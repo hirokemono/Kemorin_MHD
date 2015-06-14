@@ -265,12 +265,8 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      write(*,*) 'write in', id_rank, nprocs_in, fld_IO%iflag_file_fmt
       if( (fld_IO%iflag_file_fmt/iflag_single) .eq. 0) then
-        if(id_rank .ge. nprocs_in) then
-          write(*,*) 'write exit', id_rank
-          return
-        end if
+        if(id_rank .ge. nprocs_in)  return
       end if
 !
       if(fld_IO%iflag_file_fmt .eq. iflag_single) then

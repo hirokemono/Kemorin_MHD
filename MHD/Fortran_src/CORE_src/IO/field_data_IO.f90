@@ -8,13 +8,16 @@
 !> @brief Data IO rountines for field data IO
 !!
 !!@verbatim
-!!      function field_istack_nod_buffer(nprocs, num_field)
+!!      function field_istack_nod_buffer(nprocs, istack_nod)
+!!      function buffer_istack_nod_buffer(nprocs, istack_nod)
 !!      function field_num_buffer(num_field)
 !!      function field_comp_buffer(num_field, ncomp_field)
 !!      function each_field_name_buffer(field_name)
 !!      function each_field_data_buffer(ncomp, vect)
 !!
 !!      subroutine read_field_num_buffer(textbuf, nnod, num_field)
+!!      subroutine read_bufer_istack_nod_buffer                         &
+!!     &         (textbuf, nprocs, istack_nod)
 !!      subroutine read_field_comp_buffer                               &
 !!     &         (textbuf, num_field, ncomp_field)
 !!      subroutine read_each_field_name_buffer(textbuf, field_name)
@@ -56,19 +59,30 @@
       integer(kind = kint_gl), intent(in) :: istack_nod(0:nprocs)
       character(len=25+1+nprocs*16+1) :: field_istack_nod_buffer
 !
-      character(len=nprocs*16) :: buf_nfld
 !
+      field_istack_nod_buffer = FLD_HD0  // char(10)                    &
+     &         // buffer_istack_nod_buffer(nprocs, istack_nod)
+!
+      end function field_istack_nod_buffer
+!
+! -------------------------------------------------------------------
+!
+      function buffer_istack_nod_buffer(nprocs, istack_nod)
+!
+      integer(kind = kint), intent(in) ::    nprocs
+      integer(kind = kint_gl), intent(in) :: istack_nod(0:nprocs)
+      character(len=nprocs*16+1) :: buffer_istack_nod_buffer
+!
+      character(len=nprocs*16) :: buf_nfld
       character(len=kchara) :: fmt_txt
 !
 !
       write(fmt_txt,'(a1,i1,a9)') '(', nprocs, '(i16),a1)'
-!
       write(buf_nfld,fmt_txt) istack_nod(1:nprocs)
 !
-      field_istack_nod_buffer = FLD_HD0  // char(10)                    &
-     &                     //  buf_nfld // char(10)
+      buffer_istack_nod_buffer = buf_nfld // char(10)
 !
-      end function field_istack_nod_buffer
+      end function buffer_istack_nod_buffer
 !
 ! -------------------------------------------------------------------
 !
@@ -151,6 +165,21 @@
       read(tmp1,*) istack_nod(1:nprocs)
 !
       end subroutine read_field_istack_nod_buffer
+!
+! -------------------------------------------------------------------
+!
+      subroutine read_bufer_istack_nod_buffer                           &
+     &         (textbuf, nprocs, istack_nod)
+!
+      character(nprocs*16+1), intent(in) :: textbuf
+      integer(kind = kint), intent(in) :: nprocs
+      integer(kind = kint_gl), intent(inout) :: istack_nod(0:nprocs)
+!
+!
+      istack_nod(0) = 0
+      read(textbuf,*) istack_nod(1:nprocs)
+!
+      end subroutine read_bufer_istack_nod_buffer
 !
 ! -------------------------------------------------------------------
 !

@@ -20,6 +20,18 @@
 !!
 !!      subroutine read_alloc_stp_fld_head_gz_mpi                       &
 !!     &         (file_name, nprocs_in, id_rank, fld_IO)
+!!
+!!   Data format for the merged ascii field data
+!!     1.   Number of process
+!!     2.   Time step
+!!     3.   Time, Delta t
+!!     4.   Stacks of numbe of data points
+!!     5.   Number of fields
+!!     6.   List of number of components
+!!     7.   Each field data  (Itarate 7.1 - 7.3)
+!!      7.1   Field name
+!!      7.2   List of data size (Byte, after compressed)
+!!      7.3   Field data
 !!@endverbatim
 !
       module gz_field_file_MPI_IO
@@ -55,6 +67,8 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &    'Write mergend gzipped ascii data: ', trim(file_name)
       call calypso_mpi_write_file_open(file_name, nprocs_in, id_fld)
 !
       if(id_rank .lt. nprocs_in) then
@@ -87,6 +101,8 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &    'Read mergend gzipped ascii data: ', trim(file_name)
       call open_rd_gzfile(file_name)
 !
       call read_field_step_gz_mpi(nprocs_in, id_rank)
@@ -129,6 +145,8 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &    'Read mergend gzipped ascii data: ', trim(file_name)
       call open_rd_gzfile(file_name)
 !
       call read_field_step_gz_mpi(nprocs_in, id_rank)
@@ -182,6 +200,8 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &    'Read mergend gzipped ascii data: ', trim(file_name)
       call open_rd_gzfile(file_name)
 !
       call read_field_step_gz_mpi(nprocs_in, id_rank)
@@ -356,13 +376,14 @@
       character(len=kchara), intent(inout) :: field_name(num_field)
       real(kind = kreal), intent(inout) :: d_nod(nnod,ntot_comp)
 !
-      integer(kind = kint) :: j, icou
+      integer(kind = kint) :: j, icou, itmp
 !
 !
       if(id_rank .ge. nprocs_in) return
       icou = 1
       do j = 1, num_field
         call skip_gz_comment_chara(field_name(j))
+        call skip_gz_comment_int(itmp)
         call gz_read_fld_vecotr_mpi(nprocs_in, id_rank,                 &
      &      nnod, ncomp_field(j), d_nod(1,icou), istack_merged)
         icou = icou + ncomp_field(j)

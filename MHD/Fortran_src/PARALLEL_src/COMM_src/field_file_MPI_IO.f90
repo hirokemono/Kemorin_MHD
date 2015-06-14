@@ -24,6 +24,18 @@
 !!      subroutine sync_field_comp_mpi(num_field, ncomp_field)
 !!      subroutine sync_field_name_mpi(field_name)
 !!      subroutine sync_field_names_mpi(num_field, field_name)
+!!
+!!   Data format for the merged ascii field data
+!!     1.   Number of process
+!!     2.   Time step
+!!     3.   Time, Delta t
+!!     4.   Stacks of numbe of data points
+!!     5.   Number of fields
+!!     6.   List of number of components
+!!     7.   Each field data  (Itarate 7.1 - 7.3)
+!!      7.1   Field name
+!!      7.2   List of data size (Byte)
+!!      7.3   Field data
 !!@endverbatim
 !
       module field_file_MPI_IO
@@ -64,6 +76,8 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
+      if(my_rank .eq. 0) write(*,*) 'Write mergend ascii data: ',       &
+     &                               trim(file_name)
       call calypso_mpi_write_file_open(file_name, nprocs_in, id_fld)
 !
       if(id_rank .lt. nprocs_in) then
@@ -93,6 +107,8 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
+      if(my_rank .eq. 0) write(*,*) 'Read mergend ascii data: ',        &
+     &                               trim(file_name)
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
       ioff_gl = 0
@@ -137,6 +153,8 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
+      if(my_rank .eq. 0) write(*,*) 'Read mergend ascii data: ',        &
+     &                               trim(file_name)
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
       ioff_gl = 0
@@ -188,6 +206,8 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
+      if(my_rank .eq. 0) write(*,*) 'Read mergend ascii data: ',        &
+     &                               trim(file_name)
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
       ioff_gl = 0
@@ -247,7 +267,7 @@
 !
 !
       call calypso_mpi_seek_write_head_c                                &
-     &   (id_fld, ioff_gl, step_data_buffer(nprocs_in-1))
+     &   (id_fld, ioff_gl, step_data_buffer(nprocs_in))
       call calypso_mpi_seek_write_head_c(id_fld, ioff_gl,               &
      &    field_istack_nod_buffer(nprocs_in, istack_merged))
       call calypso_mpi_seek_write_head_c(id_fld, ioff_gl,               &
@@ -257,10 +277,9 @@
 !
       icou = 1
       do j = 1, num_field
-        call calypso_mpi_seek_write_head_c                              &
-     &     (id_fld, ioff_gl, each_field_name_buffer(field_name(j)))
         call write_fld_vecotr_mpi(id_fld, nprocs_in, id_rank, ioff_gl,  &
-     &      nnod, ncomp_field(j), d_nod(1,icou), istack_merged)
+     &      field_name(j), nnod, ncomp_field(j), d_nod(1,icou),         &
+     &      istack_merged)
         icou = icou + ncomp_field(j)
       end do
 !
@@ -270,13 +289,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine write_fld_vecotr_mpi(id_fld, nprocs_in, id_rank,       &
-     &          ioff_gl, nnod, ncomp, vect, istack_merged)
+     &          ioff_gl, field_name, nnod, ncomp, vect, istack_merged)
 !
       use field_data_IO
 !
       integer(kind = kint), intent(in) :: nnod, id_rank, nprocs_in
       integer(kind = kint), intent(in) :: ncomp
       integer(kind = kint_gl), intent(inout) :: ioff_gl
+      character(len=kchara), intent(in) :: field_name
       integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
       real(kind = kreal), intent(in) :: vect(nnod,ncomp)
 !
@@ -285,11 +305,19 @@
       real(kind = kreal) :: v1(ncomp)
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint) :: ilength
+      integer(kind = kint_gl) :: istack_buffer(0:nprocs_in)
       integer(kind = kint_gl) :: inod
 !
 !
       v1(1:ncomp) = 0.0d0
       ilength = len(each_field_data_buffer(ncomp, v1))
+      istack_buffer(0:nprocs_in) = ilength * istack_merged(0:nprocs_in)
+!
+      call calypso_mpi_seek_write_head_c                                &
+     &     (id_fld, ioff_gl, each_field_name_buffer(field_name))
+      call calypso_mpi_seek_write_head_c(id_fld, ioff_gl,               &
+     &    buffer_istack_nod_buffer(nprocs_in, istack_buffer))
+!
       ioffset = int(ioff_gl + ilength * istack_merged(id_rank))
       do inod = 1, nnod
         v1(1:ncomp) = vect(inod,1:ncomp)
@@ -414,7 +442,7 @@
         call read_step_data_buffer(c1buf(1), iread)
         deallocate(c1buf)
 !
-        if(nprocs_in .ne.(iread + 1)) then
+        if(nprocs_in .ne. iread) then
           call calypso_mpi_abort                                        &
      &       (ierr_fld, 'Set correct field data file')
         end if
@@ -630,6 +658,10 @@
 !
 !
       if(id_rank .ge. nprocs_in) return
+!   Skip buffer size
+      ilength = len(buffer_istack_nod_buffer(nprocs_in, istack_merged))
+      ioff_gl = ioff_gl + ilength
+!
       v1(1:ncomp) = 0.0d0
       ilength = len(each_field_data_buffer(ncomp, v1))
       ioffset = int(ioff_gl + ilength * istack_merged(id_rank))

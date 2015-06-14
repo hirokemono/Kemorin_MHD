@@ -27,10 +27,6 @@
 !
       implicit none
 !
-      character(len=1), allocatable :: gzip_buf(:)
-!
-      private :: gzip_buf
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -49,7 +45,11 @@
       integer, intent(in) ::  id_fld
 !
       real(kind = kreal) :: v1(ndir)
-      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, ip
+      integer(kind = kint) :: ilen_gzipped_gl(nprocs)
+      integer(kind = kint_gl) :: istack_buffer(0:nprocs)
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      character(len=1), allocatable :: gzip_buf(:)
 !
 !
       v1(1:ndir) = 0.0d0
@@ -59,9 +59,24 @@
       ilen_gzipped = gz_defleat_vector_txt(nnod, ndir, vector, ilength, &
      &                                     ilen_gz, gzip_buf(1))
 !
-      call calypso_gz_mpi_seek_write                                    &
-     &   (id_fld, ioff_gl, ilen_gzipped, gzip_buf(1))
+      call MPI_Allgather(ilen_gzipped, ione, CALYPSO_INTEGER,           &
+     &    ilen_gzipped_gl, ione, CALYPSO_INTEGER, CALYPSO_COMM,         &
+     &    ierr_MPI)
+!
+      istack_buffer(0) = 0
+      do ip = 1, nprocs
+        istack_buffer(ip) = istack_buffer(ip-1) + ilen_gzipped_gl(ip)
+      end do
+      call gz_write_fld_header_mpi(id_fld, ioff_gl,                     &
+     &    buffer_istack_nod_buffer(nprocs, istack_buffer))
+!
+      if(ilen_gzipped .gt. 0) then
+        ioffset = ioff_gl + istack_buffer(my_rank)
+        call calypso_mpi_seek_write_chara                               &
+     &     (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
+      end if
       deallocate(gzip_buf)
+      ioff_gl = ioff_gl + istack_buffer(nprocs)
 !
       end subroutine gz_write_fld_vecotr_mpi
 !
@@ -77,7 +92,7 @@
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-!
+      character(len=1), allocatable :: gzip_buf(:)
 !
 !
       if(my_rank .eq. 0) then

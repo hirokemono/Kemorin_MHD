@@ -41,11 +41,7 @@
 !
       implicit none
 !
-      character(len=1), allocatable :: gzip_buf(:)
-!
       integer, external :: gzread_f
-!
-      private :: gzip_buf
 !
 ! -----------------------------------------------------------------------
 !
@@ -62,7 +58,7 @@
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-!
+      character(len=1), allocatable :: gzip_buf(:)
 !
 !
       if(my_rank .eq. 0) then
@@ -95,7 +91,7 @@
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-!
+      character(len=1), allocatable :: gzip_buf(:)
 !
 !
       if(my_rank .eq. 0) then
@@ -131,7 +127,7 @@
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-!
+      character(len=1), allocatable :: gzip_buf(:)
 !
 !
       if(my_rank .eq. 0) then
@@ -166,7 +162,7 @@
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-!
+      character(len=1), allocatable :: gzip_buf(:)
 !
 !
       if(my_rank .eq. 0) then
@@ -201,7 +197,7 @@
 !
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-!
+      character(len=1), allocatable :: gzip_buf(:)
 !
 !
       if(my_rank .eq. 0) then
@@ -234,7 +230,11 @@
 !
       integer, intent(in) ::  id_fld
 !
-      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, ip
+      integer(kind = kint) :: ilen_gzipped_gl(nprocs)
+      integer(kind = kint_gl) :: istack_buffer(0:nprocs)
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      character(len=1), allocatable :: gzip_buf(:)
 !
 !
       ilength =  n1 * n2 * kreal
@@ -243,9 +243,26 @@
       call gzip_defleat_once                                            &
      &   (ilength, real_dat, ilen_gz, ilen_gzipped, gzip_buf(1))
 !
-      call calypso_gz_mpi_seek_write                                    &
-     &   (id_fld, ioff_gl, ilen_gzipped, gzip_buf(1))
+      call MPI_Allgather(ilen_gzipped, ione, CALYPSO_INTEGER,           &
+     &    ilen_gzipped_gl, ione, CALYPSO_INTEGER, CALYPSO_COMM,         &
+     &    ierr_MPI)
+!
+      istack_buffer(0) = 0
+      do ip = 1, my_rank
+        istack_buffer(ip) = istack_buffer(ip-1) + ilen_gzipped_gl(ip)
+      end do
+!
+      call gz_write_fld_mul_i8head_mpi_b                                &
+     &   (id_fld, ioff_gl, nprocs, istack_buffer(1))
+!
+      if(ilen_gzipped .gt. 0) then
+        ioffset = ioff_gl + istack_buffer(my_rank)
+        call calypso_mpi_seek_write_chara                               &
+     &    (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
+      end if
+!
       deallocate(gzip_buf)
+      ioff_gl = ioff_gl + istack_buffer(nprocs)
 !
       end subroutine gz_write_fld_realarray2_mpi_b
 !

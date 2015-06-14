@@ -16,6 +16,17 @@
 !!     &         (file_name, nprocs_in, id_rank, fld_IO)
 !!      subroutine read_alloc_stp_fld_head_mpi_b                        &
 !!     &         (file_name, nprocs_in, id_rank, fld_IO)
+!!
+!!   Data format for the merged binary field data
+!!     1.   Number of process
+!!     2.   Time step
+!!     3.   Time, Delta t
+!!     4.   Stacks of numbe of data points
+!!     5.   Number of fields
+!!     6.   List of number of components
+!!     7.   Field names
+!!     8.   List of data size (Byte)
+!!     9.   All Field data
 !!@endverbatim
 !
       module field_file_MPI_IO_b
@@ -53,6 +64,9 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &    'write mergend binary data: ', trim(file_name)
+!
       call calypso_mpi_write_file_open(file_name, nprocs_in, id_fld)
 !
       if(id_rank .lt. nprocs_in) then
@@ -82,6 +96,10 @@
 !
       integer :: id_fld
       integer(kind = kint_gl) :: ioff_gl
+!
+!
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &    'read mergend binary data: ', trim(file_name)
 !
 !
       call calypso_mpi_read_file_open(file_name, id_fld)
@@ -130,6 +148,9 @@
       integer :: id_fld
       integer(kind = kint_gl) :: ioff_gl
 !
+!
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &    'read mergend binary data: ', trim(file_name)
 !
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
@@ -185,6 +206,9 @@
       integer :: id_fld
       integer(kind = kint_gl) :: ioff_gl
 !
+!
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &    'read mergend binary data: ', trim(file_name)
 !
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
@@ -268,7 +292,7 @@
       real(kind = kreal) ::   rtmp_IO(1)
 !
 !
-      itmp_IO(1) = nprocs_in - 1
+      itmp_IO(1) = nprocs_in
       call calypso_mpi_seek_write_head_i                                &
      &    (id_fld, ioff_gl, ione, itmp_IO)
       itmp_IO(1) = i_time_step_IO
@@ -344,6 +368,7 @@
       integer, intent(in) ::  id_fld
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint_gl) :: istack_buffer(0:nprocs_in)
       integer(kind = kint) :: ilength
 !
 !
@@ -352,6 +377,16 @@
         ioffset = int(ioff_gl)
         call calypso_mpi_seek_write_chara                               &
      &     (id_fld, ioffset, ilength, field_name(1))
+      end if
+      ioff_gl = ioff_gl + ilength
+!
+      istack_buffer(0:nprocs_in)                                        &
+     &          = ncomp * istack_merged(0:nprocs_in) * kreal
+      ilength = nprocs_in * kint_gl
+      if(my_rank .eq. 0) then
+        ioffset = int(ioff_gl)
+        call calypso_mpi_seek_write_int8                                &
+     &     (id_fld, ioffset, ilength, istack_buffer(1))
       end if
       ioff_gl = ioff_gl + ilength
 !
@@ -403,7 +438,7 @@
         delta_t_IO = rtmp_IO(1)
         ioffset = ioffset + kreal
 !
-        if(nprocs_in .ne.(iread + 1)) then
+        if(nprocs_in .ne. iread) then
           call calypso_mpi_abort                                        &
      &       (ierr_fld, 'Set correct field data file')
         end if
@@ -505,6 +540,8 @@
 !
 !
       if(id_rank .ge. nprocs_in) return
+      ioff_gl = ioff_gl + nprocs_in * kint_gl
+!
       ioffset = int(ioff_gl + kreal * ncomp*istack_merged(id_rank))
       ilength = nnod * ncomp
       call calypso_mpi_seek_read_real                                   &

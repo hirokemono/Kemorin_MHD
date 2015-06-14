@@ -61,6 +61,9 @@
       if(nprocs .ne. nprocs_in)  call calypso_mpi_abort                 &
      &                (ierr_fld, 'gzipped data output does not work')
 !
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &    'write mergend gzipped binary data: ', trim(file_name)
+!
       call calypso_mpi_write_file_open(file_name, nprocs_in, id_fld)
 !
       ioff_gl = 0
@@ -88,6 +91,9 @@
 !
       type(field_IO), intent(inout) :: fld_IO
 !
+!
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &    'read mergend gzipped binary data: ', trim(file_name)
 !
       call open_rd_gzfile(file_name)
 !
@@ -131,6 +137,9 @@
 !
       type(field_IO), intent(inout) :: fld_IO
 !
+!
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &    'read mergend gzipped binary data: ', trim(file_name)
 !
       call open_rd_gzfile(file_name)
 !
@@ -184,6 +193,9 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &    'read mergend gzipped binary data: ', trim(file_name)
+!
       call open_rd_gzfile(file_name)
 !
       call gz_read_step_data_mpi_b(nprocs_in, id_rank)
@@ -236,7 +248,7 @@
       integer, intent(in) ::  id_fld
 !
 !
-      call gz_write_fld_inthead_mpi_b(id_fld, ioff_gl, nprocs_in-1)
+      call gz_write_fld_inthead_mpi_b(id_fld, ioff_gl, nprocs_in)
       call gz_write_fld_inthead_mpi_b(id_fld, ioff_gl, i_time_step_IO)
 !
       call gz_write_fld_realhead_mpi_b(id_fld, ioff_gl, time_IO)
@@ -291,7 +303,7 @@
 !
       if(id_rank .ge. nprocs_in) return
       call gz_read_fld_inthead_mpi_b(iread)
-      if(my_rank .eq. 0 .and. nprocs_in .ne. (iread + 1)) then
+      if(my_rank .eq. 0 .and. nprocs_in .ne. iread) then
         call calypso_mpi_abort(ierr_fld, 'Set correct field data file')
       end if
 !
@@ -356,8 +368,11 @@
       integer(kind=kint), intent(in) :: nnod, ncomp
       real(kind = kreal), intent(inout) :: vect(nnod,ncomp)
 !
+      integer(kind = kint_gl) :: istack_buffer(0:nprocs_in)
+!
 !
       if(id_rank .ge. nprocs_in) return
+      call gz_read_fld_mul_i8head_mpi_b(nprocs_in, istack_buffer)
       call gz_read_fld_realarray2_mpi_b                                 &
      &   (nprocs_in, id_rank, nnod, ncomp, vect, istack_merged)
 !

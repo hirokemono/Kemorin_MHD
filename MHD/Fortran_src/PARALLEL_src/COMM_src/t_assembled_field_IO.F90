@@ -9,6 +9,29 @@
 !!@verbatim
 !!      subroutine sel_write_SPH_assemble_field                         &
 !!     &         (nprocs_in, istep_fld, nloop, fld_IO, gz_bufs)
+!!
+!!   Data format for the merged ascii field data
+!!     1.   Number of process
+!!     2.   Time step
+!!     3.   Time, Delta t
+!!     4.   Stacks of numbe of data points
+!!     5.   Number of fields
+!!     6.   List of number of components
+!!     7.   Each field data  (Itarate 7.1 - 7.3)
+!!      7.1   Field name
+!!      7.2   List of data size (Byte)
+!!      7.3   Field data
+!!
+!!   Data format for the merged binary field data
+!!     1.   Number of process
+!!     2.   Time step
+!!     3.   Time, Delta t
+!!     4.   Stacks of numbe of data points
+!!     5.   Number of fields
+!!     6.   List of number of components
+!!     7.   Field names
+!!     8.   List of data size (Byte)
+!!     9.   All Field data
 !!@endverbatim
 !
       module t_assembled_field_IO
@@ -58,7 +81,6 @@
       character(len=kchara) :: file_name
 !
 !
-      write(*,*) 'sel_write_SPH_assemble_field', nprocs_in, nprocs, fld_IO(1)%iflag_file_fmt
       if(nprocs_in .ne. nprocs) then
         do iloop = 1, nloop
           id_rank = my_rank + (iloop-1) * nprocs
@@ -114,7 +136,7 @@
       integer(kind = kint) :: icou, j
 !
 !
-      if(my_rank .eq. 0) write(*,*) 'Open mergend compressed data: ',   &
+      if(my_rank .eq. 0) write(*,*) 'Write mergend compressed data: ',  &
      &                               trim(file_name)
       call calypso_mpi_write_file_open(file_name, nprocs_in, id_fld)
 !
@@ -157,7 +179,7 @@
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &     'Open mergend compressed binary data: ', trim(file_name)
+     &     'Write mergend compressed binary data: ', trim(file_name)
       call calypso_mpi_write_file_open(file_name, nprocs_in, id_fld)
 !
 !
@@ -242,6 +264,10 @@
         istack_gz_pe(ip) = istack_gz_pe(ip-1) + len_gz_pe(ip)
       end do
 !
+!       Write buffer size
+      call gz_write_fld_header_mpi(id_mpi_file, ioff_gl,                &
+     &     buffer_istack_nod_buffer(nprocs_in, istack_gz_pe))
+!
 !       Write to file
       do iloop = 1, nloop
         id_rank = my_rank + (iloop-1) * nprocs
@@ -264,6 +290,7 @@
       use field_data_IO
       use m_calypso_mpi_IO
       use gz_field_file_MPI_IO_b
+      use gz_field_data_MPI_IO_b
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint), intent(in) :: nprocs_in
@@ -315,6 +342,10 @@
       do ip = 1, nprocs_in
         istack_gz_pe(ip) = istack_gz_pe(ip-1) + len_gz_pe(ip)
       end do
+!
+!       Write data size
+      call gz_write_fld_mul_i8head_mpi_b                                &
+     &   (id_mpi_file, ioff_gl, nprocs_in, istack_gz_pe(1))
 !
 !       Write to file
       do iloop = 1, nloop
