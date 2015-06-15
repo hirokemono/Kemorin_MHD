@@ -24,7 +24,6 @@
 !!      subroutine gz_read_fld_realhead_mpi_b(real_dat)
 !!
 !!      subroutine gz_read_fld_mul_i8head_mpi_b(num, int_gl_dat)
-!!      subroutine gz_read_fld_mul_inthead_mpi_b(num, int_dat)
 !!      subroutine gz_read_fld_mul_charhead_mpi_b(num, chara_dat)
 !!
 !!      subroutine gz_read_fld_realarray2_mpi_b                         &
@@ -40,8 +39,6 @@
       use calypso_mpi
 !
       implicit none
-!
-      integer, external :: gzread_f
 !
 ! -----------------------------------------------------------------------
 !
@@ -248,7 +245,7 @@
      &    ierr_MPI)
 !
       istack_buffer(0) = 0
-      do ip = 1, my_rank
+      do ip = 1, nprocs
         istack_buffer(ip) = istack_buffer(ip-1) + ilen_gzipped_gl(ip)
       end do
 !
@@ -269,119 +266,179 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_fld_inthead_mpi_b(int_dat)
+      subroutine gz_read_fld_mul_inthead_mpi_b                          &
+     &         (id_fld, nprocs_in, id_rank, ioff_gl, num, int_dat)
 !
-      integer(kind = kint), intent(inout) :: int_dat
+      integer, intent(in) ::  id_fld
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
-      integer(kind = kint) :: ierr
-!
-!
-      if(my_rank .eq. 0) then
-        ierr = gzread_f(kint, int_dat)
-      else
-        call gzseek_go_fwd_f(kint, ierr)
-      end if
-!
-      end subroutine gz_read_fld_inthead_mpi_b
-!
-! -----------------------------------------------------------------------
-!
-      subroutine gz_read_fld_realhead_mpi_b(real_dat)
-!
-      real(kind = kreal), intent(inout) :: real_dat
-!
-      integer(kind = kint) :: ierr
-!
-      if(my_rank .eq. 0) then
-        ierr = gzread_f(kreal, real_dat)
-      else
-        call gzseek_go_fwd_f(kreal, ierr)
-      end if
-!
-      end subroutine gz_read_fld_realhead_mpi_b
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine gz_read_fld_mul_i8head_mpi_b(num, int_gl_dat)
-!
+      integer(kind=kint), intent(in) :: id_rank, nprocs_in
       integer(kind = kint), intent(in) :: num
-      integer(kind = kint_gl), intent(inout) :: int_gl_dat(num)
 !
-      integer(kind = kint) :: ilength, ierr
-!
-!
-      ilength = num * kint_gl
-      if(my_rank .eq. 0) then
-        ierr = gzread_f(ilength, int_gl_dat(1))
-      else
-        call gzseek_go_fwd_f(ilength, ierr)
-      end if
-!
-      end subroutine gz_read_fld_mul_i8head_mpi_b
-!
-! -----------------------------------------------------------------------
-!
-      subroutine gz_read_fld_mul_inthead_mpi_b(num, int_dat)
-!
-      integer(kind = kint), intent(in) :: num
       integer(kind = kint), intent(inout) :: int_dat(num)
 !
-      integer(kind = kint) :: ilength, ierr
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+!
+      character(len=1), allocatable :: gzip_buf(:)
 !
 !
+      if(id_rank .ge. nprocs_in) return
+!
+      ioffset = int(ioff_gl)
       ilength = num * kint
-      if(my_rank .eq. 0) then
-        ierr = gzread_f(ilength, int_dat(1))
-      else
-        call gzseek_go_fwd_f(ilength, ierr)
-      end if
+      ilen_gz = int(real(ilength) *1.01) + 24
+      allocate(gzip_buf(ilen_gz))
+      call calypso_mpi_seek_read_chara                                  &
+     &         (id_fld, ioffset, ilen_gz, gzip_buf(1))
+!
+      call gzip_infleat_once                                            &
+     &   (ilen_gz, gzip_buf(1), ilength, int_dat, ilen_gzipped)
+      deallocate(gzip_buf)
+      ioff_gl = ioff_gl + ilen_gzipped
 !
       end subroutine gz_read_fld_mul_inthead_mpi_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_fld_mul_charhead_mpi_b(num, chara_dat)
+      subroutine gz_read_fld_realhead_mpi_b                             &
+     &         (id_fld, nprocs_in, id_rank, ioff_gl, real_dat)
 !
-      integer(kind = kint), intent(in) :: num
+      integer, intent(in) ::  id_fld
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      integer(kind=kint), intent(in) :: id_rank, nprocs_in
+      real(kind = kreal), intent(inout) :: real_dat
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+!
+      character(len=1), allocatable :: gzip_buf(:)
+!
+!
+!
+      if(id_rank .ge. nprocs_in) return
+!
+      ioffset = int(ioff_gl)
+      ilength = ione * kreal
+      ilen_gz = int(real(ilength) *1.01) + 24
+      allocate(gzip_buf(ilen_gz))
+      call calypso_mpi_seek_read_chara                                  &
+     &         (id_fld, ioffset, ilen_gz, gzip_buf(1))
+!
+      call gzip_infleat_once                                            &
+     &   (ilen_gz, gzip_buf(1), ilength, real_dat, ilen_gzipped)
+      deallocate(gzip_buf)
+      ioff_gl = ioff_gl + ilen_gzipped
+!
+      end subroutine gz_read_fld_realhead_mpi_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine gz_read_fld_mul_i8head_mpi_b                           &
+     &         (id_fld, nprocs_in, id_rank, ioff_gl, num, int_dat)
+!
+      integer, intent(in) ::  id_fld
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      integer(kind=kint), intent(in) :: id_rank, nprocs_in
+      integer(kind=kint), intent(in) :: num
+      integer(kind = kint_gl), intent(inout) :: int_dat(num)
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+!
+      character(len=1), allocatable :: gzip_buf(:)
+!
+!
+      if(id_rank .ge. nprocs_in) return
+!
+      ioffset = int(ioff_gl)
+      ilength = num * kint_gl
+      ilen_gz = int(real(ilength) *1.01) + 24
+      allocate(gzip_buf(ilen_gz))
+      call calypso_mpi_seek_read_chara                                  &
+     &         (id_fld, ioffset, ilen_gz, gzip_buf(1))
+!
+      call gzip_infleat_once                                            &
+     &   (ilen_gz, gzip_buf(1), ilength, int_dat, ilen_gzipped)
+      deallocate(gzip_buf)
+      ioff_gl = ioff_gl + ilen_gzipped
+!
+      end subroutine gz_read_fld_mul_i8head_mpi_b
+!
+! -----------------------------------------------------------------------
+!
+      subroutine gz_read_fld_mul_charhead_mpi_b                         &
+     &         (id_fld, nprocs_in, id_rank, ioff_gl, num, chara_dat)
+!
+      integer, intent(in) ::  id_fld
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
+      integer(kind=kint), intent(in) :: id_rank, nprocs_in
+      integer(kind=kint), intent(in) :: num
       character(len=kchara), intent(inout) :: chara_dat(num)
 !
-      integer(kind = kint) :: ilength, ierr
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+!
+      character(len=1), allocatable :: gzip_buf(:)
 !
 !
+      if(id_rank .ge. nprocs_in) return
+!
+      ioffset = int(ioff_gl)
       ilength = num * kchara
-      if(my_rank .eq. 0) then
-        ierr = gzread_f(ilength, chara_dat(1))
-      else
-        call gzseek_go_fwd_f(ilength, ierr)
-      end if
+      ilen_gz = int(real(ilength) *1.01) + 24
+      allocate(gzip_buf(ilen_gz))
+      call calypso_mpi_seek_read_chara                                  &
+     &         (id_fld, ioffset, ilen_gz, gzip_buf(1))
+!
+      call gzip_infleat_once                                            &
+     &   (ilen_gz, gzip_buf(1), ilength, chara_dat, ilen_gzipped)
+      deallocate(gzip_buf)
+      ioff_gl = ioff_gl + ilen_gzipped
 !
       end subroutine gz_read_fld_mul_charhead_mpi_b
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_fld_realarray2_mpi_b                           &
-     &         (nprocs_in, id_rank, n1, n2, real_dat, istack_merged)
+      subroutine gz_read_fld_realarray2_mpi_b                          &
+     &         (id_fld, nprocs_in, id_rank, ioff_gl, n1, n2, real_dat)
+!
+      integer, intent(in) ::  id_fld
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
-      integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
       integer(kind = kint), intent(in) :: n1, n2
       real(kind = kreal), intent(inout) :: real_dat(n1,n2)
 !
-      integer(kind = kint) :: ilength, ierr
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+!
+      character(len=1), allocatable :: gzip_buf(:)
+!
+      integer(kind = kint_gl) :: istack_buffer(0:nprocs_in)
 !
 !
-      ilength =  int(istack_merged(id_rank)) * n2 * kreal
-      write(*,*) 'gzseek_go_fwd_f', id_rank, ilength
-      call gzseek_go_fwd_f(ilength, ierr)
+      if(id_rank .ge. nprocs_in) return
 !
-      ilength =  n1 * n2 * kreal
-      write(*,*) 'gzread_f', id_rank, ilength
-      ierr = gzread_f(ilength, real_dat)
+      istack_buffer(0) = 0
+      call gz_read_fld_mul_i8head_mpi_b(id_fld, nprocs_in, id_rank,     &
+     &    ioff_gl, nprocs_in, istack_buffer(1))
 !
-!      ilength = int(istack_merged(nprocs_in)                           &
-!     &            - istack_merged(id_rank+1))  * n2 * kreal
-!      call gzseek_go_fwd_f(ilength, ierr)
+      ioffset = int(ioff_gl) + istack_buffer(id_rank)
+      ilength = n1 * n2 * kreal
+      ilen_gz = int(istack_buffer(id_rank+1) - istack_buffer(id_rank))
+      allocate(gzip_buf(ilen_gz))
+      call calypso_mpi_seek_read_chara                                  &
+     &         (id_fld, ioffset, ilen_gz, gzip_buf(1))
+!
+      call gzip_infleat_once                                            &
+     &   (ilen_gz, gzip_buf(1), ilength, real_dat, ilen_gzipped)
+      deallocate(gzip_buf)
+      ioff_gl = ioff_gl + ilen_gz
+!
 !
       end subroutine gz_read_fld_realarray2_mpi_b
 !

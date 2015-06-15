@@ -113,7 +113,7 @@ void write_compress_txt_nolf(int *num_buffer, char *input_txt){
 	return;
 }
 
-static void strm_init (z_stream *strm)
+static void strm_deflate_init (z_stream *strm)
 {
     strm->zalloc = Z_NULL;
     strm->zfree  = Z_NULL;
@@ -123,13 +123,21 @@ static void strm_init (z_stream *strm)
                              Z_DEFAULT_STRATEGY));
     return;
 }
+static void strm_inflate_init (z_stream *strm)
+{
+    strm->zalloc = Z_NULL;
+    strm->zfree  = Z_NULL;
+    strm->opaque = Z_NULL;
+    CALL_ZLIB (inflateInit2 (strm, windowBits|GZIP_ENCODING|GZIP_AUTODETECT));
+    return;
+}
 
 void gzip_defleat_once(int *len_buf, const char *buf, int *len_gzipbuf, 
                        int *len_gzipped, char *gzipbuf)
 {
     z_stream strm;
 
-    strm_init (& strm);
+    strm_deflate_init (& strm);
     strm.next_in = (unsigned char *) buf;
     strm.avail_in =  (uInt) *len_buf;
     strm.avail_out = (uInt) *len_gzipbuf;
@@ -145,7 +153,7 @@ void gzip_defleat_begin(int *len_buf, const char *buf, int *len_gzipbuf,
                         int *len_gzipped, char *gzipbuf)
 {
     
-    strm_init (& strm_gl);
+    strm_deflate_init (& strm_gl);
     strm_gl.next_in = (unsigned char *) buf;
     strm_gl.avail_in =  (uInt) *len_buf;
     strm_gl.avail_out = (uInt) *len_gzipbuf;
@@ -180,6 +188,66 @@ void gzip_defleat_last(int *len_buf, const char *buf, int *len_gzipbuf, int *len
     *len_gzipped = *len_gzipbuf - strm_gl.avail_out;
 /*    printf("compressed size:%d %d %d \n",*len_buf, avail_out_current, *len_gzipped);*/
     deflateEnd (& strm_gl);
+    return;
+}
+
+void gzip_infleat_once(int *len_gzipbuf, const char *gzipbuf, int *len_buf, 
+                       char *buf, int *len_gzipped)
+{
+    z_stream strm;
+    
+    strm_inflate_init (& strm);
+    strm.next_in = (unsigned char *) gzipbuf;
+    strm.avail_in =  (uInt) *len_gzipbuf;
+    strm.avail_out = (uInt) *len_buf;
+    strm.next_out = (unsigned char *) buf;
+    CALL_ZLIB (inflate (& strm, Z_NO_FLUSH));
+    *len_gzipped = *len_gzipbuf - strm.avail_in;
+/*    printf("compressed size:%d %d %d \n",*len_buf, *len_gzipbuf, *len_gzipped); */
+    inflateEnd (& strm);
+    return;
+}
+
+void gzip_infleat_begin(int *len_gzipbuf, const char *gzipbuf, int *len_buf, 
+                        char *buf, int *len_gzipped)
+{
+    
+    strm_inflate_init (& strm_gl);
+    strm_gl.next_in = (unsigned char *) gzipbuf;
+    strm_gl.avail_in =  (uInt) *len_gzipbuf;
+    strm_gl.avail_out = (uInt) *len_buf;
+    strm_gl.next_out = (unsigned char *) buf;
+    CALL_ZLIB (inflate (& strm_gl, Z_NO_FLUSH));
+    *len_gzipped = *len_gzipbuf - strm_gl.avail_in;
+    return;
+}
+
+void gzip_infleat_cont(int *len_gzipbuf, int *len_buf, const char *buf, int *len_gzipped)
+{
+    uInt avail_in_current;
+    
+    avail_in_current = strm_gl.avail_in;
+    
+    strm_gl.next_out = (unsigned char *) buf;
+    strm_gl.avail_out =  (uInt) *len_buf;
+    CALL_ZLIB (inflate (& strm_gl, Z_NO_FLUSH));
+    *len_gzipped = *len_gzipbuf - strm_gl.avail_in;
+    /*    printf("compressed size:%d %d %d \n",*len_buf, avail_in_current, *len_gzipped);*/
+    return;
+}
+
+void gzip_infleat_last(int *len_gzipbuf, int *len_buf, const char *buf, int *len_gzipped)
+{
+    uInt avail_in_current;
+    
+    avail_in_current = strm_gl.avail_in;
+    
+    strm_gl.next_out = (unsigned char *) buf;
+    strm_gl.avail_out =  (uInt) *len_buf;
+    CALL_ZLIB (inflate (& strm_gl, Z_NO_FLUSH));
+    *len_gzipped = *len_gzipbuf - strm_gl.avail_in;
+    /*    printf("compressed size:%d %d %d \n",*len_buf, avail_in_current, *len_gzipped);*/
+    inflateEnd (& strm_gl);
     return;
 }
 
@@ -253,12 +321,14 @@ void gzseek_go_fwd_f(int *ioffset, int *ierr){
     *ierr =  (int)ierr_z;
 }
 
-int gzread_f(int *ilength, char *textbuf){
-    return gzread(file_gz, textbuf, (uInt) *ilength);
+void gzread_f(int *ilength, char *textbuf, int *ierr){
+    *ierr =  gzread(file_gz, textbuf, (uInt) *ilength);
+    return;
 }
 
-int gzwrite_f(int *ilength, char *textbuf){
-    return gzwrite(file_gz, textbuf, (uInt) *ilength);
+void gzwrite_f(int *ilength, char *textbuf, int *ierr){
+    *ierr =  gzwrite(file_gz, textbuf, (uInt) *ilength);
+    return;
 }
 
 void get_one_line_from_gz(int *num_buffer, int *num_word, int *nchara, char *line_buf){

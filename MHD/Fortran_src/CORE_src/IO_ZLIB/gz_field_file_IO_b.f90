@@ -26,7 +26,7 @@
 !
       implicit none
 !
-      integer, external :: gzwrite_f, gzread_f
+      private :: gz_read_step_data_mpi_b, gz_read_field_data_mpi_b
 !
 !  ---------------------------------------------------------------------
 !
@@ -73,14 +73,14 @@
 !
       call open_rd_gzfile(gzip_name)
 !
-      call read_step_data_mpi_b(id_rank)
+      call gz_read_step_data_mpi_b
       call gz_read_fld_mul_i8head_b(ione, istack_merged)
       call gz_read_fld_inthead_b(fld_IO%num_field_IO)
 !
       call gz_read_fld_mul_inthead_b                                    &
      &   (fld_IO%num_field_IO, fld_IO%num_comp_IO)
 !
-      call read_field_data_mpi_b                                        &
+      call gz_read_field_data_mpi_b                                     &
      &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%fld_name, fld_IO%d_IO)
 !
@@ -106,7 +106,7 @@
 !
       call open_rd_gzfile(gzip_name)
 !
-      call read_step_data_mpi_b(id_rank)
+      call gz_read_step_data_mpi_b
       call gz_read_fld_mul_i8head_b(ione, istack_merged)
       call gz_read_fld_inthead_b(fld_IO%num_field_IO)
 !
@@ -117,7 +117,7 @@
       fld_IO%nnod_IO = int(istack_merged(1))
       call cal_istack_phys_comp_IO(fld_IO)
       call alloc_phys_data_IO(fld_IO)
-      call read_field_data_mpi_b                                        &
+      call gz_read_field_data_mpi_b                                     &
      &   (fld_IO%nnod_IO, fld_IO%num_field_IO, fld_IO%ntot_comp_IO,     &
      &    fld_IO%fld_name, fld_IO%d_IO)
 !
@@ -143,7 +143,7 @@
 !
       call open_rd_gzfile(gzip_name)
 !
-      call read_step_data_mpi_b(id_rank)
+      call gz_read_step_data_mpi_b
       call gz_read_fld_mul_i8head_b(ione, istack_merged)
       call gz_read_fld_inthead_b(fld_IO%num_field_IO)
 !
@@ -205,9 +205,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_step_data_mpi_b(my_rank)
-!
-      integer(kind=kint), intent(in) :: my_rank
+      subroutine gz_read_step_data_mpi_b
 !
       integer(kind = kint) :: id_rank
 !
@@ -217,12 +215,12 @@
       call gz_read_fld_realhead_b(time_IO)
       call gz_read_fld_realhead_b(delta_t_IO)
 !
-      end subroutine read_step_data_mpi_b
+      end subroutine gz_read_step_data_mpi_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine read_field_data_mpi_b(nnod, num_field, ncomp,          &
+      subroutine gz_read_field_data_mpi_b(nnod, num_field, ncomp,       &
      &          field_name, vect)
 !
       integer(kind=kint), intent(in) :: nnod
@@ -234,7 +232,7 @@
       call gz_read_fld_mul_charhead_b(num_field, field_name)
       call gz_read_fld_realarray2_b(nnod, ncomp, vect)
 !
-      end subroutine read_field_data_mpi_b
+      end subroutine gz_read_field_data_mpi_b
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -246,9 +244,9 @@
       integer(kind = kint) :: ierr
 !
 !
-      ierr = gzwrite_f(kint, kint)
-      ierr = gzwrite_f(kint, int_dat)
-      ierr = gzwrite_f(kint, kint)
+      call gzwrite_f(kint, kint,    ierr)
+      call gzwrite_f(kint, int_dat, ierr)
+      call gzwrite_f(kint, kint,    ierr)
 !
       end subroutine gz_write_fld_inthead_b
 !
@@ -261,9 +259,9 @@
       integer(kind = kint) :: ierr
 !
 !
-      ierr = gzwrite_f(kint,  kreal)
-      ierr = gzwrite_f(kreal, real_dat)
-      ierr = gzwrite_f(kint,  kreal)
+      call gzwrite_f(kint,  kreal,    ierr)
+      call gzwrite_f(kreal, real_dat, ierr)
+      call gzwrite_f(kint,  kreal,    ierr)
 !
       end subroutine gz_write_fld_realhead_b
 !
@@ -279,9 +277,9 @@
 !
 !
       ilength = num *  kint_gl
-      ierr = gzwrite_f(kint, ilength)
-      ierr = gzwrite_f(ilength, int_gl_dat)
-      ierr = gzwrite_f(kint, ilength)
+      call gzwrite_f(kint,    ilength,    ierr)
+      call gzwrite_f(ilength, int_gl_dat, ierr)
+      call gzwrite_f(kint,    ilength,    ierr)
 !
       end subroutine gz_write_fld_mul_i8head_b
 !
@@ -296,9 +294,9 @@
 !
 !
       ilength = num *  kint
-      ierr = gzwrite_f(kint, ilength)
-      ierr = gzwrite_f(ilength, int_dat)
-      ierr = gzwrite_f(kint, ilength)
+      call gzwrite_f(kint,    ilength, ierr)
+      call gzwrite_f(ilength, int_dat, ierr)
+      call gzwrite_f(kint,    ilength, ierr)
 !
       end subroutine gz_write_fld_mul_inthead_b
 !
@@ -313,9 +311,9 @@
 !
 !
       ilength = num *  kchara
-      ierr = gzwrite_f(kint, ilength)
-      ierr = gzwrite_f(ilength, chara_dat)
-      ierr = gzwrite_f(kint, ilength)
+      call gzwrite_f(kint,    ilength,   ierr)
+      call gzwrite_f(ilength, chara_dat, ierr)
+      call gzwrite_f(kint,    ilength,   ierr)
 !
       end subroutine gz_write_fld_mul_charhead_b
 !
@@ -330,9 +328,9 @@
 !
 !
       ilength = n1 * n2 * kreal
-      ierr = gzwrite_f(kint, ilength)
-      ierr = gzwrite_f(ilength, real_dat)
-      ierr = gzwrite_f(kint, ilength)
+      call gzwrite_f(kint,    ilength,  ierr)
+      call gzwrite_f(ilength, real_dat, ierr)
+      call gzwrite_f(kint, ilength,     ierr)
 !
       end subroutine gz_write_fld_realarray2_b
 !
@@ -346,9 +344,9 @@
       integer(kind = kint) :: ilength, ierr
 !
 !
-      ierr = gzread_f(kint, ilength)
-      ierr = gzread_f(kint, int_dat)
-      ierr = gzread_f(kint, ilength)
+      call gzread_f(kint, ilength, ierr)
+      call gzread_f(kint, int_dat, ierr)
+      call gzread_f(kint, ilength, ierr)
 !
       end subroutine gz_read_fld_inthead_b
 !
@@ -361,9 +359,9 @@
       integer(kind = kint) :: ilength, ierr
 !
 !
-      ierr = gzread_f(kint, ilength)
-      ierr = gzread_f(kreal, real_dat)
-      ierr = gzread_f(kint, ilength)
+      call gzread_f(kint,  ilength,  ierr)
+      call gzread_f(kreal, real_dat, ierr)
+      call gzread_f(kint,  ilength,  ierr)
 !
       end subroutine gz_read_fld_realhead_b
 !
@@ -378,10 +376,10 @@
       integer(kind = kint) :: ilength, ierr
 !
 !
-      ierr = gzread_f(kint, ilength)
+      call gzread_f(kint,    ilength,    ierr)
       ilength = num * kint_gl
-      ierr = gzread_f(ilength, int_gl_dat)
-      ierr = gzread_f(kint, ilength)
+      call gzread_f(ilength, int_gl_dat, ierr)
+      call gzread_f(kint,    ilength,    ierr)
 !
       end subroutine gz_read_fld_mul_i8head_b
 !
@@ -395,10 +393,10 @@
       integer(kind = kint) :: ilength, ierr
 !
 !
-      ierr = gzread_f(kint, ilength)
+      call gzread_f(kint,    ilength, ierr)
       ilength = num * kint
-      ierr = gzread_f(ilength, int_dat)
-      ierr = gzread_f(kint, ilength)
+      call gzread_f(ilength, int_dat, ierr)
+      call gzread_f(kint,    ilength, ierr)
 !
       end subroutine gz_read_fld_mul_inthead_b
 !
@@ -412,10 +410,10 @@
       integer(kind = kint) :: ilength, ierr
 !
 !
-      ierr = gzread_f(kint, ilength)
+      call gzread_f(kint,    ilength,   ierr)
       ilength = num * kchara
-      ierr = gzread_f(ilength, chara_dat)
-      ierr = gzread_f(kint, ilength)
+      call gzread_f(ilength, chara_dat, ierr)
+      call gzread_f(kint,    ilength,   ierr)
 !
       end subroutine gz_read_fld_mul_charhead_b
 !
@@ -429,10 +427,10 @@
       integer(kind = kint) :: ilength, ierr
 !
 !
-      ierr = gzread_f(kint, ilength)
+      call gzread_f(kint,    ilength,  ierr)
       ilength =  n1 * n2 * kreal
-      ierr = gzread_f(ilength, real_dat)
-      ierr = gzread_f(kint, ilength)
+      call gzread_f(ilength, real_dat, ierr)
+      call gzread_f(kint,    ilength,  ierr)
 !
       end subroutine gz_read_fld_realarray2_b
 !

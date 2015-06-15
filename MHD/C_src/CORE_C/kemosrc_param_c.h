@@ -24,6 +24,10 @@
   #define gzip_defleat_begin        gzip_defleat_begin_
   #define gzip_defleat_cont         gzip_defleat_cont_
   #define gzip_defleat_last         gzip_defleat_last_
+  #define gzip_infleat_once         gzip_infleat_once_
+  #define gzip_infleat_begin        gzip_infleat_begin_
+  #define gzip_infleat_cont         gzip_infleat_cont_
+  #define gzip_infleat_last         gzip_infleat_last_
 
   #define write_png_rgba_c          write_png_rgba_c_
   #define write_png_rgb_c           write_png_rgb_c_
@@ -56,6 +60,10 @@
   #define gzip_defleat_begin        GZIP_DEFLEAT_BEGIN
   #define gzip_defleat_cont         GZIP_DEFLEAT_CONT
   #define gzip_defleat_last         GZIP_DEFLEAT_LAST
+  #define gzip_infleat_once         GZIP_INFLEAT_ONCE
+  #define gzip_infleat_begin        GZIP_INFLEAT_BEGIN
+  #define gzip_infleat_cont         GZIP_INFLEAT_CONT
+  #define gzip_infleat_last         GZIP_INFLEAT_LAST
 
   #define write_png_rgba_c          WRITE_PNG_RGBA_C
   #define write_png_rgb_c           WRITE_PNG_RGB_C
@@ -88,6 +96,10 @@
   #define gzip_defleat_begin        GZIP_DEFLEAT_BEGIN
   #define gzip_defleat_cont         GZIP_DEFLEAT_CONT
   #define gzip_defleat_last         GZIP_DEFLEAT_LAST
+  #define gzip_infleat_once         GZIP_INFLEAT_ONCE
+  #define gzip_infleat_begin        GZIP_INFLEAT_BEGIN
+  #define gzip_infleat_cont         GZIP_INFLEAT_CONT
+  #define gzip_infleat_last         GZIP_INFLEAT_LAST
 
   #define write_png_rgba_c          WRITE_PNG_RGBA_C
   #define write_png_rgb_c           WRITE_PNG_RGB_C
@@ -120,6 +132,10 @@
   #define gzip_defleat_begin        gzip_defleat_begin
   #define gzip_defleat_cont         gzip_defleat_cont
   #define gzip_defleat_last         gzip_defleat_last
+  #define gzip_infleat_once         gzip_infleat_once
+  #define gzip_infleat_begin        gzip_infleat_begin
+  #define gzip_infleat_cont         gzip_infleat_cont
+  #define gzip_infleat_last         gzip_infleat_last
 
   #define write_png_rgba_c          write_png_rgba_c
   #define write_png_rgb_c           write_png_rgb_c

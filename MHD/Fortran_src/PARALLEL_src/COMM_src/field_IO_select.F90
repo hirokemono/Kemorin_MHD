@@ -363,12 +363,8 @@
 !
 !
       if( (fld_IO%iflag_file_fmt/iflag_single) .eq. 0) then
-        if(id_rank .ge. nprocs_in) then
-          write(*,*) 'read out', id_rank
-          return
-        end if
+        if(id_rank .ge. nprocs_in) return
       end if
-      write(*,*) 'read in', id_rank
 !
       if(fld_IO%iflag_file_fmt .eq. iflag_single) then
         call read_alloc_step_fld_file_mpi                               &
@@ -386,7 +382,6 @@
      &       .eq. iflag_single+id_gzip_bin_file_fmt) then
         call gz_rd_alloc_st_fld_file_mpi_b                              &
      &     (file_name, nprocs_in, id_rank, fld_IO)
-      write(*,*) 'gz_rd_alloc_st_fld_file_mpi_b out', id_rank, fld_IO%nnod_IO
       else if(fld_IO%iflag_file_fmt                                     &
      &       .eq. iflag_single+id_gzip_txt_file_fmt) then
         call read_alloc_stp_fld_file_gz_mpi                             &

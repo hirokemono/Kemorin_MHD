@@ -14,6 +14,7 @@
 !!     &          num_field, ncomp_field, istack_merged)
 !!      subroutine gz_write_field_data_mpi_b(id_fld, ioff_gl,           &
 !!     &          nnod, num_field, ntot_comp, field_name, d_nod)
+!!
 !!      subroutine gz_read_step_field_file_mpi_b                        &
 !!     &         (file_name, nprocs_in, id_rank, fld_IO)
 !!      subroutine gz_rd_alloc_st_fld_file_mpi_b                        &
@@ -35,7 +36,7 @@
       implicit none
 !
       private :: gz_write_field_data_mpi_b
-      private :: gz_read_field_data_mpi_b, gz_read_field_names_mpi_b
+      private :: gz_read_step_data_mpi_b, gz_read_field_header_mpi_b
 !
 !  ---------------------------------------------------------------------
 !
@@ -84,6 +85,7 @@
      &         (file_name, nprocs_in, id_rank, fld_IO)
 !
       use field_file_MPI_IO
+      use gz_field_data_MPI_IO_b
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind=kint), intent(in) :: id_rank
@@ -91,36 +93,35 @@
 !
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer :: id_fld
+      integer(kind = kint_gl) :: ioff_gl
+!
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &    'read mergend gzipped binary data: ', trim(file_name)
+      call calypso_mpi_read_file_open(file_name, id_fld)
 !
-      call open_rd_gzfile(file_name)
-!
-      call gz_read_step_data_mpi_b(nprocs_in, id_rank)
-      call sync_field_time_mpi
+      ioff_gl = 0
+      call gz_read_step_data_mpi_b(id_fld, nprocs_in, id_rank, ioff_gl)
 !
       call alloc_merged_field_stack(nprocs_in, fld_IO)
+      call gz_read_field_header_mpi_b(id_fld, nprocs_in, id_rank,       &
+     &    ioff_gl, fld_IO%nnod_IO, fld_IO%num_field_IO,                 &
+     &    fld_IO%istack_numnod_IO)
 !
-      call gz_read_field_header_mpi(nprocs_in, id_rank,                 &
-     &    fld_IO%num_field_IO, fld_IO%istack_numnod_IO)
-      call sync_field_header_mpi(nprocs_in, id_rank, fld_IO%nnod_IO,    &
-     &    fld_IO%num_field_IO, fld_IO%istack_numnod_IO)
+      call gz_read_fld_mul_inthead_mpi_b(id_fld, nprocs_in, id_rank,    &
+     &    ioff_gl, fld_IO%num_field_IO, fld_IO%num_comp_IO)
 !
-      call gz_read_field_num_mpi_b(nprocs_in, id_rank,                  &
-     &    fld_IO%num_field_IO, fld_IO%num_comp_IO)
-      call sync_field_comp_mpi(fld_IO%num_field_IO, fld_IO%num_comp_IO)
+      if(id_rank .lt. nprocs_in) call cal_istack_phys_comp_IO(fld_IO)
 !
-      call gz_read_field_names_mpi_b(nprocs_in, id_rank,                &
-     &    fld_IO%num_field_IO, fld_IO%fld_name)
-      call sync_field_names_mpi(fld_IO%num_field_IO, fld_IO%fld_name)
+      call gz_read_fld_mul_charhead_mpi_b(id_fld, nprocs_in, id_rank,   &
+     &    ioff_gl, fld_IO%num_field_IO, fld_IO%fld_name)
+      call gz_read_fld_realarray2_mpi_b(id_fld, nprocs_in, id_rank,     &
+     &    ioff_gl, fld_IO%nnod_IO, fld_IO%ntot_comp_IO, fld_IO%d_IO)
 !
-      call gz_read_field_data_mpi_b(nprocs_in, id_rank,                 &
-     &      fld_IO%nnod_IO, fld_IO%ntot_comp_IO, fld_IO%d_IO,           &
-     &      fld_IO%istack_numnod_IO)
+      call calypso_close_mpi_file(id_fld)
+!
       call dealloc_merged_field_stack(fld_IO)
-!
-      call close_gzfile()
 !
       end subroutine gz_read_step_field_file_mpi_b
 !
@@ -130,6 +131,7 @@
      &         (file_name, nprocs_in, id_rank, fld_IO)
 !
       use field_file_MPI_IO
+      use gz_field_data_MPI_IO_b
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind=kint), intent(in) :: id_rank
@@ -137,45 +139,39 @@
 !
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer :: id_fld
+      integer(kind = kint_gl) :: ioff_gl
+!
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &    'read mergend gzipped binary data: ', trim(file_name)
+     &    'read mergend gzipped binary data MPI-IO: ', trim(file_name)
+      call calypso_mpi_read_file_open(file_name, id_fld)
 !
-      call open_rd_gzfile(file_name)
-!
-      call gz_read_step_data_mpi_b(nprocs_in, id_rank)
-      call sync_field_time_mpi
+      ioff_gl = 0
+      call gz_read_step_data_mpi_b(id_fld, nprocs_in, id_rank, ioff_gl)
 !
       call alloc_merged_field_stack(nprocs_in, fld_IO)
+      call gz_read_field_header_mpi_b(id_fld, nprocs_in, id_rank,       &
+     &    ioff_gl, fld_IO%nnod_IO, fld_IO%num_field_IO,                 &
+     &    fld_IO%istack_numnod_IO)
 !
-      call gz_read_field_header_mpi(nprocs_in, id_rank,                 &
-     &    fld_IO%num_field_IO, fld_IO%istack_numnod_IO)
-      call sync_field_header_mpi(nprocs_in, id_rank, fld_IO%nnod_IO,    &
-     &    fld_IO%num_field_IO, fld_IO%istack_numnod_IO)
+      if(id_rank .lt. nprocs_in) call alloc_phys_name_IO(fld_IO)
+      call gz_read_fld_mul_inthead_mpi_b(id_fld, nprocs_in, id_rank,    &
+     &    ioff_gl, fld_IO%num_field_IO, fld_IO%num_comp_IO)
 !
-      call alloc_phys_name_IO(fld_IO)
-      call gz_read_field_num_mpi_b(nprocs_in, id_rank,                  &
-     &    fld_IO%num_field_IO, fld_IO%num_comp_IO)
-      call sync_field_comp_mpi(fld_IO%num_field_IO, fld_IO%num_comp_IO)
+      if(id_rank .lt. nprocs_in) then
+        call cal_istack_phys_comp_IO(fld_IO)
+        call alloc_phys_data_IO(fld_IO)
+      end if
 !
-      call cal_istack_phys_comp_IO(fld_IO)
-      call alloc_phys_data_IO(fld_IO)
-      write(*,*) 'gz_read_field_data_mpi_b', id_rank, fld_IO%nnod_IO
-      call gz_read_field_names_mpi_b(nprocs_in, id_rank,                &
-     &    fld_IO%num_field_IO, fld_IO%fld_name)
-      call sync_field_names_mpi(fld_IO%num_field_IO, fld_IO%fld_name)
+      call gz_read_fld_mul_charhead_mpi_b(id_fld, nprocs_in, id_rank,   &
+     &    ioff_gl, fld_IO%num_field_IO, fld_IO%fld_name)
+      call gz_read_fld_realarray2_mpi_b(id_fld, nprocs_in, id_rank,     &
+     &    ioff_gl, fld_IO%nnod_IO, fld_IO%ntot_comp_IO, fld_IO%d_IO)
 !
-      call gz_read_field_data_mpi_b(nprocs_in, id_rank,                 &
-     &      fld_IO%nnod_IO, fld_IO%ntot_comp_IO, fld_IO%d_IO,           &
-     &      fld_IO%istack_numnod_IO)
-!
-      call close_gzfile()
+      call calypso_close_mpi_file(id_fld)
 !
       call dealloc_merged_field_stack(fld_IO)
-      if(id_rank .ge. nprocs_in) then
-        call dealloc_phys_data_IO(fld_IO)
-        call dealloc_phys_name_IO(fld_IO)
-      end if
 !
       end subroutine gz_rd_alloc_st_fld_file_mpi_b
 !
@@ -185,6 +181,7 @@
      &         (file_name, nprocs_in, id_rank, fld_IO)
 !
       use field_file_MPI_IO
+      use gz_field_data_MPI_IO_b
 !
       character(len=kchara), intent(in) :: file_name
       integer(kind=kint), intent(in) :: id_rank
@@ -192,39 +189,34 @@
 !
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer :: id_fld
+      integer(kind = kint_gl) :: ioff_gl
+!
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &    'read mergend gzipped binary data: ', trim(file_name)
+      call calypso_mpi_read_file_open(file_name, id_fld)
 !
-      call open_rd_gzfile(file_name)
-!
-      call gz_read_step_data_mpi_b(nprocs_in, id_rank)
-      call sync_field_time_mpi
+      ioff_gl = 0
+      call gz_read_step_data_mpi_b(id_fld, nprocs_in, id_rank, ioff_gl)
 !
       call alloc_merged_field_stack(nprocs_in, fld_IO)
+      call gz_read_field_header_mpi_b(id_fld, nprocs_in, id_rank,       &
+     &    ioff_gl, fld_IO%nnod_IO, fld_IO%num_field_IO,                 &
+     &    fld_IO%istack_numnod_IO)
 !
-      call gz_read_field_header_mpi(nprocs_in, id_rank,                 &
-     &    fld_IO%num_field_IO, fld_IO%istack_numnod_IO)
-      call sync_field_header_mpi(nprocs_in, id_rank, fld_IO%nnod_IO,    &
-     &    fld_IO%num_field_IO, fld_IO%istack_numnod_IO)
+      if(id_rank .lt. nprocs_in) call alloc_phys_name_IO(fld_IO)
+      call gz_read_fld_mul_inthead_mpi_b(id_fld, nprocs_in, id_rank,    &
+     &    ioff_gl, fld_IO%num_field_IO, fld_IO%num_comp_IO)
 !
-      call alloc_phys_name_IO(fld_IO)
-      call gz_read_field_num_mpi_b(nprocs_in, id_rank,                  &
-     &    fld_IO%num_field_IO, fld_IO%num_comp_IO)
-      call sync_field_comp_mpi(fld_IO%num_field_IO, fld_IO%num_comp_IO)
+      if(id_rank .lt. nprocs_in) call cal_istack_phys_comp_IO(fld_IO)
 !
-      call gz_read_field_names_mpi_b(nprocs_in, id_rank,                &
-     &    fld_IO%num_field_IO, fld_IO%fld_name)
-      call sync_field_names_mpi(fld_IO%num_field_IO, fld_IO%fld_name)
+      call gz_read_fld_mul_charhead_mpi_b(id_fld, nprocs_in, id_rank,   &
+     &    ioff_gl, fld_IO%num_field_IO, fld_IO%fld_name)
 !
-      call cal_istack_phys_comp_IO(fld_IO)
-!
-      call close_gzfile()
+      call calypso_close_mpi_file(id_fld)
 !
       call dealloc_merged_field_stack(fld_IO)
-      if(id_rank .ge. nprocs_in) then
-        call dealloc_phys_name_IO(fld_IO)
-      end if
 !
       end subroutine gz_rd_alloc_st_fld_head_mpi_b
 !
@@ -272,13 +264,13 @@
       use field_data_IO
       use gz_field_data_MPI_IO_b
 !
+      integer, intent(in) ::  id_fld
       integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
       integer(kind=kint), intent(in) :: nnod
       integer(kind=kint), intent(in) :: num_field, ntot_comp
       character(len=kchara), intent(in) :: field_name(num_field)
       real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
-!
-      integer, intent(in) ::  id_fld
 !
 !
       call gz_write_fld_mul_charhead_mpi_b                              &
@@ -291,110 +283,68 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_step_data_mpi_b(nprocs_in, id_rank)
+      subroutine gz_read_step_data_mpi_b                                &
+     &         (id_fld, nprocs_in, id_rank, ioff_gl)
 !
       use m_time_data_IO
       use gz_field_data_MPI_IO_b
       use m_error_IDs
 !
+      integer, intent(in) ::  id_fld
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
       integer(kind=kint), intent(in) :: id_rank, nprocs_in
-      integer(kind=kint) :: iread
+      integer(kind=kint) :: iread(1)
+      integer(kind=kint) :: id_read
 !
 !
-      if(id_rank .ge. nprocs_in) return
-      call gz_read_fld_inthead_mpi_b(iread)
-      if(my_rank .eq. 0 .and. nprocs_in .ne. iread) then
-        call calypso_mpi_abort(ierr_fld, 'Set correct field data file')
-      end if
+      call gz_read_fld_mul_inthead_mpi_b                                &
+     &   (id_fld, nprocs_in, id_rank, ioff_gl, ione, iread)
+      id_read = iread(1)
 !
-      call gz_read_fld_inthead_mpi_b(i_time_step_IO)
-      call gz_read_fld_realhead_mpi_b(time_IO)
-      call gz_read_fld_realhead_mpi_b(delta_t_IO)
+      call gz_read_fld_mul_inthead_mpi_b                                &
+     &   (id_fld, nprocs_in, id_rank, ioff_gl, ione, iread)
+      i_time_step_IO = iread(1)
+!
+      call gz_read_fld_realhead_mpi_b                                   &
+     &         (id_fld, nprocs_in, id_rank, ioff_gl, time_IO)
+      call gz_read_fld_realhead_mpi_b                                   &
+     &         (id_fld, nprocs_in, id_rank, ioff_gl, delta_t_IO)
 !
       end subroutine gz_read_step_data_mpi_b
 !
 ! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
 !
-      subroutine gz_read_field_header_mpi(nprocs_in, id_rank,           &
-     &          num_field, istack_merged)
+      subroutine gz_read_field_header_mpi_b(id_fld,                     &
+     &          nprocs_in, id_rank, ioff_gl, nnod, num_field,           &
+     &          istack_merged)
 !
       use gz_field_data_MPI_IO_b
       use m_phys_constants
       use field_data_IO
 !
+      integer, intent(in) ::  id_fld
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+!
       integer(kind=kint), intent(in) :: nprocs_in, id_rank
 !
-      integer(kind=kint), intent(inout) :: num_field
+      integer(kind=kint), intent(inout) :: nnod, num_field
       integer(kind = kint_gl), intent(inout)                            &
      &                         :: istack_merged(0:nprocs_in)
 !
-!
-      if(id_rank .ge. nprocs_in) return
-      call gz_read_fld_mul_i8head_mpi_b(nprocs_in, istack_merged(1))
-      call gz_read_fld_inthead_mpi_b(num_field)
-!
-      end subroutine gz_read_field_header_mpi
-!
-! -----------------------------------------------------------------------
-!
-      subroutine gz_read_field_num_mpi_b(nprocs_in, id_rank,            &
-     &           num_field, ncomp_field)
-!
-      use m_phys_constants
-      use field_data_IO
-      use gz_field_data_MPI_IO_b
-!
-      integer(kind=kint), intent(in) :: nprocs_in, id_rank
-      integer(kind=kint), intent(in) :: num_field
-      integer(kind=kint), intent(inout) :: ncomp_field(num_field)
+      integer(kind=kint) :: iread(1)
 !
 !
-      if(id_rank .ge. nprocs_in) return
-      call gz_read_fld_mul_inthead_mpi_b(num_field, ncomp_field)
+      istack_merged(0) = 0
+      call gz_read_fld_mul_i8head_mpi_b(id_fld, nprocs_in, id_rank,     &
+     &    ioff_gl, nprocs_in, istack_merged(1))
+      nnod = int(istack_merged(id_rank+1) - istack_merged(id_rank))
 !
-      end subroutine gz_read_field_num_mpi_b
+      call gz_read_fld_mul_inthead_mpi_b                                &
+     &   (id_fld, nprocs_in, id_rank, ioff_gl, ione, iread)
+      num_field = iread(1)
 !
-! -----------------------------------------------------------------------
-!
-      subroutine gz_read_field_data_mpi_b(nprocs_in, id_rank, nnod,     &
-     &          ncomp, vect, istack_merged)
-!
-      use m_phys_constants
-      use gz_field_data_MPI_IO_b
-!
-      integer(kind = kint_gl), intent(in) :: istack_merged(0:nprocs_in)
-      integer(kind=kint), intent(in) :: nprocs_in, id_rank
-      integer(kind=kint), intent(in) :: nnod, ncomp
-      real(kind = kreal), intent(inout) :: vect(nnod,ncomp)
-!
-      integer(kind = kint_gl) :: istack_buffer(0:nprocs_in)
-!
-!
-      if(id_rank .ge. nprocs_in) return
-      call gz_read_fld_mul_i8head_mpi_b(nprocs_in, istack_buffer)
-      call gz_read_fld_realarray2_mpi_b                                 &
-     &   (nprocs_in, id_rank, nnod, ncomp, vect, istack_merged)
-!
-      end subroutine gz_read_field_data_mpi_b
-!
-! -----------------------------------------------------------------------
-!
-      subroutine gz_read_field_names_mpi_b(nprocs_in, id_rank,          &
-     &          num_field, field_name)
-!
-      use m_phys_constants
-      use gz_field_data_MPI_IO_b
-!
-      integer(kind=kint), intent(in) :: nprocs_in, id_rank
-      integer(kind=kint), intent(in) :: num_field
-      character(len=kchara), intent(inout) :: field_name(num_field)
-!
-!
-      if(id_rank .ge. nprocs_in) return
-      call gz_read_fld_mul_charhead_mpi_b(num_field, field_name)
-!
-      end subroutine gz_read_field_names_mpi_b
+      end subroutine gz_read_field_header_mpi_b
 !
 ! -----------------------------------------------------------------------
 !
