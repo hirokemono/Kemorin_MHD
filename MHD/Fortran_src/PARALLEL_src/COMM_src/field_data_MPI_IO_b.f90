@@ -191,7 +191,6 @@
         iread_e = itmp_IO(1)
         ioffset = ioffset + kint
 !
-        ioffset = int(ioff_gl)
         call calypso_mpi_seek_read_int(id_fld, ioffset, ione, itmp_IO)
         iread = itmp_IO(1)
         ioffset = ioffset + kint
