@@ -171,7 +171,7 @@
 !          end do
 !        end do
 !      end do
-      write(*,*) 'init_assemble_sph end'
+!      write(*,*) 'init_assemble_sph end'
 !
       end subroutine init_assemble_sph
 !

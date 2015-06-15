@@ -26,6 +26,8 @@
 !
       implicit none
 !
+      integer(kind = kint), private :: iflag_endian_swap
+!
       private :: gz_read_step_data_mpi_b, gz_read_field_data_mpi_b
 !
 !  ---------------------------------------------------------------------
@@ -65,7 +67,6 @@
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint_gl) :: istack_merged(1)
-      integer(kind = kint) :: id_rank
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -73,7 +74,7 @@
 !
       call open_rd_gzfile(gzip_name)
 !
-      call gz_read_step_data_mpi_b
+      call gz_read_step_data_mpi_b(my_rank)
       call gz_read_fld_mul_i8head_b(ione, istack_merged)
       call gz_read_fld_inthead_b(fld_IO%num_field_IO)
 !
@@ -98,7 +99,6 @@
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint_gl) :: istack_merged(1)
-      integer(kind = kint) :: id_rank
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -106,7 +106,7 @@
 !
       call open_rd_gzfile(gzip_name)
 !
-      call gz_read_step_data_mpi_b
+      call gz_read_step_data_mpi_b(my_rank)
       call gz_read_fld_mul_i8head_b(ione, istack_merged)
       call gz_read_fld_inthead_b(fld_IO%num_field_IO)
 !
@@ -135,7 +135,6 @@
       type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint_gl) :: istack_merged(1)
-      integer(kind = kint) :: id_rank
 !
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
@@ -143,7 +142,7 @@
 !
       call open_rd_gzfile(gzip_name)
 !
-      call gz_read_step_data_mpi_b
+      call gz_read_step_data_mpi_b(my_rank)
       call gz_read_fld_mul_i8head_b(ione, istack_merged)
       call gz_read_fld_inthead_b(fld_IO%num_field_IO)
 !
@@ -194,6 +193,7 @@
       integer(kind=kint), intent(in) :: id_rank
 !
 !
+      call gz_write_fld_inthead_b(i_UNIX)
       call gz_write_fld_inthead_b(id_rank)
       call gz_write_fld_inthead_b(i_time_step_IO)
 !
@@ -205,15 +205,24 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine gz_read_step_data_mpi_b
+      subroutine gz_read_step_data_mpi_b(my_rank)
 !
-      integer(kind = kint) :: id_rank
+      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint) :: id_rank, ie_read
 !
 !
+      call gz_read_fld_inthead_b(ie_read)
       call gz_read_fld_inthead_b(id_rank)
       call gz_read_fld_inthead_b(i_time_step_IO)
       call gz_read_fld_realhead_b(time_IO)
       call gz_read_fld_realhead_b(delta_t_IO)
+!
+      iflag_endian_swap = 0
+      if(i_UNIX .ne. ie_read) then
+        if(my_rank .eq. 0) write(*,*)                                   &
+     &                            'binary data have opposite endian!'
+        iflag_endian_swap = 1
+      end if
 !
       end subroutine gz_read_step_data_mpi_b
 !

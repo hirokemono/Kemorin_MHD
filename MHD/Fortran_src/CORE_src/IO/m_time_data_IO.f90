@@ -15,7 +15,7 @@
 !!      subroutine read_step_data(id_file)
 !!
 !!      subroutine write_step_data_b(id_file, my_rank)
-!!      subroutine read_step_data_b(id_file)
+!!      subroutine read_step_data_b(id_file, id_rank, ierr)
 !!@endverbatim
 !!
 !!@n @param  my_rank   Process ID
@@ -34,6 +34,11 @@
 !>      Length of time step   @f$ \Delta t @f$
       real(kind = kreal) :: delta_t_IO
 !
+!>      Endian check integer
+      integer(kind = kint), parameter :: i_UNIX = ichar('U') * 256**3   &
+     &                                           +ichar('N') * 256**2   &
+     &                                           +ichar('I') * 256      &
+     &                                           +ichar('X')
 !
       character(len=12), parameter :: TIME_HD1 = '!  domain ID'
       character(len=19), parameter :: TIME_HD2 = '!  time step number'
@@ -151,24 +156,40 @@
       integer(kind = kint), intent(in) :: id_file, my_rank
 !
 !
-      write(id_file) my_rank
-      write(id_file) i_time_step_IO
+      write(id_file)  i_UNIX
+      write(id_file)  my_rank
+      write(id_file)  i_time_step_IO
       write(id_file)  time_IO, delta_t_IO
 !
       end subroutine write_step_data_b
 !
 ! -------------------------------------------------------------------
 !
-      subroutine read_step_data_b(id_file)
+      subroutine read_step_data_b(id_file, id_rank, ierr)
 !
-      integer(kind = kint), intent(in) :: id_file
+      integer(kind = kint), intent(in) :: id_file, id_rank
+      integer(kind = kint), intent(inout) :: ierr
 !
-      integer(kind = kint) :: itmp
+      integer(kind = kint) :: itmp1, itmp2
 !
 !
-      read(id_file) itmp
+      ierr =     0
+!
+      read(id_file) itmp1
+      if(itmp1 .ne. i_UNIX) then
+        ierr = -100
+        return
+      end if
+!
+      read(id_file) itmp2
+      if(itmp2 .ne. id_rank) then
+        ierr =     1
+        return
+      end if
+!
       read(id_file) i_time_step_IO
       read(id_file) time_IO, delta_t_IO
+!
 !
       end subroutine read_step_data_b
 !

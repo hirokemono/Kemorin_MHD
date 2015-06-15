@@ -79,6 +79,8 @@
       integer(kind=kint), intent(in) :: my_rank, istep
       type(ucd_data), intent(inout) :: ucd
 !
+      integer(kind = kint) :: ierr
+!
       character(len=kchara) :: file_name
       integer(kind= kint) :: nnod4
 !
@@ -91,7 +93,7 @@
 !
       open(id_binary_fld, file = file_name, form = 'unformatted')
 !
-      call read_step_data_b(id_binary_fld)
+      call read_step_data_b(id_binary_fld, my_rank, ierr)
 !
       read(id_binary_fld) nnod4, ucd%num_field
       read(id_binary_fld) ucd%num_comp(1:ucd%num_field)
@@ -112,6 +114,8 @@
       integer(kind=kint), intent(in) :: my_rank, istep
       type(ucd_data), intent(inout) :: ucd
 !
+      integer(kind = kint) :: ierr
+!
       character(len=kchara) :: file_name
       integer(kind= kint) :: nnod4
 !
@@ -124,7 +128,8 @@
 !
       open(id_binary_fld, file = file_name, form = 'unformatted')
 !
-      call read_step_data_b(id_binary_fld)
+      call read_step_data_b(id_binary_fld, my_rank, ierr)
+!
       read(id_binary_fld) nnod4, ucd%num_field
       ucd%nnod = nnod4
 !
@@ -149,6 +154,8 @@
       integer(kind=kint), intent(in) :: my_rank, istep
       type(ucd_data), intent(inout) :: ucd
 !
+      integer(kind = kint) :: ierr
+!
       character(len=kchara) :: file_name
       integer(kind= kint) :: nnod4
 !
@@ -161,7 +168,7 @@
 !
       open(id_binary_fld, file = file_name, form = 'unformatted')
 !
-      call read_step_data_b(id_binary_fld)
+      call read_step_data_b(id_binary_fld, my_rank, ierr)
       read(id_binary_fld) nnod4, ucd%num_field
       ucd%nnod = nnod4
 !

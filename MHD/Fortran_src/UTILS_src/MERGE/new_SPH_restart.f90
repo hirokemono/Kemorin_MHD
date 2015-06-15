@@ -173,10 +173,8 @@
       irank_org = ip - 1
       call copy_rst_prefix_and_fmt                                      &
      &   (org_sph_fst_head, ifmt_org_sph_fst, org_fst_IO)
-          write(*,*) 'sel_read_alloc_step_SPH_file', irank_org
       call sel_read_alloc_step_SPH_file                                 &
      &   (np_sph_org, irank_org, istep, org_fst_IO)
-          write(*,*) 'sel_read_alloc_step_SPH_file out', irank_org
 !
       if(irank_org .lt. np_sph_org) then
         call copy_time_steps_from_restart

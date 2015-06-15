@@ -100,13 +100,15 @@
       character(len=kchara), intent(in) :: file_name
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer(kind = kint) :: ierr
+!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read binary data file: ', trim(file_name)
       end if
 !
       open(id_phys_file, file = file_name, form = 'unformatted')
-      call read_step_data_b(id_phys_file)
+      call read_step_data_b(id_phys_file, my_rank, ierr)
 !
       read(id_phys_file) fld_IO%nnod_IO, fld_IO%num_field_IO
       read(id_phys_file) fld_IO%num_comp_IO(1:fld_IO%num_field_IO)
@@ -127,13 +129,15 @@
       character(len=kchara), intent(in) :: file_name
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer(kind = kint) :: ierr
+!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read binary data file: ', trim(file_name)
       end if
 !
       open(id_phys_file, file = file_name, form = 'unformatted')
-      call read_step_data_b(id_phys_file)
+      call read_step_data_b(id_phys_file, my_rank, ierr)
 !
       read(id_phys_file) fld_IO%nnod_IO, fld_IO%num_field_IO
 !
@@ -159,13 +163,15 @@
       character(len=kchara), intent(in) :: file_name
       type(field_IO), intent(inout) :: fld_IO
 !
+      integer(kind = kint) :: ierr
+!
 !
       if(my_rank.eq.0 .or. i_debug .gt. 0) then
         write(*,*) 'Read binary data file: ', trim(file_name)
       end if
 !
       open(id_phys_file, file = file_name, form = 'unformatted')
-      call read_step_data_b(id_phys_file)
+      call read_step_data_b(id_phys_file, my_rank, ierr)
 !
       read(id_phys_file) fld_IO%nnod_IO, fld_IO%num_field_IO
 !

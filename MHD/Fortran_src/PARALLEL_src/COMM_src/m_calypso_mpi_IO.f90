@@ -130,6 +130,7 @@
 !
 !
       call MPI_FILE_CLOSE(id_mpi_file, ierr_MPI)
+      call deallocate_mpi_IO_status
 !
       end subroutine calypso_close_mpi_file
 !
