@@ -3,7 +3,8 @@
 !
 !     Written by H. Matsui on July, 2007
 !
-!!      subroutine gz_write_textbuf_f
+!!      subroutine gz_write_textbuf_no_lf
+!!      subroutine gz_write_textbuf_w_lf
 !!
 !!      subroutine get_one_line_from_gz_f
 !!      subroutine skip_gz_comment_int(int_input)
@@ -16,6 +17,7 @@
 !
 !!      subroutine read_gz_multi_real(num, real_input)
 !!      subroutine read_gz_multi_int(num, int_input)
+!!      subroutine read_gz_multi_int8(num, int8_input)
 !!      subroutine write_gz_multi_int_8i10(num, int_output)
 !!      subroutine write_gz_multi_int_10i8(num, int_output)
 !!      subroutine write_gz_multi_int_10i12(num, int_output)
@@ -44,12 +46,21 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine gz_write_textbuf_f
+      subroutine gz_write_textbuf_no_lf
+!
+!
+      call write_compress_txt_nolf(nbuf, textbuf)
+!
+      end subroutine gz_write_textbuf_no_lf
+!
+! ----------------------------------------------------------------------
+!
+      subroutine gz_write_textbuf_w_lf
 !
 !
       call write_compress_txt(nbuf, textbuf)
 !
-      end subroutine gz_write_textbuf_f
+      end subroutine gz_write_textbuf_w_lf
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -239,6 +250,33 @@
       end subroutine read_gz_multi_int
 !
 !------------------------------------------------------------------
+!
+      subroutine read_gz_multi_int8(num, int8_input)
+!
+      integer(kind = kint), intent(in) :: num
+      integer(kind = kint_gl), intent(inout) :: int8_input(num)
+!
+      integer(kind = kint) :: ist
+!
+!
+      if(num .le. 0) return
+!
+      call skip_gz_comment_get_nword
+      read(textbuf,*) int8_input(1:num_word)
+!
+      if(num .gt. num_word) then
+        ist = num_word
+        do
+          call get_one_line_from_gz_f
+          read(textbuf,*) int8_input(ist+1:ist+num_word)
+          ist = ist + num_word
+          if(ist .ge. num) exit
+        end do
+      end if
+!
+      end subroutine read_gz_multi_int8
+!
+!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine write_gz_multi_int_8i10(num, int_output)
@@ -255,7 +293,7 @@
         n = min(num-ist-ione,iseven) + 1
         write(fmt_txt,'(a1,i2,a7)') '(', n, 'i16,a1)'
         write(textbuf,fmt_txt) int_output(ist+1:ist+n), char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -278,7 +316,7 @@
         n = min(num-ist-ione,inine) + 1
         write(fmt_txt,'(a1,i3,a6)') '(', n, 'i8,a1)'
         write(textbuf,fmt_txt) int_output(ist+1:ist+n), char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -301,7 +339,7 @@
         n = min(num-ist-ione,inine) + 1
         write(fmt_txt,'(a1,i3,a7)') '(', n, 'i12,a1)'
         write(textbuf,fmt_txt) int_output(ist+1:ist+n), char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
         ist = ist + n
         if(ist .ge. num) exit
       end do
@@ -316,7 +354,7 @@
 !
 !
       write(textbuf,'(a,a1)') comment, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       end subroutine write_gz_comment_string
 !

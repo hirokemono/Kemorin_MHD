@@ -75,7 +75,8 @@
       ave_depth_lc = 0.0d0
       do inum = 1, num_pvr_ray
         id_pixel = id_pixel_start(inum)
-        call alpha_blending(rgba_ray(1,inum), rgba_lc(1,id_pixel) )
+        call composite_alpha_blending                                   &
+     &     (rgba_ray(1,inum), rgba_lc(1,id_pixel) )
 !
         if(iflag_mapped(id_pixel) .eq. 0) then
           depth_lc(id_pixel)  = xx_pvr_ray_start(3,inum)

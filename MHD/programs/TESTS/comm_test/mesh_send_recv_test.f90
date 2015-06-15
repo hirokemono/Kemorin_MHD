@@ -20,9 +20,6 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_geometry_4_comm_test
-      use solver_SR_3
-      use solver_SR_int
-      use solver_SR_N
 !
       implicit  none
 !
@@ -49,24 +46,20 @@
 !
       use m_nod_comm_table
       use m_array_for_send_recv
+      use solver_SR_type
 !
       integer(kind = kint) :: inod
 !
 !
       do inod = 1, internal_node
-        ix_vec(inod) = int(inod_global(inod))
+        i8x_vec(inod) = int(inod_global(inod))
         x_vec(3*inod-2) = xx(inod,1)
         x_vec(3*inod-1) = xx(inod,2)
         x_vec(3*inod  ) = xx(inod,3)
       end do
 !
-      call solver_send_recv_i(numnod, num_neib, id_neib,                &
-     &                        istack_import, item_import,               &
-     &                        istack_export, item_export, ix_vec)
-!
-      call solver_send_recv_3(numnod, num_neib, id_neib,                &
-     &                        istack_import, item_import,               &
-     &                        istack_export, item_export, x_vec)
+      call SOLVER_SEND_RECV_int8_type(numnod, nod_comm, i8x_vec)
+      call SOLVER_SEND_RECV_3_type(numnod, nod_comm, x_vec)
 !
       end subroutine node_send_recv_test
 !
@@ -78,6 +71,7 @@
       use m_nod_comm_table
       use m_array_for_send_recv
       use m_solver_SR
+      use solver_SR_type
 !
       integer(kind = kint) :: inod
       integer(kind = kint), parameter :: NB = 12
@@ -87,11 +81,11 @@
       integer (kind = kint) :: neib, ist, inum, ied, num
       integer (kind = kint) :: k, ii, ix, nd
 !
-      allocate(irev_import( istack_import(num_neib) ))
+      allocate(irev_import(nod_comm%istack_import(nod_comm%num_neib)))
       allocate(xx4(NB*numnod))
 !
       do inod = 1, internal_node
-        ix_vec(inod) = int(inod_global(inod))
+        i8x_vec(inod) = inod_global(inod)
         xx4(12*inod-11) = xx(inod,1)
         xx4(12*inod-10) = xx(inod,2)
         xx4(12*inod- 9) = xx(inod,3)
@@ -106,16 +100,12 @@
         xx4(12*inod   ) = xx(inod,3) + 300.0
       end do
 !
-      call solver_send_recv_i(numnod, num_neib, id_neib,                &
-     &                        istack_import, item_import,               &
-     &                        istack_export, item_export, ix_vec)
+      call SOLVER_SEND_RECV_int8_type(numnod, nod_comm, i8x_vec)
 !
-      call solver_send_recv_N(numnod, NB, num_neib, id_neib,            &
-     &                        istack_import, item_import,               &
-     &                        istack_export, item_export, xx4)
+      call SOLVER_SEND_RECV_N_type(numnod, NB, nod_comm, xx4)
 !
-      do ii = 1, istack_import(num_neib)
-        k = item_import(ii) - internal_node
+      do ii = 1, nod_comm%istack_import(nod_comm%num_neib)
+        k = nod_comm%item_import(ii) - internal_node
         irev_import(k) = ii
       end do
 !
@@ -134,13 +124,13 @@
       call start_eleps_time(1)
       call start_eleps_time(2)
 !$omp parallel private(nd,neib,ist,ied)
-      do neib= 1, num_neib
-        ist = istack_export(neib-1)
-        ied = istack_export(neib  )
+      do neib= 1, nod_comm%num_neib
+        ist = nod_comm%istack_export(neib-1)
+        ied = nod_comm%istack_export(neib  )
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= ist+1, ied
-                 ii   = NB * (item_export(k)-1) + nd
+                 ii   = NB * (nod_comm%item_export(k)-1) + nd
                  ix   = NB * (k-1) + nd
              WS(ix)= xx4(ii)
            end do
@@ -151,13 +141,13 @@
       call end_eleps_time(2)
 
 !$omp parallel private(nd,neib,ist,ied)
-      do neib= 1, num_neib
-        ist = istack_import(neib-1)
-        ied = istack_import(neib  )
+      do neib= 1, nod_comm%num_neib
+        ist = nod_comm%istack_import(neib-1)
+        ied = nod_comm%istack_import(neib  )
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= ist+1, ied
-            ii   = NB * (item_import(k)-1) + nd
+            ii   = NB * (nod_comm%item_import(k)-1) + nd
             ix   = NB * (k-1) + nd
             xx4(ii)= WR(ix)
           end do
@@ -168,9 +158,9 @@
       call end_eleps_time(1)
       call start_eleps_time(2)
 !$omp parallel private(nd,neib,ist,ied)
-      do neib= 1, num_neib
-        ist = istack_import(neib-1)
-        ied = istack_import(neib  )
+      do neib= 1, nod_comm%num_neib
+        ist = nod_comm%istack_import(neib-1)
+        ied = nod_comm%istack_import(neib  )
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= ist+1, ied
@@ -187,13 +177,13 @@
       call start_eleps_time(3)
       call start_eleps_time(4)
 !$omp parallel private(neib,ist,ied)
-      do neib= 1, num_neib
-        ist = istack_export(neib-1)
-        ied = istack_export(neib  )
+      do neib= 1, nod_comm%num_neib
+        ist = nod_comm%istack_export(neib-1)
+        ied = nod_comm%istack_export(neib  )
 !$omp do private(k,nd,ii,ix)
         do k= ist+1, ied
           do nd = 1, NB
-                 ii   = NB * (item_export(k)-1) + nd
+                 ii   = NB * (nod_comm%item_export(k)-1) + nd
                  ix   = NB * (k-1) + nd
              WS(ix)= xx4(ii)
            end do
@@ -204,13 +194,13 @@
       call end_eleps_time(4)
 
 !$omp parallel private(nd,neib,ist,ied)
-      do neib= 1, num_neib
-        ist = istack_import(neib-1) 
-        ied = istack_import(neib  )
+      do neib= 1, nod_comm%num_neib
+        ist = nod_comm%istack_import(neib-1) 
+        ied = nod_comm%istack_import(neib  )
 !$omp do private(k,nd,ii,ix)
         do nd = 1, NB
           do k= ist+1, ied
-            ii   = NB * (item_import(k)-1) + nd
+            ii   = NB * (nod_comm%item_import(k)-1) + nd
             ix   = NB * (k-1) + nd
             xx4(ii)= WR(ix)
           end do
@@ -221,9 +211,9 @@
       call end_eleps_time(3)
       call start_eleps_time(4)
 !$omp parallel private(nd,neib,ist,ied)
-      do neib= 1, num_neib
-        ist = istack_import(neib-1)
-        ied = istack_import(neib  )
+      do neib= 1, nod_comm%num_neib
+        ist = nod_comm%istack_import(neib-1)
+        ied = nod_comm%istack_import(neib  )
 !$omp do private(k,ii,ix)
         do nd = 1, NB
           do k= ist+1, ied
@@ -242,13 +232,14 @@
       call start_eleps_time(5)
       call start_eleps_time(6)
 !$omp parallel private(neib,nd,ist,num)
-      do neib= 1, num_neib
-        ist = istack_export(neib-1)
-        num = istack_export(neib  ) - istack_export(neib-1)
+      do neib= 1, nod_comm%num_neib
+        ist = nod_comm%istack_export(neib-1)
+        num = nod_comm%istack_export(neib  )                            &
+     &       - nod_comm%istack_export(neib-1)
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= 1, num
-                 ii   = NB * (item_export(k+ist) - 1) + nd
+                 ii   = NB * (nod_comm%item_export(k+ist) - 1) + nd
                  ix   = k + (nd-1) * num + NB*ist
              WS(ix)= xx4(ii)
            end do
@@ -259,13 +250,14 @@
       call end_eleps_time(6)
 
 !$omp parallel private(nd,neib,ist,num)
-      do neib= 1, num_neib
-        ist = istack_import(neib-1)
-        num = istack_import(neib  ) - istack_import(neib-1)
+      do neib= 1, nod_comm%num_neib
+        ist = nod_comm%istack_import(neib-1)
+        num = nod_comm%istack_import(neib  )                            &
+     &       - nod_comm%istack_import(neib-1)
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= 1, num
-            ii   = NB * (item_import(k+ist)-1) + nd
+            ii   = NB * (nod_comm%item_import(k+ist)-1) + nd
             ix   = k + (nd-1) * num + NB*ist
             xx4(ii)= WR(ix)
           end do
@@ -276,9 +268,10 @@
       call end_eleps_time(5)
       call start_eleps_time(6)
 !$omp parallel private(nd,neib,ist,num)
-      do neib= 1, num_neib
-        ist = istack_import(neib-1)
-        num = istack_import(neib  ) - istack_import(neib-1)
+      do neib= 1, nod_comm%num_neib
+        ist = nod_comm%istack_import(neib-1)
+        num = nod_comm%istack_import(neib  )                            &
+     &       - nod_comm%istack_import(neib-1)
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= 1, num
@@ -296,14 +289,15 @@
       call start_eleps_time(7)
       call start_eleps_time(8)
 !$omp parallel private(neib,ist,num)
-      do neib= 1, num_neib
-        ist = istack_export(neib-1)
-        num = istack_export(neib  ) - istack_export(neib-1)
+      do neib= 1, nod_comm%num_neib
+        ist = nod_comm%istack_export(neib-1)
+        num = nod_comm%istack_export(neib  )                            &
+     &       - nod_comm%istack_export(neib-1)
 !$omp do private(k,nd,ii,ix)
         do inum = 1, NB*num
           k = mod(inum-ione,num) + ione
           nd = (inum-k) / NB + ione
-                 ii   = NB * (item_export(k+ist) - 1) + nd
+                 ii   = NB * (nod_comm%item_export(k+ist) - 1) + nd
                  ix   = inum + NB*ist
              WS(ix)= xx4(ii)
         end do
@@ -313,14 +307,15 @@
       call end_eleps_time(8)
 
 !$omp parallel private(nd,neib,ist,num,inum)
-      do neib= 1, num_neib
-        ist = istack_import(neib-1)
-        num = istack_import(neib  ) - istack_import(neib-1)
+      do neib= 1, nod_comm%num_neib
+        ist = nod_comm%istack_import(neib-1)
+        num = nod_comm%istack_import(neib  )                            &
+     &       - nod_comm%istack_import(neib-1)
 !$omp do private(inum,k,ii,ix)
         do inum = 1, NB*num
           nd = mod(inum-ione,NB) + ione
           k = (inum-nd) / NB + ione
-            ii   = NB * (item_import(k+ist)-1) + nd
+            ii   = NB * (nod_comm%item_import(k+ist)-1) + nd
             ix   = k + (nd-1) * num + NB*ist
             xx4(ii)= WR(ix)
         end do
@@ -331,9 +326,10 @@
 !
       call start_eleps_time(8)
 !$omp parallel private(nd,neib,ist,num,inum)
-      do neib= 1, num_neib
-        ist = istack_import(neib-1)
-        num = istack_import(neib  ) - istack_import(neib-1)
+      do neib= 1, nod_comm%num_neib
+        ist = nod_comm%istack_import(neib-1)
+        num = nod_comm%istack_import(neib  )                            &
+     &       - nod_comm%istack_import(neib-1)
 !$omp do private(k,ii,ix)
         do inum = 1, NB*num
           nd = mod(inum-ione,NB) + ione
@@ -357,7 +353,8 @@
 !
       subroutine ele_send_recv_test
 !
-      use m_ele_comm_table
+      use m_ele_sf_eg_comm_tables
+      use solver_SR_type
 !
       integer(kind = kint) :: iele, inum
 !
@@ -367,17 +364,14 @@
         x_ele_comm(3*iele-1) = x_ele(iele,2)
         x_ele_comm(3*iele  ) = x_ele(iele,3)
       end do
-      do inum = 1, ntot_import_ele
-        iele = item_import_ele(inum)
+      do inum = 1, ele_comm%ntot_import
+        iele = ele_comm%item_import(inum)
         x_ele_comm(3*iele-2) = 0.0d0
         x_ele_comm(3*iele-1) = 0.0d0
         x_ele_comm(3*iele  ) = 0.0d0
       end do
 !
-      call solver_send_recv_3(numele, num_neib_ele, id_neib_ele,        &
-     &                        istack_import_ele, item_import_ele,       &
-     &                        istack_export_ele, item_export_ele,       &
-     &                        x_ele_comm)
+      call SOLVER_SEND_RECV_3_type(numele, ele_comm, x_ele_comm)
 !
       end subroutine ele_send_recv_test
 !
@@ -386,7 +380,8 @@
       subroutine surf_send_recv_test
 !
       use m_surface_geometry_data
-      use m_surf_comm_table
+      use m_ele_sf_eg_comm_tables
+      use solver_SR_type
 !
       integer(kind = kint) :: isurf, inum
 !
@@ -396,17 +391,14 @@
         x_surf_comm(3*isurf-1) = x_surf(isurf,2)
         x_surf_comm(3*isurf  ) = x_surf(isurf,3)
       end do
-      do inum = 1, ntot_import_surf
-        isurf = item_import_surf(inum)
+      do inum = 1, surf_comm%ntot_import
+        isurf = surf_comm%item_import(inum)
         x_surf_comm(3*isurf-2) = 0.0d0
         x_surf_comm(3*isurf-1) = 0.0d0
         x_surf_comm(3*isurf  ) = 0.0d0
       end do
 !
-      call solver_send_recv_3(numsurf, num_neib_surf, id_neib_surf,     &
-     &                        istack_import_surf, item_import_surf,     &
-     &                        istack_export_surf, item_export_surf,     &
-     &                        x_surf_comm)
+      call SOLVER_SEND_RECV_3_type(numsurf, surf_comm, x_surf_comm)
 !
       end subroutine surf_send_recv_test
 !
@@ -415,7 +407,8 @@
       subroutine edge_send_recv_test
 !
       use m_edge_geometry_data
-      use m_edge_comm_table
+      use m_ele_sf_eg_comm_tables
+      use solver_SR_type
 !
       integer(kind = kint) :: iedge, inum
 !
@@ -425,17 +418,14 @@
         x_edge_comm(3*iedge-1) = x_edge(iedge,2)
         x_edge_comm(3*iedge  ) = x_edge(iedge,3)
       end do
-      do inum = 1, ntot_import_edge
-        iedge = item_import_edge(inum)
+      do inum = 1, edge_comm%ntot_import
+        iedge = edge_comm%item_import(inum)
         x_edge_comm(3*iedge-2) = 0.0d0
         x_edge_comm(3*iedge-1) = 0.0d0
         x_edge_comm(3*iedge  ) = 0.0d0
       end do
 !
-      call solver_send_recv_3(numedge, num_neib_edge, id_neib_edge,     &
-     &                        istack_import_edge, item_import_edge,     &
-     &                        istack_export_edge, item_export_edge,     &
-     &                        x_edge_comm)
+      call SOLVER_SEND_RECV_3_type(numedge, edge_comm, x_edge_comm)
 !
       end subroutine edge_send_recv_test
 !

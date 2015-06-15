@@ -29,6 +29,7 @@
       use m_t_step_parameter
       use m_ucd_input_data
       use m_node_phys_data
+      use m_ele_sf_eg_comm_tables
 !
       use nodal_vector_send_recv
       use const_mesh_info
@@ -47,15 +48,18 @@
       if (iflag_debug.gt.0) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(isix, numnod)
 !
+      if(iflag_debug.gt.0) write(*,*)' init_send_recv'
+      call init_send_recv
+!
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)
 !
-!  -------------------------------
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
+      call const_element_comm_tables_1st
 !
       call deallocate_edge_geometry
 !
-      if (iflag_debug.gt.0) write(*,*) 'init_send_recv'
-      call init_send_recv
+!  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'allocate_data_arrays'
       call allocate_data_arrays
@@ -97,15 +101,18 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine SPH_to_FEM_bridge_sph_trans
+      subroutine SPH_to_FEM_bridge_sph_trans(fld_IO)
 !
-      use m_field_data_IO
+      use t_field_data_IO
       use copy_rj_phys_data_4_IO
+!
+      type(field_IO), intent(inout) :: fld_IO
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_rj_all_phys_name_to_IO'
-      call copy_rj_all_phys_name_to_IO
-      call allocate_phys_data_IO
+      call copy_rj_all_phys_name_to_IO(fld_IO)
+      call alloc_phys_data_IO(fld_IO)
+      call alloc_merged_field_stack(nprocs, fld_IO)
 !
       end subroutine SPH_to_FEM_bridge_sph_trans
 !

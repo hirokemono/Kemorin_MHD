@@ -13,6 +13,7 @@
       use calypso_mpi
       use m_work_time
 !
+      use t_field_data_IO
       use SPH_analyzer_sph_trans
       use SPH_analyzer_back_trans
       use FEM_analyzer_sph_trans
@@ -20,6 +21,8 @@
       use visualizer_all
 !
       implicit none
+!
+      type(field_IO), save, private :: sph_trns_IO
 !
 ! ----------------------------------------------------------------------
 !
@@ -61,7 +64,7 @@
 !
 !    Set field IOP array by spectr fields
       if (iflag_debug.gt.0) write(*,*) 'SPH_to_FEM_bridge_sph_trans'
-      call SPH_to_FEM_bridge_sph_trans
+      call SPH_to_FEM_bridge_sph_trans(sph_trns_IO)
 !
 !  -------------------------------
 !

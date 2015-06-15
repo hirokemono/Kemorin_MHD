@@ -50,41 +50,41 @@ target_task:
 	>> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SMDT_POLY)': '$$(MOD_SMDT_POLY_TEST)' \
-	'$$(LIB_MESH_FILE)' >> $(MAKENAME)
+	'$$(LIB_FILES_MESH_TEST)' >> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SMDT_POLY)' \
-	'$$(MOD_SMDT_POLY_TEST)  -L. $$(LIB_MESH)' \
+	'$$(MOD_SMDT_POLY_TEST)  -L. $$(LIBS_MESH_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_TRIINT):' \
-	'$$(MOD_SPH_TRIINT) $$(LIB_FILES_SPH_TEST)' \
+	'$$(MOD_SPH_TRIINT) $$(LIB_FILES_MESH_TEST)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_TRIINT)' \
 	'$$(MOD_SPH_TRIINT)' \
-	'-L. $$(LIB_MESH)' \
+	'-L. $$(LIBS_MESH_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MAG_SMDT):' \
-	'$$(MOD_MAG_SMDT) $$(LIB_FILES_SPH_TEST)' \
+	'$$(MOD_MAG_SMDT) $$($$(LIB_FILES_MESH_TEST))' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MAG_SMDT)' \
 	'$$(MOD_MAG_SMDT)' \
-	'-L. $$(LIB_MESH)' \
+	'-L. $$(LIBS_MESH_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MAG16_SMDT):' \
-	'$$(MOD_MAG16_SMDT) $$(LIB_FILES_SPH_TEST)' \
+	'$$(MOD_MAG16_SMDT) $$($$(LIB_FILES_MESH_TEST))' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MAG16_SMDT)' \
 	'$$(MOD_MAG16_SMDT)' \
-	'-L. $$(LIB_MESH)' \
+	'-L. $$(LIBS_MESH_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_ACDC_SMDT):' \
-	'$$(MOD_ACDC_SMDT) $$(LIB_FILES_SPH_TEST)' \
+	'$$(MOD_ACDC_SMDT) $$(LIB_FILES_MESH_TEST)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_ACDC_SMDT)' \
 	'$$(MOD_ACDC_SMDT)' \
-	'-L. $$(LIB_MESH)' \
+	'-L. $$(LIBS_MESH_TEST)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 

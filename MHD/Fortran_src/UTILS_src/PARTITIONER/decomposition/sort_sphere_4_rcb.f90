@@ -1,17 +1,7 @@
 !sort_sphere_4_rcb.f90
 !     module sort_sphere_4_rcb
 !
-      module sort_sphere_4_rcb
-!
 !     written by H. Matsui on Aug., 2007
-!
-      use m_precision
-      use m_constants
-!
-      implicit none
-!
-      integer(kind = kint), allocatable, private :: IS_radial(:)
-!
 !
 !      subroutine s_sort_sphere_4_rcb(num_CMB, IGROUP_cmb, itheta, iphi,&
 !     &          colatitude, longitude, VAL, IS1)
@@ -22,6 +12,16 @@
 !
 !      subroutine set_domain_list_w_rev(nnod, nlevel, nproc, num, irest,&
 !     &           sort_item, ig_item)
+!
+      module sort_sphere_4_rcb
+!
+      use m_precision
+      use m_constants
+!
+      implicit none
+!
+      integer(kind = kint), allocatable, private :: IS_radial(:)
+!
 !
 ! ----------------------------------------------------------------------
 !

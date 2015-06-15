@@ -34,19 +34,17 @@
 !
       subroutine s_count_diff_geom_comm_test
 !
-      use m_ele_comm_table
+      use m_ele_sf_eg_comm_tables
       use m_surface_geometry_data
-      use m_surf_comm_table
       use m_edge_geometry_data
-      use m_edge_comm_table
 !
 !
-      call count_ele_comm_test(numele, x_ele, ntot_import_ele,          &
-     &    item_import_ele, x_ele_comm, nele_diff_local)
-      call count_ele_comm_test(numsurf, x_surf, ntot_import_surf,       &
-     &    item_import_surf, x_surf_comm, nsurf_diff_local)
-      call count_ele_comm_test(numedge, x_edge, ntot_import_edge,       &
-     &    item_import_edge, x_edge_comm, nedge_diff_local)
+      call count_ele_comm_test(numele, x_ele, ele_comm%ntot_import,     &
+     &    ele_comm%item_import, x_ele_comm, nele_diff_local)
+      call count_ele_comm_test(numsurf, x_surf, surf_comm%ntot_import,  &
+     &    surf_comm%item_import, x_surf_comm, nsurf_diff_local)
+      call count_ele_comm_test(numedge, x_edge, edge_comm%ntot_import,  &
+     &    edge_comm%item_import, x_edge_comm, nedge_diff_local)
 !
       end subroutine s_count_diff_geom_comm_test
 !
@@ -54,21 +52,19 @@
 !
       subroutine s_set_diff_geom_comm_test
 !
-      use m_ele_comm_table
+      use m_ele_sf_eg_comm_tables
       use m_surface_geometry_data
-      use m_surf_comm_table
       use m_edge_geometry_data
-      use m_edge_comm_table
 !
 !
       call compare_ele_comm_test(numele, x_ele,                         &
-     &    ntot_import_ele, item_import_ele,                             &
+     &    ele_comm%ntot_import, ele_comm%item_import,                   &
      &    x_ele_comm, nele_diff_local, iele_diff, xele_diff)
       call compare_ele_comm_test(numsurf, x_surf,                       &
-     &    ntot_import_surf, item_import_surf,                           &
+     &    surf_comm%ntot_import, surf_comm%item_import,                 &
      &    x_surf_comm, nsurf_diff_local, isurf_diff, xsurf_diff)
       call compare_ele_comm_test(numedge, x_edge,                       &
-     &    ntot_import_edge, item_import_edge,                           &
+     &    edge_comm%ntot_import, edge_comm%item_import,                 &
      &    x_edge_comm, nedge_diff_local, iedge_diff, xedge_diff)
 !
       end subroutine s_set_diff_geom_comm_test

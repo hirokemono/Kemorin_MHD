@@ -7,9 +7,8 @@
 !        type(mesh_data), intent(in) :: fem
 !        type(phys_data), intent(in) :: fld_nod
 !
-!      subroutine cross_section_main_type(istep_psf, mesh, edge,        &
-!     &          fld_nod)
-!      subroutine isosurface_main_type(istep_iso, mesh, edge, fld_nod)
+!!      subroutine field_line_main_type(istep_psf, fem, surf, next_tbl, &
+!!     &          fld_nod)
 !        integer(kind = kint), intent(in) :: istep_psf
 !        integer(kind = kint), intent(in) :: istep_iso
 !        type(mesh_geometry), intent(in) :: mesh
@@ -83,14 +82,8 @@
      &    fem%group%ele_grp%istack_grp,  fem%group%ele_grp%item_grp,    &
      &    next_tbl%neib_ele%ntot, next_tbl%neib_ele%istack_4_node,      &
      &    next_tbl%neib_ele%iele_4_node,                                &
-     &    fem%mesh%nod_comm%num_neib, fem%mesh%nod_comm%ntot_import,    &
-     &    fem%mesh%nod_comm%ntot_export, fem%mesh%nod_comm%id_neib,     &
-     &    fem%mesh%nod_comm%istack_import,                              &
-     &    fem%mesh%nod_comm%istack_export,                              &
-     &    fem%mesh%nod_comm%item_import,                                &
-     &    fem%mesh%nod_comm%item_export,                                &
      &    fld_nod%num_phys, fld_nod%ntot_phys,                          &
-     &    fld_nod%istack_component, fld_nod%d_fld)
+     &    fld_nod%istack_component, fld_nod%d_fld, fem%mesh%nod_comm)
 !
       end subroutine field_line_main_type
 !

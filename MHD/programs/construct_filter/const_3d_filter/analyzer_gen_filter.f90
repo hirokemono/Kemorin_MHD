@@ -37,8 +37,6 @@
       use set_element_geometry_4_IO
       use set_surface_geometry_4_IO
       use set_edge_geometry_4_IO
-      use surface_file_IO
-      use edge_file_IO
       use m_geometry_parameter
       use m_geometry_data
       use m_surface_group
@@ -90,7 +88,7 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1)  write(*,*)  'cal_jacobian_element'
-      max_int_point =  num_int_points
+      call maximum_integration_points(num_int_points)
       call cal_jacobian_element
 !
       if (iflag_debug.eq.1)  write(*,*)  'cal_jacobian_surface'
@@ -110,14 +108,14 @@
       call s_int_whole_volume_only
       if (my_rank.eq.0) write(*,*)  'Volume of Domain: ', volume
 !
-      if (iflag_debug.eq.1)  write(*,*)  's_int_element_length'
+      if (iflag_debug.eq.1)  write(*,*)  'int_element_length_1st'
       nnod_filter_mom = numnod
       nele_filter_mom = numele
       num_filter_moms = 2
-      call allocate_jacobians_for_ele
+      call alloc_dxdxi_diff_type(nele_filter_mom, filter_dxi1%dxi_ele)
       call allocate_ele_length
 !
-      call s_int_element_length
+      call int_element_length_1st
 !
        end subroutine init_analyzer
 !
@@ -145,6 +143,7 @@
       use set_filter_comm_tbl_4_IO
       use filter_geometry_IO
       use check_num_fail_nod_commute
+      use nodal_vector_send_recv
 !
       use cal_filter_func_node
 !
@@ -156,6 +155,8 @@
 !
       if(iflag_debug.eq.1)  write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(ithree, numnod)
+!
+      call init_send_recv
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
       call s_cal_element_size

@@ -44,6 +44,7 @@
       call FEM_initialize_vizs
 !
 !  VIZ Initialization
+      if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
       call init_visualize
 !
       end subroutine init_analyzer
@@ -59,11 +60,13 @@
 !
       do i_step = i_step_init, i_step_number
 !  Load field data
+        if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_vizs', i_step
         call FEM_analyze_vizs(i_step,                                   &
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
 !  Rendering
         if(visval .eq. 0) then
+          if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
           call visualize_all(istep_psf, istep_iso, istep_pvr,           &
      &        istep_fline)
         end if

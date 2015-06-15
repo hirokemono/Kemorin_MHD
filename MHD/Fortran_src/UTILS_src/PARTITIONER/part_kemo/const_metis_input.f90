@@ -1,15 +1,15 @@
 !
 !      module const_metis_input
 !
-      module const_metis_input
-!
 !     Written by H. Matsui on Aug., 2007
+!
+!      subroutine s_const_metis_input
+!
+      module const_metis_input
 !
       use m_precision
 !
       implicit  none
-!
-!      subroutine s_const_metis_input
 !
 ! ----------------------------------------------------------------------
 !

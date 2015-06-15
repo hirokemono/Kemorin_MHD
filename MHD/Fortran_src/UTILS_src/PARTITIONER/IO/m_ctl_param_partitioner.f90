@@ -1,9 +1,12 @@
 !m_ctl_param_partitioner.f90
 !      module m_ctl_param_partitioner
 !
-      module m_ctl_param_partitioner
-!
 !      Written by H. Matsui on Aug., 2007
+!
+!      subroutine allocate_rcb_directions
+!      subroutine deallocate_rcb_directions
+!
+      module m_ctl_param_partitioner
 !
       use m_precision
 !
@@ -58,10 +61,6 @@
 !
       character(len=kchara) :: finer_inter_file_head
       character(len=kchara) :: finer_mesh_file_head
-!
-!      subroutine allocate_rcb_directions
-!      subroutine deallocate_rcb_directions
-!
 !
 !   --------------------------------------------------------------------
 !

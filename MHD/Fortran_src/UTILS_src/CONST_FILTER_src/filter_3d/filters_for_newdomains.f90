@@ -161,9 +161,7 @@
         call deallocate_fluid_filter_coefs
 !
         call deallocate_globalnod_filter
-        call deallocate_filter_import_item
-        call deallocate_filter_export_item
-        call deallocate_neib_filter_id
+        call deallocate_type_comm_tbl(flt_comm)
 !
       end subroutine filters_4_each_newdomain
 !

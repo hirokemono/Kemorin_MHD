@@ -59,6 +59,9 @@
 !
 !     --------------------- 
 !
+      if (iflag_debug.eq.1) write(*,*) 'init_send_recv'
+      call init_send_recv
+!
       if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
       call set_local_element_info
 !
@@ -89,11 +92,6 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data_type'
       call alloc_phys_data_type(new_femmesh%mesh%node%numnod, new_phys)
-!
-!     --------------------- 
-!
-      if (iflag_debug.eq.1) write(*,*) 'init_send_recv'
-      call init_send_recv
 !
       end subroutine initialize_itp_udt
 !

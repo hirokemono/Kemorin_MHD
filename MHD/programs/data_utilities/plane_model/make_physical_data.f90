@@ -179,8 +179,8 @@
       if ( i.gt. num_fft) exit
      end do
 !
-     write(*,*) 'allocate_merged_field_name', merged_fld%num_phys
-     call allocate_merged_field_name
+     write(*,*) 'alloc_phys_name_type', merged_fld%num_phys
+     call alloc_phys_name_type(merged_fld)
 !
      iii = 0
      i = 1
@@ -239,7 +239,7 @@
       end do
 !
 !      write(*,*) 'allocate_merged_field_data'
-      call allocate_merged_field_data
+      call alloc_phys_data_type(merged%node%numnod, merged_fld)
 !
       ncomp_nsp = num_fft
 !

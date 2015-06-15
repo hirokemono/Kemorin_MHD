@@ -22,13 +22,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_zm_energies(i_step, visval)
+      subroutine SPH_analyze_zm_energies(i_step, visval, fld_IO)
 !
       use m_sph_spectr_data
       use m_t_step_parameter
-      use m_field_data_IO
       use m_control_params_2nd_files
       use m_node_id_spherical_IO
+      use t_field_data_IO
 !
       use field_IO_select
       use r_interpolate_sph_data
@@ -41,6 +41,7 @@
 !
       integer(kind = kint), intent(in) :: i_step
       integer(kind = kint), intent(inout) :: visval
+      type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint) :: i_udt
 !
@@ -53,17 +54,18 @@
 !
 !   Input spectr data
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
-        call sel_read_step_SPH_field_file(my_rank, i_step)
+      call  sel_read_step_SPH_field_file                                &
+     &     (nprocs, my_rank, i_step, fld_IO)
 !
 !    copy and extend magnetic field to outside
 !
         if(iflag_org_sph_rj_head .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-          call set_rj_phys_data_from_IO
+          call set_rj_phys_data_from_IO(fld_IO)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
-          call r_interpolate_sph_fld_from_IO
+          call r_interpolate_sph_fld_from_IO(fld_IO)
         end if
 !
 !        call set_rj_phys_for_pol_kene

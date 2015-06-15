@@ -146,9 +146,7 @@
       call deallocate_boundary_data
       call deallocate_element_connection
       call deallocate_node_geometry
-      call deallocate_nod_export_item
-      call deallocate_nod_import_item
-      call deallocate_neib_id
+      call deallocate_type_comm_tbl(nod_comm)
 !
       end subroutine deallocate_mesh_infomations
 !
@@ -181,9 +179,7 @@
       call deallocate_boundary_data
       call deallocate_element_connection
       call deallocate_node_geometry
-      call deallocate_nod_export_item
-      call deallocate_nod_import_item
-      call deallocate_neib_id
+      call deallocate_type_comm_tbl(nod_comm)
 !
       end subroutine deallocate_nod_ele_infos
 !
@@ -237,7 +233,6 @@
       use const_surface_data
       use const_edge_data
       use set_size_4_smp
-      use set_tmp_global_id_by_local
 !
       integer(kind = kint), intent(in) :: my_rank
       logical :: read_surface, read_edge
@@ -253,15 +248,11 @@
         call count_surf_size_4_smp
         if (iflag_debug.gt.0) write(*,*) 'count_overlap_surface'
         call count_overlap_surface
-!
-        if (iflag_debug.gt.0) write(*,*) 'set_global_surf_id_by_local'
-        call set_global_surf_id_by_local
       else
 !
         call count_surf_size_4_smp
         if (iflag_debug.gt.0) write(*,*) 'count_overlap_surface'
         call count_overlap_surface
-!
       end if
 !
 !
@@ -273,10 +264,6 @@
         if (iflag_debug.gt.0) write(*,*) 'count_overlap_edge'
         call count_edge_size_4_smp
         call count_overlap_edge
-!
-!
-        if (iflag_debug.gt.0) write(*,*) 'set_global_edge_id_by_local'
-        call set_global_edge_id_by_local
       else
 !
         if (iflag_debug.gt.0) write(*,*) 'count_overlap_edge'

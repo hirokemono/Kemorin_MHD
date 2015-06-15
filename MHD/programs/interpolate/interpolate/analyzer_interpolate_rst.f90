@@ -14,6 +14,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_t_step_parameter
+      use t_field_data_IO
 !
       use t_mesh_data
       use t_phys_data
@@ -26,6 +27,10 @@
 !
       type(phys_data), save :: new_phys
 !
+      type(field_IO), save :: itp_fld_IO
+!
+      private :: new_femmesh, new_surf_mesh, new_edge_mesh
+      private :: new_phys, itp_fld_IO
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,6 +67,10 @@
 !
 !     --------------------- 
 !
+      call init_send_recv
+!
+!     --------------------- 
+!
       if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
       call set_local_element_info
 !
@@ -86,10 +95,12 @@
 !
       istep_rst_start = int(i_step_init /   i_step_output_rst)
       call set_field_file_fmt_prefix                                    &
-     &   (ifmt_org_rst_file, org_rst_file_head)
-      call sel_read_alloc_step_FEM_file(izero, istep_rst_start)
+     &   (ifmt_org_rst_file, org_rst_file_head, itp_fld_IO)
+      call sel_read_alloc_step_FEM_file                                 &
+     &   (ndomain_org, izero, istep_rst_start, itp_fld_IO)
       if (iflag_debug.eq.1) write(*,*) 'init_field_name_by_restart'
-      call init_field_name_by_restart
+      call init_field_name_by_restart(itp_fld_IO)
+      call dealloc_phys_data_IO(itp_fld_IO)
 !
 !     --------------------- 
 !
@@ -102,10 +113,6 @@
       if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data_type'
       call alloc_phys_data_type(new_femmesh%mesh%node%numnod, new_phys)
 !
-!     --------------------- 
-!
-      call init_send_recv
-!
       end subroutine initialize_itp_rst
 !
 ! ----------------------------------------------------------------------
@@ -116,7 +123,6 @@
       use m_node_phys_data
       use m_ctl_params_4_gen_table
       use m_time_data_IO
-      use m_field_data_IO
       use m_geometry_parameter
       use field_IO_select
       use set_parallel_file_name
@@ -125,6 +131,7 @@
       use set_field_to_restart
       use set_field_type_to_restart
       use interpolate_nod_field_2_type
+      use const_global_element_ids
 !
       integer(kind = kint) :: i_step
 !
@@ -134,15 +141,16 @@
       do i_step = istep_rst_start, istep_rst_end
 !
         if (my_rank .lt. ndomain_org) then
-          numgrid_phys_IO = numnod
-          call allocate_phys_data_IO
+          itp_fld_IO%nnod_IO = numnod
+          call alloc_phys_data_IO(itp_fld_IO)
 !
           call set_field_file_fmt_prefix                                &
-     &       (ifmt_org_rst_file, org_rst_file_head)
-          call sel_read_step_FEM_field_file(my_rank, i_step)
+     &       (ifmt_org_rst_file, org_rst_file_head, itp_fld_IO)
+          call sel_read_step_FEM_field_file                             &
+     &       (nprocs, my_rank, i_step, itp_fld_IO)
 !
-          call copy_field_data_from_restart
-          call deallocate_phys_data_IO
+          call copy_field_data_from_restart(itp_fld_IO)
+          call dealloc_phys_data_IO(itp_fld_IO)
           time =       time_IO
           i_step_MHD = i_time_step_IO
 !
@@ -159,19 +167,28 @@
      &      new_femmesh%mesh%node, new_phys)
 !
         if (my_rank .lt. ndomain_dest) then
-          numgrid_phys_IO = new_femmesh%mesh%node%numnod
-          call allocate_phys_data_IO
-          call copy_field_type_to_rst(new_femmesh%mesh%node, new_phys)
           call copy_time_steps_to_restart
 !
+          itp_fld_IO%nnod_IO = new_femmesh%mesh%node%numnod
+          call alloc_phys_data_IO(itp_fld_IO)
+          call copy_field_type_to_rst                                   &
+     &       (new_femmesh%mesh%node, new_phys, itp_fld_IO)
+!
+          call alloc_merged_field_stack(nprocs, itp_fld_IO)
+          call count_number_of_node_stack                               &
+     &       (itp_fld_IO%nnod_IO, itp_fld_IO%istack_numnod_IO)
+!
           call set_field_file_fmt_prefix                                &
-     &       (ifmt_itp_rst_file, itp_rst_file_head)
-          call sel_write_step_FEM_field_file(my_rank, i_step)
-          call deallocate_phys_data_IO
+     &       (ifmt_itp_rst_file, itp_rst_file_head, itp_fld_IO)
+          call sel_write_step_FEM_field_file                            &
+     &       (nprocs, my_rank, i_step, itp_fld_IO)
+!
+          call dealloc_phys_data_IO(itp_fld_IO)
+          call dealloc_merged_field_stack(itp_fld_IO)
         end if
       end do
 !
-      call deallocate_phys_data_name_IO
+      call dealloc_phys_name_IO(itp_fld_IO)
 !
       end subroutine analyze_itp_rst
 !

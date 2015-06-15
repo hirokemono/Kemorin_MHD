@@ -280,51 +280,51 @@ target_task:
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_T_AVE_GAUSS_COEFS)': '$$(MOD_T_AVE_GAUSS_COEFS)' \
-	'$$(LIB_MESH_FILE)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_T_AVE_GAUSS_COEFS)' \
 	'$$(MOD_T_AVE_GAUSS_COEFS)' \
-	'-L. $$(LIB_MESH)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_T_AVE_PICK_SPH_SPEC)': '$$(MOD_T_AVE_PICK_SPH)' \
-	'$$(LIB_MESH_FILE)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_T_AVE_PICK_SPH_SPEC)' \
 	'$$(MOD_T_AVE_PICK_SPH)' \
-	'-L. $$(LIB_MESH)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_T_AVE_PICK_SPH_ENE)': '$$(MOD_T_AVE_PICK_SPH_ENE)' \
-	'$$(LIB_MESH_FILE)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_T_AVE_PICK_SPH_ENE)' \
 	'$$(MOD_T_AVE_PICK_SPH_ENE)' \
-	'-L. $$(LIB_MESH)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_T_AVE_NUSSELT)': '$$(MOD_T_AVE_NUSSELT)' \
-	'$$(LIB_MESH_FILE)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_T_AVE_NUSSELT)' \
 	'$$(MOD_T_AVE_NUSSELT)' \
-	'-L. $$(LIB_MESH)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_MAX_SPH_ENE)': '$$(MOD_MAX_SPH_ENE)' \
-	'$$(LIB_MESH_FILE)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_MAX_SPH_ENE)' \
 	'$$(MOD_MAX_SPH_ENE)' \
-	'-L. $$(LIB_MESH)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ULI_LSCALE)': '$$(MOD_SPH_ULI_LSCALE)' \
-	'$$(LIB_MESH_FILE)' \
+	'$$(LIB_FILES_SPH_UTIL)' \
 	>> $(MAKENAME)
 	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_ULI_LSCALE)' \
 	'$$(MOD_SPH_ULI_LSCALE)' \
-	'-L. $$(LIB_MESH)' \
+	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
 

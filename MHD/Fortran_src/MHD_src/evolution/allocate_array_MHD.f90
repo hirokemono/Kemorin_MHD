@@ -24,7 +24,6 @@
 !
       subroutine allocate_array
 !
-      use m_array_for_send_recv
       use m_machine_parameter
       use m_control_parameter
       use m_geometry_parameter
@@ -45,9 +44,6 @@
 !
       if (iflag_debug.ge.1) write(*,*) 'allocate_phys_data'
       call allocate_phys_data
-!
-      if (iflag_debug.ge.1 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(n_sym_tensor, numnod)
 !
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'set_bulk_values'

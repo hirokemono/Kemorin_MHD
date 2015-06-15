@@ -14,22 +14,12 @@
 !      subroutine allocate_merged_group_num
 !      subroutine allocate_merged_group_item
 !
-!      subroutine allocate_merged_field_name
-!      subroutine allocate_merged_field_data
-!
 !      subroutine deallocate_array_4_merge
 !      subroutine deallocate_number_of_mesh
-!
-!      subroutine deallocate_array_4_node
-!      subroutine deallocate_array_4_element
-!      subroutine deallocate_geom_ex_glnod
 !
 !      subroutine dealloc_subdomain_groups
 !
 !      subroutine deallocate_subdomain_grp_stack
-!
-!      subroutine deallocate_merged_field_name
-!      subroutine deallocate_merged_field_data
 !
 !      subroutine check_boundary_data_m
 !      subroutine check_material_data_m
@@ -192,58 +182,15 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-       subroutine allocate_merged_field_name
-!
-!
-       call alloc_phys_name_type(merged_fld)
-!
-       end subroutine allocate_merged_field_name
-!
-!------------------------------------------------------------------
-!
-       subroutine allocate_merged_field_data
-!
-!
-       call alloc_phys_data_type(merged%node%numnod, merged_fld)
-!
-       end subroutine allocate_merged_field_data
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
       subroutine deallocate_array_4_merge
 !
 !
-      call deallocate_array_4_node
-      call deallocate_array_4_element
+      call dealloc_local_nod_id_tbl(merge_tbl)
+      call dealloc_local_ele_id_tbl(merge_tbl)
 !
       end subroutine deallocate_array_4_merge
 !
 !------------------------------------------------------------------
-!
-      subroutine deallocate_array_4_node
-!
-      call dealloc_local_nod_id_tbl(merge_tbl)
-!
-      end subroutine deallocate_array_4_node
-!
-!------------------------------------------------------------------
-!
-      subroutine deallocate_array_4_element
-!
-      call dealloc_local_ele_id_tbl(merge_tbl)
-!
-      end subroutine deallocate_array_4_element
-!
-!------------------------------------------------------------------
-!
-      subroutine deallocate_geom_ex_glnod
-!
-      call deallocate_node_geometry_type(merged%node)
-!
-      end subroutine deallocate_geom_ex_glnod
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine dealloc_subdomain_groups
@@ -270,23 +217,6 @@
        deallocate ( istack_surf_pe )
 !
        end subroutine deallocate_subdomain_grp_stack
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-       subroutine deallocate_merged_field_name
-!
-       call dealloc_phys_name_type(merged_fld)
-!
-       end subroutine deallocate_merged_field_name
-!
-!------------------------------------------------------------------
-!
-      subroutine deallocate_merged_field_data
-!
-      call dealloc_phys_data_type(merged_fld)
-!
-      end subroutine deallocate_merged_field_data
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

@@ -1,14 +1,24 @@
+!>@file   set_element_id_4_node.f90
+!!@brief  module set_element_id_4_node
+!!
+!!@author H. Matsui
+!!@date Programmed in Oct., 2006
 !
-!      module set_element_id_4_node
-!
-!      Written by H.Matsui on Oct., 2006
-!
-!      subroutine set_belonged_ele_and_next_nod
-!      subroutine set_ele_id_4_node
-!      subroutine set_layerd_ele_id_4_node(nnod, iele_start, iele_end)
-!      subroutine set_grouped_ele_id_4_node(nele_grp, iele_grp)
-!
-!      subroutine const_next_nod_id_4_node
+!> @brief Set belonged element list for each node
+!!
+!!@verbatim
+!!      subroutine set_belonged_ele_and_next_nod
+!!
+!!      subroutine set_ele_id_4_node
+!!      subroutine set_ele_id_4_node_t
+!!      subroutine set_surf_id_4_node
+!!      subroutine set_edge_id_4_node
+!!
+!!      subroutine set_layerd_ele_id_4_node(nnod, iele_start, iele_end)
+!!      subroutine set_grouped_ele_id_4_node(nele_grp, iele_grp)
+!!
+!!      subroutine const_next_nod_id_4_node
+!!@endverbatim
 !
       module set_element_id_4_node
 !
@@ -62,6 +72,94 @@
 !
       end subroutine set_ele_id_4_node
 !
+!-----------------------------------------------------------------------
+!
+      subroutine set_ele_id_4_node_t
+!
+      use m_geometry_parameter
+      use m_geometry_data
+      use m_element_id_4_node
+      use find_element_id_4_node
+      use cal_minmax_and_stacks
+!
+!
+      call alloc_nele_belonged_type(numnod, ele_4_nod)
+!
+      call count_iele_4_node(numnod, numele, nnod_4_ele, ie,            &
+     &    ione, numele, ele_4_nod%nele_4_node)
+      call s_cal_minmax_and_stacks(numnod, ele_4_nod%nele_4_node,       &
+     &    izero, ele_4_nod%istack_4_node, ele_4_nod%ntot,               &
+     &    ele_4_nod%nmax, ele_4_nod%nmin)
+!
+!
+      call alloc_iele_belonged_type(ele_4_nod)
+!
+      call set_iele_4_node(numnod, numele, nnod_4_ele, ie,              &
+     &    ione, numele, ele_4_nod%ntot, ele_4_nod%istack_4_node,        &
+     &    ele_4_nod%nele_4_node, ele_4_nod%iele_4_node,                 &
+     &    ele_4_nod%iconn_4_node)
+!
+      end subroutine set_ele_id_4_node_t
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_surf_id_4_node
+!
+      use m_geometry_parameter
+      use m_geometry_data
+      use m_element_id_4_node
+      use find_element_id_4_node
+      use cal_minmax_and_stacks
+!
+!
+      call alloc_nele_belonged_type(numnod, surf_4_nod)
+!
+      call count_iele_4_node(numnod, numsurf, nnod_4_surf, ie_surf,     &
+     &    ione, numsurf, surf_4_nod%nele_4_node)
+      call s_cal_minmax_and_stacks(numnod,                              &
+     &    surf_4_nod%nele_4_node, izero, surf_4_nod%istack_4_node,      &
+     &    surf_4_nod%ntot, surf_4_nod%nmax, surf_4_nod%nmin)
+!
+!
+      call alloc_iele_belonged_type(surf_4_nod)
+!
+      call set_iele_4_node(numnod, numsurf, nnod_4_surf, ie_surf,       &
+     &    ione, numsurf, surf_4_nod%ntot, surf_4_nod%istack_4_node,     &
+     &    surf_4_nod%nele_4_node, surf_4_nod%iele_4_node,               &
+     &    surf_4_nod%iconn_4_node)
+!
+      end subroutine set_surf_id_4_node
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_edge_id_4_node
+!
+      use m_geometry_parameter
+      use m_geometry_data
+      use m_element_id_4_node
+      use find_element_id_4_node
+      use cal_minmax_and_stacks
+!
+!
+      call alloc_nele_belonged_type(numnod, edge_4_nod)
+!
+      call count_iele_4_node(numnod, numedge, nnod_4_edge, ie_edge,     &
+     &    ione, numedge, edge_4_nod%nele_4_node)
+      call s_cal_minmax_and_stacks(numnod,                              &
+     &    edge_4_nod%nele_4_node, izero, edge_4_nod%istack_4_node,      &
+     &    edge_4_nod%ntot, edge_4_nod%nmax, edge_4_nod%nmin)
+!
+!
+      call alloc_iele_belonged_type(edge_4_nod)
+!
+      call set_iele_4_node(numnod, numedge, nnod_4_edge, ie_edge,       &
+     &    ione, numedge, edge_4_nod%ntot, edge_4_nod%istack_4_node,     &
+     &    edge_4_nod%nele_4_node, edge_4_nod%iele_4_node,               &
+     &    edge_4_nod%iconn_4_node)
+!
+      end subroutine set_edge_id_4_node
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine set_layerd_ele_id_4_node(nnod, iele_start, iele_end)

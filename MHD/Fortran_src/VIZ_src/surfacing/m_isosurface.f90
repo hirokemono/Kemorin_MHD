@@ -17,14 +17,13 @@
 !!     &          num_nod_phys, phys_nod_name)
 !!
 !!      subroutine isosurface_main(istep_iso,                           &
-!!     &          numnod, numele, numedge, nnod_4_ele, nnod_4_edge,     &
-!!     &          ie, ie_edge, iedge_4_ele, inod_global,                &
+!!     &          numnod, internal_node, numele, numedge, nnod_4_ele,   &
+!!     &          nnod_4_edge, ie, ie_edge, iedge_4_ele,                &
 !!     &          xx, radius, a_radius, s_cylinder, a_s_cylinder,       &
-!!     &          inod_smp_stack, num_nod_phys, num_tot_nod_phys,       &
-!!     &          istack_nod_component, d_nod)
+!!     &          inod_smp_stack, edge_comm, num_nod_phys,              &
+!!     &          num_tot_nod_phys, istack_nod_component, d_nod)
 !!
 !!      subroutine dealloc_iso_field_type
-!!      subroutine deallocate_num_patch_iso
 !!@endverbatim
 !
       module m_isosurface
@@ -34,7 +33,6 @@
       use t_phys_data
       use t_psf_geometry_list
       use t_psf_patch_data
-      use t_psf_outputs
       use t_ucd_data
 !
 !
@@ -47,36 +45,18 @@
 !>      Number of isosurfaces
       integer(kind = kint) :: num_iso
 !
-!>      Structure for isosurface mesh
-      type(mesh_geometry), allocatable, save :: iso_mesh(:)
-!
-!>      Structure for isosurface field
-      type(phys_data), allocatable, save :: iso_fld(:)
-!
 !>      Structure for table for sections
-      type(sectiong_list), allocatable, save :: iso_list(:)
+      type(sectioning_list), allocatable, save :: iso_list(:)
 !
 !>      Structure for search table for sections
       type(psf_search_lists), allocatable, save :: iso_search(:)
 !
       type(psf_parameters), allocatable, save :: iso_param(:)
 !
+!>      Structure for psf patch data on local domain
+      type(psf_local_data), allocatable, save :: iso_mesh(:)
 !
-      type(psf_patch_data), save :: iso_pat
-      type(psf_collect_type), save :: iso_col
-!
-!>      Structure for isosurface output (used by master process)
-      type(ucd_data), allocatable, save :: iso_out(:)
-!
-!
-!>      End point of node list for each isosurfaces
-      integer(kind = kint), allocatable :: istack_nod_iso(:)
-      integer(kind = kint), allocatable :: istack_nod_iso_smp(:)
-!
-      integer(kind = kint), allocatable :: istack_patch_iso(:)
-      integer(kind = kint), allocatable :: istack_patch_iso_smp(:)
-!
-      private :: alloc_iso_field_type, allocate_num_patch_iso
+      private :: alloc_iso_field_type
 !
 !  ---------------------------------------------------------------------
 !
@@ -122,11 +102,11 @@
       integer(kind = kint) :: i_iso
 !
 !
-      call alloc_iso_field_type(my_rank)
+      call alloc_iso_field_type
 !
       if (iflag_debug.eq.1) write(*,*) 'set_iso_control'
       call set_iso_control(num_iso, num_mat, mat_name,                  &
-     &    num_nod_phys, phys_nod_name, iso_param, iso_fld, iso_pat)
+     &    num_nod_phys, phys_nod_name, iso_param, iso_mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
       call set_search_mesh_list_4_psf(num_iso,                          &
@@ -137,13 +117,11 @@
      &        iso_param, iso_search)
 !
       do i_iso = 1, num_iso
-        call alloc_ref_field_4_psf(numnod, iso_list(i_iso))
-        call alloc_nnod_psf(np_smp, numnod, numedge, iso_list(i_iso))
-      end do
-      if (iflag_debug.eq.1) write(*,*) 'allocate_num_patch_iso'
-      call allocate_num_patch_iso(np_smp)
+        call allocate_node_param_smp_type(iso_mesh(i_iso)%node)
+        call allocate_ele_param_smp_type(iso_mesh(i_iso)%patch)
 !
-      call alloc_psf_outputs_num(nprocs, num_iso, iso_col)
+        call alloc_ref_field_4_psf(numnod, iso_list(i_iso))
+      end do
 !
       end subroutine isosurface_init
 !
@@ -151,30 +129,32 @@
 !  ---------------------------------------------------------------------
 !
       subroutine isosurface_main(istep_iso,                             &
-     &          numnod, numele, numedge, nnod_4_ele, nnod_4_edge,       &
-     &          ie, ie_edge, iedge_4_ele, inod_global,                  &
+     &          numnod, internal_node, numele, numedge, nnod_4_ele,     &
+     &          nnod_4_edge, ie, ie_edge, iedge_4_ele,                  &
      &          xx, radius, a_radius, s_cylinder, a_s_cylinder,         &
-     &          inod_smp_stack, num_nod_phys, num_tot_nod_phys,         &
-     &          istack_nod_component, d_nod)
+     &          inod_smp_stack, edge_comm, num_nod_phys,                &
+     &          num_tot_nod_phys, istack_nod_component, d_nod)
 !
 !
       use m_geometry_constants
       use m_control_params_4_iso
+      use t_comm_table
 !
       use set_const_4_sections
       use find_node_and_patch_psf
       use set_fields_for_psf
-      use collect_psf_data
+      use set_ucd_data_to_type
+      use parallel_ucd_IO_select
 !
       integer(kind = kint), intent(in) :: istep_iso
 !
-      integer(kind=kint), intent(in) :: numnod, numele, numedge
+      integer(kind=kint), intent(in) :: numnod, internal_node
+      integer(kind=kint), intent(in) :: numele, numedge
       integer(kind=kint), intent(in) :: nnod_4_ele, nnod_4_edge
       integer(kind=kint), intent(in) :: ie(numele,nnod_4_ele)
       integer(kind=kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
       integer(kind=kint), intent(in) :: iedge_4_ele(numele,nedge_4_ele)
 !
-      integer(kind=kint_gl), intent(in) :: inod_global(numnod)
       real(kind = kreal), intent(in) :: xx(numnod,3)
       real(kind = kreal), intent(in) :: radius(numnod)
       real(kind = kreal), intent(in) :: a_radius(numnod)
@@ -189,7 +169,13 @@
      &                     :: istack_nod_component(0:num_nod_phys)
       real(kind = kreal), intent(in)  :: d_nod(numnod,num_tot_nod_phys)
 !
+      type(communication_table), intent(in) :: edge_comm
+!
       integer(kind = kint) :: i_iso
+!
+!>      Structure for isosurface output (used by master process)
+      type(ucd_data) :: iso_out
+      type(merged_ucd_data) :: iso_out_m
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_isosurfaces'
@@ -200,49 +186,42 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_iso'
       call set_node_and_patch_iso                                       &
-     &   (num_iso, numnod, numele, numedge, nnod_4_ele,                 &
-     &    nnod_4_edge, inod_global, xx, ie, ie_edge, iedge_4_ele,       &
-     &    istack_nod_iso_smp, istack_patch_iso_smp,                     &
-     &    iso_search, iso_list, iso_pat)
-!
-      call alloc_dat_on_patch_psf(iso_pat)
+     &   (num_iso, numnod, internal_node, numele, numedge, nnod_4_ele,  &
+     &    nnod_4_edge, xx, ie, ie_edge, iedge_4_ele, edge_comm,         &
+     &    iso_search, iso_list, iso_mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_4_iso'
+      call alloc_psf_field_data(num_iso, iso_mesh)
       call set_field_4_iso                                              &
      &   (num_iso, numnod, numedge, nnod_4_edge, ie_edge,               &
-     &    istack_nod_iso_smp, num_nod_phys, num_tot_nod_phys,           &
-     &    istack_nod_component, d_nod, iso_param, iso_fld, iso_list,    &
-     &    iso_pat)
+     &    num_nod_phys, num_tot_nod_phys, istack_nod_component, d_nod,  &
+     &    iso_param, iso_list, iso_mesh)
+!
+      do i_iso = 1, num_iso
+        iso_out%file_prefix = iso_header(i_iso)
+        iso_out%ifmt_file = itype_iso_file(i_iso)
+!
+        call link_node_data_type_2_output                               &
+     &     (iso_mesh(i_iso)%node, iso_out)
+        call link_ele_data_type_2_output                                &
+     &     (iso_mesh(i_iso)%patch, iso_out)
+        call link_field_data_type_2_output(iso_mesh(i_iso)%node%numnod, &
+     &      iso_mesh(i_iso)%field, iso_out)
+        call link_nnod_stacks_type_2_output(nprocs,                     &
+     &      iso_mesh(i_iso)%node, iso_mesh(i_iso)%patch, iso_out_m)
+!
+        call sel_write_parallel_ucd_file                                &
+     &      (istep_iso, iso_out, iso_out_m)
+!
+        call disconnect_merged_ucd_mesh(iso_out, iso_out_m)
+      end do
+!
+      call dealloc_psf_field_data(num_iso, iso_mesh)
+      call dealloc_psf_node_and_patch(num_iso, iso_list, iso_mesh)
 !
       do i_iso = 1, num_iso
         call dealloc_inod_psf(iso_list(i_iso))
       end do
-!
-      if (iflag_debug.eq.1) write(*,*) 'collect_numbers_4_psf'
-      call collect_numbers_4_psf(num_iso, iso_header, itype_iso_file,   &
-     &    istack_nod_iso_smp, istack_patch_iso_smp,                     &
-     &    iso_fld, iso_col, iso_out)
-!
-!
-      call alloc_psf_outputs_data(iso_col)
-      call alloc_SR_array_psf(my_rank, nprocs,                          &
-     &    iso_pat%nnod_psf_tot, iso_pat%npatch_tot, iso_col)
-!
-!
-      if (iflag_debug.eq.1) write(*,*) 'collect_data_4_iso'
-      call collect_mesh_4_psf(num_iso, iso_pat, iso_col, iso_out)
-      call collect_field_4_psf(num_iso, iso_pat, iso_col, iso_out)
-!
-      if (iflag_debug.eq.1) write(*,*) 'output_iso_ucds'
-      call output_iso_ucds(num_iso, istep_iso, iso_out)
-!
-!
-      call dealloc_SR_array_psf(my_rank,iso_col)
-      call dealloc_psf_outputs_data(iso_col)
-      call deallocate_psf_outputs_data(my_rank, num_iso, iso_out)
-      call dealloc_dat_on_patch_psf(iso_pat)
-      call dealloc_position_psf(iso_pat)
-      call dealloc_patch_data_psf(iso_pat)
 !
       end subroutine isosurface_main
 !
@@ -251,60 +230,27 @@
 !
       subroutine dealloc_iso_field_type
 !
+      use set_psf_iso_control
 !
-      deallocate(iso_mesh, iso_fld, iso_list)
-      deallocate( iso_search, iso_out, iso_param)
+      call dealloc_psf_field_name(num_iso, iso_mesh)
+!
+      deallocate(iso_mesh, iso_list)
+      deallocate(iso_search, iso_param)
 !
       end subroutine dealloc_iso_field_type
 !
 !  ---------------------------------------------------------------------
-!
-      subroutine deallocate_num_patch_iso
-!
-      deallocate(istack_nod_iso,   istack_nod_iso_smp)
-      deallocate(istack_patch_iso, istack_patch_iso_smp)
-!
-      end subroutine deallocate_num_patch_iso
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_iso_field_type(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
+      subroutine alloc_iso_field_type
 !
 !
       allocate(iso_mesh(num_iso))
-      allocate(iso_fld(num_iso))
       allocate(iso_list(num_iso))
       allocate(iso_search(num_iso))
       allocate(iso_param(num_iso))
 !
-      if(my_rank .eq. 0) then
-        allocate( iso_out(num_iso) )
-      else
-        allocate( iso_out(0) )
-      end if
-!
       end subroutine alloc_iso_field_type
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_num_patch_iso(np_smp)
-!
-      integer(kind= kint), intent(in) :: np_smp
-!
-      allocate(istack_nod_iso(0:num_iso))
-      allocate(istack_patch_iso(0:num_iso))
-      allocate(istack_nod_iso_smp(0:np_smp*num_iso))
-      allocate(istack_patch_iso_smp(0:np_smp*num_iso))
-!
-      istack_nod_iso = 0
-      istack_patch_iso = 0
-      istack_nod_iso_smp = 0
-      istack_patch_iso_smp = 0
-!
-      end subroutine allocate_num_patch_iso
 !
 !  ---------------------------------------------------------------------
 !

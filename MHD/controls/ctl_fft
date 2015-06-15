@@ -20,8 +20,7 @@ begin zonal_fft
 !         spherical: to spherical coordinate
 !         cylindrical:  to cylindrical coordinate
 !
-    spectr_file_head_ctl   'zonal_spec/spectral'
-    vector_transfer_ctl  cylindrical
+    vector_transfer_ctl       cylindrical
 !
     energy_spec_head_ctl   'zonal_spec/ene_spec'
     ave_ene_spec_head_ctl  'zonal_spec/ave_t_ene_spec'

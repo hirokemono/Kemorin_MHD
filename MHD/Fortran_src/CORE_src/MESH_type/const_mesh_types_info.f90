@@ -4,7 +4,8 @@
 !      Written by H. Matsui on Dec., 2008
 !
 !
-!      subroutine s_const_mesh_types_info(femmesh, surf_mesh, edge_mesh)
+!      subroutine s_const_mesh_types_info                               &
+!     &         (femmesh, surf_mesh, edge_mesh)
 !        type(mesh_data), intent(in) :: femmesh
 !        type(surface_geometry), intent(inout) :: surf_mesh
 !        type(edge_geometry),    intent(inout) :: edge_mesh
@@ -42,7 +43,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_const_mesh_types_info(femmesh, surf_mesh, edge_mesh)
+      subroutine s_const_mesh_types_info                                &
+     &         (femmesh, surf_mesh, edge_mesh)
 !
       use m_machine_parameter
       use set_smp_4_group_types
@@ -71,9 +73,9 @@
      &    femmesh%mesh%ele, surf_mesh%surf,                             &
      &    femmesh%group%surf_grp, femmesh%group%surf_nod_grp)
 !
-        call s_const_group_type_info                                    &
-     &      (femmesh%mesh, surf_mesh, edge_mesh, femmesh%group)
 !
+       call s_const_group_type_info                                     &
+     &      (femmesh%mesh, surf_mesh, edge_mesh, femmesh%group)
 !
       end subroutine s_const_mesh_types_info
 !

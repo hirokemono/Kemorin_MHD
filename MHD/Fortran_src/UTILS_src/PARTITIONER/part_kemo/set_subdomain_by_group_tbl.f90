@@ -1,18 +1,7 @@
 !set_subdomain_by_group_tbl.f90
 !      module set_subdomain_by_group_tbl
 !
-      module set_subdomain_by_group_tbl
-!
 !      Written by H. Matsui on Sep., 2007
-!
-      use m_precision
-!
-      implicit none
-!
-      integer(kind=kint), allocatable :: imark_nod(:)
-      integer(kind=kint), allocatable :: imark_surf(:)
-      integer(kind=kint), allocatable :: imark_edge(:)
-      private :: imark_nod, imark_surf, imark_edge
 !
 !      subroutine count_subdomain_nod_by_tbl(n_domain)
 !      subroutine set_subdomain_nod_by_tbl(n_domain)
@@ -22,6 +11,17 @@
 !
 !      subroutine count_subdomain_edge_by_tbl(n_domain)
 !      subroutine set_subdomain_edge_by_tbl(n_domain)
+!
+      module set_subdomain_by_group_tbl
+!
+      use m_precision
+!
+      implicit none
+!
+      integer(kind=kint), allocatable :: imark_nod(:)
+      integer(kind=kint), allocatable :: imark_surf(:)
+      integer(kind=kint), allocatable :: imark_edge(:)
+      private :: imark_nod, imark_surf, imark_edge
 !
 !   --------------------------------------------------------------------
 !

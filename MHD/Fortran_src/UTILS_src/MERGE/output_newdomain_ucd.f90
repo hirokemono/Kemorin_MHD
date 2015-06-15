@@ -114,13 +114,14 @@
       integer(kind = kint), intent(in) :: ip
       type(ucd_data), intent(inout) :: ucd
 !
-      integer (kind = kint) :: inod, inum
+      integer (kind = kint_gl) :: inum
+      integer (kind = kint_gl) :: inod
 !
 !
       do inum = 1, subdomains_2(ip)%node%numnod
         inod = subdomains_2(ip)%node%inod_global(inum)
         ucd%inod_global(inum) = inod
-        if (inod .le. merged%node%numnod) then
+        if(int(inod) .le. merged%node%numnod) then
           ucd%d_ucd(inum,1:ucd%ntot_comp)                               &
      &        = merged_fld%d_fld(inod,1:ucd%ntot_comp)
         else
@@ -137,7 +138,8 @@
       integer(kind = kint), intent(in) :: ip
       type(ucd_data), intent(inout) :: ucd
 !
-      integer (kind = kint) :: inum, inod
+      integer (kind = kint_gl) :: inum
+      integer (kind = kint_gl) :: inod
 !
 !
       do inum = 1, ucd%nnod

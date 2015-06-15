@@ -1,34 +1,32 @@
-!
-!      module set_size_4_smp_types
-!
-!     Written by H. Matsui on Dec., 2008
+!>@file   set_size_4_smp_types.f90
+!!@brief  module set_size_4_smp_types
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2008
 !
 !> @brief set numbers for SMP parallelization
-!
-!      subroutine count_size_4_smp_mesh_type(nod, ele)
-!        type(node_data),    intent(inout) :: nod
-!        type(element_data), intent(inout) :: ele
-!      subroutine count_ele_4_smp_mesh_type(ele)
-!        type(element_data), intent(inout) :: ele
-!      subroutine count_surf_size_smp_type(surf)
-!        type(surface_data), intent(inout) :: surf
-!      subroutine count_edge_size_smp_type(edge)
-!        type(edge_data),    intent(inout) :: edge
-!
-!      subroutine count_overlap_ele_type(nod, ele)
-!        type(node_data),    intent(in) :: nod
-!        type(element_data), intent(inout) :: ele
-!      subroutine count_overlap_surf_type(nod, surf)
-!        type(node_data),    intent(in) :: nod
-!        type(surface_data), intent(inout) :: surf
-!      subroutine count_overlap_edge_type(nod, edge)
-!        type(node_data),    intent(in) :: nod
-!        type(edge_data),    intent(inout) :: edge
-!
-!      subroutine set_gl_surf_type_by_local(surf)
-!        type(surface_data), intent(inout) :: surf
-!      subroutine set_gl_edge_type_by_local(edge)
-!        type(edge_data), intent(inout) :: edge
+!!
+!!@verbatim
+!!      subroutine count_size_4_smp_mesh_type(nod, ele)
+!!        type(node_data),    intent(inout) :: nod
+!!        type(element_data), intent(inout) :: ele
+!!      subroutine count_ele_4_smp_mesh_type(ele)
+!!        type(element_data), intent(inout) :: ele
+!!      subroutine count_surf_size_smp_type(surf)
+!!        type(surface_data), intent(inout) :: surf
+!!      subroutine count_edge_size_smp_type(edge)
+!!        type(edge_data),    intent(inout) :: edge
+!!
+!!      subroutine count_overlap_ele_type(nod, ele)
+!!        type(node_data),    intent(in) :: nod
+!!        type(element_data), intent(inout) :: ele
+!!      subroutine count_overlap_surf_type(nod, surf)
+!!        type(node_data),    intent(in) :: nod
+!!        type(surface_data), intent(inout) :: surf
+!!      subroutine count_overlap_edge_type(nod, edge)
+!!        type(node_data),    intent(in) :: nod
+!!        type(edge_data),    intent(inout) :: edge
+!!@endverbatim
 !
       module set_size_4_smp_types
 !
@@ -175,37 +173,6 @@
      &    edge%interior_edge)
 !
       end subroutine count_overlap_edge_type
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_gl_surf_type_by_local(surf)
-!
-      use t_surface_data
-      use set_global_id_by_local
-!
-      type(surface_data), intent(inout) :: surf
-!
-!
-      call s_set_global_id_by_local(surf%numsurf, surf%internal_surf,   &
-     &    surf%interior_surf, surf%isurf_global)
-!
-      end subroutine set_gl_surf_type_by_local
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_gl_edge_type_by_local(edge)
-!
-      use t_edge_data
-      use set_global_id_by_local
-!
-      type(edge_data), intent(inout) :: edge
-!
-!
-      call s_set_global_id_by_local(edge%numedge, edge%internal_edge,   &
-     &    edge%interior_edge, edge%iedge_global)
-!
-      end subroutine set_gl_edge_type_by_local
 !
 ! ----------------------------------------------------------------------
 !

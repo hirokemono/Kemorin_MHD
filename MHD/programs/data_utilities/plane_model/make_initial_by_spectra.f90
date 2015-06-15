@@ -8,6 +8,7 @@
 !
 !
       use m_precision
+      use calypso_mpi
 !
       use m_constants
       use m_file_format_switch
@@ -19,7 +20,6 @@
       use m_set_new_spectr
       use m_spectr_4_ispack
       use m_time_data_IO
-      use m_field_data_IO
       use m_control_plane_fft
       use count_number_with_overlap
       use set_plane_spectr_file_head
@@ -42,8 +42,7 @@
 !  ===========
 
       integer(kind=kint ) :: ip, inod
-      integer(kind=kint ) :: i,j
-      integer(kind=kint ) :: ix,iz
+      integer(kind=kint ) :: i, j, iz
       integer(kind=kint ) :: icomp
       integer(kind=kint ) :: i1
       integer(kind=kint ) :: iflag
@@ -59,6 +58,9 @@
 ! ==============================================
 ! * get number of  nodes,elements for whole PES
 ! ==============================================
+!
+      call calypso_MPI_init
+!
 
       write(*,*) ' Dou you prepare folloing data???'
       write(*,*) ' mesh data for new simulation:  mesh/in.PE#'
@@ -273,6 +275,8 @@
 ! * PES loops 
 ! ========================
 !
+        call plane_nnod_stack_4_IO
+!
         do ip =1, num_pe
 !
 !        write(*,*) 'numnod', merge_tbl%nnod_merged
@@ -297,5 +301,7 @@
 !
        end do
       end do
+!
+      call calypso_MPI_finalize
 !
       end program make_initial_by_spectra

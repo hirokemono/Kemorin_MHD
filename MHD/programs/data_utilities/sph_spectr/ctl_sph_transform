@@ -45,8 +45,6 @@ begin spherical_transform
   end model
 !
   begin sph_transform_ctl
-    spectr_file_head_ctl        'sph_spectr/spectral'
-!
     energy_spec_head_ctl          'sph_spectr/ene_spec'
     vol_ene_spec_head_ctl         'sph_spectr/ene_spec_vol'
     ave_ene_spec_head_ctl         'sph_spectr/t_ave_ene_spec'

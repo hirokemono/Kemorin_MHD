@@ -145,7 +145,7 @@
 !
 !      call check_refine_items
 !
-         refined_fem%mesh%nod_comm%num_neib = num_neib
+         refined_fem%mesh%nod_comm%num_neib = nod_comm%num_neib
         call allocate_type_comm_tbl_num(refined_fem%mesh%nod_comm)
         call allocate_type_comm_tbl_item(refined_fem%mesh%nod_comm)
 !

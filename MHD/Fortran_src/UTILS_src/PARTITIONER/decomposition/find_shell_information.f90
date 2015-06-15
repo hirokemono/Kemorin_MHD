@@ -1,17 +1,17 @@
 !
 !      module find_shell_information
 !
-      module find_shell_information
-!
 !      Written by H. Matsui on Sep., 2007
+!      subroutine s_find_shell_information(itheta, iphi, nnod,          &
+!     &          radius, theta, phi,  num_bc_grp, ntot_bc_grp,          &
+!     &          istack_bc_grp, item_bc_grp, name_bc_grp)
+!
+!
+      module find_shell_information
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine s_find_shell_information(itheta, iphi, nnod,          &
-!     &          radius, theta, phi,  num_bc_grp, ntot_bc_grp,          &
-!     &          istack_bc_grp, item_bc_grp, name_bc_grp)
 !
 !   --------------------------------------------------------------------
 !

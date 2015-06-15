@@ -124,23 +124,23 @@
 !
 !
       write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! 1.parallel information', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!    domain ID', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')                                           &
      &      '!    number of domain for transfer', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!    domain ID for transfer', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
 !
       call write_domain_info_gz
@@ -154,32 +154,32 @@
       call write_rtp_gl_1d_table_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')                                          &
      &      '! number of stack number for each domain', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! local wavenumber ID', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! global radial ID and grid ID', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_gl_nodes_sph_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')                                           &
      &     '! communication table between spectr data', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_import_data_gz
 !
@@ -199,23 +199,23 @@
 !
 !
       write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! 1.parallel information', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!    domain ID', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')                                           &
      &     '!    number of domain for transfer', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!    domain ID for transfer', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
 !
       call write_domain_info_gz
@@ -229,33 +229,33 @@
       call write_rj_gl_1d_table_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')                                           &
      &     '! number of stack number for each domain', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! local wavenumber ID', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')                                           &
      &     '! global radial ID and spectr ID', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_gl_nodes_sph_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')                                           &
      &     '! communication table between spectr data', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
 !
       call write_import_data_gz
@@ -271,23 +271,23 @@
 !
 !
       write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! 1.parallel information', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!    domain ID', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')                                           &
      &     '!    number of domain for transfer', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!    domain ID for transfer', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
 !
       call write_domain_info_gz
@@ -300,34 +300,34 @@
       call write_rtp_gl_1d_table_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')                                           &
      &     '! number of stack number for each domain', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! local wavenumber ID', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')                                           &
      &     '! global radial ID and grid ID', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
 !
       call write_gl_nodes_sph_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')                                           &
      &     '! communication table between grid data', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_import_data_gz
 !
@@ -339,23 +339,23 @@
 !
 !
       write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! 1.parallel information', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!    domain ID', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')                                           &
      &     '!    number of domain for transfer', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!    domain ID for transfer', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
 !
       call write_domain_info_gz
@@ -369,33 +369,33 @@
       call write_rj_gl_1d_table_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')                                           &
      &     '! number of stack number for each domain', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '! local wavenumber ID', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')                                           &
      &     '! global radial ID and wavenumber ID', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_gl_nodes_sph_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)')                                           &
      &     '! communication table between spectr data', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_import_data_gz
 !

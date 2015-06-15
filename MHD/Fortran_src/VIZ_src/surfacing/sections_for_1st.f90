@@ -73,6 +73,8 @@
 !
       subroutine cross_section_init_1st
 !
+      use m_nod_comm_table
+      use m_ele_sf_eg_comm_tables
       use m_geometry_parameter
       use m_geometry_data
       use m_element_group
@@ -82,16 +84,16 @@
       use m_cross_section
 !
 !
-      call cross_section_init(numnod, numele, numsurf, numedge,         &
-     &          nnod_4_ele, nnod_4_edge, ie, ie_edge,                   &
-     &          isf_4_ele, iedge_4_sf, iedge_4_ele,                     &
-     &          interior_ele, inod_global, xx,                          &
-     &          inod_smp_stack, iele_smp_stack,                         &
-     &          isurf_smp_stack, iedge_smp_stack,                       &
-     &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,    &
-     &          num_surf, num_surf_bc, surf_name, surf_istack,          &
-     &          surf_item, ntot_node_sf_grp, inod_stack_sf_grp,         &
-     &          inod_surf_grp, num_nod_phys, phys_nod_name)
+      call cross_section_init                                           &
+     &       (numnod, internal_node, numele, numsurf, numedge,          &
+     &        nnod_4_ele, nnod_4_edge, ie, ie_edge, isf_4_ele,          &
+     &        iedge_4_sf, iedge_4_ele, nod_comm, edge_comm,             &
+     &        interior_ele, xx, inod_smp_stack, iele_smp_stack,         &
+     &        isurf_smp_stack, iedge_smp_stack,                         &
+     &        num_mat, num_mat_bc, mat_name, mat_istack, mat_item,      &
+     &        num_surf, num_surf_bc, surf_name, surf_istack,            &
+     &        surf_item, ntot_node_sf_grp, inod_stack_sf_grp,           &
+     &        inod_surf_grp, num_nod_phys, phys_nod_name)
 !
       end subroutine cross_section_init_1st
 !
@@ -143,15 +145,15 @@
       use m_geometry_data
       use m_node_phys_data
       use m_isosurface
+      use m_ele_sf_eg_comm_tables
 !
       integer(kind = kint), intent(in) :: istep_iso
 !
-      call isosurface_main(istep_iso,                                   &
-     &          numnod, numele, numedge, nnod_4_ele, nnod_4_edge,       &
-     &          ie, ie_edge, iedge_4_ele, inod_global,                  &
-     &          xx, radius, a_radius, s_cylinder, a_s_cylinder,         &
-     &          inod_smp_stack, num_nod_phys, num_tot_nod_phys,         &
-     &          istack_nod_component, d_nod)
+      call isosurface_main(istep_iso, numnod, internal_node,            &
+     &    numele, numedge, nnod_4_ele, nnod_4_edge, ie, ie_edge,        &
+     &    iedge_4_ele, xx, radius, a_radius, s_cylinder, a_s_cylinder,  &
+     &    inod_smp_stack, edge_comm, num_nod_phys, num_tot_nod_phys,    &
+     &    istack_nod_component, d_nod)
 !
       end subroutine isosurface_main_1st
 !

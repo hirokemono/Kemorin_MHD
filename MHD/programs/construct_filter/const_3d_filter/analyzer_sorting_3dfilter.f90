@@ -48,11 +48,11 @@
 !
       subroutine analyze
 !
-      use m_nod_comm_table
       use m_geometry_data
       use m_node_group
       use m_element_group
       use m_surface_group
+      use m_nod_comm_table
 !
       use m_ctl_params_4_gen_filter
       use m_filter_file_names
@@ -90,9 +90,7 @@
         call deallocate_boundary_data
         call deallocate_element_geometry
         call deallocate_node_geometry
-        call deallocate_neib_id
-        call deallocate_nod_import_item
-        call deallocate_nod_export_item
+        call deallocate_type_comm_tbl(nod_comm)
 !
 !     read filtering information
 !
@@ -123,9 +121,7 @@
         call copy_3d_filter_weights_to_IO
 !
         call deallocate_globalnod_filter
-        call deallocate_filter_import_item
-        call deallocate_filter_export_item
-        call deallocate_neib_filter_id
+        call deallocate_type_comm_tbl(flt_comm)
 !
         ifmt_filter_file = ifmt_3d_filter
         filter_file_head = filter_3d_head

@@ -4,13 +4,22 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!      subroutine s_const_field_lines(i_fln,                            &
-!     &          numnod, numele, numsurf, nnod_4_surf,                  &
-!     &          inod_global, xx, iele_global, ie_surf,                 &
-!     &          isf_4_ele, iele_4_surf, interior_surf, vnorm_surf,     &
-!     &          ntot_ele_4_node, iele_stack_4_node, iele_4_node,       &
-!     &          num_neib, ntot_import, ntot_export, id_neib,           &
-!     &          istack_import, istack_export, item_import, item_export)
+!>@file   const_field_lines.f90
+!!@brief  module const_field_lines
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2011
+!
+!> @brief Routines to construct field lines
+!!
+!!@verbatim
+!!      subroutine s_const_field_lines(i_fln,                           &
+!!     &          numnod, numele, numsurf, nnod_4_surf,                 &
+!!     &          inod_global, xx, iele_global, ie_surf,                &
+!!     &          isf_4_ele, iele_4_surf, interior_surf, vnorm_surf,    &
+!!     &          ntot_ele_4_node, iele_stack_4_node, iele_4_node,      &
+!!     &          nod_comm)
+!!@endverbatim
 !
       module const_field_lines
 !
@@ -34,12 +43,12 @@
      &          inod_global, xx, iele_global, ie_surf,                  &
      &          isf_4_ele, iele_4_surf, interior_surf, vnorm_surf,      &
      &          ntot_ele_4_node, iele_stack_4_node, iele_4_node,        &
-     &          num_neib, ntot_import, ntot_export, id_neib,            &
-     &          istack_import, istack_export, item_import, item_export)
+     &          nod_comm)
 !
 !
       use m_control_params_4_fline
       use m_local_fline
+      use t_comm_table
       use extend_field_line
 !
       integer(kind= kint), intent(in) :: i_fln
@@ -59,14 +68,7 @@
       integer (kind=kint), intent(in) :: iele_stack_4_node(0:numnod)
       integer (kind=kint), intent(in) :: iele_4_node(ntot_ele_4_node)
 !
-      integer(kind = kint), intent(in) :: num_neib, ntot_import
-      integer(kind = kint), intent(in) :: id_neib(num_neib)
-      integer(kind = kint), intent(in) :: istack_import(0:num_neib)
-      integer(kind = kint), intent(in) :: item_import(ntot_import)
-!
-      integer(kind = kint), intent(in) :: ntot_export
-      integer(kind = kint), intent(in) :: istack_export(0:num_neib)
-      integer(kind = kint), intent(in) :: item_export(ntot_export)
+      type(communication_table), intent(in) :: nod_comm
 !
       integer(kind = kint) :: iflag_comm
       integer(kind = kint) :: i, ist, ied, num7, ip, src_rank, nline
@@ -104,8 +106,9 @@
 !
           call set_fline_start_2_bcast(iflag_comm, i,                   &
      &          numnod, numele,  inod_global, iele_global,              &
-     &          num_neib, ntot_import, id_neib, istack_import,          &
-     &          item_import)
+     &          nod_comm%num_neib, nod_comm%id_neib,                    &
+     &          nod_comm%ntot_import,  nod_comm%istack_import,          &
+     &          nod_comm%item_import)
         end do
         call calypso_MPI_barrier
 !
@@ -134,8 +137,9 @@
         call recover_local_fline_start(i_fln,                           &
      &          numnod, numele, numsurf, iele_global,                   &
      &          isf_4_ele, iele_4_surf, ntot_ele_4_node,                &
-     &          iele_stack_4_node, iele_4_node, num_neib, ntot_export,  &
-     &          id_neib, istack_export, item_export)
+     &          iele_stack_4_node, iele_4_node, nod_comm%num_neib,      &
+     &          nod_comm%id_neib, nod_comm%ntot_export,                 &
+     &          nod_comm%istack_export, nod_comm%item_export)
         call set_fline_start_from_neib(i_fln)
 !
         nline = istack_all_fline(nprocs,i_fln)                          &
@@ -158,7 +162,7 @@
 !
       subroutine set_fline_start_2_bcast(iflag_comm, iline,             &
      &          numnod, numele, inod_global, iele_global,               &
-     &          num_neib, ntot_import, id_neib, istack_import,          &
+     &          num_neib, id_neib, ntot_import, istack_import,          &
      &         item_import)
 !
       integer(kind = kint), intent(in) :: iflag_comm, iline
@@ -213,8 +217,8 @@
       subroutine recover_local_fline_start(i_fln,                       &
      &          numnod, numele, numsurf, iele_global,                   &
      &          isf_4_ele, iele_4_surf, ntot_ele_4_node,                &
-     &          iele_stack_4_node, iele_4_node, num_neib, ntot_export,  &
-     &          id_neib, istack_export, item_export)
+     &          iele_stack_4_node, iele_4_node, num_neib, id_neib,      &
+     &          ntot_export, istack_export, item_export)
 !
       use m_geometry_constants
 !

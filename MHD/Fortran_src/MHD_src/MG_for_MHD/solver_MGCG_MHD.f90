@@ -174,7 +174,6 @@
 !
       subroutine solver_MGCG_magne
 !
-      use m_nod_comm_table
       use m_solver_djds_MHD
       use m_magne_matrix
       use solver_DJDS33_struct
@@ -218,7 +217,6 @@
 !
       subroutine solver_MGCG_magne_p
 !
-      use m_nod_comm_table
       use m_solver_djds_MHD
       use m_magne_matrix
       use solver_DJDS11_struct

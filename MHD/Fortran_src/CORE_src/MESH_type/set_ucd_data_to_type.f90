@@ -1,24 +1,31 @@
-!set_ucd_data_to_type.f90
-!      module set_ucd_data_to_type
+!>@file  set_ucd_data_to_type.f90
+!!       module set_ucd_data_to_type
+!!
+!!@author H. Matsui
+!!@date        programmed by H.Matsui in July, 2007
 !
-!        programmed by H.Matsui on July, 2006
-!
-!      subroutine link_num_field_type_2_output(node, ele, ucd)
-!      subroutine link_node_data_type_2_output(node, ucd)
-!      subroutine link_ele_data_type_2_output(ele, ucd)
-!      subroutine link_field_data_type_2_output(node, phys_nod, ucd)
-!
-!      subroutine alloc_phys_name_type_by_output(ucd, phys_nod)
-!      subroutine alloc_phys_data_type_by_output(ucd, node, phys_nod)
-!      subroutine set_ucd_data_type_from_IO(my_rank, istep_ucd,         &
-!     &          numnod, ucd, phys_nod)
-!
-!      subroutine set_ucd_data_type_from_IO_once(my_rank, istep_ucd,    &
-!     &          numnod, ucd, phys_nod)
-!      subroutine add_by_ucd_data_type(my_rank, istep_ucd,              &
-!     &          numnod, ucd, phys_nod)
-!      subroutine subtract_by_ucd_data_type(my_rank, istep_ucd,         &
-!     &          numnod, ucd, phys_nod)
+!> @brief Link field structure data to IO structure for data IO
+!!
+!!@verbatim
+!!      subroutine link_num_field_type_2_output(node, ele, ucd)
+!!      subroutine link_node_data_type_2_output(node, ucd)
+!!      subroutine link_ele_data_type_2_output(ele, ucd)
+!!      subroutine link_field_data_type_2_output(node, phys_nod, ucd)
+!!      subroutine link_nnod_stacks_type_2_output                       &
+!!     &         (nprocs, node, ele, m_ucd)
+!!
+!!      subroutine alloc_phys_name_type_by_output(ucd, phys_nod)
+!!      subroutine alloc_phys_data_type_by_output(ucd, node, phys_nod)
+!!      subroutine set_ucd_data_type_from_IO(my_rank, istep_ucd,        &
+!!     &          numnod, ucd, phys_nod)
+!!
+!!      subroutine set_ucd_data_type_from_IO_once(my_rank, istep_ucd,   &
+!!     &          numnod, ucd, phys_nod)
+!!      subroutine add_by_ucd_data_type(my_rank, istep_ucd,             &
+!!     &          numnod, ucd, phys_nod)
+!!      subroutine subtract_by_ucd_data_type(my_rank, istep_ucd,        &
+!!     &          numnod, ucd, phys_nod)
+!!@endverbatim
 !
       module set_ucd_data_to_type
 !
@@ -103,6 +110,26 @@
      &    phys_nod%phys_name, phys_nod%d_fld, ucd)
 !
       end subroutine link_field_data_type_2_output
+!
+!-----------------------------------------------------------------------
+!
+      subroutine link_nnod_stacks_type_2_output                         &
+     &         (nprocs, node, ele, m_ucd)
+!
+      use t_geometry_data
+      use t_ucd_data
+      use set_ucd_data
+!
+      integer(kind = kint),  intent(in) :: nprocs
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(merged_ucd_data), intent(inout) :: m_ucd
+!
+!
+      call link_numnod_stacks_2_output(nprocs, node%istack_numnod,      &
+     &    node%istack_internod, ele%istack_numele, m_ucd)
+!
+      end subroutine link_nnod_stacks_type_2_output
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

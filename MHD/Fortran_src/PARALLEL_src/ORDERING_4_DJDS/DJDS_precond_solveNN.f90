@@ -47,9 +47,10 @@
         STARTTIME= MPI_WTIME()
 
         write(*,*) 'resize_work_4_SR'
-        if (num_neib .gt. 0) then
-          call resize_work_4_SR(NB_djds, num_neib,                      &
-     &        istack_export(num_neib), istack_import(num_neib) )
+        if (nod_comm%num_neib .gt. 0) then
+          call resize_work_4_SR(NB_djds, nod_comm%num_neib,             &
+     &        nod_comm%istack_export(nod_comm%num_neib),                &
+     &        nod_comm%istack_import(nod_comm%num_neib) )
         end if
 
         write(*,*) 'precond_DJDSNN'
@@ -72,10 +73,10 @@
      &     NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,                  &
      &     NEWtoOLD_DJDS_U, LtoU, aiccg(im_d), b_djds, x_djds,          &
      &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
-     &     aiccg(im_l), aiccg(im_u),                                    &
-     &     ALUG_L, ALUG_U, eps, itr, ierr, num_neib, id_neib,           &
-     &     istack_import, item_import,                                  &
-     &     istack_export, NOD_EXPORT_NEW,                               &
+     &     aiccg(im_l), aiccg(im_u), ALUG_L, ALUG_U, eps, itr, ierr,    &
+     &     nod_comm%num_neib, nod_comm%id_neib,                         &
+     &     nod_comm%istack_import, nod_comm%item_import,                &
+     &     nod_comm%istack_export, NOD_EXPORT_NEW,                      &
      &     method_4_solver, precond_4_solver, itr_res)
 
       call copy_solution_2_crs_nn

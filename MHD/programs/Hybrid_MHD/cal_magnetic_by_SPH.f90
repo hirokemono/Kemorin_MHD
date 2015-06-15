@@ -7,6 +7,7 @@
       type(phys_data) ::        fem_fld
 !
       type(mesh_data) :: mesh_sph
+      type(element_comms) ::    ele_mesh_sph
       type(surface_geometry) :: surf_mesh_sph
       type(edge_geometry) ::    edge_mesh_sph
       type(phys_data) :: sph_fld
@@ -27,6 +28,7 @@
 !
       use interpolate_by_type
       use m_addresses_trans_hbd_MHD
+      use const_element_comm_tables
 !
       iphys_sph%i_magne =      1
       iphys_sph%i_current =    4
@@ -59,8 +61,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_types'
       call set_mesh_data_types(mesh_sph)
-      call s_const_mesh_types_info(mesh_sph,                            &
-     &    surf_mesh_sph, edge_mesh_sph)
+      call s_const_mesh_types_info                                      &
+     &   (mesh_sph, surf_mesh_sph, edge_mesh_sph)
 !
       call alloc_phys_name_type(sph_fld)
       call alloc_phys_data_type(mesh_sph%node%numnod, sph_fld)
@@ -82,6 +84,11 @@
       if(id_legendre_transfer.eq.iflag_leg_undefined)                   &
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call initialize_sph_trans
+!
+!     ---------------------
+!
+      call const_ele_comm_tbl_global_id                                 &
+     &   (mesh_sph, ele_mesh_sph, surf_mesh_sph, edge_mesh_sph)
 !
       end subroutine induction_SPH_initialize
 !

@@ -42,7 +42,6 @@
       subroutine share_sph_rj_data(np_sph_org, org_sph_mesh)
 !
       use m_node_id_spherical_IO
-      use m_merge_spheric_mesh
 !
       integer(kind = kint), intent(in) :: np_sph_org
       type(sph_mesh_data), intent(inout) :: org_sph_mesh(np_sph_org)

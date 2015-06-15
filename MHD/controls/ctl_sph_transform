@@ -70,7 +70,6 @@ begin spherical_transform
 !     spherical transfer mode  'radius_in' 'radius_out' 'long_loop'
      sph_transform_mode_ctl   'radius_in'
 !
-    spectr_file_head_ctl        'sph_spectr/spectral'
     spectr_files_fmt_ctl        'ascii'
 !
     energy_spec_head_ctl          'sph_spectr/ene_spec'

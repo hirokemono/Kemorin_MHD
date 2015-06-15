@@ -33,7 +33,7 @@
       use m_2nd_pallalel_vector
 !
       use set_inod_newdomain_filter
-      use generate_node_comm_table
+      use generate_comm_tables
       use bcast_nodes_for_trans
 !
       type(mesh_geometry), intent(inout) :: newmesh
@@ -85,7 +85,7 @@
       use t_mesh_data
 !
       use set_inod_newdomain_filter
-      use generate_node_comm_table
+      use generate_comm_tables
 !
       type(mesh_geometry), intent(inout) :: newmesh
 !

@@ -31,6 +31,7 @@
       use m_edge_geometry_data
       use m_jacobians
       use m_t_step_parameter
+      use m_ele_sf_eg_comm_tables
 !
       use nodal_vector_send_recv
       use const_mesh_info
@@ -47,8 +48,14 @@
       if (iflag_debug.gt.0) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(isix, numnod)
 !
+      if(iflag_debug.gt.0) write(*,*)' init_send_recv'
+      call init_send_recv
+!
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)
+!
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
+      call const_element_comm_tables_1st
 !
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
@@ -86,9 +93,6 @@
 !  -------------------------------
 !
       call deallocate_edge_geometry
-!
-      if (iflag_debug.gt.0) write(*,*) 'init_send_recv'
-      call init_send_recv
 !
       if (iflag_debug.gt.0) write(*,*) 'allocate_data_arrays'
       call allocate_data_arrays

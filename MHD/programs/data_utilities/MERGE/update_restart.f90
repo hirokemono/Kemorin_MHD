@@ -14,11 +14,10 @@
       use m_control_data_4_merge
       use m_control_param_merge
       use m_read_mesh_data
-      use m_field_data_IO
 !
       use set_merged_geometry
       use set_2nd_geometry_4_serial
-      use gen_new_restart_snap
+      use new_FEM_restart
       use input_old_file_sel_4_zlib
 !
       implicit    none
@@ -52,15 +51,12 @@
       iflag_mesh_file_fmt = inew_mesh_file_fmt
       call s_set_2nd_geometry_4_serial
 !
-      call deallocate_geom_ex_glnod
+      call deallocate_node_geometry_type(merged%node)
       call deallocate_2nd_merge_table
 !
 !  allocate restart data
 !
-      numgrid_phys_IO = subdomain(ione)%node%numnod
-      call set_field_file_fmt_prefix(iorg_rst_file_fmt, org_rst_head)
-      call sel_read_rst_comps(izero, istep_start)
-      call count_restart_data_fields
+      call init_by_old_restart_data
 !
 !   loop for time integration
 !
@@ -69,7 +65,7 @@
         call update_restart_file(istep)
         write(*,*) 'step', istep, 'finish '
       end do
-      call deallocate_phys_data_name_IO
+      call dealloc_newrst_phys_name_IO
 !
 !
       if(iflag_delete_org .gt. 0) then

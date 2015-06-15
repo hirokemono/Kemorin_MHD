@@ -98,6 +98,7 @@
 !
       call choose_ucd_file_format(iso%iso_output_type_ctl,              &
      &    iso%i_iso_out_type, itype_iso_file(i_iso) )
+      itype_iso_file(i_iso) = itype_iso_file(i_iso) + iflag_single
 !
       if(iso%iso_out_field_ctl%num .eq. 0) then
         id_iso_result_type(i_iso) = iflag_constant_iso
@@ -110,7 +111,7 @@
       else if ( id_iso_result_type(i_iso) .eq. iflag_field_iso) then
         call check_field_4_viz(num_nod_phys, phys_nod_name,             &
      &      iso%iso_out_field_ctl%num, iso%iso_out_field_ctl%c1_tbl,    &
-     &      iso_fld%num_phys)
+     &      iso_fld%num_phys, iso_fld%num_phys_viz)
       end if
 !
       call count_area_4_viz(num_mat, mat_name,                          &

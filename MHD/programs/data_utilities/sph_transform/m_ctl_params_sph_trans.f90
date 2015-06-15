@@ -18,6 +18,9 @@
       character(len = kchara) :: zm_spec_file_head = 'zm_spectral'
       character(len = kchara) :: zonal_udt_head = 'z_mean_out'
 !
+      character(len = kchara) :: sph_file_head = 'restart/rst'
+      integer(kind = kint) ::    ifmt_sph_data = 0
+!
       character(len = kchara) :: cmb_radial_grp =     'CMB'
       character(len = kchara) :: icb_radial_grp =     'ICB'
 !
@@ -49,7 +52,6 @@
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
       call set_control_sph_mesh
-      call set_control_restart_file_def
       call set_control_ucd_file_def
 !
 !   setting for spherical transform
@@ -67,6 +69,12 @@
       if(i_FFT_package .gt. 0) then
         call set_fft_library_ctl(FFT_library_ctl)
       end if
+!
+      if (restart_file_prefix%iflag .gt. 0) then
+        sph_file_head = restart_file_prefix%charavalue
+      end if
+      call choose_para_file_format                                      &
+     &   (restart_file_fmt_ctl, ifmt_sph_data)
 !
 !      stepping parameter
 !
@@ -120,7 +128,6 @@
       call set_control_smp_def(my_rank)
       call set_control_sph_mesh
       call set_control_org_sph_mesh
-      call set_control_restart_file_def
       call set_control_ucd_file_def
 !
 !   setting for spherical transform
@@ -138,6 +145,12 @@
       if(i_FFT_package .gt. 0) then
         call set_fft_library_ctl(FFT_library_ctl)
       end if
+!
+      if (restart_file_prefix%iflag .gt. 0) then
+        sph_file_head = restart_file_prefix%charavalue
+      end if
+      call choose_para_file_format                                      &
+     &   (restart_file_fmt_ctl, ifmt_sph_data)
 !
 !      stepping parameter
 !
@@ -178,7 +191,6 @@
       use m_rms_4_sph_spectr
       use m_work_4_sph_trans
       use m_global_gauss_coefs
-      use m_field_data_IO
       use m_node_id_spherical_IO
       use m_control_params_2nd_files
       use m_FFT_selector
@@ -207,7 +219,6 @@
       call set_control_mesh_def
       call set_control_sph_mesh
       call set_control_org_sph_mesh
-      call set_control_restart_file_def
       call set_control_parallel_field_def
       call set_control_org_fld_file_def
 !
@@ -220,8 +231,14 @@
 !   using rstart data for spherical dynamo
 !
       if( (iflag_org_sph_rj_head*iflag_org_rst) .gt. 0) then
-        phys_file_head = org_rst_header
+        sph_file_head = org_rst_header
       end if
+!
+      if (restart_file_prefix%iflag .gt. 0) then
+        sph_file_head = restart_file_prefix%charavalue
+      end if
+      call choose_para_file_format                                      &
+     &   (restart_file_fmt_ctl, ifmt_sph_data)
 !
 !   setting for spherical transform
 !
@@ -276,11 +293,10 @@
       subroutine set_ctl_data_4_zm_trans
 !
       use m_ctl_data_4_sph_trans
-      use m_field_data_IO
 !
 !
       if(i_zm_sph_spec_file .gt. 0) then
-        phys_file_head =    zm_spec_file_head
+        sph_file_head =    zm_spec_file_head
       end if
 !
       end subroutine set_ctl_data_4_zm_trans

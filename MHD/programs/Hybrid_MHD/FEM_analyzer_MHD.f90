@@ -125,7 +125,7 @@
       use time_step_data_IO_control
       use node_monitor_IO
       use sgs_model_coefs_IO
-      use mhd_restart_file_IO_control
+      use fem_mhd_rst_IO_control
       use output_ucd_file_control
       use output_viz_file_control
       use set_exit_flag_4_visualizer

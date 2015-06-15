@@ -98,34 +98,6 @@
           iflag_MG_commute_by_ele = 1
         end if
 !
-!
-        if (MG_elem_prefix_ctl%icou .eq. num_MG_level) then
-          iflag_MG_elem_file(1:num_MG_level) = 1
-          MG_elem_file_head(1:num_MG_level)                             &
-     &              = MG_elem_prefix_ctl%c_tbl(1:num_MG_level)
-          call dealloc_control_array_chara(MG_elem_prefix_ctl)
-        else
-          iflag_MG_elem_file(1:num_MG_level) = 0
-        end if
-!
-        if (MG_surf_prefix_ctl%icou .eq. num_MG_level) then
-          iflag_MG_surf_file(1:num_MG_level) = 1
-          MG_surf_file_head(1:num_MG_level)                             &
-     &              = MG_surf_prefix_ctl%c_tbl(1:num_MG_level)
-          call dealloc_control_array_chara(MG_surf_prefix_ctl)
-        else
-          iflag_MG_surf_file(1:num_MG_level) = 0
-        end if
-!
-        if (MG_edge_prefix_ctl%icou .eq. num_MG_level) then
-          iflag_MG_edge_file(1:num_MG_level) = 1
-          MG_edge_file_head(1:num_MG_level)                             &
-     &              = MG_edge_prefix_ctl%c_tbl(1:num_MG_level)
-          call dealloc_control_array_chara(MG_edge_prefix_ctl)
-        else
-          iflag_MG_edge_file(1:num_MG_level) = 0
-        end if
-!
         if (MG_mesh_fmt_ctl%icou .eq. num_MG_level) then
           call choose_file_format_array(num_MG_level, MG_mesh_fmt_ctl,  &
      &        ifmt_MG_mesh_file)
@@ -178,13 +150,6 @@
 !
             write(*,*) 'MG_f2c_eletbl_head: ',                          &
      &                                   trim(MG_f2c_eletbl_head(i))
-!
-            if (iflag_MG_elem_file(i) .gt. 0) write(*,*)                &
-     &               'MG_elem_file_head', trim(MG_elem_file_head(i))
-            if (iflag_MG_surf_file(i) .gt. 0) write(*,*)                &
-     &               'MG_surf_file_head', trim(MG_surf_file_head(i))
-            if (iflag_MG_edge_file(i) .gt. 0) write(*,*)                &
-     &               'MG_edge_file_head', trim(MG_edge_file_head(i))
           end do
 !
           write(*,*) 'METHOD_MG:     ', trim(METHOD_MG)

@@ -1,7 +1,6 @@
 !m_shape_functions.f90
 !   module   m_shape_functions
 !
-!      subroutine allocate_integrate_arrays(numint)
 !      subroutine allocate_integrate_parameters
 !
 !      subroutine set_num_of_int_points
@@ -80,20 +79,6 @@
 ! ----------------------------------------------------------------------
 !
       contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine allocate_integrate_arrays(numint)
-!
-      use m_fem_gauss_int_coefs
-!
-      integer(kind = kint), intent(in) :: numint
-!
-!
-      max_int_point = numint
-      call allocate_integrate_parameters
-!
-      end subroutine allocate_integrate_arrays
 !
 ! ----------------------------------------------------------------------
 !

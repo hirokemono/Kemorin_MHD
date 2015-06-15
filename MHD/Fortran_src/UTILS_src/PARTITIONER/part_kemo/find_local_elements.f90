@@ -1,9 +1,11 @@
 !
 !      module find_local_elements
 !
-      module find_local_elements
-!
 !     Written by H. Matsui on Sep., 2007
+!
+!      subroutine CRE_LOCAL_DATA(NP)
+!
+      module find_local_elements
 !
       use m_precision
       use m_constants
@@ -11,8 +13,6 @@
       implicit  none
 !
       integer(kind = kint), allocatable, private :: imark_ele(:)
-!
-!      subroutine CRE_LOCAL_DATA(NP)
 !
 !   --------------------------------------------------------------------
 !

@@ -1,9 +1,15 @@
 !
 !     module m_metis_IO
 !
-      module m_metis_IO
-!
 !     Written by H. Matsui on Aug., 2007
+!
+!      subroutine allocate_metis_grp_stack_IO
+!      subroutine allocate_metis_graph_IO
+!
+!      subroutine deallocate_metis_graph_IO
+!      subroutine output_graph_4_metis
+!
+      module m_metis_IO
 !
       use m_precision
 !
@@ -18,12 +24,6 @@
       integer(kind=kint), allocatable :: istack_metis_IO(:)
       integer(kind=kint), allocatable :: igraph_metis_IO(:)
       integer(kind=kint), allocatable :: iweight_metis_IO(:)
-!
-!      subroutine allocate_metis_grp_stack_IO
-!      subroutine allocate_metis_graph_IO
-!
-!      subroutine deallocate_metis_graph_IO
-!      subroutine output_graph_4_metis
 !
 !   --------------------------------------------------------------------
 !

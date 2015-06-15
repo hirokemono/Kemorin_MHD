@@ -5,21 +5,9 @@
 !
 !      subroutine set_element_fname(my_rank)
 !
-!      subroutine input_element_comm_table(my_rank)
-!      subroutine input_element_geometries(my_rank)
-!
-!      subroutine output_ele_comm_table(my_rank)
 !      subroutine output_element_file(my_rank)
 !      subroutine output_element_sph_file(my_rank)
 !      subroutine output_element_cyl_file(my_rank)
-!
-!      subroutine input_element_comm_table_b(my_rank)
-!      subroutine input_element_geometries_b(my_rank)
-!
-!      subroutine output_ele_comm_table_b(my_rank)
-!      subroutine output_element_file_b(my_rank)
-!      subroutine output_element_sph_file_b(my_rank)
-!      subroutine output_element_cyl_file_b(my_rank)
 !
       module element_file_IO
 !
@@ -55,127 +43,6 @@
       end subroutine set_element_fname
 !
 !------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine input_element_comm_table_b(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-!
-!
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &  'Read binary element comm file: ', trim(mesh_file_name)
-!
-      open (input_file_code, file = mesh_file_name,                     &
-     &      form = 'unformatted')
-      call read_element_comm_table_b
-      close(input_file_code)
-!
-      end subroutine input_element_comm_table_b
-!
-!------------------------------------------------------------------
-!
-      subroutine input_element_geometries_b(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-!
-!
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &  'Read binary element comm file: ', trim(mesh_file_name)
-!
-      open (input_file_code, file = mesh_file_name,                     &
-     &      form = 'unformatted')
-      call read_element_comm_table_b
-      call read_element_geometries_b
-      close(input_file_code)
-!
-      end subroutine input_element_geometries_b
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine output_ele_comm_table_b(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-!
-!
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &  'Write binary element comm file: ', trim(mesh_file_name)
-!
-      open (input_file_code, file = mesh_file_name,                     &
-     &      form = 'unformatted')
-      call write_element_comm_table_b
-      close(input_file_code)
-!
-      end subroutine output_ele_comm_table_b
-!
-!------------------------------------------------------------------
-!
-      subroutine output_element_file_b(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-!
-!
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-        'Write binary element comm file: ', trim(mesh_file_name)
-!
-      open (input_file_code, file = mesh_file_name,                     &
-     &      form = 'unformatted')
-      call write_element_comm_table_b
-      call write_element_geometry_b
-!
-      end subroutine output_element_file_b
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine input_element_comm_table(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-!
-!
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &  'Read ascii element comm file: ', trim(mesh_file_name)
-!
-      open(input_file_code, file = mesh_file_name, form = 'formatted')
-      call read_element_comm_table
-      close(input_file_code)
-!
-      end subroutine input_element_comm_table
-!
-!------------------------------------------------------------------
-!
-      subroutine input_element_geometries(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-!
-!
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &  'Read ascii element comm file: ', trim(mesh_file_name)
-!
-      open(input_file_code, file = mesh_file_name, form = 'formatted')
-      call read_element_comm_table
-      call read_element_geometries
-      close(input_file_code)
-!
-      end subroutine input_element_geometries
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine output_ele_comm_table(my_rank)
-!
-      integer(kind = kint), intent(in) :: my_rank
-!
-!
-      if(my_rank.eq.0 .or. i_debug .gt. 0) write(*,*)                   &
-     &  'Write ascii element comm file: ', trim(mesh_file_name)
-!
-      open(input_file_code, file = mesh_file_name, form = 'formatted')
-      call write_element_comm_table
-      close(input_file_code)
-!
-      end subroutine output_ele_comm_table
-!
 !------------------------------------------------------------------
 !
       subroutine output_element_file(my_rank)

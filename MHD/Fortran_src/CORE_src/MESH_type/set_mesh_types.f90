@@ -78,7 +78,7 @@
 !
       subroutine set_geometry_types_data(mesh)
 !
-      use set_comm_tbl_type_4_IO
+      use set_comm_table_4_IO
       use set_node_types_4_IO
       use set_element_types_4_IO
 !
@@ -97,7 +97,7 @@
       subroutine set_mesh_type_to_IO(my_rank, mesh)
 !
       use t_mesh_data
-      use set_comm_tbl_type_4_IO
+      use set_comm_table_4_IO
       use set_element_types_4_IO
       use set_node_types_4_IO
 !
@@ -116,7 +116,7 @@
 !
       subroutine set_ele_comm_tbl_type_data(ele_mesh)
 !
-      use set_comm_tbl_type_4_IO
+      use set_comm_table_4_IO
 !
       type(element_comms) :: ele_mesh
 !
@@ -129,7 +129,7 @@
       subroutine set_surf_connect_type_data(surf_mesh, mesh)
 !
       use t_surface_data
-      use set_comm_tbl_type_4_IO
+      use set_comm_table_4_IO
       use set_surface_geom_type_IO
 !
 !
@@ -148,7 +148,7 @@
 !
       use t_surface_data
       use t_edge_data
-      use set_comm_tbl_type_4_IO
+      use set_comm_table_4_IO
       use set_edge_geom_type_IO
 !
       type(mesh_geometry),    intent(in) :: mesh
@@ -168,7 +168,7 @@
       subroutine set_surf_mesh_type_to_IO(my_rank, numele, surf_mesh)
 !
       use t_mesh_data
-      use set_comm_tbl_type_4_IO
+      use set_comm_table_4_IO
       use set_surface_geom_type_IO
 !
       integer(kind = kint), intent(in) :: my_rank, numele
@@ -186,7 +186,7 @@
      &         (my_rank, numele, numsurf, edge_mesh)
 !
       use t_mesh_data
-      use set_comm_tbl_type_4_IO
+      use set_comm_table_4_IO
       use set_edge_geom_type_IO
       use edge_IO_select
 !

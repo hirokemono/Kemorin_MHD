@@ -14,6 +14,9 @@
 !!      subroutine link_field_data_2_output(numnod, num_phys, ntot_comp,&
 !!     &          num_phys_vis, ntot_comp_vis, num_component,           &
 !!     &          phy_name, d_nod, ucd)
+!!
+!!      subroutine link_numnod_stacks_2_output(nprocs, istack_numnod,   &
+!!     &          istack_internod, istack_interele, m_ucd)
 !!@endverbatim
 !
       module set_ucd_data
@@ -57,10 +60,12 @@
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      call allocate_ucd_ele(ucd)
-!
       ucd%nele =         numele
       ucd%nnod_4_ele =   nnod_4_ele
+!
+      call allocate_ucd_ele(ucd)
+!
+      if(numele .le. 0) return
 !
 !$omp parallel workshare
       ucd%ie(1:numele,1:nnod_4_ele) = ie(1:numele,1:nnod_4_ele)
@@ -112,6 +117,29 @@
       ucd%d_ucd =>     d_nod(1:numnod,1:ntot_comp_vis)
 !
       end subroutine link_field_data_2_output
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine link_numnod_stacks_2_output(nprocs, istack_numnod,     &
+     &          istack_internod, istack_interele, m_ucd)
+!
+      integer(kind = kint), intent(in) :: nprocs
+      integer(kind = kint_gl), intent(in), target                       &
+     &                        :: istack_numnod(0:nprocs)
+      integer(kind = kint_gl), intent(in), target                       &
+     &                        :: istack_internod(0:nprocs)
+      integer(kind = kint_gl), intent(in), target                       &
+     &                        :: istack_interele(0:nprocs)
+!
+      type(merged_ucd_data), intent(inout) :: m_ucd
+!
+!
+      m_ucd%istack_merged_nod  =>   istack_numnod
+      m_ucd%istack_merged_intnod => istack_internod
+      m_ucd%istack_merged_ele =>    istack_interele
+!
+      end subroutine link_numnod_stacks_2_output
 !
 !-----------------------------------------------------------------------
 !

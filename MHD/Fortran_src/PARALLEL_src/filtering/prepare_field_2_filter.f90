@@ -29,7 +29,7 @@
       subroutine prepare_scalar_2_filter(id_phys)
 !
       use m_node_phys_data
-      use solver_SR
+      use solver_SR_type
 !
       integer (kind = kint), intent(in) :: id_phys
       integer (kind = kint) :: inod
@@ -48,11 +48,8 @@
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV                                             &
-     &    (nnod_filtering, num_neib_filter, id_neib_filter,             &
-     &     istack_import_filter, item_import_filter,                    &
-     &     istack_export_filter, item_export_filter,                    &
-     &     x_vec_filtering(1) )
+      call SOLVER_SEND_RECV_type                                        &
+     &    (nnod_filtering, flt_comm, x_vec_filtering(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       end subroutine prepare_scalar_2_filter
@@ -62,7 +59,7 @@
       subroutine prepare_vector_2_filter(id_phys)
 !
       use m_node_phys_data
-      use solver_SR_3
+      use solver_SR_type
 !
       integer (kind = kint), intent(in) :: id_phys
       integer (kind = kint) :: inod
@@ -84,17 +81,16 @@
       end do
 !$omp end parallel do
 !
-!      write(*,*) 'istack_import_filter(num_neib_filter)', istack_import_filter(num_neib_filter)
-!      write(*,*) 'istack_export_filter(num_neib_filter)', istack_export_filter(num_neib_filter)
-!      write(*,*) 'item_import_filter', size(item_import_filter)
-!      write(*,*) 'item_export_filter', size(item_export_filter)
+!      write(*,*) 'flt_comm%istack_import(flt_comm%num_neib)',          &
+!     &           flt_comm%istack_import(flt_comm%num_neib)
+!      write(*,*) 'flt_comm%istack_export(flt_comm%num_neib)',          &
+!     &           flt_comm%istack_export(flt_comm%num_neib)
+!      write(*,*) 'flt_comm%item_import', size(flt_comm%item_import)
+!      write(*,*) 'flt_comm%item_export', size(flt_comm%item_export)
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV_3                                           &
-     &    (nnod_filtering, num_neib_filter, id_neib_filter,             &
-     &     istack_import_filter, item_import_filter,                    &
-     &     istack_export_filter, item_export_filter,                    &
-     &     x_vec_filtering(1) )
+      call SOLVER_SEND_RECV_3_type                                      &
+     &    (nnod_filtering, flt_comm, x_vec_filtering(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       end subroutine prepare_vector_2_filter
@@ -104,7 +100,7 @@
       subroutine prepare_sym_tensor_2_filter(id_phys)
 !
       use m_node_phys_data
-      use solver_SR_6
+      use solver_SR_type
 !
       integer (kind = kint), intent(in) :: id_phys
       integer (kind = kint) :: inod
@@ -133,11 +129,8 @@
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV_6                                           &
-     &    (nnod_filtering, num_neib_filter, id_neib_filter,             &
-     &     istack_import_filter, item_import_filter,                    &
-     &     istack_export_filter, item_export_filter,                    &
-     &     x_vec_filtering(1) )
+      call SOLVER_SEND_RECV_6_type                                      &
+     &    (nnod_filtering, flt_comm, x_vec_filtering(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
       end subroutine prepare_sym_tensor_2_filter

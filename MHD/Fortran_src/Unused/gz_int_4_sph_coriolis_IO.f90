@@ -34,49 +34,49 @@
       call open_wt_gzfile(gzip_name)
 !
       write(textbuf,'(a,a1)') '# ----- rotate.dat -----', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '#  truncation', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(i16,a1)')  ltr_cor_IO, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       j1 = 2
       write(textbuf,'(a,a1)') '# j1, l2_gl, j3_gl, Ki/pi', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       do j3 = 1 ,jmax_cor_IO
         do j2 = 1, 2
           write(textbuf,'(3i16,1pE25.15e3,a1)') j1,                     &
      &        jgl_kcor_IO(j3,j2,j1), j3, gk_cor_IO(j3,j2,j1), char(0)
-          call gz_write_textbuf_f
+          call gz_write_textbuf_w_lf
         end do
       end do
       write(textbuf,'(a,a1)') '# j1, l2_gl, j3_gl, Li/pi', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       do j3 = 1 ,jmax_cor_IO
         write(textbuf,'(3i16,1pE25.15e3,a1)') j1,                       &
      &          jgl_lcor_IO(j3,1,j1), j3, el_cor_IO(j3,1,j1), char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end do
 !*
 !
       do j1 = 1, 3, 2
         write(textbuf,'(a,a1)') '# j1, l2_gl, j3_gl, Ki/pi', char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
         do j3 = 1 ,jmax_cor_IO
           do j2 = 1, 4
             write(textbuf,'(3i16,1pE25.15e3,a1)') j1,                   &
      &         jgl_kcor_IO(j3,j2,j1), j3, gk_cor_IO(j3,j2,j1), char(0)
-            call gz_write_textbuf_f
+            call gz_write_textbuf_w_lf
           end do
         end do
 !*
         write(textbuf,'(a,a1)') '# j1, l2_gl, j3_gl, Li/pi', char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
         do j3 = 1, jmax_cor_IO
           do j2 = 1, 2
             write(textbuf,'(3i16,1pE25.15e3,a1)') j1,                   &
      &        jgl_lcor_IO(j3,j2,j1), j3, el_cor_IO(j3,j2,j1), char(0)
-            call gz_write_textbuf_f
+            call gz_write_textbuf_w_lf
           end do
         end do
       end do

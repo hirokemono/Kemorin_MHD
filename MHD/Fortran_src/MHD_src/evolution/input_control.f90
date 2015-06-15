@@ -33,15 +33,15 @@
 !
       use m_ctl_data_fem_MHD
       use m_iccg_parameter
-      use set_control_MHD
+      use set_control_FEM_MHD
       use load_mesh_data
       use input_MG_data
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_MHD'
       call read_control_4_fem_MHD
-      if (iflag_debug.eq.1) write(*,*) 'set_control_FEM_MHD'
-      call set_control_FEM_MHD
+      if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
+      call set_control_4_FEM_MHD
 !
 !  --  load FEM mesh data
       call input_mesh(my_rank)
@@ -67,14 +67,14 @@
       subroutine input_control_4_snapshot
 !
       use m_ctl_data_fem_MHD
-      use set_control_MHD
+      use set_control_FEM_MHD
       use load_mesh_data
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
       call read_control_4_fem_snap
-      if (iflag_debug.eq.1) write(*,*) 'set_control_FEM_MHD'
-      call set_control_FEM_MHD
+      if (iflag_debug.eq.1) write(*,*) 'set_control_4_FEM_MHD'
+      call set_control_4_FEM_MHD
 !
 !  --  load FEM mesh data
       call input_mesh(my_rank)
@@ -96,38 +96,11 @@
       use edge_IO_select
       use set_3d_filtering_group_id
       use read_filtering_data
-      use set_ele_comm_tbl_4_IO
-      use set_surf_comm_tbl_4_IO
-      use set_edge_comm_tbl_4_IO
       use set_surface_geometry_4_IO
       use set_edge_geometry_4_IO
       use node_monitor_IO
       use read_bc_values_file_1st
 !
-!  --  read geometry
-!
-      if (iflag_ele_file_name .gt. 0) then
-        call sel_input_element_comm_table(my_rank)
-        call copy_ele_comm_tbl_from_IO
-      end if
-!
-! ---------------------------------
-!
-      if (iflag_surf_file_name .gt. 0) then
-        call sel_input_surface_connect(my_rank)
-        call copy_surf_comm_table_from_IO
-        call copy_surf_connect_from_IO
-      end if
-!
-! ---------------------------------
-!
-      if (iflag_edge_file_name .gt. 0) then
-        call sel_input_edge_connect(my_rank)
-        call copy_edge_comm_tbl_from_IO
-        call copy_edge_connect_from_IO
-      end if
-!
-! ---------------------------------
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 'set_local_node_id_4_monitor'

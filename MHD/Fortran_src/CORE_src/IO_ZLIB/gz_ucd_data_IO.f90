@@ -20,12 +20,12 @@
 !!      subroutine read_gz_udt_mesh_header(nnod_input, nele_in,         &
 !!     &          ncomptot_in)
 !!      subroutine read_gz_ucd_mesh_data(nnod_in, nele_in,              &
-!!     &          nnod_4_ele, inod_gl, iele_gl, xx_in, ie_in)
+!!     &          nnod_ele, inod_gl, iele_gl, xx_in, ie_in)
 !!
 !!      subroutine write_gz_udt_mesh_header(nnod_output,                &
 !!     &          nele_out, ncomp_output)
-!!      subroutine write_gz_ucd_mesh_connect(ntot_ele, nnod_4_ele,      &
-!!     &          nele, iele_gl, ie_out)
+!!      subroutine write_gz_ucd_mesh_connect(ntot_ele, nnod_ele,        &
+!!     &          nele, iele_gl, ie_gl)
 !!@endverbatim
 !
       module gz_ucd_data_IO
@@ -34,6 +34,7 @@
 !
       use m_constants
       use skip_gz_comment
+      use ucd_data_to_buffer
 !
       implicit  none
 !
@@ -59,11 +60,11 @@
 !
       write(textbuf,fmt_txt) num_output,'  ', ncomp_out(1:num_output),  &
      &                      char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       do j = 1, num_output
         write(textbuf,'(a,a1,a1)') trim(name_out(j)), ",", char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end do
 !
       end subroutine write_gz_udt_field_header
@@ -79,15 +80,14 @@
       real(kind = kreal), intent(in) :: dat_out(ntot_nod, ncomp_dat)
 !
       integer(kind = kint_gl) :: inod
-      character(len=kchara) :: fmt_txt
+      real(kind = kreal)  :: dat_1(ncomp_dat)
 !
 !
-      write(fmt_txt,'(a5,i3,a16)')                                      &
-     &                '(i16,', ncomp_dat, '(1pE25.15e3),a1)'
       do inod = 1, nnod
-        write(textbuf,fmt_txt)                                          &
-     &             inod_out(inod), dat_out(inod,1:ncomp_dat), char(0)
-        call gz_write_textbuf_f
+        dat_1(1:ncomp_dat) = dat_out(inod,1:ncomp_dat)
+        write(textbuf,'(a,a1)')                                         &
+     &       ucd_each_field(inod_out(inod), ncomp_dat, dat_1), char(0)
+        call gz_write_textbuf_no_lf
       end do
 !
       end subroutine  write_gz_ucd_field_data
@@ -198,12 +198,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine read_gz_ucd_mesh_data(nnod_in, nele_in,                &
-     &          nnod_4_ele, inod_gl, iele_gl, xx_in, ie_in)
+     &          nnod_ele, inod_gl, iele_gl, xx_in, ie_in)
 !
-      integer(kind=kint), intent(in) :: nnod_4_ele
+      integer(kind=kint), intent(in) :: nnod_ele
       integer(kind=kint_gl), intent(in) :: nnod_in, nele_in
       integer(kind=kint_gl), intent(inout) :: iele_gl(nele_in)
-      integer(kind=kint_gl), intent(inout) :: ie_in(nele_in,nnod_4_ele)
+      integer(kind=kint_gl), intent(inout) :: ie_in(nele_in,nnod_ele)
       integer(kind=kint_gl), intent(inout) :: inod_gl(nnod_in)
       real(kind = kreal), intent(inout) :: xx_in(nnod_in,3)
 !
@@ -220,7 +220,7 @@
       do iele = 1, nele_in
         call get_one_line_from_gz_f
         read(textbuf,*) iele_gl(iele), itmp, tmpchara,                  &
-     &                  ie_in(iele,1:nnod_4_ele)
+     &                  ie_in(iele,1:nnod_ele)
       end do
 !
       end subroutine  read_gz_ucd_mesh_data
@@ -235,41 +235,34 @@
       integer(kind = kint), intent(in) :: ncomp_output
 !
 !
-      write(textbuf,'(3i16,2i5,a1)') nnod_output, nele_out,             &
-     &         ncomp_output, izero, izero, char(0)
-      call gz_write_textbuf_f
+      write(textbuf,'(a,a1)')                                           &
+     &   ucd_connect_head(nnod_output, nele_out, ncomp_output), char(0)
+      call gz_write_textbuf_no_lf
 !
       end subroutine write_gz_udt_mesh_header
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine write_gz_ucd_mesh_connect(ntot_ele, nnod_4_ele,        &
-     &          nele, iele_gl, ie_out)
+      subroutine write_gz_ucd_mesh_connect(ntot_ele, nnod_ele,          &
+     &          nele, iele_gl, ie_gl)
 !
       use m_geometry_constants
 !
-      integer(kind=kint), intent(in) :: nnod_4_ele
+      integer(kind=kint), intent(in) :: nnod_ele
       integer(kind=kint_gl), intent(in) :: ntot_ele, nele
       integer(kind=kint_gl), intent(in) :: iele_gl(ntot_ele)
-      integer(kind=kint_gl), intent(in) :: ie_out(ntot_ele,nnod_4_ele)
+      integer(kind=kint_gl), intent(in) :: ie_gl(ntot_ele,nnod_ele)
 !
       integer(kind = kint_gl) :: iele
-      character(len=6) :: eleflag
-      character(len=kchara) :: fmt_txt
+      integer(kind = kint_gl) :: ie0(nnod_ele)
 !
-!
-      if(nnod_4_ele.eq.num_t_linear)    write(eleflag,'(a6)') '  hex '
-      if(nnod_4_ele.eq.num_triangle)    write(eleflag,'(a6)') '  tri '
-      if(nnod_4_ele.eq.num_linear_edge) write(eleflag,'(a6)') ' line '
-!
-      write(fmt_txt,'(a11,i3,a9)')                                      &
-     &                '(i16,i3,a6,', nnod_4_ele, '(i16),a1)'
 !
       do iele = 1, nele
-        write(textbuf,fmt_txt) iele_gl(iele), ione, eleflag,            &
-     &                         ie_out(iele,1:nnod_4_ele), char(0)
-        call gz_write_textbuf_f
+        ie0(1:nnod_ele) = ie_gl(iele,1:nnod_ele)
+        write(textbuf,'(a,a1)')                                         &
+     &          ucd_each_connect(iele_gl(iele), nnod_ele, ie0), char(0)
+        call gz_write_textbuf_no_lf
       end do
 !
       end subroutine  write_gz_ucd_mesh_connect

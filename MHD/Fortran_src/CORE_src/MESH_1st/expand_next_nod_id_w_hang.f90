@@ -36,8 +36,9 @@
       call allocate_num_next_nod_w_hang(numnod)
       call allocate_iflag_nod_hang(numnod)
 !
-      call count_next_node_w_hanging(numnod, iflag_hang_nod,            &
-     &          nnod_hang4, inod_hang4, nnod_hang2, inod_hang2,         &
+      call count_next_node_w_hanging(numnod, hang1%nod_hang%iflag_hang, &
+     &    hang1%nod_hang%n_sf, hang1%nod_hang%id_sf,                    &
+     &    hang1%nod_hang%n_ed, hang1%nod_hang%id_ed,                    &
      &          ntot_next_nod_4_node, inod_next_stack_4_node,           &
      &          inod_next_4_node, nnod_next_node_hanged)
 !
@@ -47,8 +48,9 @@
 !
       call allocate_inod_next_nod_w_hang
 !
-      call s_set_next_node_w_hanging(numnod, iflag_hang_nod,            &
-     &          nnod_hang4, inod_hang4, nnod_hang2, inod_hang2,         &
+      call s_set_next_node_w_hanging(numnod, hang1%nod_hang%iflag_hang, &
+     &    hang1%nod_hang%n_sf, hang1%nod_hang%id_sf,                    &
+     &    hang1%nod_hang%n_ed, hang1%nod_hang%id_ed,                    &
      &          ntot_next_nod_4_node, inod_next_stack_4_node,           &
      &          inod_next_4_node, ntot_next_node_hanged,                &
      &          istack_next_node_hanged, inod_next_node_hanged)

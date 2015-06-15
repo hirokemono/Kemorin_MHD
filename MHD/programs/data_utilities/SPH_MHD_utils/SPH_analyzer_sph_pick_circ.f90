@@ -57,6 +57,7 @@
       use r_interpolate_sph_data
       use sph_mhd_rst_IO_control
       use sph_MHD_circle_transform
+      use nodal_vector_send_recv
 !
 !
 !   Allocate spectr field data
@@ -66,6 +67,9 @@
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(isix, nnod_rtp)
+!
+      if(iflag_debug.gt.0) write(*,*)' init_send_recv'
+      call init_send_recv
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
       call init_rms_4_sph_spectr

@@ -1,12 +1,15 @@
-!t_geometry_data.f90
-!      module t_geometry_data
+!>@file   t_geometry_data.f90
+!!@brief  module t_geometry_data
+!!
+!!@author  H. Matsui
+!!@date Programmed in 2008
 !
-!> @brief structure of geometry data for FEM mesh
-!
-!>  including node and element position, connectivities
-!
-!     Written by H. Matsui on Nov., 2008
-!
+!>@brief structure of geometry data for FEM mesh
+!!  including node and element position, connectivities
+!!
+!!@verbatim
+!!      subroutine alloc_numnod_stack(nprocs, node)
+!!      subroutine alloc_numele_stack(nprocs, ele)
 !!      subroutine allocate_node_geometry_type(node)
 !!      subroutine allocate_ele_connect_type(ele)
 !!      subroutine allocate_overlaped_ele_type(ele)
@@ -14,6 +17,8 @@
 !!      subroutine allocate_node_param_smp_type(node)
 !!      subroutine allocate_ele_param_smp_type(ele)
 !!
+!!      subroutine dealloc_numnod_stack(node)
+!!      subroutine dealloc_numele_stack(ele)
 !!      subroutine deallocate_node_geometry_type(node)
 !!      subroutine deallocate_ele_connect_type(ele)
 !!      subroutine deallocate_overlaped_ele_type(ele)
@@ -21,11 +26,15 @@
 !!      subroutine deallocate_node_param_smp_type(node)
 !!      subroutine deallocate_ele_param_smp_type(ele)
 !!
+!!      subroutine link_new_numnod_stack(nod_org, node)
+!!      subroutine link_new_numele_stack(ele_org, ele)
 !!      subroutine link_new_nod_geometry_type(nod_org, node)
 !!      subroutine link_new_ele_connect_type(ele_org, ele)
 !!      subroutine link_new_overlaped_ele_type(ele_org, ele)
 !!      subroutine link_new_ele_geometry_type(ele_org, ele)
 !!
+!!      subroutine unlink_numnod_stack(node)
+!!      subroutine unlink_numele_stack(ele)
 !!      subroutine unlink_node_geometry_type(node)
 !!      subroutine unlink_overlaped_ele_type(ele)
 !!      subroutine unlink_ele_connect_type(ele)
@@ -33,6 +42,7 @@
 !!
 !!      subroutine check_nod_size_smp_type(node, my_rank)
 !!      subroutine check_ele_size_smp_type(ele, my_rank)
+!!@endverbatim
 !
       module t_geometry_data
 !
@@ -43,10 +53,15 @@
 !
 !>  structure for node data (position)
       type node_data
-!>       number of node on local PE (include external node)
+!>        number of node on local PE (include external node)
         integer( kind=kint )  ::  numnod
-!>       number of node on local PE
+!>        number of node on local PE
         integer( kind=kint )  ::  internal_node
+!
+!>        Stack list of number of node
+        integer(kind=kint_gl), pointer  :: istack_numnod(:)
+!>        Stack list of number of internal node
+        integer(kind=kint_gl), pointer  :: istack_internod(:)
 !
 !>       end number of node for SMP on local PE
         integer( kind=kint ), pointer :: istack_nod_smp(:)
@@ -86,6 +101,11 @@
         integer(kind=kint)  ::  internal_ele
 !>       number of nodes in each element
         integer(kind=kint) :: nnod_4_ele
+!
+!>        Stack list of number of element
+        integer(kind=kint_gl), pointer  :: istack_numele(:)
+!>        Stack list of number of internal element
+        integer(kind=kint_gl), pointer  :: istack_interele(:)
 !
 !>       end number of element for SMP on local PE
         integer( kind=kint ), pointer :: istack_ele_smp(:)
@@ -143,6 +163,36 @@
       contains
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine alloc_numnod_stack(nprocs, node)
+!
+      integer(kind = kint), intent(in) :: nprocs
+      type(node_data), intent(inout) :: node
+!
+!
+      allocate(node%istack_numnod(0:nprocs))
+      allocate(node%istack_internod(0:nprocs))
+      node%istack_numnod =   0
+      node%istack_internod = 0
+!
+      end subroutine alloc_numnod_stack
+!
+! ------------------------------------------------------
+!
+      subroutine alloc_numele_stack(nprocs, ele)
+!
+      integer(kind = kint), intent(in) :: nprocs
+      type(element_data), intent(inout) :: ele
+!
+!
+      allocate(ele%istack_numele(0:nprocs))
+      allocate(ele%istack_interele(0:nprocs))
+      ele%istack_numele =   0
+      ele%istack_interele = 0
+!
+      end subroutine alloc_numele_stack
+!
+! ------------------------------------------------------
 !
       subroutine allocate_node_geometry_type(node)
 !
@@ -276,6 +326,28 @@
 !-----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
+      subroutine dealloc_numnod_stack(node)
+!
+      type(node_data), intent(inout) :: node
+!
+!
+      deallocate(node%istack_numnod, node%istack_internod)
+!
+      end subroutine dealloc_numnod_stack
+!
+! ------------------------------------------------------
+!
+      subroutine dealloc_numele_stack(ele)
+!
+      type(element_data), intent(inout) :: ele
+!
+!
+      deallocate(ele%istack_numele, ele%istack_interele)
+!
+      end subroutine dealloc_numele_stack
+!
+! ------------------------------------------------------
+!
       subroutine deallocate_node_geometry_type(node)
 !
       type(node_data), intent(inout) :: node
@@ -358,6 +430,32 @@
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
+!
+      subroutine link_new_numnod_stack(nod_org, node)
+!
+      type(node_data), intent(in) :: nod_org
+      type(node_data), intent(inout) :: node
+!
+!
+      node%istack_numnod => nod_org%istack_numnod
+      node%istack_internod => nod_org%istack_internod
+!
+      end subroutine link_new_numnod_stack
+!
+! ------------------------------------------------------
+!
+      subroutine link_new_numele_stack(ele_org, ele)
+!
+      type(element_data), intent(in) :: ele_org
+      type(element_data), intent(inout) :: ele
+!
+!
+      ele%istack_numele => ele_org%istack_numele
+      ele%istack_interele => ele_org%istack_interele
+!
+      end subroutine link_new_numele_stack
+!
+! ------------------------------------------------------
 !
       subroutine link_new_nod_geometry_type(nod_org, node)
 !
@@ -447,6 +545,28 @@
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
+!
+      subroutine unlink_numnod_stack(node)
+!
+      type(node_data), intent(inout) :: node
+!
+!
+      nullify(node%istack_numnod, node%istack_internod)
+!
+      end subroutine unlink_numnod_stack
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine unlink_numele_stack(ele)
+!
+      type(element_data), intent(inout) :: ele
+!
+!
+      nullify(ele%istack_numele, ele%istack_interele)
+!
+      end subroutine unlink_numele_stack
+!
+! ------------------------------------------------------
 !
       subroutine unlink_node_geometry_type(node)
 !

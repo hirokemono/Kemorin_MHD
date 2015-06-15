@@ -40,39 +40,39 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  domain ID ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  number of domain to export', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  domain IDs to export', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(i16,a1)') my_rank, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(i16,a1)') num_dest_domain_IO, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       if (num_dest_domain_IO .gt. 0) then
         call write_gz_multi_int_10i8(num_dest_domain_IO,                &
      &     id_dest_domain_IO)
       else
         write(textbuf,'(a1)') char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end if
 !
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  stack of node to export', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  exported node ID', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       if (num_dest_domain_IO .gt. 0) then
         call write_gz_multi_int_8i10(num_dest_domain_IO,                &
@@ -81,7 +81,7 @@
      &      inod_itp_send_IO(1))
       else
         write(textbuf,'(a1)') char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end if
 !
       end subroutine write_gz_itp_table_org
@@ -96,20 +96,20 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  stack by interpolation type', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  destinate global node ID, ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  local element ID for interpolation',  &
      &                          char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  interpolation type ID ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  generalized position ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       if (num_dest_domain_IO .gt. 0) then
         call write_gz_multi_int_8i10(ifour, istack_itp_type_org_IO(1) )
@@ -119,12 +119,12 @@
      &        inod_gl_dest_4_org_IO(inod), iele_org_4_org_IO(inod),     &
      &        itype_inter_org_IO(inod), coef_inter_org_IO(inod,1:3),    &
      &        char(0)
-          call gz_write_textbuf_f
+          call gz_write_textbuf_w_lf
         end do
 !
       else
         write(textbuf,'(a1)') char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end if
 !
       end subroutine write_gz_itp_coefs_org
@@ -201,38 +201,38 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  domain ID ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! number of domain to import', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  domain IDs to import', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(i16,a1)') my_rank, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(i16,a1)') num_org_domain_IO, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       if (num_org_domain_IO .gt. 0) then
         call write_gz_multi_int_10i8(num_org_domain_IO,                 &
      &     id_org_domain_IO)
       else
         write(textbuf,'(a1)') char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end if
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  stack of node to import', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  imported node ID', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       if (num_org_domain_IO .gt. 0) then
         call write_gz_multi_int_8i10(num_org_domain_IO,                 &
@@ -241,7 +241,7 @@
      &      inod_dest_IO(1))
       else
         write(textbuf,'(a1)') char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end if
 !
       end subroutine write_gz_itp_table_dest
@@ -256,19 +256,19 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  stack by interpolation type', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  target global node ID, ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  belonged local element ID ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  interpolation type ID ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!  generalized position ', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       if (num_org_domain_IO .gt. 0) then
         do i = 1, num_org_domain_IO
@@ -281,12 +281,12 @@
      &        inod_global_dest_IO(inod), iele_orgin_IO(inod),           &
      &        itype_inter_dest_IO(inod), coef_inter_dest_IO(inod,1:3),  &
      &        char(0)
-          call gz_write_textbuf_f
+          call gz_write_textbuf_w_lf
         end do
 !
       else
         write(textbuf,'(a1)') char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end if
 !
       end subroutine write_gz_itp_coefs_dest

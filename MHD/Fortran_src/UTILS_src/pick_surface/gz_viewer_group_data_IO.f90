@@ -33,15 +33,15 @@
       subroutine write_domain_group_viewer_gz
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)')                                           &
      &        '! 3. node ID for domain boundary', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(i16,a1)') nnod_domain_sf, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_gz_multi_int_8i10(num_pe_sf,                           &
      &    nod_stack_domain_sf(1) )
@@ -49,15 +49,15 @@
      &    nod_item_domain_sf)
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)')                                           &
      &        '! 3.1 surface ID for domain boundary', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(i16,a1)') nsurf_domain_sf, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_gz_multi_int_8i10(num_pe_sf,                           &
      &    isurf_stack_domain_sf(1) )
@@ -65,15 +65,15 @@
      &    isurf_domain_sf)
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)')                                           &
      &       '! 3.2 edge ID for domain boundary', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(i16,a1)') nedge_domain_sf, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_gz_multi_int_8i10(num_pe_sf,                           &
      &    edge_stack_domain_sf(1) )
@@ -120,15 +120,15 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4. group information', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4.1 node group', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(i16,a1)') ngrp_nod_sf, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, ngrp_nod_sf,           &
      &    nnod_nod_sf, nod_stack_sf, nod_gp_name_sf, nod_item_sf)
@@ -162,42 +162,42 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4.2 element group', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4.2.1 element data', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       write(textbuf,'(2i16,a1)') ngrp_ele_sf, nele_ele_sf, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, ngrp_ele_sf,           &
      &    nele_ele_sf, ele_stack_sf, ele_gp_name_sf, ele_item_sf)
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4.2.2 node data', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(i16,a1)') nnod_ele_sf, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, ngrp_ele_sf,           &
      &    nnod_ele_sf, ele_nod_stack_sf, ele_gp_name_sf,                &
      &    ele_nod_item_sf)
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4.2.3 edge data', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(i16,a1)') nedge_ele_sf, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, ngrp_ele_sf,           &
      &    nedge_ele_sf, ele_edge_stack_sf, ele_gp_name_sf,              &
@@ -258,15 +258,15 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4.3 surface group', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4.3.1 surface data', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(2i16,a1)') ngrp_surf_sf, nsurf_surf_sf, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, ngrp_surf_sf,          &
      &    nsurf_surf_sf, surf_stack_sf, surf_gp_name_sf,                &
@@ -274,26 +274,26 @@
 !
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4.3.2 node data', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(i16,a1)') nnod_surf_sf, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, ngrp_surf_sf,          &
      &    nnod_surf_sf, surf_nod_stack_sf, surf_gp_name_sf,             &
      &    surf_nod_item_sf)
 !
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '! 4.3.3 edge data', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(i16,a1)') nedge_surf_sf, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       call write_viewer_group_data_gz(num_pe_sf, ngrp_surf_sf,          &
      &    nedge_surf_sf, surf_edge_stack_sf, surf_gp_name_sf,           &
@@ -369,18 +369,18 @@
           num = istack(nprocs*i    ) - istack(nprocs*(i-1))
 !
           write(textbuf,'(a,a1)') trim(name(i)), char(0)
-          call gz_write_textbuf_f
+          call gz_write_textbuf_w_lf
 !
           if(num .le. 0) then
             write(textbuf,'(a1)') char(0)
-            call gz_write_textbuf_f
+            call gz_write_textbuf_w_lf
           else
             call write_gz_multi_int_8i10(num, item(ist))
           end if
         end do
       else
         write(textbuf,'(a1)') char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end if
 !
       end subroutine write_viewer_group_data_gz

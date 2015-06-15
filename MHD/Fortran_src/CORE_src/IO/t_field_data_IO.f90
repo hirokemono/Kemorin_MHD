@@ -7,15 +7,20 @@
 !> @brief Structure for field data IO
 !!
 !!@verbatim
+!!      subroutine copy_rst_prefix_and_fmt(file_head, i_format, fld_IO)
+!!
 !!      subroutine alloc_phys_name_IO(fld_IO)
 !!      subroutine alloc_phys_data_IO(fld_IO)
+!!      subroutine alloc_merged_field_stack(nprocs, fld_IO)
 !!
+!!      subroutine dealloc_phys_IO(fld_IO)
 !!      subroutine dealloc_phys_name_IO(fld_IO)
 !!      subroutine dealloc_phys_data_IO(fld_IO)
+!!      subroutine dealloc_merged_field_stack(fld_IO)
 !!
-!!      subroutine set_field_t_file_fmt_prefix                          &
+!!      subroutine set_field_file_fmt_prefix                            &
 !!     &         (iflag_fmt, file_head, fld_IO)
-!!      subroutine cal_istack_comp_IO(fld_IO)
+!!      subroutine cal_istack_phys_comp_IO(fld_IO)
 !!@endverbatim
 !!
 !
@@ -29,6 +34,7 @@
 !>      file ID for field data IO
       integer(kind = kint), parameter :: id_phys_file = 15
 !
+!>      Structure for field data IO
       type field_IO
 !>        file header for field data
         character(len=kchara) :: file_prefix = "rst"
@@ -51,11 +57,27 @@
 !
 !>        field data for IO  (d_IO(:,:))
         real(kind = kreal), pointer :: d_IO(:,:)
+!
+!>        end point for number of node for each subdomain
+        integer(kind = kint_gl), pointer :: istack_numnod_IO(:)
       end type field_IO
 !
 ! -------------------------------------------------------------------
 !
       contains
+!
+! -------------------------------------------------------------------
+!
+      subroutine copy_rst_prefix_and_fmt(file_head, i_format, fld_IO)
+!
+      character(len=kchara), intent(in) :: file_head
+      integer(kind=kint), intent(in)  :: i_format
+      type(field_IO), intent(inout) :: fld_IO
+!
+      fld_IO%file_prefix    = file_head
+      fld_IO%iflag_file_fmt = i_format
+!
+      end subroutine copy_rst_prefix_and_fmt
 !
 ! -------------------------------------------------------------------
 !
@@ -85,6 +107,32 @@
       end subroutine alloc_phys_data_IO
 !
 ! -------------------------------------------------------------------
+!
+      subroutine alloc_merged_field_stack(nprocs, fld_IO)
+!
+      integer(kind = kint), intent(in) :: nprocs
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
+      allocate(fld_IO%istack_numnod_IO(0:nprocs))
+      fld_IO%istack_numnod_IO = 0
+!
+      end subroutine alloc_merged_field_stack
+!
+! -----------------------------------------------------------------------
+! -------------------------------------------------------------------
+!
+      subroutine dealloc_phys_IO(fld_IO)
+!
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
+      call dealloc_merged_field_stack(fld_IO)
+      call dealloc_phys_data_IO(fld_IO)
+      call dealloc_phys_name_IO(fld_IO)
+!
+      end subroutine dealloc_phys_IO
+!
 ! -------------------------------------------------------------------
 !
       subroutine dealloc_phys_name_IO(fld_IO)
@@ -110,9 +158,20 @@
       end subroutine dealloc_phys_data_IO
 !
 ! -------------------------------------------------------------------
+!
+      subroutine dealloc_merged_field_stack(fld_IO)
+!
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
+      deallocate(fld_IO%istack_numnod_IO)
+!
+      end subroutine dealloc_merged_field_stack
+!
+! -----------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
-      subroutine set_field_t_file_fmt_prefix                            &
+      subroutine set_field_file_fmt_prefix                              &
      &         (iflag_fmt, file_head, fld_IO)
 !
       integer(kind = kint), intent(in) :: iflag_fmt
@@ -122,11 +181,11 @@
       fld_IO%iflag_file_fmt = iflag_fmt
       write(fld_IO%file_prefix,'(a)') trim(file_head)
 !
-      end subroutine set_field_t_file_fmt_prefix
+      end subroutine set_field_file_fmt_prefix
 !
 ! -------------------------------------------------------------------
 !
-      subroutine cal_istack_comp_IO(fld_IO)
+      subroutine cal_istack_phys_comp_IO(fld_IO)
 !
       use m_constants
       use cal_minmax_and_stacks
@@ -138,7 +197,7 @@
      &   (fld_IO%num_field_IO, fld_IO%num_comp_IO, izero,               &
      &    fld_IO%istack_comp_IO, fld_IO%ntot_comp_IO)
 !
-      end subroutine cal_istack_comp_IO
+      end subroutine cal_istack_phys_comp_IO
 !
 ! -------------------------------------------------------------------
 !

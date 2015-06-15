@@ -81,7 +81,7 @@
       use m_nod_comm_table
 !
        read (id_file,'(10i16)') internal_node, numnod,                  &
-     &     ntot_crs_l, ntot_crs_u, NB_crs, num_neib
+     &     ntot_crs_l, ntot_crs_u, NB_crs, nod_comm%num_neib
 
 !
        end subroutine read_size_of_crs_matrix
@@ -146,28 +146,25 @@
       use m_nod_comm_table
 !
 !
-      call allocate_neib_id
+      call allocate_type_comm_tbl_num(nod_comm)
 !
-      if (nprocs .ne. 1) then
-        read (id_file,*) id_neib(1:num_neib)
+      if(nod_comm%num_neib .gt. 0) then
+        read (id_file,*) nod_comm%id_neib(1:nod_comm%num_neib)
+        read (id_file,*) nod_comm%istack_import(1:nod_comm%num_neib)
+        read (id_file,*) nod_comm%istack_export(1:nod_comm%num_neib)
+      end if
 
-        call allocate_nod_import_num
-        call allocate_nod_export_num
+      nod_comm%ntot_import= nod_comm%istack_import(nod_comm%num_neib)
+      nod_comm%ntot_export= nod_comm%istack_export(nod_comm%num_neib)
 
-        read (id_file,*) istack_import(1:num_neib)
-        read (id_file,*) istack_export(1:num_neib)
-
-        ntot_import= istack_import(num_neib)
-        ntot_export= istack_export(num_neib)
-
-        call allocate_nod_import_item
-        call allocate_nod_export_item
-        read (id_file,*) item_import(1:ntot_import)
-        read (id_file,*) item_export(1:ntot_export)
-      else
-        ntot_import= 0
-        ntot_export= 0
-      endif
+      call allocate_type_comm_tbl_item(nod_comm)
+!
+      if(nod_comm%ntot_import .gt. 0) then
+        read (id_file,*) nod_comm%item_import(1:nod_comm%ntot_import)
+      end if
+      if(nod_comm%ntot_export .gt. 0) then
+        read (id_file,*) nod_comm%item_export(1:nod_comm%ntot_export)
+      end if
 !
       end subroutine read_communication_data
 !

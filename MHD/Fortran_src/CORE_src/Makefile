@@ -15,7 +15,6 @@ MESH_type            \
 IO                   \
 IO_BINARY            \
 IO_ZLIB              \
-IO_MPI               \
 CONTROLS             \
 \
 INTERPOLATE          \

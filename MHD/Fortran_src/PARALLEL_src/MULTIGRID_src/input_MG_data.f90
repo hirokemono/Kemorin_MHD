@@ -47,32 +47,10 @@
           call sel_read_mesh(my_rank)
           call set_mesh_data_types( MG_mesh(i_level) )
 !
-          if (iflag_MG_elem_file(i_level) .gt. 0) then
-            mesh_ele_file_head = MG_elem_file_head(i_level)
-            call sel_input_element_comm_table(my_rank)
-            call set_ele_comm_tbl_type_data( MG_ele_mesh(i_level) )
-          end if
-!
-          if (iflag_MG_surf_file(i_level) .gt. 0) then
-            mesh_surf_file_head = MG_surf_file_head(i_level)
-            call sel_input_surface_connect(my_rank)
-            call set_surf_connect_type_data(MG_surf_mesh(i_level),      &
-     &          MG_mesh(i_level)%mesh )
-          else
-            call set_nnod_surf_by_eletype(MG_surf_mesh(i_level),        &
+          call set_nnod_surf_by_eletype(MG_surf_mesh(i_level),          &
      &          MG_mesh(i_level)%mesh%ele%nnod_4_ele)
-          end if
-!
-          if (iflag_MG_edge_file(i_level) .gt. 0) then
-            mesh_edge_file_head = MG_edge_file_head(i_level)
-            call sel_input_edge_connect(my_rank)
-            call set_edge_connect_type_data(MG_edge_mesh(i_level),      &
-     &          MG_surf_mesh(i_level), MG_mesh(i_level)%mesh )
-          else
-            call set_nnod_edge_by_eletype(MG_edge_mesh(i_level),        &
+          call set_nnod_edge_by_eletype(MG_edge_mesh(i_level),          &
      &          MG_mesh(i_level)%mesh%ele%nnod_4_ele)
-          end if
-!
         else
           call alloc_zero_mesh_data( MG_mesh(i_level),                  &
      &        MG_surf_mesh(i_level), MG_edge_mesh(i_level))

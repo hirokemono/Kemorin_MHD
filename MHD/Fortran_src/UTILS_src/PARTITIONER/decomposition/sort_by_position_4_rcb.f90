@@ -1,17 +1,7 @@
 !sort_by_position_4_rcb.f90
 !     module sort_by_position_4_rcb
 !
-      module sort_by_position_4_rcb
-!
 !     written by H. Matsui on Aug., 2007
-!
-      use m_precision
-      use m_constants
-!
-      implicit none
-!
-      private :: s_sort_by_position_4_rcb
-      private :: set_domain_4_rcb
 !
 !      subroutine sort_4_rcb(nnod, iter, ip0, IGROUP, idir,             &
 !     &          xx1, x2, xx3, VAL, IS1)
@@ -25,6 +15,16 @@
 !     &          ncou, VAL, IS1)
 !      subroutine sorting_by_2nd_direction(nnod, ncou, xx_1, xx_2,      &
 !     &          VAL, IS1)
+!
+      module sort_by_position_4_rcb
+!
+      use m_precision
+      use m_constants
+!
+      implicit none
+!
+      private :: s_sort_by_position_4_rcb
+      private :: set_domain_4_rcb
 !
 ! ----------------------------------------------------------------------
 !

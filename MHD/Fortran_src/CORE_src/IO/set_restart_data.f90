@@ -1,25 +1,39 @@
+!> @file  set_restart_data.f90
+!!      module set_restart_data
+!!
+!! @author  H. Matsui
+!! @date Programmed in 2001
 !
-!     module set_restart_data
-!
-!      subroutine count_field_num_to_rst_IO(num_fld, phys_name,         &
-!     &          num_fld_IO)
-!      subroutine copy_field_name_to_rst_IO (nnod, num_fld, istack_comp,&
-!     &          phys_name, num_fld_IO, ntot_comp_IO, ncomp_IO,         &
-!     &          istack_comp_IO, field_IO_name, nnod_IO)
-!      subroutine copy_field_data_to_rst_IO(nnod, num_fld, ntot_comp,   &
-!     &          istack_comp, phys_name, d_nod,                         &
-!     &          num_fld_IO, ntot_comp_IO, istack_comp_IO,              &
-!     &          field_IO_name, nnod_IO, dat_IO)
-!      subroutine copy_field_data_from_rst_IO(nnod, num_fld, ntot_comp, &
-!     &          istack_comp, phys_name, d_nod,                         &
-!     &          num_fld_IO, ntot_comp_IO, istack_comp_IO,              &
-!     &          field_IO_name, nnod_IO, dat_IO)
-!
-!      subroutine set_output_field_flag_4_rst(d_name, iflag)
-!      subroutine set_num_comps_4_rst(rst_name, numdir)
-!
-!      subroutine set_field_id_4_read_rst(d_name, num_fld, istack_comp, &
-!     &          phys_name, numdir, i_field)
+!> @brief Copy between field data and IO data
+!!
+!!@verbatim
+!!      subroutine count_field_num_to_rst_IO(num_fld, phys_name,        &
+!!     &          num_fld_IO)
+!!      subroutine copy_field_name_to_rst_IO (nnod, num_fld,            &
+!!     &          istack_comp, phys_name, num_fld_IO, ntot_comp_IO,     &
+!!     &          ncomp_IO, istack_comp_IO, field_IO_name, nnod_IO)
+!!      subroutine copy_field_data_to_rst_IO(nnod, num_fld, ntot_comp,  &
+!!     &          istack_comp, phys_name, d_nod,                        &
+!!     &          num_fld_IO, ntot_comp_IO, istack_comp_IO,             &
+!!     &          field_IO_name, nnod_IO, dat_IO)
+!!
+!!      subroutine simple_copy_fld_name_to_rst_IO                       &
+!!     &         (num_fld, istack_comp, phys_name,                      &
+!!     &          num_fld_IO, ncomp_IO, istack_comp_IO, field_IO_name)
+!!      subroutine simple_copy_fld_dat_to_rst_IO(nnod, ntot_comp, d_nod,&
+!!     &          ntot_comp_IO, nnod_IO, dat_IO)
+!!
+!!      subroutine copy_field_data_from_rst_IO(nnod, num_fld, ntot_comp,&
+!!     &          istack_comp, phys_name, d_nod,                        &
+!!     &          num_fld_IO, ntot_comp_IO, istack_comp_IO,             &
+!!     &          field_IO_name, nnod_IO, dat_IO)
+!!
+!!      subroutine set_output_field_flag_4_rst(d_name, iflag)
+!!      subroutine set_num_comps_4_rst(rst_name, numdir)
+!!
+!!      subroutine set_field_id_4_read_rst(d_name, num_fld, istack_comp,&
+!!     &          phys_name, numdir, i_field)
+!!@endverbatim
 !
       module set_restart_data
 !
@@ -135,6 +149,52 @@
 !
       end subroutine copy_field_data_to_rst_IO
 !
+!------------------------------------------------------------------
+!
+      subroutine simple_copy_fld_name_to_rst_IO                         &
+     &         (num_fld, istack_comp, phys_name,                        &
+     &          num_fld_IO, ncomp_IO, istack_comp_IO, field_IO_name)
+!
+      integer(kind=kint), intent(in)  :: num_fld
+      integer(kind=kint), intent(in)  :: istack_comp(0:num_fld)
+      character(len=kchara), intent(in) :: phys_name(num_fld)
+!
+      integer(kind=kint), intent(in) :: num_fld_IO
+      character(len=kchara), intent(inout) :: field_IO_name(num_fld_IO)
+      integer(kind=kint), intent(inout) :: ncomp_IO(num_fld_IO)
+      integer(kind=kint), intent(inout) :: istack_comp_IO(0:num_fld_IO)
+!
+      integer(kind=kint)  :: i
+!
+!
+      istack_comp_IO(0) = istack_comp(0)
+      do i = 1, num_fld
+        field_IO_name(i) =  phys_name(i)
+        ncomp_IO(i) =       istack_comp(i) - istack_comp(i-1)
+        istack_comp_IO(i) = istack_comp(i)
+      end do
+!
+      end subroutine simple_copy_fld_name_to_rst_IO
+!
+!------------------------------------------------------------------
+!
+      subroutine simple_copy_fld_dat_to_rst_IO(nnod, ntot_comp, d_nod,  &
+     &          ntot_comp_IO, nnod_IO, dat_IO)
+!
+      integer(kind=kint), intent(in)  :: nnod, ntot_comp
+      real(kind = kreal), intent(in) :: d_nod(nnod,ntot_comp)
+!
+      integer(kind=kint), intent(in) :: nnod_IO, ntot_comp_IO
+      real(kind = kreal), intent(inout) :: dat_IO(nnod_IO,ntot_comp_IO)
+!
+!
+!$omp workshare
+      dat_IO(1:nnod,1:ntot_comp) = d_nod(1:nnod,1:ntot_comp)
+!$omp end workshare
+!
+      end subroutine simple_copy_fld_dat_to_rst_IO
+!
+!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine copy_field_data_from_rst_IO(nnod, num_fld, ntot_comp,  &

@@ -95,10 +95,8 @@
      &       x_surf, vnorm_surf, area_surf, interior_surf,              &
      &       num_mat, num_mat_bc, mat_istack,  mat_item,                &
      &       ntot_ele_4_node, iele_stack_4_node, iele_4_node,           &
-     &       num_neib, ntot_import, ntot_export, id_neib,               &
-     &       istack_import, istack_export, item_import, item_export,    &
      &       num_nod_phys, num_tot_nod_phys, istack_nod_component,      &
-     &       d_nod)
+     &       d_nod, nod_comm)
 !
       end subroutine field_line_main_1st
 !

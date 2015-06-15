@@ -157,18 +157,15 @@
 !
       subroutine write_djds_mat_magne
 !
-      use m_nod_comm_table
       use m_solver_djds_MHD
       use m_magne_matrix
       use write_djds_matrix_struct
+      use skip_comment_f
 !
       integer(kind = kint) :: i
 !
 !
-      if ( ((METHOD(1:1).eq.'M').or.(METHOD(1:1).eq.'m')) .and.         &
-     &     ((METHOD(2:2).eq.'G').or.(METHOD(2:2).eq.'g')) .and.         &
-     &     ((METHOD(3:3).eq.'C').or.(METHOD(3:3).eq.'c')) .and.         &
-     &     ((METHOD(4:4).eq.'G').or.(METHOD(4:4).eq.'g')) ) then
+      if (cmp_no_case(METHOD, 'MGCG')) then
         do i = 0, num_MG_level
           call add_int_suffix(i, fhead_magne_mat, fname_tmp)
           call add_int_suffix(my_rank, fname_tmp, fname)
@@ -195,18 +192,15 @@
 !
       subroutine write_djds_mat_mag_p
 !
-      use m_nod_comm_table
       use m_solver_djds_MHD
       use m_magne_matrix
       use write_djds_matrix_struct
+      use skip_comment_f
 !
       integer(kind = kint) :: i
 !
 !
-      if ( ((METHOD(1:1).eq.'M').or.(METHOD(1:1).eq.'m')) .and.         &
-     &     ((METHOD(2:2).eq.'G').or.(METHOD(2:2).eq.'g')) .and.         &
-     &     ((METHOD(3:3).eq.'C').or.(METHOD(3:3).eq.'c')) .and.         &
-     &     ((METHOD(4:4).eq.'G').or.(METHOD(4:4).eq.'g')) ) then
+      if (cmp_no_case(METHOD, 'MGCG')) then
         do i = 0, num_MG_level
           call add_int_suffix(i, fhead_magp_mat, fname_tmp)
           call add_int_suffix(my_rank, fname_tmp, fname)
@@ -236,14 +230,12 @@
       use m_solver_djds_MHD
       use m_temp_matrix
       use write_djds_matrix_struct
+      use skip_comment_f
 !
       integer(kind = kint) :: i
 !
 !
-      if ( ((METHOD(1:1).eq.'M').or.(METHOD(1:1).eq.'m')) .and.         &
-     &     ((METHOD(2:2).eq.'G').or.(METHOD(2:2).eq.'g')) .and.         &
-     &     ((METHOD(3:3).eq.'C').or.(METHOD(3:3).eq.'c')) .and.         &
-     &     ((METHOD(4:4).eq.'G').or.(METHOD(4:4).eq.'g')) ) then
+      if (cmp_no_case(METHOD, 'MGCG')) then
         do i = 0, num_MG_level
           call add_int_suffix(i, fhead_temp_mat, fname_tmp)
           call add_int_suffix(my_rank, fname_tmp, fname)
@@ -273,14 +265,12 @@
       use m_solver_djds_MHD
       use m_light_element_matrix
       use write_djds_matrix_struct
+      use skip_comment_f
 !
       integer(kind = kint) :: i
 !
 !
-      if ( ((METHOD(1:1).eq.'M').or.(METHOD(1:1).eq.'m')) .and.         &
-     &     ((METHOD(2:2).eq.'G').or.(METHOD(2:2).eq.'g')) .and.         &
-     &     ((METHOD(3:3).eq.'C').or.(METHOD(3:3).eq.'c')) .and.         &
-     &     ((METHOD(4:4).eq.'G').or.(METHOD(4:4).eq.'g')) ) then
+      if (cmp_no_case(METHOD, 'MGCG')) then
         do i = 0, num_MG_level
           call add_int_suffix(i, fhead_dscalar_mat, fname_tmp)
           call add_int_suffix(my_rank, fname_tmp, fname)

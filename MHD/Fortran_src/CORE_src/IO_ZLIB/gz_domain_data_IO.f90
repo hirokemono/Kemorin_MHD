@@ -92,16 +92,16 @@
 !
 !
       write(textbuf,'(i16,a1)') my_rank_IO, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
       write(textbuf,'(i16,a1)') num_neib_domain_IO, char(0)
-      call gz_write_textbuf_f
+      call gz_write_textbuf_w_lf
 !
       if (num_neib_domain_IO .gt. 0) then
         call write_gz_multi_int_8i10(num_neib_domain_IO,           &
      &      id_neib_domain_IO)
       else
         write(textbuf,'(a1)') char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end if
 !
       call deallocate_neib_domain_IO
@@ -166,11 +166,11 @@
         call write_gz_multi_int_8i10(num_sr, istack_sr(1))
         do i = 1, ntot_sr
           write(textbuf,'(i16,a1)') inod_sr(i), char(0)
-          call gz_write_textbuf_f
+          call gz_write_textbuf_w_lf
         end do
       else
         write(textbuf,'(a1)') char(0)
-        call gz_write_textbuf_f
+        call gz_write_textbuf_w_lf
       end if
 !
       end subroutine write_send_recv_data_gz

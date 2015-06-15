@@ -3,9 +3,9 @@
 !
 !      Written by H.Matsui
 !
-!      subroutine set_restart_data_2_merge(ip)
-!      subroutine set_new_restart_data(ip)
-!      subroutine rescale_4_magne
+!!      subroutine set_restart_data_2_merge(ip, fld_IO)
+!!      subroutine set_new_restart_data(ip, fld_IO)
+!!      subroutine rescale_4_magne
 !
       module set_merged_restart_data
 !
@@ -19,18 +19,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_restart_data_2_merge(ip)
+      subroutine set_restart_data_2_merge(ip, fld_IO)
 !
       use m_geometry_data_4_merge
-      use m_field_data_IO
+      use t_field_data_IO
 !
       integer(kind = kint), intent(in) :: ip
-      integer(kind = kint) :: i, j, inod
+      type(field_IO), intent(in) :: fld_IO
 !
-        do j = 1, ntot_phys_data_IO
+      integer(kind = kint) :: j, inod
+      integer(kind = kint_gl) :: inod_gl
+!
+        do j = 1, fld_IO%ntot_comp_IO
           do inod = 1, subdomain(ip)%node%internal_node
-            i = subdomain(ip)%node%inod_global(inod)
-            merged_fld%d_fld(i,j) = phys_data_IO(inod,j)
+            inod_gl = subdomain(ip)%node%inod_global(inod)
+            merged_fld%d_fld(inod_gl,j) = fld_IO%d_IO(inod,j)
           end do
         end do
 !
@@ -38,20 +41,23 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_new_restart_data(ip)
+      subroutine set_new_restart_data(ip, fld_IO)
 !
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
-      use m_field_data_IO
+      use t_field_data_IO
 !
       integer(kind = kint), intent(in) :: ip
-      integer(kind = kint) :: i, j, inod
+      type(field_IO), intent(inout) :: fld_IO
+!
+      integer(kind = kint) :: j, inod
+      integer(kind = kint_gl) :: inod_gl
 !
 !
-      do j = 1, ntot_phys_data_IO
+      do j = 1, fld_IO%ntot_comp_IO
         do inod = 1, subdomains_2(ip)%node%numnod
-          i = subdomains_2(ip)%node%inod_global(inod)
-          phys_data_IO(inod,j) = merged_fld%d_fld(i,j)
+          inod_gl = subdomains_2(ip)%node%inod_global(inod)
+          fld_IO%d_IO(inod,j) = merged_fld%d_fld(inod_gl,j)
         end do
       end do
 !

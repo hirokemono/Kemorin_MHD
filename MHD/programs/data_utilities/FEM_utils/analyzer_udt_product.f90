@@ -59,6 +59,12 @@
 !
 !     ---------------------
 !
+      if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
+      call allocate_vector_for_solver(isix, numnod)
+!
+      call init_send_recv
+!
+!     --------------------- 
       if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
       call set_local_element_info
 !
@@ -69,12 +75,6 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, numnod)
-!
-      call init_send_recv
-!
-!     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_id_4_product'
       call set_field_id_4_product

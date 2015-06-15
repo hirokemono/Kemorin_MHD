@@ -1,24 +1,27 @@
+!>@file   fieldline.f90
+!!@brief  module fieldline
+!!
+!!@author H. Matsui
+!!@date Programmed in Aug., 2011
 !
-!      module fieldline
-!
-!      Written by H. Matsui on July, 2006
-!
-!      subroutine field_line_init(numnod, numele, e_multi,              &
-!     &    num_mat, num_mat_bc, mat_name, mat_istack, mat_item,         &
-!     &    num_surf, num_surf_bc, surf_name, surf_istack, surf_item,    &
-!     &    num_nod_phys, phys_nod_name)
-!
-!      subroutine field_line_main(istep_psf, numnod, numele, numsurf,   &
-!     &       nnod_4_surf, inod_smp_stack, inod_global,                 &
-!     &       xx, radius, a_radius, s_cylinder, a_s_cylinder,           &
-!     &       iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,    &
-!     &       x_surf, vnorm_surf, area_surf, interior_surf,             &
-!     &       num_mat, num_mat_bc, mat_istack,  mat_item,               &
-!     &       ntot_ele_4_node, iele_stack_4_node, iele_4_node,          &
-!     &       num_neib, ntot_import, ntot_export, id_neib,              &
-!     &       istack_import, istack_export, item_import, item_export,   &
-!     &       num_nod_phys, num_tot_nod_phys, istack_nod_component,     &
-!     &       d_nod)
+!> @brief Main routine for field line module
+!!
+!!@verbatim
+!!      subroutine field_line_init(numnod, numele, e_multi,             &
+!!     &    num_mat, num_mat_bc, mat_name, mat_istack, mat_item,        &
+!!     &    num_surf, num_surf_bc, surf_name, surf_istack, surf_item,   &
+!!     &    num_nod_phys, phys_nod_name)
+!!
+!!      subroutine field_line_main(istep_psf, numnod, numele, numsurf,  &
+!!     &       nnod_4_surf, inod_smp_stack, inod_global,                &
+!!     &       xx, radius, a_radius, s_cylinder, a_s_cylinder,          &
+!!     &       iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,   &
+!!     &       x_surf, vnorm_surf, area_surf, interior_surf,            &
+!!     &       num_mat, num_mat_bc, mat_istack,  mat_item,              &
+!!     &       ntot_ele_4_node, iele_stack_4_node, iele_4_node,         &
+!!     &       num_nod_phys, num_tot_nod_phys, istack_nod_component,    &
+!!     &       d_nod, nod_comm)
+!!@endverbatim
 !
       module fieldline
 !
@@ -28,6 +31,7 @@
       use m_control_params_4_fline
       use m_geometry_constants
       use m_global_fline
+      use t_comm_table
 !
       implicit  none
 !
@@ -88,10 +92,8 @@
      &       x_surf, vnorm_surf, area_surf, interior_surf,              &
      &       num_mat, num_mat_bc, mat_istack,  mat_item,                &
      &       ntot_ele_4_node, iele_stack_4_node, iele_4_node,           &
-     &       num_neib, ntot_import, ntot_export, id_neib,               &
-     &       istack_import, istack_export, item_import, item_export,    &
      &       num_nod_phys, num_tot_nod_phys, istack_nod_component,      &
-     &       d_nod)
+     &       d_nod, nod_comm)
 !
       use set_fields_for_fieldline
       use const_field_lines
@@ -128,20 +130,13 @@
       integer (kind=kint), intent(in) :: iele_stack_4_node(0:numnod)
       integer (kind=kint), intent(in) :: iele_4_node(ntot_ele_4_node)
 !
-      integer(kind = kint), intent(in) :: num_neib, ntot_import
-      integer(kind = kint), intent(in) :: id_neib(num_neib)
-      integer(kind = kint), intent(in) :: istack_import(0:num_neib)
-      integer(kind = kint), intent(in) :: item_import(ntot_import)
-!
-      integer(kind = kint), intent(in) :: ntot_export
-      integer(kind = kint), intent(in) :: istack_export(0:num_neib)
-      integer(kind = kint), intent(in) :: item_export(ntot_export)
-!
       integer(kind = kint), intent(in) :: num_nod_phys
       integer(kind = kint), intent(in) :: num_tot_nod_phys
       integer(kind = kint), intent(in)                                  &
      &                     :: istack_nod_component(0:num_nod_phys)
       real(kind = kreal), intent(in)  :: d_nod(numnod,num_tot_nod_phys)
+!
+      type(communication_table), intent(in) :: nod_comm
 !
       integer(kind = kint) :: i_fln
 !
@@ -167,8 +162,7 @@
      &          nnod_4_surf, inod_global, xx, iele_global, ie_surf,     &
      &          isf_4_ele, iele_4_surf, interior_surf, vnorm_surf,      &
      &          ntot_ele_4_node, iele_stack_4_node, iele_4_node,        &
-     &          num_neib, ntot_import, ntot_export, id_neib,            &
-     &          istack_import, istack_export, item_import, item_export)
+     &          nod_comm)
 !
         if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln
        call s_collect_fline_data(istep_psf, i_fln)

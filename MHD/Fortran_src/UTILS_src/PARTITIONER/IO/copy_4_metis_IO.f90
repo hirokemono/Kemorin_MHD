@@ -1,15 +1,15 @@
 !
 !     module copy_4_metis_IO
 !
-      module copy_4_metis_IO
-!
 !     Written by H. Matsui on Aug., 2007
+!
+!      subroutine copy_graph_4_metis_IO
+!
+      module copy_4_metis_IO
 !
       use m_precision
 !
       implicit  none
-!
-!      subroutine copy_graph_4_metis_IO
 !
 !   --------------------------------------------------------------------
 !

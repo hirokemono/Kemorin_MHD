@@ -64,7 +64,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'allocate_nodal_ele_length'
       call allocate_nodal_ele_length
-      call allocate_jacobians_on_node
+      call alloc_dxdxi_diff_type(nnod_filter_mom, filter_dxi1%dxi_nod)
       call allocate_dxi_dx_ele
       call allocate_dxi_dx_nod
 !
@@ -137,7 +137,7 @@
 !
       call deallocate_seed_moms_ele
 !
-      call deallocate_jacobians_for_ele
+      call dealloc_dxdxi_diff_type(filter_dxi1%dxi_ele)
       call deallocate_iele_belonged
       call deallocate_inod_next_node
 !

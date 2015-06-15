@@ -134,7 +134,6 @@
       call set_control_mesh_def
       iorg_mesh_file_fmt = iflag_mesh_file_fmt
 !
-      call set_control_restart_file_def
       call set_control_ucd_file_def
 !
       if(udt_file_head_ctl%iflag .gt. 0)                                &
@@ -227,7 +226,6 @@
       use m_ctl_data_4_time_steps
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
-      use m_field_data_IO
       use m_file_format_switch
 !
 !
@@ -246,8 +244,10 @@
         new_rst_head = new_rst_def_head
       end if
 !
-      call choose_file_format(restart_file_fmt_ctl, iorg_rst_file_fmt)
-      call choose_file_format(new_rst_files_fmt_ctl, inew_rst_file_fmt)
+      call choose_para_file_format                                      &
+     &   (restart_file_fmt_ctl, iorg_rst_file_fmt)
+      call choose_para_file_format                                      &
+     &   (new_rst_files_fmt_ctl, inew_rst_file_fmt)
 !
 !
       if (i_newrst_magne .gt. 0) then

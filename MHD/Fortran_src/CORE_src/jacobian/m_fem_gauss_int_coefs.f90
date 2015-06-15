@@ -6,6 +6,7 @@
 !      Written by H. Matsui on Dec. 2003
 !      Modified by H. Matsui on Oct., 2006
 !
+!      subroutine maximum_integration_points(num_int)
 !      subroutine allocate_gauss_coef_4_fem
 !      subroutine allocate_gauss_coef_to_4th
 !
@@ -17,10 +18,10 @@
 !
       implicit  none
 !
-      integer (kind=kint) :: max_int_point = 4
-      integer (kind=kint) :: maxtot_int_3d= 100
-      integer (kind=kint) :: maxtot_int_2d= 30
-      integer (kind=kint) :: maxtot_int_1d= 10
+      integer (kind=kint), save :: max_int_point = 4
+      integer (kind=kint), save :: maxtot_int_3d= 100
+      integer (kind=kint), save :: maxtot_int_2d= 30
+      integer (kind=kint), save :: maxtot_int_1d= 10
 !
 !
       integer (kind=kint), allocatable :: int_start1(:)
@@ -34,6 +35,16 @@
 !-----------------------------------------------------------------------
 !
       contains
+!
+!-----------------------------------------------------------------------
+!
+      subroutine maximum_integration_points(num_int)
+!
+      integer(kind = kint), intent(in) :: num_int
+!
+      max_int_point = num_int
+!
+      end subroutine maximum_integration_points
 !
 !-----------------------------------------------------------------------
 !

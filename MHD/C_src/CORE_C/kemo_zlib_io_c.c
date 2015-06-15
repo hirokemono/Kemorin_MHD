@@ -8,6 +8,24 @@
 
 gzFile file_gz;
 
+z_stream strm_gl;
+
+/* The following macro calls a zlib routine and checks the return
+ value. If the return value ("status") is not OK, it prints an error
+ message and exits the program. Zlib's error statuses are all less
+ than zero. */
+
+#define CALL_ZLIB(x) {                                                  \
+int status;                                                     \
+status = x;                                                     \
+if (status < 0) {                                               \
+fprintf (stderr,                                            \
+"%s:%d: %s returned a bad status of %d.\n",        \
+__FILE__, __LINE__, #x, status);                   \
+exit (EXIT_FAILURE);                                        \
+}                                                               \
+}
+
 void open_wt_gzfile(const char *gz_file_name){
 	file_gz = gzopen(gz_file_name, GZ_WT_MODE);
 	if (file_gz == NULL){
@@ -95,6 +113,143 @@ void write_compress_txt_nolf(int *num_buffer, char *input_txt){
 	return;
 }
 
+static void strm_deflate_init (z_stream *strm)
+{
+    strm->zalloc = Z_NULL;
+    strm->zfree  = Z_NULL;
+    strm->opaque = Z_NULL;
+    CALL_ZLIB (deflateInit2 (strm, Z_DEFAULT_COMPRESSION, Z_DEFLATED,
+                             windowBits | GZIP_ENCODING, 8,
+                             Z_DEFAULT_STRATEGY));
+    return;
+}
+static void strm_inflate_init (z_stream *strm)
+{
+    strm->zalloc = Z_NULL;
+    strm->zfree  = Z_NULL;
+    strm->opaque = Z_NULL;
+    CALL_ZLIB (inflateInit2 (strm, windowBits|GZIP_ENCODING|GZIP_AUTODETECT));
+    return;
+}
+
+void gzip_defleat_once(int *len_buf, const char *buf, int *len_gzipbuf, 
+                       int *len_gzipped, char *gzipbuf)
+{
+    z_stream strm;
+
+    strm_deflate_init (& strm);
+    strm.next_in = (unsigned char *) buf;
+    strm.avail_in =  (uInt) *len_buf;
+    strm.avail_out = (uInt) *len_gzipbuf;
+    strm.next_out = (unsigned char *) gzipbuf;
+    CALL_ZLIB (deflate (& strm, Z_FINISH));
+    *len_gzipped = *len_gzipbuf - strm.avail_out;
+/*    printf("compressed size:%d %d %d \n",*len_buf, *len_gzipbuf, *len_gzipped);*/
+    deflateEnd (& strm);
+    return;
+}
+
+void gzip_defleat_begin(int *len_buf, const char *buf, int *len_gzipbuf, 
+                        int *len_gzipped, char *gzipbuf)
+{
+    
+    strm_deflate_init (& strm_gl);
+    strm_gl.next_in = (unsigned char *) buf;
+    strm_gl.avail_in =  (uInt) *len_buf;
+    strm_gl.avail_out = (uInt) *len_gzipbuf;
+    strm_gl.next_out = (unsigned char *) gzipbuf;
+    CALL_ZLIB (deflate (& strm_gl, Z_NO_FLUSH));
+    *len_gzipped = *len_gzipbuf - strm_gl.avail_out;
+    return;
+}
+
+void gzip_defleat_cont(int *len_buf, const char *buf, int *len_gzipbuf, int *len_gzipped)
+{
+    uInt avail_out_current;
+    
+    avail_out_current = strm_gl.avail_out;
+    
+    strm_gl.next_in = (unsigned char *) buf;
+    strm_gl.avail_in =  (uInt) *len_buf;
+    CALL_ZLIB (deflate (& strm_gl, Z_NO_FLUSH));
+    *len_gzipped = *len_gzipbuf - strm_gl.avail_out;
+    return;
+}
+
+void gzip_defleat_last(int *len_buf, const char *buf, int *len_gzipbuf, int *len_gzipped)
+{
+    uInt avail_out_current;
+    
+    avail_out_current = strm_gl.avail_out;
+    
+    strm_gl.next_in = (unsigned char *) buf;
+    strm_gl.avail_in =  (uInt) *len_buf;
+    CALL_ZLIB (deflate (& strm_gl, Z_FINISH));
+    *len_gzipped = *len_gzipbuf - strm_gl.avail_out;
+/*    printf("compressed size:%d %d %d \n",*len_buf, avail_out_current, *len_gzipped);*/
+    deflateEnd (& strm_gl);
+    return;
+}
+
+void gzip_infleat_once(int *len_gzipbuf, const char *gzipbuf, int *len_buf, 
+                       char *buf, int *len_gzipped)
+{
+    z_stream strm;
+    
+    strm_inflate_init (& strm);
+    strm.next_in = (unsigned char *) gzipbuf;
+    strm.avail_in =  (uInt) *len_gzipbuf;
+    strm.avail_out = (uInt) *len_buf;
+    strm.next_out = (unsigned char *) buf;
+    CALL_ZLIB (inflate (& strm, Z_NO_FLUSH));
+    *len_gzipped = *len_gzipbuf - strm.avail_in;
+/*    printf("compressed size:%d %d %d \n",*len_buf, *len_gzipbuf, *len_gzipped); */
+    inflateEnd (& strm);
+    return;
+}
+
+void gzip_infleat_begin(int *len_gzipbuf, const char *gzipbuf, int *len_buf, 
+                        char *buf, int *len_gzipped)
+{
+    
+    strm_inflate_init (& strm_gl);
+    strm_gl.next_in = (unsigned char *) gzipbuf;
+    strm_gl.avail_in =  (uInt) *len_gzipbuf;
+    strm_gl.avail_out = (uInt) *len_buf;
+    strm_gl.next_out = (unsigned char *) buf;
+    CALL_ZLIB (inflate (& strm_gl, Z_NO_FLUSH));
+    *len_gzipped = *len_gzipbuf - strm_gl.avail_in;
+    return;
+}
+
+void gzip_infleat_cont(int *len_gzipbuf, int *len_buf, const char *buf, int *len_gzipped)
+{
+    uInt avail_in_current;
+    
+    avail_in_current = strm_gl.avail_in;
+    
+    strm_gl.next_out = (unsigned char *) buf;
+    strm_gl.avail_out =  (uInt) *len_buf;
+    CALL_ZLIB (inflate (& strm_gl, Z_NO_FLUSH));
+    *len_gzipped = *len_gzipbuf - strm_gl.avail_in;
+    /*    printf("compressed size:%d %d %d \n",*len_buf, avail_in_current, *len_gzipped);*/
+    return;
+}
+
+void gzip_infleat_last(int *len_gzipbuf, int *len_buf, const char *buf, int *len_gzipped)
+{
+    uInt avail_in_current;
+    
+    avail_in_current = strm_gl.avail_in;
+    
+    strm_gl.next_out = (unsigned char *) buf;
+    strm_gl.avail_out =  (uInt) *len_buf;
+    CALL_ZLIB (inflate (& strm_gl, Z_NO_FLUSH));
+    *len_gzipped = *len_gzipbuf - strm_gl.avail_in;
+    /*    printf("compressed size:%d %d %d \n",*len_buf, avail_in_current, *len_gzipped);*/
+    inflateEnd (& strm_gl);
+    return;
+}
 
 static int count_linechara(int num_buffer, const char *line_buf){
 	int nchara_l;
@@ -158,6 +313,22 @@ static void get_one_line_by_zlib(int *num_buffer, int *num_word, int *nchara, ch
 		fprintf(stderr, "%s \n",line_buf);
 	}
 	return;
+}
+
+void gzseek_go_fwd_f(int *ioffset, int *ierr){
+    z_off_t ierr_z;
+    ierr_z = gzseek(file_gz, (z_off_t) *ioffset, SEEK_CUR);
+    *ierr =  (int)ierr_z;
+}
+
+void gzread_f(int *ilength, char *textbuf, int *ierr){
+    *ierr =  gzread(file_gz, textbuf, (uInt) *ilength);
+    return;
+}
+
+void gzwrite_f(int *ilength, char *textbuf, int *ierr){
+    *ierr =  gzwrite(file_gz, textbuf, (uInt) *ilength);
+    return;
 }
 
 void get_one_line_from_gz(int *num_buffer, int *num_word, int *nchara, char *line_buf){

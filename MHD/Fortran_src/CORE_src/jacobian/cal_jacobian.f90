@@ -19,6 +19,7 @@
 !
       module cal_jacobian
 !
+      use m_constants
       use m_precision
 !
       use m_geometry_parameter
@@ -38,9 +39,9 @@
       use m_fem_gauss_int_coefs
 !
       if    (first_ele_type .eq. 332 .or. first_ele_type .eq. 333) then
-        max_int_point = 3
+        call maximum_integration_points(ithree)
       else
-        max_int_point = 2
+        call maximum_integration_points(itwo)
       end if
 !
       end subroutine set_max_int_point_by_etype

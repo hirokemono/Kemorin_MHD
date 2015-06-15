@@ -9,6 +9,7 @@
       program assemble_2nd_mesh
 !
       use m_precision
+      use calypso_mpi
 !
       use m_constants
       use m_read_mesh_data
@@ -34,6 +35,8 @@
 ! ==============================================                                                                                                            
 ! * get number of  nodes,elements for whole PES
 ! ==============================================
+!
+      call calypso_MPI_init
 !
        write(*,*) ' Dou you prepare folloing data???'
        write(*,*) ' original mesh data:  mesh/in.PE#'
@@ -65,7 +68,7 @@
 !    set list array for merged field
 !
       call set_field_list_4_merge
-      call allocate_merged_field_data
+      call alloc_phys_data_type(merged%node%numnod, merged_fld)
 !
 !   Cnostract grid data
 !
@@ -88,6 +91,8 @@
      &        itype_org_ucd_file, num_pe, istep)
         end do
       end if
+!
+      call calypso_MPI_finalize
 !
       stop ' //// program normally finished //// '
 !

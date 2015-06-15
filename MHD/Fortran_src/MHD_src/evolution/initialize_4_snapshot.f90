@@ -35,6 +35,8 @@
       use m_work_4_dynamic_model
       use m_work_layer_correlate
       use m_boundary_condition_IDs
+      use m_array_for_send_recv
+      use m_ele_sf_eg_comm_tables
 !
       use m_check_subroutines
 !
@@ -64,7 +66,7 @@
       use count_sgs_components
       use set_layer_list_by_table
       use set_normal_vectors
-      use mhd_restart_file_IO_control
+      use fem_mhd_rst_IO_control
 !
       use nodal_vector_send_recv
 !
@@ -87,12 +89,18 @@
       end if
 !
 !
+!     ---------------------
+!
+      if (iflag_debug.ge.1 ) write(*,*) 'allocate_vector_for_solver'
+      call allocate_vector_for_solver(n_sym_tensor, numnod)
+!
+      call init_send_recv
+!
       if (iflag_debug.eq.1) write(*,*)' const_mesh_informations'
-! 
       call const_mesh_informations(my_rank)
 !
-      call deallocate_surface_geometry
-      call deallocate_edge_geometry
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
+      call const_element_comm_tables_1st
 !
       if(i_debug .eq. iflag_full_msg) call check_whole_num_of_elements
 !
@@ -148,10 +156,11 @@
       call init_ele_material_property
       call s_count_sgs_components
 !
-      call init_send_recv
-!
       if (iflag_debug.gt.0)  write(*,*)' make comm. table for fluid'
       call s_const_comm_table_fluid
+!
+      call deallocate_surface_geometry
+      call deallocate_edge_geometry
 !
 !     --------------------- 
 !

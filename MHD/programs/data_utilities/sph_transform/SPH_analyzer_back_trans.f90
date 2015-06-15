@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine SPH_initialize_back_trans
-!      subroutine SPH_analyze_back_trans(i_step, visval)
+!      subroutine SPH_initialize_back_trans(fld_IO)
+!      subroutine SPH_analyze_back_trans(i_step, visval, fld_IO)
 !
       module SPH_analyzer_back_trans
 !
@@ -20,15 +20,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_initialize_back_trans
+      subroutine SPH_initialize_back_trans(fld_IO)
 !
       use m_t_step_parameter
       use m_ctl_params_sph_trans
       use m_node_id_spherical_IO
-      use m_field_data_IO
       use m_sph_spectr_data
       use m_sph_phys_address
       use m_control_params_2nd_files
+      use t_field_data_IO
 !
       use r_interpolate_sph_data
       use count_num_sph_smp
@@ -39,12 +39,17 @@
       use legendre_transform_select
       use sph_transfer_all_field
 !
+      type(field_IO), intent(inout) :: fld_IO
+!
+!
 !  ------  initialize spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_fld_file'
-      call set_field_file_fmt_prefix(ifmt_org_rst, org_rst_header)
+      call set_field_file_fmt_prefix                                    &
+     &   (ifmt_org_rst, org_rst_header, fld_IO)
       write(*,*) 'ifmt_org_rst', ifmt_org_rst
-      call sel_read_alloc_step_SPH_file(my_rank, i_step_init)
+      call sel_read_alloc_step_SPH_file                                 &
+     &   (nprocs, my_rank, i_step_init, fld_IO)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_sph_name_rj_to_rtp'
       call copy_sph_name_rj_to_rtp
@@ -83,14 +88,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_analyze_back_trans(i_step, visval)
+      subroutine SPH_analyze_back_trans(i_step, visval, fld_IO)
 !
       use m_sph_spectr_data
       use m_t_step_parameter
-      use m_field_data_IO
       use m_node_id_spherical_IO
       use m_control_params_2nd_files
-!      use m_schmidt_poly_on_rtm
+      use t_field_data_IO
 !
       use field_IO_select
       use r_interpolate_sph_data
@@ -102,13 +106,15 @@
 !
       integer(kind = kint), intent(in) :: i_step
       integer(kind = kint), intent(inout) :: visval
+      type(field_IO), intent(inout) :: fld_IO
 !
       integer(kind = kint) :: i_udt
 !
 !
       call set_output_flag(i_udt, i_step, i_step_output_ucd)
       call set_output_flag_4_viz(i_step, visval)
-      call set_field_file_fmt_prefix(ifmt_org_rst, org_rst_header)
+      call set_field_file_fmt_prefix                                    &
+     &   (ifmt_org_rst, org_rst_header, fld_IO)
       write(*,*) 'ifmt_org_rst', ifmt_org_rst
       visval = visval * i_udt
 !
@@ -116,17 +122,18 @@
 !
 !   Input spectr data
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
-        call sel_read_step_SPH_field_file(my_rank, i_step)
+      call sel_read_step_SPH_field_file                                 &
+     &     (nprocs, my_rank, i_step, fld_IO)
 !
 !    copy and extend magnetic field to outside
 !
         if(iflag_org_sph_rj_head .eq. 0) then
           if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-          call set_rj_phys_data_from_IO
+          call set_rj_phys_data_from_IO(fld_IO)
         else
           if (iflag_debug.gt.0) write(*,*)                              &
      &                        'r_interpolate_sph_fld_from_IO'
-          call r_interpolate_sph_fld_from_IO
+          call r_interpolate_sph_fld_from_IO(fld_IO)
         end if
 !
 !          call check_rj_spectr_data(my_rank)

@@ -42,31 +42,10 @@
       subroutine copy_comm_table_to_filter
 !
       use m_nod_comm_table
+      use t_comm_table
 !
 !
-      num_neib_filter = num_neib
-      ntot_import_filter = ntot_import
-      ntot_export_filter = ntot_export
-!
-      call allocate_neib_filter_id
-      call allocate_filter_import_num
-      call allocate_filter_export_num
-      call allocate_filter_import_item
-      call allocate_filter_export_item
-!
-      if (num_neib .gt. 0) then
-        id_neib_filter(1:num_neib) =        id_neib(1:num_neib)
-        num_import_filter(1:num_neib) =     num_import(1:num_neib)
-        istack_import_filter(0:num_neib) =  istack_import(0:num_neib)
-        num_export_filter(1:num_neib) =     num_export(1:num_neib)
-        istack_export_filter(0:num_neib) =  istack_export(0:num_neib)
-      end if
-      if (ntot_import .gt. 0) then
-        item_import_filter(1:ntot_import) = item_import(1:ntot_import)
-      end if
-      if (ntot_export .gt. 0) then
-        item_export_filter(1:ntot_export) = item_export(1:ntot_export)
-      end if
+      call copy_comm_tbl_types(nod_comm, flt_comm)
 !
       end subroutine copy_comm_table_to_filter
 !

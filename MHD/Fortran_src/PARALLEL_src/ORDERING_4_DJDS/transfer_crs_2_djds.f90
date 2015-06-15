@@ -56,9 +56,10 @@
 !C +--------------------------------------+
 !C===
 !C
-      call allocate_new_comm_table(istack_export(num_neib))
-      call set_new_comm_table(numnod, OLDtoNEW, num_neib,               &
-     &    istack_export, item_export, NOD_EXPORT_NEW)
+      call allocate_new_comm_table                                      &
+     &   (nod_comm%istack_export(nod_comm%num_neib))
+      call set_new_comm_table(numnod, OLDtoNEW, nod_comm%num_neib,      &
+     &    nod_comm%istack_export, nod_comm%item_export, NOD_EXPORT_NEW)
 !
 !C +-------------+
 !C | copy matrix |
@@ -100,12 +101,13 @@
       use m_solver_djds
       use DJDS_new_comm_table
 !
-       if (iflag_debug.eq.1) write(*,*) 'allocate_new_comm_table'
-       call allocate_new_comm_table(ntot_export)
+      if (iflag_debug.eq.1) write(*,*) 'allocate_new_comm_table'
+      call allocate_new_comm_table(nod_comm%ntot_export)
 !
-       if (iflag_debug.eq.1) write(*,*) 'set_new_comm_table'
-       call set_new_comm_table(numnod, OLDtoNEW, num_neib,              &
-                istack_export, item_export, NOD_EXPORT_NEW)
+      if (iflag_debug.eq.1) write(*,*) 'set_new_comm_table'
+      call set_new_comm_table(numnod, OLDtoNEW, nod_comm%num_neib,      &
+     &    nod_comm%istack_export, nod_comm%item_export,                 &
+     &    NOD_EXPORT_NEW)
 !
       end subroutine set_new_comm_table_entire
 !

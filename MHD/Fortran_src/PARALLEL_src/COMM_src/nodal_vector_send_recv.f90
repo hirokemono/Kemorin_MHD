@@ -33,9 +33,12 @@
       use m_solver_SR
 !
 !
-      call resize_work_4_SR(n_sym_tensor, num_neib,                     &
-     &    ntot_export, ntot_import)
-      call resize_iwork_4_SR(num_neib, ntot_export, ntot_import)
+      call resize_work_4_SR(n_sym_tensor, nod_comm%num_neib,            &
+     &    nod_comm%ntot_export, nod_comm%ntot_import)
+      call resize_iwork_4_SR(nod_comm%num_neib, nod_comm%ntot_export,   &
+     &    nod_comm%ntot_import)
+      call resize_i8work_4_SR(nod_comm%num_neib, nod_comm%ntot_export,  &
+     &    nod_comm%ntot_import)
 !
       end subroutine init_send_recv
 !
@@ -45,7 +48,7 @@
 !
       use m_array_for_send_recv
       use m_work_time
-      use solver_SR
+      use solver_SR_type
 !
       real(kind = kreal), intent(inout) :: scl_nod(numnod)
 !
@@ -59,9 +62,7 @@
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV(numnod, num_neib, id_neib,                  &
-     &                      istack_import, item_import,                 &
-     &                      istack_export, item_export, x_vec(1) )
+      call SOLVER_SEND_RECV_type(numnod, nod_comm, x_vec(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
@@ -78,7 +79,7 @@
 !
       use m_array_for_send_recv
       use m_work_time
-      use solver_SR_3
+      use solver_SR_type
 !
       real(kind = kreal), intent(inout) :: vec_nod(numnod,3)
 !
@@ -93,10 +94,7 @@
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV_3(numnod, num_neib, id_neib,                &
-     &                        istack_import, item_import,               &
-     &                        istack_export, item_export,               &
-     &                        x_vec(1) )
+      call SOLVER_SEND_RECV_3_type(numnod, nod_comm, x_vec(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
@@ -115,7 +113,7 @@
 !
       use m_array_for_send_recv
       use m_work_time
-      use solver_SR_6
+      use solver_SR_type
 !
       real(kind = kreal), intent(inout) :: tsr_nod(numnod,6)
 !
@@ -133,9 +131,7 @@
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV_6(numnod, num_neib, id_neib,                &
-     &                        istack_import, item_import,               &
-     &                        istack_export, item_export, x_vec(1) )
+      call SOLVER_SEND_RECV_6_type(numnod, nod_comm, x_vec(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
