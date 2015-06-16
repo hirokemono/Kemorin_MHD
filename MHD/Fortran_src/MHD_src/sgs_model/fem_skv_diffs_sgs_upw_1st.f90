@@ -57,8 +57,8 @@
       call fem_skv_grad_sgs_upw(numele, nnod_4_ele, nnod_4_ele,         &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,          &
      &    xjac, aw, dwx, dwx, xmom_1d_org(i_filter,2), nele_filter_mom, &
-     &    elen_dx2_ele_dx,  elen_dy2_ele_dx,  elen_dz2_ele_dx,          &
-     &    elen_dxdy_ele_dx, elen_dydz_ele_dx, elen_dzdx_ele_dx,         &
+     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
+     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    ak_diff, vxe, scalar_1, sk_v)
 !
       end subroutine fem_skv_grad_sgs_upw_1st
@@ -86,8 +86,8 @@
       call fem_skv_div_sgs_upw(numele, nnod_4_ele, nnod_4_ele, np_smp,  &
      &    iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,                  &
      &    xjac, aw, dwx, dwx, xmom_1d_org(i_filter,2), nele_filter_mom, &
-     &    elen_dx2_ele_dx,  elen_dy2_ele_dx,  elen_dz2_ele_dx,          &
-     &    elen_dxdy_ele_dx, elen_dydz_ele_dx, elen_dzdx_ele_dx,         &
+     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
+     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    ak_diff, vxe, vector_1, sk_v)
 !
       end subroutine fem_skv_div_sgs_upw_1st
@@ -115,8 +115,8 @@
       call fem_skv_rot_sgs_upw(numele, nnod_4_ele, nnod_4_ele, np_smp,  &
      &    iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,                  &
      &    xjac, aw, dwx, dwx, xmom_1d_org(i_filter,2), nele_filter_mom, &
-     &    elen_dx2_ele_dx,  elen_dy2_ele_dx,  elen_dz2_ele_dx,          &
-     &    elen_dxdy_ele_dx, elen_dydz_ele_dx, elen_dzdx_ele_dx,         &
+     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
+     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    ak_diff, vxe, vector_1, sk_v)
 !
       end subroutine fem_skv_rot_sgs_upw_1st
@@ -144,8 +144,8 @@
       call fem_skv_div_tsr_sgs_upw(numele, nnod_4_ele, nnod_4_ele,      &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,          &
      &    xjac, aw, dwx, dwx, xmom_1d_org(i_filter,2), nele_filter_mom, &
-     &    elen_dx2_ele_dx,  elen_dy2_ele_dx,  elen_dz2_ele_dx,          &
-     &    elen_dxdy_ele_dx, elen_dydz_ele_dx, elen_dzdx_ele_dx,         &
+     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
+     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    ak_diff, vxe, tensor_1, sk_v)
 !
       end subroutine fem_skv_div_tsr_sgs_upw_1st
@@ -173,8 +173,8 @@
       call fem_skv_div_ast_sgs_upw(numele, nnod_4_ele, nnod_4_ele,      &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,          &
      &    xjac, aw, dwx, dwx, xmom_1d_org(i_filter,2), nele_filter_mom, &
-     &    elen_dx2_ele_dx,  elen_dy2_ele_dx,  elen_dz2_ele_dx,          &
-     &    elen_dxdy_ele_dx, elen_dydz_ele_dx, elen_dzdx_ele_dx,         &
+     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
+     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    ak_diff, vxe, as_tsr_1, sk_v)
 !
       end subroutine fem_skv_div_as_tsr_sgs_upw_1st

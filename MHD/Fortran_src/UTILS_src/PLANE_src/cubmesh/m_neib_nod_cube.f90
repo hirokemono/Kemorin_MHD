@@ -119,7 +119,7 @@
 !
        subroutine set_element_size_on_nod
 !
-       integer(kind = kint) :: nd, ifil, kf
+       integer(kind = kint) :: ifil, kf
 !
 !
        if (nf_type.eq.0) return
@@ -146,11 +146,12 @@
 !
        subroutine set_element_size_on_ele
 !
-       integer(kind = kint) :: i, j, k, iele, k_gl, nd
+       integer(kind = kint) :: i, j, k, iele, k_gl
 !
 !
        if (nf_type.eq.0) return
 !
+       call clear_elen_diffs_type(nele_filter_mom, diff1_1)
        call clear_elen_diffs_type(nele_filter_mom, diff2_1)
 !
        iele = 0
@@ -167,16 +168,7 @@
              elen_dxdy_ele(iele) = 0.0d0
              elen_dydz_ele(iele) = 0.0d0
              elen_dzdx_ele(iele) = 0.0d0
-             do nd = 1, 3
-               elen_dx2_ele_dx(iele,nd) =   0.0d0
-               elen_dy2_ele_dx(iele,nd) =   0.0d0
-               elen_dxdy_ele_dx(iele,nd) =  0.0d0
-               elen_dydz_ele_dx(iele,nd) =  0.0d0
-               elen_dzdx_ele_dx(iele,nd) =  0.0d0
-             end do
-             elen_dz2_ele_dx(iele,1) = 0.0d0
-             elen_dz2_ele_dx(iele,2) = 0.0d0
-             elen_dz2_ele_dx(iele,3) = 2.0d0 * delta_z_e(k_gl)          &
+             diff1_1%df_z2(iele,3) = 2.0d0 * delta_z_e(k_gl)          &
      &                                       * diff_deltaz_e(k_gl)
              diff2_1%df_z2(iele,3) = 2.0d0 * d2_deltaz_e(k_gl)       &
      &                                 + 2.0d0 * diff_deltaz_e(k_gl)    &

@@ -66,13 +66,13 @@
 !
       use m_filter_elength
 !
-      call take_1st_diffs_ele(elen_dx2_nod(1), elen_dx2_ele_dx(1,1))
-      call take_1st_diffs_ele(elen_dy2_nod(1), elen_dy2_ele_dx(1,1))
-      call take_1st_diffs_ele(elen_dz2_nod(1), elen_dz2_ele_dx(1,1))
+      call take_1st_diffs_ele(elen_dx2_nod(1), diff1_1%df_x2)
+      call take_1st_diffs_ele(elen_dy2_nod(1), diff1_1%df_y2)
+      call take_1st_diffs_ele(elen_dz2_nod(1), diff1_1%df_z2)
 !
-      call take_1st_diffs_ele(elen_dxdy_nod(1), elen_dxdy_ele_dx(1,1))
-      call take_1st_diffs_ele(elen_dydz_nod(1), elen_dydz_ele_dx(1,1))
-      call take_1st_diffs_ele(elen_dzdx_nod(1), elen_dzdx_ele_dx(1,1))
+      call take_1st_diffs_ele(elen_dxdy_nod(1), diff1_1%df_xy)
+      call take_1st_diffs_ele(elen_dydz_nod(1), diff1_1%df_yz)
+      call take_1st_diffs_ele(elen_dzdx_nod(1), diff1_1%df_zx)
 !
       end subroutine cal_diffs_delta_on_element
 !

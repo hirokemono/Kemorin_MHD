@@ -21,6 +21,7 @@
       implicit none
 !
 !
+      type(elen_diffs_type), save :: diff1_1
       type(elen_diffs_type), save :: diff2_1
 !
 
@@ -69,14 +70,20 @@
       real(kind=kreal),   allocatable :: elen_dzdx_ele(:)
 !          ratio of element size at each element (element ID, direction)
 !
-      real(kind=kreal),   allocatable :: elen_dx2_ele_dx(:,:)
-      real(kind=kreal),   allocatable :: elen_dy2_ele_dx(:,:)
-      real(kind=kreal),   allocatable :: elen_dz2_ele_dx(:,:)
+!      real(kind=kreal),   allocatable :: elen_dx2_ele_dx(:,:)
+!      real(kind=kreal),   allocatable :: elen_dy2_ele_dx(:,:)
+!      real(kind=kreal),   allocatable :: elen_dz2_ele_dx(:,:)
+!      diff1_1%df_x2
+!      diff1_1%df_y2
+!      diff1_1%df_z2
 !          1st difference of elength
 !              (element ID, direction of diffrence)
-      real(kind=kreal),   allocatable :: elen_dxdy_ele_dx(:,:)
-      real(kind=kreal),   allocatable :: elen_dydz_ele_dx(:,:)
-      real(kind=kreal),   allocatable :: elen_dzdx_ele_dx(:,:)
+!      real(kind=kreal),   allocatable :: elen_dxdy_ele_dx(:,:)
+!      real(kind=kreal),   allocatable :: elen_dydz_ele_dx(:,:)
+!      real(kind=kreal),   allocatable :: elen_dzdx_ele_dx(:,:)
+!      diff1_1%df_xy
+!      diff1_1%df_yz
+!      diff1_1%df_zx
 !          1st difference of elength
 !              (element ID, direction of diffrence)
 !
@@ -115,13 +122,7 @@
         allocate( elen_dydz_ele(nele_filter_mom) )
         allocate( elen_dzdx_ele(nele_filter_mom) )
 !
-        allocate( elen_dx2_ele_dx(nele_filter_mom,3) )
-        allocate( elen_dy2_ele_dx(nele_filter_mom,3) )
-        allocate( elen_dz2_ele_dx(nele_filter_mom,3) )
-        allocate( elen_dxdy_ele_dx(nele_filter_mom,3) )
-        allocate( elen_dydz_ele_dx(nele_filter_mom,3) )
-        allocate( elen_dzdx_ele_dx(nele_filter_mom,3) )
-!
+      call alloc_elen_diffs_type(nele_filter_mom, diff1_1)
       call alloc_elen_diffs_type(nele_filter_mom, diff2_1)
 !
        elen_dx2_ele = 0.0d0
@@ -131,13 +132,6 @@
        elen_dxdy_ele = 0.0d0
        elen_dydz_ele = 0.0d0
        elen_dzdx_ele = 0.0d0
-!
-       elen_dx2_ele_dx = 0.0d0
-       elen_dy2_ele_dx = 0.0d0
-       elen_dz2_ele_dx = 0.0d0
-       elen_dxdy_ele_dx = 0.0d0
-       elen_dydz_ele_dx = 0.0d0
-       elen_dzdx_ele_dx = 0.0d0
 !
        end subroutine allocate_ele_length
 !
@@ -216,13 +210,7 @@
         deallocate( elen_dydz_ele )
         deallocate( elen_dzdx_ele )
 !
-        deallocate( elen_dx2_ele_dx )
-        deallocate( elen_dy2_ele_dx )
-        deallocate( elen_dz2_ele_dx )
-        deallocate( elen_dxdy_ele_dx )
-        deallocate( elen_dydz_ele_dx )
-        deallocate( elen_dzdx_ele_dx )
-!
+      call dealloc_elen_diffs_type(diff1_1)
       call dealloc_elen_diffs_type(diff2_1)
 !
        end subroutine deallocate_ele_length

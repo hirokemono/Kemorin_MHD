@@ -73,17 +73,17 @@
      &      elen_dzdx_ele )
 !
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      elen_dx2_ele_dx)
+     &      diff1_1%df_x2)
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      elen_dy2_ele_dx)
+     &      diff1_1%df_y2)
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      elen_dz2_ele_dx)
+     &      diff1_1%df_z2)
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      elen_dxdy_ele_dx)
+     &      diff1_1%df_xy)
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      elen_dydz_ele_dx)
+     &      diff1_1%df_yz)
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      elen_dzdx_ele_dx)
+     &      diff1_1%df_zx)
 !
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
      &      diff2_1%df_x2)

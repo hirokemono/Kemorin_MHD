@@ -36,8 +36,8 @@
      &   (ifil, numele, nf_type, xmom_1d_org,                           &
      &    elen_dx2_ele,      elen_dy2_ele,      elen_dz2_ele,           &
      &    elen_dxdy_ele,     elen_dydz_ele,     elen_dzdx_ele,          &
-     &    elen_dx2_ele_dx,   elen_dy2_ele_dx,   elen_dz2_ele_dx,        &
-     &    elen_dxdy_ele_dx,  elen_dydz_ele_dx,  elen_dzdx_ele_dx,       &
+     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
+     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
      &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx)
 !
@@ -57,8 +57,8 @@
      &   (ifil, numele, nnod_4_ele, ie, nf_type, xmom_1d_org,           &
      &    elen_dx2_ele,      elen_dy2_ele,      elen_dz2_ele,           &
      &    elen_dxdy_ele,     elen_dydz_ele,     elen_dzdx_ele,          &
-     &    elen_dx2_ele_dx,   elen_dy2_ele_dx,   elen_dz2_ele_dx,        &
-     &    elen_dxdy_ele_dx,  elen_dydz_ele_dx,  elen_dzdx_ele_dx,       &
+     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
+     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
      &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx)
 !
@@ -73,7 +73,7 @@
 !
       call delete_cross_products_of_elen(numele,                        &
      &    elen_dxdy_ele,     elen_dydz_ele,     elen_dzdx_ele,          &
-     &    elen_dxdy_ele_dx,  elen_dydz_ele_dx,  elen_dzdx_ele_dx,       &
+     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx)
 !
       end subroutine delete_x_products_of_elen_1st

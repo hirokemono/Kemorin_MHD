@@ -44,12 +44,12 @@
         do nd = 1, 3
 !$omp do
           do i = 1, nele_filter_mom
-            elen_dx2_ele_dx(i,nd) = elen_e%diff%df_x2(i,nd)
-            elen_dy2_ele_dx(i,nd) = elen_e%diff%df_y2(i,nd)
-            elen_dz2_ele_dx(i,nd) = elen_e%diff%df_z2(i,nd)
-            elen_dxdy_ele_dx(i,nd) = elen_e%diff%df_xy(i,nd)
-            elen_dydz_ele_dx(i,nd) = elen_e%diff%df_yz(i,nd)
-            elen_dzdx_ele_dx(i,nd) = elen_e%diff%df_zx(i,nd)
+            diff1_1%df_x2(i,nd) = elen_e%diff%df_x2(i,nd)
+            diff1_1%df_y2(i,nd) = elen_e%diff%df_y2(i,nd)
+            diff1_1%df_z2(i,nd) = elen_e%diff%df_z2(i,nd)
+            diff1_1%df_xy(i,nd) = elen_e%diff%df_xy(i,nd)
+            diff1_1%df_yz(i,nd) = elen_e%diff%df_yz(i,nd)
+            diff1_1%df_zx(i,nd) = elen_e%diff%df_zx(i,nd)
 !
             diff2_1%df_x2(i,nd) = elen_e%diff2%df_x2(i,nd)
             diff2_1%df_y2(i,nd) = elen_e%diff2%df_y2(i,nd)
@@ -91,12 +91,12 @@
         do nd = 1, 3
 !$omp do
           do i = 1, nele_filter_mom
-            elen_e%diff%df_x2(i,nd) = elen_dx2_ele_dx(i,nd)
-            elen_e%diff%df_y2(i,nd) = elen_dy2_ele_dx(i,nd)
-            elen_e%diff%df_z2(i,nd) = elen_dz2_ele_dx(i,nd)
-            elen_e%diff%df_xy(i,nd) = elen_dxdy_ele_dx(i,nd)
-            elen_e%diff%df_yz(i,nd) = elen_dydz_ele_dx(i,nd)
-            elen_e%diff%df_zx(i,nd) = elen_dzdx_ele_dx(i,nd)
+            elen_e%diff%df_x2(i,nd) = diff1_1%df_x2(i,nd)
+            elen_e%diff%df_y2(i,nd) = diff1_1%df_y2(i,nd)
+            elen_e%diff%df_z2(i,nd) = diff1_1%df_z2(i,nd)
+            elen_e%diff%df_xy(i,nd) = diff1_1%df_xy(i,nd)
+            elen_e%diff%df_yz(i,nd) = diff1_1%df_yz(i,nd)
+            elen_e%diff%df_zx(i,nd) = diff1_1%df_zx(i,nd)
 !
             elen_e%diff2%df_x2(i,nd) = diff2_1%df_x2(i,nd)
             elen_e%diff2%df_y2(i,nd) = diff2_1%df_y2(i,nd)
