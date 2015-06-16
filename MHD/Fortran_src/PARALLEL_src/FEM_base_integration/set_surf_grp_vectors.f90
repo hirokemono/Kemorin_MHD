@@ -45,12 +45,15 @@
       use sum_normal_4_surf_group
 !
 !
-      call allocate_vector_4_surface
+      call alloc_vectors_surf_grp_type                                  &
+     &   (num_surf, num_surf_bc, sf_grp_v1)
 !
       call pick_vector_4_surf_grp_side(numsurf, vnorm_surf,             &
-     &    vnorm_sf_grp)
-      call pick_scalar_4_surf_grp(numsurf, area_surf, area_sf_grp)
-      call pick_scalar_4_surf_grp(numsurf, a_area_surf, a_area_sf_grp)
+     &    sf_grp_v1%vnorm_sf_grp)
+      call pick_scalar_4_surf_grp(numsurf, area_surf,                   &
+     &    sf_grp_v1%area_sf_grp)
+      call pick_scalar_4_surf_grp(numsurf, a_area_surf,                 &
+     &    sf_grp_v1%a_area_sf_grp)
 !
       end subroutine pick_normal_of_surf_group
 !
@@ -71,12 +74,14 @@
 !
 !    set center of surface
 !
-      call allocate_surf_grp_geomtetry
+      call alloc_surf_grp_type_geom(num_surf_bc, sf_grp_v1)
 !
-      call pick_vector_4_surf_grp(numsurf, x_surf, x_sf_grp)
+      call pick_vector_4_surf_grp(numsurf, x_surf, sf_grp_v1%x_sf_grp)
 !
-      call position_2_sph(num_surf_bc, x_sf_grp, r_sf_grp,              &
-     &    theta_sf_grp, phi_sf_grp, ar_sf_grp, s_sf_grp, as_sf_grp)
+      call position_2_sph                                               &
+     &   (num_surf_bc, sf_grp_v1%x_sf_grp, sf_grp_v1%r_sf_grp,          &
+     &    sf_grp_v1%theta_sf_grp, sf_grp_v1%phi_sf_grp,                 &
+     &    sf_grp_v1%ar_sf_grp, sf_grp_v1%s_sf_grp, sf_grp_v1%as_sf_grp)
 !
        end subroutine pick_surface_group_geometry
 !

@@ -77,8 +77,9 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1 .and. my_rank.eq.0 )                         &
-     &   write(*,*) 'allocate_vector_4_surface'
-      call allocate_vector_4_surface
+     &   write(*,*) 'alloc_vectors_surf_grp_type'
+      call alloc_vectors_surf_grp_type                                  &
+     &   (num_surf, num_surf_bc, sf_grp_v1)
 !
       if (iflag_debug.eq.1 .and. my_rank.eq.0 )                         &
      &   write(*,*) 'pick_surface_group_geometry'

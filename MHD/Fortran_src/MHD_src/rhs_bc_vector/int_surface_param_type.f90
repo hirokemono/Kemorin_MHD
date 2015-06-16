@@ -46,8 +46,8 @@
 !
       call alloc_type_int_surf_data(surf%nnod_4_surf,                   &
      &     group%surf_grp, group%surf_grp_int)
-      call alloc_vectors_surf_grp_type(group%surf_grp,                  &
-     &    group%surf_grp_geom)
+      call alloc_vectors_surf_grp_type(group%surf_grp%num_grp,          &
+     &    group%surf_grp%num_item, group%surf_grp_geom)
 !
       if (iflag_debug.eq.1) write(*,*) 'pick_normal_of_surf_grp_type'
       call pick_normal_of_surf_grp_type(surf, group%surf_grp,           &
@@ -105,8 +105,8 @@
 !
       call alloc_type_int_surf_data(surf%nnod_4_surf,                   &
      &     group%surf_grp, group%surf_grp_int)
-      call alloc_vectors_surf_grp_type(group%surf_grp,                  &
-     &    group%surf_grp_geom)
+      call alloc_vectors_surf_grp_type(group%surf_grp%num_grp,          &
+     &    group%surf_grp%num_item, group%surf_grp_geom)
 !
       if (iflag_debug.eq.1) write(*,*) 'sum_normal_4_surf_grp_type'
       call sum_normal_4_surf_grp_type(mesh%ele, group%surf_grp,         &

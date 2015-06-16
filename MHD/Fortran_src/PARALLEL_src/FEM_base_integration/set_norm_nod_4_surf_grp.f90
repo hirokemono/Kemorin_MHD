@@ -14,7 +14,7 @@
 !     &          nnod_4_surf, node_on_sf, ie, num_surf, num_surf_bc,    &
 !     &          surf_istack, surf_item, vnorm_sf_grp, a_area_sf_grp,   &
 !     &          ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp,    &
-!     &          num_sf_4_nod, surf_norm_nod, coef_sf_nod)
+!     &          surf_norm_nod, coef_sf_nod)
 !
       module set_norm_nod_4_surf_grp
 !
@@ -41,10 +41,11 @@
       call allocate_work_norm_nod(numnod)
 !
       call cal_surf_grp_norm_node(numele, nnod_4_ele,                   &
-     &    nnod_4_surf, node_on_sf, ie, num_surf, num_surf_bc,           &
-     &    surf_istack,  surf_item, vnorm_sf_grp, a_area_sf_grp,         &
+     &    nnod_4_surf, node_on_sf, ie,                                  &
+     &    num_surf, num_surf_bc, surf_istack, surf_item,                &
+     &    sf_grp_v1%vnorm_sf_grp, sf_grp_v1%a_area_sf_grp,              &
      &    ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp,           &
-     &    num_sf_4_nod, surf_norm_nod, coef_sf_nod)
+     &    surf_norm_nod, coef_sf_nod)
 !
       call deallocate_work_norm_nod
 !
@@ -76,7 +77,7 @@
      &          nnod_4_surf, node_on_sf, ie, num_surf, num_surf_bc,     &
      &          surf_istack, surf_item, vnorm_sf_grp, a_area_sf_grp,    &
      &          ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp,     &
-     &          num_sf_4_nod, surf_norm_nod, coef_sf_nod)
+     &          surf_norm_nod, coef_sf_nod)
 !
       use m_geometry_constants
 !
@@ -96,8 +97,6 @@
       integer(kind = kint), intent(in) :: inod_stack_sf_grp(0:num_surf)
       integer(kind = kint), intent(in)                                  &
      &              :: inod_surf_grp(ntot_node_sf_grp)
-      integer(kind = kint), intent(in)                                  &
-     &              :: num_sf_4_nod(ntot_node_sf_grp)
 !
       real(kind=kreal), intent(inout)                                   &
      &           :: surf_norm_nod(ntot_node_sf_grp,3)

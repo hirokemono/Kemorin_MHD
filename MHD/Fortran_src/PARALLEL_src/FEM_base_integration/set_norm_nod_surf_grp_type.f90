@@ -51,8 +51,7 @@
      &    sf_grp%item_sf_grp, sf_grp_v%vnorm_sf_grp,                    &
      &    sf_grp_v%a_area_sf_grp, sf_nod%ntot_node_sf_grp,              &
      &    sf_nod%inod_stack_sf_grp, sf_nod%inod_surf_grp,               &
-     &    sf_nod%num_sf_4_nod, sf_nod%surf_norm_nod,                    &
-     &    sf_nod%coef_sf_nod)
+     &    sf_nod%surf_norm_nod, sf_nod%coef_sf_nod)
 !
       end subroutine cal_surf_norm_nod_type
 !

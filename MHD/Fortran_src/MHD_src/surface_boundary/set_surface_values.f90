@@ -114,7 +114,7 @@
      &            + inum - surf_istack(igrp-1)
 !
           d_surf_nod_tmp(inod) = d_surf_nod_tmp(inod)                   &
-     &          + boundary_field_IO(idat) * a_area_sf_grp(inum)
+     &       + boundary_field_IO(idat) * sf_grp_v1%a_area_sf_grp(inum)
         end do
       end do
 !

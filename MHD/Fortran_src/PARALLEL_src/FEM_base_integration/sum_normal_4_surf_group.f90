@@ -41,14 +41,16 @@
 !
       call s_sum_norm_of_surf_group(np_smp, numele, e_multi, num_surf,  &
      &    num_surf_bc, surf_item, num_surf_smp, isurf_grp_smp_stack,    &
-     &    area_sf_grp)
+     &    sf_grp_v1%area_sf_grp)
 !
-      call s_sum_norm_of_surf_grp_para(num_surf, tot_area_sf_grp)
+      call s_sum_norm_of_surf_grp_para                                  &
+     &   (num_surf, sf_grp_v1%tot_area_sf_grp)
       call deallocate_sum_local_area_grp
 !
       if (my_rank.eq.0) then
         do i = 1, num_surf
-           write(*,*)   i, trim(surf_name(i)), tot_area_sf_grp(i)
+           write(*,*) i, trim(surf_name(i)),                            &
+     &                   sf_grp_v1%tot_area_sf_grp(i)
         end do
       end if 
 !

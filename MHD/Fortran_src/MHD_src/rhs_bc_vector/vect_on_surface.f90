@@ -73,15 +73,15 @@
             vect_sf(inum,1) = vect_sf(inum,1)                           &
      &                       + aw_sf(inum,k1) * d_nod(inod,i_vect  )    &
      &                        * xjq_sf(inum,ix) * owe2d(ix)             &
-     &                        * a_area_sf_grp(inum)
+     &                        * sf_grp_v1%a_area_sf_grp(inum)
             vect_sf(inum,2) = vect_sf(inum,2)                           &
      &                       + aw_sf(inum,k1) * d_nod(inod,i_vect+1)    &
      &                        * xjq_sf(inum,ix) * owe2d(ix)             &
-     &                        * a_area_sf_grp(inum)
+     &                        * sf_grp_v1%a_area_sf_grp(inum)
             vect_sf(inum,3) = vect_sf(inum,3)                           &
      &                       + aw_sf(inum,k1) * d_nod(inod,i_vect+2)    &
      &                        * xjq_sf(inum,ix) * owe2d(ix)             &
-     &                        * a_area_sf_grp(inum)
+     &                        * sf_grp_v1%a_area_sf_grp(inum)
 !
            end do
           end do
@@ -145,13 +145,16 @@
 !
             vect_sf(inum,1) = vect_sf(inum,1) + aw_sf(inum,k1)          &
      &         * ( d_nod(inod,i_vect  ) - d_nod(inod_n,i_vect  ) )      &
-     &         * xjq_sf(inum,ix) * owe2d(ix) * a_area_sf_grp(inum)
+     &         * xjq_sf(inum,ix) * owe2d(ix)                            &
+     &         * sf_grp_v1%a_area_sf_grp(inum)
             vect_sf(inum,2) = vect_sf(inum,2) + aw_sf(inum,k1)          &
      &         * ( d_nod(inod,i_vect+1) - d_nod(inod_n,i_vect+1) )      &
-     &         * xjq_sf(inum,ix) * owe2d(ix) * a_area_sf_grp(inum)
+     &         * xjq_sf(inum,ix) * owe2d(ix)                            &
+     &         * sf_grp_v1%a_area_sf_grp(inum)
             vect_sf(inum,3) = vect_sf(inum,3) + aw_sf(inum,k1)          &
      &         * ( d_nod(inod,i_vect+2) - d_nod(inod_n,i_vect+2) )      &
-     &         * xjq_sf(inum,ix) * owe2d(ix) * a_area_sf_grp(inum)
+     &         * xjq_sf(inum,ix) * owe2d(ix)                            &
+     &         * sf_grp_v1%a_area_sf_grp(inum)
 !
            end do
           end do
