@@ -61,7 +61,7 @@
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &    'write mergend binary data: ', trim(file_name)
+     &    'write merged binary data: ', trim(file_name)
 !
       call calypso_mpi_write_file_open(file_name, nprocs_in, id_fld)
 !
@@ -95,7 +95,7 @@
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &    'read mergend binary data: ', trim(file_name)
+     &    'read merged binary data: ', trim(file_name)
 !
 !
       call calypso_mpi_read_file_open(file_name, id_fld)
@@ -141,7 +141,7 @@
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &    'read mergend binary data: ', trim(file_name)
+     &    'read merged binary data: ', trim(file_name)
 !
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
@@ -194,7 +194,7 @@
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &    'read mergend binary data: ', trim(file_name)
+     &    'read merged binary data: ', trim(file_name)
 !
       call calypso_mpi_read_file_open(file_name, id_fld)
 !

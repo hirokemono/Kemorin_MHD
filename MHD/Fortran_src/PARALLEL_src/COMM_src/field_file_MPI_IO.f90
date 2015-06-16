@@ -63,7 +63,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      if(my_rank .eq. 0) write(*,*) 'Write mergend ascii data: ',       &
+      if(my_rank .eq. 0) write(*,*) 'Write merged ascii data: ',        &
      &                               trim(file_name)
       call calypso_mpi_write_file_open(file_name, nprocs_in, id_fld)
 !
@@ -96,7 +96,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      if(my_rank .eq. 0) write(*,*) 'Read mergend ascii data: ',        &
+      if(my_rank .eq. 0) write(*,*) 'Read merged ascii data: ',         &
      &                               trim(file_name)
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
@@ -140,7 +140,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      if(my_rank .eq. 0) write(*,*) 'Read mergend ascii data: ',        &
+      if(my_rank .eq. 0) write(*,*) 'Read merged ascii data: ',         &
      &                               trim(file_name)
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
@@ -191,7 +191,7 @@
       integer(kind = kint_gl) :: ioff_gl
 !
 !
-      if(my_rank .eq. 0) write(*,*) 'Read mergend ascii data: ',        &
+      if(my_rank .eq. 0) write(*,*) 'Read merged ascii data: ',         &
      &                               trim(file_name)
       call calypso_mpi_read_file_open(file_name, id_fld)
 !

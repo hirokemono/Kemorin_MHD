@@ -136,7 +136,7 @@
       integer(kind = kint) :: icou, j
 !
 !
-      if(my_rank .eq. 0) write(*,*) 'Write mergend compressed data: ',  &
+      if(my_rank .eq. 0) write(*,*) 'Write merged compressed data: ',   &
      &                               trim(file_name)
       call calypso_mpi_write_file_open(file_name, nprocs_in, id_fld)
 !
