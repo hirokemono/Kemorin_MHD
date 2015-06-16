@@ -157,6 +157,15 @@
         real(kind=kreal),   pointer :: df_zx(:,:)
       end type filter_mom_diffs_type
 !
+      type elen_on_ele_type
+        real(kind=kreal),   pointer :: f_x2(:)
+        real(kind=kreal),   pointer :: f_y2(:)
+        real(kind=kreal),   pointer :: f_z2(:)
+        real(kind=kreal),   pointer :: f_xy(:)
+        real(kind=kreal),   pointer :: f_yz(:)
+        real(kind=kreal),   pointer :: f_zx(:)
+      end type elen_on_ele_type
+!
       type elen_diffs_type
         real(kind=kreal),   pointer :: df_x2(:,:)
         real(kind=kreal),   pointer :: df_y2(:,:)
@@ -270,41 +279,82 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_elen_diffs_type(num_elen, elens)
+      subroutine alloc_elen_on_ele_type(num_elen, elens)
 !
       integer (kind = kint), intent(in) :: num_elen
-      type(elen_diffs_type), intent(inout)  :: elens
+      type(elen_on_ele_type), intent(inout)  :: elens
 !
 !
-      allocate( elens%df_x2(num_elen,3) )
-      allocate( elens%df_y2(num_elen,3) )
-      allocate( elens%df_z2(num_elen,3) )
+      allocate( elens%f_x2(num_elen) )
+      allocate( elens%f_y2(num_elen) )
+      allocate( elens%f_z2(num_elen) )
 !
-      allocate( elens%df_xy(num_elen,3) )
-      allocate( elens%df_yz(num_elen,3) )
-      allocate( elens%df_zx(num_elen,3) )
+      allocate( elens%f_xy(num_elen) )
+      allocate( elens%f_yz(num_elen) )
+      allocate( elens%f_zx(num_elen) )
 !
-      call clear_elen_diffs_type(num_elen, elens)
+      call clear_elen_on_ele_type(num_elen, elens)
+!
+      end subroutine alloc_elen_on_ele_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_elen_diffs_type(num_elen, elen_d)
+!
+      integer (kind = kint), intent(in) :: num_elen
+      type(elen_diffs_type), intent(inout)  :: elen_d
+!
+!
+      allocate( elen_d%df_x2(num_elen,3) )
+      allocate( elen_d%df_y2(num_elen,3) )
+      allocate( elen_d%df_z2(num_elen,3) )
+!
+      allocate( elen_d%df_xy(num_elen,3) )
+      allocate( elen_d%df_yz(num_elen,3) )
+      allocate( elen_d%df_zx(num_elen,3) )
+!
+      call clear_elen_diffs_type(num_elen, elen_d)
 !
       end subroutine alloc_elen_diffs_type
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine clear_elen_diffs_type(num_elen, elens)
+      subroutine clear_elen_on_ele_type(num_elen, elens)
 !
       integer (kind = kint), intent(in) :: num_elen
-      type(elen_diffs_type), intent(inout)  :: elens
+      type(elen_on_ele_type), intent(inout)  :: elens
 !
 !
       if (num_elen .gt. 0) then
 !$omp workshare
-        elens%df_x2 = 0.0d0
-        elens%df_y2 = 0.0d0
-        elens%df_z2 = 0.0d0
-        elens%df_xy = 0.0d0
-        elens%df_yz = 0.0d0
-        elens%df_zx = 0.0d0
+        elens%f_x2 = 0.0d0
+        elens%f_y2 = 0.0d0
+        elens%f_z2 = 0.0d0
+        elens%f_xy = 0.0d0
+        elens%f_yz = 0.0d0
+        elens%f_zx = 0.0d0
+!$omp end workshare
+      end if 
+!
+      end subroutine clear_elen_on_ele_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine clear_elen_diffs_type(num_elen, elen_d)
+!
+      integer (kind = kint), intent(in) :: num_elen
+      type(elen_diffs_type), intent(inout)  :: elen_d
+!
+!
+      if (num_elen .gt. 0) then
+!$omp workshare
+        elen_d%df_x2 = 0.0d0
+        elen_d%df_y2 = 0.0d0
+        elen_d%df_z2 = 0.0d0
+        elen_d%df_xy = 0.0d0
+        elen_d%df_yz = 0.0d0
+        elen_d%df_zx = 0.0d0
 !$omp end workshare
       end if 
 !
@@ -341,13 +391,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_elen_diffs_type(elens)
+      subroutine dealloc_elen_on_ele_type(elens)
 !
-      type(elen_diffs_type), intent(inout)  :: elens
+      type(elen_on_ele_type), intent(inout)  :: elens
 !
 !
-      deallocate( elens%df_x2, elens%df_y2, elens%df_z2 )
-      deallocate( elens%df_xy, elens%df_yz, elens%df_zx )
+      deallocate( elens%f_x2, elens%f_y2, elens%f_z2 )
+      deallocate( elens%f_xy, elens%f_yz, elens%f_zx )
+!
+      end subroutine dealloc_elen_on_ele_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_elen_diffs_type(elen_d)
+!
+      type(elen_diffs_type), intent(inout)  :: elen_d
+!
+!
+      deallocate( elen_d%df_x2, elen_d%df_y2, elen_d%df_z2 )
+      deallocate( elen_d%df_xy, elen_d%df_yz, elen_d%df_zx )
 !
       end subroutine dealloc_elen_diffs_type
 !

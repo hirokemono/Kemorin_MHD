@@ -92,12 +92,12 @@
 !
           iele_2nd = iele_local_2nd(iele_gl)
 !
-          elen_dx2_ele_2nd(iele_2nd) = elen_dx2_ele(iele)
-          elen_dy2_ele_2nd(iele_2nd) = elen_dy2_ele(iele)
-          elen_dz2_ele_2nd(iele_2nd) = elen_dz2_ele(iele)
-          elen_dxdy_ele_2nd(iele_2nd) = elen_dxdy_ele(iele)
-          elen_dydz_ele_2nd(iele_2nd) = elen_dydz_ele(iele)
-          elen_dzdx_ele_2nd(iele_2nd) = elen_dzdx_ele(iele)
+          elen_2%f_x2(iele_2nd) = elen_1%f_x2(iele)
+          elen_2%f_y2(iele_2nd) = elen_1%f_y2(iele)
+          elen_2%f_z2(iele_2nd) = elen_1%f_z2(iele)
+          elen_2%f_xy(iele_2nd) = elen_1%f_xy(iele)
+          elen_2%f_yz(iele_2nd) = elen_1%f_yz(iele)
+          elen_2%f_zx(iele_2nd) = elen_1%f_zx(iele)
 !
           do nd = 1, n_vector
             diff1_2%df_x2(iele_2nd,nd)                            &

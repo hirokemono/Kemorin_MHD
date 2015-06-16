@@ -47,12 +47,14 @@
 !
       use m_geometry_parameter
       use m_filter_coefs
+      use m_filter_elength
       use add_nodes_elems_4_each_nod
 !
       integer(kind = kint), intent(in) :: inod
 !
 !
-      call cal_distance_ratio_2_filter(inod)
+      call cal_distance_ratio_2_filter(inod,                            &
+     &   elen_dx2_nod(inod), elen_dy2_nod(inod), elen_dz2_nod(inod))
 !
       call sort_added_nod_4_each_by_real(numnod,                        &
      &    nnod_near_1nod_filter, nnod_near_1nod_weight,                 &
@@ -82,23 +84,27 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_distance_ratio_2_filter(inod)
+      subroutine cal_distance_ratio_2_filter(inod,                      &
+     &          elen_dx2_nod, elen_dy2_nod, elen_dz2_nod)
 !
       use m_geometry_parameter
       use m_geometry_data
       use m_filter_coefs
-      use m_filter_elength
 !
       integer(kind = kint), intent(in) :: inod
+      real(kind=kreal), intent(in) :: elen_dx2_nod
+      real(kind=kreal), intent(in) :: elen_dy2_nod
+      real(kind=kreal), intent(in) :: elen_dz2_nod
+!
       integer(kind = kint) :: inum, jnod
 !
 !
       do inum = 1, nnod_near_1nod_weight
         jnod = inod_near_1nod_weight(inum)
         dist_ratio(inum)                                                &
-     &        = ((xx(jnod,1) - xx(inod,1))**2 / elen_dx2_ele(inod))     &
-     &        + ((xx(jnod,2) - xx(inod,2))**2 / elen_dy2_ele(inod))     &
-     &        + ((xx(jnod,3) - xx(inod,3))**2 / elen_dz2_ele(inod))
+     &        = ((xx(jnod,1) - xx(inod,1))**2 / elen_dx2_nod)           &
+     &        + ((xx(jnod,2) - xx(inod,2))**2 / elen_dy2_nod)           &
+     &        + ((xx(jnod,3) - xx(inod,3))**2 / elen_dz2_nod)
       end do
 !
       end subroutine cal_distance_ratio_2_filter

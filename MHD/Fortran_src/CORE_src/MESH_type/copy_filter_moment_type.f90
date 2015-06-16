@@ -6,6 +6,8 @@
 !
 !>    @brief copy Strucure for filter moments
 !
+!      subroutine copy_elen_diffs_type(num, elen_org, elen_tgt)
+!
 !      subroutine copy_nodal_elen_type(FEM_elen_org, FEM_elen_tgt)
 !        type(gradient_model_data_type), intent(in) :: FEM_elen_org
 !        type(gradient_model_data_type), intent(inout) :: FEM_elen_tgt
@@ -58,6 +60,32 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine copy_elength_type(num, elen_org, elen_tgt)
+!
+      use t_filter_elength
+!
+      integer (kind = kint), intent(in) :: num
+      type(elen_on_ele_type), intent(in) :: elen_org
+      type(elen_on_ele_type), intent(inout) :: elen_tgt
+!
+      integer (kind=kint) :: i
+!
+!
+!$omp parallel do
+      do i = 1, num
+        elen_tgt%f_x2(i) = elen_org%f_x2(i)
+        elen_tgt%f_y2(i) = elen_org%f_y2(i)
+        elen_tgt%f_z2(i) = elen_org%f_z2(i)
+        elen_tgt%f_xy(i) = elen_org%f_xy(i)
+        elen_tgt%f_yz(i) = elen_org%f_yz(i)
+        elen_tgt%f_zx(i) = elen_org%f_zx(i)
+      end do
+!$omp end parallel do
+!
+      end subroutine copy_elength_type
+!
+!  ---------------------------------------------------------------------
+!
       subroutine copy_mom_diffs_type(num, mom_org, mom_tgt)
 !
       use t_filter_elength
@@ -88,6 +116,36 @@
 !$omp end parallel
 !
       end subroutine copy_mom_diffs_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_elen_diffs_type(num, elen_org, elen_tgt)
+!
+      use t_filter_elength
+!
+      integer (kind = kint), intent(in) :: num
+      type(elen_diffs_type), intent(in) :: elen_org
+      type(elen_diffs_type), intent(inout) :: elen_tgt
+!
+      integer (kind=kint) :: nd, i
+!
+!
+!$omp parallel private(nd)
+      do nd = 1, 3
+!$omp do
+        do i = 1, num
+          elen_tgt%df_x2(i,nd) = elen_org%df_x2(i,nd)
+          elen_tgt%df_y2(i,nd) = elen_org%df_y2(i,nd)
+          elen_tgt%df_z2(i,nd) = elen_org%df_z2(i,nd)
+          elen_tgt%df_xy(i,nd) = elen_org%df_xy(i,nd)
+          elen_tgt%df_yz(i,nd) = elen_org%df_yz(i,nd)
+          elen_tgt%df_zx(i,nd) = elen_org%df_zx(i,nd)
+        end do
+!$omp end do nowait
+      end do
+!$omp end parallel
+!
+      end subroutine copy_elen_diffs_type
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

@@ -32,12 +32,12 @@
 !$omp parallel private(nd)
 !$omp do
         do i = 1, nele_filter_mom
-          elen_dx2_ele(i) = elen_e%moms%f_x2(i)
-          elen_dy2_ele(i) = elen_e%moms%f_y2(i)
-          elen_dz2_ele(i) = elen_e%moms%f_z2(i)
-          elen_dxdy_ele(i) = elen_e%moms%f_xy(i)
-          elen_dydz_ele(i) = elen_e%moms%f_yz(i)
-          elen_dzdx_ele(i) = elen_e%moms%f_zx(i)
+          elen_1%f_x2(i) = elen_e%moms%f_x2(i)
+          elen_1%f_y2(i) = elen_e%moms%f_y2(i)
+          elen_1%f_z2(i) = elen_e%moms%f_z2(i)
+          elen_1%f_xy(i) = elen_e%moms%f_xy(i)
+          elen_1%f_yz(i) = elen_e%moms%f_yz(i)
+          elen_1%f_zx(i) = elen_e%moms%f_zx(i)
         end do
 !$omp end do nowait
 !
@@ -62,6 +62,10 @@
         end do
 !$omp end parallel
 !
+!      call copy_elength_type(nele_filter_mom, elen_e%moms,  elen_1)
+!      call copy_elen_diffs_type(nele_filter_mom, elen_e%diff,  diff1_1)
+!      call copy_elen_diffs_type(nele_filter_mom, elen_e%diff2, diff2_1)
+!
       end subroutine copy_filter_elen_ele_from_type
 !
 !  ---------------------------------------------------------------------
@@ -79,12 +83,12 @@
 !$omp parallel private(nd)
 !$omp do
         do i = 1, nele_filter_mom
-          elen_e%moms%f_x2(i) = elen_dx2_ele(i)
-          elen_e%moms%f_y2(i) = elen_dy2_ele(i)
-          elen_e%moms%f_z2(i) = elen_dz2_ele(i)
-          elen_e%moms%f_xy(i) = elen_dxdy_ele(i)
-          elen_e%moms%f_yz(i) = elen_dydz_ele(i)
-          elen_e%moms%f_zx(i) = elen_dzdx_ele(i)
+          elen_e%moms%f_x2(i) = elen_1%f_x2(i)
+          elen_e%moms%f_y2(i) = elen_1%f_y2(i)
+          elen_e%moms%f_z2(i) = elen_1%f_z2(i)
+          elen_e%moms%f_xy(i) = elen_1%f_xy(i)
+          elen_e%moms%f_yz(i) = elen_1%f_yz(i)
+          elen_e%moms%f_zx(i) = elen_1%f_zx(i)
         end do
 !$omp end do nowait
 !

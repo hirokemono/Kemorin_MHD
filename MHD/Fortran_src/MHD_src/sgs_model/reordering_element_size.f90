@@ -60,17 +60,17 @@
         call allocate_dx_ordering_tmp
 !
         call reordering_scalar_by_layer(numele, old2newele_layer(1),    &
-     &      elen_dx2_ele )
+     &      elen_1%f_x2)
         call reordering_scalar_by_layer(numele, old2newele_layer(1),    &
-     &      elen_dy2_ele )
+     &      elen_1%f_y2)
         call reordering_scalar_by_layer(numele, old2newele_layer(1),    &
-     &      elen_dz2_ele )
+     &      elen_1%f_z2)
         call reordering_scalar_by_layer(numele, old2newele_layer(1),    &
-     &      elen_dxdy_ele )
+     &      elen_1%f_xy)
         call reordering_scalar_by_layer(numele, old2newele_layer(1),    &
-     &      elen_dydz_ele )
+     &      elen_1%f_yz)
         call reordering_scalar_by_layer(numele, old2newele_layer(1),    &
-     &      elen_dzdx_ele )
+     &      elen_1%f_zx)
 !
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
      &      diff1_1%df_x2)

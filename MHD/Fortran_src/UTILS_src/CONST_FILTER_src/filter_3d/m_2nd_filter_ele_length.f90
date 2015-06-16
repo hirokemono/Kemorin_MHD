@@ -14,30 +14,9 @@
 !
       implicit none
 !
+      type(elen_on_ele_type), save :: elen_2
       type(elen_diffs_type), save :: diff1_2
       type(elen_diffs_type), save :: diff2_2
-!
-!
-      real(kind = kreal), allocatable :: elen_dx2_ele_2nd(:)
-      real(kind = kreal), allocatable :: elen_dy2_ele_2nd(:)
-      real(kind = kreal), allocatable :: elen_dz2_ele_2nd(:)
-      real(kind = kreal), allocatable :: elen_dxdy_ele_2nd(:)
-      real(kind = kreal), allocatable :: elen_dydz_ele_2nd(:)
-      real(kind = kreal), allocatable :: elen_dzdx_ele_2nd(:)
-!
-!      real(kind = kreal), allocatable :: elen_dx2_ele_dx_2nd(:,:)
-!      real(kind = kreal), allocatable :: elen_dy2_ele_dx_2nd(:,:)
-!      real(kind = kreal), allocatable :: elen_dz2_ele_dx_2nd(:,:)
-!      real(kind = kreal), allocatable :: elen_dxdy_ele_dx_2nd(:,:)
-!      real(kind = kreal), allocatable :: elen_dydz_ele_dx_2nd(:,:)
-!      real(kind = kreal), allocatable :: elen_dzdx_ele_dx_2nd(:,:)
-!
-!      diff1_2%df_x2
-!      diff1_2%df_y2
-!      diff1_2%df_z2
-!      diff1_2%df_xy
-!      diff1_2%df_yz
-!      diff1_2%df_zx
 !
 !   --------------------------------------------------------------------
 !
@@ -50,13 +29,7 @@
       integer(kind = kint), intent(in) :: nele_2nd
 !
 !
-      allocate(elen_dx2_ele_2nd(nele_2nd))
-      allocate(elen_dy2_ele_2nd(nele_2nd))
-      allocate(elen_dz2_ele_2nd(nele_2nd))
-      allocate(elen_dxdy_ele_2nd(nele_2nd))
-      allocate(elen_dydz_ele_2nd(nele_2nd))
-      allocate(elen_dzdx_ele_2nd(nele_2nd))
-!
+      call alloc_elen_on_ele_type(nele_2nd, elen_2)
       call alloc_elen_diffs_type(nele_2nd, diff1_2)
       call alloc_elen_diffs_type(nele_2nd, diff2_2)
 !
@@ -67,13 +40,7 @@
       subroutine deallocate_2nd_ele_length
 !
 !
-      deallocate(elen_dx2_ele_2nd)
-      deallocate(elen_dy2_ele_2nd)
-      deallocate(elen_dz2_ele_2nd)
-      deallocate(elen_dxdy_ele_2nd)
-      deallocate(elen_dydz_ele_2nd)
-      deallocate(elen_dzdx_ele_2nd)
-!
+      call dealloc_elen_on_ele_type(elen_2)
       call dealloc_elen_diffs_type(diff1_2)
       call dealloc_elen_diffs_type(diff2_2)
 !

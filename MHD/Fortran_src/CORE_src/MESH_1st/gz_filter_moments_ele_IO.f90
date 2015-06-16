@@ -59,8 +59,8 @@
 !
 !
       call read_elens_ele_gz(nele_filter_mom,                           &
-     &    elen_dx2_ele, elen_dy2_ele, elen_dz2_ele,                     &
-     &    elen_dxdy_ele, elen_dydz_ele, elen_dzdx_ele,                  &
+     &    elen_1%f_x2, elen_1%f_y2, elen_1%f_z2,                   &
+     &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
      &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
      &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
@@ -78,8 +78,8 @@
 !    output coefs for filters for each node
 !
       call write_elens_ele_gz(nele_filter_mom,                          &
-     &    elen_dx2_ele, elen_dy2_ele, elen_dz2_ele,                     &
-     &    elen_dxdy_ele, elen_dydz_ele, elen_dzdx_ele,                  &
+     &    elen_1%f_x2, elen_1%f_y2, elen_1%f_z2,                   &
+     &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
      &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
      &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &

@@ -151,6 +151,7 @@
 !
        if (nf_type.eq.0) return
 !
+       call clear_elen_on_ele_type(nele_filter_mom, elen_1)
        call clear_elen_diffs_type(nele_filter_mom, diff1_1)
        call clear_elen_diffs_type(nele_filter_mom, diff2_1)
 !
@@ -159,15 +160,12 @@
          k_gl = k + koff
          do j=1,ny-1
            do i=1,nx-1
-!
              iele = iele + 1
 !
-             elen_dx2_ele(iele) = delta_h(1) * delta_h(1)
-             elen_dy2_ele(iele) = delta_h(2) * delta_h(2)
-             elen_dz2_ele(iele) = delta_z_e(k_gl) * delta_z_e(k_gl)
-             elen_dxdy_ele(iele) = 0.0d0
-             elen_dydz_ele(iele) = 0.0d0
-             elen_dzdx_ele(iele) = 0.0d0
+             elen_1%f_x2(iele) = delta_h(1) * delta_h(1)
+             elen_1%f_y2(iele) = delta_h(2) * delta_h(2)
+             elen_1%f_z2(iele) = delta_z_e(k_gl) * delta_z_e(k_gl)
+!
              diff1_1%df_z2(iele,3) = 2.0d0 * delta_z_e(k_gl)          &
      &                                       * diff_deltaz_e(k_gl)
              diff2_1%df_z2(iele,3) = 2.0d0 * d2_deltaz_e(k_gl)       &

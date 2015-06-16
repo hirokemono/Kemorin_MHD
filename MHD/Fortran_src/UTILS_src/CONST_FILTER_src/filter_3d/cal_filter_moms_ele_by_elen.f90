@@ -34,8 +34,8 @@
 !
       call s_cal_filter_moms_ele_by_elen                                &
      &   (ifil, numele, nf_type, xmom_1d_org,                           &
-     &    elen_dx2_ele,      elen_dy2_ele,      elen_dz2_ele,           &
-     &    elen_dxdy_ele,     elen_dydz_ele,     elen_dzdx_ele,          &
+     &    elen_1%f_x2, elen_1%f_y2, elen_1%f_z2,                   &
+     &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
      &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
      &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
@@ -55,8 +55,8 @@
 !
       call correct_filter_moms_ele_by_elen                              &
      &   (ifil, numele, nnod_4_ele, ie, nf_type, xmom_1d_org,           &
-     &    elen_dx2_ele,      elen_dy2_ele,      elen_dz2_ele,           &
-     &    elen_dxdy_ele,     elen_dydz_ele,     elen_dzdx_ele,          &
+     &    elen_1%f_x2, elen_1%f_y2, elen_1%f_z2,                   &
+     &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
      &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
      &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
@@ -72,7 +72,7 @@
       use m_filter_elength
 !
       call delete_cross_products_of_elen(numele,                        &
-     &    elen_dxdy_ele,     elen_dydz_ele,     elen_dzdx_ele,          &
+     &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
      &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx)
 !

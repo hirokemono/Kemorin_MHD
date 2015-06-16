@@ -26,44 +26,18 @@
       use t_geometry_data
       use m_2nd_filter_ele_length
       use m_filter_elength
+      use copy_filter_moment_type
 !
       type(node_data), intent(in) :: new_node
       type(element_data), intent(in) :: new_ele
-!
-      integer(kind = kint) :: iele, nd
 !
 !
       nnod_filter_mom = new_node%numnod
       nele_filter_mom = new_ele%numele
       call allocate_ele_length
-!
-      do iele = 1, new_ele%numele
-        elen_dx2_ele(iele) = elen_dx2_ele_2nd(iele)
-        elen_dy2_ele(iele) = elen_dy2_ele_2nd(iele)
-        elen_dz2_ele(iele) = elen_dz2_ele_2nd(iele)
-        elen_dxdy_ele(iele) = elen_dxdy_ele_2nd(iele)
-        elen_dydz_ele(iele) = elen_dydz_ele_2nd(iele)
-        elen_dzdx_ele(iele) = elen_dzdx_ele_2nd(iele)
-      end do
-!
-      do nd = 1, n_vector
-        do iele = 1, new_ele%numele
-          diff1_1%df_x2(iele,nd) = diff1_2%df_x2(iele,nd)
-          diff1_1%df_y2(iele,nd) = diff1_2%df_y2(iele,nd)
-          diff1_1%df_z2(iele,nd) = diff1_2%df_z2(iele,nd)
-          diff1_1%df_xy(iele,nd) = diff1_2%df_xy(iele,nd)
-          diff1_1%df_yz(iele,nd) = diff1_2%df_yz(iele,nd)
-          diff1_1%df_zx(iele,nd) = diff1_2%df_zx(iele,nd)
-!
-          diff2_1%df_x2(iele,nd) = diff2_2%df_x2(iele,nd)
-          diff2_1%df_y2(iele,nd) = diff2_2%df_y2(iele,nd)
-          diff2_1%df_z2(iele,nd) = diff2_2%df_z2(iele,nd)
-          diff2_1%df_xy(iele,nd) = diff2_2%df_xy(iele,nd)
-          diff2_1%df_yz(iele,nd) = diff2_2%df_yz(iele,nd)
-          diff2_1%df_zx(iele,nd) = diff2_2%df_zx(iele,nd)
-        end do
-      end do
-!
+      call copy_elength_type(nele_filter_mom, elen_2, elen_1)
+      call copy_elen_diffs_type(nele_filter_mom, diff1_2, diff1_1)
+      call copy_elen_diffs_type(nele_filter_mom, diff2_2, diff2_1)
       call deallocate_2nd_ele_length
 !
       end subroutine copy_elength_ele_from_2nd
