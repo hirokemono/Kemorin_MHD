@@ -132,7 +132,7 @@
       call cal_2nd_diffs_delta_on_element
 !
       if (iflag_momentum_type .eq. 1) then
-        call delete_cross_products_of_elen
+        call delete_x_products_of_elen_1st
       end if
 !
       call deallocate_seed_moms_ele

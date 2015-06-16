@@ -307,8 +307,8 @@
      &    num_t_linear, num_linear_sf, node_on_sf, num_surf_bc,         &
      &    surf_item, num_surf_smp, isurf_grp_smp_stack, ntot_int_3d,    &
      &    xjac, dnx, dnx, xmom_1d_org(i_filter,2), nele_filter_mom,     &
-     &    elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2,       &
-     &    elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,      &
+     &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
+     &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx,       &
      &    igrp, k2, n_int, ak_diff, phi_sf, sk_v)
 !
       end subroutine fem_surf_skv_poisson_sgs_1
@@ -335,8 +335,8 @@
      &    nnod_4_ele, nnod_4_surf, node_on_sf, num_surf_bc, surf_item,  &
      &    num_surf_smp, isurf_grp_smp_stack, ntot_int_3d,               &
      &    xjac, dwx, dwx, xmom_1d_org(i_filter,2), nele_filter_mom,     &
-     &    elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2,       &
-     &    elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,      &
+     &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
+     &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx,       &
      &    igrp, k2, n_int, ak_diff, vect_sf, ak_d, nd_v, sk_v)
 !
       end subroutine fem_surf_skv_diffusion_sgs_1

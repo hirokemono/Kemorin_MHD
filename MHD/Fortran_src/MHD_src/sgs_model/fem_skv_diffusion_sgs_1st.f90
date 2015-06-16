@@ -53,8 +53,8 @@
       call fem_skv_scalar_diffuse_sgs(numele, nnod_4_ele, nnod_4_ele,   &
      &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
      &    xjac, dwx, dwx, xmom_1d_org(i_filter,2), nele_filter_mom,     &
-     &    elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2,       &
-     &    elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,      &
+     &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
+     &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx,       &
      &    ak_diff, ak_d, scalar_1, sk_v)
 !
       end subroutine fem_skv_scalar_diffuse_sgs_1st
@@ -80,8 +80,8 @@
       call fem_skv_vector_diffuse_sgs(numele, nnod_4_ele, nnod_4_ele,   &
      &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
      &    xjac, dwx, dwx, xmom_1d_org(i_filter,2), nele_filter_mom,     &
-     &    elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2,       &
-     &    elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,      &
+     &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
+     &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx,       &
      &    ak_diff, ak_d, vect_1, sk_v)
 !
       end subroutine fem_skv_vector_diffuse_sgs_1st
@@ -106,8 +106,8 @@
       call fem_skv_poisson_sgs_pg(numele, nnod_4_ele, nnod_4_ele,       &
      &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
      &    xjac, dwx, dwx, xmom_1d_org(i_filter,2), nele_filter_mom,     &
-     &    elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2,       &
-     &    elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,      &
+     &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
+     &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx,       &
      &    ak_diff, sk_v)
 !
       end subroutine fem_skv_poisson_sgs_1st
@@ -131,8 +131,8 @@
       call fem_skv_poisson_sgs_pg(numele, num_t_linear, num_t_linear,   &
      &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
      &    xjac, dnx, dnx, xmom_1d_org(i_filter,2), nele_filter_mom,     &
-     &    elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2,       &
-     &    elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,      &
+     &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
+     &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx,       &
      &    ak_diff, sk_v)
 !
       end subroutine fem_skv_poisson_linear_sgs_1st

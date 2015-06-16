@@ -72,6 +72,10 @@
       call read_control_assemble_sph
       call set_control_4_newsph
 !
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &          'istep_start, istep_end, increment_step',               &
+     &           istep_start, istep_end, increment_step
+!
       allocate( org_sph_mesh(np_sph_org) )
       allocate( org_sph_phys(np_sph_org) )
       allocate( new_sph_mesh(np_sph_new) )

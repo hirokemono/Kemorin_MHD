@@ -155,7 +155,7 @@
             i_dest = i_dest + 1
             id_grp(i_dest) = igrp
 !
-            call set_surf_bc_dat(ngrp_sf, nele_sf, igrp, ia, i_dest,    &
+            call set_surf_bc_1st(ngrp_sf, nele_sf, igrp, ia, i_dest,    &
      &          ist_sf, sf_dat)
         end if
        end if
@@ -225,7 +225,7 @@
             i_dest = i_dest + 1
             id_grp(i_dest) = igrp
 !
-            call set_surf_bc_on_node_dat(ngrp_sf, nnod_sf, igrp, ia,    &
+            call set_surf_bc_on_node_1st(ngrp_sf, nnod_sf, igrp, ia,    &
      &          i_dest, ist_nod, sf_dat)
 !
           end if

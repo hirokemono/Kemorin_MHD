@@ -51,12 +51,12 @@
             elen_dydz_ele_dx(i,nd) = elen_e%diff%df_yz(i,nd)
             elen_dzdx_ele_dx(i,nd) = elen_e%diff%df_zx(i,nd)
 !
-            elen_dx2_ele_dx2(i,nd) = elen_e%diff2%df_x2(i,nd)
-            elen_dy2_ele_dx2(i,nd) = elen_e%diff2%df_y2(i,nd)
-            elen_dz2_ele_dx2(i,nd) = elen_e%diff2%df_z2(i,nd)
-            elen_dxdy_ele_dx2(i,nd) = elen_e%diff2%df_xy(i,nd)
-            elen_dydz_ele_dx2(i,nd) = elen_e%diff2%df_yz(i,nd)
-            elen_dzdx_ele_dx2(i,nd) = elen_e%diff2%df_zx(i,nd)
+            diff2_1%df_x2(i,nd) = elen_e%diff2%df_x2(i,nd)
+            diff2_1%df_y2(i,nd) = elen_e%diff2%df_y2(i,nd)
+            diff2_1%df_z2(i,nd) = elen_e%diff2%df_z2(i,nd)
+            diff2_1%df_xy(i,nd) = elen_e%diff2%df_xy(i,nd)
+            diff2_1%df_yz(i,nd) = elen_e%diff2%df_yz(i,nd)
+            diff2_1%df_zx(i,nd) = elen_e%diff2%df_zx(i,nd)
           end do
 !$omp end do nowait
         end do
@@ -98,12 +98,12 @@
             elen_e%diff%df_yz(i,nd) = elen_dydz_ele_dx(i,nd)
             elen_e%diff%df_zx(i,nd) = elen_dzdx_ele_dx(i,nd)
 !
-            elen_e%diff2%df_x2(i,nd) = elen_dx2_ele_dx2(i,nd)
-            elen_e%diff2%df_y2(i,nd) = elen_dy2_ele_dx2(i,nd)
-            elen_e%diff2%df_z2(i,nd) = elen_dz2_ele_dx2(i,nd)
-            elen_e%diff2%df_xy(i,nd) = elen_dxdy_ele_dx2(i,nd)
-            elen_e%diff2%df_yz(i,nd) = elen_dydz_ele_dx2(i,nd)
-            elen_e%diff2%df_zx(i,nd) = elen_dzdx_ele_dx2(i,nd)
+            elen_e%diff2%df_x2(i,nd) = diff2_1%df_x2(i,nd)
+            elen_e%diff2%df_y2(i,nd) = diff2_1%df_y2(i,nd)
+            elen_e%diff2%df_z2(i,nd) = diff2_1%df_z2(i,nd)
+            elen_e%diff2%df_xy(i,nd) = diff2_1%df_xy(i,nd)
+            elen_e%diff2%df_yz(i,nd) = diff2_1%df_yz(i,nd)
+            elen_e%diff2%df_zx(i,nd) = diff2_1%df_zx(i,nd)
           end do
 !$omp end do nowait
         end do

@@ -42,11 +42,11 @@
       use cal_filter_func_node
 !
 !
-      if(iflag_debug.eq.1)  write(*,*)'s_cal_filter_moms_ele_by_elen'
+      if(iflag_debug.eq.1)  write(*,*)'cal_fmoms_ele_by_elen_1st'
       call allocate_filter_moms_nod(nnod_filter_mom)
       call allocate_filter_moms_ele(nele_filter_mom)
-      call s_cal_filter_moms_ele_by_elen(ione)
-      call s_cal_filter_moms_ele_by_elen(itwo)
+      call cal_fmoms_ele_by_elen_1st(ione)
+      call cal_fmoms_ele_by_elen_1st(itwo)
 !
       if (itype_mass_matrix .eq. 1) call release_mass_mat_for_consist
 !
@@ -105,13 +105,13 @@
           if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
         call s_const_filter_mom_ele(ione)
           if(iflag_debug.eq.1)                                          &
-     &       write(*,*) 's_cal_filter_moms_ele_by_elen 2'
-        call s_cal_filter_moms_ele_by_elen(itwo)
+     &       write(*,*) 'cal_fmoms_ele_by_elen_1st 2'
+        call cal_fmoms_ele_by_elen_1st(itwo)
 !
           if(iflag_debug.eq.1)  write(*,*) 'set_simple_fluid_filter'
         call set_simple_fluid_filter
 !
-        call s_cal_filter_moms_ele_by_elen(itwo)
+        call cal_fmoms_ele_by_elen_1st(itwo)
         if (itype_mass_matrix .eq. 1) call release_mass_mat_for_consist
 !
         call deallocate_iele_belonged
@@ -137,11 +137,11 @@
       character(len=kchara) :: file_name
 !
 !
-      if(iflag_debug.eq.1)  write(*,*)'s_cal_filter_moms_ele_by_elen'
+      if(iflag_debug.eq.1)  write(*,*)'cal_fmoms_ele_by_elen_1st'
       call allocate_filter_moms_nod(nnod_filter_mom)
       call allocate_filter_moms_ele(nele_filter_mom)
-      call s_cal_filter_moms_ele_by_elen(ione)
-      call s_cal_filter_moms_ele_by_elen(itwo)
+      call cal_fmoms_ele_by_elen_1st(ione)
+      call cal_fmoms_ele_by_elen_1st(itwo)
       if (itype_mass_matrix .eq. 1) call release_mass_mat_for_consist
 !
 !  ---------------------------------------------------
@@ -242,10 +242,10 @@
       call s_const_filter_mom_ele(ione)
         if(iflag_debug.eq.1)                                            &
      &       write(*,*) 'correct_filter_moms_ele_by_elen 1'
-      call correct_filter_moms_ele_by_elen(ione)
+      call correct_fmoms_ele_by_elen_1st(ione)
         if(iflag_debug.eq.1)                                            &
-     &       write(*,*) 's_cal_filter_moms_ele_by_elen 2'
-      call s_cal_filter_moms_ele_by_elen(itwo)
+     &       write(*,*) 'cal_fmoms_ele_by_elen_1st 2'
+      call cal_fmoms_ele_by_elen_1st(itwo)
 !
       if(iflag_debug.eq.1)  write(*,*)'correct_wrong_fluid_filters'
       call correct_wrong_fluid_filters(org_filter_coef_code)
@@ -260,7 +260,7 @@
 !
       close(org_filter_coef_code)
 !
-      call s_cal_filter_moms_ele_by_elen(itwo)
+      call cal_fmoms_ele_by_elen_1st(itwo)
 !
       end subroutine correct_by_simple_filter
 !

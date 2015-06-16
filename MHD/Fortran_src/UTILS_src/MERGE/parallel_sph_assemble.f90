@@ -228,7 +228,8 @@
      &    izero, CALYPSO_COMM, ierr_MPI)
       call MPI_Bcast(new_sph_mesh(1)%sph_mesh%sph_rj%nidx_rj(1),        &
      &    ione, CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
-     write(*,*) 'iflag_same_rgrid: ', r_itp%iflag_same_rgrid,           &
+      if(my_rank .eq. 0) write(*,*) 'iflag_same_rgrid: ',               &
+     &            r_itp%iflag_same_rgrid,                               &
      &            new_sph_mesh(1)%sph_mesh%sph_rj%nidx_rj(1)
 !
       if(r_itp%iflag_same_rgrid .eq. 0) then

@@ -1,8 +1,12 @@
-!set_nodal_field_for_psf.f90
-!      module set_nodal_field_for_psf
+!>@file  set_nodal_field_for_psf.f90
+!!       module set_nodal_field_for_psf
+!!
+!!@author H. Matsui
+!!@date   Programmed in June, 2006
 !
-!      Written by H. Matsui on June, 2006
-!
+!>@brief Set nodal field for sectioning
+!!
+!!@verbatim
 !!      subroutine count_position_4_psf(psf_list, psf_node)
 !!        type(sectioning_list), intent(in) :: psf_list
 !!        type(node_data), intent(inout) :: psf_node
@@ -17,6 +21,7 @@
 !!     &          d_nod, ifield_psf, ncomp, dat_tmp, psf_list)
 !!
 !!      subroutine set_const_on_psf(nnod_patch, const, dat_psf)
+!!@endverbatim
 !
       module set_nodal_field_for_psf
 !
@@ -159,7 +164,8 @@
       integer(kind = kint), intent(in) :: nnod_on_edge, ishift
       integer(kind = kint), intent(in) :: istack_n_on_e_smp(0:np_smp)
       integer(kind = kint), intent(in) :: iedge_4_nod(nnod_on_edge)
-      real(kind= kreal), intent(inout) :: coef_on_edge(nnod_on_edge,2)
+      real(kind= kreal), intent(in) :: coef_on_edge(nnod_on_edge,2)
+!
       integer(kind = kint_gl), intent(in) :: istack_intnod
       integer(kind = kint), intent(in) :: nnod_patch
 !
@@ -233,7 +239,8 @@
       integer(kind = kint), intent(in) :: nnod_on_edge, ishift
       integer(kind = kint), intent(in) :: istack_n_on_e_smp(0:np_smp)
       integer(kind = kint), intent(in) :: iedge_4_nod(nnod_on_edge)
-      real(kind= kreal), intent(inout) :: coef_on_edge(nnod_on_edge,2)
+      real(kind= kreal), intent(in) :: coef_on_edge(nnod_on_edge,2)
+!
       integer(kind = kint), intent(in) :: nnod_patch, ncomp
       real(kind = kreal), intent(in) :: d_nod(nnod,ncomp)
 !

@@ -1,108 +1,110 @@
+!> @file  t_filter_elength.f90
+!!      module t_filter_elength
+!!
+!! @author  H. Matsui
+!! @date Programmed in March, 2009
+!!@n     Modified in Feb., 2012
 !
-!      module t_filter_elength
-!
-!     Written by H. Matsui on March, 2009
-!     Modified by H. Matsui on Feb., 2012
-!
-!>    @brief Strucure for element length of SGS model filtering
-!
-!      subroutine alloc_elen_ele_type(nele_filter_mom, elen_ele)
-!        integer (kind = kint), intent(in) :: nele_filter_mom
-!        type(ele_mom_diffs_type), intent(inout) :: elen_ele
-!       (substitution of allocate_ele_length )
-!      subroutine alloc_nodal_elen_type(nnod_filter_mom, elen_nod)
-!        integer (kind = kint), intent(in) :: nnod_filter_mom
-!        type(ele_mom_diffs_type), intent(inout) :: elen_nod
-!       (substitution of allocate_nodal_ele_length )
-!
-!      subroutine alloc_ref_1d_mom_type(filter_conf)
-!        type(filter_config_type), intent(inout) ::  filter_conf
-!       (substitution of allocate_ref_1d_moment )
-!      subroutine dealloc_filter_mom_type(FEM_elens)
-!        type(gradient_model_data_type), intent(inout) :: FEM_elens
-!       (substitution of deallocate_filter_moments )
-!
-!      subroutine dealloc_elen_type(elen_ele)
-!        type(ele_mom_diffs_type), intent(inout) :: elen_ele
-!       (substitution of deallocate_ele_length )
-!      subroutine dealloc_nodal_elen_type(elen_nod)
-!        type(ele_mom_diffs_type), intent(inout) :: elen_nod
-!       (substitution of deallocate_nodal_ele_length )
-!      subroutine dealloc_ref_1d_mom_type(filter_conf)
-!        type(filter_config_type), intent(inout) ::  filter_conf
-!       (substitution of deallocate_ref_1d_moment )
-!
-!   data comparison
-!
-!    nf_type...     nf_type
-!    isgs_4_div...  isgs_4_div
-!   filter function number for time evolution
-!         dynamic model: isgs_4_div = 2, other models: isgs_4_div = 1
-!
-!   filter_type(:)...   filter_type
-!   f_width(:)...       f_width
-!   xmom_1d_org(:,:)... xmom_1d_org
-!          one dimensional moment in reference frame
-!              (direction,filter No,order)
-!
-!      nnod_filter_mom... filter_nod%num_fmom
-!      nele_filter_mom... filter_ele%num_fmom
-!
-!
-!      elen_dx2_nod(i)... elen_nod%moms%f_x2(i)
-!      elen_dy2_nod(i)... elen_nod%moms%f_y2(i)
-!      elen_dz2_nod(i)... elen_nod%moms%f_z2(i)
-!          ratio of element size on nodet (node ID, direction)
-!      elen_dxdy_nod(i)... elen_nod%moms%f_xy(i)
-!      elen_dydz_nod(i)... elen_nod%moms%f_yz(i)
-!      elen_dzdx_nod(i)... elen_nod%moms%f_zx(i)
-!          ratio of element size  on node (node ID, direction)
-!
-!      elen_dx2_nod_dx(i,nd)...  elen_nod%diff%df_x2(i,nd)
-!      elen_dy2_nod_dx(i,nd)...  elen_nod%diff%df_y2(i,nd)
-!      elen_dz2_nod_dx(i,nd)...  elen_nod%diff%df_z2(i,nd)
-!          1st difference of elelemet length on node
-!              (element ID, direction of diffrence)
-!      elen_dxdy_nod_dx(i,nd)... elen_nod%diff%df_xy(i,nd)
-!      elen_dydz_nod_dx(i,nd)... elen_nod%diff%df_yz(i,nd)
-!      elen_dzdx_nod_dx(i,nd)... elen_nod%diff%df_zx(i,nd)
-!          1st difference of elelemet length on node
-!              (element ID, direction of diffrence)
-!
-!      elen_dx2_ele(i)... elen_ele%moms%f_x2(i)
-!      elen_dy2_ele(i)... elen_ele%moms%f_y2(i)
-!      elen_dz2_ele(i)... elen_ele%moms%f_z2(i)
-!          ratio of element size at each element (element ID, direction)
-!      elen_dxdy_ele(i)... elen_ele%moms%f_xy(i)
-!      elen_dydz_ele(i)... elen_ele%moms%f_yz(i)
-!      elen_dzdx_ele(i)... elen_ele%moms%f_zx(i)
-!          ratio of element size at each element (element ID, direction)
-!
-!      elen_dx2_ele_dx(i,nd)...  elen_ele%diff%df_x2(i,nd)
-!      elen_dy2_ele_dx(i,nd)...  elen_ele%diff%df_y2(i,nd)
-!      elen_dz2_ele_dx(i,nd)...  elen_ele%diff%df_z2(i,nd)
-!          1st difference of elelemet length
-!              (element ID, direction of diffrence)
-!      elen_dxdy_ele_dx(i,nd)... elen_ele%diff%df_xy(i,nd)
-!      elen_dydz_ele_dx(i,nd)... elen_ele%diff%df_yz(i,nd)
-!      elen_dzdx_ele_dx(i,nd)... elen_ele%diff%df_zx(i,nd)
-!          1st difference of elelemet length
-!              (element ID, direction of diffrence)
-!
-!      elen_dx2_ele_dx2(i,nd)...  elen_ele%diff2%df_x2(i,nd)
-!      elen_dy2_ele_dx2(i,nd)...  elen_ele%diff2%df_y2(i,nd)
-!      elen_dz2_ele_dx2(i,nd)...  elen_ele%diff2%df_z2(i,nd)
-!          2nd difference of elelemet length
-!              (element ID, direction of diffrence)
-!      elen_dxdy_ele_dx2(i,nd)... elen_ele%diff2%df_xy(i,nd)
-!      elen_dydz_ele_dx2(i,nd)... elen_ele%diff2%df_yz(i,nd)
-!      elen_dzdx_ele_dx2(i,nd)... elen_ele%diff2%df_zx(i,nd)
-!          2nd difference of elelemet length
-!              (element ID, direction of diffrence)
-!
-!         i:     element ID
-!         nd:    direction of differenciate
-!
+!>@brief Strucure for element length of SGS model filtering
+!!
+!!@verbatim
+!!      subroutine alloc_elen_ele_type(nele_filter_mom, elen_ele)
+!!        integer (kind = kint), intent(in) :: nele_filter_mom
+!!        type(ele_mom_diffs_type), intent(inout) :: elen_ele
+!!       (substitution of allocate_ele_length )
+!!      subroutine alloc_nodal_elen_type(nnod_filter_mom, elen_nod)
+!!        integer (kind = kint), intent(in) :: nnod_filter_mom
+!!        type(ele_mom_diffs_type), intent(inout) :: elen_nod
+!!       (substitution of allocate_nodal_ele_length )
+!!
+!!      subroutine alloc_ref_1d_mom_type(filter_conf)
+!!        type(filter_config_type), intent(inout) ::  filter_conf
+!!       (substitution of allocate_ref_1d_moment )
+!!      subroutine dealloc_filter_mom_type(FEM_elens)
+!!        type(gradient_model_data_type), intent(inout) :: FEM_elens
+!!       (substitution of deallocate_filter_moments )
+!!
+!!      subroutine dealloc_elen_type(elen_ele)
+!!        type(ele_mom_diffs_type), intent(inout) :: elen_ele
+!!       (substitution of deallocate_ele_length )
+!!      subroutine dealloc_nodal_elen_type(elen_nod)
+!!        type(ele_mom_diffs_type), intent(inout) :: elen_nod
+!!       (substitution of deallocate_nodal_ele_length )
+!!      subroutine dealloc_ref_1d_mom_type(filter_conf)
+!!        type(filter_config_type), intent(inout) ::  filter_conf
+!!       (substitution of deallocate_ref_1d_moment )
+!!
+!!   data comparison
+!!
+!!    nf_type...     nf_type
+!!    isgs_4_div...  isgs_4_div
+!!   filter function number for time evolution
+!!         dynamic model: isgs_4_div = 2, other models: isgs_4_div = 1
+!!
+!!   filter_type(:)...   filter_type
+!!   f_width(:)...       f_width
+!!   xmom_1d_org(:,:)... xmom_1d_org
+!!          one dimensional moment in reference frame
+!!              (direction,filter No,order)
+!!
+!!      nnod_filter_mom... filter_nod%num_fmom
+!!      nele_filter_mom... filter_ele%num_fmom
+!!
+!!
+!!      elen_dx2_nod(i)... elen_nod%moms%f_x2(i)
+!!      elen_dy2_nod(i)... elen_nod%moms%f_y2(i)
+!!      elen_dz2_nod(i)... elen_nod%moms%f_z2(i)
+!!          ratio of element size on nodet (node ID, direction)
+!!      elen_dxdy_nod(i)... elen_nod%moms%f_xy(i)
+!!      elen_dydz_nod(i)... elen_nod%moms%f_yz(i)
+!!      elen_dzdx_nod(i)... elen_nod%moms%f_zx(i)
+!!          ratio of element size  on node (node ID, direction)
+!!
+!!      elen_dx2_nod_dx(i,nd)...  elen_nod%diff%df_x2(i,nd)
+!!      elen_dy2_nod_dx(i,nd)...  elen_nod%diff%df_y2(i,nd)
+!!      elen_dz2_nod_dx(i,nd)...  elen_nod%diff%df_z2(i,nd)
+!!          1st difference of elelemet length on node
+!!              (element ID, direction of diffrence)
+!!      elen_dxdy_nod_dx(i,nd)... elen_nod%diff%df_xy(i,nd)
+!!      elen_dydz_nod_dx(i,nd)... elen_nod%diff%df_yz(i,nd)
+!!      elen_dzdx_nod_dx(i,nd)... elen_nod%diff%df_zx(i,nd)
+!!          1st difference of elelemet length on node
+!!              (element ID, direction of diffrence)
+!!
+!!      elen_dx2_ele(i)... elen_ele%moms%f_x2(i)
+!!      elen_dy2_ele(i)... elen_ele%moms%f_y2(i)
+!!      elen_dz2_ele(i)... elen_ele%moms%f_z2(i)
+!!          ratio of element size at each element (element ID, direction)
+!!      elen_dxdy_ele(i)... elen_ele%moms%f_xy(i)
+!!      elen_dydz_ele(i)... elen_ele%moms%f_yz(i)
+!!      elen_dzdx_ele(i)... elen_ele%moms%f_zx(i)
+!!          ratio of element size at each element (element ID, direction)
+!!
+!!      elen_dx2_ele_dx(i,nd)...  elen_ele%diff%df_x2(i,nd)
+!!      elen_dy2_ele_dx(i,nd)...  elen_ele%diff%df_y2(i,nd)
+!!      elen_dz2_ele_dx(i,nd)...  elen_ele%diff%df_z2(i,nd)
+!!          1st difference of elelemet length
+!!              (element ID, direction of diffrence)
+!!      elen_dxdy_ele_dx(i,nd)... elen_ele%diff%df_xy(i,nd)
+!!      elen_dydz_ele_dx(i,nd)... elen_ele%diff%df_yz(i,nd)
+!!      elen_dzdx_ele_dx(i,nd)... elen_ele%diff%df_zx(i,nd)
+!!          1st difference of elelemet length
+!!              (element ID, direction of diffrence)
+!!
+!!      elen_dx2_ele_dx2(i,nd)...  elen_ele%diff2%df_x2(i,nd)
+!!      elen_dy2_ele_dx2(i,nd)...  elen_ele%diff2%df_y2(i,nd)
+!!      elen_dz2_ele_dx2(i,nd)...  elen_ele%diff2%df_z2(i,nd)
+!!          2nd difference of elelemet length
+!!              (element ID, direction of diffrence)
+!!      elen_dxdy_ele_dx2(i,nd)... elen_ele%diff2%df_xy(i,nd)
+!!      elen_dydz_ele_dx2(i,nd)... elen_ele%diff2%df_yz(i,nd)
+!!      elen_dzdx_ele_dx2(i,nd)... elen_ele%diff2%df_zx(i,nd)
+!!          2nd difference of elelemet length
+!!              (element ID, direction of diffrence)
+!!
+!!         i:     element ID
+!!         nd:    direction of differenciate
+!!@endverbatim
 !
       module t_filter_elength
 !
@@ -154,6 +156,15 @@
         real(kind=kreal),   pointer :: df_yz(:,:)
         real(kind=kreal),   pointer :: df_zx(:,:)
       end type filter_mom_diffs_type
+!
+      type elen_diffs_type
+        real(kind=kreal),   pointer :: df_x2(:,:)
+        real(kind=kreal),   pointer :: df_y2(:,:)
+        real(kind=kreal),   pointer :: df_z2(:,:)
+        real(kind=kreal),   pointer :: df_xy(:,:)
+        real(kind=kreal),   pointer :: df_yz(:,:)
+        real(kind=kreal),   pointer :: df_zx(:,:)
+      end type elen_diffs_type
 !
       type nod_mom_diffs_type
         type(filter_mom_type) :: moms
@@ -258,6 +269,48 @@
       end subroutine alloc_filter_mom_diffs_type
 !
 !  ---------------------------------------------------------------------
+!
+      subroutine alloc_elen_diffs_type(num_elen, elens)
+!
+      integer (kind = kint), intent(in) :: num_elen
+      type(elen_diffs_type), intent(inout)  :: elens
+!
+!
+      allocate( elens%df_x2(num_elen,3) )
+      allocate( elens%df_y2(num_elen,3) )
+      allocate( elens%df_z2(num_elen,3) )
+!
+      allocate( elens%df_xy(num_elen,3) )
+      allocate( elens%df_yz(num_elen,3) )
+      allocate( elens%df_zx(num_elen,3) )
+!
+      call clear_elen_diffs_type(num_elen, elens)
+!
+      end subroutine alloc_elen_diffs_type
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine clear_elen_diffs_type(num_elen, elens)
+!
+      integer (kind = kint), intent(in) :: num_elen
+      type(elen_diffs_type), intent(inout)  :: elens
+!
+!
+      if (num_elen .gt. 0) then
+!$omp workshare
+        elens%df_x2 = 0.0d0
+        elens%df_y2 = 0.0d0
+        elens%df_z2 = 0.0d0
+        elens%df_xy = 0.0d0
+        elens%df_yz = 0.0d0
+        elens%df_zx = 0.0d0
+!$omp end workshare
+      end if 
+!
+      end subroutine clear_elen_diffs_type
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine dealloc_moments_type(moms)
@@ -285,6 +338,18 @@
       deallocate( dmoms%df_xy, dmoms%df_yz, dmoms%df_zx )
 !
       end subroutine dealloc_filter_mom_diffs_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_elen_diffs_type(elens)
+!
+      type(elen_diffs_type), intent(inout)  :: elens
+!
+!
+      deallocate( elens%df_x2, elens%df_y2, elens%df_z2 )
+      deallocate( elens%df_xy, elens%df_yz, elens%df_zx )
+!
+      end subroutine dealloc_elen_diffs_type
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

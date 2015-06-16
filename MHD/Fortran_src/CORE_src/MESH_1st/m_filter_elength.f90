@@ -16,9 +16,14 @@
       module m_filter_elength
 !
       use m_precision
+      use t_filter_elength
 !
       implicit none
 !
+!
+      type(elen_diffs_type), save :: diff2_1
+!
+
       integer (kind = kint) :: nf_type
       integer (kind = kint) :: isgs_4_div = 1
 !   filter function number for time evolution
@@ -75,16 +80,23 @@
 !          1st difference of elength
 !              (element ID, direction of diffrence)
 !
-      real(kind=kreal),   allocatable :: elen_dx2_ele_dx2(:,:)
-      real(kind=kreal),   allocatable :: elen_dy2_ele_dx2(:,:)
-      real(kind=kreal),   allocatable :: elen_dz2_ele_dx2(:,:)
+!      real(kind=kreal),   allocatable :: elen_dx2_ele_dx2(:,:)
+!      real(kind=kreal),   allocatable :: elen_dy2_ele_dx2(:,:)
+!      real(kind=kreal),   allocatable :: elen_dz2_ele_dx2(:,:)
+!      diff2_1%df_x2
+!      diff2_1%df_y2
+!      diff2_1%df_z2
 !          2nd difference of elength
 !              (element ID, direction of diffrence)
-      real(kind=kreal),   allocatable :: elen_dxdy_ele_dx2(:,:)
-      real(kind=kreal),   allocatable :: elen_dydz_ele_dx2(:,:)
-      real(kind=kreal),   allocatable :: elen_dzdx_ele_dx2(:,:)
+!      real(kind=kreal),   allocatable :: elen_dxdy_ele_dx2(:,:)
+!      real(kind=kreal),   allocatable :: elen_dydz_ele_dx2(:,:)
+!      real(kind=kreal),   allocatable :: elen_dzdx_ele_dx2(:,:)
+!      diff2_1%df_xy
+!      diff2_1%df_yz
+!      diff2_1%df_zx
 !          2nd difference of elength
 !              (element ID, direction of diffrence)
+!
 !
 !  ---------------------------------------------------------------------
 !
@@ -110,12 +122,7 @@
         allocate( elen_dydz_ele_dx(nele_filter_mom,3) )
         allocate( elen_dzdx_ele_dx(nele_filter_mom,3) )
 !
-        allocate( elen_dx2_ele_dx2(nele_filter_mom,3) )
-        allocate( elen_dy2_ele_dx2(nele_filter_mom,3) )
-        allocate( elen_dz2_ele_dx2(nele_filter_mom,3) )
-        allocate( elen_dxdy_ele_dx2(nele_filter_mom,3) )
-        allocate( elen_dydz_ele_dx2(nele_filter_mom,3) )
-        allocate( elen_dzdx_ele_dx2(nele_filter_mom,3) )
+      call alloc_elen_diffs_type(nele_filter_mom, diff2_1)
 !
        elen_dx2_ele = 0.0d0
        elen_dy2_ele = 0.0d0
@@ -131,13 +138,6 @@
        elen_dxdy_ele_dx = 0.0d0
        elen_dydz_ele_dx = 0.0d0
        elen_dzdx_ele_dx = 0.0d0
-!
-       elen_dx2_ele_dx2 = 0.0d0
-       elen_dy2_ele_dx2 = 0.0d0
-       elen_dz2_ele_dx2 = 0.0d0
-       elen_dxdy_ele_dx2 = 0.0d0
-       elen_dydz_ele_dx2 = 0.0d0
-       elen_dzdx_ele_dx2 = 0.0d0
 !
        end subroutine allocate_ele_length
 !
@@ -223,12 +223,7 @@
         deallocate( elen_dydz_ele_dx )
         deallocate( elen_dzdx_ele_dx )
 !
-        deallocate( elen_dx2_ele_dx2 )
-        deallocate( elen_dy2_ele_dx2 )
-        deallocate( elen_dz2_ele_dx2 )
-        deallocate( elen_dxdy_ele_dx2 )
-        deallocate( elen_dydz_ele_dx2 )
-        deallocate( elen_dzdx_ele_dx2 )
+      call dealloc_elen_diffs_type(diff2_1)
 !
        end subroutine deallocate_ele_length
 !

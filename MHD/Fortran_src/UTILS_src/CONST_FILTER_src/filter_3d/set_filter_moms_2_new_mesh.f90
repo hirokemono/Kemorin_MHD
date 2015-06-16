@@ -54,7 +54,8 @@
 !
       type(element_data), intent(in) :: new_ele
 !
-      integer(kind = kint) :: iele, iele_gl
+      integer(kind = kint) :: iele
+      integer(kind = kint_gl) :: iele_gl
 !
 !
       iele_local_2nd(1:max_gl_ele_newdomain) = 0
@@ -79,13 +80,14 @@
 !
       type(node_data), intent(in) :: new_node
 !
-      integer(kind = kint) :: iele, iele_gl, iele_2nd, nd
+      integer(kind = kint) :: iele, iele_2nd, nd
+      integer(kind = kint_gl) :: iele_gl
 !
 !
       do iele = 1, numele
         iele_gl = iele_global(iele)
         if (ie(iele,1) .le. new_node%internal_node                      &
-     &      .and. iele_gl .le. max_gl_ele_newdomain                     &
+     &      .and. int(iele_gl) .le. max_gl_ele_newdomain                &
      &      .and. iele_local_2nd(iele_gl) .gt. 0) then
 !
           iele_2nd = iele_local_2nd(iele_gl)
@@ -112,17 +114,17 @@
      &         = elen_dzdx_ele_dx(iele,nd)
 !
             elen_dx2_ele_dx2_2nd(iele_2nd,nd)                           &
-     &         = elen_dx2_ele_dx2(iele,nd)
+     &         = diff2_1%df_x2(iele,nd)
             elen_dy2_ele_dx2_2nd(iele_2nd,nd)                           &
-     &         = elen_dy2_ele_dx2(iele,nd)
+     &         = diff2_1%df_y2(iele,nd)
             elen_dz2_ele_dx2_2nd(iele_2nd,nd)                           &
-     &         = elen_dz2_ele_dx2(iele,nd)
+     &         = diff2_1%df_z2(iele,nd)
             elen_dxdy_ele_dx2_2nd(iele_2nd,nd)                          &
-     &         = elen_dxdy_ele_dx2(iele,nd)
+     &         = diff2_1%df_xy(iele,nd)
             elen_dydz_ele_dx2_2nd(iele_2nd,nd)                          &
-     &         = elen_dydz_ele_dx2(iele,nd)
+     &         = diff2_1%df_yz(iele,nd)
             elen_dzdx_ele_dx2_2nd(iele_2nd,nd)                          &
-     &         = elen_dzdx_ele_dx2(iele,nd)
+     &         = diff2_1%df_zx(iele,nd)
           end do
 !
         end if
@@ -142,7 +144,8 @@
 !
       type(node_data), intent(in) :: new_node
 !
-      integer(kind = kint) :: iele, iele_gl, iele_2nd, nd, ifil
+      integer(kind = kint) :: iele, iele_2nd, nd, ifil
+      integer(kind = kint_gl) :: iele_gl
 !
 !
       do iele = 1, numele

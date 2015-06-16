@@ -123,9 +123,6 @@
         increment_step = i_step_rst_ctl%intvalue
       end if
 !
-      write(*,*) 'istep_start, istep_end, increment_step',              &
-     &           istep_start, istep_end, increment_step
-!
       end subroutine set_control_4_newsph
 !
 ! -----------------------------------------------------------------------

@@ -1,10 +1,17 @@
 !
 !     module cal_diff_elesize_on_ele
 !
-      module cal_diff_elesize_on_ele
-!
 !     Written by H. Matsui on Nov., 2006
 !     Modified by H. Matsui on Mar., 2008
+!
+!      subroutine cal_diffs_delta_on_element
+!      subroutine cal_2nd_diffs_delta_on_element
+!
+!      subroutine cal_filter_moms_ele_by_nod(ifil)
+!      subroutine cal_1st_diffs_filter_ele(ifil)
+!      subroutine cal_2nd_diffs_filter_ele(ifil)
+!
+      module cal_diff_elesize_on_ele
 !
       use m_precision
 !
@@ -13,13 +20,6 @@
       integer(kind=kint), parameter :: n_vector = 3
       private :: n_vector
       private :: take_1st_diffs_ele, take_2nd_diffs_ele
-!
-!      subroutine cal_diffs_delta_on_element
-!      subroutine cal_2nd_diffs_delta_on_element
-!
-!      subroutine cal_filter_moms_ele_by_nod(ifil)
-!      subroutine cal_1st_diffs_filter_ele(ifil)
-!      subroutine cal_2nd_diffs_filter_ele(ifil)
 !
 !  ---------------------------------------------------------------------
 !
@@ -114,19 +114,19 @@
 !
       use m_filter_elength
 !
-      call take_2nd_diffs_ele(elen_dx2_nod_dx(1,1),                     &
-     &                        elen_dx2_ele_dx2(1,1))
-      call take_2nd_diffs_ele(elen_dy2_nod_dx(1,1),                     &
-     &                        elen_dy2_ele_dx2(1,1))
-      call take_2nd_diffs_ele(elen_dz2_nod_dx(1,1),                     &
-     &                        elen_dz2_ele_dx2(1,1))
+      call take_2nd_diffs_ele(elen_dx2_nod_dx,                     &
+     &                        diff2_1%df_x2)
+      call take_2nd_diffs_ele(elen_dy2_nod_dx,                     &
+     &                        diff2_1%df_y2)
+      call take_2nd_diffs_ele(elen_dz2_nod_dx,                     &
+     &                        diff2_1%df_z2)
 !
-      call take_2nd_diffs_ele(elen_dxdy_nod_dx(1,1),                    &
-     &                        elen_dxdy_ele_dx2(1,1))
-      call take_2nd_diffs_ele(elen_dydz_nod_dx(1,1),                    &
-     &                        elen_dydz_ele_dx2(1,1))
-      call take_2nd_diffs_ele(elen_dzdx_nod_dx(1,1),                    &
-     &                        elen_dzdx_ele_dx2(1,1))
+      call take_2nd_diffs_ele(elen_dxdy_nod_dx,                    &
+     &                        diff2_1%df_xy)
+      call take_2nd_diffs_ele(elen_dydz_nod_dx,                    &
+     &                        diff2_1%df_yz)
+      call take_2nd_diffs_ele(elen_dzdx_nod_dx,                    &
+     &                        diff2_1%df_zx)
 !
       end subroutine cal_2nd_diffs_delta_on_element
 !

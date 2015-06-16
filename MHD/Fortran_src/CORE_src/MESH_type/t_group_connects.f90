@@ -1,24 +1,27 @@
-!
-!     module t_group_connects
+!> @file  t_group_connects.f90
+!!      module t_group_connects
+!!
+!! @author  H. Matsui
+!! @date Programmed in Dec., 2008
 !
 !> @brief Structure of connectivity data for group items
-!
-!     Writteg by H.Matsui on Dec., 2008
-!
-!      subroutine alloc_surf_item_sf_grp_type(nitem_grp, sf_grp_data)
-!      subroutine alloc_num_other_grp(num_grp, e_grp)
-!      subroutine alloc_item_other_grp(e_grp)
-!
-!      subroutine dealloc_surf_item_sf_grp_type(sf_grp_data)
-!      subroutine dealloc_num_other_grp(e_grp)
-!      subroutine dealloc_item_other_grp(e_grp)
-!
-!      subroutine unlink_surf_item_sf_grp_type(sf_grp_data)
-!      subroutine unlink_num_other_grp(e_grp)
-!      subroutine unlink_item_other_grp(e_grp)
-!
-!      subroutine link_ele_grp_connect_type(tbls_org, tbls_ele_new)
-!      subroutine link_surf_grp_connect_type(tbls_org, tbls_sf_new)
+!!
+!!@verbatim
+!!      subroutine alloc_surf_item_sf_grp_type(nitem_grp, sf_grp_data)
+!!      subroutine alloc_num_other_grp(num_grp, e_grp)
+!!      subroutine alloc_item_other_grp(e_grp)
+!!
+!!      subroutine dealloc_surf_item_sf_grp_type(sf_grp_data)
+!!      subroutine dealloc_num_other_grp(e_grp)
+!!      subroutine dealloc_item_other_grp(e_grp)
+!!
+!!      subroutine unlink_surf_item_sf_grp_type(sf_grp_data)
+!!      subroutine unlink_num_other_grp(e_grp)
+!!      subroutine unlink_item_other_grp(e_grp)
+!!
+!!      subroutine link_ele_grp_connect_type(tbls_org, tbls_ele_new)
+!!      subroutine link_surf_grp_connect_type(tbls_org, tbls_sf_new)
+!!@endverbatim
 !
       module t_group_connects
 !
@@ -28,40 +31,40 @@
 !
 !>   Structure of connectivities for groups
       type group_connect_data
+!>   total number of connectivity for group
         integer(kind=kint) :: ntot_e_grp
-!<   total number of connectivity for group
+!>   number of item for each group
         integer(kind=kint), pointer :: nitem_e_grp(:)
-!<   number of item for each group
+!>   end number of item for each group
         integer(kind=kint), pointer :: istack_e_grp(:)
-!<   end number of item for each group
 !
+!>   local item ID for group
         integer(kind=kint), pointer :: item_e_grp(:)
-!<   local item ID for group
       end type group_connect_data
 !
 !
 !>   Structure of connectivities for element group
       type element_group_table
+!>   local surface connectivity for element group
         type(group_connect_data) :: surf
-!<   local surface connectivity for element group
+!>   local edge connectivity for element group
         type(group_connect_data) :: edge
-!<   local edge connectivity for element group
+!>   local node connectivity for element group
         type(group_connect_data) :: node
-!<   local node connectivity for element group
       end type element_group_table
 !
 !
 !>   Structure of connectivities for surface group
       type surface_group_table
+!>   local surface ID for surface group
         integer(kind=kint), pointer :: isurf_grp(:)
-!<   local surface ID for surface group
+!>   local surface ID for opposite side of surface group
         integer(kind=kint), pointer :: isurf_grp_n(:)
-!<   local surface ID for opposite side of surface group
 !
+!>   local edge connectivity for surface group
         type(group_connect_data) :: edge
-!<   local edge connectivity for surface group
+!>   local node connectivity for surface group
         type(group_connect_data) :: node
-!<   local node connectivity for surface group
       end type surface_group_table
 !
 !

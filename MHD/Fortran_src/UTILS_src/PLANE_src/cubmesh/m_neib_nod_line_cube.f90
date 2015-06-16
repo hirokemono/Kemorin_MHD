@@ -101,7 +101,7 @@
       use filter_moment_data_IO_b
       use write_line_filter_data
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
 !
        i_st2 =  max(i_st-ndepth,1)
@@ -157,8 +157,6 @@
       use filter_moment_data_IO
       use filter_moment_data_IO_b
       use write_line_filter_data
-!
-      integer(kind = kint) :: j
 !
 !
        i_st2 =  max(i_st-ndepth,1)

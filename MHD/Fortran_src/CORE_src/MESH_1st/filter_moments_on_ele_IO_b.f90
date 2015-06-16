@@ -69,8 +69,8 @@
      &    elen_dxdy_ele, elen_dydz_ele, elen_dzdx_ele,                  &
      &    elen_dx2_ele_dx, elen_dy2_ele_dx, elen_dz2_ele_dx,            &
      &    elen_dxdy_ele_dx, elen_dydz_ele_dx, elen_dzdx_ele_dx,         &
-     &    elen_dx2_ele_dx2, elen_dy2_ele_dx2, elen_dz2_ele_dx2,         &
-     &    elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2)
+     &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
+     &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx)
 !
       end subroutine read_elength_ele_b
 !
@@ -89,8 +89,8 @@
      &    elen_dxdy_ele, elen_dydz_ele, elen_dzdx_ele,                  &
      &    elen_dx2_ele_dx, elen_dy2_ele_dx, elen_dz2_ele_dx,            &
      &    elen_dxdy_ele_dx, elen_dydz_ele_dx, elen_dzdx_ele_dx,         &
-     &    elen_dx2_ele_dx2, elen_dy2_ele_dx2, elen_dz2_ele_dx2,         &
-     &    elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2)
+     &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
+     &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx)
 !
       end subroutine write_elength_ele_b
 !
