@@ -77,7 +77,7 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      write(fmt_txt,'(a1,i1,a9)') '(', nprocs, '(i16),a1)'
+      write(fmt_txt,'(a1,i7,a9)') '(', nprocs, '(i16),a1)'
       write(buf_nfld,fmt_txt) istack_nod(1:nprocs)
 !
       buffer_istack_nod_buffer = buf_nfld // char(10)
