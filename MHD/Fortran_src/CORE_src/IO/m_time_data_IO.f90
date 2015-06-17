@@ -46,10 +46,11 @@
 !
       integer(kind = kint), parameter :: l_hd = 12 + 19 + 16 + 3
       integer(kind = kint), parameter :: l_dt = 2*16 + 2*25 + 3
-      integer(kind = kint), parameter :: n_buffer = l_hd+l_dt
+!
+      integer(kind = kint), parameter :: len_step_data_buf = l_hd+l_dt
 !
       private :: TIME_HD1, TIME_HD2, TIME_HD3
-      private :: l_hd, l_dt, n_buffer
+      private :: l_hd, l_dt
 !
 ! -------------------------------------------------------------------
 !
@@ -57,19 +58,11 @@
 !
 ! -------------------------------------------------------------------
 !
-      integer(kind = kint) function len_step_data_buf()
-!
-      len_step_data_buf = n_buffer
-!
-      end function len_step_data_buf
-!
-! -------------------------------------------------------------------
-!
       function step_data_buffer(my_rank)
 !
       integer(kind = kint), intent(in) :: my_rank
 !
-      character(len=n_buffer) :: step_data_buffer
+      character(len=len_step_data_buf) :: step_data_buffer
 !
       character(len=16) :: buf_pe, buf_step
       character(len=2*25) :: buf_time
@@ -92,7 +85,7 @@
 !
       subroutine read_step_data_buffer(textbuf, id_rank)
 !
-      character(len=n_buffer), intent(in) :: textbuf
+      character(len=len_step_data_buf), intent(in) :: textbuf
       integer(kind = kint), intent(inout) :: id_rank
 !
       character(len=kchara) :: tmpchara(6)

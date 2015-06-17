@@ -311,11 +311,11 @@
       character(len=1), allocatable :: textbuf(:)
 !
 !
-      ilength = len_step_data_buf()
+      ilength = len_step_data_buf
       allocate(textbuf(ilength))
       call gz_read_fld_charhead_mpi                                     &
      &   (id_fld, ioff_gl, ilength, textbuf(1))
-      if(my_rank .eq. 0) call read_step_data_buffer(textbuf(1), iread)
+      if(my_rank .eq. 0) call read_step_data_buf_ext(textbuf(1), iread)
       deallocate(textbuf)
 !
       if(my_rank.eq.0 .and. nprocs_in .ne. iread) then
@@ -351,7 +351,7 @@
       allocate(textbuf(ilength))
       call gz_read_fld_charhead_mpi                                     &
      &   (id_fld, ioff_gl, ilength, textbuf(1))
-      if(my_rank .eq. 0) call read_field_istack_nod_buffer              &
+      if(my_rank .eq. 0) call read_field_istack_nod_buf_ext             &
      &                      (textbuf(1), nprocs_in, istack_merged)
       deallocate(textbuf)
 !
@@ -359,7 +359,7 @@
       allocate(textbuf(ilength))
       call gz_read_fld_charhead_mpi                                     &
      &   (id_fld, ioff_gl, ilength, textbuf(1))
-      if(my_rank .eq. 0) call read_field_num_buffer                     &
+      if(my_rank .eq. 0) call read_field_num_buf_ext                    &
      &                      (textbuf(1), num_field)
       deallocate(textbuf)
 !
@@ -391,7 +391,7 @@
       allocate(textbuf(ilength))
       call gz_read_fld_charhead_mpi                                     &
      &   (id_fld, ioff_gl, ilength, textbuf(1))
-      if(my_rank .eq. 0) call read_field_comp_buffer                    &
+      if(my_rank .eq. 0) call read_field_comp_buf_ext                   &
      &                      (textbuf(1), num_field, ncomp_field)
       deallocate(textbuf)
 !

@@ -24,9 +24,9 @@ LIB_FILES_MERGE = \
 '$$(LIB_MESH_FILE)'
 
 LIBS_MERGE = \
-'$$(LIB_SOLVER)'    \
-'$$(LIB_PARA)'      \
 '$$(LIB_UTILS)'     \
+'$$(LIB_PARA)'      \
+'$$(LIB_SOLVER)'    \
 '$$(LIB_MESH)'
 
 ifdef FORTRAN_C_CONNECT

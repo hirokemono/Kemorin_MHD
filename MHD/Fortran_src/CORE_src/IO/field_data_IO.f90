@@ -154,8 +154,8 @@
       subroutine read_field_istack_nod_buffer                           &
      &         (textbuf, nprocs, istack_nod)
 !
-      character(len=25+1+nprocs*16+1), intent(in) :: textbuf
       integer(kind = kint), intent(in) :: nprocs
+      character(len=25+1+nprocs*16+1), intent(in) :: textbuf
       integer(kind = kint_gl), intent(inout) :: istack_nod(0:nprocs)
 !
       character(len=nprocs*16) ::    tmp1
@@ -171,8 +171,8 @@
       subroutine read_bufer_istack_nod_buffer                           &
      &         (textbuf, nprocs, istack_nod)
 !
-      character(nprocs*16+1), intent(in) :: textbuf
       integer(kind = kint), intent(in) :: nprocs
+      character(nprocs*16+1), intent(in) :: textbuf
       integer(kind = kint_gl), intent(inout) :: istack_nod(0:nprocs)
 !
 !
@@ -225,8 +225,8 @@
 !
       subroutine read_each_field_data_buffer(textbuf, ncomp, vect)
 !
-      character(len=ncomp*25+1), intent(in) :: textbuf
       integer(kind = kint), intent(in) :: ncomp
+      character(len=ncomp*25+1), intent(in) :: textbuf
       real(kind = kreal), intent(inout) :: vect(ncomp)
 !
 !

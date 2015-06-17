@@ -259,7 +259,7 @@
         call gzip_infleat_once                                          &
      &     (ilen_gz, gzip_buf(1), kchara, textbuf(1), ilen_gzipped)
 !
-        call read_each_field_name_buffer(textbuf(1), field_name)
+        call read_each_field_name_buf_ext(textbuf(1), field_name)
         ilength = len_trim(field_name) + 1
 !
         call gzip_infleat_once                                          &
@@ -280,6 +280,7 @@
      &          ioff_gl, nnod, ndir, vector)
 !
       use field_data_IO
+      use field_data_MPI_IO
 !
       integer, intent(in) ::  id_fld
       integer(kind = kint_gl), intent(inout) :: ioff_gl
@@ -326,22 +327,22 @@
       if(nnod .eq. 1) then
         call gzip_infleat_once                                          &
      &   (ilen_gz, gzip_buf(1), ilength, textbuf(1), ilen_gzipped)
-        call read_each_field_data_buffer(textbuf(1), ndir, v1)
+        call read_each_field_data_buf_ext(textbuf(1), ndir, v1)
         vector(1,1:ndir) = v1(1:ndir)
       else if(nnod .gt. 0) then
         call gzip_infleat_begin                                         &
      &   (ilen_gz, gzip_buf(1), ilength, textbuf(1), ilen_gzipped)
-        call read_each_field_data_buffer(textbuf(1), ndir, v1)
+        call read_each_field_data_buf_ext(textbuf(1), ndir, v1)
         vector(1,1:ndir) = v1(1:ndir)
         do inod = 2, nnod-1
           call gzip_infleat_cont                                        &
      &        (ilen_gz, ilength, textbuf(1), ilen_gzipped)
-          call read_each_field_data_buffer(textbuf(1), ndir, v1)
+          call read_each_field_data_buf_ext(textbuf(1), ndir, v1)
           vector(inod,1:ndir) = v1(1:ndir)
         end do
         call gzip_infleat_last                                          &
      &     (ilen_gz, ilength, textbuf(1), ilen_gzipped)
-        call read_each_field_data_buffer(textbuf(1), ndir, v1)
+        call read_each_field_data_buf_ext(textbuf(1), ndir, v1)
         vector(nnod,1:ndir) = v1(1:ndir)
       end if
       deallocate(gzip_buf, textbuf)
@@ -371,7 +372,7 @@
 !
       call gz_read_fld_charhead_mpi                                     &
      &   (id_fld, ioff_gl, ilength, textbuf(1))
-      call read_bufer_istack_nod_buffer                                 &
+      call read_bufer_istack_nod_buf_ext                                &
      &   (textbuf(1), nprocs_in, istack_buf)
       deallocate(textbuf)
 !
