@@ -31,8 +31,8 @@
 !
 !
       call cal_filter_moments_on_node(nnod_filter_mom,                  &
-     &           elen_n%f_x2, elen_n%f_y2, elen_n%f_z2,              &
-     &           elen_n%f_xy, elen_n%f_yz, elen_n%f_zx)
+     &           elenn%moms%f_x2, elenn%moms%f_y2, elenn%moms%f_z2,     &
+     &           elenn%moms%f_xy, elenn%moms%f_yz, elenn%moms%f_zx)
 !
       end subroutine cal_filter_moments_on_node_1st
 !
@@ -59,8 +59,9 @@
       call s_cal_1d_moments_4_filter
 !
 !      if (iflag_debug.eq.1)                                            &
-!     & write(*,*) 's_set_seeds_moments', nele_filter_mom, num_order_3d
-      do iele = 1, nele_filter_mom
+!     & write(*,*) 's_set_seeds_moments', FEM1_elen%nele_filter_mom,    &
+!     &             num_order_3d
+      do iele = 1, FEM1_elen%nele_filter_mom
         call s_set_seeds_moments                                        &
      &      (filter_dxi1%dxi_ele%dx%df_dxi(iele),                       &
      &       filter_dxi1%dxi_ele%dx%df_dei(iele),                       &

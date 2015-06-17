@@ -66,9 +66,10 @@
 !
 !
       call fem_skv_div_sgs_vector_upw(numele, nnod_4_ele, nnod_4_ele,   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt,          &
-     &    ntot_int_3d, xjac, aw, dwx, dwx,         &
-     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom, &
+     &    np_smp, iele_fsmp_stack, n_int, k2, dt,                       &
+     &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
+     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    ak_diff, vxe, sgs_1, flux_1, sk_v)
@@ -96,9 +97,10 @@
 !
 !
       call fem_skv_div_tensor_w_sgs_upw(numele, nnod_4_ele, nnod_4_ele, &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt,          &
-     &    ntot_int_3d, xjac, aw, dwx, dwx,             &
-     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom, &
+     &    np_smp, iele_fsmp_stack, n_int, k2, dt,                       &
+     &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
+     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    ak_diff, vxe, sgs_1, flux_1, sk_v)
@@ -126,9 +128,10 @@
 !
 !
       call fem_skv_div_as_tsr_w_sgs_upw(numele, nnod_4_ele, nnod_4_ele, &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt,          &
-     &    ntot_int_3d, xjac, aw, dwx, dwx,         &
-     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom, &
+     &    np_smp, iele_fsmp_stack, n_int, k2, dt,                       &
+     &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
+     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    ak_diff, vxe, sgs_1, flux_1, sk_v)
@@ -239,9 +242,10 @@
 !
       call fem_skv_sclr_inertia_modsgs_upw                              &
      &   (numele, nnod_4_ele, nnod_4_ele, np_smp,                       &
-     &    iele_fsmp_stack,n_int, k2, dt,                   &
-     &    ntot_int_3d, xjac, aw, dwx, dwx,   &
-     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom, &
+     &    iele_fsmp_stack,n_int, k2, dt,                                &
+     &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
+     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    ak_diff, scalar_e, sgs_e, flux_e, vxe, vxe_up, sk_v)
@@ -273,9 +277,10 @@
 !
       call fem_skv_vect_inertia_modsgs_upw                              &
      &   (numele, nnod_4_ele, nnod_4_ele, np_smp,                       &
-     &    iele_fsmp_stack, n_int, k2, dt,                  &
-     &    ntot_int_3d, xjac, aw, dwx, dwx,        &
-     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom, &
+     &    iele_fsmp_stack, n_int, k2, dt,                               &
+     &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
+     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    ak_diff, vector_e, sgs_e, flux_e, vxe, vxe_up, sk_v)

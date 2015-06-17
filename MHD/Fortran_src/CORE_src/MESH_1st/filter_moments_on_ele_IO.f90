@@ -65,7 +65,7 @@
       integer(kind = kint), intent(in) :: id_file
 !
 !
-      call read_elens_ele(id_file, nele_filter_mom,                     &
+      call read_elens_ele(id_file, FEM1_elen%nele_filter_mom,           &
      &    elen1%moms%f_x2, elen1%moms%f_y2, elen1%moms%f_z2,            &
      &    elen1%moms%f_xy, elen1%moms%f_yz, elen1%moms%f_zx,            &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
@@ -86,7 +86,7 @@
 !
 !    output coefs for filters for each node
 !
-      call write_elens_ele(id_file, nele_filter_mom,                    &
+      call write_elens_ele(id_file, FEM1_elen%nele_filter_mom,          &
      &    elen1%moms%f_x2, elen1%moms%f_y2, elen1%moms%f_z2,            &
      &    elen1%moms%f_xy, elen1%moms%f_yz, elen1%moms%f_zx,            &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &

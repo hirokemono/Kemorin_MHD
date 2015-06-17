@@ -111,9 +111,10 @@
 !
       if (iflag_debug.eq.1)  write(*,*)  'int_element_length_1st'
       nnod_filter_mom = numnod
-      nele_filter_mom = numele
+      FEM1_elen%nele_filter_mom = numele
       num_filter_moms = 2
-      call alloc_dxdxi_diff_type(nele_filter_mom, filter_dxi1%dxi_ele)
+      call alloc_dxdxi_diff_type                                        &
+     &   (FEM1_elen%nele_filter_mom, filter_dxi1%dxi_ele)
       call allocate_ele_length
 !
       call int_element_length_1st

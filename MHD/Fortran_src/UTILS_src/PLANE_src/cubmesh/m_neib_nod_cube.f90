@@ -72,7 +72,7 @@
         call set_range_4_nodeloop(kpe)
 !
         nnod_filter_mom = nodtot
-        nele_filter_mom = elmtot
+        FEM1_elen%nele_filter_mom = elmtot
         call allocate_ref_1d_moment
         call allocate_ele_length
 !
@@ -151,9 +151,12 @@
 !
        if (filter_conf1%nf_type .eq. 0) return
 !
-       call clear_elen_on_ele_type(nele_filter_mom, elen1%moms)
-       call clear_elen_diffs_type(nele_filter_mom, elen1%diff)
-       call clear_elen_diffs_type(nele_filter_mom, elen1%diff2)
+       call clear_elen_on_ele_type                                      &
+      &   (FEM1_elen%nele_filter_mom, elen1%moms)
+       call clear_elen_diffs_type                                       &
+      &   (FEM1_elen%nele_filter_mom, elen1%diff)
+       call clear_elen_diffs_type                                       &
+      &   (FEM1_elen%nele_filter_mom, elen1%diff2)
 !
        iele = 0
        do k=1,nz-1

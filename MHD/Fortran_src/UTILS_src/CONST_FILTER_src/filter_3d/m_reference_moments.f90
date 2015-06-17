@@ -1,9 +1,17 @@
 !
 !     module m_reference_moments
 !
-      module m_reference_moments
-!
 !     Written by H. Matsui on Aug., 2006
+!
+!      subroutine allocate_reference_moments
+!      subroutine deallocate_reference_moments
+!
+!      subroutine allocate_seed_moms_ele(nele_filter_mom)
+!      subroutine deallocate_seed_moms_ele
+!      subroutine allocate_seed_moms_nod(nnod_filter_mom)
+!      subroutine deallocate_seed_moms_nod
+!
+      module m_reference_moments
 !
       use m_precision
 !
@@ -39,15 +47,6 @@
 !
       real(kind = kreal), allocatable :: seed_moments_ele(:,:)
       real(kind = kreal), allocatable :: seed_moments_nod(:,:)
-!
-!
-!      subroutine allocate_reference_moments
-!      subroutine deallocate_reference_moments
-!
-!      subroutine allocate_seed_moms_ele
-!      subroutine deallocate_seed_moms_ele
-!      subroutine allocate_seed_moms_nod
-!      subroutine deallocate_seed_moms_nod
 !
 ! ----------------------------------------------------------------------
 !
@@ -157,9 +156,9 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_seed_moms_ele
+      subroutine allocate_seed_moms_ele(nele_filter_mom)
 !
-      use m_filter_elength
+      integer(kind = kint), intent(in) :: nele_filter_mom
 !
       allocate( seed_moments_ele(nele_filter_mom,num_order_3d) )
       seed_moments_ele = 0.0d0
@@ -176,9 +175,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_seed_moms_nod
+      subroutine allocate_seed_moms_nod(nnod_filter_mom)
 !
-      use m_filter_elength
+      integer(kind = kint), intent(in) :: nnod_filter_mom
 !
       allocate( seed_moments_nod(nnod_filter_mom,num_order_3d) )
       seed_moments_nod = 0.0d0

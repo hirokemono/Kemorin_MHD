@@ -112,8 +112,8 @@
 !  ---------------------------------------------------
 !
       call allocate_reference_moments
-      call allocate_seed_moms_ele
-      call allocate_seed_moms_nod
+      call allocate_seed_moms_ele(FEM1_elen%nele_filter_mom)
+      call allocate_seed_moms_nod(nnod_filter_mom)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_filter_moments_on_ele'
       call cal_filter_moments_on_ele

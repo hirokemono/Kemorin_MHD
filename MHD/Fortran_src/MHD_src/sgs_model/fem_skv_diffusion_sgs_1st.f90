@@ -51,9 +51,10 @@
 !
 !
       call fem_skv_scalar_diffuse_sgs(numele, nnod_4_ele, nnod_4_ele,   &
-     &    np_smp, iele_fsmp_stack, n_int, k2,              &
-     &    ntot_int_3d, xjac, dwx, dwx,        &
-     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,     &
+     &    np_smp, iele_fsmp_stack, n_int, k2,                           &
+     &    ntot_int_3d, xjac, dwx, dwx,                                  &
+     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
      &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx,      &
      &    ak_diff, ak_d, scalar_1, sk_v)
@@ -79,9 +80,10 @@
 !
 !
       call fem_skv_vector_diffuse_sgs(numele, nnod_4_ele, nnod_4_ele,   &
-     &    np_smp, iele_fsmp_stack, n_int, k2,              &
-     &    ntot_int_3d, xjac, dwx, dwx,        &
-     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,     &
+     &    np_smp, iele_fsmp_stack, n_int, k2,                           &
+     &    ntot_int_3d, xjac, dwx, dwx,                                  &
+     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
      &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx,      &
      &    ak_diff, ak_d, vect_1, sk_v)
@@ -106,9 +108,10 @@
 !
 !
       call fem_skv_poisson_sgs_pg(numele, nnod_4_ele, nnod_4_ele,       &
-     &    np_smp, iele_fsmp_stack, n_int, k2,              &
-     &    ntot_int_3d, xjac, dwx, dwx,   &
-     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,     &
+     &    np_smp, iele_fsmp_stack, n_int, k2,                           &
+     &    ntot_int_3d, xjac, dwx, dwx,                                  &
+     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
      &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx,      &
      &    ak_diff, sk_v)
@@ -132,9 +135,10 @@
 !
 !
       call fem_skv_poisson_sgs_pg(numele, num_t_linear, num_t_linear,   &
-     &    np_smp, iele_fsmp_stack, n_int, k2,              &
-     &    ntot_int_3d, xjac, dnx, dnx,        &
-     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,     &
+     &    np_smp, iele_fsmp_stack, n_int, k2,                           &
+     &    ntot_int_3d, xjac, dnx, dnx,                                  &
+     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
      &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx,      &
      &    ak_diff, sk_v)
