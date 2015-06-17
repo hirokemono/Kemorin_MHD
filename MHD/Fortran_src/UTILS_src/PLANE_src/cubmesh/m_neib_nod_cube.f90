@@ -126,7 +126,7 @@
 !
        do ifil = 1, nf_type
          filter_type(ifil) = filtertype_z(ifil)
-         f_width(ifil) = width_f(ifil)
+         filter_conf1%f_width(ifil) = width_f(ifil)
            do kf = 0, 2
              filter_conf1%xmom_1d_org(ifil,kf) = mom_1d_o(kf,3,ifil)
            end do

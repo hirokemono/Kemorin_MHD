@@ -38,14 +38,14 @@
 !
       character(len=kchara), allocatable :: filter_type(:)
 !
-      real(kind=kreal), allocatable :: f_width(:)
+!      real(kind=kreal), allocatable :: f_width(:)
 !
       integer (kind = kint) :: nnod_filter_mom, nele_filter_mom
 !
 !      real(kind=kreal), allocatable :: xmom_1d_org(:,:)
 !          one dimensional moment in reference frame
 !              (direction,filter No,order)
-!   filter_conf1%xmom_1d_org
+!   filter_conf1%f_width
 !
 !  ---------------------------------------------------------------------
 !
@@ -77,11 +77,11 @@
       subroutine allocate_ref_1d_moment
 !
       allocate( filter_type(nf_type) )
-      allocate( f_width(nf_type) )
+      allocate( filter_conf1%f_width(nf_type) )
 !
       allocate( filter_conf1%xmom_1d_org(nf_type,0:2) )
 !
-      f_width =      0.0d0
+      filter_conf1%f_width =      0.0d0
       filter_conf1%xmom_1d_org =  0.0d0
 !
       end subroutine allocate_ref_1d_moment
@@ -123,7 +123,7 @@
        subroutine deallocate_ref_1d_moment
 !
         deallocate( filter_type )
-        deallocate( f_width )
+        deallocate( filter_conf1%f_width )
 !
         deallocate( filter_conf1%xmom_1d_org )
 !

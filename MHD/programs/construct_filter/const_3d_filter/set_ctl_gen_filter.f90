@@ -94,7 +94,7 @@
           filter_type(i) = reference_filter_ctl%c_tbl(i)
 !
           ref_filter_width(i) = reference_filter_ctl%vect(i)
-          f_width(i) =          ref_filter_width(i)
+          filter_conf1%f_width(i) = ref_filter_width(i)
         end do
 !
         call deallocate_ref_filter_ctl

@@ -32,7 +32,7 @@
 !
 !
       call read_ref_filter_param_gz(nf_type,                            &
-     &    filter_type, f_width, filter_conf1%xmom_1d_org)
+     &    filter_type, filter_conf1%f_width, filter_conf1%xmom_1d_org)
 !
       end subroutine read_base_filter_info_gz
 !
@@ -45,7 +45,7 @@
 !
 !
       call write_ref_filter_param_gz(nf_type,                           &
-     &    filter_type, f_width, filter_conf1%xmom_1d_org)
+     &    filter_type, filter_conf1%f_width, filter_conf1%xmom_1d_org)
 !
       end subroutine write_base_filter_info_gz
 !

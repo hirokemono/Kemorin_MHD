@@ -40,11 +40,14 @@
       do i = 1, num_ref_filter
 !
         if      (iref_filter_type(i) .eq. iflag_tophat_filter) then
-          call int_tophat_moment_infty(itwo, f_mom, f_width(i) )
+          call int_tophat_moment_infty                                  &
+     &       (itwo, f_mom, filter_conf1%f_width(i) )
         else if (iref_filter_type(i) .eq. iflag_linear_filter) then
-          call int_linear_moment_infty(itwo, f_mom, f_width(i) )
+          call int_linear_moment_infty                                  &
+     &       (itwo, f_mom, filter_conf1%f_width(i) )
         else if (iref_filter_type(i) .eq. iflag_gaussian_filter) then
-          call int_gaussian_moment_infty(itwo, f_mom, f_width(i) )
+          call int_gaussian_moment_infty                                &
+     &       (itwo, f_mom, filter_conf1%f_width(i) )
         end if
 !
         filter_conf1%xmom_1d_org(i,0:itwo) = f_mom(0:itwo)
@@ -66,13 +69,13 @@
 !
       if      (iref_filter_type(1) .eq. iflag_tophat_filter) then
         call int_tophat_moment_infty(num_moment3, ref_moments_1d(0),    &
-     &      f_width(1) )
+     &      filter_conf1%f_width(1) )
       else if (iref_filter_type(1) .eq. iflag_linear_filter) then
         call int_linear_moment_infty(num_moment3, ref_moments_1d(0),    &
-     &      f_width(1) )
+     &      filter_conf1%f_width(1) )
       else if (iref_filter_type(1) .eq. iflag_gaussian_filter) then
         call int_gaussian_moment_infty(num_moment3, ref_moments_1d(0),  &
-     &      f_width(1) )
+     &      filter_conf1%f_width(1) )
       end if
 !
       end subroutine s_cal_1d_moments_4_filter
