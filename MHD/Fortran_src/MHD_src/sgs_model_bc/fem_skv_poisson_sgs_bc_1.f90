@@ -55,7 +55,7 @@
       call fem_skv_poisson_sgs_fixed(numele, num_t_linear,              &
      &    num_t_linear, np_smp, num_index_ibc, ele_bc_id,               &
      &    ibc_stack_smp, k2, n_int, ntot_int_3d, xjac, dnx, dnx,        &
-     &    xmom_1d_org(i_filter,2), nele_filter_mom,                     &
+     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,        &
      &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
      &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx,       &
      &    ak_diff, phi_e, sk_v)
@@ -88,7 +88,7 @@
       call fem_skv_diffuse_sgs_fixed(numele, nnod_4_ele, nnod_4_ele,    &
      &    np_smp, num_index_ibc, ele_bc_id, ibc_stack_smp,              &
      &    k2, nd, n_int, ntot_int_3d, xjac, dwx, dwx,                   &
-     &    xmom_1d_org(i_filter,2), nele_filter_mom,                     &
+     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,        &
      &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
      &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx,       &
      &    ak_diff, ak_d, phi_e, sk_v)

@@ -29,13 +29,13 @@
       integer(kind = kint), intent(in) :: itype_mass
 !
 !
-      call int_dx_ele2_node(itype_mass, elen_1%f_x2, elen_dx2_nod)
-      call int_dx_ele2_node(itype_mass, elen_1%f_y2, elen_dy2_nod)
-      call int_dx_ele2_node(itype_mass, elen_1%f_z2, elen_dz2_nod)
+      call int_dx_ele2_node(itype_mass, elen_1%f_x2, elen_n%f_x2)
+      call int_dx_ele2_node(itype_mass, elen_1%f_y2, elen_n%f_y2)
+      call int_dx_ele2_node(itype_mass, elen_1%f_z2, elen_n%f_z2)
 !
-      call int_dx_ele2_node(itype_mass, elen_1%f_xy, elen_dxdy_nod)
-      call int_dx_ele2_node(itype_mass, elen_1%f_yz, elen_dydz_nod)
-      call int_dx_ele2_node(itype_mass, elen_1%f_zx, elen_dzdx_nod)
+      call int_dx_ele2_node(itype_mass, elen_1%f_xy, elen_n%f_xy)
+      call int_dx_ele2_node(itype_mass, elen_1%f_yz, elen_n%f_yz)
+      call int_dx_ele2_node(itype_mass, elen_1%f_zx, elen_n%f_zx)
 !
       end subroutine cal_dx2_on_node
 !

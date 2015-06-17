@@ -118,8 +118,8 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_filter_moments_on_ele'
       call cal_filter_moments_on_ele
 !
-      if (iflag_debug.eq.1) write(*,*) 'cal_filter_moments_on_node'
-      call cal_filter_moments_on_node
+      if (iflag_debug.eq.1) write(*,*) 'cal_filter_moments_on_node_1st'
+      call cal_filter_moments_on_node_1st
 !
 !  ---------------------------------------------------
 !        differences of element size for each element

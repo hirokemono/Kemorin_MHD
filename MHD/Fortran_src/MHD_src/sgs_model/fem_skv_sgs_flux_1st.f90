@@ -53,7 +53,7 @@
 !
       call fem_skv_sgs_flux_pg(numele, nnod_4_ele, nnod_4_ele,          &
      &    iele_fsmp_stack, n_int, k2, ntot_int_3d, xjac, aw, dwx,       &
-     &    xmom_1d_org(i_filter,2), nele_filter_mom,                     &
+     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,        &
      &    elen_1%f_x2, elen_1%f_y2, elen_1%f_z2,                   &
      &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
      &    scalar_1, dvx, nd_t, sk_v)
@@ -82,7 +82,7 @@
 !
       call fem_skv_sgs_flux_upw(numele, nnod_4_ele, nnod_4_ele,         &
      &    iele_fsmp_stack, n_int, k2, ntot_int_3d, xjac, aw, dwx,       &
-     &    dt, xmom_1d_org(i_filter,2), nele_filter_mom,                 &
+     &    dt, filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,    &
      &    elen_1%f_x2, elen_1%f_y2, elen_1%f_z2,                   &
      &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
      &    scalar_1, vxe, dvx, nd_t, sk_v)
@@ -109,7 +109,7 @@
 !
       call fem_skv_sgs_uxb_pg(numele, nnod_4_ele, nnod_4_ele,           &
      &    iele_fsmp_stack, n_int, k2, ntot_int_3d, xjac, aw, dwx,       &
-     &    xmom_1d_org(i_filter,2), nele_filter_mom,                     &
+     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,        &
      &    elen_1%f_x2, elen_1%f_y2, elen_1%f_z2,                   &
      &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
      &    vect_1, dvx, nd, sk_v)
@@ -137,7 +137,7 @@
 !
       call fem_skv_sgs_uxb_upw(numele, nnod_4_ele, nnod_4_ele,          &
      &    iele_fsmp_stack, n_int, k2, ntot_int_3d, xjac, aw, dwx,       &
-     &    dt, xmom_1d_org(i_filter,2), nele_filter_mom,                 &
+     &    dt, filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,    &
      &    elen_1%f_x2, elen_1%f_y2, elen_1%f_z2,                   &
      &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
      &    vect_1, vxe, dvx, nd, sk_v)
@@ -165,7 +165,7 @@
 !
       call fem_skv_sgs_induct_t_pg(numele, nnod_4_ele, nnod_4_ele,      &
      &    iele_fsmp_stack, n_int, k2, ntot_int_3d, xjac, aw, dwx,       &
-     &    xmom_1d_org(i_filter,2), nele_filter_mom,                     &
+     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,        &
      &    elen_1%f_x2, elen_1%f_y2, elen_1%f_z2,                   &
      &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
      &    vect_sgs, dvx, dbx, nd, sk_v)
@@ -194,7 +194,7 @@
 !
       call fem_skv_sgs_induct_t_upw(numele, nnod_4_ele, nnod_4_ele,     &
      &    iele_fsmp_stack, n_int, ntot_int_3d, k2, xjac, aw, dwx,       &
-     &    dt, xmom_1d_org(i_filter,2), nele_filter_mom,                 &
+     &    dt, filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,    &
      &    elen_1%f_x2, elen_1%f_y2, elen_1%f_z2,                   &
      &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
      &    vect_sgs, vxe, dvx, dbx, nd, sk_v)

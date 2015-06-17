@@ -33,18 +33,18 @@
 !      1st derivatives
 !
       call take_1st_diffs_nod_by_consist                                &
-     &    ( elen_dx2_nod(1), elen_dx2_nod_dx(1,1) )
+     &    ( elen_n%f_x2, diff1_n%df_x2)
       call take_1st_diffs_nod_by_consist                                &
-     &    ( elen_dy2_nod(1), elen_dy2_nod_dx(1,1) )
+     &    ( elen_n%f_y2, diff1_n%df_y2)
       call take_1st_diffs_nod_by_consist                                &
-     &    ( elen_dz2_nod(1), elen_dz2_nod_dx(1,1) )
+     &    ( elen_n%f_z2, diff1_n%df_z2)
 !
       call take_1st_diffs_nod_by_consist                                &
-     &    ( elen_dxdy_nod(1), elen_dxdy_nod_dx(1,1) )
+     &    ( elen_n%f_xy, diff1_n%df_xy)
       call take_1st_diffs_nod_by_consist                                &
-     &    ( elen_dydz_nod(1), elen_dydz_nod_dx(1,1) )
+     &    ( elen_n%f_yz, diff1_n%df_yz)
       call take_1st_diffs_nod_by_consist                                &
-     &    ( elen_dzdx_nod(1), elen_dzdx_nod_dx(1,1) )
+     &    ( elen_n%f_zx, diff1_n%df_zx)
 !
       end subroutine cal_1st_diffs_dx_by_consist
 !
@@ -91,18 +91,18 @@
 !      1st derivatives
 !
       call take_1st_diffs_nod_by_lump                                   &
-     &    ( elen_dx2_nod(1), elen_dx2_nod_dx(1,1) )
+     &    ( elen_n%f_x2, diff1_n%df_x2)
       call take_1st_diffs_nod_by_lump                                   &
-     &    ( elen_dy2_nod(1), elen_dy2_nod_dx(1,1) )
+     &    ( elen_n%f_y2, diff1_n%df_y2)
       call take_1st_diffs_nod_by_lump                                   &
-     &    ( elen_dz2_nod(1), elen_dz2_nod_dx(1,1) )
+     &    ( elen_n%f_z2, diff1_n%df_z2)
 !
       call take_1st_diffs_nod_by_lump                                   &
-     &    ( elen_dxdy_nod(1), elen_dxdy_nod_dx(1,1) )
+     &    ( elen_n%f_xy, diff1_n%df_xy)
       call take_1st_diffs_nod_by_lump                                   &
-     &    ( elen_dydz_nod(1), elen_dydz_nod_dx(1,1) )
+     &    ( elen_n%f_yz, diff1_n%df_yz)
       call take_1st_diffs_nod_by_lump                                   &
-     &    ( elen_dzdx_nod(1), elen_dzdx_nod_dx(1,1) )
+     &    ( elen_n%f_zx, diff1_n%df_zx)
 !
       end subroutine cal_1st_diffs_dx_by_lump
 !

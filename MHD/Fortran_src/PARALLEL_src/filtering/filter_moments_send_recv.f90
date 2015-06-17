@@ -74,13 +74,13 @@
       use m_filter_elength
 !
 !
-      call nod_scalar_send_recv(elen_dx2_nod(1))
-      call nod_scalar_send_recv(elen_dy2_nod(1))
-      call nod_scalar_send_recv(elen_dz2_nod(1))
+      call nod_scalar_send_recv(elen_n%f_x2)
+      call nod_scalar_send_recv(elen_n%f_y2)
+      call nod_scalar_send_recv(elen_n%f_z2)
 !
-      call nod_scalar_send_recv(elen_dxdy_nod(1))
-      call nod_scalar_send_recv(elen_dydz_nod(1))
-      call nod_scalar_send_recv(elen_dzdx_nod(1))
+      call nod_scalar_send_recv(elen_n%f_xy)
+      call nod_scalar_send_recv(elen_n%f_yz)
+      call nod_scalar_send_recv(elen_n%f_zx)
 !
       end subroutine elength_nod_send_recv
 !
@@ -91,13 +91,13 @@
       use m_filter_elength
 !
 !
-      call nod_vector_send_recv(elen_dx2_nod_dx(1,1))
-      call nod_vector_send_recv(elen_dy2_nod_dx(1,1))
-      call nod_vector_send_recv(elen_dz2_nod_dx(1,1))
+      call nod_vector_send_recv(diff1_n%df_x2)
+      call nod_vector_send_recv(diff1_n%df_y2)
+      call nod_vector_send_recv(diff1_n%df_z2)
 !
-      call nod_vector_send_recv(elen_dxdy_nod_dx(1,1))
-      call nod_vector_send_recv(elen_dydz_nod_dx(1,1))
-      call nod_vector_send_recv(elen_dzdx_nod_dx(1,1))
+      call nod_vector_send_recv(diff1_n%df_xy)
+      call nod_vector_send_recv(diff1_n%df_yz)
+      call nod_vector_send_recv(diff1_n%df_zx)
 !
       end subroutine diff_elen_nod_send_recv
 !

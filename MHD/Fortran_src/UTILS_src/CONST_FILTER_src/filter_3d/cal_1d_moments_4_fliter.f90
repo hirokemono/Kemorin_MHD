@@ -47,7 +47,7 @@
           call int_gaussian_moment_infty(itwo, f_mom, f_width(i) )
         end if
 !
-        xmom_1d_org(i,0:itwo) = f_mom(0:itwo)
+        filter_conf1%xmom_1d_org(i,0:itwo) = f_mom(0:itwo)
 !
       end do
 !

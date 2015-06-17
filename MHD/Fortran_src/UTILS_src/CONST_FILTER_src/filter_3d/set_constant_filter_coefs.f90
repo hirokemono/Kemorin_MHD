@@ -1,17 +1,18 @@
 !
 !      module set_constant_filter_coefs
 !
-      module set_constant_filter_coefs
-!
 !     Written by H. Matsui on Nov., 2006
 !
+!      subroutine s_set_constant_filter_coefs(inod, num_fixed)
+!
+      module set_constant_filter_coefs
+!
       use m_precision
+      use m_constants
 !
       use calypso_mpi
 !
       implicit none
-!
-!      subroutine s_set_constant_filter_coefs(inod, num_fixed)
 !
 ! ----------------------------------------------------------------------
 !
@@ -31,7 +32,6 @@
       integer(kind = kint), intent(in) :: inod, num_fixed
 !
       real(kind = kreal) :: g
-      real(kind = kreal), parameter :: one = 1.0d0, zero = 0.0d0
       integer(kind = kint) :: i, j, jnod
 !
 !
@@ -44,12 +44,11 @@
         call s_cal_gaussian_at_node(ref_filter_width(1),                &
      &      xx(jnod,1), xx(jnod,2), xx(jnod,3),                         &
      &      xx(inod,1), xx(inod,2), xx(inod,3),                         &
-     &      elen_dx2_nod(inod), elen_dy2_nod(inod), elen_dz2_nod(inod), &
-     &      g )
+     &      elen_n%f_x2(inod), elen_n%f_y2(inod),                       &
+     &      elen_n%f_z2(inod), g)
 !
         vec_mat(i) = g
         a_mat(i,j) = one
-!
       end do
 !
       end subroutine s_set_constant_filter_coefs

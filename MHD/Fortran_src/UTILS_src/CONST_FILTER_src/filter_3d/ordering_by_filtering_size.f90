@@ -54,7 +54,7 @@
 !
 !
       call cal_distance_ratio_2_filter(inod,                            &
-     &   elen_dx2_nod(inod), elen_dy2_nod(inod), elen_dz2_nod(inod))
+     &   elen_n%f_x2(inod), elen_n%f_y2(inod), elen_n%f_z2(inod))
 !
       call sort_added_nod_4_each_by_real(numnod,                        &
      &    nnod_near_1nod_filter, nnod_near_1nod_weight,                 &

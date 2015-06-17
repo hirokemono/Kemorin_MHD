@@ -1,21 +1,23 @@
 !cal_filter_moms_by_element.f90
 !     module cal_filter_moms_by_element
 !
-      module cal_filter_moms_by_element
-!
 !     Written by H. Matsui on Apr., 2008
+!
+!!      subroutine cal_filter_moments_on_ele
+!!      subroutine cal_filter_moments_on_node(nnod_filter_mom,          &
+!!     &           elen_dx2_nod,  elen_dy2_nod,  elen_dz2_nod,          &
+!!     &           elen_dxdy_nod, elen_dydz_nod, elen_dzdx_nod)
+!
+!
+      module cal_filter_moms_by_element
 !
       use m_precision
 !
       use m_reference_moments
-      use m_filter_elength
       use m_finite_element_matrix
       use m_phys_constants
 !
       implicit none
-!
-!      subroutine cal_filter_moments_on_ele
-!      subroutine cal_filter_moments_on_node
 !
 !-----------------------------------------------------------------------
 !
@@ -23,9 +25,24 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine cal_filter_moments_on_node_1st
+!
+      use m_filter_elength
+!
+!
+      call cal_filter_moments_on_node(nnod_filter_mom,                  &
+     &           elen_n%f_x2, elen_n%f_y2, elen_n%f_z2,              &
+     &           elen_n%f_xy, elen_n%f_yz, elen_n%f_zx)
+!
+      end subroutine cal_filter_moments_on_node_1st
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
       subroutine cal_filter_moments_on_ele
 !
       use m_machine_parameter
+      use m_filter_elength
       use m_filter_dxdxi
       use cal_1d_moments_4_fliter
       use set_filter_moments_3d
@@ -64,12 +81,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_filter_moments_on_node
+      subroutine cal_filter_moments_on_node(nnod_filter_mom,            &
+     &           elen_dx2_nod,  elen_dy2_nod,  elen_dz2_nod,            &
+     &           elen_dxdy_nod, elen_dydz_nod, elen_dzdx_nod)
 !
       use m_ctl_params_4_gen_filter
       use filter_moments_send_recv
       use int_vol_elesize_on_node
       use nodal_vector_send_recv
+!
+      integer(kind = kint), intent(in) :: nnod_filter_mom
+      real(kind=kreal), intent(in) :: elen_dx2_nod(nnod_filter_mom)
+      real(kind=kreal), intent(in) :: elen_dy2_nod(nnod_filter_mom)
+      real(kind=kreal), intent(in) :: elen_dz2_nod(nnod_filter_mom)
+      real(kind=kreal), intent(in) :: elen_dxdy_nod(nnod_filter_mom)
+      real(kind=kreal), intent(in) :: elen_dydz_nod(nnod_filter_mom)
+      real(kind=kreal), intent(in) :: elen_dzdx_nod(nnod_filter_mom)
 !
       integer(kind = kint) :: inod, n, im_x, im_y, im_z
 !

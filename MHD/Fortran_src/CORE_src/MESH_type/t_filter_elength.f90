@@ -279,21 +279,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_elen_on_ele_type(num_elen, elens)
+      subroutine alloc_elen_on_ele_type(num, elens)
 !
-      integer (kind = kint), intent(in) :: num_elen
+      integer (kind = kint), intent(in) :: num
       type(elen_on_ele_type), intent(inout)  :: elens
 !
 !
-      allocate( elens%f_x2(num_elen) )
-      allocate( elens%f_y2(num_elen) )
-      allocate( elens%f_z2(num_elen) )
+      allocate( elens%f_x2(num) )
+      allocate( elens%f_y2(num) )
+      allocate( elens%f_z2(num) )
 !
-      allocate( elens%f_xy(num_elen) )
-      allocate( elens%f_yz(num_elen) )
-      allocate( elens%f_zx(num_elen) )
+      allocate( elens%f_xy(num) )
+      allocate( elens%f_yz(num) )
+      allocate( elens%f_zx(num) )
 !
-      call clear_elen_on_ele_type(num_elen, elens)
+      call clear_elen_on_ele_type(num, elens)
 !
       end subroutine alloc_elen_on_ele_type
 !
@@ -320,13 +320,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine clear_elen_on_ele_type(num_elen, elens)
+      subroutine clear_elen_on_ele_type(num, elens)
 !
-      integer (kind = kint), intent(in) :: num_elen
+      integer (kind = kint), intent(in) :: num
       type(elen_on_ele_type), intent(inout)  :: elens
 !
 !
-      if (num_elen .gt. 0) then
+      if (num .gt. 0) then
 !$omp workshare
         elens%f_x2 = 0.0d0
         elens%f_y2 = 0.0d0
@@ -341,13 +341,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine clear_elen_diffs_type(num_elen, elen_d)
+      subroutine clear_elen_diffs_type(num, elen_d)
 !
-      integer (kind = kint), intent(in) :: num_elen
+      integer (kind = kint), intent(in) :: num
       type(elen_diffs_type), intent(inout)  :: elen_d
 !
 !
-      if (num_elen .gt. 0) then
+      if (num .gt. 0) then
 !$omp workshare
         elen_d%df_x2 = 0.0d0
         elen_d%df_y2 = 0.0d0

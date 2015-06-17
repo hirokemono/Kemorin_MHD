@@ -53,10 +53,11 @@
 !
 !
       call fem_skv_commute_error_grad(numele, nnod_4_ele, nnod_4_ele,   &
-     &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
-     &    xjac, dwx, dwx, xmom_1d_org(i_filter,2), nele_filter_mom,     &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
+     &    np_smp, iele_fsmp_stack, n_int, k2,                           &
+     &    ntot_int_3d, xjac, dwx, dwx,                                  &
+     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,        &
+     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,                &
+     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,                &
      &    scalar_1, sk_v)
 !
       end subroutine fem_skv_commute_err_grad_1
@@ -80,8 +81,9 @@
 !
 !
       call fem_skv_commute_error_div(numele, nnod_4_ele, nnod_4_ele,    &
-     &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
-     &    xjac, dwx, dwx, xmom_1d_org(i_filter,2), nele_filter_mom,     &
+     &    np_smp, iele_fsmp_stack, n_int, k2,              &
+     &    ntot_int_3d, xjac, dwx, dwx,         &
+     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,     &
      &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
      &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    vector_1, sk_v)
@@ -107,8 +109,9 @@
 !
 !
       call fem_skv_commute_error_rot(numele, nnod_4_ele, nnod_4_ele,    &
-     &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
-     &    xjac, dwx, dwx, xmom_1d_org(i_filter,2), nele_filter_mom,     &
+     &    np_smp, iele_fsmp_stack, n_int, k2,              &
+     &    ntot_int_3d, xjac, dwx, dwx,  &
+     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,     &
      &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
      &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    vector_1, sk_v)
@@ -135,8 +138,9 @@
 !
       call fem_skv_commute_error_div_tsr                                &
      &   (numele, nnod_4_ele, nnod_4_ele,                               &
-     &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
-     &    xjac, dwx, dwx, xmom_1d_org(i_filter,2), nele_filter_mom,     &
+     &    np_smp, iele_fsmp_stack, n_int, k2,              &
+     &    ntot_int_3d, xjac, dwx, dwx,    &
+     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,     &
      &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
      &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    tensor_1, sk_v)
@@ -163,8 +167,9 @@
 !
       call fem_skv_commute_error_div_ast                                &
      &   (numele, nnod_4_ele, nnod_4_ele,                               &
-     &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
-     &    xjac, dwx, dwx, xmom_1d_org(i_filter,2), nele_filter_mom,     &
+     &    np_smp, iele_fsmp_stack, n_int, k2,              &
+     &    ntot_int_3d, xjac, dwx, dwx,   &
+     &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,     &
      &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
      &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
      &    as_tsr_1, sk_v)
