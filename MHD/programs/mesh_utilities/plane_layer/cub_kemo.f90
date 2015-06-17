@@ -191,8 +191,8 @@
 !     set one-dimensional moments
 !
 !      if (iflag_filter .ge.0) then
-         filter_conf1%nf_type = iflag_filter
-         call allocate_filter_4_plane(filter_conf1%nf_type)
+         FEM1_elen%filter_conf%nf_type = iflag_filter
+         call allocate_filter_4_plane(FEM1_elen%filter_conf%nf_type)
          call read_filter_info
 !      end if
 !

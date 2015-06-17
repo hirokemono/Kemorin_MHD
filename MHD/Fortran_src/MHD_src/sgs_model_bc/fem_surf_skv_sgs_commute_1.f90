@@ -71,7 +71,7 @@
      &    node_on_sf, num_surf_bc, surf_item, num_surf_smp,             &
      &    isurf_grp_smp_stack, ntot_int_sf_grp,                         &
      &    xsq_sf, axjq_sf, aw_sf, aw_sf,                                &
-     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
@@ -101,7 +101,7 @@
      &    node_on_sf, num_surf_bc, surf_item, num_surf_smp,             &
      &    isurf_grp_smp_stack, ntot_int_sf_grp,                         &
      &    xsq_sf, axjq_sf, aw_sf, aw_sf,                                &
-     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
@@ -131,7 +131,7 @@
      &    node_on_sf, num_surf_bc, surf_item, num_surf_smp,             &
      &    isurf_grp_smp_stack, ntot_int_sf_grp,                         &
      &     xsq_sf, axjq_sf, aw_sf, aw_sf,                               &
-     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
@@ -165,7 +165,7 @@
      &    node_on_sf, num_surf_bc, surf_item, num_surf_smp,             &
      &    isurf_grp_smp_stack, ntot_int_sf_grp,                         &
      &    xsq_sf, axjq_sf, aw_sf, aw_sf,                                &
-     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
@@ -197,7 +197,7 @@
      &    node_on_sf, num_surf_bc, surf_item, num_surf_smp,             &
      &    isurf_grp_smp_stack, ntot_int_sf_grp,                         &
      &    xsq_sf, axjq_sf, aw_sf, aw_sf,                                &
-     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
@@ -229,7 +229,7 @@
      &    node_on_sf, num_surf_bc, surf_item, num_surf_smp,             &
      &    isurf_grp_smp_stack, ntot_int_sf_grp,                         &
      &    xsq_sf, axjq_sf, aw_sf, aw_sf,                                &
-     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
@@ -261,7 +261,7 @@
      &        node_on_sf, num_surf_bc, surf_item, num_surf_smp,         &
      &    isurf_grp_smp_stack, ntot_int_sf_grp,                         &
      &    xsq_sf, axjq_sf, an_sf, aw_sf,                                &
-     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
@@ -293,7 +293,7 @@
      &    node_on_sf, num_surf_bc, surf_item, num_surf_smp,             &
      &    isurf_grp_smp_stack, ntot_int_sf_grp,                         &
      &    xsq_sf, axjq_sf, aw_sf, an_sf,                                &
-     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
@@ -323,7 +323,7 @@
      &    num_t_linear, num_linear_sf, node_on_sf, num_surf_bc,         &
      &    surf_item, num_surf_smp, isurf_grp_smp_stack,                 &
      &    ntot_int_3d, xjac, dnx, dnx,                                  &
-     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
      &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx,      &
@@ -353,7 +353,7 @@
      &    nnod_4_ele, nnod_4_surf, node_on_sf, num_surf_bc, surf_item,  &
      &    num_surf_smp, isurf_grp_smp_stack,                            &
      &    ntot_int_3d, xjac, dwx, dwx,                                  &
-     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
      &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx,      &

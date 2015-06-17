@@ -31,9 +31,10 @@
       use gz_filter_moms_elen_data_IO
 !
 !
-      call read_ref_filter_param_gz(filter_conf1%nf_type,               &
-     &    filter_conf1%filter_type, filter_conf1%f_width,               &
-     &    filter_conf1%xmom_1d_org)
+      call read_ref_filter_param_gz(FEM1_elen%filter_conf%nf_type,      &
+     &    FEM1_elen%filter_conf%filter_type,                            &
+     &    FEM1_elen%filter_conf%f_width,                                &
+     &    FEM1_elen%filter_conf%xmom_1d_org)
 !
       end subroutine read_base_filter_info_gz
 !
@@ -45,9 +46,10 @@
       use gz_filter_moms_elen_data_IO
 !
 !
-      call write_ref_filter_param_gz(filter_conf1%nf_type,              &
-     &    filter_conf1%filter_type, filter_conf1%f_width,               &
-     &    filter_conf1%xmom_1d_org)
+      call write_ref_filter_param_gz(FEM1_elen%filter_conf%nf_type,     &
+     &    FEM1_elen%filter_conf%filter_type,                            &
+     &    FEM1_elen%filter_conf%f_width,                                &
+     &    FEM1_elen%filter_conf%xmom_1d_org)
 !
       end subroutine write_base_filter_info_gz
 !

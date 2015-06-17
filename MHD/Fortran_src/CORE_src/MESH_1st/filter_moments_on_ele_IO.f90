@@ -32,9 +32,11 @@
 !
       integer(kind = kint), intent(in) :: id_file
 !
-      call read_ref_filter_param(id_file, filter_conf1%nf_type,         &
-     &    filter_conf1%filter_type, filter_conf1%f_width,               &
-     &    filter_conf1%xmom_1d_org)
+      call read_ref_filter_param                                        &
+     &   (id_file, FEM1_elen%filter_conf%nf_type,                       &
+     &    FEM1_elen%filter_conf%filter_type,                            &
+     &    FEM1_elen%filter_conf%f_width,                                &
+     &    FEM1_elen%filter_conf%xmom_1d_org)
 !
       end subroutine read_base_filter_info
 !
@@ -48,9 +50,11 @@
       integer(kind = kint), intent(in) :: id_file
 !
 !
-      call write_ref_filter_param(id_file, filter_conf1%nf_type,        &
-     &    filter_conf1%filter_type, filter_conf1%f_width,               &
-     &    filter_conf1%xmom_1d_org)
+      call write_ref_filter_param                                       &
+     &   (id_file, FEM1_elen%filter_conf%nf_type,                       &
+     &    FEM1_elen%filter_conf%filter_type,                            &
+     &    FEM1_elen%filter_conf%f_width,                                &
+     &    FEM1_elen%filter_conf%xmom_1d_org)
 !
       end subroutine write_base_filter_info
 !

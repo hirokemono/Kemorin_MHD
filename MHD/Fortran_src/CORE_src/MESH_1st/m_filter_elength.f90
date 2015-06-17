@@ -25,11 +25,9 @@
       type(elen_nod_diffs_type), save ::  elenn
       type(elen_ele_diffs_type), save ::  elen1
 !
-      type(filter_config_type), save :: filter_conf1
+!      type(filter_config_type), save :: filter_conf1
 !
-!      integer (kind = kint) :: nnod_filter_mom
-!
-!   FEM1_elen%nnod_filter_mom
+!   FEM1_elen%filter_conf
 !
 !  ---------------------------------------------------------------------
 !
@@ -57,7 +55,7 @@
 !
       subroutine allocate_ref_1d_moment
 !
-      call alloc_ref_1d_mom_type(filter_conf1)
+      call alloc_ref_1d_mom_type(FEM1_elen%filter_conf)
 !
       end subroutine allocate_ref_1d_moment
 !
@@ -94,7 +92,7 @@
 !
       subroutine deallocate_ref_1d_moment
 !
-      call dealloc_ref_1d_mom_type(filter_conf1)
+      call dealloc_ref_1d_mom_type(FEM1_elen%filter_conf)
 !
       end subroutine deallocate_ref_1d_moment
 !

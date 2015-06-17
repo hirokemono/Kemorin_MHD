@@ -55,7 +55,7 @@
         pe1 = pe_id - 1
 !
         write(*,*) 'allocate_filters_nod'
-       call allocate_filters_nod(filter_conf1%nf_type)
+       call allocate_filters_nod(FEM1_elen%filter_conf%nf_type)
 !
        i_st2 =  max(i_st-ndepth,1)
        i_end2 = min(i_end+ndepth,nx)
@@ -98,12 +98,14 @@
           call add_int_suffix(pe1, filter_file_header, nb_name)
           write(*,*) 'output binary file: ', nb_name
           open (nb_out, file=nb_name, form='unformatted')
-          call write_neighboring_nod_line_b(filter_conf1%nf_type)
+          call write_neighboring_nod_line_b                             &
+     &       (FEM1_elen%filter_conf%nf_type)
         else
           call add_int_suffix(pe1, filter_file_header, nb_name)
           write(*,*) 'output ascii file: ', trim(nb_name)
           open (nb_out, file=nb_name)
-          call write_neighboring_nod_line(filter_conf1%nf_type)
+          call write_neighboring_nod_line                               &
+     &       (FEM1_elen%filter_conf%nf_type)
         end if
         close(nb_out)
 !
@@ -122,19 +124,20 @@
        integer(kind = kint) :: ifil, kf
 !
 !
-       if (filter_conf1%nf_type .eq. 0) return
+       if (FEM1_elen%filter_conf%nf_type .eq. 0) return
 !
-       do ifil = 1, filter_conf1%nf_type
-         filter_conf1%filter_type(ifil) = filtertype_z(ifil)
-         filter_conf1%f_width(ifil) = width_f(ifil)
+       do ifil = 1, FEM1_elen%filter_conf%nf_type
+         FEM1_elen%filter_conf%filter_type(ifil) = filtertype_z(ifil)
+         FEM1_elen%filter_conf%f_width(ifil) = width_f(ifil)
            do kf = 0, 2
-             filter_conf1%xmom_1d_org(ifil,kf) = mom_1d_o(kf,3,ifil)
+             FEM1_elen%filter_conf%xmom_1d_org(ifil,kf)                 &
+     &           = mom_1d_o(kf,3,ifil)
            end do
        end do
 !
        if (iflag_z_filter.eq.0) then
-         do ifil = 1, filter_conf1%nf_type
-           filter_conf1%filter_type(ifil) = filtertype_h(ifil)
+         do ifil = 1, FEM1_elen%filter_conf%nf_type
+           FEM1_elen%filter_conf%filter_type(ifil) = filtertype_h(ifil)
          end do
        end if
 !
@@ -149,7 +152,7 @@
        integer(kind = kint) :: i, j, k, iele, k_gl
 !
 !
-       if (filter_conf1%nf_type .eq. 0) return
+       if (FEM1_elen%filter_conf%nf_type .eq. 0) return
 !
        call clear_elen_on_ele_type                                      &
       &   (FEM1_elen%nele_filter_mom, elen1%moms)
@@ -209,7 +212,7 @@
             i2 = nneib_h(1) - ii + 1
             inod_f_item_x(i1,i,j,k) = i - ii
             inod_f_dist_x(i1,i,j,k) = - ii
-            do ifil = 1, filter_conf1%nf_type
+            do ifil = 1, FEM1_elen%filter_conf%nf_type
              filter_c_x(i1,i,j,k,ifil) = coef_nod_x(i2,0,ifil)
             end do
           end do
@@ -217,7 +220,7 @@
           i2 = nneib_h(1)+1
           inod_f_item_x(i1,i,j,k) = i
           inod_f_dist_x(i1,i,j,k) = 0
-          do ifil = 1, filter_conf1%nf_type
+          do ifil = 1, FEM1_elen%filter_conf%nf_type
             filter_c_x(i1,i,j,k,ifil) = coef_nod_x(i2,0,ifil)
           end do
           do ii = 1, ndepth_x( 1)
@@ -225,7 +228,7 @@
             i2 = nneib_h(1) + ii + 1
             inod_f_item_x(i1,i,j,k) = i + ii
             inod_f_dist_x(i1,i,j,k) = ii
-            do ifil = 1, filter_conf1%nf_type
+            do ifil = 1, FEM1_elen%filter_conf%nf_type
              filter_c_x(i1,i,j,k,ifil) = coef_nod_x(i2,0,ifil)
             end do
           end do
@@ -266,7 +269,7 @@
             j2 = nneib_h(2) - jj + 1
             inod_f_item_y(j1,i,j,k) = j - jj
             inod_f_dist_y(j1,i,j,k) = -jj
-            do ifil = 1, filter_conf1%nf_type
+            do ifil = 1, FEM1_elen%filter_conf%nf_type
               filter_c_y(j1,i,j,k,ifil) = coef_nod_y(j2,0,ifil)
             end do
           end do
@@ -274,7 +277,7 @@
           j2 = nneib_h(2) + 1
           inod_f_item_y(j1,i,j,k) = j
           inod_f_dist_y(j1,i,j,k) = 0
-          do ifil = 1, filter_conf1%nf_type
+          do ifil = 1, FEM1_elen%filter_conf%nf_type
             filter_c_y(j1,i,j,k,ifil) = coef_nod_y(j2,0,ifil)
           end do
           do jj = 1, ndepth_y( 1)
@@ -282,7 +285,7 @@
             j2 = nneib_h(2) + jj + 1
             inod_f_item_y(j1,i,j,k) = j + jj
             inod_f_dist_y(j1,i,j,k) = jj
-            do ifil = 1, filter_conf1%nf_type
+            do ifil = 1, FEM1_elen%filter_conf%nf_type
               filter_c_y(j1,i,j,k,ifil) = coef_nod_y(j2,0,ifil)
             end do
           end do
@@ -324,7 +327,7 @@
             k1 = ndepth_z(-1) - kk + 1
             inod_f_item_z(k1,i,j,k) = k - kk
             inod_f_dist_z(k1,i,j,k) = -kk
-            do ifil = 1, filter_conf1%nf_type
+            do ifil = 1, FEM1_elen%filter_conf%nf_type
               k2 = nneib_z(k_gl,1,ifil) - kk + 1
               if (iflag_z_filter.eq.0) then
                 filter_c_z(k1,i,j,k,ifil) = coef_nod_x(k2,0,ifil)
@@ -336,7 +339,7 @@
           k1 = ndepth_z(-1) + 1
           inod_f_item_z(k1,i,j,k) = k
           inod_f_dist_z(k1,i,j,k) = 0
-          do ifil = 1, filter_conf1%nf_type
+          do ifil = 1, FEM1_elen%filter_conf%nf_type
             k2 = nneib_z(k_gl,1,ifil) + 1
               if (iflag_z_filter.eq.0) then
                 filter_c_z(k1,i,j,k,ifil) = coef_nod_x(k2,0,ifil)
@@ -348,7 +351,7 @@
             k1 = kk + ndepth_z(-1) + 1
             inod_f_item_z(k1,i,j,k) = k + kk
             inod_f_dist_z(k1,i,j,k) = kk
-            do ifil = 1, filter_conf1%nf_type
+            do ifil = 1, FEM1_elen%filter_conf%nf_type
               k2 = nneib_z(k_gl,1,ifil) + kk + 1
               if (iflag_z_filter.eq.0) then
                 filter_c_z(k1,i,j,k,ifil) = coef_nod_x(k2,0,ifil)
@@ -378,7 +381,7 @@
         do j=j_st2,j_end2
          do i=i_st2,i_end2
 !
-          do ifil = 1, filter_conf1%nf_type
+          do ifil = 1, FEM1_elen%filter_conf%nf_type
 !
            total_mom = 0.0d0
            do k1 = 1, nnod_neib_z(i,j,k)
@@ -498,7 +501,8 @@
      &         node_id_lc(i1,j1,k), inod_f_dist_xy(ij,i,j,k,1),         &
      &         inod_f_dist_xy(ij,i,j,k,2)
           write(50,'(1p10E25.15e3)')                                    &
-     &        (filter_c_xy(ij,i,j,k,ifil),ifil=1,filter_conf1%nf_type)
+     &        (filter_c_xy(ij,i,j,k,ifil),ifil=1,                       &
+     &            FEM1_elen%filter_conf%nf_type)
           end do
          enddo
         enddo

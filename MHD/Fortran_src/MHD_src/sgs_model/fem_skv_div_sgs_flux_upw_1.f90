@@ -68,7 +68,7 @@
       call fem_skv_div_sgs_vector_upw(numele, nnod_4_ele, nnod_4_ele,   &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt,                       &
      &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
-     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
@@ -99,7 +99,7 @@
       call fem_skv_div_tensor_w_sgs_upw(numele, nnod_4_ele, nnod_4_ele, &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt,                       &
      &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
-     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
@@ -130,7 +130,7 @@
       call fem_skv_div_as_tsr_w_sgs_upw(numele, nnod_4_ele, nnod_4_ele, &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt,                       &
      &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
-     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
@@ -244,7 +244,7 @@
      &   (numele, nnod_4_ele, nnod_4_ele, np_smp,                       &
      &    iele_fsmp_stack,n_int, k2, dt,                                &
      &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
-     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
@@ -279,7 +279,7 @@
      &   (numele, nnod_4_ele, nnod_4_ele, np_smp,                       &
      &    iele_fsmp_stack, n_int, k2, dt,                               &
      &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
-     &    filter_conf1%xmom_1d_org(i_filter,2),                         &
+     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
      &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &

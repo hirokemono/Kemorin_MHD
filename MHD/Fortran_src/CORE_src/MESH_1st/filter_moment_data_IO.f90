@@ -35,9 +35,9 @@
 !
       call write_filter_elen_head(id_file,                              &
      &    FEM1_elen%nnod_filter_mom, FEM1_elen%nele_filter_mom,         &
-     &    filter_conf1%nf_type)
+     &    FEM1_elen%filter_conf%nf_type)
 !
-      if (filter_conf1%nf_type .gt. 0) then
+      if (FEM1_elen%filter_conf%nf_type .gt. 0) then
         call write_base_filter_info(id_file)
         call write_elength_ele(id_file)
       end if
@@ -56,10 +56,10 @@
       integer (kind = kint) :: ifil
 !
 !
-      call write_filter_moms_head(id_file,                              &
-     &    nnod_fmom, nele_fmom, num_filter_moms, filter_conf1%nf_type)
+      call write_filter_moms_head(id_file, nnod_fmom, nele_fmom,        &
+     &    num_filter_moms, FEM1_elen%filter_conf%nf_type)
 !
-      if (filter_conf1%nf_type .gt. 0) then
+      if (FEM1_elen%filter_conf%nf_type .gt. 0) then
         call write_base_filter_info(id_file)
         do ifil = 1, num_filter_moms
           call write_filter_moments_ele(id_file, ifil)
@@ -81,7 +81,7 @@
 !
       call read_filter_moms_head(id_file,                               &
      &    FEM1_elen%nnod_filter_mom, FEM1_elen%nele_filter_mom,         &
-     &    num_filter_moms, filter_conf1%nf_type)
+     &    num_filter_moms, FEM1_elen%filter_conf%nf_type)
 !
       end subroutine read_filter_moment_num
 !
@@ -101,7 +101,7 @@
 !
       call read_filter_elen_head(id_file,                               &
      &    FEM1_elen%nnod_filter_mom, FEM1_elen%nele_filter_mom, &
-     &    filter_conf1%nf_type)
+     &    FEM1_elen%filter_conf%nf_type)
 !
       if (FEM1_elen%nnod_filter_mom .ne. numnod) then
         ierr = 500
@@ -114,7 +114,7 @@
       call allocate_ref_1d_moment
       call allocate_ele_length
 !
-      if (filter_conf1%nf_type .gt. 0) then
+      if (FEM1_elen%filter_conf%nf_type .gt. 0) then
         call read_base_filter_info(id_file)
         call read_elength_ele(id_file)
       end if
@@ -149,7 +149,7 @@
       call allocate_ref_1d_moment
       call allocate_filter_moms_ele(FEM1_elen%nele_filter_mom)
 !
-      if (filter_conf1%nf_type .gt. 0) then
+      if (FEM1_elen%filter_conf%nf_type .gt. 0) then
 !
         call read_base_filter_info(id_file)
         do ifil = 1, num_filter_moms

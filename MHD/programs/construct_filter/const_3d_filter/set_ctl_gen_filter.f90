@@ -74,7 +74,7 @@
 !
 !
       num_ref_filter = reference_filter_ctl%num
-      filter_conf1%nf_type = num_ref_filter
+      FEM1_elen%filter_conf%nf_type = num_ref_filter
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'num_ref_filter', num_ref_filter
 !
@@ -91,10 +91,11 @@
           if(cmp_no_case(reference_filter_ctl%c_tbl(i), 'Tophat')       &
      &          ) iref_filter_type(i) = iflag_tophat_filter
 !
-          filter_conf1%filter_type(i) = reference_filter_ctl%c_tbl(i)
+          FEM1_elen%filter_conf%filter_type(i)                          &
+     &          = reference_filter_ctl%c_tbl(i)
 !
           ref_filter_width(i) = reference_filter_ctl%vect(i)
-          filter_conf1%f_width(i) = ref_filter_width(i)
+          FEM1_elen%filter_conf%f_width(i) = ref_filter_width(i)
         end do
 !
         call deallocate_ref_filter_ctl
