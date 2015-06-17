@@ -125,7 +125,7 @@
        if (nf_type.eq.0) return
 !
        do ifil = 1, nf_type
-         filter_type(ifil) = filtertype_z(ifil)
+         filter_conf1%filter_type(ifil) = filtertype_z(ifil)
          filter_conf1%f_width(ifil) = width_f(ifil)
            do kf = 0, 2
              filter_conf1%xmom_1d_org(ifil,kf) = mom_1d_o(kf,3,ifil)
@@ -134,7 +134,7 @@
 !
        if (iflag_z_filter.eq.0) then
          do ifil = 1, nf_type
-           filter_type(ifil) = filtertype_h(ifil)
+           filter_conf1%filter_type(ifil) = filtertype_h(ifil)
          end do
        end if
 !

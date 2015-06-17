@@ -91,7 +91,7 @@
           if(cmp_no_case(reference_filter_ctl%c_tbl(i), 'Tophat')       &
      &          ) iref_filter_type(i) = iflag_tophat_filter
 !
-          filter_type(i) = reference_filter_ctl%c_tbl(i)
+          filter_conf1%filter_type(i) = reference_filter_ctl%c_tbl(i)
 !
           ref_filter_width(i) = reference_filter_ctl%vect(i)
           filter_conf1%f_width(i) = ref_filter_width(i)
