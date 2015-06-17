@@ -18,6 +18,11 @@
 !
 !  ----------------------------------------------------------------------
 !
+!      subroutine allocate_neighboring_nod_line
+!      subroutine deallocate_neighboring_nod_line
+!      subroutine write_neighboring_nod_line(nf_type)
+!      subroutine write_neighboring_nod_line_b(nf_type)
+!
       use m_precision
 !
       use m_constants
@@ -28,7 +33,6 @@
       use m_filtering_nod_4_cubmesh
       use m_filter_data_4_plane
 !
-      use m_filter_elength
       use m_l_filtering_data
 !
       implicit none
@@ -54,6 +58,7 @@
       integer(kind = kint) :: j_st2, j_end2
       integer(kind = kint) :: k_st2, k_end2
       private :: i_st2, i_end2, j_st2, j_end2, k_st2, k_end2
+      private :: set_fiilter_nod_line, order_fiilter_nod_line
 !
 !  ----------------------------------------------------------------------
 !
@@ -94,12 +99,13 @@
        end subroutine deallocate_neighboring_nod_line
 !
 !  ----------------------------------------------------------------------!
-!
-      subroutine write_neighboring_nod_line
+      subroutine write_neighboring_nod_line(nf_type)
 !
       use filter_moment_data_IO
       use filter_moment_data_IO_b
       use write_line_filter_data
+!
+       integer(kind = kint), intent(in) :: nf_type
 !
       integer(kind = kint) :: i
 !
@@ -113,7 +119,7 @@
 !
        call allocate_neighboring_nod_line
 !
-       call set_fiilter_nod_line
+       call set_fiilter_nod_line(nf_type)
 !
        call allocate_l_filtering_data(nodtot)
        call order_fiilter_nod_line
@@ -151,12 +157,13 @@
        end subroutine write_neighboring_nod_line
 !
 !  ----------------------------------------------------------------------!
-!
-      subroutine write_neighboring_nod_line_b
+      subroutine write_neighboring_nod_line_b(nf_type)
 !
       use filter_moment_data_IO
       use filter_moment_data_IO_b
       use write_line_filter_data
+!
+       integer(kind = kint), intent(in) :: nf_type
 !
 !
        i_st2 =  max(i_st-ndepth,1)
@@ -168,7 +175,7 @@
 !
        call allocate_neighboring_nod_line
 !
-       call set_fiilter_nod_line
+       call set_fiilter_nod_line(nf_type)
 !
        call allocate_l_filtering_data(nodtot)
        call order_fiilter_nod_line
@@ -193,7 +200,9 @@
        end subroutine write_neighboring_nod_line_b
 !
 !  ----------------------------------------------------------------------!
-       subroutine set_fiilter_nod_line
+       subroutine set_fiilter_nod_line(nf_type)
+!
+       integer(kind = kint), intent(in) :: nf_type
 !
        integer(kind = kint) :: i, j, k, inod, nd
        integer(kind = kint) :: ii, i1, jj, kk, ifil, idx1, idx2, idx3

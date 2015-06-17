@@ -32,7 +32,7 @@
 !
       integer(kind = kint), intent(in) :: id_file
 !
-      call read_ref_filter_param(id_file, nf_type,                      &
+      call read_ref_filter_param(id_file, filter_conf1%nf_type,         &
      &    filter_conf1%filter_type, filter_conf1%f_width,               &
      &    filter_conf1%xmom_1d_org)
 !
@@ -48,7 +48,7 @@
       integer(kind = kint), intent(in) :: id_file
 !
 !
-      call write_ref_filter_param(id_file, nf_type,                     &
+      call write_ref_filter_param(id_file, filter_conf1%nf_type,        &
      &    filter_conf1%filter_type, filter_conf1%f_width,               &
      &    filter_conf1%xmom_1d_org)
 !

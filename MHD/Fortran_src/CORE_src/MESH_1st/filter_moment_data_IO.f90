@@ -34,9 +34,9 @@
 !
 !
       call write_filter_elen_head(id_file,                              &
-     &    nnod_filter_mom, nele_filter_mom, nf_type)
+     &    nnod_filter_mom, nele_filter_mom, filter_conf1%nf_type)
 !
-      if (nf_type.gt.0) then
+      if (filter_conf1%nf_type .gt. 0) then
         call write_base_filter_info(id_file)
         call write_elength_ele(id_file)
       end if
@@ -56,9 +56,9 @@
 !
 !
       call write_filter_moms_head(id_file,                              &
-     &    nnod_fmom, nele_fmom, num_filter_moms, nf_type)
+     &    nnod_fmom, nele_fmom, num_filter_moms, filter_conf1%nf_type)
 !
-      if (nf_type.gt.0) then
+      if (filter_conf1%nf_type .gt. 0) then
         call write_base_filter_info(id_file)
         do ifil = 1, num_filter_moms
           call write_filter_moments_ele(id_file, ifil)
@@ -79,7 +79,8 @@
 !
 !
       call read_filter_moms_head(id_file,                               &
-     &    nnod_filter_mom, nele_filter_mom, num_filter_moms, nf_type)
+     &    nnod_filter_mom, nele_filter_mom, num_filter_moms,            &
+     &    filter_conf1%nf_type)
 !
       end subroutine read_filter_moment_num
 !
@@ -98,7 +99,7 @@
 !
 !
       call read_filter_elen_head(id_file,                               &
-     &    nnod_filter_mom, nele_filter_mom, nf_type)
+     &    nnod_filter_mom, nele_filter_mom, filter_conf1%nf_type)
 !
       if (nnod_filter_mom.ne.numnod) then
         ierr = 500
@@ -111,7 +112,7 @@
       call allocate_ref_1d_moment
       call allocate_ele_length
 !
-      if (nf_type.gt.0) then
+      if (filter_conf1%nf_type .gt. 0) then
         call read_base_filter_info(id_file)
         call read_elength_ele(id_file)
       end if
@@ -146,7 +147,7 @@
       call allocate_ref_1d_moment
       call allocate_filter_moms_ele(nele_filter_mom)
 !
-      if (nf_type.gt.0) then
+      if (filter_conf1%nf_type .gt. 0) then
 !
         call read_base_filter_info(id_file)
         do ifil = 1, num_filter_moms

@@ -39,7 +39,7 @@
       integer (kind = kint) :: i_grid
 !
 !
-       do ifil = 1, nf_type
+       do ifil = 1, filter_conf1%nf_type
 !
          ifil0 = ifil-1
 !

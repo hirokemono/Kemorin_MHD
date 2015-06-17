@@ -33,7 +33,7 @@
       integer(kind = kint), intent(in) :: ifil
 !
       call s_cal_filter_moms_ele_by_elen                                &
-     &   (ifil, numele, nf_type, filter_conf1%xmom_1d_org,              &
+     &   (ifil, numele, filter_conf1%nf_type, filter_conf1%xmom_1d_org, &
      &    elen_1%f_x2, elen_1%f_y2, elen_1%f_z2,                   &
      &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
      &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
@@ -54,7 +54,7 @@
       integer(kind = kint), intent(in) :: ifil
 !
       call correct_filter_moms_ele_by_elen(ifil, numele, nnod_4_ele,    &
-     &    ie, nf_type, filter_conf1%xmom_1d_org,           &
+     &    ie, filter_conf1%nf_type, filter_conf1%xmom_1d_org,           &
      &    elen_1%f_x2, elen_1%f_y2, elen_1%f_z2,                   &
      &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
      &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &

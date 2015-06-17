@@ -1,11 +1,12 @@
 !
 !     module m_filter_data_4_plane
 !
-      module m_filter_data_4_plane
-!
 !     Written by Kemorin
 !
-
+!     subroutine allocate_filter_4_plane(nf_type)
+!
+      module m_filter_data_4_plane
+!
       use m_precision
 !
       implicit none
@@ -53,13 +54,14 @@
 !
 !  ----------------------------------------------------------------------
 !
-       subroutine allocate_filter_4_plane
+       subroutine allocate_filter_4_plane(nf_type)
 !
        use m_size_4_plane
        use m_size_of_cube
        use m_filtering_nod_4_cubmesh
 !
-       use m_filter_elength
+       integer(kind = kint), intent(in) :: nf_type
+!
 !
        iwidth_1d = 2*ndepth+1
        iwidth_2d = iwidth_1d*iwidth_1d

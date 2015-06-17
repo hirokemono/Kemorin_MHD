@@ -31,7 +31,7 @@
       use gz_filter_moms_elen_data_IO
 !
 !
-      call read_ref_filter_param_gz(nf_type,                            &
+      call read_ref_filter_param_gz(filter_conf1%nf_type,               &
      &    filter_conf1%filter_type, filter_conf1%f_width,               &
      &    filter_conf1%xmom_1d_org)
 !
@@ -45,7 +45,7 @@
       use gz_filter_moms_elen_data_IO
 !
 !
-      call write_ref_filter_param_gz(nf_type,                           &
+      call write_ref_filter_param_gz(filter_conf1%nf_type,              &
      &    filter_conf1%filter_type, filter_conf1%f_width,               &
      &    filter_conf1%xmom_1d_org)
 !

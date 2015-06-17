@@ -1,9 +1,15 @@
 !
 !      module m_filtering_nod_4_cubmesh
 !
-      module m_filtering_nod_4_cubmesh
-!
 !     Written by H. Matsui
+!
+!       subroutine allocate_work_4_filter_nod
+!       subroutine reset_work_4_filter_nod
+!       subroutine allocate_filters_nod(nf_type)
+!       subroutine deallocate_work_4_filter_nod
+!       subroutine deallocate_filters_nod
+!
+      module m_filtering_nod_4_cubmesh
 !
       use m_precision
 !
@@ -130,11 +136,12 @@
 !
 !  ----------------------------------------------------------------------
 !
-       subroutine allocate_filters_nod
+       subroutine allocate_filters_nod(nf_type)
 !
        use m_size_of_cube
        use m_comm_data_cube_kemo
-       use m_filter_elength
+!
+       integer(kind = kint), intent(in) :: nf_type
 !
        allocate(filter_c_x(ndep_1,numnod_x,numnod_y,numnod_z,nf_type))
        allocate(filter_c_y(ndep_1,numnod_x,numnod_y,numnod_z,nf_type))

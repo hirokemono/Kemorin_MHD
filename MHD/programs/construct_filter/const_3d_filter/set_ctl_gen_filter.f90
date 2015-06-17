@@ -74,7 +74,7 @@
 !
 !
       num_ref_filter = reference_filter_ctl%num
-      nf_type = num_ref_filter
+      filter_conf1%nf_type = num_ref_filter
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'num_ref_filter', num_ref_filter
 !
