@@ -12,7 +12,7 @@
 !      subroutine read_elen_ele_type_gz(nele_fmom, elen_ele)
 !      subroutine write_elen_ele_type_gz(nele_fmom, elen_ele)
 !        integer (kind = kint), intent(in)  :: nele_fmom
-!        type(ele_mom_diffs_type), intent(inout)  :: elen_ele
+!        type(elen_ele_diffs_type), intent(inout)  :: elen_ele
 !
 !      subroutine read_filter_moms_ele_type_gz(nele_fmom, mom_ele)
 !      subroutine write_filter_moms_ele_type_gz(nele_fmom, mom_ele)
@@ -70,7 +70,7 @@
       use gz_filter_moms_elen_data_IO
 !
       integer (kind = kint), intent(in)  :: nele_fmom
-      type(ele_mom_diffs_type), intent(inout)  :: elen_ele
+      type(elen_ele_diffs_type), intent(inout)  :: elen_ele
 !
 !
       call read_elens_ele_gz(nele_fmom,                                 &
@@ -95,7 +95,7 @@
 !      integer (kind = kint), intent(in) :: nnod
       integer (kind = kint), intent(in)  :: nele_fmom
 !      type(nod_mom_diffs_type) :: elen_nod
-      type(ele_mom_diffs_type), intent(inout)  :: elen_ele
+      type(elen_ele_diffs_type), intent(inout)  :: elen_ele
 !
 !
 !    output coefs for filters for each node

@@ -22,7 +22,6 @@
       implicit none
 !
       private :: copy_moments_type, copy_mom_diffs_type
-      private :: copy_nod_mom_diffs_type, copy_ele_mom_diffs_type
 !
 !  ---------------------------------------------------------------------
 !
@@ -150,46 +149,6 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_nod_mom_diffs_type(nnod_org, nnod_tgt,            &
-     &          mom_org, mom_tgt)
-!
-      use t_filter_elength
-!
-      integer (kind = kint), intent(in) :: nnod_org
-      type(nod_mom_diffs_type), intent(in) :: mom_org
-      integer (kind = kint), intent(inout) :: nnod_tgt
-      type(nod_mom_diffs_type), intent(inout) :: mom_tgt
-!
-!
-      nnod_tgt = nnod_org
-      call copy_moments_type(nnod_tgt, mom_org%moms, mom_tgt%moms)
-      call copy_mom_diffs_type(nnod_tgt, mom_org%diff, mom_tgt%diff)
-!
-      end subroutine copy_nod_mom_diffs_type
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_ele_mom_diffs_type(nele_org, nele_tgt,            &
-     &          mom_org, mom_tgt)
-!
-      use t_filter_elength
-!
-      integer (kind = kint), intent(in) :: nele_org
-      type(ele_mom_diffs_type), intent(in) :: mom_org
-      integer (kind = kint), intent(inout) :: nele_tgt
-      type(ele_mom_diffs_type), intent(inout) :: mom_tgt
-!
-!
-      nele_tgt = nele_org
-      call copy_moments_type(nele_tgt, mom_org%moms, mom_tgt%moms)
-      call copy_mom_diffs_type(nele_tgt, mom_org%diff, mom_tgt%diff)
-      call copy_mom_diffs_type(nele_tgt, mom_org%diff2, mom_tgt%diff2)
-!
-      end subroutine copy_ele_mom_diffs_type
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine copy_elen_ele_type(FEM_elen_org, FEM_elen_tgt)
 !
       use t_filter_elength
@@ -198,9 +157,13 @@
       type(gradient_model_data_type), intent(inout) :: FEM_elen_tgt
 !
 !
-      call copy_ele_mom_diffs_type(FEM_elen_org%nele_filter_mom,        &
-     &    FEM_elen_tgt%nele_filter_mom, FEM_elen_org%elen_ele,          &
-     &    FEM_elen_tgt%elen_ele)
+      FEM_elen_tgt%nele_filter_mom = FEM_elen_org%nele_filter_mom
+      call copy_elength_type(FEM_elen_tgt%nele_filter_mom,              &
+     &    FEM_elen_org%elen_ele%moms, FEM_elen_tgt%elen_ele%moms)
+      call copy_elen_diffs_type(FEM_elen_tgt%nele_filter_mom,           &
+     &    FEM_elen_org%elen_ele%diff, FEM_elen_tgt%elen_ele%diff)
+      call copy_elen_diffs_type(FEM_elen_tgt%nele_filter_mom,           &
+     &    FEM_elen_org%elen_ele%diff2, FEM_elen_tgt%elen_ele%diff2)
 !
       end subroutine copy_elen_ele_type
 !
@@ -214,9 +177,11 @@
       type(gradient_model_data_type), intent(inout) :: FEM_elen_tgt
 !
 !
-      call copy_nod_mom_diffs_type(FEM_elen_org%nnod_filter_mom,        &
-     &    FEM_elen_tgt%nnod_filter_mom, FEM_elen_org%elen_nod,          &
-     &    FEM_elen_tgt%elen_nod)
+      FEM_elen_tgt%nnod_filter_mom = FEM_elen_org%nnod_filter_mom
+      call copy_elength_type(FEM_elen_tgt%nele_filter_mom,              &
+     &    FEM_elen_org%elen_nod%moms, FEM_elen_tgt%elen_nod%moms)
+      call copy_elen_diffs_type(FEM_elen_tgt%nele_filter_mom,           &
+     &    FEM_elen_org%elen_nod%diff, FEM_elen_tgt%elen_nod%diff)
 !
       end subroutine copy_nodal_elen_type
 !
@@ -233,10 +198,17 @@
       integer(kind = kint) :: ifil
 !
 !
+      FEM_moms_tgt%nele_fmom = FEM_moms_org%nele_fmom
       do ifil = 1, FEM_moms_tgt%num_filter_moms
-      call copy_ele_mom_diffs_type(FEM_moms_org%nele_fmom,              &
-     &    FEM_moms_tgt%nele_fmom, FEM_moms_org%mom_ele(ifil),           &
-     &    FEM_moms_tgt%mom_ele(ifil) )
+        call copy_moments_type(FEM_moms_tgt%nele_fmom,                  &
+     &      FEM_moms_org%mom_ele(ifil)%moms,                            &
+     &      FEM_moms_tgt%mom_ele(ifil)%moms)
+        call copy_mom_diffs_type(FEM_moms_tgt%nele_fmom,                &
+     &      FEM_moms_org%mom_ele(ifil)%diff,                            &
+     &      FEM_moms_tgt%mom_ele(ifil)%diff)
+        call copy_mom_diffs_type(FEM_moms_tgt%nele_fmom,                &
+     &      FEM_moms_org%mom_ele(ifil)%diff2,                           &
+     &      FEM_moms_tgt%mom_ele(ifil)%diff2)
       end do
 !
       end subroutine copy_filter_moms_ele_type

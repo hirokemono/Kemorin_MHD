@@ -10,11 +10,11 @@
 !!@verbatim
 !!      subroutine alloc_elen_ele_type(nele_filter_mom, elen_ele)
 !!        integer (kind = kint), intent(in) :: nele_filter_mom
-!!        type(ele_mom_diffs_type), intent(inout) :: elen_ele
+!!        type(elen_ele_diffs_type), intent(inout) :: elen_ele
 !!       (substitution of allocate_ele_length )
 !!      subroutine alloc_nodal_elen_type(nnod_filter_mom, elen_nod)
 !!        integer (kind = kint), intent(in) :: nnod_filter_mom
-!!        type(ele_mom_diffs_type), intent(inout) :: elen_nod
+!!        type(elen_nod_diffs_type), intent(inout) :: elen_nod
 !!       (substitution of allocate_nodal_ele_length )
 !!
 !!      subroutine alloc_ref_1d_mom_type(filter_conf)
@@ -25,10 +25,10 @@
 !!       (substitution of deallocate_filter_moments )
 !!
 !!      subroutine dealloc_elen_type(elen_ele)
-!!        type(ele_mom_diffs_type), intent(inout) :: elen_ele
+!!        type(elen_ele_diffs_type), intent(inout) :: elen_ele
 !!       (substitution of deallocate_ele_length )
 !!      subroutine dealloc_nodal_elen_type(elen_nod)
-!!        type(ele_mom_diffs_type), intent(inout) :: elen_nod
+!!        type(elen_nod_diffs_type), intent(inout) :: elen_nod
 !!       (substitution of deallocate_nodal_ele_length )
 !!      subroutine dealloc_ref_1d_mom_type(filter_conf)
 !!        type(filter_config_type), intent(inout) ::  filter_conf
@@ -37,9 +37,6 @@
 !!   data comparison
 !!
 !!    nf_type...     nf_type
-!!    isgs_4_div...  isgs_4_div
-!!   filter function number for time evolution
-!!         dynamic model: isgs_4_div = 2, other models: isgs_4_div = 1
 !!
 !!   filter_type(:)...   filter_type
 !!   f_width(:)...       f_width
@@ -116,7 +113,6 @@
 !
       type filter_config_type
         integer (kind = kint) :: nf_type
-        integer (kind = kint) :: isgs_4_div
         character(len=kchara), pointer :: filter_type(:)
         real(kind=kreal), pointer :: f_width(:)
         real(kind=kreal), pointer :: xmom_1d_org(:,:)
@@ -186,18 +182,25 @@
         type(filter_mom_diffs_type) :: diff2
       end type ele_mom_diffs_type
 !
+      type elen_nod_diffs_type
+        type(elen_on_ele_type) :: moms
+        type(elen_diffs_type) :: diff
+      end type elen_nod_diffs_type
+!
+      type elen_ele_diffs_type
+        type(elen_on_ele_type) :: moms
+        type(elen_diffs_type) :: diff
+        type(elen_diffs_type) :: diff2
+      end type elen_ele_diffs_type
+!
 !
       type gradient_model_data_type
         integer (kind = kint) :: nnod_filter_mom, nele_filter_mom
         type(filter_config_type) ::  filter_conf
 !
-        type(nod_mom_diffs_type) :: elen_nod
-        type(ele_mom_diffs_type) :: elen_ele
+        type(elen_nod_diffs_type) :: elen_nod
+        type(elen_ele_diffs_type) :: elen_ele
       end type gradient_model_data_type
-!
-      private :: alloc_moments_type, dealloc_moments_type
-      private :: alloc_filter_mom_diffs_type
-      private :: dealloc_filter_mom_diffs_type
 !
 !  ---------------------------------------------------------------------
 !
@@ -416,34 +419,6 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_nod_mom_diffs_type(nnod_fmom, moms_nod)
-!
-      integer (kind = kint), intent(in) :: nnod_fmom
-      type(nod_mom_diffs_type), intent(inout)  :: moms_nod
-!
-!
-      call alloc_moments_type(nnod_fmom, moms_nod%moms)
-      call alloc_filter_mom_diffs_type(nnod_fmom, moms_nod%diff)
-!
-      end subroutine alloc_nod_mom_diffs_type
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine alloc_ele_mom_diffs_type(nele_fmom, moms_ele)
-!
-      integer (kind = kint), intent(in) :: nele_fmom
-      type(ele_mom_diffs_type), intent(inout)  :: moms_ele
-!
-!
-      call alloc_moments_type(nele_fmom, moms_ele%moms)
-      call alloc_filter_mom_diffs_type(nele_fmom, moms_ele%diff)
-      call alloc_filter_mom_diffs_type(nele_fmom, moms_ele%diff2)
-!
-      end subroutine alloc_ele_mom_diffs_type
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine dealloc_nod_mom_diffs_type(moms_nod)
 !
       type(nod_mom_diffs_type), intent(inout)  :: moms_nod
@@ -473,10 +448,12 @@
       subroutine alloc_elen_ele_type(nele_filter_mom, elen_ele)
 !
       integer (kind = kint), intent(in) :: nele_filter_mom
-      type(ele_mom_diffs_type), intent(inout) :: elen_ele
+      type(elen_ele_diffs_type), intent(inout) :: elen_ele
 !
 !
-      call alloc_ele_mom_diffs_type(nele_filter_mom, elen_ele)
+      call alloc_elen_on_ele_type(nele_filter_mom, elen_ele%moms)
+      call alloc_elen_diffs_type(nele_filter_mom,  elen_ele%diff)
+      call alloc_elen_diffs_type(nele_filter_mom,  elen_ele%diff2)
 !
       end subroutine alloc_elen_ele_type
 !
@@ -485,10 +462,11 @@
       subroutine alloc_nodal_elen_type(nnod_filter_mom, elen_nod)
 !
       integer (kind = kint), intent(in) :: nnod_filter_mom
-      type(nod_mom_diffs_type), intent(inout) :: elen_nod
+      type(elen_nod_diffs_type), intent(inout) :: elen_nod
 !
 !
-      call alloc_nod_mom_diffs_type(nnod_filter_mom, elen_nod)
+      call alloc_elen_on_ele_type(nnod_filter_mom, elen_nod%moms)
+      call alloc_elen_diffs_type(nnod_filter_mom, elen_nod%diff)
 !
       end subroutine alloc_nodal_elen_type
 !
@@ -529,10 +507,12 @@
 !
       subroutine dealloc_elen_type(elen_ele)
 !
-      type(ele_mom_diffs_type), intent(inout) :: elen_ele
+      type(elen_ele_diffs_type), intent(inout) :: elen_ele
 !
 !
-      call dealloc_ele_mom_diffs_type(elen_ele)
+      call dealloc_elen_on_ele_type(elen_ele%moms)
+      call dealloc_elen_diffs_type(elen_ele%diff)
+      call dealloc_elen_diffs_type(elen_ele%diff2)
 !
       end subroutine dealloc_elen_type
 !
@@ -540,10 +520,11 @@
 !
       subroutine dealloc_nodal_elen_type(elen_nod)
 !
-      type(nod_mom_diffs_type), intent(inout) :: elen_nod
+      type(elen_nod_diffs_type), intent(inout) :: elen_nod
 !
 !
-      call dealloc_nod_mom_diffs_type(elen_nod)
+      call dealloc_elen_on_ele_type(elen_nod%moms)
+      call dealloc_elen_diffs_type(elen_nod%diff)
 !
       end subroutine dealloc_nodal_elen_type
 !

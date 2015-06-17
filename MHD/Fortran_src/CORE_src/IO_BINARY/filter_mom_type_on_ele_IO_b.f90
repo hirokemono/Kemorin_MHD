@@ -13,7 +13,7 @@
 !      subroutine read_elen_ele_type_b(id_file, nele_fmom, elen_ele)
 !      subroutine write_elen_ele_type_b(id_file, nele_fmom, elen_ele)
 !        integer(kind = kint), intent(in) :: id_file, nele_fmom
-!        type(ele_mom_diffs_type), intent(in) :: elen_ele
+!        type(elen_ele_diffs_type), intent(in) :: elen_ele
 !
 !      subroutine read_filter_moms_ele_type_b(id_file, nele_fmom,       &
 !     &          mom_ele)
@@ -75,7 +75,7 @@
       use filter_moms_elen_data_IO_b
 !
       integer(kind = kint), intent(in) :: id_file, nele_fmom
-      type(ele_mom_diffs_type), intent(inout) :: elen_ele
+      type(elen_ele_diffs_type), intent(inout) :: elen_ele
 !
 !
       call read_elens_ele_b(id_file, nele_fmom,                         &
@@ -98,7 +98,7 @@
       use filter_moms_elen_data_IO_b
 !
       integer(kind = kint), intent(in) :: id_file, nele_fmom
-      type(ele_mom_diffs_type), intent(in) :: elen_ele
+      type(elen_ele_diffs_type), intent(in) :: elen_ele
 !
 !
       call write_elens_ele_b(id_file, nele_fmom,                        &

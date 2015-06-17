@@ -30,22 +30,9 @@
 !
       type(filter_config_type), save :: filter_conf1
 !
-
-!      integer (kind = kint) :: nf_type
-      integer (kind = kint) :: isgs_4_div = 1
-!   filter function number for time evolution
-!         dynamic model: isgs_4_div = 2, other models: isgs_4_div = 1
-!
-!      character(len=kchara), allocatable :: filter_type(:)
-!
-!      real(kind=kreal), allocatable :: f_width(:)
-!
       integer (kind = kint) :: nnod_filter_mom, nele_filter_mom
 !
-!      real(kind=kreal), allocatable :: xmom_1d_org(:,:)
-!          one dimensional moment in reference frame
-!              (direction,filter No,order)
-!   filter_conf1%nf_type
+!   filter_conf1%isgs_4_div
 !
 !  ---------------------------------------------------------------------
 !
@@ -76,13 +63,7 @@
 !
       subroutine allocate_ref_1d_moment
 !
-      allocate( filter_conf1%filter_type(filter_conf1%nf_type) )
-      allocate( filter_conf1%f_width(filter_conf1%nf_type) )
-!
-      allocate( filter_conf1%xmom_1d_org(filter_conf1%nf_type,0:2) )
-!
-      filter_conf1%f_width =      0.0d0
-      filter_conf1%xmom_1d_org =  0.0d0
+      call alloc_ref_1d_mom_type(filter_conf1)
 !
       end subroutine allocate_ref_1d_moment
 !
@@ -120,14 +101,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine deallocate_ref_1d_moment
+      subroutine deallocate_ref_1d_moment
 !
-        deallocate( filter_conf1%filter_type )
-        deallocate( filter_conf1%f_width )
+      call dealloc_ref_1d_mom_type(filter_conf1)
 !
-        deallocate( filter_conf1%xmom_1d_org )
-!
-       end subroutine deallocate_ref_1d_moment
+      end subroutine deallocate_ref_1d_moment
 !
 !  ---------------------------------------------------------------------
 !

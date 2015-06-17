@@ -109,8 +109,10 @@
 !
       allocate( FEM_moms%mom_nod(FEM_moms%num_filter_moms) )
       do ifil = 1, FEM_moms%num_filter_moms
-        call alloc_nod_mom_diffs_type(FEM_moms%nnod_fmom,               &
-     &      FEM_moms%mom_nod(ifil))
+        call alloc_moments_type                                         &
+     &     (FEM_moms%nnod_fmom, FEM_moms%mom_nod(ifil)%moms)
+        call alloc_filter_mom_diffs_type                                &
+     &      (FEM_moms%nnod_fmom, FEM_moms%mom_nod(ifil)%diff)
       end do
 !
       end subroutine alloc_filter_moms_nod_type
@@ -124,7 +126,8 @@
 !
 !
       do ifil = 1, FEM_moms%num_filter_moms
-        call dealloc_nod_mom_diffs_type(FEM_moms%mom_nod(ifil))
+        call dealloc_moments_type(FEM_moms%mom_nod(ifil)%moms)
+        call dealloc_filter_mom_diffs_type(FEM_moms%mom_nod(ifil)%diff)
       end do
       deallocate( FEM_moms%mom_nod )
 !
@@ -137,15 +140,19 @@
 !
       integer(kind = kint), intent(in) :: nele
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
-      integer(kind = kint) :: ifil
+      integer(kind = kint) :: i
 !
 !
       FEM_moms%nele_fmom = nele
 !
       allocate( FEM_moms%mom_ele(FEM_moms%num_filter_moms) )
-      do ifil = 1, FEM_moms%num_filter_moms
-        call alloc_ele_mom_diffs_type(FEM_moms%nele_fmom,               &
-     &      FEM_moms%mom_ele(ifil))
+      do i = 1, FEM_moms%num_filter_moms
+        call alloc_moments_type                                         &
+     &     (FEM_moms%nele_fmom, FEM_moms%mom_ele(i)%moms)
+        call alloc_filter_mom_diffs_type                                &
+     &     (FEM_moms%nele_fmom, FEM_moms%mom_ele(i)%diff)
+        call alloc_filter_mom_diffs_type                                &
+     &     (FEM_moms%nele_fmom, FEM_moms%mom_ele(i)%diff2)
       end do
 !
       end subroutine alloc_filter_moms_ele_type
@@ -155,11 +162,14 @@
       subroutine dealloc_filter_moms_ele_type(FEM_moms)
 !
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
-      integer(kind = kint) :: ifil
+      integer(kind = kint) :: i
 !
 !
-      do ifil = 1, FEM_moms%num_filter_moms
-        call dealloc_ele_mom_diffs_type(FEM_moms%mom_ele(ifil))
+      do i = 1, FEM_moms%num_filter_moms
+        call dealloc_ele_mom_diffs_type(FEM_moms%mom_ele(i))
+        call dealloc_moments_type(FEM_moms%mom_ele(i)%moms)
+        call dealloc_filter_mom_diffs_type(FEM_moms%mom_ele(i)%diff)
+        call dealloc_filter_mom_diffs_type(FEM_moms%mom_ele(i)%diff2)
       end do
       deallocate( FEM_moms%mom_ele )
 !
