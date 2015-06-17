@@ -66,13 +66,13 @@
 !
       use m_filter_elength
 !
-      call take_1st_diffs_ele(elen_n%f_x2, diff1_1%df_x2)
-      call take_1st_diffs_ele(elen_n%f_y2, diff1_1%df_y2)
-      call take_1st_diffs_ele(elen_n%f_z2, diff1_1%df_z2)
+      call take_1st_diffs_ele(elen_n%f_x2, elen1%diff%df_x2)
+      call take_1st_diffs_ele(elen_n%f_y2, elen1%diff%df_y2)
+      call take_1st_diffs_ele(elen_n%f_z2, elen1%diff%df_z2)
 !
-      call take_1st_diffs_ele(elen_n%f_xy, diff1_1%df_xy)
-      call take_1st_diffs_ele(elen_n%f_yz, diff1_1%df_yz)
-      call take_1st_diffs_ele(elen_n%f_zx, diff1_1%df_zx)
+      call take_1st_diffs_ele(elen_n%f_xy, elen1%diff%df_xy)
+      call take_1st_diffs_ele(elen_n%f_yz, elen1%diff%df_yz)
+      call take_1st_diffs_ele(elen_n%f_zx, elen1%diff%df_zx)
 !
       end subroutine cal_diffs_delta_on_element
 !
@@ -115,18 +115,18 @@
       use m_filter_elength
 !
       call take_2nd_diffs_ele(diff1_n%df_x2,                     &
-     &                        diff2_1%df_x2)
+     &                        elen1%diff2%df_x2)
       call take_2nd_diffs_ele(diff1_n%df_y2,                     &
-     &                        diff2_1%df_y2)
+     &                        elen1%diff2%df_y2)
       call take_2nd_diffs_ele(diff1_n%df_z2,                     &
-     &                        diff2_1%df_z2)
+     &                        elen1%diff2%df_z2)
 !
       call take_2nd_diffs_ele(diff1_n%df_xy,                    &
-     &                        diff2_1%df_xy)
+     &                        elen1%diff2%df_xy)
       call take_2nd_diffs_ele(diff1_n%df_yz,                    &
-     &                        diff2_1%df_yz)
+     &                        elen1%diff2%df_yz)
       call take_2nd_diffs_ele(diff1_n%df_zx,                    &
-     &                        diff2_1%df_zx)
+     &                        elen1%diff2%df_zx)
 !
       end subroutine cal_2nd_diffs_delta_on_element
 !

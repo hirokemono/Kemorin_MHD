@@ -151,9 +151,9 @@
 !
        if (filter_conf1%nf_type .eq. 0) return
 !
-       call clear_elen_on_ele_type(nele_filter_mom, elen_1)
-       call clear_elen_diffs_type(nele_filter_mom, diff1_1)
-       call clear_elen_diffs_type(nele_filter_mom, diff2_1)
+       call clear_elen_on_ele_type(nele_filter_mom, elen1%moms)
+       call clear_elen_diffs_type(nele_filter_mom, elen1%diff)
+       call clear_elen_diffs_type(nele_filter_mom, elen1%diff2)
 !
        iele = 0
        do k=1,nz-1
@@ -162,13 +162,13 @@
            do i=1,nx-1
              iele = iele + 1
 !
-             elen_1%f_x2(iele) = delta_h(1) * delta_h(1)
-             elen_1%f_y2(iele) = delta_h(2) * delta_h(2)
-             elen_1%f_z2(iele) = delta_z_e(k_gl) * delta_z_e(k_gl)
+             elen1%moms%f_x2(iele) = delta_h(1) * delta_h(1)
+             elen1%moms%f_y2(iele) = delta_h(2) * delta_h(2)
+             elen1%moms%f_z2(iele) = delta_z_e(k_gl) * delta_z_e(k_gl)
 !
-             diff1_1%df_z2(iele,3) = 2.0d0 * delta_z_e(k_gl)          &
+             elen1%diff%df_z2(iele,3) = 2.0d0 * delta_z_e(k_gl)         &
      &                                       * diff_deltaz_e(k_gl)
-             diff2_1%df_z2(iele,3) = 2.0d0 * d2_deltaz_e(k_gl)       &
+             elen1%diff2%df_z2(iele,3) = 2.0d0 * d2_deltaz_e(k_gl)      &
      &                                 + 2.0d0 * diff_deltaz_e(k_gl)    &
      &                                         * diff_deltaz_e(k_gl)
            enddo

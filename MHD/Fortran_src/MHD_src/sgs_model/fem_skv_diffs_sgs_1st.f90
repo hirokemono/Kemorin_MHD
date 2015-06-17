@@ -61,8 +61,8 @@
      &    np_smp, iele_fsmp_stack, n_int, k2,                           &
      &    ntot_int_3d, xjac, aw, dwx, dwx, &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom, &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    ak_diff, scalar_1, sk_v)
 !
       end subroutine fem_skv_grad_sgs_pg_1st
@@ -89,8 +89,8 @@
      &    iele_fsmp_stack, n_int, k2,                                   &
      &    ntot_int_3d, xjac, aw, dwx, dwx, &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom, &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    ak_diff, vector_1, sk_v)
 !
       end subroutine fem_skv_div_sgs_pg_1st
@@ -117,8 +117,8 @@
      &    iele_fsmp_stack, n_int, k2,                      &
      &    ntot_int_3d, xjac, aw, dwx, dwx, &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom, &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    ak_diff, vector_1, sk_v)
 !
       end subroutine fem_skv_rot_sgs_pg_1st
@@ -145,8 +145,8 @@
      &    np_smp, iele_fsmp_stack, n_int, k2,              &
      &    ntot_int_3d, xjac, aw, dwx, dwx, &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom, &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    ak_diff, tensor_1, sk_v)
 !
       end subroutine fem_skv_div_tsr_sgs_pg_1st
@@ -173,8 +173,8 @@
      &    np_smp, iele_fsmp_stack, n_int, k2,              &
      &    ntot_int_3d, xjac, aw, dwx, dwx, &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom, &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    ak_diff, as_tsr_1, sk_v)
 !
       end subroutine fem_skv_div_as_tsr_sgs_pg_1st
@@ -203,8 +203,8 @@
      &    np_smp, iele_fsmp_stack, n_int, k2,              &
      &    ntot_int_3d, xjac, aw, dwx, dnx, &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom, &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    ak_diff, scalar_1, sk_v)
 !
       end subroutine fem_skv_linear_grad_sgs_1st
@@ -231,8 +231,8 @@
      &    iele_fsmp_stack, n_int, k2,                      &
      &    ntot_int_3d, xjac, an, dnx, dwx, &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom, &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    ak_diff, vector_1, sk_v)
 !
       end subroutine fem_skv_div_2l_sgs_1st

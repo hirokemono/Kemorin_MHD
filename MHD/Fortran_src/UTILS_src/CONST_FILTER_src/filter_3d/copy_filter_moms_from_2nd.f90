@@ -35,9 +35,9 @@
       nnod_filter_mom = new_node%numnod
       nele_filter_mom = new_ele%numele
       call allocate_ele_length
-      call copy_elength_type(nele_filter_mom, elen_2, elen_1)
-      call copy_elen_diffs_type(nele_filter_mom, diff1_2, diff1_1)
-      call copy_elen_diffs_type(nele_filter_mom, diff2_2, diff2_1)
+      call copy_elength_type(nele_filter_mom, elen_2, elen1%moms)
+      call copy_elen_diffs_type(nele_filter_mom, diff1_2, elen1%diff)
+      call copy_elen_diffs_type(nele_filter_mom, diff2_2, elen1%diff2)
       call deallocate_2nd_ele_length
 !
       end subroutine copy_elength_ele_from_2nd

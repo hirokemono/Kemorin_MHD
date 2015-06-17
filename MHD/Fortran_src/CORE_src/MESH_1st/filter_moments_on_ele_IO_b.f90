@@ -67,12 +67,12 @@
 !
 !
       call read_elens_ele_b(id_file, nele_filter_mom,                   &
-     &    elen_1%f_x2, elen_1%f_y2, elen_1%f_z2,                   &
-     &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
-     &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
-     &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx)
+     &    elen1%moms%f_x2, elen1%moms%f_y2, elen1%moms%f_z2,            &
+     &    elen1%moms%f_xy, elen1%moms%f_yz, elen1%moms%f_zx,            &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
+     &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx)
 !
       end subroutine read_elength_ele_b
 !
@@ -87,12 +87,12 @@
 !
 !
       call write_elens_ele_b(id_file, nele_filter_mom,                  &
-     &    elen_1%f_x2, elen_1%f_y2, elen_1%f_z2,                   &
-     &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
-     &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
-     &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx)
+     &    elen1%moms%f_x2, elen1%moms%f_y2, elen1%moms%f_z2,            &
+     &    elen1%moms%f_xy, elen1%moms%f_yz, elen1%moms%f_zx,            &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
+     &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx)
 !
       end subroutine write_elength_ele_b
 !

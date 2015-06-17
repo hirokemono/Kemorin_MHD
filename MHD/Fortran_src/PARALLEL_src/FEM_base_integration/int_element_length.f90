@@ -33,7 +33,7 @@
       use m_filter_dxdxi
 !
       call s_int_element_length(nele_filter_mom,                        &
-     &    filter_dxi1%dxi_ele, elen_1)
+     &    filter_dxi1%dxi_ele, elen1%moms)
 !
       end subroutine int_element_length_1st
 !

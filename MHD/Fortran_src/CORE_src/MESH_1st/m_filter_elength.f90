@@ -24,10 +24,9 @@
       type(elen_on_ele_type), save ::  elen_n
       type(elen_diffs_type), save ::  diff1_n
 !
-      type(elen_on_ele_type), save :: elen_1
-      type(elen_diffs_type), save ::  diff1_1
-      type(elen_diffs_type), save ::  diff2_1
-!
+      type(elen_ele_diffs_type), save ::  elen1
+!   elen1%diff2
+
       type(filter_config_type), save :: filter_conf1
 !
       integer (kind = kint) :: nnod_filter_mom, nele_filter_mom
@@ -43,9 +42,7 @@
       subroutine allocate_ele_length
 !
 !
-      call alloc_elen_on_ele_type(nele_filter_mom, elen_1)
-      call alloc_elen_diffs_type(nele_filter_mom,  diff1_1)
-      call alloc_elen_diffs_type(nele_filter_mom,  diff2_1)
+      call alloc_elen_ele_type(nele_filter_mom, elen1)
 !
       end subroutine allocate_ele_length
 !
@@ -83,9 +80,7 @@
 !
        subroutine deallocate_ele_length
 !
-      call dealloc_elen_on_ele_type(elen_1)
-      call dealloc_elen_diffs_type(diff1_1)
-      call dealloc_elen_diffs_type(diff2_1)
+      call dealloc_elen_type(elen1)
 !
        end subroutine deallocate_ele_length
 !

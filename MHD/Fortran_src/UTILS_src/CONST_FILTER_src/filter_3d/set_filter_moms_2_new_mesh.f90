@@ -92,39 +92,39 @@
 !
           iele_2nd = iele_local_2nd(iele_gl)
 !
-          elen_2%f_x2(iele_2nd) = elen_1%f_x2(iele)
-          elen_2%f_y2(iele_2nd) = elen_1%f_y2(iele)
-          elen_2%f_z2(iele_2nd) = elen_1%f_z2(iele)
-          elen_2%f_xy(iele_2nd) = elen_1%f_xy(iele)
-          elen_2%f_yz(iele_2nd) = elen_1%f_yz(iele)
-          elen_2%f_zx(iele_2nd) = elen_1%f_zx(iele)
+          elen_2%f_x2(iele_2nd) = elen1%moms%f_x2(iele)
+          elen_2%f_y2(iele_2nd) = elen1%moms%f_y2(iele)
+          elen_2%f_z2(iele_2nd) = elen1%moms%f_z2(iele)
+          elen_2%f_xy(iele_2nd) = elen1%moms%f_xy(iele)
+          elen_2%f_yz(iele_2nd) = elen1%moms%f_yz(iele)
+          elen_2%f_zx(iele_2nd) = elen1%moms%f_zx(iele)
 !
           do nd = 1, n_vector
             diff1_2%df_x2(iele_2nd,nd)                            &
-     &         = diff1_1%df_x2(iele,nd)
+     &         = elen1%diff%df_x2(iele,nd)
             diff1_2%df_y2(iele_2nd,nd)                            &
-     &         = diff1_1%df_y2(iele,nd)
+     &         = elen1%diff%df_y2(iele,nd)
             diff1_2%df_z2(iele_2nd,nd)                            &
-     &         = diff1_1%df_z2(iele,nd)
+     &         = elen1%diff%df_z2(iele,nd)
             diff1_2%df_xy(iele_2nd,nd)                           &
-     &         = diff1_1%df_xy(iele,nd)
+     &         = elen1%diff%df_xy(iele,nd)
             diff1_2%df_yz(iele_2nd,nd)                           &
-     &         = diff1_1%df_yz(iele,nd)
+     &         = elen1%diff%df_yz(iele,nd)
             diff1_2%df_zx(iele_2nd,nd)                           &
-     &         = diff1_1%df_zx(iele,nd)
+     &         = elen1%diff%df_zx(iele,nd)
 !
             diff2_2%df_x2(iele_2nd,nd)                           &
-     &         = diff2_1%df_x2(iele,nd)
+     &         = elen1%diff2%df_x2(iele,nd)
             diff2_2%df_y2(iele_2nd,nd)                           &
-     &         = diff2_1%df_y2(iele,nd)
+     &         = elen1%diff2%df_y2(iele,nd)
             diff2_2%df_z2(iele_2nd,nd)                           &
-     &         = diff2_1%df_z2(iele,nd)
+     &         = elen1%diff2%df_z2(iele,nd)
             diff2_2%df_xy(iele_2nd,nd)                          &
-     &         = diff2_1%df_xy(iele,nd)
+     &         = elen1%diff2%df_xy(iele,nd)
             diff2_2%df_yz(iele_2nd,nd)                          &
-     &         = diff2_1%df_yz(iele,nd)
+     &         = elen1%diff2%df_yz(iele,nd)
             diff2_2%df_zx(iele_2nd,nd)                          &
-     &         = diff2_1%df_zx(iele,nd)
+     &         = elen1%diff2%df_zx(iele,nd)
           end do
 !
         end if

@@ -26,45 +26,10 @@
 !
       type(ele_mom_diffs_type), intent(in)  :: elen_e
 !
-      integer (kind=kint) :: nd, i
 !
-!
-!$omp parallel private(nd)
-!$omp do
-        do i = 1, nele_filter_mom
-          elen_1%f_x2(i) = elen_e%moms%f_x2(i)
-          elen_1%f_y2(i) = elen_e%moms%f_y2(i)
-          elen_1%f_z2(i) = elen_e%moms%f_z2(i)
-          elen_1%f_xy(i) = elen_e%moms%f_xy(i)
-          elen_1%f_yz(i) = elen_e%moms%f_yz(i)
-          elen_1%f_zx(i) = elen_e%moms%f_zx(i)
-        end do
-!$omp end do nowait
-!
-        do nd = 1, 3
-!$omp do
-          do i = 1, nele_filter_mom
-            diff1_1%df_x2(i,nd) = elen_e%diff%df_x2(i,nd)
-            diff1_1%df_y2(i,nd) = elen_e%diff%df_y2(i,nd)
-            diff1_1%df_z2(i,nd) = elen_e%diff%df_z2(i,nd)
-            diff1_1%df_xy(i,nd) = elen_e%diff%df_xy(i,nd)
-            diff1_1%df_yz(i,nd) = elen_e%diff%df_yz(i,nd)
-            diff1_1%df_zx(i,nd) = elen_e%diff%df_zx(i,nd)
-!
-            diff2_1%df_x2(i,nd) = elen_e%diff2%df_x2(i,nd)
-            diff2_1%df_y2(i,nd) = elen_e%diff2%df_y2(i,nd)
-            diff2_1%df_z2(i,nd) = elen_e%diff2%df_z2(i,nd)
-            diff2_1%df_xy(i,nd) = elen_e%diff2%df_xy(i,nd)
-            diff2_1%df_yz(i,nd) = elen_e%diff2%df_yz(i,nd)
-            diff2_1%df_zx(i,nd) = elen_e%diff2%df_zx(i,nd)
-          end do
-!$omp end do nowait
-        end do
-!$omp end parallel
-!
-!      call copy_elength_type(nele_filter_mom, elen_e%moms,  elen_1)
-!      call copy_elen_diffs_type(nele_filter_mom, elen_e%diff,  diff1_1)
-!      call copy_elen_diffs_type(nele_filter_mom, elen_e%diff2, diff2_1)
+      call copy_elength_type(nele_filter_mom, elen_e%moms,  elen1%moms)
+      call copy_elen_diffs_type(nele_filter_mom, elen_e%diff, elen1%diff)
+      call copy_elen_diffs_type(nele_filter_mom, elen_e%diff2, elen1%diff2)
 !
       end subroutine copy_filter_elen_ele_from_type
 !
@@ -77,41 +42,10 @@
 !
       type(ele_mom_diffs_type), intent(inout) :: elen_e
 !
-      integer (kind=kint) :: nd, i
 !
-!
-!$omp parallel private(nd)
-!$omp do
-        do i = 1, nele_filter_mom
-          elen_e%moms%f_x2(i) = elen_1%f_x2(i)
-          elen_e%moms%f_y2(i) = elen_1%f_y2(i)
-          elen_e%moms%f_z2(i) = elen_1%f_z2(i)
-          elen_e%moms%f_xy(i) = elen_1%f_xy(i)
-          elen_e%moms%f_yz(i) = elen_1%f_yz(i)
-          elen_e%moms%f_zx(i) = elen_1%f_zx(i)
-        end do
-!$omp end do nowait
-!
-        do nd = 1, 3
-!$omp do
-          do i = 1, nele_filter_mom
-            elen_e%diff%df_x2(i,nd) = diff1_1%df_x2(i,nd)
-            elen_e%diff%df_y2(i,nd) = diff1_1%df_y2(i,nd)
-            elen_e%diff%df_z2(i,nd) = diff1_1%df_z2(i,nd)
-            elen_e%diff%df_xy(i,nd) = diff1_1%df_xy(i,nd)
-            elen_e%diff%df_yz(i,nd) = diff1_1%df_yz(i,nd)
-            elen_e%diff%df_zx(i,nd) = diff1_1%df_zx(i,nd)
-!
-            elen_e%diff2%df_x2(i,nd) = diff2_1%df_x2(i,nd)
-            elen_e%diff2%df_y2(i,nd) = diff2_1%df_y2(i,nd)
-            elen_e%diff2%df_z2(i,nd) = diff2_1%df_z2(i,nd)
-            elen_e%diff2%df_xy(i,nd) = diff2_1%df_xy(i,nd)
-            elen_e%diff2%df_yz(i,nd) = diff2_1%df_yz(i,nd)
-            elen_e%diff2%df_zx(i,nd) = diff2_1%df_zx(i,nd)
-          end do
-!$omp end do nowait
-        end do
-!$omp end parallel
+      call copy_elength_type(nele_filter_mom, elen1%moms, elen_e%moms)
+      call copy_elen_diffs_type(nele_filter_mom, elen1%diff, elen_e%diff)
+      call copy_elen_diffs_type(nele_filter_mom, elen1%diff2, elen_e%diff2)
 !
       end subroutine copy_filter_elen_ele_to_type
 !

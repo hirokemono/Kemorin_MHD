@@ -72,8 +72,8 @@
      &    isurf_grp_smp_stack, ntot_int_sf_grp,        &
      &    xsq_sf, axjq_sf, aw_sf, aw_sf, &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,       &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    igrp, k2, n_int, nd, n_diff, dxe_sf, scalar_sf, sk_v)
 !
       end subroutine fem_sf_skv_sgs_commute_err_p1
@@ -101,8 +101,8 @@
      &    isurf_grp_smp_stack, ntot_int_sf_grp,        &
      &    xsq_sf, axjq_sf, aw_sf, aw_sf,   &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,       &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    igrp, k2, n_int, dxe_sf, scalar_sf, sk_v)
 !
       end subroutine fem_sf_skv_grad_commute_p1
@@ -130,8 +130,8 @@
      &    isurf_grp_smp_stack, ntot_int_sf_grp,       &
      &     xsq_sf, axjq_sf, aw_sf, aw_sf, &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,       &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    igrp, k2, nd, n_int, dxe_sf, vect_sf, sk_v)
 !
       end subroutine fem_sf_skv_div_flux_commute_p1
@@ -163,8 +163,8 @@
      &    isurf_grp_smp_stack, ntot_int_sf_grp,        &
      &    xsq_sf, axjq_sf, aw_sf, aw_sf,  &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,       &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    igrp, k2, n_int, nd, n_diff, dxe_sf, scalar_sf,               &
      &    ak_diff, coef, sk_v)
 !
@@ -194,8 +194,8 @@
      &    isurf_grp_smp_stack, ntot_int_sf_grp,        &
      &    xsq_sf, axjq_sf, aw_sf, aw_sf,   &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,       &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    igrp, k2, n_int, dxe_sf, scalar_sf, ak_diff, coef, sk_v)
 !
       end subroutine fem_sf_skv_sgs_grad_p1
@@ -225,8 +225,8 @@
      &    isurf_grp_smp_stack, ntot_int_sf_grp,        &
      &    xsq_sf, axjq_sf, aw_sf, aw_sf,  &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,       &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    igrp, k2, nd, n_int, dxe_sf, vect_sf, ak_diff, coef, sk_v)
 !
       end subroutine fem_sf_skv_sgs_div_flux_p1
@@ -256,8 +256,8 @@
      &    isurf_grp_smp_stack, ntot_int_sf_grp,        &
      &    xsq_sf, axjq_sf, an_sf, aw_sf,  &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,       &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    igrp, k2, n_int, ione, n_diff, dxe_sf, scalar_sf,             &
      &    ak_diff, one, sk_v)
 !
@@ -287,8 +287,8 @@
      &    isurf_grp_smp_stack, ntot_int_sf_grp, &
      &    xsq_sf, axjq_sf, aw_sf, an_sf,        &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,       &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
      &    igrp, k2, n_int, dxe_sf, scalar_sf, ak_diff, one, sk_v)
 !
       end subroutine fem_sf_skv_sgs_velo_co_p1
@@ -316,8 +316,8 @@
      &    surf_item, num_surf_smp, isurf_grp_smp_stack,                 &
      &    ntot_int_3d, xjac, dnx, dnx, &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,     &
-     &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
-     &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx,       &
+     &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
+     &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx,      &
      &    igrp, k2, n_int, ak_diff, phi_sf, sk_v)
 !
       end subroutine fem_surf_skv_poisson_sgs_1
@@ -345,8 +345,8 @@
      &    num_surf_smp, isurf_grp_smp_stack,                            &
      &    ntot_int_3d, xjac, dwx, dwx, &
      &    filter_conf1%xmom_1d_org(i_filter,2), nele_filter_mom,     &
-     &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
-     &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx,       &
+     &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
+     &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx,      &
      &    igrp, k2, n_int, ak_diff, vect_sf, ak_d, nd_v, sk_v)
 !
       end subroutine fem_surf_skv_diffusion_sgs_1

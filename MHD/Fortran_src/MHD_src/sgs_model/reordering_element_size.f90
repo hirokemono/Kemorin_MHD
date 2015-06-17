@@ -5,8 +5,7 @@
 !      Modified by H. Matsui on Feb., 2008
 !
 !      subroutine reordering_ele_size
-!      subroutine reordering_scalar_by_layer(numele, old2newele_layer,  &
-!     &          elen_1, elen_2, elen_3)
+!      subroutine reordering_scalar_by_layer
 !      subroutine reordering_vector_by_layer(numele, old2newele, elen)
 !      subroutine reordering_layer_info(numele, old2newele_layer,       &
 !     &          n_item_layer_d, item_layer)
@@ -60,43 +59,43 @@
         call allocate_dx_ordering_tmp
 !
         call reordering_scalar_by_layer(numele, old2newele_layer(1),    &
-     &      elen_1%f_x2)
+     &      elen1%moms%f_x2)
         call reordering_scalar_by_layer(numele, old2newele_layer(1),    &
-     &      elen_1%f_y2)
+     &      elen1%moms%f_y2)
         call reordering_scalar_by_layer(numele, old2newele_layer(1),    &
-     &      elen_1%f_z2)
+     &      elen1%moms%f_z2)
         call reordering_scalar_by_layer(numele, old2newele_layer(1),    &
-     &      elen_1%f_xy)
+     &      elen1%moms%f_xy)
         call reordering_scalar_by_layer(numele, old2newele_layer(1),    &
-     &      elen_1%f_yz)
+     &      elen1%moms%f_yz)
         call reordering_scalar_by_layer(numele, old2newele_layer(1),    &
-     &      elen_1%f_zx)
+     &      elen1%moms%f_zx)
 !
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      diff1_1%df_x2)
+     &      elen1%diff%df_x2)
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      diff1_1%df_y2)
+     &      elen1%diff%df_y2)
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      diff1_1%df_z2)
+     &      elen1%diff%df_z2)
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      diff1_1%df_xy)
+     &      elen1%diff%df_xy)
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      diff1_1%df_yz)
+     &      elen1%diff%df_yz)
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      diff1_1%df_zx)
+     &      elen1%diff%df_zx)
 !
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      diff2_1%df_x2)
+     &      elen1%diff2%df_x2)
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      diff2_1%df_y2)
+     &      elen1%diff2%df_y2)
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      diff2_1%df_z2)
+     &      elen1%diff2%df_z2)
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      diff2_1%df_xy)
+     &      elen1%diff2%df_xy)
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      diff2_1%df_yz)
+     &      elen1%diff2%df_yz)
         call reordering_vector_by_layer(numele, old2newele_layer(1),    &
-     &      diff2_1%df_zx)
+     &      elen1%diff2%df_zx)
 !
         call deallocate_dx_ordering_tmp
 !

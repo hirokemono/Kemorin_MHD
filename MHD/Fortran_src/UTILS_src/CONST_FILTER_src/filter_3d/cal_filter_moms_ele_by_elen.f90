@@ -34,12 +34,12 @@
 !
       call s_cal_filter_moms_ele_by_elen                                &
      &   (ifil, numele, filter_conf1%nf_type, filter_conf1%xmom_1d_org, &
-     &    elen_1%f_x2, elen_1%f_y2, elen_1%f_z2,                   &
-     &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
-     &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
-     &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx)
+     &    elen1%moms%f_x2, elen1%moms%f_y2, elen1%moms%f_z2,            &
+     &    elen1%moms%f_xy, elen1%moms%f_yz, elen1%moms%f_zx,            &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
+     &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx)
 !
       end subroutine cal_fmoms_ele_by_elen_1st
 !
@@ -55,12 +55,12 @@
 !
       call correct_filter_moms_ele_by_elen(ifil, numele, nnod_4_ele,    &
      &    ie, filter_conf1%nf_type, filter_conf1%xmom_1d_org,           &
-     &    elen_1%f_x2, elen_1%f_y2, elen_1%f_z2,                   &
-     &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
-     &    diff1_1%df_x2,  diff1_1%df_y2,  diff1_1%df_z2,          &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
-     &    diff2_1%df_x2,  diff2_1%df_y2,  diff2_1%df_z2,       &
-     &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx)
+     &    elen1%moms%f_x2, elen1%moms%f_y2, elen1%moms%f_z2,            &
+     &    elen1%moms%f_xy, elen1%moms%f_yz, elen1%moms%f_zx,            &
+     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
+     &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx)
 !
       end subroutine correct_fmoms_ele_by_elen_1st
 !
@@ -72,9 +72,9 @@
       use m_filter_elength
 !
       call delete_cross_products_of_elen(numele,                        &
-     &    elen_1%f_xy, elen_1%f_yz, elen_1%f_zx,                   &
-     &    diff1_1%df_xy,  diff1_1%df_yz,  diff1_1%df_zx,          &
-     &    diff2_1%df_xy,  diff2_1%df_yz,  diff2_1%df_zx)
+     &    elen1%moms%f_xy, elen1%moms%f_yz, elen1%moms%f_zx,            &
+     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx)
 !
       end subroutine delete_x_products_of_elen_1st
 !
