@@ -110,7 +110,7 @@
       if (my_rank.eq.0) write(*,*)  'Volume of Domain: ', volume
 !
       if (iflag_debug.eq.1)  write(*,*)  'int_element_length_1st'
-      nnod_filter_mom = numnod
+      FEM1_elen%nnod_filter_mom = numnod
       FEM1_elen%nele_filter_mom = numele
       num_filter_moms = 2
       call alloc_dxdxi_diff_type                                        &

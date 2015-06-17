@@ -27,9 +27,9 @@
 !
       type(filter_config_type), save :: filter_conf1
 !
-      integer (kind = kint) :: nnod_filter_mom
+!      integer (kind = kint) :: nnod_filter_mom
 !
-!   FEM1_elen%nele_filter_mom
+!   FEM1_elen%nnod_filter_mom
 !
 !  ---------------------------------------------------------------------
 !
@@ -48,7 +48,7 @@
 !
       subroutine allocate_nodal_ele_length
 !
-      call alloc_nodal_elen_type(nnod_filter_mom, elenn)
+      call alloc_nodal_elen_type(FEM1_elen%nnod_filter_mom, elenn)
 !
       end subroutine allocate_nodal_ele_length
 !

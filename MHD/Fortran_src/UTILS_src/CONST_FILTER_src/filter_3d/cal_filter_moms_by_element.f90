@@ -30,7 +30,7 @@
       use m_filter_elength
 !
 !
-      call cal_filter_moments_on_node(nnod_filter_mom,                  &
+      call cal_filter_moments_on_node(FEM1_elen%nnod_filter_mom,        &
      &           elenn%moms%f_x2, elenn%moms%f_y2, elenn%moms%f_z2,     &
      &           elenn%moms%f_xy, elenn%moms%f_yz, elenn%moms%f_zx)
 !

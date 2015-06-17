@@ -71,7 +71,7 @@
         write(*,*) 'set_range_4_nodeloop'
         call set_range_4_nodeloop(kpe)
 !
-        nnod_filter_mom = nodtot
+        FEM1_elen%nnod_filter_mom = nodtot
         FEM1_elen%nele_filter_mom = elmtot
         call allocate_ref_1d_moment
         call allocate_ele_length

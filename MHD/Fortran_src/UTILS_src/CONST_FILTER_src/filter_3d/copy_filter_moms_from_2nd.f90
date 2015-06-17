@@ -32,7 +32,7 @@
       type(element_data), intent(in) :: new_ele
 !
 !
-      nnod_filter_mom = new_node%numnod
+      FEM1_elen%nnod_filter_mom = new_node%numnod
       FEM1_elen%nele_filter_mom = new_ele%numele
       call allocate_ele_length
       call copy_elength_type(FEM1_elen%nele_filter_mom, elen_2, elen1%moms)

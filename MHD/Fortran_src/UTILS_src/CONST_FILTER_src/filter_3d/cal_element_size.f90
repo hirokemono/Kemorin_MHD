@@ -64,7 +64,8 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'allocate_nodal_ele_length'
       call allocate_nodal_ele_length
-      call alloc_dxdxi_diff_type(nnod_filter_mom, filter_dxi1%dxi_nod)
+      call alloc_dxdxi_diff_type                                        &
+     &   (FEM1_elen%nnod_filter_mom, filter_dxi1%dxi_nod)
       call allocate_dxi_dx_ele
       call allocate_dxi_dx_nod
 !
@@ -113,7 +114,7 @@
 !
       call allocate_reference_moments
       call allocate_seed_moms_ele(FEM1_elen%nele_filter_mom)
-      call allocate_seed_moms_nod(nnod_filter_mom)
+      call allocate_seed_moms_nod(FEM1_elen%nnod_filter_mom)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_filter_moments_on_ele'
       call cal_filter_moments_on_ele

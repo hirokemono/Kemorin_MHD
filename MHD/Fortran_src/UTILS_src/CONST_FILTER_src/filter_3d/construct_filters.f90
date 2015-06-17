@@ -43,7 +43,7 @@
 !
 !
       if(iflag_debug.eq.1)  write(*,*)'cal_fmoms_ele_by_elen_1st'
-      call allocate_filter_moms_nod(nnod_filter_mom)
+      call allocate_filter_moms_nod(FEM1_elen%nnod_filter_mom)
       call allocate_filter_moms_ele(FEM1_elen%nele_filter_mom)
       call cal_fmoms_ele_by_elen_1st(ione)
       call cal_fmoms_ele_by_elen_1st(itwo)
@@ -88,7 +88,7 @@
 !
 !
       if(iflag_debug.eq.1) write(*,*) 'allocate_filter_moms_nod'
-      call allocate_filter_moms_nod(nnod_filter_mom)
+      call allocate_filter_moms_nod(FEM1_elen%nnod_filter_mom)
       if(iflag_debug.eq.1) write(*,*) 'allocate_filter_moms_ele'
       call allocate_filter_moms_ele(FEM1_elen%nele_filter_mom)
 !
@@ -138,7 +138,7 @@
 !
 !
       if(iflag_debug.eq.1)  write(*,*)'cal_fmoms_ele_by_elen_1st'
-      call allocate_filter_moms_nod(nnod_filter_mom)
+      call allocate_filter_moms_nod(FEM1_elen%nnod_filter_mom)
       call allocate_filter_moms_ele(FEM1_elen%nele_filter_mom)
       call cal_fmoms_ele_by_elen_1st(ione)
       call cal_fmoms_ele_by_elen_1st(itwo)
@@ -205,7 +205,7 @@
 !
 !
           if(iflag_debug.eq.1) write(*,*) 'allocate_filter_moms_nod'
-      call allocate_filter_moms_nod(nnod_filter_mom)
+      call allocate_filter_moms_nod(FEM1_elen%nnod_filter_mom)
           if(iflag_debug.eq.1) write(*,*) 'allocate_filter_moms_ele'
       call allocate_filter_moms_ele(FEM1_elen%nele_filter_mom)
 !
