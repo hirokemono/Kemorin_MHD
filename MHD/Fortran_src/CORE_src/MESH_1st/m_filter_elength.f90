@@ -22,12 +22,9 @@
 !
       type(gradient_model_data_type), save :: FEM1_elen
 !
-      type(elen_nod_diffs_type), save ::  elenn
       type(elen_ele_diffs_type), save ::  elen1
 !
-!      type(filter_config_type), save :: filter_conf1
-!
-!   FEM1_elen%filter_conf
+!   FEM1_elen%elen_nod
 !
 !  ---------------------------------------------------------------------
 !
@@ -46,7 +43,8 @@
 !
       subroutine allocate_nodal_ele_length
 !
-      call alloc_nodal_elen_type(FEM1_elen%nnod_filter_mom, elenn)
+      call alloc_nodal_elen_type                   &
+     &   (FEM1_elen%nnod_filter_mom, FEM1_elen%elen_nod)
 !
       end subroutine allocate_nodal_ele_length
 !
@@ -84,7 +82,7 @@
        subroutine deallocate_nodal_ele_length
 !
 !
-      call dealloc_nodal_elen_type(elenn)
+      call dealloc_nodal_elen_type(FEM1_elen%elen_nod)
 !
        end subroutine deallocate_nodal_ele_length
 !

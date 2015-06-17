@@ -33,18 +33,18 @@
 !      1st derivatives
 !
       call take_1st_diffs_nod_by_consist                                &
-     &    ( elenn%moms%f_x2, elenn%diff%df_x2)
+     &   (FEM1_elen%elen_nod%moms%f_x2, FEM1_elen%elen_nod%diff%df_x2)
       call take_1st_diffs_nod_by_consist                                &
-     &    ( elenn%moms%f_y2, elenn%diff%df_y2)
+     &   (FEM1_elen%elen_nod%moms%f_y2, FEM1_elen%elen_nod%diff%df_y2)
       call take_1st_diffs_nod_by_consist                                &
-     &    ( elenn%moms%f_z2, elenn%diff%df_z2)
+     &   (FEM1_elen%elen_nod%moms%f_z2, FEM1_elen%elen_nod%diff%df_z2)
 !
       call take_1st_diffs_nod_by_consist                                &
-     &    ( elenn%moms%f_xy, elenn%diff%df_xy)
+     &   (FEM1_elen%elen_nod%moms%f_xy, FEM1_elen%elen_nod%diff%df_xy)
       call take_1st_diffs_nod_by_consist                                &
-     &    ( elenn%moms%f_yz, elenn%diff%df_yz)
+     &   (FEM1_elen%elen_nod%moms%f_yz, FEM1_elen%elen_nod%diff%df_yz)
       call take_1st_diffs_nod_by_consist                                &
-     &    ( elenn%moms%f_zx, elenn%diff%df_zx)
+     &   (FEM1_elen%elen_nod%moms%f_zx, FEM1_elen%elen_nod%diff%df_zx)
 !
       end subroutine cal_1st_diffs_dx_by_consist
 !
@@ -91,18 +91,18 @@
 !      1st derivatives
 !
       call take_1st_diffs_nod_by_lump                                   &
-     &    ( elenn%moms%f_x2, elenn%diff%df_x2)
+     &   (FEM1_elen%elen_nod%moms%f_x2, FEM1_elen%elen_nod%diff%df_x2)
       call take_1st_diffs_nod_by_lump                                   &
-     &    ( elenn%moms%f_y2, elenn%diff%df_y2)
+     &   (FEM1_elen%elen_nod%moms%f_y2, FEM1_elen%elen_nod%diff%df_y2)
       call take_1st_diffs_nod_by_lump                                   &
-     &    ( elenn%moms%f_z2, elenn%diff%df_z2)
+     &   (FEM1_elen%elen_nod%moms%f_z2, FEM1_elen%elen_nod%diff%df_z2)
 !
       call take_1st_diffs_nod_by_lump                                   &
-     &    ( elenn%moms%f_xy, elenn%diff%df_xy)
+     &   (FEM1_elen%elen_nod%moms%f_xy, FEM1_elen%elen_nod%diff%df_xy)
       call take_1st_diffs_nod_by_lump                                   &
-     &    ( elenn%moms%f_yz, elenn%diff%df_yz)
+     &   (FEM1_elen%elen_nod%moms%f_yz, FEM1_elen%elen_nod%diff%df_yz)
       call take_1st_diffs_nod_by_lump                                   &
-     &    ( elenn%moms%f_zx, elenn%diff%df_zx)
+     &   (FEM1_elen%elen_nod%moms%f_zx, FEM1_elen%elen_nod%diff%df_zx)
 !
       end subroutine cal_1st_diffs_dx_by_lump
 !

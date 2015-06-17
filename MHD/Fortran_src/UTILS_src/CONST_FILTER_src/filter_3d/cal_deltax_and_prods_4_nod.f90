@@ -29,13 +29,19 @@
       integer(kind = kint), intent(in) :: itype_mass
 !
 !
-      call int_dx_ele2_node(itype_mass, elen1%moms%f_x2, elenn%moms%f_x2)
-      call int_dx_ele2_node(itype_mass, elen1%moms%f_y2, elenn%moms%f_y2)
-      call int_dx_ele2_node(itype_mass, elen1%moms%f_z2, elenn%moms%f_z2)
+      call int_dx_ele2_node                                             &
+     &   (itype_mass, elen1%moms%f_x2, FEM1_elen%elen_nod%moms%f_x2)
+      call int_dx_ele2_node                                             &
+     &   (itype_mass, elen1%moms%f_y2, FEM1_elen%elen_nod%moms%f_y2)
+      call int_dx_ele2_node                                             &
+     &   (itype_mass, elen1%moms%f_z2, FEM1_elen%elen_nod%moms%f_z2)
 !
-      call int_dx_ele2_node(itype_mass, elen1%moms%f_xy, elenn%moms%f_xy)
-      call int_dx_ele2_node(itype_mass, elen1%moms%f_yz, elenn%moms%f_yz)
-      call int_dx_ele2_node(itype_mass, elen1%moms%f_zx, elenn%moms%f_zx)
+      call int_dx_ele2_node                                             &
+     &   (itype_mass, elen1%moms%f_xy, FEM1_elen%elen_nod%moms%f_xy)
+      call int_dx_ele2_node                                             &
+     &   (itype_mass, elen1%moms%f_yz, FEM1_elen%elen_nod%moms%f_yz)
+      call int_dx_ele2_node                                             &
+     &   (itype_mass, elen1%moms%f_zx, FEM1_elen%elen_nod%moms%f_zx)
 !
       end subroutine cal_dx2_on_node
 !

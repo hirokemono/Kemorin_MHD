@@ -31,8 +31,9 @@
 !
 !
       call cal_filter_moments_on_node(FEM1_elen%nnod_filter_mom,        &
-     &           elenn%moms%f_x2, elenn%moms%f_y2, elenn%moms%f_z2,     &
-     &           elenn%moms%f_xy, elenn%moms%f_yz, elenn%moms%f_zx)
+     &    FEM1_elen%elen_nod%moms%f_x2, FEM1_elen%elen_nod%moms%f_y2,   &
+     &    FEM1_elen%elen_nod%moms%f_z2, FEM1_elen%elen_nod%moms%f_xy,   &
+     &    FEM1_elen%elen_nod%moms%f_yz, FEM1_elen%elen_nod%moms%f_zx)
 !
       end subroutine cal_filter_moments_on_node_1st
 !

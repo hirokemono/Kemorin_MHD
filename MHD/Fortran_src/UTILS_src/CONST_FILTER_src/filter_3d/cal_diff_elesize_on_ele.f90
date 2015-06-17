@@ -36,25 +36,25 @@
 !
       integer(kind = kint), intent(in) :: ifil
 !
-      call scalar_on_element(iele_smp_stack, num_int_points,      &
+      call scalar_on_element(iele_smp_stack, num_int_points,            &
      &    filter_x_ele(1,ifil), filter_x_nod(1,ifil) )
-      call scalar_on_element(iele_smp_stack, num_int_points,      &
+      call scalar_on_element(iele_smp_stack, num_int_points,            &
      &    filter_y_ele(1,ifil), filter_y_nod(1,ifil) )
-      call scalar_on_element(iele_smp_stack, num_int_points,      &
+      call scalar_on_element(iele_smp_stack, num_int_points,            &
      &    filter_z_ele(1,ifil), filter_z_nod(1,ifil) )
 !
-      call scalar_on_element(iele_smp_stack, num_int_points,      &
+      call scalar_on_element(iele_smp_stack, num_int_points,            &
      &    filter_x2_ele(1,ifil), filter_x2_nod(1,ifil) )
-      call scalar_on_element(iele_smp_stack, num_int_points,      &
+      call scalar_on_element(iele_smp_stack, num_int_points,            &
      &    filter_y2_ele(1,ifil), filter_y2_nod(1,ifil) )
-      call scalar_on_element(iele_smp_stack, num_int_points,      &
+      call scalar_on_element(iele_smp_stack, num_int_points,            &
      &    filter_z2_ele(1,ifil), filter_z2_nod(1,ifil) )
 !
-      call scalar_on_element(iele_smp_stack, num_int_points,      &
+      call scalar_on_element(iele_smp_stack, num_int_points,            &
      &    filter_xy_ele(1,ifil), filter_xy_nod(1,ifil) )
-      call scalar_on_element(iele_smp_stack, num_int_points,      &
+      call scalar_on_element(iele_smp_stack, num_int_points,            &
      &    filter_yz_ele(1,ifil), filter_yz_nod(1,ifil) )
-      call scalar_on_element(iele_smp_stack, num_int_points,      &
+      call scalar_on_element(iele_smp_stack, num_int_points,            &
      &    filter_zx_ele(1,ifil), filter_zx_nod(1,ifil) )
 !
       end subroutine cal_filter_moms_ele_by_nod
@@ -66,13 +66,19 @@
 !
       use m_filter_elength
 !
-      call take_1st_diffs_ele(elenn%moms%f_x2, elen1%diff%df_x2)
-      call take_1st_diffs_ele(elenn%moms%f_y2, elen1%diff%df_y2)
-      call take_1st_diffs_ele(elenn%moms%f_z2, elen1%diff%df_z2)
+      call take_1st_diffs_ele                                           &
+     &   (FEM1_elen%elen_nod%moms%f_x2, elen1%diff%df_x2)
+      call take_1st_diffs_ele                                           &
+     &   (FEM1_elen%elen_nod%moms%f_y2, elen1%diff%df_y2)
+      call take_1st_diffs_ele                                           &
+     &   (FEM1_elen%elen_nod%moms%f_z2, elen1%diff%df_z2)
 !
-      call take_1st_diffs_ele(elenn%moms%f_xy, elen1%diff%df_xy)
-      call take_1st_diffs_ele(elenn%moms%f_yz, elen1%diff%df_yz)
-      call take_1st_diffs_ele(elenn%moms%f_zx, elen1%diff%df_zx)
+      call take_1st_diffs_ele                                           &
+     &   (FEM1_elen%elen_nod%moms%f_xy, elen1%diff%df_xy)
+      call take_1st_diffs_ele                                           &
+     &   (FEM1_elen%elen_nod%moms%f_yz, elen1%diff%df_yz)
+      call take_1st_diffs_ele                                           &
+     &   (FEM1_elen%elen_nod%moms%f_zx, elen1%diff%df_zx)
 !
       end subroutine cal_diffs_delta_on_element
 !
@@ -114,18 +120,18 @@
 !
       use m_filter_elength
 !
-      call take_2nd_diffs_ele(elenn%diff%df_x2,                     &
+      call take_2nd_diffs_ele(FEM1_elen%elen_nod%diff%df_x2,            &
      &                        elen1%diff2%df_x2)
-      call take_2nd_diffs_ele(elenn%diff%df_y2,                     &
+      call take_2nd_diffs_ele(FEM1_elen%elen_nod%diff%df_y2,            &
      &                        elen1%diff2%df_y2)
-      call take_2nd_diffs_ele(elenn%diff%df_z2,                     &
+      call take_2nd_diffs_ele(FEM1_elen%elen_nod%diff%df_z2,            &
      &                        elen1%diff2%df_z2)
 !
-      call take_2nd_diffs_ele(elenn%diff%df_xy,                    &
+      call take_2nd_diffs_ele(FEM1_elen%elen_nod%diff%df_xy,            &
      &                        elen1%diff2%df_xy)
-      call take_2nd_diffs_ele(elenn%diff%df_yz,                    &
+      call take_2nd_diffs_ele(FEM1_elen%elen_nod%diff%df_yz,            &
      &                        elen1%diff2%df_yz)
-      call take_2nd_diffs_ele(elenn%diff%df_zx,                    &
+      call take_2nd_diffs_ele(FEM1_elen%elen_nod%diff%df_zx,            &
      &                        elen1%diff2%df_zx)
 !
       end subroutine cal_2nd_diffs_delta_on_element

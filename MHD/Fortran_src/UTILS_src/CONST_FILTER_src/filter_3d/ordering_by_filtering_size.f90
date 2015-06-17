@@ -54,8 +54,9 @@
 !
 !
       call cal_distance_ratio_2_filter(inod,                            &
-     &   elenn%moms%f_x2(inod), elenn%moms%f_y2(inod),                  &
-     &   elenn%moms%f_z2(inod))
+     &   FEM1_elen%elen_nod%moms%f_x2(inod),                            &
+     &   FEM1_elen%elen_nod%moms%f_y2(inod),                            &
+     &   FEM1_elen%elen_nod%moms%f_z2(inod))
 !
       call sort_added_nod_4_each_by_real(numnod,                        &
      &    nnod_near_1nod_filter, nnod_near_1nod_weight,                 &
