@@ -53,13 +53,14 @@
 !
 !
       call fem_skv_poisson_sgs_fixed(numele, num_t_linear,              &
-     &    num_t_linear, np_smp, num_index_ibc, ele_bc_id,               &
-     &    ibc_stack_smp, k2, n_int, ntot_int_3d, xjac, dnx, dnx,        &
-     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
-     &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
-     &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx,      &
-     &    ak_diff, phi_e, sk_v)
+     &  num_t_linear, np_smp, num_index_ibc, ele_bc_id,                 &
+     &  ibc_stack_smp, k2, n_int, ntot_int_3d, xjac, dnx, dnx,          &
+     &  FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                  &
+     &  FEM1_elen%nele_filter_mom,                                      &
+     &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &
+     &  FEM1_elen%elen_ele%diff2%df_z2, FEM1_elen%elen_ele%diff2%df_xy, &
+     &  FEM1_elen%elen_ele%diff2%df_yz, FEM1_elen%elen_ele%diff2%df_zx, &
+     &  ak_diff, phi_e, sk_v)
 !
       end subroutine fem_skv_poisson_sgs_fix_1st
 !
@@ -87,13 +88,14 @@
 !
 !
       call fem_skv_diffuse_sgs_fixed(numele, nnod_4_ele, nnod_4_ele,    &
-     &    np_smp, num_index_ibc, ele_bc_id, ibc_stack_smp,              &
-     &    k2, nd, n_int, ntot_int_3d, xjac, dwx, dwx,                   &
-     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
-     &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
-     &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx,      &
-     &    ak_diff, ak_d, phi_e, sk_v)
+     &  np_smp, num_index_ibc, ele_bc_id, ibc_stack_smp,                &
+     &  k2, nd, n_int, ntot_int_3d, xjac, dwx, dwx,                     &
+     &  FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                  &
+     &  FEM1_elen%nele_filter_mom,                                      &
+     &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &
+     &  FEM1_elen%elen_ele%diff2%df_z2, FEM1_elen%elen_ele%diff2%df_xy, &
+     &  FEM1_elen%elen_ele%diff2%df_yz, FEM1_elen%elen_ele%diff2%df_zx, &
+     &  ak_diff, ak_d, phi_e, sk_v)
 !
       end subroutine fem_skv_diffuse_sgs_fix_1st
 !

@@ -59,8 +59,9 @@
      &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
+     &    FEM1_elen%elen_ele%diff%df_z2, FEM1_elen%elen_ele%diff%df_xy, &
+     &    FEM1_elen%elen_ele%diff%df_yz, FEM1_elen%elen_ele%diff%df_zx, &
      &    ak_diff, vxe, scalar_1, sk_v)
 !
       end subroutine fem_skv_grad_sgs_upw_1st
@@ -90,8 +91,9 @@
      &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
+     &    FEM1_elen%elen_ele%diff%df_z2, FEM1_elen%elen_ele%diff%df_xy, &
+     &    FEM1_elen%elen_ele%diff%df_yz, FEM1_elen%elen_ele%diff%df_zx, &
      &    ak_diff, vxe, vector_1, sk_v)
 !
       end subroutine fem_skv_div_sgs_upw_1st
@@ -121,8 +123,9 @@
      &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
+     &    FEM1_elen%elen_ele%diff%df_z2, FEM1_elen%elen_ele%diff%df_xy, &
+     &    FEM1_elen%elen_ele%diff%df_yz, FEM1_elen%elen_ele%diff%df_zx, &
      &    ak_diff, vxe, vector_1, sk_v)
 !
       end subroutine fem_skv_rot_sgs_upw_1st
@@ -152,8 +155,9 @@
      &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
+     &    FEM1_elen%elen_ele%diff%df_z2, FEM1_elen%elen_ele%diff%df_xy, &
+     &    FEM1_elen%elen_ele%diff%df_yz, FEM1_elen%elen_ele%diff%df_zx, &
      &    ak_diff, vxe, tensor_1, sk_v)
 !
       end subroutine fem_skv_div_tsr_sgs_upw_1st
@@ -183,8 +187,9 @@
      &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
+     &    FEM1_elen%elen_ele%diff%df_z2, FEM1_elen%elen_ele%diff%df_xy, &
+     &    FEM1_elen%elen_ele%diff%df_yz, FEM1_elen%elen_ele%diff%df_zx, &
      &    ak_diff, vxe, as_tsr_1, sk_v)
 !
       end subroutine fem_skv_div_as_tsr_sgs_upw_1st

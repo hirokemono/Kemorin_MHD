@@ -35,9 +35,12 @@
       FEM1_elen%nnod_filter_mom = new_node%numnod
       FEM1_elen%nele_filter_mom = new_ele%numele
       call allocate_ele_length
-      call copy_elength_type(FEM1_elen%nele_filter_mom, elen_2, elen1%moms)
-      call copy_elen_diffs_type(FEM1_elen%nele_filter_mom, diff1_2, elen1%diff)
-      call copy_elen_diffs_type(FEM1_elen%nele_filter_mom, diff2_2, elen1%diff2)
+      call copy_elength_type(FEM1_elen%nele_filter_mom, elen_2,  &
+     &    FEM1_elen%elen_ele%moms)
+      call copy_elen_diffs_type(FEM1_elen%nele_filter_mom, diff1_2,  &
+     &    FEM1_elen%elen_ele%diff)
+      call copy_elen_diffs_type(FEM1_elen%nele_filter_mom, diff2_2,  &
+     &    FEM1_elen%elen_ele%diff2)
       call deallocate_2nd_ele_length
 !
       end subroutine copy_elength_ele_from_2nd

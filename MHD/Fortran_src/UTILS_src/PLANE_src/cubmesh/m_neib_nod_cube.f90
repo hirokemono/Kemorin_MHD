@@ -155,11 +155,11 @@
        if (FEM1_elen%filter_conf%nf_type .eq. 0) return
 !
        call clear_elen_on_ele_type                                      &
-      &   (FEM1_elen%nele_filter_mom, elen1%moms)
+      &   (FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele%moms)
        call clear_elen_diffs_type                                       &
-      &   (FEM1_elen%nele_filter_mom, elen1%diff)
+      &   (FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele%diff)
        call clear_elen_diffs_type                                       &
-      &   (FEM1_elen%nele_filter_mom, elen1%diff2)
+      &   (FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele%diff2)
 !
        iele = 0
        do k=1,nz-1
@@ -168,15 +168,20 @@
            do i=1,nx-1
              iele = iele + 1
 !
-             elen1%moms%f_x2(iele) = delta_h(1) * delta_h(1)
-             elen1%moms%f_y2(iele) = delta_h(2) * delta_h(2)
-             elen1%moms%f_z2(iele) = delta_z_e(k_gl) * delta_z_e(k_gl)
+             FEM1_elen%elen_ele%moms%f_x2(iele)                         &
+     &                             = delta_h(1) * delta_h(1)
+             FEM1_elen%elen_ele%moms%f_y2(iele)                         &
+     &                             = delta_h(2) * delta_h(2)
+             FEM1_elen%elen_ele%moms%f_z2(iele)                         &
+     &                             = delta_z_e(k_gl) * delta_z_e(k_gl)
 !
-             elen1%diff%df_z2(iele,3) = 2.0d0 * delta_z_e(k_gl)         &
-     &                                       * diff_deltaz_e(k_gl)
-             elen1%diff2%df_z2(iele,3) = 2.0d0 * d2_deltaz_e(k_gl)      &
-     &                                 + 2.0d0 * diff_deltaz_e(k_gl)    &
-     &                                         * diff_deltaz_e(k_gl)
+             FEM1_elen%elen_ele%diff%df_z2(iele,3)                      &
+     &                             = 2.0d0 * delta_z_e(k_gl)            &
+     &                                     * diff_deltaz_e(k_gl)
+             FEM1_elen%elen_ele%diff2%df_z2(iele,3)                     &
+                                   = 2.0d0 * d2_deltaz_e(k_gl)          &
+     &                              + 2.0d0 * diff_deltaz_e(k_gl)       &
+     &                                      * diff_deltaz_e(k_gl)
            enddo
          enddo
        enddo

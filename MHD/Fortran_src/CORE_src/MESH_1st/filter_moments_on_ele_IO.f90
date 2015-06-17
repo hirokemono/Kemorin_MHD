@@ -70,12 +70,15 @@
 !
 !
       call read_elens_ele(id_file, FEM1_elen%nele_filter_mom,           &
-     &    elen1%moms%f_x2, elen1%moms%f_y2, elen1%moms%f_z2,            &
-     &    elen1%moms%f_xy, elen1%moms%f_yz, elen1%moms%f_zx,            &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
-     &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
-     &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx)
+     &  FEM1_elen%elen_ele%moms%f_x2,   FEM1_elen%elen_ele%moms%f_y2,   &
+     &  FEM1_elen%elen_ele%moms%f_z2,   FEM1_elen%elen_ele%moms%f_xy,   &
+     &  FEM1_elen%elen_ele%moms%f_yz,   FEM1_elen%elen_ele%moms%f_zx,   &
+     &  FEM1_elen%elen_ele%diff%df_x2,  FEM1_elen%elen_ele%diff%df_y2,  &
+     &  FEM1_elen%elen_ele%diff%df_z2,  FEM1_elen%elen_ele%diff%df_xy,  &
+     &  FEM1_elen%elen_ele%diff%df_yz,  FEM1_elen%elen_ele%diff%df_zx,  &
+     &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &
+     &  FEM1_elen%elen_ele%diff2%df_z2, FEM1_elen%elen_ele%diff2%df_xy, &
+     &  FEM1_elen%elen_ele%diff2%df_yz, FEM1_elen%elen_ele%diff2%df_zx)
 !
       end subroutine read_elength_ele
 !
@@ -91,12 +94,15 @@
 !    output coefs for filters for each node
 !
       call write_elens_ele(id_file, FEM1_elen%nele_filter_mom,          &
-     &    elen1%moms%f_x2, elen1%moms%f_y2, elen1%moms%f_z2,            &
-     &    elen1%moms%f_xy, elen1%moms%f_yz, elen1%moms%f_zx,            &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
-     &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
-     &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx)
+     &  FEM1_elen%elen_ele%moms%f_x2,   FEM1_elen%elen_ele%moms%f_y2,   &
+     &  FEM1_elen%elen_ele%moms%f_z2,   FEM1_elen%elen_ele%moms%f_xy,   &
+     &  FEM1_elen%elen_ele%moms%f_yz,   FEM1_elen%elen_ele%moms%f_zx,   &
+     &  FEM1_elen%elen_ele%diff%df_x2,  FEM1_elen%elen_ele%diff%df_y2,  &
+     &  FEM1_elen%elen_ele%diff%df_z2,  FEM1_elen%elen_ele%diff%df_xy,  &
+     &  FEM1_elen%elen_ele%diff%df_yz,  FEM1_elen%elen_ele%diff%df_zx,  &
+     &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &
+     &  FEM1_elen%elen_ele%diff2%df_z2, FEM1_elen%elen_ele%diff2%df_xy, &
+     &  FEM1_elen%elen_ele%diff2%df_yz, FEM1_elen%elen_ele%diff2%df_zx)
 !
       end subroutine write_elength_ele
 !

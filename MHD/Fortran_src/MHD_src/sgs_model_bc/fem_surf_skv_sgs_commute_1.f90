@@ -73,8 +73,9 @@
      &    xsq_sf, axjq_sf, aw_sf, aw_sf,                                &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
+     &    FEM1_elen%elen_ele%diff%df_z2, FEM1_elen%elen_ele%diff%df_xy, &
+     &    FEM1_elen%elen_ele%diff%df_yz, FEM1_elen%elen_ele%diff%df_zx, &
      &    igrp, k2, n_int, nd, n_diff, dxe_sf, scalar_sf, sk_v)
 !
       end subroutine fem_sf_skv_sgs_commute_err_p1
@@ -103,8 +104,9 @@
      &    xsq_sf, axjq_sf, aw_sf, aw_sf,                                &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
+     &    FEM1_elen%elen_ele%diff%df_z2, FEM1_elen%elen_ele%diff%df_xy, &
+     &    FEM1_elen%elen_ele%diff%df_yz, FEM1_elen%elen_ele%diff%df_zx, &
      &    igrp, k2, n_int, dxe_sf, scalar_sf, sk_v)
 !
       end subroutine fem_sf_skv_grad_commute_p1
@@ -133,8 +135,9 @@
      &     xsq_sf, axjq_sf, aw_sf, aw_sf,                               &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
+     &    FEM1_elen%elen_ele%diff%df_z2, FEM1_elen%elen_ele%diff%df_xy, &
+     &    FEM1_elen%elen_ele%diff%df_yz, FEM1_elen%elen_ele%diff%df_zx, &
      &    igrp, k2, nd, n_int, dxe_sf, vect_sf, sk_v)
 !
       end subroutine fem_sf_skv_div_flux_commute_p1
@@ -167,8 +170,9 @@
      &    xsq_sf, axjq_sf, aw_sf, aw_sf,                                &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
+     &    FEM1_elen%elen_ele%diff%df_z2, FEM1_elen%elen_ele%diff%df_xy, &
+     &    FEM1_elen%elen_ele%diff%df_yz, FEM1_elen%elen_ele%diff%df_zx, &
      &    igrp, k2, n_int, nd, n_diff, dxe_sf, scalar_sf,               &
      &    ak_diff, coef, sk_v)
 !
@@ -199,8 +203,9 @@
      &    xsq_sf, axjq_sf, aw_sf, aw_sf,                                &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
+     &    FEM1_elen%elen_ele%diff%df_z2, FEM1_elen%elen_ele%diff%df_xy, &
+     &    FEM1_elen%elen_ele%diff%df_yz, FEM1_elen%elen_ele%diff%df_zx, &
      &    igrp, k2, n_int, dxe_sf, scalar_sf, ak_diff, coef, sk_v)
 !
       end subroutine fem_sf_skv_sgs_grad_p1
@@ -231,8 +236,9 @@
      &    xsq_sf, axjq_sf, aw_sf, aw_sf,                                &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
+     &    FEM1_elen%elen_ele%diff%df_z2, FEM1_elen%elen_ele%diff%df_xy, &
+     &    FEM1_elen%elen_ele%diff%df_yz, FEM1_elen%elen_ele%diff%df_zx, &
      &    igrp, k2, nd, n_int, dxe_sf, vect_sf, ak_diff, coef, sk_v)
 !
       end subroutine fem_sf_skv_sgs_div_flux_p1
@@ -263,8 +269,9 @@
      &    xsq_sf, axjq_sf, an_sf, aw_sf,                                &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
+     &    FEM1_elen%elen_ele%diff%df_z2, FEM1_elen%elen_ele%diff%df_xy, &
+     &    FEM1_elen%elen_ele%diff%df_yz, FEM1_elen%elen_ele%diff%df_zx, &
      &    igrp, k2, n_int, ione, n_diff, dxe_sf, scalar_sf,             &
      &    ak_diff, one, sk_v)
 !
@@ -295,8 +302,9 @@
      &    xsq_sf, axjq_sf, aw_sf, an_sf,                                &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
+     &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
+     &    FEM1_elen%elen_ele%diff%df_z2, FEM1_elen%elen_ele%diff%df_xy, &
+     &    FEM1_elen%elen_ele%diff%df_yz, FEM1_elen%elen_ele%diff%df_zx, &
      &    igrp, k2, n_int, dxe_sf, scalar_sf, ak_diff, one, sk_v)
 !
       end subroutine fem_sf_skv_sgs_velo_co_p1
@@ -320,14 +328,15 @@
 !
 !
       call fem_surf_skv_poisson_sgs(np_smp, numele, num_t_linear,       &
-     &    num_t_linear, num_linear_sf, node_on_sf, num_surf_bc,         &
-     &    surf_item, num_surf_smp, isurf_grp_smp_stack,                 &
-     &    ntot_int_3d, xjac, dnx, dnx,                                  &
-     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
-     &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
-     &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx,      &
-     &    igrp, k2, n_int, ak_diff, phi_sf, sk_v)
+     &  num_t_linear, num_linear_sf, node_on_sf, num_surf_bc,           &
+     &  surf_item, num_surf_smp, isurf_grp_smp_stack,                   &
+     &  ntot_int_3d, xjac, dnx, dnx,                                    &
+     &  FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                  &
+     &  FEM1_elen%nele_filter_mom,                                      &
+     &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &
+     &  FEM1_elen%elen_ele%diff2%df_z2, FEM1_elen%elen_ele%diff2%df_xy, &
+     &  FEM1_elen%elen_ele%diff2%df_yz, FEM1_elen%elen_ele%diff2%df_zx, &
+     &  igrp, k2, n_int, ak_diff, phi_sf, sk_v)
 !
       end subroutine fem_surf_skv_poisson_sgs_1
 !
@@ -350,14 +359,15 @@
 !
 !
       call fem_surf_skv_diffusion_sgs(np_smp, numele, nnod_4_ele,       &
-     &    nnod_4_ele, nnod_4_surf, node_on_sf, num_surf_bc, surf_item,  &
-     &    num_surf_smp, isurf_grp_smp_stack,                            &
-     &    ntot_int_3d, xjac, dwx, dwx,                                  &
-     &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
-     &    FEM1_elen%nele_filter_mom,                                    &
-     &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
-     &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx,      &
-     &    igrp, k2, n_int, ak_diff, vect_sf, ak_d, nd_v, sk_v)
+     &  nnod_4_ele, nnod_4_surf, node_on_sf, num_surf_bc, surf_item,    &
+     &  num_surf_smp, isurf_grp_smp_stack,                              &
+     &  ntot_int_3d, xjac, dwx, dwx,                                    &
+     &  FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                  &
+     &  FEM1_elen%nele_filter_mom,                                      &
+     &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &
+     &  FEM1_elen%elen_ele%diff2%df_z2, FEM1_elen%elen_ele%diff2%df_xy, &
+     &  FEM1_elen%elen_ele%diff2%df_yz, FEM1_elen%elen_ele%diff2%df_zx, &
+     &  igrp, k2, n_int, ak_diff, vect_sf, ak_d, nd_v, sk_v)
 !
       end subroutine fem_surf_skv_diffusion_sgs_1
 !

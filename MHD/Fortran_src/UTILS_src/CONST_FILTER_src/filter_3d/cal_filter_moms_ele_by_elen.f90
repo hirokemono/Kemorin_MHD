@@ -33,14 +33,17 @@
       integer(kind = kint), intent(in) :: ifil
 !
       call s_cal_filter_moms_ele_by_elen(ifil, numele,                  &
-     &    FEM1_elen%filter_conf%nf_type,                                &
-     &    FEM1_elen%filter_conf%xmom_1d_org,                            &
-     &    elen1%moms%f_x2, elen1%moms%f_y2, elen1%moms%f_z2,            &
-     &    elen1%moms%f_xy, elen1%moms%f_yz, elen1%moms%f_zx,            &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
-     &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
-     &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx)
+     &  FEM1_elen%filter_conf%nf_type,                                  &
+     &  FEM1_elen%filter_conf%xmom_1d_org,                              &
+     &  FEM1_elen%elen_ele%moms%f_x2,   FEM1_elen%elen_ele%moms%f_y2,   &
+     &  FEM1_elen%elen_ele%moms%f_z2,   FEM1_elen%elen_ele%moms%f_xy,   &
+     &  FEM1_elen%elen_ele%moms%f_yz,   FEM1_elen%elen_ele%moms%f_zx,   &
+     &  FEM1_elen%elen_ele%diff%df_x2,  FEM1_elen%elen_ele%diff%df_y2,  &
+     &  FEM1_elen%elen_ele%diff%df_z2,  FEM1_elen%elen_ele%diff%df_xy,  &
+     &  FEM1_elen%elen_ele%diff%df_yz,  FEM1_elen%elen_ele%diff%df_zx,  &
+     &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &
+     &  FEM1_elen%elen_ele%diff2%df_z2, FEM1_elen%elen_ele%diff2%df_xy, &
+     &  FEM1_elen%elen_ele%diff2%df_yz, FEM1_elen%elen_ele%diff2%df_zx)
 !
       end subroutine cal_fmoms_ele_by_elen_1st
 !
@@ -55,14 +58,17 @@
       integer(kind = kint), intent(in) :: ifil
 !
       call correct_filter_moms_ele_by_elen(ifil, numele, nnod_4_ele,    &
-     &    ie, FEM1_elen%filter_conf%nf_type,                            &
-     &    FEM1_elen%filter_conf%xmom_1d_org,                            &
-     &    elen1%moms%f_x2, elen1%moms%f_y2, elen1%moms%f_z2,            &
-     &    elen1%moms%f_xy, elen1%moms%f_yz, elen1%moms%f_zx,            &
-     &    elen1%diff%df_x2,  elen1%diff%df_y2,  elen1%diff%df_z2,       &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
-     &    elen1%diff2%df_x2, elen1%diff2%df_y2, elen1%diff2%df_z2,      &
-     &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx)
+     &  ie, FEM1_elen%filter_conf%nf_type,                              &
+     &  FEM1_elen%filter_conf%xmom_1d_org,                              &
+     &  FEM1_elen%elen_ele%moms%f_x2,   FEM1_elen%elen_ele%moms%f_y2,   &
+     &  FEM1_elen%elen_ele%moms%f_z2,   FEM1_elen%elen_ele%moms%f_xy,   &
+     &  FEM1_elen%elen_ele%moms%f_yz,   FEM1_elen%elen_ele%moms%f_zx,   &
+     &  FEM1_elen%elen_ele%diff%df_x2,  FEM1_elen%elen_ele%diff%df_y2,  &
+     &  FEM1_elen%elen_ele%diff%df_z2,  FEM1_elen%elen_ele%diff%df_xy,  &
+     &  FEM1_elen%elen_ele%diff%df_yz,  FEM1_elen%elen_ele%diff%df_zx,  &
+     &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &
+     &  FEM1_elen%elen_ele%diff2%df_z2, FEM1_elen%elen_ele%diff2%df_xy, &
+     &  FEM1_elen%elen_ele%diff2%df_yz, FEM1_elen%elen_ele%diff2%df_zx)
 !
       end subroutine correct_fmoms_ele_by_elen_1st
 !
@@ -74,9 +80,11 @@
       use m_filter_elength
 !
       call delete_cross_products_of_elen(numele,                        &
-     &    elen1%moms%f_xy, elen1%moms%f_yz, elen1%moms%f_zx,            &
-     &    elen1%diff%df_xy,  elen1%diff%df_yz,  elen1%diff%df_zx,       &
-     &    elen1%diff2%df_xy, elen1%diff2%df_yz, elen1%diff2%df_zx)
+     &  FEM1_elen%elen_ele%moms%f_xy,   FEM1_elen%elen_ele%moms%f_yz,   &
+     &  FEM1_elen%elen_ele%moms%f_zx,   FEM1_elen%elen_ele%diff%df_xy,  &
+     &  FEM1_elen%elen_ele%diff%df_yz,  FEM1_elen%elen_ele%diff%df_zx,  &
+     &  FEM1_elen%elen_ele%diff2%df_xy, FEM1_elen%elen_ele%diff2%df_yz, &
+     &  FEM1_elen%elen_ele%diff2%df_zx)
 !
       end subroutine delete_x_products_of_elen_1st
 !
