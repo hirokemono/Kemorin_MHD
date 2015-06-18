@@ -36,7 +36,7 @@
 !$omp parallel private(ifl,nd)
       do ifl = 1, num_filter_moms
 !$omp do
-        do i = 1, nele_fmom
+        do i = 1, mom1%nele_fmom
           filter_x_ele(i,ifl) =  mom_e(ifl)%moms%f_x(i)
           filter_y_ele(i,ifl) =  mom_e(ifl)%moms%f_y(i)
           filter_z_ele(i,ifl) =  mom_e(ifl)%moms%f_z(i)
@@ -51,7 +51,7 @@
 !
         do nd = 1, 3
 !$omp do
-          do i = 1, nele_fmom
+          do i = 1, mom1%nele_fmom
             filter_x_ele_dx(i,nd,ifl) =  mom_e(ifl)%diff%df_x(i,nd)
             filter_y_ele_dx(i,nd,ifl) =  mom_e(ifl)%diff%df_y(i,nd)
             filter_z_ele_dx(i,nd,ifl) =  mom_e(ifl)%diff%df_z(i,nd)
@@ -94,7 +94,7 @@
 !$omp parallel private(ifl,nd)
       do ifl = 1, num_filter_moms
 !$omp do
-        do i = 1, nele_fmom
+        do i = 1, mom1%nele_fmom
           mom_e(ifl)%moms%f_x(i) =  filter_x_ele(i,ifl)
           mom_e(ifl)%moms%f_y(i) =  filter_y_ele(i,ifl)
           mom_e(ifl)%moms%f_z(i) =  filter_z_ele(i,ifl)
@@ -109,7 +109,7 @@
 !
         do nd = 1, 3
 !$omp do
-          do i = 1, nele_fmom
+          do i = 1, mom1%nele_fmom
             mom_e(ifl)%diff%df_x(i,nd) =  filter_x_ele_dx(i,nd,ifl)
             mom_e(ifl)%diff%df_y(i,nd) =  filter_y_ele_dx(i,nd,ifl)
             mom_e(ifl)%diff%df_z(i,nd) =  filter_z_ele_dx(i,nd,ifl)
@@ -153,7 +153,7 @@
 !$omp parallel private(ifl,nd)
       do ifl = 1, num_filter_moms
 !$omp do
-        do i = 1, nnod_fmom
+        do i = 1, mom1%nnod_fmom
           filter_x_nod(i,ifl) =  mom_n(ifl)%moms%f_x(i)
           filter_y_nod(i,ifl) =  mom_n(ifl)%moms%f_y(i)
           filter_z_nod(i,ifl) =  mom_n(ifl)%moms%f_z(i)
@@ -168,7 +168,7 @@
 !
         do nd = 1, 3
 !$omp do
-          do i = 1, nnod_fmom
+          do i = 1, mom1%nnod_fmom
             filter_x_nod_dx(i,nd,ifl) =  mom_n(ifl)%diff%df_x(i,nd)
             filter_y_nod_dx(i,nd,ifl) =  mom_n(ifl)%diff%df_y(i,nd)
             filter_z_nod_dx(i,nd,ifl) =  mom_n(ifl)%diff%df_z(i,nd)
@@ -201,7 +201,7 @@
 !$omp parallel private(ifl,nd)
       do ifl = 1, num_filter_moms
 !$omp do
-        do i = 1, nnod_fmom
+        do i = 1, mom1%nnod_fmom
           mom_n(ifl)%moms%f_x(i) =  filter_x_nod(i,ifl)
           mom_n(ifl)%moms%f_y(i) =  filter_y_nod(i,ifl)
           mom_n(ifl)%moms%f_z(i) =  filter_z_nod(i,ifl)
@@ -216,7 +216,7 @@
 !
         do nd = 1, 3
 !$omp do
-          do i = 1, nnod_fmom
+          do i = 1, mom1%nnod_fmom
             mom_n(ifl)%diff%df_x(i,nd) =  filter_x_nod_dx(i,nd,ifl)
             mom_n(ifl)%diff%df_y(i,nd) =  filter_y_nod_dx(i,nd,ifl)
             mom_n(ifl)%diff%df_z(i,nd) =  filter_z_nod_dx(i,nd,ifl)

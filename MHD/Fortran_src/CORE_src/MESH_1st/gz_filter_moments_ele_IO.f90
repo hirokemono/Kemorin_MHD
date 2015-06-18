@@ -108,7 +108,7 @@
       integer(kind = kint), intent(in) :: ifil
 !
 !
-      call read_filter_moms_ele_gz(nele_fmom,                           &
+      call read_filter_moms_ele_gz(mom1%nele_fmom,                      &
      &    filter_x2_ele(1,ifil), filter_y2_ele(1,ifil),                 &
      &    filter_z2_ele(1,ifil), filter_xy_ele(1,ifil),                 &
      &    filter_yz_ele(1,ifil), filter_zx_ele(1,ifil),                 &
@@ -136,7 +136,7 @@
       integer(kind = kint), intent(in) :: ifil
 !
 !
-      call write_filter_moms_ele_gz(nele_fmom,                          &
+      call write_filter_moms_ele_gz(mom1%nele_fmom,                     &
      &    filter_x2_ele(1,ifil), filter_y2_ele(1,ifil),                 &
      &    filter_z2_ele(1,ifil), filter_xy_ele(1,ifil),                 &
      &    filter_yz_ele(1,ifil), filter_zx_ele(1,ifil),                 &

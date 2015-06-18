@@ -117,7 +117,7 @@
       integer(kind = kint), intent(in) :: id_file, ifil
 !
 !
-      call read_filter_moms_ele(id_file, nele_fmom,                     &
+      call read_filter_moms_ele(id_file, mom1%nele_fmom,                &
      &    filter_x2_ele(1,ifil), filter_y2_ele(1,ifil),                 &
      &    filter_z2_ele(1,ifil), filter_xy_ele(1,ifil),                 &
      &    filter_yz_ele(1,ifil), filter_zx_ele(1,ifil),                 &
@@ -144,7 +144,7 @@
 !
       integer(kind = kint), intent(in) :: id_file, ifil
 !
-      call write_filter_moms_ele(id_file, nele_fmom,                    &
+      call write_filter_moms_ele(id_file, mom1%nele_fmom,               &
      &    filter_x2_ele(1,ifil), filter_y2_ele(1,ifil),                 &
      &    filter_z2_ele(1,ifil), filter_xy_ele(1,ifil),                 &
      &    filter_yz_ele(1,ifil), filter_zx_ele(1,ifil),                 &

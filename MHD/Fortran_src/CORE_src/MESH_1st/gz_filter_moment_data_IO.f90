@@ -53,7 +53,7 @@
       integer (kind = kint) :: ifil
 !
 !
-      call write_filter_moms_head_gz(nnod_fmom, nele_fmom,              &
+      call write_filter_moms_head_gz(mom1%nnod_fmom, mom1%nele_fmom,    &
      &    num_filter_moms, FEM1_elen%filter_conf%nf_type)
 !
       if (FEM1_elen%filter_conf%nf_type .gt. 0) then
@@ -139,7 +139,7 @@
         ierr = 0
       end if
 !
-      nnod_fmom = FEM1_elen%nnod_filter_mom
+      mom1%nnod_fmom = FEM1_elen%nnod_filter_mom
       call alloc_ref_1d_mom_type(FEM1_elen%filter_conf)
       call allocate_filter_moms_ele(FEM1_elen%nele_filter_mom)
 !

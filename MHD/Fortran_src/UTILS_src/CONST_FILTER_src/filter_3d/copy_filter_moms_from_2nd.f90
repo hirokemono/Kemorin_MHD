@@ -53,7 +53,7 @@
       integer(kind = kint) :: iele, ifil, nd
 !
 !
-      nnod_fmom = new_node%numnod
+      mom1%nnod_fmom = new_node%numnod
       call allocate_filter_moms_ele(new_ele%numele)
 !
       do ifil = 1, num_filter_moms
