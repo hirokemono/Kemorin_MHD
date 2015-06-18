@@ -112,7 +112,7 @@
       if (iflag_debug.eq.1)  write(*,*)  'int_element_length_1st'
       FEM1_elen%nnod_filter_mom = numnod
       FEM1_elen%nele_filter_mom = numele
-      num_filter_moms = 2
+      mom1%num_filter_moms = 2
       call alloc_dxdxi_diff_type                                        &
      &   (FEM1_elen%nele_filter_mom, filter_dxi1%dxi_ele)
       call alloc_elen_ele_type                                          &

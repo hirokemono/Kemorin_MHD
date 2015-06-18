@@ -145,7 +145,6 @@
      &          new_surf_mesh, new_edge_mesh)
 !
       use calypso_mpi
-      use m_2nd_filter_moments
       use m_filter_file_names
       use m_filter_moments
       use m_filter_elength
@@ -163,8 +162,9 @@
       type(surface_geometry), intent(inout) :: new_surf_mesh
       type(edge_geometry), intent(inout) ::  new_edge_mesh
 !
-      integer (kind = kint) :: nele2_filter_mom
+!
       type(elen_ele_diffs_type) :: elen2_ele
+      type(ele_mom_diffs_type), allocatable, save :: mom2_ele(:)
 !
 !
       iflag_mesh_file_fmt = id_ascii_file_fmt
@@ -185,8 +185,7 @@
 !    construct new filter table
 !
       if (iflag_set_filter_elen .gt. 0) then
-        nele2_filter_mom = newmesh%ele%numele
-        call alloc_elen_ele_type(nele2_filter_mom, elen2_ele)
+        call alloc_elen_ele_type(newmesh%ele%numele, elen2_ele)
       end if
 !
       if (iflag_set_filter_moms .gt. 0) then
@@ -194,16 +193,17 @@
         filter_file_head = org_filter_moms_head
         call sel_read_num_filter_mom_file(izero)
 !
-        num_filter_moms_2nd = num_filter_moms
-        call allocate_2nd_filter_moms_ele                               &
-     &     (newmesh%ele%numele, num_filter_moms)
+        allocate(mom2_ele(mom1%num_filter_moms))
+        call alloc_filter_mom_ele_items                                 &
+     &    (newmesh%ele%numele, mom1%num_filter_moms, mom2_ele)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'set_iele_table_4_newfilter'
       call set_iele_table_4_newfilter(newmesh%ele)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_filter_moms_newdomain'
-      call const_filter_moms_newdomain(nprocs, newmesh%node, elen2_ele)
+      call const_filter_moms_newdomain(nprocs, newmesh%node,            &
+     &   mom1%num_filter_moms, elen2_ele, mom2_ele)
 !
 !
 !      write new filter moments file
@@ -221,7 +221,7 @@
         ifmt_filter_file = id_ascii_file_fmt
         filter_file_head = new_filter_elen_head
         call copy_elength_ele_from_2nd                                  &
-     &     (newmesh%node%numnod, nele2_filter_mom, elen2_ele)
+     &     (newmesh%node%numnod, newmesh%ele%numele, elen2_ele)
         call sel_write_filter_elen_file(my_rank_2nd)
 !
         call dealloc_elen_type(elen2_ele)
@@ -235,8 +235,8 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_filter_moms_newdomain                            &
-     &         (norg_domain, new_node, elen2_e)
+      subroutine const_filter_moms_newdomain(norg_domain, new_node,     &
+     &         num_filter_moms_2nd, elen2_e, mom2_ele)
 !
       use m_geometry_parameter
       use m_geometry_data
@@ -251,8 +251,12 @@
       use t_geometry_data
 !
       integer(kind = kint), intent(in) :: norg_domain
+      integer(kind = kint), intent(in) :: num_filter_moms_2nd
       type(node_data), intent(in) :: new_node
       type(elen_ele_diffs_type), intent(inout) :: elen2_e
+      type(ele_mom_diffs_type), intent(inout)                           &
+     &               :: mom2_ele(num_filter_moms_2nd)
+!
       integer(kind = kint) :: ip, my_rank_org, ierr
 !
 !
@@ -277,7 +281,8 @@
           call sel_read_filter_moms_file(my_rank_org,                   &
      &        numnod, numele, ierr)
 !
-          call set_new_filter_moms_ele(new_node)
+          call set_new_filter_moms_ele                                  &
+     &       (new_node, num_filter_moms_2nd, mom2_ele)
           call deallocate_filter_moms_ele
           if (ip .lt. norg_domain .or. iflag_set_filter_elen.gt.0) then
             call dealloc_ref_1d_mom_type(FEM1_elen%filter_conf)

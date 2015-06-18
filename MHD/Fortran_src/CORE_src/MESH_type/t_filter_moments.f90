@@ -12,17 +12,26 @@
 !      subroutine dealloc_filter_moms_nod_type(FEM_moms)
 !        type(gradient_filter_mom_type), intent(inout) :: FEM_moms
 !       (substitution of deallocate_filter_moms_nod )
+!      subroutine alloc_filter_mom_ele_items(nele, n_filter, mom_ele)
+!      subroutine dealloc_filter_mom_ele_items(n_filter, mom_ele)
+!        integer(kind = kint), intent(in) :: nele, n_filter
+!        type(filter_mom_diffs_type), intent(inout) :: mom_ele
 !      subroutine alloc_filter_moms_ele_type(nele, FEM_moms)
 !        type(gradient_filter_mom_type), intent(inout) :: FEM_moms
 !       (substitution of allocate_filter_moms_ele )
 !      subroutine dealloc_filter_moms_ele_type(FEM_moms)
 !        type(gradient_filter_mom_type), intent(inout) :: FEM_moms
 !       (substitution of deallocate_filter_moms_ele )
-!      subroutine copy_filter_moms_ele_type(FEM_moms_org, FEM_moms_tgt)
+!      subroutine copy_filter_moms_ele                                  &
+!     &         (nele, n_filter, org_mom_ele, tgt_mom_ele)
+!        integer(kind = kint), intent(in) :: nele, n_filter
+!        type(ele_mom_diffs_type), intent(in) ::    org_mom_ele(n_filter)
+!        type(ele_mom_diffs_type), intent(inout) :: tgt_mom_ele(n_filter)
+!      subroutine copy_filter_moms_nod_type(FEM_moms_org, FEM_moms_tgt)
 !        type(gradient_filter_mom_type), intent(in) ::    FEM_moms_org
 !        type(gradient_filter_mom_type), intent(inout) :: FEM_moms_tgt
 !
-!   data comparison
+!   data corresponds
 !
 !      filter_x_nod(i,ifil)...  mom_nod(ifil)%moms%f_x(i)
 !      filter_y_nod(i,ifil)...  mom_nod(ifil)%moms%f_y(i)
@@ -131,10 +140,6 @@
         type(nod_mom_diffs_type), pointer :: mom_nod(:)
         type(ele_mom_diffs_type), pointer :: mom_ele(:)
       end type gradient_filter_mom_type
-!
-      private :: alloc_moments_type, alloc_filter_mom_diffs_type
-      private :: dealloc_moments_type, dealloc_filter_mom_diffs_type
-      private :: copy_moments_type, copy_mom_diffs_type
 !
 !  ---------------------------------------------------------------------
 !
@@ -343,24 +348,51 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
+      subroutine alloc_filter_mom_ele_items(nele, n_filter, mom_ele)
+!
+      integer(kind = kint), intent(in) :: nele, n_filter
+      type(ele_mom_diffs_type), intent(inout) :: mom_ele(n_filter)
+      integer(kind = kint) :: i
+!
+!
+      do i = 1, n_filter
+        call alloc_moments_type(nele, mom_ele(i)%moms)
+        call alloc_filter_mom_diffs_type(nele, mom_ele(i)%diff)
+        call alloc_filter_mom_diffs_type(nele, mom_ele(i)%diff2)
+      end do
+!
+      end subroutine alloc_filter_mom_ele_items
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_filter_mom_ele_items(n_filter, mom_ele)
+!
+      integer(kind = kint), intent(in) :: n_filter
+      type(ele_mom_diffs_type), intent(inout) :: mom_ele(n_filter)
+      integer(kind = kint) :: i
+!
+!
+      do i = 1, n_filter
+        call dealloc_moments_type(mom_ele(i)%moms)
+        call dealloc_filter_mom_diffs_type(mom_ele(i)%diff)
+        call dealloc_filter_mom_diffs_type(mom_ele(i)%diff2)
+      end do
+!
+      end subroutine dealloc_filter_mom_ele_items
+!
+!  ---------------------------------------------------------------------
+!
       subroutine alloc_filter_moms_ele_type(nele, FEM_moms)
 !
       integer(kind = kint), intent(in) :: nele
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
-      integer(kind = kint) :: i
 !
 !
       FEM_moms%nele_fmom = nele
 !
       allocate( FEM_moms%mom_ele(FEM_moms%num_filter_moms) )
-      do i = 1, FEM_moms%num_filter_moms
-        call alloc_moments_type                                         &
-     &     (FEM_moms%nele_fmom, FEM_moms%mom_ele(i)%moms)
-        call alloc_filter_mom_diffs_type                                &
-     &     (FEM_moms%nele_fmom, FEM_moms%mom_ele(i)%diff)
-        call alloc_filter_mom_diffs_type                                &
-     &     (FEM_moms%nele_fmom, FEM_moms%mom_ele(i)%diff2)
-      end do
+      call alloc_filter_mom_ele_items(FEM_moms%nele_fmom,               &
+     &    FEM_moms%num_filter_moms, FEM_moms%mom_ele)
 !
       end subroutine alloc_filter_moms_ele_type
 !
@@ -369,14 +401,9 @@
       subroutine dealloc_filter_moms_ele_type(FEM_moms)
 !
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms
-      integer(kind = kint) :: i
 !
-!
-      do i = 1, FEM_moms%num_filter_moms
-        call dealloc_moments_type(FEM_moms%mom_ele(i)%moms)
-        call dealloc_filter_mom_diffs_type(FEM_moms%mom_ele(i)%diff)
-        call dealloc_filter_mom_diffs_type(FEM_moms%mom_ele(i)%diff2)
-      end do
+      call dealloc_filter_mom_ele_items                                 &
+     &   (FEM_moms%num_filter_moms, FEM_moms%mom_ele)
       deallocate( FEM_moms%mom_ele )
 !
       end subroutine dealloc_filter_moms_ele_type
@@ -384,27 +411,46 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_filter_moms_ele_type(FEM_moms_org, FEM_moms_tgt)
+      subroutine copy_filter_moms_ele                                   &
+     &         (nele, n_filter, org_mom_ele, tgt_mom_ele)
+!
+      integer(kind = kint), intent(in) :: nele, n_filter
+      type(ele_mom_diffs_type), intent(in) ::    org_mom_ele(n_filter)
+      type(ele_mom_diffs_type), intent(inout) :: tgt_mom_ele(n_filter)
+      integer(kind = kint) :: ifil
+!
+!
+      do ifil = 1, n_filter
+        call copy_moments_type                                          &
+     &     (nele, org_mom_ele(ifil)%moms, tgt_mom_ele(ifil)%moms)
+        call copy_mom_diffs_type                                        &
+     &     (nele, org_mom_ele(ifil)%diff, tgt_mom_ele(ifil)%diff)
+        call copy_mom_diffs_type                                        &
+     &     (nele, org_mom_ele(ifil)%diff2, tgt_mom_ele(ifil)%diff2)
+      end do
+!
+      end subroutine copy_filter_moms_ele
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_filter_moms_nod_type(FEM_moms_org, FEM_moms_tgt)
 !
       type(gradient_filter_mom_type), intent(in) ::    FEM_moms_org
       type(gradient_filter_mom_type), intent(inout) :: FEM_moms_tgt
       integer(kind = kint) :: ifil
 !
 !
-      FEM_moms_tgt%nele_fmom = FEM_moms_org%nele_fmom
+      FEM_moms_tgt%nnod_fmom = FEM_moms_org%nnod_fmom
       do ifil = 1, FEM_moms_tgt%num_filter_moms
-        call copy_moments_type(FEM_moms_tgt%nele_fmom,                  &
-     &      FEM_moms_org%mom_ele(ifil)%moms,                            &
-     &      FEM_moms_tgt%mom_ele(ifil)%moms)
-        call copy_mom_diffs_type(FEM_moms_tgt%nele_fmom,                &
-     &      FEM_moms_org%mom_ele(ifil)%diff,                            &
-     &      FEM_moms_tgt%mom_ele(ifil)%diff)
-        call copy_mom_diffs_type(FEM_moms_tgt%nele_fmom,                &
-     &      FEM_moms_org%mom_ele(ifil)%diff2,                           &
-     &      FEM_moms_tgt%mom_ele(ifil)%diff2)
+        call copy_moments_type(FEM_moms_tgt%nnod_fmom,                  &
+     &      FEM_moms_org%mom_nod(ifil)%moms,                            &
+     &      FEM_moms_tgt%mom_nod(ifil)%moms)
+        call copy_mom_diffs_type(FEM_moms_tgt%nnod_fmom,                &
+     &      FEM_moms_org%mom_nod(ifil)%diff,                            &
+     &      FEM_moms_tgt%mom_nod(ifil)%diff)
       end do
 !
-      end subroutine copy_filter_moms_ele_type
+      end subroutine copy_filter_moms_nod_type
 !
 !  ---------------------------------------------------------------------
 !

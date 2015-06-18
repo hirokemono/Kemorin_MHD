@@ -54,11 +54,11 @@
 !
 !
       call write_filter_moms_head_gz(mom1%nnod_fmom, mom1%nele_fmom,    &
-     &    num_filter_moms, FEM1_elen%filter_conf%nf_type)
+     &    mom1%num_filter_moms, FEM1_elen%filter_conf%nf_type)
 !
       if (FEM1_elen%filter_conf%nf_type .gt. 0) then
         call write_base_filter_info_gz
-        do ifil = 1, num_filter_moms
+        do ifil = 1, mom1%num_filter_moms
           call write_filter_moments_ele_gz(ifil)
         end do
       end if
@@ -76,7 +76,7 @@
 !
       call read_filter_moms_head_gz                                     &
      &   (FEM1_elen%nnod_filter_mom, FEM1_elen%nele_filter_mom,         &
-     &    num_filter_moms, FEM1_elen%filter_conf%nf_type)
+     &    mom1%num_filter_moms, FEM1_elen%filter_conf%nf_type)
 !
       end subroutine read_filter_moment_num_gz
 !
@@ -145,7 +145,7 @@
 !
       if (FEM1_elen%filter_conf%nf_type .gt. 0) then
         call read_base_filter_info_gz
-        do ifil = 1, num_filter_moms
+        do ifil = 1, mom1%num_filter_moms
           call read_filter_moments_ele_gz(ifil)
         end do
       end if

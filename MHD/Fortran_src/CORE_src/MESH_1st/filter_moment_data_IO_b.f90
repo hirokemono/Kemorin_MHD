@@ -59,12 +59,12 @@
 !
       call write_filter_moms_head_b                                     &
      &   (id_file, mom1%nnod_fmom, mom1%nele_fmom,                      &
-     &    num_filter_moms, FEM1_elen%filter_conf%nf_type)
+     &    mom1%num_filter_moms, FEM1_elen%filter_conf%nf_type)
 !
       if (FEM1_elen%filter_conf%nf_type .gt. 0) then
         call write_base_filter_info_b(id_file)
 !
-        do ifil = 1, num_filter_moms
+        do ifil = 1, mom1%num_filter_moms
           call write_filter_moments_ele_b(id_file, ifil)
         end do
       end if
@@ -83,7 +83,7 @@
 !
       call read_filter_moms_head_b(id_file,                             &
      &    FEM1_elen%nnod_filter_mom, FEM1_elen%nele_filter_mom,         &
-     &    num_filter_moms, FEM1_elen%filter_conf%nf_type)
+     &    mom1%num_filter_moms, FEM1_elen%filter_conf%nf_type)
 !
       end subroutine read_filter_moment_num_b
 !
@@ -154,7 +154,7 @@
       if (FEM1_elen%filter_conf%nf_type .gt. 0) then
 !
         call read_base_filter_info_b(id_file)
-        do ifil = 1, num_filter_moms
+        do ifil = 1, mom1%num_filter_moms
           call read_filter_moments_ele_b(id_file, ifil)
         end do
 !

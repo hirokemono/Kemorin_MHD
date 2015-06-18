@@ -12,9 +12,6 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter :: n_vector = 3
-      private :: n_vector
-!
 !   --------------------------------------------------------------------
 !
       contains
@@ -50,71 +47,16 @@
       type(node_data), intent(in) :: new_node
       type(element_data), intent(in) :: new_ele
 !
-      integer(kind = kint) :: iele, ifil, nd
-!
 !
       mom1%nnod_fmom = new_node%numnod
       call allocate_filter_moms_ele(new_ele%numele)
 !
-      do ifil = 1, num_filter_moms
-        do iele = 1, new_ele%numele
-          filter_x2_ele(iele,ifil) = filter_x2_ele_2nd(iele,ifil)
-          filter_y2_ele(iele,ifil) = filter_y2_ele_2nd(iele,ifil)
-          filter_z2_ele(iele,ifil) = filter_z2_ele_2nd(iele,ifil)
-          filter_xy_ele(iele,ifil) = filter_xy_ele_2nd(iele,ifil)
-          filter_yz_ele(iele,ifil) = filter_yz_ele_2nd(iele,ifil)
-          filter_zx_ele(iele,ifil) = filter_zx_ele_2nd(iele,ifil)
-          filter_x_ele(iele,ifil) =  filter_x_ele_2nd(iele,ifil)
-          filter_y_ele(iele,ifil) =  filter_y_ele_2nd(iele,ifil)
-          filter_z_ele(iele,ifil) =  filter_z_ele_2nd(iele,ifil)
-        end do
-      end do
+      call copy_filter_moms_ele                                         &
+     &   (new_ele%numele, mom1%num_filter_moms, mom2_ele, mom1%mom_ele)
 !
-      do ifil = 1, num_filter_moms
-        do nd = 1, n_vector
-          do iele = 1, new_ele%numele
-            filter_x2_ele_dx(iele,nd,ifil)                              &
-     &          = filter_x2_ele_dx_2nd(iele,nd,ifil)
-            filter_y2_ele_dx(iele,nd,ifil)                              &
-     &          = filter_y2_ele_dx_2nd(iele,nd,ifil)
-            filter_z2_ele_dx(iele,nd,ifil)                              &
-     &          = filter_z2_ele_dx_2nd(iele,nd,ifil)
-            filter_xy_ele_dx(iele,nd,ifil)                              &
-     &          = filter_xy_ele_dx_2nd(iele,nd,ifil)
-            filter_yz_ele_dx(iele,nd,ifil)                              &
-     &          = filter_yz_ele_dx_2nd(iele,nd,ifil)
-            filter_zx_ele_dx(iele,nd,ifil)                              &
-     &          = filter_zx_ele_dx_2nd(iele,nd,ifil)
-            filter_x_ele_dx(iele,nd,ifil)                               &
-     &          =  filter_x_ele_dx_2nd(iele,nd,ifil)
-            filter_y_ele_dx(iele,nd,ifil)                               &
-     &          =  filter_y_ele_dx_2nd(iele,nd,ifil)
-            filter_z_ele_dx(iele,nd,ifil)                               &
-     &          =  filter_z_ele_dx_2nd(iele,nd,ifil)
-!
-            filter_x2_ele_dx2(iele,nd,ifil)                             &
-     &          = filter_x2_ele_dx2_2nd(iele,nd,ifil)
-            filter_y2_ele_dx2(iele,nd,ifil)                             &
-     &          = filter_y2_ele_dx2_2nd(iele,nd,ifil)
-            filter_z2_ele_dx2(iele,nd,ifil)                             &
-     &          = filter_z2_ele_dx2_2nd(iele,nd,ifil)
-            filter_xy_ele_dx2(iele,nd,ifil)                             &
-     &          = filter_xy_ele_dx2_2nd(iele,nd,ifil)
-            filter_yz_ele_dx2(iele,nd,ifil)                             &
-     &          = filter_yz_ele_dx2_2nd(iele,nd,ifil)
-            filter_zx_ele_dx2(iele,nd,ifil)                             &
-     &          = filter_zx_ele_dx2_2nd(iele,nd,ifil)
-            filter_x_ele_dx2(iele,nd,ifil)                              &
-     &          =  filter_x_ele_dx2_2nd(iele,nd,ifil)
-            filter_y_ele_dx2(iele,nd,ifil)                              &
-     &          =  filter_y_ele_dx2_2nd(iele,nd,ifil)
-            filter_z_ele_dx2(iele,nd,ifil)                              &
-     &          =  filter_z_ele_dx2_2nd(iele,nd,ifil)
-          end do
-        end do
-      end do
-!
-      call deallocate_2nd_filter_moms_ele
+      call dealloc_filter_mom_ele_items                                 &
+     &    (num_filter_moms_2nd, mom2_ele)
+      deallocate(mom2_ele)
 !
       end subroutine copy_filter_moments_from_2nd
 !
