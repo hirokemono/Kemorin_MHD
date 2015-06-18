@@ -62,8 +62,9 @@
 !  ---------------------------------------------------
 !
 !
-      if (iflag_debug.eq.1)  write(*,*) 'allocate_nodal_ele_length'
-      call allocate_nodal_ele_length
+      if (iflag_debug.eq.1)  write(*,*) 'alloc_nodal_elen_type'
+      call alloc_nodal_elen_type                                        &
+     &   (FEM1_elen%nnod_filter_mom, FEM1_elen%elen_nod)
       call alloc_dxdxi_diff_type                                        &
      &   (FEM1_elen%nnod_filter_mom, filter_dxi1%dxi_nod)
       call allocate_dxi_dx_ele

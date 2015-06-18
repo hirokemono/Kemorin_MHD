@@ -225,10 +225,10 @@
         call sel_write_filter_elen_file(my_rank_2nd)
 !
         call dealloc_elen_type(elen2_ele)
-        call deallocate_ele_length
+        call dealloc_elen_type(FEM1_elen%elen_ele)
       end if
 !
-      call deallocate_ref_1d_moment
+      call dealloc_ref_1d_mom_type(FEM1_elen%filter_conf)
       call deallocate_ele_connect_type(newmesh%ele)
 !
       end subroutine trans_filter_moms_each_domain
@@ -280,7 +280,7 @@
           call set_new_filter_moms_ele(new_node)
           call deallocate_filter_moms_ele
           if (ip .lt. norg_domain .or. iflag_set_filter_elen.gt.0) then
-            call deallocate_ref_1d_moment
+            call dealloc_ref_1d_mom_type(FEM1_elen%filter_conf)
           end if
         end if
 !
@@ -293,9 +293,11 @@
 !
 !          if (iflag_debug.eq.1) write(*,*) 'set_new_elength_ele'
           call set_new_elength_ele(new_node, elen2_e)
-!          if (iflag_debug.eq.1) write(*,*) 'deallocate_ele_length'
-          call deallocate_ele_length
-          if (ip .lt. norg_domain) call deallocate_ref_1d_moment
+!          if (iflag_debug.eq.1) write(*,*) 'dealloc_elen_type'
+          call dealloc_elen_type(FEM1_elen%elen_ele)
+          if (ip .lt. norg_domain) then
+            call dealloc_ref_1d_mom_type(FEM1_elen%filter_conf)
+          end if
         end if
 !
         call deallocate_element_connection

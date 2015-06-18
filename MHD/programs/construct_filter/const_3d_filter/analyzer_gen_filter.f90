@@ -115,7 +115,8 @@
       num_filter_moms = 2
       call alloc_dxdxi_diff_type                                        &
      &   (FEM1_elen%nele_filter_mom, filter_dxi1%dxi_ele)
-      call allocate_ele_length
+      call alloc_elen_ele_type                                          &
+     &   (FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele)
 !
       call int_element_length_1st
 !

@@ -64,56 +64,57 @@
        k_st2 =  max(k_st-ndepth,1)
        k_end2 = min(k_end+ndepth,nz)
 !
-        write(*,*) 'i_st, i_end', i_st2, i_end2, nx
-        write(*,*) 'j_st, j_end', j_st2, j_end2, ny
-        write(*,*) 'k_st, k_end', k_st2, k_end2, nz
+       write(*,*) 'i_st, i_end', i_st2, i_end2, nx
+       write(*,*) 'j_st, j_end', j_st2, j_end2, ny
+       write(*,*) 'k_st, k_end', k_st2, k_end2, nz
 !
-        write(*,*) 'set_range_4_nodeloop'
-        call set_range_4_nodeloop(kpe)
+       write(*,*) 'set_range_4_nodeloop'
+       call set_range_4_nodeloop(kpe)
 !
-        FEM1_elen%nnod_filter_mom = nodtot
-        FEM1_elen%nele_filter_mom = elmtot
-        call allocate_ref_1d_moment
-        call allocate_ele_length
+       FEM1_elen%nnod_filter_mom = nodtot
+       FEM1_elen%nele_filter_mom = elmtot
+       call alloc_ref_1d_mom_type(FEM1_elen%filter_conf)
+       call alloc_elen_ele_type                                         &
+      &   (FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele)
 !
-        write(*,*) 'set_element_size_on_nod'
-        call set_element_size_on_nod
-        call set_element_size_on_ele
+       write(*,*) 'set_element_size_on_nod'
+       call set_element_size_on_nod
+       call set_element_size_on_ele
 !
-        write(*,*) 'count_neib_node_x'
-        call count_neib_node_x
+       write(*,*) 'count_neib_node_x'
+       call count_neib_node_x
 !        call check_neib_node_x
-        write(*,*) 'count_neib_node_y'
-        call count_neib_node_y
+       write(*,*) 'count_neib_node_y'
+       call count_neib_node_y
 !        call check_neib_node_y
-        write(*,*) 'count_neib_node_z'
-        call count_neib_node_z
-        if (iflag_z_filter.eq.0)  then
-          write(*,*) 'norm_z_coefs'
-          call norm_z_coefs
-        end if
+       write(*,*) 'count_neib_node_z'
+       call count_neib_node_z
+       if (iflag_z_filter.eq.0)  then
+         write(*,*) 'norm_z_coefs'
+         call norm_z_coefs
+       end if
 !        call check_neib_node_z
 !
-        if ( iflag_data_f .eq. 1) then
-          call add_int_suffix(pe1, filter_file_header, nb_name)
-          write(*,*) 'output binary file: ', nb_name
-          open (nb_out, file=nb_name, form='unformatted')
-          call write_neighboring_nod_line_b                             &
+       if ( iflag_data_f .eq. 1) then
+         call add_int_suffix(pe1, filter_file_header, nb_name)
+         write(*,*) 'output binary file: ', nb_name
+         open (nb_out, file=nb_name, form='unformatted')
+         call write_neighboring_nod_line_b                              &
      &       (FEM1_elen%filter_conf%nf_type)
-        else
-          call add_int_suffix(pe1, filter_file_header, nb_name)
-          write(*,*) 'output ascii file: ', trim(nb_name)
-          open (nb_out, file=nb_name)
-          call write_neighboring_nod_line                               &
+       else
+         call add_int_suffix(pe1, filter_file_header, nb_name)
+         write(*,*) 'output ascii file: ', trim(nb_name)
+         open (nb_out, file=nb_name)
+         call write_neighboring_nod_line                                &
      &       (FEM1_elen%filter_conf%nf_type)
-        end if
-        close(nb_out)
+       end if
+       close(nb_out)
 !
-        write(*,*) 'deallocate_filters_nod'
-        call deallocate_filters_nod
+       write(*,*) 'deallocate_filters_nod'
+       call deallocate_filters_nod
 !
-        call deallocate_ele_length
-        call deallocate_ref_1d_moment
+       call dealloc_elen_type(FEM1_elen%elen_ele)
+       call dealloc_ref_1d_mom_type(FEM1_elen%filter_conf)
 !
        end subroutine neighboring_node
 !

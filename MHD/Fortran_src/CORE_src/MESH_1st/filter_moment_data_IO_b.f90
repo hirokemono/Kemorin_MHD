@@ -111,8 +111,9 @@
         ierr = 0
       end if
 !
-      call allocate_ref_1d_moment
-      call allocate_ele_length
+      call alloc_ref_1d_mom_type(FEM1_elen%filter_conf)
+      call alloc_elen_ele_type                                          &
+     &   (FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele)
 !
       if (FEM1_elen%filter_conf%nf_type .gt. 0) then
         call read_base_filter_info_b(id_file)
@@ -146,7 +147,7 @@
       end if
 !
       nnod_fmom = FEM1_elen%nnod_filter_mom
-      call allocate_ref_1d_moment
+      call alloc_ref_1d_mom_type(FEM1_elen%filter_conf)
       call allocate_filter_moms_ele(FEM1_elen%nele_filter_mom)
 !
       if (FEM1_elen%filter_conf%nf_type .gt. 0) then

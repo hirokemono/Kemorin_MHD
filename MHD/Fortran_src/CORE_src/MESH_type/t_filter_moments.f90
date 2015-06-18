@@ -18,6 +18,9 @@
 !      subroutine dealloc_filter_moms_ele_type(FEM_moms)
 !        type(gradient_filter_mom_type), intent(inout) :: FEM_moms
 !       (substitution of deallocate_filter_moms_ele )
+!      subroutine copy_filter_moms_ele_type(FEM_moms_org, FEM_moms_tgt)
+!        type(gradient_filter_mom_type), intent(in) ::    FEM_moms_org
+!        type(gradient_filter_mom_type), intent(inout) :: FEM_moms_tgt
 !
 !   data comparison
 !
@@ -131,6 +134,7 @@
 !
       private :: alloc_moments_type, alloc_filter_mom_diffs_type
       private :: dealloc_moments_type, dealloc_filter_mom_diffs_type
+      private :: copy_moments_type, copy_mom_diffs_type
 !
 !  ---------------------------------------------------------------------
 !
@@ -209,6 +213,65 @@
       end if 
 !
       end subroutine alloc_filter_mom_diffs_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_moments_type(num, mom_org, mom_tgt)
+!
+      integer (kind = kint), intent(in) :: num
+      type(filter_mom_type), intent(in) :: mom_org
+      type(filter_mom_type), intent(inout) :: mom_tgt
+!
+      integer (kind=kint) :: i
+!
+!
+!$omp parallel do
+      do i = 1, num
+        mom_tgt%f_0(i) =  mom_org%f_0(i)
+        mom_tgt%f_x(i) =  mom_org%f_x(i)
+        mom_tgt%f_y(i) =  mom_org%f_y(i)
+        mom_tgt%f_z(i) =  mom_org%f_z(i)
+        mom_tgt%f_x2(i) = mom_org%f_x2(i)
+        mom_tgt%f_y2(i) = mom_org%f_y2(i)
+        mom_tgt%f_z2(i) = mom_org%f_z2(i)
+        mom_tgt%f_xy(i) = mom_org%f_xy(i)
+        mom_tgt%f_yz(i) = mom_org%f_yz(i)
+        mom_tgt%f_zx(i) = mom_org%f_zx(i)
+      end do
+!$omp end parallel do
+!
+      end subroutine copy_moments_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_mom_diffs_type(num, mom_org, mom_tgt)
+!
+      integer (kind = kint), intent(in) :: num
+      type(filter_mom_diffs_type), intent(in) :: mom_org
+      type(filter_mom_diffs_type), intent(inout) :: mom_tgt
+!
+      integer (kind=kint) :: nd, i
+!
+!
+!$omp parallel private(nd)
+      do nd = 1, 3
+!$omp do
+        do i = 1, num
+          mom_tgt%df_x(i,nd) =  mom_org%df_x(i,nd)
+          mom_tgt%df_y(i,nd) =  mom_org%df_y(i,nd)
+          mom_tgt%df_z(i,nd) =  mom_org%df_z(i,nd)
+          mom_tgt%df_x2(i,nd) = mom_org%df_x2(i,nd)
+          mom_tgt%df_y2(i,nd) = mom_org%df_y2(i,nd)
+          mom_tgt%df_z2(i,nd) = mom_org%df_z2(i,nd)
+          mom_tgt%df_xy(i,nd) = mom_org%df_xy(i,nd)
+          mom_tgt%df_yz(i,nd) = mom_org%df_yz(i,nd)
+          mom_tgt%df_zx(i,nd) = mom_org%df_zx(i,nd)
+        end do
+!$omp end do nowait
+      end do
+!$omp end parallel
+!
+      end subroutine copy_mom_diffs_type
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -317,6 +380,31 @@
       deallocate( FEM_moms%mom_ele )
 !
       end subroutine dealloc_filter_moms_ele_type
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_filter_moms_ele_type(FEM_moms_org, FEM_moms_tgt)
+!
+      type(gradient_filter_mom_type), intent(in) ::    FEM_moms_org
+      type(gradient_filter_mom_type), intent(inout) :: FEM_moms_tgt
+      integer(kind = kint) :: ifil
+!
+!
+      FEM_moms_tgt%nele_fmom = FEM_moms_org%nele_fmom
+      do ifil = 1, FEM_moms_tgt%num_filter_moms
+        call copy_moments_type(FEM_moms_tgt%nele_fmom,                  &
+     &      FEM_moms_org%mom_ele(ifil)%moms,                            &
+     &      FEM_moms_tgt%mom_ele(ifil)%moms)
+        call copy_mom_diffs_type(FEM_moms_tgt%nele_fmom,                &
+     &      FEM_moms_org%mom_ele(ifil)%diff,                            &
+     &      FEM_moms_tgt%mom_ele(ifil)%diff)
+        call copy_mom_diffs_type(FEM_moms_tgt%nele_fmom,                &
+     &      FEM_moms_org%mom_ele(ifil)%diff2,                           &
+     &      FEM_moms_tgt%mom_ele(ifil)%diff2)
+      end do
+!
+      end subroutine copy_filter_moms_ele_type
 !
 !  ---------------------------------------------------------------------
 !

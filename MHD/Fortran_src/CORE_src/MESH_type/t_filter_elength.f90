@@ -11,28 +11,30 @@
 !!      subroutine alloc_elen_ele_type(nele_filter_mom, elen_ele)
 !!        integer (kind = kint), intent(in) :: nele_filter_mom
 !!        type(elen_ele_diffs_type), intent(inout) :: elen_ele
-!!       (substitution of allocate_ele_length )
 !!      subroutine alloc_nodal_elen_type(nnod_filter_mom, elen_nod)
 !!        integer (kind = kint), intent(in) :: nnod_filter_mom
 !!        type(elen_nod_diffs_type), intent(inout) :: elen_nod
-!!       (substitution of allocate_nodal_ele_length )
 !!
 !!      subroutine alloc_ref_1d_mom_type(filter_conf)
 !!        type(filter_config_type), intent(inout) ::  filter_conf
-!!       (substitution of allocate_ref_1d_moment )
 !!      subroutine dealloc_filter_mom_type(FEM_elens)
 !!        type(gradient_model_data_type), intent(inout) :: FEM_elens
-!!       (substitution of deallocate_filter_moments )
 !!
 !!      subroutine dealloc_elen_type(elen_ele)
 !!        type(elen_ele_diffs_type), intent(inout) :: elen_ele
-!!       (substitution of deallocate_ele_length )
 !!      subroutine dealloc_nodal_elen_type(elen_nod)
 !!        type(elen_nod_diffs_type), intent(inout) :: elen_nod
-!!       (substitution of deallocate_nodal_ele_length )
 !!      subroutine dealloc_ref_1d_mom_type(filter_conf)
 !!        type(filter_config_type), intent(inout) ::  filter_conf
-!!       (substitution of deallocate_ref_1d_moment )
+!!
+!!      subroutine copy_elength_type(num, elen_org, elen_tgt)
+!!        integer (kind = kint), intent(in) :: num
+!!        type(elen_on_ele_type), intent(in) :: elen_org
+!!        type(elen_on_ele_type), intent(inout) :: elen_tgt
+!!      subroutine copy_elen_diffs_type(num, elen_org, elen_tgt)
+!!        integer (kind = kint), intent(in) :: num
+!!        type(elen_diffs_type), intent(in) :: elen_org
+!!        type(elen_diffs_type), intent(inout) :: elen_tgt
 !!
 !!   data comparison
 !!
@@ -372,6 +374,59 @@
       deallocate( filter_conf%xmom_1d_org )
 !
       end subroutine dealloc_ref_1d_mom_type
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_elength_type(num, elen_org, elen_tgt)
+!
+      integer (kind = kint), intent(in) :: num
+      type(elen_on_ele_type), intent(in) :: elen_org
+      type(elen_on_ele_type), intent(inout) :: elen_tgt
+!
+      integer (kind=kint) :: i
+!
+!
+!$omp parallel do
+      do i = 1, num
+        elen_tgt%f_x2(i) = elen_org%f_x2(i)
+        elen_tgt%f_y2(i) = elen_org%f_y2(i)
+        elen_tgt%f_z2(i) = elen_org%f_z2(i)
+        elen_tgt%f_xy(i) = elen_org%f_xy(i)
+        elen_tgt%f_yz(i) = elen_org%f_yz(i)
+        elen_tgt%f_zx(i) = elen_org%f_zx(i)
+      end do
+!$omp end parallel do
+!
+      end subroutine copy_elength_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_elen_diffs_type(num, elen_org, elen_tgt)
+!
+      integer (kind = kint), intent(in) :: num
+      type(elen_diffs_type), intent(in) :: elen_org
+      type(elen_diffs_type), intent(inout) :: elen_tgt
+!
+      integer (kind=kint) :: nd, i
+!
+!
+!$omp parallel private(nd)
+      do nd = 1, 3
+!$omp do
+        do i = 1, num
+          elen_tgt%df_x2(i,nd) = elen_org%df_x2(i,nd)
+          elen_tgt%df_y2(i,nd) = elen_org%df_y2(i,nd)
+          elen_tgt%df_z2(i,nd) = elen_org%df_z2(i,nd)
+          elen_tgt%df_xy(i,nd) = elen_org%df_xy(i,nd)
+          elen_tgt%df_yz(i,nd) = elen_org%df_yz(i,nd)
+          elen_tgt%df_zx(i,nd) = elen_org%df_zx(i,nd)
+        end do
+!$omp end do nowait
+      end do
+!$omp end parallel
+!
+      end subroutine copy_elen_diffs_type
 !
 !  ---------------------------------------------------------------------
 !

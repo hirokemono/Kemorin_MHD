@@ -80,7 +80,7 @@
 !
       if ( num_ref_filter .gt. 0) then
         call allocate_ref_filter_type
-        call allocate_ref_1d_moment
+        call alloc_ref_1d_mom_type(FEM1_elen%filter_conf)
         
         do i = 1, num_ref_filter
           iref_filter_type(i) = iflag_tophat_filter
