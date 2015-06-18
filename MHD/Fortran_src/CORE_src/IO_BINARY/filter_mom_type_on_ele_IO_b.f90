@@ -36,7 +36,7 @@
 !
       subroutine read_base_filter_info_type_b(id_file, filter_conf)
 !
-      use t_filter_moments
+      use t_filter_elength
       use filter_moms_elen_data_IO_b
 !
       integer(kind = kint), intent(in) :: id_file
@@ -53,7 +53,7 @@
 !
       subroutine write_base_filter_info_type_b(id_file, filter_conf)
 !
-      use t_filter_moments
+      use t_filter_elength
       use filter_moms_elen_data_IO_b
 !
       integer(kind = kint), intent(in) :: id_file
@@ -71,7 +71,7 @@
 !
       subroutine read_elen_ele_type_b(id_file, nele_fmom, elen_ele)
 !
-      use t_filter_moments
+      use t_filter_elength
       use filter_moms_elen_data_IO_b
 !
       integer(kind = kint), intent(in) :: id_file, nele_fmom
@@ -94,7 +94,7 @@
 !
       subroutine write_elen_ele_type_b(id_file, nele_fmom, elen_ele)
 !
-      use t_filter_moments
+      use t_filter_elength
       use filter_moms_elen_data_IO_b
 !
       integer(kind = kint), intent(in) :: id_file, nele_fmom

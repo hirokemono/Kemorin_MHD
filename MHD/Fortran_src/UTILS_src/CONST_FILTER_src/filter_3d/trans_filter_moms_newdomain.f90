@@ -146,7 +146,6 @@
 !
       use calypso_mpi
       use m_2nd_filter_moments
-      use m_2nd_filter_ele_length
       use m_filter_file_names
       use m_filter_moments
       use m_filter_elength
@@ -163,6 +162,9 @@
       type(mesh_geometry), intent(inout) :: newmesh
       type(surface_geometry), intent(inout) :: new_surf_mesh
       type(edge_geometry), intent(inout) ::  new_edge_mesh
+!
+      integer (kind = kint) :: nele2_filter_mom
+      type(elen_ele_diffs_type) :: elen2_ele
 !
 !
       iflag_mesh_file_fmt = id_ascii_file_fmt
@@ -183,7 +185,8 @@
 !    construct new filter table
 !
       if (iflag_set_filter_elen .gt. 0) then
-        call allocate_2nd_ele_length(newmesh%ele%numele)
+        nele2_filter_mom = newmesh%ele%numele
+        call alloc_elen_ele_type(nele2_filter_mom, elen2_ele)
       end if
 !
       if (iflag_set_filter_moms .gt. 0) then
@@ -200,7 +203,7 @@
       call set_iele_table_4_newfilter(newmesh%ele)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_filter_moms_newdomain'
-      call const_filter_moms_newdomain(nprocs, newmesh%node)
+      call const_filter_moms_newdomain(nprocs, newmesh%node, elen2_ele)
 !
 !
 !      write new filter moments file
@@ -217,8 +220,11 @@
       if (iflag_set_filter_elen .gt. 0) then
         ifmt_filter_file = id_ascii_file_fmt
         filter_file_head = new_filter_elen_head
-        call copy_elength_ele_from_2nd(newmesh%node, newmesh%ele)
+        call copy_elength_ele_from_2nd                                  &
+     &     (newmesh%node%numnod, nele2_filter_mom, elen2_ele)
         call sel_write_filter_elen_file(my_rank_2nd)
+!
+        call dealloc_elen_type(elen2_ele)
         call deallocate_ele_length
       end if
 !
@@ -229,13 +235,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_filter_moms_newdomain(norg_domain, new_node)
+      subroutine const_filter_moms_newdomain                            &
+     &         (norg_domain, new_node, elen2_e)
 !
       use m_geometry_parameter
       use m_geometry_data
       use m_filter_file_names
       use m_filter_moments
       use m_filter_elength
+      use t_filter_elength
       use filter_moment_IO_select
       use set_element_connect_4_IO
       use set_filter_moms_2_new_mesh
@@ -244,6 +252,7 @@
 !
       integer(kind = kint), intent(in) :: norg_domain
       type(node_data), intent(in) :: new_node
+      type(elen_ele_diffs_type), intent(inout) :: elen2_e
       integer(kind = kint) :: ip, my_rank_org, ierr
 !
 !
@@ -283,7 +292,7 @@
      &        numnod, numele, ierr)
 !
 !          if (iflag_debug.eq.1) write(*,*) 'set_new_elength_ele'
-          call set_new_elength_ele(new_node)
+          call set_new_elength_ele(new_node, elen2_e)
 !          if (iflag_debug.eq.1) write(*,*) 'deallocate_ele_length'
           call deallocate_ele_length
           if (ip .lt. norg_domain) call deallocate_ref_1d_moment

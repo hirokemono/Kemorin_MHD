@@ -33,7 +33,7 @@
 !
       subroutine read_base_filter_info_type_gz(filter_conf)
 !
-      use t_filter_moments
+      use t_filter_elength
       use gz_filter_moms_elen_data_IO
 !
       type(filter_config_type), intent(inout) ::  filter_conf
@@ -49,7 +49,7 @@
 !
       subroutine write_base_filter_info_type_gz(filter_conf)
 !
-      use t_filter_moments
+      use t_filter_elength
       use gz_filter_moms_elen_data_IO
 !
       type(filter_config_type), intent(in) ::  filter_conf
@@ -66,7 +66,7 @@
 !
       subroutine read_elen_ele_type_gz(nele_fmom, elen_ele)
 !
-      use t_filter_moments
+      use t_filter_elength
       use gz_filter_moms_elen_data_IO
 !
       integer (kind = kint), intent(in)  :: nele_fmom
@@ -89,7 +89,7 @@
 !
       subroutine write_elen_ele_type_gz(nele_fmom, elen_ele)
 !
-      use t_filter_moments
+      use t_filter_elength
       use gz_filter_moms_elen_data_IO
 !
 !      integer (kind = kint), intent(in) :: nnod

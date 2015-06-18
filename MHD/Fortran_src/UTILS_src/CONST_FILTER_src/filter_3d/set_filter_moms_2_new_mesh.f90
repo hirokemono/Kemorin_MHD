@@ -1,9 +1,17 @@
 !set_filter_moms_2_new_mesh.f90
 !      module set_filter_moms_2_new_mesh
 !
-      module set_filter_moms_2_new_mesh
-!
 !     Written by H. Matsui on Nov., 2008
+!
+!      subroutine allocate_iele_local_newfilter
+!      subroutine deallocate_iele_local_newfilter
+!
+!      subroutine set_iele_table_4_newfilter(new_ele)
+!
+!      subroutine set_new_elength_ele(new_node, elen2_ele)
+!      subroutine set_new_filter_moms_ele(new_node)
+!
+      module set_filter_moms_2_new_mesh
 !
       use m_precision
 !
@@ -15,14 +23,6 @@
       integer(kind = kint), parameter :: n_vector = 3
 !
       private :: iele_local_2nd, n_vector
-!
-!      subroutine allocate_iele_local_newfilter
-!      subroutine deallocate_iele_local_newfilter
-!
-!      subroutine set_iele_table_4_newfilter(new_ele)
-!
-!      subroutine set_new_elength_ele(new_node)
-!      subroutine set_new_filter_moms_ele(new_node)
 !
 !   --------------------------------------------------------------------
 !
@@ -69,16 +69,17 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_new_elength_ele(new_node)
+      subroutine set_new_elength_ele(new_node, elen2_ele)
 !
       use t_geometry_data
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_2nd_filter_ele_length
       use m_filter_elength
+      use t_filter_elength
 !
       type(node_data), intent(in) :: new_node
+      type(elen_ele_diffs_type), intent(inout) :: elen2_ele
 !
       integer(kind = kint) :: iele, iele_2nd, nd
       integer(kind = kint_gl) :: iele_gl
@@ -92,38 +93,44 @@
 !
           iele_2nd = iele_local_2nd(iele_gl)
 !
-          elen_2%f_x2(iele_2nd) = FEM1_elen%elen_ele%moms%f_x2(iele)
-          elen_2%f_y2(iele_2nd) = FEM1_elen%elen_ele%moms%f_y2(iele)
-          elen_2%f_z2(iele_2nd) = FEM1_elen%elen_ele%moms%f_z2(iele)
-          elen_2%f_xy(iele_2nd) = FEM1_elen%elen_ele%moms%f_xy(iele)
-          elen_2%f_yz(iele_2nd) = FEM1_elen%elen_ele%moms%f_yz(iele)
-          elen_2%f_zx(iele_2nd) = FEM1_elen%elen_ele%moms%f_zx(iele)
+          elen2_ele%moms%f_x2(iele_2nd)                                 &
+     &         = FEM1_elen%elen_ele%moms%f_x2(iele)
+          elen2_ele%moms%f_y2(iele_2nd)                                 &
+     &         = FEM1_elen%elen_ele%moms%f_y2(iele)
+          elen2_ele%moms%f_z2(iele_2nd)                                 &
+     &         = FEM1_elen%elen_ele%moms%f_z2(iele)
+          elen2_ele%moms%f_xy(iele_2nd)                                 &
+     &         = FEM1_elen%elen_ele%moms%f_xy(iele)
+          elen2_ele%moms%f_yz(iele_2nd)                                 &
+     &         = FEM1_elen%elen_ele%moms%f_yz(iele)
+          elen2_ele%moms%f_zx(iele_2nd)                                 &
+     &         = FEM1_elen%elen_ele%moms%f_zx(iele)
 !
           do nd = 1, n_vector
-            diff1_2%df_x2(iele_2nd,nd)                            &
+            elen2_ele%diff%df_x2(iele_2nd,nd)                           &
      &         = FEM1_elen%elen_ele%diff%df_x2(iele,nd)
-            diff1_2%df_y2(iele_2nd,nd)                            &
+            elen2_ele%diff%df_y2(iele_2nd,nd)                           &
      &         = FEM1_elen%elen_ele%diff%df_y2(iele,nd)
-            diff1_2%df_z2(iele_2nd,nd)                            &
+            elen2_ele%diff%df_z2(iele_2nd,nd)                           &
      &         = FEM1_elen%elen_ele%diff%df_z2(iele,nd)
-            diff1_2%df_xy(iele_2nd,nd)                           &
+            elen2_ele%diff%df_xy(iele_2nd,nd)                           &
      &         = FEM1_elen%elen_ele%diff%df_xy(iele,nd)
-            diff1_2%df_yz(iele_2nd,nd)                           &
+            elen2_ele%diff%df_yz(iele_2nd,nd)                           &
      &         = FEM1_elen%elen_ele%diff%df_yz(iele,nd)
-            diff1_2%df_zx(iele_2nd,nd)                           &
+            elen2_ele%diff%df_zx(iele_2nd,nd)                           &
      &         = FEM1_elen%elen_ele%diff%df_zx(iele,nd)
 !
-            diff2_2%df_x2(iele_2nd,nd)                           &
+            elen2_ele%diff2%df_x2(iele_2nd,nd)                          &
      &         = FEM1_elen%elen_ele%diff2%df_x2(iele,nd)
-            diff2_2%df_y2(iele_2nd,nd)                           &
+            elen2_ele%diff2%df_y2(iele_2nd,nd)                          &
      &         = FEM1_elen%elen_ele%diff2%df_y2(iele,nd)
-            diff2_2%df_z2(iele_2nd,nd)                           &
+            elen2_ele%diff2%df_z2(iele_2nd,nd)                          &
      &         = FEM1_elen%elen_ele%diff2%df_z2(iele,nd)
-            diff2_2%df_xy(iele_2nd,nd)                          &
+            elen2_ele%diff2%df_xy(iele_2nd,nd)                          &
      &         = FEM1_elen%elen_ele%diff2%df_xy(iele,nd)
-            diff2_2%df_yz(iele_2nd,nd)                          &
+            elen2_ele%diff2%df_yz(iele_2nd,nd)                          &
      &         = FEM1_elen%elen_ele%diff2%df_yz(iele,nd)
-            diff2_2%df_zx(iele_2nd,nd)                          &
+            elen2_ele%diff2%df_zx(iele_2nd,nd)                          &
      &         = FEM1_elen%elen_ele%diff2%df_zx(iele,nd)
           end do
 !

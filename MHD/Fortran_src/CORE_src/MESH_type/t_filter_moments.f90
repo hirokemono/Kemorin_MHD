@@ -80,10 +80,47 @@
 !
       use m_precision
 !
-      use t_filter_elength
-!
       implicit none
 !
+!
+      type filter_mom_type
+        real(kind=kreal),   pointer :: f_0(:)
+!
+        real(kind=kreal),   pointer :: f_x(:)
+        real(kind=kreal),   pointer :: f_y(:)
+        real(kind=kreal),   pointer :: f_z(:)
+        real(kind=kreal),   pointer :: f_x2(:)
+        real(kind=kreal),   pointer :: f_y2(:)
+        real(kind=kreal),   pointer :: f_z2(:)
+        real(kind=kreal),   pointer :: f_xy(:)
+        real(kind=kreal),   pointer :: f_yz(:)
+        real(kind=kreal),   pointer :: f_zx(:)
+      end type filter_mom_type
+!
+      type filter_mom_diffs_type
+        real(kind=kreal),   pointer :: df_0(:,:)
+!
+        real(kind=kreal),   pointer :: df_x(:,:)
+        real(kind=kreal),   pointer :: df_y(:,:)
+        real(kind=kreal),   pointer :: df_z(:,:)
+        real(kind=kreal),   pointer :: df_x2(:,:)
+        real(kind=kreal),   pointer :: df_y2(:,:)
+        real(kind=kreal),   pointer :: df_z2(:,:)
+        real(kind=kreal),   pointer :: df_xy(:,:)
+        real(kind=kreal),   pointer :: df_yz(:,:)
+        real(kind=kreal),   pointer :: df_zx(:,:)
+      end type filter_mom_diffs_type
+!
+      type nod_mom_diffs_type
+        type(filter_mom_type) :: moms
+        type(filter_mom_diffs_type) :: diff
+      end type nod_mom_diffs_type
+!
+      type ele_mom_diffs_type
+        type(filter_mom_type) :: moms
+        type(filter_mom_diffs_type) :: diff
+        type(filter_mom_diffs_type) :: diff2
+      end type ele_mom_diffs_type
 !
       type gradient_filter_mom_type
         integer (kind = kint) :: nnod_fmom, nele_fmom
@@ -92,10 +129,117 @@
         type(ele_mom_diffs_type), pointer :: mom_ele(:)
       end type gradient_filter_mom_type
 !
+      private :: alloc_moments_type, alloc_filter_mom_diffs_type
+      private :: dealloc_moments_type, dealloc_filter_mom_diffs_type
+!
 !  ---------------------------------------------------------------------
 !
       contains
 !
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_moments_type(num_fmom, moms)
+!
+      integer (kind = kint), intent(in) :: num_fmom
+      type(filter_mom_type), intent(inout)  :: moms
+!
+!
+      allocate( moms%f_0(num_fmom) )
+!
+      allocate( moms%f_x(num_fmom) )
+      allocate( moms%f_y(num_fmom) )
+      allocate( moms%f_z(num_fmom) )
+!
+      allocate( moms%f_x2(num_fmom) )
+      allocate( moms%f_y2(num_fmom) )
+      allocate( moms%f_z2(num_fmom) )
+!
+      allocate( moms%f_xy(num_fmom) )
+      allocate( moms%f_yz(num_fmom) )
+      allocate( moms%f_zx(num_fmom) )
+!
+      if (num_fmom .gt. 0) then
+        moms%f_0 =  0.0d0
+        moms%f_x =  0.0d0
+        moms%f_y =  0.0d0
+        moms%f_z =  0.0d0
+        moms%f_x2 = 0.0d0
+        moms%f_y2 = 0.0d0
+        moms%f_z2 = 0.0d0
+        moms%f_xy = 0.0d0
+        moms%f_yz = 0.0d0
+        moms%f_zx = 0.0d0
+      end if 
+!
+      end subroutine alloc_moments_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_filter_mom_diffs_type(num_fmom, dmoms)
+!
+      integer (kind = kint), intent(in) :: num_fmom
+      type(filter_mom_diffs_type), intent(inout)  :: dmoms
+!
+!
+      allocate( dmoms%df_0(num_fmom,3) )
+!
+      allocate( dmoms%df_x(num_fmom,3) )
+      allocate( dmoms%df_y(num_fmom,3) )
+      allocate( dmoms%df_z(num_fmom,3) )
+!
+      allocate( dmoms%df_x2(num_fmom,3) )
+      allocate( dmoms%df_y2(num_fmom,3) )
+      allocate( dmoms%df_z2(num_fmom,3) )
+!
+      allocate( dmoms%df_xy(num_fmom,3) )
+      allocate( dmoms%df_yz(num_fmom,3) )
+      allocate( dmoms%df_zx(num_fmom,3) )
+!
+      if (num_fmom .gt. 0) then
+        dmoms%df_0 =  0.0d0
+        dmoms%df_x =  0.0d0
+        dmoms%df_y =  0.0d0
+        dmoms%df_z =  0.0d0
+        dmoms%df_x2 = 0.0d0
+        dmoms%df_y2 = 0.0d0
+        dmoms%df_z2 = 0.0d0
+        dmoms%df_xy = 0.0d0
+        dmoms%df_yz = 0.0d0
+        dmoms%df_zx = 0.0d0
+      end if 
+!
+      end subroutine alloc_filter_mom_diffs_type
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_moments_type(moms)
+!
+      type(filter_mom_type), intent(inout)  :: moms
+!
+!
+      deallocate( moms%f_0 )
+      deallocate( moms%f_x, moms%f_y, moms%f_z )
+      deallocate( moms%f_x2, moms%f_y2, moms%f_z2 )
+      deallocate( moms%f_xy, moms%f_yz, moms%f_zx )
+!
+      end subroutine dealloc_moments_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_filter_mom_diffs_type(dmoms)
+!
+      type(filter_mom_diffs_type), intent(inout)  :: dmoms
+!
+!
+      deallocate( dmoms%df_0 )
+      deallocate( dmoms%df_x, dmoms%df_y, dmoms%df_z )
+      deallocate( dmoms%df_x2, dmoms%df_y2, dmoms%df_z2 )
+      deallocate( dmoms%df_xy, dmoms%df_yz, dmoms%df_zx )
+!
+      end subroutine dealloc_filter_mom_diffs_type
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine alloc_filter_moms_nod_type(nnod, FEM_moms)
@@ -166,7 +310,6 @@
 !
 !
       do i = 1, FEM_moms%num_filter_moms
-        call dealloc_ele_mom_diffs_type(FEM_moms%mom_ele(i))
         call dealloc_moments_type(FEM_moms%mom_ele(i)%moms)
         call dealloc_filter_mom_diffs_type(FEM_moms%mom_ele(i)%diff)
         call dealloc_filter_mom_diffs_type(FEM_moms%mom_ele(i)%diff2)

@@ -8,9 +8,6 @@
 !
 !      subroutine copy_elen_diffs_type(num, elen_org, elen_tgt)
 !
-!      subroutine copy_nodal_elen_type(FEM_elen_org, FEM_elen_tgt)
-!        type(gradient_model_data_type), intent(in) :: FEM_elen_org
-!        type(gradient_model_data_type), intent(inout) :: FEM_elen_tgt
 !      subroutine copy_filter_moms_ele_type(FEM_moms_org, FEM_moms_tgt)
 !        type(gradient_filter_mom_type), intent(in) ::    FEM_moms_org
 !        type(gradient_filter_mom_type), intent(inout) :: FEM_moms_tgt
@@ -31,7 +28,7 @@
 !
       subroutine copy_moments_type(num, mom_org, mom_tgt)
 !
-      use t_filter_elength
+      use t_filter_moments
 !
       integer (kind = kint), intent(in) :: num
       type(filter_mom_type), intent(in) :: mom_org
@@ -87,7 +84,7 @@
 !
       subroutine copy_mom_diffs_type(num, mom_org, mom_tgt)
 !
-      use t_filter_elength
+      use t_filter_moments
 !
       integer (kind = kint), intent(in) :: num
       type(filter_mom_diffs_type), intent(in) :: mom_org
@@ -145,45 +142,6 @@
 !$omp end parallel
 !
       end subroutine copy_elen_diffs_type
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_elen_ele_type(FEM_elen_org, FEM_elen_tgt)
-!
-      use t_filter_elength
-!
-      type(gradient_model_data_type), intent(in) :: FEM_elen_org
-      type(gradient_model_data_type), intent(inout) :: FEM_elen_tgt
-!
-!
-      FEM_elen_tgt%nele_filter_mom = FEM_elen_org%nele_filter_mom
-      call copy_elength_type(FEM_elen_tgt%nele_filter_mom,              &
-     &    FEM_elen_org%elen_ele%moms, FEM_elen_tgt%elen_ele%moms)
-      call copy_elen_diffs_type(FEM_elen_tgt%nele_filter_mom,           &
-     &    FEM_elen_org%elen_ele%diff, FEM_elen_tgt%elen_ele%diff)
-      call copy_elen_diffs_type(FEM_elen_tgt%nele_filter_mom,           &
-     &    FEM_elen_org%elen_ele%diff2, FEM_elen_tgt%elen_ele%diff2)
-!
-      end subroutine copy_elen_ele_type
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_nodal_elen_type(FEM_elen_org, FEM_elen_tgt)
-!
-      use t_filter_elength
-!
-      type(gradient_model_data_type), intent(in) :: FEM_elen_org
-      type(gradient_model_data_type), intent(inout) :: FEM_elen_tgt
-!
-!
-      FEM_elen_tgt%nnod_filter_mom = FEM_elen_org%nnod_filter_mom
-      call copy_elength_type(FEM_elen_tgt%nele_filter_mom,              &
-     &    FEM_elen_org%elen_nod%moms, FEM_elen_tgt%elen_nod%moms)
-      call copy_elen_diffs_type(FEM_elen_tgt%nele_filter_mom,           &
-     &    FEM_elen_org%elen_nod%diff, FEM_elen_tgt%elen_nod%diff)
-!
-      end subroutine copy_nodal_elen_type
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
