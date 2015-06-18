@@ -1,9 +1,15 @@
 !set_simple_filters.f90
 !      module set_simple_filters
 !
-      module set_simple_filters
-!
 !     Written by H. Matsui on Mar., 2008
+!
+!      subroutine set_tophat_filter_4_each_nod
+!      subroutine set_linear_filter_4_each_nod
+!      subroutine set_gaussian_filter_each_nod(inod)
+!      subroutine normalize_each_filter_weight
+!      subroutine cal_filter_moments_each_nod(ifil, inod)
+!
+      module set_simple_filters
 !
       use m_precision
 !
@@ -13,13 +19,6 @@
       implicit none
 !
       private :: cal_moments_from_matrix
-!
-!      subroutine set_tophat_filter_4_each_nod
-!      subroutine set_linear_filter_4_each_nod
-!      subroutine set_gaussian_filter_each_nod(inod)
-!      subroutine normalize_each_filter_weight
-!      subroutine cal_filter_moments_each_nod(id_f, inod)
-!      subroutine copy_filter_moments_each_nod(id_dest, id_org, inod)
 !
 !-----------------------------------------------------------------------
 !
@@ -133,13 +132,13 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_filter_moments_each_nod(id_f, inod)
+      subroutine cal_filter_moments_each_nod(ifil, inod)
 !
       use m_reference_moments
       use m_filter_moments
       use m_matrix_4_filter
 !
-      integer(kind = kint), intent(in) :: id_f, inod
+      integer(kind = kint), intent(in) :: ifil, inod
       integer(kind = kint) :: j, icou, kx, ky, kz
 !
       icou = 0
@@ -150,23 +149,32 @@
         if ( (kx+ky+kz).eq.1 .or. (kx+ky+kz).eq.2) then
           icou = icou + 1
           if     (kx.eq.1 .and. ky.eq.0 .and. kz.eq.0) then
-            call cal_moments_from_matrix(j, filter_x_nod(inod,id_f))
+            call cal_moments_from_matrix                                &
+     &         (j, mom1%mom_nod(ifil)%moms%f_x(inod))
           else if(kx.eq.0 .and. ky.eq.1 .and. kz.eq.0) then
-            call cal_moments_from_matrix(j, filter_y_nod(inod,id_f))
+            call cal_moments_from_matrix                                &
+     &         (j, mom1%mom_nod(ifil)%moms%f_y(inod))
           else if(kx.eq.0 .and. ky.eq.0 .and. kz.eq.1) then
-            call cal_moments_from_matrix(j, filter_z_nod(inod,id_f))
+            call cal_moments_from_matrix                                &
+     &         (j, mom1%mom_nod(ifil)%moms%f_z(inod))
           else if(kx.eq.1 .and. ky.eq.1 .and. kz.eq.0) then
-            call cal_moments_from_matrix(j, filter_xy_nod(inod,id_f))
+            call cal_moments_from_matrix                                &
+     &         (j, mom1%mom_nod(ifil)%moms%f_xy(inod))
           else if(kx.eq.0 .and. ky.eq.1 .and. kz.eq.1) then
-            call cal_moments_from_matrix(j, filter_yz_nod(inod,id_f))
+            call cal_moments_from_matrix                                &
+     &         (j, mom1%mom_nod(ifil)%moms%f_yz(inod))
           else if(kx.eq.1 .and. ky.eq.0 .and. kz.eq.1) then
-            call cal_moments_from_matrix(j, filter_zx_nod(inod,id_f))
+            call cal_moments_from_matrix                                &
+     &         (j, mom1%mom_nod(ifil)%moms%f_zx(inod))
           else if(kx.eq.2 .and. ky.eq.0 .and. kz.eq.0) then
-            call cal_moments_from_matrix(j, filter_x2_nod(inod,id_f))
+            call cal_moments_from_matrix                                &
+     &         (j, mom1%mom_nod(ifil)%moms%f_x2(inod))
           else if(kx.eq.0 .and. ky.eq.2 .and. kz.eq.0) then
-            call cal_moments_from_matrix(j, filter_y2_nod(inod,id_f))
+            call cal_moments_from_matrix                                &
+     &         (j, mom1%mom_nod(ifil)%moms%f_y2(inod))
           else if(kx.eq.0 .and. ky.eq.0 .and. kz.eq.2) then
-            call cal_moments_from_matrix(j, filter_z2_nod(inod,id_f))
+            call cal_moments_from_matrix                                &
+     &         (j, mom1%mom_nod(ifil)%moms%f_z2(inod))
           end if
         else if(icou .eq. 9) then
           exit
@@ -174,26 +182,6 @@
       end do
 !
       end subroutine cal_filter_moments_each_nod
-!
-!-----------------------------------------------------------------------
-!
-      subroutine copy_filter_moments_each_nod(id_dest, id_org, inod)
-!
-      use m_filter_moments
-!
-      integer(kind = kint), intent(in) :: id_dest, id_org, inod
-!
-      filter_x_nod(inod,id_dest) =  filter_x_nod(inod,id_org)
-      filter_y_nod(inod,id_dest) =  filter_y_nod(inod,id_org)
-      filter_z_nod(inod,id_dest) =  filter_z_nod(inod,id_org)
-      filter_xy_nod(inod,id_dest) = filter_xy_nod(inod,id_org)
-      filter_yz_nod(inod,id_dest) = filter_yz_nod(inod,id_org)
-      filter_zx_nod(inod,id_dest) = filter_zx_nod(inod,id_org)
-      filter_x2_nod(inod,id_dest) = filter_x2_nod(inod,id_org)
-      filter_y2_nod(inod,id_dest) = filter_y2_nod(inod,id_org)
-      filter_z2_nod(inod,id_dest) = filter_z2_nod(inod,id_org)
-!
-      end subroutine copy_filter_moments_each_nod
 !
 !-----------------------------------------------------------------------
 !

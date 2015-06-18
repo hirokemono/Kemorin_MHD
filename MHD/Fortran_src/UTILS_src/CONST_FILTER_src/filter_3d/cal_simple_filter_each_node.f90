@@ -100,6 +100,7 @@
       use m_geometry_parameter
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
+      use m_filter_moments
       use m_matrix_4_filter
 !
       use expand_filter_area_4_1node
@@ -143,7 +144,8 @@
         if (nnod_near_1nod_weight .eq. nnod_near_nod_weight(inod))      &
      &     then
           call write_each_same_filter_coef(inod)
-          call copy_filter_moments_each_nod(itwo, ione, inod)
+          call copy_moments_each_point                                  &
+     &       (inod, mom1%mom_nod(ione)%moms,mom1%mom_nod(itwo)%moms)
 !
 !    construct filter for fluid area
 !

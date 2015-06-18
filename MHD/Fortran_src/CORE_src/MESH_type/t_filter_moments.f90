@@ -22,6 +22,10 @@
 !      subroutine dealloc_filter_moms_ele_type(FEM_moms)
 !        type(gradient_filter_mom_type), intent(inout) :: FEM_moms
 !       (substitution of deallocate_filter_moms_ele )
+!
+!      subroutine copy_moments_each_point(inod, mom_org, mom_tgt)
+!      subroutine copy_moments_type(num, mom_org, mom_tgt)
+!
 !      subroutine copy_filter_moms_ele                                  &
 !     &         (nele, n_filter, org_mom_ele, tgt_mom_ele)
 !        integer(kind = kint), intent(in) :: nele, n_filter
@@ -218,6 +222,27 @@
       end if 
 !
       end subroutine alloc_filter_mom_diffs_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_moments_each_point(inod, mom_org, mom_tgt)
+!
+      integer (kind = kint), intent(in) :: inod
+      type(filter_mom_type), intent(in) :: mom_org
+      type(filter_mom_type), intent(inout) :: mom_tgt
+!
+      mom_tgt%f_0(inod) =  mom_org%f_0(inod)
+      mom_tgt%f_x(inod) =  mom_org%f_x(inod)
+      mom_tgt%f_y(inod) =  mom_org%f_y(inod)
+      mom_tgt%f_z(inod) =  mom_org%f_z(inod)
+      mom_tgt%f_x2(inod) = mom_org%f_x2(inod)
+      mom_tgt%f_y2(inod) = mom_org%f_y2(inod)
+      mom_tgt%f_z2(inod) = mom_org%f_z2(inod)
+      mom_tgt%f_xy(inod) = mom_org%f_xy(inod)
+      mom_tgt%f_yz(inod) = mom_org%f_yz(inod)
+      mom_tgt%f_zx(inod) = mom_org%f_zx(inod)
+!
+      end subroutine copy_moments_each_point
 !
 !  ---------------------------------------------------------------------
 !

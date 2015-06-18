@@ -111,17 +111,17 @@
 !
       integer(kind = kint), intent(in) :: ifil
 !
-      call nod_scalar_send_recv(filter_x_nod(1,ifil))
-      call nod_scalar_send_recv(filter_y_nod(1,ifil))
-      call nod_scalar_send_recv(filter_z_nod(1,ifil))
+      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_x)
+      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_y)
+      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_z)
 !
-      call nod_scalar_send_recv(filter_x2_nod(1,ifil))
-      call nod_scalar_send_recv(filter_y2_nod(1,ifil))
-      call nod_scalar_send_recv(filter_z2_nod(1,ifil))
+      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_x2)
+      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_y2)
+      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_z2)
 !
-      call nod_scalar_send_recv(filter_xy_nod(1,ifil))
-      call nod_scalar_send_recv(filter_yz_nod(1,ifil))
-      call nod_scalar_send_recv(filter_zx_nod(1,ifil))
+      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_xy)
+      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_yz)
+      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_zx)
 !
       end subroutine filter_mom_nod_send_recv
 !
@@ -134,17 +134,17 @@
 !
       integer(kind = kint), intent(in) :: ifil
 !
-      call nod_vector_send_recv(filter_x_nod_dx(1,1,ifil))
-      call nod_vector_send_recv(filter_y_nod_dx(1,1,ifil))
-      call nod_vector_send_recv(filter_z_nod_dx(1,1,ifil))
+      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_x)
+      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_y)
+      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_z)
 !
-      call nod_vector_send_recv(filter_x2_nod_dx(1,1,ifil))
-      call nod_vector_send_recv(filter_y2_nod_dx(1,1,ifil))
-      call nod_vector_send_recv(filter_z2_nod_dx(1,1,ifil))
+      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_x2)
+      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_y2)
+      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_z2)
 !
-      call nod_vector_send_recv(filter_xy_nod_dx(1,1,ifil))
-      call nod_vector_send_recv(filter_yz_nod_dx(1,1,ifil))
-      call nod_vector_send_recv(filter_zx_nod_dx(1,1,ifil))
+      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_xy)
+      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_yz)
+      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_zx)
 !
       end subroutine diff_filter_mom_nod_send_recv
 !
