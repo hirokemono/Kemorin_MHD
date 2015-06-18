@@ -49,7 +49,7 @@
 !
 !
       mom1%nnod_fmom = new_node%numnod
-      call allocate_filter_moms_ele(new_ele%numele)
+      call alloc_filter_moms_ele_type(new_ele%numele, mom1)
 !
       call copy_filter_moms_ele                                         &
      &   (new_ele%numele, mom1%num_filter_moms, mom2_ele, mom1%mom_ele)

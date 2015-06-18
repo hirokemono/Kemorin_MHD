@@ -43,8 +43,8 @@
 !
 !
       if(iflag_debug.eq.1)  write(*,*)'cal_fmoms_ele_by_elen_1st'
-      call allocate_filter_moms_nod(FEM1_elen%nnod_filter_mom)
-      call allocate_filter_moms_ele(FEM1_elen%nele_filter_mom)
+      call alloc_filter_moms_nod_type(FEM1_elen%nnod_filter_mom, mom1)
+      call alloc_filter_moms_ele_type(FEM1_elen%nele_filter_mom, mom1)
       call cal_fmoms_ele_by_elen_1st(ione)
       call cal_fmoms_ele_by_elen_1st(itwo)
 !
@@ -87,10 +87,10 @@
       use filter_geometry_IO
 !
 !
-      if(iflag_debug.eq.1) write(*,*) 'allocate_filter_moms_nod'
-      call allocate_filter_moms_nod(FEM1_elen%nnod_filter_mom)
-      if(iflag_debug.eq.1) write(*,*) 'allocate_filter_moms_ele'
-      call allocate_filter_moms_ele(FEM1_elen%nele_filter_mom)
+      if(iflag_debug.eq.1) write(*,*) 'alloc_filter_moms_nod_type'
+      call alloc_filter_moms_nod_type(FEM1_elen%nnod_filter_mom, mom1)
+      if(iflag_debug.eq.1) write(*,*) 'alloc_filter_moms_ele_type'
+      call alloc_filter_moms_ele_type(FEM1_elen%nele_filter_mom, mom1)
 !
 !  ---------------------------------------------------
 !     construct filter function
@@ -138,8 +138,8 @@
 !
 !
       if(iflag_debug.eq.1)  write(*,*)'cal_fmoms_ele_by_elen_1st'
-      call allocate_filter_moms_nod(FEM1_elen%nnod_filter_mom)
-      call allocate_filter_moms_ele(FEM1_elen%nele_filter_mom)
+      call alloc_filter_moms_nod_type(FEM1_elen%nnod_filter_mom, mom1)
+      call alloc_filter_moms_ele_type(FEM1_elen%nele_filter_mom, mom1)
       call cal_fmoms_ele_by_elen_1st(ione)
       call cal_fmoms_ele_by_elen_1st(itwo)
       if (itype_mass_matrix .eq. 1) call release_mass_mat_for_consist
@@ -204,10 +204,10 @@
       character(len=kchara) :: file_name
 !
 !
-          if(iflag_debug.eq.1) write(*,*) 'allocate_filter_moms_nod'
-      call allocate_filter_moms_nod(FEM1_elen%nnod_filter_mom)
-          if(iflag_debug.eq.1) write(*,*) 'allocate_filter_moms_ele'
-      call allocate_filter_moms_ele(FEM1_elen%nele_filter_mom)
+          if(iflag_debug.eq.1) write(*,*) 'alloc_filter_moms_nod_type'
+      call alloc_filter_moms_nod_type(FEM1_elen%nnod_filter_mom, mom1)
+          if(iflag_debug.eq.1) write(*,*) 'alloc_filter_moms_ele_type'
+      call alloc_filter_moms_ele_type(FEM1_elen%nele_filter_mom, mom1)
 !
 !  ---------------------------------------------------
 !     check filter function

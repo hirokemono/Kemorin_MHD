@@ -27,8 +27,9 @@
 !
       subroutine write_filter_elen_data(id_file)
 !
+      use m_filter_elength
       use filter_moments_IO
-      use filter_moments_on_ele_IO
+      use filter_mom_type_on_ele_IO
 !
       integer (kind = kint), intent(in) :: id_file
 !
@@ -38,8 +39,10 @@
      &    FEM1_elen%filter_conf%nf_type)
 !
       if (FEM1_elen%filter_conf%nf_type .gt. 0) then
-        call write_base_filter_info(id_file)
-        call write_elength_ele(id_file)
+        call write_base_filter_info_type                                &
+     &     (id_file, FEM1_elen%filter_conf)
+        call write_elen_ele_type                                        &
+     &     (id_file, FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele)
       end if
 !
       end subroutine write_filter_elen_data
@@ -48,9 +51,10 @@
 !
       subroutine write_filter_moments_data(id_file)
 !
+      use m_filter_elength
       use m_filter_moments
       use filter_moments_IO
-      use filter_moments_on_ele_IO
+      use filter_mom_type_on_ele_IO
 !
       integer (kind = kint), intent(in) :: id_file
       integer (kind = kint) :: ifil
@@ -61,9 +65,11 @@
      &    mom1%num_filter_moms, FEM1_elen%filter_conf%nf_type)
 !
       if (FEM1_elen%filter_conf%nf_type .gt. 0) then
-        call write_base_filter_info(id_file)
+        call write_base_filter_info_type                                &
+     &     (id_file, FEM1_elen%filter_conf)
         do ifil = 1, mom1%num_filter_moms
-          call write_filter_moments_ele(id_file, ifil)
+          call write_filter_moms_ele_type                               &
+     &      (id_file, mom1%nele_fmom, mom1%mom_ele(ifil))
         end do
       end if
 !
@@ -91,8 +97,9 @@
 !
       subroutine read_filter_elen_data(id_file, numnod, numele, ierr)
 !
+      use m_filter_elength
       use filter_moments_IO
-      use filter_moments_on_ele_IO
+      use filter_mom_type_on_ele_IO
 !
 !
       integer (kind=kint), intent(in) :: id_file
@@ -117,8 +124,9 @@
      &   (FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele)
 !
       if (FEM1_elen%filter_conf%nf_type .gt. 0) then
-        call read_base_filter_info(id_file)
-        call read_elength_ele(id_file)
+        call read_base_filter_info_type(id_file, FEM1_elen%filter_conf)
+        call read_elen_ele_type                                         &
+     &     (id_file, FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele)
       end if
 !
       end subroutine read_filter_elen_data
@@ -127,8 +135,9 @@
 !
       subroutine read_filter_moments_data(id_file, numnod, numele, ierr)
 !
+      use m_filter_elength
       use m_filter_moments
-      use filter_moments_on_ele_IO
+      use filter_mom_type_on_ele_IO
 !
       integer (kind=kint), intent(in) :: id_file
       integer (kind=kint), intent(in) :: numnod, numele
@@ -149,13 +158,14 @@
 !
       mom1%nnod_fmom = FEM1_elen%nnod_filter_mom
       call alloc_ref_1d_mom_type(FEM1_elen%filter_conf)
-      call allocate_filter_moms_ele(FEM1_elen%nele_filter_mom)
+      call alloc_filter_moms_ele_type(FEM1_elen%nele_filter_mom, mom1)
 !
       if (FEM1_elen%filter_conf%nf_type .gt. 0) then
 !
-        call read_base_filter_info(id_file)
+        call read_base_filter_info_type(id_file, FEM1_elen%filter_conf)
         do ifil = 1, mom1%num_filter_moms
-          call read_filter_moments_ele(id_file, ifil)
+          call read_filter_moms_ele_type                                &
+     &      (id_file, mom1%nele_fmom, mom1%mom_ele(ifil))
         end do
 !
       end if

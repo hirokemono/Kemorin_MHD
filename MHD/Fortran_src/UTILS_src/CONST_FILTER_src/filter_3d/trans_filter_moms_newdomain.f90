@@ -213,7 +213,7 @@
         filter_file_head = new_filter_moms_head
         call copy_filter_moments_from_2nd(newmesh%node, newmesh%ele)
         call sel_write_filter_moms_file(my_rank_2nd)
-        call deallocate_filter_moms_ele
+        call dealloc_filter_moms_ele_type(mom1)
       end if
 !
 !
@@ -283,7 +283,7 @@
 !
           call set_new_filter_moms_ele                                  &
      &       (new_node, num_filter_moms_2nd, mom2_ele)
-          call deallocate_filter_moms_ele
+          call dealloc_filter_moms_ele_type(mom1)
           if (ip .lt. norg_domain .or. iflag_set_filter_elen.gt.0) then
             call dealloc_ref_1d_mom_type(FEM1_elen%filter_conf)
           end if

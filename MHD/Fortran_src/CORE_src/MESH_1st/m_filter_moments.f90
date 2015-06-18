@@ -3,11 +3,7 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine allocate_filter_moms_nod
-!      subroutine allocate_filter_moms_ele
-!
 !      subroutine deallocate_filter_moms_nod
-!      subroutine deallocate_filter_moms_ele
 !
 !   data correspondence
 !
@@ -81,42 +77,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_filter_moms_nod(nnod)
-!
-      integer(kind = kint), intent(in) :: nnod
-!
-!
-      call alloc_filter_moms_nod_type(nnod, mom1)
-!
-      end subroutine allocate_filter_moms_nod
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine allocate_filter_moms_ele(nele)
-!
-      integer(kind = kint), intent(in) :: nele
-!
-      call alloc_filter_moms_ele_type(nele, mom1)
-!
-      end subroutine allocate_filter_moms_ele
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
       subroutine deallocate_filter_moms_nod
 !
 !
       call dealloc_filter_moms_nod_type(mom1)
 !
       end subroutine deallocate_filter_moms_nod
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_filter_moms_ele
-!
-      call dealloc_filter_moms_ele_type(mom1)
-!
-      end subroutine deallocate_filter_moms_ele
 !
 !  ---------------------------------------------------------------------
 !

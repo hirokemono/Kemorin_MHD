@@ -29,15 +29,17 @@
 !
       subroutine write_filter_elen_data_gz
 !
+      use m_filter_elength
       use gz_filter_moments_IO
-      use gz_filter_moments_ele_IO
+      use gz_filter_mom_type_ele_IO
 !
       call write_filter_elen_head_gz(FEM1_elen%nnod_filter_mom,         &
-    &     FEM1_elen%nele_filter_mom, FEM1_elen%filter_conf%nf_type)
+     &     FEM1_elen%nele_filter_mom, FEM1_elen%filter_conf%nf_type)
 !
       if (FEM1_elen%filter_conf%nf_type .gt. 0) then
-        call write_base_filter_info_gz
-        call write_elength_ele_gz
+        call write_base_filter_info_type_gz(FEM1_elen%filter_conf)
+        call write_elen_ele_type_gz                                     &
+     &     (FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele)
       end if
 !
       end subroutine write_filter_elen_data_gz
@@ -46,9 +48,10 @@
 !
       subroutine write_filter_moments_data_gz
 !
+      use m_filter_elength
       use m_filter_moments
       use gz_filter_moments_IO
-      use gz_filter_moments_ele_IO
+      use gz_filter_mom_type_ele_IO
 !
       integer (kind = kint) :: ifil
 !
@@ -57,9 +60,10 @@
      &    mom1%num_filter_moms, FEM1_elen%filter_conf%nf_type)
 !
       if (FEM1_elen%filter_conf%nf_type .gt. 0) then
-        call write_base_filter_info_gz
+        call write_base_filter_info_type_gz(FEM1_elen%filter_conf)
         do ifil = 1, mom1%num_filter_moms
-          call write_filter_moments_ele_gz(ifil)
+          call write_filter_moms_ele_type_gz                            &
+     &       (mom1%nele_fmom, mom1%mom_ele(ifil))
         end do
       end if
 !
@@ -85,8 +89,9 @@
 !
       subroutine read_filter_elen_data_gz(numnod, numele, ierr)
 !
+      use m_filter_elength
       use gz_filter_moments_IO
-      use gz_filter_moments_ele_IO
+      use gz_filter_mom_type_ele_IO
 !
       integer (kind=kint), intent(in) :: numnod, numele
       integer (kind=kint), intent(inout) :: ierr
@@ -109,8 +114,9 @@
      &   (FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele)
 !
       if (FEM1_elen%filter_conf%nf_type .gt. 0) then
-        call read_base_filter_info_gz
-        call read_elength_ele_gz
+        call read_base_filter_info_type_gz(FEM1_elen%filter_conf)
+        call read_elen_ele_type_gz                                      &
+     &     (FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele)
       end if
 !
       end subroutine read_filter_elen_data_gz
@@ -119,9 +125,10 @@
 !
       subroutine read_filter_moments_data_gz(numnod, numele, ierr)
 !
+      use m_filter_elength
       use m_filter_moments
       use gz_filter_moments_IO
-      use gz_filter_moments_ele_IO
+      use gz_filter_mom_type_ele_IO
 !
       integer (kind=kint), intent(in) :: numnod, numele
       integer (kind=kint), intent(inout) :: ierr
@@ -141,12 +148,13 @@
 !
       mom1%nnod_fmom = FEM1_elen%nnod_filter_mom
       call alloc_ref_1d_mom_type(FEM1_elen%filter_conf)
-      call allocate_filter_moms_ele(FEM1_elen%nele_filter_mom)
+      call alloc_filter_moms_ele_type(FEM1_elen%nele_filter_mom, mom1)
 !
       if (FEM1_elen%filter_conf%nf_type .gt. 0) then
-        call read_base_filter_info_gz
+        call read_base_filter_info_type_gz(FEM1_elen%filter_conf)
         do ifil = 1, mom1%num_filter_moms
-          call read_filter_moments_ele_gz(ifil)
+          call read_filter_moms_ele_type_gz                             &
+      &   (mom1%nele_fmom, mom1%mom_ele(ifil))
         end do
       end if
 !
