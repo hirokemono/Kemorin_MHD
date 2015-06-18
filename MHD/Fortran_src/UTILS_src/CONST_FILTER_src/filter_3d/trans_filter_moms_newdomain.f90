@@ -191,7 +191,7 @@
       if (iflag_set_filter_moms .gt. 0) then
         ifmt_filter_file = id_ascii_file_fmt
         filter_file_head = org_filter_moms_head
-        call sel_read_num_filter_mom_file(izero)
+        call sel_read_num_filter_mom_file(izero, FEM1_elen, mom1)
 !
         allocate(mom2_ele(mom1%num_filter_moms))
         call alloc_filter_mom_ele_items                                 &
@@ -212,7 +212,7 @@
         ifmt_filter_file = id_ascii_file_fmt
         filter_file_head = new_filter_moms_head
         call copy_filter_moments_from_2nd(newmesh%node, newmesh%ele)
-        call sel_write_filter_moms_file(my_rank_2nd)
+        call sel_write_filter_moms_file(my_rank_2nd, FEM1_elen, mom1)
         call dealloc_filter_moms_ele_type(mom1)
       end if
 !
@@ -222,7 +222,7 @@
         filter_file_head = new_filter_elen_head
         call copy_elength_ele_from_2nd                                  &
      &     (newmesh%node%numnod, newmesh%ele%numele, elen2_ele)
-        call sel_write_filter_elen_file(my_rank_2nd)
+        call sel_write_filter_elen_file(my_rank_2nd, FEM1_elen)
 !
         call dealloc_elen_type(elen2_ele)
         call dealloc_elen_type(FEM1_elen%elen_ele)
@@ -279,7 +279,7 @@
           ifmt_filter_file = id_ascii_file_fmt
           filter_file_head = org_filter_moms_head
           call sel_read_filter_moms_file(my_rank_org,                   &
-     &        numnod, numele, ierr)
+     &        numnod, numele, FEM1_elen, mom1, ierr)
 !
           call set_new_filter_moms_ele                                  &
      &       (new_node, num_filter_moms_2nd, mom2_ele)
@@ -294,7 +294,7 @@
           ifmt_filter_file = id_ascii_file_fmt
           filter_file_head = org_filter_elen_head
           call sel_read_filter_elen_file(my_rank_org,                   &
-     &        numnod, numele, ierr)
+     &        numnod, numele, FEM1_elen, ierr)
 !
 !          if (iflag_debug.eq.1) write(*,*) 'set_new_elength_ele'
           call set_new_elength_ele(new_node, elen2_e)

@@ -130,6 +130,8 @@
       use m_geometry_parameter
       use m_matrix_4_filter
       use m_crs_matrix_4_filter
+      use m_filter_elength
+      use m_filter_moments
       use m_filter_coefs
       use m_filter_coef_combained
       use m_comm_data_IO
@@ -170,7 +172,7 @@
 !
       ifmt_filter_file = ifmt_filter_elen
       filter_file_head = filter_elen_head
-      call sel_write_filter_elen_file(my_rank)
+      call sel_write_filter_elen_file(my_rank, FEM1_elen)
 !
 !  ---------------------------------------------------
 !       copy node and communication table
@@ -221,7 +223,7 @@
 !
         ifmt_filter_file = ifmt_filter_moms
         filter_file_head = filter_moms_head
-        call sel_write_filter_moms_file(my_rank)
+        call sel_write_filter_moms_file(my_rank, FEM1_elen, mom1)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'

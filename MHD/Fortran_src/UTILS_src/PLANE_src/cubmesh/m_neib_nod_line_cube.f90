@@ -98,11 +98,12 @@
 !
        end subroutine deallocate_neighboring_nod_line
 !
-!  ----------------------------------------------------------------------!
+!  ----------------------------------------------------------------------
+!
       subroutine write_neighboring_nod_line(nf_type)
 !
-      use filter_moment_data_IO
-      use filter_moment_data_IO_b
+      use m_filter_elength
+      use filter_mom_type_data_IO
       use write_line_filter_data
 !
        integer(kind = kint), intent(in) :: nf_type
@@ -124,7 +125,7 @@
        call allocate_l_filtering_data(nodtot)
        call order_fiilter_nod_line
 !
-       call write_filter_elen_data(filter_file_code)
+       call write_filter_elen_data_type(nb_out, FEM1_elen)
 !
        ndepth_l = ndepth
        num_filter_l = ndep_1
@@ -156,11 +157,12 @@
 !
        end subroutine write_neighboring_nod_line
 !
-!  ----------------------------------------------------------------------!
+!  ----------------------------------------------------------------------
+!
       subroutine write_neighboring_nod_line_b(nf_type)
 !
-      use filter_moment_data_IO
-      use filter_moment_data_IO_b
+      use m_filter_elength
+      use filter_mom_type_data_IO_b
       use write_line_filter_data
 !
        integer(kind = kint), intent(in) :: nf_type
@@ -180,8 +182,7 @@
        call allocate_l_filtering_data(nodtot)
        call order_fiilter_nod_line
 !
-!
-       call write_filter_elen_data_b(filter_file_code)
+       call write_filter_elen_data_type_b(nb_out, FEM1_elen)
 !
        ndepth_l = ndepth
        num_filter_l = ndep_1

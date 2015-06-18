@@ -1,5 +1,5 @@
-!filter_IO_select_4_zlib.F90
-!      module filter_IO_select_4_zlib
+!filter_moment_IO_select.F90
+!      module filter_moment_IO_select
 !
 !     Written by H. Matsui in 2004
 !
@@ -8,14 +8,14 @@
 !      subroutine sel_read_filter_geometry_file(my_rank)
 !      subroutine sel_write_filter_geometry_file(my_rank)
 !
-!      subroutine sel_read_num_filter_mom_t_file(my_rank,               &
+!      subroutine sel_read_num_filter_mom_file(my_rank,                 &
 !     &          FEM_elens, FEM_moms)
-!      subroutine sel_read_filter_elen_t_file(my_rank, nnod, nele,      &
+!      subroutine sel_read_filter_elen_file(my_rank, nnod, nele,        &
 !     &          FEM_elens, ierr)
-!      subroutine sel_write_filter_elen_t_file(my_rank, FEM_elens)
-!      subroutine sel_read_filter_moms_t_file(my_rank, nnod, nele,      &
+!      subroutine sel_write_filter_elen_file(my_rank, FEM_elens)
+!      subroutine sel_read_filter_moms_file(my_rank, nnod, nele,        &
 !     &          FEM_elens, FEM_moms, ierr)
-!      subroutine sel_write_filter_moms_t_file(my_rank,                 &
+!      subroutine sel_write_filter_moms_file(my_rank,                   &
 !     &          FEM_elens, FEM_moms)
 !        integer(kind = kint), intent(in) :: my_rank
 !        integer(kind = kint), intent(in) :: nnod, nele
@@ -24,7 +24,7 @@
 !        integer(kind = kint), intent(inout) :: ierr
 !
 !
-      module filter_IO_select_4_zlib
+      module filter_moment_IO_select
 !
       use m_precision
 !
@@ -158,7 +158,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sel_read_num_filter_mom_t_file(my_rank,                &
+      subroutine sel_read_num_filter_mom_file(my_rank,                  &
      &          FEM_elens, FEM_moms)
 !
       use t_filter_elength
@@ -190,12 +190,12 @@
       &     FEM_elens, FEM_moms)
        end if
 !
-      end subroutine sel_read_num_filter_mom_t_file
+      end subroutine sel_read_num_filter_mom_file
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sel_read_filter_elen_t_file(my_rank, nnod, nele,       &
+      subroutine sel_read_filter_elen_file(my_rank, nnod, nele,         &
      &          FEM_elens, ierr)
 !
       use t_filter_elength
@@ -227,11 +227,11 @@
      &      nnod, nele, FEM_elens, ierr)
       end if
 !
-      end subroutine sel_read_filter_elen_t_file
+      end subroutine sel_read_filter_elen_file
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_write_filter_elen_t_file(my_rank, FEM_elens)
+      subroutine sel_write_filter_elen_file(my_rank, FEM_elens)
 !
       use t_filter_elength
       use filter_moments_type_file_IO
@@ -258,12 +258,12 @@
         call write_filter_elen_type_file(file_name, my_rank, FEM_elens)
       end if
 !
-      end subroutine sel_write_filter_elen_t_file
+      end subroutine sel_write_filter_elen_file
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sel_read_filter_moms_t_file(my_rank, nnod, nele,       &
+      subroutine sel_read_filter_moms_file(my_rank, nnod, nele,        &
      &          FEM_elens, FEM_moms, ierr)
 !
       use t_filter_elength
@@ -297,11 +297,11 @@
      &      nnod, nele, FEM_elens, FEM_moms, ierr)
       end if
 !
-      end subroutine sel_read_filter_moms_t_file
+      end subroutine sel_read_filter_moms_file
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_write_filter_moms_t_file(my_rank,                  &
+      subroutine sel_write_filter_moms_file(my_rank,                    &
      &          FEM_elens, FEM_moms)
 !
       use t_filter_elength
@@ -333,8 +333,8 @@
      &      FEM_elens, FEM_moms)
       end if
 !
-      end subroutine sel_write_filter_moms_t_file
+      end subroutine sel_write_filter_moms_file
 !
 !-----------------------------------------------------------------------
 !
-      end module filter_IO_select_4_zlib
+      end module filter_moment_IO_select

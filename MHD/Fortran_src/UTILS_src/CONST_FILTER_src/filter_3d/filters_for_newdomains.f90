@@ -82,12 +82,9 @@
       use set_filter_comm_tbl_4_IO
       use const_newdomain_filter
       use set_parallel_file_name
-      use filter_moment_data_IO
-      use filter_moment_data_IO_b
       use filter_geometry_IO
       use filter_IO_for_newdomain
       use set_filter_geometry_4_IO
-      use filter_moments_file_IO
 !
       use t_geometry_data
 !
