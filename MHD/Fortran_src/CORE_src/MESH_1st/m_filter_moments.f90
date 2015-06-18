@@ -73,39 +73,7 @@
       implicit none
 !
       type(gradient_filter_mom_type), save :: mom1
-!   mom1%mom_nod(ifil)%moms%f_x(i)
-!
-!
-      real(kind=kreal),   allocatable :: filter_x_ele(:,:)
-      real(kind=kreal),   allocatable :: filter_y_ele(:,:)
-      real(kind=kreal),   allocatable :: filter_z_ele(:,:)
-      real(kind=kreal),   allocatable :: filter_x2_ele(:,:)
-      real(kind=kreal),   allocatable :: filter_y2_ele(:,:)
-      real(kind=kreal),   allocatable :: filter_z2_ele(:,:)
-      real(kind=kreal),   allocatable :: filter_xy_ele(:,:)
-      real(kind=kreal),   allocatable :: filter_yz_ele(:,:)
-      real(kind=kreal),   allocatable :: filter_zx_ele(:,:)
-!
-      real(kind=kreal),   allocatable :: filter_x_ele_dx(:,:,:)
-      real(kind=kreal),   allocatable :: filter_y_ele_dx(:,:,:)
-      real(kind=kreal),   allocatable :: filter_z_ele_dx(:,:,:)
-      real(kind=kreal),   allocatable :: filter_x2_ele_dx(:,:,:)
-      real(kind=kreal),   allocatable :: filter_y2_ele_dx(:,:,:)
-      real(kind=kreal),   allocatable :: filter_z2_ele_dx(:,:,:)
-      real(kind=kreal),   allocatable :: filter_xy_ele_dx(:,:,:)
-      real(kind=kreal),   allocatable :: filter_yz_ele_dx(:,:,:)
-      real(kind=kreal),   allocatable :: filter_zx_ele_dx(:,:,:)
-!
-      real(kind=kreal),   allocatable :: filter_x_ele_dx2(:,:,:)
-      real(kind=kreal),   allocatable :: filter_y_ele_dx2(:,:,:)
-      real(kind=kreal),   allocatable :: filter_z_ele_dx2(:,:,:)
-      real(kind=kreal),   allocatable :: filter_x2_ele_dx2(:,:,:)
-      real(kind=kreal),   allocatable :: filter_y2_ele_dx2(:,:,:)
-      real(kind=kreal),   allocatable :: filter_z2_ele_dx2(:,:,:)
-      real(kind=kreal),   allocatable :: filter_xy_ele_dx2(:,:,:)
-      real(kind=kreal),   allocatable :: filter_yz_ele_dx2(:,:,:)
-      real(kind=kreal),   allocatable :: filter_zx_ele_dx2(:,:,:)
-!
+!   mom1%mom_ele(ifil)%moms%f_x(i)
 !
 !  ---------------------------------------------------------------------
 !
@@ -128,67 +96,7 @@
 !
       integer(kind = kint), intent(in) :: nele
 !
-!
-      mom1%nele_fmom = nele
-      allocate( filter_x_ele(mom1%nele_fmom,mom1%num_filter_moms) )
-      allocate( filter_y_ele(mom1%nele_fmom,mom1%num_filter_moms) )
-      allocate( filter_z_ele(mom1%nele_fmom,mom1%num_filter_moms) )
-      allocate( filter_x2_ele(mom1%nele_fmom,mom1%num_filter_moms) )
-      allocate( filter_y2_ele(mom1%nele_fmom,mom1%num_filter_moms) )
-      allocate( filter_z2_ele(mom1%nele_fmom,mom1%num_filter_moms) )
-      allocate( filter_xy_ele(mom1%nele_fmom,mom1%num_filter_moms) )
-      allocate( filter_yz_ele(mom1%nele_fmom,mom1%num_filter_moms) )
-      allocate( filter_zx_ele(mom1%nele_fmom,mom1%num_filter_moms) )
-!
-      allocate( filter_x_ele_dx(mom1%nele_fmom,3,mom1%num_filter_moms) )
-      allocate( filter_y_ele_dx(mom1%nele_fmom,3,mom1%num_filter_moms) )
-      allocate( filter_z_ele_dx(mom1%nele_fmom,3,mom1%num_filter_moms) )
-      allocate( filter_x2_ele_dx(mom1%nele_fmom,3,mom1%num_filter_moms) )
-      allocate( filter_y2_ele_dx(mom1%nele_fmom,3,mom1%num_filter_moms) )
-      allocate( filter_z2_ele_dx(mom1%nele_fmom,3,mom1%num_filter_moms) )
-      allocate( filter_xy_ele_dx(mom1%nele_fmom,3,mom1%num_filter_moms) )
-      allocate( filter_yz_ele_dx(mom1%nele_fmom,3,mom1%num_filter_moms) )
-      allocate( filter_zx_ele_dx(mom1%nele_fmom,3,mom1%num_filter_moms) )
-!
-      allocate( filter_x_ele_dx2(mom1%nele_fmom,3,mom1%num_filter_moms) )
-      allocate( filter_y_ele_dx2(mom1%nele_fmom,3,mom1%num_filter_moms) )
-      allocate( filter_z_ele_dx2(mom1%nele_fmom,3,mom1%num_filter_moms) )
-      allocate( filter_x2_ele_dx2(mom1%nele_fmom,3,mom1%num_filter_moms) )
-      allocate( filter_y2_ele_dx2(mom1%nele_fmom,3,mom1%num_filter_moms) )
-      allocate( filter_z2_ele_dx2(mom1%nele_fmom,3,mom1%num_filter_moms) )
-      allocate( filter_xy_ele_dx2(mom1%nele_fmom,3,mom1%num_filter_moms) )
-      allocate( filter_yz_ele_dx2(mom1%nele_fmom,3,mom1%num_filter_moms) )
-      allocate( filter_zx_ele_dx2(mom1%nele_fmom,3,mom1%num_filter_moms) )
-!
-      filter_x_ele =  0.0d0
-      filter_y_ele =  0.0d0
-      filter_z_ele =  0.0d0
-      filter_x2_ele = 0.0d0
-      filter_y2_ele = 0.0d0
-      filter_z2_ele = 0.0d0
-      filter_xy_ele = 0.0d0
-      filter_yz_ele = 0.0d0
-      filter_zx_ele = 0.0d0
-!
-      filter_x_ele_dx =  0.0d0
-      filter_y_ele_dx =  0.0d0
-      filter_z_ele_dx =  0.0d0
-      filter_x2_ele_dx = 0.0d0
-      filter_y2_ele_dx = 0.0d0
-      filter_z2_ele_dx = 0.0d0
-      filter_xy_ele_dx = 0.0d0
-      filter_yz_ele_dx = 0.0d0
-      filter_zx_ele_dx = 0.0d0
-!
-      filter_x_ele_dx2 =  0.0d0
-      filter_y_ele_dx2 =  0.0d0
-      filter_z_ele_dx2 =  0.0d0
-      filter_x2_ele_dx2 = 0.0d0
-      filter_y2_ele_dx2 = 0.0d0
-      filter_z2_ele_dx2 = 0.0d0
-      filter_xy_ele_dx2 = 0.0d0
-      filter_yz_ele_dx2 = 0.0d0
-      filter_zx_ele_dx2 = 0.0d0
+      call alloc_filter_moms_ele_type(nele, mom1)
 !
       end subroutine allocate_filter_moms_ele
 !
@@ -206,35 +114,7 @@
 !
       subroutine deallocate_filter_moms_ele
 !
-      deallocate( filter_x_ele )
-      deallocate( filter_y_ele )
-      deallocate( filter_z_ele )
-      deallocate( filter_x2_ele )
-      deallocate( filter_y2_ele )
-      deallocate( filter_z2_ele )
-      deallocate( filter_xy_ele )
-      deallocate( filter_yz_ele )
-      deallocate( filter_zx_ele )
-!
-      deallocate( filter_x_ele_dx )
-      deallocate( filter_y_ele_dx )
-      deallocate( filter_z_ele_dx )
-      deallocate( filter_x2_ele_dx )
-      deallocate( filter_y2_ele_dx )
-      deallocate( filter_z2_ele_dx )
-      deallocate( filter_xy_ele_dx )
-      deallocate( filter_yz_ele_dx )
-      deallocate( filter_zx_ele_dx )
-!
-      deallocate( filter_x_ele_dx2 )
-      deallocate( filter_y_ele_dx2 )
-      deallocate( filter_z_ele_dx2 )
-      deallocate( filter_x2_ele_dx2 )
-      deallocate( filter_y2_ele_dx2 )
-      deallocate( filter_z2_ele_dx2 )
-      deallocate( filter_xy_ele_dx2 )
-      deallocate( filter_yz_ele_dx2 )
-      deallocate( filter_zx_ele_dx2 )
+      call dealloc_filter_moms_ele_type(mom1)
 !
       end subroutine deallocate_filter_moms_ele
 !

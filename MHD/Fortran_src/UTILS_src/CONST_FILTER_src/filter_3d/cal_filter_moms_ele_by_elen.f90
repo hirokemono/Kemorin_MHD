@@ -29,10 +29,11 @@
 !
       use m_geometry_parameter
       use m_filter_elength
+      use m_filter_moments
 !
       integer(kind = kint), intent(in) :: ifil
 !
-      call s_cal_filter_moms_ele_by_elen(ifil, numele,                  &
+      call s_cal_filter_moms_ele_by_elen(numele,                        &
      &  FEM1_elen%filter_conf%nf_type,                                  &
      &  FEM1_elen%filter_conf%xmom_1d_org,                              &
      &  FEM1_elen%elen_ele%moms%f_x2,   FEM1_elen%elen_ele%moms%f_y2,   &
@@ -43,7 +44,22 @@
      &  FEM1_elen%elen_ele%diff%df_yz,  FEM1_elen%elen_ele%diff%df_zx,  &
      &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &
      &  FEM1_elen%elen_ele%diff2%df_z2, FEM1_elen%elen_ele%diff2%df_xy, &
-     &  FEM1_elen%elen_ele%diff2%df_yz, FEM1_elen%elen_ele%diff2%df_zx)
+     &  FEM1_elen%elen_ele%diff2%df_yz, FEM1_elen%elen_ele%diff2%df_zx, &
+     &  mom1%mom_ele(ifil)%moms%f_x,    mom1%mom_ele(ifil)%moms%f_y,    &
+     &  mom1%mom_ele(ifil)%moms%f_z,    mom1%mom_ele(ifil)%moms%f_x2,   &
+     &  mom1%mom_ele(ifil)%moms%f_y2,   mom1%mom_ele(ifil)%moms%f_z2,   &
+     &  mom1%mom_ele(ifil)%moms%f_xy,   mom1%mom_ele(ifil)%moms%f_yz,   &
+     &  mom1%mom_ele(ifil)%moms%f_zx,                                   &
+     &  mom1%mom_ele(ifil)%diff%df_x,   mom1%mom_ele(ifil)%diff%df_y,   &
+     &  mom1%mom_ele(ifil)%diff%df_z,   mom1%mom_ele(ifil)%diff%df_x2,  &
+     &  mom1%mom_ele(ifil)%diff%df_y2,  mom1%mom_ele(ifil)%diff%df_z2,  &
+     &  mom1%mom_ele(ifil)%diff%df_xy,  mom1%mom_ele(ifil)%diff%df_yz,  &
+     &  mom1%mom_ele(ifil)%diff%df_zx,                                  &
+     &  mom1%mom_ele(ifil)%diff2%df_x,  mom1%mom_ele(ifil)%diff2%df_y,  &
+     &  mom1%mom_ele(ifil)%diff2%df_z,  mom1%mom_ele(ifil)%diff2%df_x2, &
+     &  mom1%mom_ele(ifil)%diff2%df_y2, mom1%mom_ele(ifil)%diff2%df_z2, &
+     &  mom1%mom_ele(ifil)%diff2%df_xy, mom1%mom_ele(ifil)%diff2%df_yz, &
+     &  mom1%mom_ele(ifil)%diff2%df_zx)
 !
       end subroutine cal_fmoms_ele_by_elen_1st
 !
@@ -54,10 +70,11 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_filter_elength
+      use m_filter_moments
 !
       integer(kind = kint), intent(in) :: ifil
 !
-      call correct_filter_moms_ele_by_elen(ifil, numele, nnod_4_ele,    &
+      call correct_filter_moms_ele_by_elen(numele, nnod_4_ele,          &
      &  ie, FEM1_elen%filter_conf%nf_type,                              &
      &  FEM1_elen%filter_conf%xmom_1d_org,                              &
      &  FEM1_elen%elen_ele%moms%f_x2,   FEM1_elen%elen_ele%moms%f_y2,   &
@@ -68,7 +85,22 @@
      &  FEM1_elen%elen_ele%diff%df_yz,  FEM1_elen%elen_ele%diff%df_zx,  &
      &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &
      &  FEM1_elen%elen_ele%diff2%df_z2, FEM1_elen%elen_ele%diff2%df_xy, &
-     &  FEM1_elen%elen_ele%diff2%df_yz, FEM1_elen%elen_ele%diff2%df_zx)
+     &  FEM1_elen%elen_ele%diff2%df_yz, FEM1_elen%elen_ele%diff2%df_zx, &
+     &  mom1%mom_ele(ifil)%moms%f_x,    mom1%mom_ele(ifil)%moms%f_y,    &
+     &  mom1%mom_ele(ifil)%moms%f_z,    mom1%mom_ele(ifil)%moms%f_x2,   &
+     &  mom1%mom_ele(ifil)%moms%f_y2,   mom1%mom_ele(ifil)%moms%f_z2,   &
+     &  mom1%mom_ele(ifil)%moms%f_xy,   mom1%mom_ele(ifil)%moms%f_yz,   &
+     &  mom1%mom_ele(ifil)%moms%f_zx,                                   &
+     &  mom1%mom_ele(ifil)%diff%df_x,   mom1%mom_ele(ifil)%diff%df_y,   &
+     &  mom1%mom_ele(ifil)%diff%df_z,   mom1%mom_ele(ifil)%diff%df_x2,  &
+     &  mom1%mom_ele(ifil)%diff%df_y2,  mom1%mom_ele(ifil)%diff%df_z2,  &
+     &  mom1%mom_ele(ifil)%diff%df_xy,  mom1%mom_ele(ifil)%diff%df_yz,  &
+     &  mom1%mom_ele(ifil)%diff%df_zx,                                  &
+     &  mom1%mom_ele(ifil)%diff2%df_x,  mom1%mom_ele(ifil)%diff2%df_y,  &
+     &  mom1%mom_ele(ifil)%diff2%df_z,  mom1%mom_ele(ifil)%diff2%df_x2, &
+     &  mom1%mom_ele(ifil)%diff2%df_y2, mom1%mom_ele(ifil)%diff2%df_z2, &
+     &  mom1%mom_ele(ifil)%diff2%df_xy, mom1%mom_ele(ifil)%diff2%df_yz, &
+     &  mom1%mom_ele(ifil)%diff2%df_zx)
 !
       end subroutine correct_fmoms_ele_by_elen_1st
 !
@@ -92,17 +124,22 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_cal_filter_moms_ele_by_elen                          &
-     &   (ifil, numele, nf_type, xmom_1d_org,                           &
+     &   (numele, nf_type, xmom_1d_org,                                 &
      &    elen_dx2_ele,      elen_dy2_ele,      elen_dz2_ele,           &
      &    elen_dxdy_ele,     elen_dydz_ele,     elen_dzdx_ele,          &
      &    elen_dx2_ele_dx,   elen_dy2_ele_dx,   elen_dz2_ele_dx,        &
      &    elen_dxdy_ele_dx,  elen_dydz_ele_dx,  elen_dzdx_ele_dx,       &
      &    elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2,       &
-     &    elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2)
-!
-      use m_filter_moments
-!
-      integer(kind = kint), intent(in) :: ifil
+     &    elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,      &
+     &    filter_x_ele,      filter_y_ele,      filter_z_ele,           &
+     &    filter_x2_ele,     filter_y2_ele,     filter_z2_ele,          &
+     &    filter_xy_ele,     filter_yz_ele,     filter_zx_ele,          &
+     &    filter_x_ele_dx,   filter_y_ele_dx,   filter_z_ele_dx,        &
+     &    filter_x2_ele_dx,  filter_y2_ele_dx,  filter_z2_ele_dx,       &
+     &    filter_xy_ele_dx,  filter_yz_ele_dx,  filter_zx_ele_dx,       &
+     &    filter_x_ele_dx2,  filter_y_ele_dx2,  filter_z_ele_dx2,       &
+     &    filter_x2_ele_dx2, filter_y2_ele_dx2, filter_z2_ele_dx2,      &
+     &    filter_xy_ele_dx2, filter_yz_ele_dx2, filter_zx_ele_dx2)
 !
       integer (kind = kint), intent(in) :: numele
 !
@@ -130,25 +167,49 @@
       real(kind=kreal), intent(in) :: elen_dydz_ele_dx2(numele,3)
       real(kind=kreal), intent(in) :: elen_dzdx_ele_dx2(numele,3)
 !
+      real(kind=kreal), intent(inout) :: filter_x_ele(numele)
+      real(kind=kreal), intent(inout) :: filter_y_ele(numele)
+      real(kind=kreal), intent(inout) :: filter_z_ele(numele)
+      real(kind=kreal), intent(inout) :: filter_x2_ele(numele)
+      real(kind=kreal), intent(inout) :: filter_y2_ele(numele)
+      real(kind=kreal), intent(inout) :: filter_z2_ele(numele)
+      real(kind=kreal), intent(inout) :: filter_xy_ele(numele)
+      real(kind=kreal), intent(inout) :: filter_yz_ele(numele)
+      real(kind=kreal), intent(inout) :: filter_zx_ele(numele)
+!
+      real(kind=kreal), intent(inout) :: filter_x_ele_dx(numele,3)
+      real(kind=kreal), intent(inout) :: filter_y_ele_dx(numele,3)
+      real(kind=kreal), intent(inout) :: filter_z_ele_dx(numele,3)
+      real(kind=kreal), intent(inout) :: filter_x2_ele_dx(numele,3)
+      real(kind=kreal), intent(inout) :: filter_y2_ele_dx(numele,3)
+      real(kind=kreal), intent(inout) :: filter_z2_ele_dx(numele,3)
+      real(kind=kreal), intent(inout) :: filter_xy_ele_dx(numele,3)
+      real(kind=kreal), intent(inout) :: filter_yz_ele_dx(numele,3)
+      real(kind=kreal), intent(inout) :: filter_zx_ele_dx(numele,3)
+!
+      real(kind=kreal), intent(inout) :: filter_x_ele_dx2(numele,3)
+      real(kind=kreal), intent(inout) :: filter_y_ele_dx2(numele,3)
+      real(kind=kreal), intent(inout) :: filter_z_ele_dx2(numele,3)
+      real(kind=kreal), intent(inout) :: filter_x2_ele_dx2(numele,3)
+      real(kind=kreal), intent(inout) :: filter_y2_ele_dx2(numele,3)
+      real(kind=kreal), intent(inout) :: filter_z2_ele_dx2(numele,3)
+      real(kind=kreal), intent(inout) :: filter_xy_ele_dx2(numele,3)
+      real(kind=kreal), intent(inout) :: filter_yz_ele_dx2(numele,3)
+      real(kind=kreal), intent(inout) :: filter_zx_ele_dx2(numele,3)
+!
       integer(kind = kint) :: iele, nd
 !
 !$omp parallel do
       do iele = 1, numele
-        filter_x_ele(iele,ifil) = zero
-        filter_y_ele(iele,ifil) = zero
-        filter_z_ele(iele,ifil) = zero
-        filter_x2_ele(iele,ifil)                                        &
-     &        = xmom_1d_org(1,2) * elen_dx2_ele(iele)
-        filter_y2_ele(iele,ifil)                                        &
-     &        = xmom_1d_org(1,2) * elen_dy2_ele(iele)
-        filter_z2_ele(iele,ifil)                                        &
-     &        = xmom_1d_org(1,2) * elen_dz2_ele(iele)
-        filter_xy_ele(iele,ifil)                                        &
-     &        = xmom_1d_org(1,2) * elen_dxdy_ele(iele)
-        filter_yz_ele(iele,ifil)                                        &
-     &        = xmom_1d_org(1,2) * elen_dydz_ele(iele)
-        filter_zx_ele(iele,ifil)                                        &
-     &        = xmom_1d_org(1,2) * elen_dzdx_ele(iele)
+        filter_x_ele(iele) = zero
+        filter_y_ele(iele) = zero
+        filter_z_ele(iele) = zero
+        filter_x2_ele(iele) = xmom_1d_org(1,2) * elen_dx2_ele(iele)
+        filter_y2_ele(iele) = xmom_1d_org(1,2) * elen_dy2_ele(iele)
+        filter_z2_ele(iele) = xmom_1d_org(1,2) * elen_dz2_ele(iele)
+        filter_xy_ele(iele) = xmom_1d_org(1,2) * elen_dxdy_ele(iele)
+        filter_yz_ele(iele) = xmom_1d_org(1,2) * elen_dydz_ele(iele)
+        filter_zx_ele(iele) = xmom_1d_org(1,2) * elen_dzdx_ele(iele)
       end do
 !$omp end parallel do
 !
@@ -156,20 +217,20 @@
       do nd = 1, 3
 !$omp do private(iele)
         do iele = 1, numele
-          filter_x_ele_dx(iele,nd,ifil) = zero
-          filter_y_ele_dx(iele,nd,ifil) = zero
-          filter_z_ele_dx(iele,nd,ifil) = zero
-          filter_x2_ele_dx(iele,nd,ifil)                                &
+          filter_x_ele_dx(iele,nd) = zero
+          filter_y_ele_dx(iele,nd) = zero
+          filter_z_ele_dx(iele,nd) = zero
+          filter_x2_ele_dx(iele,nd)                                     &
      &        = xmom_1d_org(1,2) * elen_dx2_ele_dx(iele,nd)
-          filter_y2_ele_dx(iele,nd,ifil)                                &
+          filter_y2_ele_dx(iele,nd)                                     &
      &        = xmom_1d_org(1,2) * elen_dy2_ele_dx(iele,nd)
-          filter_z2_ele_dx(iele,nd,ifil)                                &
+          filter_z2_ele_dx(iele,nd)                                     &
      &        = xmom_1d_org(1,2) * elen_dz2_ele_dx(iele,nd)
-          filter_xy_ele_dx(iele,nd,ifil)                                &
+          filter_xy_ele_dx(iele,nd)                                     &
      &        = xmom_1d_org(1,2) * elen_dxdy_ele_dx(iele,nd)
-          filter_yz_ele_dx(iele,nd,ifil)                                &
+          filter_yz_ele_dx(iele,nd)                                     &
      &        = xmom_1d_org(1,2) * elen_dydz_ele_dx(iele,nd)
-          filter_zx_ele_dx(iele,nd,ifil)                                &
+          filter_zx_ele_dx(iele,nd)                                     &
      &        = xmom_1d_org(1,2) * elen_dzdx_ele_dx(iele,nd)
         end do
 !$omp end do nowait
@@ -180,20 +241,20 @@
       do nd = 1, 3
 !$omp do private(iele)
         do iele = 1, numele
-          filter_x_ele_dx2(iele,nd,ifil) = zero
-          filter_y_ele_dx2(iele,nd,ifil) = zero
-          filter_z_ele_dx2(iele,nd,ifil) = zero
-          filter_x2_ele_dx2(iele,nd,ifil)                               &
+          filter_x_ele_dx2(iele,nd) = zero
+          filter_y_ele_dx2(iele,nd) = zero
+          filter_z_ele_dx2(iele,nd) = zero
+          filter_x2_ele_dx2(iele,nd)                                    &
      &        = xmom_1d_org(1,2) * elen_dx2_ele_dx2(iele,nd)
-          filter_y2_ele_dx2(iele,nd,ifil)                               &
+          filter_y2_ele_dx2(iele,nd)                                    &
      &        = xmom_1d_org(1,2) * elen_dy2_ele_dx2(iele,nd)
-          filter_z2_ele_dx2(iele,nd,ifil)                               &
+          filter_z2_ele_dx2(iele,nd)                                    &
      &        = xmom_1d_org(1,2) * elen_dz2_ele_dx2(iele,nd)
-          filter_xy_ele_dx2(iele,nd,ifil)                               &
+          filter_xy_ele_dx2(iele,nd)                                    &
      &        = xmom_1d_org(1,2) * elen_dxdy_ele_dx2(iele,nd)
-          filter_yz_ele_dx2(iele,nd,ifil)                               &
+          filter_yz_ele_dx2(iele,nd)                                    &
      &        = xmom_1d_org(1,2) * elen_dydz_ele_dx2(iele,nd)
-          filter_zx_ele_dx2(iele,nd,ifil)                               &
+          filter_zx_ele_dx2(iele,nd)                                    &
      &        = xmom_1d_org(1,2) * elen_dzdx_ele_dx2(iele,nd)
         end do
 !$omp end do nowait
@@ -205,18 +266,24 @@
 !  ---------------------------------------------------------------------
 !
       subroutine correct_filter_moms_ele_by_elen                        &
-     &   (ifil, numele, nnod_4_ele, ie, nf_type, xmom_1d_org,           &
+     &   (numele, nnod_4_ele, ie, nf_type, xmom_1d_org,                 &
      &    elen_dx2_ele,      elen_dy2_ele,      elen_dz2_ele,           &
      &    elen_dxdy_ele,     elen_dydz_ele,     elen_dzdx_ele,          &
      &    elen_dx2_ele_dx,   elen_dy2_ele_dx,   elen_dz2_ele_dx,        &
      &    elen_dxdy_ele_dx,  elen_dydz_ele_dx,  elen_dzdx_ele_dx,       &
      &    elen_dx2_ele_dx2,  elen_dy2_ele_dx2,  elen_dz2_ele_dx2,       &
-     &    elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2)
+     &    elen_dxdy_ele_dx2, elen_dydz_ele_dx2, elen_dzdx_ele_dx2,      &
+     &    filter_x_ele,      filter_y_ele,      filter_z_ele,           &
+     &    filter_x2_ele,     filter_y2_ele,     filter_z2_ele,          &
+     &    filter_xy_ele,     filter_yz_ele,     filter_zx_ele,          &
+     &    filter_x_ele_dx,   filter_y_ele_dx,   filter_z_ele_dx,        &
+     &    filter_x2_ele_dx,  filter_y2_ele_dx,  filter_z2_ele_dx,       &
+     &    filter_xy_ele_dx,  filter_yz_ele_dx,  filter_zx_ele_dx,       &
+     &    filter_x_ele_dx2,  filter_y_ele_dx2,  filter_z_ele_dx2,       &
+     &    filter_x2_ele_dx2, filter_y2_ele_dx2, filter_z2_ele_dx2,      &
+     &    filter_xy_ele_dx2, filter_yz_ele_dx2, filter_zx_ele_dx2)
 !
-      use m_filter_moments
       use m_filter_coefs
-!
-      integer(kind = kint), intent(in) :: ifil
 !
       integer (kind = kint), intent(in) :: numele, nnod_4_ele
       integer (kind = kint), intent(in) :: ie(numele,nnod_4_ele)
@@ -244,6 +311,36 @@
       real(kind=kreal), intent(in) :: elen_dxdy_ele_dx2(numele,3)
       real(kind=kreal), intent(in) :: elen_dydz_ele_dx2(numele,3)
       real(kind=kreal), intent(in) :: elen_dzdx_ele_dx2(numele,3)
+!
+      real(kind=kreal), intent(inout) :: filter_x_ele(numele)
+      real(kind=kreal), intent(inout) :: filter_y_ele(numele)
+      real(kind=kreal), intent(inout) :: filter_z_ele(numele)
+      real(kind=kreal), intent(inout) :: filter_x2_ele(numele)
+      real(kind=kreal), intent(inout) :: filter_y2_ele(numele)
+      real(kind=kreal), intent(inout) :: filter_z2_ele(numele)
+      real(kind=kreal), intent(inout) :: filter_xy_ele(numele)
+      real(kind=kreal), intent(inout) :: filter_yz_ele(numele)
+      real(kind=kreal), intent(inout) :: filter_zx_ele(numele)
+!
+      real(kind=kreal), intent(inout) :: filter_x_ele_dx(numele,3)
+      real(kind=kreal), intent(inout) :: filter_y_ele_dx(numele,3)
+      real(kind=kreal), intent(inout) :: filter_z_ele_dx(numele,3)
+      real(kind=kreal), intent(inout) :: filter_x2_ele_dx(numele,3)
+      real(kind=kreal), intent(inout) :: filter_y2_ele_dx(numele,3)
+      real(kind=kreal), intent(inout) :: filter_z2_ele_dx(numele,3)
+      real(kind=kreal), intent(inout) :: filter_xy_ele_dx(numele,3)
+      real(kind=kreal), intent(inout) :: filter_yz_ele_dx(numele,3)
+      real(kind=kreal), intent(inout) :: filter_zx_ele_dx(numele,3)
+!
+      real(kind=kreal), intent(inout) :: filter_x_ele_dx2(numele,3)
+      real(kind=kreal), intent(inout) :: filter_y_ele_dx2(numele,3)
+      real(kind=kreal), intent(inout) :: filter_z_ele_dx2(numele,3)
+      real(kind=kreal), intent(inout) :: filter_x2_ele_dx2(numele,3)
+      real(kind=kreal), intent(inout) :: filter_y2_ele_dx2(numele,3)
+      real(kind=kreal), intent(inout) :: filter_z2_ele_dx2(numele,3)
+      real(kind=kreal), intent(inout) :: filter_xy_ele_dx2(numele,3)
+      real(kind=kreal), intent(inout) :: filter_yz_ele_dx2(numele,3)
+      real(kind=kreal), intent(inout) :: filter_zx_ele_dx2(numele,3)
 !
       integer(kind = kint) :: iele, nd, inum, inod, k1
 !
@@ -275,21 +372,15 @@
       do inum = 1, nele_make_moment_again
         iele = iele_make_moment_again(inum)
 !
-        filter_x_ele(iele,ifil) = zero
-        filter_y_ele(iele,ifil) = zero
-        filter_z_ele(iele,ifil) = zero
-        filter_x2_ele(iele,ifil)                                        &
-     &        = xmom_1d_org(1,2) * elen_dx2_ele(iele)
-        filter_y2_ele(iele,ifil)                                        &
-     &        = xmom_1d_org(1,2) * elen_dy2_ele(iele)
-        filter_z2_ele(iele,ifil)                                        &
-     &        = xmom_1d_org(1,2) * elen_dz2_ele(iele)
-        filter_xy_ele(iele,ifil)                                        &
-     &        = xmom_1d_org(1,2) * elen_dxdy_ele(iele)
-        filter_yz_ele(iele,ifil)                                        &
-     &        = xmom_1d_org(1,2) * elen_dydz_ele(iele)
-        filter_zx_ele(iele,ifil)                                        &
-     &        = xmom_1d_org(1,2) * elen_dzdx_ele(iele)
+        filter_x_ele(iele) = zero
+        filter_y_ele(iele) = zero
+        filter_z_ele(iele) = zero
+        filter_x2_ele(iele) = xmom_1d_org(1,2) * elen_dx2_ele(iele)
+        filter_y2_ele(iele) = xmom_1d_org(1,2) * elen_dy2_ele(iele)
+        filter_z2_ele(iele) = xmom_1d_org(1,2) * elen_dz2_ele(iele)
+        filter_xy_ele(iele) = xmom_1d_org(1,2) * elen_dxdy_ele(iele)
+        filter_yz_ele(iele) = xmom_1d_org(1,2) * elen_dydz_ele(iele)
+        filter_zx_ele(iele) = xmom_1d_org(1,2) * elen_dzdx_ele(iele)
       end do
 !$omp end parallel do
 !
@@ -299,20 +390,20 @@
         do inum = 1, nele_make_moment_again
           iele = iele_make_moment_again(inum)
 !
-          filter_x_ele_dx(iele,nd,ifil) = zero
-          filter_y_ele_dx(iele,nd,ifil) = zero
-          filter_z_ele_dx(iele,nd,ifil) = zero
-          filter_x2_ele_dx(iele,nd,ifil)                                &
+          filter_x_ele_dx(iele,nd) = zero
+          filter_y_ele_dx(iele,nd) = zero
+          filter_z_ele_dx(iele,nd) = zero
+          filter_x2_ele_dx(iele,nd)                                     &
      &        = xmom_1d_org(1,2) * elen_dx2_ele_dx(iele,nd)
-          filter_y2_ele_dx(iele,nd,ifil)                                &
+          filter_y2_ele_dx(iele,nd)                                     &
      &        = xmom_1d_org(1,2) * elen_dy2_ele_dx(iele,nd)
-          filter_z2_ele_dx(iele,nd,ifil)                                &
+          filter_z2_ele_dx(iele,nd)                                     &
      &        = xmom_1d_org(1,2) * elen_dz2_ele_dx(iele,nd)
-          filter_xy_ele_dx(iele,nd,ifil)                                &
+          filter_xy_ele_dx(iele,nd)                                     &
      &        = xmom_1d_org(1,2) * elen_dxdy_ele_dx(iele,nd)
-          filter_yz_ele_dx(iele,nd,ifil)                                &
+          filter_yz_ele_dx(iele,nd)                                     &
      &        = xmom_1d_org(1,2) * elen_dydz_ele_dx(iele,nd)
-          filter_zx_ele_dx(iele,nd,ifil)                                &
+          filter_zx_ele_dx(iele,nd)                                     &
      &        = xmom_1d_org(1,2) * elen_dzdx_ele_dx(iele,nd)
         end do
 !$omp end do nowait
@@ -325,20 +416,20 @@
         do inum = 1, nele_make_moment_again
           iele = iele_make_moment_again(inum)
 !
-          filter_x_ele_dx2(iele,nd,ifil) = zero
-          filter_y_ele_dx2(iele,nd,ifil) = zero
-          filter_z_ele_dx2(iele,nd,ifil) = zero
-          filter_x2_ele_dx2(iele,nd,ifil)                               &
+          filter_x_ele_dx2(iele,nd) = zero
+          filter_y_ele_dx2(iele,nd) = zero
+          filter_z_ele_dx2(iele,nd) = zero
+          filter_x2_ele_dx2(iele,nd)                                    &
      &        = xmom_1d_org(1,2) * elen_dx2_ele_dx2(iele,nd)
-          filter_y2_ele_dx2(iele,nd,ifil)                               &
+          filter_y2_ele_dx2(iele,nd)                                    &
      &        = xmom_1d_org(1,2) * elen_dy2_ele_dx2(iele,nd)
-          filter_z2_ele_dx2(iele,nd,ifil)                               &
+          filter_z2_ele_dx2(iele,nd)                                    &
      &        = xmom_1d_org(1,2) * elen_dz2_ele_dx2(iele,nd)
-          filter_xy_ele_dx2(iele,nd,ifil)                               &
+          filter_xy_ele_dx2(iele,nd)                                    &
      &        = xmom_1d_org(1,2) * elen_dxdy_ele_dx2(iele,nd)
-          filter_yz_ele_dx2(iele,nd,ifil)                               &
+          filter_yz_ele_dx2(iele,nd)                                    &
      &        = xmom_1d_org(1,2) * elen_dydz_ele_dx2(iele,nd)
-          filter_zx_ele_dx2(iele,nd,ifil)                               &
+          filter_zx_ele_dx2(iele,nd)                                    &
      &        = xmom_1d_org(1,2) * elen_dzdx_ele_dx2(iele,nd)
         end do
 !$omp end do nowait

@@ -145,7 +145,8 @@
      &     then
           call write_each_same_filter_coef(inod)
           call copy_moments_each_point                                  &
-     &       (inod, mom1%mom_nod(ione)%moms,mom1%mom_nod(itwo)%moms)
+     &       (inod, mom1%mom_nod(ione)%moms,                            &
+     &        inod, mom1%mom_nod(itwo)%moms)
 !
 !    construct filter for fluid area
 !

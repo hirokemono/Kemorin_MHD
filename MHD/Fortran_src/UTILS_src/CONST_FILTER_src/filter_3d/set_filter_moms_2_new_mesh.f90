@@ -154,7 +154,7 @@
       type(ele_mom_diffs_type), intent(inout)                           &
      &               :: mom2_ele(num_filter_moms_2nd)
 !
-      integer(kind = kint) :: iele, iele_2nd, nd, ifil
+      integer(kind = kint) :: iele, iele_2nd, ifil
       integer(kind = kint_gl) :: iele_gl
 !
 !
@@ -174,64 +174,15 @@
           end if
 !
           do ifil = 1, mom1%num_filter_moms
-            mom2_ele(ifil)%moms%f_x2(iele_2nd)                          &
-     &            = filter_x2_ele(iele,ifil)
-            mom2_ele(ifil)%moms%f_y2(iele_2nd)                          &
-     &            = filter_y2_ele(iele,ifil)
-            mom2_ele(ifil)%moms%f_z2(iele_2nd)                          &
-     &            = filter_z2_ele(iele,ifil)
-            mom2_ele(ifil)%moms%f_xy(iele_2nd)                          &
-     &            = filter_xy_ele(iele,ifil)
-            mom2_ele(ifil)%moms%f_yz(iele_2nd)                          &
-     &            = filter_yz_ele(iele,ifil)
-            mom2_ele(ifil)%moms%f_zx(iele_2nd)                          &
-     &            = filter_zx_ele(iele,ifil)
-            mom2_ele(ifil)%moms%f_x(iele_2nd)                           &
-     &            =  filter_x_ele(iele,ifil)
-            mom2_ele(ifil)%moms%f_y(iele_2nd)                           &
-     &            =  filter_y_ele(iele,ifil)
-            mom2_ele(ifil)%moms%f_z(iele_2nd)                           &
-     &            =  filter_z_ele(iele,ifil)
-!
-            do nd = 1, n_vector
-              mom2_ele(ifil)%diff%df_x2(iele_2nd,nd)                    &
-     &          = filter_x2_ele_dx(iele,nd,ifil)
-              mom2_ele(ifil)%diff%df_y2(iele_2nd,nd)                    &
-     &          = filter_y2_ele_dx(iele,nd,ifil)
-              mom2_ele(ifil)%diff%df_z2(iele_2nd,nd)                    &
-     &          = filter_z2_ele_dx(iele,nd,ifil)
-              mom2_ele(ifil)%diff%df_xy(iele_2nd,nd)                    &
-     &          = filter_xy_ele_dx(iele,nd,ifil)
-              mom2_ele(ifil)%diff%df_yz(iele_2nd,nd)                    &
-     &          = filter_yz_ele_dx(iele,nd,ifil)
-              mom2_ele(ifil)%diff%df_zx(iele_2nd,nd)                    &
-     &          = filter_zx_ele_dx(iele,nd,ifil)
-              mom2_ele(ifil)%diff%df_x(iele_2nd,nd)                     &
-     &          =  filter_x_ele_dx(iele,nd,ifil)
-              mom2_ele(ifil)%diff%df_y(iele_2nd,nd)                     &
-     &          =  filter_y_ele_dx(iele,nd,ifil)
-              mom2_ele(ifil)%diff%df_z(iele_2nd,nd)                     &
-     &          =  filter_z_ele_dx(iele,nd,ifil)
-!
-              mom2_ele(ifil)%diff2%df_x2(iele_2nd,nd)                   &
-     &          = filter_x2_ele_dx2(iele,nd,ifil)
-              mom2_ele(ifil)%diff2%df_y2(iele_2nd,nd)                   &
-     &          = filter_y2_ele_dx2(iele,nd,ifil)
-              mom2_ele(ifil)%diff2%df_z2(iele_2nd,nd)                   &
-     &          = filter_z2_ele_dx2(iele,nd,ifil)
-              mom2_ele(ifil)%diff2%df_xy(iele_2nd,nd)                   &
-     &          = filter_xy_ele_dx2(iele,nd,ifil)
-              mom2_ele(ifil)%diff2%df_yz(iele_2nd,nd)                   &
-     &          = filter_yz_ele_dx2(iele,nd,ifil)
-              mom2_ele(ifil)%diff2%df_zx(iele_2nd,nd)                   &
-     &          = filter_zx_ele_dx2(iele,nd,ifil)
-              mom2_ele(ifil)%diff2%df_x(iele_2nd,nd)                    &
-     &          =  filter_x_ele_dx2(iele,nd,ifil)
-              mom2_ele(ifil)%diff2%df_y(iele_2nd,nd)                    &
-     &          =  filter_y_ele_dx2(iele,nd,ifil)
-              mom2_ele(ifil)%diff2%df_z(iele_2nd,nd)                    &
-     &          =  filter_z_ele_dx2(iele,nd,ifil)
-            end do
+            call copy_moments_each_point                                &
+     &         (iele, mom1%mom_ele(ifil)%moms,                          &
+     &          iele_2nd, mom2_ele(ifil)%moms)
+            call copy_mom_diffs_each_point                              &
+     &         (iele, mom1%mom_ele(ifil)%diff,                          &
+     &          iele_2nd, mom2_ele(ifil)%diff)
+            call copy_mom_diffs_each_point                              &
+     &         (iele, mom1%mom_ele(ifil)%diff2,                         &
+     &          iele_2nd, mom2_ele(ifil)%diff2)
           end do
 !
         end if

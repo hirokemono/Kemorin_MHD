@@ -23,8 +23,15 @@
 !        type(gradient_filter_mom_type), intent(inout) :: FEM_moms
 !       (substitution of deallocate_filter_moms_ele )
 !
-!      subroutine copy_moments_each_point(inod, mom_org, mom_tgt)
+!      subroutine copy_moments_each_point                               &
+!     &         (i_org, mom_org, i_tgt, mom_tgt)
 !      subroutine copy_moments_type(num, mom_org, mom_tgt)
+!        type(filter_mom_type), intent(in) :: mom_org
+!        type(filter_mom_type), intent(inout) :: mom_tgt
+!      subroutine copy_mom_diffs_each_point                             &
+!     &         (i_org, mom_org, i_tgt, mom_tgt)
+!        type(filter_mom_diffs_type), intent(in) :: mom_org
+!        type(filter_mom_diffs_type), intent(inout) :: mom_tgt
 !
 !      subroutine copy_filter_moms_ele                                  &
 !     &         (nele, n_filter, org_mom_ele, tgt_mom_ele)
@@ -225,24 +232,51 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_moments_each_point(inod, mom_org, mom_tgt)
+      subroutine copy_moments_each_point                                &
+     &         (i_org, mom_org, i_tgt, mom_tgt)
 !
-      integer (kind = kint), intent(in) :: inod
+      integer (kind = kint), intent(in) :: i_org, i_tgt
       type(filter_mom_type), intent(in) :: mom_org
       type(filter_mom_type), intent(inout) :: mom_tgt
 !
-      mom_tgt%f_0(inod) =  mom_org%f_0(inod)
-      mom_tgt%f_x(inod) =  mom_org%f_x(inod)
-      mom_tgt%f_y(inod) =  mom_org%f_y(inod)
-      mom_tgt%f_z(inod) =  mom_org%f_z(inod)
-      mom_tgt%f_x2(inod) = mom_org%f_x2(inod)
-      mom_tgt%f_y2(inod) = mom_org%f_y2(inod)
-      mom_tgt%f_z2(inod) = mom_org%f_z2(inod)
-      mom_tgt%f_xy(inod) = mom_org%f_xy(inod)
-      mom_tgt%f_yz(inod) = mom_org%f_yz(inod)
-      mom_tgt%f_zx(inod) = mom_org%f_zx(inod)
+      mom_tgt%f_0(i_tgt) =  mom_org%f_0(i_org)
+      mom_tgt%f_x(i_tgt) =  mom_org%f_x(i_org)
+      mom_tgt%f_y(i_tgt) =  mom_org%f_y(i_org)
+      mom_tgt%f_z(i_tgt) =  mom_org%f_z(i_org)
+      mom_tgt%f_x2(i_tgt) = mom_org%f_x2(i_org)
+      mom_tgt%f_y2(i_tgt) = mom_org%f_y2(i_org)
+      mom_tgt%f_z2(i_tgt) = mom_org%f_z2(i_org)
+      mom_tgt%f_xy(i_tgt) = mom_org%f_xy(i_org)
+      mom_tgt%f_yz(i_tgt) = mom_org%f_yz(i_org)
+      mom_tgt%f_zx(i_tgt) = mom_org%f_zx(i_org)
 !
       end subroutine copy_moments_each_point
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_mom_diffs_each_point                              &
+     &         (i_org, mom_org, i_tgt, mom_tgt)
+!
+      integer (kind = kint), intent(in) :: i_org, i_tgt
+      type(filter_mom_diffs_type), intent(in) :: mom_org
+      type(filter_mom_diffs_type), intent(inout) :: mom_tgt
+!
+      integer (kind=kint) :: nd
+!
+!
+      do nd = 1, 3
+        mom_tgt%df_x(i_tgt,nd) =  mom_org%df_x(i_org,nd)
+        mom_tgt%df_y(i_tgt,nd) =  mom_org%df_y(i_org,nd)
+        mom_tgt%df_z(i_tgt,nd) =  mom_org%df_z(i_org,nd)
+        mom_tgt%df_x2(i_tgt,nd) = mom_org%df_x2(i_org,nd)
+        mom_tgt%df_y2(i_tgt,nd) = mom_org%df_y2(i_org,nd)
+        mom_tgt%df_z2(i_tgt,nd) = mom_org%df_z2(i_org,nd)
+        mom_tgt%df_xy(i_tgt,nd) = mom_org%df_xy(i_org,nd)
+        mom_tgt%df_yz(i_tgt,nd) = mom_org%df_yz(i_org,nd)
+        mom_tgt%df_zx(i_tgt,nd) = mom_org%df_zx(i_org,nd)
+      end do
+!
+      end subroutine copy_mom_diffs_each_point
 !
 !  ---------------------------------------------------------------------
 !
