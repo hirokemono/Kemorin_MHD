@@ -158,7 +158,6 @@
       use read_line_filter_data
       use set_parallel_file_name
       use filter_moment_IO_select
-      use filter_moment_IO_select
 !
       integer(kind = kint) :: ierr
 !
