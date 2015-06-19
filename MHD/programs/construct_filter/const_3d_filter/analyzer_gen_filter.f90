@@ -15,8 +15,11 @@
       use calypso_mpi
 !
       use m_ctl_params_4_gen_filter
+      use t_filter_dxdxi
 !
       implicit none
+!
+      type(dxdxi_data_type), save :: filter_dxi1
 !
 ! ----------------------------------------------------------------------
 !
@@ -41,7 +44,6 @@
       use m_geometry_data
       use m_surface_group
       use m_surface_group_geometry
-      use m_filter_dxdxi
       use check_jacobians
       use int_volume_of_domain
       use int_element_length
@@ -113,12 +115,12 @@
       FEM1_elen%nnod_filter_mom = numnod
       FEM1_elen%nele_filter_mom = numele
       mom1%num_filter_moms = 2
-      call alloc_dxdxi_diff_type                                        &
-     &   (FEM1_elen%nele_filter_mom, filter_dxi1%dxi_ele)
+      call alloc_jacobians_ele(FEM1_elen%nele_filter_mom, filter_dxi1)
       call alloc_elen_ele_type                                          &
      &   (FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele)
 !
-      call int_element_length_1st
+      call s_int_element_length(FEM1_elen%nele_filter_mom,              &
+     &    filter_dxi1%dxi_ele, FEM1_elen%elen_ele%moms)
 !
        end subroutine init_analyzer
 !
@@ -164,7 +166,8 @@
       call init_send_recv
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
-      call s_cal_element_size
+      call s_cal_element_size(filter_dxi1)
+      call dealloc_jacobians_ele(filter_dxi1)
 !
 !  ---------------------------------------------------
 !       output filter length and coefs
@@ -212,6 +215,7 @@
           if (iflag_debug.eq.1) write(*,*) 'const_simple_filter'
           call const_simple_filter
         end if
+        call dealloc_jacobians_node(filter_dxi1)
 !
         close(filter_coef_code)
 !

@@ -8,16 +8,13 @@
 !> @brief Strucure for dxdxi for SGS model
 !!
 !!@verbatim
-!!      subroutine alloc_jacobians_on_node_type(nnod_filter_mom, dxi_nod)
+!!      subroutine alloc_jacobians_node(nnod_filter_mom, filter_dxi)
 !!        integer (kind = kint), intent(in) :: nnod_filter_mom
-!!        type(dxdxi_direction_type), intent(inout) :: dxi_nod
-!!      subroutine alloc_jacobians_ele_type(nele_filter_mom, dxi_ele)
+!!      subroutine alloc_jacobians_ele(nele_filter_mom, filter_dxi)
 !!        integer (kind = kint), intent(in) :: nele_filter_mom
-!!        type(dxdxi_direction_type), intent(inout) :: dxi_ele
-!!      subroutine dealloc_jacobians_on_node_type(dxi_nod)
-!!        type(dxdxi_direction_type), intent(inout) :: dxi_nod
-!!      subroutine dealloc_jacobians_ele_type(dxi_ele)
-!!        type(dxdxi_direction_type), intent(inout) :: dxi_ele
+!!      subroutine dealloc_jacobians_node(filter_dxi)
+!!      subroutine dealloc_jacobians_ele(filter_dxi)
+!!        type(dxdxi_data_type), intent(inout) :: filter_dxi
 !!
 !!          1st difference of elengh_nod
 !!              (node ID, direction of diffrence)
@@ -72,15 +69,15 @@ module t_filter_dxdxi
       end type dxdxi_direction_type
 !
 !>        Structure for dx/dxi at nodes and elements
-      type gradient_model_data_type
+      type dxdxi_data_type
 !>        Structure for dx/dxi at nodes
         type(dxdxi_direction_type) :: dxi_nod
 !>        Structure for dx/dxi in elements
         type(dxdxi_direction_type) :: dxi_ele
-      end type gradient_model_data_type
+      end type dxdxi_data_type
 !
       private :: alloc_dxi_diff_type, dealloc_dxi_diff_type
-!      private :: alloc_dxdxi_diff_type, dealloc_dxdxi_diff_type
+      private :: alloc_dxdxi_diff_type, dealloc_dxdxi_diff_type
 !
 !  ---------------------------------------------------------------------
 !
@@ -148,49 +145,50 @@ module t_filter_dxdxi
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_jacobians_on_node_type(nnod_filter_mom, dxi_nod)
+      subroutine alloc_jacobians_node(nnod_filter_mom, filter_dxi)
 !
       integer (kind = kint), intent(in) :: nnod_filter_mom
-      type(dxdxi_direction_type), intent(inout) :: dxi_nod
+      type(dxdxi_data_type), intent(inout) :: filter_dxi
 !
 !
-      call alloc_dxdxi_diff_type(nnod_filter_mom, dxi_nod)
+      call alloc_dxdxi_diff_type(nnod_filter_mom, filter_dxi%dxi_nod)
 !
-      end subroutine alloc_jacobians_on_node_type
+      end subroutine alloc_jacobians_node
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_jacobians_ele_type(nele_filter_mom, dxi_ele)
+      subroutine alloc_jacobians_ele(nele_filter_mom, filter_dxi)
 !
       integer (kind = kint), intent(in) :: nele_filter_mom
-      type(dxdxi_direction_type), intent(inout) :: dxi_ele
+      type(dxdxi_data_type), intent(inout) :: filter_dxi
 !
 !
-      call alloc_dxdxi_diff_type(nele_filter_mom, dxi_ele)
+      call alloc_dxdxi_diff_type(nele_filter_mom, filter_dxi%dxi_ele)
 !
-      end subroutine alloc_jacobians_ele_type
+      end subroutine alloc_jacobians_ele
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_jacobians_node(filter_dxi)
+!
+      type(dxdxi_data_type), intent(inout) :: filter_dxi
+!
+!
+      call dealloc_dxdxi_diff_type(filter_dxi%dxi_nod)
+!
+      end subroutine dealloc_jacobians_node
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine dealloc_jacobians_on_node_type(dxi_nod)
+      subroutine dealloc_jacobians_ele(filter_dxi)
 !
-      type(dxdxi_direction_type), intent(inout) :: dxi_nod
-!
-!
-      call dealloc_dxdxi_diff_type(dxi_nod)
-!
-      end subroutine dealloc_jacobians_on_node_type
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine dealloc_jacobians_ele_type(dxi_ele)
-!
-      type(dxdxi_direction_type), intent(inout) :: dxi_ele
+      type(dxdxi_data_type), intent(inout) :: filter_dxi
 !
 !
-      call dealloc_dxdxi_diff_type(dxi_ele)
+      call dealloc_dxdxi_diff_type(filter_dxi%dxi_ele)
 !
-      end subroutine dealloc_jacobians_ele_type
+      end subroutine dealloc_jacobians_ele
 !
 !  ---------------------------------------------------------------------
 !

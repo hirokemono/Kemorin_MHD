@@ -4,14 +4,17 @@
 !     Written by H. Matsui on Apr., 2008
 !     Modified by H. Matsui on Apr., 2008
 !
-!      subroutine jacobi_nod_send_recv
+!      subroutine jacobi_nod_send_recv(filter_dxi)
+!        type(dxdxi_data_type), save :: filter_dxi
 !      subroutine dxidx_nod_send_recv
 !
-!      subroutine elength_nod_send_recv
-!      subroutine diff_elen_nod_send_recv
+!      subroutine elength_nod_send_recv(elen_nod)
+!      subroutine diff_elen_nod_send_recv(elen_nod)
+!        type(elen_nod_diffs_type), intent(inout) :: elen_nod
 !
 !      subroutine filter_mom_nod_send_recv(ifil)
 !      subroutine diff_filter_mom_nod_send_recv(ifil)
+!        type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !
       module filter_moments_send_recv
 !
@@ -26,22 +29,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine jacobi_nod_send_recv
+      subroutine jacobi_nod_send_recv(filter_dxi)
 !
-      use m_filter_dxdxi
+      use t_filter_dxdxi
+!
+      type(dxdxi_data_type), intent(inout) :: filter_dxi
 !
 !
-      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dx%df_dxi)
-      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dx%df_dei)
-      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dx%df_dzi)
+      call nod_scalar_send_recv(filter_dxi%dxi_nod%dx%df_dxi)
+      call nod_scalar_send_recv(filter_dxi%dxi_nod%dx%df_dei)
+      call nod_scalar_send_recv(filter_dxi%dxi_nod%dx%df_dzi)
 !
-      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dy%df_dxi)
-      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dy%df_dei)
-      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dy%df_dzi)
+      call nod_scalar_send_recv(filter_dxi%dxi_nod%dy%df_dxi)
+      call nod_scalar_send_recv(filter_dxi%dxi_nod%dy%df_dei)
+      call nod_scalar_send_recv(filter_dxi%dxi_nod%dy%df_dzi)
 !
-      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dz%df_dxi)
-      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dz%df_dei)
-      call nod_scalar_send_recv(filter_dxi1%dxi_nod%dz%df_dzi)
+      call nod_scalar_send_recv(filter_dxi%dxi_nod%dz%df_dxi)
+      call nod_scalar_send_recv(filter_dxi%dxi_nod%dz%df_dei)
+      call nod_scalar_send_recv(filter_dxi%dxi_nod%dz%df_dzi)
 !
       end subroutine jacobi_nod_send_recv
 !
@@ -69,82 +74,85 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine elength_nod_send_recv
+      subroutine elength_nod_send_recv(elen_nod)
 !
-      use m_filter_elength
+      use t_filter_elength
+!
+      type(elen_nod_diffs_type), intent(inout) :: elen_nod
 !
 !
-      call nod_scalar_send_recv(FEM1_elen%elen_nod%moms%f_x2)
-      call nod_scalar_send_recv(FEM1_elen%elen_nod%moms%f_y2)
-      call nod_scalar_send_recv(FEM1_elen%elen_nod%moms%f_z2)
+      call nod_scalar_send_recv(elen_nod%moms%f_x2)
+      call nod_scalar_send_recv(elen_nod%moms%f_y2)
+      call nod_scalar_send_recv(elen_nod%moms%f_z2)
 !
-      call nod_scalar_send_recv(FEM1_elen%elen_nod%moms%f_xy)
-      call nod_scalar_send_recv(FEM1_elen%elen_nod%moms%f_yz)
-      call nod_scalar_send_recv(FEM1_elen%elen_nod%moms%f_zx)
+      call nod_scalar_send_recv(elen_nod%moms%f_xy)
+      call nod_scalar_send_recv(elen_nod%moms%f_yz)
+      call nod_scalar_send_recv(elen_nod%moms%f_zx)
 !
       end subroutine elength_nod_send_recv
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine diff_elen_nod_send_recv
+      subroutine diff_elen_nod_send_recv(elen_nod)
 !
-      use m_filter_elength
+      use t_filter_elength
 !
+      type(elen_nod_diffs_type), intent(inout) :: elen_nod
 !
-      call nod_vector_send_recv(FEM1_elen%elen_nod%diff%df_x2)
-      call nod_vector_send_recv(FEM1_elen%elen_nod%diff%df_y2)
-      call nod_vector_send_recv(FEM1_elen%elen_nod%diff%df_z2)
+      call nod_vector_send_recv(elen_nod%diff%df_x2)
+      call nod_vector_send_recv(elen_nod%diff%df_y2)
+      call nod_vector_send_recv(elen_nod%diff%df_z2)
 !
-      call nod_vector_send_recv(FEM1_elen%elen_nod%diff%df_xy)
-      call nod_vector_send_recv(FEM1_elen%elen_nod%diff%df_yz)
-      call nod_vector_send_recv(FEM1_elen%elen_nod%diff%df_zx)
+      call nod_vector_send_recv(elen_nod%diff%df_xy)
+      call nod_vector_send_recv(elen_nod%diff%df_yz)
+      call nod_vector_send_recv(elen_nod%diff%df_zx)
 !
       end subroutine diff_elen_nod_send_recv
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine filter_mom_nod_send_recv(ifil)
+      subroutine filter_mom_nod_send_recv(mom_nod)
 !
-      use m_filter_moments
+      use t_filter_moments
+!
+      type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !
 !
-      integer(kind = kint), intent(in) :: ifil
+      call nod_scalar_send_recv(mom_nod%moms%f_x)
+      call nod_scalar_send_recv(mom_nod%moms%f_y)
+      call nod_scalar_send_recv(mom_nod%moms%f_z)
 !
-      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_x)
-      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_y)
-      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_z)
+      call nod_scalar_send_recv(mom_nod%moms%f_x2)
+      call nod_scalar_send_recv(mom_nod%moms%f_y2)
+      call nod_scalar_send_recv(mom_nod%moms%f_z2)
 !
-      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_x2)
-      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_y2)
-      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_z2)
-!
-      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_xy)
-      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_yz)
-      call nod_scalar_send_recv(mom1%mom_nod(ifil)%moms%f_zx)
+      call nod_scalar_send_recv(mom_nod%moms%f_xy)
+      call nod_scalar_send_recv(mom_nod%moms%f_yz)
+      call nod_scalar_send_recv(mom_nod%moms%f_zx)
 !
       end subroutine filter_mom_nod_send_recv
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine diff_filter_mom_nod_send_recv(ifil)
+      subroutine diff_filter_mom_nod_send_recv(mom_nod)
 !
-      use m_filter_moments
+      use t_filter_moments
+!
+      type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !
 !
-      integer(kind = kint), intent(in) :: ifil
+      call nod_vector_send_recv(mom_nod%diff%df_x)
+      call nod_vector_send_recv(mom_nod%diff%df_y)
+      call nod_vector_send_recv(mom_nod%diff%df_z)
 !
-      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_x)
-      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_y)
-      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_z)
+      call nod_vector_send_recv(mom_nod%diff%df_x2)
+      call nod_vector_send_recv(mom_nod%diff%df_y2)
+      call nod_vector_send_recv(mom_nod%diff%df_z2)
 !
-      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_x2)
-      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_y2)
-      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_z2)
-!
-      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_xy)
-      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_yz)
-      call nod_vector_send_recv(mom1%mom_nod(ifil)%diff%df_zx)
+      call nod_vector_send_recv(mom_nod%diff%df_xy)
+      call nod_vector_send_recv(mom_nod%diff%df_yz)
+      call nod_vector_send_recv(mom_nod%diff%df_zx)
 !
       end subroutine diff_filter_mom_nod_send_recv
 !

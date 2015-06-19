@@ -40,14 +40,15 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_filter_moments_on_ele
+      subroutine cal_filter_moments_on_ele(dxi_ele)
 !
       use m_machine_parameter
       use m_filter_elength
-      use m_filter_dxdxi
+      use t_filter_dxdxi
       use cal_1d_moments_4_fliter
       use set_filter_moments_3d
 !
+      type(dxdxi_direction_type), intent(in) :: dxi_ele
       integer(kind = kint) :: iele
 !
 !
@@ -64,15 +65,11 @@
 !     &             num_order_3d
       do iele = 1, FEM1_elen%nele_filter_mom
         call s_set_seeds_moments                                        &
-     &      (filter_dxi1%dxi_ele%dx%df_dxi(iele),                       &
-     &       filter_dxi1%dxi_ele%dx%df_dei(iele),                       &
-     &       filter_dxi1%dxi_ele%dx%df_dzi(iele),                       &
-     &       filter_dxi1%dxi_ele%dy%df_dxi(iele),                       &
-     &       filter_dxi1%dxi_ele%dy%df_dei(iele),                       &
-     &       filter_dxi1%dxi_ele%dy%df_dzi(iele),                       &
-     &       filter_dxi1%dxi_ele%dz%df_dxi(iele),                       &
-     &       filter_dxi1%dxi_ele%dz%df_dei(iele),                       &
-     &       filter_dxi1%dxi_ele%dz%df_dzi(iele))
+     &      (dxi_ele%dx%df_dxi(iele), dxi_ele%dx%df_dei(iele),          &
+     &       dxi_ele%dx%df_dzi(iele), dxi_ele%dy%df_dxi(iele),          &
+     &       dxi_ele%dy%df_dei(iele), dxi_ele%dy%df_dzi(iele),          &
+     &       dxi_ele%dz%df_dxi(iele), dxi_ele%dz%df_dei(iele),          &
+     &       dxi_ele%dz%df_dzi(iele))
 !
         seed_moments_ele(iele,1:num_order_3d)                           &
      &      = seed_moments(1:num_order_3d)

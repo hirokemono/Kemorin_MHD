@@ -79,7 +79,7 @@
 !
       integer(kind= kint), intent(in) ::  istep_psf
       type(psf_local_data), intent(in) :: psf_mesh
-      type(ucd_data), intent(in) ::        psf_out
+      type(ucd_data), intent(inout) :: psf_out
       type(merged_ucd_data), intent(inout) :: psf_out_m
 !
 !

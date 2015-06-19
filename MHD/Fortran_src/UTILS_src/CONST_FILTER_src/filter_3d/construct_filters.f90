@@ -1,9 +1,14 @@
 !
 !      module construct_filters
 !
-      module construct_filters
-!
 !     Written by H. Matsui on Mar., 2008
+!
+!      subroutine const_commutative_filter
+!      subroutine const_simple_filter
+!      subroutine correct_commutative_filter
+!      subroutine correct_by_simple_filter
+!
+      module construct_filters
 !
       use m_precision
 !
@@ -23,11 +28,6 @@
       implicit none
 !
       character(len=kchara), parameter, private :: tmp_head = 'work'
-!
-!      subroutine const_commutative_filter
-!      subroutine const_simple_filter
-!      subroutine correct_commutative_filter
-!      subroutine correct_by_simple_filter
 !
 ! ----------------------------------------------------------------------
 !
@@ -116,9 +116,6 @@
 !
         call deallocate_iele_belonged
         call deallocate_inod_next_node
-!
-!        if(iflag_debug.eq.1)  write(*,*) 'finalize_4_cal_fileters'
-!        call finalize_4_cal_fileters
 !
       end subroutine const_simple_filter
 !

@@ -1,10 +1,13 @@
 !
 !      module cal_element_size
 !
-      module cal_element_size
-!
 !      Written by H.Matsui on Nov., 2006
 !      Modified by H. Matsui on Mar., 2008
+!
+!      subroutine s_cal_element_size(filter_dxi)
+!      subroutine s_const_filter_mom_ele(ifil)
+!
+      module cal_element_size
 !
       use m_precision
 !
@@ -13,27 +16,23 @@
 !
       implicit none
 !
-!      subroutine s_cal_element_size
-!      subroutine s_const_filter_mom_ele(ifil)
-!
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_element_size
+      subroutine s_cal_element_size(filter_dxi)
 !
       use m_finite_element_matrix
       use m_ctl_params_4_gen_filter
       use m_element_id_4_node
       use m_next_node_id_4_node
       use m_filter_elength
-      use m_filter_dxdxi
       use m_reference_moments
       use m_dxi_dxes_3d_node
-      use m_filter_dxdxi
       use m_crs_consist_mass_mat
+      use t_filter_dxdxi
 !
       use set_element_id_4_node
       use ordering_4_rhs_assemble
@@ -46,6 +45,8 @@
       use cal_dxidx_ele
       use cal_deltax_and_prods_4_nod
       use cal_1st_diff_deltax_4_nod
+!
+      type(dxdxi_data_type), intent(inout) :: filter_dxi
 !
 !  ---------------------------------------------------
 !      set RHS assemble table
@@ -65,8 +66,7 @@
       if (iflag_debug.eq.1)  write(*,*) 'alloc_nodal_elen_type'
       call alloc_nodal_elen_type                                        &
      &   (FEM1_elen%nnod_filter_mom, FEM1_elen%elen_nod)
-      call alloc_dxdxi_diff_type                                        &
-     &   (FEM1_elen%nnod_filter_mom, filter_dxi1%dxi_nod)
+      call alloc_jacobians_node(FEM1_elen%nnod_filter_mom, filter_dxi)
       call allocate_dxi_dx_ele
       call allocate_dxi_dx_nod
 !
@@ -91,7 +91,7 @@
       call cal_dx2_on_node(itype_mass_matrix)
       call cal_dxi_dxes_node(itype_mass_matrix)
 !
-      call elength_nod_send_recv
+      call elength_nod_send_recv(FEM1_elen%elen_nod)
       call dxidx_nod_send_recv
 !
 !  ---------------------------------------------------
@@ -107,7 +107,7 @@
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'diff_elen_nod_send_recv'
-      call diff_elen_nod_send_recv
+      call diff_elen_nod_send_recv(FEM1_elen%elen_nod)
 !
 !  ---------------------------------------------------
 !        filter moments on each node
@@ -118,7 +118,7 @@
       call allocate_seed_moms_nod(FEM1_elen%nnod_filter_mom)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_filter_moments_on_ele'
-      call cal_filter_moments_on_ele
+      call cal_filter_moments_on_ele(filter_dxi%dxi_ele)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_filter_moments_on_node_1st'
       call cal_filter_moments_on_node_1st
@@ -139,7 +139,6 @@
 !
       call deallocate_seed_moms_ele
 !
-      call dealloc_dxdxi_diff_type(filter_dxi1%dxi_ele)
       call deallocate_iele_belonged
       call deallocate_inod_next_node
 !
@@ -149,6 +148,7 @@
 !
       subroutine s_const_filter_mom_ele(ifil)
 !
+      use m_filter_moments
       use m_ctl_params_4_gen_filter
       use cal_diff_elesize_on_ele
       use cal_1st_diff_deltax_4_nod
@@ -156,7 +156,8 @@
 !
       integer(kind = kint), intent(in) :: ifil
 !
-      call filter_mom_nod_send_recv(ifil)
+!
+      call filter_mom_nod_send_recv(mom1%mom_nod(ifil))
 !
       if (itype_mass_matrix .eq. 1) then
         call cal_diffs_filter_nod_consist(ifil)
@@ -164,7 +165,7 @@
         call cal_diffs_filter_nod_lump(ifil)
       end if
 !
-      call diff_filter_mom_nod_send_recv(ifil)
+      call diff_filter_mom_nod_send_recv(mom1%mom_nod(ifil))
 !
       call cal_filter_moms_ele_by_nod(ifil)
       call cal_1st_diffs_filter_ele(ifil)

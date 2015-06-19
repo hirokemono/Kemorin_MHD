@@ -117,7 +117,6 @@
       use m_crs_matrix_4_filter
       use m_element_id_4_node
       use m_next_node_id_4_node
-      use m_filter_dxdxi
       use add_nodes_elems_4_each_nod
       use ordering_by_filtering_size
       use fem_const_filter_matrix
@@ -135,8 +134,6 @@
       call deallocate_matrix_4_filter
       call deallocate_mat_num_weight
       call deallocate_sk_filter
-!
-      call dealloc_dxdxi_diff_type(filter_dxi1%dxi_nod)
 !
       call deallocate_wk_exp_ele_nod_each
 !

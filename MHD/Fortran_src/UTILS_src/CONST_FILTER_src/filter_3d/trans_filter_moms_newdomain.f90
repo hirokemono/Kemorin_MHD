@@ -152,7 +152,6 @@
       use set_filter_moms_2_new_mesh
       use set_element_types_4_IO
       use set_filter_moms_2_new_mesh
-      use copy_filter_moms_from_2nd
       use set_mesh_types
 !
       use t_mesh_data
@@ -211,7 +210,15 @@
       if (iflag_set_filter_moms .gt. 0) then
         ifmt_filter_file = id_ascii_file_fmt
         filter_file_head = new_filter_moms_head
-        call copy_filter_moments_from_2nd(newmesh%node, newmesh%ele)
+        mom1%nnod_fmom = newmesh%node%numnod
+
+        call alloc_filter_moms_ele_type(newmesh%ele%numele, mom1)
+        call copy_filter_moms_ele(newmesh%ele%numele,                   &
+      &     mom1%num_filter_moms, mom2_ele, mom1%mom_ele)
+        call dealloc_filter_mom_ele_items                               &
+      &    (mom1%num_filter_moms, mom2_ele)
+        deallocate(mom2_ele)
+
         call sel_write_filter_moms_file(my_rank_2nd, FEM1_elen, mom1)
         call dealloc_filter_moms_ele_type(mom1)
       end if
@@ -220,8 +227,12 @@
       if (iflag_set_filter_elen .gt. 0) then
         ifmt_filter_file = id_ascii_file_fmt
         filter_file_head = new_filter_elen_head
-        call copy_elength_ele_from_2nd                                  &
-     &     (newmesh%node%numnod, newmesh%ele%numele, elen2_ele)
+        FEM1_elen%nnod_filter_mom = newmesh%node%numnod
+        FEM1_elen%nele_filter_mom = newmesh%ele%numele
+        call alloc_elen_ele_type                                        &
+     &     (FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele)
+        call copy_filter_elen_ele_from_type(elen2_ele)
+!
         call sel_write_filter_elen_file(my_rank_2nd, FEM1_elen)
 !
         call dealloc_elen_type(elen2_ele)

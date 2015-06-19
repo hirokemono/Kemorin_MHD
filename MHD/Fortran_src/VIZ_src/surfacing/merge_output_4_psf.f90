@@ -36,7 +36,7 @@
       use ucd_IO_select
 !
       type(psf_local_data), intent(in) :: psf_mesh
-      type(ucd_data), intent(in) :: psf_out
+      type(ucd_data), intent(inout) :: psf_out
 !
       integer(kind = kint) :: nnod4, ntot4
       integer(kind = kint) :: istack4(0:nprocs)

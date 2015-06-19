@@ -5,7 +5,7 @@
 !                                    on July 2000 (ver 1.1)
 !        Modified by H. Matsui on Aug., 2006
 !
-!      subroutine s_int_element_length
+!      subroutine s_int_element_length(nele_filter, dxi_ele, elen_ele)
 !
       module int_element_length
 !
@@ -17,25 +17,12 @@
 !
 !   minimum and maximum of element position
 !
-      private :: s_int_element_length
       private :: fem_element_length_linear, fem_element_length_quad
       private :: fem_element_length_lag, cal_element_length_by_jacobi
 !
 !-----------------------------------------------------------------------
 !
       contains
-!
-!-----------------------------------------------------------------------
-!
-      subroutine int_element_length_1st
-!
-      use m_filter_elength
-      use m_filter_dxdxi
-!
-      call s_int_element_length(FEM1_elen%nele_filter_mom,              &
-     &    filter_dxi1%dxi_ele, FEM1_elen%elen_ele%moms)
-!
-      end subroutine int_element_length_1st
 !
 !-----------------------------------------------------------------------
 !
