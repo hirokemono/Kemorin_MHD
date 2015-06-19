@@ -77,13 +77,16 @@
 !
       use m_filter_coefs
 !
-      integer(kind = kint) :: ip, id_dest
+      integer(kind = kint) :: ip, id_dest, nneib_recv, nneib_send
 !
 !
       if (my_rank .eq. izero) call allocate_num_failed_nodes
 !
 !C-- SEND
+      nneib_send = 0
+      nneib_recv = 0
       if (my_rank .ne. izero) then
+        nneib_send = 1
         isend_failed(1) = num_failed_whole
         isend_failed(2) = num_failed_fluid
         call MPI_ISEND (isend_failed(1), itwo, CALYPSO_INTEGER,         &
@@ -92,15 +95,18 @@
 !C
 !C-- RECEIVE
       if (my_rank .eq. izero) then
+        nneib_recv = nprocs-1
         do ip = 2, nprocs
           id_dest = ip - 1
           call MPI_IRECV (irecv_failed(1,id_dest), itwo,                &
      &        CALYPSO_INTEGER, id_dest, izero, CALYPSO_COMM,            &
      &        i_req2(id_dest), ierr_MPI)
         end do
+      end if
 !
-        call MPI_WAITALL (nprocs-1, i_req2(1), i_sta2(1,1), ierr_MPI)
+      call MPI_WAITALL (nneib_recv, i_req2(1), i_sta2(1,1), ierr_MPI)
 !
+      if (my_rank .eq. izero) then
         do ip= 2, nprocs
           id_dest = ip - 1
           num_failed_whole_gl(ip) = irecv_failed(1,id_dest)
@@ -111,9 +117,7 @@
         num_failed_fluid_gl(1) = num_failed_fluid
       end if
 !
-      if (my_rank .ne. izero) then
-        call MPI_WAITALL (ione, i_req1, i_sta1(1), ierr_MPI)
-      end if
+      call MPI_WAITALL(nneib_send, i_req1, i_sta1(1), ierr_MPI)
 !
 !
       if (my_rank .eq. izero) then

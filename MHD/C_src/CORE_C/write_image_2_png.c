@@ -80,7 +80,7 @@ void write_png_rgb(const char *file_name, png_uint_32 num_x, png_uint_32 num_y,
 	png_structp	png_ptr;
 	png_infop	info_ptr;
 	
-	printf("fname_in = %s...end \n", file_name);
+	printf("PNG data file: %s...end \n", file_name);
 	
 	void write_row_callback(png_structp png_ptr, png_uint_32 row, int pass);
 	

@@ -70,7 +70,7 @@
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &    'Write merged gzipped ascii data: ', trim(file_name)
+     &    'Write gzipped ascii data by MPI-IO: ', trim(file_name)
       call calypso_mpi_write_file_open(file_name, nprocs_in, id_fld)
 !
       if(id_rank .lt. nprocs_in) then
@@ -106,7 +106,7 @@
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &    'Read merged gzipped ascii data: ', trim(file_name)
+     &    'Read gzipped ascii data by MPI-IO: ', trim(file_name)
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
       ioff_gl = 0
@@ -147,7 +147,7 @@
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &    'Read merged gzipped ascii data: ', trim(file_name)
+     &    'Read gzipped ascii data by MPI-IO: ', trim(file_name)
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
       ioff_gl = 0
@@ -199,7 +199,7 @@
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &    'Read merged gzipped ascii data: ', trim(file_name)
+     &    'Read gzipped ascii data by MPI-IO: ', trim(file_name)
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
       ioff_gl = 0

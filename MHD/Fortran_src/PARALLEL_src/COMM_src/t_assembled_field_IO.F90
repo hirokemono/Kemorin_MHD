@@ -136,8 +136,8 @@
       integer(kind = kint) :: icou, j
 !
 !
-      if(my_rank .eq. 0) write(*,*) 'Write merged compressed data: ',   &
-     &                               trim(file_name)
+      if(my_rank .eq. 0) write(*,*)                                     &
+     &      'Write compressed data by MPI-IO: ', trim(file_name)
       call calypso_mpi_write_file_open(file_name, nprocs_in, id_fld)
 !
       ioff_gl = 0
@@ -179,7 +179,7 @@
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &     'Write mergend compressed binary data: ', trim(file_name)
+     &     'Write compressed binary data by MPI-IO: ', trim(file_name)
       call calypso_mpi_write_file_open(file_name, nprocs_in, id_fld)
 !
 !

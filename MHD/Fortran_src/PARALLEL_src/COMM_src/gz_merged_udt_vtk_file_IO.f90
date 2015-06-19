@@ -56,7 +56,7 @@
      &      iflag_ucd_gz, istep, gzip_name)
 !
       if(my_rank .eq. 0) then
-        write(*,*) 'gzipped single UCD data: ', trim(gzip_name)
+        write(*,*) 'gzipped UCD data by MPI-IO: ', trim(gzip_name)
       end if
 !
       call gz_write_ucd_file_mpi(gzip_name, ucd, m_ucd)
@@ -79,7 +79,7 @@
      &      iflag_udt_gz, istep, gzip_name)
 !
       if(my_rank .eq. 0) then
-        write(*,*) 'gzipped single UCD field data: ', trim(gzip_name)
+        write(*,*) 'gzipped UCD field by MPI-IO: ', trim(gzip_name)
       end if
 !
       call gz_write_ucd_phys_mpi(gzip_name, ucd, m_ucd)
@@ -102,7 +102,7 @@
      &      gzip_name)
 !
       if(my_rank .eq. 0) then
-        write(*,*) 'gzipped single UCD grid data: ', trim(gzip_name)
+        write(*,*) 'gzipped UCD grid by MPI-IO: ', trim(gzip_name)
       end if
 !
       call gz_write_ucd_grid_mpi(gzip_name, ucd, m_ucd)
@@ -127,7 +127,7 @@
      &    istep, gzip_name)
 !
      if(my_rank .eq. 0) then
-        write(*,*) 'gzipped single VTK data: ', trim(gzip_name)
+        write(*,*) 'gzipped VTK data by MPI-IO: ', trim(gzip_name)
       end if
       call calypso_mpi_barrier
 !
@@ -152,7 +152,7 @@
      &      istep, gzip_name)
 !
      if(my_rank .eq. 0) then
-        write(*,*) 'gzipped single VTK field data: ', trim(gzip_name)
+        write(*,*) 'gzipped VTK field by MPI-IO: ', trim(gzip_name)
       end if
       call calypso_mpi_barrier
 !
@@ -176,7 +176,7 @@
      &    gzip_name)
 !
      if(my_rank .eq. 0) then
-        write(*,*) 'gzipped single VTK grid data: ', trim(gzip_name)
+        write(*,*) 'gzipped VTK grid by MPI-IO: ', trim(gzip_name)
       end if
       call calypso_mpi_barrier
 !

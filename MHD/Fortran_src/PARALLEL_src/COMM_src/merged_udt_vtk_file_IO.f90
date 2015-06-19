@@ -109,7 +109,7 @@
      &      istep, file_name)
 !
      if(my_rank .eq. 0) then
-        write(*,*) 'single UCD data: ', trim(file_name)
+        write(*,*) 'UCD data by MPI-IO: ', trim(file_name)
       end if
       call calypso_mpi_barrier
 !
@@ -134,7 +134,7 @@
      &      istep, file_name)
 !
      if(my_rank .eq. 0) then
-        write(*,*) 'single UCD field data: ', trim(file_name)
+        write(*,*) 'UCD field by MPI-IO: ', trim(file_name)
       end if
       call calypso_mpi_barrier
 !
@@ -158,7 +158,7 @@
      &    file_name)
 !
      if(my_rank .eq. 0) then
-        write(*,*) 'single UCD grid data: ', trim(file_name)
+        write(*,*) 'UCD grid by MPI-IO: ', trim(file_name)
       end if
       call calypso_mpi_barrier
 !
@@ -184,7 +184,7 @@
      &      istep, file_name)
 !
      if(my_rank .eq. 0) then
-        write(*,*) 'single VTK data: ', trim(file_name)
+        write(*,*) 'VTK by MPI-IO: ', trim(file_name)
       end if
       call calypso_mpi_barrier
 !
@@ -209,7 +209,7 @@
      &      istep, file_name)
 !
      if(my_rank .eq. 0) then
-        write(*,*) 'single VTK field data: ', trim(file_name)
+        write(*,*) 'VTK field by MPI-IO: ', trim(file_name)
       end if
       call calypso_mpi_barrier
 !
@@ -233,7 +233,7 @@
      &    file_name)
 !
      if(my_rank .eq. 0) then
-        write(*,*) 'single VTK grid data: ', trim(file_name)
+        write(*,*) 'VTK grid by MPI-IO: ', trim(file_name)
       end if
       call calypso_mpi_barrier
 !

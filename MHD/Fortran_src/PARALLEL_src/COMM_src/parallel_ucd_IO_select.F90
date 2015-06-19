@@ -30,8 +30,6 @@
 !
       implicit none
 !
-      private :: choose_para_fld_file_format
-!
 !------------------------------------------------------------------
 !
       contains

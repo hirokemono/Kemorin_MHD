@@ -65,7 +65,7 @@
      &                (ierr_fld, 'gzipped data output does not work')
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &    'write merged gzipped binary data: ', trim(file_name)
+     &    'write gzipped binary data by MPI-IO: ', trim(file_name)
 !
       call calypso_mpi_write_file_open(file_name, nprocs_in, id_fld)
 !
@@ -100,7 +100,7 @@
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &    'read merged gzipped binary data: ', trim(file_name)
+     &    'read gzipped binary data by MPI-IO: ', trim(file_name)
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
       ioff_gl = 0
@@ -146,7 +146,7 @@
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &    'read merged gzipped binary data MPI-IO: ', trim(file_name)
+     &      'read gzipped binary data MPI-IO: ', trim(file_name)
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
       ioff_gl = 0
@@ -198,7 +198,7 @@
 !
 !
       if(my_rank .eq. 0) write(*,*)                                     &
-     &    'read merged gzipped binary data: ', trim(file_name)
+     &    'read gzipped binary data by MPI-IO: ', trim(file_name)
       call calypso_mpi_read_file_open(file_name, id_fld)
 !
       ioff_gl = 0

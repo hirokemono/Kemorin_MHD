@@ -154,6 +154,7 @@
       real(kind = kreal), allocatable :: rgba_real_part(:,:)
 !
       integer(kind = kint) :: num, ip, inum, ipix, max_smp, ist
+      integer(kind = kint) :: nneib_recv
 !
 !
       num_pixel_xy = n_pvr_pixel(1,i_pvr)*n_pvr_pixel(2,i_pvr)
@@ -225,19 +226,24 @@
 !
 !  Collect image to rank 0
 !
+      nneib_recv = 0
       num = ifour * npixel_local
       call MPI_ISEND(rgba_real_part(1,1), num, CALYPSO_REAL,            &
      &    izero, 0, CALYPSO_COMM, req1(1), ierr_MPI)
 !
       if(my_rank .eq. 0) then
+        nneib_recv = nprocs
         do ip = 1, nprocs
           ist =          istack_image(ip-1)
           num = ifour * (istack_image(ip) - istack_image(ip-1))
           call MPI_IRECV(rgba_real_gl(1,ist+1), num, CALYPSO_REAL,      &
      &       (ip-1), 0, CALYPSO_COMM, req2(ip), ierr_MPI)
         end do
-        call MPI_WAITALL(nprocs, req2, sta2, ierr_MPI)
+      end if
 !
+      call MPI_WAITALL(nneib_recv, req2, sta2, ierr_MPI)
+!
+      if(my_rank .eq. 0) then
         call set_pvr_colorbar(i_pvr, num_pixel_xy, rgba_real_gl(1,1))
       end if
       call MPI_WAITALL (ione, req1(1), sta1, ierr_MPI)

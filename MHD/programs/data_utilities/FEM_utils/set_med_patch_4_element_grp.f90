@@ -301,7 +301,7 @@
       use calypso_mpi
 !
       character(len=kchara), intent(in) :: grp_name
-      integer(kind = kint) :: np_recv
+      integer(kind = kint) :: np_recv, nneib_recv
       integer(kind = kint) :: ip, num, inum, ist, k1
 !
       real(kind = kreal), allocatable :: xyz_med_g(:,:)
@@ -310,6 +310,7 @@
       call MPI_Gather(npatch_grp, ione, CALYPSO_INTEGER, npatch_l,      &
      &    ione, CALYPSO_INTEGER, izero, CALYPSO_COMM, ierr_MPI)
 !
+      np_recv = 0
       if(my_rank .eq. 0) then
         do ip = 1, nprocs
           istack_npatch_l(ip) = istack_npatch_l(ip-1) + npatch_l(ip)
@@ -320,18 +321,20 @@
         allocate(xyz_med_g(3,3*npatch_g))
       end if
 !
+      nneib_recv = 0
       call MPI_Isend(xyz_med(1,1), 9*npatch_grp, CALYPSO_REAL,          &
      &      izero, 0, CALYPSO_COMM, req1, ierr_MPI)
 !
       if(my_rank .eq. 0) then
+        nneib_recv = nprocs
         do ip = 1, nprocs
           ist = 3*istack_npatch_l(ip-1) + 1
           num = 9*npatch_l(ip)
           call MPI_Irecv(xyz_med_g(1,ist), num, CALYPSO_REAL,           &
      &        (ip-1), 0, CALYPSO_COMM, req2(ip), ierr_MPI)
         end do
-        call MPI_WAITALL(nprocs, req2, sta2, ierr_MPI)
       end if
+      call MPI_WAITALL(nneib_recv, req2, sta2, ierr_MPI)
       call MPI_WAITALL(ione, req1, sta1, ierr_MPI)
 !
       if(my_rank .eq. 0) then

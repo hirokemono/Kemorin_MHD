@@ -92,9 +92,8 @@
       use search_ele_list_for_psf
       use set_const_4_sections
       use find_node_and_patch_psf
-      use set_ucd_data_to_type
-      use parallel_ucd_IO_select
       use set_fields_for_psf
+      use output_4_psf
 !
       integer(kind=kint), intent(in) :: numnod, internal_node, numele
       integer(kind=kint), intent(in) :: numsurf, numedge
@@ -172,22 +171,9 @@
       call alloc_psf_field_data(num_psf, psf_mesh)
 !
       do i_psf = 1, num_psf
-        psf_out(i_psf)%file_prefix = psf_header(i_psf)
-        psf_out(i_psf)%ifmt_file = itype_psf_file(i_psf)
-!
-        call link_node_data_type_2_output                               &
-     &     (psf_mesh(i_psf)%node, psf_out(i_psf))
-        call link_ele_data_type_2_output                                &
-     &     (psf_mesh(i_psf)%patch, psf_out(i_psf))
-        call link_field_data_type_2_output(psf_mesh(i_psf)%node%numnod, &
-     &      psf_mesh(i_psf)%field, psf_out(i_psf))
-!
-        call link_nnod_stacks_type_2_output(nprocs,                     &
-     &      psf_mesh(i_psf)%node, psf_mesh(i_psf)%patch,                &
-     &      psf_out_m(i_psf))
-!
-        call sel_write_parallel_ucd_mesh                                &
-     &     (psf_out(i_psf), psf_out_m(i_psf))
+        call output_section_mesh                                        &
+     &     (psf_header(i_psf), itype_psf_file(i_psf), psf_mesh(i_psf),  &
+     &      psf_out(i_psf), psf_out_m(i_psf))
       end do
 !
 !      call calypso_mpi_barrier
@@ -203,7 +189,7 @@
       use m_control_params_4_psf
       use set_fields_for_psf
       use set_ucd_data_to_type
-      use parallel_ucd_IO_select
+      use output_4_psf
 !
       integer(kind = kint), intent(in) :: istep_psf
 !
@@ -227,15 +213,9 @@
 !
 !      call start_eleps_time(21)
       do i_psf = 1, num_psf
-         call sel_write_parallel_ucd_file                               &
-     &      (istep_psf, psf_out(i_psf), psf_out_m(i_psf))
+        call output_section_data(istep_psf, psf_mesh(i_psf),            &
+     &      psf_out(i_psf), psf_out_m(i_psf))
       end do
-!
-!        call sel_write_parallel_ucd_mesh(ucd, m_ucd)
-!
-!        call disconnect_ucd_data(ucd)
-!      end do
-!      call end_eleps_time(21)
 !
       end subroutine cross_section_main
 !

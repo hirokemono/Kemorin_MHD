@@ -126,6 +126,8 @@
         call write_ucd_data_2_gz_vtk(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_vtd_gz) then
         call write_ucd_data_2_gz_vtk_phys(my_rank, istep_ucd, ucd)
+      else if(ucd%ifmt_file .eq. iflag_ucd_gz) then
+        call write_gz_ucd_file(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_udt_gz) then
         call write_gz_udt_file(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_fld_gz) then
@@ -136,6 +138,8 @@
         call write_udt_data_2_vtk_file(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_vtd) then
         call write_udt_data_2_vtk_phys(my_rank, istep_ucd, ucd)
+      else if(ucd%ifmt_file .eq. iflag_ucd) then
+        call write_ucd_file(my_rank, istep_ucd, ucd)
       else if(ucd%ifmt_file .eq. iflag_udt) then
         call write_udt_file(my_rank, istep_ucd, ucd)
       else

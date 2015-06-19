@@ -143,8 +143,7 @@
       use set_const_4_sections
       use find_node_and_patch_psf
       use set_fields_for_psf
-      use set_ucd_data_to_type
-      use parallel_ucd_IO_select
+      use output_4_psf
 !
       integer(kind = kint), intent(in) :: istep_iso
 !
@@ -173,10 +172,6 @@
 !
       integer(kind = kint) :: i_iso
 !
-!>      Structure for isosurface output (used by master process)
-      type(ucd_data) :: iso_out
-      type(merged_ucd_data) :: iso_out_m
-!
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_isosurfaces'
       call set_const_4_isosurfaces(num_iso, numnod, inod_smp_stack,     &
@@ -198,22 +193,8 @@
      &    iso_param, iso_list, iso_mesh)
 !
       do i_iso = 1, num_iso
-        iso_out%file_prefix = iso_header(i_iso)
-        iso_out%ifmt_file = itype_iso_file(i_iso)
-!
-        call link_node_data_type_2_output                               &
-     &     (iso_mesh(i_iso)%node, iso_out)
-        call link_ele_data_type_2_output                                &
-     &     (iso_mesh(i_iso)%patch, iso_out)
-        call link_field_data_type_2_output(iso_mesh(i_iso)%node%numnod, &
-     &      iso_mesh(i_iso)%field, iso_out)
-        call link_nnod_stacks_type_2_output(nprocs,                     &
-     &      iso_mesh(i_iso)%node, iso_mesh(i_iso)%patch, iso_out_m)
-!
-        call sel_write_parallel_ucd_file                                &
-     &      (istep_iso, iso_out, iso_out_m)
-!
-        call disconnect_merged_ucd_mesh(iso_out, iso_out_m)
+        call output_isosurface(iso_header(i_iso),                       &
+     &      itype_iso_file(i_iso), istep_iso, iso_mesh(i_iso))
       end do
 !
       call dealloc_psf_field_data(num_iso, iso_mesh)

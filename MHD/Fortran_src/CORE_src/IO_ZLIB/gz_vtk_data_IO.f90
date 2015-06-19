@@ -184,8 +184,8 @@
       write(textbuf,'(a,a1)')  vtk_cell_type_head(nele), char(0)
       call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(a,a1)') vtk_each_cell_type(icellid), char(0)
       do iele = 1, nele
+        write(textbuf,'(a,a1)') vtk_each_cell_type(icellid), char(0)
         call gz_write_textbuf_no_lf
       end do
 !
