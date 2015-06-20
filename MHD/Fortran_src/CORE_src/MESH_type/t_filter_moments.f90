@@ -11,7 +11,6 @@
 !       (substitution of allocate_filter_moms_nod )
 !      subroutine dealloc_filter_moms_nod_type(FEM_moms)
 !        type(gradient_filter_mom_type), intent(inout) :: FEM_moms
-!       (substitution of deallocate_filter_moms_nod )
 !      subroutine alloc_filter_mom_ele_items(nele, n_filter, mom_ele)
 !      subroutine dealloc_filter_mom_ele_items(n_filter, mom_ele)
 !        integer(kind = kint), intent(in) :: nele, n_filter

@@ -3,6 +3,14 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
+!      subroutine cal_1st_diffs_dx_by_consist
+!      subroutine cal_diffs_filter_nod_consist(mom_nod)
+!      subroutine cal_diffs_filter_nod_lump(mom_nod)
+!      subroutine cal_1st_diffs_dx_by_lump
+!      subroutine cal_1st_diffs_dx_by_lump(ifil)
+!      subroutine cal_diff_dx_by_consist
+!      subroutine cal_diff_dx_by_lump
+!
       module cal_1st_diff_deltax_4_nod
 !
       use m_precision
@@ -12,13 +20,6 @@
 !
       private :: take_1st_diffs_nod_by_consist
       private :: take_1st_diffs_nod_by_lump
-!
-!      subroutine cal_1st_diffs_dx_by_consist
-!      subroutine cal_1st_diffs_dx_by_consist(ifil)
-!      subroutine cal_1st_diffs_dx_by_lump
-!      subroutine cal_1st_diffs_dx_by_lump(ifil)
-!      subroutine cal_diff_dx_by_consist
-!      subroutine cal_diff_dx_by_lump
 !
 !-----------------------------------------------------------------------
 !
@@ -50,34 +51,34 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_diffs_filter_nod_consist(ifil)
+      subroutine cal_diffs_filter_nod_consist(mom_nod)
 !
-      use m_filter_moments
+      use t_filter_moments
 !
-      integer(kind = kint), intent(in) :: ifil
+      type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !
 !      1st derivatives
 !
       call take_1st_diffs_nod_by_consist                                &
-     &   (mom1%mom_nod(ifil)%moms%f_x,  mom1%mom_nod(ifil)%diff%df_x)
+     &   (mom_nod%moms%f_x,  mom_nod%diff%df_x)
       call take_1st_diffs_nod_by_consist                                &
-     &   (mom1%mom_nod(ifil)%moms%f_y,  mom1%mom_nod(ifil)%diff%df_y)
+     &   (mom_nod%moms%f_y,  mom_nod%diff%df_y)
       call take_1st_diffs_nod_by_consist                                &
-     &   (mom1%mom_nod(ifil)%moms%f_z,  mom1%mom_nod(ifil)%diff%df_z)
+     &   (mom_nod%moms%f_z,  mom_nod%diff%df_z)
 !
       call take_1st_diffs_nod_by_consist                                &
-     &   (mom1%mom_nod(ifil)%moms%f_x2, mom1%mom_nod(ifil)%diff%df_x2)
+     &   (mom_nod%moms%f_x2, mom_nod%diff%df_x2)
       call take_1st_diffs_nod_by_consist                                &
-     &   (mom1%mom_nod(ifil)%moms%f_y2, mom1%mom_nod(ifil)%diff%df_y2)
+     &   (mom_nod%moms%f_y2, mom_nod%diff%df_y2)
       call take_1st_diffs_nod_by_consist                                &
-     &   (mom1%mom_nod(ifil)%moms%f_z2, mom1%mom_nod(ifil)%diff%df_z2)
+     &   (mom_nod%moms%f_z2, mom_nod%diff%df_z2)
 !
       call take_1st_diffs_nod_by_consist                                &
-     &   (mom1%mom_nod(ifil)%moms%f_xy, mom1%mom_nod(ifil)%diff%df_xy)
+     &   (mom_nod%moms%f_xy, mom_nod%diff%df_xy)
       call take_1st_diffs_nod_by_consist                                &
-     &   (mom1%mom_nod(ifil)%moms%f_yz, mom1%mom_nod(ifil)%diff%df_yz)
+     &   (mom_nod%moms%f_yz, mom_nod%diff%df_yz)
       call take_1st_diffs_nod_by_consist                                &
-     &   (mom1%mom_nod(ifil)%moms%f_zx, mom1%mom_nod(ifil)%diff%df_zx)
+     &   (mom_nod%moms%f_zx, mom_nod%diff%df_zx)
 !
       end subroutine cal_diffs_filter_nod_consist
 !
@@ -108,34 +109,34 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_diffs_filter_nod_lump(ifil)
+      subroutine cal_diffs_filter_nod_lump(mom_nod)
 !
-      use m_filter_moments
+      use t_filter_moments
 !
-      integer(kind = kint), intent(in) :: ifil
+      type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !
 !      1st derivatives
 !
       call take_1st_diffs_nod_by_lump                                   &
-     &   (mom1%mom_nod(ifil)%moms%f_x,  mom1%mom_nod(ifil)%diff%df_x)
+     &   (mom_nod%moms%f_x,  mom_nod%diff%df_x)
       call take_1st_diffs_nod_by_lump                                   &
-     &   (mom1%mom_nod(ifil)%moms%f_y,  mom1%mom_nod(ifil)%diff%df_y)
+     &   (mom_nod%moms%f_y,  mom_nod%diff%df_y)
       call take_1st_diffs_nod_by_lump                                   &
-     &   (mom1%mom_nod(ifil)%moms%f_z,  mom1%mom_nod(ifil)%diff%df_z)
+     &   (mom_nod%moms%f_z,  mom_nod%diff%df_z)
 !
       call take_1st_diffs_nod_by_lump                                   &
-     &   (mom1%mom_nod(ifil)%moms%f_x2, mom1%mom_nod(ifil)%diff%df_x2)
+     &   (mom_nod%moms%f_x2, mom_nod%diff%df_x2)
       call take_1st_diffs_nod_by_lump                                   &
-     &   (mom1%mom_nod(ifil)%moms%f_y2, mom1%mom_nod(ifil)%diff%df_y2)
+     &   (mom_nod%moms%f_y2, mom_nod%diff%df_y2)
       call take_1st_diffs_nod_by_lump                                   &
-     &   (mom1%mom_nod(ifil)%moms%f_z2, mom1%mom_nod(ifil)%diff%df_z2)
+     &   (mom_nod%moms%f_z2, mom_nod%diff%df_z2)
 !
       call take_1st_diffs_nod_by_lump                                   &
-     &   (mom1%mom_nod(ifil)%moms%f_xy, mom1%mom_nod(ifil)%diff%df_xy)
+     &   (mom_nod%moms%f_xy, mom_nod%diff%df_xy)
       call take_1st_diffs_nod_by_lump                                   &
-     &   (mom1%mom_nod(ifil)%moms%f_yz, mom1%mom_nod(ifil)%diff%df_yz)
+     &   (mom_nod%moms%f_yz, mom_nod%diff%df_yz)
       call take_1st_diffs_nod_by_lump                                   &
-     &   (mom1%mom_nod(ifil)%moms%f_zx, mom1%mom_nod(ifil)%diff%df_zx)
+     &   (mom_nod%moms%f_zx, mom_nod%diff%df_zx)
 !
       end subroutine cal_diffs_filter_nod_lump
 !

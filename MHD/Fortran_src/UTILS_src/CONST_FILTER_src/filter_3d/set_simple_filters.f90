@@ -10,7 +10,7 @@
 !!     &          deidx_nod, deidy_nod, deidz_nod,                      &
 !!     &          dzidx_nod, dzidy_nod, dzidz_nod)
 !!      subroutine normalize_each_filter_weight
-!!      subroutine cal_filter_moments_each_nod(ifil, inod)
+!!      subroutine cal_filter_moms_each_nod_type(inod, mom_nod)
 !
       module set_simple_filters
 !
@@ -21,7 +21,7 @@
 !
       implicit none
 !
-      private :: cal_moments_from_matrix
+      private :: cal_moments_from_matrix, cal_filter_moments_each_nod
 !
 !-----------------------------------------------------------------------
 !
@@ -145,15 +145,44 @@
       end subroutine normalize_each_filter_weight
 !
 !-----------------------------------------------------------------------
+!
+      subroutine cal_filter_moms_each_nod_type(inod, mom_nod)
+!
+      use t_filter_moments
+!
+      integer(kind = kint), intent(in) :: inod
+      type(nod_mom_diffs_type), intent(inout) :: mom_nod
+!
+!
+      call cal_filter_moments_each_nod(mom_nod%moms%f_x(inod),          &
+     &       mom_nod%moms%f_y(inod),   mom_nod%moms%f_z(inod),          &
+     &       mom_nod%moms%f_x2(inod),  mom_nod%moms%f_y2(inod),         &
+     &       mom_nod%moms%f_z2(inod),  mom_nod%moms%f_xy(inod),         &
+     &       mom_nod%moms%f_yz(inod),  mom_nod%moms%f_zx(inod))
+!
+      end subroutine cal_filter_moms_each_nod_type
+!
 !-----------------------------------------------------------------------
 !
-      subroutine cal_filter_moments_each_nod(ifil, inod)
+      subroutine cal_filter_moments_each_nod                            &
+     &         (filter_x_nod,  filter_y_nod,  filter_z_nod,             &
+     &          filter_x2_nod, filter_y2_nod, filter_z2_nod,            &
+     &          filter_xy_nod, filter_yz_nod, filter_zx_nod)
 !
       use m_reference_moments
-      use m_filter_moments
       use m_matrix_4_filter
 !
-      integer(kind = kint), intent(in) :: ifil, inod
+      real(kind = kreal), intent(inout) :: filter_x_nod
+      real(kind = kreal), intent(inout) :: filter_y_nod
+      real(kind = kreal), intent(inout) :: filter_z_nod
+      real(kind = kreal), intent(inout) :: filter_x2_nod
+      real(kind = kreal), intent(inout) :: filter_y2_nod
+      real(kind = kreal), intent(inout) :: filter_z2_nod
+      real(kind = kreal), intent(inout) :: filter_xy_nod
+      real(kind = kreal), intent(inout) :: filter_yz_nod
+      real(kind = kreal), intent(inout) :: filter_zx_nod
+!
+!
       integer(kind = kint) :: j, icou, kx, ky, kz
 !
       icou = 0
@@ -164,32 +193,23 @@
         if ( (kx+ky+kz).eq.1 .or. (kx+ky+kz).eq.2) then
           icou = icou + 1
           if     (kx.eq.1 .and. ky.eq.0 .and. kz.eq.0) then
-            call cal_moments_from_matrix                                &
-     &         (j, mom1%mom_nod(ifil)%moms%f_x(inod))
+            call cal_moments_from_matrix(j, filter_x_nod )
           else if(kx.eq.0 .and. ky.eq.1 .and. kz.eq.0) then
-            call cal_moments_from_matrix                                &
-     &         (j, mom1%mom_nod(ifil)%moms%f_y(inod))
+            call cal_moments_from_matrix(j, filter_y_nod )
           else if(kx.eq.0 .and. ky.eq.0 .and. kz.eq.1) then
-            call cal_moments_from_matrix                                &
-     &         (j, mom1%mom_nod(ifil)%moms%f_z(inod))
+            call cal_moments_from_matrix(j, filter_z_nod )
           else if(kx.eq.1 .and. ky.eq.1 .and. kz.eq.0) then
-            call cal_moments_from_matrix                                &
-     &         (j, mom1%mom_nod(ifil)%moms%f_xy(inod))
+            call cal_moments_from_matrix(j, filter_xy_nod)
           else if(kx.eq.0 .and. ky.eq.1 .and. kz.eq.1) then
-            call cal_moments_from_matrix                                &
-     &         (j, mom1%mom_nod(ifil)%moms%f_yz(inod))
+            call cal_moments_from_matrix(j, filter_yz_nod)
           else if(kx.eq.1 .and. ky.eq.0 .and. kz.eq.1) then
-            call cal_moments_from_matrix                                &
-     &         (j, mom1%mom_nod(ifil)%moms%f_zx(inod))
+            call cal_moments_from_matrix(j, filter_zx_nod)
           else if(kx.eq.2 .and. ky.eq.0 .and. kz.eq.0) then
-            call cal_moments_from_matrix                                &
-     &         (j, mom1%mom_nod(ifil)%moms%f_x2(inod))
+            call cal_moments_from_matrix(j, filter_x2_nod)
           else if(kx.eq.0 .and. ky.eq.2 .and. kz.eq.0) then
-            call cal_moments_from_matrix                                &
-     &         (j, mom1%mom_nod(ifil)%moms%f_y2(inod))
+            call cal_moments_from_matrix(j, filter_y2_nod)
           else if(kx.eq.0 .and. ky.eq.0 .and. kz.eq.2) then
-            call cal_moments_from_matrix                                &
-     &         (j, mom1%mom_nod(ifil)%moms%f_z2(inod))
+            call cal_moments_from_matrix(j, filter_z2_nod)
           end if
         else if(icou .eq. 9) then
           exit

@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!      subroutine select_const_filter(dxidxs)
+!!      subroutine select_const_filter(dxidxs, FEM_moments)
 !
       module construct_filters
 !
@@ -35,27 +35,32 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine select_const_filter(dxidxs)
+      subroutine select_const_filter(dxidxs, FEM_moments)
 !
       use t_filter_dxdxi
+      use t_filter_moments
 !
       type(dxidx_data_type), intent(inout) :: dxidxs
+      type(gradient_filter_mom_type), intent(inout) :: FEM_moments
 !
 !
       if (iflag_tgt_filter_type .eq. 1)  then
         if (iflag_debug.eq.1) write(*,*) 'const_commutative_filter'
-        call  const_commutative_filter
+        call  const_commutative_filter(FEM_moments)
+!
       else if (iflag_tgt_filter_type .eq. -1) then
         if (iflag_debug.eq.1) write(*,*) 'correct_commutative_filter'
-        call  correct_commutative_filter(dxidxs)
+        call  correct_commutative_filter(dxidxs, FEM_moments)
+!
       else if (iflag_tgt_filter_type .ge. -4                            &
      &     .and. iflag_tgt_filter_type .le. -2) then
         if (iflag_debug.eq.1) write(*,*) 'correct_by_simple_filter'
-        call  correct_by_simple_filter(dxidxs)
+        call  correct_by_simple_filter(dxidxs, FEM_moments)
+!
       else if (iflag_tgt_filter_type.ge.2                               &
      &     .and. iflag_tgt_filter_type.le.4) then
         if (iflag_debug.eq.1) write(*,*) 'const_simple_filter'
-        call const_simple_filter(dxidxs)
+        call const_simple_filter(dxidxs, FEM_moments)
       end if
 !
       end subroutine select_const_filter
@@ -63,18 +68,22 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_commutative_filter
+      subroutine const_commutative_filter(FEM_moments)
 !
       use m_filter_elength
-      use m_filter_moments
+      use t_filter_moments
       use cal_filter_func_node
+!
+      type(gradient_filter_mom_type), intent(inout) :: FEM_moments
 !
 !
       if(iflag_debug.eq.1)  write(*,*)'cal_fmoms_ele_by_elen_1st'
-      call alloc_filter_moms_nod_type(FEM1_elen%nnod_filter_mom, mom1)
-      call alloc_filter_moms_ele_type(FEM1_elen%nele_filter_mom, mom1)
-      call cal_fmoms_ele_by_elen_1st(ione)
-      call cal_fmoms_ele_by_elen_1st(itwo)
+      call alloc_filter_moms_nod_type                                   &
+     &   (FEM1_elen%nnod_filter_mom, FEM_moments)
+      call alloc_filter_moms_ele_type                                   &
+     &   (FEM1_elen%nele_filter_mom, FEM_moments)
+      call cal_fmoms_ele_by_elen_1st(FEM_moments%mom_ele(1))
+      call cal_fmoms_ele_by_elen_1st(FEM_moments%mom_ele(2))
 !
       if (itype_mass_matrix .eq. 1) call release_mass_mat_for_consist
 !
@@ -83,7 +92,7 @@
 !  ---------------------------------------------------
 !
       if(iflag_debug.eq.1)  write(*,*) 'const_commute_filter_coefs'
-      call const_commute_filter_coefs
+      call const_commute_filter_coefs(FEM_moments%mom_nod(1))
 !
       call deallocate_iele_belonged
       call deallocate_inod_next_node
@@ -102,13 +111,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_simple_filter(dxidxs)
+      subroutine const_simple_filter(dxidxs, FEM_moments)
 !
       use m_element_id_4_node
       use m_next_node_id_4_node
       use m_finite_element_matrix
       use m_filter_elength
-      use m_filter_moments
+      use t_filter_moments
       use t_filter_dxdxi
       use cal_1st_diff_deltax_4_nod
       use cal_filter_func_node
@@ -116,33 +125,37 @@
       use filter_geometry_IO
 !
       type(dxidx_data_type), intent(inout) :: dxidxs
+      type(gradient_filter_mom_type), intent(inout) :: FEM_moments
 !
 !
       if(iflag_debug.eq.1) write(*,*) 'alloc_filter_moms_nod_type'
-      call alloc_filter_moms_nod_type(FEM1_elen%nnod_filter_mom, mom1)
+      call alloc_filter_moms_nod_type                                   &
+     &   (FEM1_elen%nnod_filter_mom, FEM_moments)
       if(iflag_debug.eq.1) write(*,*) 'alloc_filter_moms_ele_type'
-      call alloc_filter_moms_ele_type(FEM1_elen%nele_filter_mom, mom1)
+      call alloc_filter_moms_ele_type                                   &
+     &   (FEM1_elen%nele_filter_mom, FEM_moments)
 !
 !  ---------------------------------------------------
 !     construct filter function
 !  ---------------------------------------------------
 !
         if(iflag_debug.eq.1) write(*,*) 'set_simple_filter'
-        call set_simple_filter(dxidxs)
+        call set_simple_filter(dxidxs, FEM_moments%mom_nod(1))
 !
         call deallocate_iele_belonged
         call deallocate_inod_next_node
 !
           if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
-        call s_const_filter_mom_ele(ione)
+        call s_const_filter_mom_ele                                     &
+     &     (FEM_moments%mom_nod(1), FEM_moments%mom_ele(1))
           if(iflag_debug.eq.1)                                          &
      &       write(*,*) 'cal_fmoms_ele_by_elen_1st 2'
-        call cal_fmoms_ele_by_elen_1st(itwo)
+        call cal_fmoms_ele_by_elen_1st(FEM_moments%mom_ele(2))
 !
           if(iflag_debug.eq.1)  write(*,*) 'set_simple_fluid_filter'
-        call set_simple_fluid_filter(dxidxs)
+        call set_simple_fluid_filter(dxidxs, FEM_moments%mom_nod)
 !
-        call cal_fmoms_ele_by_elen_1st(itwo)
+        call cal_fmoms_ele_by_elen_1st(FEM_moments%mom_ele(2))
         if (itype_mass_matrix .eq. 1) call release_mass_mat_for_consist
 !
         call deallocate_iele_belonged
@@ -153,25 +166,28 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine correct_commutative_filter(dxidxs)
+      subroutine correct_commutative_filter(dxidxs, FEM_moments)
 !
       use m_filter_file_names
       use m_filter_elength
-      use m_filter_moments
+      use t_filter_moments
       use t_filter_dxdxi
       use set_parallel_file_name
       use correct_wrong_filters
       use filter_geometry_IO
 !
       type(dxidx_data_type), intent(inout) :: dxidxs
+      type(gradient_filter_mom_type), intent(inout) :: FEM_moments
       character(len=kchara) :: file_name
 !
 !
       if(iflag_debug.eq.1)  write(*,*)'cal_fmoms_ele_by_elen_1st'
-      call alloc_filter_moms_nod_type(FEM1_elen%nnod_filter_mom, mom1)
-      call alloc_filter_moms_ele_type(FEM1_elen%nele_filter_mom, mom1)
-      call cal_fmoms_ele_by_elen_1st(ione)
-      call cal_fmoms_ele_by_elen_1st(itwo)
+      call alloc_filter_moms_nod_type                                   &
+     &   (FEM1_elen%nnod_filter_mom, FEM_moments)
+      call alloc_filter_moms_ele_type                                   &
+     &   (FEM1_elen%nele_filter_mom, FEM_moments)
+      call cal_fmoms_ele_by_elen_1st(FEM_moments%mom_ele(1))
+      call cal_fmoms_ele_by_elen_1st(FEM_moments%mom_ele(2))
       if (itype_mass_matrix .eq. 1) call release_mass_mat_for_consist
 !
 !  ---------------------------------------------------
@@ -198,13 +214,15 @@
       call allocate_correct_filter_flag(numnod, numele)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
-      call s_correct_wrong_filters(org_filter_coef_code, dxidxs)
+      call s_correct_wrong_filters                                      &
+     &   (org_filter_coef_code, dxidxs, FEM_moments%mom_nod(1))
 !
       call deallocate_iele_belonged
       call deallocate_inod_next_node
 !
       if(iflag_debug.eq.1)  write(*,*)'correct_wrong_fluid_filters'
-      call correct_wrong_fluid_filters(org_filter_coef_code, dxidxs)
+      call correct_wrong_fluid_filters                                  &
+     &   (org_filter_coef_code, dxidxs, FEM_moments%mom_nod)
 !
       call deallocate_correct_filter_flag
 !
@@ -220,12 +238,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine correct_by_simple_filter(dxidxs)
+      subroutine correct_by_simple_filter(dxidxs, FEM_moments)
 !
       use m_filter_file_names
       use m_filter_elength
-      use m_filter_moments
       use m_filter_coefs
+      use t_filter_moments
       use t_filter_dxdxi
       use m_field_file_format
       use set_parallel_file_name
@@ -233,13 +251,16 @@
       use filter_geometry_IO
 !
       type(dxidx_data_type), intent(inout) :: dxidxs
+      type(gradient_filter_mom_type), intent(inout) :: FEM_moments
       character(len=kchara) :: file_name
 !
 !
           if(iflag_debug.eq.1) write(*,*) 'alloc_filter_moms_nod_type'
-      call alloc_filter_moms_nod_type(FEM1_elen%nnod_filter_mom, mom1)
+      call alloc_filter_moms_nod_type                                   &
+     &   (FEM1_elen%nnod_filter_mom, FEM_moments)
           if(iflag_debug.eq.1) write(*,*) 'alloc_filter_moms_ele_type'
-      call alloc_filter_moms_ele_type(FEM1_elen%nele_filter_mom, mom1)
+      call alloc_filter_moms_ele_type                                   &
+     &   (FEM1_elen%nele_filter_mom, FEM_moments)
 !
 !  ---------------------------------------------------
 !     check filter function
@@ -265,22 +286,25 @@
       call allocate_correct_filter_flag(numnod, numele)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
-      call s_correct_wrong_filters(org_filter_coef_code, dxidxs)
+      call s_correct_wrong_filters                                      &
+     &   (org_filter_coef_code, dxidxs, FEM_moments%mom_nod(1))
 !
       call deallocate_iele_belonged
       call deallocate_inod_next_node
 !
         if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
-      call s_const_filter_mom_ele(ione)
+      call s_const_filter_mom_ele                                       &
+     &   (FEM_moments%mom_nod(1), FEM_moments%mom_ele(1))
         if(iflag_debug.eq.1)                                            &
      &       write(*,*) 'correct_filter_moms_ele_by_elen 1'
-      call correct_fmoms_ele_by_elen_1st(ione)
+      call correct_fmoms_ele_by_elen_1st(FEM_moments%mom_ele(1))
         if(iflag_debug.eq.1)                                            &
      &       write(*,*) 'cal_fmoms_ele_by_elen_1st 2'
-      call cal_fmoms_ele_by_elen_1st(itwo)
+      call cal_fmoms_ele_by_elen_1st(FEM_moments%mom_ele(2))
 !
       if(iflag_debug.eq.1)  write(*,*)'correct_wrong_fluid_filters'
-      call correct_wrong_fluid_filters(org_filter_coef_code, dxidxs)
+      call correct_wrong_fluid_filters                                  &
+     &   (org_filter_coef_code, dxidxs, FEM_moments%mom_nod)
 !
       call deallocate_correct_filter_flag
 !
@@ -291,8 +315,6 @@
       call finalize_4_cal_fileters
 !
       close(org_filter_coef_code)
-!
-      call cal_fmoms_ele_by_elen_1st(itwo)
 !
       end subroutine correct_by_simple_filter
 !

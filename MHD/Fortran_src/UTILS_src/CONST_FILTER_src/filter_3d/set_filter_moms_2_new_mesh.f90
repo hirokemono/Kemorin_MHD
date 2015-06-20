@@ -9,7 +9,8 @@
 !      subroutine set_iele_table_4_newfilter(new_ele)
 !
 !      subroutine set_new_elength_ele(new_node, elen2_ele)
-!      subroutine set_new_filter_moms_ele(new_node)
+!      subroutine set_new_filter_moms_ele                               &
+!     &         (FEM_moms, new_node, num_filter_moms_2nd, mom2_ele)
 !
       module set_filter_moms_2_new_mesh
 !
@@ -142,15 +143,16 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_new_filter_moms_ele                                &
-     &         (new_node, num_filter_moms_2nd, mom2_ele)
+     &         (FEM_moms, new_node, num_filter_moms_2nd, mom2_ele)
 !
       use m_geometry_parameter
       use m_geometry_data
       use t_geometry_data
-      use m_filter_moments
+      use t_filter_moments
 !
       integer(kind = kint), intent(in) :: num_filter_moms_2nd
       type(node_data), intent(in) :: new_node
+      type(gradient_filter_mom_type), intent(in) :: FEM_moms
       type(ele_mom_diffs_type), intent(inout)                           &
      &               :: mom2_ele(num_filter_moms_2nd)
 !
@@ -173,15 +175,15 @@
             write(*,*) 'baka-', iele, iele_gl, iele_2nd
           end if
 !
-          do ifil = 1, mom1%num_filter_moms
+          do ifil = 1, FEM_moms%num_filter_moms
             call copy_moments_each_point                                &
-     &         (iele, mom1%mom_ele(ifil)%moms,                          &
+     &         (iele, FEM_moms%mom_ele(ifil)%moms,                      &
      &          iele_2nd, mom2_ele(ifil)%moms)
             call copy_mom_diffs_each_point                              &
-     &         (iele, mom1%mom_ele(ifil)%diff,                          &
+     &         (iele, FEM_moms%mom_ele(ifil)%diff,                      &
      &          iele_2nd, mom2_ele(ifil)%diff)
             call copy_mom_diffs_each_point                              &
-     &         (iele, mom1%mom_ele(ifil)%diff2,                         &
+     &         (iele, FEM_moms%mom_ele(ifil)%diff2,                     &
      &          iele_2nd, mom2_ele(ifil)%diff2)
           end do
 !

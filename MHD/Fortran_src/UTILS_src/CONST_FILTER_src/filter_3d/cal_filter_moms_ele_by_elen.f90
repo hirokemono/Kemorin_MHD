@@ -5,6 +5,7 @@
 !
 !!      subroutine cal_fmoms_ele_by_elen_1st(ifil)
 !!      subroutine correct_fmoms_ele_by_elen_1st(ifil)
+!!        type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !!      subroutine delete_x_products_of_elen_1st
 !!
 !!      subroutine s_cal_filter_moms_ele_by_elen(ifil)
@@ -25,13 +26,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_fmoms_ele_by_elen_1st(ifil)
+      subroutine cal_fmoms_ele_by_elen_1st(mom_ele)
 !
       use m_geometry_parameter
       use m_filter_elength
-      use m_filter_moments
+      use t_filter_moments
 !
-      integer(kind = kint), intent(in) :: ifil
+      type(ele_mom_diffs_type), intent(inout) :: mom_ele
+!
 !
       call s_cal_filter_moms_ele_by_elen(numele,                        &
      &  FEM1_elen%filter_conf%nf_type,                                  &
@@ -45,34 +47,29 @@
      &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &
      &  FEM1_elen%elen_ele%diff2%df_z2, FEM1_elen%elen_ele%diff2%df_xy, &
      &  FEM1_elen%elen_ele%diff2%df_yz, FEM1_elen%elen_ele%diff2%df_zx, &
-     &  mom1%mom_ele(ifil)%moms%f_x,    mom1%mom_ele(ifil)%moms%f_y,    &
-     &  mom1%mom_ele(ifil)%moms%f_z,    mom1%mom_ele(ifil)%moms%f_x2,   &
-     &  mom1%mom_ele(ifil)%moms%f_y2,   mom1%mom_ele(ifil)%moms%f_z2,   &
-     &  mom1%mom_ele(ifil)%moms%f_xy,   mom1%mom_ele(ifil)%moms%f_yz,   &
-     &  mom1%mom_ele(ifil)%moms%f_zx,                                   &
-     &  mom1%mom_ele(ifil)%diff%df_x,   mom1%mom_ele(ifil)%diff%df_y,   &
-     &  mom1%mom_ele(ifil)%diff%df_z,   mom1%mom_ele(ifil)%diff%df_x2,  &
-     &  mom1%mom_ele(ifil)%diff%df_y2,  mom1%mom_ele(ifil)%diff%df_z2,  &
-     &  mom1%mom_ele(ifil)%diff%df_xy,  mom1%mom_ele(ifil)%diff%df_yz,  &
-     &  mom1%mom_ele(ifil)%diff%df_zx,                                  &
-     &  mom1%mom_ele(ifil)%diff2%df_x,  mom1%mom_ele(ifil)%diff2%df_y,  &
-     &  mom1%mom_ele(ifil)%diff2%df_z,  mom1%mom_ele(ifil)%diff2%df_x2, &
-     &  mom1%mom_ele(ifil)%diff2%df_y2, mom1%mom_ele(ifil)%diff2%df_z2, &
-     &  mom1%mom_ele(ifil)%diff2%df_xy, mom1%mom_ele(ifil)%diff2%df_yz, &
-     &  mom1%mom_ele(ifil)%diff2%df_zx)
+     &  mom_ele%moms%f_x,    mom_ele%moms%f_y,    mom_ele%moms%f_z,     &
+     &  mom_ele%moms%f_x2,   mom_ele%moms%f_y2,   mom_ele%moms%f_z2,    &
+     &  mom_ele%moms%f_xy,   mom_ele%moms%f_yz,   mom_ele%moms%f_zx,    &
+     &  mom_ele%diff%df_x,   mom_ele%diff%df_y,   mom_ele%diff%df_z,    &
+     &  mom_ele%diff%df_x2,  mom_ele%diff%df_y2,  mom_ele%diff%df_z2,   &
+     &  mom_ele%diff%df_xy,  mom_ele%diff%df_yz,  mom_ele%diff%df_zx,   &
+     &  mom_ele%diff2%df_x,  mom_ele%diff2%df_y,  mom_ele%diff2%df_z,   &
+     &  mom_ele%diff2%df_x2, mom_ele%diff2%df_y2, mom_ele%diff2%df_z2,  &
+     &  mom_ele%diff2%df_xy, mom_ele%diff2%df_yz, mom_ele%diff2%df_zx)
 !
       end subroutine cal_fmoms_ele_by_elen_1st
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine correct_fmoms_ele_by_elen_1st(ifil)
+      subroutine correct_fmoms_ele_by_elen_1st(mom_ele)
 !
       use m_geometry_parameter
       use m_geometry_data
       use m_filter_elength
-      use m_filter_moments
+      use t_filter_moments
 !
-      integer(kind = kint), intent(in) :: ifil
+      type(ele_mom_diffs_type), intent(inout) :: mom_ele
+!
 !
       call correct_filter_moms_ele_by_elen(numele, nnod_4_ele,          &
      &  ie, FEM1_elen%filter_conf%nf_type,                              &
@@ -86,21 +83,15 @@
      &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &
      &  FEM1_elen%elen_ele%diff2%df_z2, FEM1_elen%elen_ele%diff2%df_xy, &
      &  FEM1_elen%elen_ele%diff2%df_yz, FEM1_elen%elen_ele%diff2%df_zx, &
-     &  mom1%mom_ele(ifil)%moms%f_x,    mom1%mom_ele(ifil)%moms%f_y,    &
-     &  mom1%mom_ele(ifil)%moms%f_z,    mom1%mom_ele(ifil)%moms%f_x2,   &
-     &  mom1%mom_ele(ifil)%moms%f_y2,   mom1%mom_ele(ifil)%moms%f_z2,   &
-     &  mom1%mom_ele(ifil)%moms%f_xy,   mom1%mom_ele(ifil)%moms%f_yz,   &
-     &  mom1%mom_ele(ifil)%moms%f_zx,                                   &
-     &  mom1%mom_ele(ifil)%diff%df_x,   mom1%mom_ele(ifil)%diff%df_y,   &
-     &  mom1%mom_ele(ifil)%diff%df_z,   mom1%mom_ele(ifil)%diff%df_x2,  &
-     &  mom1%mom_ele(ifil)%diff%df_y2,  mom1%mom_ele(ifil)%diff%df_z2,  &
-     &  mom1%mom_ele(ifil)%diff%df_xy,  mom1%mom_ele(ifil)%diff%df_yz,  &
-     &  mom1%mom_ele(ifil)%diff%df_zx,                                  &
-     &  mom1%mom_ele(ifil)%diff2%df_x,  mom1%mom_ele(ifil)%diff2%df_y,  &
-     &  mom1%mom_ele(ifil)%diff2%df_z,  mom1%mom_ele(ifil)%diff2%df_x2, &
-     &  mom1%mom_ele(ifil)%diff2%df_y2, mom1%mom_ele(ifil)%diff2%df_z2, &
-     &  mom1%mom_ele(ifil)%diff2%df_xy, mom1%mom_ele(ifil)%diff2%df_yz, &
-     &  mom1%mom_ele(ifil)%diff2%df_zx)
+     &  mom_ele%moms%f_x,    mom_ele%moms%f_y,    mom_ele%moms%f_z,     &
+     &  mom_ele%moms%f_x2,   mom_ele%moms%f_y2,   mom_ele%moms%f_z2,    &
+     &  mom_ele%moms%f_xy,   mom_ele%moms%f_yz,   mom_ele%moms%f_zx,    &
+     &  mom_ele%diff%df_x,   mom_ele%diff%df_y,   mom_ele%diff%df_z,    &
+     &  mom_ele%diff%df_x2,  mom_ele%diff%df_y2,  mom_ele%diff%df_z2,   &
+     &  mom_ele%diff%df_xy,  mom_ele%diff%df_yz,  mom_ele%diff%df_zx,   &
+     &  mom_ele%diff2%df_x,  mom_ele%diff2%df_y,  mom_ele%diff2%df_z,   &
+     &  mom_ele%diff2%df_x2, mom_ele%diff2%df_y2, mom_ele%diff2%df_z2,  &
+     &  mom_ele%diff2%df_xy, mom_ele%diff2%df_yz, mom_ele%diff2%df_zx)
 !
       end subroutine correct_fmoms_ele_by_elen_1st
 !

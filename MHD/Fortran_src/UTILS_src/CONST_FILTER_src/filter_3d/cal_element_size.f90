@@ -149,30 +149,31 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_const_filter_mom_ele(ifil)
+      subroutine s_const_filter_mom_ele(mom_nod, mom_ele)
 !
-      use m_filter_moments
+      use t_filter_moments
       use m_ctl_params_4_gen_filter
       use cal_diff_elesize_on_ele
       use cal_1st_diff_deltax_4_nod
       use filter_moments_send_recv
 !
-      integer(kind = kint), intent(in) :: ifil
+      type(nod_mom_diffs_type), intent(inout) :: mom_nod
+      type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !
 !
-      call filter_mom_nod_send_recv(mom1%mom_nod(ifil))
+      call filter_mom_nod_send_recv(mom_nod)
 !
       if (itype_mass_matrix .eq. 1) then
-        call cal_diffs_filter_nod_consist(ifil)
+        call cal_diffs_filter_nod_consist(mom_nod)
       else
-        call cal_diffs_filter_nod_lump(ifil)
+        call cal_diffs_filter_nod_lump(mom_nod)
       end if
 !
-      call diff_filter_mom_nod_send_recv(mom1%mom_nod(ifil))
+      call diff_filter_mom_nod_send_recv(mom_nod)
 !
-      call cal_filter_moms_ele_by_nod(ifil)
-      call cal_1st_diffs_filter_ele(ifil)
-      call cal_2nd_diffs_filter_ele(ifil)
+      call cal_filter_moms_ele_by_nod(mom_nod, mom_ele)
+      call cal_1st_diffs_filter_ele(mom_nod, mom_ele)
+      call cal_2nd_diffs_filter_ele(mom_nod, mom_ele)
 !
       end subroutine s_const_filter_mom_ele
 !

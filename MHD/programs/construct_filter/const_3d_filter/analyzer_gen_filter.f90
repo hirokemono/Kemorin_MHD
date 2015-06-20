@@ -16,11 +16,13 @@
 !
       use m_ctl_params_4_gen_filter
       use t_filter_dxdxi
+      use t_filter_moments
 !
       implicit none
 !
       type(dxdxi_data_type), save :: filter_dxi1
       type(dxidx_data_type), save :: dxidxs1
+      type(gradient_filter_mom_type), save :: FEM_momenet1
 !
 ! ----------------------------------------------------------------------
 !
@@ -32,7 +34,6 @@
 !
       use m_fem_gauss_int_coefs
       use m_filter_file_names
-      use m_filter_moments
       use const_mesh_info
       use input_control_gen_filter
       use cal_1d_moments_4_fliter
@@ -115,7 +116,7 @@
       if (iflag_debug.eq.1)  write(*,*)  'int_element_length_1st'
       FEM1_elen%nnod_filter_mom = numnod
       FEM1_elen%nele_filter_mom = numele
-      mom1%num_filter_moms = 2
+      FEM_momenet1%num_filter_moms = 2
       call alloc_jacobians_ele(FEM1_elen%nele_filter_mom, filter_dxi1)
       call alloc_elen_ele_type                                          &
      &   (FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele)
@@ -134,7 +135,6 @@
       use m_matrix_4_filter
       use m_crs_matrix_4_filter
       use m_filter_elength
-      use m_filter_moments
       use m_filter_coefs
       use m_filter_coef_combained
       use m_comm_data_IO
@@ -201,7 +201,7 @@
         num_failed_whole = 0
         num_failed_fluid = 0
 !
-        call select_const_filter(dxidxs1)
+        call select_const_filter(dxidxs1, FEM_momenet1)
         call dealloc_jacobians_node(filter_dxi1)
 !
         close(filter_coef_code)
@@ -214,7 +214,8 @@
 !
         ifmt_filter_file = ifmt_filter_moms
         filter_file_head = filter_moms_head
-        call sel_write_filter_moms_file(my_rank, FEM1_elen, mom1)
+        call sel_write_filter_moms_file                                 &
+     &     (my_rank, FEM1_elen, FEM_momenet1)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'

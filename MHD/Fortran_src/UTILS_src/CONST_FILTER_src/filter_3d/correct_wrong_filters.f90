@@ -1,9 +1,14 @@
 !
 !      module correct_wrong_filters
 !
-      module correct_wrong_filters
-!
 !     Written by H. Matsui on Nov., 2008
+!
+!!      subroutine s_correct_wrong_filters                              &
+!!     &          (id_filter_coef, dxidxs, mom_nod)
+!!      subroutine correct_wrong_fluid_filters                          &
+!!     &         (id_filter_coef, dxidxs, mom_nod)
+!
+      module correct_wrong_filters
 !
       use m_precision
 !
@@ -20,11 +25,7 @@
       use cal_filter_moments_again
       use write_filters_4_each_node
 !
-!
       implicit none
-!
-!      subroutine s_correct_wrong_filters(id_filter_coef)
-!      subroutine correct_wrong_fluid_filters(id_filter_coef)
 !
 ! -----------------------------------------------------------------------
 !
@@ -32,12 +33,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_correct_wrong_filters(id_filter_coef, dxidxs)
+      subroutine s_correct_wrong_filters                                &
+     &          (id_filter_coef, dxidxs, mom_nod)
 !
       use t_filter_dxdxi
+      use t_filter_moments
+      use set_simple_filters
 !
       integer(kind = kint), intent(in) :: id_filter_coef
       type(dxidx_data_type), intent(inout) :: dxidxs
+      type(nod_mom_diffs_type), intent(inout) :: mom_nod
+!
       integer(kind = kint) :: inod, ierr2, ierr
 !
 !
@@ -69,7 +75,7 @@
 !
           if(iflag_tgt_filter_type .ge. -4                              &
      &      .and. iflag_tgt_filter_type.le. -2) then
-            call s_cal_filter_moments_again(inod)
+            call s_cal_filter_moments_again(inod, mom_nod)
           end if
         else
 !
@@ -81,6 +87,8 @@
             call set_simple_filter_nod_by_nod(inod, dxidxs%dx_nod)
           end if
 !
+          nnod_near_nod_weight(inod) = nnod_near_1nod_weight
+          call cal_filter_moms_each_nod_type(inod, mom_nod)
         end if
 !
       end do
@@ -89,12 +97,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine correct_wrong_fluid_filters(id_filter_coef, dxidxs)
+      subroutine correct_wrong_fluid_filters                            &
+     &         (id_filter_coef, dxidxs, mom_nod)
 !
       use t_filter_dxdxi
+      use t_filter_moments
 !
       integer(kind = kint), intent(in) :: id_filter_coef
       type(dxidx_data_type), intent(inout) :: dxidxs
+      type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
 !
       integer(kind = kint) :: inod, ierr2, ierr
 !
@@ -139,7 +150,8 @@
             call const_fluid_filter_nod_by_nod(inod, ierr)
           else if(iflag_tgt_filter_type .ge. -4                         &
      &      .and. iflag_tgt_filter_type.le. -2) then
-            call set_simple_fl_filter_nod_by_nod(inod, dxidxs%dx_nod)
+            call set_simple_fl_filter_nod_by_nod(inod, dxidxs%dx_nod,   &
+     &          mom_nod)
           end if
 !
         end if

@@ -40,7 +40,6 @@
       subroutine const_filter_func_nod_by_nod(inod, ierr)
 !
       use cal_1d_moments_4_fliter
-      use set_simple_filters
 !
       integer(kind = kint), intent(in) :: inod
       integer(kind = kint), intent(inout) :: ierr
@@ -171,9 +170,6 @@
         end if
 !
         call write_each_filter_stack_coef(inod)
-!
-        nnod_near_nod_weight(inod) = nnod_near_1nod_weight
-        call cal_filter_moments_each_nod(ione, inod)
 !
       end subroutine const_filter_func_nod_by_nod
 !

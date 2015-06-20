@@ -7,9 +7,9 @@
 !      subroutine cal_diffs_delta_on_element
 !      subroutine cal_2nd_diffs_delta_on_element
 !
-!      subroutine cal_filter_moms_ele_by_nod(ifil)
-!      subroutine cal_1st_diffs_filter_ele(ifil)
-!      subroutine cal_2nd_diffs_filter_ele(ifil)
+!      subroutine cal_filter_moms_ele_by_nod(mom_nod, mom_ele)
+!      subroutine cal_1st_diffs_filter_ele(mom_nod, mom_ele)
+!      subroutine cal_2nd_diffs_filter_ele(mom_nod, mom_ele)
 !
       module cal_diff_elesize_on_ele
 !
@@ -27,35 +27,36 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_filter_moms_ele_by_nod(ifil)
+      subroutine cal_filter_moms_ele_by_nod(mom_nod, mom_ele)
 !
       use m_ctl_params_4_gen_filter
       use m_geometry_parameter
-      use m_filter_moments
+      use t_filter_moments
       use cal_fields_on_element
 !
-      integer(kind = kint), intent(in) :: ifil
+      type(nod_mom_diffs_type), intent(in) :: mom_nod
+      type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !
       call scalar_on_element(iele_smp_stack, num_int_points,            &
-     &    mom1%mom_ele(ifil)%moms%f_x, mom1%mom_nod(ifil)%moms%f_x)
+     &    mom_ele%moms%f_x, mom_nod%moms%f_x)
       call scalar_on_element(iele_smp_stack, num_int_points,            &
-     &    mom1%mom_ele(ifil)%moms%f_y, mom1%mom_nod(ifil)%moms%f_y)
+     &    mom_ele%moms%f_y, mom_nod%moms%f_y)
       call scalar_on_element(iele_smp_stack, num_int_points,            &
-     &    mom1%mom_ele(ifil)%moms%f_z, mom1%mom_nod(ifil)%moms%f_z)
+     &    mom_ele%moms%f_z, mom_nod%moms%f_z)
 !
       call scalar_on_element(iele_smp_stack, num_int_points,            &
-     &    mom1%mom_ele(ifil)%moms%f_x2, mom1%mom_nod(ifil)%moms%f_x2)
+     &    mom_ele%moms%f_x2, mom_nod%moms%f_x2)
       call scalar_on_element(iele_smp_stack, num_int_points,            &
-     &    mom1%mom_ele(ifil)%moms%f_y2, mom1%mom_nod(ifil)%moms%f_y2)
+     &    mom_ele%moms%f_y2, mom_nod%moms%f_y2)
       call scalar_on_element(iele_smp_stack, num_int_points,            &
-     &    mom1%mom_ele(ifil)%moms%f_z2, mom1%mom_nod(ifil)%moms%f_z2)
+     &    mom_ele%moms%f_z2, mom_nod%moms%f_z2)
 !
       call scalar_on_element(iele_smp_stack, num_int_points,            &
-     &    mom1%mom_ele(ifil)%moms%f_xy, mom1%mom_nod(ifil)%moms%f_xy)
+     &    mom_ele%moms%f_xy, mom_nod%moms%f_xy)
       call scalar_on_element(iele_smp_stack, num_int_points,            &
-     &    mom1%mom_ele(ifil)%moms%f_yz, mom1%mom_nod(ifil)%moms%f_yz)
+     &    mom_ele%moms%f_yz, mom_nod%moms%f_yz)
       call scalar_on_element(iele_smp_stack, num_int_points,            &
-     &    mom1%mom_ele(ifil)%moms%f_zx, mom1%mom_nod(ifil)%moms%f_zx)
+     &    mom_ele%moms%f_zx, mom_nod%moms%f_zx)
 !
       end subroutine cal_filter_moms_ele_by_nod
 !
@@ -84,32 +85,25 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_1st_diffs_filter_ele(ifil)
+      subroutine cal_1st_diffs_filter_ele(mom_nod, mom_ele)
 !
-      use m_filter_moments
+      use t_filter_moments
 !
-      integer(kind = kint), intent(in) :: ifil
+      type(nod_mom_diffs_type), intent(in) :: mom_nod
+      type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !
-      call take_1st_diffs_ele(mom1%mom_nod(ifil)%moms%f_x,              &
-     &                        mom1%mom_ele(ifil)%diff%df_x)
-      call take_1st_diffs_ele(mom1%mom_nod(ifil)%moms%f_y,              &
-     &                        mom1%mom_ele(ifil)%diff%df_y)
-      call take_1st_diffs_ele(mom1%mom_nod(ifil)%moms%f_z,              &
-     &                        mom1%mom_ele(ifil)%diff%df_z)
 !
-      call take_1st_diffs_ele(mom1%mom_nod(ifil)%moms%f_x2,             &
-     &                        mom1%mom_ele(ifil)%diff%df_x2)
-      call take_1st_diffs_ele(mom1%mom_nod(ifil)%moms%f_y2,             &
-     &                        mom1%mom_ele(ifil)%diff%df_y2)
-      call take_1st_diffs_ele(mom1%mom_nod(ifil)%moms%f_z2,             &
-     &                        mom1%mom_ele(ifil)%diff%df_z2)
+      call take_1st_diffs_ele(mom_nod%moms%f_x,  mom_ele%diff%df_x)
+      call take_1st_diffs_ele(mom_nod%moms%f_y,  mom_ele%diff%df_y)
+      call take_1st_diffs_ele(mom_nod%moms%f_z,  mom_ele%diff%df_z)
 !
-      call take_1st_diffs_ele(mom1%mom_nod(ifil)%moms%f_xy,             &
-     &                        mom1%mom_ele(ifil)%diff%df_xy)
-      call take_1st_diffs_ele(mom1%mom_nod(ifil)%moms%f_yz,             &
-     &                        mom1%mom_ele(ifil)%diff%df_yz)
-      call take_1st_diffs_ele(mom1%mom_nod(ifil)%moms%f_zx,             &
-     &                        mom1%mom_ele(ifil)%diff%df_zx)
+      call take_1st_diffs_ele(mom_nod%moms%f_x2, mom_ele%diff%df_x2)
+      call take_1st_diffs_ele(mom_nod%moms%f_y2, mom_ele%diff%df_y2)
+      call take_1st_diffs_ele(mom_nod%moms%f_z2, mom_ele%diff%df_z2)
+!
+      call take_1st_diffs_ele(mom_nod%moms%f_xy, mom_ele%diff%df_xy)
+      call take_1st_diffs_ele(mom_nod%moms%f_yz, mom_ele%diff%df_yz)
+      call take_1st_diffs_ele(mom_nod%moms%f_zx, mom_ele%diff%df_zx)
 !
       end subroutine cal_1st_diffs_filter_ele
 !
@@ -138,32 +132,25 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_2nd_diffs_filter_ele(ifil)
+      subroutine cal_2nd_diffs_filter_ele(mom_nod, mom_ele)
 !
-      use m_filter_moments
+      use t_filter_moments
 !
-      integer(kind = kint), intent(in) :: ifil
+      type(nod_mom_diffs_type), intent(in) :: mom_nod
+      type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !
-      call take_2nd_diffs_ele(mom1%mom_nod(ifil)%diff%df_x,             &
-     &                        mom1%mom_ele(ifil)%diff2%df_x)
-      call take_2nd_diffs_ele(mom1%mom_nod(ifil)%diff%df_y,             &
-     &                        mom1%mom_ele(ifil)%diff2%df_y)
-      call take_2nd_diffs_ele(mom1%mom_nod(ifil)%diff%df_z,             &
-     &                        mom1%mom_ele(ifil)%diff2%df_z)
 !
-      call take_2nd_diffs_ele(mom1%mom_nod(ifil)%diff%df_x2,            &
-     &                        mom1%mom_ele(ifil)%diff2%df_x2)
-      call take_2nd_diffs_ele(mom1%mom_nod(ifil)%diff%df_y2,            &
-     &                        mom1%mom_ele(ifil)%diff2%df_y2)
-      call take_2nd_diffs_ele(mom1%mom_nod(ifil)%diff%df_z2,            &
-     &                        mom1%mom_ele(ifil)%diff2%df_z2)
+      call take_2nd_diffs_ele(mom_nod%diff%df_x,  mom_ele%diff2%df_x)
+      call take_2nd_diffs_ele(mom_nod%diff%df_y,  mom_ele%diff2%df_y)
+      call take_2nd_diffs_ele(mom_nod%diff%df_z,  mom_ele%diff2%df_z)
 !
-      call take_2nd_diffs_ele(mom1%mom_nod(ifil)%diff%df_xy,            &
-     &                        mom1%mom_ele(ifil)%diff2%df_xy)
-      call take_2nd_diffs_ele(mom1%mom_nod(ifil)%diff%df_yz,            &
-     &                        mom1%mom_ele(ifil)%diff2%df_yz)
-      call take_2nd_diffs_ele(mom1%mom_nod(ifil)%diff%df_zx,            &
-     &                        mom1%mom_ele(ifil)%diff2%df_zx)
+      call take_2nd_diffs_ele(mom_nod%diff%df_x2, mom_ele%diff2%df_x2)
+      call take_2nd_diffs_ele(mom_nod%diff%df_y2, mom_ele%diff2%df_y2)
+      call take_2nd_diffs_ele(mom_nod%diff%df_z2, mom_ele%diff2%df_z2)
+!
+      call take_2nd_diffs_ele(mom_nod%diff%df_xy, mom_ele%diff2%df_xy)
+      call take_2nd_diffs_ele(mom_nod%diff%df_yz, mom_ele%diff2%df_yz)
+      call take_2nd_diffs_ele(mom_nod%diff%df_zx, mom_ele%diff2%df_zx)
 !
       end subroutine cal_2nd_diffs_filter_ele
 !

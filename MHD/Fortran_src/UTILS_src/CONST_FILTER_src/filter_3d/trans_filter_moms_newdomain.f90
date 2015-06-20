@@ -146,7 +146,6 @@
 !
       use calypso_mpi
       use m_filter_file_names
-      use m_filter_moments
       use m_filter_elength
       use filter_moment_IO_select
       use set_filter_moms_2_new_mesh
@@ -155,6 +154,7 @@
       use set_mesh_types
 !
       use t_mesh_data
+      use t_filter_moments
 !
       integer(kind = kint), intent(in) :: my_rank_2nd
       type(mesh_geometry), intent(inout) :: newmesh
@@ -162,8 +162,10 @@
       type(edge_geometry), intent(inout) ::  new_edge_mesh
 !
 !
+      type(gradient_filter_mom_type), save :: FEM_momenet1
+!
       type(elen_ele_diffs_type) :: elen2_ele
-      type(ele_mom_diffs_type), allocatable, save :: mom2_ele(:)
+      type(ele_mom_diffs_type), allocatable, save :: moment2_ele(:)
 !
 !
       iflag_mesh_file_fmt = id_ascii_file_fmt
@@ -190,11 +192,12 @@
       if (iflag_set_filter_moms .gt. 0) then
         ifmt_filter_file = id_ascii_file_fmt
         filter_file_head = org_filter_moms_head
-        call sel_read_num_filter_mom_file(izero, FEM1_elen, mom1)
+        call sel_read_num_filter_mom_file                               &
+     &     (izero, FEM1_elen, FEM_momenet1)
 !
-        allocate(mom2_ele(mom1%num_filter_moms))
-        call alloc_filter_mom_ele_items                                 &
-     &    (newmesh%ele%numele, mom1%num_filter_moms, mom2_ele)
+        allocate(moment2_ele(FEM_momenet1%num_filter_moms))
+        call alloc_filter_mom_ele_items(newmesh%ele%numele,             &
+     &      FEM_momenet1%num_filter_moms, moment2_ele)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'set_iele_table_4_newfilter'
@@ -202,7 +205,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'const_filter_moms_newdomain'
       call const_filter_moms_newdomain(nprocs, newmesh%node,            &
-     &   mom1%num_filter_moms, elen2_ele, mom2_ele)
+     &    FEM_momenet1, elen2_ele, moment2_ele)
 !
 !
 !      write new filter moments file
@@ -210,17 +213,20 @@
       if (iflag_set_filter_moms .gt. 0) then
         ifmt_filter_file = id_ascii_file_fmt
         filter_file_head = new_filter_moms_head
-        mom1%nnod_fmom = newmesh%node%numnod
+        FEM_momenet1%nnod_fmom = newmesh%node%numnod
 
-        call alloc_filter_moms_ele_type(newmesh%ele%numele, mom1)
+        call alloc_filter_moms_ele_type                                 &
+     &     (newmesh%ele%numele, FEM_momenet1)
         call copy_filter_moms_ele(newmesh%ele%numele,                   &
-      &     mom1%num_filter_moms, mom2_ele, mom1%mom_ele)
+     &      FEM_momenet1%num_filter_moms, moment2_ele,                  &
+     &      FEM_momenet1%mom_ele)
         call dealloc_filter_mom_ele_items                               &
-      &    (mom1%num_filter_moms, mom2_ele)
-        deallocate(mom2_ele)
+     &     (FEM_momenet1%num_filter_moms, moment2_ele)
+        deallocate(moment2_ele)
 
-        call sel_write_filter_moms_file(my_rank_2nd, FEM1_elen, mom1)
-        call dealloc_filter_moms_ele_type(mom1)
+        call sel_write_filter_moms_file                                 &
+     &     (my_rank_2nd, FEM1_elen, FEM_momenet1)
+        call dealloc_filter_moms_ele_type(FEM_momenet1)
       end if
 !
 !
@@ -247,13 +253,13 @@
 !   --------------------------------------------------------------------
 !
       subroutine const_filter_moms_newdomain(norg_domain, new_node,     &
-     &         num_filter_moms_2nd, elen2_e, mom2_ele)
+     &          mom1, elen2_e, mom2_ele)
 !
       use m_geometry_parameter
       use m_geometry_data
       use m_filter_file_names
-      use m_filter_moments
       use m_filter_elength
+      use t_filter_moments
       use t_filter_elength
       use filter_moment_IO_select
       use set_element_connect_4_IO
@@ -262,11 +268,11 @@
       use t_geometry_data
 !
       integer(kind = kint), intent(in) :: norg_domain
-      integer(kind = kint), intent(in) :: num_filter_moms_2nd
       type(node_data), intent(in) :: new_node
       type(elen_ele_diffs_type), intent(inout) :: elen2_e
+      type(gradient_filter_mom_type), intent(inout) :: mom1
       type(ele_mom_diffs_type), intent(inout)                           &
-     &               :: mom2_ele(num_filter_moms_2nd)
+     &               :: mom2_ele(mom1%num_filter_moms)
 !
       integer(kind = kint) :: ip, my_rank_org, ierr
 !
@@ -293,7 +299,7 @@
      &        numnod, numele, FEM1_elen, mom1, ierr)
 !
           call set_new_filter_moms_ele                                  &
-     &       (new_node, num_filter_moms_2nd, mom2_ele)
+     &       (mom1, new_node, mom1%num_filter_moms, mom2_ele)
           call dealloc_filter_moms_ele_type(mom1)
           if (ip .lt. norg_domain .or. iflag_set_filter_elen.gt.0) then
             call dealloc_ref_1d_mom_type(FEM1_elen%filter_conf)

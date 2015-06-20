@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on Nov., 2008
 !
-!      subroutine set_simple_filter_nod_by_nod(inod)
-!      subroutine set_simple_fl_filter_nod_by_nod(inod)
+!!      subroutine set_simple_filter_nod_by_nod(inod, dx_nod)
+!!      subroutine set_simple_fl_filter_nod_by_nod(inod, dx_nod, mom_nod)
 !
       module cal_simple_filter_each_node
 !
@@ -87,27 +87,24 @@
      &      dx_nod%dzi%df_dx, dx_nod%dzi%df_dy, dx_nod%dzi%df_dz)
       end if
 !
-        call cal_filter_and_coefficients
-        call normalize_each_filter_weight
+      call cal_filter_and_coefficients
+      call normalize_each_filter_weight
 !
-        call s_delete_small_weighting
-        call write_each_filter_stack_coef(inod)
-!
-        nnod_near_nod_weight(inod) = nnod_near_1nod_weight
-        call cal_filter_moments_each_nod(ione, inod)
+      call s_delete_small_weighting
+      call write_each_filter_stack_coef(inod)
 !
       end subroutine set_simple_filter_nod_by_nod
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_simple_fl_filter_nod_by_nod(inod, dx_nod)
+      subroutine set_simple_fl_filter_nod_by_nod(inod, dx_nod, mom_nod)
 !
       use m_geometry_parameter
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
-      use m_filter_moments
       use m_matrix_4_filter
       use t_filter_dxdxi
+      use t_filter_moments
 !
       use expand_filter_area_4_1node
       use set_simple_filters
@@ -119,6 +116,7 @@
 !
       integer(kind = kint), intent(in) :: inod
       type(dxidx_direction_type), intent(in) :: dx_nod
+      type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
 !
       integer(kind = kint) :: i
 !
@@ -153,8 +151,7 @@
      &     then
           call write_each_same_filter_coef(inod)
           call copy_moments_each_point                                  &
-     &       (inod, mom1%mom_nod(ione)%moms,                            &
-     &        inod, mom1%mom_nod(itwo)%moms)
+     &       (inod, mom_nod(1)%moms, inod, mom_nod(2)%moms)
 !
 !    construct filter for fluid area
 !

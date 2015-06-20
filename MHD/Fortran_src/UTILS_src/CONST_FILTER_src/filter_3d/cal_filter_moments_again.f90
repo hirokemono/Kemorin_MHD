@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!      subroutine s_cal_filter_moments_again(inod)
+!      subroutine s_cal_filter_moments_again(inod, mom_nod)
 !
       module cal_filter_moments_again
 !
@@ -19,21 +19,24 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_filter_moments_again(inod)
+      subroutine s_cal_filter_moments_again(inod, mom_nod)
 !
       use m_geometry_parameter
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
       use m_matrix_4_filter
+      use m_filter_elength
+      use t_filter_moments
 !
       use expand_filter_area_4_1node
       use cal_3d_filter_4_each_node
       use int_filter_functions
       use fem_const_filter_matrix
       use set_simple_filters
-      use m_filter_elength
 !
       integer(kind = kint), intent(in) :: inod
+      type(nod_mom_diffs_type), intent(inout) :: mom_nod
+!
       integer(kind = kint) :: num_fixed_point = 0
       integer(kind = kint) :: i
 !
@@ -58,8 +61,8 @@
 !
 !      set filter function without normalization
 !
-        nnod_near_nod_weight(inod) = nnod_near_1nod_weight
-        call cal_filter_moments_each_nod(ione, inod)
+      nnod_near_nod_weight(inod) = nnod_near_1nod_weight
+      call cal_filter_moms_each_nod_type(inod, mom_nod)
 !
       end subroutine s_cal_filter_moments_again
 !
