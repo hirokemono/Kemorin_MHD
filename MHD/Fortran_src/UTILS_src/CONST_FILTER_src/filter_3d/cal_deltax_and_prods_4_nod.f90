@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Nov., 2006
 !
 !      subroutine cal_dx2_on_node(itype_mass)
-!      subroutine cal_dxi_dxes_node(itype_mass)
+!      subroutine cal_dxi_dxes_node(itype_mass, dxidxs)
 !
       module cal_deltax_and_prods_4_nod
 !
@@ -47,24 +47,34 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_dxi_dxes_node(itype_mass)
+      subroutine cal_dxi_dxes_node(itype_mass, dxidxs)
 !
-      use m_dxi_dxes_3d_node
+      use t_filter_dxdxi
 !
       integer(kind = kint), intent(in) :: itype_mass
+      type(dxidx_data_type), intent(inout) :: dxidxs
 !
 !
-      call int_dx_ele2_node(itype_mass, dxidx_ele, dxidx_nod)
-      call int_dx_ele2_node(itype_mass, deidx_ele, deidx_nod)
-      call int_dx_ele2_node(itype_mass, dzidx_ele, dzidx_nod)
+      call int_dx_ele2_node                                             &
+     &   (itype_mass, dxidxs%dx_ele%dxi%df_dx, dxidxs%dx_nod%dxi%df_dx)
+      call int_dx_ele2_node                                             &
+     &   (itype_mass, dxidxs%dx_nod%dxi%df_dy, dxidxs%dx_nod%dxi%df_dy)
+      call int_dx_ele2_node                                             &
+     &   (itype_mass, dxidxs%dx_nod%dxi%df_dz, dxidxs%dx_nod%dxi%df_dz)
 !
-      call int_dx_ele2_node(itype_mass, dxidy_ele, dxidy_nod)
-      call int_dx_ele2_node(itype_mass, deidy_ele, deidy_nod)
-      call int_dx_ele2_node(itype_mass, dzidy_ele, dzidy_nod)
+      call int_dx_ele2_node                                             &
+     &   (itype_mass, dxidxs%dx_ele%dei%df_dx, dxidxs%dx_nod%dei%df_dx)
+      call int_dx_ele2_node                                             &
+     &   (itype_mass, dxidxs%dx_nod%dei%df_dy, dxidxs%dx_nod%dei%df_dy)
+      call int_dx_ele2_node                                             &
+     &   (itype_mass, dxidxs%dx_nod%dei%df_dz, dxidxs%dx_nod%dei%df_dz)
 !
-      call int_dx_ele2_node(itype_mass, dxidz_ele, dxidz_nod)
-      call int_dx_ele2_node(itype_mass, deidz_ele, deidz_nod)
-      call int_dx_ele2_node(itype_mass, dzidz_ele, dzidz_nod)
+      call int_dx_ele2_node                                             &
+     &   (itype_mass, dxidxs%dx_ele%dzi%df_dx, dxidxs%dx_nod%dzi%df_dx)
+      call int_dx_ele2_node                                             &
+     &   (itype_mass, dxidxs%dx_nod%dzi%df_dy, dxidxs%dx_nod%dzi%df_dy)
+      call int_dx_ele2_node                                             &
+     &   (itype_mass, dxidxs%dx_nod%dzi%df_dz, dxidxs%dx_nod%dzi%df_dz)
 !
       end subroutine cal_dxi_dxes_node
 !

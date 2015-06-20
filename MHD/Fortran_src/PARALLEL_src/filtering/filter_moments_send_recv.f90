@@ -52,22 +52,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine dxidx_nod_send_recv
+      subroutine dxidx_nod_send_recv(dx_nod)
 !
-      use m_dxi_dxes_3d_node
+      use t_filter_dxdxi
+!
+      type(dxidx_direction_type), intent(in) :: dx_nod
 !
 !
-      call nod_scalar_send_recv(dxidx_nod(1))
-      call nod_scalar_send_recv(deidx_nod(1))
-      call nod_scalar_send_recv(dzidx_nod(1))
+      call nod_scalar_send_recv(dx_nod%dxi%df_dx)
+      call nod_scalar_send_recv(dx_nod%dxi%df_dy)
+      call nod_scalar_send_recv(dx_nod%dxi%df_dz)
 !
-      call nod_scalar_send_recv(dxidy_nod(1))
-      call nod_scalar_send_recv(deidy_nod(1))
-      call nod_scalar_send_recv(dzidy_nod(1))
+      call nod_scalar_send_recv(dx_nod%dei%df_dx)
+      call nod_scalar_send_recv(dx_nod%dei%df_dy)
+      call nod_scalar_send_recv(dx_nod%dei%df_dz)
 !
-      call nod_scalar_send_recv(dxidz_nod(1))
-      call nod_scalar_send_recv(deidz_nod(1))
-      call nod_scalar_send_recv(dzidz_nod(1))
+      call nod_scalar_send_recv(dx_nod%dzi%df_dx)
+      call nod_scalar_send_recv(dx_nod%dzi%df_dy)
+      call nod_scalar_send_recv(dx_nod%dzi%df_dz)
 !
       end subroutine dxidx_nod_send_recv
 !

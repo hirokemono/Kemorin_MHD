@@ -4,8 +4,11 @@
 !      Written by H.Matsui on Nov., 2006
 !      Modified by H. Matsui on Mar., 2008
 !
-!      subroutine s_cal_element_size(filter_dxi)
-!      subroutine s_const_filter_mom_ele(ifil)
+!!      subroutine s_cal_element_size(filter_dxi, dxidxs)
+!!        type(dxdxi_data_type), intent(inout) :: filter_dxi
+!!        type(dxidx_data_type), intent(inout) :: dxidxs
+!!
+!!      subroutine s_const_filter_mom_ele(ifil)
 !
       module cal_element_size
 !
@@ -22,7 +25,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_element_size(filter_dxi)
+      subroutine s_cal_element_size(filter_dxi, dxidxs)
 !
       use m_finite_element_matrix
       use m_ctl_params_4_gen_filter
@@ -30,7 +33,6 @@
       use m_next_node_id_4_node
       use m_filter_elength
       use m_reference_moments
-      use m_dxi_dxes_3d_node
       use m_crs_consist_mass_mat
       use t_filter_dxdxi
 !
@@ -47,6 +49,7 @@
       use cal_1st_diff_deltax_4_nod
 !
       type(dxdxi_data_type), intent(inout) :: filter_dxi
+      type(dxidx_data_type), intent(inout) :: dxidxs
 !
 !  ---------------------------------------------------
 !      set RHS assemble table
@@ -67,8 +70,8 @@
       call alloc_nodal_elen_type                                        &
      &   (FEM1_elen%nnod_filter_mom, FEM1_elen%elen_nod)
       call alloc_jacobians_node(FEM1_elen%nnod_filter_mom, filter_dxi)
-      call allocate_dxi_dx_ele
-      call allocate_dxi_dx_nod
+      call alloc_dxidxs_ele(numele, dxidxs)
+      call alloc_dxidxs_node(numnod, dxidxs)
 !
       call allocate_fem_mat_base
       call allocate_scalar_ele_4_int
@@ -81,18 +84,18 @@
       if (iflag_debug.eq.1)  write(*,*) 'int_mass_matrix_4_filter'
       call int_mass_matrix_4_filter
 !
-      if (iflag_debug.eq.1)  write(*,*) 's_cal_dxidx_ele'
-      call s_cal_dxidx_ele
+      if (iflag_debug.eq.1)  write(*,*) 'cal_dxidx_ele_type'
+      call cal_dxidx_ele_type(dxidxs%dx_ele)
 !
 !  ---------------------------------------------------
 !        cal element size for each node
 !  ---------------------------------------------------
 !
       call cal_dx2_on_node(itype_mass_matrix)
-      call cal_dxi_dxes_node(itype_mass_matrix)
+      call cal_dxi_dxes_node(itype_mass_matrix, dxidxs)
 !
       call elength_nod_send_recv(FEM1_elen%elen_nod)
-      call dxidx_nod_send_recv
+      call dxidx_nod_send_recv(dxidxs%dx_nod)
 !
 !  ---------------------------------------------------
 !        cal products of element size for each node

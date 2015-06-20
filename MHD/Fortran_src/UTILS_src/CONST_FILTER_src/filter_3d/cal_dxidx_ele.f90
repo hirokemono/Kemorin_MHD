@@ -3,8 +3,8 @@
 !
 !        programmed by H.Matsui on Nov., 2008
 !
-!      subroutine s_cal_dxidx_ele
-!
+!      subroutine cal_dxidx_ele_type(dx_ele)
+!!
       module cal_dxidx_ele
 !
       use m_precision
@@ -12,19 +12,51 @@
 !
       implicit none
 !
+      private :: s_cal_dxidx_ele
+!
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_dxidx_ele
+      subroutine cal_dxidx_ele_type(dx_ele)
+!
+      use m_geometry_parameter
+      use t_filter_dxdxi
+!
+      type(dxidx_direction_type), intent(inout) :: dx_ele
+!
+!
+      call s_cal_dxidx_ele(numele,                                      &
+     &      dx_ele%dxi%df_dx, dx_ele%dxi%df_dy, dx_ele%dxi%df_dz,       &
+     &      dx_ele%dei%df_dx, dx_ele%dei%df_dy, dx_ele%dei%df_dz,       &
+     &      dx_ele%dzi%df_dx, dx_ele%dzi%df_dy, dx_ele%dzi%df_dz)
+!
+      end subroutine cal_dxidx_ele_type
+!
+!-----------------------------------------------------------------------
+!
+      subroutine s_cal_dxidx_ele(nele,                                  &
+     &          dxidx_ele, dxidy_ele, dxidz_ele,                        &
+     &          deidx_ele, deidy_ele, deidz_ele,                        &
+     &          dzidx_ele, dzidy_ele, dzidz_ele)
 !
       use m_geometry_parameter
       use m_machine_parameter
       use m_fem_gauss_int_coefs
       use m_jacobians
-      use m_dxi_dxes_3d_node
+!
+      integer(kind = kint), intent(in) :: nele
+      real(kind=kreal), intent(inout) :: dxidx_ele(nele)
+      real(kind=kreal), intent(inout) :: deidx_ele(nele)
+      real(kind=kreal), intent(inout) :: dzidx_ele(nele)
+      real(kind=kreal), intent(inout) :: dxidy_ele(nele)
+      real(kind=kreal), intent(inout) :: deidy_ele(nele)
+      real(kind=kreal), intent(inout) :: dzidy_ele(nele)
+      real(kind=kreal), intent(inout) :: dxidz_ele(nele)
+      real(kind=kreal), intent(inout) :: deidz_ele(nele)
+      real(kind=kreal), intent(inout) :: dzidz_ele(nele)
 !
       integer (kind = kint) :: ii, ix, i0
       integer (kind=kint) :: iele, ip, ist, ied

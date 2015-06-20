@@ -3,11 +3,14 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!      subroutine set_tophat_filter_4_each_nod
-!      subroutine set_linear_filter_4_each_nod
-!      subroutine set_gaussian_filter_each_nod(inod)
-!      subroutine normalize_each_filter_weight
-!      subroutine cal_filter_moments_each_nod(ifil, inod)
+!!      subroutine set_tophat_filter_4_each_nod
+!!      subroutine set_linear_filter_4_each_nod
+!!      subroutine set_gaussian_filter_each_nod(inod, nnod,             &
+!!     &          dxidx_nod, dxidy_nod, dxidz_nod,                      &
+!!     &          deidx_nod, deidy_nod, deidz_nod,                      &
+!!     &          dzidx_nod, dzidy_nod, dzidz_nod)
+!!      subroutine normalize_each_filter_weight
+!!      subroutine cal_filter_moments_each_nod(ifil, inod)
 !
       module set_simple_filters
 !
@@ -54,16 +57,28 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_gaussian_filter_each_nod(inod)
+      subroutine set_gaussian_filter_each_nod(inod, nnod,               &
+     &          dxidx_nod, dxidy_nod, dxidz_nod,                        &
+     &          deidx_nod, deidy_nod, deidz_nod,                        &
+     &          dzidx_nod, dzidy_nod, dzidz_nod)
 !
       use m_ctl_params_4_gen_filter
       use m_geometry_data
-      use m_dxi_dxes_3d_node
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
       use m_matrix_4_filter
 !
-      integer(kind = kint), intent(in) :: inod
+      integer(kind = kint), intent(in) :: inod, nnod
+      real(kind=kreal), intent(in) :: dxidx_nod(nnod)
+      real(kind=kreal), intent(in) :: deidx_nod(nnod)
+      real(kind=kreal), intent(in) :: dzidx_nod(nnod)
+      real(kind=kreal), intent(in) :: dxidy_nod(nnod)
+      real(kind=kreal), intent(in) :: deidy_nod(nnod)
+      real(kind=kreal), intent(in) :: dzidy_nod(nnod)
+      real(kind=kreal), intent(in) :: dxidz_nod(nnod)
+      real(kind=kreal), intent(in) :: deidz_nod(nnod)
+      real(kind=kreal), intent(in) :: dzidz_nod(nnod)
+!
 !
       integer(kind = kint) :: i, inod_n
       real(kind = kreal) :: pi

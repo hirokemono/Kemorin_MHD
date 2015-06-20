@@ -65,35 +65,39 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_simple_filter
+      subroutine set_simple_filter(dxidxs)
 !
       use m_ctl_params_4_gen_filter
+      use t_filter_dxdxi
       use m_filter_coefs
       use cal_simple_filter_each_node
       use expand_filter_area_4_1node
 !
       integer(kind = kint) :: inod
+      type(dxidx_data_type), intent(inout) :: dxidxs
 !
 !
       call init_4_cal_fileters
 !
       i_exp_level_1nod_weight = maximum_neighbour
       do inod = inod_start_filter, inod_end_filter
-        call set_simple_filter_nod_by_nod(inod)
+        call set_simple_filter_nod_by_nod(inod, dxidxs%dx_nod)
       end do
 !
       end subroutine set_simple_filter
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_simple_fluid_filter
+      subroutine set_simple_fluid_filter(dxidxs)
 !
       use m_ctl_params_4_gen_filter
+      use t_filter_dxdxi
       use m_filter_coefs
       use cal_simple_filter_each_node
       use expand_filter_area_4_1node
 !
       integer(kind = kint) :: inod
+      type(dxidx_data_type), intent(inout) :: dxidxs
 !
 !
       call init_4_cal_fluid_fileters
@@ -102,7 +106,7 @@
 !
       i_exp_level_1nod_weight = maximum_neighbour
       do inod = inod_start_filter, inod_end_filter
-        call set_simple_fl_filter_nod_by_nod(inod)
+        call set_simple_fl_filter_nod_by_nod(inod, dxidxs%dx_nod)
       end do
 !
       end subroutine set_simple_fluid_filter

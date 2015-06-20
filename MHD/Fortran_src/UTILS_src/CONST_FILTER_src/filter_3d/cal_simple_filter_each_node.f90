@@ -23,12 +23,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_simple_filter_nod_by_nod(inod)
+      subroutine set_simple_filter_nod_by_nod(inod, dx_nod)
 !
       use m_geometry_parameter
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
       use m_matrix_4_filter
+      use t_filter_dxdxi
 !
       use expand_filter_area_4_1node
       use set_simple_filters
@@ -39,6 +40,7 @@
       use write_filters_4_each_node
 !
       integer(kind = kint), intent(in) :: inod
+      type(dxidx_direction_type), intent(in) :: dx_nod
       integer(kind = kint) :: i
 !
 !
@@ -79,7 +81,10 @@
       else if ( abs(iflag_tgt_filter_type) .eq. 3) then
         call set_linear_filter_4_each_nod
       else if ( abs(iflag_tgt_filter_type) .eq. 4) then
-        call set_gaussian_filter_each_nod(inod)
+        call set_gaussian_filter_each_nod(inod, numnod,                 &
+     &      dx_nod%dxi%df_dx, dx_nod%dxi%df_dy, dx_nod%dxi%df_dz,       &
+     &      dx_nod%dei%df_dx, dx_nod%dei%df_dy, dx_nod%dei%df_dz,       &
+     &      dx_nod%dzi%df_dx, dx_nod%dzi%df_dy, dx_nod%dzi%df_dz)
       end if
 !
         call cal_filter_and_coefficients
@@ -95,13 +100,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_simple_fl_filter_nod_by_nod(inod)
+      subroutine set_simple_fl_filter_nod_by_nod(inod, dx_nod)
 !
       use m_geometry_parameter
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
       use m_filter_moments
       use m_matrix_4_filter
+      use t_filter_dxdxi
 !
       use expand_filter_area_4_1node
       use set_simple_filters
@@ -112,6 +118,8 @@
       use write_filters_4_each_node
 !
       integer(kind = kint), intent(in) :: inod
+      type(dxidx_direction_type), intent(in) :: dx_nod
+!
       integer(kind = kint) :: i
 !
 !
@@ -165,7 +173,10 @@
           else if ( abs(iflag_tgt_filter_type) .eq. 3) then
             call set_linear_filter_4_each_nod
           else if ( abs(iflag_tgt_filter_type) .eq. 4) then
-            call set_gaussian_filter_each_nod(inod)
+            call set_gaussian_filter_each_nod(inod, numnod,             &
+     &          dx_nod%dxi%df_dx, dx_nod%dxi%df_dy, dx_nod%dxi%df_dz,   &
+     &          dx_nod%dei%df_dx, dx_nod%dei%df_dy, dx_nod%dei%df_dz,   &
+     &          dx_nod%dzi%df_dx, dx_nod%dzi%df_dy, dx_nod%dzi%df_dz)
           end if
 !
           call cal_filter_and_coefficients

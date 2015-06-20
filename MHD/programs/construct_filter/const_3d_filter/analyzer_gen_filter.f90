@@ -20,6 +20,7 @@
       implicit none
 !
       type(dxdxi_data_type), save :: filter_dxi1
+      type(dxidx_data_type), save :: dxidxs1
 !
 ! ----------------------------------------------------------------------
 !
@@ -166,7 +167,7 @@
       call init_send_recv
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
-      call s_cal_element_size(filter_dxi1)
+      call s_cal_element_size(filter_dxi1, dxidxs1)
       call dealloc_jacobians_ele(filter_dxi1)
 !
 !  ---------------------------------------------------
@@ -200,21 +201,7 @@
         num_failed_whole = 0
         num_failed_fluid = 0
 !
-        if (iflag_tgt_filter_type .eq. 1)  then
-          if (iflag_debug.eq.1) write(*,*) 'const_commutative_filter'
-          call  const_commutative_filter
-        else if (iflag_tgt_filter_type .eq. -1) then
-          if (iflag_debug.eq.1) write(*,*) 'correct_commutative_filter'
-          call  correct_commutative_filter
-        else if (iflag_tgt_filter_type .ge. -4                          &
-     &     .and. iflag_tgt_filter_type .le. -2) then
-          if (iflag_debug.eq.1) write(*,*) 'correct_by_simple_filter'
-          call  correct_by_simple_filter
-        else if (iflag_tgt_filter_type.ge.2                             &
-     &     .and. iflag_tgt_filter_type.le.4) then
-          if (iflag_debug.eq.1) write(*,*) 'const_simple_filter'
-          call const_simple_filter
-        end if
+        call select_const_filter(dxidxs1)
         call dealloc_jacobians_node(filter_dxi1)
 !
         close(filter_coef_code)

@@ -32,9 +32,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_correct_wrong_filters(id_filter_coef)
+      subroutine s_correct_wrong_filters(id_filter_coef, dxidxs)
+!
+      use t_filter_dxdxi
 !
       integer(kind = kint), intent(in) :: id_filter_coef
+      type(dxidx_data_type), intent(inout) :: dxidxs
       integer(kind = kint) :: inod, ierr2, ierr
 !
 !
@@ -75,7 +78,7 @@
             call const_filter_func_nod_by_nod(inod, ierr)
           else if(iflag_tgt_filter_type .ge. -4                         &
      &      .and. iflag_tgt_filter_type.le. -2) then
-            call set_simple_filter_nod_by_nod(inod)
+            call set_simple_filter_nod_by_nod(inod, dxidxs%dx_nod)
           end if
 !
         end if
@@ -86,9 +89,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine correct_wrong_fluid_filters(id_filter_coef)
+      subroutine correct_wrong_fluid_filters(id_filter_coef, dxidxs)
+!
+      use t_filter_dxdxi
 !
       integer(kind = kint), intent(in) :: id_filter_coef
+      type(dxidx_data_type), intent(inout) :: dxidxs
+!
       integer(kind = kint) :: inod, ierr2, ierr
 !
 !
@@ -132,7 +139,7 @@
             call const_fluid_filter_nod_by_nod(inod, ierr)
           else if(iflag_tgt_filter_type .ge. -4                         &
      &      .and. iflag_tgt_filter_type.le. -2) then
-            call set_simple_fl_filter_nod_by_nod(inod)
+            call set_simple_fl_filter_nod_by_nod(inod, dxidxs%dx_nod)
           end if
 !
         end if

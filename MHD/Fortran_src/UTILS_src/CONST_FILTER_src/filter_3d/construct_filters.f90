@@ -3,10 +3,7 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!      subroutine const_commutative_filter
-!      subroutine const_simple_filter
-!      subroutine correct_commutative_filter
-!      subroutine correct_by_simple_filter
+!      subroutine select_const_filter(dxidxs)
 !
       module construct_filters
 !
@@ -29,10 +26,41 @@
 !
       character(len=kchara), parameter, private :: tmp_head = 'work'
 !
+      private :: const_commutative_filter, const_simple_filter
+      private :: correct_commutative_filter, correct_by_simple_filter
+!
 ! ----------------------------------------------------------------------
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine select_const_filter(dxidxs)
+!
+      use t_filter_dxdxi
+!
+      type(dxidx_data_type), intent(inout) :: dxidxs
+!
+!
+      if (iflag_tgt_filter_type .eq. 1)  then
+        if (iflag_debug.eq.1) write(*,*) 'const_commutative_filter'
+        call  const_commutative_filter
+      else if (iflag_tgt_filter_type .eq. -1) then
+        if (iflag_debug.eq.1) write(*,*) 'correct_commutative_filter'
+        call  correct_commutative_filter(dxidxs)
+      else if (iflag_tgt_filter_type .ge. -4                            &
+     &     .and. iflag_tgt_filter_type .le. -2) then
+        if (iflag_debug.eq.1) write(*,*) 'correct_by_simple_filter'
+        call  correct_by_simple_filter(dxidxs)
+      else if (iflag_tgt_filter_type.ge.2                               &
+     &     .and. iflag_tgt_filter_type.le.4) then
+        if (iflag_debug.eq.1) write(*,*) 'const_simple_filter'
+        call const_simple_filter(dxidxs)
+      end if
+!
+      end subroutine select_const_filter
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine const_commutative_filter
@@ -74,17 +102,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_simple_filter
+      subroutine const_simple_filter(dxidxs)
 !
       use m_element_id_4_node
       use m_next_node_id_4_node
       use m_finite_element_matrix
       use m_filter_elength
       use m_filter_moments
+      use t_filter_dxdxi
       use cal_1st_diff_deltax_4_nod
       use cal_filter_func_node
       use cal_diff_elesize_on_ele
       use filter_geometry_IO
+!
+      type(dxidx_data_type), intent(inout) :: dxidxs
 !
 !
       if(iflag_debug.eq.1) write(*,*) 'alloc_filter_moms_nod_type'
@@ -97,7 +128,7 @@
 !  ---------------------------------------------------
 !
         if(iflag_debug.eq.1) write(*,*) 'set_simple_filter'
-        call set_simple_filter
+        call set_simple_filter(dxidxs)
 !
         call deallocate_iele_belonged
         call deallocate_inod_next_node
@@ -109,7 +140,7 @@
         call cal_fmoms_ele_by_elen_1st(itwo)
 !
           if(iflag_debug.eq.1)  write(*,*) 'set_simple_fluid_filter'
-        call set_simple_fluid_filter
+        call set_simple_fluid_filter(dxidxs)
 !
         call cal_fmoms_ele_by_elen_1st(itwo)
         if (itype_mass_matrix .eq. 1) call release_mass_mat_for_consist
@@ -122,15 +153,17 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine correct_commutative_filter
+      subroutine correct_commutative_filter(dxidxs)
 !
       use m_filter_file_names
       use m_filter_elength
       use m_filter_moments
+      use t_filter_dxdxi
       use set_parallel_file_name
       use correct_wrong_filters
       use filter_geometry_IO
 !
+      type(dxidx_data_type), intent(inout) :: dxidxs
       character(len=kchara) :: file_name
 !
 !
@@ -165,13 +198,13 @@
       call allocate_correct_filter_flag(numnod, numele)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
-      call s_correct_wrong_filters(org_filter_coef_code)
+      call s_correct_wrong_filters(org_filter_coef_code, dxidxs)
 !
       call deallocate_iele_belonged
       call deallocate_inod_next_node
 !
       if(iflag_debug.eq.1)  write(*,*)'correct_wrong_fluid_filters'
-      call correct_wrong_fluid_filters(org_filter_coef_code)
+      call correct_wrong_fluid_filters(org_filter_coef_code, dxidxs)
 !
       call deallocate_correct_filter_flag
 !
@@ -187,17 +220,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine correct_by_simple_filter
+      subroutine correct_by_simple_filter(dxidxs)
 !
       use m_filter_file_names
       use m_filter_elength
       use m_filter_moments
       use m_filter_coefs
+      use t_filter_dxdxi
       use m_field_file_format
       use set_parallel_file_name
       use correct_wrong_filters
       use filter_geometry_IO
 !
+      type(dxidx_data_type), intent(inout) :: dxidxs
       character(len=kchara) :: file_name
 !
 !
@@ -230,7 +265,7 @@
       call allocate_correct_filter_flag(numnod, numele)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
-      call s_correct_wrong_filters(org_filter_coef_code)
+      call s_correct_wrong_filters(org_filter_coef_code, dxidxs)
 !
       call deallocate_iele_belonged
       call deallocate_inod_next_node
@@ -245,7 +280,7 @@
       call cal_fmoms_ele_by_elen_1st(itwo)
 !
       if(iflag_debug.eq.1)  write(*,*)'correct_wrong_fluid_filters'
-      call correct_wrong_fluid_filters(org_filter_coef_code)
+      call correct_wrong_fluid_filters(org_filter_coef_code, dxidxs)
 !
       call deallocate_correct_filter_flag
 !
