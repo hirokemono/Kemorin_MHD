@@ -30,7 +30,6 @@
       character(len = 1), allocatable :: rgb_chara_gl(:,:)
       character(len = 1), allocatable :: rgba_chara_gl(:,:)
 !
-      real(kind = kreal), allocatable :: rgba_recv(:,:)
       real(kind = kreal), allocatable :: rgba_lc(:,:)
       character(len = 1), allocatable :: rgb_chara_lc(:,:)
       integer(kind = kint), allocatable :: ip_farther(:)
@@ -38,7 +37,6 @@
       integer(kind = kint), allocatable :: iflag_mapped(:)
       real(kind = kreal), allocatable :: depth_lc(:)
       real(kind = kreal), allocatable :: ave_depth_gl(:)
-      real(kind = kreal), allocatable :: ave_depth_recv(:)
       real(kind = kreal) :: ave_depth_lc, covered_area
 !
 !>       status flag for sending
@@ -86,16 +84,9 @@
 !
         allocate(rgba_real_gl(4,nmax_pixel))
 !
-!
         rgba_real_gl =  0.0d0
         rgba_left_gl =  0.0d0
         rgba_right_gl = 0.0d0
-!
-!
-        allocate(rgba_recv(4*nmax_pixel,nprocs))
-        allocate(ave_depth_recv(nprocs))
-        rgba_recv =      0.0d0
-        ave_depth_recv = 0.0d0
       end if
 !
       allocate(istack_image(0:nprocs))
@@ -123,8 +114,7 @@
       if(my_rank .eq. 0) then
         deallocate(rgb_chara_gl, rgba_chara_gl)
         deallocate(rgba_left_gl, rgba_right_gl)
-        deallocate(rgba_real_gl, rgba_recv)
-        deallocate(ave_depth_recv)
+        deallocate(rgba_real_gl)
       end if
 !
       deallocate (sta1, req1, sta2, req2)
