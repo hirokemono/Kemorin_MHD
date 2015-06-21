@@ -49,9 +49,8 @@
       call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
 !
       ioff_gl = 0
-      call gz_write_ucd_mesh_mpi(id_vtk, ioff_gl,                       &
-     &    ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%ntot_comp,            &
-     &    ucd%xx, ucd%ie,           &
+      call gz_write_ucd_mesh_mpi(id_vtk, ioff_gl, ucd%nnod, ucd%nele,   &
+     &    ucd%nnod_4_ele, ucd%ntot_comp, ucd%xx, ucd%ie,                &
      &    m_ucd%istack_merged_intnod, m_ucd%istack_merged_ele)
 !
       call gz_write_ucd_data_mpi(id_vtk, ioff_gl,                       &
@@ -102,9 +101,8 @@
       call calypso_mpi_write_file_open(file_name, nprocs, id_vtk)
 !
       ioff_gl = 0
-      call gz_write_ucd_mesh_mpi(id_vtk, ioff_gl,                       &
-     &    ucd%nnod, ucd%nele, ucd%nnod_4_ele, ucd%ntot_comp,            &
-     &    ucd%xx, ucd%ie,           &
+      call gz_write_ucd_mesh_mpi(id_vtk, ioff_gl, ucd%nnod, ucd%nele,   &
+     &    ucd%nnod_4_ele, ucd%ntot_comp, ucd%xx, ucd%ie,                &
      &    m_ucd%istack_merged_intnod, m_ucd%istack_merged_ele)
 !
       call calypso_close_mpi_file(id_vtk)

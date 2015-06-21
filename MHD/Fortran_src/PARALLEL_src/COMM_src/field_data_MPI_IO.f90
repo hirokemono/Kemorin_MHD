@@ -23,6 +23,9 @@
 !!      subroutine read_field_num_mpi                                   &
 !!     &         (id_fld, ioff_gl, num_field, ncomp_field)
 !!
+!!      subroutine write_field_vecotr_mpi(id_fld, ioff_gl,              &
+!!     &          nnod, ncomp, vect, istack_merged_intnod)
+!
 !!      subroutine read_field_name_mpi(id_fld, ioff_gl, field_name)
 !!      subroutine read_fld_vecotr_mpi(id_fld, nprocs_in, id_rank,      &
 !!     &          ioff_gl, nnod, ncomp, vect, istack_merged)
@@ -30,6 +33,8 @@
 !!     &          istack_merged)
 !!
 !!  External routines in this file
+!!      subroutine calypso_mpi_seek_write_ext                           &
+!!     &         (id_mpi_file, ioffset, ilength, textbuf)
 !!      subroutine read_step_data_buf_ext(textbuf, id_rank)
 !!      subroutine read_field_istack_nod_buf_ext                        &
 !!     &         (textbuf, nprocs, istack_nod)
@@ -353,6 +358,51 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
+      subroutine write_field_vecotr_mpi(id_fld, ioff_gl,                &
+     &          nnod, ncomp, vect, istack_merged_intnod)
+!
+      integer(kind = kint_gl), intent(inout) :: ioff_gl
+      integer(kind = kint_gl), intent(in)                               &
+     &         :: istack_merged_intnod(0:nprocs)
+      integer(kind = kint), intent(in) :: nnod, ncomp
+      real(kind = kreal), intent(in) :: vect(nnod,ncomp)
+!
+      integer, intent(in) ::  id_fld
+!
+      character(len=ncomp*25+1), allocatable, target :: textbuf_n(:)
+      character(len=ncomp*25+1), pointer :: charatmp
+      character(len=kchara) :: fmt_txt
+!
+      integer(kind = MPI_OFFSET_KIND) :: ioffset
+      integer(kind = kint) :: ilength
+      integer(kind = kint_gl) :: i, num
+!
+!
+      write(*,*) 'write_field_vecotr_mpi'
+      ilength = ncomp*25 + 1
+      num = istack_merged_intnod(my_rank+1)                             &
+     &     - istack_merged_intnod(my_rank)
+      ioffset = int(ioff_gl + ilength * istack_merged_intnod(my_rank))
+      ioff_gl = ioff_gl + ilength * istack_merged_intnod(nprocs)
+!
+      if(num .le. 0) return
+      write(fmt_txt,'(a1,i5,a16)') '(', ncomp, '(1pE25.15e3),a1)'
+!
+      allocate(textbuf_n(nnod))
+!
+      do i = 1, num
+        charatmp => textbuf_n(i)
+        write(charatmp,'(1p3E23.12e3,a1)') vect(i,1:ncomp), char(10)
+      end do
+      call calypso_mpi_seek_write_ext(id_fld, ioffset, (num*ilength),   &
+     &    textbuf_n(1))
+!
+      deallocate(textbuf_n)
+!
+      end subroutine write_field_vecotr_mpi
+!
+! -----------------------------------------------------------------------
+!
       subroutine read_fld_vecotr_mpi(id_fld, nprocs_in, id_rank,        &
      &          ioff_gl, nnod, ncomp, vect, istack_merged)
 !
@@ -426,6 +476,24 @@
 !      External routine to pass character lengh check
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine calypso_mpi_seek_write_ext                             &
+     &         (id_mpi_file, ioffset, ilength, textbuf)
+!
+      use m_calypso_mpi_IO
+!
+      integer, intent(in) ::  id_mpi_file
+      integer(kind = kint), intent(in) :: ilength
+      character(len=ilength), intent(in) :: textbuf
+      integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
+!
+!
+      call calypso_mpi_seek_write_chara                                 &
+     &         (id_mpi_file, ioffset, ilength, textbuf)
+!
+      end subroutine calypso_mpi_seek_write_ext
+!
+! -------------------------------------------------------------------
 !
       subroutine read_step_data_buf_ext(textbuf, id_rank)
 !

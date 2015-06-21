@@ -57,11 +57,11 @@
         call link_nnod_stacks_type_2_output(nprocs,                     &
      &    psf_mesh%node, psf_mesh%patch, psf_out_m)
 !
+        call link_node_data_type_2_output(psf_mesh%node, psf_out)
         call link_ele_data_type_2_output(psf_mesh%patch, psf_out)
         call link_field_data_type_2_output(psf_mesh%node%numnod,        &
      &    psf_mesh%field, psf_out)
 !
-        call link_node_data_type_2_output(psf_mesh%node, psf_out)
         call sel_write_parallel_ucd_mesh(psf_out, psf_out_m)
       end if
 !

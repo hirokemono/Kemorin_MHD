@@ -44,8 +44,8 @@
 !
 !
       ucd%nnod =         numnod
-      ucd%inod_global => inod_gl(1:numnod)
-      ucd%xx =>          xx(1:numnod,1:3)
+      ucd%inod_global => inod_gl
+      ucd%xx =>          xx
 !
       end subroutine link_node_data_2_output
 !
@@ -111,10 +111,10 @@
       ucd%num_field = num_phys_vis
       ucd%ntot_comp = ntot_comp_vis
 !
-      ucd%num_comp =>  num_component(1:num_phys_vis)
-      ucd%phys_name => phy_name(1:num_phys_vis)
+      ucd%num_comp =>  num_component
+      ucd%phys_name => phy_name
 !
-      ucd%d_ucd =>     d_nod(1:numnod,1:ntot_comp_vis)
+      ucd%d_ucd =>     d_nod
 !
       end subroutine link_field_data_2_output
 !

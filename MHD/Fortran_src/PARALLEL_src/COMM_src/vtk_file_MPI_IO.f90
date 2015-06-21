@@ -141,15 +141,14 @@
         if ( ncomp_field(j) .eq. n_scalar) then
           call calypso_mpi_seek_write_head_c(id_vtk, ioff_gl,           &
      &        vtk_scalar_head(field_name(j)))
-          call write_vtk_scalar_mpi(id_vtk, ioff_gl,                    &
-     &          nnod, d_nod(1,icou), istack_merged_intnod)
+          call write_vtk_field_mpi(id_vtk, ioff_gl,                     &
+     &          nnod, n_scalar, d_nod(1,icou), istack_merged_intnod)
 !
         else if ( ncomp_field(j) .eq. n_vector) then
           call calypso_mpi_seek_write_head_c(id_vtk, ioff_gl,           &
      &        vtk_vector_head(field_name(j)))
-!
-          call write_vtk_vecotr_mpi(id_vtk, ioff_gl,                    &
-     &          nnod, d_nod(1,icou), istack_merged_intnod)
+          call write_vtk_field_mpi(id_vtk, ioff_gl,                     &
+     &          nnod, n_vector, d_nod(1,icou), istack_merged_intnod)
 !
         else if ( ncomp_field(j) .eq. n_sym_tensor) then
           call calypso_mpi_seek_write_head_c(id_vtk, ioff_gl,           &
@@ -170,6 +169,7 @@
      &          istack_merged_intnod, istack_merged_ele)
 !
       use m_phys_constants
+      use field_data_MPI_IO
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint_gl), intent(in)                               &
@@ -191,8 +191,8 @@
 !
       call calypso_mpi_seek_write_head_c                                &
      &   (id_vtk, ioff_gl, vtk_node_head(nt_nod))
-      call write_vtk_vecotr_mpi(id_vtk, ioff_gl,                        &
-     &    nnod, xx(1,1), istack_merged_intnod)
+      call write_vtk_field_mpi(id_vtk, ioff_gl,                         &
+     &    nnod, n_vector, xx(1,1), istack_merged_intnod)
 !
       call calypso_mpi_seek_write_head_c                                &
      &   (id_vtk, ioff_gl, vtk_connect_head(nt_ele, nnod_ele))
@@ -203,75 +203,56 @@
 !
       call calypso_mpi_seek_write_head_c                                &
      &   (id_vtk, ioff_gl, vtk_cell_type_head(nt_ele))
-      call write_vtk_celltype_mpi(id_vtk, ioff_gl,                      &
-     &    nnod_ele, istack_merged_ele)
+      call write_vtk_celltype_mpi(id_vtk, ioff_gl, nt_ele,              &
+     &   nele,  nnod_ele, istack_merged_ele(my_rank))
 !
       end subroutine write_vtk_mesh_mpi
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_vtk_scalar_mpi(id_vtk, ioff_gl,                  &
-     &          nnod, vect, istack_merged_intnod)
+      subroutine write_vtk_field_mpi(id_vtk, ioff_gl,                   &
+     &          nnod, ncomp, vect, istack_merged_intnod)
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
       integer(kind = kint_gl), intent(in)                               &
      &         :: istack_merged_intnod(0:nprocs)
       integer(kind = kint_gl), intent(in) :: nnod
-      real(kind = kreal), intent(in) :: vect(nnod)
+      integer(kind = kint), intent(in) :: ncomp
+      real(kind = kreal), intent(in) :: vect(nnod,ncomp)
 !
       integer, intent(in) ::  id_vtk
 !
-      integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilength
-      integer(kind = kint_gl) :: inod, num
-!
-!
-      num = istack_merged_intnod(my_rank+1)                             &
-     &     - istack_merged_intnod(my_rank)
-!
-      ilength = len(vtk_each_scalar(zero))
-      ioffset = int(ioff_gl                                             &
-     &         + ilength * istack_merged_intnod(my_rank))
-      do inod = 1, num
-        call calypso_mpi_seek_write_chara(id_vtk, ioffset, ilength,     &
-     &     vtk_each_scalar(vect(inod)))
-      end do
-      ioff_gl = ioff_gl + ilength * istack_merged_intnod(nprocs)
-!
-      end subroutine write_vtk_scalar_mpi
-!
-! -----------------------------------------------------------------------
-!
-      subroutine write_vtk_vecotr_mpi(id_vtk, ioff_gl,                  &
-     &          nnod, vect, istack_merged_intnod)
-!
-      integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint_gl), intent(in)                               &
-     &         :: istack_merged_intnod(0:nprocs)
-      integer(kind = kint_gl), intent(in) :: nnod
-      real(kind = kreal), intent(in) :: vect(nnod,3)
-!
-      integer, intent(in) ::  id_vtk
+      character(len=ncomp*25+1), allocatable, target :: textbuf_n(:)
+      character(len=ncomp*25+1), pointer :: charatmp
+      character(len=kchara) :: fmt_txt
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint) :: ilength
-      integer(kind = kint_gl) :: inod, num
+      integer(kind = kint_gl) :: i, num
 !
 !
+      ilength = ncomp*25 + 1
       num = istack_merged_intnod(my_rank+1)                             &
      &     - istack_merged_intnod(my_rank)
-!
-      ilength = len(vtk_each_vector(zero, zero, zero))
-      ioffset = int(ioff_gl                                             &
-     &             + ilength * istack_merged_intnod(my_rank))
-      do inod = 1, num
-        call calypso_mpi_seek_write_chara(id_vtk, ioffset, ilength,     &
-     &      vtk_each_vector(vect(inod,1), vect(inod,2), vect(inod,3)))
-      end do
+      ioffset = int(ioff_gl + ilength * istack_merged_intnod(my_rank))
       ioff_gl = ioff_gl + ilength * istack_merged_intnod(nprocs)
 !
-      end subroutine write_vtk_vecotr_mpi
+      if(num .le. 0) return
+      write(fmt_txt,'(a1,i5,a16)') '(', ncomp, '(1pE25.15e3),a1)'
+!
+      allocate(textbuf_n(nnod))
+!
+      do i = 1, num
+        charatmp => textbuf_n(i)
+        write(charatmp,fmt_txt) vect(i,1:ncomp), char(10)
+      end do
+      call calypso_mpi_seek_write_ext(id_vtk, ioffset, (num*ilength),   &
+     &    textbuf_n(1))
+!
+      deallocate(textbuf_n)
+!
+      end subroutine write_vtk_field_mpi
 !
 ! -----------------------------------------------------------------------
 !
@@ -286,26 +267,38 @@
 !
       integer, intent(in) ::  id_vtk
 !
+      integer(kind = kint), parameter :: ilength = 3*25 + 1
+      character(len=ilength), allocatable, target :: textbuf_n(:)
+      character(len=ilength), pointer :: charatmp
+      character(len=kchara), parameter :: fmt_txt = '(6(1pE25.15e3),a1)'
+!
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilength
-      integer(kind = kint_gl) :: inod, num
+      integer(kind = kint_gl) :: i, num
 !
 !
       num = istack_merged_intnod(my_rank+1)                             &
      &     - istack_merged_intnod(my_rank)
+      ioffset = int(ioff_gl + ilength * istack_merged_intnod(my_rank))
+      ioff_gl = ioff_gl + ilength * istack_merged_intnod(nprocs)
 !
-      ilength = len(vtk_each_vector(zero, zero, zero))
-      ioffset = int(ioff_gl                                             &
-     &             + ilength * istack_merged_intnod(my_rank))
-      do inod = 1, num
-        call calypso_mpi_seek_write_chara(id_vtk, ioffset, ilength,     &
-     &      vtk_each_vector(vect(inod,1), vect(inod,2), vect(inod,3)))
-        call calypso_mpi_seek_write_chara(id_vtk, ioffset, ilength,     &
-     &      vtk_each_vector(vect(inod,2), vect(inod,4), vect(inod,5)))
-        call calypso_mpi_seek_write_chara(id_vtk, ioffset, ilength,     &
-     &      vtk_each_vector(vect(inod,3), vect(inod,5), vect(inod,6)))
+      if(num .le. 0) return
+      allocate(textbuf_n(3*nnod))
+!
+      do i = 1, num
+        charatmp => textbuf_n(3*i-2)
+        write(charatmp,fmt_txt)                                         &
+     &                    vect(i,1), vect(i,2), vect(i,3), char(10)
+        charatmp => textbuf_n(3*i-1)
+        write(charatmp,fmt_txt)                                         &
+     &                    vect(i,2), vect(i,4), vect(i,5), char(10)
+        charatmp => textbuf_n(3*i  )
+        write(charatmp,fmt_txt)                                         &
+     &                    vect(i,3), vect(i,5), vect(i,6), char(10)
       end do
-      ioff_gl = ioff_gl + 3*ilength * istack_merged_intnod(nprocs)
+      call calypso_mpi_seek_write_ext(id_vtk, ioffset, (3*num*ilength), &
+     &    textbuf_n(1))
+!
+      deallocate(textbuf_n)
 !
       end subroutine write_vtk_tensor_mpi
 !
@@ -324,6 +317,9 @@
 !
       integer, intent(in) ::  id_vtk
 !
+      character(len=16+16*nnod_ele+1), allocatable, target              &
+     &                                :: textbuf_n(:)
+!
       integer(kind = kint_gl) :: ie0(nnod_ele)
       integer(kind = kint_gl) :: iele
 !
@@ -334,45 +330,56 @@
       ie0(1:nnod_ele) = 0
       ilength = len(vtk_each_connect(nnod_ele, ie0))
       ioffset = int(ioff_gl + ilength * istack)
+      ioff_gl = ioff_gl + ilength * nt_ele
+!
+      if(nele .le. 0) return
+      allocate(textbuf_n(nele))
+!
       do iele = 1, nele
         ie0(1:nnod_ele) = ie(iele,1:nnod_ele) - 1
-        call calypso_mpi_seek_write_chara(id_vtk, ioffset, ilength,     &
-     &       vtk_each_connect(nnod_ele,ie0))
+        textbuf_n(iele) = vtk_each_connect(nnod_ele,ie0)
       end do
-      ioff_gl = ioff_gl + ilength * nt_ele
+      call calypso_mpi_seek_write_ext(id_vtk, ioffset, (nele*ilength),  &
+     &    textbuf_n(1))
+      deallocate(textbuf_n)
 !
       end subroutine write_vtk_connect_mpi
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine write_vtk_celltype_mpi(id_vtk, ioff_gl,                &
-     &          nnod_ele, istack_merged_ele)
+      subroutine write_vtk_celltype_mpi(id_vtk, ioff_gl, nt_ele,        &
+     &          nele, nnod_ele, istack)
 !
       use m_phys_constants
 !
       integer(kind = kint_gl), intent(inout) :: ioff_gl
-      integer(kind = kint_gl), intent(in)                               &
-     &         :: istack_merged_ele(0:nprocs)
+      integer(kind = kint_gl), intent(in) :: nele, nt_ele, istack
       integer(kind = kint), intent(in) :: nnod_ele
 !
       integer, intent(in) ::  id_vtk
 !
-      integer(kind = kint_gl) :: iele, nele
+      integer(kind = kint), parameter :: ilength = 5 + 1
+      character(len=ilength), allocatable, target :: textbuf_n(:)
+!
       integer(kind = kint) :: icellid
+      integer(kind = kint_gl) :: iele
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilength
 !
 !
-      nele = istack_merged_ele(my_rank+1) - istack_merged_ele(my_rank)
       icellid = vtk_cell_type(nnod_ele)
-      ilength = len(vtk_each_cell_type(icellid))
-      ioffset = int(ioff_gl + ilength * istack_merged_ele(my_rank))
+      ioffset = int(ioff_gl + ilength * istack)
+      ioff_gl = ioff_gl + ilength * nt_ele
+!
+      if(nele .le. 0) return
+      allocate(textbuf_n(nele))
+!
       do iele = 1, nele
-        call calypso_mpi_seek_write_chara(id_vtk, ioffset, ilength,     &
-     &      vtk_each_cell_type(icellid))
+        textbuf_n(iele) = vtk_each_cell_type(icellid)
       end do
-      ioff_gl = ioff_gl + ilength * istack_merged_ele(nprocs)
+      call calypso_mpi_seek_write_ext(id_vtk, ioffset, (nele*ilength),  &
+     &    textbuf_n(1))
+      deallocate(textbuf_n)
 !
       end subroutine write_vtk_celltype_mpi
 !

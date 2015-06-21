@@ -115,6 +115,7 @@
 !
 !
       call init_mpi_IO_status
+      call calypso_mpi_barrier
       call MPI_FILE_OPEN                                                &
      &   (CALYPSO_COMM, file_name, MPI_MODE_RDONLY,                     &
      &    MPI_INFO_NULL, id_mpi_file, ierr_MPI)
@@ -130,6 +131,7 @@
 !
 !
       call MPI_FILE_CLOSE(id_mpi_file, ierr_MPI)
+      call calypso_mpi_barrier
       call deallocate_mpi_IO_status
 !
       end subroutine calypso_close_mpi_file
@@ -322,6 +324,7 @@
         call calypso_mpi_seek_write_chara                               &
      &    (id_mpi_file, ioffset, ilen_gzipped, gzip_buf(1))
       end if
+!
       do ip = 1, nprocs
         ioff_gl = ioff_gl + ilen_gzipped_gl(ip)
       end do
