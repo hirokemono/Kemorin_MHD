@@ -319,6 +319,7 @@
       deallocate(textbuf)
 !
       if(my_rank.eq.0 .and. nprocs_in .ne. iread) then
+        write(*,*) 'nprocs_in', nprocs_in, iread
         call calypso_mpi_abort(ierr_fld, 'Set correct field data file')
       end if
 !
@@ -427,6 +428,8 @@
         call gz_read_fld_1word_mpi(id_fld, ioff_gl, field_name(j))
         call gz_read_each_field_mpi(id_fld, nprocs_in, id_rank,        &
      &      ioff_gl, nnod, ncomp_field(j), d_nod(1,icou))
+         write(*,*) 'field_name(j) end'
+         if(my_rank .eq. 0) write(*,*) field_name(j)
         icou = icou + ncomp_field(j)
       end do
 !

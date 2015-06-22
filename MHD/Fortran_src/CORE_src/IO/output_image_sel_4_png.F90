@@ -1,4 +1,11 @@
+!
 !output_image_sel_4_png.F90
+!
+!      subroutine sel_output_image_file(id_file_type, img_head,         &
+!     &          npix_x, npix_y, cimage)
+!      subroutine sel_rgba_image_file(id_file_type, img_head,           &
+!     &          npix_x, npix_y, cimage)
+!
       module output_image_sel_4_png
 !
       use m_precision
@@ -8,11 +15,6 @@
       implicit none
 !
       character(len=1024), private ::  fhead_img_v
-!
-!      subroutine sel_output_image_file(id_file_type, img_head,         &
-!     &          npix_x, npix_y, cimage)
-!      subroutine sel_rgba_image_file(id_file_type, img_head,           &
-!     &          npix_x, npix_y, cimage)
 !
 !------------------------------------------------------------------
 !

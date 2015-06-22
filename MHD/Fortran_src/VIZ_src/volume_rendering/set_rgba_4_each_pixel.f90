@@ -122,8 +122,9 @@
      &         .and. value.le.fea_point(1,i+1)) then
             opacity_local = fea_point(3,i)                              &
      &                     + (fea_point(3,i+1) - fea_point(3,i))        &
-     &                     * (value - fea_point(1,i)-mint)              &
+     &                     * (value - fea_point(1,i))                   &
      &                      / (fea_point(1,i+1) - fea_point(1,i))
+            exit
           end if
         end do
       end if

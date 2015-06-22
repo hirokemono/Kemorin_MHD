@@ -88,13 +88,16 @@
       character(len=len_step_data_buf), intent(in) :: textbuf
       integer(kind = kint), intent(inout) :: id_rank
 !
-      character(len=kchara) :: tmpchara(6)
+      character(len=16) :: tmp2
+      character(len=16) :: tmp4
+      character(len=50) :: tmp6
 !
-!
-      read(textbuf,'(a13,a17,a20,a17,a17,a51)') tmpchara(1:6)
-      read(tmpchara(2),*) id_rank
-      read(tmpchara(4),*) i_time_step_IO
-      read(tmpchara(6),*) time_IO, delta_t_IO
+      write(tmp2,'(a16)') textbuf(14:29)
+      write(tmp4,'(a16)') textbuf(51:66)
+      write(tmp6,'(a50)') textbuf(85:134)
+      read(tmp2,*) id_rank
+      read(tmp4,*) i_time_step_IO
+      read(tmp6,*) time_IO, delta_t_IO
 !
       end subroutine read_step_data_buffer
 !

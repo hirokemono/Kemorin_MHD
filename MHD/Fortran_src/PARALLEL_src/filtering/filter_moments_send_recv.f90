@@ -56,7 +56,7 @@
 !
       use t_filter_dxdxi
 !
-      type(dxidx_direction_type), intent(in) :: dx_nod
+      type(dxidx_direction_type), intent(inout) :: dx_nod
 !
 !
       call nod_scalar_send_recv(dx_nod%dxi%df_dx)

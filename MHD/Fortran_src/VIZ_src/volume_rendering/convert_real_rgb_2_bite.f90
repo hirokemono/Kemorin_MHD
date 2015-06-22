@@ -1,6 +1,11 @@
 !convert_real_rgb_2_bite.f90
 !      module convert_real_rgb_2_bite
 !
+!      subroutine cvt_double_rgba_to_char_rgb(num_pixel, rgba, crgb)
+!      subroutine cvt_double_rgba_to_char_rgba(num_pixel, rgba, crgba)
+!
+!      subroutine set_rgb_background(num_pixel, rgba, bgcolor)
+!
       module convert_real_rgb_2_bite
 !
       use m_precision
@@ -9,11 +14,6 @@
       use calypso_mpi
 !
       implicit  none
-!
-!      subroutine cvt_double_rgba_to_char_rgb(num_pixel, rgba, crgb)
-!      subroutine cvt_double_rgba_to_char_rgba(num_pixel, rgba, crgba)
-!
-!      subroutine set_rgb_background(num_pixel, rgba, bgcolor)
 !
 !  ---------------------------------------------------------------------
 !
