@@ -1,9 +1,12 @@
 !ordering_pvr_sf_domain_grp.f90
 !      module ordering_pvr_sf_domain_grp
 !
-      module ordering_pvr_sf_domain_grp
-!
 !        programmed by H.Matsui on Aug., 2011
+!
+!      subroutine s_ordering_pvr_sf_domain_grp(pvr_bound)
+!      subroutine dealloc_ordering_pvr_domain_grp
+!
+      module ordering_pvr_sf_domain_grp
 !
       use m_precision
       use m_constants
@@ -11,13 +14,12 @@
       implicit  none
 !
 !
-      integer(kind = kint) :: isize_array = 0
       integer(kind = kint), allocatable :: i_org(:)
       integer(kind = kint), allocatable :: itmp(:)
       real(kind = kreal), allocatable :: ztmp(:)
 !
-!      subroutine s_ordering_pvr_sf_domain_grp
-!      subroutine dealloc_ordering_pvr_domain_grp
+      private :: i_org, itmp, ztmp
+      private :: alloc_ordering_pvr_domain_grp
 !
 ! -----------------------------------------------------------------------
 !
@@ -25,75 +27,108 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_ordering_pvr_sf_domain_grp(i_pvr)
+      subroutine s_ordering_pvr_sf_domain_grp(pvr_bound)
 !
-      use m_surf_grp_4_pvr_domain
+      use t_surf_grp_4_pvr_domain
       use m_control_params_4_pvr
       use quicksort
 !
-      integer(kind = kint), intent(in) :: i_pvr
-      integer(kind = kint) :: inum, ist, ied, nd, k1
+      type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
+!
+      integer(kind = kint) :: inum
 !
 !
-      if (isize_array .eq. 0) then
-        allocate(itmp(ntot_pvr_surf_domain))
-        allocate(ztmp(ntot_pvr_surf_domain))
-        allocate(i_org(ntot_pvr_surf_domain))
-        isize_array = ntot_pvr_surf_domain
-      end if
+      call alloc_ordering_pvr_domain_grp(pvr_bound%num_pvr_surf)
 !
-      ist = istack_pvr_surf_domain(i_pvr-1) + 1
-      ied = istack_pvr_surf_domain(i_pvr)
-!
-      do inum = 1, ntot_pvr_surf_domain
-        ztmp(inum) = screen_posi_pvr_domain(3,inum)
+!$omp parallel do
+      do inum = 1, pvr_bound%num_pvr_surf
+        ztmp(inum) = pvr_bound%screen_posi(3,inum)
         i_org(inum) = inum
       end do
+!$omp end parallel do
 !
-      call quicksort_real_w_index(ntot_pvr_surf_domain, ztmp, ist,      &
-     &    ied, i_org)
-!
-!
-      call swap_int_items_sf_grp(itwo, ntot_pvr_surf_domain,            &
-     &    item_pvr_surf_domain)
-!
-      call swap_int_items_sf_grp(itwo, ntot_pvr_surf_domain,            &
-     &    isurf_xrng_pvr_domain)
-      call swap_int_items_sf_grp(itwo, ntot_pvr_surf_domain,            &
-     &    jsurf_yrng_pvr_domain)
+      call quicksort_real_w_index(pvr_bound%num_pvr_surf, ztmp, ione,   &
+     &    pvr_bound%num_pvr_surf, i_org)
 !
 !
-      call swap_real_items_sf_grp(ithree, ntot_pvr_surf_domain,         &
-     &    screen_posi_pvr_domain)
-      call swap_real_items_sf_grp(ithree, ntot_pvr_surf_domain,         &
-     &    screen_norm_pvr_domain)
+      call swap_int_items_sf_grp(itwo, pvr_bound%num_pvr_surf,          &
+     &    pvr_bound%item_pvr_surf)
 !
-      call swap_real_items_sf_grp(ione, ntot_pvr_surf_domain,           &
-     &    screen_w_pvr_domain)
+      call swap_int_items_sf_grp(itwo, pvr_bound%num_pvr_surf,          &
+     &    pvr_bound%isurf_xrng)
+      call swap_int_items_sf_grp(itwo, pvr_bound%num_pvr_surf,          &
+     &    pvr_bound%jsurf_yrng)
 !
-      call swap_real_items_sf_grp(itwo, ntot_pvr_surf_domain,           &
-     &    screen_xrng_pvr_domain)
-      call swap_real_items_sf_grp(itwo, ntot_pvr_surf_domain,           &
-     &    screen_yrng_pvr_domain)
-      call swap_real_items_sf_grp(itwo, ntot_pvr_surf_domain,           &
-     &    screen_zrng_pvr_domain)
 !
-      do nd = 1, 3
-          call swap_real_items_sf_grp(ifour, ntot_pvr_surf_domain,      &
-     &        xx_nod_pvr_domain(1,nd) )
-          call swap_real_items_sf_grp(ifour, ntot_pvr_surf_domain,      &
-     &        xx_model_pvr_domain(1,nd) )
-          call swap_real_items_sf_grp(ifour, ntot_pvr_surf_domain,      &
-     &        xx_screen_pvr_domain(1,nd) )
-      end do
+      call swap_real_items_sf_grp(ithree, pvr_bound%num_pvr_surf,       &
+     &    pvr_bound%screen_posi)
+      call swap_real_items_sf_grp(ithree, pvr_bound%num_pvr_surf,       &
+     &    pvr_bound%screen_norm)
+!
+      call swap_real_items_sf_grp(ione, pvr_bound%num_pvr_surf,         &
+     &    pvr_bound%screen_w)
+!
+      call swap_real_items_sf_grp(itwo, pvr_bound%num_pvr_surf,         &
+     &    pvr_bound%screen_xrng)
+      call swap_real_items_sf_grp(itwo, pvr_bound%num_pvr_surf,         &
+     &    pvr_bound%screen_yrng)
+      call swap_real_items_sf_grp(itwo, pvr_bound%num_pvr_surf,         &
+     &    pvr_bound%screen_zrng)
+!
+      call ordering_pvr_surf_positions(pvr_bound%num_pvr_surf,          &
+     &    pvr_bound%xx_nod, pvr_bound%xx_model, pvr_bound%xx_screen)
+!
+      call dealloc_ordering_pvr_domain_grp
 !
       end subroutine s_ordering_pvr_sf_domain_grp
 !
 ! -----------------------------------------------------------------------
 !
+      subroutine ordering_pvr_surf_positions(num_pvr_surf,              &
+     &          xx_nod_pvr_domain, xx_model_pvr_domain,                 &
+     &          xx_screen_pvr_domain)
+!
+      integer(kind = kint), intent(in) :: num_pvr_surf
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: xx_nod_pvr_domain(4*num_pvr_surf,4)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: xx_model_pvr_domain(4*num_pvr_surf,4)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: xx_screen_pvr_domain(4*num_pvr_surf,4)
+!
+      integer(kind = kint) :: nd
+!
+!
+      do nd = 1, 4
+        call swap_real_items_sf_grp(ifour, num_pvr_surf,                &
+     &      xx_nod_pvr_domain(1,nd))
+        call swap_real_items_sf_grp(ifour, num_pvr_surf,                &
+     &      xx_model_pvr_domain(1,nd))
+        call swap_real_items_sf_grp(ifour, num_pvr_surf,                &
+     &      xx_screen_pvr_domain(1,nd))
+      end do
+!
+      end subroutine ordering_pvr_surf_positions
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_ordering_pvr_domain_grp(num_pvr_surf)
+!
+      integer(kind = kint), intent(in) :: num_pvr_surf
+!
+      if(allocated(itmp)) return
+!
+      allocate(itmp(num_pvr_surf))
+      allocate(ztmp(num_pvr_surf))
+      allocate(i_org(num_pvr_surf))
+!
+      end subroutine alloc_ordering_pvr_domain_grp
+!
+! -----------------------------------------------------------------------
+!
       subroutine dealloc_ordering_pvr_domain_grp
 !
-      deallocate(itmp, ztmp, i_org)
+      if(allocated(itmp)) deallocate(itmp, ztmp, i_org)
 !
       end subroutine dealloc_ordering_pvr_domain_grp
 !

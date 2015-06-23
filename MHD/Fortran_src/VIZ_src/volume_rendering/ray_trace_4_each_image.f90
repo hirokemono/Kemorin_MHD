@@ -4,9 +4,16 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!      subroutine s_ray_trace_4_each_image                              &
-!     &         (i_pvr, numnod, numele, numsurf, nnod_4_surf,           &
-!     &         ie_surf, isf_4_ele, iele_4_surf, e_multi, xx)
+!!      subroutine s_ray_trace_4_each_image                             &
+!!     &        (i_pvr, numnod, numele, numsurf, nnod_4_surf,           &
+!!     &         ie_surf, isf_4_ele, iele_4_surf, e_multi, xx,          &
+!!     &         nnod_pvr, nele_pvr, iflag_pvr_used_ele, x_nod_screen,  &
+!!     &         d_nod_pvr, grad_ele_pvr, ray_vec, num_pvr_ray,         &
+!!     &         icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,     &
+!!     &         xx_pvr_start, xx_pvr_ray_start, rgba_ray)
+!!      subroutine blend_overlapped_area(num_pvr_ray,                   &
+!!     &         id_pixel_start, xx_pvr_ray_start, rgba_ray,            &
+!!     &         num_pixel_xy, iflag_mapped, rgba_lc, depth_lc)
 !      subroutine ray_trace_each_pixel(iflag_used_ele, color_nod,       &
 !     &          ray_vec, id_pixel, isurf_org, screen_st, xmodel_st,    &
 !     &          c_field, icount_line, iflag_comm)
@@ -18,12 +25,10 @@
       use m_constants
       use m_geometry_constants
       use calypso_mpi
-      use m_geometries_in_pvr_screen
       use set_rgba_4_each_pixel
 !
       implicit  none
 !
-      integer(kind = kint) :: ntot_pixel
       private :: ray_trace_each_pixel
 !
 !  ---------------------------------------------------------------------
@@ -33,13 +38,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_ray_trace_4_each_image                               &
-     &         (i_pvr, numnod, numele, numsurf, nnod_4_surf,            &
-     &         ie_surf, isf_4_ele, iele_4_surf, e_multi, xx)
-!
-      use m_pvr_ray_startpoints
-      use m_surf_grp_4_pvr_domain
-      use m_control_params_4_pvr
-      use m_pvr_image_array
+     &        (i_pvr, numnod, numele, numsurf, nnod_4_surf,             &
+     &         ie_surf, isf_4_ele, iele_4_surf, e_multi, xx,            &
+     &         nnod_pvr, nele_pvr, iflag_pvr_used_ele, x_nod_screen,    &
+     &         d_nod_pvr, grad_ele_pvr, ray_vec, num_pvr_ray,           &
+     &         icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,       &
+     &         xx_pvr_start, xx_pvr_ray_start, rgba_ray)
 !
       integer(kind = kint), intent(in) :: i_pvr
 !
@@ -51,8 +55,26 @@
       real(kind = kreal), intent(in) :: e_multi(numele)
       real(kind = kreal), intent(in) :: xx(numnod,3)
 !
-      integer(kind = kint) :: inum, iflag_comm, id_pixel
-!      character(len=kchara) :: img_head_tmp
+      integer(kind = kint), intent(in) :: nnod_pvr, nele_pvr
+      integer(kind = kint), intent(in) :: iflag_pvr_used_ele(numele)
+      real(kind = kreal), intent(in) :: x_nod_screen(nnod_pvr,4)
+      real(kind = kreal), intent(in) :: d_nod_pvr(nnod_pvr)
+      real(kind = kreal), intent(in) :: grad_ele_pvr(nele_pvr,3)
+!
+      real(kind = kreal), intent(in) :: ray_vec(3)
+      integer(kind = kint), intent(in) :: num_pvr_ray
+      integer(kind = kint), intent(inout)                               &
+     &                    :: icount_pvr_trace(num_pvr_ray)
+      integer(kind = kint), intent(inout)                               &
+     &                    :: isf_pvr_ray_start(3,num_pvr_ray)
+      real(kind = kreal), intent(inout) :: xi_pvr_start(2,num_pvr_ray)
+      real(kind = kreal), intent(inout) :: xx_pvr_start(3,num_pvr_ray)
+      real(kind = kreal), intent(inout)                                 &
+     &                    ::  xx_pvr_ray_start(3,num_pvr_ray)
+      real(kind = kreal), intent(inout)                                 &
+     &                    ::  rgba_ray(4,num_pvr_ray)
+!
+      integer(kind = kint) :: inum, iflag_comm
 !
 !
 !$omp parallel do private(inum, iflag_comm)
@@ -60,19 +82,41 @@
           rgba_ray(1:4,inum) = zero
           call ray_trace_each_pixel(i_pvr, numnod, numele, numsurf,     &
      &        nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf,             &
-     &        e_multi, xx, iflag_pvr_used_ele(1,i_pvr),                 &
-     &        d_nod_pvr(1,i_pvr), grad_ele_pvr(1,1,i_pvr),              &
+     &        e_multi, xx, nnod_pvr, nele_pvr, iflag_pvr_used_ele,      &
+     &        x_nod_screen, d_nod_pvr, grad_ele_pvr,                    &
      &        ray_vec, isf_pvr_ray_start(1,inum),                       &
      &        xx_pvr_ray_start(1,inum), xx_pvr_start(1,inum),           &
      &        xi_pvr_start(1,inum), rgba_ray(1,inum),                   &
-     &        icount_pvr_trace(inum),  iflag_comm)
+     &        icount_pvr_trace(inum), iflag_comm)
       end do
 !$omp end parallel do
+!
+      end subroutine s_ray_trace_4_each_image
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine blend_overlapped_area(num_pvr_ray,                     &
+     &         id_pixel_start, xx_pvr_ray_start, rgba_ray,              &
+     &         num_pixel_xy, iflag_mapped, rgba_lc, depth_lc)
+!
+      integer(kind = kint), intent(in) :: num_pvr_ray
+      integer(kind = kint), intent(in) :: id_pixel_start(num_pvr_ray)
+      real(kind = kreal), intent(in)                                    &
+     &                    ::  xx_pvr_ray_start(3,num_pvr_ray)
+      real(kind = kreal), intent(in)                                    &
+     &                    ::  rgba_ray(4,num_pvr_ray)
+!
+      integer(kind = kint), intent(in) :: num_pixel_xy
+      integer(kind = kint), intent(inout) :: iflag_mapped(num_pixel_xy)
+      real(kind = kreal), intent(inout) :: rgba_lc(4,num_pixel_xy)
+      real(kind = kreal), intent(inout) :: depth_lc(num_pixel_xy)
+!
+      integer(kind = kint) :: inum, id_pixel
+!
 !
       iflag_mapped = 0
       rgba_lc =      0.0d0
       depth_lc =     0.0d0
-      ave_depth_lc = 0.0d0
       do inum = 1, num_pvr_ray
         id_pixel = id_pixel_start(inum)
         call composite_alpha_blending                                   &
@@ -87,25 +131,16 @@
         end if
       end do
 !
-!
-!      ntot_pixel = n_pvr_pixel(1,i_pvr)*n_pvr_pixel(2,i_pvr)
-!      call cvt_double_rgba_to_char_rgb(ntot_pixel, rgba_lc(1,1),       &
-!     &    rgb_chara_lc(1,1))
-!
-!      write(img_head_tmp,'(a,i1)')  'img_tmp.', my_rank
-!      call sel_output_image_file(id_pvr_file_type(i_pvr),              &
-!     &    img_head_tmp, n_pvr_pixel(1,i_pvr), n_pvr_pixel(2,i_pvr),    &
-!     &    rgb_chara_lc)
-!
-      end subroutine s_ray_trace_4_each_image
+      end subroutine blend_overlapped_area
 !
 !  ---------------------------------------------------------------------
 !
       subroutine ray_trace_each_pixel(i_pvr, numnod, numele, numsurf,   &
      &          nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf,           &
-     &          e_multi, xx, iflag_used_ele, color_nod,                 &
-     &          grad_ele, ray_vec, isurf_org, screen_st,                &
-     &          xx_st, xi, rgba_ray, icount_line, iflag_comm)
+     &          e_multi, xx, nnod_pvr, nele_pvr, iflag_used_ele,        &
+     &          x_nod_screen, color_nod, grad_ele, ray_vec, isurf_org,  &
+     &          screen_st, xx_st, xi, rgba_ray, icount_line,            &
+     &         iflag_comm)
 !
       use cal_field_on_surf_viz
       use cal_fline_in_cube
@@ -119,6 +154,8 @@
       real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: iflag_used_ele(numele)
+      integer(kind = kint), intent(in) :: nnod_pvr, nele_pvr
+      real(kind = kreal), intent(in) :: x_nod_screen(nnod_pvr,4)
       real(kind = kreal), intent(in) :: color_nod(nnod_pvr)
       real(kind = kreal), intent(in) :: grad_ele(nele_pvr,3)
       real(kind = kreal), intent(in) :: ray_vec(3)
@@ -205,4 +242,3 @@
 !  ---------------------------------------------------------------------
 !
       end module ray_trace_4_each_image
-

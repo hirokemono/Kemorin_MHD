@@ -109,7 +109,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank, numnod
 !
-      call check_near_nod_4_node(my_rank, numnod, near_surf1_tbl)
+      call check_near_4_nod_t(my_rank, numnod, near_surf1_tbl)
 !
       end subroutine check_near_surf_4_node
 !

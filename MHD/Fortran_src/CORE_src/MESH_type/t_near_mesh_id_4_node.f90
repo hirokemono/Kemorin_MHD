@@ -12,15 +12,14 @@
 !> @n      (module m_near_surface_id_4_node)
 !> @n      (module m_near_edge_id_4_node)
 !
-!      subroutine alloc_num_4_near_nod(node, near_tbl)
+!      subroutine alloc_num_4_near_nod(numnod, near_tbl)
 !      subroutine alloc_near_node(near_tbl)
 !
 !      subroutine dealloc_num_4_near_node(near_tbl)
 !      subroutine dealloc_near_node(near_tbl)
 !
-!      subroutine check_near_nod_4_node(my_rank, node, near_tbl)
+!      subroutine check_near_4_nod_t(my_rank, numnod, near_tbl)
 !        integer(kind = kint), intent(in) :: my_rank
-!        type(node_data), intent(in) :: node
 !        type(near_mesh), intent(in) :: near_tbl
 !
 !
@@ -80,21 +79,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine alloc_num_4_near_nod(node, near_tbl)
+      subroutine alloc_num_4_near_nod(numnod, near_tbl)
 !
-      use t_geometry_data
-!
-      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: numnod
       type(near_mesh), intent(inout) :: near_tbl
 !
 !
-      allocate(near_tbl%num_nod(node%numnod))
-      allocate(near_tbl%istack_nod(0:node%numnod))
+      allocate(near_tbl%num_nod(numnod))
+      allocate(near_tbl%istack_nod(0:numnod))
 !
       near_tbl%nmax = 0
       near_tbl%nmin = 0
-      near_tbl%num_nod =       0
       near_tbl%istack_nod =    0
+      if(numnod .gt. 0) near_tbl%num_nod = 0
 !
       end subroutine alloc_num_4_near_nod
 !
@@ -143,12 +140,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_near_nod_4_node(my_rank, node, near_tbl)
-!
-      use t_geometry_data
+      subroutine check_near_4_nod_t(my_rank, numnod, near_tbl)
 !
       integer(kind = kint), intent(in) :: my_rank
-      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: numnod
       type(near_mesh), intent(in) :: near_tbl
 !
       integer(kind = kint) :: inod, ist, ied
@@ -156,7 +151,7 @@
 !
       write(50+my_rank,*) 'max and min. of near node ID for node ',     &
      &                    near_tbl%nmax, near_tbl%nmin
-      do inod = 1, node%numnod
+      do inod = 1, numnod
         ist = near_tbl%istack_nod(inod-1) + 1
         ied = near_tbl%istack_nod(inod)
         write(50+my_rank,*) 'near node ID for node num_nod',      &
@@ -168,7 +163,7 @@
         write(50+my_rank,'(8i16)') near_tbl%idist(ist:ied)
       end do
 !
-      end subroutine check_near_nod_4_node
+      end subroutine check_near_4_nod_t
 !
 ! -----------------------------------------------------------------------
 !

@@ -3,9 +3,6 @@
 !
 !       Programmed by H. Matsui
 !
-!      subroutine allocate_pvr_image_array
-!      subroutine deallocate_pvr_image_array
-!
 !      subroutine blend_pvr_over_domains(i_pvr, n_pvr_pixel)
 !      subroutine cvt_double_rgba_to_char_rgb(num_pixel, rgba, crgb)
 !      subroutine cvt_double_rgba_to_char_rgba(num_pixel, rgba, crgba)
@@ -19,266 +16,152 @@
 !
       implicit  none
 !
-      integer(kind = kint) :: nmax_pixel, num_pixel_xy
-!
-      integer(kind = kint), allocatable :: istack_image(:)
-!
-      real(kind = kreal), allocatable :: rgba_real_gl(:,:)
-      real(kind = kreal), allocatable :: rgba_left_gl(:,:)
-      real(kind = kreal), allocatable :: rgba_right_gl(:,:)
-!
-      character(len = 1), allocatable :: rgb_chara_gl(:,:)
-      character(len = 1), allocatable :: rgba_chara_gl(:,:)
-!
-      real(kind = kreal), allocatable :: rgba_lc(:,:)
-      character(len = 1), allocatable :: rgb_chara_lc(:,:)
-      integer(kind = kint), allocatable :: ip_farther(:)
-!
-      integer(kind = kint), allocatable :: iflag_mapped(:)
-      real(kind = kreal), allocatable :: depth_lc(:)
-      real(kind = kreal), allocatable :: ave_depth_gl(:)
-      real(kind = kreal) :: ave_depth_lc, covered_area
-!
-!>       status flag for sending
-      integer, save, allocatable :: sta1(:,:)
-!>       status flag for recieving
-      integer, save, allocatable :: sta2(:,:)
-!>       status flag for sending
-      integer, save, allocatable :: req1(:  )
-!>       status flag for recieving
-      integer, save, allocatable :: req2(:  )
-!
-      private :: sta1, sta2, req1, req2
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_pvr_image_array
+      subroutine s_set_pvr_ray_start_point(i_pvr,                       &
+     &          numnod, numele, numsurf, nnod_4_surf, xx,               &
+     &          ie_surf, isf_4_ele, pvr_bound, proj, pixel_xy, pvr_start)
 !
-      use m_control_params_4_pvr
-!
-      integer(kind = kint) :: num, i_pvr
-!
-!
-      nmax_pixel = n_pvr_pixel(1,1)*n_pvr_pixel(2,1)
-      nmax_pixel = n_pvr_pixel(1,1)*n_pvr_pixel(2,1)
-      do i_pvr = 2, num_pvr
-        num = n_pvr_pixel(1,i_pvr)*n_pvr_pixel(2,i_pvr)
-        nmax_pixel = max(nmax_pixel,num)
-      end do
-!
-      allocate(ave_depth_gl(nprocs))
-      allocate(ip_farther(nprocs))
-      ave_depth_gl = 0.0d0
-      ip_farther = -1
-!
-      if(my_rank .eq. 0) then
-        allocate(rgb_chara_gl(3,nmax_pixel))
-        allocate(rgba_chara_gl(4,nmax_pixel))
-!
-        allocate(rgba_left_gl(4,nmax_pixel))
-        allocate(rgba_right_gl(4,nmax_pixel))
-!
-        allocate(rgba_real_gl(4,nmax_pixel))
-!
-        rgba_real_gl =  0.0d0
-        rgba_left_gl =  0.0d0
-        rgba_right_gl = 0.0d0
-      end if
-!
-      allocate(istack_image(0:nprocs))
-!
-      allocate(iflag_mapped(nmax_pixel))
-      allocate(rgba_lc(4,nmax_pixel))
-      allocate(rgb_chara_lc(3,nmax_pixel))
-      allocate(depth_lc(nmax_pixel))
-      iflag_mapped = 0
-      rgba_lc = 0.0d0
-      depth_lc = 0.0d0
-!
-      allocate (sta1(MPI_STATUS_SIZE,nprocs))
-      allocate (req1(nprocs))
-      allocate (sta2(MPI_STATUS_SIZE,nprocs))
-      allocate (req2(nprocs))
-!
-      end subroutine allocate_pvr_image_array
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine deallocate_pvr_image_array
-!
-!
-      if(my_rank .eq. 0) then
-        deallocate(rgb_chara_gl, rgba_chara_gl)
-        deallocate(rgba_left_gl, rgba_right_gl)
-        deallocate(rgba_real_gl)
-      end if
-!
-      deallocate (sta1, req1, sta2, req2)
-!
-      deallocate(ave_depth_gl, ip_farther)
-      deallocate(istack_image)
-      deallocate(rgba_lc,rgb_chara_lc)
-      deallocate(iflag_mapped,depth_lc)
-!
-      end subroutine deallocate_pvr_image_array
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine blend_pvr_over_domains(i_pvr)
-!
-      use m_control_params_4_pvr
-      use quicksort
-      use set_rgba_4_each_pixel
-      use draw_pvr_colorbar
-      use cal_minmax_and_stacks
+      use t_surf_grp_4_pvr_domain
+      use t_pvr_ray_startpoints
+      use t_geometries_in_pvr_screen
+      use m_geometries_in_pvr_screen
+      use set_pvr_ray_start_point
+      use cal_field_on_surf_viz
 !
       integer(kind = kint), intent(in) :: i_pvr
+      integer(kind = kint), intent(in) :: numnod, numele, numsurf
+      integer(kind = kint), intent(in) :: nnod_4_surf
+      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
+      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
+      real(kind = kreal), intent(in)  :: xx(numnod,3)
 !
-      integer(kind = kint) :: npixel_local
-      real(kind = kreal), allocatable :: rgba_part(:,:,:)
-      real(kind = kreal), allocatable :: rgba_real_part(:,:)
+      type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound
+      type(pvr_projected_type), intent(in) :: proj
+      type(pvr_ray_start_type), intent(inout) :: pvr_start
+      type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !
-      integer(kind = kint) :: num, ip, inum, ipix, max_smp, ist
-      integer(kind = kint) :: nneib_recv
+      integer(kind = kint) :: inum
 !
 !
-      num_pixel_xy = n_pvr_pixel(1,i_pvr)*n_pvr_pixel(2,i_pvr)
-      call count_number_4_smp(nprocs, ione, num_pixel_xy,               &
-     &    istack_image, max_smp)
-      npixel_local = istack_image(my_rank+1) - istack_image(my_rank)
+      call allocate_num_pvr_ray_start                                   &
+     &   (pvr_bound%num_pvr_surf, pvr_start)
 !
-      allocate(rgba_part(4,npixel_local,nprocs))
-      allocate(rgba_real_part(4,npixel_local))
+      call count_each_pvr_ray_start_point(numele, isf_4_ele,            &
+     &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
+     &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
+     &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
+     &    pvr_bound%screen_norm, pvr_bound%xx_screen,                   &
+     &    pvr_bound%isurf_xrng, pvr_bound%jsurf_yrng,                   &
+     &    ray_vec, pvr_start%num_pvr_ray, pvr_start%istack_pvr_ray_sf)
 !
-!$omp workshare
-      rgba_part(1:4,1:npixel_local,1:nprocs) = zero
-!$omp end workshare
+      call allocate_item_pvr_ray_start(pvr_start)
 !
-! -- Set Average depth for each subdomain
-      covered_area = 0.0d0
-      do ipix = 1, num_pixel_xy
-        covered_area = covered_area + dble(iflag_mapped(ipix))
-        if(iflag_mapped(ipix) .gt. 0) then
-          ave_depth_lc = ave_depth_lc + depth_lc(ipix)
-        end if
-      end do
-      ave_depth_lc = ave_depth_lc / covered_area
-!
-      call MPI_Allgather(ave_depth_lc, ione, CALYPSO_REAL,              &
-     &                   ave_depth_gl, ione, CALYPSO_REAL,              &
-     &                   CALYPSO_COMM, ierr_MPI)
-!
-      do ip = 1, nprocs
-        ip_farther(ip) = ip
-      end do
-!
-      call quicksort_real_w_index(nprocs, ave_depth_gl, ione, nprocs,   &
-     &    ip_farther)
-!
-! Distribute image
-!
-      do ip = 1, nprocs
-        ist =          istack_image(ip-1)
-        num = ifour * (istack_image(ip) - istack_image(ip-1))
-        call MPI_ISEND(rgba_lc(1,ist+1), num, CALYPSO_REAL,             &
-     &      (ip-1), 0, CALYPSO_COMM, req1(ip), ierr_MPI)
-      end do
-!
-      do ip = 1, nprocs
-        num = ifour * npixel_local
-        call MPI_IRECV(rgba_part(1,1,ip), num, CALYPSO_REAL,            &
-     &      (ip-1), 0, CALYPSO_COMM, req2(ip), ierr_MPI)
-      end do
-!
-      call MPI_WAITALL (nprocs, req2, sta2, ierr_MPI)
-      call MPI_WAITALL (nprocs, req1, sta1, ierr_MPI)
-!
-!  Alpha blending
-!
-!$omp workshare
-      rgba_real_part(1:4,1:npixel_local) = zero
-!$omp end workshare
-!
-!$omp parallel do private(ipix,inum,ip)
-      do ipix = 1, npixel_local
-        do inum = 1, nprocs
-          ip = ip_farther(inum)
-          call composite_alpha_blending(rgba_part(1,ipix,ip),           &
-     &        rgba_real_part(1,ipix))
-        end do
+!$omp parallel do private (inum)
+      do inum = 1, pvr_bound%num_pvr_surf
+        call set_each_pvr_ray_start(i_pvr, inum, numnod,                &
+     &    numele, numsurf, nnod_4_surf, xx, ie_surf, isf_4_ele,         &
+     &    proj%nnod_pvr, proj%x_nod_screen,                             &
+     &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
+     &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
+     &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
+     &    pvr_bound%screen_norm, pvr_bound%xx_screen,                   &
+     &    pvr_bound%isurf_xrng, pvr_bound%jsurf_yrng,                   &
+     &    ray_vec, pvr_start%istack_pvr_ray_sf,                         &
+     &    pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
+     &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
+     &    pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,               &
+     &    pvr_start%xx_pvr_ray_start, pvr_start%pvr_ray_dir)
       end do
 !$omp end parallel do
 !
-!  Collect image to rank 0
+      end subroutine s_set_pvr_ray_start_point
 !
-      nneib_recv = 0
-      num = ifour * npixel_local
-      call MPI_ISEND(rgba_real_part(1,1), num, CALYPSO_REAL,            &
-     &    izero, 0, CALYPSO_COMM, req1(1), ierr_MPI)
+!  ---------------------------------------------------------------------
 !
-      if(my_rank .eq. 0) then
-        nneib_recv = nprocs
-        do ip = 1, nprocs
-          ist =          istack_image(ip-1)
-          num = ifour * (istack_image(ip) - istack_image(ip-1))
-          call MPI_IRECV(rgba_real_gl(1,ist+1), num, CALYPSO_REAL,      &
-     &       (ip-1), 0, CALYPSO_COMM, req2(ip), ierr_MPI)
-        end do
-      end if
+      subroutine ray_trace_local(i_pvr, numnod, numele, numsurf,        &
+     &    nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf, e_multi, xx,    &
+     &    proj, pvr_start, pvr_img)
 !
-      call MPI_WAITALL(nneib_recv, req2, sta2, ierr_MPI)
+      use t_pvr_image_array
+      use t_pvr_ray_startpoints
+      use t_geometries_in_pvr_screen
+      use m_geometries_in_pvr_screen
+      use ray_trace_4_each_image
+      use composite_pvr_images
 !
-      if(my_rank .eq. 0) then
-        call set_pvr_colorbar(i_pvr, num_pixel_xy, rgba_real_gl(1,1))
-      end if
-      call MPI_WAITALL (ione, req1(1), sta1, ierr_MPI)
+      integer(kind = kint), intent(in) :: i_pvr
 !
-      deallocate(rgba_real_part, rgba_part)
+      integer(kind = kint), intent(in) :: numnod, numele, numsurf
+      integer(kind = kint), intent(in) :: nnod_4_surf
+      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
+      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
+      integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
+      real(kind = kreal), intent(in) :: e_multi(numele)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
+!
+      type(pvr_projected_type), intent(in) :: proj
+      type(pvr_ray_start_type), intent(inout) :: pvr_start
+      type(pvr_image_type), intent(inout) :: pvr_img
+!
+!
+      call s_ray_trace_4_each_image                                     &
+     &   (i_pvr, numnod, numele, numsurf, nnod_4_surf,                  &
+     &    ie_surf, isf_4_ele, iele_4_surf, e_multi, xx,                 &
+     &    proj%nnod_pvr, proj%nele_pvr,                                 &
+     &    proj%field_pvr(i_pvr)%iflag_used_ele, proj%x_nod_screen,      &
+     &    proj%field_pvr(i_pvr)%d_pvr, proj%field_pvr(i_pvr)%grad_ele,  &
+     &    ray_vec, pvr_start%num_pvr_ray,                               &
+     &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
+     &    pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,               &
+     &    pvr_start%xx_pvr_ray_start, pvr_start%rgba_ray)
+!
+      call blend_overlapped_area(pvr_start%num_pvr_ray,                 &
+     &    pvr_start%id_pixel_start, pvr_start%xx_pvr_ray_start,         &
+     &    pvr_start%rgba_ray, pvr_img%num_pixel_xy,                     &
+     &    pvr_img%iflag_mapped, pvr_img%rgba_lc, pvr_img%depth_lc)
+!
+      call deallocate_item_pvr_ray_start(pvr_start)
+!
+!      call sel_write_pvr_local_img(i_pvr, pvr_img%num_pixel_xy,        &
+!     &    pvr_img%rgba_lc,  pvr_img%rgb_chara_lc)
+!
+      end subroutine ray_trace_local
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine blend_pvr_over_domains(i_pvr, pvr_img)
+!
+      use t_pvr_image_array
+      use composite_pvr_images
+!
+      integer(kind = kint), intent(in) :: i_pvr
+      type(pvr_image_type), intent(inout) :: pvr_img
+!
+!
+      call blend_image_over_domains(i_pvr, pvr_img%istack_image,        &
+     &   pvr_img%num_pixel_xy, pvr_img%iflag_mapped, pvr_img%depth_lc,  &
+     &   pvr_img%rgba_lc, pvr_img%rgba_real_gl)
 !
       end subroutine blend_pvr_over_domains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine write_pvr_image_file(i_pvr, i_rot, istep_pvr)
+      subroutine write_pvr_image_file(i_pvr, i_rot, istep_pvr, pvr_img)
 !
-      use m_control_params_4_pvr
-      use output_image_sel_4_png
-      use set_parallel_file_name
-      use convert_real_rgb_2_bite
+      use t_pvr_image_array
+      use composite_pvr_images
 !
-      character(len=kchara) :: tmpchara, img_head_tmp
       integer(kind = kint), intent(in) :: i_pvr, i_rot, istep_pvr
+      type(pvr_image_type), intent(inout) :: pvr_img
 !
-      if(my_rank .eq. 0) then
-        if(i_rot .gt. 0) then
-          call add_int_suffix(istep_pvr, pvr_header(i_pvr),             &
-     &            tmpchara)
-          call add_int_suffix(i_rot, tmpchara, img_head_tmp)
-        else
-          call add_int_suffix(istep_pvr, pvr_header(i_pvr),             &
-     &            img_head_tmp)
-        end if
-!
-        if(id_pvr_transparent(i_pvr) .eq. 1) then
-          call cvt_double_rgba_to_char_rgba(num_pixel_xy,               &
-     &             rgba_real_gl(1,1),  rgba_chara_gl(1,1) )
-          call sel_rgba_image_file(id_pvr_file_type(i_pvr),             &
-     &        img_head_tmp, n_pvr_pixel(1,i_pvr), n_pvr_pixel(2,1),     &
-     &        rgba_chara_gl(1,1) )
-        else
-          call cvt_double_rgba_to_char_rgb(num_pixel_xy,                &
-     &             rgba_real_gl(1,1),  rgb_chara_gl(1,1) )
-          call sel_output_image_file(id_pvr_file_type(i_pvr),           &
-     &        img_head_tmp, n_pvr_pixel(1,i_pvr), n_pvr_pixel(2,1),     &
-     &             rgb_chara_gl(1,1) )
-        end if
-!
-      end if
+      call sel_write_pvr_image_file(i_pvr, i_rot, istep_pvr,            &
+     &    pvr_img%num_pixel_xy, pvr_img%rgba_real_gl,                   &
+     &    pvr_img%rgba_chara_gl, pvr_img%rgb_chara_gl)
 !
       end subroutine write_pvr_image_file
 !

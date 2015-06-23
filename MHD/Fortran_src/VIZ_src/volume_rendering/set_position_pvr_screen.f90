@@ -1,9 +1,20 @@
 !set_position_pvr_screen.f90
 !      module set_position_pvr_screen
 !
-      module set_position_pvr_screen
-!
 !        programmed by H.Matsui on Aug., 2011
+!
+!!      subroutine copy_node_position_for_pvr(numnod, inod_smp_stack,   &
+!!     &          xx, nnod_pvr, istack_nod_pvr, x_nod_sim)
+!!      subroutine copy_node_position_pvr_domain(numnod, numele,        &
+!!     &          numsurf, nnod_4_surf, xx, ie_surf, isf_4_ele,         &
+!!     &          num_pvr_surf, item_pvr_surf_domain, xx_nod_pvr_domain)
+!!
+!!      subroutine cal_position_pvr_screen(model_mat, project_mat)
+!!      subroutine position_pvr_domain_on_screen(model_mat, project_mat,&
+!!     &          num_pvr_surf, xx_nod_pvr_domain, xx_model_pvr_domain, &
+!!     &          xx_screen_pvr_domain)
+!
+      module set_position_pvr_screen
 !
       use m_precision
 !
@@ -12,34 +23,26 @@
 !
       implicit  none
 !
-!      subroutine copy_node_position_for_pvr(numnod, numele,            &
-!     &          inod_smp_stack, xx)
-!      subroutine copy_node_position_pvr_domain(i_pvr)
-!
-!      subroutine cal_position_pvr_screen(model_mat, project_mat)
-!      subroutine position_pvr_domain_on_screen(model_mat, project_mat)
-!
 ! -----------------------------------------------------------------------
 !
       contains
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_node_position_for_pvr(numnod, numele,             &
-     &          inod_smp_stack, xx)
+      subroutine copy_node_position_for_pvr(numnod, inod_smp_stack,     &
+     &          xx, nnod_pvr, istack_nod_pvr, x_nod_sim)
 !
-      use m_geometries_in_pvr_screen
-!
-      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: xx(numnod,3)
+!
+      integer(kind = kint), intent(inout) :: nnod_pvr
+      integer(kind = kint), intent(inout) :: istack_nod_pvr(0:np_smp)
+      real(kind = kreal), intent(inout) :: x_nod_sim(nnod_pvr,4)
 !
       integer(kind = kint) :: inod
 !
 !
-      nnod_pvr = numnod
-      nele_pvr = numele
-      call allocate_node_position_pvr
       istack_nod_pvr(0:np_smp) = inod_smp_stack(0:np_smp)
 !
 !$omp parallel do
@@ -56,10 +59,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine copy_node_position_pvr_domain(numnod, numele,          &
-     &          numsurf, nnod_4_surf, xx, ie_surf, isf_4_ele)
+     &          numsurf, nnod_4_surf, xx, ie_surf, isf_4_ele,           &
+     &          num_pvr_surf, item_pvr_surf_domain, xx_nod_pvr_domain)
 !
       use m_geometry_constants
-      use m_surf_grp_4_pvr_domain
 !
       integer(kind = kint), intent(in) :: numnod
       real(kind = kreal), intent(in) :: xx(numnod,3)
@@ -67,12 +70,19 @@
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
 !
+      integer(kind = kint), intent(in) :: num_pvr_surf
+      integer(kind = kint), intent(in)                                  &
+     &                    :: item_pvr_surf_domain(2,num_pvr_surf)
+!
+      real(kind = kreal), intent(inout)                                 &
+     &                    :: xx_nod_pvr_domain(4,num_pvr_surf)
+!
       integer(kind = kint) :: inum, iele, k1, isurf
       integer(kind = kint) :: i1, i2, i3, i4
 !
 !
 !$omp parallel do private (inum,iele,k1,isurf,i1,i2,i3,i4)
-      do inum = 1, ntot_pvr_surf_domain
+      do inum = 1, num_pvr_surf
         iele = item_pvr_surf_domain(1,inum)
         k1 =   item_pvr_surf_domain(2,inum)
         isurf = abs(isf_4_ele(iele,k1))
@@ -95,13 +105,20 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_position_pvr_screen(model_mat, project_mat)
+      subroutine cal_position_pvr_screen(model_mat, project_mat,        &
+     &          nnod_pvr, istack_nod_pvr, x_nod_sim, x_nod_model,       &
+     &          x_nod_screen)
 !
-      use m_geometries_in_pvr_screen
       use cal_matrix_vector_smp
 !
       real(kind = kreal), intent(in) :: model_mat(4,4)
       real(kind = kreal), intent(in) :: project_mat(4,4)
+!
+      integer(kind = kint), intent(in) :: nnod_pvr
+      integer(kind = kint), intent(in) :: istack_nod_pvr(0:np_smp)
+      real(kind = kreal), intent(in) :: x_nod_sim(nnod_pvr,4)
+      real(kind = kreal), intent(inout) :: x_nod_model(nnod_pvr,4)
+      real(kind = kreal), intent(inout) :: x_nod_screen(nnod_pvr,4)
 !
       integer(kind = kint) :: inod, ip
       real(kind = kreal) :: coef
@@ -131,13 +148,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine position_pvr_domain_on_screen(model_mat, project_mat)
+      subroutine position_pvr_domain_on_screen(model_mat, project_mat,  &
+     &          num_pvr_surf, xx_nod_pvr_domain, xx_model_pvr_domain,   &
+     &          xx_screen_pvr_domain)
 !
-      use m_surf_grp_4_pvr_domain
       use cal_matrix_vector_smp
 !
       real(kind = kreal), intent(in) :: model_mat(4,4)
       real(kind = kreal), intent(in) :: project_mat(4,4)
+!
+      integer(kind = kint), intent(in) :: num_pvr_surf
+      real(kind = kreal), intent(in)                                    &
+     &                   :: xx_nod_pvr_domain(4,num_pvr_surf)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: xx_model_pvr_domain(4,num_pvr_surf)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: xx_screen_pvr_domain(4,num_pvr_surf)
 !
       integer(kind = kint) :: inod, ip, k1
       integer(kind = kint) :: istack(0:4), ntot
@@ -145,9 +171,9 @@
 !
       istack(0) = 0
       do k1 = 1, 4
-        istack(k1) = istack(k1-1) + ntot_pvr_surf_domain
+        istack(k1) = istack(k1-1) + num_pvr_surf
       end do
-      ntot = 4*ntot_pvr_surf_domain
+      ntot = 4*num_pvr_surf
 !
 !$omp parallel
       call cal_matvec_44_on_node(ifour, ntot, istack, model_mat,        &
@@ -160,7 +186,7 @@
 !
 !$omp parallel do private(coef,ip,inod)
       do ip = 1, ifour
-        do inod = 1, ntot_pvr_surf_domain
+        do inod = 1, num_pvr_surf
           coef = one / xx_screen_pvr_domain(4*inod+ip-4,4)
           xx_screen_pvr_domain(4*inod+ip-4,1)                           &
      &               = xx_screen_pvr_domain(4*inod+ip-4,1) * coef
@@ -171,6 +197,11 @@
         end do
       end do
 !$omp end parallel do
+!
+      do inod = 1, num_pvr_surf
+        write(*,*) 'x_surf', xx_screen_pvr_domain(4*inod-3:4*inod,1)
+        write(*,*) 'y_surf', xx_screen_pvr_domain(4*inod-3:4*inod,2)
+      end do
 !
       end subroutine position_pvr_domain_on_screen
 !

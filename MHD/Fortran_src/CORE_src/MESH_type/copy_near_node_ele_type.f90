@@ -49,7 +49,7 @@
       type(near_mesh), intent(inout) :: near_ele
 !
 !
-      call alloc_num_4_near_nod(node, near_ele)
+      call alloc_num_4_near_nod(node%numnod, near_ele)
 !
       near_ele%num_nod(1:node%numnod)                                   &
      &    = next_ele%nele_4_node(1:node%numnod)
@@ -82,7 +82,7 @@
       integer(kind = kint) :: inod, i
 !
 !
-      call alloc_num_4_near_nod(node, near_nod)
+      call alloc_num_4_near_nod(node%numnod, near_nod)
 !
       near_nod%num_nod(1:node%numnod)                                   &
      &     = next_nod%nnod_next(1:node%numnod)

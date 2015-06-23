@@ -26,17 +26,28 @@
       use m_machine_parameter
       use m_control_params_4_pvr
       use m_geometry_constants
-      use m_pvr_image_array
+      use t_surf_grp_4_pvr_domain
+      use t_pvr_ray_startpoints
+      use t_pvr_image_array
+      use t_geometries_in_pvr_screen
       use set_default_pvr_params
 !
       use m_geometries_in_pvr_screen
-      use m_surf_grp_4_pvr_domain
-      use m_pvr_ray_startpoints
       use set_position_pvr_screen
       use find_pvr_surf_domain
       use set_pvr_ray_start_point
 !
       implicit  none
+!
+      type(pvr_bounds_surf_ctl), allocatable, save :: pvr_bound(:)
+!
+      type(pvr_ray_start_type), save :: pvr_start
+      type(pvr_image_type), save :: pvr_img
+!
+      type(pvr_projected_type), save :: projected
+      type(pvr_pixel_position_type), allocatable, save :: pixel_xy(:)
+!
+      private :: pvr_start, pvr_img
 !
 !  ---------------------------------------------------------------------
 !
@@ -79,20 +90,27 @@
       call s_set_pvr_control(num_mat, mat_name,                         &
      &    num_nod_phys, phys_nod_name)
 !
+      allocate(pvr_bound(num_pvr))
+      allocate(pixel_xy(num_pvr))
+!
+      call allocate_node_position_pvr(numnod, numele, projected)
+      call allocate_nod_data_4_pvr(num_pvr, projected)
       call s_find_pvr_surf_domain(numele, numsurf, e_multi,             &
      &          isf_4_ele, iele_4_surf, num_mat, num_mat_bc,            &
-     &          mat_istack, mat_item)
+     &          mat_istack, mat_item, pvr_bound, projected)
 !
-      call copy_node_position_for_pvr(numnod, numele,                   &
-     &          inod_smp_stack, xx)
-      call copy_node_position_pvr_domain(numnod, numele,                &
-     &          numsurf, nnod_4_surf, xx, ie_surf, isf_4_ele)
+      call copy_node_position_for_pvr(numnod, inod_smp_stack, xx,       &
+     &    projected%nnod_pvr, projected%istack_nod_pvr,                 &
+     &    projected%x_nod_sim)
 !
-      call allocate_nod_data_4_pvr
+      do i_pvr = 1, num_pvr
+        call copy_node_position_pvr_domain(numnod, numele,              &
+     &      numsurf, nnod_4_surf, xx, ie_surf, isf_4_ele,               &
+     &      pvr_bound(i_pvr)%num_pvr_surf,                              &
+     &      pvr_bound(i_pvr)%item_pvr_surf, pvr_bound(i_pvr)%xx_nod)
+      end do
+!
       call allocate_mesh_outline_pvr
-      call allocate_pvr_image_array
-      call allocate_num_pvr_ray_start
-      call allocate_item_pvr_ray_start
 !
 !
       do i_pvr = 1, num_pvr
@@ -100,9 +118,10 @@
         call check_pvr_parameters(i_pvr)
       end do
 !
-!
       if(iflag_debug .gt. 0) write(*,*) 'set_pixel_on_pvr_screen'
-      call set_pixel_on_pvr_screen
+      do i_pvr = 1, num_pvr
+        call set_pixel_on_pvr_screen(i_pvr, pixel_xy(i_pvr))
+      end do
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_pvr_modelview_matrix'
       call cal_pvr_modelview_matrix(izero)
@@ -114,15 +133,21 @@
           if(iflag_debug .gt. 0) write(*,*)                             &
      &               'cal_position_pvr_screen', i_pvr
           call cal_position_pvr_screen(modelview_mat(1,i_pvr),          &
-     &        projection_mat(1,i_pvr))
+     &        projection_mat(1,i_pvr), projected%nnod_pvr,              &
+     &        projected%istack_nod_pvr, projected%x_nod_sim,            &
+     &        projected%x_nod_model, projected%x_nod_screen)
 !
           if(iflag_debug .gt. 0) write(*,*)                             &
      &               'position_pvr_domain_on_screen', i_pvr
           call position_pvr_domain_on_screen(modelview_mat(1,i_pvr),    &
-     &        projection_mat(1,i_pvr))
+     &        projection_mat(1,i_pvr), pvr_bound(i_pvr)%num_pvr_surf,   &
+     &        pvr_bound(i_pvr)%xx_nod, pvr_bound(i_pvr)%xx_model,       &
+     &        pvr_bound(i_pvr)%xx_screen)
 !
-          call set_pvr_domain_surface_data(i_pvr, numele, numsurf,      &
-   &          nnod_4_surf, ie_surf, isf_4_ele)
+          call set_pvr_domain_surface_data(n_pvr_pixel(1,i_pvr),        &
+     &        numele, numsurf,nnod_4_surf, ie_surf, isf_4_ele,          &
+     &        projected%nnod_pvr, projected%x_nod_model,                &
+     &        projected%x_nod_screen, pvr_bound(i_pvr))
         end do
 !
 !
@@ -145,8 +170,8 @@
      &         ntot_int_3d, dnx, xjac, num_nod_phys, num_tot_nod_phys,  &
      &         istack_nod_component, d_nod)
 !
+      use m_pvr_image_array
       use cal_pvr_modelview_mat
-      use ray_trace_4_each_image
 !
       integer(kind = kint), intent(in) :: istep_pvr
 !
@@ -190,7 +215,7 @@
      &          inod_smp_stack, iele_smp_stack, xx, radius,             &
      &          a_radius, s_cylinder, a_s_cylinder, ie, a_vol_ele,      &
      &          ntot_int_3d, dnx, xjac, num_nod_phys, num_tot_nod_phys, &
-     &          istack_nod_component, d_nod)
+     &          istack_nod_component, d_nod, projected)
 !
       do i_pvr = 1, num_pvr
         if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
@@ -206,36 +231,49 @@
           ied_rot = 0
         end if
 !
+        call alloc_pvr_image_array_type(n_pvr_pixel(1,i_pvr), pvr_img)
+!
         do i_rot = ist_rot, ied_rot
           if(iflag_rotation .gt. 0) then
             call cal_pvr_modelview_matrix(i_rot)
 !
-            call cal_position_pvr_screen(modelview_mat(1,i_pvr),        &
-     &          projection_mat(1,i_pvr))
+            call cal_position_pvr_screen                                &
+     &         (modelview_mat(1,i_pvr),  projection_mat(1,i_pvr),       &
+     &          projected%nnod_pvr, projected%istack_nod_pvr,           &
+     &          projected%x_nod_sim, projected%x_nod_model,             &
+     &          projected%x_nod_screen)
             call position_pvr_domain_on_screen(modelview_mat(1,i_pvr),  &
-     &          projection_mat(1,i_pvr))
+     &          projection_mat(1,i_pvr), pvr_bound(i_pvr)%num_pvr_surf, &
+     &          pvr_bound(i_pvr)%xx_nod, pvr_bound(i_pvr)%xx_model,     &
+     &          pvr_bound(i_pvr)%xx_screen)
 !
-            call set_pvr_domain_surface_data(i_pvr, numele, numsurf,    &
-   &          nnod_4_surf, ie_surf, isf_4_ele)
+            call set_pvr_domain_surface_data(n_pvr_pixel(1,i_pvr),      &
+     &          numele, numsurf, nnod_4_surf, ie_surf, isf_4_ele,       &
+     &          projected%nnod_pvr, projected%x_nod_model,              &
+     &          projected%x_nod_screen, pvr_bound(i_pvr))
           end if
 !
           if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_ray_start_point'
           call s_set_pvr_ray_start_point(i_pvr,                         &
      &          numnod, numele, numsurf, nnod_4_surf, xx,               &
-     &          ie_surf, isf_4_ele)
-!          call check_pvr_ray_startpoints(my_rank)
+     &          ie_surf, isf_4_ele, pvr_bound(i_pvr), projected,        &
+     &           pixel_xy(i_pvr), pvr_start)
+!          call check_pvr_ray_startpoints(my_rank, pvr_start)
 !
           if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
-          call s_ray_trace_4_each_image(i_pvr, numnod, numele, numsurf, &
-     &       nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf, e_multi, xx)
+          call ray_trace_local(i_pvr, numnod, numele, numsurf,          &
+     &       nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf, e_multi, xx, &
+     &       projected, pvr_start, pvr_img)
 !
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                'blend_pvr_over_domains', i_pvr
-          call blend_pvr_over_domains(i_pvr)
+          call blend_pvr_over_domains(i_pvr, pvr_img)
 !
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                'write_pvr_image_file', i_pvr
-          call write_pvr_image_file(i_pvr, i_rot, istep_pvr)
+          call write_pvr_image_file(i_pvr, i_rot, istep_pvr, pvr_img)
+!
+          call dealloc_pvr_image_array_type(pvr_img)
 !
           call calypso_MPI_barrier
         end do

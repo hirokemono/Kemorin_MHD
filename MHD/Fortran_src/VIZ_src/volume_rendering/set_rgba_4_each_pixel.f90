@@ -33,7 +33,6 @@
      &          c_data, grad_data, rgba_pixel)
 !
       use m_control_params_4_pvr
-      use m_geometries_in_pvr_screen
       use set_color_4_pvr
 !
       integer(kind = kint), intent(in) :: i_pvr

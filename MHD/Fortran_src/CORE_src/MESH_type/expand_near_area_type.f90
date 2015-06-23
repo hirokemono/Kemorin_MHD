@@ -153,7 +153,7 @@
       type(near_mesh), intent(inout) :: near_ele_tbl, near_ele_wide
 !
 !
-      call alloc_num_4_near_nod(node, near_ele_wide)
+      call alloc_num_4_near_nod(node%numnod, near_ele_wide)
 !
       call count_expanded_near_element(np_smp,                          &
      &    node%numnod, ele%numele, node%istack_nod_smp, iflag_expand,   &
@@ -207,7 +207,7 @@
       type(near_mesh), intent(inout) :: near_node_tbl, near_node_wide
 !
 !
-      call alloc_num_4_near_nod(node, near_node_wide)
+      call alloc_num_4_near_nod(node%numnod, near_node_wide)
 !
       call add_num_nod_4_group(np_smp, node%numnod,                     &
      &    ele%numele, ele%nnod_4_ele, ele%ie, node%istack_nod_smp,      &
