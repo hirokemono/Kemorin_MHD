@@ -16,9 +16,11 @@
 !
       real(kind = kreal), allocatable :: center_g(:,:)
       real(kind = kreal), allocatable :: rmax_g(:)
+!
+!
+!!@n   minimum value: xx_minmax(1,ndir,i_pvr)
+!!@n   maximum value: xx_minmax(2,ndir,i_pvr)
       real(kind = kreal), allocatable :: xx_minmax_g(:,:,:)
-!   minimum value: xx_minmax(1,ndir,i_pvr)
-!   maximum value: xx_minmax(2,ndir,i_pvr)
 !
       real(kind = kreal), allocatable :: d_minmax_pvr(:,:)
 !
@@ -39,6 +41,7 @@
       allocate( rmax_g(num_pvr) )
       allocate( center_g(3,num_pvr) )
       allocate( xx_minmax_g(2,3,num_pvr) )
+      allocate( d_minmax_pvr(2,num_pvr) )
 !
       xx_minmax_g(1,1:3,1:num_pvr) =  1.0d-30
       xx_minmax_g(2,1:3,1:num_pvr) = -1.0d-30

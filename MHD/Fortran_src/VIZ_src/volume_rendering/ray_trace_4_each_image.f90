@@ -8,15 +8,12 @@
 !!     &        (i_pvr, numnod, numele, numsurf, nnod_4_surf,           &
 !!     &         ie_surf, isf_4_ele, iele_4_surf, e_multi, xx,          &
 !!     &         nnod_pvr, nele_pvr, iflag_pvr_used_ele, x_nod_screen,  &
-!!     &         d_nod_pvr, grad_ele_pvr, ray_vec, num_pvr_ray,         &
-!!     &         icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,     &
-!!     &         xx_pvr_start, xx_pvr_ray_start, rgba_ray)
+!!     &         d_nod_pvr, grad_ele_pvr, viewpoint_vec, ray_vec,       &
+!!     &         num_pvr_ray, icount_pvr_trace, isf_pvr_ray_start,      &
+!!     &         xi_pvr_start, xx_pvr_start, xx_pvr_ray_start, rgba_ray)
 !!      subroutine blend_overlapped_area(num_pvr_ray,                   &
 !!     &         id_pixel_start, xx_pvr_ray_start, rgba_ray,            &
 !!     &         num_pixel_xy, iflag_mapped, rgba_lc, depth_lc)
-!      subroutine ray_trace_each_pixel(iflag_used_ele, color_nod,       &
-!     &          ray_vec, id_pixel, isurf_org, screen_st, xmodel_st,    &
-!     &          c_field, icount_line, iflag_comm)
 !
       module ray_trace_4_each_image
 !
@@ -41,9 +38,9 @@
      &        (i_pvr, numnod, numele, numsurf, nnod_4_surf,             &
      &         ie_surf, isf_4_ele, iele_4_surf, e_multi, xx,            &
      &         nnod_pvr, nele_pvr, iflag_pvr_used_ele, x_nod_screen,    &
-     &         d_nod_pvr, grad_ele_pvr, ray_vec, num_pvr_ray,           &
-     &         icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,       &
-     &         xx_pvr_start, xx_pvr_ray_start, rgba_ray)
+     &         d_nod_pvr, grad_ele_pvr, viewpoint_vec, ray_vec,         &
+     &         num_pvr_ray, icount_pvr_trace, isf_pvr_ray_start,        &
+     &         xi_pvr_start, xx_pvr_start, xx_pvr_ray_start, rgba_ray)
 !
       integer(kind = kint), intent(in) :: i_pvr
 !
@@ -61,6 +58,7 @@
       real(kind = kreal), intent(in) :: d_nod_pvr(nnod_pvr)
       real(kind = kreal), intent(in) :: grad_ele_pvr(nele_pvr,3)
 !
+      real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec(3)
       integer(kind = kint), intent(in) :: num_pvr_ray
       integer(kind = kint), intent(inout)                               &
@@ -84,7 +82,7 @@
      &        nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf,             &
      &        e_multi, xx, nnod_pvr, nele_pvr, iflag_pvr_used_ele,      &
      &        x_nod_screen, d_nod_pvr, grad_ele_pvr,                    &
-     &        ray_vec, isf_pvr_ray_start(1,inum),                       &
+     &        viewpoint_vec, ray_vec, isf_pvr_ray_start(1,inum),        &
      &        xx_pvr_ray_start(1,inum), xx_pvr_start(1,inum),           &
      &        xi_pvr_start(1,inum), rgba_ray(1,inum),                   &
      &        icount_pvr_trace(inum), iflag_comm)
@@ -138,9 +136,9 @@
       subroutine ray_trace_each_pixel(i_pvr, numnod, numele, numsurf,   &
      &          nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf,           &
      &          e_multi, xx, nnod_pvr, nele_pvr, iflag_used_ele,        &
-     &          x_nod_screen, color_nod, grad_ele, ray_vec, isurf_org,  &
-     &          screen_st, xx_st, xi, rgba_ray, icount_line,            &
-     &         iflag_comm)
+     &          x_nod_screen, color_nod, grad_ele,                      &
+     &          viewpoint_vec, ray_vec, isurf_org, screen_st, xx_st,    &
+     &          xi, rgba_ray, icount_line, iflag_comm)
 !
       use cal_field_on_surf_viz
       use cal_fline_in_cube
@@ -153,13 +151,14 @@
       real(kind = kreal), intent(in) :: e_multi(numele)
       real(kind = kreal), intent(in) :: xx(numnod,3)
 !
+      integer(kind = kint), intent(in) :: i_pvr
       integer(kind = kint), intent(in) :: iflag_used_ele(numele)
       integer(kind = kint), intent(in) :: nnod_pvr, nele_pvr
       real(kind = kreal), intent(in) :: x_nod_screen(nnod_pvr,4)
       real(kind = kreal), intent(in) :: color_nod(nnod_pvr)
       real(kind = kreal), intent(in) :: grad_ele(nele_pvr,3)
+      real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: ray_vec(3)
-      integer(kind = kint), intent(in) :: i_pvr
 !
       integer(kind = kint), intent(inout) :: isurf_org(3)
       integer(kind = kint), intent(inout) :: icount_line, iflag_comm
@@ -223,8 +222,8 @@
         c_tgt(1) = half*(c_tgt(1) + c_org(1))
 !
         if(e_multi(iele) .gt. 0.0d0) then
-          call s_set_rgba_4_each_pixel(i_pvr, xx_st, xx_tgt,            &
-     &      c_tgt(1), grad_tgt, rgba_ray)
+          call s_set_rgba_4_each_pixel(i_pvr, viewpoint_vec,            &
+     &        xx_st, xx_tgt, c_tgt(1), grad_tgt, rgba_ray)
         end if
 !
         if(isurf_org(1).eq.0) then

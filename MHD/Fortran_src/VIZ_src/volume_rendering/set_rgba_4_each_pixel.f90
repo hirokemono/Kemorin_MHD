@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!!      subroutine s_set_rgba_4_each_pixel(i_pvr, xin_model, xout_model,&
-!!     &          c_data, grad_data, rgba)
+!!      subroutine s_set_rgba_4_each_pixel(i_pvr, viewpoint_vec,        &
+!!     &          xin_model, xout_model, c_data, grad_data, rgba_pixel)
 !!      subroutine compute_opacity(transfer_function_style, opa_value,  &
 !!     &          num_of_features, fea_point, value, opacity_local)
 !!      subroutine composite_alpha_blending(rgba_src, rgba_tgt)
@@ -29,13 +29,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_rgba_4_each_pixel(i_pvr, xin_model, xout_model,  &
-     &          c_data, grad_data, rgba_pixel)
+      subroutine s_set_rgba_4_each_pixel(i_pvr, viewpoint_vec,          &
+     &          xin_model, xout_model, c_data, grad_data, rgba_pixel)
 !
       use m_control_params_4_pvr
       use set_color_4_pvr
 !
       integer(kind = kint), intent(in) :: i_pvr
+      real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: c_data, grad_data(3)
       real(kind = kreal), intent(in) :: xin_model(3), xout_model(3)
       real(kind = kreal), intent(inout) :: rgba_pixel(4)
@@ -60,7 +61,7 @@
      &    num_pvr_datamap_pnt(i_pvr), pvr_datamap_param(1,ist_dmap+1),  &
      &    c_data, color)
 !
-      call rendering_with_light(viewpoint_vec(1,i_pvr),                 &
+      call rendering_with_light(viewpoint_vec,                          &
      &    num_pvr_lights(i_pvr), xyz_pvr_lights(1,ist_lgt+1),           &
      &    grad_data, pvr_lighting_real(1,i_pvr),                        &
      &    xin_model, xout_model, one, color, opa_current, rgba_pixel )

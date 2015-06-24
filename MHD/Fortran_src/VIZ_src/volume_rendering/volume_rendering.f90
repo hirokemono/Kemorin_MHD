@@ -26,6 +26,7 @@
       use m_machine_parameter
       use m_control_params_4_pvr
       use m_geometry_constants
+      use m_mesh_outline_pvr
       use t_surf_grp_4_pvr_domain
       use t_pvr_ray_startpoints
       use t_pvr_image_array
@@ -115,49 +116,43 @@
 !
       do i_pvr = 1, num_pvr
         call cal_mesh_outline_pvr(i_pvr, numnod, xx)
-        call check_pvr_parameters(i_pvr)
-      end do
+        call check_pvr_parameters(i_pvr, view_params(i_pvr))
 !
-      if(iflag_debug .gt. 0) write(*,*) 'set_pixel_on_pvr_screen'
-      do i_pvr = 1, num_pvr
-        call set_pixel_on_pvr_screen(i_pvr, pixel_xy(i_pvr))
-      end do
+        if(iflag_debug .gt. 0) write(*,*) 'set_pixel_on_pvr_screen'
+        call set_pixel_on_pvr_screen                                    &
+     &     (view_params(i_pvr)%n_pvr_pixel, pixel_xy(i_pvr))
 !
-      if(iflag_debug .gt. 0) write(*,*) 'cal_pvr_modelview_matrix'
-      call cal_pvr_modelview_matrix(izero)
-      if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
-      call set_pvr_projection_matrix
+        if(iflag_debug .gt. 0) write(*,*) 'cal_pvr_modelview_matrix'
+        call cal_pvr_modelview_matrix(i_pvr, izero, view_params(i_pvr))
 !
-      if(iflag_rotation .eq.0) then
-        do i_pvr = 1, num_pvr
+        if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
+        call set_pvr_projection_matrix(i_pvr, view_params(i_pvr))
+!        call set_pvr_orthogonal_params(i_pvr, view_params(i_pvr))
+!
+        if(view_params(i_pvr)%iflag_rotate_snap .eq. 0) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &               'cal_position_pvr_screen', i_pvr
-          call cal_position_pvr_screen(modelview_mat(1,i_pvr),          &
-     &        projection_mat(1,i_pvr), projected%nnod_pvr,              &
+          call cal_position_pvr_screen(view_params(i_pvr)%modelview_mat,&
+     &        view_params(i_pvr)%projection_mat, projected%nnod_pvr,    &
      &        projected%istack_nod_pvr, projected%x_nod_sim,            &
      &        projected%x_nod_model, projected%x_nod_screen)
 !
           if(iflag_debug .gt. 0) write(*,*)                             &
      &               'position_pvr_domain_on_screen', i_pvr
-          call position_pvr_domain_on_screen(modelview_mat(1,i_pvr),    &
-     &        projection_mat(1,i_pvr), pvr_bound(i_pvr)%num_pvr_surf,   &
+          call position_pvr_domain_on_screen(view_params(i_pvr)%modelview_mat,    &
+     &        view_params(i_pvr)%projection_mat, pvr_bound(i_pvr)%num_pvr_surf,   &
      &        pvr_bound(i_pvr)%xx_nod, pvr_bound(i_pvr)%xx_model,       &
      &        pvr_bound(i_pvr)%xx_screen)
 !
-          call set_pvr_domain_surface_data(n_pvr_pixel(1,i_pvr),        &
+          call set_pvr_domain_surface_data(view_params(i_pvr)%n_pvr_pixel,        &
      &        numele, numsurf,nnod_4_surf, ie_surf, isf_4_ele,          &
      &        projected%nnod_pvr, projected%x_nod_model,                &
      &        projected%x_nod_screen, pvr_bound(i_pvr))
-        end do
-!
+        end if
+      end do
 !
 !      call check_surf_rng_pvr_domain(my_rank)
 !      call check_surf_norm_pvr_domain(my_rank)
-      end if
-!
-!      call set_pvr_orthogonal_params
-!
-      return
 !
       end subroutine pvr_init
 !
@@ -219,51 +214,53 @@
 !
       do i_pvr = 1, num_pvr
         if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
-        call set_default_pvr_data_params(i_pvr)
+        call set_default_pvr_data_params(i_pvr, d_minmax_pvr(1,i_pvr))
 !
-        if(     iprm_pvr_rot(1,i_pvr).ge.1                              &
-     &    .or.  iprm_pvr_rot(1,i_pvr).eq.2                              &
-     &    .or.  iprm_pvr_rot(1,i_pvr).eq.3) then
+        if(     view_params(i_pvr)%iprm_pvr_rot(1).eq.1                 &
+     &    .or.  view_params(i_pvr)%iprm_pvr_rot(1).eq.2                 &
+     &    .or.  view_params(i_pvr)%iprm_pvr_rot(1).eq.3) then
           ist_rot = 1
-          ied_rot = iprm_pvr_rot(2,i_pvr)
+          ied_rot = view_params(i_pvr)%iprm_pvr_rot(2)
         else
           ist_rot = 0
           ied_rot = 0
         end if
 !
-        call alloc_pvr_image_array_type(n_pvr_pixel(1,i_pvr), pvr_img)
+        call alloc_pvr_image_array_type(view_params(i_pvr)%n_pvr_pixel, pvr_img)
 !
         do i_rot = ist_rot, ied_rot
-          if(iflag_rotation .gt. 0) then
-            call cal_pvr_modelview_matrix(i_rot)
+          if(view_params(i_pvr)%iflag_rotate_snap .gt. 0) then
+            call cal_pvr_modelview_matrix                               &
+     &         (i_pvr, i_rot, view_params(i_pvr))
 !
             call cal_position_pvr_screen                                &
-     &         (modelview_mat(1,i_pvr),  projection_mat(1,i_pvr),       &
+     &         (view_params(i_pvr)%modelview_mat, view_params(i_pvr)%projection_mat,       &
      &          projected%nnod_pvr, projected%istack_nod_pvr,           &
      &          projected%x_nod_sim, projected%x_nod_model,             &
      &          projected%x_nod_screen)
-            call position_pvr_domain_on_screen(modelview_mat(1,i_pvr),  &
-     &          projection_mat(1,i_pvr), pvr_bound(i_pvr)%num_pvr_surf, &
+            call position_pvr_domain_on_screen(view_params(i_pvr)%modelview_mat,  &
+     &          view_params(i_pvr)%projection_mat, pvr_bound(i_pvr)%num_pvr_surf, &
      &          pvr_bound(i_pvr)%xx_nod, pvr_bound(i_pvr)%xx_model,     &
      &          pvr_bound(i_pvr)%xx_screen)
 !
-            call set_pvr_domain_surface_data(n_pvr_pixel(1,i_pvr),      &
+            call set_pvr_domain_surface_data(view_params(i_pvr)%n_pvr_pixel,      &
      &          numele, numsurf, nnod_4_surf, ie_surf, isf_4_ele,       &
      &          projected%nnod_pvr, projected%x_nod_model,              &
      &          projected%x_nod_screen, pvr_bound(i_pvr))
           end if
 !
           if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_ray_start_point'
-          call s_set_pvr_ray_start_point(i_pvr,                         &
-     &          numnod, numele, numsurf, nnod_4_surf, xx,               &
-     &          ie_surf, isf_4_ele, pvr_bound(i_pvr), projected,        &
-     &           pixel_xy(i_pvr), pvr_start)
+          call s_set_pvr_ray_start_point(numnod, numele, numsurf,       &
+     &        nnod_4_surf, xx, ie_surf, isf_4_ele,                      &
+     &        view_params(i_pvr)%viewpoint_vec, pvr_bound(i_pvr),       &
+     &        projected, pixel_xy(i_pvr), pvr_start)
 !          call check_pvr_ray_startpoints(my_rank, pvr_start)
 !
           if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
           call ray_trace_local(i_pvr, numnod, numele, numsurf,          &
      &       nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf, e_multi, xx, &
-     &       projected, pvr_start, pvr_img)
+     &       view_params(i_pvr)%viewpoint_vec, projected, pvr_start,    &
+     &       pvr_img)
 !
           if(iflag_debug .gt. 0) write(*,*)                             &
      &                'blend_pvr_over_domains', i_pvr

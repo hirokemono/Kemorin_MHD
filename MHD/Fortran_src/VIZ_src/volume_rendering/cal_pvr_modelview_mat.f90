@@ -1,11 +1,14 @@
-!cal_pvr_modelview_mat.f90
-!      module cal_pvr_modelview_mat
+!>@file  cal_pvr_modelview_mat.f90
+!!       module cal_pvr_modelview_mat
+!!
+!!@author H. Matsui
+!!@date   Programmed in May. 2006
 !
-!        programmed by H.Matsui on May. 2009
-!
-!      subroutine set_pvr_projection_matrix
-!      subroutine cal_pvr_modelview_matrix
-!      subroutine cal_pvr_rotate_mat_by_views(i_pvr, i_rot)
+!> @brief Get model view matrix for PVR
+!!
+!!@verbatim
+!!      subroutine cal_pvr_modelview_matrix(i_rot, view_param)
+!!@endverbatim
 !
       module cal_pvr_modelview_mat
 !
@@ -13,7 +16,7 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_control_params_4_pvr
+      use t_control_params_4_pvr
 !
       implicit none
 !
@@ -21,10 +24,8 @@
       private :: ione_stack
 !
       private :: cal_modelview_mat_by_views
+      private :: cal_pvr_rotate_mat_by_views
       private :: set_rot_mat_from_viewpts
-!
-!      subroutine cal_pvr_modelview_matrix
-!      subroutine cal_pvr_rotate_mat_by_views(i_pvr, i_rot)
 !
 ! -----------------------------------------------------------------------
 !
@@ -32,31 +33,31 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_pvr_modelview_matrix(i_rot)
+      subroutine cal_pvr_modelview_matrix(i_pvr, i_rot, view_param)
 !
+      use m_control_params_4_pvr
       use cal_inverse_small_matrix
       use cal_matrix_vector_smp
 !
-      integer(kind = kint), intent(in) :: i_rot
+      integer(kind = kint), intent(in) :: i_pvr, i_rot
+      type(pvr_view_parameter), intent(inout) :: view_param
 !
-      integer(kind = kint) :: i_pvr, i, ierr2
+      integer(kind = kint) :: i, ierr2
       integer(kind = kint) :: ist, ied, istack_l(0:1)
       real(kind = kreal) ::  vec_tmp(4)
       real(kind = kreal) ::  posi_zero(4) = (/zero,zero,zero,one/)
 !
 !
-      do i_pvr = 1, num_pvr
-!
         if(i_rot .eq. 0) then
-          if (iflag_modelview_mat(i_pvr) .eq. 0) then
-            call cal_modelview_mat_by_views(i_pvr)
+          if (view_param%iflag_modelview_mat .eq. 0) then
+            call cal_modelview_mat_by_views(i_pvr, view_param)
           end if
         else
-          call cal_pvr_rotate_mat_by_views(i_pvr,i_rot)
+          call cal_pvr_rotate_mat_by_views(i_pvr, i_rot, view_param)
         end if
 !
-        call cal_inverse_44_matrix(modelview_mat(1,i_pvr),              &
-     &      modelview_inv(1,i_pvr), ierr2)
+        call cal_inverse_44_matrix(view_param%modelview_mat,            &
+     &      view_param%modelview_inv, ierr2)
 !
         istack_l(0) = 0
         istack_l(1) = num_pvr_lights(i_pvr)
@@ -64,99 +65,99 @@
         ied = istack_pvr_lights(i_pvr  )
         do i = ist, ied
           call cal_mat44_vec3_on_node(ione, ione, ione_stack(0),        &
-     &        modelview_mat(1,i_pvr), xyz_pvr_lights(1,i),              &
+     &        view_param%modelview_mat, xyz_pvr_lights(1,i),            &
      &        vec_tmp(1) )
           view_pvr_lights(1:3,i) = vec_tmp(1:3)
         end do
 !
         call cal_mat44_vec3_on_node(ione, ione, ione_stack(0),          &
-     &      modelview_inv(1,i_pvr), posi_zero(1),                       &
-     &     vec_tmp(1) )
-        viewpoint_vec(1:3,i_pvr) = vec_tmp(1:3)
-
+     &      view_param%modelview_inv, posi_zero(1), vec_tmp(1))
+        view_param%viewpoint_vec(1:3) = vec_tmp(1:3)
 !
         if (iflag_debug .gt. 0) then
           write(*,*) 'modelview_mat'
           do i = 1, 4
-            write(*,'(1p4e16.7)') modelview_mat(i:i+12:4,i_pvr)
+            write(*,'(1p4e16.7)') view_param%modelview_mat(i:i+12:4)
           end do
 !
           write(*,*) 'modelview_inv'
           do i = 1, 4
-            write(*,'(1p4e16.7)') modelview_inv(i:i+12:4,i_pvr)
+            write(*,'(1p4e16.7)') view_param%modelview_inv(i:i+12:4)
           end do
 !
-          write(*,*) 'lookat_vec', lookat_vec(1:3,i_pvr)
-          write(*,*) 'scale_factor_pvr', scale_factor_pvr(1:3,i_pvr)
-          write(*,*) 'viewpoint_vec', viewpoint_vec(1:3,i_pvr)
-          write(*,*) 'viewpt_in_view', viewpt_in_viewer_pvr(1:3,i_pvr)
+          write(*,*) 'lookat_vec', view_param%lookat_vec(1:3)
+          write(*,*) 'scale_factor_pvr',                                &
+     &              view_param%scale_factor_pvr(1:3)
+          write(*,*) 'viewpoint_vec', view_param%viewpoint_vec(1:3)
+          write(*,*) 'viewpt_in_view',                                  &
+     &              view_param%viewpt_in_viewer_pvr(1:3)
 !
           do i = istack_pvr_lights(i_pvr-1)+1, istack_pvr_lights(i_pvr)
             write(*,*) 'view_pvr_lights', i, view_pvr_lights(1:3,i)
           end do
         end if
 !
-      end do
-!
       end subroutine cal_pvr_modelview_matrix
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_modelview_mat_by_views(i_pvr)
+      subroutine cal_modelview_mat_by_views(i_pvr, view_param)
 !
       use m_mesh_outline_pvr
       use transform_mat_operations
       use cal_matrix_vector_smp
 !
       integer(kind = kint), intent(in) :: i_pvr
+      type(pvr_view_parameter), intent(inout) :: view_param
 !
       real(kind = kreal) :: rev_lookat(3)
 !
 !
 !
-      if(iflag_lookpoint_vec(i_pvr) .eq. 0) then
-        lookat_vec(1:3,i_pvr) = center_g(1:3,i_pvr)
-        iflag_lookpoint_vec(i_pvr) = 1
+      if(view_param%iflag_lookpoint .eq. 0) then
+        view_param%lookat_vec(1:3) = center_g(1:3,i_pvr)
+        view_param%iflag_lookpoint = 1
       end if
-      rev_lookat(1:3) =   - lookat_vec(1:3,i_pvr)
+      rev_lookat(1:3) =   - view_param%lookat_vec(1:3)
 !
-      if(iflag_scale_fact_pvr(i_pvr) .eq. 0) then
-        scale_factor_pvr(1,i_pvr) = 1.0d0 / rmax_g(i_pvr)
-        scale_factor_pvr(2,i_pvr) = 1.0d0 / rmax_g(i_pvr)
-        scale_factor_pvr(3,i_pvr) = 1.0d0 / rmax_g(i_pvr)
-        iflag_scale_fact_pvr(i_pvr) = 1
+      if(view_param%iflag_scale_fact .eq. 0) then
+        view_param%scale_factor_pvr(1) = 1.0d0 / rmax_g(i_pvr)
+        view_param%scale_factor_pvr(2) = 1.0d0 / rmax_g(i_pvr)
+        view_param%scale_factor_pvr(3) = 1.0d0 / rmax_g(i_pvr)
+        view_param%iflag_scale_fact = 1
       end if
 !
 !
-      if (iflag_rotation_pvr(i_pvr) .gt. 0) then
-        call Kemo_Unit( modelview_mat(1,i_pvr) )
-        call Kemo_Rotate( modelview_mat(1,i_pvr),                       &
-     &      rotation_pvr(1,i_pvr), rotation_pvr(2,i_pvr) )
+      if (view_param%iflag_rotation .gt. 0) then
+        call Kemo_Unit( view_param%modelview_mat)
+        call Kemo_Rotate( view_param%modelview_mat,                     &
+     &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
       else
-        call set_rot_mat_from_viewpts(i_pvr, modelview_mat(1,i_pvr) )
+        call set_rot_mat_from_viewpts(view_param)
       end if
 !
-      call Kemo_Scale(modelview_mat(1,i_pvr),                           &
-     &    scale_factor_pvr(1,i_pvr) )
-      call Kemo_Translate( modelview_mat(1,i_pvr), rev_lookat)
-      iflag_modelview_mat(i_pvr) = 1
+      call Kemo_Scale(view_param%modelview_mat,                         &
+     &                view_param%scale_factor_pvr)
+      call Kemo_Translate(view_param%modelview_mat, rev_lookat)
+      view_param%iflag_modelview_mat = 1
 !
 !
-      if (iflag_viewpt_in_view_pvr(i_pvr) .eq. 0) then
+      if (view_param%iflag_viewpt_in_view .eq. 0) then
         call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
-     &    modelview_mat(1,i_pvr), viewpoint_vec(1,i_pvr),               &
-     &    viewpt_in_viewer_pvr(1,i_pvr) )
-        call Kemo_Translate( modelview_mat(1,i_pvr),                    &
-     &      viewpt_in_viewer_pvr(1,i_pvr))
-        iflag_viewpt_in_view_pvr(i_pvr) = 1
+     &    view_param%modelview_mat, view_param%viewpoint_vec,           &
+     &    view_param%viewpt_in_viewer_pvr)
+        call Kemo_Translate(view_param%modelview_mat,                   &
+     &      view_param%viewpt_in_viewer_pvr)
+        view_param%iflag_viewpt_in_view = 1
       else
-        call Kemo_Translate( modelview_mat(1,i_pvr),                    &
-     &      viewpt_in_viewer_pvr(1,i_pvr))
+        call Kemo_Translate(view_param%modelview_mat,                   &
+     &      view_param%viewpt_in_viewer_pvr)
       end if
 !
       if (iflag_debug .gt. 0) then
-        write(*,*) 'viewpt_in_view', viewpt_in_viewer_pvr(1:3,i_pvr)
+        write(*,*) 'viewpt_in_view',                                    &
+     &            view_param%viewpt_in_viewer_pvr(1:3)
       end if
 !
 !
@@ -164,72 +165,75 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_pvr_rotate_mat_by_views(i_pvr, i_rot)
+      subroutine cal_pvr_rotate_mat_by_views(i_pvr, i_rot, view_param)
 !
       use m_mesh_outline_pvr
       use transform_mat_operations
       use cal_matrix_vector_smp
 !
       integer(kind = kint), intent(in) :: i_pvr, i_rot
+      type(pvr_view_parameter), intent(inout) :: view_param
 !
       integer(kind = kint) :: iaxis_rot
       real(kind = kreal) :: rotation_axis(3), rev_lookat(3)
-      real(kind = kreal) :: movie_mat(4,4), angle_deg
+      real(kind = kreal) :: angle_deg
 !
 !
 !
-      if(iflag_lookpoint_vec(i_pvr) .eq. 0) then
-        lookat_vec(1:3,i_pvr) = center_g(1:3,i_pvr)
-        iflag_lookpoint_vec(i_pvr) = 1
+      if(view_param%iflag_lookpoint .eq. 0) then
+        view_param%lookat_vec(1:3) = center_g(1:3,i_pvr)
+        view_param%iflag_lookpoint = 1
       end if
-      rev_lookat(1:3) =   - lookat_vec(1:3,i_pvr)
+      rev_lookat(1:3) =   - view_param%lookat_vec(1:3)
 !
-      if(iflag_scale_fact_pvr(i_pvr) .eq. 0) then
-        scale_factor_pvr(1,i_pvr) = 1.0d0 / rmax_g(i_pvr)
-        scale_factor_pvr(2,i_pvr) = 1.0d0 / rmax_g(i_pvr)
-        scale_factor_pvr(3,i_pvr) = 1.0d0 / rmax_g(i_pvr)
-        iflag_scale_fact_pvr(i_pvr) = 1
+      if(view_param%iflag_scale_fact .eq. 0) then
+        view_param%scale_factor_pvr(1) = 1.0d0 / rmax_g(i_pvr)
+        view_param%scale_factor_pvr(2) = 1.0d0 / rmax_g(i_pvr)
+        view_param%scale_factor_pvr(3) = 1.0d0 / rmax_g(i_pvr)
+        view_param%iflag_scale_fact = 1
       end if
 !
 !
-      if (iflag_rotation_pvr(i_pvr) .gt. 0) then
-        call Kemo_Unit( modelview_mat(1,i_pvr) )
+      if (view_param%iflag_rotation .gt. 0) then
+        call Kemo_Unit(view_param%modelview_mat)
 !
-      iaxis_rot = iprm_pvr_rot(1,i_pvr)
+      iaxis_rot = view_param%iprm_pvr_rot(1)
       rotation_axis(1:3) =       zero
       rotation_axis(iaxis_rot) = one
-      angle_deg = 360.0d0 * dble(i_rot-1) / dble(iprm_pvr_rot(2,i_pvr))
-      call Kemo_Rotate( modelview_mat(1,i_pvr),                       &
+      angle_deg = 360.0d0 * dble(i_rot-1)                               &
+     &           / dble(view_param%iprm_pvr_rot(2))
+      call Kemo_Rotate(view_param%modelview_mat,                        &
      &    angle_deg, rotation_axis(1) )
 !
-        call Kemo_Rotate( modelview_mat(1,i_pvr),                       &
-     &      rotation_pvr(1,i_pvr), rotation_pvr(2,i_pvr) )
+        call Kemo_Rotate(view_param%modelview_mat,                      &
+     &      view_param%rotation_pvr(1), view_param%rotation_pvr(2:4))
       else
-        call set_rot_mat_from_viewpts(i_pvr, modelview_mat(1,i_pvr) )
+        call set_rot_mat_from_viewpts(view_param)
       end if
 !
-      call Kemo_Scale(modelview_mat(1,i_pvr),                           &
-     &    scale_factor_pvr(1,i_pvr) )
-      call Kemo_Translate( modelview_mat(1,i_pvr), rev_lookat)
-      iflag_modelview_mat(i_pvr) = 1
+      call Kemo_Scale(view_param%modelview_mat,                         &
+     &    view_param%scale_factor_pvr)
+      call Kemo_Translate(view_param%modelview_mat, rev_lookat)
+      view_param%iflag_modelview_mat = 1
 !
 !    rotation matrix for movie
 !
 !
-      if (iflag_viewpt_in_view_pvr(i_pvr) .eq. 0) then
+      if (view_param%iflag_viewpt_in_view .eq. 0) then
         call cal_mat44_vec3_on_node(ione, ione, ione_stack,             &
-     &    modelview_mat(1,i_pvr), viewpoint_vec(1,i_pvr),               &
-     &    viewpt_in_viewer_pvr(1,i_pvr) )
-        call Kemo_Translate( modelview_mat(1,i_pvr),                    &
-     &      viewpt_in_viewer_pvr(1,i_pvr))
-        iflag_viewpt_in_view_pvr(i_pvr) = 1
+     &    view_param%modelview_mat, view_param%viewpoint_vec,           &
+     &    view_param%viewpt_in_viewer_pvr)
+        call Kemo_Translate(view_param%modelview_mat,                   &
+     &      view_param%viewpt_in_viewer_pvr)
+        view_param%iflag_viewpt_in_view = 1
       else
-        call Kemo_Translate( modelview_mat(1,i_pvr),                    &
-     &      viewpt_in_viewer_pvr(1,i_pvr))
+        call Kemo_Translate(view_param%modelview_mat,                   &
+     &      view_param%viewpt_in_viewer_pvr)
       end if
 !
       if (iflag_debug .gt. 0) then
-        write(*,*) 'viewpt_in_view', viewpt_in_viewer_pvr(1:3,i_pvr)
+        write(*,*) 'viewpt_in_view',                                    &
+     &             view_param%viewpt_in_viewer_pvr(1:3)
       end if
 !
       end subroutine cal_pvr_rotate_mat_by_views
@@ -237,21 +241,20 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_rot_mat_from_viewpts(i_pvr, rot_mat)
+      subroutine set_rot_mat_from_viewpts(view_param)
 !
       use mag_of_field_smp
       use cal_products_smp
 !
-      integer(kind = kint), intent(in) :: i_pvr
-      real(kind = kreal), intent(inout) :: rot_mat(16)
+      type(pvr_view_parameter), intent(inout) :: view_param
 !
       integer(kind = kint) :: i
       real(kind = kreal) :: viewing_dir(3), u(3), v(3), size(1)
       real(kind = kreal) :: look_norm(3), view_norm(3)
 !
 !
-      viewing_dir(1:3) = lookat_vec(1:3,i_pvr)                          &
-     &                  - viewpoint_vec(1:3,i_pvr)
+      viewing_dir(1:3) = view_param%lookat_vec(1:3)                     &
+     &                  - view_param%viewpoint_vec(1:3)
 !$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack(0),              &
      &    viewing_dir(1), size(1) )
@@ -262,24 +265,24 @@
       call cal_vector_magnitude(ione, ione, ione_stack(0),              &
      &    viewing_dir(1), size(1) )
 !$omp end parallel
-      look_norm(1:3) = lookat_vec(1:3,i_pvr) / size(1)
+      look_norm(1:3) = view_param%lookat_vec(1:3) / size(1)
 !
 !$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack(0),              &
-     &    viewpoint_vec(1,i_pvr), size(1) )
+     &    view_param%viewpoint_vec, size(1) )
 !$omp end parallel
-      view_norm(1:3) = viewpoint_vec(1:3,i_pvr) / size(1)
+      view_norm(1:3) = view_param%viewpoint_vec(1:3) / size(1)
 !
 !$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack(0),              &
-     &    up_direction_vec(1,i_pvr), size(1) )
+     &    view_param%up_direction_vec(1), size(1) )
 !$omp end parallel
-      up_direction_vec(1:3,i_pvr) = up_direction_vec(1:3,i_pvr)         &
-     &                             / size(1)
+      view_param%up_direction_vec(1:3)                                  &
+     &     = view_param%up_direction_vec(1:3) / size(1)
 !
 !    /* find the direction of axis U */
       call cal_cross_prod_no_coef_smp(ione, ione, ione_stack(0),        &
-     &    up_direction_vec(1,i_pvr), viewing_dir(1), u(1) )
+     &    view_param%up_direction_vec(1), viewing_dir(1), u(1))
 !$omp parallel
       call cal_vector_magnitude(ione, ione, ione_stack(0),              &
      &    u(1), size(1) )
@@ -296,13 +299,13 @@
       v(1:3) = v(1:3) / size(1)
 !
       do i = 1, 3
-        rot_mat(4*i-3) = u(i)
-        rot_mat(4*i-2) = v(i)
-        rot_mat(4*i-1) = viewing_dir(i)
-        rot_mat(4*i  ) = zero
+        view_param%modelview_mat(4*i-3) = u(i)
+        view_param%modelview_mat(4*i-2) = v(i)
+        view_param%modelview_mat(4*i-1) = viewing_dir(i)
+        view_param%modelview_mat(4*i  ) = zero
       end do
-      rot_mat(13:15) = zero
-      rot_mat(16   ) = one
+      view_param%modelview_mat(13:15) = zero
+      view_param%modelview_mat(16   ) = one
 !
       end subroutine set_rot_mat_from_viewpts
 !

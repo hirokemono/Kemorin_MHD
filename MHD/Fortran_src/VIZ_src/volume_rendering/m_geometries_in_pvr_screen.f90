@@ -8,6 +8,7 @@
 !     &          a_radius, s_cylinder, a_s_cylinder, ie, a_vol_ele,     &
 !     &          ntot_int_3d, dnx, xjac, num_nod_phys, num_tot_nod_phys,&
 !     &          istack_nod_component, d_nod)
+!!      subroutine set_pixel_on_pvr_screen(n_pvr_pixel, pixel_xy)
 !
       module m_geometries_in_pvr_screen
 !
@@ -82,22 +83,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pixel_on_pvr_screen(i_pvr, pixel_xy)
+      subroutine set_pixel_on_pvr_screen(n_pvr_pixel, pixel_xy)
 !
       use t_geometries_in_pvr_screen
       use set_projection_matrix
 !
-      integer(kind = kint), intent(in) :: i_pvr
+      integer(kind = kint), intent(in) :: n_pvr_pixel(2)
       type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !
 !
-      pixel_xy%num_pixel_x = n_pvr_pixel(1,i_pvr)
-      pixel_xy%num_pixel_y = n_pvr_pixel(2,i_pvr)
+      pixel_xy%num_pixel_x = n_pvr_pixel(1)
+      pixel_xy%num_pixel_y = n_pvr_pixel(2)
       call allocate_pixel_position_pvr(pixel_xy)
 !
-      call set_pixel_points_on_project(n_pvr_pixel(1,i_pvr),            &
-          n_pvr_pixel(2,i_pvr), pixel_xy%pixel_point_x,                 &
-     &    pixel_xy%pixel_point_y)
+      call set_pixel_points_on_project(n_pvr_pixel(1), n_pvr_pixel(2),  &
+          pixel_xy%pixel_point_x, pixel_xy%pixel_point_y)
 !
       end subroutine set_pixel_on_pvr_screen
 !

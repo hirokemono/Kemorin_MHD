@@ -75,7 +75,7 @@
      &                    :: item_pvr_surf_domain(2,num_pvr_surf)
 !
       real(kind = kreal), intent(inout)                                 &
-     &                    :: xx_nod_pvr_domain(4,num_pvr_surf)
+     &                    :: xx_nod_pvr_domain(4*num_pvr_surf,4)
 !
       integer(kind = kint) :: inum, iele, k1, isurf
       integer(kind = kint) :: i1, i2, i3, i4
@@ -159,11 +159,11 @@
 !
       integer(kind = kint), intent(in) :: num_pvr_surf
       real(kind = kreal), intent(in)                                    &
-     &                   :: xx_nod_pvr_domain(4,num_pvr_surf)
+     &                   :: xx_nod_pvr_domain(4*num_pvr_surf,4)
       real(kind = kreal), intent(inout)                                 &
-     &                   :: xx_model_pvr_domain(4,num_pvr_surf)
+     &                   :: xx_model_pvr_domain(4*num_pvr_surf,4)
       real(kind = kreal), intent(inout)                                 &
-     &                   :: xx_screen_pvr_domain(4,num_pvr_surf)
+     &                   :: xx_screen_pvr_domain(4*num_pvr_surf,4)
 !
       integer(kind = kint) :: inod, ip, k1
       integer(kind = kint) :: istack(0:4), ntot
@@ -197,11 +197,6 @@
         end do
       end do
 !$omp end parallel do
-!
-      do inod = 1, num_pvr_surf
-        write(*,*) 'x_surf', xx_screen_pvr_domain(4*inod-3:4*inod,1)
-        write(*,*) 'y_surf', xx_screen_pvr_domain(4*inod-3:4*inod,2)
-      end do
 !
       end subroutine position_pvr_domain_on_screen
 !

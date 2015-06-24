@@ -60,7 +60,7 @@
       do i_pvr = 1, num_pvr
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr', i_pvr
         call set_control_pvr(i_pvr, pvr_ctl_struct(i_pvr), num_mat,     &
-     &      mat_name, num_nod_phys, phys_nod_name)
+     &      mat_name, num_nod_phys, phys_nod_name, view_params(i_pvr))
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'deallocate_cont_dat_pvr', i_pvr
         call deallocate_cont_dat_pvr(pvr_ctl_struct(i_pvr))

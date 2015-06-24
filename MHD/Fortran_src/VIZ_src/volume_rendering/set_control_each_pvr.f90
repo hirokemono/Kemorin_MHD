@@ -6,7 +6,7 @@
 !      subroutine count_control_pvr(i_pvr, pvr,                         &
 !     &          num_mat, mat_name, num_nod_phys, phys_nod_name)
 !      subroutine set_control_pvr(i_pvr, pvr, num_mat, mat_name,        &
-!     &          num_nod_phys, phys_nod_name)
+!     &          num_nod_phys, phys_nod_name, view_param)
 !
       module set_control_each_pvr
 !
@@ -111,7 +111,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_pvr(i_pvr, pvr, num_mat, mat_name,         &
-     &          num_nod_phys, phys_nod_name)
+     &          num_nod_phys, phys_nod_name, view_param)
 !
       use set_pvr_modelview_matrix
       use set_area_4_viz
@@ -123,8 +123,9 @@
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
-      type(pvr_ctl), intent(inout) :: pvr
       integer(kind = kint), intent(in) :: i_pvr
+      type(pvr_ctl), intent(inout) :: pvr
+      type(pvr_view_parameter), intent(inout) :: view_param
 !
       integer(kind = kint) :: ist, i, icheck_ncomp(1)
       real(kind = kreal), allocatable :: pvr_param_tmp(:,:)
@@ -207,23 +208,23 @@
      &   .and. pvr%rotation_axis_ctl%iflag .gt. 0) then
         tmpchara = pvr%rotation_axis_ctl%charavalue
         if     (cmp_no_case(tmpchara, 'x')) then
-          iprm_pvr_rot(1,i_pvr) = 1
-          iflag_rotation = 1
+          view_param%iprm_pvr_rot(1) = 1
+          view_param%iflag_rotate_snap = 1
         else if(cmp_no_case(tmpchara, 'y')) then
-          iprm_pvr_rot(1,i_pvr) = 2
-          iflag_rotation = 1
+          view_param%iprm_pvr_rot(1) = 2
+          view_param%iflag_rotate_snap = 1
         else if(cmp_no_case(tmpchara, 'z')) then
-          iprm_pvr_rot(1,i_pvr) = 3
-          iflag_rotation = 1
+          view_param%iprm_pvr_rot(1) = 3
+          view_param%iflag_rotate_snap = 1
         else
-          iprm_pvr_rot(1,i_pvr) = 0
+          view_param%iprm_pvr_rot(1) = 0
+          view_param%iflag_rotation =  0
         end if
 !
-        iprm_pvr_rot(2,i_pvr) = pvr%num_frames_ctl%intvalue
-        max_rotation = max(max_rotation, iprm_pvr_rot(2,i_pvr))
+        view_param%iprm_pvr_rot(2) = pvr%num_frames_ctl%intvalue
       else
-        iprm_pvr_rot(1,i_pvr) = 0
-        iprm_pvr_rot(2,i_pvr) = 1
+        view_param%iprm_pvr_rot(1) = 0
+        view_param%iprm_pvr_rot(2) = 1
       end if
 !
 !    set colormap setting
@@ -427,7 +428,7 @@
 !
 !   set transfer matrix
 !
-      call s_set_pvr_modelview_matrix(i_pvr, pvr%mat)
+      call s_set_pvr_modelview_matrix(pvr%mat, view_param)
 !
       end subroutine set_control_pvr
 !

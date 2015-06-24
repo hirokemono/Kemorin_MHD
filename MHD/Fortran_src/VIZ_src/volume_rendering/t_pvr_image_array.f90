@@ -24,6 +24,8 @@
       type pvr_image_type
 !>    Number of pixels
         integer(kind = kint) :: num_pixel_xy
+!>    Number of pixels in each direction
+        integer(kind = kint) :: num_pixels(2)
 !
 !>    Stackes for subimages in each process for blending
         integer(kind = kint), pointer :: istack_image(:)
@@ -63,6 +65,7 @@
       type(pvr_image_type), intent(inout) :: pvr_img
 !
 !
+      pvr_img%num_pixels(1:2) = n_pvr_pixel(1:2)
       pvr_img%num_pixel_xy = n_pvr_pixel(1)*n_pvr_pixel(2)
 !
       if(my_rank .eq. 0) then

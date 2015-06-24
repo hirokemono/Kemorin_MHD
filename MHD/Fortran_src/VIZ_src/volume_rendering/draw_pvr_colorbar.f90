@@ -20,9 +20,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pvr_colorbar(i_pvr, num_pixel, rgba_gl)
+      subroutine set_pvr_colorbar                                       &
+     &         (i_pvr, num_pixel, n_pvr_pixel, rgba_gl)
 !
       integer(kind = kint), intent(in) :: i_pvr, num_pixel
+      integer(kind = kint), intent(in) :: n_pvr_pixel(2)
       real(kind = kreal), intent(inout)  :: rgba_gl(4,num_pixel)
 !
       integer(kind = kint) :: iext_colorbar
@@ -38,7 +40,7 @@
         call s_draw_pvr_colorbar(i_pvr, iflag_pvr_colorbar(i_pvr),      &
      &        iflag_pvr_cbar_nums(i_pvr), iflag_pvr_zero_mark(i_pvr),   &
      &        iscale_font(i_pvr), ntick_pvr_colorbar(i_pvr),            &
-     &        cbar_range(1,i_pvr), n_pvr_pixel(1,i_pvr),                &
+     &        cbar_range(1,i_pvr), n_pvr_pixel,                         &
      &        iext_colorbar, num_pixel, rgba_gl)
       end if
 !
