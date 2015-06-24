@@ -5,7 +5,7 @@
 !
 !!      subroutine s_find_pvr_surf_domain(numele, numsurf, e_multi,     &
 !!     &          isf_4_ele, iele_4_surf, num_mat, num_mat_bc,          &
-!!     &          mat_istack, mat_item, pvr_bound, proj)
+!!     &          mat_istack, mat_item, fld_params, pvr_bound, proj)
 !!      subroutine set_pvr_domain_surface_data                          &
 !!     &         (n_pvr_pixel, numele, numsurf, nnod_4_surf,            &
 !!     &          ie_surf, isf_4_ele, nnod_pvr,                         &
@@ -33,9 +33,9 @@
 !
       subroutine s_find_pvr_surf_domain(numele, numsurf, e_multi,       &
      &          isf_4_ele, iele_4_surf, num_mat, num_mat_bc,            &
-     &          mat_istack, mat_item, pvr_bound, proj)
+     &          mat_istack, mat_item, fld_params, pvr_bound, proj)
 !
-      use m_geometry_constants
+      use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
       use t_geometries_in_pvr_screen
       use find_selected_domain_bd
@@ -50,19 +50,20 @@
       integer(kind=kint), intent(in) :: mat_istack(0:num_mat)
       integer(kind=kint), intent(in) :: mat_item(num_mat_bc)
 !
+      type(pvr_field_parameter), intent(in) :: fld_params(num_pvr)
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound(num_pvr)
       type(pvr_projected_type), intent(inout) :: proj
 !
-      integer(kind = kint) :: i_pvr, jst_grp
+      integer(kind = kint) :: i_pvr
 !
 !
       call allocate_imark_4_surface(numsurf)
 !
       do i_pvr = 1, num_pvr
-        jst_grp = istack_grp_area_pvr(i_pvr-1) + 1
         call s_set_iflag_for_used_ele(numele, e_multi,                  &
      &      num_mat, num_mat_bc, mat_istack, mat_item,                  &
-     &      nele_grp_area_pvr(i_pvr), id_ele_grp_area_pvr(jst_grp),     &
+     &      fld_params(i_pvr)%nele_grp_area_pvr,                        &
+     &      fld_params(i_pvr)%id_ele_grp_area_pvr,                      &
      &      proj%field_pvr(i_pvr)%iflag_used_ele)
 !
         call mark_selected_domain_bd(numele, numsurf, isf_4_ele,        &
@@ -91,6 +92,7 @@
      &          ie_surf, isf_4_ele, nnod_pvr,                           &
      &          x_nod_model, x_nod_screen, pvr_bound)
 !
+      use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
       use ordering_pvr_sf_domain_grp
 !

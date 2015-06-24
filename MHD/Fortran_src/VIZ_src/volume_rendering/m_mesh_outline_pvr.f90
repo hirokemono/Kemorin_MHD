@@ -3,29 +3,20 @@
 !
 !        programmed by H.Matsui on May. 2006
 !
-!      subroutine cal_mesh_outline_pvr(i_pvr, numnod, xx)
-!      subroutine allocate_phys_data_4_pvr
-!      subroutine deallocate_phys_data_4_pvr
+!!      subroutine cal_mesh_outline_pvr(numnod, xx, outline)
 !
       module m_mesh_outline_pvr
 !
       use m_precision
+      use t_surf_grp_4_pvr_domain
 !
       implicit  none
 !
+      type(pvr_domain_outline), allocatable, save :: outlines(:)
 !
-      real(kind = kreal), allocatable :: center_g(:,:)
-      real(kind = kreal), allocatable :: rmax_g(:)
-!
-!
-!!@n   minimum value: xx_minmax(1,ndir,i_pvr)
-!!@n   maximum value: xx_minmax(2,ndir,i_pvr)
-      real(kind = kreal), allocatable :: xx_minmax_g(:,:,:)
-!
-      real(kind = kreal), allocatable :: d_minmax_pvr(:,:)
 !
       real(kind = kreal), allocatable :: xx_minmax_l(:,:,:)
-      real(kind = kreal), allocatable :: xx_minmax_tbl(:,:,:,:)
+      real(kind = kreal), allocatable :: xx_minmax_tbl(:,:,:)
       private :: xx_minmax_l, xx_minmax_tbl
 !
 ! -----------------------------------------------------------------------
@@ -34,53 +25,24 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_mesh_outline_pvr
-!
-      use m_control_params_4_pvr
-!
-      allocate( rmax_g(num_pvr) )
-      allocate( center_g(3,num_pvr) )
-      allocate( xx_minmax_g(2,3,num_pvr) )
-      allocate( d_minmax_pvr(2,num_pvr) )
-!
-      xx_minmax_g(1,1:3,1:num_pvr) =  1.0d-30
-      xx_minmax_g(2,1:3,1:num_pvr) = -1.0d-30
-!
-      center_g = 0.0d0
-      rmax_g = 0.0d0
-!
-      end subroutine allocate_mesh_outline_pvr
-!
-! -----------------------------------------------------------------------
-!
-      subroutine deallocate_mesh_outline_pvr
-!
-!
-      deallocate( rmax_g, center_g, xx_minmax_g )
-!
-      end subroutine deallocate_mesh_outline_pvr
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine cal_mesh_outline_pvr(i_pvr, numnod, xx)
+      subroutine cal_mesh_outline_pvr(numnod, xx, outline)
 !
       use calypso_mpi
       use m_constants
       use m_machine_parameter
       use m_control_params_4_pvr
 !
-      integer(kind = kint), intent(in) :: i_pvr
-!
       integer(kind = kint), intent(in) :: numnod
       real(kind = kreal), intent(in) :: xx(numnod,3)
+!
+      type(pvr_domain_outline), intent(inout) :: outline
 !
       integer(kind = kint) :: inod, ip
       real(kind = kreal) :: rmax_l, r_from_ct
 !
 !
       allocate( xx_minmax_l(2,3,nprocs) )
-      allocate( xx_minmax_tbl(2,3,nprocs,num_pvr) )
+      allocate( xx_minmax_tbl(2,3,nprocs) )
       xx_minmax_l =     0.0d0
       xx_minmax_tbl =   0.0d0
 !
@@ -99,50 +61,50 @@
 !
       xx_minmax_tbl = 0.0d0
       call MPI_allREDUCE( xx_minmax_l(1,1,1),                           &
-     &    xx_minmax_tbl(1,1,1,i_pvr), (isix*nprocs),                    &
+     &    xx_minmax_tbl(1,1,1), (isix*nprocs),                          &
      &    CALYPSO_REAL,  MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
-      xx_minmax_g(1,1:3,i_pvr) = xx_minmax_tbl(1,1:3,1,i_pvr)
-      xx_minmax_g(2,1:3,i_pvr) = xx_minmax_tbl(2,1:3,1,i_pvr)
+      outline%xx_minmax_g(1,1:3) = xx_minmax_tbl(1,1:3,1)
+      outline%xx_minmax_g(2,1:3) = xx_minmax_tbl(2,1:3,1)
       do ip = 2, nprocs
-        xx_minmax_g(1,1:3,i_pvr) = min(xx_minmax_g(1,1:3,i_pvr),        &
-     &                                 xx_minmax_tbl(1,1:3,ip,i_pvr) )
-        xx_minmax_g(2,1:3,i_pvr) = max(xx_minmax_g(1,1:3,i_pvr),        &
-     &                                 xx_minmax_tbl(2,1:3,ip,i_pvr) )
+        outline%xx_minmax_g(1,1:3) = min(outline%xx_minmax_g(1,1:3),    &
+     &                                 xx_minmax_tbl(1,1:3,ip) )
+        outline%xx_minmax_g(2,1:3) = max(outline%xx_minmax_g(1,1:3),    &
+     &                                 xx_minmax_tbl(2,1:3,ip) )
       end do
 !
-      center_g(1:3,i_pvr)                                               &
-     &   = (xx_minmax_g(1,1:3,i_pvr) + xx_minmax_g(2,1:3,i_pvr)) / two
+      outline%center_g(1:3) = (outline%xx_minmax_g(1,1:3)               &
+     &                        + outline%xx_minmax_g(2,1:3)) / two
 !
 !
       inod = 1
-      rmax_l = sqrt( (xx(inod,1) - center_g(1,i_pvr))                   &
-     &              *(xx(inod,1) - center_g(1,i_pvr))                   &
-     &             + (xx(inod,2) - center_g(2,i_pvr))                   &
-     &              *(xx(inod,2) - center_g(2,i_pvr))                   &
-     &             + (xx(inod,3) - center_g(3,i_pvr))                   &
-     &              *(xx(inod,3) - center_g(3,i_pvr)) )
+      rmax_l = sqrt( (xx(inod,1) - outline%center_g(1))                 &
+     &              *(xx(inod,1) - outline%center_g(1))                 &
+     &             + (xx(inod,2) - outline%center_g(2))                 &
+     &              *(xx(inod,2) - outline%center_g(2))                 &
+     &             + (xx(inod,3) - outline%center_g(3))                 &
+     &              *(xx(inod,3) - outline%center_g(3)) )
 !
 !
 !
       do inod = 2, numnod
-        r_from_ct = sqrt( (xx(inod,1) - center_g(1,i_pvr))              &
-     &                   *(xx(inod,1) - center_g(1,i_pvr))              &
-     &                  + (xx(inod,2) - center_g(2,i_pvr))              &
-     &                   *(xx(inod,2) - center_g(2,i_pvr))              &
-     &                  + (xx(inod,3) - center_g(3,i_pvr))              &
-     &                   *(xx(inod,3) - center_g(3,i_pvr)) )
+        r_from_ct = sqrt( (xx(inod,1) - outline%center_g(1))            &
+     &                   *(xx(inod,1) - outline%center_g(1))            &
+     &                  + (xx(inod,2) - outline%center_g(2))            &
+     &                   *(xx(inod,2) - outline%center_g(2))            &
+     &                  + (xx(inod,3) - outline%center_g(3))            &
+     &                   *(xx(inod,3) - outline%center_g(3)) )
         rmax_l = max(rmax_l, r_from_ct)
       end do
 !
-      call MPI_allREDUCE( rmax_l, rmax_g(i_pvr), ione,                  &
+      call MPI_allREDUCE( rmax_l, outline%rmax_g, ione,                 &
      &    CALYPSO_REAL,  MPI_MAX, CALYPSO_COMM, ierr_MPI)
 !
       if (iflag_debug .gt. 0) then
-        write(*,*) 'xx_min_g', xx_minmax_g(1,1:3,i_pvr)
-        write(*,*) 'xx_max_g', xx_minmax_g(2,1:3,i_pvr)
-        write(*,*) 'center_g', center_g(1:3,i_pvr)
-        write(*,*) 'rmax_g', rmax_g(i_pvr)
+        write(*,*) 'xx_min_g', outline%xx_minmax_g(1,1:3)
+        write(*,*) 'xx_max_g', outline%xx_minmax_g(2,1:3)
+        write(*,*) 'center_g', outline%center_g(1:3)
+        write(*,*) 'rmax_g', outline%rmax_g
       end if
 !
       deallocate(xx_minmax_l, xx_minmax_tbl)

@@ -1,8 +1,8 @@
 !
 !      module  draw_pvr_colorbar
 !
-!!      subroutine set_pvr_colorbar                                     &
-!!     &         (i_pvr, num_pixel, n_pvr_pixel, color_param, rgba_gl)
+!!      subroutine set_pvr_colorbar(num_pixel, n_pvr_pixel,             &
+!!     &         color_param, cbar_param, rgba_gl)
 !
       module  draw_pvr_colorbar
 !
@@ -22,33 +22,36 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_pvr_colorbar                                       &
-     &         (i_pvr, num_pixel, n_pvr_pixel, color_param, rgba_gl)
+      subroutine set_pvr_colorbar(num_pixel, n_pvr_pixel,               &
+     &         color_param, cbar_param, rgba_gl)
 !
-      use m_control_params_4_pvr
+      use t_control_params_4_pvr
 !
-      integer(kind = kint), intent(in) :: i_pvr, num_pixel
+      integer(kind = kint), intent(in) :: num_pixel
       integer(kind = kint), intent(in) :: n_pvr_pixel(2)
 !
+!      type(pvr_domain_outline), intent(in) :: outline
       type(pvr_colormap_parameter), intent(in) :: color_param
+      type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !
       real(kind = kreal), intent(inout)  :: rgba_gl(4,num_pixel)
 !
       integer(kind = kint) :: iext_colorbar
 !
-      if( iflag_pvr_colorbar(i_pvr) .eq. 1) then
-        iext_colorbar = 15 + 8 * 9 * iscale_font(i_pvr)
+      if(cbar_param%iflag_pvr_colorbar .eq. 1) then
+        iext_colorbar = 15 + 8 * 9 * cbar_param%iscale_font
         iext_colorbar = iext_colorbar + ithree                          &
      &                  - mod((iext_colorbar-ione),ifour) 
-!        if(cbar_range(2,i_pvr) .le. cbar_range(1,i_pvr)) then
-!          cbar_range(1:2,i_pvr) = d_minmax_pvr(1:2,i_pvr)
+!        if(cbar_param%cbar_range(2) .le. cbar_param%cbar_range(1)) then
+!          cbar_param%cbar_range(1:2) = outline%d_minmax_pvr(1:2)
 !        end if
 !
-        call s_draw_pvr_colorbar(iflag_pvr_colorbar(i_pvr),             &
-     &        iflag_pvr_cbar_nums(i_pvr), iflag_pvr_zero_mark(i_pvr),   &
-     &        iscale_font(i_pvr), ntick_pvr_colorbar(i_pvr),            &
-     &        cbar_range(1,i_pvr), n_pvr_pixel,                         &
-     &        iext_colorbar, num_pixel, color_param, rgba_gl)
+        call s_draw_pvr_colorbar(cbar_param%iflag_pvr_colorbar,         &
+     &      cbar_param%iflag_pvr_cbar_nums,                             &
+     &      cbar_param%iflag_pvr_zero_mark,                             &
+     &      cbar_param%iscale_font, cbar_param%ntick_pvr_colorbar,      &
+     &      cbar_param%cbar_range(1), n_pvr_pixel,                      &
+     &      iext_colorbar, num_pixel, color_param, rgba_gl)
       end if
 !
       end subroutine set_pvr_colorbar

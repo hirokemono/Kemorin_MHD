@@ -10,7 +10,6 @@
 !!      subroutine allocate_num_pvr_ray_start(num_pvr_surf, pvr_start)
 !!      subroutine allocate_item_pvr_ray_start(pvr_start)
 !!      subroutine deallocate_pvr_ray_start(pvr_start)
-!!      subroutine reallocate_item_pvr_ray_start(pvr_start)
 !!      subroutine check_pvr_ray_startpoints(my_rank, pvr_start)
 !!@endverbatim
 !
@@ -54,6 +53,7 @@
 !>  Direction of Ray in screen coordinate
       real(kind = kreal), parameter :: ray_vec(3) = (/zero, zero, one/)
 !
+      private :: deallocate_item_pvr_ray_start
       private :: deallocate_num_pvr_ray_start
 !
 !  ---------------------------------------------------------------------
@@ -112,23 +112,6 @@
       call deallocate_num_pvr_ray_start(pvr_start)
 !
       end subroutine deallocate_pvr_ray_start
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine reallocate_item_pvr_ray_start(pvr_start)
-!
-      use m_control_params_4_pvr
-!
-      type(pvr_ray_start_type), intent(inout) :: pvr_start
-!
-!
-      if(pvr_start%num_pvr_ray .gt. pvr_start%ntot_pvr_ray) then
-        pvr_start%ntot_pvr_ray = pvr_start%num_pvr_ray
-        call deallocate_item_pvr_ray_start(pvr_start)
-        call allocate_item_pvr_ray_start(pvr_start)
-      end if
-!
-      end subroutine reallocate_item_pvr_ray_start
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

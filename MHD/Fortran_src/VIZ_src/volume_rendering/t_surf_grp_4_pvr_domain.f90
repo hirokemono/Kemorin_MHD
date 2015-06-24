@@ -20,6 +20,20 @@
       implicit  none
 !
 !
+      type pvr_domain_outline
+!>    Center of domain
+        real(kind = kreal) :: center_g(3) = (/zero,zero,zero/)
+!>    Maximum distance from center of domain
+        real(kind = kreal) :: rmax_g = zero
+!
+!>    MAximum and mimimum position of domain
+!!@n   minimum value: xx_minmax(1,ndir)
+!!@n   maximum value: xx_minmax(2,ndir)
+        real(kind = kreal) :: xx_minmax_g(2,3)
+!!    Range of field data
+        real(kind = kreal) :: d_minmax_pvr(2)
+      end type pvr_domain_outline
+!
       type pvr_bounds_surf_ctl
 !>        Number of Surface address for surface group
         integer(kind = kint) :: num_pvr_surf

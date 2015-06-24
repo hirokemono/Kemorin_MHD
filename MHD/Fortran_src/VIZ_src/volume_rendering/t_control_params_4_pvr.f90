@@ -17,6 +17,34 @@
 !
       implicit  none
 !
+!>  Structure for field parameter for PVR
+      type pvr_output_parameter
+!>    File prefix for image file
+        character(len = kchara) :: pvr_prefix
+!>    File format for image file
+        integer(kind = kint) :: id_pvr_file_type
+!>    Transparent image flag
+        integer(kind = kint) :: id_pvr_transparent = 0
+      end type pvr_output_parameter
+!
+!>  Structure for field parameter for PVR
+      type pvr_field_parameter
+!>     Field type for PVR data
+        integer(kind = kint) :: id_pvr_output =    0
+!>     Component flag for PVR data
+        integer(kind = kint) :: icomp_pvr_output = 0
+!>     Number of component of data for Rendering
+        integer(kind = kint) :: ncomp_pvr_org =    0
+!>     Field name of data for Rendering
+        character(len = kchara) :: name_pvr_output
+!
+!>     Number of Element group for volume rendering
+        integer(kind = kint) :: nele_grp_area_pvr = 0
+!>     Element group list for volume rendering
+        integer(kind = kint), pointer :: id_ele_grp_area_pvr(:)
+      end type pvr_field_parameter
+!
+!
 !>  Structure for view parameteres
       type pvr_view_parameter
 !>    Number of pixels for image
@@ -103,7 +131,7 @@
       end type pvr_view_parameter
 !
 !
-!>  Structure for PVR colormap
+!>  Structure for PVR colormap parameters
       type pvr_colormap_parameter
 !>    Colormap IDs
 !!@n        pvr_colormap(:) =        id_pvr_color(1)
@@ -116,7 +144,7 @@
 !>    Data and corresponding color value
 !!@n        Field data:  pvr_datamap_param(1,:)
 !!@n        Color data:  pvr_datamap_param(2,:)
-        real(kind = kreal), allocatable :: pvr_datamap_param(:,:)
+        real(kind = kreal), pointer :: pvr_datamap_param(:,:)
 !
 !>    Number of data points to define color
         integer(kind = kint) :: num_opacity_pnt = 0
@@ -127,7 +155,7 @@
 !!@n        pvr_opacity_dat_high(:) = pvr_opacity_param(2,:)
 !!@n        pvr_opacity_opacity(:) =  pvr_opacity_param(3,:)
 !!@n        ambient_opacity:  pvr_opacity_param(3,(num_opacity_pnt(:)+1))
-        real(kind = kreal), allocatable :: pvr_opacity_param(:,:)
+        real(kind = kreal), pointer :: pvr_opacity_param(:,:)
 !
 !>    Defined flag for lights
         integer(kind = kint) :: iflag_pvr_lights = 0
@@ -138,10 +166,26 @@
 !!@n        specular_coef(:) = pvr_lighting_real(3,:)
         real(kind = kreal) :: pvr_lighting_real(3) = (/zero,zero,zero/)
 !>    Position of lights
-        real(kind = kreal), allocatable :: xyz_pvr_lights(:,:)
+        real(kind = kreal), pointer :: xyz_pvr_lights(:,:)
 !>    Position of lights in viewer coordinates
-        real(kind = kreal), allocatable :: view_pvr_lights(:,:)
+        real(kind = kreal), pointer :: view_pvr_lights(:,:)
       end type pvr_colormap_parameter
+!
+!>  Structure for PVR colorbar parameters
+      type pvr_colorbar_parameter
+!>    Draw flag for color bar
+        integer(kind = kint) :: iflag_pvr_colorbar =  0
+!>    Draw flag for color bar numbers
+        integer(kind = kint) :: iflag_pvr_cbar_nums = 0
+!>    Draw flag for zero line in color bar
+        integer(kind = kint) :: iflag_pvr_zero_mark = 0
+!>    Scaling for number font
+        integer(kind = kint) :: iscale_font = 1
+!>    Thicknsess of colorbar
+        integer(kind = kint) :: ntick_pvr_colorbar =  3
+!>    Range of colorbar
+        real(kind = kreal) :: cbar_range(2) = (/zero,one/)
+      end type pvr_colorbar_parameter
 !
 !  ---------------------------------------------------------------------
 !
@@ -163,6 +207,30 @@
         view_param%projection_right(1:16) = 0.0d0
 !
       end subroutine reset_pvr_view_parameteres
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine alloc_pvr_element_group(fld_prm)
+!
+      type(pvr_field_parameter), intent(inout) :: fld_prm
+!
+      allocate(fld_prm%id_ele_grp_area_pvr(fld_prm%nele_grp_area_pvr))
+!
+      if(fld_prm%nele_grp_area_pvr .le. 0) return
+      fld_prm%id_ele_grp_area_pvr = 0
+!
+      end subroutine alloc_pvr_element_group
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine dealloc_pvr_element_group(fld_prm)
+!
+      type(pvr_field_parameter), intent(inout) :: fld_prm
+!
+      deallocate(fld_prm%id_ele_grp_area_pvr)
+!
+      end subroutine dealloc_pvr_element_group
 !
 !  ---------------------------------------------------------------------
 !

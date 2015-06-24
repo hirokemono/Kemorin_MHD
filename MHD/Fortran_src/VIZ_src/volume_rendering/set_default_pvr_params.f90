@@ -3,9 +3,8 @@
 !
 !        programmed by H.Matsui on May. 2009
 !
-!      subroutine check_pvr_parameters(i_pvr)
-!!      subroutine set_default_pvr_data_params                          &
-!!     &         (d_minmax_pvr, color_param)
+!!      subroutine check_pvr_parameters(outline, view_param, color_param)
+!!      subroutine set_default_pvr_data_params(d_minmax_pvr, color_param)
 !
       module set_default_pvr_params
 !
@@ -26,32 +25,33 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_pvr_parameters(i_pvr, view_param)
+      subroutine check_pvr_parameters(outline, view_param, color_param)
 !
-      use m_control_params_4_pvr
-      use m_mesh_outline_pvr
+      use t_control_params_4_pvr
+      use t_surf_grp_4_pvr_domain
 !
-      integer(kind = kint), intent(in) :: i_pvr
+      type(pvr_domain_outline), intent(in) :: outline
       type(pvr_view_parameter), intent(inout) :: view_param
+      type(pvr_colormap_parameter), intent(inout) :: color_param
 !
 !
       if (view_param%iflag_viewpoint .eq. 0) then
-        call set_default_viewpoint_pvr(center_g(1,i_pvr),               &
-     &      xx_minmax_g(1,1,i_pvr), view_param%viewpoint_vec)
+        call set_default_viewpoint_pvr(outline%center_g,                &
+     &      outline%xx_minmax_g, view_param%viewpoint_vec)
       end if
 !
       if (view_param%iflag_lookpoint .eq. 0) then
         call set_default_lookatpoint_pvr                                &
-     &     (center_g(1,i_pvr), view_param%lookat_vec)
+     &     (outline%center_g, view_param%lookat_vec)
       end if
 !
       if (view_param%iflag_updir .eq. 0) then
         call set_default_up_dir_pvr(view_param%up_direction_vec)
       end if
 !
-      if (color_params(i_pvr)%iflag_pvr_lights .eq. 0) then
-        call set_default_light_pvr                                     &
-     &     (center_g(1,i_pvr), xx_minmax_g(1,1,i_pvr), color_params(i_pvr))
+      if (color_param%iflag_pvr_lights .eq. 0) then
+        call set_default_light_pvr                                      &
+     &     (outline%center_g, outline%xx_minmax_g, color_param)
       end if
 !
       end subroutine check_pvr_parameters
@@ -125,8 +125,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_default_pvr_data_params                            &
-     &         (d_minmax_pvr, color_param)
+      subroutine set_default_pvr_data_params(d_minmax_pvr, color_param)
 !
       use t_control_params_4_pvr
       use set_color_4_pvr

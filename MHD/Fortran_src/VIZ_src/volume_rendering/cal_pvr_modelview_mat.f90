@@ -8,7 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine cal_pvr_modelview_matrix                             &
-!!     &          (i_pvr, i_rot, view_param, color_param)
+!!     &          (i_rot, outline, view_param, color_param)
 !!@endverbatim
 !
       module cal_pvr_modelview_mat
@@ -35,13 +35,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_pvr_modelview_matrix                               &
-     &          (i_pvr, i_rot, view_param, color_param)
+     &          (i_rot, outline, view_param, color_param)
 !
-      use t_control_params_4_pvr
+      use t_surf_grp_4_pvr_domain
       use cal_inverse_small_matrix
       use cal_matrix_vector_smp
 !
-      integer(kind = kint), intent(in) :: i_pvr, i_rot
+      integer(kind = kint), intent(in) :: i_rot
+      type(pvr_domain_outline), intent(in) :: outline
       type(pvr_colormap_parameter), intent(inout) :: color_param
       type(pvr_view_parameter), intent(inout) :: view_param
 !
@@ -53,10 +54,10 @@
 !
         if(i_rot .eq. 0) then
           if (view_param%iflag_modelview_mat .eq. 0) then
-            call cal_modelview_mat_by_views(i_pvr, view_param)
+            call cal_modelview_mat_by_views(outline, view_param)
           end if
         else
-          call cal_pvr_rotate_mat_by_views(i_pvr, i_rot, view_param)
+          call cal_pvr_rotate_mat_by_views(i_rot, outline, view_param)
         end if
 !
         call cal_inverse_44_matrix(view_param%modelview_mat,            &
@@ -65,9 +66,9 @@
         istack_l(0) = 0
         istack_l(1) = color_param%num_pvr_lights
         do i = 1, color_param%num_pvr_lights
-          call cal_mat44_vec3_on_node(ione, ione, ione_stack(0),        &
-     &       view_param%modelview_mat, color_param%xyz_pvr_lights(1,i), &
-     &       vec_tmp(1))
+          call cal_mat44_vec3_on_node                                   &
+     &       (ione, ione, ione_stack(0), view_param%modelview_mat,      &
+     &       color_param%xyz_pvr_lights(1:16,i), vec_tmp(1))
           color_param%view_pvr_lights(1:3,i) = vec_tmp(1:3)
         end do
 !
@@ -104,13 +105,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_modelview_mat_by_views(i_pvr, view_param)
+      subroutine cal_modelview_mat_by_views(outline, view_param)
 !
-      use m_mesh_outline_pvr
+      use t_surf_grp_4_pvr_domain
       use transform_mat_operations
       use cal_matrix_vector_smp
 !
-      integer(kind = kint), intent(in) :: i_pvr
+      type(pvr_domain_outline), intent(in) :: outline
       type(pvr_view_parameter), intent(inout) :: view_param
 !
       real(kind = kreal) :: rev_lookat(3)
@@ -118,15 +119,15 @@
 !
 !
       if(view_param%iflag_lookpoint .eq. 0) then
-        view_param%lookat_vec(1:3) = center_g(1:3,i_pvr)
+        view_param%lookat_vec(1:3) = outline%center_g(1:3)
         view_param%iflag_lookpoint = 1
       end if
       rev_lookat(1:3) =   - view_param%lookat_vec(1:3)
 !
       if(view_param%iflag_scale_fact .eq. 0) then
-        view_param%scale_factor_pvr(1) = 1.0d0 / rmax_g(i_pvr)
-        view_param%scale_factor_pvr(2) = 1.0d0 / rmax_g(i_pvr)
-        view_param%scale_factor_pvr(3) = 1.0d0 / rmax_g(i_pvr)
+        view_param%scale_factor_pvr(1) = 1.0d0 / outline%rmax_g
+        view_param%scale_factor_pvr(2) = 1.0d0 / outline%rmax_g
+        view_param%scale_factor_pvr(3) = 1.0d0 / outline%rmax_g
         view_param%iflag_scale_fact = 1
       end if
 !
@@ -167,13 +168,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_pvr_rotate_mat_by_views(i_pvr, i_rot, view_param)
+      subroutine cal_pvr_rotate_mat_by_views                            &
+     &         (i_rot, outline, view_param)
 !
-      use m_mesh_outline_pvr
+      use t_surf_grp_4_pvr_domain
       use transform_mat_operations
       use cal_matrix_vector_smp
 !
-      integer(kind = kint), intent(in) :: i_pvr, i_rot
+      integer(kind = kint), intent(in) :: i_rot
+      type(pvr_domain_outline), intent(in) :: outline
       type(pvr_view_parameter), intent(inout) :: view_param
 !
       integer(kind = kint) :: iaxis_rot
@@ -183,15 +186,15 @@
 !
 !
       if(view_param%iflag_lookpoint .eq. 0) then
-        view_param%lookat_vec(1:3) = center_g(1:3,i_pvr)
+        view_param%lookat_vec(1:3) = outline%center_g(1:3)
         view_param%iflag_lookpoint = 1
       end if
       rev_lookat(1:3) =   - view_param%lookat_vec(1:3)
 !
       if(view_param%iflag_scale_fact .eq. 0) then
-        view_param%scale_factor_pvr(1) = 1.0d0 / rmax_g(i_pvr)
-        view_param%scale_factor_pvr(2) = 1.0d0 / rmax_g(i_pvr)
-        view_param%scale_factor_pvr(3) = 1.0d0 / rmax_g(i_pvr)
+        view_param%scale_factor_pvr(1) = 1.0d0 / outline%rmax_g
+        view_param%scale_factor_pvr(2) = 1.0d0 / outline%rmax_g
+        view_param%scale_factor_pvr(3) = 1.0d0 / outline%rmax_g
         view_param%iflag_scale_fact = 1
       end if
 !

@@ -6,13 +6,16 @@
 !      subroutine allocate_pvr_image_array
 !      subroutine deallocate_pvr_image_array
 !
-!      subroutine cvt_double_rgba_to_char_rgb(num_pixel, rgba, crgb)
-!      subroutine cvt_double_rgba_to_char_rgba(num_pixel, rgba, crgba)
-!!      subroutine sel_write_pvr_image_file                             &
-!!     &         (i_pvr, i_rot, istep_pvr,  n_pvr_pixel, num_pixel_xy,  &
+!!      subroutine blend_image_over_domains(color_param, cbar_param,    &
+!!     &          istack_image, n_pvr_pixel, num_pixel_xy, iflag_mapped,&
+!!     &          depth_lc, rgba_lc, rgba_real_gl)
+!!      subroutine cvt_double_rgba_to_char_rgb(num_pixel, rgba, crgb)
+!!      subroutine cvt_double_rgba_to_char_rgba(num_pixel, rgba, crgba)
+!!      subroutine sel_write_pvr_image_file(file_param,                 &
+!!     &          i_rot, istep_pvr, n_pvr_pixel, num_pixel_xy,          &
 !!     &          rgba_real_gl, rgba_chara_gl, rgb_chara_gl)
-!!      subroutine sel_write_pvr_local_img                              &
-!!     &         (i_pvr, n_pvr_pixel, num_pixel_xy, rgba_lc, rgb_chara)
+!!      subroutine sel_write_pvr_local_img(file_param,                  &
+!!     &         n_pvr_pixel, num_pixel_xy, rgba_lc, rgb_chara)
 !
       module composite_pvr_images
 !
@@ -64,19 +67,20 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine blend_image_over_domains(i_pvr, istack_image,          &
-     &          n_pvr_pixel, num_pixel_xy, iflag_mapped,                &
+      subroutine blend_image_over_domains(color_param, cbar_param,      &
+     &          istack_image, n_pvr_pixel, num_pixel_xy, iflag_mapped,  &
      &          depth_lc, rgba_lc, rgba_real_gl)
 !
-      use m_control_params_4_pvr
+      use t_control_params_4_pvr
       use quicksort
       use set_rgba_4_each_pixel
       use draw_pvr_colorbar
       use cal_minmax_and_stacks
 !
-      integer(kind = kint), intent(in) :: i_pvr
-!
       integer(kind = kint), intent(in) :: n_pvr_pixel(2)
+!
+      type(pvr_colormap_parameter), intent(in) :: color_param
+      type(pvr_colorbar_parameter), intent(in) :: cbar_param
 !
       integer(kind = kint), intent(in) :: iflag_mapped(num_pixel_xy)
       real(kind = kreal), intent(in) :: rgba_lc(4,num_pixel_xy)
@@ -191,8 +195,8 @@
       call MPI_WAITALL(nneib_recv, req2, sta2, ierr_MPI)
 !
       if(my_rank .eq. 0) then
-        call set_pvr_colorbar(i_pvr, num_pixel_xy,                      &
-     &      n_pvr_pixel, color_params(i_pvr), rgba_real_gl(1,1))
+        call set_pvr_colorbar(num_pixel_xy, n_pvr_pixel,                &
+     &      color_param, cbar_param, rgba_real_gl(1,1))
       end if
       call MPI_WAITALL (ione, req1(1), sta1, ierr_MPI)
 !
@@ -203,16 +207,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_write_pvr_image_file                               &
-     &         (i_pvr, i_rot, istep_pvr, n_pvr_pixel, num_pixel_xy,     &
+      subroutine sel_write_pvr_image_file(file_param,                   &
+     &          i_rot, istep_pvr, n_pvr_pixel, num_pixel_xy,            &
      &          rgba_real_gl, rgba_chara_gl, rgb_chara_gl)
 !
-      use m_control_params_4_pvr
+      use t_control_params_4_pvr
       use output_image_sel_4_png
       use set_parallel_file_name
       use convert_real_rgb_2_bite
 !
-      integer(kind = kint), intent(in) :: i_pvr, i_rot, istep_pvr
+      type(pvr_output_parameter), intent(in) :: file_param
+!
+      integer(kind = kint), intent(in) :: i_rot, istep_pvr
       integer(kind = kint), intent(in) :: num_pixel_xy
       integer(kind = kint), intent(in) :: n_pvr_pixel(2)
       real(kind = kreal), intent(in) :: rgba_real_gl(4,num_pixel_xy)
@@ -223,24 +229,23 @@
 !
       if(my_rank .ne. 0) return
       if(i_rot .gt. 0) then
-          call add_int_suffix(istep_pvr, pvr_header(i_pvr),             &
-     &            tmpchara)
-          call add_int_suffix(i_rot, tmpchara, img_head_tmp)
+        call add_int_suffix(istep_pvr, file_param%pvr_prefix, tmpchara)
+        call add_int_suffix(i_rot, tmpchara, img_head_tmp)
       else
-          call add_int_suffix(istep_pvr, pvr_header(i_pvr),             &
-     &            img_head_tmp)
+        call add_int_suffix(istep_pvr, file_param%pvr_prefix,           &
+     &      img_head_tmp)
       end if
 !
-      if(id_pvr_transparent(i_pvr) .eq. 1) then
+      if(file_param%id_pvr_transparent .eq. 1) then
           call cvt_double_rgba_to_char_rgba(num_pixel_xy,               &
      &             rgba_real_gl(1,1),  rgba_chara_gl(1,1) )
-          call sel_rgba_image_file(id_pvr_file_type(i_pvr),             &
+          call sel_rgba_image_file(file_param%id_pvr_file_type,         &
      &        img_head_tmp, n_pvr_pixel(1), n_pvr_pixel(2),             &
      &        rgba_chara_gl(1,1) )
       else
           call cvt_double_rgba_to_char_rgb(num_pixel_xy,                &
      &             rgba_real_gl(1,1),  rgb_chara_gl(1,1) )
-          call sel_output_image_file(id_pvr_file_type(i_pvr),           &
+          call sel_output_image_file(file_param%id_pvr_file_type,       &
      &        img_head_tmp, n_pvr_pixel(1), n_pvr_pixel(2),             &
      &        rgb_chara_gl(1,1) )
       end if
@@ -249,15 +254,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine sel_write_pvr_local_img                                &
-     &         (i_pvr, n_pvr_pixel, num_pixel_xy, rgba_lc, rgb_chara)
+      subroutine sel_write_pvr_local_img(file_param,                    &
+     &         n_pvr_pixel, num_pixel_xy, rgba_lc, rgb_chara)
 !
-      use m_control_params_4_pvr
+      use t_control_params_4_pvr
       use output_image_sel_4_png
       use set_parallel_file_name
       use convert_real_rgb_2_bite
 !
-      integer(kind = kint), intent(in) :: i_pvr
+      type(pvr_output_parameter), intent(in) :: file_param
+!
       integer(kind = kint), intent(in) :: num_pixel_xy
       integer(kind = kint), intent(in) :: n_pvr_pixel(2)
       real(kind = kreal), intent(inout) :: rgba_lc(4,num_pixel_xy)
@@ -269,7 +275,7 @@
      &    rgb_chara(1,1))
 !
       write(img_head_tmp,'(a,i1)')  'img_tmp.', my_rank
-      call sel_output_image_file(id_pvr_file_type(i_pvr),              &
+      call sel_output_image_file(file_param%id_pvr_file_type,           &
      &    img_head_tmp, n_pvr_pixel(1), n_pvr_pixel(2), rgb_chara)
 !
       end subroutine sel_write_pvr_local_img

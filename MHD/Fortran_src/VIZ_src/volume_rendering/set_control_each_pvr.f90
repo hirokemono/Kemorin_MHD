@@ -3,10 +3,11 @@
 !
 !        programmed by H.Matsui on May. 2006
 !
-!      subroutine count_control_pvr(i_pvr, pvr,                         &
-!     &          num_mat, mat_name, num_nod_phys, phys_nod_name)
-!      subroutine set_control_pvr(i_pvr, pvr, num_mat, mat_name,        &
-!     &          num_nod_phys, phys_nod_name, view_param, color_param)
+!!      subroutine set_pvr_file_control                                 &
+!!     &         (pvr, num_nod_phys, phys_nod_name, file_param)
+!!      subroutine set_control_pvr(pvr, num_mat, mat_name,              &
+!!     &          num_nod_phys, phys_nod_name, fld_param, view_param,   &
+!!     &          color_param, cbar_param)
 !
       module set_control_each_pvr
 !
@@ -15,7 +16,6 @@
       use m_constants
       use m_error_IDs
       use m_control_data_4_pvr
-      use m_control_params_4_pvr
       use calypso_mpi
 !
       use set_field_comp_for_viz
@@ -28,53 +28,52 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_control_pvr(i_pvr, pvr,                          &
-     &          num_mat, mat_name, num_nod_phys, phys_nod_name)
+      subroutine set_pvr_file_control                                   &
+     &         (pvr, num_nod_phys, phys_nod_name, file_param)
 !
+      use t_control_params_4_pvr
       use set_area_4_viz
       use skip_comment_f
-!
-      integer(kind = kint), intent(in) :: num_mat
-      character(len=kchara), intent(in) :: mat_name(num_mat)
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
       type(pvr_ctl), intent(in) :: pvr
-      integer(kind = kint), intent(in) :: i_pvr
+      type(pvr_output_parameter), intent(inout) :: file_param
+!
 !
       integer(kind = kint) :: num_field, num_phys_viz
       character(len = kchara) :: tmpchara
 !
 !
       if(pvr%file_head_ctl%iflag .gt. 0) then
-        pvr_header(i_pvr) = pvr%file_head_ctl%charavalue
+        file_param%pvr_prefix = pvr%file_head_ctl%charavalue
       else 
-        pvr_header(i_pvr) = 'pvr'
+        file_param%pvr_prefix = 'pvr'
       end if
 !
       tmpchara = pvr%file_fmt_ctl%charavalue
       if     (cmp_no_case(tmpchara, 'ucd')                              &
      &   .or. cmp_no_case(tmpchara, 'udt')) then
-        id_pvr_file_type(i_pvr) = 0
+        file_param%id_pvr_file_type = 0
       else if(cmp_no_case(tmpchara, 'png')) then
-        id_pvr_file_type(i_pvr) = 12
+        file_param%id_pvr_file_type = 12
       else if(cmp_no_case(tmpchara, 'bmp')) then
-        id_pvr_file_type(i_pvr) = 11
+        file_param%id_pvr_file_type = 11
       else
-        id_pvr_file_type(i_pvr) = 11
+        file_param%id_pvr_file_type = 11
       end if
 !
 !
       tmpchara = pvr%transparent_ctl%charavalue
       if     (cmp_no_case(tmpchara, 'rgba')                             &
      &   .or. cmp_no_case(tmpchara, 'transparent')) then
-        id_pvr_transparent(i_pvr) = 1
+        file_param%id_pvr_transparent = 1
       else if(cmp_no_case(tmpchara, 'rgb')                              &
      &   .or. cmp_no_case(tmpchara, 'solid')) then
-        id_pvr_transparent(i_pvr) = 0
+        file_param%id_pvr_transparent = 0
       else
-        id_pvr_transparent(i_pvr) = 0
+        file_param%id_pvr_transparent = 0
       end if
 !
       call check_field_4_viz(num_nod_phys, phys_nod_name,               &
@@ -84,35 +83,22 @@
       end if
 !
 !
-      call count_area_4_viz(num_mat, mat_name,                          &
-     &    pvr%pvr_area_ctl%num, pvr%pvr_area_ctl%c_tbl,                 &
-     &    nele_grp_area_pvr(i_pvr) )
-      istack_grp_area_pvr(i_pvr) = istack_grp_area_pvr(i_pvr-1)         &
-     &                          + nele_grp_area_pvr(i_pvr)
-!
-      if ( nele_grp_area_pvr(i_pvr) .eq. 0)                             &
-     &   call calypso_MPI_abort(ierr_PVR, 'set correct element group')
-!
       if(iflag_debug .gt. 0) then
-        write(*,*) 'i_pvr', i_pvr
-        write(*,*) 'pvr_header(i_pvr)', pvr_header(i_pvr)
-        write(*,*) 'id_pvr_file_type(i_pvr)', id_pvr_file_type(i_pvr)
-        write(*,*) 'id_pvr_transparent(i_pvr)',                         &
-     &      id_pvr_transparent(i_pvr)
-        write(*,*) 'istack_grp_area_pvr(i_pvr)',                        &
-     &            istack_grp_area_pvr(i_pvr)
-        write(*,*) 'nele_grp_area_pvr(i_pvr)',                          &
-     &            nele_grp_area_pvr(i_pvr)
+        write(*,*) 'pvr_prefix', file_param%pvr_prefix
+        write(*,*) 'id_pvr_file_type', file_param%id_pvr_file_type
+        write(*,*) 'id_pvr_transparent', file_param%id_pvr_transparent
       end if
 !
-      end subroutine count_control_pvr
+      end subroutine set_pvr_file_control
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_pvr(i_pvr, pvr, num_mat, mat_name,         &
-     &          num_nod_phys, phys_nod_name, view_param, color_param)
+      subroutine set_control_pvr(pvr, num_mat, mat_name,                &
+     &          num_nod_phys, phys_nod_name, fld_param, view_param,     &
+     &          color_param, cbar_param)
 !
+      use t_control_params_4_pvr
       use set_pvr_modelview_matrix
       use set_area_4_viz
       use set_color_4_pvr
@@ -125,30 +111,44 @@
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
-      integer(kind = kint), intent(in) :: i_pvr
       type(pvr_ctl), intent(inout) :: pvr
+      type(pvr_field_parameter), intent(inout) :: fld_param
       type(pvr_view_parameter), intent(inout) :: view_param
       type(pvr_colormap_parameter), intent(inout) :: color_param
+      type(pvr_colorbar_parameter), intent(inout) :: cbar_param
 !
-      integer(kind = kint) :: ist, i, icheck_ncomp(1)
-!
+      integer(kind = kint) :: i, icheck_ncomp(1), ist
+      integer(kind = kint) :: ifld_tmp(1), icomp_tmp(1), ncomp_tmp(1)
+      character(len = kchara) :: fldname_tmp(1)
       character(len = kchara) :: tmpchara
 !
 !
       call set_components_4_viz                                         &
      &   (num_nod_phys, phys_nod_name, ione, pvr%pvr_field_ctl,         &
-     &    pvr%pvr_comp_ctl, ione, id_pvr_output(i_pvr),                 &
-     &    icomp_pvr_output(i_pvr), icheck_ncomp(1),                     &
-     &    ncomp_pvr_org(i_pvr), name_pvr_output(i_pvr) )
-!
-      ist = istack_grp_area_pvr(i_pvr-1) + 1
-      call s_set_area_4_viz(num_mat, mat_name,                          &
-     &    pvr%pvr_area_ctl%num, pvr%pvr_area_ctl%c_tbl,                 &
-     &    nele_grp_area_pvr(i_pvr), id_ele_grp_area_pvr(ist) )
+     &    pvr%pvr_comp_ctl, ione, ifld_tmp, icomp_tmp,                  &
+     &    icheck_ncomp, ncomp_tmp, fldname_tmp)
+      fld_param%id_pvr_output =    ifld_tmp(1)
+      fld_param%icomp_pvr_output = icomp_tmp(1)
+      fld_param%ncomp_pvr_org =    ncomp_tmp(1)
+      fld_param%name_pvr_output =  fldname_tmp(1)
 !
       if (icheck_ncomp(1) .gt. 1)                                       &
      &     call calypso_MPI_abort(ierr_PVR, 'set scalar for rendering')
 !
+!
+      call count_area_4_viz(num_mat, mat_name,                          &
+     &    pvr%pvr_area_ctl%num, pvr%pvr_area_ctl%c_tbl,                 &
+     &    fld_param%nele_grp_area_pvr)
+!
+      if (fld_param%nele_grp_area_pvr .le. 0) then
+        call calypso_MPI_abort(ierr_PVR, 'set correct element group')
+      else
+        call alloc_pvr_element_group(fld_param)
+      end if
+!
+      call s_set_area_4_viz(num_mat, mat_name,                          &
+     &    pvr%pvr_area_ctl%num, pvr%pvr_area_ctl%c_tbl,                 &
+     &    fld_param%nele_grp_area_pvr, fld_param%id_ele_grp_area_pvr)
 !
       if(pvr%ambient_coef_ctl%iflag .gt. 0) then
         color_param%pvr_lighting_real(1)                                &
@@ -157,6 +157,9 @@
         color_param%pvr_lighting_real(1) = 0.5
       end if
 !
+!
+!
+
       if(pvr%diffuse_coef_ctl%iflag .gt. 0) then
         color_param%pvr_lighting_real(2)                                &
      &      = pvr%diffuse_coef_ctl%realvalue
@@ -345,51 +348,52 @@
 !
 !    set colorbar setting
 !
-      iflag_pvr_colorbar(i_pvr) = 0
+      cbar_param%iflag_pvr_colorbar = 0
       if( pvr%colorbar_switch_ctl%iflag .gt. 0) then
         tmpchara = pvr%colorbar_switch_ctl%charavalue
         if   (cmp_no_case(tmpchara, 'on')                               &
      &   .or. cmp_no_case(tmpchara, 'data')                             &
      &   .or. cmp_no_case(tmpchara, 'equi_data')) then
-          iflag_pvr_colorbar(i_pvr) = 1
+          cbar_param%iflag_pvr_colorbar = 1
         end if
       end if
 !
-      if ( iflag_pvr_colorbar(i_pvr) .gt. 0) then
+      if (cbar_param%iflag_pvr_colorbar .gt. 0) then
         if( pvr%colorbar_scale_ctl%iflag .gt. 0) then
           tmpchara = pvr%colorbar_scale_ctl%charavalue
           if  (cmp_no_case(tmpchara, 'on')) then
-            iflag_pvr_cbar_nums(i_pvr) = 1
+            cbar_param%iflag_pvr_cbar_nums = 1
 !
             if (pvr%font_size_ctl%iflag .gt. 0) then
-              iscale_font(i_pvr) = pvr%font_size_ctl%intvalue
+              cbar_param%iscale_font = pvr%font_size_ctl%intvalue
             else
-              iscale_font(i_pvr) = 1
+              cbar_param%iscale_font = 1
             end if
 !
             if (pvr%ngrid_cbar_ctl%iflag .gt. 0) then
-              ntick_pvr_colorbar(i_pvr)                                 &
+              cbar_param%ntick_pvr_colorbar                             &
      &                      = pvr%ngrid_cbar_ctl%intvalue + 2
             else
-              ntick_pvr_colorbar(i_pvr) = 3
+              cbar_param%ntick_pvr_colorbar = 3
             end if
 !
             if (pvr%zeromarker_flag_ctl%iflag .gt. 0) then
               tmpchara = pvr%zeromarker_flag_ctl%charavalue
               if  (cmp_no_case(tmpchara, 'on')) then
-                iflag_pvr_zero_mark(i_pvr) = 1
+                cbar_param%iflag_pvr_zero_mark = 1
               else
-                iflag_pvr_zero_mark(i_pvr) = 0
+                cbar_param%iflag_pvr_zero_mark = 0
               end if
             else
-              iflag_pvr_zero_mark(i_pvr) = 0
+              cbar_param%iflag_pvr_zero_mark = 0
             end if
 !
           end if
         end if
 !
         if( pvr%cbar_range_ctl%iflag .gt. 0) then
-          cbar_range(1:2,i_pvr) = pvr%cbar_range_ctl%realvalue(1:2)
+          cbar_param%cbar_range(1:2)                                    &
+     &                = pvr%cbar_range_ctl%realvalue(1:2)
         end if
 !
       end if

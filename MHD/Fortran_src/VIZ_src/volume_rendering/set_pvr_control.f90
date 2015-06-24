@@ -16,6 +16,9 @@
 !
       implicit none
 !
+      integer(kind = kint), parameter :: pvr_ctl_file_code = 11
+!
+      private :: pvr_ctl_file_code
       private :: read_control_pvr
 !
 !  ---------------------------------------------------------------------
@@ -41,16 +44,10 @@
 !
       ctl_file_code = pvr_ctl_file_code
 !
-      call allocate_ctl_param_4_pvr
       call allocate_pvr_ctl_struct
 !
       do i_pvr = 1, num_pvr
         call read_control_pvr(i_pvr)
-      end do
-!
-      do i_pvr = 1, num_pvr
-        call count_control_pvr(i_pvr, pvr_ctl_struct(i_pvr), num_mat,   &
-     &      mat_name, num_nod_phys, phys_nod_name)
       end do
 !
       if(iflag_debug .gt. 0) write(*,*) 'allocate_components_4_pvr',    &
@@ -58,10 +55,15 @@
       call allocate_components_4_pvr
 !
       do i_pvr = 1, num_pvr
+        if(iflag_debug .gt. 0) write(*,*) 'PVR parameters for', i_pvr
+        call set_pvr_file_control(pvr_ctl_struct(i_pvr),                &
+     &      num_nod_phys, phys_nod_name, file_params(i_pvr))
+!
         if(iflag_debug .gt. 0) write(*,*) 'set_control_pvr', i_pvr
-        call set_control_pvr(i_pvr, pvr_ctl_struct(i_pvr), num_mat,     &
-     &      mat_name, num_nod_phys, phys_nod_name, view_params(i_pvr),  &
-     &      color_params(i_pvr))
+        call set_control_pvr(pvr_ctl_struct(i_pvr), num_mat,            &
+     &      mat_name, num_nod_phys, phys_nod_name,                      &
+     &      fld_params(i_pvr), view_params(i_pvr),                      &
+     &      color_params(i_pvr), cbar_params(i_pvr))
         if(iflag_debug .gt. 0) write(*,*)                               &
      &                       'deallocate_cont_dat_pvr', i_pvr
         call deallocate_cont_dat_pvr(pvr_ctl_struct(i_pvr))
