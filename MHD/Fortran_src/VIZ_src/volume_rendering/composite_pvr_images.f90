@@ -192,7 +192,7 @@
 !
       if(my_rank .eq. 0) then
         call set_pvr_colorbar(i_pvr, num_pixel_xy,                      &
-     &      n_pvr_pixel, rgba_real_gl(1,1))
+     &      n_pvr_pixel, color_params(i_pvr), rgba_real_gl(1,1))
       end if
       call MPI_WAITALL (ione, req1(1), sta1, ierr_MPI)
 !

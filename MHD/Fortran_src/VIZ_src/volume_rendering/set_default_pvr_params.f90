@@ -4,7 +4,8 @@
 !        programmed by H.Matsui on May. 2009
 !
 !      subroutine check_pvr_parameters(i_pvr)
-!      subroutine set_default_pvr_data_params(i_pvr)
+!!      subroutine set_default_pvr_data_params                          &
+!!     &         (d_minmax_pvr, color_param)
 !
       module set_default_pvr_params
 !
@@ -48,8 +49,9 @@
         call set_default_up_dir_pvr(view_param%up_direction_vec)
       end if
 !
-      if (iflag_pvr_lights(i_pvr) .eq. 0) then
-        call set_default_light_pvr(i_pvr, center_g(1,i_pvr), xx_minmax_g(1,1,i_pvr))
+      if (color_params(i_pvr)%iflag_pvr_lights .eq. 0) then
+        call set_default_light_pvr                                     &
+     &     (center_g(1,i_pvr), xx_minmax_g(1,1,i_pvr), color_params(i_pvr))
       end if
 !
       end subroutine check_pvr_parameters
@@ -99,20 +101,22 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_default_light_pvr(i_pvr, center_g, xx_minmax_g)
+      subroutine set_default_light_pvr                                  &
+     &         (center_g, xx_minmax_g, color_param)
 !
-      use m_control_params_4_pvr
+      use t_control_params_4_pvr
 !
-      integer(kind = kint), intent(in) :: i_pvr
       real(kind = kreal), intent(in) :: xx_minmax_g(2,3)
       real(kind = kreal), intent(in) :: center_g(3)
+      type(pvr_colormap_parameter), intent(inout) :: color_param
 !
 !
-      xyz_pvr_lights(1,i_pvr) = center_g(1)
-      xyz_pvr_lights(2,i_pvr) = xx_minmax_g(2,2)                        &
+      color_param%num_pvr_lights = 1
+      color_param%xyz_pvr_lights(1,1) = center_g(1)
+      color_param%xyz_pvr_lights(2,1) = xx_minmax_g(2,2)                &
      &                        + 0.1d0 * ( xx_minmax_g(2,2)              &
      &                                  - xx_minmax_g(1,2) )
-      xyz_pvr_lights(3,i_pvr) = xx_minmax_g(2,3)                        &
+      color_param%xyz_pvr_lights(3,1) = xx_minmax_g(2,3)                &
      &                        + 2.0d0 * ( xx_minmax_g(2,3)              &
      &                                  - xx_minmax_g(1,3) )
 !
@@ -121,21 +125,21 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_default_pvr_data_params(i_pvr, d_minmax_pvr)
+      subroutine set_default_pvr_data_params                            &
+     &         (d_minmax_pvr, color_param)
 !
-      use m_control_params_4_pvr
+      use t_control_params_4_pvr
+      use set_color_4_pvr
 !
-      integer(kind = kint), intent(in) :: i_pvr
       real(kind = kreal), intent(in) :: d_minmax_pvr(2)
-      integer(kind = kint) :: ist
+      type(pvr_colormap_parameter), intent(inout) :: color_param
 !
 !
-      if (id_pvr_color(1,i_pvr) .eq. 1) then
-        ist = istack_pvr_datamap_pnt(i_pvr-1)
-        pvr_datamap_param(1,ist+1) = d_minmax_pvr(1)
-        pvr_datamap_param(1,ist+2) = d_minmax_pvr(2)
-        pvr_datamap_param(2,ist+1) = zero
-        pvr_datamap_param(2,ist+2) = one
+      if(color_param%id_pvr_color(2) .eq. iflag_automatic) then
+        color_param%pvr_datamap_param(1,1) = d_minmax_pvr(1)
+        color_param%pvr_datamap_param(1,2) = d_minmax_pvr(2)
+        color_param%pvr_datamap_param(2,1) = zero
+        color_param%pvr_datamap_param(2,2) = one
       end if
 !
       end subroutine set_default_pvr_data_params

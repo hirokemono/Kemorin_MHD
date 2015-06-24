@@ -7,7 +7,8 @@
 !> @brief Get model view matrix for PVR
 !!
 !!@verbatim
-!!      subroutine cal_pvr_modelview_matrix(i_rot, view_param)
+!!      subroutine cal_pvr_modelview_matrix                             &
+!!     &          (i_pvr, i_rot, view_param, color_param)
 !!@endverbatim
 !
       module cal_pvr_modelview_mat
@@ -33,17 +34,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_pvr_modelview_matrix(i_pvr, i_rot, view_param)
+      subroutine cal_pvr_modelview_matrix                               &
+     &          (i_pvr, i_rot, view_param, color_param)
 !
-      use m_control_params_4_pvr
+      use t_control_params_4_pvr
       use cal_inverse_small_matrix
       use cal_matrix_vector_smp
 !
       integer(kind = kint), intent(in) :: i_pvr, i_rot
+      type(pvr_colormap_parameter), intent(inout) :: color_param
       type(pvr_view_parameter), intent(inout) :: view_param
 !
       integer(kind = kint) :: i, ierr2
-      integer(kind = kint) :: ist, ied, istack_l(0:1)
+      integer(kind = kint) :: istack_l(0:1)
       real(kind = kreal) ::  vec_tmp(4)
       real(kind = kreal) ::  posi_zero(4) = (/zero,zero,zero,one/)
 !
@@ -60,14 +63,12 @@
      &      view_param%modelview_inv, ierr2)
 !
         istack_l(0) = 0
-        istack_l(1) = num_pvr_lights(i_pvr)
-        ist = istack_pvr_lights(i_pvr-1) + 1
-        ied = istack_pvr_lights(i_pvr  )
-        do i = ist, ied
+        istack_l(1) = color_param%num_pvr_lights
+        do i = 1, color_param%num_pvr_lights
           call cal_mat44_vec3_on_node(ione, ione, ione_stack(0),        &
-     &        view_param%modelview_mat, xyz_pvr_lights(1,i),            &
-     &        vec_tmp(1) )
-          view_pvr_lights(1:3,i) = vec_tmp(1:3)
+     &       view_param%modelview_mat, color_param%xyz_pvr_lights(1,i), &
+     &       vec_tmp(1))
+          color_param%view_pvr_lights(1:3,i) = vec_tmp(1:3)
         end do
 !
         call cal_mat44_vec3_on_node(ione, ione, ione_stack(0),          &
@@ -92,8 +93,9 @@
           write(*,*) 'viewpt_in_view',                                  &
      &              view_param%viewpt_in_viewer_pvr(1:3)
 !
-          do i = istack_pvr_lights(i_pvr-1)+1, istack_pvr_lights(i_pvr)
-            write(*,*) 'view_pvr_lights', i, view_pvr_lights(1:3,i)
+          do i = 1, color_param%num_pvr_lights
+            write(*,*) 'view_pvr_lights',                               &
+     &                i, color_param%view_pvr_lights(1:3,i)
           end do
         end if
 !

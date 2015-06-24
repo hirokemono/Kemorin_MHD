@@ -114,15 +114,16 @@
 !
 !
       call s_ray_trace_4_each_image                                     &
-     &   (i_pvr, numnod, numele, numsurf, nnod_4_surf,                  &
+     &   (numnod, numele, numsurf, nnod_4_surf,                         &
      &    ie_surf, isf_4_ele, iele_4_surf, e_multi, xx,                 &
      &    proj%nnod_pvr, proj%nele_pvr,                                 &
      &    proj%field_pvr(i_pvr)%iflag_used_ele, proj%x_nod_screen,      &
      &    proj%field_pvr(i_pvr)%d_pvr, proj%field_pvr(i_pvr)%grad_ele,  &
-     &    viewpoint_vec, ray_vec, pvr_start%num_pvr_ray,                &
-     &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
-     &    pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,               &
-     &    pvr_start%xx_pvr_ray_start, pvr_start%rgba_ray)
+     &    viewpoint_vec, color_params(i_pvr), ray_vec,                  &
+     &    pvr_start%num_pvr_ray, pvr_start%icount_pvr_trace,            &
+     &    pvr_start%isf_pvr_ray_start, pvr_start%xi_pvr_start,          &
+     &    pvr_start%xx_pvr_start, pvr_start%xx_pvr_ray_start,           &
+     &    pvr_start%rgba_ray)
 !
       call blend_overlapped_area(pvr_start%num_pvr_ray,                 &
      &    pvr_start%id_pixel_start, pvr_start%xx_pvr_ray_start,         &

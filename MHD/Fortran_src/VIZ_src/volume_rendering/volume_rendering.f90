@@ -122,12 +122,13 @@
         call set_pixel_on_pvr_screen                                    &
      &     (view_params(i_pvr)%n_pvr_pixel, pixel_xy(i_pvr))
 !
-        if(iflag_debug .gt. 0) write(*,*) 'cal_pvr_modelview_matrix'
-        call cal_pvr_modelview_matrix(i_pvr, izero, view_params(i_pvr))
-!
         if(iflag_debug .gt. 0) write(*,*) 'set_pvr_projection_matrix'
         call set_pvr_projection_matrix(i_pvr, view_params(i_pvr))
 !        call set_pvr_orthogonal_params(i_pvr, view_params(i_pvr))
+!
+        if(iflag_debug .gt. 0) write(*,*) 'cal_pvr_modelview_matrix'
+        call cal_pvr_modelview_matrix(i_pvr, izero, view_params(i_pvr), &
+     &      color_params(i_pvr))
 !
         if(view_params(i_pvr)%iflag_rotate_snap .eq. 0) then
           if(iflag_debug .gt. 0) write(*,*)                             &
@@ -214,7 +215,8 @@
 !
       do i_pvr = 1, num_pvr
         if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
-        call set_default_pvr_data_params(i_pvr, d_minmax_pvr(1,i_pvr))
+        call set_default_pvr_data_params                                &
+     &     (d_minmax_pvr(1,i_pvr), color_params(i_pvr))
 !
         if(     view_params(i_pvr)%iprm_pvr_rot(1).eq.1                 &
      &    .or.  view_params(i_pvr)%iprm_pvr_rot(1).eq.2                 &
@@ -231,7 +233,7 @@
         do i_rot = ist_rot, ied_rot
           if(view_params(i_pvr)%iflag_rotate_snap .gt. 0) then
             call cal_pvr_modelview_matrix                               &
-     &         (i_pvr, i_rot, view_params(i_pvr))
+     &         (i_pvr, i_rot, view_params(i_pvr), color_params(i_pvr))
 !
             call cal_position_pvr_screen                                &
      &         (view_params(i_pvr)%modelview_mat, view_params(i_pvr)%projection_mat,       &

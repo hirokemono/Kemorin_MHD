@@ -1,14 +1,20 @@
+!>@file  set_rgba_4_each_pixel.f90
+!!       module set_rgba_4_each_pixel
+!!
+!!@author H. Matsui
+!!@date   Programmed in July. 2006
 !
-!      module set_rgba_4_each_pixel
-!
-!      Written by H. Matsui on July, 2006
-!
-!!      subroutine s_set_rgba_4_each_pixel(i_pvr, viewpoint_vec,        &
-!!     &          xin_model, xout_model, c_data, grad_data, rgba_pixel)
+!> @brief Structures for parameteres for volume rendering
+!!
+!!@verbatim
+!!      subroutine s_set_rgba_4_each_pixel(viewpoint_vec,               &
+!!     &          xin_model, xout_model, c_data, grad_data,             &
+!!     &          color_param, rgba_pixel)
 !!      subroutine compute_opacity(transfer_function_style, opa_value,  &
 !!     &          num_of_features, fea_point, value, opacity_local)
 !!      subroutine composite_alpha_blending(rgba_src, rgba_tgt)
 !!      subroutine alpha_blending(rgba_src, rgba_tgt)
+!!@endverbatim
 !
       module set_rgba_4_each_pixel
 !
@@ -20,6 +26,19 @@
       real(kind = kreal), parameter :: EPSILON = 1.0d-9
       private :: EPSILON
 !
+      character(len = kchara), parameter                                &
+     &                        :: hd_intensity =   'intense_chenge'
+      character(len = kchara), parameter                                &
+     &                        :: hd_pointdelta =  'point_delta'
+      character(len = kchara), parameter                                &
+     &                        :: hd_pointrange =  'point_ranges'
+      character(len = kchara), parameter                                &
+     &                        :: hd_pointlinear = 'point_linear'
+      integer(kind = kint), parameter :: iflag_anbient =     1
+      integer(kind = kint), parameter :: iflag_intense =     2
+      integer(kind = kint), parameter :: iflag_pointdelta =  3
+      integer(kind = kint), parameter :: iflag_pointrange =  4
+      integer(kind = kint), parameter :: iflag_pointlinear = 5
 !
       private :: rendering_with_light
 !
@@ -29,42 +48,40 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_rgba_4_each_pixel(i_pvr, viewpoint_vec,          &
-     &          xin_model, xout_model, c_data, grad_data, rgba_pixel)
+      subroutine s_set_rgba_4_each_pixel(viewpoint_vec,                 &
+     &          xin_model, xout_model, c_data, grad_data,               &
+     &          color_param, rgba_pixel)
 !
-      use m_control_params_4_pvr
+      use t_control_params_4_pvr
       use set_color_4_pvr
 !
-      integer(kind = kint), intent(in) :: i_pvr
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
       real(kind = kreal), intent(in) :: c_data, grad_data(3)
       real(kind = kreal), intent(in) :: xin_model(3), xout_model(3)
+      type(pvr_colormap_parameter), intent(in) :: color_param
+!
       real(kind = kreal), intent(inout) :: rgba_pixel(4)
 !
-      integer(kind = kint) :: ist_dmap, ist_dopt
-      integer(kind = kint) :: num_of_features, ist_lgt
+      integer(kind = kint) :: num_of_features
       real(kind = kreal) :: color(3)
       real(kind = kreal) :: anb_opacity, opa_current
 !
 !
-      ist_dopt =  istack_opacity_pnt(i_pvr-1)
-      ist_dmap =  istack_pvr_datamap_pnt(i_pvr-1)
-      ist_lgt =   istack_pvr_lights(i_pvr-1)
-      num_of_features = num_opacity_pnt(i_pvr)
-      anb_opacity = pvr_opacity_param(1,ist_dopt+num_of_features)
+      num_of_features = color_param%num_opacity_pnt
+      anb_opacity = color_param%pvr_opacity_param(1,num_of_features)
 !
-      call compute_opacity(id_pvr_color(3,i_pvr), anb_opacity,          &
-     &    num_of_features, pvr_opacity_param(1,ist_dopt+1),             &
+      call compute_opacity(color_param%id_pvr_color(3), anb_opacity,    &
+     &    num_of_features, color_param%pvr_opacity_param,               &
      &    c_data, opa_current)
 !
-      call value_to_rgb(id_pvr_color(2,i_pvr), id_pvr_color(1,i_pvr),   &
-     &    num_pvr_datamap_pnt(i_pvr), pvr_datamap_param(1,ist_dmap+1),  &
-     &    c_data, color)
+      call value_to_rgb(color_param%id_pvr_color(2),                    &
+     &    color_param%id_pvr_color(1), color_param%num_pvr_datamap_pnt, &
+     &    color_param%pvr_datamap_param, c_data, color)
 !
       call rendering_with_light(viewpoint_vec,                          &
-     &    num_pvr_lights(i_pvr), xyz_pvr_lights(1,ist_lgt+1),           &
-     &    grad_data, pvr_lighting_real(1,i_pvr),                        &
-     &    xin_model, xout_model, one, color, opa_current, rgba_pixel )
+     &    color_param%num_pvr_lights, color_param%xyz_pvr_lights,       &
+     &    grad_data, color_param%pvr_lighting_real,                     &
+     &    xin_model, xout_model, one, color, opa_current, rgba_pixel)
 !
       end subroutine s_set_rgba_4_each_pixel
 !
@@ -87,9 +104,9 @@
 !
 !
       opacity_local = zero
-      if     (transfer_function_style .eq. 1) then
+      if     (transfer_function_style .eq. iflag_anbient) then
         opacity_local = opa_value
-      else if(transfer_function_style .eq. 3) then
+      else if(transfer_function_style .eq. iflag_pointdelta) then
         mint = 1.0d-17
         do i = 1, num_of_features
           t = abs(value - fea_point(1,i))
@@ -106,7 +123,7 @@
           end if
         end do
 !
-      else if(transfer_function_style .eq. 4) then
+      else if(transfer_function_style .eq. iflag_pointrange) then
         opacity_local = opa_value
         do i = 1, num_of_features
           if(value.ge.fea_point(1,i)                                    &
@@ -115,7 +132,7 @@
           end if
         end do
 !
-      else if(transfer_function_style .eq. 5) then
+      else if(transfer_function_style .eq. iflag_pointlinear) then
         opacity_local = opa_value
         do i = 1, num_of_features-1
           if(value.ge.fea_point(1,i)                                    &

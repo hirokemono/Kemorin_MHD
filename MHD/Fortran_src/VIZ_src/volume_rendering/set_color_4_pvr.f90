@@ -1,9 +1,24 @@
+!>@file  set_color_4_pvr.f90
+!!       module set_color_4_pvr
+!!
+!!@author H. Matsui
+!!@date   Programmed in July. 2006
 !
-!      module set_color_4_pvr
+!> @brief Structures for parameteres for volume rendering
+!!
+!!@verbatim
+!!      subroutine normalize_by_color(value, id_colormap_style,        &
+!!     &          num_point, datamap_param, colordat)
+!!      subroutine restore_from_normalize(value_rgb, id_colormap_style,&
+!!     &          mincolor, maxcolor, num_point, datamap_param, value)
+!!
+!!      subroutine normvalue_to_rgb(id_color_system, colordat, color)
+!!
+!!      subroutine value_to_rgb(id_colormap_style, id_color_system,    &
+!!     &          num_interval_map, interval_point, value, color)
+!!@endverbatim
 !
       module set_color_4_pvr
-!
-!      Written by H. Matsui on July, 2006
 !
       use m_precision
 !
@@ -11,15 +26,21 @@
 !
       implicit  none
 !
-!      subroutine normalize_by_color(value, id_colormap_style,          &
-!     &          num_point, datamap_param, colordat)
-!      subroutine restore_from_normalize(value_rgb, id_colormap_style,  &
-!     &          mincolor, maxcolor, num_point, datamap_param, value)
+      character(len = kchara), parameter :: hd_rainbow =   'rainbow'
+      character(len = kchara), parameter :: hd_readblue =  'red_blue'
+      character(len = kchara), parameter :: hd_grayscale = 'grayscale'
+      integer(kind = kint), parameter :: iflag_readblue =   1
+      integer(kind = kint), parameter :: iflag_rainbow =    2
+      integer(kind = kint), parameter :: iflag_grayscale =  3
 !
-!      subroutine normvalue_to_rgb(id_color_system, colordat, color)
-!
-!      subroutine value_to_rgb(id_colormap_style, id_color_system,      &
-!     &          num_interval_map, interval_point, value, color)
+      character(len = kchara), parameter :: hd_minmax =    'minmax'
+      character(len = kchara), parameter :: hd_linear =    'linear'
+      character(len = kchara), parameter :: hd_nonlinear = 'nonlinear'
+      character(len = kchara), parameter                                &
+     &                        :: hd_colorlist = 'colormap_list'
+      integer(kind = kint), parameter :: iflag_automatic =  1
+      integer(kind = kint), parameter :: iflag_minmax =     2
+      integer(kind = kint), parameter :: iflag_colorlist =  3
 !
 ! ----------------------------------------------------------------------
 !
@@ -38,7 +59,7 @@
       real(kind = kreal), intent(out) :: colordat
 !
 !
-      if(id_colormap_style .eq. 3) then
+      if(id_colormap_style .eq. iflag_colorlist) then
         call normalize_by_linear_segment(num_point, datamap_param,      &
      &      value, colordat)
       else
@@ -62,7 +83,7 @@
       real(kind = kreal), intent(out) :: value
 !
 !
-      if(id_colormap_style .eq. 3) then
+      if(id_colormap_style .eq. iflag_colorlist) then
         call restore_segment_normalize(value_rgb,                       &
      &          mincolor, maxcolor, num_point, datamap_param, value)
       else
@@ -85,11 +106,11 @@
       real(kind = kreal), intent(out) :: color(3)
 !
 !
-      if(id_color_system .eq. 1) then
+      if(id_color_system .eq. iflag_readblue) then
         call color_redblue(colordat, color(1), color(2), color(3))
-      else if(id_color_system .eq. 2) then
+      else if(id_color_system .eq. iflag_rainbow) then
         call color_rainbow(colordat, color(1), color(2), color(3))
-      else if(id_color_system .eq. 3) then
+      else if(id_color_system .eq. iflag_grayscale) then
         call color_grayscale(colordat, color(1), color(2), color(3))
       end if
 !
