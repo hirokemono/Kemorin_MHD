@@ -16,9 +16,7 @@
       module t_pvr_ray_startpoints
 !
       use m_precision
-!
       use m_constants
-      use m_control_params_4_pvr
 !
       implicit  none
 !

@@ -47,7 +47,7 @@
       subroutine init_visualize_pvr_type(fem, sf_mesh_psf, fld_nod)
 !
       use m_control_data_pvrs
-      use m_control_params_4_pvr
+      use volume_rendering
 !
       type(mesh_data), intent(in) :: fem
       type(surface_geometry), intent(in) :: sf_mesh_psf
@@ -68,7 +68,7 @@
      &          fem, sf_mesh_psf, jac_3d, fld_nod)
 !
       use t_jacobian_3d
-      use m_control_params_4_pvr
+      use volume_rendering
 !
       integer(kind = kint), intent(in) :: istep_pvr
 !

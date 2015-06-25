@@ -14,9 +14,9 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use m_control_params_4_pvr
       use m_control_params_4_fline
 !
+      use volume_rendering
       use sections_for_1st
       use fieldline_1st
       use volume_rendering_1st

@@ -159,7 +159,7 @@
 !
       type(modeview_ctl), intent(in) :: mat
       type(pvr_view_parameter), intent(inout) :: view_param
-      integer(kind = kint) :: i, nd1, nd2, j
+      integer(kind = kint) :: i, nd1, nd2
 !
 !
       if(mat%modelview_mat_ctl%num .ne. 16) then
@@ -173,8 +173,8 @@
         nd2 = set_4direction_flag(mat%modelview_mat_ctl%c2_tbl(i))
 !
         if(nd1*nd2 .gt. 0) then
-          j = nd2 + 4*(nd1-1)
-          view_param%modelview_mat(j) = mat%modelview_mat_ctl%vect(i)
+          view_param%modelview_mat(nd2,nd1)                             &
+     &              = mat%modelview_mat_ctl%vect(i)
         end if
       end do
 !

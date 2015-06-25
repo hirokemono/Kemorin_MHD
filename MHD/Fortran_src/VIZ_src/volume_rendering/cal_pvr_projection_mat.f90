@@ -75,7 +75,7 @@
         if (iflag_debug .gt. 0) then
           write(*,*) 'projection_mat for PVR ', i_pvr
           do i = 1, 4
-            write(*,'(1p4e16.7)') view_param%projection_mat(i:i+12:4)
+            write(*,'(1p4e16.7)') view_param%projection_mat(i,1:4)
           end do
         end if
 !
@@ -120,7 +120,7 @@
         if (iflag_debug .gt. 0) then
           write(*,*) 'projection_left for PVR ', i_pvr
           do i = 1, 4
-            write(*,'(1p4e16.7)') view_param%projection_left(i:i+12:4)
+            write(*,'(1p4e16.7)') view_param%projection_left(i,1:4)
           end do
         end if
 !
@@ -165,7 +165,7 @@
         if (iflag_debug .gt. 0) then
           write(*,*) 'projection_right for PVR ', i_pvr
           do i = 1, 4
-            write(*,'(1p4e16.7)') view_param%projection_right(i:i+12:4)
+            write(*,'(1p4e16.7)') view_param%projection_right(i,1:4)
           end do
         end if
 !

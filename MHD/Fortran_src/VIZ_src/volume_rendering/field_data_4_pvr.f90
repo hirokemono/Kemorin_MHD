@@ -1,19 +1,23 @@
-!m_geometries_in_pvr_screen.f90
-!      module m_geometries_in_pvr_screen
+!>@file  field_data_4_pvr.f90
+!!       module field_data_4_pvr
+!!
+!!@author H. Matsui
+!!@date   Programmed in May. 2006
 !
-!        programmed by H.Matsui on Aug., 2011
-!
-!      subroutine cal_field_4_pvr(numnod, numele, nnod_4_ele,           &
-!     &          inod_smp_stack, iele_smp_stack, xx, radius,            &
-!     &          a_radius, s_cylinder, a_s_cylinder, ie, a_vol_ele,     &
-!     &          ntot_int_3d, dnx, xjac, num_nod_phys, num_tot_nod_phys,&
-!     &          istack_nod_component, d_nod, fld_params, proj)
+!> @brief Set field data for volume rendering
+!!
+!!@verbatim
+!!      subroutine cal_field_4_pvr(num_pvr, numnod, numele, nnod_4_ele, &
+!!     &         inod_smp_stack, iele_smp_stack, xx, radius,            &
+!!     &         a_radius, s_cylinder, a_s_cylinder, ie, a_vol_ele,     &
+!!     &         ntot_int_3d, dnx, xjac, num_nod_phys, num_tot_nod_phys,&
+!!     &         istack_nod_component, d_nod, fld_params, field_pvr)
 !!      subroutine set_pixel_on_pvr_screen(n_pvr_pixel, pixel_xy)
+!!@endverbatim
 !
-      module m_geometries_in_pvr_screen
+      module field_data_4_pvr
 !
       use m_precision
-!
       use m_constants
 !
       implicit  none
@@ -25,10 +29,10 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_field_4_pvr(num_pvr, numnod, numele, nnod_4_ele,   &
-     &          inod_smp_stack, iele_smp_stack, xx, radius,             &
-     &          a_radius, s_cylinder, a_s_cylinder, ie, a_vol_ele,      &
-     &          ntot_int_3d, dnx, xjac, num_nod_phys, num_tot_nod_phys, &
-     &          istack_nod_component, d_nod, fld_params, proj)
+     &         inod_smp_stack, iele_smp_stack, xx, radius,              &
+     &         a_radius, s_cylinder, a_s_cylinder, ie, a_vol_ele,       &
+     &         ntot_int_3d, dnx, xjac, num_nod_phys, num_tot_nod_phys,  &
+     &         istack_nod_component, d_nod, fld_params, field_pvr)
 !
       use t_control_params_4_pvr
       use t_geometries_in_pvr_screen
@@ -59,7 +63,7 @@
       real(kind = kreal), intent(in)  :: d_nod(numnod,num_tot_nod_phys)
 !
       type(pvr_field_parameter), intent(in) :: fld_params(num_pvr)
-      type(pvr_projected_type), intent(inout) :: proj
+      type(pvr_projected_field), intent(inout) :: field_pvr(num_pvr)
 !
 !
       integer(kind = kint) :: i_pvr
@@ -73,12 +77,12 @@
         call convert_comps_4_viz(numnod, inod_smp_stack, xx, radius,    &
      &      a_radius, s_cylinder, a_s_cylinder, ione,  num_comp,        &
      &      fld_params(i_pvr)%icomp_pvr_output, d_nod(1,ist_fld+1),     &
-     &      proj%field_pvr(i_pvr)%d_pvr)
+     &      field_pvr(i_pvr)%d_pvr)
 !
         call fem_gradient_on_element(iele_smp_stack,                    &
      &          numnod, numele, nnod_4_ele, ie, a_vol_ele,              &
      &          ntot_int_3d, ione, dnx, xjac,                           &
-     &     proj%field_pvr(i_pvr)%grad_ele, proj%field_pvr(i_pvr)%d_pvr)
+     &          field_pvr(i_pvr)%grad_ele, field_pvr(i_pvr)%d_pvr)
       end do
 !
       end subroutine cal_field_4_pvr
@@ -105,4 +109,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module m_geometries_in_pvr_screen
+      end module field_data_4_pvr

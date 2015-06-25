@@ -213,12 +213,13 @@
           view_param%iprm_pvr_rot(1) = 3
           view_param%iflag_rotate_snap = 1
         else
-          view_param%iprm_pvr_rot(1) = 0
-          view_param%iflag_rotation =  0
+          view_param%iprm_pvr_rot(1) =   0
+          view_param%iflag_rotate_snap = 0
         end if
 !
         view_param%iprm_pvr_rot(2) = pvr%num_frames_ctl%intvalue
       else
+        view_param%iflag_rotate_snap = 0
         view_param%iprm_pvr_rot(1) = 0
         view_param%iprm_pvr_rot(2) = 1
       end if

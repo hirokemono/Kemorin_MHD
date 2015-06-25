@@ -27,7 +27,6 @@
 !
       use m_constants
       use m_geometry_constants
-      use m_control_params_4_pvr
 !
       implicit  none
 !

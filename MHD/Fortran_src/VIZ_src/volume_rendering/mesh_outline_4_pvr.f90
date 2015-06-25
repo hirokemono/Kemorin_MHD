@@ -1,18 +1,21 @@
+!>@file  mesh_outline_4_pvr.f90
+!!       module mesh_outline_4_pvr
+!!
+!!@author H. Matsui
+!!@date   Programmed in May, 2006
 !
-!      module m_mesh_outline_pvr
-!
-!        programmed by H.Matsui on May. 2006
-!
+!> @brief Set mesh outline for PVR
+!!
+!!@verbatim
 !!      subroutine cal_mesh_outline_pvr(numnod, xx, outline)
+!!@endverbatim
 !
-      module m_mesh_outline_pvr
+      module mesh_outline_4_pvr
 !
       use m_precision
       use t_surf_grp_4_pvr_domain
 !
       implicit  none
-!
-      type(pvr_domain_outline), allocatable, save :: outlines(:)
 !
 !
       real(kind = kreal), allocatable :: xx_minmax_l(:,:,:)
@@ -30,7 +33,6 @@
       use calypso_mpi
       use m_constants
       use m_machine_parameter
-      use m_control_params_4_pvr
 !
       integer(kind = kint), intent(in) :: numnod
       real(kind = kreal), intent(in) :: xx(numnod,3)
@@ -113,4 +115,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module m_mesh_outline_pvr
+      end module mesh_outline_4_pvr

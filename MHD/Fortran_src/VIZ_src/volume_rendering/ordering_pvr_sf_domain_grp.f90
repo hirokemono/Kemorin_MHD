@@ -30,7 +30,6 @@
       subroutine s_ordering_pvr_sf_domain_grp(pvr_bound)
 !
       use t_surf_grp_4_pvr_domain
-      use m_control_params_4_pvr
       use quicksort
 !
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound

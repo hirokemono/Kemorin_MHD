@@ -3,14 +3,14 @@
 !
 !        programmed by H.Matsui on Aug., 2011
 !
-!!      subroutine s_find_pvr_surf_domain(numele, numsurf, e_multi,     &
-!!     &          isf_4_ele, iele_4_surf, num_mat, num_mat_bc,          &
-!!     &          mat_istack, mat_item, fld_params, pvr_bound, proj)
+!!      subroutine s_find_pvr_surf_domain(num_pvr, numele, numsurf,     &
+!!     &          e_multi, isf_4_ele, iele_4_surf, num_mat, num_mat_bc, &
+!!     &          mat_istack, mat_item, fld_params, pvr_bound, field_pvr)
 !!      subroutine set_pvr_domain_surface_data                          &
 !!     &         (n_pvr_pixel, numele, numsurf, nnod_4_surf,            &
 !!     &          ie_surf, isf_4_ele, nnod_pvr,                         &
 !!     &          x_nod_model, x_nod_screen, pvr_bound)
-!!      subroutine deallocate_pvr_surf_domain(pvr_bound)
+!!      subroutine deallocate_pvr_surf_domain(num_pvr, pvr_bound)
 !
       module find_pvr_surf_domain
 !
@@ -18,7 +18,6 @@
 !
       use m_constants
       use m_geometry_constants
-      use m_control_params_4_pvr
 !
       implicit  none
 !
@@ -31,9 +30,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_find_pvr_surf_domain(numele, numsurf, e_multi,       &
-     &          isf_4_ele, iele_4_surf, num_mat, num_mat_bc,            &
-     &          mat_istack, mat_item, fld_params, pvr_bound, proj)
+      subroutine s_find_pvr_surf_domain(num_pvr, numele, numsurf,       &
+     &          e_multi, isf_4_ele, iele_4_surf, num_mat, num_mat_bc,   &
+     &          mat_istack, mat_item, fld_params, pvr_bound, field_pvr)
 !
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
@@ -50,9 +49,10 @@
       integer(kind=kint), intent(in) :: mat_istack(0:num_mat)
       integer(kind=kint), intent(in) :: mat_item(num_mat_bc)
 !
+      integer(kind=kint), intent(in) :: num_pvr
       type(pvr_field_parameter), intent(in) :: fld_params(num_pvr)
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound(num_pvr)
-      type(pvr_projected_type), intent(inout) :: proj
+      type(pvr_projected_field), intent(inout) :: field_pvr(num_pvr)
 !
       integer(kind = kint) :: i_pvr
 !
@@ -64,19 +64,19 @@
      &      num_mat, num_mat_bc, mat_istack, mat_item,                  &
      &      fld_params(i_pvr)%nele_grp_area_pvr,                        &
      &      fld_params(i_pvr)%id_ele_grp_area_pvr,                      &
-     &      proj%field_pvr(i_pvr)%iflag_used_ele)
+     &      field_pvr(i_pvr)%iflag_used_ele)
 !
         call mark_selected_domain_bd(numele, numsurf, isf_4_ele,        &
-     &      proj%field_pvr(i_pvr)%iflag_used_ele)
+     &      field_pvr(i_pvr)%iflag_used_ele)
         call count_selected_domain_bd(numsurf,                          &
      &      pvr_bound(i_pvr)%num_pvr_surf)
 !
         call alloc_pvr_surf_domain_item(pvr_bound(i_pvr))
 !
         call mark_selected_domain_bd(numele, numsurf, isf_4_ele,        &
-     &      proj%field_pvr(i_pvr)%iflag_used_ele)
+     &      field_pvr(i_pvr)%iflag_used_ele)
         call s_find_selected_domain_bd(numele, numsurf, iele_4_surf,    &
-     &      proj%field_pvr(i_pvr)%iflag_used_ele,                       &
+     &      field_pvr(i_pvr)%iflag_used_ele,                            &
      &      pvr_bound(i_pvr)%num_pvr_surf,                              &
      &      pvr_bound(i_pvr)%item_pvr_surf)
       end do
@@ -132,10 +132,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine deallocate_pvr_surf_domain(pvr_bound)
+      subroutine deallocate_pvr_surf_domain(num_pvr, pvr_bound)
 !
       use t_surf_grp_4_pvr_domain
 !
+      integer(kind=kint), intent(in) :: num_pvr
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound(num_pvr)
 !
       integer(kind = kint) :: i_pvr

@@ -79,12 +79,12 @@
         if (iflag_debug .gt. 0) then
           write(*,*) 'modelview_mat'
           do i = 1, 4
-            write(*,'(1p4e16.7)') view_param%modelview_mat(i:i+12:4)
+            write(*,'(1p4e16.7)') view_param%modelview_mat(i,1:4)
           end do
 !
           write(*,*) 'modelview_inv'
           do i = 1, 4
-            write(*,'(1p4e16.7)') view_param%modelview_inv(i:i+12:4)
+            write(*,'(1p4e16.7)') view_param%modelview_inv(i,1:4)
           end do
 !
           write(*,*) 'lookat_vec', view_param%lookat_vec(1:3)
@@ -199,15 +199,15 @@
       end if
 !
 !
-      if (view_param%iflag_rotation .gt. 0) then
+      if (view_param%iflag_rotate_snap .gt. 0) then
         call Kemo_Unit(view_param%modelview_mat)
 !
-      iaxis_rot = view_param%iprm_pvr_rot(1)
-      rotation_axis(1:3) =       zero
-      rotation_axis(iaxis_rot) = one
-      angle_deg = 360.0d0 * dble(i_rot-1)                               &
+        iaxis_rot = view_param%iprm_pvr_rot(1)
+        rotation_axis(1:3) =       zero
+        rotation_axis(iaxis_rot) = one
+        angle_deg = 360.0d0 * dble(i_rot-1)                             &
      &           / dble(view_param%iprm_pvr_rot(2))
-      call Kemo_Rotate(view_param%modelview_mat,                        &
+        call Kemo_Rotate(view_param%modelview_mat,                      &
      &    angle_deg, rotation_axis(1) )
 !
         call Kemo_Rotate(view_param%modelview_mat,                      &
@@ -304,13 +304,13 @@
       v(1:3) = v(1:3) / size(1)
 !
       do i = 1, 3
-        view_param%modelview_mat(4*i-3) = u(i)
-        view_param%modelview_mat(4*i-2) = v(i)
-        view_param%modelview_mat(4*i-1) = viewing_dir(i)
-        view_param%modelview_mat(4*i  ) = zero
+        view_param%modelview_mat(1,i) = u(i)
+        view_param%modelview_mat(2,i) = v(i)
+        view_param%modelview_mat(3,i) = viewing_dir(i)
+        view_param%modelview_mat(4,i) = zero
       end do
-      view_param%modelview_mat(13:15) = zero
-      view_param%modelview_mat(16   ) = one
+      view_param%modelview_mat(1:3,4) = zero
+      view_param%modelview_mat(4,4) = one
 !
       end subroutine set_rot_mat_from_viewpts
 !

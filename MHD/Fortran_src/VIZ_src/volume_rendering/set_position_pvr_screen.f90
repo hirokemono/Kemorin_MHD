@@ -133,7 +133,7 @@
      &    project_mat, x_nod_model, x_nod_screen)
 !$omp end parallel
 !
-!$omp parallel do private(coef,ip)
+!$omp parallel do private(coef,ip,inod)
       do ip = 1, np_smp
         do inod = istack_nod_pvr(ip-1)+1, istack_nod_pvr(ip)
           coef = one / x_nod_screen(inod,4)

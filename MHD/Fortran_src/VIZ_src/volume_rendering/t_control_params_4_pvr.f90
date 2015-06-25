@@ -68,15 +68,15 @@
 !>    Farther distance for perspective view
         real(kind = kreal) :: perspective_far = zero
 !>    perspective projection matrix
-        real(kind = kreal) :: projection_mat(16)
+        real(kind = kreal) :: projection_mat(4,4)
 !
 !
 !>    Defined flag for modelview matrix
         integer(kind = kint) :: iflag_modelview_mat = 0
 !>    Modelview matrix
-        real(kind = kreal) :: modelview_mat(16)
+        real(kind = kreal) :: modelview_mat(4,4)
 !>    Inverse of modelview matrix
-        real(kind = kreal) :: modelview_inv(16)
+        real(kind = kreal) :: modelview_inv(4,4)
 !
 !
 !>    Defined flag for view rotation
@@ -113,9 +113,9 @@
 !>    Defined flag for stereo view
         integer(kind = kint) :: iflag_stereo_pvr = 0
 !>    Perspective projection matrix for left eye
-        real(kind = kreal) :: projection_left(16)
+        real(kind = kreal) :: projection_left(4,4)
 !>    Perspective projection matrix for right eye
-        real(kind = kreal) :: projection_right(16)
+        real(kind = kreal) :: projection_right(4,4)
 !
 !>    Focal length for streo view
         real(kind = kreal) :: focalLength = one
@@ -198,13 +198,13 @@
       type(pvr_view_parameter), intent(inout) :: view_param
 !
 !
-        view_param%projection_mat(1:16) =   0.0d0
+        view_param%projection_mat(1:4,1:4) =   0.0d0
 !
-        view_param%modelview_mat(1:16) =   0.0d0
-        view_param%modelview_inv(1:16) =   0.0d0
+        view_param%modelview_mat(1:4,1:4) =   0.0d0
+        view_param%modelview_inv(1:4,1:4) =   0.0d0
 !
-        view_param%projection_left(1:16) =  0.0d0
-        view_param%projection_right(1:16) = 0.0d0
+        view_param%projection_left(1:4,1:4) =  0.0d0
+        view_param%projection_right(1:4,1:4) = 0.0d0
 !
       end subroutine reset_pvr_view_parameteres
 !

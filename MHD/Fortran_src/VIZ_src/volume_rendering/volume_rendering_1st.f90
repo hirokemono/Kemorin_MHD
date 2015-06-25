@@ -27,7 +27,7 @@
       subroutine init_visualize_pvr
 !
       use m_control_data_pvrs
-      use m_control_params_4_pvr
+      use volume_rendering
 !
 !
       num_pvr = num_pvr_ctl
@@ -40,7 +40,7 @@
 !
       subroutine visualize_pvr(istep_pvr)
 !
-      use m_control_params_4_pvr
+      use volume_rendering
 !
       integer(kind = kint), intent(in) :: istep_pvr
 !

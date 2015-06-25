@@ -7,6 +7,13 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
+!!      subroutine allocate_node_position_pvr(numnod, numele, proj)
+!!      subroutine allocate_nod_data_4_pvr(num_pvr, proj, field_pvr)
+!!      subroutine allocate_pixel_position_pvr(pixel_xy)
+!!
+!!      subroutine deallocate_projected_data_pvr                        &
+!!      &        (num_pvr, proj, field_pvr)
+!!      subroutine deallocate_pixel_position_pvr(pixel_xy)
 !!@endverbatim
 !
       module t_geometries_in_pvr_screen
@@ -20,6 +27,10 @@
 !
 !>  Structure for field data on projected coordinate
       type pvr_projected_field
+!>    Position in modelview coordinate
+        real(kind = kreal), pointer :: x_nod_model(:,:)
+!>    Position in screen coordinate
+        real(kind = kreal), pointer :: x_nod_screen(:,:)
 !>    Data for rendering
         real(kind = kreal), pointer :: d_pvr(:)
 !>    Gradient for rendering
@@ -37,15 +48,8 @@
         integer(kind = kint), pointer :: istack_nod_pvr(:)
 !>    Position in physical coordinate
         real(kind = kreal), pointer :: x_nod_sim(:,:)
-!>    Position in modelview coordinate
-        real(kind = kreal), pointer :: x_nod_model(:,:)
-!>    Position in screen coordinate
-        real(kind = kreal), pointer :: x_nod_screen(:,:)
 !>    Number of element
         integer(kind = kint) :: nele_pvr
-!
-!>    Data for rendering
-        type(pvr_projected_field), pointer :: field_pvr(:)
       end type pvr_projected_type
 !
 !>  Structure for pixel position
@@ -75,9 +79,17 @@
       type(pvr_projected_field), intent(inout) :: fld_pvr
 !
 !
+      allocate(fld_pvr%x_nod_model(nnod,4))
+      allocate(fld_pvr%x_nod_screen(nnod,4))
+!
       allocate(fld_pvr%d_pvr(nnod))
       allocate(fld_pvr%grad_ele(nele,3))
-      if(nnod .gt. 0) fld_pvr%d_pvr =    0.0d0
+!
+      if(nnod .gt. 0) then
+        fld_pvr%x_nod_model =  0.0d0
+        fld_pvr%x_nod_screen = 0.0d0
+        fld_pvr%d_pvr =        0.0d0
+      end if
       if(nele .gt. 0) fld_pvr%grad_ele = 0.0d0
 !
       end subroutine alloc_nod_data_4_pvr
@@ -104,6 +116,7 @@
 !
       deallocate(fld_pvr%iflag_used_ele)
       deallocate(fld_pvr%d_pvr, fld_pvr%grad_ele)
+      deallocate(fld_pvr%x_nod_model, fld_pvr%x_nod_screen)
 !
       end subroutine dealloc_data_4_pvr
 !
@@ -123,33 +136,29 @@
 !
       allocate(proj%istack_nod_pvr(0:np_smp))
       allocate(proj%x_nod_sim(proj%nnod_pvr,4))
-      allocate(proj%x_nod_model(proj%nnod_pvr,4))
-      allocate(proj%x_nod_screen(proj%nnod_pvr,4))
 !
       proj%istack_nod_pvr = 0
       if(proj%nnod_pvr .gt. 0) then
         proj%x_nod_sim =   0.0d0
-        proj%x_nod_model =  0.0d0
-        proj%x_nod_screen = 0.0d0
       end if
 !
       end subroutine allocate_node_position_pvr
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_nod_data_4_pvr(num_pvr, proj)
+      subroutine allocate_nod_data_4_pvr(num_pvr, proj, field_pvr)
 !
       integer(kind = kint), intent(in) :: num_pvr
-      type(pvr_projected_type), intent(inout) :: proj
+      type(pvr_projected_type), intent(in) :: proj
+      type(pvr_projected_field), intent(inout) :: field_pvr(num_pvr)
 !
       integer(kind = kint) :: i
 !
 !
-      allocate(proj%field_pvr(num_pvr))
       do i = 1, num_pvr
         call alloc_nod_data_4_pvr                                       &
-     &     (proj%nnod_pvr, proj%nele_pvr, proj%field_pvr(i))
-        call alloc_iflag_pvr_used_ele(proj%nele_pvr, proj%field_pvr(i))
+     &     (proj%nnod_pvr, proj%nele_pvr, field_pvr(i))
+        call alloc_iflag_pvr_used_ele(proj%nele_pvr, field_pvr(i))
       end do
 !
       end subroutine allocate_nod_data_4_pvr
@@ -172,20 +181,21 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine deallocate_projected_data_pvr(num_pvr, proj)
+      subroutine deallocate_projected_data_pvr                          &
+      &        (num_pvr, proj, field_pvr)
 !
       integer(kind = kint), intent(in) :: num_pvr
       type(pvr_projected_type), intent(inout) :: proj
+      type(pvr_projected_field), intent(inout) :: field_pvr(num_pvr)
 !
       integer(kind = kint) :: i
 !
 !
       do i = 1, num_pvr
-        call dealloc_data_4_pvr(proj%field_pvr(i))
+        call dealloc_data_4_pvr(field_pvr(i))
       end do
 !
-      deallocate(proj%istack_nod_pvr)
-      deallocate(proj%x_nod_sim, proj%x_nod_model, proj%x_nod_screen)
+      deallocate(proj%istack_nod_pvr, proj%x_nod_sim)
 !
       end subroutine deallocate_projected_data_pvr
 !
