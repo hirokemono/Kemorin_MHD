@@ -7,12 +7,11 @@
 !!     &          xx, nnod_pvr, istack_nod_pvr, x_nod_sim)
 !!      subroutine copy_node_position_pvr_domain(numnod, numele,        &
 !!     &          numsurf, nnod_4_surf, xx, ie_surf, isf_4_ele,         &
-!!     &          num_pvr_surf, item_pvr_surf_domain, xx_nod_pvr_domain)
+!!     &          num_pvr_surf, item_pvr_surf_domain, xx_pvr_domain)
 !!
 !!      subroutine cal_position_pvr_screen(model_mat, project_mat)
-!!      subroutine position_pvr_domain_on_screen(model_mat, project_mat,&
-!!     &          num_pvr_surf, xx_nod_pvr_domain, xx_model_pvr_domain, &
-!!     &          xx_screen_pvr_domain)
+!!      subroutine overwte_pvr_domain_on_screen(model_mat, project_mat, &
+!!     &          num_pvr_surf, xx_pvr_domain)
 !
       module set_position_pvr_screen
 !
@@ -60,7 +59,7 @@
 !
       subroutine copy_node_position_pvr_domain(numnod, numele,          &
      &          numsurf, nnod_4_surf, xx, ie_surf, isf_4_ele,           &
-     &          num_pvr_surf, item_pvr_surf_domain, xx_nod_pvr_domain)
+     &          num_pvr_surf, item_pvr_surf_domain, xx_pvr_domain)
 !
       use m_geometry_constants
 !
@@ -75,7 +74,7 @@
      &                    :: item_pvr_surf_domain(2,num_pvr_surf)
 !
       real(kind = kreal), intent(inout)                                 &
-     &                    :: xx_nod_pvr_domain(4*num_pvr_surf,4)
+     &                    :: xx_pvr_domain(4*num_pvr_surf,4)
 !
       integer(kind = kint) :: inum, iele, k1, isurf
       integer(kind = kint) :: i1, i2, i3, i4
@@ -92,11 +91,11 @@
         i3 = ie_surf(isurf,3)
         i4 = ie_surf(isurf,4)
 !
-        xx_nod_pvr_domain(4*inum-3,1:3) = xx(i1,1:3)
-        xx_nod_pvr_domain(4*inum-2,1:3) = xx(i2,1:3)
-        xx_nod_pvr_domain(4*inum-1,1:3) = xx(i3,1:3)
-        xx_nod_pvr_domain(4*inum,  1:3) = xx(i4,1:3)
-        xx_nod_pvr_domain(4*inum-3:4*inum,4) = one
+        xx_pvr_domain(4*inum-3,1:3) = xx(i1,1:3)
+        xx_pvr_domain(4*inum-2,1:3) = xx(i2,1:3)
+        xx_pvr_domain(4*inum-1,1:3) = xx(i3,1:3)
+        xx_pvr_domain(4*inum,  1:3) = xx(i4,1:3)
+        xx_pvr_domain(4*inum-3:4*inum,4) = one
       end do
 !$omp end parallel do
 !
@@ -148,9 +147,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine position_pvr_domain_on_screen(model_mat, project_mat,  &
-     &          num_pvr_surf, xx_nod_pvr_domain, xx_model_pvr_domain,   &
-     &          xx_screen_pvr_domain)
+      subroutine overwte_pvr_domain_on_screen(model_mat, project_mat,   &
+     &          num_pvr_surf, xx_pvr_domain)
 !
       use cal_matrix_vector_smp
 !
@@ -158,47 +156,57 @@
       real(kind = kreal), intent(in) :: project_mat(4,4)
 !
       integer(kind = kint), intent(in) :: num_pvr_surf
-      real(kind = kreal), intent(in)                                    &
-     &                   :: xx_nod_pvr_domain(4*num_pvr_surf,4)
       real(kind = kreal), intent(inout)                                 &
-     &                   :: xx_model_pvr_domain(4*num_pvr_surf,4)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: xx_screen_pvr_domain(4*num_pvr_surf,4)
+     &                   :: xx_pvr_domain(4*num_pvr_surf,4)
 !
-      integer(kind = kint) :: inod, ip, k1
-      integer(kind = kint) :: istack(0:4), ntot
+      integer(kind = kint) :: inod, ntot
       real(kind = kreal) :: coef
 !
-      istack(0) = 0
-      do k1 = 1, 4
-        istack(k1) = istack(k1-1) + num_pvr_surf
-      end do
       ntot = 4*num_pvr_surf
+      call overwrite_projection_at_once                                 &
+     &   (ntot, model_mat, project_mat, xx_pvr_domain(1,1))
 !
-!$omp parallel
-      call cal_matvec_44_on_node(ifour, ntot, istack, model_mat,        &
-     &    xx_nod_pvr_domain(1,1), xx_model_pvr_domain(1,1))
-!$omp end parallel
-!$omp parallel
-      call cal_matvec_44_on_node(ifour, ntot, istack, project_mat,      &
-     &    xx_model_pvr_domain(1,1), xx_screen_pvr_domain(1,1))
-!$omp end parallel
-!
-!$omp parallel do private(coef,ip,inod)
-      do ip = 1, ifour
-        do inod = 1, num_pvr_surf
-          coef = one / xx_screen_pvr_domain(4*inod+ip-4,4)
-          xx_screen_pvr_domain(4*inod+ip-4,1)                           &
-     &               = xx_screen_pvr_domain(4*inod+ip-4,1) * coef
-          xx_screen_pvr_domain(4*inod+ip-4,2)                           &
-     &               = xx_screen_pvr_domain(4*inod+ip-4,2) * coef
-          xx_screen_pvr_domain(4*inod+ip-4,3)                           &
-     &               = xx_screen_pvr_domain(4*inod+ip-4,3) * coef
-        end do
+!$omp parallel do private(coef,inod)
+      do inod = 1, ntot
+          coef = one / xx_pvr_domain(inod,4)
+          xx_pvr_domain(inod,1) = xx_pvr_domain(inod,1) * coef
+          xx_pvr_domain(inod,2) = xx_pvr_domain(inod,2) * coef
+          xx_pvr_domain(inod,3) = xx_pvr_domain(inod,3) * coef
       end do
 !$omp end parallel do
 !
-      end subroutine position_pvr_domain_on_screen
+      end subroutine overwte_pvr_domain_on_screen
+!
+! -----------------------------------------------------------------------
+!
+      subroutine overwrite_projection_at_once(nnod, A1, A2, x)
+!
+      integer(kind = kint), intent(in) :: nnod
+      real(kind = kreal), intent(in) :: A1(4,4), A2(4,4)
+      real(kind = kreal), intent(inout) :: x(nnod,4)
+!
+      real(kind = kreal) :: x1, x2, x3, x4
+      integer(kind = kint) :: inod
+!
+!$omp parallel do private(inod,x1,x2,x3,x4)
+      do inod = 1, nnod
+        x1 = A1(1,1)*x(inod,1) + A1(1,2)*x(inod,2)                      &
+     &     + A1(1,3)*x(inod,3) + A1(1,4) * one
+        x2 = A1(2,1)*x(inod,1) + A1(2,2)*x(inod,2)                      &
+     &     + A1(2,3)*x(inod,3) + A1(2,4) * one
+        x3 = A1(3,1)*x(inod,1) + A1(3,2)*x(inod,2)                      &
+     &     + A1(3,3)*x(inod,3) + A1(3,4) * one
+        x4 = A1(4,1)*x(inod,1) + A1(4,2)*x(inod,2)                      &
+     &     + A1(4,3)*x(inod,3) + A1(4,4) * one
+!
+        x(inod,1) = A2(1,1)*x1 + A2(1,2)*x2 + A2(1,3)*x3 + A2(1,4) * x4
+        x(inod,2) = A2(2,1)*x1 + A2(2,2)*x2 + A2(2,3)*x3 + A2(2,4) * x4
+        x(inod,3) = A2(3,1)*x1 + A2(3,2)*x2 + A2(3,3)*x3 + A2(3,4) * x4
+        x(inod,4) = A2(4,1)*x1 + A2(4,2)*x2 + A2(4,3)*x3 + A2(4,4) * x4
+      end do
+!$omp end parallel do
+!
+      end subroutine overwrite_projection_at_once
 !
 ! -----------------------------------------------------------------------
 !

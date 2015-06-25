@@ -138,11 +138,6 @@
      &    projected%x_nod_sim)
 !
       do i_pvr = 1, num_pvr
-        call copy_node_position_pvr_domain(numnod, numele,              &
-     &      numsurf, nnod_4_surf, xx, ie_surf, isf_4_ele,               &
-     &      pvr_bound(i_pvr)%num_pvr_surf,                              &
-     &      pvr_bound(i_pvr)%item_pvr_surf, pvr_bound(i_pvr)%xx_nod)
-!
         call cal_mesh_outline_pvr(numnod, xx, outlines(i_pvr))
         call check_pvr_parameters(outlines(i_pvr), view_params(i_pvr),  &
      &      color_params(i_pvr))
@@ -159,10 +154,9 @@
           if(iflag_debug .gt. 0) write(*,*) 'cal_pvr_modelview_matrix'
           call cal_pvr_modelview_matrix(izero, outlines(i_pvr),         &
      &        view_params(i_pvr), color_params(i_pvr))
-          call transfer_to_screen                                       &
-     &         (numele, numsurf, nnod_4_surf, ie_surf, isf_4_ele,       &
-     &          projected, field_pvr(i_pvr), view_params(i_pvr),        &
-     &          pvr_bound(i_pvr))
+          call transfer_to_screen(numnod, numele, numsurf,              &
+     &         nnod_4_surf, xx, ie_surf, isf_4_ele, projected,          &
+     &         field_pvr(i_pvr), view_params(i_pvr), pvr_bound(i_pvr))
         end if
       end do
 !
@@ -243,10 +237,9 @@
           if(view_params(i_pvr)%iflag_rotate_snap .gt. 0) then
             call cal_pvr_modelview_matrix(i_rot, outlines(i_pvr),       &
      &          view_params(i_pvr), color_params(i_pvr))
-            call transfer_to_screen                                     &
-     &         (numele, numsurf, nnod_4_surf, ie_surf, isf_4_ele,       &
-     &          projected, field_pvr(i_pvr), view_params(i_pvr),        &
-     &          pvr_bound(i_pvr))
+            call transfer_to_screen(numnod, numele, numsurf,            &
+     &          nnod_4_surf, xx, ie_surf, isf_4_ele, projected,         &
+     &          field_pvr(i_pvr), view_params(i_pvr), pvr_bound(i_pvr))
           end if
 !
           call rendering_image                                          &

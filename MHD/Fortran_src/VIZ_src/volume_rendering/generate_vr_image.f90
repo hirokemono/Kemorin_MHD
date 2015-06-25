@@ -36,8 +36,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine transfer_to_screen                                     &
-     &         (numele, numsurf, nnod_4_surf, ie_surf, isf_4_ele,       &
+      subroutine transfer_to_screen(numnod, numele, numsurf,            &
+     &          nnod_4_surf, xx, ie_surf, isf_4_ele,                    &
      &          proj, field_pvr, view_param, pvr_bound)
 !
       use m_geometry_constants
@@ -47,10 +47,11 @@
       use set_position_pvr_screen
       use find_pvr_surf_domain
 !
-      integer(kind = kint), intent(in) :: numele, numsurf
+      integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       type(pvr_view_parameter), intent(inout) :: view_param
       type(pvr_projected_type), intent(inout) :: proj
@@ -62,10 +63,13 @@
      &      (view_param%modelview_mat, view_param%projection_mat,       &
      &       proj%nnod_pvr, proj%istack_nod_pvr,  proj%x_nod_sim,       &
      &       field_pvr%x_nod_model, field_pvr%x_nod_screen)
-      call position_pvr_domain_on_screen(view_param%modelview_mat,      &
-     &       view_param%projection_mat, pvr_bound%num_pvr_surf,         &
-     &       pvr_bound%xx_nod, pvr_bound%xx_model, pvr_bound%xx_screen)
 !
+      call copy_node_position_pvr_domain(numnod, numele, numsurf,       &
+     &    nnod_4_surf, xx, ie_surf, isf_4_ele, pvr_bound%num_pvr_surf,  &
+     &    pvr_bound%item_pvr_surf,pvr_bound%xx_nod)
+      call overwte_pvr_domain_on_screen(view_param%modelview_mat,       &
+     &       view_param%projection_mat, pvr_bound%num_pvr_surf,         &
+     &       pvr_bound%xx_nod)
       call set_pvr_domain_surface_data(view_param%n_pvr_pixel,          &
      &       numele, numsurf, nnod_4_surf, ie_surf, isf_4_ele,          &
      &       proj%nnod_pvr, field_pvr%x_nod_model,                      &
@@ -174,7 +178,7 @@
      &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
      &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
-     &    pvr_bound%screen_norm, pvr_bound%xx_screen,                   &
+     &    pvr_bound%screen_norm, pvr_bound%xx_nod,                      &
      &    pvr_bound%isurf_xrng, pvr_bound%jsurf_yrng,                   &
      &    ray_vec, pvr_start%num_pvr_ray, pvr_start%istack_pvr_ray_sf)
 !
@@ -188,7 +192,7 @@
      &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
      &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
-     &    pvr_bound%screen_norm, pvr_bound%xx_screen,                   &
+     &    pvr_bound%screen_norm, pvr_bound%xx_nod,                      &
      &    pvr_bound%isurf_xrng, pvr_bound%jsurf_yrng,                   &
      &    viewpoint_vec, ray_vec, pvr_start%istack_pvr_ray_sf,          &
      &    pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
