@@ -7,8 +7,8 @@
 !> @brief Structures for position in the projection coordinate 
 !!
 !!@verbatim
-!!      subroutine allocate_node_position_pvr(numnod, numele, proj)
-!!      subroutine allocate_nod_data_4_pvr(num_pvr, proj, field_pvr)
+!!      subroutine allocate_nod_data_4_pvr                              &
+!!     &         (num_pvr, numnod, numele, field_pvr)
 !!      subroutine allocate_pixel_position_pvr(pixel_xy)
 !!
 !!      subroutine deallocate_projected_data_pvr                        &
@@ -39,18 +39,6 @@
 !>    flag for rendering element
         integer(kind = kint), pointer :: iflag_used_ele(:)
       end type pvr_projected_field
-!
-!>  Structure for data on projected coordinate
-      type pvr_projected_type
-!>    Number of node
-        integer(kind = kint) :: nnod_pvr
-!>    node stack for SMP
-        integer(kind = kint), pointer :: istack_nod_pvr(:)
-!>    Position in physical coordinate
-        real(kind = kreal), pointer :: x_nod_sim(:,:)
-!>    Number of element
-        integer(kind = kint) :: nele_pvr
-      end type pvr_projected_type
 !
 !>  Structure for pixel position
       type pvr_pixel_position_type
@@ -123,33 +111,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_node_position_pvr(numnod, numele, proj)
+      subroutine allocate_nod_data_4_pvr                                &
+     &         (num_pvr, numnod, numele, field_pvr)
 !
-      use m_machine_parameter
-!
-      integer(kind = kint), intent(in) :: numnod, numele
-      type(pvr_projected_type), intent(inout) :: proj
-!
-!
-      proj%nnod_pvr = numnod
-      proj%nele_pvr = numele
-!
-      allocate(proj%istack_nod_pvr(0:np_smp))
-      allocate(proj%x_nod_sim(proj%nnod_pvr,4))
-!
-      proj%istack_nod_pvr = 0
-      if(proj%nnod_pvr .gt. 0) then
-        proj%x_nod_sim =   0.0d0
-      end if
-!
-      end subroutine allocate_node_position_pvr
-!
-! -----------------------------------------------------------------------
-!
-      subroutine allocate_nod_data_4_pvr(num_pvr, proj, field_pvr)
-!
-      integer(kind = kint), intent(in) :: num_pvr
-      type(pvr_projected_type), intent(in) :: proj
+      integer(kind = kint), intent(in) :: num_pvr, numnod, numele
       type(pvr_projected_field), intent(inout) :: field_pvr(num_pvr)
 !
       integer(kind = kint) :: i
@@ -157,8 +122,8 @@
 !
       do i = 1, num_pvr
         call alloc_nod_data_4_pvr                                       &
-     &     (proj%nnod_pvr, proj%nele_pvr, field_pvr(i))
-        call alloc_iflag_pvr_used_ele(proj%nele_pvr, field_pvr(i))
+     &     (numnod, numele, field_pvr(i))
+        call alloc_iflag_pvr_used_ele(numele, field_pvr(i))
       end do
 !
       end subroutine allocate_nod_data_4_pvr
@@ -181,11 +146,9 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine deallocate_projected_data_pvr                          &
-      &        (num_pvr, proj, field_pvr)
+      subroutine deallocate_projected_data_pvr(num_pvr, field_pvr)
 !
       integer(kind = kint), intent(in) :: num_pvr
-      type(pvr_projected_type), intent(inout) :: proj
       type(pvr_projected_field), intent(inout) :: field_pvr(num_pvr)
 !
       integer(kind = kint) :: i
@@ -194,8 +157,6 @@
       do i = 1, num_pvr
         call dealloc_data_4_pvr(field_pvr(i))
       end do
-!
-      deallocate(proj%istack_nod_pvr, proj%x_nod_sim)
 !
       end subroutine deallocate_projected_data_pvr
 !

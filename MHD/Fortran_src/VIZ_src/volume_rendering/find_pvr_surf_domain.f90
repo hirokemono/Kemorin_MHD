@@ -7,9 +7,12 @@
 !!     &          e_multi, isf_4_ele, iele_4_surf, num_mat, num_mat_bc, &
 !!     &          mat_istack, mat_item, fld_params, pvr_bound, field_pvr)
 !!      subroutine set_pvr_domain_surface_data                          &
-!!     &         (n_pvr_pixel, numele, numsurf, nnod_4_surf,            &
-!!     &          ie_surf, isf_4_ele, nnod_pvr,                         &
-!!     &          x_nod_model, x_nod_screen, pvr_bound)
+!!     &       (n_pvr_pixel, numnod, numele, numsurf, nnod_4_surf,      &
+!!     &        ie_surf, isf_4_ele, x_nod_screen, pvr_bound)
+!!      subroutine norm_on_model_pvr_domains(numnod, numele, numsurf,   &
+!!     &         nnod_4_surf, ie_surf, isf_4_ele, x_nod_model,          &
+!!     &         num_pvr_surf, item_pvr_surf_domain,                    &
+!!     &         screen_norm_pvr_domain)
 !!      subroutine deallocate_pvr_surf_domain(num_pvr, pvr_bound)
 !
       module find_pvr_surf_domain
@@ -21,7 +24,7 @@
 !
       implicit  none
 !
-      private :: norm_on_model_pvr_domains, range_on_screen_pvr_domains
+      private :: range_on_screen_pvr_domains
       private :: range_on_pixel_pvr_domains
 !
 ! -----------------------------------------------------------------------
@@ -88,9 +91,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_pvr_domain_surface_data                            &
-     &         (n_pvr_pixel, numele, numsurf, nnod_4_surf,              &
-     &          ie_surf, isf_4_ele, nnod_pvr,                           &
-     &          x_nod_model, x_nod_screen, pvr_bound)
+     &       (n_pvr_pixel, numnod, numele, numsurf, nnod_4_surf,        &
+     &        ie_surf, isf_4_ele, x_nod_screen, pvr_bound)
 !
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
@@ -98,24 +100,19 @@
 !
       integer(kind = kint), intent(in) :: n_pvr_pixel(2)
 !
+      integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: numele, numsurf, nnod_4_surf
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
 !
-      integer(kind = kint), intent(in) :: nnod_pvr
-      real(kind = kreal), intent(in) :: x_nod_model(nnod_pvr,4)
-      real(kind = kreal), intent(in) :: x_nod_screen(nnod_pvr,4)
+      real(kind = kreal), intent(in) :: x_nod_screen(numnod,4)
 !
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !
 !
 !$omp parallel
-      call norm_on_model_pvr_domains(numele, numsurf,                   &
-     &    nnod_4_surf, ie_surf, isf_4_ele, nnod_pvr, x_nod_model,       &
-     &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
-     &    pvr_bound%screen_norm)
-      call range_on_screen_pvr_domains(numele, numsurf,                 &
-     &    nnod_4_surf, ie_surf, isf_4_ele, nnod_pvr, x_nod_screen,      &
+      call range_on_screen_pvr_domains(numnod, numele, numsurf,         &
+     &    nnod_4_surf, ie_surf, isf_4_ele, x_nod_screen,                &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
      &    pvr_bound%screen_posi, pvr_bound%screen_w,                    &
      &    pvr_bound%screen_xrng, pvr_bound%screen_yrng,                 &
@@ -151,17 +148,17 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine norm_on_model_pvr_domains(numele, numsurf,             &
-     &         nnod_4_surf, ie_surf, isf_4_ele, nnod_pvr, x_nod_model,  &
+      subroutine norm_on_model_pvr_domains(numnod, numele, numsurf,     &
+     &         nnod_4_surf, ie_surf, isf_4_ele, x_nod_model,            &
      &         num_pvr_surf, item_pvr_surf_domain,                      &
      &         screen_norm_pvr_domain)
 !
+      integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: numele, numsurf, nnod_4_surf
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
 !
-      integer(kind = kint), intent(in) :: nnod_pvr
-      real(kind = kreal), intent(in) :: x_nod_model(nnod_pvr,4)
+      real(kind = kreal), intent(in) :: x_nod_model(numnod,4)
 !
       integer(kind = kint), intent(in) :: num_pvr_surf
       integer(kind = kint), intent(in)                                  &
@@ -175,7 +172,7 @@
       real(kind = kreal) :: x31(3), x42(3)
 !
 !
-!$omp do private (inum,iele,k1,isurf,i1,i2,i3,i4,x31,x42)
+!$omp parallel do private (inum,iele,k1,isurf,i1,i2,i3,i4,x31,x42)
         do inum = 1, num_pvr_surf
           iele = item_pvr_surf_domain(1,inum)
           k1 =   item_pvr_surf_domain(2,inum)
@@ -198,25 +195,25 @@
      &                  = (x31(1)*x42(2) - x31(2)*x42(1))               &
      &                   * dble(isf_4_ele(iele,k1) /isurf)
         end do
-!$omp end do
+!$omp end parallel do
 !
       end subroutine norm_on_model_pvr_domains
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine range_on_screen_pvr_domains(numele, numsurf,           &
-     &      nnod_4_surf, ie_surf, isf_4_ele, nnod_pvr, x_nod_screen,    &
+      subroutine range_on_screen_pvr_domains(numnod, numele, numsurf,   &
+     &      nnod_4_surf, ie_surf, isf_4_ele, x_nod_screen,              &
      &      num_pvr_surf, item_pvr_surf_domain,                         &
      &      screen_posi_pvr_domain, screen_w_pvr_domain,                &
      &      screen_xrng_pvr_domain, screen_yrng_pvr_domain,             &
      &      screen_zrng_pvr_domain)
 !
+      integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: numele, numsurf, nnod_4_surf
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
 !
-      integer(kind = kint), intent(in) :: nnod_pvr
-      real(kind = kreal), intent(in) :: x_nod_screen(nnod_pvr,4)
+      real(kind = kreal), intent(in) :: x_nod_screen(numnod,4)
 !
       integer(kind = kint), intent(in) :: num_pvr_surf
       integer(kind = kint), intent(in)                                  &

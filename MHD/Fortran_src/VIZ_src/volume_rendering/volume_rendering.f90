@@ -3,11 +3,10 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine pvr_init(numnod, numele, numsurf,                     &
-!     &          nnod_4_surf, inod_smp_stack, xx,                       &
-!     &          e_multi, ie_surf, isf_4_ele, iele_4_surf,              &
-!     &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,   &
-!     &          num_nod_phys, phys_nod_name)
+!!      subroutine pvr_init(numnod, numele, numsurf, nnod_4_surf, xx,   &
+!!     &          e_multi, ie_surf, isf_4_ele, iele_4_surf,             &
+!!     &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,  &
+!!     &          num_nod_phys, phys_nod_name)
 !
 !      subroutine pvr_main(istep_pvr, numnod, numele, numsurf,          &
 !     &         nnod_4_ele, nnod_4_surf, inod_smp_stack, iele_smp_stack,&
@@ -71,15 +70,13 @@
 !
       type(pvr_pixel_position_type), allocatable, save :: pixel_xy(:)
 !
-      type(pvr_projected_type), save :: projected
-!
       type(pvr_ray_start_type), save :: pvr_start
       type(pvr_image_type), save :: pvr_img
 !
       private :: file_params, fld_params, view_params
       private :: color_params, cbar_params
       private :: pvr_bound, outlines, field_pvr, pixel_xy
-      private :: projected, pvr_start, pvr_img
+      private :: pvr_start, pvr_img
 !
 !  ---------------------------------------------------------------------
 !
@@ -87,8 +84,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine pvr_init(numnod, numele, numsurf,                      &
-     &          nnod_4_surf, inod_smp_stack, xx,                        &
+      subroutine pvr_init(numnod, numele, numsurf, nnod_4_surf, xx,     &
      &          e_multi, ie_surf, isf_4_ele, iele_4_surf,               &
      &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,    &
      &          num_nod_phys, phys_nod_name)
@@ -99,7 +95,6 @@
 !
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: xx(numnod,3)
       real(kind = kreal), intent(in) :: e_multi(numele)
 !
@@ -127,15 +122,10 @@
      &    num_nod_phys, phys_nod_name, file_params, fld_params,         &
      &    view_params, color_params, cbar_params)
 !
-      call allocate_node_position_pvr(numnod, numele, projected)
-      call allocate_nod_data_4_pvr(num_pvr, projected, field_pvr)
+      call allocate_nod_data_4_pvr(num_pvr, numnod, numele, field_pvr)
       call s_find_pvr_surf_domain(num_pvr, numele, numsurf, e_multi,    &
      &    isf_4_ele, iele_4_surf, num_mat, num_mat_bc,                  &
      &    mat_istack, mat_item, fld_params, pvr_bound, field_pvr)
-!
-      call copy_node_position_for_pvr(numnod, inod_smp_stack, xx,       &
-     &    projected%nnod_pvr, projected%istack_nod_pvr,                 &
-     &    projected%x_nod_sim)
 !
       do i_pvr = 1, num_pvr
         call cal_mesh_outline_pvr(numnod, xx, outlines(i_pvr))
@@ -155,8 +145,8 @@
           call cal_pvr_modelview_matrix(izero, outlines(i_pvr),         &
      &        view_params(i_pvr), color_params(i_pvr))
           call transfer_to_screen(numnod, numele, numsurf,              &
-     &         nnod_4_surf, xx, ie_surf, isf_4_ele, projected,          &
-     &         field_pvr(i_pvr), view_params(i_pvr), pvr_bound(i_pvr))
+     &         nnod_4_surf, xx, ie_surf, isf_4_ele, field_pvr(i_pvr),   &
+     &         view_params(i_pvr), pvr_bound(i_pvr))
         end if
       end do
 !
@@ -238,14 +228,14 @@
             call cal_pvr_modelview_matrix(i_rot, outlines(i_pvr),       &
      &          view_params(i_pvr), color_params(i_pvr))
             call transfer_to_screen(numnod, numele, numsurf,            &
-     &          nnod_4_surf, xx, ie_surf, isf_4_ele, projected,         &
-     &          field_pvr(i_pvr), view_params(i_pvr), pvr_bound(i_pvr))
+     &          nnod_4_surf, xx, ie_surf, isf_4_ele, field_pvr(i_pvr),  &
+     &          view_params(i_pvr), pvr_bound(i_pvr))
           end if
 !
           call rendering_image                                          &
      &      (i_pvr, i_rot, istep_pvr, numnod, numele, numsurf,          &
      &       nnod_4_surf, e_multi, xx, ie_surf, isf_4_ele, iele_4_surf, &
-     &       projected, file_params(i_pvr), color_params(i_pvr),        &
+     &       file_params(i_pvr), color_params(i_pvr),                   &
      &       cbar_params(i_pvr), view_params(i_pvr), field_pvr(i_pvr),  &
      &       pvr_bound(i_pvr), pixel_xy(i_pvr), pvr_start, pvr_img)
 !

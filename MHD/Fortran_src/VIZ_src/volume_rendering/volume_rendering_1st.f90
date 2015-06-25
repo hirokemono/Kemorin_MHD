@@ -64,8 +64,7 @@
       use volume_rendering
 !
 !
-      call pvr_init(numnod, numele, numsurf,                            &
-     &          nnod_4_surf, inod_smp_stack, xx,                        &
+      call pvr_init(numnod, numele, numsurf, nnod_4_surf, xx,           &
      &          e_multi, ie_surf, isf_4_ele, iele_4_surf,               &
      &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,    &
      &          num_nod_phys, phys_nod_name)

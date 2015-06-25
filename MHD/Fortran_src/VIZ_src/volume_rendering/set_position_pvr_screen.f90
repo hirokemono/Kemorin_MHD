@@ -3,12 +3,12 @@
 !
 !        programmed by H.Matsui on Aug., 2011
 !
-!!      subroutine copy_node_position_for_pvr(numnod, inod_smp_stack,   &
-!!     &          xx, nnod_pvr, istack_nod_pvr, x_nod_sim)
 !!      subroutine copy_node_position_pvr_domain(numnod, numele,        &
 !!     &          numsurf, nnod_4_surf, xx, ie_surf, isf_4_ele,         &
 !!     &          num_pvr_surf, item_pvr_surf_domain, xx_pvr_domain)
 !!
+!!      subroutine cal_position_pvr_modelview                           &
+!!     &         (model_mat, numnod, xx, x_nod_model)
 !!      subroutine cal_position_pvr_screen(model_mat, project_mat)
 !!      subroutine overwte_pvr_domain_on_screen(model_mat, project_mat, &
 !!     &          num_pvr_surf, xx_pvr_domain)
@@ -25,35 +25,6 @@
 ! -----------------------------------------------------------------------
 !
       contains
-!
-! -----------------------------------------------------------------------
-!
-      subroutine copy_node_position_for_pvr(numnod, inod_smp_stack,     &
-     &          xx, nnod_pvr, istack_nod_pvr, x_nod_sim)
-!
-      integer(kind = kint), intent(in) :: numnod
-      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
-      real(kind = kreal), intent(in) :: xx(numnod,3)
-!
-      integer(kind = kint), intent(inout) :: nnod_pvr
-      integer(kind = kint), intent(inout) :: istack_nod_pvr(0:np_smp)
-      real(kind = kreal), intent(inout) :: x_nod_sim(nnod_pvr,4)
-!
-      integer(kind = kint) :: inod
-!
-!
-      istack_nod_pvr(0:np_smp) = inod_smp_stack(0:np_smp)
-!
-!$omp parallel do
-      do inod = 1, numnod
-        x_nod_sim(inod,1) = xx(inod,1)
-        x_nod_sim(inod,2) = xx(inod,2)
-        x_nod_sim(inod,3) = xx(inod,3)
-        x_nod_sim(inod,4) = one
-      end do
-!$omp end parallel do
-!
-      end subroutine copy_node_position_for_pvr
 !
 ! -----------------------------------------------------------------------
 !
@@ -104,42 +75,82 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_position_pvr_screen(model_mat, project_mat,        &
-     &          nnod_pvr, istack_nod_pvr, x_nod_sim, x_nod_model,       &
-     &          x_nod_screen)
+      subroutine cal_position_pvr_modelview                             &
+     &         (model_mat, numnod, xx, x_nod_model)
+!
+      real(kind = kreal), intent(in) :: model_mat(4,4)
+!
+      integer(kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(in) :: xx(numnod,3)
+      real(kind = kreal), intent(inout) :: x_nod_model(numnod,4)
+!
+      integer(kind = kint) :: inod
+!
+!
+!$omp parallel do private(inod)
+      do inod = 1, numnod
+          x_nod_model(inod,1) =  model_mat(1,1) * xx(inod,1)            &
+     &                         + model_mat(1,2) * xx(inod,2)            &
+     &                         + model_mat(1,3) * xx(inod,3)            &
+     &                         + model_mat(1,4) * one
+          x_nod_model(inod,2)  = model_mat(2,1) * xx(inod,1)            &
+     &                         + model_mat(2,2) * xx(inod,2)            &
+     &                         + model_mat(2,3) * xx(inod,3)            &
+     &                         + model_mat(2,4) * one
+          x_nod_model(inod,3) =  model_mat(3,1) * xx(inod,1)            &
+     &                         + model_mat(3,2) * xx(inod,2)            &
+     &                         + model_mat(3,3) * xx(inod,3)            &
+     &                         + model_mat(3,4) * one
+          x_nod_model(inod,4) =  model_mat(4,1) * xx(inod,1)            &
+     &                         + model_mat(4,2) * xx(inod,2)            &
+     &                         + model_mat(4,3) * xx(inod,3)            &
+     &                         + model_mat(4,4) * one
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_position_pvr_modelview
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_position_pvr_screen(project_mat, numnod,           &
+     &          x_nod_model, x_nod_screen)
 !
       use cal_matrix_vector_smp
 !
-      real(kind = kreal), intent(in) :: model_mat(4,4)
       real(kind = kreal), intent(in) :: project_mat(4,4)
 !
-      integer(kind = kint), intent(in) :: nnod_pvr
-      integer(kind = kint), intent(in) :: istack_nod_pvr(0:np_smp)
-      real(kind = kreal), intent(in) :: x_nod_sim(nnod_pvr,4)
-      real(kind = kreal), intent(inout) :: x_nod_model(nnod_pvr,4)
-      real(kind = kreal), intent(inout) :: x_nod_screen(nnod_pvr,4)
+      integer(kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(in) :: x_nod_model(numnod,4)
+      real(kind = kreal), intent(inout) :: x_nod_screen(numnod,4)
 !
-      integer(kind = kint) :: inod, ip
-      real(kind = kreal) :: coef
+      integer(kind = kint) :: inod
+      real(kind = kreal) :: coef, x1, x2, x3, x4
 !
 !
-!$omp parallel
-      call cal_matvec_44_on_node(np_smp, nnod_pvr, istack_nod_pvr,      &
-     &    model_mat, x_nod_sim, x_nod_model)
-!$omp end parallel
-!$omp parallel
-      call cal_matvec_44_on_node(np_smp, nnod_pvr, istack_nod_pvr,      &
-     &    project_mat, x_nod_model, x_nod_screen)
-!$omp end parallel
+      x_nod_screen = x_nod_model
+!$omp parallel do private(inod,x1,x2,x3,x4,coef)
+      do inod = 1, numnod
+        x1 =  project_mat(1,1)*x_nod_screen(inod,1)                     &
+     &      + project_mat(1,2)*x_nod_screen(inod,2)                     &
+     &      + project_mat(1,3)*x_nod_screen(inod,3)                     &
+     &      + project_mat(1,4)*x_nod_screen(inod,4)
+        x2 =  project_mat(2,1)*x_nod_screen(inod,1)                     &
+     &      + project_mat(2,2)*x_nod_screen(inod,2)                     &
+     &      + project_mat(2,3)*x_nod_screen(inod,3)                     &
+     &      + project_mat(2,4)*x_nod_screen(inod,4)
+        x3 =  project_mat(3,1)*x_nod_screen(inod,1)                     &
+     &      + project_mat(3,2)*x_nod_screen(inod,2)                     &
+     &      + project_mat(3,3)*x_nod_screen(inod,3)                     &
+     &      + project_mat(3,4)*x_nod_screen(inod,4)
+        x4 =  project_mat(4,1)*x_nod_screen(inod,1)                     &
+     &      + project_mat(4,2)*x_nod_screen(inod,2)                     &
+     &      + project_mat(4,3)*x_nod_screen(inod,3)                     &
+     &      + project_mat(4,4)*x_nod_screen(inod,4)
 !
-!$omp parallel do private(coef,ip,inod)
-      do ip = 1, np_smp
-        do inod = istack_nod_pvr(ip-1)+1, istack_nod_pvr(ip)
-          coef = one / x_nod_screen(inod,4)
-          x_nod_screen(inod,1) = x_nod_screen(inod,1) * coef
-          x_nod_screen(inod,2) = x_nod_screen(inod,2) * coef
-          x_nod_screen(inod,3) = x_nod_screen(inod,3) * coef
-        end do
+        coef = one / x4
+        x_nod_screen(inod,1) = x1 * coef
+        x_nod_screen(inod,2) = x2 * coef
+        x_nod_screen(inod,3) = x3 * coef
       end do
 !$omp end parallel do
 !

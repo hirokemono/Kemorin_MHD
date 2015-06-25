@@ -11,7 +11,7 @@
 !!     &          ray_vec, num_pvr_ray, istack_pvr_ray_sf)
 !!      subroutine set_each_pvr_ray_start                               &
 !!     &         (inum, numnod, numele, numsurf, nnod_4_surf,           &
-!!     &          xx, ie_surf, isf_4_ele, nnod_pvr, x_nod_screen,       &
+!!     &          xx, ie_surf, isf_4_ele, x_nod_screen,                 &
 !!     &          npixel_x, npixel_y, pixel_point_x, pixel_point_y,     &
 !!     &          num_pvr_surf, item_pvr_surf_domain,                   &
 !!     &          screen_norm_pvr_domain, xx_screen_pvr_domain,         &
@@ -164,7 +164,7 @@
 !
       subroutine set_each_pvr_ray_start                                 &
      &         (inum, numnod, numele, numsurf, nnod_4_surf,             &
-     &          xx, ie_surf, isf_4_ele, nnod_pvr, x_nod_screen,         &
+     &          xx, ie_surf, isf_4_ele, x_nod_screen,                   &
      &          npixel_x, npixel_y, pixel_point_x, pixel_point_y,       &
      &          num_pvr_surf, item_pvr_surf_domain,                     &
      &          screen_norm_pvr_domain, xx_screen_pvr_domain,           &
@@ -183,9 +183,7 @@
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
       real(kind = kreal), intent(in)  :: xx(numnod,3)
 !
-!
-      integer(kind = kint), intent(in) :: nnod_pvr
-      real(kind = kreal), intent(in) :: x_nod_screen(nnod_pvr,4)
+      real(kind = kreal), intent(in) :: x_nod_screen(numnod,4)
 !
       integer(kind = kint), intent(in) :: npixel_x, npixel_y
       real(kind = kreal), intent(in) :: pixel_point_x(npixel_x)
@@ -262,10 +260,10 @@
               xx_pvr_ray_start(1,icou) = x_pix(1)
               xx_pvr_ray_start(2,icou) = x_pix(2)
 !
-              call cal_field_on_surf_scalar(nnod_pvr, numsurf,          &
+              call cal_field_on_surf_scalar(numnod, numsurf,            &
      &              nnod_4_surf, ie_surf, isurf, xi_pvr_start(1,icou),  &
      &              x_nod_screen(1,3), xx_pvr_ray_start(3,icou) )
-              call cal_field_on_surf_vector(nnod_pvr, numsurf,          &
+              call cal_field_on_surf_vector(numnod, numsurf,            &
      &              nnod_4_surf, ie_surf, isurf, xi_pvr_start(1,icou),  &
      &              xx(1,1), xx_pvr_start(1,icou) )
               pvr_ray_dir(1:3,icou) = viewpoint_vec(1:3)                &
