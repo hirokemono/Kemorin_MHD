@@ -12,9 +12,9 @@
 !
       implicit none
 !
-      integer(kind = kint), parameter, private :: BAR_WIDTH = itwo*iten
-!
       private :: gen_colormark
+!
+      integer(kind = kint), parameter, private :: BAR_WIDTH = 12
 !
 !  ---------------------------------------------------------------------
 !
@@ -36,12 +36,8 @@
 !
       real(kind = kreal), intent(inout)  :: rgba_gl(4,num_pixel)
 !
-      integer(kind = kint) :: iext_colorbar
 !
       if(cbar_param%iflag_pvr_colorbar .eq. 1) then
-        iext_colorbar = 15 + 8 * 9 * cbar_param%iscale_font
-        iext_colorbar = iext_colorbar + ithree                          &
-     &                  - mod((iext_colorbar-ione),ifour) 
 !        if(cbar_param%cbar_range(2) .le. cbar_param%cbar_range(1)) then
 !          cbar_param%cbar_range(1:2) = outline%d_minmax_pvr(1:2)
 !        end if
@@ -51,7 +47,7 @@
      &      cbar_param%iflag_pvr_zero_mark,                             &
      &      cbar_param%iscale_font, cbar_param%ntick_pvr_colorbar,      &
      &      cbar_param%cbar_range(1), n_pvr_pixel,                      &
-     &      iext_colorbar, num_pixel, color_param, rgba_gl)
+     &      num_pixel, color_param, rgba_gl)
       end if
 !
       end subroutine set_pvr_colorbar
@@ -60,7 +56,7 @@
 !
       subroutine s_draw_pvr_colorbar(color_bar_style,                   &
      &         iflag_cbar_numeric, iflag_zero_mark, iscale,             &
-     &         num_of_scale, c_minmax, npix_img, isleeve_bar,           &
+     &         num_of_scale, c_minmax, npix_img,                        &
      &         ntot_pix, color_param, dimage)
 !
       use t_control_params_4_pvr
@@ -70,7 +66,6 @@
       integer(kind = kint), intent(in) :: iflag_cbar_numeric
       integer(kind = kint), intent(in) :: iflag_zero_mark
       real(kind = kreal), intent(in) :: c_minmax(2)
-      integer(kind = kint), intent(in) :: isleeve_bar
       integer(kind = kint), intent(in) :: npix_img(2)
       integer(kind = kint), intent(in) :: ntot_pix
 !
@@ -81,7 +76,12 @@
 !
       real(kind = kreal), intent(inout) :: dimage(4,ntot_pix)
 !
+      integer(kind = kint):: isleeve_bar
 !
+!
+        isleeve_bar = BAR_WIDTH + 6 + 8 * 9 * iscale
+        isleeve_bar = isleeve_bar + ithree                              &
+     &                  - mod((isleeve_bar-ione),ifour) 
 !
       if (color_bar_style .gt. 0) then
         call gen_colormark(iscale, c_minmax, npix_img,                  &
@@ -160,7 +160,12 @@
      &    color_param%num_pvr_datamap_pnt,                              &
      &    color_param%pvr_datamap_param, value, color)
 !
-        do i = ist, ied-1
+        do i = ist, ist+BAR_WIDTH/2-1
+          k = j*npix_img(1) + i + 1
+          dimage(1:3,k) = color(1:3)
+          dimage(4,k) = one
+        end do
+        do i = ist+BAR_WIDTH/2, ist+BAR_WIDTH-1
           k = j*npix_img(1) + i + 1
           dimage(1:3,k) = color(1:3) * opa_current
           dimage(4,k) = one

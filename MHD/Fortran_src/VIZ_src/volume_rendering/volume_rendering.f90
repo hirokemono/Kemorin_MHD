@@ -223,6 +223,8 @@
           ied_rot = view_params(i_pvr)%iprm_pvr_rot(2)
         end if
 !
+        ist_rot = view_params(i_pvr)%istart_rot
+        ied_rot = view_params(i_pvr)%iend_rot
         do i_rot = ist_rot, ied_rot
           if(view_params(i_pvr)%iflag_rotate_snap .gt. 0) then
             call cal_pvr_modelview_matrix(i_rot, outlines(i_pvr),       &

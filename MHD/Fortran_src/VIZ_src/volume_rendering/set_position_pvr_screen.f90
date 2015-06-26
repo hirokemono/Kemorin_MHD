@@ -9,7 +9,7 @@
 !!
 !!      subroutine cal_position_pvr_modelview                           &
 !!     &         (model_mat, numnod, xx, x_nod_model)
-!!      subroutine cal_position_pvr_screen(model_mat, project_mat)
+!!      subroutine overwte_position_pvr_screen(model_mat, project_mat)
 !!      subroutine overwte_pvr_domain_on_screen(model_mat, project_mat, &
 !!     &          num_pvr_surf, xx_pvr_domain)
 !
@@ -112,22 +112,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_position_pvr_screen(project_mat, numnod,           &
-     &          x_nod_model, x_nod_screen)
+      subroutine overwte_position_pvr_screen(project_mat, numnod,       &
+     &          x_nod_screen)
 !
       use cal_matrix_vector_smp
 !
       real(kind = kreal), intent(in) :: project_mat(4,4)
 !
       integer(kind = kint), intent(in) :: numnod
-      real(kind = kreal), intent(in) :: x_nod_model(numnod,4)
       real(kind = kreal), intent(inout) :: x_nod_screen(numnod,4)
 !
       integer(kind = kint) :: inod
       real(kind = kreal) :: coef, x1, x2, x3, x4
 !
 !
-      x_nod_screen = x_nod_model
 !$omp parallel do private(inod,x1,x2,x3,x4,coef)
       do inod = 1, numnod
         x1 =  project_mat(1,1)*x_nod_screen(inod,1)                     &
@@ -154,7 +152,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine cal_position_pvr_screen
+      end subroutine overwte_position_pvr_screen
 !
 ! -----------------------------------------------------------------------
 !

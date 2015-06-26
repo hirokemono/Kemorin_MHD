@@ -287,7 +287,7 @@
      &     (id_fld, ioff_gl, each_field_name_buffer(field_name(j)))
         call gz_write_fld_vecotr_mpi(id_fld, ioff_gl,                   &
      &      nnod, ncomp_field(j), d_nod(1,icou))
-        write(*,*) 'gz_write_fld_vecotr_mpi end', j, my_rank, ioff_gl
+!        write(*,*) 'gz_write_fld_vecotr_mpi end', j, my_rank, ioff_gl
         icou = icou + ncomp_field(j)
       end do
 !
@@ -426,11 +426,11 @@
       icou = 1
       do j = 1, num_field
         call gz_read_fld_1word_mpi(id_fld, ioff_gl, field_name(j))
-         write(*,*) 'gz_read_each_field_mpi start', j, my_rank
+!         write(*,*) 'gz_read_each_field_mpi start', j, my_rank
         call gz_read_each_field_mpi(id_fld, nprocs_in, id_rank,        &
      &      ioff_gl, nnod, ncomp_field(j), d_nod(1,icou))
-         write(*,*) 'gz_read_each_field_mpi end', j, my_rank
-         if(my_rank .eq. 0) write(*,*) field_name(j)
+!         write(*,*) 'gz_read_each_field_mpi end', j, my_rank
+         if(my_rank .eq. 0) write(*,*) 'Read ', j, trim(field_name(j))
         icou = icou + ncomp_field(j)
       end do
 !

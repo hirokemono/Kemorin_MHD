@@ -73,7 +73,7 @@
       integer(kind=kint_gl), intent(in) :: nnod
 !
 !
-      write(textbuf,'(a,a1)') vtk_fields_head(nnod), char(0)
+      textbuf =  vtk_fields_head(nnod) // char(0)
       call gz_write_textbuf_no_lf
 !
       end subroutine write_gz_vtk_fields_head
@@ -89,11 +89,11 @@
 !
 !
       if (ncomp_field .eq. n_scalar) then
-        write(textbuf,'(a,a1)') vtk_scalar_head(field_name), char(0)
+        textbuf = vtk_scalar_head(field_name) // char(0)
       else if (ncomp_field .eq. n_vector) then
-        write(textbuf,'(a,a1)') vtk_vector_head(field_name), char(0)
+        textbuf =  vtk_vector_head(field_name) // char(0)
       else if (ncomp_field .eq. n_sym_tensor) then
-        write(textbuf,'(a,a1)') vtk_tensor_head(field_name), char(0)
+        textbuf =  vtk_tensor_head(field_name) // char(0)
       end if
       call gz_write_textbuf_no_lf
 !
@@ -124,15 +124,13 @@
         end do
       else if(ncomp_field .eq. n_vector) then
         do inod = 1, nnod
-          write(textbuf,'(a,a1)')                                       &
-     &    vtk_each_vector(d_nod(inod,1), d_nod(inod,2), d_nod(inod,3)), &
-     &    char(0)
+          textbuf = vtk_each_vector(d_nod(inod,1), d_nod(inod,2),       &
+     &                              d_nod(inod,3)) // char(0)
           call gz_write_textbuf_no_lf
         end do
       else
         do inod = 1, nnod
-          write(textbuf,'(a,a1)')                                       &
-     &     vtk_each_scalar(d_nod(inod,1)), char(0)
+          textbuf = vtk_each_scalar(d_nod(inod,1)) // char(0)
           call gz_write_textbuf_no_lf
         end do
       end if
@@ -147,7 +145,7 @@
       integer(kind = kint_gl), intent(in) :: nnod
 !
 !
-      write(textbuf,'(a,a1)') vtk_node_head(nnod), char(0)
+      textbuf =  vtk_node_head(nnod) // char(0)
       call gz_write_textbuf_no_lf
 !
       end subroutine write_gz_vtk_node_head
@@ -161,7 +159,7 @@
       integer(kind = kint_gl), intent(in) :: nele
 !
 !
-      write(textbuf,'(a,a1)') vtk_connect_head(nele, nnod_ele), char(0)
+      textbuf =  vtk_connect_head(nele, nnod_ele) // char(0)
       call gz_write_textbuf_no_lf
 !
       end subroutine write_gz_vtk_connect_head
@@ -181,11 +179,11 @@
 !
       icellid = vtk_cell_type(nnod_ele)
 !
-      write(textbuf,'(a,a1)')  vtk_cell_type_head(nele), char(0)
+      textbuf = vtk_cell_type_head(nele) // char(0)
       call gz_write_textbuf_no_lf
 !
       do iele = 1, nele
-        write(textbuf,'(a,a1)') vtk_each_cell_type(icellid), char(0)
+        textbuf =  vtk_each_cell_type(icellid) // char(0)
         call gz_write_textbuf_no_lf
       end do
 !
@@ -206,7 +204,7 @@
 !
       do iele = 1, nele
         ie0(1:nnod_ele) = ie(iele,1:nnod_ele) - 1
-        write(textbuf,'(a,a1)') vtk_each_connect(nnod_ele,ie0), char(0)
+        textbuf =  vtk_each_connect(nnod_ele,ie0) // char(0)
         call gz_write_textbuf_no_lf
       end do
 !

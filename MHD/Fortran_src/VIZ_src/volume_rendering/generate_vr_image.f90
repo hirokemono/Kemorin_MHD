@@ -66,8 +66,8 @@
      &    pvr_bound%screen_norm)
 !
 !
-      call cal_position_pvr_screen(view_param%projection_mat,           &
-     &    numnod, field_pvr%x_nod_model, field_pvr%x_nod_screen)
+      call overwte_position_pvr_screen(view_param%projection_mat,       &
+     &    numnod, field_pvr%x_nod_model)
 !
       call copy_node_position_pvr_domain(numnod, numele, numsurf,       &
      &    nnod_4_surf, xx, ie_surf, isf_4_ele, pvr_bound%num_pvr_surf,  &
@@ -77,7 +77,7 @@
      &    pvr_bound%xx_nod)
       call set_pvr_domain_surface_data(view_param%n_pvr_pixel,          &
      &    numnod, numele, numsurf, nnod_4_surf, ie_surf, isf_4_ele,     &
-     &    field_pvr%x_nod_screen, pvr_bound)
+     &    field_pvr%x_nod_model, pvr_bound)
 !
       end subroutine transfer_to_screen
 !
@@ -130,7 +130,7 @@
       if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
       call ray_trace_local(numnod, numele, numsurf,                     &
      &       nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf, e_multi, xx, &
-     &       view_param%viewpoint_vec, field_pvr%x_nod_screen,          &
+     &       view_param%viewpoint_vec, field_pvr%x_nod_model,           &
      &       field_pvr, color_param, pvr_start, pvr_img)
 !
       if(iflag_debug .gt. 0) write(*,*) 'write_pvr_image_file', i_pvr
@@ -187,7 +187,7 @@
 !$omp parallel do private (inum)
       do inum = 1, pvr_bound%num_pvr_surf
         call set_each_pvr_ray_start(inum, numnod, numele, numsurf,      &
-     &    nnod_4_surf, xx, ie_surf, isf_4_ele, field_pvr%x_nod_screen,  &
+     &    nnod_4_surf, xx, ie_surf, isf_4_ele, field_pvr%x_nod_model,   &
      &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
      &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &

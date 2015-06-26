@@ -128,6 +128,10 @@
 !!@n        rotatin axis:    iprm_pvr_rot(1)
 !!@n        number of frame: iprm_pvr_rot(2)
         integer(kind = kint) :: iprm_pvr_rot(2) = (/0,0/)
+!>     Rotation start step
+        integer(kind = kint) :: istart_rot = 0
+!>     Rotation end step
+        integer(kind = kint) :: iend_rot =   0
       end type pvr_view_parameter
 !
 !

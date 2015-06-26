@@ -27,10 +27,9 @@
 !
 !>  Structure for field data on projected coordinate
       type pvr_projected_field
-!>    Position in modelview coordinate
+!>    Position in modelview coordinate and screen coordinate
+!!@n    (Overwritten)
         real(kind = kreal), pointer :: x_nod_model(:,:)
-!>    Position in screen coordinate
-        real(kind = kreal), pointer :: x_nod_screen(:,:)
 !>    Data for rendering
         real(kind = kreal), pointer :: d_pvr(:)
 !>    Gradient for rendering
@@ -68,14 +67,12 @@
 !
 !
       allocate(fld_pvr%x_nod_model(nnod,4))
-      allocate(fld_pvr%x_nod_screen(nnod,4))
 !
       allocate(fld_pvr%d_pvr(nnod))
       allocate(fld_pvr%grad_ele(nele,3))
 !
       if(nnod .gt. 0) then
         fld_pvr%x_nod_model =  0.0d0
-        fld_pvr%x_nod_screen = 0.0d0
         fld_pvr%d_pvr =        0.0d0
       end if
       if(nele .gt. 0) fld_pvr%grad_ele = 0.0d0
@@ -104,7 +101,7 @@
 !
       deallocate(fld_pvr%iflag_used_ele)
       deallocate(fld_pvr%d_pvr, fld_pvr%grad_ele)
-      deallocate(fld_pvr%x_nod_model, fld_pvr%x_nod_screen)
+      deallocate(fld_pvr%x_nod_model)
 !
       end subroutine dealloc_data_4_pvr
 !

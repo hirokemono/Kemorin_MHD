@@ -72,12 +72,12 @@
       fld_IO%num_field_IO = 0
        do i_fld = 1, num_phys_rj
          if   ( phys_name_rj(i_fld) .eq. fhd_velo                       &
-     &     .or. phys_name_rj(i_fld) .eq. fhd_vort                       &
-     &     .or. phys_name_rj(i_fld) .eq. fhd_press                      &
+!     &     .or. phys_name_rj(i_fld) .eq. fhd_vort                      &
+!     &     .or. phys_name_rj(i_fld) .eq. fhd_press                     &
      &     .or. phys_name_rj(i_fld) .eq. fhd_temp                       &
      &     .or. phys_name_rj(i_fld) .eq. fhd_light                      &
      &     .or. phys_name_rj(i_fld) .eq. fhd_magne                      &
-     &     .or. phys_name_rj(i_fld) .eq. fhd_mag_potential              &
+!     &     .or. phys_name_rj(i_fld) .eq. fhd_mag_potential             &
      &     .or. phys_name_rj(i_fld) .eq. fhd_entropy                    &
      &     .or. phys_name_rj(i_fld) .eq. fhd_pre_mom                    &
      &     .or. phys_name_rj(i_fld) .eq. fhd_pre_uxb                    &
@@ -109,7 +109,7 @@
       fld_IO%istack_comp_IO(0) = 0
       do i_fld = 1, num_phys_rj
         if         (phys_name_rj(i_fld) .eq. fhd_velo                   &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_vort                   &
+!     &         .or. phys_name_rj(i_fld) .eq. fhd_vort                  &
      &         .or. phys_name_rj(i_fld) .eq. fhd_magne                  &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_mom                &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_uxb                &
@@ -119,11 +119,11 @@
           fld_IO%num_comp_IO(icou) = n_vector
           fld_IO%istack_comp_IO(icou) = fld_IO%istack_comp_IO(icou-1)   &
      &                                 + fld_IO%num_comp_IO(icou)
-        else if    (phys_name_rj(i_fld) .eq. fhd_press                  &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_temp                   &
+        else if    (phys_name_rj(i_fld) .eq. fhd_temp                   &
      &         .or. phys_name_rj(i_fld) .eq. fhd_light                  &
+!     &         .or. phys_name_rj(i_fld) .eq. fhd_press                 &
      &         .or. phys_name_rj(i_fld) .eq. fhd_entropy                &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_mag_potential          &
+!     &         .or. phys_name_rj(i_fld) .eq. fhd_mag_potential         &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_heat               &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_composit           &
      &         .or. phys_name_rj(i_fld) .eq. fhd_heat_source            &
@@ -166,18 +166,18 @@
         do j_IO = 1, fld_IO%num_field_IO
           if (phys_name_rj(i_fld) .eq. fld_IO%fld_name(j_IO)) then
             if     (phys_name_rj(i_fld) .eq. fhd_velo                   &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_vort                   &
+!     &         .or. phys_name_rj(i_fld) .eq. fhd_vort                  &
      &         .or. phys_name_rj(i_fld) .eq. fhd_magne                  &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_mom                &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_uxb                &
      &         ) then
               call copy_each_sph_vector_to_IO(i_fld, j_IO, fld_IO)
 !
-            else if(phys_name_rj(i_fld) .eq. fhd_press                  &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_temp                   &
+            else if(phys_name_rj(i_fld) .eq. fhd_temp                   &
      &         .or. phys_name_rj(i_fld) .eq. fhd_light                  &
+!     &         .or. phys_name_rj(i_fld) .eq. fhd_press                 &
      &         .or. phys_name_rj(i_fld) .eq. fhd_entropy                &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_mag_potential          &
+!     &         .or. phys_name_rj(i_fld) .eq. fhd_mag_potential         &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_heat               &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_composit           &
      &         .or. phys_name_rj(i_fld) .eq. fhd_heat_source            &
@@ -221,18 +221,18 @@
         do j_IO = 1, fld_IO%num_field_IO
           if (phys_name_rj(i_fld) .eq. fld_IO%fld_name(j_IO)) then
             if     (phys_name_rj(i_fld) .eq. fhd_velo                   &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_vort                   &
+ !    &         .or. phys_name_rj(i_fld) .eq. fhd_vort                  &
      &         .or. phys_name_rj(i_fld) .eq. fhd_magne                  &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_mom                &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_uxb                &
      &         ) then
               call copy_each_sph_vector_from_IO(i_fld, j_IO, fld_IO)
 !
-            else if     (phys_name_rj(i_fld) .eq. fhd_press             &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_temp                   &
+            else if(phys_name_rj(i_fld) .eq. fhd_temp                   &
      &         .or. phys_name_rj(i_fld) .eq. fhd_light                  &
+!     &         .or. phys_name_rj(i_fld) .eq. fhd_press                 &
      &         .or. phys_name_rj(i_fld) .eq. fhd_entropy                &
-     &         .or. phys_name_rj(i_fld) .eq. fhd_mag_potential          &
+!     &         .or. phys_name_rj(i_fld) .eq. fhd_mag_potential         &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_heat               &
      &         .or. phys_name_rj(i_fld) .eq. fhd_pre_composit           &
      &         .or. phys_name_rj(i_fld) .eq. fhd_heat_source            &

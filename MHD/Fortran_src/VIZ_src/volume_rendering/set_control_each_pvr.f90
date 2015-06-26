@@ -222,6 +222,15 @@
         view_param%iflag_rotate_snap = 0
         view_param%iprm_pvr_rot(1) = 0
         view_param%iprm_pvr_rot(2) = 1
+        view_param%iflag_rotate_snap = 0
+      end if
+!
+      if(view_param%iflag_rotate_snap .eq. 0) then
+        view_param%istart_rot = 0
+        view_param%iend_rot =   0
+      else
+        view_param%istart_rot = 1
+        view_param%iend_rot =   view_param%iprm_pvr_rot(2)
       end if
 !
 !    set colormap setting

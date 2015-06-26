@@ -85,8 +85,8 @@
 !
       do inod = 1, nnod
         dat_1(1:ncomp_dat) = dat_out(inod,1:ncomp_dat)
-        write(textbuf,'(a,a1)')                                         &
-     &       ucd_each_field(inod_out(inod), ncomp_dat, dat_1), char(0)
+        textbuf = ucd_each_field(inod_out(inod), ncomp_dat, dat_1)      &
+     &           // char(0)
         call gz_write_textbuf_no_lf
       end do
 !
@@ -235,8 +235,8 @@
       integer(kind = kint), intent(in) :: ncomp_output
 !
 !
-      write(textbuf,'(a,a1)')                                           &
-     &   ucd_connect_head(nnod_output, nele_out, ncomp_output), char(0)
+      textbuf = ucd_connect_head(nnod_output, nele_out, ncomp_output)   &
+     &         // char(0)
       call gz_write_textbuf_no_lf
 !
       end subroutine write_gz_udt_mesh_header
@@ -260,8 +260,8 @@
 !
       do iele = 1, nele
         ie0(1:nnod_ele) = ie_gl(iele,1:nnod_ele)
-        write(textbuf,'(a,a1)')                                         &
-     &          ucd_each_connect(iele_gl(iele), nnod_ele, ie0), char(0)
+        textbuf = ucd_each_connect(iele_gl(iele), nnod_ele, ie0)        &
+     &           // char(0)
         call gz_write_textbuf_no_lf
       end do
 !
