@@ -8,7 +8,7 @@ AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
 AM_INIT_AUTOMAKE
 AM_CONDITIONAL([am__fastdepOBJC], false)
 AM_CONDITIONAL([am__fastdepCXX], false)
-
+AC_CANONICAL_HOST
 
 dnl Include Fortran related definitions
 builtin(include,MHD/confdb/aclocal_fc.m4)
@@ -88,6 +88,12 @@ AC_PROG_CC
 AC_PROG_FC
 AC_PROG_RANLIB
 AC_MSG_RESULT(RANLIB... "${RANLIB}")
+
+if test ${host_alias} = "powerpc64-bgq-linux"
+then
+  XL_FORTRAN="__bgq__"
+fi
+AC_SUBST(XL_FORTRAN)
 
 
 if test -z ${AR}
@@ -310,9 +316,12 @@ if test -n "${LIBS}"
 fi
 AC_SUBST(PGPLOT_LIBS)
 
-
 AC_MSG_RESULT()
 AC_MSG_RESULT(-----   Configuration summary   -------------------------------)
+AC_MSG_RESULT()
+AC_MSG_RESULT(  host:        "${host}")
+AC_MSG_RESULT(  host_alias:  "${host_alias}")
+AC_MSG_RESULT(XL_FORTRAN:    "${XL_FORTRAN}")
 AC_MSG_RESULT()
 if test -n "${OPENMP_FCFLAGS}"; then
         AC_MSG_RESULT(    Use OpenMP ...        yes)

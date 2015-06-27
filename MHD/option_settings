@@ -6,7 +6,7 @@ Settings for Makefiles
 #
 ./configure --prefix='/hsfs/home0/matsui/local' CC=cc FC=f90 \
 AR="ar -X64" RANLIB="ranlib -X64" MPICC=mpcc_r MPIFC=mpif90 \
-FCFLAGS="-64 -O4 -noifswpl  -pardiag=2 -autoinline=2 -model=L1 -pmfunc" \
+FCFLAGS="-O3 -O4 -noifswpl  -autoinline=2" \
 PKG_CONFIG_PATH=/hsfs/home0/matsui/local/lib/pkgconfig \
 --with-blas=yes --enable-fftw3 --enable-libpng  --with-zlib=/hsfs/home0/matsui/local \
 --with-pgplot=/hsfs/home0/matsui/local/pgplot --with-hdf5=no
@@ -207,13 +207,17 @@ PKG_CONFIG_PATH='/usr/lib64/pkgconfig:/glade/apps/opt/fftw/3.3.2/intel/12.1.4/li
 #
 # ANL Mira
 #
-./configure --prefix='/home/matsui/local' --enable-fftw3 --enable-libpng --disable-gl \
+../configure --host=powerpc64-bgq-linux --prefix='/home/matsui/local' \
+--enable-fftw3 --enable-libpng --disable-gl \
 --with-hdf5=no --with-zlib=/soft/libraries/alcf/current/xl/ZLIB --without-pgplot \
-CC=bgxlc FC=bgxlf MPICC=mpixlc MPIF90=mpixlf90 \
+CC=bgxlc FC=bgxlf90_r MPICC=mpixlc MPIFC=mpixlf90_r \
 CFLAGS='-O3 -q64' FCFLAGS='-O3 -q64' \
 FFTW3_CFLAGS='-I/soft/libraries/alcf/current/xl/FFTW3/include' \
 FFTW3_LIBS='-L/soft/libraries/alcf/current/xl/FFTW3/lib -lfftw3' \
 PKG_CONFIG_PATH="$PKG_CONFIG_PATH":/home/matsui/local/lib/pkgconfig
+
+# LDFLAGS='-L /soft/compilers/ibmcmp-nov2012/xlsmp/bg/3.1/lib64 -lxlomp_ser -L/soft/compilers/ibmcmp-nov2012/xlf/bg/14.1/lib64 -lxlf90 -lxl' \
+
 #
 # -------------------------------------------------------------------------------
 # Intel mac with gfortran-openmpi (MacBook Pro with macport)

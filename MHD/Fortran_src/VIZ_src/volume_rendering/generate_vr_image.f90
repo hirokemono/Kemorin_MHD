@@ -118,8 +118,6 @@
       type(pvr_image_type), intent(inout) :: pvr_img
 !
 !
-      call alloc_pvr_image_array_type(view_param%n_pvr_pixel, pvr_img)
-!
       if(iflag_debug .gt. 0) write(*,*) 's_set_pvr_ray_start_point'
       call s_set_pvr_ray_start_point(numnod, numele, numsurf,           &
      &        nnod_4_surf, xx, ie_surf, isf_4_ele,                      &
@@ -136,9 +134,6 @@
       if(iflag_debug .gt. 0) write(*,*) 'write_pvr_image_file', i_pvr
       call write_pvr_image_file(file_param, color_param, cbar_param,    &
      &    i_rot, istep_pvr, pvr_img)
-!
-      call deallocate_pvr_ray_start(pvr_start)
-      call dealloc_pvr_image_array_type(pvr_img)
 !
       end subroutine rendering_image
 !
@@ -170,9 +165,6 @@
 !
       integer(kind = kint) :: inum
 !
-!
-      call allocate_num_pvr_ray_start                                   &
-     &   (pvr_bound%num_pvr_surf, pvr_start)
 !
       call count_each_pvr_ray_start_point(numele, isf_4_ele,            &
      &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
@@ -250,9 +242,8 @@
      &    pvr_img%iflag_mapped, pvr_img%rgba_lc, pvr_img%depth_lc)
 !
 !
-!      call sel_write_pvr_local_img                                     &
-!     &   (file_param, pvr_img%num_pixels, pvr_img%num_pixel_xy,        &
-!     &    pvr_img%rgba_lc,  pvr_img%rgb_chara_lc)
+      call deallocate_item_pvr_ray_start(pvr_start)
+!      call sel_write_pvr_local_img(file_param, pvr_img)
 !
       end subroutine ray_trace_local
 !
@@ -274,18 +265,12 @@
 !
       type(pvr_image_type), intent(inout) :: pvr_img
 !
-!
       if(iflag_debug .gt. 0) write(*,*) 'blend_image_over_domains'
-      call blend_image_over_domains(color_param, cbar_param,            &
-     &    pvr_img%istack_image, pvr_img%num_pixels,                     &
-     &    pvr_img%num_pixel_xy, pvr_img%iflag_mapped, pvr_img%depth_lc, &
-     &    pvr_img%rgba_lc, pvr_img%rgba_real_gl)
+      call blend_image_over_domains(color_param, cbar_param, pvr_img)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
       call sel_write_pvr_image_file                                     &
-     &   (file_param, i_rot, istep_pvr, pvr_img%num_pixels,             &
-     &    pvr_img%num_pixel_xy, pvr_img%rgba_real_gl,                   &
-     &    pvr_img%rgba_chara_gl, pvr_img%rgb_chara_gl)
+     &   (file_param, i_rot, istep_pvr, pvr_img)
 !
       end subroutine write_pvr_image_file
 !

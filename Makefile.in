@@ -32,8 +32,8 @@ F90_LOCAL = $(F90)
 MPIF90 = @MPIFC@
 MPICC =  @MPICC@
 
-GMAKE = @GMAKE@
-AR = @ar_bin@
+GMAKE =  @GMAKE@
+AR =     @ar_bin@
 RANLIB = @RANLIB@
 
 #
@@ -42,11 +42,12 @@ RANLIB = @RANLIB@
 #    C routtine name mangle flag for Fortran connection
 #     -DFC_NAME_LOWER_USCORE, -DFC_NAME_UPPER, or -DFC_NAME_LOWER
 # FC_NAME_MANGLE -DWITH_FLAG is defined to use cocoa Framework
+# XL_FORTRAN   Set "-WF," option for cpp preprocessor
 #
 OPENMP_FCFLAGS = @OPENMP_FCFLAGS@
 FC_NAME_MANGLE = @DFC_NAME_MANGLE@
 COCOA_FLAG =     @COCOA_FLAG@
-
+XL_FORTRAN =     @XL_FORTRAN@
 #
 #  optimization
 #
@@ -153,6 +154,7 @@ makemake: $(MAKE_MOD_DEP)
 		AR="$(AR)" \
 		RANLIB="$(RANLIB)" \
 		MAKE_MOD_DEP="$(MAKE_MOD_DEP)" \
+        XL_FORTRAN="$(XL_FORTRAN)" \
 		makemake
 
 

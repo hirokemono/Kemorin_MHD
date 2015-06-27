@@ -70,8 +70,8 @@
 !
       type(pvr_pixel_position_type), allocatable, save :: pixel_xy(:)
 !
-      type(pvr_ray_start_type), save :: pvr_start
-      type(pvr_image_type), save :: pvr_img
+      type(pvr_ray_start_type), allocatable, save :: pvr_start(:)
+      type(pvr_image_type), allocatable, save :: pvr_img(:)
 !
       private :: file_params, fld_params, view_params
       private :: color_params, cbar_params
@@ -148,6 +148,11 @@
      &         nnod_4_surf, xx, ie_surf, isf_4_ele, field_pvr(i_pvr),   &
      &         view_params(i_pvr), pvr_bound(i_pvr))
         end if
+!
+        call allocate_num_pvr_ray_start                                 &
+     &   (pvr_bound(i_pvr)%num_pvr_surf, pvr_start(i_pvr))
+        call alloc_pvr_image_array_type                                 &
+     &     (view_params(i_pvr)%n_pvr_pixel, pvr_img(i_pvr))
       end do
 !
 !      call check_surf_rng_pvr_domain(my_rank)
@@ -215,14 +220,6 @@
         call set_default_pvr_data_params                                &
      &     (outlines(i_pvr)%d_minmax_pvr, color_params(i_pvr))
 !
-        if(view_params(i_pvr)%iflag_rotate_snap .eq. 0) then
-          ist_rot = 0
-          ied_rot = 0
-        else
-          ist_rot = 1
-          ied_rot = view_params(i_pvr)%iprm_pvr_rot(2)
-        end if
-!
         ist_rot = view_params(i_pvr)%istart_rot
         ied_rot = view_params(i_pvr)%iend_rot
         do i_rot = ist_rot, ied_rot
@@ -239,7 +236,8 @@
      &       nnod_4_surf, e_multi, xx, ie_surf, isf_4_ele, iele_4_surf, &
      &       file_params(i_pvr), color_params(i_pvr),                   &
      &       cbar_params(i_pvr), view_params(i_pvr), field_pvr(i_pvr),  &
-     &       pvr_bound(i_pvr), pixel_xy(i_pvr), pvr_start, pvr_img)
+     &       pvr_bound(i_pvr), pixel_xy(i_pvr),                         &
+     &       pvr_start(i_pvr), pvr_img(i_pvr))
 !
           call calypso_MPI_barrier
         end do
@@ -268,6 +266,8 @@
       allocate(pixel_xy(num_pvr))
       allocate(outlines(num_pvr))
       allocate(field_pvr(num_pvr))
+      allocate(pvr_start(num_pvr))
+      allocate(pvr_img(num_pvr))
 !
       end subroutine allocate_components_4_pvr
 !

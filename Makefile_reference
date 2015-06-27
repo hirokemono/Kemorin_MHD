@@ -46,7 +46,10 @@ RANLIB = ranlib
 #     -DWITH_PGPLOT .... generate programs using PGPLOT
 #
 
+OPENMP_FCFLAGS = -fopenmp
 FC_NAME_MANGLE = -DCONNECT_TO_C -DFC_NAME_LOWER_USCORE
+COCOA_FLAG =     -D__APPLE__
+XL_FORTRAN =     -D__bgq__
 
 #
 F90OPTFLAGS= -O3 -fopenmp -Wall
@@ -156,6 +159,7 @@ makemake: mpif.h
 		MPICC="$(MPICC)"   \
 		AR="$(AR)" \
 		RANLIB="$(RANLIB)" \
+        XL_FORTRAN="$(XL_FORTRAN)" \
 		makemake
 
 

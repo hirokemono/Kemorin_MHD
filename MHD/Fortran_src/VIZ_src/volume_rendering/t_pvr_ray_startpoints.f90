@@ -51,7 +51,6 @@
 !>  Direction of Ray in screen coordinate
       real(kind = kreal), parameter :: ray_vec(3) = (/zero, zero, one/)
 !
-      private :: deallocate_item_pvr_ray_start
       private :: deallocate_num_pvr_ray_start
 !
 !  ---------------------------------------------------------------------

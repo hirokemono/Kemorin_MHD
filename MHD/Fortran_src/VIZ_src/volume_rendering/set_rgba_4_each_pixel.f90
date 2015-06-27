@@ -135,7 +135,13 @@
       else if(transfer_function_style .eq. iflag_pointlinear) then
         opacity_local = opa_value
         do i = 1, num_of_features-1
-          if(value.ge.fea_point(1,i)                                    &
+          if(value .le. fea_point(1,1)) then
+            opacity_local = fea_point(3,1)
+            exit
+          else if(value .ge. fea_point(1,num_of_features)) then
+            opacity_local = fea_point(3,num_of_features)
+            exit
+          else if(value.ge.fea_point(1,i)                               &
      &         .and. value.le.fea_point(1,i+1)) then
             opacity_local = fea_point(3,i)                              &
      &                     + (fea_point(3,i+1) - fea_point(3,i))        &

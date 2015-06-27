@@ -11,11 +11,9 @@
 !!     &          depth_lc, rgba_lc, rgba_real_gl)
 !!      subroutine cvt_double_rgba_to_char_rgb(num_pixel, rgba, crgb)
 !!      subroutine cvt_double_rgba_to_char_rgba(num_pixel, rgba, crgba)
-!!      subroutine sel_write_pvr_image_file(file_param,                 &
-!!     &          i_rot, istep_pvr, n_pvr_pixel, num_pixel_xy,          &
-!!     &          rgba_real_gl, rgba_chara_gl, rgb_chara_gl)
-!!      subroutine sel_write_pvr_local_img(file_param,                  &
-!!     &         n_pvr_pixel, num_pixel_xy, rgba_lc, rgb_chara)
+!!      subroutine sel_write_pvr_image_file                             &
+!!     &         (file_param, i_rot, istep_pvr, pvr_img)
+!!      subroutine sel_write_pvr_local_img(file_param, pvr_img)
 !
       module composite_pvr_images
 !
@@ -36,6 +34,9 @@
       integer, save, allocatable :: req2(:  )
 !
       private :: sta1, sta2, req1, req2
+!
+      private :: blend_image_from_subdomains, distribute_average_depth
+      private :: distribute_segmented_images, collect_segmented_images
 !
 !  ---------------------------------------------------------------------
 !
@@ -67,59 +68,169 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine blend_image_over_domains(color_param, cbar_param,      &
-     &          istack_image, n_pvr_pixel, num_pixel_xy, iflag_mapped,  &
-     &          depth_lc, rgba_lc, rgba_real_gl)
+      subroutine blend_image_over_domains                               &
+     &          (color_param, cbar_param, pvr_img)
 !
       use t_control_params_4_pvr
-      use quicksort
-      use set_rgba_4_each_pixel
+      use t_pvr_image_array
       use draw_pvr_colorbar
-      use cal_minmax_and_stacks
-!
-      integer(kind = kint), intent(in) :: n_pvr_pixel(2)
 !
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
-!
-      integer(kind = kint), intent(in) :: iflag_mapped(num_pixel_xy)
-      real(kind = kreal), intent(in) :: rgba_lc(4,num_pixel_xy)
-      real(kind = kreal), intent(in) :: depth_lc(num_pixel_xy)
-      integer(kind = kint), intent(in) :: num_pixel_xy
-!
-      integer(kind = kint), intent(inout) :: istack_image(0:nprocs)
-      real(kind = kreal), intent(inout) :: rgba_real_gl(4,num_pixel_xy)
-      integer(kind = kint) :: npixel_local
-!
-      integer(kind = kint), allocatable :: ip_farther(:)
-      real(kind = kreal), allocatable :: ave_depth_gl(:)
-      real(kind = kreal) :: ave_depth_lc, covered_area
-      real(kind = kreal), allocatable :: rgba_part(:,:,:)
-      real(kind = kreal), allocatable :: rgba_real_part(:,:)
-!
-      integer(kind = kint) :: num, ip, inum, ipix, max_smp, ist
-      integer(kind = kint) :: nneib_recv
+      type(pvr_image_type), intent(inout) :: pvr_img
 !
 !
       call alloc_pvr_image_comm_status
 !
-      allocate(ave_depth_gl(nprocs))
-      allocate(ip_farther(nprocs))
-      ave_depth_gl = 0.0d0
-      ip_farther = -1
+! -- Set Average depth for each subdomain
+      call distribute_average_depth                                     &
+     &   (pvr_img%num_pixel_xy, pvr_img%iflag_mapped, pvr_img%depth_lc, &
+     &    pvr_img%ip_farther, pvr_img%ave_depth_gl)
 !
-      call count_number_4_smp(nprocs, ione, num_pixel_xy,               &
-     &    istack_image, max_smp)
-      npixel_local = istack_image(my_rank+1) - istack_image(my_rank)
+! Distribute image
+      call distribute_segmented_images                                  &
+     &   (pvr_img%num_pixel_xy, pvr_img%rgba_lc,                        &
+     &    pvr_img%istack_image, pvr_img%npixel_local, pvr_img%rgba_part)
 !
-      allocate(rgba_part(4,npixel_local,nprocs))
-      allocate(rgba_real_part(4,npixel_local))
+!  Alpha blending
+      call blend_image_from_subdomains                                  &
+     &   (pvr_img%ip_farther, pvr_img%npixel_local,                     &
+     &    pvr_img%rgba_part, pvr_img%rgba_real_part)
+!
+!  Collect image to rank 0
+      call collect_segmented_images                                     &
+     &   (pvr_img%npixel_local, pvr_img%istack_image,                   &
+     &    pvr_img%num_pixel_xy, pvr_img%rgba_real_part,                 &
+     &    pvr_img%rgba_real_gl)
+
+!
+      if(my_rank .eq. 0) then
+        call set_pvr_colorbar(pvr_img%num_pixel_xy, pvr_img%num_pixels, &
+     &      color_param, cbar_param, pvr_img%rgba_real_gl)
+      end if
+!
+      end subroutine blend_image_over_domains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine sel_write_pvr_image_file                               &
+     &         (file_param, i_rot, istep_pvr, pvr_img)
+!
+      use t_pvr_image_array
+      use t_control_params_4_pvr
+      use output_image_sel_4_png
+      use set_parallel_file_name
+      use convert_real_rgb_2_bite
+!
+      type(pvr_output_parameter), intent(in) :: file_param
+      integer(kind = kint), intent(in) :: i_rot, istep_pvr
+!
+      type(pvr_image_type), intent(inout) :: pvr_img
+!
+      character(len=kchara) :: tmpchara, img_head
+!
+      if(my_rank .ne. 0) return
+      if(i_rot .gt. 0) then
+        call add_int_suffix(istep_pvr, file_param%pvr_prefix, tmpchara)
+        call add_int_suffix(i_rot, tmpchara, img_head)
+      else
+        call add_int_suffix(istep_pvr, file_param%pvr_prefix,           &
+     &      img_head)
+      end if
+!
+      if(file_param%id_pvr_transparent .eq. 1) then
+          call cvt_double_rgba_to_char_rgba(pvr_img%num_pixel_xy,       &
+     &        pvr_img%rgba_real_gl,  pvr_img%rgba_chara_gl)
+          call sel_rgba_image_file(file_param%id_pvr_file_type,         &
+     &        img_head, pvr_img%num_pixels(1), pvr_img%num_pixels(2),   &
+     &        pvr_img%rgba_chara_gl)
+      else
+          call cvt_double_rgba_to_char_rgb(pvr_img%num_pixel_xy,        &
+     &        pvr_img%rgba_real_gl,  pvr_img%rgb_chara_gl)
+          call sel_output_image_file(file_param%id_pvr_file_type,       &
+     &        img_head, pvr_img%num_pixels(1), pvr_img%num_pixels(2),   &
+     &        pvr_img%rgb_chara_gl)
+      end if
+!
+      end subroutine sel_write_pvr_image_file
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine sel_write_pvr_local_img(file_param, pvr_img)
+!
+      use t_pvr_image_array
+      use t_control_params_4_pvr
+      use output_image_sel_4_png
+      use set_parallel_file_name
+      use convert_real_rgb_2_bite
+!
+      type(pvr_output_parameter), intent(in) :: file_param
+!
+      type(pvr_image_type), intent(inout) :: pvr_img
+!
+      character(len=kchara) :: img_head_tmp
+!
+      call cvt_double_rgba_to_char_rgb(pvr_img%num_pixel_xy,            &
+     &    pvr_img%rgba_lc, pvr_img%rgb_chara_lc)
+!
+      write(img_head_tmp,'(a,i1)')  'img_tmp.', my_rank
+      call sel_output_image_file(file_param%id_pvr_file_type,           &
+     &    img_head_tmp, pvr_img%num_pixels(1), pvr_img%num_pixels(2),   &
+     &    pvr_img%rgb_chara_lc)
+!
+      end subroutine sel_write_pvr_local_img
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine blend_image_from_subdomains(ip_farther, npixel_local,  &
+     &          rgba_part, rgba_real_part)
+!
+      use set_rgba_4_each_pixel
+!
+      integer(kind = kint), intent(in) :: ip_farther(nprocs)
+      integer(kind = kint), intent(in) :: npixel_local
+      real(kind = kreal), intent(in)                                    &
+     &             :: rgba_part(4,npixel_local,nprocs)
+      real(kind = kreal), intent(inout)                                 &
+     &             :: rgba_real_part(4,npixel_local)
+!
+      integer(kind = kint) :: ip, inum, ipix
+!
 !
 !$omp workshare
-      rgba_part(1:4,1:npixel_local,1:nprocs) = zero
+      rgba_real_part(1:4,1:npixel_local) = zero
 !$omp end workshare
 !
-! -- Set Average depth for each subdomain
+!$omp parallel do private(ipix,inum,ip)
+      do ipix = 1, npixel_local
+        do inum = 1, nprocs
+          ip = ip_farther(inum)
+          call composite_alpha_blending(rgba_part(1,ipix,ip),   &
+     &        rgba_real_part(1,ipix))
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine blend_image_from_subdomains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine distribute_average_depth(num_pixel_xy,                 &
+     &          iflag_mapped, depth_lc, ip_farther, ave_depth_gl)
+!
+      use quicksort
+!
+      integer(kind = kint), intent(in) :: num_pixel_xy
+      integer(kind = kint), intent(in) :: iflag_mapped(num_pixel_xy)
+      real(kind = kreal), intent(in) :: depth_lc(num_pixel_xy)
+!
+      integer(kind = kint), intent(inout) :: ip_farther(nprocs)
+      real(kind = kreal), intent(inout) :: ave_depth_gl(nprocs)
+!
+      real(kind = kreal) :: ave_depth_lc, covered_area
+      integer(kind = kint) :: ip, ipix
+!
       ave_depth_lc = 0.0d0
       covered_area = 0.0d0
       do ipix = 1, num_pixel_xy
@@ -141,7 +252,28 @@
       call quicksort_real_w_index(nprocs, ave_depth_gl, ione, nprocs,   &
      &    ip_farther)
 !
-! Distribute image
+      end subroutine distribute_average_depth
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine distribute_segmented_images(num_pixel_xy, rgba_lc,     &
+     &          istack_image, npixel_local, rgba_part)
+!
+      integer(kind = kint), intent(in) :: num_pixel_xy
+      real(kind = kreal), intent(in) :: rgba_lc(4,num_pixel_xy)
+!
+      integer(kind = kint), intent(in) :: istack_image(0:nprocs)
+      integer(kind = kint), intent(in) :: npixel_local
+!
+      real(kind = kreal), intent(inout)                                 &
+     &             :: rgba_part(4,npixel_local,nprocs)
+!
+      integer(kind = kint) :: num, ip, ist
+!
+!
+!$omp workshare
+      rgba_part(1:4,1:npixel_local,1:nprocs) = zero
+!$omp end workshare
 !
       do ip = 1, nprocs
         ist =          istack_image(ip-1)
@@ -159,23 +291,23 @@
       call MPI_WAITALL (nprocs, req2, sta2, ierr_MPI)
       call MPI_WAITALL (nprocs, req1, sta1, ierr_MPI)
 !
-!  Alpha blending
+      end subroutine distribute_segmented_images
 !
-!$omp workshare
-      rgba_real_part(1:4,1:npixel_local) = zero
-!$omp end workshare
+!  ---------------------------------------------------------------------
 !
-!$omp parallel do private(ipix,inum,ip)
-      do ipix = 1, npixel_local
-        do inum = 1, nprocs
-          ip = ip_farther(inum)
-          call composite_alpha_blending(rgba_part(1,ipix,ip),           &
-     &        rgba_real_part(1,ipix))
-        end do
-      end do
-!$omp end parallel do
+      subroutine collect_segmented_images(npixel_local, istack_image,   &
+     &          num_pixel_xy, rgba_real_part, rgba_real_gl)
 !
-!  Collect image to rank 0
+      integer(kind = kint), intent(in) :: istack_image(0:nprocs)
+      integer(kind = kint), intent(in) :: npixel_local
+      real(kind = kreal), intent(in) :: rgba_real_part(4,npixel_local)
+      integer(kind = kint), intent(in) :: num_pixel_xy
+!
+      real(kind = kreal), intent(inout) :: rgba_real_gl(4,num_pixel_xy)
+!
+      integer(kind = kint) :: num, ip, ist
+      integer(kind = kint) :: nneib_recv
+!
 !
       nneib_recv = 0
       num = ifour * npixel_local
@@ -193,92 +325,9 @@
       end if
 !
       call MPI_WAITALL(nneib_recv, req2, sta2, ierr_MPI)
-!
-      if(my_rank .eq. 0) then
-        call set_pvr_colorbar(num_pixel_xy, n_pvr_pixel,                &
-     &      color_param, cbar_param, rgba_real_gl(1,1))
-      end if
       call MPI_WAITALL (ione, req1(1), sta1, ierr_MPI)
 !
-      deallocate(rgba_real_part, rgba_part)
-      deallocate(ave_depth_gl, ip_farther)
-!
-      end subroutine blend_image_over_domains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine sel_write_pvr_image_file(file_param,                   &
-     &          i_rot, istep_pvr, n_pvr_pixel, num_pixel_xy,            &
-     &          rgba_real_gl, rgba_chara_gl, rgb_chara_gl)
-!
-      use t_control_params_4_pvr
-      use output_image_sel_4_png
-      use set_parallel_file_name
-      use convert_real_rgb_2_bite
-!
-      type(pvr_output_parameter), intent(in) :: file_param
-!
-      integer(kind = kint), intent(in) :: i_rot, istep_pvr
-      integer(kind = kint), intent(in) :: num_pixel_xy
-      integer(kind = kint), intent(in) :: n_pvr_pixel(2)
-      real(kind = kreal), intent(in) :: rgba_real_gl(4,num_pixel_xy)
-      character(len = 1), intent(inout) :: rgba_chara_gl(4,num_pixel_xy)
-      character(len = 1), intent(inout) :: rgb_chara_gl(3,num_pixel_xy)
-!
-      character(len=kchara) :: tmpchara, img_head_tmp
-!
-      if(my_rank .ne. 0) return
-      if(i_rot .gt. 0) then
-        call add_int_suffix(istep_pvr, file_param%pvr_prefix, tmpchara)
-        call add_int_suffix(i_rot, tmpchara, img_head_tmp)
-      else
-        call add_int_suffix(istep_pvr, file_param%pvr_prefix,           &
-     &      img_head_tmp)
-      end if
-!
-      if(file_param%id_pvr_transparent .eq. 1) then
-          call cvt_double_rgba_to_char_rgba(num_pixel_xy,               &
-     &             rgba_real_gl(1,1),  rgba_chara_gl(1,1) )
-          call sel_rgba_image_file(file_param%id_pvr_file_type,         &
-     &        img_head_tmp, n_pvr_pixel(1), n_pvr_pixel(2),             &
-     &        rgba_chara_gl(1,1) )
-      else
-          call cvt_double_rgba_to_char_rgb(num_pixel_xy,                &
-     &             rgba_real_gl(1,1),  rgb_chara_gl(1,1) )
-          call sel_output_image_file(file_param%id_pvr_file_type,       &
-     &        img_head_tmp, n_pvr_pixel(1), n_pvr_pixel(2),             &
-     &        rgb_chara_gl(1,1) )
-      end if
-!
-      end subroutine sel_write_pvr_image_file
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine sel_write_pvr_local_img(file_param,                    &
-     &         n_pvr_pixel, num_pixel_xy, rgba_lc, rgb_chara)
-!
-      use t_control_params_4_pvr
-      use output_image_sel_4_png
-      use set_parallel_file_name
-      use convert_real_rgb_2_bite
-!
-      type(pvr_output_parameter), intent(in) :: file_param
-!
-      integer(kind = kint), intent(in) :: num_pixel_xy
-      integer(kind = kint), intent(in) :: n_pvr_pixel(2)
-      real(kind = kreal), intent(inout) :: rgba_lc(4,num_pixel_xy)
-      character(len = 1), intent(inout) :: rgb_chara(3,num_pixel_xy)
-!
-      character(len=kchara) :: img_head_tmp
-!
-      call cvt_double_rgba_to_char_rgb(num_pixel_xy, rgba_lc(1,1),      &
-     &    rgb_chara(1,1))
-!
-      write(img_head_tmp,'(a,i1)')  'img_tmp.', my_rank
-      call sel_output_image_file(file_param%id_pvr_file_type,           &
-     &    img_head_tmp, n_pvr_pixel(1), n_pvr_pixel(2), rgb_chara)
-!
-      end subroutine sel_write_pvr_local_img
+      end subroutine collect_segmented_images
 !
 !  ---------------------------------------------------------------------
 !

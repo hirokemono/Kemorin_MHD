@@ -21,6 +21,7 @@
 !
       use m_precision
 !
+      use calypso_mpi
       use t_ucd_data
 !
       implicit  none
@@ -53,6 +54,7 @@
       if((psf_out%ifmt_file/iflag_single) .eq. 0) then
         call merge_ucd_psf_mesh(psf_mesh, psf_out)
         if(my_rank .eq. 0) call sel_write_grd_file(iminus, psf_out)
+        call calypso_mpi_barrier
       else
         call link_nnod_stacks_type_2_output(nprocs,                     &
      &    psf_mesh%node, psf_mesh%patch, psf_out_m)
@@ -89,7 +91,8 @@
         if(my_rank .eq. 0) then
           call sel_write_udt_file(iminus, istep_psf, psf_out)
         end if
-      else
+        call calypso_mpi_barrier
+     else
          call sel_write_parallel_ucd_file                               &
      &      (istep_psf, psf_out, psf_out_m)
       end if
@@ -128,6 +131,7 @@
           call sel_write_ucd_file(iminus, istep_iso, iso_out)
           call deallocate_ucd_mesh(iso_out)
         end if
+        call calypso_mpi_barrier
       else
         call link_nnod_stacks_type_2_output(nprocs,                     &
      &      iso_mesh%node, iso_mesh%patch, iso_out_m)

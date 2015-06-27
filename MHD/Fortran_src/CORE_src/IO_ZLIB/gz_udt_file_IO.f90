@@ -57,7 +57,7 @@
       call set_parallel_ucd_file_name(ucd%file_prefix, iflag_ucd_gz,    &
      &    my_rank, istep, gzip_name)
 !
-      if(i_debug.gt.0 .or. my_rank.eq.0) write(*,*)                     &
+      if(i_debug.gt.0 .or. my_rank.le.0) write(*,*)                     &
      &      'Write gzipped ucd file: ', trim(gzip_name)
       call open_wt_gzfile(gzip_name)
 !
@@ -80,7 +80,7 @@
       call set_parallel_ucd_file_name(ucd%file_prefix, iflag_udt_gz,    &
      &    my_rank, istep, gzip_name)
 !
-      if(i_debug.gt.0 .or. my_rank.eq.0) write(*,*)                     &
+      if(i_debug.gt.0 .or. my_rank.le.0) write(*,*)                     &
      &      'Write gzipped ucd file: ', trim(gzip_name)
       call open_wt_gzfile(gzip_name)
 !
@@ -102,7 +102,7 @@
       call set_parallel_grd_file_name(ucd%file_prefix, iflag_udt_gz,    &
      &    my_rank, gzip_name)
 !
-      if(i_debug.gt.0 .or. my_rank.eq.0) write(*,*)                     &
+      if(i_debug.gt.0 .or. my_rank.le.0) write(*,*)                     &
      &      'Write gzipped ucd grid file: ', trim(gzip_name)
       call open_wt_gzfile(gzip_name)
 !

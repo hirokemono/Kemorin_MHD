@@ -99,7 +99,7 @@
       call set_parallel_ucd_file_name(ucd%file_prefix, iflag_vtk_gz,    &
      &    my_rank, istep, gzip_name)
 !
-      if(my_rank.eq.0) write(*,*)                                       &
+      if(my_rank.le.0) write(*,*)                                       &
      &    'Write gzipped VTK data: ', trim(gzip_name)
 !
       call write_gz_vtk_file(gzip_name,                                 &
@@ -124,7 +124,7 @@
       call set_parallel_ucd_file_name(ucd%file_prefix, iflag_vtd_gz,    &
      &    my_rank, istep, gzip_name)
 !
-      if(my_rank.eq.0) write(*,*)                                       &
+      if(my_rank.le.0) write(*,*)                                       &
      &    'Write gzipped VTK field: ', trim(gzip_name)
 !
       call write_gz_vtk_phys(gzip_name, ucd%nnod, ucd%num_field,        &
@@ -147,7 +147,7 @@
       call set_parallel_grd_file_name(ucd%file_prefix, iflag_vtd_gz,    &
      &    my_rank, gzip_name)
 !
-      if(my_rank.eq.0) write(*,*)                                       &
+      if(my_rank.le.0) write(*,*)                                       &
      &    'Write gzipped VTK grid: ', trim(gzip_name)
 !
       call write_gz_vtk_grid(gzip_name,                                 &

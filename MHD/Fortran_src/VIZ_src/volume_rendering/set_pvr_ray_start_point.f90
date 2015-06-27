@@ -72,16 +72,12 @@
       integer(kind = kint) :: inum
 !
 !
-!$omp parallel do private (inum)
-      do inum = 1, num_pvr_surf
-        call count_each_pvr_ray_start(inum, numele, isf_4_ele,          &
+      call count_each_pvr_ray_start(numele, isf_4_ele,                  &
      &      npixel_x, npixel_y, pixel_point_x, pixel_point_y,           &
      &      num_pvr_surf, item_pvr_surf_domain,                         &
      &      screen_norm_pvr_domain, xx_screen_pvr_domain,               &
      &      isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain,               &
-     &      ray_vec, istack_pvr_ray_sf(inum))
-      end do
-!$omp end parallel do
+     &      ray_vec, istack_pvr_ray_sf(1))
 !
       istack_pvr_ray_sf(0) = 0
       do inum = 1, num_pvr_surf
@@ -95,7 +91,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_each_pvr_ray_start                               &
-     &         (inum, numele, isf_4_ele, npixel_x, npixel_y,            &
+     &         (numele, isf_4_ele, npixel_x, npixel_y,                  &
      &          pixel_point_x, pixel_point_y,  &
      &          num_pvr_surf, item_pvr_surf_domain,                     &
      &          screen_norm_pvr_domain, xx_screen_pvr_domain,           &
@@ -122,41 +118,45 @@
      &                    :: jsurf_yrng_pvr_domain(2,num_pvr_surf)
 !
       real(kind = kreal), intent(in) :: ray_vec(3)
-      integer(kind = kint), intent(in) :: inum
-      integer(kind = kint), intent(inout) :: num_ray
+      integer(kind = kint), intent(inout) :: num_ray(num_pvr_surf)
 !
-      integer(kind = kint) :: iele, k1, isurf, iflag
+      integer(kind = kint) :: inum, iele, k1, isurf, iflag
       integer(kind = kint) :: ist_pix, ied_pix, jst_pix, jed_pix
       integer(kind = kint) :: ipix, jpix
       real(kind = kreal) :: x_pix(2)
       real(kind = kreal) :: xi(2), x_surf(2,4)
 !
 !
-      num_ray = 0
-      iele = item_pvr_surf_domain(1,inum)
-      k1 =   item_pvr_surf_domain(2,inum)
-      isurf = abs(isf_4_ele(iele,k1))
+!$omp parallel do private(inum,iele,k1,isurf,iflag,x_surf,              &
+!$omp&       ist_pix,ied_pix,jst_pix,jed_pix,ipix,jpix,x_pix,xi)
+      do inum = 1, num_pvr_surf
+        num_ray(inum) = 0
+        iele = item_pvr_surf_domain(1,inum)
+        k1 =   item_pvr_surf_domain(2,inum)
+        isurf = abs(isf_4_ele(iele,k1))
 !
-      if( (screen_norm_pvr_domain(3,inum)*ray_vec(3)) .gt. zero) then
-        x_surf(1:2,1) = xx_screen_pvr_domain(4*inum-3,1:2)
-        x_surf(1:2,2) = xx_screen_pvr_domain(4*inum-2,1:2)
-        x_surf(1:2,3) = xx_screen_pvr_domain(4*inum-1,1:2)
-        x_surf(1:2,4) = xx_screen_pvr_domain(4*inum,  1:2)
+        if((screen_norm_pvr_domain(3,inum)*ray_vec(3)) .gt. zero) then
+          x_surf(1:2,1) = xx_screen_pvr_domain(4*inum-3,1:2)
+          x_surf(1:2,2) = xx_screen_pvr_domain(4*inum-2,1:2)
+          x_surf(1:2,3) = xx_screen_pvr_domain(4*inum-1,1:2)
+          x_surf(1:2,4) = xx_screen_pvr_domain(4*inum,  1:2)
 !
-        ist_pix = isurf_xrng_pvr_domain(1,inum)
-        ied_pix = isurf_xrng_pvr_domain(2,inum)
-        jst_pix = jsurf_yrng_pvr_domain(1,inum)
-        jed_pix = jsurf_yrng_pvr_domain(2,inum)
-        do ipix = ist_pix, ied_pix
-          do jpix = jst_pix, jed_pix
-            x_pix(1) = pixel_point_x(ipix)
-            x_pix(2) = pixel_point_y(jpix)
+          ist_pix = isurf_xrng_pvr_domain(1,inum)
+          ied_pix = isurf_xrng_pvr_domain(2,inum)
+          jst_pix = jsurf_yrng_pvr_domain(1,inum)
+          jed_pix = jsurf_yrng_pvr_domain(2,inum)
+          do ipix = ist_pix, ied_pix
+            do jpix = jst_pix, jed_pix
+              x_pix(1) = pixel_point_x(ipix)
+              x_pix(2) = pixel_point_y(jpix)
 !
-            call cal_coefs_on_surf(x_surf, x_pix, iflag, xi)
-            num_ray = num_ray + iflag
+              call cal_coefs_on_surf(x_surf, x_pix, iflag, xi)
+              num_ray(inum) = num_ray(inum) + iflag
+            end do
           end do
-        end do
-      end if
+        end if
+      end do
+!$omp end parallel do
 !
       end subroutine count_each_pvr_ray_start
 !
