@@ -170,11 +170,9 @@
 !
       call alloc_psf_field_data(num_psf, psf_mesh)
 !
-      do i_psf = 1, num_psf
-        call output_section_mesh                                        &
-     &     (psf_header(i_psf), itype_psf_file(i_psf), psf_mesh(i_psf),  &
-     &      psf_out(i_psf), psf_out_m(i_psf))
-      end do
+      if (iflag_debug.eq.1) write(*,*) 'output_section_mesh'
+      call output_section_mesh(num_psf, psf_header, itype_psf_file,     &
+     &   psf_mesh, psf_out, psf_out_m)
 !
 !      call calypso_mpi_barrier
 !
@@ -202,8 +200,6 @@
      &                     :: istack_nod_component(0:num_nod_phys)
       real(kind = kreal), intent(in)  :: d_nod(numnod,num_tot_nod_phys)
 !
-      integer(kind = kint) :: i_psf
-!
 !
 !      call start_eleps_time(20)
       call set_field_4_psf(num_psf, numnod, numedge, nnod_4_edge,       &
@@ -212,10 +208,9 @@
 !      call end_eleps_time(20)
 !
 !      call start_eleps_time(21)
-      do i_psf = 1, num_psf
-        call output_section_data(istep_psf, psf_mesh(i_psf),            &
-     &      psf_out(i_psf), psf_out_m(i_psf))
-      end do
+      if (iflag_debug.eq.1) write(*,*) 'output_section_mesh'
+      call output_section_data                                          &
+     &   (num_psf, istep_psf, psf_mesh, psf_out, psf_out_m)
 !
       end subroutine cross_section_main
 !

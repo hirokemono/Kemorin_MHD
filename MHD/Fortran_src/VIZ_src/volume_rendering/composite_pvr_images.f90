@@ -24,6 +24,7 @@
 !
       implicit  none
 !
+!
 !>       status flag for sending
       integer, save, allocatable :: sta1(:,:)
 !>       status flag for recieving
@@ -79,6 +80,9 @@
       type(pvr_colorbar_parameter), intent(in) :: cbar_param
       type(pvr_image_type), intent(inout) :: pvr_img
 !
+!>       MPI rank for image outp
+      integer(kind = kint), parameter :: irank_tgt = 0
+!
 !
       call alloc_pvr_image_comm_status
 !
@@ -99,12 +103,11 @@
 !
 !  Collect image to rank 0
       call collect_segmented_images                                     &
-     &   (pvr_img%npixel_local, pvr_img%istack_image,                   &
+     &   (irank_tgt, pvr_img%npixel_local, pvr_img%istack_image,        &
      &    pvr_img%num_pixel_xy, pvr_img%rgba_real_part,                 &
      &    pvr_img%rgba_real_gl)
-
 !
-      if(my_rank .eq. 0) then
+      if(my_rank .eq. irank_tgt) then
         call set_pvr_colorbar(pvr_img%num_pixel_xy, pvr_img%num_pixels, &
      &      color_param, cbar_param, pvr_img%rgba_real_gl)
       end if
@@ -173,7 +176,6 @@
       call cvt_double_rgba_to_char_rgb(pvr_img%num_pixel_xy,            &
      &    pvr_img%rgba_lc, pvr_img%rgb_chara_lc)
 !
-      write(img_head_tmp,'(a,i1)')  'img_tmp.', my_rank
       call sel_output_image_file(file_param%id_pvr_file_type,           &
      &    img_head_tmp, pvr_img%num_pixels(1), pvr_img%num_pixels(2),   &
      &    pvr_img%rgb_chara_lc)
@@ -268,36 +270,56 @@
       real(kind = kreal), intent(inout)                                 &
      &             :: rgba_part(4,npixel_local,nprocs)
 !
-      integer(kind = kint) :: num, ip, ist
+      integer(kind = kint) :: num, i_rank, ist, i
+      integer(kind = kint) :: nneib_send, nneib_recv
 !
 !
 !$omp workshare
       rgba_part(1:4,1:npixel_local,1:nprocs) = zero
 !$omp end workshare
 !
-      do ip = 1, nprocs
-        ist =          istack_image(ip-1)
-        num = ifour * (istack_image(ip) - istack_image(ip-1))
-        call MPI_ISEND(rgba_lc(1,ist+1), num, CALYPSO_REAL,             &
-     &      (ip-1), 0, CALYPSO_COMM, req1(ip), ierr_MPI)
+      nneib_send = 0
+      do i_rank = 0, nprocs-1
+        if(i_rank .eq. my_rank) cycle
+          nneib_send = nneib_send + 1
+          ist =          istack_image(i_rank)
+          num = ifour * (istack_image(i_rank+1) - istack_image(i_rank))
+          call MPI_ISEND(rgba_lc(1,ist+1), num, CALYPSO_REAL,           &
+     &        i_rank, 0, CALYPSO_COMM, req1(nneib_send), ierr_MPI)
       end do
 !
-      do ip = 1, nprocs
-        num = ifour * npixel_local
-        call MPI_IRECV(rgba_part(1,1,ip), num, CALYPSO_REAL,            &
-     &      (ip-1), 0, CALYPSO_COMM, req2(ip), ierr_MPI)
+      nneib_recv = 0
+      do i_rank = 0, nprocs-1
+        if(i_rank .eq. my_rank) cycle
+          nneib_recv = nneib_recv + 1
+          num = ifour * npixel_local
+          call MPI_IRECV(rgba_part(1,1,i_rank+1), num, CALYPSO_REAL,    &
+     &        i_rank, 0, CALYPSO_COMM, req2(nneib_recv), ierr_MPI)
       end do
 !
-      call MPI_WAITALL (nprocs, req2, sta2, ierr_MPI)
-      call MPI_WAITALL (nprocs, req1, sta1, ierr_MPI)
+      call MPI_WAITALL (nneib_recv, req2, sta2, ierr_MPI)
+      call MPI_WAITALL (nneib_send, req1, sta1, ierr_MPI)
+!
+      num = npixel_local
+      ist = istack_image(my_rank)
+!$omp parallel do
+      do i = 1, num
+        rgba_part(1,i,my_rank+1) = rgba_lc(1,ist+i)
+        rgba_part(2,i,my_rank+1) = rgba_lc(2,ist+i)
+        rgba_part(3,i,my_rank+1) = rgba_lc(3,ist+i)
+        rgba_part(4,i,my_rank+1) = rgba_lc(4,ist+i)
+      end do
+!$omp end parallel do
 !
       end subroutine distribute_segmented_images
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine collect_segmented_images(npixel_local, istack_image,   &
+      subroutine collect_segmented_images                               &
+     &         (irank_tgt, npixel_local, istack_image,                  &
      &          num_pixel_xy, rgba_real_part, rgba_real_gl)
 !
+      integer(kind = kint), intent(in) :: irank_tgt
       integer(kind = kint), intent(in) :: istack_image(0:nprocs)
       integer(kind = kint), intent(in) :: npixel_local
       real(kind = kreal), intent(in) :: rgba_real_part(4,npixel_local)
@@ -305,27 +327,47 @@
 !
       real(kind = kreal), intent(inout) :: rgba_real_gl(4,num_pixel_xy)
 !
-      integer(kind = kint) :: num, ip, ist
-      integer(kind = kint) :: nneib_recv
+      integer(kind = kint) :: num, i_rank, ist, i
+      integer(kind = kint) :: nneib_send, nneib_recv
 !
 !
+      nneib_send = 0
       nneib_recv = 0
       num = ifour * npixel_local
-      call MPI_ISEND(rgba_real_part(1,1), num, CALYPSO_REAL,            &
-     &    izero, 0, CALYPSO_COMM, req1(1), ierr_MPI)
+      if(my_rank .ne. irank_tgt) then
+        nneib_send = 1
+        call MPI_ISEND(rgba_real_part(1,1), num, CALYPSO_REAL,          &
+     &      irank_tgt, 0, CALYPSO_COMM, req1(1), ierr_MPI)
+      end if
 !
-      if(my_rank .eq. 0) then
-        nneib_recv = nprocs
-        do ip = 1, nprocs
-          ist =          istack_image(ip-1)
-          num = ifour * (istack_image(ip) - istack_image(ip-1))
+      if(my_rank .eq. irank_tgt) then
+        do i_rank = 0, nprocs-1
+          if(i_rank .eq. irank_tgt) cycle
+!
+          nneib_recv = nneib_recv + 1
+          ist =          istack_image(i_rank)
+          num = ifour * (istack_image(i_rank+1) - istack_image(i_rank))
           call MPI_IRECV(rgba_real_gl(1,ist+1), num, CALYPSO_REAL,      &
-     &       (ip-1), 0, CALYPSO_COMM, req2(ip), ierr_MPI)
+     &        i_rank, 0, CALYPSO_COMM, req2(nneib_recv), ierr_MPI)
         end do
       end if
 !
-      call MPI_WAITALL(nneib_recv, req2, sta2, ierr_MPI)
-      call MPI_WAITALL (ione, req1(1), sta1, ierr_MPI)
+      call MPI_WAITALL(nneib_recv, req2(1), sta2, ierr_MPI)
+!
+      if(my_rank .eq. irank_tgt) then
+        ist = istack_image(irank_tgt)
+        num = istack_image(irank_tgt+1) - ist
+!$omp parallel do
+        do i = 1, num
+          rgba_real_gl(1,ist+i) = rgba_real_part(1,i)
+          rgba_real_gl(2,ist+i) = rgba_real_part(2,i)
+          rgba_real_gl(3,ist+i) = rgba_real_part(3,i)
+          rgba_real_gl(4,ist+i) = rgba_real_part(4,i)
+        end do
+!$omp end parallel do
+      end if
+!
+      call MPI_WAITALL(nneib_send, req1(1), sta1, ierr_MPI)
 !
       end subroutine collect_segmented_images
 !

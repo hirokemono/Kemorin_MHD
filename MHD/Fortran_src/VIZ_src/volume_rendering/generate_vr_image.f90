@@ -11,7 +11,7 @@
 !!     &         (numele, numsurf, nnod_4_surf, ie_surf, isf_4_ele,     &
 !!     &          proj, field_pvr, view_param, pvr_bound)
 !!      subroutine rendering_image                                      &
-!!     &      (i_pvr, i_rot, istep_pvr, numnod, numele, numsurf,        &
+!!     &      (i_rot, istep_pvr, numnod, numele, numsurf,               &
 !!     &      nnod_4_surf, e_multi, xx, ie_surf, isf_4_ele, iele_4_surf,&
 !!     &      file_param, color_param, cbar_param, view_param,          &
 !!     &      field_pvr, pvr_bound, pixel_xy, pvr_start, pvr_img)
@@ -28,7 +28,6 @@
       implicit  none
 !
       private :: s_set_pvr_ray_start_point, ray_trace_local
-      private :: write_pvr_image_file
 !
 !  ---------------------------------------------------------------------
 !
@@ -84,7 +83,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_image                                        &
-     &       (i_pvr, i_rot, istep_pvr, numnod, numele, numsurf,         &
+     &       (i_rot, istep_pvr, numnod, numele, numsurf,                &
      &       nnod_4_surf, e_multi, xx, ie_surf, isf_4_ele, iele_4_surf, &
      &       file_param, color_param, cbar_param, view_param,           &
      &       field_pvr, pvr_bound, pixel_xy, pvr_start, pvr_img)
@@ -95,8 +94,9 @@
       use t_pvr_ray_startpoints
       use t_pvr_image_array
       use t_geometries_in_pvr_screen
+      use composite_pvr_images
 !
-      integer(kind = kint), intent(in) :: i_pvr, i_rot, istep_pvr
+      integer(kind = kint), intent(in) :: i_rot, istep_pvr
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
@@ -131,9 +131,13 @@
      &       view_param%viewpoint_vec, field_pvr%x_nod_model,           &
      &       field_pvr, color_param, pvr_start, pvr_img)
 !
-      if(iflag_debug .gt. 0) write(*,*) 'write_pvr_image_file', i_pvr
-      call write_pvr_image_file(file_param, color_param, cbar_param,    &
-     &    i_rot, istep_pvr, pvr_img)
+      if(iflag_debug .gt. 0) write(*,*) 'blend_image_over_domains'
+      call blend_image_over_domains                                     &
+     &   (color_param, cbar_param, pvr_img)
+!
+      if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
+      call sel_write_pvr_image_file                                     &
+     &   (file_param, i_rot, istep_pvr, pvr_img)
 !
       end subroutine rendering_image
 !
@@ -163,8 +167,6 @@
       type(pvr_ray_start_type), intent(inout) :: pvr_start
       type(pvr_pixel_position_type), intent(inout) :: pixel_xy
 !
-      integer(kind = kint) :: inum
-!
 !
       call count_each_pvr_ray_start_point(numele, isf_4_ele,            &
      &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
@@ -176,9 +178,7 @@
 !
       call allocate_item_pvr_ray_start(pvr_start)
 !
-!$omp parallel do private (inum)
-      do inum = 1, pvr_bound%num_pvr_surf
-        call set_each_pvr_ray_start(inum, numnod, numele, numsurf,      &
+      call set_each_pvr_ray_start(numnod, numele, numsurf,              &
      &    nnod_4_surf, xx, ie_surf, isf_4_ele, field_pvr%x_nod_model,   &
      &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
      &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
@@ -190,8 +190,6 @@
      &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
      &    pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,               &
      &    pvr_start%xx_pvr_ray_start, pvr_start%pvr_ray_dir)
-      end do
-!$omp end parallel do
 !
       end subroutine s_set_pvr_ray_start_point
 !
@@ -246,33 +244,6 @@
 !      call sel_write_pvr_local_img(file_param, pvr_img)
 !
       end subroutine ray_trace_local
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine write_pvr_image_file                                   &
-     &         (file_param, color_param, cbar_param, i_rot, istep_pvr,  &
-     &          pvr_img)
-!
-      use t_control_params_4_pvr
-      use t_pvr_image_array
-      use composite_pvr_images
-!
-      integer(kind = kint), intent(in) :: i_rot, istep_pvr
-!
-      type(pvr_output_parameter), intent(in) :: file_param
-      type(pvr_colormap_parameter), intent(in) :: color_param
-      type(pvr_colorbar_parameter), intent(in) :: cbar_param
-!
-      type(pvr_image_type), intent(inout) :: pvr_img
-!
-      if(iflag_debug .gt. 0) write(*,*) 'blend_image_over_domains'
-      call blend_image_over_domains(color_param, cbar_param, pvr_img)
-!
-      if(iflag_debug .gt. 0) write(*,*) 'sel_write_pvr_image_file'
-      call sel_write_pvr_image_file                                     &
-     &   (file_param, i_rot, istep_pvr, pvr_img)
-!
-      end subroutine write_pvr_image_file
 !
 !  ---------------------------------------------------------------------
 !

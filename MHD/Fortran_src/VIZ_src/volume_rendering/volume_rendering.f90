@@ -232,14 +232,12 @@
           end if
 !
           call rendering_image                                          &
-     &      (i_pvr, i_rot, istep_pvr, numnod, numele, numsurf,          &
+     &      (i_rot, istep_pvr, numnod, numele, numsurf,                 &
      &       nnod_4_surf, e_multi, xx, ie_surf, isf_4_ele, iele_4_surf, &
      &       file_params(i_pvr), color_params(i_pvr),                   &
      &       cbar_params(i_pvr), view_params(i_pvr), field_pvr(i_pvr),  &
      &       pvr_bound(i_pvr), pixel_xy(i_pvr),                         &
      &       pvr_start(i_pvr), pvr_img(i_pvr))
-!
-          call calypso_MPI_barrier
         end do
       end do
 !

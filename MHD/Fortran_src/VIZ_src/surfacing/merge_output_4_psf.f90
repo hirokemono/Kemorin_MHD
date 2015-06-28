@@ -8,8 +8,8 @@
 !>@brief Collect and output routines for surfacing module
 !!
 !!@verbatim
-!!      subroutine merge_ucd_psf_data(psf_mesh, psf_out)
-!!      subroutine merge_ucd_psf_mesh(psf_mesh, psf_ucd)
+!!      subroutine merge_ucd_psf_data(irank_tgt, psf_mesh, psf_out)
+!!      subroutine merge_ucd_psf_mesh(irank_tgt, psf_mesh, psf_ucd)
 !!@endverbatim
 !
       module merge_output_4_psf
@@ -30,11 +30,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine merge_ucd_psf_data(psf_mesh, psf_out)
+      subroutine merge_ucd_psf_data(irank_tgt, psf_mesh, psf_out)
 !
       use collect_to_rank0
       use ucd_IO_select
 !
+      integer(kind = kint), intent(in) :: irank_tgt
       type(psf_local_data), intent(in) :: psf_mesh
       type(ucd_data), intent(inout) :: psf_out
 !
@@ -47,17 +48,18 @@
       istack4(0:nprocs) = int(psf_mesh%node%istack_internod(0:nprocs))
 !
       call collect_vectors_to_rank0(nnod4, psf_out%ntot_comp, istack4,  &
-     &    psf_mesh%field%d_fld, ntot4, psf_out%d_ucd)
+     &    psf_mesh%field%d_fld, irank_tgt, ntot4, psf_out%d_ucd)
 !
       end subroutine merge_ucd_psf_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine merge_ucd_psf_mesh(psf_mesh, psf_ucd)
+      subroutine merge_ucd_psf_mesh(irank_tgt, psf_mesh, psf_ucd)
 !
       use collect_to_rank0
 !
+      integer(kind = kint), intent(in) :: irank_tgt
       type(psf_local_data), intent(in) :: psf_mesh
       type(ucd_data), intent(inout) :: psf_ucd
 !
@@ -66,7 +68,7 @@
       integer(kind = kint), allocatable :: ie4(:,:)
 !
 !
-      if(my_rank .eq. 0) then
+      if(my_rank .eq. irank_tgt) then
         psf_ucd%nnod = psf_mesh%node%istack_internod(nprocs)
         psf_ucd%nele = psf_mesh%patch%istack_numele(nprocs)
       else
@@ -91,12 +93,12 @@
       ntot4 = int(psf_ucd%nnod)
       istack4(0:nprocs) = int(psf_mesh%node%istack_internod(0:nprocs))
 !
-      call calypso_mpi_barrier
       call collect_int8s_to_rank0(nnod4, ione, istack4,                 &
-     &    psf_mesh%node%inod_global, ntot4, psf_ucd%inod_global)
+     &    psf_mesh%node%inod_global, irank_tgt,                         &
+     &    ntot4, psf_ucd%inod_global)
 !
       call collect_vectors_to_rank0(nnod4, n_vector, istack4,           &
-     &    psf_mesh%node%xx, ntot4, psf_ucd%xx)
+     &    psf_mesh%node%xx, irank_tgt, ntot4, psf_ucd%xx)
 !
 !
       nnod4 = int(psf_mesh%patch%numele)
@@ -104,17 +106,18 @@
       istack4(0:nprocs) = int(psf_mesh%patch%istack_numele(0:nprocs))
 !
       call collect_int8s_to_rank0(nnod4, ione, istack4,                 &
-     &    psf_mesh%patch%iele_global, ntot4, psf_ucd%iele_global)
+     &    psf_mesh%patch%iele_global, irank_tgt,                        &
+     &    ntot4, psf_ucd%iele_global)
 !
       call collect_integers_to_rank0(nnod4, psf_ucd%nnod_4_ele,         &
-     &    istack4, psf_mesh%patch%ie, ntot4, ie4)
+     &    istack4, psf_mesh%patch%ie, irank_tgt, ntot4, ie4)
 !
-      if(my_rank .eq. 0) then
+      if(my_rank .eq. irank_tgt) then
         psf_ucd%ie(1:psf_ucd%nele,1:psf_ucd%nnod_4_ele)                 &
      &              = ie4(1:psf_ucd%nele,1:psf_ucd%nnod_4_ele)
       end if
       deallocate(ie4)
-
+!
       end subroutine merge_ucd_psf_mesh
 !
 ! -----------------------------------------------------------------------

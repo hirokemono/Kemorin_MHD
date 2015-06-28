@@ -56,6 +56,10 @@
 !>      Structure for psf patch data on local domain
       type(psf_local_data), allocatable, save :: iso_mesh(:)
 !
+!>      Structure for isosurface output (used by master process)
+      type(ucd_data), allocatable, save :: iso_out(:)
+      type(merged_ucd_data), allocatable, save :: iso_out_m(:)
+!
       private :: alloc_iso_field_type
 !
 !  ---------------------------------------------------------------------
@@ -192,10 +196,8 @@
      &    num_nod_phys, num_tot_nod_phys, istack_nod_component, d_nod,  &
      &    iso_param, iso_list, iso_mesh)
 !
-      do i_iso = 1, num_iso
-        call output_isosurface(iso_header(i_iso),                       &
-     &      itype_iso_file(i_iso), istep_iso, iso_mesh(i_iso))
-      end do
+      call output_isosurface(num_iso, iso_header, itype_iso_file,       &
+     &    istep_iso, iso_mesh, iso_out, iso_out_m)
 !
       call dealloc_psf_field_data(num_iso, iso_mesh)
       call dealloc_psf_node_and_patch(num_iso, iso_list, iso_mesh)
@@ -217,6 +219,7 @@
 !
       deallocate(iso_mesh, iso_list)
       deallocate(iso_search, iso_param)
+      deallocate(iso_out, iso_out_m)
 !
       end subroutine dealloc_iso_field_type
 !
@@ -230,6 +233,9 @@
       allocate(iso_list(num_iso))
       allocate(iso_search(num_iso))
       allocate(iso_param(num_iso))
+!
+      allocate(iso_out(num_iso))
+      allocate(iso_out_m(num_iso))
 !
       end subroutine alloc_iso_field_type
 !

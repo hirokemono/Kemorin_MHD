@@ -8,13 +8,14 @@
 !>@brief Output routines for surfacing module
 !!
 !!@verbatim
-!!      subroutine output_section_mesh(psf_header, itype_psf_file,      &
-!!     &         psf_mesh, psf_out, psf_out_m)
+!!      subroutine output_section_mesh(num_psf, psf_header,             &
+!!     &          itype_psf_file, psf_mesh, psf_out, psf_out_m)
 !!      subroutine output_section_data                                  &
-!!     &         (istep_psf, psf_mesh, psf_out, psf_out_m)
+!!     &         (num_psf, istep_psf, psf_mesh, psf_out, psf_out_m)
 !!
 !!      subroutine output_isosurface                                    &
-!!     &         (iso_header, itype_iso_file, istep_iso, iso_mesh)
+!!     &         (num_iso, iso_header, itype_iso_file, istep_iso,       &
+!!     &         iso_mesh, iso_out, iso_out_m)
 !!@endverbatim
 !
       module output_4_psf
@@ -32,8 +33,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine output_section_mesh(psf_header, itype_psf_file,        &
-     &         psf_mesh, psf_out, psf_out_m)
+      subroutine output_section_mesh(num_psf, psf_header,               &
+     &          itype_psf_file, psf_mesh, psf_out, psf_out_m)
 !
       use t_psf_patch_data
       use set_ucd_data_to_type
@@ -41,61 +42,91 @@
       use ucd_IO_select
       use merge_output_4_psf
 !
-      character(len = kchara), intent(in) :: psf_header
-      integer(kind= kint), intent(in) :: itype_psf_file
-      type(psf_local_data), intent(in) :: psf_mesh
-      type(ucd_data), intent(inout) ::        psf_out
-      type(merged_ucd_data), intent(inout) :: psf_out_m
+      integer(kind= kint), intent(in) :: num_psf
+      character(len = kchara), intent(in) :: psf_header(num_psf)
+      integer(kind= kint), intent(in) :: itype_psf_file(num_psf)
+      type(psf_local_data), intent(in) :: psf_mesh(num_psf)
+      type(ucd_data), intent(inout) ::        psf_out(num_psf)
+      type(merged_ucd_data), intent(inout) :: psf_out_m(num_psf)
+!
+      integer(kind= kint) :: i_psf, irank_tgt
 !
 !
-      psf_out%file_prefix = psf_header
-      psf_out%ifmt_file = itype_psf_file
+      do i_psf = 1, num_psf
+        if((psf_out(i_psf)%ifmt_file/iflag_single) .eq. 0) then
+          irank_tgt = mod(i_psf-1,nprocs)
+          call merge_ucd_psf_mesh                                       &
+     &       (irank_tgt, psf_mesh(i_psf), psf_out(i_psf))
+          call calypso_mpi_barrier
+        else
+          call link_nnod_stacks_type_2_output(nprocs,                   &
+     &          psf_mesh(i_psf)%node, psf_mesh(i_psf)%patch,            &
+     &          psf_out_m(i_psf))
 !
-      if((psf_out%ifmt_file/iflag_single) .eq. 0) then
-        call merge_ucd_psf_mesh(psf_mesh, psf_out)
-        if(my_rank .eq. 0) call sel_write_grd_file(iminus, psf_out)
-        call calypso_mpi_barrier
-      else
-        call link_nnod_stacks_type_2_output(nprocs,                     &
-     &    psf_mesh%node, psf_mesh%patch, psf_out_m)
+          call link_node_data_type_2_output                             &
+     &         (psf_mesh(i_psf)%node, psf_out(i_psf))
+          call link_ele_data_type_2_output                              &
+     &         (psf_mesh(i_psf)%patch, psf_out(i_psf))
+          call link_field_data_type_2_output                            &
+     &       (psf_mesh(i_psf)%node%numnod, psf_mesh(i_psf)%field,       &
+     &        psf_out(i_psf))
+        end if
+      end do
 !
-        call link_node_data_type_2_output(psf_mesh%node, psf_out)
-        call link_ele_data_type_2_output(psf_mesh%patch, psf_out)
-        call link_field_data_type_2_output(psf_mesh%node%numnod,        &
-     &    psf_mesh%field, psf_out)
-!
-        call sel_write_parallel_ucd_mesh(psf_out, psf_out_m)
-      end if
+      do i_psf = 1, num_psf
+        psf_out(i_psf)%file_prefix = psf_header(i_psf)
+        psf_out(i_psf)%ifmt_file = itype_psf_file(i_psf)
+        if((psf_out(i_psf)%ifmt_file/iflag_single) .eq. 0) then
+          if(my_rank .eq. mod(i_psf-1,nprocs)) then
+            call sel_write_grd_file(iminus, psf_out(i_psf))
+          end if
+        else
+          call sel_write_parallel_ucd_mesh                              &
+     &       (psf_out(i_psf), psf_out_m(i_psf))
+        end if
+      end do
+      call calypso_mpi_barrier
 !
       end subroutine output_section_mesh
 !
 !  ---------------------------------------------------------------------
 !
       subroutine output_section_data                                    &
-     &         (istep_psf, psf_mesh, psf_out, psf_out_m)
+     &         (num_psf, istep_psf, psf_mesh, psf_out, psf_out_m)
 !
       use set_ucd_data_to_type
       use parallel_ucd_IO_select
       use ucd_IO_select
       use merge_output_4_psf
 !
+      integer(kind= kint), intent(in) :: num_psf
       integer(kind= kint), intent(in) ::  istep_psf
-      type(psf_local_data), intent(in) :: psf_mesh
-      type(ucd_data), intent(inout) :: psf_out
-      type(merged_ucd_data), intent(inout) :: psf_out_m
+      type(psf_local_data), intent(in) :: psf_mesh(num_psf)
+      type(ucd_data), intent(inout) ::        psf_out(num_psf)
+      type(merged_ucd_data), intent(inout) :: psf_out_m(num_psf)
+!
+      integer(kind= kint) :: i_psf, irank_tgt
 !
 !
-      if((psf_out%ifmt_file/iflag_single) .eq. 0) then
-        call merge_ucd_psf_data(psf_mesh, psf_out)
-!
-        if(my_rank .eq. 0) then
-          call sel_write_udt_file(iminus, istep_psf, psf_out)
+      do i_psf = 1, num_psf
+        if((psf_out(i_psf)%ifmt_file/iflag_single) .eq. 0) then
+          irank_tgt = mod(i_psf-1,nprocs)
+          call merge_ucd_psf_data                                       &
+     &       (irank_tgt, psf_mesh(i_psf), psf_out(i_psf))
         end if
-        call calypso_mpi_barrier
-     else
-         call sel_write_parallel_ucd_file                               &
-     &      (istep_psf, psf_out, psf_out_m)
-      end if
+      end do
+!
+      do i_psf = 1, num_psf
+        if((psf_out(i_psf)%ifmt_file/iflag_single) .eq. 0) then
+          if(my_rank .eq. mod(i_psf-1,nprocs)) then
+            call sel_write_udt_file(iminus, istep_psf, psf_out(i_psf))
+          end if
+        else
+          call sel_write_parallel_ucd_file                              &
+     &      (istep_psf, psf_out(i_psf), psf_out_m(i_psf))
+        end if
+      end do
+      call calypso_mpi_barrier
 !
       end subroutine output_section_data
 !
@@ -103,7 +134,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine output_isosurface                                      &
-     &         (iso_header, itype_iso_file, istep_iso, iso_mesh)
+     &         (num_iso, iso_header, itype_iso_file, istep_iso,         &
+     &         iso_mesh, iso_out, iso_out_m)
 !
       use t_psf_patch_data
       use set_ucd_data_to_type
@@ -111,41 +143,59 @@
       use ucd_IO_select
       use merge_output_4_psf
 !
-      character(len = kchara), intent(in) :: iso_header
-      integer(kind= kint), intent(in) :: istep_iso, itype_iso_file
-      type(psf_local_data), intent(in) :: iso_mesh
+      integer(kind= kint), intent(in) :: num_iso
+      character(len = kchara), intent(in) :: iso_header(num_iso)
+      integer(kind= kint), intent(in) :: itype_iso_file(num_iso)
+      integer(kind= kint), intent(in) :: istep_iso
+      type(psf_local_data), intent(in) :: iso_mesh(num_iso)
 !
 !>      Structure for isosurface output (used by master process)
-      type(ucd_data) :: iso_out
-      type(merged_ucd_data) :: iso_out_m
+      type(ucd_data), intent(inout) :: iso_out(num_iso)
+      type(merged_ucd_data), intent(inout) :: iso_out_m(num_iso)
+!
+      integer(kind= kint) :: i_iso, irank_tgt
 !
 !
-      iso_out%file_prefix = iso_header
-      iso_out%ifmt_file = itype_iso_file
+      do i_iso = 1, num_iso
+        if((iso_out(i_iso)%ifmt_file/iflag_single) .eq. 0) then
+          irank_tgt = mod(i_iso-1,nprocs)
+          call merge_ucd_psf_mesh                                       &
+     &       (irank_tgt, iso_mesh(i_iso), iso_out(i_iso))
+          call merge_ucd_psf_data                                       &
+     &       (irank_tgt, iso_mesh(i_iso), iso_out(i_iso))
+        else
+          call link_nnod_stacks_type_2_output(nprocs,                   &
+     &        iso_mesh(i_iso)%node, iso_mesh(i_iso)%patch,              &
+     &        iso_out_m(i_iso))
 !
-      if((iso_out%ifmt_file/iflag_single) .eq. 0) then
-        call merge_ucd_psf_mesh(iso_mesh, iso_out)
-        call merge_ucd_psf_data(iso_mesh, iso_out)
+          call link_node_data_type_2_output                             &
+     &       (iso_mesh(i_iso)%node, iso_out(i_iso))
+          call link_ele_data_type_2_output                              &
+     &       (iso_mesh(i_iso)%patch, iso_out(i_iso))
+          call link_field_data_type_2_output                            &
+     &       (iso_mesh(i_iso)%node%numnod,                              &
+     &        iso_mesh(i_iso)%field, iso_out(i_iso))
 !
-        if(my_rank .eq. 0) then
-          call sel_write_ucd_file(iminus, istep_iso, iso_out)
-          call deallocate_ucd_mesh(iso_out)
         end if
-        call calypso_mpi_barrier
-      else
-        call link_nnod_stacks_type_2_output(nprocs,                     &
-     &      iso_mesh%node, iso_mesh%patch, iso_out_m)
+      end do
 !
-        call link_node_data_type_2_output(iso_mesh%node, iso_out)
-        call link_ele_data_type_2_output(iso_mesh%patch, iso_out)
-        call link_field_data_type_2_output(iso_mesh%node%numnod,        &
-     &    iso_mesh%field, iso_out)
+      do i_iso = 1, num_iso
+        iso_out(i_iso)%file_prefix = iso_header(i_iso)
+        iso_out(i_iso)%ifmt_file = itype_iso_file(i_iso)
+        if((iso_out(i_iso)%ifmt_file/iflag_single) .eq. 0) then
+          if(my_rank .eq. mod(i_iso-1,nprocs)) then
+            call sel_write_ucd_file(iminus, istep_iso, iso_out(i_iso))
+          end if
+          call deallocate_ucd_mesh(iso_out(i_iso))
+        else
+          call sel_write_parallel_ucd_file                              &
+     &       (istep_iso, iso_out(i_iso), iso_out_m(i_iso))
+          call disconnect_merged_ucd_mesh                               &
+     &       (iso_out(i_iso), iso_out_m(i_iso))
+        end if
+      end do
 !
-        call sel_write_parallel_ucd_file                                &
-     &      (istep_iso, iso_out, iso_out_m)
-        call disconnect_merged_ucd_mesh(iso_out, iso_out_m)
-      end if
-!
+      call calypso_mpi_barrier
 !
       end subroutine output_isosurface
 !
