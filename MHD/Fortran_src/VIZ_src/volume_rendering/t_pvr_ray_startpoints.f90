@@ -31,6 +31,8 @@
 !>    temporal number of pixels to start ray tracing
         integer(kind = kint), pointer :: istack_tmp_pvr_ray_st(:)
 !>    temporal number of pixels to start ray tracing
+        integer(kind = kint), pointer :: ipix_start_tmp(:,:)
+!>    temporal number of pixels to start ray tracing
         integer(kind = kint), pointer :: iflag_start_tmp(:)
 !>    start point of ray traing in surface coordinate
         real(kind = kreal), pointer ::  xi_start_tmp(:,:)
@@ -119,10 +121,12 @@
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
 !
+      allocate(pvr_start%ipix_start_tmp(2,pvr_start%ntot_tmp_pvr_ray))
       allocate(pvr_start%iflag_start_tmp(pvr_start%ntot_tmp_pvr_ray))
       allocate(pvr_start%xi_start_tmp(2,pvr_start%ntot_tmp_pvr_ray))
 !
       if(pvr_start%ntot_tmp_pvr_ray .gt. 0) then
+        pvr_start%ipix_start_tmp = 0
         pvr_start%iflag_start_tmp = 0
         pvr_start%xi_start_tmp =    0.0d0
       end if
@@ -149,6 +153,7 @@
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
 !
+      deallocate(pvr_start%ipix_start_tmp)
       deallocate(pvr_start%iflag_start_tmp, pvr_start%xi_start_tmp)
 !
       end subroutine deallocate_tmp_pvr_ray_start

@@ -182,7 +182,8 @@
      &    pvr_bound%jsurf_yrng, ray_vec,                                &
      &    pvr_start%num_pvr_ray, pvr_start%istack_pvr_ray_sf,           &
      &    pvr_start%ntot_tmp_pvr_ray, pvr_start%istack_tmp_pvr_ray_st,  &
-     &    pvr_start%iflag_start_tmp, pvr_start%xi_start_tmp)
+     &    pvr_start%ipix_start_tmp, pvr_start%iflag_start_tmp,          &
+     &    pvr_start%xi_start_tmp)
 !
       call allocate_item_pvr_ray_start(pvr_start)
 !
@@ -229,15 +230,14 @@
      &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
      &    pixel_xy%pixel_point_x, pixel_xy%pixel_point_y,               &
      &    pvr_bound%num_pvr_surf, pvr_bound%item_pvr_surf,              &
-     &    pvr_bound%screen_norm, pvr_bound%isurf_xrng,                  &
-     &    pvr_bound%jsurf_yrng, viewpoint_vec, ray_vec,                 &
+     &    pvr_bound%screen_norm, viewpoint_vec, ray_vec,                &
      &    pvr_start%ntot_tmp_pvr_ray, pvr_start%istack_tmp_pvr_ray_st,  &
-     &    pvr_start%iflag_start_tmp, pvr_start%xi_start_tmp,            &
-     &    pvr_start%istack_pvr_ray_sf, pvr_start%num_pvr_ray,           &
-     &    pvr_start%id_pixel_start, pvr_start%icount_pvr_trace,         &
-     &    pvr_start%isf_pvr_ray_start, pvr_start%xi_pvr_start,          &
-     &    pvr_start%xx_pvr_start, pvr_start%xx_pvr_ray_start,           &
-     &    pvr_start%pvr_ray_dir)
+     &    pvr_start%ipix_start_tmp, pvr_start%iflag_start_tmp,          &
+     &    pvr_start%xi_start_tmp, pvr_start%istack_pvr_ray_sf,          &
+     &    pvr_start%num_pvr_ray, pvr_start%id_pixel_start,              &
+     &    pvr_start%icount_pvr_trace, pvr_start%isf_pvr_ray_start,      &
+     &    pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,               &
+     &    pvr_start%xx_pvr_ray_start, pvr_start%pvr_ray_dir)
 !
       call s_ray_trace_4_each_image(numnod, numele, numsurf,            &
      &    nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf, e_multi, xx,    &

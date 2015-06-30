@@ -3,13 +3,19 @@
 !
 !        programmed by H.Matsui on Aug., 2011
 !
-!!      subroutine count_each_pvr_ray_start (numnod, numele, numsurf,   &
-!!     &          nnod_4_surf, ie_surf, isf_4_ele,                      &
-!!     &          x_nod_screen, npixel_x, npixel_y,                     &
-!!     &          pixel_point_x, pixel_point_y,num_pvr_surf,            &
-!!     &          item_pvr_surf_domain, screen_norm_pvr_domain,         &
+!!      subroutine count_temporal_pvr_ray_start                         &
+!!     &         (num_pvr_surf, screen_norm_pvr_domain,                 &
 !!     &          isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain, ray_vec,&
-!!     &          num_pvr_ray, istack_pvr_ray_sf)
+!!     &          ntot_tmp_pvr_ray_sf, istack_tmp_pvr_ray_st)
+!!      subroutine count_each_pvr_ray_start (numnod, numele, numsurf,   &
+!!     &         nnod_4_surf, ie_surf, isf_4_ele,                       &
+!!     &         x_nod_screen, npixel_x, npixel_y,                      &
+!!     &         pixel_point_x, pixel_point_y,num_pvr_surf,             &
+!!     &         item_pvr_surf_domain, screen_norm_pvr_domain,          &
+!!     &         isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain, ray_vec, &
+!!     &         num_pvr_ray, istack_pvr_ray_sf, ntot_tmp_pvr_ray,      &
+!!     &         istack_tmp_pvr_ray_st, ipix_start_tmp, iflag_start_tmp,&
+!!     &         xi_pvr_start_tmp)
 !!      subroutine set_each_pvr_ray_start                               &
 !!     &         (numnod, numele, numsurf, nnod_4_surf,                 &
 !!     &          xx, ie_surf, isf_4_ele, x_nod_screen,                 &
@@ -86,14 +92,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_each_pvr_ray_start (numnod, numele, numsurf,     &
-     &          nnod_4_surf, ie_surf, isf_4_ele,                        &
-     &          x_nod_screen, npixel_x, npixel_y,                       &
-     &          pixel_point_x, pixel_point_y,num_pvr_surf,              &
-     &          item_pvr_surf_domain, screen_norm_pvr_domain,           &
-     &          isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain, ray_vec,  &
-     &          num_pvr_ray, istack_pvr_ray_sf, ntot_tmp_pvr_ray,       &
-     &          istack_tmp_pvr_ray_st, iflag_start_tmp,                 &
-     &          xi_pvr_start_tmp)
+     &         nnod_4_surf, ie_surf, isf_4_ele,                         &
+     &         x_nod_screen, npixel_x, npixel_y,                        &
+     &         pixel_point_x, pixel_point_y,num_pvr_surf,               &
+     &         item_pvr_surf_domain, screen_norm_pvr_domain,            &
+     &         isurf_xrng_pvr_domain, jsurf_yrng_pvr_domain, ray_vec,   &
+     &         num_pvr_ray, istack_pvr_ray_sf, ntot_tmp_pvr_ray,        &
+     &         istack_tmp_pvr_ray_st, ipix_start_tmp, iflag_start_tmp,  &
+     &         xi_pvr_start_tmp)
 !
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
@@ -125,6 +131,8 @@
       integer(kind = kint), intent(inout) :: num_pvr_ray
       integer(kind = kint), intent(inout)                               &
      &                   :: iflag_start_tmp(ntot_tmp_pvr_ray)
+      integer(kind = kint), intent(inout)                               &
+     &                   :: ipix_start_tmp(2,ntot_tmp_pvr_ray)
       real(kind = kreal), intent(inout)                                 &
      &                   :: xi_pvr_start_tmp(2,ntot_tmp_pvr_ray)
       integer(kind = kint), intent(inout)                               &
@@ -165,6 +173,8 @@
               icou = icou + 1
               x_pix(1) = pixel_point_x(ipix)
               x_pix(2) = pixel_point_y(jpix)
+              ipix_start_tmp(1,icou) = ipix
+              ipix_start_tmp(2,icou) = jpix
               call cal_coefs_on_surf(x_surf, x_pix,                     &
      &            iflag_start_tmp(icou), xi_pvr_start_tmp(1,icou))
 !              write(100+my_rank,*) inum, ipix, jpix, iflag, xi
@@ -194,10 +204,9 @@
      &          xx, ie_surf, isf_4_ele, x_nod_screen,                   &
      &          npixel_x, npixel_y, pixel_point_x, pixel_point_y,       &
      &          num_pvr_surf, item_pvr_surf_domain,                     &
-     &          screen_norm_pvr_domain, isurf_xrng_pvr_domain,          &
-     &          jsurf_yrng_pvr_domain, viewpoint_vec, ray_vec,          &
+     &          screen_norm_pvr_domain, viewpoint_vec, ray_vec,         &
      &          ntot_tmp_pvr_ray, istack_tmp_pvr_ray_st,                &
-     &          iflag_start_tmp, xi_pvr_start_tmp,                      &
+     &          ipix_start_tmp, iflag_start_tmp, xi_pvr_start_tmp,      &
      &          istack_pvr_ray_sf, num_pvr_ray, id_pixel_start,         &
      &          icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,      &
      &          xx_pvr_start, xx_pvr_ray_start, pvr_ray_dir)
@@ -219,10 +228,6 @@
       integer(kind = kint), intent(in) :: num_pvr_surf
       integer(kind = kint), intent(in)                                  &
      &                    :: item_pvr_surf_domain(2,num_pvr_surf)
-      integer(kind = kint), intent(in)                                  &
-     &                    :: isurf_xrng_pvr_domain(2,num_pvr_surf)
-      integer(kind = kint), intent(in)                                  &
-     &                    :: jsurf_yrng_pvr_domain(2,num_pvr_surf)
       real(kind = kreal), intent(in)                                    &
      &                    :: screen_norm_pvr_domain(3,num_pvr_surf)
 !
@@ -234,6 +239,8 @@
      &                   :: istack_tmp_pvr_ray_st(0:num_pvr_surf)
       integer(kind = kint), intent(in)                                  &
      &                   :: iflag_start_tmp(ntot_tmp_pvr_ray)
+      integer(kind = kint), intent(in)                                  &
+     &                   :: ipix_start_tmp(2,ntot_tmp_pvr_ray)
       real(kind = kreal), intent(in)                                    &
      &                   :: xi_pvr_start_tmp(2,ntot_tmp_pvr_ray)
       integer(kind = kint), intent(in)                                  &
@@ -253,57 +260,55 @@
       real(kind = kreal), intent(inout) :: pvr_ray_dir(3,num_pvr_ray)
 !
       integer(kind = kint) :: inum, icou, jcou, iele, k1, isurf
-      integer(kind = kint) :: ist_pix, ied_pix, jst_pix, jed_pix
+      integer(kind = kint) :: ist_pix, ied_pix
       integer(kind = kint) :: ipix, jpix
 !
 !
 !      write(*,*) 'set_each_pvr_ray_start loop '
 !$omp parallel do private(inum,icou,jcou,iele,k1,isurf,                 &
-!$omp&                    ipix,jpix,ist_pix,ied_pix,jst_pix,jed_pix)
+!$omp&                    ipix,jpix,ist_pix,ied_pix)
       do inum = 1, num_pvr_surf
-        icou = istack_tmp_pvr_ray_st(inum-1)
-        jcou = istack_pvr_ray_sf(inum-1)
-        iele = item_pvr_surf_domain(1,inum)
-        k1 =   item_pvr_surf_domain(2,inum)
-        isurf = abs(isf_4_ele(iele,k1))
-!
         if( (screen_norm_pvr_domain(3,inum)*ray_vec(3)) .gt. zero) then
-          ist_pix = isurf_xrng_pvr_domain(1,inum)
-          ied_pix = isurf_xrng_pvr_domain(2,inum)
-          jst_pix = jsurf_yrng_pvr_domain(1,inum)
-          jed_pix = jsurf_yrng_pvr_domain(2,inum)
-          do ipix = ist_pix, ied_pix
-            do jpix = jst_pix, jed_pix
-              icou = icou + 1
-              if(iflag_start_tmp(icou) .gt. 0) then
-                jcou = jcou + 1
-                if(jcou .gt. num_pvr_ray) write(*,*) 'aho', my_rank,    &
+          iele = item_pvr_surf_domain(1,inum)
+          k1 =   item_pvr_surf_domain(2,inum)
+          isurf = abs(isf_4_ele(iele,k1))
+!
+          icou = istack_tmp_pvr_ray_st(inum-1)
+          jcou = istack_pvr_ray_sf(inum-1)
+!
+          ist_pix = istack_tmp_pvr_ray_st(inum-1) + 1
+          ied_pix = istack_tmp_pvr_ray_st(inum)
+          do icou = ist_pix, ied_pix
+            ipix = ipix_start_tmp(1,icou)
+            jpix = ipix_start_tmp(2,icou)
+            if(iflag_start_tmp(icou) .gt. 0) then
+              jcou = jcou + 1
+              if(jcou .gt. num_pvr_ray) write(*,*) 'aho', my_rank,      &
      &                         jcou, num_pvr_ray, inum, num_pvr_surf
 !
-                icount_pvr_trace(jcou) = 0
-                id_pixel_start(jcou) = ipix + (jpix-1)*npixel_x
-                isf_pvr_ray_start(1,jcou) = iele
-                isf_pvr_ray_start(2,jcou) = k1
-                isf_pvr_ray_start(3,jcou) = ie_surf(isurf,1)
-                xi_pvr_start(1:2,jcou) =   xi_pvr_start_tmp(1:2,icou)
-                xx_pvr_ray_start(1,jcou) = pixel_point_x(ipix)
-                xx_pvr_ray_start(2,jcou) = pixel_point_y(jpix)
+              icount_pvr_trace(jcou) = 0
+              id_pixel_start(jcou) = ipix + (jpix-1)*npixel_x
+              isf_pvr_ray_start(1,jcou) = iele
+              isf_pvr_ray_start(2,jcou) = k1
+              isf_pvr_ray_start(3,jcou) = ie_surf(isurf,1)
+              xi_pvr_start(1:2,jcou) =   xi_pvr_start_tmp(1:2,icou)
+              xx_pvr_ray_start(1,jcou) = pixel_point_x(ipix)
+              xx_pvr_ray_start(2,jcou) = pixel_point_y(jpix)
 !
-                call cal_field_on_surf_scalar(numnod, numsurf,          &
+              call cal_field_on_surf_scalar(numnod, numsurf,            &
      &              nnod_4_surf, ie_surf, isurf, xi_pvr_start(1,jcou),  &
      &              x_nod_screen(1,3), xx_pvr_ray_start(3,jcou) )
-                call cal_field_on_surf_vector(numnod, numsurf,          &
+              call cal_field_on_surf_vector(numnod, numsurf,            &
      &              nnod_4_surf, ie_surf, isurf, xi_pvr_start(1,jcou),  &
      &              xx(1,1), xx_pvr_start(1,jcou) )
 !
-                pvr_ray_dir(1,jcou) = viewpoint_vec(1)                  &
+              pvr_ray_dir(1,jcou) = viewpoint_vec(1)                    &
      &                                 - xx_pvr_start(1,jcou)
-                pvr_ray_dir(2,jcou) = viewpoint_vec(2)                  &
+              pvr_ray_dir(2,jcou) = viewpoint_vec(2)                    &
      &                                 - xx_pvr_start(2,jcou)
-                pvr_ray_dir(3,jcou) = viewpoint_vec(3)                  &
+              pvr_ray_dir(3,jcou) = viewpoint_vec(3)                    &
      &                                 - xx_pvr_start(3,jcou)
-              end if
-            end do
+            end if
           end do
         end if
 !
