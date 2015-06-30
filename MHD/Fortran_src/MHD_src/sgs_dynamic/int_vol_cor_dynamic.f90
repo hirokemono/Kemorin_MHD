@@ -15,7 +15,6 @@
       use m_geometry_data
       use m_jacobians
       use m_fem_gauss_int_coefs
-      use m_layering_ele_list
       use m_work_layer_correlate
 !
       implicit none
@@ -31,29 +30,43 @@
       subroutine int_vol_layer_correlate(n_tensor, n_int, ave_s, ave_g)
 !
       use m_geometry_constants
+      use m_layering_ele_list
       use int_vol_layer_cor_grpsmp
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
-      real(kind = kreal), intent(in) :: ave_s(n_layer_d,n_tensor)
-      real(kind = kreal), intent(in) :: ave_g(n_layer_d,n_tensor)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: ave_s(layer_tbl1%n_layer_d,n_tensor)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: ave_g(layer_tbl1%n_layer_d,n_tensor)
 !
 !
-      if (minlayer_4_smp .gt. min_item_layer_d_smp) then
+      if(layer_tbl1%minlayer_4_smp                                      &
+     &      .gt. layer_tbl1%min_item_layer_d_smp) then
 !
         if (nnod_4_ele .eq. num_t_linear) then
-          call int_vol_layer_cor_l(n_tensor, n_int, ave_s, ave_g)
+          call int_vol_layer_cor_l(n_tensor, n_int,                     &
+     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
+     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
+     &        ave_s, ave_g)
         else if (nnod_4_ele .eq. num_t_quad) then
-          call int_vol_layer_cor_q(n_tensor, n_int, ave_s, ave_g)
+          call int_vol_layer_cor_q(n_tensor, n_int,                     &
+     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
+     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
+     &        ave_s, ave_g)
         end if
 !
       else
 !
         if (nnod_4_ele .eq. num_t_linear) then
-          call int_vol_layer_cor_grpsmp_l(n_tensor, n_int,             &
-     &        ave_s, ave_g)
+          call int_vol_layer_cor_grpsmp_l(n_tensor, n_int,              &
+     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
+     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
+     &      layer_tbl1%item_layer, ave_s, ave_g)
         else if (nnod_4_ele .eq. num_t_quad) then
-          call int_vol_layer_cor_grpsmp_q(n_tensor, n_int,             &
-     &        ave_s, ave_g)
+          call int_vol_layer_cor_grpsmp_q(n_tensor, n_int,              &
+     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
+     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
+     &      layer_tbl1%item_layer, ave_s, ave_g)
         end if
 !
       end if
@@ -63,12 +76,20 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_layer_cor_l(n_tensor, n_int, ave_s, ave_g)
+      subroutine int_vol_layer_cor_l(n_tensor, n_int,                   &
+     &          n_layer_d, n_item_layer_d, layer_stack_smp, item_layer, &
+     &          ave_s, ave_g)
 !
       use m_node_phys_data
       use m_node_phys_address
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
+!
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in)                                 &
+     &                      :: layer_stack_smp(0:n_layer_d*np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
+!
       real(kind = kreal), intent(in) :: ave_s(n_layer_d,n_tensor)
       real(kind = kreal), intent(in) :: ave_g(n_layer_d,n_tensor)
 !
@@ -201,12 +222,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_layer_cor_q(n_tensor, n_int, ave_s, ave_g)
+      subroutine int_vol_layer_cor_q(n_tensor, n_int,                   &
+     &          n_layer_d, n_item_layer_d, layer_stack_smp, item_layer, &
+     &          ave_s, ave_g)
 !
       use m_node_phys_data
       use m_node_phys_address
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
+!
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in)                                 &
+     &                      :: layer_stack_smp(0:n_layer_d*np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
+!
       real(kind = kreal), intent(in) :: ave_s(n_layer_d,n_tensor)
       real(kind = kreal), intent(in) :: ave_g(n_layer_d,n_tensor)
 !

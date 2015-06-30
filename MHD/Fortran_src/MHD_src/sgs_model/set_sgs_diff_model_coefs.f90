@@ -5,13 +5,15 @@
 !     Modified by H. Matsui on July, 2007
 !     Modified by H. Matsui on Nov., 2009
 !
-!      subroutine clippging_sgs_coefs(numdir, ifield_d, icomp_f)
-!      subroutine clippging_sgs_diff_coefs(numdir, ifield_d, icomp_f)
-!
-!      subroutine set_model_coefs_2_ele(itype_csim, numdir,             &
-!     &          ifield_d, icomp_f)
-!      subroutine clear_model_coefs_2_ele(numdir, icomp_f)
-!      subroutine set_diff_coefs_layer_ele(ifield_d)
+!!      subroutine clippging_sgs_coefs(numdir, ifield_d, icomp_f)
+!!      subroutine clippging_sgs_diff_coefs(numdir, ifield_d, icomp_f)
+!!
+!!      subroutine set_model_coefs_2_ele(itype_csim, numdir,            &
+!!     &          ifield_d, icomp_f, n_layer_d, n_item_layer_d,         &
+!!     &          layer_stack_smp, item_layer)
+!!      subroutine clear_model_coefs_2_ele(numdir, icomp_f)
+!!      subroutine set_diff_coefs_layer_ele(ifield_d,                   &
+!!     &         n_layer_d, n_item_layer_d, layer_stack_smp, item_layer)
 !      subroutine set_diff_coefs_whole_ele(iele_fsmp_stack, ifield_d)
 !
       module set_sgs_diff_model_coefs
@@ -19,7 +21,6 @@
       use m_precision
 !
       use m_constants
-      use m_layering_ele_list
       use m_geometry_parameter
 !
       implicit none
@@ -45,39 +46,39 @@
 !
 !
 !      write(50+my_rank,*) 'nd, i, sgs_c_coef(i,icomp_f:icomp_f+numdir-1)'
-!      do nd = 1, n_layer_d
+!      do nd = 1, nlayer_SGS
 !        write(50+my_rank,*) nd, i, sgs_c_coef(i,icomp_f:icomp_f+numdir-1)
 !      end do
 !
 !
       if (iset_SGS_nagetive_clip .eq. 1) then
         do nd = 1, numdir
-          call delete_negative_coefs(n_layer_d, SGS_clipping_limit,     &
+          call delete_negative_coefs(nlayer_SGS, SGS_clipping_limit,    &
      &      sgs_c_coef(1,icomp_f+nd-1), sgs_c_whole(icomp_f+nd-1),      &
      &      sgs_c_clip(1,icomp_f+nd-1), sgs_c_whole_clip(icomp_f+nd-1))
         end do
-        call delete_negative_coefs(n_layer_d, SGS_clipping_limit,       &
+        call delete_negative_coefs(nlayer_SGS, SGS_clipping_limit,      &
      &       sgs_f_coef(1,ifield_d), sgs_f_whole(ifield_d),             &
      &       sgs_f_clip(1,ifield_d), sgs_f_whole_clip(ifield_d))
 !
 !
       else if (iset_SGS_nagetive_clip .eq. 2) then
         do nd = 1, numdir
-          call ignore_negative_coefs(n_layer_d, SGS_clipping_limit,     &
+          call ignore_negative_coefs(nlayer_SGS, SGS_clipping_limit,    &
      &      sgs_c_coef(1,icomp_f+nd-1), sgs_c_whole(icomp_f+nd-1),      &
      &      sgs_c_clip(1,icomp_f+nd-1), sgs_c_whole_clip(icomp_f+nd-1))
         end do
-        call ignore_negative_coefs(n_layer_d, SGS_clipping_limit,       &
+        call ignore_negative_coefs(nlayer_SGS, SGS_clipping_limit,      &
      &       sgs_f_coef(1,ifield_d), sgs_f_whole(ifield_d),             &
      &       sgs_f_clip(1,ifield_d), sgs_f_whole_clip(ifield_d))
 !
         if (iflag_SGS_initial .eq. 1) then
           do nd = 1, numdir
-            call init_negative_coefs(n_layer_d, SGS_clipping_limit,     &
+            call init_negative_coefs(nlayer_SGS, SGS_clipping_limit,    &
      &      sgs_c_coef(1,icomp_f+nd-1), sgs_c_whole(icomp_f+nd-1),      &
      &      sgs_c_clip(1,icomp_f+nd-1), sgs_c_whole_clip(icomp_f+nd-1))
           end do
-          call init_negative_coefs(n_layer_d, SGS_clipping_limit,       &
+          call init_negative_coefs(nlayer_SGS, SGS_clipping_limit,      &
      &      sgs_c_coef(1,icomp_f+nd-1), sgs_c_whole(icomp_f+nd-1),      &
      &      sgs_c_clip(1,icomp_f+nd-1), sgs_c_whole_clip(icomp_f+nd-1))
         end if
@@ -85,11 +86,11 @@
       else
 !
         do nd = 1, numdir
-          call copy_sgs_coefs(n_layer_d,                                &
+          call copy_sgs_coefs(nlayer_SGS,                               &
      &      sgs_c_coef(1,icomp_f+nd-1), sgs_c_whole(icomp_f+nd-1),      &
      &      sgs_c_clip(1,icomp_f+nd-1), sgs_c_whole_clip(icomp_f+nd-1))
         end do
-        call copy_sgs_coefs(n_layer_d,                                  &
+        call copy_sgs_coefs(nlayer_SGS,                                 &
      &       sgs_f_coef(1,ifield_d), sgs_f_whole(ifield_d),             &
      &       sgs_f_clip(1,ifield_d), sgs_f_whole_clip(ifield_d))
       end if
@@ -101,6 +102,7 @@
       subroutine clippging_sgs_diff_coefs(numdir, ifield_d, icomp_f)
 !
       use m_control_parameter
+!      use m_layering_ele_list
       use m_t_step_parameter
       use m_ele_info_4_dynamical
 !
@@ -110,33 +112,33 @@
 !
       if (iset_SGS_nagetive_clip .eq. 1) then
         do nd = 1, numdir
-          call delete_negative_coefs(n_layer_d, SGS_clipping_limit,     &
+          call delete_negative_coefs(nlayer_SGS, SGS_clipping_limit,    &
      &    diff_c_coef(1,icomp_f+nd-1), diff_c_whole(icomp_f+nd-1),      &
      &    diff_c_clip(1,icomp_f+nd-1), diff_c_whole_clip(icomp_f+nd-1))
         end do
-        call delete_negative_coefs(n_layer_d, SGS_clipping_limit,       &
+        call delete_negative_coefs(nlayer_SGS, SGS_clipping_limit,      &
      &       diff_f_coef(1,ifield_d), diff_f_whole(ifield_d),           &
      &       diff_f_clip(1,ifield_d), diff_f_whole_clip(ifield_d))
 !
 !
       else if (iset_SGS_nagetive_clip .eq. 2) then
         do nd = 1, numdir
-          call ignore_negative_coefs(n_layer_d, SGS_clipping_limit,     &
+          call ignore_negative_coefs(nlayer_SGS, SGS_clipping_limit,    &
      &    diff_c_coef(1,icomp_f+nd-1), diff_c_whole(icomp_f+nd-1),      &
      &    diff_c_clip(1,icomp_f+nd-1), diff_c_whole_clip(icomp_f+nd-1))
         end do
-        call ignore_negative_coefs(n_layer_d, SGS_clipping_limit,       &
+        call ignore_negative_coefs(nlayer_SGS, SGS_clipping_limit,      &
      &       diff_f_coef(1,ifield_d), diff_f_whole(ifield_d),           &
      &       diff_f_clip(1,ifield_d), diff_f_whole_clip(ifield_d))
 !
         if (iflag_SGS_initial .eq. 1) then
           do nd = 1, numdir
-            call init_negative_coefs(n_layer_d, SGS_clipping_limit,     &
+            call init_negative_coefs(nlayer_SGS, SGS_clipping_limit,    &
      &        diff_c_coef(1,icomp_f+nd-1), diff_c_whole(icomp_f+nd-1),  &
      &        diff_c_clip(1,icomp_f+nd-1),                              &
      &        diff_c_whole_clip(icomp_f+nd-1))
           end do
-          call init_negative_coefs(n_layer_d, SGS_clipping_limit,       &
+          call init_negative_coefs(nlayer_SGS, SGS_clipping_limit,      &
      &       diff_f_coef(1,ifield_d), diff_f_whole(ifield_d),           &
      &       diff_f_clip(1,ifield_d), diff_f_whole_clip(ifield_d))
         end if
@@ -144,12 +146,12 @@
       else
 !
         do nd = 1, numdir
-          call copy_sgs_coefs(n_layer_d,                                &
+          call copy_sgs_coefs(nlayer_SGS,                               &
      &        diff_c_coef(1,icomp_f+nd-1), diff_c_whole(icomp_f+nd-1),  &
      &        diff_c_clip(1,icomp_f+nd-1),                              &
      &        diff_c_whole_clip(icomp_f+nd-1))
         end do
-        call copy_sgs_coefs(n_layer_d,                                  &
+        call copy_sgs_coefs(nlayer_SGS,                                 &
      &       diff_f_coef(1,ifield_d), diff_f_whole(ifield_d),           &
      &       diff_f_clip(1,ifield_d), diff_f_whole_clip(ifield_d))
       end if
@@ -181,21 +183,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine delete_negative_coefs(n_layer_d, clip_level,         &
+      subroutine delete_negative_coefs(nlayer_SGS, clip_level,          &
      &          coef, coef_w, clipped, clipped_w)
 !
-      integer (kind = kint), intent(in) :: n_layer_d
+      integer (kind = kint), intent(in) :: nlayer_SGS
       real (kind = kreal), intent(in) :: clip_level
-      real (kind = kreal), intent(in) :: coef(n_layer_d)
+      real (kind = kreal), intent(in) :: coef(nlayer_SGS)
       real (kind = kreal), intent(in) :: coef_w
 !
-      real (kind = kreal), intent(inout) :: clipped(n_layer_d)
+      real (kind = kreal), intent(inout) :: clipped(nlayer_SGS)
       real (kind = kreal), intent(inout) :: clipped_w
 !
       integer (kind = kint) :: inum
 !
 !
-      do inum = 1, n_layer_d
+      do inum = 1, nlayer_SGS
         if (coef(inum) .lt. clip_level) then
           clipped(inum) = zero
         else
@@ -212,20 +214,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine ignore_negative_coefs(n_layer_d, clip_level,           &
+      subroutine ignore_negative_coefs(nlayer_SGS, clip_level,          &
      &          coef, coef_w, clipped, clipped_w)
 !
-      integer (kind = kint), intent(in) :: n_layer_d
+      integer (kind = kint), intent(in) :: nlayer_SGS
       real (kind = kreal), intent(in) :: clip_level
-      real (kind = kreal), intent(in) :: coef(n_layer_d)
+      real (kind = kreal), intent(in) :: coef(nlayer_SGS)
       real (kind = kreal), intent(in) :: coef_w
 !
-      real (kind = kreal), intent(inout) :: clipped(n_layer_d)
+      real (kind = kreal), intent(inout) :: clipped(nlayer_SGS)
       real (kind = kreal), intent(inout) :: clipped_w
 !
       integer (kind = kint) :: inum
 !
-        do inum = 1, n_layer_d
+        do inum = 1, nlayer_SGS
           if (coef(inum) .gt. clip_level) clipped(inum) = coef(inum)
         end do
         if (coef_w .gt. clip_level) clipped_w = coef_w
@@ -234,21 +236,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_negative_coefs(n_layer_d, clip_level,             &
+      subroutine init_negative_coefs(nlayer_SGS, clip_level,            &
      &          coef, coef_w, clipped, clipped_w)
 !
-      integer (kind = kint), intent(in) :: n_layer_d
+      integer (kind = kint), intent(in) :: nlayer_SGS
       real (kind = kreal), intent(in) :: clip_level
-      real (kind = kreal), intent(in) :: coef(n_layer_d)
+      real (kind = kreal), intent(in) :: coef(nlayer_SGS)
       real (kind = kreal), intent(in) :: coef_w
 !
-      real (kind = kreal), intent(inout) :: clipped(n_layer_d)
+      real (kind = kreal), intent(inout) :: clipped(nlayer_SGS)
       real (kind = kreal), intent(inout) :: clipped_w
 !
       integer(kind = kint) :: inum
 !
       if (coef_w .lt. clip_level)  clipped_w = zero
-      do inum = 1, n_layer_d
+      do inum = 1, nlayer_SGS
         if (coef(inum) .lt. clip_level) clipped(inum) = clipped_w
       end do
 !
@@ -289,7 +291,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_model_coefs_2_ele(itype_csim, numdir,              &
-     &          ifield_d, icomp_f)
+     &          ifield_d, icomp_f, n_layer_d, n_item_layer_d,           &
+     &          layer_stack_smp, item_layer)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -299,6 +302,12 @@
 !
       integer (kind = kint), intent(in) :: itype_csim
       integer (kind = kint), intent(in) :: numdir, ifield_d, icomp_f
+!
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in)                                 &
+     &                      :: layer_stack_smp(0:n_layer_d*np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
+!
       integer (kind = kint) :: ip, is, ist, ied, nst, ned
       integer (kind = kint) :: inum, iele0, iele, nd
 !
@@ -351,7 +360,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_diff_coefs_layer_ele(ifield_d)
+      subroutine set_diff_coefs_layer_ele(ifield_d,                     &
+     &         n_layer_d, n_item_layer_d, layer_stack_smp, item_layer)
 !
       use m_machine_parameter
       use m_ele_info_4_dynamical
@@ -359,6 +369,11 @@
       use m_SGS_model_coefs
 !
       integer (kind = kint), intent(in) :: ifield_d
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in)                                 &
+     &                      :: layer_stack_smp(0:n_layer_d*np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
+!
       integer (kind = kint) :: ip, is, ist, ied, inum, iele0, iele
 !
 !

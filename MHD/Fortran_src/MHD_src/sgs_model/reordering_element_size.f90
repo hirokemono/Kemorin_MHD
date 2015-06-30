@@ -102,7 +102,7 @@
 !
 !      if ( iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
 !        call reordering_layer_info(numele, old2newele_layer(1),         &
-!     &      n_item_layer_d, item_layer(1) )
+!     &      layer_tbl1%n_item_layer_d, item_layer(1) )
 !      end if
 !
       end subroutine reordering_ele_size

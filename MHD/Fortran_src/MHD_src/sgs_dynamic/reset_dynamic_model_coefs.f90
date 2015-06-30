@@ -20,7 +20,6 @@
       use m_geometry_parameter
       use m_machine_parameter
       use m_SGS_model_coefs
-      use m_layering_ele_list
       use m_ele_info_4_dynamical
 !
       implicit none
@@ -38,13 +37,21 @@
 !
       subroutine reset_vector_sgs_model_coefs(icomp_sgs)
 !
+      use m_layering_ele_list
+!
       integer (kind = kint), intent(in) :: icomp_sgs
 !
 !
-      if (minlayer_4_smp .gt. min_item_layer_d_smp) then
-        call reset_sgs_v_model_coefs_elesmp(icomp_sgs)
+      if(layer_tbl1%minlayer_4_smp                                      &
+     &     .gt. layer_tbl1%min_item_layer_d_smp) then
+        call reset_sgs_v_model_coefs_elesmp(icomp_sgs,                  &
+     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
+     &      layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
       else
-        call reset_sgs_v_model_coefs_grpsmp(icomp_sgs)
+        call reset_sgs_v_model_coefs_grpsmp                             &
+     &     (icomp_sgs, layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d, &
+     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
+     &      layer_tbl1%item_layer)
       end if
 !
       end subroutine reset_vector_sgs_model_coefs
@@ -53,13 +60,21 @@
 !
       subroutine reset_tensor_sgs_model_coefs(icomp_sgs)
 !
+      use m_layering_ele_list
+!
       integer (kind = kint), intent(in) :: icomp_sgs
 !
 !
-      if (minlayer_4_smp .gt. min_item_layer_d_smp) then
-        call reset_sgs_t_model_coefs_elesmp(icomp_sgs)
+      if(layer_tbl1%minlayer_4_smp                                      &
+     &     .gt. layer_tbl1%min_item_layer_d_smp) then
+        call reset_sgs_t_model_coefs_elesmp(icomp_sgs,                  &
+     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
+     &      layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
       else
-        call reset_sgs_t_model_coefs_grpsmp(icomp_sgs)
+        call reset_sgs_t_model_coefs_grpsmp                             &
+     &     (icomp_sgs, layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d, &
+     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
+     &      layer_tbl1%item_layer)
       end if
 !
       end subroutine reset_tensor_sgs_model_coefs
@@ -67,9 +82,15 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine reset_sgs_v_model_coefs_elesmp(icomp_sgs)
+      subroutine reset_sgs_v_model_coefs_elesmp(icomp_sgs,              &
+     &          n_layer_d, n_item_layer_d, layer_stack_smp, item_layer)
 !
       integer (kind = kint), intent(in) :: icomp_sgs
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in)                                 &
+     &                      :: layer_stack_smp(0:n_layer_d*np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
+!
       integer (kind = kint) :: iele0, iele, iproc, ist, ied, is, inum
 !
 !
@@ -108,9 +129,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine reset_sgs_t_model_coefs_elesmp(icomp_sgs)
+      subroutine reset_sgs_t_model_coefs_elesmp(icomp_sgs,              &
+     &          n_layer_d, n_item_layer_d, layer_stack_smp, item_layer)
 !
       integer (kind = kint), intent(in) :: icomp_sgs
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in)                                 &
+     &                      :: layer_stack_smp(0:n_layer_d*np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
+!
       integer (kind = kint) :: iele0, iele, iproc, ist, ied, is, inum
 !
 !
@@ -155,11 +182,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine reset_sgs_v_model_coefs_grpsmp(icomp_sgs)
-!
-      use m_layering_ele_list
+      subroutine reset_sgs_v_model_coefs_grpsmp                         &
+     &         (icomp_sgs, n_layer_d, n_item_layer_d, layer_stack,      &
+     &          istack_item_layer_d_smp, item_layer)
 !
       integer (kind = kint), intent(in) :: icomp_sgs
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in) :: layer_stack(0:n_layer_d)
+      integer (kind = kint), intent(in)                                 &
+     &               :: istack_item_layer_d_smp(0:np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
+!
       integer (kind = kint) :: iele0, iele, iproc, inum
       integer (kind = kint) :: ist, ied, ist_num, ied_num
 !
@@ -186,11 +219,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine reset_sgs_t_model_coefs_grpsmp(icomp_sgs)
-!
-      use m_layering_ele_list
+      subroutine reset_sgs_t_model_coefs_grpsmp                         &
+     &         (icomp_sgs, n_layer_d, n_item_layer_d, layer_stack,      &
+     &          istack_item_layer_d_smp, item_layer)
 !
       integer (kind = kint), intent(in) :: icomp_sgs
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in) :: layer_stack(0:n_layer_d)
+      integer (kind = kint), intent(in)                                 &
+     &               :: istack_item_layer_d_smp(0:np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
+!
       integer (kind = kint) :: iele0, iele, iproc, inum
       integer (kind = kint) :: ist, ied, ist_num, ied_num
 !

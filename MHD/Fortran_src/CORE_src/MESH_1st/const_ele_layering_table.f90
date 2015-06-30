@@ -4,6 +4,9 @@
 !      written by H. Matsui on Nov.,  2006
 !      Modified by H. Matsui on Nov., 2009
 !
+!      subroutine const_layers_4_dynamic
+!      subroutine deallocate_layering_ele_list
+!
       module const_ele_layering_table
 !
       use m_precision
@@ -69,32 +72,37 @@
 !
       call set_layerd_group_id(num_mat, mat_name)
 !
-      n_layer_d = num_layer_grp
-      call allocate_layering_ele_list
+      layer_tbl1%n_layer_d = num_layer_grp
+      call alloc_layering_ele_list_type(layer_tbl1)
 !
 !
         if (iflag_debug .eq. 1)                                         &
      &    write(*,*) 'count_ele_layer_by_table'
       call count_ele_layer_by_table(num_mat, mat_istack,                &
-     &    n_layer_d, n_item_layer_d,  layer_stack)
+     &    layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,              &
+     &    layer_tbl1%layer_stack)
 !
-!      call check_layer_stack(my_rank)
+!      call check_layer_stack_type(my_rank, layer_tbl1)
 !
-      if (iflag_debug .eq. 1) write(*,*) 'allocate_layer_items'
-      call allocate_layer_items
+      if (iflag_debug .eq. 1) write(*,*) 'alloc_layer_items_type'
+      call alloc_layer_items_type(layer_tbl1)
       if (iflag_debug .eq. 1)  write(*,*) 'set_ele_layer_by_table'
-      call set_ele_layer_by_table(num_mat, num_mat_bc,                  &
-     &    mat_istack, mat_item, n_layer_d, n_item_layer_d,              &
-     &    layer_stack, item_layer)
+      call set_ele_layer_by_table                                       &
+     &   (num_mat, num_mat_bc, mat_istack, mat_item,                    &
+     &    layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,              &
+     &    layer_tbl1%layer_stack, layer_tbl1%item_layer)
 !
       call deallocate_layering_ele_grp
 !
 !   SMP settings
 !
-      call count_ele_4_dynamic_smp(n_layer_d, layer_stack,              &
-     &          maxlayer_4_smp, minlayer_4_smp,                         &
-     &          min_item_layer_d_smp, max_item_layer_d_smp,             &
-     &          layer_stack_smp, istack_item_layer_d_smp)
+      call count_ele_4_dynamic_smp                                      &
+     &         (layer_tbl1%n_layer_d, layer_tbl1%layer_stack,           &
+     &          layer_tbl1%maxlayer_4_smp, layer_tbl1%minlayer_4_smp,   &
+     &          layer_tbl1%min_item_layer_d_smp,                        &
+     &          layer_tbl1%max_item_layer_d_smp,                        &
+     &          layer_tbl1%layer_stack_smp,                             &
+     &          layer_tbl1%istack_item_layer_d_smp)
 !
       end subroutine const_layer_list_by_table
 !
@@ -127,31 +135,47 @@
 !
 !
       call set_num_dynamic_layer_by_start(num_mat, mat_name,            &
-     &    mat_istack, n_layer_d)
+     &    mat_istack, layer_tbl1%n_layer_d)
 !
-      call allocate_layer_ele_start(n_layer_d)
-      call allocate_layering_ele_list
+      call allocate_layer_ele_start(layer_tbl1%n_layer_d)
+      call alloc_layering_ele_list_type(layer_tbl1)
 !
       call set_start_ele_4_dynamic(num_mat, num_mat_bc,                 &
-     &    mat_name, mat_istack, mat_item, n_layer_d)
+     &    mat_name, mat_istack, mat_item, layer_tbl1%n_layer_d)
 !
-      call count_ele_4_dynamic_by_start(n_layer_d, n_item_layer_d,      &
-     &    layer_stack)
+      call count_ele_4_dynamic_by_start                                 &
+     &   (layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,              &
+     &    layer_tbl1%layer_stack)
 !
-      call allocate_layer_items
-      call set_ele_4_dynamic_by_start(n_layer_d, n_item_layer_d,        &
-     &    layer_stack, item_layer)
+      call alloc_layer_items_type(layer_tbl1)
+      call set_ele_4_dynamic_by_start                                   &
+     &   (layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,              &
+     &    layer_tbl1%layer_stack, layer_tbl1%item_layer)
 !
       call deallocate_layer_ele_start
 !
 !   SMP settings
 !
-      call count_ele_4_dynamic_smp(n_layer_d, layer_stack,              &
-     &          maxlayer_4_smp, minlayer_4_smp,                         &
-     &          min_item_layer_d_smp, max_item_layer_d_smp,             &
-     &          layer_stack_smp, istack_item_layer_d_smp)
+      call count_ele_4_dynamic_smp                                      &
+     &         (layer_tbl1%n_layer_d, layer_tbl1%layer_stack,           &
+     &          layer_tbl1%maxlayer_4_smp, layer_tbl1%minlayer_4_smp,   &
+     &          layer_tbl1%min_item_layer_d_smp,                        &
+     &          layer_tbl1%max_item_layer_d_smp,                        &
+     &          layer_tbl1%layer_stack_smp,                             &
+     &          layer_tbl1%istack_item_layer_d_smp)
 !
       end subroutine const_layer_list_by_start_end
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine deallocate_layering_ele_list
+!
+      use m_layering_ele_list
+!
+      call dealloc_layering_ele_list_type(layer_tbl1)
+!
+      end subroutine deallocate_layering_ele_list
 !
 ! ----------------------------------------------------------------------
 !

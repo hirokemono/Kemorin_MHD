@@ -46,7 +46,6 @@
       subroutine output_ini_model_coefs
 !
       use m_SGS_model_coefs
-      use m_layering_ele_list
       use open_sgs_model_coefs
       use sgs_model_coefs_IO
 !
@@ -64,7 +63,7 @@
         write(rst_sgs_coef_code,'(2i16)') i_step_MHD, i_step_sgs_coefs
 !
         write(rst_sgs_coef_code,'(a)')  '! num. of model coefs'
-        write(rst_sgs_coef_code,'(2i16)')  num_sgs_kinds, n_layer_d
+        write(rst_sgs_coef_code,'(2i16)')  num_sgs_kinds, nlayer_SGS
 !
         call write_sgs_coef_head(rst_sgs_coef_code)
 !
@@ -73,7 +72,7 @@
      &        (sgs_f_whole_clip(nd),nd=1,num_sgs_kinds)
 !
 !   write model coefs for each layer
-        do inum = 1, n_layer_d
+        do inum = 1, nlayer_SGS
           write(rst_sgs_coef_code,1000) i_step_MHD, time, inum,         &
      &     (sgs_f_clip(inum,nd),nd=1,num_sgs_kinds)
         end do
@@ -81,7 +80,7 @@
         if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
 !
           write(rst_sgs_coef_code,'(a)')  '! num. of commute coefs'
-          write(rst_sgs_coef_code,'(2i16)')  num_diff_kinds, n_layer_d
+          write(rst_sgs_coef_code,'(2i16)')  num_diff_kinds, nlayer_SGS
 !
           call write_diff_coef_head(rst_sgs_coef_code)
 !
@@ -89,7 +88,7 @@
      &          (diff_f_whole_clip(nd),nd=1, num_diff_kinds)
 !
           if (iset_DIFF_model_coefs .eq. 1 ) then
-            do inum = 1, n_layer_d
+            do inum = 1, nlayer_SGS
               write(rst_sgs_coef_code,1000)  i_step_MHD, time, inum,    &
      &              (diff_f_clip(inum,nd),nd=1,num_diff_kinds)
             end do
@@ -191,7 +190,6 @@
       subroutine set_ini_model_coefs_from_IO
 !
       use m_SGS_model_coefs
-      use m_layering_ele_list
       use m_ele_info_4_dynamical
 !
       integer(kind = kint) :: i, j
@@ -200,7 +198,7 @@
       do i = 1, num_sgs_kinds
         do j = 1, num_sgs_kinds_IO
           if ( name_ak_sgs(i) .eq. name_ak_sgs_IO(j) ) then
-            sgs_f_clip(1:n_layer_d,i) = coef_sgs_IO(1:n_layer_d,j)
+            sgs_f_clip(1:nlayer_SGS,i) = coef_sgs_IO(1:nlayer_SGS,j)
             sgs_f_whole_clip(i) =           coef_sgs_IO(0,j)
             exit
           end if
@@ -216,7 +214,8 @@
             if ( name_ak_diff(i) .eq. name_ak_diff_IO(j) ) then
               diff_f_whole_clip(i) = coef_diff_IO(0,j)
               if (iset_DIFF_model_coefs .eq. 1) then
-                diff_f_clip(1:n_layer_d,i) = coef_diff_IO(1:n_layer_d,j)
+                diff_f_clip(1:nlayer_SGS,i)                             &
+     &                   = coef_diff_IO(1:nlayer_SGS,j)
               end if
               exit
             end if
@@ -234,6 +233,7 @@
 !
       subroutine set_initial_model_coefs_ele
 !
+      use m_layering_ele_list
       use m_SGS_model_coefs
       use m_geometry_data_MHD
       use set_sgs_diff_model_coefs
@@ -242,7 +242,9 @@
 !
       do i = 1, num_sgs_kinds
          ist = istack_sgs_coefs(i-1) + 1
-         call set_model_coefs_2_ele(izero, ncomp_sgs_coefs(i), i, ist)
+         call set_model_coefs_2_ele(izero, ncomp_sgs_coefs(i), i, ist,  &
+     &       layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,           &
+     &       layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
       end do
 !
       if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
@@ -252,7 +254,9 @@
           end do
         else
           do i = 1, num_diff_kinds
-            call set_diff_coefs_layer_ele(i)
+            call set_diff_coefs_layer_ele                               &
+     &         (i, layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,     &
+     &          layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
           end do
         end if
       end if

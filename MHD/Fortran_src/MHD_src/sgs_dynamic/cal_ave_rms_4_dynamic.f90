@@ -39,14 +39,15 @@
 !
       call s_int_vol_rms_ave_dynamic(n_tensor, n_int)
 !
-      call sum_layerd_averages
-      call divide_layers_ave_by_vol                                     &
-     &    (n_tensor, ave_sgs_simi(1,icomp_f),                           &
+      call sum_layerd_averages(layer_tbl1%n_layer_d)
+      call divide_layers_ave_by_vol(layer_tbl1%n_layer_d, n_tensor,     &
+     &    layer_tbl1%a_vol_layer, ave_sgs_simi(1,icomp_f),              &
      &    ave_sgs_grad(1,icomp_f), rms_sgs_simi(1,icomp_f),             &
      &    rms_sgs_grad(1,icomp_f), ratio_sgs(1,icomp_f) )
 !
       call sum_whole_averages
-      call divide_all_layer_ave_by_vol(n_tensor, vol_total_layer(1),    &
+      call divide_all_layer_ave_by_vol                                  &
+     &     (n_tensor, layer_tbl1%vol_total_layer(1),                    &
      &      ave_sgs_simi_w(icomp_f), ave_sgs_grad_w(icomp_f),           &
      &      rms_sgs_simi_w(icomp_f), rms_sgs_grad_w(icomp_f),           &
      &      ratio_sgs_w(icomp_f) )
@@ -67,14 +68,15 @@
 !
       call s_int_vol_rms_ave_dynamic(n_tensor, n_int)
 !
-      call sum_layerd_averages
-      call divide_layers_ave_by_vol                                     &
-     &    (n_tensor, ave_diff_simi(1,icomp_f),                          &
+      call sum_layerd_averages(layer_tbl1%n_layer_d)
+      call divide_layers_ave_by_vol(layer_tbl1%n_layer_d, n_tensor,     &
+     &    layer_tbl1%a_vol_layer, ave_diff_simi(1,icomp_f),             &
      &    ave_diff_grad(1,icomp_f), rms_diff_simi(1,icomp_f),           &
      &    rms_diff_grad(1,icomp_f), ratio_diff(1,icomp_f) )
 !
       call sum_whole_averages
-      call divide_all_layer_ave_by_vol(n_tensor, vol_total_layer(1),    &
+      call divide_all_layer_ave_by_vol                                  &
+     &     (n_tensor, layer_tbl1%vol_total_layer(1),                    &
      &      ave_diff_simi_w(icomp_f), ave_diff_grad_w(icomp_f),         &
      &      rms_diff_simi_w(icomp_f), rms_diff_grad_w(icomp_f),         &
      &      ratio_diff_w(icomp_f) )

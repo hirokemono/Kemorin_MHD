@@ -16,7 +16,6 @@
       use m_jacobians
       use m_fem_gauss_int_coefs
       use m_work_layer_correlate
-      use m_layering_ele_list
       use m_ele_info_4_dynamical
 !
       implicit none
@@ -32,25 +31,37 @@
       subroutine s_int_vol_rms_ave_dynamic(n_tensor, n_int)
 !
       use m_geometry_constants
+      use m_layering_ele_list
       use int_vol_rms_dynamic_grpsmp
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
 !
 !
-      if (minlayer_4_smp .gt. min_item_layer_d_smp) then
+      if(layer_tbl1%minlayer_4_smp                                      &
+     &     .gt. layer_tbl1%min_item_layer_d_smp) then
 !
         if (nnod_4_ele .eq. num_t_linear) then
-          call int_vol_rms_ave_dynamic_l(n_tensor, n_int)
+          call int_vol_rms_ave_dynamic_l(n_tensor, n_int,               &
+     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
+     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
         else if (nnod_4_ele .eq. num_t_quad) then
-          call int_vol_rms_ave_dynamic_q(n_tensor, n_int)
+          call int_vol_rms_ave_dynamic_q(n_tensor, n_int,               &
+     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
+     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
         end if
 !
       else
 !
         if (nnod_4_ele .eq. num_t_linear) then
-          call int_vol_rms_dynamic_grpsmp_l(n_tensor, n_int)
+          call int_vol_rms_dynamic_grpsmp_l(n_tensor, n_int,            &
+     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
+     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
+     &      layer_tbl1%item_layer)
         else if (nnod_4_ele .eq. num_t_quad) then
-          call int_vol_rms_dynamic_grpsmp_q(n_tensor, n_int)
+          call int_vol_rms_dynamic_grpsmp_q(n_tensor, n_int,            &
+     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
+     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
+     &      layer_tbl1%item_layer)
         end if
 !
       end if
@@ -60,12 +71,18 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_rms_ave_dynamic_l(n_tensor, n_int)
+      subroutine int_vol_rms_ave_dynamic_l(n_tensor, n_int,             &
+     &          n_layer_d, n_item_layer_d, layer_stack_smp, item_layer)
 !
       use m_node_phys_data
       use m_node_phys_address
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
+!
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in)                                 &
+     &                      :: layer_stack_smp(0:n_layer_d*np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
 !
       integer (kind = kint) :: iproc, nd, iele, iele0
       integer (kind = kint) :: ii, ix, i_s, i_g, i_f
@@ -190,12 +207,18 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_rms_ave_dynamic_q(n_tensor, n_int)
+      subroutine int_vol_rms_ave_dynamic_q(n_tensor, n_int,             &
+     &          n_layer_d, n_item_layer_d, layer_stack_smp, item_layer)
 !
       use m_node_phys_data
       use m_node_phys_address
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
+!
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in)                                 &
+     &                      :: layer_stack_smp(0:n_layer_d*np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
 !
       integer (kind = kint) :: iproc, nd, iele, iele0
       integer (kind = kint) :: ii, ix, i_s, i_g, i_f

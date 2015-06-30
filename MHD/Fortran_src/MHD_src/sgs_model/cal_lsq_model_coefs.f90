@@ -50,20 +50,22 @@
       call int_vol_model_coef(numdir, n_int)
 !
 !    model coefficients for each components: lsq_model_coefs_4_comps
-      call lsq_model_coefs_4_comps(ncomp_sgs)
+      call lsq_model_coefs_4_comps(layer_tbl1%n_layer_d, ncomp_sgs)
 !
-      call merge_coefs_4_dynamic(numdir, n_layer_d,                     &
+      call merge_coefs_4_dynamic(numdir, layer_tbl1%n_layer_d,          &
      &    sgs_c_coef(1,icomp_f), sgs_f_coef(1,ifield_d),                &
-     &    cor_sgs(1,icomp_f) )
+     &    cor_sgs(1,icomp_f))
 !
       call lsq_whole_model_coefs(ncomp_sgs)
 !
       call s_merge_coefs_w_dynamic(numdir, sgs_c_whole(icomp_f),        &
-     &    sgs_f_whole(ifield_d), cor_sgs_w(icomp_f) )
+     &    sgs_f_whole(ifield_d), cor_sgs_w(icomp_f))
 !
       call clippging_sgs_coefs(numdir, ifield_d, icomp_f)
 !
-      call set_model_coefs_2_ele(itype_csim, numdir, ifield_d, icomp_f)
+      call set_model_coefs_2_ele(itype_csim, numdir, ifield_d, icomp_f, &
+     &    layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,              &
+     &    layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
 !
       end subroutine cal_model_coef_4_flux
 !
@@ -110,20 +112,22 @@
       call int_vol_model_coef(numdir, n_int)
 !
 !    model coefficients for each components: lsq_model_coefs_4_comps
-      call lsq_model_coefs_4_comps(ncomp_sgs)
+      call lsq_model_coefs_4_comps(layer_tbl1%n_layer_d, ncomp_sgs)
 !
-      call merge_coefs_4_dynamic(numdir, n_layer_d,                     &
+      call merge_coefs_4_dynamic(numdir, layer_tbl1%n_layer_d,          &
      &    diff_c_coef(1,icomp_f), diff_f_coef(1,ifield_d),              &
      &    cor_diff(1,icomp_f) )
 !
       call lsq_whole_model_coefs(ncomp_sgs)
 !
       call s_merge_coefs_w_dynamic(numdir, diff_c_whole(icomp_f),       &
-     &    diff_f_whole(ifield_d), cor_diff_w(icomp_f) )
+     &    diff_f_whole(ifield_d), cor_diff_w(icomp_f))
 !
       call clippging_sgs_diff_coefs(numdir, ifield_d, icomp_f)
 !
-      call set_diff_coefs_layer_ele(ifield_d)
+      call set_diff_coefs_layer_ele(ifield_d,                           &
+     &    layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,              &
+     &    layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
 !
       end subroutine cal_lsq_layerd_diff_coef
 !

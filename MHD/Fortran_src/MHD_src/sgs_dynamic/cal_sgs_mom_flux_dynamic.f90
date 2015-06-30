@@ -83,7 +83,7 @@
       call cal_model_coefs(itype_SGS_m_flux_coef, n_sym_tensor,         &
      &    iak_sgs_mf, icomp_sgs_mf, intg_point_t_evo)
 !
-      call reduce_model_coefs_layer(SGS_mf_factor, n_layer_d,           &
+      call reduce_model_coefs_layer(SGS_mf_factor, nlayer_SGS,          &
      &    sgs_f_clip(1,iak_sgs_mf), sgs_f_whole_clip(iak_sgs_mf) )
       call reduce_ele_tensor_model_coefs(SGS_mf_factor,                 &
      &    ak_sgs(1,icomp_sgs_mf))

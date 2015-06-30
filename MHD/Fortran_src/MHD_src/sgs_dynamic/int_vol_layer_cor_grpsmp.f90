@@ -3,8 +3,12 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine int_vol_layer_correlate(n_tensor, n_int, inum,        &
-!     &          ave_s, ave_g)
+!!      subroutine int_vol_layer_cor_grpsmp_l(n_tensor, n_int,          &
+!!     &          n_layer_d, n_item_layer_d, layer_stack,               &
+!!     &          istack_item_layer_d_smp, item_layer, ave_s, ave_g)
+!!      subroutine int_vol_layer_cor_grpsmp_q(n_tensor, n_int,          &
+!!     &          n_layer_d, n_item_layer_d, layer_stack,               &
+!!     &          istack_item_layer_d_smp, item_layer, ave_s, ave_g)
 !
       module int_vol_layer_cor_grpsmp
 !
@@ -15,7 +19,6 @@
       use m_geometry_data
       use m_jacobians
       use m_fem_gauss_int_coefs
-      use m_layering_ele_list
       use m_work_layer_correlate
 !
       implicit none
@@ -27,12 +30,20 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_layer_cor_grpsmp_l(n_tensor, n_int,            &
-     &          ave_s, ave_g)
+     &          n_layer_d, n_item_layer_d, layer_stack,                 &
+     &          istack_item_layer_d_smp, item_layer, ave_s, ave_g)
 !
       use m_node_phys_data
       use m_node_phys_address
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
+!
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in) :: layer_stack(0:n_layer_d)
+      integer (kind = kint), intent(in)                                 &
+     &               :: istack_item_layer_d_smp(0:np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
+!
       real(kind = kreal), intent(in) :: ave_s(n_layer_d,n_tensor)
       real(kind = kreal), intent(in) :: ave_g(n_layer_d,n_tensor)
 !
@@ -169,12 +180,20 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_layer_cor_grpsmp_q(n_tensor, n_int,            &
-     &          ave_s, ave_g)
+     &          n_layer_d, n_item_layer_d, layer_stack,                 &
+     &          istack_item_layer_d_smp, item_layer, ave_s, ave_g)
 !
       use m_node_phys_data
       use m_node_phys_address
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
+!
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in) :: layer_stack(0:n_layer_d)
+      integer (kind = kint), intent(in)                                 &
+     &               :: istack_item_layer_d_smp(0:np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
+!
       real(kind = kreal), intent(in) :: ave_s(n_layer_d,n_tensor)
       real(kind = kreal), intent(in) :: ave_g(n_layer_d,n_tensor)
 !

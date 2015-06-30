@@ -26,6 +26,7 @@
 !
       subroutine mod_Csim_by_SGS_buoyancy_ele
 !
+      use m_layering_ele_list
       use m_SGS_address
       use m_control_parameter
       use set_sgs_diff_model_coefs
@@ -36,21 +37,33 @@
       if(iflag_4_gravity .gt. id_turn_OFF                               &
      &     .and. iflag_4_composit_buo .gt. id_turn_OFF) then
         if(itype_SGS_m_flux_coef .eq. 1) then
-          call modify_cmpCsim_by_SGS_dbuo_ele
+          call modify_cmpCsim_by_SGS_dbuo_ele                           &
+     &       (layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
+     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
         else
-          call modify_fldCsim_by_SGS_dbuo_ele
+          call modify_fldCsim_by_SGS_dbuo_ele                           &
+     &       (layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
+     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
         end if
       else if(iflag_4_gravity .gt. id_turn_OFF) then
         if(itype_SGS_m_flux_coef .eq. 1) then
-          call modify_cmpCsim_by_SGS_buo_ele(iak_sgs_tbuo)
+          call modify_cmpCsim_by_SGS_buo_ele(iak_sgs_tbuo,              &
+     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
+     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
         else
-          call modify_fldCsim_by_SGS_buo_ele(iak_sgs_tbuo)
+          call modify_fldCsim_by_SGS_buo_ele(iak_sgs_tbuo,              &
+     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
+     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
         end if
       else if(iflag_4_composit_buo .gt. id_turn_OFF) then
         if(itype_SGS_m_flux_coef .eq. 1) then
-          call modify_cmpCsim_by_SGS_buo_ele(iak_sgs_cbuo)
+          call modify_cmpCsim_by_SGS_buo_ele(iak_sgs_cbuo,              &
+     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
+     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
         else
-          call modify_fldCsim_by_SGS_buo_ele(iak_sgs_cbuo)
+          call modify_fldCsim_by_SGS_buo_ele(iak_sgs_cbuo,              &
+     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
+     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
         end if
       end if
 !
@@ -59,16 +72,21 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine modify_fldCsim_by_SGS_buo_ele(iak_sgs_buo)
+      subroutine modify_fldCsim_by_SGS_buo_ele(iak_sgs_buo,             &
+     &          n_layer_d, n_item_layer_d, layer_stack_smp, item_layer)
 !
       use m_machine_parameter
       use m_ele_info_4_dynamical
       use m_SGS_address
       use m_SGS_model_coefs
-      use m_layering_ele_list
       use m_work_4_dynamic_model
 !
       integer (kind = kint), intent(in) :: iak_sgs_buo
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in)                                 &
+     &                      :: layer_stack_smp(0:n_layer_d*np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
+!
       integer (kind = kint) :: ip, is, ist, ied, nst, ned
       integer (kind = kint) :: igrp, iele0, iele, nd
 !
@@ -99,14 +117,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine modify_fldCsim_by_SGS_dbuo_ele
+      subroutine modify_fldCsim_by_SGS_dbuo_ele                         &
+     &         (n_layer_d, n_item_layer_d, layer_stack_smp, item_layer)
 !
       use m_machine_parameter
       use m_ele_info_4_dynamical
       use m_SGS_address
       use m_SGS_model_coefs
-      use m_layering_ele_list
       use m_work_4_dynamic_model
+!
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in)                                 &
+     &                      :: layer_stack_smp(0:n_layer_d*np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
 !
       integer (kind = kint) :: ip, is, ist, ied, nst, ned
       integer (kind = kint) :: igrp, iele0, iele, nd
@@ -139,14 +162,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine modify_cmpCsim_by_SGS_buo_ele(iak_sgs_buo)
+      subroutine modify_cmpCsim_by_SGS_buo_ele(iak_sgs_buo,             &
+     &          n_layer_d, n_item_layer_d, layer_stack_smp, item_layer)
 !
       use m_machine_parameter
       use m_ele_info_4_dynamical
       use m_SGS_address
       use m_SGS_model_coefs
-      use m_layering_ele_list
       use m_work_4_dynamic_model
+!
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in)                                 &
+     &                      :: layer_stack_smp(0:n_layer_d*np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
 !
       integer (kind = kint), intent(in) :: iak_sgs_buo
       integer (kind = kint) :: ip, is, ist, ied, nst, ned
@@ -179,14 +207,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine modify_cmpCsim_by_SGS_dbuo_ele
+      subroutine modify_cmpCsim_by_SGS_dbuo_ele                         &
+     &         (n_layer_d, n_item_layer_d, layer_stack_smp, item_layer)
 !
       use m_machine_parameter
       use m_ele_info_4_dynamical
       use m_SGS_address
       use m_SGS_model_coefs
-      use m_layering_ele_list
       use m_work_4_dynamic_model
+!
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in)                                 &
+     &                      :: layer_stack_smp(0:n_layer_d*np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
 !
       integer (kind = kint) :: ip, is, ist, ied, nst, ned
       integer (kind = kint) :: igrp, iele0, iele, nd

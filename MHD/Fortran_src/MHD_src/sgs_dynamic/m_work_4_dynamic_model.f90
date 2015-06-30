@@ -3,12 +3,12 @@
 !
 !  Written by Kemorin
 !
-!      subroutine allocate_work_4_dynamic
+!      subroutine allocate_work_4_dynamic(n_layer_d)
 !      subroutine allocate_work_4_dynamic_by_egrp
 !
 !      subroutine deallocate_work_4_dynamic
 !
-!      subroutine lsq_model_coefs_4_comps(ncomp_sgs)
+!      subroutine lsq_model_coefs_4_comps(n_layer_d, ncomp_sgs)
 !      subroutine lsq_whole_model_coefs(ncomp_sgs)
 !
       module m_work_4_dynamic_model
@@ -33,10 +33,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_work_4_dynamic
+      subroutine allocate_work_4_dynamic(n_layer_d)
 !
       use m_machine_parameter
-      use m_layering_ele_list
+!
+      integer(kind = kint), intent(in) :: n_layer_d
 !
 !
       allocate (sgs_wg(18) )
@@ -67,12 +68,11 @@
 ! -----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine lsq_model_coefs_4_comps(ncomp_sgs)
+      subroutine lsq_model_coefs_4_comps(n_layer_d, ncomp_sgs)
 !
       use calypso_mpi
-      use m_layering_ele_list
 !
-      integer(kind = kint), intent(in) :: ncomp_sgs
+      integer(kind = kint), intent(in) :: n_layer_d, ncomp_sgs
 !
 !
       sgs_les(1:n_layer_d,1:ncomp_sgs) = 0.0d0

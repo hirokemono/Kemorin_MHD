@@ -27,6 +27,7 @@
       use m_phys_constants
       use m_node_phys_address
       use m_SGS_address
+      use m_layering_ele_list
       use m_node_phys_data
       use m_physical_property
       use m_ele_info_4_dynamical
@@ -47,7 +48,9 @@
 !   lead SGS momentum flux using original model coefficient
 !
       call set_model_coefs_2_ele(itype_SGS_m_flux_coef, n_sym_tensor,   &
-     &    iak_sgs_mf, icomp_sgs_mf)
+     &    iak_sgs_mf, icomp_sgs_mf, layer_tbl1%n_layer_d,               &
+     &    layer_tbl1%n_item_layer_d, layer_tbl1%layer_stack_smp,        &
+     &    layer_tbl1%item_layer)
 !
       call cal_sgs_momentum_flux
 !
@@ -75,40 +78,43 @@
 !
       if(iflag_4_gravity .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps_1st(intg_point_t_evo,            &
-     &      n_layer_d, n_item_layer_d, layer_stack, item_layer,         &
+     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
+     &      layer_tbl1%layer_stack, layer_tbl1%item_layer,              &
      &      d_nod(1,iphys%i_reynolds_wk), d_nod(1,iphys%i_SGS_buo_wk),  &
      &      sgs_l(1,1), sgs_l(1,4), sgs_l(1,2), sgs_l(1,5) )
 !
         if(iflag_4_composit_buo .gt. id_turn_OFF) then
           call int_vol_rms_ave_ele_grps_1st(intg_point_t_evo,           &
-     &        n_layer_d, n_item_layer_d, layer_stack, item_layer,       &
+     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
+     &        layer_tbl1%layer_stack, layer_tbl1%item_layer,            &
      &        d_nod(1,iphys%i_SGS_comp_buo_wk), sgs_l(1,3), sgs_l(1,6))
         end if
       else if(iflag_4_composit_buo .gt. id_turn_OFF) then
-        call int_vol_2rms_ave_ele_grps_1st(intg_point_t_evo,            &
-     &      n_layer_d, n_item_layer_d, layer_stack,                     &
-     &      item_layer, d_nod(1,iphys%i_reynolds_wk),                   &
+        call int_vol_2rms_ave_ele_grps_1st                              &
+     &     (intg_point_t_evo, layer_tbl1%n_layer_d,                     &
+     &      layer_tbl1%n_item_layer_d, layer_tbl1%layer_stack,          &
+     &      layer_tbl1%item_layer, d_nod(1,iphys%i_reynolds_wk),        &
      &      d_nod(1,iphys%i_SGS_comp_buo_wk), sgs_l(1,1), sgs_l(1,4),   &
      &      sgs_l(1,3), sgs_l(1,6) )
       end if
 !
 !
-      call lsq_model_coefs_4_comps(ncomp_sgs_buo)
+      call lsq_model_coefs_4_comps(layer_tbl1%n_layer_d, ncomp_sgs_buo)
 !
 !   Parameterize model coeffisient including SGS Buoyancy
 !
       if(iflag_4_gravity .gt. id_turn_OFF) then
-!        call cal_Csim_buo_by_Reynolds_ratio(n_layer_d, ifive,          &
+!        call cal_Csim_buo_by_Reynolds_ratio(nlayer_SGS, ifive,         &
 !     &      sgs_c_coef(1,icomp_sgs_tbuo), sgs_f_coef(1,iak_sgs_tbuo) )
-        call single_Csim_buo_by_mf_ratio(n_layer_d, ifive,              &
+        call single_Csim_buo_by_mf_ratio(nlayer_SGS, ifive,             &
      &      sgs_c_coef(1,icomp_sgs_tbuo), sgs_f_coef(1,iak_sgs_tbuo) )
         call clippging_sgs_coefs(ncomp_sgs_buo,                         &
      &      iak_sgs_tbuo, icomp_sgs_tbuo)
       end if
       if(iflag_4_composit_buo .gt. id_turn_OFF) then
-!        call cal_Csim_buo_by_Reynolds_ratio(n_layer_d, isix,           &
+!        call cal_Csim_buo_by_Reynolds_ratio(nlayer_SGS, isix,          &
 !     &      sgs_c_coef(1,icomp_sgs_cbuo), sgs_f_coef(1,iak_sgs_cbuo) )
-        call single_Csim_buo_by_mf_ratio(n_layer_d, isix,               &
+        call single_Csim_buo_by_mf_ratio(nlayer_SGS, isix,              &
      &      sgs_c_coef(1,icomp_sgs_cbuo), sgs_f_coef(1,iak_sgs_cbuo) )
         call clippging_sgs_coefs(ncomp_sgs_buo,                         &
      &      iak_sgs_tbuo, icomp_sgs_tbuo)
@@ -116,11 +122,11 @@
 !
 !      if(iflag_debug .gt. 0) then
 !        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo', iak_sgs_tbuo
-!        do i = 1, n_layer_d
+!        do i = 1, nlayer_SGS
 !          write(*,'(i16,1pe20.12)') i, sgs_f_coef(i,iak_sgs_tbuo)
 !        end do
 !        write(*,*) 'sgs_f_coef, icomp_sgs_tbuo', icomp_sgs_cbuo
-!        do i = 1, n_layer_d
+!        do i = 1, nlayer_SGS
 !          write(*,'(i16,1p6e20.12)') i,                                &
 !     &              sgs_c_coef(i,icomp_sgs_tbuo:icomp_sgs_tbuo+5)
 !        end do

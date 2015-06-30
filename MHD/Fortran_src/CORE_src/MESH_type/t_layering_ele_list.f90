@@ -1,18 +1,21 @@
-!t_layering_ele_list.f90
-!      module t_layering_ele_list
-!
-!      written by Kemorin on Nov., 2009
+!>@file  t_layering_ele_list.f90
+!!       module t_layering_ele_list
+!!
+!!@author H. Matsui
+!!@date   Programmed in Nov., 2009
 !
 !> @brief Structure of grouping of elements
-!
-!      subroutine alloc_layering_ele_list_type(layer_tbl)
-!      subroutine alloc_layer_items_type(layer_tbl)
-!      subroutine alloc_layering_volumes_type(layer_tbl)
-!
-!      subroutine dealloc_layering_ele_list_type(layer_tbl)
-!      subroutine dealloc_layering_volumes_type(layer_tbl)
-!
-!      subroutine check_layer_stack_type(my_rank, layer_tbl)
+!!
+!!@verbatim
+!!      subroutine alloc_layering_ele_list_type(layer_tbl)
+!!      subroutine alloc_layer_items_type(layer_tbl)
+!!      subroutine alloc_layering_volumes_type(layer_tbl)
+!!
+!!      subroutine dealloc_layering_ele_list_type(layer_tbl)
+!!      subroutine dealloc_layering_volumes_type(layer_tbl)
+!!
+!!      subroutine check_layer_stack_type(my_rank, layer_tbl)
+!!@endverbatim
 !
       module t_layering_ele_list
 !

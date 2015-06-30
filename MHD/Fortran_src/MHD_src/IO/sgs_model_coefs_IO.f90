@@ -18,7 +18,6 @@
       use m_control_parameter
       use m_SGS_model_coefs
       use m_t_step_parameter
-      use m_layering_ele_list
       use m_ele_info_4_dynamical
       use open_sgs_model_coefs
 !
@@ -171,7 +170,7 @@
      &    sgs_rms_file_code, sgs_rms_file_name)
 !
 !
-      do inum = 1, n_layer_d
+      do inum = 1, nlayer_SGS
         write(sgs_fld_coef_file_code,1000) i_step_MHD,                  &
      &           time, inum, sgs_f_clip(inum,1:num_sgs_kinds)
         write(sgs_comp_coef_file_code,1000) i_step_MHD,                 &
@@ -313,7 +312,7 @@
       call open_diff_rms_ratio_file(iflag_layered,                      &
      &              diff_rms_file_code, diff_rms_file_name)
 !
-      do inum = 1, n_layer_d
+      do inum = 1, nlayer_SGS
         write(diff_coef_file_code,1000)                                 &
      &       i_step_MHD, time, inum,                                    &
      &              diff_f_clip(inum,1:num_diff_kinds)

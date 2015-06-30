@@ -12,6 +12,8 @@
 !
       implicit none
 !
+      integer(kind = kint) :: nlayer_SGS
+!
       real(kind = kreal), allocatable    :: sgs_f_coef(:,:)
       real(kind = kreal), allocatable    :: sgs_f_clip(:,:)
       real(kind = kreal), allocatable    :: sgs_f_whole(:)
@@ -74,38 +76,42 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_sgs_coefs_layer
+      subroutine allocate_sgs_coefs_layer(n_layer_d)
 !
       use m_SGS_model_coefs
-      use m_layering_ele_list
 !
-       allocate( sgs_c_coef(n_layer_d, num_sgs_coefs) )
-       allocate( sgs_c_clip(n_layer_d, num_sgs_coefs) )
+      integer(kind = kint), intent(in) :: n_layer_d
+!
+!
+      nlayer_SGS = n_layer_d
+!
+       allocate( sgs_c_coef(nlayer_SGS, num_sgs_coefs) )
+       allocate( sgs_c_clip(nlayer_SGS, num_sgs_coefs) )
        allocate( sgs_c_whole(num_sgs_coefs) )
        allocate( sgs_c_whole_clip(num_sgs_coefs) )
-       allocate( sgs_f_clip(n_layer_d, num_sgs_kinds) )
+       allocate( sgs_f_clip(nlayer_SGS, num_sgs_kinds) )
        allocate( sgs_f_whole_clip(num_sgs_kinds) )
-       allocate( sgs_f_coef(n_layer_d, num_sgs_kinds) )
+       allocate( sgs_f_coef(nlayer_SGS, num_sgs_kinds) )
        allocate( sgs_f_whole(num_sgs_kinds) )
        allocate( name_ak_sgs(num_sgs_kinds) )
 !
-       allocate( diff_c_coef(n_layer_d, num_diff_coefs) )
-       allocate( diff_c_clip(n_layer_d, num_diff_coefs) )
+       allocate( diff_c_coef(nlayer_SGS, num_diff_coefs) )
+       allocate( diff_c_clip(nlayer_SGS, num_diff_coefs) )
        allocate( diff_c_whole(num_diff_coefs) )
-       allocate( diff_f_coef(n_layer_d, num_diff_kinds) )
+       allocate( diff_f_coef(nlayer_SGS, num_diff_kinds) )
        allocate( diff_f_whole(num_diff_kinds) )
-       allocate( diff_f_clip(n_layer_d, num_diff_kinds) )
+       allocate( diff_f_clip(nlayer_SGS, num_diff_kinds) )
        allocate( diff_f_whole_clip(num_diff_kinds) )
        allocate( diff_c_whole_clip(num_diff_coefs) )
        allocate( name_ak_diff(num_diff_coefs) )
 !
-       allocate( ave_sgs_simi(n_layer_d, num_sgs_coefs) )
-       allocate( ave_sgs_grad(n_layer_d, num_sgs_coefs) )
-       allocate( rms_sgs_simi(n_layer_d, num_sgs_coefs) )
-       allocate( rms_sgs_grad(n_layer_d, num_sgs_coefs) )
-       allocate( cor_sgs(n_layer_d, num_sgs_coefs) )
-       allocate( cov_sgs(n_layer_d, num_sgs_coefs) )
-       allocate( ratio_sgs(n_layer_d, num_sgs_coefs) )
+       allocate( ave_sgs_simi(nlayer_SGS, num_sgs_coefs) )
+       allocate( ave_sgs_grad(nlayer_SGS, num_sgs_coefs) )
+       allocate( rms_sgs_simi(nlayer_SGS, num_sgs_coefs) )
+       allocate( rms_sgs_grad(nlayer_SGS, num_sgs_coefs) )
+       allocate( cor_sgs(nlayer_SGS, num_sgs_coefs) )
+       allocate( cov_sgs(nlayer_SGS, num_sgs_coefs) )
+       allocate( ratio_sgs(nlayer_SGS, num_sgs_coefs) )
        allocate( ave_sgs_simi_w(num_sgs_coefs) )
        allocate( ave_sgs_grad_w(num_sgs_coefs) )
        allocate( rms_sgs_simi_w(num_sgs_coefs) )
@@ -114,13 +120,13 @@
        allocate( cov_sgs_w(num_sgs_coefs) )
        allocate( ratio_sgs_w(num_sgs_coefs) )
 !
-       allocate( ave_diff_simi(n_layer_d, num_diff_coefs) )
-       allocate( ave_diff_grad(n_layer_d, num_diff_coefs) )
-       allocate( rms_diff_simi(n_layer_d, num_diff_coefs) )
-       allocate( rms_diff_grad(n_layer_d, num_diff_coefs) )
-       allocate( cor_diff(n_layer_d, num_diff_coefs) )
-       allocate( cov_diff(n_layer_d, num_diff_coefs) )
-       allocate( ratio_diff(n_layer_d, num_diff_coefs) )
+       allocate( ave_diff_simi(nlayer_SGS, num_diff_coefs) )
+       allocate( ave_diff_grad(nlayer_SGS, num_diff_coefs) )
+       allocate( rms_diff_simi(nlayer_SGS, num_diff_coefs) )
+       allocate( rms_diff_grad(nlayer_SGS, num_diff_coefs) )
+       allocate( cor_diff(nlayer_SGS, num_diff_coefs) )
+       allocate( cov_diff(nlayer_SGS, num_diff_coefs) )
+       allocate( ratio_diff(nlayer_SGS, num_diff_coefs) )
        allocate( ave_diff_simi_w(num_diff_coefs) )
        allocate( ave_diff_grad_w(num_diff_coefs) )
        allocate( rms_diff_simi_w(num_diff_coefs) )
@@ -129,12 +135,12 @@
        allocate( cov_diff_w(num_diff_coefs) )
        allocate( ratio_diff_w(num_diff_coefs) )
 !
-       allocate( coef_sgs_p(n_layer_d, num_sgs_kinds) )
-       allocate( coef_diff_p(n_layer_d, num_diff_kinds) )
+       allocate( coef_sgs_p(nlayer_SGS, num_sgs_kinds) )
+       allocate( coef_diff_p(nlayer_SGS, num_diff_kinds) )
        allocate( coef_diff_wp(num_diff_kinds) )
 !
       if (num_sgs_kinds .gt. 0) then
-        if (n_layer_d .gt. 0) then
+        if (nlayer_SGS .gt. 0) then
           sgs_f_clip =  1.0d0
           sgs_f_coef =  1.0d0
           coef_sgs_p =  1.0d0
@@ -149,7 +155,7 @@
 !
       if (num_sgs_coefs .gt. 0) then
 !
-        if (n_layer_d .gt. 0) then
+        if (nlayer_SGS .gt. 0) then
           ave_sgs_simi = 0.0d0
           ave_sgs_grad = 0.0d0
           rms_sgs_simi = 0.0d0
@@ -169,7 +175,7 @@
       end if
 !
       if (num_diff_kinds .gt. 0) then
-        if (n_layer_d .gt. 0) then
+        if (nlayer_SGS .gt. 0) then
           diff_f_clip =    0.0d0
           diff_f_coef =  0.0d0
           coef_diff_p =  0.0d0
@@ -183,7 +189,7 @@
         diff_c_whole_clip = 0.0d0
       end if
       if (num_diff_coefs .gt. 0) then
-        if (n_layer_d .gt. 0) then
+        if (nlayer_SGS .gt. 0) then
           ave_diff_simi = 0.0d0
           ave_diff_grad = 0.0d0
           rms_diff_simi = 0.0d0

@@ -3,11 +3,11 @@
 !
 !  Written by Kemorin
 !
-!      subroutine allocate_work_layer_correlate
+!      subroutine allocate_work_layer_correlate(n_layer_d)
 !      subroutine deallocate_work_layer_correlate
 !
-!      subroutine sum_layerd_averages
-!      subroutine sum_layerd_correlation
+!      subroutine sum_layerd_averages(n_layer_d)
+!      subroutine sum_layerd_correlation(n_layer_d)
 !
 !      subroutine sum_whole_averages
 !      subroutine sum_whole_correlation
@@ -42,10 +42,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_work_layer_correlate
+      subroutine allocate_work_layer_correlate(n_layer_d)
 !
       use m_machine_parameter
-      use m_layering_ele_list
+!
+      integer (kind = kint), intent(in) :: n_layer_d
 !
 !
       ncomp_correlate_2 = itwo * ncomp_correlate
@@ -115,11 +116,11 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine sum_layerd_averages
+      subroutine sum_layerd_averages(n_layer_d)
 !
       use calypso_mpi
-      use m_layering_ele_list
 !
+      integer (kind = kint), intent(in) :: n_layer_d
       integer (kind = kint) :: num
 !
 !
@@ -137,11 +138,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sum_layerd_correlation
+      subroutine sum_layerd_correlation(n_layer_d)
 !
       use calypso_mpi
-      use m_layering_ele_list
 !
+      integer (kind = kint), intent(in) :: n_layer_d
       integer (kind = kint) :: num_1, num_2
 !
 !

@@ -41,12 +41,14 @@
       call int_vol_layer_correlate(n_tensor, n_int,                     &
      &      ave_sgs_simi(1,icomp_f), ave_sgs_grad(1,icomp_f) )
 !
-      call sum_layerd_correlation
-      call cal_layered_correlation(n_tensor,                            &
-     &    cor_sgs(1,icomp_f), cov_sgs(1,icomp_f) )
+      call sum_layerd_correlation(layer_tbl1%n_layer_d)
+      call cal_layered_correlation                                      &
+     &   (layer_tbl1%n_layer_d, n_tensor, layer_tbl1%a_vol_layer,       &
+     &    cor_sgs(1,icomp_f), cov_sgs(1,icomp_f))
 !
       call sum_whole_correlation
-      call cal_all_layer_correlation(n_tensor, vol_total_layer(1),      &
+      call cal_all_layer_correlation                                    &
+     &   (n_tensor, layer_tbl1%vol_total_layer(1),                      &
      &    cor_sgs_w(icomp_f), cov_sgs_w(icomp_f) )
 !
       end subroutine cal_correlate_sgs_dynamic
@@ -66,12 +68,14 @@
       call int_vol_layer_correlate(n_tensor, n_int,                     &
      &      ave_diff_simi(1,icomp_f), ave_diff_grad(1,icomp_f) )
 !
-      call sum_layerd_correlation
-      call cal_layered_correlation(n_tensor,                            &
+      call sum_layerd_correlation(layer_tbl1%n_layer_d)
+      call cal_layered_correlation                                      &
+     &   (layer_tbl1%n_layer_d, n_tensor, layer_tbl1%a_vol_layer,       &
      &    cor_diff(1,icomp_f), cov_diff(1,icomp_f) )
 !
       call sum_whole_correlation
-      call cal_all_layer_correlation(n_tensor, vol_total_layer(1),      &
+      call cal_all_layer_correlation                                    &
+     &   (n_tensor, layer_tbl1%vol_total_layer(1),                      &
      &    cor_diff_w(icomp_f), cov_diff_w(icomp_f) )
 !
       end subroutine cal_correlate_diff_dynamic
@@ -81,6 +85,7 @@
       subroutine cal_correlate_diff_area(iele_fsmp_stack, n_tensor,     &
      &          icomp_f, n_int)
 !
+      use m_layering_ele_list
       use int_vol_diff_correlate
 !
       integer (kind = kint), intent(in) :: n_tensor
@@ -96,7 +101,8 @@
      &     ave_diff_grad_w(icomp_f), ave_diff_grad_w(icomp_f) )
 !
       call sum_whole_correlation
-      call cal_all_layer_correlation(n_tensor, vol_total_layer(1),      &
+      call cal_all_layer_correlation                                    &
+     &   (n_tensor, layer_tbl1%vol_total_layer(1),                      &
      &    cor_diff_w(icomp_f), cov_diff_w(icomp_f) )
 !
       end subroutine cal_correlate_diff_area

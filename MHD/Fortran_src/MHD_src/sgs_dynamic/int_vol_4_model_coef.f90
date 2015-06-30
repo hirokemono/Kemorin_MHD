@@ -16,7 +16,6 @@
       use m_geometry_data
       use m_jacobians
       use m_fem_gauss_int_coefs
-      use m_layering_ele_list
       use m_ele_info_4_dynamical
       use m_work_4_dynamic_model
 !
@@ -33,29 +32,41 @@
       subroutine int_vol_model_coef(n_tensor, n_int)
 !
       use m_geometry_constants
+      use m_layering_ele_list
       use int_vol_model_coef_grpsmp
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
 !
 !
       sgs_w(1:18) =   0.0d0
-      sgs_l(1:n_layer_d,1:18) =   0.0d0
+      sgs_l(1:layer_tbl1%n_layer_d,1:18) =   0.0d0
 !
-      if (minlayer_4_smp .gt. min_item_layer_d_smp) then
+      if(layer_tbl1%minlayer_4_smp                                      &
+     &     .gt. layer_tbl1%min_item_layer_d_smp) then
 !
         if (nnod_4_ele .eq. num_t_linear) then
-          call int_vol_model_coef_l(n_tensor, n_int)
+          call int_vol_model_coef_l(n_tensor, n_int,                    &
+     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
+     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
         else if (nnod_4_ele .eq. num_t_quad) then
-          call int_vol_model_coef_q(n_tensor, n_int)
+          call int_vol_model_coef_q(n_tensor, n_int,                    &
+     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
+     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
         end if
 !
       else
 !
         sgs_l_smp(1:np_smp,1:18) = 0.0d0
         if (nnod_4_ele .eq. num_t_linear) then
-          call int_vol_model_coef_grpsmp_l(n_tensor, n_int)
+          call int_vol_model_coef_grpsmp_l(n_tensor, n_int,             &
+     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
+     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
+     &      layer_tbl1%item_layer)
         else if (nnod_4_ele .eq. num_t_quad) then
-          call int_vol_model_coef_grpsmp_q(n_tensor, n_int)
+          call int_vol_model_coef_grpsmp_q(n_tensor, n_int,             &
+     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
+     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
+     &      layer_tbl1%item_layer)
         end if
 !
       end if
@@ -64,12 +75,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_model_coef_l(n_tensor, n_int)
+      subroutine int_vol_model_coef_l(n_tensor, n_int,                  &
+     &          n_layer_d, n_item_layer_d, layer_stack_smp, item_layer)
 !
       use m_node_phys_address
       use m_node_phys_data
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
+!
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in)                                 &
+     &                      :: layer_stack_smp(0:n_layer_d*np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
 !
       integer (kind = kint) :: iproc, nd, iele, iele0
       integer (kind = kint) :: ii, ix, inum, is, ist, ied
@@ -170,12 +187,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_model_coef_q(n_tensor, n_int)
+      subroutine int_vol_model_coef_q(n_tensor, n_int,                  &
+     &          n_layer_d, n_item_layer_d, layer_stack_smp, item_layer)
 !
       use m_node_phys_address
       use m_node_phys_data
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
+!
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in)                                 &
+     &                      :: layer_stack_smp(0:n_layer_d*np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
 !
       integer (kind = kint) :: iproc, nd, iele, iele0
       integer (kind = kint) :: ii, ix, inum, is, ist, ied

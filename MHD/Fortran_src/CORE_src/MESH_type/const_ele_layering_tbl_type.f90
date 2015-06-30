@@ -67,7 +67,7 @@
       call set_layerd_group_id(ele_grp%num_grp, ele_grp%grp_name)
 !
       layer_tbl%n_layer_d = num_layer_grp
-      call allocate_layering_ele_list
+      call alloc_layering_ele_list_type(layer_tbl)
 !
 !
         if (iflag_debug .eq. 1)                                         &
@@ -76,10 +76,10 @@
      &    ele_grp%istack_grp, layer_tbl%n_layer_d,                      &
      &   layer_tbl%n_item_layer_d,  layer_tbl%layer_stack)
 !
-!      call check_layer_stack(my_rank)
+!      call check_layer_stack_type(my_rank, layer_tbl1)
 !
       if (iflag_debug .eq. 1) write(*,*) 'allocate_layer_items'
-      call allocate_layer_items
+      call alloc_layer_items_type(layer_tbl)
       if (iflag_debug .eq. 1)  write(*,*) 'set_ele_layer_by_table'
       call set_ele_layer_by_table(ele_grp%num_grp, ele_grp%num_item,    &
      &    ele_grp%istack_grp, ele_grp%item_grp, layer_tbl%n_layer_d,    &
@@ -137,7 +137,7 @@
      &    ele_grp%grp_name, ele_grp%istack_grp, layer_tbl%n_layer_d)
 !
       call allocate_layer_ele_start(layer_tbl%n_layer_d)
-      call allocate_layering_ele_list
+      call alloc_layering_ele_list_type(layer_tbl)
 !
       call set_start_ele_4_dynamic(ele_grp%num_grp, ele_grp%num_item,   &
      &    ele_grp%grp_name, ele_grp%istack_grp, ele_grp%item_grp,       &
@@ -146,7 +146,7 @@
       call count_ele_4_dynamic_by_start(layer_tbl%n_layer_d,            &
      &    layer_tbl%n_item_layer_d, layer_tbl%layer_stack)
 !
-      call allocate_layer_items
+      call alloc_layer_items_type(layer_tbl)
       call set_ele_4_dynamic_by_start(layer_tbl%n_layer_d,              &
      &    layer_tbl%n_item_layer_d, layer_tbl%layer_stack,              &
      &    layer_tbl%item_layer)

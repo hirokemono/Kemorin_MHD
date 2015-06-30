@@ -4,8 +4,12 @@
 !     Written by H. Matsui on Nov., 2008
 !
 !  Volume integration:                      int_vol_model_coef
-!      subroutine int_vol_model_coef_grpsmp_l(n_tensor, n_int)
-!      subroutine int_vol_model_coef_grpsmp_q(n_tensor, n_int)
+!      subroutine int_vol_model_coef_grpsmp_l(n_tensor, n_int,          &
+!     &          n_layer_d, n_item_layer_d, layer_stack,                &
+!     &          istack_item_layer_d_smp, item_layer)
+!      subroutine int_vol_model_coef_grpsmp_q(n_tensor, n_int,          &
+!     &          n_layer_d, n_item_layer_d, layer_stack,                &
+!     &          istack_item_layer_d_smp, item_layer)
 !
       module int_vol_model_coef_grpsmp
 !
@@ -18,7 +22,6 @@
       use m_jacobians
       use m_fem_gauss_int_coefs
       use m_ele_info_4_dynamical
-      use m_layering_ele_list
       use m_work_4_dynamic_model
 !
       implicit none
@@ -29,12 +32,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_model_coef_grpsmp_l(n_tensor, n_int)
+      subroutine int_vol_model_coef_grpsmp_l(n_tensor, n_int,           &
+     &          n_layer_d, n_item_layer_d, layer_stack,                 &
+     &          istack_item_layer_d_smp, item_layer)
 !
       use m_node_phys_address
       use m_node_phys_data
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
+!
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in) :: layer_stack(0:n_layer_d)
+      integer (kind = kint), intent(in)                                 &
+     &               :: istack_item_layer_d_smp(0:np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
 !
       integer (kind = kint) :: iproc, nd, ist_num, ied_num, iele, iele0
       integer (kind = kint) :: ii, ix, inum, is, ist, ied
@@ -135,12 +146,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_model_coef_grpsmp_q(n_tensor, n_int)
+      subroutine int_vol_model_coef_grpsmp_q(n_tensor, n_int,           &
+     &          n_layer_d, n_item_layer_d, layer_stack,                 &
+     &          istack_item_layer_d_smp, item_layer)
 !
       use m_node_phys_address
       use m_node_phys_data
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
+!
+      integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
+      integer (kind = kint), intent(in) :: layer_stack(0:n_layer_d)
+      integer (kind = kint), intent(in)                                 &
+     &               :: istack_item_layer_d_smp(0:np_smp)
+      integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
 !
       integer (kind = kint) :: iproc, nd, ist_num, ied_num, iele, iele0
       integer (kind = kint) :: ii, ix, inum, is, ist, ied

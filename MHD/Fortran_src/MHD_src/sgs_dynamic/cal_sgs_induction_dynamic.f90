@@ -136,7 +136,7 @@
       call cal_model_coefs(itype_SGS_uxb_coef, n_asym_tensor,           &
      &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo)
 !
-      call reduce_model_coefs_layer(SGS_uxb_factor, n_layer_d,          &
+      call reduce_model_coefs_layer(SGS_uxb_factor, nlayer_SGS,         &
      &    sgs_f_clip(1,iak_sgs_uxb), sgs_f_whole_clip(iak_sgs_uxb) )
       call reduce_ele_vect_model_coefs(SGS_uxb_factor,                  &
      &    ak_sgs(1,icomp_sgs_uxb))

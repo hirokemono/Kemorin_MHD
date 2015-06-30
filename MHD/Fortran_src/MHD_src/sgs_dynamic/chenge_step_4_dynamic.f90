@@ -13,7 +13,6 @@
       use m_control_parameter
       use m_t_step_parameter
       use m_SGS_model_coefs
-      use m_layering_ele_list
       use m_ele_info_4_dynamical
 !
       implicit none
@@ -63,7 +62,7 @@
         diff_r = 0.0d0
         diff_max = 0.0d0
         do j = 1, num_sgs_kinds
-          do i = 1, n_layer_d
+          do i = 1, nlayer_SGS
             diff_r = abs(sgs_f_coef(i,j) - coef_sgs_p(i,j))
             diff_max = max(diff_max, diff_r)
           end do
@@ -72,7 +71,7 @@
         if (iflag_commute_linear .gt. id_SGS_commute_OFF) then
           if (iset_DIFF_model_coefs .eq. 1) then
             do j = 1, num_diff_kinds
-              do i = 1, n_layer_d
+              do i = 1, nlayer_SGS
                 diff_r = abs(diff_f_coef(i,j) - coef_diff_p(i,j))
                 diff_max = max(diff_max, diff_r)
               end do
@@ -156,7 +155,7 @@
 !
 !
       do j = 1, num_sgs_kinds
-        do i = 1, n_layer_d
+        do i = 1, nlayer_SGS
           coef_sgs_p(i,j) = sgs_f_coef(i,j)
         end do
       end do
@@ -164,7 +163,7 @@
       if (iflag_commute_linear .gt. id_SGS_commute_OFF) then
         if (iset_DIFF_model_coefs .eq. 1) then
           do j = 1, num_diff_kinds
-            do i = 1, n_layer_d
+            do i = 1, nlayer_SGS
               coef_diff_p(i,j) = diff_f_coef(i,j)
             end do
           end do

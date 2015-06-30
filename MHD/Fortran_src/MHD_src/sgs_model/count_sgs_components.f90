@@ -26,6 +26,7 @@
       use m_control_parameter
       use m_geometry_parameter
       use m_node_phys_address
+      use m_layering_ele_list
       use m_ele_info_4_dynamical
       use m_SGS_model_coefs
       use m_SGS_address
@@ -151,7 +152,7 @@
 !
 !   set index for model coefficients
 !
-      call allocate_sgs_coefs_layer
+      call allocate_sgs_coefs_layer(layer_tbl1%n_layer_d)
       call allocate_model_coefs
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
