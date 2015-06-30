@@ -14,6 +14,8 @@
 !
       integer(kind = kint), allocatable, private :: imark_ele(:)
 !
+      private :: count_ele_in_subdomain, set_ele_in_subdomain
+!
 !   --------------------------------------------------------------------
 !
       contains
@@ -29,12 +31,47 @@
 !
       integer(kind = kint), intent(in) :: NP
 !
-      integer(kind = kint) :: ip, icel, icou, in, k
-!
 !
       call allocate_num_4_near_ele(NP)
       allocate (imark_ele(numele))
+!
+      call count_ele_in_subdomain(NP, nnod_s_domin, IGROUP_nod,         &
+     &          numnod, numele, nnod_4_ele, ie, nodelm,                 &
+     &          ntot_ele_near_nod, nele_near_nod, iele_stack_near_nod)
+!
+      call allocate_near_element
+!
+      call set_ele_in_subdomain(NP, nnod_s_domin, IGROUP_nod,           &
+     &          numnod, numele, nnod_4_ele, ie, nodelm,                 &
+     &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
 
+      deallocate (imark_ele)
+
+      end subroutine CRE_LOCAL_DATA
+!
+!   --------------------------------------------------------------------
+!   --------------------------------------------------------------------
+!
+      subroutine count_ele_in_subdomain(NP, nnod_s_domin, IGROUP_nod,   &
+     &          numnod, numele, nnod_4_ele, ie, nodelm,                 &
+     &          ntot_ele_near_nod, nele_near_nod, iele_stack_near_nod)
+!
+      integer(kind = kint), intent(in) :: NP
+      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: nodelm(numele)
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+!
+      integer(kind = kint), intent(in) :: nnod_s_domin
+      integer(kind = kint), intent(in) :: IGROUP_nod(nnod_s_domin)
+!
+      integer(kind = kint), intent(inout) :: ntot_ele_near_nod
+      integer(kind = kint), intent(inout) :: nele_near_nod(numnod)
+      integer(kind = kint), intent(inout)                               &
+     &              :: iele_stack_near_nod(0:numnod)
+!
+      integer(kind = kint) :: ip, icel, in, k
+!
+!
       iele_stack_near_nod(0)= 0
       do ip= 1, NP
 !
@@ -43,8 +80,8 @@
           do k= 1, nodelm(icel)
             in= ie(icel,k)
             if (IGROUP_nod(in).eq.ip) imark_ele(icel) = 1
-          enddo
-        enddo
+          end do
+        end do
 
         do icel= 1, numele
           nele_near_nod(ip)  = nele_near_nod(ip) + imark_ele(icel)
@@ -54,11 +91,32 @@
       end do
       ntot_ele_near_nod = iele_stack_near_nod(NP)
 !
+      end subroutine count_ele_in_subdomain
 !
-     call allocate_near_element
+!   --------------------------------------------------------------------
+!
+      subroutine set_ele_in_subdomain(NP, nnod_s_domin, IGROUP_nod,     &
+     &          numnod, numele, nnod_4_ele, ie, nodelm,                 &
+     &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
+!
+      integer(kind = kint), intent(in) :: NP
+      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: nodelm(numele)
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+!
+      integer(kind = kint), intent(in) :: nnod_s_domin
+      integer(kind = kint), intent(in) :: IGROUP_nod(nnod_s_domin)
+!
+      integer(kind = kint), intent(in) :: ntot_ele_near_nod
+      integer(kind = kint), intent(in)                                  &
+     &              :: iele_stack_near_nod(0:numnod)
+      integer(kind = kint), intent(inout)                               &
+     &              :: iele_near_nod(ntot_ele_near_nod)
+!
+      integer(kind = kint) :: ip, icel, in, k, icou
+!
 !
       do ip= 1, NP
-!
         imark_ele(1:numele)= 0
         do icel= 1, numele
           do k= 1, nodelm(icel)
@@ -73,12 +131,10 @@
             icou = icou + 1
               iele_near_nod(icou) =       icel
           endif
-        enddo
-      enddo
-
-      deallocate (imark_ele)
-
-      end subroutine CRE_LOCAL_DATA
+        end do
+      end do
+!
+      end subroutine set_ele_in_subdomain
 !
 !   --------------------------------------------------------------------
 !

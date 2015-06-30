@@ -1,9 +1,12 @@
 !ordering_by_element_group.f90
 !      module ordering_by_element_group
 !
-      module ordering_by_element_group
-!
 !      Written by H. Matsui on Oct., 2007
+!
+!!      subroutine set_local_element_table(n_domain,                    &
+!!     &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
+!
+      module ordering_by_element_group
 !
       use m_precision
 !
@@ -12,25 +15,29 @@
       integer(kind = kint), allocatable, private :: imark_ele(:)
       private :: s_ordering_by_element_group
 !
-!      subroutine set_local_element_table(n_domain)
-!
 !   --------------------------------------------------------------------
 !
       contains
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_local_element_table(n_domain)
+      subroutine set_local_element_table(n_domain,                      &
+     &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
 !
+      use m_geometry_parameter
       use m_ctl_param_partitioner
-      use m_near_element_id_4_node
       use m_internal_4_partitioner
 !
       integer(kind = kint), intent(in) :: n_domain
+      integer(kind = kint), intent(in) :: ntot_ele_near_nod
+      integer(kind = kint), intent(in) :: iele_stack_near_nod(0:numnod)
+      integer(kind = kint), intent(inout)                               &
+     &                      :: iele_near_nod(ntot_ele_near_nod)
 !
 !
       if (nele_grp_ordering .gt. 0) then
-        call s_ordering_by_element_group(n_domain)
+        call s_ordering_by_element_group(n_domain,                      &
+     &      ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
       else
         iele_4_subdomain(1:ntot_numele_sub)                             &
      &        = iele_near_nod(1:ntot_numele_sub)
@@ -40,15 +47,20 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine s_ordering_by_element_group(n_domain)
+      subroutine s_ordering_by_element_group(n_domain,                  &
+     &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
 !
       use m_ctl_param_partitioner
       use m_geometry_parameter
       use m_element_group
-      use m_near_element_id_4_node
       use m_internal_4_partitioner
 !
       integer(kind = kint), intent(in) :: n_domain
+!
+      integer(kind = kint), intent(in) :: ntot_ele_near_nod
+      integer(kind = kint), intent(in) :: iele_stack_near_nod(0:numnod)
+      integer(kind = kint), intent(inout)                               &
+     &                      :: iele_near_nod(ntot_ele_near_nod)
 !
       integer(kind = kint) :: igrp, ip, ist, ied, inum, iele, icou
       integer(kind = kint) :: jgrp, jst, jed, jnum

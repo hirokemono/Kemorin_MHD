@@ -110,7 +110,8 @@
 !
       call allocate_iele_4_subdomain
 !
-      call set_local_element_table(n_domain)
+      call set_local_element_table(n_domain,                            &
+     &    ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
 !
       call deallocate_near_element
       call deallocate_num_4_near_ele
