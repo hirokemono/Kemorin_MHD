@@ -74,31 +74,9 @@
       call swap_real_items_sf_grp(itwo, pvr_bound%num_pvr_surf,         &
      &    pvr_bound%screen_zrng)
 !
-      call ordering_pvr_surf_positions(pvr_bound%num_pvr_surf,          &
-     &    pvr_bound%xx_nod)
-!
       call dealloc_ordering_pvr_domain_grp
 !
       end subroutine s_ordering_pvr_sf_domain_grp
-!
-! -----------------------------------------------------------------------
-!
-      subroutine ordering_pvr_surf_positions(num_pvr_surf,              &
-     &          xx_pvr_domain)
-!
-      integer(kind = kint), intent(in) :: num_pvr_surf
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: xx_pvr_domain(4*num_pvr_surf,4)
-!
-      integer(kind = kint) :: nd
-!
-!
-      do nd = 1, 4
-        call swap_real_items_sf_grp(ifour, num_pvr_surf,                &
-     &      xx_pvr_domain(1,nd))
-      end do
-!
-      end subroutine ordering_pvr_surf_positions
 !
 ! -----------------------------------------------------------------------
 !

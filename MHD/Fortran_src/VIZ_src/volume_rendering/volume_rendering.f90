@@ -145,12 +145,11 @@
           call cal_pvr_modelview_matrix(izero, outlines(i_pvr),         &
      &        view_params(i_pvr), color_params(i_pvr))
           call transfer_to_screen(numnod, numele, numsurf,              &
-     &         nnod_4_surf, xx, ie_surf, isf_4_ele, field_pvr(i_pvr),   &
-     &         view_params(i_pvr), pvr_bound(i_pvr))
+     &        nnod_4_surf, xx, ie_surf, isf_4_ele, field_pvr(i_pvr),    &
+     &        view_params(i_pvr), pvr_bound(i_pvr), pixel_xy(i_pvr),    &
+     &        pvr_start(i_pvr))
         end if
 !
-        call allocate_num_pvr_ray_start                                 &
-     &   (pvr_bound(i_pvr)%num_pvr_surf, pvr_start(i_pvr))
         call alloc_pvr_image_array_type                                 &
      &     (view_params(i_pvr)%n_pvr_pixel, pvr_img(i_pvr))
       end do
@@ -228,7 +227,8 @@
      &          view_params(i_pvr), color_params(i_pvr))
             call transfer_to_screen(numnod, numele, numsurf,            &
      &          nnod_4_surf, xx, ie_surf, isf_4_ele, field_pvr(i_pvr),  &
-     &          view_params(i_pvr), pvr_bound(i_pvr))
+     &          view_params(i_pvr), pvr_bound(i_pvr),  pixel_xy(i_pvr), &
+     &          pvr_start(i_pvr))
           end if
 !
           call rendering_image                                          &
@@ -236,8 +236,12 @@
      &       nnod_4_surf, e_multi, xx, ie_surf, isf_4_ele, iele_4_surf, &
      &       file_params(i_pvr), color_params(i_pvr),                   &
      &       cbar_params(i_pvr), view_params(i_pvr), field_pvr(i_pvr),  &
-     &       pvr_bound(i_pvr), pixel_xy(i_pvr),                         &
-     &       pvr_start(i_pvr), pvr_img(i_pvr))
+     &       pixel_xy(i_pvr), pvr_bound(i_pvr), pvr_start(i_pvr),       &
+     &       pvr_img(i_pvr))
+!
+          if(view_params(i_pvr)%iflag_rotate_snap .gt. 0) then
+            call deallocate_pvr_ray_start(pvr_start(i_pvr))
+          end if
         end do
       end do
 !

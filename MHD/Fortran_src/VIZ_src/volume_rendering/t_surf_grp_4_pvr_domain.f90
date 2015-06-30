@@ -47,10 +47,6 @@
 !>       Average w in screen coordinate
         real(kind = kreal), pointer :: screen_w(:)
 !
-!>       position in screen coordinate
-!!         (4*(Surface #-1)+locel node#, direction)
-        real(kind = kreal), pointer :: xx_nod(:,:)
-!
 !>    Start and end position in horizontal screen
         real(kind = kreal), pointer :: screen_xrng(:,:)
 !>    Start and end position in horizontal screen
@@ -86,8 +82,6 @@
       allocate(pvr_bound%isurf_xrng(2,pvr_bound%num_pvr_surf))
       allocate(pvr_bound%jsurf_yrng(2,pvr_bound%num_pvr_surf))
 !
-      allocate(pvr_bound%xx_nod(4*pvr_bound%num_pvr_surf,4))
-!
       if(pvr_bound%num_pvr_surf .le. 0) return
       pvr_bound%item_pvr_surf = 0
       pvr_bound%screen_norm = 0.0d0
@@ -109,7 +103,6 @@
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound
 !
 !
-      deallocate(pvr_bound%xx_nod)
       deallocate(pvr_bound%item_pvr_surf)
       deallocate(pvr_bound%screen_posi, pvr_bound%screen_norm)
       deallocate(pvr_bound%screen_xrng, pvr_bound%screen_yrng)

@@ -25,9 +25,20 @@
       type pvr_ray_start_type
 !>    Total number of ray tracing
         integer(kind = kint) :: ntot_pvr_ray = 0
+!
+!>    Number of ray tracing
+        integer(kind = kint) :: ntot_tmp_pvr_ray
+!>    temporal number of pixels to start ray tracing
+        integer(kind = kint), pointer :: istack_tmp_pvr_ray_st(:)
+!>    temporal number of pixels to start ray tracing
+        integer(kind = kint), pointer :: iflag_start_tmp(:)
+!>    start point of ray traing in surface coordinate
+        real(kind = kreal), pointer ::  xi_start_tmp(:,:)
+!
+!
 !>    Number of ray tracing
         integer(kind = kint) :: num_pvr_ray
-!>    stack of number of surfaces for ray tracing
+!>    stack of number of pixels to start ray tracing
         integer(kind = kint), pointer :: istack_pvr_ray_sf(:)
 !
 !>    ray trace counter
@@ -66,7 +77,10 @@
 !
 !
       allocate(pvr_start%istack_pvr_ray_sf(0:num_pvr_surf))
-      pvr_start%istack_pvr_ray_sf =   0
+      allocate(pvr_start%istack_tmp_pvr_ray_st(0:num_pvr_surf))
+!
+      pvr_start%istack_pvr_ray_sf =     0
+      pvr_start%istack_tmp_pvr_ray_st = 0
 !
       end subroutine allocate_num_pvr_ray_start
 !
@@ -100,15 +114,44 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine allocate_tmp_pvr_ray_start(pvr_start)
+!
+      type(pvr_ray_start_type), intent(inout) :: pvr_start
+!
+!
+      allocate(pvr_start%iflag_start_tmp(pvr_start%ntot_tmp_pvr_ray))
+      allocate(pvr_start%xi_start_tmp(2,pvr_start%ntot_tmp_pvr_ray))
+!
+      if(pvr_start%ntot_tmp_pvr_ray .gt. 0) then
+        pvr_start%iflag_start_tmp = 0
+        pvr_start%xi_start_tmp =    0.0d0
+      end if
+!
+      end subroutine allocate_tmp_pvr_ray_start
+!
+!  ---------------------------------------------------------------------
+!
       subroutine deallocate_pvr_ray_start(pvr_start)
 !
       type(pvr_ray_start_type), intent(inout) :: pvr_start
 !
 !
       call deallocate_item_pvr_ray_start(pvr_start)
+      call deallocate_tmp_pvr_ray_start(pvr_start)
       call deallocate_num_pvr_ray_start(pvr_start)
 !
       end subroutine deallocate_pvr_ray_start
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine deallocate_tmp_pvr_ray_start(pvr_start)
+!
+      type(pvr_ray_start_type), intent(inout) :: pvr_start
+!
+!
+      deallocate(pvr_start%iflag_start_tmp, pvr_start%xi_start_tmp)
+!
+      end subroutine deallocate_tmp_pvr_ray_start
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -119,6 +162,7 @@
 !
 !
       deallocate(pvr_start%istack_pvr_ray_sf)
+      deallocate(pvr_start%istack_tmp_pvr_ray_st)
 !
       end subroutine deallocate_num_pvr_ray_start
 !
