@@ -48,7 +48,7 @@
       type(next_nod_id_4_nod), intent(inout) :: neib_hang
 !
 !
-      call alloc_num_next_node_type(mesh%node%numnod, neib_hang)
+      call alloc_num_next_node(mesh%node%numnod, neib_hang)
       call allocate_iflag_nod_hang(mesh%node%numnod)
 !
       call count_next_node_w_hanging(mesh%node%numnod,                  &
@@ -61,7 +61,7 @@
      &    neib_hang%nnod_next, izero, neib_hang%istack_next,            &
      &    neib_hang%ntot, neib_hang%nmax, neib_hang%nmin)
 !
-      call alloc_inod_next_node_type(neib_hang)
+      call alloc_inod_next_node(neib_hang)
 !
       call s_set_next_node_w_hanging(mesh%node%numnod,                  &
      &          nod_hang%iflag_hang, nod_hang%n_sf, nod_hang%id_sf,     &
@@ -84,14 +84,14 @@
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !
 !
-      call dealloc_inod_next_node_type(neib_nod)
+      call dealloc_inod_next_node(neib_nod)
 !
       neib_nod%ntot = neib_hang%ntot
       neib_nod%nmin = neib_hang%nmin
       neib_nod%nmax = neib_hang%nmax
 !
-      call alloc_num_next_node_type(mesh%node%numnod, neib_nod)
-      call alloc_inod_next_node_type(neib_nod)
+      call alloc_num_next_node(mesh%node%numnod, neib_nod)
+      call alloc_inod_next_node(neib_nod)
 !
       neib_nod%nnod_next(1:mesh%node%numnod)                            &
      &      = neib_hang%nnod_next(1:mesh%node%numnod)

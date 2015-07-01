@@ -14,21 +14,21 @@
 !        type(element_around_node), intent(inout) :: neib_ele
 !      subroutine alloc_iele_belonged_type(neib_ele)
 !        type(element_around_node), intent(inout) :: neib_ele
-!      subroutine alloc_num_next_node_type(numnod, neib_nod)
+!      subroutine alloc_num_next_node(numnod, neib_nod)
 !        integer(kind= kint), intent(in) :: numnod
 !        type(next_nod_id_4_nod), intent(inout) :: neib_nod
-!      subroutine alloc_inod_next_node_type(neib_nod)
+!      subroutine alloc_inod_next_node(neib_nod)
 !        type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !
 !      subroutine dealloc_iele_belonged_type(neib_ele)
 !        type(element_around_node), intent(inout) :: neib_ele
-!      subroutine dealloc_inod_next_node_type(neib_nod)
+!      subroutine dealloc_inod_next_node(neib_nod)
 !        type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !
 !      subroutine check_ele_id_4_node_type(my_rank, numnod, neib_ele)
 !        integer(kind = kint), intent(in) :: my_rank, numnod
 !        type(element_around_node), intent(in) :: neib_ele
-!      subroutine check_next_nod_4_node_type(my_rank, numnod, neib_nod)
+!      subroutine check_next_node_id_4_node(my_rank, numnod, neib_nod)
 !        integer(kind = kint), intent(in) :: my_rank, numnod
 !        type(next_nod_id_4_nod), intent(in) :: neib_nod
 !
@@ -77,12 +77,12 @@
         integer (kind=kint), pointer :: iweight_next(:)
       end type next_nod_id_4_nod
 !
-!> @brief Structure of neighbouring node and element list for each node
+!>   Structure of neighbouring node and element list for each node
       type next_nod_ele_table
+!>   Structure of belonged element list for each node
         type(element_around_node) :: neib_ele
-!<   Structure of belonged element list for each node
+!>   Structure of neighbouring node list for each node
         type(next_nod_id_4_nod) ::   neib_nod
-!<   Structure of neighbouring node list for each node
       end type next_nod_ele_table
 !
 !-----------------------------------------------------------------------
@@ -123,7 +123,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_num_next_node_type(numnod, neib_nod)
+      subroutine alloc_num_next_node(numnod, neib_nod)
 !
       integer(kind= kint), intent(in) :: numnod
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
@@ -136,11 +136,11 @@
       if(numnod .gt. 0) neib_nod%nnod_next =   0
       neib_nod%istack_next = 0
 !
-      end subroutine alloc_num_next_node_type
+      end subroutine alloc_num_next_node
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_inod_next_node_type(neib_nod)
+      subroutine alloc_inod_next_node(neib_nod)
 !
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !
@@ -152,7 +152,7 @@
         neib_nod%iweight_next = 0
       end if
 !
-      end subroutine alloc_inod_next_node_type
+      end subroutine alloc_inod_next_node
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -171,7 +171,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_inod_next_node_type(neib_nod)
+      subroutine dealloc_inod_next_node(neib_nod)
 !
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !
@@ -181,7 +181,7 @@
       deallocate( neib_nod%inod_next )
       deallocate( neib_nod%iweight_next )
 !
-      end subroutine dealloc_inod_next_node_type
+      end subroutine dealloc_inod_next_node
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -208,7 +208,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_next_nod_4_node_type(my_rank, numnod, neib_nod)
+      subroutine check_next_node_id_4_node(my_rank, numnod, neib_nod)
 !
       integer(kind = kint), intent(in) :: my_rank, numnod
       type(next_nod_id_4_nod), intent(in) :: neib_nod
@@ -225,7 +225,7 @@
         write(50+my_rank,'(8i16)') neib_nod%iweight_next(ist:ied)
       end do
 !
-      end subroutine check_next_nod_4_node_type
+      end subroutine check_next_node_id_4_node
 !
 !-----------------------------------------------------------------------
 !

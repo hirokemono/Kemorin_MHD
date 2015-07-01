@@ -89,6 +89,7 @@
 !
       use m_filter_file_names
       use m_field_file_format
+      use m_next_node_id_4_node
       use set_element_id_4_node
       use set_element_list_4_filter
 !
@@ -239,13 +240,13 @@
         iele_near_1nod_weight(inum) = iele_4_node(jnum)
       end do
 !
-      nnod_near_1nod_filter = nnod_next_4_node(inod)
-      nnod_near_1nod_weight = nnod_next_4_node(inod)
+      nnod_near_1nod_filter = neib_nod1%nnod_next(inod)
+      nnod_near_1nod_weight = neib_nod1%nnod_next(inod)
       idist_from_center_1nod(inum) = 1
       do inum = 1, nnod_near_1nod_weight
-        jnum = inod_next_stack_4_node(inod-1) + inum
-        inod_near_1nod_weight(inum) = inod_next_4_node(jnum)
-        iweight_1nod_weight(inum) =   iweight_next_4_node(inum)
+        jnum = neib_nod1%istack_next(inod-1) + inum
+        inod_near_1nod_weight(inum) = neib_nod1%inod_next(jnum)
+        iweight_1nod_weight(inum) =   neib_nod1%iweight_next(inum)
         idist_from_center_1nod(inum) = 1
       end do
       do inum = (nnod_near_1nod_weight+1), numnod

@@ -23,6 +23,7 @@
 !
       subroutine set_connect_RHS_assemble
 !
+      use m_next_node_id_4_node
       use ordering_4_rhs_assemble
 !
 !

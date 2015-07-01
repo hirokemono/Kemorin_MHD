@@ -9,7 +9,7 @@
 !      subroutine search_node_in_all_element(my_rank_2nd, error_level   &
 !     &          org_node, org_ele)
 !      subroutine giveup_to_search_element(my_rank_2nd, error_level,    &
-!     &          org_node, org_ele)
+!     &          inod_next_stack_4_node, org_node, org_ele)
 !
       module search_node_in_element
 !
@@ -189,10 +189,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine giveup_to_search_element(my_rank_2nd, error_level,     &
-     &          org_node, org_ele)
+     &          inod_next_stack_4_node, org_node, org_ele)
 !
       use m_element_id_4_node
-      use m_next_node_id_4_node
+!
+      integer(kind = kint), intent(in)                                  &
+     &                     :: inod_next_stack_4_node(0:numnod)
 !
       integer(kind = kint), intent(in) :: my_rank_2nd
       real(kind = kreal), intent(in) :: error_level

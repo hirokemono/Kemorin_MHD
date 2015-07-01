@@ -95,7 +95,7 @@
       call const_commute_filter_coefs(FEM_moments%mom_nod(1))
 !
       call deallocate_iele_belonged
-      call deallocate_inod_next_node
+      call dealloc_inod_next_node(neib_nod1)
 !
       if(iflag_debug.eq.1)  write(*,*)'const_fluid_filter_coefs'
       call const_fluid_filter_coefs
@@ -103,7 +103,7 @@
       call finalize_4_cal_fileters
 !
       call deallocate_iele_belonged
-      call deallocate_inod_next_node
+      call dealloc_inod_next_node(neib_nod1)
 !
       call deallocate_coef_4_filter_moms
 !
@@ -143,7 +143,7 @@
         call set_simple_filter(dxidxs, FEM_moments%mom_nod(1))
 !
         call deallocate_iele_belonged
-        call deallocate_inod_next_node
+        call dealloc_inod_next_node(neib_nod1)
 !
           if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
         call s_const_filter_mom_ele                                     &
@@ -159,7 +159,7 @@
         if (itype_mass_matrix .eq. 1) call release_mass_mat_for_consist
 !
         call deallocate_iele_belonged
-        call deallocate_inod_next_node
+        call dealloc_inod_next_node(neib_nod1)
 !
       end subroutine const_simple_filter
 !
@@ -218,7 +218,7 @@
      &   (org_filter_coef_code, dxidxs, FEM_moments%mom_nod(1))
 !
       call deallocate_iele_belonged
-      call deallocate_inod_next_node
+      call dealloc_inod_next_node(neib_nod1)
 !
       if(iflag_debug.eq.1)  write(*,*)'correct_wrong_fluid_filters'
       call correct_wrong_fluid_filters                                  &
@@ -227,7 +227,7 @@
       call deallocate_correct_filter_flag
 !
       call deallocate_iele_belonged
-      call deallocate_inod_next_node
+      call dealloc_inod_next_node(neib_nod1)
 !
       call deallocate_coef_4_filter_moms
       call finalize_4_cal_fileters
@@ -290,7 +290,7 @@
      &   (org_filter_coef_code, dxidxs, FEM_moments%mom_nod(1))
 !
       call deallocate_iele_belonged
-      call deallocate_inod_next_node
+      call dealloc_inod_next_node(neib_nod1)
 !
         if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
       call s_const_filter_mom_ele                                       &
@@ -309,7 +309,7 @@
       call deallocate_correct_filter_flag
 !
       call deallocate_iele_belonged
-      call deallocate_inod_next_node
+      call dealloc_inod_next_node(neib_nod1)
 !
       call deallocate_coef_4_filter_moms
       call finalize_4_cal_fileters

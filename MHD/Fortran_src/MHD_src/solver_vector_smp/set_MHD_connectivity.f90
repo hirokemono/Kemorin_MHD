@@ -52,7 +52,7 @@
       call set_djds_whole_connectivity
 !
       call deallocate_iele_belonged
-      call deallocate_inod_next_node
+      call dealloc_inod_next_node(neib_nod1)
 !
       end subroutine set_MHD_whole_connectivity
 !
@@ -122,8 +122,8 @@
 !C +-------------------------------+
 !C===
       call s_set_crs_connect_type(np_smp, numnod, inod_smp_stack,       &
-     &          ntot_next_nod_4_node, inod_next_stack_4_node,           &
-     &          inod_next_4_node, MHD_CRS)
+     &          neib_nod1%ntot, neib_nod1%istack_next,                  &
+     &          neib_nod1%inod_next, MHD_CRS)
 !
 !C +-----------------+
 !C | DJDS reordering |
@@ -175,6 +175,7 @@
       use t_crs_connect
       use t_solver_djds
       use t_vector_for_solver
+      use m_next_node_id_4_node
 !
       use set_element_id_4_node
       use reordering_djds_smp_type
@@ -194,8 +195,8 @@
       call const_next_nod_id_4_node
 !
       call s_set_crs_connect_type(np_smp, numnod, inod_smp_stack,       &
-     &    ntot_next_nod_4_node, inod_next_stack_4_node,                 &
-     &    inod_next_4_node, MHD_CRS)
+     &    neib_nod1%ntot, neib_nod1%istack_next,                        &
+     &    neib_nod1%inod_next, MHD_CRS)
 !
       call s_reordering_djds_smp_type(np_smp, numnod, internal_node,    &
      &    inter_smp_stack, solver_C, MHD_CRS, djds_tbl)
@@ -203,7 +204,7 @@
 !
       call dealloc_type_crs_connect(MHD_CRS)
       call deallocate_iele_belonged
-      call deallocate_inod_next_node
+      call dealloc_inod_next_node(neib_nod1)
 !
       end subroutine set_djds_layer_connectivity
 !

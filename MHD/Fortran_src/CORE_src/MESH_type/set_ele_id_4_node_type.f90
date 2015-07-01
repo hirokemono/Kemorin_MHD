@@ -233,7 +233,7 @@
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !
 !
-      call alloc_num_next_node_type(mesh%node%numnod, neib_nod)
+      call alloc_num_next_node(mesh%node%numnod, neib_nod)
       call allocate_work_next_node(np_smp, mesh%node%numnod)
 !
       call count_nod_4_grp_smp(np_smp, mesh%node%numnod,                &
@@ -247,7 +247,7 @@
      &    neib_nod%ntot, neib_nod%nmax, neib_nod%nmin)
 !
 !
-      call alloc_inod_next_node_type(neib_nod)
+      call alloc_inod_next_node(neib_nod)
 !
 !
       call set_nod_4_grp_smp(np_smp, mesh%node%numnod, mesh%ele%numele, &

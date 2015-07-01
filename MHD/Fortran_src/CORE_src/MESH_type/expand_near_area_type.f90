@@ -247,6 +247,9 @@
       call copy_wider_id_2_near_type(node%numnod,                       &
      &    near_node_tbl, near_node_wide)
 !
+      call dealloc_near_node(near_node_wide)
+      call dealloc_num_4_near_node(near_node_wide)
+!
       end subroutine expand_node_list_type
 !
 !-----------------------------------------------------------------------

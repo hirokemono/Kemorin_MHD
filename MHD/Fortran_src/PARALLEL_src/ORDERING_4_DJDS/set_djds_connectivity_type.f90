@@ -133,7 +133,7 @@
 !
       call dealloc_type_crs_connect(CRS_table)
       call dealloc_iele_belonged_type(FEM_next%neib_ele)
-      call dealloc_inod_next_node_type(FEM_next%neib_nod)
+      call dealloc_inod_next_node(FEM_next%neib_nod)
 !
       end subroutine set_djds_layer_connect_type
 !

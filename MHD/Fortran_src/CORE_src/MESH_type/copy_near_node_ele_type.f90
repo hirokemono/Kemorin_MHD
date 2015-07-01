@@ -146,8 +146,6 @@
       near_tbl%iweight(1:near_tbl%ntot)                                 &
      &           = near_tbl_wide%iweight(1:near_tbl%ntot)
 !
-      call dealloc_num_4_near_node(near_tbl_wide)
-!
       end subroutine copy_wider_id_2_near_type
 !
 !-----------------------------------------------------------------------

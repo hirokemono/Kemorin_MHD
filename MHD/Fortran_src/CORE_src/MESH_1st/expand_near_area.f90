@@ -166,7 +166,7 @@
 !
       use expand_near_flag
       use cal_minmax_and_stacks
-      use copy_near_node_and_element
+      use copy_near_node_ele_type
       use add_node_4_group
       use set_distance_near_nod
 !
@@ -207,7 +207,11 @@
      &    near_node1_wide%ntot, near_node1_wide%istack_nod,             &
      &    near_node1_wide%id_near_nod, near_node1_wide%iweight)
 !
-      call copy_wider_node_id_2_near
+      call copy_wider_id_2_near_type                                    &
+     &   (numnod, near_node1_tbl, near_node1_wide)
+!
+      call dealloc_near_node(near_node1_wide)
+      call dealloc_num_4_near_node(near_node1_wide)
 !
       end subroutine expand_node_list
 !

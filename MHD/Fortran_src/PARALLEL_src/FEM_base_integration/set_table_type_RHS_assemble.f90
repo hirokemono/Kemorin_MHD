@@ -75,11 +75,10 @@
       call alloc_iele_belonged_type(next_tbl%neib_ele)
 !
 !
-      call alloc_num_next_node_type(mesh%node%numnod,                   &
-     &    next_tbl%neib_nod)
+      call alloc_num_next_node(mesh%node%numnod, next_tbl%neib_nod)
 !
       next_tbl%neib_nod%ntot = 0
-      call alloc_inod_next_node_type(next_tbl%neib_nod)
+      call alloc_inod_next_node(next_tbl%neib_nod)
 !
 !      set RHS assemble table
 !

@@ -143,7 +143,7 @@
       call deallocate_seed_moms_ele
 !
       call deallocate_iele_belonged
-      call deallocate_inod_next_node
+      call dealloc_inod_next_node(neib_nod1)
 !
       end subroutine s_cal_element_size
 !

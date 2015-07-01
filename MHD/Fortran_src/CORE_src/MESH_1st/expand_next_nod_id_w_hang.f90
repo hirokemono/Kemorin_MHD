@@ -39,8 +39,8 @@
       call count_next_node_w_hanging(numnod, hang1%nod_hang%iflag_hang, &
      &    hang1%nod_hang%n_sf, hang1%nod_hang%id_sf,                    &
      &    hang1%nod_hang%n_ed, hang1%nod_hang%id_ed,                    &
-     &          ntot_next_nod_4_node, inod_next_stack_4_node,           &
-     &          inod_next_4_node, nnod_next_node_hanged)
+     &    neib_nod1%ntot, neib_nod1%istack_next, neib_nod1%inod_next,   &
+     &    nnod_next_node_hanged)
 !
       call s_cal_minmax_and_stacks(numnod, nnod_next_node_hanged,       &
      &    izero, istack_next_node_hanged, ntot_next_node_hanged,        &
@@ -51,9 +51,9 @@
       call s_set_next_node_w_hanging(numnod, hang1%nod_hang%iflag_hang, &
      &    hang1%nod_hang%n_sf, hang1%nod_hang%id_sf,                    &
      &    hang1%nod_hang%n_ed, hang1%nod_hang%id_ed,                    &
-     &          ntot_next_nod_4_node, inod_next_stack_4_node,           &
-     &          inod_next_4_node, ntot_next_node_hanged,                &
-     &          istack_next_node_hanged, inod_next_node_hanged)
+     &    neib_nod1%ntot, neib_nod1%istack_next, neib_nod1%inod_next,   &
+     &    ntot_next_node_hanged, istack_next_node_hanged,               &
+     &    inod_next_node_hanged)
 !
       call deallocate_iflag_nod_hang
 !
@@ -64,24 +64,24 @@
       subroutine overwrite_next_nod_by_hanged
 !
 !
-      call deallocate_inod_next_node
+      call dealloc_inod_next_node(neib_nod1)
 !
-      ntot_next_nod_4_node = ntot_next_node_hanged
-      nmin_next_nod_4_node = nmin_next_node_hanged
-      nmax_next_nod_4_node = nmax_next_node_hanged
+      neib_nod1%ntot = ntot_next_node_hanged
+      neib_nod1%nmin = nmin_next_node_hanged
+      neib_nod1%nmax = nmax_next_node_hanged
 !
-      call allocate_num_next_node(numnod)
-      call allocate_inod_next_node
+      call alloc_num_next_node(numnod, neib_nod1)
+      call alloc_inod_next_node(neib_nod1)
 !
-      nnod_next_4_node(1:numnod)                                        &
+      neib_nod1%nnod_next(1:numnod)                                     &
      &      = nnod_next_node_hanged(1:numnod)
-      inod_next_stack_4_node(0:numnod)                                  &
+      neib_nod1%istack_next(0:numnod)                                   &
      &      = istack_next_node_hanged(0:numnod)
 !
-      inod_next_4_node(1:ntot_next_nod_4_node)                          &
-     &      = inod_next_node_hanged(1:ntot_next_nod_4_node) 
-      iweight_next_4_node(1:ntot_next_nod_4_node)                       &
-     &      = iweight_next_hanged(1:ntot_next_nod_4_node) 
+      neib_nod1%inod_next(1:neib_nod1%ntot)                             &
+     &      = inod_next_node_hanged(1:neib_nod1%ntot) 
+      neib_nod1%iweight_next(1:neib_nod1%ntot)                          &
+     &      = iweight_next_hanged(1:neib_nod1%ntot) 
 !
       end subroutine overwrite_next_nod_by_hanged
 !

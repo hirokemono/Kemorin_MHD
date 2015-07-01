@@ -25,6 +25,7 @@
       use m_machine_parameter
       use m_ctl_params_4_gen_table
       use m_geometry_parameter
+      use m_next_node_id_4_node
       use m_2nd_pallalel_vector
       use m_read_mesh_data
       use m_work_const_itp_table
@@ -77,7 +78,8 @@
      &        write(*,*) 'giveup_to_search_element', ilevel, my_rank
             error_level_final = search_error_level(num_search_times)*2
             call giveup_to_search_element(my_rank_2nd,                  &
-     &          error_level_final, org_mesh%node, org_mesh%ele)
+     &          error_level_final, neib_nod1%istack_next,               &
+     &          org_mesh%node, org_mesh%ele)
           else
             if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
      &        write(*,*) 'search_node_in_element_2nd', ilevel, my_rank
