@@ -3,7 +3,6 @@
 !
 !     written by H. Matsui on Dec., 2008
 !
-!       subroutine allocate_surf_infinity
 !       subroutine deallocate_surf_infinity
 !
 !      subroutine count_num_bc_infinity(iflag_surf_infty,               &

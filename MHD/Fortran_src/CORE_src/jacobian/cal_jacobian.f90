@@ -102,7 +102,7 @@
         call cal_jacobian_lag
       end if
 !
-      if (ngrp_sf_infty /= 0) then
+      if (infty_list%ngrp_sf .ne. 0) then
         call cal_jacobian_infinity
 !
         if (first_ele_type .eq. 332) then
@@ -116,7 +116,7 @@
       if (first_ele_type .eq. 331) then
         call copy_jacobians_quad
         call copy_dxi_dx_2_quad
-        if (ngrp_sf_infty /= 0) then
+        if (infty_list%ngrp_sf .ne. 0) then
           call copy_jacobians_inf_quad
         end if
       end if

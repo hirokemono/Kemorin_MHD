@@ -1,36 +1,39 @@
-!t_next_node_ele_4_node.f90
-!      module t_next_node_ele_4_node
+!>@file  t_next_node_ele_4_node.f90
+!!       module t_next_node_ele_4_node
+!!
+!!@author H. Matsui
+!!@date   Programmed on Nov., 2008
+!!@n      Modified by H. Matsui on Feb., 2012
 !
 !> @brief Neighbouring node and element list for each node
-!
 !>     This routine is substitution of the following module
 !>@n        (module m_element_id_4_node)
 !>@n        (module m_next_node_id_4_node)
-!
-!      Written by H.Matsui on Nov., 2008
-!
-!      subroutine alloc_numele_belonged(numnod, neib_ele)
-!        integer(kind= kint), intent(in) :: numnod
-!        type(element_around_node), intent(inout) :: neib_ele
-!      subroutine alloc_iele_belonged(neib_ele)
-!        type(element_around_node), intent(inout) :: neib_ele
-!      subroutine alloc_num_next_node(numnod, neib_nod)
-!        integer(kind= kint), intent(in) :: numnod
-!        type(next_nod_id_4_nod), intent(inout) :: neib_nod
-!      subroutine alloc_inod_next_node(neib_nod)
-!        type(next_nod_id_4_nod), intent(inout) :: neib_nod
-!
-!      subroutine dealloc_iele_belonged(neib_ele)
-!        type(element_around_node), intent(inout) :: neib_ele
-!      subroutine dealloc_inod_next_node(neib_nod)
-!        type(next_nod_id_4_nod), intent(inout) :: neib_nod
-!
-!      subroutine check_ele_id_4_node_type(my_rank, numnod, neib_ele)
-!        integer(kind = kint), intent(in) :: my_rank, numnod
-!        type(element_around_node), intent(in) :: neib_ele
-!      subroutine check_next_node_id_4_node(my_rank, numnod, neib_nod)
-!        integer(kind = kint), intent(in) :: my_rank, numnod
-!        type(next_nod_id_4_nod), intent(in) :: neib_nod
+!!
+!!@verbatim
+!!      subroutine alloc_numele_belonged(numnod, neib_ele)
+!!        integer(kind= kint), intent(in) :: numnod
+!!        type(element_around_node), intent(inout) :: neib_ele
+!!      subroutine alloc_iele_belonged(neib_ele)
+!!        type(element_around_node), intent(inout) :: neib_ele
+!!      subroutine alloc_num_next_node(numnod, neib_nod)
+!!        integer(kind= kint), intent(in) :: numnod
+!!        type(next_nod_id_4_nod), intent(inout) :: neib_nod
+!!      subroutine alloc_inod_next_node(neib_nod)
+!!        type(next_nod_id_4_nod), intent(inout) :: neib_nod
+!!
+!!      subroutine dealloc_iele_belonged(neib_ele)
+!!        type(element_around_node), intent(inout) :: neib_ele
+!!      subroutine dealloc_inod_next_node(neib_nod)
+!!        type(next_nod_id_4_nod), intent(inout) :: neib_nod
+!!
+!!      subroutine check_ele_id_4_node_type(my_rank, numnod, neib_ele)
+!!        integer(kind = kint), intent(in) :: my_rank, numnod
+!!        type(element_around_node), intent(in) :: neib_ele
+!!      subroutine check_next_node_id_4_node(my_rank, numnod, neib_nod)
+!!        integer(kind = kint), intent(in) :: my_rank, numnod
+!!        type(next_nod_id_4_nod), intent(in) :: neib_nod
+!!@endverbatim
 !
       module t_next_node_ele_4_node
 !

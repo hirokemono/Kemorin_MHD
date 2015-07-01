@@ -4,21 +4,29 @@
 !
 !     written by H. Matsui
 !
-!      subroutine allocate_infty_surf_ctl
-!      subroutine deallocate_infty_surf_ctl
-!      subroutine const_bc_infinity_surf_grp(iflag_surf_infty)
+!>@file  t_surface_boundary.f90
+!!       module t_surface_boundary
+!!
+!!@author H. Matsui
+!!@date   Programmed on Nov., 2008
+!!@n      Modified by H. Matsui on Feb., 2012
+!
+!> @brief Structure for inifinity boundary
+!!
+!!@verbatim
+!!      subroutine deallocate_infty_surf_ctl
+!!      subroutine const_bc_infinity_surf_grp(iflag_surf_infty)
+!!@endverbatim
 !
       module m_surf_data_infinity
 !
       use m_precision
+      use t_surface_boundary
 !
       implicit  none
 !
-      integer (kind=kint) :: ngrp_sf_infty
-      integer (kind=kint), allocatable :: id_grp_sf_infty(:)
-      real (kind=kreal), allocatable :: sf_infty_apt(:)
-!
-      private :: allocate_surf_infinity
+!>      Structure for scalar's boundary condition on surface
+      type(scalar_surf_BC_list), save :: infty_list
 !
 !-----------------------------------------------------------------------
 !
@@ -26,28 +34,12 @@
 !
 !-----------------------------------------------------------------------
 !
-       subroutine allocate_surf_infinity
+      subroutine deallocate_surf_infinity
 !
-       allocate( id_grp_sf_infty(ngrp_sf_infty) )
-       allocate( sf_infty_apt(ngrp_sf_infty) )
+      call dealloc_scalar_surf_BC(infty_list)
 !
-      if (ngrp_sf_infty.gt.0) then
-        id_grp_sf_infty = 0
-        sf_infty_apt = 0.0d0
-      end if
+      end subroutine deallocate_surf_infinity
 !
-       end subroutine allocate_surf_infinity
-!
-!-----------------------------------------------------------------------
-!
-       subroutine deallocate_surf_infinity
-!
-       deallocate( id_grp_sf_infty )
-       deallocate( sf_infty_apt )
-!
-       end subroutine deallocate_surf_infinity
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine const_bc_infinity_surf_grp(iflag_surf_infty)
@@ -59,12 +51,12 @@
 !
 !
       call count_num_bc_infinity(iflag_surf_infty,                      &
-     &    num_surf, surf_name, ngrp_sf_infty)
+     &    num_surf, surf_name, infty_list%ngrp_sf)
 !
-      call allocate_surf_infinity
+      call alloc_scalar_surf_BC(infty_list)
 !
       call set_bc_infty_id(iflag_surf_infty, num_surf, surf_name,       &
-     &    ngrp_sf_infty, id_grp_sf_infty)
+     &    infty_list%ngrp_sf, infty_list%igrp_sf)
 !
       end subroutine const_bc_infinity_surf_grp
 !

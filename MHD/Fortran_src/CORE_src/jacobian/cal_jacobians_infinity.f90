@@ -39,7 +39,8 @@
       integer (kind=kint) :: ii, ix, i0
 !
 !
-      call s_cal_shape_func_infty_linear(ntot_int_3d, sf_infty_apt(1),  &
+      call s_cal_shape_func_infty_linear                                &
+     &   (ntot_int_3d, infty_list%sf_apt(1),                            &
      &    an_infty, dnxi_infty, dnei_infty, dnzi_infty,                 &
      &    xi3, ei3, zi3)
 !
@@ -70,7 +71,8 @@
       integer (kind=kint) :: ii, ix, i0
 !
 !
-      call s_cal_shape_func_infty_quad(ntot_int_3d, sf_infty_apt(1),    &
+      call s_cal_shape_func_infty_quad                                  &
+     &   (ntot_int_3d, infty_list%sf_apt(1),                            &
      &    aw_infty, dnxi_infty20, dnei_infty20, dnzi_infty20,           &
      &    xi3, ei3, zi3)
 !
@@ -101,7 +103,8 @@
       integer (kind=kint) :: ii, ix, i0
 !
 !
-      call s_cal_shape_func_infty_lag(ntot_int_3d, sf_infty_apt(1),     &
+      call s_cal_shape_func_infty_lag                                   &
+     &   (ntot_int_3d, infty_list%sf_apt(1),                            &
      &    aw_infty, dnxi_infty27, dnei_infty27, dnzi_infty27,           &
      &    xi3, ei3, zi3)
 !
@@ -132,7 +135,8 @@
       integer (kind=kint) :: ii, ix, i0
 !
 !
-      call s_cal_shape_func_infty_quad(ntot_int_3d, sf_infty_apt(1),    &
+      call s_cal_shape_func_infty_quad                                  &
+     &   (ntot_int_3d, infty_list%sf_apt(1),                            &
      &    am_infty, dnxi_infty20, dnei_infty20, dnzi_infty20,           &
      &    xi3, ei3, zi3)
 !

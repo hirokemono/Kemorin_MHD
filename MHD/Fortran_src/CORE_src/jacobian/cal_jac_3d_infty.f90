@@ -79,7 +79,7 @@
 !
       call s_cal_jacobian_3d_inf_8(numnod, numele,                      &
      &    np_smp, ie, xx, num_surf_bc, surf_item,                       &
-     &    ngrp_sf_infty, id_grp_sf_infty, num_surf_smp,                 &
+     &    infty_list%ngrp_sf, infty_list%igrp_sf, num_surf_smp,         &
      &    isurf_grp_smp_stack, xjac, axjac, dnx, dny, dnz,              &
      &    dxidx, deidx, dzidx, dxidy, deidy, dzidy, dxidz,              &
      &    deidz, dzidz, dnxi, dnei, dnzi, dnxi_inf, dnei_inf, dnzi_inf)
@@ -125,7 +125,7 @@
 !
       call s_cal_jacobian_3d_inf_20(numnod, numele,                     &
      &    np_smp, ie, xx, num_surf_bc, surf_item,                       &
-     &    ngrp_sf_infty, id_grp_sf_infty, num_surf_smp,                 &
+     &    infty_list%ngrp_sf, infty_list%igrp_sf, num_surf_smp,         &
      &    isurf_grp_smp_stack, xjac, axjac, dnx, dny, dnz,              &
      &    dxidx, deidx, dzidx, dxidy, deidy, dzidy, dxidz,              &
      &    deidz, dzidz, dnxi, dnei, dnzi, dnxi_inf, dnei_inf, dnzi_inf)
@@ -171,7 +171,7 @@
 !
       call s_cal_jacobian_3d_inf_27(numnod, numele,                     &
      &          np_smp, ie, xx, num_surf_bc, surf_item,                 &
-     &          ngrp_sf_infty, id_grp_sf_infty, num_surf_smp,           &
+     &          infty_list%ngrp_sf, infty_list%igrp_sf, num_surf_smp,   &
      &          isurf_grp_smp_stack, xjac, axjac,                       &
      &          dnx, dny, dnz, dxidx, deidx, dzidx, dxidy,              &
      &          deidy, dzidy, dxidz, deidz, dzidz, dnxi, dnei, dnzi,    &
@@ -218,7 +218,7 @@
 !
       call s_cal_jacobian_3d_inf_8_20(numnod, numele,                   &
      &    np_smp, ie, xx, num_surf_bc, surf_item,                       &
-     &    ngrp_sf_infty, id_grp_sf_infty, num_surf_smp,                 &
+     &    infty_list%ngrp_sf, infty_list%igrp_sf, num_surf_smp,         &
      &    isurf_grp_smp_stack, xjac, axjac, dnx, dny, dnz,              &
      &    dxidx, deidx, dzidx, dxidy, deidy, dzidy, dxidz,              &
      &    deidz, dzidz, dnxi, dnei, dnzi, dnxi_inf, dnei_inf, dnzi_inf)
