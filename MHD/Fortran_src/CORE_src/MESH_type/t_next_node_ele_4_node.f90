@@ -9,10 +9,10 @@
 !
 !      Written by H.Matsui on Nov., 2008
 !
-!      subroutine alloc_nele_belonged_type(numnod, neib_ele)
+!      subroutine alloc_numele_belonged(numnod, neib_ele)
 !        integer(kind= kint), intent(in) :: numnod
 !        type(element_around_node), intent(inout) :: neib_ele
-!      subroutine alloc_iele_belonged_type(neib_ele)
+!      subroutine alloc_iele_belonged(neib_ele)
 !        type(element_around_node), intent(inout) :: neib_ele
 !      subroutine alloc_num_next_node(numnod, neib_nod)
 !        integer(kind= kint), intent(in) :: numnod
@@ -20,7 +20,7 @@
 !      subroutine alloc_inod_next_node(neib_nod)
 !        type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !
-!      subroutine dealloc_iele_belonged_type(neib_ele)
+!      subroutine dealloc_iele_belonged(neib_ele)
 !        type(element_around_node), intent(inout) :: neib_ele
 !      subroutine dealloc_inod_next_node(neib_nod)
 !        type(next_nod_id_4_nod), intent(inout) :: neib_nod
@@ -91,7 +91,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_nele_belonged_type(numnod, neib_ele)
+      subroutine alloc_numele_belonged(numnod, neib_ele)
 !
       integer(kind= kint), intent(in) :: numnod
       type(element_around_node), intent(inout) :: neib_ele
@@ -102,11 +102,11 @@
       if( numnod .gt. 0) neib_ele%nele_4_node = 0
       neib_ele%istack_4_node = 0
 !
-      end subroutine alloc_nele_belonged_type
+      end subroutine alloc_numele_belonged
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_iele_belonged_type(neib_ele)
+      subroutine alloc_iele_belonged(neib_ele)
 !
       type(element_around_node), intent(inout) :: neib_ele
 !
@@ -118,7 +118,7 @@
         neib_ele%iconn_4_node = 0
       end if
 !
-      end subroutine alloc_iele_belonged_type
+      end subroutine alloc_iele_belonged
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -157,7 +157,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_iele_belonged_type(neib_ele)
+      subroutine dealloc_iele_belonged(neib_ele)
 !
       type(element_around_node), intent(inout) :: neib_ele
 !
@@ -167,7 +167,7 @@
       deallocate( neib_ele%iele_4_node )
       deallocate( neib_ele%iconn_4_node )
 !
-      end subroutine dealloc_iele_belonged_type
+      end subroutine dealloc_iele_belonged
 !
 !-----------------------------------------------------------------------
 !

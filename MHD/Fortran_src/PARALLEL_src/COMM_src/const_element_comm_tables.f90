@@ -190,8 +190,8 @@
      &   (mesh%ele%numele, mesh%ele%interior_ele, mesh%ele%x_ele,       &
      &    mesh%node, mesh%nod_comm, belongs%blng_ele, belongs%host_ele, &
      &    ele_mesh%ele_comm)
-      call dealloc_iele_belonged_type(belongs%host_ele)
-      call dealloc_iele_belonged_type(belongs%blng_ele)
+      call dealloc_iele_belonged(belongs%host_ele)
+      call dealloc_iele_belonged(belongs%blng_ele)
 !
       end subroutine const_element_comm_table
 !
@@ -213,8 +213,8 @@
      &   (surf_mesh%surf%numsurf, surf_mesh%surf%interior_surf,         &
      &    surf_mesh%surf%x_surf, mesh%node, mesh%nod_comm,              &
      &    belongs%blng_surf, belongs%host_surf, surf_mesh%surf_comm)
-      call dealloc_iele_belonged_type(belongs%host_surf)
-      call dealloc_iele_belonged_type(belongs%blng_surf)
+      call dealloc_iele_belonged(belongs%host_surf)
+      call dealloc_iele_belonged(belongs%blng_surf)
 !
       end subroutine const_surf_comm_table
 !
@@ -237,8 +237,8 @@
      &   (edge_mesh%edge%numedge, edge_mesh%edge%interior_edge,         &
      &    edge_mesh%edge%x_edge, mesh%node, mesh%nod_comm,              &
      &    belongs%blng_edge, belongs%host_edge, edge_mesh%edge_comm)
-      call dealloc_iele_belonged_type(belongs%host_edge)
-      call dealloc_iele_belonged_type(belongs%blng_edge)
+      call dealloc_iele_belonged(belongs%host_edge)
+      call dealloc_iele_belonged(belongs%blng_edge)
 !
       end subroutine const_edge_comm_table
 !

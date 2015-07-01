@@ -46,9 +46,9 @@
       subroutine dealloc_belonged_id_4_node1st
 !
 !
-      call dealloc_iele_belonged_type(blng_tbls%host_ele)
-      call dealloc_iele_belonged_type(blng_tbls%host_surf)
-      call dealloc_iele_belonged_type(blng_tbls%host_edge)
+      call dealloc_iele_belonged(blng_tbls%host_ele)
+      call dealloc_iele_belonged(blng_tbls%host_surf)
+      call dealloc_iele_belonged(blng_tbls%host_edge)
 !
       end subroutine dealloc_belonged_id_4_node1st
 !
@@ -65,7 +65,7 @@
       type(element_around_node), intent(inout) :: host_ele
 !
 !
-      call alloc_nele_belonged_type(numnod, host_ele)
+      call alloc_numele_belonged(numnod, host_ele)
 !
       call count_belonged_ele_4_node(numnod, numele,                    &
      &    nnod_4_ele, ie, ione, numele, host_ele%nele_4_node)
@@ -74,7 +74,7 @@
      &    host_ele%ntot, host_ele%nmax, host_ele%nmin)
 !
 !
-      call alloc_iele_belonged_type(host_ele)
+      call alloc_iele_belonged(host_ele)
 !
       call set_belonged_ele_4_node(numnod, numele,                      &
      &    nnod_4_ele, ie,  ione, numele,                                &
@@ -95,7 +95,7 @@
       type(element_around_node), intent(inout) :: host_surf
 !
 !
-      call alloc_nele_belonged_type(numnod, host_surf)
+      call alloc_numele_belonged(numnod, host_surf)
 !
       call count_belonged_ele_4_node(numnod, numsurf,                   &
      &    nnod_4_surf, ie_surf, ione, numsurf,                          &
@@ -105,7 +105,7 @@
      &    host_surf%ntot, host_surf%nmax, host_surf%nmin)
 !
 !
-      call alloc_iele_belonged_type(host_surf)
+      call alloc_iele_belonged(host_surf)
 !
       call set_belonged_ele_4_node(numnod, numsurf,                     &
      &    nnod_4_surf, ie_surf,  ione, numsurf,                         &
@@ -127,7 +127,7 @@
       type(element_around_node), intent(inout) :: host_edge
 !
 !
-      call alloc_nele_belonged_type(numnod, host_edge)
+      call alloc_numele_belonged(numnod, host_edge)
 !
       call count_belonged_ele_4_node(numnod, numedge,                   &
      &    nnod_4_edge, ie_edge, ione, numedge, host_edge%nele_4_node)
@@ -136,7 +136,7 @@
      &    host_edge%ntot, host_edge%nmax, host_edge%nmin)
 !
 !
-      call alloc_iele_belonged_type(host_edge)
+      call alloc_iele_belonged(host_edge)
 !
       call set_belonged_ele_4_node(numnod, numedge,                     &
      &    nnod_4_edge, ie_edge,  ione, numedge,                         &

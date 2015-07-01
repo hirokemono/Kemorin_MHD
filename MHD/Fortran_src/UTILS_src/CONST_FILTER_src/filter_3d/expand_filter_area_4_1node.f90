@@ -39,7 +39,7 @@
       use fem_const_filter_matrix
       use add_nodes_elems_4_each_nod
       use ordering_by_filtering_size
-      use set_element_id_4_node
+      use const_RHS_assemble_list
       use delete_small_weighting
 !
 !
@@ -90,7 +90,6 @@
       use m_filter_file_names
       use m_field_file_format
       use m_next_node_id_4_node
-      use set_element_id_4_node
       use set_element_list_4_filter
 !
 !
@@ -199,8 +198,8 @@
       nnod_near_1nod_filter = nnod_near_1nod_weight
       nele_near_1nod_filter = nele_near_1nod_weight
 !
-      call expand_near_ele_4_each_nod(numnod, numele,                   &
-     &    ntot_ele_4_node, iele_stack_4_node, iele_4_node,              &
+      call expand_near_ele_4_each_nod(numnod, numele, ele_4_nod1%ntot,  &
+     &    ele_4_nod1%istack_4_node, ele_4_nod1%iele_4_node,             &
      &    nnod_near_1nod_filter, inod_near_1nod_weight,                 &
      &    nele_near_1nod_filter, nele_near_1nod_weight,                 &
      &    iele_near_1nod_weight)
@@ -233,11 +232,11 @@
       integer(kind = kint), intent(in) :: inod, numnod
       integer(kind = kint) :: inum, jnum
 !
-      nele_near_1nod_filter = nele_4_node(inod)
-      nele_near_1nod_weight = nele_4_node(inod)
+      nele_near_1nod_filter = ele_4_nod1%nele_4_node(inod)
+      nele_near_1nod_weight = ele_4_nod1%nele_4_node(inod)
       do inum = 1, nele_near_1nod_weight
-        jnum = iele_stack_4_node(inod-1) + inum
-        iele_near_1nod_weight(inum) = iele_4_node(jnum)
+        jnum = ele_4_nod1%istack_4_node(inod-1) + inum
+        iele_near_1nod_weight(inum) = ele_4_nod1%iele_4_node(jnum)
       end do
 !
       nnod_near_1nod_filter = neib_nod1%nnod_next(inod)

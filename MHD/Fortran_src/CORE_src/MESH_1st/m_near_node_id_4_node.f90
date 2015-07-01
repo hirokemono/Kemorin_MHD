@@ -3,6 +3,8 @@
 !
 !      Written by H. Matsui on Aug., 2006
 !
+!      subroutine deallocate_near_node
+!
 !      subroutine check_near_nod_4_node(my_rank,numnod)
 !      subroutine check_near_nod_4_nod_sorted(my_rank,numnod)
 !
@@ -22,6 +24,16 @@
 ! -----------------------------------------------------------------------
 !
       contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine deallocate_near_node
+!
+!
+      call dealloc_near_node(near_node1_tbl)
+      call dealloc_num_4_near_node(near_node1_tbl)
+!
+      end subroutine deallocate_near_node
 !
 ! -----------------------------------------------------------------------
 !

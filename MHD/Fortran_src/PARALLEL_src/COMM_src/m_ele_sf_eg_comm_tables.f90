@@ -165,7 +165,6 @@
       use m_geometry_data
       use m_element_id_4_node
       use m_belonged_element_4_node
-      use set_element_id_4_node
 !
 !
       call set_ele_id_4_node_comm
@@ -173,8 +172,8 @@
       call const_ele_comm_table_1st(numnod, numele, inod_global,        &
      &    interior_ele, x_ele, nod_comm, ele_4_nod_comm,                &
      &    blng_tbls%host_ele, ele_comm)
-      call dealloc_iele_belonged_type(blng_tbls%host_ele)
-      call dealloc_iele_belonged_type(ele_4_nod_comm)
+      call dealloc_iele_belonged(blng_tbls%host_ele)
+      call dealloc_iele_belonged(ele_4_nod_comm)
 !
       end subroutine const_element_comm_table_1st
 !
@@ -188,16 +187,15 @@
       use m_surface_geometry_data
       use m_element_id_4_node
       use m_belonged_element_4_node
-      use set_element_id_4_node
 !
 !
       call set_surf_id_4_node
       call belonged_surf_id_4_node_1(blng_tbls%host_surf)
       call const_ele_comm_table_1st(numnod, numsurf, inod_global,       &
-     &    interior_surf, x_surf, nod_comm, surf_4_nod,                  &
+     &    interior_surf, x_surf, nod_comm, surf_4_nod1,                 &
      &    blng_tbls%host_surf, surf_comm)
-      call dealloc_iele_belonged_type(blng_tbls%host_surf)
-      call dealloc_iele_belonged_type(surf_4_nod)
+      call dealloc_iele_belonged(blng_tbls%host_surf)
+      call dealloc_iele_belonged(surf_4_nod1)
 !
       end subroutine const_surf_comm_table_1st
 !
@@ -211,16 +209,15 @@
       use m_edge_geometry_data
       use m_element_id_4_node
       use m_belonged_element_4_node
-      use set_element_id_4_node
 !
 !
       call set_edge_id_4_node
       call belonged_edge_id_4_node_1(blng_tbls%host_edge)
       call const_ele_comm_table_1st(numnod, numedge, inod_global,       &
-     &    interior_edge, x_edge, nod_comm, edge_4_nod,                  &
+     &    interior_edge, x_edge, nod_comm, edge_4_nod1,                 &
      &    blng_tbls%host_edge,  edge_comm)
-      call dealloc_iele_belonged_type(blng_tbls%host_edge)
-      call dealloc_iele_belonged_type(edge_4_nod)
+      call dealloc_iele_belonged(blng_tbls%host_edge)
+      call dealloc_iele_belonged(edge_4_nod1)
 !
       end subroutine const_edge_comm_table_1st
 !

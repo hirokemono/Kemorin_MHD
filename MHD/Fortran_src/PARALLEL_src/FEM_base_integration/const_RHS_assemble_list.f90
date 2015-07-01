@@ -11,8 +11,6 @@
 !
       use m_precision
 !
-      use set_element_id_4_node
-!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -23,6 +21,7 @@
 !
       subroutine set_connect_RHS_assemble
 !
+      use m_element_id_4_node
       use m_next_node_id_4_node
       use ordering_4_rhs_assemble
 !
@@ -37,6 +36,21 @@
       call sort_node_index
 !
       end subroutine set_connect_RHS_assemble
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_belonged_ele_and_next_nod
+!
+      use m_element_id_4_node
+      use m_next_node_id_4_node
+!
+!
+!      Search surrounding node and element
+!
+      call set_ele_id_4_node
+      call const_next_nod_id_4_node
+!
+      end subroutine set_belonged_ele_and_next_nod
 !
 !-----------------------------------------------------------------------
 !

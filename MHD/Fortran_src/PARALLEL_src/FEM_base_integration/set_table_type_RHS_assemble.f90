@@ -68,11 +68,10 @@
 !
 !  found surrounding node and element
 !
-      call alloc_nele_belonged_type(mesh%node%numnod,                   &
-     &    next_tbl%neib_ele)
+      call alloc_numele_belonged(mesh%node%numnod, next_tbl%neib_ele)
 !
       next_tbl%neib_ele%ntot = 0
-      call alloc_iele_belonged_type(next_tbl%neib_ele)
+      call alloc_iele_belonged(next_tbl%neib_ele)
 !
 !
       call alloc_num_next_node(mesh%node%numnod, next_tbl%neib_nod)

@@ -29,6 +29,7 @@
       use m_geometry_parameter
       use m_node_phys_data
       use m_edge_geometry_data
+      use m_element_id_4_node
       use m_jacobians
       use m_t_step_parameter
       use m_ele_sf_eg_comm_tables
@@ -36,7 +37,6 @@
       use nodal_vector_send_recv
       use const_mesh_info
       use cal_jacobian
-      use set_element_id_4_node
       use int_volume_of_domain
       use set_normal_vectors
       use set_surf_grp_vectors

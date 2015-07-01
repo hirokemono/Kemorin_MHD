@@ -39,9 +39,10 @@
       call alloc_num_next_node(numnod, neib_nod1)
       call allocate_work_next_node(np_smp, numnod)
 !
-      call count_nod_4_grp_smp(np_smp, numnod, numele, nnod_4_ele, ie,  &
-     &    inod_smp_stack, numnod, ntot_ele_4_node, iele_stack_4_node,   &
-     &    iele_4_node, neib_nod1%nnod_next)
+      call count_nod_4_grp_smp(np_smp, numnod, numele,                  &
+     &    nnod_4_ele, ie, inod_smp_stack, numnod,                       &
+     &    ele_4_nod1%ntot, ele_4_nod1%istack_4_node,                    &
+     &    ele_4_nod1%iele_4_node, neib_nod1%nnod_next)
 !
       call s_cal_minmax_and_stacks(numnod, neib_nod1%nnod_next, izero,  &
      &    neib_nod1%istack_next, neib_nod1%ntot,                        &
@@ -52,8 +53,9 @@
 !
 !
       call set_nod_4_grp_smp(np_smp, numnod, numele, nnod_4_ele, ie,    &
-     &    inod_smp_stack, numnod, ntot_ele_4_node, iele_stack_4_node,   &
-     &    iele_4_node, neib_nod1%ntot, neib_nod1%istack_next,           &
+     &    inod_smp_stack, numnod, ele_4_nod1%ntot,                      &
+     &    ele_4_nod1%istack_4_node, ele_4_nod1%iele_4_node,             &
+     &    neib_nod1%ntot, neib_nod1%istack_next,                        &
      &    neib_nod1%nnod_next, neib_nod1%inod_next,                     &
      &    neib_nod1%iweight_next)
 !

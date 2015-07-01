@@ -33,6 +33,7 @@
       use m_control_params_2nd_files
       use m_surface_geometry_data
       use m_edge_geometry_data
+      use m_element_id_4_node
       use m_jacobians
       use m_ucd_input_data
       use m_ele_sf_eg_comm_tables
@@ -40,7 +41,6 @@
       use const_mesh_info
       use load_mesh_data
       use set_parallel_file_name
-      use set_element_id_4_node
 !
       use cal_jacobian
       use int_volume_of_domain

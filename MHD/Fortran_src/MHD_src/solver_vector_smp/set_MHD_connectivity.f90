@@ -37,21 +37,16 @@
 !
       subroutine set_MHD_whole_connectivity
 !
-      use set_element_id_4_node
-      use ordering_4_rhs_assemble
+      use const_RHS_assemble_list
 !
-!
-!      Search surrounding node and element
-!      set RHS assemble table
-      call set_belonged_ele_and_next_nod
 !
 !      set RHS assemble table
-      call sort_node_index
+      call set_connect_RHS_assemble
 !
 !      set Matrix assemble table
       call set_djds_whole_connectivity
 !
-      call deallocate_iele_belonged
+      call dealloc_iele_belonged(ele_4_nod1)
       call dealloc_inod_next_node(neib_nod1)
 !
       end subroutine set_MHD_whole_connectivity
@@ -176,8 +171,8 @@
       use t_solver_djds
       use t_vector_for_solver
       use m_next_node_id_4_node
+      use m_element_id_4_node
 !
-      use set_element_id_4_node
       use reordering_djds_smp_type
       use set_djds_smp_ordering_type
       use set_crs_connect_type
@@ -203,7 +198,7 @@
       call set_new_comm_table_type(numnod, layer_comm, djds_tbl)
 !
       call dealloc_type_crs_connect(MHD_CRS)
-      call deallocate_iele_belonged
+      call dealloc_iele_belonged(ele_4_nod1)
       call dealloc_inod_next_node(neib_nod1)
 !
       end subroutine set_djds_layer_connectivity

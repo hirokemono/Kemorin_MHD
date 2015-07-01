@@ -42,17 +42,17 @@
       use cal_minmax_and_stacks
 !
 !
-      inod_ele_max = nmax_ele_4_node
+      inod_ele_max = ele_4_nod1%nmax
       call allocate_sorted_node
 !
 !    count number of node to RHS assemble
 !
-      call count_nele_4_RHS_assemble(numnod, nmax_ele_4_node,           &
-     &          nele_4_node, np_smp, inod_ele_max, nnod_sort_smp)
+      call count_nele_4_RHS_assemble(numnod, ele_4_nod1%nmax,           &
+     &    ele_4_nod1%nele_4_node, np_smp, inod_ele_max, nnod_sort_smp)
 !
 !    stacking for SMP
 !
-      call s_cal_dbl_minmax_and_stacks(np_smp, nmax_ele_4_node,         &
+      call s_cal_dbl_minmax_and_stacks(np_smp, ele_4_nod1%nmax,         &
      &    nnod_sort_smp, izero, nod_stack_smp, num_sort_smp,            &
      &    nmax_sort_smp, nmin_sort_smp)
 !
@@ -62,10 +62,11 @@
 !
 !       write(*,*) 'allocate smp end'
 !
-      call set_iele_4_RHS_assemble(numnod, nmax_ele_4_node,             &
-     &          nele_4_node, iele_stack_4_node, np_smp, inod_ele_max,   &
-     &          nod_stack_smp, ntot_ele_4_node, iele_4_node,            &
-     &          iconn_4_node, num_sort_smp, node_sort_list_smp,         &
+      call set_iele_4_RHS_assemble(numnod, ele_4_nod1%nmax,             &
+     &    ele_4_nod1%nele_4_node, ele_4_nod1%istack_4_node,             &
+     &    np_smp, inod_ele_max, nod_stack_smp,                          &
+     &    ele_4_nod1%ntot, ele_4_nod1%iele_4_node,                      &
+     &    ele_4_nod1%iconn_4_node, num_sort_smp, node_sort_list_smp,    &
      &          iele_sort_smp, iconn_sort_smp)
 !
 !       write(*,*) 'set smp for RHS end'

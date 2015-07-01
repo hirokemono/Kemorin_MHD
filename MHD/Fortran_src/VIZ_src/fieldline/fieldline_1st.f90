@@ -94,9 +94,9 @@
      &       iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,     &
      &       x_surf, vnorm_surf, area_surf, interior_surf,              &
      &       num_mat, num_mat_bc, mat_istack,  mat_item,                &
-     &       ntot_ele_4_node, iele_stack_4_node, iele_4_node,           &
-     &       num_nod_phys, num_tot_nod_phys, istack_nod_component,      &
-     &       d_nod, nod_comm)
+     &       ele_4_nod1%ntot, ele_4_nod1%istack_4_node,                 &
+     &       ele_4_nod1%iele_4_node, num_nod_phys, num_tot_nod_phys,    &
+     &       istack_nod_component, d_nod, nod_comm)
 !
       end subroutine field_line_main_1st
 !

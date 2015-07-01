@@ -114,13 +114,13 @@
       use expand_near_flag
       use expand_near_element
       use cal_minmax_and_stacks
-      use copy_near_node_and_element
+      use copy_near_node_ele_type
 !
 !
       call alloc_num_4_near_nod(numnod, near_ele1_wide)
-      call count_expanded_near_element(np_smp,                          &
-     &    numnod, numele, inod_smp_stack, iflag_expand,                 &
-     &    ntot_ele_4_node, iele_stack_4_node, iele_4_node,              &
+      call count_expanded_near_element(np_smp, numnod, numele,          &
+     &    inod_smp_stack, iflag_expand, ele_4_nod1%ntot,                &
+     &    ele_4_nod1%istack_4_node, ele_4_nod1%iele_4_node,             &
      &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &
      &    near_node1_tbl%id_near_nod, near_ele1_tbl%ntot,               &
      &    near_ele1_tbl%num_nod, near_ele1_tbl%istack_nod,              &
@@ -133,9 +133,9 @@
 !
       call alloc_near_element(near_ele1_wide)
 !
-      call set_expanded_near_element(np_smp,                            &
-     &    numnod, numele, inod_smp_stack, iflag_expand,                 &
-     &    ntot_ele_4_node, iele_stack_4_node, iele_4_node,              &
+      call set_expanded_near_element(np_smp, numnod, numele,            &
+     &    inod_smp_stack, iflag_expand, ele_4_nod1%ntot,                &
+     &    ele_4_nod1%istack_4_node, ele_4_nod1%iele_4_node,             &
      &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &
      &    near_node1_tbl%id_near_nod, near_ele1_tbl%ntot,               &
      &    near_ele1_tbl%num_nod, near_ele1_tbl%istack_nod,              &

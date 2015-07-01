@@ -58,7 +58,7 @@
       type(element_around_node), intent(inout) :: neib_ele
 !
 !
-      call alloc_nele_belonged_type(mesh%node%numnod, neib_ele)
+      call alloc_numele_belonged(mesh%node%numnod, neib_ele)
 !
       call count_iele_4_node(mesh%node%numnod, mesh%ele%numele,         &
      &    mesh%ele%nnod_4_ele, mesh%ele%ie, ione, mesh%ele%numele,      &
@@ -68,7 +68,7 @@
      &    neib_ele%ntot, neib_ele%nmax, neib_ele%nmin)
 !
 !
-      call alloc_iele_belonged_type(neib_ele)
+      call alloc_iele_belonged(neib_ele)
 !
       call set_iele_4_node(mesh%node%numnod, mesh%ele%numele,           &
      &    mesh%ele%nnod_4_ele, mesh%ele%ie,  ione, mesh%ele%numele,     &
@@ -92,7 +92,7 @@
       type(element_around_node), intent(inout) :: neib_ele
 !
 !
-      call alloc_nele_belonged_type(mesh%node%numnod, neib_ele)
+      call alloc_numele_belonged(mesh%node%numnod, neib_ele)
 !
       call count_iele_4_node(mesh%node%numnod, surf%numsurf,            &
      &    surf%nnod_4_surf, surf%ie_surf, ione, surf%numsurf,           &
@@ -102,7 +102,7 @@
      &    neib_ele%ntot, neib_ele%nmax, neib_ele%nmin)
 !
 !
-      call alloc_iele_belonged_type(neib_ele)
+      call alloc_iele_belonged(neib_ele)
 !
       call set_iele_4_node(mesh%node%numnod, surf%numsurf,              &
      &    surf%nnod_4_surf, surf%ie_surf,  ione, surf%numsurf,          &
@@ -126,7 +126,7 @@
       type(element_around_node), intent(inout) :: neib_ele
 !
 !
-      call alloc_nele_belonged_type(mesh%node%numnod, neib_ele)
+      call alloc_numele_belonged(mesh%node%numnod, neib_ele)
 !
       call count_iele_4_node(mesh%node%numnod, edge%numedge,            &
      &    edge%nnod_4_edge, edge%ie_edge, ione, edge%numedge,           &
@@ -136,7 +136,7 @@
      &    neib_ele%ntot, neib_ele%nmax, neib_ele%nmin)
 !
 !
-      call alloc_iele_belonged_type(neib_ele)
+      call alloc_iele_belonged(neib_ele)
 !
       call set_iele_4_node(mesh%node%numnod, edge%numedge,              &
      &    edge%nnod_4_edge, edge%ie_edge,  ione, edge%numedge,          &
@@ -162,7 +162,7 @@
       type(element_around_node), intent(inout) :: neib_ele
 !
 !
-      call alloc_nele_belonged_type(mesh%node%numnod, neib_ele)
+      call alloc_numele_belonged(mesh%node%numnod, neib_ele)
 !
       call count_iele_4_node(mesh%node%numnod, mesh%ele%numele, nnod,   &
      &    mesh%ele%ie, iele_start, iele_end, neib_ele%nele_4_node )
@@ -171,7 +171,7 @@
      &    neib_ele%ntot, neib_ele%nmax, neib_ele%nmin)
 !
 !
-      call alloc_iele_belonged_type(neib_ele)
+      call alloc_iele_belonged(neib_ele)
 !
       call set_iele_4_node(mesh%node%numnod, mesh%ele%numele, nnod,     &
      &    mesh%ele%ie,  iele_start, iele_end, neib_ele%ntot,            &
@@ -197,7 +197,7 @@
       type(element_around_node), intent(inout) :: neib_ele
 !
 !
-      call alloc_nele_belonged_type(mesh%node%numnod, neib_ele)
+      call alloc_numele_belonged(mesh%node%numnod, neib_ele)
 !
       call count_grp_iele_4_node(mesh%node%numnod, mesh%ele%numele,     &
      &    mesh%ele%nnod_4_ele, mesh%ele%ie, nele_grp, iele_grp,         &
@@ -206,7 +206,7 @@
      &    neib_ele%nele_4_node, izero, neib_ele%istack_4_node,          &
      &    neib_ele%ntot, neib_ele%nmax, neib_ele%nmin)
 !
-      call alloc_iele_belonged_type(neib_ele)
+      call alloc_iele_belonged(neib_ele)
 !
       call set_grp_iele_4_node(mesh%node%numnod, mesh%ele%numele,       &
      &    mesh%ele%nnod_4_ele, mesh%ele%ie, nele_grp, iele_grp,         &

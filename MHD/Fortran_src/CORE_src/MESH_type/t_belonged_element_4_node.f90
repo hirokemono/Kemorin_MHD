@@ -66,9 +66,9 @@
       type(belonged_table), intent(inout) :: belongs
 !
 !
-      call dealloc_iele_belonged_type(belongs%host_ele)
-      call dealloc_iele_belonged_type(belongs%host_surf)
-      call dealloc_iele_belonged_type(belongs%host_edge)
+      call dealloc_iele_belonged(belongs%host_ele)
+      call dealloc_iele_belonged(belongs%host_surf)
+      call dealloc_iele_belonged(belongs%host_edge)
 !
       end subroutine dealloc_belonged_id_4_node
 !
@@ -85,7 +85,7 @@
       type(element_around_node), intent(inout) :: host_ele
 !
 !
-      call alloc_nele_belonged_type(mesh%node%numnod, host_ele)
+      call alloc_numele_belonged(mesh%node%numnod, host_ele)
 !
       call count_belonged_ele_4_node(mesh%node%numnod, mesh%ele%numele, &
      &    mesh%ele%nnod_4_ele, mesh%ele%ie, ione, mesh%ele%numele,      &
@@ -95,7 +95,7 @@
      &    host_ele%ntot, host_ele%nmax, host_ele%nmin)
 !
 !
-      call alloc_iele_belonged_type(host_ele)
+      call alloc_iele_belonged(host_ele)
 !
       call set_belonged_ele_4_node(mesh%node%numnod, mesh%ele%numele,   &
      &    mesh%ele%nnod_4_ele, mesh%ele%ie,  ione, mesh%ele%numele,     &
@@ -118,7 +118,7 @@
       type(element_around_node), intent(inout) :: host_surf
 !
 !
-      call alloc_nele_belonged_type(mesh%node%numnod, host_surf)
+      call alloc_numele_belonged(mesh%node%numnod, host_surf)
 !
       call count_belonged_ele_4_node(mesh%node%numnod, surf%numsurf,    &
      &    surf%nnod_4_surf, surf%ie_surf, ione, surf%numsurf,           &
@@ -128,7 +128,7 @@
      &    host_surf%ntot, host_surf%nmax, host_surf%nmin)
 !
 !
-      call alloc_iele_belonged_type(host_surf)
+      call alloc_iele_belonged(host_surf)
 !
       call set_belonged_ele_4_node(mesh%node%numnod, surf%numsurf,      &
      &    surf%nnod_4_surf, surf%ie_surf,  ione, surf%numsurf,          &
@@ -152,7 +152,7 @@
       type(element_around_node), intent(inout) :: host_edge
 !
 !
-      call alloc_nele_belonged_type(mesh%node%numnod, host_edge)
+      call alloc_numele_belonged(mesh%node%numnod, host_edge)
 !
       call count_belonged_ele_4_node(mesh%node%numnod, edge%numedge,    &
      &    edge%nnod_4_edge, edge%ie_edge, ione, edge%numedge,           &
@@ -162,7 +162,7 @@
      &    host_edge%ntot, host_edge%nmax, host_edge%nmin)
 !
 !
-      call alloc_iele_belonged_type(host_edge)
+      call alloc_iele_belonged(host_edge)
 !
       call set_belonged_ele_4_node(mesh%node%numnod, edge%numedge,      &
      &    edge%nnod_4_edge, edge%ie_edge,  ione, edge%numedge,          &

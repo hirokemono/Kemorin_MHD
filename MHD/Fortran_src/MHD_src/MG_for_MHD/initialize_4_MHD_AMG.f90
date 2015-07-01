@@ -221,8 +221,7 @@
      &        MG_djds_tbl(i_level) )
         end if
 !
-        call dealloc_iele_belonged_type                                 &
-     &        ( MG_next_table(i_level)%neib_ele )
+        call dealloc_iele_belonged(MG_next_table(i_level)%neib_ele)
         call dealloc_inod_next_node(MG_next_table(i_level)%neib_nod)
       end do
 !
