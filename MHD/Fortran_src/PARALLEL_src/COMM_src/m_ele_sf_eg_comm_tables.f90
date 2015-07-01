@@ -168,13 +168,13 @@
       use set_element_id_4_node
 !
 !
-      call set_ele_id_4_node_t
+      call set_ele_id_4_node_comm
       call belonged_ele_id_4_node_1(blng_tbls%host_ele)
       call const_ele_comm_table_1st(numnod, numele, inod_global,        &
-     &    interior_ele, x_ele, nod_comm, ele_4_nod,                     &
+     &    interior_ele, x_ele, nod_comm, ele_4_nod_comm,                &
      &    blng_tbls%host_ele, ele_comm)
       call dealloc_iele_belonged_type(blng_tbls%host_ele)
-      call dealloc_iele_belonged_type(ele_4_nod)
+      call dealloc_iele_belonged_type(ele_4_nod_comm)
 !
       end subroutine const_element_comm_table_1st
 !

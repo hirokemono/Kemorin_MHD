@@ -39,7 +39,7 @@
       integer (kind=kint), allocatable :: iconn_4_node(:)
 !
 !>   Structure of included element list for each node
-      type(element_around_node), save :: ele_4_nod
+      type(element_around_node), save :: ele_4_nod_comm
 !
 !>   Structure of included surface list for each node
       type(element_around_node), save :: surf_4_nod

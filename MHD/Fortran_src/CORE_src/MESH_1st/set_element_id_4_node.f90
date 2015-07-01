@@ -10,7 +10,7 @@
 !!      subroutine set_belonged_ele_and_next_nod
 !!
 !!      subroutine set_ele_id_4_node
-!!      subroutine set_ele_id_4_node_t
+!!      subroutine set_ele_id_4_node_comm
 !!      subroutine set_surf_id_4_node
 !!      subroutine set_edge_id_4_node
 !!
@@ -76,7 +76,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_ele_id_4_node_t
+      subroutine set_ele_id_4_node_comm
 !
       use m_geometry_parameter
       use m_geometry_data
@@ -85,23 +85,24 @@
       use cal_minmax_and_stacks
 !
 !
-      call alloc_nele_belonged_type(numnod, ele_4_nod)
+      call alloc_nele_belonged_type(numnod, ele_4_nod_comm)
 !
       call count_iele_4_node(numnod, numele, nnod_4_ele, ie,            &
-     &    ione, numele, ele_4_nod%nele_4_node)
-      call s_cal_minmax_and_stacks(numnod, ele_4_nod%nele_4_node,       &
-     &    izero, ele_4_nod%istack_4_node, ele_4_nod%ntot,               &
-     &    ele_4_nod%nmax, ele_4_nod%nmin)
+     &    ione, numele, ele_4_nod_comm%nele_4_node)
+      call s_cal_minmax_and_stacks(numnod, ele_4_nod_comm%nele_4_node,  &
+     &    izero, ele_4_nod_comm%istack_4_node, ele_4_nod_comm%ntot,     &
+     &    ele_4_nod_comm%nmax, ele_4_nod_comm%nmin)
 !
 !
-      call alloc_iele_belonged_type(ele_4_nod)
+      call alloc_iele_belonged_type(ele_4_nod_comm)
 !
-      call set_iele_4_node(numnod, numele, nnod_4_ele, ie,              &
-     &    ione, numele, ele_4_nod%ntot, ele_4_nod%istack_4_node,        &
-     &    ele_4_nod%nele_4_node, ele_4_nod%iele_4_node,                 &
-     &    ele_4_nod%iconn_4_node)
+      call set_iele_4_node                                              &
+     &   (numnod, numele, nnod_4_ele, ie, ione, numele,                 &
+     &    ele_4_nod_comm%ntot, ele_4_nod_comm%istack_4_node,            &
+     &    ele_4_nod_comm%nele_4_node, ele_4_nod_comm%iele_4_node,       &
+     &    ele_4_nod_comm%iconn_4_node)
 !
-      end subroutine set_ele_id_4_node_t
+      end subroutine set_ele_id_4_node_comm
 !
 !-----------------------------------------------------------------------
 !
