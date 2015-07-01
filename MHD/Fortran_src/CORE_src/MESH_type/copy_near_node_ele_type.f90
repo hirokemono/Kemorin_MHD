@@ -10,12 +10,10 @@
 !> Substitution of
 !> @n      (subroutine  copy_next_element_id_2_near)
 !
-!      subroutine copy_next_nod_id_2_near_type(node, next_nod, near_nod)
+!      subroutine copy_next_node_id_2_near(node, next_nod, near_nod)
 !        type(node_data), intent(in) :: node
 !        type(next_nod_id_4_nod), intent(in) :: next_nod
 !        type(near_mesh), intent(inout) :: near_nod
-!> Substitution of
-!> @n      (subroutine  copy_next_node_id_2_near)
 !
 !      subroutine copy_wider_id_2_near_type(node,                       &
 !     &          near_tbl, near_tbl_wide)
@@ -73,25 +71,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_next_nod_id_2_near_type(node, next_nod, near_nod)
+      subroutine copy_next_node_id_2_near(numnod, next_nod, near_nod)
 !
-      use t_geometry_data
       use t_next_node_ele_4_node
       use t_near_mesh_id_4_node
 !
-      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: numnod
       type(next_nod_id_4_nod), intent(in) :: next_nod
       type(near_mesh), intent(inout) :: near_nod
 !
       integer(kind = kint) :: inod, i
 !
 !
-      call alloc_num_4_near_nod(node%numnod, near_nod)
+      call alloc_num_4_near_nod(numnod, near_nod)
 !
-      near_nod%num_nod(1:node%numnod)                                   &
-     &     = next_nod%nnod_next(1:node%numnod)
-      near_nod%istack_nod(0:node%numnod)                                &
-     &     = next_nod%istack_next(0:node%numnod)
+      near_nod%num_nod(1:numnod) =    next_nod%nnod_next(1:numnod)
+      near_nod%istack_nod(0:numnod) = next_nod%istack_next(0:numnod)
 !
       near_nod%ntot = next_nod%ntot
       near_nod%nmax = next_nod%nmax
@@ -106,12 +101,12 @@
       near_nod%iweight(1:near_nod%ntot)                                 &
      &           = next_nod%iweight_next(1:near_nod%ntot)
 !
-      do inod = 1, node%numnod
+      do inod = 1, numnod
         i = next_nod%istack_next(inod-1) + 1
         near_nod%idist(i) = 0
       end do
 !
-      end subroutine copy_next_nod_id_2_near_type
+      end subroutine copy_next_node_id_2_near
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
