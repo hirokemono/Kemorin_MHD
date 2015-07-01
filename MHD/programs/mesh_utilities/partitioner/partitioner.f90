@@ -5,6 +5,7 @@
       use m_constants
 !
       use t_mesh_data
+      use t_near_mesh_id_4_node
 !
       use m_control_data_4_part
       use m_ctl_param_partitioner
@@ -22,6 +23,7 @@
       implicit none
 !
       type(mesh_data), save :: partitioned_fem
+      type(near_mesh), save :: included_ele
 !
       integer(kind = kint), parameter :: my_rank = izero
 !
@@ -43,7 +45,7 @@
 !
 !C===
 !C-- create subdomain mesh
-      call PROC_LOCAL_MESH(partitioned_fem)
+      call PROC_LOCAL_MESH(partitioned_fem, included_ele)
 !
 !  ========= Construct subdomain information for viewer ==============
 !

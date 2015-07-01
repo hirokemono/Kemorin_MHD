@@ -5,8 +5,9 @@
 !
 !      subroutine copy_next_element_id_2_near
 !      subroutine copy_next_node_id_2_near
-!      subroutine copy_wider_element_id_2_near
 !      subroutine copy_wider_node_id_2_near
+!
+!      subroutine deallocate_near_element
 !
       module copy_near_node_and_element
 !
@@ -27,18 +28,19 @@
       use m_near_element_id_4_node
 !
 !
-      call allocate_num_4_near_ele(numnod)
+      call alloc_num_4_near_nod(numnod, near_ele1_tbl)
 !
-      nele_near_nod(1:numnod) =       nele_4_node(1:numnod)
-      iele_stack_near_nod(0:numnod) = iele_stack_4_node(0:numnod)
+      near_ele1_tbl%num_nod(1:numnod) =    nele_4_node(1:numnod)
+      near_ele1_tbl%istack_nod(0:numnod) = iele_stack_4_node(0:numnod)
 !
-      ntot_ele_near_nod = ntot_ele_4_node
-      nmax_ele_near_nod = nmax_ele_4_node
-      nmin_ele_near_nod = nmin_ele_4_node
+      near_ele1_tbl%ntot = ntot_ele_4_node
+      near_ele1_tbl%nmax = nmax_ele_4_node
+      near_ele1_tbl%nmin = nmin_ele_4_node
 !
-      call allocate_near_element
+      call alloc_near_element(near_ele1_tbl)
 !
-      iele_near_nod(1:ntot_ele_4_node) = iele_4_node(1:ntot_ele_4_node)
+      near_ele1_tbl%id_near_nod(1:ntot_ele_4_node)                      &
+     &     = iele_4_node(1:ntot_ele_4_node)
 !
       end subroutine copy_next_element_id_2_near
 !
@@ -81,33 +83,6 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine copy_wider_element_id_2_near
-!
-      use m_geometry_parameter
-      use m_near_element_id_4_node
-!
-!
-      call deallocate_near_element
-!
-      nele_near_nod(1:numnod) =       nele_near_nod_w(1:numnod)
-      iele_stack_near_nod(0:numnod) = iele_stack_near_nod_w(0:numnod)
-!
-      ntot_ele_near_nod = ntot_ele_near_nod_w
-      nmax_ele_near_nod = nmax_ele_near_nod_w
-      nmin_ele_near_nod = nmin_ele_near_nod_w
-!
-      call allocate_near_element
-!
-      iele_near_nod(1:ntot_ele_near_nod)                                &
-     &           = iele_near_nod_w(1:ntot_ele_near_nod)
-!
-      call deallocate_near_element_w
-      call deallocate_num_4_near_ele_w
-!
-      end subroutine copy_wider_element_id_2_near
-!
-!-----------------------------------------------------------------------
-!
       subroutine copy_wider_node_id_2_near
 !
       use m_geometry_parameter
@@ -137,6 +112,18 @@
       call deallocate_num_4_near_nod_w
 !
       end subroutine copy_wider_node_id_2_near
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine deallocate_near_element
+!
+      use m_near_element_id_4_node
+!
+      call dealloc_num_4_near_node(near_ele1_tbl)
+      call dealloc_near_node(near_ele1_tbl)
+!
+      end subroutine deallocate_near_element
 !
 !-----------------------------------------------------------------------
 !

@@ -1,26 +1,29 @@
-!t_near_mesh_id_4_node.f90
-!      module t_near_mesh_id_4_node
-!
-!      Written by H. Matsui on Aug., 2006
+!!
+!>@file  t_near_mesh_id_4_node.f90
+!!       module t_near_mesh_id_4_node
+!!
+!!@author H. Matsui
+!!@date   Programmed in Aug., 2006
 !
 !> @brief structure of surrounded node, element, surface, edge
 !>      for each node
-!
+!!
 !> Substitution of
 !> @n      (module m_near_node_id_4_node)
 !> @n      (module m_near_element_id_4_node)
-!> @n      (module m_near_surface_id_4_node)
-!> @n      (module m_near_edge_id_4_node)
-!
-!      subroutine alloc_num_4_near_nod(numnod, near_tbl)
-!      subroutine alloc_near_node(near_tbl)
-!
-!      subroutine dealloc_num_4_near_node(near_tbl)
-!      subroutine dealloc_near_node(near_tbl)
-!
-!      subroutine check_near_4_nod_t(my_rank, numnod, near_tbl)
-!        integer(kind = kint), intent(in) :: my_rank
-!        type(near_mesh), intent(in) :: near_tbl
+!!
+!!@verbatim
+!!      subroutine alloc_num_4_near_nod(numnod, near_tbl)
+!!      subroutine alloc_near_node(near_tbl)
+!!      subroutine alloc_near_element(near_tbl)
+!!
+!!      subroutine dealloc_num_4_near_node(near_tbl)
+!!      subroutine dealloc_near_node(near_tbl)
+!!
+!!      subroutine check_near_4_nod_t(my_rank, numnod, near_tbl)
+!!        integer(kind = kint), intent(in) :: my_rank
+!!        type(near_mesh), intent(in) :: near_tbl
+!!@endverbatim
 !
 !
       module t_near_mesh_id_4_node
@@ -105,11 +108,28 @@
       allocate(near_tbl%id_near_nod(near_tbl%ntot))
       allocate(near_tbl%idist(near_tbl%ntot))
       allocate(near_tbl%iweight(near_tbl%ntot))
-      near_tbl%id_near_nod = 0
-      near_tbl%idist =       0
-      near_tbl%iweight =     0
+!
+      if(near_tbl%ntot .gt. 0) then
+        near_tbl%id_near_nod = 0
+        near_tbl%idist =       0
+        near_tbl%iweight =     0
+      end if
 !
       end subroutine alloc_near_node
+!
+! -----------------------------------------------------------------------
+!
+      subroutine alloc_near_element(near_tbl)
+!
+      type(near_mesh), intent(inout) :: near_tbl
+!
+!
+      allocate(near_tbl%id_near_nod(near_tbl%ntot))
+      allocate(near_tbl%idist(0))
+      allocate(near_tbl%iweight(0))
+      if(near_tbl%ntot .gt. 0) near_tbl%id_near_nod = 0
+!
+      end subroutine alloc_near_element
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

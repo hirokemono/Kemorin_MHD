@@ -3,11 +3,10 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!      subroutine s_const_local_mesh_by_tbl(n_domain)
-!      subroutine const_local_mesh_surf_by_tbl(n_domain)
+!      subroutine s_const_local_mesh_by_tbl(n_domain, included_ele)
 !
 !      subroutine const_local_node_by_near_tbl(n_domain)
-!      subroutine const_local_ele_by_near_tbl(n_domain)
+!      subroutine const_local_ele_by_near_tbl(n_domain, included_ele)
 !      subroutine const_local_surf_by_near_tbl(n_domain)
 !      subroutine const_local_edge_by_near_tbl(n_domain)
 !
@@ -28,30 +27,18 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine s_const_local_mesh_by_tbl(n_domain)
+      subroutine s_const_local_mesh_by_tbl(n_domain, included_ele)
+!
+      use t_near_mesh_id_4_node
 !
       integer(kind = kint), intent(in) :: n_domain
+      type(near_mesh), intent(inout) :: included_ele
 !
 !
-      call const_local_ele_by_near_tbl(n_domain)
+      call const_local_ele_by_near_tbl(n_domain, included_ele)
       call const_local_node_by_near_tbl(n_domain)
 !
       end subroutine s_const_local_mesh_by_tbl
-!
-!   --------------------------------------------------------------------
-!
-      subroutine const_local_mesh_surf_by_tbl(n_domain)
-!
-      integer(kind = kint), intent(in) :: n_domain
-!
-!
-      call const_local_ele_by_near_tbl(n_domain)
-      call const_local_node_by_near_tbl(n_domain)
-!
-      call const_local_surf_by_near_tbl(n_domain)
-      call const_local_edge_by_near_tbl(n_domain)
-!
-      end subroutine const_local_mesh_surf_by_tbl
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
@@ -91,30 +78,33 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_local_ele_by_near_tbl(n_domain)
+      subroutine const_local_ele_by_near_tbl(n_domain, included_ele)
 !
       use m_internal_4_partitioner
-      use m_near_element_id_4_node
+      use t_near_mesh_id_4_node
       use ordering_by_element_group
 !
       integer(kind = kint), intent(in) :: n_domain
+      type(near_mesh), intent(inout) :: included_ele
 !
 !
       call allocate_num_interele_4_part(n_domain)
 !
-      numele_4_subdomain(1:n_domain) = nele_near_nod(1:n_domain)
-      istack_numele_sub(0:n_domain) =  iele_stack_near_nod(0:n_domain)
-      nmax_numele_sub = nmax_ele_near_nod
-      nmin_numele_sub = nmin_ele_near_nod
-      ntot_numele_sub = ntot_ele_near_nod
+      numele_4_subdomain(1:n_domain)                                    &
+     &     = included_ele%num_nod(1:n_domain)
+      istack_numele_sub(0:n_domain)                                     &
+     &     =  included_ele%istack_nod(0:n_domain)
+      nmax_numele_sub = included_ele%nmax
+      nmin_numele_sub = included_ele%nmin
+      ntot_numele_sub = included_ele%ntot
 !
       call allocate_iele_4_subdomain
 !
-      call set_local_element_table(n_domain,                            &
-     &    ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
+      call set_local_element_table(n_domain, included_ele%ntot,         &
+     &    included_ele%istack_nod, included_ele%id_near_nod)
 !
-      call deallocate_near_element
-      call deallocate_num_4_near_ele
+      call dealloc_near_node(included_ele)
+      call dealloc_num_4_near_node(included_ele)
 !
       call count_internal_ele_by_tbl(n_domain)
 !

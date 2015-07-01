@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on Aug., 2007
 !
-!      subroutine PROC_LOCAL_MESH(new_fem)
+!      subroutine PROC_LOCAL_MESH(new_fem, included_ele)
 !
       module generate_local_mesh
 !
@@ -17,9 +17,10 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine PROC_LOCAL_MESH(new_fem)
+      subroutine PROC_LOCAL_MESH(new_fem, included_ele)
 !
       use t_mesh_data
+      use t_near_mesh_id_4_node
       use m_constants
       use m_geometry_parameter
       use m_geometry_data
@@ -36,6 +37,7 @@
       use const_mesh_info
 !
       type(mesh_data), intent(inout) :: new_fem
+      type(near_mesh), intent(inout) :: included_ele
 !
       character(len=kchara), parameter :: work_file_header = 'work'
 !C
@@ -43,8 +45,9 @@
 !C-- OVERLAPPED ELEMENTs
       call count_overlapped_ele(numele, nodelm(1), ie)
 !
-      call CRE_LOCAL_DATA(num_domain)
-      call increase_overlapping(num_domain, n_overlap, i_sleeve_ele)
+      call CRE_LOCAL_DATA(num_domain, included_ele)
+      call increase_overlapping(num_domain, n_overlap, i_sleeve_ele,    &
+     &    included_ele)
 !
 !C
 !C-- INTERFACE info.
@@ -54,7 +57,7 @@
 !C +---------------------------------------------+
 !C===
 !C
-      call s_const_local_mesh_by_tbl(num_domain)
+      call s_const_local_mesh_by_tbl(num_domain, included_ele)
 !
       call open_partition_log(num_domain, numedge, org_mesh_header)
 !C

@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on Sep., 2007
 !
-!      subroutine CRE_LOCAL_DATA(NP)
+!      subroutine CRE_LOCAL_DATA(NP, included_ele)
 !
       module find_local_elements
 !
@@ -22,28 +22,31 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine CRE_LOCAL_DATA(NP)
+      subroutine CRE_LOCAL_DATA(NP, included_ele)
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_near_element_id_4_node
+      use t_near_mesh_id_4_node
       use m_domain_group_4_partition
 !
       integer(kind = kint), intent(in) :: NP
+      type(near_mesh), intent(inout) :: included_ele
 !
 !
-      call allocate_num_4_near_ele(NP)
+      call alloc_num_4_near_nod(NP, included_ele)
       allocate (imark_ele(numele))
 !
       call count_ele_in_subdomain(NP, nnod_s_domin, IGROUP_nod,         &
-     &          numnod, numele, nnod_4_ele, ie, nodelm,                 &
-     &          ntot_ele_near_nod, nele_near_nod, iele_stack_near_nod)
+     &    numnod, numele, nnod_4_ele, ie, nodelm,                       &
+     &    included_ele%ntot, included_ele%num_nod,                      &
+     &    included_ele%istack_nod)
 !
-      call allocate_near_element
+      call alloc_near_element(included_ele)
 !
       call set_ele_in_subdomain(NP, nnod_s_domin, IGROUP_nod,           &
      &          numnod, numele, nnod_4_ele, ie, nodelm,                 &
-     &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
+     &          included_ele%ntot, included_ele%istack_nod,             &
+     &          included_ele%id_near_nod)
 
       deallocate (imark_ele)
 

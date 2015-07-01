@@ -23,8 +23,12 @@
 !        type(near_mesh), intent(inout) :: near_tbl_wide
 !        type(near_mesh), intent(inout) :: near_tbl
 !> Substitution of
-!> @n      (subroutine  copy_wider_element_id_2_near)
 !> @n      (subroutine  copy_wider_node_id_2_near)
+!
+!!      subroutine copy_extended_ele_id(numnod, near_tbl, near_tbl_wide)
+!!        integer(kind = kint), intent(in) :: numnod
+!!        type(near_mesh), intent(inout) :: near_tbl_wide
+!!        type(near_mesh), intent(inout) :: near_tbl
 !
       module copy_near_node_ele_type
 !
@@ -60,7 +64,7 @@
       near_ele%nmax = next_ele%nmax
       near_ele%nmin = next_ele%nmin
 !
-      call alloc_near_node(near_ele)
+      call alloc_near_element(near_ele)
 !
       near_ele%id_near_nod(1:near_ele%ntot)                             &
      &    = next_ele%iele_4_node(1:near_ele%ntot)
@@ -112,23 +116,21 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine copy_wider_id_2_near_type(node,                        &
+      subroutine copy_wider_id_2_near_type(numnod,                      &
      &          near_tbl, near_tbl_wide)
 !
-      use t_geometry_data
       use t_near_mesh_id_4_node
 !
-      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: numnod
       type(near_mesh), intent(inout) :: near_tbl_wide
       type(near_mesh), intent(inout) :: near_tbl
 !
 !
       call dealloc_near_node(near_tbl)
 !
-      near_tbl%num_nod(1:node%numnod)                                   &
-     &      = near_tbl_wide%num_nod(1:node%numnod)
-      near_tbl%istack_nod(0:node%numnod)                                &
-     &      = near_tbl_wide%istack_nod(0:node%numnod)
+      near_tbl%num_nod(1:numnod) = near_tbl_wide%num_nod(1:numnod)
+      near_tbl%istack_nod(0:numnod)                                     &
+     &      = near_tbl_wide%istack_nod(0:numnod)
 !
       near_tbl%ntot = near_tbl_wide%ntot
       near_tbl%nmax = near_tbl_wide%nmax
@@ -147,6 +149,34 @@
       call dealloc_num_4_near_node(near_tbl_wide)
 !
       end subroutine copy_wider_id_2_near_type
+!
+!-----------------------------------------------------------------------
+!
+      subroutine copy_extended_ele_id(numnod, near_tbl, near_tbl_wide)
+!
+      use t_near_mesh_id_4_node
+!
+      integer(kind = kint), intent(in) :: numnod
+      type(near_mesh), intent(inout) :: near_tbl_wide
+      type(near_mesh), intent(inout) :: near_tbl
+!
+!
+      call dealloc_near_node(near_tbl)
+!
+      near_tbl%num_nod(1:numnod) = near_tbl_wide%num_nod(1:numnod)
+      near_tbl%istack_nod(0:numnod)                                     &
+     &      = near_tbl_wide%istack_nod(0:numnod)
+!
+      near_tbl%ntot = near_tbl_wide%ntot
+      near_tbl%nmax = near_tbl_wide%nmax
+      near_tbl%nmin = near_tbl_wide%nmin
+!
+      call alloc_near_element(near_tbl)
+!
+      near_tbl%id_near_nod(1:near_tbl%ntot)                             &
+     &           = near_tbl_wide%id_near_nod(1:near_tbl%ntot)
+!
+      end subroutine copy_extended_ele_id
 !
 !-----------------------------------------------------------------------
 !

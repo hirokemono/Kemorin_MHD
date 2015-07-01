@@ -3,19 +3,26 @@
 !
 !     written by H. Matsui on Sep., 2007
 !
-!      subroutine increase_overlapping(NP, n_overlap, i_sleeve_ele)
+!      subroutine increase_overlapping(NP, n_overlap, i_sleeve_ele,     &
+!     &          included_ele)
 !
       module increase_overlap
 !
       use m_precision
       use m_constants
 !
+      use t_near_mesh_id_4_node
+!
       implicit  none
+!
+!> structure of surrounded element for each node
+        type(near_mesh) :: near_ele_tmp
 !
       integer(kind= kint), allocatable :: nele_subdomain
       integer(kind= kint), allocatable :: iflag_nod(:), iflag_ele(:)
       integer(kind= kint), allocatable :: item_tmp_e(:)
       integer(kind= kint), allocatable :: NPC_tmp2(:)
+!
       private :: nele_subdomain, iflag_nod, iflag_ele
       private :: item_tmp_e, NPC_tmp2
 !
@@ -27,59 +34,61 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine increase_overlapping(NP, n_overlap, i_sleeve_ele)
+      subroutine increase_overlapping(NP, n_overlap, i_sleeve_ele,      &
+     &          included_ele)
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_near_element_id_4_node
       use m_domain_group_4_partition
 !
       integer(kind = kint), intent(in) :: NP
       integer(kind = kint), intent(in) :: n_overlap, i_sleeve_ele
+      type(near_mesh), intent(inout) :: included_ele
 !
       integer(kind= kint) :: ip, inum, icel
 !
 !
-      ntot_ele_near_nod = iele_stack_near_nod(NP)
-      ntot_ele_near_nod_w = ntot_ele_near_nod
+      included_ele%ntot = included_ele%istack_nod(NP)
+      near_ele_tmp%ntot = included_ele%ntot
+      call alloc_num_4_near_nod(NP, near_ele_tmp)
+      call alloc_near_element(near_ele_tmp)
+!
       allocate( iflag_nod(numnod) )
       allocate( iflag_ele(numele) )
       allocate( item_tmp_e(numele) )
-      call allocate_num_4_near_ele_w(NP)
-      call allocate_near_element_w
 !
       iflag_nod = 0
       iflag_ele = 0
       item_tmp_e = 0
       do ip= 1, NP
         call mark_extented_overlap(ip, n_overlap, i_sleeve_ele,         &
-     &          numnod, numele, nnod_4_ele, ie, nodelm,                 &
-     &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod,  &
-     &          nnod_s_domin, IGROUP_nod)
+     &      numnod, numele, nnod_4_ele, ie, nodelm,                     &
+     &      included_ele%ntot, included_ele%istack_nod,                 &
+     &      included_ele%id_near_nod, nnod_s_domin, IGROUP_nod)
 !
-        allocate( NPC_tmp2(iele_stack_near_nod_w(ip-1)) )
+        allocate(NPC_tmp2(near_ele_tmp%istack_nod(ip-1)) )
 !
-        iele_stack_near_nod_w(ip) = iele_stack_near_nod_w(ip-1)         &
-     &                             + nele_subdomain
-        do icel = 1, iele_stack_near_nod_w(ip-1)
-          NPC_tmp2(icel) = iele_near_nod_w(icel)
+        near_ele_tmp%istack_nod(ip) = near_ele_tmp%istack_nod(ip-1)     &
+     &                                 + nele_subdomain
+        do icel = 1, near_ele_tmp%istack_nod(ip-1)
+          NPC_tmp2(icel) = near_ele_tmp%id_near_nod(icel)
         end do
 !
-        ntot_ele_near_nod_w = iele_stack_near_nod_w(ip)
-        call deallocate_near_element_w
-        call allocate_near_element_w
+        near_ele_tmp%ntot = near_ele_tmp%istack_nod(ip)
+        call dealloc_near_node(near_ele_tmp)
+        call alloc_near_element(near_ele_tmp)
 !
-        do icel = 1, iele_stack_near_nod_w(ip-1)
-          iele_near_nod_w(icel) = NPC_tmp2(icel)
+        do icel = 1, near_ele_tmp%istack_nod(ip-1)
+          near_ele_tmp%id_near_nod(icel) = NPC_tmp2(icel)
         end do
         do icel = 1, nele_subdomain
-          inum = iele_stack_near_nod_w(ip-1) + icel
-          iele_near_nod_w(inum) = item_tmp_e(icel)
+          inum = near_ele_tmp%istack_nod(ip-1) + icel
+          near_ele_tmp%id_near_nod(inum) = item_tmp_e(icel)
         end do
-        ntot_ele_near_nod_w = iele_stack_near_nod_w(NP)
+        near_ele_tmp%ntot = near_ele_tmp%istack_nod(NP)
 !
-        write(*,*) 'ip, nele_subdomain',                               &
-     &             ip, nele_subdomain, iele_stack_near_nod_w(ip)
+        write(*,*) 'ip, nele_subdomain',                                &
+     &             ip, nele_subdomain, near_ele_tmp%istack_nod(ip)
 !
         deallocate( NPC_tmp2 )
 !
@@ -87,29 +96,32 @@
 !
 !    copy from work array
 !
-      nmax_ele_near_nod = 0
-      nmin_ele_near_nod = ntot_ele_near_nod_w
+      included_ele%nmax = 0
+      included_ele%nmin = near_ele_tmp%ntot
       do ip= 1, NP
-        iele_stack_near_nod(ip) = iele_stack_near_nod_w(ip)
-        nele_near_nod(ip) = iele_stack_near_nod(ip)                     &
-     &                     - iele_stack_near_nod(ip-1)
-        nmax_ele_near_nod = max(nmax_ele_near_nod,nele_near_nod(ip))
-        nmin_ele_near_nod = min(nmin_ele_near_nod,nele_near_nod(ip))
+        included_ele%istack_nod(ip) = near_ele_tmp%istack_nod(ip)
+        included_ele%num_nod(ip) = included_ele%istack_nod(ip)          &
+     &                             - included_ele%istack_nod(ip-1)
+        included_ele%nmax                                               &
+     &             = max(included_ele%nmax,included_ele%num_nod(ip))
+        included_ele%nmin                                               &
+     &             = min(included_ele%nmin,included_ele%num_nod(ip))
       end do
-      ntot_ele_near_nod = ntot_ele_near_nod_w
+      included_ele%ntot = near_ele_tmp%ntot
 !
-      call deallocate_near_element
-      call allocate_near_element
+      call dealloc_near_node(included_ele)
+      call alloc_near_element(included_ele)
 !
-      do inum = 1, iele_stack_near_nod(NP)
-        iele_near_nod(inum)= iele_near_nod_w(inum)
+      do inum = 1, included_ele%istack_nod(NP)
+        included_ele%id_near_nod(inum)                                  &
+     &              = near_ele_tmp%id_near_nod(inum)
       end do
 !
       deallocate( iflag_nod )
       deallocate( iflag_ele )
       deallocate( item_tmp_e )
-      call deallocate_near_element_w
-      call deallocate_num_4_near_ele_w
+      call dealloc_near_node(near_ele_tmp)
+      call dealloc_num_4_near_node(near_ele_tmp)
 !
       end subroutine increase_overlapping
 !

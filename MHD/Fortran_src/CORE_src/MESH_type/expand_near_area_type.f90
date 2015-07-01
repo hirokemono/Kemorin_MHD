@@ -168,7 +168,7 @@
      &    izero, near_ele_wide%istack_nod, near_ele_wide%ntot,          &
      &    near_ele_wide%nmax, near_ele_wide%nmin)
 !
-      call alloc_near_node(near_ele_wide)
+      call alloc_near_element(near_ele_wide)
 !
       call set_expanded_near_element(np_smp,                            &
      &    node%numnod, ele%numele, node%istack_nod_smp, iflag_expand,   &
@@ -180,8 +180,11 @@
      &    near_ele_wide%ntot, near_ele_wide%num_nod,                    &
      &    near_ele_wide%istack_nod, near_ele_wide%id_near_nod)
 !
-      call copy_wider_id_2_near_type(node,                              &
+      call copy_extended_ele_id(node%numnod,                       &
      &    near_ele_tbl, near_ele_wide)
+!
+      call dealloc_near_node(near_ele_wide)
+      call dealloc_num_4_near_node(near_ele_wide)
 !
       end subroutine expand_element_list_type
 !
@@ -241,7 +244,7 @@
      &    near_node_wide%istack_nod, near_node_wide%id_near_nod,        &
      &    near_node_wide%iweight)
 !
-      call copy_wider_id_2_near_type(node,                              &
+      call copy_wider_id_2_near_type(node%numnod,                       &
      &    near_node_tbl, near_node_wide)
 !
       end subroutine expand_node_list_type
