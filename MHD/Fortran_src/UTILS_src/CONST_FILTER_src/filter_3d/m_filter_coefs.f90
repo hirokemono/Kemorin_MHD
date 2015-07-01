@@ -1,9 +1,28 @@
 !
 !      module m_filter_coefs
 !
-      module m_filter_coefs
-!
 !     Written by H. Matsui on Nov., 2006
+!
+!      subroutine allocate_filter_coefs
+!      subroutine deallocate_filter_coefs
+!
+!      subroutine allocate_inod_all_w
+!      subroutine allocate_num_near_all_f
+!      subroutine allocate_num_near_all_w
+!      subroutine allocate_nod_ele_near_all_w
+!      subroutine allocate_nod_ele_near_1nod(numnod, numele)
+!      subroutine allocate_nod_ele_1nod_tmp(numnod, numele)
+!
+!      subroutine deallocate_num_near_all_w
+!      subroutine deallocate_nod_ele_near_all_w
+!      subroutine deallocate_nod_ele_near_1nod
+!      subroutine deallocate_nod_ele_1nod_tmp
+!
+!      subroutine check_num_near_all_f(my_rank)
+!      subroutine check_near_nod_all_filter(my_rank)
+!      subroutine check_filter_functions(my_rank, id_base)
+!
+      module m_filter_coefs
 !
       use m_precision
 !
@@ -70,25 +89,6 @@
 !
       integer(kind = kint) :: num_failed_whole
       integer(kind = kint) :: num_failed_fluid
-!
-!      subroutine allocate_filter_coefs(ntot_nod_near_nod)
-!      subroutine deallocate_filter_coefs
-!
-!      subroutine allocate_inod_all_w
-!      subroutine allocate_num_near_all_f
-!      subroutine allocate_num_near_all_w
-!      subroutine allocate_nod_ele_near_all_w
-!      subroutine allocate_nod_ele_near_1nod(numnod, numele)
-!      subroutine allocate_nod_ele_1nod_tmp(numnod, numele)
-!
-!      subroutine deallocate_num_near_all_w
-!      subroutine deallocate_nod_ele_near_all_w
-!      subroutine deallocate_nod_ele_near_1nod
-!      subroutine deallocate_nod_ele_1nod_tmp
-!
-!      subroutine check_num_near_all_f(my_rank)
-!      subroutine check_near_nod_all_filter(my_rank)
-!      subroutine check_filter_functions(my_rank, id_base)
 !
 ! ----------------------------------------------------------------------
 !

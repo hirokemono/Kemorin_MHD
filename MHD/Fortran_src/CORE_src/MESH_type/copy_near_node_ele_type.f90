@@ -136,7 +136,7 @@
       near_tbl%nmax = near_tbl_wide%nmax
       near_tbl%nmin = near_tbl_wide%nmin
 !
-      call allocate_near_node(near_tbl)
+      call alloc_near_node(near_tbl)
 !
       near_tbl%id_near_nod(1:near_tbl%ntot)                             &
      &           = near_tbl_wide%id_near_nod(1:near_tbl%ntot)
