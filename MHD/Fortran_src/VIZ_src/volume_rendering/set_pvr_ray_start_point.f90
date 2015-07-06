@@ -138,15 +138,19 @@
       integer(kind = kint), intent(inout)                               &
      &                   :: istack_pvr_ray_sf(0:num_pvr_surf)
 !
-      integer(kind = kint) :: inum, iele, k1, isurf, iflag, itmp, icou
+      integer(kind = kint) :: inum, iele, k1, isurf, icou
       integer(kind = kint) :: ist_pix, ied_pix, jst_pix, jed_pix
-      integer(kind = kint) :: ipix, jpix, i1, i2, i3, i4
+      integer(kind = kint) :: ipix, jpix, i1, i2, i3, i4, iflag
       real(kind = kreal) :: x_pix(2), xi(2)
       real(kind = kreal) :: x_surf(2,4)
 !
+      real(kind = kreal) :: xt1(2), a(2,2)
+      real(kind = kreal) :: c1(3), c3(3), aj
 !
-!$omp parallel do private(inum,iele,k1,isurf,iflag,x_surf,i1,i2,i3,i4,  &
-!$omp&        icou,ist_pix,ied_pix,jst_pix,jed_pix,ipix,jpix,x_pix,xi)
+!
+!$omp parallel do private(inum,iele,k1,isurf,x_surf,i1,i2,i3,i4,iflag,  &
+!$omp&        icou,ist_pix,ied_pix,jst_pix,jed_pix,ipix,jpix,x_pix,xi,  &
+!$omp&        xt1,a,c1,c3,aj)
       do inum = 1, num_pvr_surf
         istack_pvr_ray_sf(inum) = 0
         iele = item_pvr_surf_domain(1,inum)
@@ -175,9 +179,55 @@
               x_pix(2) = pixel_point_y(jpix)
               ipix_start_tmp(1,icou) = ipix
               ipix_start_tmp(2,icou) = jpix
-              call cal_coefs_on_surf(x_surf, x_pix,                     &
-     &            iflag_start_tmp(icou), xi_pvr_start_tmp(1,icou))
-!              write(100+my_rank,*) inum, ipix, jpix, iflag, xi
+!
+!              call cal_coefs_on_surf(x_surf, x_pix, iflag, xi)
+              xt1(1:2) = x_pix(1:2) - x_surf(1:2,1)
+              a(1:2,1) = x_surf(1:2,2) - x_surf(1:2,1)
+              a(1:2,2) = x_surf(1:2,4) - x_surf(1:2,1)
+              aj = one / (a(1,1)*a(2,2) - a(2,1)*a(1,2))
+!
+              c1(1) = ( a(2,2)*xt1(1) - a(1,2)*xt1(2) ) * aj
+              c1(2) = (-a(2,1)*xt1(1) + a(1,1)*xt1(2) ) * aj
+!
+              xt1(1:2) = x_pix(1:2) - x_surf(1:2,3)
+              a(1:2,1) = x_surf(1:2,2) - x_surf(1:2,3)
+              a(1:2,2) = x_surf(1:2,4) - x_surf(1:2,3)
+              aj = one / (a(1,1)*a(2,2) - a(2,1)*a(1,2))
+!
+              c3(1) = ( a(2,2)*xt1(1) - a(1,2)*xt1(2) ) * aj
+              c3(2) = (-a(2,1)*xt1(1) + a(1,1)*xt1(2) ) * aj
+!
+              c1(3) = one - (c1(1) + c1(2))
+              c3(3) = one - (c3(1) + c3(2))
+!
+              if(c1(1).ge.zero .and. c1(2).ge.zero                      &
+     &                         .and. c1(3).ge.zero) then
+                iflag = 1
+                xi(1) = -one + two*c1(1)
+                xi(2) = -one + two*c1(2)
+!
+              else if(c3(1).ge.zero .and. c3(2).ge.zero                 &
+     &                              .and. c3(3).ge.zero) then
+                iflag = 1
+                xi(1) = one - two*c3(2)
+                xi(2) = one - two*c3(1)
+              else
+                xi(1) = -two
+                xi(2) = -two
+                iflag = 0
+              end if
+!              write(200+my_rank,*) 'cal_coefs_on_surf', iflag, xi(1:2),&
+!     &        c1, c3
+!
+!
+!              write(200+my_rank,*) inum, ipix, jpix, iflag, xi,        &
+!     &               x_pix, x_surf
+              iflag_start_tmp(icou) = iflag
+              xi_pvr_start_tmp(1:2,icou) = xi
+!
+!              write(100+my_rank,*) inum, ipix, jpix, &
+!     &             iflag_start_tmp(icou), xi_pvr_start_tmp(1:2,icou), &
+!     &             x_pix, x_surf
 !
               if(iflag_start_tmp(icou) .gt. 0) then
                 istack_pvr_ray_sf(inum) = istack_pvr_ray_sf(inum) + 1
@@ -321,52 +371,53 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_coefs_on_surf(x_surf, x_tgt, iflag_inside, xi)
+      subroutine cal_coefs_on_surf(x_surf, x_pix, iflag, xi)
 !
-      real(kind = kreal), intent(in) ::    x_tgt(2)
+      real(kind = kreal), intent(in) ::    x_pix(2)
       real(kind = kreal), intent(in) ::    x_surf(2,4)
-      integer(kind = kint), intent(inout) :: iflag_inside
+      integer(kind = kint), intent(inout) :: iflag
       real(kind = kreal), intent(inout) :: xi(2)
 !
-      real(kind = kreal) :: xt1(2), a(2,2), coef(2,2)
-      real(kind = kreal) :: c1, c3, aj
+      real(kind = kreal) :: xt1(2), a(2,2)
+      real(kind = kreal) :: c1(3), c3(3), aj
 !
 !
-      xt1(1:2) = x_tgt(1:2) - x_surf(1:2,1)
+      xt1(1:2) = x_pix(1:2) - x_surf(1:2,1)
       a(1:2,1) = x_surf(1:2,2) - x_surf(1:2,1)
       a(1:2,2) = x_surf(1:2,4) - x_surf(1:2,1)
       aj = one / (a(1,1)*a(2,2) - a(2,1)*a(1,2))
 !
-      coef(1,1) = ( a(2,2)*xt1(1) - a(1,2)*xt1(2) ) * aj
-      coef(2,1) = (-a(2,1)*xt1(1) + a(1,1)*xt1(2) ) * aj
+      c1(1) = ( a(2,2)*xt1(1) - a(1,2)*xt1(2) ) * aj
+      c1(2) = (-a(2,1)*xt1(1) + a(1,1)*xt1(2) ) * aj
 !
-      xt1(1:2) = x_tgt(1:2) - x_surf(1:2,3)
+      xt1(1:2) = x_pix(1:2) - x_surf(1:2,3)
       a(1:2,1) = x_surf(1:2,2) - x_surf(1:2,3)
       a(1:2,2) = x_surf(1:2,4) - x_surf(1:2,3)
       aj = one / (a(1,1)*a(2,2) - a(2,1)*a(1,2))
 !
-      coef(1,2) = ( a(2,2)*xt1(1) - a(1,2)*xt1(2) ) * aj
-      coef(2,2) = (-a(2,1)*xt1(1) + a(1,1)*xt1(2) ) * aj
+      c3(1) = ( a(2,2)*xt1(1) - a(1,2)*xt1(2) ) * aj
+      c3(2) = (-a(2,1)*xt1(1) + a(1,1)*xt1(2) ) * aj
 !
-      c1 = one - (coef(1,1) + coef(2,1))
-      c3 = one - (coef(1,2) + coef(2,2))
+      c1(3) = one - (c1(1) + c1(2))
+      c3(3) = one - (c3(1) + c3(2))
 !
-      if(coef(1,1).ge.zero .and. coef(2,1).ge.zero                      &
-     &      .and. c1 .ge. zero) then
-        iflag_inside = 1
-        xi(1) = -one + two*coef(1,1)
-        xi(2) = -one + two*coef(2,1)
+      if(c1(1).ge.zero .and. c1(2).ge.zero .and. c1(3).ge.zero) then
+        iflag = 1
+        xi(1) = -one + two*c1(1)
+        xi(2) = -one + two*c1(2)
 !
-      else if(coef(1,2).ge.zero .and. coef(2,2).ge.zero                 &
-     &      .and. c3 .ge. zero) then
-        iflag_inside = 1
-        xi(1) = one - two*coef(2,2)
-        xi(2) = one - two*coef(1,2)
+      else if(c3(1).ge.zero .and. c3(2).ge.zero .and. c3(3).ge.zero)    &
+     &    then
+        iflag = 1
+        xi(1) = one - two*c3(2)
+        xi(2) = one - two*c3(1)
       else
         xi(1) = -two
         xi(2) = -two
-        iflag_inside = 0
+        iflag = 0
       end if
+      write(200+my_rank,*) 'cal_coefs_on_surf', iflag, xi(1:2), &
+     &        c1, c3
 !
       end subroutine cal_coefs_on_surf
 !

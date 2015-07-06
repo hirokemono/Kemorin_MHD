@@ -171,13 +171,16 @@
 !
       type(pvr_image_type), intent(inout) :: pvr_img
 !
-      character(len=kchara) :: img_head_tmp
+      character(len=kchara) :: img_head
+!
+!
+      call add_int_suffix(my_rank, file_param%pvr_prefix, img_head)
 !
       call cvt_double_rgba_to_char_rgb(pvr_img%num_pixel_xy,            &
      &    pvr_img%rgba_lc, pvr_img%rgb_chara_lc)
 !
       call sel_output_image_file(file_param%id_pvr_file_type,           &
-     &    img_head_tmp, pvr_img%num_pixels(1), pvr_img%num_pixels(2),   &
+     &    img_head, pvr_img%num_pixels(1), pvr_img%num_pixels(2),       &
      &    pvr_img%rgb_chara_lc)
 !
       end subroutine sel_write_pvr_local_img
@@ -208,7 +211,7 @@
       do ipix = 1, npixel_local
         do inum = 1, nprocs
           ip = ip_farther(inum)
-          call composite_alpha_blending(rgba_part(1,ipix,ip),   &
+          call composite_alpha_blending(rgba_part(1,ipix,ip),           &
      &        rgba_real_part(1,ipix))
         end do
       end do

@@ -71,7 +71,7 @@
       integer(kind = kint) :: i
       integer(kind = kint) :: ir, ig, ib, ia
 !
-!$omp parallel do private(i,ir,ig,ib)
+!$omp parallel do private(i,ir,ig,ib,ia)
       do i = 1, num_pixel
         ir = int( rgba(1,i)*256.0d0)
         ig = int( rgba(2,i)*256.0d0)
@@ -121,6 +121,7 @@
 !
       integer(kind = kint) :: i
 !
+!$omp parallel do private(i)
       do i = 1, num_pixel
         if(     rgba(1,i) .lt. (bgcolor(1)+0.004)                       &
      &    .and. rgba(2,i) .lt. (bgcolor(2)+0.004)                       &
@@ -130,6 +131,7 @@
           rgba(3,i) = bgcolor(3)
         end if
       end do
+!$omp end parallel do
 !
       end subroutine set_rgb_background
 !

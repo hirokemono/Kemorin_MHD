@@ -129,6 +129,8 @@
      &       field_pvr, color_param, pixel_xy, pvr_bound,               &
      &       pvr_start, pvr_img)
 !
+!      call sel_write_pvr_local_img(file_param, pvr_img)
+!
       if(iflag_debug .gt. 0) write(*,*) 'blend_image_over_domains'
       call blend_image_over_domains                                     &
      &   (color_param, cbar_param, pvr_img)
@@ -219,7 +221,6 @@
       type(pvr_pixel_position_type), intent(in) :: pixel_xy
       type(pvr_bounds_surf_ctl), intent(in) :: pvr_bound
 !
-!      type(pvr_output_parameter), intent(in) :: file_param
       type(pvr_colormap_parameter), intent(in) :: color_param
       type(pvr_ray_start_type), intent(inout) :: pvr_start
       type(pvr_image_type), intent(inout) :: pvr_img
@@ -252,9 +253,6 @@
      &    pvr_start%id_pixel_start, pvr_start%xx_pvr_ray_start,         &
      &    pvr_start%rgba_ray, pvr_img%num_pixel_xy,                     &
      &    pvr_img%iflag_mapped, pvr_img%rgba_lc, pvr_img%depth_lc)
-!
-!
-!      call sel_write_pvr_local_img(file_param, pvr_img)
 !
       end subroutine ray_trace_local
 !

@@ -169,3 +169,7 @@ clean:
 		$(GMAKE) clean )\
 	done; \
 	rm -f mpif.h *.o *.mod *~ *.par *.diag *.a *.f90
+
+distclean:
+    echo "# Back to initial package"; \
+    rm -fr $(MAKEDIR) $(BUILDDIR) Makefile config.log

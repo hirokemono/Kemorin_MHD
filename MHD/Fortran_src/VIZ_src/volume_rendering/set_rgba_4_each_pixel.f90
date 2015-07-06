@@ -227,9 +227,9 @@
         rgb(1:3) = rgb(1:3) + color(1:3) * coef
       end do
 !
-!
       rgb(1:3) = rgb(1:3) * opa_current
       rgb(4) =   opa_current*coff_i
+!
       call composite_alpha_blending(rgb, accum_rgba)
 !
       end subroutine rendering_with_light

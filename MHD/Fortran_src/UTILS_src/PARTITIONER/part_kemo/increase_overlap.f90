@@ -18,7 +18,7 @@
 !> structure of surrounded element for each node
         type(near_mesh) :: near_ele_tmp
 !
-      integer(kind= kint), allocatable :: nele_subdomain
+      integer(kind= kint) :: nele_subdomain
       integer(kind= kint), allocatable :: iflag_nod(:), iflag_ele(:)
       integer(kind= kint), allocatable :: item_tmp_e(:)
       integer(kind= kint), allocatable :: NPC_tmp2(:)
