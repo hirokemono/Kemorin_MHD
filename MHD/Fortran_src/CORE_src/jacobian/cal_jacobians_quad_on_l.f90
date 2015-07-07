@@ -8,7 +8,7 @@
 !      subroutine cal_jacobian_quad_on_linear
 !      subroutine cal_jacobian_dyquad_on_linear
 !      subroutine cal_jacobian_surface_quad_on_l
-!      subroutine cal_jacobian_edge_quad_on_l
+!      subroutine cal_jacobian_edge_quad_on_l(jac_1d_ql)
 !
       module cal_jacobians_quad_on_l
 !
@@ -123,17 +123,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_edge_quad_on_l
+      subroutine cal_jacobian_edge_quad_on_l(jac_1d_ql)
 !
-      use m_jacobians_4_edge
+      use t_jacobian_1d
       use cal_jac_1d
       use cal_shape_function_1d
 !
+      type(jacobians_1d), intent(inout) :: jac_1d_ql
       integer (kind = kint) :: ii, ix, i0
 !
 !
-      call s_cal_shape_function_1d_quad(ntot_int_1d, am_edge,           &
-     &    dnxi_ed20, xi1)
+      call s_cal_shape_function_1d_quad(jac_1d_ql%ntot_int,             &
+     &    jac_1d_ql%an_edge, dnxi_ed20, xi1)
 !
 !   jacobian for quadrature elaments
 !
@@ -141,9 +142,12 @@
         do ii = 1, i0
           ix = int_start1(i0) + ii
 !
-          call s_cal_jacobian_1d_l_quad(xjlq_edge(1,ix),                &
-     &        axjlq_edge(1,ix), xelq_edge(1,ix,1), xelq_edge(1,ix,2),   &
-     &        xelq_edge(1,ix,3), dnxi_ed20(1,ix))
+          call s_cal_jacobian_1d_l_quad                                 &
+     &       (jac_1d_ql%xj_edge(1:numedge,ix),                          &
+     &        jac_1d_ql%axj_edge(1:numedge,ix),                         &
+     &        jac_1d_ql%xeg_edge(1:numedge,ix,1),                       &
+     &        jac_1d_ql%xeg_edge(1:numedge,ix,2),                       &
+     &        jac_1d_ql%xeg_edge(1:numedge,ix,3), dnxi_ed20(1,ix))
         end do
       end do
 !

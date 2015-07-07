@@ -4,138 +4,89 @@
 !
 !       Written by H. Matsui
 !
-!      subroutine allocate_jacobians_edge_linear
-!      subroutine allocate_jacobians_edge_quad
-!      subroutine allocate_jacobians_edge_l_quad
-!      subroutine copy_jacobians_edge_quad
+!      subroutine allocate_jacobians_edge_linear(n_int)
 !
-!      subroutine deallocate_jac_edge_linear
-!      subroutine deallocate_jac_edge_quad
-!      subroutine deallocate_jac_edge_l_quad
+!!      subroutine cal_jacobian_edge
+!!      subroutine allocate_jacobians_edge_l_quad(n_int)
+!!      subroutine deallocate_jac_edge_linear
+!!      subroutine deallocate_jac_edge_quad
+!!      subroutine deallocate_jac_edge_l_quad
 !
       module   m_jacobians_4_edge
 !
       use m_precision
+      use t_jacobian_1d
 !
       implicit  none
 !
-      integer(kind = kint) :: ntot_int_1d
-      real (kind=kreal), allocatable :: an_edge(:,:)
-! 
-      real (kind=kreal), allocatable :: xeg_edge(:,:,:)
-      real (kind=kreal), allocatable :: xj_edge(:,:)
-      real (kind=kreal), allocatable :: axj_edge(:,:)
-!
-!
-!
-      real (kind=kreal), allocatable :: aw_edge(:,:)
-! 
-      real (kind=kreal), allocatable :: xeq_edge(:,:,:)
-      real (kind=kreal), allocatable :: xjq_edge(:,:)
-      real (kind=kreal), allocatable :: axjq_edge(:,:)
-!
-!
-!
-      real (kind=kreal), allocatable :: am_edge(:,:)
-! 
-      real (kind=kreal), allocatable :: xelq_edge(:,:,:)
-      real (kind=kreal), allocatable :: xjlq_edge(:,:)
-      real (kind=kreal), allocatable :: axjlq_edge(:,:)
+!>     Stracture for Jacobians for edge (linear)
+      type(jacobians_1d), save :: jac1_1d_l
+!>     Stracture for Jacobians for edge (quad)
+      type(jacobians_1d), save :: jac1_1d_q
+!>     Stracture for Jacobians for edge (linear function for quad)
+      type(jacobians_1d), save :: jac1_1d_ql
 !
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
+!> Construct shape function, difference of shape function, and Jacobian
+!> for edge element
 !
-      subroutine allocate_jacobians_edge_linear
+      subroutine cal_jacobian_edge
+!
+      use m_machine_parameter
+      use m_geometry_constants
+      use m_geometry_parameter
+!
+      use cal_jacobians_linear
+      use cal_jacobians_quad
+      use cal_jacobians_lag
+!
+!
+      call alloc_1d_jac_type                                            &
+     &   (numedge, num_linear_edge, maxtot_int_1d, jac1_1d_l)
+!
+      if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_edge_linear'
+      call cal_jacobian_edge_linear(jac1_1d_l)
+!
+      if(first_ele_type .eq. 332 .or. first_ele_type .eq. 333) then
+        if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_edge_quad'
+        call alloc_1d_jac_type                                          &
+     &     (numedge, nnod_4_edge, maxtot_int_1d, jac1_1d_q)
+        call cal_jacobian_edge_quad(jac1_1d_q)
+      else
+        if (iflag_debug.eq.1) write(*,*) 'copy_1d_jacobians'
+        call copy_1d_jacobians                                          &
+     &     (numedge, num_linear_edge, jac1_1d_l, jac1_1d_q)
+      end if
+!
+      end subroutine cal_jacobian_edge
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine allocate_jacobians_edge_l_quad(n_int)
 !
       use m_geometry_constants
       use m_geometry_parameter
       use m_fem_gauss_int_coefs
 !
-!
-      allocate(an_edge(num_linear_edge,ntot_int_1d))
-!
-      allocate(xeg_edge(numedge,ntot_int_1d,3))
-!
-      allocate(xj_edge(numedge,ntot_int_1d))
-      allocate(axj_edge(numedge,ntot_int_1d))
-!
-       an_edge = 0.0d0
-!
-       xj_edge = 0.0d0
-       axj_edge = 0.0d0
-!
-       end subroutine allocate_jacobians_edge_linear
-!
-!  ------------------------------------------------------------------
-!
-      subroutine allocate_jacobians_edge_quad
-!
-      use m_geometry_constants
-      use m_geometry_parameter
-      use m_fem_gauss_int_coefs
+      integer(kind = kint), intent(in) :: n_int
 !
 !
-      allocate(aw_edge(nnod_4_edge,ntot_int_1d))
-!
-      allocate(xeq_edge(numedge,ntot_int_1d,3))
-!
-      allocate(xjq_edge(numedge,ntot_int_1d))
-      allocate(axjq_edge(numedge,ntot_int_1d)) 
-!
-      aw_edge = 0.0d0
-      xeq_edge = 0.0d0
-      xjq_edge = 0.0d0
-      axjq_edge = 0.0d0 
-!
-      end subroutine allocate_jacobians_edge_quad
-!
-!  ------------------------------------------------------------------
-!
-      subroutine allocate_jacobians_edge_l_quad
-!
-      use m_geometry_constants
-      use m_geometry_parameter
-      use m_fem_gauss_int_coefs
-!
-      allocate(am_edge(num_quad_edge,ntot_int_1d))
-!
-      allocate(xelq_edge(numedge,ntot_int_1d,3))
-!
-      allocate(xjlq_edge(numedge,ntot_int_1d))
-      allocate(axjlq_edge(numedge,ntot_int_1d)) 
-!
-      am_edge = 0.0d0
-      xelq_edge = 0.0d0
-      xjlq_edge = 0.0d0
-      axjlq_edge = 0.0d0 
+      call alloc_1d_jac_type(numedge, num_quad_edge, n_int,           &
+     &                       jac1_1d_ql)
 !
       end subroutine allocate_jacobians_edge_l_quad
 !
 !  ------------------------------------------------------------------
 !  ------------------------------------------------------------------
 !
-      subroutine copy_jacobians_edge_quad
-!
-       aw_edge   = an_edge
-       xeq_edge  = xeg_edge
-       xjq_edge  = xj_edge
-       axjq_edge = axj_edge
-!
-       end subroutine copy_jacobians_edge_quad
-!
-!  ------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
       subroutine deallocate_jac_edge_linear
 !
-      deallocate(an_edge)
-      deallocate(xeg_edge)
-!
-      deallocate(xj_edge)
-      deallocate(axj_edge)
+      call dealloc_1d_jac_type(jac1_1d_l)
 !
       end subroutine deallocate_jac_edge_linear
 !
@@ -143,12 +94,7 @@
 !
       subroutine deallocate_jac_edge_quad
 !
-      deallocate(aw_edge)
-!
-      deallocate(xeq_edge)
-!
-      deallocate(xjq_edge)
-      deallocate(axjq_edge)
+      call dealloc_1d_jac_type(jac1_1d_q)
 !
       end subroutine deallocate_jac_edge_quad
 !
@@ -156,12 +102,7 @@
 !
       subroutine deallocate_jac_edge_l_quad
 !
-      deallocate(am_edge)
-!
-      deallocate(xelq_edge)
-!
-      deallocate(xjlq_edge)
-      deallocate(axjlq_edge)
+      call dealloc_1d_jac_type(jac1_1d_ql)
 !
       end subroutine deallocate_jac_edge_l_quad
 !

@@ -247,9 +247,7 @@
 !
       do i_level = 1, num_MG_level
         call s_int_surface_param_type(MG_mesh(i_level)%mesh,            &
-     &      MG_surf_mesh(i_level)%surf,                                 &
-     &      MG_jacobians(i_level)%jac_sf_grp,                           &
-     &      MG_mesh(i_level)%group)
+     &      MG_surf_mesh(i_level)%surf, MG_mesh(i_level)%group)
       end do
 !
 !     --------------------- 

@@ -1,14 +1,18 @@
+!>@file  cal_shape_func_infty_1d.f90
+!!       module cal_shape_func_infty_1d
+!!
+!!@author H. Matsui and H.Okuda
+!!@date   Programmed in July, 2000
+!!@n      modified by H. Matsui on Aug., 2006
 !
-!      module cal_shape_func_infty_1d
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        modified by H. Matsui on Aug., 2006
-!
-!      subroutine s_cal_shape_func_inf_1d_linear(ntot_int_1d, xk,       &
-!     &          an_infty, dnxi_infty, xi)
-!      subroutine s_cal_shape_func_inf_1d_quad(ntot_int_1d, xk,         &
-!     &          an_infty, dnxi_infty, xi)
+!> @brief  caliculate shape function and differences at Gauss points
+!!
+!!@verbatim
+!!      subroutine s_cal_shape_func_inf_1d_linear(ntot_int_1d, xk,      &
+!!     &          an_infty, dnxi_infty, xi)
+!!      subroutine s_cal_shape_func_inf_1d_quad(ntot_int_1d, xk,        &
+!!     &          an_infty, dnxi_infty, xi)
+!!@endverbatim
 !
       module cal_shape_func_infty_1d
 !

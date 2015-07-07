@@ -43,8 +43,8 @@
           do k2 = 1, 2
            inod1 = ie_edge(iele,k1)
            inod2 = ie_edge(iele,k2)
-           wk = an_edge(k1,ix) * an_edge(k2,ix)                         &
-     &         * xeg_edge(iele,ix,3) * owe(ix)
+           wk = jac1_1d_l%an_edge(k1,ix) * jac1_1d_l%an_edge(k2,ix)     &
+     &         * jac1_1d_l%xeg_edge(iele,ix,3) * owe(ix)
            mk_c(inod1,inod2) = mk_c(inod1,inod2) + wk
            mk(inod2) = mk(inod2) + wk
          end do

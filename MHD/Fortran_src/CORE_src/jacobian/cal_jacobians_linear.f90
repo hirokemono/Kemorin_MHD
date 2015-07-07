@@ -7,6 +7,7 @@
 !
 !      subroutine cal_jacobian_trilinear
 !      subroutine cal_jacobian_dylinear
+!      subroutine cal_jacobian_edge_linear(jac_1d_l)
 !
       module cal_jacobians_linear
 !
@@ -117,29 +118,32 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_edge_linear
+      subroutine cal_jacobian_edge_linear(jac_1d_l)
 !
-      use m_jacobians_4_edge
+      use t_jacobian_1d
       use cal_jac_1d
       use cal_shape_function_1d
 !
+      type(jacobians_1d), intent(inout) :: jac_1d_l
       integer (kind = kint) :: ii, ix, i0
 !
 !
-      call s_cal_shape_function_1d_linear(ntot_int_1d, an_edge,         &
-     &    dnxi_ed1, xi1)
+      call s_cal_shape_function_1d_linear(jac_1d_l%ntot_int,            &
+     &    jac_1d_l%an_edge, dnxi_ed1, xi1)
 !
 !   jacobian for tri-linear elaments
 !
       do i0 = 1, max_int_point
         do ii = 1, i0
-!
           ix = int_start1(i0) + ii
 !
-          call s_cal_jacobian_1d_linear(xj_edge(1,ix), axj_edge(1,ix),  &
-     &        xeg_edge(1,ix,1), xeg_edge(1,ix,2), xeg_edge(1,ix,3),     &
+          call s_cal_jacobian_1d_linear                                 &
+     &       (jac_1d_l%xj_edge(1:numedge,ix),                           &
+     &        jac_1d_l%axj_edge(1:numedge,ix),                          &
+     &        jac_1d_l%xeg_edge(1:numedge,ix,1),                        &
+     &        jac_1d_l%xeg_edge(1:numedge,ix,2),                        &
+     &        jac_1d_l%xeg_edge(1:numedge,ix,3),                        &
      &        dnxi_ed1(1,ix))
-!
         end do
       end do
 !

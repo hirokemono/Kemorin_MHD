@@ -46,6 +46,7 @@
       use m_geometry_data
       use m_surface_group
       use m_surface_group_geometry
+      use m_jacobians_4_edge
       use check_jacobians
       use int_volume_of_domain
       use int_element_length

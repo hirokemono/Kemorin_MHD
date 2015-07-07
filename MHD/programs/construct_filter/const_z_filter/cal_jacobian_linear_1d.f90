@@ -21,6 +21,7 @@
 !
       use m_fem_gauss_int_coefs
       use m_gauss_int_parameters
+      use m_jacobians_4_edge
       use set_size_4_smp
       use set_integration_indices
       use set_gauss_int_parameters

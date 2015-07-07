@@ -45,10 +45,12 @@
            ix = i + int_start1(n_int)
            xmom_dt(inod2,kf) = xmom_dt(inod2,kf)                        &
      &                        + xmom_int_t(inod1,kf) * owe(ix)          &
-     &                         * dnxi_ed1(j1,ix) * an_edge(j2,ix)
+     &                         * dnxi_ed1(j1,ix)                        &
+     &                         * jac1_1d_l%an_edge(j2,ix)
            xmom_dot(inod2,kf) = xmom_dot(inod2,kf)                      &
      &                        + xmom_int_to(inod1,kf) * owe(ix)         &
-     &                         * dnxi_ed1(j1,ix) * an_edge(j2,ix)
+     &                         * dnxi_ed1(j1,ix)                        &
+     &                         * jac1_1d_l%an_edge(j2,ix)
           end do
          end do
         end do

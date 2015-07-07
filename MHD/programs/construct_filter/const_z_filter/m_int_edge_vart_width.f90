@@ -78,8 +78,10 @@
           ix = i + int_start1(n_int)
           do k2 = 1, 2
            inod2 = ie_edge(iele,k2)
-           rhs_dz(inod2) = rhs_dz(inod2) + abs(xeg_edge(iele,ix,3))     &
-     &          * an_edge(k2,ix)  * xeg_edge(iele,ix,3) * owe(ix)
+           rhs_dz(inod2) = rhs_dz(inod2)                                &
+     &                    + abs(jac1_1d_l%xeg_edge(iele,ix,3))          &
+     &                     * jac1_1d_l%an_edge(k2,ix)                   &
+     &                     * jac1_1d_l%xeg_edge(iele,ix,3) * owe(ix)
          end do
        end do
       end do
@@ -225,7 +227,8 @@
               inod1 = ie_edge(iele,k1)
               inod2 = ie_edge(iele,k2)
               rhs_dz(inod2) = rhs_dz(inod2) + delta_z(inod1)            &
-     &                    * dnxi_ed1(k1,ix) * an_edge(k2,ix) * owe(ix)
+     &                                     * dnxi_ed1(k1,ix)            &
+     &                       * jac1_1d_l%an_edge(k2,ix) * owe(ix)
             end do
           end do
         end do
@@ -262,7 +265,7 @@
               inod2 = ie_edge(iele,k2)
               rhs_dz(inod2) = rhs_dz(inod2) - delta_z(inod1)            &
      &                     * dnxi_ed1(k1,ix)* dnxi_ed1(k2,ix) * owe(ix) &
-     &                     / xeg_edge(iele,ix,3)
+     &                      / jac1_1d_l%xeg_edge(iele,ix,3)
             end do
           end do
         end do
@@ -301,7 +304,8 @@
               inod1 = ie_edge(iele,k1)
               inod2 = ie_edge(iele,k2)
               rhs_dz(inod2) = rhs_dz(inod2) + delta_dz(inod1)           &
-     &                    * dnxi_ed1(k1,ix) * an_edge(k2,ix) * owe(ix)
+     &                    * dnxi_ed1(k1,ix) * jac1_1d_l%an_edge(k2,ix)  &
+     &                    * owe(ix)
             end do
           end do
         end do

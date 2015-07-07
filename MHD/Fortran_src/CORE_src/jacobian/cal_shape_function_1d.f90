@@ -1,13 +1,17 @@
+!>@file  const_jacobians_1d_type.f90
+!!       module const_jacobians_1d_type
+!!
+!!@author H. Matsui
+!!@date   Programmed in Dec., 2008
 !
-!      module cal_shape_function_1d
-!
-!        programmed by H.Matsui and H.Okuda
-!                                    on July 2000 (ver 1.1)
-!        modified by H. Matsui on Aug., 2006
-!
-!      subroutine s_cal_shape_function_1d_linear(ntot_int_1d, an, dnxi, &
-!     &          xi)
-!      subroutine s_cal_shape_function_1d_quad(ntot_int_1d, an, dnxi, xi)
+!> @brief  caliculate shape function and differences at Gauss points
+!!
+!!@verbatim
+!!      subroutine s_cal_shape_function_1d_linear(ntot_int_1d,          &
+!!     &          an, dnxi, xi)
+!!      subroutine s_cal_shape_function_1d_quad(ntot_int_1d,            &
+!!     &          an, dnxi, xi)
+!!@endverbatim
 !
       module cal_shape_function_1d
 !

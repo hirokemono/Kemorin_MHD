@@ -13,7 +13,6 @@
 !
 !      subroutine cal_jacobian_element
 !      subroutine cal_jacobian_surface
-!      subroutine cal_jacobian_edge
 !      subroutine cal_jacobian_surf_grp
 !
 !
@@ -160,38 +159,6 @@
 !
       end subroutine cal_jacobian_surface
 !
-!-----------------------------------------------------------------------
-!> Construct shape function, difference of shape function, and Jacobian
-!> for edge element
-!
-      subroutine cal_jacobian_edge
-!
-      use m_machine_parameter
-      use m_jacobians_4_edge
-!
-      use cal_jacobians_linear
-      use cal_jacobians_quad
-      use cal_jacobians_lag
-!
-!
-      ntot_int_1d = maxtot_int_1d
-      call allocate_jacobians_edge_linear
-      call allocate_jacobians_edge_quad
-!
-      if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_edge_linear'
-      call cal_jacobian_edge_linear
-!
-      if(first_ele_type .eq. 332 .or. first_ele_type .eq. 333) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_edge_quad'
-        call cal_jacobian_edge_quad
-      else
-        if (iflag_debug.eq.1) write(*,*) 'copy_jacobians_edge_quad'
-        call copy_jacobians_edge_quad
-      end if
-!
-      end subroutine cal_jacobian_edge
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !> Construct shape function, difference of shape function, and Jacobian
 !> for surface group

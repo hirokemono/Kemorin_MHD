@@ -167,9 +167,8 @@
       type(jacobians_1d), intent(inout) :: jac_1d
 !
 !
-      jac_1d%ntot_int = maxtot_int_1d
       call alloc_1d_jac_type(edge_mesh%edge%numedge,                    &
-     &    edge_mesh%edge%nnod_4_edge, jac_1d)
+     &    edge_mesh%edge%nnod_4_edge, maxtot_int_1d, jac_1d)
 !
       if      (edge_mesh%edge%nnod_4_edge .eq. num_linear_edge) then
         call cal_jacobian_type_1d_linear(mesh, edge_mesh, jac_1d)
@@ -285,9 +284,8 @@
 !
 !
       if (edge_mesh%edge%nnod_4_edge .ne. num_linear_edge) then
-        jac_1d_l%ntot_int = maxtot_int_1d
         call alloc_1d_jac_type(edge_mesh%edge%numedge, num_linear_edge, &
-     &      jac_1d_l)
+     &      maxtot_int_1d, jac_1d_l)
         call cal_jacobian_type_1d_linear(mesh, edge_mesh, jac_1d_l)
       end if
 !

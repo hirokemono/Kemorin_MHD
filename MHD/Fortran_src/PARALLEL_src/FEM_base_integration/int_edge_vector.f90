@@ -1,13 +1,14 @@
+!>@file  int_edge_vector.f90
+!!       module int_edge_vector
+!!
+!!@author H. Matsui
+!!@date   Programmed in Aug., 2006
 !
-!     module int_edge_vector
-!
-!      Written by H. Matsui on Aug., 2006
-!
-!      subroutine s_int_edge_vector
-!
-!      subroutine int_edge_vect(numedge, iedge_smp_stack,               &
-!     &          ntot_int_1d, num_int, xj_edge, xeg_edge,               &
-!     &          edge_vect, edge_length, a_edge_length)
+!> @brief  Structure of 1D Jacobian and difference of shape functions
+!!
+!!@verbatim
+!!      subroutine s_int_edge_vector
+!!@endverbatim
 !
       module int_edge_vector
 !
@@ -35,12 +36,12 @@
 !
       if(nnod_4_ele .eq. num_quad_edge) then
         call int_edge_vect(numedge, iedge_smp_stack,                    &
-     &          ntot_int_1d, max_int_point, xjq_edge, xeq_edge,         &
-     &          edge_vect, edge_length, a_edge_length)
+     &      jac1_1d_q%ntot_int, max_int_point, jac1_1d_q%xj_edge,       &
+     &      jac1_1d_q%xeg_edge, edge_vect, edge_length, a_edge_length)
       else
         call int_edge_vect(numedge, iedge_smp_stack,                    &
-     &          ntot_int_1d, max_int_point, xj_edge, xeg_edge,          &
-     &          edge_vect, edge_length, a_edge_length)
+     &      jac1_1d_l%ntot_int, max_int_point, jac1_1d_l%xj_edge,       &
+     &      jac1_1d_l%xeg_edge, edge_vect, edge_length, a_edge_length)
       end if
 !
       end subroutine s_int_edge_vector

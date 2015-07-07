@@ -1,14 +1,19 @@
+!>@file  const_jacobians_1d_type.f90
+!!       module const_jacobians_1d_type
+!!
+!!@author H. Matsui
+!!@date   Programmed in Dec., 2008
 !
-!     module const_jacobians_1d_type
-!
-!      Written by H. Matsui on Dec., 2008
-!
-!      subroutine cal_jacobian_type_1d_linear(mesh, edge_mesh, jac_1d)
-!      subroutine cal_jacobian_type_1d_quad(mesh, edge_mesh, jac_1d)
-!      subroutine cal_jacobian_type_1d_l_quad(mesh, edge_mesh, jac_1d)
-!        type(mesh_geometry), intent(in) :: mesh
-!        type(edge_geometry), intent(in)  :: edge_mesh
-!        type(jacobians_1d), intent(inout) :: jac_1d
+!> @brief  Construct Jacobians on edge
+!!
+!!@verbatim
+!!!      subroutine cal_jacobian_type_1d_linear(mesh, edge_mesh, jac_1d)
+!!      subroutine cal_jacobian_type_1d_quad(mesh, edge_mesh, jac_1d)
+!!      subroutine cal_jacobian_type_1d_l_quad(mesh, edge_mesh, jac_1d)
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(edge_geometry), intent(in)  :: edge_mesh
+!!        type(jacobians_1d), intent(inout) :: jac_1d
+!!@endverbatim
 !
       module const_jacobians_1d_type
 !
@@ -40,7 +45,8 @@
 !
 !
       call copy_shape_func_from_array(jac_1d%ntot_int,                  &
-     &    edge_mesh%edge%nnod_4_edge, an_edge, jac_1d%an_edge)
+     &    edge_mesh%edge%nnod_4_edge, jac1_1d_l%an_edge,                &
+     &    jac_1d%an_edge)
 !
 !   jacobian for tri-linear elaments
 !
@@ -49,12 +55,12 @@
 !
           ix = int_start1(i0) + ii
 !
-          call cal_jac_1d_linear_type(mesh, edge_mesh,                 &
-     &        jac_1d%xj_edge(1:edge_mesh%edge%numedge,ix),             &
-     &        jac_1d%axj_edge(1:edge_mesh%edge%numedge,ix),            &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,1),          &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,2),          &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,3),          &
+          call cal_jac_1d_linear_type(mesh, edge_mesh,                  &
+     &        jac_1d%xj_edge(1:edge_mesh%edge%numedge,ix),              &
+     &        jac_1d%axj_edge(1:edge_mesh%edge%numedge,ix),             &
+     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,1),           &
+     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,2),           &
+     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,3),           &
      &        dnxi_ed1(1:edge_mesh%edge%nnod_4_edge,ix) )
 !
         end do
@@ -80,7 +86,8 @@
 !
 !
       call copy_shape_func_from_array(jac_1d%ntot_int,                  &
-     &    edge_mesh%edge%nnod_4_edge, aw_edge, jac_1d%an_edge)
+     &    edge_mesh%edge%nnod_4_edge, jac1_1d_q%an_edge,                &
+     &    jac_1d%an_edge)
 !
 !   jacobian for quadrature elaments
 !
@@ -89,12 +96,12 @@
 !
           ix = int_start1(i0) + ii
 !
-          call cal_jac_1d_quad_type(mesh, edge_mesh,                   &
-     &        jac_1d%xj_edge(1:edge_mesh%edge%numedge,ix),             &
-     &        jac_1d%axj_edge(1:edge_mesh%edge%numedge,ix),            &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,1),          &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,2),          &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,3),          &
+          call cal_jac_1d_quad_type(mesh, edge_mesh,                    &
+     &        jac_1d%xj_edge(1:edge_mesh%edge%numedge,ix),              &
+     &        jac_1d%axj_edge(1:edge_mesh%edge%numedge,ix),             &
+     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,1),           &
+     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,2),           &
+     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,3),           &
      &        dnxi_ed20(1:edge_mesh%edge%nnod_4_edge,ix) )
 !
         end do
@@ -120,7 +127,8 @@
 !
 !
       call copy_shape_func_from_array(jac_1d%ntot_int,                  &
-     &    edge_mesh%edge%nnod_4_edge, aw_edge, jac_1d%an_edge)
+     &    edge_mesh%edge%nnod_4_edge, jac1_1d_ql%an_edge,               &
+     &    jac_1d%an_edge)
 !
 !   jacobian for quadrature elaments
 !
@@ -130,11 +138,11 @@
           ix = int_start1(i0) + ii
 !
           call cal_jac_1d_l_quad_type(mesh, edge_mesh,                  &
-     &        jac_1d%xj_edge(1:edge_mesh%edge%numedge,ix),             &
-     &        jac_1d%axj_edge(1:edge_mesh%edge%numedge,ix),            &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,1),          &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,2),          &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,3),          &
+     &        jac_1d%xj_edge(1:edge_mesh%edge%numedge,ix),              &
+     &        jac_1d%axj_edge(1:edge_mesh%edge%numedge,ix),             &
+     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,1),           &
+     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,2),           &
+     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,3),           &
      &        dnxi_ed20(1:edge_mesh%edge%nnod_4_edge,ix) )
 !
         end do

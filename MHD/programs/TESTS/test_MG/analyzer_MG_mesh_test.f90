@@ -33,6 +33,7 @@
       use set_edge_geometry_4_IO
       use m_geometry_data
       use m_surface_group
+      use m_jacobians_4_edge
       use check_jacobians
       use int_volume_of_domain
       use set_surf_grp_vectors
