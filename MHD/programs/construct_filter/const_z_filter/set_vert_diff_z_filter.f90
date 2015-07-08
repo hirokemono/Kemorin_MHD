@@ -1,15 +1,16 @@
 !set_vert_diff_z_filter.f90
 !      module set_vert_diff_z_filter
 !
-      module set_vert_diff_z_filter
-!
 !      Written by H. Matsui
 !
+!     subroutine set_spatial_difference(n_int)
+!
+      module set_vert_diff_z_filter
+!
       use m_precision
+      use m_constants
 !
       implicit none
-!
-!     subroutine set_spatial_difference(n_int)
 !
 !   --------------------------------------------------------------------
 !
@@ -27,8 +28,7 @@
       use m_int_edge_data
 !
       integer (kind = kint), intent(in) :: n_int
-      integer (kind = kint) :: iele, inod, j, k, ix
-      real(kind = kreal), parameter :: one = 1.0d0, half = 0.5d0
+      integer (kind = kint) :: iele, k, ix
 !
 !
        do k = 1, n_int

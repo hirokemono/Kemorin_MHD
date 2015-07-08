@@ -1,32 +1,39 @@
+!>@file  const_jacobians_2d_type.f90
+!!       module const_jacobians_2d_type
+!!
+!!@author H. Matsui
+!!@date   Programmed on Nov., 2008
+!!@n      Modified by H. Matsui on Feb., 2012
 !
-!     module const_jacobians_2d_type
-!
-!      Written by H. Matsui on Dec., 2008
-!
-!      subroutine cal_jacobian_type_2d_linear(mesh, surf_mesh, jac_2d)
-!      subroutine cal_jacobian_type_2d_quad(mesh, surf_mesh, jac_2d)
-!      subroutine cal_jacobian_type_2d_quad(mesh, surf_mesh, jac_2d)
-!      subroutine cal_jacobian_type_2d_l_quad(mesh, surf_mesh, jac_2d)
-!        type(mesh_geometry), intent(in) :: mesh
-!        type(surface_geometry), intent(in)  :: surf_mesh
-!        type(jacobians_2d), intent(inout) :: jac_2d
-!
-!      subroutine cal_jacobian_type_sf_grp_linear(mesh, surf_mesh,      &
-!     &          group, jac_sf_grp)
-!      subroutine cal_jacobian_type_sf_grp_quad(mesh, surf_mesh,        &
-!     &          group, jac_sf_grp)
-!      subroutine cal_jacobian_type_sf_grp_lag(mesh, surf_mesh,         &
-!     &          group, jac_sf_grp)
-!      subroutine cal_jacobian_type_sf_grp_l_quad(mesh, surf_mesh,      &
-!     &          group, jac_sf_grp)
-!        type(mesh_geometry),    intent(in) :: mesh
-!        type(surface_geometry), intent(in) :: surf_mesh
-!        type(mesh_groups),      intent(in) :: group
-!        type(jacobians_2d), intent(inout) :: jac_sf_grp
+!> @brief Construct Jacobians on surfaces
+!!
+!!@verbatim
+!!      subroutine cal_jacobian_type_2d_linear(mesh, surf_mesh, jac_2d)
+!!      subroutine cal_jacobian_type_2d_quad(mesh, surf_mesh, jac_2d)
+!!      subroutine cal_jacobian_type_2d_quad(mesh, surf_mesh, jac_2d)
+!!      subroutine cal_jacobian_type_2d_l_quad(mesh, surf_mesh, jac_2d)
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(surface_geometry), intent(in)  :: surf_mesh
+!!        type(jacobians_2d), intent(inout) :: jac_2d
+!!
+!!      subroutine cal_jacobian_type_sf_grp_linear(mesh, surf_mesh,     &
+!!     &          group, jac_sf_grp)
+!!      subroutine cal_jacobian_type_sf_grp_quad(mesh, surf_mesh,       &
+!!     &          group, jac_sf_grp)
+!!      subroutine cal_jacobian_type_sf_grp_lag(mesh, surf_mesh,        &
+!!     &          group, jac_sf_grp)
+!!      subroutine cal_jacobian_type_sf_grp_l_quad(mesh, surf_mesh,     &
+!!     &          group, jac_sf_grp)
+!!        type(mesh_geometry),    intent(in) :: mesh
+!!        type(surface_geometry), intent(in) :: surf_mesh
+!!        type(mesh_groups),      intent(in) :: group
+!!        type(jacobians_2d), intent(inout) :: jac_sf_grp
+!!@endverbatim
 !
       module const_jacobians_2d_type
 !
       use m_precision
+      use m_machine_parameter
 !
       use m_fem_gauss_int_coefs
       use m_shape_functions
@@ -44,7 +51,7 @@
       use m_jacobians_4_surface
       use t_mesh_data
       use t_jacobians
-      use cal_jac_2d_type
+      use cal_jacobian_2d_linear
 !
       type(mesh_geometry), intent(in) :: mesh
       type(surface_geometry), intent(in)  :: surf_mesh
@@ -60,10 +67,11 @@
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0
-!
           ix = int_start2(i0) + ii
 !
-          call cal_jac_2d_linear_type(mesh, surf_mesh,                  &
+          call s_cal_jacobian_2d_4(mesh%node%numnod,                    &
+     &        surf_mesh%surf%numsurf, surf_mesh%surf%ie_surf,           &
+     &        mesh%node%xx, np_smp, surf_mesh%surf%istack_surf_smp,     &
      &        jac_2d%xj_sf(1:surf_mesh%surf%numsurf,ix),                &
      &        jac_2d%axj_sf(1:surf_mesh%surf%numsurf,ix),               &
      &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,1),             &
@@ -71,7 +79,6 @@
      &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,3),             &
      &        dnxi_sf1(1:surf_mesh%surf%nnod_4_surf,ix),                &
      &        dnei_sf1(1:surf_mesh%surf%nnod_4_surf,ix) )
-!
         end do
       end do
 !
@@ -84,7 +91,7 @@
       use m_jacobians_4_surface
       use t_mesh_data
       use t_jacobians
-      use cal_jac_2d_type
+      use cal_jacobian_2d_quad
 !
       type(mesh_geometry), intent(in) :: mesh
       type(surface_geometry), intent(in)  :: surf_mesh
@@ -100,10 +107,11 @@
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0
-!
           ix = int_start2(i0) + ii
 !
-          call cal_jac_2d_quad_type(mesh, surf_mesh,                    &
+          call s_cal_jacobian_2d_8(mesh%node%numnod,                    &
+     &        surf_mesh%surf%numsurf, surf_mesh%surf%ie_surf,           &
+     &        mesh%node%xx, np_smp, surf_mesh%surf%istack_surf_smp,     &
      &        jac_2d%xj_sf(1:surf_mesh%surf%numsurf,ix),                &
      &        jac_2d%axj_sf(1:surf_mesh%surf%numsurf,ix),               &
      &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,1),             &
@@ -111,7 +119,6 @@
      &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,3),             &
      &        dnxi_sf20(1:surf_mesh%surf%nnod_4_surf,ix),               &
      &        dnxi_sf20(1:surf_mesh%surf%nnod_4_surf,ix) )
-!
         end do
       end do
 !
@@ -124,7 +131,7 @@
       use m_jacobians_4_surface
       use t_mesh_data
       use t_jacobians
-      use cal_jac_2d_type
+      use cal_jacobian_2d_lag
 !
       type(mesh_geometry), intent(in) :: mesh
       type(surface_geometry), intent(in)  :: surf_mesh
@@ -140,10 +147,11 @@
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0
-!
           ix = int_start2(i0) + ii
 !
-          call cal_jac_2d_lag_type(mesh, surf_mesh,                     &
+          call s_cal_jacobian_2d_9(mesh%node%numnod,                    &
+     &        surf_mesh%surf%numsurf, surf_mesh%surf%ie_surf,           &
+     &        mesh%node%xx, np_smp, surf_mesh%surf%istack_surf_smp,     &
      &        jac_2d%xj_sf(1:surf_mesh%surf%numsurf,ix),                &
      &        jac_2d%axj_sf(1:surf_mesh%surf%numsurf,ix),               &
      &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,1),             &
@@ -151,7 +159,6 @@
      &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,3),             &
      &        dnxi_sf27(1:surf_mesh%surf%nnod_4_surf,ix),               &
      &        dnxi_sf27(1:surf_mesh%surf%nnod_4_surf,ix) )
-!
         end do
       end do
 !
@@ -162,10 +169,11 @@
 !
       subroutine cal_jacobian_type_2d_l_quad(mesh, surf_mesh, jac_2d)
 !
+      use m_geometry_constants
       use m_jacobians_4_surface
       use t_mesh_data
       use t_jacobians
-      use cal_jac_2d_type
+      use cal_jacobian_2d_linear_quad
 !
       type(mesh_geometry), intent(in) :: mesh
       type(surface_geometry), intent(in)  :: surf_mesh
@@ -181,10 +189,11 @@
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0
-!
           ix = int_start2(i0) + ii
 !
-          call cal_jac_2d_l_quad_type(mesh, surf_mesh,                  &
+          call s_cal_jacobian_2d_4_8(mesh%node%numnod,                  &
+     &        surf_mesh%surf%numsurf, surf_mesh%surf%ie_surf,           &
+     &        mesh%node%xx, np_smp, surf_mesh%surf%istack_surf_smp,     &
      &        jac_2d%xj_sf(1:surf_mesh%surf%numsurf,ix),                &
      &        jac_2d%axj_sf(1:surf_mesh%surf%numsurf,ix),               &
      &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,1),             &
@@ -192,7 +201,6 @@
      &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,3),             &
      &        dnxi_sf20(1:surf_mesh%surf%nnod_4_surf,ix),               &
      &        dnxi_sf20(1:surf_mesh%surf%nnod_4_surf,ix) )
-!
         end do
       end do
 !
@@ -204,10 +212,11 @@
       subroutine cal_jacobian_type_sf_grp_linear(mesh, surf_mesh,       &
      &          group, jac_sf_grp)
 !
+      use m_geometry_constants
       use m_jacobian_sf_grp
       use t_mesh_data
       use t_jacobians
-      use cal_jac_2d_type
+      use cal_jacobian_sf_grp_linear
 !
       type(mesh_geometry),    intent(in) :: mesh
       type(surface_geometry), intent(in) :: surf_mesh
@@ -225,18 +234,20 @@
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0
-!
           ix = int_start2(i0) + ii
 !
-          call cal_jac_sf_grp_linear_type(mesh, group,                  &
-     &        jac_sf_grp%xj_sf(1:group%surf_grp%num_item,ix),           &
-     &        jac_sf_grp%axj_sf(1:group%surf_grp%num_item,ix),          &
-     &        jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,1),        &
-     &        jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,2),        &
-     &        jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,3),        &
-     &        dnxi_sf1(1:surf_mesh%surf%nnod_4_surf,ix),                &
-     &        dnei_sf1(1:surf_mesh%surf%nnod_4_surf,ix) )
-!
+          call s_cal_jacobian_sf_grp_4(mesh%node%numnod,                &
+     &       mesh%ele%numele, mesh%ele%ie, mesh%node%xx,                &
+     &       group%surf_grp%num_grp, group%surf_grp%num_item,           &
+     &       group%surf_grp%item_sf_grp, np_smp,                        &
+     &       group%surf_grp%num_grp_smp, group%surf_grp%istack_grp_smp, &
+     &       jac_sf_grp%xj_sf(1:group%surf_grp%num_item,ix),            &
+     &       jac_sf_grp%axj_sf(1:group%surf_grp%num_item,ix),           &
+     &       jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,1),         &
+     &       jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,2),         &
+     &       jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,3),         &
+     &       dnxi_sf1(1:surf_mesh%surf%nnod_4_surf,ix),                 &
+     &       dnei_sf1(1:surf_mesh%surf%nnod_4_surf,ix))
         end do
       end do
 !
@@ -248,10 +259,11 @@
       subroutine cal_jacobian_type_sf_grp_quad(mesh, surf_mesh,         &
      &          group, jac_sf_grp)
 !
+      use m_geometry_constants
       use m_jacobian_sf_grp
       use t_mesh_data
       use t_jacobians
-      use cal_jac_2d_type
+      use cal_jacobian_sf_grp_quad
 !
       type(mesh_geometry),    intent(in) :: mesh
       type(surface_geometry), intent(in) :: surf_mesh
@@ -269,18 +281,20 @@
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0
-!
           ix = int_start2(i0) + ii
 !
-          call cal_jac_sf_grp_quad_type(mesh, group,                    &
-     &        jac_sf_grp%xj_sf(1:group%surf_grp%num_item,ix),           &
-     &        jac_sf_grp%axj_sf(1:group%surf_grp%num_item,ix),          &
-     &        jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,1),        &
-     &        jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,2),        &
-     &        jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,3),        &
-     &        dnxi_sf1(1:surf_mesh%surf%nnod_4_surf,ix),                &
-     &        dnei_sf1(1:surf_mesh%surf%nnod_4_surf,ix) )
-!
+          call s_cal_jacobian_sf_grp_8(mesh%node%numnod,                &
+     &       mesh%ele%numele, mesh%ele%ie, mesh%node%xx,                &
+     &       group%surf_grp%num_grp, group%surf_grp%num_item,           &
+     &       group%surf_grp%item_sf_grp, np_smp,                        &
+     &       group%surf_grp%num_grp_smp, group%surf_grp%istack_grp_smp, &
+     &       jac_sf_grp%xj_sf(1:group%surf_grp%num_item,ix),            &
+     &       jac_sf_grp%axj_sf(1:group%surf_grp%num_item,ix),           &
+     &       jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,1),         &
+     &       jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,2),         &
+     &       jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,3),         &
+     &       dnxi_sf1(1:surf_mesh%surf%nnod_4_surf,ix),                 &
+     &       dnei_sf1(1:surf_mesh%surf%nnod_4_surf,ix) )
         end do
       end do
 !
@@ -292,10 +306,11 @@
       subroutine cal_jacobian_type_sf_grp_lag(mesh, surf_mesh,          &
      &          group, jac_sf_grp)
 !
+      use m_geometry_constants
       use m_jacobian_sf_grp
       use t_mesh_data
       use t_jacobians
-      use cal_jac_2d_type
+      use cal_jacobian_sf_grp_lag
 !
       type(mesh_geometry),    intent(in) :: mesh
       type(surface_geometry), intent(in) :: surf_mesh
@@ -313,18 +328,20 @@
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0
-!
           ix = int_start2(i0) + ii
 !
-          call cal_jac_sf_grp_lag_type(mesh, group,                     &
-     &        jac_sf_grp%xj_sf(1:group%surf_grp%num_item,ix),           &
-     &        jac_sf_grp%axj_sf(1:group%surf_grp%num_item,ix),          &
-     &        jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,1),        &
-     &        jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,2),        &
-     &        jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,3),        &
-     &        dnxi_sf1(1:surf_mesh%surf%nnod_4_surf,ix),                &
-     &        dnei_sf1(1:surf_mesh%surf%nnod_4_surf,ix) )
-!
+          call s_cal_jacobian_sf_grp_9(mesh%node%numnod,                &
+     &       mesh%ele%numele, mesh%ele%ie, mesh%node%xx,                &
+     &       group%surf_grp%num_grp, group%surf_grp%num_item,           &
+     &       group%surf_grp%item_sf_grp, np_smp,                        &
+     &       group%surf_grp%num_grp_smp, group%surf_grp%istack_grp_smp, &
+     &       jac_sf_grp%xj_sf(1:group%surf_grp%num_item,ix),            &
+     &       jac_sf_grp%axj_sf(1:group%surf_grp%num_item,ix),           &
+     &       jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,1),         &
+     &       jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,2),         &
+     &       jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,3),         &
+     &       dnxi_sf1(1:surf_mesh%surf%nnod_4_surf,ix),                 &
+     &       dnei_sf1(1:surf_mesh%surf%nnod_4_surf,ix) )
         end do
       end do
 !
@@ -336,10 +353,11 @@
       subroutine cal_jacobian_type_sf_grp_l_quad(mesh, surf_mesh,       &
      &          group, jac_sf_grp)
 !
+      use m_geometry_constants
       use m_jacobian_sf_grp
       use t_mesh_data
       use t_jacobians
-      use cal_jac_2d_type
+      use cal_jacobian_sf_grp_l_quad
 !
       type(mesh_geometry),    intent(in) :: mesh
       type(surface_geometry), intent(in) :: surf_mesh
@@ -357,21 +375,22 @@
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0
-!
           ix = int_start2(i0) + ii
 !
-          call cal_jac_sf_grp_l_quad_type(mesh, group,                  &
-     &        jac_sf_grp%xj_sf(1:group%surf_grp%num_item,ix),           &
-     &        jac_sf_grp%axj_sf(1:group%surf_grp%num_item,ix),          &
-     &        jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,1),        &
-     &        jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,2),        &
-     &        jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,3),        &
-     &        dnxi_sf1(1:surf_mesh%surf%nnod_4_surf,ix),                &
-     &        dnei_sf1(1:surf_mesh%surf%nnod_4_surf,ix) )
-!
+          call s_cal_jacobian_sf_grp_4_8(mesh%node%numnod,              &
+     &       mesh%ele%numele,  mesh%ele%ie, mesh%node%xx,               &
+     &       group%surf_grp%num_grp, group%surf_grp%num_item,           &
+     &       group%surf_grp%item_sf_grp, np_smp,                        &
+     &       group%surf_grp%num_grp_smp, group%surf_grp%istack_grp_smp, &
+     &       jac_sf_grp%xj_sf(1:group%surf_grp%num_item,ix),            &
+     &       jac_sf_grp%axj_sf(1:group%surf_grp%num_item,ix),           &
+     &       jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,1),         &
+     &       jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,2),         &
+     &       jac_sf_grp%xsf_sf(1:group%surf_grp%num_item,ix,3),         &
+     &       dnxi_sf1(1:surf_mesh%surf%nnod_4_surf,ix),                 &
+     &       dnei_sf1(1:surf_mesh%surf%nnod_4_surf,ix) )
         end do
       end do
-!
 !
       end subroutine cal_jacobian_type_sf_grp_l_quad
 !

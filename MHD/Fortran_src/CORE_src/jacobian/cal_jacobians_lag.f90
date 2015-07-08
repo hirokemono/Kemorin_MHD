@@ -6,8 +6,9 @@
 !        modified by H. Matsui on June. 2006
 !
 !      subroutine cal_jacobian_lag
-!      subroutine cal_jacobian_dylag(jac_sf_grp_q)
 !      subroutine cal_jacobian_surface_lag(jac_2d_q)
+!
+!      subroutine cal_jacobian_dylag(jac_sf_grp_q)
 !
       module cal_jacobians_lag
 !
@@ -62,45 +63,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_dylag(jac_sf_grp_q)
-!
-      use m_surface_group
-      use t_jacobian_2d
-      use cal_jac_2d
-      use cal_shape_function_2d
-!
-      type(jacobians_2d), intent(inout) :: jac_sf_grp_q
-!
-      integer (kind = kint) :: ii, ix, i0
-!
-!
-      call s_cal_shape_function_2d_lag(jac_sf_grp_q%ntot_int,           &
-     &    jac_sf_grp_q%an_sf, dnxi_sf27, dnei_sf27, xi2, ei2)
-!
-!   jacobian for quadrature  elaments
-!
-      do i0 = 1, max_int_point
-        do ii = 1, i0*i0
-          ix = int_start2(i0) + ii
-!
-          call s_cal_jacobian_sf_grp_lag                                &
-     &       (jac_sf_grp_q%xj_sf(1:num_surf_bc,ix),                     &
-     &        jac_sf_grp_q%axj_sf(1:num_surf_bc,ix),                    &
-     &        jac_sf_grp_q%xsf_sf(1:num_surf_bc,ix,1),                  &
-     &        jac_sf_grp_q%xsf_sf(1:num_surf_bc,ix,2),                  &
-     &        jac_sf_grp_q%xsf_sf(1:num_surf_bc,ix,3),                  &
-     &        dnxi_sf27(1,ix), dnei_sf27(1,ix) )
-        end do
-      end do
-!
-      end subroutine cal_jacobian_dylag
-!
-!-----------------------------------------------------------------------
-!
       subroutine cal_jacobian_surface_lag(jac_2d_q)
 !
       use t_jacobian_2d
-      use cal_jac_2d
+      use cal_jacobian_2d_lag
       use cal_shape_function_2d
 !
       type(jacobians_2d), intent(inout) :: jac_2d_q
@@ -117,8 +83,9 @@
         do ii = 1, i0*i0
           ix = int_start2(i0) + ii
 !
-          call s_cal_jacobian_2d_lag                                    &
-     &       (jac_2d_q%xj_sf(1:numsurf,ix),                             &
+          call s_cal_jacobian_2d_9                                      &
+     &       (numnod, numsurf, ie_surf, xx, np_smp, isurf_smp_stack,    &
+     &        jac_2d_q%xj_sf(1:numsurf,ix),                             &
      &        jac_2d_q%axj_sf(1:numsurf,ix),                            &
      &        jac_2d_q%xsf_sf(1:numsurf,ix,1),                          &
      &        jac_2d_q%xsf_sf(1:numsurf,ix,2),                          &
@@ -128,6 +95,44 @@
       end do
 !
       end subroutine cal_jacobian_surface_lag
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine cal_jacobian_dylag(jac_sf_grp_q)
+!
+      use m_surface_group
+      use t_jacobian_2d
+      use cal_jacobian_sf_grp_lag
+      use cal_shape_function_2d
+!
+      type(jacobians_2d), intent(inout) :: jac_sf_grp_q
+!
+      integer (kind = kint) :: ii, ix, i0
+!
+!
+      call s_cal_shape_function_2d_lag(jac_sf_grp_q%ntot_int,           &
+     &    jac_sf_grp_q%an_sf, dnxi_sf27, dnei_sf27, xi2, ei2)
+!
+!   jacobian for quadrature  elaments
+!
+      do i0 = 1, max_int_point
+        do ii = 1, i0*i0
+          ix = int_start2(i0) + ii
+!
+          call s_cal_jacobian_sf_grp_9(numnod, numele,                  &
+     &        ie, xx, num_surf, num_surf_bc, surf_item,                 &
+     &        np_smp, num_surf_smp, isurf_grp_smp_stack,                &
+     &        jac_sf_grp_q%xj_sf(1:num_surf_bc,ix),                     &
+     &        jac_sf_grp_q%axj_sf(1:num_surf_bc,ix),                    &
+     &        jac_sf_grp_q%xsf_sf(1:num_surf_bc,ix,1),                  &
+     &        jac_sf_grp_q%xsf_sf(1:num_surf_bc,ix,2),                  &
+     &        jac_sf_grp_q%xsf_sf(1:num_surf_bc,ix,3),                  &
+     &        dnxi_sf27(1,ix), dnei_sf27(1,ix) )
+        end do
+      end do
+!
+      end subroutine cal_jacobian_dylag
 !
 !-----------------------------------------------------------------------
 !

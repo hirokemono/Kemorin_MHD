@@ -6,9 +6,9 @@
 !        modified by H. Matsui on June. 2006
 !
 !      subroutine cal_jacobian_quad_on_linear
-!      subroutine cal_jacobian_dyquad_on_linear
-!      subroutine cal_jacobian_surface_quad_on_l
+!      subroutine cal_jacobian_surface_quad_on_l(jac_2d_ql)
 !      subroutine cal_jacobian_edge_quad_on_l(jac_1d_ql)
+!      subroutine cal_jacobian_dyquad_on_linear(jac_sf_grp_ql)
 !
       module cal_jacobians_quad_on_l
 !
@@ -44,7 +44,6 @@
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0*i0
-!
           ix = int_start3(i0) + ii
 !
           call s_cal_jacobian_3d_lin_quad(xjac_lq(1,ix),                &
@@ -62,18 +61,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_dyquad_on_linear
+      subroutine cal_jacobian_surface_quad_on_l(jac_2d_ql)
 !
-      use m_surface_group
-      use m_jacobian_sf_grp
-      use cal_jac_2d
+      use t_jacobian_2d
+      use cal_jacobian_2d_linear_quad
       use cal_shape_function_2d
+!
+      type(jacobians_2d), intent(inout) :: jac_2d_ql
 !
       integer (kind = kint) :: ii, ix, i0
 !
 !
-      call s_cal_shape_function_2d_quad(jac1_sf_grp_2d_ql%ntot_int,     &
-     &    jac1_sf_grp_2d_ql%an_sf, dnxi_sf20, dnei_sf20, xi2, ei2)
+      call s_cal_shape_function_2d_quad(jac_2d_ql%ntot_int,             &
+     &    jac_2d_ql%an_sf, dnxi_sf20, dnei_sf20, xi2, ei2)
 !
 !   jacobian for quadrature  elaments
 !
@@ -81,45 +81,13 @@
         do ii = 1, i0*i0
           ix = int_start2(i0) + ii
 !
-          call s_cal_jacobian_sf_grp_quad                               &
-     &       (jac1_sf_grp_2d_ql%xj_sf(1:num_surf_bc,ix),                &
-     &        jac1_sf_grp_2d_ql%axj_sf(1:num_surf_bc,ix),               &
-     &        jac1_sf_grp_2d_ql%xsf_sf(1:num_surf_bc,ix,1),             &
-     &        jac1_sf_grp_2d_ql%xsf_sf(1:num_surf_bc,ix,2),             &
-     &        jac1_sf_grp_2d_ql%xsf_sf(1:num_surf_bc,ix,3),             &
-     &        dnxi_sf20(1,ix), dnei_sf20(1,ix) )
-        end do
-      end do
-!
-!
-      end subroutine cal_jacobian_dyquad_on_linear
-!
-!-----------------------------------------------------------------------
-!
-      subroutine cal_jacobian_surface_quad_on_l
-!
-      use m_jacobians_4_surface
-      use cal_jac_2d
-      use cal_shape_function_2d
-!
-      integer (kind = kint) :: ii, ix, i0
-!
-!
-      call s_cal_shape_function_2d_quad(jac1_2d_ql%ntot_int,            &
-     &    jac1_2d_ql%an_sf, dnxi_sf20, dnei_sf20, xi2, ei2)
-!
-!   jacobian for quadrature  elaments
-!
-      do i0 = 1, max_int_point
-        do ii = 1, i0*i0
-          ix = int_start2(i0) + ii
-!
-          call s_cal_jacobian_2d_l_quad                                 &
-     &       (jac1_2d_ql%xj_sf(1:numsurf,ix),                           &
-     &        jac1_2d_ql%axj_sf(1:numsurf,ix),                          &
-     &        jac1_2d_ql%xsf_sf(1:numsurf,ix,1),                        &
-     &        jac1_2d_ql%xsf_sf(1:numsurf,ix,2),                        &
-     &        jac1_2d_ql%xsf_sf(1:numsurf,ix,3),                        &
+          call s_cal_jacobian_2d_4_8                                    &
+     &       (numnod, numsurf, ie_surf, xx, np_smp, isurf_smp_stack,    &
+     &        jac_2d_ql%xj_sf(1:numsurf,ix),                            &
+     &        jac_2d_ql%axj_sf(1:numsurf,ix),                           &
+     &        jac_2d_ql%xsf_sf(1:numsurf,ix,1),                         &
+     &        jac_2d_ql%xsf_sf(1:numsurf,ix,2),                         &
+     &        jac_2d_ql%xsf_sf(1:numsurf,ix,3),                         &
      &        dnxi_sf20(1,ix), dnei_sf20(1,ix) )
         end do
       end do
@@ -131,7 +99,7 @@
       subroutine cal_jacobian_edge_quad_on_l(jac_1d_ql)
 !
       use t_jacobian_1d
-      use cal_jac_1d
+      use cal_jacobian_1d
       use cal_shape_function_1d
 !
       type(jacobians_1d), intent(inout) :: jac_1d_ql
@@ -147,8 +115,9 @@
         do ii = 1, i0
           ix = int_start1(i0) + ii
 !
-          call s_cal_jacobian_1d_l_quad                                 &
-     &       (jac_1d_ql%xj_edge(1:numedge,ix),                          &
+          call s_cal_jacobian_1d_2_3                                    &
+     &       (numnod, numedge, ie_edge, xx, np_smp, iedge_smp_stack,    &
+     &        jac_1d_ql%xj_edge(1:numedge,ix),                          &
      &        jac_1d_ql%axj_edge(1:numedge,ix),                         &
      &        jac_1d_ql%xeg_edge(1:numedge,ix,1),                       &
      &        jac_1d_ql%xeg_edge(1:numedge,ix,2),                       &
@@ -158,6 +127,45 @@
 !
 !
       end subroutine cal_jacobian_edge_quad_on_l
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine cal_jacobian_dyquad_on_linear(jac_sf_grp_ql)
+!
+      use m_geometry_constants
+      use m_surface_group
+      use t_jacobian_2d
+      use cal_jacobian_sf_grp_l_quad
+      use cal_shape_function_2d
+!
+      type(jacobians_2d), intent(inout) :: jac_sf_grp_ql
+!
+      integer (kind = kint) :: ii, ix, i0
+!
+!
+      call s_cal_shape_function_2d_quad(jac_sf_grp_ql%ntot_int,         &
+     &    jac_sf_grp_ql%an_sf, dnxi_sf20, dnei_sf20, xi2, ei2)
+!
+!   jacobian for quadrature  elaments
+!
+      do i0 = 1, max_int_point
+        do ii = 1, i0*i0
+          ix = int_start2(i0) + ii
+!
+          call s_cal_jacobian_sf_grp_4_8(numnod, numele,                &
+     &        ie, xx, num_surf, num_surf_bc, surf_item,                 &
+     &        np_smp, num_surf_smp, isurf_grp_smp_stack,                &
+     &        jac_sf_grp_ql%xj_sf(1:num_surf_bc,ix),                    &
+     &        jac_sf_grp_ql%axj_sf(1:num_surf_bc,ix),                   &
+     &        jac_sf_grp_ql%xsf_sf(1:num_surf_bc,ix,1),                 &
+     &        jac_sf_grp_ql%xsf_sf(1:num_surf_bc,ix,2),                 &
+     &        jac_sf_grp_ql%xsf_sf(1:num_surf_bc,ix,3),                 &
+     &        dnxi_sf20(1,ix), dnei_sf20(1,ix) )
+        end do
+      end do
+!
+      end subroutine cal_jacobian_dyquad_on_linear
 !
 !-----------------------------------------------------------------------
 !

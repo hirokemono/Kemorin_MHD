@@ -13,7 +13,11 @@
       module cal_jacobians_linear
 !
       use m_precision
+      use m_machine_parameter
 !
+      use m_geometry_constants
+      use m_geometry_parameter
+      use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_shape_functions
 !
@@ -60,7 +64,7 @@
       subroutine cal_jacobian_surface_linear(jac_2d_l)
 !
       use t_jacobian_2d
-      use cal_jac_2d
+      use cal_jacobian_2d_linear
       use cal_shape_function_2d
 !
       type(jacobians_2d), intent(inout) :: jac_2d_l
@@ -76,8 +80,9 @@
         do ii = 1, i0*i0
           ix = int_start2(i0) + ii
 !
-          call s_cal_jacobian_2d_linear                                 &
-     &       (jac_2d_l%xj_sf(1:numsurf,ix),                             &
+          call s_cal_jacobian_2d_4                                      &
+     &       (numnod, numsurf, ie_surf, xx, np_smp, isurf_smp_stack,    &
+     &        jac_2d_l%xj_sf(1:numsurf,ix),                             &
      &        jac_2d_l%axj_sf(1:numsurf,ix),                            &
      &        jac_2d_l%xsf_sf(1:numsurf,ix,1),                          &
      &        jac_2d_l%xsf_sf(1:numsurf,ix,2),                          &
@@ -93,7 +98,7 @@
       subroutine cal_jacobian_edge_linear(jac_1d_l)
 !
       use t_jacobian_1d
-      use cal_jac_1d
+      use cal_jacobian_1d
       use cal_shape_function_1d
 !
       type(jacobians_1d), intent(inout) :: jac_1d_l
@@ -109,8 +114,9 @@
         do ii = 1, i0
           ix = int_start1(i0) + ii
 !
-          call s_cal_jacobian_1d_linear                                 &
-     &       (jac_1d_l%xj_edge(1:numedge,ix),                           &
+          call s_cal_jacobian_1d_2                                      &
+     &       (numnod, numedge, ie_edge, xx, np_smp, iedge_smp_stack,    &
+     &        jac_1d_l%xj_edge(1:numedge,ix),                           &
      &        jac_1d_l%axj_edge(1:numedge,ix),                          &
      &        jac_1d_l%xeg_edge(1:numedge,ix,1),                        &
      &        jac_1d_l%xeg_edge(1:numedge,ix,2),                        &
@@ -128,7 +134,7 @@
 !
       use m_surface_group
       use t_jacobian_2d
-      use cal_jac_2d
+      use cal_jacobian_sf_grp_linear
       use cal_shape_function_2d
 !
       type(jacobians_2d), intent(inout) :: jac_sf_grp_l
@@ -145,8 +151,10 @@
         do ii = 1, i0*i0
           ix = int_start2(i0) + ii
 !
-          call s_cal_jacobian_sf_grp_linear                             &
-     &       (jac_sf_grp_l%xj_sf(1:num_surf_bc,ix),                     &
+          call s_cal_jacobian_sf_grp_4(numnod, numele,                  &
+     &        ie, xx, num_surf, num_surf_bc, surf_item,                 &
+     &        np_smp, num_surf_smp, isurf_grp_smp_stack,                &
+     &        jac_sf_grp_l%xj_sf(1:num_surf_bc,ix),                     &
      &        jac_sf_grp_l%axj_sf(1:num_surf_bc,ix),                    &
      &        jac_sf_grp_l%xsf_sf(1:num_surf_bc,ix,1),                  &
      &        jac_sf_grp_l%xsf_sf(1:num_surf_bc,ix,2),                  &

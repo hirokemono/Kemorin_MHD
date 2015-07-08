@@ -15,6 +15,7 @@
       use m_precision
 !
       use m_machine_parameter
+      use m_geometry_constants
       use m_geometry_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
@@ -67,7 +68,7 @@
       subroutine cal_jacobian_surface_quad(jac_2d_q)
 !
       use t_jacobian_2d
-      use cal_jac_2d
+      use cal_jacobian_2d_quad
       use cal_shape_function_2d
 !
       type(jacobians_2d), intent(inout) :: jac_2d_q
@@ -84,8 +85,9 @@
         do ii = 1, i0*i0
           ix = int_start2(i0) + ii
 !
-          call s_cal_jacobian_2d_quad                                   &
-     &       (jac_2d_q%xj_sf(1:numsurf,ix),                             &
+          call s_cal_jacobian_2d_8                                      &
+     &       (numnod, numsurf, ie_surf, xx, np_smp, isurf_smp_stack,    &
+     &        jac_2d_q%xj_sf(1:numsurf,ix),                             &
      &        jac_2d_q%axj_sf(1:numsurf,ix),                            &
      &        jac_2d_q%xsf_sf(1:numsurf,ix,1),                          &
      &        jac_2d_q%xsf_sf(1:numsurf,ix,2),                          &
@@ -101,7 +103,7 @@
       subroutine cal_jacobian_edge_quad(jac_1d_q)
 !
       use t_jacobian_1d
-      use cal_jac_1d
+      use cal_jacobian_1d
       use cal_shape_function_1d
 !
       type(jacobians_1d), intent(inout) :: jac_1d_q
@@ -115,16 +117,16 @@
 !
       do i0 = 1, max_int_point
         do ii = 1, i0
-!
           ix = int_start1(i0) + ii
 !
-          call s_cal_jacobian_1d_quad(jac_1d_q%xj_edge(1:numedge,ix),   &
+          call s_cal_jacobian_1d_3                                      &
+     &       (numnod, numedge, ie_edge, xx, np_smp, iedge_smp_stack,    &
+     &        jac_1d_q%xj_edge(1:numedge,ix),                           &
      &        jac_1d_q%axj_edge(1:numedge,ix),                          &
      &        jac_1d_q%xeg_edge(1:numedge,ix,1),                        &
      &        jac_1d_q%xeg_edge(1:numedge,ix,2),                        &
      &        jac_1d_q%xeg_edge(1:numedge,ix,3),                        &
      &        dnxi_ed20(1,ix))
-!
         end do
       end do
 !
@@ -138,7 +140,7 @@
 !
       use m_surface_group
       use t_jacobian_2d
-      use cal_jac_2d
+      use cal_jacobian_sf_grp_quad
       use cal_shape_function_2d
 !
       type(jacobians_2d), intent(inout) :: jac_sf_grp_q
@@ -155,8 +157,10 @@
         do ii = 1, i0*i0
           ix = int_start2(i0) + ii
 !
-          call s_cal_jacobian_sf_grp_quad                               &
-     &       (jac_sf_grp_q%xj_sf(1:num_surf_bc,ix),                     &
+          call s_cal_jacobian_sf_grp_8(numnod, numele,                  &
+     &        ie, xx, num_surf, num_surf_bc, surf_item,                 &
+     &        np_smp, num_surf_smp, isurf_grp_smp_stack,                &
+     &        jac_sf_grp_q%xj_sf(1:num_surf_bc,ix),                     &
      &        jac_sf_grp_q%axj_sf(1:num_surf_bc,ix),                    &
      &        jac_sf_grp_q%xsf_sf(1:num_surf_bc,ix,1),                  &
      &        jac_sf_grp_q%xsf_sf(1:num_surf_bc,ix,2),                  &
