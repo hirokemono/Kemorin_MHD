@@ -13,7 +13,6 @@
 !
 !      subroutine cal_jacobian_element
 !      subroutine cal_jacobian_surface
-!      subroutine cal_jacobian_surf_grp
 !
 !
       module cal_jacobian
@@ -158,45 +157,6 @@
       end if
 !
       end subroutine cal_jacobian_surface
-!
-!-----------------------------------------------------------------------
-!> Construct shape function, difference of shape function, and Jacobian
-!> for surface group
-!
-      subroutine cal_jacobian_surf_grp
-!
-      use m_machine_parameter
-      use m_jacobians_2d
-      use m_surface_group
-!
-      use cal_jacobians_linear
-      use cal_jacobians_quad
-      use cal_jacobians_lag
-!
-!
-      if (num_surf .gt. 0) then
-        ntot_int_sf_grp = maxtot_int_2d
-!
-        call allocate_jacobians_2d_linear
-        call allocate_jacobians_2d_quad
-!
-        if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_dylinear'
-        call cal_jacobian_dylinear
-!
-        if (first_ele_type .eq. 332) then
-          if (iflag_debug.eq.1)  write(*,*) 'cal_jacobian_dyquad'
-          call cal_jacobian_dyquad
-        else if (first_ele_type .eq. 333) then
-          if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_dylag'
-          call cal_jacobian_dylag
-        else
-          if (iflag_debug.eq.1) write(*,*) 'copy_jacobians_2d_quad'
-          call copy_jacobians_2d_quad
-        end if
-!
-      end if
-!
-      end subroutine cal_jacobian_surf_grp
 !
 !-----------------------------------------------------------------------
 !

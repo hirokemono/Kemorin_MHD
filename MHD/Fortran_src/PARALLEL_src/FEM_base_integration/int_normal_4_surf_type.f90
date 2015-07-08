@@ -41,8 +41,8 @@
       call allocate_normal_vect_type(surf)
 !
       call int_normal_all_surf(surf%numsurf, surf%istack_surf_smp,      &
-     &    jac_2d%ntot_int, max_int_point, jac_2d%xj_surf,               &
-     &    jac_2d%xsf_surf, surf%area_surf, surf%a_area_surf,            &
+     &    jac_2d%ntot_int, max_int_point, jac_2d%xj_sf,                 &
+     &    jac_2d%xsf_sf, surf%area_surf, surf%a_area_surf,              &
      &    surf%vnorm_surf)
 !
       end subroutine s_int_normal_4_all_surf_type

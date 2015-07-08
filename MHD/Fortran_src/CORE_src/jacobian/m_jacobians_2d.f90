@@ -1,146 +1,103 @@
+!>@file  m_jacobians_2d.f90
+!!       module m_jacobians_2d
+!!
+!!@author H. Matsui
+!!@date   Programmed on Nov., 2008
+!!@n      Modified by H. Matsui on Feb., 2012
 !
-!   module   m_jacobians_2d
-!
-!      subroutine allocate_jacobians_2d_linear
-!      subroutine allocate_jacobians_2d_quad
-!      subroutine allocate_jacobians_2d_l_quad
-!
-!      subroutine copy_jacobians_2d_quad
-!
-!      subroutine deallocate_jacobians_2d_linear
-!      subroutine deallocate_jacobians_2d_quad
-!      subroutine deallocate_jacobians_2d_l_quad
+!> @brief  2D Jacobian and difference for surface groups
+!!
+!!@verbatim
+!!      subroutine cal_jacobian_surf_grp
+!!
+!!      subroutine allocate_jacobians_2d_l_quad(n_int)
+!!
+!!      subroutine deallocate_jacobians_2d_linear
+!!      subroutine deallocate_jacobians_2d_quad
+!!      subroutine deallocate_jacobians_2d_l_quad
+!!@endverbatim
 !
       module   m_jacobians_2d
 !
       use m_precision
+      use t_jacobian_2d
 !
       implicit  none
 !
-      integer(kind = kint) :: ntot_int_sf_grp
-      real (kind=kreal), allocatable :: an_sf(:,:)
-! 
-      real (kind=kreal), allocatable :: xsf_sf(:,:,:)
-      real (kind=kreal), allocatable :: xj_sf(:,:)
-      real (kind=kreal), allocatable :: axj_sf(:,:)
-!
-!
-      real (kind=kreal), allocatable :: aw_sf(:,:)
-! 
-      real (kind=kreal), allocatable :: xsq_sf(:,:,:)
-      real (kind=kreal), allocatable :: xjq_sf(:,:)
-      real (kind=kreal), allocatable :: axjq_sf(:,:)
-!
-!
-      real (kind=kreal), allocatable :: am_sf(:,:)
-! 
-      real (kind=kreal), allocatable :: xslq_sf(:,:,:)
-      real (kind=kreal), allocatable :: xjlq_sf(:,:)
-      real (kind=kreal), allocatable :: axjlq_sf(:,:)
-!
+!>     Stracture of linear Jacobians for surafce group
+      type(jacobians_2d), save :: jac1_sf_grp_2d_l
+!>     Stracture of quadrature Jacobians for surafce group
+      type(jacobians_2d), save :: jac1_sf_grp_2d_q
+!>     Stracture of quadrature Jacobians for linear surafce group
+      type(jacobians_2d), save :: jac1_sf_grp_2d_ql
 !
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
+!> Construct shape function, difference of shape function, and Jacobian
+!> for surface group
 !
-       subroutine allocate_jacobians_2d_linear
+      subroutine cal_jacobian_surf_grp
+!
+      use m_machine_parameter
+      use m_geometry_constants
+      use m_geometry_parameter
+      use m_surface_group
+!
+      use cal_jacobians_linear
+      use cal_jacobians_quad
+      use cal_jacobians_lag
+!
+!
+      if (num_surf .le. 0) return
+      call alloc_2d_jac_type(num_surf_bc, num_linear_sf, maxtot_int_2d, &
+     &                       jac1_sf_grp_2d_l)
+      if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_dylinear'
+      call cal_jacobian_dylinear(jac1_sf_grp_2d_l)
+!
+      if (first_ele_type .eq. 332) then
+        if (iflag_debug.eq.1)  write(*,*) 'cal_jacobian_dyquad'
+        call alloc_2d_jac_type(num_surf_bc, nnod_4_surf,                &
+     &        maxtot_int_2d, jac1_sf_grp_2d_q)
+        call cal_jacobian_dyquad(jac1_sf_grp_2d_q)
+      else if (first_ele_type .eq. 333) then
+        if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_dylag'
+        call alloc_2d_jac_type(num_surf_bc, nnod_4_surf,                &
+     &        maxtot_int_2d, jac1_sf_grp_2d_q)
+        call cal_jacobian_dylag(jac1_sf_grp_2d_q)
+      else
+        if (iflag_debug.eq.1) write(*,*) 'copy_jacobians_2d_quad'
+        call copy_jacobians_2d(num_surf_bc, nnod_4_surf,                &
+     &        jac1_sf_grp_2d_l, jac1_sf_grp_2d_q)
+      end if
+!
+      end subroutine cal_jacobian_surf_grp
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine allocate_jacobians_2d_l_quad(n_int)
 !
        use m_geometry_constants
        use m_geometry_parameter
        use m_surface_group
-       use m_fem_gauss_int_coefs
 !
+      integer(kind = kint), intent(in) :: n_int
 !
-      allocate(an_sf(num_linear_sf,ntot_int_sf_grp))
-!
-      allocate(xsf_sf(num_surf_bc,ntot_int_sf_grp,3))
-!
-      allocate(xj_sf(num_surf_bc,ntot_int_sf_grp))
-      allocate(axj_sf(num_surf_bc,ntot_int_sf_grp))
-!
-!
-      an_sf = 0.0d0
-!
-      if(num_surf_bc .gt. 0) then
-        xj_sf = 0.0d0
-        axj_sf = 0.0d0
-      end if
-!
-      end subroutine allocate_jacobians_2d_linear
-!
-!  ------------------------------------------------------------------
-!
-      subroutine allocate_jacobians_2d_quad
-!
-       use m_geometry_parameter
-       use m_surface_group
-       use m_fem_gauss_int_coefs
-!
-      allocate(aw_sf(nnod_4_surf,ntot_int_sf_grp))
-!
-      allocate(xsq_sf(num_surf_bc,ntot_int_sf_grp,3))
-!
-      allocate(xjq_sf(num_surf_bc,ntot_int_sf_grp))
-      allocate(axjq_sf(num_surf_bc,ntot_int_sf_grp)) 
-!
-      aw_sf = 0.0d0
-!
-      if(num_surf_bc .gt. 0) then
-        xsq_sf = 0.0d0
-        xjq_sf = 0.0d0
-        axjq_sf = 0.0d0 
-      end if
-!
-      end subroutine allocate_jacobians_2d_quad
-!
-!  ------------------------------------------------------------------
-!
-      subroutine allocate_jacobians_2d_l_quad
-!
-       use m_geometry_constants
-       use m_geometry_parameter
-       use m_surface_group
-       use m_fem_gauss_int_coefs
-!
-      allocate(am_sf(num_quad_sf,ntot_int_sf_grp))
-!
-      allocate(xslq_sf(num_surf_bc,ntot_int_sf_grp,3))
-!
-      allocate(xjlq_sf(num_surf_bc,ntot_int_sf_grp))
-      allocate(axjlq_sf(num_surf_bc,ntot_int_sf_grp)) 
-!
-      am_sf = 0.0d0
-!
-      if(num_surf_bc .gt. 0) then
-        xslq_sf = 0.0d0
-        xjlq_sf = 0.0d0
-        axjlq_sf = 0.0d0
-      end if
+      call alloc_2d_jac_type(num_surf_bc, num_quad_sf, n_int,           &
+     &    jac1_sf_grp_2d_ql)
 !
        end subroutine allocate_jacobians_2d_l_quad
 !
 !  ------------------------------------------------------------------
 !  ------------------------------------------------------------------
 !
-      subroutine copy_jacobians_2d_quad
-!
-       aw_sf   = an_sf
-       xsq_sf  = xsf_sf
-       xjq_sf  = xj_sf
-       axjq_sf = axj_sf
-!       dwx_sf  = dnx_sf
-       end subroutine copy_jacobians_2d_quad
-!
-!  ------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
        subroutine deallocate_jacobians_2d_linear
 !
 !
-      deallocate(an_sf, xsf_sf)
-      deallocate(xj_sf, axj_sf)
+      call dealloc_2d_jac_type(jac1_sf_grp_2d_l)
 !
       end subroutine deallocate_jacobians_2d_linear
 !
@@ -149,8 +106,7 @@
       subroutine deallocate_jacobians_2d_quad
 !
 !
-      deallocate(aw_sf, xsq_sf)
-      deallocate(xjq_sf, axjq_sf)
+      call dealloc_2d_jac_type(jac1_sf_grp_2d_q)
 !
       end subroutine deallocate_jacobians_2d_quad
 !
@@ -159,8 +115,7 @@
       subroutine deallocate_jacobians_2d_l_quad
 !
 !
-      deallocate(am_sf, xslq_sf)
-      deallocate(xjlq_sf, axjlq_sf)
+      call dealloc_2d_jac_type(jac1_sf_grp_2d_ql)
 !
       end subroutine deallocate_jacobians_2d_l_quad
 !

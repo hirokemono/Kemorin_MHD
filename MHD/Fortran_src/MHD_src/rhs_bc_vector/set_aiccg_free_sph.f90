@@ -67,8 +67,9 @@
             call fem_surf_crank_free_inside(igrp, k2, num_int,          &
      &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,            &
      &          num_surf_bc, num_surf_smp, isurf_grp_smp_stack,         &
-     &          surf_item, ntot_int_sf_grp, aw_sf, xjq_sf, xe_sf,       &
-     &          ak_d_velo, sk6)
+     &          surf_item, jac1_sf_grp_2d_q%ntot_int,                   &
+     &          jac1_sf_grp_2d_q%an_sf, jac1_sf_grp_2d_q%xj_sf,         &
+     &          xe_sf, ak_d_velo, sk6)
 !
             call add_skv1_2_MHD_matrix33(idx_4_fl_mat, k2, sk6,         &
      &          Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
@@ -111,8 +112,9 @@
             call fem_surf_crank_free_outside(igrp, k2, num_int,         &
      &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,            &
      &          num_surf_bc, num_surf_smp, isurf_grp_smp_stack,         &
-     &          surf_item, ntot_int_sf_grp, aw_sf, xjq_sf, xe_sf,       &
-     &          ak_d_velo, sk6)
+     &          surf_item, jac1_sf_grp_2d_q%ntot_int,                   &
+     &          jac1_sf_grp_2d_q%an_sf, jac1_sf_grp_2d_q%xj_sf,         &
+     &          xe_sf, ak_d_velo, sk6)
 !
             call add_skv1_2_MHD_matrix33(idx_4_fl_mat, k2, sk6,         &
      &          Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)

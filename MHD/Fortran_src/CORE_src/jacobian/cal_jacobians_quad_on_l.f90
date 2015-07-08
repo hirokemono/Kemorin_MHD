@@ -64,6 +64,7 @@
 !
       subroutine cal_jacobian_dyquad_on_linear
 !
+      use m_surface_group
       use m_jacobians_2d
       use cal_jac_2d
       use cal_shape_function_2d
@@ -71,20 +72,22 @@
       integer (kind = kint) :: ii, ix, i0
 !
 !
-      call s_cal_shape_function_2d_quad(ntot_int_sf_grp, am_sf,         &
-     &    dnxi_sf20, dnei_sf20, xi2, ei2)
+      call s_cal_shape_function_2d_quad(jac1_sf_grp_2d_ql%ntot_int,     &
+     &    jac1_sf_grp_2d_ql%an_sf, dnxi_sf20, dnei_sf20, xi2, ei2)
 !
 !   jacobian for quadrature  elaments
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0
-!
           ix = int_start2(i0) + ii
 !
-          call s_cal_jacobian_sf_grp_quad(xjlq_sf(1,ix),                &
-     &        axjlq_sf(1,ix), xslq_sf(1,ix,1), xslq_sf(1,ix,2),         &
-     &        xslq_sf(1,ix,3), dnxi_sf20(1,ix), dnei_sf20(1,ix) )
-!
+          call s_cal_jacobian_sf_grp_quad                               &
+     &       (jac1_sf_grp_2d_ql%xj_sf(1:num_surf_bc,ix),                &
+     &        jac1_sf_grp_2d_ql%axj_sf(1:num_surf_bc,ix),               &
+     &        jac1_sf_grp_2d_ql%xsf_sf(1:num_surf_bc,ix,1),             &
+     &        jac1_sf_grp_2d_ql%xsf_sf(1:num_surf_bc,ix,2),             &
+     &        jac1_sf_grp_2d_ql%xsf_sf(1:num_surf_bc,ix,3),             &
+     &        dnxi_sf20(1,ix), dnei_sf20(1,ix) )
         end do
       end do
 !

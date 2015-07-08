@@ -19,7 +19,7 @@
 !        type(mesh_geometry), intent(in) :: mesh
 !        type(surface_geometry), intent(in) :: surf_mesh
 !        type(mesh_groups),      intent(in) :: group
-!        type(jacobians_surf_grp), intent(inout) :: jac_sf_grp
+!        type(jacobians_2d), intent(inout) :: jac_sf_grp
 !
 !      subroutine const_linear_jac_3d_type(mesh, group, jacobians)
 !        type(mesh_geometry), intent(in) :: mesh
@@ -41,7 +41,7 @@
 !        type(mesh_geometry), intent(in) :: mesh
 !        type(mesh_groups), intent(in) ::  group
 !        type(surface_geometry), intent(in) :: surf_mesh
-!        type(jacobians_surf_grp), intent(inout) :: jac_sf_grp_l
+!        type(jacobians_2d), intent(inout) :: jac_sf_grp_l
 !
 !
 !      subroutine empty_jacobian_type(mesh, jac_3d)
@@ -56,7 +56,7 @@
 !     &          group, jac_sf_grp)
 !        type(surface_geometry), intent(in) :: surf_mesh
 !        type(mesh_groups),      intent(in) :: group
-!        type(jacobians_surf_grp), intent(inout) :: jac_sf_grp
+!        type(jacobians_2d), intent(inout) :: jac_sf_grp
 !
 !      subroutine empty_linear_jac_3d_type(mesh, jacobians)
 !        type(mesh_geometry), intent(in) :: mesh
@@ -141,9 +141,8 @@
       type(jacobians_2d), intent(inout) :: jac_2d
 !
 !
-      jac_2d%ntot_int = maxtot_int_2d
       call alloc_2d_jac_type(surf_mesh%surf%numsurf,                    &
-     &    surf_mesh%surf%nnod_4_surf, jac_2d)
+     &    surf_mesh%surf%nnod_4_surf, maxtot_int_2d, jac_2d)
 !
       if      (surf_mesh%surf%nnod_4_surf .eq. num_linear_sf) then
         call cal_jacobian_type_2d_linear(mesh, surf_mesh, jac_2d)
@@ -189,12 +188,11 @@
       type(mesh_geometry),    intent(in) :: mesh
       type(surface_geometry), intent(in) :: surf_mesh
       type(mesh_groups),      intent(in) :: group
-      type(jacobians_surf_grp), intent(inout) :: jac_sf_grp
+      type(jacobians_2d), intent(inout) :: jac_sf_grp
 !
 !
-      jac_sf_grp%ntot_int = maxtot_int_2d
-      call alloc_2d_jac_sf_grp_type(surf_mesh%surf%nnod_4_surf,         &
-     &    group%surf_grp%num_item, jac_sf_grp)
+      call alloc_2d_jac_type(group%surf_grp%num_item,                   &
+     &    surf_mesh%surf%nnod_4_surf, maxtot_int_2d, jac_sf_grp)
 !
       if (group%surf_grp%num_grp .gt. 0) then
         if      (surf_mesh%surf%nnod_4_surf .eq. num_linear_sf) then
@@ -264,9 +262,8 @@
 !
 !
       if(surf_mesh%surf%nnod_4_surf .ne. num_linear_sf) then
-        jac_2d_l%ntot_int = maxtot_int_2d
         call alloc_2d_jac_type(surf_mesh%surf%numsurf,                  &
-     &      num_linear_sf, jac_2d_l)
+     &      num_linear_sf, maxtot_int_2d, jac_2d_l)
         call cal_jacobian_type_2d_linear(mesh, surf_mesh, jac_2d_l)
       end if
 !
@@ -301,7 +298,7 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::  group
       type(surface_geometry), intent(in) :: surf_mesh
-      type(jacobians_surf_grp), intent(inout) :: jac_sf_grp_l
+      type(jacobians_2d), intent(inout) :: jac_sf_grp_l
 !
 !
       if(surf_mesh%surf%nnod_4_surf .ne. num_linear_sf) then
@@ -339,9 +336,8 @@
       type(jacobians_2d), intent(inout) :: jac_2d
 !
 !
-      jac_2d%ntot_int = maxtot_int_2d
       call alloc_2d_jac_type(surf_mesh%surf%numsurf,                    &
-     &    surf_mesh%surf%nnod_4_surf, jac_2d)
+     &    surf_mesh%surf%nnod_4_surf, maxtot_int_2d, jac_2d)
 !
       end subroutine empty_jacobian_surface_type
 !
@@ -352,12 +348,11 @@
 !
       type(surface_geometry), intent(in) :: surf_mesh
       type(mesh_groups),      intent(in) :: group
-      type(jacobians_surf_grp), intent(inout) :: jac_sf_grp
+      type(jacobians_2d), intent(inout) :: jac_sf_grp
 !
 !
-      jac_sf_grp%ntot_int = maxtot_int_2d
-      call alloc_2d_jac_sf_grp_type(surf_mesh%surf%nnod_4_surf,         &
-     &    group%surf_grp%num_item, jac_sf_grp)
+      call alloc_2d_jac_type(group%surf_grp%num_item,                   &
+     &    surf_mesh%surf%nnod_4_surf, maxtot_int_2d, jac_sf_grp)
 !
       end subroutine empty_jacobian_surf_grp_type
 !

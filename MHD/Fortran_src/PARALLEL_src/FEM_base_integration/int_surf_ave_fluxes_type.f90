@@ -57,7 +57,7 @@
 !
         call int_surf_area_1_surf_grp(mesh%ele%numele, surf%numsurf,    &
      &      surf%isf_4_ele, mesh%ele%e_multi, jac_2d%ntot_int, num_int, &
-     &      jac_2d%xj_surf, num_sgrp, isurf_grp, area)
+     &      jac_2d%xj_sf, num_sgrp, isurf_grp, area)
 !
       end subroutine int_surf_area_1sgrp_type
 !
@@ -87,13 +87,13 @@
         call int_surf_ave_1sgrp_8(mesh%node%numnod, mesh%ele%numele,    &
      &      surf%numsurf, surf%nnod_4_surf, surf%ie_surf,               &
      &      surf%isf_4_ele, mesh%ele%e_multi, jac_2d%ntot_int, num_int, &
-     &      jac_2d%an_surf, jac_2d%xj_surf, num_sgrp, isurf_grp,        &
+     &      jac_2d%an_sf, jac_2d%xj_sf, num_sgrp, isurf_grp,            &
      &      istack_sf_grp_smp, d1_nod, ave_l)
       else
         call int_surf_ave_1sgrp_4(mesh%node%numnod, mesh%ele%numele,    &
      &      surf%numsurf, surf%nnod_4_surf, surf%ie_surf,               &
      &      surf%isf_4_ele, mesh%ele%e_multi, jac_2d%ntot_int, num_int, &
-     &      jac_2d%an_surf, jac_2d%xj_surf, num_sgrp, isurf_grp,        &
+     &      jac_2d%an_sf, jac_2d%xj_sf, num_sgrp, isurf_grp,            &
      &      istack_sf_grp_smp, d1_nod, ave_l)
       end if
 !
@@ -126,13 +126,13 @@
      &      surf%numsurf,  surf%nnod_4_surf, surf%ie_surf,              &
      &      surf%isf_4_ele, mesh%ele%e_multi, num_sgrp, isurf_grp,      &
      &      istack_sf_grp_smp, jac_2d%ntot_int, num_int,                &
-     &      jac_2d%an_surf, jac_2d%xsf_surf, d1_nod, flux)
+     &      jac_2d%an_sf, jac_2d%xsf_sf, d1_nod, flux)
       else
         call int_vec_flux_1sgrp_4(mesh%node%numnod, mesh%ele%numele,    &
      &      surf%numsurf, surf%nnod_4_surf, surf%ie_surf,               &
      &      surf%isf_4_ele, mesh%ele%e_multi, num_sgrp, isurf_grp,      &
      &      istack_sf_grp_smp, jac_2d%ntot_int, num_int,                &
-     &      jac_2d%an_surf, jac_2d%xsf_surf, d1_nod, flux)
+     &      jac_2d%an_sf, jac_2d%xsf_sf, d1_nod, flux)
       end if
 !
       end subroutine int_vec_flux_1sgrp_type
@@ -163,13 +163,13 @@
      &      surf%numsurf, surf%nnod_4_surf, surf%ie_surf,               &
      &      surf%isf_4_ele, mesh%ele%e_multi, num_sgrp, isurf_grp,      &
      &      istack_sf_grp_smp, jac_2d%ntot_int, num_int,                &
-     &      jac_2d%an_surf, jac_2d%xsf_surf, d1_nod, flux_l)
+     &      jac_2d%an_sf, jac_2d%xsf_sf, d1_nod, flux_l)
       else
         call int_vec_tflux_1sgrp_4(mesh%node%numnod, mesh%ele%numele,   &
      &      surf%numsurf, surf%nnod_4_surf, surf%ie_surf,               &
      &      surf%isf_4_ele, mesh%ele%e_multi, num_sgrp, isurf_grp,      &
      &      istack_sf_grp_smp, jac_2d%ntot_int, num_int,                &
-     &      jac_2d%an_surf, jac_2d%xsf_surf, d1_nod, flux_l)
+     &      jac_2d%an_sf, jac_2d%xsf_sf, d1_nod, flux_l)
       end if
 !
       end subroutine int_vec_total_flux_1sgrp_type

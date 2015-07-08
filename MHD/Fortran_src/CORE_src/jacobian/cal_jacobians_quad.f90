@@ -7,7 +7,7 @@
 !
 !      subroutine cal_jacobian_quad
 !      subroutine cal_jacobian_dyquad
-!      subroutine cal_jacobian_surface_quad
+!      subroutine cal_jacobian_surface_quad(jac_sf_grp_q)
 !      subroutine cal_jacobian_edge_quad(jac_1d_q)
 !
       module cal_jacobians_quad
@@ -64,29 +64,34 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_dyquad
+      subroutine cal_jacobian_dyquad(jac_sf_grp_q)
 !
-      use m_jacobians_2d
+      use m_surface_group
+      use t_jacobian_2d
       use cal_jac_2d
       use cal_shape_function_2d
+!
+      type(jacobians_2d), intent(inout) :: jac_sf_grp_q
 !
       integer (kind = kint) :: ii, ix, i0
 !
 !
-      call s_cal_shape_function_2d_quad(ntot_int_sf_grp, aw_sf,         &
-     &    dnxi_sf20, dnei_sf20, xi2, ei2)
+      call s_cal_shape_function_2d_quad(jac_sf_grp_q%ntot_int,          &
+     &    jac_sf_grp_q%an_sf, dnxi_sf20, dnei_sf20, xi2, ei2)
 !
 !   jacobian for quadrature  elaments
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0
-!
           ix = int_start2(i0) + ii
 !
-          call s_cal_jacobian_sf_grp_quad(xjq_sf(1,ix), axjq_sf(1,ix),  &
-     &        xsq_sf(1,ix,1), xsq_sf(1,ix,2), xsq_sf(1,ix,3),           &
+          call s_cal_jacobian_sf_grp_quad                               &
+     &       (jac_sf_grp_q%xj_sf(1:num_surf_bc,ix),                     &
+     &        jac_sf_grp_q%axj_sf(1:num_surf_bc,ix),                    &
+     &        jac_sf_grp_q%xsf_sf(1:num_surf_bc,ix,1),                  &
+     &        jac_sf_grp_q%xsf_sf(1:num_surf_bc,ix,2),                  &
+     &        jac_sf_grp_q%xsf_sf(1:num_surf_bc,ix,3),                  &
      &        dnxi_sf20(1,ix), dnei_sf20(1,ix) )
-!
         end do
       end do
 !

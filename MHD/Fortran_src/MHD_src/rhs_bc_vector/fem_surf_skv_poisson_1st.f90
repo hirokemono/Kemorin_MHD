@@ -53,10 +53,12 @@
      &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_surf_skv_poisson_wall(np_smp, numele,                    &
-     &    nnod_4_ele, nnod_4_surf, nnod_4_surf, node_on_sf,             &
-     &    num_surf_bc, surf_item, num_surf_smp, isurf_grp_smp_stack,    &
-     &    igrp, k2, n_int, ntot_int_sf_grp, xsf_sf, an_sf, an_sf,       &
+      call fem_surf_skv_poisson_wall                                    &
+     &   (np_smp, numele,  nnod_4_ele, nnod_4_surf,                     &
+     &    nnod_4_surf, node_on_sf, num_surf_bc, surf_item,              &
+     &    num_surf_smp, isurf_grp_smp_stack, igrp, k2, n_int,           &
+     &    jac1_sf_grp_2d_l%ntot_int, jac1_sf_grp_2d_l%xsf_sf,           &
+     &    jac1_sf_grp_2d_l%an_sf, jac1_sf_grp_2d_l%an_sf,               &
      &    vect_sf, sk_v)
 !
       end subroutine fem_surf_skv_poisson_wall_1
@@ -77,11 +79,13 @@
      &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_surf_skv_poisson_sph_out(np_smp, numele,                 &
-     &    nnod_4_ele, nnod_4_surf, nnod_4_surf, node_on_sf,             &
-     &    num_surf_bc, surf_item, num_surf_smp, isurf_grp_smp_stack,    &
-     &    igrp, k2, n_int, ntot_int_sf_grp, xj_sf, an_sf, an_sf,        &
-     &    xe_sf, vect_sf, sk_v)
+      call fem_surf_skv_poisson_sph_out                                 &
+     &   (np_smp, numele,  nnod_4_ele, nnod_4_surf,                     &
+     &    nnod_4_surf, node_on_sf, num_surf_bc, surf_item,              &
+     &    num_surf_smp, isurf_grp_smp_stack, igrp, k2, n_int,           &
+     &    jac1_sf_grp_2d_l%ntot_int, jac1_sf_grp_2d_l%xj_sf,            &
+     &    jac1_sf_grp_2d_l%an_sf, jac1_sf_grp_2d_l%an_sf, xe_sf,        &
+     &    vect_sf, sk_v)
 !
       end subroutine fem_surf_skv_poisson_sph_out_1
 !
@@ -102,10 +106,12 @@
      &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_surf_skv_current_diffuse(np_smp, numele, nnod_4_ele,     &
-     &    nnod_4_surf, nnod_4_surf, node_on_sf, num_surf_bc,            &
-     &    surf_item, num_surf_smp, isurf_grp_smp_stack, igrp,           &
-     &    k2, nd, n_int, ntot_int_sf_grp, xjq_sf, aw_sf, aw_sf,         &
+      call fem_surf_skv_current_diffuse                                 &
+     &   (np_smp, numele, nnod_4_ele, nnod_4_surf, nnod_4_surf,         &
+     &    node_on_sf, num_surf_bc, surf_item, num_surf_smp,             &
+     &    isurf_grp_smp_stack, igrp, k2, nd, n_int,                     &
+     &    jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%xj_sf,            &
+     &    jac1_sf_grp_2d_q%an_sf, jac1_sf_grp_2d_q%an_sf,               &
      &    dxe_sf, scalar_sf, sk_v)
 !
       end subroutine fem_surf_skv_current_diffuse_1
@@ -127,10 +133,12 @@
      &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_surf_skv_diffuse_term(np_smp, numele, nnod_4_ele,        &
-     &    nnod_4_surf, nnod_4_surf, node_on_sf, num_surf_bc,            &
-     &    surf_item, num_surf_smp, isurf_grp_smp_stack, igrp,           &
-     &    k2, nd, n_int, ntot_int_sf_grp, xjq_sf, aw_sf, aw_sf,         &
+      call fem_surf_skv_diffuse_term                                    &
+     &   (np_smp, numele, nnod_4_ele,  nnod_4_surf, nnod_4_surf,        &
+     &    node_on_sf, num_surf_bc, surf_item, num_surf_smp,             &
+     &    isurf_grp_smp_stack, igrp, k2, nd, n_int,                     &
+     &    jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%xj_sf,            &
+     &    jac1_sf_grp_2d_q%an_sf, jac1_sf_grp_2d_q%an_sf,               &
      &    ak_d, dxe_sf, scalar_sf, sk_v)
 !
       end subroutine fem_surf_skv_diffuse_1st
@@ -153,10 +161,12 @@
      &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_surf_skv_trq_sph_out(np_smp, numele, nnod_4_ele,         &
-     &    nnod_4_surf, nnod_4_surf, node_on_sf, num_surf_bc,            &
-     &    surf_item, num_surf_smp, isurf_grp_smp_stack, igrp,           &
-     &    k2, n_int, ntot_int_sf_grp, xjq_sf, aw_sf, aw_sf,             &
+      call fem_surf_skv_trq_sph_out                                     &
+     &   (np_smp, numele, nnod_4_ele, nnod_4_surf, nnod_4_surf,         &
+     &    node_on_sf, num_surf_bc, surf_item, num_surf_smp,             &
+     &    isurf_grp_smp_stack, igrp, k2, n_int,                         &
+     &    jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%xj_sf,            &
+     &    jac1_sf_grp_2d_q%an_sf, jac1_sf_grp_2d_q%an_sf,               &
      &    ak_d_velo, xe_sf, vect_sf, sk_v)
 !
 !
@@ -189,7 +199,8 @@
      &    nnod_4_surf, node_on_sf, num_surf, num_surf_bc,               &
      &    surf_istack, surf_item, num_surf_smp, isurf_grp_smp_stack,    &
      &    nmax_surf, nmax_ele_surf, ngrp_sf, id_grp_sf, ist_surf,       &
-     &    sf_apt, n_int, nd, ntot_int_sf_grp, xjq_sf, aw_sf,            &
+     &    sf_apt, n_int, nd, jac1_sf_grp_2d_q%ntot_int,                 &
+     &    jac1_sf_grp_2d_q%xj_sf, jac1_sf_grp_2d_q%an_sf,               &
      &    ak_d, sk_v)
 !
       end subroutine fem_surf_skv_norm_grad_1
@@ -218,7 +229,8 @@
      &    nnod_4_surf, node_on_sf, num_surf, num_surf_bc,               &
      &    surf_istack, surf_item, num_surf_smp, isurf_grp_smp_stack,    &
      &    nmax_surf, nmax_ele_surf, ngrp_sf, id_grp_sf, ist_surf,       &
-     &    sf_apt, n_int, ntot_int_sf_grp, xjq_sf, aw_sf, sk_v)
+     &    sf_apt, n_int, jac1_sf_grp_2d_q%ntot_int,                     &
+     &    jac1_sf_grp_2d_q%xj_sf, jac1_sf_grp_2d_q%an_sf, sk_v)
 !
       end subroutine fem_surf_skv_norm_poisson_1
 !

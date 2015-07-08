@@ -1,21 +1,25 @@
-!t_jacobian_2d.f90
-!     module t_jacobian_2d
+!>@file  t_jacobian_2d.f90
+!!       module t_jacobian_2d
+!!
+!!@author H. Matsui
+!!@date   Programmed on Nov., 2008
+!!@n      Modified by H. Matsui on Feb., 2012
 !
-!      Written by H. Matsui on Dec., 2008
-!
-!>   Structure of 2D Jacobian and difference of shape functions
-!
-!
-!      subroutine alloc_2d_jac_type(numsurf, nnod_4_surf, jac_2d)
-!        integer(kind = kint), intent(in) :: numsurf, nnod_4_surf
-!        type(jacobians_2d), intent(inout) :: jac_2d
-!       subroutine alloc_2d_jac_sf_grp_type(nnod_4_surf,                &
-!     &           num_surf_bc, jac_sf_grp)
-!        integer(kind = kint), intent(in) :: nnod_4_surf, num_surf_bc
-!        type(jacobians_surf_grp), intent(inout) :: jac_sf_grp
-!
-!      subroutine dealloc_2d_jac_type(jac_2d)
-!      subroutine dealloc_2d_jac_sf_grp_type(jac_sf_grp)
+!> @brief  Structure of 2D Jacobian and difference of shape functions
+!!
+!!@verbatim
+!!      subroutine alloc_2d_jac_type(nsurf, nnod_4_surf, n_int, jac_2d)
+!!        integer(kind = kint), intent(in) :: nsurf, nnod_4_surf
+!!        integer(kind = kint), intent(in) :: n_int
+!!        type(jacobians_2d), intent(inout) :: jac_2d
+!!
+!!      subroutine dealloc_2d_jac_type(jac_2d)
+!!
+!!      subroutine copy_jacobians_2d                                    &
+!!     &         (nsurf, nnod_4_surf, jac_2d_org, jac_2d_new)
+!!        type(jacobians_2d), intent(in) :: jac_2d_org
+!!        type(jacobians_2d), intent(inout) :: jac_2d_new
+!!@endverbatim
 !
       module t_jacobian_2d
 !
@@ -23,30 +27,21 @@
 !
       implicit  none
 !
-!>     Stracture for Jacobians for surface
+!>     Stracture of Jacobians for surface
       type jacobians_2d
+!>     Number of Gauss points
         integer(kind=kint) :: ntot_int
-        real (kind=kreal), pointer :: an_surf(:,:)
-! 
-        real (kind=kreal), pointer :: xsf_surf(:,:,:)
-!
-        real (kind=kreal), pointer :: xj_surf(:,:)
-        real (kind=kreal), pointer :: axj_surf(:,:)
-      end type jacobians_2d
-!
-!
-!>     Stracture for Jacobians for surafce group
-      type jacobians_surf_grp
-        integer(kind=kint) :: ntot_int
+!>    Shape function
         real (kind=kreal), pointer :: an_sf(:,:)
 ! 
+!>    Difference of shape function
         real (kind=kreal), pointer :: xsf_sf(:,:,:)
 !
+!>    Jacobian
         real (kind=kreal), pointer :: xj_sf(:,:)
+!>    1 / Jacobian
         real (kind=kreal), pointer :: axj_sf(:,:)
-!
-        real (kind=kreal), pointer :: sgs_sf(:,:)
-      end type jacobians_surf_grp
+      end type jacobians_2d
 !
 !-----------------------------------------------------------------------
 !
@@ -54,58 +49,32 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_2d_jac_type(numsurf, nnod_4_surf, jac_2d)
+      subroutine alloc_2d_jac_type(nsurf, nnod_4_surf, n_int, jac_2d)
 !
-      integer(kind = kint), intent(in) :: numsurf, nnod_4_surf
+      integer(kind = kint), intent(in) :: nsurf, nnod_4_surf
+      integer(kind = kint), intent(in) :: n_int
 !
       type(jacobians_2d), intent(inout) :: jac_2d
 !
 !
-      allocate(jac_2d%an_surf(nnod_4_surf,jac_2d%ntot_int))
+      jac_2d%ntot_int = n_int
+      allocate(jac_2d%an_sf(nnod_4_surf,jac_2d%ntot_int))
 !
-      allocate(jac_2d%xsf_surf(numsurf,jac_2d%ntot_int,3))
+      allocate(jac_2d%xsf_sf(nsurf,jac_2d%ntot_int,3))
 !
-      allocate(jac_2d%xj_surf(numsurf,jac_2d%ntot_int))
-      allocate(jac_2d%axj_surf(numsurf,jac_2d%ntot_int))
+      allocate(jac_2d%xj_sf(nsurf,jac_2d%ntot_int))
+      allocate(jac_2d%axj_sf(nsurf,jac_2d%ntot_int))
 !
-      jac_2d%an_surf = 0.0d0
+      jac_2d%an_sf = 0.0d0
 !
-      if (numsurf .gt. 0) then
-        jac_2d%xsf_surf = 0.0d0
+      if (nsurf .gt. 0) then
+        jac_2d%xsf_sf = 0.0d0
 !
-        jac_2d%xj_surf = 0.0d0
-        jac_2d%axj_surf = 0.0d0
+        jac_2d%xj_sf = 0.0d0
+        jac_2d%axj_sf = 0.0d0
       end if
 !
       end subroutine alloc_2d_jac_type
-!
-!  ---------------------------------------------------------------------
-!
-       subroutine alloc_2d_jac_sf_grp_type(nnod_4_surf,                 &
-     &           num_surf_bc, jac_sf_grp)
-!
-      integer(kind = kint), intent(in) :: nnod_4_surf, num_surf_bc
-!
-      type(jacobians_surf_grp), intent(inout) :: jac_sf_grp
-!
-!
-      allocate(jac_sf_grp%an_sf(nnod_4_surf,jac_sf_grp%ntot_int))
-!
-      allocate(jac_sf_grp%xsf_sf(num_surf_bc,jac_sf_grp%ntot_int,3))
-!
-      allocate(jac_sf_grp%xj_sf(num_surf_bc,jac_sf_grp%ntot_int))
-      allocate(jac_sf_grp%axj_sf(num_surf_bc,jac_sf_grp%ntot_int))
-      allocate(jac_sf_grp%sgs_sf(num_surf_bc,14))
-!
-      if (num_surf_bc .gt. 0) then
-        jac_sf_grp%an_sf = 0.0d0
-!
-        jac_sf_grp%xj_sf = 0.0d0
-        jac_sf_grp%axj_sf = 0.0d0
-        jac_sf_grp%sgs_sf = 0.0d0
-      end if
-!
-      end subroutine alloc_2d_jac_sf_grp_type
 !
 !  ---------------------------------------------------------------------
 !
@@ -114,28 +83,34 @@
       type(jacobians_2d), intent(inout) :: jac_2d
 !
 !
-      deallocate(jac_2d%an_surf)
-      deallocate(jac_2d%xsf_surf)
+      deallocate(jac_2d%an_sf)
+      deallocate(jac_2d%xsf_sf)
 !
-      deallocate(jac_2d%xj_surf, jac_2d%axj_surf)
+      deallocate(jac_2d%xj_sf, jac_2d%axj_sf)
 !
       end subroutine dealloc_2d_jac_type
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
-      subroutine dealloc_2d_jac_sf_grp_type(jac_sf_grp)
+      subroutine copy_jacobians_2d                                      &
+     &         (nsurf, nnod_4_surf, jac_2d_org, jac_2d_new)
 !
-      type(jacobians_surf_grp), intent(inout) :: jac_sf_grp
+      integer(kind = kint), intent(in) :: nsurf, nnod_4_surf
+      type(jacobians_2d), intent(in) :: jac_2d_org
+      type(jacobians_2d), intent(inout) :: jac_2d_new
 !
 !
-      deallocate(jac_sf_grp%an_sf)
-      deallocate(jac_sf_grp%xsf_sf)
+      call alloc_2d_jac_type(nsurf, nnod_4_surf,                       &
+     &    jac_2d_org%ntot_int, jac_2d_new)
 !
-      deallocate(jac_sf_grp%xj_sf, jac_sf_grp%axj_sf)
-      deallocate(jac_sf_grp%sgs_sf)
+      jac_2d_new%an_sf   = jac_2d_org%an_sf
+      jac_2d_new%xsf_sf  = jac_2d_org%xsf_sf
+      jac_2d_new%xj_sf  = jac_2d_org%xj_sf
+      jac_2d_new%axj_sf = jac_2d_org%axj_sf
 !
-      end subroutine dealloc_2d_jac_sf_grp_type
+       end subroutine copy_jacobians_2d
 !
-!  ------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
       end module t_jacobian_2d

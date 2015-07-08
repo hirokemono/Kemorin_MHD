@@ -22,7 +22,7 @@
 !        type(mesh_geometry),    intent(in) :: mesh
 !        type(surface_geometry), intent(in) :: surf_mesh
 !        type(mesh_groups),      intent(in) :: group
-!        type(jacobians_surf_grp), intent(inout) :: jac_sf_grp
+!        type(jacobians_2d), intent(inout) :: jac_sf_grp
 !
       module const_jacobians_2d_type
 !
@@ -54,7 +54,7 @@
 !
 !
       call copy_shape_func_from_array(jac_2d%ntot_int,                  &
-     &    surf_mesh%surf%nnod_4_surf, an_surf, jac_2d%an_surf )
+     &    surf_mesh%surf%nnod_4_surf, an_surf, jac_2d%an_sf)
 !
 !   jacobian for tri-linear elaments
 !
@@ -64,11 +64,11 @@
           ix = int_start2(i0) + ii
 !
           call cal_jac_2d_linear_type(mesh, surf_mesh,                  &
-     &        jac_2d%xj_surf(1:surf_mesh%surf%numsurf,ix),              &
-     &        jac_2d%axj_surf(1:surf_mesh%surf%numsurf,ix),             &
-     &        jac_2d%xsf_surf(1:surf_mesh%surf%numsurf,ix,1),           &
-     &        jac_2d%xsf_surf(1:surf_mesh%surf%numsurf,ix,2),           &
-     &        jac_2d%xsf_surf(1:surf_mesh%surf%numsurf,ix,3),           &
+     &        jac_2d%xj_sf(1:surf_mesh%surf%numsurf,ix),                &
+     &        jac_2d%axj_sf(1:surf_mesh%surf%numsurf,ix),               &
+     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,1),             &
+     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,2),             &
+     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,3),             &
      &        dnxi_sf1(1:surf_mesh%surf%nnod_4_surf,ix),                &
      &        dnei_sf1(1:surf_mesh%surf%nnod_4_surf,ix) )
 !
@@ -94,7 +94,7 @@
 !
 !
       call copy_shape_func_from_array(jac_2d%ntot_int,                  &
-     &    surf_mesh%surf%nnod_4_surf, aw_surf, jac_2d%an_surf )
+     &    surf_mesh%surf%nnod_4_surf, aw_surf, jac_2d%an_sf)
 !
 !   jacobian for quadrature  elaments
 !
@@ -104,11 +104,11 @@
           ix = int_start2(i0) + ii
 !
           call cal_jac_2d_quad_type(mesh, surf_mesh,                    &
-     &        jac_2d%xj_surf(1:surf_mesh%surf%numsurf,ix),              &
-     &        jac_2d%axj_surf(1:surf_mesh%surf%numsurf,ix),             &
-     &        jac_2d%xsf_surf(1:surf_mesh%surf%numsurf,ix,1),           &
-     &        jac_2d%xsf_surf(1:surf_mesh%surf%numsurf,ix,2),           &
-     &        jac_2d%xsf_surf(1:surf_mesh%surf%numsurf,ix,3),           &
+     &        jac_2d%xj_sf(1:surf_mesh%surf%numsurf,ix),                &
+     &        jac_2d%axj_sf(1:surf_mesh%surf%numsurf,ix),               &
+     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,1),             &
+     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,2),             &
+     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,3),             &
      &        dnxi_sf20(1:surf_mesh%surf%nnod_4_surf,ix),               &
      &        dnxi_sf20(1:surf_mesh%surf%nnod_4_surf,ix) )
 !
@@ -134,7 +134,7 @@
 !
 !
       call copy_shape_func_from_array(jac_2d%ntot_int,                  &
-     &   surf_mesh%surf%nnod_4_surf, aw_surf, jac_2d%an_surf )
+     &   surf_mesh%surf%nnod_4_surf, aw_surf, jac_2d%an_sf)
 !
 !   jacobian for quadrature  elaments
 !
@@ -144,11 +144,11 @@
           ix = int_start2(i0) + ii
 !
           call cal_jac_2d_lag_type(mesh, surf_mesh,                     &
-     &        jac_2d%xj_surf(1:surf_mesh%surf%numsurf,ix),              &
-     &        jac_2d%axj_surf(1:surf_mesh%surf%numsurf,ix),             &
-     &        jac_2d%xsf_surf(1:surf_mesh%surf%numsurf,ix,1),           &
-     &        jac_2d%xsf_surf(1:surf_mesh%surf%numsurf,ix,2),           &
-     &        jac_2d%xsf_surf(1:surf_mesh%surf%numsurf,ix,3),           &
+     &        jac_2d%xj_sf(1:surf_mesh%surf%numsurf,ix),                &
+     &        jac_2d%axj_sf(1:surf_mesh%surf%numsurf,ix),               &
+     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,1),             &
+     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,2),             &
+     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,3),             &
      &        dnxi_sf27(1:surf_mesh%surf%nnod_4_surf,ix),               &
      &        dnxi_sf27(1:surf_mesh%surf%nnod_4_surf,ix) )
 !
@@ -175,7 +175,7 @@
 !
 !
       call copy_shape_func_from_array(jac_2d%ntot_int,                  &
-     &    surf_mesh%surf%nnod_4_surf, aw_surf, jac_2d%an_surf )
+     &    surf_mesh%surf%nnod_4_surf, aw_surf, jac_2d%an_sf)
 !
 !   jacobian for quadrature elaments
 !
@@ -185,11 +185,11 @@
           ix = int_start2(i0) + ii
 !
           call cal_jac_2d_l_quad_type(mesh, surf_mesh,                  &
-     &        jac_2d%xj_surf(1:surf_mesh%surf%numsurf,ix),              &
-     &        jac_2d%axj_surf(1:surf_mesh%surf%numsurf,ix),             &
-     &        jac_2d%xsf_surf(1:surf_mesh%surf%numsurf,ix,1),           &
-     &        jac_2d%xsf_surf(1:surf_mesh%surf%numsurf,ix,2),           &
-     &        jac_2d%xsf_surf(1:surf_mesh%surf%numsurf,ix,3),           &
+     &        jac_2d%xj_sf(1:surf_mesh%surf%numsurf,ix),                &
+     &        jac_2d%axj_sf(1:surf_mesh%surf%numsurf,ix),               &
+     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,1),             &
+     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,2),             &
+     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,3),             &
      &        dnxi_sf20(1:surf_mesh%surf%nnod_4_surf,ix),               &
      &        dnxi_sf20(1:surf_mesh%surf%nnod_4_surf,ix) )
 !
@@ -212,13 +212,14 @@
       type(mesh_geometry),    intent(in) :: mesh
       type(surface_geometry), intent(in) :: surf_mesh
       type(mesh_groups),      intent(in) :: group
-      type(jacobians_surf_grp), intent(inout) :: jac_sf_grp
+      type(jacobians_2d), intent(inout) :: jac_sf_grp
 !
       integer (kind = kint) :: ii, ix, i0
 !
 !
       call copy_shape_func_from_array(jac_sf_grp%ntot_int,              &
-     &    surf_mesh%surf%nnod_4_surf, an_sf, jac_sf_grp%an_sf)
+     &    surf_mesh%surf%nnod_4_surf, jac1_sf_grp_2d_l%an_sf,           &
+     &    jac_sf_grp%an_sf)
 !
 !   jacobian for tri-linear elaments
 !
@@ -255,13 +256,14 @@
       type(mesh_geometry),    intent(in) :: mesh
       type(surface_geometry), intent(in) :: surf_mesh
       type(mesh_groups),      intent(in) :: group
-      type(jacobians_surf_grp), intent(inout) :: jac_sf_grp
+      type(jacobians_2d), intent(inout) :: jac_sf_grp
 !
       integer (kind = kint) :: ii, ix, i0
 !
 !
       call copy_shape_func_from_array(jac_sf_grp%ntot_int,              &
-     &    surf_mesh%surf%nnod_4_surf, aw_sf, jac_sf_grp%an_sf)
+     &    surf_mesh%surf%nnod_4_surf, jac1_sf_grp_2d_q%an_sf,           &
+     &    jac_sf_grp%an_sf)
 !
 !   jacobian for quadrature  elaments
 !
@@ -298,13 +300,14 @@
       type(mesh_geometry),    intent(in) :: mesh
       type(surface_geometry), intent(in) :: surf_mesh
       type(mesh_groups),      intent(in) :: group
-      type(jacobians_surf_grp), intent(inout) :: jac_sf_grp
+      type(jacobians_2d), intent(inout) :: jac_sf_grp
 !
       integer (kind = kint) :: ii, ix, i0
 !
 !
       call copy_shape_func_from_array(jac_sf_grp%ntot_int,              &
-     &    surf_mesh%surf%nnod_4_surf, aw_sf, jac_sf_grp%an_sf)
+     &    surf_mesh%surf%nnod_4_surf, jac1_sf_grp_2d_q%an_sf,           &
+     &    jac_sf_grp%an_sf)
 !
 !   jacobian for quadrature  elaments
 !
@@ -341,13 +344,14 @@
       type(mesh_geometry),    intent(in) :: mesh
       type(surface_geometry), intent(in) :: surf_mesh
       type(mesh_groups),      intent(in) :: group
-      type(jacobians_surf_grp), intent(inout) :: jac_sf_grp
+      type(jacobians_2d), intent(inout) :: jac_sf_grp
 !
       integer (kind = kint) :: ii, ix, i0
 !
 !
       call copy_shape_func_from_array(jac_sf_grp%ntot_int,              &
-     &    surf_mesh%surf%nnod_4_surf, aw_sf, jac_sf_grp%an_sf)
+     &    surf_mesh%surf%nnod_4_surf, jac1_sf_grp_2d_q%an_sf,           &
+     &    jac_sf_grp%an_sf)
 !
 !   jacobian for quadrature  elaments
 !

@@ -15,7 +15,7 @@
 !        type(surface_data), intent(in) ::   surf_mesh
 !        type(nodal_boundarty_conditions), intent(in) ::   nodal_bc
 !        type(surface_boundarty_conditions), intent(in) :: surface_bc
-!        type(jacobians_surf_grp), intent(in) ::          jac_sf_grp
+!        type(jacobians_2d), intent(in) ::          jac_sf_grp
 !        type(coefs_4_MHD_AMG), intent(in) ::          ak_AMG
 !        type(DJDS_ordering_table),  intent(in) :: djds_tbl
 !        type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
@@ -66,7 +66,7 @@
       type(surface_data), intent(in) ::   surf_mesh
       type(nodal_boundarty_conditions), intent(in) ::   nodal_bc
       type(surface_boundarty_conditions), intent(in) :: surface_bc
-      type(jacobians_surf_grp), intent(in) ::          jac_sf_grp
+      type(jacobians_2d), intent(in) ::         jac_sf_grp
       type(coefs_4_MHD_AMG), intent(in) ::      ak_AMG
       type(DJDS_ordering_table),  intent(in) :: djds_tbl
       type(DJDS_ordering_table),  intent(in) :: djds_tbl_fl
@@ -140,7 +140,7 @@
       type(vect_fixed_nod_bc_type), intent(in) :: velo_bc
       type(scaler_rotaion_nod_bc_type), intent(in) :: rot_bc
       type(velocity_surf_bc_type), intent(in) ::     torque_bc
-      type(jacobians_surf_grp), intent(in) ::       jac_sf_grp
+      type(jacobians_2d), intent(in) ::             jac_sf_grp
       type(coefs_4_MHD_AMG), intent(in) ::          ak_AMG
 !
       type(DJDS_ordering_table), intent(in) :: djds_tbl_fl

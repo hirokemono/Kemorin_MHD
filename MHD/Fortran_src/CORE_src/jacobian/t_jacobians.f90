@@ -32,7 +32,7 @@
 !>     Stracture for Jacobians for edge
         type(jacobians_1d) ::       jac_1d
 !>     Stracture for Jacobians for surafce group
-        type(jacobians_surf_grp) :: jac_sf_grp
+        type(jacobians_2d) :: jac_sf_grp
 !
 !>     Stracture for Jacobians for linear element
         type(jacobians_3d), pointer ::  jac_3d_l
@@ -41,7 +41,7 @@
 !>     Stracture for Jacobians for linear edge
         type(jacobians_1d), pointer  :: jac_1d_l
 !>     Stracture for Jacobians for linear surafce group
-        type(jacobians_surf_grp), pointer :: jac_sf_grp_l
+        type(jacobians_2d), pointer :: jac_sf_grp_l
 !
         type(jacobians_3d), pointer ::  jac_3d_lq
 !>     Stracture for quadrature Jacobians for surface
@@ -49,7 +49,7 @@
 !>     Stracture for quadrature Jacobians for edge
         type(jacobians_1d), pointer  :: jac_1d_lq
 !>     Stracture for quadrature Jacobians for surafce group
-        type(jacobians_surf_grp), pointer :: jac_sf_grp_lq
+        type(jacobians_2d), pointer :: jac_sf_grp_lq
 !
       end type jacobians_type
 !

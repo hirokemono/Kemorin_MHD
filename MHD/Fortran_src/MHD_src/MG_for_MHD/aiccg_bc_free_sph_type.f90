@@ -12,7 +12,7 @@
 !        type(surface_data), intent(in) ::  surf
 !        type(mesh_groups), intent(in) :: group
 !        type(velocity_surf_bc_type), intent(in) :: torque_bc
-!        type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !        type(coefs_4_MHD_AMG), intent(in) ::            ak_AMG
 !        type(DJDS_ordering_table), intent(in) :: fluid_tbl
 !        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -51,7 +51,7 @@
       type(surface_data), intent(in) ::  surf
       type(mesh_groups), intent(in) :: group
       type(velocity_surf_bc_type), intent(in) :: torque_bc
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(coefs_4_MHD_AMG), intent(in) ::    ak_AMG
 !
       type(DJDS_ordering_table), intent(in) :: fluid_tbl
@@ -93,7 +93,7 @@
       type(surface_group_data), intent(in) :: sf_grp
 !
       type(scaler_surf_bc_data_type), intent(in) :: free_sph_in
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(surf_grp_geom_4_fem_int), intent(in) :: sf_grp_int
       type(coefs_4_MHD_AMG), intent(in) ::            ak_AMG
 !
@@ -150,7 +150,7 @@
       type(surface_group_data), intent(in) :: sf_grp
 !
       type(scaler_surf_bc_data_type), intent(in) :: free_sph_out
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(surf_grp_geom_4_fem_int), intent(in) :: sf_grp_int
       type(coefs_4_MHD_AMG), intent(in) ::            ak_AMG
 !

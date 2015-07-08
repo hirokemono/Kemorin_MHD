@@ -25,8 +25,9 @@
 !
       implicit  none
 !
-!>     Stracture for Jacobians for edge
+!>     Stracture of Jacobians for edge
       type jacobians_1d
+!>     Number of Gauss points
         integer(kind = kint) :: ntot_int
 !
 !>    Shape function

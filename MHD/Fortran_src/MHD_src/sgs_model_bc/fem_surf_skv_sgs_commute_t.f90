@@ -71,7 +71,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(work_finite_surface_mat), intent(in) :: fem_sf_wk
 !
@@ -108,7 +108,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(work_finite_surface_mat), intent(in) :: fem_sf_wk
 !
@@ -145,7 +145,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(work_finite_surface_mat), intent(in) :: fem_sf_wk
 !
@@ -182,7 +182,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(work_finite_surface_mat), intent(in) :: fem_sf_wk
 !
@@ -222,7 +222,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(work_finite_surface_mat), intent(in) :: fem_sf_wk
 !
@@ -262,7 +262,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(work_finite_surface_mat), intent(in) :: fem_sf_wk
 !
@@ -303,8 +303,8 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp_l
+      type(jacobians_2d), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp_l
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(work_finite_surface_mat), intent(in) :: fem_sf_wk
 !
@@ -343,8 +343,8 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp_l
+      type(jacobians_2d), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp_l
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(work_finite_surface_mat), intent(in) :: fem_sf_wk
 !

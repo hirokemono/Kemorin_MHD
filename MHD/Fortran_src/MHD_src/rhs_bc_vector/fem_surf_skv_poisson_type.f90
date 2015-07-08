@@ -54,7 +54,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(work_finite_surface_mat), intent(in) :: fem_sf_wk
 !
       integer (kind = kint), intent(in) :: n_int, k2, igrp
@@ -82,7 +82,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(work_finite_surface_mat), intent(in) :: fem_sf_wk
 !
       integer (kind = kint), intent(in) :: n_int, k2, igrp
@@ -111,7 +111,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(work_finite_surface_mat), intent(in) :: fem_sf_wk
 !
       integer (kind = kint), intent(in) :: igrp, n_int, k2, nd
@@ -139,7 +139,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(work_finite_surface_mat), intent(in) :: fem_sf_wk
 !
       integer (kind = kint), intent(in) :: igrp, n_int, k2, nd
@@ -169,7 +169,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(work_finite_surface_mat), intent(in) :: fem_sf_wk
 !
       integer (kind = kint), intent(in) :: igrp, k2, n_int
@@ -201,7 +201,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       integer (kind = kint), intent(in) :: nmax_surf, ngrp_sf
       integer (kind = kint), intent(in) :: nmax_ele_surf
       integer (kind = kint), intent(in) :: id_grp_sf(nmax_surf)
@@ -237,7 +237,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
-      type(jacobians_surf_grp), intent(in) :: jac_sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       integer (kind = kint), intent(in) :: nmax_surf, ngrp_sf
       integer (kind = kint), intent(in) :: nmax_ele_surf
       integer (kind = kint), intent(in) :: id_grp_sf(nmax_surf)

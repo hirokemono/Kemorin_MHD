@@ -34,6 +34,7 @@
       use m_ele_material_property
       use m_bulk_values
       use m_jacobians
+      use m_jacobians_2d
       use m_work_4_dynamic_model
       use m_work_layer_correlate
       use m_boundary_condition_IDs
