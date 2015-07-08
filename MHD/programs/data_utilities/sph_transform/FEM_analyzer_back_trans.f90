@@ -31,6 +31,7 @@
       use m_edge_geometry_data
       use m_element_id_4_node
       use m_jacobians
+      use m_jacobians_4_surface
       use m_t_step_parameter
       use m_ele_sf_eg_comm_tables
 !

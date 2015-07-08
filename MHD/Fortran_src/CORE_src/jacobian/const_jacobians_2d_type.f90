@@ -54,7 +54,7 @@
 !
 !
       call copy_shape_func_from_array(jac_2d%ntot_int,                  &
-     &    surf_mesh%surf%nnod_4_surf, an_surf, jac_2d%an_sf)
+     &    surf_mesh%surf%nnod_4_surf, jac1_2d_l%an_sf, jac_2d%an_sf)
 !
 !   jacobian for tri-linear elaments
 !
@@ -94,7 +94,7 @@
 !
 !
       call copy_shape_func_from_array(jac_2d%ntot_int,                  &
-     &    surf_mesh%surf%nnod_4_surf, aw_surf, jac_2d%an_sf)
+     &    surf_mesh%surf%nnod_4_surf, jac1_2d_q%an_sf, jac_2d%an_sf)
 !
 !   jacobian for quadrature  elaments
 !
@@ -134,7 +134,7 @@
 !
 !
       call copy_shape_func_from_array(jac_2d%ntot_int,                  &
-     &   surf_mesh%surf%nnod_4_surf, aw_surf, jac_2d%an_sf)
+     &   surf_mesh%surf%nnod_4_surf, jac1_2d_q%an_sf, jac_2d%an_sf)
 !
 !   jacobian for quadrature  elaments
 !
@@ -175,7 +175,7 @@
 !
 !
       call copy_shape_func_from_array(jac_2d%ntot_int,                  &
-     &    surf_mesh%surf%nnod_4_surf, aw_surf, jac_2d%an_sf)
+     &    surf_mesh%surf%nnod_4_surf, jac1_2d_q%an_sf, jac_2d%an_sf)
 !
 !   jacobian for quadrature elaments
 !
@@ -204,7 +204,7 @@
       subroutine cal_jacobian_type_sf_grp_linear(mesh, surf_mesh,       &
      &          group, jac_sf_grp)
 !
-      use m_jacobians_2d
+      use m_jacobian_sf_grp
       use t_mesh_data
       use t_jacobians
       use cal_jac_2d_type
@@ -248,7 +248,7 @@
       subroutine cal_jacobian_type_sf_grp_quad(mesh, surf_mesh,         &
      &          group, jac_sf_grp)
 !
-      use m_jacobians_2d
+      use m_jacobian_sf_grp
       use t_mesh_data
       use t_jacobians
       use cal_jac_2d_type
@@ -292,7 +292,7 @@
       subroutine cal_jacobian_type_sf_grp_lag(mesh, surf_mesh,          &
      &          group, jac_sf_grp)
 !
-      use m_jacobians_2d
+      use m_jacobian_sf_grp
       use t_mesh_data
       use t_jacobians
       use cal_jac_2d_type
@@ -336,7 +336,7 @@
       subroutine cal_jacobian_type_sf_grp_l_quad(mesh, surf_mesh,       &
      &          group, jac_sf_grp)
 !
-      use m_jacobians_2d
+      use m_jacobian_sf_grp
       use t_mesh_data
       use t_jacobians
       use cal_jac_2d_type

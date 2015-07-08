@@ -35,8 +35,9 @@
       use edge_IO_select
       use m_geometry_data
       use m_surface_group
+      use m_jacobians_4_surface
       use m_jacobians_4_edge
-      use m_jacobians_2d
+      use m_jacobian_sf_grp
       use check_jacobians
       use int_volume_of_domain
       use set_surf_grp_vectors

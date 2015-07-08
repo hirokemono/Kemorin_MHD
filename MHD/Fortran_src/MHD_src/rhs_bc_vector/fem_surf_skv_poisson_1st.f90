@@ -30,7 +30,7 @@
       use m_geometry_constants
       use m_geometry_parameter
       use m_surface_group
-      use m_jacobians_2d
+      use m_jacobian_sf_grp
       use m_phys_constants
 !
       implicit none

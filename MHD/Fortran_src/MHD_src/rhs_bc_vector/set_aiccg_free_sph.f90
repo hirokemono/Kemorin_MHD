@@ -43,7 +43,7 @@
       use m_node_phys_address
       use m_ele_material_property
       use m_int_surface_data
-      use m_jacobians_2d
+      use m_jacobian_sf_grp
       use m_finite_element_matrix
       use m_sorted_node_MHD
       use m_surf_data_torque
@@ -88,7 +88,7 @@
       use m_node_phys_address
       use m_ele_material_property
       use m_int_surface_data
-      use m_jacobians_2d
+      use m_jacobian_sf_grp
       use m_finite_element_matrix
       use m_sorted_node_MHD
       use m_surf_data_torque

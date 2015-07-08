@@ -12,7 +12,6 @@
 !>        and Jacobians for input hexahedral mesh
 !
 !      subroutine cal_jacobian_element
-!      subroutine cal_jacobian_surface
 !
 !
       module cal_jacobian
@@ -123,40 +122,6 @@
       call deallocate_inv_jacobians
 !
       end subroutine cal_jacobian_element
-!
-!-----------------------------------------------------------------------
-!> Construct shape function, difference of shape function, and Jacobian
-!> for surface element
-!
-      subroutine cal_jacobian_surface
-!
-      use m_machine_parameter
-      use m_jacobians_4_surface
-!
-      use cal_jacobians_linear
-      use cal_jacobians_quad
-      use cal_jacobians_lag
-!
-!
-      ntot_int_2d = maxtot_int_2d
-      call allocate_jacobians_surf_linear
-      call allocate_jacobians_surf_quad
-!
-      if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_surface_linear'
-      call cal_jacobian_surface_linear
-!
-      if (first_ele_type .eq. 332) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_surface_quad'
-        call cal_jacobian_surface_quad
-      else if (first_ele_type .eq. 333) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_surface_lag'
-        call cal_jacobian_surface_lag
-      else
-        if (iflag_debug.eq.1) write(*,*) 'copy_jacobians_surface_quad'
-        call copy_jacobians_surface_quad
-      end if
-!
-      end subroutine cal_jacobian_surface
 !
 !-----------------------------------------------------------------------
 !

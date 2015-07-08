@@ -1,5 +1,5 @@
-!>@file  m_jacobians_2d.f90
-!!       module m_jacobians_2d
+!>@file  m_jacobian_sf_grp.f90
+!!       module m_jacobian_sf_grp
 !!
 !!@author H. Matsui
 !!@date   Programmed on Nov., 2008
@@ -17,7 +17,7 @@
 !!      subroutine deallocate_jacobians_2d_l_quad
 !!@endverbatim
 !
-      module   m_jacobians_2d
+      module   m_jacobian_sf_grp
 !
       use m_precision
       use t_jacobian_2d
@@ -121,4 +121,4 @@
 !
 !  ------------------------------------------------------------------
 !
-      end module   m_jacobians_2d
+      end module   m_jacobian_sf_grp

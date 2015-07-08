@@ -32,12 +32,12 @@
 !
       if (nnod_4_ele .eq. num_t_quad) then
         call int_normal_all_surf(numsurf, isurf_smp_stack,              &
-     &     ntot_int_2d, max_int_point, xjq_surf, xsq_surf,              &
-     &     area_surf, a_area_surf, vnorm_surf)
+     &     jac1_2d_q%ntot_int, max_int_point, jac1_2d_q%xj_sf,          &
+     &     jac1_2d_q%xsf_sf, area_surf, a_area_surf, vnorm_surf)
       else
         call int_normal_all_surf(numsurf, isurf_smp_stack,              &
-     &     ntot_int_2d, max_int_point, xj_surf, xsf_surf,               &
-     &     area_surf, a_area_surf, vnorm_surf)
+     &     jac1_2d_l%ntot_int, max_int_point, jac1_2d_l%xj_sf,          &
+     &     jac1_2d_l%xsf_sf, area_surf, a_area_surf, vnorm_surf)
       end if
 !
       end subroutine s_int_normal_4_all_surface

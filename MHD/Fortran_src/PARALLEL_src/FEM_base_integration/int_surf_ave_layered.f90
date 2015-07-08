@@ -57,9 +57,9 @@
           num_sgrp = layer_stack(igrp) - layer_stack(igrp-1)
           call int_surf_ave_1sgrp_8(numnod, numele, numsurf,            &
      &        nnod_4_surf, ie_surf, isf_4_ele, e_multi,                 &
-     &        ntot_int_2d, num_int, aw_surf, xjq_surf, num_sgrp,        &
-     &        item_layer(1,ist), istack_layer_grp_smp(ist_smp),         &
-     &        d1_nod, ave_l(igrp) )
+     &        jac1_2d_q%ntot_int, num_int, jac1_2d_q%an_sf,             &
+     &        jac1_2d_q%xj_sf, num_sgrp, item_layer(1,ist),                              &
+     &        istack_layer_grp_smp(ist_smp), d1_nod, ave_l(igrp) )
         end do
 !
       else
@@ -70,9 +70,9 @@
           num_sgrp = layer_stack(igrp) - layer_stack(igrp-1)
           call int_surf_ave_1sgrp_4(numnod, numele, numsurf,            &
      &        nnod_4_surf, ie_surf, isf_4_ele, e_multi,                 &
-     &        ntot_int_2d, num_int, an_surf, xj_surf, num_sgrp,         &
-     &        item_layer(1,ist), istack_layer_grp_smp(ist_smp),         &
-     &        d1_nod, ave_l(igrp) )
+     &        jac1_2d_l%ntot_int, num_int, jac1_2d_l%an_sf,             &
+     &        jac1_2d_l%xj_sf, num_sgrp, item_layer(1,ist),                              &
+     &        istack_layer_grp_smp(ist_smp), d1_nod, ave_l(igrp) )
         end do
 !
       end if
@@ -104,8 +104,9 @@
           ist = layer_stack(igrp-1) + 1
           num_sgrp = layer_stack(igrp) - layer_stack(igrp-1)
           call int_surf_area_1_surf_grp(numele, numsurf,                &
-     &           isf_4_ele, e_multi, ntot_int_2d, num_int,              &
-     &           xjq_surf, num_sgrp, item_layer(1,ist), area_l(igrp))
+     &           isf_4_ele, e_multi, jac1_2d_q%ntot_int, num_int,       &
+     &           jac1_2d_q%xj_sf, num_sgrp, item_layer(1,ist),          &
+     &           area_l(igrp))
         end do
 !$omp end parallel do
 !
@@ -116,8 +117,9 @@
           ist = layer_stack(igrp-1) + 1
           num_sgrp = layer_stack(igrp) - layer_stack(igrp-1)
           call int_surf_area_1_surf_grp(numele, numsurf,                &
-     &           isf_4_ele, e_multi, ntot_int_2d, num_int,              &
-     &           xj_surf, num_sgrp, item_layer(1,ist), area_l(igrp))
+     &           isf_4_ele, e_multi, jac1_2d_l%ntot_int, num_int,       &
+     &           jac1_2d_l%xj_sf, num_sgrp, item_layer(1,ist),          &
+     &           area_l(igrp))
         end do
 !$omp end parallel do
 !

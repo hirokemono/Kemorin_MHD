@@ -6,8 +6,9 @@
 !        modified by H. Matsui on June. 2006
 !
 !      subroutine cal_jacobian_trilinear
-!      subroutine cal_jacobian_dylinear(jac_sf_grp_l)
+!      subroutine cal_jacobian_surface_linear(jac_2d_l)
 !      subroutine cal_jacobian_edge_linear(jac_1d_l)
+!      subroutine cal_jacobian_dylinear(jac_sf_grp_l)
 !
       module cal_jacobians_linear
 !
@@ -56,20 +57,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_dylinear(jac_sf_grp_l)
+      subroutine cal_jacobian_surface_linear(jac_2d_l)
 !
-      use m_surface_group
       use t_jacobian_2d
       use cal_jac_2d
       use cal_shape_function_2d
 !
-      type(jacobians_2d), intent(inout) :: jac_sf_grp_l
-!
+      type(jacobians_2d), intent(inout) :: jac_2d_l
       integer (kind = kint) :: ii, ix, i0
 !
 !
-      call s_cal_shape_function_2d_linear(jac_sf_grp_l%ntot_int,        &
-     &    jac_sf_grp_l%an_sf, dnxi_sf1, dnei_sf1, xi2, ei2)
+      call s_cal_shape_function_2d_linear(jac_2d_l%ntot_int,            &
+     &    jac_2d_l%an_sf, dnxi_sf1, dnei_sf1, xi2, ei2)
 !
 !   jacobian for tri-linear elaments
 !
@@ -77,47 +76,15 @@
         do ii = 1, i0*i0
           ix = int_start2(i0) + ii
 !
-          call s_cal_jacobian_sf_grp_linear                             &
-     &       (jac_sf_grp_l%xj_sf(1:num_surf_bc,ix),                     &
-     &        jac_sf_grp_l%axj_sf(1:num_surf_bc,ix),                    &
-     &        jac_sf_grp_l%xsf_sf(1:num_surf_bc,ix,1),                  &
-     &        jac_sf_grp_l%xsf_sf(1:num_surf_bc,ix,2),                  &
-     &        jac_sf_grp_l%xsf_sf(1:num_surf_bc,ix,3),                  &
+          call s_cal_jacobian_2d_linear                                 &
+     &       (jac_2d_l%xj_sf(1:numsurf,ix),                             &
+     &        jac_2d_l%axj_sf(1:numsurf,ix),                            &
+     &        jac_2d_l%xsf_sf(1:numsurf,ix,1),                          &
+     &        jac_2d_l%xsf_sf(1:numsurf,ix,2),                          &
+     &        jac_2d_l%xsf_sf(1:numsurf,ix,3),                          &
      &        dnxi_sf1(1,ix), dnei_sf1(1,ix) )
         end do
       end do
-!
-!
-      end subroutine cal_jacobian_dylinear
-!
-!-----------------------------------------------------------------------
-!
-      subroutine cal_jacobian_surface_linear
-!
-      use m_jacobians_4_surface
-      use cal_jac_2d
-      use cal_shape_function_2d
-!
-      integer (kind = kint) :: ii, ix, i0
-!
-!
-      call s_cal_shape_function_2d_linear(ntot_int_2d, an_surf,         &
-     &    dnxi_sf1, dnei_sf1, xi2, ei2)
-!
-!   jacobian for tri-linear elaments
-!
-      do i0 = 1, max_int_point
-        do ii = 1, i0*i0
-!
-          ix = int_start2(i0) + ii
-!
-          call s_cal_jacobian_2d_linear(xj_surf(1,ix), axj_surf(1,ix),  &
-     &        xsf_surf(1,ix,1), xsf_surf(1,ix,2), xsf_surf(1,ix,3),     &
-     &        dnxi_sf1(1,ix), dnei_sf1(1,ix) )
-!
-        end do
-      end do
-!
 !
       end subroutine cal_jacobian_surface_linear
 !
@@ -152,8 +119,43 @@
         end do
       end do
 !
-!
       end subroutine cal_jacobian_edge_linear
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine cal_jacobian_dylinear(jac_sf_grp_l)
+!
+      use m_surface_group
+      use t_jacobian_2d
+      use cal_jac_2d
+      use cal_shape_function_2d
+!
+      type(jacobians_2d), intent(inout) :: jac_sf_grp_l
+!
+      integer (kind = kint) :: ii, ix, i0
+!
+!
+      call s_cal_shape_function_2d_linear(jac_sf_grp_l%ntot_int,        &
+     &    jac_sf_grp_l%an_sf, dnxi_sf1, dnei_sf1, xi2, ei2)
+!
+!   jacobian for tri-linear elaments
+!
+      do i0 = 1, max_int_point
+        do ii = 1, i0*i0
+          ix = int_start2(i0) + ii
+!
+          call s_cal_jacobian_sf_grp_linear                             &
+     &       (jac_sf_grp_l%xj_sf(1:num_surf_bc,ix),                     &
+     &        jac_sf_grp_l%axj_sf(1:num_surf_bc,ix),                    &
+     &        jac_sf_grp_l%xsf_sf(1:num_surf_bc,ix,1),                  &
+     &        jac_sf_grp_l%xsf_sf(1:num_surf_bc,ix,2),                  &
+     &        jac_sf_grp_l%xsf_sf(1:num_surf_bc,ix,3),                  &
+     &        dnxi_sf1(1,ix), dnei_sf1(1,ix) )
+        end do
+      end do
+!
+      end subroutine cal_jacobian_dylinear
 !
 !-----------------------------------------------------------------------
 !
