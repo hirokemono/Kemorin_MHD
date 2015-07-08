@@ -16,7 +16,9 @@
       module const_jacobians_3d_type
 !
       use m_precision
+      use m_machine_parameter
 !
+      use m_geometry_constants
       use m_fem_gauss_int_coefs
       use m_shape_functions
 !
@@ -32,9 +34,8 @@
 !
       use t_mesh_data
       use t_jacobians
-      use m_geometry_constants
       use m_jacobians
-      use cal_jac_3d_type
+      use cal_jacobian_3d_linear
 !
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(inout) :: jac_3d
@@ -48,11 +49,13 @@
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0*i0
-!
           ix = int_start3(i0) + ii
 !
-          call cal_jac_3d_linear_type(mesh,                             &
-     &        jac_3d%xjac(1:mesh%ele%numele,ix),                        &
+          call s_cal_jacobian_3d_8                                      &
+     &       (mesh%node%numnod, mesh%ele%numele,                        &
+     &        np_smp, mesh%ele%istack_ele_smp,                          &
+     &        mesh%ele%ie(1:mesh%ele%numele,1:num_t_linear),            &
+     &        mesh%node%xx, jac_3d%xjac(1:mesh%ele%numele,ix),          &
      &        jac_3d%axjac(1:mesh%ele%numele,ix),                       &
      &        jac_3d%dnx(1:mesh%ele%numele,1:num_t_linear,ix,1),        &
      &        jac_3d%dnx(1:mesh%ele%numele,1:num_t_linear,ix,2),        &
@@ -79,9 +82,8 @@
 !
       use t_mesh_data
       use t_jacobians
-      use m_geometry_constants
       use m_jacobians
-      use cal_jac_3d_type
+      use cal_jacobian_3d_quad
 !
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(inout) :: jac_3d
@@ -95,10 +97,11 @@
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0*i0
-!
           ix = int_start3(i0) + ii
 !
-          call cal_jac_3d_quad_type(mesh,                               &
+          call s_cal_jacobian_3d_20                                     &
+     &       (mesh%node%numnod, mesh%ele%numele, np_smp,                &
+     &        mesh%ele%istack_ele_smp, mesh%ele%ie, mesh%node%xx,       &
      &        jac_3d%xjac(1:mesh%ele%numele,ix),                        &
      &        jac_3d%axjac(1:mesh%ele%numele,ix),                       &
      &        jac_3d%dnx(1:mesh%ele%numele,1:num_t_quad,ix,1),          &
@@ -126,9 +129,8 @@
 !
       use t_mesh_data
       use t_jacobians
-      use m_geometry_constants
       use m_jacobians
-      use cal_jac_3d_type
+      use cal_jacobian_3d_lag
 !
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(inout) :: jac_3d
@@ -142,10 +144,11 @@
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0*i0
-!
           ix = int_start3(i0) + ii
 !
-          call cal_jac_3d_quad_type(mesh,                               &
+          call s_cal_jacobian_3d_27                                     &
+     &       (mesh%node%numnod, mesh%ele%numele, np_smp,                &
+     &        mesh%ele%istack_ele_smp, mesh%ele%ie, mesh%node%xx,       &
      &        jac_3d%xjac(1:mesh%ele%numele,ix),                        &
      &        jac_3d%axjac(1:mesh%ele%numele,ix),                       &
      &        jac_3d%dnx(1:mesh%ele%numele,1:num_t_lag,ix,1),           &
@@ -173,9 +176,8 @@
 !
       use t_mesh_data
       use t_jacobians
-      use m_geometry_constants
       use m_jacobians
-      use cal_jac_3d_type
+      use cal_jacobian_3d_linear_quad
 !
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(inout) :: jac_3d
@@ -189,10 +191,11 @@
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0*i0
-!
           ix = int_start3(i0) + ii
 !
-          call cal_jac_3d_lin_quad_type(mesh,                           &
+          call cal_jacobian_3d_8_20                                     &
+     &       (mesh%node%numnod, mesh%ele%numele, np_smp,                &
+     &        mesh%ele%istack_ele_smp, mesh%ele%ie, mesh%node%xx,       &
      &        jac_3d%xjac(1:mesh%ele%numele,ix),                        &
      &        jac_3d%axjac(1:mesh%ele%numele,ix),                       &
      &        jac_3d%dnx(1:mesh%ele%numele,1:num_t_quad,ix,1),          &

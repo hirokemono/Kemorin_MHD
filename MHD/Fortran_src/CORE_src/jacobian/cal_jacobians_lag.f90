@@ -31,7 +31,7 @@
       subroutine cal_jacobian_lag
 !
       use m_jacobians
-      use cal_jac_3d
+      use cal_jacobian_3d_lag
       use cal_shape_function_3d
 !
       integer (kind=kint) :: ii, ix, i0
@@ -44,10 +44,10 @@
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0*i0
-!
           ix = int_start3(i0) + ii
 !
-          call s_cal_jacobian_3d_lag(xjac_q(1,ix), axjac_q(1,ix),       &
+          call s_cal_jacobian_3d_27(numnod, numele, np_smp,             &
+     &      iele_smp_stack, ie, xx, xjac_q(1,ix), axjac_q(1,ix),        &
      &      dwx(1,1,ix,1), dwx(1,1,ix,2), dwx(1,1,ix,3),                &
      &      dxidx_20(1,ix,1,1), dxidx_20(1,ix,2,1), dxidx_20(1,ix,3,1), &
      &      dxidx_20(1,ix,1,2), dxidx_20(1,ix,2,2), dxidx_20(1,ix,3,2), &

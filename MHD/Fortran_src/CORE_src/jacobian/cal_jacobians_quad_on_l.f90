@@ -31,7 +31,7 @@
       subroutine cal_jacobian_quad_on_linear
 !
       use m_jacobians
-      use cal_jac_3d
+      use cal_jacobian_3d_linear_quad
       use cal_shape_function_3d
 !
       integer (kind=kint) :: ii, ix, i0
@@ -46,7 +46,8 @@
         do ii = 1, i0*i0*i0
           ix = int_start3(i0) + ii
 !
-          call s_cal_jacobian_3d_lin_quad(xjac_lq(1,ix),                &
+          call cal_jacobian_3d_8_20(numnod, numele,                     &
+     &        np_smp, iele_smp_stack, ie, xx, xjac_lq(1,ix),            &
      &        axjac_lq(1,ix), dmx(1,1,ix,1), dmx(1,1,ix,2),             &
      &        dmx(1,1,ix,3),  dxidx_lq(1,ix,1,1), dxidx_lq(1,ix,2,1),   &
      &        dxidx_lq(1,ix,3,1), dxidx_lq(1,ix,1,2),                   &

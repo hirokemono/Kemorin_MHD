@@ -32,7 +32,7 @@
       subroutine cal_jacobian_trilinear
 !
       use m_jacobians
-      use cal_jac_3d
+      use cal_jacobian_3d_linear
       use cal_shape_function_3d
 !
       integer (kind = kint) :: ii, ix, i0
@@ -44,16 +44,15 @@
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0*i0
-!
           ix = int_start3(i0) + ii
 !
-          call s_cal_jacobian_3d_linear(xjac(1,ix), axjac(1,ix),        &
+          call s_cal_jacobian_3d_8(numnod, numele, np_smp,              &
+     &        iele_smp_stack, ie, xx, xjac(1,ix), axjac(1,ix),          &
      &        dnx(1,1,ix,1), dnx(1,1,ix,2), dnx(1,1,ix,3),              &
      &        dxidx_1(1,ix,1,1), dxidx_1(1,ix,2,1), dxidx_1(1,ix,3,1),  &
      &        dxidx_1(1,ix,1,2), dxidx_1(1,ix,2,2), dxidx_1(1,ix,3,2),  &
      &        dxidx_1(1,ix,1,3), dxidx_1(1,ix,2,3), dxidx_1(1,ix,3,3),  &
      &        dnxi_1(1,ix), dnei_1(1,ix), dnzi_1(1,ix) )
-!
         end do
       end do
 !
