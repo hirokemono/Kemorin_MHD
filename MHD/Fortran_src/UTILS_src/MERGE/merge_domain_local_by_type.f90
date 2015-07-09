@@ -70,7 +70,8 @@
       integer(kind = kint), intent(inout) :: iele_local(elmpetot)
       integer(kind = kint), intent(inout) :: idomain_ele(elmpetot)
 !
-      integer(kind = kint) :: ip, inod, iele, inod_gl, iele_gl
+      integer(kind = kint) :: ip, inod, iele
+      integer(kind = kint_gl) :: inod_gl, iele_gl
 !
 !
       do ip = 1, nprocs

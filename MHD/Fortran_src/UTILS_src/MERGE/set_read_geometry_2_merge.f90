@@ -141,22 +141,23 @@
       use m_geometry_data_4_merge
 !
       integer(kind = kint), intent(in) :: ip
-      integer(kind = kint)  :: inod, inod_g, inum, j, jp, ist, ied
+      integer(kind = kint)  :: inod, inum, j, jp, ist, ied
+      integer(kind = kint_gl) :: inod_gl
 !
 !
       do inod = 1, subdomain(ip)%node%numnod
-        inod_g = subdomain(ip)%node%inod_global(inod)
-        if (ioverlap_n(inod_g) .eq. 0) then
+        inod_gl = subdomain(ip)%node%inod_global(inod)
+        if (ioverlap_n(inod_gl) .eq. 0) then
           merge_tbl%nnod_merged  =  merge_tbl%nnod_merged  + 1
-          merged%node%xx(inod_g,1:3) = subdomain(ip)%node%xx(inod,1:3)
+          merged%node%xx(inod_gl,1:3) = subdomain(ip)%node%xx(inod,1:3)
         end if
-        ioverlap_n(inod_g) = ioverlap_n(inod_g) + 1
+        ioverlap_n(inod_gl) = ioverlap_n(inod_gl) + 1
       end do
 !
       do inod = 1, subdomain(ip)%node%internal_node
-        inod_g = subdomain(ip)%node%inod_global(inod)
-        merge_tbl%inod_local(inod_g) = inod
-        merge_tbl%idomain_nod(inod_g) = ip
+        inod_gl = subdomain(ip)%node%inod_global(inod)
+        merge_tbl%inod_local(inod_gl) = inod
+        merge_tbl%idomain_nod(inod_gl) = ip
       end do
 !
       do j = 1, subdomain(ip)%nod_comm%num_neib
@@ -165,10 +166,10 @@
         ied = subdomain(ip)%nod_comm%istack_import(j  )
         do inum = ist, ied
           inod = subdomain(ip)%nod_comm%item_import(inum)
-          inod_g = subdomain(ip)%node%inod_global(inod)
-          if (merge_tbl%inod_local(inod_g) .eq. 0) then
-            merge_tbl%inod_local(inod_g) = inod
-            merge_tbl%idomain_nod(inod_g) = jp
+          inod_gl = subdomain(ip)%node%inod_global(inod)
+          if (merge_tbl%inod_local(inod_gl) .eq. 0) then
+            merge_tbl%inod_local(inod_gl) = inod
+            merge_tbl%idomain_nod(inod_gl) = jp
           end if
         end do
       end do
@@ -182,37 +183,38 @@
       use m_geometry_data_4_merge
 !
       integer(kind = kint), intent(in) :: ip
-      integer(kind = kint) :: inod, iele, iele_g, k
+      integer(kind = kint) :: inod, iele, k
+      integer(kind = kint_gl) :: iele_gl
 !
 !
       do iele = 1, subdomain(ip)%ele%numele
-        iele_g = subdomain(ip)%ele%iele_global(iele)
+        iele_gl = subdomain(ip)%ele%iele_global(iele)
 !
-        if(ioverlap_e(iele_g) .eq. 0 ) then
+        if(ioverlap_e(iele_gl) .eq. 0 ) then
           merge_tbl%nele_merged  =  merge_tbl%nele_merged  + 1
-          merged%ele%elmtyp(iele_g) = subdomain(ip)%ele%elmtyp(iele)
+          merged%ele%elmtyp(iele_gl) = subdomain(ip)%ele%elmtyp(iele)
           do k = 1, merged%ele%nnod_4_ele
             inod = subdomain(ip)%ele%ie(iele,k)
-            merged%ele%ie(iele_g,k)                                     &
-     &           = subdomain(ip)%node%inod_global(inod)
+            merged%ele%ie(iele_gl,k)                                    &
+     &           = int(subdomain(ip)%node%inod_global(inod))
           end do
-          merge_tbl%iele_local(iele_g) = iele
-          merge_tbl%idomain_ele(iele_g) = ip
+          merge_tbl%iele_local(iele_gl) = iele
+          merge_tbl%idomain_ele(iele_gl) = ip
         end if
 !
-        ioverlap_e(iele_g) = ioverlap_e(iele_g) + 1
+        ioverlap_e(iele_gl) = ioverlap_e(iele_gl) + 1
       end do
 !
       do iele =1, subdomain(ip)%ele%numele
-        iele_g = subdomain(ip)%ele%iele_global(iele)
-        inod =   merged%ele%ie(iele_g,1)
+        iele_gl = subdomain(ip)%ele%iele_global(iele)
+        inod =   merged%ele%ie(iele_gl,1)
         if( merge_tbl%idomain_nod(inod) .eq. ip) then
-            merge_tbl%iele_local( iele_g ) =  iele
-            merge_tbl%idomain_ele( iele_g ) = ip
+            merge_tbl%iele_local( iele_gl ) =  iele
+            merge_tbl%idomain_ele( iele_gl ) = ip
         else if( merge_tbl%idomain_nod(inod) .gt. 0                     &
-     &     .and. merge_tbl%iele_local(iele_g) .eq. 0) then
-            merge_tbl%iele_local( iele_g ) = iele
-            merge_tbl%idomain_ele( iele_g )                             &
+     &     .and. merge_tbl%iele_local(iele_gl) .eq. 0) then
+            merge_tbl%iele_local( iele_gl ) = iele
+            merge_tbl%idomain_ele( iele_gl )                            &
      &         =  merge_tbl%idomain_nod(inod)
         end if
       end do
@@ -234,14 +236,15 @@
       integer(kind=kint), intent(in) :: ifield_2_copy(org_fld%num_phys)
 !
       integer(kind = kint) :: i, ic0, ic, j, nd
-      integer(kind = kint) :: inod, inod_global
+      integer(kind = kint) :: inod
+      integer(kind = kint_gl) :: inod_gl
 !
 !
       do inod = 1, subdomain(ip)%node%numnod
-        inod_global = subdomain(ip)%node%inod_global(inod)
+        inod_gl = subdomain(ip)%node%inod_global(inod)
 !
-        if    (ioverlap_n(inod_global) .ge. 1 ) then
-          if(merge_tbl%idomain_nod(inod_global) .eq. ip) then
+        if    (ioverlap_n(inod_gl) .ge. 1 ) then
+          if(merge_tbl%idomain_nod(inod_gl) .eq. ip) then
             do  j = 1, org_fld%num_phys
               ic0 = org_fld%istack_component(j-1)
 !
@@ -249,16 +252,16 @@
                 i = ifield_2_copy(j)
                 ic = merged_fld%istack_component(i-1)
                 do nd = 1, org_fld%num_component(j)
-                  merged_fld%d_fld(inod_global,ic+nd)                   &
+                  merged_fld%d_fld(inod_gl,ic+nd)                       &
      &                     = ucd%d_ucd(inod,ic0+nd)
                 end do
               end if
             end do
           end if
 !
-        else if(ioverlap_n( inod_global ) .eq. 0 ) then
+        else if(ioverlap_n(inod_gl) .eq. 0 ) then
           write(*,*) ' ioverlap error !! stop !'
-          write(*,*) ' ip, inode ', ip, inod_global, inod
+          write(*,*) ' ip, inode ', ip, inod_gl, inod
           stop
         endif
 !
