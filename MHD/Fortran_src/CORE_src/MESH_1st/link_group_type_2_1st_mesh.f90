@@ -113,11 +113,11 @@
       type(surface_group_table), intent(inout) :: tbls_surf_grp
 !
 !
-      tbls_surf_grp%edge%ntot_e_grp = ntot_edge_sf_grp
+      tbls_surf_grp%edge%ntot_e_grp = sf_grp_data1%edge%ntot_e_grp
       tbls_surf_grp%node%ntot_e_grp = ntot_node_sf_grp
 !
-      tbls_surf_grp%isurf_grp =>          isurf_grp
-      tbls_surf_grp%isurf_grp_n =>        isurf_grp_n
+      tbls_surf_grp%isurf_grp =>          sf_grp_data1%isurf_grp
+      tbls_surf_grp%isurf_grp_n =>        sf_grp_data1%isurf_grp_n
 !
       tbls_surf_grp%edge%nitem_e_grp =>  nedge_sf_grp
       tbls_surf_grp%edge%istack_e_grp => iedge_stack_sf_grp

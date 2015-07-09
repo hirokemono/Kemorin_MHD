@@ -27,16 +27,21 @@
       module m_surface_group_connect
 !
       use m_precision
+      use t_group_connects
+      use t_surface_group_connect
 !
       implicit  none
 !
 !
-      integer(kind=kint), allocatable, target :: isurf_grp(:)
-!<   local surface ID for surface group
+!>   Structure of connectivities for surface group
+      type(surface_group_table), save :: sf_grp_data1
+!> Structure of connectivity data for surface group items
+      type(surface_node_grp_data), save :: sf_grp_nod1
 !
-      integer(kind=kint) :: ntot_edge_sf_grp
+!sf_grp_data1%edge%nitem_e_grp
+!      integer(kind=kint) :: ntot_edge_sf_grp
 !<   total number of edge for surface group
-      integer(kind=kint), allocatable, target :: nedge_sf_grp(:)
+!      integer(kind=kint), allocatable, target :: nedge_sf_grp(:)
 !<   number of edge for each surface group
       integer(kind=kint), allocatable, target :: iedge_stack_sf_grp(:)
 !<   end number of edge for each surface group
@@ -62,8 +67,6 @@
       real(kind=kreal),   allocatable, target :: coef_sf_nod(:)
 !<   multiply coefs at each node for surface group
 !
-      integer(kind=kint), allocatable, target :: isurf_grp_n(:)
-!<   local surface ID for opposite side of surface group
 !
 !
       integer( kind=kint ), allocatable :: isurf_nod_smp_stack(:)
@@ -77,28 +80,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_surf_id_4_sf_grp
-!
-      use m_surface_group
-!
-      allocate(isurf_grp(num_surf_bc))
-      allocate(isurf_grp_n(num_surf_bc))
-      isurf_grp = 0
-      isurf_grp_n = 0
-!
-      end subroutine allocate_surf_id_4_sf_grp
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
       subroutine allocate_edge_stack_4_sf_grp
 !
       use m_surface_group
 !
-      allocate(nedge_sf_grp(num_surf))
+      allocate(sf_grp_data1%edge%nitem_e_grp(num_surf))
       allocate(iedge_stack_sf_grp(0:num_surf))
 !
-      nedge_sf_grp = 0
+      sf_grp_data1%edge%nitem_e_grp = 0
       iedge_stack_sf_grp = 0
 !
       end subroutine allocate_edge_stack_4_sf_grp
@@ -107,7 +96,7 @@
 !
       subroutine allocate_edge_id_4_sf_grp
 !
-      allocate(iedge_surf_grp(ntot_edge_sf_grp))
+      allocate(iedge_surf_grp(sf_grp_data1%edge%ntot_e_grp))
       iedge_surf_grp = 0
 !
       end subroutine allocate_edge_id_4_sf_grp
@@ -140,20 +129,9 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine deallocate_surf_id_4_sf_grp
-!
-      use m_surface_group
-!
-      deallocate(isurf_grp)
-      deallocate(isurf_grp_n)
-!
-      end subroutine deallocate_surf_id_4_sf_grp
-!
-!-----------------------------------------------------------------------
-!
       subroutine deallocate_edge_id_4_sf_grp
 !
-      deallocate(nedge_sf_grp, iedge_stack_sf_grp)
+      deallocate(sf_grp_data1%edge%nitem_e_grp, iedge_stack_sf_grp)
       deallocate(iedge_surf_grp)
 !
       end subroutine deallocate_edge_id_4_sf_grp

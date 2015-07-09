@@ -115,7 +115,7 @@
 !
 !
       call deallocate_edge_id_4_sf_grp
-      call deallocate_surf_id_4_sf_grp
+      call dealloc_surf_item_sf_grp_type(sf_grp_data1)
 !
       call deallocate_surf_id_4_ele_grp
       call deallocate_edge_id_4_ele_grp
