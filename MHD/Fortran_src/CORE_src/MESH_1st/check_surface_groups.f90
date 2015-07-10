@@ -110,7 +110,7 @@
        integer(kind = kint) :: isurf, iele
 !
 !
-       do isurf = 1, num_surf_bc
+       do isurf = 1, sf_grp1%num_item
          iele = surf_item(1,isurf)
          write(id_check,'(2i16, 1p6E25.15e3)') isurf, iele,             &
      &           sf_grp_v1%vnorm_sf_grp(isurf,1:3),                     &

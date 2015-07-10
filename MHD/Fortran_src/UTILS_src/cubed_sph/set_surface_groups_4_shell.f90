@@ -76,8 +76,8 @@
         end if
       end do
 !
-      num_surf_bc = icou * numele_sf
-      write(*,*) 'num_surf_bc', num_surf_bc, numele_sf
+      sf_grp1%num_item = icou * numele_sf
+      write(*,*) 'num_surf_bc', sf_grp1%num_item, numele_sf
 !
       end subroutine count_surf_groups
 !

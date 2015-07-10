@@ -86,7 +86,7 @@
       if (iflag_debug.eq.1 .and. my_rank.eq.0 )                         &
      &   write(*,*) 'alloc_vectors_surf_grp_type'
       call alloc_vectors_surf_grp_type                                  &
-     &   (sf_grp1%num_grp, num_surf_bc, sf_grp_v1)
+     &   (sf_grp1%num_grp, sf_grp1%num_item, sf_grp_v1)
 !
       if (iflag_debug.eq.1 .and. my_rank.eq.0 )                         &
      &   write(*,*) 'pick_surface_group_geometry'

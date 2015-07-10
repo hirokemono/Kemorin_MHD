@@ -118,15 +118,17 @@
 !
       sf_grp1%num_grp = sf_grp%num_grp
       if (sf_grp1%num_grp .gt. 0) then
-        num_surf_bc = sf_grp%num_item
+        sf_grp1%num_item = sf_grp%num_item
         call allocate_surface_data
 !
         surf_name(1:sf_grp1%num_grp)                                    &
      &     = sf_grp%grp_name(1:sf_grp1%num_grp)
         surf_istack(0:sf_grp1%num_grp)                                  &
      &     =  sf_grp%istack_grp(0:sf_grp1%num_grp)
-        surf_item(1,1:num_surf_bc)= sf_grp%item_sf_grp(1,1:num_surf_bc)
-        surf_item(2,1:num_surf_bc)= sf_grp%item_sf_grp(2,1:num_surf_bc)
+        surf_item(1,1:sf_grp1%num_item)                                 &
+     &     = sf_grp%item_sf_grp(1,1:sf_grp1%num_item)
+        surf_item(2,1:sf_grp1%num_item)                                 &
+     &     = sf_grp%item_sf_grp(2,1:sf_grp1%num_item)
       end if
 !
       end subroutine surface_group_from_type
@@ -212,8 +214,8 @@
 !
       if(sf_grp%num_grp .ne. sf_grp1%num_grp) write(*,*) 'num_surf',    &
      &     my_rank, sf_grp%num_grp, sf_grp1%num_grp
-      if(sf_grp%num_item .ne. num_surf_bc) write(*,*)                   &
-     &     'num_surf_bc', my_rank, sf_grp%num_item, num_surf_bc
+      if(sf_grp%num_item .ne. sf_grp1%num_item) write(*,*)              &
+     &     'num_surf_bc', my_rank, sf_grp%num_item, sf_grp1%num_item
       do i = 1, sf_grp1%num_grp
         if(sf_grp%grp_name(i) .ne. surf_name(i))                        &
      &       write(*,*) 'surf_name(i)', my_rank, i,                     &
@@ -222,7 +224,7 @@
      &       write(*,*) 'surf_istack(i)', my_rank, i,                   &
      &       sf_grp%istack_grp(i), surf_istack(i)
       end do
-      do i = 1, num_surf_bc
+      do i = 1, sf_grp1%num_item
         if(sf_grp%item_sf_grp(1,i) .ne. surf_item(1,i)                  &
      &   .or. sf_grp%item_sf_grp(2,i) .ne. surf_item(2,i))              &
      &       write(*,*) 'surf_item(:,i)', my_rank, i,                   &

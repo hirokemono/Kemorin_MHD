@@ -68,10 +68,10 @@
       use set_surface_id_4_surf_grp
 !
 !
-      call alloc_surf_item_sf_grp_type(num_surf_bc, sf_grp_data1)
+      call alloc_surf_item_sf_grp_type(sf_grp1%num_item, sf_grp_data1)
 !
       call set_surface_id_4_surf_group(numele, isf_4_ele,               &
-     &    sf_grp1%num_grp, num_surf_bc, surf_istack, surf_item,         &
+     &    sf_grp1%num_grp, sf_grp1%num_item, surf_istack, surf_item,    &
      &    sf_grp_data1%isurf_grp, sf_grp_data1%isurf_grp_n)
 !
       end subroutine set_surf_id_4_surf_group
@@ -96,7 +96,7 @@
       call alloc_num_other_grp(sf_grp1%num_grp, sf_grp_data1%edge)
 !
       call count_nod_4_ele_grp(numedge, numsurf, nedge_4_surf,          &
-     &    iedge_4_sf, sf_grp1%num_grp, num_surf_bc,                     &
+     &    iedge_4_sf, sf_grp1%num_grp, sf_grp1%num_item,                &
      &    surf_istack, sf_grp_data1%isurf_grp,                          &
      &    sf_grp_data1%edge%ntot_e_grp, sf_grp_data1%edge%nitem_e_grp,  &
      &    sf_grp_data1%edge%istack_e_grp, imark_4_grp)
@@ -104,7 +104,7 @@
       call alloc_item_other_grp(sf_grp_data1%edge)
 !
       call set_nod_4_ele_grp(numedge, numsurf, nedge_4_surf,            &
-     &    iedge_4_sf, sf_grp1%num_grp, num_surf_bc,                     &
+     &    iedge_4_sf, sf_grp1%num_grp, sf_grp1%num_item,                &
      &    surf_istack, sf_grp_data1%isurf_grp,                          &
      &    sf_grp_data1%edge%ntot_e_grp, sf_grp_data1%edge%nitem_e_grp,  &
      &    sf_grp_data1%edge%istack_e_grp, sf_grp_data1%edge%item_e_grp, &
@@ -133,7 +133,7 @@
 !
       call count_surf_nod_grp_stack(np_smp, inod_smp_stack,             &
      &    numele, nnod_4_ele, ie, nnod_4_surf, node_on_sf,              &
-     &    sf_grp1%num_grp, num_surf_bc, surf_istack, surf_item,         &
+     &    sf_grp1%num_grp, sf_grp1%num_item, surf_istack, surf_item,    &
      &    sf_grp_nod1%ntot_node_sf_grp, sf_grp_nod1%nnod_sf_grp,        &
      &    sf_grp_nod1%inod_stack_sf_grp)
 !
@@ -152,7 +152,7 @@
 !
         call set_surf_nod_grp_item(numnod, numele, nnod_4_ele, ie,      &
      &      nnod_4_surf, node_on_sf, node_on_sf_n, sf_grp1%num_grp,     &
-     &      num_surf_bc, surf_istack, surf_item,                        &
+     &      sf_grp1%num_item, surf_istack, surf_item,                   &
      &      sf_grp_nod1%ntot_node_sf_grp,                               &
      &      sf_grp_nod1%inod_stack_sf_grp, sf_grp_nod1%inod_surf_grp,   &
      &      sf_grp_nod1%surf_node_n, sf_grp_nod1%num_sf_4_nod)
@@ -178,7 +178,7 @@
 !
       call cal_surf_grp_norm_node(numele, nnod_4_ele,                   &
      &    nnod_4_surf, node_on_sf, ie,                                  &
-     &    sf_grp1%num_grp, num_surf_bc, surf_istack, surf_item,         &
+     &    sf_grp1%num_grp, sf_grp1%num_item, surf_istack, surf_item,    &
      &    sf_grp_v1%vnorm_sf_grp, sf_grp_v1%a_area_sf_grp,              &
      &    sf_grp_nod1%ntot_node_sf_grp, sf_grp_nod1%inod_stack_sf_grp,  &
      &    sf_grp_nod1%inod_surf_grp, sf_grp_nod1%surf_norm_nod,         &

@@ -23,11 +23,11 @@
 !
 !>  Structure for surfacet group
       type(surface_group_data), save :: sf_grp1
-!sf_grp1%num_grp
+!sf_grp1%num_item
 !
 !      integer(kind=kint) :: num_surf
 !<      number of surface group
-      integer(kind=kint) :: num_surf_bc
+!      integer(kind=kint) :: sf_grp1%num_item
 !<      total number of surface for surface group
 !
       integer(kind=kint),   allocatable, target :: surf_istack(:)
@@ -58,7 +58,7 @@
 !
        allocate(surf_istack(0:sf_grp1%num_grp))
        allocate(surf_name(sf_grp1%num_grp))
-       allocate(surf_item(2,num_surf_bc))
+       allocate(surf_item(2,sf_grp1%num_item))
 !
       call clear_surface_data
 !

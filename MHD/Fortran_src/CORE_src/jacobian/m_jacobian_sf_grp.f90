@@ -52,24 +52,24 @@
 !
 !
       if (sf_grp1%num_grp .le. 0) return
-      call alloc_2d_jac_type(num_surf_bc, num_linear_sf, maxtot_int_2d, &
-     &                       jac1_sf_grp_2d_l)
+      call alloc_2d_jac_type(sf_grp1%num_item, num_linear_sf,           &
+     &                       maxtot_int_2d, jac1_sf_grp_2d_l)
       if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_dylinear'
       call cal_jacobian_dylinear(jac1_sf_grp_2d_l)
 !
       if (first_ele_type .eq. 332) then
         if (iflag_debug.eq.1)  write(*,*) 'cal_jacobian_dyquad'
-        call alloc_2d_jac_type(num_surf_bc, nnod_4_surf,                &
+        call alloc_2d_jac_type(sf_grp1%num_item, nnod_4_surf,           &
      &        maxtot_int_2d, jac1_sf_grp_2d_q)
         call cal_jacobian_dyquad(jac1_sf_grp_2d_q)
       else if (first_ele_type .eq. 333) then
         if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_dylag'
-        call alloc_2d_jac_type(num_surf_bc, nnod_4_surf,                &
+        call alloc_2d_jac_type(sf_grp1%num_item, nnod_4_surf,           &
      &        maxtot_int_2d, jac1_sf_grp_2d_q)
         call cal_jacobian_dylag(jac1_sf_grp_2d_q)
       else
         if (iflag_debug.eq.1) write(*,*) 'copy_jacobians_2d_quad'
-        call copy_jacobians_2d(num_surf_bc, nnod_4_surf,                &
+        call copy_jacobians_2d(sf_grp1%num_item, nnod_4_surf,           &
      &        jac1_sf_grp_2d_l, jac1_sf_grp_2d_q)
       end if
 !
@@ -86,7 +86,7 @@
 !
       integer(kind = kint), intent(in) :: n_int
 !
-      call alloc_2d_jac_type(num_surf_bc, num_quad_sf, n_int,           &
+      call alloc_2d_jac_type(sf_grp1%num_item, num_quad_sf, n_int,      &
      &    jac1_sf_grp_2d_ql)
 !
        end subroutine allocate_jacobians_2d_l_quad

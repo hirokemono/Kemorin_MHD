@@ -142,12 +142,13 @@
      &    group_l%ele_grp%item_grp)
 !
       group_l%surf_grp%num_grp = sf_grp1%num_grp
-      group_l%surf_grp%num_item = 4*num_surf_bc
+      group_l%surf_grp%num_item = 4 * sf_grp1%num_item
       call allocate_sf_grp_type_num(group_l%surf_grp)
       call allocate_sf_grp_type_item(group_l%surf_grp)
 !
-      call convert_surf_group_2_linear(sf_grp1%num_grp, num_surf_bc,    &
-     &    surf_name, surf_istack, surf_item, group_l%surf_grp%num_item, &
+      call convert_surf_group_2_linear                                  &
+     &   (sf_grp1%num_grp, sf_grp1%num_item, surf_name,             &
+     &    surf_istack, surf_item, group_l%surf_grp%num_item, &
      &    group_l%surf_grp%grp_name, group_l%surf_grp%istack_grp,       &
      &    group_l%surf_grp%item_sf_grp)
 !

@@ -62,8 +62,8 @@
 !
       type(surface_group_data), intent(inout) :: sf_grp
 !
-      sf_grp%num_grp = sf_grp1%num_grp
-      sf_grp%num_item = num_surf_bc
+      sf_grp%num_grp =  sf_grp1%num_grp
+      sf_grp%num_item = sf_grp1%num_item
 !
       sf_grp%grp_name =>   surf_name
       sf_grp%istack_grp => surf_istack

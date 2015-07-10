@@ -66,7 +66,7 @@
           if ( (surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
             call fem_surf_crank_free_inside(igrp, k2, num_int,          &
      &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,            &
-     &          num_surf_bc, num_surf_smp, isurf_grp_smp_stack,         &
+     &          sf_grp1%num_item, num_surf_smp, isurf_grp_smp_stack,    &
      &          surf_item, jac1_sf_grp_2d_q%ntot_int,                   &
      &          jac1_sf_grp_2d_q%an_sf, jac1_sf_grp_2d_q%xj_sf,         &
      &          xe_sf, ak_d_velo, sk6)
@@ -111,7 +111,7 @@
           if ( (surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
             call fem_surf_crank_free_outside(igrp, k2, num_int,         &
      &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,            &
-     &          num_surf_bc, num_surf_smp, isurf_grp_smp_stack,         &
+     &          sf_grp1%num_item, num_surf_smp, isurf_grp_smp_stack,    &
      &          surf_item, jac1_sf_grp_2d_q%ntot_int,                   &
      &          jac1_sf_grp_2d_q%an_sf, jac1_sf_grp_2d_q%xj_sf,         &
      &          xe_sf, ak_d_velo, sk6)

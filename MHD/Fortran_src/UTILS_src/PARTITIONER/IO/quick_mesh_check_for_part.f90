@@ -75,8 +75,8 @@
 !C
 !C-- check local surface ID
       if (sf_grp1%num_grp.gt.0) then
-        call check_surface_def_in_surf_grp(numele, num_surf_bc,         &
-     &          elmtyp, surf_item)
+        call check_surface_def_in_surf_grp(numele, sf_grp1%num_item,    &
+     &      elmtyp, surf_item)
       end if
 !
       end subroutine quick_mesh_chk_4_part

@@ -31,12 +31,12 @@
       use m_geometry_parameter
       use m_surface_group
 !
-      allocate( scalar_sf(num_surf_bc) )
-      allocate( vect_sf(num_surf_bc,3) )
-      allocate( xe_sf(num_surf_bc,4,nnod_4_surf) )
-      allocate( dxe_sf(num_surf_bc,4,nnod_4_surf) )
+      allocate( scalar_sf(sf_grp1%num_item) )
+      allocate( vect_sf(sf_grp1%num_item,3) )
+      allocate( xe_sf(sf_grp1%num_item,4,nnod_4_surf) )
+      allocate( dxe_sf(sf_grp1%num_item,4,nnod_4_surf) )
 !
-      if(num_surf_bc .gt. 0) then
+      if(sf_grp1%num_item .gt. 0) then
         scalar_sf = 0.0d0
         vect_sf = 0.0d0
         xe_sf =   0.0d0
@@ -65,7 +65,7 @@
        integer(kind = kint) :: i, isurf
 !
        write(50+my_rank,*) txt
-       do isurf = 1, num_surf_bc
+       do isurf = 1, sf_grp1%num_item
          write(50+my_rank,*) isurf, (vect_sf(isurf,i),i=1, 3)
        end do
 !

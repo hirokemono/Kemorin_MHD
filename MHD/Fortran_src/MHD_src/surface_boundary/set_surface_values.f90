@@ -106,7 +106,7 @@
       call set_surf_bc_on_node_dat                                      &
      &   (ngrp_sf, nnod_surf, igrp, id_sf_dat, i_dest, numnod,          &
      &    numele, nnod_4_ele, nnod_4_surf, ie, node_on_sf,              &
-     &    sf_grp1%num_grp, num_surf_bc,                                 &
+     &    sf_grp1%num_grp, sf_grp1%num_item,                            &
      &    surf_istack, surf_item,                                       &
      &    sf_grp_nod1%ntot_node_sf_grp, sf_grp_nod1%inod_stack_sf_grp,  &
      &    sf_grp_nod1%inod_surf_grp, sf_grp_nod1%coef_sf_nod,           &

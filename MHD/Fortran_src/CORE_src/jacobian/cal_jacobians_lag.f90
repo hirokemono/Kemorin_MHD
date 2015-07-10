@@ -121,13 +121,13 @@
           ix = int_start2(i0) + ii
 !
           call s_cal_jacobian_sf_grp_9(numnod, numele,                  &
-     &        ie, xx, sf_grp1%num_grp, num_surf_bc, surf_item,          &
+     &        ie, xx, sf_grp1%num_grp, sf_grp1%num_item, surf_item,     &
      &        np_smp, num_surf_smp, isurf_grp_smp_stack,                &
-     &        jac_sf_grp_q%xj_sf(1:num_surf_bc,ix),                     &
-     &        jac_sf_grp_q%axj_sf(1:num_surf_bc,ix),                    &
-     &        jac_sf_grp_q%xsf_sf(1:num_surf_bc,ix,1),                  &
-     &        jac_sf_grp_q%xsf_sf(1:num_surf_bc,ix,2),                  &
-     &        jac_sf_grp_q%xsf_sf(1:num_surf_bc,ix,3),                  &
+     &        jac_sf_grp_q%xj_sf(1:sf_grp1%num_item,ix),                &
+     &        jac_sf_grp_q%axj_sf(1:sf_grp1%num_item,ix),               &
+     &        jac_sf_grp_q%xsf_sf(1:sf_grp1%num_item,ix,1),             &
+     &        jac_sf_grp_q%xsf_sf(1:sf_grp1%num_item,ix,2),             &
+     &        jac_sf_grp_q%xsf_sf(1:sf_grp1%num_item,ix,3),             &
      &        dnxi_sf27(1,ix), dnei_sf27(1,ix) )
         end do
       end do

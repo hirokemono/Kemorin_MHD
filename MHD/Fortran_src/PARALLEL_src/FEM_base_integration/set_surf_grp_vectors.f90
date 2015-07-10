@@ -46,7 +46,7 @@
 !
 !
       call alloc_vectors_surf_grp_type                                  &
-     &   (sf_grp1%num_grp, num_surf_bc, sf_grp_v1)
+     &   (sf_grp1%num_grp, sf_grp1%num_item, sf_grp_v1)
 !
       call pick_vector_4_surf_grp_side(numsurf, vnorm_surf,             &
      &    sf_grp_v1%vnorm_sf_grp)
@@ -74,12 +74,12 @@
 !
 !    set center of surface
 !
-      call alloc_surf_grp_type_geom(num_surf_bc, sf_grp_v1)
+      call alloc_surf_grp_type_geom(sf_grp1%num_item, sf_grp_v1)
 !
       call pick_vector_4_surf_grp(numsurf, x_surf, sf_grp_v1%x_sf_grp)
 !
       call position_2_sph                                               &
-     &   (num_surf_bc, sf_grp_v1%x_sf_grp, sf_grp_v1%r_sf_grp,          &
+     &   (sf_grp1%num_item, sf_grp_v1%x_sf_grp, sf_grp_v1%r_sf_grp,     &
      &    sf_grp_v1%theta_sf_grp, sf_grp_v1%phi_sf_grp,                 &
      &    sf_grp_v1%ar_sf_grp, sf_grp_v1%s_sf_grp, sf_grp_v1%as_sf_grp)
 !
@@ -96,10 +96,10 @@
       integer(kind = kint), intent(in) :: numsurf
       real(kind=kreal), intent(in) :: x_surf(numsurf,3)
 !
-      real(kind=kreal), intent(inout) :: x_sf_grp(num_surf_bc,3)
+      real(kind=kreal), intent(inout) :: x_sf_grp(sf_grp1%num_item,3)
 !
 !
-      call pick_vector_by_surf_grp(sf_grp1%num_grp, num_surf_bc,        &
+      call pick_vector_by_surf_grp(sf_grp1%num_grp, sf_grp1%num_item,   &
      &    num_surf_smp, isurf_grp_smp_stack, sf_grp_data1%isurf_grp,    &
      &    numsurf, x_surf, x_sf_grp)
 !
@@ -115,11 +115,12 @@
       integer(kind = kint), intent(in) :: numsurf
       real(kind=kreal), intent(in) :: x_surf(numsurf,3)
 !
-      real(kind=kreal), intent(inout) :: x_sf_grp(num_surf_bc,3)
+      real(kind=kreal), intent(inout) :: x_sf_grp(sf_grp1%num_item,3)
 !
 !
-      call pick_vect_by_surf_grp_w_side(sf_grp1%num_grp, num_surf_bc,   &
-     &    num_surf_smp, isurf_grp_smp_stack, sf_grp_data1%isurf_grp,    &
+      call pick_vect_by_surf_grp_w_side                                 &
+     &   (sf_grp1%num_grp, sf_grp1%num_item, num_surf_smp,   &
+     &    isurf_grp_smp_stack, sf_grp_data1%isurf_grp,    &
      &    numsurf, x_surf, x_sf_grp)
 !
       end subroutine pick_vector_4_surf_grp_side
@@ -134,10 +135,10 @@
       integer(kind = kint), intent(in) :: numsurf
       real(kind=kreal), intent(in) :: x_surf(numsurf)
 !
-      real(kind=kreal), intent(inout) :: x_sf_grp(num_surf_bc)
+      real(kind=kreal), intent(inout) :: x_sf_grp(sf_grp1%num_item)
 !
 !
-      call pick_scalar_by_surf_grp(sf_grp1%num_grp, num_surf_bc,        &
+      call pick_scalar_by_surf_grp(sf_grp1%num_grp, sf_grp1%num_item,   &
      &    num_surf_smp, isurf_grp_smp_stack, sf_grp_data1%isurf_grp,    &
      &    numsurf, x_surf, x_sf_grp)
 !
