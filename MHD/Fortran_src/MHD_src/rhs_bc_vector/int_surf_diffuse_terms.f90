@@ -113,7 +113,7 @@
       use fem_surf_skv_poisson_1st
       use cal_skv_to_ff_smp_1st
 !
-      integer(kind=kint) :: k2, nd, i_comp, i, igrp
+      integer(kind=kint) :: k2, nd, i_comp, i, igrp, num
 !
 !
       if(nmax_sf_lead_vect_p .eq. 0) return
@@ -124,7 +124,8 @@
 !
         do i = 1, ngrp_sf_lead_vect_p(nd)
           igrp = id_grp_sf_lead_vect_p(i,nd)
-          if ((surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
+          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+          if (num .gt. 0) then
 !
             do k2 = 1, nnod_4_surf
               call dlt_scl_phys_2_each_surface(igrp, k2, i_comp,        &
@@ -163,7 +164,7 @@
       integer(kind = kint), intent(in) :: n_int, i_field
       real (kind = kreal), intent(in) :: ak_d(numele)
 !
-      integer(kind=kint) :: k2, i, igrp
+      integer(kind=kint) :: k2, i, igrp, num
 !
 !
       if (ngrp_sf .eq. 0) return
@@ -171,7 +172,8 @@
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
-        if ((surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
+        num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+        if (num .gt. 0) then
 !
           do k2=1, nnod_4_surf
             call dlt_scl_phys_2_each_surface(igrp, k2, i_field,         &
@@ -209,7 +211,7 @@
       integer(kind = kint), intent(in) :: n_int, i_field
       real (kind = kreal), intent(in) :: ak_d(numele)
 !
-      integer(kind=kint) :: k2, i, igrp, nd, i_comp
+      integer(kind=kint) :: k2, i, igrp, nd, i_comp, num
 !
 !
       if (nmax_sf .eq. 0) return
@@ -220,7 +222,8 @@
 !
         do i = 1, ngrp_sf(nd)
           igrp = id_grp_sf(i,nd)
-          if ((surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
+          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+          if (num .gt. 0) then
 !
             do k2=1, nnod_4_surf
               call dlt_scl_phys_2_each_surface(igrp, k2, i_comp,        &

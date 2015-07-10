@@ -51,7 +51,7 @@
       do i = 1, ngrp_sf
        igrp = id_grp_sf(i)
 !
-       nsf = surf_istack(igrp) - surf_istack(igrp-1)
+       nsf = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
        if (nsf.gt.0) then
 !
 !$omp parallel do &
@@ -108,7 +108,7 @@
       do i = 1, ngrp_sf
        igrp = id_grp_sf(i)
 !
-       nsf = surf_istack(igrp) - surf_istack(igrp-1)
+       nsf = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
        if (nsf.gt.0) then
 !
 !$omp parallel do &

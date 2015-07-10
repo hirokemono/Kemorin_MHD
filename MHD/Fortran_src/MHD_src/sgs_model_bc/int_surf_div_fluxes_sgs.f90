@@ -161,7 +161,7 @@
       real (kind = kreal), intent(in) :: ak_diff(numele)
       real (kind = kreal), intent(in) :: coef_field
 !
-      integer(kind=kint) :: k2, i, igrp
+      integer(kind=kint) :: k2, i, igrp, num
 !
 !
       if (ngrp_sf .eq. 0) return
@@ -171,8 +171,9 @@
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
+        num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
 !
-        if ( (surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
+        if (num .gt. 0) then
           do k2 = 1, nnod_4_surf
             call d_SGS_flux_2_each_sf_w_cst(igrp, k2, ione,             &
      &            i_vect, i_scalar, i_tensor, dminus, vect_sf)
@@ -210,7 +211,7 @@
       real (kind = kreal), intent(in) :: ak_diff(numele)
       real (kind = kreal), intent(in) :: coef_field
 !
-      integer(kind=kint) :: k2, i, igrp, nd
+      integer(kind=kint) :: k2, i, igrp, nd, num
 !
 !
       if (nmax_sf .eq. 0) return
@@ -221,8 +222,9 @@
       do nd = 1, n_vector
         do i = 1, ngrp_sf(nd)
           igrp = id_grp_sf(i,nd)
+          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
 !
-          if ( (surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
+          if (num .gt. 0) then
             do k2 = 1, nnod_4_surf
               call d_SGS_flux_2_each_sf_w_cst(igrp, k2, nd,             &
      &            i_vect, i_scalar, i_tensor, dminus, vect_sf)
@@ -257,7 +259,7 @@
       integer(kind=kint), intent(in) :: n_int, i_filter
       integer(kind=kint), intent(in) :: i_vect, i_scalar, i_tensor
 !
-      integer(kind=kint) :: k2, i, igrp
+      integer(kind=kint) :: k2, i, igrp, num
 !
 !
       if (ngrp_sf .eq. 0) return
@@ -267,8 +269,9 @@
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
+        num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
 !
-        if ( (surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
+        if (num .gt. 0) then
           do k2 = 1, nnod_4_surf
             call d_SGS_flux_2_each_surface(igrp, k2, ione,              &
      &            i_vect, i_scalar, i_tensor, vect_sf)
@@ -303,7 +306,7 @@
       integer(kind=kint), intent(in) :: n_int, i_filter
       integer(kind=kint), intent(in) :: i_vect, i_scalar, i_tensor
 !
-      integer(kind=kint) :: k2, i, igrp, nd
+      integer(kind=kint) :: k2, i, igrp, nd, num
 !
 !
       if (nmax_sf .eq. 0) return
@@ -314,8 +317,9 @@
       do nd = 1, n_vector
         do i = 1, ngrp_sf(nd)
           igrp = id_grp_sf(i,nd)
+          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
 !
-          if ( (surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
+          if (num .gt. 0) then
             do k2 = 1, nnod_4_surf
               call d_SGS_flux_2_each_surface(igrp, k2, nd,              &
      &            i_vect, i_scalar, i_tensor, vect_sf)

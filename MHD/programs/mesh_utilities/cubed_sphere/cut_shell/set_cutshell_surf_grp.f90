@@ -79,7 +79,7 @@
 !
       do i = 1, sf_grp1%num_grp
          new_sf_grp%istack_grp(i) = new_sf_grp%istack_grp(i-1)
-         do inum = surf_istack(i-1)+1, surf_istack(i)
+         do inum = sf_grp1%istack_grp(i-1)+1, sf_grp1%istack_grp(i)
            iele = surf_item(1,inum)
            if ( mark_new_ele(iele) .ne. 0 ) then
              new_sf_grp%istack_grp(i) = new_sf_grp%istack_grp(i) + 1
@@ -100,7 +100,7 @@
 !
       icou = 0
       do i = 1, sf_grp1%num_grp
-         do inum = surf_istack(i-1)+1, surf_istack(i)
+         do inum = sf_grp1%istack_grp(i-1)+1, sf_grp1%istack_grp(i)
            iele = surf_item(1,inum)
            if ( mark_new_ele(iele) .ne. 0 ) then
              icou = icou + 1

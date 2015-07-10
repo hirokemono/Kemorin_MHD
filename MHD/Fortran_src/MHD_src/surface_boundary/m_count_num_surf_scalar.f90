@@ -97,7 +97,7 @@
 !
 !
       call count_num_surf_grad_scalar                                   &
-     &   (sf_grp1%num_grp, surf_istack, surf_name,                      &
+     &   (sf_grp1%num_grp, sf_grp1%istack_grp, surf_name,               &
      &    h_flux_surf%num_bc, h_flux_surf%bc_name,                      &
      &    h_flux_surf%ibc_type, name_hf,                                &
      &    ngrp_sf_fix_hf, nele_sf_fix_hf, ngrp_sf_lead_hf)
@@ -113,7 +113,7 @@
 !
 !
       call count_num_surf_grad_scalar                                   &
-     &    (sf_grp1%num_grp, surf_istack, surf_name,                     &
+     &    (sf_grp1%num_grp, sf_grp1%istack_grp, surf_name,              &
      &     wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,     &
      &     name_pg, ngrp_sf_fix_pg, nele_sf_fix_pg, ngrp_sf_lead_p)
 !
@@ -128,7 +128,7 @@
 !
 !
       call count_num_surf_grad_scalar                                   &
-     &   (sf_grp1%num_grp, surf_istack, surf_name,                      &
+     &   (sf_grp1%num_grp, sf_grp1%istack_grp, surf_name,               &
      &    e_potential_surf%num_bc, e_potential_surf%bc_name,            &
      &    e_potential_surf%ibc_type, name_mpg, ngrp_sf_fix_mpg,         &
      &    nele_sf_fix_mpg, ngrp_sf_lead_mp)
@@ -144,7 +144,7 @@
 !
 !
       call count_num_surf_grad_scalar                                   &
-     &    (sf_grp1%num_grp, surf_istack, surf_name,                     &
+     &    (sf_grp1%num_grp, sf_grp1%istack_grp, surf_name,              &
      &     light_surf%num_bc, light_surf%bc_name,                       &
      &     light_surf%ibc_type, name_dsg,                               &
      &     ngrp_sf_fix_cmg, nele_sf_fix_cmg, ngrp_sf_lead_cmg)

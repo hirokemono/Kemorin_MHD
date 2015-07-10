@@ -81,7 +81,7 @@
        integer(kind = kint), intent(in) :: iak_diff, i_filter
        integer(kind = kint), intent(in) :: i_comp
 !
-       integer(kind=kint) :: k2, i, igrp
+       integer(kind=kint) :: k2, i, igrp, num
 !
 !
 !  ---------  set number of integral points
@@ -91,7 +91,8 @@
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
-        if( (surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
+        num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+        if(num .gt. 0) then
 !
           do k2=1, nnod_4_surf
             call dlt_scl_phys_2_each_surf_cst(igrp, k2,                 &

@@ -42,7 +42,7 @@
       integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
       integer(kind = kint), intent(in) :: i_vect
 !
-      integer(kind=kint) :: k2, i, igrp
+      integer(kind=kint) :: k2, i, igrp, num
 !
 !
       call reset_sk6(n_scalar)
@@ -51,7 +51,8 @@
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
-        if ((surf_istack(igrp) - surf_istack(igrp-1)) .gt.0 ) then
+        num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+        if (num .gt.0 ) then
 !
           do k2=1, num_linear_sf
             call vector_phys_2_each_surface(igrp, k2, i_vect, vect_sf)
@@ -77,14 +78,15 @@
       integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
       integer(kind = kint), intent(in) :: i_vect
 !
-      integer(kind=kint) :: k2, i, igrp
+      integer(kind=kint) :: k2, i, igrp, num
 !
 !
       call reset_sk6(n_scalar)
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
-        if ((surf_istack(igrp) - surf_istack(igrp-1)) .gt.0 ) then
+        num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+        if (num .gt.0 ) then
 !
 ! -------- loop for shape function for the phsical values
           do k2=1, num_linear_sf
@@ -112,7 +114,7 @@
       integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
       integer(kind = kint), intent(in) :: i_vect
 !
-      integer(kind=kint) :: k2, i, igrp
+      integer(kind=kint) :: k2, i, igrp, num
 !
 !
       call reset_sk6(n_scalar)
@@ -121,7 +123,8 @@
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
-        if ((surf_istack(igrp) - surf_istack(igrp-1)) .gt.0 ) then
+        num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+        if (num .gt. 0) then
 !
 ! -------- loop for shape function for the phsical values
           do k2=1, num_linear_sf

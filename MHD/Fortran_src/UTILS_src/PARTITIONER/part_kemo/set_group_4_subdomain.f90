@@ -162,8 +162,8 @@
       new_sf_grp%istack_grp(0) = 0
       do ig = 1, sf_grp1%num_grp
         new_sf_grp%istack_grp(ig) = new_sf_grp%istack_grp(ig-1)
-        ist = surf_istack(ig-1) + 1
-        ied = surf_istack(ig)
+        ist = sf_grp1%istack_grp(ig-1) + 1
+        ied = sf_grp1%istack_grp(ig)
         do inum = ist, ied
           iele = surf_item(1,inum)
           if (iele_local_part(iele) .gt. 0) then
@@ -190,8 +190,8 @@
       icou = 0
       do ig = 1, sf_grp1%num_grp
         icou = new_sf_grp%istack_grp(ig-1)
-        ist = surf_istack(ig-1) + 1
-        ied = surf_istack(ig)
+        ist = sf_grp1%istack_grp(ig-1) + 1
+        ied = sf_grp1%istack_grp(ig)
         do inum = ist, ied
           iele = surf_item(1,inum)
 !

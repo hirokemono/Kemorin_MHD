@@ -131,7 +131,7 @@
 !
 !
       call s_set_sf_grad_vector_id                                      &
-     &    (sf_grp1%num_grp, surf_istack, surf_name,                     &
+     &    (sf_grp1%num_grp, sf_grp1%istack_grp, surf_name,              &
      &     torque_surf%num_bc, torque_surf%bc_name,                     &
      &     torque_surf%ibc_type, torque_surf%bc_magnitude,              &
      &     name_vxg, name_vyg, name_vzg,                                &
@@ -150,7 +150,7 @@
 !
 !
       call s_set_sf_grad_vector_id                                      &
-     &    (sf_grp1%num_grp, surf_istack, surf_name,                     &
+     &    (sf_grp1%num_grp, sf_grp1%istack_grp, surf_name,              &
      &     a_potential_surf%num_bc, a_potential_surf%bc_name,           &
      &     a_potential_surf%ibc_type, a_potential_surf%bc_magnitude,    &
      &     name_axg, name_ayg, name_azg,                                &
@@ -170,7 +170,7 @@
 !
 !
       call s_set_sf_grad_vector_id                                      &
-     &   (sf_grp1%num_grp, surf_istack, surf_name,                      &
+     &   (sf_grp1%num_grp, sf_grp1%istack_grp, surf_name,               &
      &    magne_surf%num_bc, magne_surf%bc_name,                        &
      &    magne_surf%ibc_type, magne_surf%bc_magnitude,                 &
      &    name_bxg, name_byg, name_bzg,                                 &
@@ -189,7 +189,7 @@
 !
 !
       call s_set_sf_grad_vector_id                                      &
-     &    (sf_grp1%num_grp, surf_istack, surf_name,                     &
+     &    (sf_grp1%num_grp, sf_grp1%istack_grp, surf_name,              &
      &     current_surf%num_bc, current_surf%bc_name,                   &
      &     current_surf%ibc_type, current_surf%bc_magnitude,            &
      &     name_sjx, name_sjy, name_sjz,                                &

@@ -67,7 +67,7 @@
       call field_line_init(numnod, numele, e_multi,                     &
      &    num_mat, num_mat_bc, mat_name, mat_istack, mat_item,          &
      &    sf_grp1%num_grp, sf_grp1%num_item, surf_name,                 &
-     &    surf_istack, surf_item,                                       &
+     &    sf_grp1%istack_grp, surf_item,                                &
      &    num_nod_phys, phys_nod_name)
 !
       end subroutine field_line_init_1st

@@ -41,7 +41,7 @@
       integer(kind=kint), intent(in) :: n_int, i_filter
       integer (kind = kint), intent(in) :: i_b, i_v, i_flux
 !
-      integer(kind=kint) :: k2, nd, i, igrp
+      integer(kind=kint) :: k2, nd, i, igrp, num
 !
 !
       if (sum(ngrp_sf_sgs_magne) .eq. 0) return
@@ -50,7 +50,8 @@
       do nd = 1, n_vector
         do i = 1, ngrp_sf_sgs_magne(nd)
           igrp = id_grp_sf_sgs_magne(i,nd)
-          if ( (surf_istack(igrp) - surf_istack(igrp-1)) .gt.0) then
+          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+          if (num .gt.0) then
 !
             do k2=1, nnod_4_surf
               call d_SGS_induct_t_2_each_surface(igrp, k2, nd,          &
@@ -82,7 +83,7 @@
       integer(kind=kint), intent(in) :: n_int, i_filter
       integer (kind = kint), intent(in) :: i_b, i_v, i_flux
 !
-      integer(kind=kint) :: k2, nd, i, igrp
+      integer(kind=kint) :: k2, nd, i, igrp, num
 !
 !
       if (sum(ngrp_sf_sgs_magne) .eq. 0) return
@@ -91,7 +92,8 @@
       do nd = 1, n_vector
         do i = 1, ngrp_sf_sgs_magne(nd)
           igrp = id_grp_sf_sgs_magne(i,nd)
-          if ( (surf_istack(igrp) - surf_istack(igrp-1)) .gt.0) then
+          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+          if(num .gt. 0) then
 !
             do k2=1, nnod_4_surf
               call d_SGS_induct_t_2_each_surface(igrp, k2, nd,          &

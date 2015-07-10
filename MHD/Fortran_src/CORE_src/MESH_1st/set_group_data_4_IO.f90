@@ -106,7 +106,7 @@
 !
         surf_name(1:sf_grp1%num_grp)                                    &
      &     = surf_name_dummy(1:sf_grp1%num_grp)
-        surf_istack(0:sf_grp1%num_grp)                                  &
+        sf_grp1%istack_grp(0:sf_grp1%num_grp)                           &
      &     =  surf_istack_dummy(0:sf_grp1%num_grp)
         surf_item(1,1:sf_grp1%num_item)                                 &
      &     = surf_item_dummy(1:sf_grp1%num_item,1)
@@ -176,7 +176,7 @@
 !
       surf_name_dummy(1:sf_grp1%num_grp) = surf_name(1:sf_grp1%num_grp)
       surf_istack_dummy(0:sf_grp1%num_grp)                              &
-     &     = surf_istack(0:sf_grp1%num_grp)
+     &     = sf_grp1%istack_grp(0:sf_grp1%num_grp)
 !
       call allocate_bc_sf_item_dummy
       surf_item_dummy(1:sf_grp1%num_item,1)                             &

@@ -40,7 +40,7 @@
       integer(kind = kint), intent(in) :: id_grp_sf(nmax_grp_sf,3)
       integer(kind = kint), intent(in) :: i_vect, iak_diff, i_filter
 !
-      integer(kind=kint) :: k2, nd, nrot1, nrot2, i, igrp, i_comp
+      integer(kind=kint) :: k2, nd, nrot1, nrot2, i, igrp, i_comp, num
 !
 !
 !  ---------  set number of integral points
@@ -58,7 +58,8 @@
         i_comp = i_vect + nrot2 - 1
         do i = 1, ngrp_sf(nrot2)
           igrp = id_grp_sf(i,nrot2)
-          if((surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
+          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+          if(num .gt. 0) then
 !
             do k2=1, nnod_4_surf
               call dlt_scl_phys_2_each_surface(igrp, k2, i_comp,        &
@@ -74,7 +75,8 @@
         i_comp = i_vect + nrot1 - 1
         do i = 1, ngrp_sf(nrot1)
           igrp = id_grp_sf(i,nrot1)
-          if((surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
+          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+          if(num .gt. 0) then
 !
             do k2=1, nnod_4_surf
               call dlt_scl_phys_2_each_surf_cst(igrp, k2, i_comp,       &
@@ -108,7 +110,7 @@
       integer(kind = kint), intent(in) :: id_grp_sf(nmax_grp_sf,3)
       integer(kind = kint), intent(in) :: i_vect, i_filter
 !
-      integer(kind=kint) :: k2, nd, nrot1, nrot2, i, igrp, i_comp
+      integer(kind=kint) :: k2, nd, nrot1, nrot2, i, igrp, i_comp, num
 !
 !
 !  ---------  set number of integral points
@@ -123,7 +125,8 @@
         i_comp = i_vect + nrot2 - 1
         do i = 1, ngrp_sf(nrot2)
           igrp = id_grp_sf(i,nrot2)
-          if((surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
+          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+          if(num .gt. 0) then
 !
             do k2=1, nnod_4_surf
              call dlt_scl_phys_2_each_surface(igrp, k2, i_comp,         &
@@ -138,7 +141,8 @@
        i_comp = i_vect + nrot1 - 1
        do i = 1, ngrp_sf(nrot1)
          igrp = id_grp_sf(i,nrot1)
-         if((surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
+         num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+         if(num .gt. 0) then
 !
             do k2=1, nnod_4_surf
               call dlt_scl_phys_2_each_surf_cst(igrp, k2,               &

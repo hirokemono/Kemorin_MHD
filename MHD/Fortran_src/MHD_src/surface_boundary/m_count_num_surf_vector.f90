@@ -124,7 +124,7 @@
 !
 !
       call count_num_sf_grad_vector                                     &
-     &   (sf_grp1%num_grp, surf_istack, surf_name,                      &
+     &   (sf_grp1%num_grp, sf_grp1%istack_grp, surf_name,               &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type, name_vxg, name_vyg, name_vzg,           &
      &    nmax_sf_fix_tq, nmax_ele_sf_fix_tq, nmax_sf_lead_tq,          &
@@ -141,7 +141,7 @@
 !
 !
       call count_num_sf_grad_vector                                     &
-     &   (sf_grp1%num_grp, surf_istack,                                 &
+     &   (sf_grp1%num_grp, sf_grp1%istack_grp,                          &
      &    surf_name, a_potential_surf%num_bc,                           &
      &    a_potential_surf%bc_name, a_potential_surf%ibc_type,          &
      &    name_axg, name_ayg, name_azg, nmax_sf_fix_grad_a,             &
@@ -159,7 +159,7 @@
 !
 !
       call count_num_sf_grad_vector                                     &
-     &    (sf_grp1%num_grp, surf_istack, surf_name,                     &
+     &    (sf_grp1%num_grp, sf_grp1%istack_grp, surf_name,              &
      &     magne_surf%num_bc, magne_surf%bc_name, magne_surf%ibc_type,  &
      &     name_bxg, name_byg, name_bzg, nmax_sf_fix_grad_b,            &
      &     nmax_ele_sf_fix_grad_b, nmax_sf_lead_b, ngrp_sf_fix_grad_b,  &
@@ -176,7 +176,7 @@
 !
 !
       call count_num_sf_grad_vector                                     &
-     &    (sf_grp1%num_grp, surf_istack,                                &
+     &    (sf_grp1%num_grp, sf_grp1%istack_grp,                         &
      &     surf_name, current_surf%num_bc,                              &
      &     current_surf%bc_name, current_surf%ibc_type,                 &
      &     name_jxg, name_jyg, name_jzg, nmax_sf_fix_grad_j,            &

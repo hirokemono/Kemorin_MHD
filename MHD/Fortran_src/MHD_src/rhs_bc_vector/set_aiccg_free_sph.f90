@@ -53,8 +53,7 @@
       use cal_poisson_matrices_1st
 !
       integer (kind = kint), intent(in) :: num_int
-      integer (kind = kint) :: i, igrp
-      integer (kind = kint) :: k2
+      integer (kind = kint) :: i, igrp, k2, num
 !
 !
       do k2 = 1, nnod_4_surf
@@ -62,8 +61,9 @@
 !
         do i = 1, ngrp_sf_fr_in
           igrp = id_grp_sf_fr_in(i)
+          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
 !
-          if ( (surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
+          if (num .gt. 0) then
             call fem_surf_crank_free_inside(igrp, k2, num_int,          &
      &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,            &
      &          sf_grp1%num_item, num_surf_smp, isurf_grp_smp_stack,    &
@@ -98,8 +98,7 @@
       use cal_poisson_matrices_1st
 !
       integer (kind = kint), intent(in) :: num_int
-      integer (kind = kint) :: i, igrp
-      integer (kind = kint) :: k2
+      integer (kind = kint) :: i, igrp, k2, num
 !
 !
       do k2 = 1, nnod_4_surf
@@ -107,8 +106,9 @@
 !
         do i = 1, ngrp_sf_fr_out
           igrp = id_grp_sf_fr_out(i)
+          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
 !
-          if ( (surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
+          if (num .gt. 0) then
             call fem_surf_crank_free_outside(igrp, k2, num_int,         &
      &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,            &
      &          sf_grp1%num_item, num_surf_smp, isurf_grp_smp_stack,    &

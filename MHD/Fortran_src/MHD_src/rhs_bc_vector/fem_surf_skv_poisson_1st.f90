@@ -199,9 +199,10 @@
      &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_surf_skv_norm_grad_pg(np_smp, numele, nnod_4_ele,        &
-     &    nnod_4_surf, node_on_sf, sf_grp1%num_grp, sf_grp1%num_item,   &
-     &    surf_istack, surf_item, num_surf_smp, isurf_grp_smp_stack,    &
+      call fem_surf_skv_norm_grad_pg                                    &
+     &   (np_smp, numele, nnod_4_ele, nnod_4_surf, node_on_sf,          &
+     &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%istack_grp,        &
+     &    surf_item, num_surf_smp, isurf_grp_smp_stack,    &
      &    nmax_surf, nmax_ele_surf, ngrp_sf, id_grp_sf, ist_surf,       &
      &    sf_apt, n_int, nd, jac1_sf_grp_2d_q%ntot_int,                 &
      &    jac1_sf_grp_2d_q%xj_sf, jac1_sf_grp_2d_q%an_sf,               &
@@ -229,9 +230,10 @@
      &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_surf_skv_norm_poisson(np_smp, numele, nnod_4_ele,        &
-     &    nnod_4_surf, node_on_sf, sf_grp1%num_grp, sf_grp1%num_item,   &
-     &    surf_istack, surf_item, num_surf_smp, isurf_grp_smp_stack,    &
+      call fem_surf_skv_norm_poisson                                    &
+     &   (np_smp, numele, nnod_4_ele, nnod_4_surf, node_on_sf,          &
+     &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%istack_grp,        &
+     &    surf_item, num_surf_smp, isurf_grp_smp_stack,                 &
      &    nmax_surf, nmax_ele_surf, ngrp_sf, id_grp_sf, ist_surf,       &
      &    sf_apt, n_int, jac1_sf_grp_2d_q%ntot_int,                     &
      &    jac1_sf_grp_2d_q%xj_sf, jac1_sf_grp_2d_q%an_sf, sk_v)

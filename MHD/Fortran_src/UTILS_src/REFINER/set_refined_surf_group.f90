@@ -70,8 +70,8 @@
       do i = 1, sf_grp1%num_grp
         new_sf_grp%istack_grp(i) = new_sf_grp%istack_grp(i-1)
 !
-        ist = surf_istack(i-1) + 1
-        ied = surf_istack(i)
+        ist = sf_grp1%istack_grp(i-1) + 1
+        ied = sf_grp1%istack_grp(i)
         do inum = ist, ied
 !
           iele = surf_item(1,inum)
@@ -127,8 +127,8 @@
       do i = 1, sf_grp1%num_grp
         icou = new_sf_grp%istack_grp(i-1)
 !
-        ist = surf_istack(i-1) + 1
-        ied = surf_istack(i)
+        ist = sf_grp1%istack_grp(i-1) + 1
+        ied = sf_grp1%istack_grp(i)
         do inum = ist, ied
 !
           iele = surf_item(1,inum)

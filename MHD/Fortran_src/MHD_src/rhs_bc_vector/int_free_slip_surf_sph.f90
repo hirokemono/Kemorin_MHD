@@ -62,7 +62,7 @@
       integer (kind = kint), intent(in)                                 &
      &       :: id_grp_outside(ngrp_surf_outside)
 !
-      integer (kind = kint) :: k2, i, igrp
+      integer (kind = kint) :: k2, i, igrp, num
 !
 !
       if(ngrp_surf_outside .le. 0) return
@@ -70,7 +70,8 @@
 !
       do i = 1, ngrp_surf_outside
         igrp = id_grp_outside(i)
-        if ((surf_istack(igrp) - surf_istack(igrp-1)) .gt.0 ) then
+        num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+        if (num .gt.0 ) then
 !
           do k2 = 1, nnod_4_surf
             call vector_phys_2_each_surface(igrp, k2, i_field,          &
@@ -99,7 +100,7 @@
       integer (kind = kint), intent(in)                                 &
      &       :: id_grp_inside(ngrp_surf_inside)
 !
-      integer (kind = kint) :: k2, i, igrp
+      integer (kind = kint) :: k2, i, igrp, num
 !
 !
       if (ngrp_surf_inside .le. 0) return
@@ -107,7 +108,8 @@
 !
       do i = 1, ngrp_surf_inside
         igrp = id_grp_inside(i)
-        if ((surf_istack(igrp) - surf_istack(igrp-1)) .gt.0 ) then
+        num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+        if (num .gt.0 ) then
 !
            do k2 = 1, nnod_4_surf
             call vector_phys_2_each_surf_cst(igrp, k2, i_field,         &

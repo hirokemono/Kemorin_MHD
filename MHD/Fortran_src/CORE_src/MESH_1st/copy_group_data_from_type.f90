@@ -123,7 +123,7 @@
 !
         surf_name(1:sf_grp1%num_grp)                                    &
      &     = sf_grp%grp_name(1:sf_grp1%num_grp)
-        surf_istack(0:sf_grp1%num_grp)                                  &
+        sf_grp1%istack_grp(0:sf_grp1%num_grp)                           &
      &     =  sf_grp%istack_grp(0:sf_grp1%num_grp)
         surf_item(1,1:sf_grp1%num_item)                                 &
      &     = sf_grp%item_sf_grp(1,1:sf_grp1%num_item)
@@ -220,9 +220,9 @@
         if(sf_grp%grp_name(i) .ne. surf_name(i))                        &
      &       write(*,*) 'surf_name(i)', my_rank, i,                     &
      &       sf_grp%grp_name(i), surf_name(i)
-        if(sf_grp%istack_grp(i) .ne. surf_istack(i))                    &
+        if(sf_grp%istack_grp(i) .ne. sf_grp1%istack_grp(i))             &
      &       write(*,*) 'surf_istack(i)', my_rank, i,                   &
-     &       sf_grp%istack_grp(i), surf_istack(i)
+     &       sf_grp%istack_grp(i), sf_grp1%istack_grp(i)
       end do
       do i = 1, sf_grp1%num_item
         if(sf_grp%item_sf_grp(1,i) .ne. surf_item(1,i)                  &

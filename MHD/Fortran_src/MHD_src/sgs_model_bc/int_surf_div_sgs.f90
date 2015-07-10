@@ -41,7 +41,7 @@
       integer(kind = kint), intent(in) :: id_grp_sf(nmax_grp_sf,3)
       integer(kind = kint), intent(in) :: i_vect, iak_diff, i_filter
 !
-      integer(kind=kint) :: k2, nd, i, igrp, i_comp
+      integer(kind=kint) :: k2, nd, i, igrp, i_comp, num
 !
 !
       if(nmax_grp_sf .eq. 0) return
@@ -53,7 +53,8 @@
         i_comp = i_vect + nd - 1
         do i = 1, ngrp_sf(nd)
           igrp = id_grp_sf(i,nd)
-          if ((surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
+          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+          if (num .gt. 0) then
 !
             do k2 = 1, nnod_4_surf
               call dlt_scl_phys_2_each_surface(igrp, k2, i_comp,        &
@@ -85,7 +86,7 @@
        integer(kind = kint), intent(in) :: id_grp_sf(nmax_grp_sf,3)
        integer(kind = kint), intent(in) :: i_vect, i_filter
 !
-       integer(kind=kint) :: k2, nd, i, igrp, i_comp
+       integer(kind=kint) :: k2, nd, i, igrp, i_comp, num
 !
 !
 ! -------- loop for shape function for the phsical values
@@ -97,7 +98,8 @@
         i_comp = i_vect + nd - 1
         do i = 1, ngrp_sf(nd)
           igrp = id_grp_sf(i,nd)
-          if ((surf_istack(igrp) - surf_istack(igrp-1)) .gt. 0) then
+          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+          if (num .gt. 0) then
 !
             do k2=1, nnod_4_surf
               call dlt_scl_phys_2_each_surface(igrp, k2, i_comp,        &

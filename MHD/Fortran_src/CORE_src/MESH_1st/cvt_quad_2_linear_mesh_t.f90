@@ -148,7 +148,7 @@
 !
       call convert_surf_group_2_linear                                  &
      &   (sf_grp1%num_grp, sf_grp1%num_item, surf_name,             &
-     &    surf_istack, surf_item, group_l%surf_grp%num_item, &
+     &    sf_grp1%istack_grp, surf_item, group_l%surf_grp%num_item, &
      &    group_l%surf_grp%grp_name, group_l%surf_grp%istack_grp,       &
      &    group_l%surf_grp%item_sf_grp)
 !

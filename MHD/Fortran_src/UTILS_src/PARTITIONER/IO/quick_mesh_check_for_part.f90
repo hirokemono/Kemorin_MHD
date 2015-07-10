@@ -56,7 +56,7 @@
       endif
 !
       if (sf_grp1%num_grp.gt.0) then
-        do is= 1, surf_istack(sf_grp1%num_grp)
+        do is= 1, sf_grp1%istack_grp(sf_grp1%num_grp)
           in= surf_item(1,is)
           ik= surf_item(2,is)
           if (in.le.0) call ERROR_EXIT(ierr_grp, ithree)

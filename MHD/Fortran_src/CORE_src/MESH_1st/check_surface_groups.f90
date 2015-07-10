@@ -32,8 +32,8 @@
 !
       write(id_check,*) ' inum, center of surface'
       do i_grp = 1, sf_grp1%num_grp
-        ist = surf_istack(i_grp-1) + 1
-        ied = surf_istack(i_grp)
+        ist = sf_grp1%istack_grp(i_grp-1) + 1
+        ied = sf_grp1%istack_grp(i_grp)
         do inum = ist, ied
           write(id_check,'(i16,1p3e23.12)') inum,                       &
      &              sf_grp_v1%x_sf_grp(inum,1:3)
@@ -56,8 +56,8 @@
       write(id_check,*) ' inum, center of surface'
       write(id_check,*) '          (r, theta, phi, cyl_r)'
       do i_grp = 1, sf_grp1%num_grp
-        ist = surf_istack(i_grp-1) + 1
-        ied = surf_istack(i_grp)
+        ist = sf_grp1%istack_grp(i_grp-1) + 1
+        ied = sf_grp1%istack_grp(i_grp)
         do inum = ist, ied
           write(id_check,'(i16,1p4e23.12)') inum,                       &
      &        sf_grp_v1%r_sf_grp(inum), sf_grp_v1%theta_sf_grp(inum),   &
@@ -82,7 +82,7 @@
 !
        write(50+id_check,*) txt
        write(50+id_check,*) 'surf_istack'
-       write(50+id_check,*) surf_istack(0:sf_grp1%num_grp)
+       write(50+id_check,*) sf_grp1%istack_grp(0:sf_grp1%num_grp)
        write(50+id_check,*) 'inod_stack_sf_grp'
        write(50+id_check,*)                                             &
      &     sf_grp_nod1%inod_stack_sf_grp(0:sf_grp1%num_grp)

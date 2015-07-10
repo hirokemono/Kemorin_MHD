@@ -34,11 +34,11 @@
       write(id_file,'(a)') '! 4.2. Surface group'
 !
       write(id_file,'(i16)') sf_grp1%num_grp
-      write(id_file,'(6i16)')  surf_istack(1:sf_grp1%num_grp)
+      write(id_file,'(6i16)')  sf_grp1%istack_grp(1:sf_grp1%num_grp)
 !
       do k = 1, sf_grp1%num_grp
-        ist = surf_istack(k-1) + 1
-        ied = surf_istack(k)
+        ist = sf_grp1%istack_grp(k-1) + 1
+        ied = sf_grp1%istack_grp(k)
         write(id_file,*) trim(surf_name(k))
         write(id_file,'(6i16)') (surf_item(1,i),i=ist,ied)
         write(id_file,'(6i16)') (surf_item(2,i),i=ist,ied)
@@ -90,14 +90,14 @@
       integer(kind = kint) :: i, ist, ied, inum
 !
 !
-      surf_istack(0) = 0
+      sf_grp1%istack_grp(0) = 0
       do i = 1, num_surf_grp_csp
-        surf_istack(i) = surf_istack(i-1)
+        sf_grp1%istack_grp(i) = sf_grp1%istack_grp(i-1)
         ist = istack_surf_grp_layer_csp(i-1) + 1
         ied = istack_surf_grp_layer_csp(i)
         do inum = ist, ied
           if( mod(id_surf_grp_layer_csp(1,inum),nskip_r) .eq. 0 ) then
-            surf_istack(i) = surf_istack(i) + numele_sf
+            sf_grp1%istack_grp(i) = sf_grp1%istack_grp(i) + numele_sf
           end if
         end do
       end do
@@ -116,7 +116,7 @@
 !
 !
       do i = 1, num_surf_grp_csp
-        icou = surf_istack(i-1)
+        icou = sf_grp1%istack_grp(i-1)
         ist = istack_surf_grp_layer_csp(i-1) + 1
         ied = istack_surf_grp_layer_csp(i)
         do inum = ist, ied
