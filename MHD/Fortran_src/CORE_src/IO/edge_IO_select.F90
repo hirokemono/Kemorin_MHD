@@ -1,11 +1,16 @@
-!edge_IO_select.F90
-!      module edge_IO_select
+!>@file  edge_IO_select.f90
+!!      module edge_IO_select
+!!
+!!@author  H. Matsui
+!!@date Programmed in Aug., 2006
 !
-!     Written by H. Matsui on Aug., 2006
-!
-!      subroutine sel_output_edge_geometries(my_rank)
-!      subroutine sel_output_edge_geometries_sph(my_rank)
-!      subroutine sel_output_edge_geometries_cyl(my_rank)
+!>@brief Edge file IO selector
+!!
+!!@verbatim
+!!      subroutine sel_output_edge_geometries(my_rank)
+!!      subroutine sel_output_edge_geometries_sph(my_rank)
+!!      subroutine sel_output_edge_geometries_cyl(my_rank)
+!!@endverbatim
 !
 !
       module edge_IO_select

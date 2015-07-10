@@ -17,10 +17,15 @@
       module m_surface_group
 !
       use m_precision
+      use t_group_data
 !
       implicit  none
 !
-      integer(kind=kint) :: num_surf
+!>  Structure for surfacet group
+      type(surface_group_data), save :: sf_grp1
+!sf_grp1%num_grp
+!
+!      integer(kind=kint) :: num_surf
 !<      number of surface group
       integer(kind=kint) :: num_surf_bc
 !<      total number of surface for surface group
@@ -51,8 +56,8 @@
 !
       subroutine allocate_surface_data
 !
-       allocate(surf_istack(0:num_surf))
-       allocate(surf_name(num_surf))
+       allocate(surf_istack(0:sf_grp1%num_grp))
+       allocate(surf_name(sf_grp1%num_grp))
        allocate(surf_item(2,num_surf_bc))
 !
       call clear_surface_data
@@ -105,7 +110,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank
 !
-       write(*,*) 'PE: ', my_rank, 'num_surf ', num_surf
+       write(*,*) 'PE: ', my_rank, 'num_surf ', sf_grp1%num_grp
        write(*,*) 'PE: ', my_rank, 'num_surf_smp ', num_surf_smp
        write(*,*) 'PE: ', my_rank,                                      &
      &            'isurf_grp_smp_stack ', isurf_grp_smp_stack

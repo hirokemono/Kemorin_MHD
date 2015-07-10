@@ -62,12 +62,12 @@
       integer(kind = kint) :: iflag
 !
 !
-      do i = 1, num_surf
+      do i = 1, sf_grp1%num_grp
         new_sf_grp%grp_name(i) = surf_name(i)
       end do
 !
       new_sf_grp%istack_grp(0) = 0
-      do i = 1, num_surf
+      do i = 1, sf_grp1%num_grp
         new_sf_grp%istack_grp(i) = new_sf_grp%istack_grp(i-1)
 !
         ist = surf_istack(i-1) + 1
@@ -101,7 +101,7 @@
 !
         end do
       end do
-      new_sf_grp%num_item = new_sf_grp%istack_grp(num_surf)
+      new_sf_grp%num_item = new_sf_grp%istack_grp(sf_grp1%num_grp)
 !
       end subroutine count_refined_surf_group
 !
@@ -124,7 +124,7 @@
       integer(kind = kint) :: iflag
 !
 !
-      do i = 1, num_surf
+      do i = 1, sf_grp1%num_grp
         icou = new_sf_grp%istack_grp(i-1)
 !
         ist = surf_istack(i-1) + 1

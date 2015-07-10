@@ -39,7 +39,7 @@
       use set_surf_scalar_id
 !
 !
-      call s_count_num_surf_scalar(num_surf, surf_name,                 &
+      call s_count_num_surf_scalar(sf_grp1%num_grp, surf_name,          &
      &    h_flux_surf%num_bc, h_flux_surf%bc_name,                      &
      &    h_flux_surf%ibc_type, ngrp_sf_sgs_temp)
 !
@@ -53,7 +53,7 @@
       use set_surf_scalar_id
 !
 !
-      call s_count_num_surf_scalar(num_surf, surf_name,                 &
+      call s_count_num_surf_scalar(sf_grp1%num_grp, surf_name,          &
      &    wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,      &
      &    ngrp_sf_sgs_p)
 !
@@ -67,7 +67,7 @@
       use set_surf_scalar_id
 !
 !
-      call s_count_num_surf_scalar(num_surf, surf_name,                 &
+      call s_count_num_surf_scalar(sf_grp1%num_grp, surf_name,          &
      &    e_potential_surf%num_bc, e_potential_surf%bc_name,            &
      &    e_potential_surf%ibc_type, ngrp_sf_sgs_magp)
 !
@@ -81,9 +81,9 @@
       use set_surf_scalar_id
 !
 !
-      call s_count_num_surf_scalar                                      &
-     &  (num_surf, surf_name, light_surf%num_bc, light_surf%bc_name,    &
-     &   light_surf%ibc_type, ngrp_sf_sgs_cmg)
+      call s_count_num_surf_scalar(sf_grp1%num_grp, surf_name,          &
+     &    light_surf%num_bc, light_surf%bc_name,                        &
+     &    light_surf%ibc_type, ngrp_sf_sgs_cmg)
 !
       end subroutine count_num_surf_composition
 !
@@ -97,7 +97,7 @@
 !
 !
       call count_num_surf_grad_scalar                                   &
-     &   (num_surf, surf_istack, surf_name,                             &
+     &   (sf_grp1%num_grp, surf_istack, surf_name,                      &
      &    h_flux_surf%num_bc, h_flux_surf%bc_name,                      &
      &    h_flux_surf%ibc_type, name_hf,                                &
      &    ngrp_sf_fix_hf, nele_sf_fix_hf, ngrp_sf_lead_hf)
@@ -113,7 +113,7 @@
 !
 !
       call count_num_surf_grad_scalar                                   &
-     &    (num_surf, surf_istack, surf_name,                            &
+     &    (sf_grp1%num_grp, surf_istack, surf_name,                     &
      &     wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,     &
      &     name_pg, ngrp_sf_fix_pg, nele_sf_fix_pg, ngrp_sf_lead_p)
 !
@@ -128,9 +128,10 @@
 !
 !
       call count_num_surf_grad_scalar                                   &
-     &   (num_surf, surf_istack, surf_name, e_potential_surf%num_bc,    &
-     &    e_potential_surf%bc_name, e_potential_surf%ibc_type,          &
-     &    name_mpg, ngrp_sf_fix_mpg, nele_sf_fix_mpg, ngrp_sf_lead_mp)
+     &   (sf_grp1%num_grp, surf_istack, surf_name,                      &
+     &    e_potential_surf%num_bc, e_potential_surf%bc_name,            &
+     &    e_potential_surf%ibc_type, name_mpg, ngrp_sf_fix_mpg,         &
+     &    nele_sf_fix_mpg, ngrp_sf_lead_mp)
 !
       end subroutine count_num_surf_magp_grad
 !
@@ -143,7 +144,7 @@
 !
 !
       call count_num_surf_grad_scalar                                   &
-     &    (num_surf, surf_istack, surf_name,                            &
+     &    (sf_grp1%num_grp, surf_istack, surf_name,                     &
      &     light_surf%num_bc, light_surf%bc_name,                       &
      &     light_surf%ibc_type, name_dsg,                               &
      &     ngrp_sf_fix_cmg, nele_sf_fix_cmg, ngrp_sf_lead_cmg)
@@ -159,7 +160,7 @@
       use set_wall_scalar_id
 !
 !
-      call count_num_wall_surf(num_surf, surf_name,                     &
+      call count_num_wall_surf(sf_grp1%num_grp, surf_name,              &
      &    wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,      &
      &    ngrp_sf_wall_p, ngrp_sf_spin_p, ngrp_sf_spout_p)
 !
@@ -173,7 +174,7 @@
       use set_wall_scalar_id
 !
 !
-      call count_num_wall_surf(num_surf, surf_name,                     &
+      call count_num_wall_surf(sf_grp1%num_grp, surf_name,              &
      &   e_potential_surf%num_bc, e_potential_surf%bc_name,             &
      &   e_potential_surf%ibc_type, ngrp_sf_wall_mp,                    &
      &   ngrp_sf_spin_mp, ngrp_sf_spout_mp)

@@ -36,26 +36,25 @@
       use check_finite_element_mat
 !
 !
-      if ( num_surf .ne. 0 ) then
-       call allocate_int_surf_data
+      if (sf_grp1%num_grp .le. 0) return
 !
-       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
-       call pick_normal_of_surf_group
+      call allocate_int_surf_data
 !
-       if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
-       call s_sum_normal_4_surf_group
+      if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
+      call pick_normal_of_surf_group
 !
-       if (iflag_debug.eq.1)  write(*,*) 'cal_surf_norm_node'
-       call cal_surf_norm_node
+      if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
+      call s_sum_normal_4_surf_group
+!
+      if (iflag_debug.eq.1)  write(*,*) 'cal_surf_norm_node'
+      call cal_surf_norm_node
 !
 !
-       if (iflag_debug.eq.1)  write(*,*) 'position_2_each_surface'
-       call position_2_each_surface
+      if (iflag_debug.eq.1)  write(*,*) 'position_2_each_surface'
+      call position_2_each_surface
 !
-       if (iflag_debug.eq.1)  write(*,*) 'delta_x_2_each_surface'
-       call delta_x_2_each_surface
-!
-      end if
+      if (iflag_debug.eq.1)  write(*,*) 'delta_x_2_each_surface'
+      call delta_x_2_each_surface
 !
 !      call check_surface_param_smp('int_surface_parameters end',       &
 !     &    my_rank)

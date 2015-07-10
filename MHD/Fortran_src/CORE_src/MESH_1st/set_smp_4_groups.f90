@@ -75,11 +75,11 @@
       use cal_minmax_and_stacks
 !
 !
-      num_surf_smp = np_smp*num_surf
+      num_surf_smp = np_smp * sf_grp1%num_grp
 !
       call allocate_surface_param_smp
 !
-      call set_group_size_4_smp(np_smp, num_surf, surf_istack,          &
+      call set_group_size_4_smp(np_smp, sf_grp1%num_grp, surf_istack,   &
      &    isurf_grp_smp_stack, max_sf_grp_4_smp)
 !
       end subroutine count_surf_4_sheard_para

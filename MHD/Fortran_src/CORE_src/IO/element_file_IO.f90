@@ -1,13 +1,20 @@
-!element_file_IO.f90
-!      module element_file_IO
+!>@file  element_file_IO.f90
+!!      module element_file_IO
+!!
+!!@author  H. Matsui
+!!@date Programmed in Aug., 2006
 !
-!     Written by H. Matsui on Aug., 2006
-!
-!      subroutine set_element_fname(my_rank)
-!
-!      subroutine output_element_file(my_rank)
-!      subroutine output_element_sph_file(my_rank)
-!      subroutine output_element_cyl_file(my_rank)
+!>@brief File IO for element communication table
+!!
+!!@verbatim
+!!      subroutine set_element_fname(my_rank)
+!!
+!!      subroutine output_element_file(my_rank)
+!!      subroutine output_element_sph_file(my_rank)
+!!      subroutine output_element_cyl_file(my_rank)
+!!@endverbatim
+!!
+!!@param my_rank  MPI rank
 !
       module element_file_IO
 !

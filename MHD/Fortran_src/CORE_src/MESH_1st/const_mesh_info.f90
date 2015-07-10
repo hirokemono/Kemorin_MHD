@@ -66,7 +66,7 @@
       call const_element_list_4_surface
 !
 !       if (iflag_debug.gt.0) call check_surf_nod_4_sheard_para         &
-!     &                          (my_rank, num_surf, sf_grp_nod1)
+!     &                     (my_rank, sf_grp1%num_grp, sf_grp_nod1)
 !
 !
        if (iflag_debug.eq.1) write(*,*) 'const_ele_group_connect'

@@ -46,7 +46,7 @@
 !
 !
       call alloc_vectors_surf_grp_type                                  &
-     &   (num_surf, num_surf_bc, sf_grp_v1)
+     &   (sf_grp1%num_grp, num_surf_bc, sf_grp_v1)
 !
       call pick_vector_4_surf_grp_side(numsurf, vnorm_surf,             &
      &    sf_grp_v1%vnorm_sf_grp)
@@ -99,7 +99,7 @@
       real(kind=kreal), intent(inout) :: x_sf_grp(num_surf_bc,3)
 !
 !
-      call pick_vector_by_surf_grp(num_surf, num_surf_bc,               &
+      call pick_vector_by_surf_grp(sf_grp1%num_grp, num_surf_bc,        &
      &    num_surf_smp, isurf_grp_smp_stack, sf_grp_data1%isurf_grp,    &
      &    numsurf, x_surf, x_sf_grp)
 !
@@ -118,7 +118,7 @@
       real(kind=kreal), intent(inout) :: x_sf_grp(num_surf_bc,3)
 !
 !
-      call pick_vect_by_surf_grp_w_side(num_surf, num_surf_bc,          &
+      call pick_vect_by_surf_grp_w_side(sf_grp1%num_grp, num_surf_bc,   &
      &    num_surf_smp, isurf_grp_smp_stack, sf_grp_data1%isurf_grp,    &
      &    numsurf, x_surf, x_sf_grp)
 !
@@ -137,7 +137,7 @@
       real(kind=kreal), intent(inout) :: x_sf_grp(num_surf_bc)
 !
 !
-      call pick_scalar_by_surf_grp(num_surf, num_surf_bc,               &
+      call pick_scalar_by_surf_grp(sf_grp1%num_grp, num_surf_bc,        &
      &    num_surf_smp, isurf_grp_smp_stack, sf_grp_data1%isurf_grp,    &
      &    numsurf, x_surf, x_sf_grp)
 !

@@ -1,10 +1,10 @@
-!> @file  t_group_connects.f90
+!>@file  t_group_connects.f90
 !!      module t_group_connects
 !!
-!! @author  H. Matsui
-!! @date Programmed in Dec., 2008
+!!@author  H. Matsui
+!!@date Programmed in Dec., 2008
 !
-!> @brief Structure of connectivity data for group items
+!>@brief Structure of connectivity data for group items
 !!
 !!@verbatim
 !!      subroutine alloc_surf_item_sf_grp_type(nitem_grp, sf_grp_data)

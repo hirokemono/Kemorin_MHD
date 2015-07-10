@@ -98,14 +98,16 @@
 !
 !   set surface group
 !
-      num_surf = num_surf_dummy
-      if (num_surf/=0) then
+      sf_grp1%num_grp = num_surf_dummy
+      if (sf_grp1%num_grp .gt. 0) then
 !
         num_surf_bc = num_surf_bc_dummy
         call allocate_surface_data
 !
-        surf_name(1:num_surf) =    surf_name_dummy(1:num_surf)
-        surf_istack(0:num_surf) =  surf_istack_dummy(0:num_surf)
+        surf_name(1:sf_grp1%num_grp)                                    &
+     &     = surf_name_dummy(1:sf_grp1%num_grp)
+        surf_istack(0:sf_grp1%num_grp)                                  &
+     &     =  surf_istack_dummy(0:sf_grp1%num_grp)
         surf_item(1,1:num_surf_bc) = surf_item_dummy(1:num_surf_bc,1)
         surf_item(2,1:num_surf_bc) = surf_item_dummy(1:num_surf_bc,2)
       end if
@@ -166,12 +168,13 @@
       use m_read_boundary_data
 !
 !
-      num_surf_dummy = num_surf
+      num_surf_dummy = sf_grp1%num_grp
       num_surf_bc_dummy = num_surf_bc
       call allocate_bc_sf_stack_dummy
 !
-      surf_name_dummy(1:num_surf) = surf_name(1:num_surf)
-      surf_istack_dummy(0:num_surf) = surf_istack(0:num_surf)
+      surf_name_dummy(1:sf_grp1%num_grp) = surf_name(1:sf_grp1%num_grp)
+      surf_istack_dummy(0:sf_grp1%num_grp)                              &
+     &     = surf_istack(0:sf_grp1%num_grp)
 !
       call allocate_bc_sf_item_dummy
       surf_item_dummy(1:num_surf_bc,1) = surf_item(1,1:num_surf_bc)

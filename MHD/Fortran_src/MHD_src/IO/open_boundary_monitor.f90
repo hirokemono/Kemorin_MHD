@@ -43,25 +43,25 @@
 !
          write(boundary_monitor_code,'(a)', advance='NO')               &
      &        't_step, time, h_flux: '
-         do i = 1, num_surf
+         do i = 1, sf_grp1%num_grp
            write(boundary_monitor_code,'(a,a2)', advance='NO')          &
      &       trim(surf_name(i)), ', '
          end do
 !
          write(boundary_monitor_code,'(a)', advance='NO') 'stress_x: '
-         do i = 1, num_surf
+         do i = 1, sf_grp1%num_grp
            write(boundary_monitor_code,'(a,a2)', advance='NO')          &
      &       trim(surf_name(i)), ', '
          end do
 !
          write(boundary_monitor_code,'(a)', advance='NO') 'stress_y: '
-         do i = 1, num_surf
+         do i = 1, sf_grp1%num_grp
            write(boundary_monitor_code,'(a,a2)', advance='NO')          &
      &       trim(surf_name(i)), ', '
          end do
 !
          write(boundary_monitor_code,'(a)', advance='NO') 'stress_z: '
-         do i = 1, num_surf
+         do i = 1, sf_grp1%num_grp
            write(boundary_monitor_code,'(a,a2)', advance='NO')          &
      &       trim(surf_name(i)), ', '
          end do

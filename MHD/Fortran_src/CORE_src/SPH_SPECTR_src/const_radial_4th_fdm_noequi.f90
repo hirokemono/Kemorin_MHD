@@ -1,9 +1,14 @@
-!
-!      module const_radial_4th_fdm_noequi
-!
-!      Programmed by H. Matsui on June., 1994
-!      modified by H. Matsui on Apr., 2009
+!>@file   const_radial_4th_fdm_noequi.f90
+!!@brief  module const_radial_4th_fdm_noequi
 !!
+!!
+!!@author H. Matsui
+!!@date Programmed in June., 1994
+!!@n      modified by H. Matsui in Apr., 2009
+!
+!>@brief Copy spherical harmonics indices
+!!
+!!@verbatim
 !!      subroutine const_4th_fdm_matrices
 !!      subroutine const_4th_fdm_coefs
 !!
@@ -11,7 +16,8 @@
 !!
 !!      subroutine nod_r_4th_fdm_coef_noequi(kr,                        &
 !!     &          dr_p1, dr_n1, dr_p2, dr_n2, mat_fdm)
-!!
+!!@endverbatim
+!
       module const_radial_4th_fdm_noequi
 !
       use m_precision

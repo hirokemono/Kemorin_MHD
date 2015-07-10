@@ -7,8 +7,6 @@
 !      subroutine link_element_group_to_type(ele_grp)
 !      subroutine link_surface_group_to_type(sf_grp)
 !
-!      subroutine link_1st_ele_grp_connect_type(tbls_ele_grp)
-!
       module link_group_type_2_1st_mesh
 !
       use m_precision
@@ -64,7 +62,7 @@
 !
       type(surface_group_data), intent(inout) :: sf_grp
 !
-      sf_grp%num_grp = num_surf
+      sf_grp%num_grp = sf_grp1%num_grp
       sf_grp%num_item = num_surf_bc
 !
       sf_grp%grp_name =>   surf_name
@@ -72,35 +70,6 @@
       sf_grp%item_sf_grp => surf_item
 !
       end subroutine link_surface_group_to_type
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine link_1st_ele_grp_connect_type(tbls_ele_grp)
-!
-      use m_element_group_connect
-      use t_group_connects
-!
-      type(element_group_table), intent(inout) :: tbls_ele_grp
-!
-!
-      tbls_ele_grp%surf%ntot_e_grp = ele_grp_data1%surf%ntot_e_grp
-      tbls_ele_grp%edge%ntot_e_grp = ele_grp_data1%edge%ntot_e_grp
-      tbls_ele_grp%node%ntot_e_grp = ele_grp_data1%node%ntot_e_grp
-!
-      tbls_ele_grp%surf%nitem_e_grp =>  ele_grp_data1%surf%nitem_e_grp
-      tbls_ele_grp%surf%istack_e_grp => ele_grp_data1%surf%istack_e_grp
-      tbls_ele_grp%surf%item_e_grp =>   ele_grp_data1%surf%item_e_grp
-!
-      tbls_ele_grp%edge%nitem_e_grp =>  ele_grp_data1%edge%nitem_e_grp
-      tbls_ele_grp%edge%istack_e_grp => ele_grp_data1%edge%istack_e_grp
-      tbls_ele_grp%edge%item_e_grp =>   ele_grp_data1%edge%item_e_grp
-!
-      tbls_ele_grp%node%nitem_e_grp =>  ele_grp_data1%node%nitem_e_grp
-      tbls_ele_grp%node%istack_e_grp => ele_grp_data1%node%istack_e_grp
-      tbls_ele_grp%node%item_e_grp =>   ele_grp_data1%node%item_e_grp
-!
-      end subroutine link_1st_ele_grp_connect_type
 !
 !  ---------------------------------------------------------------------
 !

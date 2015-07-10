@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date   Programmed in June, 2015
 !
-!> @brief Swap endian
+!>@brief Swap endian
 !!
 !!@verbatim
 !!      subroutine endian_swap_real(num_real, real_data)

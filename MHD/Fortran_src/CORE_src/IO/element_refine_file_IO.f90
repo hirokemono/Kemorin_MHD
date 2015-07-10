@@ -1,10 +1,15 @@
-!element_refine_file_IO.f90
-!      module element_refine_file_IO
+!>@file  element_refine_file_IO.f90
+!!       module element_refine_file_IO
+!!
+!!@author H. Matsui
+!!@date   Programmed in May, 2010
 !
-!        programmed by H.Matsui on May, 2010
-!
-!      subroutine read_element_refine_file(my_rank, ifile_type)
-!      subroutine write_element_refine_file(my_rank, ifile_type)
+!>@brief File IO for element refinment data
+!!
+!!@verbatim
+!!      subroutine read_element_refine_file(my_rank, ifile_type)
+!!      subroutine write_element_refine_file(my_rank, ifile_type)
+!!@endverbatim
 !
       module element_refine_file_IO
 !

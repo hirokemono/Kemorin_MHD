@@ -20,6 +20,7 @@
 !
 !>   Array for marking
       integer(kind=kint), allocatable :: imark_4_grp(:)
+!
       private :: imark_4_grp
       private :: set_surf_4_ele_group, set_edge_4_ele_group
       private :: set_node_4_ele_group

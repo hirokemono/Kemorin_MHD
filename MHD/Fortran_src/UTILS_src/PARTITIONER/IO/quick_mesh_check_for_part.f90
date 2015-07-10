@@ -37,7 +37,7 @@
 !
       if (num_bc   .lt. 0) call ERROR_EXIT(ierr_ngrp, ione)
       if (num_mat  .lt. 0) call ERROR_EXIT(ierr_ngrp, itwo)
-      if (num_surf .lt. 0) call ERROR_EXIT(ierr_ngrp, ithree)
+      if (sf_grp1%num_grp .lt. 0) call ERROR_EXIT(ierr_ngrp, ithree)
 !
       if (num_bc .gt. 0) then
         do is= 1, bc_istack(num_bc)
@@ -55,8 +55,8 @@
         enddo
       endif
 !
-      if (num_surf.gt.0) then
-        do is= 1, surf_istack(num_surf)
+      if (sf_grp1%num_grp.gt.0) then
+        do is= 1, surf_istack(sf_grp1%num_grp)
           in= surf_item(1,is)
           ik= surf_item(2,is)
           if (in.le.0) call ERROR_EXIT(ierr_grp, ithree)
@@ -74,7 +74,7 @@
       if (ierr.gt.0) call ERROR_EXIT(ierr, izero)
 !C
 !C-- check local surface ID
-      if (num_surf.gt.0) then
+      if (sf_grp1%num_grp.gt.0) then
         call check_surface_def_in_surf_grp(numele, num_surf_bc,         &
      &          elmtyp, surf_item)
       end if

@@ -156,10 +156,11 @@
       integer(kind = kint) :: ig, ist, ied, inum, iele
 !
 !
-      new_sf_grp%grp_name(1:num_surf) = surf_name(1:num_surf)
+      new_sf_grp%grp_name(1:sf_grp1%num_grp)                            &
+     &     = surf_name(1:sf_grp1%num_grp)
 !
       new_sf_grp%istack_grp(0) = 0
-      do ig = 1, num_surf
+      do ig = 1, sf_grp1%num_grp
         new_sf_grp%istack_grp(ig) = new_sf_grp%istack_grp(ig-1)
         ist = surf_istack(ig-1) + 1
         ied = surf_istack(ig)
@@ -170,7 +171,7 @@
           end if
         end do
       end do
-      new_sf_grp%num_item = new_sf_grp%istack_grp(num_surf)
+      new_sf_grp%num_item = new_sf_grp%istack_grp(sf_grp1%num_grp)
 !
       end subroutine count_local_surf_group
 !
@@ -187,7 +188,7 @@
 !
 !
       icou = 0
-      do ig = 1, num_surf
+      do ig = 1, sf_grp1%num_grp
         icou = new_sf_grp%istack_grp(ig-1)
         ist = surf_istack(ig-1) + 1
         ied = surf_istack(ig)

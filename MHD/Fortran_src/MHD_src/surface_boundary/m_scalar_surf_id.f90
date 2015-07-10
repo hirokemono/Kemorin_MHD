@@ -38,7 +38,7 @@
       use set_surf_scalar_id
 !
 !
-      call s_set_surf_scalar_id(num_surf, surf_name,                    &
+      call s_set_surf_scalar_id(sf_grp1%num_grp, surf_name,             &
      &   h_flux_surf%num_bc, h_flux_surf%bc_name, h_flux_surf%ibc_type, &
      &   ngrp_sf_sgs_temp, id_grp_sf_sgs_temp)
 !
@@ -52,7 +52,7 @@
       use set_surf_scalar_id
 !
 !
-      call s_set_surf_scalar_id(num_surf, surf_name,                    &
+      call s_set_surf_scalar_id(sf_grp1%num_grp, surf_name,             &
      &   wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,       &
      &   ngrp_sf_sgs_p, id_grp_sf_sgs_p)
 !
@@ -66,7 +66,7 @@
       use set_surf_scalar_id
 !
 !
-      call s_set_surf_scalar_id(num_surf, surf_name,                    &
+      call s_set_surf_scalar_id(sf_grp1%num_grp, surf_name,             &
      &   e_potential_surf%num_bc, e_potential_surf%bc_name,             &
      &   e_potential_surf%ibc_type, ngrp_sf_sgs_magp,                   &
      &   id_grp_sf_sgs_magp)
@@ -81,7 +81,7 @@
       use set_surf_scalar_id
 !
 !
-      call s_set_surf_scalar_id(num_surf, surf_name,                    &
+      call s_set_surf_scalar_id(sf_grp1%num_grp, surf_name,             &
      &   light_surf%num_bc, light_surf%bc_name, light_surf%ibc_type,    &
      &   ngrp_sf_sgs_cmg, id_grp_sf_sgs_cmg)
 !
@@ -95,7 +95,8 @@
       use m_surf_data_temp
       use set_sf_grad_scalar_id
 !
-      call s_set_surf_grad_scalar_id(num_surf, surf_istack, surf_name,  &
+      call s_set_surf_grad_scalar_id                                    &
+     &  (sf_grp1%num_grp, surf_istack, surf_name,                       &
      &   h_flux_surf%num_bc, h_flux_surf%bc_name,                       &
      &   h_flux_surf%ibc_type, h_flux_surf%bc_magnitude, name_hf,       &
      &   ngrp_sf_fix_hf, id_grp_sf_fix_hf,                              &
@@ -111,7 +112,8 @@
       use m_surf_data_press
       use set_sf_grad_scalar_id
 !
-      call s_set_surf_grad_scalar_id(num_surf, surf_istack, surf_name,  &
+      call s_set_surf_grad_scalar_id                                    &
+     &  (sf_grp1%num_grp, surf_istack, surf_name,                       &
      &   wall_surf%num_bc, wall_surf%bc_name,                           &
      &   wall_surf%ibc_type, wall_surf%bc_magnitude,                    &
      &   name_pg, ngrp_sf_fix_pg, id_grp_sf_fix_pg,                     &
@@ -127,7 +129,8 @@
       use m_surf_data_magne_p
       use set_sf_grad_scalar_id
 !
-      call s_set_surf_grad_scalar_id(num_surf, surf_istack, surf_name,  &
+      call s_set_surf_grad_scalar_id                                    &
+     &  (sf_grp1%num_grp, surf_istack, surf_name,                       &
      &   e_potential_surf%num_bc, e_potential_surf%bc_name,             &
      &   e_potential_surf%ibc_type, e_potential_surf%bc_magnitude,      &
      &   name_mpg, ngrp_sf_fix_mpg, id_grp_sf_fix_mpg,                  &
@@ -143,7 +146,8 @@
       use m_surf_data_composition
       use set_sf_grad_scalar_id
 !
-      call s_set_surf_grad_scalar_id(num_surf, surf_istack, surf_name,  &
+      call s_set_surf_grad_scalar_id                                    &
+     &  (sf_grp1%num_grp, surf_istack, surf_name,                       &
      &   light_surf%num_bc, light_surf%bc_name,                         &
      &   light_surf%ibc_type, light_surf%bc_magnitude, name_dsg,        &
      &   ngrp_sf_fix_cmg, id_grp_sf_fix_cmg,                            &
@@ -161,7 +165,8 @@
       use set_wall_scalar_id
 !
 !
-      call s_set_wall_scalar_id(num_surf, surf_name,                    &
+      call s_set_wall_scalar_id                                         &
+     &   (sf_grp1%num_grp, surf_name,                                   &
      &    wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,      &
      &    ngrp_sf_wall_p, id_grp_sf_wall_p,                             &
      &    ngrp_sf_spin_p, id_grp_sf_spin_p,                             &
@@ -177,7 +182,8 @@
       use set_wall_scalar_id
 !
 !
-      call s_set_wall_scalar_id(num_surf, surf_name,                    &
+      call s_set_wall_scalar_id                                         &
+     &   (sf_grp1%num_grp, surf_name,                                   &
      &    e_potential_surf%num_bc, e_potential_surf%bc_name,            &
      &    e_potential_surf%ibc_type,                                    &
      &    ngrp_sf_wall_mp, id_grp_sf_wall_mp,                           &

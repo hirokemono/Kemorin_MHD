@@ -82,6 +82,7 @@
      &          surf_mesh_l, edge_mesh_l, nod_fld_l)
 !
       use m_surface_group_connect
+      use m_element_group_connect
       use t_mesh_data
       use t_phys_data
       use link_data_type_to_1st_mesh
@@ -106,8 +107,8 @@
       call link_surface_data_type(surf_mesh_l%surf)
       call link_edge_data_type(edge_mesh_l%edge)
 !
-      call link_1st_ele_grp_connect_type(femmesh_l%group%tbls_ele_grp)
-      call link_1st_surf_grp_conn_type(femmesh_l%group%tbls_surf_grp)
+      call link_ele_grp_connect_type                                    &
+     &    (ele_grp_data1, femmesh_l%group%tbls_ele_grp)
       call link_surf_grp_connect_type                                   &
      &    (sf_grp_data1, femmesh_l%group%tbls_surf_grp)
 !

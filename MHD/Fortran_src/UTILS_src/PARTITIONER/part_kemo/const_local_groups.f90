@@ -85,7 +85,7 @@
       type(surface_group_data), intent(inout) :: new_sf_grp
 !
 !
-      new_sf_grp%num_grp = num_surf
+      new_sf_grp%num_grp = sf_grp1%num_grp
       call allocate_sf_grp_type_num(new_sf_grp)
       call count_local_surf_group(new_sf_grp)
 !

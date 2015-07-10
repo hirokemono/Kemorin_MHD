@@ -1,14 +1,17 @@
-!edge_file_IO.f90
-!      module edge_file_IO
+!>@file  edge_file_IO.f90
+!!      module edge_file_IO
+!!
+!!@author  H. Matsui
+!!@date Programmed in Aug., 2006
 !
-!     Written by H. Matsui on Aug., 2006
-!
-!      subroutine set_edge_fname(my_rank)
-!
-!      subroutine output_edge_geometries
-!      subroutine output_edge_geometries_sph
-!      subroutine output_edge_geometries_cyl
-!
+!>@brief File IO for edge data
+!!
+!!@verbatim
+!!      subroutine set_edge_fname(my_rank)
+!!      subroutine output_edge_geometries
+!!      subroutine output_edge_geometries_sph
+!!      subroutine output_edge_geometries_cyl
+!!@endverbatim
 !
       module edge_file_IO
 !

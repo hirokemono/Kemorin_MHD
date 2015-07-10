@@ -1,11 +1,16 @@
-!element_IO_select.F90
-!      module element_IO_select
+!>@file  element_IO_select.f90
+!!      module element_IO_select
+!!
+!!@author  H. Matsui
+!!@date Programmed in Aug., 2006
 !
-!     Written by H. Matsui on Aug., 2006
-!
-!      subroutine sel_output_element_file(my_rank)
-!      subroutine sel_output_element_sph_file(my_rank)
-!      subroutine sel_output_element_cyl_file(my_rank)
+!>@brief File IO selector for element communication table
+!!
+!!@verbatim
+!!      subroutine sel_output_element_file(my_rank)
+!!      subroutine sel_output_element_sph_file(my_rank)
+!!      subroutine sel_output_element_cyl_file(my_rank)
+!!@endverbatim
 !
       module element_IO_select
 !

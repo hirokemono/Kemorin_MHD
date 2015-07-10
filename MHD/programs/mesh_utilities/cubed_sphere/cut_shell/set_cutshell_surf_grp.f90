@@ -32,7 +32,7 @@
       type(surface_group_data), intent(inout) :: new_sf_grp
 !
 !
-      new_sf_grp%num_grp =  num_surf + 1
+      new_sf_grp%num_grp =  sf_grp1%num_grp + 1
       call allocate_sf_grp_type_num(new_sf_grp)
 !
       call count_new_surf_group(new_sf_grp)
@@ -54,7 +54,7 @@
       type(surface_group_data), intent(inout) :: new_sf_grp
 !
 !
-      new_sf_grp%num_grp =  num_surf
+      new_sf_grp%num_grp =  sf_grp1%num_grp
       call allocate_sf_grp_type_num(new_sf_grp)
 !
       call count_new_surf_group(new_sf_grp)
@@ -74,9 +74,10 @@
       integer(kind = kint) :: i, iele, inum
 !
 !
-      new_sf_grp%grp_name(1:num_surf) = surf_name(1:num_surf)
+      new_sf_grp%grp_name(1:sf_grp1%num_grp)                            &
+     &     = surf_name(1:sf_grp1%num_grp)
 !
-      do i = 1, num_surf
+      do i = 1, sf_grp1%num_grp
          new_sf_grp%istack_grp(i) = new_sf_grp%istack_grp(i-1)
          do inum = surf_istack(i-1)+1, surf_istack(i)
            iele = surf_item(1,inum)
@@ -85,7 +86,7 @@
            end if
          end do
       end do
-      new_sf_grp%num_item = new_sf_grp%istack_grp(num_surf)
+      new_sf_grp%num_item = new_sf_grp%istack_grp(sf_grp1%num_grp)
 !
       end subroutine count_new_surf_group
 !
@@ -98,7 +99,7 @@
      integer(kind = kint) :: iele, inum, i, icou
 !
       icou = 0
-      do i = 1, num_surf
+      do i = 1, sf_grp1%num_grp
          do inum = surf_istack(i-1)+1, surf_istack(i)
            iele = surf_item(1,inum)
            if ( mark_new_ele(iele) .ne. 0 ) then
@@ -129,7 +130,7 @@
       new_sf_grp%grp_name(new_sf_grp%num_grp) = 'equator_surf'
 !
       new_sf_grp%istack_grp(new_sf_grp%num_grp)                         &
-     &      = new_sf_grp%istack_grp(num_surf)
+     &      = new_sf_grp%istack_grp(sf_grp1%num_grp)
       do iele = 1, new_ele%numele
         do inum = 1, nsurf_4_ele
           isig = 1
@@ -162,7 +163,7 @@
       integer(kind = kint) :: iele, inum, i, k, inod, icou, isig
 !
 !
-      icou = new_sf_grp%istack_grp(num_surf)
+      icou = new_sf_grp%istack_grp(sf_grp1%num_grp)
       do iele = 1, new_ele%numele
         do inum = 1, nsurf_4_ele
           isig = 1

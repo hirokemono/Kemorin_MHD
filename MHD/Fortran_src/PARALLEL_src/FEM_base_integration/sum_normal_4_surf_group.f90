@@ -37,18 +37,19 @@
       integer(kind = kint) :: i
 !
 !
-      call allocate_sum_local_area_grp(num_surf)
+      call allocate_sum_local_area_grp(sf_grp1%num_grp)
 !
-      call s_sum_norm_of_surf_group(np_smp, numele, e_multi, num_surf,  &
+      call s_sum_norm_of_surf_group(np_smp, numele, e_multi,            &
+     &    sf_grp1%num_grp,  &
      &    num_surf_bc, surf_item, num_surf_smp, isurf_grp_smp_stack,    &
      &    sf_grp_v1%area_sf_grp)
 !
       call s_sum_norm_of_surf_grp_para                                  &
-     &   (num_surf, sf_grp_v1%tot_area_sf_grp)
+     &   (sf_grp1%num_grp, sf_grp_v1%tot_area_sf_grp)
       call deallocate_sum_local_area_grp
 !
       if (my_rank.eq.0) then
-        do i = 1, num_surf
+        do i = 1, sf_grp1%num_grp
            write(*,*) i, trim(surf_name(i)),                            &
      &                   sf_grp_v1%tot_area_sf_grp(i)
         end do

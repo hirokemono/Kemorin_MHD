@@ -1,13 +1,18 @@
-!element_data_IO.f90
-!      module element_data_IO
+!>@file  element_data_IO.f90
+!!      module element_data_IO
+!!
+!!@author  H. Matsui
+!!@date Programmed in Oct., 2006
 !
-!     Written by H. Matsui on Oct., 2006
-!
-!      subroutine write_element_comm_table
-!
-!      subroutine write_element_geometry
-!      subroutine write_element_geometry_sph
-!      subroutine write_element_geometry_cyl
+!>@brief Data IO routines for element data
+!!
+!!@verbatim
+!!      subroutine write_element_comm_table
+!!
+!!      subroutine write_element_geometry
+!!      subroutine write_element_geometry_sph
+!!      subroutine write_element_geometry_cyl
+!!@endverbatim
 !
       module element_data_IO
 !

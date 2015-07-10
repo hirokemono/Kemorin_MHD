@@ -42,7 +42,7 @@
 !
       call position_2_each_surf_grp(np_smp, numnod, numele, nnod_4_ele, &
      &    nnod_4_surf, node_on_sf, ie, xx, a_radius,                    &
-     &    num_surf, num_surf_bc, surf_istack, surf_item,                &
+     &    sf_grp1%num_grp, num_surf_bc, surf_istack, surf_item,         &
      &    num_surf_smp, isurf_grp_smp_stack, xe_sf)
 !
       end subroutine position_2_each_surface
@@ -59,7 +59,7 @@
 !
       call delta_x_2_each_surf_grp(np_smp, numnod, numele, nnod_4_ele,  &
      &    nnod_4_surf, node_on_sf, node_on_sf_n, ie, xx,                &
-     &    num_surf, num_surf_bc, surf_istack, surf_item,                &
+     &    sf_grp1%num_grp, num_surf_bc, surf_istack, surf_item,         &
      &    num_surf_smp, isurf_grp_smp_stack, dxe_sf)
 !
       end subroutine delta_x_2_each_surface

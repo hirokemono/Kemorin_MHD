@@ -51,7 +51,7 @@
       use cal_jacobians_lag
 !
 !
-      if (num_surf .le. 0) return
+      if (sf_grp1%num_grp .le. 0) return
       call alloc_2d_jac_type(num_surf_bc, num_linear_sf, maxtot_int_2d, &
      &                       jac1_sf_grp_2d_l)
       if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_dylinear'

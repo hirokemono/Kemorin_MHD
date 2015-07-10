@@ -102,7 +102,7 @@
 !
       call allocate_mark_refine_sf_grp(nnod_2nd)
 !
-      new_sf_grp%num_grp = num_surf
+      new_sf_grp%num_grp = sf_grp1%num_grp
       call allocate_sf_grp_type_num(new_sf_grp)
 !
       call count_refined_surf_group(new_sf_grp)

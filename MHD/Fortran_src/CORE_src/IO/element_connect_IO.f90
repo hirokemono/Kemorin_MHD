@@ -1,18 +1,24 @@
-!element_connect_IO.f90
-!      module element_connect_IO
+!>@file  element_connect_IO.f90
+!!      module element_connect_IO
+!!
+!!@author  H. Matsui
+!!@date Programmed in Oct., 2006
 !
-!     Written by H. Matsui on Oct., 2006
-!
-!      subroutine write_element_info(id_file)
-!      subroutine write_surface_4_element(id_file)
-!      subroutine write_edge_4_element(id_file)
-!      subroutine write_element_info_b(id_file)
-!
-!      subroutine read_number_of_element(id_file)
-!      subroutine read_element_info(id_file)
-!      subroutine read_number_of_element_b(id_file)
-!      subroutine read_element_info_b(id_file)
-!
+!>@brief Data IO routines for element connectivity
+!!
+!!@verbatim
+!!      subroutine write_element_info(id_file)
+!!      subroutine write_surface_4_element(id_file)
+!!      subroutine write_edge_4_element(id_file)
+!!      subroutine write_element_info_b(id_file)
+!!
+!!      subroutine read_number_of_element(id_file)
+!!      subroutine read_element_info(id_file)
+!!      subroutine read_number_of_element_b(id_file)
+!!      subroutine read_element_info_b(id_file)
+!!@endverbatim
+!!
+!!@param  id_file  File ID
 !
       module element_connect_IO
 !

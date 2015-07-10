@@ -45,7 +45,8 @@
 !
 !
       call read_boundary_values_file(my_rank,                           &
-     &    num_bc, bc_istack, bc_name, num_surf, surf_istack, surf_name)
+     &    num_bc, bc_istack, bc_name,                                   &
+     &    sf_grp1%num_grp, surf_istack, surf_name)
 !
       end subroutine read_boundary_values_file_1
 !

@@ -121,7 +121,7 @@
           ix = int_start2(i0) + ii
 !
           call s_cal_jacobian_sf_grp_9(numnod, numele,                  &
-     &        ie, xx, num_surf, num_surf_bc, surf_item,                 &
+     &        ie, xx, sf_grp1%num_grp, num_surf_bc, surf_item,          &
      &        np_smp, num_surf_smp, isurf_grp_smp_stack,                &
      &        jac_sf_grp_q%xj_sf(1:num_surf_bc,ix),                     &
      &        jac_sf_grp_q%axj_sf(1:num_surf_bc,ix),                    &

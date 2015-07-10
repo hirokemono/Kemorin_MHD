@@ -31,7 +31,7 @@
       integer(kind = kint) :: i_grp, ist, ied, inum
 !
       write(id_check,*) ' inum, center of surface'
-      do i_grp = 1, num_surf
+      do i_grp = 1, sf_grp1%num_grp
         ist = surf_istack(i_grp-1) + 1
         ied = surf_istack(i_grp)
         do inum = ist, ied
@@ -55,7 +55,7 @@
 !
       write(id_check,*) ' inum, center of surface'
       write(id_check,*) '          (r, theta, phi, cyl_r)'
-      do i_grp = 1, num_surf
+      do i_grp = 1, sf_grp1%num_grp
         ist = surf_istack(i_grp-1) + 1
         ied = surf_istack(i_grp)
         do inum = ist, ied
@@ -82,18 +82,19 @@
 !
        write(50+id_check,*) txt
        write(50+id_check,*) 'surf_istack'
-       write(50+id_check,*) (surf_istack(isurf), isurf = 0, num_surf)
+       write(50+id_check,*) surf_istack(0:sf_grp1%num_grp)
        write(50+id_check,*) 'inod_stack_sf_grp'
-       write(50+id_check,*) sf_grp_nod1%inod_stack_sf_grp(0:num_surf)
+       write(50+id_check,*)                                             &
+     &     sf_grp_nod1%inod_stack_sf_grp(0:sf_grp1%num_grp)
 !
        write(50+id_check,*) 'isurf_grp_smp_stack'
-       do isurf = 1, num_surf
+       do isurf = 1, sf_grp1%num_grp
          write(50+id_check,*) isurf,                                    &
      &    (isurf_grp_smp_stack(i),i=(np_smp*(isurf-1)+1),np_smp*isurf)
        end do
       write(50+id_check,*) 'isurf_nod_smp_stack'
       call check_surf_nod_4_sheard_para                                 &
-     &   (id_check, num_surf, sf_grp_nod1)
+     &   (id_check, sf_grp1%num_grp, sf_grp_nod1)
 !
        end subroutine check_surface_param_smp
 !

@@ -1,13 +1,18 @@
-!edge_data_IO.f90
-!      module edge_data_IO
+!>@file  edge_data_IO.f90
+!!      module edge_data_IO
+!!
+!!@author  H. Matsui
+!!@date Programmed in Aug., 2006
 !
-!     Written by H. Matsui on Aug., 2006
-!
-!      subroutine write_edge_connection
-!
-!      subroutine write_edge_geometry
-!      subroutine write_edge_geometry_sph
-!      subroutine write_edge_geometry_cyl
+!>@brief data IO orutines for edge
+!!
+!!@verbatim
+!!      subroutine write_edge_connection
+!!
+!!      subroutine write_edge_geometry
+!!      subroutine write_edge_geometry_sph
+!!      subroutine write_edge_geometry_cyl
+!!@endverbatim
 !
 !
       module edge_data_IO
