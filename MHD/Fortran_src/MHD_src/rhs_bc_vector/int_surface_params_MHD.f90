@@ -30,7 +30,6 @@
 !
       use position_of_each_surface
       use set_surf_grp_vectors
-      use set_norm_nod_4_surf_grp
       use sum_normal_4_surf_group
 !
 !      use check_surface_groups
@@ -45,10 +44,6 @@
 !
        if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
        call s_sum_normal_4_surf_group
-!
-!
-       if(iflag_debug.eq.1) write(*,*) 'allocate_vect_4_node_on_surf'
-       call allocate_vect_4_node_on_surf
 !
        if (iflag_debug.eq.1)  write(*,*) 'cal_surf_norm_node'
        call cal_surf_norm_node

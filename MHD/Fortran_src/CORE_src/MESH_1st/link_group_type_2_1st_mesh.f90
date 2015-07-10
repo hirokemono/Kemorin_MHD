@@ -8,7 +8,6 @@
 !      subroutine link_surface_group_to_type(sf_grp)
 !
 !      subroutine link_1st_ele_grp_connect_type(tbls_ele_grp)
-!      subroutine link_1st_surf_grp_conn_type(tbls_surf_grp)
 !
       module link_group_type_2_1st_mesh
 !
@@ -103,33 +102,6 @@
 !
       end subroutine link_1st_ele_grp_connect_type
 !
-!  ---------------------------------------------------------------------
-!
-      subroutine link_1st_surf_grp_conn_type(tbls_surf_grp)
-!
-      use m_surface_group_connect
-      use t_group_connects
-!
-      type(surface_group_table), intent(inout) :: tbls_surf_grp
-!
-!
-      tbls_surf_grp%edge%ntot_e_grp = sf_grp_data1%edge%ntot_e_grp
-      tbls_surf_grp%node%ntot_e_grp = ntot_node_sf_grp
-!
-      tbls_surf_grp%isurf_grp =>          sf_grp_data1%isurf_grp
-      tbls_surf_grp%isurf_grp_n =>        sf_grp_data1%isurf_grp_n
-!
-      tbls_surf_grp%edge%nitem_e_grp =>  nedge_sf_grp
-      tbls_surf_grp%edge%istack_e_grp => iedge_stack_sf_grp
-      tbls_surf_grp%edge%item_e_grp =>   iedge_surf_grp
-!
-      tbls_surf_grp%node%nitem_e_grp =>   nnod_sf_grp
-      tbls_surf_grp%node%istack_e_grp =>  inod_stack_sf_grp
-      tbls_surf_grp%node%item_e_grp =>    inod_surf_grp
-!
-      end subroutine link_1st_surf_grp_conn_type
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       end module link_group_type_2_1st_mesh

@@ -84,18 +84,16 @@
        write(50+id_check,*) 'surf_istack'
        write(50+id_check,*) (surf_istack(isurf), isurf = 0, num_surf)
        write(50+id_check,*) 'inod_stack_sf_grp'
-       write(50+id_check,*) inod_stack_sf_grp(0:num_surf)
+       write(50+id_check,*) sf_grp_nod1%inod_stack_sf_grp(0:num_surf)
 !
        write(50+id_check,*) 'isurf_grp_smp_stack'
        do isurf = 1, num_surf
          write(50+id_check,*) isurf,                                    &
      &    (isurf_grp_smp_stack(i),i=(np_smp*(isurf-1)+1),np_smp*isurf)
        end do
-       write(50+id_check,*) 'isurf_nod_smp_stack'
-       do isurf = 1, num_surf
-         write(50+id_check,*) isurf,                                    &
-     &    (isurf_nod_smp_stack(i),i=(np_smp*(isurf-1)+1),np_smp*isurf)
-       end do
+      write(50+id_check,*) 'isurf_nod_smp_stack'
+      call check_surf_nod_4_sheard_para                                 &
+     &   (id_check, num_surf, sf_grp_nod1)
 !
        end subroutine check_surface_param_smp
 !

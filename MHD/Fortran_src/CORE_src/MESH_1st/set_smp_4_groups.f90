@@ -4,7 +4,6 @@
 !     Written by H. Matsui on Sep., 2005
 !
 !      subroutine count_num_groups_4_smp
-!      subroutine count_surf_nod_4_sheard_para
 !
       module set_smp_4_groups
 !
@@ -84,22 +83,6 @@
      &    isurf_grp_smp_stack, max_sf_grp_4_smp)
 !
       end subroutine count_surf_4_sheard_para
-!
-!-----------------------------------------------------------------------
-!
-      subroutine count_surf_nod_4_sheard_para
-!
-      use m_machine_parameter
-      use m_surface_group
-      use m_surface_group_connect
-      use cal_minmax_and_stacks
-!
-      call allocate_surf_nod_param_smp
-!
-      call set_group_size_4_smp(np_smp, num_surf, inod_stack_sf_grp,    &
-     &    isurf_nod_smp_stack, max_sf_nod_4_smp)
-!
-      end subroutine count_surf_nod_4_sheard_para
 !
 !-----------------------------------------------------------------------
 !

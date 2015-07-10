@@ -32,7 +32,6 @@
 !
       use m_surface_group_connect
       use set_smp_4_groups
-      use set_surface_node_grp
       use const_surface_data
       use const_group_infos
 !      use check_surface_groups
@@ -60,14 +59,15 @@
 !       if (iflag_debug.gt.0) call check_mat_4_sheard_para(my_rank)
 !       if (iflag_debug.gt.0) call check_surf_4_sheard_para(my_rank)
 !
-      if (iflag_debug.gt.0) write(*,*) 's_set_surface_node_grp'
-      call s_set_surface_node_grp
-!       call check_surface_node_id(my_rank+50)
+      if (iflag_debug.gt.0) write(*,*) 'set_surface_node_grp'
+      call set_surface_node_grp
+!       call check_surface_node_id(my_rank, sf_grp_nod1)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_element_list_4_surface'
       call const_element_list_4_surface
 !
-!       if (iflag_debug.gt.0) call check_surf_nod_4_sheard_para(my_rank)
+!       if (iflag_debug.gt.0) call check_surf_nod_4_sheard_para         &
+!     &                          (my_rank, num_surf, sf_grp_nod1)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_group_informations'
       call const_group_informations
@@ -121,12 +121,12 @@
       call deallocate_edge_id_4_ele_grp
       call deallocate_node_id_4_ele_grp
 !
-      call deallocate_surf_nod_param_smp
+      call dealloc_num_surf_grp_nod_smp(sf_grp_nod1)
       call deallocate_surface_param_smp
       call deallocate_material_param_smp
       call deallocate_boundary_param_smp
 !
-      call deallocate_surf_nod
+      call dealloc_surf_grp_nod(sf_grp_nod1)
       call deallocate_surface_geometry
       call deallocate_edge_geometry
 !

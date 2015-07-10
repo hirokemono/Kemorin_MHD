@@ -39,7 +39,7 @@
 !
 !
       call s_set_surf_vector_id                                         &
-     &   (num_surf, surf_name, inod_stack_sf_grp,                       &
+     &   (num_surf, surf_name, sf_grp_nod1%inod_stack_sf_grp,           &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type, torque_surf%bc_magnitude,               &
      &    name_svn, nmax_sf_sgs_velo, id_grp_sf_sgs_velo,               &
@@ -67,7 +67,7 @@
 !
 !
       call s_set_surf_vector_id                                         &
-     &    (num_surf, surf_name, inod_stack_sf_grp,                      &
+     &    (num_surf, surf_name, sf_grp_nod1%inod_stack_sf_grp,          &
      &     a_potential_surf%num_bc, a_potential_surf%bc_name,           &
      &     a_potential_surf%ibc_type, a_potential_surf%bc_magnitude,    &
      &     name_san, nmax_sf_sgs_vect_p, id_grp_sf_sgs_vect_p,          &
@@ -93,7 +93,7 @@
 !
 !
       call s_set_surf_vector_id                                         &
-     &   (num_surf, surf_name, inod_stack_sf_grp,                       &
+     &   (num_surf, surf_name, sf_grp_nod1%inod_stack_sf_grp,           &
      &    magne_surf%num_bc, magne_surf%bc_name,                        &
      &    magne_surf%ibc_type, magne_surf%bc_magnitude,                 &
      &    name_sbn, nmax_sf_sgs_magne, id_grp_sf_sgs_magne,             &
@@ -112,7 +112,7 @@
 !
 !
       call s_set_surf_vector_id                                         &
-     &    (num_surf, surf_name, inod_stack_sf_grp,                      &
+     &    (num_surf, surf_name, sf_grp_nod1%inod_stack_sf_grp,          &
      &     current_surf%num_bc, current_surf%bc_name,                   &
      &     current_surf%ibc_type, current_surf%bc_magnitude,            &
      &     name_sjn, nmax_sf_sgs_current, id_grp_sf_sgs_current,        &

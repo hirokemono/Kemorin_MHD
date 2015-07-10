@@ -9,18 +9,16 @@
 !        modified by H.Matsui on Sep. 2005
 !
 !      subroutine set_normal_velocity
-!      subroutine set_normal_comp(ngrp_sf, nnod_sf, id_grp_sf,          &
-!     &          ist_nod_sf, sf_apt, i_vect)
 !
       module set_normal_field
 !
       use m_precision
 !
       use m_machine_parameter
-      use m_surface_group
-      use m_surface_group_connect
 !
       implicit none
+!
+      private :: set_normal_comp
 !
 !-----------------------------------------------------------------------
 !
@@ -31,10 +29,16 @@
       subroutine set_normal_velocity
 !
       use m_node_phys_address
+      use m_surface_group
+      use m_surface_group_connect
       use m_surf_data_torque
 !
       if (ngrp_sf_fix_vn .gt. 0) then
-        call set_normal_comp(ngrp_sf_fix_vn, nnod_sf_fix_vn,            &
+        call set_normal_comp(num_surf, num_surf_smp,                    &
+     &      sf_grp_nod1%ntot_node_sf_grp,                               &
+     &      sf_grp_nod1%inod_stack_sf_grp,                              &
+     &      sf_grp_nod1%istack_surf_nod_smp, sf_grp_nod1%inod_surf_grp, &
+     &      sf_grp_nod1%surf_norm_nod, ngrp_sf_fix_vn, nnod_sf_fix_vn,  &
      &      id_grp_sf_fix_vn, ist_nod_sf_fix_vn, sf_fix_vn_apt,         &
      &      iphys%i_velo)
       end if
@@ -43,10 +47,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_normal_comp(ngrp_sf, nnod_sf, id_grp_sf,           &
-     &          ist_nod_sf, sf_apt, i_vect)
+      subroutine set_normal_comp(num_surf, num_surf_smp,                &
+     &         ntot_node_sf_grp, inod_stack_sf_grp,                     &
+     &         isurf_nod_smp_stack, inod_surf_grp, surf_norm_nod,       &
+     &         ngrp_sf, nnod_sf, id_grp_sf, ist_nod_sf, sf_apt, i_vect)
 !
       use m_node_phys_data
+!
+      integer (kind = kint), intent(in) :: num_surf, num_surf_smp
+      integer (kind = kint), intent(in) :: ntot_node_sf_grp
+      integer (kind = kint), intent(in)                                 &
+     &                      :: inod_stack_sf_grp(0:num_surf)
+      integer (kind = kint), intent(in)                                 &
+     &                      :: isurf_nod_smp_stack(0:num_surf_smp)
+      integer (kind = kint), intent(in)                                 &
+     &                      :: inod_surf_grp(ntot_node_sf_grp)
+      real(kind=kreal), intent(in) :: surf_norm_nod(ntot_node_sf_grp,3)
 !
       integer (kind = kint), intent(in) :: i_vect, ngrp_sf, nnod_sf
       integer (kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
@@ -63,8 +79,7 @@
        nsf = inod_stack_sf_grp(igrp) - inod_stack_sf_grp(igrp-1)
        if (nsf.gt.0) then
 !
-!$omp parallel do &
-!$omp& private(id_sf,ist,ied,inum,inod,idat)
+!$omp parallel do private(id_sf,ist,ied,inum,inod,idat)
         do iproc = 1, np_smp
          id_sf = np_smp*(igrp-1) + iproc
          ist = isurf_nod_smp_stack(id_sf-1)+1

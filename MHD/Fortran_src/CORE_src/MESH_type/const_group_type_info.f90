@@ -28,7 +28,7 @@
       use m_machine_parameter
       use t_mesh_data
       use set_tables_4_ele_grp_type
-      use set_tables_4_surf_grp_type
+      use set_surface_node_grp_type
 !
       type(mesh_geometry),    intent(in) :: mesh
       type(surface_geometry), intent(in) :: surf_mesh
@@ -56,11 +56,6 @@
        if (iflag_debug.eq.1) write(*,*) 'set_edge_4_surf_grp_type'
       call set_edge_4_surf_grp_type(surf_mesh%surf, edge_mesh%edge,     &
      &    group%surf_grp,  group%tbls_surf_grp)
-!
-       if (iflag_debug.eq.1) write(*,*) 'set_node_4_surf_grp_type'
-      call set_node_4_surf_grp_type(surf_mesh%surf, mesh%node,          &
-     &    group%surf_grp,  group%tbls_surf_grp)
-!
 !
       end subroutine s_const_group_type_info
 !

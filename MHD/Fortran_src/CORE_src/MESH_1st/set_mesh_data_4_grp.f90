@@ -8,9 +8,7 @@
 !      subroutine set_edge_4_ele_group
 !      subroutine set_node_4_ele_group
 !
-!      subroutine set_edge_4_surf_group
-!
-!      subroutine set_surf_id_4_surf_group
+!      subroutine deallocate_edge_id_4_sf_grp
 !
       module set_mesh_data_4_grp
 !
@@ -123,61 +121,6 @@
       call deallocate_imark_4_grp
 !
       end subroutine set_node_4_ele_group
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine set_edge_4_surf_group
-!
-      use m_geometry_constants
-      use m_geometry_parameter
-      use m_geometry_data
-      use m_surface_group
-      use m_surface_group_connect
-!
-      use set_node_4_group
-!
-!
-      call allocate_imark_4_grp(numedge)
-      call allocate_edge_stack_4_sf_grp
-!
-      call count_nod_4_ele_grp(numedge, numsurf, nedge_4_surf,          &
-     &    iedge_4_sf, num_surf, num_surf_bc, &
-     &    surf_istack, sf_grp_data1%isurf_grp,    &
-     &    sf_grp_data1%edge%ntot_e_grp, sf_grp_data1%edge%nitem_e_grp, iedge_stack_sf_grp,           &
-     &    imark_4_grp)
-!
-      call allocate_edge_id_4_sf_grp
-!
-      call set_nod_4_ele_grp(numedge, numsurf, nedge_4_surf,            &
-     &    iedge_4_sf, num_surf, num_surf_bc,      &
-     &    surf_istack, sf_grp_data1%isurf_grp,    &
-     &    sf_grp_data1%edge%ntot_e_grp, sf_grp_data1%edge%nitem_e_grp, iedge_stack_sf_grp,           &
-     &    iedge_surf_grp, imark_4_grp)
-!
-      call deallocate_imark_4_grp
-!
-      end subroutine set_edge_4_surf_group
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine set_surf_id_4_surf_group
-!
-      use m_geometry_parameter
-      use m_geometry_data
-      use m_surface_group
-      use m_surface_group_connect
-      use set_surface_id_4_surf_grp
-!
-!
-      call alloc_surf_item_sf_grp_type(num_surf_bc, sf_grp_data1)
-!
-      call set_surface_id_4_surf_group(numele, isf_4_ele,               &
-     &    num_surf, num_surf_bc, surf_istack, surf_item,                &
-     &    sf_grp_data1%isurf_grp, sf_grp_data1%isurf_grp_n)
-!
-      end subroutine set_surf_id_4_surf_group
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

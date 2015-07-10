@@ -13,7 +13,6 @@
 !      subroutine deallocate_surface_param_smp
 !
 !      subroutine check_surf_4_sheard_para(my_rank)
-!      subroutine check_surf_nod_4_sheard_para(my_rank)
 !
       module m_surface_group
 !

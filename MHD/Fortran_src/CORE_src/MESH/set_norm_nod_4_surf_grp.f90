@@ -4,9 +4,6 @@
 !        programmed by H.Matsui
 !     Modified by H. Matsui on Sep, 2007
 !
-!      subroutine cal_surf_norm_node
-!       output: coef_sf_nod, surf_norm_nod
-!
 !      subroutine allocate_work_norm_nod(numnod)
 !      subroutine deallocate_work_norm_nod
 !
@@ -19,6 +16,7 @@
       module set_norm_nod_4_surf_grp
 !
       use m_precision
+      use m_geometry_constants
 !
       implicit none
 !
@@ -28,30 +26,6 @@
 !
       contains
 !
-! -----------------------------------------------------------------------
-!
-      subroutine cal_surf_norm_node
-!
-      use m_geometry_parameter
-      use m_geometry_data
-      use m_surface_group
-      use m_surface_group_geometry
-      use m_surface_group_connect
-!
-      call allocate_work_norm_nod(numnod)
-!
-      call cal_surf_grp_norm_node(numele, nnod_4_ele,                   &
-     &    nnod_4_surf, node_on_sf, ie,                                  &
-     &    num_surf, num_surf_bc, surf_istack, surf_item,                &
-     &    sf_grp_v1%vnorm_sf_grp, sf_grp_v1%a_area_sf_grp,              &
-     &    ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp,           &
-     &    surf_norm_nod, coef_sf_nod)
-!
-      call deallocate_work_norm_nod
-!
-      end subroutine cal_surf_norm_node
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine allocate_work_norm_nod(numnod)
@@ -72,14 +46,13 @@
       end subroutine deallocate_work_norm_nod
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
       subroutine cal_surf_grp_norm_node(numele, nnod_4_ele,             &
      &          nnod_4_surf, node_on_sf, ie, num_surf, num_surf_bc,     &
      &          surf_istack, surf_item, vnorm_sf_grp, a_area_sf_grp,    &
      &          ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp,     &
      &          surf_norm_nod, coef_sf_nod)
-!
-      use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: nnod_4_surf
       integer(kind = kint), intent(in) :: numele, nnod_4_ele

@@ -41,7 +41,7 @@
 !
       use int_normal_4_surf_type
       use position_2_each_surf_type
-      use set_norm_nod_surf_grp_type
+      use set_surface_node_grp_type
       use set_surf_grp_vectors_type
 !
       type(mesh_geometry),      intent(in) :: mesh
@@ -64,16 +64,10 @@
      &    group%surf_grp_geom)
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'alloc_vect_surf_grp_nod'
-      call alloc_vect_surf_grp_nod(group%surf_nod_grp)
-!
       if ( group%surf_grp%num_grp .ne. 0 ) then
        if (iflag_debug.eq.1) write(*,*) 'cal_surf_norm_nod_type'
-       call allocate_work_norm_nod(mesh%node%numnod)
        call cal_surf_norm_nod_type(mesh, surf, group%surf_grp,          &
      &     group%surf_grp_geom, group%surf_nod_grp)
-!
-       call deallocate_work_norm_nod
 !
 !
        if (iflag_debug.eq.1) write(*,*) 's_position_2_each_surf_type'
@@ -97,7 +91,6 @@
 !
       use int_normal_4_surf_type
       use position_2_each_surf_type
-      use set_norm_nod_surf_grp_type
       use set_surf_grp_vectors_type
 !
       type(mesh_geometry),      intent(in) :: mesh

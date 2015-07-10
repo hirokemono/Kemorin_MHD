@@ -88,7 +88,7 @@
       use const_group_type_info
       use set_surface_node_grp_type
       use set_tables_4_ele_grp_type
-      use set_tables_4_surf_grp_type
+      use set_surface_node_grp_type
 !
       type(mesh_data),      intent(inout) :: femmesh
       type(surface_geometry), intent(inout) :: surf_mesh

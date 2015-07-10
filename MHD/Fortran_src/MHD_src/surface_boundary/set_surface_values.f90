@@ -104,12 +104,12 @@
 !
 !
       call set_surf_bc_on_node_dat                                      &
-     &         (ngrp_sf, nnod_surf, igrp, id_sf_dat, i_dest, numnod,    &
-     &          numele, nnod_4_ele, nnod_4_surf, ie, node_on_sf,        &
-     &          num_surf, num_surf_bc, surf_istack, surf_item,          &
-     &          ntot_node_sf_grp, inod_stack_sf_grp, inod_surf_grp,     &
-     &          coef_sf_nod, sf_grp_v1%a_area_sf_grp, ist_nod_sf,       &
-     &          sf_dat_apt)
+     &   (ngrp_sf, nnod_surf, igrp, id_sf_dat, i_dest, numnod,          &
+     &    numele, nnod_4_ele, nnod_4_surf, ie, node_on_sf,              &
+     &    num_surf, num_surf_bc, surf_istack, surf_item,                &
+     &    sf_grp_nod1%ntot_node_sf_grp, sf_grp_nod1%inod_stack_sf_grp,  &
+     &    sf_grp_nod1%inod_surf_grp, sf_grp_nod1%coef_sf_nod,           &
+     &    sf_grp_v1%a_area_sf_grp, ist_nod_sf, sf_dat_apt)
 !
       end subroutine set_surf_bc_on_node_1st
 !

@@ -12,8 +12,7 @@
 !!      subroutine alloc_item_other_grp(e_grp)
 !!
 !!      subroutine dealloc_surf_item_sf_grp_type(sf_grp_data)
-!!      subroutine dealloc_num_other_grp(e_grp)
-!!      subroutine dealloc_item_other_grp(e_grp)
+!!      subroutine dealloc_grp_connect(e_grp)
 !!
 !!      subroutine unlink_surf_item_sf_grp_type(sf_grp_data)
 !!      subroutine unlink_num_other_grp(e_grp)
@@ -63,8 +62,6 @@
 !
 !>   local edge connectivity for surface group
         type(group_connect_data) :: edge
-!>   local node connectivity for surface group
-        type(group_connect_data) :: node
       end type surface_group_table
 !
 !
@@ -130,25 +127,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_num_other_grp(e_grp)
+      subroutine dealloc_grp_connect(e_grp)
 !
       type(group_connect_data), intent(inout) :: e_grp
 !
 !
+      deallocate(e_grp%item_e_grp)
       deallocate(e_grp%nitem_e_grp )
       deallocate(e_grp%istack_e_grp)
 !
-      end subroutine dealloc_num_other_grp
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_item_other_grp(e_grp)
-!
-      type(group_connect_data), intent(inout) :: e_grp
-!
-      deallocate(e_grp%item_e_grp)
-!
-      end subroutine dealloc_item_other_grp
+      end subroutine dealloc_grp_connect
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -221,7 +209,6 @@
 !
 !
       tbls_sf_new%edge%ntot_e_grp = tbls_org%edge%ntot_e_grp
-      tbls_sf_new%node%ntot_e_grp = tbls_org%node%ntot_e_grp
 !
       tbls_sf_new%isurf_grp =>          tbls_org%isurf_grp
       tbls_sf_new%isurf_grp_n =>        tbls_org%isurf_grp_n
@@ -229,10 +216,6 @@
       tbls_sf_new%edge%nitem_e_grp =>  tbls_org%edge%nitem_e_grp
       tbls_sf_new%edge%istack_e_grp => tbls_org%edge%istack_e_grp
       tbls_sf_new%edge%item_e_grp =>   tbls_org%edge%item_e_grp
-!
-      tbls_sf_new%node%nitem_e_grp =>   tbls_org%node%nitem_e_grp
-      tbls_sf_new%node%istack_e_grp =>  tbls_org%node%istack_e_grp
-      tbls_sf_new%node%item_e_grp =>    tbls_org%node%item_e_grp
 !
       end subroutine link_surf_grp_connect_type
 !

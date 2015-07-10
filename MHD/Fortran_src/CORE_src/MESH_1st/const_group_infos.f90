@@ -21,6 +21,7 @@
       subroutine const_group_informations
 !
       use m_machine_parameter
+      use m_surface_group_connect
       use set_mesh_data_4_grp
 !
 !

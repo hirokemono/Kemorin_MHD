@@ -6,10 +6,6 @@
 !      subroutine count_num_groups_type_smp(group)
 !        type(mesh_groups), intent(inout) :: group
 !
-!      subroutine count_surf_nod_grp_type_smp(sf_grp, sf_nod)
-!        type(surface_group_data), intent(in) :: sf_grp
-!        type(surface_node_grp_data), intent(inout) :: sf_nod
-!
       module set_smp_4_group_types
 !
       use m_precision
@@ -79,27 +75,6 @@
      &    sf_grp%istack_grp_smp, sf_grp%max_grp_smp)
 !
       end subroutine count_surf_grp_type_smp
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine count_surf_nod_grp_type_smp(sf_grp, sf_nod)
-!
-      use t_group_data
-      use t_surface_group_connect
-      use cal_minmax_and_stacks
-!
-      type(surface_group_data), intent(in) :: sf_grp
-      type(surface_node_grp_data), intent(inout) :: sf_nod
-!
-!
-     call alloc_num_surf_grp_nod_smp(sf_grp, sf_nod)
-!
-      call set_group_size_4_smp(np_smp,                                 &
-     &    sf_grp%num_grp, sf_nod%inod_stack_sf_grp,                     &
-     &    sf_nod%istack_surf_nod_smp, sf_nod%max_sf_nod_4_smp)
-!
-      end subroutine count_surf_nod_grp_type_smp
 !
 !-----------------------------------------------------------------------
 !

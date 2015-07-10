@@ -85,15 +85,15 @@
 !
 !
       call cross_section_init                                           &
-     &       (numnod, internal_node, numele, numsurf, numedge,          &
-     &        nnod_4_ele, nnod_4_edge, ie, ie_edge, isf_4_ele,          &
-     &        iedge_4_sf, iedge_4_ele, nod_comm, edge_comm,             &
-     &        interior_ele, xx, inod_smp_stack, iele_smp_stack,         &
-     &        isurf_smp_stack, iedge_smp_stack,                         &
-     &        num_mat, num_mat_bc, mat_name, mat_istack, mat_item,      &
-     &        num_surf, num_surf_bc, surf_name, surf_istack,            &
-     &        surf_item, ntot_node_sf_grp, inod_stack_sf_grp,           &
-     &        inod_surf_grp, num_nod_phys, phys_nod_name)
+     &   (numnod, internal_node, numele, numsurf, numedge,              &
+     &    nnod_4_ele, nnod_4_edge, ie, ie_edge, isf_4_ele,              &
+     &    iedge_4_sf, iedge_4_ele, nod_comm, edge_comm,                 &
+     &    interior_ele, xx, inod_smp_stack, iele_smp_stack,             &
+     &    isurf_smp_stack, iedge_smp_stack,                             &
+     &    num_mat, num_mat_bc, mat_name, mat_istack, mat_item,          &
+     &    num_surf, num_surf_bc, surf_name, surf_istack, surf_item,     &
+     &    sf_grp_nod1%ntot_node_sf_grp, sf_grp_nod1%inod_stack_sf_grp,  &
+     &    sf_grp_nod1%inod_surf_grp, num_nod_phys, phys_nod_name)
 !
       end subroutine cross_section_init_1st
 !
