@@ -84,21 +84,21 @@
       type(element_group_table), intent(inout) :: tbls_ele_grp
 !
 !
-      tbls_ele_grp%surf%ntot_e_grp = ntot_surf_ele_grp
-      tbls_ele_grp%edge%ntot_e_grp = ntot_edge_ele_grp
-      tbls_ele_grp%node%ntot_e_grp = ntot_node_ele_grp
+      tbls_ele_grp%surf%ntot_e_grp = ele_grp_data1%surf%ntot_e_grp
+      tbls_ele_grp%edge%ntot_e_grp = ele_grp_data1%edge%ntot_e_grp
+      tbls_ele_grp%node%ntot_e_grp = ele_grp_data1%node%ntot_e_grp
 !
-      tbls_ele_grp%surf%nitem_e_grp =>  nsurf_ele_grp
-      tbls_ele_grp%surf%istack_e_grp => isurf_stack_ele_grp
-      tbls_ele_grp%surf%item_e_grp =>   isurf_ele_grp
+      tbls_ele_grp%surf%nitem_e_grp =>  ele_grp_data1%surf%nitem_e_grp
+      tbls_ele_grp%surf%istack_e_grp => ele_grp_data1%surf%istack_e_grp
+      tbls_ele_grp%surf%item_e_grp =>   ele_grp_data1%surf%item_e_grp
 !
-      tbls_ele_grp%edge%nitem_e_grp =>  nedge_ele_grp
-      tbls_ele_grp%edge%istack_e_grp => iedge_stack_ele_grp
-      tbls_ele_grp%edge%item_e_grp =>   iedge_ele_grp
+      tbls_ele_grp%edge%nitem_e_grp =>  ele_grp_data1%edge%nitem_e_grp
+      tbls_ele_grp%edge%istack_e_grp => ele_grp_data1%edge%istack_e_grp
+      tbls_ele_grp%edge%item_e_grp =>   ele_grp_data1%edge%item_e_grp
 !
-      tbls_ele_grp%node%nitem_e_grp =>   nnod_ele_grp
-      tbls_ele_grp%node%istack_e_grp =>  inod_stack_ele_grp
-      tbls_ele_grp%node%item_e_grp =>    inod_ele_grp
+      tbls_ele_grp%node%nitem_e_grp =>  ele_grp_data1%node%nitem_e_grp
+      tbls_ele_grp%node%istack_e_grp => ele_grp_data1%node%istack_e_grp
+      tbls_ele_grp%node%item_e_grp =>   ele_grp_data1%node%item_e_grp
 !
       end subroutine link_1st_ele_grp_connect_type
 !

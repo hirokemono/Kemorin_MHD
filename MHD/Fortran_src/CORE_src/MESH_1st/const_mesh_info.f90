@@ -17,7 +17,6 @@
       module const_mesh_info
 !
       use m_precision
-!
       use m_machine_parameter
 !
       implicit none
@@ -30,10 +29,10 @@
 !
       subroutine const_mesh_informations(my_rank)
 !
+      use m_element_group_connect
       use m_surface_group_connect
       use set_smp_4_groups
       use const_surface_data
-      use const_group_infos
 !      use check_surface_groups
 !
       integer(kind = kint), intent(in) :: my_rank
@@ -69,8 +68,11 @@
 !       if (iflag_debug.gt.0) call check_surf_nod_4_sheard_para         &
 !     &                          (my_rank, num_surf, sf_grp_nod1)
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_group_informations'
-      call const_group_informations
+!
+       if (iflag_debug.eq.1) write(*,*) 'const_ele_group_connect'
+      call const_ele_group_connect
+       if (iflag_debug.eq.1) write(*,*) 'const_surf_group_connect'
+      call const_surf_group_connect
 !
       end subroutine const_mesh_informations
 !
@@ -80,7 +82,6 @@
 !
       use m_surface_group_connect
       use set_smp_4_groups
-      use const_group_infos
 !
 !
        if (iflag_debug.gt.0) write(*,*) 'set_local_element_info'
@@ -114,19 +115,13 @@
       use m_surface_group_connect
 !
 !
-      call deallocate_edge_id_4_sf_grp
-      call dealloc_surf_item_sf_grp_type(sf_grp_data1)
+      call deallocate_surf_group_connect
+      call deallocate_ele_group_connect
 !
-      call deallocate_surf_id_4_ele_grp
-      call deallocate_edge_id_4_ele_grp
-      call deallocate_node_id_4_ele_grp
-!
-      call dealloc_num_surf_grp_nod_smp(sf_grp_nod1)
       call deallocate_surface_param_smp
       call deallocate_material_param_smp
       call deallocate_boundary_param_smp
 !
-      call dealloc_surf_grp_nod(sf_grp_nod1)
       call deallocate_surface_geometry
       call deallocate_edge_geometry
 !

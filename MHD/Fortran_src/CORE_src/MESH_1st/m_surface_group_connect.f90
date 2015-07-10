@@ -5,12 +5,10 @@
 !
 !     Writteg by H.Matsui on Aug., 2006
 !
-!      subroutine set_surf_id_4_surf_group
-!      subroutine set_edge_4_surf_group
+!      subroutine const_surf_group_connect
+!      subroutine deallocate_surf_group_connect
 !      subroutine set_surface_node_grp
 !      subroutine cal_surf_norm_node
-!
-!      subroutine deallocate_edge_id_4_sf_grp
 !
       module m_surface_group_connect
 !
@@ -26,10 +24,40 @@
 !> Structure of connectivity data for surface group items
       type(surface_node_grp_data), save :: sf_grp_nod1
 !
+      private :: set_surf_id_4_surf_group, set_edge_4_surf_group
+!
 !-----------------------------------------------------------------------
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine const_surf_group_connect
+!
+      use m_machine_parameter
+!
+!
+       if (iflag_debug.eq.1) write(*,*) 'set_surf_id_4_surf_group'
+      call set_surf_id_4_surf_group
+!
+       if (iflag_debug.eq.1) write(*,*) 'set_edge_4_surf_group'
+      call set_edge_4_surf_group
+!
+      end subroutine const_surf_group_connect
+!
+!-----------------------------------------------------------------------
+!
+      subroutine deallocate_surf_group_connect
+!
+!
+      call dealloc_grp_connect(sf_grp_data1%edge)
+      call dealloc_surf_item_sf_grp_type(sf_grp_data1)
+      call dealloc_num_surf_grp_nod_smp(sf_grp_nod1)
+      call dealloc_surf_grp_nod(sf_grp_nod1)
+!
+      end subroutine deallocate_surf_group_connect
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine set_surf_id_4_surf_group
@@ -48,7 +76,6 @@
 !
       end subroutine set_surf_id_4_surf_group
 !
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine set_edge_4_surf_group
@@ -160,15 +187,6 @@
       call deallocate_work_norm_nod
 !
       end subroutine cal_surf_norm_node
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine deallocate_edge_id_4_sf_grp
-!
-      call dealloc_grp_connect(sf_grp_data1%edge)
-!
-      end subroutine deallocate_edge_id_4_sf_grp
 !
 !-----------------------------------------------------------------------
 !

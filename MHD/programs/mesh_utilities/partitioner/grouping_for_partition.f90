@@ -74,8 +74,10 @@
 !
       else if (NTYP_div .eq. iPART_LAYER_SPH) then
         call eb_spherical_w_egrp(numnod, internal_node, num_mat,        &
-     &      mat_name, ntot_node_ele_grp, inod_stack_ele_grp,            &
-     &      inod_ele_grp, radius, colatitude, longitude)
+     &      mat_name, ele_grp_data1%node%ntot_e_grp,                    &
+     &      ele_grp_data1%node%istack_e_grp,                            &
+     &      ele_grp_data1%node%item_e_grp,                              &
+     &      radius, colatitude, longitude)
 !
 !
 !C
