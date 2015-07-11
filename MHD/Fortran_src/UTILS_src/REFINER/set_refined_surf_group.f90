@@ -63,7 +63,7 @@
 !
 !
       do i = 1, sf_grp1%num_grp
-        new_sf_grp%grp_name(i) = surf_name(i)
+        new_sf_grp%grp_name(i) = sf_grp1%grp_name(i)
       end do
 !
       new_sf_grp%istack_grp(0) = 0

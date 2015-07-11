@@ -39,7 +39,7 @@
       do k = 1, sf_grp1%num_grp
         ist = sf_grp1%istack_grp(k-1) + 1
         ied = sf_grp1%istack_grp(k)
-        write(id_file,*) trim(surf_name(k))
+        write(id_file,*) trim(sf_grp1%grp_name(k))
         write(id_file,'(6i16)') (sf_grp1%item_sf_grp(1,i),i=ist,ied)
         write(id_file,'(6i16)') (sf_grp1%item_sf_grp(2,i),i=ist,ied)
       end do
@@ -54,7 +54,7 @@
 !
 !
       do i = 1, num_surf_grp_csp
-        surf_name(i) = surf_grp_name_csp(i)
+        sf_grp1%grp_name(i) = surf_grp_name_csp(i)
       end do
 !
       end subroutine set_surface_group_names

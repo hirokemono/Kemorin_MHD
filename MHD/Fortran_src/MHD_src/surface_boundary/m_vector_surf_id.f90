@@ -38,15 +38,15 @@
       use set_stress_free_surf_id
 !
 !
-      call s_set_surf_vector_id                                         &
-     &   (sf_grp1%num_grp, surf_name, sf_grp_nod1%inod_stack_sf_grp,    &
+      call s_set_surf_vector_id(sf_grp1%num_grp, sf_grp1%grp_name,      &
+     &    sf_grp_nod1%inod_stack_sf_grp,                                &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type, torque_surf%bc_magnitude,               &
      &    name_svn, nmax_sf_sgs_velo, id_grp_sf_sgs_velo,               &
      &    ngrp_sf_fix_vn, id_grp_sf_fix_vn,                             &
      &    nnod_sf_fix_vn, ist_nod_sf_fix_vn, sf_fix_vn_apt)
 !
-      call s_stress_free_surf_id(sf_grp1%num_grp, surf_name,            &
+      call s_stress_free_surf_id(sf_grp1%num_grp, sf_grp1%grp_name,     &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type,                                         &
      &    iflag_surf_free_sph_in, iflag_surf_free_sph_out,              &
@@ -66,15 +66,15 @@
       use set_stress_free_surf_id
 !
 !
-      call s_set_surf_vector_id                                         &
-     &    (sf_grp1%num_grp, surf_name, sf_grp_nod1%inod_stack_sf_grp,   &
-     &     a_potential_surf%num_bc, a_potential_surf%bc_name,           &
-     &     a_potential_surf%ibc_type, a_potential_surf%bc_magnitude,    &
-     &     name_san, nmax_sf_sgs_vect_p, id_grp_sf_sgs_vect_p,          &
-     &     ngrp_sf_fix_vpn, id_grp_sf_fix_vpn,                          &
-     &     nnod_sf_fix_vpn, ist_nod_sf_fix_vpn, sf_apt_fix_vpn)
+      call s_set_surf_vector_id(sf_grp1%num_grp, sf_grp1%grp_name,      &
+     &    sf_grp_nod1%inod_stack_sf_grp,                                &
+     &    a_potential_surf%num_bc, a_potential_surf%bc_name,            &
+     &    a_potential_surf%ibc_type, a_potential_surf%bc_magnitude,     &
+     &    name_san, nmax_sf_sgs_vect_p, id_grp_sf_sgs_vect_p,           &
+     &    ngrp_sf_fix_vpn, id_grp_sf_fix_vpn,                           &
+     &    nnod_sf_fix_vpn, ist_nod_sf_fix_vpn, sf_apt_fix_vpn)
 !
-      call s_stress_free_surf_id(sf_grp1%num_grp, surf_name,            &
+      call s_stress_free_surf_id(sf_grp1%num_grp, sf_grp1%grp_name,     &
      &    a_potential_surf%num_bc, a_potential_surf%bc_name,            &
      &    a_potential_surf%ibc_type,                                    &
      &    iflag_surf_qvc_sph_in, iflag_surf_qvc_sph_out,                &
@@ -92,8 +92,8 @@
       use set_surf_vector_id
 !
 !
-      call s_set_surf_vector_id                                         &
-     &   (sf_grp1%num_grp, surf_name, sf_grp_nod1%inod_stack_sf_grp,    &
+      call s_set_surf_vector_id(sf_grp1%num_grp, sf_grp1%grp_name,      &
+     &    sf_grp_nod1%inod_stack_sf_grp,                                &
      &    magne_surf%num_bc, magne_surf%bc_name,                        &
      &    magne_surf%ibc_type, magne_surf%bc_magnitude,                 &
      &    name_sbn, nmax_sf_sgs_magne, id_grp_sf_sgs_magne,             &
@@ -111,13 +111,13 @@
       use set_surf_vector_id
 !
 !
-      call s_set_surf_vector_id                                         &
-     &    (sf_grp1%num_grp, surf_name, sf_grp_nod1%inod_stack_sf_grp,   &
-     &     current_surf%num_bc, current_surf%bc_name,                   &
-     &     current_surf%ibc_type, current_surf%bc_magnitude,            &
-     &     name_sjn, nmax_sf_sgs_current, id_grp_sf_sgs_current,        &
-     &     ngrp_sf_fix_jn, id_grp_sf_fix_jn,                            &
-     &     nnod_sf_fix_jn, ist_nod_sf_fix_jn, sf_apt_fix_jn)
+      call s_set_surf_vector_id(sf_grp1%num_grp, sf_grp1%grp_name,      &
+     &    sf_grp_nod1%inod_stack_sf_grp,                                &
+     &    current_surf%num_bc, current_surf%bc_name,                    &
+     &    current_surf%ibc_type, current_surf%bc_magnitude,             &
+     &    name_sjn, nmax_sf_sgs_current, id_grp_sf_sgs_current,         &
+     &    ngrp_sf_fix_jn, id_grp_sf_fix_jn,                             &
+     &    nnod_sf_fix_jn, ist_nod_sf_fix_jn, sf_apt_fix_jn)
 !
       end subroutine set_surf_current_id
 !
@@ -131,7 +131,7 @@
 !
 !
       call s_set_sf_grad_vector_id                                      &
-     &    (sf_grp1%num_grp, sf_grp1%istack_grp, surf_name,              &
+     &    (sf_grp1%num_grp, sf_grp1%istack_grp, sf_grp1%grp_name,       &
      &     torque_surf%num_bc, torque_surf%bc_name,                     &
      &     torque_surf%ibc_type, torque_surf%bc_magnitude,              &
      &     name_vxg, name_vyg, name_vzg,                                &
@@ -150,7 +150,7 @@
 !
 !
       call s_set_sf_grad_vector_id                                      &
-     &    (sf_grp1%num_grp, sf_grp1%istack_grp, surf_name,              &
+     &    (sf_grp1%num_grp, sf_grp1%istack_grp, sf_grp1%grp_name,       &
      &     a_potential_surf%num_bc, a_potential_surf%bc_name,           &
      &     a_potential_surf%ibc_type, a_potential_surf%bc_magnitude,    &
      &     name_axg, name_ayg, name_azg,                                &
@@ -170,7 +170,7 @@
 !
 !
       call s_set_sf_grad_vector_id                                      &
-     &   (sf_grp1%num_grp, sf_grp1%istack_grp, surf_name,               &
+     &   (sf_grp1%num_grp, sf_grp1%istack_grp, sf_grp1%grp_name,        &
      &    magne_surf%num_bc, magne_surf%bc_name,                        &
      &    magne_surf%ibc_type, magne_surf%bc_magnitude,                 &
      &    name_bxg, name_byg, name_bzg,                                 &
@@ -189,7 +189,7 @@
 !
 !
       call s_set_sf_grad_vector_id                                      &
-     &    (sf_grp1%num_grp, sf_grp1%istack_grp, surf_name,              &
+     &    (sf_grp1%num_grp, sf_grp1%istack_grp, sf_grp1%grp_name,       &
      &     current_surf%num_bc, current_surf%bc_name,                   &
      &     current_surf%ibc_type, current_surf%bc_magnitude,            &
      &     name_sjx, name_sjy, name_sjz,                                &

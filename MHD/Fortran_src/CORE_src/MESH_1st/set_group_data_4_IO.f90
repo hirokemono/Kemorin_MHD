@@ -104,7 +104,7 @@
         sf_grp1%num_item = num_surf_bc_dummy
         call allocate_surface_data
 !
-        surf_name(1:sf_grp1%num_grp)                                    &
+        sf_grp1%grp_name(1:sf_grp1%num_grp)                             &
      &     = surf_name_dummy(1:sf_grp1%num_grp)
         sf_grp1%istack_grp(0:sf_grp1%num_grp)                           &
      &     =  surf_istack_dummy(0:sf_grp1%num_grp)
@@ -174,7 +174,8 @@
       num_surf_bc_dummy = sf_grp1%num_item
       call allocate_bc_sf_stack_dummy
 !
-      surf_name_dummy(1:sf_grp1%num_grp) = surf_name(1:sf_grp1%num_grp)
+      surf_name_dummy(1:sf_grp1%num_grp)                                &
+     &     = sf_grp1%grp_name(1:sf_grp1%num_grp)
       surf_istack_dummy(0:sf_grp1%num_grp)                              &
      &     = sf_grp1%istack_grp(0:sf_grp1%num_grp)
 !

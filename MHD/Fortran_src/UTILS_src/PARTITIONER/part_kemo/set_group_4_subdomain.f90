@@ -157,7 +157,7 @@
 !
 !
       new_sf_grp%grp_name(1:sf_grp1%num_grp)                            &
-     &     = surf_name(1:sf_grp1%num_grp)
+     &     = sf_grp1%grp_name(1:sf_grp1%num_grp)
 !
       new_sf_grp%istack_grp(0) = 0
       do ig = 1, sf_grp1%num_grp

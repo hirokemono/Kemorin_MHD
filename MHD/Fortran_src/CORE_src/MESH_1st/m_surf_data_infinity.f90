@@ -51,12 +51,12 @@
 !
 !
       call count_num_bc_infinity(iflag_surf_infty,                      &
-     &    sf_grp1%num_grp, surf_name, infty_list%ngrp_sf)
+     &    sf_grp1%num_grp, sf_grp1%grp_name, infty_list%ngrp_sf)
 !
       call alloc_scalar_surf_BC(infty_list)
 !
       call set_bc_infty_id(iflag_surf_infty,                            &
-     &    sf_grp1%num_grp, surf_name,                                   &
+     &    sf_grp1%num_grp, sf_grp1%grp_name,                            &
      &    infty_list%ngrp_sf, infty_list%igrp_sf)
 !
       end subroutine const_bc_infinity_surf_grp

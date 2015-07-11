@@ -121,7 +121,7 @@
         sf_grp1%num_item = sf_grp%num_item
         call allocate_surface_data
 !
-        surf_name(1:sf_grp1%num_grp)                                    &
+        sf_grp1%grp_name(1:sf_grp1%num_grp)                             &
      &     = sf_grp%grp_name(1:sf_grp1%num_grp)
         sf_grp1%istack_grp(0:sf_grp1%num_grp)                           &
      &     =  sf_grp%istack_grp(0:sf_grp1%num_grp)
@@ -217,9 +217,9 @@
       if(sf_grp%num_item .ne. sf_grp1%num_item) write(*,*)              &
      &     'num_surf_bc', my_rank, sf_grp%num_item, sf_grp1%num_item
       do i = 1, sf_grp1%num_grp
-        if(sf_grp%grp_name(i) .ne. surf_name(i))                        &
+        if(sf_grp%grp_name(i) .ne. sf_grp1%grp_name(i))                 &
      &       write(*,*) 'surf_name(i)', my_rank, i,                     &
-     &       sf_grp%grp_name(i), surf_name(i)
+     &       sf_grp%grp_name(i), sf_grp1%grp_name(i)
         if(sf_grp%istack_grp(i) .ne. sf_grp1%istack_grp(i))             &
      &       write(*,*) 'surf_istack(i)', my_rank, i,                   &
      &       sf_grp%istack_grp(i), sf_grp1%istack_grp(i)

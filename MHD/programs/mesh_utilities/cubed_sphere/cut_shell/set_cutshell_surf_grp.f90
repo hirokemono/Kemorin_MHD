@@ -75,7 +75,7 @@
 !
 !
       new_sf_grp%grp_name(1:sf_grp1%num_grp)                            &
-     &     = surf_name(1:sf_grp1%num_grp)
+     &     = sf_grp1%grp_name(1:sf_grp1%num_grp)
 !
       do i = 1, sf_grp1%num_grp
          new_sf_grp%istack_grp(i) = new_sf_grp%istack_grp(i-1)

@@ -50,7 +50,7 @@
 !
       if (my_rank.eq.0) then
         do i = 1, sf_grp1%num_grp
-           write(*,*) i, trim(surf_name(i)),                            &
+           write(*,*) i, trim(sf_grp1%grp_name(i)),                     &
      &                   sf_grp_v1%tot_area_sf_grp(i)
         end do
       end if 

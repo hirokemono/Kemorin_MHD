@@ -91,7 +91,7 @@
      &    interior_ele, xx, inod_smp_stack, iele_smp_stack,             &
      &    isurf_smp_stack, iedge_smp_stack,                             &
      &    num_mat, num_mat_bc, mat_name, mat_istack, mat_item,          &
-     &    sf_grp1%num_grp, sf_grp1%num_item, surf_name,                 &
+     &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%grp_name,          &
      &    sf_grp1%istack_grp, sf_grp1%item_sf_grp,                      &
      &    sf_grp_nod1%ntot_node_sf_grp, sf_grp_nod1%inod_stack_sf_grp,  &
      &    sf_grp_nod1%inod_surf_grp, num_nod_phys, phys_nod_name)
