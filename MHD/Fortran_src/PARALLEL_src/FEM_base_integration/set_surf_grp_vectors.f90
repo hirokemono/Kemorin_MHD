@@ -100,8 +100,8 @@
 !
 !
       call pick_vector_by_surf_grp(sf_grp1%num_grp, sf_grp1%num_item,   &
-     &    num_surf_smp, isurf_grp_smp_stack, sf_grp_data1%isurf_grp,    &
-     &    numsurf, x_surf, x_sf_grp)
+     &    sf_grp1%num_grp_smp, isurf_grp_smp_stack,                     &
+     &    sf_grp_data1%isurf_grp, numsurf, x_surf, x_sf_grp)
 !
       end subroutine pick_vector_4_surf_grp
 !
@@ -119,7 +119,7 @@
 !
 !
       call pick_vect_by_surf_grp_w_side                                 &
-     &   (sf_grp1%num_grp, sf_grp1%num_item, num_surf_smp,   &
+     &   (sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%num_grp_smp,       &
      &    isurf_grp_smp_stack, sf_grp_data1%isurf_grp,    &
      &    numsurf, x_surf, x_sf_grp)
 !
@@ -139,8 +139,8 @@
 !
 !
       call pick_scalar_by_surf_grp(sf_grp1%num_grp, sf_grp1%num_item,   &
-     &    num_surf_smp, isurf_grp_smp_stack, sf_grp_data1%isurf_grp,    &
-     &    numsurf, x_surf, x_sf_grp)
+     &    sf_grp1%num_grp_smp, isurf_grp_smp_stack,    &
+     &    sf_grp_data1%isurf_grp, numsurf, x_surf, x_sf_grp)
 !
       end subroutine pick_scalar_4_surf_grp
 !

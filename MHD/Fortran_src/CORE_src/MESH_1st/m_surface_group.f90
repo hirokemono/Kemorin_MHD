@@ -23,7 +23,7 @@
 !
 !>  Structure for surfacet group
       type(surface_group_data), save :: sf_grp1
-!sf_grp1%grp_name
+!sf_grp1%num_grp_smp
 !
 !      integer(kind=kint) :: num_surf
 !<      number of surface group
@@ -40,7 +40,7 @@
 !      character(len=kchara), allocatable, target :: surf_name(:)
 !<      surface group name
 !
-      integer( kind=kint )  ::  num_surf_smp
+!      integer( kind=kint )  ::  num_surf_smp
 !<      number of surface group for SMP process
       integer( kind=kint ), allocatable :: isurf_grp_smp_stack(:)
 !<      end address of each surface group for SMP process
@@ -88,7 +88,7 @@
 !
        subroutine allocate_surface_param_smp
 !
-       allocate( isurf_grp_smp_stack(0:num_surf_smp))
+       allocate( isurf_grp_smp_stack(0:sf_grp1%num_grp_smp))
        isurf_grp_smp_stack = 0
 !
        end subroutine allocate_surface_param_smp
@@ -111,7 +111,7 @@
       integer(kind = kint), intent(in) :: my_rank
 !
        write(*,*) 'PE: ', my_rank, 'num_surf ', sf_grp1%num_grp
-       write(*,*) 'PE: ', my_rank, 'num_surf_smp ', num_surf_smp
+       write(*,*) 'PE: ', my_rank, 'num_surf_smp ', sf_grp1%num_grp_smp
        write(*,*) 'PE: ', my_rank,                                      &
      &            'isurf_grp_smp_stack ', isurf_grp_smp_stack
 !

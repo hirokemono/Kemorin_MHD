@@ -69,7 +69,7 @@
 !
       call fem_sf_skv_sgs_commute_err_p(np_smp, numele, nnod_4_ele,     &
      &    nnod_4_surf, nnod_4_surf, node_on_sf,                         &
-     &    sf_grp1%num_item, sf_grp1%item_sf_grp, num_surf_smp,          &
+     &    sf_grp1%num_item, sf_grp1%item_sf_grp, sf_grp1%num_grp_smp,   &
      &    isurf_grp_smp_stack, jac1_sf_grp_2d_q%ntot_int,               &
      &    jac1_sf_grp_2d_q%xsf_sf, jac1_sf_grp_2d_q%axj_sf,             &
      &    jac1_sf_grp_2d_q%an_sf, jac1_sf_grp_2d_q%an_sf,               &
@@ -102,7 +102,7 @@
 !
       call fem_sf_skv_grad_commute_posi(np_smp, numele, nnod_4_ele,     &
      &    nnod_4_surf, nnod_4_surf, node_on_sf,                         &
-     &    sf_grp1%num_item, sf_grp1%item_sf_grp, num_surf_smp,          &
+     &    sf_grp1%num_item, sf_grp1%item_sf_grp, sf_grp1%num_grp_smp,   &
      &    isurf_grp_smp_stack, jac1_sf_grp_2d_q%ntot_int,               &
      &    jac1_sf_grp_2d_q%xsf_sf, jac1_sf_grp_2d_q%axj_sf,             &
      &    jac1_sf_grp_2d_q%an_sf, jac1_sf_grp_2d_q%an_sf,               &
@@ -135,7 +135,7 @@
 !
       call fem_sf_skv_div_flux_commute_p(np_smp, numele, nnod_4_ele,    &
      &    nnod_4_surf, nnod_4_surf, node_on_sf,                         &
-     &    sf_grp1%num_item, sf_grp1%item_sf_grp, num_surf_smp,          &
+     &    sf_grp1%num_item, sf_grp1%item_sf_grp, sf_grp1%num_grp_smp,   &
      &    isurf_grp_smp_stack, jac1_sf_grp_2d_q%ntot_int,               &
      &    jac1_sf_grp_2d_q%xsf_sf, jac1_sf_grp_2d_q%axj_sf,             &
      &    jac1_sf_grp_2d_q%an_sf, jac1_sf_grp_2d_q%an_sf,               &
@@ -172,7 +172,7 @@
 !
       call fem_sf_skv_sgs_vect_diff_p(np_smp, numele, nnod_4_ele,       &
      &    nnod_4_surf, nnod_4_surf, node_on_sf,                         &
-     &    sf_grp1%num_item, sf_grp1%item_sf_grp, num_surf_smp,          &
+     &    sf_grp1%num_item, sf_grp1%item_sf_grp, sf_grp1%num_grp_smp,   &
      &    isurf_grp_smp_stack, jac1_sf_grp_2d_q%ntot_int,               &
      &    jac1_sf_grp_2d_q%xsf_sf, jac1_sf_grp_2d_q%axj_sf,             &
      &    jac1_sf_grp_2d_q%an_sf, jac1_sf_grp_2d_q%an_sf,               &
@@ -207,7 +207,7 @@
 !
       call fem_sf_skv_sgs_grad_posi(np_smp, numele, nnod_4_ele,         &
      &    nnod_4_surf, nnod_4_surf, node_on_sf,                         &
-     &    sf_grp1%num_item, sf_grp1%item_sf_grp, num_surf_smp,          &
+     &    sf_grp1%num_item, sf_grp1%item_sf_grp, sf_grp1%num_grp_smp,   &
      &    isurf_grp_smp_stack, jac1_sf_grp_2d_q%ntot_int,               &
      &    jac1_sf_grp_2d_q%xsf_sf, jac1_sf_grp_2d_q%axj_sf,             &
      &    jac1_sf_grp_2d_q%an_sf, jac1_sf_grp_2d_q%an_sf,               &
@@ -242,7 +242,7 @@
 !
       call fem_sf_skv_sgs_div_flux_posi(np_smp, numele, nnod_4_ele,     &
      &    nnod_4_surf, nnod_4_surf, node_on_sf,                         &
-     &    sf_grp1%num_item, sf_grp1%item_sf_grp, num_surf_smp,          &
+     &    sf_grp1%num_item, sf_grp1%item_sf_grp, sf_grp1%num_grp_smp,   &
      &    isurf_grp_smp_stack, jac1_sf_grp_2d_q%ntot_int,               &
      &    jac1_sf_grp_2d_q%xsf_sf, jac1_sf_grp_2d_q%axj_sf,             &
      &    jac1_sf_grp_2d_q%an_sf, jac1_sf_grp_2d_q%an_sf,               &
@@ -277,7 +277,7 @@
 !
       call fem_sf_skv_sgs_vect_diff_p(np_smp, numele, num_t_linear,     &
      &    num_linear_sf, nnod_4_surf, node_on_sf,                       &
-     &    sf_grp1%num_item, sf_grp1%item_sf_grp, num_surf_smp,          &
+     &    sf_grp1%num_item, sf_grp1%item_sf_grp, sf_grp1%num_grp_smp,   &
      &    isurf_grp_smp_stack, jac1_sf_grp_2d_q%ntot_int,               &
      &    jac1_sf_grp_2d_q%xsf_sf, jac1_sf_grp_2d_q%axj_sf,             &
      &    jac1_sf_grp_2d_l%an_sf, jac1_sf_grp_2d_q%an_sf,               &
@@ -312,7 +312,7 @@
 !
       call fem_sf_skv_sgs_grad_posi(np_smp, numele, nnod_4_ele,         &
      &    nnod_4_surf, num_linear_sf, node_on_sf,                       &
-     &    sf_grp1%num_item, sf_grp1%item_sf_grp, num_surf_smp,          &
+     &    sf_grp1%num_item, sf_grp1%item_sf_grp, sf_grp1%num_grp_smp,   &
      &    isurf_grp_smp_stack, jac1_sf_grp_2d_q%ntot_int,               &
      &    jac1_sf_grp_2d_q%xsf_sf, jac1_sf_grp_2d_q%axj_sf,             &
      &    jac1_sf_grp_2d_q%an_sf, jac1_sf_grp_2d_l%an_sf,               &
@@ -345,7 +345,7 @@
 !
       call fem_surf_skv_poisson_sgs(np_smp, numele, num_t_linear,       &
      &  num_t_linear, num_linear_sf, node_on_sf, sf_grp1%num_item,      &
-     &  sf_grp1%item_sf_grp, num_surf_smp, isurf_grp_smp_stack,         &
+     &  sf_grp1%item_sf_grp, sf_grp1%num_grp_smp, isurf_grp_smp_stack,  &
      &  ntot_int_3d, xjac, dnx, dnx,                                    &
      &  FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                  &
      &  FEM1_elen%nele_filter_mom,                                      &
@@ -377,7 +377,7 @@
       call fem_surf_skv_diffusion_sgs(np_smp, numele, nnod_4_ele,       &
      &  nnod_4_ele, nnod_4_surf, node_on_sf,                            &
      &  sf_grp1%num_item, sf_grp1%item_sf_grp,                          &
-     &  num_surf_smp, isurf_grp_smp_stack,                              &
+     &  sf_grp1%num_grp_smp, isurf_grp_smp_stack,                       &
      &  ntot_int_3d, xjac, dwx, dwx,                                    &
      &  FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                  &
      &  FEM1_elen%nele_filter_mom,                                      &

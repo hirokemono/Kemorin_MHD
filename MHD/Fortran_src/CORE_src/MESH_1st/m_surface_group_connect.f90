@@ -140,7 +140,7 @@
      &    sf_grp_nod1%inod_stack_sf_grp)
 !
 !
-      call alloc_num_surf_grp_nod_smp(num_surf_smp, sf_grp_nod1)
+      call alloc_num_surf_grp_nod_smp(sf_grp1%num_grp_smp, sf_grp_nod1)
 !
       call set_group_size_4_smp                                         &
      &   (np_smp, sf_grp1%num_grp, sf_grp_nod1%inod_stack_sf_grp,       &

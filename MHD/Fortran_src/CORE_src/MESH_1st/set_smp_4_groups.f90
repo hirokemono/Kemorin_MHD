@@ -75,7 +75,7 @@
       use cal_minmax_and_stacks
 !
 !
-      num_surf_smp = np_smp * sf_grp1%num_grp
+      sf_grp1%num_grp_smp = np_smp * sf_grp1%num_grp
 !
       call allocate_surface_param_smp
 !

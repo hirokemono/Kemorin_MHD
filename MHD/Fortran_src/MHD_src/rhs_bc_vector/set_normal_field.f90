@@ -34,7 +34,7 @@
       use m_surf_data_torque
 !
       if (ngrp_sf_fix_vn .gt. 0) then
-        call set_normal_comp(sf_grp1%num_grp, num_surf_smp,             &
+        call set_normal_comp(sf_grp1%num_grp, sf_grp1%num_grp_smp,      &
      &      sf_grp_nod1%ntot_node_sf_grp,                               &
      &      sf_grp_nod1%inod_stack_sf_grp,                              &
      &      sf_grp_nod1%istack_surf_nod_smp, sf_grp_nod1%inod_surf_grp, &
