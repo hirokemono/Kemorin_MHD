@@ -67,7 +67,7 @@
 !
       sf_grp%grp_name =>   surf_name
       sf_grp%istack_grp => sf_grp1%istack_grp
-      sf_grp%item_sf_grp => surf_item
+      sf_grp%item_sf_grp => sf_grp1%item_sf_grp
 !
       end subroutine link_surface_group_to_type
 !

@@ -107,7 +107,7 @@
      &   (ngrp_sf, nnod_surf, igrp, id_sf_dat, i_dest, numnod,          &
      &    numele, nnod_4_ele, nnod_4_surf, ie, node_on_sf,              &
      &    sf_grp1%num_grp, sf_grp1%num_item,                            &
-     &    sf_grp1%istack_grp, surf_item,                                &
+     &    sf_grp1%istack_grp, sf_grp1%item_sf_grp,                      &
      &    sf_grp_nod1%ntot_node_sf_grp, sf_grp_nod1%inod_stack_sf_grp,  &
      &    sf_grp_nod1%inod_surf_grp, sf_grp_nod1%coef_sf_nod,           &
      &    sf_grp_v1%a_area_sf_grp, ist_nod_sf, sf_dat_apt)

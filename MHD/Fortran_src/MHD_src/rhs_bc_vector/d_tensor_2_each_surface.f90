@@ -65,8 +65,8 @@
 !voption, indep, vec
          do inum = ist, ied
 !
-           iele = surf_item(1,inum)
-           isf =  surf_item(2,inum)
+           iele = sf_grp1%item_sf_grp(1,inum)
+           isf =  sf_grp1%item_sf_grp(2,inum)
            kk2 =    node_on_sf(k2,isf)
            kk2_n =  node_on_sf_n(k2,isf)
            inod =   ie(iele,kk2)
@@ -125,8 +125,8 @@
 !voption, indep, vec
           do inum = ist, ied
 !
-           iele = surf_item(1,inum)
-           isf =  surf_item(2,inum)
+           iele = sf_grp1%item_sf_grp(1,inum)
+           isf =  sf_grp1%item_sf_grp(2,inum)
            kk2 =    node_on_sf(k2,isf)
            kk2_n =  node_on_sf_n(k2,isf)
            inod =   ie(iele,kk2)

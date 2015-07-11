@@ -23,7 +23,7 @@
 !
 !>  Structure for surfacet group
       type(surface_group_data), save :: sf_grp1
-!sf_grp1%istack_grp
+!sf_grp1%item_sf_grp
 !
 !      integer(kind=kint) :: num_surf
 !<      number of surface group
@@ -32,10 +32,10 @@
 !
 !      integer(kind=kint),   allocatable, target :: surf_istack(:)
 !<      end address of each surface group
-      integer(kind=kint),    allocatable, target :: surf_item(:,:)
+!      integer(kind=kint),    allocatable, target :: surf_item(:,:)
 !<      local surface ID for surface group
-!<      surf_item(1,:):  local element ID
-!<      surf_item(2,:):  surface ID for each element
+!<      sf_grp1%item_sf_grp(1,:):  local element ID
+!<      sf_grp1%item_sf_grp(2,:):  surface ID for each element
 !
       character(len=kchara), allocatable, target :: surf_name(:)
 !<      surface group name
@@ -58,7 +58,7 @@
 !
        allocate(sf_grp1%istack_grp(0:sf_grp1%num_grp))
        allocate(surf_name(sf_grp1%num_grp))
-       allocate(surf_item(2,sf_grp1%num_item))
+       allocate(sf_grp1%item_sf_grp(2,sf_grp1%num_item))
 !
       call clear_surface_data
 !
@@ -69,7 +69,7 @@
       subroutine clear_surface_data
 !
        sf_grp1%istack_grp=0
-       surf_item=0
+       sf_grp1%item_sf_grp=0
 !
       end subroutine clear_surface_data
 !
@@ -79,7 +79,7 @@
 !
        deallocate(sf_grp1%istack_grp)
        deallocate(surf_name)
-       deallocate(surf_item)
+       deallocate(sf_grp1%item_sf_grp)
 !
       end subroutine deallocate_surface_data
 !

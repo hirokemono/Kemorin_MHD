@@ -48,11 +48,11 @@
 !
 !
       call delta_flux_t_2_each_surface                                  &
-     &         (np_smp, numnod, numele, nnod_4_ele, ie, nnod_4_surf,    &
-     &          node_on_sf, node_on_sf_n, sf_grp1%num_item, surf_item,  &
-     &          num_surf_smp, isurf_grp_smp_stack, igrp, k2, nd,        &
-     &          i_vect, i_field, i_flux, num_tot_nod_phys, d_nod,       &
-     &          vector_sf)
+     &   (np_smp, numnod, numele, nnod_4_ele, ie, nnod_4_surf,          &
+     &    node_on_sf, node_on_sf_n, sf_grp1%num_item,                   &
+     &    sf_grp1%item_sf_grp, num_surf_smp, isurf_grp_smp_stack,       &
+     &    igrp, k2, nd, i_vect, i_field, i_flux, num_tot_nod_phys,      &
+     &    d_nod, vector_sf)
 !
       end subroutine d_SGS_flux_2_each_surface
 !
@@ -70,12 +70,12 @@
       real (kind=kreal), intent(inout) :: vector_sf(sf_grp1%num_item,3)
 !
 !
-      call delta_flux_t_2_each_sf_w_coef                                &
-     &         (np_smp, numnod, numele, nnod_4_ele, ie, nnod_4_surf,    &
-     &          node_on_sf, node_on_sf_n, sf_grp1%num_item, surf_item,  &
-     &          num_surf_smp, isurf_grp_smp_stack, igrp, k2, nd,        &
-     &          i_vect, i_field, i_flux, num_tot_nod_phys, d_nod,       &
-     &          ak_e, vector_sf)
+      call delta_flux_t_2_each_sf_w_coef                                 &
+     &   (np_smp, numnod, numele, nnod_4_ele, ie, nnod_4_surf,           &
+     &    node_on_sf, node_on_sf_n, sf_grp1%num_item,                    &
+     &    sf_grp1%item_sf_grp, num_surf_smp, isurf_grp_smp_stack,        &
+     &    igrp, k2, nd, i_vect, i_field, i_flux, num_tot_nod_phys,       &
+     &    d_nod, ak_e, vector_sf)
 !
       end subroutine d_SGS_flux_2_each_sf_w_coef
 !
@@ -94,11 +94,11 @@
 !
 !
       call delta_flux_t_2_each_sf_w_cst                                 &
-     &         (np_smp, numnod, numele, nnod_4_ele, ie, nnod_4_surf,    &
-     &          node_on_sf, node_on_sf_n, sf_grp1%num_item, surf_item,  &
-     &          num_surf_smp, isurf_grp_smp_stack, igrp, k2, nd,        &
-     &          i_vect, i_field, i_flux, num_tot_nod_phys, d_nod,       &
-     &          coef, vector_sf)
+     &   (np_smp, numnod, numele, nnod_4_ele, ie, nnod_4_surf,          &
+     &    node_on_sf, node_on_sf_n, sf_grp1%num_item,                   &
+     &    sf_grp1%item_sf_grp, num_surf_smp, isurf_grp_smp_stack,       &
+     &    igrp, k2, nd, i_vect, i_field, i_flux, num_tot_nod_phys,      &
+     &    d_nod, coef, vector_sf)
 !
       end subroutine d_SGS_flux_2_each_sf_w_cst
 !
@@ -118,9 +118,10 @@
 !
       call delta_SGS_induct_t_2_surface                                 &
      &   (np_smp, numnod, numele, nnod_4_ele, ie, nnod_4_surf,          &
-     &    node_on_sf, node_on_sf_n, sf_grp1%num_item, surf_item,        &
-     &    num_surf_smp, isurf_grp_smp_stack, igrp, k2, nd,              &
-     &    i_flux, i_b, i_v, num_tot_nod_phys, d_nod, vector_sf)
+     &    node_on_sf, node_on_sf_n, sf_grp1%num_item,                   &
+     &    sf_grp1%item_sf_grp, num_surf_smp, isurf_grp_smp_stack,       &
+     &    igrp, k2, nd, i_flux, i_b, i_v, num_tot_nod_phys,             &
+     &    d_nod, vector_sf)
 !
       end subroutine d_SGS_induct_t_2_each_surface
 !
@@ -140,9 +141,10 @@
 !
       call delta_SGS_induct_t_2_sf_w_coef                               &
      &   (np_smp, numnod, numele, nnod_4_ele, ie, nnod_4_surf,          &
-     &    node_on_sf, node_on_sf_n, sf_grp1%num_item, surf_item,        &
-     &    num_surf_smp, isurf_grp_smp_stack, igrp, k2, nd,              &
-     &    i_flux, i_b, i_v, num_tot_nod_phys, d_nod, ak_e, vector_sf)
+     &    node_on_sf, node_on_sf_n, sf_grp1%num_item,                   &
+     &    sf_grp1%item_sf_grp, num_surf_smp, isurf_grp_smp_stack,       &
+     &    igrp, k2, nd, i_flux, i_b, i_v, num_tot_nod_phys,             &
+     &    d_nod, ak_e, vector_sf)
 !
       end subroutine d_SGS_induct_t_2_each_sf_w_coef
 !
@@ -162,9 +164,10 @@
 !
       call delta_SGS_induct_t_2_sf_w_cst                                &
      &   (np_smp, numnod, numele, nnod_4_ele, ie, nnod_4_surf,          &
-     &    node_on_sf, node_on_sf_n, sf_grp1%num_item, surf_item,        &
-     &    num_surf_smp, isurf_grp_smp_stack, igrp, k2, nd,              &
-     &    i_flux, i_b, i_v, num_tot_nod_phys, d_nod, coef, vector_sf)
+     &    node_on_sf, node_on_sf_n, sf_grp1%num_item,                   &
+     &    sf_grp1%item_sf_grp, num_surf_smp, isurf_grp_smp_stack,       &
+     &    igrp, k2, nd, i_flux, i_b, i_v, num_tot_nod_phys,             &
+     &    d_nod, coef, vector_sf)
 !
       end subroutine d_SGS_induct_t_2_each_sf_w_cst
 !

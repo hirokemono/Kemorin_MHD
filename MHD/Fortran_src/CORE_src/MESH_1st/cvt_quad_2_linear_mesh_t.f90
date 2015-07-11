@@ -147,10 +147,10 @@
       call allocate_sf_grp_type_item(group_l%surf_grp)
 !
       call convert_surf_group_2_linear                                  &
-     &   (sf_grp1%num_grp, sf_grp1%num_item, surf_name,             &
-     &    sf_grp1%istack_grp, surf_item, group_l%surf_grp%num_item, &
-     &    group_l%surf_grp%grp_name, group_l%surf_grp%istack_grp,       &
-     &    group_l%surf_grp%item_sf_grp)
+     &   (sf_grp1%num_grp, sf_grp1%num_item, surf_name,                 &
+     &    sf_grp1%istack_grp, sf_grp1%item_sf_grp,                      &
+     &    group_l%surf_grp%num_item, group_l%surf_grp%grp_name,         &
+     &    group_l%surf_grp%istack_grp, group_l%surf_grp%item_sf_grp)
 !
       end subroutine gen_linear_group_type
 !

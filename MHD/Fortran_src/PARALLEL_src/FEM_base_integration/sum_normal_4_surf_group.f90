@@ -40,8 +40,8 @@
       call allocate_sum_local_area_grp(sf_grp1%num_grp)
 !
       call s_sum_norm_of_surf_group(np_smp, numele, e_multi,            &
-     &    sf_grp1%num_grp, sf_grp1%num_item,  &
-     &    surf_item, num_surf_smp, isurf_grp_smp_stack,    &
+     &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%item_sf_grp,       &
+     &    num_surf_smp, isurf_grp_smp_stack,    &
      &    sf_grp_v1%area_sf_grp)
 !
       call s_sum_norm_of_surf_grp_para                                  &

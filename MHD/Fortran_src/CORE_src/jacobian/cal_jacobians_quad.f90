@@ -157,8 +157,8 @@
         do ii = 1, i0*i0
           ix = int_start2(i0) + ii
 !
-          call s_cal_jacobian_sf_grp_8(numnod, numele,                  &
-     &        ie, xx, sf_grp1%num_grp, sf_grp1%num_item, surf_item,     &
+          call s_cal_jacobian_sf_grp_8(numnod, numele, ie, xx,          &
+     &        sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%item_sf_grp,   &
      &        np_smp, num_surf_smp, isurf_grp_smp_stack,                &
      &        jac_sf_grp_q%xj_sf(1:sf_grp1%num_item,ix),                &
      &        jac_sf_grp_q%axj_sf(1:sf_grp1%num_item,ix),               &

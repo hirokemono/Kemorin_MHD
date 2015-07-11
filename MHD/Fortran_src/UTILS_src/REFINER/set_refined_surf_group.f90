@@ -74,8 +74,8 @@
         ied = sf_grp1%istack_grp(i)
         do inum = ist, ied
 !
-          iele = surf_item(1,inum)
-          isf =  surf_item(2,inum)
+          iele = sf_grp1%item_sf_grp(1,inum)
+          isf =  sf_grp1%item_sf_grp(2,inum)
           call mark_refined_node_4_surf_grp(iele, isf, ione)
 !
           jst = istack_ele_refined(iele-1) + 1
@@ -131,8 +131,8 @@
         ied = sf_grp1%istack_grp(i)
         do inum = ist, ied
 !
-          iele = surf_item(1,inum)
-          isf =  surf_item(2,inum)
+          iele = sf_grp1%item_sf_grp(1,inum)
+          isf =  sf_grp1%item_sf_grp(2,inum)
           call mark_refined_node_4_surf_grp(iele, isf, ione)
 !
           jst = istack_ele_refined(iele-1) + 1

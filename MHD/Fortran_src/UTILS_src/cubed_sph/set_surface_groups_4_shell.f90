@@ -40,8 +40,8 @@
         ist = sf_grp1%istack_grp(k-1) + 1
         ied = sf_grp1%istack_grp(k)
         write(id_file,*) trim(surf_name(k))
-        write(id_file,'(6i16)') (surf_item(1,i),i=ist,ied)
-        write(id_file,'(6i16)') (surf_item(2,i),i=ist,ied)
+        write(id_file,'(6i16)') (sf_grp1%item_sf_grp(1,i),i=ist,ied)
+        write(id_file,'(6i16)') (sf_grp1%item_sf_grp(2,i),i=ist,ied)
       end do
 !
       end subroutine write_surface_group
@@ -125,8 +125,9 @@
      &             * (id_surf_grp_layer_csp(1,inum)/nskip_r-1)
             do j = 1, numele_sf
               icou = icou + 1
-              surf_item(1,icou) = iele0 + j
-              surf_item(2,icou) = id_surf_grp_layer_csp(2,inum)
+              sf_grp1%item_sf_grp(1,icou) = iele0 + j
+              sf_grp1%item_sf_grp(2,icou)                               &
+     &                    = id_surf_grp_layer_csp(2,inum)
             end do
           end if
         end do

@@ -165,7 +165,7 @@
         ist = sf_grp1%istack_grp(ig-1) + 1
         ied = sf_grp1%istack_grp(ig)
         do inum = ist, ied
-          iele = surf_item(1,inum)
+          iele = sf_grp1%item_sf_grp(1,inum)
           if (iele_local_part(iele) .gt. 0) then
             new_sf_grp%istack_grp(ig) = new_sf_grp%istack_grp(ig) + 1
           end if
@@ -193,12 +193,13 @@
         ist = sf_grp1%istack_grp(ig-1) + 1
         ied = sf_grp1%istack_grp(ig)
         do inum = ist, ied
-          iele = surf_item(1,inum)
+          iele = sf_grp1%item_sf_grp(1,inum)
 !
           if (iele_local_part(iele) .gt. 0) then
             icou = icou + 1
             new_sf_grp%item_sf_grp(1,icou) = iele_local_part(iele)
-            new_sf_grp%item_sf_grp(2,icou) = surf_item(2,inum)
+            new_sf_grp%item_sf_grp(2,icou)                              &
+     &                                 = sf_grp1%item_sf_grp(2,inum)
           end if
         end do
       end do

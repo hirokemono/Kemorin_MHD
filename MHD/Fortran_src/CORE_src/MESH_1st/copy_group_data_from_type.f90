@@ -125,9 +125,9 @@
      &     = sf_grp%grp_name(1:sf_grp1%num_grp)
         sf_grp1%istack_grp(0:sf_grp1%num_grp)                           &
      &     =  sf_grp%istack_grp(0:sf_grp1%num_grp)
-        surf_item(1,1:sf_grp1%num_item)                                 &
+        sf_grp1%item_sf_grp(1,1:sf_grp1%num_item)                       &
      &     = sf_grp%item_sf_grp(1,1:sf_grp1%num_item)
-        surf_item(2,1:sf_grp1%num_item)                                 &
+        sf_grp1%item_sf_grp(2,1:sf_grp1%num_item)                       &
      &     = sf_grp%item_sf_grp(2,1:sf_grp1%num_item)
       end if
 !
@@ -225,11 +225,11 @@
      &       sf_grp%istack_grp(i), sf_grp1%istack_grp(i)
       end do
       do i = 1, sf_grp1%num_item
-        if(sf_grp%item_sf_grp(1,i) .ne. surf_item(1,i)                  &
-     &   .or. sf_grp%item_sf_grp(2,i) .ne. surf_item(2,i))              &
+        if(sf_grp%item_sf_grp(1,i) .ne. sf_grp1%item_sf_grp(1,i)        &
+     &   .or. sf_grp%item_sf_grp(2,i) .ne. sf_grp1%item_sf_grp(2,i))    &
      &       write(*,*) 'surf_item(:,i)', my_rank, i,                   &
-     &       sf_grp%item_sf_grp(1,i), surf_item(1,i),                   &
-     &       sf_grp%item_sf_grp(2,i), surf_item(2,i)
+     &       sf_grp%item_sf_grp(1,i), sf_grp1%item_sf_grp(1,i),         &
+     &       sf_grp%item_sf_grp(2,i), sf_grp1%item_sf_grp(2,i)
       end do
 !
       end subroutine compare_surf_grp_type_vs_1st

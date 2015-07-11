@@ -57,8 +57,8 @@
 !
       if (sf_grp1%num_grp.gt.0) then
         do is= 1, sf_grp1%istack_grp(sf_grp1%num_grp)
-          in= surf_item(1,is)
-          ik= surf_item(2,is)
+          in= sf_grp1%item_sf_grp(1,is)
+          ik= sf_grp1%item_sf_grp(2,is)
           if (in.le.0) call ERROR_EXIT(ierr_grp, ithree)
           if (ik.le.0) call ERROR_EXIT(ierr_grp, ithree)
           if (in.gt.numele) call ERROR_EXIT(ierr_ov_grp, ithree)
@@ -76,7 +76,7 @@
 !C-- check local surface ID
       if (sf_grp1%num_grp.gt.0) then
         call check_surface_def_in_surf_grp(numele, sf_grp1%num_item,    &
-     &      elmtyp, surf_item)
+     &      elmtyp, sf_grp1%item_sf_grp)
       end if
 !
       end subroutine quick_mesh_chk_4_part

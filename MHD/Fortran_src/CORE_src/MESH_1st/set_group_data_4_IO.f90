@@ -108,9 +108,9 @@
      &     = surf_name_dummy(1:sf_grp1%num_grp)
         sf_grp1%istack_grp(0:sf_grp1%num_grp)                           &
      &     =  surf_istack_dummy(0:sf_grp1%num_grp)
-        surf_item(1,1:sf_grp1%num_item)                                 &
+        sf_grp1%item_sf_grp(1,1:sf_grp1%num_item)                       &
      &     = surf_item_dummy(1:sf_grp1%num_item,1)
-        surf_item(2,1:sf_grp1%num_item)                                 &
+        sf_grp1%item_sf_grp(2,1:sf_grp1%num_item)                       &
      &     = surf_item_dummy(1:sf_grp1%num_item,2)
       end if
       call deallocate_bc_sf_item_dummy
@@ -180,9 +180,9 @@
 !
       call allocate_bc_sf_item_dummy
       surf_item_dummy(1:sf_grp1%num_item,1)                             &
-     &     = surf_item(1,1:sf_grp1%num_item)
+     &     = sf_grp1%item_sf_grp(1,1:sf_grp1%num_item)
       surf_item_dummy(1:sf_grp1%num_item,2)                             &
-     &     = surf_item(2,1:sf_grp1%num_item)
+     &     = sf_grp1%item_sf_grp(2,1:sf_grp1%num_item)
 !
       call deallocate_surface_data
 !
