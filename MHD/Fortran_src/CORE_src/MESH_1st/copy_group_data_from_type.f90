@@ -19,7 +19,6 @@
       implicit  none
 !
       private ::  node_group_from_type, element_group_from_type
-      private ::  surface_group_from_type
       private ::  compare_nod_grp_type_vs_1st
       private ::  compare_ele_grp_type_vs_1st
       private ::  compare_surf_grp_type_vs_1st
@@ -32,14 +31,16 @@
 !
       subroutine group_data_from_type(group)
 !
+      use m_surface_group
       use t_mesh_data
+      use t_group_data
 !
       type(mesh_groups), intent(inout) :: group
 !
 !
       call node_group_from_type(group%nod_grp)
       call element_group_from_type(group%ele_grp)
-      call surface_group_from_type(group%surf_grp)
+      call copy_surface_group(group%surf_grp, sf_grp1)
 !
       call dealloc_groups_data(group)
 !
@@ -107,33 +108,6 @@
       end subroutine element_group_from_type
 !
 !-----------------------------------------------------------------------
-!
-      subroutine surface_group_from_type(sf_grp)
-!
-      use m_surface_group
-      use t_group_data
-!
-      type(surface_group_data), intent(inout) :: sf_grp
-!
-!
-      sf_grp1%num_grp = sf_grp%num_grp
-      if (sf_grp1%num_grp .gt. 0) then
-        sf_grp1%num_item = sf_grp%num_item
-        call allocate_surface_data
-!
-        sf_grp1%grp_name(1:sf_grp1%num_grp)                             &
-     &     = sf_grp%grp_name(1:sf_grp1%num_grp)
-        sf_grp1%istack_grp(0:sf_grp1%num_grp)                           &
-     &     =  sf_grp%istack_grp(0:sf_grp1%num_grp)
-        sf_grp1%item_sf_grp(1,1:sf_grp1%num_item)                       &
-     &     = sf_grp%item_sf_grp(1,1:sf_grp1%num_item)
-        sf_grp1%item_sf_grp(2,1:sf_grp1%num_item)                       &
-     &     = sf_grp%item_sf_grp(2,1:sf_grp1%num_item)
-      end if
-!
-      end subroutine surface_group_from_type
-!
-!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine compare_nod_grp_type_vs_1st(my_rank, nod_grp)

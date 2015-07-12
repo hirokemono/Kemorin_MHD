@@ -84,7 +84,7 @@
         if (iflag_debug.eq.1) write(*,*) 'input_mesh'
         call input_mesh(my_rank)
 !
-        call deallocate_surface_data
+        call deallocate_sf_grp_type(sf_grp1)
         call deallocate_material_data
         call deallocate_boundary_data
         call deallocate_element_geometry

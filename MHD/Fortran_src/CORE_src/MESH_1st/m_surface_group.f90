@@ -3,17 +3,6 @@
 !
 !> @brief surface group data
 !
-!      written by H. Matsui
-!
-!      subroutine allocate_surface_data
-!      subroutine clear_surface_data
-!      subroutine deallocate_surface_data
-!
-!      subroutine allocate_surface_param_smp
-!      subroutine deallocate_surface_param_smp
-!
-!      subroutine check_surf_4_sheard_para(my_rank)
-!
       module m_surface_group
 !
       use m_precision
@@ -23,100 +12,5 @@
 !
 !>  Structure for surfacet group
       type(surface_group_data), save :: sf_grp1
-!sf_grp1%max_grp_smp
-!
-!      integer(kind=kint) :: num_surf
-!<      number of surface group
-!      integer(kind=kint) :: sf_grp1%num_item
-!<      total number of surface for surface group
-!
-!      integer(kind=kint),   allocatable, target :: surf_istack(:)
-!<      end address of each surface group
-!      integer(kind=kint),    allocatable, target :: surf_item(:,:)
-!<      local surface ID for surface group
-!<      sf_grp1%item_sf_grp(1,:):  local element ID
-!<      sf_grp1%item_sf_grp(2,:):  surface ID for each element
-!
-!      character(len=kchara), allocatable, target :: surf_name(:)
-!<      surface group name
-!
-!      integer( kind=kint )  ::  num_surf_smp
-!<      number of surface group for SMP process
-!      integer( kind=kint ), allocatable :: isurf_grp_smp_stack(:)
-!<      end address of each surface group for SMP process
-!      integer( kind=kint )  ::  max_sf_grp_4_smp
-!<      maximum number of surface group for SMP process
-!
-!
-!-----------------------------------------------------------------------
-!
-      contains
-!
-!-----------------------------------------------------------------------
-!
-      subroutine allocate_surface_data
-!
-       allocate(sf_grp1%istack_grp(0:sf_grp1%num_grp))
-       allocate(sf_grp1%grp_name(sf_grp1%num_grp))
-       allocate(sf_grp1%item_sf_grp(2,sf_grp1%num_item))
-!
-      call clear_surface_data
-!
-      end subroutine allocate_surface_data
-!
-!-----------------------------------------------------------------------
-!
-      subroutine clear_surface_data
-!
-       sf_grp1%istack_grp=0
-       sf_grp1%item_sf_grp=0
-!
-      end subroutine clear_surface_data
-!
-!-----------------------------------------------------------------------
-!
-      subroutine deallocate_surface_data
-!
-       deallocate(sf_grp1%istack_grp)
-       deallocate(sf_grp1%grp_name)
-       deallocate(sf_grp1%item_sf_grp)
-!
-      end subroutine deallocate_surface_data
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-       subroutine allocate_surface_param_smp
-!
-       allocate( sf_grp1%istack_grp_smp(0:sf_grp1%num_grp_smp))
-       sf_grp1%istack_grp_smp = 0
-!
-       end subroutine allocate_surface_param_smp
-!
-!-----------------------------------------------------------------------
-!
-       subroutine deallocate_surface_param_smp
-!
-!
-       deallocate(sf_grp1%istack_grp_smp)
-!
-       end subroutine deallocate_surface_param_smp
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine check_surf_4_sheard_para(my_rank)
-!
-!
-      integer(kind = kint), intent(in) :: my_rank
-!
-       write(*,*) 'PE: ', my_rank, 'num_surf ', sf_grp1%num_grp
-       write(*,*) 'PE: ', my_rank, 'num_surf_smp ', sf_grp1%num_grp_smp
-       write(*,*) 'PE: ', my_rank,                                      &
-     &            'isurf_grp_smp_stack ', sf_grp1%istack_grp_smp
-!
-      end subroutine check_surf_4_sheard_para
-!
-!-----------------------------------------------------------------------
 !
       end module m_surface_group

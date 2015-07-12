@@ -56,7 +56,9 @@
       call count_num_groups_4_smp
 !       if (iflag_debug.gt.0) call check_bc_4_sheard_para(my_rank)
 !       if (iflag_debug.gt.0) call check_mat_4_sheard_para(my_rank)
-!       if (iflag_debug.gt.0) call check_surf_4_sheard_para(my_rank)
+!       if (iflag_debug.gt.0) then
+!         call call check_surf_grp_type_data(my_rank, sf_grp1)
+!       end if
 !
       if (iflag_debug.gt.0) write(*,*) 'set_surface_node_grp'
       call set_surface_node_grp
@@ -118,7 +120,7 @@
       call deallocate_surf_group_connect
       call deallocate_ele_group_connect
 !
-      call deallocate_surface_param_smp
+      call deallocate_sf_grp_type_smp(sf_grp1)
       call deallocate_material_param_smp
       call deallocate_boundary_param_smp
 !
@@ -136,7 +138,7 @@
       call deallocate_surface_connect
       call deallocate_element_geometry
 !
-      call deallocate_surface_data
+      call deallocate_sf_grp_type(sf_grp1)
       call deallocate_material_data
       call deallocate_boundary_data
       call deallocate_element_connection
@@ -159,7 +161,7 @@
       use m_surface_group
 !
 !
-      call deallocate_surface_param_smp
+      call deallocate_sf_grp_type_smp(sf_grp1)
       call deallocate_material_param_smp
       call deallocate_boundary_param_smp
 !
@@ -169,7 +171,7 @@
 !
       call deallocate_element_geometry
 !
-      call deallocate_surface_data
+      call deallocate_sf_grp_type(sf_grp1)
       call deallocate_material_data
       call deallocate_boundary_data
       call deallocate_element_connection

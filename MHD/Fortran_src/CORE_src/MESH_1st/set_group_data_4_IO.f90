@@ -102,7 +102,7 @@
       if (sf_grp1%num_grp .gt. 0) then
 !
         sf_grp1%num_item = num_surf_bc_dummy
-        call allocate_surface_data
+        call allocate_surf_grp_type(sf_grp1)
 !
         sf_grp1%grp_name(1:sf_grp1%num_grp)                             &
      &     = surf_name_dummy(1:sf_grp1%num_grp)
@@ -167,25 +167,11 @@
       subroutine set_surface_group_to_IO
 !
       use m_surface_group
-      use m_read_boundary_data
+      use set_group_types_4_IO
 !
 !
-      num_surf_dummy = sf_grp1%num_grp
-      num_surf_bc_dummy = sf_grp1%num_item
-      call allocate_bc_sf_stack_dummy
-!
-      surf_name_dummy(1:sf_grp1%num_grp)                                &
-     &     = sf_grp1%grp_name(1:sf_grp1%num_grp)
-      surf_istack_dummy(0:sf_grp1%num_grp)                              &
-     &     = sf_grp1%istack_grp(0:sf_grp1%num_grp)
-!
-      call allocate_bc_sf_item_dummy
-      surf_item_dummy(1:sf_grp1%num_item,1)                             &
-     &     = sf_grp1%item_sf_grp(1,1:sf_grp1%num_item)
-      surf_item_dummy(1:sf_grp1%num_item,2)                             &
-     &     = sf_grp1%item_sf_grp(2,1:sf_grp1%num_item)
-!
-      call deallocate_surface_data
+      call set_surface_grp_type_to_IO(sf_grp1)
+      call deallocate_sf_grp_type(sf_grp1)
 !
       end subroutine set_surface_group_to_IO
 !

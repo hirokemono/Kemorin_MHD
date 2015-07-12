@@ -17,7 +17,7 @@
 !
       use m_node_group
       use m_element_group
-      use m_surface_group
+      use t_group_data
 !
       use cubed_sph_file_names
       use set_node_groups_4_shell
@@ -25,6 +25,8 @@
       use set_surface_groups_4_shell
 !
       implicit none
+!
+      type(surface_group_data), save :: sf_grp_sph
 !
 !   --------------------------------------------------------------------
 !
@@ -72,19 +74,19 @@
 !
 ! surface group
 !
-      call count_surf_groups(numele_sf, ione)
+      call count_surf_groups(numele_sf, ione, sf_grp_sph)
 !
-      call allocate_surface_data
+      call allocate_surf_grp_type(sf_grp_sph)
 !
-      call set_surface_group_names
+      call set_surface_group_names(sf_grp_sph)
 !
-      call set_surf_istack(numele_sf, ione)
+      call set_surf_istack(numele_sf, ione, sf_grp_sph)
 !
-      call set_surf_item(numele_cube, numele_sf, ione)
+      call set_surf_item(numele_cube, numele_sf, ione, sf_grp_sph)
 !
-      call write_surface_group(id_l_group)
+      call write_surf_grp_shell(id_l_group, sf_grp_sph)
 !
-      call deallocate_surface_data
+      call deallocate_sf_grp_type(sf_grp_sph)
 !
       return
       end subroutine output_group_data
@@ -133,19 +135,19 @@
 !
 ! surface group
 !
-      call count_surf_groups(numele_sf, ione)
+      call count_surf_groups(numele_sf, ione, sf_grp_sph)
 !
-      call allocate_surface_data
+      call allocate_surf_grp_type(sf_grp_sph)
 !
-      call set_surface_group_names
+      call set_surface_group_names(sf_grp_sph)
 !
-      call set_surf_istack(numele_sf, ione)
+      call set_surf_istack(numele_sf, ione, sf_grp_sph)
 !
-      call set_surf_item(numele_cube, numele_sf, ione)
+      call set_surf_item(numele_cube, numele_sf, ione, sf_grp_sph)
 !
-      call write_surface_group(id_q_group)
+      call write_surf_grp_shell(id_q_group, sf_grp_sph)
 !
-      call deallocate_surface_data
+      call deallocate_sf_grp_type(sf_grp_sph)
 !
       end subroutine output_group_data_quad
 !
@@ -191,19 +193,19 @@
 !
 ! surface group
 !
-      call count_surf_groups(nele_sf_c, nskip_r)
+      call count_surf_groups(nele_sf_c, nskip_r, sf_grp_sph)
 !
-      call allocate_surface_data
+      call allocate_surf_grp_type(sf_grp_sph)
 !
-      call set_surface_group_names
+      call set_surface_group_names(sf_grp_sph)
 !
-      call set_surf_istack(nele_sf_c, nskip_r)
+      call set_surf_istack(nele_sf_c, nskip_r, sf_grp_sph)
 !
-      call set_surf_item(nele_cube_c, nele_sf_c, nskip_r)
+      call set_surf_item(nele_cube_c, nele_sf_c, nskip_r, sf_grp_sph)
 !
-      call write_surface_group(id_l_group)
+      call write_surf_grp_shell(id_l_group, sf_grp_sph)
 !
-      call deallocate_surface_data
+      call deallocate_sf_grp_type(sf_grp_sph)
 !
       return
       end subroutine output_coarse_group_data

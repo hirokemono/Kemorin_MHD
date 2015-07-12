@@ -14,8 +14,6 @@
 !
       implicit none
 !
-      private :: count_surf_grp_type_smp
-!
 !-----------------------------------------------------------------------
 !
       contains

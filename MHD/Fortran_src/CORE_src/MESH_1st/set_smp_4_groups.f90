@@ -70,20 +70,23 @@
 !
       subroutine count_surf_4_sheard_para
 !
-      use m_machine_parameter
       use m_surface_group
-      use cal_minmax_and_stacks
+      use set_smp_4_group_types
 !
 !
-      sf_grp1%num_grp_smp = np_smp * sf_grp1%num_grp
-!
-      call allocate_surface_param_smp
-!
-      call set_group_size_4_smp                                         &
-     &   (np_smp, sf_grp1%num_grp, sf_grp1%istack_grp,                  &
-     &    sf_grp1%istack_grp_smp, sf_grp1%max_grp_smp)
+      call count_surf_grp_type_smp(sf_grp1)
 !
       end subroutine count_surf_4_sheard_para
+!
+!-----------------------------------------------------------------------
+!
+      subroutine deallocate_surface_param_smp
+!
+      use m_surface_group
+!
+      call deallocate_sf_grp_type_smp(sf_grp1)
+!
+      end subroutine deallocate_surface_param_smp
 !
 !-----------------------------------------------------------------------
 !
