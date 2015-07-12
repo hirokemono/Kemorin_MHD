@@ -78,7 +78,7 @@
 !
        integer(kind = kint), intent(in) :: id_check
        character(*), intent(in) :: txt
-       integer(kind = kint) :: i, isurf
+       integer(kind = kint) :: isurf, ist, ied
 !
        write(50+id_check,*) txt
        write(50+id_check,*) 'surf_istack'
@@ -89,8 +89,9 @@
 !
        write(50+id_check,*) 'isurf_grp_smp_stack'
        do isurf = 1, sf_grp1%num_grp
-         write(50+id_check,*) isurf,                                    &
-     &    (isurf_grp_smp_stack(i),i=(np_smp*(isurf-1)+1),np_smp*isurf)
+         ist = np_smp*(isurf-1) + 1
+         ied = np_smp*isurf
+         write(50+id_check,*) isurf, sf_grp1%istack_grp_smp(ist:ied)
        end do
       write(50+id_check,*) 'isurf_nod_smp_stack'
       call check_surf_nod_4_sheard_para                                 &

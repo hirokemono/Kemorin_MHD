@@ -152,7 +152,7 @@
 !
           call s_cal_jacobian_sf_grp_4(numnod, numele, ie, xx,          &
      &        sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%item_sf_grp,   &
-     &        np_smp, sf_grp1%num_grp_smp, isurf_grp_smp_stack,         &
+     &        np_smp, sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,      &
      &        jac_sf_grp_l%xj_sf(1:sf_grp1%num_item,ix),                &
      &        jac_sf_grp_l%axj_sf(1:sf_grp1%num_item,ix),               &
      &        jac_sf_grp_l%xsf_sf(1:sf_grp1%num_item,ix,1),             &

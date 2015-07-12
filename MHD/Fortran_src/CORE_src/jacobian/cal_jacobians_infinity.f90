@@ -53,7 +53,7 @@
           call s_cal_jacobian_3d_inf_8(numnod, numele,                  &
      &        np_smp, ie, xx, sf_grp1%num_item, sf_grp1%item_sf_grp,    &
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
-     &        sf_grp1%num_grp_smp, isurf_grp_smp_stack,                 &
+     &        sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,              &
      &        xjac(1,ix), axjac(1,ix),                                  &
      &        dnx(1,1,ix,1), dnx(1,1,ix,2), dnx(1,1,ix,3),              &
      &        dxidx_1(1,ix,1,1), dxidx_1(1,ix,2,1), dxidx_1(1,ix,3,1),  &
@@ -89,7 +89,7 @@
           call s_cal_jacobian_3d_inf_20(numnod, numele,                 &
      &        np_smp, ie, xx, sf_grp1%num_item, sf_grp1%item_sf_grp,    &
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
-     &        sf_grp1%num_grp_smp, isurf_grp_smp_stack,                 &
+     &        sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,              &
      &        xjac_q(1,ix), axjac_q(1,ix),                              &
      &      dwx(1,1,ix,1), dwx(1,1,ix,2), dwx(1,1,ix,3),                &
      &      dxidx_20(1,ix,1,1), dxidx_20(1,ix,2,1), dxidx_20(1,ix,3,1), &
@@ -126,7 +126,7 @@
           call s_cal_jacobian_3d_inf_27(numnod, numele,                 &
      &        np_smp, ie, xx, sf_grp1%num_item, sf_grp1%item_sf_grp,    &
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
-     &        sf_grp1%num_grp_smp, isurf_grp_smp_stack,                 &
+     &        sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,              &
      &        xjac_q(1,ix), axjac_q(1,ix),                              &
      &      dwx(1,1,ix,1), dwx(1,1,ix,2), dwx(1,1,ix,3),                &
      &      dxidx_20(1,ix,1,1), dxidx_20(1,ix,2,1), dxidx_20(1,ix,3,1), &
@@ -163,7 +163,7 @@
           call s_cal_jacobian_3d_inf_8_20(numnod, numele,               &
      &        np_smp, ie, xx, sf_grp1%num_item, sf_grp1%item_sf_grp,    &
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
-     &        sf_grp1%num_grp_smp, isurf_grp_smp_stack,                 &
+     &        sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,              &
      &        xjac_lq(1,ix), axjac_lq(1,ix),                            &
      &      dmx(1,1,ix,1), dmx(1,1,ix,2), dmx(1,1,ix,3),                &
      &      dxidx_lq(1,ix,1,1), dxidx_lq(1,ix,2,1), dxidx_lq(1,ix,3,1), &

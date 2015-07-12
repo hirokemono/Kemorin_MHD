@@ -44,7 +44,7 @@
      &    nnod_4_surf, node_on_sf, ie, xx, a_radius,                    &
      &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%istack_grp,        &
      &    sf_grp1%item_sf_grp, sf_grp1%num_grp_smp,                     &
-     &    isurf_grp_smp_stack, xe_sf)
+     &    sf_grp1%istack_grp_smp, xe_sf)
 !
       end subroutine position_2_each_surface
 !
@@ -62,7 +62,7 @@
      &    nnod_4_surf, node_on_sf, node_on_sf_n, ie, xx,                &
      &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%istack_grp,        &
      &    sf_grp1%item_sf_grp, sf_grp1%num_grp_smp,                     &
-     &    isurf_grp_smp_stack, dxe_sf)
+     &    sf_grp1%istack_grp_smp, dxe_sf)
 !
       end subroutine delta_x_2_each_surface
 !

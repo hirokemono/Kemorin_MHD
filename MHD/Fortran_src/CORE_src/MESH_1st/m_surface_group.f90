@@ -23,7 +23,7 @@
 !
 !>  Structure for surfacet group
       type(surface_group_data), save :: sf_grp1
-!sf_grp1%num_grp_smp
+!sf_grp1%max_grp_smp
 !
 !      integer(kind=kint) :: num_surf
 !<      number of surface group
@@ -42,9 +42,9 @@
 !
 !      integer( kind=kint )  ::  num_surf_smp
 !<      number of surface group for SMP process
-      integer( kind=kint ), allocatable :: isurf_grp_smp_stack(:)
+!      integer( kind=kint ), allocatable :: isurf_grp_smp_stack(:)
 !<      end address of each surface group for SMP process
-      integer( kind=kint )  ::  max_sf_grp_4_smp
+!      integer( kind=kint )  ::  max_sf_grp_4_smp
 !<      maximum number of surface group for SMP process
 !
 !
@@ -88,8 +88,8 @@
 !
        subroutine allocate_surface_param_smp
 !
-       allocate( isurf_grp_smp_stack(0:sf_grp1%num_grp_smp))
-       isurf_grp_smp_stack = 0
+       allocate( sf_grp1%istack_grp_smp(0:sf_grp1%num_grp_smp))
+       sf_grp1%istack_grp_smp = 0
 !
        end subroutine allocate_surface_param_smp
 !
@@ -98,7 +98,7 @@
        subroutine deallocate_surface_param_smp
 !
 !
-       deallocate(isurf_grp_smp_stack)
+       deallocate(sf_grp1%istack_grp_smp)
 !
        end subroutine deallocate_surface_param_smp
 !
@@ -113,7 +113,7 @@
        write(*,*) 'PE: ', my_rank, 'num_surf ', sf_grp1%num_grp
        write(*,*) 'PE: ', my_rank, 'num_surf_smp ', sf_grp1%num_grp_smp
        write(*,*) 'PE: ', my_rank,                                      &
-     &            'isurf_grp_smp_stack ', isurf_grp_smp_stack
+     &            'isurf_grp_smp_stack ', sf_grp1%istack_grp_smp
 !
       end subroutine check_surf_4_sheard_para
 !

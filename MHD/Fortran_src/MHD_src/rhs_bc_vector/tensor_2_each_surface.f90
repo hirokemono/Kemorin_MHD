@@ -58,8 +58,8 @@
 !$omp& private(id_sf,ist,ied,inum,iele,isf,kk2,inod)
         do iproc = 1, np_smp
          id_sf = np_smp*(igrp-1) + iproc
-         ist = isurf_grp_smp_stack(id_sf-1)+1
-         ied = isurf_grp_smp_stack(id_sf)
+         ist = sf_grp1%istack_grp_smp(id_sf-1)+1
+         ied = sf_grp1%istack_grp_smp(id_sf)
 !
 !cdir nodep
 !voption, indep, vec
@@ -115,8 +115,8 @@
 !$omp& private(id_sf,ist,ied,inum,iele,isf,kk2,inod)
         do iproc = 1, np_smp
          id_sf = np_smp*(igrp-1) + iproc
-         ist = isurf_grp_smp_stack(id_sf-1)+1
-         ied = isurf_grp_smp_stack(id_sf)
+         ist = sf_grp1%istack_grp_smp(id_sf-1)+1
+         ied = sf_grp1%istack_grp_smp(id_sf)
 !
          if (nd .eq. 1 ) then
 !cdir nodep

@@ -67,7 +67,7 @@
             call fem_surf_crank_free_inside(igrp, k2, num_int,          &
      &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,            &
      &          sf_grp1%num_item, sf_grp1%num_grp_smp,                  &
-     &          isurf_grp_smp_stack, sf_grp1%item_sf_grp,               &
+     &          sf_grp1%istack_grp_smp, sf_grp1%item_sf_grp,            &
      &          jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%an_sf,      &
      &          jac1_sf_grp_2d_q%xj_sf, xe_sf, ak_d_velo, sk6)
 !
@@ -112,7 +112,7 @@
             call fem_surf_crank_free_outside(igrp, k2, num_int,         &
      &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,            &
      &          sf_grp1%num_item, sf_grp1%num_grp_smp,                  &
-     &          isurf_grp_smp_stack, sf_grp1%item_sf_grp,               &
+     &          sf_grp1%istack_grp_smp, sf_grp1%item_sf_grp,            &
      &          jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%an_sf,      &
      &          jac1_sf_grp_2d_q%xj_sf, xe_sf, ak_d_velo, sk6)
 !

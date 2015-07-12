@@ -59,7 +59,7 @@
       call delta_scalar_phys_2_each_sf(np_smp, numnod, numele,          &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
      &    sf_grp1%num_item, sf_grp1%item_sf_grp,                        &
-     &    sf_grp1%num_grp_smp, isurf_grp_smp_stack,    &
+     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
      &    igrp, k2, i_scalar, num_tot_nod_phys, d_nod, scalar_sf)
 !
       end subroutine dlt_scl_phys_2_each_surface
@@ -80,7 +80,7 @@
       call delta_vector_phys_2_each_sf(np_smp, numnod, numele,          &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
      &    sf_grp1%num_item, sf_grp1%item_sf_grp,                        &
-     &    sf_grp1%num_grp_smp, isurf_grp_smp_stack,    &
+     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
      &    igrp, k2, i_vector, num_tot_nod_phys, d_nod, vector_sf)
 !
       end subroutine dlt_vect_phys_2_each_surface
@@ -101,7 +101,7 @@
       call delta_tensor_phys_2_each_sf(np_smp, numnod, numele,          &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
      &    sf_grp1%num_item, sf_grp1%item_sf_grp,                        &
-     &    sf_grp1%num_grp_smp, isurf_grp_smp_stack,    &
+     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
      &    igrp, k2, i_tensor, num_tot_nod_phys, d_nod, tensor_sf)
 !
       end subroutine dlt_tsr_phys_2_each_surface
@@ -124,7 +124,7 @@
       call dlt_scl_phys_2_each_sf_w_coef(np_smp, numnod, numele,        &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
      &    sf_grp1%num_item, sf_grp1%item_sf_grp,                        &
-     &    sf_grp1%num_grp_smp, isurf_grp_smp_stack,    &
+     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
      &    igrp, k2, i_scalar, num_tot_nod_phys, d_nod, ak_e, scalar_sf)
 !
       end subroutine dlt_scl_phys_2_each_surf_coef
@@ -146,7 +146,7 @@
       call dlt_vect_phys_2_each_sf_w_coef(np_smp, numnod, numele,       &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
      &    sf_grp1%num_item, sf_grp1%item_sf_grp,                        &
-     &    sf_grp1%num_grp_smp, isurf_grp_smp_stack,    &
+     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
      &    igrp, k2, i_vector, num_tot_nod_phys, d_nod, ak_e, vector_sf)
 !
       end subroutine dlt_vect_phys_2_each_surf_coef
@@ -168,7 +168,7 @@
       call dlt_tsr_phys_2_each_sf_w_coef(np_smp, numnod, numele,        &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
      &    sf_grp1%num_item, sf_grp1%item_sf_grp,                        &
-     &    sf_grp1%num_grp_smp, isurf_grp_smp_stack,    &
+     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
      &    igrp, k2, i_tensor, num_tot_nod_phys, d_nod, ak_e, tensor_sf)
 !
       end subroutine dlt_tsr_phys_2_each_surf_coef
@@ -191,7 +191,7 @@
       call dlt_scl_phys_2_each_sf_w_cst(np_smp, numnod, numele,         &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
      &    sf_grp1%num_item, sf_grp1%item_sf_grp,                        &
-     &    sf_grp1%num_grp_smp, isurf_grp_smp_stack,    &
+     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
      &    igrp, k2, i_scalar, num_tot_nod_phys, d_nod, coef, scalar_sf)
 !
       end subroutine dlt_scl_phys_2_each_surf_cst
@@ -213,7 +213,7 @@
       call dlt_vect_phys_2_each_sf_w_cst(np_smp, numnod, numele,        &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
      &    sf_grp1%num_item, sf_grp1%item_sf_grp,                        &
-     &    sf_grp1%num_grp_smp, isurf_grp_smp_stack,    &
+     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
      &    igrp, k2, i_vector, num_tot_nod_phys, d_nod, coef, vector_sf)
 !
       end subroutine dlt_vect_phys_2_each_surf_cst
@@ -235,7 +235,7 @@
       call dlt_tsr_phys_2_each_sf_w_cst(np_smp, numnod, numele,         &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
      &    sf_grp1%num_item, sf_grp1%item_sf_grp,                        &
-     &    sf_grp1%num_grp_smp, isurf_grp_smp_stack,    &
+     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
      &    igrp, k2, i_tensor, num_tot_nod_phys, d_nod, coef, tensor_sf)
 !
       end subroutine dlt_tsr_phys_2_each_surf_cst

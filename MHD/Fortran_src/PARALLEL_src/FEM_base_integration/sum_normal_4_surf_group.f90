@@ -41,7 +41,7 @@
 !
       call s_sum_norm_of_surf_group(np_smp, numele, e_multi,            &
      &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%item_sf_grp,       &
-     &    sf_grp1%num_grp_smp, isurf_grp_smp_stack,    &
+     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
      &    sf_grp_v1%area_sf_grp)
 !
       call s_sum_norm_of_surf_grp_para                                  &
