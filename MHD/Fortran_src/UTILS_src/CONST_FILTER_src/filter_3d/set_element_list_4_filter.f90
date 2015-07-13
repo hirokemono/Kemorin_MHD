@@ -107,7 +107,7 @@
 !
         do igrp = 1, num_filtering_grp
           do i = 1, ele_grp1%num_grp
-            if ( filter_area_name(igrp) .eq. mat_name(i) ) then
+            if(filter_area_name(igrp) .eq. ele_grp1%grp_name(i)) then
               id_filter_area_grp(igrp) = i
               ist = mat_istack(i-1) + 1
               ied = mat_istack(i)

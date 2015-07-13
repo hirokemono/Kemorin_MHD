@@ -81,7 +81,7 @@
         ele_grp1%num_item = num_mat_bc_dummy
         call allocate_material_data
 !
-        mat_name(1:ele_grp1%num_grp)                     &
+        ele_grp1%grp_name(1:ele_grp1%num_grp)                           &
      &         = mat_name_dummy(1:ele_grp1%num_grp)
         mat_istack(0:ele_grp1%num_grp)                   &
      &         =  mat_istack_dummy(0:ele_grp1%num_grp)
@@ -156,7 +156,7 @@
       call allocate_bc_ele_stack_dummy
 !
       mat_name_dummy(1:ele_grp1%num_grp)                                &
-     &           = mat_name(1:ele_grp1%num_grp)
+     &           = ele_grp1%grp_name(1:ele_grp1%num_grp)
       mat_istack_dummy(0:ele_grp1%num_grp)                              &
      &           = mat_istack(0:ele_grp1%num_grp)
 !

@@ -97,7 +97,7 @@
 !
 !
       new_ele_grp%grp_name(1:ele_grp1%num_grp)                          &
-     &      = mat_name(1:ele_grp1%num_grp)
+     &      = ele_grp1%grp_name(1:ele_grp1%num_grp)
 !
       new_ele_grp%istack_grp(0) = 0
       do ig = 1, ele_grp1%num_grp

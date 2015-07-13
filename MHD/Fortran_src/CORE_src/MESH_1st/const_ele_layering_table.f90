@@ -70,7 +70,7 @@
       use set_layer_list_by_table
 !
 !
-      call set_layerd_group_id(ele_grp1%num_grp, mat_name)
+      call set_layerd_group_id(ele_grp1%num_grp, ele_grp1%grp_name)
 !
       layer_tbl1%n_layer_d = num_layer_grp
       call alloc_layering_ele_list_type(layer_tbl1)
@@ -117,11 +117,11 @@
 !
 !
       call count_layering_ele_grp_list                                  &
-     &   (ele_grp1%num_grp, mat_name, ist_grp)
+     &   (ele_grp1%num_grp, ele_grp1%grp_name, ist_grp)
 !
       call allocate_layering_ele_grp
       call set_layering_ele_grp_list                                    &
-     &   (ele_grp1%num_grp, mat_name, ist_grp)
+     &   (ele_grp1%num_grp, ele_grp1%grp_name, ist_grp)
 !
       end subroutine const_layer_list_by_mesh_file
 !
@@ -136,14 +136,15 @@
       use set_layer_list_by_start_end
 !
 !
-      call set_num_dynamic_layer_by_start(ele_grp1%num_grp, mat_name,   &
-     &    mat_istack, layer_tbl1%n_layer_d)
+      call set_num_dynamic_layer_by_start(ele_grp1%num_grp,             &
+     &    ele_grp1%grp_name, mat_istack, layer_tbl1%n_layer_d)
 !
       call allocate_layer_ele_start(layer_tbl1%n_layer_d)
       call alloc_layering_ele_list_type(layer_tbl1)
 !
       call set_start_ele_4_dynamic(ele_grp1%num_grp, ele_grp1%num_item, &
-     &    mat_name, mat_istack, mat_item, layer_tbl1%n_layer_d)
+     &    ele_grp1%grp_name, mat_istack, mat_item,                      &
+     &    layer_tbl1%n_layer_d)
 !
       call count_ele_4_dynamic_by_start                                 &
      &   (layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,              &

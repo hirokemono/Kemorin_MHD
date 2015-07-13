@@ -39,7 +39,7 @@
       do k = 1, ele_grp1%num_grp
         ist = mat_istack(k-1)+1
         ied = mat_istack(k)
-        write(id_file,*) trim(mat_name(k))
+        write(id_file,*) trim(ele_grp1%grp_name(k))
         write(id_file,'(6i16)') (mat_item(i),i=ist,ied)
       end do
 !
@@ -54,7 +54,7 @@
 !
 !
       do i = 1, num_ele_grp_csp
-        mat_name(i) = ele_grp_name_csp(i)
+        ele_grp1%grp_name(i) = ele_grp_name_csp(i)
       end do
 !
       end subroutine set_element_group_names

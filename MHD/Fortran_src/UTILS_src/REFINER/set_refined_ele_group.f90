@@ -30,7 +30,7 @@
 !
 !
       do i = 1, ele_grp1%num_grp
-        new_ele_grp%grp_name(i) = mat_name(i)
+        new_ele_grp%grp_name(i) = ele_grp1%grp_name(i)
       end do
 !
       new_ele_grp%istack_grp(0) = 0

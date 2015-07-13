@@ -66,7 +66,7 @@
 !
       call pvr_init(numnod, numele, numsurf, nnod_4_surf, xx,           &
      &    e_multi, ie_surf, isf_4_ele, iele_4_surf,                     &
-     &    ele_grp1%num_grp, ele_grp1%num_item, mat_name, &
+     &    ele_grp1%num_grp, ele_grp1%num_item, ele_grp1%grp_name,       &
      &    mat_istack, mat_item, num_nod_phys, phys_nod_name)
 !
       end subroutine pvr_init_1st

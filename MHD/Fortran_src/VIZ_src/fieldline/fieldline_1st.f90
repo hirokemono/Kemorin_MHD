@@ -65,7 +65,7 @@
 !
 !
       call field_line_init(numnod, numele, e_multi,                     &
-     &    ele_grp1%num_grp, ele_grp1%num_item, mat_name,    &
+     &    ele_grp1%num_grp, ele_grp1%num_item, ele_grp1%grp_name,       &
      &    mat_istack, mat_item,          &
      &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%grp_name,          &
      &    sf_grp1%istack_grp, sf_grp1%item_sf_grp,                      &

@@ -90,7 +90,7 @@
      &    iedge_4_sf, iedge_4_ele, nod_comm, edge_comm,                 &
      &    interior_ele, xx, inod_smp_stack, iele_smp_stack,             &
      &    isurf_smp_stack, iedge_smp_stack,                             &
-     &    ele_grp1%num_grp, ele_grp1%num_item, mat_name,  &
+     &    ele_grp1%num_grp, ele_grp1%num_item, ele_grp1%grp_name,       &
      &    mat_istack, mat_item,          &
      &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%grp_name,          &
      &    sf_grp1%istack_grp, sf_grp1%item_sf_grp,                      &
@@ -115,7 +115,7 @@
      &          ie_edge, isf_4_ele, iedge_4_sf, interior_ele,           &
      &          inod_smp_stack, iele_smp_stack,                         &
      &          isurf_smp_stack, iedge_smp_stack,                       &
-     &          ele_grp1%num_grp, ele_grp1%num_item, mat_name,  &
+     &          ele_grp1%num_grp, ele_grp1%num_item, ele_grp1%grp_name, &
      &          mat_istack, mat_item,    &
      &          num_nod_phys, phys_nod_name)
 !

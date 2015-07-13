@@ -104,8 +104,8 @@
 !
       do igrp = 1, ele_grp1%num_grp
         call skip_comment(character_4_read,id_file)
-        read(character_4_read,*) mat_name(igrp)
-        write(*,*) 'mat_name: ', trim(mat_name(igrp))
+        read(character_4_read,*) ele_grp1%grp_name(igrp)
+        write(*,*) 'mat_name: ', trim(ele_grp1%grp_name(igrp))
         read(id_file,*) nnod, nele
         mat_istack(igrp) = mat_istack(igrp-1) + nele
 !

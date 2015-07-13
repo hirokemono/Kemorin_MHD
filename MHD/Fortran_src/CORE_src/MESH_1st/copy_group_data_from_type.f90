@@ -100,7 +100,7 @@
         ele_grp1%num_item = ele_grp%num_item
         call allocate_material_data
 !
-        mat_name(1:ele_grp1%num_grp)                 &
+        ele_grp1%grp_name(1:ele_grp1%num_grp)                           &
      &          =    ele_grp%grp_name(1:ele_grp1%num_grp)
         mat_istack(0:ele_grp1%num_grp)               &
      &          =  ele_grp%istack_grp(0:ele_grp1%num_grp)
@@ -161,9 +161,9 @@
       if(ele_grp%num_item .ne. ele_grp1%num_item) write(*,*)            &
      &     'num_mat_bc', my_rank, ele_grp%num_item, ele_grp1%num_item
       do i = 1, ele_grp1%num_grp
-        if(ele_grp%grp_name(i) .ne. mat_name(i))                        &
+        if(ele_grp%grp_name(i) .ne. ele_grp1%grp_name(i))               &
      &       write(*,*) 'mat_name(i)', my_rank, i,                      &
-     &       ele_grp%grp_name(i), mat_name(i)
+     &       ele_grp%grp_name(i), ele_grp1%grp_name(i)
         if(ele_grp%istack_grp(i) .ne. mat_istack(i))                    &
      &       write(*,*) 'mat_istack(i)', my_rank, i,                    &
      &       ele_grp%istack_grp(i), mat_istack(i)

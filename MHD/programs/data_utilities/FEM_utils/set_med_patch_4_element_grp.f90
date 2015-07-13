@@ -103,7 +103,7 @@
 !
 !   collect patch data
 !
-        call collect_ele_grp_patch( mat_name(igrp) )
+        call collect_ele_grp_patch(ele_grp1%grp_name(igrp))
 !
         deallocate(xyz_med)
       end do

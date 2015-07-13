@@ -128,7 +128,7 @@
 !
 !
       new_elegrp%grp_name(1:ele_grp1%num_grp)                           &
-     &      =   mat_name(1:ele_grp1%num_grp)
+     &      =   ele_grp1%grp_name(1:ele_grp1%num_grp)
       new_elegrp%istack_grp(0:ele_grp1%num_grp)                         &
      &      = mat_istack(0:ele_grp1%num_grp)
 !
@@ -291,7 +291,7 @@
       ele_grp1%num_item = new_elegrp%num_item
       call allocate_material_data
 !
-      mat_name(1:ele_grp1%num_grp)                                      &
+      ele_grp1%grp_name(1:ele_grp1%num_grp)                             &
      &        =    new_elegrp%grp_name(1:ele_grp1%num_grp)
       mat_istack(0:ele_grp1%num_grp)                                    &
      &        =  new_elegrp%istack_grp(0:ele_grp1%num_grp)

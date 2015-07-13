@@ -84,7 +84,7 @@
 !
       call count_ele_4_layer(numele, numele_in_core,                    &
      &    num_in_core_ele_grp, in_core_ele_grp_name,                    &
-     &    ele_grp1%num_grp, mat_istack, mat_name)
+     &    ele_grp1%num_grp, mat_istack, ele_grp1%grp_name)
 !
 !    set node list for conductor
 !

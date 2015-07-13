@@ -47,7 +47,7 @@
       ele_grp%num_grp =  ele_grp1%num_grp
       ele_grp%num_item = ele_grp1%num_item
 !
-      ele_grp%grp_name =>   mat_name
+      ele_grp%grp_name =>   ele_grp1%grp_name
       ele_grp%istack_grp => mat_istack
       ele_grp%item_grp =>   mat_item
 !

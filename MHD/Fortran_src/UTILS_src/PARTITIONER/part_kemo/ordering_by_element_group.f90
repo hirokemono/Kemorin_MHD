@@ -73,7 +73,7 @@
 !
       do igrp = 1, nele_grp_ordering
         do jgrp = 1, ele_grp1%num_grp
-          if (ele_grp_ordering(igrp) .eq. mat_name(jgrp)) then
+          if (ele_grp_ordering(igrp) .eq. ele_grp1%grp_name(jgrp)) then
             igrp_ele_ordering(igrp) = jgrp
           end if
         end do
