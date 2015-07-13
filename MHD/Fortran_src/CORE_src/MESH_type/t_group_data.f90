@@ -41,6 +41,8 @@
 !!
 !!      subroutine check_group_type_data(my_rank, grp)
 !!      subroutine check_surf_grp_type_data(my_rank, sf_grp)
+!!      subroutine check_grp_4_sheard_para(my_rank, grp)
+!!      subroutine check_surf_grp_4_sheard_para(my_rank, sf_grp)
 !!        integer(kind = kint), intent(in) :: my_rank
 !!        type(group_data), intent(in) :: grp
 !!        type(surface_group_data), intent(in) :: sf_grp
@@ -371,6 +373,7 @@
 !
       grp_new%num_grp =     grp_org%num_grp
       if (grp_new%num_grp .le. 0) return
+!
       grp_new%num_item = grp_org%num_item
       call allocate_grp_type(grp_new)
 !
@@ -451,6 +454,35 @@
       end subroutine check_surf_grp_type_data
 !
 ! -----------------------------------------------------------------------
+!
+      subroutine check_grp_4_sheard_para(my_rank, grp)
+!
+      integer(kind = kint), intent(in) :: my_rank
+      type(group_data), intent(in) :: grp
+!
+!
+      write(*,*) 'PE: ', my_rank, 'num_bc ', grp%num_grp
+      write(*,*) 'PE: ', my_rank, 'num_bc_smp ', grp%num_grp_smp
+      write(*,*) 'PE: ', my_rank, 'ibc_smp_stack ', grp%istack_grp_smp
+!
+      end subroutine check_grp_4_sheard_para
+!
+!-----------------------------------------------------------------------
+!
+      subroutine check_surf_grp_4_sheard_para(my_rank, sf_grp)
+!
+      integer(kind = kint), intent(in) :: my_rank
+      type(surface_group_data), intent(in) :: sf_grp
+!
+!
+      write(*,*) 'PE: ', my_rank, 'num_bc ', sf_grp%num_grp
+      write(*,*) 'PE: ', my_rank, 'num_bc_smp ', sf_grp%num_grp_smp
+      write(*,*) 'PE: ', my_rank, 'ibc_smp_stack ',                     &
+     &          sf_grp%istack_grp_smp
+!
+      end subroutine check_surf_grp_4_sheard_para
+!
+!-----------------------------------------------------------------------
 !
       end module t_group_data
 !

@@ -40,7 +40,7 @@
 !
       nod_grp1%num_grp_smp = np_smp * nod_grp1%num_grp
 !
-      call allocate_boundary_param_smp
+      call allocate_grp_type_smp(nod_grp1)
 !
       call set_group_size_4_smp                                         &
      &   (np_smp, nod_grp1%num_grp, nod_grp1%istack_grp,                &

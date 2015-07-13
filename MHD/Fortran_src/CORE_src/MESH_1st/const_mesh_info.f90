@@ -54,10 +54,10 @@
 !
        if (iflag_debug.gt.0) write(*,*) 'count_num_groups_4_smp'
       call count_num_groups_4_smp
-!       if (iflag_debug.gt.0) call check_bc_4_sheard_para(my_rank)
-!       if (iflag_debug.gt.0) call check_mat_4_sheard_para(my_rank)
 !       if (iflag_debug.gt.0) then
-!         call call check_surf_grp_type_data(my_rank, sf_grp1)
+!         call check_grp_4_sheard_para(my_rank, nod_grp1)
+!         call check_grp_4_sheard_para(my_rank, ele_grp1)
+!         call check_surf_grp_4_sheard_para(my_rank, sf_grp1)
 !       end if
 !
       if (iflag_debug.gt.0) write(*,*) 'set_surface_node_grp'
@@ -122,7 +122,10 @@
 !
       call deallocate_sf_grp_type_smp(sf_grp1)
       call deallocate_grp_type_smp(ele_grp1)
-      call deallocate_boundary_param_smp
+      call deallocate_grp_type_smp(nod_grp1)
+      call deallocate_sf_grp_type(sf_grp1)
+      call deallocate_grp_type(ele_grp1)
+      call deallocate_grp_type(nod_grp1)
 !
       call deallocate_surface_geometry
       call deallocate_edge_geometry
@@ -138,9 +141,6 @@
       call deallocate_surface_connect
       call deallocate_element_geometry
 !
-      call deallocate_sf_grp_type(sf_grp1)
-      call deallocate_grp_type(ele_grp1)
-      call deallocate_boundary_data
       call deallocate_element_connection
       call deallocate_node_geometry
       call deallocate_type_comm_tbl(nod_comm)
@@ -163,7 +163,10 @@
 !
       call deallocate_sf_grp_type_smp(sf_grp1)
       call deallocate_grp_type_smp(ele_grp1)
-      call deallocate_boundary_param_smp
+      call deallocate_grp_type_smp(nod_grp1)
+      call deallocate_sf_grp_type(sf_grp1)
+      call deallocate_grp_type(ele_grp1)
+      call deallocate_grp_type(nod_grp1)
 !
       call deallocate_geometry_param_smp
       call deallocate_inod_in_surf
@@ -171,9 +174,6 @@
 !
       call deallocate_element_geometry
 !
-      call deallocate_sf_grp_type(sf_grp1)
-      call deallocate_grp_type(ele_grp1)
-      call deallocate_boundary_data
       call deallocate_element_connection
       call deallocate_node_geometry
       call deallocate_type_comm_tbl(nod_comm)

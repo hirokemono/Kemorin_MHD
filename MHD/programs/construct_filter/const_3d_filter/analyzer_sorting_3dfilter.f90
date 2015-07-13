@@ -86,7 +86,7 @@
 !
         call deallocate_sf_grp_type(sf_grp1)
         call deallocate_grp_type(ele_grp1)
-        call deallocate_boundary_data
+        call deallocate_grp_type(nod_grp1)
         call deallocate_element_geometry
         call deallocate_node_geometry
         call deallocate_type_comm_tbl(nod_comm)

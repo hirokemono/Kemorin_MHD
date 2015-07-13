@@ -44,7 +44,7 @@
 !
       call count_node_groups_linear(numnod_cube, numnod_sf, ione)
 !
-      call allocate_boundary_data
+      call allocate_grp_type(nod_grp1)
 !
       call set_node_group_names
 !
@@ -55,7 +55,7 @@
 !
       call write_node_group(id_l_group)
 !
-      call deallocate_boundary_data
+      call deallocate_grp_type(nod_grp1)
 !
 !   set element group
 !
@@ -104,7 +104,7 @@
       call count_node_groups_quad(numnod_cube, numedge_cube,            &
      &    numnod_sf, numedge_sf)
 !
-      call allocate_boundary_data
+      call allocate_grp_type(nod_grp1)
 !
       call set_node_group_names
 !
@@ -116,8 +116,7 @@
 !
       call write_node_group(id_q_group)
 !
-      write(*,*) 'deallocate_boundary_data'
-      call deallocate_boundary_data
+      call deallocate_grp_type(nod_grp1)
 !
 !   set element group
 !
@@ -164,7 +163,7 @@
 !
       call count_node_groups_linear(nnod_cube_c, nnod_sf_c, nskip_r)
 !
-      call allocate_boundary_data
+      call allocate_grp_type(nod_grp1)
 !
       call set_node_group_names
 !
@@ -173,10 +172,9 @@
       call set_nodal_item_linear(nnod_cube_c, nnod_sf_c, n_hemi_c,      &
      &          nskip_r)
 !
-         write(*,*) 'write_node_group'
       call write_node_group(id_l_group)
 !
-      call deallocate_boundary_data
+      call deallocate_grp_type(nod_grp1)
 !
 !   set element group
 !
