@@ -76,14 +76,15 @@
 !
       nod_grp1%num_grp = nod_grp%num_grp
       if (nod_grp1%num_grp .gt. 0) then
-        num_nod_bc = nod_grp%num_item
+        nod_grp1%num_item = nod_grp%num_item
         call allocate_boundary_data
 !
         bc_name(1:nod_grp1%num_grp)                                     &
      &     = nod_grp%grp_name(1:nod_grp1%num_grp)
         bc_istack(0:nod_grp1%num_grp)                                   &
      &     = nod_grp%istack_grp(0:nod_grp1%num_grp)
-        bc_item(1:num_nod_bc) = nod_grp%item_grp(1:num_nod_bc)
+        bc_item(1:nod_grp1%num_item)                                    &
+     &     = nod_grp%item_grp(1:nod_grp1%num_item)
       end if
 !
       end subroutine node_group_from_type
@@ -104,8 +105,8 @@
 !
       if(nod_grp%num_grp .ne. nod_grp1%num_grp) write(*,*) 'num_bc',    &
      &     my_rank, nod_grp%num_grp, nod_grp1%num_grp
-      if(nod_grp%num_item .ne. num_nod_bc) write(*,*)                   &
-     &     'num_nod_bc', my_rank, nod_grp%num_item, num_nod_bc
+      if(nod_grp%num_item .ne. nod_grp1%num_item) write(*,*)            &
+     &     'num_nod_bc', my_rank, nod_grp%num_item, nod_grp1%num_item
       do i = 1, nod_grp1%num_grp
         if(nod_grp%grp_name(i) .ne. bc_name(i))                         &
      &       write(*,*) 'bc_name(i)', my_rank, i,                       &
@@ -114,7 +115,7 @@
      &       write(*,*) 'bc_istack(i)', my_rank, i,                     &
      &       nod_grp%istack_grp(i), bc_istack(i)
       end do
-      do i = 1, num_nod_bc
+      do i = 1, nod_grp1%num_item
         if(nod_grp%item_grp(i) .ne. bc_item(i))                         &
      &       write(*,*) 'bc_item(i)', my_rank, i,                       &
      &       nod_grp%item_grp(i), bc_item(i)

@@ -64,13 +64,14 @@
       nod_grp1%num_grp = num_bc_dummy
       if (nod_grp1%num_grp .gt. 0) then
 !
-        num_nod_bc = num_nod_bc_dummy
+        nod_grp1%num_item = num_nod_bc_dummy
         call allocate_boundary_data
 !
         bc_name(1:nod_grp1%num_grp) = bc_name_dummy(1:nod_grp1%num_grp)
         bc_istack(0:nod_grp1%num_grp)                                   &
      &      = bc_istack_dummy(0:nod_grp1%num_grp)
-        bc_item(1:num_nod_bc) = bc_item_dummy(1:num_nod_bc)
+        bc_item(1:nod_grp1%num_item)                                    &
+     &      = bc_item_dummy(1:nod_grp1%num_item)
       end if
       call deallocate_bc_item_dummy
 !
@@ -86,7 +87,7 @@
 !
 !
       num_bc_dummy = nod_grp1%num_grp
-      num_nod_bc_dummy = num_nod_bc
+      num_nod_bc_dummy = nod_grp1%num_item
       call allocate_bc_stack_dummy
 !
       bc_name_dummy(1:nod_grp1%num_grp) = bc_name(1:nod_grp1%num_grp)
@@ -94,7 +95,7 @@
      &            = bc_istack(0:nod_grp1%num_grp)
 !
       call allocate_bc_item_dummy
-      bc_item_dummy(1:num_nod_bc) = bc_item(1:num_nod_bc)
+      bc_item_dummy(1:nod_grp1%num_item) = bc_item(1:nod_grp1%num_item)
 !
       call deallocate_boundary_data
 !

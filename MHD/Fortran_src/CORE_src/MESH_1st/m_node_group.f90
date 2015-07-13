@@ -25,11 +25,11 @@
 !>  Structure for node and node group
       type(group_data), save :: nod_grp1
 !
-!nod_grp1%num_grp
+!nod_grp1%num_grp_smp
 !
 !      integer (kind=kint) :: num_bc
 !<      number of node group
-      integer (kind=kint) :: num_nod_bc
+!      integer (kind=kint) :: num_nod_bc
 !<      total number of nodes for node group
 !
       integer (kind=kint), allocatable, target :: bc_istack(:)
@@ -59,7 +59,7 @@
 !
        allocate(bc_istack(0:nod_grp1%num_grp))
        allocate(bc_name(nod_grp1%num_grp))
-       allocate(bc_item(num_nod_bc))
+       allocate(bc_item(nod_grp1%num_item))
 !
       call clear_boundary_data
 !

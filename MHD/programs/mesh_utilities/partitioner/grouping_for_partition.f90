@@ -89,7 +89,8 @@
       else if (NTYP_div .eq. iPART_CUBED_SPHERE) then
         call divide_by_sphere_coord(num_domain, numnod,                 &
      &      nnod_4_ele, xx, radius, colatitude, longitude,              &
-     &      nod_grp1%num_grp, num_nod_bc, bc_istack, bc_item, bc_name)
+     &      nod_grp1%num_grp, nod_grp1%num_item, bc_istack,             &
+     &      bc_item, bc_name)
 !C
 !C +------------------------------+
 !C | Partisioning by MeTiS output |

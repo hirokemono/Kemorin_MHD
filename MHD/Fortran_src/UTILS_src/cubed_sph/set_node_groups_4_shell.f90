@@ -84,13 +84,13 @@
 !
       nod_grp1%num_grp = 2 + num_node_grp_csp
 !
-      num_nod_bc = 2
+      nod_grp1%num_item = 2
       do i = 1, num_nod_layer_csp
         if      ( id_nod_grp_layer_csp(i) .eq. 0 ) then
-          num_nod_bc = num_nod_bc + numnod_cube
+          nod_grp1%num_item = nod_grp1%num_item + numnod_cube
         else if ( id_nod_grp_layer_csp(i) .gt. 0 ) then
           if ( mod(id_nod_grp_layer_csp(i),nskip_r) .eq. 0 ) then
-            num_nod_bc = num_nod_bc + numnod_sf
+            nod_grp1%num_item = nod_grp1%num_item + numnod_sf
           end if
         end if
       end do
@@ -106,14 +106,16 @@
       integer(kind = kint), intent(in) :: numnod_sf, numedge_sf
       integer(kind = kint) :: i
 !
-      num_nod_bc = 2
+      nod_grp1%num_item = 2
       do i = 1, num_nod_layer_csp
         if      ( id_nod_grp_layer_csp(i) .eq. 0 ) then
-          num_nod_bc = num_nod_bc + numnod_cube + numedge_cube
+          nod_grp1%num_item = nod_grp1%num_item                         &
+     &                       + numnod_cube + numedge_cube
         else if ( id_nod_grp_layer_csp(i) .gt. 0 ) then
-          num_nod_bc = num_nod_bc + numnod_sf + numedge_sf
+          nod_grp1%num_item = nod_grp1%num_item                         &
+     &                       + numnod_sf + numedge_sf
         else if ( id_nod_grp_layer_csp(i) .lt. 0 ) then
-          num_nod_bc = num_nod_bc + numnod_sf
+          nod_grp1%num_item = nod_grp1%num_item + numnod_sf
         end if
       end do
 !

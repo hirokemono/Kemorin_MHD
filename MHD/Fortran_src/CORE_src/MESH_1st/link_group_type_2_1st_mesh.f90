@@ -26,8 +26,8 @@
 !
       type(group_data), intent(inout) :: nod_grp
 !
-      nod_grp%num_grp = nod_grp1%num_grp
-      nod_grp%num_item = num_nod_bc
+      nod_grp%num_grp =  nod_grp1%num_grp
+      nod_grp%num_item = nod_grp1%num_item
 !
       nod_grp%grp_name =>  bc_name
       nod_grp%istack_grp => bc_istack
