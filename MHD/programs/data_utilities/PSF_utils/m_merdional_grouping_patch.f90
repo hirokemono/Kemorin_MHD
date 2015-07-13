@@ -107,18 +107,18 @@
         read(character_4_read,*) ele_grp1%grp_name(igrp)
         write(*,*) 'mat_name: ', trim(ele_grp1%grp_name(igrp))
         read(id_file,*) nnod, nele
-        mat_istack(igrp) = mat_istack(igrp-1) + nele
+        ele_grp1%istack_grp(igrp) = ele_grp1%istack_grp(igrp-1) + nele
 !
         do inum = 1, nnod
-          inod = 3*mat_istack(igrp-1) + inum
+          inod = 3*ele_grp1%istack_grp(igrp-1) + inum
           read(id_file,*)  itmp, xx_egrp(inod,1:3)
         end do
 !
         do inum = 1, nele
-          iele = mat_istack(igrp-1) + inum
+          iele = ele_grp1%istack_grp(igrp-1) + inum
           call skip_comment(character_4_read,id_file)
           read(character_4_read,*)  itmp, iloc(1:3)
-          ie_egrp(iele,1:3) = 3*mat_istack(igrp-1) + iloc(1:3)
+          ie_egrp(iele,1:3) = 3*ele_grp1%istack_grp(igrp-1) + iloc(1:3)
         end do
       end do
 !

@@ -78,7 +78,8 @@
 !
         if (iflag_debug .eq. 1)                                         &
      &    write(*,*) 'count_ele_layer_by_table'
-      call count_ele_layer_by_table(ele_grp1%num_grp, mat_istack,       &
+      call count_ele_layer_by_table                                     &
+     &   (ele_grp1%num_grp, ele_grp1%istack_grp,                        &
      &    layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,              &
      &    layer_tbl1%layer_stack)
 !
@@ -87,8 +88,8 @@
       if (iflag_debug .eq. 1) write(*,*) 'alloc_layer_items_type'
       call alloc_layer_items_type(layer_tbl1)
       if (iflag_debug .eq. 1)  write(*,*) 'set_ele_layer_by_table'
-      call set_ele_layer_by_table                                       &
-     &   (ele_grp1%num_grp, ele_grp1%num_item, mat_istack, mat_item,    &
+      call set_ele_layer_by_table(ele_grp1%num_grp,                     &
+     &    ele_grp1%num_item, ele_grp1%istack_grp, mat_item,    &
      &    layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,              &
      &    layer_tbl1%layer_stack, layer_tbl1%item_layer)
 !
@@ -137,13 +138,13 @@
 !
 !
       call set_num_dynamic_layer_by_start(ele_grp1%num_grp,             &
-     &    ele_grp1%grp_name, mat_istack, layer_tbl1%n_layer_d)
+     &    ele_grp1%grp_name, ele_grp1%istack_grp, layer_tbl1%n_layer_d)
 !
       call allocate_layer_ele_start(layer_tbl1%n_layer_d)
       call alloc_layering_ele_list_type(layer_tbl1)
 !
       call set_start_ele_4_dynamic(ele_grp1%num_grp, ele_grp1%num_item, &
-     &    ele_grp1%grp_name, mat_istack, mat_item,                      &
+     &    ele_grp1%grp_name, ele_grp1%istack_grp, mat_item,             &
      &    layer_tbl1%n_layer_d)
 !
       call count_ele_4_dynamic_by_start                                 &

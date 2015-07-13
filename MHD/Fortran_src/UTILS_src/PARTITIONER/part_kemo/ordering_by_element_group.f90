@@ -94,8 +94,8 @@
         do igrp = 1, nele_grp_ordering
           jgrp = igrp_ele_ordering(igrp)
           if (jgrp .gt. 0) then
-            jst = mat_istack(jgrp-1) + 1
-            jed = mat_istack(jgrp)
+            jst = ele_grp1%istack_grp(jgrp-1) + 1
+            jed = ele_grp1%istack_grp(jgrp)
             do jnum = jst, jed
               iele = mat_item(jnum)
               if(imark_ele(iele) .gt. 0) then

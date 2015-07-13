@@ -34,11 +34,12 @@
       write(id_file,'(a)') '! 4.2. Element group'
 !
       write(id_file,'(i16)') ele_grp1%num_grp
-      write(id_file,'(6i16)')  (mat_istack(i),i=1,ele_grp1%num_grp)
+      write(id_file,'(6i16)')                                           &
+     &         (ele_grp1%istack_grp(i),i=1,ele_grp1%num_grp)
 !
       do k = 1, ele_grp1%num_grp
-        ist = mat_istack(k-1)+1
-        ied = mat_istack(k)
+        ist = ele_grp1%istack_grp(k-1)+1
+        ied = ele_grp1%istack_grp(k)
         write(id_file,*) trim(ele_grp1%grp_name(k))
         write(id_file,'(6i16)') (mat_item(i),i=ist,ied)
       end do
@@ -93,17 +94,19 @@
       integer(kind = kint) :: i, ist, ied, inum
 !
 !
-      mat_istack(0) = 0
+      ele_grp1%istack_grp(0) = 0
       do i = 1, num_ele_grp_csp
-        mat_istack(i) = mat_istack(i-1)
+        ele_grp1%istack_grp(i) = ele_grp1%istack_grp(i-1)
         ist = istack_ele_grp_layer_csp(i-1) + 1
         ied = istack_ele_grp_layer_csp(i)
         do inum = ist, ied
           if      (id_ele_grp_layer_csp(inum) .eq. 0) then
-            mat_istack(i) = mat_istack(i) + numele_cube
+            ele_grp1%istack_grp(i) = ele_grp1%istack_grp(i)             &
+     &                              + numele_cube
           else if (id_ele_grp_layer_csp(inum) .gt. 0) then
             if ( mod(id_ele_grp_layer_csp(inum),nskip_r) .eq. 0 ) then
-              mat_istack(i) = mat_istack(i) + numele_sf
+              ele_grp1%istack_grp(i) = ele_grp1%istack_grp(i)           &
+     &                                + numele_sf
             end if
           end if
         end do
@@ -122,7 +125,7 @@
 !
 !
       do i = 1, num_ele_grp_csp
-        icou = mat_istack(i-1)
+        icou = ele_grp1%istack_grp(i-1)
 !
         ist = istack_ele_grp_layer_csp(i-1) + 1
         ied = istack_ele_grp_layer_csp(i)

@@ -61,7 +61,8 @@
 !
       call allocate_material_param_smp
 !
-      call set_group_size_4_smp(np_smp, ele_grp1%num_grp, mat_istack,   &
+      call set_group_size_4_smp                                         &
+     &   (np_smp, ele_grp1%num_grp, ele_grp1%istack_grp,                &
      &    imat_smp_stack, ele_grp1%max_grp_smp)
 !
       end subroutine count_mat_4_sheard_para

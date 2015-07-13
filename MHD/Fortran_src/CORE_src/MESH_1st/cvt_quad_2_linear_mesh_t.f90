@@ -138,7 +138,7 @@
 !
       call convert_ele_group_2_linear                                   &
      &   (ele_grp1%num_grp, ele_grp1%num_item, ele_grp1%grp_name,       &
-     &    mat_istack, mat_item, group_l%ele_grp%num_item,     &
+     &    ele_grp1%istack_grp, mat_item, group_l%ele_grp%num_item,      &
      &    group_l%ele_grp%grp_name, group_l%ele_grp%istack_grp,         &
      &    group_l%ele_grp%item_grp)
 !

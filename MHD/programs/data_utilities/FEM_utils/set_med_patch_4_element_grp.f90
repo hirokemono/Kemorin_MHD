@@ -83,12 +83,13 @@
      &            = imat_smp_stack(ip+(igrp-1)*np_smp)                  &
      &             - imat_smp_stack((igrp-1)*np_smp)
         end do
-        ele_search%num_search = mat_istack(igrp) - mat_istack(igrp-1)
+        ele_search%num_search = ele_grp1%istack_grp(igrp)               &
+     &                         - ele_grp1%istack_grp(igrp-1)
 !
         call alloc_psf_search_list(ele_search)
         do inum = 1, ele_search%num_search
           ele_search%id_search(inum)                                    &
-     &               = mat_item(inum+mat_istack(igrp-1))
+     &               = mat_item(inum+ele_grp1%istack_grp(igrp-1))
         end do
         call dealloc_psf_search_list(ele_search)
         call dealloc_num_psf_search_list(ele_search)
@@ -134,8 +135,8 @@
 !
 !
       npatch = 0
-      ist = mat_istack(igrp-1) + 1
-      ied = mat_istack(igrp)
+      ist = ele_grp1%istack_grp(igrp-1) + 1
+      ied = ele_grp1%istack_grp(igrp)
       do inum = ist, ied
         iele = mat_item(inum)
         ie_1ele(1:8) = ie(iele,1:8)
@@ -178,8 +179,8 @@
 !
 !
       icou = 0
-      ist = mat_istack(igrp-1) + 1
-      ied = mat_istack(igrp)
+      ist = ele_grp1%istack_grp(igrp-1) + 1
+      ied = ele_grp1%istack_grp(igrp)
       do inum = ist, ied
         iele = mat_item(inum)
         ie_1ele(1:8) =   ie(iele,1:8)

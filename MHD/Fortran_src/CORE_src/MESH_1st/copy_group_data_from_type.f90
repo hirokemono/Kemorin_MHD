@@ -102,7 +102,7 @@
 !
         ele_grp1%grp_name(1:ele_grp1%num_grp)                           &
      &          =    ele_grp%grp_name(1:ele_grp1%num_grp)
-        mat_istack(0:ele_grp1%num_grp)               &
+        ele_grp1%istack_grp(0:ele_grp1%num_grp)                         &
      &          =  ele_grp%istack_grp(0:ele_grp1%num_grp)
         mat_item(1:ele_grp1%num_item)                &
      &          = ele_grp%item_grp(1:ele_grp1%num_item)
@@ -164,9 +164,9 @@
         if(ele_grp%grp_name(i) .ne. ele_grp1%grp_name(i))               &
      &       write(*,*) 'mat_name(i)', my_rank, i,                      &
      &       ele_grp%grp_name(i), ele_grp1%grp_name(i)
-        if(ele_grp%istack_grp(i) .ne. mat_istack(i))                    &
+        if(ele_grp%istack_grp(i) .ne. ele_grp1%istack_grp(i))           &
      &       write(*,*) 'mat_istack(i)', my_rank, i,                    &
-     &       ele_grp%istack_grp(i), mat_istack(i)
+     &       ele_grp%istack_grp(i), ele_grp1%istack_grp(i)
       end do
       do i = 1, ele_grp1%num_item
         if(ele_grp%item_grp(i) .ne. mat_item(i))                        &

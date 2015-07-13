@@ -128,9 +128,9 @@
 !
 !
       new_elegrp%grp_name(1:ele_grp1%num_grp)                           &
-     &      =   ele_grp1%grp_name(1:ele_grp1%num_grp)
+     &      = ele_grp1%grp_name(1:ele_grp1%num_grp)
       new_elegrp%istack_grp(0:ele_grp1%num_grp)                         &
-     &      = mat_istack(0:ele_grp1%num_grp)
+     &      = ele_grp1%istack_grp(0:ele_grp1%num_grp)
 !
       icou = ele_grp1%num_grp
       do i = 1, num_ele_grp1
@@ -293,7 +293,7 @@
 !
       ele_grp1%grp_name(1:ele_grp1%num_grp)                             &
      &        =    new_elegrp%grp_name(1:ele_grp1%num_grp)
-      mat_istack(0:ele_grp1%num_grp)                                    &
+      ele_grp1%istack_grp(0:ele_grp1%num_grp)                           &
      &        =  new_elegrp%istack_grp(0:ele_grp1%num_grp)
       mat_item(1:ele_grp1%num_item)                  &
      &        = new_elegrp%item_grp(1:ele_grp1%num_item)

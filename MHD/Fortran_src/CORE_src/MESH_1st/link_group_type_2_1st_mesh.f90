@@ -48,7 +48,7 @@
       ele_grp%num_item = ele_grp1%num_item
 !
       ele_grp%grp_name =>   ele_grp1%grp_name
-      ele_grp%istack_grp => mat_istack
+      ele_grp%istack_grp => ele_grp1%istack_grp
       ele_grp%item_grp =>   mat_item
 !
       end subroutine link_element_group_to_type

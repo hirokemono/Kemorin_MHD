@@ -67,8 +67,8 @@
 !
         do j = 1,  num_refine_type
           i = id_refined_ele_grp(j)
-          ist = mat_istack(i-1) + 1
-          ied = mat_istack(i)
+          ist = ele_grp1%istack_grp(i-1) + 1
+          ied = ele_grp1%istack_grp(i)
           do inum = ist, ied
             iele = mat_item(inum)
             iflag_refine_ele(iele) = iflag_refine_type(j)

@@ -102,8 +102,8 @@
       new_ele_grp%istack_grp(0) = 0
       do ig = 1, ele_grp1%num_grp
         new_ele_grp%istack_grp(ig) = new_ele_grp%istack_grp(ig-1)
-        ist = mat_istack(ig-1) + 1
-        ied = mat_istack(ig)
+        ist = ele_grp1%istack_grp(ig-1) + 1
+        ied = ele_grp1%istack_grp(ig)
         do inum = ist, ied
           iele = mat_item(inum)
 !
@@ -130,8 +130,8 @@
 !
       icou = 0
       do ig = 1, ele_grp1%num_grp
-        ist = mat_istack(ig-1) + 1
-        ied = mat_istack(ig)
+        ist = ele_grp1%istack_grp(ig-1) + 1
+        ied = ele_grp1%istack_grp(ig)
         do inum = ist, ied
           iele = mat_item(inum)
 !

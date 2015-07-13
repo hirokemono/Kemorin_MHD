@@ -37,8 +37,8 @@
       do i = 1, ele_grp1%num_grp
         new_ele_grp%istack_grp(i) = new_ele_grp%istack_grp(i-1)
 !
-        ist = mat_istack(i-1) + 1
-        ied = mat_istack(i)
+        ist = ele_grp1%istack_grp(i-1) + 1
+        ied = ele_grp1%istack_grp(i)
         do inum = ist, ied
           iele = mat_item(inum)
           new_ele_grp%istack_grp(i) = new_ele_grp%istack_grp(i)         &
@@ -66,8 +66,8 @@
       do i = 1, ele_grp1%num_grp
         icou = new_ele_grp%istack_grp(i-1)
 !
-        ist = mat_istack(i-1) + 1
-        ied = mat_istack(i)
+        ist = ele_grp1%istack_grp(i-1) + 1
+        ied = ele_grp1%istack_grp(i)
         do inum = ist, ied
           iele = mat_item(inum)
           jst = istack_ele_refined(iele-1) + 1

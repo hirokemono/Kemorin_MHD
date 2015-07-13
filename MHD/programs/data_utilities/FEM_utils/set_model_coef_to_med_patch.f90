@@ -36,8 +36,8 @@
       call find_start_element_group                                     &
      &   (ele_grp1%num_grp, ele_grp1%grp_name)
 !
-      numele_psf = mat_istack(iend_ele_grp_drmd)                        &
-     &            - mat_istack(istart_ele_grp_drmd-1)
+      numele_psf = ele_grp1%istack_grp(iend_ele_grp_drmd)               &
+     &            - ele_grp1%istack_grp(istart_ele_grp_drmd-1)
       numnod_psf = 3 * numele_psf
 !
       nfield_psf =   num_comp
@@ -53,20 +53,20 @@
         write(psf_data_name(i),'(a)') comp_name(i)
       end do
 !
-      ist = mat_istack(istart_ele_grp_drmd-1)
+      ist = ele_grp1%istack_grp(istart_ele_grp_drmd-1)
       do i = 1, numele_psf
         inod_psf(i) = i
         iele_psf(i) = i
         ie_psf(i,1:3) = ie_egrp(i+ist,1:3)                              &
-     &                 - 3*mat_istack(istart_ele_grp_drmd-1)
+     &                 - 3*ele_grp1%istack_grp(istart_ele_grp_drmd-1)
       end do
 !
-      ist_nod = 3*mat_istack(istart_ele_grp_drmd-1)
+      ist_nod = 3*ele_grp1%istack_grp(istart_ele_grp_drmd-1)
       icou = 0
       do inum = 1, num_ele_grp_drmd
         igrp = inum + istart_ele_grp_drmd - 1
-        ist = 3*mat_istack(igrp-1) + 1
-        ied = 3*mat_istack(igrp)
+        ist = 3*ele_grp1%istack_grp(igrp-1) + 1
+        ied = 3*ele_grp1%istack_grp(igrp)
         do inod = ist, ied
           icou = icou + 1
           inod_psf(icou) = icou
@@ -104,12 +104,12 @@
         write(psf_data_name(i),'(a)') comp_name(i)
       end do
 !
-      ist_nod = 3*mat_istack(istart_ele_grp_drmd-1)
+      ist_nod = 3*ele_grp1%istack_grp(istart_ele_grp_drmd-1)
       icou = 0
       do inum = 1, num_ele_grp_drmd
         igrp = inum + istart_ele_grp_drmd - 1
-        ist = 3*mat_istack(igrp-1) + 1
-        ied = 3*mat_istack(igrp)
+        ist = 3*ele_grp1%istack_grp(igrp-1) + 1
+        ied = 3*ele_grp1%istack_grp(igrp)
         do inod = ist, ied
           icou = icou + 1
           inod_psf(icou) = icou

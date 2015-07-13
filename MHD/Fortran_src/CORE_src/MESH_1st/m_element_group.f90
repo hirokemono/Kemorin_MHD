@@ -26,14 +26,14 @@
 !>  Structure for node and element group
       type(group_data), save :: ele_grp1
 !
-!ele_grp1%grp_name
+!ele_grp1%istack_grp
 !
 !      integer (kind=kint) :: num_mat
 !<      number of element group
 !      integer (kind=kint) :: num_mat_bc
 !<      total number of nodes for element group
 ! 
-      integer (kind=kint), allocatable, target :: mat_istack(:)
+!      integer (kind=kint), allocatable, target :: mat_istack(:)
 !<      end address of each element group
       integer (kind=kint), allocatable, target :: mat_item(:)
 !<      local element ID for element group
@@ -57,7 +57,7 @@
 !
       subroutine allocate_material_data
 !
-       allocate(mat_istack(0:ele_grp1%num_grp))
+       allocate(ele_grp1%istack_grp(0:ele_grp1%num_grp))
        allocate(ele_grp1%grp_name(ele_grp1%num_grp))
        allocate(mat_item(ele_grp1%num_item))
 !
@@ -69,7 +69,7 @@
 !
       subroutine clear_material_data
 !
-      mat_istack = 0
+      ele_grp1%istack_grp = 0
       if(ele_grp1%num_item .gt. 0) mat_item = 0
 !
       end subroutine clear_material_data
@@ -78,7 +78,7 @@
 !
       subroutine deallocate_material_data
 !
-       deallocate(mat_istack)
+       deallocate(ele_grp1%istack_grp)
        deallocate(ele_grp1%grp_name)
        deallocate(mat_item)
 !

@@ -54,7 +54,7 @@
       new_ele_grp%istack_grp(0) = 0
       do i = 1, ele_grp1%num_grp
          new_ele_grp%istack_grp(i) = new_ele_grp%istack_grp(i-1)
-         do inum = mat_istack(i-1)+1, mat_istack(i)
+         do inum = ele_grp1%istack_grp(i-1)+1, ele_grp1%istack_grp(i)
            iele = mat_item(inum)
            if ( mark_new_ele(iele) .ne. 0 ) then
              new_ele_grp%istack_grp(i) = new_ele_grp%istack_grp(i) + 1
@@ -76,7 +76,7 @@
 !
       icou = 0
       do i = 1, ele_grp1%num_grp
-         do inum = mat_istack(i-1)+1, mat_istack(i)
+         do inum = ele_grp1%istack_grp(i-1)+1, ele_grp1%istack_grp(i)
            iele = mat_item(inum)
            if ( mark_new_ele(iele) .ne. 0 ) then
              icou = icou + 1
