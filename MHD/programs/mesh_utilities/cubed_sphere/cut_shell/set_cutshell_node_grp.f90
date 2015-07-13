@@ -79,7 +79,7 @@
       do i = 1, nod_grp1%num_grp
          new_nod_grp%istack_grp(i) = new_nod_grp%istack_grp(i-1)
          do inum = nod_grp1%istack_grp(i-1)+1, nod_grp1%istack_grp(i)
-           inod = bc_item(inum)
+           inod = nod_grp1%item_grp(inum)
            if ( mark_new_node(inod) .ne. 0 ) then
              new_nod_grp%istack_grp(i) = new_nod_grp%istack_grp(i) + 1
            end if
@@ -100,7 +100,7 @@
       icou = 0
       do i = 1, nod_grp1%num_grp
          do inum = nod_grp1%istack_grp(i-1)+1, nod_grp1%istack_grp(i)
-           inod = bc_item(inum)
+           inod = nod_grp1%item_grp(inum)
            if ( mark_new_node(inod) .ne. 0 ) then
              icou = icou + 1
              new_nod_grp%item_grp(icou) = mark_new_node(inod)

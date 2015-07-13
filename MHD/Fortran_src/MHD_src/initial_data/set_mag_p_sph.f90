@@ -46,7 +46,7 @@
       do k=1, nod_grp1%istack_grp(i)-nod_grp1%istack_grp(i-1)
        ii=ii+1
 !
-       inod = bc_item(k+nod_grp1%istack_grp(i-1))
+       inod = nod_grp1%item_grp(k+nod_grp1%istack_grp(i-1))
        ibc_mag_p_id(ii)=inod
 !
        call dschmidt(colatitude(inod))

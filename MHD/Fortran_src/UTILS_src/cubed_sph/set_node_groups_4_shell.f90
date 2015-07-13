@@ -51,7 +51,7 @@
         ist = nod_grp1%istack_grp(k-1) + 1
         ied = nod_grp1%istack_grp(k)
         write(id_file,*) trim(nod_grp1%grp_name(k))
-        write(id_file,'(6i16)') bc_item(ist:ied)
+        write(id_file,'(6i16)') nod_grp1%item_grp(ist:ied)
       end do
 !
       end subroutine write_node_group
@@ -239,14 +239,14 @@
      &      + (num_hemi-1)*(num_hemi-2) / 2                             &
      &      + num_hemi / 2
       i = nod_grp1%istack_grp(0) + 1
-      bc_item(i) = inod0
+      nod_grp1%item_grp(i) = inod0
 !
 !  North pole at CMB
 !
       inod0 = numnod_cube + numnod_sf * (nr_cmb/nskip_r + 1)            &
      &      - (num_hemi+1)*(num_hemi) / 2 - num_hemi/2
       i = nod_grp1%istack_grp(1) + 1
-      bc_item(i) = inod0
+      nod_grp1%item_grp(i) = inod0
 !
       end subroutine set_nodal_item_center
 !
@@ -274,7 +274,7 @@
 !
             do j = 1, numnod_cube
               icou = icou + 1
-              bc_item(icou) = j
+              nod_grp1%item_grp(icou) = j
             end do
 !
           else if (id_nod_grp_layer_csp(inum) .gt. 0) then
@@ -284,7 +284,7 @@
      &               * (id_nod_grp_layer_csp(inum)/nskip_r - 1)
               do j = 1, numnod_sf
                 icou = icou + 1
-                bc_item(icou) = inod0 + j
+                nod_grp1%item_grp(icou) = inod0 + j
               end do
             end if
 !
@@ -320,11 +320,11 @@
 !
             do j = 1, numnod_cube
               icou = icou + 1
-              bc_item(icou) = j
+              nod_grp1%item_grp(icou) = j
             end do
             do j = 1, numedge_cube
               icou = icou + 1
-              bc_item(icou) = numnod + j
+              nod_grp1%item_grp(icou) = numnod + j
             end do
 !
           else if (id_nod_grp_layer_csp(inum) .gt. 0) then
@@ -336,11 +336,11 @@
      &                      * (id_nod_grp_layer_csp(inum)-2)
             do j = 1, numnod_sf
               icou = icou + 1
-              bc_item(icou) = inod0 + j
+              nod_grp1%item_grp(icou) = inod0 + j
             end do
             do j = 1, numedge_sf
               icou = icou + 1
-              bc_item(icou) = inod9 + j
+              nod_grp1%item_grp(icou) = inod9 + j
             end do
 !
           else if (id_nod_grp_layer_csp(inum) .lt. 0) then
@@ -350,7 +350,7 @@
      &                      * (-id_nod_grp_layer_csp(inum)-1)
             do j = 1, numnod_sf
               icou = icou + 1
-              bc_item(icou) = inod17 + j
+              nod_grp1%item_grp(icou) = inod17 + j
             end do
 !
           end if

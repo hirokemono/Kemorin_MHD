@@ -269,12 +269,12 @@
       do i = 1, nod_grp1%num_grp
         if (nod_grp1%grp_name(i) .eq. 'ICB') then
           do inum = nod_grp1%istack_grp(i-1)+1, nod_grp1%istack_grp(i)
-            inod = bc_item(inum)
+            inod = nod_grp1%item_grp(inum)
             r_ICB = min(r_ICB,radius(inod))
           end do
         else if (nod_grp1%grp_name(i) .eq. 'CMB') then
           do inum = nod_grp1%istack_grp(i-1)+1, nod_grp1%istack_grp(i)
-            inod = bc_item(inum)
+            inod = nod_grp1%item_grp(inum)
             r_CMB = max(r_CMB,radius(inod))
           end do
         end if

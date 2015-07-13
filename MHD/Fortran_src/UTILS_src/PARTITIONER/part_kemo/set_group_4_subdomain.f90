@@ -45,7 +45,7 @@
         ist = nod_grp1%istack_grp(ig-1) + 1
         ied = nod_grp1%istack_grp(ig)
         do inum = ist, ied
-          inod = bc_item(inum)
+          inod = nod_grp1%item_grp(inum)
 !
           if (inod_local_part(inod) .gt. 0) then
             new_nod_grp%istack_grp(ig) = new_nod_grp%istack_grp(ig) + 1
@@ -73,7 +73,7 @@
         ist = nod_grp1%istack_grp(ig-1) + 1
         ied = nod_grp1%istack_grp(ig)
         do inum = ist, ied
-          inod = bc_item(inum)
+          inod = nod_grp1%item_grp(inum)
 !
           if (inod_local_part(inod) .gt. 0) then
             icou = icou + 1

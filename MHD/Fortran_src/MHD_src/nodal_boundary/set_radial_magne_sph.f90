@@ -44,7 +44,7 @@
 !
       do k=1, nod_grp1%istack_grp(i)-nod_grp1%istack_grp(i-1)
 !
-       inod = bc_item(k+nod_grp1%istack_grp(i-1))
+       inod = nod_grp1%item_grp(k+nod_grp1%istack_grp(i-1))
 !
        do nd = 1, 3
          l_f(nd) = l_f(nd) + 1

@@ -83,7 +83,7 @@
      &     = nod_grp%grp_name(1:nod_grp1%num_grp)
         nod_grp1%istack_grp(0:nod_grp1%num_grp)                         &
      &     = nod_grp%istack_grp(0:nod_grp1%num_grp)
-        bc_item(1:nod_grp1%num_item)                                    &
+        nod_grp1%item_grp(1:nod_grp1%num_item)                          &
      &     = nod_grp%item_grp(1:nod_grp1%num_item)
       end if
 !
@@ -116,9 +116,9 @@
      &       nod_grp%istack_grp(i), nod_grp1%istack_grp(i)
       end do
       do i = 1, nod_grp1%num_item
-        if(nod_grp%item_grp(i) .ne. bc_item(i))                         &
+        if(nod_grp%item_grp(i) .ne. nod_grp1%item_grp(i))               &
      &       write(*,*) 'bc_item(i)', my_rank, i,                       &
-     &       nod_grp%item_grp(i), bc_item(i)
+     &       nod_grp%item_grp(i), nod_grp1%item_grp(i)
       end do
 !
       end subroutine compare_nod_grp_type_vs_1st

@@ -25,7 +25,7 @@
 !>  Structure for node and node group
       type(group_data), save :: nod_grp1
 !
-!nod_grp1%grp_name
+!nod_grp1%item_grp
 !
 !      integer (kind=kint) :: num_bc
 !<      number of node group
@@ -34,7 +34,7 @@
 !
 !      integer (kind=kint), allocatable, target :: bc_istack(:)
 !<      end address of each node group
-      integer (kind=kint), allocatable, target :: bc_item(:)
+!      integer (kind=kint), allocatable, target :: bc_item(:)
 !<      local node ID for node group
 !
 !      character (len=kchara), allocatable, target :: bc_name(:)
@@ -59,7 +59,7 @@
 !
        allocate(nod_grp1%istack_grp(0:nod_grp1%num_grp))
        allocate(nod_grp1%grp_name(nod_grp1%num_grp))
-       allocate(bc_item(nod_grp1%num_item))
+       allocate(nod_grp1%item_grp(nod_grp1%num_item))
 !
       call clear_boundary_data
 !
@@ -70,7 +70,7 @@
       subroutine clear_boundary_data
 !
        nod_grp1%istack_grp=0
-       bc_item=0
+       nod_grp1%item_grp=0
 !
       end subroutine clear_boundary_data
 !
@@ -80,7 +80,7 @@
 !
        deallocate(nod_grp1%istack_grp)
        deallocate(nod_grp1%grp_name)
-       deallocate(bc_item)
+       deallocate(nod_grp1%item_grp)
 !
       end subroutine deallocate_boundary_data
 !

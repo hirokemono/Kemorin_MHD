@@ -68,7 +68,7 @@
         ist = nod_grp1%istack_grp(i-1) + 1
         ied = nod_grp1%istack_grp(i)
         do inum = ist, ied
-          inod = bc_item(inum)
+          inod = nod_grp1%item_grp(inum)
           inod_mark(inod) = 1
         end do
 !
@@ -138,7 +138,7 @@
         ied = nod_grp1%istack_grp(i)
         do inum = ist, ied
           icou = icou + 1
-          inod = bc_item(inum)
+          inod = nod_grp1%item_grp(inum)
           inod_mark(inod) = 1
           new_nod_grp%item_grp(icou) = inod
         end do

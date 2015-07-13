@@ -41,7 +41,7 @@
 !
       if (nod_grp1%num_grp .gt. 0) then
         do is= 1, nod_grp1%istack_grp(nod_grp1%num_grp)
-          in= bc_item(is)
+          in= nod_grp1%item_grp(is)
           if (in .le. 0) call ERROR_EXIT(ierr_grp,ione)
           if (in .gt. numnod) call ERROR_EXIT(ierr_ov_grp,ione)
         end do

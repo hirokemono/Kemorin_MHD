@@ -46,19 +46,19 @@
       do k=1, nod_grp1%istack_grp(i)-nod_grp1%istack_grp(i-1)
         ii=ii+1
 !
-        ibc_id(ii)=bc_item(k+nod_grp1%istack_grp(i-1))
+        ibc_id(ii)=nod_grp1%item_grp(k+nod_grp1%istack_grp(i-1))
         bc_id_apt(ii)=bc_magnitude
 !
       end do
 !
       if ( bc_magnitude .ne. 0.0d0 ) then
         do k=1, nod_grp1%istack_grp(i)-nod_grp1%istack_grp(i-1)
-         ibc(    bc_item(k+nod_grp1%istack_grp(i-1)) ) = 1
+         ibc(nod_grp1%item_grp(k+nod_grp1%istack_grp(i-1)) ) = 1
         end do
       end if
 !
       do k=1, nod_grp1%istack_grp(i)-nod_grp1%istack_grp(i-1)
-        ibc2(    bc_item(k+nod_grp1%istack_grp(i-1)) ) = 1
+        ibc2(nod_grp1%item_grp(k+nod_grp1%istack_grp(i-1)) ) = 1
       end do
 !
       end subroutine set_nod_bc_from_ctl
@@ -93,11 +93,11 @@
               ja = istack_bc_data_IO(ia-1) + k
               ii=ii+1
 !
-              ibc_id(ii)=bc_item(k+nod_grp1%istack_grp(i-1))
+              ibc_id(ii)=nod_grp1%item_grp(k+nod_grp1%istack_grp(i-1))
               bc_id_apt(ii)=boundary_field_IO(ja)
 !
-              ibc(    bc_item(k+nod_grp1%istack_grp(i-1)) ) = 1
-              ibc2(    bc_item(k+nod_grp1%istack_grp(i-1)) ) = 1
+              ibc( nod_grp1%item_grp(k+nod_grp1%istack_grp(i-1)) ) = 1
+              ibc2(nod_grp1%item_grp(k+nod_grp1%istack_grp(i-1)) ) = 1
             end do
 !
           end if

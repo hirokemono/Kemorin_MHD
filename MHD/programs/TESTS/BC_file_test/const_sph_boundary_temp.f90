@@ -88,7 +88,7 @@
       ist = nod_grp1%istack_grp(igrp-1)
       num = nod_grp1%istack_grp(igrp  ) - nod_grp1%istack_grp(igrp-1)
       do inum = 1, num
-        inod = bc_item(ist+inum)
+        inod = nod_grp1%item_grp(ist+inum)
 !
         call dschmidt(colatitude(inod))
         call spheric(longitude(inod))

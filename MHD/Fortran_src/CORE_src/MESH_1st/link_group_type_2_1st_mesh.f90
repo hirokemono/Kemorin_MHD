@@ -31,7 +31,7 @@
 !
       nod_grp%grp_name =>  nod_grp1%grp_name
       nod_grp%istack_grp => nod_grp1%istack_grp
-      nod_grp%item_grp =>   bc_item
+      nod_grp%item_grp =>   nod_grp1%item_grp
 !
       end subroutine link_node_group_to_type
 !

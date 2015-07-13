@@ -167,9 +167,9 @@
         do inum = 1, num_monitor
           if (nod_grp1%grp_name(i) .eq. monitor_grp(inum)) then
             do k= nod_grp1%istack_grp(i-1)+1, nod_grp1%istack_grp(i)
-              if( bc_item(k) .le. internal_node ) then 
+              if( nod_grp1%item_grp(k) .le. internal_node ) then 
                 num_monitor_local = num_monitor_local + 1
-                monitor_local(num_monitor_local) = bc_item(k)
+                monitor_local(num_monitor_local) = nod_grp1%item_grp(k)
               end if
             end do
             exit
