@@ -77,8 +77,9 @@
 !      end if
 !
 !
-      call marking_by_layers(numele, num_mat, num_mat_bc,               &
-     &          mat_istack, mat_name, mat_item, mat_flag_mhd(1) )
+      call marking_by_layers                                            &
+     &   (numele, ele_grp1%num_grp, ele_grp1%num_item,                  &
+     &    mat_istack, mat_name, mat_item, mat_flag_mhd(1) )
 !
 !  set list vector for ordering
 !

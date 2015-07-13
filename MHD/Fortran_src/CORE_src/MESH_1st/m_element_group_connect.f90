@@ -73,10 +73,11 @@
 !
 !
       call allocate_imark_4_grp(numsurf)
-      call alloc_num_other_grp(num_mat, ele_grp_data1%surf)
+      call alloc_num_other_grp(ele_grp1%num_grp, ele_grp_data1%surf)
 !
       call count_nod_4_ele_grp(numsurf, numele, nsurf_4_ele, isf_4_ele, &
-     &   num_mat, num_mat_bc, mat_istack, mat_item,                     &
+     &   ele_grp1%num_grp, ele_grp1%num_item, mat_istack, &
+     &   mat_item,                     &
      &   ele_grp_data1%surf%ntot_e_grp, ele_grp_data1%surf%nitem_e_grp, &
      &   ele_grp_data1%surf%istack_e_grp, imark_4_grp)
 !
@@ -84,7 +85,8 @@
       call alloc_item_other_grp(ele_grp_data1%surf)
 !
       call set_nod_4_ele_grp(numsurf, numele, nsurf_4_ele, isf_4_ele,   &
-     &    num_mat, num_mat_bc, mat_istack, mat_item,                    &
+     &    ele_grp1%num_grp, ele_grp1%num_item, mat_istack,       &
+     &    mat_item,                    &
      &    ele_grp_data1%surf%ntot_e_grp,                                &
      &    ele_grp_data1%surf%nitem_e_grp,                               &
      &    ele_grp_data1%surf%istack_e_grp,                              &
@@ -107,10 +109,12 @@
 !
 !
       call allocate_imark_4_grp(numedge)
-      call alloc_num_other_grp(num_mat, ele_grp_data1%edge)
+      call alloc_num_other_grp(ele_grp1%num_grp, ele_grp_data1%edge)
 !
-      call count_nod_4_ele_grp(numedge, numele, nedge_4_ele,            &
-     &   iedge_4_ele, num_mat, num_mat_bc, mat_istack, mat_item,        &
+      call count_nod_4_ele_grp                                          &
+     &  (numedge, numele, nedge_4_ele, iedge_4_ele,                     &
+     &   ele_grp1%num_grp, ele_grp1%num_item,      &
+     &   mat_istack, mat_item,        &
      &   ele_grp_data1%edge%ntot_e_grp, ele_grp_data1%edge%nitem_e_grp, &
      &   ele_grp_data1%edge%istack_e_grp, imark_4_grp)
 !
@@ -118,7 +122,7 @@
       call alloc_item_other_grp(ele_grp_data1%edge)
 !
       call set_nod_4_ele_grp(numedge, numele, nedge_4_ele, iedge_4_ele, &
-     &    num_mat, num_mat_bc, mat_istack, mat_item,                    &
+     &    ele_grp1%num_grp, ele_grp1%num_item, mat_istack, mat_item,    &
      &    ele_grp_data1%edge%ntot_e_grp,                                &
      &    ele_grp_data1%edge%nitem_e_grp,                               &
      &    ele_grp_data1%edge%istack_e_grp,                              &
@@ -140,10 +144,10 @@
 !
 !
       call allocate_imark_4_grp(numnod)
-      call alloc_num_other_grp(num_mat, ele_grp_data1%node)
+      call alloc_num_other_grp(ele_grp1%num_grp, ele_grp_data1%node)
 !
       call count_nod_4_ele_grp(numnod, numele, nnod_4_ele, ie,          &
-     &   num_mat, num_mat_bc, mat_istack, mat_item,                     &
+     &   ele_grp1%num_grp, ele_grp1%num_item, mat_istack, mat_item,     &
      &   ele_grp_data1%node%ntot_e_grp, ele_grp_data1%node%nitem_e_grp, &
      &   ele_grp_data1%node%istack_e_grp, imark_4_grp)
 !
@@ -151,7 +155,7 @@
       call alloc_item_other_grp(ele_grp_data1%node)
 !
       call set_nod_4_ele_grp(numnod, numele, nnod_4_ele, ie,            &
-     &    num_mat, num_mat_bc, mat_istack, mat_item,                    &
+     &    ele_grp1%num_grp, ele_grp1%num_item, mat_istack, mat_item,    &
      &    ele_grp_data1%node%ntot_e_grp,                                &
      &    ele_grp_data1%node%nitem_e_grp,                               &
      &    ele_grp_data1%node%istack_e_grp,                              &

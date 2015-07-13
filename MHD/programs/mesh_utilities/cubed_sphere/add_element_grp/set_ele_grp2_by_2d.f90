@@ -101,7 +101,7 @@
       integer(kind = kint) :: igrp
 !
 !
-      ngrp_new_ele = num_mat
+      ngrp_new_ele = ele_grp1%num_grp
       do igrp = 1, ngrp_added
         if(nitem_added_gl(igrp) .gt. 0) ngrp_new_ele = ngrp_new_ele + 1
       end do
@@ -127,10 +127,12 @@
       integer(kind = kint) :: i, j, igrp, icou
 !
 !
-      new_elegrp%grp_name(1:num_mat) =   mat_name(1:num_mat)
-      new_elegrp%istack_grp(0:num_mat) = mat_istack(0:num_mat)
+      new_elegrp%grp_name(1:ele_grp1%num_grp)                           &
+     &      =   mat_name(1:ele_grp1%num_grp)
+      new_elegrp%istack_grp(0:ele_grp1%num_grp)                         &
+     &      = mat_istack(0:ele_grp1%num_grp)
 !
-      icou = num_mat
+      icou = ele_grp1%num_grp
       do i = 1, num_ele_grp1
         do j = 1, num_ele_grp2
           igrp = j + (i-1)*num_ele_grp2
@@ -228,11 +230,12 @@
       real(kind = kreal) :: max_prev_1, max_prev_2
 !
 !
-      new_elegrp%item_grp(1:num_mat_bc) = mat_item(1:num_mat_bc)
+      new_elegrp%item_grp(1:ele_grp1%num_item)                          &
+     &         = mat_item(1:ele_grp1%num_item)
 !
       max_prev_1 = 1.0e30
       item_ed = 1
-      icou = num_mat
+      icou = ele_grp1%num_grp
       do i = 1, num_ele_grp1
         call set_start_end_egrping(ref_ele1,                            &
      &      dminmax_grp_1(i,1), dminmax_grp_1(i,2), max_prev_1,         &
@@ -275,7 +278,7 @@
       integer(kind = kint) :: igrp, ist, ied
 !
 !
-      do igrp = num_mat+1, new_elegrp%num_grp
+      do igrp = ele_grp1%num_grp+1, new_elegrp%num_grp
         ist = new_elegrp%istack_grp(igrp-1) + 1
         ied = new_elegrp%istack_grp(igrp)
         call quicksort_int(new_elegrp%num_item, new_elegrp%item_grp,    &
@@ -284,13 +287,16 @@
 !
       call deallocate_material_data
 !
-      num_mat =    new_elegrp%num_grp
-      num_mat_bc = new_elegrp%num_item
+      ele_grp1%num_grp =    new_elegrp%num_grp
+      ele_grp1%num_item = new_elegrp%num_item
       call allocate_material_data
 !
-      mat_name(1:num_mat) =    new_elegrp%grp_name(1:num_mat)
-      mat_istack(0:num_mat) =  new_elegrp%istack_grp(0:num_mat)
-      mat_item(1:num_mat_bc) = new_elegrp%item_grp(1:num_mat_bc)
+      mat_name(1:ele_grp1%num_grp)                                      &
+     &        =    new_elegrp%grp_name(1:ele_grp1%num_grp)
+      mat_istack(0:ele_grp1%num_grp)                                    &
+     &        =  new_elegrp%istack_grp(0:ele_grp1%num_grp)
+      mat_item(1:ele_grp1%num_item)                  &
+     &        = new_elegrp%item_grp(1:ele_grp1%num_item)
 !
       end subroutine ordering_each_added_egrp
 !

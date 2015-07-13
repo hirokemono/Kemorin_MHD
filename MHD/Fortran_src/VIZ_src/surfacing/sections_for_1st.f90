@@ -78,7 +78,7 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_element_group
-      use m_surface_group
+      use m_group_data
       use m_surface_group_connect
       use m_node_phys_data
       use m_cross_section
@@ -90,7 +90,8 @@
      &    iedge_4_sf, iedge_4_ele, nod_comm, edge_comm,                 &
      &    interior_ele, xx, inod_smp_stack, iele_smp_stack,             &
      &    isurf_smp_stack, iedge_smp_stack,                             &
-     &    num_mat, num_mat_bc, mat_name, mat_istack, mat_item,          &
+     &    ele_grp1%num_grp, ele_grp1%num_item, mat_name,  &
+     &    mat_istack, mat_item,          &
      &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%grp_name,          &
      &    sf_grp1%istack_grp, sf_grp1%item_sf_grp,                      &
      &    sf_grp_nod1%ntot_node_sf_grp, sf_grp_nod1%inod_stack_sf_grp,  &
@@ -114,7 +115,8 @@
      &          ie_edge, isf_4_ele, iedge_4_sf, interior_ele,           &
      &          inod_smp_stack, iele_smp_stack,                         &
      &          isurf_smp_stack, iedge_smp_stack,                       &
-     &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,    &
+     &          ele_grp1%num_grp, ele_grp1%num_item, mat_name,  &
+     &          mat_istack, mat_item,    &
      &          num_nod_phys, phys_nod_name)
 !
       end subroutine isosurface_init_1st

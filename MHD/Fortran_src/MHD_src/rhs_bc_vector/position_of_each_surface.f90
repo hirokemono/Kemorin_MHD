@@ -37,7 +37,7 @@
       use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
-      use m_surface_group
+      use m_group_data
       use m_int_surface_data
 !
       call position_2_each_surf_grp(np_smp, numnod, numele, nnod_4_ele, &
@@ -55,7 +55,7 @@
       use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
-      use m_surface_group
+      use m_group_data
       use m_int_surface_data
 !
       call delta_x_2_each_surf_grp(np_smp, numnod, numele, nnod_4_ele,  &

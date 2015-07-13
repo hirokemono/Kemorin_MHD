@@ -33,7 +33,7 @@
       integer(kind = kint) :: icou, inod, inum
 !
 !
-      call find_start_element_group(num_mat, mat_name)
+      call find_start_element_group(ele_grp1%num_grp, mat_name)
 !
       numele_psf = mat_istack(iend_ele_grp_drmd)                        &
      &            - mat_istack(istart_ele_grp_drmd-1)

@@ -96,10 +96,11 @@
       integer(kind = kint) :: ig, ist, ied, inum, iele
 !
 !
-      new_ele_grp%grp_name(1:num_mat) = mat_name(1:num_mat)
+      new_ele_grp%grp_name(1:ele_grp1%num_grp)                          &
+     &      = mat_name(1:ele_grp1%num_grp)
 !
       new_ele_grp%istack_grp(0) = 0
-      do ig = 1, num_mat
+      do ig = 1, ele_grp1%num_grp
         new_ele_grp%istack_grp(ig) = new_ele_grp%istack_grp(ig-1)
         ist = mat_istack(ig-1) + 1
         ied = mat_istack(ig)
@@ -111,7 +112,7 @@
           end if
         end do
       end do
-      new_ele_grp%num_item = new_ele_grp%istack_grp(num_mat)
+      new_ele_grp%num_item = new_ele_grp%istack_grp(ele_grp1%num_grp)
 !
       end subroutine count_local_ele_group
 !
@@ -128,7 +129,7 @@
 !
 !
       icou = 0
-      do ig = 1, num_mat
+      do ig = 1, ele_grp1%num_grp
         ist = mat_istack(ig-1) + 1
         ied = mat_istack(ig)
         do inum = ist, ied

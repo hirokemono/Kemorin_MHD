@@ -131,13 +131,14 @@
 !
       call link_node_group_to_type(group_l%nod_grp)
 !
-      group_l%ele_grp%num_grp = num_mat
-      group_l%ele_grp%num_item = 8*num_mat_bc
+      group_l%ele_grp%num_grp = ele_grp1%num_grp
+      group_l%ele_grp%num_item = 8 * ele_grp1%num_item
       call allocate_grp_type_num(group_l%ele_grp)
       call allocate_grp_type_item(group_l%ele_grp)
 !
-      call convert_ele_group_2_linear(num_mat, num_mat_bc,              &
-     &    mat_name, mat_istack, mat_item, group_l%ele_grp%num_item,     &
+      call convert_ele_group_2_linear                                   &
+     &   (ele_grp1%num_grp, ele_grp1%num_item, mat_name,     &
+     &    mat_istack, mat_item, group_l%ele_grp%num_item,     &
      &    group_l%ele_grp%grp_name, group_l%ele_grp%istack_grp,         &
      &    group_l%ele_grp%item_grp)
 !

@@ -34,7 +34,7 @@
       else
 !
         do j = 1, num_refine_type
-          do i = 1, num_mat
+          do i = 1, ele_grp1%num_grp
             if (refined_ele_grp(j) .eq. mat_name(i) ) then
               id_refined_ele_grp(j) = i
               exit

@@ -146,7 +146,7 @@
      &          ak_diff, coef_field)
 !
       use m_geometry_parameter
-      use m_surface_group
+      use m_group_data
       use m_finite_element_matrix
       use m_int_surface_data
 !
@@ -195,7 +195,7 @@
      &          ak_diff, coef_field)
 !
       use m_geometry_parameter
-      use m_surface_group
+      use m_group_data
       use m_finite_element_matrix
       use m_int_surface_data
 !
@@ -246,7 +246,7 @@
      &          id_grp_sf, i_filter, i_tensor, i_vect, i_scalar)
 !
       use m_geometry_parameter
-      use m_surface_group
+      use m_group_data
       use m_finite_element_matrix
       use m_int_surface_data
 !
@@ -292,7 +292,7 @@
      &          id_grp_sf, i_filter, i_tensor, i_vect, i_scalar)
 !
       use m_geometry_parameter
-      use m_surface_group
+      use m_group_data
       use m_finite_element_matrix
       use m_int_surface_data
 !

@@ -28,7 +28,7 @@
       type(group_data), intent(inout) :: new_ele_grp
 !
 !
-      new_ele_grp%num_grp =  num_mat
+      new_ele_grp%num_grp =  ele_grp1%num_grp
       call allocate_grp_type_num(new_ele_grp)
 !
       call count_new_ele_group(new_ele_grp)
@@ -48,10 +48,11 @@
       integer(kind = kint) :: i, iele, inum
 !
 !
-      new_ele_grp%grp_name(1:num_mat) = mat_name(1:num_mat)
+      new_ele_grp%grp_name(1:ele_grp1%num_grp)                          &
+     &       = mat_name(1:ele_grp1%num_grp)
 !
       new_ele_grp%istack_grp(0) = 0
-      do i = 1, num_mat
+      do i = 1, ele_grp1%num_grp
          new_ele_grp%istack_grp(i) = new_ele_grp%istack_grp(i-1)
          do inum = mat_istack(i-1)+1, mat_istack(i)
            iele = mat_item(inum)
@@ -74,7 +75,7 @@
       integer(kind = kint) :: iele, inum, i, icou
 !
       icou = 0
-      do i = 1, num_mat
+      do i = 1, ele_grp1%num_grp
          do inum = mat_istack(i-1)+1, mat_istack(i)
            iele = mat_item(inum)
            if ( mark_new_ele(iele) .ne. 0 ) then

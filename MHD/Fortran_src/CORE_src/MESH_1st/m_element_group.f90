@@ -18,12 +18,19 @@
       module m_element_group
 !
       use m_precision
+      use t_group_data
 !
       implicit  none
 !
-      integer (kind=kint) :: num_mat
+!
+!>  Structure for node and element group
+      type(group_data), save :: ele_grp1
+!
+!ele_grp1%num_item
+!
+!      integer (kind=kint) :: num_mat
 !<      number of element group
-      integer (kind=kint) :: num_mat_bc
+!      integer (kind=kint) :: num_mat_bc
 !<      total number of nodes for element group
 ! 
       integer (kind=kint), allocatable, target :: mat_istack(:)
@@ -50,9 +57,9 @@
 !
       subroutine allocate_material_data
 !
-       allocate(mat_istack(0:num_mat))
-       allocate(mat_name(num_mat))
-       allocate(mat_item(num_mat_bc))
+       allocate(mat_istack(0:ele_grp1%num_grp))
+       allocate(mat_name(ele_grp1%num_grp))
+       allocate(mat_item(ele_grp1%num_item))
 !
       call clear_material_data
 !
@@ -63,7 +70,7 @@
       subroutine clear_material_data
 !
       mat_istack = 0
-      if(num_mat_bc .gt. 0) mat_item = 0
+      if(ele_grp1%num_item .gt. 0) mat_item = 0
 !
       end subroutine clear_material_data
 !
@@ -82,7 +89,7 @@
 !
        subroutine allocate_material_param_smp
 !
-       allocate( imat_smp_stack(0:num_mat_smp))
+       allocate( imat_smp_stack(0:ele_grp1%num_item))
        imat_smp_stack = 0
 !
        end subroutine allocate_material_param_smp
@@ -102,8 +109,8 @@
 !
       integer(kind = kint), intent(in) :: my_rank
 !
-       write(*,*) 'PE: ', my_rank, 'num_mat ', num_mat
-       write(*,*) 'PE: ', my_rank, 'num_mat_smp ', num_mat_smp
+       write(*,*) 'PE: ', my_rank, 'num_mat ', ele_grp1%num_grp
+       write(*,*) 'PE: ', my_rank, 'num_mat_smp ', ele_grp1%num_item
        write(*,*) 'PE: ', my_rank,                                      &
      &            'imat_smp_stack ', imat_smp_stack
 !

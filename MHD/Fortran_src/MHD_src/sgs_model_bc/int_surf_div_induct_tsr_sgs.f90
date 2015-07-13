@@ -31,7 +31,7 @@
 !
       use m_SGS_model_coefs
       use m_SGS_address
-      use m_surface_group
+      use m_group_data
       use m_int_surface_data
 !
       use delta_SGS_2_each_surface
@@ -75,7 +75,7 @@
      &          i_v, i_b)
 !
       use m_int_surface_data
-      use m_surface_group
+      use m_group_data
       use delta_SGS_2_each_surface
       use fem_surf_skv_sgs_commute_1
       use cal_skv_to_ff_smp_1st

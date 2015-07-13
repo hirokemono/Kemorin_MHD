@@ -69,7 +69,7 @@
      &          id_sf_dat, i_dest, ist_sf, sf_dat_apt)
 !
       use m_boundary_field_IO
-      use m_surface_group
+      use m_group_data
 !
       integer(kind = kint), intent(in) :: igrp, i_dest, id_sf_dat
       integer(kind = kint), intent(in) :: ngrp_sf, nele_surf
@@ -92,7 +92,7 @@
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_surface_group
+      use m_group_data
       use m_surface_group_connect
       use m_surface_group_geometry
 !

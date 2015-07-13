@@ -66,7 +66,7 @@
       type(group_data), intent(inout) :: new_ele_grp
 !
 !
-      new_ele_grp%num_grp = num_mat
+      new_ele_grp%num_grp = ele_grp1%num_grp
       call allocate_grp_type_num(new_ele_grp)
       call count_local_ele_group(new_ele_grp)
 !

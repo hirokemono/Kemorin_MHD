@@ -77,7 +77,7 @@
 !
       use m_phys_constants
       use m_geometry_parameter
-      use m_surface_group
+      use m_group_data
       use m_SGS_model_coefs
       use m_SGS_address
       use m_finite_element_matrix

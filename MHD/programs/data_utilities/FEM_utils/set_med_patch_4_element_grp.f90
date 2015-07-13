@@ -70,11 +70,12 @@
       type(sect_search_list) :: ele_search
 !
 !
-      call init_ele_grp_med_patch(file_head, num_mat, num_mat_bc)
+      call init_ele_grp_med_patch                                       &
+     &   (file_head, ele_grp1%num_grp, ele_grp1%num_item)
 !
       call set_sectioning_case_table
 !
-      do igrp = 1, num_mat
+      do igrp = 1, ele_grp1%num_grp
         call alloc_num_psf_search_list(np_smp, ele_search)
 !
         do ip = 1, np_smp

@@ -69,16 +69,16 @@
       open (id_file, file = file_name, form = 'formatted')
 !
       call skip_comment(character_4_read,id_file)
-      read(character_4_read,*) num_mat
-!      write(*,*) 'num_mat', num_mat
+      read(character_4_read,*) ele_grp1%num_grp
+!      write(*,*) 'num_mat', ele_grp1%num_grp
 !
-      num_mat_bc = 0
-      do igrp = 1, num_mat
+      ele_grp1%num_item = 0
+      do igrp = 1, ele_grp1%num_grp
         call skip_comment(character_4_read,id_file)
         read(character_4_read,*) name_tmp
         read(id_file,*) nnod, nele
 !        write(*,*) 'nnod, nele', igrp, nnod, nele
-        num_mat_bc = num_mat_bc + nele
+        ele_grp1%num_item = ele_grp1%num_item + nele
 !
         do inod = 1, nnod
           read(id_file,*)  itmp
@@ -93,7 +93,7 @@
       close(id_file)
 !
       call allocate_material_data
-      call allocate_med_grouping_patch(num_mat_bc)
+      call allocate_med_grouping_patch(ele_grp1%num_item)
 !
 !
       write(*,*) 'ascii mesh file: ', trim(file_name)
@@ -102,7 +102,7 @@
       call skip_comment(character_4_read,id_file)
       read(character_4_read,*) itmp
 !
-      do igrp = 1, num_mat
+      do igrp = 1, ele_grp1%num_grp
         call skip_comment(character_4_read,id_file)
         read(character_4_read,*) mat_name(igrp)
         write(*,*) 'mat_name: ', trim(mat_name(igrp))

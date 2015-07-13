@@ -70,7 +70,7 @@
       use set_layer_list_by_table
 !
 !
-      call set_layerd_group_id(num_mat, mat_name)
+      call set_layerd_group_id(ele_grp1%num_grp, mat_name)
 !
       layer_tbl1%n_layer_d = num_layer_grp
       call alloc_layering_ele_list_type(layer_tbl1)
@@ -78,7 +78,7 @@
 !
         if (iflag_debug .eq. 1)                                         &
      &    write(*,*) 'count_ele_layer_by_table'
-      call count_ele_layer_by_table(num_mat, mat_istack,                &
+      call count_ele_layer_by_table(ele_grp1%num_grp, mat_istack,       &
      &    layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,              &
      &    layer_tbl1%layer_stack)
 !
@@ -88,7 +88,7 @@
       call alloc_layer_items_type(layer_tbl1)
       if (iflag_debug .eq. 1)  write(*,*) 'set_ele_layer_by_table'
       call set_ele_layer_by_table                                       &
-     &   (num_mat, num_mat_bc, mat_istack, mat_item,                    &
+     &   (ele_grp1%num_grp, ele_grp1%num_item, mat_istack, mat_item,    &
      &    layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,              &
      &    layer_tbl1%layer_stack, layer_tbl1%item_layer)
 !
@@ -116,10 +116,12 @@
       integer(kind = kint) :: ist_grp
 !
 !
-      call count_layering_ele_grp_list(num_mat, mat_name, ist_grp)
+      call count_layering_ele_grp_list                                  &
+     &   (ele_grp1%num_grp, mat_name, ist_grp)
 !
       call allocate_layering_ele_grp
-      call set_layering_ele_grp_list(num_mat, mat_name, ist_grp)
+      call set_layering_ele_grp_list                                    &
+     &   (ele_grp1%num_grp, mat_name, ist_grp)
 !
       end subroutine const_layer_list_by_mesh_file
 !
@@ -134,13 +136,13 @@
       use set_layer_list_by_start_end
 !
 !
-      call set_num_dynamic_layer_by_start(num_mat, mat_name,            &
+      call set_num_dynamic_layer_by_start(ele_grp1%num_grp, mat_name,   &
      &    mat_istack, layer_tbl1%n_layer_d)
 !
       call allocate_layer_ele_start(layer_tbl1%n_layer_d)
       call alloc_layering_ele_list_type(layer_tbl1)
 !
-      call set_start_ele_4_dynamic(num_mat, num_mat_bc,                 &
+      call set_start_ele_4_dynamic(ele_grp1%num_grp, ele_grp1%num_item, &
      &    mat_name, mat_istack, mat_item, layer_tbl1%n_layer_d)
 !
       call count_ele_4_dynamic_by_start                                 &

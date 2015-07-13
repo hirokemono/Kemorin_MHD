@@ -20,7 +20,7 @@
 !
       use m_precision
 !
-      use m_surface_group
+      use m_group_data
       use m_surf_data_list
       use m_header_4_surface_bc
 !

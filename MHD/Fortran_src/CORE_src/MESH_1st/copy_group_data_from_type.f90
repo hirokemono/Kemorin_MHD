@@ -95,14 +95,17 @@
       type(group_data), intent(inout) :: ele_grp
 !
 !
-      num_mat =     ele_grp%num_grp
-      if (num_mat .gt. 0) then
-        num_mat_bc = ele_grp%num_item
+      ele_grp1%num_grp =     ele_grp%num_grp
+      if (ele_grp1%num_grp .gt. 0) then
+        ele_grp1%num_item = ele_grp%num_item
         call allocate_material_data
 !
-        mat_name(1:num_mat) =    ele_grp%grp_name(1:num_mat)
-        mat_istack(0:num_mat) =  ele_grp%istack_grp(0:num_mat)
-        mat_item(1:num_mat_bc) = ele_grp%item_grp(1:num_mat_bc)
+        mat_name(1:ele_grp1%num_grp)                 &
+     &          =    ele_grp%grp_name(1:ele_grp1%num_grp)
+        mat_istack(0:ele_grp1%num_grp)               &
+     &          =  ele_grp%istack_grp(0:ele_grp1%num_grp)
+        mat_item(1:ele_grp1%num_item)                &
+     &          = ele_grp%item_grp(1:ele_grp1%num_item)
       end if
 !
       end subroutine element_group_from_type
@@ -153,11 +156,11 @@
 !
       integer(kind = kint) :: i
 !
-      if(ele_grp%num_grp .ne. num_mat) write(*,*) 'num_mat',            &
-     &     my_rank, ele_grp%num_grp, num_mat
-      if(ele_grp%num_item .ne. num_mat_bc) write(*,*)                   &
-     &     'num_mat_bc', my_rank, ele_grp%num_item, num_mat_bc
-      do i = 1, num_mat
+      if(ele_grp%num_grp .ne. ele_grp1%num_grp) write(*,*) 'num_mat',   &
+     &     my_rank, ele_grp%num_grp, ele_grp1%num_grp
+      if(ele_grp%num_item .ne. ele_grp1%num_item) write(*,*)            &
+     &     'num_mat_bc', my_rank, ele_grp%num_item, ele_grp1%num_item
+      do i = 1, ele_grp1%num_grp
         if(ele_grp%grp_name(i) .ne. mat_name(i))                        &
      &       write(*,*) 'mat_name(i)', my_rank, i,                      &
      &       ele_grp%grp_name(i), mat_name(i)
@@ -165,7 +168,7 @@
      &       write(*,*) 'mat_istack(i)', my_rank, i,                    &
      &       ele_grp%istack_grp(i), mat_istack(i)
       end do
-      do i = 1, num_mat_bc
+      do i = 1, ele_grp1%num_item
         if(ele_grp%item_grp(i) .ne. mat_item(i))                        &
      &       write(*,*) 'mat_item(i)', my_rank, i,                      &
      &       ele_grp%item_grp(i), mat_item(i)

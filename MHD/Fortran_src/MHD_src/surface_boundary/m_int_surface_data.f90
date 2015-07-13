@@ -29,7 +29,7 @@
       subroutine allocate_int_surf_data
 !
       use m_geometry_parameter
-      use m_surface_group
+      use m_group_data
 !
       allocate( scalar_sf(sf_grp1%num_item) )
       allocate( vect_sf(sf_grp1%num_item,3) )
@@ -58,7 +58,7 @@
 !
        subroutine check_vect_sf(my_rank, txt)
 !
-       use m_surface_group
+       use m_group_data
 !
        integer(kind = kint), intent(in) :: my_rank
        character(*), intent(in) :: txt

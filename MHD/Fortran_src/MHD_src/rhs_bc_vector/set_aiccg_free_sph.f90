@@ -39,7 +39,7 @@
       subroutine set_aiccg_bc_free_sph_in(num_int)
 !
       use m_geometry_parameter
-      use m_surface_group
+      use m_group_data
       use m_node_phys_address
       use m_ele_material_property
       use m_int_surface_data
@@ -84,7 +84,7 @@
       subroutine set_aiccg_bc_free_sph_out(num_int)
 !
       use m_geometry_parameter
-      use m_surface_group
+      use m_group_data
       use m_node_phys_address
       use m_ele_material_property
       use m_int_surface_data

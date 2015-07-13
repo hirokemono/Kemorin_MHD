@@ -33,10 +33,10 @@
       write(id_file,'(a)') '!'
       write(id_file,'(a)') '! 4.2. Element group'
 !
-      write(id_file,'(i16)') num_mat
-      write(id_file,'(6i16)')  (mat_istack(i),i=1,num_mat)
+      write(id_file,'(i16)') ele_grp1%num_grp
+      write(id_file,'(6i16)')  (mat_istack(i),i=1,ele_grp1%num_grp)
 !
-      do k = 1, num_mat
+      do k = 1, ele_grp1%num_grp
         ist = mat_istack(k-1)+1
         ied = mat_istack(k)
         write(id_file,*) trim(mat_name(k))
@@ -68,15 +68,15 @@
       integer(kind = kint), intent(in) :: nskip_r
       integer(kind = kint) :: i
 !
-      num_mat = num_ele_grp_csp
+      ele_grp1%num_grp = num_ele_grp_csp
 !
-      num_mat_bc = 0
+      ele_grp1%num_item = 0
       do i = 1, num_ele_layer_csp
         if      (id_ele_grp_layer_csp(i) .eq. 0) then
-          num_mat_bc = num_mat_bc + numele_cube
+          ele_grp1%num_item = ele_grp1%num_item + numele_cube
         else if (id_ele_grp_layer_csp(i) .gt. 0) then
           if ( mod(id_ele_grp_layer_csp(i),nskip_r) .eq. 0 ) then
-            num_mat_bc = num_mat_bc + numele_sf
+            ele_grp1%num_item = ele_grp1%num_item + numele_sf
           end if
         end if
       end do

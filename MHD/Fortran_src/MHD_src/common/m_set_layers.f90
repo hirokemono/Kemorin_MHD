@@ -10,16 +10,6 @@
 !        modified by H.Matsui on Feb., 2008
 !        modified by H.Matsui on Dec., 2008
 !
-!
-      module m_set_layers
-!
-      use m_precision
-!
-      implicit none
-!
-      integer (kind=kint), allocatable :: mat_node_flag(:)
-      private :: mat_node_flag
-! 
 !      subroutine alloc_mat_node_flag(numnod)
 !      subroutine dealloc_mat_node_flag
 !
@@ -32,6 +22,16 @@
 !      subroutine set_node_4_layer(numnod, numnod_field, inod_field,    &
 !     &     iele_start, iele_end, numele, nnod_4_ele, ie)
 !
+!
+      module m_set_layers
+!
+      use m_precision
+!
+      implicit none
+!
+      integer (kind=kint), allocatable :: mat_node_flag(:)
+      private :: mat_node_flag
+! 
 ! ---------------------------------------------------------------------
 !
       contains

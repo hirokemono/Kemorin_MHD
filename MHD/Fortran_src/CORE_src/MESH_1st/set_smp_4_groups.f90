@@ -57,11 +57,11 @@
       use cal_minmax_and_stacks
 !
 !
-      num_mat_smp = np_smp*num_mat
+      num_mat_smp = np_smp * ele_grp1%num_grp
 !
       call allocate_material_param_smp
 !
-      call set_group_size_4_smp(np_smp, num_mat, mat_istack,            &
+      call set_group_size_4_smp(np_smp, ele_grp1%num_grp, mat_istack,   &
      &    imat_smp_stack, max_mat_4_smp)
 !
       end subroutine count_mat_4_sheard_para

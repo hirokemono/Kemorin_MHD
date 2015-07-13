@@ -36,7 +36,7 @@
       if (numele .le. 0) call ERROR_EXIT(ierr_ele, izero)
 !
       if (num_bc   .lt. 0) call ERROR_EXIT(ierr_ngrp, ione)
-      if (num_mat  .lt. 0) call ERROR_EXIT(ierr_ngrp, itwo)
+      if (ele_grp1%num_grp  .lt. 0) call ERROR_EXIT(ierr_ngrp, itwo)
       if (sf_grp1%num_grp .lt. 0) call ERROR_EXIT(ierr_ngrp, ithree)
 !
       if (num_bc .gt. 0) then
@@ -47,8 +47,8 @@
         end do
       end if
 !
-      if (num_mat .gt. 0) then
-        do is= 1, mat_istack(num_mat)
+      if (ele_grp1%num_grp .gt. 0) then
+        do is= 1, mat_istack(ele_grp1%num_grp)
           in= mat_item(is)
           if (in .le. 0) call ERROR_EXIT(ierr_grp, itwo)
           if (in .gt. numele) call ERROR_EXIT(ierr_ov_grp, itwo)

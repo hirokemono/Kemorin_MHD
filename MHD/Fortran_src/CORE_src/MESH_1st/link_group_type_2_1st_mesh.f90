@@ -44,8 +44,8 @@
 !
       type(group_data), intent(inout) :: ele_grp
 !
-      ele_grp%num_grp =  num_mat
-      ele_grp%num_item = num_mat_bc
+      ele_grp%num_grp =  ele_grp1%num_grp
+      ele_grp%num_item = ele_grp1%num_item
 !
       ele_grp%grp_name =>   mat_name
       ele_grp%istack_grp => mat_istack

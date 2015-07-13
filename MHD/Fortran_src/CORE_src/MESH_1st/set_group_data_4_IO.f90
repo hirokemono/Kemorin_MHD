@@ -75,15 +75,18 @@
 !
 !    set element group
 !
-      num_mat =     num_mat_dummy
-      if (num_mat/=0) then
+      ele_grp1%num_grp =     num_mat_dummy
+      if (ele_grp1%num_grp .gt. 0) then
 !
-        num_mat_bc = num_mat_bc_dummy
+        ele_grp1%num_item = num_mat_bc_dummy
         call allocate_material_data
 !
-        mat_name(1:num_mat) =    mat_name_dummy(1:num_mat)
-        mat_istack(0:num_mat) =  mat_istack_dummy(0:num_mat)
-        mat_item(1:num_mat_bc) = mat_item_dummy(1:num_mat_bc)
+        mat_name(1:ele_grp1%num_grp)                     &
+     &         = mat_name_dummy(1:ele_grp1%num_grp)
+        mat_istack(0:ele_grp1%num_grp)                   &
+     &         =  mat_istack_dummy(0:ele_grp1%num_grp)
+        mat_item(1:ele_grp1%num_item)                    &
+     &         = mat_item_dummy(1:ele_grp1%num_item)
       end if
       call deallocate_bc_ele_item_dummy
 !
@@ -148,15 +151,18 @@
       use m_read_boundary_data
 !
 !
-      num_mat_dummy = num_mat
-      num_mat_bc_dummy = num_mat_bc
+      num_mat_dummy = ele_grp1%num_grp
+      num_mat_bc_dummy = ele_grp1%num_item
       call allocate_bc_ele_stack_dummy
 !
-      mat_name_dummy(1:num_mat) = mat_name(1:num_mat)
-      mat_istack_dummy(0:num_mat) = mat_istack(0:num_mat)
+      mat_name_dummy(1:ele_grp1%num_grp)                                &
+     &           = mat_name(1:ele_grp1%num_grp)
+      mat_istack_dummy(0:ele_grp1%num_grp)                              &
+     &           = mat_istack(0:ele_grp1%num_grp)
 !
       call allocate_bc_ele_item_dummy
-      mat_item_dummy(1:num_mat_bc) = mat_item(1:num_mat_bc)
+      mat_item_dummy(1:ele_grp1%num_item)                               &
+     &           = mat_item(1:ele_grp1%num_item)
 !
       call deallocate_material_data
 !

@@ -42,7 +42,7 @@
      &    ie_org(1,1), ie(1,1) )
 !
       call reordering_element_group(numele, old2newele_layer(1),        &
-     &    num_mat_bc, mat_item(1) )
+     &    ele_grp1%num_item, mat_item(1) )
 !
       call reordering_surface_group(numele, old2newele_layer(1),        &
      &    sf_grp1%num_item, sf_grp1%item_sf_grp)

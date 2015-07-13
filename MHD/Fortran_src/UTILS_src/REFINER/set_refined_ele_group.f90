@@ -29,12 +29,12 @@
       integer(kind= kint) :: i, iele, ist, ied, inum
 !
 !
-      do i = 1, num_mat
+      do i = 1, ele_grp1%num_grp
         new_ele_grp%grp_name(i) = mat_name(i)
       end do
 !
       new_ele_grp%istack_grp(0) = 0
-      do i = 1, num_mat
+      do i = 1, ele_grp1%num_grp
         new_ele_grp%istack_grp(i) = new_ele_grp%istack_grp(i-1)
 !
         ist = mat_istack(i-1) + 1
@@ -45,7 +45,7 @@
      &                               + num_ele_refined(iele)
         end do
       end do
-      new_ele_grp%num_item = new_ele_grp%istack_grp(num_mat)
+      new_ele_grp%num_item = new_ele_grp%istack_grp(ele_grp1%num_grp)
 !
       end subroutine count_refined_ele_group
 !
@@ -63,7 +63,7 @@
       integer(kind= kint) :: jst, jed, jnum
 !
 !
-      do i = 1, num_mat
+      do i = 1, ele_grp1%num_grp
         icou = new_ele_grp%istack_grp(i-1)
 !
         ist = mat_istack(i-1) + 1
