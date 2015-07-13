@@ -79,7 +79,7 @@
         nod_grp1%num_item = nod_grp%num_item
         call allocate_boundary_data
 !
-        bc_name(1:nod_grp1%num_grp)                                     &
+        nod_grp1%grp_name(1:nod_grp1%num_grp)                           &
      &     = nod_grp%grp_name(1:nod_grp1%num_grp)
         nod_grp1%istack_grp(0:nod_grp1%num_grp)                         &
      &     = nod_grp%istack_grp(0:nod_grp1%num_grp)
@@ -108,9 +108,9 @@
       if(nod_grp%num_item .ne. nod_grp1%num_item) write(*,*)            &
      &     'num_nod_bc', my_rank, nod_grp%num_item, nod_grp1%num_item
       do i = 1, nod_grp1%num_grp
-        if(nod_grp%grp_name(i) .ne. bc_name(i))                         &
+        if(nod_grp%grp_name(i) .ne. nod_grp1%grp_name(i))               &
      &       write(*,*) 'bc_name(i)', my_rank, i,                       &
-     &       nod_grp%grp_name(i), bc_name(i)
+     &       nod_grp%grp_name(i), nod_grp1%grp_name(i)
         if(nod_grp%istack_grp(i) .ne. nod_grp1%istack_grp(i))           &
      &       write(*,*) 'bc_istack(i)', my_rank, i,                     &
      &       nod_grp%istack_grp(i), nod_grp1%istack_grp(i)

@@ -147,7 +147,7 @@
         do i=1, nod_grp1%num_grp
 !
           do inum = 1, num_monitor
-            if (bc_name(i) .eq. monitor_grp(inum)) then
+            if (nod_grp1%grp_name(i) .eq. monitor_grp(inum)) then
                num_monitor_local = num_monitor_local                    &
      &                            + nod_grp1%istack_grp(i)              &
      &                            - nod_grp1%istack_grp(i-1)
@@ -165,7 +165,7 @@
       num_monitor_local = 0
       do i=1, nod_grp1%num_grp
         do inum = 1, num_monitor
-          if (bc_name(i) .eq. monitor_grp(inum)) then
+          if (nod_grp1%grp_name(i) .eq. monitor_grp(inum)) then
             do k= nod_grp1%istack_grp(i-1)+1, nod_grp1%istack_grp(i)
               if( bc_item(k) .le. internal_node ) then 
                 num_monitor_local = num_monitor_local + 1

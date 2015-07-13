@@ -29,7 +29,7 @@
       nod_grp%num_grp =  nod_grp1%num_grp
       nod_grp%num_item = nod_grp1%num_item
 !
-      nod_grp%grp_name =>  bc_name
+      nod_grp%grp_name =>  nod_grp1%grp_name
       nod_grp%istack_grp => nod_grp1%istack_grp
       nod_grp%item_grp =>   bc_item
 !

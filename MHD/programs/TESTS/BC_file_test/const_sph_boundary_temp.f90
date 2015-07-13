@@ -32,7 +32,7 @@
 !
 !
       do igrp = 1, nod_grp1%num_grp
-        if(bc_name(igrp) .eq. grp_name_nod_bc) then
+        if(nod_grp1%grp_name(igrp) .eq. grp_name_nod_bc) then
           igrp_nod_bc = igrp
           exit
         end if
@@ -43,7 +43,7 @@
       call allocate_num_bc_values
 !
       bc_group_type_IO(1) = flag_nod_grp
-      bc_data_group_IO(1) = bc_name(igrp_nod_bc)
+      bc_data_group_IO(1) = nod_grp1%grp_name(igrp_nod_bc)
       bc_field_type_IO(1) = 'temperature'
 !
       istack_bc_data_IO(0) = 0

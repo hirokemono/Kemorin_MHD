@@ -63,7 +63,7 @@
 !
 ! ----------- check node group
 !
-         if (bc_name(i)==bc_field_name(j)) then
+         if (nod_grp1%grp_name(i) .eq. bc_field_name(j)) then
           do nd = 1, 3
 !
 ! -----------set boundary from control file
@@ -122,11 +122,11 @@
 !
 ! ----------- check node group
 !
-         if (bc_name(i)==bc_field_name(j)) then
+         if (nod_grp1%grp_name(i) .eq. bc_field_name(j)) then
 !
           do nd = 1, 3
 !
-            if (ibc_field_type(j) == (iref+nd) ) then
+            if (ibc_field_type(j) .eq. (iref+nd) ) then
 !
               call set_nod_bc_from_ctl(nmax_bc_nod, ii(nd), i,          &
      &            ibc_id(1,nd), ibc(1,nd), ibc2(1,nd), bc_apt(1,nd),    &
@@ -171,7 +171,7 @@
 !
         do j=1, num_bc_field 
 !
-         if (bc_name(i)==bc_field_name(j)) then
+         if (nod_grp1%grp_name(i) .eq. bc_field_name(j)) then
           do nd = 1, 3
             if ( ibc_field_type(j) == (nd+iref) ) then
               call set_nod_bc_from_ctl(num_bc_nod, ii(nd), i,           &
@@ -203,7 +203,7 @@
       do i=1, nod_grp1%num_grp 
         do j=1, num_bc_field 
 !
-         if (bc_name(i)==bc_field_name(j)) then
+         if (nod_grp1%grp_name(i) .eq. bc_field_name(j)) then
 !
           if ( ibc_field_type(j) == 999 ) then
             call set_r_magne_sph(l_f, i, j)

@@ -58,7 +58,7 @@
 !
 !
       do i = 1, nod_grp1%num_grp
-        new_nod_grp%grp_name(i) = bc_name(i)
+        new_nod_grp%grp_name(i) = nod_grp1%grp_name(i)
       end do
 !
       new_nod_grp%istack_grp(0) = 0

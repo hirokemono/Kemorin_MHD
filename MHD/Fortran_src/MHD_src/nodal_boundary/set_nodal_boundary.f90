@@ -86,7 +86,7 @@
 !
       do ia = 1, num_bc_group_IO
         if(bc_group_type_IO(ia) .eq. flag_nod_grp) then
-          if ( bc_data_group_IO(ia) .eq. bc_name(i)                     &
+          if ( bc_data_group_IO(ia) .eq. nod_grp1%grp_name(i)           &
      &       .and. bc_field_type_IO(ia) .eq. field_name ) then
 !
             do k=1, nod_grp1%istack_grp(i)-nod_grp1%istack_grp(i-1)

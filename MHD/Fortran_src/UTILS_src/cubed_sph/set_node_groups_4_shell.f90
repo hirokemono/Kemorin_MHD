@@ -50,7 +50,7 @@
       do k = 1, nod_grp1%num_grp
         ist = nod_grp1%istack_grp(k-1) + 1
         ied = nod_grp1%istack_grp(k)
-        write(id_file,*) trim(bc_name(k))
+        write(id_file,*) trim(nod_grp1%grp_name(k))
         write(id_file,'(6i16)') bc_item(ist:ied)
       end do
 !
@@ -63,10 +63,10 @@
 !
       integer(kind = kint) :: i
 !
-      bc_name(1) = 'Center'
-      bc_name(2) = 'Press'
+      nod_grp1%grp_name(1) = 'Center'
+      nod_grp1%grp_name(2) = 'Press'
       do i = 1, num_node_grp_csp
-        bc_name(i+2) = nod_grp_name_csp(i)
+        nod_grp1%grp_name(i+2) = nod_grp_name_csp(i)
       end do
 !
       end subroutine set_node_group_names

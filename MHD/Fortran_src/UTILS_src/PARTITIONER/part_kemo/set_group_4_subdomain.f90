@@ -37,7 +37,7 @@
 !
 !
       new_nod_grp%grp_name(1:nod_grp1%num_grp)                          &
-     &      = bc_name(1:nod_grp1%num_grp)
+     &      = nod_grp1%grp_name(1:nod_grp1%num_grp)
 !
       new_nod_grp%istack_grp(0) = 0
       do ig = 1, nod_grp1%num_grp

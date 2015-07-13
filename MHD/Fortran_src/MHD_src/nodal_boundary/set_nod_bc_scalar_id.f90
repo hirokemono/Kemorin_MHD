@@ -61,7 +61,7 @@
 !
 ! ----------- check node group
 !
-          if (bc_name(i)==bc_field_name(j)) then
+          if (nod_grp1%grp_name(i) .eq. bc_field_name(j)) then
 !
 ! -----------set boundary from control file
 !
@@ -111,7 +111,7 @@
 !
       do i=1, nod_grp1%num_grp 
         do j=1, num_bc_field
-          if (bc_name(i)==bc_field_name(j)) then
+          if (nod_grp1%grp_name(i) .eq. bc_field_name(j)) then
 !
             if ( ibc_field_type(j) .eq. iref) then
               call set_nod_bc_from_ctl (num_bc_nod, ii, i, ibc_id,      &
@@ -140,7 +140,7 @@
 !
       do i=1, nod_grp1%num_grp 
         do j=1, num_bc_field
-          if (bc_name(i)==bc_field_name(j)) then
+          if (nod_grp1%grp_name(i) .eq. bc_field_name(j)) then
 !
             if ( ibc_field_type(j) .eq. 999 ) then
               call s_set_mag_p_sph(ii, i, j)
