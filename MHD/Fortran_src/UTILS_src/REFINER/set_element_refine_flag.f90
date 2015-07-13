@@ -70,7 +70,7 @@
           ist = ele_grp1%istack_grp(i-1) + 1
           ied = ele_grp1%istack_grp(i)
           do inum = ist, ied
-            iele = mat_item(inum)
+            iele = ele_grp1%item_grp(inum)
             iflag_refine_ele(iele) = iflag_refine_type(j)
           end do
         end do

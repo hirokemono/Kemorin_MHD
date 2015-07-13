@@ -85,7 +85,7 @@
      &         = mat_name_dummy(1:ele_grp1%num_grp)
         ele_grp1%istack_grp(0:ele_grp1%num_grp)                         &
      &         =  mat_istack_dummy(0:ele_grp1%num_grp)
-        mat_item(1:ele_grp1%num_item)                    &
+        ele_grp1%item_grp(1:ele_grp1%num_item)                          &
      &         = mat_item_dummy(1:ele_grp1%num_item)
       end if
       call deallocate_bc_ele_item_dummy
@@ -162,7 +162,7 @@
 !
       call allocate_bc_ele_item_dummy
       mat_item_dummy(1:ele_grp1%num_item)                               &
-     &           = mat_item(1:ele_grp1%num_item)
+     &           = ele_grp1%item_grp(1:ele_grp1%num_item)
 !
       call deallocate_material_data
 !

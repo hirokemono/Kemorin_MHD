@@ -49,7 +49,7 @@
 !
       ele_grp%grp_name =>   ele_grp1%grp_name
       ele_grp%istack_grp => ele_grp1%istack_grp
-      ele_grp%item_grp =>   mat_item
+      ele_grp%item_grp =>   ele_grp1%item_grp
 !
       end subroutine link_element_group_to_type
 !

@@ -55,7 +55,7 @@
       do i = 1, ele_grp1%num_grp
          new_ele_grp%istack_grp(i) = new_ele_grp%istack_grp(i-1)
          do inum = ele_grp1%istack_grp(i-1)+1, ele_grp1%istack_grp(i)
-           iele = mat_item(inum)
+           iele = ele_grp1%item_grp(inum)
            if ( mark_new_ele(iele) .ne. 0 ) then
              new_ele_grp%istack_grp(i) = new_ele_grp%istack_grp(i) + 1
            end if
@@ -77,7 +77,7 @@
       icou = 0
       do i = 1, ele_grp1%num_grp
          do inum = ele_grp1%istack_grp(i-1)+1, ele_grp1%istack_grp(i)
-           iele = mat_item(inum)
+           iele = ele_grp1%item_grp(inum)
            if ( mark_new_ele(iele) .ne. 0 ) then
              icou = icou + 1
              new_ele_grp%item_grp(icou) = mark_new_ele(iele)

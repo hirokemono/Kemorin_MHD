@@ -105,7 +105,7 @@
         ist = ele_grp1%istack_grp(ig-1) + 1
         ied = ele_grp1%istack_grp(ig)
         do inum = ist, ied
-          iele = mat_item(inum)
+          iele = ele_grp1%item_grp(inum)
 !
           if (iele_local_part(iele) .gt. 0) then
             new_ele_grp%istack_grp(ig) = new_ele_grp%istack_grp(ig) + 1
@@ -133,7 +133,7 @@
         ist = ele_grp1%istack_grp(ig-1) + 1
         ied = ele_grp1%istack_grp(ig)
         do inum = ist, ied
-          iele = mat_item(inum)
+          iele = ele_grp1%item_grp(inum)
 !
           if (iele_local_part(iele) .gt. 0) then
             icou = icou + 1

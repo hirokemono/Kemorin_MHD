@@ -104,7 +104,7 @@
      &          =    ele_grp%grp_name(1:ele_grp1%num_grp)
         ele_grp1%istack_grp(0:ele_grp1%num_grp)                         &
      &          =  ele_grp%istack_grp(0:ele_grp1%num_grp)
-        mat_item(1:ele_grp1%num_item)                &
+        ele_grp1%item_grp(1:ele_grp1%num_item)                          &
      &          = ele_grp%item_grp(1:ele_grp1%num_item)
       end if
 !
@@ -169,9 +169,9 @@
      &       ele_grp%istack_grp(i), ele_grp1%istack_grp(i)
       end do
       do i = 1, ele_grp1%num_item
-        if(ele_grp%item_grp(i) .ne. mat_item(i))                        &
+        if(ele_grp%item_grp(i) .ne. ele_grp1%item_grp(i))               &
      &       write(*,*) 'mat_item(i)', my_rank, i,                      &
-     &       ele_grp%item_grp(i), mat_item(i)
+     &       ele_grp%item_grp(i), ele_grp1%item_grp(i)
       end do
 !
       end subroutine compare_ele_grp_type_vs_1st

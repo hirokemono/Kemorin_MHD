@@ -112,7 +112,7 @@
               ist = ele_grp1%istack_grp(i-1) + 1
               ied = ele_grp1%istack_grp(i)
               do inum = ist, ied
-                iele = mat_item(inum)
+                iele = ele_grp1%item_grp(inum)
                 imark_ele_filter(iele) = 1
               end do
             end if

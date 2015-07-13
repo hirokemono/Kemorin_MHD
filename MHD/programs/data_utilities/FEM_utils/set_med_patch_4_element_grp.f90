@@ -89,7 +89,7 @@
         call alloc_psf_search_list(ele_search)
         do inum = 1, ele_search%num_search
           ele_search%id_search(inum)                                    &
-     &               = mat_item(inum+ele_grp1%istack_grp(igrp-1))
+     &            = ele_grp1%item_grp(inum+ele_grp1%istack_grp(igrp-1))
         end do
         call dealloc_psf_search_list(ele_search)
         call dealloc_num_psf_search_list(ele_search)
@@ -138,7 +138,7 @@
       ist = ele_grp1%istack_grp(igrp-1) + 1
       ied = ele_grp1%istack_grp(igrp)
       do inum = ist, ied
-        iele = mat_item(inum)
+        iele = ele_grp1%item_grp(inum)
         ie_1ele(1:8) = ie(iele,1:8)
         xx_1ele(1,1:8) = xx(ie_1ele(1:8),1)
         xx_1ele(2,1:8) = xx(ie_1ele(1:8),2)
@@ -182,7 +182,7 @@
       ist = ele_grp1%istack_grp(igrp-1) + 1
       ied = ele_grp1%istack_grp(igrp)
       do inum = ist, ied
-        iele = mat_item(inum)
+        iele = ele_grp1%item_grp(inum)
         ie_1ele(1:8) =   ie(iele,1:8)
         xx_1ele(1,1:8) = xx(ie_1ele(1:8),1)
         xx_1ele(2,1:8) = xx(ie_1ele(1:8),2)

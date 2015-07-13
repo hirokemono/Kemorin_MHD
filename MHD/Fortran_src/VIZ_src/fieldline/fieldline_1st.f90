@@ -66,7 +66,7 @@
 !
       call field_line_init(numnod, numele, e_multi,                     &
      &    ele_grp1%num_grp, ele_grp1%num_item, ele_grp1%grp_name,       &
-     &    ele_grp1%istack_grp, mat_item,          &
+     &    ele_grp1%istack_grp, ele_grp1%item_grp,                       &
      &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%grp_name,          &
      &    sf_grp1%istack_grp, sf_grp1%item_sf_grp,                      &
      &    num_nod_phys, phys_nod_name)
@@ -91,15 +91,14 @@
 !
 !
       call field_line_main(istep_psf, numnod, numele, numsurf,          &
-     &       nnod_4_surf, inod_smp_stack, inod_global,                  &
-     &       xx, radius, a_radius, s_cylinder, a_s_cylinder,            &
-     &       iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,     &
-     &       x_surf, vnorm_surf, area_surf, interior_surf,              &
-     &       ele_grp1%num_grp, ele_grp1%num_item, ele_grp1%istack_grp,  &
-     &       mat_item,                &
-     &       ele_4_nod1%ntot, ele_4_nod1%istack_4_node,                 &
-     &       ele_4_nod1%iele_4_node, num_nod_phys, num_tot_nod_phys,    &
-     &       istack_nod_component, d_nod, nod_comm)
+     &    nnod_4_surf, inod_smp_stack, inod_global,                     &
+     &    xx, radius, a_radius, s_cylinder, a_s_cylinder,               &
+     &    iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,        &
+     &    x_surf, vnorm_surf, area_surf, interior_surf,                 &
+     &    ele_grp1%num_grp, ele_grp1%num_item, ele_grp1%istack_grp,     &
+     &    ele_grp1%item_grp, ele_4_nod1%ntot, ele_4_nod1%istack_4_node, &
+     &    ele_4_nod1%iele_4_node, num_nod_phys, num_tot_nod_phys,       &
+     &    istack_nod_component, d_nod, nod_comm)
 !
       end subroutine field_line_main_1st
 !

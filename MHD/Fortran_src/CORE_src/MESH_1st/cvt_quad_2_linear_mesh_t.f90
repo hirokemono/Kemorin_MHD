@@ -138,9 +138,9 @@
 !
       call convert_ele_group_2_linear                                   &
      &   (ele_grp1%num_grp, ele_grp1%num_item, ele_grp1%grp_name,       &
-     &    ele_grp1%istack_grp, mat_item, group_l%ele_grp%num_item,      &
-     &    group_l%ele_grp%grp_name, group_l%ele_grp%istack_grp,         &
-     &    group_l%ele_grp%item_grp)
+     &    ele_grp1%istack_grp, ele_grp1%item_grp,                       &
+     &    group_l%ele_grp%num_item, group_l%ele_grp%grp_name,           &
+     &    group_l%ele_grp%istack_grp, group_l%ele_grp%item_grp)
 !
       group_l%surf_grp%num_grp = sf_grp1%num_grp
       group_l%surf_grp%num_item = 4 * sf_grp1%num_item

@@ -97,7 +97,7 @@
             jst = ele_grp1%istack_grp(jgrp-1) + 1
             jed = ele_grp1%istack_grp(jgrp)
             do jnum = jst, jed
-              iele = mat_item(jnum)
+              iele = ele_grp1%item_grp(jnum)
               if(imark_ele(iele) .gt. 0) then
                 icou = icou + 1
                 iele_4_subdomain(icou) = iele

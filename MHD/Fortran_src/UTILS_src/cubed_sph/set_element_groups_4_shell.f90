@@ -41,7 +41,7 @@
         ist = ele_grp1%istack_grp(k-1)+1
         ied = ele_grp1%istack_grp(k)
         write(id_file,*) trim(ele_grp1%grp_name(k))
-        write(id_file,'(6i16)') (mat_item(i),i=ist,ied)
+        write(id_file,'(6i16)') (ele_grp1%item_grp(i),i=ist,ied)
       end do
 !
       end subroutine write_element_group
@@ -133,13 +133,14 @@
           if      (id_ele_grp_layer_csp(inum) .eq. 0) then
             do iele = 1, numele_cube
               icou = icou + 1
-              mat_item(icou) = iele
+              ele_grp1%item_grp(icou) = iele
             end do
           else if (id_ele_grp_layer_csp(inum) .gt. 0) then
             if ( mod(id_ele_grp_layer_csp(inum),nskip_r) .eq. 0 ) then
               do iele = 1, numele_sf
                 icou = icou + 1
-                mat_item(icou) = iele + numele_cube + numele_sf         &
+                ele_grp1%item_grp(icou) = iele                          &
+     &                       + numele_cube + numele_sf                  &
      &                        * (id_ele_grp_layer_csp(inum)/nskip_r-1)
               end do
             end if

@@ -79,7 +79,7 @@
 !
       call marking_by_layers                                            &
      &   (numele, ele_grp1%num_grp, ele_grp1%num_item,                  &
-     &    ele_grp1%istack_grp, ele_grp1%grp_name, mat_item,             &
+     &    ele_grp1%istack_grp, ele_grp1%grp_name, ele_grp1%item_grp,    &
      &    mat_flag_mhd(1) )
 !
 !  set list vector for ordering

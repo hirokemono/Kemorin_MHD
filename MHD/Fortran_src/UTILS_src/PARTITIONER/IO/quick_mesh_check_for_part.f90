@@ -49,7 +49,7 @@
 !
       if (ele_grp1%num_grp .gt. 0) then
         do is= 1, ele_grp1%istack_grp(ele_grp1%num_grp)
-          in= mat_item(is)
+          in= ele_grp1%item_grp(is)
           if (in .le. 0) call ERROR_EXIT(ierr_grp, itwo)
           if (in .gt. numele) call ERROR_EXIT(ierr_ov_grp, itwo)
         enddo

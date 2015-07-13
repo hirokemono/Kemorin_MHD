@@ -40,7 +40,7 @@
         ist = ele_grp1%istack_grp(i-1) + 1
         ied = ele_grp1%istack_grp(i)
         do inum = ist, ied
-          iele = mat_item(inum)
+          iele = ele_grp1%item_grp(inum)
           new_ele_grp%istack_grp(i) = new_ele_grp%istack_grp(i)         &
      &                               + num_ele_refined(iele)
         end do
@@ -69,7 +69,7 @@
         ist = ele_grp1%istack_grp(i-1) + 1
         ied = ele_grp1%istack_grp(i)
         do inum = ist, ied
-          iele = mat_item(inum)
+          iele = ele_grp1%item_grp(inum)
           jst = istack_ele_refined(iele-1) + 1
           jed = istack_ele_refined(iele)
           do jnum = jst, jed
