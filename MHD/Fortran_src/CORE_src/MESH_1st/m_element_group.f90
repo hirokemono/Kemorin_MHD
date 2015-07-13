@@ -26,7 +26,7 @@
 !>  Structure for node and element group
       type(group_data), save :: ele_grp1
 !
-!ele_grp1%num_item
+!ele_grp1%max_grp_smp
 !
 !      integer (kind=kint) :: num_mat
 !<      number of element group
@@ -41,12 +41,12 @@
       character (len=kchara), allocatable, target :: mat_name(:)
 !<      element group name
 !
-      integer( kind=kint )  ::  num_mat_smp
+!      integer( kind=kint )  ::  num_mat_smp
 !<      number of element group for SMP process
       integer( kind=kint ), allocatable :: imat_smp_stack(:)
 !<      end address of each element group for SMP process
 !
-      integer( kind=kint )  ::  max_mat_4_smp
+!      integer( kind=kint )  ::  max_mat_4_smp
 !<      maximum number of element group for SMP process
 !
 ! ----------------------------------------------------------------------
@@ -89,7 +89,7 @@
 !
        subroutine allocate_material_param_smp
 !
-       allocate( imat_smp_stack(0:ele_grp1%num_item))
+       allocate( imat_smp_stack(0:ele_grp1%num_grp_smp))
        imat_smp_stack = 0
 !
        end subroutine allocate_material_param_smp
@@ -110,7 +110,7 @@
       integer(kind = kint), intent(in) :: my_rank
 !
        write(*,*) 'PE: ', my_rank, 'num_mat ', ele_grp1%num_grp
-       write(*,*) 'PE: ', my_rank, 'num_mat_smp ', ele_grp1%num_item
+       write(*,*) 'PE: ', my_rank, 'num_mat_smp ', ele_grp1%num_grp_smp
        write(*,*) 'PE: ', my_rank,                                      &
      &            'imat_smp_stack ', imat_smp_stack
 !

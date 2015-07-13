@@ -170,8 +170,7 @@
       use write_cubed_sph_grp_data
       use modify_colat_cube_surf
 !
-      integer(kind = kint) :: iele_start, inod_end, inum, ic
-      integer(kind = kint) :: inum1, iele_s2
+      integer(kind = kint) :: iele_start, inod_end, inum, ic, iele_s2
 !
 !
        iele_start = numele
