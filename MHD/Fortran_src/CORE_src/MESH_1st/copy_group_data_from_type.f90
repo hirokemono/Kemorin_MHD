@@ -74,13 +74,15 @@
       type(group_data), intent(inout) :: nod_grp
 !
 !
-      num_bc = nod_grp%num_grp
-      if (num_bc .gt. 0) then
+      nod_grp1%num_grp = nod_grp%num_grp
+      if (nod_grp1%num_grp .gt. 0) then
         num_nod_bc = nod_grp%num_item
         call allocate_boundary_data
 !
-        bc_name(1:num_bc) =     nod_grp%grp_name(1:num_bc)
-        bc_istack(0:num_bc) =   nod_grp%istack_grp(0:num_bc)
+        bc_name(1:nod_grp1%num_grp)                                     &
+     &     = nod_grp%grp_name(1:nod_grp1%num_grp)
+        bc_istack(0:nod_grp1%num_grp)                                   &
+     &     = nod_grp%istack_grp(0:nod_grp1%num_grp)
         bc_item(1:num_nod_bc) = nod_grp%item_grp(1:num_nod_bc)
       end if
 !
@@ -100,11 +102,11 @@
       integer(kind = kint) :: i
 !
 !
-      if(nod_grp%num_grp .ne. num_bc) write(*,*) 'num_bc',              &
-     &     my_rank, nod_grp%num_grp, num_bc
+      if(nod_grp%num_grp .ne. nod_grp1%num_grp) write(*,*) 'num_bc',    &
+     &     my_rank, nod_grp%num_grp, nod_grp1%num_grp
       if(nod_grp%num_item .ne. num_nod_bc) write(*,*)                   &
      &     'num_nod_bc', my_rank, nod_grp%num_item, num_nod_bc
-      do i = 1, num_bc
+      do i = 1, nod_grp1%num_grp
         if(nod_grp%grp_name(i) .ne. bc_name(i))                         &
      &       write(*,*) 'bc_name(i)', my_rank, i,                       &
      &       nod_grp%grp_name(i), bc_name(i)

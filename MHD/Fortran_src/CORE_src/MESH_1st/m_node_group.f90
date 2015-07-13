@@ -18,10 +18,16 @@
       module m_node_group
 !
       use m_precision
+      use t_group_data
 !
       implicit  none
 !
-      integer (kind=kint) :: num_bc
+!>  Structure for node and node group
+      type(group_data), save :: nod_grp1
+!
+!nod_grp1%num_grp
+!
+!      integer (kind=kint) :: num_bc
 !<      number of node group
       integer (kind=kint) :: num_nod_bc
 !<      total number of nodes for node group
@@ -51,8 +57,8 @@
 !
       subroutine allocate_boundary_data
 !
-       allocate(bc_istack(0:num_bc))
-       allocate(bc_name(num_bc))
+       allocate(bc_istack(0:nod_grp1%num_grp))
+       allocate(bc_name(nod_grp1%num_grp))
        allocate(bc_item(num_nod_bc))
 !
       call clear_boundary_data
@@ -102,7 +108,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank
 !
-       write(*,*) 'PE: ', my_rank, 'num_bc ', num_bc
+       write(*,*) 'PE: ', my_rank, 'num_bc ', nod_grp1%num_grp
        write(*,*) 'PE: ', my_rank, 'num_bc_smp ', num_bc_smp
        write(*,*) 'PE: ', my_rank,                                      &
      &            'ibc_smp_stack ', ibc_smp_stack

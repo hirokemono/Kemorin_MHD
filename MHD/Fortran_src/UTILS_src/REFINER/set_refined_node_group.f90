@@ -57,12 +57,12 @@
       integer(kind= kint) :: inod, iele, iedge, isurf
 !
 !
-      do i = 1, num_bc
+      do i = 1, nod_grp1%num_grp
         new_nod_grp%grp_name(i) = bc_name(i)
       end do
 !
       new_nod_grp%istack_grp(0) = 0
-      do i = 1, num_bc
+      do i = 1, nod_grp1%num_grp
         inod_mark(1:numnod) = 0
 !
         ist = bc_istack(i-1) + 1
@@ -108,7 +108,7 @@
         end do
 !
       end do
-      new_nod_grp%num_item = new_nod_grp%istack_grp(num_bc)
+      new_nod_grp%num_item = new_nod_grp%istack_grp(nod_grp1%num_grp)
 !
       end subroutine count_refined_node_group
 !
@@ -128,7 +128,7 @@
       integer(kind = kint) :: inod, iedge, isurf, iele
 !
 !
-      do i = 1, num_bc
+      do i = 1, nod_grp1%num_grp
         inod_mark(1:numnod) = 0
 !
         icou = new_nod_grp%istack_grp(i-1)

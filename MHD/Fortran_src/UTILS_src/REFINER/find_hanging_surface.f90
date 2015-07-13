@@ -218,7 +218,7 @@
 !
       integer(kind = kint) :: icou
 !
-      icou = num_bc
+      icou = nod_grp1%num_grp
       if(nnod_hang_4 .gt. 0) then
         icou = icou+1
         new_nod_grp%grp_name(icou) = 'HANGING_NODE_SURF'
@@ -258,7 +258,7 @@
 !
       integer(kind = kint) :: icou, inum, ist
 !
-      icou = num_bc
+      icou = nod_grp1%num_grp
       if(nnod_hang_4 .gt. 0) then
         ist =  new_nod_grp%istack_grp(icou)
         do inum = 1, nnod_hang_4

@@ -144,7 +144,7 @@
       num_monitor_local = 0
 !
       if ( num_monitor .gt. 0 ) then
-        do i=1, num_bc
+        do i=1, nod_grp1%num_grp
 !
           do inum = 1, num_monitor
             if (bc_name(i) .eq. monitor_grp(inum)) then
@@ -162,7 +162,7 @@
       if (num_monitor_local .eq. 0) return
 !
       num_monitor_local = 0
-      do i=1, num_bc
+      do i=1, nod_grp1%num_grp
         do inum = 1, num_monitor
           if (bc_name(i) .eq. monitor_grp(inum)) then
             do k= bc_istack(i-1)+1, bc_istack(i)

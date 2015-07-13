@@ -15,7 +15,7 @@
       implicit  none
 !
 !
-!>  Structure for node and element group
+!>  Structure for element group
       type(group_data), save :: ele_grp1
 !
 ! ----------------------------------------------------------------------

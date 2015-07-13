@@ -32,7 +32,7 @@
       type(group_data), intent(inout) :: new_nod_grp
 !
 !
-      new_nod_grp%num_grp =  num_bc + 1
+      new_nod_grp%num_grp =  nod_grp1%num_grp + 1
       call allocate_grp_type_num(new_nod_grp)
 !
       call count_new_nod_group(new_nod_grp)
@@ -53,7 +53,7 @@
       type(group_data), intent(inout) :: new_nod_grp
 !
 !
-      new_nod_grp%num_grp =  num_bc
+      new_nod_grp%num_grp =  nod_grp1%num_grp
       call allocate_grp_type_num(new_nod_grp)
 !
       call count_new_nod_group(new_nod_grp)
@@ -72,10 +72,11 @@
 !
       integer(kind = kint) :: i, inod, inum
 !
-      new_nod_grp%grp_name(1:num_bc) = bc_name(1:num_bc)
+      new_nod_grp%grp_name(1:nod_grp1%num_grp)                          &
+     &     = bc_name(1:nod_grp1%num_grp)
 !
       new_nod_grp%istack_grp(0) = 0
-      do i = 1, num_bc
+      do i = 1, nod_grp1%num_grp
          new_nod_grp%istack_grp(i) = new_nod_grp%istack_grp(i-1)
          do inum = bc_istack(i-1)+1, bc_istack(i)
            inod = bc_item(inum)
@@ -84,7 +85,7 @@
            end if
          end do
       end do
-      new_nod_grp%num_item = new_nod_grp%istack_grp(num_bc)
+      new_nod_grp%num_item = new_nod_grp%istack_grp(nod_grp1%num_grp)
 !
       end subroutine count_new_nod_group
 !
@@ -97,7 +98,7 @@
       integer(kind = kint) :: inod, inum, i, icou
 !
       icou = 0
-      do i = 1, num_bc
+      do i = 1, nod_grp1%num_grp
          do inum = bc_istack(i-1)+1, bc_istack(i)
            inod = bc_item(inum)
            if ( mark_new_node(inod) .ne. 0 ) then
@@ -123,7 +124,7 @@
       new_nod_grp%grp_name(new_nod_grp%num_grp) = 'equator'
 !
       new_nod_grp%istack_grp(new_nod_grp%num_grp)                       &
-     &     = new_nod_grp%istack_grp(num_bc)
+     &     = new_nod_grp%istack_grp(nod_grp1%num_grp)
       do inod = 1, new_node%numnod
         if ( abs(new_node%xx(inod,3)) .le. 1.0d-11 ) then
           new_nod_grp%istack_grp(new_nod_grp%num_grp) &
@@ -143,7 +144,7 @@
 !
       integer(kind = kint) :: inod, icou
 !
-      icou = new_nod_grp%istack_grp(num_bc)
+      icou = new_nod_grp%istack_grp(nod_grp1%num_grp)
       do inod = 1, new_node%numnod
         if ( abs(new_node%xx(inod,3)) .le. 1.0d-11 ) then
           icou = icou + 1

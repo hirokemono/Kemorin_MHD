@@ -36,10 +36,11 @@
       integer(kind = kint) :: ig, ist, ied, inum, inod
 !
 !
-      new_nod_grp%grp_name(1:num_bc) = bc_name(1:num_bc)
+      new_nod_grp%grp_name(1:nod_grp1%num_grp)                          &
+     &      = bc_name(1:nod_grp1%num_grp)
 !
       new_nod_grp%istack_grp(0) = 0
-      do ig = 1, num_bc
+      do ig = 1, nod_grp1%num_grp
         new_nod_grp%istack_grp(ig) = new_nod_grp%istack_grp(ig-1)
         ist = bc_istack(ig-1) + 1
         ied = bc_istack(ig)
@@ -51,7 +52,7 @@
           end if
         end do
       end do
-      new_nod_grp%num_item = new_nod_grp%istack_grp(num_bc)
+      new_nod_grp%num_item = new_nod_grp%istack_grp(nod_grp1%num_grp)
 !
       end subroutine count_local_node_group
 !
@@ -68,7 +69,7 @@
 !
 !
       icou = 0
-      do ig = 1, num_bc
+      do ig = 1, nod_grp1%num_grp
         ist = bc_istack(ig-1) + 1
         ied = bc_istack(ig)
         do inum = ist, ied

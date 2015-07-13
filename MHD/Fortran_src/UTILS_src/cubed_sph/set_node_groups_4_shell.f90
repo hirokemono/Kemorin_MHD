@@ -37,21 +37,21 @@
       subroutine write_node_group(id_file)
 !
       integer(kind = kint), intent(in) :: id_file
-      integer(kind = kint) :: i, k, ist, ied
+      integer(kind = kint) :: k, ist, ied
 !
       write(id_file,'(a)') '!'
       write(id_file,'(a)') '! boundary conditions'
       write(id_file,'(a)') '! 4. Group information'
       write(id_file,'(a)') '! 4.1. Node group'
 !
-      write(id_file,'(i16)') num_bc
-      write(id_file,'(6i16)') (bc_istack(i),i=1,num_bc)
+      write(id_file,'(i16)') nod_grp1%num_grp
+      write(id_file,'(6i16)') bc_istack(1:nod_grp1%num_grp)
 !
-      do k = 1, num_bc
+      do k = 1, nod_grp1%num_grp
         ist = bc_istack(k-1) + 1
         ied = bc_istack(k)
         write(id_file,*) trim(bc_name(k))
-        write(id_file,'(6i16)') (bc_item(i),i=ist,ied)
+        write(id_file,'(6i16)') bc_item(ist:ied)
       end do
 !
       end subroutine write_node_group
@@ -81,7 +81,8 @@
       integer(kind = kint), intent(in) :: nskip_r
       integer(kind = kint) :: i
 !
-      num_bc = 2 + num_node_grp_csp
+!
+      nod_grp1%num_grp = 2 + num_node_grp_csp
 !
       num_nod_bc = 2
       do i = 1, num_nod_layer_csp
@@ -116,7 +117,7 @@
         end if
       end do
 !
-      num_bc = 2 + num_node_grp_csp
+      nod_grp1%num_grp = 2 + num_node_grp_csp
 !
       end subroutine count_node_groups_quad
 !

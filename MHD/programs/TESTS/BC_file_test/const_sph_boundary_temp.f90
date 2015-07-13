@@ -31,7 +31,7 @@
       integer(kind = kint) :: igrp
 !
 !
-      do igrp = 1, num_bc
+      do igrp = 1, nod_grp1%num_grp
         if(bc_name(igrp) .eq. grp_name_nod_bc) then
           igrp_nod_bc = igrp
           exit

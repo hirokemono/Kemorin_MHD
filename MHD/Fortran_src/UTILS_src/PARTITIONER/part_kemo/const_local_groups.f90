@@ -47,7 +47,7 @@
       type(group_data), intent(inout) :: new_nod_grp
 !
 !
-      new_nod_grp%num_grp = num_bc
+      new_nod_grp%num_grp = nod_grp1%num_grp
       call allocate_grp_type_num(new_nod_grp)
       call count_local_node_group(new_nod_grp)
 !

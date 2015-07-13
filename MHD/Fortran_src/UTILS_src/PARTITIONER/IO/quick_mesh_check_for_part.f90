@@ -35,12 +35,12 @@
       if (numnod .le. 0) call ERROR_EXIT(ierr_ele, izero)
       if (numele .le. 0) call ERROR_EXIT(ierr_ele, izero)
 !
-      if (num_bc   .lt. 0) call ERROR_EXIT(ierr_ngrp, ione)
+      if (nod_grp1%num_grp   .lt. 0) call ERROR_EXIT(ierr_ngrp, ione)
       if (ele_grp1%num_grp  .lt. 0) call ERROR_EXIT(ierr_ngrp, itwo)
       if (sf_grp1%num_grp .lt. 0) call ERROR_EXIT(ierr_ngrp, ithree)
 !
-      if (num_bc .gt. 0) then
-        do is= 1, bc_istack(num_bc)
+      if (nod_grp1%num_grp .gt. 0) then
+        do is= 1, bc_istack(nod_grp1%num_grp)
           in= bc_item(is)
           if (in .le. 0) call ERROR_EXIT(ierr_grp,ione)
           if (in .gt. numnod) call ERROR_EXIT(ierr_ov_grp,ione)

@@ -61,14 +61,15 @@
 !
 !   set node group
 !
-      num_bc = num_bc_dummy
-      if (num_bc/=0) then
+      nod_grp1%num_grp = num_bc_dummy
+      if (nod_grp1%num_grp .gt. 0) then
 !
         num_nod_bc = num_nod_bc_dummy
         call allocate_boundary_data
 !
-        bc_name(1:num_bc) =     bc_name_dummy(1:num_bc)
-        bc_istack(0:num_bc) =   bc_istack_dummy(0:num_bc)
+        bc_name(1:nod_grp1%num_grp) = bc_name_dummy(1:nod_grp1%num_grp)
+        bc_istack(0:nod_grp1%num_grp)                                   &
+     &      = bc_istack_dummy(0:nod_grp1%num_grp)
         bc_item(1:num_nod_bc) = bc_item_dummy(1:num_nod_bc)
       end if
       call deallocate_bc_item_dummy
@@ -84,12 +85,13 @@
       use m_read_boundary_data
 !
 !
-      num_bc_dummy = num_bc
+      num_bc_dummy = nod_grp1%num_grp
       num_nod_bc_dummy = num_nod_bc
       call allocate_bc_stack_dummy
 !
-      bc_name_dummy(1:num_bc) = bc_name(1:num_bc)
-      bc_istack_dummy(0:num_bc) = bc_istack(0:num_bc)
+      bc_name_dummy(1:nod_grp1%num_grp) = bc_name(1:nod_grp1%num_grp)
+      bc_istack_dummy(0:nod_grp1%num_grp)                               &
+     &            = bc_istack(0:nod_grp1%num_grp)
 !
       call allocate_bc_item_dummy
       bc_item_dummy(1:num_nod_bc) = bc_item(1:num_nod_bc)

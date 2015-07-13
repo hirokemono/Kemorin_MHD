@@ -266,7 +266,7 @@
 !
       r_ICB = 1.0d11
       r_CMB = 0.0d0
-      do i = 1, num_bc
+      do i = 1, nod_grp1%num_grp
         if (bc_name(i) .eq. 'ICB') then
           do inum = bc_istack(i-1)+1, bc_istack(i)
             inod = bc_item(inum)

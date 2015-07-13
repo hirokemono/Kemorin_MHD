@@ -52,7 +52,7 @@
 !
       call allocate_mark_refine_nod_grp
 !
-      new_nod_grp%num_grp = num_bc
+      new_nod_grp%num_grp = nod_grp1%num_grp
       call add_hanging_node_group_num(new_nod_grp)
       call allocate_grp_type_num(new_nod_grp)
 !
@@ -80,11 +80,11 @@
       new_ele_grp%num_grp = ele_grp1%num_grp
       call allocate_grp_type_num(new_ele_grp)
 !
-      call count_refined_ele_group(new_ele_grp)
+      call count_refined_ele_group(ele_grp1, new_ele_grp)
       call allocate_grp_type_item(new_ele_grp)
 !
       write(*,*) 's_set_refined_ele_group'
-      call s_set_refined_ele_group(new_ele_grp)
+      call s_set_refined_ele_group(ele_grp1, new_ele_grp)
 !
       end subroutine const_refined_ele_group
 !

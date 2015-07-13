@@ -56,7 +56,7 @@
       integer (kind = kint) :: i, j, nd
 !
 !
-      do i=1, num_bc 
+      do i=1, nod_grp1%num_grp 
 ! ----------- loop for boundary conditions
 !
         do j=1, num_bc_field 
@@ -115,8 +115,7 @@
       integer (kind = kint) :: i, j, nd
 !
 !
-      do i=1, num_bc 
-!
+      do i=1, nod_grp1%num_grp 
 ! ----------- loop for boundary conditions
 !
         do j=1, num_bc_field 
@@ -168,7 +167,7 @@
       integer (kind = kint) :: i, j, nd
 !
 !
-      do i=1, num_bc 
+      do i=1, nod_grp1%num_grp 
 !
         do j=1, num_bc_field 
 !
@@ -201,7 +200,7 @@
       integer (kind = kint) :: i, j
 !
 !
-      do i=1, num_bc 
+      do i=1, nod_grp1%num_grp 
         do j=1, num_bc_field 
 !
          if (bc_name(i)==bc_field_name(j)) then
