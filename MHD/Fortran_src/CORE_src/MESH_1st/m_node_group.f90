@@ -40,12 +40,12 @@
       character (len=kchara), allocatable, target :: bc_name(:)
 !<      node group name
 !
-      integer( kind=kint )  ::  num_bc_smp
+!      integer( kind=kint )  ::  num_bc_smp
 !<      number of node group for SMP process
       integer( kind=kint ), allocatable :: ibc_smp_stack(:)
 !<      end address of each node group for SMP process
 !
-      integer( kind=kint )  ::  max_bc_4_smp
+!      integer( kind=kint )  ::  max_bc_4_smp
 !<      maximum number of node group for SMP process
 !
 !
@@ -88,7 +88,7 @@
 !
        subroutine allocate_boundary_param_smp
 !
-       allocate( ibc_smp_stack(0:num_bc_smp))
+       allocate( ibc_smp_stack(0:nod_grp1%num_grp_smp))
        ibc_smp_stack = 0
 !
        end subroutine allocate_boundary_param_smp
@@ -109,7 +109,7 @@
       integer(kind = kint), intent(in) :: my_rank
 !
        write(*,*) 'PE: ', my_rank, 'num_bc ', nod_grp1%num_grp
-       write(*,*) 'PE: ', my_rank, 'num_bc_smp ', num_bc_smp
+       write(*,*) 'PE: ', my_rank, 'num_bc_smp ', nod_grp1%num_grp_smp
        write(*,*) 'PE: ', my_rank,                                      &
      &            'ibc_smp_stack ', ibc_smp_stack
 !
