@@ -92,7 +92,7 @@
 !
       close(id_file)
 !
-      call allocate_material_data
+      call allocate_grp_type(ele_grp1)
       call allocate_med_grouping_patch(ele_grp1%num_item)
 !
 !

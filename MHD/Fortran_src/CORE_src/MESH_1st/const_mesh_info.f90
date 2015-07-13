@@ -121,7 +121,7 @@
       call deallocate_ele_group_connect
 !
       call deallocate_sf_grp_type_smp(sf_grp1)
-      call deallocate_material_param_smp
+      call deallocate_grp_type_smp(ele_grp1)
       call deallocate_boundary_param_smp
 !
       call deallocate_surface_geometry
@@ -139,7 +139,7 @@
       call deallocate_element_geometry
 !
       call deallocate_sf_grp_type(sf_grp1)
-      call deallocate_material_data
+      call deallocate_grp_type(ele_grp1)
       call deallocate_boundary_data
       call deallocate_element_connection
       call deallocate_node_geometry
@@ -162,7 +162,7 @@
 !
 !
       call deallocate_sf_grp_type_smp(sf_grp1)
-      call deallocate_material_param_smp
+      call deallocate_grp_type_smp(ele_grp1)
       call deallocate_boundary_param_smp
 !
       call deallocate_geometry_param_smp
@@ -172,7 +172,7 @@
       call deallocate_element_geometry
 !
       call deallocate_sf_grp_type(sf_grp1)
-      call deallocate_material_data
+      call deallocate_grp_type(ele_grp1)
       call deallocate_boundary_data
       call deallocate_element_connection
       call deallocate_node_geometry

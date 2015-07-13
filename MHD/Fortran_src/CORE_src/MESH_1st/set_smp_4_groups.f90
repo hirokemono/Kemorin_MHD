@@ -59,11 +59,11 @@
 !
       ele_grp1%num_grp_smp = np_smp * ele_grp1%num_grp
 !
-      call allocate_material_param_smp
+      call allocate_grp_type_smp(ele_grp1)
 !
       call set_group_size_4_smp                                         &
      &   (np_smp, ele_grp1%num_grp, ele_grp1%istack_grp,                &
-     &    imat_smp_stack, ele_grp1%max_grp_smp)
+     &    ele_grp1%istack_grp_smp, ele_grp1%max_grp_smp)
 !
       end subroutine count_mat_4_sheard_para
 !
@@ -78,16 +78,6 @@
       call count_surf_grp_type_smp(sf_grp1)
 !
       end subroutine count_surf_4_sheard_para
-!
-!-----------------------------------------------------------------------
-!
-      subroutine deallocate_surface_param_smp
-!
-      use m_surface_group
-!
-      call deallocate_sf_grp_type_smp(sf_grp1)
-!
-      end subroutine deallocate_surface_param_smp
 !
 !-----------------------------------------------------------------------
 !

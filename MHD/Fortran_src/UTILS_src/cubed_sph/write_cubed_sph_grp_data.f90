@@ -16,7 +16,6 @@
       use m_cubed_sph_grp_param
 !
       use m_node_group
-      use m_element_group
       use t_group_data
 !
       use cubed_sph_file_names
@@ -26,7 +25,9 @@
 !
       implicit none
 !
+      type(group_data), save :: ele_grp_sph
       type(surface_group_data), save :: sf_grp_sph
+      private :: ele_grp_sph, sf_grp_sph
 !
 !   --------------------------------------------------------------------
 !
@@ -58,19 +59,20 @@
 !
 !   set element group
 !
-      call count_ele_groups(numele_cube, numele_sf, ione)
+      call count_ele_groups(numele_cube, numele_sf, ione, ele_grp_sph)
 !
-      call allocate_material_data
+      call allocate_grp_type(ele_grp_sph)
 !
-      call set_element_group_names
+      call set_element_group_names(ele_grp_sph)
 !
-      call set_ele_grp_istack(numele_cube, numele_sf, ione)
+      call set_ele_grp_istack                                           &
+     &   (numele_cube, numele_sf, ione, ele_grp_sph)
 !
-      call set_ele_item(numele_cube, numele_sf, ione)
+      call set_ele_item(numele_cube, numele_sf, ione, ele_grp_sph)
 !
-      call write_element_group(id_l_group)
+      call write_element_group(id_l_group, ele_grp_sph)
 !
-      call deallocate_material_data
+      call deallocate_grp_type(ele_grp_sph)
 !
 ! surface group
 !
@@ -119,19 +121,20 @@
 !
 !   set element group
 !
-      call count_ele_groups(numele_cube, numele_sf, ione)
+      call count_ele_groups(numele_cube, numele_sf, ione, ele_grp_sph)
 !
-      call allocate_material_data
+      call allocate_grp_type(ele_grp_sph)
 !
-      call set_element_group_names
+      call set_element_group_names(ele_grp_sph)
 !
-      call set_ele_grp_istack(numele_cube, numele_sf, ione)
+      call set_ele_grp_istack                                           &
+     &   (numele_cube, numele_sf, ione, ele_grp_sph)
 !
-      call set_ele_item(numele_cube, numele_sf, ione)
+      call set_ele_item(numele_cube, numele_sf, ione, ele_grp_sph)
 !
-      call write_element_group(id_q_group)
+      call write_element_group(id_q_group, ele_grp_sph)
 !
-      call deallocate_material_data
+      call deallocate_grp_type(ele_grp_sph)
 !
 ! surface group
 !
@@ -177,19 +180,21 @@
 !
 !   set element group
 !
-      call count_ele_groups(nele_cube_c, nele_sf_c, nskip_r)
+      call count_ele_groups                                             &
+     &   (nele_cube_c, nele_sf_c, nskip_r, ele_grp_sph)
 !
-      call allocate_material_data
+      call allocate_grp_type(ele_grp_sph)
 !
-      call set_element_group_names
+      call set_element_group_names(ele_grp_sph)
 !
-      call set_ele_grp_istack(nele_cube_c, nele_sf_c, nskip_r)
+      call set_ele_grp_istack                                           &
+     &   (nele_cube_c, nele_sf_c, nskip_r, ele_grp_sph)
 !
-      call set_ele_item(nele_cube_c, nele_sf_c, nskip_r)
+      call set_ele_item(nele_cube_c, nele_sf_c, nskip_r, ele_grp_sph)
 !
-      call write_element_group(id_l_group)
+      call write_element_group(id_l_group, ele_grp_sph)
 !
-      call deallocate_material_data
+      call deallocate_grp_type(ele_grp_sph)
 !
 ! surface group
 !

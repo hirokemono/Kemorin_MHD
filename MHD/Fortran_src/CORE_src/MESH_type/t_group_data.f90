@@ -12,6 +12,7 @@
 !>@n        (module m_surface_group)
 !!
 !!@verbatim
+!!      subroutine allocate_grp_type(grp)
 !!      subroutine allocate_grp_type_num(grp)
 !!      subroutine allocate_grp_type_item(grp)
 !!      subroutine allocate_grp_type_smp(grp)
@@ -35,6 +36,7 @@
 !!      subroutine unlink_group_type(grp)
 !!      subroutine unlink_surf_group_type(sf_grp)
 !!
+!!      subroutine copy_group_data(grp_org, grp_new)
 !!      subroutine copy_surface_group(sf_grp_org, sf_grp_new)
 !!
 !!      subroutine check_group_type_data(my_rank, grp)
@@ -107,6 +109,17 @@
 ! ----------------------------------------------------------------------
 !
       contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine allocate_grp_type(grp)
+!
+      type(group_data), intent(inout) :: grp
+!
+      call allocate_grp_type_num(grp)
+      call allocate_grp_type_item(grp)
+!
+      end subroutine allocate_grp_type
 !
 ! ----------------------------------------------------------------------
 !
@@ -349,6 +362,28 @@
 !
 !  ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
+!
+      subroutine copy_group_data(grp_org, grp_new)
+!
+      type(group_data), intent(in) :: grp_org
+      type(group_data), intent(inout) :: grp_new
+!
+!
+      grp_new%num_grp =     grp_org%num_grp
+      if (grp_new%num_grp .le. 0) return
+      grp_new%num_item = grp_org%num_item
+      call allocate_grp_type(grp_new)
+!
+      grp_new%grp_name(1:grp_new%num_grp)                               &
+     &          =    grp_org%grp_name(1:grp_new%num_grp)
+      grp_new%istack_grp(0:grp_new%num_grp)                             &
+     &          =  grp_org%istack_grp(0:grp_new%num_grp)
+      grp_new%item_grp(1:grp_new%num_item)                              &
+     &          = grp_org%item_grp(1:grp_new%num_item)
+!
+      end subroutine copy_group_data
+!
+!  ---------------------------------------------------------------------
 !
       subroutine copy_surface_group(sf_grp_org, sf_grp_new)
 !

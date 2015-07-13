@@ -80,8 +80,8 @@
 !
         do ip = 1, np_smp
           ele_search%istack_search_smp(ip)                              &
-     &            = imat_smp_stack(ip+(igrp-1)*np_smp)                  &
-     &             - imat_smp_stack((igrp-1)*np_smp)
+     &            = ele_grp1%istack_grp_smp(ip+(igrp-1)*np_smp)         &
+     &             - ele_grp1%istack_grp_smp((igrp-1)*np_smp)
         end do
         ele_search%num_search = ele_grp1%istack_grp(igrp)               &
      &                         - ele_grp1%istack_grp(igrp-1)

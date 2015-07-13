@@ -285,11 +285,11 @@
      &      ist, ied)
       end do
 !
-      call deallocate_material_data
+      call deallocate_grp_type(ele_grp1)
 !
       ele_grp1%num_grp =    new_elegrp%num_grp
       ele_grp1%num_item = new_elegrp%num_item
-      call allocate_material_data
+      call allocate_grp_type(ele_grp1)
 !
       ele_grp1%grp_name(1:ele_grp1%num_grp)                             &
      &        =    new_elegrp%grp_name(1:ele_grp1%num_grp)

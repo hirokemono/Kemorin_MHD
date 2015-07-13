@@ -18,7 +18,7 @@
 !
       implicit  none
 !
-      private ::  node_group_from_type, element_group_from_type
+      private ::  node_group_from_type
       private ::  compare_nod_grp_type_vs_1st
       private ::  compare_ele_grp_type_vs_1st
       private ::  compare_surf_grp_type_vs_1st
@@ -31,6 +31,7 @@
 !
       subroutine group_data_from_type(group)
 !
+      use m_element_group
       use m_surface_group
       use t_mesh_data
       use t_group_data
@@ -39,7 +40,7 @@
 !
 !
       call node_group_from_type(group%nod_grp)
-      call element_group_from_type(group%ele_grp)
+      call copy_group_data(group%ele_grp, ele_grp1)
       call copy_surface_group(group%surf_grp, sf_grp1)
 !
       call dealloc_groups_data(group)
@@ -84,31 +85,6 @@
       end if
 !
       end subroutine node_group_from_type
-!
-!-----------------------------------------------------------------------
-!
-      subroutine element_group_from_type(ele_grp)
-!
-      use m_element_group
-      use t_group_data
-!
-      type(group_data), intent(inout) :: ele_grp
-!
-!
-      ele_grp1%num_grp =     ele_grp%num_grp
-      if (ele_grp1%num_grp .gt. 0) then
-        ele_grp1%num_item = ele_grp%num_item
-        call allocate_material_data
-!
-        ele_grp1%grp_name(1:ele_grp1%num_grp)                           &
-     &          =    ele_grp%grp_name(1:ele_grp1%num_grp)
-        ele_grp1%istack_grp(0:ele_grp1%num_grp)                         &
-     &          =  ele_grp%istack_grp(0:ele_grp1%num_grp)
-        ele_grp1%item_grp(1:ele_grp1%num_item)                          &
-     &          = ele_grp%item_grp(1:ele_grp1%num_item)
-      end if
-!
-      end subroutine element_group_from_type
 !
 !-----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
