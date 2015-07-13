@@ -42,8 +42,8 @@
       new_nod_grp%istack_grp(0) = 0
       do ig = 1, nod_grp1%num_grp
         new_nod_grp%istack_grp(ig) = new_nod_grp%istack_grp(ig-1)
-        ist = bc_istack(ig-1) + 1
-        ied = bc_istack(ig)
+        ist = nod_grp1%istack_grp(ig-1) + 1
+        ied = nod_grp1%istack_grp(ig)
         do inum = ist, ied
           inod = bc_item(inum)
 !
@@ -70,8 +70,8 @@
 !
       icou = 0
       do ig = 1, nod_grp1%num_grp
-        ist = bc_istack(ig-1) + 1
-        ied = bc_istack(ig)
+        ist = nod_grp1%istack_grp(ig-1) + 1
+        ied = nod_grp1%istack_grp(ig)
         do inum = ist, ied
           inod = bc_item(inum)
 !

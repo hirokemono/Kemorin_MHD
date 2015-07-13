@@ -40,7 +40,7 @@
       if (sf_grp1%num_grp .lt. 0) call ERROR_EXIT(ierr_ngrp, ithree)
 !
       if (nod_grp1%num_grp .gt. 0) then
-        do is= 1, bc_istack(nod_grp1%num_grp)
+        do is= 1, nod_grp1%istack_grp(nod_grp1%num_grp)
           in= bc_item(is)
           if (in .le. 0) call ERROR_EXIT(ierr_grp,ione)
           if (in .gt. numnod) call ERROR_EXIT(ierr_ov_grp,ione)

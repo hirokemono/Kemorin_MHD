@@ -45,11 +45,11 @@
       write(id_file,'(a)') '! 4.1. Node group'
 !
       write(id_file,'(i16)') nod_grp1%num_grp
-      write(id_file,'(6i16)') bc_istack(1:nod_grp1%num_grp)
+      write(id_file,'(6i16)') nod_grp1%istack_grp(1:nod_grp1%num_grp)
 !
       do k = 1, nod_grp1%num_grp
-        ist = bc_istack(k-1) + 1
-        ied = bc_istack(k)
+        ist = nod_grp1%istack_grp(k-1) + 1
+        ied = nod_grp1%istack_grp(k)
         write(id_file,*) trim(bc_name(k))
         write(id_file,'(6i16)') bc_item(ist:ied)
       end do
@@ -132,19 +132,21 @@
       integer(kind = kint), intent(in) :: nskip_r
       integer(kind = kint) :: i, inum, ist, ied
 !
-      bc_istack(0) = 0
-      bc_istack(1) = 1
-      bc_istack(2) = bc_istack(1) + 1
+      nod_grp1%istack_grp(0) = 0
+      nod_grp1%istack_grp(1) = 1
+      nod_grp1%istack_grp(2) = nod_grp1%istack_grp(1) + 1
       do i = 1, num_node_grp_csp
-        bc_istack(i+2) = bc_istack(i+1)
+        nod_grp1%istack_grp(i+2) = nod_grp1%istack_grp(i+1)
         ist = istack_nod_grp_layer_csp(i-1) + 1
         ied = istack_nod_grp_layer_csp(i)
         do inum = ist, ied
           if      ( id_nod_grp_layer_csp(inum) .eq. 0 ) then
-            bc_istack(i+2) = bc_istack(i+2) + numnod_cube
+            nod_grp1%istack_grp(i+2) = nod_grp1%istack_grp(i+2)         &
+     &                                + numnod_cube
           else if ( id_nod_grp_layer_csp(inum) .gt. 0 ) then
             if ( mod(id_nod_grp_layer_csp(inum),nskip_r) .eq. 0 ) then
-              bc_istack(i+2) = bc_istack(i+2) + numnod_sf
+              nod_grp1%istack_grp(i+2) = nod_grp1%istack_grp(i+2)       &
+     &                                  + numnod_sf
             end if
           end if
         end do
@@ -161,21 +163,23 @@
       integer(kind = kint), intent(in) :: numnod_sf, numedge_sf
       integer(kind = kint) :: i, inum, ist, ied
 !
-      bc_istack(0) = 0
-      bc_istack(1) = 1
-      bc_istack(2) = bc_istack(1) + 1
+      nod_grp1%istack_grp(0) = 0
+      nod_grp1%istack_grp(1) = 1
+      nod_grp1%istack_grp(2) = nod_grp1%istack_grp(1) + 1
       do i = 1, num_node_grp_csp
-        bc_istack(i+2) = bc_istack(i+1)
+        nod_grp1%istack_grp(i+2) = nod_grp1%istack_grp(i+1)
         ist = istack_nod_grp_layer_csp(i-1) + 1
         ied = istack_nod_grp_layer_csp(i)
         do inum = ist, ied
           if      ( id_nod_grp_layer_csp(inum) .eq. 0 ) then
-            bc_istack(i+2) = bc_istack(i+2)                             &
-     &                      + numnod_cube + numedge_cube
+            nod_grp1%istack_grp(i+2) = nod_grp1%istack_grp(i+2)         &
+     &                                + numnod_cube + numedge_cube
           else if ( id_nod_grp_layer_csp(inum) .gt. 0 ) then
-            bc_istack(i+2) = bc_istack(i+2) + numnod_sf + numedge_sf
+            nod_grp1%istack_grp(i+2) = nod_grp1%istack_grp(i+2)         &
+     &                                + numnod_sf + numedge_sf
           else if ( id_nod_grp_layer_csp(inum) .lt. 0 ) then
-            bc_istack(i+2) = bc_istack(i+2) + numnod_sf
+            nod_grp1%istack_grp(i+2) = nod_grp1%istack_grp(i+2)         &
+     &                                + numnod_sf
           end if
         end do
       end do
@@ -234,14 +238,14 @@
       inod0 = (num_hemi-1)*(num_hemi-1)*(num_hemi-2) / 2                &
      &      + (num_hemi-1)*(num_hemi-2) / 2                             &
      &      + num_hemi / 2
-      i = bc_istack(0) + 1
+      i = nod_grp1%istack_grp(0) + 1
       bc_item(i) = inod0
 !
 !  North pole at CMB
 !
       inod0 = numnod_cube + numnod_sf * (nr_cmb/nskip_r + 1)            &
      &      - (num_hemi+1)*(num_hemi) / 2 - num_hemi/2
-      i = bc_istack(1) + 1
+      i = nod_grp1%istack_grp(1) + 1
       bc_item(i) = inod0
 !
       end subroutine set_nodal_item_center
@@ -260,7 +264,7 @@
 !
       do i = 1, num_node_grp_csp
 !
-        icou = bc_istack(i+1)
+        icou = nod_grp1%istack_grp(i+1)
         ist = istack_nod_grp_layer_csp(i-1) + 1
         ied = istack_nod_grp_layer_csp(i)
 !
@@ -306,7 +310,7 @@
 !
       do i = 1, num_node_grp_csp
 !
-        icou = bc_istack(i+1)
+        icou = nod_grp1%istack_grp(i+1)
         ist = istack_nod_grp_layer_csp(i-1) + 1
         ied = istack_nod_grp_layer_csp(i)
 !

@@ -25,14 +25,14 @@
 !>  Structure for node and node group
       type(group_data), save :: nod_grp1
 !
-!nod_grp1%num_grp_smp
+!nod_grp1%istack_grp
 !
 !      integer (kind=kint) :: num_bc
 !<      number of node group
 !      integer (kind=kint) :: num_nod_bc
 !<      total number of nodes for node group
 !
-      integer (kind=kint), allocatable, target :: bc_istack(:)
+!      integer (kind=kint), allocatable, target :: bc_istack(:)
 !<      end address of each node group
       integer (kind=kint), allocatable, target :: bc_item(:)
 !<      local node ID for node group
@@ -42,7 +42,7 @@
 !
 !      integer( kind=kint )  ::  num_bc_smp
 !<      number of node group for SMP process
-      integer( kind=kint ), allocatable :: ibc_smp_stack(:)
+!      integer( kind=kint ), allocatable :: ibc_smp_stack(:)
 !<      end address of each node group for SMP process
 !
 !      integer( kind=kint )  ::  max_bc_4_smp
@@ -57,7 +57,7 @@
 !
       subroutine allocate_boundary_data
 !
-       allocate(bc_istack(0:nod_grp1%num_grp))
+       allocate(nod_grp1%istack_grp(0:nod_grp1%num_grp))
        allocate(bc_name(nod_grp1%num_grp))
        allocate(bc_item(nod_grp1%num_item))
 !
@@ -69,7 +69,7 @@
 !
       subroutine clear_boundary_data
 !
-       bc_istack=0
+       nod_grp1%istack_grp=0
        bc_item=0
 !
       end subroutine clear_boundary_data
@@ -78,7 +78,7 @@
 !
       subroutine deallocate_boundary_data
 !
-       deallocate(bc_istack)
+       deallocate(nod_grp1%istack_grp)
        deallocate(bc_name)
        deallocate(bc_item)
 !
@@ -88,8 +88,8 @@
 !
        subroutine allocate_boundary_param_smp
 !
-       allocate( ibc_smp_stack(0:nod_grp1%num_grp_smp))
-       ibc_smp_stack = 0
+       allocate( nod_grp1%istack_grp_smp(0:nod_grp1%num_grp_smp))
+       nod_grp1%istack_grp_smp = 0
 !
        end subroutine allocate_boundary_param_smp
 !
@@ -97,7 +97,7 @@
 !
        subroutine deallocate_boundary_param_smp
 !
-       deallocate(ibc_smp_stack)
+       deallocate(nod_grp1%istack_grp_smp)
 !
        end subroutine deallocate_boundary_param_smp
 !
@@ -111,7 +111,7 @@
        write(*,*) 'PE: ', my_rank, 'num_bc ', nod_grp1%num_grp
        write(*,*) 'PE: ', my_rank, 'num_bc_smp ', nod_grp1%num_grp_smp
        write(*,*) 'PE: ', my_rank,                                      &
-     &            'ibc_smp_stack ', ibc_smp_stack
+     &            'ibc_smp_stack ', nod_grp1%istack_grp_smp
 !
       end subroutine check_bc_4_sheard_para
 !

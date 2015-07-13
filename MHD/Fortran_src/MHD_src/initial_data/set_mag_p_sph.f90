@@ -43,10 +43,10 @@
       jj = int(e_potential_nod%bc_magnitude(j))
       call get_dgree_order_by_full_j(jj, ll, mm)
 !
-      do k=1, bc_istack(i)-bc_istack(i-1)
+      do k=1, nod_grp1%istack_grp(i)-nod_grp1%istack_grp(i-1)
        ii=ii+1
 !
-       inod = bc_item(k+bc_istack(i-1))
+       inod = bc_item(k+nod_grp1%istack_grp(i-1))
        ibc_mag_p_id(ii)=inod
 !
        call dschmidt(colatitude(inod))

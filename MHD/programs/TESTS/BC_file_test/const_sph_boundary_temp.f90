@@ -47,8 +47,8 @@
       bc_field_type_IO(1) = 'temperature'
 !
       istack_bc_data_IO(0) = 0
-      istack_bc_data_IO(1) = bc_istack(igrp_nod_bc)                     &
-     &                      - bc_istack(igrp_nod_bc-1)
+      istack_bc_data_IO(1) = nod_grp1%istack_grp(igrp_nod_bc)           &
+     &                      - nod_grp1%istack_grp(igrp_nod_bc-1)
       ntot_boundary_field_IO = istack_bc_data_IO(1)
       call allocate_boundary_values
 !
@@ -85,8 +85,8 @@
       call allocate_schmidt_polynomial
       call allocate_spherical_harmonics(nth)
 !
-      ist = bc_istack(igrp-1)
-      num = bc_istack(igrp  ) - bc_istack(igrp-1)
+      ist = nod_grp1%istack_grp(igrp-1)
+      num = nod_grp1%istack_grp(igrp  ) - nod_grp1%istack_grp(igrp-1)
       do inum = 1, num
         inod = bc_item(ist+inum)
 !

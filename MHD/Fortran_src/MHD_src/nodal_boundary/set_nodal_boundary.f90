@@ -43,22 +43,22 @@
       integer(kind = kint) :: k
 !
 !
-      do k=1, bc_istack(i)-bc_istack(i-1)
+      do k=1, nod_grp1%istack_grp(i)-nod_grp1%istack_grp(i-1)
         ii=ii+1
 !
-        ibc_id(ii)=bc_item(k+bc_istack(i-1))
+        ibc_id(ii)=bc_item(k+nod_grp1%istack_grp(i-1))
         bc_id_apt(ii)=bc_magnitude
 !
       end do
 !
       if ( bc_magnitude .ne. 0.0d0 ) then
-        do k=1, bc_istack(i)-bc_istack(i-1)
-         ibc(    bc_item(k+bc_istack(i-1)) ) = 1
+        do k=1, nod_grp1%istack_grp(i)-nod_grp1%istack_grp(i-1)
+         ibc(    bc_item(k+nod_grp1%istack_grp(i-1)) ) = 1
         end do
       end if
 !
-      do k=1, bc_istack(i)-bc_istack(i-1)
-        ibc2(    bc_item(k+bc_istack(i-1)) ) = 1
+      do k=1, nod_grp1%istack_grp(i)-nod_grp1%istack_grp(i-1)
+        ibc2(    bc_item(k+nod_grp1%istack_grp(i-1)) ) = 1
       end do
 !
       end subroutine set_nod_bc_from_ctl
@@ -89,15 +89,15 @@
           if ( bc_data_group_IO(ia) .eq. bc_name(i)                     &
      &       .and. bc_field_type_IO(ia) .eq. field_name ) then
 !
-            do k=1, bc_istack(i)-bc_istack(i-1)
+            do k=1, nod_grp1%istack_grp(i)-nod_grp1%istack_grp(i-1)
               ja = istack_bc_data_IO(ia-1) + k
               ii=ii+1
 !
-              ibc_id(ii)=bc_item(k+bc_istack(i-1))
+              ibc_id(ii)=bc_item(k+nod_grp1%istack_grp(i-1))
               bc_id_apt(ii)=boundary_field_IO(ja)
 !
-              ibc(    bc_item(k+bc_istack(i-1)) ) = 1
-              ibc2(    bc_item(k+bc_istack(i-1)) ) = 1
+              ibc(    bc_item(k+nod_grp1%istack_grp(i-1)) ) = 1
+              ibc2(    bc_item(k+nod_grp1%istack_grp(i-1)) ) = 1
             end do
 !
           end if

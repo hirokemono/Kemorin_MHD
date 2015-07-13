@@ -65,15 +65,16 @@
       do i = 1, nod_grp1%num_grp
         inod_mark(1:numnod) = 0
 !
-        ist = bc_istack(i-1) + 1
-        ied = bc_istack(i)
+        ist = nod_grp1%istack_grp(i-1) + 1
+        ied = nod_grp1%istack_grp(i)
         do inum = ist, ied
           inod = bc_item(inum)
           inod_mark(inod) = 1
         end do
 !
         new_nod_grp%istack_grp(i) = new_nod_grp%istack_grp(i-1)         &
-     &                    + bc_istack(i) - bc_istack(i-1)
+     &                             + nod_grp1%istack_grp(i)             &
+     &                             - nod_grp1%istack_grp(i-1)
 !
         do iedge = 1, numedge
           call check_element_in_nod_group(iedge, numedge, nnod_4_edge,  &
@@ -133,8 +134,8 @@
 !
         icou = new_nod_grp%istack_grp(i-1)
 !
-        ist = bc_istack(i-1) + 1
-        ied = bc_istack(i)
+        ist = nod_grp1%istack_grp(i-1) + 1
+        ied = nod_grp1%istack_grp(i)
         do inum = ist, ied
           icou = icou + 1
           inod = bc_item(inum)

@@ -42,9 +42,9 @@
       jj = int( aint( magne_nod%bc_magnitude(j)) )
       call get_dgree_order_by_full_j(jj, ll, mm)
 !
-      do k=1, bc_istack(i)-bc_istack(i-1)
+      do k=1, nod_grp1%istack_grp(i)-nod_grp1%istack_grp(i-1)
 !
-       inod = bc_item(k+bc_istack(i-1))
+       inod = bc_item(k+nod_grp1%istack_grp(i-1))
 !
        do nd = 1, 3
          l_f(nd) = l_f(nd) + 1

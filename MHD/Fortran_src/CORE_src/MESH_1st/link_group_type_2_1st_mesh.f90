@@ -30,7 +30,7 @@
       nod_grp%num_item = nod_grp1%num_item
 !
       nod_grp%grp_name =>  bc_name
-      nod_grp%istack_grp => bc_istack
+      nod_grp%istack_grp => nod_grp1%istack_grp
       nod_grp%item_grp =>   bc_item
 !
       end subroutine link_node_group_to_type

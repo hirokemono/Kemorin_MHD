@@ -42,8 +42,9 @@
 !
       call allocate_boundary_param_smp
 !
-      call set_group_size_4_smp(np_smp, nod_grp1%num_grp, bc_istack,    &
-     &    ibc_smp_stack, nod_grp1%max_grp_smp)
+      call set_group_size_4_smp                                         &
+     &   (np_smp, nod_grp1%num_grp, nod_grp1%istack_grp,                &
+     &    nod_grp1%istack_grp_smp, nod_grp1%max_grp_smp)
 !
       end subroutine count_bc_4_sheard_para
 !

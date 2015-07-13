@@ -81,7 +81,7 @@
 !
         bc_name(1:nod_grp1%num_grp)                                     &
      &     = nod_grp%grp_name(1:nod_grp1%num_grp)
-        bc_istack(0:nod_grp1%num_grp)                                   &
+        nod_grp1%istack_grp(0:nod_grp1%num_grp)                         &
      &     = nod_grp%istack_grp(0:nod_grp1%num_grp)
         bc_item(1:nod_grp1%num_item)                                    &
      &     = nod_grp%item_grp(1:nod_grp1%num_item)
@@ -111,9 +111,9 @@
         if(nod_grp%grp_name(i) .ne. bc_name(i))                         &
      &       write(*,*) 'bc_name(i)', my_rank, i,                       &
      &       nod_grp%grp_name(i), bc_name(i)
-        if(nod_grp%istack_grp(i) .ne. bc_istack(i))                     &
+        if(nod_grp%istack_grp(i) .ne. nod_grp1%istack_grp(i))           &
      &       write(*,*) 'bc_istack(i)', my_rank, i,                     &
-     &       nod_grp%istack_grp(i), bc_istack(i)
+     &       nod_grp%istack_grp(i), nod_grp1%istack_grp(i)
       end do
       do i = 1, nod_grp1%num_item
         if(nod_grp%item_grp(i) .ne. bc_item(i))                         &
