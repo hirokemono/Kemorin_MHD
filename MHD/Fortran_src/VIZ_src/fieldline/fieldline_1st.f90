@@ -57,8 +57,7 @@
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_element_group
-      use m_surface_group
+      use m_group_data
       use m_node_phys_data
 !
       use fieldline
@@ -81,7 +80,7 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_surface_geometry_data
-      use m_element_group
+      use m_group_data
       use m_element_id_4_node
       use m_node_phys_data
 !

@@ -67,15 +67,15 @@
 !
             if ( ibc_field_type(j) .eq. 1 ) then
 !
-              call set_nod_bc_from_ctl (num_bc_nod, ii, i, ibc_id,      &
-     &              ibc, ibc2, bc_apt, bc_field_mag(j) )
+              call set_nod_bc_from_ctl(nod_grp1, numnod, num_bc_nod,    &
+     &            ii, i, ibc_id, ibc, ibc2, bc_apt, bc_field_mag(j) )
 !
 ! -----------set boundary from data file
 !
             else if ( ibc_field_type(j).eq. -1 ) then
 !
-              call set_nod_bc_from_data (num_bc_nod, ii, i, ibc_id,     &
-     &              ibc, ibc2, bc_apt, field_name)
+              call set_nod_bc_from_data(nod_grp1, numnod, num_bc_nod,   &
+     &            ii, i, ibc_id, ibc, ibc2, bc_apt, field_name)
             end if
 !
           end if
@@ -114,8 +114,8 @@
           if (nod_grp1%grp_name(i) .eq. bc_field_name(j)) then
 !
             if ( ibc_field_type(j) .eq. iref) then
-              call set_nod_bc_from_ctl (num_bc_nod, ii, i, ibc_id,      &
-     &              ibc, ibc2, bc_apt, bc_field_mag(j) )
+              call set_nod_bc_from_ctl(nod_grp1, numnod, num_bc_nod,    &
+     &            ii, i, ibc_id, ibc, ibc2, bc_apt, bc_field_mag(j) )
             end if
 !
           end if

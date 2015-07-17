@@ -44,22 +44,21 @@
       call get_dgree_order_by_full_j(jj, ll, mm)
 !
       do k=1, nod_grp1%istack_grp(i)-nod_grp1%istack_grp(i-1)
-       ii=ii+1
+        ii=ii+1
 !
-       inod = nod_grp1%item_grp(k+nod_grp1%istack_grp(i-1))
-       ibc_mag_p_id(ii)=inod
+        inod = nod_grp1%item_grp(k+nod_grp1%istack_grp(i-1))
+        ibc_mag_p_id(ii)=inod
 !
-       call dschmidt(colatitude(inod))
+        call dschmidt(colatitude(inod))
 !
-       if (mm.ge.0) then
-         bc_mag_p_id_apt(ii) = p(mm,ll) * cos(longitude(inod)*dble(mm))
-       else
-         bc_mag_p_id_apt(ii) = p(mm,ll) * sin(longitude(inod)*dble(mm))
-       end if
+        if (mm.ge.0) then
+          bc_mag_p_id_apt(ii) = p(mm,ll) * cos(longitude(inod)*dble(mm))
+        else
+          bc_mag_p_id_apt(ii) = p(mm,ll) * sin(longitude(inod)*dble(mm))
+        end if
 !
         ibc_mag_p(    inod ) = 1
         ibc2_mag_p(   inod ) = 1
-!
       end do
 !
       call deallocate_schmidt_polynomial

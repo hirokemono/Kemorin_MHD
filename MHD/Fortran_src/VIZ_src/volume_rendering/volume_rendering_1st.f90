@@ -58,7 +58,7 @@
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_element_group
+      use m_group_data
       use m_node_phys_data
 !
       use volume_rendering

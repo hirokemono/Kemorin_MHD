@@ -1,12 +1,17 @@
 !
 !      module set_element_list_4_filter
 !
-      module set_element_list_4_filter
-!
 !     Written by H. Matsui on Oct., 2006
 !
-      use m_precision
+!      subroutine s_set_element_list_4_filter(ele_grp)
+!      subroutine set_ele_id_4_filter_grp
 !
+      module set_element_list_4_filter
+!
+      use m_precision
+      use m_constants
+!
+      use m_machine_parameter
       use m_element_list_4_filter
       use m_geometry_parameter
 !
@@ -21,25 +26,23 @@
       private :: mark_ele_list_4_filter
       private :: count_ele_list_4_filter, set_ele_list_4_filter
 !
-!      subroutine s_set_element_list_4_filter
-!      subroutine set_ele_id_4_filter_grp
-!
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_element_list_4_filter
+      subroutine s_set_element_list_4_filter(ele_grp)
 !
-      use m_machine_parameter
+      use t_group_data
       use cal_minmax_and_stacks
 !
-      integer(kind = kint), parameter :: ione = 1
+      type(group_data), intent(in) :: ele_grp
+!
 !
       call allocate_mark_list_4_filter
 !
-      call mark_ele_list_4_filter
+      call mark_ele_list_4_filter(ele_grp)
 !
       call count_ele_list_4_filter
 !
@@ -90,29 +93,29 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine mark_ele_list_4_filter
+      subroutine mark_ele_list_4_filter(ele_grp)
 !
-      use m_element_group
+      use t_group_data
       use m_ctl_params_4_gen_filter
+      use skip_comment_f
 !
+      type(group_data), intent(in) :: ele_grp
       integer(kind = kint) :: i, igrp, inum, ist, ied, iele
 !
 !
-      if (     filter_area_name(1) .eq. 'all'                           &
-     &    .or. filter_area_name(1) .eq. 'All'                           &
-     &    .or. filter_area_name(1) .eq. 'ALL') then
+      if (cmp_no_case(filter_area_name(1), 'all')) then
         id_filter_area_grp(1) = -1
         imark_ele_filter(1:numele) = 1
       else
 !
         do igrp = 1, num_filtering_grp
-          do i = 1, ele_grp1%num_grp
-            if(filter_area_name(igrp) .eq. ele_grp1%grp_name(i)) then
+          do i = 1, ele_grp%num_grp
+            if(filter_area_name(igrp) .eq. ele_grp%grp_name(i)) then
               id_filter_area_grp(igrp) = i
-              ist = ele_grp1%istack_grp(i-1) + 1
-              ied = ele_grp1%istack_grp(i)
+              ist = ele_grp%istack_grp(i-1) + 1
+              ied = ele_grp%istack_grp(i)
               do inum = ist, ied
-                iele = ele_grp1%item_grp(inum)
+                iele = ele_grp%item_grp(inum)
                 imark_ele_filter(iele) = 1
               end do
             end if

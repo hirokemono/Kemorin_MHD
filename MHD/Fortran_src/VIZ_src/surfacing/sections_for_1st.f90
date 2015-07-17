@@ -77,7 +77,6 @@
       use m_ele_sf_eg_comm_tables
       use m_geometry_parameter
       use m_geometry_data
-      use m_element_group
       use m_group_data
       use m_surface_group_connect
       use m_node_phys_data
@@ -105,7 +104,7 @@
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_element_group
+      use m_group_data
       use m_node_phys_data
       use m_isosurface
 !

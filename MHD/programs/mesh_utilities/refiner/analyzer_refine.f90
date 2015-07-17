@@ -80,6 +80,7 @@
       use m_geometry_constants
       use m_geometry_parameter
       use m_geometry_data
+      use m_element_group
       use m_refined_node_id
       use m_refined_element_data
       use m_work_merge_refine_itp
@@ -114,7 +115,7 @@
 !
         if(iflag_tmp_tri_refine .eq. 0) then
           write(*,*) 's_set_element_refine_flag'
-          call s_set_element_refine_flag
+          call s_set_element_refine_flag(numele, ele_grp1)
         end if
 !
         write(*,*) 's_set_refine_flags_4_tri'

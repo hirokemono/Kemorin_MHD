@@ -44,6 +44,7 @@
       use set_edge_geometry_4_IO
       use m_geometry_parameter
       use m_geometry_data
+      use m_element_group
       use m_surface_group
       use m_surface_group_geometry
       use m_jacobians_4_surface
@@ -74,7 +75,7 @@
       if (iflag_debug.gt.0) write(*,*) 's_cal_1d_moments'
       call s_cal_1d_moments
 !
-      call s_set_element_list_4_filter
+      call s_set_element_list_4_filter(ele_grp1)
 !
 !     --------------------- 
 !

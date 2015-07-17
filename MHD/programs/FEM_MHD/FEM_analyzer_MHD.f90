@@ -96,7 +96,7 @@
       call output_grd_file_w_org_connect
 !
       call allocate_phys_range
-!       call s_open_boundary_monitor(my_rank)
+!       call s_open_boundary_monitor(my_rank, sf_grp1)
       call end_eleps_time(4)
 !
       end subroutine FEM_initialize_MHD

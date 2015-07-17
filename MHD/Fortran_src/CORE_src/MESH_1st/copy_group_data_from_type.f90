@@ -30,9 +30,7 @@
 !
       subroutine group_data_from_type(group)
 !
-      use m_node_group
-      use m_element_group
-      use m_surface_group
+      use m_group_data
       use t_mesh_data
       use t_group_data
 !

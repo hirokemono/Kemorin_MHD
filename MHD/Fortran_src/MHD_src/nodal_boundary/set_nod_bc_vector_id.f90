@@ -22,6 +22,7 @@
 !
       use m_precision
 !
+      use m_geometry_parameter
       use m_node_group
       use set_nodal_boundary
 !
@@ -36,8 +37,6 @@
       subroutine set_fixed_vector_id(num_bc_field, bc_field_name,       &
      &          ibc_field_type, bc_field_mag, ibc, ibc2, nmax_bc_nod,   &
      &          ibc_id, bc_apt, field_name, ii)
-!
-      use m_geometry_parameter
 !
       integer (kind=kint), intent(in) :: num_bc_field
       real (kind=kreal), intent(in) :: bc_field_mag(num_bc_field)
@@ -69,17 +68,16 @@
 ! -----------set boundary from control file
 !
             if (ibc_field_type(j)== nd) then
-              call set_nod_bc_from_ctl(nmax_bc_nod, ii(nd), i,        &
-     &            ibc_id(1,nd), ibc(1,nd), ibc2(1,nd), bc_apt(1,nd),  &
-     &            bc_field_mag(j) )
+              call set_nod_bc_from_ctl(nod_grp1, numnod, nmax_bc_nod,   &
+     &            ii(nd), i, ibc_id(1,nd), ibc(1,nd), ibc2(1,nd),       &
+     &            bc_apt(1,nd), bc_field_mag(j) )
 !
 ! -----------set boundary from data file
 !
             else if (ibc_field_type(j)==-nd) then
-              call set_nod_bc_from_data(nmax_bc_nod, ii(nd), i,       &
-     &            ibc_id(1,nd), ibc(1,nd), ibc2(1,nd), bc_apt(1,nd),  &
-     &            field_name(nd))
-!
+              call set_nod_bc_from_data(nod_grp1, numnod, nmax_bc_nod,  &
+     &            ii(nd), i, ibc_id(1,nd), ibc(1,nd), ibc2(1,nd),       &
+     &            bc_apt(1,nd), field_name(nd))
             end if
           end do
 !
@@ -94,8 +92,6 @@
       subroutine set_bc_vector_id(num_bc_field, bc_field_name,          &
      &          ibc_field_type, bc_field_mag, ibc, ibc2, nmax_bc_nod,   &
      &          ibc_id, bc_apt, iref, ii)
-!
-      use m_geometry_parameter
 !
       integer (kind=kint), intent(in) :: iref
 !
@@ -127,11 +123,9 @@
           do nd = 1, 3
 !
             if (ibc_field_type(j) .eq. (iref+nd) ) then
-!
-              call set_nod_bc_from_ctl(nmax_bc_nod, ii(nd), i,          &
-     &            ibc_id(1,nd), ibc(1,nd), ibc2(1,nd), bc_apt(1,nd),    &
-     &            bc_field_mag(j) )
-!
+              call set_nod_bc_from_ctl(nod_grp1, numnod, nmax_bc_nod,   &
+     &            ii(nd), i, ibc_id(1,nd), ibc(1,nd), ibc2(1,nd),       &
+     &            bc_apt(1,nd), bc_field_mag(j) )
             end if
           end do
 !
@@ -174,8 +168,9 @@
          if (nod_grp1%grp_name(i) .eq. bc_field_name(j)) then
           do nd = 1, 3
             if ( ibc_field_type(j) == (nd+iref) ) then
-              call set_nod_bc_from_ctl(num_bc_nod, ii(nd), i,           &
-     &            ibc_id, ibc, ibc2, bc_apt(1,nd), bc_field_mag(j) )
+              call set_nod_bc_from_ctl(nod_grp1, numnod, num_bc_nod,    &
+     &            ii(nd), i, ibc_id, ibc, ibc2, bc_apt(1,nd),           &
+     &            bc_field_mag(j) )
             end if
           end do
 !

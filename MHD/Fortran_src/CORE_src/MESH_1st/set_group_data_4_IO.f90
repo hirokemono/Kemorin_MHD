@@ -20,9 +20,7 @@
 !
       subroutine copy_group_data_from_IO
 !
-      use m_node_group
-      use m_element_group
-      use m_surface_group
+      use m_group_data
       use set_group_types_4_IO
 !
 !
@@ -36,9 +34,7 @@
 !
       subroutine copy_group_data_to_IO
 !
-      use m_node_group
-      use m_element_group
-      use m_surface_group
+      use m_group_data
       use set_group_types_4_IO
 !
 !

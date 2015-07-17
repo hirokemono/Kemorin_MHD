@@ -7,7 +7,7 @@
 !      subroutine dealloc_r_ele_cubed_sph
 !      subroutine count_new_2d_element_group
 !      subroutine set_rele_cubed_sph
-!      subroutine set_new_2d_ele_group
+!      subroutine set_new_2d_ele_group(ele_grp)
 !
       module set_new_2d_element_group
 !
@@ -117,31 +117,39 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_new_2d_ele_group
+      subroutine set_new_2d_ele_group(ele_grp)
 !
       use m_add_ele_grp_parameter
-      use m_element_group
+      use t_group_data
       use set_ele_grp2_by_2d
+!
+      type(group_data), intent(inout) :: ele_grp
 !
 !
       if (iflag_grping_direction .eq. 0) then
         call const_ele_grp_item_by_2d(r_ele_sph, theta_ele,             &
      &      num_r_ele_grp, r_ele_grp_name, minmax_r_ele_grping,         &
-     &      num_t_ele_grp, t_ele_grp_name, minmax_t_ele_grping)
+     &      num_t_ele_grp, t_ele_grp_name, minmax_t_ele_grping,         &
+     &      ele_grp)
 !
       else if (iflag_grping_direction .eq. 1) then
         call const_ele_grp_item_by_2d(r_ele_sph,  s_ele,                &
      &      num_r_ele_grp, r_ele_grp_name, minmax_r_ele_grping,         &
-     &      num_s_ele_grp, s_ele_grp_name, minmax_s_ele_grping)
+     &      num_s_ele_grp, s_ele_grp_name, minmax_s_ele_grping,         &
+     &      ele_grp)
+
 !
       else if (iflag_grping_direction .eq. 2) then
         call const_ele_grp_item_by_2d(s_ele,  x_ele(1,3),               &
      &      num_s_ele_grp, s_ele_grp_name, minmax_s_ele_grping,         &
-     &      num_z_ele_grp, z_ele_grp_name, minmax_z_ele_grping)
+     &      num_z_ele_grp, z_ele_grp_name, minmax_z_ele_grping,         &
+     &      ele_grp)
+
       else if (iflag_grping_direction .eq. 3) then
         call const_ele_grp_item_by_2d(x_ele(1,3), theta_ele,            &
      &      num_z_ele_grp, z_ele_grp_name, minmax_z_ele_grping,         &
-     &      num_t_ele_grp, t_ele_grp_name, minmax_t_ele_grping)
+     &      num_t_ele_grp, t_ele_grp_name, minmax_t_ele_grping,         &
+     &      ele_grp)
       end if
 !
       end subroutine set_new_2d_ele_group

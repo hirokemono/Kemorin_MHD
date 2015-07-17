@@ -5,7 +5,7 @@
 !                                    on July 2000 (ver 1.1)
 !      Modified by H. Matsui on Aug, 2007
 !
-!      subroutine s_open_boundary_monitor(my_rank)
+!      subroutine s_open_boundary_monitor(sf_grp)
 !      subroutine close_boundary_monitor(my_rank)
 !
       module open_boundary_monitor
@@ -26,10 +26,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_open_boundary_monitor
+      subroutine s_open_boundary_monitor(sf_grp)
 !
-      use m_surface_group
+      use t_group_data
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer(kind = kint) :: i
 !
 !
@@ -43,27 +44,27 @@
 !
          write(boundary_monitor_code,'(a)', advance='NO')               &
      &        't_step, time, h_flux: '
-         do i = 1, sf_grp1%num_grp
+         do i = 1, sf_grp%num_grp
            write(boundary_monitor_code,'(a,a2)', advance='NO')          &
-     &       trim(sf_grp1%grp_name(i)), ', '
+     &       trim(sf_grp%grp_name(i)), ', '
          end do
 !
          write(boundary_monitor_code,'(a)', advance='NO') 'stress_x: '
-         do i = 1, sf_grp1%num_grp
+         do i = 1, sf_grp%num_grp
            write(boundary_monitor_code,'(a,a2)', advance='NO')          &
-     &       trim(sf_grp1%grp_name(i)), ', '
+     &       trim(sf_grp%grp_name(i)), ', '
          end do
 !
          write(boundary_monitor_code,'(a)', advance='NO') 'stress_y: '
-         do i = 1, sf_grp1%num_grp
+         do i = 1, sf_grp%num_grp
            write(boundary_monitor_code,'(a,a2)', advance='NO')          &
-     &       trim(sf_grp1%grp_name(i)), ', '
+     &       trim(sf_grp%grp_name(i)), ', '
          end do
 !
          write(boundary_monitor_code,'(a)', advance='NO') 'stress_z: '
-         do i = 1, sf_grp1%num_grp
+         do i = 1, sf_grp%num_grp
            write(boundary_monitor_code,'(a,a2)', advance='NO')          &
-     &       trim(sf_grp1%grp_name(i)), ', '
+     &       trim(sf_grp%grp_name(i)), ', '
          end do
          write(boundary_monitor_code,'(a)') ''
 !

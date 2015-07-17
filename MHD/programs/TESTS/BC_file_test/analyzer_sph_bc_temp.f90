@@ -56,10 +56,11 @@
 !
       subroutine analyze_bc_temp
 !
+      use m_node_group
       use const_sph_boundary_temp
 !
       if (iflag_debug.gt.0) write(*,*) 'const_sph_temp_bc'
-      call const_sph_temp_bc
+      call const_sph_temp_bc(nod_grp1)
 !
       end subroutine analyze_bc_temp
 !

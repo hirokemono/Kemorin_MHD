@@ -5,6 +5,7 @@
       use m_precision
 !
       use m_constants
+      use m_element_group
       use m_merdional_grouping_patch
       use m_ctl_data_ele_grp_udt
       use m_ctl_params_ele_grp_udt
@@ -30,7 +31,7 @@
       call read_control_ele_grp_udt
       call set_control_ele_grp_udt
 !
-      call read_med_grouping_patch(layerd_mesh_head)
+      call read_med_grouping_patch(layerd_mesh_head, ele_grp1)
 !
       write(*,*) 'fname_input: ', trim(group_data_file_name)
       call count_num_comp_layer_evo_file(id_org_file,                   &

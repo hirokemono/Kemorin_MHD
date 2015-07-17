@@ -3,14 +3,14 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine s_set_new_surface_grp_4_hemi(newmesh, new_sf_grp)
-!      subroutine s_set_new_surface_grp(new_sf_grp)
+!      subroutine s_set_new_surface_grp_4_hemi                          &
+!     &         (sf_grp, newmesh, new_sf_grp)
+!      subroutine s_set_new_surface_grp(sf_grp, new_sf_grp)
 !
       module set_cutshell_surf_grp
 !
       use m_precision
 !
-      use m_surface_group
       use m_cutshell_nod_ele_flag
       use t_mesh_data
       use t_group_data
@@ -26,87 +26,93 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_new_surface_grp_4_hemi(newmesh, new_sf_grp)
+      subroutine s_set_new_surface_grp_4_hemi                           &
+     &         (sf_grp, newmesh, new_sf_grp)
 !
+      type(surface_group_data), intent(in) :: sf_grp
       type(mesh_geometry), intent(in) :: newmesh
       type(surface_group_data), intent(inout) :: new_sf_grp
 !
 !
-      new_sf_grp%num_grp =  sf_grp1%num_grp + 1
+      new_sf_grp%num_grp =  sf_grp%num_grp + 1
       call allocate_sf_grp_type_num(new_sf_grp)
 !
-      call count_new_surf_group(new_sf_grp)
-      call count_equator_surface(newmesh%node, newmesh%ele, new_sf_grp)
+      call count_new_surf_group(sf_grp, new_sf_grp)
+      call count_equator_surface                                        &
+     &   (sf_grp%num_grp, newmesh%node, newmesh%ele, new_sf_grp)
 !
 !
       call allocate_sf_grp_type_item(new_sf_grp)
 !
-      call set_new_surf_group(new_sf_grp)
-!
-      call set_equator_surface(newmesh%node, newmesh%ele, new_sf_grp)
+      call set_new_surf_group(sf_grp, new_sf_grp)
+      call set_equator_surface                                          &
+     &   (sf_grp%num_grp, newmesh%node, newmesh%ele, new_sf_grp)
 !
       end subroutine s_set_new_surface_grp_4_hemi
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_new_surface_grp(new_sf_grp)
+      subroutine s_set_new_surface_grp(sf_grp, new_sf_grp)
 !
+      type(surface_group_data), intent(in) :: sf_grp
       type(surface_group_data), intent(inout) :: new_sf_grp
 !
 !
-      new_sf_grp%num_grp =  sf_grp1%num_grp
+      new_sf_grp%num_grp =  sf_grp%num_grp
       call allocate_sf_grp_type_num(new_sf_grp)
 !
-      call count_new_surf_group(new_sf_grp)
+      call count_new_surf_group(sf_grp, new_sf_grp)
 !
       call allocate_sf_grp_type_item(new_sf_grp)
-      call set_new_surf_group(new_sf_grp)
+      call set_new_surf_group(sf_grp, new_sf_grp)
 !
       end subroutine s_set_new_surface_grp
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_new_surf_group(new_sf_grp)
+      subroutine count_new_surf_group(sf_grp, new_sf_grp)
 !
+      type(surface_group_data), intent(in) :: sf_grp
       type(surface_group_data), intent(inout) :: new_sf_grp
 !
       integer(kind = kint) :: i, iele, inum
 !
 !
-      new_sf_grp%grp_name(1:sf_grp1%num_grp)                            &
-     &     = sf_grp1%grp_name(1:sf_grp1%num_grp)
+      new_sf_grp%grp_name(1:sf_grp%num_grp)                             &
+     &     = sf_grp%grp_name(1:sf_grp%num_grp)
 !
-      do i = 1, sf_grp1%num_grp
+      do i = 1, sf_grp%num_grp
          new_sf_grp%istack_grp(i) = new_sf_grp%istack_grp(i-1)
-         do inum = sf_grp1%istack_grp(i-1)+1, sf_grp1%istack_grp(i)
-           iele = sf_grp1%item_sf_grp(1,inum)
+         do inum = sf_grp%istack_grp(i-1)+1, sf_grp%istack_grp(i)
+           iele = sf_grp%item_sf_grp(1,inum)
            if ( mark_new_ele(iele) .ne. 0 ) then
              new_sf_grp%istack_grp(i) = new_sf_grp%istack_grp(i) + 1
            end if
          end do
       end do
-      new_sf_grp%num_item = new_sf_grp%istack_grp(sf_grp1%num_grp)
+      new_sf_grp%num_item = new_sf_grp%istack_grp(sf_grp%num_grp)
 !
       end subroutine count_new_surf_group
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_surf_group(new_sf_grp)
+      subroutine set_new_surf_group(sf_grp, new_sf_grp)
 !
+      type(surface_group_data), intent(in) :: sf_grp
       type(surface_group_data), intent(inout) :: new_sf_grp
 !
      integer(kind = kint) :: iele, inum, i, icou
 !
       icou = 0
-      do i = 1, sf_grp1%num_grp
-         do inum = sf_grp1%istack_grp(i-1)+1, sf_grp1%istack_grp(i)
-           iele = sf_grp1%item_sf_grp(1,inum)
+      do i = 1, sf_grp%num_grp
+         do inum = sf_grp%istack_grp(i-1)+1, sf_grp%istack_grp(i)
+           iele = sf_grp%item_sf_grp(1,inum)
            if ( mark_new_ele(iele) .ne. 0 ) then
              icou = icou + 1
              new_sf_grp%item_sf_grp(1,icou) = mark_new_ele(iele)
              new_sf_grp%item_sf_grp(2,icou)                             &
-     &                    = sf_grp1%item_sf_grp(2,inum)
+     &                    = sf_grp%item_sf_grp(2,inum)
            end if
          end do
       end do
@@ -116,11 +122,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_equator_surface(new_node, new_ele, new_sf_grp)
+      subroutine count_equator_surface                                  &
+     &         (num_surf, new_node, new_ele, new_sf_grp)
 !
       use m_geometry_constants
       use m_geometry_parameter
 !
+      integer(kind = kint), intent(in) :: num_surf
       type(node_data), intent(in) :: new_node
       type(element_data), intent(in) :: new_ele
       type(surface_group_data), intent(inout) :: new_sf_grp
@@ -131,7 +139,7 @@
       new_sf_grp%grp_name(new_sf_grp%num_grp) = 'equator_surf'
 !
       new_sf_grp%istack_grp(new_sf_grp%num_grp)                         &
-     &      = new_sf_grp%istack_grp(sf_grp1%num_grp)
+     &      = new_sf_grp%istack_grp(num_surf)
       do iele = 1, new_ele%numele
         do inum = 1, nsurf_4_ele
           isig = 1
@@ -152,11 +160,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_equator_surface(new_node, new_ele, new_sf_grp)
+      subroutine set_equator_surface                                    &
+     &         (num_surf, new_node, new_ele, new_sf_grp)
 !
       use m_geometry_constants
       use m_geometry_parameter
 !
+      integer(kind = kint), intent(in) :: num_surf
       type(node_data), intent(in) :: new_node
       type(element_data), intent(in) :: new_ele
       type(surface_group_data), intent(inout) :: new_sf_grp
@@ -164,7 +174,7 @@
       integer(kind = kint) :: iele, inum, i, k, inod, icou, isig
 !
 !
-      icou = new_sf_grp%istack_grp(sf_grp1%num_grp)
+      icou = new_sf_grp%istack_grp(num_surf)
       do iele = 1, new_ele%numele
         do inum = 1, nsurf_4_ele
           isig = 1

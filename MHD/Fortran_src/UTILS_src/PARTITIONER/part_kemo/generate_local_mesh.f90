@@ -24,6 +24,7 @@
       use m_constants
       use m_geometry_parameter
       use m_geometry_data
+      use m_element_group
       use m_ctl_param_partitioner
       use m_subdomain_table_IO
 !
@@ -57,7 +58,8 @@
 !C +---------------------------------------------+
 !C===
 !C
-      call s_const_local_mesh_by_tbl(num_domain, included_ele)
+      call s_const_local_mesh_by_tbl                                    &
+     &   (ele_grp1, num_domain, included_ele)
 !
       call open_partition_log(num_domain, numedge, org_mesh_header)
 !C

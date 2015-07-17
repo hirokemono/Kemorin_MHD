@@ -3,10 +3,12 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!      subroutine s_const_local_mesh_by_tbl(n_domain, included_ele)
+!      subroutine s_const_local_mesh_by_tbl                             &
+!     &         (ele_grp, n_domain, included_ele)
 !
 !      subroutine const_local_node_by_near_tbl(n_domain)
-!      subroutine const_local_ele_by_near_tbl(n_domain, included_ele)
+!      subroutine const_local_ele_by_near_tbl                           &
+!     &         (ele_grp, n_domain, included_ele)
 !      subroutine const_local_surf_by_near_tbl(n_domain)
 !      subroutine const_local_edge_by_near_tbl(n_domain)
 !
@@ -21,21 +23,26 @@
 !
       implicit none
 !
+      private :: const_local_ele_by_near_tbl
+!
 !   --------------------------------------------------------------------
 !
       contains
 !
 !   --------------------------------------------------------------------
 !
-      subroutine s_const_local_mesh_by_tbl(n_domain, included_ele)
+      subroutine s_const_local_mesh_by_tbl                              &
+     &          (ele_grp, n_domain, included_ele)
 !
+      use t_group_data
       use t_near_mesh_id_4_node
 !
+      type(group_data), intent(in) :: ele_grp
       integer(kind = kint), intent(in) :: n_domain
       type(near_mesh), intent(inout) :: included_ele
 !
 !
-      call const_local_ele_by_near_tbl(n_domain, included_ele)
+      call const_local_ele_by_near_tbl(ele_grp, n_domain, included_ele)
       call const_local_node_by_near_tbl(n_domain)
 !
       end subroutine s_const_local_mesh_by_tbl
@@ -78,12 +85,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_local_ele_by_near_tbl(n_domain, included_ele)
+      subroutine const_local_ele_by_near_tbl                            &
+     &         (ele_grp, n_domain, included_ele)
 !
       use m_internal_4_partitioner
+      use t_group_data
       use t_near_mesh_id_4_node
       use ordering_by_element_group
 !
+      type(group_data), intent(in) :: ele_grp
       integer(kind = kint), intent(in) :: n_domain
       type(near_mesh), intent(inout) :: included_ele
 !
@@ -100,7 +110,8 @@
 !
       call allocate_iele_4_subdomain
 !
-      call set_local_element_table(n_domain, included_ele%ntot,         &
+      call set_local_element_table                                      &
+     &   (ele_grp, n_domain, included_ele%ntot,                         &
      &    included_ele%istack_nod, included_ele%id_near_nod)
 !
       call dealloc_near_node(included_ele)

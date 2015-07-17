@@ -20,9 +20,7 @@
       use m_error_IDs
       use m_geometry_parameter
       use m_geometry_data
-      use m_node_group
-      use m_element_group
-      use m_surface_group
+      use m_group_data
 !
       use set_nnod_for_ele_by_type
       use check_domain_prop_4_part

@@ -5,7 +5,7 @@
 !
 !      subroutine const_ele_grp_item_by_2d(ref_ele1, ref_ele2,          &
 !     &          num_ele_grp1, ele_grp_name1, dminmax_grp_1,            &
-!     &          num_ele_grp2, ele_grp_name2, dminmax_grp_2)
+!     &          num_ele_grp2, ele_grp_name2, dminmax_grp_2, ele_grp)
 !
       module  set_ele_grp2_by_2d
 !
@@ -53,11 +53,10 @@
 !
       subroutine const_ele_grp_item_by_2d(ref_ele1, ref_ele2,           &
      &          num_ele_grp1, ele_grp_name1, dminmax_grp_1,             &
-     &          num_ele_grp2, ele_grp_name2, dminmax_grp_2)
+     &          num_ele_grp2, ele_grp_name2, dminmax_grp_2, ele_grp)
 !
-      use m_element_group
-      use m_work_4_add_egrp_sph
       use t_group_data
+      use m_work_4_add_egrp_sph
       use start_end_4_2d_ele_grping
 !
       integer(kind = kint), intent(in) :: num_ele_grp1
@@ -70,22 +69,24 @@
       real(kind = kreal), intent(in) :: ref_ele1(numele)
       real(kind = kreal), intent(in) :: ref_ele2(numele)
 !
+      type(group_data), intent(inout) :: ele_grp
+!
       type(group_data) :: new_elegrp
 !
 !
-      call count_ngrp_ele_grps(new_elegrp%num_grp)
+      call count_ngrp_ele_grps(ele_grp%num_grp, new_elegrp%num_grp)
       call allocate_grp_type_num(new_elegrp)
 !
       call set_2d_ele_grp_names(num_ele_grp1, ele_grp_name1,            &
-     &    num_ele_grp2, ele_grp_name2, new_elegrp)
+     &    num_ele_grp2, ele_grp_name2, ele_grp, new_elegrp)
 !
       call allocate_grp_type_item(new_elegrp)
 !
       call add_ele_grp_item_by_2d(ref_ele1, ref_ele2,                   &
      &    num_ele_grp1, dminmax_grp_1, num_ele_grp2, dminmax_grp_2,     &
-     &    new_elegrp)
+     &    ele_grp, new_elegrp)
 !
-      call ordering_each_added_egrp(new_elegrp)
+      call ordering_each_added_egrp(new_elegrp, ele_grp)
       call deallocate_grp_type(new_elegrp)
 !
       end subroutine const_ele_grp_item_by_2d
@@ -93,15 +94,14 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_ngrp_ele_grps(ngrp_new_ele)
+      subroutine count_ngrp_ele_grps(num_mat, ngrp_new_ele)
 !
-      use m_element_group
-!
+      integer(kind = kint), intent(in)  :: num_mat
       integer(kind = kint), intent(inout)  :: ngrp_new_ele
       integer(kind = kint) :: igrp
 !
 !
-      ngrp_new_ele = ele_grp1%num_grp
+      ngrp_new_ele = num_mat
       do igrp = 1, ngrp_added
         if(nitem_added_gl(igrp) .gt. 0) ngrp_new_ele = ngrp_new_ele + 1
       end do
@@ -111,9 +111,8 @@
 !   --------------------------------------------------------------------
 !
       subroutine set_2d_ele_grp_names(num_ele_grp1, ele_grp_name1,      &
-     &          num_ele_grp2, ele_grp_name2, new_elegrp)
+     &          num_ele_grp2, ele_grp_name2, ele_grp, new_elegrp)
 !
-      use m_element_group
       use set_parallel_file_name
       use t_group_data
 !
@@ -121,18 +120,19 @@
       character(len=kchara), intent(in)  :: ele_grp_name1(num_ele_grp1)
       integer(kind = kint), intent(in) :: num_ele_grp2
       character(len=kchara), intent(in)  :: ele_grp_name2(num_ele_grp2)
+      type(group_data), intent(in) :: ele_grp
 !
       type(group_data), intent(inout) :: new_elegrp
 !
       integer(kind = kint) :: i, j, igrp, icou
 !
 !
-      new_elegrp%grp_name(1:ele_grp1%num_grp)                           &
-     &      = ele_grp1%grp_name(1:ele_grp1%num_grp)
-      new_elegrp%istack_grp(0:ele_grp1%num_grp)                         &
-     &      = ele_grp1%istack_grp(0:ele_grp1%num_grp)
+      new_elegrp%grp_name(1:ele_grp%num_grp)                            &
+     &      = ele_grp%grp_name(1:ele_grp%num_grp)
+      new_elegrp%istack_grp(0:ele_grp%num_grp)                         &
+     &      = ele_grp%istack_grp(0:ele_grp%num_grp)
 !
-      icou = ele_grp1%num_grp
+      icou = ele_grp%num_grp
       do i = 1, num_ele_grp1
         do j = 1, num_ele_grp2
           igrp = j + (i-1)*num_ele_grp2
@@ -157,7 +157,6 @@
      &       num_ele_grp1, dminmax_grp_1, num_ele_grp2, dminmax_grp_2)
 !
       use m_add_ele_grp_parameter
-      use m_element_group
 !
       use m_work_4_add_egrp_sph
       use start_end_4_2d_ele_grping
@@ -205,11 +204,10 @@
 !
       subroutine add_ele_grp_item_by_2d(ref_ele1, ref_ele2,             &
      &       num_ele_grp1, dminmax_grp_1, num_ele_grp2, dminmax_grp_2,  &
-     &       new_elegrp)
+     &       ele_grp, new_elegrp)
 !
       use m_work_4_add_egrp_sph
       use start_end_4_2d_ele_grping
-      use m_element_group
       use t_group_data
 !
       integer(kind = kint), intent(in) :: num_ele_grp1
@@ -219,6 +217,7 @@
 !
       real(kind = kreal), intent(in) :: ref_ele1(numele)
       real(kind = kreal), intent(in) :: ref_ele2(numele)
+      type(group_data), intent(in) :: ele_grp
 !
       type(group_data), intent(inout) :: new_elegrp
 !
@@ -230,12 +229,12 @@
       real(kind = kreal) :: max_prev_1, max_prev_2
 !
 !
-      new_elegrp%item_grp(1:ele_grp1%num_item)                          &
-     &         = ele_grp1%item_grp(1:ele_grp1%num_item)
+      new_elegrp%item_grp(1:ele_grp%num_item)                           &
+     &         = ele_grp%item_grp(1:ele_grp%num_item)
 !
       max_prev_1 = 1.0e30
       item_ed = 1
-      icou = ele_grp1%num_grp
+      icou = ele_grp%num_grp
       do i = 1, num_ele_grp1
         call set_start_end_egrping(ref_ele1,                            &
      &      dminmax_grp_1(i,1), dminmax_grp_1(i,2), max_prev_1,         &
@@ -267,36 +266,36 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine ordering_each_added_egrp(new_elegrp)
+      subroutine ordering_each_added_egrp(new_elegrp, ele_grp)
 !
       use quicksort
-      use m_element_group
       use t_group_data
 !
       type(group_data), intent(inout) :: new_elegrp
+      type(group_data), intent(inout) :: ele_grp
 !
       integer(kind = kint) :: igrp, ist, ied
 !
 !
-      do igrp = ele_grp1%num_grp+1, new_elegrp%num_grp
+      do igrp = ele_grp%num_grp+1, new_elegrp%num_grp
         ist = new_elegrp%istack_grp(igrp-1) + 1
         ied = new_elegrp%istack_grp(igrp)
         call quicksort_int(new_elegrp%num_item, new_elegrp%item_grp,    &
      &      ist, ied)
       end do
 !
-      call deallocate_grp_type(ele_grp1)
+      call deallocate_grp_type(ele_grp)
 !
-      ele_grp1%num_grp =    new_elegrp%num_grp
-      ele_grp1%num_item = new_elegrp%num_item
-      call allocate_grp_type(ele_grp1)
+      ele_grp%num_grp =    new_elegrp%num_grp
+      ele_grp%num_item = new_elegrp%num_item
+      call allocate_grp_type(ele_grp)
 !
-      ele_grp1%grp_name(1:ele_grp1%num_grp)                             &
-     &        =    new_elegrp%grp_name(1:ele_grp1%num_grp)
-      ele_grp1%istack_grp(0:ele_grp1%num_grp)                           &
-     &        =  new_elegrp%istack_grp(0:ele_grp1%num_grp)
-      ele_grp1%item_grp(1:ele_grp1%num_item)                            &
-     &        = new_elegrp%item_grp(1:ele_grp1%num_item)
+      ele_grp%grp_name(1:ele_grp%num_grp)                               &
+     &        =    new_elegrp%grp_name(1:ele_grp%num_grp)
+      ele_grp%istack_grp(0:ele_grp%num_grp)                             &
+     &        =  new_elegrp%istack_grp(0:ele_grp%num_grp)
+      ele_grp%item_grp(1:ele_grp%num_item)                              &
+     &        = new_elegrp%item_grp(1:ele_grp%num_item)
 !
       end subroutine ordering_each_added_egrp
 !

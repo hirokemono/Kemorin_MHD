@@ -1,9 +1,11 @@
 !set_element_refine_flag.f90
 !      module set_element_refine_flag
 !
-      module set_element_refine_flag
-!
 !      Written by Kemorin on Oct., 2007
+!
+!      subroutine set_element_refine_flag(numele, ele_grp)
+!
+      module set_element_refine_flag
 !
       use m_precision
 !
@@ -19,20 +21,22 @@
       private :: count_triple_refine_table, set_triple_refine_table
       private :: const_triple_refine_table
 !
-!      subroutine set_element_refine_flag
-!
 ! -----------------------------------------------------------------------
 !
       contains
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_element_refine_flag
+      subroutine s_set_element_refine_flag(numele, ele_grp)
 !
+      use t_group_data
       use find_boundary_4_tri_refine
 !
+      integer(kind = kint), intent(in) :: numele
+      type(group_data), intent(in) :: ele_grp
 !
-      call set_refine_flag_by_ele_grp
+!
+      call set_refine_flag_by_ele_grp(numele, ele_grp)
       if (id_refined_ele_grp(1) .eq. -1) return
 !
 !
@@ -48,11 +52,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine set_refine_flag_by_ele_grp
+      subroutine set_refine_flag_by_ele_grp(numele, ele_grp)
 !
       use m_refined_element_data
-      use m_geometry_parameter
-      use m_element_group
+      use t_group_data
+!
+      integer(kind = kint), intent(in) :: numele
+      type(group_data), intent(in) :: ele_grp
 !
       integer(kind = kint) :: j, i, ist, ied, inum, iele
 !
@@ -67,10 +73,10 @@
 !
         do j = 1,  num_refine_type
           i = id_refined_ele_grp(j)
-          ist = ele_grp1%istack_grp(i-1) + 1
-          ied = ele_grp1%istack_grp(i)
+          ist = ele_grp%istack_grp(i-1) + 1
+          ied = ele_grp%istack_grp(i)
           do inum = ist, ied
-            iele = ele_grp1%item_grp(inum)
+            iele = ele_grp%item_grp(inum)
             iflag_refine_ele(iele) = iflag_refine_type(j)
           end do
         end do

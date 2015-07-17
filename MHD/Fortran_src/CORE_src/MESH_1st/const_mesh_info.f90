@@ -107,9 +107,7 @@
       use m_geometry_parameter
       use m_geometry_data
 !
-      use m_node_group
-      use m_element_group
-      use m_surface_group
+      use m_group_data
 !
       use m_surface_geometry_data
       use m_edge_geometry_data
@@ -156,9 +154,7 @@
       use m_geometry_parameter
       use m_geometry_data
 !
-      use m_node_group
-      use m_element_group
-      use m_surface_group
+      use m_group_data
 !
 !
       call deallocate_sf_grp_type_smp(sf_grp1)

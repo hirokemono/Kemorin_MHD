@@ -9,8 +9,8 @@
 !      subroutine set_hanging_nodes
 !
 !      subroutine add_hanging_node_group_num(new_nod_grp)
-!      subroutine add_hanging_node_group_name(new_nod_grp)
-!      subroutine add_hanging_node_group_item(new_nod_grp)
+!      subroutine add_hanging_node_group_name(num_bc, new_nod_grp)
+!      subroutine add_hanging_node_group_item(num_bc, new_nod_grp)
 !
 !
       module find_hanging_surface
@@ -192,7 +192,6 @@
 !
       subroutine add_hanging_node_group_num(new_nod_grp)
 !
-      use m_node_group
       use t_group_data
 !
       type(group_data), intent(inout) :: new_nod_grp
@@ -209,16 +208,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_hanging_node_group_name(new_nod_grp)
+      subroutine add_hanging_node_group_name(num_bc, new_nod_grp)
 !
-      use m_node_group
       use t_group_data
 !
+      integer(kind = kint), intent(in) :: num_bc
       type(group_data), intent(inout) :: new_nod_grp
 !
       integer(kind = kint) :: icou
 !
-      icou = nod_grp1%num_grp
+      icou = num_bc
       if(nnod_hang_4 .gt. 0) then
         icou = icou+1
         new_nod_grp%grp_name(icou) = 'HANGING_NODE_SURF'
@@ -249,16 +248,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine add_hanging_node_group_item(new_nod_grp)
+      subroutine add_hanging_node_group_item(num_bc, new_nod_grp)
 !
-      use m_node_group
       use t_group_data
 !
+      integer(kind = kint), intent(in) :: num_bc
       type(group_data), intent(inout) :: new_nod_grp
 !
       integer(kind = kint) :: icou, inum, ist
 !
-      icou = nod_grp1%num_grp
+      icou = num_bc
       if(nnod_hang_4 .gt. 0) then
         ist =  new_nod_grp%istack_grp(icou)
         do inum = 1, nnod_hang_4

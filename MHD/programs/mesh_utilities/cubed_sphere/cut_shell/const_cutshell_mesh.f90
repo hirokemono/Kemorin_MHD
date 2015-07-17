@@ -8,6 +8,9 @@
       use m_precision
 !
       use t_mesh_data
+      use t_group_data
+!
+      use m_group_data
 !
       use m_cutshell_nod_ele_flag
       use set_cutshell_node_data
@@ -70,9 +73,11 @@
 !
       call s_set_new_elements(newmesh%ele)
 !
-      call s_set_new_node_grp_4_hemi(newmesh%node, new_group%nod_grp)
-      call s_set_new_element_grp(new_group%ele_grp)
-      call s_set_new_surface_grp_4_hemi(newmesh, new_group%surf_grp)
+      call s_set_new_node_grp_4_hemi                                    &
+     &   (nod_grp1, newmesh%node, new_group%nod_grp)
+      call s_set_new_element_grp(ele_grp1, new_group%ele_grp)
+      call s_set_new_surface_grp_4_hemi                                 &
+     &   (sf_grp1, newmesh, new_group%surf_grp)
 !
       end subroutine select_northern_hemisphere
 !
@@ -88,28 +93,28 @@
 !
       call s_set_new_elements(newmesh%ele)
 !
-      call s_set_new_node_grp(new_group%nod_grp)
-      call s_set_new_element_grp(new_group%ele_grp)
-      call s_set_new_surface_grp(new_group%surf_grp)
+      call s_set_new_node_grp(nod_grp1, new_group%nod_grp)
+      call s_set_new_element_grp(ele_grp1, new_group%ele_grp)
+      call s_set_new_surface_grp(sf_grp1, new_group%surf_grp)
 !
       end subroutine select_cut_shell
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-       subroutine select_spherical_shell(newmesh, new_group)
+      subroutine select_spherical_shell(newmesh, new_group)
 !
       type(mesh_geometry), intent(inout) :: newmesh
       type(mesh_groups), intent(inout) :: new_group
 !
 !
-      call set_new_node_outer_core(newmesh%node)
+      call set_new_node_outer_core(nod_grp1, newmesh%node)
 !
       call s_set_new_elements(newmesh%ele)
 !
-      call s_set_new_node_grp(new_group%nod_grp)
-      call s_set_new_element_grp(new_group%ele_grp)
-      call s_set_new_surface_grp(new_group%surf_grp)
+      call s_set_new_node_grp(nod_grp1, new_group%nod_grp)
+      call s_set_new_element_grp(ele_grp1, new_group%ele_grp)
+      call s_set_new_surface_grp(sf_grp1, new_group%surf_grp)
 !
       end subroutine select_spherical_shell
 !
@@ -121,13 +126,15 @@
       type(mesh_groups), intent(inout) :: new_group
 !
 !
-      call set_new_node_hemi_o_core(newmesh%node)
+      call set_new_node_hemi_o_core(nod_grp1, newmesh%node)
 !
       call s_set_new_elements(newmesh%ele)
 !
-      call s_set_new_node_grp_4_hemi(newmesh%node, new_group%nod_grp)
-      call s_set_new_element_grp(new_group%ele_grp)
-      call s_set_new_surface_grp_4_hemi(newmesh, new_group%surf_grp)
+      call s_set_new_node_grp_4_hemi                                    &
+     &   (nod_grp1, newmesh%node, new_group%nod_grp)
+      call s_set_new_element_grp(ele_grp1, new_group%ele_grp)
+      call s_set_new_surface_grp_4_hemi                                 &
+     &   (sf_grp1, newmesh, new_group%surf_grp)
 !
       end subroutine select_hemispherical_shell
 !

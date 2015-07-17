@@ -6,8 +6,10 @@
 !      subroutine allocate_mark_refine_sf_grp(nnod_2nd)
 !      subroutine deallocate_mark_refine_sf_grp
 !
-!      subroutine count_refined_surf_group
-!      subroutine s_set_refined_surf_group
+!      subroutine count_refined_surf_group                              &
+!     &         (nnod_4_surf, node_on_sf, sf_grp, new_sf_grp)
+!      subroutine s_set_refined_surf_group                              &
+!     &         (nnod_4_surf, node_on_sf, sf_grp, new_sf_grp)
 !
       module set_refined_surf_group
 !
@@ -45,14 +47,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_refined_surf_group(new_sf_grp)
+      subroutine count_refined_surf_group                               &
+     &         (nnod_4_surf, node_on_sf, sf_grp, new_sf_grp)
 !
       use m_geometry_constants
-      use m_geometry_parameter
-      use m_surface_group
-      use t_group_data
       use m_refined_element_data
+      use t_group_data
 !
+      integer(kind = kint), intent(in) :: nnod_4_surf
+      integer(kind = kint), intent(in)                                  &
+     &                     :: node_on_sf(nnod_4_surf,nsurf_4_ele)
+      type(surface_group_data), intent(in) :: sf_grp
       type(surface_group_data), intent(inout) :: new_sf_grp
 !
       integer(kind = kint) :: i, ist, ied, inum
@@ -62,20 +67,20 @@
       integer(kind = kint) :: iflag
 !
 !
-      do i = 1, sf_grp1%num_grp
-        new_sf_grp%grp_name(i) = sf_grp1%grp_name(i)
+      do i = 1, sf_grp%num_grp
+        new_sf_grp%grp_name(i) = sf_grp%grp_name(i)
       end do
 !
       new_sf_grp%istack_grp(0) = 0
-      do i = 1, sf_grp1%num_grp
+      do i = 1, sf_grp%num_grp
         new_sf_grp%istack_grp(i) = new_sf_grp%istack_grp(i-1)
 !
-        ist = sf_grp1%istack_grp(i-1) + 1
-        ied = sf_grp1%istack_grp(i)
+        ist = sf_grp%istack_grp(i-1) + 1
+        ied = sf_grp%istack_grp(i)
         do inum = ist, ied
 !
-          iele = sf_grp1%item_sf_grp(1,inum)
-          isf =  sf_grp1%item_sf_grp(2,inum)
+          iele = sf_grp%item_sf_grp(1,inum)
+          isf =  sf_grp%item_sf_grp(2,inum)
           call mark_refined_node_4_surf_grp(iele, isf, ione)
 !
           jst = istack_ele_refined(iele-1) + 1
@@ -101,20 +106,23 @@
 !
         end do
       end do
-      new_sf_grp%num_item = new_sf_grp%istack_grp(sf_grp1%num_grp)
+      new_sf_grp%num_item = new_sf_grp%istack_grp(sf_grp%num_grp)
 !
       end subroutine count_refined_surf_group
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_refined_surf_group(new_sf_grp)
+      subroutine s_set_refined_surf_group                               &
+     &         (nnod_4_surf, node_on_sf, sf_grp, new_sf_grp)
 !
       use m_geometry_constants
-      use m_geometry_parameter
-      use m_surface_group
-      use t_group_data
       use m_refined_element_data
+      use t_group_data
 !
+      integer(kind = kint), intent(in) :: nnod_4_surf
+      integer(kind = kint), intent(in)                                  &
+     &                     :: node_on_sf(nnod_4_surf,nsurf_4_ele)
+      type(surface_group_data), intent(in) :: sf_grp
       type(surface_group_data), intent(inout) :: new_sf_grp
 !
       integer(kind = kint) :: i, icou, ist, ied, inum
@@ -124,15 +132,15 @@
       integer(kind = kint) :: iflag
 !
 !
-      do i = 1, sf_grp1%num_grp
+      do i = 1, sf_grp%num_grp
         icou = new_sf_grp%istack_grp(i-1)
 !
-        ist = sf_grp1%istack_grp(i-1) + 1
-        ied = sf_grp1%istack_grp(i)
+        ist = sf_grp%istack_grp(i-1) + 1
+        ied = sf_grp%istack_grp(i)
         do inum = ist, ied
 !
-          iele = sf_grp1%item_sf_grp(1,inum)
-          isf =  sf_grp1%item_sf_grp(2,inum)
+          iele = sf_grp%item_sf_grp(1,inum)
+          isf =  sf_grp%item_sf_grp(2,inum)
           call mark_refined_node_4_surf_grp(iele, isf, ione)
 !
           jst = istack_ele_refined(iele-1) + 1

@@ -49,9 +49,7 @@
       subroutine analyze
 !
       use m_geometry_data
-      use m_node_group
-      use m_element_group
-      use m_surface_group
+      use m_group_data
       use m_nod_comm_table
 !
       use m_ctl_params_4_gen_filter

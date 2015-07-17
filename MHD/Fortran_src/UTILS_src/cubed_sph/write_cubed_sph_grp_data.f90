@@ -15,7 +15,6 @@
       use m_cubed_sph_surf_mesh
       use m_cubed_sph_grp_param
 !
-      use m_node_group
       use t_group_data
 !
       use cubed_sph_file_names
@@ -25,9 +24,10 @@
 !
       implicit none
 !
+      type(group_data), save :: nod_grp_sph
       type(group_data), save :: ele_grp_sph
       type(surface_group_data), save :: sf_grp_sph
-      private :: ele_grp_sph, sf_grp_sph
+      private :: nod_grp_sph, ele_grp_sph, sf_grp_sph
 !
 !   --------------------------------------------------------------------
 !
@@ -42,20 +42,22 @@
 !
       write(*,*) 'output group information for linear'
 !
-      call count_node_groups_linear(numnod_cube, numnod_sf, ione)
+      call count_node_groups_linear                                     &
+     &   (numnod_cube, numnod_sf, ione, nod_grp_sph)
 !
-      call allocate_grp_type(nod_grp1)
+      call allocate_grp_type(nod_grp_sph)
 !
-      call set_node_group_names
+      call set_node_group_names(nod_grp_sph)
 !
-      call set_node_istack_linear(numnod_cube, numnod_sf, ione)
+      call set_node_istack_linear                                       &
+     &   (numnod_cube, numnod_sf, ione, nod_grp_sph)
 !
       call set_nodal_item_linear(numnod_cube, numnod_sf, num_hemi,      &
-     &          ione)
+     &    ione, nod_grp_sph)
 !
-      call write_node_group(id_l_group)
+      call write_cubed_sph_nod_grp(id_l_group, nod_grp_sph)
 !
-      call deallocate_grp_type(nod_grp1)
+      call deallocate_grp_type(nod_grp_sph)
 !
 !   set element group
 !
@@ -102,21 +104,21 @@
       write(*,*) 'output quad group information'
 !
       call count_node_groups_quad(numnod_cube, numedge_cube,            &
-     &    numnod_sf, numedge_sf)
+     &    numnod_sf, numedge_sf, nod_grp_sph)
 !
-      call allocate_grp_type(nod_grp1)
+      call allocate_grp_type(nod_grp_sph)
 !
-      call set_node_group_names
+      call set_node_group_names(nod_grp_sph)
 !
       call set_node_istack_quad(numnod_cube, numedge_cube,              &
-     &    numnod_sf, numedge_sf)
+     &    numnod_sf, numedge_sf, nod_grp_sph)
 !
       call set_nodal_item_quad(numnod, numnod_cube, numedge_cube,       &
-     &          numnod_sf, numedge_sf, num_hemi, ione)
+     &          numnod_sf, numedge_sf, num_hemi, ione, nod_grp_sph)
 !
-      call write_node_group(id_q_group)
+      call write_cubed_sph_nod_grp(id_q_group, nod_grp_sph)
 !
-      call deallocate_grp_type(nod_grp1)
+      call deallocate_grp_type(nod_grp_sph)
 !
 !   set element group
 !
@@ -161,20 +163,22 @@
 !
 !   set groups
 !
-      call count_node_groups_linear(nnod_cube_c, nnod_sf_c, nskip_r)
+      call count_node_groups_linear                                     &
+     &   (nnod_cube_c, nnod_sf_c, nskip_r, nod_grp_sph)
 !
-      call allocate_grp_type(nod_grp1)
+      call allocate_grp_type(nod_grp_sph)
 !
-      call set_node_group_names
+      call set_node_group_names(nod_grp_sph)
 !
-      call set_node_istack_linear(nnod_cube_c, nnod_sf_c, nskip_r)
+      call set_node_istack_linear                                       &
+     &   (nnod_cube_c, nnod_sf_c, nskip_r, nod_grp_sph)
 !
       call set_nodal_item_linear(nnod_cube_c, nnod_sf_c, n_hemi_c,      &
-     &          nskip_r)
+     &    nskip_r, nod_grp_sph)
 !
-      call write_node_group(id_l_group)
+      call write_cubed_sph_nod_grp(id_l_group, nod_grp_sph)
 !
-      call deallocate_grp_type(nod_grp1)
+      call deallocate_grp_type(nod_grp_sph)
 !
 !   set element group
 !

@@ -26,6 +26,7 @@
       use calypso_mpi
       use m_control_data_add_ele_grp
       use m_add_ele_grp_parameter
+      use m_element_group
       use m_read_mesh_data
       use m_work_4_add_egrp_sph
       use load_mesh_data
@@ -53,7 +54,7 @@
       call count_new_2d_element_group
 !
       if (iflag_debug.eq.1) write(*,*) 'set_new_2d_ele_group'
-      call set_new_2d_ele_group
+      call set_new_2d_ele_group(ele_grp1)
 !
       call deallocate_work_4_add_egrp_sph
 !
