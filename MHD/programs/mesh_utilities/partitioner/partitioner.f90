@@ -10,6 +10,8 @@
       use m_control_data_4_part
       use m_ctl_param_partitioner
       use m_read_mesh_data
+      use m_element_group
+      use m_element_group_connect
 !
       use init_partitioner
       use grouping_for_partition
@@ -41,11 +43,11 @@
 !  ========= Routines for partitioner ==============
 !
       call initialize_partitioner
-      call grouping_for_partitioner
+      call grouping_for_partitioner(ele_grp1, ele_grp_data1)
 !
 !C===
 !C-- create subdomain mesh
-      call PROC_LOCAL_MESH(partitioned_fem, included_ele)
+      call PROC_LOCAL_MESH(ele_grp1, partitioned_fem, included_ele)
 !
 !  ========= Construct subdomain information for viewer ==============
 !

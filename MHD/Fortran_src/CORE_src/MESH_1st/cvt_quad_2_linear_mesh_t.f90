@@ -121,15 +121,13 @@
 !
       use t_mesh_data
       use t_group_data
-      use m_element_group
-      use m_surface_group
-      use link_group_type_2_1st_mesh
+      use m_group_data
       use convert_group_2_linear
 !
       type(mesh_groups), intent(inout) :: group_l
 !
 !
-      call link_node_group_to_type(group_l%nod_grp)
+      call link_group_type(nod_grp1, group_l%nod_grp)
 !
       group_l%ele_grp%num_grp = ele_grp1%num_grp
       group_l%ele_grp%num_item = 8 * ele_grp1%num_item

@@ -51,7 +51,7 @@
 !
 !    output grid data
 !
-      call set_ele_grp_patch_2_psf_grd
+      call set_ele_grp_patch_2_psf_grd(ele_grp1)
       call set_psf_mesh_to_ucd_mesh(psf_ucd)
 !
       psf_ucd%ifmt_file = iflag_udt
@@ -130,7 +130,7 @@
       call write_t_ave_m_coef_file(istep_read, time)
       call write_sigma_m_coef_file(istep_read, time)
 !
-      call set_field_to_med_patch(num_layer, num_comp,                  &
+      call set_field_to_med_patch(ele_grp1, num_layer, num_comp,        &
      &    comp_name, ave_coef)
 !
       call set_psf_mesh_to_ucd_field(psf_ucd)
@@ -139,7 +139,7 @@
       psf_ucd%file_prefix = tave_grp_udt_head
       call sel_write_udt_file(iminus, istep_read, psf_ucd)
 !
-      call set_field_to_med_patch(num_layer, num_comp,                  &
+      call set_field_to_med_patch(ele_grp1, num_layer, num_comp,        &
      &    comp_name, sigma_coef)
       call sel_write_udt_file(iminus, istep_read, psf_ucd)
 !

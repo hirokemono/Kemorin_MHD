@@ -28,7 +28,6 @@
       use m_node_phys_data
       use m_physical_property
       use m_control_parameter
-      use m_node_group
 !
       integer (kind = kint) :: inod, inum
 !

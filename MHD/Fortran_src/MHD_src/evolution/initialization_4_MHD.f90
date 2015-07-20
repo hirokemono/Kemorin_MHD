@@ -26,6 +26,7 @@
       use m_t_step_parameter
 !
       use m_geometry_data
+      use m_surface_group
       use m_surface_geometry_data
       use m_edge_geometry_data
       use m_surf_data_infinity
@@ -238,7 +239,7 @@
       call s_cal_normal_vector
 !
       if (iflag_debug.eq.1) write(*,*)  'int_surface_parameters'
-      call int_surface_parameters
+      call int_surface_parameters(sf_grp1%num_grp)
 !
 !     --------------------- 
 !

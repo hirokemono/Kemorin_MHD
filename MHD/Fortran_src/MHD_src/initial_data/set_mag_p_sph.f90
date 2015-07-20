@@ -3,7 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!     subroutine set_mag_p_sph
+!      subroutine s_set_mag_p_sph(nod_grp、ii, i, j)
+!        type(group_data), intent(in) :: nod_grp
 !
       module set_mag_p_sph
 !
@@ -17,22 +18,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_mag_p_sph(ii, i, j)
+      subroutine s_set_mag_p_sph(nod_grp, ii, i, j)
 !
-      use m_precision
-!
-      use m_node_group
-      use m_bc_data_list
-      use m_bc_data_magne_p
       use m_geometry_parameter
       use m_geometry_data
+      use m_bc_data_list
+      use m_bc_data_magne_p
       use m_schmidt_polynomial
+      use t_group_data
       use spherical_harmonics
 !
-      implicit none
+      type(group_data), intent(in) :: nod_grp
+      integer(kind = kint), intent(in) :: i, j
+      integer(kind = kint), intent(inout) :: ii
 !
-      integer(kind = kint) :: i, j, k, ii, jj
-!
+      integer(kind = kint) :: k, jj
       integer(kind = kint) :: inod
       integer(kind = kint) :: ll, mm
 !
@@ -43,10 +43,10 @@
       jj = int(e_potential_nod%bc_magnitude(j))
       call get_dgree_order_by_full_j(jj, ll, mm)
 !
-      do k=1, nod_grp1%istack_grp(i)-nod_grp1%istack_grp(i-1)
+      do k=1, nod_grp%istack_grp(i)-nod_grp%istack_grp(i-1)
         ii=ii+1
 !
-        inod = nod_grp1%item_grp(k+nod_grp1%istack_grp(i-1))
+        inod = nod_grp%item_grp(k+nod_grp%istack_grp(i-1))
         ibc_mag_p_id(ii)=inod
 !
         call dschmidt(colatitude(inod))

@@ -37,6 +37,7 @@
       use m_array_for_send_recv
       use m_nod_comm_table
       use m_geometry_parameter
+      use m_group_data
       use m_node_phys_address
       use m_ele_sf_eg_comm_tables
 !
@@ -46,7 +47,6 @@
 !
       use m_2nd_pallalel_vector
       use link_data_type_to_1st_mesh
-      use link_group_type_2_1st_mesh
       use const_ele_layering_table
       use int_volume_of_domain
       use correlation_all_layerd_data
@@ -89,9 +89,9 @@
       call link_node_data_type(mesh_ref%node)
       call link_element_data_type(mesh_ref%ele)
 !
-      call link_node_group_to_type(group_ref%nod_grp)
-      call link_element_group_to_type(group_ref%ele_grp)
-      call link_surface_group_to_type(group_ref%surf_grp)
+      call link_group_type(nod_grp1, group_ref%nod_grp)
+      call link_group_type(ele_grp1, group_ref%ele_grp)
+      call link_surf_group_type(sf_grp1, group_ref%surf_grp)
 !
       call link_nodal_fld_type_names(phys_ref)
       call alloc_phys_data_type(mesh_ref%node%numnod, phys_ref)

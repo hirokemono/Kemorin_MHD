@@ -124,7 +124,6 @@
       use m_geometry_data
       use m_surface_group
       use set_surface_node
-      use set_smp_4_groups
       use cal_minmax_and_stacks
 !
 !

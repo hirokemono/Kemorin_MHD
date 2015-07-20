@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on Aug., 2007
 !
-!      subroutine grouping_for_partitioner
+!      subroutine grouping_for_partitioner(ele_grp, ele_grp_data)
 !
       module grouping_for_partition
 !
@@ -17,7 +17,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine grouping_for_partitioner
+      subroutine grouping_for_partitioner(ele_grp, ele_grp_data)
 !
       use m_constants
       use m_error_IDs
@@ -25,10 +25,11 @@
       use m_geometry_parameter
       use m_geometry_data
       use m_node_group
-      use m_element_group
-      use m_element_group_connect
       use m_subdomain_table_IO
       use m_domain_group_4_partition
+!
+      use t_group_data
+      use t_group_connects
 !
       use recursive_bisection
       use node_equaly_sectioning
@@ -38,6 +39,9 @@
       use copy_domain_list_4_IO
       use set_partition_by_fine_mesh
       use error_exit_4_part
+!
+      type(group_data), intent(in) :: ele_grp
+      type(element_group_table), intent(in) :: ele_grp_data
 !
       integer(kind = kint) :: ierr
 !
@@ -74,11 +78,9 @@
 !
       else if (NTYP_div .eq. iPART_LAYER_SPH) then
         call eb_spherical_w_egrp(numnod, internal_node,                 &
-     &      ele_grp1%num_grp, ele_grp1%grp_name,                        &
-     &      ele_grp_data1%node%ntot_e_grp,                              &
-     &      ele_grp_data1%node%istack_e_grp,                            &
-     &      ele_grp_data1%node%item_e_grp,                              &
-     &      radius, colatitude, longitude)
+     &    ele_grp%num_grp, ele_grp%grp_name,                            &
+     &    ele_grp_data%node%ntot_e_grp, ele_grp_data%node%istack_e_grp, &
+     &    ele_grp_data%node%item_e_grp, radius, colatitude, longitude)
 !
 !
 !C

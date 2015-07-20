@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on Aug., 2007
 !
-!      subroutine PROC_LOCAL_MESH(new_fem, included_ele)
+!      subroutine PROC_LOCAL_MESH(ele_grp, new_fem, included_ele)
 !
       module generate_local_mesh
 !
@@ -17,14 +17,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine PROC_LOCAL_MESH(new_fem, included_ele)
+      subroutine PROC_LOCAL_MESH(ele_grp, new_fem, included_ele)
 !
       use t_mesh_data
       use t_near_mesh_id_4_node
+      use t_group_data
       use m_constants
       use m_geometry_parameter
       use m_geometry_data
-      use m_element_group
       use m_ctl_param_partitioner
       use m_subdomain_table_IO
 !
@@ -37,6 +37,7 @@
       use local_mesh_by_part
       use const_mesh_info
 !
+      type(group_data), intent(in) :: ele_grp
       type(mesh_data), intent(inout) :: new_fem
       type(near_mesh), intent(inout) :: included_ele
 !
@@ -58,9 +59,7 @@
 !C +---------------------------------------------+
 !C===
 !C
-      call s_const_local_mesh_by_tbl                                    &
-     &   (ele_grp1, num_domain, included_ele)
-!
+      call s_const_local_mesh_by_tbl(ele_grp, num_domain, included_ele)
       call open_partition_log(num_domain, numedge, org_mesh_header)
 !C
 !C +---------------------------------------+

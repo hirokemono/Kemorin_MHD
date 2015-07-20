@@ -21,6 +21,8 @@
 !
       implicit none
 !
+      private :: count_num_groups_4_smp
+!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -31,7 +33,6 @@
 !
       use m_element_group_connect
       use m_surface_group_connect
-      use set_smp_4_groups
       use const_surface_data
 !      use check_surface_groups
 !
@@ -83,7 +84,6 @@
       subroutine const_nod_ele_infos
 !
       use m_surface_group_connect
-      use set_smp_4_groups
 !
 !
        if (iflag_debug.gt.0) write(*,*) 'set_local_element_info'
@@ -197,6 +197,19 @@
       end subroutine set_local_element_info
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine count_num_groups_4_smp
+!
+      use m_group_data
+      use set_smp_4_group_types
+!
+      call count_grp_type_smp(nod_grp1)
+      call count_grp_type_smp(ele_grp1)
+      call count_surf_grp_type_smp(sf_grp1)
+!
+      end subroutine count_num_groups_4_smp
+!
+!-----------------------------------------------------------------------
 !
       subroutine set_nod_and_ele_infos
 !

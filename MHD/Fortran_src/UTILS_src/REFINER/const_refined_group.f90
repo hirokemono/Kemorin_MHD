@@ -45,7 +45,6 @@
 !
       use set_refined_node_group
       use find_hanging_surface
-      use m_node_group
       use t_group_data
 !
       type(group_data), intent(in) :: nod_grp

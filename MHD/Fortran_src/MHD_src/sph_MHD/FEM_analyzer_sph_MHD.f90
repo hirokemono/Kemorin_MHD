@@ -43,6 +43,7 @@
 !
       subroutine FEM_initialize_sph_MHD
 !
+      use m_node_group
       use m_array_for_send_recv
       use m_t_step_parameter
       use m_surface_geometry_data
@@ -59,7 +60,7 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_local_node_id_4_monitor'
-      call set_local_node_id_4_monitor
+      call set_local_node_id_4_monitor(nod_grp1)
 !
 !  -------------------------------
 !

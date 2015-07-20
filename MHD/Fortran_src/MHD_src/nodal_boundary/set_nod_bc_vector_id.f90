@@ -201,7 +201,7 @@
          if (nod_grp1%grp_name(i) .eq. bc_field_name(j)) then
 !
           if ( ibc_field_type(j) == 999 ) then
-            call set_r_magne_sph(l_f, i, j)
+            call set_r_magne_sph(nod_grp1, l_f, i, j)
           end if
 !
          end if

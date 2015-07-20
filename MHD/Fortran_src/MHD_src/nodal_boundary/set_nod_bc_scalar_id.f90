@@ -6,21 +6,22 @@
 !        modified by Kemorin on Jan. 2004
 !        modified by Kemorin on Oct. 2005
 !
-!      subroutine set_fixed_bc_scalar_id(num_bc_field, bc_field_name,   &
+!      subroutine set_fixed_bc_scalar_id                                &
+!     &         (nod_grp, numnod, num_bc_field, bc_field_name,          &
 !     &          ibc_field_type, bc_field_mag, ibc, ibc2, num_bc_nod,   &
 !     &          ibc_id, bc_apt, field_name, ii)
-!      subroutine set_bc_scalar_id(num_bc_field, bc_field_name,         &
+!      subroutine set_bc_scalar_id                                      &
+!     &         (nod_grp, numnod, num_bc_field, bc_field_name,          &
 !     &          ibc_field_type, bc_field_mag, ibc, ibc2, num_bc_nod,   &
 !     &          ibc_id, bc_apt, iref, ii)
-!      subroutine set_bc_sph_magne_p_id(num_bc_field, bc_field_name,    &
-!     &          ibc_field_type, ii)
+!      subroutine set_bc_sph_magne_p_id(nod_grp,                        &
+!     &          num_bc_field, bc_field_name, ibc_field_type, ii)
 !
       module set_nod_bc_scalar_id
 !
       use m_precision
 !
-      use m_geometry_parameter
-      use m_node_group
+      use t_group_data
       use set_nodal_boundary
 !
       implicit none
@@ -31,10 +32,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fixed_bc_scalar_id(num_bc_field, bc_field_name,    &
+      subroutine set_fixed_bc_scalar_id                                 &
+     &         (nod_grp, numnod, num_bc_field, bc_field_name,           &
      &          ibc_field_type, bc_field_mag, ibc, ibc2, num_bc_nod,    &
      &          ibc_id, bc_apt, field_name, ii)
 !
+      type(group_data), intent(in) :: nod_grp
+      integer (kind=kint), intent(in) :: numnod
       integer (kind=kint), intent(in) :: num_bc_field
       real (kind=kreal), intent(in) :: bc_field_mag(num_bc_field)
       integer (kind=kint), intent(in) :: ibc_field_type(num_bc_field)
@@ -53,7 +57,7 @@
       integer (kind = kint) :: i, j
 !
 !
-      do i=1, nod_grp1%num_grp 
+      do i=1, nod_grp%num_grp 
 !
 ! ----------- loop for boundary conditions
 !
@@ -61,20 +65,20 @@
 !
 ! ----------- check node group
 !
-          if (nod_grp1%grp_name(i) .eq. bc_field_name(j)) then
+          if (nod_grp%grp_name(i) .eq. bc_field_name(j)) then
 !
 ! -----------set boundary from control file
 !
             if ( ibc_field_type(j) .eq. 1 ) then
 !
-              call set_nod_bc_from_ctl(nod_grp1, numnod, num_bc_nod,    &
+              call set_nod_bc_from_ctl(nod_grp, numnod, num_bc_nod,     &
      &            ii, i, ibc_id, ibc, ibc2, bc_apt, bc_field_mag(j) )
 !
 ! -----------set boundary from data file
 !
             else if ( ibc_field_type(j).eq. -1 ) then
 !
-              call set_nod_bc_from_data(nod_grp1, numnod, num_bc_nod,   &
+              call set_nod_bc_from_data(nod_grp, numnod, num_bc_nod,    &
      &            ii, i, ibc_id, ibc, ibc2, bc_apt, field_name)
             end if
 !
@@ -86,12 +90,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_scalar_id(num_bc_field, bc_field_name,          &
+      subroutine set_bc_scalar_id                                       &
+     &         (nod_grp, numnod, num_bc_field, bc_field_name,           &
      &          ibc_field_type, bc_field_mag, ibc, ibc2, num_bc_nod,    &
      &          ibc_id, bc_apt, iref, ii)
 !
       integer (kind=kint), intent(in) :: iref
 !
+      type(group_data), intent(in) :: nod_grp
+      integer (kind=kint), intent(in) :: numnod
       integer (kind=kint), intent(in) :: num_bc_field
       real (kind=kreal), intent(in) :: bc_field_mag(num_bc_field)
       integer (kind=kint), intent(in) :: ibc_field_type(num_bc_field)
@@ -109,12 +116,12 @@
 !
       ii = 0
 !
-      do i=1, nod_grp1%num_grp 
+      do i=1, nod_grp%num_grp 
         do j=1, num_bc_field
-          if (nod_grp1%grp_name(i) .eq. bc_field_name(j)) then
+          if (nod_grp%grp_name(i) .eq. bc_field_name(j)) then
 !
             if ( ibc_field_type(j) .eq. iref) then
-              call set_nod_bc_from_ctl(nod_grp1, numnod, num_bc_nod,    &
+              call set_nod_bc_from_ctl(nod_grp, numnod, num_bc_nod,     &
      &            ii, i, ibc_id, ibc, ibc2, bc_apt, bc_field_mag(j) )
             end if
 !
@@ -126,11 +133,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_sph_magne_p_id(num_bc_field, bc_field_name,     &
-     &          ibc_field_type, ii)
+      subroutine set_bc_sph_magne_p_id(nod_grp,                         &
+     &          num_bc_field, bc_field_name, ibc_field_type, ii)
 !
       use set_mag_p_sph
 !
+      type(group_data), intent(in) :: nod_grp
       integer (kind=kint), intent(in) :: num_bc_field
       integer (kind=kint), intent(in) :: ibc_field_type(num_bc_field)
       character (len=kchara), intent(in) :: bc_field_name(num_bc_field)
@@ -138,12 +146,12 @@
       integer (kind = kint), intent(inout) :: ii
       integer (kind = kint) :: i, j
 !
-      do i=1, nod_grp1%num_grp 
+      do i=1, nod_grp%num_grp 
         do j=1, num_bc_field
-          if (nod_grp1%grp_name(i) .eq. bc_field_name(j)) then
+          if (nod_grp%grp_name(i) .eq. bc_field_name(j)) then
 !
             if ( ibc_field_type(j) .eq. 999 ) then
-              call s_set_mag_p_sph(ii, i, j)
+              call s_set_mag_p_sph(nod_grp, ii, i, j)
             end if
 !
           end if

@@ -90,6 +90,7 @@
       use m_machine_parameter
       use m_control_parameter
       use m_read_mesh_data
+      use m_node_group
 !
       use element_IO_select
       use surface_IO_select
@@ -104,7 +105,7 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 'set_local_node_id_4_monitor'
-      call set_local_node_id_4_monitor
+      call set_local_node_id_4_monitor(nod_grp1)
 !
 ! ----  open data file for boundary data
 !

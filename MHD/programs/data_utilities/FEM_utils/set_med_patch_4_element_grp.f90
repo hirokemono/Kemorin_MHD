@@ -51,45 +51,46 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_med_patch_ele_grp(file_head)
+      subroutine set_med_patch_ele_grp(file_head, ele_grp)
 !
       use calypso_mpi
       use m_geometry_constants
       use m_geometry_parameter
       use m_geometry_data
-      use m_element_group
       use m_psf_case_table
+      use t_group_data
       use set_psf_case_table
       use patch_4_psf
 !
       use t_psf_geometry_list
 !
       character(len=kchara), intent(in) :: file_head
+      type(group_data), intent(in) :: ele_grp
 !
       integer(kind = kint) :: ip, igrp, inum
       type(sect_search_list) :: ele_search
 !
 !
       call init_ele_grp_med_patch                                       &
-     &   (file_head, ele_grp1%num_grp, ele_grp1%num_item)
+     &   (file_head, ele_grp%num_grp, ele_grp%num_item)
 !
       call set_sectioning_case_table
 !
-      do igrp = 1, ele_grp1%num_grp
+      do igrp = 1, ele_grp%num_grp
         call alloc_num_psf_search_list(np_smp, ele_search)
 !
         do ip = 1, np_smp
           ele_search%istack_search_smp(ip)                              &
-     &            = ele_grp1%istack_grp_smp(ip+(igrp-1)*np_smp)         &
-     &             - ele_grp1%istack_grp_smp((igrp-1)*np_smp)
+     &            = ele_grp%istack_grp_smp(ip+(igrp-1)*np_smp)          &
+     &             - ele_grp%istack_grp_smp((igrp-1)*np_smp)
         end do
-        ele_search%num_search = ele_grp1%istack_grp(igrp)               &
-     &                         - ele_grp1%istack_grp(igrp-1)
+        ele_search%num_search = ele_grp%istack_grp(igrp)                &
+     &                         - ele_grp%istack_grp(igrp-1)
 !
         call alloc_psf_search_list(ele_search)
         do inum = 1, ele_search%num_search
           ele_search%id_search(inum)                                    &
-     &            = ele_grp1%item_grp(inum+ele_grp1%istack_grp(igrp-1))
+     &            = ele_grp%item_grp(inum+ele_grp%istack_grp(igrp-1))
         end do
         call dealloc_psf_search_list(ele_search)
         call dealloc_num_psf_search_list(ele_search)
@@ -97,14 +98,14 @@
         call set_psf_type_id(numnod, numele, nnod_4_ele, ie,            &
      &      ele_search, mark_elegrp, xx(1,2))
 !
-        call count_med_grp_patch(igrp, npatch_grp)
+        call count_med_grp_patch(ele_grp, igrp, npatch_grp)
         allocate(xyz_med(3,3*npatch_grp+3))
 !
-        call set_med_grp_patch(igrp, npatch_grp, xyz_med)
+        call set_med_grp_patch(ele_grp, igrp, npatch_grp, xyz_med)
 !
 !   collect patch data
 !
-        call collect_ele_grp_patch(ele_grp1%grp_name(igrp))
+        call collect_ele_grp_patch(ele_grp%grp_name(igrp))
 !
         deallocate(xyz_med)
       end do
@@ -115,14 +116,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_med_grp_patch(igrp, npatch)
+      subroutine count_med_grp_patch(ele_grp, igrp, npatch)
 !
       use m_geometry_constants
       use m_geometry_parameter
       use m_geometry_data
-      use m_element_group
       use m_psf_case_table
+      use t_group_data
 !
+      type(group_data), intent(in) :: ele_grp
       integer(kind = kint), intent(in) :: igrp
       integer(kind = kint), intent(inout) :: npatch
 !
@@ -135,10 +137,10 @@
 !
 !
       npatch = 0
-      ist = ele_grp1%istack_grp(igrp-1) + 1
-      ied = ele_grp1%istack_grp(igrp)
+      ist = ele_grp%istack_grp(igrp-1) + 1
+      ied = ele_grp%istack_grp(igrp)
       do inum = ist, ied
-        iele = ele_grp1%item_grp(inum)
+        iele = ele_grp%item_grp(inum)
         ie_1ele(1:8) = ie(iele,1:8)
         xx_1ele(1,1:8) = xx(ie_1ele(1:8),1)
         xx_1ele(2,1:8) = xx(ie_1ele(1:8),2)
@@ -159,14 +161,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_med_grp_patch(igrp, npatch, x_patch)
+      subroutine set_med_grp_patch(ele_grp, igrp, npatch, x_patch)
 !
       use m_geometry_constants
       use m_geometry_parameter
       use m_geometry_data
-      use m_element_group
       use m_psf_case_table
+      use t_group_data
 !
+      type(group_data), intent(in) :: ele_grp
       integer(kind = kint), intent(in) :: igrp
       integer(kind = kint), intent(in) :: npatch
       real(kind = kreal), intent(inout) :: x_patch(3,3*npatch)
@@ -179,10 +182,10 @@
 !
 !
       icou = 0
-      ist = ele_grp1%istack_grp(igrp-1) + 1
-      ied = ele_grp1%istack_grp(igrp)
+      ist = ele_grp%istack_grp(igrp-1) + 1
+      ied = ele_grp%istack_grp(igrp)
       do inum = ist, ied
-        iele = ele_grp1%item_grp(inum)
+        iele = ele_grp%item_grp(inum)
         ie_1ele(1:8) =   ie(iele,1:8)
         xx_1ele(1,1:8) = xx(ie_1ele(1:8),1)
         xx_1ele(2,1:8) = xx(ie_1ele(1:8),2)

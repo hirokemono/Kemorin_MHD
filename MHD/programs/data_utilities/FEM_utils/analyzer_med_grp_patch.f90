@@ -58,11 +58,12 @@
 !
       subroutine analyze_med_grp_patch
 !
+      use m_element_group
       use m_ctl_params_4_diff_udt
       use set_med_patch_4_element_grp
 !
 !
-      call set_med_patch_ele_grp(grouping_mesh_head)
+      call set_med_patch_ele_grp(grouping_mesh_head, ele_grp1)
 !
       end subroutine analyze_med_grp_patch
 !

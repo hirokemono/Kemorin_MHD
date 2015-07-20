@@ -51,7 +51,7 @@
 !
 !    output grid data
 !
-      call set_ele_grp_patch_2_psf_grd
+      call set_ele_grp_patch_2_psf_grd(ele_grp1)
       call set_psf_mesh_to_ucd_mesh(psf_ucd)
 !
       psf_ucd%ifmt_file = iflag_udt
@@ -62,8 +62,8 @@
 !    output udt data
 !
       call sqrt_of_rms_coefs(num_layer, num_comp, coef)
-      call set_field_to_med_patch(num_layer, num_comp,                  &
-     &          comp_name, coef)
+      call set_field_to_med_patch(ele_grp1, num_layer, num_comp,        &
+     &    comp_name, coef)
 !
       call set_psf_mesh_to_ucd_field(psf_ucd)
 !
@@ -80,8 +80,8 @@
         if(mod((istep_read-istep_start),istep_inc) .eq. izero           &
      &     .and. istep_read.ge.istep_start) then
           call sqrt_of_rms_coefs(num_layer, num_comp, coef)
-          call set_field_to_med_patch(num_layer, num_comp,              &
-     &          comp_name, coef)
+          call set_field_to_med_patch(ele_grp1, num_layer, num_comp,    &
+     &        comp_name, coef)
           call sel_write_udt_file(iminus, istep_start, psf_ucd)
         end if
 !

@@ -83,10 +83,10 @@
 !
       use m_surface_group_connect
       use m_element_group_connect
+      use m_group_data
       use t_mesh_data
       use t_phys_data
       use link_data_type_to_1st_mesh
-      use link_group_type_2_1st_mesh
 !
       type(mesh_data), intent(inout) :: femmesh_l
       type(surface_geometry), intent(inout) :: surf_mesh_l
@@ -100,9 +100,9 @@
       call link_node_data_type(femmesh_l%mesh%node)
       call link_element_data_type(femmesh_l%mesh%ele)
 !
-      call link_node_group_to_type(femmesh_l%group%nod_grp)
-      call link_element_group_to_type(femmesh_l%group%ele_grp)
-      call link_surface_group_to_type(femmesh_l%group%surf_grp)
+      call link_group_type(nod_grp1, femmesh_l%group%nod_grp)
+      call link_group_type(ele_grp1, femmesh_l%group%ele_grp)
+      call link_surf_group_type(sf_grp1, femmesh_l%group%surf_grp)
 !
       call link_surface_data_type(surf_mesh_l%surf)
       call link_edge_data_type(edge_mesh_l%edge)

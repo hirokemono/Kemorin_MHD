@@ -19,11 +19,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surface_parameters
+      subroutine int_surface_parameters(num_surf)
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_surface_group
       use m_surface_group_connect
       use m_finite_element_matrix
       use m_int_surface_data
@@ -32,11 +31,12 @@
       use set_surf_grp_vectors
       use sum_normal_4_surf_group
 !
-!      use check_surface_groups
       use check_finite_element_mat
 !
+      integer(kind = kint), intent(in) :: num_surf
 !
-      if (sf_grp1%num_grp .le. 0) return
+!
+      if (num_surf .le. 0) return
 !
       call allocate_int_surf_data
 !

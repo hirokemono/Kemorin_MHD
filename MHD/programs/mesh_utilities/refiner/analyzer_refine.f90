@@ -16,6 +16,8 @@
 !
       use t_mesh_data
 !
+      use m_element_group
+!
       implicit none
 !
       integer(kind = kint), parameter, private :: my_rank = 0
@@ -68,7 +70,7 @@
 !    set refine flags
 !
         write(*,*) 'set_ele_grp_id_4_refine'
-        call set_ele_grp_id_4_refine
+        call set_ele_grp_id_4_refine(ele_grp1)
 !
       end subroutine  initialize_refine
 !
@@ -80,7 +82,6 @@
       use m_geometry_constants
       use m_geometry_parameter
       use m_geometry_data
-      use m_element_group
       use m_refined_node_id
       use m_refined_element_data
       use m_work_merge_refine_itp

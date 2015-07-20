@@ -43,7 +43,7 @@
       subroutine set_mesh_from_type(mesh, group)
 !
       use t_mesh_data
-      use copy_group_data_from_type
+      use m_group_data
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) :: group
@@ -59,7 +59,7 @@
       subroutine compare_mesh_type_vs_1st(my_rank, mesh, group)
 !
       use t_mesh_data
-      use copy_group_data_from_type
+      use m_group_data
 !
       integer(kind = kint), intent(in)  :: my_rank
       type(mesh_geometry), intent(inout) :: mesh

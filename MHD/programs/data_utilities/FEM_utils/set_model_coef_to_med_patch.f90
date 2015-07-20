@@ -3,8 +3,8 @@
 !
 !      written by Kemorin
 !
-!      subroutine set_ele_grp_patch_2_psf_grd
-!      subroutine set_field_to_med_patch
+!      subroutine set_ele_grp_patch_2_psf_grd(ele_grp)
+!      subroutine set_field_to_med_patch(ele_grp)
 !      subroutine cal_ave_rms_csim
 !
       module set_model_coef_to_med_patch
@@ -20,24 +20,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_ele_grp_patch_2_psf_grd
+      subroutine set_ele_grp_patch_2_psf_grd(ele_grp)
 !
-      use m_element_group
+      use t_group_data
       use m_psf_results
       use m_ctl_params_ele_grp_udt
       use m_tave_SGS_model_coefs
       use m_merdional_grouping_patch
       use coordinate_converter
 !
+      type(group_data), intent(in) :: ele_grp
       integer(kind = kint) :: igrp, i, ist, ied, ist_nod
       integer(kind = kint) :: icou, inod, inum
 !
 !
-      call find_start_element_group                                     &
-     &   (ele_grp1%num_grp, ele_grp1%grp_name)
+      call find_start_element_group(ele_grp%num_grp, ele_grp%grp_name)
 !
-      numele_psf = ele_grp1%istack_grp(iend_ele_grp_drmd)               &
-     &            - ele_grp1%istack_grp(istart_ele_grp_drmd-1)
+      numele_psf = ele_grp%istack_grp(iend_ele_grp_drmd)                &
+     &            - ele_grp%istack_grp(istart_ele_grp_drmd-1)
       numnod_psf = 3 * numele_psf
 !
       nfield_psf =   num_comp
@@ -53,20 +53,20 @@
         write(psf_data_name(i),'(a)') comp_name(i)
       end do
 !
-      ist = ele_grp1%istack_grp(istart_ele_grp_drmd-1)
+      ist = ele_grp%istack_grp(istart_ele_grp_drmd-1)
       do i = 1, numele_psf
         inod_psf(i) = i
         iele_psf(i) = i
         ie_psf(i,1:3) = ie_egrp(i+ist,1:3)                              &
-     &                 - 3*ele_grp1%istack_grp(istart_ele_grp_drmd-1)
+     &                 - 3*ele_grp%istack_grp(istart_ele_grp_drmd-1)
       end do
 !
-      ist_nod = 3*ele_grp1%istack_grp(istart_ele_grp_drmd-1)
+      ist_nod = 3*ele_grp%istack_grp(istart_ele_grp_drmd-1)
       icou = 0
       do inum = 1, num_ele_grp_drmd
         igrp = inum + istart_ele_grp_drmd - 1
-        ist = 3*ele_grp1%istack_grp(igrp-1) + 1
-        ied = 3*ele_grp1%istack_grp(igrp)
+        ist = 3*ele_grp%istack_grp(igrp-1) + 1
+        ied = 3*ele_grp%istack_grp(igrp)
         do inod = ist, ied
           icou = icou + 1
           inod_psf(icou) = icou
@@ -82,14 +82,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_field_to_med_patch(num_grp, num_comp,              &
+      subroutine set_field_to_med_patch(ele_grp, num_grp, num_comp,     &
      &          comp_name, d_grp)
 !
-      use m_element_group
+      use t_group_data
       use m_psf_results
       use m_ctl_params_ele_grp_udt
       use m_merdional_grouping_patch
 !
+      type(group_data), intent(in) :: ele_grp
       integer(kind = kint), intent(in) :: num_grp, num_comp
       character(len = kchara), intent(in) :: comp_name(num_comp)
       real(kind = kreal), intent(in) :: d_grp(num_grp, num_comp)
@@ -104,12 +105,12 @@
         write(psf_data_name(i),'(a)') comp_name(i)
       end do
 !
-      ist_nod = 3*ele_grp1%istack_grp(istart_ele_grp_drmd-1)
+      ist_nod = 3*ele_grp%istack_grp(istart_ele_grp_drmd-1)
       icou = 0
       do inum = 1, num_ele_grp_drmd
         igrp = inum + istart_ele_grp_drmd - 1
-        ist = 3*ele_grp1%istack_grp(igrp-1) + 1
-        ied = 3*ele_grp1%istack_grp(igrp)
+        ist = 3*ele_grp%istack_grp(igrp-1) + 1
+        ied = 3*ele_grp%istack_grp(igrp)
         do inod = ist, ied
           icou = icou + 1
           inod_psf(icou) = icou
@@ -123,7 +124,6 @@
 !
       subroutine cal_ave_rms_csim
 !
-      use m_element_group
       use m_ctl_params_ele_grp_udt
       use m_tave_SGS_model_coefs
       use m_psf_results

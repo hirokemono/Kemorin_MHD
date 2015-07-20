@@ -9,7 +9,7 @@
 !      subroutine allocate_monitor_local
 !      subroutine deallocate_monitor_local
 !
-!      subroutine set_local_node_id_4_monitor
+!      subroutine set_local_node_id_4_monitor(nod_grp)
 !      subroutine output_monitor_control
 !      subroutine skip_monitor_data
 !
@@ -128,14 +128,15 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_local_node_id_4_monitor
+      subroutine set_local_node_id_4_monitor(nod_grp)
 !
       use calypso_mpi
       use m_control_parameter
       use m_geometry_parameter
       use m_geometry_data
-      use m_node_group
+      use t_group_data
 !
+      type(group_data), intent(in) :: nod_grp
       integer (kind = kint) :: i, k, inum
 !
 !
@@ -144,13 +145,13 @@
       num_monitor_local = 0
 !
       if ( num_monitor .gt. 0 ) then
-        do i=1, nod_grp1%num_grp
+        do i = 1, nod_grp%num_grp
 !
           do inum = 1, num_monitor
-            if (nod_grp1%grp_name(i) .eq. monitor_grp(inum)) then
+            if (nod_grp%grp_name(i) .eq. monitor_grp(inum)) then
                num_monitor_local = num_monitor_local                    &
-     &                            + nod_grp1%istack_grp(i)              &
-     &                            - nod_grp1%istack_grp(i-1)
+     &                            + nod_grp%istack_grp(i)               &
+     &                            - nod_grp%istack_grp(i-1)
                exit
             end if
           end do
@@ -163,13 +164,13 @@
       if (num_monitor_local .eq. 0) return
 !
       num_monitor_local = 0
-      do i=1, nod_grp1%num_grp
+      do i=1, nod_grp%num_grp
         do inum = 1, num_monitor
-          if (nod_grp1%grp_name(i) .eq. monitor_grp(inum)) then
-            do k= nod_grp1%istack_grp(i-1)+1, nod_grp1%istack_grp(i)
-              if( nod_grp1%item_grp(k) .le. internal_node ) then 
+          if (nod_grp%grp_name(i) .eq. monitor_grp(inum)) then
+            do k= nod_grp%istack_grp(i-1)+1, nod_grp%istack_grp(i)
+              if( nod_grp%item_grp(k) .le. internal_node ) then 
                 num_monitor_local = num_monitor_local + 1
-                monitor_local(num_monitor_local) = nod_grp1%item_grp(k)
+                monitor_local(num_monitor_local) = nod_grp%item_grp(k)
               end if
             end do
             exit
