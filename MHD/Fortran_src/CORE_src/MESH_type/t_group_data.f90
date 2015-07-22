@@ -45,7 +45,7 @@
 !!      subroutine check_surf_grp_4_sheard_para(my_rank, sf_grp)
 !!      subroutine compare_nod_grp_type_vs_1st(my_rank, grp_ref, grp)
 !!      subroutine compare_surf_grp_type_vs_1st                         &
-!!     &         (my_rank, sf_grp_ref邵ｲ縲廓_grp)
+!!     &         (my_rank, sf_grp_ref, sf_grp)
 !!        integer(kind = kint), intent(in) :: my_rank
 !!        type(group_data), intent(in) :: grp
 !!        type(surface_group_data), intent(in) :: sf_grp
