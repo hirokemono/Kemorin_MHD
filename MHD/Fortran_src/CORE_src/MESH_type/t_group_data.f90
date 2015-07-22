@@ -45,7 +45,7 @@
 !!      subroutine check_surf_grp_4_sheard_para(my_rank, sf_grp)
 !!      subroutine compare_nod_grp_type_vs_1st(my_rank, grp_ref, grp)
 !!      subroutine compare_surf_grp_type_vs_1st                         &
-!!     &         (my_rank, sf_grp_ref縲《f_grp)
+!!     &         (my_rank, sf_grp_ref邵ｲ縲廓_grp)
 !!        integer(kind = kint), intent(in) :: my_rank
 !!        type(group_data), intent(in) :: grp
 !!        type(surface_group_data), intent(in) :: sf_grp
@@ -377,6 +377,8 @@
       grp_new%num_grp =     grp_org%num_grp
       grp_new%num_item = grp_org%num_item
 !
+      call allocate_grp_type_num(grp_new)
+!
       if (grp_new%num_grp .gt. 0) then
         grp_new%grp_name(1:grp_new%num_grp)                             &
      &          =    grp_org%grp_name(1:grp_new%num_grp)
@@ -384,7 +386,7 @@
      &          =  grp_org%istack_grp(0:grp_new%num_grp)
       end if
 !
-      call allocate_grp_type(grp_new)
+      call allocate_grp_type_item(grp_new)
 !
       if (grp_new%num_item .gt. 0) then
         grp_new%item_grp(1:grp_new%num_item)                            &
