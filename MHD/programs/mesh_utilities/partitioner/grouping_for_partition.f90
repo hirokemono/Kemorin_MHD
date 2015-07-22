@@ -3,7 +3,8 @@
 !
 !     Written by H. Matsui on Aug., 2007
 !
-!      subroutine grouping_for_partitioner(ele_grp, ele_grp_data)
+!      subroutine grouping_for_partitioner                              &
+!     &         (nod_grp, ele_grp, ele_grp_data)
 !
       module grouping_for_partition
 !
@@ -17,14 +18,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine grouping_for_partitioner(ele_grp, ele_grp_data)
+      subroutine grouping_for_partitioner                               &
+     &         (nod_grp, ele_grp, ele_grp_data)
 !
       use m_constants
       use m_error_IDs
       use m_ctl_param_partitioner
       use m_geometry_parameter
       use m_geometry_data
-      use m_node_group
       use m_subdomain_table_IO
       use m_domain_group_4_partition
 !
@@ -40,6 +41,7 @@
       use set_partition_by_fine_mesh
       use error_exit_4_part
 !
+      type(group_data), intent(in) :: nod_grp
       type(group_data), intent(in) :: ele_grp
       type(element_group_table), intent(in) :: ele_grp_data
 !
@@ -91,8 +93,8 @@
       else if (NTYP_div .eq. iPART_CUBED_SPHERE) then
         call divide_by_sphere_coord(num_domain, numnod,                 &
      &      nnod_4_ele, xx, radius, colatitude, longitude,              &
-     &      nod_grp1%num_grp, nod_grp1%num_item, nod_grp1%istack_grp,   &
-     &      nod_grp1%item_grp, nod_grp1%grp_name)
+     &      nod_grp%num_grp, nod_grp%num_item, nod_grp%istack_grp,      &
+     &      nod_grp%item_grp, nod_grp%grp_name)
 !C
 !C +------------------------------+
 !C | Partisioning by MeTiS output |

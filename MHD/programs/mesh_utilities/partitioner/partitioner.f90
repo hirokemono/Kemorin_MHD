@@ -10,7 +10,7 @@
       use m_control_data_4_part
       use m_ctl_param_partitioner
       use m_read_mesh_data
-      use m_element_group
+      use m_group_data
       use m_element_group_connect
 !
       use init_partitioner
@@ -42,8 +42,8 @@
 !
 !  ========= Routines for partitioner ==============
 !
-      call initialize_partitioner
-      call grouping_for_partitioner(ele_grp1, ele_grp_data1)
+      call initialize_partitioner(nod_grp1, ele_grp1, sf_grp1)
+      call grouping_for_partitioner(nod_grp1, ele_grp1, ele_grp_data1)
 !
 !C===
 !C-- create subdomain mesh

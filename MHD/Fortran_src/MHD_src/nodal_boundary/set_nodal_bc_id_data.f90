@@ -24,6 +24,8 @@
       use m_machine_parameter
       use m_control_parameter
 !
+      use m_node_group
+!
       use m_bc_data_ene
       use m_bc_temp_sgs
 !
@@ -60,7 +62,7 @@
 !
 !
 !
-      call count_num_bc_nod
+      call count_num_bc_nod(nod_grp1)
 !
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         call allocate_bc_ene

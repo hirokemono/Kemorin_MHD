@@ -38,7 +38,7 @@
       use set_ele_nod_bc_vectors
 !
 !
-      call set_bc_fixed_velo_id
+      call set_bc_fixed_velo_id(nod_grp1)
 !
       call set_bc_velo_4_sphere_id(numnod, nod_grp1)
 !
@@ -62,7 +62,7 @@
       use set_ele_nod_bc_vectors
 !
 !
-      call set_bc_fixed_vect_p_id
+      call set_bc_fixed_vect_p_id(nod_grp1)
 !
 !   set node id in an element for magnetic boundary 
 !
@@ -79,7 +79,7 @@
       use set_ele_nod_bc_vectors
 !
 !
-      call set_bc_fixed_magne_id
+      call set_bc_fixed_magne_id(nod_grp1)
 !
 !   set node id in an element for magnetic boundary 
 !
@@ -96,7 +96,7 @@
       use set_ele_nod_bc_vectors
 !
 !
-      call set_bc_fixed_current_id
+      call set_bc_fixed_current_id(nod_grp1)
 !
       call set_ele_nodal_bc_4_current
 !

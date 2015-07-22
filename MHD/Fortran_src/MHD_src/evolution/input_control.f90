@@ -91,6 +91,7 @@
       use m_control_parameter
       use m_read_mesh_data
       use m_node_group
+      use m_surface_group
 !
       use element_IO_select
       use surface_IO_select
@@ -100,7 +101,7 @@
       use set_surface_geometry_4_IO
       use set_edge_geometry_4_IO
       use node_monitor_IO
-      use read_bc_values_file_1st
+      use read_bc_values_file
 !
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
@@ -110,7 +111,7 @@
 ! ----  open data file for boundary data
 !
       if (iflag_boundary_file .eq. id_read_boundary_file) then
-        call read_boundary_values_file_1(my_rank)
+        call s_read_bc_values_file(my_rank, nod_grp1, sf_grp1)
       end if
 !
 ! ---------------------------------
