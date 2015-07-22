@@ -124,6 +124,7 @@
       use m_machine_parameter
       use m_geometry_parameter
       use m_geometry_data
+      use m_group_data
       use t_mesh_data
       use t_phys_data
 !
@@ -147,7 +148,8 @@
       call connect_quad_mesh_2_linear_t(femmesh_l%mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'gen_linear_group_type'
-      call gen_linear_group_type(femmesh_l%group)
+      call gen_linear_group_type(nod_grp1, ele_grp1, sf_grp1,           &
+     &                           femmesh_l%group)
 !
       if (iflag_debug.eq.1) write(*,*) 's_const_surface_type_data'
       call s_const_surface_type_data(femmesh_l%mesh%node,               &

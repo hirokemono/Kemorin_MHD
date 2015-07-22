@@ -22,13 +22,15 @@
       use m_geometry_parameter
       use m_iccg_parameter
       use m_work_4_MHD_layering
+      use m_element_group
+      use m_surface_group
 !
       use reordering_by_layers
       use reordering_MG_ele_by_layers
 !
 !
       call allocate_lists_4_layer(numele)
-      call s_reordering_by_layers
+      call s_reordering_by_layers(ele_grp1, sf_grp1)
 !
 !   ordereing of element parameters for AMG (for first grid)
 !

@@ -5,15 +5,15 @@
 !      Moified by H. Matsui on Sep., 2007
 !      Moified by H. Matsui on Feb., 2008
 !
-!      subroutine reordering_element_info
-!   ordereing of connectivity, element group, and surface group
-!
-!      subroutine reordering_element_connect(numele, nnod_4_ele,        &
-!     &          new2oldele_layer, iele_gl_org, iele_gl, ie_org, ie)
-!      subroutine reordering_element_group(numele, old2newele_layer,    &
-!     &    num_mat_bc, mat_item)
-!      subroutine reordering_surface_group(numele, old2newele_layer,    &
-!     &    num_surf_bc, surf_item)
+!!      subroutine reordering_element_info(ele_grp, sf_grp)
+!!   ordereing of connectivity, element group, and surface group
+!!
+!!      subroutine reordering_element_connect(numele, nnod_4_ele,       &
+!!     &          new2oldele_layer, iele_gl_org, iele_gl, ie_org, ie)
+!!      subroutine reordering_element_group(numele, old2newele_layer,   &
+!!     &    num_mat_bc, mat_item)
+!!      subroutine reordering_surface_group(numele, old2newele_layer,   &
+!!     &    num_surf_bc, surf_item)
 !
       module reordering_element_MHD
 !
@@ -27,14 +27,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine reordering_element_info
+      subroutine reordering_element_info(ele_grp, sf_grp)
 !
       use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
-      use m_element_group
-      use m_surface_group
       use m_work_4_MHD_layering
+      use t_group_data
+!
+      type(group_data), intent(in) :: ele_grp
+      type(surface_group_data), intent(in) :: sf_grp
 !
 !
       call reordering_element_connect(numele, nnod_4_ele,               &
@@ -42,10 +44,10 @@
      &    ie_org(1,1), ie(1,1) )
 !
       call reordering_element_group(numele, old2newele_layer(1),        &
-     &    ele_grp1%num_item, ele_grp1%item_grp)
+     &    ele_grp%num_item, ele_grp%item_grp)
 !
       call reordering_surface_group(numele, old2newele_layer(1),        &
-     &    sf_grp1%num_item, sf_grp1%item_sf_grp)
+     &    sf_grp%num_item, sf_grp%item_sf_grp)
 !
       end subroutine reordering_element_info
 !

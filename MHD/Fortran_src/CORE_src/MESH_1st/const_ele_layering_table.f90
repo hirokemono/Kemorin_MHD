@@ -28,6 +28,7 @@
 !
       subroutine const_layers_4_dynamic
 !
+      use m_element_group
       use set_layer_list_by_table
 !
       integer(kind = kint) :: i
@@ -36,12 +37,12 @@
       if (iflag_layering_type .eq. 1) then
         if (iflag_debug .eq. 1)                                         &
      &    write(*,*) 'const_layer_list_by_start_end'
-        call const_layer_list_by_start_end
+        call const_layer_list_by_start_end(ele_grp1)
 !
       else if (iflag_layering_type .eq. 2) then
         if (iflag_debug .eq. 1)                                         &
      &    write(*,*) 'const_layer_list_by_mesh_file'
-        call const_layer_list_by_mesh_file
+        call const_layer_list_by_mesh_file(ele_grp1)
       end if
 !
       if (iflag_debug.eq.1) then
@@ -56,21 +57,23 @@
       if (iflag_layering_type.eq.0 .or. iflag_layering_type.eq.2) then
         if (iflag_debug .eq. 1)                                         &
      &    write(*,*) 'const_layer_list_by_table'
-        call const_layer_list_by_table
+        call const_layer_list_by_table(ele_grp1)
       end if
 !
       end subroutine const_layers_4_dynamic
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_layer_list_by_table
+      subroutine const_layer_list_by_table(ele_grp)
 !
-      use m_element_group
+      use t_group_data
       use m_layering_ele_list
       use set_layer_list_by_table
 !
+      type(group_data), intent(in) :: ele_grp
 !
-      call set_layerd_group_id(ele_grp1%num_grp, ele_grp1%grp_name)
+!
+      call set_layerd_group_id(ele_grp%num_grp, ele_grp%grp_name)
 !
       layer_tbl1%n_layer_d = num_layer_grp
       call alloc_layering_ele_list_type(layer_tbl1)
@@ -79,7 +82,7 @@
         if (iflag_debug .eq. 1)                                         &
      &    write(*,*) 'count_ele_layer_by_table'
       call count_ele_layer_by_table                                     &
-     &   (ele_grp1%num_grp, ele_grp1%istack_grp,                        &
+     &   (ele_grp%num_grp, ele_grp%istack_grp,                          &
      &    layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,              &
      &    layer_tbl1%layer_stack)
 !
@@ -88,8 +91,8 @@
       if (iflag_debug .eq. 1) write(*,*) 'alloc_layer_items_type'
       call alloc_layer_items_type(layer_tbl1)
       if (iflag_debug .eq. 1)  write(*,*) 'set_ele_layer_by_table'
-      call set_ele_layer_by_table(ele_grp1%num_grp,                     &
-     &    ele_grp1%num_item, ele_grp1%istack_grp, ele_grp1%item_grp,    &
+      call set_ele_layer_by_table(ele_grp%num_grp,                      &
+     &    ele_grp%num_item, ele_grp%istack_grp, ele_grp%item_grp,       &
      &    layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,              &
      &    layer_tbl1%layer_stack, layer_tbl1%item_layer)
 !
@@ -109,42 +112,46 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_layer_list_by_mesh_file
+      subroutine const_layer_list_by_mesh_file(ele_grp)
 !
-      use m_element_group
+      use t_group_data
       use set_layer_list_by_table
+!
+      type(group_data), intent(in) :: ele_grp
 !
       integer(kind = kint) :: ist_grp
 !
 !
       call count_layering_ele_grp_list                                  &
-     &   (ele_grp1%num_grp, ele_grp1%grp_name, ist_grp)
+     &   (ele_grp%num_grp, ele_grp%grp_name, ist_grp)
 !
       call allocate_layering_ele_grp
       call set_layering_ele_grp_list                                    &
-     &   (ele_grp1%num_grp, ele_grp1%grp_name, ist_grp)
+     &   (ele_grp%num_grp, ele_grp%grp_name, ist_grp)
 !
       end subroutine const_layer_list_by_mesh_file
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_layer_list_by_start_end
+      subroutine const_layer_list_by_start_end(ele_grp)
 !
-      use m_element_group
+      use t_group_data
       use m_layering_ele_list
       use set_layer_list_by_table
       use set_layer_list_by_start_end
 !
+      type(group_data), intent(in) :: ele_grp
 !
-      call set_num_dynamic_layer_by_start(ele_grp1%num_grp,             &
-     &    ele_grp1%grp_name, ele_grp1%istack_grp, layer_tbl1%n_layer_d)
+!
+      call set_num_dynamic_layer_by_start(ele_grp%num_grp,              &
+     &    ele_grp%grp_name, ele_grp%istack_grp, layer_tbl1%n_layer_d)
 !
       call allocate_layer_ele_start(layer_tbl1%n_layer_d)
       call alloc_layering_ele_list_type(layer_tbl1)
 !
-      call set_start_ele_4_dynamic(ele_grp1%num_grp, ele_grp1%num_item, &
-     &    ele_grp1%grp_name, ele_grp1%istack_grp, ele_grp1%item_grp,    &
+      call set_start_ele_4_dynamic(ele_grp%num_grp, ele_grp%num_item,   &
+     &    ele_grp%grp_name, ele_grp%istack_grp, ele_grp%item_grp,       &
      &    layer_tbl1%n_layer_d)
 !
       call count_ele_4_dynamic_by_start                                 &

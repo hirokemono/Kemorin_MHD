@@ -6,7 +6,7 @@
 !      Modified by H. Matsui on Feb., 2008
 !
 !      subroutine s_reordering_by_layers_snap
-!      subroutine s_reordering_by_layers
+!      subroutine s_reordering_by_layers(ele_grp, sf_grp)
 !
 !.......................................................................
 !
@@ -32,9 +32,12 @@
 !
       subroutine s_reordering_by_layers_snap
 !
+      use m_element_group
+      use m_surface_group
+!
 !
       call allocate_lists_4_layer(numele)
-      call s_reordering_by_layers
+      call s_reordering_by_layers(ele_grp1, sf_grp1)
       call deallocate_lists_4_layer
 !
       end subroutine s_reordering_by_layers_snap
@@ -42,19 +45,23 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine s_reordering_by_layers
+      subroutine s_reordering_by_layers(ele_grp, sf_grp)
 !
+      use calypso_mpi
       use m_machine_parameter
       use m_control_parameter
       use m_iccg_parameter
-      use calypso_mpi
       use m_geometry_data
       use m_geometry_data_MHD
-      use m_element_group
+!
+      use t_group_data
 !
       use const_layering_table
       use reordering_element_MHD
       use reordering_element_size
+!
+      type(group_data), intent(in) :: ele_grp
+      type(surface_group_data), intent(inout) :: sf_grp
 !
 !
 !      if (my_rank .eq. 0 ) then
@@ -77,9 +84,8 @@
 !      end if
 !
 !
-      call marking_by_layers                                            &
-     &   (numele, ele_grp1%num_grp, ele_grp1%num_item,                  &
-     &    ele_grp1%istack_grp, ele_grp1%grp_name, ele_grp1%item_grp,    &
+      call marking_by_layers(numele, ele_grp%num_grp, ele_grp%num_item, &
+     &    ele_grp%istack_grp, ele_grp%grp_name, ele_grp%item_grp,       &
      &    mat_flag_mhd(1) )
 !
 !  set list vector for ordering
@@ -101,7 +107,7 @@
 !   ordereing of connectivity, element group, and surface group
 !
       call allocate_element_connect_org
-      call reordering_element_info
+      call reordering_element_info(ele_grp, sf_grp)
 !
 !   ordereing of element parameters for SGS model
 !

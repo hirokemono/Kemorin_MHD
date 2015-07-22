@@ -26,13 +26,15 @@
 !
       subroutine set_layers
 !
+      use m_element_group
+!
 !    set node list for fluid
 !
       call set_layer_fluid
 !
 !    set node and element list for conductor
 !
-      call set_layers_4_induction
+      call set_layers_4_induction(ele_grp1)
 !
       end subroutine set_layers
 !
@@ -69,22 +71,23 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine set_layers_4_induction
+      subroutine set_layers_4_induction(ele_grp)
 !
       use m_control_parameter
       use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
-      use m_element_group
       use m_set_layers
+      use t_group_data
       use count_smp_size_4_MHD
 !
+      type(group_data), intent(inout) :: ele_grp
 !
 !    count number of element for insulated core
 !
       call count_ele_4_layer(numele, numele_in_core,                    &
      &    num_in_core_ele_grp, in_core_ele_grp_name,                    &
-     &    ele_grp1%num_grp, ele_grp1%istack_grp, ele_grp1%grp_name)
+     &    ele_grp%num_grp, ele_grp%istack_grp, ele_grp%grp_name)
 !
 !    set node list for conductor
 !
