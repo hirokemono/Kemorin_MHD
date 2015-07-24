@@ -5,11 +5,11 @@
 !                                    on July 2000 (ver 1.1)
 !        modified by H. Matsui on June. 2006
 !
-!      subroutine cal_jacobian_infinity
-!      subroutine cal_jacobian_infty_quad
-!      subroutine cal_jacobian_infty_lag
-!
-!      subroutine cal_jacobian_infty_linear_quad
+!!      subroutine cal_jacobian_infinity(sf_grp)
+!!      subroutine cal_jacobian_infty_quad(sf_grp)
+!!      subroutine cal_jacobian_infty_lag(sf_grp)
+!!
+!!      subroutine cal_jacobian_infty_linear_quad(sf_grp)
 !
       module cal_jacobians_infinity
 !
@@ -18,11 +18,12 @@
       use m_machine_parameter
       use m_geometry_parameter
       use m_geometry_data
-      use m_surface_group
       use m_surf_data_infinity
       use m_fem_gauss_int_coefs
       use m_shape_functions
       use m_jacobians
+!
+      use t_group_data
 !
       use cal_shape_func_infty_3d
 !
@@ -34,10 +35,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_infinity
+      subroutine cal_jacobian_infinity(sf_grp)
 !
       use cal_jacobian_3d_inf_linear
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind=kint) :: ii, ix, i0
 !
 !
@@ -51,9 +53,9 @@
           ix = int_start3(i0) + ii
 !
           call s_cal_jacobian_3d_inf_8(numnod, numele,                  &
-     &        np_smp, ie, xx, sf_grp1%num_item, sf_grp1%item_sf_grp,    &
+     &        np_smp, ie, xx, sf_grp%num_item, sf_grp%item_sf_grp,      &
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
-     &        sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,              &
+     &        sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                &
      &        xjac(1,ix), axjac(1,ix),                                  &
      &        dnx(1,1,ix,1), dnx(1,1,ix,2), dnx(1,1,ix,3),              &
      &        dxidx_1(1,ix,1,1), dxidx_1(1,ix,2,1), dxidx_1(1,ix,3,1),  &
@@ -70,10 +72,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_infty_quad
+      subroutine cal_jacobian_infty_quad(sf_grp)
 !
       use cal_jacobian_3d_inf_quad
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind=kint) :: ii, ix, i0
 !
 !
@@ -87,9 +90,9 @@
           ix = int_start3(i0) + ii
 !
           call s_cal_jacobian_3d_inf_20(numnod, numele,                 &
-     &        np_smp, ie, xx, sf_grp1%num_item, sf_grp1%item_sf_grp,    &
+     &        np_smp, ie, xx, sf_grp%num_item, sf_grp%item_sf_grp,      &
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
-     &        sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,              &
+     &        sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                &
      &        xjac_q(1,ix), axjac_q(1,ix),                              &
      &      dwx(1,1,ix,1), dwx(1,1,ix,2), dwx(1,1,ix,3),                &
      &      dxidx_20(1,ix,1,1), dxidx_20(1,ix,2,1), dxidx_20(1,ix,3,1), &
@@ -106,10 +109,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_infty_lag
+      subroutine cal_jacobian_infty_lag(sf_grp)
 !
       use cal_jacobian_3d_inf_lag
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind=kint) :: ii, ix, i0
 !
 !
@@ -124,9 +128,9 @@
           ix = int_start3(i0) + ii
 !
           call s_cal_jacobian_3d_inf_27(numnod, numele,                 &
-     &        np_smp, ie, xx, sf_grp1%num_item, sf_grp1%item_sf_grp,    &
+     &        np_smp, ie, xx, sf_grp%num_item, sf_grp%item_sf_grp,      &
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
-     &        sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,              &
+     &        sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                &
      &        xjac_q(1,ix), axjac_q(1,ix),                              &
      &      dwx(1,1,ix,1), dwx(1,1,ix,2), dwx(1,1,ix,3),                &
      &      dxidx_20(1,ix,1,1), dxidx_20(1,ix,2,1), dxidx_20(1,ix,3,1), &
@@ -144,10 +148,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_infty_linear_quad
+      subroutine cal_jacobian_infty_linear_quad(sf_grp)
 !
       use cal_jacobian_3d_inf_l_quad
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind=kint) :: ii, ix, i0
 !
 !
@@ -161,9 +166,9 @@
           ix = int_start3(i0) + ii
 !
           call s_cal_jacobian_3d_inf_8_20(numnod, numele,               &
-     &        np_smp, ie, xx, sf_grp1%num_item, sf_grp1%item_sf_grp,    &
+     &        np_smp, ie, xx, sf_grp%num_item, sf_grp%item_sf_grp,      &
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
-     &        sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,              &
+     &        sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                &
      &        xjac_lq(1,ix), axjac_lq(1,ix),                            &
      &      dmx(1,1,ix,1), dmx(1,1,ix,2), dmx(1,1,ix,3),                &
      &      dxidx_lq(1,ix,1,1), dxidx_lq(1,ix,2,1), dxidx_lq(1,ix,3,1), &

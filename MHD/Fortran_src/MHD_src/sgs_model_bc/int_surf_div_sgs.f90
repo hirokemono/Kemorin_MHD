@@ -57,11 +57,11 @@
           if (num .gt. 0) then
 !
             do k2 = 1, nnod_4_surf
-              call dlt_scl_phys_2_each_surface(igrp, k2, i_comp,        &
-     &            scalar_sf)
-              call fem_sf_skv_sgs_vect_diff_p1(igrp, k2, ione, n_int,   &
-     &            i_filter, nd, dxe_sf, scalar_sf, ak_diff(1,iak_diff), &
-     &            one, sk6)
+              call dlt_scl_phys_2_each_surface(sf_grp1, igrp, k2,       &
+     &            i_comp, scalar_sf)
+              call fem_sf_skv_sgs_vect_diff_p1(sf_grp1, igrp, k2,       &
+     &            ione, n_int, i_filter, nd, dxe_sf, scalar_sf,         &
+     &            ak_diff(1,iak_diff), one, sk6)
             end do
           end if
         end do
@@ -102,10 +102,10 @@
           if (num .gt. 0) then
 !
             do k2=1, nnod_4_surf
-              call dlt_scl_phys_2_each_surface(igrp, k2, i_comp,        &
-     &            scalar_sf)
-              call fem_sf_skv_sgs_commute_err_p1(igrp, k2, ione, n_int, &
-     &            i_filter, nd, dxe_sf, scalar_sf, sk6)
+              call dlt_scl_phys_2_each_surface(sf_grp1, igrp, k2,       &
+     &            i_comp, scalar_sf)
+              call fem_sf_skv_sgs_commute_err_p1(sf_grp1, igrp, k2,     &
+     &            ione, n_int, i_filter, nd, dxe_sf, scalar_sf, sk6)
             end do
 !
           end if

@@ -13,6 +13,7 @@
       use m_control_parameter
       use m_phys_constants
       use m_finite_element_matrix
+      use m_surface_group
 !
       implicit none
 !
@@ -32,9 +33,9 @@
       if (ngrp_sf_fix_pg .eq. 0) return
       call reset_sk6(n_scalar)
 !
-      call fem_surf_skv_norm_poisson_1(ngrp_sf_fix_pg, nele_sf_fix_pg,  &
-     &    ngrp_sf_fix_pg, id_grp_sf_fix_pg, ist_ele_sf_fix_pg,          &
-     &    sf_apt_fix_pg, intg_point_poisson, sk6)
+      call fem_surf_skv_norm_poisson_1(sf_grp1, ngrp_sf_fix_pg,         &
+     &    nele_sf_fix_pg, ngrp_sf_fix_pg, id_grp_sf_fix_pg,             &
+     &    ist_ele_sf_fix_pg, sf_apt_fix_pg, intg_point_poisson, sk6)
 !
       call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
 !
@@ -52,7 +53,7 @@
       if (ngrp_sf_fix_mpg .eq. 0) return
       call reset_sk6(n_scalar)
 !
-      call fem_surf_skv_norm_poisson_1(ngrp_sf_fix_mpg,                 &
+      call fem_surf_skv_norm_poisson_1(sf_grp1, ngrp_sf_fix_mpg,        &
      &    nele_sf_fix_mpg, ngrp_sf_fix_mpg, id_grp_sf_fix_mpg,          &
      &    ist_ele_sf_fix_mpg, sf_apt_fix_mpg, intg_point_poisson, sk6)
 !

@@ -37,6 +37,8 @@
       use edge_IO_select
       use m_geometry_data
       use m_surface_group
+      use m_surface_group_connect
+      use m_surface_group_geometry
       use m_jacobians_4_surface
       use m_jacobians_4_edge
       use m_jacobian_sf_grp
@@ -85,7 +87,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'pick_surface_group_geometry'
-      call pick_surface_group_geometry
+      call pick_surface_group_geometry(sf_grp1, sf_grp_v1)
 !
 !  -------------------------------
 !  -------------------------------
@@ -133,10 +135,10 @@
 !  -------------------------------
 !
        if (iflag_debug.gt.0)  write(*,*) 'pick_normal_of_surf_group'
-       call pick_normal_of_surf_group
+       call pick_normal_of_surf_group(sf_grp1, sf_grp_v1)
 !
        if (iflag_debug.gt.0)  write(*,*) 's_sum_normal_4_surf_group'
-       call s_sum_normal_4_surf_group
+       call s_sum_normal_4_surf_group(sf_grp1, sf_grp_v1)
 !
 !  ---------------------------------------------
 !     output node data

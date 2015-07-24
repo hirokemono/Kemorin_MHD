@@ -3,19 +3,20 @@
 !
 !      Written by H. Matsui on Sep., 2005
 !
-!      subroutine d_SGS_flux_2_each_surface(igrp, k2, nd,               &
-!     &          i_vect, i_field, i_flux, vector_sf)
-!      subroutine d_SGS_flux_2_each_sf_w_coef(igrp, k2, nd,             &
-!     &          i_vect, i_field, i_flux, ak_e, vector_sf)
-!      subroutine d_SGS_flux_2_each_sf_w_cst(igrp, k2, nd,              &
-!     &          i_vect, i_field, i_flux, coef, vector_sf)
-!
-!      subroutine d_SGS_induct_t_2_each_surface(igrp, k2, nd,           &
-!     &          i_flux, i_b, i_v, vector_sf)
-!      subroutine d_SGS_induct_t_2_each_sf_w_coef(igrp, k2, nd,         &
-!     &          i_flux, i_b, i_v, ak_e, vector_sf)
-!      subroutine d_SGS_induct_t_2_each_sf_w_cst(igrp, k2, nd,          &
-!     &          i_flux, i_b, i_v, coef, vector_sf)
+!!      subroutine d_SGS_flux_2_each_surface(sf_grp, igrp, k2, nd,      &
+!!     &          i_vect, i_field, i_flux, vector_sf)
+!!      subroutine d_SGS_flux_2_each_sf_w_coef(sf_grp, igrp, k2, nd,    &
+!!     &          i_vect, i_field, i_flux, ak_e, vector_sf)
+!!      subroutine d_SGS_flux_2_each_sf_w_cst(sf_grp, igrp, k2, nd,     &
+!!     &          i_vect, i_field, i_flux, coef, vector_sf)
+!!
+!!      subroutine d_SGS_induct_t_2_each_surface(sf_grp, igrp, k2, nd,  &
+!!     &          i_flux, i_b, i_v, vector_sf)
+!!      subroutine d_SGS_induct_t_2_each_sf_w_coef(sf_grp, igrp, k2, nd,&
+!!     &          i_flux, i_b, i_v, ak_e, vector_sf)
+!!      subroutine d_SGS_induct_t_2_each_sf_w_cst(sf_grp, igrp, k2, nd, &
+!!     &          i_flux, i_b, i_v, coef, vector_sf)
+!!        type(surface_group_data), intent(in) :: sf_grp
 !
       module delta_SGS_2_each_surface
 !
@@ -24,9 +25,9 @@
       use m_machine_parameter
       use m_geometry_parameter
       use m_geometry_data
-      use m_group_data
       use m_phys_constants
       use m_node_phys_data
+      use t_group_data
 !
       implicit none
 !
@@ -36,21 +37,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine d_SGS_flux_2_each_surface(igrp, k2, nd,                &
+      subroutine d_SGS_flux_2_each_surface(sf_grp, igrp, k2, nd,        &
      &          i_vect, i_field, i_flux, vector_sf)
 !
       use set_delta_SGS_2_each_surf
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: i_vect, i_field, i_flux
       integer (kind = kint), intent(in) :: igrp, k2, nd
 !
-      real (kind=kreal), intent(inout) :: vector_sf(sf_grp1%num_item,3)
+      real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
       call delta_flux_t_2_each_surface(np_smp, numnod, numele,          &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
-     &    sf_grp1%num_item, sf_grp1%item_sf_grp,                        &
-     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
+     &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
+     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_vect, i_field, i_flux, num_tot_nod_phys,      &
      &    d_nod, vector_sf)
 !
@@ -58,22 +60,23 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine d_SGS_flux_2_each_sf_w_coef(igrp, k2, nd,              &
+      subroutine d_SGS_flux_2_each_sf_w_coef(sf_grp, igrp, k2, nd,      &
      &          i_vect, i_field, i_flux, ak_e, vector_sf)
 !
       use set_delta_SGS_2_sf_w_coef
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: igrp, k2, nd
       integer (kind = kint), intent(in) :: i_vect, i_field, i_flux
       real (kind=kreal), intent(in) :: ak_e(numele)
 !
-      real (kind=kreal), intent(inout) :: vector_sf(sf_grp1%num_item,3)
+      real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
       call delta_flux_t_2_each_sf_w_coef(np_smp, numnod, numele,        &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
-     &    sf_grp1%num_item, sf_grp1%item_sf_grp,                        &
-     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
+     &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
+     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_vect, i_field, i_flux, num_tot_nod_phys,      &
      &    d_nod, ak_e, vector_sf)
 !
@@ -81,22 +84,23 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine d_SGS_flux_2_each_sf_w_cst(igrp, k2, nd,               &
+      subroutine d_SGS_flux_2_each_sf_w_cst(sf_grp, igrp, k2, nd,       &
      &          i_vect, i_field, i_flux, coef, vector_sf)
 !
       use set_delta_SGS_2_sf_w_cst
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: i_vect, i_field, i_flux
       integer (kind = kint), intent(in) :: igrp, k2, nd
       real (kind=kreal), intent(in) :: coef
 !
-      real (kind=kreal), intent(inout) :: vector_sf(sf_grp1%num_item,3)
+      real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
       call delta_flux_t_2_each_sf_w_cst(np_smp, numnod, numele,         &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
-     &    sf_grp1%num_item, sf_grp1%item_sf_grp,                        &
-     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
+     &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
+     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_vect, i_field, i_flux, num_tot_nod_phys,      &
      &    d_nod, coef, vector_sf)
 !
@@ -105,21 +109,22 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine d_SGS_induct_t_2_each_surface(igrp, k2, nd,            &
+      subroutine d_SGS_induct_t_2_each_surface(sf_grp, igrp, k2, nd,    &
      &          i_flux, i_b, i_v, vector_sf)
 !
       use set_delta_SGS_2_each_surf
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: i_b, i_v, i_flux
       integer (kind = kint), intent(in) :: igrp, k2, nd
 !
-      real (kind=kreal), intent(inout) :: vector_sf(sf_grp1%num_item,3)
+      real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
       call delta_SGS_induct_t_2_surface(np_smp, numnod, numele,         &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
-     &    sf_grp1%num_item, sf_grp1%item_sf_grp,                        &
-     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
+     &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
+     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_flux, i_b, i_v, num_tot_nod_phys,             &
      &    d_nod, vector_sf)
 !
@@ -127,22 +132,23 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine d_SGS_induct_t_2_each_sf_w_coef(igrp, k2, nd,          &
+      subroutine d_SGS_induct_t_2_each_sf_w_coef(sf_grp, igrp, k2, nd,  &
      &          i_flux, i_b, i_v, ak_e, vector_sf)
 !
       use set_delta_SGS_2_sf_w_coef
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: i_b, i_v, i_flux
       integer (kind = kint), intent(in) :: igrp, k2, nd
       real (kind=kreal), intent(in) :: ak_e(numele)
 !
-      real (kind=kreal), intent(inout) :: vector_sf(sf_grp1%num_item,3)
+      real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
       call delta_SGS_induct_t_2_sf_w_coef(np_smp, numnod, numele,       &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
-     &    sf_grp1%num_item, sf_grp1%item_sf_grp,                        &
-     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
+     &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
+     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_flux, i_b, i_v, num_tot_nod_phys,             &
      &    d_nod, ak_e, vector_sf)
 !
@@ -150,22 +156,23 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine d_SGS_induct_t_2_each_sf_w_cst(igrp, k2, nd,           &
+      subroutine d_SGS_induct_t_2_each_sf_w_cst(sf_grp, igrp, k2, nd,   &
      &          i_flux, i_b, i_v, coef, vector_sf)
 !
       use set_delta_SGS_2_sf_w_cst
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: i_b, i_v, i_flux
       integer (kind = kint), intent(in) :: igrp, k2, nd
       real (kind=kreal), intent(in) :: coef
 !
-      real (kind=kreal), intent(inout) :: vector_sf(sf_grp1%num_item,3)
+      real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
       call delta_SGS_induct_t_2_sf_w_cst(np_smp, numnod, numele,        &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
-     &    sf_grp1%num_item, sf_grp1%item_sf_grp,                        &
-     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
+     &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
+     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_flux, i_b, i_v, num_tot_nod_phys,             &
      &    d_nod, coef, vector_sf)
 !

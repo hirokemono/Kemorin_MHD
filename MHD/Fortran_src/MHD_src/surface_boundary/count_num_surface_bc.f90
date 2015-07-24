@@ -3,7 +3,9 @@
 !
 !      Written by H. Matsui on Sep. 2005
 !
-!      subroutine count_num_surf_bc
+!!      subroutine count_num_surf_bc(sf_grp, sf_grp_nod)
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
       module count_num_surface_bc
 !
@@ -14,122 +16,59 @@
 !
       implicit none
 !
-      private :: count_num_bc_h_flux
-      private :: count_num_bc_torque,     count_num_bc_press_sf
-      private :: count_num_bc_vecp_sf,    count_num_bc_magne_sf
-      private :: count_num_bc_current_sf, count_num_surf_mag_p
-      private :: count_num_bc_d_scalar_sf
-!
 !-----------------------------------------------------------------------
 !
       contains 
 !
 !-----------------------------------------------------------------------
 !
-      subroutine count_num_surf_bc
+      subroutine count_num_surf_bc(sf_grp, sf_grp_nod)
 !
       use m_machine_parameter
+      use t_group_data
+      use t_surface_group_connect
+!
+      type(surface_group_data), intent(in) :: sf_grp
+      type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_h_flux'
-      call count_num_bc_h_flux
+      call count_num_surf_temp(sf_grp)
+      call count_num_surf_h_flux(sf_grp)
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_torque'
-      call count_num_bc_torque
+      call count_num_surf_velo(sf_grp, sf_grp_nod)
+      call count_num_surf_torque(sf_grp)
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_press_sf'
-      call count_num_bc_press_sf
+      call count_num_surf_press(sf_grp)
+      call count_num_surf_press_grad(sf_grp)
+      call count_num_wall_press(sf_grp)
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_vecp_sf'
-      call count_num_bc_vecp_sf
+      call count_num_surf_vect_p(sf_grp, sf_grp_nod)
+      call count_num_surf_grad_vecp(sf_grp)
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_magne_sf'
-      call count_num_bc_magne_sf
+      call count_num_surf_magne(sf_grp, sf_grp_nod)
+      call count_num_surf_grad_b(sf_grp)
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_current_sf'
-      call count_num_bc_current_sf
+      call count_num_surf_current(sf_grp, sf_grp_nod)
+      call count_num_surf_grad_j(sf_grp)
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_surf_mag_p'
-      call count_num_surf_mag_p
+      call count_num_surf_magne_p(sf_grp)
+      call count_num_surf_magp_grad(sf_grp)
+      call count_num_wall_magne_p(sf_grp)
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_bc_d_scalar_sf'
-      call count_num_bc_d_scalar_sf
+      call count_num_surf_composition(sf_grp)
+      call count_num_surf_composition_grad(sf_grp)
 !
       end subroutine count_num_surf_bc
-!
-!-----------------------------------------------------------------------
-!
-      subroutine count_num_bc_h_flux
-!
-      call count_num_surf_temp
-      call count_num_surf_h_flux
-!
-      end subroutine count_num_bc_h_flux
-!
-!-----------------------------------------------------------------------
-!
-      subroutine count_num_bc_torque
-!
-      call count_num_surf_velo
-      call count_num_surf_torque
-!
-      end subroutine count_num_bc_torque
-!
-!-----------------------------------------------------------------------
-!
-      subroutine count_num_bc_press_sf
-!
-      call count_num_surf_press
-      call count_num_surf_press_grad
-      call count_num_wall_press
-!
-      end subroutine count_num_bc_press_sf
-!
-!-----------------------------------------------------------------------
-!
-      subroutine count_num_bc_vecp_sf
-!
-      call count_num_surf_vect_p
-      call count_num_surf_grad_vecp
-!
-      end subroutine count_num_bc_vecp_sf
-!
-!-----------------------------------------------------------------------
-!
-      subroutine count_num_bc_magne_sf
-!
-      call count_num_surf_magne
-      call count_num_surf_grad_b
-!
-      end subroutine count_num_bc_magne_sf
-!
-!-----------------------------------------------------------------------
-!
-      subroutine count_num_bc_current_sf
-!
-      call count_num_surf_current
-      call count_num_surf_grad_j
-!
-      end subroutine count_num_bc_current_sf
-!
-!-----------------------------------------------------------------------
-!
-      subroutine count_num_surf_mag_p
-!
-      call count_num_surf_magne_p
-      call count_num_surf_magp_grad
-      call count_num_wall_magne_p
-!
-      end subroutine count_num_surf_mag_p
-!
-!-----------------------------------------------------------------------
-!
-      subroutine count_num_bc_d_scalar_sf
-!
-      call count_num_surf_composition
-      call count_num_surf_composition_grad
-!
-      end subroutine count_num_bc_d_scalar_sf
 !
 !-----------------------------------------------------------------------
 !

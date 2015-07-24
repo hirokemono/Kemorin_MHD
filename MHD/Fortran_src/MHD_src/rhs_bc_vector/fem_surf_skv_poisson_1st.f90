@@ -3,24 +3,26 @@
 !
 !      Written by H. Matsui on Sep., 2005
 !
-!      subroutine fem_surf_skv_poisson_wall_1(igrp, k2, n_int,          &
-!     &          vect_sf, sk_v)
-!      subroutine fem_surf_skv_poisson_sph_out_1(igrp, k2, n_int,       &
-!     &          xe_sf, vect_sf, sk_v)
-!
-!      subroutine fem_surf_skv_current_diffuse_1(igrp, k2, nd, n_int,   &
-!     &          dxe_sf, scalar_sf, sk_v)
-!      subroutine fem_surf_skv_diffuse_1st(igrp, k2, nd, n_int,         &
-!     &          dxe_sf, scalar_sf, ak_d, sk_v)
-!
-!      subroutine fem_surf_skv_trq_sph_out_1(igrp, k2, n_int,           &
-!     &          ak_d_velo, xe_sf, vect_sf, sk_v)
-!
-!      subroutine fem_surf_skv_norm_grad_1(nmax_surf, nmax_ele_surf,    &
-!     &          ngrp_sf, id_grp_sf, ist_surf, sf_apt, n_int, nd,       &
-!     &          ak_d, sk_v)
-!      subroutine fem_surf_skv_norm_poisson_1(nmax_surf, nmax_ele_surf, &
-!     &          ngrp_sf, id_grp_sf, ist_surf, sf_apt, n_int, sk_v)
+!!      subroutine fem_surf_skv_poisson_wall_1(sf_grp, igrp, k2, n_int, &
+!!     &          vect_sf, sk_v)
+!!      subroutine fem_surf_skv_poisson_sph_out_1(sf_grp, igrp, k2,     &
+!!     &          n_int, xe_sf, vect_sf, sk_v)
+!!
+!!      subroutine fem_surf_skv_current_diffuse_1(sf_grp, igrp, k2,     &
+!!     &           nd, n_int, dxe_sf, scalar_sf, sk_v)
+!!      subroutine fem_surf_skv_diffuse_1st(sf_grp, igrp, k2, nd, n_int,&
+!!     &          dxe_sf, scalar_sf, ak_d, sk_v)
+!!
+!!      subroutine fem_surf_skv_trq_sph_out_1(sf_grp, igrp, k2, n_int,  &
+!!     &          ak_d_velo, xe_sf, vect_sf, sk_v)
+!!
+!!      subroutine fem_surf_skv_norm_grad_1                             &
+!!     &         (sf_grp, nmax_surf, nmax_ele_surf,                     &
+!!     &          ngrp_sf, id_grp_sf, ist_surf, sf_apt, n_int, nd,      &
+!!     &          ak_d, sk_v)
+!!      subroutine fem_surf_skv_norm_poisson_1                          &
+!!     &         (sf_grp, nmax_surf, nmax_ele_surf,                     &
+!!     &          ngrp_sf, id_grp_sf, ist_surf, sf_apt, n_int, sk_v)
 !
       module fem_surf_skv_poisson_1st
 !
@@ -29,9 +31,10 @@
       use m_machine_parameter
       use m_geometry_constants
       use m_geometry_parameter
-      use m_surface_group
       use m_jacobian_sf_grp
       use m_phys_constants
+!
+      use t_group_data
 !
       implicit none
 !
@@ -41,13 +44,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_surf_skv_poisson_wall_1(igrp, k2, n_int,           &
+      subroutine fem_surf_skv_poisson_wall_1(sf_grp, igrp, k2, n_int,   &
      &          vect_sf, sk_v)
 !
       use fem_surf_skv_poisson
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: n_int, k2, igrp
-      real (kind=kreal), intent(in) :: vect_sf(sf_grp1%num_item,3)
+      real (kind=kreal), intent(in) :: vect_sf(sf_grp%num_item,3)
 !
       real (kind=kreal), intent(inout)                                  &
      &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
@@ -55,9 +59,9 @@
 !
       call fem_surf_skv_poisson_wall                                    &
      &   (np_smp, numele,  nnod_4_ele, nnod_4_surf,                     &
-     &    nnod_4_surf, node_on_sf, sf_grp1%num_item,                    &
-     &    sf_grp1%item_sf_grp, sf_grp1%num_grp_smp,                     &
-     &    sf_grp1%istack_grp_smp, igrp, k2, n_int,                      &
+     &    nnod_4_surf, node_on_sf, sf_grp%num_item,                     &
+     &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &
+     &    sf_grp%istack_grp_smp, igrp, k2, n_int,                       &
      &    jac1_sf_grp_2d_l%ntot_int, jac1_sf_grp_2d_l%xsf_sf,           &
      &    jac1_sf_grp_2d_l%an_sf, jac1_sf_grp_2d_l%an_sf,               &
      &    vect_sf, sk_v)
@@ -66,16 +70,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_surf_skv_poisson_sph_out_1(igrp, k2, n_int,        &
-     &          xe_sf, vect_sf, sk_v)
+      subroutine fem_surf_skv_poisson_sph_out_1(sf_grp, igrp, k2,       &
+     &          n_int, xe_sf, vect_sf, sk_v)
 !
       use fem_surf_skv_poisson
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: n_int, k2, igrp
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: xe_sf(sf_grp1%num_item,4,nnod_4_surf)
-      real (kind=kreal), intent(in) :: vect_sf(sf_grp1%num_item,3)
+     &                  :: xe_sf(sf_grp%num_item,4,nnod_4_surf)
+      real (kind=kreal), intent(in) :: vect_sf(sf_grp%num_item,3)
 !
       real (kind=kreal), intent(inout)                                  &
      &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
@@ -83,9 +88,9 @@
 !
       call fem_surf_skv_poisson_sph_out                                 &
      &   (np_smp, numele,  nnod_4_ele, nnod_4_surf,                     &
-     &    nnod_4_surf, node_on_sf, sf_grp1%num_item,                    &
-     &    sf_grp1%item_sf_grp, sf_grp1%num_grp_smp,                     &
-     &    sf_grp1%istack_grp_smp, igrp, k2, n_int,                      &
+     &    nnod_4_surf, node_on_sf, sf_grp%num_item,                     &
+     &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &
+     &    sf_grp%istack_grp_smp, igrp, k2, n_int,                       &
      &    jac1_sf_grp_2d_l%ntot_int, jac1_sf_grp_2d_l%xj_sf,            &
      &    jac1_sf_grp_2d_l%an_sf, jac1_sf_grp_2d_l%an_sf, xe_sf,        &
      &    vect_sf, sk_v)
@@ -95,16 +100,17 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine fem_surf_skv_current_diffuse_1(igrp, k2, nd, n_int,    &
-     &          dxe_sf, scalar_sf, sk_v)
+      subroutine fem_surf_skv_current_diffuse_1(sf_grp, igrp, k2,       &
+     &           nd, n_int, dxe_sf, scalar_sf, sk_v)
 !
       use fem_surf_skv_diffuse
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: igrp, n_int, k2, nd
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: dxe_sf(sf_grp1%num_item,4,nnod_4_surf)
-      real (kind=kreal), intent(in) :: scalar_sf(sf_grp1%num_item)
+     &                  :: dxe_sf(sf_grp%num_item,4,nnod_4_surf)
+      real (kind=kreal), intent(in) :: scalar_sf(sf_grp%num_item)
 !
       real (kind=kreal), intent(inout)                                  &
      &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
@@ -112,8 +118,8 @@
 !
       call fem_surf_skv_current_diffuse                                 &
      &   (np_smp, numele, nnod_4_ele, nnod_4_surf, nnod_4_surf,         &
-     &    node_on_sf, sf_grp1%num_item, sf_grp1%item_sf_grp,            &
-     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
+     &    node_on_sf, sf_grp%num_item, sf_grp%item_sf_grp,              &
+     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, n_int, jac1_sf_grp_2d_q%ntot_int,               &
      &    jac1_sf_grp_2d_q%xj_sf, jac1_sf_grp_2d_q%an_sf,               &
      &    jac1_sf_grp_2d_q%an_sf, dxe_sf, scalar_sf, sk_v)
@@ -122,16 +128,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_surf_skv_diffuse_1st(igrp, k2, nd, n_int,          &
+      subroutine fem_surf_skv_diffuse_1st(sf_grp, igrp, k2, nd, n_int,  &
      &          dxe_sf, scalar_sf, ak_d, sk_v)
 !
       use fem_surf_skv_diffuse
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: igrp, n_int, k2, nd
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: dxe_sf(sf_grp1%num_item,4,nnod_4_surf)
-      real (kind=kreal), intent(in) :: scalar_sf(sf_grp1%num_item)
+     &                  :: dxe_sf(sf_grp%num_item,4,nnod_4_surf)
+      real (kind=kreal), intent(in) :: scalar_sf(sf_grp%num_item)
       real (kind=kreal), intent(in) :: ak_d(numele)
 !
       real (kind=kreal), intent(inout)                                  &
@@ -140,8 +147,8 @@
 !
       call fem_surf_skv_diffuse_term                                    &
      &   (np_smp, numele, nnod_4_ele,  nnod_4_surf, nnod_4_surf,        &
-     &    node_on_sf, sf_grp1%num_item, sf_grp1%item_sf_grp,            &
-     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
+     &    node_on_sf, sf_grp%num_item, sf_grp%item_sf_grp,              &
+     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, n_int, jac1_sf_grp_2d_q%ntot_int,               &
      &    jac1_sf_grp_2d_q%xj_sf, jac1_sf_grp_2d_q%an_sf,               &
      &    jac1_sf_grp_2d_q%an_sf, ak_d, dxe_sf, scalar_sf, sk_v)
@@ -151,16 +158,17 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine fem_surf_skv_trq_sph_out_1(igrp, k2, n_int,            &
+      subroutine fem_surf_skv_trq_sph_out_1(sf_grp, igrp, k2, n_int,    &
      &          ak_d_velo, xe_sf, vect_sf, sk_v)
 !
       use fem_surf_skv_norm_grad
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: igrp, k2, n_int
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: xe_sf(sf_grp1%num_item,4,nnod_4_surf)
-      real (kind=kreal), intent(in) :: vect_sf(sf_grp1%num_item,3)
+     &                  :: xe_sf(sf_grp%num_item,4,nnod_4_surf)
+      real (kind=kreal), intent(in) :: vect_sf(sf_grp%num_item,3)
       real (kind=kreal), intent(in) :: ak_d_velo(numele)
 !
       real (kind=kreal), intent(inout)                                  &
@@ -169,8 +177,8 @@
 !
       call fem_surf_skv_trq_sph_out                                     &
      &   (np_smp, numele, nnod_4_ele, nnod_4_surf, nnod_4_surf,         &
-     &    node_on_sf, sf_grp1%num_item, sf_grp1%item_sf_grp,            &
-     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
+     &    node_on_sf, sf_grp%num_item, sf_grp%item_sf_grp,              &
+     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, n_int, jac1_sf_grp_2d_q%ntot_int,                   &
      &    jac1_sf_grp_2d_q%xj_sf, jac1_sf_grp_2d_q%an_sf,               &
      &    jac1_sf_grp_2d_q%an_sf, ak_d_velo, xe_sf, vect_sf, sk_v)
@@ -181,12 +189,14 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_surf_skv_norm_grad_1(nmax_surf, nmax_ele_surf,     &
+      subroutine fem_surf_skv_norm_grad_1                               &
+     &         (sf_grp, nmax_surf, nmax_ele_surf,                       &
      &          ngrp_sf, id_grp_sf, ist_surf, sf_apt, n_int, nd,        &
      &          ak_d, sk_v)
 !
       use fem_surf_skv_norm_grad
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: nmax_surf, ngrp_sf
       integer (kind = kint), intent(in) :: nmax_ele_surf
       integer (kind = kint), intent(in) :: id_grp_sf(nmax_surf)
@@ -203,9 +213,9 @@
 !
       call fem_surf_skv_norm_grad_pg                                    &
      &   (np_smp, numele, nnod_4_ele, nnod_4_surf, node_on_sf,          &
-     &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%istack_grp,        &
-     &    sf_grp1%item_sf_grp, sf_grp1%num_grp_smp,                     &
-     &    sf_grp1%istack_grp_smp, nmax_surf, nmax_ele_surf, ngrp_sf,    &
+     &    sf_grp%num_grp, sf_grp%num_item, sf_grp%istack_grp,           &
+     &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &
+     &    sf_grp%istack_grp_smp, nmax_surf, nmax_ele_surf, ngrp_sf,     &
      &    id_grp_sf, ist_surf, sf_apt, n_int, nd,                       &
      &    jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%xj_sf,            &
      &    jac1_sf_grp_2d_q%an_sf, ak_d, sk_v)
@@ -214,11 +224,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_surf_skv_norm_poisson_1(nmax_surf, nmax_ele_surf,  &
+      subroutine fem_surf_skv_norm_poisson_1                            &
+     &         (sf_grp, nmax_surf, nmax_ele_surf,                       &
      &          ngrp_sf, id_grp_sf, ist_surf, sf_apt, n_int, sk_v)
 !
       use fem_surf_skv_norm_grad
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: nmax_surf, ngrp_sf
       integer (kind = kint), intent(in) :: nmax_ele_surf
       integer (kind = kint), intent(in) :: id_grp_sf(nmax_surf)
@@ -234,9 +246,9 @@
 !
       call fem_surf_skv_norm_poisson                                    &
      &   (np_smp, numele, nnod_4_ele, nnod_4_surf, node_on_sf,          &
-     &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%istack_grp,        &
-     &    sf_grp1%item_sf_grp, sf_grp1%num_grp_smp,                     &
-     &    sf_grp1%istack_grp_smp, nmax_surf, nmax_ele_surf, ngrp_sf,    &
+     &    sf_grp%num_grp, sf_grp%num_item, sf_grp%istack_grp,           &
+     &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &
+     &    sf_grp%istack_grp_smp, nmax_surf, nmax_ele_surf, ngrp_sf,     &
      &    id_grp_sf, ist_surf, sf_apt, n_int,                           &
      &    jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%xj_sf,            &
      &    jac1_sf_grp_2d_q%an_sf, sk_v)

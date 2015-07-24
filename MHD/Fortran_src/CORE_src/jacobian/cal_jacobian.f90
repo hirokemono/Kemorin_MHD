@@ -49,6 +49,8 @@
 !
       subroutine cal_jacobian_element
 !
+      use m_surface_group
+!
       use m_fem_gauss_int_coefs
       use m_surf_data_infinity
       use m_jacobians
@@ -100,12 +102,12 @@
       end if
 !
       if (infty_list%ngrp_sf .ne. 0) then
-        call cal_jacobian_infinity
+        call cal_jacobian_infinity(sf_grp1)
 !
         if (first_ele_type .eq. 332) then
-          call cal_jacobian_infty_quad
+          call cal_jacobian_infty_quad(sf_grp1)
         else if (first_ele_type .eq. 333) then
-          call cal_jacobian_infty_lag
+          call cal_jacobian_infty_lag(sf_grp1)
         end if
 !
       end if

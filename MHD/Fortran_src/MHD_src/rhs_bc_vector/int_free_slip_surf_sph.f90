@@ -74,9 +74,9 @@
         if (num .gt.0 ) then
 !
           do k2 = 1, nnod_4_surf
-            call vector_phys_2_each_surface(igrp, k2, i_field,          &
+            call vector_phys_2_each_surface(sf_grp1, igrp, k2, i_field, &
      &          vect_sf)
-            call fem_surf_skv_trq_sph_out_1(igrp, k2, n_int,            &
+            call fem_surf_skv_trq_sph_out_1(sf_grp1, igrp, k2, n_int,   &
      &          ak_d_velo, xe_sf, vect_sf, sk6)
           end do
 !
@@ -112,9 +112,9 @@
         if (num .gt.0 ) then
 !
            do k2 = 1, nnod_4_surf
-            call vector_phys_2_each_surf_cst(igrp, k2, i_field,         &
-     &          dminus, vect_sf)
-            call fem_surf_skv_trq_sph_out_1(igrp, k2, n_int,            &
+            call vector_phys_2_each_surf_cst(sf_grp1, igrp, k2,         &
+     &          i_field, dminus, vect_sf)
+            call fem_surf_skv_trq_sph_out_1(sf_grp1, igrp, k2, n_int,   &
      &          ak_d_velo, xe_sf, vect_sf, sk6)
           end do
         end if

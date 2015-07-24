@@ -8,7 +8,7 @@
 !      subroutine cal_jacobian_lag
 !      subroutine cal_jacobian_surface_lag(jac_2d_q)
 !
-!      subroutine cal_jacobian_dylag(jac_sf_grp_q)
+!      subroutine cal_jacobian_dylag(sf_grp, jac_sf_grp_q)
 !
       module cal_jacobians_lag
 !
@@ -99,13 +99,14 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_dylag(jac_sf_grp_q)
+      subroutine cal_jacobian_dylag(sf_grp, jac_sf_grp_q)
 !
-      use m_surface_group
+      use t_group_data
       use t_jacobian_2d
       use cal_jacobian_sf_grp_lag
       use cal_shape_function_2d
 !
+      type(surface_group_data), intent(in) :: sf_grp
       type(jacobians_2d), intent(inout) :: jac_sf_grp_q
 !
       integer (kind = kint) :: ii, ix, i0
@@ -121,13 +122,13 @@
           ix = int_start2(i0) + ii
 !
           call s_cal_jacobian_sf_grp_9(numnod, numele, ie, xx,          &
-     &        sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%item_sf_grp,   &
-     &        np_smp, sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,      &
-     &        jac_sf_grp_q%xj_sf(1:sf_grp1%num_item,ix),                &
-     &        jac_sf_grp_q%axj_sf(1:sf_grp1%num_item,ix),               &
-     &        jac_sf_grp_q%xsf_sf(1:sf_grp1%num_item,ix,1),             &
-     &        jac_sf_grp_q%xsf_sf(1:sf_grp1%num_item,ix,2),             &
-     &        jac_sf_grp_q%xsf_sf(1:sf_grp1%num_item,ix,3),             &
+     &        sf_grp%num_grp, sf_grp%num_item, sf_grp%item_sf_grp,      &
+     &        np_smp, sf_grp%num_grp_smp, sf_grp%istack_grp_smp,        &
+     &        jac_sf_grp_q%xj_sf(1:sf_grp%num_item,ix),                 &
+     &        jac_sf_grp_q%axj_sf(1:sf_grp%num_item,ix),                &
+     &        jac_sf_grp_q%xsf_sf(1:sf_grp%num_item,ix,1),              &
+     &        jac_sf_grp_q%xsf_sf(1:sf_grp%num_item,ix,2),              &
+     &        jac_sf_grp_q%xsf_sf(1:sf_grp%num_item,ix,3),              &
      &        dnxi_sf27(1,ix), dnei_sf27(1,ix) )
         end do
       end do

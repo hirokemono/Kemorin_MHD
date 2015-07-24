@@ -91,7 +91,7 @@
 !
       if (iflag_debug.eq.1 .and. my_rank.eq.0 )                         &
      &   write(*,*) 'pick_surface_group_geometry'
-      call pick_surface_group_geometry
+      call pick_surface_group_geometry(sf_grp1, sf_grp_v1)
 !
 !  -------------------------------
 !  -------------------------------

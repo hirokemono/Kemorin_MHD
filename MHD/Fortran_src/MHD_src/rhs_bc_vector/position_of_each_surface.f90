@@ -4,21 +4,22 @@
 !      Written by H. Matsui on Sep., 2005
 !      Modified by H. Matsui on Jan., 2009
 !
-!      subroutine position_2_each_surface
-!        Input:  xx, Output:  xe_sf
-!      subroutine delta_x_2_each_surface
-!        Output:  dxe_sf
-!
-!      subroutine position_2_each_surf_grp(np_smp, numnod, numele,      &
-!     &          nnod_4_ele, nnod_4_surf, node_on_sf, ie, xx, a_radius, &
-!     &          num_surf, num_surf_bc, surf_istack, surf_item,         &
-!     &          num_surf_smp, isurf_grp_smp_stack, xe_sf)
-!
-!      subroutine delta_x_2_each_surf_grp(np_smp, numnod, numele,       &
-!     &          nnod_4_ele, nnod_4_surf, node_on_sf, node_on_sf_n,     &
-!     &          ie, xx, num_surf, num_surf_bc,                         &
-!     &          surf_istack, surf_item, num_surf_smp,                  &
-!     &          isurf_grp_smp_stack, dxe_sf)
+!!      subroutine position_2_each_surface(sf_grp)
+!!        Input:  xx, Output:  xe_sf
+!!      subroutine delta_x_2_each_surface(sf_grp)
+!!        Output:  dxe_sf
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!
+!!      subroutine position_2_each_surf_grp(np_smp, numnod, numele,     &
+!!     &          nnod_4_ele, nnod_4_surf, node_on_sf, ie, xx, a_radius,&
+!!     &          num_surf, num_surf_bc, surf_istack, surf_item,        &
+!!     &          num_surf_smp, isurf_grp_smp_stack, xe_sf)
+!!
+!!      subroutine delta_x_2_each_surf_grp(np_smp, numnod, numele,      &
+!!     &          nnod_4_ele, nnod_4_surf, node_on_sf, node_on_sf_n,    &
+!!     &          ie, xx, num_surf, num_surf_bc,                        &
+!!     &          surf_istack, surf_item, num_surf_smp,                 &
+!!     &          isurf_grp_smp_stack, dxe_sf)
 !
       module position_of_each_surface
 !
@@ -32,37 +33,43 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine position_2_each_surface
+      subroutine position_2_each_surface(sf_grp)
 !
       use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
-      use m_group_data
       use m_int_surface_data
+      use t_group_data
+!
+      type(surface_group_data), intent(in) :: sf_grp
+!
 !
       call position_2_each_surf_grp(np_smp, numnod, numele, nnod_4_ele, &
      &    nnod_4_surf, node_on_sf, ie, xx, a_radius,                    &
-     &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%istack_grp,        &
-     &    sf_grp1%item_sf_grp, sf_grp1%num_grp_smp,                     &
-     &    sf_grp1%istack_grp_smp, xe_sf)
+     &    sf_grp%num_grp, sf_grp%num_item, sf_grp%istack_grp,           &
+     &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &
+     &    sf_grp%istack_grp_smp, xe_sf)
 !
       end subroutine position_2_each_surface
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine delta_x_2_each_surface
+      subroutine delta_x_2_each_surface(sf_grp)
 !
       use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
-      use m_group_data
       use m_int_surface_data
+      use t_group_data
+!
+      type(surface_group_data), intent(in) :: sf_grp
+!
 !
       call delta_x_2_each_surf_grp(np_smp, numnod, numele, nnod_4_ele,  &
      &    nnod_4_surf, node_on_sf, node_on_sf_n, ie, xx,                &
-     &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%istack_grp,        &
-     &    sf_grp1%item_sf_grp, sf_grp1%num_grp_smp,                     &
-     &    sf_grp1%istack_grp_smp, dxe_sf)
+     &    sf_grp%num_grp, sf_grp%num_item, sf_grp%istack_grp,           &
+     &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &
+     &    sf_grp%istack_grp_smp, dxe_sf)
 !
       end subroutine delta_x_2_each_surface
 !

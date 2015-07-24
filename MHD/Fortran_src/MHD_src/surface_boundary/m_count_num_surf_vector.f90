@@ -4,23 +4,25 @@
 !      Written by H. Matsui on Sep. 2005
 !      Modified by H. Matsui on Feb., 2009
 !
-!      subroutine count_num_surf_velo
-!      subroutine count_num_surf_vect_p
-!      subroutine count_num_surf_magne
-!      subroutine count_num_surf_current
-!
-!      subroutine count_num_surf_torque
-!      subroutine count_num_surf_grad_vecp
-!      subroutine count_num_surf_grad_b
-!      subroutine count_num_surf_grad_j
+!!      subroutine count_num_surf_velo(sf_grp, sf_grp_nod)
+!!      subroutine count_num_surf_vect_p(sf_grp, sf_grp_nod)
+!!      subroutine count_num_surf_magne(sf_grp, sf_grp_nod)
+!!      subroutine count_num_surf_current(sf_grp, sf_grp_nod)
+!!
+!!      subroutine count_num_surf_torque(sf_grp)
+!!      subroutine count_num_surf_grad_vecp(sf_grp)
+!!      subroutine count_num_surf_grad_b(sf_grp)
+!!      subroutine count_num_surf_grad_j(sf_grp)
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
       module m_count_num_surf_vector
 !
       use m_precision
 !
-      use m_group_data
       use m_surf_data_list
       use m_header_4_surface_bc
+      use t_group_data
 !
       implicit  none
 !
@@ -30,24 +32,26 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine count_num_surf_velo
+      subroutine count_num_surf_velo(sf_grp, sf_grp_nod)
 !
-      use m_surface_group_connect
+      use t_surface_group_connect
       use m_surf_data_torque
       use m_boundary_condition_IDs
       use set_surf_vector_id
       use set_stress_free_surf_id
 !
+      type(surface_group_data), intent(in) :: sf_grp
+      type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
-      call s_count_num_surf_vector                                      &
-     &   (sf_grp1%num_grp, sf_grp_nod1%inod_stack_sf_grp,               &
-     &    sf_grp1%grp_name, torque_surf%num_bc, torque_surf%bc_name,    &
+!
+      call s_count_num_surf_vector(sf_grp, sf_grp_nod,                  &
+     &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type, name_svn,                               &
      &    nmax_sf_sgs_velo, ngrp_sf_sgs_velo,                           &
      &    ngrp_sf_fix_vn, nnod_sf_fix_vn)
 !
       call count_num_stress_free_surf                                   &
-     &   (sf_grp1%num_grp, sf_grp1%grp_name,                            &
+     &   (sf_grp%num_grp, sf_grp%grp_name,                              &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type,                                         &
      &    iflag_surf_free_sph_in, iflag_surf_free_sph_out,              &
@@ -57,24 +61,26 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine count_num_surf_vect_p
+      subroutine count_num_surf_vect_p(sf_grp, sf_grp_nod)
 !
-      use m_surface_group_connect
+      use t_surface_group_connect
       use m_surf_data_vector_p
       use m_boundary_condition_IDs
       use set_surf_vector_id
       use set_stress_free_surf_id
 !
+      type(surface_group_data), intent(in) :: sf_grp
+      type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
-      call s_count_num_surf_vector                                      &
-     &    (sf_grp1%num_grp, sf_grp_nod1%inod_stack_sf_grp,              &
-     &     sf_grp1%grp_name, a_potential_surf%num_bc,                   &
+!
+      call s_count_num_surf_vector(sf_grp, sf_grp_nod,                  &
+     &     a_potential_surf%num_bc,                                     &
      &     a_potential_surf%bc_name, a_potential_surf%ibc_type,         &
      &     name_san, nmax_sf_sgs_vect_p, ngrp_sf_sgs_vect_p,            &
      &     ngrp_sf_fix_vpn, nnod_sf_fix_vpn)
 !
       call count_num_stress_free_surf                                   &
-     &   (sf_grp1%num_grp, sf_grp1%grp_name,                            &
+     &   (sf_grp%num_grp, sf_grp%grp_name,                              &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type,                                         &
      &    iflag_surf_qvc_sph_in, iflag_surf_qvc_sph_out,                &
@@ -84,16 +90,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine count_num_surf_magne
+      subroutine count_num_surf_magne(sf_grp, sf_grp_nod)
 !
-      use m_surface_group_connect
+      use t_surface_group_connect
       use m_surf_data_magne
       use set_surf_vector_id
 !
+      type(surface_group_data), intent(in) :: sf_grp
+      type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
-      call s_count_num_surf_vector                                      &
-     &   (sf_grp1%num_grp, sf_grp_nod1%inod_stack_sf_grp,               &
-     &    sf_grp1%grp_name, magne_surf%num_bc, magne_surf%bc_name,      &
+!
+      call s_count_num_surf_vector(sf_grp, sf_grp_nod,                  &
+     &    magne_surf%num_bc, magne_surf%bc_name,                        &
      &    magne_surf%ibc_type, name_sbn, nmax_sf_sgs_magne,             &
      &    ngrp_sf_sgs_magne, ngrp_sf_fix_bn, nnod_sf_fix_bn)
 !
@@ -101,16 +109,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine count_num_surf_current
+      subroutine count_num_surf_current(sf_grp, sf_grp_nod)
 !
-      use m_surface_group_connect
+      use t_surface_group_connect
       use m_surf_data_current
       use set_surf_vector_id
 !
+      type(surface_group_data), intent(in) :: sf_grp
+      type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
-      call s_count_num_surf_vector                                      &
-     &   (sf_grp1%num_grp, sf_grp_nod1%inod_stack_sf_grp,               &
-     &    sf_grp1%grp_name, current_surf%num_bc, current_surf%bc_name,  &
+!
+      call s_count_num_surf_vector(sf_grp, sf_grp_nod,                  &
+     &    current_surf%num_bc, current_surf%bc_name,                    &
      &    current_surf%ibc_type, name_sjn, nmax_sf_sgs_current,         &
      &    ngrp_sf_sgs_current, ngrp_sf_fix_jn, nnod_sf_fix_jn)
 !
@@ -119,14 +129,16 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine count_num_surf_torque
+      subroutine count_num_surf_torque(sf_grp)
 !
       use m_surf_data_torque
       use set_sf_grad_vector_id
 !
+      type(surface_group_data), intent(in) :: sf_grp
+!
 !
       call count_num_sf_grad_vector                                     &
-     &   (sf_grp1%num_grp, sf_grp1%istack_grp, sf_grp1%grp_name,        &
+     &   (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,           &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type, name_vxg, name_vyg, name_vzg,           &
      &    nmax_sf_fix_tq, nmax_ele_sf_fix_tq, nmax_sf_lead_tq,          &
@@ -136,14 +148,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine count_num_surf_grad_vecp
+      subroutine count_num_surf_grad_vecp(sf_grp)
 !
       use m_surf_data_vector_p
       use set_sf_grad_vector_id
 !
+      type(surface_group_data), intent(in) :: sf_grp
+!
 !
       call count_num_sf_grad_vector                                     &
-     &   (sf_grp1%num_grp, sf_grp1%istack_grp, sf_grp1%grp_name,        &
+     &   (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,           &
      &    a_potential_surf%num_bc, a_potential_surf%bc_name,            &
      &    a_potential_surf%ibc_type, name_axg, name_ayg, name_azg,      &
      &    nmax_sf_fix_grad_a, nmax_ele_sf_fix_grad_a,                   &
@@ -154,14 +168,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine count_num_surf_grad_b
+      subroutine count_num_surf_grad_b(sf_grp)
 !
       use m_surf_data_magne
       use set_sf_grad_vector_id
 !
+      type(surface_group_data), intent(in) :: sf_grp
+!
 !
       call count_num_sf_grad_vector                                     &
-     &    (sf_grp1%num_grp, sf_grp1%istack_grp, sf_grp1%grp_name,       &
+     &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
      &     magne_surf%num_bc, magne_surf%bc_name, magne_surf%ibc_type,  &
      &     name_bxg, name_byg, name_bzg, nmax_sf_fix_grad_b,            &
      &     nmax_ele_sf_fix_grad_b, nmax_sf_lead_b, ngrp_sf_fix_grad_b,  &
@@ -171,16 +187,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine count_num_surf_grad_j
+      subroutine count_num_surf_grad_j(sf_grp)
 !
       use m_surf_data_current
       use set_sf_grad_vector_id
 !
+      type(surface_group_data), intent(in) :: sf_grp
+!
 !
       call count_num_sf_grad_vector                                     &
-     &    (sf_grp1%num_grp, sf_grp1%istack_grp,                         &
-     &     sf_grp1%grp_name, current_surf%num_bc,                       &
-     &     current_surf%bc_name, current_surf%ibc_type,                 &
+     &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
+     &     current_surf%num_bc, current_surf%bc_name,                   &
+     &     current_surf%ibc_type,                                       &
      &     name_jxg, name_jyg, name_jzg, nmax_sf_fix_grad_j,            &
      &     nmax_ele_sf_fix_grad_j, nmax_sf_lead_j, ngrp_sf_fix_grad_j,  &
      &     nele_sf_fix_grad_j, ngrp_sf_lead_j)

@@ -30,6 +30,9 @@
       use m_node_phys_data
       use m_edge_geometry_data
       use m_element_id_4_node
+      use m_surface_group
+      use m_surface_group_connect
+      use m_surface_group_geometry
       use m_jacobians
       use m_jacobians_4_surface
       use m_t_step_parameter
@@ -84,10 +87,10 @@
         call s_cal_normal_vector
 !
         if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
-        call pick_normal_of_surf_group
+        call pick_normal_of_surf_group(sf_grp1, sf_grp_v1)
 !
         if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
-        call s_sum_normal_4_surf_group
+        call s_sum_normal_4_surf_group(sf_grp1, sf_grp_v1)
       end if
 !
 !  -------------------------------

@@ -3,17 +3,15 @@
 !
 !      Written by H. Matsui on Sep. 2005
 !
-!      subroutine s_count_num_surf_vector                               &
-!     &          (num_surf, inod_stack_sf_grp, surf_name,               &
-!     &           num_bc_sf, bc_sf_name, ibc_sf_type,                   &
-!     &           field_name, nmax_sf_sgs, ngrp_sf_sgs, ngrp_sf_dat_n,  &
-!     &           nnod_sf_dat_n)
-!      subroutine s_set_surf_vector_id                                  &
-!     &          (num_surf, surf_name, inod_stack_sf_grp,               &
-!     &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,        &
-!     &           field_name, nmax_sf_sgs, id_grp_sf_sgs,               &
-!     &           ngrp_sf_fix_n, id_grp_sf_fix_n,                       &
-!     &           nnod_sf_fix_n, ist_nod_sf_fix_n, sf_apt_fix_n)
+!!      subroutine s_count_num_surf_vector(sf_grp, sf_grp_nod,          &
+!!     &           num_bc_sf, bc_sf_name, ibc_sf_type,                  &
+!!     &           field_name, nmax_sf_sgs, ngrp_sf_sgs, ngrp_sf_dat_n, &
+!!     &           nnod_sf_dat_n)
+!!      subroutine s_set_surf_vector_id(sf_grp, sf_grp_nod, sf_grp_v,   &
+!!     &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,       &
+!!     &           field_name, nmax_sf_sgs, id_grp_sf_sgs,              &
+!!     &           ngrp_sf_fix_n, id_grp_sf_fix_n,                      &
+!!     &           nnod_sf_fix_n, ist_nod_sf_fix_n, sf_apt_fix_n)
 !
       module set_surf_vector_id
 !
@@ -30,15 +28,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_count_num_surf_vector                                &
-     &          (num_surf, inod_stack_sf_grp, surf_name,                &
+      subroutine s_count_num_surf_vector(sf_grp, sf_grp_nod,            &
      &           num_bc_sf, bc_sf_name, ibc_sf_type,                    &
      &           field_name, nmax_sf_sgs, ngrp_sf_sgs, ngrp_sf_dat_n,   &
      &           nnod_sf_dat_n)
 !
-      integer(kind=kint), intent(in) :: num_surf
-      integer(kind = kint), intent(in) :: inod_stack_sf_grp(0:num_surf)
-      character(len=kchara), intent(in) :: surf_name(num_surf)
+      use t_group_data
+      use t_surface_group_connect
+!
+      type(surface_group_data), intent(in) :: sf_grp
+      type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
       integer (kind=kint) :: num_bc_sf
       integer (kind=kint), intent(in) :: ibc_sf_type(num_bc_sf)
@@ -61,7 +60,7 @@
       ngrp_sf_dat_n = 0
       nnod_sf_dat_n = 0
 !
-      do i=1, num_surf
+      do i = 1, sf_grp%num_grp
 !
         if (num_bc_sf .gt. 0) then
 !
@@ -69,7 +68,7 @@
           do j=1, num_bc_sf
 !
 ! ----------- check surface group
-            if (surf_name(i)==bc_sf_name(j)) then
+            if (sf_grp%grp_name(i) .eq. bc_sf_name(j)) then
               isig_s(1:3) = 0
 !
 ! -----------set boundary from control file
@@ -85,17 +84,17 @@
               if (ibc_sf_type(j) .eq. iflag_fixed_norm) then
                 ngrp_sf_dat_n = ngrp_sf_dat_n + 1
                 nnod_sf_dat_n = nnod_sf_dat_n                           &
-     &                  + inod_stack_sf_grp(i) - inod_stack_sf_grp(i-1)
+     &                         + sf_grp_nod%inod_stack_sf_grp(i)        &
+     &                         - sf_grp_nod%inod_stack_sf_grp(i-1)
                 isig_s(1:3) = 1
               else if (ibc_sf_type(j) .eq. -iflag_fixed_norm) then
                 call count_surf_nod_group_from_data(i, ngrp_sf_dat_n,   &
-     &              nnod_sf_dat_n, field_name, num_surf,                &
-     &              inod_stack_sf_grp, surf_name)
+     &              nnod_sf_dat_n, field_name, sf_grp%num_grp,          &
+     &              sf_grp_nod%inod_stack_sf_grp, sf_grp%grp_name)
                 isig_s(1:3) = 1
               end if
 !
               ngrp_sf_sgs(1:3) = ngrp_sf_sgs(1:3) + isig_s(1:3)
-!
             end if
 !
           end do
@@ -110,16 +109,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_surf_vector_id                                   &
-     &          (num_surf, surf_name, inod_stack_sf_grp,                &
+      subroutine s_set_surf_vector_id(sf_grp, sf_grp_nod, sf_grp_v,     &
      &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,         &
      &           field_name, nmax_sf_sgs, id_grp_sf_sgs,                &
      &           ngrp_sf_fix_n, id_grp_sf_fix_n,                        &
      &           nnod_sf_fix_n, ist_nod_sf_fix_n, sf_apt_fix_n)
 !
-      integer(kind = kint), intent(in) :: num_surf
-      integer(kind = kint), intent(in) :: inod_stack_sf_grp(0:num_surf)
-      character (len=kchara), intent(in) :: surf_name(num_surf)
+      use t_group_data
+      use t_surface_group_connect
+      use t_surface_group_geometry
+!
+      type(surface_group_data), intent(in) :: sf_grp
+      type(surface_node_grp_data), intent(in) :: sf_grp_nod
+      type(surface_group_geometry), intent(in) :: sf_grp_v
 !
       integer (kind=kint) :: num_bc_sf
       real (kind=kreal), intent(in) :: bc_sf_mag(num_bc_sf)
@@ -149,13 +151,13 @@
       l_s1(1:3) = 0
       l_10 = 0
 !
-      do i=1, num_surf
+      do i = 1, sf_grp%num_grp
 !
 ! ----------- loop for boundary conditions
         do j=1, num_bc_sf
 !
 ! ----------- check surface group
-         if (surf_name(i)==bc_sf_name(j)) then
+         if (sf_grp%grp_name(i) .eq. bc_sf_name(j)) then
            isig_s(1:3) = 0
 !
 ! -----------set boundary from control file
@@ -171,13 +173,15 @@
 ! -----------set boundary from control file
 !
             if (ibc_sf_type(j) .eq. iflag_fixed_norm) then
-              call set_sf_nod_grp_from_ctl(num_surf, inod_stack_sf_grp, &
+              call set_sf_nod_grp_from_ctl                              &
+     &           (sf_grp%num_grp, sf_grp_nod%inod_stack_sf_grp,         &
      &            ngrp_sf_fix_n, nnod_sf_fix_n, l_10, i,                &
      &            id_grp_sf_fix_n, ist_nod_sf_fix_n, sf_apt_fix_n,      &
      &            bc_sf_mag(j))
               isig_s(1:3) = 1
             else if (ibc_sf_type(j) .eq. -iflag_fixed_norm) then
-              call set_sf_nod_grp_from_data(num_surf, surf_name,        &
+              call set_sf_nod_grp_from_data                             &
+     &           (sf_grp, sf_grp_nod, sf_grp_v,                         &
      &            ngrp_sf_fix_n, nnod_sf_fix_n, l_10, i,                &
      &            id_grp_sf_fix_n, ist_nod_sf_fix_n, sf_apt_fix_n,      &
      &            field_name )

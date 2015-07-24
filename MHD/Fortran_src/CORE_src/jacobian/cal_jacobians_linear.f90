@@ -8,7 +8,7 @@
 !      subroutine cal_jacobian_trilinear
 !      subroutine cal_jacobian_surface_linear(jac_2d_l)
 !      subroutine cal_jacobian_edge_linear(jac_1d_l)
-!      subroutine cal_jacobian_dylinear(jac_sf_grp_l)
+!      subroutine cal_jacobian_dylinear(sf_grp, jac_sf_grp_l)
 !
       module cal_jacobians_linear
 !
@@ -129,13 +129,14 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_jacobian_dylinear(jac_sf_grp_l)
+      subroutine cal_jacobian_dylinear(sf_grp, jac_sf_grp_l)
 !
-      use m_surface_group
+      use t_group_data
       use t_jacobian_2d
       use cal_jacobian_sf_grp_linear
       use cal_shape_function_2d
 !
+      type(surface_group_data), intent(in) :: sf_grp
       type(jacobians_2d), intent(inout) :: jac_sf_grp_l
 !
       integer (kind = kint) :: ii, ix, i0
@@ -151,13 +152,13 @@
           ix = int_start2(i0) + ii
 !
           call s_cal_jacobian_sf_grp_4(numnod, numele, ie, xx,          &
-     &        sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%item_sf_grp,   &
-     &        np_smp, sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,      &
-     &        jac_sf_grp_l%xj_sf(1:sf_grp1%num_item,ix),                &
-     &        jac_sf_grp_l%axj_sf(1:sf_grp1%num_item,ix),               &
-     &        jac_sf_grp_l%xsf_sf(1:sf_grp1%num_item,ix,1),             &
-     &        jac_sf_grp_l%xsf_sf(1:sf_grp1%num_item,ix,2),             &
-     &        jac_sf_grp_l%xsf_sf(1:sf_grp1%num_item,ix,3),             &
+     &        sf_grp%num_grp, sf_grp%num_item, sf_grp%item_sf_grp,      &
+     &        np_smp, sf_grp%num_grp_smp, sf_grp%istack_grp_smp,        &
+     &        jac_sf_grp_l%xj_sf(1:sf_grp%num_item,ix),                 &
+     &        jac_sf_grp_l%axj_sf(1:sf_grp%num_item,ix),                &
+     &        jac_sf_grp_l%xsf_sf(1:sf_grp%num_item,ix,1),              &
+     &        jac_sf_grp_l%xsf_sf(1:sf_grp%num_item,ix,2),              &
+     &        jac_sf_grp_l%xsf_sf(1:sf_grp%num_item,ix,3),              &
      &        dnxi_sf1(1,ix), dnei_sf1(1,ix) )
         end do
       end do

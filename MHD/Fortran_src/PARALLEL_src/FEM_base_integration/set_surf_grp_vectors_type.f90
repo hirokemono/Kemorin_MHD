@@ -3,9 +3,6 @@
 !
 !     Writteg by H.Matsui on Aug., 2006
 !
-!      subroutine pick_normal_of_surf_group
-!      subroutine pick_surface_group_geometry
-!
 !      subroutine pick_normal_of_surf_grp_type(surf, sf_grp,            &
 !     &          sf_grp_data, sf_grp_v)
 !      subroutine pick_surf_grp_geometry_type(surf, sf_grp, sf_grp_data,&

@@ -56,10 +56,11 @@
         if (num .gt. 0) then
 !
           do k2=1, nnod_4_surf
-            call dlt_scl_phys_2_each_surface(igrp, k2, i_scalar,        &
-     &                vect_sf(1,1) )
-            call fem_sf_skv_sgs_grad_p1(igrp, k2, n_int, i_filter,      &
-     &               dxe_sf, scalar_sf, ak_diff(1,iak_diff), one, sk6)
+            call dlt_scl_phys_2_each_surface(sf_grp1, igrp, k2,         &
+     &          i_scalar, vect_sf(1,1) )
+            call fem_sf_skv_sgs_grad_p1(sf_grp1, igrp, k2,              &
+     &          n_int, i_filter, dxe_sf, scalar_sf,                     &
+     &          ak_diff(1,iak_diff), one, sk6)
           end do
 !
         end if
@@ -98,10 +99,10 @@
         if (num .gt. 0) then
 !
           do k2=1, nnod_4_surf
-            call dlt_scl_phys_2_each_surface(igrp, k2, i_scalar,        &
-     &              scalar_sf )
-            call fem_sf_skv_grad_commute_p1(igrp, k2, n_int, i_filter,  &
-     &          dxe_sf, scalar_sf, sk6)
+            call dlt_scl_phys_2_each_surface(sf_grp1, igrp, k2,         &
+     &          i_scalar, scalar_sf )
+            call fem_sf_skv_grad_commute_p1(sf_grp1, igrp, k2,          &
+     &          n_int, i_filter, dxe_sf, scalar_sf, sk6)
           end do
 !
         end if

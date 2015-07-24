@@ -3,22 +3,13 @@
 !
 !      Written by H. Matsui on Sep. 2005
 !
-!      subroutine set_surface_id
+!      subroutine set_surface_id(sf_grp, sf_grp_nod, sf_grp_v)
 !
       module set_surface_id_MHD
 !
       use m_precision
 !
-      use m_scalar_surf_id
-      use m_vector_surf_id
-!
       implicit none
-!
-      private :: set_bc_h_flux_id
-      private :: set_bc_torque_id, set_bc_wall_id
-      private :: set_bc_magne_surf_id, set_bc_current_surf_id
-      private :: set_bc_vect_p_surf_id, set_surf_mag_p_id
-      private :: set_surf_composition_id
 !
 !-----------------------------------------------------------------------
 !
@@ -26,113 +17,59 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_surface_id
+      subroutine set_surface_id(sf_grp, sf_grp_nod, sf_grp_v)
 !
       use m_control_parameter
 !
+      use m_scalar_surf_id
+      use m_vector_surf_id
+      use t_group_data
+      use t_surface_group_connect
+      use t_surface_group_geometry
+!
+      type(surface_group_data), intent(in) :: sf_grp
+      type(surface_node_grp_data), intent(in) :: sf_grp_nod
+      type(surface_group_geometry), intent(in) :: sf_grp_v
+!
 !
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
-        call set_bc_h_flux_id
+        call set_surf_temp_id(sf_grp)
+        call set_surf_heat_flux_id(sf_grp)
       end if
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call set_bc_torque_id
-        call set_bc_wall_id
+        call set_surf_velo_id(sf_grp, sf_grp_nod, sf_grp_v)
+        call set_surf_torque_id(sf_grp)
+!
+        call set_surf_press_id(sf_grp)
+        call set_surf_grad_press_id(sf_grp)
+        call set_wall_press_id(sf_grp)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
      &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call set_bc_magne_surf_id
-        call set_bc_current_surf_id
-        call set_surf_mag_p_id
+        call set_surf_magne_id(sf_grp, sf_grp_nod, sf_grp_v)
+        call set_surf_grad_b_id(sf_grp)
+!
+        call set_surf_current_id(sf_grp, sf_grp_nod, sf_grp_v)
+        call set_surf_grad_j_id(sf_grp)
+!
+        call set_surf_magne_p_id(sf_grp)
+        call set_surf_grad_magne_p_id(sf_grp)
+        call set_wall_magne_p_id(sf_grp)
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call set_bc_vect_p_surf_id
+        call set_surf_vect_p_id(sf_grp, sf_grp_nod, sf_grp_v)
+        call set_surf_grad_vecp_id(sf_grp)
       end if
 ! 
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call set_surf_composition_id
+        call set_surf_fix_composition_id(sf_grp)
+        call set_surf_grad_composition_id(sf_grp)
       end if
 ! 
       end subroutine set_surface_id
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine set_bc_h_flux_id
-!
-      call set_surf_temp_id
-      call set_surf_heat_flux_id
-!
-      end subroutine set_bc_h_flux_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_bc_torque_id
-!
-!
-      call set_surf_velo_id
-      call set_surf_torque_id
-!
-      end subroutine set_bc_torque_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_bc_wall_id
-!
-      call set_surf_press_id
-      call set_surf_grad_press_id
-      call set_wall_press_id
-!
-      end subroutine set_bc_wall_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_bc_vect_p_surf_id
-!
-!
-      call set_surf_vect_p_id
-      call set_surf_grad_vecp_id
-!
-      end subroutine set_bc_vect_p_surf_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_bc_magne_surf_id
-!
-      call set_surf_magne_id
-      call set_surf_grad_b_id
-!
-      end subroutine set_bc_magne_surf_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_bc_current_surf_id
-!
-      call set_surf_current_id
-      call set_surf_grad_j_id
-!
-      end subroutine set_bc_current_surf_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_surf_mag_p_id
-!
-      call set_surf_magne_p_id
-      call set_surf_grad_magne_p_id
-      call set_wall_magne_p_id
-!
-      end subroutine set_surf_mag_p_id
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_surf_composition_id
-!
-      call set_surf_fix_composition_id
-      call set_surf_grad_composition_id
-!
-      end subroutine set_surf_composition_id
 !
 !-----------------------------------------------------------------------
 !

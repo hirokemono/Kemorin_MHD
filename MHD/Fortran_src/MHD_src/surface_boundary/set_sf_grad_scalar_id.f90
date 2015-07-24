@@ -8,8 +8,7 @@
 !     &          (num_surf, surf_istack, surf_name,                     &
 !     &           num_bc_sf, bc_sf_name, ibc_sf_type,                   &
 !     &           ngrp_sf_fix, nele_sf_fix, ngrp_sf_lead)
-!      subroutine s_set_surf_grad_scalar_id                             &
-!     &          (num_surf, surf_istack, surf_name,                     &
+!      subroutine s_set_surf_grad_scalar_id(sf_grp,                     &
 !     &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,        &
 !     &           field_name, ngrp_sf_fix, id_grp_sf_fix,               &
 !     &           nele_sf_fix, ist_sf_fix, sf_apt_fix,                  &
@@ -88,16 +87,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_surf_grad_scalar_id                              &
-     &          (num_surf, surf_istack, surf_name,                      &
+      subroutine s_set_surf_grad_scalar_id(sf_grp,                      &
      &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,         &
      &           field_name, ngrp_sf_fix, id_grp_sf_fix,                &
      &           nele_sf_fix, ist_sf_fix, sf_apt_fix,                   &
      &           ngrp_sf_lead, id_grp_sf_lead)
 !
-      integer (kind=kint), intent(in) :: num_surf
-      integer(kind = kint), intent(in) :: surf_istack(0:num_surf)
-      character (len=kchara), intent(in) :: surf_name(num_surf)
+      use t_group_data
+!
+      type(surface_group_data), intent(in) :: sf_grp
 !
       integer (kind=kint), intent(in) :: num_bc_sf
       real (kind=kreal), intent(in) :: bc_sf_mag(num_bc_sf)
@@ -123,21 +121,21 @@
 !
 ! ---------  boundary condition for temperature
 !
-      do i=1, num_surf
-!
+      do i=1, sf_grp%num_grp
         do j=1, num_bc_sf
 !
-          if (surf_name(i)==bc_sf_name(j)) then
+          if (sf_grp%grp_name(i) .eq. bc_sf_name(j)) then
 !
 ! -----------set boundary using SGS case
 !
             if (ibc_sf_type(j) .eq. iflag_fixed_grad_s) then
-              call set_surf_group_from_ctl(num_surf, surf_istack,       &
+              call set_surf_group_from_ctl                              &
+     &           (sf_grp%num_grp, sf_grp%istack_grp,                    &
      &            ngrp_sf_fix, nele_sf_fix, l_f1, i, id_grp_sf_fix,     &
      &            ist_sf_fix, sf_apt_fix, bc_sf_mag(j))
 !
             else if (ibc_sf_type(j) .eq. (-iflag_fixed_grad_s)) then
-              call  set_surf_group_from_data(num_surf, surf_name,       &
+              call  set_surf_group_from_data(sf_grp,                    &
      &            ngrp_sf_fix, nele_sf_fix, l_f1, i, id_grp_sf_fix,     &
      &            ist_sf_fix, sf_apt_fix, field_name)
 !

@@ -25,6 +25,9 @@
 !
       use m_machine_parameter
       use m_geometry_parameter
+      use m_group_data
+      use m_surface_group_connect
+      use m_surface_group_geometry
 !
       use count_num_surface_bc
       use set_surface_id_MHD
@@ -36,11 +39,11 @@
 ! ---  set boundary conditions
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_surf_bc'
-      call count_num_surf_bc
+      call count_num_surf_bc(sf_grp1, sf_grp_nod1)
 !
       call allocate_surf_bc_data
 !
-      call set_surface_id
+      call set_surface_id(sf_grp1, sf_grp_nod1, sf_grp_v1)
 ! 
       call deallocate_work_4_surf_bc_dat
 ! 

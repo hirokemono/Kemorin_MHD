@@ -23,7 +23,10 @@
 !
       use m_machine_parameter
       use m_control_parameter
+      use m_geometry_parameter
+      use m_surface_group
       use m_surface_group_connect
+      use m_surface_group_geometry
       use m_finite_element_matrix
       use m_int_surface_data
 !
@@ -38,23 +41,23 @@
 !
       if (num_surf .le. 0) return
 !
-      call allocate_int_surf_data
+      call allocate_int_surf_data(sf_grp1%num_item, nnod_4_surf)
 !
       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
-      call pick_normal_of_surf_group
+      call pick_normal_of_surf_group(sf_grp1, sf_grp_v1)
 !
       if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
-      call s_sum_normal_4_surf_group
+      call s_sum_normal_4_surf_group(sf_grp1, sf_grp_v1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_surf_norm_node'
       call cal_surf_norm_node
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'position_2_each_surface'
-      call position_2_each_surface
+      call position_2_each_surface(sf_grp1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'delta_x_2_each_surface'
-      call delta_x_2_each_surface
+      call delta_x_2_each_surface(sf_grp1)
 !
 !      call check_surface_param_smp('int_surface_parameters end',       &
 !     &    my_rank)

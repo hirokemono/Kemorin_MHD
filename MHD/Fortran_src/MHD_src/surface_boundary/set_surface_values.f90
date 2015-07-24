@@ -11,10 +11,10 @@
 !!      subroutine allocate_work_4_surf_bc_dat(numnod)
 !!      subroutine deallocate_work_4_surf_bc_dat
 !!
-!!      subroutine set_surf_bc_1st(ngrp_sf, nele_surf, igrp,            &
+!!      subroutine set_surf_bc_1st(sf_grp, ngrp_sf, nele_surf, igrp,    &
 !!     &          id_sf_dat, i_dest, ist_sf, sf_dat_apt)
-!!      subroutine set_surf_bc_on_node_1st                              &
-!!     &         (ngrp_sf, nnod_surf, igrp, id_sf_dat, i_dest,          &
+!!      subroutine set_surf_bc_on_node_1st(sf_grp, sf_grp_nod, sf_grp_v,&
+!!     &          ngrp_sf, nnod_surf, igrp, id_sf_dat, i_dest,          &
 !!     &          ist_nod_sf, sf_dat_apt)
 !!
 !!      subroutine set_surf_bc_dat(ngrp_sf, nele_surf, igrp,            &
@@ -65,12 +65,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_surf_bc_1st(ngrp_sf, nele_surf, igrp,              &
+      subroutine set_surf_bc_1st(sf_grp, ngrp_sf, nele_surf, igrp,      &
      &          id_sf_dat, i_dest, ist_sf, sf_dat_apt)
 !
       use m_boundary_field_IO
-      use m_group_data
+      use t_group_data
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer(kind = kint), intent(in) :: igrp, i_dest, id_sf_dat
       integer(kind = kint), intent(in) :: ngrp_sf, nele_surf
 !
@@ -79,23 +80,26 @@
 !
 !
       call set_surf_bc_dat(ngrp_sf, nele_surf, igrp, id_sf_dat, i_dest, &
-     &    sf_grp1%num_grp, sf_grp1%istack_grp, ist_sf, sf_dat_apt)
+     &    sf_grp%num_grp, sf_grp%istack_grp, ist_sf, sf_dat_apt)
 !
       end subroutine set_surf_bc_1st
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_surf_bc_on_node_1st                                &
-     &         (ngrp_sf, nnod_surf, igrp, id_sf_dat, i_dest,            &
+      subroutine set_surf_bc_on_node_1st(sf_grp, sf_grp_nod, sf_grp_v,  &
+     &          ngrp_sf, nnod_surf, igrp, id_sf_dat, i_dest,            &
      &          ist_nod_sf, sf_dat_apt)
 !
       use m_geometry_parameter
       use m_geometry_data
-      use m_group_data
-      use m_surface_group_connect
-      use m_surface_group_geometry
+      use t_surface_group_geometry
+      use t_group_data
+      use t_surface_group_connect
 !
+      type(surface_group_data), intent(in) :: sf_grp
+      type(surface_node_grp_data), intent(in) :: sf_grp_nod
+      type(surface_group_geometry), intent(in) :: sf_grp_v
       integer(kind = kint), intent(in) :: igrp, i_dest, id_sf_dat
       integer(kind = kint), intent(in) :: ngrp_sf, nnod_surf
 !
@@ -106,11 +110,11 @@
       call set_surf_bc_on_node_dat                                      &
      &   (ngrp_sf, nnod_surf, igrp, id_sf_dat, i_dest, numnod,          &
      &    numele, nnod_4_ele, nnod_4_surf, ie, node_on_sf,              &
-     &    sf_grp1%num_grp, sf_grp1%num_item,                            &
-     &    sf_grp1%istack_grp, sf_grp1%item_sf_grp,                      &
-     &    sf_grp_nod1%ntot_node_sf_grp, sf_grp_nod1%inod_stack_sf_grp,  &
-     &    sf_grp_nod1%inod_surf_grp, sf_grp_nod1%coef_sf_nod,           &
-     &    sf_grp_v1%a_area_sf_grp, ist_nod_sf, sf_dat_apt)
+     &    sf_grp%num_grp, sf_grp%num_item,                              &
+     &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &
+     &    sf_grp_nod%ntot_node_sf_grp, sf_grp_nod%inod_stack_sf_grp,    &
+     &    sf_grp_nod%inod_surf_grp, sf_grp_nod%coef_sf_nod,             &
+     &    sf_grp_v%a_area_sf_grp, ist_nod_sf, sf_dat_apt)
 !
       end subroutine set_surf_bc_on_node_1st
 !

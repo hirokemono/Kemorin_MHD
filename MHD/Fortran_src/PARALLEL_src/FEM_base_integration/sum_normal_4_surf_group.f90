@@ -5,7 +5,7 @@
 !      Modified by H. Matsui on June, 2007
 !      Modified by H. Matsui on Jan., 2009
 !
-!      subroutine s_sum_normal_4_surf_group
+!      subroutine s_sum_normal_4_surf_group(sf_grp, sf_grp_v)
 !      subroutine s_sum_norm_of_surf_grp_para(num_surf, tot_area_sf_grp)
 !
       module sum_normal_4_surf_group
@@ -25,33 +25,36 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_sum_normal_4_surf_group
+      subroutine s_sum_normal_4_surf_group(sf_grp, sf_grp_v)
 !
       use calypso_mpi
       use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
-      use m_surface_group
-      use m_surface_group_geometry
+      use t_group_data
+      use t_surface_group_geometry
+!
+      type(surface_group_data), intent(in) :: sf_grp
+      type(surface_group_geometry), intent(inout) :: sf_grp_v
 !
       integer(kind = kint) :: i
 !
 !
-      call allocate_sum_local_area_grp(sf_grp1%num_grp)
+      call allocate_sum_local_area_grp(sf_grp%num_grp)
 !
       call s_sum_norm_of_surf_group(np_smp, numele, e_multi,            &
-     &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%item_sf_grp,       &
-     &    sf_grp1%num_grp_smp, sf_grp1%istack_grp_smp,                  &
-     &    sf_grp_v1%area_sf_grp)
+     &    sf_grp%num_grp, sf_grp%num_item, sf_grp%item_sf_grp,          &
+     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
+     &    sf_grp_v%area_sf_grp)
 !
       call s_sum_norm_of_surf_grp_para                                  &
-     &   (sf_grp1%num_grp, sf_grp_v1%tot_area_sf_grp)
+     &   (sf_grp%num_grp, sf_grp_v%tot_area_sf_grp)
       call deallocate_sum_local_area_grp
 !
       if (my_rank.eq.0) then
-        do i = 1, sf_grp1%num_grp
-           write(*,*) i, trim(sf_grp1%grp_name(i)),                     &
-     &                   sf_grp_v1%tot_area_sf_grp(i)
+        do i = 1, sf_grp%num_grp
+           write(*,*) i, trim(sf_grp%grp_name(i)),                      &
+     &                   sf_grp_v%tot_area_sf_grp(i)
         end do
       end if 
 !

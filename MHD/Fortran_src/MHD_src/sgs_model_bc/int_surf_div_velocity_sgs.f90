@@ -108,10 +108,11 @@
           if(num .gt. 0) then
 !
             do k2=1, nnod_4_surf
-              call dlt_scl_phys_2_each_surface(igrp, k2, i_comp,        &
-     &            scalar_sf)
-              call fem_sf_skv_sgs_div_linear_p1(igrp, k2, nd, n_int,    &
-     &            i_filter, dxe_sf, scalar_sf, ak_diff(1,iak_diff), sk6)
+              call dlt_scl_phys_2_each_surface(sf_grp1, igrp, k2,       &
+     &            i_comp, scalar_sf)
+              call fem_sf_skv_sgs_div_linear_p1(sf_grp1, igrp, k2,      &
+     &            nd, n_int, i_filter, dxe_sf, scalar_sf,               &
+     &            ak_diff(1,iak_diff), sk6)
             end do
 !
           end if

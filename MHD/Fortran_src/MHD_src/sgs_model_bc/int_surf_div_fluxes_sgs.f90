@@ -175,10 +175,11 @@
 !
         if (num .gt. 0) then
           do k2 = 1, nnod_4_surf
-            call d_SGS_flux_2_each_sf_w_cst(igrp, k2, ione,             &
-     &            i_vect, i_scalar, i_tensor, dminus, vect_sf)
-            call fem_sf_skv_sgs_div_flux_p1(igrp, k2, ione, n_int     , &
-     &          i_filter, dxe_sf, vect_sf, ak_diff, coef_field, sk6)
+            call d_SGS_flux_2_each_sf_w_cst(sf_grp1, igrp, k2, ione,    &
+     &          i_vect, i_scalar, i_tensor, dminus, vect_sf)
+            call fem_sf_skv_sgs_div_flux_p1(sf_grp1, igrp, k2, ione,    &
+     &          n_int, i_filter, dxe_sf, vect_sf, ak_diff, coef_field,  &
+     &          sk6)
           end do
 !
         end if
@@ -226,10 +227,11 @@
 !
           if (num .gt. 0) then
             do k2 = 1, nnod_4_surf
-              call d_SGS_flux_2_each_sf_w_cst(igrp, k2, nd,             &
+              call d_SGS_flux_2_each_sf_w_cst(sf_grp1, igrp, k2, nd,    &
      &            i_vect, i_scalar, i_tensor, dminus, vect_sf)
-              call fem_sf_skv_sgs_div_flux_p1(igrp, k2, nd, n_int,      &
-     &          i_filter, dxe_sf, vect_sf, ak_diff, coef_field, sk6)
+              call fem_sf_skv_sgs_div_flux_p1(sf_grp1, igrp, k2, nd,    &
+     &            n_int, i_filter, dxe_sf, vect_sf, ak_diff,            &
+     &            coef_field, sk6)
             end do
 !
           end if
@@ -273,10 +275,10 @@
 !
         if (num .gt. 0) then
           do k2 = 1, nnod_4_surf
-            call d_SGS_flux_2_each_surface(igrp, k2, ione,              &
-     &            i_vect, i_scalar, i_tensor, vect_sf)
-            call fem_sf_skv_div_flux_commute_p1(igrp, k2, ione, n_int,  &
-     &            i_filter, dxe_sf, vect_sf, sk6)
+            call d_SGS_flux_2_each_surface(sf_grp1, igrp, k2, ione,     &
+     &          i_vect, i_scalar, i_tensor, vect_sf)
+            call fem_sf_skv_div_flux_commute_p1(sf_grp1, igrp, k2,      &
+     &          ione, n_int, i_filter, dxe_sf, vect_sf, sk6)
           end do
 !
         end if
@@ -321,10 +323,10 @@
 !
           if (num .gt. 0) then
             do k2 = 1, nnod_4_surf
-              call d_SGS_flux_2_each_surface(igrp, k2, nd,              &
-     &            i_vect, i_scalar, i_tensor, vect_sf)
-              call fem_sf_skv_div_flux_commute_p1(igrp, k2, nd, n_int,  &
-     &            i_filter, dxe_sf, vect_sf, sk6)
+              call d_SGS_flux_2_each_surface(sf_grp1, igrp, k2,         &
+     &            nd, i_vect, i_scalar, i_tensor, vect_sf)
+              call fem_sf_skv_div_flux_commute_p1(sf_grp1, igrp, k2,    &
+     &            nd, n_int, i_filter, dxe_sf, vect_sf, sk6)
             end do
 !
           end if

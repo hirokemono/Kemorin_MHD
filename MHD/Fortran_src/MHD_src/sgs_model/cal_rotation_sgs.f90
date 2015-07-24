@@ -129,6 +129,7 @@
       subroutine choose_int_vol_rot_sgs(iflag_4_supg, iele_fsmp_stack,  &
      &          nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff, i_vector)
 !
+      use m_group_data
       use m_control_parameter
       use m_element_phys_address
       use int_sgs_vect_diff_1st
@@ -154,7 +155,7 @@
      &      ifilter_final, iak_diff, i_vector)
        end if
 !
-       call int_surf_rotation_sgs(intg_point_t_evo,                     &
+       call int_surf_rotation_sgs(sf_grp1, intg_point_t_evo,            &
      &     nmax_grp_sf, ngrp_sf, id_grp_sf, ifilter_final, iak_diff,    &
      &     i_vector)
 !

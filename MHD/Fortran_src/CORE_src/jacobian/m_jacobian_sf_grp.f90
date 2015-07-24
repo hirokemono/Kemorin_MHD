@@ -55,18 +55,18 @@
       call alloc_2d_jac_type(sf_grp1%num_item, num_linear_sf,           &
      &                       maxtot_int_2d, jac1_sf_grp_2d_l)
       if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_dylinear'
-      call cal_jacobian_dylinear(jac1_sf_grp_2d_l)
+      call cal_jacobian_dylinear(sf_grp1, jac1_sf_grp_2d_l)
 !
       if (first_ele_type .eq. 332) then
         if (iflag_debug.eq.1)  write(*,*) 'cal_jacobian_dyquad'
         call alloc_2d_jac_type(sf_grp1%num_item, nnod_4_surf,           &
      &        maxtot_int_2d, jac1_sf_grp_2d_q)
-        call cal_jacobian_dyquad(jac1_sf_grp_2d_q)
+        call cal_jacobian_dyquad(sf_grp1, jac1_sf_grp_2d_q)
       else if (first_ele_type .eq. 333) then
         if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_dylag'
         call alloc_2d_jac_type(sf_grp1%num_item, nnod_4_surf,           &
      &        maxtot_int_2d, jac1_sf_grp_2d_q)
-        call cal_jacobian_dylag(jac1_sf_grp_2d_q)
+        call cal_jacobian_dylag(sf_grp1, jac1_sf_grp_2d_q)
       else
         if (iflag_debug.eq.1) write(*,*) 'copy_jacobians_2d_quad'
         call copy_jacobians_2d(sf_grp1%num_item, nnod_4_surf,           &

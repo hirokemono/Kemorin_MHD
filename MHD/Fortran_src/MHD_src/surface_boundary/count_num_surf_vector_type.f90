@@ -64,8 +64,7 @@
       type(velocity_surf_bc_type), intent(inout) :: velo
 !
 !
-      call s_count_num_surf_vector                                      &
-     &   (sf_grp%num_grp, sf_nod%inod_stack_sf_grp, sf_grp%grp_name,    &
+      call s_count_num_surf_vector(sf_grp, sf_nod,                      &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type, name_svn,                               &
      &    velo%sgs%nmax_sf_dat, velo%sgs%ngrp_sf_dat,                   &
@@ -94,8 +93,7 @@
       type(velocity_surf_bc_type), intent(inout) :: vector_p
 !
 !
-      call s_count_num_surf_vector                                      &
-     &   (sf_grp%num_grp, sf_nod%inod_stack_sf_grp, sf_grp%grp_name,    &
+      call s_count_num_surf_vector(sf_grp, sf_nod,                      &
      &    a_potential_surf%num_bc, a_potential_surf%bc_name,            &
      &    a_potential_surf%ibc_type, name_san,                          &
      &    vector_p%sgs%nmax_sf_dat, vector_p%sgs%ngrp_sf_dat,           &
@@ -124,8 +122,7 @@
       type(vector_surf_bc_type), intent(inout) :: magne
 !
 !
-      call s_count_num_surf_vector                                      &
-     &    (sf_grp%num_grp, sf_nod%inod_stack_sf_grp, sf_grp%grp_name,   &
+      call s_count_num_surf_vector(sf_grp, sf_nod,                      &
      &     magne_surf%num_bc, magne_surf%bc_name, magne_surf%ibc_type,  &
      &     name_sbn, magne%sgs%nmax_sf_dat, magne%sgs%ngrp_sf_dat,      &
      &     magne%normal%ngrp_sf_fix_fx, magne%normal%nitem_sf_fix_fx)
@@ -144,8 +141,7 @@
       type(vector_surf_bc_type), intent(inout) :: current
 !
 !
-      call s_count_num_surf_vector                                      &
-     &    (sf_grp%num_grp, sf_nod%inod_stack_sf_grp, sf_grp%grp_name,   &
+      call s_count_num_surf_vector(sf_grp, sf_nod,                      &
      &     current_surf%num_bc, current_surf%bc_name,                   &
      &     current_surf%ibc_type, name_sjn,                             &
      &     current%sgs%nmax_sf_dat, current%sgs%ngrp_sf_dat,            &

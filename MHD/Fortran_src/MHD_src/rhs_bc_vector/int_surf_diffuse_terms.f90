@@ -128,10 +128,10 @@
           if (num .gt. 0) then
 !
             do k2 = 1, nnod_4_surf
-              call dlt_scl_phys_2_each_surface(igrp, k2, i_comp,        &
-     &              scalar_sf)
-              call fem_surf_skv_current_diffuse_1(igrp, k2, nd,         &
-     &              intg_point_t_evo, dxe_sf, scalar_sf, sk6)
+              call dlt_scl_phys_2_each_surface(sf_grp1, igrp, k2,       &
+     &            i_comp, scalar_sf)
+              call fem_surf_skv_current_diffuse_1(sf_grp1, igrp,        &
+     &            k2, nd, intg_point_t_evo, dxe_sf, scalar_sf, sk6)
             end do
 !
           end if
@@ -176,10 +176,10 @@
         if (num .gt. 0) then
 !
           do k2=1, nnod_4_surf
-            call dlt_scl_phys_2_each_surface(igrp, k2, i_field,         &
-     &          scalar_sf)
-            call fem_surf_skv_diffuse_1st(igrp, k2, ione, n_int,        &
-     &          dxe_sf, scalar_sf, ak_d, sk6)
+            call dlt_scl_phys_2_each_surface(sf_grp1, igrp, k2,         &
+     &          i_field, scalar_sf)
+            call fem_surf_skv_diffuse_1st(sf_grp1, igrp, k2,            &
+     &          ione, n_int, dxe_sf, scalar_sf, ak_d, sk6)
           end do
         end if
       end do
@@ -226,10 +226,10 @@
           if (num .gt. 0) then
 !
             do k2=1, nnod_4_surf
-              call dlt_scl_phys_2_each_surface(igrp, k2, i_comp,        &
-     &            scalar_sf)
-              call fem_surf_skv_diffuse_1st(igrp, k2, nd, n_int,        &
-     &            dxe_sf, scalar_sf, ak_d, sk6)
+              call dlt_scl_phys_2_each_surface(sf_grp1, igrp, k2,       &
+     &            i_comp, scalar_sf)
+              call fem_surf_skv_diffuse_1st(sf_grp1, igrp, k2,          &
+     &            nd, n_int, dxe_sf, scalar_sf, ak_d, sk6)
             end do
 !
           end if

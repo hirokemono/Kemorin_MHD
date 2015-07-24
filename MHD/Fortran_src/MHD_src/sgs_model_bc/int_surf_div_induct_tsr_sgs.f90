@@ -54,11 +54,11 @@
           if (num .gt.0) then
 !
             do k2=1, nnod_4_surf
-              call d_SGS_induct_t_2_each_surface(igrp, k2, nd,          &
-     &             i_flux, i_b, i_v, vect_sf)
-              call fem_sf_skv_sgs_div_flux_p1(igrp, k2, nd, n_int,      &
-     &            i_filter, dxe_sf, vect_sf, ak_diff(1,iak_diff_uxb),   &
-     &            dminus, sk6)
+              call d_SGS_induct_t_2_each_surface(sf_grp1, igrp, k2, nd, &
+     &            i_flux, i_b, i_v, vect_sf)
+              call fem_sf_skv_sgs_div_flux_p1(sf_grp1, igrp, k2, nd,    &
+     &            n_int, i_filter, dxe_sf, vect_sf,                     &
+     &            ak_diff(1,iak_diff_uxb), dminus, sk6)
             end do
 !
           end if
@@ -96,10 +96,10 @@
           if(num .gt. 0) then
 !
             do k2=1, nnod_4_surf
-              call d_SGS_induct_t_2_each_surface(igrp, k2, nd,          &
-     &            i_flux, i_b, i_v, vect_sf)
-              call fem_sf_skv_div_flux_commute_p1(igrp, k2, nd, n_int,  &
-     &            i_filter, dxe_sf, vect_sf, sk6)
+              call d_SGS_induct_t_2_each_surface(sf_grp1, igrp, k2,     &
+     &            nd, i_flux, i_b, i_v, vect_sf)
+              call fem_sf_skv_div_flux_commute_p1(sf_grp1, igrp, k2,    &
+     &            nd, n_int, i_filter, dxe_sf, vect_sf, sk6)
             end do
 !
           end if

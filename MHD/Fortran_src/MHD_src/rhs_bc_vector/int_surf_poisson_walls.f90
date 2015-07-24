@@ -55,8 +55,9 @@
         if (num .gt.0 ) then
 !
           do k2=1, num_linear_sf
-            call vector_phys_2_each_surface(igrp, k2, i_vect, vect_sf)
-            call fem_surf_skv_poisson_wall_1(igrp, k2, n_int,           &
+            call vector_phys_2_each_surface(sf_grp1, igrp, k2,          &
+     &          i_vect, vect_sf)
+            call fem_surf_skv_poisson_wall_1(sf_grp1, igrp, k2, n_int,  &
      &          vect_sf, sk6)
           end do
 !
@@ -90,10 +91,10 @@
 !
 ! -------- loop for shape function for the phsical values
           do k2=1, num_linear_sf
-            call vector_phys_2_each_surf_cst(igrp, k2, i_vect,          &
-     &          dminus, vect_sf)
-            call fem_surf_skv_poisson_sph_out_1(igrp, k2, n_int,        &
-     &          xe_sf, vect_sf, sk6)
+            call vector_phys_2_each_surf_cst(sf_grp1, igrp, k2,         &
+     &          i_vect, dminus, vect_sf)
+            call fem_surf_skv_poisson_sph_out_1(sf_grp1, igrp, k2,      &
+     &          n_int, xe_sf, vect_sf, sk6)
           end do
 !
         end if
@@ -128,9 +129,10 @@
 !
 ! -------- loop for shape function for the phsical values
           do k2=1, num_linear_sf
-            call vector_phys_2_each_surface(igrp, k2, i_vect, vect_sf)
-            call fem_surf_skv_poisson_sph_out_1(igrp, k2, n_int,        &
-     &          xe_sf, vect_sf, sk6)
+            call vector_phys_2_each_surface(sf_grp1, igrp, k2,          &
+     &          i_vect, vect_sf)
+            call fem_surf_skv_poisson_sph_out_1(sf_grp1, igrp, k2,      &
+     &          n_int, xe_sf, vect_sf, sk6)
           end do
 !
         end if

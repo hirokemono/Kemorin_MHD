@@ -94,11 +94,11 @@
         num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
         if(num .gt. 0) then
 !
-          do k2=1, nnod_4_surf
-            call dlt_scl_phys_2_each_surf_cst(igrp, k2,                 &
-     &            i_comp, dminus, scalar_sf )
-            call fem_sf_skv_sgs_velo_co_p1(igrp, k2, n_int, i_filter,   &
-     &            dxe_sf, scalar_sf, ak_diff(1,iak_diff), sk6)
+          do k2 = 1, nnod_4_surf
+            call dlt_scl_phys_2_each_surf_cst(sf_grp1, igrp, k2,        &
+     &          i_comp, dminus, scalar_sf )
+            call fem_sf_skv_sgs_velo_co_p1(sf_grp1, igrp, k2, n_int,    &
+     &          i_filter, dxe_sf, scalar_sf, ak_diff(1,iak_diff), sk6)
           end do
 !
         end if

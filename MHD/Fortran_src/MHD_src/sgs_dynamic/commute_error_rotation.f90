@@ -39,6 +39,7 @@
      &          id_grp_sf, i_filter, i_sgs, i_vect)
 !
       use m_geometry_parameter
+      use m_group_data
 !
       integer(kind = kint), intent(in) :: nmax_grp_sf
       integer(kind = kint), intent(in) :: ngrp_sf(3)
@@ -54,7 +55,7 @@
       call int_vol_commute_rot(iele_smp_stack, intg_point_t_evo,        &
      &    i_filter, i_vect)
 !
-      call int_surf_rot_commute_sgs(intg_point_t_evo,                   &
+      call int_surf_rot_commute_sgs(sf_grp1, intg_point_t_evo,          &
      &    nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter, i_vect)
 !
       call set_ff_nl_smp_2_ff(n_vector)
@@ -68,6 +69,7 @@
      &          id_grp_sf, i_filter, i_sgs, i_vect)
 !
       use m_geometry_data_MHD
+      use m_group_data
 !
       integer(kind = kint), intent(in) :: nmax_grp_sf
       integer(kind = kint), intent(in) :: ngrp_sf(3)
@@ -80,7 +82,7 @@
 !
       call int_vol_commute_rot(iele_fl_smp_stack, intg_point_t_evo,     &
      &    i_filter, i_vect)
-      call int_surf_rot_commute_sgs(intg_point_t_evo,                   &
+      call int_surf_rot_commute_sgs(sf_grp1, intg_point_t_evo,          &
      &    nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter, i_vect)
 !
       call set_ff_nl_smp_2_ff(n_vector)
@@ -94,6 +96,7 @@
      &          id_grp_sf, i_filter, i_sgs, i_vect)
 !
       use m_geometry_data_MHD
+      use m_group_data
 !
       integer(kind = kint), intent(in) :: nmax_grp_sf
       integer(kind = kint), intent(in) :: ngrp_sf(3)
@@ -106,7 +109,7 @@
 !
       call int_vol_commute_rot(iele_cd_smp_stack, intg_point_t_evo,     &
      &    i_filter, i_vect)
-      call int_surf_rot_commute_sgs(intg_point_t_evo,                   &
+      call int_surf_rot_commute_sgs(sf_grp1, intg_point_t_evo,          &
      &    nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter, i_vect)
 !
       call set_ff_nl_smp_2_ff(n_vector)
