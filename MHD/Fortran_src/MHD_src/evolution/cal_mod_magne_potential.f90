@@ -24,14 +24,15 @@
 !
       use calypso_mpi
       use m_control_parameter
+      use m_group_data
       use m_finite_element_matrix
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
       use int_surf_div_velocity_sgs
+      use int_surf_fixed_gradients
       use set_boundary_potentials
       use set_magne_boundary
-      use set_bc_grad_potentials
       use int_surf_normal_fields
       use cal_solver_MHD
 !
@@ -42,9 +43,9 @@
       call int_vol_divergence_magne
 !      call int_surf_sgs_div_magne
 !
-      call int_surf_normal_magne
+      call int_surf_normal_magne(sf_grp1)
 !
-      call set_boundary_grad_magne_p
+      call int_sf_grad_magne_p(sf_grp1)
 !
       call int_vol_sk_mp_bc
 !

@@ -29,6 +29,7 @@
       use calypso_mpi
       use m_finite_element_matrix
       use m_node_phys_address
+      use m_group_data
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -58,7 +59,7 @@
         call int_vol_vect_p_pre_ele
       end if
 !
-      call int_sf_grad_vecp(intg_point_t_evo)
+      call int_sf_grad_vecp(sf_grp1, intg_point_t_evo)
 !
 !      call check_nodal_data(my_rank, n_vector, iphys%i_velo)
 !      call check_elemental_data(my_rank, n_vector, iphys_ele%i_magne)

@@ -31,6 +31,7 @@
 !
       subroutine const_mesh_informations(my_rank)
 !
+      use m_group_data
       use m_element_group_connect
       use m_surface_group_connect
       use const_surface_data
@@ -62,7 +63,7 @@
 !       end if
 !
       if (iflag_debug.gt.0) write(*,*) 'set_surface_node_grp'
-      call set_surface_node_grp
+      call set_surface_node_grp(sf_grp1)
 !       call check_surface_node_id(my_rank, sf_grp_nod1)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_element_list_4_surface'

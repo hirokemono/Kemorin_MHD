@@ -25,6 +25,7 @@
       use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data_MHD
+      use m_surface_group
       use m_finite_element_matrix
       use m_int_vol_data
 !
@@ -45,7 +46,7 @@
 !
 !  for boundary conditions
 !
-       call int_surf_current_diffuse
+       call int_surf_current_diffuse(sf_grp1)
 !
        call cal_multi_pass_4_vector_ff
        call cal_ff_2_vector(d_nod(1,iphys%i_current), ff, ml)

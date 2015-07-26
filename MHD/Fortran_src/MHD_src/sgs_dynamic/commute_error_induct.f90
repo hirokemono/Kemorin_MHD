@@ -34,6 +34,7 @@
 !
       use m_control_parameter
       use m_geometry_data_MHD
+      use m_group_data
       use m_phys_constants
       use m_node_phys_address
       use m_node_phys_data
@@ -54,7 +55,7 @@
       call int_vol_commute_induct_t(iele_cd_smp_stack,                  &
      &    intg_point_t_evo, i_filter, i_flux, i_v, i_b)
 !
-      call int_surf_commute_induct_t(intg_point_t_evo, i_flux,          &
+      call int_surf_commute_induct_t(sf_grp1, intg_point_t_evo, i_flux, &
      &    i_filter, i_v, i_b)
 !
       call set_ff_nl_smp_2_ff(n_vector)

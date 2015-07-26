@@ -87,7 +87,7 @@
 !      call check_jacobians_trilinear(my_rank)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_surf_grp'
-      call cal_jacobian_surf_grp
+      call cal_jacobian_surf_grp(sf_grp1)
 !
 !
 !  -------------------------------

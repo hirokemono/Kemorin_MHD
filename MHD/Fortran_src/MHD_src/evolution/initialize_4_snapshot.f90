@@ -59,6 +59,7 @@
       use ordering_line_filter_smp
       use const_ele_layering_table
       use const_comm_table_fluid
+      use const_bc_infty_surf_type
       use set_reference_value
       use material_property
       use reordering_by_layers
@@ -174,7 +175,8 @@
 !
 !     ---------------------
 !
-      call const_bc_infinity_surf_grp(iflag_surf_infty)
+      call const_bc_infinity_surf_grp                                   &
+     &   (iflag_surf_infty, sf_grp1, infty_list)
 !
 !     --------------------- 
 !
@@ -185,7 +187,7 @@
       call deallocate_dxi_dx_quad
       call deallocate_dxi_dx_linear
 !
-      call cal_jacobian_surf_grp
+      call cal_jacobian_surf_grp(sf_grp1)
 !
 !     --------------------- 
 !

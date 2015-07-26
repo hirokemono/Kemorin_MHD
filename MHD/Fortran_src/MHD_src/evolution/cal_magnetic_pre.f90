@@ -44,7 +44,7 @@
 !
 !
 !      call check_surface_param_smp('cal_magnetic_field_pre start',     &
-!     &    my_rank)
+!     &    my_rank, sf_grp1)
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         call cal_sgs_magne_induction
       end if

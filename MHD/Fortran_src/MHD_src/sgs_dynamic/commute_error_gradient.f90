@@ -19,6 +19,7 @@
 !
       use m_control_parameter
       use m_phys_constants
+      use m_group_data
       use m_node_phys_data
       use m_finite_element_matrix
       use m_int_vol_data
@@ -53,7 +54,7 @@
       call int_vol_commute_grad(iele_smp_stack, intg_point_t_evo,       &
      &    i_filter, i_scalar)
 !
-      call int_surf_grad_commute_sgs(intg_point_t_evo,                  &
+      call int_surf_grad_commute_sgs(sf_grp1, intg_point_t_evo,         &
      &    ngrp_sf, id_grp_sf, i_filter, i_scalar)
 !
       call set_ff_nl_smp_2_ff(n_vector)
@@ -79,7 +80,7 @@
       call int_vol_commute_grad(iele_fl_smp_stack, intg_point_t_evo,    &
      &    i_filter, i_scalar)
 !
-      call int_surf_grad_commute_sgs(intg_point_t_evo,                  &
+      call int_surf_grad_commute_sgs(sf_grp1, intg_point_t_evo,         &
      &    ngrp_sf, id_grp_sf, i_filter, i_scalar)
 !
       call set_ff_nl_smp_2_ff(n_vector)
@@ -105,7 +106,7 @@
       call int_vol_commute_grad(iele_cd_smp_stack, intg_point_t_evo,    &
      &    i_filter, i_scalar)
 !
-      call int_surf_grad_commute_sgs(intg_point_t_evo,                  &
+      call int_surf_grad_commute_sgs(sf_grp1, intg_point_t_evo,         &
      &    ngrp_sf, id_grp_sf, i_filter, i_scalar)
 !
       call set_ff_nl_smp_2_ff(n_vector)

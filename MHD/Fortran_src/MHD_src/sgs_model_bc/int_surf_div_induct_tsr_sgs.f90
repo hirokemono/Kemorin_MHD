@@ -3,10 +3,10 @@
 !
 !      Written by H. Matsui on Sep., 2005
 !
-!      subroutine int_surf_div_induct_t_sgs(n_int, i_flux, i_filter,    &
-!     &          i_v, i_b)
-!      subroutine int_surf_commute_induct_t(n_int, i_flux, i_filter,    &
-!     &          i_v, i_b)
+!!      subroutine int_surf_div_induct_t_sgs(sf_grp, n_int,             &
+!!     &          i_flux, i_filter, i_v, i_b)
+!!      subroutine int_surf_commute_induct_t(sf_grp, n_int,             &
+!!     &          i_flux, i_filter, i_v, i_b)
 !
       module int_surf_div_induct_tsr_sgs
 !
@@ -18,6 +18,8 @@
       use m_finite_element_matrix
       use m_surf_data_magne
 !
+      use t_group_data
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -26,18 +28,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_div_induct_t_sgs(n_int, i_flux, i_filter,     &
-     &          i_v, i_b)
+      subroutine int_surf_div_induct_t_sgs(sf_grp, n_int,               &
+     &          i_flux, i_filter, i_v, i_b)
 !
       use m_SGS_model_coefs
       use m_SGS_address
-      use m_group_data
       use m_int_surface_data
 !
       use delta_SGS_2_each_surface
       use fem_surf_skv_sgs_commute_1
       use cal_skv_to_ff_smp_1st
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer(kind=kint), intent(in) :: n_int, i_filter
       integer (kind = kint), intent(in) :: i_b, i_v, i_flux
 !
@@ -50,13 +52,13 @@
       do nd = 1, n_vector
         do i = 1, ngrp_sf_sgs_magne(nd)
           igrp = id_grp_sf_sgs_magne(i,nd)
-          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+          num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if (num .gt.0) then
 !
             do k2=1, nnod_4_surf
-              call d_SGS_induct_t_2_each_surface(sf_grp1, igrp, k2, nd, &
+              call d_SGS_induct_t_2_each_surface(sf_grp, igrp, k2, nd,  &
      &            i_flux, i_b, i_v, vect_sf)
-              call fem_sf_skv_sgs_div_flux_p1(sf_grp1, igrp, k2, nd,    &
+              call fem_sf_skv_sgs_div_flux_p1(sf_grp, igrp, k2, nd,     &
      &            n_int, i_filter, dxe_sf, vect_sf,                     &
      &            ak_diff(1,iak_diff_uxb), dminus, sk6)
             end do
@@ -71,15 +73,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_commute_induct_t(n_int, i_flux, i_filter,     &
-     &          i_v, i_b)
+      subroutine int_surf_commute_induct_t(sf_grp, n_int,               &
+     &          i_flux, i_filter, i_v, i_b)
 !
       use m_int_surface_data
-      use m_group_data
       use delta_SGS_2_each_surface
       use fem_surf_skv_sgs_commute_1
       use cal_skv_to_ff_smp_1st
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer(kind=kint), intent(in) :: n_int, i_filter
       integer (kind = kint), intent(in) :: i_b, i_v, i_flux
 !
@@ -92,13 +94,13 @@
       do nd = 1, n_vector
         do i = 1, ngrp_sf_sgs_magne(nd)
           igrp = id_grp_sf_sgs_magne(i,nd)
-          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+          num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if(num .gt. 0) then
 !
             do k2=1, nnod_4_surf
-              call d_SGS_induct_t_2_each_surface(sf_grp1, igrp, k2,     &
+              call d_SGS_induct_t_2_each_surface(sf_grp, igrp, k2,      &
      &            nd, i_flux, i_b, i_v, vect_sf)
-              call fem_sf_skv_div_flux_commute_p1(sf_grp1, igrp, k2,    &
+              call fem_sf_skv_div_flux_commute_p1(sf_grp, igrp, k2,     &
      &            nd, n_int, i_filter, dxe_sf, vect_sf, sk6)
             end do
 !

@@ -69,6 +69,7 @@
       use const_ele_layering_table
       use estimate_stabilities
       use const_comm_table_fluid
+      use const_bc_infty_surf_type
       use set_reference_value
       use material_property
       use reordering_by_layers_MHD
@@ -206,7 +207,8 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*)  'const_bc_infinity_surf_grp'
-      call const_bc_infinity_surf_grp(iflag_surf_infty)
+      call const_bc_infinity_surf_grp                                   &
+     &   (iflag_surf_infty, sf_grp1, infty_list)
 !
 !  -------------------------------
 !
@@ -221,7 +223,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)  'cal_jacobian_surf_grp'
-      call cal_jacobian_surf_grp
+      call cal_jacobian_surf_grp(sf_grp1)
 !
 !     --------------------- 
 !

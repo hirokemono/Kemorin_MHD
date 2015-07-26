@@ -89,12 +89,7 @@
      &    iedge_4_sf, iedge_4_ele, nod_comm, edge_comm,                 &
      &    interior_ele, xx, inod_smp_stack, iele_smp_stack,             &
      &    isurf_smp_stack, iedge_smp_stack,                             &
-     &    ele_grp1%num_grp, ele_grp1%num_item, ele_grp1%grp_name,       &
-     &    ele_grp1%istack_grp, ele_grp1%item_grp,                       &
-     &    sf_grp1%num_grp, sf_grp1%num_item, sf_grp1%grp_name,          &
-     &    sf_grp1%istack_grp, sf_grp1%item_sf_grp,                      &
-     &    sf_grp_nod1%ntot_node_sf_grp, sf_grp_nod1%inod_stack_sf_grp,  &
-     &    sf_grp_nod1%inod_surf_grp, num_nod_phys, phys_nod_name)
+     &    ele_grp1, sf_grp1, sf_grp_nod1, num_nod_phys, phys_nod_name)
 !
       end subroutine cross_section_init_1st
 !
@@ -114,9 +109,7 @@
      &          ie_edge, isf_4_ele, iedge_4_sf, interior_ele,           &
      &          inod_smp_stack, iele_smp_stack,                         &
      &          isurf_smp_stack, iedge_smp_stack,                       &
-     &          ele_grp1%num_grp, ele_grp1%num_item, ele_grp1%grp_name, &
-     &          ele_grp1%istack_grp, ele_grp1%item_grp,                 &
-     &          num_nod_phys, phys_nod_name)
+     &          ele_grp1, num_nod_phys, phys_nod_name)
 !
       end subroutine isosurface_init_1st
 !

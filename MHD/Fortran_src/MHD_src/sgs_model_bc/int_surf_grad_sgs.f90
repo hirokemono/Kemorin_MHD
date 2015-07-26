@@ -3,10 +3,11 @@
 !
 !      Written by H. Matsui on Sep., 2005
 !
-!      subroutine int_surf_gradient_sgs(n_int, ngrp_sf, id_grp_sf,      &
-!     &         i_filter, iak_diff, i_scalar)
-!      subroutine int_surf_grad_commute_sgs(n_int, ngrp_sf, id_grp_sf,  &
-!     &         i_filter, i_scalar)
+!!      subroutine int_surf_gradient_sgs(sf_grp, n_int,                 &
+!!     &          ngrp_sf, id_grp_sf, i_filter, iak_diff, i_scalar)
+!!      subroutine int_surf_grad_commute_sgs(sf_grp, n_int,             &
+!!     &          ngrp_sf, id_grp_sf, i_filter, i_scalar)
+!!        type(surface_group_data), intent(in) :: sf_grp
 !
       module int_surf_grad_sgs
 !
@@ -15,8 +16,8 @@
       use m_constants
       use m_phys_constants
       use m_geometry_parameter
-      use m_group_data
       use m_finite_element_matrix
+      use t_group_data
 !
       implicit none
 !
@@ -26,8 +27,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_gradient_sgs(n_int, ngrp_sf, id_grp_sf,       &
-     &         i_filter, iak_diff, i_scalar)
+      subroutine int_surf_gradient_sgs(sf_grp, n_int,                   &
+     &          ngrp_sf, id_grp_sf, i_filter, iak_diff, i_scalar)
 !
       use m_int_surface_data
       use m_SGS_model_coefs
@@ -38,6 +39,7 @@
       use cal_skv_to_ff_smp_1st
 !
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer(kind = kint), intent(in) :: n_int, ngrp_sf
       integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
       integer(kind = kint), intent(in) :: i_scalar, iak_diff, i_filter
@@ -52,13 +54,13 @@
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
-        num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+        num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if (num .gt. 0) then
 !
           do k2=1, nnod_4_surf
-            call dlt_scl_phys_2_each_surface(sf_grp1, igrp, k2,         &
+            call dlt_scl_phys_2_each_surface(sf_grp, igrp, k2,          &
      &          i_scalar, vect_sf(1,1) )
-            call fem_sf_skv_sgs_grad_p1(sf_grp1, igrp, k2,              &
+            call fem_sf_skv_sgs_grad_p1(sf_grp, igrp, k2,               &
      &          n_int, i_filter, dxe_sf, scalar_sf,                     &
      &          ak_diff(1,iak_diff), one, sk6)
           end do
@@ -72,8 +74,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_grad_commute_sgs(n_int, ngrp_sf, id_grp_sf,   &
-     &         i_filter, i_scalar)
+      subroutine int_surf_grad_commute_sgs(sf_grp, n_int,               &
+     &          ngrp_sf, id_grp_sf, i_filter, i_scalar)
 !
       use m_int_surface_data
       use delta_phys_2_each_surface
@@ -81,11 +83,12 @@
       use cal_skv_to_ff_smp_1st
 !
 !
-       integer(kind = kint), intent(in) :: n_int, ngrp_sf
-       integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
-       integer(kind = kint), intent(in) :: i_scalar, i_filter
+      type(surface_group_data), intent(in) :: sf_grp
+      integer(kind = kint), intent(in) :: n_int, ngrp_sf
+      integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
+      integer(kind = kint), intent(in) :: i_scalar, i_filter
 !
-       integer(kind=kint) :: k2, i, igrp, num
+      integer(kind=kint) :: k2, i, igrp, num
 !
 !
 !  ---------  set number of integral points
@@ -95,13 +98,13 @@
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
-        num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+        num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if (num .gt. 0) then
 !
           do k2=1, nnod_4_surf
-            call dlt_scl_phys_2_each_surface(sf_grp1, igrp, k2,         &
+            call dlt_scl_phys_2_each_surface(sf_grp, igrp, k2,          &
      &          i_scalar, scalar_sf )
-            call fem_sf_skv_grad_commute_p1(sf_grp1, igrp, k2,          &
+            call fem_sf_skv_grad_commute_p1(sf_grp, igrp, k2,           &
      &          n_int, i_filter, dxe_sf, scalar_sf, sk6)
           end do
 !

@@ -5,8 +5,7 @@
 !
 !!      subroutine pvr_init(numnod, numele, numsurf, nnod_4_surf, xx,   &
 !!     &          e_multi, ie_surf, isf_4_ele, iele_4_surf,             &
-!!     &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,  &
-!!     &          num_nod_phys, phys_nod_name)
+!!     &          ele_grp, num_nod_phys, phys_nod_name)
 !
 !      subroutine pvr_main(istep_pvr, numnod, numele, numsurf,          &
 !     &         nnod_4_ele, nnod_4_surf, inod_smp_stack, iele_smp_stack,&
@@ -86,9 +85,9 @@
 !
       subroutine pvr_init(numnod, numele, numsurf, nnod_4_surf, xx,     &
      &          e_multi, ie_surf, isf_4_ele, iele_4_surf,               &
-     &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,    &
-     &          num_nod_phys, phys_nod_name)
+     &          ele_grp, num_nod_phys, phys_nod_name)
 !
+      use t_group_data
       use set_pvr_control
       use cal_pvr_modelview_mat
       use cal_pvr_projection_mat
@@ -102,14 +101,10 @@
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
       integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
 !
-      integer(kind=kint), intent(in) :: num_mat, num_mat_bc
-      integer(kind=kint), intent(in) :: mat_istack(0:num_mat)
-      integer(kind=kint), intent(in) :: mat_item(num_mat_bc)
-      character(len=kchara), intent(in) :: mat_name(num_mat)
-!
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
 !
+      type(group_data), intent(in) :: ele_grp
 !
       integer(kind = kint) :: i_pvr
 !
@@ -118,14 +113,16 @@
      &         num_pvr
       call allocate_components_4_pvr
 !
-      call s_set_pvr_control(num_pvr, num_mat, mat_name,                &
+      call s_set_pvr_control                                            &
+     &   (num_pvr, ele_grp%num_grp, ele_grp%grp_name,                   &
      &    num_nod_phys, phys_nod_name, file_params, fld_params,         &
      &    view_params, color_params, cbar_params)
 !
       call allocate_nod_data_4_pvr(num_pvr, numnod, numele, field_pvr)
       call s_find_pvr_surf_domain(num_pvr, numele, numsurf, e_multi,    &
-     &    isf_4_ele, iele_4_surf, num_mat, num_mat_bc,                  &
-     &    mat_istack, mat_item, fld_params, pvr_bound, field_pvr)
+     &    isf_4_ele, iele_4_surf, ele_grp%num_grp, ele_grp%num_item,    &
+     &    ele_grp%istack_grp, ele_grp%item_grp,                         &
+     &    fld_params, pvr_bound, field_pvr)
 !
       do i_pvr = 1, num_pvr
         call cal_mesh_outline_pvr(numnod, xx, outlines(i_pvr))

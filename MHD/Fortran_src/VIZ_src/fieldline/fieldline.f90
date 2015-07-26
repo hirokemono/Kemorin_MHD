@@ -8,19 +8,20 @@
 !!
 !!@verbatim
 !!      subroutine field_line_init(numnod, numele, e_multi,             &
-!!     &    num_mat, num_mat_bc, mat_name, mat_istack, mat_item,        &
-!!     &    num_surf, num_surf_bc, surf_name, surf_istack, surf_item,   &
-!!     &    num_nod_phys, phys_nod_name)
+!!     &          ele_grp, sf_grp,  num_nod_phys, phys_nod_name)
+!
 !!
 !!      subroutine field_line_main(istep_psf, numnod, numele, numsurf,  &
 !!     &       nnod_4_surf, inod_smp_stack, inod_global,                &
 !!     &       xx, radius, a_radius, s_cylinder, a_s_cylinder,          &
 !!     &       iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,   &
 !!     &       x_surf, vnorm_surf, area_surf, interior_surf,            &
-!!     &       num_mat, num_mat_bc, mat_istack,  mat_item,              &
-!!     &       ntot_ele_4_node, iele_stack_4_node, iele_4_node,         &
-!!     &       num_nod_phys, num_tot_nod_phys, istack_nod_component,    &
-!!     &       d_nod, nod_comm)
+!!     &       ele_grp, ele_4_nod,  num_nod_phys, num_tot_nod_phys,     &
+!!     &       istack_nod_component, d_nod, nod_comm)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(group_data), intent(in) :: ele_grp
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(element_around_node), intent(in) :: ele_4_nod
 !!@endverbatim
 !
       module fieldline
@@ -32,6 +33,8 @@
       use m_geometry_constants
       use m_global_fline
       use t_comm_table
+      use t_group_data
+      use t_next_node_ele_4_node
 !
       implicit  none
 !
@@ -42,9 +45,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine field_line_init(numnod, numele, e_multi,               &
-     &    num_mat, num_mat_bc, mat_name, mat_istack, mat_item,          &
-     &    num_surf, num_surf_bc, surf_name, surf_istack, surf_item,     &
-     &    num_nod_phys, phys_nod_name)
+     &          ele_grp, sf_grp,  num_nod_phys, phys_nod_name)
 !
       use calypso_mpi
       use m_source_4_filed_line
@@ -54,24 +55,19 @@
       integer(kind=kint), intent(in) :: numnod, numele
       real(kind = kreal), intent(in) :: e_multi(numele)
 !
-      integer(kind=kint), intent(in) :: num_mat, num_mat_bc
-      integer(kind=kint), intent(in) :: mat_istack(0:num_mat)
-      integer(kind=kint), intent(in) :: mat_item(num_mat_bc)
-      character(len=kchara), intent(in) :: mat_name(num_mat)
-!
-      integer(kind=kint), intent(in) :: num_surf, num_surf_bc
-      integer(kind=kint), intent(in) :: surf_istack(0:num_surf)
-      integer(kind=kint), intent(in) :: surf_item(2,num_surf_bc)
-      character(len=kchara), intent(in) :: surf_name(num_surf)
-!
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+!
+      type(group_data), intent(in) :: ele_grp
+      type(surface_group_data), intent(in) :: sf_grp
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_fline_control'
       call s_set_fline_control(numele, e_multi,                         &
-     &    num_mat, num_mat_bc, mat_name, mat_istack, mat_item,          &
-     &    num_surf, num_surf_bc, surf_name, surf_istack, surf_item,     &
+     &    ele_grp%num_grp, ele_grp%num_item, ele_grp%grp_name,          &
+     &    ele_grp%istack_grp, ele_grp%item_grp,                         &
+     &    sf_grp%num_grp, sf_grp%num_item, sf_grp%grp_name,             &
+     &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &
      &    num_nod_phys, phys_nod_name)
 !
       if (iflag_debug.eq.1) write(*,*) 'allocate_local_data_4_fline'
@@ -90,10 +86,8 @@
      &       xx, radius, a_radius, s_cylinder, a_s_cylinder,            &
      &       iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,     &
      &       x_surf, vnorm_surf, area_surf, interior_surf,              &
-     &       num_mat, num_mat_bc, mat_istack,  mat_item,                &
-     &       ntot_ele_4_node, iele_stack_4_node, iele_4_node,           &
-     &       num_nod_phys, num_tot_nod_phys, istack_nod_component,      &
-     &       d_nod, nod_comm)
+     &       ele_grp, ele_4_nod,  num_nod_phys, num_tot_nod_phys,       &
+     &       istack_nod_component, d_nod, nod_comm)
 !
       use set_fields_for_fieldline
       use const_field_lines
@@ -122,14 +116,6 @@
       real(kind = kreal), intent(in) :: vnorm_surf(numsurf,3)
       real(kind = kreal), intent(in) :: area_surf(numsurf)
 !
-      integer(kind=kint), intent(in) :: num_mat, num_mat_bc
-      integer(kind=kint), intent(in) :: mat_istack(0:num_mat)
-      integer(kind=kint), intent(in) :: mat_item(num_mat_bc)
-!
-      integer (kind=kint), intent(in) :: ntot_ele_4_node
-      integer (kind=kint), intent(in) :: iele_stack_4_node(0:numnod)
-      integer (kind=kint), intent(in) :: iele_4_node(ntot_ele_4_node)
-!
       integer(kind = kint), intent(in) :: num_nod_phys
       integer(kind = kint), intent(in) :: num_tot_nod_phys
       integer(kind = kint), intent(in)                                  &
@@ -137,6 +123,8 @@
       real(kind = kreal), intent(in)  :: d_nod(numnod,num_tot_nod_phys)
 !
       type(communication_table), intent(in) :: nod_comm
+      type(group_data), intent(in) :: ele_grp
+      type(element_around_node), intent(in) :: ele_4_nod
 !
       integer(kind = kint) :: i_fln
 !
@@ -153,7 +141,8 @@
      &        numnod, numele, numsurf, nnod_4_surf,                     &
      &        iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,    &
      &        x_surf, vnorm_surf, area_surf,                            &
-     &        num_mat, num_mat_bc, mat_istack,  mat_item)
+     &        ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,    &
+     &        ele_grp%item_grp)
       end do
 !
       do i_fln = 1, num_fline
@@ -161,8 +150,8 @@
         call s_const_field_lines(i_fln, numnod, numele, numsurf,        &
      &          nnod_4_surf, inod_global, xx, iele_global, ie_surf,     &
      &          isf_4_ele, iele_4_surf, interior_surf, vnorm_surf,      &
-     &          ntot_ele_4_node, iele_stack_4_node, iele_4_node,        &
-     &          nod_comm)
+     &          ele_4_nod%ntot, ele_4_nod%istack_4_node,                &
+     &          ele_4_nod%iele_4_node, nod_comm)
 !
         if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln
        call s_collect_fline_data(istep_psf, i_fln)

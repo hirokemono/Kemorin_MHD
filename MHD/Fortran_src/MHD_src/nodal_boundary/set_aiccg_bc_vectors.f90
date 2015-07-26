@@ -71,6 +71,7 @@
 !
       subroutine set_aiccg_bc_velo
 !
+      use m_group_data
       use m_bc_data_rotate
 !
       use set_aiccg_free_sph
@@ -78,7 +79,7 @@
 !
 !
 !      matrix setting for free slip on sphere
-      call set_aiccg_bc_free_sphere
+      call set_aiccg_bc_free_sphere(sf_grp1)
 !
 !      matrix setting for fixed boundaries
       call set_aiccg_bc_velo_nod

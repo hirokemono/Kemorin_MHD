@@ -142,16 +142,8 @@
      &    fem%mesh%ele%interior_ele, fem%mesh%node%xx,                  &
      &    fem%mesh%node%istack_nod_smp, fem%mesh%ele%istack_ele_smp,    &
      &    surf%istack_surf_smp, edge_mesh%edge%istack_edge_smp,         &
-     &    fem%group%ele_grp%num_grp, fem%group%ele_grp%num_item,        &
-     &    fem%group%ele_grp%grp_name, fem%group%ele_grp%istack_grp,     &
-     &    fem%group%ele_grp%item_grp, fem%group%surf_grp%num_grp,       &
-     &    fem%group%surf_grp%num_item, fem%group%surf_grp%grp_name,     &
-     &    fem%group%surf_grp%istack_grp,                                &
-     &    fem%group%surf_grp%item_sf_grp,                               &
-     &    fem%group%surf_nod_grp%ntot_node_sf_grp,                      &
-     &    fem%group%surf_nod_grp%inod_stack_sf_grp,                     &
-     &    fem%group%surf_nod_grp%inod_surf_grp,                         &
-     &    fld_nod%num_phys, fld_nod%phys_name)
+     &    fem%group%ele_grp, fem%group%surf_grp,                        &
+     &    fem%group%surf_nod_grp, fld_nod%num_phys, fld_nod%phys_name)
 !
       end subroutine cross_section_init_type
 !
@@ -175,10 +167,7 @@
      &    edge%iedge_4_sf, fem%mesh%ele%interior_ele,                   &
      &    fem%mesh%node%istack_nod_smp, fem%mesh%ele%istack_ele_smp,    &
      &    surf%istack_surf_smp, edge%istack_edge_smp,                   &
-     &    fem%group%ele_grp%num_grp, fem%group%ele_grp%num_item,        &
-     &    fem%group%ele_grp%grp_name, fem%group%ele_grp%istack_grp,     &
-     &    fem%group%ele_grp%item_grp, fld_nod%num_phys,                 &
-     &    fld_nod%phys_name)
+     &    fem%group%ele_grp, fld_nod%num_phys, fld_nod%phys_name)
 !
       end subroutine isosurface_init_type
 !

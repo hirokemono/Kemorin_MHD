@@ -22,6 +22,7 @@
       subroutine cal_scalar_potential
 !
       use m_machine_parameter
+      use m_group_data
       use m_finite_element_matrix
 !
       use int_vol_fractional_div
@@ -40,7 +41,7 @@
 !
 !      call int_surf_sgs_div_vect_p
 !
-      call int_surf_normal_vector_p
+      call int_surf_normal_vector_p(sf_grp1)
 !
       call int_vol_sk_mp_bc
 !

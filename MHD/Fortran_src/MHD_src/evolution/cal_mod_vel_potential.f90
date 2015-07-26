@@ -22,13 +22,15 @@
       subroutine cal_mod_potential
 !
       use m_finite_element_matrix
+      
+use m_group_data
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
       use int_surf_div_velocity_sgs
-      use set_boundary_potentials
-      use set_bc_grad_potentials
+      use int_surf_fixed_gradients
       use int_surf_normal_fields
+      use set_boundary_potentials
       use cal_solver_MHD
 !
 !
@@ -39,13 +41,13 @@
 !
       call int_vol_divergence_velo
 !
-      call int_surf_normal_velocity
+      call int_surf_normal_velocity(sf_grp1)
 !
 !      call int_surf_sgs_div_velo
 !
 !   set boundary condition for wall
 !
-      call set_boundary_grad_press
+      call int_sf_grad_press(sf_grp1)
 !
 !   add boundary term for fixed velocity
 !

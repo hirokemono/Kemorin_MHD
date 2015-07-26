@@ -100,9 +100,7 @@
       call pvr_init(fem%mesh%node%numnod, fem%mesh%ele%numele,          &
      &    surf%numsurf, surf%nnod_4_surf, fem%mesh%node%xx,             &
      &    fem%mesh%ele%e_multi, surf%ie_surf,                           &
-     &    surf%isf_4_ele, surf%iele_4_surf, fem%group%ele_grp%num_grp,  &
-     &    fem%group%ele_grp%num_item, fem%group%ele_grp%grp_name,       &
-     &    fem%group%ele_grp%istack_grp, fem%group%ele_grp%item_grp,     &
+     &    surf%isf_4_ele, surf%iele_4_surf, fem%group%ele_grp,          &
      &    fld_nod%num_phys, fld_nod%phys_name)
 !
       end subroutine pvr_init_type

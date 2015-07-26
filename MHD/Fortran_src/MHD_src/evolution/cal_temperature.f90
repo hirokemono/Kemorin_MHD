@@ -44,7 +44,8 @@
       use check_finite_element_mat
 !
 !
-!      call check_surface_param_smp('cal_velocity_pre start, my_rank')
+!      call check_surface_param_smp('cal_velocity_pre start',           &
+!     &    my_rank, sf_grp1)
 !      call check_jacobians_triquad
 !
       if (iflag_SGS_heat .ne. id_SGS_none) call cal_sgs_heat_flux

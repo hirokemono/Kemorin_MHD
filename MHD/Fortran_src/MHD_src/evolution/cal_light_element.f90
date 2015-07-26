@@ -31,10 +31,11 @@
 !
       use m_finite_element_matrix
       use m_node_phys_address
+      use m_group_data
 !
       use nod_phys_send_recv
       use set_boundary_scalars
-      use set_bc_grad_light_comp
+      use int_surf_fixed_gradients
       use int_vol_diffusion_ele
       use int_vol_light_comp_ele
 !
@@ -51,7 +52,7 @@
       end if
 !
 !
-      call set_bc_grad_composition
+      call int_sf_grad_composition(sf_grp1, intg_point_t_evo)
 !
 !
       if     (iflag_t_evo_4_composit .eq. id_explicit_euler) then

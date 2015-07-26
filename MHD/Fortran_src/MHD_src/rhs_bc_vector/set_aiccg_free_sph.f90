@@ -4,7 +4,7 @@
 !      stress free boundary in a spherical shell
 !     Written by H. Matsui on Sep. 2005
 !
-!      subroutine set_aiccg_bc_free_sphere
+!!      subroutine set_aiccg_bc_free_sphere(sf_grp)
 !
       module set_aiccg_free_sph
 !
@@ -20,26 +20,32 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_free_sphere
+      subroutine set_aiccg_bc_free_sphere(sf_grp)
 !
+      use t_group_data
       use m_control_parameter
       use m_surf_data_torque
+!
+      type(surface_group_data), intent(in) :: sf_grp
 !
       integer (kind = kint)  :: num_int
 !
 !
       num_int = intg_point_poisson
-      if(ngrp_sf_fr_in .gt. 0)  call set_aiccg_bc_free_sph_in(num_int)
-      if(ngrp_sf_fr_out .gt. 0) call set_aiccg_bc_free_sph_out(num_int)
+      if(ngrp_sf_fr_in .gt. 0)  then
+        call set_aiccg_bc_free_sph_in(sf_grp, num_int)
+      end if
+      if(ngrp_sf_fr_out .gt. 0) then
+        call set_aiccg_bc_free_sph_out(sf_grp, num_int)
+      end if
 !
       end subroutine set_aiccg_bc_free_sphere
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_free_sph_in(num_int)
+      subroutine set_aiccg_bc_free_sph_in(sf_grp, num_int)
 !
       use m_geometry_parameter
-      use m_group_data
       use m_node_phys_address
       use m_ele_material_property
       use m_int_surface_data
@@ -48,10 +54,12 @@
       use m_sorted_node_MHD
       use m_surf_data_torque
       use m_velo_matrix
+      use t_group_data
 !
       use fem_surf_crank_free_sph
       use cal_poisson_matrices_1st
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: num_int
       integer (kind = kint) :: i, igrp, k2, num
 !
@@ -61,13 +69,13 @@
 !
         do i = 1, ngrp_sf_fr_in
           igrp = id_grp_sf_fr_in(i)
-          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+          num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
 !
           if (num .gt. 0) then
             call fem_surf_crank_free_inside(igrp, k2, num_int,          &
      &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,            &
-     &          sf_grp1%num_item, sf_grp1%num_grp_smp,                  &
-     &          sf_grp1%istack_grp_smp, sf_grp1%item_sf_grp,            &
+     &          sf_grp%num_item, sf_grp%num_grp_smp,                    &
+     &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
      &          jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%an_sf,      &
      &          jac1_sf_grp_2d_q%xj_sf, xe_sf, ak_d_velo, sk6)
 !
@@ -81,10 +89,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_free_sph_out(num_int)
+      subroutine set_aiccg_bc_free_sph_out(sf_grp, num_int)
 !
       use m_geometry_parameter
-      use m_group_data
       use m_node_phys_address
       use m_ele_material_property
       use m_int_surface_data
@@ -93,10 +100,12 @@
       use m_sorted_node_MHD
       use m_surf_data_torque
       use m_velo_matrix
+      use t_group_data
 !
       use fem_surf_crank_free_sph
       use cal_poisson_matrices_1st
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: num_int
       integer (kind = kint) :: i, igrp, k2, num
 !
@@ -106,13 +115,13 @@
 !
         do i = 1, ngrp_sf_fr_out
           igrp = id_grp_sf_fr_out(i)
-          num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+          num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
 !
           if (num .gt. 0) then
             call fem_surf_crank_free_outside(igrp, k2, num_int,         &
      &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,            &
-     &          sf_grp1%num_item, sf_grp1%num_grp_smp,                  &
-     &          sf_grp1%istack_grp_smp, sf_grp1%item_sf_grp,            &
+     &          sf_grp%num_item, sf_grp%num_grp_smp,                    &
+     &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
      &          jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%an_sf,      &
      &          jac1_sf_grp_2d_q%xj_sf, xe_sf, ak_d_velo, sk6)
 !

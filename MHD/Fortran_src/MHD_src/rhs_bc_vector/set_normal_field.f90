@@ -8,7 +8,9 @@
 !        modified by H.Matsui on Nov. 2003
 !        modified by H.Matsui on Sep. 2005
 !
-!      subroutine set_normal_velocity
+!!      subroutine set_normal_velocity(sf_grp, sf_grp_nod)
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
       module set_normal_field
 !
@@ -26,19 +28,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_normal_velocity
+      subroutine set_normal_velocity(sf_grp, sf_grp_nod)
 !
       use m_node_phys_address
-      use m_group_data
-      use m_surface_group_connect
       use m_surf_data_torque
+      use t_group_data
+      use t_surface_group_connect
+!
+      type(surface_group_data), intent(in) :: sf_grp
+      type(surface_node_grp_data), intent(in) :: sf_grp_nod
+!
 !
       if (ngrp_sf_fix_vn .gt. 0) then
-        call set_normal_comp(sf_grp1%num_grp, sf_grp1%num_grp_smp,      &
-     &      sf_grp_nod1%ntot_node_sf_grp,                               &
-     &      sf_grp_nod1%inod_stack_sf_grp,                              &
-     &      sf_grp_nod1%istack_surf_nod_smp, sf_grp_nod1%inod_surf_grp, &
-     &      sf_grp_nod1%surf_norm_nod, ngrp_sf_fix_vn, nnod_sf_fix_vn,  &
+        call set_normal_comp(sf_grp%num_grp, sf_grp%num_grp_smp,        &
+     &      sf_grp_nod%ntot_node_sf_grp, sf_grp_nod%inod_stack_sf_grp,  &
+     &      sf_grp_nod%istack_surf_nod_smp, sf_grp_nod%inod_surf_grp,   &
+     &      sf_grp_nod%surf_norm_nod, ngrp_sf_fix_vn, nnod_sf_fix_vn,   &
      &      id_grp_sf_fix_vn, ist_nod_sf_fix_vn, sf_fix_vn_apt,         &
      &      iphys%i_velo)
       end if
@@ -74,31 +79,30 @@
       integer (kind = kint) :: ist, ied, inum, inod, idat
 !
       do i = 1, ngrp_sf
-       igrp = id_grp_sf(i)
+        igrp = id_grp_sf(i)
 !
-       nsf = inod_stack_sf_grp(igrp) - inod_stack_sf_grp(igrp-1)
-       if (nsf.gt.0) then
+        nsf = inod_stack_sf_grp(igrp) - inod_stack_sf_grp(igrp-1)
+        if (nsf.gt.0) then
 !
 !$omp parallel do private(id_sf,ist,ied,inum,inod,idat)
-        do iproc = 1, np_smp
-         id_sf = np_smp*(igrp-1) + iproc
-         ist = isurf_nod_smp_stack(id_sf-1)+1
-         ied = isurf_nod_smp_stack(id_sf)
+          do iproc = 1, np_smp
+            id_sf = np_smp*(igrp-1) + iproc
+            ist = isurf_nod_smp_stack(id_sf-1)+1
+            ied = isurf_nod_smp_stack(id_sf)
 !
 !cdir nodep
 !VOPTION INDEP, VEC
-         do inum = ist, ied
-          inod = inod_surf_grp(inum)
-          idat = ist_nod_sf(i-1) + inum - inod_stack_sf_grp(igrp-1)
-          d_nod(inod,i_vect  ) = sf_apt(idat) * surf_norm_nod(inum,1)
-          d_nod(inod,i_vect+1) = sf_apt(idat) * surf_norm_nod(inum,2)
-          d_nod(inod,i_vect+2) = sf_apt(idat) * surf_norm_nod(inum,3)
-         end do
-!
-        end do
+            do inum = ist, ied
+              inod = inod_surf_grp(inum)
+              idat = ist_nod_sf(i-1) + inum - inod_stack_sf_grp(igrp-1)
+              d_nod(inod,i_vect  ) = sf_apt(idat)*surf_norm_nod(inum,1)
+              d_nod(inod,i_vect+1) = sf_apt(idat)*surf_norm_nod(inum,2)
+              d_nod(inod,i_vect+2) = sf_apt(idat)*surf_norm_nod(inum,3)
+            end do
+          end do
 !$omp end parallel do
 !
-       end if
+        end if
       end do
 !
       end subroutine set_normal_comp

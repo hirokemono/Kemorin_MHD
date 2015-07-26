@@ -13,8 +13,8 @@
 !!     &          ie_edge, isf_4_ele, iedge_4_sf, interior_ele,         &
 !!     &          inod_smp_stack, iele_smp_stack,                       &
 !!     &          isurf_smp_stack, iedge_smp_stack,                     &
-!!     &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,  &
-!!     &          num_nod_phys, phys_nod_name)
+!!     &          ele_grp, num_nod_phys, phys_nod_name)
+!!        type(group_data), intent(in) :: ele_grp
 !!
 !!      subroutine isosurface_main(istep_iso,                           &
 !!     &          numnod, internal_node, numele, numedge, nnod_4_ele,   &
@@ -73,11 +73,12 @@
      &          ie_edge, isf_4_ele, iedge_4_sf, interior_ele,           &
      &          inod_smp_stack, iele_smp_stack,                         &
      &          isurf_smp_stack, iedge_smp_stack,                       &
-     &          num_mat, num_mat_bc, mat_name, mat_istack, mat_item,    &
-     &          num_nod_phys, phys_nod_name)
+     &          ele_grp, num_nod_phys, phys_nod_name)
 !
       use m_geometry_constants
       use m_control_params_4_iso
+!
+      use t_group_data
 !
       use set_psf_iso_control
       use search_ele_list_for_psf
@@ -95,13 +96,10 @@
       integer(kind=kint), intent(in) :: isurf_smp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: iedge_smp_stack(0:np_smp)
 !
-      integer(kind=kint), intent(in) :: num_mat, num_mat_bc
-      integer(kind=kint), intent(in) :: mat_istack(0:num_mat)
-      integer(kind=kint), intent(in) :: mat_item(num_mat_bc)
-      character(len=kchara), intent(in) :: mat_name(num_mat)
-!
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+!
+      type(group_data), intent(in) :: ele_grp
 !
       integer(kind = kint) :: i_iso
 !
@@ -109,7 +107,7 @@
       call alloc_iso_field_type
 !
       if (iflag_debug.eq.1) write(*,*) 'set_iso_control'
-      call set_iso_control(num_iso, num_mat, mat_name,                  &
+      call set_iso_control(num_iso, ele_grp%num_grp, ele_grp%grp_name,  &
      &    num_nod_phys, phys_nod_name, iso_param, iso_mesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
@@ -117,8 +115,8 @@
      &        numnod, numele, numsurf, numedge, nnod_4_edge, ie_edge,   &
      &        isf_4_ele, iedge_4_sf, interior_ele, inod_smp_stack,      &
      &        iele_smp_stack, isurf_smp_stack, iedge_smp_stack,         &
-     &        num_mat, num_mat_bc, mat_istack, mat_item,                &
-     &        iso_param, iso_search)
+     &        ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,    &
+     &        ele_grp%item_grp, iso_param, iso_search)
 !
       do i_iso = 1, num_iso
         call allocate_node_param_smp_type(iso_mesh(i_iso)%node)

@@ -34,6 +34,7 @@
      &          i_flux, i_vect, i_scalar)
 !
       use m_geometry_data_MHD
+      use m_group_data
       use m_phys_constants
       use m_node_phys_data
       use m_finite_element_matrix
@@ -52,8 +53,8 @@
 !
       call int_vol_commute_div_v_flux(iele_fl_smp_stack,                &
      &    intg_point_t_evo, i_filter, i_flux, i_vect, i_scalar)
-      call int_surf_commute_sgs_h_flux(intg_point_t_evo, i_filter,      &
-     &      i_flux, i_vect, i_scalar)
+      call int_surf_commute_sgs_h_flux(sf_grp1, intg_point_t_evo,       &
+     &    i_filter, i_flux, i_vect, i_scalar)
 !
       call set_ff_nl_smp_2_ff(n_scalar)
       call cal_ff_2_scalar(d_nod(1,i_sgs), ff_nl, ml_fl)

@@ -3,12 +3,13 @@
 !
 !      Written by H. Matsui on Sep. 2005
 !
-!      subroutine int_surf_poisson_wall(n_int, ngrp_sf, id_grp_sf,      &
-!     &          i_vect)
-!      subroutine int_surf_poisson_sph_in(n_int, ngrp_sf, id_grp_sf,    &
-!     &          i_vect)
-!      subroutine int_surf_poisson_sph_out(n_int, ngrp_sf, id_grp_sf,   &
-!     &          i_vect)
+!!      subroutine int_surf_poisson_wall(sf_grp, n_int, ngrp_sf,        &
+!!     &          id_grp_sf, i_vect)
+!!      subroutine int_surf_poisson_sph_in(sf_grp, n_int, ngrp_sf,      &
+!!     &          id_grp_sf, i_vect)
+!!      subroutine int_surf_poisson_sph_out(sf_grp, n_int, ngrp_sf,     &
+!!     &          id_grp_sf, i_vect)
+!!        type(surface_group_data), intent(in) :: sf_grp
 !
       module int_surf_poisson_walls
 !
@@ -17,9 +18,9 @@
 !
       use m_geometry_constants
       use m_geometry_parameter
-      use m_surface_group
       use m_phys_constants
       use m_finite_element_matrix
+      use t_group_data
 !
       use node_phys_2_each_surface
       use fem_surf_skv_poisson_1st
@@ -33,11 +34,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_poisson_wall(n_int, ngrp_sf, id_grp_sf,       &
-     &          i_vect)
+      subroutine int_surf_poisson_wall(sf_grp, n_int, ngrp_sf,          &
+     &          id_grp_sf, i_vect)
 !
       use m_int_surface_data
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer(kind = kint), intent(in) :: n_int, ngrp_sf
       integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
       integer(kind = kint), intent(in) :: i_vect
@@ -51,13 +53,13 @@
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
-        num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+        num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if (num .gt.0 ) then
 !
           do k2=1, num_linear_sf
-            call vector_phys_2_each_surface(sf_grp1, igrp, k2,          &
+            call vector_phys_2_each_surface(sf_grp, igrp, k2,           &
      &          i_vect, vect_sf)
-            call fem_surf_skv_poisson_wall_1(sf_grp1, igrp, k2, n_int,  &
+            call fem_surf_skv_poisson_wall_1(sf_grp, igrp, k2, n_int,   &
      &          vect_sf, sk6)
           end do
 !
@@ -70,11 +72,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_poisson_sph_in(n_int, ngrp_sf, id_grp_sf,     &
-     &          i_vect)
+      subroutine int_surf_poisson_sph_in(sf_grp, n_int, ngrp_sf,        &
+     &          id_grp_sf, i_vect)
 !
       use m_int_surface_data
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer(kind = kint), intent(in) :: n_int, ngrp_sf
       integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
       integer(kind = kint), intent(in) :: i_vect
@@ -86,14 +89,14 @@
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
-        num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+        num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if (num .gt.0 ) then
 !
 ! -------- loop for shape function for the phsical values
           do k2=1, num_linear_sf
-            call vector_phys_2_each_surf_cst(sf_grp1, igrp, k2,         &
+            call vector_phys_2_each_surf_cst(sf_grp, igrp, k2,          &
      &          i_vect, dminus, vect_sf)
-            call fem_surf_skv_poisson_sph_out_1(sf_grp1, igrp, k2,      &
+            call fem_surf_skv_poisson_sph_out_1(sf_grp, igrp, k2,       &
      &          n_int, xe_sf, vect_sf, sk6)
           end do
 !
@@ -106,11 +109,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_poisson_sph_out(n_int, ngrp_sf, id_grp_sf,    &
-     &          i_vect)
+      subroutine int_surf_poisson_sph_out(sf_grp, n_int, ngrp_sf,       &
+     &          id_grp_sf, i_vect)
 !
       use m_int_surface_data
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer(kind = kint), intent(in) :: n_int, ngrp_sf
       integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
       integer(kind = kint), intent(in) :: i_vect
@@ -124,14 +128,14 @@
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
-        num = sf_grp1%istack_grp(igrp) - sf_grp1%istack_grp(igrp-1)
+        num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if (num .gt. 0) then
 !
 ! -------- loop for shape function for the phsical values
           do k2=1, num_linear_sf
-            call vector_phys_2_each_surface(sf_grp1, igrp, k2,          &
+            call vector_phys_2_each_surface(sf_grp, igrp, k2,           &
      &          i_vect, vect_sf)
-            call fem_surf_skv_poisson_sph_out_1(sf_grp1, igrp, k2,      &
+            call fem_surf_skv_poisson_sph_out_1(sf_grp, igrp, k2,       &
      &          n_int, xe_sf, vect_sf, sk6)
           end do
 !

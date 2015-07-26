@@ -35,6 +35,8 @@
       subroutine set_boundary_velo
 !
       use m_control_parameter
+      use m_group_data
+      use m_surface_group_connect
       use m_node_phys_address
 !
       use set_normal_field
@@ -44,7 +46,7 @@
 !
 !     set normal velocity
 !
-      call set_normal_velocity
+      call set_normal_velocity(sf_grp1, sf_grp_nod1)
 !
 !     set fixed velocity
 !

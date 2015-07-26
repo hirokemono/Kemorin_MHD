@@ -57,6 +57,7 @@
       subroutine cal_vecp_diffusion
 !
       use m_phys_constants
+      use m_group_data
       use m_node_phys_address
       use m_node_phys_data
 !
@@ -68,7 +69,7 @@
 !
       call int_vol_vp_diffuse_ele_monitor
 !
-      call int_sf_grad_vecp(intg_point_t_evo)
+      call int_sf_grad_vecp(sf_grp1, intg_point_t_evo)
 !
       call set_ff_nl_smp_2_ff(n_vector)
 !

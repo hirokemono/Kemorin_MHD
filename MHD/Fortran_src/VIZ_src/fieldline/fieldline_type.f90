@@ -40,12 +40,7 @@
 !
       call field_line_init(fem%mesh%node%numnod,                        &
      &    fem%mesh%ele%numele, fem%mesh%ele%e_multi,                    &
-     &    fem%group%ele_grp%num_grp, fem%group%ele_grp%num_item,        &
-     &    fem%group%ele_grp%grp_name, fem%group%ele_grp%istack_grp,     &
-     &    fem%group%ele_grp%item_grp, fem%group%surf_grp%num_grp,       &
-     &    fem%group%surf_grp%num_item, fem%group%surf_grp%grp_name,     &
-     &    fem%group%surf_grp%istack_grp,                                &
-     &    fem%group%surf_grp%item_sf_grp,                               &
+     &    fem%group%ele_grp, fem%group%surf_grp,                        &
      &    fld_nod%num_phys, fld_nod%phys_name)
 !
       end subroutine field_line_init_type
@@ -78,10 +73,7 @@
      &    fem%mesh%ele%iele_global, fem%mesh%ele%e_multi,               &
      &    surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf, surf%x_surf,  &
      &    surf%vnorm_surf, surf%area_surf, surf%interior_surf,          &
-     &    fem%group%ele_grp%num_grp, fem%group%ele_grp%num_item,        &
-     &    fem%group%ele_grp%istack_grp,  fem%group%ele_grp%item_grp,    &
-     &    next_tbl%neib_ele%ntot, next_tbl%neib_ele%istack_4_node,      &
-     &    next_tbl%neib_ele%iele_4_node,                                &
+     &    fem%group%ele_grp, next_tbl%neib_ele,                         &
      &    fld_nod%num_phys, fld_nod%ntot_phys,                          &
      &    fld_nod%istack_component, fld_nod%d_fld, fem%mesh%nod_comm)
 !

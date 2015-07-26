@@ -8,9 +8,9 @@
 !> @brief  2D Jacobian and difference for surface groups
 !!
 !!@verbatim
-!!      subroutine cal_jacobian_surf_grp
+!!      subroutine cal_jacobian_surf_grp(sf_grp)
 !!
-!!      subroutine allocate_jacobians_2d_l_quad(n_int)
+!!      subroutine allocate_jacobians_2d_l_quad(sf_grp, n_int)
 !!
 !!      subroutine deallocate_jacobians_2d_linear
 !!      subroutine deallocate_jacobians_2d_quad
@@ -39,37 +39,39 @@
 !> Construct shape function, difference of shape function, and Jacobian
 !> for surface group
 !
-      subroutine cal_jacobian_surf_grp
+      subroutine cal_jacobian_surf_grp(sf_grp)
 !
       use m_machine_parameter
       use m_geometry_constants
       use m_geometry_parameter
-      use m_surface_group
+      use t_group_data
 !
       use cal_jacobians_linear
       use cal_jacobians_quad
       use cal_jacobians_lag
 !
+      type(surface_group_data), intent(in) :: sf_grp
 !
-      if (sf_grp1%num_grp .le. 0) return
-      call alloc_2d_jac_type(sf_grp1%num_item, num_linear_sf,           &
+!
+      if (sf_grp%num_grp .le. 0) return
+      call alloc_2d_jac_type(sf_grp%num_item, num_linear_sf,            &
      &                       maxtot_int_2d, jac1_sf_grp_2d_l)
       if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_dylinear'
-      call cal_jacobian_dylinear(sf_grp1, jac1_sf_grp_2d_l)
+      call cal_jacobian_dylinear(sf_grp, jac1_sf_grp_2d_l)
 !
       if (first_ele_type .eq. 332) then
         if (iflag_debug.eq.1)  write(*,*) 'cal_jacobian_dyquad'
-        call alloc_2d_jac_type(sf_grp1%num_item, nnod_4_surf,           &
+        call alloc_2d_jac_type(sf_grp%num_item, nnod_4_surf,            &
      &        maxtot_int_2d, jac1_sf_grp_2d_q)
-        call cal_jacobian_dyquad(sf_grp1, jac1_sf_grp_2d_q)
+        call cal_jacobian_dyquad(sf_grp, jac1_sf_grp_2d_q)
       else if (first_ele_type .eq. 333) then
         if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_dylag'
-        call alloc_2d_jac_type(sf_grp1%num_item, nnod_4_surf,           &
+        call alloc_2d_jac_type(sf_grp%num_item, nnod_4_surf,            &
      &        maxtot_int_2d, jac1_sf_grp_2d_q)
-        call cal_jacobian_dylag(sf_grp1, jac1_sf_grp_2d_q)
+        call cal_jacobian_dylag(sf_grp, jac1_sf_grp_2d_q)
       else
         if (iflag_debug.eq.1) write(*,*) 'copy_jacobians_2d_quad'
-        call copy_jacobians_2d(sf_grp1%num_item, nnod_4_surf,           &
+        call copy_jacobians_2d(sf_grp%num_item, nnod_4_surf,            &
      &        jac1_sf_grp_2d_l, jac1_sf_grp_2d_q)
       end if
 !
@@ -78,15 +80,16 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_jacobians_2d_l_quad(n_int)
+      subroutine allocate_jacobians_2d_l_quad(sf_grp, n_int)
 !
        use m_geometry_constants
        use m_geometry_parameter
-       use m_surface_group
+       use t_group_data
 !
+      type(surface_group_data), intent(in) :: sf_grp
       integer(kind = kint), intent(in) :: n_int
 !
-      call alloc_2d_jac_type(sf_grp1%num_item, num_quad_sf, n_int,      &
+      call alloc_2d_jac_type(sf_grp%num_item, num_quad_sf, n_int,       &
      &    jac1_sf_grp_2d_ql)
 !
        end subroutine allocate_jacobians_2d_l_quad
