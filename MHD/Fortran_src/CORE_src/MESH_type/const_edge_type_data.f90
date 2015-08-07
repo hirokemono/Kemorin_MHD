@@ -25,7 +25,7 @@
 !
       implicit none
 !
-      type(sum_hash_tbl), save, private :: edge_sf_tbl
+      type(sum_hash_tbl), save, private :: edge_ele_tbl
 !
 !------------------------------------------------------------------
 !
@@ -36,8 +36,8 @@
       subroutine s_const_edge_type_data(nod, ele, surf, edge)
 !
       use m_machine_parameter
-      use set_edge_hash_by_sf
-      use set_edge_data_by_sf
+      use set_edge_hash_by_ele
+      use set_edge_data_by_ele
 !
       type(node_data),    intent(in) :: nod
       type(element_data), intent(in) :: ele
@@ -45,46 +45,45 @@
       type(edge_data),    intent(inout) :: edge
 !
 !
-      call alloc_sum_hash(nod%numnod, surf%numsurf, nedge_4_surf,       &
-     &    edge%nnod_4_edge, edge_sf_tbl)
+      call alloc_sum_hash(nod%numnod, ele%numele, nedge_4_ele,          &
+     &    edge%nnod_4_edge, edge_ele_tbl)
 !
 !   set hash data for edge elements using sum of local node ID
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_edge_hash_4_sf'
-      call const_edge_hash_4_sf(nod%numnod, surf%numsurf,               &
-     &    surf%nnod_4_surf, edge%nnod_4_edge, surf%ie_surf,             &
-     &    edge_sf_tbl%num_hash, edge_sf_tbl%istack_hash,                &
-     &    edge_sf_tbl%iend_hash, edge_sf_tbl%id_hash,                   &
-     &    edge_sf_tbl%iflag_hash)
+      if (iflag_debug.eq.1) write(*,*) 'const_edge_hash_4_ele'
+      call const_edge_hash_4_ele(nod%numnod, ele%numele,                &
+     &    ele%nnod_4_ele, edge%nnod_4_edge, ele%ie,                     &
+     &    edge_ele_tbl%num_hash, edge_ele_tbl%istack_hash,              &
+     &    edge_ele_tbl%iend_hash, edge_ele_tbl%id_hash,                 &
+     &    edge_ele_tbl%iflag_hash)
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'count_num_edges_by_sf'
-      call count_num_edges_by_sf                                        &
-     &   (nod%numnod, surf%numsurf, edge%nnod_4_edge,                   &
-     &    edge_sf_tbl%istack_hash, edge_sf_tbl%iend_hash,               &
-     &    edge_sf_tbl%iflag_hash, edge%numedge)
+      if (iflag_debug.eq.1) write(*,*) 'count_num_edges_by_ele'
+      call count_num_edges_by_ele                                       &
+     &   (nod%numnod, ele%numele, edge%nnod_4_edge,                     &
+     &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &
+     &    edge_ele_tbl%iflag_hash, edge%numedge)
 !
       call allocate_edge_connect_type(edge, surf%numsurf)
-!
-      if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_by_sf'
-      call set_edges_connect_by_sf                                      &
-     &   (nod%numnod, surf%numsurf, edge%numedge,                       &
-     &    surf%nnod_4_surf, edge%nnod_4_edge, surf%ie_surf,             &
-     &    edge_sf_tbl%istack_hash, edge_sf_tbl%iend_hash,               &
-     &    edge_sf_tbl%id_hash, edge_sf_tbl%iflag_hash,                  &
-     &    edge%ie_edge, edge%iedge_4_sf, edge%node_on_edge_sf)
-!
-!
       call allocate_edge_4_ele_type(edge, ele%numele)
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_4_ele'
-      call set_edges_connect_4_ele                                      &
-     &   (nod%numnod, ele%numele, surf%numsurf, edge%numedge,           &
-     &    ele%nnod_4_ele, edge%nnod_4_edge, ele%ie, edge%iedge_4_sf,    &
-     &    edge_sf_tbl%istack_hash, edge_sf_tbl%id_hash,                 &
-     &    edge_sf_tbl%iflag_hash, edge%ie_edge, edge%iedge_4_ele)
+      if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_by_sf'
+      call set_edges_connect_by_ele                                     &
+     &   (nod%numnod, ele%numele, edge%numedge,                         &
+     &    ele%nnod_4_ele, edge%nnod_4_edge, ele%ie,                     &
+     &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &
+     &    edge_ele_tbl%id_hash, edge_ele_tbl%iflag_hash,                &
+     &    edge%ie_edge, edge%iedge_4_ele, edge%node_on_edge)
 !
-      call dealloc_sum_hash(edge_sf_tbl)
+      if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_4_ele'
+      call set_edges_connect_4_sf                                       &
+     &   (nod%numnod, ele%numele, surf%numsurf, edge%numedge,           &
+     &    surf%nnod_4_surf, edge%nnod_4_edge,                           &
+     &    surf%ie_surf, edge%iedge_4_ele,                               &
+     &    edge_ele_tbl%istack_hash, edge_ele_tbl%id_hash,               &
+     &    edge_ele_tbl%iflag_hash, edge%ie_edge, edge%iedge_4_sf)
+!
+      call dealloc_sum_hash(edge_ele_tbl)
 !
       end subroutine s_const_edge_type_data
 !

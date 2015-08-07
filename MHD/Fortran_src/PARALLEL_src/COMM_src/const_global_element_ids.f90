@@ -114,7 +114,8 @@
       integer(kind = kint) :: iele
 !
 !
-      write(*,*) 'nele: ', my_rank, nele, size(x_ele,1)
+      write(*,*) 'Number of  ', trim(txt), ' for ', my_rank, ': ',      &
+     &            nele, size(x_ele,1)
       allocate(x_test(3*nele))
 !
 !$omp parallel do

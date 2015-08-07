@@ -15,8 +15,11 @@
       use m_geometry_constants
       use m_geometry_parameter
       use m_geometry_data
+      use t_sum_hash
 !
       implicit none
+!
+      type(sum_hash_tbl), save, private :: surf_ele_tbl
 !
       private :: const_all_surface_data
       private :: const_external_surface_data
@@ -30,36 +33,31 @@
 !
       subroutine construct_surface_data
 !
-      use m_surface_hash
-!
       use set_surface_hash
       use check_geometries
 !
 !   set hash data for suface elements using sum of local node ID
 !
-!
-      call allocate_surface_hash(numnod, numele, nnod_4_surf)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'count_surface_hash'
-      call count_surface_hash(numnod, numele, nnod_4_ele,               &
-     &          nnod_4_surf, ie)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'set_surf_hash'
-      call set_surf_hash(numele, nnod_4_ele, ie)
+      call alloc_sum_hash                                               &
+     &   (numnod, numele, nsurf_4_ele, nnod_4_surf, surf_ele_tbl)
 !
 !
-      call const_all_surface_data
+      if (iflag_debug.eq.1)  write(*,*) 'const_surf_hash'
+      call const_surf_hash(numnod, numele, nnod_4_ele, nnod_4_surf, ie, &
+     &    surf_ele_tbl%num_hash, surf_ele_tbl%istack_hash,              &
+     &    surf_ele_tbl%iend_hash, surf_ele_tbl%id_hash)
+!
+      call const_all_surface_data(surf_ele_tbl)
 !      call check_surface_data(my_rank)
 !
-!      call const_external_surface_data
+!      call const_external_surface_data(surf_ele_tbl)
 !      call check_external_surface(my_rank)
 !
-!      call const_isolate_surface_data
+!      call const_isolate_surface_data(surf_ele_tbl)
 !      call check_iso_surface(my_rank)
 !
-!
-      if (iflag_debug.eq.1) write(*,*) 'deallocate_surface_hash'
-      call deallocate_surface_hash
+      if (iflag_debug.eq.1) write(*,*) 'dealloc_sum_hash(surf_ele_tbl)'
+      call dealloc_sum_hash(surf_ele_tbl)
 !
       end subroutine construct_surface_data
 !
@@ -79,26 +77,32 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine const_all_surface_data
+      subroutine const_all_surface_data(sf_ele_tbl)
 !
       use mark_surf_hash
       use set_surface_data
 !
+      type(sum_hash_tbl), intent(inout) :: sf_ele_tbl
+!
 !   mark for all surfaces
 !
       if (iflag_debug.eq.1) write(*,*) 'mark_all_surfaces'
-      call mark_all_surfaces(numele, nnod_4_ele, ie)
+      call mark_all_surfaces                                            &
+     &   (numnod, numele, nnod_4_ele, nnod_4_surf, ie,                  &
+     &    sf_ele_tbl%istack_hash, sf_ele_tbl%iend_hash,                 &
+     &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash)
 !
 !   set surface data
 !
       if (iflag_debug.eq.1) write(*,*) 'count_all_surfaces'
-      call count_all_surfaces(numele, numsurf)
+      call count_all_surfaces(numele, sf_ele_tbl%iflag_hash, numsurf)
 !
       call allocate_surface_connect
 !
       if (iflag_debug.eq.1) write(*,*) 'set_all_surfaces'
       call set_all_surfaces(numele, numsurf, nnod_4_ele,                &
-     &          nnod_4_surf, ie, node_on_sf, ie_surf, isf_4_ele)
+     &    nnod_4_surf, ie, node_on_sf, sf_ele_tbl%id_hash,              &
+     &    sf_ele_tbl%iflag_hash, ie_surf, isf_4_ele)
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_surf_rotation_flag'
       call set_surf_rotation_flag(numele, numsurf, nnod_4_ele,          &
@@ -108,55 +112,70 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine const_external_surface_data
+      subroutine const_external_surface_data(sf_ele_tbl)
 !
       use mark_surf_hash
       use set_surface_data
 !
+      type(sum_hash_tbl), intent(inout) :: sf_ele_tbl
+!
 !   mark for all surfaces
 !
       if (iflag_debug.eq.1) write(*,*) 'mark_independent_surface'
-      call mark_independent_surface(numele, nnod_4_ele, ie)
+      call mark_independent_surface                                     &
+     &   (numnod, numele, nnod_4_ele, nnod_4_surf, ie,                  &
+     &    sf_ele_tbl%istack_hash, sf_ele_tbl%iend_hash,                 &
+     &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash)
 !
       if (iflag_debug.eq.1) write(*,*) 'mark_external_surface'
-      call mark_external_surface(internal_node, numele, nnod_4_ele, ie)
+      call mark_external_surface                                        &
+     &   (internal_node, numnod, numele, nnod_4_ele, nnod_4_surf, ie,   &
+     &    sf_ele_tbl%istack_hash, sf_ele_tbl%iend_hash,                 &
+     &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash)
 !
 !   set surface data
 !
       if (iflag_debug.eq.1) write(*,*) 'count_part_surface'
-      call count_part_surface(numele, numsurf_ext)
+      call count_part_surface                                           &
+     &   (numele, numele, sf_ele_tbl%iflag_hash, numsurf_ext)
 !
       call allocate_ext_surface
 !
       if (iflag_debug.eq.1) write(*,*) 'set_part_surface'
-      call set_part_surface(numele, numele, numsurf_ext,                &
-     &          isf_4_ele, isf_external)
+      call set_part_surface(numele, numele, numsurf_ext, isf_4_ele,     &
+     &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash, isf_external)
 !
       end subroutine const_external_surface_data
 !
 !------------------------------------------------------------------
 !
-      subroutine const_isolate_surface_data
+      subroutine const_isolate_surface_data(sf_ele_tbl)
 !
       use mark_surf_hash
       use set_surface_data
+!
+      type(sum_hash_tbl), intent(inout) :: sf_ele_tbl
 !
 !
 !   mark independent surface
 !
       if (iflag_debug.eq.1) write(*,*) 'mark_independent_surface'
-      call mark_independent_surface(numele, nnod_4_ele, ie)
+      call mark_independent_surface                                     &
+     &   (numnod, numele, nnod_4_ele, nnod_4_surf, ie,                  &
+     &    sf_ele_tbl%istack_hash, sf_ele_tbl%iend_hash,                 &
+     &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash)
 !
 !   set surface data
 !
       if (iflag_debug.eq.1) write(*,*) 'count_part_surface'
-      call count_part_surface(numele, numsurf_iso)
+      call count_part_surface                                           &
+     &   (numele, numele, sf_ele_tbl%iflag_hash, numsurf_iso)
 !
       call allocate_iso_surface
 !
       if (iflag_debug.eq.1) write(*,*) 'set_part_surface'
-      call set_part_surface(numele, numele, numsurf_iso,                &
-     &          isf_4_ele, isf_isolate)
+      call set_part_surface(numele, numele, numsurf_iso, isf_4_ele,     &
+     &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash, isf_isolate)
 !
       end subroutine const_isolate_surface_data
 !
