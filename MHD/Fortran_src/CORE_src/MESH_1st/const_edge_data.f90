@@ -13,10 +13,11 @@
 !
       use m_geometry_constants
       use m_geometry_parameter
+      use t_sum_hash
 !
       implicit none
 !
-      private :: construct_all_edge, construct_bc_edge
+      type(sum_hash_tbl), save, private :: edge_sf_tbl
 !
 !------------------------------------------------------------------
 !
@@ -24,24 +25,56 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine construct_edge_data(my_rank)
+      subroutine construct_edge_data(id_rank)
 !
-      use m_edge_hash
+      use m_machine_parameter
+      use m_geometry_data
+!
+      use set_edge_hash_by_ele
+      use set_edge_data_by_ele
+!
       use check_geometries
 !
-      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: id_rank
 !
 !
-      call allocate_edge_hash(numnod, numsurf, nnod_4_edge)
+      call alloc_sum_hash(numnod, numele, nedge_4_ele,                  &
+     &    nnod_4_edge, edge_sf_tbl)
 !
-      call construct_all_edge
-!      call check_edge_data(my_rank)
-!      call check_edge_hexa_data(my_rank)
+!   set hash data for edge elements using sum of local node ID
 !
-!      call construct_bc_edge
-!      call check_bc_edge(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'const_edge_hash_4_ele'
+      call const_edge_hash_4_ele                                        &
+     &   (numnod, numele, nnod_4_ele, nnod_4_edge, ie,                  &
+     &    edge_sf_tbl%num_hash, edge_sf_tbl%istack_hash,                &
+     &    edge_sf_tbl%iend_hash, edge_sf_tbl%id_hash,                   &
+     &    edge_sf_tbl%iflag_hash)
 !
-      call deallocate_edge_hash
+      if (iflag_debug.eq.1) write(*,*) 'count_num_edges_by_ele'
+      call count_num_edges_by_ele(numnod, numele, nnod_4_edge,          &
+     &    edge_sf_tbl%istack_hash, edge_sf_tbl%iend_hash,               &
+     &    edge_sf_tbl%iflag_hash, numedge)
+!
+      call allocate_edge_connect
+      call allocate_edge_4_ele
+!
+      if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_by_ele'
+      call set_edges_connect_by_ele                                     &
+     &   (numnod, numele, numedge, nnod_4_ele, nnod_4_edge, ie,         &
+     &    edge_sf_tbl%istack_hash, edge_sf_tbl%iend_hash,               &
+     &    edge_sf_tbl%id_hash, edge_sf_tbl%iflag_hash,                  &
+     &    ie_edge, iedge_4_ele, node_on_edge)
+!
+      if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_4_sf'
+      call set_edges_connect_4_sf(numnod, numele, numsurf, numedge,     &
+     &    nnod_4_surf, nnod_4_edge, ie_surf, iedge_4_ele,               &
+     &    edge_sf_tbl%istack_hash, edge_sf_tbl%id_hash,                 &
+     &    edge_sf_tbl%iflag_hash, ie_edge, iedge_4_sf)
+!
+      call dealloc_sum_hash(edge_sf_tbl)
+!
+!      call check_edge_data(id_rank)
+!      call check_edge_hexa_data(id_rank)
 !
       end subroutine construct_edge_data
 !
@@ -84,91 +117,6 @@
      &    istack_isurf_4_edge, isurf_4_edge)
 !
       end subroutine const_surface_list_4_edge
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine construct_all_edge
-!
-      use m_machine_parameter
-      use m_geometry_data
-!
-      use set_edge_hash
-      use mark_edge_hash
-      use set_edge_data
-!
-      use check_geometries
-!
-!   set hash data for edge elements using sum of local node ID
-!
-      if (iflag_debug.eq.1) write(*,*) 'count_edge_hash_4_sf'
-      call count_edge_hash_4_sf(numnod, numsurf, nnod_4_surf,           &
-     &          nnod_4_edge, ie_surf)
-!
-      if (iflag_debug.eq.1) write(*,*) 'set_edge_hash_4_sf'
-      call set_edge_hash_4_sf(numsurf, nnod_4_surf, ie_surf)
-!
-!
-      if (iflag_debug.eq.1) write(*,*) 'mark_all_edges'
-      call mark_all_edges(numsurf, nnod_4_surf, ie_surf)
-!
-!
-      if (iflag_debug.eq.1) write(*,*) 'count_num_edges'
-      call count_num_edges(numedge)
-!
-      call allocate_edge_connect
-!
-      if (iflag_debug.eq.1) write(*,*) 'set_edges_connection'
-      call set_edges_connection(numsurf, numedge, nnod_4_surf,          &
-     &    nnod_4_edge, ie_surf, ie_edge, iedge_4_sf, node_on_edge_sf)
-!
-!
-      call allocate_edge_4_ele
-!
-      if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_4_ele'
-      call set_edges_connect_4_ele(numele, numsurf, numedge,            &
-     &    nnod_4_ele, nnod_4_edge, ie, iedge_4_sf,                      &
-     &    ie_edge, iedge_4_ele)
-!
-      end subroutine construct_all_edge
-!
-!------------------------------------------------------------------
-!
-      subroutine construct_bc_edge
-!
-      use m_machine_parameter
-      use m_geometry_data
-!
-      use set_edge_hash
-      use mark_edge_hash
-      use set_edge_data
-!
-!   set hash data for edge elements using sum of local node ID
-!
-      call cleear_edge_hash
-!
-      if (iflag_debug.eq.1) write(*,*) 'count_part_edge_hash_4_sf'
-      call count_part_edge_hash_4_sf(numnod, numsurf, numsurf_iso,      &
-     &          nnod_4_surf, nnod_4_edge, ie_surf, isf_isolate)
-!
-      if (iflag_debug.eq.1) write(*,*) 'set_part_edge_hash_4_sf'
-      call set_part_edge_hash_4_sf(numsurf, numsurf_iso, nnod_4_surf,   &
-     &    ie_surf, isf_isolate)
-!
-!
-      if (iflag_debug.eq.1) write(*,*) 'mark_all_edges'
-      call mark_all_edges(numsurf, nnod_4_surf, ie_surf)
-!
-!
-      call count_num_edges(numedge_iso)
-!
-      call allocate_iso_edge
-!
-      if (iflag_debug.eq.1) write(*,*) 'set_part_edges'
-      call set_part_edges(numsurf, numedge_iso,                         &
-     &    iedge_4_sf, iedge_isolate)
-!
-      end subroutine construct_bc_edge
 !
 !------------------------------------------------------------------
 !

@@ -26,7 +26,8 @@
 !!      subroutine element_position_reverse_SR(num_neib_e, id_neib_e,   &
 !!     &          istack_import_e, istack_export_e)
 !!
-!!      subroutine set_eleent_export_item(numnod, numele, inod_global,  &
+!!      subroutine set_element_export_item                              &
+!!     &         (txt, numnod, numele, inod_global,                     &
 !!     &          internal_flag, x_ele, iele_stack_4_node, iele_4_node, &
 !!     &          num_neib, istack_export, item_export, num_neib_e,     &
 !!     &          istack_export_e, item_export_e)
@@ -293,11 +294,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_eleent_export_item(numnod, numele, inod_global,    &
+      subroutine set_element_export_item                                &
+     &         (txt, numnod, numele, inod_global,                       &
      &          internal_flag, x_ele, iele_stack_4_node, iele_4_node,   &
      &          num_neib, istack_export, item_export, num_neib_e,       &
      &          istack_export_e, item_export_e)
 !
+      character(len=kchara), intent(in) :: txt
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint_gl), intent(in) :: inod_global(numnod)
       integer(kind = kint), intent(in) :: internal_flag(numele)
@@ -365,12 +368,12 @@
             end if
           end do
           if(iflag .eq. 0)                                             &
-     &           write(*,*) 'Missing imported ele', my_rank, inum,     &
-     &                      kele, dist_min
+     &           write(*,*) 'Missing imported ', trim(txt), ': ',      &
+     &                     my_rank, kele, inum, xe_export(3*inum-2:3*inum), dist_min
         end do
       end do
 !
-      end subroutine set_eleent_export_item
+      end subroutine set_element_export_item
 !
 !-----------------------------------------------------------------------
 !

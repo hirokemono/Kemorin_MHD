@@ -33,7 +33,7 @@
       private :: const_global_surface_id,  const_global_edge_id
       private :: const_element_comm_table, const_surf_comm_table
       private :: const_edge_comm_table
-      private :: const_ele_comm_table_type
+      private :: const_ele_comm_table_type, set_global_ele_id_type
 !
 !-----------------------------------------------------------------------
 !
@@ -133,6 +133,7 @@
       use const_global_element_ids
 !
       type(surface_geometry), intent(inout) :: surf_mesh
+      character(len=kchara), parameter :: txt = 'surface'
 !
 !
       call alloc_numsurf_stack(nprocs, surf_mesh%surf)
@@ -143,7 +144,7 @@
      &  (surf_mesh%surf%internal_surf, surf_mesh%surf%istack_intersurf)
 !
       call set_global_ele_id_type                                       &
-     &   (surf_mesh%surf%numsurf, surf_mesh%surf%istack_intersurf,      &
+     &   (txt, surf_mesh%surf%numsurf, surf_mesh%surf%istack_intersurf, &
      &    surf_mesh%surf%interior_surf, surf_mesh%surf_comm,            &
      &    surf_mesh%surf%isurf_global)
 !
@@ -156,6 +157,7 @@
       use const_global_element_ids
 !
       type(edge_geometry),    intent(inout) :: edge_mesh
+      character(len=kchara), parameter :: txt = 'edge'
 !
 !
       call alloc_numedge_stack(nprocs, edge_mesh%edge)
@@ -166,7 +168,7 @@
      &  (edge_mesh%edge%internal_edge, edge_mesh%edge%istack_interedge)
 !
       call set_global_ele_id_type                                       &
-     &   (edge_mesh%edge%numedge, edge_mesh%edge%istack_interedge,      &
+     &   (txt, edge_mesh%edge%numedge, edge_mesh%edge%istack_interedge, &
      &    edge_mesh%edge%interior_edge, edge_mesh%edge_comm,            &
      &    edge_mesh%edge%iedge_global)
 !
@@ -183,11 +185,13 @@
       type(element_comms), intent(inout) ::    ele_mesh
       type(belonged_table), intent(inout) :: belongs
 !
+      character(len=kchara), parameter :: txt = 'element'
+!
 !
       call s_set_ele_id_4_node_type(mesh, belongs%blng_ele)
       call belonged_ele_id_4_node(mesh, belongs%host_ele)
       call const_ele_comm_table_type                                    &
-     &   (mesh%ele%numele, mesh%ele%interior_ele, mesh%ele%x_ele,       &
+     &   (txt, mesh%ele%numele, mesh%ele%interior_ele, mesh%ele%x_ele,  &
      &    mesh%node, mesh%nod_comm, belongs%blng_ele, belongs%host_ele, &
      &    ele_mesh%ele_comm)
       call dealloc_iele_belonged(belongs%host_ele)
@@ -205,12 +209,15 @@
       type(surface_geometry), intent(inout) :: surf_mesh
       type(belonged_table), intent(inout) :: belongs
 !
+      character(len=kchara), parameter :: txt = 'surface'
+!
+!
       call set_surf_id_4_node_type                                      &
      &   (mesh, surf_mesh%surf, belongs%blng_surf)
       call belonged_surf_id_4_node                                      &
      &   (mesh, surf_mesh%surf, belongs%host_surf)
       call const_ele_comm_table_type                                    &
-     &   (surf_mesh%surf%numsurf, surf_mesh%surf%interior_surf,         &
+     &   (txt, surf_mesh%surf%numsurf, surf_mesh%surf%interior_surf,    &
      &    surf_mesh%surf%x_surf, mesh%node, mesh%nod_comm,              &
      &    belongs%blng_surf, belongs%host_surf, surf_mesh%surf_comm)
       call dealloc_iele_belonged(belongs%host_surf)
@@ -228,13 +235,15 @@
       type(edge_geometry), intent(inout) :: edge_mesh
       type(belonged_table), intent(inout) :: belongs
 !
+      character(len=kchara), parameter :: txt = 'edge'
+!
 !
       call set_edge_id_4_node_type                                      &
      &   (mesh, edge_mesh%edge, belongs%blng_edge)
       call belonged_edge_id_4_node                                      &
      &   (mesh, edge_mesh%edge, belongs%host_edge)
       call const_ele_comm_table_type                                    &
-     &   (edge_mesh%edge%numedge, edge_mesh%edge%interior_edge,         &
+     &   (txt, edge_mesh%edge%numedge, edge_mesh%edge%interior_edge,    &
      &    edge_mesh%edge%x_edge, mesh%node, mesh%nod_comm,              &
      &    belongs%blng_edge, belongs%host_edge, edge_mesh%edge_comm)
       call dealloc_iele_belonged(belongs%host_edge)
@@ -246,12 +255,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine const_ele_comm_table_type                              &
-     &         (numele, internal_flag, x_ele, node, nod_comm,           &
-     &         neib_e, host, e_comm)
+     &         (txt, numele, internal_flag, x_ele, node, nod_comm,      &
+     &          neib_e, host, e_comm)
 !
       use const_element_comm_table
       use const_global_element_ids
 !
+      character(len=kchara), intent(in) :: txt
       integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: internal_flag(numele)
       real(kind = kreal), intent(in)  :: x_ele(numele,3)
@@ -296,7 +306,7 @@
       call element_position_reverse_SR(e_comm%num_neib, e_comm%id_neib, &
      &    e_comm%istack_import, e_comm%istack_export)
 !
-      call set_eleent_export_item(node%numnod, numele,                  &
+      call set_element_export_item(txt, node%numnod, numele,            &
      &    node%inod_global, internal_flag, x_ele, neib_e%istack_4_node, &
      &    neib_e%iele_4_node, nod_comm%num_neib,                        &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
@@ -304,19 +314,20 @@
 !
       call deallocate_element_rev_list
 !
-      call check_element_position(numele, x_ele, e_comm)
+      call check_element_position(txt, numele, x_ele, e_comm)
 !
       end subroutine const_ele_comm_table_type
 !
 !-----------------------------------------------------------------------
 !
       subroutine set_global_ele_id_type                                 &
-     &         (nele, istack_internal_e, internal_flag, e_comm,         &
+     &         (txt, nele, istack_internal_e, internal_flag, e_comm,    &
      &          iele_global)
 !
       use solver_SR_int
       use const_global_element_ids
 !
+      character(len=kchara), intent(in) :: txt
       integer(kind = kint), intent(in) :: nele
       integer(kind = kint), intent(in) :: internal_flag(nele)
       integer(kind = kint_gl), intent(in)                               &
@@ -327,8 +338,8 @@
       integer(kind = kint_gl), intent(inout)  :: iele_global(nele)
 !
 !
-      call set_global_ele_id(nele, istack_internal_e, internal_flag,    &
-     &          e_comm, iele_global)
+      call set_global_ele_id(txt, nele, istack_internal_e,              &
+     &    internal_flag, e_comm, iele_global)
 !
       end subroutine set_global_ele_id_type
 !

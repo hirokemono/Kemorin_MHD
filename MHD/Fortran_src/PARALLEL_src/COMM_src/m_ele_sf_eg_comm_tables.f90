@@ -106,13 +106,14 @@
       use m_geometry_data
       use const_global_element_ids
 !
+      character(len=kchara), parameter :: txt = 'element'
 !
       call allocate_numele_stack(nprocs)
 !
       call count_number_of_node_stack(numele, istack_numele)
       call count_number_of_node_stack(internal_ele, istack_interele)
 !
-      call set_global_ele_id(numele, istack_interele,                   &
+      call set_global_ele_id(txt, numele, istack_interele,              &
      &         interior_ele, ele_comm, iele_global)
 !
       end subroutine const_global_element_id_1st
@@ -125,13 +126,14 @@
       use m_geometry_data
       use const_global_element_ids
 !
+      character(len=kchara), parameter :: txt = 'surface'
 !
       call allocate_numsurf_stack(nprocs)
 !
       call count_number_of_node_stack(numsurf, istack_numsurf)
       call count_number_of_node_stack(internal_surf, istack_intersurf)
 !
-      call set_global_ele_id(numsurf, istack_intersurf,                 &
+      call set_global_ele_id(txt, numsurf, istack_intersurf,            &
      &         interior_surf, surf_comm, isurf_global)
 !
       end subroutine const_global_surface_id_1st
@@ -144,13 +146,14 @@
       use m_geometry_data
       use const_global_element_ids
 !
+      character(len=kchara), parameter :: txt = 'edge'
 !
       call allocate_numedge_stack(nprocs)
 !
       call count_number_of_node_stack(numedge, istack_numedge)
       call count_number_of_node_stack(internal_edge, istack_interedge)
 !
-      call set_global_ele_id(numedge, istack_interele,                  &
+      call set_global_ele_id(txt, numedge, istack_interele,             &
      &         interior_edge, edge_comm, iedge_global)
 !
       end subroutine const_global_edge_id_1st
@@ -166,10 +169,12 @@
       use m_element_id_4_node
       use m_belonged_element_4_node
 !
+      character(len=kchara), parameter :: txt = 'element'
+!
 !
       call set_ele_id_4_node_comm
       call belonged_ele_id_4_node_1(blng_tbls%host_ele)
-      call const_ele_comm_table_1st(numnod, numele, inod_global,        &
+      call const_ele_comm_table_1st(txt, numnod, numele, inod_global,   &
      &    interior_ele, x_ele, nod_comm, ele_4_nod_comm,                &
      &    blng_tbls%host_ele, ele_comm)
       call dealloc_iele_belonged(blng_tbls%host_ele)
@@ -188,10 +193,12 @@
       use m_element_id_4_node
       use m_belonged_element_4_node
 !
+      character(len=kchara), parameter :: txt = 'surface'
+!
 !
       call set_surf_id_4_node
       call belonged_surf_id_4_node_1(blng_tbls%host_surf)
-      call const_ele_comm_table_1st(numnod, numsurf, inod_global,       &
+      call const_ele_comm_table_1st(txt, numnod, numsurf, inod_global,  &
      &    interior_surf, x_surf, nod_comm, surf_4_nod1,                 &
      &    blng_tbls%host_surf, surf_comm)
       call dealloc_iele_belonged(blng_tbls%host_surf)
@@ -210,10 +217,12 @@
       use m_element_id_4_node
       use m_belonged_element_4_node
 !
+      character(len=kchara), parameter :: txt = 'edge'
+!
 !
       call set_edge_id_4_node
       call belonged_edge_id_4_node_1(blng_tbls%host_edge)
-      call const_ele_comm_table_1st(numnod, numedge, inod_global,       &
+      call const_ele_comm_table_1st(txt, numnod, numedge, inod_global,  &
      &    interior_edge, x_edge, nod_comm, edge_4_nod1,                 &
      &    blng_tbls%host_edge,  edge_comm)
       call dealloc_iele_belonged(blng_tbls%host_edge)
@@ -224,7 +233,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine const_ele_comm_table_1st(numnod, numele, inod_global,  &
+      subroutine const_ele_comm_table_1st                               &
+     &         (txt, numnod, numele, inod_global,                       &
      &          internal_flag, x_ele, nod_comm, neib_e, host, e_comm)
 !
       use t_comm_table
@@ -232,6 +242,7 @@
       use const_element_comm_table
       use const_global_element_ids
 !
+      character(len=kchara), intent(in) :: txt
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint_gl), intent(in) :: inod_global(numnod)
       integer(kind = kint), intent(in) :: internal_flag(numele)
@@ -275,7 +286,7 @@
       call element_position_reverse_SR(e_comm%num_neib, e_comm%id_neib, &
      &    e_comm%istack_import, e_comm%istack_export)
 !
-      call set_eleent_export_item(numnod, numele, inod_global,          &
+      call set_element_export_item(txt, numnod, numele, inod_global,    &
      &    internal_flag, x_ele, neib_e%istack_4_node,                   &
      &    neib_e%iele_4_node, nod_comm%num_neib,                        &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
@@ -283,7 +294,7 @@
 !
       call deallocate_element_rev_list
 !
-      call check_element_position(numele, x_ele, e_comm)
+      call check_element_position(txt, numele, x_ele, e_comm)
 !
       end subroutine const_ele_comm_table_1st
 !

@@ -16,9 +16,9 @@
 !
       call calypso_MPI_init
 !
-      call init_analyzer
+      call initialize_mesh_test
 
-      call analyze
+      call analyze_mesh_test
 
       call calypso_MPI_finalize
 !

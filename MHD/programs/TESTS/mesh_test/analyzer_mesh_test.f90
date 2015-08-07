@@ -4,8 +4,8 @@
 !
 !      modified by H. Matsui on Aug., 2006 
 !
-!      subroutine init_analyzer
-!      subroutine analyze
+!      subroutine initialize_mesh_test
+!      subroutine analyze_mesh_test
 !
 !..................................................
 !
@@ -24,7 +24,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine initialize_mesh_test
 !
       use const_mesh_info
       use cal_jacobian
@@ -42,6 +42,8 @@
       use m_jacobians_4_surface
       use m_jacobians_4_edge
       use m_jacobian_sf_grp
+      use m_ele_sf_eg_comm_tables
+      use m_array_for_send_recv
       use check_jacobians
       use int_volume_of_domain
       use set_surf_grp_vectors
@@ -51,9 +53,11 @@
       use m_read_mesh_data
       use m_comm_data_IO
       use mesh_data_IO
+      use nodal_vector_send_recv
       use sum_normal_4_surf_group
       use set_parallel_file_name
       use set_node_geometry_4_IO
+      use set_comm_table_4_IO
 !
       use m_ctl_data_test_mesh
       use set_control_test_mesh
@@ -78,11 +82,22 @@
       if (iflag_debug.gt.0) write(*,*) 'input_mesh'
       call input_mesh(my_rank)
 !
+!  -------------------------------
 !
-!     ---------------------
+      if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
+      call allocate_vector_for_solver(isix, numnod)
+!
+      if(iflag_debug.gt.0) write(*,*)' init_send_recv'
+      call init_send_recv
+      iflag_debug = 1
+!
+!  -----    construct geometry informations
 !
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)
+!
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
+      call const_element_comm_tables_1st
 !
 !  -------------------------------
 !
@@ -154,6 +169,8 @@
      &      form = 'formatted')
 !
       num_neib_domain_IO = 0
+      call allocate_neib_domain_IO
+!
       call copy_node_geom_sph_to_IO
 !
       call output_node_sph_geometry
@@ -166,6 +183,7 @@
      &      form = 'formatted')
 !
       num_neib_domain_IO = 0
+      call allocate_neib_domain_IO
       call copy_node_geom_cyl_to_IO
 !
       call output_node_cyl_geometry
@@ -177,18 +195,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_ele_geometry_to_IO'
       mesh_ele_file_head = mesh_ele_def_head
+      call copy_comm_tbl_type_to_IO(my_rank, ele_comm)
       call copy_ele_geometry_to_IO
       call sel_output_element_file(my_rank)
-!
-      if (iflag_debug.gt.0) write(*,*) 'copy_ele_sph_geom_to_IO'
-      write(mesh_ele_file_head,'(a,a4)') mesh_ele_def_head, '_sph'
-      call copy_ele_sph_geom_to_IO
-      call sel_output_element_sph_file(my_rank)
-!
-      if (iflag_debug.gt.0) write(*,*) 'copy_ele_cyl_geom_to_IO'
-      write(mesh_ele_file_head,'(a,a4)') mesh_ele_def_head, '_cyl'
-      call copy_ele_cyl_geom_to_IO
-      call sel_output_element_cyl_file(my_rank)
 !
 !  -------------------------------
 !     output surface data
@@ -196,27 +205,12 @@
 !
       mesh_surf_file_head = mesh_def_surf_head
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO'
+      call copy_comm_tbl_type_to_IO(my_rank, surf_comm)
       call copy_surf_connect_to_IO
       call copy_surf_geometry_to_IO
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_output_surface_file'
       call sel_output_surface_file(my_rank)
-!
-      write(mesh_surf_file_head,'(a,a4)') mesh_def_surf_head, '_sph'
-      if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO_sph'
-      call copy_surf_connect_to_IO
-      call copy_surf_geometry_to_IO_sph
-!
-      if (iflag_debug.gt.0) write(*,*) 'sel_output_surface_sph_file'
-      call sel_output_surface_sph_file(my_rank)
-!
-      write(mesh_surf_file_head,'(a,a4)') mesh_def_surf_head, '_cyl'
-      if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO_cyl'
-      call copy_surf_connect_to_IO
-      call copy_surf_geometry_to_IO_cyl
-!
-      if (iflag_debug.gt.0) write(*,*) 'sel_output_surface_cyl_file'
-      call sel_output_surface_cyl_file(my_rank)
 !
 !  -------------------------------
 !     output edge data
@@ -224,37 +218,23 @@
 !
       mesh_edge_file_head = mesh_def_edge_head
       if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO'
+      call copy_comm_tbl_type_to_IO(my_rank, edge_comm)
       call copy_edge_connect_to_IO
       call copy_edge_geometry_to_IO
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_output_edge_geometries'
       call sel_output_edge_geometries(my_rank)
 !
-      write(mesh_edge_file_head,'(a,a4)') mesh_def_edge_head, '_sph'
-      if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO'
-      call copy_edge_connect_to_IO
-      call copy_edge_geometry_to_IO_sph
-!
-      if (iflag_debug.gt.0) write(*,*) 'sel_output_edge_geometries_sph'
-      call sel_output_edge_geometries_sph(my_rank)
-!
-      write(mesh_edge_file_head,'(a,a4)') mesh_def_edge_head, '_cyl'
-      if (iflag_debug.gt.0) write(*,*) 'copy_edge_connect_to_IO'
-      call copy_edge_connect_to_IO
-      call copy_edge_geometry_to_IO_cyl
-      if (iflag_debug.gt.0) write(*,*) 'sel_output_edge_geometries_cyl'
-      call sel_output_edge_geometries_cyl(my_rank)
-!
-       end subroutine init_analyzer
+       end subroutine initialize_mesh_test
 !
 ! ----------------------------------------------------------------------
 !
-        subroutine analyze
+        subroutine analyze_mesh_test
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'exit analyze'
 !
-        end subroutine analyze
+        end subroutine analyze_mesh_test
 !
 ! ----------------------------------------------------------------------
 !

@@ -4,8 +4,8 @@
 !
 !      modified by H. Matsui on Aug., 2006 
 !
-!      subroutine init_analyzer
-!      subroutine analyze
+!      subroutine initialize_mesh_test
+!      subroutine analyze_mesh_test
 !
       module analyzer_mesh_test
 !
@@ -21,7 +21,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine initialize_mesh_test
 !
       use calypso_mpi
       use const_mesh_info
@@ -239,18 +239,18 @@
       if (iflag_debug.gt.0) write(*,*) 'sel_output_edge_geometries_cyl'
       call sel_output_edge_geometries_cyl(my_rank)
 !
-       end subroutine init_analyzer
+       end subroutine initialize_mesh_test
 !
 ! ----------------------------------------------------------------------
 !
-        subroutine analyze
+        subroutine analyze_mesh_test
 !
         use calypso_mpi
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'
 !
-        end subroutine analyze
+        end subroutine analyze_mesh_test
 !
 ! ----------------------------------------------------------------------
 !

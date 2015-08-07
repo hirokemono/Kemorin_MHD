@@ -8,9 +8,9 @@
 !!
 !!@verbatim
 !!      subroutine count_number_of_node_stack(nnod, istack_nod_list)
-!!      subroutine set_global_ele_id(nele, istack_internal_e,           &
+!!      subroutine set_global_ele_id(txt, nele, istack_internal_e,      &
 !!     &         internal_flag, e_comm, iele_global)
-!!      subroutine check_element_position(nele, x_ele, e_comm)
+!!      subroutine check_element_position(txt, nele, x_ele, e_comm)
 !!@endverbatim
 !!
       module const_global_element_ids
@@ -55,12 +55,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_global_ele_id(nele, istack_internal_e,             &
+      subroutine set_global_ele_id(txt, nele, istack_internal_e,        &
      &          internal_flag, e_comm, iele_global)
 !
       use t_comm_table
       use solver_SR_type
 !
+      character(len=kchara), intent(in) :: txt
       integer(kind = kint), intent(in) :: nele
       integer(kind = kint), intent(in) :: internal_flag(nele)
       integer(kind = kint_gl), intent(in)                               &
@@ -87,7 +88,7 @@
 !
       do iele = 1, nele
         if(iele_global(iele) .eq. 0)  write(*,*)                        &
-     &        'Missing communication for element  ', iele
+     &        'Missing communication for ', trim(txt), ': ', iele
       end do
 !
       end subroutine set_global_ele_id
@@ -95,23 +96,25 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine check_element_position(nele, x_ele, e_comm)
+      subroutine check_element_position(txt, nele, x_ele, e_comm)
 !
       use t_comm_table
       use solver_SR_type
 !
+      character(len=kchara), intent(in) :: txt
       integer(kind = kint), intent(in) :: nele
       real(kind = kreal), intent(in)  :: x_ele(nele,3)
 !
       type(communication_table), intent(in) :: e_comm
 !
 !
-      real(kind = kreal), parameter :: tiny = 1.0d-15
+      real(kind = kreal), parameter :: tiny = 1.0d-14
       real(kind = kreal) :: dx, dy, dz
       real(kind = kreal), allocatable :: x_test(:)
       integer(kind = kint) :: iele
 !
 !
+      write(*,*) 'nele: ', my_rank, nele, size(x_ele,1)
       allocate(x_test(3*nele))
 !
 !$omp parallel do
@@ -130,8 +133,8 @@
         dz = x_test(3*iele  ) - x_ele(iele,3)
         if(     (abs(dx) .ge. tiny)  .or. (abs(dy) .ge. tiny)           &
      &     .or. (abs(dz) .ge. tiny)) then
-          write(*,*) 'wrong element position at: ', my_rank, iele,      &
-     &         x_ele(iele,1:3), dx, dy, dz
+          write(*,*) 'wrong ', trim(txt), ' position at: ',             &
+     &         my_rank, iele, x_ele(iele,1:3), dx, dy, dz
         end if
       end do
 !
