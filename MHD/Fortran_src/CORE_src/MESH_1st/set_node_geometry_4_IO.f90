@@ -106,6 +106,7 @@
 !
 !
       numnod = numnod_dummy
+      node1%numnod = numnod_dummy
       internal_node = internal_node_dummy
 !
       call allocate_node_geometry

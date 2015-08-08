@@ -69,6 +69,8 @@
       subroutine s_set_components_flags(comp_name, phys_name,           &
      &          icomp, ncomp, ncomp_org, rst_name)
 !
+      use skip_comment_f
+!
       character(len=kchara), intent(in) :: comp_name, phys_name
 !
       integer(kind = kint), intent(inout) :: icomp, ncomp, ncomp_org
@@ -76,137 +78,98 @@
 !
 !
 !
-      if (     comp_name .eq. 'scalar'                                  &
-     &    .or. comp_name .eq. 'Scalar'                                  &
-     &    .or. comp_name .eq. 'SCALAR') then
+      if     (cmp_no_case(comp_name, 'scalar'))then
         icomp =     icomp_SCALAR
         ncomp =     ncomp_SCALAR
         ncomp_org = ncomp_SCALAR
         write(rst_name,1000) trim(phys_name)
-      else if (comp_name .eq. 'vector'                                  &
-     &    .or. comp_name .eq. 'Vector'                                  &
-     &    .or. comp_name .eq. 'VECTOR') then
+      else if(cmp_no_case(comp_name, 'vector')) then
         icomp =     icomp_VECTOR
         ncomp =     ncomp_VECTOR
         ncomp_org = ncomp_VECTOR
         write(rst_name,1000) trim(phys_name)
-      else if (comp_name .eq. 'sym_tensor'                              &
-     &    .or. comp_name .eq. 'Sym_tensor'                              &
-     &    .or. comp_name .eq. 'SYM_TENSOR') then
+      else if(cmp_no_case(comp_name, 'sym_tensor')) then
         icomp =     icomp_SYM_TENSOR
         ncomp =     ncomp_SYM_TENSOR
         ncomp_org = ncomp_SYM_TENSOR
         write(rst_name,1000) trim(phys_name)
-      else if (comp_name .eq. 'asym_tensor'                             &
-     &    .or. comp_name .eq. 'Asym_tensor'                             &
-     &    .or. comp_name .eq. 'ASYM_TENSOR') then
+      else if(cmp_no_case(comp_name, 'asym_tensor')) then
         icomp =     icomp_ASYM_TENSOR
         ncomp =     ncomp_ASYM_TENSOR
         ncomp_org = ncomp_ASYM_TENSOR
         write(rst_name,1000) trim(phys_name)
-      else if (comp_name .eq. 'spherical_vector'                        &
-     &    .or. comp_name .eq. 'Spherical_vector'                        &
-     &    .or. comp_name .eq. 'SPHERICAL_VECTOR') then
+      else if(cmp_no_case(comp_name, 'spherical_vector')) then
         icomp =     icomp_SPH_VECTOR
         ncomp =     ncomp_VECTOR
         ncomp_org = ncomp_VECTOR
         write(rst_name,1100) trim(phys_name)
-      else if (comp_name .eq. 'cylindrical_vector'                      &
-     &    .or. comp_name .eq. 'Cylindrical_vector'                      &
-     &    .or. comp_name .eq. 'CYLINDRICAL_VECTOR') then
+      else if(cmp_no_case(comp_name, 'cylindrical_vector')) then
         icomp =     icomp_CYL_VECTOR
         ncomp =     ncomp_VECTOR
         ncomp_org = ncomp_VECTOR
         write(rst_name,1200) trim(phys_name)
-      else if (comp_name .eq. 'spherical_sym_tensor'                    &
-     &    .or. comp_name .eq. 'Spherical_sym_tensor'                    &
-     &    .or. comp_name .eq. 'SPHERICAL_SYM_TENSOR') then
+      else if(cmp_no_case(comp_name, 'spherical_sym_tensor')) then
         icomp =     icomp_SPHL_SYM_TENSOR
         ncomp =     ncomp_SYM_TENSOR
         ncomp_org = ncomp_SYM_TENSOR
         write(rst_name,1100) trim(phys_name)
-      else if (comp_name .eq. 'cylindrical_sym_tensor'                  &
-     &    .or. comp_name .eq. 'Cylindrical_sym_tensor'                  &
-     &    .or. comp_name .eq. 'CYLINDRICAL_SYM_TENSOR') then
+      else if(cmp_no_case(comp_name, 'cylindrical_sym_tensor')) then
         icomp =     icomp_CYL_SYM_TENSOR
         ncomp =     ncomp_SYM_TENSOR
         ncomp_org = ncomp_SYM_TENSOR
         write(rst_name,1200) trim(phys_name)
 !
-      else if (comp_name .eq. 'norm'                                    &
-     &    .or. comp_name .eq. 'Norm'                                    &
-     &    .or. comp_name .eq. 'NORM') then
+      else if(cmp_no_case(comp_name, 'norm')) then
         icomp =     icomp_NORM
         ncomp =     ncomp_SCALAR
         ncomp_org = ncomp_VECTOR
         write(rst_name,1300) trim(phys_name)
-      else if (comp_name .eq. 'x'                                       &
-     &    .or. comp_name .eq. 'X') then
+      else if(cmp_no_case(comp_name, 'x')) then
         icomp =     icomp_X
         ncomp =     ncomp_SCALAR
         ncomp_org = ncomp_VECTOR
         write(rst_name,1001) trim(phys_name)
-      else if (comp_name .eq. 'y'                                       &
-     &    .or. comp_name .eq. 'Y') then
+      else if(cmp_no_case(comp_name, 'y')) then
         icomp =     icomp_Y
         ncomp =     ncomp_SCALAR
         ncomp_org = ncomp_VECTOR
         write(rst_name,1002) trim(phys_name)
-      else if (comp_name .eq. 'z'                                       &
-     &    .or. comp_name .eq. 'Z') then
+      else if(cmp_no_case(comp_name, 'z')) then
         icomp =     icomp_Z
         ncomp =     ncomp_SCALAR
         ncomp_org = ncomp_VECTOR
         write(rst_name,1003) trim(phys_name)
-      else if (comp_name .eq. 'radial'                                  &
-     &    .or. comp_name .eq. 'Radial'                                  &
-     &    .or. comp_name .eq. 'RADIAL'                                  &
-     &    .or. comp_name .eq. 'r'                                       &
-     &    .or. comp_name .eq. 'R'     ) then
+      else if(cmp_no_case(comp_name, 'radial')                          &
+     &   .or. cmp_no_case(comp_name, 'r')) then
         icomp =     icomp_RADIAL
         ncomp =     ncomp_SCALAR
         ncomp_org = ncomp_VECTOR
         write(rst_name,1011) trim(phys_name)
-      else if (comp_name .eq. 'elevation'                               &
-     &    .or. comp_name .eq. 'Elevation'                               &
-     &    .or. comp_name .eq. 'ELEVATION'                               &
-     &    .or. comp_name .eq. 'theta'                                   &
-     &    .or. comp_name .eq. 'Theta'                                   &
-     &    .or. comp_name .eq. 'THETA') then
+      else if(cmp_no_case(comp_name, 'elevation')                       &
+     &   .or. cmp_no_case(comp_name, 'theta')) then
         icomp =     icomp_THETA
         ncomp =     ncomp_SCALAR
         ncomp_org = ncomp_VECTOR
         write(rst_name,1012) trim(phys_name)
-      else if (comp_name .eq. 'azimuth'                                 &
-     &    .or. comp_name .eq. 'Azimuth'                                 &
-     &    .or. comp_name .eq. 'AZIMUTH'                                 &
-     &    .or. comp_name .eq. 'phi'                                     &
-     &    .or. comp_name .eq. 'Phi'                                     &
-     &    .or. comp_name .eq. 'PHI') then
+      else if(cmp_no_case(comp_name, 'azimuth')                         &
+     &   .or. cmp_no_case(comp_name, 'phi')) then
         icomp =     icomp_PHI
         ncomp =     ncomp_SCALAR
         ncomp_org = ncomp_VECTOR
         write(rst_name,1013) trim(phys_name)
-      else if (comp_name .eq. 'cylinder_r'                              &
-     &    .or. comp_name .eq. 'Cylinder_r'                              &
-     &    .or. comp_name .eq. 'CYLINDER_R'                              &
-     &    .or. comp_name .eq. 's'                                       &
-     &    .or. comp_name .eq. 'S') then
+      else if(cmp_no_case(comp_name, 'cylinder_r')                      &
+     &   .or. cmp_no_case(comp_name, 's')) then
         icomp =     icomp_CYLINDER_R
         ncomp =     ncomp_SCALAR
         ncomp_org = ncomp_VECTOR
         write(rst_name,1014) trim(phys_name)
 !
-      else if (comp_name .eq. 'norm_sym_tensor'                         &
-     &    .or. comp_name .eq. 'Norm_sym_tensor'                         &
-     &    .or. comp_name .eq. 'NORM_SYM_TENSOR') then
+      else if(cmp_no_case(comp_name, 'norm_sym_tensor')) then
         icomp =     icomp_NORM_SYM_TENSOR
         ncomp =     ncomp_SCALAR
         ncomp_org = ncomp_SYM_TENSOR
         write(rst_name,1300) trim(phys_name)
-      else if (comp_name .eq. 'norm_asym_tensor'                        &
-     &    .or. comp_name .eq. 'Norm_asym_tensor'                        &
-     &    .or. comp_name .eq. 'NORM_ASYM_TENSOR') then
+      else if(cmp_no_case(comp_name, 'norm_asym_tensor')) then
         icomp =     icomp_NORM_ASYM_TENSOR
         ncomp =     ncomp_SCALAR
         ncomp_org = ncomp_ASYM_TENSOR

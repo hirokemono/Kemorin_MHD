@@ -170,16 +170,16 @@
       numedge_sf20 = numedge_sf
       numele_sf20 =  numele_sf
 !
-      numnod = numnod_cube + numnod_sf
-      numele = numele_cube
-      numsurf = numsurf_cube
-      numedge = numedge_cube
-      numnod = numnod + numnod_sf * nr
-      numele = numele + numele_sf * nr
-      numedge = numedge + (numedge_sf+numnod_sf) * nr
-      numsurf = numsurf + (numele_sf+numedge_sf) * nr
-      numnod_20 = numnod + numedge
-      numele_20 = numele
+      nnod_cb_sph = numnod_cube + numnod_sf
+      nele_cb_sph = numele_cube
+      nsurf_cb_sph = numsurf_cube
+      nedge_cb_sph = numedge_cube
+      nnod_cb_sph = nnod_cb_sph + numnod_sf * nr
+      nele_cb_sph = nele_cb_sph + numele_sf * nr
+      nedge_cb_sph = nedge_cb_sph + (numedge_sf+numnod_sf) * nr
+      nsurf_cb_sph = nsurf_cb_sph + (numele_sf+numedge_sf) * nr
+      numnod_20 = nnod_cb_sph + nedge_cb_sph
+      numele_20 = nele_cb_sph
 !
 !  set center cube size
 !

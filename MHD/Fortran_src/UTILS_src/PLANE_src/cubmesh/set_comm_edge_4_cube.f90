@@ -1,10 +1,16 @@
 !set_comm_edge_4_cube.f90
 !     module set_comm_edge_4_cube
 !
-      module set_comm_edge_4_cube
-!
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
+!
+!      subroutine count_im_edge(kpe, inp, jnp, knp, inod, nd)
+!      subroutine set_im_edge(kpe, inp, jnp, knp, inod, nd)
+!
+!      subroutine count_ex_edge(kpe, inp, jnp, knp, inod, nd)
+!      subroutine set_ex_edge(kpe, inp, jnp, knp, inod, nd)
+!
+      module set_comm_edge_4_cube
 !
       use m_precision
 !
@@ -14,12 +20,6 @@
       use m_sleeve_cube
 !
       implicit none
-!
-!      subroutine count_im_edge(kpe, inp, jnp, knp, inod, nd)
-!      subroutine set_im_edge(kpe, inp, jnp, knp, inod, nd)
-!
-!      subroutine count_ex_edge(kpe, inp, jnp, knp, inod, nd)
-!      subroutine set_ex_edge(kpe, inp, jnp, knp, inod, nd)
 !
 ! ----------------------------------------------------------------------
 !

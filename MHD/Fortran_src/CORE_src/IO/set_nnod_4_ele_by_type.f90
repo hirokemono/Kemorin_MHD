@@ -1,9 +1,14 @@
+!>@file   set_nnod_4_ele_by_type.f90
+!!@brief  module set_nnod_4_ele_by_type
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep., 2006
 !
-!      module set_nnod_4_ele_by_type
-!
-!     Written by H. Matsui on Sep., 2006
-!
-!      subroutine s_set_nnod_4_ele_by_type(nnod_4_ele, itype)
+!>@brief  Set Number of element from element type ID
+!!
+!!@verbatim
+!!      subroutine s_set_nnod_4_ele_by_type(nnod_4_ele, itype)
+!!@endverbatim
 !
       module set_nnod_4_ele_by_type
 !
@@ -86,4 +91,3 @@
 !------------------------------------------------------------------
 !
       end module set_nnod_4_ele_by_type
-

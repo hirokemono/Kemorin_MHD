@@ -113,7 +113,7 @@
       call set_node_istack_quad(numnod_cube, numedge_cube,              &
      &    numnod_sf, numedge_sf, nod_grp_sph)
 !
-      call set_nodal_item_quad(numnod, numnod_cube, numedge_cube,       &
+      call set_nodal_item_quad(nnod_cb_sph, numnod_cube, numedge_cube,  &
      &          numnod_sf, numedge_sf, num_hemi, ione, nod_grp_sph)
 !
       call write_cubed_sph_nod_grp(id_q_group, nod_grp_sph)

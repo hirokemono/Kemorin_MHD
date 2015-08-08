@@ -1,9 +1,9 @@
 !
 !     module m_size_of_cube
 !
-      module m_size_of_cube
-!
 !     modified by Kemorin
+!
+      module m_size_of_cube
 !
       use m_precision
 !
@@ -34,7 +34,7 @@
 !       \LOCALVAR[nz1]      nodal count with 1 fill-in for z direction
 
       integer(kind=kint )  ::  numnod_x , numnod_y , numnod_z 
-      integer(kind=kint )  ::  numnod
+      integer(kind=kint )  ::  nnod_cubmesh
 ! \beginLOCALVARS[nx]      array size for x direction
 !       \LOCALVAR[ny]      array size for y direction
 !       \LOCALVAR[nz]      array size for z direction

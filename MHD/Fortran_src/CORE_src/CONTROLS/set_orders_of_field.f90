@@ -1,10 +1,15 @@
+!>@file   set_orders_of_field.f90
+!!@brief  module set_orders_of_field
+!!
+!!@author H. Matsui
+!!@date Programmed by H. Matsui in Jan., 2010
 !
-!      module set_orders_of_field
-!
-!        programmed by H.Matsui on Jan., 2010
-!
-!      subroutine s_set_orders_of_field(nnod_4_ele,                     &
-!     &          num_nod_phys, phys_nod_name, iorder_nod_phys)
+!> @brief Chenge order of field by element type
+!!
+!!@verbatim
+!!      subroutine s_set_orders_of_field(nnod_4_ele,                    &
+!!     &          num_nod_phys, phys_nod_name, iorder_nod_phys)
+!!@endverbatim
 !
       module set_orders_of_field
 !

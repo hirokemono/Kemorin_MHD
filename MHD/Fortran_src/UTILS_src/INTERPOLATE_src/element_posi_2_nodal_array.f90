@@ -32,6 +32,7 @@
       call deallocate_node_geometry
 !
 !
+      node1%numnod =  numele
       numnod =       numele
       internal_node = numele
 !

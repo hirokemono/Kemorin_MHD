@@ -50,7 +50,8 @@
         ie20(7) = inod0 + ie_sf20(iele0,3) + numnod_sf
         ie20(8) = inod0 + ie_sf20(iele0,4) + numnod_sf
 !
-        inod9 = numnod + numedge_cube + (numnod_sf + numedge_sf)*(k-2)
+        inod9 = nnod_cb_sph + numedge_cube                              &
+     &         + (numnod_sf + numedge_sf)*(k-2)
 !
         ie20( 9) = inod9 + ie_sf20(iele0,5)
         ie20(10) = inod9 + ie_sf20(iele0,6)
@@ -62,7 +63,8 @@
         ie20(15) = inod9 + ie_sf20(iele0,7) + numnod_sf + numedge_sf
         ie20(16) = inod9 + ie_sf20(iele0,8) + numnod_sf + numedge_sf
 !
-        inod17 = numnod + numedge_cube + (numnod_sf + numedge_sf)*(k-1)
+        inod17 = nnod_cb_sph + numedge_cube                             &
+     &          + (numnod_sf + numedge_sf)*(k-1)
 !
         ie20(17) = inod17 + ie_sf20(iele0,1)
         ie20(18) = inod17 + ie_sf20(iele0,2)
@@ -110,14 +112,17 @@
         ie20(3) = inod0 + iedge_sf20(iele0,1) + numnod_sf
         ie20(4) = inod0 + iedge_sf20(iele0,3) + numnod_sf
 !
-        inod9 = numnod + numedge_cube + (numnod_sf + numedge_sf)*(k-2)
+        inod9 = nnod_cb_sph + numedge_cube                              &
+     &         + (numnod_sf + numedge_sf)*(k-2)
 !
         ie20( 5) = inod9 + iedge_sf20(iele0,2)
 !
-        inod17 = numnod + numedge_cube + (numnod_sf + numedge_sf)*(k-1)
+        inod17 = nnod_cb_sph + numedge_cube                             &
+     &          + (numnod_sf + numedge_sf)*(k-1)
         ie20( 7) = inod17 + iedge_sf20(iele0,2)
 !
-        inod17 = numnod + numedge_cube + (numnod_sf + numedge_sf)*(k-1)
+        inod17 = nnod_cb_sph + numedge_cube                             &
+     &          + (numnod_sf + numedge_sf)*(k-1)
 !
         ie20( 6) = inod17 + iedge_sf20(iele0,1)
         ie20( 8) = inod17 + iedge_sf20(iele0,3)

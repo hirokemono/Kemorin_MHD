@@ -60,7 +60,7 @@
       use reordering_element_MHD
       use reordering_element_size
 !
-      type(group_data), intent(in) :: ele_grp
+      type(group_data), intent(inout) :: ele_grp
       type(surface_group_data), intent(inout) :: sf_grp
 !
 !

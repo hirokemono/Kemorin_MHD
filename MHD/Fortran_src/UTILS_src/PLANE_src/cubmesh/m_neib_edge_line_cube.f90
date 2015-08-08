@@ -1,8 +1,6 @@
 !
 !      module m_neib_edge_line_cube
 !
-      module m_neib_edge_line_cube
-!
 !     written by H. Matsui
 !
 !  ----------------------------------------------------------------------
@@ -17,6 +15,8 @@
 !        distance in zta-direction
 !
 !  ----------------------------------------------------------------------
+!
+      module m_neib_edge_line_cube
 !
       use m_precision
 !

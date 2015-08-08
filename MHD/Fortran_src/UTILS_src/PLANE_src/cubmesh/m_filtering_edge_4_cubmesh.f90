@@ -1,9 +1,9 @@
 !
 !      module m_filtering_edge_4_cubmesh
 !
-      module m_filtering_edge_4_cubmesh
-!
 !     Written by H. Matsui
+!
+      module m_filtering_edge_4_cubmesh
 !
       use m_precision
 !

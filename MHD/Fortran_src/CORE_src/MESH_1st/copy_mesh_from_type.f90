@@ -121,6 +121,7 @@
       integer(kind = kint) :: inod
 !
 !
+      node1%numnod =  node%numnod
       numnod =        node%numnod
       internal_node = node%internal_node
 !

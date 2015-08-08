@@ -1,16 +1,20 @@
 !
 !      module m_cubed_sph_mesh
 !
-      module m_cubed_sph_mesh
-!
 !      Written by H. Matsui on Apr., 2006
+!
+!       subroutine allocate_coarse_mesh_stack(max_coarse_level)
+!       subroutine deallocate_coarse_mesh_stack
+!
+      module m_cubed_sph_mesh
 !
       use m_precision
 !
       implicit none
 !
 !   num. of node, element
-      integer(kind = kint) :: numnod, numele, numedge, numsurf
+      integer(kind = kint) :: nnod_cb_sph, nele_cb_sph
+      integer(kind = kint) :: nedge_cb_sph, nsurf_cb_sph
       integer(kind = kint) :: numnod_20, numele_20
 !   position
       real(kind = kreal) :: xyz(3)
@@ -23,9 +27,6 @@
       integer(kind = kint), allocatable :: iele_stack(:)
       integer(kind = kint), allocatable :: iedge_stack(:)
       integer(kind = kint), allocatable :: isurf_stack(:)
-!
-!       subroutine allocate_coarse_mesh_stack(max_coarse_level)
-!       subroutine deallocate_coarse_mesh_stack
 !
 !   --------------------------------------------------------------------
 !

@@ -30,7 +30,7 @@
 !
        use m_size_of_cube
 !
-       allocate(iele_group_id(2*numnod))
+       allocate(iele_group_id(2*nnod_cubmesh))
        call reset_cube_ele_group_id
 !
        end subroutine allocate_cube_ele_group_id

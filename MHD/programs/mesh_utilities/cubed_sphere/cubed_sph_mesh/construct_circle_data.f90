@@ -40,7 +40,7 @@
 !
       write(*,*) 'write_header_4_mesh'
       call write_header_4_mesh(id_l_mesh, id_l_connect, id_l_group,     &
-     &   numnod, numele, num_t_linear)
+     &   nnod_cb_sph, nele_cb_sph, num_t_linear)
 !
       if (iflag_quad .gt. 0) then
         write(*,*) 'set_quad_mesh_file_names'
@@ -76,8 +76,8 @@
        call back_to_square(inod_start, id_l_mesh, id_flag_quad)
         write(*,*) 'projection end'
 !
-        write(*,*) 'inod_start', inod_start, numnod
-       if ( inod_start .ne. numnod ) then
+        write(*,*) 'inod_start', inod_start, nnod_cb_sph
+       if ( inod_start .ne. nnod_cb_sph ) then
         write (*,*) 'number of node in the shell is wrong'
         stop
        end if
@@ -89,12 +89,12 @@
 !
        if (iflag_quad .gt. 0) then
 !
-         write(*,*) 'set_center_square_quad', numnod, inod_start
+         write(*,*) 'set_center_square_quad', nnod_cb_sph, inod_start
          call set_center_square_quad(inod_start, id_q_mesh)
-         write(*,*) 'set_center_rect_quad end', numnod, inod_start
-         if ( inod_start .ne. (numnod+numedge_cube) ) then
+         write(*,*) 'set_center_rect_quad end', nnod_cb_sph, inod_start
+         if ( inod_start .ne. (nnod_cb_sph+numedge_cube) ) then
            write (*,*) 'number of quadrature node in center is wrong',  &
-     &             inod_start, (numnod+numedge_cube)
+     &             inod_start, (nnod_cb_sph+numedge_cube)
            stop
          end if
 !
@@ -124,7 +124,7 @@
 !
       write(*,*) 'set connectivity for center square'
       call square_center_connect_quad(iele_start, id_l_connect,         &
-     &    id_flag_quad, numnod, num_hemi)
+     &    id_flag_quad, nnod_cb_sph, num_hemi)
       if ( iele_start .ne. numele_cube ) then
         write (*,*) 'number of quadrature element of center is wrong'
         stop
@@ -132,7 +132,7 @@
 !
       write(*,*) 'set connectivity in the sphere shell'
       call radial_stack_surf_q(iele_start, id_l_connect, id_flag_quad)
-      if ( iele_start .ne. numele ) then
+      if ( iele_start .ne. nele_cb_sph ) then
         write (*,*) 'number of quadrature element in shell is wrong'
         stop
       end if

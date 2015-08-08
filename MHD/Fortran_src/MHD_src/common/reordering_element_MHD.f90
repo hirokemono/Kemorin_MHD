@@ -35,8 +35,8 @@
       use m_work_4_MHD_layering
       use t_group_data
 !
-      type(group_data), intent(in) :: ele_grp
-      type(surface_group_data), intent(in) :: sf_grp
+      type(group_data), intent(inout) :: ele_grp
+      type(surface_group_data), intent(inout) :: sf_grp
 !
 !
       call reordering_element_connect(numele, nnod_4_ele,               &

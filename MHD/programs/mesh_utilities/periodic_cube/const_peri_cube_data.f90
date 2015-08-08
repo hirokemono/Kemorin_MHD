@@ -40,7 +40,7 @@
 !
       write(*,*) 'write_header_4_mesh'
       call write_header_4_mesh(id_l_mesh, id_l_connect, id_l_group,     &
-     &   numnod, numele, num_t_linear)
+     &   nnod_cb_sph, nele_cb_sph, num_t_linear)
 !
       if (iflag_quad .gt. 0) then
         write(*,*) 'set_quad_mesh_file_names'
@@ -73,8 +73,8 @@
         write(*,*) 'cover_peri_cube'
        call cover_peri_cube(inod_start, id_l_mesh, id_flag_quad)
 !
-        write(*,*) 'inod_start', inod_start, numnod
-       if ( inod_start .ne. numnod ) then
+        write(*,*) 'inod_start', inod_start, nnod_cb_sph
+       if ( inod_start .ne. nnod_cb_sph ) then
         write (*,*) 'number of node in the shell is wrong'
         stop
        end if
@@ -86,12 +86,12 @@
 !
        if (iflag_quad .gt. 0) then
 !
-         write(*,*) 'set_center_rect_quad', numnod, inod_start
+         write(*,*) 'set_center_rect_quad', nnod_cb_sph, inod_start
          call set_center_rect_quad(inod_start, id_q_mesh)
-         write(*,*) 'set_center_rect_quad end', numnod, inod_start
-         if ( inod_start .ne. (numnod+numedge_cube) ) then
+         write(*,*) 'set_center_rect_quad end', nnod_cb_sph, inod_start
+         if ( inod_start .ne. (nnod_cb_sph+numedge_cube) ) then
            write (*,*) 'number of quadrature node in center is wrong',  &
-     &             inod_start, (numnod+numedge_cube)
+     &             inod_start, (nnod_cb_sph+numedge_cube)
            stop
          end if
 !
@@ -109,7 +109,7 @@
 !
       write(*,*) 'set connectivity for center cube'
       call set_center_connect_quad(iele_start, id_l_connect,            &
-     &    id_flag_quad, numnod, num_hemi, ncube_vertical)
+     &    id_flag_quad, nnod_cb_sph, num_hemi, ncube_vertical)
       if ( iele_start .ne. numele_cube ) then
         write (*,*) 'number of quadrature element of center is wrong'
         stop
@@ -155,7 +155,7 @@
 !
 !
        write(*,*) 'max_coarse_level', max_coarse_level
-       iele_start = numele
+       iele_start = nele_cb_sph
        inum = iele_start
 !
        call allocate_coarse_cube_surf_tmp

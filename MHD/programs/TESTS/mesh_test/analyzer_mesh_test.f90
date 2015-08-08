@@ -89,7 +89,6 @@
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
       call init_send_recv
-      iflag_debug = 1
 !
 !  -----    construct geometry informations
 !

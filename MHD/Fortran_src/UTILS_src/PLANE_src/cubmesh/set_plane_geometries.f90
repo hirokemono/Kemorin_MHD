@@ -1,16 +1,16 @@
 !set_plane_geometries.f90
 !     module set_plane_geometries
 !
-      module set_plane_geometries
-!
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
+!
+!      subroutine s_set_plane_geometries(elm_type)
+!
+      module set_plane_geometries
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine s_set_plane_geometries(elm_type)
 !
 ! ----------------------------------------------------------------------
 !
@@ -59,7 +59,7 @@
       numnod_y = nyi+2*ndepth
       numnod_z = nzi+2*ndepth
 !
-      numnod   = numnod_x*numnod_y*numnod_z
+      nnod_cubmesh = numnod_x*numnod_y*numnod_z
 !
       end subroutine s_set_plane_geometries
 !

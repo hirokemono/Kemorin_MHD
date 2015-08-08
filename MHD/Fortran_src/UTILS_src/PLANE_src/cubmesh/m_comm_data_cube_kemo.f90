@@ -1,9 +1,9 @@
 !m_comm_data_cube_kemo.f90
 !      module m_comm_data_cube_kemo
 !
-      module m_comm_data_cube_kemo
-!
 !      Written by Kemorin
+!
+      module m_comm_data_cube_kemo
 !
       use m_precision
 !

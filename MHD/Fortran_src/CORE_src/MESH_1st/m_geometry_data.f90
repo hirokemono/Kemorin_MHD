@@ -69,8 +69,13 @@
       module   m_geometry_data
 !
       use m_precision
+      use t_geometry_data
 !
       implicit  none
+!
+!>  structure for node data (position)
+      type(node_data), save :: node1
+!    node1%numnod
 !
 !
 !>   Stack list of number of node

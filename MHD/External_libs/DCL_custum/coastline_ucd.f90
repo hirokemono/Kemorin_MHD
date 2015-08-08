@@ -6,7 +6,7 @@
 !
       implicit none
 !
-      integer(kind = kint) :: nloop, numnod, numedge
+      integer(kind = kint) :: nloop, nnod_ucd, numedge
       integer(kind = kint), allocatable :: ie_edge(:)
       real(kind = kreal), allocatable :: tp_edge(:)
       real(kind = kreal), allocatable :: xx_edge(:,:)
@@ -56,11 +56,11 @@
       close(id_coast)
 !
 !
-      numnod =  nnod2 /  2
+      nnod_ucd =  nnod2 /  2
       numedge = nedge2 / 2
       allocate(tp_edge(2*nnod2+2))
       allocate(d_edge(2*nnod2))
-      allocate(xx_edge(3,2*numnod))
+      allocate(xx_edge(3,2*nnod_ucd))
       allocate(ie_edge(2*nedge2))
 !
       open(id_coast,file="coast_world.asc")
@@ -115,51 +115,53 @@
      &     .or. (p2.lt.180.0 .and. p1.gt.180.0) )  then
           write(*,*) 'cut line at 180deg.: ', iele, i1, p1,  i2, p2
 !
-          numnod = numnod + 1
-          tp_edge(2*numnod-1) = ((p2-180.0)*t1 - (p1-180.0)*t2) / (p2-p1)
-          tp_edge(2*numnod  ) = 180.0
-          d_edge(2*numnod-1) = d_edge(2*i1-1)
-          d_edge(2*numnod  ) = d_edge(2*i1  )
-          numnod = numnod + 2
-          tp_edge(2*numnod-1) = ((p2-180.0)*t1 - (p1-180.0)*t2) / (p2-p1)
-          tp_edge(2*numnod  ) = 180.0
-          d_edge(2*numnod-1) = d_edge(2*i2-1)
-          d_edge(2*numnod  ) = d_edge(2*i2  )
+          nnod_ucd = nnod_ucd + 1
+          tp_edge(2*nnod_ucd-1) = ((p2-180.0)*t1 - (p1-180.0)*t2)       &
+     &                           / (p2-p1)
+          tp_edge(2*nnod_ucd  ) = 180.0
+          d_edge(2*nnod_ucd-1) = d_edge(2*i1-1)
+          d_edge(2*nnod_ucd  ) = d_edge(2*i1  )
+          nnod_ucd = nnod_ucd + 2
+          tp_edge(2*nnod_ucd-1) = ((p2-180.0)*t1 - (p1-180.0)*t2)       &
+     &                           / (p2-p1)
+          tp_edge(2*nnod_ucd  ) = 180.0
+          d_edge(2*nnod_ucd-1) = d_edge(2*i2-1)
+          d_edge(2*nnod_ucd  ) = d_edge(2*i2  )
 !
           ie_edge(2*iele-1) = i1
-          ie_edge(2*iele  ) = numnod - 1
+          ie_edge(2*iele  ) = nnod_ucd - 1
 
           numedge = numedge + 1
-          ie_edge(2*numedge-1) = numnod
+          ie_edge(2*numedge-1) = nnod_ucd
           ie_edge(2*numedge  ) = i2
 
         else if(p1.eq.180.0 .and. p2.gt.180.0)  then
           write(*,*) 'move line at 180deg.: ', iele, i1, p1,  i2, p2
 
-          numnod = numnod + 1
-          tp_edge(2*numnod-1) =  t1
-          tp_edge(2*numnod  ) = -p1
-          d_edge(2*numnod-1) = d_edge(2*i2-1)
-          d_edge(2*numnod  ) = d_edge(2*i2  )
+          nnod_ucd = nnod_ucd + 1
+          tp_edge(2*nnod_ucd-1) =  t1
+          tp_edge(2*nnod_ucd  ) = -p1
+          d_edge(2*nnod_ucd-1) = d_edge(2*i2-1)
+          d_edge(2*nnod_ucd  ) = d_edge(2*i2  )
 
-          ie_edge(2*iele-1) = numnod
+          ie_edge(2*iele-1) = nnod_ucd
           ie_edge(2*iele  ) = i2
 
         else if(p2.eq.180.0 .and. p1.gt.180.0)  then
           write(*,*) 'move line at 180deg.: ', iele, i1, p1,  i2, p2
 
-          numnod = numnod + 1
-          tp_edge(2*numnod-1) =  t2
-          tp_edge(2*numnod  ) = -p2
-          d_edge(2*numnod-1) = d_edge(2*i1-1)
-          d_edge(2*numnod  ) = d_edge(2*i1  )
+          nnod_ucd = nnod_ucd + 1
+          tp_edge(2*nnod_ucd-1) =  t2
+          tp_edge(2*nnod_ucd  ) = -p2
+          d_edge(2*nnod_ucd-1) = d_edge(2*i1-1)
+          d_edge(2*nnod_ucd  ) = d_edge(2*i1  )
 
           ie_edge(2*iele-1) = i1
-          ie_edge(2*iele  ) = numnod
+          ie_edge(2*iele  ) = nnod_ucd
         end if
       end do
 !
-      do inod = 1, numnod
+      do inod = 1, nnod_ucd
         if( tp_edge(2*inod) .gt. 180.0) then
           write(*,*) 'flip angle at: ', inod, tp_edge(2*inod)
           tp_edge(2*inod) = tp_edge(2*inod) - 360.0
@@ -169,9 +171,9 @@
 !
       pi = four*atan(one)
       ratio = pi / 180.0d0
-      tp_edge(1:2*numnod) = tp_edge(1:2*numnod) * ratio
+      tp_edge(1:2*nnod_ucd) = tp_edge(1:2*nnod_ucd) * ratio
 !
-      do inod = 1, numnod
+      do inod = 1, nnod_ucd
         t = tp_edge(2*inod-1)
         p = tp_edge(2*inod  )
         xx_edge(1,inod) = cos(t) * cos(p)
@@ -179,12 +181,12 @@
         xx_edge(3,inod) = sin(t)
       end do
 !
-!      tp_edge(1:2*numnod) = tp_edge(1:2*numnod) / ratio
+!      tp_edge(1:2*nnod_ucd) = tp_edge(1:2*nnod_ucd) / ratio
 !
       open(id_file,file="coastline.0.inp")
 !
-      write(id_file,*) numnod, numedge
-      do i = 1, numnod
+      write(id_file,*) nnod_ucd, numedge
+      do i = 1, nnod_ucd
         write(id_file,'(i16,1p3e16.7)') i, xx_edge(1:3,i)
 !        write(id_file,'(i16,1p3e16.7)') i, tp_edge(2*i-1:2*i)
       end do
@@ -196,7 +198,7 @@
 !
       write(id_file,'(2i4)') ione, ione
       write(id_file,'(a,a1)') "coastline", ','
-      do i = 1, numnod
+      do i = 1, nnod_ucd
         write(id_file,'(i16,1pe16.7)') i, d_edge(2*i)
       end do
 !
@@ -211,7 +213,7 @@
 
       write(id_file,'(a)') '#include "coastline_c.h" '
 
-      write(id_file,'(a,i6,a)') 'int nnod_coast =  ', numnod,  ';'
+      write(id_file,'(a,i6,a)') 'int nnod_coast =  ', nnod_ucd,  ';'
       write(id_file,'(a,i6,a)') 'int nedge_coast = ', numedge, ';'
       write(id_file,'(a,i6,a)') 'int iedge_coast[', numedge, '][2] = {'
       do i = 1, numedge
@@ -221,16 +223,16 @@
       write(id_file,'(a)') '};'
 !
 !
-      write(id_file,'(a,i6,a)')                                        &
-     &         'double map_coast_r1[', numnod, '][2] = {'
-      do i = 1, numnod
+      write(id_file,'(a,i6,a)')                                         &
+     &         'double map_coast_r1[', nnod_ucd, '][2] = {'
+      do i = 1, nnod_ucd
         write(id_file,'(a2,1pe13.5,a1,1pe13.5,a2)')                     &
      &        '	{',tp_edge(2*i-1), ',', tp_edge(2*i), '},'
       end do
       write(id_file,'(a)') '};'
 !
-      write(id_file,'(a,i6,a)') 'double d_coast_r1[',numnod,'] = {'
-      do i = 1, numnod
+      write(id_file,'(a,i6,a)') 'double d_coast_r1[',nnod_ucd,'] = {'
+      do i = 1, nnod_ucd
         write(id_file,'(10(1pe8.2,a2))')  d_edge(2*i),', '
       end do
       write(id_file,'(a)') '};'
