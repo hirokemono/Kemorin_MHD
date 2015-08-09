@@ -70,6 +70,9 @@
 !
       subroutine  set_numnod_z_commute
 !
+!
+      node1%numnod = internal_node
+!
       internal_node = totalnod
       numnod = internal_node
       totalele = internal_node - 1
