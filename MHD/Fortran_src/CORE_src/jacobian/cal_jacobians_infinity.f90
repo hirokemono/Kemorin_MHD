@@ -52,7 +52,7 @@
         do ii = 1, i0*i0*i0
           ix = int_start3(i0) + ii
 !
-          call s_cal_jacobian_3d_inf_8(numnod, numele,                  &
+          call s_cal_jacobian_3d_inf_8(node1%numnod, numele,            &
      &        np_smp, ie, xx, sf_grp%num_item, sf_grp%item_sf_grp,      &
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
      &        sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                &
@@ -89,7 +89,7 @@
         do ii = 1, i0*i0*i0
           ix = int_start3(i0) + ii
 !
-          call s_cal_jacobian_3d_inf_20(numnod, numele,                 &
+          call s_cal_jacobian_3d_inf_20(node1%numnod, numele,           &
      &        np_smp, ie, xx, sf_grp%num_item, sf_grp%item_sf_grp,      &
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
      &        sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                &
@@ -127,7 +127,7 @@
 !
           ix = int_start3(i0) + ii
 !
-          call s_cal_jacobian_3d_inf_27(numnod, numele,                 &
+          call s_cal_jacobian_3d_inf_27(node1%numnod, numele,           &
      &        np_smp, ie, xx, sf_grp%num_item, sf_grp%item_sf_grp,      &
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
      &        sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                &
@@ -165,7 +165,7 @@
         do ii = 1, i0*i0*i0
           ix = int_start3(i0) + ii
 !
-          call s_cal_jacobian_3d_inf_8_20(numnod, numele,               &
+          call s_cal_jacobian_3d_inf_8_20(node1%numnod, numele,         &
      &        np_smp, ie, xx, sf_grp%num_item, sf_grp%item_sf_grp,      &
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
      &        sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                &

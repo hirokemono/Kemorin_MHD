@@ -48,7 +48,7 @@
         do ii = 1, i0*i0*i0
           ix = int_start3(i0) + ii
 !
-          call s_cal_jacobian_3d_20(numnod, numele, np_smp,             &
+          call s_cal_jacobian_3d_20(node1%numnod, numele, np_smp,       &
      &      iele_smp_stack, ie, xx, xjac_q(1,ix), axjac_q(1,ix),        &
      &      dwx(1,1,ix,1), dwx(1,1,ix,2), dwx(1,1,ix,3),                &
      &      dxidx_20(1,ix,1,1), dxidx_20(1,ix,2,1), dxidx_20(1,ix,3,1), &
@@ -85,8 +85,8 @@
         do ii = 1, i0*i0
           ix = int_start2(i0) + ii
 !
-          call s_cal_jacobian_2d_8                                      &
-     &       (numnod, numsurf, ie_surf, xx, np_smp, isurf_smp_stack,    &
+          call s_cal_jacobian_2d_8(node1%numnod, numsurf,               &
+     &       ie_surf, xx, np_smp, isurf_smp_stack,                      &
      &        jac_2d_q%xj_sf(1:numsurf,ix),                             &
      &        jac_2d_q%axj_sf(1:numsurf,ix),                            &
      &        jac_2d_q%xsf_sf(1:numsurf,ix,1),                          &
@@ -119,8 +119,8 @@
         do ii = 1, i0
           ix = int_start1(i0) + ii
 !
-          call s_cal_jacobian_1d_3                                      &
-     &       (numnod, numedge, ie_edge, xx, np_smp, iedge_smp_stack,    &
+          call s_cal_jacobian_1d_3(node1%numnod, numedge,               &
+     &        ie_edge, xx, np_smp, iedge_smp_stack,                     &
      &        jac_1d_q%xj_edge(1:numedge,ix),                           &
      &        jac_1d_q%axj_edge(1:numedge,ix),                          &
      &        jac_1d_q%xeg_edge(1:numedge,ix,1),                        &
@@ -158,7 +158,7 @@
         do ii = 1, i0*i0
           ix = int_start2(i0) + ii
 !
-          call s_cal_jacobian_sf_grp_8(numnod, numele, ie, xx,          &
+          call s_cal_jacobian_sf_grp_8(node1%numnod, numele, ie, xx,    &
      &        sf_grp%num_grp, sf_grp%num_item, sf_grp%item_sf_grp,      &
      &        np_smp, sf_grp%num_grp_smp, sf_grp%istack_grp_smp,        &
      &        jac_sf_grp_q%xj_sf(1:sf_grp%num_item,ix),                 &
