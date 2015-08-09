@@ -65,18 +65,18 @@
       type(element_around_node), intent(inout) :: host_ele
 !
 !
-      call alloc_numele_belonged(numnod, host_ele)
+      call alloc_numele_belonged(node1%numnod, host_ele)
 !
-      call count_belonged_ele_4_node(numnod, numele,                    &
+      call count_belonged_ele_4_node(node1%numnod, numele,              &
      &    nnod_4_ele, ie, ione, numele, host_ele%nele_4_node)
-      call s_cal_minmax_and_stacks(numnod,                              &
+      call s_cal_minmax_and_stacks(node1%numnod,                        &
      &    host_ele%nele_4_node, izero, host_ele%istack_4_node,          &
      &    host_ele%ntot, host_ele%nmax, host_ele%nmin)
 !
 !
       call alloc_iele_belonged(host_ele)
 !
-      call set_belonged_ele_4_node(numnod, numele,                      &
+      call set_belonged_ele_4_node(node1%numnod, numele,                &
      &    nnod_4_ele, ie,  ione, numele,                                &
      &    host_ele%ntot, host_ele%istack_4_node, host_ele%nele_4_node,  &
      &    host_ele%iele_4_node, host_ele%iconn_4_node)
@@ -95,19 +95,19 @@
       type(element_around_node), intent(inout) :: host_surf
 !
 !
-      call alloc_numele_belonged(numnod, host_surf)
+      call alloc_numele_belonged(node1%numnod, host_surf)
 !
-      call count_belonged_ele_4_node(numnod, numsurf,                   &
+      call count_belonged_ele_4_node(node1%numnod, numsurf,             &
      &    nnod_4_surf, ie_surf, ione, numsurf,                          &
      &    host_surf%nele_4_node)
-      call s_cal_minmax_and_stacks(numnod,                              &
+      call s_cal_minmax_and_stacks(node1%numnod,                        &
      &    host_surf%nele_4_node, izero, host_surf%istack_4_node,        &
      &    host_surf%ntot, host_surf%nmax, host_surf%nmin)
 !
 !
       call alloc_iele_belonged(host_surf)
 !
-      call set_belonged_ele_4_node(numnod, numsurf,                     &
+      call set_belonged_ele_4_node(node1%numnod, numsurf,               &
      &    nnod_4_surf, ie_surf,  ione, numsurf,                         &
      &    host_surf%ntot, host_surf%istack_4_node,                      &
      &    host_surf%nele_4_node, host_surf%iele_4_node,                 &
@@ -127,18 +127,18 @@
       type(element_around_node), intent(inout) :: host_edge
 !
 !
-      call alloc_numele_belonged(numnod, host_edge)
+      call alloc_numele_belonged(node1%numnod, host_edge)
 !
-      call count_belonged_ele_4_node(numnod, numedge,                   &
+      call count_belonged_ele_4_node(node1%numnod, numedge,             &
      &    nnod_4_edge, ie_edge, ione, numedge, host_edge%nele_4_node)
-      call s_cal_minmax_and_stacks(numnod,                              &
+      call s_cal_minmax_and_stacks(node1%numnod,                        &
      &    host_edge%nele_4_node, izero, host_edge%istack_4_node,        &
      &    host_edge%ntot, host_edge%nmax, host_edge%nmin)
 !
 !
       call alloc_iele_belonged(host_edge)
 !
-      call set_belonged_ele_4_node(numnod, numedge,                     &
+      call set_belonged_ele_4_node(node1%numnod, numedge,               &
      &    nnod_4_edge, ie_edge,  ione, numedge,                         &
      &    host_edge%ntot, host_edge%istack_4_node,                      &
      &    host_edge%nele_4_node, host_edge%iele_4_node,                 &

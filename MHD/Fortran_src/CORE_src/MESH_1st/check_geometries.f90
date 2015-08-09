@@ -38,10 +38,10 @@
 !
 !
       write(50+my_rank,*) 'numnod, internal_node'
-      write(50+my_rank,'(2i16)') numnod, internal_node
+      write(50+my_rank,'(2i16)') node1%numnod, internal_node
 !
       write(50+my_rank,*) 'inod, position'
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         write(50+my_rank,'(i16,1p3e25.14)') inod, xx(inod,1:3)
       end do
 !

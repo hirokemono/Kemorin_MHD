@@ -128,7 +128,7 @@
       call allocate_node_geometry
 !
 !$omp parallel do
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         inod_global(inod) = node%inod_global(inod)
         xx(inod,1) = node%xx(inod,1)
         xx(inod,2) = node%xx(inod,2)
@@ -212,11 +212,11 @@
       real(kind = kreal) :: err
 !
 !
-      if(node%numnod .ne. numnod) write(*,*) 'numnod',                  &
-     &      my_rank, node%numnod, numnod
+      if(node%numnod .ne. node1%numnod) write(*,*) 'numnod',            &
+     &      my_rank, node%numnod, node1%numnod
       if(node%internal_node .ne. internal_node) write(*,*)              &
      &      'numnod', my_rank, node%internal_node, internal_node
-      do i = 1, numnod
+      do i = 1, node1%numnod
         err = sqrt((node%xx(i,1) - xx(i,1))**2                          &
      &           + (node%xx(i,2) - xx(i,2))**2                          &
      &           + (node%xx(i,3) - xx(i,3))**2)

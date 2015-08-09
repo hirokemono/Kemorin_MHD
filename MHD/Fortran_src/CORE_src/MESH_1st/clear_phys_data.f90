@@ -30,7 +30,7 @@
       subroutine clear_nodal_data(numdir, i_res)
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
 !
       use m_node_phys_data
       use delete_field_smp
@@ -39,7 +39,7 @@
 !
 !
 !$omp parallel
-      call delete_phys_data_smp(np_smp, numnod, inod_smp_stack,         &
+      call delete_phys_data_smp(np_smp, node1%numnod, inod_smp_stack,   &
      &    num_tot_nod_phys, numdir, i_res, d_nod)
 !$omp end parallel
 !

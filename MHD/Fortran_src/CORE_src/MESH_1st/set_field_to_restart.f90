@@ -24,7 +24,7 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
       use t_field_data_IO
 !
@@ -75,7 +75,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      call copy_field_name_to_rst_IO(numnod, num_nod_phys,              &
+      call copy_field_name_to_rst_IO(node1%numnod, num_nod_phys,        &
      &    istack_nod_component, phys_nod_name,                          &
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO, fld_IO%num_comp_IO, &
      &    fld_IO%istack_comp_IO, fld_IO%fld_name, fld_IO%nnod_IO)
@@ -90,7 +90,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      call copy_field_data_to_rst_IO(numnod, num_nod_phys,              &
+      call copy_field_data_to_rst_IO(node1%numnod, num_nod_phys,        &
      &    num_tot_nod_phys, istack_nod_component, phys_nod_name, d_nod, &
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
      &    fld_IO%istack_comp_IO, fld_IO%fld_name, fld_IO%nnod_IO,       &
@@ -105,7 +105,7 @@
       type(field_IO), intent(in) :: fld_IO
 !
 !
-      call copy_field_data_from_rst_IO(numnod, num_nod_phys,            &
+      call copy_field_data_from_rst_IO(node1%numnod, num_nod_phys,      &
      &    num_tot_nod_phys, istack_nod_component, phys_nod_name, d_nod, &
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
      &    fld_IO%istack_comp_IO, fld_IO%fld_name, fld_IO%nnod_IO,       &
@@ -135,7 +135,8 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      call simple_copy_fld_dat_to_rst_IO(numnod, num_nod_phys, d_nod,   &
+      call simple_copy_fld_dat_to_rst_IO                                &
+     &   (node1%numnod, num_nod_phys, d_nod,                            &
      &    fld_IO%ntot_comp_IO, fld_IO%nnod_IO, fld_IO%d_IO)
 !
       end subroutine simple_copy_fld_data_to_rst

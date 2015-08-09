@@ -71,7 +71,6 @@
 !
       subroutine init_read_ucd_data(my_rank, istep_ucd)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_node_phys_data
 !
@@ -80,7 +79,7 @@
       integer(kind = kint),  intent(in) :: my_rank, istep_ucd
 !
 !
-      input_ucd%nnod =      numnod
+      input_ucd%nnod =      node1%numnod
       input_ucd%ntot_comp = num_nod_phys_vis
       call sel_read_udt_param(my_rank, istep_ucd, input_ucd)
 !
@@ -119,7 +118,7 @@
 !
       subroutine set_data_by_read_ucd(my_rank, istep_ucd)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
 !
       use set_and_cal_udt_data
@@ -129,7 +128,7 @@
 !
 !
       call sel_read_udt_file(my_rank, istep_ucd, input_ucd)
-      call set_field_by_udt_data(numnod, num_nod_phys,                  &
+      call set_field_by_udt_data(node1%numnod, num_nod_phys,            &
      &    num_tot_nod_phys, istack_nod_component, phys_nod_name,        &
      &    d_nod, input_ucd)
 !
@@ -141,7 +140,7 @@
       subroutine set_data_by_read_ucd_once(my_rank, istep_ucd,          &
      &          ifile_format, ucd_prefix)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
 !
       use set_and_cal_udt_data
@@ -157,9 +156,9 @@
       local_ucd%ifmt_file =   ifile_format
       local_ucd%file_prefix = ucd_prefix
 !
-      local_ucd%nnod =      numnod
+      local_ucd%nnod =      node1%numnod
       call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
-      call set_field_by_udt_data(numnod, num_nod_phys,                  &
+      call set_field_by_udt_data(node1%numnod, num_nod_phys,            &
      &    num_tot_nod_phys, istack_nod_component, phys_nod_name,        &
      &    d_nod, local_ucd)
       call deallocate_ucd_data(local_ucd)
@@ -171,7 +170,7 @@
       subroutine add_ucd_to_data(my_rank, istep_ucd,                    &
      &          ifile_format, ucd_prefix)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
 !
       use set_and_cal_udt_data
@@ -187,9 +186,9 @@
       local_ucd%ifmt_file =   ifile_format
       local_ucd%file_prefix = ucd_prefix
 !
-      local_ucd%nnod =      numnod
+      local_ucd%nnod =      node1%numnod
       call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
-      call add_field_by_udt_data(numnod, num_nod_phys,                  &
+      call add_field_by_udt_data(node1%numnod, num_nod_phys,            &
      &    num_tot_nod_phys, istack_nod_component, phys_nod_name,        &
      &    d_nod, local_ucd)
       call deallocate_ucd_data(local_ucd)
@@ -201,7 +200,7 @@
       subroutine subtract_by_ucd_data(my_rank, istep_ucd,               &
      &          ifile_format, ucd_prefix)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
 !
       use set_and_cal_udt_data
@@ -217,9 +216,9 @@
       local_ucd%ifmt_file =   ifile_format
       local_ucd%file_prefix = ucd_prefix
 !
-      local_ucd%nnod = numnod
+      local_ucd%nnod = node1%numnod
       call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
-      call subtract_field_by_udt_data(numnod, num_nod_phys,             &
+      call subtract_field_by_udt_data(node1%numnod, num_nod_phys,       &
      &    num_tot_nod_phys, istack_nod_component, phys_nod_name,        &
      &    d_nod, local_ucd)
       call deallocate_ucd_data(local_ucd)
@@ -233,7 +232,6 @@
      &          ifile_format, ucd_prefix, field_name,                   &
      &          i_field, ncomp_field)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_node_phys_data
 !
@@ -253,7 +251,7 @@
       local_ucd%ifmt_file =   ifile_format
       local_ucd%file_prefix = ucd_prefix
 !
-      local_ucd%nnod =      numnod
+      local_ucd%nnod =      node1%numnod
       call sel_read_udt_param(my_rank, istep_ucd, local_ucd)
       call find_field_id_in_ucd(local_ucd, field_name,                  &
      &    i_field, ncomp_field)
@@ -266,8 +264,6 @@
       subroutine set_one_field_by_read_ucd_once(my_rank, istep_ucd,     &
      &          ifile_format, ucd_prefix, i_field, ncomp_field,         &
      &          numnod, d_fld)
-!
-      use m_geometry_data
 !
       use set_and_cal_udt_data
       use ucd_IO_select

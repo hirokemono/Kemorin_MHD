@@ -28,7 +28,7 @@
 !
       subroutine copy_scalar_component(i_target, i_org)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
       use copy_field_smp
 !
@@ -36,7 +36,7 @@
 !
 !
 !$omp parallel
-      call copy_nod_scalar_smp(np_smp, numnod, inod_smp_stack,          &
+      call copy_nod_scalar_smp(np_smp, node1%numnod, inod_smp_stack,    &
      &    d_nod(1,i_org), d_nod(1,i_target) )
 !$omp end parallel
 !
@@ -46,7 +46,7 @@
 !
       subroutine copy_vector_component(i_target, i_org)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
       use copy_field_smp
 !
@@ -54,7 +54,7 @@
 !
 !
 !$omp parallel
-      call copy_nod_vector_smp(np_smp, numnod, inod_smp_stack,          &
+      call copy_nod_vector_smp(np_smp, node1%numnod, inod_smp_stack,    &
      &    d_nod(1,i_org), d_nod(1,i_target) )
 !$omp end parallel
 !
@@ -64,7 +64,7 @@
 !
       subroutine copy_tensor_components(i_target, i_org)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
       use copy_field_smp
 !
@@ -72,7 +72,8 @@
 !
 !
 !$omp parallel
-      call copy_nod_sym_tensor_smp(np_smp, numnod, inod_smp_stack,      &
+      call copy_nod_sym_tensor_smp                                      &
+     &   (np_smp, node1%numnod, inod_smp_stack,                         &
      &    d_nod(1,i_org), d_nod(1,i_target) )
 !$omp end parallel
 !

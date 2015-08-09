@@ -147,10 +147,10 @@
       type(group_data), intent(in) :: ele_grp
 !
 !
-      call allocate_imark_4_grp(numnod)
+      call allocate_imark_4_grp(node1%numnod)
       call alloc_num_other_grp(ele_grp%num_grp, ele_grp_data1%node)
 !
-      call count_nod_4_ele_grp(numnod, numele, nnod_4_ele, ie,          &
+      call count_nod_4_ele_grp(node1%numnod, numele, nnod_4_ele, ie,    &
      &   ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,         &
      &   ele_grp%item_grp, ele_grp_data1%node%ntot_e_grp,               &
      &   ele_grp_data1%node%nitem_e_grp,                                &
@@ -159,7 +159,7 @@
 !
       call alloc_item_other_grp(ele_grp_data1%node)
 !
-      call set_nod_4_ele_grp(numnod, numele, nnod_4_ele, ie,            &
+      call set_nod_4_ele_grp(node1%numnod, numele, nnod_4_ele, ie,      &
      &    ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,        &
      &    ele_grp%item_grp, ele_grp_data1%node%ntot_e_grp,              &
      &    ele_grp_data1%node%nitem_e_grp,                               &

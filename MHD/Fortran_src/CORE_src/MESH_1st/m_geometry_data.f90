@@ -70,6 +70,7 @@
 !
       use m_precision
       use t_geometry_data
+      use m_geometry_parameter
 !
       implicit  none
 !
@@ -234,8 +235,6 @@
 !
       subroutine allocate_geometry_data
 !
-      use m_geometry_parameter
-!
 !
       call allocate_node_geometry
       call allocate_element_connection
@@ -342,7 +341,6 @@
 !
       subroutine allocate_node_geometry
 !
-      use m_geometry_parameter
 !
 !
       allocate(inod_global(numnod))
@@ -370,8 +368,6 @@
 ! ------------------------------------------------------
 !
       subroutine allocate_element_connection
-!
-      use m_geometry_parameter
 !
 !
       allocate(iele_global(numele))
@@ -419,7 +415,6 @@
 !
        subroutine allocate_element_geometry
 !
-       use m_geometry_parameter
 !
         allocate(x_ele(numele,3))
         allocate(r_ele(numele))
@@ -477,7 +472,6 @@
       subroutine allocate_surface_connect
 !
       use m_geometry_constants
-      use m_geometry_parameter
 !
       allocate( isf_4_ele(numele,nsurf_4_ele) )
       allocate( isf_rot_ele(numele,nsurf_4_ele) )
@@ -497,7 +491,6 @@
       subroutine allocate_edge_connect
 !
       use m_geometry_constants
-      use m_geometry_parameter
 !
       allocate( iedge_4_sf(numsurf,nedge_4_surf) )
       allocate( ie_edge(numedge,nnod_4_edge) )
@@ -516,7 +509,6 @@
       subroutine allocate_edge_4_ele
 !
       use m_geometry_constants
-      use m_geometry_parameter
 !
       allocate( iedge_4_ele(numele,nedge_4_ele) )
       iedge_4_ele = 0
@@ -528,7 +520,6 @@
 !
       subroutine allocate_ele_4_surf
 !
-      use m_geometry_parameter
 !
       allocate( iele_4_surf(numsurf,2,2) )
       iele_4_surf = 0
@@ -539,7 +530,6 @@
 !
       subroutine allocate_ele_4_edge_num
 !
-      use m_geometry_parameter
 !
       allocate( num_iele_4_edge(numedge) )
       allocate( istack_iele_4_edge(0:numedge) )
@@ -552,7 +542,6 @@
 !
       subroutine allocate_ele_4_edge_item
 !
-      use m_geometry_parameter
 !
       ntot_iele_4_edge = istack_iele_4_edge(numedge)
       allocate( iele_4_edge(ntot_iele_4_edge,2) )
@@ -564,7 +553,6 @@
 !
       subroutine allocate_surf_4_edge_num
 !
-      use m_geometry_parameter
 !
       allocate( num_isurf_4_edge(numedge) )
       allocate( istack_isurf_4_edge(0:numedge) )
@@ -577,7 +565,6 @@
 !
       subroutine allocate_surf_4_edge_item
 !
-      use m_geometry_parameter
 !
       ntot_isurf_4_edge = istack_isurf_4_edge(numedge)
       allocate( isurf_4_edge(ntot_isurf_4_edge,2) )

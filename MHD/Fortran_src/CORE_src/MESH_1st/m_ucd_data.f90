@@ -69,12 +69,11 @@
 !
       subroutine link_local_mesh_4_ucd_out
 !
-      use m_geometry_parameter
       use m_geometry_data
       use set_and_cal_udt_data
 !
 !
-      call const_udt_local_nodes(numnod, xx, fem_ucd)
+      call const_udt_local_nodes(node1%numnod, xx, fem_ucd)
       call const_udt_local_connect(internal_node, numele, nnod_4_ele,   &
      &    ie, fem_ucd)
 !
@@ -84,13 +83,13 @@
 !
       subroutine link_global_mesh_4_ucd_out
 !
-      use m_geometry_parameter
       use m_geometry_data
       use set_ucd_data
       use set_and_cal_udt_data
 !
 !
-      call link_node_data_2_output(numnod, inod_global, xx, fem_ucd)
+      call link_node_data_2_output                                      &
+     &   (node1%numnod, inod_global, xx, fem_ucd)
       call const_udt_global_connect(internal_node, numele, nnod_4_ele,  &
      &    iele_global, ie, fem_ucd)
 !
@@ -101,12 +100,13 @@
 !
       subroutine link_fem_num_field_2_ucd_out
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
       use set_ucd_data
 !
 !
-      call link_num_field_2_output(numnod, num_nod_phys_vis, fem_ucd)
+      call link_num_field_2_output                                      &
+     &   (node1%numnod, num_nod_phys_vis, fem_ucd)
 !
       end subroutine link_fem_num_field_2_ucd_out
 !
@@ -114,12 +114,12 @@
 !
       subroutine link_fem_node_data_2_ucd_out
 !
-      use m_geometry_parameter
       use m_geometry_data
       use set_ucd_data
 !
 !
-      call link_node_data_2_output(numnod, inod_global, xx, fem_ucd)
+      call link_node_data_2_output                                      &
+     &   (node1%numnod, inod_global, xx, fem_ucd)
 !
       end subroutine link_fem_node_data_2_ucd_out
 !
@@ -127,12 +127,12 @@
 !
       subroutine link_fem_field_data_2_ucd_out
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
       use set_ucd_data
 !
 !
-      call link_field_data_2_output(numnod, num_nod_phys,               &
+      call link_field_data_2_output(node1%numnod, num_nod_phys,         &
      &    num_tot_nod_phys, num_nod_phys_vis, num_tot_nod_phys_vis,     &
      &    num_nod_component, phys_nod_name, d_nod, fem_ucd)
 !
@@ -159,7 +159,7 @@
       subroutine link_output_ucd_file_once(my_rank, istep_ucd,          &
      &          ifile_format, ucd_prefix)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
 !
       use set_ucd_data
@@ -172,7 +172,7 @@
       type(ucd_data) :: local_ucd
 !
 !
-      call link_field_data_2_output(numnod, num_nod_phys,               &
+      call link_field_data_2_output(node1%numnod, num_nod_phys,         &
      &    num_tot_nod_phys, num_nod_phys_vis, num_tot_nod_phys_vis,     &
      &    num_nod_component, phys_nod_name, d_nod, local_ucd)
 !

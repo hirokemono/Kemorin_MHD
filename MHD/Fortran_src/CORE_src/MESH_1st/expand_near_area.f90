@@ -24,7 +24,7 @@
 !
       subroutine extend_near_area_no_flag(my_rank, iloop)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_machine_parameter
       use m_near_node_id_4_node
       use expand_near_element
@@ -35,10 +35,10 @@
       integer(kind = kint) :: i
 !
 !
-      call allocate_mark_4_near_node(np_smp, numnod)
+      call allocate_mark_4_near_node(np_smp, node1%numnod)
       call allocate_imark_4_ele(np_smp, numele)
 !
-      call allocate_iflag_expand(numnod)
+      call allocate_iflag_expand(node1%numnod)
 !
       do i = 1, iloop
 !
@@ -58,8 +58,8 @@
 !
       subroutine extend_near_area_with_flag(my_rank, nref_neib)
 !
-      use m_geometry_parameter
       use m_machine_parameter
+      use m_geometry_data
       use m_near_node_id_4_node
       use m_near_element_id_4_node
       use expand_near_element
@@ -70,15 +70,15 @@
       integer(kind = kint) :: i, iflag_finish
 !
 !
-      call allocate_mark_4_near_node(np_smp, numnod)
+      call allocate_mark_4_near_node(np_smp, node1%numnod)
       call allocate_imark_4_ele(np_smp, numele)
 !
-      call allocate_iflag_expand(numnod)
+      call allocate_iflag_expand(node1%numnod)
 !
-      call set_expand_flag(numnod, internal_node, nref_neib,            &
+      call set_expand_flag(node1%numnod, internal_node, nref_neib,      &
      &    near_node1_tbl%num_nod, iflag_expand, iflag_finish)
 !
-!      call check_near_elements(my_rank, numnod, near_ele1_tbl)
+!      call check_near_elements(my_rank, node1%numnod, near_ele1_tbl)
 !
       i = 0
       do
@@ -88,7 +88,7 @@
         call expand_element_list
         call expand_node_list
 !
-        call set_expand_flag(numnod, internal_node, nref_neib,          &
+        call set_expand_flag(node1%numnod, internal_node, nref_neib,    &
      &      near_node1_tbl%num_nod, iflag_expand, iflag_finish)
 !
         if (iflag_finish .eq. 0) exit
@@ -107,7 +107,7 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_element_id_4_node
       use m_near_node_id_4_node
       use m_near_element_id_4_node
@@ -117,8 +117,8 @@
       use copy_near_node_ele_type
 !
 !
-      call alloc_num_4_near_nod(numnod, near_ele1_wide)
-      call count_expanded_near_element(np_smp, numnod, numele,          &
+      call alloc_num_4_near_nod(node1%numnod, near_ele1_wide)
+      call count_expanded_near_element(np_smp, node1%numnod, numele,    &
      &    inod_smp_stack, iflag_expand, ele_4_nod1%ntot,                &
      &    ele_4_nod1%istack_4_node, ele_4_nod1%iele_4_node,             &
      &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &
@@ -127,13 +127,13 @@
      &    near_ele1_tbl%id_near_nod, near_ele1_wide%num_nod)
 !
       call s_cal_minmax_and_stacks                                      &
-     &   (numnod, near_ele1_wide%num_nod, izero,                        &
+     &   (node1%numnod, near_ele1_wide%num_nod, izero,                  &
      &    near_ele1_wide%istack_nod, near_ele1_wide%ntot,               &
      &    near_ele1_wide%nmax, near_ele1_wide%nmin)
 !
       call alloc_near_element(near_ele1_wide)
 !
-      call set_expanded_near_element(np_smp, numnod, numele,            &
+      call set_expanded_near_element(np_smp, node1%numnod, numele,      &
      &    inod_smp_stack, iflag_expand, ele_4_nod1%ntot,                &
      &    ele_4_nod1%istack_4_node, ele_4_nod1%iele_4_node,             &
      &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &
@@ -143,7 +143,8 @@
      &    near_ele1_wide%num_nod, near_ele1_wide%istack_nod,            &
      &    near_ele1_wide%id_near_nod)
 !
-      call copy_extended_ele_id(numnod, near_ele1_tbl, near_ele1_wide)
+      call copy_extended_ele_id                                         &
+     &   (node1%numnod, near_ele1_tbl, near_ele1_wide)
 !
       call dealloc_near_node(near_ele1_wide)
       call dealloc_num_4_near_node(near_ele1_wide)
@@ -159,7 +160,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_near_node_id_4_node
       use m_near_element_id_4_node
@@ -171,24 +171,26 @@
       use set_distance_near_nod
 !
 !
-      call alloc_num_4_near_nod(numnod, near_node1_wide)
+      call alloc_num_4_near_nod(node1%numnod, near_node1_wide)
 !
-      call add_num_nod_4_group(np_smp, numnod, numele, nnod_4_ele, ie,  &
-     &    inod_smp_stack, numnod, near_ele1_tbl%ntot,                   &
+      call add_num_nod_4_group                                          &
+     &   (np_smp, node1%numnod, numele, nnod_4_ele, ie,                 &
+     &    inod_smp_stack, node1%numnod, near_ele1_tbl%ntot,             &
      &    near_ele1_tbl%istack_nod, near_ele1_tbl%id_near_nod,          &
      &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &
      &    near_node1_tbl%id_near_nod, iflag_expand,                     &
      &    near_node1_wide%num_nod)
 !
       call s_cal_minmax_and_stacks                                      &
-     &   (numnod, near_node1_wide%num_nod, izero,                       &
+     &   (node1%numnod, near_node1_wide%num_nod, izero,                 &
      &    near_node1_wide%istack_nod, near_node1_wide%ntot,             &
      &    near_node1_wide%nmax, near_node1_wide%nmin)
 !
       call alloc_near_node(near_node1_wide)
 !
-      call add_nod_id_4_group(np_smp, numnod, numele, nnod_4_ele, ie,   &
-     &    inod_smp_stack, numnod, near_ele1_tbl%ntot,                   &
+      call add_nod_id_4_group                                           &
+     &   (np_smp, node1%numnod, numele, nnod_4_ele, ie,                 &
+     &    inod_smp_stack, node1%numnod, near_ele1_tbl%ntot,             &
      &    near_ele1_tbl%istack_nod, near_ele1_tbl%id_near_nod,          &
      &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &
      &    near_node1_tbl%id_near_nod, near_node1_tbl%iweight,           &
@@ -197,18 +199,18 @@
      &    near_node1_wide%id_near_nod, near_node1_wide%iweight)
 !
       call add_distance_flag                                            &
-     &   (np_smp, inod_smp_stack, numnod,  near_node1_tbl%ntot,         &
+     &   (np_smp, inod_smp_stack, node1%numnod,  near_node1_tbl%ntot,   &
      &    near_node1_tbl%istack_nod, near_node1_tbl%idist,              &
      &    near_node1_wide%ntot, near_node1_wide%istack_nod,             &
      &    near_node1_wide%idist)
 !
       call sort_added_nod_4_group                                       &
-     &   (numnod, near_node1_tbl%istack_nod, iflag_expand,              &
+     &   (node1%numnod, near_node1_tbl%istack_nod, iflag_expand,        &
      &    near_node1_wide%ntot, near_node1_wide%istack_nod,             &
      &    near_node1_wide%id_near_nod, near_node1_wide%iweight)
 !
       call copy_wider_id_2_near_type                                    &
-     &   (numnod, near_node1_tbl, near_node1_wide)
+     &   (node1%numnod, near_node1_tbl, near_node1_wide)
 !
       call dealloc_near_node(near_node1_wide)
       call dealloc_num_4_near_node(near_node1_wide)

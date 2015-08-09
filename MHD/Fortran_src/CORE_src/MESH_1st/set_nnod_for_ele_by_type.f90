@@ -73,7 +73,7 @@
 !
 !
       call set_nnod_for_ele_by_eletype(numele, elmtyp, nodelm, ierr)
-      call check_wrong_element_list(numnod, numele, nnod_4_ele,         &
+      call check_wrong_element_list(node1%numnod, numele, nnod_4_ele,   &
      &    nodelm, ie, ierr)
 !
       end subroutine set_num_node_for_ele_by_etype

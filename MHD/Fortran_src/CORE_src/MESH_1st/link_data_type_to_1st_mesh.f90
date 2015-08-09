@@ -55,7 +55,7 @@
       type(node_data), intent(inout) :: node
 !
 !
-      node%numnod =         numnod
+      node%numnod =        node1%numnod
       node%internal_node = internal_node
 !
       node%inod_global => inod_global

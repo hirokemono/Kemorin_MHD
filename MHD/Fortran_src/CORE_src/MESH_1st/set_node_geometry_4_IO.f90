@@ -33,13 +33,13 @@
       integer(kind = kint) :: inod
 !
 !
-      numnod_dummy = numnod
+      numnod_dummy = node1%numnod
       internal_node_dummy = internal_node
 !
       call allocate_node_data_dummy
 !
 !$omp parallel do
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         globalnodid_dummy(inod) = inod_global(inod)
         xx_dummy(inod,1) = xx(inod,1)
         xx_dummy(inod,2) = xx(inod,2)
@@ -56,13 +56,13 @@
       integer(kind = kint) :: inod
 !
 !
-      numnod_dummy = numnod
+      numnod_dummy = node1%numnod
       internal_node_dummy = internal_node
 !
       call allocate_node_data_dummy
 !
 !$omp parallel do
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         globalnodid_dummy(inod) = inod_global(inod)
         xx_dummy(inod,1) = radius(inod)
         xx_dummy(inod,2) = colatitude(inod)
@@ -80,13 +80,13 @@
       integer(kind = kint) :: inod
 !
 !
-      numnod_dummy = numnod
+      numnod_dummy = node1%numnod
       internal_node_dummy = internal_node
 !
       call allocate_node_data_dummy
 !
 !$omp parallel do
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         globalnodid_dummy(inod) = inod_global(inod)
         xx_dummy(inod,1) = s_cylinder(inod)
         xx_dummy(inod,2) = longitude(inod)
@@ -112,7 +112,7 @@
       call allocate_node_geometry
 !
 !$omp parallel do
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         inod_global(inod) = globalnodid_dummy(inod)
         xx(inod,1) = xx_dummy(inod,1)
         xx(inod,2) = xx_dummy(inod,2)
@@ -132,7 +132,7 @@
 !
 !
 !$omp parallel do
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
 !        inod_global(inod) = globalnodid_dummy(inod)
         radius(inod) =     xx_dummy(inod,1)
         colatitude(inod) = xx_dummy(inod,2)
@@ -152,7 +152,7 @@
 !
 !
 !$omp parallel do
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
 !        inod_global(inod) = globalnodid_dummy(inod)
         s_cylinder(inod) = xx_dummy(inod,1)
         longitude(inod) =  xx_dummy(inod,2)

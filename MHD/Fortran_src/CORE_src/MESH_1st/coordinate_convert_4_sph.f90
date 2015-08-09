@@ -48,12 +48,12 @@
         numdir = istack_nod_component(i  ) - istack_nod_component(i-1)
         if     (numdir .eq. 6) then
           call overwrite_xyz_tensor_by_sph_smp                          &
-     &       (np_smp, numnod, inod_smp_stack, d_nod(1,i_fld),           &
+     &       (np_smp, node1%numnod, inod_smp_stack, d_nod(1,i_fld),     &
      &        xx(1,1), xx(1,2), xx(1,3), radius, s_cylinder,            &
      &        a_radius, a_s_cylinder)
         else if(numdir .eq. 3) then
           call overwrite_sph_vect_2_xyz_smp                             &
-     &       (np_smp, numnod, inod_smp_stack, d_nod(1,i_fld),           &
+     &       (np_smp, node1%numnod, inod_smp_stack, d_nod(1,i_fld),     &
      &        colatitude(1), longitude(1))
         end if
       end do

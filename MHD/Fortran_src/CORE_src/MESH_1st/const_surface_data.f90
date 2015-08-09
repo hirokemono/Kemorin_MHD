@@ -39,11 +39,12 @@
 !   set hash data for suface elements using sum of local node ID
 !
       call alloc_sum_hash                                               &
-     &   (numnod, numele, nsurf_4_ele, nnod_4_surf, surf_ele_tbl)
+     &   (node1%numnod, numele, nsurf_4_ele, nnod_4_surf, surf_ele_tbl)
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'const_surf_hash'
-      call const_surf_hash(numnod, numele, nnod_4_ele, nnod_4_surf, ie, &
+      call const_surf_hash                                              &
+     &   (node1%numnod, numele, nnod_4_ele, nnod_4_surf, ie,            &
      &    surf_ele_tbl%num_hash, surf_ele_tbl%istack_hash,              &
      &    surf_ele_tbl%iend_hash, surf_ele_tbl%id_hash)
 !
@@ -88,7 +89,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'mark_all_surfaces'
       call mark_all_surfaces                                            &
-     &   (numnod, numele, nnod_4_ele, nnod_4_surf, ie,                  &
+     &   (node1%numnod, numele, nnod_4_ele, nnod_4_surf, ie,            &
      &    sf_ele_tbl%istack_hash, sf_ele_tbl%iend_hash,                 &
      &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash)
 !
@@ -123,13 +124,13 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'mark_independent_surface'
       call mark_independent_surface                                     &
-     &   (numnod, numele, nnod_4_ele, nnod_4_surf, ie,                  &
+     &   (node1%numnod, numele, nnod_4_ele, nnod_4_surf, ie,            &
      &    sf_ele_tbl%istack_hash, sf_ele_tbl%iend_hash,                 &
      &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash)
 !
       if (iflag_debug.eq.1) write(*,*) 'mark_external_surface'
-      call mark_external_surface                                        &
-     &   (internal_node, numnod, numele, nnod_4_ele, nnod_4_surf, ie,   &
+      call mark_external_surface(internal_node, node1%numnod,           &
+     &    numele, nnod_4_ele, nnod_4_surf, ie,                          &
      &    sf_ele_tbl%istack_hash, sf_ele_tbl%iend_hash,                 &
      &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash)
 !
@@ -161,7 +162,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'mark_independent_surface'
       call mark_independent_surface                                     &
-     &   (numnod, numele, nnod_4_ele, nnod_4_surf, ie,                  &
+     &   (node1%numnod, numele, nnod_4_ele, nnod_4_surf, ie,            &
      &    sf_ele_tbl%istack_hash, sf_ele_tbl%iend_hash,                 &
      &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash)
 !

@@ -31,14 +31,14 @@
 !
       subroutine count_size_4_sheard_para
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use cal_minmax_and_stacks
 !
 !
        call allocate_geometry_param_smp
 !
 !
-       call count_number_4_smp( np_smp, ione, numnod,                   &
+       call count_number_4_smp( np_smp, ione, node1%numnod,             &
      &       inod_smp_stack, maxnod_4_smp )
 !
        call count_number_4_smp( np_smp, ione, internal_node,            &
