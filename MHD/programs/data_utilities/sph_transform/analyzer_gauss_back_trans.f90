@@ -26,6 +26,7 @@
 !
       subroutine init_analyzer
 !
+      use m_geometry_data
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
       use parallel_load_data_4_sph
@@ -54,7 +55,7 @@
 !  ------  initialize spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_init_gauss_back_trans'
-      call SPH_init_gauss_back_trans
+      call SPH_init_gauss_back_trans(node1%numnod)
 !
       call  init_visualize
 !

@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine SPH_init_gauss_back_trans
+!      subroutine SPH_init_gauss_back_trans(numnod)
 !      subroutine SPH_analyze_gauss_back_trans(i_step, visval)
 !
       module SPH_analyzer_gauss_b_trans
@@ -20,7 +20,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_init_gauss_back_trans
+      subroutine SPH_init_gauss_back_trans(numnod)
 !
       use m_t_step_parameter
       use m_ctl_params_sph_trans
@@ -35,6 +35,8 @@
       use pole_sph_transform
       use legendre_transform_select
       use sph_transfer_all_field
+!
+      integer(kind = kint), intent(in) :: numnod
 !
 !  ------  initialize spectr data
 !
@@ -57,7 +59,7 @@
      &            id_legendre_transfer = iflag_leg_orginal_loop
       call copy_sph_trans_nums_from_rtp
       call initialize_sph_trans
-      call init_pole_transform
+      call init_pole_transform(numnod)
       call allocate_d_pole_4_all_trans
 !
       end subroutine SPH_init_gauss_back_trans

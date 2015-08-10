@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine SPH_initialize_back_trans(fld_IO)
+!      subroutine SPH_initialize_back_trans(numnod, fld_IO)
 !      subroutine SPH_analyze_back_trans(i_step, visval, fld_IO)
 !
       module SPH_analyzer_back_trans
@@ -20,7 +20,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine SPH_initialize_back_trans(fld_IO)
+      subroutine SPH_initialize_back_trans(numnod, fld_IO)
 !
       use m_t_step_parameter
       use m_ctl_params_sph_trans
@@ -39,6 +39,7 @@
       use legendre_transform_select
       use sph_transfer_all_field
 !
+      integer(kind = kint), intent(in) :: numnod
       type(field_IO), intent(inout) :: fld_IO
 !
 !
@@ -78,7 +79,7 @@
       call copy_sph_trans_nums_from_rtp
       call initialize_sph_trans
 !
-      call init_pole_transform
+      call init_pole_transform(numnod)
       call allocate_d_pole_4_all_trans
 !
 !      call calypso_MPI_barrier

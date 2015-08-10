@@ -30,6 +30,7 @@
 !
       subroutine initialize_sph_back_trans
 !
+      use m_geometry_data
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
       use parallel_load_data_4_sph
@@ -59,7 +60,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_back_trans'
-      call SPH_initialize_back_trans(sph_trns_IO)
+      call SPH_initialize_back_trans(node1%numnod, sph_trns_IO)
 !
 !  -------------------------------
 !

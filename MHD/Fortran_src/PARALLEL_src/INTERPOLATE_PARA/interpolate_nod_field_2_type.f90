@@ -29,6 +29,7 @@
       use m_precision
       use m_machine_parameter
 !
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_data
       use t_geometry_data
