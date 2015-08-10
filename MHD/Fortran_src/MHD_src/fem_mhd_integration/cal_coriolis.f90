@@ -4,7 +4,8 @@
 !        programmed by H.Matsui on July 2000 (ver 1.1)
 !        modified by H. Matsui on Aug., 2007
 !
-!      subroutine cal_coriolis_nod(angular, coef_cor, ml_o_fl, velo, ff)
+!!      subroutine cal_coriolis_nod(numnod, inod_smp_stack,             &
+!!     &          angular, coef_cor, ml_o_fl, velo, ff)
 !
       module cal_coriolis
 !
@@ -18,11 +19,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_coriolis_nod(angular, coef_cor, ml_o_fl, velo, ff)
+      subroutine cal_coriolis_nod(numnod, inod_smp_stack,               &
+     &          angular, coef_cor, ml_o_fl, velo, ff)
 !
-      use m_geometry_parameter
       use m_machine_parameter
 !
+      integer (kind=kint), intent(in) :: numnod
+      integer (kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
       real (kind=kreal), intent(in) :: coef_cor 
       real (kind=kreal), intent(in) :: angular(3)
       real (kind=kreal), intent(in) :: velo(numnod,3)

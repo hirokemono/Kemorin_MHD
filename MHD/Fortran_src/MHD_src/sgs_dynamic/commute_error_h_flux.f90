@@ -33,6 +33,7 @@
       subroutine cal_commute_error_4_hf(i_filter, i_sgs,                &
      &          i_flux, i_vect, i_scalar)
 !
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_group_data
       use m_phys_constants
@@ -57,7 +58,8 @@
      &    i_filter, i_flux, i_vect, i_scalar)
 !
       call set_ff_nl_smp_2_ff(n_scalar)
-      call cal_ff_2_scalar(d_nod(1,i_sgs), ff_nl, ml_fl)
+      call cal_ff_2_scalar(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,i_sgs), ff_nl, ml_fl)
 !
       end subroutine cal_commute_error_4_hf
 !

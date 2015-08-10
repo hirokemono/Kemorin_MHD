@@ -13,7 +13,7 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
       implicit none
 !
@@ -23,22 +23,21 @@
 !
 !-----------------------------------------------------------------------
 !
-       subroutine cal_flux_vector(i_r, i_v, i_s)
+      subroutine cal_flux_vector(i_r, i_v, i_s)
 !
+      use m_machine_parameter
       use m_node_phys_data
+      use cal_products_smp
 !
-       integer(kind = kint), intent(in) :: i_r, i_s, i_v
-       integer(kind = kint) :: inod
+      integer(kind = kint), intent(in) :: i_r, i_s, i_v
 !
-!$omp parallel do
-       do inod = 1, numnod
-        d_nod(inod,i_r  ) = d_nod(inod,i_v  ) * d_nod(inod,i_s)
-        d_nod(inod,i_r+1) = d_nod(inod,i_v+1) * d_nod(inod,i_s)
-        d_nod(inod,i_r+2) = d_nod(inod,i_v+2) * d_nod(inod,i_s)
-      end do
-!$omp end parallel do
 !
-       end subroutine cal_flux_vector
+!$omp parallel
+      call cal_vec_scalar_prod_no_coef_smp(np_smp, node1%numnod,        &
+     &    inod_smp_stack, d_nod(1,i_v), d_nod(1,i_s), d_nod(1,i_r))
+!$omp end parallel
+!
+      end subroutine cal_flux_vector
 !
 !-----------------------------------------------------------------------
 !
@@ -50,7 +49,7 @@
       integer(kind = kint) :: inod
 !
 !$omp parallel do
-       do inod = 1, numnod
+       do inod = 1, node1%numnod
         d_nod(inod,i_r  ) = d_nod(inod,i_v1  ) * d_nod(inod,i_v2  )
         d_nod(inod,i_r+1) = d_nod(inod,i_v1+1) * d_nod(inod,i_v2  )
         d_nod(inod,i_r+2) = d_nod(inod,i_v1+2) * d_nod(inod,i_v2  )
@@ -73,7 +72,7 @@
       integer(kind = kint) :: inod
 !
 !$omp parallel do
-       do inod = 1, numnod
+       do inod = 1, node1%numnod
          d_nod(inod,i_r  )                                              &
      &                  = ( d_nod(inod,i_v1  )+ex_magne(1) )            &
      &                  * ( d_nod(inod,i_v1  )+ex_magne(1) )
@@ -107,7 +106,7 @@
       integer(kind = kint) :: inod
 !
 !$omp parallel do
-       do inod = 1, numnod
+       do inod = 1, node1%numnod
         d_nod(inod,i_r  ) = d_nod(inod,i_v1+1) * d_nod(inod,i_v2  )     &
      &                     - d_nod(inod,i_v2+1) * d_nod(inod,i_v1  )
         d_nod(inod,i_r+1) = d_nod(inod,i_v1+2) * d_nod(inod,i_v2  )     &

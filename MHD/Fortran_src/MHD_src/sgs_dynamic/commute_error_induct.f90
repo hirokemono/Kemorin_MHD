@@ -33,6 +33,7 @@
      &          i_flux, i_v, i_b)
 !
       use m_control_parameter
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_group_data
       use m_phys_constants
@@ -59,7 +60,8 @@
      &    i_filter, i_v, i_b)
 !
       call set_ff_nl_smp_2_ff(n_vector)
-      call cal_ff_2_vector(d_nod(1,i_sgs), ff_nl, ml_fl)
+      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,i_sgs), ff_nl, ml_fl)
 !
       end subroutine cal_commute_error_4_idct
 !

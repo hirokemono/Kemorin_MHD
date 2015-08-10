@@ -70,6 +70,7 @@
       subroutine cal_div_sgs_mf_simi(i_sgs, i_flux, i_vect)
 !
       use m_control_parameter
+      use m_geometry_data
       use m_finite_element_matrix
       use m_int_vol_data
       use m_phys_constants
@@ -84,18 +85,19 @@
       integer(kind = kint), intent(in) :: i_sgs
 !
 !
-       call reset_ff_smps
+      call reset_ff_smps
 !
-       if (iflag_velo_supg .eq. id_magnetic_SUPG) then
+      if (iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_div_sgs_mf_simi_upm(i_flux, i_vect)
-       else if (iflag_velo_supg .eq. id_turn_ON) then
+      else if (iflag_velo_supg .eq. id_turn_ON) then
         call int_div_sgs_mf_simi_upw(i_flux, i_vect)
-       else
+      else
         call int_div_sgs_mf_simi_pg(i_flux, i_vect)
-       end if
+      end if
 !
-       call set_ff_nl_smp_2_ff(n_vector)
-       call cal_ff_2_vector(d_nod(1,i_sgs), ff_nl, ml_fl)
+      call set_ff_nl_smp_2_ff(n_vector)
+      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,i_sgs), ff_nl, ml_fl)
 !
 ! ----------   communications
 !

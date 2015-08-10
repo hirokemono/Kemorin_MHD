@@ -1,17 +1,23 @@
-!node_geometry_IO.f90
-!      module node_geometry_IO
+!>@file   node_geometry_IO.f90
+!!@brief  module node_geometry_IO
+!!
+!!@author H. Matsui
+!!@date Programmed by H.Matsui and H.Okuda in July 2000
+!!@n     Modified by H. Matsui on  Aug., 2006
 !
-!     Written by H. Matsui on Aug., 2006
-!
-!      subroutine write_geometry_info(id_file)
-!      subroutine write_scalar_in_element(id_file)
-!      subroutine write_vector_in_element(id_file)
-!      subroutine write_geometry_info_b(id_file)
-!
-!      subroutine read_number_of_node(id_file)
-!      subroutine read_geometry_info(id_file)
-!      subroutine read_number_of_node_b(id_file)
-!      subroutine read_geometry_info_b(id_file)
+!>@brief  routines for ASCII data IO for mesh geometry
+!!
+!!@verbatim
+!!      subroutine write_geometry_info(id_file)
+!!      subroutine write_scalar_in_element(id_file)
+!!      subroutine write_vector_in_element(id_file)
+!!      subroutine write_geometry_info_b(id_file)
+!!
+!!      subroutine read_number_of_node(id_file)
+!!      subroutine read_geometry_info(id_file)
+!!      subroutine read_number_of_node_b(id_file)
+!!      subroutine read_geometry_info_b(id_file)
+!!@endverbatim
 !
       module node_geometry_IO
 !

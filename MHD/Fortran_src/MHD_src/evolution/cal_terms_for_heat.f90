@@ -32,6 +32,7 @@
 !
       subroutine cal_terms_4_heat(i_field)
 !
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
 !
@@ -56,7 +57,8 @@
 !
 !       call check_ff_nl(n_scalar)
 !
-      call cal_ff_2_scalar(d_nod(1,i_field), ff_nl, ml_fl)
+      call cal_ff_2_scalar                                              &
+     &   (node1%numnod, inod_smp_stack, d_nod(1,i_field), ff_nl, ml_fl)
 !
 !   communication
 !
@@ -69,6 +71,7 @@
 !
       subroutine cal_thermal_diffusion
 !
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
 !
@@ -85,7 +88,8 @@
 !
       call set_boundary_ene_4_rhs
 !
-      call cal_ff_2_scalar(d_nod(1,iphys%i_t_diffuse), ff, ml_fl)
+      call cal_ff_2_scalar(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,iphys%i_t_diffuse), ff, ml_fl)
 !
 !   communication
 !

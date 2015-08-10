@@ -38,7 +38,7 @@
       subroutine cal_rotation_commute(nmax_grp_sf, ngrp_sf,             &
      &          id_grp_sf, i_filter, i_sgs, i_vect)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_group_data
 !
       integer(kind = kint), intent(in) :: nmax_grp_sf
@@ -59,7 +59,8 @@
      &    nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter, i_vect)
 !
       call set_ff_nl_smp_2_ff(n_vector)
-      call cal_ff_2_vector(d_nod(1,i_sgs), ff_nl, ml)
+      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,i_sgs), ff_nl, ml)
 !
       end subroutine cal_rotation_commute
 !
@@ -68,6 +69,7 @@
       subroutine cal_rotation_commute_fluid(nmax_grp_sf, ngrp_sf,       &
      &          id_grp_sf, i_filter, i_sgs, i_vect)
 !
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_group_data
 !
@@ -86,7 +88,8 @@
      &    nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter, i_vect)
 !
       call set_ff_nl_smp_2_ff(n_vector)
-      call cal_ff_2_vector(d_nod(1,i_sgs), ff_nl, ml_fl)
+      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,i_sgs), ff_nl, ml_fl)
 !
       end subroutine cal_rotation_commute_fluid
 !
@@ -95,6 +98,7 @@
       subroutine cal_rotation_commute_conduct(nmax_grp_sf, ngrp_sf,     &
      &          id_grp_sf, i_filter, i_sgs, i_vect)
 !
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_group_data
 !
@@ -113,7 +117,8 @@
      &    nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter, i_vect)
 !
       call set_ff_nl_smp_2_ff(n_vector)
-      call cal_ff_2_vector(d_nod(1,i_sgs), ff_nl, ml_cd)
+      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,i_sgs), ff_nl, ml_cd)
 !
       end subroutine cal_rotation_commute_conduct
 !

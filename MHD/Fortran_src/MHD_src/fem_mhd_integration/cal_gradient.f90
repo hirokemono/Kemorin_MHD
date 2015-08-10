@@ -31,7 +31,7 @@
 !
       subroutine cal_gradent_whole(iflag_4_supg, i_res, i_scalar)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
 !
       integer(kind = kint), intent(in) :: iflag_4_supg
@@ -39,13 +39,14 @@
 !
 !
 !
-       call reset_ff_smps
+      call reset_ff_smps
 !
-       call choose_int_vol_grads(iflag_4_supg,                          &
+      call choose_int_vol_grads(iflag_4_supg,                           &
      &     iele_smp_stack, i_scalar)
 !
-       call set_ff_nl_smp_2_ff(n_vector)
-       call cal_ff_2_vector(d_nod(1,i_res), ff_nl, ml)
+      call set_ff_nl_smp_2_ff(n_vector)
+      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,i_res), ff_nl, ml)
 !
 ! ----------   communications
 !
@@ -57,6 +58,7 @@
 !
       subroutine cal_gradent_in_fluid(iflag_4_supg, i_res, i_scalar)
 !
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_data
 !
@@ -64,13 +66,14 @@
       integer(kind = kint), intent(in) :: i_scalar, i_res
 !
 !
-       call reset_ff_smps
+      call reset_ff_smps
 !
-       call choose_int_vol_grads(iflag_4_supg, iele_fl_smp_stack,       &
+      call choose_int_vol_grads(iflag_4_supg, iele_fl_smp_stack,        &
      &     i_scalar)
 !
-       call set_ff_nl_smp_2_ff(n_vector)
-       call cal_ff_2_vector(d_nod(1,i_res), ff_nl, ml_fl)
+      call set_ff_nl_smp_2_ff(n_vector)
+      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,i_res), ff_nl, ml_fl)
 !
 ! ----------   communications
 !
@@ -82,6 +85,7 @@
 !
       subroutine cal_gradent_in_conduct(iflag_4_supg, i_res, i_scalar)
 !
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_data
 !
@@ -89,13 +93,14 @@
       integer(kind = kint), intent(in) :: i_scalar, i_res
 !
 !
-       call reset_ff_smps
+      call reset_ff_smps
 !
-       call choose_int_vol_grads(iflag_4_supg, iele_cd_smp_stack,       &
+      call choose_int_vol_grads(iflag_4_supg, iele_cd_smp_stack,        &
      &     i_scalar)
 !
-       call set_ff_nl_smp_2_ff(n_vector)
-       call cal_ff_2_vector(d_nod(1,i_res), ff_nl, ml_cd)
+      call set_ff_nl_smp_2_ff(n_vector)
+      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,i_res), ff_nl, ml_cd)
 !
 ! ----------   communications
 !

@@ -3,17 +3,21 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!      subroutine cal_ff_2_field (numdir, vector, ff, ml)
-!      subroutine cal_ff_2_vector (vector, ff, ml)
-!      subroutine cal_ff_2_scalar (scalar, ff, ml)
-!      subroutine cal_ff_smp_2_multi_pass (numdir, ff_smp, ff_m_smp)
-!      subroutine cal_multi_pass_2_ff_smp (numdir, ff_nl_smp, ff_m_smp)
+!!      subroutine cal_ff_2_field                                       &
+!!     &         (numnod, inod_smp_stack, numdir, vector, ff, ml)
+!!      subroutine cal_ff_2_vector                                      &
+!!     &         (numnod, inod_smp_stack, vector, ff, ml)
+!!      subroutine cal_ff_2_scalar                                      &
+!!     &         (numnod, inod_smp_stack, scalar, ff, ml)
+!!
+!!      subroutine cal_ff_smp_2_multi_pass(maxnod_4_smp, inod_smp_stack,&
+!!     &          numdir, ff_smp, ff_m_smp)
+!!      subroutine cal_multi_pass_2_ff_smp(maxnod_4_smp, inod_smp_stack,&
+!!     &          numdir, ff_nl_smp, ff_m_smp)
 !
       module cal_for_ffs
 !
       use m_precision
-!
-      use m_geometry_parameter
       use m_machine_parameter
 !
       implicit none
@@ -24,9 +28,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_ff_2_field (numdir, vector, ff, ml)
+      subroutine cal_ff_2_field                                         &
+     &         (numnod, inod_smp_stack, numdir, vector, ff, ml)
 !
-      integer(kind=kint), intent(in) :: numdir
+      integer(kind=kint), intent(in) :: numnod, numdir
+      integer(kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
       real(kind=kreal), intent(in) :: ff(numnod,numdir) 
       real(kind=kreal), intent(in) :: ml(numnod)
@@ -53,8 +59,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_ff_2_vector (vector, ff, ml)
+      subroutine cal_ff_2_vector                                        &
+     &         (numnod, inod_smp_stack, vector, ff, ml)
 !
+      integer(kind=kint), intent(in) :: numnod
+      integer(kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind=kreal), intent(in) :: ff(numnod,3) 
       real(kind=kreal), intent(in) :: ml(numnod)
       real(kind=kreal), intent(inout) :: vector(numnod,3)
@@ -80,8 +89,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_ff_2_scalar (scalar, ff, ml)
+      subroutine cal_ff_2_scalar                                        &
+     &         (numnod, inod_smp_stack, scalar, ff, ml)
 !
+      integer(kind=kint), intent(in) :: numnod
+      integer(kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind=kreal), intent(in) :: ff(numnod,1) 
       real(kind=kreal), intent(in) :: ml(numnod)
       real(kind=kreal), intent(inout) :: scalar(numnod)
@@ -105,9 +117,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_ff_smp_2_multi_pass (numdir, ff_smp, ff_m_smp)
+      subroutine cal_ff_smp_2_multi_pass(maxnod_4_smp, inod_smp_stack,  &
+     &         numdir, ff_smp, ff_m_smp)
 !
-      integer(kind=kint), intent(in) :: numdir
+      integer(kind=kint), intent(in) :: maxnod_4_smp, numdir
+      integer(kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
       real(kind=kreal), intent(in)    :: ff_smp(maxnod_4_smp,3,np_smp)
       real(kind=kreal), intent(inout) :: ff_m_smp(maxnod_4_smp,3,np_smp)
@@ -130,9 +144,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_multi_pass_2_ff_smp (numdir, ff_nl_smp, ff_m_smp)
+      subroutine cal_multi_pass_2_ff_smp(maxnod_4_smp, inod_smp_stack,  &
+     &         numdir, ff_nl_smp, ff_m_smp)
 !
-      integer(kind=kint), intent(in) :: numdir
+      integer(kind=kint), intent(in) :: maxnod_4_smp, numdir
+      integer(kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
       real(kind=kreal),intent(inout) :: ff_nl_smp(maxnod_4_smp,3,np_smp)
       real(kind=kreal),intent(in) :: ff_m_smp(maxnod_4_smp,3,np_smp)

@@ -24,7 +24,7 @@
       subroutine s_int_magne_induction
 !
       use m_control_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_finite_element_matrix
       use m_int_vol_data
       use m_node_phys_address
@@ -41,7 +41,8 @@
           iphys%i_vp_induct)
 !
 !      call cal_multi_pass_4_vector_ff
-!      call cal_ff_2_vector(d_nod(1,iphys%i_magne), ff, ml_cd)
+!      call cal_ff_2_vector(node1%numnod, inod_smp_stack,               &
+!     &    d_nod(1,iphys%i_magne), ff, ml_cd)
       call cal_ff_smp_2_vector(d_nod(1,iphys%i_induction),              &
      &    ff_nl_smp, ml_cd)
 !

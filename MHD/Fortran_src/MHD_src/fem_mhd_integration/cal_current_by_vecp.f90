@@ -22,8 +22,8 @@
 !
       subroutine int_current_diffuse
 !
-      use m_geometry_parameter
       use m_machine_parameter
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_surface_group
       use m_finite_element_matrix
@@ -46,14 +46,15 @@
 !
 !  for boundary conditions
 !
-       call int_surf_current_diffuse(sf_grp1)
+      call int_surf_current_diffuse(sf_grp1)
 !
-       call cal_multi_pass_4_vector_ff
-       call cal_ff_2_vector(d_nod(1,iphys%i_current), ff, ml)
+      call cal_multi_pass_4_vector_ff
+      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,iphys%i_current), ff, ml)
 !
 !    communication
 !
-       call vector_send_recv(iphys%i_current)
+      call vector_send_recv(iphys%i_current)
 !
       end subroutine int_current_diffuse
 !

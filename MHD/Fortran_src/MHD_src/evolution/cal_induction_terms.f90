@@ -30,6 +30,7 @@
 !
       subroutine cal_vecp_induction
 !
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
 !
@@ -47,7 +48,8 @@
       call cal_t_evo_4_vector_cd(iflag_mag_supg)
       call set_boundary_vect_p_4_rhs
 !
-      call cal_ff_2_vector(d_nod(1,iphys%i_vp_induct), ff_nl, ml_cd)
+      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,iphys%i_vp_induct), ff_nl, ml_cd)
       call vector_send_recv(iphys%i_vp_induct)
 !
       end subroutine cal_vecp_induction
@@ -56,6 +58,7 @@
 !
       subroutine cal_vecp_diffusion
 !
+      use m_geometry_data
       use m_phys_constants
       use m_group_data
       use m_node_phys_address
@@ -75,7 +78,8 @@
 !
       call set_boundary_vect_p_4_rhs
 !
-      call cal_ff_2_vector(d_nod(1,iphys%i_vp_diffuse), ff, ml_cd)
+      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,iphys%i_vp_diffuse), ff, ml_cd)
 !
       call vector_send_recv(iphys%i_vp_diffuse)
 !

@@ -46,6 +46,7 @@
       subroutine cal_div_sgs_idct_simi(i_sgs, i_flux, i_v, i_b)
 !
       use m_control_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_finite_element_matrix
       use m_int_vol_data
@@ -60,16 +61,17 @@
       integer(kind = kint), intent(in) :: i_sgs
 !
 !
-       call reset_ff_smps
+      call reset_ff_smps
 !
-       if ( iflag_mag_supg .gt. id_turn_OFF) then
+      if ( iflag_mag_supg .gt. id_turn_OFF) then
         call int_div_sgs_idct_simi_upw(i_flux, i_v, i_b)
-       else
+      else
         call int_div_sgs_idct_simi_pg(i_flux, i_v, i_b)
-       end if
+      end if
 !
-       call set_ff_nl_smp_2_ff(n_vector)
-       call cal_ff_2_vector(d_nod(1,i_sgs), ff_nl, ml_fl)
+      call set_ff_nl_smp_2_ff(n_vector)
+      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,i_sgs), ff_nl, ml_fl)
 !
 ! ----------   communications
 !

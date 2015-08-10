@@ -30,16 +30,17 @@
 !
       subroutine int_coriolis_nod_exp
 !
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
 !
 !
       if ( iflag_4_coriolis .eq. id_FORCE_at_node) then
-        call cal_coriolis_nod(angular, coef_cor, ml_o_fl,               &
-     &      d_nod(1,iphys%i_velo), ff_nl)
+        call cal_coriolis_nod(node1%numnod, inod_smp_stack, angular,    &
+     &      coef_cor, ml_o_fl, d_nod(1,iphys%i_velo), ff_nl)
       else if ( iflag_4_coriolis .eq. id_Coriolis_nod_imp) then
-        call cal_coriolis_nod(angular, coef_cor, ml_o_fl,               &
-     &      d_nod(1,iphys%i_velo), ff)
+        call cal_coriolis_nod(node1%numnod, inod_smp_stack, angular,    &
+     &      coef_cor, ml_o_fl, d_nod(1,iphys%i_velo), ff)
       end if
 !
       end subroutine int_coriolis_nod_exp

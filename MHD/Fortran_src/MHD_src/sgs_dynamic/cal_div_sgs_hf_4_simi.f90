@@ -24,6 +24,7 @@
 !
       subroutine cal_div_sgs_hf_simi(i_sgs, i_flux, i_vect, i_scalar)
 !
+      use m_geometry_data
       use m_finite_element_matrix
       use m_int_vol_data
       use m_node_phys_data
@@ -48,7 +49,8 @@
         end if
 !
        call set_ff_nl_smp_2_ff(numdir_d)
-       call cal_ff_2_scalar(d_nod(1,i_sgs), ff_nl, ml_fl)
+       call cal_ff_2_scalar(node1%numnod, inod_smp_stack,               &
+     &     d_nod(1,i_sgs), ff_nl, ml_fl)
 !
 ! ----------   communications
 !

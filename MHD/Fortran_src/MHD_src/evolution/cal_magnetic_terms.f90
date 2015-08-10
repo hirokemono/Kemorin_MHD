@@ -30,6 +30,7 @@
 !
       subroutine cal_terms_4_magnetic(i_field)
 !
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
 !
@@ -48,11 +49,12 @@
 !
       call int_surf_magne_monitor(i_field)
 !
-       call cal_t_evo_4_vector_cd(iflag_mag_supg)
-       call set_boundary_magne_4_rhs
+      call cal_t_evo_4_vector_cd(iflag_mag_supg)
+      call set_boundary_magne_4_rhs
 !
-       call cal_ff_2_vector(d_nod(1,i_field), ff_nl, ml_cd)
-       call vector_send_recv(i_field)
+      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,i_field), ff_nl, ml_cd)
+      call vector_send_recv(i_field)
 !
       end subroutine cal_terms_4_magnetic
 !
@@ -60,6 +62,7 @@
 !
       subroutine cal_magnetic_diffusion
 !
+      use m_geometry_data
       use m_node_phys_address
       use m_phys_constants
       use m_node_phys_data
@@ -77,7 +80,8 @@
 !
       call set_boundary_magne_4_rhs
 !
-      call cal_ff_2_vector(d_nod(1,iphys%i_b_diffuse), ff, ml)
+      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,iphys%i_b_diffuse), ff, ml)
       call vector_send_recv(iphys%i_b_diffuse)
 !
       end subroutine cal_magnetic_diffusion

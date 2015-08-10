@@ -30,6 +30,7 @@
 !
       subroutine cal_terms_4_momentum(i_field)
 !
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
 !
@@ -50,11 +51,12 @@
 !
       call int_surf_velo_monitor(i_field)
 !
-       call cal_t_evo_4_vector_fl(iflag_velo_supg)
+      call cal_t_evo_4_vector_fl(iflag_velo_supg)
 !       call set_boundary_velo_4_rhs
 !
-       call cal_ff_2_vector(d_nod(1,i_field), ff_nl, ml_fl)
-       call vector_send_recv(i_field)
+      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+     &    d_nod(1,i_field), ff_nl, ml_fl)
+      call vector_send_recv(i_field)
 !
       end subroutine cal_terms_4_momentum
 !
@@ -62,6 +64,7 @@
 !
       subroutine cal_viscous_diffusion
 !
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
       use m_node_phys_data
@@ -69,18 +72,19 @@
       use int_vol_diffusion_ele
 !
 !
-       call reset_ff_smps
-       call int_vol_viscous_ele_monitor
+      call reset_ff_smps
+      call int_vol_viscous_ele_monitor
 !
-       call int_surf_velo_monitor(iphys%i_v_diffuse)
+      call int_surf_velo_monitor(iphys%i_v_diffuse)
 !
-       call set_ff_nl_smp_2_ff(n_vector)
+      call set_ff_nl_smp_2_ff(n_vector)
 !
-       call set_boundary_velo_4_rhs
+      call set_boundary_velo_4_rhs
 !
-       call cal_ff_2_vector(d_nod(1,iphys%i_v_diffuse), ff, ml_fl)
+      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+     &     d_nod(1,iphys%i_v_diffuse), ff, ml_fl)
 !
-       call vector_send_recv(iphys%i_v_diffuse)
+      call vector_send_recv(iphys%i_v_diffuse)
 !
       end subroutine cal_viscous_diffusion
 !

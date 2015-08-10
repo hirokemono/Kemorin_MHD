@@ -41,7 +41,8 @@
           iphys%i_SGS_vp_induct)
 !
 !      call cal_multi_pass_4_vector_ff
-!      call cal_ff_2_vector(d_nod(1,iphys%i_magne), ff, ml_cd)
+!      call cal_ff_2_vector(node1%numnod, inod_smp_stack,               &
+!    &     d_nod(1,iphys%i_magne), ff, ml_cd)
        call cal_ff_smp_2_vector(d_nod(1,iphys%i_SGS_induction),         &
      &    ff_nl_smp, ml_cd)
 !
