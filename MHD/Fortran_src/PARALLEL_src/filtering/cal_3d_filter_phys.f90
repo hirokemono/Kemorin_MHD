@@ -27,7 +27,7 @@
       use m_precision
 !
       use m_array_for_send_recv
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
       use m_filter_coef_combained
       use m_nod_filter_comm_table
@@ -60,9 +60,9 @@
      &    ntot_near_nod_3d_filter, inod_near_nod_3d, filter_weight_3d,  &
      &    istack_nsum_3d_filter, max_nsum_3d_filter,                    &
      &    ntot_nsum_3d_filter, ist_nsum_3d_filter, ied_nsum_3d_filter,  &
-     &    nnod_filtering, x_vec_filtering(1), numnod, x_vec(1))
+     &    nnod_filtering, x_vec_filtering(1), node1%numnod, x_vec(1))
 !
-      call scalar_send_recv_3d_filter(numnod, x_vec(1),                 &
+      call scalar_send_recv_3d_filter(node1%numnod, x_vec(1),           &
      &    d_nod(1,i_filter))
 !
       end subroutine cal_3d_filter_scalar_phys
@@ -87,9 +87,9 @@
      &    ntot_near_nod_3d_filter, inod_near_nod_3d, filter_weight_3d,  &
      &    istack_nsum_3d_filter, max_nsum_3d_filter,                    &
      &    ntot_nsum_3d_filter, ist_nsum_3d_filter, ied_nsum_3d_filter,  &
-     &    nnod_filtering, x_vec_filtering(1), numnod, x_vec(1))
+     &    nnod_filtering, x_vec_filtering(1), node1%numnod, x_vec(1))
 !
-      call vector_send_recv_3d_filter(numnod, x_vec(1),                 &
+      call vector_send_recv_3d_filter(node1%numnod, x_vec(1),           &
      &    d_nod(1,i_filter))
 !
       end subroutine cal_3d_filter_vector_phys
@@ -114,9 +114,9 @@
      &    ntot_near_nod_3d_filter, inod_near_nod_3d, filter_weight_3d,  &
      &    istack_nsum_3d_filter, max_nsum_3d_filter,                    &
      &    ntot_nsum_3d_filter, ist_nsum_3d_filter, ied_nsum_3d_filter,  &
-     &    nnod_filtering, x_vec_filtering(1), numnod, x_vec(1))
+     &    nnod_filtering, x_vec_filtering(1), node1%numnod, x_vec(1))
 !
-      call tensor_send_recv_3d_filter(numnod, x_vec(1),                 &
+      call tensor_send_recv_3d_filter(node1%numnod, x_vec(1),           &
      &    d_nod(1,i_filter))
 !
       end subroutine cal_3d_filter_tensor_phys
@@ -140,9 +140,9 @@
      &    ngrp_nod_3d_filter, istack_nod_3d_filter, ntot_nod_3d_filter, &
      &    inod_3d_filter, istack_near_nod_3d_filter,                    &
      &    ntot_near_nod_3d_filter, inod_near_nod_3d, filter_weight_3d,  &
-     &    nnod_filtering, x_vec_filtering(1), numnod, x_vec(1) )
+     &    nnod_filtering, x_vec_filtering(1), node1%numnod, x_vec(1) )
 !
-      call scalar_send_recv_3d_filter(numnod, x_vec(1),                 &
+      call scalar_send_recv_3d_filter(node1%numnod, x_vec(1),           &
      &    d_nod(1,i_filter))
 !
       end subroutine cal_3d_ez_filter_scalar_phys
@@ -165,9 +165,9 @@
      &    ngrp_nod_3d_filter, istack_nod_3d_filter, ntot_nod_3d_filter, &
      &    inod_3d_filter, istack_near_nod_3d_filter,                    &
      &    ntot_near_nod_3d_filter, inod_near_nod_3d, filter_weight_3d,  &
-     &    nnod_filtering, x_vec_filtering(1), numnod, x_vec(1))
+     &    nnod_filtering, x_vec_filtering(1), node1%numnod, x_vec(1))
 !
-      call vector_send_recv_3d_filter(numnod, x_vec(1),                 &
+      call vector_send_recv_3d_filter(node1%numnod, x_vec(1),           &
      &    d_nod(1,i_filter))
 !
       end subroutine cal_3d_ez_filter_vector_phys
@@ -190,9 +190,9 @@
      &    ngrp_nod_3d_filter, istack_nod_3d_filter, ntot_nod_3d_filter, &
      &    inod_3d_filter, istack_near_nod_3d_filter,                    &
      &    ntot_near_nod_3d_filter, inod_near_nod_3d, filter_weight_3d,  &
-     &    nnod_filtering, x_vec_filtering(1), numnod, x_vec(1))
+     &    nnod_filtering, x_vec_filtering(1), node1%numnod, x_vec(1))
 !
-      call tensor_send_recv_3d_filter(numnod, x_vec(1),                 &
+      call tensor_send_recv_3d_filter(node1%numnod, x_vec(1),           &
      &    d_nod(1,i_filter))
 !
       end subroutine cal_3d_ez_filter_tensor_phys

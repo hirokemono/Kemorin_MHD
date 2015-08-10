@@ -4,6 +4,8 @@
 !     Written by H. Matsui
 !     Modified by H. Matsui on Apr., 2008
 !
+!     solve using CRS matrix
+!
 !      subroutine solve_by_crs_solver11
 !      subroutine solve_by_crs_solver33
 !      subroutine solve_by_crs_solverNN
@@ -14,15 +16,13 @@
 !
       use calypso_mpi
       use m_nod_comm_table
-      use m_geometry_parameter
+      use m_geometry_data
       use m_crs_connect
       use m_crs_matrix
 
       implicit none
 !
       real(kind = kreal) :: rtime, starttime, endtime
-!
-!     solve using CRS matrix
 !
 !  ---------------------------------------------------------------------
 !
@@ -42,9 +42,10 @@
       PRESET_crs= 2
 
       call  solve                                                       &
-     &                  (internal_node, numnod, ntot_crs_l, ntot_crs_u, &
-     &                   D_crs, AL_crs, istack_crs_l, item_crs_l,       &
-     &                   AU_crs, istack_crs_u, item_crs_u,              &
+     &                  (internal_node, node1%numnod,                   &
+     &                   ntot_crs_l, ntot_crs_u, D_crs, AL_crs,         &
+     &                   istack_crs_l, item_crs_l, AU_crs,              &
+     &                   istack_crs_u, item_crs_u,                      &
      &                   B_crs, X_crs, PRESET_crs,                      &
      &                   nod_comm%num_neib, nod_comm%id_neib,           &
      &                   nod_comm%istack_import, nod_comm%item_import,  &
@@ -68,9 +69,10 @@
       PRESET_crs= 2
 
       call  solve33                                                     &
-     &                  (internal_node, numnod, ntot_crs_l, ntot_crs_u, &
-     &                   D_crs, AL_crs, istack_crs_l, item_crs_l,       &
-     &                   AU_crs, istack_crs_u, item_crs_u,              &
+     &                  (internal_node, node1%numnod,                   &
+     &                   ntot_crs_l, ntot_crs_u, D_crs, AL_crs,         &
+     &                   istack_crs_l, item_crs_l, AU_crs,              &
+     &                   istack_crs_u, item_crs_u,                      &
      &                   B_crs, X_crs, PRESET_crs,                      &
      &                   nod_comm%num_neib, nod_comm%id_neib,           &
      &                   nod_comm%istack_import, nod_comm%item_import,  &
@@ -94,7 +96,7 @@
       PRESET_crs= 2
 
       call  solveNN                                                     &
-     &                  (internal_node, numnod, NB_crs,                 &
+     &                  (internal_node, node1%numnod, NB_crs,           &
      &                   ntot_crs_l, ntot_crs_u, D_crs, AL_crs,         &
      &                   istack_crs_l, item_crs_l, AU_crs,              &
      &                   istack_crs_u, item_crs_u,                      &

@@ -6,15 +6,16 @@
 !        modified by H. Matsui on June. 2006
 !        modified by H. Matsui on Jan., 2009
 !
-!      subroutine count_rcm(NHYP, OLDtoNEW, NEWtoOLD,  NLmax, NUmax)
-!
-!      subroutine check_dependency_RCM_MC(my_rank, NP,                  &
-!     &          NPL_mc, NPU_mc, INL_mc, INU_mc, IAL_mc, IAU_mc,        &
-!     &          NCOLORtot, IVECmc, IVnew, IW, IFLAG)
-!      subroutine set_color_tbl_RCM_MC(NP, NHYP, NCOLORtot, IVECT_rcm,  &
-!     &          IVECmc, ICHK, IVnew, IW)
-!      subroutine set_RCM_MC_table(NP, N, NCOLORtot, IVnew,             &
-!     &          NHYP, OLDtoNEWmc, NEWtoOLDmc)
+!!      subroutine count_rcm(N, NP, NHYP, OLDtoNEW, NEWtoOLD,           &
+!!     &          NLmax, NUmax)
+!!
+!!      subroutine check_dependency_RCM_MC(my_rank, NP,                 &
+!!     &          NPL_mc, NPU_mc, INL_mc, INU_mc, IAL_mc, IAU_mc,       &
+!!     &          NCOLORtot, IVECmc, IVnew, IW, IFLAG)
+!!      subroutine set_color_tbl_RCM_MC(NP, NHYP, NCOLORtot, IVECT_rcm, &
+!!     &          IVECmc, ICHK, IVnew, IW)
+!!      subroutine set_RCM_MC_table(N, NP, NCOLORtot, IVnew,            &
+!!     &          NHYP, OLDtoNEWmc, NEWtoOLDmc)
 !
       module ordering_MC_RCM
 !
@@ -29,12 +30,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine count_rcm(NHYP, OLDtoNEW, NEWtoOLD,  NLmax, NUmax)
+      subroutine count_rcm(N, NP, NHYP, OLDtoNEW, NEWtoOLD,             &
+     &          NLmax, NUmax)
 !
       use calypso_mpi
       use m_machine_parameter
       use m_iccg_parameter
-      use m_geometry_parameter
       use m_matrix_work
 !
       use m_crs_connect
@@ -42,10 +43,11 @@
 !
       use MC_Cuthill_McKee
 !
+      integer(kind=kint), intent(in) :: N, NP
       integer(kind=kint), intent(inout) :: NHYP
       integer(kind=kint), intent(inout) :: NLmax, NUmax
-      integer(kind=kint), intent(inout) :: OLDtoNEW(numnod)
-      integer(kind=kint), intent(inout) :: NEWtoOLD(numnod)
+      integer(kind=kint), intent(inout) :: OLDtoNEW(NP)
+      integer(kind=kint), intent(inout) :: NEWtoOLD(NP)
 !
       integer(kind=kint) :: NHYPmax
       integer(kind=kint) :: IFLAG, IFLAGmax
@@ -60,8 +62,8 @@
       max_mc_u =  max_crs_u
       min_mc_u =  min_crs_u
 !
-      call allocate_IVECT_rcm(numnod)
-      call allocate_mc_stack(numnod)
+      call allocate_IVECT_rcm(NP)
+      call allocate_mc_stack(NP)
       call allocate_mc_connect
 !
 !
@@ -74,12 +76,12 @@
 !
       if(iflag_debug.eq.1) write(*,*) 'iflag_ordering', iflag_ordering
 !
-      call allocate_iW_ordering(numnod)
+      call allocate_iW_ordering(NP)
 !
       if (iflag_ordering .eq. 0 ) then
 !
         if (iflag_debug.eq.1) write(*,*) 'no_MC'
-        call no_MC (numnod,  ntot_crs_l, ntot_crs_u,                   &
+        call no_MC (NP,  ntot_crs_l, ntot_crs_u,                       &
      &     istack_crs_l, istack_crs_u, item_crs_l, item_crs_u,         &
      &     ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,                   &
      &     istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,             &
@@ -87,12 +89,12 @@
 !
         NCOLORtot = 1
 !
-        call allocate_work_4_rcm(numnod, NHYP)
-        IW(1:numnod) = 0
+        call allocate_work_4_rcm(NP, NHYP)
+        IW(1:NP) = 0
 !
 !
 !CDIR NOVECTOR
-        do i= 1, numnod
+        do i= 1, NP
           OLDtoNEW(i)= i
           NEWtoOLD(i)= i
           OLDtoNEWmc(i)= i
@@ -100,7 +102,7 @@
         enddo
 !
         IVECmc(0) = 0
-        IVECmc(1) = internal_node
+        IVECmc(1) = N
 !
       else
 !C
@@ -112,7 +114,7 @@
 !  -------  RCM ordering
         if ( iflag_ordering .eq. 1 ) then
           if (iflag_debug.eq.1) write(*,*) 'sRCM'
-          call sRCM (numnod, internal_node, ntot_crs_l, ntot_crs_u,     &
+          call sRCM (NP, N, ntot_crs_l, ntot_crs_u,                     &
      &        istack_crs_l, istack_crs_u, item_crs_l, item_crs_u,       &
      &        ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,                 &
      &        istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,           &
@@ -121,7 +123,7 @@
 !  -------  MC ordering
         else if ( iflag_ordering .eq. 2 ) then
           if (iflag_debug.eq.1) write(*,*) 'sMC', mc_color
-          call sMC (numnod, internal_node, ntot_crs_l, ntot_crs_u,      &
+          call sMC (NP, N, ntot_crs_l, ntot_crs_u,                      &
      &        istack_crs_l, istack_crs_u, item_crs_l, item_crs_u,       &
      &        ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,                 &
      &        istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,           &
@@ -152,14 +154,14 @@
      &         'PE:',my_rank,'color number: ', NCOLORtot 
         endif
 !
-        call allocate_work_4_rcm(numnod, NHYP)
+        call allocate_work_4_rcm(NP, NHYP)
 !
-        call set_color_tbl_RCM_MC(numnod, NHYP, NCOLORtot, IVECT_rcm,   &
+        call set_color_tbl_RCM_MC(NP, NHYP, NCOLORtot, IVECT_rcm,       &
      &      IVECmc, ICHK, IVnew, IW)
 !
 !C
 !C-- CHECK dependency
-        call check_dependency_RCM_MC(my_rank, numnod,                   &
+        call check_dependency_RCM_MC(my_rank, NP,                       &
      &      ntot_mc_l, ntot_mc_u, istack_mc_l, istack_mc_u,             &
      &      item_mc_l, item_mc_u, NCOLORtot, IVECmc, IVnew, IW, IFLAG)
 !
@@ -173,8 +175,8 @@
           goto 999
         endif
 !
-        call set_RCM_MC_table(numnod, internal_node, NCOLORtot, IVnew,  &
-     &          NHYP, OLDtoNEWmc, NEWtoOLDmc)
+        call set_RCM_MC_table(N, NP, NCOLORtot, IVnew,                  &
+     &                        NHYP, OLDtoNEWmc, NEWtoOLDmc)
 !
       end if
 !
@@ -182,12 +184,12 @@
       call deallocate_iW_ordering
       call deallocate_IVECT_rcm
 !
-!        do i = 1, numnod
+!        do i = 1, NP
 !          write(60+my_rank,*) 'istack_mc_l', i, istack_mc_l(i)
 !          write(60+my_rank,'(1i16)')                                   &
 !     &             item_mc_l(istack_mc_l(i-1)+1:istack_mc_l(i))
 !        end do
-!        do i = 1, numnod
+!        do i = 1, NP
 !          write(60+my_rank,*) 'istack_mc_u', i, istack_mc_u(i)
 !          write(60+my_rank,'(10i16)')                                  &
 !     &             item_mc_u(istack_mc_u(i-1)+1:istack_mc_u(i))
@@ -311,7 +313,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_RCM_MC_table(NP, N, NCOLORtot, IVnew,              &
+      subroutine set_RCM_MC_table(N, NP, NCOLORtot, IVnew,              &
      &          NHYP, OLDtoNEWmc, NEWtoOLDmc)
 !
       integer(kind = kint), intent(in) :: NP, N

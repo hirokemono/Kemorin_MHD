@@ -30,7 +30,6 @@
       use m_machine_parameter
 !
       use m_phys_constants
-      use m_geometry_parameter
       use m_node_phys_data
       use t_geometry_data
       use t_comm_table
@@ -49,7 +48,6 @@
 !
       subroutine init_interpolate_nodal_data(nod_dest)
 !
-      use m_geometry_data
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
       use m_interpolate_table_orgin
@@ -64,7 +62,7 @@
       if (iflag_debug.eq.1) write(*,*) 'const_interporate_mat'
       call const_interporate_mat(numele, nnod_4_ele, ie)
 !
-      call verify_vector_for_solver(n_sym_tensor, numnod)
+      call verify_vector_for_solver(n_sym_tensor, node1%numnod)
       call verify_2nd_iccg_matrix(n_sym_tensor, nod_dest%numnod)
 !
       end subroutine init_interpolate_nodal_data
@@ -131,7 +129,7 @@
 !
       call verify_2nd_iccg_matrix(n_scalar, nod_dest%numnod)
 !
-      call interpolate_mod_1(comm_dest, numnod, nod_dest%numnod,        &
+      call interpolate_mod_1(comm_dest, node1%numnod, nod_dest%numnod,  &
      &    d_nod(1,i_origin), xvec_2nd(1))
 !
 !$omp parallel do
@@ -160,11 +158,11 @@
       integer(kind = kint) :: inod
 !
 !     initialize
-      call verify_vector_for_solver(n_vector, numnod)
+      call verify_vector_for_solver(n_vector, node1%numnod)
       call verify_2nd_iccg_matrix(n_vector, nod_dest%numnod)
 !
 !$omp parallel do
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         x_vec(3*inod-2) = d_nod(inod,i_origin  )
         x_vec(3*inod-1) = d_nod(inod,i_origin+1)
         x_vec(3*inod  ) = d_nod(inod,i_origin+2)
@@ -173,7 +171,7 @@
 !
 !    interpolation
 !
-      call interpolate_mod_3(comm_dest, numnod, nod_dest%numnod,        &
+      call interpolate_mod_3(comm_dest, node1%numnod, nod_dest%numnod,  &
      &    x_vec(1), xvec_2nd(1))
 !
 !$omp parallel do
@@ -204,12 +202,12 @@
 !
 !     initialize
 !
-      call verify_vector_for_solver(n_sym_tensor, numnod)
+      call verify_vector_for_solver(n_sym_tensor, node1%numnod)
       call verify_2nd_iccg_matrix(n_sym_tensor, nod_dest%numnod)
 !
 !
 !$omp parallel do
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         x_vec(6*inod-5) = d_nod(inod,i_origin  )
         x_vec(6*inod-4) = d_nod(inod,i_origin+1)
         x_vec(6*inod-3) = d_nod(inod,i_origin+2)
@@ -220,7 +218,7 @@
 !$omp end parallel do
 !
 !    interpolation
-      call interpolate_mod_6(comm_dest, numnod, nod_dest%numnod,        &
+      call interpolate_mod_6(comm_dest, node1%numnod, nod_dest%numnod,  &
      &    x_vec(1), xvec_2nd(1))
 !
 !$omp parallel do
@@ -256,13 +254,13 @@
 !
 !     initialize
 !
-      call verify_vector_for_solver(numdir, numnod)
+      call verify_vector_for_solver(numdir, node1%numnod)
       call verify_2nd_iccg_matrix(numdir, nod_dest%numnod)
 !
 !$omp parallel private(inod)
       do nd = 1, numdir
 !$omp do
-        do inod = 1, numnod
+        do inod = 1, node1%numnod
           x_vec(numdir*(inod-1)+nd) = d_nod(inod,i_origin+nd-1)
         end do
 !$omp end do nowait

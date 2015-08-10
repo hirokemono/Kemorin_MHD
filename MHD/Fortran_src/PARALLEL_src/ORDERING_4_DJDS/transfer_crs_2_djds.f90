@@ -30,6 +30,7 @@
 !
       subroutine transfer_crs_2_djds_matrix
 !
+      use m_geometry_data
       use m_matrix_data_4_djds
       use m_crs_connect
       use m_nod_comm_table
@@ -58,20 +59,21 @@
 !C
       call allocate_new_comm_table                                      &
      &   (nod_comm%istack_export(nod_comm%num_neib))
-      call set_new_comm_table(numnod, OLDtoNEW, nod_comm%num_neib,      &
+      call set_new_comm_table                                           &
+     &   (node1%numnod, OLDtoNEW, nod_comm%num_neib,                    &
      &    nod_comm%istack_export, nod_comm%item_export, NOD_EXPORT_NEW)
 !
 !C +-------------+
 !C | copy matrix |
 !C +-------------+
 !
-      call allocate_vector_data_4_djds
-      call allocate_matrix_data_4_djds
+      call allocate_vector_data_4_djds(node1%numnod)
+      call allocate_matrix_data_4_djds(internal_node, node1%numnod)
 !
        if (iflag_debug.eq.1) write(*,*) 'copy_matrix_2_djds_NN'
-      call copy_matrix_2_djds_NN
+      call copy_matrix_2_djds_NN(internal_node, node1%numnod)
        if (iflag_debug.eq.1) write(*,*) 'copy_RH_vect_2_crs_nn'
-      call copy_RH_vect_2_crs_nn
+      call copy_RH_vect_2_crs_nn(node1%numnod)
 !
       call deallocate_crs_connect
 !
@@ -96,7 +98,7 @@
 !
       subroutine set_new_comm_table_entire
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_nod_comm_table
       use m_solver_djds
       use DJDS_new_comm_table
@@ -105,7 +107,8 @@
       call allocate_new_comm_table(nod_comm%ntot_export)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_new_comm_table'
-      call set_new_comm_table(numnod, OLDtoNEW, nod_comm%num_neib,      &
+      call set_new_comm_table                                           &
+     &   (node1%numnod, OLDtoNEW, nod_comm%num_neib,                    &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    NOD_EXPORT_NEW)
 !

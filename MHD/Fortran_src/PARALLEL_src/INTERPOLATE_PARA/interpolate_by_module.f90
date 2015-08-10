@@ -27,7 +27,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_interpolate_table_orgin
       use m_interpolate_table_dest
@@ -67,7 +66,7 @@
 !
 !  interpolation
       if (num_dest_domain .gt. 0) then
-        call itp_matvec_scalar(np_smp, numnod, X_org(1),                &
+        call itp_matvec_scalar(np_smp, node1%numnod, X_org(1),          &
      &      NC_itp, NCM_itp, INM_itp, IAM_itp, AM_itp,                  &
      &      NUM_SUM_itp(4), IEND_SUM_itp_smp, x_inter_org(1))
       end if
@@ -114,7 +113,7 @@
 !    interpolation
 !
       if (num_dest_domain.gt.0) then
-        call itp_matvec_vector(np_smp, numnod, X_org(1),                &
+        call itp_matvec_vector(np_smp, node1%numnod, X_org(1),          &
      &      NC_itp, NCM_itp, INM_itp, IAM_itp, AM_itp,                  &
      &      NUM_SUM_itp(4), IEND_SUM_itp_smp, x_inter_org(1))
       end if
@@ -162,7 +161,7 @@
 !
 !
       if (num_dest_domain.gt.0) then
-        call itp_matvec_tensor(np_smp, numnod, X_org(1),                &
+        call itp_matvec_tensor(np_smp, node1%numnod, X_org(1),          &
      &      NC_itp, NCM_itp, INM_itp, IAM_itp, AM_itp,                  &
      &      NUM_SUM_itp(4), IEND_SUM_itp_smp, x_inter_org(1))
       end if
@@ -206,7 +205,7 @@
       call verifty_work_4_itp_field(NB, ntot_table_org)
 !
       if (num_dest_domain.gt.0) then
-        call itp_matvec_fields(np_smp, numnod, NB,                      &
+        call itp_matvec_fields(np_smp, node1%numnod, NB,                &
      &      X_org(1), NC_itp, NCM_itp, INM_itp, IAM_itp, AM_itp,        &
      &      NUM_SUM_itp(4), IEND_SUM_itp_smp, x_inter_org(1))
       end if
@@ -262,7 +261,7 @@
 !    interpolation
 !
       if (num_dest_domain.gt.0) then
-        call s_interporate_imark_para(np_smp, numnod, numele,           &
+        call s_interporate_imark_para(np_smp, node1%numnod, numele,     &
      &    nnod_4_ele, ie, ix_vec(1), istack_tbl_type_org_smp,           &
      &    ntot_table_org, iele_org_4_org,                               &
      &    itype_inter_org, i_inter_org(1) )

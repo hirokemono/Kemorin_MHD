@@ -22,18 +22,18 @@
 !
       subroutine copy_node_data_to_filter
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
 !
       inter_nod_3dfilter = internal_node
-      nnod_filtering = numnod
+      nnod_filtering = node1%numnod
       call allocate_globalnod_filter
 !
-      id_globalnod_filtering(1:numnod) = inod_global(1:numnod)
-      xx_filtering(1:numnod,1) = xx(1:numnod,1)
-      xx_filtering(1:numnod,2) = xx(1:numnod,2)
-      xx_filtering(1:numnod,3) = xx(1:numnod,3)
+      id_globalnod_filtering(1:node1%numnod)                            &
+     &                               = inod_global(1:node1%numnod)
+      xx_filtering(1:node1%numnod,1) = xx(1:node1%numnod,1)
+      xx_filtering(1:node1%numnod,2) = xx(1:node1%numnod,2)
+      xx_filtering(1:node1%numnod,3) = xx(1:node1%numnod,3)
 !
       end subroutine copy_node_data_to_filter
 !

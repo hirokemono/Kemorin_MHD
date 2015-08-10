@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine allocate_l_filtering_smp
-!      subroutine allocate_l_filtering_tmp
+!      subroutine allocate_l_filtering_smp(numnod)
+!      subroutine allocate_l_filtering_tmp(numnod)
 !      subroutine deallocate_l_filtering_smp
 !      subroutine deallocate_l_filtering_tmp
 !
@@ -54,11 +54,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_l_filtering_smp
+      subroutine allocate_l_filtering_smp(numnod)
 !
-      use m_geometry_parameter
       use m_machine_parameter
       use m_l_filtering_data
+!
+      integer(kind = kint), intent(in) :: numnod
 !
 !
       allocate( inod_l_filter_smp(numnod,3) )
@@ -83,11 +84,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_l_filtering_tmp
+      subroutine allocate_l_filtering_tmp(numnod)
 !
-      use m_geometry_parameter
       use m_machine_parameter
       use m_l_filtering_data
+!
+!
+      integer(kind = kint), intent(in) :: numnod
 !
 !
       allocate( inod_l_filter_tmp(numnod,3) )

@@ -180,7 +180,7 @@
           goto 999
         endif
 !
-        call set_RCM_MC_table(NP, N, NCOLORtot,                         &
+        call set_RCM_MC_table(N, NP, NCOLORtot,                         &
      &      IVnew, djds_tbl%NHYP, OLDtoNEWmc, NEWtoOLDmc)
 !
       end if

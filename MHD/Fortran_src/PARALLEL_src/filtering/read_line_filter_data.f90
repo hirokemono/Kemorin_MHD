@@ -12,7 +12,7 @@
       use m_precision
 !
       use calypso_mpi
-      use m_geometry_parameter
+      use m_geometry_data
       use m_l_filtering_data
 !
       implicit none
@@ -48,14 +48,14 @@
       call skip_comment(character_4_read,file_code)
       read(character_4_read,*) (num_l_filter(nd), nd=1,3)
 !
-!      write(*,*) 'allocate_l_filtering_data', numnod
+!      write(*,*) 'allocate_l_filtering_data', node1%numnod
 !
-      call allocate_l_filtering_data(numnod)
+      call allocate_l_filtering_data(node1%numnod)
 !
       call skip_comment(character_4_read,file_code)
       read(character_4_read,*) (inod_l_filter(1,nd), nd=1,3),           &
      &            (istack_l_filter(1,nd), nd=1,3)
-      do inod = 2, numnod
+      do inod = 2, node1%numnod
         read(file_code,*) (inod_l_filter(inod,nd), nd=1,3),             &
      &            (istack_l_filter(inod,nd), nd=1,3)
       end do
@@ -91,12 +91,12 @@
 !
        read(file_code) (num_l_filter(nd), nd=1,3)
 !
-       call allocate_l_filtering_data(numnod)
+       call allocate_l_filtering_data(node1%numnod)
 !
        read(file_code)                                                  &
-     &       ((inod_l_filter(inod,nd),inod=1,numnod), nd=1,3)
+     &       ((inod_l_filter(inod,nd),inod=1,node1%numnod), nd=1,3)
        read(file_code)                                                  &
-     &       ((istack_l_filter(inod,nd),inod=1,numnod), nd=1,3)
+     &       ((istack_l_filter(inod,nd),inod=1,node1%numnod), nd=1,3)
 !
        read(file_code)                                                  &
      &       ((item_l_filter(i,nd),i=1,ntot_l_filter), nd=1,3)

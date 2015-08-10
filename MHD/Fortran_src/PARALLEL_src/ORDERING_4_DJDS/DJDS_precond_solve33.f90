@@ -24,7 +24,7 @@
 !
       use calypso_mpi
       use m_nod_comm_table
-      use m_geometry_parameter
+      use m_geometry_data
       use m_machine_parameter
       use m_iccg_parameter
       use m_solver_djds
@@ -54,7 +54,7 @@
         end if
 
         call precond_DJDS33                                             &
-     &         ( internal_node, numnod, np_smp, inter_smp_stack,        &
+     &         ( internal_node, node1%numnod, np_smp, inter_smp_stack,  &
      &           OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,                      &
      &           aiccg(im_d), ALUG_L, ALUG_U, precond_4_solver,         &
      &           sigma_diag)
@@ -65,8 +65,8 @@
         ierr = 1
  
         write(*,*) 'init_solve33_DJDS_kemo', method_4_solver
-      call init_solve33_DJDS_kemo                                       &
-     &   ( internal_node, numnod, NLmax, NUmax, itotal_l, itotal_u,     &
+      call init_solve33_DJDS_kemo(internal_node, node1%numnod,          &
+     &     NLmax, NUmax, itotal_l, itotal_u,                            &
      &     NHYP, np_smp, inter_smp_stack, STACKmc, NLmaxHYP, NUmaxHYP,  &
      &     IVECT, NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,           &
      &     NEWtoOLD_DJDS_U, LtoU, aiccg(im_d), b_djds, x_djds,          &
@@ -77,7 +77,7 @@
      &     nod_comm%istack_export, NOD_EXPORT_NEW,                      &
      &     method_4_solver, precond_4_solver, itr_res)
 
-      call copy_solution_2_crs_nn
+      call copy_solution_2_crs_nn(node1%numnod)
 
 !
       end  subroutine solve_by_djds_solver33

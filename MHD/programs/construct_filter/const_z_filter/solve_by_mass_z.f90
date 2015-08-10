@@ -96,7 +96,7 @@
         B_crs(i) = rhs_mk_crs(i)
       end do
 !
-      call copy_RH_vect_2_crs_nn
+      call copy_RH_vect_2_crs_nn(numnod)
 !
         write(*,*) 'init_solve_DJDS_kemo'
       call init_solve_DJDS_kemo                                         &
@@ -112,7 +112,7 @@
      &     nod_comm%istack_export, NOD_EXPORT_NEW,                      &
      &     method_4_solver, precond_4_solver, itr_res)
 
-      call copy_solution_2_crs_nn
+      call copy_solution_2_crs_nn(numnod)
 !
       do i = 1, numnod
         sol_mk_crs(i) = X_crs(i)

@@ -20,7 +20,7 @@
 !
       subroutine ordering_l_filter_smp
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_machine_parameter
       use m_filter_elength
       use m_l_filtering_data
@@ -36,13 +36,13 @@
         nsize_lf_smp = max(nsize_lf_smp,nmax_l_filter(nd))
       end do
 !
-      call allocate_l_filtering_tmp
-      call allocate_l_filtering_smp
+      call allocate_l_filtering_tmp(node1%numnod)
+      call allocate_l_filtering_smp(node1%numnod)
 !
 !
 !    cyclic ordering
 !
-      do inod0 = 1, numnod
+      do inod0 = 1, node1%numnod
         ip =     mod(inod0-1,np_smp) + 1
         inod1 = (inod0 - ip) / np_smp + 1
         inod  = inod_smp_stack(ip-1) + inod1
@@ -79,7 +79,7 @@
         ied = inod_smp_stack(ip)
 !
         do nd = 1, 3
-          do inod = 1, numnod
+          do inod = 1, node1%numnod
             inod_l_filter_smp(inod,nd) = inod_l_filter_tmp(inod,nd)
             inod_l_filter(inod,nd) = inod_l_filter_tmp(inod,nd)
             istack_l_filter(inod,nd) = istack_l_filter_tmp(inod,nd)
@@ -91,7 +91,7 @@
         end do
       end do
 !
-!     call check_istack_l_filter(numnod, my_rank)
+!     call check_istack_l_filter(node1%numnod, my_rank)
 !
       call deallocate_l_filtering_tmp
 !
