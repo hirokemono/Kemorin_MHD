@@ -43,7 +43,6 @@
 !
       subroutine set_layer_fluid
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
       use m_set_layers
@@ -52,15 +51,15 @@
 !
 !    set node list for fluid
 !
-      call alloc_mat_node_flag(numnod)
+      call alloc_mat_node_flag(node1%numnod)
 !
-      call count_node_4_layer(numnod, internal_node,                    &
+      call count_node_4_layer(node1%numnod, internal_node,              &
      &     numnod_fluid, internal_node_fluid,                           &
      &     iele_fl_start, iele_fl_end, numele, nnod_4_ele, ie)
 !
       call allocate_fluid_node_list
 !
-        call set_node_4_layer(numnod, numnod_fluid, inod_fluid,         &
+        call set_node_4_layer(node1%numnod, numnod_fluid, inod_fluid,   &
      &        iele_fl_start, iele_fl_end, numele, nnod_4_ele, ie)
 !
       call dealloc_mat_node_flag
@@ -74,7 +73,6 @@
       subroutine set_layers_4_induction(ele_grp)
 !
       use m_control_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
       use m_set_layers
@@ -91,17 +89,17 @@
 !
 !    set node list for conductor
 !
-      call alloc_mat_node_flag(numnod)
+      call alloc_mat_node_flag(node1%numnod)
 !
-      call count_node_4_layer(numnod, internal_node,                    &
+      call count_node_4_layer(node1%numnod, internal_node,              &
      &    numnod_conduct, internal_node_conduct,                        &
      &    iele_cd_start, iele_cd_end, numele, nnod_4_ele, ie)
 !
-      call count_node_4_layer(numnod, internal_node,                    &
+      call count_node_4_layer(node1%numnod, internal_node,              &
      &    numnod_insulate, internal_node_insulate,                      &
      &    iele_ins_start, iele_ins_end, numele, nnod_4_ele, ie)
 !
-!      call count_node_4_layer(numnod, internal_node,                   &
+!      call count_node_4_layer(node1%numnod, internal_node,             &
 !     &    numnod_in_core, internal_node_in_core,                       &
 !     &    iele_ic_start, iele_ic_end, numele, nnod_4_ele, ie)
 !
@@ -111,14 +109,17 @@
 !
 !  set node list
 !
-        call set_node_4_layer(numnod, numnod_conduct, inod_conduct,     &
-     &        iele_cd_start, iele_cd_end, numele, nnod_4_ele, ie)
+        call set_node_4_layer                                           &
+     &     (node1%numnod, numnod_conduct, inod_conduct,                 &
+     &      iele_cd_start, iele_cd_end, numele, nnod_4_ele, ie)
 !
-        call set_node_4_layer(numnod, numnod_insulate, inod_insulate,   &
-     &        iele_ins_start, iele_ins_end, numele, nnod_4_ele, ie)
+        call set_node_4_layer                                           &
+     &     (node1%numnod, numnod_insulate, inod_insulate,               &
+     &      iele_ins_start, iele_ins_end, numele, nnod_4_ele, ie)
 !
-!        call set_node_4_layer(numnod, numnod_in_core, inod_in_core,    &
-!     &        iele_ic_start, iele_ic_end, numele, nnod_4_ele, ie)
+!        call set_node_4_layer                                          &
+!     &     (node1%numnod, numnod_in_core, inod_in_core,                &
+!     &      iele_ic_start, iele_ic_end, numele, nnod_4_ele, ie)
 !
       call dealloc_mat_node_flag
 !

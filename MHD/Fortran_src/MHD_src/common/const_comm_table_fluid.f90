@@ -34,7 +34,6 @@
       use m_machine_parameter
       use m_control_parameter
       use m_nod_comm_table
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
       use m_solver_djds_MHD
@@ -42,13 +41,13 @@
       use solver_SR_int
 !
 !
-      call allocate_flags_reduced_comm(nprocs, numnod)
+      call allocate_flags_reduced_comm(nprocs, node1%numnod)
 !
       call mark_4_fluid_nod_by_ele(numele, nnod_4_ele, ie,              &
      &    iele_fl_smp_stack(0), iele_fl_smp_stack(np_smp) )
 !
       call solver_send_recv_i                                           &
-     &   (numnod, nod_comm%num_neib, nod_comm%id_neib,                  &
+     &   (node1%numnod, nod_comm%num_neib, nod_comm%id_neib,            &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    iflag_nod)
@@ -110,7 +109,7 @@
       end if
 !
 !       write(50+my_rank,*) 'i, inod_global(i), iflag_nod(i)'
-!       do i = 1, numnod
+!       do i = 1, node1%numnod
 !         write(50+my_rank,*) i, inod_global(i), iflag_nod(i)
 !       end do
 !       write(50+my_rank,*) 'i, item_import(i)'

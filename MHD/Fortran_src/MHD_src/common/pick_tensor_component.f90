@@ -3,18 +3,17 @@
 !
 !      programmed by H. Matsui on Oct., 2005
 !
-!      subroutine pick_sym_tensor_component(i_comp, i_flux, nd)
+!      subroutine pick_sym_tensor_component(numnod, i_comp, i_flux, nd)
 !       i_comp: solution vector ID
 !       i_flux: tensor ID
 !       nd: direction for pick up
-!      subroutine pick_asym_tensor_component(i_comp, i_flux, nd)
+!      subroutine pick_asym_tensor_component(numnod, i_comp, i_flux, nd)
 !
       module pick_tensor_component
 !
       use m_precision
 !
       use m_constants
-      use m_geometry_parameter
       use m_machine_parameter
       use m_phys_constants
 !
@@ -26,10 +25,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine pick_sym_tensor_component(i_comp, i_flux, nd)
+      subroutine pick_sym_tensor_component(numnod, i_comp, i_flux, nd)
 !
       use m_node_phys_data
 !
+      integer (kind = kint), intent(in) :: numnod
       integer (kind = kint), intent(in) :: i_comp, i_flux, nd
 !
       integer (kind = kint) :: inod, n1, n2, n3
@@ -52,10 +52,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine pick_asym_tensor_component(i_comp, i_flux, nd)
+      subroutine pick_asym_tensor_component(numnod, i_comp, i_flux, nd)
 !
       use m_node_phys_data
 !
+      integer (kind = kint), intent(in) :: numnod
       integer (kind = kint), intent(in) :: i_comp, i_flux, nd
 !
       integer (kind = kint) :: inod, n1, n2, n3

@@ -21,7 +21,6 @@
 !
       subroutine set_reference_temp
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_address
@@ -35,7 +34,7 @@
 ! set reference temperature (for spherical shell)
 !
       if ( iflag_4_ref_temp .eq. id_sphere_ref_temp) then
-        d_nod(1:numnod,iphys%i_ref_t) = zero
+        d_nod(1:node1%numnod,iphys%i_ref_t) = zero
 !
         do inum = 1, numnod_fluid
           inod = inod_fluid(inum)
@@ -52,7 +51,7 @@
       end if
 !
       if ( iflag_4_ref_temp .eq. id_linear_r_ref_temp) then
-        d_nod(1:numnod,iphys%i_ref_t) = zero
+        d_nod(1:node1%numnod,iphys%i_ref_t) = zero
 !
         do inum = 1, numnod_fluid
           inod = inod_fluid(inum)
@@ -67,7 +66,7 @@
 !
 !
       if (iflag_4_ref_temp .ge. 1 .and. iflag_4_ref_temp .le. 3) then
-        d_nod(1:numnod,iphys%i_ref_t) = zero
+        d_nod(1:node1%numnod,iphys%i_ref_t) = zero
         do inum = 1, numnod_fluid
           inod = inod_fluid(inum)
           d_nod(inod,iphys%i_ref_t) = (high_temp - low_temp)            &
@@ -79,7 +78,7 @@
       end if
 !
       if (iflag_t_strat .gt. id_turn_OFF) then
-        d_nod(1:numnod,iphys%i_gref_t) = zero
+        d_nod(1:node1%numnod,iphys%i_gref_t) = zero
 !
         do inum = 1, numnod_fluid
 !

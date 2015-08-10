@@ -17,7 +17,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
       use m_node_phys_address
       use m_physical_property
@@ -33,7 +33,7 @@
       use poynting_flux_smp
 !
 !
-      call cal_electric_field_smp(np_smp, numnod, inod_smp_stack,       &
+      call cal_electric_field_smp(np_smp, node1%numnod, inod_smp_stack, &
      &    coef_d_magne, d_nod(1,iphys%i_current),                       &
      &    d_nod(1,iphys%i_vp_induct), d_nod(1,iphys%i_electric))
 !
@@ -46,7 +46,7 @@
       use poynting_flux_smp
 !
 !
-      call cal_poynting_flux_smp(np_smp, numnod, inod_smp_stack,        &
+      call cal_poynting_flux_smp(np_smp, node1%numnod, inod_smp_stack,  &
      &     coef_d_magne, d_nod(1,iphys%i_current),                      &
      &     d_nod(1,iphys%i_vp_induct), d_nod(1,iphys%i_magne),          &
      &     d_nod(1,iphys%i_poynting))

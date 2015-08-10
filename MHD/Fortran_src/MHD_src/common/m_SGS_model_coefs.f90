@@ -6,7 +6,7 @@
 !     Written by H. Matsui
 !
 !       subroutine allocate_model_coefs
-!       subroutine allocate_nod_model_coefs
+!       subroutine allocate_nod_model_coefs(numnod)
 !
 !       subroutine deallocate_model_coefs
 !       subroutine deallocate_nod_model_coefs
@@ -73,17 +73,17 @@
 !
 !  --------------------------------------------------------------------
 !
-       subroutine allocate_nod_model_coefs
+      subroutine allocate_nod_model_coefs(numnod)
 !
-       use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numnod
 !
-       allocate( ak_sgs_nod(numnod,num_sgs_coefs) )
-       allocate( ak_diff_nod(numnod,num_diff_kinds) )
+      allocate( ak_sgs_nod(numnod,num_sgs_coefs) )
+      allocate( ak_diff_nod(numnod,num_diff_kinds) )
 !
-       if (num_sgs_kinds .gt. 0) ak_sgs_nod =  1.0d0 
-       if (num_diff_kinds .gt. 0) ak_diff_nod = 1.0d0
+      if (num_sgs_kinds .gt. 0) ak_sgs_nod =  1.0d0 
+      if (num_diff_kinds .gt. 0) ak_diff_nod = 1.0d0
 !
-       end subroutine allocate_nod_model_coefs
+      end subroutine allocate_nod_model_coefs
 !
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------

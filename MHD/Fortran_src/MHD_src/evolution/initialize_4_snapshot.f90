@@ -158,7 +158,7 @@
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property
       call init_ele_material_property
-      call s_count_sgs_components
+      call s_count_sgs_components(node1%numnod)
 !
       if (iflag_debug.gt.0)  write(*,*)' make comm. table for fluid'
       call s_const_comm_table_fluid

@@ -4,7 +4,7 @@
 !      Written by H. Matsui on 2004
 !      Modified by H. Matsui on July, 2007
 !
-!     subroutine s_count_sgs_components
+!     subroutine s_count_sgs_components(numnod)
 !
       module count_sgs_components
 !
@@ -18,20 +18,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_count_sgs_components
+      subroutine s_count_sgs_components(numnod)
 !
       use m_machine_parameter
       use calypso_mpi
       use m_phys_labels
       use m_control_parameter
-      use m_geometry_parameter
       use m_node_phys_address
       use m_layering_ele_list
       use m_ele_info_4_dynamical
       use m_SGS_model_coefs
       use m_SGS_address
 !
-      integer (kind = kint) :: i, j, id, jd
+      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint) :: i, j, id, jd
 !
 !
 !    count coefficients for SGS terms
@@ -157,7 +157,7 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
      &      .or. iflag_SGS_model.eq.id_SGS_similarity)  then
-        call allocate_nod_model_coefs
+        call allocate_nod_model_coefs(numnod)
       end if
 !
        i = 1
