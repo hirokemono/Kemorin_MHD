@@ -16,7 +16,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_finite_element_matrix
       use m_sorted_node

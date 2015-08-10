@@ -91,7 +91,6 @@
      &          ngrp_sf, nnod_surf, igrp, id_sf_dat, i_dest,            &
      &          ist_nod_sf, sf_dat_apt)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use t_surface_group_geometry
       use t_group_data
@@ -108,7 +107,7 @@
 !
 !
       call set_surf_bc_on_node_dat                                      &
-     &   (ngrp_sf, nnod_surf, igrp, id_sf_dat, i_dest, numnod,          &
+     &   (ngrp_sf, nnod_surf, igrp, id_sf_dat, i_dest, node1%numnod,    &
      &    numele, nnod_4_ele, nnod_4_surf, ie, node_on_sf,              &
      &    sf_grp%num_grp, sf_grp%num_item,                              &
      &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &

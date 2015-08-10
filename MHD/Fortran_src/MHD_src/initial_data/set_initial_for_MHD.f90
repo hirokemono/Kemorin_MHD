@@ -13,7 +13,6 @@
       use m_constants
 !
       use m_control_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_physical_property
       use m_schmidt_polynomial
@@ -58,7 +57,7 @@
 !
       call idx28
 !
-        do inod = 1, numnod
+        do inod = 1, node1%numnod
          call dschmidt(colatitude(inod))
          call spheric(longitude(inod))
 !
@@ -121,7 +120,7 @@
 !
       call idx28
 !
-        do inod = 1, numnod
+        do inod = 1, node1%numnod
          call dschmidt(colatitude(inod))
          call spheric(longitude(inod))
 !
@@ -169,7 +168,7 @@
       integer (kind = kint) :: inod, inum
 !
 !
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
        d_nod(inod,iphys%i_press) = 0.0d0
       end do
 !

@@ -66,7 +66,7 @@
       subroutine output_grd_file_w_org_connect
 !
       use m_ucd_data
-      use m_geometry_parameter
+      use m_geometry_data
       use m_field_file_format
       use m_t_step_parameter
       use set_ucd_data
@@ -103,7 +103,6 @@
 !
       subroutine link_global_org_mesh_4_ucd
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
       use m_ucd_data
@@ -120,14 +119,13 @@
 !
       subroutine link_local_org_mesh_4_ucd
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
       use m_ucd_data
       use set_and_cal_udt_data
 !
 !
-      call const_udt_local_nodes(numnod, xx, fem_ucd)
+      call const_udt_local_nodes(node1%numnod, xx, fem_ucd)
       call const_udt_local_connect(internal_node, numele, nnod_4_ele,   &
      &    ie_org, fem_ucd)
 !

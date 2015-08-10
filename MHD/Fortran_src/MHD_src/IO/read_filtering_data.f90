@@ -53,7 +53,7 @@
       use m_error_IDs
       use m_control_parameter
       use m_filter_file_names
-      use m_geometry_parameter
+      use m_geometry_data
       use m_filter_elength
       use filter_moment_IO_select
 !
@@ -64,7 +64,7 @@
         ifmt_filter_file = ifmt_filter_elen
         filter_file_head = filter_elen_head
         call sel_read_filter_elen_file                                  &
-     &      (my_rank, numnod, numele, FEM1_elen, ierr)
+     &      (my_rank, node1%numnod, numele, FEM1_elen, ierr)
 !
         if (ierr.eq.500) then
           write(e_message,*)                                            &
@@ -88,7 +88,7 @@
       use m_filter_file_names
       use m_filter_coef_combained
       use m_nod_filter_comm_table
-      use m_geometry_parameter
+      use m_geometry_data
       use filter_moment_IO_select
       use set_filter_comm_tbl_4_IO
       use set_filter_geometry_4_IO
@@ -153,7 +153,7 @@
       use m_filter_file_names
       use m_filter_coef_combained
       use m_filter_elength
-      use m_geometry_parameter
+      use m_geometry_data
       use m_field_file_format
       use read_line_filter_data
       use set_parallel_file_name
@@ -165,7 +165,7 @@
       ifmt_filter_file = ifmt_filter_elen
       filter_file_head = filter_line_head
       call sel_read_filter_elen_file                                    &
-     &   (my_rank, numnod, numele, FEM1_elen, ierr)
+     &   (my_rank, node1%numnod, numele, FEM1_elen, ierr)
 !
         if (ierr.eq.500) then
           write(e_message,*)                                            &

@@ -22,7 +22,7 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
       implicit none
 !

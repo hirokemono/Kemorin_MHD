@@ -15,7 +15,6 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_sorted_node
 !

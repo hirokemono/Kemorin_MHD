@@ -19,7 +19,7 @@
       use m_machine_parameter
       use calypso_mpi
       use m_iccg_parameter
-      use m_geometry_parameter
+      use m_geometry_data
 !
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD

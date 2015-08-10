@@ -31,11 +31,11 @@
 !
       subroutine allocate_aiccg_temp
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_solver_djds_MHD
 !
 !
-      call alloc_type_djds11_mat(numnod, internal_node,                 &
+      call alloc_type_djds11_mat(node1%numnod, internal_node,           &
      &    DJDS_fluid, Tmat_DJDS)
       call reset_aiccg_temp
 !
@@ -54,7 +54,6 @@
 !
       subroutine reset_aiccg_temp
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
       use m_solver_djds_MHD
@@ -64,7 +63,7 @@
 !
        Tmat_DJDS%aiccg = 0.0d0
 !
-       do inod = 1, numnod
+       do inod = 1, node1%numnod
         Tmat_DJDS%aiccg(inod) = 1.0d0
        end do
 !

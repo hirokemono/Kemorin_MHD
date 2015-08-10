@@ -24,7 +24,7 @@
       subroutine set_surf_bc_data
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_group_data
       use m_surface_group_connect
       use m_surface_group_geometry
@@ -34,7 +34,7 @@
       use set_surface_values
 !
 !
-      call allocate_work_4_surf_bc_dat(numnod)
+      call allocate_work_4_surf_bc_dat(node1%numnod)
 !
 ! ---  set boundary conditions
 !

@@ -28,7 +28,6 @@
       use m_node_phys_address
       use m_node_phys_data
       use m_physical_property
-      use m_geometry_parameter
 !
       integer ( kind = kint), intent(in) :: isig
 !
@@ -41,7 +40,7 @@
       pi = four * atan(one)
 !
 !$omp parallel do
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
        d_nod(inod,iphys%i_velo  ) = 0.0d0
        d_nod(inod,iphys%i_velo+1) = 0.0d0
        d_nod(inod,iphys%i_velo+2) = 0.0d0
@@ -51,7 +50,7 @@
 !
 !
 !$omp parallel do
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         if(radius(inod) .lt. depth_high_t)                              &
      &                 d_nod(inod,iphys%i_temp) = one
         if(radius(inod) .gt. depth_low_t)                               &

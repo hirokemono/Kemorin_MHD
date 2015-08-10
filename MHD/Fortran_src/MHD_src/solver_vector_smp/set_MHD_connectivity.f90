@@ -19,7 +19,7 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
 !
       use m_element_id_4_node
       use m_next_node_id_4_node
@@ -116,7 +116,7 @@
 !C | set connectivity in CRS array |
 !C +-------------------------------+
 !C===
-      call s_set_crs_connect_type(np_smp, numnod, inod_smp_stack,       &
+      call s_set_crs_connect_type(np_smp, node1%numnod, inod_smp_stack, &
      &          neib_nod1%ntot, neib_nod1%istack_next,                  &
      &          neib_nod1%inod_next, MHD_CRS)
 !
@@ -125,7 +125,8 @@
 !C +-----------------+
 !C===
 !C
-      call s_reordering_djds_smp_type(np_smp, numnod, internal_node,    &
+      call s_reordering_djds_smp_type                                   &
+     &   (np_smp, node1%numnod, internal_node,                          &
      &    inter_smp_stack, solver_C, MHD_CRS, DJDS_entire)
 !C
 !      write(*,*) 'STACKmc', size(DJDS_entire%STACKmc)
@@ -154,7 +155,8 @@
 !C===
 !C
       call set_nod_comm_tbl_2_type(DJDS_comm_etr)
-      call set_new_comm_table_type(numnod, DJDS_comm_etr, DJDS_entire)
+      call set_new_comm_table_type                                      &
+     &   (node1%numnod, DJDS_comm_etr, DJDS_entire)
 !
       call dealloc_type_crs_connect(MHD_CRS)
 !
@@ -189,13 +191,14 @@
       call set_layerd_ele_id_4_node(nnod_1ele, iele_start, iele_end)
       call const_next_nod_id_4_node
 !
-      call s_set_crs_connect_type(np_smp, numnod, inod_smp_stack,       &
+      call s_set_crs_connect_type(np_smp, node1%numnod, inod_smp_stack, &
      &    neib_nod1%ntot, neib_nod1%istack_next,                        &
      &    neib_nod1%inod_next, MHD_CRS)
 !
-      call s_reordering_djds_smp_type(np_smp, numnod, internal_node,    &
+      call s_reordering_djds_smp_type                                   &
+     &   (np_smp, node1%numnod, internal_node,                          &
      &    inter_smp_stack, solver_C, MHD_CRS, djds_tbl)
-      call set_new_comm_table_type(numnod, layer_comm, djds_tbl)
+      call set_new_comm_table_type(node1%numnod, layer_comm, djds_tbl)
 !
       call dealloc_type_crs_connect(MHD_CRS)
       call dealloc_iele_belonged(ele_4_nod1)

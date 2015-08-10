@@ -59,7 +59,7 @@
 !
       subroutine cal_sol_vect_p_pre_crank
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
       use solver_MGCG_MHD
@@ -69,7 +69,10 @@
       call solver_MGCG_magne
 !
       call copy_solver_vec_to_vector(iphys%i_vecp)
-      d_nod(1:numnod,iphys%i_m_phi) = 0.0d0
+!
+!$omp workshare
+      d_nod(1:node1%numnod,iphys%i_m_phi) = 0.0d0
+!$omp end workshare
 !
       end subroutine cal_sol_vect_p_pre_crank
 !
@@ -78,7 +81,7 @@
       subroutine cal_sol_magne_pre_crank
 !
       use calypso_mpi
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
       use solver_MGCG_MHD
 !
@@ -144,9 +147,9 @@
       subroutine copy_ff_to_rhs33
 !
       use calypso_mpi
-      use m_array_for_send_recv
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
+      use m_array_for_send_recv
       use m_finite_element_matrix
 !
       integer (kind = kint) :: ip, ist, ied, inod
@@ -175,9 +178,9 @@
       subroutine copy_ff_to_rhs11
 !
       use calypso_mpi
-      use m_array_for_send_recv
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
+      use m_array_for_send_recv
       use m_finite_element_matrix
 !
       integer (kind = kint) :: ip, ist, ied, inod
@@ -202,9 +205,9 @@
       subroutine copy_ff_potential_to_rhs(i_field)
 !
       use calypso_mpi
-      use m_array_for_send_recv
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
+      use m_array_for_send_recv
       use m_node_phys_data
       use m_finite_element_matrix
 !
@@ -232,9 +235,9 @@
       subroutine copy_solver_vec_to_vector(i_field)
 !
       use calypso_mpi
-      use m_array_for_send_recv
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
+      use m_array_for_send_recv
       use m_node_phys_data
 !
       integer (kind = kint), intent(in) :: i_field
@@ -261,9 +264,9 @@
       subroutine copy_solver_vec_to_scalar(i_field)
 !
       use calypso_mpi
-      use m_array_for_send_recv
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
+      use m_array_for_send_recv
       use m_node_phys_data
 !
       integer (kind = kint), intent(in) :: i_field

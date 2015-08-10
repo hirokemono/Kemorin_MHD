@@ -76,7 +76,7 @@
 !
       subroutine init_restart_4_snapshot
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use const_global_element_ids
 !
       use field_IO_select
@@ -89,7 +89,7 @@
       call sel_read_alloc_FEM_fld_head                                  &
      &   (nprocs, my_rank, index_rst, fem_fst_IO)
 !
-      fem_fst_IO%nnod_IO = numnod
+      fem_fst_IO%nnod_IO = node1%numnod
       call alloc_phys_data_IO(fem_fst_IO)
 !
       call alloc_merged_field_stack(nprocs, fem_fst_IO)

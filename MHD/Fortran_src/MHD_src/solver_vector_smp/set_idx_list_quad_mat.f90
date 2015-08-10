@@ -26,7 +26,6 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_sorted_node
 !
@@ -126,7 +125,7 @@
               iele = iele_sort_smp(in)
               iconn = iconn_sort_smp(in)
 !
-              call set_off_diag_type(numnod, internal_node,             &
+              call set_off_diag_type(node1%numnod, internal_node,       &
      &            djds_tbl, ie(iele,iconn), ie(iele,k2), mat_num)
               idx_4_djds_mat(in,k2) = mat_num
             end do
@@ -173,7 +172,7 @@
               iconn = iconn_sort_smp(in)
 !
               if(iele.ge.iele_start .and. iele.le.iele_end) then
-                call set_off_diag_type(numnod, internal_node,           &
+                call set_off_diag_type(node1%numnod, internal_node,     &
      &              djds_tbl, ie(iele,iconn), ie(iele,k2), mat_num)
                 idx_4_djds_mat(in,k2) = mat_num
               else

@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine s_set_mag_p_sph(nod_grp、ii, i, j)
+!      subroutine s_set_mag_p_sph(nod_grp, i, j)
 !        type(group_data), intent(in) :: nod_grp
 !
       module set_mag_p_sph
@@ -20,7 +20,6 @@
 !
       subroutine s_set_mag_p_sph(nod_grp, ii, i, j)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_bc_data_list
       use m_bc_data_magne_p

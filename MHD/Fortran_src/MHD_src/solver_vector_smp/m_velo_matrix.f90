@@ -38,11 +38,11 @@
 !
       subroutine allocate_aiccg_velo
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_solver_djds_MHD
 !
 !
-      call alloc_type_djds33_mat(numnod, internal_node,                 &
+      call alloc_type_djds33_mat(node1%numnod, internal_node,           &
      &    DJDS_fluid, Vmat_DJDS)
       call reset_aiccg_velo
 !
@@ -52,11 +52,11 @@
 !
       subroutine allocate_aiccg_press
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_solver_djds_MHD
 !
 !
-      call alloc_type_djds11_mat(numnod, internal_node,                 &
+      call alloc_type_djds11_mat(node1%numnod, internal_node,           &
      &    DJDS_fl_l, Pmat_DJDS)
       call reset_aiccg_press
 !
@@ -85,7 +85,6 @@
 !
       subroutine reset_aiccg_velo
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
       use m_solver_djds_MHD
@@ -95,7 +94,7 @@
 !
       Vmat_DJDS%aiccg = 0.0d00
 !
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         Vmat_DJDS%aiccg(inod*9-8) = 1.0d0
         Vmat_DJDS%aiccg(inod*9-4) = 1.0d0
         Vmat_DJDS%aiccg(inod*9  ) = 1.0d0
@@ -131,7 +130,7 @@
 !
       Pmat_DJDS%aiccg = 0.0d0
 !
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         Pmat_DJDS%aiccg(inod) = 1.0d0
       end do
 !

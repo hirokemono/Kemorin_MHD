@@ -37,11 +37,11 @@
 !
       subroutine allocate_aiccg_magne
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_solver_djds_MHD
 !
 !
-      call alloc_type_djds33_mat(numnod, internal_node,                 &
+      call alloc_type_djds33_mat(node1%numnod, internal_node,           &
      &    DJDS_entire, Bmat_DJDS)
       call reset_aiccg_magne
 !
@@ -51,12 +51,11 @@
 !
       subroutine allocate_aiccg_mag_p
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_solver_djds_MHD
 !
 !
-      call alloc_type_djds11_mat(numnod, internal_node,                 &
+      call alloc_type_djds11_mat(node1%numnod, internal_node,           &
      &    DJDS_linear, Fmat_DJDS)
       call reset_aiccg_mag_p
 !
@@ -86,7 +85,6 @@
       subroutine reset_aiccg_magne
 !
       use m_control_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
       use m_solver_djds_MHD
@@ -97,7 +95,7 @@
       Bmat_DJDS%aiccg = 0.0d0
 !
       if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
-        do inod = 1, numnod
+        do inod = 1, node1%numnod
           Bmat_DJDS%aiccg(9*inod-8) = 1.0d0
           Bmat_DJDS%aiccg(9*inod-4) = 1.0d0
           Bmat_DJDS%aiccg(9*inod  ) = 1.0d0
@@ -124,7 +122,6 @@
       subroutine reset_aiccg_mag_p
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
       use m_solver_djds_MHD
@@ -133,7 +130,7 @@
 !
       Fmat_DJDS%aiccg = 0.0d0
 !
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         Fmat_DJDS%aiccg(inod) = 1.0d0
       end do
 !

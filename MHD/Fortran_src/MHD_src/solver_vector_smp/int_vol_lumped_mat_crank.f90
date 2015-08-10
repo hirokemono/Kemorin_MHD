@@ -18,7 +18,7 @@
       use m_precision
       use m_constants
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_finite_element_matrix
       use init_djds_matrix_lump
@@ -45,35 +45,35 @@
 !$omp parallel
       if (iflag_t_evo_4_velo .eq. id_Crank_nicolson                     &
      &     .and. coef_velo .gt. zero) then
-        call init_33_matrix_lump(numnod,                                &
+        call init_33_matrix_lump(node1%numnod,                          &
      &      numnod_fluid, inod_fluid, DJDS_fluid%OLDtoNEW, ml_o_fl,     &
      &      Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
       end if
 !
       if (iflag_t_evo_4_temp .eq. id_Crank_nicolson                     &
      &     .and. coef_temp .gt. zero) then
-        call init_11_matrix_lump(numnod,                                &
+        call init_11_matrix_lump(node1%numnod,                          &
      &      numnod_fluid, inod_fluid, DJDS_fluid%OLDtoNEW, ml_o_fl,     &
      &      Tmat_DJDS%num_non0, Tmat_DJDS%aiccg)
       end if
 !
       if (iflag_t_evo_4_magne .eq. id_Crank_nicolson                    &
      &     .and. coef_magne .gt. zero) then
-        call init_33_matrix_lump(numnod, numnod_conduct, inod_conduct,  &
-     &      DJDS_entire%OLDtoNEW, ml_o_cd,                              &
+        call init_33_matrix_lump(node1%numnod, numnod_conduct,          &
+     &      inod_conduct, DJDS_entire%OLDtoNEW, ml_o_cd,                &
      &      Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
       end if
 !
       if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson                   &
      &     .and. coef_magne .gt. zero) then
-        call init_33_matrix_lump(numnod, numnod_conduct, inod_conduct,  &
-     &      DJDS_entire%OLDtoNEW, ml_o_cd,                              &
+        call init_33_matrix_lump(node1%numnod, numnod_conduct,          &
+     &      inod_conduct, DJDS_entire%OLDtoNEW, ml_o_cd,                &
      &      Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
       end if
 !
       if (iflag_t_evo_4_composit .eq. id_Crank_nicolson                 &
      &     .and. coef_light .gt. zero) then
-        call init_11_matrix_lump(numnod,                                &
+        call init_11_matrix_lump(node1%numnod,                          &
      &      numnod_fluid, inod_fluid, DJDS_fluid%OLDtoNEW, ml_o_fl,     &
      &      Cmat_DJDS%num_non0, Cmat_DJDS%aiccg)
       end if
@@ -91,8 +91,8 @@
 !
       use cal_coriolis_mat33
 !
-      call cal_lumped_coriolis_matrix(numnod, numnod_fluid, inod_fluid, &
-     &    DJDS_fluid%OLDtoNEW, coef_cor, angular, ml_o_fl,              &
+      call cal_lumped_coriolis_matrix(node1%numnod, numnod_fluid,       &
+     &    inod_fluid, DJDS_fluid%OLDtoNEW, coef_cor, angular, ml_o_fl,  &
      &    Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
 !
       end subroutine add_lumped_coriolis_matrix

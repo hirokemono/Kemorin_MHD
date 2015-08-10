@@ -11,7 +11,6 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       implicit none
@@ -30,7 +29,7 @@
       integer (kind = kint) :: inod
 !
 !$omp parallel do
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
        d_nod(inod,iphys%i_press)  = 0.0d0
        d_nod(inod,iphys%i_velo  ) = 0.0d0
        d_nod(inod,iphys%i_velo+1) = -xx(inod,3)
@@ -50,7 +49,7 @@
       integer (kind = kint) :: inod
 !
 !$omp parallel do
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
        d_nod(inod,iphys%i_press)  = 0.0d0
        d_nod(inod,iphys%i_velo  ) =  xx(inod,3)
        d_nod(inod,iphys%i_velo+1) =  0.0d0
@@ -70,7 +69,7 @@
       integer (kind = kint) :: inod
 !
 !$omp parallel do
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
        d_nod(inod,iphys%i_press)  = 0.0d0
        d_nod(inod,iphys%i_velo  ) = -xx(inod,2)
        d_nod(inod,iphys%i_velo+1) =  xx(inod,1)
