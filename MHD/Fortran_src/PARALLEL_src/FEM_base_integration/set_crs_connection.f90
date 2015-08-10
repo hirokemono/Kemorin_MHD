@@ -30,7 +30,7 @@
 !
       subroutine s_set_crs_connection
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_machine_parameter
       use m_next_node_id_4_node
       use m_crs_connect
@@ -38,20 +38,20 @@
       use cal_minmax_and_stacks
 !
 !
-      call allocate_crs_stack(numnod)
+      call allocate_crs_stack(node1%numnod)
 !
-      call count_item_crs(numnod, np_smp, inod_smp_stack,               &
+      call count_item_crs(node1%numnod, np_smp, inod_smp_stack,         &
      &    neib_nod1%ntot, neib_nod1%istack_next, neib_nod1%inod_next,   &
      &    num_crs_l, num_crs_u)
 !
-      call s_cal_minmax_and_stacks(numnod, num_crs_l, izero,            &
+      call s_cal_minmax_and_stacks(node1%numnod, num_crs_l, izero,      &
      &    istack_crs_l, ntot_crs_l, max_crs_l, min_crs_l)
-      call s_cal_minmax_and_stacks(numnod, num_crs_u, izero,            &
+      call s_cal_minmax_and_stacks(node1%numnod, num_crs_u, izero,      &
      &    istack_crs_u, ntot_crs_u, max_crs_u, min_crs_u)
 !
       call allocate_crs_connect
 !
-      call set_item_crs(numnod, np_smp, inod_smp_stack,                 &
+      call set_item_crs(node1%numnod, np_smp, inod_smp_stack,           &
      &    neib_nod1%ntot, neib_nod1%istack_next, neib_nod1%inod_next,   &
      &    ntot_crs_l, ntot_crs_u, istack_crs_l, istack_crs_u,           &
      &    item_crs_l, item_crs_u)

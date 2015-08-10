@@ -31,7 +31,7 @@
 !
 !
 !      write(*,*) 'allocate_marix_list'
-      call allocate_marix_list
+      call allocate_marix_list(nnod_4_ele)
 !
 !      write(*,*) 'set_index_list_4_mat_etr'
       call set_index_list_4_mat_etr

@@ -34,7 +34,7 @@
 !
       use m_constants
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_machine_parameter
       use m_element_id_4_node
       use m_sorted_node
@@ -43,11 +43,11 @@
 !
 !
       inod_ele_max = ele_4_nod1%nmax
-      call allocate_sorted_node
+      call allocate_sorted_node(node1%numnod)
 !
 !    count number of node to RHS assemble
 !
-      call count_nele_4_RHS_assemble(numnod, ele_4_nod1%nmax,           &
+      call count_nele_4_RHS_assemble(node1%numnod, ele_4_nod1%nmax,     &
      &    ele_4_nod1%nele_4_node, np_smp, inod_ele_max, nnod_sort_smp)
 !
 !    stacking for SMP
@@ -62,7 +62,7 @@
 !
 !       write(*,*) 'allocate smp end'
 !
-      call set_iele_4_RHS_assemble(numnod, ele_4_nod1%nmax,             &
+      call set_iele_4_RHS_assemble(node1%numnod, ele_4_nod1%nmax,       &
      &    ele_4_nod1%nele_4_node, ele_4_nod1%istack_4_node,             &
      &    np_smp, inod_ele_max, nod_stack_smp,                          &
      &    ele_4_nod1%ntot, ele_4_nod1%iele_4_node,                      &

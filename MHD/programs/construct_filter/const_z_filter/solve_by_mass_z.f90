@@ -15,7 +15,7 @@
 !
       module solve_by_mass_z
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_int_edge_vart_width
       use m_consist_mass_crs
 !
@@ -43,7 +43,7 @@
 !
       NB_crs = 1
          write(*,*) 'allocate_crs_mat_data'
-      call allocate_crs_mat_data
+      call allocate_crs_mat_data(node1%numnod)
 !
       do i = 1, numnod
         D_crs(1,1,i) = d_mk_crs(i)
@@ -75,7 +75,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_nod_comm_table
-      use m_geometry_parameter
+      use m_geometry_data
       use m_iccg_parameter
       use m_solver_djds
       use m_matrix_data_4_djds
@@ -90,7 +90,7 @@
 !
       NB_crs = 1
          write(*,*) 'allocate_crs_mat_data'
-      call allocate_crs_mat_data
+      call allocate_crs_mat_data(node1%numnod)
 !
       do i = 1, numnod
         B_crs(i) = rhs_mk_crs(i)

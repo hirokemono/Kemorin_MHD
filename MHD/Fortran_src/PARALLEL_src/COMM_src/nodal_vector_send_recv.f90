@@ -15,7 +15,7 @@
       use m_precision
       use calypso_mpi
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_nod_comm_table
 !
       implicit none
@@ -50,23 +50,23 @@
       use m_work_time
       use solver_SR_type
 !
-      real(kind = kreal), intent(inout) :: scl_nod(numnod)
+      real(kind = kreal), intent(inout) :: scl_nod(node1%numnod)
 !
       integer(kind=kint)  :: inod
 !
 !
 !$omp parallel do
-       do inod=1, numnod
+       do inod=1, node1%numnod
         x_vec(inod) = scl_nod(inod)
        end do
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV_type(numnod, nod_comm, x_vec(1))
+      call SOLVER_SEND_RECV_type(node1%numnod, nod_comm, x_vec(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
-      do inod=1, numnod
+      do inod=1, node1%numnod
         scl_nod(inod) = x_vec(inod)
       end do
 !$omp end parallel do
@@ -81,12 +81,12 @@
       use m_work_time
       use solver_SR_type
 !
-      real(kind = kreal), intent(inout) :: vec_nod(numnod,3)
+      real(kind = kreal), intent(inout) :: vec_nod(node1%numnod,3)
 !
       integer (kind = kint) :: inod
 !
 !$omp parallel do
-      do inod=1, numnod
+      do inod=1, node1%numnod
         x_vec(3*inod-2) = vec_nod(inod,1)
         x_vec(3*inod-1) = vec_nod(inod,2)
         x_vec(3*inod  ) = vec_nod(inod,3)
@@ -94,11 +94,11 @@
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV_3_type(numnod, nod_comm, x_vec(1))
+      call SOLVER_SEND_RECV_3_type(node1%numnod, nod_comm, x_vec(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
-      do inod=1, numnod
+      do inod=1, node1%numnod
         vec_nod(inod,1) = x_vec(3*inod-2)
         vec_nod(inod,2) = x_vec(3*inod-1)
         vec_nod(inod,3) = x_vec(3*inod  )
@@ -115,12 +115,12 @@
       use m_work_time
       use solver_SR_type
 !
-      real(kind = kreal), intent(inout) :: tsr_nod(numnod,6)
+      real(kind = kreal), intent(inout) :: tsr_nod(node1%numnod,6)
 !
       integer (kind = kint) :: inod
 !
 !$omp parallel do
-      do inod=1, numnod
+      do inod=1, node1%numnod
         x_vec(6*inod-5) = tsr_nod(inod,1)
         x_vec(6*inod-4) = tsr_nod(inod,2)
         x_vec(6*inod-3) = tsr_nod(inod,3)
@@ -131,11 +131,11 @@
 !$omp end parallel do
 !
       START_SRtime= MPI_WTIME()
-      call SOLVER_SEND_RECV_6_type(numnod, nod_comm, x_vec(1))
+      call SOLVER_SEND_RECV_6_type(node1%numnod, nod_comm, x_vec(1))
       SendRecvtime = MPI_WTIME() - START_SRtime + SendRecvtime
 !
 !$omp parallel do
-      do inod=1, numnod
+      do inod=1, node1%numnod
         tsr_nod(inod,1) = x_vec(6*inod-5)
         tsr_nod(inod,2) = x_vec(6*inod-4)
         tsr_nod(inod,3) = x_vec(6*inod-3)

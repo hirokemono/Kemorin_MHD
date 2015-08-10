@@ -90,15 +90,15 @@
 !
       subroutine allocate_fem_mat_base
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_machine_parameter
       use m_phys_constants
 !
 !
       call allocate_node_ff
 !
-      allocate(ml(numnod))
-      allocate(ml_o(numnod))
+      allocate(ml(node1%numnod))
+      allocate(ml_o(node1%numnod))
 !
       allocate(ff_smp(maxnod_4_smp,3,np_smp))
       allocate(ff_nl_smp(maxnod_4_smp,3,np_smp))
@@ -130,15 +130,15 @@
 !
       subroutine allocate_fem_mat_region
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
       call allocate_fem_mat_fluid
 !
-      allocate(ml_cd(numnod))
-      allocate(ml_ins(numnod))
+      allocate(ml_cd(node1%numnod))
+      allocate(ml_ins(node1%numnod))
 !
-      allocate(ml_o_cd(numnod))
-      allocate(ml_o_ins(numnod))
+      allocate(ml_o_cd(node1%numnod))
+      allocate(ml_o_ins(node1%numnod))
 !
         ml_cd =  0.0d0
         ml_ins = 0.0d0
@@ -152,10 +152,10 @@
 !
       subroutine allocate_fem_mat_fluid
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
-      allocate(ml_fl(numnod))
-      allocate(ml_o_fl(numnod))
+      allocate(ml_fl(node1%numnod))
+      allocate(ml_o_fl(node1%numnod))
 !
         ml_fl =   0.0d0
         ml_o_fl = 0.0d0
@@ -166,7 +166,7 @@
 !
       subroutine allocate_node_ff
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
 !
       allocate(ff(numnod,3))
@@ -268,7 +268,7 @@
 !
       subroutine reset_ff
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint) :: inod, nd
 !

@@ -165,7 +165,7 @@
 !
        write(*,*) 'allocate_crs_mat_data'
        NB_crs = ncomp_mat
-       call allocate_crs_mat_data
+       call allocate_crs_mat_data(node1%numnod)
 !
        call set_matrix_4_border
        write(*,*) 's_const_commute_matrix'
@@ -173,7 +173,7 @@
        write(*,*) 's_switch_crs_matrix'
        call s_switch_crs_matrix
        write(*,*) 'check_crs_matrix_components'
-       call check_crs_matrix_components(my_rank)
+       call check_crs_matrix_components(my_rank, node1%numnod)
 !
 !      goto 999
 !

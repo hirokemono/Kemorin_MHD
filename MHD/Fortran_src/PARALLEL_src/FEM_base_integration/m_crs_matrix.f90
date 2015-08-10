@@ -3,11 +3,11 @@
 !
 !      Written by Kemorin
 !
-!       subroutine allocate_crs_matrix
-!       subroutine allocate_crs_mat_data
+!       subroutine allocate_crs_matrix(numnod)
+!       subroutine allocate_crs_mat_data(numnod)
 !
 !       subroutine deallocate_crs_mat_data
-!       subroutine check_crs_matrix_components(my_rank)
+!       subroutine check_crs_matrix_components(my_rank, numnod)
 !
       module m_crs_matrix
 !
@@ -39,30 +39,33 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine allocate_crs_matrix
+       subroutine allocate_crs_matrix(numnod)
 !
-       use m_geometry_parameter
        use m_crs_connect
+!
+       integer(kind = kint), intent(in) :: numnod
 !
 !
        call allocate_crs_stack(numnod)
        call allocate_crs_connect
 !
-       call allocate_crs_mat_data
+       call allocate_crs_mat_data(numnod)
 !
        end subroutine allocate_crs_matrix
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine allocate_crs_mat_data
+       subroutine allocate_crs_mat_data(numnod)
 !
        use m_crs_connect
-       use m_geometry_parameter
 !
-       allocate (AL_crs(NB_crs,NB_crs,ntot_crs_l) )
-       allocate (AU_crs(NB_crs,NB_crs,ntot_crs_u) )
-       allocate (D_crs(NB_crs,NB_crs,numnod))
-       allocate (B_crs(NB_crs*numnod), X_crs(NB_crs*numnod))
+       integer(kind = kint), intent(in) :: numnod
+!
+!
+       allocate(AL_crs(NB_crs,NB_crs,ntot_crs_l) )
+       allocate(AU_crs(NB_crs,NB_crs,ntot_crs_u) )
+       allocate(D_crs(NB_crs,NB_crs,numnod))
+       allocate(B_crs(NB_crs*numnod), X_crs(NB_crs*numnod))
 !
        AL_crs = 0.0d0
        AU_crs = 0.0d0
@@ -85,12 +88,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine check_crs_matrix_components(my_rank)
+       subroutine check_crs_matrix_components(my_rank, numnod)
 !
-       use m_geometry_parameter
        use m_crs_connect
 !
-       integer (kind = kint) :: my_rank, i, k1, k2, j
+       integer(kind = kint), intent(in) :: my_rank, numnod
+       integer (kind = kint) :: i, k1, k2, j
 !
        do i = 1, numnod
            write(my_rank+50,*) "vector (inod) = ", i

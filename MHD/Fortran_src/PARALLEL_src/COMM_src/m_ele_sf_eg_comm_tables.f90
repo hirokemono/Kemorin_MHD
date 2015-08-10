@@ -93,7 +93,7 @@
 !
       call allocate_numnod_stack(nprocs)
 !
-      call count_number_of_node_stack(numnod, istack_numnod)
+      call count_number_of_node_stack(node1%numnod, istack_numnod)
       call count_number_of_node_stack(internal_node, istack_internod)
 !
       end subroutine const_global_numnod_list_1st
@@ -174,7 +174,8 @@
 !
       call set_ele_id_4_node_comm
       call belonged_ele_id_4_node_1(blng_tbls%host_ele)
-      call const_ele_comm_table_1st(txt, numnod, numele, inod_global,   &
+      call const_ele_comm_table_1st                                     &
+     &   (txt, node1%numnod, numele, inod_global,                       &
      &    interior_ele, x_ele, nod_comm, ele_4_nod_comm,                &
      &    blng_tbls%host_ele, ele_comm)
       call dealloc_iele_belonged(blng_tbls%host_ele)
@@ -198,7 +199,8 @@
 !
       call set_surf_id_4_node
       call belonged_surf_id_4_node_1(blng_tbls%host_surf)
-      call const_ele_comm_table_1st(txt, numnod, numsurf, inod_global,  &
+      call const_ele_comm_table_1st                                     &
+     &   (txt, node1%numnod, numsurf, inod_global,                      &
      &    interior_surf, x_surf, nod_comm, surf_4_nod1,                 &
      &    blng_tbls%host_surf, surf_comm)
       call dealloc_iele_belonged(blng_tbls%host_surf)
@@ -222,7 +224,8 @@
 !
       call set_edge_id_4_node
       call belonged_edge_id_4_node_1(blng_tbls%host_edge)
-      call const_ele_comm_table_1st(txt, numnod, numedge, inod_global,  &
+      call const_ele_comm_table_1st                                     &
+     &   (txt, node1%numnod, numedge, inod_global,                      &
      &    interior_edge, x_edge, nod_comm, edge_4_nod1,                 &
      &    blng_tbls%host_edge,  edge_comm)
       call dealloc_iele_belonged(blng_tbls%host_edge)

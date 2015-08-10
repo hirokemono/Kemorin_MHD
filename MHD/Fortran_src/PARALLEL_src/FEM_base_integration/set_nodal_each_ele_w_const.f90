@@ -30,7 +30,7 @@
       subroutine set_vector_2_each_ele_cnst(k2, vect_e, d_nod, coef)
 !
       integer(kind = kint), intent(in) :: k2
-      real (kind=kreal), intent(in) :: d_nod(numnod,3)
+      real (kind=kreal), intent(in) :: d_nod(node1%numnod,3)
       real (kind=kreal), intent(in) :: coef
       real (kind=kreal), intent(inout) :: vect_e(numele,3)
 !
@@ -59,7 +59,7 @@
       subroutine set_scalar_2_each_ele_cnst(k2, scalar_e, d_nod, coef)
 !
       integer(kind = kint), intent(in) :: k2
-      real (kind=kreal), intent(in) :: d_nod(numnod)
+      real (kind=kreal), intent(in) :: d_nod(node1%numnod)
       real (kind=kreal), intent(in) :: coef
       real (kind=kreal), intent(inout) :: scalar_e(numele)
 !
@@ -87,7 +87,7 @@
 !
       integer(kind = kint), intent(in) :: k2, nd
       integer(kind = kint), intent(in) :: l_sim_t(3,3)
-      real (kind=kreal), intent(in) :: d_nod(numnod,6)
+      real (kind=kreal), intent(in) :: d_nod(node1%numnod,6)
       real (kind=kreal), intent(in) :: coef
       real (kind=kreal), intent(inout) :: vect_e(numele,3)
 !
@@ -122,7 +122,7 @@
 !
       integer(kind = kint), intent(in) :: k2, nd
       integer(kind = kint), intent(in) :: l_asim_t(3,3,2)
-      real (kind=kreal), intent(in) :: d_nod(numnod,3)
+      real (kind=kreal), intent(in) :: d_nod(node1%numnod,3)
       real (kind=kreal), intent(in) :: coef
       real (kind=kreal), intent(inout) :: vect_e(numele,3)
 !

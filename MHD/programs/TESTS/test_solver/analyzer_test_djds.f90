@@ -57,10 +57,11 @@
       use DJDS_precond_solve11
       use DJDS_precond_solve33
       use DJDS_precond_solveNN
+!      use m_geometry_data
 !
       integer(kind = kint) :: ierr
 !
-!      call check_crs_matrix_components(my_rank)
+!      call check_crs_matrix_components(my_rank, node1%numnod)
 !C
 !C-- ICCG computation
       if (SOLVER_crs .eq. 'scalar' .or. SOLVER_crs.eq.'SCALAR') then

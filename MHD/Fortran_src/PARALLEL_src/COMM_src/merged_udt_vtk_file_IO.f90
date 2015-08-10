@@ -58,7 +58,7 @@
       call link_numnod_stacks_2_output(nprocs, istack_numnod,           &
      &    istack_internod, istack_interele, m_ucd)
 !
-      call allocate_merged_ucd_data(numnod)
+      call allocate_merged_ucd_data(node1%numnod)
       call set_node_double_address                                      &
      &   (nod_comm%num_neib, nod_comm%id_neib,                          &
      &    nod_comm%istack_import, nod_comm%item_import,                 &

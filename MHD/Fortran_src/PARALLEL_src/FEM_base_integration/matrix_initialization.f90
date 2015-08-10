@@ -21,7 +21,7 @@
 !
       subroutine iccg_matrix_init(num_mat, aiccg)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_machine_parameter
       use m_sorted_node
 !
@@ -32,7 +32,7 @@
 !
       call s_crs_matrix_init(np_smp, nnod_4_ele,                        &
      &          inod_ele_max, num_sort_smp, nod_stack_smp, idx_4_mat,   &
-     &          num_mat, ione, numnod, aiccg)
+     &          num_mat, ione, node1%numnod, aiccg)
 !
       end subroutine iccg_matrix_init
 !

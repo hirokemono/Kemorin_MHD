@@ -19,7 +19,7 @@
 !
       subroutine s_switch_crs_matrix
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_crs_connect
       use m_crs_matrix
 !
@@ -28,7 +28,7 @@
 !
 !
 !
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         do k1 = 1, NB_crs
           if ( abs(D_crs(k1,k1,inod)) .eq. 0.0d0) then
             do k2 = k1+1, NB_crs

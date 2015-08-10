@@ -48,7 +48,7 @@
       use cal_ff_smp_to_ffs
 !
       real(kind = kreal), intent(in) :: scalar_ele(numele)
-      real(kind = kreal), intent(inout) :: scalar_nod(numnod)
+      real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
 !
 !
       call int_area_ele_scalar_2_node(iele_smp_stack, scalar_ele)
@@ -63,7 +63,7 @@
       use cal_ff_smp_to_ffs
 !
       real(kind = kreal), intent(in) :: vector_ele(numele,3)
-      real(kind = kreal), intent(inout) :: vector_nod(numnod,3)
+      real(kind = kreal), intent(inout) :: vector_nod(node1%numnod,3)
 !
 !
       call int_area_ele_vector_2_node(iele_smp_stack, vector_ele)
@@ -78,7 +78,7 @@
       use cal_ff_smp_to_ffs
 !
       real(kind = kreal), intent(in) :: tensor_ele(numele,6)
-      real(kind = kreal), intent(inout) :: tensor_nod(numnod,6)
+      real(kind = kreal), intent(inout) :: tensor_nod(node1%numnod,6)
 !
 !
       call int_area_ele_sym_tensor_2_node(iele_smp_stack, tensor_ele)

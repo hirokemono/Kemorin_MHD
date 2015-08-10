@@ -18,7 +18,7 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_machine_parameter
       use m_phys_constants
       use m_sorted_node
@@ -39,7 +39,7 @@
       integer(kind = kint), intent(in) :: numdir
 !
 !
-      call s_set_ff_nl_smp_2_ff(numnod, np_smp, maxnod_4_smp,           &
+      call s_set_ff_nl_smp_2_ff(node1%numnod, np_smp, maxnod_4_smp,     &
      &    inod_smp_stack, node_sort_list_smp, numdir,                   &
      &    ff_smp, ff_nl_smp, ff, ff_nl)
 !
@@ -53,11 +53,11 @@
 !
       integer(kind = kint), intent(in) :: numdir
 !
-      real(kind = kreal), intent(inout) :: ff(numnod,3)
+      real(kind = kreal), intent(inout) :: ff(node1%numnod,3)
       real(kind = kreal), intent(in) :: ff_smp(maxnod_4_smp,3,np_smp)
 !
 !
-      call s_cal_ff_smp_2_ff (numnod, np_smp, maxnod_4_smp,             &
+      call s_cal_ff_smp_2_ff (node1%numnod, np_smp, maxnod_4_smp,       &
      &    inod_smp_stack, node_sort_list_smp, numdir, ff_smp, ff)
 !
       end subroutine cal_ff_smp_2_ff
@@ -69,11 +69,11 @@
       use cal_rhs_node_order
 !
       real(kind=kreal), intent(in) :: ff_smp(maxnod_4_smp,3,np_smp)
-      real(kind=kreal), intent(inout) :: ml(numnod)
-      real(kind=kreal), intent(inout) :: ml_o(numnod)
+      real(kind=kreal), intent(inout) :: ml(node1%numnod)
+      real(kind=kreal), intent(inout) :: ml_o(node1%numnod)
 !
 !
-      call s_cal_ff_smp_2_ml (numnod, np_smp, maxnod_4_smp,             &
+      call s_cal_ff_smp_2_ml (node1%numnod, np_smp, maxnod_4_smp,       &
      &    inod_smp_stack, node_sort_list_smp, ml, ml_o, ff_smp)
 !
       end subroutine cal_ff_smp_2_ml
@@ -85,12 +85,12 @@
 !
       use cal_rhs_node_order
 !
-      real(kind=kreal), intent(inout) :: scalar(numnod)
-      real(kind=kreal), intent(in) :: ml(numnod)
+      real(kind=kreal), intent(inout) :: scalar(node1%numnod)
+      real(kind=kreal), intent(in) :: ml(node1%numnod)
       real(kind=kreal), intent(in) :: ff_smp(maxnod_4_smp,3,np_smp)
 !
 !
-      call s_cal_ff_smp_2_scalar (numnod, np_smp, maxnod_4_smp,         &
+      call s_cal_ff_smp_2_scalar (node1%numnod, np_smp, maxnod_4_smp,   &
      &    inod_smp_stack, node_sort_list_smp, scalar, ff_smp, ml)
 !
       end subroutine cal_ff_smp_2_scalar
@@ -102,14 +102,14 @@
       use m_phys_constants
       use cal_rhs_node_order
 !
-      real(kind=kreal), intent(in) :: ml(numnod)
+      real(kind=kreal), intent(in) :: ml(node1%numnod)
       real(kind=kreal), intent(in)                                      &
      &                  :: ff_smp(maxnod_4_smp,n_vector,np_smp)
 !
-      real(kind=kreal), intent(inout) :: vector(numnod,n_vector)
+      real(kind=kreal), intent(inout) :: vector(node1%numnod,n_vector)
 !
 !
-      call s_cal_ff_smp_2_vector (numnod, np_smp, maxnod_4_smp,         &
+      call s_cal_ff_smp_2_vector (node1%numnod, np_smp, maxnod_4_smp,   &
      &    inod_smp_stack, node_sort_list_smp, vector, ff_smp, ml)
 !
       end subroutine cal_ff_smp_2_vector
@@ -121,14 +121,15 @@
       use m_phys_constants
       use cal_rhs_node_order
 !
-      real(kind=kreal), intent(in) :: ml(numnod)
+      real(kind=kreal), intent(in) :: ml(node1%numnod)
       real(kind=kreal), intent(in)                                      &
      &                 :: ff_t_smp(maxnod_4_smp,n_sym_tensor,np_smp)
 !
-      real(kind=kreal), intent(inout) :: tensor(numnod,n_sym_tensor)
+      real(kind=kreal), intent(inout)                                   &
+     &                 :: tensor(node1%numnod,n_sym_tensor)
 !
 !
-      call s_cal_ff_smp_2_tensor(numnod, np_smp, maxnod_4_smp,          &
+      call s_cal_ff_smp_2_tensor(node1%numnod, np_smp, maxnod_4_smp,    &
      &    inod_smp_stack, node_sort_list_smp, tensor, ff_t_smp, ml)
 !
       end subroutine cal_ff_smp_2_tensor

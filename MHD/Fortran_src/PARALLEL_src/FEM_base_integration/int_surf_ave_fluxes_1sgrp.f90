@@ -72,19 +72,19 @@
       integer (kind = kint), intent(in) :: num_sgrp
       integer (kind = kint), intent(in) :: isurf_grp(2,num_sgrp)
       integer (kind = kint), intent(in) :: istack_sf_grp_smp(0:np_smp)
-      real(kind = kreal), intent(in) :: d1_nod(numnod)
+      real(kind = kreal), intent(in) :: d1_nod(node1%numnod)
 !
       real(kind = kreal), intent(inout) :: ave_l
 !
 !
       if (nnod_4_ele .eq. num_t_quad) then
-        call int_surf_ave_1sgrp_8(numnod, numele, numsurf,              &
+        call int_surf_ave_1sgrp_8(node1%numnod, numele, numsurf,        &
      &      nnod_4_surf, ie_surf, isf_4_ele, e_multi,                   &
      &      jac1_2d_q%ntot_int, num_int, jac1_2d_q%an_sf,               &
      &      jac1_2d_q%xj_sf, num_sgrp, isurf_grp, istack_sf_grp_smp,    &
      &      d1_nod, ave_l)
       else
-        call int_surf_ave_1sgrp_4(numnod, numele, numsurf,              &
+        call int_surf_ave_1sgrp_4(node1%numnod, numele, numsurf,        &
      &      nnod_4_surf, ie_surf, isf_4_ele, e_multi,                   &
      &      jac1_2d_l%ntot_int, num_int, jac1_2d_l%an_sf,               &
      &      jac1_2d_l%xj_sf, num_sgrp, isurf_grp, istack_sf_grp_smp,    &
@@ -106,19 +106,19 @@
       integer(kind = kint), intent(in) :: num_sgrp
       integer(kind = kint), intent(in) :: isurf_grp(2,num_sgrp)
       integer(kind = kint), intent(in) :: istack_sf_grp_smp(0:np_smp)
-      real(kind = kreal), intent(in) :: d1_nod(numnod,3)
+      real(kind = kreal), intent(in) :: d1_nod(node1%numnod,3)
 !
       real(kind = kreal), intent(inout) :: flux(num_sgrp)
 !
 !
       if (nnod_4_ele .eq. num_t_quad) then
-        call int_vec_flux_1sgrp_8(numnod, numele, numsurf,              &
+        call int_vec_flux_1sgrp_8(node1%numnod, numele, numsurf,        &
      &          nnod_4_surf, ie_surf, isf_4_ele, e_multi, num_sgrp,     &
      &          isurf_grp, istack_sf_grp_smp, jac1_2d_q%ntot_int,       &
      &          num_int, jac1_2d_q%an_sf, jac1_2d_q%xsf_sf,             &
      &          d1_nod, flux)
       else
-        call int_vec_flux_1sgrp_4(numnod, numele, numsurf,              &
+        call int_vec_flux_1sgrp_4(node1%numnod, numele, numsurf,        &
      &          nnod_4_surf, ie_surf, isf_4_ele, e_multi, num_sgrp,     &
      &          isurf_grp, istack_sf_grp_smp, jac1_2d_l%ntot_int,       &
      &          num_int, jac1_2d_l%an_sf, jac1_2d_l%xsf_sf,             &
@@ -139,19 +139,19 @@
       integer(kind = kint), intent(in) :: num_sgrp
       integer(kind = kint), intent(in) :: isurf_grp(2,num_sgrp)
       integer(kind = kint), intent(in) :: istack_sf_grp_smp(0:np_smp)
-      real(kind = kreal), intent(in) :: d1_nod(numnod,3)
+      real(kind = kreal), intent(in) :: d1_nod(node1%numnod,3)
 !
       real(kind = kreal), intent(inout) :: flux_l
 !
 !
       if (nnod_4_ele .eq. num_t_quad) then
-        call int_vec_tflux_1sgrp_8(numnod, numele, numsurf,             &
+        call int_vec_tflux_1sgrp_8(node1%numnod, numele, numsurf,       &
      &          nnod_4_surf, ie_surf, isf_4_ele, e_multi, num_sgrp,     &
      &          isurf_grp, istack_sf_grp_smp, jac1_2d_q%ntot_int,       &
      &          num_int, jac1_2d_q%an_sf, jac1_2d_q%xsf_sf,             &
      &          d1_nod, flux_l)
       else
-        call int_vec_tflux_1sgrp_4(numnod, numele, numsurf,             &
+        call int_vec_tflux_1sgrp_4(node1%numnod, numele, numsurf,       &
      &          nnod_4_surf, ie_surf, isf_4_ele, e_multi, num_sgrp,     &
      &          isurf_grp, istack_sf_grp_smp, jac1_2d_l%ntot_int,       &
      &          num_int, jac1_2d_l%an_sf, jac1_2d_l%xsf_sf,             &

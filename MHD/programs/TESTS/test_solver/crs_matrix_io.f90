@@ -11,7 +11,7 @@
       use m_precision
 !
       use calypso_mpi
-      use m_geometry_parameter
+      use m_geometry_data
       use m_crs_connect
       use m_crs_matrix
 !
@@ -64,7 +64,7 @@
 
       call read_size_of_crs_matrix
 
-      call allocate_crs_matrix
+      call allocate_crs_matrix(node1%numnod)
 
       call read_crs_matrix
 

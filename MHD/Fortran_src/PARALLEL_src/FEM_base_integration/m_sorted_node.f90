@@ -4,11 +4,11 @@
 !
 !     Written by H. Matsui
 !
-!       subroutine allocate_sorted_node
+!       subroutine allocate_sorted_node(numnod)
 !       subroutine allocate_sort_smp
 !
 !       subroutine allocate_marix_list_general(nnod_4_ele)
-!       subroutine allocate_marix_list
+!       subroutine allocate_marix_list(nnod_4_ele)
 !
 !       subroutine deallocate_sorted_node
 !
@@ -50,10 +50,11 @@
 !
 !-----------------------------------------------------------------------
 !
-       subroutine allocate_sorted_node
+       subroutine allocate_sorted_node(numnod)
 !
-       use m_geometry_parameter
        use m_machine_parameter
+!
+       integer(kind = kint), intent(in) :: numnod
 !
 !
        allocate( node_sort_list_smp(numnod,2) )
@@ -94,10 +95,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_marix_list
+      subroutine allocate_marix_list(nnod_4_ele)
 !
       use m_geometry_constants
-      use m_geometry_parameter
+!
+      integer(kind = kint), intent(in) :: nnod_4_ele
 !
       allocate (idx_4_mat (num_sort_smp,nnod_4_ele))
       allocate (idx_4_l_mat (num_sort_smp,num_t_linear))

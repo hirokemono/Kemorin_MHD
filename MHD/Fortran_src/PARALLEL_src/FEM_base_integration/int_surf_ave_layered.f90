@@ -42,7 +42,7 @@
       integer (kind = kint), intent(in) :: item_layer(2,n_item_layer_d)
       integer (kind = kint), intent(in)                                 &
      &       :: istack_layer_grp_smp(0:np_smp*n_layer_d)
-      real(kind = kreal), intent(in) :: d1_nod(numnod)
+      real(kind = kreal), intent(in) :: d1_nod(node1%numnod)
 !
       real(kind = kreal), intent(inout) :: ave_l(n_layer_d)
 !
@@ -55,10 +55,10 @@
           ist =     layer_stack(igrp-1) + 1
           ist_smp = (igrp-1) * np_smp
           num_sgrp = layer_stack(igrp) - layer_stack(igrp-1)
-          call int_surf_ave_1sgrp_8(numnod, numele, numsurf,            &
+          call int_surf_ave_1sgrp_8(node1%numnod, numele, numsurf,      &
      &        nnod_4_surf, ie_surf, isf_4_ele, e_multi,                 &
      &        jac1_2d_q%ntot_int, num_int, jac1_2d_q%an_sf,             &
-     &        jac1_2d_q%xj_sf, num_sgrp, item_layer(1,ist),                              &
+     &        jac1_2d_q%xj_sf, num_sgrp, item_layer(1,ist),             &
      &        istack_layer_grp_smp(ist_smp), d1_nod, ave_l(igrp) )
         end do
 !
@@ -68,10 +68,10 @@
           ist = layer_stack(igrp-1) + 1
           ist_smp = (igrp-1) * np_smp
           num_sgrp = layer_stack(igrp) - layer_stack(igrp-1)
-          call int_surf_ave_1sgrp_4(numnod, numele, numsurf,            &
+          call int_surf_ave_1sgrp_4(node1%numnod, numele, numsurf,      &
      &        nnod_4_surf, ie_surf, isf_4_ele, e_multi,                 &
      &        jac1_2d_l%ntot_int, num_int, jac1_2d_l%an_sf,             &
-     &        jac1_2d_l%xj_sf, num_sgrp, item_layer(1,ist),                              &
+     &        jac1_2d_l%xj_sf, num_sgrp, item_layer(1,ist),             &
      &        istack_layer_grp_smp(ist_smp), d1_nod, ave_l(igrp) )
         end do
 !

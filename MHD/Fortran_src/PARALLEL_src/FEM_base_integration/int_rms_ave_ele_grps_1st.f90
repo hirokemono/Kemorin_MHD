@@ -55,7 +55,7 @@
       integer (kind = kint), intent(in) :: num_egrp, ntot_egrp
       integer (kind = kint), intent(in) :: istack_egrp(0:num_egrp)
       integer (kind = kint), intent(in) :: iele_grp(ntot_egrp)
-      real(kind = kreal), intent(in) :: d_nod(numnod)
+      real(kind = kreal), intent(in) :: d_nod(node1%numnod)
 !
       real(kind = kreal), intent(inout) :: ave_l(num_egrp)
       real(kind = kreal), intent(inout) :: rms_l(num_egrp)
@@ -69,7 +69,8 @@
         do igrp = 1, num_egrp
           ist_grp =   istack_egrp(igrp-1) + 1
           nitem_grp = istack_egrp(igrp) - istack_egrp(igrp-1)
-          call int_vol_rms_ave_1egrp_q(numnod, numele, ie, e_multi,   &
+          call int_vol_rms_ave_1egrp_q                                &
+     &       (node1%numnod, numele, ie, e_multi,                      &
      &        nitem_grp, iele_grp(ist_grp), num_int, ntot_int_3d,     &
      &        xjac, an, d_nod, ave_l(igrp), rms_l(igrp) )
         end do
@@ -81,7 +82,8 @@
         do igrp = 1, num_egrp
           ist_grp =   istack_egrp(igrp-1) + 1
           nitem_grp = istack_egrp(igrp) - istack_egrp(igrp-1)
-          call int_vol_rms_ave_1egrp_l(numnod, numele, ie, e_multi,     &
+          call int_vol_rms_ave_1egrp_l                                  &
+     &       (node1%numnod, numele, ie, e_multi,                        &
      &        nitem_grp, iele_grp(ist_grp), num_int, ntot_int_3d,       &
      &        xjac, an, d_nod, ave_l(igrp), rms_l(igrp) )
         end do
@@ -101,16 +103,16 @@
       integer (kind = kint), intent(in) :: num_int
       integer (kind = kint), intent(in) :: nitem_grp
       integer (kind = kint), intent(in) :: iele_grp(nitem_grp)
-      real(kind = kreal), intent(in) :: d_nod(numnod)
+      real(kind = kreal), intent(in) :: d_nod(node1%numnod)
       real(kind = kreal), intent(inout) :: ave_l, rms_l
 !
 !
       if (nnod_4_ele .eq. num_t_quad) then
-        call int_vol_rms_ave_1egrp_q(numnod, numele, ie, e_multi,       &
+        call int_vol_rms_ave_1egrp_q(node1%numnod, numele, ie, e_multi, &
      &      nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, an,        &
      &      d_nod, ave_l, rms_l)
       else
-        call int_vol_rms_ave_1egrp_l(numnod, numele, ie, e_multi,       &
+        call int_vol_rms_ave_1egrp_l(node1%numnod, numele, ie, e_multi, &
      &      nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, an,        &
      &      d_nod, ave_l, rms_l)
       end if
@@ -131,7 +133,8 @@
       integer (kind = kint), intent(in) :: num_egrp, ntot_egrp
       integer (kind = kint), intent(in) :: istack_egrp(0:num_egrp)
       integer (kind = kint), intent(in) :: iele_grp(ntot_egrp)
-      real(kind = kreal), intent(in) :: d1_nod(numnod), d2_nod(numnod)
+      real(kind = kreal), intent(in) :: d1_nod(node1%numnod)
+      real(kind = kreal), intent(in) :: d2_nod(node1%numnod)
 !
       real(kind = kreal), intent(inout) :: ave_1(num_egrp)
       real(kind = kreal), intent(inout) :: rms_1(num_egrp)
@@ -147,7 +150,8 @@
         do igrp = 1, num_egrp
           ist_grp =   istack_egrp(igrp-1) + 1
           nitem_grp = istack_egrp(igrp) - istack_egrp(igrp-1)
-          call int_vol_2rms_ave_1egrp_q(numnod, numele, ie, e_multi,    &
+          call int_vol_2rms_ave_1egrp_q                                 &
+     &       (node1%numnod, numele, ie, e_multi,                        &
      &        nitem_grp, iele_grp(ist_grp), num_int, ntot_int_3d,       &
      &        xjac, an, d1_nod, d2_nod, ave_1(igrp), rms_1(igrp),       &
      &        ave_2(igrp), rms_2(igrp) )
@@ -160,7 +164,8 @@
         do igrp = 1, num_egrp
           ist_grp =   istack_egrp(igrp-1) + 1
           nitem_grp = istack_egrp(igrp) - istack_egrp(igrp-1)
-          call int_vol_2rms_ave_1egrp_l(numnod, numele, ie, e_multi,    &
+          call int_vol_2rms_ave_1egrp_l                                 &
+     &       (node1%numnod, numele, ie, e_multi,                        &
      &        nitem_grp, iele_grp(ist_grp), num_int, ntot_int_3d,       &
      &        xjac, an, d1_nod, d2_nod, ave_1(igrp), rms_1(igrp),       &
      &        ave_2(igrp), rms_2(igrp) )
@@ -182,16 +187,19 @@
       integer (kind = kint), intent(in) :: num_int
       integer (kind = kint), intent(in) :: nitem_grp
       integer (kind = kint), intent(in) :: iele_grp(nitem_grp)
-      real(kind = kreal), intent(in) :: d1_nod(numnod), d2_nod(numnod)
+      real(kind = kreal), intent(in) :: d1_nod(node1%numnod)
+      real(kind = kreal), intent(in) :: d2_nod(node1%numnod)
       real(kind = kreal), intent(inout) :: ave_1, rms_1, ave_2, rms_2
 !
 !
       if (nnod_4_ele .eq. num_t_quad) then
-        call int_vol_2rms_ave_1egrp_q(numnod, numele, ie, e_multi,      &
+        call int_vol_2rms_ave_1egrp_q                                   &
+     &     (node1%numnod, numele, ie, e_multi,                          &
      &      nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, aw,        &
      &      d1_nod, d2_nod, ave_1, rms_1, ave_2, rms_2)
       else
-        call int_vol_2rms_ave_1egrp_l(numnod, numele, ie, e_multi,      &
+        call int_vol_2rms_ave_1egrp_l                                   &
+     &     (node1%numnod, numele, ie, e_multi,                          &
      &      nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, an,        &
      &      d1_nod, d2_nod, ave_1, rms_1, ave_2, rms_2)
       end if
@@ -211,7 +219,8 @@
       integer (kind = kint), intent(in) :: num_egrp, ntot_egrp
       integer (kind = kint), intent(in) :: istack_egrp(0:num_egrp)
       integer (kind = kint), intent(in) :: iele_grp(ntot_egrp)
-      real(kind = kreal), intent(in) :: d1_nod(numnod), d2_nod(numnod)
+      real(kind = kreal), intent(in) :: d1_nod(node1%numnod)
+      real(kind = kreal), intent(in) :: d2_nod(node1%numnod)
       real(kind = kreal), intent(in) :: ave_1(num_egrp)
       real(kind = kreal), intent(in) :: ave_2(num_egrp)
 !
@@ -229,7 +238,8 @@
         do igrp = 1, num_egrp
           ist_grp =   istack_egrp(igrp-1) + 1
           nitem_grp = istack_egrp(igrp) - istack_egrp(igrp-1)
-          call int_vol_dev_cor_1egrp_q(numnod, numele, ie, e_multi,     &
+          call int_vol_dev_cor_1egrp_q                                  &
+     &       (node1%numnod, numele, ie, e_multi,                        &
      &        nitem_grp, iele_grp(ist_grp), num_int, ntot_int_3d,       &
      &        xjac, aw, d1_nod, d2_nod, ave_1(igrp), ave_2(igrp),       &
      &        sig_1(igrp), sig_2(igrp), cov_l(igrp) )
@@ -242,7 +252,8 @@
         do igrp = 1, num_egrp
           ist_grp =   istack_egrp(igrp-1) + 1
           nitem_grp = istack_egrp(igrp) - istack_egrp(igrp-1)
-          call int_vol_dev_cor_1egrp_l(numnod, numele, ie, e_multi,     &
+          call int_vol_dev_cor_1egrp_l                                  &
+     &       (node1%numnod, numele, ie, e_multi,                        &
      &        nitem_grp, iele_grp(ist_grp), num_int, ntot_int_3d,       &
      &        xjac, an, d1_nod, d2_nod, ave_1(igrp), ave_2(igrp),       &
      &        sig_1(igrp), sig_2(igrp), cov_l(igrp) )
@@ -264,17 +275,18 @@
       integer (kind = kint), intent(in) :: num_int
       integer (kind = kint), intent(in) :: nitem_grp
       integer (kind = kint), intent(in) :: iele_grp(nitem_grp)
-      real(kind = kreal), intent(in) :: d1_nod(numnod), d2_nod(numnod)
+      real(kind = kreal), intent(in) :: d1_nod(node1%numnod)
+      real(kind = kreal), intent(in) :: d2_nod(node1%numnod)
       real(kind = kreal), intent(in) :: ave_1, ave_2
       real(kind = kreal), intent(inout) :: sig_1, sig_2, cov_l
 !
 !
       if (nnod_4_ele .eq. num_t_quad) then
-        call int_vol_dev_cor_1egrp_q(numnod, numele, ie, e_multi,       &
+        call int_vol_dev_cor_1egrp_q(node1%numnod, numele, ie, e_multi, &
      &      nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, aw,        &
      &      d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
       else
-        call int_vol_dev_cor_1egrp_l(numnod, numele, ie, e_multi,       &
+        call int_vol_dev_cor_1egrp_l(node1%numnod, numele, ie, e_multi, &
      &      nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, an,        &
      &      d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
       end if
