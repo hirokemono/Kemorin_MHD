@@ -75,7 +75,6 @@
 !
       use m_nod_comm_table
       use m_ele_sf_eg_comm_tables
-      use m_geometry_parameter
       use m_geometry_data
       use m_group_data
       use m_surface_group_connect
@@ -84,7 +83,7 @@
 !
 !
       call cross_section_init                                           &
-     &   (numnod, internal_node, numele, numsurf, numedge,              &
+     &   (node1%numnod, internal_node, numele, numsurf, numedge,        &
      &    nnod_4_ele, nnod_4_edge, ie, ie_edge, isf_4_ele,              &
      &    iedge_4_sf, iedge_4_ele, nod_comm, edge_comm,                 &
      &    interior_ele, xx, inod_smp_stack, iele_smp_stack,             &
@@ -97,7 +96,6 @@
 !
       subroutine isosurface_init_1st
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_group_data
       use m_node_phys_data
@@ -105,7 +103,7 @@
 !
 !
       call isosurface_init                                              &
-     &         (numnod, numele, numsurf, numedge, nnod_4_edge,          &
+     &         (node1%numnod, numele, numsurf, numedge, nnod_4_edge,    &
      &          ie_edge, isf_4_ele, iedge_4_sf, interior_ele,           &
      &          inod_smp_stack, iele_smp_stack,                         &
      &          isurf_smp_stack, iedge_smp_stack,                       &
@@ -118,7 +116,6 @@
 !
       subroutine cross_section_main_1st(istep_psf)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_node_phys_data
       use m_cross_section
@@ -126,7 +123,7 @@
       integer(kind = kint), intent(in) :: istep_psf
 !
 !
-      call cross_section_main(istep_psf, numnod, numedge,               &
+      call cross_section_main(istep_psf, node1%numnod, numedge,         &
      &          nnod_4_edge, ie_edge, num_nod_phys, num_tot_nod_phys,   &
      &          istack_nod_component, d_nod)
 !
@@ -136,7 +133,6 @@
 !
       subroutine isosurface_main_1st(istep_iso)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_node_phys_data
       use m_isosurface
@@ -144,7 +140,7 @@
 !
       integer(kind = kint), intent(in) :: istep_iso
 !
-      call isosurface_main(istep_iso, numnod, internal_node,            &
+      call isosurface_main(istep_iso, node1%numnod, internal_node,      &
      &    numele, numedge, nnod_4_ele, nnod_4_edge, ie, ie_edge,        &
      &    iedge_4_ele, xx, radius, a_radius, s_cylinder, a_s_cylinder,  &
      &    inod_smp_stack, edge_comm, num_nod_phys, num_tot_nod_phys,    &

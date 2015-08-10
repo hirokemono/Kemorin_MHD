@@ -56,7 +56,6 @@
 !
       subroutine pvr_init_1st
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_group_data
       use m_node_phys_data
@@ -64,7 +63,7 @@
       use volume_rendering
 !
 !
-      call pvr_init(numnod, numele, numsurf, nnod_4_surf, xx,           &
+      call pvr_init(node1%numnod, numele, numsurf, nnod_4_surf, xx,     &
      &    e_multi, ie_surf, isf_4_ele, iele_4_surf,                     &
      &    ele_grp1, num_nod_phys, phys_nod_name)
 !
@@ -74,7 +73,6 @@
 !
       subroutine pvr_main_1st(istep_pvr)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_node_phys_data
       use m_jacobians
@@ -84,7 +82,7 @@
       integer(kind = kint), intent(in) :: istep_pvr
 !
 !
-      call pvr_main(istep_pvr, numnod, numele, numsurf,                 &
+      call pvr_main(istep_pvr, node1%numnod, numele, numsurf,           &
      &         nnod_4_ele, nnod_4_surf, inod_smp_stack, iele_smp_stack, &
      &         xx, radius, a_radius, s_cylinder, a_s_cylinder, ie,      &
      &         a_vol_ele, e_multi, ie_surf, isf_4_ele, iele_4_surf,     &

@@ -55,7 +55,6 @@
 !
       subroutine field_line_init_1st
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_group_data
       use m_node_phys_data
@@ -63,7 +62,7 @@
       use fieldline
 !
 !
-      call field_line_init(numnod, numele, e_multi,                     &
+      call field_line_init(node1%numnod, numele, e_multi,               &
      &    ele_grp1, sf_grp1, num_nod_phys, phys_nod_name)
 !
       end subroutine field_line_init_1st
@@ -73,7 +72,6 @@
       subroutine field_line_main_1st(istep_psf)
 !
       use m_nod_comm_table
-      use m_geometry_parameter
       use m_geometry_data
       use m_surface_geometry_data
       use m_group_data
@@ -85,7 +83,7 @@
       integer(kind = kint), intent(in) :: istep_psf
 !
 !
-      call field_line_main(istep_psf, numnod, numele, numsurf,          &
+      call field_line_main(istep_psf, node1%numnod, numele, numsurf,    &
      &    nnod_4_surf, inod_smp_stack, inod_global,                     &
      &    xx, radius, a_radius, s_cylinder, a_s_cylinder,               &
      &    iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,        &
