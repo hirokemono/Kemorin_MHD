@@ -1,27 +1,30 @@
-!filter_mom_type_on_ele_IO.f90
-!     module filter_mom_type_on_ele_IO
+!>@file   filter_mom_type_on_ele_IO.f90
+!!@brief  module filter_mom_type_on_ele_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in Feb., 2012
 !
-!     Written by H. Matsui
-!     modified by H. Matsui on Nov., 2006
-!     modified by H. Matsui on Mar., 2008
-!
-!      subroutine read_base_filter_info_type(id_file, filter_conf)
-!      subroutine write_base_filter_info_type(id_file, filter_conf)
-!        integer(kind = kint), intent(in) :: id_file
-!        type(filter_config_type), intent(inout) ::  filter_conf
-!
-!      subroutine read_elen_ele_type(id_file, nele_fmom, elen_ele)
-!      subroutine write_elen_ele_type(id_file, nele_fmom, elen_ele)
-!        integer (kind = kint), intent(in)  :: nele_fmom
-!        integer(kind = kint), intent(in) :: id_file
-!        type(elen_ele_diffs_type), intent(inout)  :: elen_ele
-!
-!      subroutine read_filter_moms_ele_type(id_file, nele_fmom, mom_ele)
-!      subroutine write_filter_moms_ele_type(id_file,                   &
-!     &          nele_fmom, mom_ele)
-!        integer(kind = kint), intent(in) :: id_file
-!        integer (kind = kint), intent(in) :: nele_fmom
-!        type(ele_mom_diffs_type), intent(inout) :: mom_ele
+!> @brief Filter moment data IO on elements using structure
+!!
+!!@verbatim
+!!      subroutine read_base_filter_info_type(id_file, filter_conf)
+!!      subroutine write_base_filter_info_type(id_file, filter_conf)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        type(filter_config_type), intent(inout) ::  filter_conf
+!!
+!!      subroutine read_elen_ele_type(id_file, nele_fmom, elen_ele)
+!!      subroutine write_elen_ele_type(id_file, nele_fmom, elen_ele)
+!!        integer (kind = kint), intent(in)  :: nele_fmom
+!!        integer(kind = kint), intent(in) :: id_file
+!!        type(elen_ele_diffs_type), intent(inout)  :: elen_ele
+!!
+!!      subroutine read_filter_moms_ele_type(id_file, nele_fmom, mom_ele)
+!!      subroutine write_filter_moms_ele_type(id_file,                  &
+!!     &          nele_fmom, mom_ele)
+!!        integer(kind = kint), intent(in) :: id_file
+!!        integer (kind = kint), intent(in) :: nele_fmom
+!!        type(ele_mom_diffs_type), intent(inout) :: mom_ele
+!!@endverbatim
 !
       module filter_mom_type_on_ele_IO
 !

@@ -1,25 +1,30 @@
-!filter_mom_type_data_IO.f90
-!     module filter_mom_type_data_IO
+!>@file   filter_mom_type_data_IO.f90
+!!@brief  module filter_mom_type_data_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in Feb., 2012
 !
-!     Written by H. Matsui on Feb., 2012
-!
-!      subroutine write_filter_elen_data_type(id_file, FEM_elens)
-!      subroutine write_filter_moms_data_type(id_file,                  &
-!     &          FEM_elens, FEM_moms)
-!      subroutine read_filter_moment_num_type(id_file,                  &
-!     &          FEM_elens, FEM_moms)
-!        integer (kind=kint), intent(in) :: id_file
-!        type(gradient_model_data_type), intent(inout) :: FEM_elens
-!        type(gradient_filter_mom_type), intent(inout) :: FEM_moms
-!
-!      subroutine read_filter_elen_data_type(id_file, numnod, numele,   &
-!     &          FEM_elens, ierr)
-!      subroutine read_filter_moms_data_type(id_file, numnod, numele,&
-!     &          FEM_elens, FEM_moms, ierr)
-!        integer (kind=kint), intent(in) :: id_file
-!        integer (kind=kint), intent(in) :: numnod, numele
-!        type(gradient_model_data_type), intent(inout) :: FEM_elens
-!        type(gradient_filter_mom_type), intent(inout) :: FEM_moms
+!> @brief Filter moment data IO using structure
+!!
+!!@verbatim
+!!      subroutine write_filter_elen_data_type(id_file, FEM_elens)
+!!      subroutine write_filter_moms_data_type(id_file,                 &
+!!     &          FEM_elens, FEM_moms)
+!!      subroutine read_filter_moment_num_type(id_file,                 &
+!!     &          FEM_elens, FEM_moms)
+!!        integer (kind=kint), intent(in) :: id_file
+!!        type(gradient_model_data_type), intent(inout) :: FEM_elens
+!!        type(gradient_filter_mom_type), intent(inout) :: FEM_moms
+!!
+!!      subroutine read_filter_elen_data_type(id_file, numnod, numele,  &
+!!     &          FEM_elens, ierr)
+!!      subroutine read_filter_moms_data_type(id_file, numnod, numele,&
+!!     &          FEM_elens, FEM_moms, ierr)
+!!        integer (kind=kint), intent(in) :: id_file
+!!        integer (kind=kint), intent(in) :: numnod, numele
+!!        type(gradient_model_data_type), intent(inout) :: FEM_elens
+!!        type(gradient_filter_mom_type), intent(inout) :: FEM_moms
+!!@endverbatim
 !
       module filter_mom_type_data_IO
 !

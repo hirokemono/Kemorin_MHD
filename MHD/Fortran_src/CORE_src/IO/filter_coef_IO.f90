@@ -1,19 +1,24 @@
+!>@file   filter_coef_IO.f90
+!!@brief  module filter_coef_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in Nov., 2006
+!!@date Modified in Apr., 2008
+!!@date Modified in Nov., 2008
 !
-!      module filter_coef_IO
-!
-!     Written by H. Matsui on Nov., 2006
-!     Modified by H. Matsui on Apr., 2008
-!     Modified by H. Matsui on Nov., 2008
-!
-!      subroutine read_3d_filter_stack(id_file)
-!      subroutine read_3d_filter_weights_coef(id_file)
-!      subroutine read_3d_filter_stack_b(id_file)
-!      subroutine read_3d_filter_weights_coef_b(id_file)
-!
-!      subroutine write_3d_filter_stack(id_file)
-!      subroutine write_3d_filter_weights_coef(id_file)
-!      subroutine write_3d_filter_stack_b(id_file)
-!      subroutine write_3d_filter_weights_coef_b(id_file)
+!> @brief Data IO routine for ASCII filter data
+!!
+!!@verbatim
+!!      subroutine read_3d_filter_stack(id_file)
+!!      subroutine read_3d_filter_weights_coef(id_file)
+!!      subroutine read_3d_filter_stack_b(id_file)
+!!      subroutine read_3d_filter_weights_coef_b(id_file)
+!!
+!!      subroutine write_3d_filter_stack(id_file)
+!!      subroutine write_3d_filter_weights_coef(id_file)
+!!      subroutine write_3d_filter_stack_b(id_file)
+!!      subroutine write_3d_filter_weights_coef_b(id_file)
+!!@endverbatim
 !
       module filter_coef_IO
 !

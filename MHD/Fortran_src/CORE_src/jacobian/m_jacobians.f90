@@ -89,8 +89,9 @@
 !
 !     iele: element ID
 !     ix:   integration point ID
-!       subroutine allocate_jacobians
-!       subroutine allocate_jacobians_quad
+!       subroutine allocate_jacobians(numele)
+!       subroutine allocate_jacobians_quad(numele, nnod_4_ele)
+!       subroutine allocate_jacobians_linear_quad(numele)
 !
 !      subroutine copy_jacobians_quad
 !      subroutine copy_jacobians_inf_quad
@@ -98,8 +99,9 @@
 !       subroutine deallocate_inv_jacobians
 !       subroutine deallocate_inv_jacobians_quad
 !
-!      subroutine allocate_dxi_dx_linear
-!      subroutine allocate_dxi_dx_quad
+!      subroutine allocate_dxi_dx_linear(numele)
+!      subroutine allocate_dxi_dx_quad(numele)
+!      subroutine allocate_dxi_dx_l_quad(numele)
 !      subroutine deallocate_dxi_dx_linear
 !      subroutine deallocate_dxi_dx_quad
 !      subroutine copy_dxi_dx_2_quad
@@ -148,11 +150,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine allocate_jacobians
+       subroutine allocate_jacobians(numele)
 !
        use m_geometry_constants
-       use m_geometry_parameter
        use m_fem_gauss_int_coefs
+!
+       integer(kind = kint), intent(in) :: numele
+!
 !
        allocate(an(num_t_linear,ntot_int_3d))
        allocate(an_infty(num_t_linear,nsurf_4_ele,ntot_int_3d))
@@ -174,11 +178,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine allocate_jacobians_quad
+       subroutine allocate_jacobians_quad(numele, nnod_4_ele)
 !
        use m_geometry_constants
-       use m_geometry_parameter
        use m_fem_gauss_int_coefs
+!
+       integer(kind = kint), intent(in) :: numele, nnod_4_ele
 !
 !
        allocate(aw(nnod_4_ele,ntot_int_3d))
@@ -201,11 +206,12 @@
 !
 !  ------------------------------------------------------------------
 !
-       subroutine allocate_jacobians_linear_quad
+       subroutine allocate_jacobians_linear_quad(numele)
 !
        use m_geometry_constants
-       use m_geometry_parameter
        use m_fem_gauss_int_coefs
+!
+       integer(kind = kint), intent(in) :: numele
 !
 !
        allocate(am(num_t_quad,ntot_int_3d))
@@ -302,10 +308,11 @@
 !  ------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_dxi_dx_linear
+      subroutine allocate_dxi_dx_linear(numele)
 !
-      use m_geometry_parameter
       use m_fem_gauss_int_coefs
+!
+      integer(kind = kint), intent(in) :: numele
 !
 !
       allocate( dxidx_1(numele,ntot_int_3d,3,3) )
@@ -315,10 +322,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_dxi_dx_quad
+      subroutine allocate_dxi_dx_quad(numele)
 !
-      use m_geometry_parameter
       use m_fem_gauss_int_coefs
+!
+      integer(kind = kint), intent(in) :: numele
 !
 !
       allocate( dxidx_20(numele,ntot_int_3d,3,3) )
@@ -328,10 +336,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_dxi_dx_l_quad
+      subroutine allocate_dxi_dx_l_quad(numele)
 !
-      use m_geometry_parameter
       use m_fem_gauss_int_coefs
+!
+      integer(kind = kint), intent(in) :: numele
 !
 !
       allocate( dxidx_lq(numele,ntot_int_3d,3,3) )

@@ -19,7 +19,6 @@
       use m_constants
       use m_precision
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       implicit none
@@ -70,10 +69,10 @@
       call allocate_gauss_coef_4_fem
 !
       ntot_int_3d = maxtot_int_3d
-      call allocate_jacobians
-      call allocate_jacobians_quad
-      call allocate_dxi_dx_linear
-      call allocate_dxi_dx_quad
+      call allocate_jacobians(ele1%numele)
+      call allocate_jacobians_quad(ele1%numele, nnod_4_ele)
+      call allocate_dxi_dx_linear(ele1%numele)
+      call allocate_dxi_dx_quad(ele1%numele)
 !
 !  set constant for gauss integration with roots
 !

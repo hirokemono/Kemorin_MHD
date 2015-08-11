@@ -1,13 +1,18 @@
-!filter_geometry_IO.f90
-!      module filter_geometry_IO
+!>@file   filter_geometry_IO.f90
+!!@brief  module filter_geometry_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in 2004
 !
-!     Written by H. Matsui on Sep., 2006
-!
-!      subroutine read_filter_geometry(id_file)
-!      subroutine read_filter_geometry_b(id_file)
-!
-!      subroutine write_filter_geometry(id_file)
-!      subroutine write_filter_geometry_b(id_file)
+!> @brief Geometry data IO for filter data
+!!
+!!@verbatim
+!!      subroutine read_filter_geometry(id_file)
+!!      subroutine read_filter_geometry_b(id_file)
+!!
+!!      subroutine write_filter_geometry(id_file)
+!!      subroutine write_filter_geometry_b(id_file)
+!!@endverbatim
 !
       module filter_geometry_IO
 !

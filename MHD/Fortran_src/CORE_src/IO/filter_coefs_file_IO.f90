@@ -1,17 +1,22 @@
+!>@file   filter_coefs_file_IO.f90
+!!@brief  module filter_coefs_file_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in 2004
 !
-!      module filter_coefs_file_IO
-!
-!     Written by H. Matsui in 2004
-!
-!      subroutine read_sorted_filter_coef_file(file_name, my_rank)
-!      subroutine write_sorted_filter_coef_file(file_name, my_rank)
-!      subroutine read_filter_geometry_file(file_name, my_rank)
-!      subroutine write_filter_geometry_file(file_name, my_rank)
-!
-!      subroutine read_sorted_filter_coef_file_b(file_name, my_rank)
-!      subroutine write_sorted_filter_coef_file_b(file_name, my_rank)
-!      subroutine read_filter_geometry_file_b(file_name, my_rank)
-!      subroutine write_filter_geometry_file_b(file_name, my_rank)
+!> @brief ASCII filter data file IO
+!!
+!!@verbatim
+!!      subroutine read_sorted_filter_coef_file(file_name, my_rank)
+!!      subroutine write_sorted_filter_coef_file(file_name, my_rank)
+!!      subroutine read_filter_geometry_file(file_name, my_rank)
+!!      subroutine write_filter_geometry_file(file_name, my_rank)
+!!
+!!      subroutine read_sorted_filter_coef_file_b(file_name, my_rank)
+!!      subroutine write_sorted_filter_coef_file_b(file_name, my_rank)
+!!      subroutine read_filter_geometry_file_b(file_name, my_rank)
+!!      subroutine write_filter_geometry_file_b(file_name, my_rank)
+!!@endverbatim
 !
       module filter_coefs_file_IO
 !

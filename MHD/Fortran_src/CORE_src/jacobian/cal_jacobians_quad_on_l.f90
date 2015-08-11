@@ -15,7 +15,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_shape_functions
@@ -46,7 +45,7 @@
         do ii = 1, i0*i0*i0
           ix = int_start3(i0) + ii
 !
-          call cal_jacobian_3d_8_20(node1%numnod, numele,               &
+          call cal_jacobian_3d_8_20(node1%numnod, ele1%numele,          &
      &        np_smp, iele_smp_stack, ie, xx, xjac_lq(1,ix),            &
      &        axjac_lq(1,ix), dmx(1,1,ix,1), dmx(1,1,ix,2),             &
      &        dmx(1,1,ix,3),  dxidx_lq(1,ix,1,1), dxidx_lq(1,ix,2,1),   &
@@ -155,7 +154,8 @@
         do ii = 1, i0*i0
           ix = int_start2(i0) + ii
 !
-          call s_cal_jacobian_sf_grp_4_8(node1%numnod, numele, ie, xx,  &
+          call s_cal_jacobian_sf_grp_4_8                                &
+     &       (node1%numnod, ele1%numele, ie, xx,                        &
      &        sf_grp%num_grp, sf_grp%num_item, sf_grp%item_sf_grp,      &
      &        np_smp, sf_grp%num_grp_smp, sf_grp%istack_grp_smp,        &
      &        jac_sf_grp_ql%xj_sf(1:sf_grp%num_item,ix),                &
