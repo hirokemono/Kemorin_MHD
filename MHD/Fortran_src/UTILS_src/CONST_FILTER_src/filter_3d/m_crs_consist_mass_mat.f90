@@ -1,9 +1,15 @@
 !
 !     module m_crs_consist_mass_mat
 !
-      module m_crs_consist_mass_mat
-!
 !     Written by H. Matsui on Oct., 2006
+!
+!      subroutine allocate_mass_connect(numnod)
+!      subroutine allocate_aiccg_mass
+!
+!      subroutine deallocate_mass_connect
+!      subroutine deallocate_aiccg_mass
+!
+      module m_crs_consist_mass_mat
 !
       use m_precision
 !
@@ -28,32 +34,26 @@
       integer (kind = kint) :: im_mass_l
 !   pointer for lower part of matrix
 !
-!      subroutine allocate_mass_connect
-!      subroutine allocate_aiccg_mass
-!
-!      subroutine deallocate_mass_connect
-!      subroutine deallocate_aiccg_mass
-!
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_mass_connect
+      subroutine allocate_mass_connect(numnod)
 !
-       use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numnod
 !
-       allocate(istack_mass_l(0:numnod) )
-       allocate(istack_mass_u(0:numnod) )
+      allocate(istack_mass_l(0:numnod) )
+      allocate(istack_mass_u(0:numnod) )
 !
-       allocate(item_mass_l(ntot_mass_l) )
-       allocate(item_mass_u(ntot_mass_u) )
+      allocate(item_mass_l(ntot_mass_l) )
+      allocate(item_mass_u(ntot_mass_u) )
 !
-       istack_mass_l = 0
-       istack_mass_u = 0
-       item_mass_l =   0
-       item_mass_u =   0
+      istack_mass_l = 0
+      istack_mass_u = 0
+      item_mass_l =   0
+      item_mass_u =   0
 !
       end subroutine allocate_mass_connect
 !

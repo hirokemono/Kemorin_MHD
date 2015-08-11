@@ -80,7 +80,6 @@
 !
       use m_nod_comm_table
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_refined_node_id
       use m_refined_element_data
@@ -134,7 +133,8 @@
 !
 !   set refined nodes
 !
-        call allocate_num_refine_node
+        call allocate_num_refine_node(node1%numnod, numele,             &
+     &      numsurf, numedge)
         write(*,*) 's_count_nnod_for_refine'
         call s_count_nnod_for_refine
 !
@@ -145,7 +145,7 @@
         write(*,*) 's_set_local_position_4_refine'
         call s_set_local_position_4_refine
 !
-!      call check_refine_items
+!      call check_refine_items(node1%numnod, numele, numsurf, numedge)
 !
          refined_fem%mesh%nod_comm%num_neib = nod_comm%num_neib
         call allocate_type_comm_tbl_num(refined_fem%mesh%nod_comm)

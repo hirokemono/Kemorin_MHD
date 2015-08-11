@@ -1,9 +1,16 @@
 !cal_xyz_4_refine.f90
 !      module cal_xyz_4_refine
 !
-      module cal_xyz_4_refine
-!
 !     Written by H. Matsui on Oct., 2007
+!
+!      subroutine cal_xyz_on_edge_4_refine
+!      subroutine cal_xyz_on_surf_4_refine
+!      subroutine cal_xyz_on_ele_4_refine
+!      subroutine cal_xyz_on_1edge_4_refine(iedge)
+!      subroutine cal_xyz_on_1surf_4_refine(isurf)
+!      subroutine cal_xyz_on_1ele_4_refine(iele)
+!
+      module cal_xyz_4_refine
 !
       use m_precision
 !
@@ -13,13 +20,6 @@
       use m_refined_node_id
 !
       implicit none
-!
-!      subroutine cal_xyz_on_edge_4_refine
-!      subroutine cal_xyz_on_surf_4_refine
-!      subroutine cal_xyz_on_ele_4_refine
-!      subroutine cal_xyz_on_1edge_4_refine(iedge)
-!      subroutine cal_xyz_on_1surf_4_refine(isurf)
-!      subroutine cal_xyz_on_1ele_4_refine(iele)
 !
 !  ---------------------------------------------------------------------
 !

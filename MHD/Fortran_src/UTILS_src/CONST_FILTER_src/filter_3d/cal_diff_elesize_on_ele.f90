@@ -159,11 +159,11 @@
 !
       subroutine take_1st_diffs_ele(org_nod_field, diff_field)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_ctl_params_4_gen_filter
       use cal_differences_on_ele
 !
-      real(kind = kreal), intent(in) :: org_nod_field(numnod)
+      real(kind = kreal), intent(in) :: org_nod_field(node1%numnod)
       real(kind = kreal), intent(inout) :: diff_field(numele,3)
       integer(kind=kint) :: nd
 !
@@ -178,11 +178,11 @@
 !
       subroutine take_2nd_diffs_ele(org_nod_field, diff_field)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_ctl_params_4_gen_filter
       use cal_differences_on_ele
 !
-      real(kind = kreal), intent(in) :: org_nod_field(numnod,3)
+      real(kind = kreal), intent(in) :: org_nod_field(node1%numnod,3)
       real(kind = kreal), intent(inout) :: diff_field(numele,3)
       integer(kind=kint) :: nd
 !

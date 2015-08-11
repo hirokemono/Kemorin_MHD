@@ -719,14 +719,13 @@
 !
       subroutine mark_refine_node_flag
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_refine_flag_parameters
       use m_refined_element_data
 !
       integer(kind = kint) :: iele, k1, inod
 !
-      allocate(imark_nod(numnod))
+      allocate(imark_nod(node1%numnod))
       imark_nod = 0
 !
       do iele = 1, numele
@@ -744,7 +743,7 @@
 !
       subroutine redefine_refine_node_flag
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint) :: num
       integer(kind = kint), allocatable :: imark_tmp(:)
@@ -755,7 +754,7 @@
       imark_tmp(1:num) = imark_nod(1:num)
 !
       deallocate(imark_nod)
-      allocate(imark_nod(numnod))
+      allocate(imark_nod(node1%numnod))
       imark_nod = 0
 !
       imark_nod(1:num) = imark_tmp(1:num)

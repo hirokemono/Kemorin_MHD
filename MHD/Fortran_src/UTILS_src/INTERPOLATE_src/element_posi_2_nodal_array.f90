@@ -22,7 +22,6 @@
       subroutine s_element_posi_2_nodal_array
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use cal_minmax_and_stacks
 !
@@ -39,7 +38,7 @@
       call allocate_node_geometry
 !
 !$omp parallel do
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
 !
         inod_global(inod) = iele_global(inod)
         xx(inod,1) =       x_ele(inod,1)
@@ -57,7 +56,7 @@
 !$omp end parallel do
 !
 !
-       call count_number_4_smp( np_smp, ione, numnod,                   &
+       call count_number_4_smp( np_smp, ione, node1%numnod,             &
      &       inod_smp_stack, maxnod_4_smp )
 !
        call count_number_4_smp( np_smp, ione, internal_node,            &

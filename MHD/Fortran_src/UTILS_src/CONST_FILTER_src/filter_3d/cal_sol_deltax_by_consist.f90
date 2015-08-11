@@ -29,14 +29,14 @@
       use m_machine_parameter
       use m_nod_comm_table
       use m_ctl_params_4_gen_filter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_finite_element_matrix
       use m_crs_consist_mass_mat
 !
       use   solver
 !
       integer (kind = kint), intent(in) :: nd_dx
-      real(kind= kreal), intent(inout) :: dx_nod(numnod)
+      real(kind= kreal), intent(inout) :: dx_nod(node1%numnod)
 !
       integer (kind = kint) :: inod
       integer(kind = kint) :: ierr
@@ -52,13 +52,13 @@
 !
       imonitor_solve = i_debug
 !
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         x_vec(inod) = ff(inod,nd_dx)
         b_vec(inod) = ff(inod,nd_dx)
       end do
 !
 !       write(50+my_rank,*) 'div_b'
-!       do inod=1, numnod
+!       do inod=1, node1%numnod
 !         write(50+my_rank,*) b_vec(inod)
 !       end do
 !
@@ -67,7 +67,7 @@
      &              method_elesize, precond_elesize
       end if
 !
-      call solve(internal_node, numnod, ntot_mass_l, ntot_mass_u,       &
+      call solve(internal_node, node1%numnod, ntot_mass_l, ntot_mass_u, &
      &             aiccg_mass(im_mass_d), aiccg_mass(im_mass_l),        &
      &             istack_mass_l, item_mass_l, aiccg_mass(im_mass_u),   &
      &             istack_mass_u, item_mass_u, b_vec(1), x_vec(1),      &
@@ -82,7 +82,7 @@
         write(*,*) ' iteration finish:', itr_res
       end if
 !
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         dx_nod(inod) = x_vec(inod)
       end do
 !

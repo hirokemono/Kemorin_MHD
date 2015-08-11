@@ -21,14 +21,14 @@
 !
       subroutine s_set_refined_node_id
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_refined_element_data
       use m_refined_node_id
 !
       integer(kind = kint) :: inod, iedge, isurf, iele
       integer(kind = kint) :: ist, jst, jed, j
 !
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         inod_refine_nod(inod) = inod
       end do
 !

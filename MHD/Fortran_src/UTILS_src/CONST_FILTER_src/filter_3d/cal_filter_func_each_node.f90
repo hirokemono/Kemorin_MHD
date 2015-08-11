@@ -13,7 +13,7 @@
       use m_constants
       use calypso_mpi
       use m_ctl_params_4_gen_filter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_filter_coefs
       use m_matrix_4_filter
       use m_reference_moments
@@ -50,7 +50,7 @@
       real(kind= kreal) :: det_mat_solution
 !
 !
-        call copy_next_nod_ele_4_each(inod, numnod)
+        call copy_next_nod_ele_4_each(inod, node1%numnod)
 !
         ibest_mat_size =   -1
         ibest_fixed_point = 0
@@ -156,7 +156,7 @@
 !
         if (ibest_mat_size .gt. 0) then
           call copy_filter_coefs_from_tmp
-          call s_delete_small_weighting
+          call s_delete_small_weighting(node1%numnod)
         else
           if (iflag_tgt_filter_type .gt. 0) then
             i_exp_level_1nod_weight = -maximum_neighbour
@@ -186,7 +186,7 @@
       real(kind= kreal) :: det_mat_solution
 !
 !
-        call copy_next_nod_ele_4_each(inod, numnod)
+        call copy_next_nod_ele_4_each(inod, node1%numnod)
 !
 !    no filtering
 !
@@ -296,7 +296,7 @@
 !
             if (ibest_mat_size .gt. 0) then
               call copy_filter_coefs_from_tmp
-              call s_delete_small_weighting
+              call s_delete_small_weighting(node1%numnod)
             else
               if (iflag_tgt_filter_type .gt. 0) then
                 i_exp_level_1nod_weight = -maximum_neighbour

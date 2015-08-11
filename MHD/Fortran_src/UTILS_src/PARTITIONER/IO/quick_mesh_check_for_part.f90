@@ -18,7 +18,6 @@
 !
       use m_constants
       use m_error_IDs
-      use m_geometry_parameter
       use m_geometry_data
       use t_group_data
 !
@@ -34,7 +33,7 @@
       integer(kind=kint) ::  is, in, ik
 !
 !
-      if (numnod .le. 0) call ERROR_EXIT(ierr_ele, izero)
+      if (node1%numnod .le. 0) call ERROR_EXIT(ierr_ele, izero)
       if (numele .le. 0) call ERROR_EXIT(ierr_ele, izero)
 !
       if (nod_grp%num_grp .lt. 0) call ERROR_EXIT(ierr_ngrp, ione)
@@ -45,7 +44,7 @@
         do is= 1, nod_grp%istack_grp(nod_grp%num_grp)
           in= nod_grp%item_grp(is)
           if (in .le. 0) call ERROR_EXIT(ierr_grp,ione)
-          if (in .gt. numnod) call ERROR_EXIT(ierr_ov_grp,ione)
+          if (in .gt. node1%numnod) call ERROR_EXIT(ierr_ov_grp,ione)
         end do
       end if
 !

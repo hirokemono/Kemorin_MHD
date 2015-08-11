@@ -255,7 +255,6 @@
       subroutine const_filter_moms_newdomain(norg_domain, new_node,     &
      &          mom1, elen2_e, mom2_ele)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_filter_file_names
       use m_filter_elength
@@ -296,7 +295,7 @@
           ifmt_filter_file = id_ascii_file_fmt
           filter_file_head = org_filter_moms_head
           call sel_read_filter_moms_file(my_rank_org,                   &
-     &        numnod, numele, FEM1_elen, mom1, ierr)
+     &        node1%numnod, numele, FEM1_elen, mom1, ierr)
 !
           call set_new_filter_moms_ele                                  &
      &       (mom1, new_node, mom1%num_filter_moms, mom2_ele)
@@ -311,7 +310,7 @@
           ifmt_filter_file = id_ascii_file_fmt
           filter_file_head = org_filter_elen_head
           call sel_read_filter_elen_file(my_rank_org,                   &
-     &        numnod, numele, FEM1_elen, ierr)
+     &        node1%numnod, numele, FEM1_elen, ierr)
 !
 !          if (iflag_debug.eq.1) write(*,*) 'set_new_elength_ele'
           call set_new_elength_ele(new_node, elen2_e)

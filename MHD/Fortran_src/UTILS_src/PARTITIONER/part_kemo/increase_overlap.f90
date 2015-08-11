@@ -37,7 +37,6 @@
       subroutine increase_overlapping(NP, n_overlap, i_sleeve_ele,      &
      &          included_ele)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_domain_group_4_partition
 !
@@ -53,7 +52,7 @@
       call alloc_num_4_near_nod(NP, near_ele_tmp)
       call alloc_near_element(near_ele_tmp)
 !
-      allocate( iflag_nod(numnod) )
+      allocate( iflag_nod(node1%numnod) )
       allocate( iflag_ele(numele) )
       allocate( item_tmp_e(numele) )
 !
@@ -62,7 +61,7 @@
       item_tmp_e = 0
       do ip= 1, NP
         call mark_extented_overlap(ip, n_overlap, i_sleeve_ele,         &
-     &      numnod, numele, nnod_4_ele, ie, nodelm,                     &
+     &      node1%numnod, numele, nnod_4_ele, ie, nodelm,               &
      &      included_ele%ntot, included_ele%istack_nod,                 &
      &      included_ele%id_near_nod, nnod_s_domin, IGROUP_nod)
 !

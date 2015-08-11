@@ -23,7 +23,7 @@
 !
       integer(kind = kint) :: inter_nod_3dfilter
       integer(kind = kint) :: nnod_filtering
-      integer(kind = kint), allocatable :: id_globalnod_filtering(:)
+      integer(kind = kint_gl), allocatable :: id_globalnod_filtering(:)
       real(kind = kreal), allocatable :: xx_filtering(:,:)
 !
       real(kind = kreal), allocatable :: x_vec_filtering(:)

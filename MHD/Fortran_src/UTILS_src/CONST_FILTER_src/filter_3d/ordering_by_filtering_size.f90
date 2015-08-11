@@ -1,10 +1,15 @@
 !
 !      module ordering_by_filtering_size
 !
-      module ordering_by_filtering_size
-!
 !      Written by H. Matsui on Oct., 2006
 !      Modified by H. Matsui on Mar., 2008
+!
+!      subroutine s_ordering_by_filtering_size
+!      subroutine cal_distance_from_filter
+!
+!      subroutine allocate_dist_ratio(numnod)
+!
+      module ordering_by_filtering_size
 !
       use m_precision
 !
@@ -15,9 +20,6 @@
       private :: cal_distance_ratio_2_filter
       private :: cal_distance_from_filter
 !
-!      subroutine s_ordering_by_filtering_size
-!      subroutine cal_distance_from_filter
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -26,7 +28,7 @@
 !
       subroutine filter_ordering_by_distance(inod)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_filter_coefs
       use add_nodes_elems_4_each_nod
 !
@@ -35,7 +37,7 @@
 !
       call cal_distance_from_filter(inod)
 !
-      call sort_added_nod_4_each_by_real(numnod,                        &
+      call sort_added_nod_4_each_by_real(node1%numnod,                  &
      &    nnod_near_1nod_filter, nnod_near_1nod_weight,                 &
      &    inod_near_1nod_weight, dist_ratio)
 !
@@ -45,7 +47,7 @@
 !
       subroutine filter_ordering_by_dist_ratio(inod)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_filter_coefs
       use m_filter_elength
       use add_nodes_elems_4_each_nod
@@ -58,7 +60,7 @@
      &   FEM1_elen%elen_nod%moms%f_y2(inod),                            &
      &   FEM1_elen%elen_nod%moms%f_z2(inod))
 !
-      call sort_added_nod_4_each_by_real(numnod,                        &
+      call sort_added_nod_4_each_by_real(node1%numnod,                  &
      &    nnod_near_1nod_filter, nnod_near_1nod_weight,                 &
      &    inod_near_1nod_weight, dist_ratio)
 !
@@ -67,9 +69,9 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_dist_ratio
+      subroutine allocate_dist_ratio(numnod)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numnod
 !
       allocate( dist_ratio(numnod) )
       dist_ratio = 0.0d0

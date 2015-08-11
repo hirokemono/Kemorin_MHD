@@ -16,7 +16,7 @@
       use m_constants
 !
       use m_ctl_params_4_gen_filter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_machine_parameter
       use m_phys_constants
 !
@@ -61,7 +61,7 @@
 !
       integer(kind = kint), intent(in) :: itype_mass
       real(kind = kreal), intent(in) :: elen_ele(numele)
-      real(kind = kreal), intent(inout) :: elen_nod(numnod)
+      real(kind = kreal), intent(inout) :: elen_nod(node1%numnod)
 !
 !
       if (id_filter_area_grp(1) .eq. -1) then
@@ -91,7 +91,7 @@
       use cal_skv_to_ff_smp_1st
       use fem_skv_vector_diff_1st
 !
-      real(kind = kreal), intent(inout) :: elen_org_nod(numnod)
+      real(kind = kreal), intent(inout) :: elen_org_nod(node1%numnod)
 !
       integer(kind=kint) :: k2
 !

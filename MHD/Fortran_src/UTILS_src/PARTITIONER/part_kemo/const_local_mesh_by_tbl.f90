@@ -88,6 +88,7 @@
       subroutine const_local_ele_by_near_tbl                            &
      &         (ele_grp, n_domain, included_ele)
 !
+      use m_geometry_data
       use m_internal_4_partitioner
       use t_group_data
       use t_near_mesh_id_4_node
@@ -111,7 +112,7 @@
       call allocate_iele_4_subdomain
 !
       call set_local_element_table                                      &
-     &   (ele_grp, n_domain, included_ele%ntot,                         &
+     &   (node1%numnod, numele, ele_grp, n_domain, included_ele%ntot,                         &
      &    included_ele%istack_nod, included_ele%id_near_nod)
 !
       call dealloc_near_node(included_ele)

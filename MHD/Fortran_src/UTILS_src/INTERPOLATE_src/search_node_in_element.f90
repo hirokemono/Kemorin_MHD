@@ -17,7 +17,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_interpolate_table_dest
       use m_work_const_itp_table
@@ -194,7 +193,7 @@
       use m_element_id_4_node
 !
       integer(kind = kint), intent(in)                                  &
-     &                     :: inod_next_stack_4_node(0:numnod)
+     &                     :: inod_next_stack_4_node(0:node1%numnod)
 !
       integer(kind = kint), intent(in) :: my_rank_2nd
       real(kind = kreal), intent(in) :: error_level

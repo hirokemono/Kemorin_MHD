@@ -3,7 +3,7 @@
 !
 !      Writen by H. Matsui on Oct., 2007
 !
-!      subroutine allocate_mark_refine_nod_grp
+!      subroutine allocate_mark_refine_nod_grp(numnod)
 !      subroutine deallocate_mark_refine_nod_grp
 !
 !      subroutine count_refined_node_group(nod_grp, new_nod_grp)
@@ -24,9 +24,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_mark_refine_nod_grp
+      subroutine allocate_mark_refine_nod_grp(numnod)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numnod
 !
       allocate(inod_mark(numnod))
       inod_mark = 0
@@ -45,7 +45,6 @@
 !
       subroutine count_refined_node_group(nod_grp, new_nod_grp)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_refined_node_id
       use t_group_data
@@ -63,7 +62,7 @@
 !
       new_nod_grp%istack_grp(0) = 0
       do i = 1, nod_grp%num_grp
-        inod_mark(1:numnod) = 0
+        inod_mark(1:node1%numnod) = 0
 !
         ist = nod_grp%istack_grp(i-1) + 1
         ied = nod_grp%istack_grp(i)
@@ -130,7 +129,7 @@
 !
 !
       do i = 1, nod_grp%num_grp
-        inod_mark(1:numnod) = 0
+        inod_mark(1:node1%numnod) = 0
 !
         icou = new_nod_grp%istack_grp(i-1)
 !

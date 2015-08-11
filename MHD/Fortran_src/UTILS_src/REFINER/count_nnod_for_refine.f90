@@ -22,7 +22,7 @@
 !
       subroutine s_count_nnod_for_refine
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_refined_node_id
       use m_refined_element_data
       use cal_minmax_and_stacks
@@ -30,7 +30,7 @@
       integer(kind = kint) :: iedge, isurf, iele
 !
 !
-      num_nod_refine_nod(1:numnod) = 1
+      num_nod_refine_nod(1:node1%numnod) = 1
 !
       do iedge = 1, numedge
         call count_num_nod_refine_edge(iflag_refine_edge(iedge),        &
@@ -47,7 +47,7 @@
      &      num_nod_refine_ele(iele) )
       end do
 !
-      call s_cal_minmax_and_stacks(numnod, num_nod_refine_nod,          &
+      call s_cal_minmax_and_stacks(node1%numnod, num_nod_refine_nod,    &
      &    izero, istack_nod_refine_nod, ntot_nod_refine_nod,            &
      &    nmax_nod_refine_nod, nmin_nod_refine_nod)
 !

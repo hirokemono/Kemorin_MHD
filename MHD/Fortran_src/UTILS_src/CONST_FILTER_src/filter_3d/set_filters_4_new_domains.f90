@@ -20,7 +20,6 @@
       use m_precision
 !
       use m_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_domain_group_4_partition
 !
@@ -107,7 +106,7 @@
           ied = istack_near_nod_w_filter(inod)
           do inum = ist, ied
             jnod = inod_near_nod_w_filter(inum)
-            if (jnod .gt. numnod) write(*,*) 'jnod', jnod, inum
+            if (jnod .gt. node1%numnod) write(*,*) 'jnod', jnod, inum
             if (jnod .lt. 1) write(*,*) 'jnod', jnod, inum
             jnod_g = inod_global(jnod)
             imark_whole_nod(jnod_g) = 1
@@ -116,7 +115,7 @@
           ied = istack_near_nod_f_filter(inod)
           do inum = ist, ied
             jnod = inod_near_nod_f_filter(inum)
-            if (jnod .gt. numnod) write(*,*) 'jnod', jnod, inum
+            if (jnod .gt. node1%numnod) write(*,*) 'jnod', jnod, inum
             if (jnod .lt. 1) write(*,*) 'jnod', jnod, inum
             jnod_g = inod_global(jnod)
             imark_whole_nod(jnod_g) = 1
@@ -124,7 +123,7 @@
         end if
       end do
 !
-      do jnod = 1, numnod
+      do jnod = 1, node1%numnod
         jnod_g = inod_global(jnod)
         if (imark_whole_nod(jnod_g) .gt. 0) then
           xx_whole_nod(jnod_g,1) = xx(jnod,1)
@@ -220,7 +219,7 @@
       do inod = 1, new_node%internal_node
         icou = istack_numnod_sub(ip2-1) + inod
         inod_g = new_node%inod_global(inod)
-        inod_4_subdomain(icou) = inod_g
+        inod_4_subdomain(icou) = int(inod_g)
         imark_whole_nod(inod_g) = 0
       end do
 !
@@ -230,7 +229,7 @@
       do inod_g = 1, nnod_s_domin
         if (imark_whole_nod(inod_g) .gt. 0) then
           icou = icou + 1
-          inod_4_subdomain(icou) = inod_g
+          inod_4_subdomain(icou) = int(inod_g)
         end if
       end do
 !

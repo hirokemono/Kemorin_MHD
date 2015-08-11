@@ -21,7 +21,7 @@
 !
       subroutine s_cal_filter_moments_again(inod, mom_nod)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
       use m_matrix_4_filter
@@ -41,7 +41,7 @@
       integer(kind = kint) :: i
 !
 !
-      call copy_next_nod_ele_4_each(inod, numnod)
+      call copy_next_nod_ele_4_each(inod, node1%numnod)
       call resize_matrix_size_gen_filter
 !
       do i = 1, maximum_neighbour

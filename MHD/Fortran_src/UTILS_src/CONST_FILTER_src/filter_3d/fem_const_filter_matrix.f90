@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Nov., 2006
 !
 !      subroutine allocate_sk_filter
-!      subroutine allocate_mat_num_weight
+!      subroutine allocate_mat_num_weight(numnod)
 !      subroutine deallocate_sk_filter
 !      subroutine deallocate_mat_num_weight
 !
@@ -60,9 +60,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_mat_num_weight
+      subroutine allocate_mat_num_weight(numnod)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numnod
 !
       allocate( xx_int(numnod,3) )
       xx_int =      0.0d0

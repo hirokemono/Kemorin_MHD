@@ -13,7 +13,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_ctl_params_4_gen_filter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_reference_moments
       use m_element_id_4_node
       use m_next_node_id_4_node
@@ -211,7 +211,7 @@
 !     correct filter function
 !  ---------------------------------------------------
 !
-      call allocate_correct_filter_flag(numnod, numele)
+      call allocate_correct_filter_flag(node1%numnod, numele)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
       call s_correct_wrong_filters                                      &
@@ -283,7 +283,7 @@
 !     correct filter function
 !  ---------------------------------------------------
 !
-      call allocate_correct_filter_flag(numnod, numele)
+      call allocate_correct_filter_flag(node1%numnod, numele)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
       call s_correct_wrong_filters                                      &

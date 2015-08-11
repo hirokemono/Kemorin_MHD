@@ -3,7 +3,8 @@
 !
 !      Written by H. Matsui on Oct., 2007
 !
-!!        call s_ordering_by_element_group(ele_grp, n_domain,           &
+!!      subroutine set_local_element_table                              &
+!!     &         (numnod, numele, ele_grp, n_domain,                    &
 !!     &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
 !
       module ordering_by_element_group
@@ -21,15 +22,16 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_local_element_table(ele_grp, n_domain,             &
+      subroutine set_local_element_table                                &
+     &         (numnod, numele, ele_grp, n_domain,                      &
      &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
 !
-      use m_geometry_parameter
       use t_group_data
       use m_ctl_param_partitioner
       use m_internal_4_partitioner
 !
       type(group_data), intent(in) :: ele_grp
+      integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: n_domain
       integer(kind = kint), intent(in) :: ntot_ele_near_nod
       integer(kind = kint), intent(in) :: iele_stack_near_nod(0:numnod)
@@ -38,7 +40,8 @@
 !
 !
       if (nele_grp_ordering .gt. 0) then
-        call s_ordering_by_element_group(ele_grp, n_domain,             &
+        call s_ordering_by_element_group                                &
+     &     (numnod, numele, ele_grp, n_domain,                          &
      &      ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
       else
         iele_4_subdomain(1:ntot_numele_sub)                             &
@@ -49,15 +52,16 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine s_ordering_by_element_group(ele_grp, n_domain,         &
+      subroutine s_ordering_by_element_group                            &
+     &         (numnod, numele, ele_grp, n_domain,                      &
      &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
 !
       use t_group_data
       use m_ctl_param_partitioner
-      use m_geometry_parameter
       use m_internal_4_partitioner
 !
       type(group_data), intent(in) :: ele_grp
+      integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: n_domain
 !
       integer(kind = kint), intent(in) :: ntot_ele_near_nod

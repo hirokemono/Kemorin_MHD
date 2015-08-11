@@ -9,7 +9,7 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_ctl_param_newdom_filter
       use set_parallel_file_name
       use filter_IO_for_newdomain
@@ -35,7 +35,7 @@
       character(len=kchara) :: file_name
 !
 !
-      call allocate_nod_ele_near_1nod(numnod, numele)
+      call allocate_nod_ele_near_1nod(node1%numnod, numele)
 !
       call add_int_suffix(my_rank, org_filter_coef_head, file_name)
 !

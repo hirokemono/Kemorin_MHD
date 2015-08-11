@@ -43,6 +43,7 @@
 !
       subroutine const_refined_node_group(nod_grp, new_nod_grp)
 !
+      use m_geometry_data
       use set_refined_node_group
       use find_hanging_surface
       use t_group_data
@@ -51,7 +52,7 @@
       type(group_data), intent(inout) :: new_nod_grp
 !
 !
-      call allocate_mark_refine_nod_grp
+      call allocate_mark_refine_nod_grp(node1%numnod)
 !
       new_nod_grp%num_grp = nod_grp%num_grp
       call add_hanging_node_group_num(new_nod_grp)

@@ -1,15 +1,15 @@
 !
 !     module set_consist_mass_connect
 !
-      module set_consist_mass_connect
-!
 !     Written by H. Matsui on Oct., 2006
+!
+!      subroutine s_set_consist_mass_connect(numnod)
+!
+      module set_consist_mass_connect
 !
       use m_precision
 !
       implicit none
-!
-!      subroutine s_set_consist_mass_connect
 !
 !-----------------------------------------------------------------------
 !
@@ -17,11 +17,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_consist_mass_connect
+      subroutine s_set_consist_mass_connect(numnod)
 !
-      use m_geometry_parameter
       use m_crs_connect
       use m_crs_consist_mass_mat
+!
+      integer(kind = kint), intent(in) :: numnod
 !
 !
       ntot_mass_l = ntot_crs_l
@@ -33,7 +34,7 @@
       num_mass_mat = numnod + ntot_crs_l + ntot_crs_u
 !
 !
-      call allocate_mass_connect
+      call allocate_mass_connect(numnod)
 !
       istack_mass_l(0:numnod) = istack_crs_l
       istack_mass_u(0:numnod) = istack_crs_u

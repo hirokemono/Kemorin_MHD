@@ -145,14 +145,14 @@
 !
       subroutine take_1st_diffs_nod_by_consist(org_field, diff_field)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_finite_element_matrix
       use int_vol_elesize_on_node
       use cal_ff_smp_to_ffs
       use cal_sol_deltax_by_consist
 !
-      real(kind = kreal), intent(inout) :: org_field(numnod)
-      real(kind = kreal), intent(inout) :: diff_field(numnod,3)
+      real(kind = kreal), intent(inout) :: org_field(node1%numnod)
+      real(kind = kreal), intent(inout) :: diff_field(node1%numnod,3)
       integer(kind = kint) :: nd
 !
       ff = 0.0d0
@@ -169,13 +169,13 @@
 !
       subroutine take_1st_diffs_nod_by_lump(org_field, diff_field)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_finite_element_matrix
       use int_vol_elesize_on_node
       use cal_ff_smp_to_ffs
 !
-      real(kind = kreal), intent(inout) :: org_field(numnod)
-      real(kind = kreal), intent(inout) :: diff_field(numnod,3)
+      real(kind = kreal), intent(inout) :: org_field(node1%numnod)
+      real(kind = kreal), intent(inout) :: diff_field(node1%numnod,3)
 !
       ff_nl_smp = 0.0d0
       call int_vol_diff_dxs(org_field)

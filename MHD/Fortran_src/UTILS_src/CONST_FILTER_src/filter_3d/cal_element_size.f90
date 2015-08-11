@@ -177,6 +177,7 @@
 !
       subroutine set_mass_matrix_for_consist
 !
+      use m_geometry_data
       use m_crs_connect
       use m_crs_consist_mass_mat
       use set_crs_connection
@@ -199,7 +200,7 @@
 !  ---------------------------------------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 's_set_consist_mass_connect'
-      call s_set_consist_mass_connect
+      call s_set_consist_mass_connect(node1%numnod)
 !
       if (iflag_debug.eq.1)  write(*,*) 'deallocate_crs_connect'
       call deallocate_crs_connect

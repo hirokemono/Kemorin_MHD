@@ -17,13 +17,13 @@
       type(interpolate_table) :: c2f_mgd
 !
       integer(kind = kint) :: nnod_org, intnod_org
-      integer(kind = kint), allocatable :: inod_global_org(:)
+      integer(kind = kint_gl), allocatable :: inod_global_org(:)
       real(kind = kreal), allocatable :: xx_org(:,:)
       real(kind = kreal), allocatable :: xi_org(:,:)
 !
       integer(kind = kint) :: nele_org, nnod_4_ele_org, nele_500
       integer(kind = kint), allocatable :: iele_500(:)
-      integer(kind = kint), allocatable :: iele_global_org(:)
+      integer(kind = kint_gl), allocatable :: iele_global_org(:)
       integer(kind = kint), allocatable :: ie_org(:,:)
 !
       integer(kind = kint), allocatable :: ilevel_refine_org(:)
@@ -39,6 +39,7 @@
 !
       real(kind = kreal) :: xi_refine_local_tri(3,64)
 !
+      private :: inod_global_org, iele_global_org
       private :: set_local_position_full_tri
 !
 !   --------------------------------------------------------------------
@@ -107,7 +108,6 @@
 !
       subroutine copy_original_mesh_conn_refine
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_refined_node_id
       use m_refined_element_data
@@ -115,7 +115,7 @@
       integer(kind = kint) :: inum, ist, num, iele, i
 !
 !
-      nnod_org =       numnod
+      nnod_org =       node1%numnod
       intnod_org =     internal_node
       nele_org =       numele
       nnod_4_ele_org = nnod_4_ele

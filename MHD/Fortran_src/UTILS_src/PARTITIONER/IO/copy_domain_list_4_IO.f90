@@ -26,9 +26,9 @@
 !
       subroutine copy_domain_list_from_IO
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
-      if (nnod_group_IO .ne. numnod) stop 'check number of node'
+      if (nnod_group_IO .ne. node1%numnod) stop 'check number of node'
 !
       if (internod_group_IO .ne. internal_node) then
         stop 'check number of internal node'
@@ -45,10 +45,10 @@
 !
       subroutine copy_domain_list_to_IO
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
 !
-      nnod_group_IO =     numnod
+      nnod_group_IO =     node1%numnod
       internod_group_IO = internal_node
       nproc_group_IO =    num_domain
 !

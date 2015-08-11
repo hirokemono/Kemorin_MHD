@@ -9,7 +9,6 @@
       module cal_simple_filter_each_node
 !
       use m_precision
-!
       use m_constants
 !
       implicit none
@@ -25,7 +24,7 @@
 !
       subroutine set_simple_filter_nod_by_nod(inod, dx_nod)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
       use m_matrix_4_filter
@@ -44,7 +43,7 @@
       integer(kind = kint) :: i
 !
 !
-      call copy_next_nod_ele_4_each(inod, numnod)
+      call copy_next_nod_ele_4_each(inod, node1%numnod)
       call resize_matrix_size_gen_filter
 !
 !   set filter area for tophat filter
@@ -81,7 +80,7 @@
       else if ( abs(iflag_tgt_filter_type) .eq. 3) then
         call set_linear_filter_4_each_nod
       else if ( abs(iflag_tgt_filter_type) .eq. 4) then
-        call set_gaussian_filter_each_nod(inod, numnod,                 &
+        call set_gaussian_filter_each_nod(inod, node1%numnod,           &
      &      dx_nod%dxi%df_dx, dx_nod%dxi%df_dy, dx_nod%dxi%df_dz,       &
      &      dx_nod%dei%df_dx, dx_nod%dei%df_dy, dx_nod%dei%df_dz,       &
      &      dx_nod%dzi%df_dx, dx_nod%dzi%df_dy, dx_nod%dzi%df_dz)
@@ -90,7 +89,7 @@
       call cal_filter_and_coefficients
       call normalize_each_filter_weight
 !
-      call s_delete_small_weighting
+      call s_delete_small_weighting(node1%numnod)
       call write_each_filter_stack_coef(inod)
 !
       end subroutine set_simple_filter_nod_by_nod
@@ -99,7 +98,7 @@
 !
       subroutine set_simple_fl_filter_nod_by_nod(inod, dx_nod, mom_nod)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
       use m_matrix_4_filter
@@ -121,7 +120,7 @@
       integer(kind = kint) :: i
 !
 !
-      call copy_next_nod_ele_4_each(inod, numnod)
+      call copy_next_nod_ele_4_each(inod, node1%numnod)
 !
 !    no filtering
 !
@@ -170,7 +169,7 @@
           else if ( abs(iflag_tgt_filter_type) .eq. 3) then
             call set_linear_filter_4_each_nod
           else if ( abs(iflag_tgt_filter_type) .eq. 4) then
-            call set_gaussian_filter_each_nod(inod, numnod,             &
+            call set_gaussian_filter_each_nod(inod, node1%numnod,       &
      &          dx_nod%dxi%df_dx, dx_nod%dxi%df_dy, dx_nod%dxi%df_dz,   &
      &          dx_nod%dei%df_dx, dx_nod%dei%df_dy, dx_nod%dei%df_dz,   &
      &          dx_nod%dzi%df_dx, dx_nod%dzi%df_dy, dx_nod%dzi%df_dz)
@@ -179,7 +178,7 @@
           call cal_filter_and_coefficients
           call normalize_each_filter_weight
 !
-          call s_delete_small_weighting
+          call s_delete_small_weighting(node1%numnod)
           call write_each_filter_stack_coef(inod)
         end if
       end if

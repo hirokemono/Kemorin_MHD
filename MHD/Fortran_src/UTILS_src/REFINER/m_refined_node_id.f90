@@ -1,9 +1,21 @@
 !m_refined_node_id.f90
 !      module m_refined_node_id
 !
-      module m_refined_node_id
-!
 !     Written by H. Matsui on Oct., 2007
+!
+!!      subroutine allocate_num_refine_node                             &
+!!     &         (numnod, numele, numsurf, numedge)
+!!      subroutine allocate_item_refine_node
+!!
+!!      subroutine deallocate_refine_node_id
+!!      subroutine deallocate_num_refine_node
+!!      subroutine deallocate_refined_local_posi
+!!      subroutine deallocate_refined_xyz
+!!      subroutine deallocate_refined_sph
+!!
+!!      subroutine check_refine_items(numnod, numele, numsurf, numedge)
+!
+      module m_refined_node_id
 !
       use m_precision
 !
@@ -55,26 +67,18 @@
       real(kind = kreal), allocatable :: sph_refine_edge(:,:)
 !
 !
-!      subroutine allocate_num_refine_node
-!      subroutine allocate_item_refine_node
-!
-!      subroutine deallocate_refine_node_id
-!      subroutine deallocate_num_refine_node
-!      subroutine deallocate_refined_local_posi
-!      subroutine deallocate_refined_xyz
-!      subroutine deallocate_refined_sph
-!
-!      subroutine check_refine_items
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_num_refine_node
+      subroutine allocate_num_refine_node                               &
+     &         (numnod, numele, numsurf, numedge)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numnod,  numele
+      integer(kind = kint), intent(in) :: numsurf, numedge
+!
 !
       allocate( num_nod_refine_nod(numnod)   )
       allocate( num_nod_refine_ele(numele)   )
@@ -216,9 +220,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_refine_items
+      subroutine check_refine_items(numnod, numele, numsurf, numedge)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numnod,  numele
+      integer(kind = kint), intent(in) :: numsurf, numedge
+!
 !
       integer(kind = kint) :: i, j, ist, ied
 !

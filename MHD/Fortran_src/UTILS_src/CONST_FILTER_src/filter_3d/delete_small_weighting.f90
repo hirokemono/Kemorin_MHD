@@ -1,9 +1,13 @@
 !
 !      module delete_small_weighting
 !
-      module delete_small_weighting
-!
 !     Written by H. Matsui on Nov., 2006
+!
+!      subroutine allocate_tmp_4_filter_sort(numnod)
+!      subroutine deallocate_tmp_4_filter_sort
+!      subroutine s_delete_small_weighting(numnod)
+!
+      module delete_small_weighting
 !
       use m_precision
 !
@@ -19,19 +23,17 @@
       private :: wgt_tmp, coef_tmp
       private :: sorting_by_filter_weights, truncate_tiny_weighting
 !
-!      subroutine allocate_tmp_4_filter_sort
-!      subroutine deallocate_tmp_4_filter_sort
-!      subroutine s_delete_small_weighting
-!
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_delete_small_weighting
+      subroutine s_delete_small_weighting(numnod)
 !
-      call sorting_by_filter_weights
+      integer(kind = kint), intent(in) :: numnod
+!
+      call sorting_by_filter_weights(numnod)
 !
       call truncate_tiny_weighting
 !
@@ -40,10 +42,11 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_tmp_4_filter_sort
+      subroutine allocate_tmp_4_filter_sort(numnod)
 !
-      use m_geometry_parameter
       use m_filter_coefs
+!
+      integer(kind = kint), intent(in) :: numnod
 !
       allocate(id_org(numnod))
       allocate(wgt_tmp(numnod))
@@ -72,11 +75,12 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine sorting_by_filter_weights
+      subroutine sorting_by_filter_weights(numnod)
 !
-      use m_geometry_parameter
       use m_filter_coefs
       use quicksort
+!
+      integer(kind = kint), intent(in) :: numnod
 !
       integer(kind = kint) :: id_start
       integer(kind = kint) :: i, j_org

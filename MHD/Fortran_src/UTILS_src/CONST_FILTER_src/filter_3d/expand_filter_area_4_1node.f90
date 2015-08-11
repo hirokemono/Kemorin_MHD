@@ -30,7 +30,7 @@
 !
       subroutine init_4_cal_fileters
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_reference_moments
       use m_matrix_4_filter
       use m_filter_file_names
@@ -48,13 +48,13 @@
       end if
       nnod_filetering = inod_end_filter - inod_start_filter + 1
 !
-      call allocate_nod_ele_near_1nod(numnod, numele)
-      call allocate_nod_ele_1nod_tmp(numnod, numele)
-      call allocate_wk_exp_ele_nod_each(numnod, numele)
+      call allocate_nod_ele_near_1nod(node1%numnod, numele)
+      call allocate_nod_ele_1nod_tmp(node1%numnod, numele)
+      call allocate_wk_exp_ele_nod_each(node1%numnod, numele)
 !
       max_mat_size =      0
       nmax_num_ele_1nod = 0
-      call allocate_mat_num_weight
+      call allocate_mat_num_weight(node1%numnod)
       call allocate_matrix_4_filter
       call allocate_sk_filter
 !
@@ -64,9 +64,11 @@
       call allocate_array_4_crs_stack
       call allocate_array_4_crs_item
 !
-      if (iflag_ordering_list .gt. 0) call allocate_dist_ratio
+      if (iflag_ordering_list .gt. 0) then
+        call allocate_dist_ratio(node1%numnod)
+      end if
 !
-      call allocate_tmp_4_filter_sort
+      call allocate_tmp_4_filter_sort(node1%numnod)
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
         write(filter_coef_code,'(a)') '!'
@@ -198,20 +200,22 @@
       nnod_near_1nod_filter = nnod_near_1nod_weight
       nele_near_1nod_filter = nele_near_1nod_weight
 !
-      call expand_near_ele_4_each_nod(numnod, numele, ele_4_nod1%ntot,  &
+      call expand_near_ele_4_each_nod                                   &
+     &   (node1%numnod, numele, ele_4_nod1%ntot,                        &
      &    ele_4_nod1%istack_4_node, ele_4_nod1%iele_4_node,             &
      &    nnod_near_1nod_filter, inod_near_1nod_weight,                 &
      &    nele_near_1nod_filter, nele_near_1nod_weight,                 &
      &    iele_near_1nod_weight)
 !
-      call add_nod_4_grp_each_nod(numnod, numele, nnod_4_ele, ie,       &
+      call add_nod_4_grp_each_nod                                       &
+     &   (node1%numnod, numele, nnod_4_ele, ie,                         &
      &    nele_near_1nod_weight, iele_near_1nod_weight,                 &
      &    nnod_near_1nod_filter, nnod_near_1nod_weight,                 &
      &    inod_near_1nod_weight, iweight_1nod_weight,                   &
      &    idist_from_center_1nod)
 !
       if     (iflag_ordering_list .eq. 0) then
-        call sort_added_nod_4_each_nod(numnod,                          &
+        call sort_added_nod_4_each_nod(node1%numnod,                    &
      &      nnod_near_1nod_filter, nnod_near_1nod_weight,               &
      &      inod_near_1nod_weight, iweight_1nod_weight)
       else if(iflag_ordering_list .eq. 1) then

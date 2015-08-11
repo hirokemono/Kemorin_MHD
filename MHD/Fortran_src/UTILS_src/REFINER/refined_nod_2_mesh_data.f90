@@ -22,7 +22,6 @@
 !
       subroutine s_refined_nod_2_mesh_data(new_node)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_refined_node_id
 !
@@ -42,9 +41,9 @@
         new_node%inod_global(inod) = inod
       end do
 !
-      new_node%xx(1:numnod,1) = xx(1:numnod,1)
-      new_node%xx(1:numnod,2) = xx(1:numnod,2)
-      new_node%xx(1:numnod,3) = xx(1:numnod,3)
+      new_node%xx(1:node1%numnod,1) = xx(1:node1%numnod,1)
+      new_node%xx(1:node1%numnod,2) = xx(1:node1%numnod,2)
+      new_node%xx(1:node1%numnod,3) = xx(1:node1%numnod,3)
 !
       icou = ntot_nod_refine_nod
       do inod = 1, ntot_nod_refine_edge
