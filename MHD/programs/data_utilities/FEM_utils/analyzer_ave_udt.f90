@@ -28,7 +28,7 @@
 !
       use m_array_for_send_recv
       use calypso_mpi
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
       use input_control_udt_diff
       use const_mesh_info
@@ -50,7 +50,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, numnod)
+      call allocate_vector_for_solver(isix, node1%numnod)
 !
       call init_send_recv
 !

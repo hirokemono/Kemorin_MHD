@@ -42,7 +42,6 @@
          dz(iele) = half * dz(iele)
        end do
 !
-!
       end subroutine set_spatial_difference
 !
 !   --------------------------------------------------------------------

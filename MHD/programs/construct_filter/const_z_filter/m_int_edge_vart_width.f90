@@ -32,17 +32,17 @@
 !
       subroutine allocate_delta_z
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
-      allocate ( delta_z(numnod) )
-      allocate ( delta_dz(numnod) )
-      allocate ( d2_dz(numnod) )
+      allocate ( delta_z(node1%numnod) )
+      allocate ( delta_dz(node1%numnod) )
+      allocate ( d2_dz(node1%numnod) )
 !
       allocate ( delta_z_e(numele) )
       allocate ( delta_dz_e(numele) )
       allocate ( d2_dz_e(numele) )
 !
-      allocate( rhs_dz(numnod) )
+      allocate( rhs_dz(node1%numnod) )
 !
       rhs_dz = 0.0d0
 
@@ -68,7 +68,7 @@
       use m_int_edge_data
 !
       integer (kind = kint), intent(in) :: n_int
-      integer (kind = kint) ::  inod2, iele, k2, inod, i, ix
+      integer (kind = kint) ::  inod2, iele, k2, i, ix
 !
 !
       rhs_dz = 0.0d0
@@ -94,15 +94,13 @@
 !
      subroutine set_rhs_vart_width
 !
-!     Written by H. Matsui
-!
-      use m_geometry_parameter
+      use m_geometry_data
       use m_consist_mass_crs
 !
       integer (kind = kint) :: inod
 !
 !
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         rhs_mk_crs(inod) = rhs_dz(inod)
       end do
 !
@@ -110,20 +108,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-!     subroutine cal_sol_vart_width
-!
      subroutine cal_sol_vart_width
 !
-!     Written by H. Matsui
-!
-      use m_geometry_parameter
+      use m_geometry_data
       use m_commute_filter_z
       use m_int_edge_data
 !
       integer (kind = kint) :: inod
 !
 !
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         delta_z(inod) = rhs_dz(inod) * mk(inod)
       end do
 !
@@ -131,20 +125,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-!     subroutine cal_sol_diff_vart_width
-!
      subroutine cal_sol_diff_vart_width
 !
-!     Written by H. Matsui
-!
-      use m_geometry_parameter
+      use m_geometry_data
       use m_commute_filter_z
       use m_int_edge_data
 !
       integer (kind = kint) :: inod
 !
 !
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         delta_dz(inod) = rhs_dz(inod) * mk(inod)
       end do
 !
@@ -152,20 +142,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-!     subroutine cal_sol_d2_vart_width
-!
      subroutine cal_sol_d2_vart_width
 !
-!     Written by H. Matsui
-!
-      use m_geometry_parameter
+      use m_geometry_data
       use m_commute_filter_z
       use m_int_edge_data
 !
       integer (kind = kint) :: inod
 !
 !
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         d2_dz(inod) = rhs_dz(inod) * mk(inod)
       end do
 !
@@ -175,7 +161,6 @@
 !
       subroutine cal_vart_width_by_ele
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_commute_filter_z
       use m_int_edge_data
@@ -190,7 +175,7 @@
           inod2 = ie_edge(iele,k2)
           if (inod2 .eq. 1) then
             delta_z(inod2) = delta_z(inod2) + dz(iele)
-          else if (inod2 .eq. numnod) then
+          else if (inod2 .eq. node1%numnod) then
             delta_z(inod2) = delta_z(inod2) + dz(iele)
           else
             delta_z(inod2) = delta_z(inod2) + dz(iele)                  &
@@ -311,7 +296,7 @@
         end do
       end do
 !
-!      do inod1 = 1, numnod
+!      do inod1 = 1, node1%numnod
 !        write(*,*) inod1, rhs_dz(inod1)
 !      end do
 !

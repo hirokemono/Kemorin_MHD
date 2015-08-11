@@ -42,6 +42,7 @@
       subroutine analyze_communication_test
 !
       use calypso_mpi
+      use m_geometry_data
       use m_array_for_send_recv
       use m_array_for_send_recv
       use m_geometry_parameter
@@ -56,9 +57,9 @@
       use const_mesh_info
 !
 !
-      call allocate_iccg_int8_matrix(numnod)
+      call allocate_iccg_int8_matrix(node1%numnod)
       call allocate_cflag_collect_diff
-      call allocate_vector_for_solver(ithree, numnod)
+      call allocate_vector_for_solver(ithree, node1%numnod)
 !
       call init_send_recv
 !
@@ -89,7 +90,7 @@
       call collect_diff_nod_comm_test
       call deallocate_diff_nod_comm_test
 !
-      call allocate_geom_4_comm_test
+      call allocate_geom_4_comm_test(numele, numsurf, numedge)
       call s_mesh_send_recv_test
       call s_count_diff_geom_comm_test
 !

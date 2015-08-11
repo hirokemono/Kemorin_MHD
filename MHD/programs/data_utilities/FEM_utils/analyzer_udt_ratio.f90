@@ -16,6 +16,8 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use m_geometry_data
+!
       implicit none
 !
 ! ----------------------------------------------------------------------
@@ -29,7 +31,6 @@
       use m_ctl_params_4_prod_udt
       use m_array_for_send_recv
       use m_ctl_data_product_udt
-      use m_geometry_parameter
       use nodal_vector_send_recv
       use load_mesh_data
       use const_mesh_info
@@ -60,7 +61,7 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, numnod)
+      call allocate_vector_for_solver(isix, node1%numnod)
 !
       call init_send_recv
 !
@@ -78,7 +79,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_id_4_product'
       call set_field_id_4_product
-      call allocate_product_data
+      call allocate_product_data(node1%numnod)
       call allocate_product_result
 !
       end subroutine initialize_udt_ratio
@@ -100,7 +101,7 @@
       do istep = i_step_init, i_step_number
         if ( mod(istep,i_step_output_ucd) .eq. izero) then
           istep_ucd = istep / i_step_output_ucd
-          call set_data_for_product(istep_ucd)
+          call set_data_for_product(node1%numnod, istep_ucd)
           call cal_rev_of_2nd_field
           call cal_products_of_fields
 !

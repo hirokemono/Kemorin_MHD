@@ -19,7 +19,6 @@
 !
       subroutine set_difference_of_position
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_commute_filter_z
       use m_neibor_data_z

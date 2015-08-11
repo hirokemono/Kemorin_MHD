@@ -38,11 +38,13 @@
 !
       subroutine s_const_reduced_geometry(newmesh, new_group)
 !
+      use m_geometry_data
+!
       type(mesh_geometry), intent(inout) :: newmesh
       type(mesh_groups), intent(inout) :: new_group
 !
 !
-      call allocate_trans_table
+      call allocate_trans_table(node1%numnod, numele)
 !
       if      (iflag_reduce_type .eq. 1) then
          call select_northern_hemisphere(newmesh, new_group)
@@ -54,7 +56,7 @@
          call select_hemispherical_shell(newmesh, new_group)
       end if
 !
-!      call check_trans_table
+!      call check_trans_table(node1%numnod, numele)
 !
       call deallocate_trans_table
 !

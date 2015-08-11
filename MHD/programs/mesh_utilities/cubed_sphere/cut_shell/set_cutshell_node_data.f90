@@ -13,7 +13,6 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_cutshell_nod_ele_flag
       use t_geometry_data
@@ -108,7 +107,7 @@
       integer(kind = kint) :: inod
 !
       new_node%numnod = 0
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         if (xx(inod,3) .gt. -1.0d-11) then
           new_node%numnod = new_node%numnod + 1
          end if
@@ -125,7 +124,7 @@
       integer(kind = kint) :: inod
 !
       new_node%numnod = 0
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         if (  xx(inod,1) .lt. 1.0d-11 .or. xx(inod,2) .lt. 1.0d-11      &
      &   .or. xx(inod,3) .lt. 1.0d-11  ) then
           new_node%numnod = new_node%numnod + 1
@@ -143,7 +142,7 @@
       integer(kind = kint) :: inod
 !
       new_node%numnod = 0
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         if ( radius(inod) .ge. r_ICB .and. radius(inod).le. r_CMB) then
           new_node%numnod = new_node%numnod + 1
         end if
@@ -160,7 +159,7 @@
       integer(kind = kint) :: inod
 !
       new_node%numnod = 0
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         if ( radius(inod) .ge. r_ICB .and. radius(inod).le. r_CMB       &
      &    .and. xx(inod,3) .gt. -1.0d-11) then
           new_node%numnod = new_node%numnod + 1
@@ -179,7 +178,7 @@
       integer(kind = kint) :: inod, icou
 !
       icou = 0
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
 !
         if ( xx(inod,3) .gt. -1.0d-11 ) then
           icou = icou + 1
@@ -201,7 +200,7 @@
       integer(kind = kint) :: inod, icou
 !
       icou = 0
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
 !
         if (  xx(inod,1) .lt. 1.0d-11 .or. xx(inod,2) .lt. 1.0d-11      &
      &   .or. xx(inod,3) .lt. 1.0d-11  ) then
@@ -224,7 +223,7 @@
       integer(kind = kint) :: inod, icou
 !
       icou = 0
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
 !
         if ( radius(inod) .ge. r_ICB .and. radius(inod).le. r_CMB) then
           icou = icou + 1
@@ -246,7 +245,7 @@
       integer(kind = kint) :: inod, icou
 !
       icou = 0
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
 !
         if ( radius(inod) .ge. r_ICB .and. radius(inod).le. r_CMB       &
      &    .and. xx(inod,3) .gt. -1.0d-11) then

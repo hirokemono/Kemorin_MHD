@@ -39,10 +39,10 @@
 !
       subroutine allocate_work_4_lscale
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
 !
-      allocate(d_mag(numnod))
+      allocate(d_mag(node1%numnod))
       d_mag = zero
 !
       end subroutine allocate_work_4_lscale
@@ -62,7 +62,7 @@
       subroutine const_MHD_length_scales(istep_ucd)
 !
       use calypso_mpi
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_labels
       use m_node_phys_address
       use m_node_phys_data
@@ -86,7 +86,7 @@
       fem_ucd%num_comp(1:fem_ucd%num_field) = ione
       call cal_istack_ucd_component(fem_ucd)
 !
-      fem_ucd%nnod =      numnod
+      fem_ucd%nnod =      node1%numnod
       call allocate_ucd_phys_data(fem_ucd)
 !
       icou = 0
@@ -95,16 +95,16 @@
         fem_ucd%phys_name(icou) = fhd_temp_scale
         call cal_length_scale_by_diffuse1(iphys%i_temp,                 &
      &      iphys%i_t_diffuse)
-        call set_one_field_to_udt_data(numnod, ione, icou, d_mag(1),    &
-     &      fem_ucd)
+        call set_one_field_to_udt_data                                  &
+     &     (node1%numnod, ione, icou, d_mag(1), fem_ucd)
       end if
 !
       if(iphys%i_velo  .gt. 0) then
         icou = icou + 1
         fem_ucd%phys_name(icou) = fhd_velocity_scale
         call cal_vect_length_scale_by_rot(iphys%i_velo, iphys%i_vort)
-        call set_one_field_to_udt_data(numnod, ione, icou, d_mag(1),    &
-     &      fem_ucd)
+        call set_one_field_to_udt_data                                  &
+     &     (node1%numnod, ione, icou, d_mag(1), fem_ucd)
       end if
 !
       if(iphys%i_magne .gt. 0) then
@@ -112,8 +112,8 @@
         fem_ucd%phys_name(3) =    fhd_magnetic_scale
         call cal_vect_length_scale_by_rot(iphys%i_magne,                &
      &      iphys%i_current)
-        call set_one_field_to_udt_data(numnod, ione, icou, d_mag(1),    &
-     &      fem_ucd)
+        call set_one_field_to_udt_data                                  &
+     &     (node1%numnod, ione, icou, d_mag(1), fem_ucd)
       end if
 !
       call set_ucd_file_prefix(result_udt_file_head)
@@ -163,7 +163,7 @@
 !
       subroutine cal_vect_length_scale_by_rot(i_v, i_w)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
       use mag_of_field_smp
       use mag_of_field_smp
@@ -172,7 +172,8 @@
 !
 !
 !$omp parallel
-      call cal_len_scale_by_rot_smp(np_smp, numnod, inod_smp_stack,     &
+      call cal_len_scale_by_rot_smp                                     &
+     &   (np_smp, node1%numnod, inod_smp_stack,                         &
      &    d_nod(1,i_v), d_nod(1,i_w), d_mag(1))
 !$omp end parallel
 !
@@ -182,15 +183,16 @@
 !
       subroutine cal_length_scale_by_diffuse1(i_t, i_d)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
       use mag_of_field_smp
 !
       integer(kind = kint),  intent(in) :: i_t, i_d
 !
 !$omp parallel
-     call cal_len_scale_by_diffuse_smp(np_smp, numnod,                  &
-     &    inod_smp_stack, d_nod(1,i_t), d_nod(1,i_d), d_mag(1))
+     call cal_len_scale_by_diffuse_smp                                  &
+     &   (np_smp, node1%numnod, inod_smp_stack,                         &
+     &    d_nod(1,i_t), d_nod(1,i_d), d_mag(1))
 !$omp end parallel
 !
      end subroutine cal_length_scale_by_diffuse1

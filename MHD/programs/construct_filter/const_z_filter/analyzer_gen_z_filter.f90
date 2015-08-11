@@ -23,7 +23,6 @@
       subroutine init_analyzer
 !
       use calypso_mpi
-      use m_geometry_parameter
       use m_geometry_data
       use m_iccg_parameter
       use m_crs_connect
@@ -100,25 +99,25 @@
 !
 !
       if (my_rank.eq.0) write(*,*) 'allocate_int_edge_data'
-      call allocate_int_edge_data
+      call allocate_int_edge_data(node1%numnod, numele)
       call set_spatial_difference(n_int)
 !
       if (my_rank.eq.0) write(*,*) 'cal_delta_z_analytical'
        call cal_delta_z_analytical
 !      call cal_delta_z
 !
-!      call check_crs_connect(my_rank, numnod)
+!      call check_crs_connect(my_rank, node1%numnod)
 !      call check_communication_data
 !
 !    set information for filtering for node
 !
-      call allocate_neib_nod
+      call allocate_neib_nod(node1%numnod, internal_node)
       if (my_rank.eq.0) write(*,*) 's_set_neib_nod_z'
       call s_set_neib_nod_z(internal_node, nfilter2_2, numfilter+1,     &
      &    nneib_nod, ineib_nod)
       if (my_rank.eq.0) write(*,*) 'set_connect_2_n_filter'
       call set_connect_2_n_filter
-!      call check_neib_nod(my_rank)
+!      call check_neib_nod(my_rank, node1%numnod, internal_node)
 !
 !    set information for filtering for element
 !
@@ -157,17 +156,17 @@
        call allocate_work_4_integration
        call allocate_work_4_commute
 !
-       call allocate_matrix_4_commutation
+       call allocate_matrix_4_commutation(node1%numnod)
 !
       if (my_rank.eq.0) write(*,*) 'int_edge_norm_nod'
        call int_edge_norm_nod
-!       call check_nod_normalize_matrix(my_rank)
+!       call check_nod_normalize_matrix(my_rank, node1%numnod)
 !
        write(*,*) 'allocate_crs_mat_data'
        NB_crs = ncomp_mat
        call allocate_crs_mat_data(node1%numnod)
 !
-       call set_matrix_4_border
+       call set_matrix_4_border(node1%numnod)
        write(*,*) 's_const_commute_matrix'
        call s_const_commute_matrix
        write(*,*) 's_switch_crs_matrix'
@@ -183,7 +182,7 @@
 !C-- solve matrix
       write(*,*) 'METHOD_crs: ', METHOD_crs
       if ( METHOD_crs .eq. 'LU' ) then
-        call solve_z_commute_LU
+        call solve_z_commute_LU(node1%numnod)
       else
         if   (SOLVER_crs.eq.'block33'                                   &
      &    .or. SOLVER_crs.eq.'BLOCK33') then
@@ -200,15 +199,16 @@
 !
 !
        ndep_filter = ncomp_mat
-       call allocate_int_commute_filter(numnod, numele)
+       call allocate_int_commute_filter(node1%numnod, numele)
 !
        write(*,*) 's_copy_1darray_2_2darray'
-       call s_copy_1darray_2_2darray(ncomp_mat,numnod,c_filter,X_crs)
+       call s_copy_1darray_2_2darray                                    &
+     &    (ncomp_mat, node1%numnod, c_filter,X_crs)
        call deallocate_crs_mat_data
 !
        write(*,*) 's_set_neib_nod_z'
-       call s_set_neib_nod_z(numnod, ncomp_mat, nside, nneib_nod2,      &
-     &    ineib_nod2)
+       call s_set_neib_nod_z(node1%numnod, ncomp_mat, nside,            &
+     &     nneib_nod2, ineib_nod2)
 !       call check_neib_nod_2nd(my_rank)
        write(*,*) 's_set_neib_ele_z'
        call s_set_neib_ele_z(numele, ncomp_mat, nside, nneib_ele2,      &
@@ -222,9 +222,9 @@
        write(*,*) 'xmom_ht_x', xmom_ht_x
        write(*,*) 'xmom_ht_x', xmom_ht_y
        if(my_rank.eq.0) write(*,*) 'int_edge_commutative_filter'
-       call int_edge_commutative_filter(numnod, numele,                 &
+       call int_edge_commutative_filter(node1%numnod, numele,           &
      &     xx(1,3), ie_edge)
-!       call check_int_commutative_filter(my_rank, numnod)
+!       call check_int_commutative_filter(my_rank, node1%numnod)
 !
        if(my_rank.eq.0) write(*,*) 'int_edge_moment'
        call int_edge_moment(n_int)

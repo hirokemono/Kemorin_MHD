@@ -20,7 +20,6 @@
       subroutine int_edge_norm_nod
 !
       use m_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_commute_filter_z
       use m_work_4_integration
@@ -32,13 +31,14 @@
       use m_int_edge_data
       use set_filter_moments
 !
-      integer (kind = kint) :: inod, iele, jele
-      integer (kind = kint) :: kf, k, jnod1, jnod2
-      integer (kind = kint) :: i, j, je, jj, inod0, j0
+      integer(kind = kint_gl) :: inod0, jele
+      integer(kind = kint) :: inod
+      integer(kind = kint) :: kf, jnod1, jnod2
+      integer(kind = kint) :: i, j, je, jj, j0
       real(kind = kreal) :: zz0, zz1, zz2, zs, ze
 !
 !
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         inod0 = inod_global(inod)
         zz0 = xx(inod0,3) 
         do je = 1, nfilter2_3 - 1

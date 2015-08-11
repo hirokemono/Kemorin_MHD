@@ -24,7 +24,6 @@
 !
       use m_constants
       use m_phys_labels
-      use m_geometry_parameter
       use m_geometry_data
       use m_size_4_plane
       use m_cube_position
@@ -98,7 +97,7 @@
 !
 !    construct new data
 !
-      merged%node%numnod = numnod
+      merged%node%numnod = node1%numnod
 !      
       call alloc_merged_field_stack(nprocs, plane_fst_IO)
       plane_fst_IO%istack_numnod_IO(0) = 0

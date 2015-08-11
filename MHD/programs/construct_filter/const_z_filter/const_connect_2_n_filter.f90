@@ -19,15 +19,15 @@
 !
       subroutine set_connect_2_n_filter
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_commute_filter_z
       use m_neibor_data_z
 !
-      integer(kind = kint) :: i, inod
+      integer(kind = kint) :: inod
+      integer(kind = kint_gl) :: i
 !
 !
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         i = inod_global(inod)
         ncomp_st(inod) = max(1, 1+nneib_nod(i,1) - (ncomp_mat-1)/2 )
         ncomp_st(inod) = min(ncomp_st(inod)+ncomp_mat-1, nfilter2_3)    &

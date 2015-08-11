@@ -3,6 +3,9 @@
 !
 !     Written by H. Matsui
 !
+!      subroutine allocate_int_edge_data(numnod, numele)
+!      subroutine deallocate_int_edge_data
+!
       module m_int_edge_data
 !
       use m_precision
@@ -21,10 +24,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_int_edge_data
+      subroutine allocate_int_edge_data(numnod, numele)
 !
-      use m_geometry_parameter
       use m_fem_gauss_int_coefs
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+!
 !
       allocate( dz(numele) )
       allocate( mk(numnod) )

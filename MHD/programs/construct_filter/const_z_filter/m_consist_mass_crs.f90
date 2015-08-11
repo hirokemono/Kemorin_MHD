@@ -3,6 +3,9 @@
 !
 !     Written by H. Matsui
 !
+!      subroutine allocate_consist_mass_crs(numnod)
+!      subroutine deallocate_consist_mass_crs
+!
       module m_consist_mass_crs
 !
       use m_precision
@@ -22,11 +25,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_consist_mass_crs
+      subroutine allocate_consist_mass_crs(numnod)
 !
-       use m_geometry_parameter
-       use m_crs_connect
-       use m_crs_matrix
+      use m_crs_connect
+      use m_crs_matrix
+
+      integer(kind = kint), intent(in) :: numnod
 !
        allocate (al_mk_crs(ntot_crs_l) )
        allocate (au_mk_crs(ntot_crs_l) )

@@ -17,7 +17,6 @@
       use m_constants
 !
       use calypso_mpi
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_4_comm_test
 !
@@ -58,8 +57,8 @@
         x_vec(3*inod  ) = xx(inod,3)
       end do
 !
-      call SOLVER_SEND_RECV_int8_type(numnod, nod_comm, i8x_vec)
-      call SOLVER_SEND_RECV_3_type(numnod, nod_comm, x_vec)
+      call SOLVER_SEND_RECV_int8_type(node1%numnod, nod_comm, i8x_vec)
+      call SOLVER_SEND_RECV_3_type(node1%numnod, nod_comm, x_vec)
 !
       end subroutine node_send_recv_test
 !
@@ -82,7 +81,7 @@
       integer (kind = kint) :: k, ii, ix, nd
 !
       allocate(irev_import(nod_comm%istack_import(nod_comm%num_neib)))
-      allocate(xx4(NB*numnod))
+      allocate(xx4(NB*node1%numnod))
 !
       do inod = 1, internal_node
         i8x_vec(inod) = inod_global(inod)
@@ -100,9 +99,9 @@
         xx4(12*inod   ) = xx(inod,3) + 300.0
       end do
 !
-      call SOLVER_SEND_RECV_int8_type(numnod, nod_comm, i8x_vec)
+      call SOLVER_SEND_RECV_int8_type(node1%numnod, nod_comm, i8x_vec)
 !
-      call SOLVER_SEND_RECV_N_type(numnod, NB, nod_comm, xx4)
+      call SOLVER_SEND_RECV_N_type(node1%numnod, NB, nod_comm, xx4)
 !
       do ii = 1, nod_comm%istack_import(nod_comm%num_neib)
         k = nod_comm%item_import(ii) - internal_node

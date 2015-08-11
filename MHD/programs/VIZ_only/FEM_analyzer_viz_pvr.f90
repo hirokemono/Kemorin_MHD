@@ -27,7 +27,7 @@
 !
       use m_array_for_send_recv
       use m_read_mesh_data
-      use m_geometry_parameter
+      use m_geometry_data
       use m_surface_group
       use m_control_params_2nd_files
       use m_surface_geometry_data
@@ -57,7 +57,7 @@
       if (iflag_debug.gt.0) write(*,*) 'load_mesh_data', mesh_file_head
       call load_mesh_data
 !
-      call allocate_vector_for_solver(isix, numnod)
+      call allocate_vector_for_solver(isix, node1%numnod)
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
       call init_send_recv

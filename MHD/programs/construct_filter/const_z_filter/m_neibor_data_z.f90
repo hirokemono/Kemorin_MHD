@@ -3,6 +3,11 @@
 !
 !      Written by Kemorin
 !
+!      subroutine allocate_neib_nod(numnod, internal_node)
+!      subroutine allocate_neib_ele
+!      subroutine check_neib_nod(my_rank, numnod, internal_node)
+!      subroutine check_neib_ele(my_rank)
+!
       module m_neibor_data_z
 !
       use m_precision
@@ -28,10 +33,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_neib_nod
+      subroutine allocate_neib_nod(numnod, internal_node)
 !
-      use m_geometry_parameter
       use m_commute_filter_z
+!
+      integer(kind = kint), intent(in) :: numnod, internal_node
 !
       allocate( nneib_nod(internal_node,2) )
       allocate( ineib_nod(internal_node,nfilter2_2,2) )
@@ -47,10 +53,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-!
       subroutine allocate_neib_ele
 !
-      use m_geometry_parameter
       use m_commute_filter_z
 !
       allocate( nneib_ele(totalele,2) )
@@ -70,13 +74,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_neib_nod(my_rank)
+      subroutine check_neib_nod(my_rank, numnod, internal_node)
 !
-      use m_geometry_parameter
       use m_commute_filter_z
 !
-      integer(kind = kint) :: my_rank
-      integer(kind = kint) :: i, j, k, i1
+      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: numnod, internal_node
+!
+      integer(kind = kint) :: i, j, k
 !
       write(50+my_rank,*) 'nummat', nummat
       write(50+my_rank,*) 'nneib_nod'
@@ -99,11 +104,10 @@
 !
       subroutine check_neib_ele(my_rank)
 !
-      use m_geometry_parameter
       use m_commute_filter_z
 !
-      integer(kind = kint) :: my_rank
-      integer(kind = kint) :: i, j, k, i1
+      integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint) :: i, j, k
 !
       write(50+my_rank,*) 'nneib_ele'
       write(50+my_rank,'(10i16)') (nneib_ele(i,1),i=1,totalele)

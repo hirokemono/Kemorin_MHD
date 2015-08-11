@@ -27,7 +27,7 @@
       subroutine FEM_initialize_surface
 !
       use m_read_mesh_data
-      use m_geometry_parameter
+      use m_geometry_data
       use m_surface_geometry_data
       use m_edge_geometry_data
       use m_control_params_2nd_files
@@ -48,7 +48,7 @@
       if (iflag_debug.gt.0) write(*,*) 'input_mesh'
       call input_mesh(my_rank)
 !
-      call allocate_vector_for_solver(isix, numnod)
+      call allocate_vector_for_solver(isix, node1%numnod)
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
       call init_send_recv

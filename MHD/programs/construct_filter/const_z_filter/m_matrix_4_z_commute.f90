@@ -3,6 +3,9 @@
 !
 !      Written by Kemorin
 !
+!      subroutine allocate_matrix_4_commutation(numnod)
+!      subroutine check_nod_normalize_matrix(my_rank, numnod)
+!
       module m_matrix_4_z_commute
 !
       use m_precision
@@ -18,12 +21,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_matrix_4_commutation
+      subroutine allocate_matrix_4_commutation(numnod)
 !
-      use m_geometry_parameter
       use m_commute_filter_z
       use m_crs_connect
       use m_crs_matrix
+!
+      integer(kind = kint), intent(in) :: numnod
 !
       allocate( d_norm_nod(numnod,nfilter2_3,0:nfilter2_3) )
 !
@@ -33,13 +37,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_nod_normalize_matrix(my_rank)
+      subroutine check_nod_normalize_matrix(my_rank, numnod)
 !
-      use m_geometry_parameter
       use m_commute_filter_z
       use m_crs_matrix
 !
-      integer (kind = kint) :: my_rank
+      integer (kind = kint), intent(in) :: my_rank, numnod
       integer (kind = kint) :: i, j, k
 !
 !

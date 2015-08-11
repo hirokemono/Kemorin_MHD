@@ -42,7 +42,6 @@
       use set_element_geometry_4_IO
       use set_surface_geometry_4_IO
       use set_edge_geometry_4_IO
-      use m_geometry_parameter
       use m_geometry_data
       use m_element_group
       use m_surface_group
@@ -118,7 +117,7 @@
       if (my_rank.eq.0) write(*,*)  'Volume of Domain: ', volume
 !
       if (iflag_debug.eq.1)  write(*,*)  'int_element_length_1st'
-      FEM1_elen%nnod_filter_mom = numnod
+      FEM1_elen%nnod_filter_mom = node1%numnod
       FEM1_elen%nele_filter_mom = numele
       FEM_momenet1%num_filter_moms = 2
       call alloc_jacobians_ele(FEM1_elen%nele_filter_mom, filter_dxi1)
@@ -135,7 +134,7 @@
       subroutine analyze
 !
       use m_array_for_send_recv
-      use m_geometry_parameter
+      use m_geometry_data
       use m_matrix_4_filter
       use m_crs_matrix_4_filter
       use m_filter_elength
@@ -166,7 +165,7 @@
 !  ---------------------------------------------------
 !
       if(iflag_debug.eq.1)  write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(ithree, numnod)
+      call allocate_vector_for_solver(ithree, node1%numnod)
 !
       call init_send_recv
 !

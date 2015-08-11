@@ -18,7 +18,6 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_4_comm_test
 !
@@ -78,7 +77,7 @@
       use m_array_for_send_recv
 !
 !
-      call count_node_comm_test(numnod, internal_node,                  &
+      call count_node_comm_test(node1%numnod, internal_node,            &
      &    xx, x_vec, nnod_diff_local)
 !
       end subroutine count_diff_node_comm_test
@@ -92,7 +91,7 @@
       use m_array_for_send_recv
 !
 !
-      call compare_nod_comm_test(numnod, internal_node,                 &
+      call compare_nod_comm_test(node1%numnod, internal_node,           &
      &    xx, x_vec, nnod_diff_local, inod_diff, xx_diff)
 !
       end subroutine set_diff_node_comm_test

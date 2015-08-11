@@ -23,7 +23,6 @@
 !
       use calypso_mpi
       use calypso_mpi
-      use m_geometry_parameter
       use m_geometry_data
       use m_crs_connect
       use m_crs_matrix
@@ -62,7 +61,7 @@
       call set_crs_connect_commute_z
 !
       if (my_rank.eq.0) write(*,*) 'allocate_int_edge_data'
-      call allocate_int_edge_data
+      call allocate_int_edge_data(node1%numnod, numele)
       call set_spatial_difference(n_int)
 !
 !
@@ -77,7 +76,7 @@
        open (id_delta_z,file='delta_z.0.dat')
 !
       write(id_delta_z,*) 'inod, z, delta z, diff.'
-      do i = 1, numnod
+      do i = 1, node1%numnod
         write(id_delta_z,'(i15,1p20E25.15e3)')                          &
      &        i, xx(i,3), delta_z(i), delta_dz(i), d2_dz(i)
       end do

@@ -1,7 +1,7 @@
 !
 !      module m_geometry_4_comm_test
 !
-!      subroutine allocate_geom_4_comm_test
+!      subroutine allocate_geom_4_comm_test(numele, numsurf, numedge)
 !      subroutine deallocate_geom_4_comm_test
 !
 !      subroutine allocate_diff_nod_comm_test
@@ -79,9 +79,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_geom_4_comm_test
+      subroutine allocate_geom_4_comm_test(numele, numsurf, numedge)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numele, numsurf, numedge
 !
 !
       allocate(x_ele_comm(3*numele))

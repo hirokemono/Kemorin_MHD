@@ -3,12 +3,13 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine set_consist_mass_mat
-!      subroutine set_matrix_4_border
+!      subroutine set_consist_mass_mat(numnod)
+!      subroutine set_matrix_4_border(numnod)
 !
       module set_matrices_4_z_filter
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -18,12 +19,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_consist_mass_mat
+      subroutine set_consist_mass_mat(numnod)
 !
       use m_consist_mass_crs
-      use m_geometry_parameter
       use m_int_edge_data
 !
+      integer (kind = kint), intent(in) :: numnod
       integer (kind = kint) :: inod
 !
 !
@@ -41,17 +42,16 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_matrix_4_border
+      subroutine set_matrix_4_border(numnod)
 !
-      use m_geometry_parameter
       use m_commute_filter_z
       use m_crs_matrix
       use m_matrix_4_z_commute
       use m_neibor_data_z
       use m_z_filter_values
 !
-      integer (kind = kint) :: kk, kfact, inod, i, k1, ii, jj, k2
-      real(kind = kreal), parameter :: zero = 0.0d0, one = 1.0d0
+      integer (kind = kint), intent(in) :: numnod
+      integer (kind = kint) :: inod, i
 !
 !
 !   components for normalization on node

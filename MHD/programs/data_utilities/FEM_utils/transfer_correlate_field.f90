@@ -13,7 +13,6 @@
       use m_constants
       use m_machine_parameter
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
 !
       implicit none
@@ -73,10 +72,10 @@
 !
 !
       if     (iflag_correlate_coord .eq. iflag_spherical) then
-        call transfer_nod_fld_to_sph(numnod, num_nod_phys,              &
+        call transfer_nod_fld_to_sph(node1%numnod, num_nod_phys,        &
      &      num_tot_nod_phys, istack_nod_component, d_nod)
       else if(iflag_correlate_coord .eq. iflag_cylindrical) then
-        call transfer_nod_fld_to_cyl(numnod, num_nod_phys,              &
+        call transfer_nod_fld_to_cyl(node1%numnod, num_nod_phys,        &
      &     num_tot_nod_phys, istack_nod_component, d_nod)
       end if
 !
@@ -122,7 +121,7 @@
 !$omp parallel private(nd)
       do nd = 1, phys_2nd%ntot_phys
 !$omp do 
-        do inod = 1, numnod
+        do inod = 1, node1%numnod
           phys_2nd%d_fld(inod,nd) = d_nod(inod,icomp_4_correlate)
         end do
 !$omp end do nowait
@@ -152,11 +151,11 @@
         ncomp = istack_component(i_fld) - istack_component(i_fld-1)
 !$omp parallel
         if     (ncomp .eq. n_vector) then
-          call overwrite_vector_2_sph_smp(np_smp, numnod,               &
+          call overwrite_vector_2_sph_smp(np_smp, node1%numnod,         &
      &        inod_smp_stack, d_nod(1,ist), xx(1,1), xx(1,2), xx(1,3),  &
      &        radius, s_cylinder, a_radius, a_s_cylinder)
         else if(ncomp .eq. n_sym_tensor) then
-          call overwrite_sph_tensor_smp(np_smp, numnod,                 &
+          call overwrite_sph_tensor_smp(np_smp, node1%numnod,           &
      &        inod_smp_stack, d_nod(1,ist), xx(1,1), xx(1,2), xx(1,3),  &
      &        radius, s_cylinder, a_radius, a_s_cylinder)
         end if
@@ -186,11 +185,11 @@
         ncomp = istack_component(i_fld) - istack_component(i_fld-1)
 !$omp parallel
         if     (ncomp .eq. n_vector) then
-          call overwrite_vector_2_cyl_smp(np_smp, numnod,               &
+          call overwrite_vector_2_cyl_smp(np_smp, node1%numnod,         &
      &          inod_smp_stack, d_nod(1,ist),                           &
      &          xx(1,1), xx(1,2), s_cylinder, a_s_cylinder)
        else if(ncomp .eq. n_sym_tensor) then
-          call overwrite_cyl_tensor_smp(np_smp, numnod,                 &
+          call overwrite_cyl_tensor_smp(np_smp, node1%numnod,           &
      &          inod_smp_stack, d_nod(1,ist), xx(1,1), xx(1,2),         &
      &          s_cylinder, a_s_cylinder)
         end if

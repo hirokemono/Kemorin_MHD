@@ -9,6 +9,7 @@
       module const_geometry_z_commute
 !
       use m_precision
+      use m_constants
 !
       use m_nod_comm_table
       use m_geometry_parameter
@@ -70,6 +71,7 @@
 !
       subroutine  set_numnod_z_commute
 !
+      use m_geometry_data
 !
       node1%numnod = internal_node
 !
@@ -81,7 +83,7 @@
       nmat_ele = totalele*nfilter2_1
       nmat_nod = internal_node*nfilter2_3
 !
-      numele = numnod - 1
+      numele = node1%numnod - 1
 !
       first_ele_type = 331
       numsurf = numele
@@ -99,6 +101,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_global_id_z_commute
+!
+      use m_geometry_data
 !
       integer (kind = kint) :: i
 !
@@ -130,12 +134,11 @@
 !
       subroutine set_liner_grids
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       integer (kind = kint) :: i
 !
-      do i = 1, numnod
+      do i = 1, node1%numnod
         xx(i,3) = zsize * (-0.5d0 + dble(i-1) / dble(internal_node-1) )
       end do
 !
@@ -145,7 +148,6 @@
 !
       subroutine set_chebyshev_grids
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       real (kind = kreal) :: pi
@@ -154,7 +156,7 @@
 !
       pi = four * atan(one)
 !
-        do i = 1, numnod
+        do i = 1, node1%numnod
           xx(i,3) = -0.5d0 * zsize                                      &
      &         * cos (pi* dble(i - 1) / dble(internal_node-1) )
         end do
@@ -165,7 +167,6 @@
 !
       subroutine set_half_chebyshev_grids
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       real (kind = kreal) :: pi
@@ -174,7 +175,7 @@
 !
       pi = four * atan(one)
 !
-        do i = 1, numnod
+        do i = 1, node1%numnod
           xx(i,3) = -0.5d0*zsize - zsize                                &
      &         * cos (pi* dble(i - 1) / dble(2*(internal_node-1)) )
         end do
@@ -185,13 +186,12 @@
 !
       subroutine set_test_grids
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       integer (kind = kint) :: i
 !
 !
-        do i = 1, numnod
+        do i = 1, node1%numnod
           xx(i,3) = 2.0d0 * dble(i-1) - dble(internal_node-1)
         end do
 !
@@ -201,16 +201,14 @@
 !
       subroutine set_test_grids_2
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       real (kind = kreal) :: pi
-      real (kind = kreal), parameter :: one = 1.0d0, four = 4.0d0
       integer (kind = kint) :: i
 !
       pi = four * atan(one)
 !
-        do i = 1, numnod
+        do i = 1, node1%numnod
           xx(i,3) = - dble(internal_node-1)                             &
      &         * cos (pi* dble(i - 1) / dble(internal_node-1) ) 
         end do

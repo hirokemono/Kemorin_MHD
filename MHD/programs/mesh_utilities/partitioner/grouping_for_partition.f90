@@ -24,7 +24,6 @@
       use m_constants
       use m_error_IDs
       use m_ctl_param_partitioner
-      use m_geometry_parameter
       use m_geometry_data
       use m_subdomain_table_IO
       use m_domain_group_4_partition
@@ -52,7 +51,7 @@
 !C +-----+
 !C===
       if (NTYP_div .eq. iPART_RCB_XYZ) then
-        call rc_bisection(numnod, internal_node, xx)
+        call rc_bisection(node1%numnod, internal_node, xx)
 !C===
 !C===
 !C
@@ -62,7 +61,7 @@
 !C===
 
       else if (NTYP_div .eq. iPART_RCB_SPH) then
-        call rcb_spherical(numnod, internal_node,                       &
+        call rcb_spherical(node1%numnod, internal_node,                 &
      &      radius, colatitude, longitude)
 !
 !C
@@ -72,14 +71,14 @@
 !C===
 !
       else if (NTYP_div .eq. iPART_EQ_XYZ) then
-        call equaly_bisection(numnod, internal_node, xx)
+        call equaly_bisection(node1%numnod, internal_node, xx)
 !
       else if (NTYP_div .eq. iPART_EQ_SPH) then
-        call eb_spherical(numnod, internal_node,                        &
+        call eb_spherical(node1%numnod, internal_node,                  &
      &      radius, colatitude, longitude)
 !
       else if (NTYP_div .eq. iPART_LAYER_SPH) then
-        call eb_spherical_w_egrp(numnod, internal_node,                 &
+        call eb_spherical_w_egrp(node1%numnod, internal_node,           &
      &    ele_grp%num_grp, ele_grp%grp_name,                            &
      &    ele_grp_data%node%ntot_e_grp, ele_grp_data%node%istack_e_grp, &
      &    ele_grp_data%node%item_e_grp, radius, colatitude, longitude)
@@ -91,7 +90,7 @@
 !C +------------------------------+
 !C===
       else if (NTYP_div .eq. iPART_CUBED_SPHERE) then
-        call divide_by_sphere_coord(num_domain, numnod,                 &
+        call divide_by_sphere_coord(num_domain, node1%numnod,           &
      &      nnod_4_ele, xx, radius, colatitude, longitude,              &
      &      nod_grp%num_grp, nod_grp%num_item, nod_grp%istack_grp,      &
      &      nod_grp%item_grp, nod_grp%grp_name)
@@ -102,7 +101,7 @@
 !C===
       else if (NTYP_div .eq. iPART_MeTiS_RSB) then
         write(*,*) 'read_group_by_metis'
-        call read_group_by_metis(ierr, numnod, internal_node)
+        call read_group_by_metis(ierr, node1%numnod, internal_node)
         if (ierr .eq. ierr_P_MPI) call ERROR_EXIT(ierr_P_MPI, izero)
         write(*,*) 'copy_domain_list_from_IO'
         call copy_domain_list_from_IO

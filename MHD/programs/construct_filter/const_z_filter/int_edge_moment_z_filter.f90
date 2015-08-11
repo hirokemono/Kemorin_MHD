@@ -19,7 +19,6 @@
 !
       subroutine int_edge_moment(n_int)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_shape_functions
@@ -57,7 +56,7 @@
        end do
       end do
 !
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
        do kf = 0, 2
            xmom_dt(inod,kf)  = xmom_dt(inod,kf)  * mk(inod)
            xmom_dot(inod,kf) = xmom_dot(inod,kf) * mk(inod)

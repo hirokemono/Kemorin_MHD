@@ -3,13 +3,13 @@
 !
 !      Written by H. Matsui on Dec., 2007
 !
-!      subroutine allocate_product_data
+!      subroutine allocate_product_data(numnod)
 !      subroutine allocate_product_result
 !      subroutine deallocate_product_data
 !
 !      subroutine set_field_id_4_product
 !
-!      subroutine set_data_for_product(istep_ucd)
+!      subroutine set_data_for_product(numnod, istep_ucd)
 !      subroutine cal_products_of_fields
 !
       module product_udt_fields
@@ -31,10 +31,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_product_data
+      subroutine allocate_product_data(numnod)
 !
       use m_ctl_params_4_prod_udt
-      use m_geometry_parameter
+!
+      integer(kind = kint), intent(in) :: numnod
 !
 !
       allocate(d_prod1(numnod,ncomp_4_product1))
@@ -148,15 +149,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_data_for_product(istep_ucd)
+      subroutine set_data_for_product(numnod, istep_ucd)
 !
       use calypso_mpi
-      use m_geometry_parameter
-      use m_geometry_data
       use m_ctl_params_4_prod_udt
       use m_ucd_data
       use m_ucd_input_data
 !
+      integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: istep_ucd
 !
 !

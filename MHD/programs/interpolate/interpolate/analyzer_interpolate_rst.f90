@@ -123,7 +123,7 @@
       use m_node_phys_data
       use m_ctl_params_4_gen_table
       use m_time_data_IO
-      use m_geometry_parameter
+      use m_geometry_data
       use field_IO_select
       use set_parallel_file_name
       use copy_time_steps_4_restart
@@ -141,7 +141,7 @@
       do i_step = istep_rst_start, istep_rst_end
 !
         if (my_rank .lt. ndomain_org) then
-          itp_fld_IO%nnod_IO = numnod
+          itp_fld_IO%nnod_IO = node1%numnod
           call alloc_phys_data_IO(itp_fld_IO)
 !
           call set_field_file_fmt_prefix                                &

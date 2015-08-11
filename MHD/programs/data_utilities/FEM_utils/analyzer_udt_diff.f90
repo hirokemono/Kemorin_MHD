@@ -27,7 +27,7 @@
       subroutine initialize_udt_diff
 !
       use m_array_for_send_recv
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
       use input_control_udt_diff
@@ -50,7 +50,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(n_sym_tensor, numnod)
+      call allocate_vector_for_solver(n_sym_tensor, node1%numnod)
 !
       call init_send_recv
 !

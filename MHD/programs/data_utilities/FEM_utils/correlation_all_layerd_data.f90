@@ -3,6 +3,7 @@
 !
 !     Written by H. Matsui on Nov., 2009
 !
+!      subroutine allocate_vec_transfer(numnod)
 !      subroutine s_correlation_all_layerd_data(nnod_2, phys_2nd)
 !
       module correlation_all_layerd_data
@@ -28,9 +29,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_vec_transfer
+      subroutine allocate_vec_transfer(numnod)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numnod
+!
 !
       allocate(d_nod_trans2(numnod,6))
       d_nod_trans2 = 0.0d0
@@ -90,7 +92,6 @@
 !
       subroutine  int_vol_rms_ave_all_layer(nnod_2, phys_2nd)
 !
-      use m_geometry_parameter
       use m_node_phys_data
       use m_fem_gauss_int_coefs
       use int_rms_ave_ele_grps_1st
@@ -120,7 +121,7 @@
 !
       subroutine  int_vol_dev_cor_all_layer(phys_2nd)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
       use m_fem_gauss_int_coefs
       use int_rms_ave_ele_grps_1st
@@ -133,7 +134,8 @@
 !
       do icomp = 1, num_tot_nod_phys
         icomp_2 = icomp+num_tot_nod_phys
-        d_nod_trans2(1:numnod,1) = phys_2nd%d_fld(1:numnod,icomp)
+        d_nod_trans2(1:node1%numnod,1)                                  &
+     &          = phys_2nd%d_fld(1:node1%numnod,icomp)
         call int_vol_dev_cor_ele_grps_1st(max_int_point,                &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%item_layer,              &

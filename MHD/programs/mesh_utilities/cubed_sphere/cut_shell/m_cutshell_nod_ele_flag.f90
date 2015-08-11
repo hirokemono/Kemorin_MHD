@@ -1,9 +1,12 @@
 !m_cutshell_nod_ele_flag.f90
 !      module m_cutshell_nod_ele_flag
 !
-      module m_cutshell_nod_ele_flag
-!
 !     Written by H. Matsui
+!
+!      subroutine allocate_trans_table(numnod, numele)
+!      subroutine deallocate_trans_table(numnod, numele)
+!
+      module m_cutshell_nod_ele_flag
 !
       use m_precision
 !
@@ -12,18 +15,15 @@
       integer (kind=kint), allocatable  :: mark_new_node(:)
       integer (kind=kint), allocatable  :: mark_new_ele(:)
 !
-!      subroutine allocate_trans_table
-!      subroutine deallocate_trans_table
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_trans_table
+      subroutine allocate_trans_table(numnod, numele)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numnod, numele
 !
       allocate( mark_new_node(numnod) )
       allocate( mark_new_ele(numele)  )
@@ -44,9 +44,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_trans_table
+      subroutine check_trans_table(numnod, numele)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numnod, numele
+!
       integer(kind = kint) :: i
 !
       write(50,*) 'mark_new_node'

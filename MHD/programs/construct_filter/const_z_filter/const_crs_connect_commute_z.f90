@@ -11,7 +11,6 @@
 !
       use m_crs_connect
       use m_crs_matrix
-      use m_geometry_parameter
       use m_commute_filter_z
 !
       implicit none
@@ -27,21 +26,26 @@
 !
       subroutine set_crs_connect_commute_z
 !
+      use m_geometry_data
 !
-      call set_num_off_diag_z_commute
 !
-      call allocate_crs_stack(numnod)
+      call set_num_off_diag_z_commute(internal_node)
+!
+      call allocate_crs_stack(node1%numnod)
       call allocate_crs_connect
 !
-      call set_stack_crs_z_commute
+      call set_stack_crs_z_commute(internal_node)
 !
-      call set_item_crs_z_commute
+      call set_item_crs_z_commute(internal_node)
 !
       end subroutine set_crs_connect_commute_z
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_num_off_diag_z_commute
+      subroutine set_num_off_diag_z_commute(internal_node)
+!
+      integer(kind = kint), intent(in) :: internal_node
+!
 !
       ntot_crs_l = internal_node - 1
       ntot_crs_u = internal_node - 1
@@ -50,9 +54,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_stack_crs_z_commute
+      subroutine set_stack_crs_z_commute(internal_node)
 !
-      integer (kind = kint) :: i
+      integer(kind = kint), intent(in) :: internal_node
+      integer(kind = kint) :: i
 !
 !    set lower component
 !
@@ -71,9 +76,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_item_crs_z_commute
+      subroutine set_item_crs_z_commute(internal_node)
 !
-      integer (kind = kint) :: i
+      integer(kind = kint), intent(in) :: internal_node
+      integer(kind = kint) :: i
 !
 !    set lower component
 !

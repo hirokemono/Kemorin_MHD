@@ -3,11 +3,11 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine solve_z_commute_LU
+!      subroutine solve_z_commute_LU(numnod)
 !
-!      subroutine solve_delta_z_LU
-!      subroutine solve_delta_dz_LU
-!      subroutine solve_delta_d2z_LU
+!      subroutine solve_delta_z_LU(numnod)
+!      subroutine solve_delta_dz_LU(numnod)
+!      subroutine solve_delta_d2z_LU(numnod)
 !
       module calcs_by_LUsolver
 !
@@ -26,12 +26,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_z_commute_LU
+      subroutine solve_z_commute_LU(numnod)
 !
-      use m_geometry_parameter
       use m_crs_matrix
       use m_commute_filter_z
 !
+      integer(kind = kint), intent(in) :: numnod
       integer(kind = kint) :: inod, i, j
 !
        ncomp_lu = ncomp_mat
@@ -64,45 +64,51 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_delta_z_LU
+      subroutine solve_delta_z_LU(numnod)
 !
       use m_int_edge_vart_width
 !
-      call solve_delta_z_etc_LU(delta_z)
+      integer(kind = kint), intent(in) :: numnod
+!
+      call solve_delta_z_etc_LU(numnod, delta_z)
 !
       end subroutine solve_delta_z_LU
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_delta_dz_LU
+      subroutine solve_delta_dz_LU(numnod)
 !
       use m_int_edge_vart_width
 !
-      call solve_delta_z_etc_LU(delta_dz)
+      integer(kind = kint), intent(in) :: numnod
+!
+      call solve_delta_z_etc_LU(numnod, delta_dz)
 !
       end subroutine solve_delta_dz_LU
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_delta_d2z_LU
+      subroutine solve_delta_d2z_LU(numnod)
 !
       use m_int_edge_vart_width
 !
-      call solve_delta_z_etc_LU(d2_dz)
+      integer(kind = kint), intent(in) :: numnod
+!
+      call solve_delta_z_etc_LU(numnod, d2_dz)
 !
       end subroutine solve_delta_d2z_LU
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_delta_z_etc_LU(X_lu)
+      subroutine solve_delta_z_etc_LU(numnod, X_lu)
 !
-      use m_geometry_parameter
       use m_int_edge_data
       use m_int_edge_vart_width
 !
+      integer(kind = kint), intent(in) :: numnod
       real(kind = kreal), intent(inout) :: X_lu(numnod)
 !
-      integer(kind = kint) :: inod, i, j
+      integer(kind = kint) :: i, j
 !
          ncomp_lu = numnod
 !

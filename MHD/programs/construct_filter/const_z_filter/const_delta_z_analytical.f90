@@ -61,9 +61,9 @@
       subroutine cal_dz_liner_grids
 !
       integer (kind = kint) :: i
-      real(kind = kreal), parameter :: zero = 0.0d0
 !
-        do i = 1, numnod
+!
+        do i = 1, node1%numnod
           delta_z(i) =  zsize / dble(2*internal_node-1)
           delta_dz(i) = zero
           d2_dz(i) =    zero
@@ -84,9 +84,10 @@
       real (kind = kreal) :: pi
       integer (kind = kint) :: i, inod1, inod2
 !
+!
       pi = four * atan(one)
 !
-        do i = 1, numnod
+        do i = 1, node1%numnod
           delta_z(i)                                                    &
      &          = ( 0.5d0 * zsize * pi / (two*dble(internal_node-1)) )  &
      &           * sin (pi* dble(i - 1) / dble(internal_node-1) )
@@ -129,11 +130,11 @@
 !
       pi = four * atan(one)
 !
-        do i = 1, numnod
+        do i = 1, node1%numnod
           xx(i,3) = -0.5d0*zsize - zsize                                &
      &         * cos (pi* dble(i - 1) / dble(2*(internal_node-1)) )
         end do
-        do i = 1, numnod
+        do i = 1, node1%numnod
           delta_z(i) = ( zsize * pi / two*dble(2*(internal_node-1)) )   &
      &           * sin (pi* dble(i - 1) / dble(2*(internal_node-1)) )
           if ( i.eq.1 ) then
@@ -165,7 +166,7 @@
 !
       integer (kind = kint) :: i
 !
-        do i = 1, numnod
+        do i = 1, node1%numnod
           delta_z(i) =  one
           delta_dz(i) = zero
           d2_dz(i) =    zero
@@ -189,11 +190,11 @@
 !
       pi = four * atan(one)
 !
-        do i = 1, numnod
+        do i = 1, node1%numnod
           xx(i,3) = - dble(internal_node-1)                             &
      &         * cos (pi* dble(i - 1) / dble(internal_node-1) ) 
         end do
-        do i = 1, numnod
+        do i = 1, node1%numnod
           delta_z(i)                                                    &
      &          = 0.5*pi * sin(pi* dble(i - 1) / dble(internal_node-1))
           delta_dz(i) =   pi / ( two * dble(internal_node-1)            &

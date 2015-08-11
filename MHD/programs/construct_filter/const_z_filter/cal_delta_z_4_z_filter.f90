@@ -19,7 +19,7 @@
 !
       subroutine cal_delta_z
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_crs_matrix
       use m_int_edge_vart_width
       use m_int_edge_data
@@ -39,19 +39,19 @@
 !      iflag_mass = 0
 !
       if ( iflag_mass .eq. 1) then
-       call allocate_consist_mass_crs
-       call set_consist_mass_mat
+       call allocate_consist_mass_crs(node1%numnod)
+       call set_consist_mass_mat(node1%numnod)
 !
        call allocate_delta_z
        call int_edge_vart_width(num_int)
 !
        call set_rhs_vart_width
-       call set_consist_mass_mat
+       call set_consist_mass_mat(node1%numnod)
 !
        write(*,*) METHOD_crs
        if ( METHOD_crs .eq. 'LU' ) then
 !
-         call solve_delta_z_LU
+         call solve_delta_z_LU(node1%numnod)
 !
        else
 !
@@ -68,7 +68,7 @@
        call set_rhs_vart_width
 
        if ( METHOD_crs .eq. 'LU' ) then
-         call solve_delta_dz_LU
+         call solve_delta_dz_LU(node1%numnod)
        else
          write(*,*) 'solve_crs_by_mass_z2'
          call  solve_crs_by_mass_z2
@@ -81,7 +81,7 @@
        call set_rhs_vart_width
 
        if ( METHOD_crs .eq. 'LU' ) then
-          call solve_delta_d2z_LU
+          call solve_delta_d2z_LU(node1%numnod)
        else
          write(*,*) 'solve_crs_by_mass_z2'
          call  solve_crs_by_mass_z2

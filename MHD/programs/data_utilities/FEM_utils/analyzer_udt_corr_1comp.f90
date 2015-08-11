@@ -36,7 +36,7 @@
 !
       use m_array_for_send_recv
       use m_nod_comm_table
-      use m_geometry_parameter
+      use m_geometry_data
       use m_group_data
       use m_node_phys_address
       use m_ele_sf_eg_comm_tables
@@ -94,14 +94,14 @@
 !
       call link_nodal_fld_type_names(phys_ref)
       call alloc_phys_data_type(mesh_ref%node%numnod, phys_ref)
-      call allocate_vec_transfer
+      call allocate_vec_transfer(node1%numnod)
 !
       call set_component_add_4_correlate
 !
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix,    numnod)
+      call allocate_vector_for_solver(isix, node1%numnod)
       call allocate_2nd_iccg_matrix(isix, mesh_ref%node%numnod)
 !
       call init_send_recv

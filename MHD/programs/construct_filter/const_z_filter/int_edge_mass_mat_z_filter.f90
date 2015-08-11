@@ -20,7 +20,6 @@
       subroutine int_edge_mass_matrix(n_int)
 !
       use m_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_jacobians_4_edge
@@ -52,7 +51,7 @@
        end do
       end do
 !
-      do inod2 = 1, numnod
+      do inod2 = 1, node1%numnod
         mk(inod2) = one / mk(inod2)
       end do
 !
