@@ -4,7 +4,7 @@
 !
 !      Written by H. Matsui
 !
-!       subroutine allocate_bc_rot
+!       subroutine allocate_bc_rot(numnod)
 !       subroutine allocate_bc_rot_4_ele
 !       subroutine deallocate_ibc_4_rot
 !       subroutine deallocate_bc2_rot
@@ -41,21 +41,23 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_rot
+       subroutine allocate_bc_rot(numnod)
 !
-       use m_geometry_parameter
+       integer(kind = kint), intent(in) :: numnod
 !
        allocate(ibc_velo_rot(numnod))
        allocate(ibc2_velo_rot(numnod))
 !
-       ibc_velo_rot=0
-       ibc2_velo_rot=0
+       if(numnod .gt. 0) then
+         ibc_velo_rot=0
+         ibc2_velo_rot=0
+       end if
 ! 
        allocate(ibc_v10_id(num_bc_v10_nod))
        allocate(bc_v10_id_apt(num_bc_v10_nod,3))
-       if (num_bc_v10_nod/=0) then
-        ibc_v10_id=0
-        bc_v10_id_apt=0.0d00
+       if (num_bc_v10_nod .gt. 0) then
+         ibc_v10_id=0
+         bc_v10_id_apt=0.0d00
        end if
 !
        end subroutine allocate_bc_rot

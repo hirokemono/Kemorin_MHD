@@ -4,29 +4,31 @@
 !      Written by H. Matsui nad H. Okuda
 !      Modified by H. Matsui on Oct., 2005
 !
-!      subroutine set_ele_4_vector_nodal_bc(ibc, ibc2, nmax_idx_ibc,    &
-!     &          num_idx_ibc, ele_bc_id, nod_bc_id, nmax_idx_ibc2,      &
-!     &          ele_bc2_id, nod_bc2_id, ibc_end, ibc_shape, ibc_stack, &
-!     &          ibc_stack_smp)
-!      subroutine set_ele_4_vector_nodal_bc_fl(ibc, ibc2, nmax_idx_ibc, &
-!     &          num_idx_ibc, ele_bc_id, nod_bc_id, nmax_idx_ibc2,      &
-!     &          ele_bc2_id, nod_bc2_id, ibc_end, ibc_shape, ibc_stack, &
-!     &          ibc_stack_smp)
-!
-!      subroutine set_ele_4_scalar_nodal_bc(ibc, ibc2, num_idx_ibc,     &
-!     &          ele_bc_id, nod_bc_id, num_idx_ibc2, ele_bc2_id,        &
-!     &          nod_bc2_id, ibc_end, ibc_shape, ibc_stack,             &
-!     &          ibc_stack_smp)
-!      subroutine set_ele_4_scalar_nodal_bc_fl(ibc, ibc2, num_idx_ibc,  &
-!     &          ele_bc_id, nod_bc_id, num_idx_ibc2, ele_bc2_id,        &
-!     &          nod_bc2_id, ibc_end, ibc_shape, ibc_stack,             &
-!     &          ibc_stack_smp)
+!!      subroutine set_ele_4_vector_nodal_bc                            &
+!!     &         (numnod, nnod_4_ele, ibc, ibc2, nmax_idx_ibc,          &
+!!     &          num_idx_ibc, ele_bc_id, nod_bc_id, nmax_idx_ibc2,     &
+!!     &          ele_bc2_id, nod_bc2_id, ibc_end, ibc_shape, ibc_stack,&
+!!     &          ibc_stack_smp)
+!!      subroutine set_ele_4_vector_nodal_bc_fl                         &
+!!     &         (numnod, nnod_4_ele, ibc, ibc2, nmax_idx_ibc,          &
+!!     &          num_idx_ibc, ele_bc_id, nod_bc_id, nmax_idx_ibc2,     &
+!!     &          ele_bc2_id, nod_bc2_id, ibc_end, ibc_shape, ibc_stack,&
+!!     &          ibc_stack_smp)
+!!
+!!      subroutine set_ele_4_scalar_nodal_bc                            &
+!!     &         (numnod, nnod_4_ele, ibc, ibc2, num_idx_ibc,           &
+!!     &          ele_bc_id, nod_bc_id, num_idx_ibc2, ele_bc2_id,       &
+!!     &          nod_bc2_id, ibc_end, ibc_shape, ibc_stack,            &
+!!     &          ibc_stack_smp)
+!!      subroutine set_ele_4_scalar_nodal_bc_fl                         &
+!!     &         (numnod, nnod_4_ele, ibc, ibc2, num_idx_ibc,           &
+!!     &          ele_bc_id, nod_bc_id, num_idx_ibc2, ele_bc2_id,       &
+!!     &          nod_bc2_id, ibc_end, ibc_shape, ibc_stack,            &
+!!     &          ibc_stack_smp)
 !
       module set_ele_4_nodal_bc
 !
       use m_precision
-!
-      use m_geometry_parameter
       use m_machine_parameter
 !
       use set_bc_element
@@ -40,11 +42,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_ele_4_vector_nodal_bc(ibc, ibc2, nmax_idx_ibc,     &
+      subroutine set_ele_4_vector_nodal_bc                              &
+     &         (numnod, nnod_4_ele, ibc, ibc2, nmax_idx_ibc,            &
      &          num_idx_ibc, ele_bc_id, nod_bc_id, nmax_idx_ibc2,       &
      &          ele_bc2_id, nod_bc2_id, ibc_end, ibc_shape, ibc_stack,  &
      &          ibc_stack_smp)
 !
+      integer (kind=kint), intent(in) :: numnod, nnod_4_ele
       integer (kind=kint), intent(in) :: ibc(numnod,3), ibc2(numnod,3)
 !
       integer (kind=kint), intent(in) :: nmax_idx_ibc
@@ -82,11 +86,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_ele_4_vector_nodal_bc_fl(ibc, ibc2, nmax_idx_ibc,  &
+      subroutine set_ele_4_vector_nodal_bc_fl                           &
+     &         (numnod, nnod_4_ele, ibc, ibc2, nmax_idx_ibc,            &
      &          num_idx_ibc, ele_bc_id, nod_bc_id, nmax_idx_ibc2,       &
      &          ele_bc2_id, nod_bc2_id, ibc_end, ibc_shape, ibc_stack,  &
      &          ibc_stack_smp)
 !
+      integer (kind=kint), intent(in) :: numnod, nnod_4_ele
       integer (kind=kint), intent(in) :: ibc(numnod,3), ibc2(numnod,3)
 !
       integer (kind=kint), intent(in) :: nmax_idx_ibc
@@ -124,11 +130,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_ele_4_scalar_nodal_bc(ibc, ibc2, num_idx_ibc,      &
+      subroutine set_ele_4_scalar_nodal_bc                              &
+     &         (numnod, nnod_4_ele, ibc, ibc2, num_idx_ibc,             &
      &          ele_bc_id, nod_bc_id, num_idx_ibc2, ele_bc2_id,         &
      &          nod_bc2_id, ibc_end, ibc_shape, ibc_stack,              &
      &          ibc_stack_smp)
 !
+      integer (kind=kint), intent(in) :: numnod, nnod_4_ele
       integer (kind=kint), intent(in) :: ibc(numnod), ibc2(numnod)
 !
       integer (kind=kint), intent(in) :: num_idx_ibc
@@ -160,11 +168,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_ele_4_scalar_nodal_bc_fl(ibc, ibc2, num_idx_ibc,   &
+      subroutine set_ele_4_scalar_nodal_bc_fl                           &
+     &         (numnod, nnod_4_ele, ibc, ibc2, num_idx_ibc,             &
      &          ele_bc_id, nod_bc_id, num_idx_ibc2, ele_bc2_id,         &
      &          nod_bc2_id, ibc_end, ibc_shape, ibc_stack,              &
      &          ibc_stack_smp)
 !
+      integer (kind=kint), intent(in) :: numnod, nnod_4_ele
       integer (kind=kint), intent(in) :: ibc(numnod), ibc2(numnod)
 !
       integer (kind=kint), intent(in) :: num_idx_ibc

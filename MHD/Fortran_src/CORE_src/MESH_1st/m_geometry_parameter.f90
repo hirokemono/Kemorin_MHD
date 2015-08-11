@@ -22,14 +22,14 @@
 !      subroutine check_edge_surf_size_4_smp
 !
 !
-      module   m_geometry_parameter
+      module m_geometry_parameter
 !
       use m_precision
 !
       implicit  none
 !
 !>     number of node on local PE (include external node)
-      integer( kind=kint )  ::  numnod
+!      integer( kind=kint )  ::  numnod
 !>     number of node on local PE
       integer( kind=kint )  ::  internal_node
 !>     number of element on local PE

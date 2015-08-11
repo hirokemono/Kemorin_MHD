@@ -4,7 +4,7 @@
 !
 !     Written by Kemorin
 !
-!       subroutine allocate_bc_magne
+!       subroutine allocate_bc_magne(numnod)
 !       subroutine allocate_bc_magne_4_element
 !
 !       subroutine deallocate_ibc_4_magne
@@ -50,19 +50,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_magne
+       subroutine allocate_bc_magne(numnod)
 !
-       use m_geometry_parameter
+       integer(kind = kint), intent(in) :: numnod
 !
        allocate(ibc_magne(numnod,3))
        allocate(ibc2_magne(numnod,3))
 !
-       ibc_magne=0
-       ibc2_magne=0
+       if(numnod .gt. 0) then
+         ibc_magne = 0
+         ibc2_magne = 0
+       end if
 ! 
        allocate(ibc_b_id(nmax_bc_b_nod,3))
        allocate(bc_b_id_apt(nmax_bc_b_nod,3))
-       if (nmax_bc_b_nod/=0) then
+       if (nmax_bc_b_nod .gt. 0) then
         ibc_b_id=0 
         bc_b_id_apt=0.0d00
        end if

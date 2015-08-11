@@ -18,7 +18,7 @@
       module set_bc_phys_id
 !
       use m_precision
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_group
 !
       implicit none
@@ -40,7 +40,7 @@
 !
       call set_bc_fixed_velo_id(nod_grp1)
 !
-      call set_bc_velo_4_sphere_id(numnod, nod_grp1)
+      call set_bc_velo_4_sphere_id(node1%numnod, nod_grp1)
 !
 !   set node id in an element for velocity boundary 
 !
@@ -110,7 +110,7 @@
       use set_ele_nod_bc_scalars
 !
 !
-      call set_bc_fixed_temp_id(numnod, nod_grp1)
+      call set_bc_fixed_temp_id(node1%numnod, nod_grp1)
 !
 !   set node id in an element for the temperature boundary 
 !
@@ -128,7 +128,7 @@
       use set_ele_nod_bc_potential
 !
 !
-      call set_bc_fixed_press_id(numnod, nod_grp1)
+      call set_bc_fixed_press_id(node1%numnod, nod_grp1)
 !
 !   set node id in an element for the pressure boundary 
 !
@@ -145,7 +145,7 @@
       use set_ele_nod_bc_potential
 !
 !
-      call set_bc_fixed_m_potential_id(numnod, nod_grp1)
+      call set_bc_fixed_m_potential_id(node1%numnod, nod_grp1)
 !
 !   set node id in an element for the pressure boundary 
 !
@@ -164,7 +164,7 @@
       use set_ele_nod_bc_scalars
 !
 !
-      call set_bc_fixed_composition_id(numnod, nod_grp1)
+      call set_bc_fixed_composition_id(node1%numnod, nod_grp1)
 !
 !   set node id in an element for composition boundary 
 !

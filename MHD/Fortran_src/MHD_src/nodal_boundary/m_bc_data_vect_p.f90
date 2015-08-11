@@ -4,6 +4,7 @@
 !
 !     Written by H. Matsui
 !
+!       subroutine allocate_bc_vect_p(numnod)
 !
       module m_bc_data_vect_p
 !
@@ -44,19 +45,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_vect_p
+       subroutine allocate_bc_vect_p(numnod)
 !
-       use m_geometry_parameter
+       integer(kind = kint), intent(in) :: numnod
 !
        allocate(ibc_vp(numnod,3))
        allocate(ibc2_vp(numnod,3))
 !
-       ibc_vp = 0
-       ibc2_vp = 0
+       if(numnod .gt. 0) then
+         ibc_vp = 0
+         ibc2_vp = 0
+       end if
 ! 
        allocate(ibc_vp_id(nmax_bc_vp_nod,3))
        allocate(bc_vp_id_apt(nmax_bc_vp_nod,3))
-       if (nmax_bc_vp_nod/=0) then
+       if (nmax_bc_vp_nod .gt. 0) then
         ibc_vp_id=0 
         bc_vp_id_apt=0.0d00
        end if

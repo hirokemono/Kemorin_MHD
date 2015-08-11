@@ -4,7 +4,7 @@
 !
 !     Written by Kemorin
 !
-!       subroutine allocate_bc_press
+!       subroutine allocate_bc_press(numnod)
 !       subroutine allocate_bc_press_4_element
 !       subroutine deallocate_ibc_4_press
 !       subroutine deallocate_bc2_press
@@ -47,20 +47,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_press
+       subroutine allocate_bc_press(numnod)
 !
-       use m_geometry_parameter
+       integer(kind = kint), intent(in) :: numnod
 !
        allocate(ibc_press(numnod))
        allocate(ibc2_press(numnod))
 !
-       ibc_press=0
-       ibc2_press=0
+       if(numnod .gt. 0) then
+         ibc_press=0
+         ibc2_press=0
+       end if
 ! 
        allocate(ibc_p_id(num_bc_p_nod))
        allocate(bc_p_id_apt(num_bc_p_nod))
 !
-       if (num_bc_p_nod/=0) then
+       if (num_bc_p_nod .gt. 0) then
         ibc_p_id=0
         bc_p_id_apt=0.0d00
        end if

@@ -174,14 +174,14 @@
 !
       subroutine cal_rev_of_2nd_field
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_ctl_params_4_prod_udt
 !
       integer(kind = kint) :: nd, inod
 !
 !
        do nd = 1, ncomp_4_product2
-         do inod = 1,  numnod
+         do inod = 1, node1%numnod
            if(d_prod2(inod,nd) .eq. zero) then
              d_prod2(inod,nd) = zero
            else
@@ -197,7 +197,6 @@
 !
       subroutine cal_products_of_fields
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_ctl_params_4_prod_udt
       use m_node_phys_data
@@ -208,89 +207,114 @@
       if(ncomp_4_product1.eq.1) then
         if(ncomp_4_product2 .eq. 1) then
 !$omp parallel
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
 !$omp end parallel
         else if(ncomp_4_product2 .eq.3) then
 !$omp parallel
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,2),  d_nod(1,2))
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,3),  d_nod(1,3))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,1), d_prod2(1,2),  d_nod(1,2))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,1), d_prod2(1,3),  d_nod(1,3))
 !$omp end parallel
         else if(ncomp_4_product2 .eq.6) then
 !$omp parallel
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,2),  d_nod(1,2))
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,3),  d_nod(1,3))
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,4),  d_nod(1,4))
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,5),  d_nod(1,5))
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,6),  d_nod(1,6))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,1), d_prod2(1,2),  d_nod(1,2))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,1), d_prod2(1,3),  d_nod(1,3))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,1), d_prod2(1,4),  d_nod(1,4))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,1), d_prod2(1,5),  d_nod(1,5))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,1), d_prod2(1,6),  d_nod(1,6))
 !$omp end parallel
         end if
       else if(ncomp_4_product1.eq.3) then
         if(ncomp_4_product2 .eq. 1) then
 !$omp parallel
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,2), d_prod2(1,1),  d_nod(1,2))
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,3), d_prod2(1,1),  d_nod(1,3))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod,             &
+     &         inod_smp_stack, d_prod1(1,2), d_prod2(1,1),  d_nod(1,2))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod,             &
+     &         inod_smp_stack, d_prod1(1,3), d_prod2(1,1),  d_nod(1,3))
 !$omp end parallel
         else if(ncomp_4_product2 .eq.3) then
           if(iflag_product_type .eq. 2) then
 !$omp parallel
-           call cal_cross_prod_no_coef_smp(np_smp, numnod,              &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
+           call cal_cross_prod_no_coef_smp                              &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
 !$omp end parallel
           else
 !$omp parallel
-           call cal_dot_prod_no_coef_smp(np_smp, numnod,                &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
+           call cal_dot_prod_no_coef_smp                                &
+     &        (np_smp, node1%numnod,  inod_smp_stack,                   &
+     &         d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
 !$omp end parallel
           end if
         else if(ncomp_4_product2 .eq.6) then
 !$omp parallel
-           call cal_tensor_vec_prod_no_coef_smp(np_smp, numnod,         &
-               inod_smp_stack, d_prod2(1,1), d_prod1(1,1),  d_nod(1,1))
+           call cal_tensor_vec_prod_no_coef_smp                         &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod2(1,1), d_prod1(1,1),  d_nod(1,1))
 !$omp end parallel
         end if
       else if(ncomp_4_product1.eq.6) then
         if(ncomp_4_product2 .eq. 1) then
 !$omp parallel
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,2), d_prod2(1,1),  d_nod(1,2))
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,3), d_prod2(1,1),  d_nod(1,3))
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,4), d_prod2(1,1),  d_nod(1,4))
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,5), d_prod2(1,1),  d_nod(1,5))
-           call cal_scalar_prod_no_coef_smp(np_smp, numnod,             &
-               inod_smp_stack, d_prod1(1,6), d_prod2(1,1),  d_nod(1,6))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,2), d_prod2(1,1),  d_nod(1,2))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,3), d_prod2(1,1),  d_nod(1,3))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,4), d_prod2(1,1),  d_nod(1,4))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,5), d_prod2(1,1),  d_nod(1,5))
+           call cal_scalar_prod_no_coef_smp                             &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,6), d_prod2(1,1),  d_nod(1,6))
 !$omp end parallel
         else if(ncomp_4_product2 .eq.3) then
 !$omp parallel
-           call cal_tensor_vec_prod_no_coef_smp(np_smp, numnod,         &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
+           call cal_tensor_vec_prod_no_coef_smp                         &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
 !$omp end parallel
         else if(ncomp_4_product2 .eq.6) then
 !$omp parallel
-           call cal_tensor_vec_prod_no_coef_smp(np_smp, numnod,         &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
-           call cal_tensor_vec_prod_no_coef_smp(np_smp, numnod,         &
-               inod_smp_stack, d_prod1(1,1), d_prod2(1,4),  d_nod(1,4))
+           call cal_tensor_vec_prod_no_coef_smp                         &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,1), d_prod2(1,1),  d_nod(1,1))
+           call cal_tensor_vec_prod_no_coef_smp                         &
+     &        (np_smp, node1%numnod, inod_smp_stack,                    &
+     &         d_prod1(1,1), d_prod2(1,4),  d_nod(1,4))
 !$omp end parallel
         end if
       end if
@@ -305,7 +329,7 @@
       end if
 !
 !      write(50+my_rank,*) 'd_nod'
-!      do i = 1, numnod
+!      do i = 1, node1%numnod
 !        write(50+my_rank,*) i, inod_global(i),   &
 !     &          d_prod1(i,1:ncomp_4_product1),   &
 !     &          d_prod2(i,1:ncomp_4_product2),   &

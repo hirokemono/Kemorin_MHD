@@ -57,10 +57,10 @@
 !
          write(*,*) 'solve_crs_by_mass_z'
          call solve_crs_by_mass_z
-         write(*,*) 'copy_solution_2_deltaz'
-         call copy_solution_2_deltaz
-!
-        end if
+!$omp workshare
+         delta_z(1:node1%numnod) = sol_mk_crs(1:node1%numnod)
+!$omp end workshare
+       end if
 !
        write(*,*) 'int_edge_diff_vart_w'
        call int_edge_diff_vart_w(num_int)
@@ -72,8 +72,9 @@
        else
          write(*,*) 'solve_crs_by_mass_z2'
          call  solve_crs_by_mass_z2
-         write(*,*) 'copy_solution_2_delta_dz'
-         call copy_solution_2_delta_dz
+!$omp workshare
+         delta_dz(1:node1%numnod) = sol_mk_crs(1:node1%numnod)
+!$omp end workshare
         end if
 !
        call int_edge_d2_vart_w(num_int)
@@ -85,7 +86,9 @@
        else
          write(*,*) 'solve_crs_by_mass_z2'
          call  solve_crs_by_mass_z2
-         call copy_solution_2_d2dz
+!$omp workshare
+         d2_dz(1:node1%numnod) = sol_mk_crs(1:node1%numnod)
+!$omp end workshare
        end if
 !
        call cal_sol_d2_vart_width

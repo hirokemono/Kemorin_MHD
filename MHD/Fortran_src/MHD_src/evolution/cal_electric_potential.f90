@@ -21,6 +21,7 @@
 !
       subroutine cal_scalar_potential
 !
+      use m_geometry_data
       use m_machine_parameter
       use m_group_data
       use m_finite_element_matrix
@@ -33,7 +34,7 @@
       use cal_solver_MHD
 !
 !
-      call reset_ff
+      call reset_ff(node1%numnod)
       call reset_ff_smps
 !
       if (iflag_debug .gt. 0)  write(*,*) 'int_vol_divergence_vect_p'

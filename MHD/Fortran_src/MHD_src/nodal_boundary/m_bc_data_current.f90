@@ -4,7 +4,7 @@
 !
 !     Written by Kemorin
 !
-!       subroutine allocate_bc_current
+!       subroutine allocate_bc_current(numnod)
 !       subroutine deallocate_ibc_4_current
 !
       module m_bc_data_current
@@ -29,9 +29,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_current
+       subroutine allocate_bc_current(numnod)
 !
-       use m_geometry_parameter
+       integer(kind = kint), intent(in) :: numnod
 !
        allocate(ibc_j(numnod,3))
        allocate(ibc2_j(numnod,3))

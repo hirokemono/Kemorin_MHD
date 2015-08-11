@@ -1,15 +1,20 @@
-!m_read_djds_matrix_IO.f90
-!      module m_read_djds_matrix_IO
+!!> @file  m_read_djds_matrix_IO.f90
+!!      module m_read_djds_matrix_IO
+!!
+!! @author  H. Matsui
+!! @date Written in Sep., 2006
 !
-!     Written by H. Matsui on Sep., 2006
-!
-!      subroutine deallocate_djds_mat11_comp_IO
-!      subroutine deallocate_djds_mat33_cmop_IO
-!      subroutine deallocate_djds_mat_connects_IO
-!
-!      subroutine read_djds_mat11_comp(id_file)
-!      subroutine read_djds_mat33_comp(id_file)
-!      subroutine read_djds_mat_connects(id_file)
+!> @brief IO routines for DJDS matrix
+!!
+!!@verbatim
+!!      subroutine deallocate_djds_mat11_comp_IO
+!!      subroutine deallocate_djds_mat33_cmop_IO
+!!      subroutine deallocate_djds_mat_connects_IO
+!!
+!!      subroutine read_djds_mat11_comp(id_file)
+!!      subroutine read_djds_mat33_comp(id_file)
+!!      subroutine read_djds_mat_connects(id_file)
+!!@endverbatim
 !
       module m_read_djds_matrix_IO
 !

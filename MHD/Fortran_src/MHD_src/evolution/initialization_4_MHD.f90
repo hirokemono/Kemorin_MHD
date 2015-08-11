@@ -108,7 +108,7 @@
 !     ---------------------
 !
       if (iflag_debug.ge.1 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(n_sym_tensor, numnod)
+      call allocate_vector_for_solver(n_sym_tensor, node1%numnod)
 !
       call init_send_recv
 !

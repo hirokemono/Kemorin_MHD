@@ -4,7 +4,7 @@
 !
 !      Written by Kemorin
 !
-!       subroutine allocate_bc_magne_p
+!       subroutine allocate_bc_magne_p(numnod)
 !       subroutine allocate_bc_magne_p_4_element
 !       subroutine deallocate_ibc_4_magne_p
 !       subroutine deallocate_bc2_magne_p
@@ -44,19 +44,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_magne_p
+       subroutine allocate_bc_magne_p(numnod)
 !
-       use m_geometry_parameter
+       integer(kind = kint), intent(in) :: numnod
+!
 !
        allocate(ibc_mag_p(numnod))
        allocate(ibc2_mag_p(numnod))
 !
-       ibc_mag_p=0
-       ibc2_mag_p=0
+       if(numnod .gt. 0) then
+         ibc_mag_p=0
+         ibc2_mag_p=0
+       end if
 ! 
        allocate(ibc_mag_p_id(num_bc_mag_p_nod))
        allocate(bc_mag_p_id_apt(num_bc_mag_p_nod))
-       if (num_bc_mag_p_nod/=0) then
+       if (num_bc_mag_p_nod .gt. 0) then
         ibc_mag_p_id=0
         bc_mag_p_id_apt=0.0d00
        end if

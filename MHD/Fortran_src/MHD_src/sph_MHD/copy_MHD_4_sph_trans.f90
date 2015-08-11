@@ -111,7 +111,7 @@
 !
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
       use m_spheric_parameter
       use m_spheric_param_smp
@@ -123,7 +123,7 @@
       if( (i_field*i_trns) .le. 0) return
       call copy_vector_from_trans                                       &
      &  (nnod_rtp, m_folding, inod_rtp_smp_stack,                       &
-     &   numnod, frm_rtp(1,i_trns), d_nod(1,i_field) )
+     &   node1%numnod, frm_rtp(1,i_trns), d_nod(1,i_field) )
 !
       end subroutine copy_force_from_MHD_trans
 !

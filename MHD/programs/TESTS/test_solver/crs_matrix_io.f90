@@ -80,7 +80,7 @@
 !
       use m_nod_comm_table
 !
-       read (id_file,'(10i16)') internal_node, numnod,                  &
+       read (id_file,'(10i16)') internal_node, node1%numnod,            &
      &     ntot_crs_l, ntot_crs_u, NB_crs, nod_comm%num_neib
 
 !
@@ -93,8 +93,8 @@
        integer (kind = kint) :: i, k, j1, j2, kk
 !
 
-      read (id_file,'(10i16)') (istack_crs_l(k), k= 1, numnod)
-      read (id_file,'(10i16)') (istack_crs_u(k), k= 1, numnod)
+      read (id_file,'(10i16)') (istack_crs_l(k), k= 1, node1%numnod)
+      read (id_file,'(10i16)') (istack_crs_u(k), k= 1, node1%numnod)
       read (id_file,'(10i16)') (item_crs_l(k), k= 1, ntot_crs_l)
       read (id_file,'(10i16)') (item_crs_u(k), k= 1, ntot_crs_u)
 
@@ -102,8 +102,8 @@
         read (id_file,'(5e27.20)') (AL_crs(1,1,k),k= 1,ntot_crs_l)
         read (id_file,'(5e27.20)') (AU_crs(1,1,k),k= 1,ntot_crs_u)
         
-        read (15,'(5e27.20)') (D_crs(1,1,i), i= 1,numnod)
-        read (15,'(5e27.20)') (B_crs(i), i= 1,numnod)
+        read (15,'(5e27.20)') (D_crs(1,1,i), i= 1,node1%numnod)
+        read (15,'(5e27.20)') (B_crs(i), i= 1,node1%numnod)
       else
         do  k= 1, ntot_crs_l
           do j1= 1, NB_crs
@@ -117,7 +117,7 @@
           enddo
         enddo
 
-        do  k= 1, numnod
+        do  k= 1, node1%numnod
           do j1= 1, NB_crs
             kk = NB_crs*(k-1) + j1
             read (id_file,'(5e27.20)') (D_crs(j1,j2,k),j2= 1, NB_crs),  &
@@ -127,11 +127,11 @@
 !
        end if
 !
-        do i= 1, NB_crs*numnod
+        do i= 1, (NB_crs * node1%numnod)
           X_crs(i)= 0.d0
         enddo
 !
-       do i = 1, numnod
+       do i = 1, node1%numnod
          num_crs_l(i) = istack_crs_l(i) - istack_crs_l(i-1)
          num_crs_u(i) = istack_crs_u(i) - istack_crs_u(i-1)
        end do

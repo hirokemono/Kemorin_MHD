@@ -4,6 +4,8 @@
 !
 !      Written by Kemorin on Feb., 2004
 !
+!       subroutine allocate_bc_t_sgs(numnod)
+!
       module m_bc_temp_sgs
 !
       use m_precision
@@ -39,19 +41,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine allocate_bc_t_sgs
+       subroutine allocate_bc_t_sgs(numnod)
 !
-       use m_geometry_parameter
+       integer(kind = kint), intent(in) :: numnod
 !
        allocate(ibc_t_sgs(numnod))
        allocate(ibc2_t_sgs(numnod))
 !
-       ibc_t_sgs=0
-       ibc2_t_sgs=0
+       if(numnod .gt. 0) then
+         ibc_t_sgs=0
+         ibc2_t_sgs=0
+       end if
 ! 
        allocate(ibc_t_sgs_id(num_bc_t_sgs_nod))
        allocate(bc_t_sgs_id_apt(num_bc_t_sgs_nod))
-       if (num_bc_t_sgs_nod/=0) then
+       if (num_bc_t_sgs_nod .gt. 0) then
          ibc_t_sgs_id=0 
          bc_t_sgs_id_apt=0.0d00 
        end if

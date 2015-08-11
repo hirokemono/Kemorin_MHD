@@ -8,16 +8,13 @@
 !      subroutine allocate_finite_elem_mt
 !
 !      subroutine allocate_fem_mat_base
-!      subroutine allocate_fem_mat_region
-!      subroutine allocate_fem_mat_fluid
-!      subroutine allocate_node_ff
 !
 !      subroutine reset_sk1
 !      subroutine reset_sk6(numdir)
 !
 !      subroutine reset_ff_smp
 !      subroutine reset_ff_smps
-!      subroutine reset_ff
+!      subroutine reset_ff(numnod)
 !      subroutine reset_ff_t_smp
 !
 !      subroutine deallocate_fem_mat_base
@@ -72,6 +69,9 @@
       real (kind=kreal)  :: sk_ele_b(3,3)
 !  work coefficients for magnetic field 
 !
+      private :: allocate_fem_mat_region
+      private :: allocate_fem_mat_fluid, allocate_node_ff
+!
 !   ---------------------------------------------------------------------
 !
       contains
@@ -80,8 +80,11 @@
 !
       subroutine allocate_finite_elem_mt
 !
+      use m_geometry_data
+!
+!
       call allocate_fem_mat_base
-      call allocate_fem_mat_region
+      call allocate_fem_mat_region(node1%numnod)
 !
       end subroutine allocate_finite_elem_mt
 !
@@ -95,7 +98,7 @@
       use m_phys_constants
 !
 !
-      call allocate_node_ff
+      call allocate_node_ff(node1%numnod)
 !
       allocate(ml(node1%numnod))
       allocate(ml_o(node1%numnod))
@@ -111,16 +114,22 @@
       allocate(ml_ele_diag(numele))
       allocate(ml_o_ele_diag(numele))
 !
-      ml =  0.0d0
-      ml_o =0.0d0
+      if(node1%numnod .gt. 0) then
+        ml =  0.0d0
+        ml_o =0.0d0
+      end if
 !
-      ff_m_smp = 0.0d0
-      ff_t_smp = 0.0d0
-      sk1 =       0.0d0
-      sk6 =      0.0d0
+      if(maxnod_4_smp .gt. 0) then
+        ff_m_smp = 0.0d0
+        ff_t_smp = 0.0d0
+      end if
 !
-      ml_ele_diag = 0.0d0
-      ml_o_ele_diag = 0.0d0
+      if(numele .gt. 0) then
+        sk1 =      0.0d0
+        sk6 =      0.0d0
+        ml_ele_diag = 0.0d0
+        ml_o_ele_diag = 0.0d0
+      end if
 !
       call reset_ff_smps
 !
@@ -128,52 +137,57 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine allocate_fem_mat_region
+      subroutine allocate_fem_mat_region(numnod)
 !
-      use m_geometry_data
+      integer(kind = kint), intent(in) :: numnod
 !
-      call allocate_fem_mat_fluid
 !
-      allocate(ml_cd(node1%numnod))
-      allocate(ml_ins(node1%numnod))
+      call allocate_fem_mat_fluid(numnod)
 !
-      allocate(ml_o_cd(node1%numnod))
-      allocate(ml_o_ins(node1%numnod))
+      allocate(ml_cd(numnod))
+      allocate(ml_ins(numnod))
 !
-        ml_cd =  0.0d0
-        ml_ins = 0.0d0
+      allocate(ml_o_cd(numnod))
+      allocate(ml_o_ins(numnod))
 !
-        ml_o_cd =  0.0d0
-        ml_o_ins = 0.0d0
+      if(numnod .le. 0) return
+      ml_cd =  0.0d0
+      ml_ins = 0.0d0
+!
+      ml_o_cd =  0.0d0
+      ml_o_ins = 0.0d0
 !
       end subroutine allocate_fem_mat_region
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine allocate_fem_mat_fluid
+      subroutine allocate_fem_mat_fluid(numnod)
 !
-      use m_geometry_data
+      integer(kind = kint), intent(in) :: numnod
 !
-      allocate(ml_fl(node1%numnod))
-      allocate(ml_o_fl(node1%numnod))
 !
-        ml_fl =   0.0d0
-        ml_o_fl = 0.0d0
+      allocate(ml_fl(numnod))
+      allocate(ml_o_fl(numnod))
+!
+      if(numnod .le. 0) return
+      ml_fl =   0.0d0
+      ml_o_fl = 0.0d0
 !
       end subroutine allocate_fem_mat_fluid
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine allocate_node_ff
+      subroutine allocate_node_ff(numnod)
 !
-      use m_geometry_data
+      integer(kind = kint), intent(in) :: numnod
 !
 !
       allocate(ff(numnod,3))
       allocate(ff_nl(numnod,3))
       allocate(ff_t(numnod,6))
 !
-      call reset_ff
+      if(numnod .le. 0) return
+      call reset_ff(numnod)
       ff_nl = 0.0d0
       ff_t =  0.0d0
 !
@@ -266,10 +280,9 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine reset_ff
+      subroutine reset_ff(numnod)
 !
-      use m_geometry_data
-!
+      integer(kind = kint), intent(in) :: numnod
       integer(kind = kint) :: inod, nd
 !
 !

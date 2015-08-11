@@ -7,14 +7,14 @@
 !        modified by Kemorin on Oct. 2005
 !
 !!      subroutine set_fixed_vector_id                                  &
-!!     &         (nod_grp, num_bc_field, bc_field_name,                 &
+!!     &         (numnod, nod_grp, num_bc_field, bc_field_name,         &
 !!     &          ibc_field_type, bc_field_mag, ibc, ibc2, nmax_bc_nod, &
 !!     &          ibc_id, bc_apt, field_name, ii)
 !!      subroutine set_bc_vector_id                                     &
-!!     &         (nod_grp, num_bc_field, bc_field_name,                 &
+!!     &         (numnod, nod_grp, num_bc_field, bc_field_name,         &
 !!     &          ibc_field_type, bc_field_mag, ibc, ibc2, nmax_bc_nod, &
 !!     &          ibc_id, bc_apt, iref, ii)
-!!      subroutine set_bc_rotate_id(nod_grp, num_bc_field,              &
+!!      subroutine set_bc_rotate_id(numnod, nod_grp, num_bc_field,      &
 !!     &          bc_field_name, ibc_field_type, bc_field_mag,          &
 !!     &          ibc, ibc2, num_bc_nod, ibc_id, bc_apt, iref, ii)
 !!      subroutine set_sph_magne_id(nod_grp, num_bc_field,              &
@@ -24,7 +24,6 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
       use t_group_data
       use set_nodal_boundary
 !
@@ -37,7 +36,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_fixed_vector_id                                    &
-     &         (nod_grp, num_bc_field, bc_field_name,                   &
+     &         (numnod, nod_grp, num_bc_field, bc_field_name,           &
      &          ibc_field_type, bc_field_mag, ibc, ibc2, nmax_bc_nod,   &
      &          ibc_id, bc_apt, field_name, ii)
 !
@@ -48,6 +47,7 @@
       character (len=kchara), intent(in) :: bc_field_name(num_bc_field)
       character(len=kchara), intent(in) :: field_name(3)
 !
+      integer (kind=kint), intent(in) :: numnod
       integer (kind=kint), intent(inout) :: ibc(numnod,3)
       integer (kind=kint), intent(inout) :: ibc2(numnod,3)
 !
@@ -91,7 +91,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_bc_vector_id                                       &
-     &         (nod_grp, num_bc_field, bc_field_name,                   &
+     &         (numnod, nod_grp, num_bc_field, bc_field_name,           &
      &          ibc_field_type, bc_field_mag, ibc, ibc2, nmax_bc_nod,   &
      &          ibc_id, bc_apt, iref, ii)
 !
@@ -103,6 +103,7 @@
       integer (kind=kint), intent(in) :: ibc_field_type(num_bc_field)
       character (len=kchara), intent(in) :: bc_field_name(num_bc_field)
 !
+      integer (kind=kint), intent(in) :: numnod
       integer (kind=kint), intent(inout) :: ibc(numnod,3)
       integer (kind=kint), intent(inout) :: ibc2(numnod,3)
 !
@@ -138,11 +139,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_rotate_id(nod_grp, num_bc_field,                &
+      subroutine set_bc_rotate_id(numnod, nod_grp, num_bc_field,        &
      &          bc_field_name, ibc_field_type, bc_field_mag,            &
      &          ibc, ibc2, num_bc_nod, ibc_id, bc_apt, iref, ii)
-!
-      use m_geometry_parameter
 !
       integer (kind=kint), intent(in) :: iref
 !
@@ -152,6 +151,7 @@
       integer (kind=kint), intent(in) :: ibc_field_type(num_bc_field)
       character (len=kchara), intent(in) :: bc_field_name(num_bc_field)
 !
+      integer (kind=kint), intent(in) :: numnod
       integer (kind=kint), intent(inout) :: ibc(numnod)
       integer (kind=kint), intent(inout) :: ibc2(numnod)
 !

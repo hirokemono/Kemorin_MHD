@@ -4,6 +4,8 @@
 !
 !     Written by Kemorin
 !
+!      subroutine allocate_bc_p_sgs(numnod)
+!
       module m_bc_press_sgs
 !
       use m_precision
@@ -41,20 +43,22 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_p_sgs
+       subroutine allocate_bc_p_sgs(numnod)
 !
-       use m_geometry_parameter
+       integer(kind = kint), intent(in) :: numnod
 !
        allocate(ibc_press_sgs(numnod))
        allocate(ibc2_press_sgs(numnod))
 !
-       ibc_press_sgs=0
-       ibc2_press_sgs=0
+       if(numnod .gt. 0) then
+         ibc_press_sgs = 0
+         ibc2_press_sgs = 0
+       end if
 ! 
        allocate(ibc_ps_id(num_bc_ps_nod))
        allocate(bc_ps_id_apt(num_bc_ps_nod))
 !
-       if (num_bc_ps_nod/=0) then
+       if (num_bc_ps_nod .gt. 0) then
         ibc_ps_id=0
         bc_ps_id_apt=0.0d00
        end if

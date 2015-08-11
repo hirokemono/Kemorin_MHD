@@ -22,6 +22,7 @@
 !
       subroutine FEM_initialize_sph_trans
 !
+      use m_geometry_data
       use m_control_params_2nd_files
       use m_array_for_send_recv
       use m_edge_geometry_data
@@ -46,7 +47,7 @@
 !  -----    construct geometry informations
 !
       if (iflag_debug.gt.0) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, numnod)
+      call allocate_vector_for_solver(isix, node1%numnod)
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
       call init_send_recv

@@ -214,7 +214,8 @@
 !
       character(len=kchara), intent(in) :: target_name
 !
-      integer(kind = kint) :: ip, igrp, kst, ked, k, ii, inod
+      integer(kind = kint) :: ip, igrp, kst, ked, k, ii
+      integer(kind = kint_gl) :: inod_g
 !
 !
       iflag_nod_grp = 0
@@ -226,8 +227,8 @@
             ked = sub_nod_grp(ip)%istack_grp(igrp  )
             do k = kst, ked
               ii = sub_nod_grp(ip)%item_grp(k)
-              inod = subdomain(ip)%node%inod_global(ii)
-              iflag_nod_grp(inod) = 1
+              inod_g = subdomain(ip)%node%inod_global(ii)
+              iflag_nod_grp(inod_g) = 1
             end do
           end if
         end do
@@ -241,7 +242,8 @@
 !
       character(len=kchara), intent(in) :: target_name
 !
-      integer(kind = kint) :: ip, igrp, kst, ked, k, ii, iele
+      integer(kind = kint) :: ip, igrp, kst, ked, k, ii
+      integer(kind = kint_gl) :: iele_g
 !
 !
       iflag_ele_grp = 0
@@ -253,8 +255,8 @@
             ked = sub_ele_grp(ip)%istack_grp(igrp  )
             do k = kst, ked
               ii = sub_ele_grp(ip)%item_grp(k)
-              iele = subdomain(ip)%ele%iele_global(ii)
-              iflag_ele_grp(iele) = 1
+              iele_g = subdomain(ip)%ele%iele_global(ii)
+              iflag_ele_grp(iele_g) = 1
             end do
           end if
         end do
@@ -269,7 +271,8 @@
       character(len=kchara), intent(in) :: target_name
 !
 !
-      integer(kind = kint) :: ip, igrp, kst, ked, k, ii, iele, isurf
+      integer(kind = kint) :: ip, igrp, kst, ked, k, ii, isurf
+      integer(kind = kint_gl) :: iele_g
 !
 !
       iflag_sf_grp = 0
@@ -281,9 +284,10 @@
             ked = sub_surf_grp(ip)%istack_grp(igrp  )
             do k = kst, ked
               ii =  sub_surf_grp(ip)%item_sf_grp(1,k)
-              iele =  subdomain(ip)%ele%iele_global(ii)
+              iele_g =  subdomain(ip)%ele%iele_global(ii)
               isurf = sub_surf_grp(ip)%item_sf_grp(2,k)
-              iflag_sf_grp(iele,isurf) = iflag_sf_grp(iele,isurf) + 1
+              iflag_sf_grp(iele_g,isurf)                                &
+     &              = iflag_sf_grp(iele_g,isurf) + 1
             end do
           end if
         end do

@@ -32,7 +32,6 @@
 !
 !
       node1%numnod =  numele
-      numnod =       numele
       internal_node = numele
 !
       call allocate_node_geometry

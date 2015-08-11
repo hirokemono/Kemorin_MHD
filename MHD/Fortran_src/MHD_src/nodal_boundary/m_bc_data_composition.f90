@@ -53,9 +53,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine allocate_bc_composition
+       subroutine allocate_bc_composition(numnod)
 !
-       use m_geometry_parameter
+       integer(kind = kint), intent(in) :: numnod
 !
        allocate(ibc_composit(numnod))
        allocate(ibc2_composit(numnod))
@@ -65,7 +65,7 @@
 ! 
         allocate(ibc_composit_id(num_bc_composition_nod))
         allocate(bc_composit_id_apt(num_bc_composition_nod))
-       if (num_bc_composition_nod/=0) then
+       if (num_bc_composition_nod .gt. 0) then
          ibc_composit_id=0 
          bc_composit_id_apt=0.0d00 
        end if

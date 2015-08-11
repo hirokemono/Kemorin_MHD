@@ -343,15 +343,15 @@
 !
 !
 !
-      allocate(inod_global(numnod))
-      allocate(xx(numnod,3))
+      allocate(inod_global(node1%numnod))
+      allocate(xx(node1%numnod,3))
 !
-      allocate(radius(numnod))
-      allocate(a_radius(numnod))
-      allocate(s_cylinder(numnod))
-      allocate(a_s_cylinder(numnod))
-      allocate(longitude(numnod))
-      allocate(colatitude(numnod))
+      allocate(radius(node1%numnod))
+      allocate(a_radius(node1%numnod))
+      allocate(s_cylinder(node1%numnod))
+      allocate(a_s_cylinder(node1%numnod))
+      allocate(longitude(node1%numnod))
+      allocate(colatitude(node1%numnod))
 !
       inod_global = 0
       xx = 0.0d00

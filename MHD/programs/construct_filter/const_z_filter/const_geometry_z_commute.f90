@@ -73,10 +73,9 @@
 !
       use m_geometry_data
 !
-      node1%numnod = internal_node
 !
       internal_node = totalnod
-      numnod = internal_node
+      node1%numnod = internal_node
       totalele = internal_node - 1
 !      nod_comm%num_neib = 2
 !

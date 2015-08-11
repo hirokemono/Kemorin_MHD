@@ -122,7 +122,6 @@
 !
 !
       node1%numnod =  node%numnod
-      numnod =        node%numnod
       internal_node = node%internal_node
 !
       call allocate_node_geometry

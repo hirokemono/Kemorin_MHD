@@ -4,6 +4,7 @@
 !
 !      Written by Kemorin
 !
+!       subroutine allocate_bc_magp_sgs(numnod)
 !
       module m_bc_mag_p_sgs
 !
@@ -40,19 +41,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_magp_sgs
+       subroutine allocate_bc_magp_sgs(numnod)
 !
-       use m_geometry_parameter
+       integer(kind = kint), intent(in) :: numnod
 !
        allocate(ibc_mp_sgs(numnod))
        allocate(ibc2_mp_sgs(numnod))
 !
-       ibc_mp_sgs=0
-       ibc2_mp_sgs=0
+       if(numnod .gt. 0) then
+         ibc_mp_sgs=0
+         ibc2_mp_sgs=0
+       end if
 ! 
        allocate(ibc_mp_sgs_id(num_bc_mp_sgs_nod))
        allocate(bc_mp_sgs_id_apt(num_bc_mp_sgs_nod))
-       if (num_bc_mp_sgs_nod/=0) then
+       if (num_bc_mp_sgs_nod .gt. 0) then
         ibc_mp_sgs_id=0
         bc_mp_sgs_id_apt=0.0d00
        end if

@@ -25,6 +25,7 @@
       use calypso_mpi
       use m_control_parameter
       use m_group_data
+      use m_geometry_data
       use m_finite_element_matrix
 !
       use int_vol_fractional_div
@@ -37,7 +38,7 @@
       use cal_solver_MHD
 !
 !
-      call reset_ff
+      call reset_ff(node1%numnod)
       call reset_ff_smps
 !
       call int_vol_divergence_magne

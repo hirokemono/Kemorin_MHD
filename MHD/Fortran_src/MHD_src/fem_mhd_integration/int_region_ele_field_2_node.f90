@@ -15,6 +15,7 @@
       module int_region_ele_field_2_node
 !
       use m_precision
+      use m_geometry_data
       use m_geometry_data_MHD
 !
       use int_element_field_2_node
@@ -32,7 +33,7 @@
 !
 !
       real(kind = kreal), intent(in) :: scalar_ele(numele)
-      real(kind = kreal), intent(inout) :: scalar_nod(numnod)
+      real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
 !
 !
       call int_area_ele_scalar_2_node(iele_fl_smp_stack, scalar_ele)
@@ -45,7 +46,7 @@
       subroutine int_fl_ele_vector_2_node(vector_nod, vector_ele)
 !
       real(kind = kreal), intent(in) :: vector_ele(numele,3)
-      real(kind = kreal), intent(inout) :: vector_nod(numnod,3)
+      real(kind = kreal), intent(inout) :: vector_nod(node1%numnod,3)
 !
 !
       call int_area_ele_vector_2_node(iele_fl_smp_stack, vector_ele)
@@ -59,7 +60,7 @@
       subroutine int_cd_ele_scalar_2_node(scalar_nod, scalar_ele)
 !
       real(kind = kreal), intent(in) :: scalar_ele(numele)
-      real(kind = kreal), intent(inout) :: scalar_nod(numnod)
+      real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
 !
 !
       call int_area_ele_scalar_2_node(iele_cd_smp_stack, scalar_ele)
@@ -72,7 +73,7 @@
       subroutine int_cd_ele_vector_2_node(vector_nod, vector_ele)
 !
       real(kind = kreal), intent(in) :: vector_ele(numele,3)
-      real(kind = kreal), intent(inout) :: vector_nod(numnod,3)
+      real(kind = kreal), intent(inout) :: vector_nod(node1%numnod,3)
 !
 !
       call int_area_ele_vector_2_node(iele_cd_smp_stack, vector_ele)
@@ -86,7 +87,7 @@
       subroutine int_ins_ele_scalar_2_node(scalar_nod, scalar_ele)
 !
       real(kind = kreal), intent(in) :: scalar_ele(numele)
-      real(kind = kreal), intent(inout) :: scalar_nod(numnod)
+      real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
 !
 !
       call int_area_ele_scalar_2_node(iele_ins_smp_stack, scalar_ele)
@@ -99,7 +100,7 @@
       subroutine int_ins_ele_vector_2_node(vector_nod, vector_ele)
 !
       real(kind = kreal), intent(in) :: vector_ele(numele,3)
-      real(kind = kreal), intent(inout) :: vector_nod(numnod,3)
+      real(kind = kreal), intent(inout) :: vector_nod(node1%numnod,3)
 !
 !
       call int_area_ele_vector_2_node(iele_ins_smp_stack, vector_ele)

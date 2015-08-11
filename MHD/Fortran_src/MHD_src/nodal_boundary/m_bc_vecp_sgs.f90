@@ -4,6 +4,8 @@
 !
 !     Written by H. Matsui
 !
+!       subroutine allocate_bc_vecp_sgs(numnod)
+!
       module m_bc_vecp_sgs
 !
       use m_precision
@@ -44,19 +46,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_vecp_sgs
+       subroutine allocate_bc_vecp_sgs(numnod)
 !
-       use m_geometry_parameter
+       integer(kind = kint), intent(in) :: numnod
 !
        allocate(ibc_a_sgs(numnod,3))
        allocate(ibc2_a_sgs(numnod,3))
 !
-       ibc_a_sgs=0
-       ibc2_a_sgs=0
+       if(numnod .gt. 0) then
+         ibc_a_sgs=0
+         ibc2_a_sgs=0
+       end if
 ! 
        allocate(ibc_a_sgs_id(nmax_bc_a_sgs_nod,3))
        allocate(bc_a_sgs_id_apt(nmax_bc_a_sgs_nod,3))
-       if (nmax_bc_a_sgs_nod/=0) then
+       if (nmax_bc_a_sgs_nod .gt. 0) then
         ibc_a_sgs_id=0 
         bc_a_sgs_id_apt=0.0d00
        end if

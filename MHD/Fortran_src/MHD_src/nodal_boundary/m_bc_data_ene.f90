@@ -4,7 +4,7 @@
 !
 !      Written by Kemorin on Feb., 2004
 !
-!       subroutine allocate_bc_ene
+!       subroutine allocate_bc_ene(numnod)
 !       subroutine allocate_bc_temp_4_element
 !       subroutine deallocate_ibc_4_temp
 !       subroutine deallocate_bc2_temp
@@ -44,24 +44,26 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine allocate_bc_ene
+      subroutine allocate_bc_ene(numnod)
 !
-       use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numnod
 !
-       allocate(ibc_temp(numnod))
-       allocate(ibc2_temp(numnod))
+      allocate(ibc_temp(numnod))
+      allocate(ibc2_temp(numnod))
 !
-       ibc_temp=0
-       ibc2_temp=0
+      if (numnod .gt. 0) then
+        ibc_temp=0
+        ibc2_temp=0
+      end if
 ! 
-       allocate(ibc_e_id(num_bc_e_nod))
-       allocate(bc_e_id_apt(num_bc_e_nod))
-       if (num_bc_e_nod/=0) then
-         ibc_e_id=0 
-         bc_e_id_apt=0.0d00 
-       end if
+      allocate(ibc_e_id(num_bc_e_nod))
+      allocate(bc_e_id_apt(num_bc_e_nod))
+      if (num_bc_e_nod .gt. 0) then
+        ibc_e_id=0 
+        bc_e_id_apt=0.0d00 
+      end if
 !
-       end subroutine allocate_bc_ene
+      end subroutine allocate_bc_ene
 !
 !  ---------------------------------------------------------------------
 !

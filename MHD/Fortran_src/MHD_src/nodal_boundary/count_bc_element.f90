@@ -34,11 +34,10 @@
 !
       subroutine count_bc_element_4_vect(num_index_ibc, ibc)
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       integer (kind= kint), intent(inout) :: num_index_ibc(3)
-      integer (kind= kint), intent(in)    :: ibc(numnod,3)
+      integer (kind= kint), intent(in)    :: ibc(node1%numnod,3)
 !
       integer (kind= kint) :: nd
 !
@@ -52,11 +51,10 @@
 !
       subroutine count_bc_element_4_vect_fl(num_index_ibc, ibc)
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       integer (kind= kint), intent(inout) :: num_index_ibc(3)
-      integer (kind= kint), intent(in)    :: ibc(numnod,3)
+      integer (kind= kint), intent(in)    :: ibc(node1%numnod,3)
 !
       integer (kind= kint) :: nd
 !
@@ -70,11 +68,10 @@
 !
       subroutine count_bc_element_4_vect_cd(num_index_ibc, ibc)
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       integer (kind= kint), intent(inout) :: num_index_ibc(3)
-      integer (kind= kint), intent(in)    :: ibc(numnod,3)
+      integer (kind= kint), intent(in)    :: ibc(node1%numnod,3)
 !
       integer (kind= kint) :: nd
 !
@@ -88,11 +85,10 @@
 !
       subroutine count_bc_element_4_vect_ins(num_index_ibc, ibc)
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       integer (kind= kint), intent(inout) :: num_index_ibc(3)
-      integer (kind= kint), intent(in)    :: ibc(numnod,3)
+      integer (kind= kint), intent(in)    :: ibc(node1%numnod,3)
 !
       integer (kind= kint) :: nd
 !
@@ -107,16 +103,15 @@
 !
       subroutine count_bc_element_whole(num_index_ibc, ibc)
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       integer (kind= kint), intent(inout) :: num_index_ibc
-      integer (kind= kint), intent(in)    :: ibc(numnod)
+      integer (kind= kint), intent(in)    :: ibc(node1%numnod)
 !
       integer (kind= kint), parameter :: ione = 1
 !
 !   conunt node in elements for boundary
-      call count_bc_ele(numnod, numele, nnod_4_ele, ie,                 &
+      call count_bc_ele(node1%numnod, numele, nnod_4_ele, ie,           &
      &    ione, numele, num_index_ibc, ibc)
 !
       end subroutine count_bc_element_whole
@@ -125,14 +120,13 @@
 !
       subroutine count_bc_element_fl(num_index_ibc, ibc)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
 !
       integer (kind= kint), intent(inout) :: num_index_ibc
-      integer (kind= kint), intent(in)    :: ibc(numnod)
+      integer (kind= kint), intent(in)    :: ibc(node1%numnod)
 !
-      call count_bc_ele(numnod, numele, nnod_4_ele, ie,                 &
+      call count_bc_ele(node1%numnod, numele, nnod_4_ele, ie,           &
      &           iele_fl_start, iele_fl_end, num_index_ibc, ibc)
 !
       end subroutine count_bc_element_fl
@@ -141,14 +135,13 @@
 !
       subroutine count_bc_element_cd(num_index_ibc, ibc)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
 !
       integer (kind= kint), intent(inout) :: num_index_ibc
-      integer (kind= kint), intent(in)    :: ibc(numnod)
+      integer (kind= kint), intent(in)    :: ibc(node1%numnod)
 !
-      call count_bc_ele(numnod, numele, nnod_4_ele, ie,                 &
+      call count_bc_ele(node1%numnod, numele, nnod_4_ele, ie,           &
      &           iele_cd_start, iele_cd_end, num_index_ibc, ibc)
 !
       end subroutine count_bc_element_cd
@@ -157,14 +150,13 @@
 !
       subroutine count_bc_element_ins(num_index_ibc, ibc)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
 !
       integer (kind= kint), intent(inout) :: num_index_ibc
-      integer (kind= kint), intent(in)    :: ibc(numnod)
+      integer (kind= kint), intent(in)    :: ibc(node1%numnod)
 !
-      call count_bc_ele(numnod, numele, nnod_4_ele, ie,                 &
+      call count_bc_ele(node1%numnod, numele, nnod_4_ele, ie,           &
      &           iele_ins_start, iele_ins_end,  num_index_ibc, ibc)
 !
       end subroutine count_bc_element_ins

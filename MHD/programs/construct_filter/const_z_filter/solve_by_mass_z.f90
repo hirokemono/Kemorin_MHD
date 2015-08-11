@@ -9,10 +9,6 @@
 !      subroutine solve_crs_by_mass_z
 !      subroutine solve_crs_by_mass_z2
 !
-!      subroutine copy_solution_2_deltaz
-!      subroutine copy_solution_2_delta_dz
-!      subroutine copy_solution_2_d2dz
-!
       module solve_by_mass_z
 !
       use m_geometry_data
@@ -45,7 +41,7 @@
          write(*,*) 'allocate_crs_mat_data'
       call allocate_crs_mat_data(node1%numnod)
 !
-      do i = 1, numnod
+      do i = 1, node1%numnod
         D_crs(1,1,i) = d_mk_crs(i)
         B_crs(i) = rhs_mk_crs(i)
       end do
@@ -59,7 +55,7 @@
          write(*,*) 'solve_by_djds_solver11'
       call solve_by_djds_solver11(ierr)
 !
-      do i = 1, numnod
+      do i = 1, node1%numnod
         sol_mk_crs(i) = X_crs(i)
       end do
 !
@@ -92,15 +88,15 @@
          write(*,*) 'allocate_crs_mat_data'
       call allocate_crs_mat_data(node1%numnod)
 !
-      do i = 1, numnod
+      do i = 1, node1%numnod
         B_crs(i) = rhs_mk_crs(i)
       end do
 !
-      call copy_RH_vect_2_crs_nn(numnod)
+      call copy_RH_vect_2_crs_nn(node1%numnod)
 !
         write(*,*) 'init_solve_DJDS_kemo'
-      call init_solve_DJDS_kemo                                         &
-     &   ( internal_node, numnod, NLmax, NUmax, itotal_l, itotal_u,     &
+      call init_solve_DJDS_kemo(internal_node, node1%numnod,            &
+     &     NLmax, NUmax, itotal_l, itotal_u,                            &
      &     NHYP, np_smp, inter_smp_stack, STACKmc, NLmaxHYP, NUmaxHYP,  &
      &     IVECT, NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,           &
      &     NEWtoOLD_DJDS_U, LtoU, aiccg(im_d), b_djds, x_djds,          &
@@ -112,9 +108,9 @@
      &     nod_comm%istack_export, NOD_EXPORT_NEW,                      &
      &     method_4_solver, precond_4_solver, itr_res)
 
-      call copy_solution_2_crs_nn(numnod)
+      call copy_solution_2_crs_nn(node1%numnod)
 !
-      do i = 1, numnod
+      do i = 1, node1%numnod
         sol_mk_crs(i) = X_crs(i)
       end do
 !
@@ -122,42 +118,6 @@
       call deallocate_crs_mat_data
 !
       end subroutine solve_crs_by_mass_z2
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_solution_2_deltaz
-!
-      integer(kind = kint) :: i
-!
-         do i = 1, numnod
-          delta_z(i) = sol_mk_crs(i)
-         end do
-!
-      end subroutine copy_solution_2_deltaz
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_solution_2_delta_dz
-!
-      integer(kind = kint) :: i
-!
-         do i = 1, numnod
-          delta_dz(i) = sol_mk_crs(i)
-         end do
-!
-      end subroutine copy_solution_2_delta_dz
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_solution_2_d2dz
-!
-      integer(kind = kint) :: i
-!
-         do i = 1, numnod
-          d2_dz(i) = sol_mk_crs(i)
-         end do
-!
-      end subroutine copy_solution_2_d2dz
 !
 !  ---------------------------------------------------------------------
 !

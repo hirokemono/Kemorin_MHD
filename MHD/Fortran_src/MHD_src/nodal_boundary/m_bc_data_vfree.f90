@@ -4,6 +4,8 @@
 !
 !      Written by H. Matsui
 !
+!       subroutine allocate_bc_vfr(numnod)
+!
       module m_bc_data_vfree
 !
       use m_precision
@@ -37,19 +39,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_vfr
+       subroutine allocate_bc_vfr(numnod)
 !
-       use m_geometry_parameter
+       integer(kind = kint), intent(in) :: numnod
 !
        allocate(ibc_velo_fr(numnod))
        allocate(ibc2_velo_fr(numnod))
 !
-       ibc_velo_fr=0
-       ibc2_velo_fr=0
+       if(numnod .gt. 0) then
+         ibc_velo_fr=0
+         ibc2_velo_fr=0
+       end if
 ! 
        allocate(ibc_fr_id(num_bc_fr_nod))
        allocate(bc_fr_id_apt(num_bc_fr_nod))
-       if (num_bc_fr_nod/=0) then
+       if (num_bc_fr_nod .gt. 0) then
         ibc_fr_id=0
         bc_fr_id_apt=0.0d00
        end if

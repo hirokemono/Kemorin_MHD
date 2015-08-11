@@ -27,6 +27,7 @@
 !
       subroutine s_cal_element_size(filter_dxi, dxidxs)
 !
+      use m_geometry_data
       use m_finite_element_matrix
       use m_ctl_params_4_gen_filter
       use m_element_id_4_node
@@ -67,7 +68,7 @@
      &   (FEM1_elen%nnod_filter_mom, FEM1_elen%elen_nod)
       call alloc_jacobians_node(FEM1_elen%nnod_filter_mom, filter_dxi)
       call alloc_dxidxs_ele(numele, dxidxs)
-      call alloc_dxidxs_node(numnod, dxidxs)
+      call alloc_dxidxs_node(node1%numnod, dxidxs)
 !
       call allocate_fem_mat_base
       call allocate_scalar_ele_4_int

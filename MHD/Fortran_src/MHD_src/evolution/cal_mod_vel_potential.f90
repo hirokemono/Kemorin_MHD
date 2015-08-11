@@ -22,8 +22,8 @@
       subroutine cal_mod_potential
 !
       use m_finite_element_matrix
-      
-use m_group_data
+      use m_geometry_data
+      use m_group_data
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -34,7 +34,7 @@ use m_group_data
       use cal_solver_MHD
 !
 !
-      call reset_ff
+      call reset_ff(node1%numnod)
       call reset_ff_smps
 !
 !    take divergence of velocity

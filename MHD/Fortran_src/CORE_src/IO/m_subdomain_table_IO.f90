@@ -1,8 +1,3 @@
-!
-!     module m_subdomain_table_IO
-!
-!      Written by H. Matsui on Aug., 2007
-!
 !> @file  m_subdomain_table_IO.f90
 !!      module m_subdomain_table_IO
 !!

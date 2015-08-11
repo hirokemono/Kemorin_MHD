@@ -4,6 +4,8 @@
 !
 !      Written by H. Matsui
 !
+!       subroutine allocate_bc_v_sgs(numnod)
+!
       module m_bc_velo_sgs
 !
       use m_precision
@@ -43,19 +45,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_v_sgs
+       subroutine allocate_bc_v_sgs(numnod)
 !
-       use m_geometry_parameter
+       integer(kind = kint), intent(in) :: numnod
 !
        allocate(ibc_v_sgs(numnod,3) )
        allocate(ibc2_v_sgs(numnod,3))
 !
-       ibc_v_sgs =  0
-       ibc2_v_sgs = 0
+       if(numnod .gt. 0) then
+         ibc_v_sgs =  0
+         ibc2_v_sgs = 0
+       end if
 ! 
        allocate(ibc_v_sgs_id(nmax_bc_v_sgs_nod,3))
        allocate(bc_v_sgs_apt(nmax_bc_v_sgs_nod,3))
-       if (nmax_bc_v_sgs_nod/=0) then
+       if (nmax_bc_v_sgs_nod .gt. 0) then
         ibc_v_sgs_id=0 
         bc_v_sgs_apt=0.0d00
        end if

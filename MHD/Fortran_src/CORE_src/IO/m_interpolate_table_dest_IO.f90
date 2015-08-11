@@ -3,13 +3,23 @@
 !
 !        programmed by H.Matsui on Sep. 2006 (ver 1.2)
 !
-!      subroutine allocate_itp_num_dst_IO
-!      subroutine allocate_itp_nod_dst_IO
-!      subroutine allocate_itp_coefs_dst_IO
+!> @file  m_interpolate_table_dest_IO.f90
+!!      module m_interpolate_table_dest_IO
+!!
+!! @author  H. Matsui
+!! @date Written in Aug., 2006
 !
-!      subroutine deallocate_itp_num_dst_IO
-!      subroutine deallocate_itp_nod_dst_IO
-!      subroutine deallocate_itp_coefs_dst_IO
+!> @brief IO routines for target data of interpolation table
+!!
+!!@verbatim
+!!      subroutine allocate_itp_num_dst_IO
+!!      subroutine allocate_itp_nod_dst_IO
+!!      subroutine allocate_itp_coefs_dst_IO
+!!
+!!      subroutine deallocate_itp_num_dst_IO
+!!      subroutine deallocate_itp_nod_dst_IO
+!!      subroutine deallocate_itp_coefs_dst_IO
+!!@endverbatim
 !
       module m_interpolate_table_dest_IO
 !

@@ -45,8 +45,6 @@
       real (kind = kreal), intent(in) :: SGS_factor
       real (kind = kreal), intent(inout) :: ak_sgs(numele,3)
 !
-      integer (kind = kint) :: iele
-!
 !
 !$omp parallel
       call ovwrt_coef_prod_vect_smp(np_smp, numele, iele_smp_stack,     &
@@ -65,8 +63,6 @@
 !
       real (kind = kreal), intent(in) :: SGS_factor
       real (kind = kreal), intent(inout) :: ak_sgs(numele,6)
-!
-      integer (kind = kint) :: iele
 !
 !
 !$omp parallel

@@ -4,6 +4,8 @@
 !
 !      Written by H. Matsui
 !
+!       subroutine allocate_bc_vsp(numnod)
+!
       module m_bc_data_vsp
 !
       use m_precision
@@ -36,19 +38,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_vsp
+       subroutine allocate_bc_vsp(numnod)
 !
-       use m_geometry_parameter
+       integer(kind = kint), intent(in) :: numnod
 !
        allocate(ibc_velo_vsp(numnod))
        allocate(ibc2_velo_vsp(numnod))
 !
-       ibc_velo_vsp=0
-       ibc2_velo_vsp=0
+       if(numnod .gt. 0) then
+         ibc_velo_vsp = 0
+         ibc2_velo_vsp = 0
+       end if
 ! 
        allocate(ibc_vsp_id(num_bc_vsp_nod))
        allocate(bc_vsp_id_apt(num_bc_vsp_nod))
-       if (num_bc_vsp_nod/=0) then
+       if (num_bc_vsp_nod .gt. 0) then
         ibc_vsp_id=0
         bc_vsp_id_apt=0.0d00
        end if

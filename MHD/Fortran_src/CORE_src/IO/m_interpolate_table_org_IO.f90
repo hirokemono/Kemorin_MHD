@@ -1,13 +1,18 @@
+!> @file  m_interpolate_table_org_IO.f90
+!!      module m_interpolate_table_org_IO
+!!
+!! @author  H. Matsui
+!! @date Written in Aug., 2006
 !
-!      module m_interpolate_table_org_IO
-!
-!     Written by H. Matsui on Aug., 2006
-!
-!      subroutine allocate_itp_num_org_IO
-!      subroutine allocate_itp_table_org_IO
-!
-!      subroutine deallocate_itp_num_org_IO
-!      subroutine deallocate_itp_table_org_IO
+!> @brief IO routines for origin data of interpolation table
+!!
+!!@verbatim
+!!      subroutine allocate_itp_num_org_IO
+!!      subroutine allocate_itp_table_org_IO
+!!
+!!      subroutine deallocate_itp_num_org_IO
+!!      subroutine deallocate_itp_table_org_IO
+!!@endverbatim
 !
       module m_interpolate_table_org_IO
 !
