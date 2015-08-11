@@ -20,7 +20,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
 !
       implicit  none
@@ -56,10 +55,10 @@
       integer(kind = kint) :: iele
 !
       write(50+my_rank,*) 'numele, nnod_4_ele'
-      write(50+my_rank,'(2i16)') numele, nnod_4_ele
+      write(50+my_rank,'(2i16)') ele1%numele, nnod_4_ele
 !
       write(50+my_rank,*) 'iele, connection'
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         write(50+my_rank,'(28i16)') iele, ie(iele,1:nnod_4_ele)
       end do
 !
@@ -84,10 +83,10 @@
       end do
 !
       write(50+my_rank,*) 'numele, nsurf_4_ele'
-      write(50+my_rank,'(2i16)') numele, nsurf_4_ele
+      write(50+my_rank,'(2i16)') ele1%numele, nsurf_4_ele
       write(50+my_rank,*) 'iele, edge ID for surface'
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         write(50+my_rank,'(7i16)')                                     &
      &            iele, isf_4_ele(iele,1:nsurf_4_ele)
       end do
@@ -136,10 +135,10 @@
 !
 !
       write(50+my_rank,*) 'numele, nedge_4_ele'
-      write(50+my_rank,'(2i16)') numele, nedge_4_ele
+      write(50+my_rank,'(2i16)') ele1%numele, nedge_4_ele
       write(50+my_rank,*) 'isurf, edge ID for surface'
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         write(50+my_rank,'(13i16)')                                     &
      &            iele, iedge_4_ele(iele,1:nedge_4_ele)
       end do

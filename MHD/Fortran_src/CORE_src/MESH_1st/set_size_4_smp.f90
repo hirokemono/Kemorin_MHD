@@ -44,7 +44,7 @@
        call count_number_4_smp( np_smp, ione, internal_node,            &
      &       inter_smp_stack, max_in_nod_4_smp )
 !
-       call count_number_4_smp( np_smp, ione, numele,                   &
+       call count_number_4_smp( np_smp, ione, ele1%numele,              &
      &       iele_smp_stack, maxele_4_smp )
 !
       end subroutine count_size_4_sheard_para
@@ -84,16 +84,15 @@
 !
       subroutine count_overlap_element
 !
-      use m_geometry_parameter
       use m_geometry_data
       use count_overlap
 !
 !
       call set_overlap_flag(np_smp, iele_smp_stack, internal_node,      &
-     &    numele, ie(1,1), internal_ele, interior_ele)
+     &    ele1%numele, ie(1,1), internal_ele, interior_ele)
 !
       call copy_real_overlap_flag(np_smp, iele_smp_stack,               &
-     &          numele, interior_ele, e_multi)
+     &    ele1%numele, interior_ele, e_multi)
 !
       end subroutine count_overlap_element
 !

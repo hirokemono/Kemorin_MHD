@@ -113,7 +113,7 @@
 !
       integer ( kind = kint) :: inod, jj, k
 !      real (kind = kreal) :: rr
-      real (kind = kreal) :: pi, rr, xr, shell
+      real (kind = kreal) :: pi, xr, shell
       real(kind = kreal), parameter :: A_light = 0.1d0
 !
       pi = four * atan(one)

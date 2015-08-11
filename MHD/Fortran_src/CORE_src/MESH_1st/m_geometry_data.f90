@@ -78,6 +78,9 @@
       type(node_data), save :: node1
 !    node1%numnod
 !
+!>  structure for element data (position and connectivity)
+      type(element_data), save :: ele1
+!    ele1%numele
 !
 !>   Stack list of number of node
       integer(kind=kint_gl), allocatable, target  :: istack_numnod(:)
@@ -370,10 +373,10 @@
       subroutine allocate_element_connection
 !
 !
-      allocate(iele_global(numele))
-      allocate(elmtyp(numele))
-      allocate(nodelm(numele))
-      allocate(ie(numele,nnod_4_ele))
+      allocate(iele_global(ele1%numele))
+      allocate(elmtyp(ele1%numele))
+      allocate(nodelm(ele1%numele))
+      allocate(ie(ele1%numele,nnod_4_ele))
 !
       iele_global = 0
       elmtyp = 0
@@ -416,19 +419,19 @@
        subroutine allocate_element_geometry
 !
 !
-        allocate(x_ele(numele,3))
-        allocate(r_ele(numele))
-        allocate(ar_ele(numele))
-        allocate(phi_ele(numele))
-        allocate(theta_ele(numele))
-        allocate(s_ele(numele))
-        allocate(as_ele(numele))
+        allocate(x_ele(ele1%numele,3))
+        allocate(r_ele(ele1%numele))
+        allocate(ar_ele(ele1%numele))
+        allocate(phi_ele(ele1%numele))
+        allocate(theta_ele(ele1%numele))
+        allocate(s_ele(ele1%numele))
+        allocate(as_ele(ele1%numele))
 !
-        allocate ( interior_ele(numele) )
-        allocate ( e_multi(numele) )
+        allocate ( interior_ele(ele1%numele) )
+        allocate ( e_multi(ele1%numele) )
 !
-        allocate( volume_ele (numele))
-        allocate( a_vol_ele (numele))
+        allocate( volume_ele (ele1%numele))
+        allocate( a_vol_ele (ele1%numele))
 !
        interior_ele = 1
        e_multi = 1.0d0
@@ -473,8 +476,8 @@
 !
       use m_geometry_constants
 !
-      allocate( isf_4_ele(numele,nsurf_4_ele) )
-      allocate( isf_rot_ele(numele,nsurf_4_ele) )
+      allocate( isf_4_ele(ele1%numele,nsurf_4_ele) )
+      allocate( isf_rot_ele(ele1%numele,nsurf_4_ele) )
       allocate( ie_surf(numsurf,nnod_4_surf) )
       allocate( isurf_global(numsurf) )
       allocate( interior_surf(numsurf) )
@@ -510,7 +513,7 @@
 !
       use m_geometry_constants
 !
-      allocate( iedge_4_ele(numele,nedge_4_ele) )
+      allocate( iedge_4_ele(ele1%numele,nedge_4_ele) )
       iedge_4_ele = 0
 !
       end subroutine allocate_edge_4_ele

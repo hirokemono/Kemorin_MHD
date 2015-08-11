@@ -28,7 +28,6 @@
       subroutine const_next_nod_id_4_node
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
 !
       use m_element_id_4_node
@@ -39,7 +38,7 @@
       call alloc_num_next_node(node1%numnod, neib_nod1)
       call allocate_work_next_node(np_smp, node1%numnod)
 !
-      call count_nod_4_grp_smp(np_smp, node1%numnod, numele,            &
+      call count_nod_4_grp_smp(np_smp, node1%numnod, ele1%numele,       &
      &    nnod_4_ele, ie, inod_smp_stack, node1%numnod,                 &
      &    ele_4_nod1%ntot, ele_4_nod1%istack_4_node,                    &
      &    ele_4_nod1%iele_4_node, neib_nod1%nnod_next)
@@ -54,7 +53,7 @@
 !
 !
       call set_nod_4_grp_smp                                            &
-     &   (np_smp, node1%numnod, numele, nnod_4_ele, ie,                 &
+     &   (np_smp, node1%numnod, ele1%numele, nnod_4_ele, ie,            &
      &    inod_smp_stack, node1%numnod, ele_4_nod1%ntot,                &
      &    ele_4_nod1%istack_4_node, ele_4_nod1%iele_4_node,             &
      &    neib_nod1%ntot, neib_nod1%istack_next,                        &

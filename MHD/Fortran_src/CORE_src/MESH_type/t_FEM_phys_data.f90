@@ -66,9 +66,9 @@
 !
 !  allocation for physical values
 !
-!      write(*,*) 'allocate_data_arrays', num_tot_nod_phys
+!      write(*,*) 'alloc_phys_data_type node', num_tot_nod_phys
       call alloc_phys_data_type(mesh%node%numnod, FEM_fld%phys_nod)
-!      write(*,*) 'allocate_ele_data_arrays', num_tot_ele_phys
+!      write(*,*) 'alloc_phys_data_type element', num_tot_ele_phys
       call alloc_phys_data_type(mesh%ele%numele, FEM_fld%phys_ele)
 !
 !   set address of nodal values

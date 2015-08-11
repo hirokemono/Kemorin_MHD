@@ -65,16 +65,16 @@
 !
       subroutine set_num_node_for_ele_by_etype(ierr)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use set_nnod_for_element
 !
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call set_nnod_for_ele_by_eletype(numele, elmtyp, nodelm, ierr)
-      call check_wrong_element_list(node1%numnod, numele, nnod_4_ele,   &
-     &    nodelm, ie, ierr)
+      call set_nnod_for_ele_by_eletype                                  &
+     &   (ele1%numele, elmtyp, nodelm, ierr)
+      call check_wrong_element_list(node1%numnod,                       &
+     &    ele1%numele, nnod_4_ele, nodelm, ie, ierr)
 !
       end subroutine set_num_node_for_ele_by_etype
 !

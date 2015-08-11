@@ -8,7 +8,6 @@
       use m_precision
 !
       use calypso_mpi
-      use m_geometry_parameter
       use m_geometry_data
       use m_read_mesh_data
       use m_filter_func_4_sorting
@@ -47,6 +46,8 @@
         call sel_read_geometry_size(my_rank)
         call deallocate_neib_domain_IO
         call copy_node_geometry_from_IO
+!
+        ele1%numele = numele_dummy
         numele = numele_dummy
 !
 !     read filtering information
@@ -79,6 +80,8 @@
         call sel_read_geometry_size(my_rank)
         call deallocate_neib_domain_IO
         call copy_node_geometry_from_IO
+!
+        ele1%numele = numele_dummy
         numele = numele_dummy
 !
 !     read filtering information

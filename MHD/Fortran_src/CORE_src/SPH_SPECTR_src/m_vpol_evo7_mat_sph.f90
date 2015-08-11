@@ -1,8 +1,3 @@
-!
-!      module m_vpol_evo7_mat_sph
-!
-!     Written by H. Matsui on Apr, 2009
-!
 !>@file   m_vpol_evo7_mat_sph.f90
 !!@brief  module m_vpol_evo7_mat_sph
 !!

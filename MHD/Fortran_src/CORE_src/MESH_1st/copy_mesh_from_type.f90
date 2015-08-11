@@ -154,6 +154,7 @@
       integer(kind = kint) :: iele, k1
 !
 !
+      ele1%numele =       ele%numele
       numele =            ele%numele
       first_ele_type = ele%first_ele_type
 !
@@ -176,14 +177,14 @@
 !$omp parallel private(k1)
       do k1 = 1, nnod_4_ele
 !$omp do private(iele)
-        do iele = 1, numele
+        do iele = 1, ele1%numele
           ie(iele,k1) = ele%ie(iele,k1)
         end do
 !$omp end do nowait
       end do
 !
 !$omp do
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         iele_global(iele) = ele%iele_global(iele)
         elmtyp(iele) =      ele%elmtyp(iele)
         nodelm(iele) =      ele%nodelm(iele)
@@ -243,15 +244,15 @@
       integer(kind = kint) :: i, k1, iflag
 !
 !
-      if(ele%numele .ne. numele) write(*,*) 'numele',                   &
-     &      my_rank, ele%numele, numele
+      if(ele%numele .ne. ele1%numele) write(*,*) 'numele',              &
+     &      my_rank, ele%numele, ele1%numele
       if(ele%first_ele_type .ne. first_ele_type) write(*,*)             &
      &       'first_ele_type', my_rank, ele%first_ele_type,             &
      &       first_ele_type
       if(ele%nnod_4_ele .ne. nnod_4_ele) write(*,*) 'nnod_4_ele',       &
      &      my_rank, ele%nnod_4_ele, nnod_4_ele
 !
-      do i = 1, numele
+      do i = 1, ele1%numele
         iflag = 0
         do k1 = 1, nnod_4_ele
           if(ele%ie(i,k1) .ne. ie(i,k1)) iflag = 1

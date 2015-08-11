@@ -7,7 +7,7 @@
 !> @brief Field data in element for FEM
 !
 !      subroutine allocate_ele_dat_names
-!      subroutine allocate_ele_data_arrays
+!      subroutine allocate_ele_data_arrays(numele)
 !      subroutine allocate_ele_fld_id_4_rms
 !
 !      subroutine deallocate_ele_data_arrays
@@ -68,15 +68,15 @@
 !
 !  --------------------------------------------------------------------
 !
-       subroutine allocate_ele_data_arrays
+      subroutine allocate_ele_data_arrays(numele)
 !
-       use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numele
 !
-       allocate( iflag_ele_update(num_tot_ele_phys) )
-       allocate( d_ele(numele,num_tot_ele_phys) )
+      allocate( iflag_ele_update(num_tot_ele_phys) )
+      allocate( d_ele(numele,num_tot_ele_phys) )
 !
-       iflag_ele_update = 0
-       d_ele = 0.0d0
+      iflag_ele_update = 0
+      d_ele = 0.0d0
 !
        end subroutine allocate_ele_data_arrays
 !
@@ -116,14 +116,14 @@
 !
       subroutine check_elemental_data(my_rank, numdir, i_field)
 !
-       use m_geometry_parameter
+       use m_geometry_data
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: numdir, i_field
       integer(kind = kint) :: iele, nd
 !
       write(50+my_rank,*) 'iele, elemental field: ', i_field, numdir
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         write(50+my_rank,'(i16,1p10e25.14)')                            &
      &         iele, (d_ele(iele,i_field+nd-1),nd=1, numdir)
       end do

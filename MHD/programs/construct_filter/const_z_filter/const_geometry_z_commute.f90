@@ -12,7 +12,6 @@
       use m_constants
 !
       use m_nod_comm_table
-      use m_geometry_parameter
       use m_geometry_data
       use m_commute_filter_z
 !
@@ -71,8 +70,6 @@
 !
       subroutine  set_numnod_z_commute
 !
-      use m_geometry_data
-!
 !
       internal_node = totalnod
       node1%numnod = internal_node
@@ -82,6 +79,7 @@
       nmat_ele = totalele*nfilter2_1
       nmat_nod = internal_node*nfilter2_3
 !
+      ele1%numele = node1%numnod - 1
       numele = node1%numnod - 1
 !
       first_ele_type = 331

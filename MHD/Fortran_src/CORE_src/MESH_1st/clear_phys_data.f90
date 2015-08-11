@@ -50,7 +50,7 @@
       subroutine clear_elemental_data(numdir, i_res)
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
 !
       use m_element_phys_data
       use delete_field_smp
@@ -59,7 +59,7 @@
 !
 !
 !$omp parallel
-      call delete_phys_data_smp(np_smp, numele, iele_smp_stack,         &
+      call delete_phys_data_smp(np_smp, ele1%numele, iele_smp_stack,    &
      &    num_tot_ele_phys, numdir, i_res, d_ele)
 !$omp end parallel
 !

@@ -12,7 +12,6 @@
       use m_precision
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use t_sum_hash
 !
       implicit none
@@ -38,20 +37,21 @@
       integer(kind = kint), intent(in) :: id_rank
 !
 !
-      call alloc_sum_hash(node1%numnod, numele, nedge_4_ele,            &
+      call alloc_sum_hash(node1%numnod, ele1%numele, nedge_4_ele,       &
      &    nnod_4_edge, edge_ele_tbl)
 !
 !   set hash data for edge elements using sum of local node ID
 !
       if (iflag_debug.eq.1) write(*,*) 'const_edge_hash_4_ele'
       call const_edge_hash_4_ele                                        &
-     &   (node1%numnod, numele, nnod_4_ele, nnod_4_edge, ie,            &
+     &   (node1%numnod, ele1%numele, nnod_4_ele, nnod_4_edge, ie,       &
      &    edge_ele_tbl%num_hash, edge_ele_tbl%istack_hash,              &
      &    edge_ele_tbl%iend_hash, edge_ele_tbl%id_hash,                 &
      &    edge_ele_tbl%iflag_hash)
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_edges_by_ele'
-      call count_num_edges_by_ele(node1%numnod, numele, nnod_4_edge,    &
+      call count_num_edges_by_ele                                       &
+     &   (node1%numnod, ele1%numele, nnod_4_edge,                       &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &
      &    edge_ele_tbl%iflag_hash, numedge)
 !
@@ -59,15 +59,15 @@
       call allocate_edge_4_ele
 !
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_by_ele'
-      call set_edges_connect_by_ele                                     &
-     &   (node1%numnod, numele, numedge, nnod_4_ele, nnod_4_edge, ie,   &
+      call set_edges_connect_by_ele(node1%numnod, ele1%numele,          &
+     &    numedge, nnod_4_ele, nnod_4_edge, ie,                         &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &
      &    edge_ele_tbl%id_hash, edge_ele_tbl%iflag_hash,                &
      &    ie_edge, iedge_4_ele, node_on_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_4_sf'
       call set_edges_connect_4_sf                                       &
-     &   (node1%numnod, numele, numsurf, numedge,                       &
+     &   (node1%numnod, ele1%numele, numsurf, numedge,                  &
      &    nnod_4_surf, nnod_4_edge, ie_surf, iedge_4_ele,               &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%id_hash,               &
      &    edge_ele_tbl%iflag_hash, ie_edge, iedge_4_sf)
@@ -88,12 +88,12 @@
 !
 !
       call allocate_ele_4_edge_num
-      call count_ele_list_4_edge(numele, numedge, nedge_4_ele,          &
+      call count_ele_list_4_edge(ele1%numele, numedge, nedge_4_ele,     &
      &    iedge_4_ele, ntot_iele_4_edge, num_iele_4_edge,               &
      &    istack_iele_4_edge)
 !
       call allocate_ele_4_edge_item
-      call set_ele_list_4_edge(numele, numedge, nedge_4_ele,            &
+      call set_ele_list_4_edge(ele1%numele, numedge, nedge_4_ele,       &
      &    iedge_4_ele, ntot_iele_4_edge, num_iele_4_edge,               &
      &    istack_iele_4_edge, iele_4_edge)
 !

@@ -209,7 +209,7 @@
       use m_geometry_parameter
       use m_geometry_data
 !
-      integer(kind = kint) :: i, j
+      integer(kind = kint) :: i
 !
       write(50,*) 'i, iflag_refine_sf_lcl(i)'
       do i = 1, numele

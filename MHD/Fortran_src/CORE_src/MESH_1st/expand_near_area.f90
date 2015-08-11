@@ -36,7 +36,7 @@
 !
 !
       call allocate_mark_4_near_node(np_smp, node1%numnod)
-      call allocate_imark_4_ele(np_smp, numele)
+      call allocate_imark_4_ele(np_smp, ele1%numele)
 !
       call allocate_iflag_expand(node1%numnod)
 !
@@ -71,7 +71,7 @@
 !
 !
       call allocate_mark_4_near_node(np_smp, node1%numnod)
-      call allocate_imark_4_ele(np_smp, numele)
+      call allocate_imark_4_ele(np_smp, ele1%numele)
 !
       call allocate_iflag_expand(node1%numnod)
 !
@@ -118,7 +118,8 @@
 !
 !
       call alloc_num_4_near_nod(node1%numnod, near_ele1_wide)
-      call count_expanded_near_element(np_smp, node1%numnod, numele,    &
+      call count_expanded_near_element                                  &
+     &   (np_smp, node1%numnod, ele1%numele,                            &
      &    inod_smp_stack, iflag_expand, ele_4_nod1%ntot,                &
      &    ele_4_nod1%istack_4_node, ele_4_nod1%iele_4_node,             &
      &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &
@@ -133,7 +134,8 @@
 !
       call alloc_near_element(near_ele1_wide)
 !
-      call set_expanded_near_element(np_smp, node1%numnod, numele,      &
+      call set_expanded_near_element                                    &
+     &   (np_smp, node1%numnod, ele1%numele,                            &
      &    inod_smp_stack, iflag_expand, ele_4_nod1%ntot,                &
      &    ele_4_nod1%istack_4_node, ele_4_nod1%iele_4_node,             &
      &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &
@@ -174,7 +176,7 @@
       call alloc_num_4_near_nod(node1%numnod, near_node1_wide)
 !
       call add_num_nod_4_group                                          &
-     &   (np_smp, node1%numnod, numele, nnod_4_ele, ie,                 &
+     &   (np_smp, node1%numnod, ele1%numele, nnod_4_ele, ie,            &
      &    inod_smp_stack, node1%numnod, near_ele1_tbl%ntot,             &
      &    near_ele1_tbl%istack_nod, near_ele1_tbl%id_near_nod,          &
      &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &
@@ -189,7 +191,7 @@
       call alloc_near_node(near_node1_wide)
 !
       call add_nod_id_4_group                                           &
-     &   (np_smp, node1%numnod, numele, nnod_4_ele, ie,                 &
+     &   (np_smp, node1%numnod, ele1%numele, nnod_4_ele, ie,            &
      &    inod_smp_stack, node1%numnod, near_ele1_tbl%ntot,             &
      &    near_ele1_tbl%istack_nod, near_ele1_tbl%id_near_nod,          &
      &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &

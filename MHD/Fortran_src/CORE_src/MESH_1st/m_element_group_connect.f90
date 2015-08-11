@@ -67,7 +67,6 @@
       subroutine set_surf_4_ele_group(ele_grp)
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
 !
       use set_node_4_group
@@ -78,7 +77,8 @@
       call allocate_imark_4_grp(numsurf)
       call alloc_num_other_grp(ele_grp%num_grp, ele_grp_data1%surf)
 !
-      call count_nod_4_ele_grp(numsurf, numele, nsurf_4_ele, isf_4_ele, &
+      call count_nod_4_ele_grp                                          &
+     &  (numsurf, ele1%numele, nsurf_4_ele, isf_4_ele,                  &
      &   ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,         &
      &   ele_grp%item_grp, ele_grp_data1%surf%ntot_e_grp,               &
      &   ele_grp_data1%surf%nitem_e_grp,                                &
@@ -87,7 +87,8 @@
 !
       call alloc_item_other_grp(ele_grp_data1%surf)
 !
-      call set_nod_4_ele_grp(numsurf, numele, nsurf_4_ele, isf_4_ele,   &
+      call set_nod_4_ele_grp                                            &
+     &   (numsurf, ele1%numele, nsurf_4_ele, isf_4_ele,                 &
      &    ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,        &
      &    ele_grp%item_grp, ele_grp_data1%surf%ntot_e_grp,              &
      &    ele_grp_data1%surf%nitem_e_grp,                               &
@@ -103,7 +104,6 @@
       subroutine set_edge_4_ele_group(ele_grp)
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
 !
       use set_node_4_group
@@ -115,7 +115,7 @@
       call alloc_num_other_grp(ele_grp%num_grp, ele_grp_data1%edge)
 !
       call count_nod_4_ele_grp                                          &
-     &   (numedge, numele, nedge_4_ele, iedge_4_ele,                    &
+     &   (numedge, ele1%numele, nedge_4_ele, iedge_4_ele,               &
      &    ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,        &
      &    ele_grp%item_grp, ele_grp_data1%edge%ntot_e_grp,              &
      &    ele_grp_data1%edge%nitem_e_grp,                               &
@@ -124,7 +124,8 @@
 !
       call alloc_item_other_grp(ele_grp_data1%edge)
 !
-      call set_nod_4_ele_grp(numedge, numele, nedge_4_ele, iedge_4_ele, &
+      call set_nod_4_ele_grp                                            &
+     &   (numedge, ele1%numele, nedge_4_ele, iedge_4_ele,               &
      &    ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,        &
      &    ele_grp%item_grp, ele_grp_data1%edge%ntot_e_grp,              &
      &    ele_grp_data1%edge%nitem_e_grp,                               &
@@ -139,7 +140,6 @@
 !
       subroutine set_node_4_ele_group(ele_grp)
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       use set_node_4_group
@@ -150,7 +150,8 @@
       call allocate_imark_4_grp(node1%numnod)
       call alloc_num_other_grp(ele_grp%num_grp, ele_grp_data1%node)
 !
-      call count_nod_4_ele_grp(node1%numnod, numele, nnod_4_ele, ie,    &
+      call count_nod_4_ele_grp                                          &
+     &  (node1%numnod, ele1%numele, nnod_4_ele, ie,                     &
      &   ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,         &
      &   ele_grp%item_grp, ele_grp_data1%node%ntot_e_grp,               &
      &   ele_grp_data1%node%nitem_e_grp,                                &
@@ -159,7 +160,7 @@
 !
       call alloc_item_other_grp(ele_grp_data1%node)
 !
-      call set_nod_4_ele_grp(node1%numnod, numele, nnod_4_ele, ie,      &
+      call set_nod_4_ele_grp(node1%numnod, ele1%numele, nnod_4_ele, ie, &
      &    ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,        &
      &    ele_grp%item_grp, ele_grp_data1%node%ntot_e_grp,              &
      &    ele_grp_data1%node%nitem_e_grp,                               &

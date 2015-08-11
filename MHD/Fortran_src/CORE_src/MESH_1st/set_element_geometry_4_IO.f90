@@ -14,7 +14,6 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_read_mesh_data
 !
@@ -31,14 +30,14 @@
       integer(kind = kint) :: iele
 !
 !
-      numnod_dummy = numele
+      numnod_dummy = ele1%numele
       internal_node_dummy = internal_ele
 !
       call allocate_node_data_dummy
       call allocate_ele_scalar_IO
 !
 !$omp parallel do
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         globalnodid_dummy(iele) = iele_global(iele)
         xx_dummy(iele,1) = x_ele(iele,1)
         xx_dummy(iele,2) = x_ele(iele,2)
@@ -56,14 +55,14 @@
       integer(kind = kint) :: iele
 !
 !
-      numnod_dummy = numele
+      numnod_dummy = ele1%numele
       internal_node_dummy = internal_ele
 !
       call allocate_node_data_dummy
       call allocate_ele_scalar_IO
 !
 !$omp parallel do
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         globalnodid_dummy(iele) = iele_global(iele)
 !
         xx_dummy(iele,1) = r_ele(iele)
@@ -82,14 +81,14 @@
       integer(kind = kint) :: iele
 !
 !
-      numnod_dummy = numele
+      numnod_dummy = ele1%numele
       internal_node_dummy = internal_ele
 !
       call allocate_node_data_dummy
       call allocate_ele_scalar_IO
 !
 !$omp parallel do
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         globalnodid_dummy(iele) = iele_global(iele)
 !
         xx_dummy(iele,1) = s_ele(iele)
@@ -112,7 +111,7 @@
 !      call allocate_element_geometry
 !
 !$omp parallel do
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         x_ele(iele,1) = xx_dummy(iele,1)
         x_ele(iele,2) = xx_dummy(iele,2)
         x_ele(iele,3) = xx_dummy(iele,3)
@@ -135,7 +134,7 @@
 !      call allocate_element_geometry
 !
 !$omp parallel do
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         r_ele(iele) = xx_dummy(iele,1)
         theta_ele(iele) = xx_dummy(iele,2)
         phi_ele(iele) = xx_dummy(iele,3)
@@ -158,7 +157,7 @@
 !      call allocate_element_geometry
 !
 !$omp parallel do
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         s_ele(iele) = xx_dummy(iele,1)
         phi_ele(iele) = xx_dummy(iele,2)
         x_ele(iele,3) = xx_dummy(iele,3)

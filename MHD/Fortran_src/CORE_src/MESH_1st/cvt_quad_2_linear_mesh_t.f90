@@ -43,11 +43,11 @@
       type(mesh_geometry), intent(inout) :: mesh_l
 !
 !
-      mesh_l%node%numnod = node1%numnod + numsurf + numele
+      mesh_l%node%numnod = node1%numnod + numsurf + ele1%numele
 !
       call allocate_node_geometry_type(mesh_l%node)
 !
-      call set_position_on_surf(node1%numnod, numsurf, numele,          &
+      call set_position_on_surf(node1%numnod, numsurf, ele1%numele,     &
      &    xx, x_ele, x_surf, mesh_l%node%numnod,  mesh_l%node%xx)
 !
       call position_2_sph(mesh_l%node%numnod, mesh_l%node%xx,           &
@@ -70,19 +70,19 @@
       type(mesh_geometry), intent(inout) :: mesh_l
 !
 !
-      mesh_l%ele%numele = 8*numele
+      mesh_l%ele%numele = 8 * ele1%numele
       mesh_l%ele%nnod_4_ele = num_t_linear
 !
       call allocate_ele_connect_type(mesh_l%ele)
       call allocate_ele_geometry_type(mesh_l%ele)
 !
-      allocate(ie_4_333(numele,27) )
+      allocate(ie_4_333(ele1%numele,27) )
 !
       call gen_connect_quad27_from_quad20                               &
-     &   (node1%numnod, numele, numsurf, ie,                            &
+     &   (node1%numnod, ele1%numele, numsurf, ie,                       &
      &    isf_4_ele, ie_4_333)
 !
-      call set_27quad_2_8x8linear(numele, ie_4_333,                     &
+      call set_27quad_2_8x8linear(ele1%numele, ie_4_333,                &
      &    mesh_l%node%numnod, mesh_l%ele%ie)
 !
       deallocate(ie_4_333)
@@ -102,13 +102,13 @@
       type(mesh_geometry), intent(inout) :: mesh_l
 !
 !
-      mesh_l%ele%numele = 8 * numele
+      mesh_l%ele%numele = 8 * ele1%numele
       mesh_l%ele%nnod_4_ele = num_t_linear
 !
       call allocate_ele_connect_type(mesh_l%ele)
       call allocate_ele_geometry_type(mesh_l%ele)
 !
-      call set_27quad_2_8x8linear(numele, ie,                           &
+      call set_27quad_2_8x8linear(ele1%numele, ie,                      &
      &    mesh_l%node%numnod, mesh_l%ele%ie)
 !
       end subroutine connect_lag_mesh_2_linear_t
@@ -173,7 +173,7 @@
 !
 !
       call set_internal_list_4_linear_20(node1%numnod, internal_node,   &
-     &    numele, numsurf, interior_ele, interior_surf,                 &
+     &    ele1%numele, numsurf, interior_ele, interior_surf,            &
      &    mesh_l%node%numnod, mesh_l%ele%numele, surf_l%numsurf,        &
      &    edge_l%numedge, mesh_l%ele%ie, surf_l%ie_surf,                &
      &    edge_l%ie_edge, mesh_l%ele%interior_ele,                      &
@@ -260,7 +260,7 @@
       type(phys_data), intent(inout) :: nod_fld_l
 !
 !
-      call set_fields_on_surf(node1%numnod, numsurf, numele,            &
+      call set_fields_on_surf(node1%numnod, numsurf, ele1%numele,       &
      &    ie, ie_surf, nod_fld_l%ntot_phys, mesh_l%node%numnod,         &
      &    nod_fld_l%d_fld)
 !

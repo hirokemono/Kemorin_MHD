@@ -39,23 +39,22 @@
       subroutine set_center_of_element
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use set_element_position
       use coordinate_converter
 !
       if (nnod_4_ele .eq. num_t_quad) then
-        call set_quad_ele_position(node1%numnod, numele, ie, xx,        &
+        call set_quad_ele_position(node1%numnod, ele1%numele, ie, xx,   &
      &          x_ele)
       else if (nnod_4_ele .eq. num_t_linear) then
-        call set_linear_ele_position(node1%numnod, numele, ie, xx,      &
+        call set_linear_ele_position(node1%numnod, ele1%numele, ie, xx, &
      &          x_ele)
       else if (nnod_4_ele .eq. num_t_lag) then
-        call set_lag_ele_position(node1%numnod, numele, ie, xx,         &
+        call set_lag_ele_position(node1%numnod, ele1%numele, ie, xx,    &
      &          x_ele)
       end if
 !
-      call position_2_sph( numele, x_ele, r_ele, theta_ele,             &
+      call position_2_sph(ele1%numele, x_ele, r_ele, theta_ele,         &
      &       phi_ele, ar_ele, s_ele, as_ele)
 !
       end subroutine set_center_of_element

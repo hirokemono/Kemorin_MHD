@@ -30,11 +30,12 @@
 !
       subroutine initialize_ele_field_data
 !
+      use m_geometry_data
       use m_element_phys_data
 !
 !  allocatie element field
 !
-      call allocate_ele_data_arrays
+      call allocate_ele_data_arrays(ele1%numele)
       call set_element_field_address
 !
       end subroutine initialize_ele_field_data

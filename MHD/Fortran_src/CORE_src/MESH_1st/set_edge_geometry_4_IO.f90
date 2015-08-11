@@ -16,7 +16,6 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_edge_geometry_data
 !
@@ -35,12 +34,12 @@
       use m_geometry_constants
 !
 !
-      numele_dummy = numele
+      numele_dummy = ele1%numele
 !
       nsf_4_ele_IO = numsurf
       nsurf_in_ele_IO = nedge_4_surf
 !
-      ned_4_ele_IO = numele
+      ned_4_ele_IO = ele1%numele
 !
       numele_dummy = numedge
       nnod_4_ele_dummy = nnod_4_edge
@@ -63,8 +62,8 @@
 !
       isf_4_ele_IO(1:numsurf,1:nedge_4_surf)                            &
      &        = iedge_4_sf(1:numsurf,1:nedge_4_surf)
-      iedge_4_ele_IO(1:numele,1:nedge_4_ele)                            &
-     &        = iedge_4_ele(1:numele,1:nedge_4_ele)
+      iedge_4_ele_IO(1:ele1%numele,1:nedge_4_ele)                       &
+     &        = iedge_4_ele(1:ele1%numele,1:nedge_4_ele)
 !
       end subroutine copy_edge_connect_to_IO
 !
@@ -146,8 +145,8 @@
       iedge_4_sf(1:numsurf,1:nedge_4_surf)                              &
      &        = isf_4_ele_IO(1:numsurf,1:nedge_4_surf)
 !
-      iedge_4_ele(1:numele,1:nedge_4_ele)                               &
-     &        = iedge_4_ele_IO(1:numele,1:nedge_4_ele)
+      iedge_4_ele(1:ele1%numele,1:nedge_4_ele)                          &
+     &        = iedge_4_ele_IO(1:ele1%numele,1:nedge_4_ele)
 !
       call deallocate_surface_connect_IO
       call deallocate_ele_info_dummy

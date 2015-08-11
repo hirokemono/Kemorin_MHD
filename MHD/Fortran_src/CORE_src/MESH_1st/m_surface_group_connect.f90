@@ -62,7 +62,6 @@
 !
       subroutine set_surf_id_4_surf_group(sf_grp)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use set_surface_id_4_surf_grp
       use t_group_data
@@ -72,7 +71,7 @@
 !
       call alloc_surf_item_sf_grp_type(sf_grp%num_item, sf_grp_data1)
 !
-      call set_surface_id_4_surf_group(numele, isf_4_ele,               &
+      call set_surface_id_4_surf_group(ele1%numele, isf_4_ele,          &
      &    sf_grp%num_grp, sf_grp%num_item,                              &
      &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &
      &    sf_grp_data1%isurf_grp, sf_grp_data1%isurf_grp_n)
@@ -124,7 +123,6 @@
       subroutine set_surface_node_grp(sf_grp)
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use t_group_data
       use set_surface_node
@@ -138,7 +136,7 @@
       call alloc_num_surf_grp_nod(sf_grp%num_grp, sf_grp_nod1)
 !
       call count_surf_nod_grp_stack(np_smp, inod_smp_stack,             &
-     &    numele, nnod_4_ele, ie, nnod_4_surf, node_on_sf,              &
+     &    ele1%numele, nnod_4_ele, ie, nnod_4_surf, node_on_sf,         &
      &    sf_grp%num_grp, sf_grp%num_item,                              &
      &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &
      &    sf_grp_nod1%ntot_node_sf_grp, sf_grp_nod1%nnod_sf_grp,        &
@@ -158,7 +156,7 @@
         call alloc_item_surf_grp_nod(sf_grp_nod1)
 !
         call set_surf_nod_grp_item                                      &
-     &     (node1%numnod, numele, nnod_4_ele, ie,                       &
+     &     (node1%numnod, ele1%numele, nnod_4_ele, ie,                  &
      &      nnod_4_surf, node_on_sf, node_on_sf_n, sf_grp%num_grp,      &
      &      sf_grp%num_item, sf_grp%istack_grp, sf_grp%item_sf_grp,     &
      &      sf_grp_nod1%ntot_node_sf_grp,                               &

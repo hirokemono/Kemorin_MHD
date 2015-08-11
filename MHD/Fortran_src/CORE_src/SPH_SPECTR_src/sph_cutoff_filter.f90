@@ -10,7 +10,7 @@
 !!@verbatim
 !!      subroutine init_horizontal_cutoff_filter
 !!      subroutine deallocate_sph_cutoff_filter
-!
+!!
 !!      subroutine sph_horizontal_cutoff_scalar(nnod_rj, ntot_comp_rj,  &
 !!     &          i_fld, i_filtered, d_rj)
 !!      subroutine sph_horizontal_cutoff_vector(nnod_rj, ntot_comp_rj,  &
