@@ -1,10 +1,17 @@
+!> @file  output_image_sel_4_png.f90
+!!      module output_image_sel_4_png
+!!
+!! @author  H. Matsui
+!! @date Written in June, 2009
 !
-!output_image_sel_4_png.F90
-!
-!      subroutine sel_output_image_file(id_file_type, img_head,         &
-!     &          npix_x, npix_y, cimage)
-!      subroutine sel_rgba_image_file(id_file_type, img_head,           &
-!     &          npix_x, npix_y, cimage)
+!> @brief selector for image data output
+!!
+!!@verbatim
+!!      subroutine sel_output_image_file(id_file_type, img_head,        &
+!!     &          npix_x, npix_y, cimage)
+!!      subroutine sel_rgba_image_file(id_file_type, img_head,          &
+!!     &          npix_x, npix_y, cimage)
+!!@endverbatim
 !
       module output_image_sel_4_png
 !

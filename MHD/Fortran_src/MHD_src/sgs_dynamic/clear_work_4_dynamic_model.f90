@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Oct. 2005
 !     Modified by H. Matsui on Aug., 2007
 !
-!     subroutine s_clear_work_4_dynamic_model
+!     subroutine s_clear_work_4_dynamic_model(numnod)
 !
       module clear_work_4_dynamic_model
 !
@@ -18,12 +18,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine s_clear_work_4_dynamic_model
+       subroutine s_clear_work_4_dynamic_model(numnod)
 !
-       use m_geometry_parameter
        use m_node_phys_address
        use m_node_phys_data
 !
+       integer(kind = kint), intent(in) :: numnod
        integer(kind = kint) :: inod
 !
 !$omp parallel do

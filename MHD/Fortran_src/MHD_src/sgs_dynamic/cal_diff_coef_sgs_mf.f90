@@ -19,6 +19,7 @@
 !
       subroutine s_cal_diff_coef_sgs_mf
 !
+      use m_geometry_data
       use m_machine_parameter
       use m_control_parameter
       use m_node_phys_address
@@ -42,7 +43,7 @@
 !    reset model coefficients
 !
       call reset_diff_model_coefs(iak_diff_mf)
-      call s_clear_work_4_dynamic_model
+      call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !   gradient model by filtered field (to iphys%i_sgs_grad_f)
 !

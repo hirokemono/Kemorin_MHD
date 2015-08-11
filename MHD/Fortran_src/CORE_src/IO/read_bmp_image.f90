@@ -1,17 +1,21 @@
-!read_bmp_image.f90
-!      module read_bmp_image
+!> @file  read_bmp_image.f90
+!!      module read_bmp_image
+!!
+!! @author  H. Matsui
+!! @date Written in June, 2009
 !
 !> @brief FORTRAN 77 program to make BMP
-!  Written by H. Matsui on June, 2009
-!
-!       subroutine read_BMP_file(fhead, ihpixf, jvpixf)
-!       subroutine copy_rgba_from_BMP(ihpixf, jvpixf, rgba)
-!       subroutine copy_rgb_from_BMP(ihpixf, jvpixf, rgb)
-!
-!      character(len=kchara), intent(in) :: fhead
-!      integer, intent(in) :: ihpixf, jvpixf
-! RGB data array
-!      character(len=1), intent(in) :: rgb(3,ihpixf,jvpixf)
+!!
+!!@verbatim
+!!       subroutine read_BMP_file(fhead, ihpixf, jvpixf)
+!!       subroutine copy_rgba_from_BMP(ihpixf, jvpixf, rgba)
+!!       subroutine copy_rgb_from_BMP(ihpixf, jvpixf, rgb)
+!!
+!!      character(len=kchara), intent(in) :: fhead
+!!      integer, intent(in) :: ihpixf, jvpixf
+!! RGB data array
+!!      character(len=1), intent(in) :: rgb(3,ihpixf,jvpixf)
+!!@endverbatim
 !
       module read_bmp_image
 !

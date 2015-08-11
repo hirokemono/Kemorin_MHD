@@ -21,6 +21,7 @@
 !
       subroutine s_cal_sgs_h_flux_dynamic_simi
 !
+      use m_geometry_data
       use m_machine_parameter
       use m_control_parameter
       use m_node_phys_address
@@ -41,7 +42,7 @@
 !
       call reset_vector_sgs_model_coefs(icomp_sgs_hf)
       call reset_vector_sgs_nod_m_coefs(icomp_sgs_hf)
-      call s_clear_work_4_dynamic_model
+      call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !   similarity model with wider filter
 !

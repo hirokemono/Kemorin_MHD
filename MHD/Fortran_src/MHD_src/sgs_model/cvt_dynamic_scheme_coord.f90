@@ -63,7 +63,6 @@
 !
       subroutine convert_dynamic_vectors_2_cyl
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
@@ -72,15 +71,15 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'convert cylindrical corrdinate'
 !$omp parallel
-      call overwrite_vector_2_cyl_smp(np_smp, numnod,                   &
+      call overwrite_vector_2_cyl_smp(np_smp, node1%numnod,             &
      &    inod_smp_stack, d_nod(1,iphys%i_sgs_simi),                    &
      &    xx(1,1), xx(1,2), s_cylinder, a_s_cylinder)
 
-      call overwrite_vector_2_cyl_smp(np_smp, numnod,                   &
+      call overwrite_vector_2_cyl_smp(np_smp, node1%numnod,             &
      &    inod_smp_stack, d_nod(1,iphys%i_sgs_grad),                    &
      &    xx(1,1), xx(1,2), s_cylinder, a_s_cylinder)
 
-      call overwrite_vector_2_cyl_smp(np_smp, numnod,                   &
+      call overwrite_vector_2_cyl_smp(np_smp, node1%numnod,             &
      &    inod_smp_stack, d_nod(1,iphys%i_sgs_grad_f),                  &
      &    xx(1,1), xx(1,2), s_cylinder, a_s_cylinder)
 !$omp end parallel
@@ -91,7 +90,6 @@
 !
       subroutine convert_dynamic_vectors_2_sph
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
@@ -100,15 +98,18 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'convert spherical corrdinate'
 !$omp parallel
-      call overwrite_vector_2_sph_smp(np_smp, numnod, inod_smp_stack,   &
+      call overwrite_vector_2_sph_smp                                   &
+     &   (np_smp, node1%numnod, inod_smp_stack,                         &
      &    d_nod(1,iphys%i_sgs_simi), xx(1,1), xx(1,2), xx(1,3),         &
      &    radius, s_cylinder, a_radius, a_s_cylinder)
 
-      call overwrite_vector_2_sph_smp(np_smp, numnod, inod_smp_stack,   &
+      call overwrite_vector_2_sph_smp                                   &
+     &   (np_smp, node1%numnod, inod_smp_stack,                         &
      &    d_nod(1,iphys%i_sgs_grad), xx(1,1), xx(1,2), xx(1,3),         &
      &    radius, s_cylinder, a_radius, a_s_cylinder)
 
-      call overwrite_vector_2_sph_smp(np_smp, numnod, inod_smp_stack,   &
+      call overwrite_vector_2_sph_smp                                   &
+     &   (np_smp, node1%numnod, inod_smp_stack,                         &
      &    d_nod(1,iphys%i_sgs_grad_f), xx(1,1), xx(1,2), xx(1,3),       &
      &    radius, s_cylinder, a_radius, a_s_cylinder)
 !$omp end parallel
@@ -120,7 +121,6 @@
 !
       subroutine convert_dynamic_tensors_2_cyl
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
@@ -129,15 +129,18 @@
 !
       if(iflag_debug.gt.0) write(*,*) 'convert cylindrical corrdinate'
 !$omp parallel
-      call overwrite_cyl_tensor_smp(np_smp, numnod, inod_smp_stack,     &
+      call overwrite_cyl_tensor_smp                                     &
+         (np_smp, node1%numnod, inod_smp_stack,                         &
      &    d_nod(1,iphys%i_sgs_simi), xx(1,1), xx(1,2),                  &
      &    s_cylinder, a_s_cylinder)
 
-      call overwrite_cyl_tensor_smp(np_smp, numnod, inod_smp_stack,     &
+      call overwrite_cyl_tensor_smp                                     &
+     &   (np_smp, node1%numnod, inod_smp_stack,                         &
      &    d_nod(1,iphys%i_sgs_grad), xx(1,1), xx(1,2),                  &
      &    s_cylinder, a_s_cylinder)
 
-      call overwrite_cyl_tensor_smp(np_smp, numnod, inod_smp_stack,     &
+      call overwrite_cyl_tensor_smp                                     &
+     &   (np_smp, node1%numnod, inod_smp_stack,                         &
      &    d_nod(1,iphys%i_sgs_grad_f), xx(1,1), xx(1,2),                &
      &    s_cylinder, a_s_cylinder)
 !$omp end parallel
@@ -148,7 +151,6 @@
 !
       subroutine convert_dynamic_tensors_2_sph
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
@@ -157,15 +159,18 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'convert spherical corrdinate'
 !$omp parallel
-      call overwrite_sph_tensor_smp(np_smp, numnod, inod_smp_stack,     &
+      call overwrite_sph_tensor_smp                                     &
+     &   (np_smp, node1%numnod, inod_smp_stack,                         &
      &    d_nod(1,iphys%i_sgs_simi), xx(1,1), xx(1,2), xx(1,3),         &
      &    radius, s_cylinder, a_radius, a_s_cylinder)
 !
-      call overwrite_sph_tensor_smp(np_smp, numnod, inod_smp_stack,     &
+      call overwrite_sph_tensor_smp                                     &
+     &   (np_smp, node1%numnod, inod_smp_stack,                         &
      &    d_nod(1,iphys%i_sgs_grad), xx(1,1), xx(1,2), xx(1,3),         &
      &    radius, s_cylinder, a_radius, a_s_cylinder)
 !
-      call overwrite_sph_tensor_smp(np_smp, numnod, inod_smp_stack,     &
+      call overwrite_sph_tensor_smp                                     &
+     &   (np_smp, node1%numnod, inod_smp_stack,                         &
      &    d_nod(1,iphys%i_sgs_grad_f), xx(1,1), xx(1,2), xx(1,3),       &
      &    radius, s_cylinder, a_radius, a_s_cylinder)
 !$omp end parallel

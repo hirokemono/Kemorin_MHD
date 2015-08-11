@@ -22,6 +22,7 @@
 !
       use m_machine_parameter
       use m_control_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
       use m_SGS_address
@@ -39,7 +40,7 @@
 !    reset model coefficients
 !
       call reset_tensor_sgs_model_coefs(icomp_sgs_lor)
-      call s_clear_work_4_dynamic_model
+      call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !    SGS term by similarity model
 !

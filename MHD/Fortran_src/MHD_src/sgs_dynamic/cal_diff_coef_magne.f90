@@ -19,6 +19,7 @@
 !
       subroutine s_cal_diff_coef_magne
 !
+      use m_geometry_data
       use m_machine_parameter
       use m_control_parameter
       use m_node_phys_address
@@ -50,7 +51,7 @@
 !    reset model coefficients
 !
       call reset_diff_model_coefs(iak_diff_b)
-      call s_clear_work_4_dynamic_model
+      call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !    get filtered scalar potential(to iphys%i_sgs_grad_f)
 !

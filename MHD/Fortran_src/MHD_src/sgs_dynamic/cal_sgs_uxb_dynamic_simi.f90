@@ -28,6 +28,7 @@
 !
       subroutine s_cal_sgs_uxb_dynamic_simi
 !
+      use m_geometry_data
       use m_node_phys_address
       use m_finite_element_matrix
 !
@@ -41,7 +42,7 @@
 !    reset model coefficients
 !
       call reset_vector_sgs_model_coefs(icomp_sgs_uxb)
-      call s_clear_work_4_dynamic_model
+      call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !   similarity model with wider filter
 !
@@ -81,6 +82,7 @@
       subroutine cal_sgs_induct_t_dynamic_simi
 !
       use m_node_phys_address
+      use m_geometry_data
 !
       use reset_dynamic_model_coefs
       use cal_filtering_vectors
@@ -96,7 +98,7 @@
 !
       call reset_vector_sgs_model_coefs(icomp_sgs_uxb)
       call reset_vector_sgs_nod_m_coefs(icomp_sgs_uxb)
-      call s_clear_work_4_dynamic_model
+      call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !   similarity model with wider filter
 !

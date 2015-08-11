@@ -39,7 +39,7 @@
       subroutine cal_sgs_m_flux_diffuse(i_sgs, i_vect)
 !
       use m_control_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
 !
@@ -56,7 +56,7 @@
 !
 !
 !$omp parallel do
-      do inod = 1, numnod
+      do inod = 1, node1%numnod
         d_nod(inod,i_sgs  ) = two * d_nod(inod,i_sgs  )
         d_nod(inod,i_sgs+1) =       d_nod(inod,i_sgs+1)                 &
      &                            + d_nod(inod,iphys%i_sgs_diffuse  )

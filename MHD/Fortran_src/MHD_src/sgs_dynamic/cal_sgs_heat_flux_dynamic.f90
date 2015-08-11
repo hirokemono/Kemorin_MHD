@@ -20,6 +20,7 @@
 !
       subroutine cal_sgs_hf_dynamic
 !
+      use m_geometry_data
       use m_machine_parameter
       use m_control_parameter
       use m_phys_constants
@@ -40,7 +41,7 @@
 !    reset model coefficients
 !
       call reset_vector_sgs_model_coefs(icomp_sgs_hf)
-      call s_clear_work_4_dynamic_model
+      call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !    SGS term by similarity model
 !

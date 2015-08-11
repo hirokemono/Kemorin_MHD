@@ -25,6 +25,7 @@
 !
       subroutine s_cal_sgs_m_flux_dynamic_simi
 !
+      use m_geometry_data
       use m_node_phys_address
       use m_SGS_model_coefs
       use m_SGS_address
@@ -44,7 +45,7 @@
 !
       call reset_tensor_sgs_model_coefs(icomp_sgs_mf)
       call reset_tensor_sgs_nod_m_coefs(icomp_sgs_mf)
-      call s_clear_work_4_dynamic_model
+      call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !   similarity model with wider filter
 !
@@ -92,6 +93,7 @@
 !
       subroutine cal_sgs_maxwell_dynamic_simi
 !
+      use m_geometry_data
       use m_node_phys_address
       use m_SGS_model_coefs
       use m_SGS_address
@@ -111,7 +113,7 @@
 !
       call reset_tensor_sgs_model_coefs(icomp_sgs_lor)
       call reset_tensor_sgs_nod_m_coefs(icomp_sgs_lor)
-      call s_clear_work_4_dynamic_model
+      call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !   similarity model with wider filter
 !

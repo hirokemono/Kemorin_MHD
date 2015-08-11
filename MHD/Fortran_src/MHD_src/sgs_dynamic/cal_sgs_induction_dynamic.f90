@@ -26,6 +26,7 @@
 !
       subroutine cal_sgs_uxb_dynamic
 !
+      use m_geometry_data
       use m_finite_element_matrix
       use m_node_phys_address
       use m_SGS_address
@@ -42,7 +43,7 @@
 !    reset model coefficients
 !
       call reset_vector_sgs_model_coefs(icomp_sgs_uxb)
-      call s_clear_work_4_dynamic_model
+      call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !    SGS term by similarity model (to iphys%i_sgs_simi)
 !
@@ -81,6 +82,7 @@
 !
       subroutine cal_sgs_induct_t_dynamic
 !
+      use m_geometry_data
       use m_node_phys_address
       use m_SGS_address
 !
@@ -97,7 +99,7 @@
 !    reset model coefficients
 !
       call reset_vector_sgs_model_coefs(icomp_sgs_uxb)
-      call s_clear_work_4_dynamic_model
+      call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !    SGS term by similarity model
 !

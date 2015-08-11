@@ -15,7 +15,6 @@
 !
       use m_control_parameter
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_physical_property
 !
@@ -292,9 +291,9 @@
       use m_node_phys_data
 !
       integer (kind=kint), intent(in) :: i_fc
-      real (kind=kreal), intent(in) :: ml_o_fl(numnod)
+      real (kind=kreal), intent(in) :: ml_o_fl(node1%numnod)
 !
-      real (kind=kreal), intent(inout) :: ff(numnod,3)
+      real (kind=kreal), intent(inout) :: ff(node1%numnod,3)
 !
       integer (kind=kint) :: iproc, inod
       integer (kind=kint) :: ist, ied
