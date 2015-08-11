@@ -57,7 +57,7 @@
       real (kind=kreal), intent(inout) :: scalar_sf(sf_grp%num_item)
 !
 !
-      call scalar_phys_2_each_sf(np_smp, numnod, numele,                &
+      call scalar_phys_2_each_sf(np_smp, node1%numnod, numele,          &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -79,7 +79,7 @@
       real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
-      call vector_phys_2_each_sf(np_smp, numnod, numele,                &
+      call vector_phys_2_each_sf(np_smp, node1%numnod, numele,          &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -101,7 +101,7 @@
       real (kind=kreal), intent(inout) :: tensor_sf(sf_grp%num_item,6)
 !
 !
-      call vector_phys_2_each_sf(np_smp, numnod, numele,                &
+      call vector_phys_2_each_sf(np_smp, node1%numnod, numele,          &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -125,7 +125,7 @@
       real (kind=kreal), intent(inout) :: scalar_sf(sf_grp%num_item)
 !
 !
-      call scalar_phys_2_each_sf_w_coef(np_smp, numnod, numele,         &
+      call scalar_phys_2_each_sf_w_coef(np_smp, node1%numnod, numele,   &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -148,7 +148,7 @@
       real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
-      call vector_phys_2_each_sf_w_coef(np_smp, numnod, numele,         &
+      call vector_phys_2_each_sf_w_coef(np_smp, node1%numnod, numele,   &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -171,7 +171,7 @@
       real (kind=kreal), intent(inout) :: tensor_sf(sf_grp%num_item,6)
 !
 !
-      call vector_phys_2_each_sf_w_coef(np_smp, numnod, numele,         &
+      call vector_phys_2_each_sf_w_coef(np_smp, node1%numnod, numele,   &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -195,7 +195,7 @@
       real (kind=kreal), intent(inout) :: scalar_sf(sf_grp%num_item)
 !
 !
-      call scalar_phys_2_each_sf_w_const(np_smp, numnod, numele,        &
+      call scalar_phys_2_each_sf_w_const(np_smp, node1%numnod, numele,  &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -218,7 +218,7 @@
       real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
-      call vector_phys_2_each_sf_w_const(np_smp, numnod, numele,        &
+      call vector_phys_2_each_sf_w_const(np_smp, node1%numnod, numele,  &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -241,7 +241,7 @@
       real (kind=kreal), intent(inout) :: tensor_sf(sf_grp%num_item,6)
 !
 !
-      call tensor_phys_2_each_sf_w_const(np_smp, numnod, numele,        &
+      call tensor_phys_2_each_sf_w_const(np_smp, node1%numnod, numele,  &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &

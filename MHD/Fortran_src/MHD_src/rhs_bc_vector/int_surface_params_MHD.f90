@@ -83,7 +83,7 @@
       type(surface_node_grp_data), intent(inout) :: sf_grp_nod
 !
 !
-      call allocate_work_norm_nod(numnod)
+      call allocate_work_norm_nod(node1%numnod)
       call alloc_vect_surf_grp_nod(sf_grp_nod)
 !
       call cal_surf_grp_norm_node(numele, nnod_4_ele,                   &

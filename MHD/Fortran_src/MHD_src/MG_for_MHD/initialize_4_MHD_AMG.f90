@@ -29,7 +29,7 @@
       use m_type_AMG_data
       use t_edge_data
       use t_surface_data
-      use m_geometry_parameter
+      use m_geometry_data
       use m_boundary_condition_IDs
       use set_layers_4_MHD_AMG
       use const_mesh_types_info
@@ -59,7 +59,7 @@
       if (iflag_debug .gt. 0) write(*,*) 'alloc_iccgN_vec_type'
       MG_vector(0)%isize_solver_vect = -1
       call alloc_iccgN_vec_type                                         &
-     &           (isix, numnod,  MG_vector(0))
+     &           (isix, node1%numnod,  MG_vector(0))
 !
 !     --------------------- 
 !
