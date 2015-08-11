@@ -15,7 +15,6 @@
       use m_precision
 !
       use m_constants
-      use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
 !
@@ -31,8 +30,8 @@
 !
       integer(kind = kint), intent(in) :: k2
       real (kind=kreal), intent(in) :: d_nod(node1%numnod,3)
-      real (kind=kreal), intent(in) :: ak_e(numele)
-      real (kind=kreal), intent(inout) :: vect_e(numele,3)
+      real (kind=kreal), intent(in) :: ak_e(ele1%numele)
+      real (kind=kreal), intent(inout) :: vect_e(ele1%numele,3)
 !
       integer(kind = kint) :: iproc, inod, iele, ist, ied
 !
@@ -60,8 +59,8 @@
 !
       integer(kind = kint), intent(in) :: k2
       real (kind=kreal), intent(in) :: d_nod(node1%numnod)
-      real (kind=kreal), intent(in) :: ak_e(numele)
-      real (kind=kreal), intent(inout) :: scalar_e(numele)
+      real (kind=kreal), intent(in) :: ak_e(ele1%numele)
+      real (kind=kreal), intent(inout) :: scalar_e(ele1%numele)
 !
       integer(kind = kint) :: iproc, inod, iele, ist, ied
 !
@@ -88,8 +87,8 @@
       integer(kind = kint), intent(in) :: k2, nd
       integer(kind = kint), intent(in) :: l_sim_t(3,3)
       real (kind=kreal), intent(in) :: d_nod(node1%numnod,6)
-      real (kind=kreal), intent(in) :: ak_e(numele)
-      real (kind=kreal), intent(inout) :: vect_e(numele,3)
+      real (kind=kreal), intent(in) :: ak_e(ele1%numele)
+      real (kind=kreal), intent(inout) :: vect_e(ele1%numele,3)
 !
       integer(kind = kint) :: iproc, inod, iele, ist, ied
       integer(kind = kint) :: n1, n2, n3
@@ -123,8 +122,8 @@
       integer(kind = kint), intent(in) :: k2, nd
       integer(kind = kint), intent(in) :: l_asim_t(3,3,2)
       real (kind=kreal), intent(in) :: d_nod(node1%numnod,3)
-      real (kind=kreal), intent(in) :: ak_e(numele)
-      real (kind=kreal), intent(inout) :: vect_e(numele,3)
+      real (kind=kreal), intent(in) :: ak_e(ele1%numele)
+      real (kind=kreal), intent(inout) :: vect_e(ele1%numele,3)
 !
       integer(kind = kint) :: iproc, inod, iele, ist, ied
       integer(kind = kint) :: n1, n2, n3

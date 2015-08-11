@@ -14,11 +14,11 @@
 !      subroutine int_area_ele_sym_tensor_2_node(iele_fsmp_stack,       &
 !     &          tensor_ele)
 !
-!      subroutine int_grp_ele_scalar_2_node(iele_fsmp_stack,            &
+!      subroutine int_grp_ele_scalar_2_node(numele, iele_fsmp_stack,    &
 !     &          nele_grp, iele_grp, scalar_ele)
-!      subroutine int_grp_ele_vector_2_node(iele_fsmp_stack,            &
+!      subroutine int_grp_ele_vector_2_node(numele, iele_fsmp_stack,    &
 !     &          nele_grp, iele_grp, vector_ele)
-!      subroutine int_grp_ele_sym_tensor_2_node(iele_fsmp_stack,        &
+!      subroutine int_grp_ele_sym_tensor_2_node(numele, iele_fsmp_stack,&
 !     &          nele_grp, iele_grp, tensor_ele)
 !
       module int_element_field_2_node
@@ -26,7 +26,6 @@
       use m_precision
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_phys_constants
       use m_fem_gauss_int_coefs
       use m_finite_element_matrix
@@ -45,9 +44,10 @@
 !
       subroutine cal_ele_scalar_2_node(scalar_nod, scalar_ele)
 !
+      use m_geometry_data
       use cal_ff_smp_to_ffs
 !
-      real(kind = kreal), intent(in) :: scalar_ele(numele)
+      real(kind = kreal), intent(in) :: scalar_ele(ele1%numele)
       real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
 !
 !
@@ -60,9 +60,10 @@
 !
       subroutine cal_ele_vector_2_node(vector_nod, vector_ele)
 !
+      use m_geometry_data
       use cal_ff_smp_to_ffs
 !
-      real(kind = kreal), intent(in) :: vector_ele(numele,3)
+      real(kind = kreal), intent(in) :: vector_ele(ele1%numele,3)
       real(kind = kreal), intent(inout) :: vector_nod(node1%numnod,3)
 !
 !
@@ -75,9 +76,10 @@
 !
       subroutine cal_ele_sym_tensor_2_node(tensor_nod, tensor_ele)
 !
+      use m_geometry_data
       use cal_ff_smp_to_ffs
 !
-      real(kind = kreal), intent(in) :: tensor_ele(numele,6)
+      real(kind = kreal), intent(in) :: tensor_ele(ele1%numele,6)
       real(kind = kreal), intent(inout) :: tensor_nod(node1%numnod,6)
 !
 !
@@ -92,8 +94,10 @@
       subroutine int_area_ele_scalar_2_node(iele_fsmp_stack,            &
      &          scalar_ele)
 !
+      use m_geometry_data
+!
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real(kind = kreal), intent(in) :: scalar_ele(numele)
+      real(kind = kreal), intent(in) :: scalar_ele(ele1%numele)
 !
 !
       ff_smp = 0.0d0
@@ -118,8 +122,10 @@
       subroutine int_area_ele_vector_2_node(iele_fsmp_stack,            &
      &          vector_ele)
 !
+      use m_geometry_data
+!
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real(kind = kreal), intent(in) :: vector_ele(numele,3)
+      real(kind = kreal), intent(in) :: vector_ele(ele1%numele,3)
 !
 !
       ff_smp = 0.0d0
@@ -144,8 +150,10 @@
       subroutine int_area_ele_sym_tensor_2_node(iele_fsmp_stack,        &
      &          tensor_ele)
 !
+      use m_geometry_data
+!
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real(kind = kreal), intent(in) :: tensor_ele(numele,6)
+      real(kind = kreal), intent(in) :: tensor_ele(ele1%numele,6)
 !
 !
       ff_t_smp = 0.0d0
@@ -168,10 +176,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_grp_ele_scalar_2_node(iele_fsmp_stack,             &
+      subroutine int_grp_ele_scalar_2_node(numele, iele_fsmp_stack,     &
      &          nele_grp, iele_grp, scalar_ele)
 !
-      integer (kind=kint), intent(in) :: nele_grp
+      integer (kind=kint), intent(in) :: numele, nele_grp
       integer (kind=kint), intent(in) :: iele_grp(nele_grp)
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: scalar_ele(numele)
@@ -196,10 +204,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_grp_ele_vector_2_node(iele_fsmp_stack,             &
+      subroutine int_grp_ele_vector_2_node(numele, iele_fsmp_stack,     &
      &          nele_grp, iele_grp, vector_ele)
 !
-      integer (kind=kint), intent(in) :: nele_grp
+      integer (kind=kint), intent(in) :: numele, nele_grp
       integer (kind=kint), intent(in) :: iele_grp(nele_grp)
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: vector_ele(numele,3)
@@ -224,10 +232,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_grp_ele_sym_tensor_2_node(iele_fsmp_stack,         &
+      subroutine int_grp_ele_sym_tensor_2_node(numele, iele_fsmp_stack, &
      &          nele_grp, iele_grp, tensor_ele)
 !
-      integer (kind=kint), intent(in) :: nele_grp
+      integer (kind=kint), intent(in) :: numele, nele_grp
       integer (kind=kint), intent(in) :: iele_grp(nele_grp)
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: tensor_ele(numele,6)

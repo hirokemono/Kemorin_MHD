@@ -39,10 +39,10 @@
       integer(kind = kint), intent(in) :: k2
       real (kind=kreal), intent(in) :: coef
       real (kind=kreal), intent(in) :: scalar(node1%numnod)
-      real (kind=kreal), intent(inout) :: scalar_e(numele)
+      real (kind=kreal), intent(inout) :: scalar_e(ele1%numele)
 !
 !
-      call const_scalar_2_each_ele(node1%numnod, numele,                &
+      call const_scalar_2_each_ele(node1%numnod, ele1%numele,           &
      &    nnod_4_ele, ie,                                               &
      &    np_smp, iele_smp_stack, k2, ione, ione,                       &
      &    scalar(1), coef, scalar_e)
@@ -56,10 +56,10 @@
       integer(kind = kint), intent(in) :: k2
       real (kind=kreal), intent(in) :: coef
       real (kind=kreal), intent(in) :: vector(node1%numnod,3)
-      real (kind=kreal), intent(inout) :: vector_e(numele,3)
+      real (kind=kreal), intent(inout) :: vector_e(ele1%numele,3)
 !
 !
-      call const_vector_2_each_ele(node1%numnod, numele,                &
+      call const_vector_2_each_ele(node1%numnod, ele1%numele,           &
      &    nnod_4_ele, ie,                                               &
      &    np_smp, iele_smp_stack, k2, ione, ithree,                     &
      &    vector, coef, vector_e)
@@ -73,10 +73,10 @@
       integer(kind = kint), intent(in) :: k2
       real (kind=kreal), intent(in) :: coef
       real (kind=kreal), intent(in) :: tensor(node1%numnod,6)
-      real (kind=kreal), intent(inout) :: tensor_e(numele,6)
+      real (kind=kreal), intent(inout) :: tensor_e(ele1%numele,6)
 !
 !
-      call const_tensor_2_each_ele(node1%numnod, numele,                &
+      call const_tensor_2_each_ele(node1%numnod, ele1%numele,           &
      &    nnod_4_ele, ie,                                               &
      &    np_smp, iele_smp_stack, k2, ione, isix,                       &
      &    tensor, coef, tensor_e)
@@ -92,10 +92,10 @@
 !
       integer(kind = kint), intent(in) :: k2, i_fld
       real (kind=kreal), intent(in) :: coef
-      real (kind=kreal), intent(inout) :: scalar_e(numele)
+      real (kind=kreal), intent(inout) :: scalar_e(ele1%numele)
 !
 !
-      call const_scalar_2_each_ele(node1%numnod, numele,                &
+      call const_scalar_2_each_ele(node1%numnod, ele1%numele,           &
      &    nnod_4_ele, ie,                                               &
      &    np_smp, iele_smp_stack, k2, i_fld, num_tot_nod_phys,          &
      &    d_nod, coef, scalar_e)
@@ -110,10 +110,10 @@
 !
       integer(kind = kint), intent(in) :: k2, i_fld
       real (kind=kreal), intent(in) :: coef
-      real (kind=kreal), intent(inout) :: vector_e(numele,3)
+      real (kind=kreal), intent(inout) :: vector_e(ele1%numele,3)
 !
 !
-      call const_vector_2_each_ele(node1%numnod, numele,                &
+      call const_vector_2_each_ele(node1%numnod, ele1%numele,           &
      &    nnod_4_ele, ie,                                               &
      &    np_smp, iele_smp_stack, k2, i_fld, num_tot_nod_phys,          &
      &    d_nod, coef, vector_e)
@@ -128,10 +128,10 @@
 !
       integer(kind = kint), intent(in) :: k2, i_fld
       real (kind=kreal), intent(in) :: coef
-      real (kind=kreal), intent(inout) :: tensor_e(numele,6)
+      real (kind=kreal), intent(inout) :: tensor_e(ele1%numele,6)
 !
 !
-      call const_tensor_2_each_ele(node1%numnod, numele,                &
+      call const_tensor_2_each_ele(node1%numnod, ele1%numele,           &
      &    nnod_4_ele, ie,                                               &
      &    np_smp, iele_smp_stack, k2, i_fld, num_tot_nod_phys,          &
      &    d_nod, coef, tensor_e)
@@ -148,10 +148,10 @@
 !
       integer(kind = kint), intent(in) :: k2, i_flux, nd
       real (kind=kreal), intent(in) :: coef
-      real (kind=kreal), intent(inout) :: vector_e(numele,3)
+      real (kind=kreal), intent(inout) :: vector_e(ele1%numele,3)
 !
 !
-      call const_tensor_2_vec_each_ele(node1%numnod, numele,            &
+      call const_tensor_2_vec_each_ele(node1%numnod, ele1%numele,       &
      &    nnod_4_ele, ie,                                               &
      &    np_smp, iele_smp_stack, k2, i_flux, nd, num_tot_nod_phys,     &
      &    d_nod, coef, vector_e)
@@ -167,11 +167,11 @@
 !
       integer(kind = kint), intent(in) :: k2, i_flux, nd
       real (kind=kreal), intent(in) :: coef
-      real (kind=kreal), intent(inout) :: vector_e(numele,3)
+      real (kind=kreal), intent(inout) :: vector_e(ele1%numele,3)
 !
 !
       call const_as_tsr_2_vec_each_ele                                  &
-     &   (node1%numnod, numele, nnod_4_ele, ie,                         &
+     &   (node1%numnod, ele1%numele, nnod_4_ele, ie,                    &
      &    np_smp, iele_smp_stack, k2, i_flux, nd, num_tot_nod_phys,     &
      &    d_nod, coef, vector_e)
 !

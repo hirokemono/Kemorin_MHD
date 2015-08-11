@@ -43,7 +43,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_fem_gauss_int_coefs
       use m_jacobians
@@ -63,13 +63,13 @@
 !
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real(kind=kreal),   intent(in) :: scalar_1(numele)
+      real(kind=kreal),   intent(in) :: scalar_1(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_scalar_field(numele, nnod_4_ele, nnod_4_ele,         &
+      call fem_skv_scalar_field(ele1%numele, nnod_4_ele, nnod_4_ele,    &
      &    ntot_int_3d, iele_fsmp_stack, n_int, k2, xjac, aw, aw,        &
      &    scalar_1, sk_v)
 !
@@ -84,13 +84,13 @@
 !
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real(kind=kreal), intent(in)    :: vect_1(numele,n_vector)
+      real(kind=kreal), intent(in)    :: vect_1(ele1%numele,n_vector)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_vector_field(numele, nnod_4_ele, nnod_4_ele,         &
+      call fem_skv_vector_field(ele1%numele, nnod_4_ele, nnod_4_ele,    &
      &    ntot_int_3d, iele_fsmp_stack, n_int, k2, xjac, aw, aw,        &
      &    vect_1, sk_v)
 !
@@ -105,13 +105,14 @@
 !
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real(kind=kreal), intent(in) :: tensor_1(numele,n_sym_tensor)
+      real(kind=kreal), intent(in)                                      &
+     &                   :: tensor_1(ele1%numele,n_sym_tensor)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_tensor_field(numele, nnod_4_ele, nnod_4_ele,         &
+      call fem_skv_tensor_field(ele1%numele, nnod_4_ele, nnod_4_ele,    &
      &    ntot_int_3d, iele_fsmp_stack, n_int, k2, xjac, aw, aw,        &
      &    tensor_1, sk_v)
 !
@@ -127,13 +128,13 @@
 !
       integer (kind=kint), intent(in) :: n_int
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: scalar_ele(numele)
+      real (kind=kreal), intent(in) :: scalar_ele(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_scalar_on_ele_m(numele, nnod_4_ele,                  &
+      call fem_skv_scalar_on_ele_m(ele1%numele, nnod_4_ele,             &
      &          iele_fsmp_stack, ntot_int_3d, n_int, xjac, aw,          &
      &          scalar_ele, sk_v)
 !
@@ -148,13 +149,13 @@
 !
       integer (kind=kint), intent(in) :: n_int
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: vector_ele(numele,3)
+      real (kind=kreal), intent(in) :: vector_ele(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_vector_on_ele_m(numele, nnod_4_ele,                  &
+      call fem_skv_vector_on_ele_m(ele1%numele, nnod_4_ele,             &
      &          iele_fsmp_stack, ntot_int_3d, n_int, xjac, aw,          &
      &          vector_ele, sk_v)
 !
@@ -169,13 +170,13 @@
 !
       integer (kind=kint), intent(in) :: n_int
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: tensor_ele(numele,6)
+      real (kind=kreal), intent(in) :: tensor_ele(ele1%numele,6)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_tensor_on_ele_m(numele, nnod_4_ele,                  &
+      call fem_skv_tensor_on_ele_m(ele1%numele, nnod_4_ele,             &
      &          iele_fsmp_stack, ntot_int_3d, n_int, xjac, aw,          &
      &          tensor_ele, sk_v)
 !
@@ -187,18 +188,17 @@
       subroutine fem_skv_scalar_on_ele_HRZ_1st(iele_fsmp_stack,         &
      &          ml_ele_diag, scalar_ele, sk_v)
 !
-      use m_geometry_data
       use fem_skv_scalar_on_ele
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: scalar_ele(numele)
-      real (kind=kreal), intent(in) :: ml_ele_diag(numele)
+      real (kind=kreal), intent(in) :: scalar_ele(ele1%numele)
+      real (kind=kreal), intent(in) :: ml_ele_diag(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_scalar_on_ele_HRZ_m(numele, nnod_4_ele,              &
+      call fem_skv_scalar_on_ele_HRZ_m(ele1%numele, nnod_4_ele,         &
      &    iele_fsmp_stack, volume_ele, ml_ele_diag, scalar_ele, sk_v)
 !
       end subroutine fem_skv_scalar_on_ele_HRZ_1st
@@ -208,18 +208,17 @@
       subroutine fem_skv_vector_on_ele_HRZ_1st(iele_fsmp_stack,         &
      &          ml_ele_diag, vector_ele, sk_v)
 !
-      use m_geometry_data
       use fem_skv_vector_on_ele
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: vector_ele(numele,3)
-      real (kind=kreal), intent(in) :: ml_ele_diag(numele)
+      real (kind=kreal), intent(in) :: vector_ele(ele1%numele,3)
+      real (kind=kreal), intent(in) :: ml_ele_diag(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_vector_on_ele_HRZ_m(numele, nnod_4_ele,              &
+      call fem_skv_vector_on_ele_HRZ_m(ele1%numele, nnod_4_ele,         &
      &    iele_fsmp_stack, volume_ele, ml_ele_diag, vector_ele, sk_v)
 !
       end subroutine fem_skv_vector_on_ele_HRZ_1st
@@ -233,14 +232,14 @@
       use fem_skv_tensor_on_ele
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: tensor_ele(numele,6)
-      real (kind=kreal), intent(in) :: ml_ele_diag(numele)
+      real (kind=kreal), intent(in) :: tensor_ele(ele1%numele,6)
+      real (kind=kreal), intent(in) :: ml_ele_diag(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_tensor_on_ele_HRZ_m(numele, nnod_4_ele,              &
+      call fem_skv_tensor_on_ele_HRZ_m(ele1%numele, nnod_4_ele,         &
      &    iele_fsmp_stack, volume_ele, ml_ele_diag, tensor_ele, sk_v)
 !
       end subroutine fem_skv_tensor_on_ele_HRZ_1st
@@ -258,13 +257,13 @@
 !
       integer (kind=kint), intent(in) :: n_int
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: scalar_ele(numele)
+      real (kind=kreal), intent(in) :: scalar_ele(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_scalar_on_ele_grp_m(numele, nnod_4_ele,              &
+      call fem_skv_scalar_on_ele_grp_m(ele1%numele, nnod_4_ele,         &
      &    iele_fsmp_stack, nele_grp, iele_grp, ntot_int_3d, n_int,      &
      &     xjac, aw, scalar_ele, sk_v)
 !
@@ -282,13 +281,13 @@
 !
       integer (kind=kint), intent(in) :: n_int
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: vector_ele(numele,3)
+      real (kind=kreal), intent(in) :: vector_ele(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_vector_on_ele_grp_m(numele, nnod_4_ele,              &
+      call fem_skv_vector_on_ele_grp_m(ele1%numele, nnod_4_ele,         &
      &    iele_fsmp_stack, nele_grp, iele_grp, ntot_int_3d, n_int,      &
      &     xjac, aw, vector_ele, sk_v)
 !
@@ -306,13 +305,13 @@
 !
       integer (kind=kint), intent(in) :: n_int
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: tensor_ele(numele,6)
+      real (kind=kreal), intent(in) :: tensor_ele(ele1%numele,6)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_tensor_on_ele_grp_m(numele, nnod_4_ele,              &
+      call fem_skv_tensor_on_ele_grp_m(ele1%numele, nnod_4_ele,         &
      &    iele_fsmp_stack, nele_grp, iele_grp, ntot_int_3d, n_int,      &
      &     xjac, aw, tensor_ele, sk_v)
 !
@@ -324,21 +323,20 @@
       subroutine fem_skv_scalar_on_egrp_HRZ_1st(iele_fsmp_stack,        &
      &          nele_grp, iele_grp, ml_ele_diag, scalar_ele, sk_v)
 !
-      use m_geometry_data
       use fem_skv_scalar_on_ele
 !
       integer (kind=kint), intent(in) :: nele_grp
       integer (kind=kint), intent(in) :: iele_grp(nele_grp)
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: scalar_ele(numele)
-      real (kind=kreal), intent(in) :: ml_ele_diag(numele)
+      real (kind=kreal), intent(in) :: scalar_ele(ele1%numele)
+      real (kind=kreal), intent(in) :: ml_ele_diag(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_scalar_on_ele_grp_HRZ(numele, nnod_4_ele,            &
+      call fem_skv_scalar_on_ele_grp_HRZ(ele1%numele, nnod_4_ele,       &
      &    iele_fsmp_stack, volume_ele, nele_grp, iele_grp, ml_ele_diag, &
      &    scalar_ele, sk_v)
 !
@@ -349,21 +347,20 @@
       subroutine fem_skv_vector_on_egrp_HRZ_1st(iele_fsmp_stack,        &
      &          nele_grp, iele_grp, ml_ele_diag, vector_ele, sk_v)
 !
-      use m_geometry_data
       use fem_skv_vector_on_ele
 !
       integer (kind=kint), intent(in) :: nele_grp
       integer (kind=kint), intent(in) :: iele_grp(nele_grp)
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: vector_ele(numele,3)
-      real (kind=kreal), intent(in) :: ml_ele_diag(numele)
+      real (kind=kreal), intent(in) :: vector_ele(ele1%numele,3)
+      real (kind=kreal), intent(in) :: ml_ele_diag(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_vector_on_ele_grp_HRZ(numele, nnod_4_ele,            &
+      call fem_skv_vector_on_ele_grp_HRZ(ele1%numele, nnod_4_ele,       &
      &    iele_fsmp_stack, volume_ele, nele_grp, iele_grp, ml_ele_diag, &
      &    vector_ele, sk_v)
 !
@@ -374,21 +371,20 @@
       subroutine fem_skv_tensor_on_egrp_HRZ_1st(iele_fsmp_stack,        &
      &          nele_grp, iele_grp, ml_ele_diag, tensor_ele, sk_v)
 !
-      use m_geometry_data
       use fem_skv_tensor_on_ele
 !
       integer (kind=kint), intent(in) :: nele_grp
       integer (kind=kint), intent(in) :: iele_grp(nele_grp)
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: tensor_ele(numele,6)
-      real (kind=kreal), intent(in) :: ml_ele_diag(numele)
+      real (kind=kreal), intent(in) :: tensor_ele(ele1%numele,6)
+      real (kind=kreal), intent(in) :: ml_ele_diag(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_tensor_on_ele_grp_HRZ(numele, nnod_4_ele,            &
+      call fem_skv_tensor_on_ele_grp_HRZ(ele1%numele, nnod_4_ele,       &
      &    iele_fsmp_stack, volume_ele, nele_grp, iele_grp, ml_ele_diag, &
      &    tensor_ele, sk_v)
 !

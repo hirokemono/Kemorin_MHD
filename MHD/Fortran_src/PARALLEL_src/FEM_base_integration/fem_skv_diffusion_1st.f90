@@ -19,7 +19,7 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_fem_gauss_int_coefs
       use m_jacobians
@@ -41,14 +41,14 @@
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(in) :: ak_d(numele)
-      real(kind=kreal),   intent(in) :: scalar_1(numele)
+      real (kind=kreal), intent(in) :: ak_d(ele1%numele)
+      real(kind=kreal),   intent(in) :: scalar_1(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_scalar_diffuse(numele, nnod_4_ele, nnod_4_ele,       &
+      call fem_skv_scalar_diffuse(ele1%numele, nnod_4_ele, nnod_4_ele,  &
      &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
      &    xjac, dwx, dwx, ak_d, scalar_1, sk_v)
 !
@@ -64,14 +64,14 @@
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(in) :: ak_d(numele)
-      real(kind=kreal), intent(in) :: vect_1(numele,3)
+      real (kind=kreal), intent(in) :: ak_d(ele1%numele)
+      real(kind=kreal), intent(in) :: vect_1(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_vector_diffuse(numele, nnod_4_ele, nnod_4_ele,       &
+      call fem_skv_vector_diffuse(ele1%numele, nnod_4_ele, nnod_4_ele,  &
      &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
      &    xjac, dwx, dwx, ak_d, vect_1, sk_v)
 !
@@ -88,10 +88,10 @@
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_poisson(numele, nnod_4_ele, nnod_4_ele,              &
+      call fem_skv_poisson(ele1%numele, nnod_4_ele, nnod_4_ele,         &
      &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
      &    xjac, dwx, dwx, sk_v)
 !
@@ -108,10 +108,10 @@
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_poisson(numele, num_t_linear, num_t_linear,          &
+      call fem_skv_poisson(ele1%numele, num_t_linear, num_t_linear,     &
      &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
      &    xjac, dnx, dnx, sk_v)
 !

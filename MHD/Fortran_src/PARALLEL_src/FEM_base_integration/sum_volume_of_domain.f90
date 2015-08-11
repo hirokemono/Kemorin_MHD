@@ -50,7 +50,6 @@
 !
       subroutine sum_4_volume(iele_fsmp_stack, vol_local)
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -89,7 +88,6 @@
        subroutine sum_of_volume_by_ele_table(numele_field,              &
      &           iele_fsmp_stack, iele_field, vol_local)
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       integer (kind=kint), intent(in) :: numele_field

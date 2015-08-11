@@ -22,7 +22,6 @@
 !
        subroutine fem_element_volume_pg(n_int)
 !
-      use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
@@ -35,7 +34,7 @@
 !
 !
 !$omp workshare
-      volume_ele(1:numele) = 0.0d0
+      volume_ele(1:ele1%numele) = 0.0d0
 !$omp end workshare
 !
 !$omp parallel do private(iele,ii,ix,istart,iend) 

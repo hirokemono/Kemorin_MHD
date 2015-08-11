@@ -108,11 +108,11 @@
       allocate(ff_m_smp(maxnod_4_smp,3,np_smp))
       allocate(ff_t_smp(maxnod_4_smp,6,np_smp))
 !
-      allocate(sk1(numele,nnod_4_ele))
-      allocate(sk6(numele,n_sym_tensor,nnod_4_ele))
+      allocate(sk1(ele1%numele,nnod_4_ele))
+      allocate(sk6(ele1%numele,n_sym_tensor,nnod_4_ele))
 !
-      allocate(ml_ele_diag(numele))
-      allocate(ml_o_ele_diag(numele))
+      allocate(ml_ele_diag(ele1%numele))
+      allocate(ml_o_ele_diag(ele1%numele))
 !
       if(node1%numnod .gt. 0) then
         ml =  0.0d0
@@ -124,7 +124,7 @@
         ff_t_smp = 0.0d0
       end if
 !
-      if(numele .gt. 0) then
+      if(ele1%numele .gt. 0) then
         sk1 =      0.0d0
         sk6 =      0.0d0
         ml_ele_diag = 0.0d0
@@ -198,7 +198,7 @@
 !
       subroutine reset_sk1
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint) :: k1, iele
 !
@@ -206,7 +206,7 @@
 !$omp parallel private(iele)
       do k1 = 1, nnod_4_ele
 !$omp do
-        do iele = 1, numele
+        do iele = 1, ele1%numele
           sk1(iele,k1) = 0.0d0
         end do
 !$omp end do nowait
@@ -219,7 +219,7 @@
 !
       subroutine reset_sk6(numdir)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
 !
       integer(kind = kint), intent(in) :: numdir
@@ -230,7 +230,7 @@
       do k1 = 1, nnod_4_ele
         do nd = 1, numdir
 !$omp do
-          do iele = 1, numele
+          do iele = 1, ele1%numele
              sk6(iele,nd,k1) = 0.0d0
           end do
 !$omp end do nowait

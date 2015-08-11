@@ -28,7 +28,6 @@
       subroutine s_sum_normal_4_surf_group(sf_grp, sf_grp_v)
 !
       use calypso_mpi
-      use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
       use t_group_data
@@ -42,7 +41,7 @@
 !
       call allocate_sum_local_area_grp(sf_grp%num_grp)
 !
-      call s_sum_norm_of_surf_group(np_smp, numele, e_multi,            &
+      call s_sum_norm_of_surf_group(np_smp, ele1%numele, e_multi,       &
      &    sf_grp%num_grp, sf_grp%num_item, sf_grp%item_sf_grp,          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    sf_grp_v%area_sf_grp)

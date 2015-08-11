@@ -67,7 +67,8 @@
       if (id_filter_area_grp(1) .eq. -1) then
         call int_area_ele_scalar_2_node(iele_smp_stack, elen_ele)
       else
-        call int_grp_ele_scalar_2_node(iele_filter_smp_stack,           &
+        call int_grp_ele_scalar_2_node                                  &
+     &     (ele1%numele, iele_filter_smp_stack,                         &
      &      nele_4_filter, iele_4_filter, elen_ele)
       end if
 !

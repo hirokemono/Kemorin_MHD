@@ -178,7 +178,7 @@
 !
       write(50+my_rank,*) 'k1, iele, sk6'
       do k1 = 1, nnod_4_ele
-       do iele = 1, numele
+       do iele = 1, ele1%numele
         write(50+my_rank,'(2i16,1p10e25.14)')                           &
      &         k1, iele, sk6(iele,1:6,k1)
        end do

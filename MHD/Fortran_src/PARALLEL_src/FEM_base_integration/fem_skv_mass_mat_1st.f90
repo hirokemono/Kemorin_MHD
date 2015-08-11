@@ -36,7 +36,7 @@
 !
       use m_machine_parameter
       use m_phys_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use m_jacobians
 !
       use m_fem_gauss_int_coefs
@@ -60,10 +60,10 @@
       integer (kind=kint), intent(in) :: num_int
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_mass_matrix(numele, nnod_4_ele, nnod_4_ele,          &
+      call fem_skv_mass_matrix(ele1%numele, nnod_4_ele, nnod_4_ele,     &
      &          np_smp, iele_fsmp_stack, ntot_int_3d, num_int,          &
      &          xjac, aw, aw, k2, sk_v)
 !
@@ -82,10 +82,10 @@
       integer (kind=kint), intent(in) :: num_int
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_mass_matrix_diag(numele, nnod_4_ele, np_smp,         &
+      call fem_skv_mass_matrix_diag(ele1%numele, nnod_4_ele, np_smp,    &
      &          iele_fsmp_stack, ntot_int_3d, num_int, xjac, aw, sk_v)
 !
       end  subroutine fem_skv_mass_matrix_diag_1st
@@ -103,10 +103,10 @@
       integer (kind=kint), intent(in) :: num_int
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_mass_mat_diag_HRZ(numele, nnod_4_ele, np_smp,        &
+      call fem_skv_mass_mat_diag_HRZ(ele1%numele, nnod_4_ele, np_smp,   &
      &          iele_fsmp_stack, ntot_int_3d, num_int, aw, xjac, sk_v)
 !
       end  subroutine fem_skv_mass_mat_diag_HRZ_1st
@@ -120,13 +120,13 @@
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real (kind=kreal), intent(in)                                     &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
-      real (kind=kreal), intent(inout) :: sk_e(numele)
-      real (kind=kreal), intent(inout) :: ml_e(numele)
+      real (kind=kreal), intent(inout) :: sk_e(ele1%numele)
+      real (kind=kreal), intent(inout) :: ml_e(ele1%numele)
 !
 !
-      call sum_skv_diagonal_4_HRZ(numele, nnod_4_ele, np_smp,           &
+      call sum_skv_diagonal_4_HRZ(ele1%numele, nnod_4_ele, np_smp,      &
      &           iele_fsmp_stack, sk_v, sk_e, ml_e)
 !
       end subroutine sum_skv_diagonal_4_HRZ_1st
@@ -140,13 +140,13 @@
       use fem_skv_mass_mat
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in)  :: ml_e(numele)
+      real (kind=kreal), intent(in)  :: ml_e(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call volume_average_skv_HRZ(numele, nnod_4_ele, np_smp,           &
+      call volume_average_skv_HRZ(ele1%numele, nnod_4_ele, np_smp,      &
      &          iele_fsmp_stack, volume_ele, sk_v, ml_e)
 !
       end subroutine vol_average_skv_HRZ_1st
@@ -168,10 +168,10 @@
       integer (kind=kint), intent(in) :: num_int
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_grp_skv_mass_matrix(numele, nnod_4_ele, nnod_4_ele,      &
+      call fem_grp_skv_mass_matrix(ele1%numele, nnod_4_ele, nnod_4_ele, &
      &          np_smp, iele_fsmp_stack, nele_grp, iele_grp,            &
      &          ntot_int_3d, num_int, xjac, aw, aw, k2, sk_v)
 !
@@ -192,10 +192,10 @@
       integer (kind=kint), intent(in) :: num_int
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_grp_skv_mass_matrix_diag(numele, nnod_4_ele,             &
+      call fem_grp_skv_mass_matrix_diag(ele1%numele, nnod_4_ele,        &
      &          np_smp, iele_fsmp_stack, nele_grp, iele_grp,            &
      &          ntot_int_3d, num_int, xjac, aw, sk_v)
 !
@@ -216,10 +216,10 @@
       integer (kind=kint), intent(in) :: num_int
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_grp_skv_mass_mat_diag_HRZ(numele, nnod_4_ele,            &
+      call fem_grp_skv_mass_mat_diag_HRZ(ele1%numele, nnod_4_ele,       &
      &          np_smp, iele_fsmp_stack, nele_grp, iele_grp,            &
      &          ntot_int_3d, num_int, xjac, aw, sk_v)
 !
@@ -231,19 +231,18 @@
       subroutine grp_volume_average_skv_HRZ_1                           &
      &         (iele_fsmp_stack, nele_grp, iele_grp, sk_v, ml_e)
 !
-      use m_geometry_data
       use fem_grp_skv_mass_mat
 !
       integer (kind=kint), intent(in) :: nele_grp
       integer (kind=kint), intent(in) :: iele_grp(nele_grp)
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in)  :: ml_e(numele)
+      real (kind=kreal), intent(in)  :: ml_e(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call grp_volume_average_skv_HRZ(numele, nnod_4_ele, np_smp,       &
+      call grp_volume_average_skv_HRZ(ele1%numele, nnod_4_ele, np_smp,  &
      &          iele_fsmp_stack, nele_grp, iele_grp, volume_ele,        &
      &          sk_v, ml_e)
 !

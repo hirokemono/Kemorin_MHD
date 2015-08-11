@@ -23,7 +23,7 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
 !
       implicit none
@@ -43,10 +43,10 @@
       real (kind=kreal), intent(in) :: coef
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call prodct_w_const_skv_scalar(numele,                            &
+      call prodct_w_const_skv_scalar(ele1%numele,                       &
      &          iele_fsmp_stack, nnod_4_ele, coef, sk_v)
 !
       end subroutine prod_w_const_skv_scalar_1st
@@ -62,10 +62,10 @@
       real (kind=kreal), intent(in) :: coef
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call prodct_w_const_skv_vector(numele,                            &
+      call prodct_w_const_skv_vector(ele1%numele,                       &
      &          iele_fsmp_stack, nnod_4_ele, coef, sk_v)
 !
       end subroutine prod_w_const_skv_vector_1st
@@ -81,10 +81,10 @@
       real (kind=kreal), intent(in) :: coef
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call prodct_w_const_skv_tensor(numele,                            &
+      call prodct_w_const_skv_tensor(ele1%numele,                       &
      &          iele_fsmp_stack, nnod_4_ele, coef, sk_v)
 !
       end subroutine prod_w_const_skv_tensor_1st
@@ -102,10 +102,10 @@
       real (kind=kreal), intent(in) :: c_vec(3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call cross_product_cvec_coef_skv(numele,                          &
+      call cross_product_cvec_coef_skv(ele1%numele,                     &
      &          iele_fsmp_stack, nnod_4_ele, coef, c_vec, sk_v)
 !
       end subroutine cross_prod_cvec_coef_skv_1st
@@ -121,10 +121,10 @@
       real (kind=kreal), intent(in) :: c_vec(3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call cross_product_cvec_skv(numele,                               &
+      call cross_product_cvec_skv(ele1%numele,                          &
      &          iele_fsmp_stack, nnod_4_ele, c_vec, sk_v)
 !
       end subroutine cross_prod_cvec_skv_1st

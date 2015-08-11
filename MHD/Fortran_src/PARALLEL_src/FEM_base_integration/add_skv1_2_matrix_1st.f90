@@ -8,7 +8,7 @@
 !
       use m_precision
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_sorted_node
       use m_phys_constants
 !
@@ -26,13 +26,13 @@
 !
       integer (kind = kint), intent(in) :: k2
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
       integer (kind = kint), intent(in) :: nmat_size
       real(kind=kreal), intent(inout) :: aiccg(0:nmat_size)
 !
 !
-      call add_skv1_2_matrix11(np_smp, numele, nnod_4_ele,              &
+      call add_skv1_2_matrix11(np_smp, ele1%numele, nnod_4_ele,         &
      &    inod_ele_max, num_sort_smp, nod_stack_smp, iele_sort_smp,     &
      &    iconn_sort_smp, idx_4_mat, k2, sk_v, nmat_size, aiccg)
 !
@@ -46,13 +46,13 @@
 !
       integer (kind = kint), intent(in) :: k2
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
       integer (kind = kint), intent(in) :: nmat_size
       real(kind = kreal), intent(inout) :: aiccg33(-8:nmat_size)
 !
 !
-      call add_skv1_2_matrix33(np_smp, numele, nnod_4_ele,              &
+      call add_skv1_2_matrix33(np_smp, ele1%numele, nnod_4_ele,         &
      &    inod_ele_max, num_sort_smp, nod_stack_smp, iele_sort_smp,     &
      &    iconn_sort_smp, idx_4_mat, k2, sk_v, nmat_size, aiccg33)
 !

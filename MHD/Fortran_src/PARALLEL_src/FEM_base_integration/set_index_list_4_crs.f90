@@ -21,14 +21,13 @@
 !
       subroutine set_idx_list_4_whole_crs
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_machine_parameter
       use m_sorted_node
 !
       call allocate_marix_list_general(nnod_4_ele)
       call s_set_index_list_4_crs(np_smp, node1%numnod, internal_node,  &
-     &          numele, nnod_4_ele, ie)
+     &    ele1%numele, nnod_4_ele, ie)
 !
       end subroutine set_idx_list_4_whole_crs
 !

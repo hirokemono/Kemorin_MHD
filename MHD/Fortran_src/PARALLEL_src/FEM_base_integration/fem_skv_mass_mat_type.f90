@@ -169,7 +169,6 @@
       subroutine vol_average_skv_HRZ_type(iele_fsmp_stack, ele,         &
      &          fem_wk, ele_diag)
 !
-      use m_geometry_data
       use fem_skv_mass_mat
 !
       type(element_data), intent(in) :: ele

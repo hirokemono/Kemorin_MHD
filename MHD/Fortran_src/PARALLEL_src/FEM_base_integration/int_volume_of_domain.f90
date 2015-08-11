@@ -53,7 +53,6 @@
       subroutine s_int_volume_of_domain
 !
       use calypso_mpi
-      use m_geometry_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
       use fem_element_volume
