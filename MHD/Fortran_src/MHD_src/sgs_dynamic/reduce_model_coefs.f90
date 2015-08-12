@@ -39,16 +39,16 @@
       subroutine reduce_ele_vect_model_coefs(SGS_factor, ak_sgs)
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use overwrite_prod_const_smp
 !
       real (kind = kreal), intent(in) :: SGS_factor
-      real (kind = kreal), intent(inout) :: ak_sgs(numele,3)
+      real (kind = kreal), intent(inout) :: ak_sgs(ele1%numele,3)
 !
 !
 !$omp parallel
-      call ovwrt_coef_prod_vect_smp(np_smp, numele, iele_smp_stack,     &
-     &    SGS_factor, ak_sgs)
+      call ovwrt_coef_prod_vect_smp(np_smp, ele1%numele,                &
+     &    iele_smp_stack, SGS_factor, ak_sgs)
 !$omp end parallel
 !
       end subroutine reduce_ele_vect_model_coefs
@@ -58,16 +58,16 @@
       subroutine reduce_ele_tensor_model_coefs(SGS_factor, ak_sgs)
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use overwrite_prod_const_smp
 !
       real (kind = kreal), intent(in) :: SGS_factor
-      real (kind = kreal), intent(inout) :: ak_sgs(numele,6)
+      real (kind = kreal), intent(inout) :: ak_sgs(ele1%numele,6)
 !
 !
 !$omp parallel
-      call ovwrt_coef_prod_tensor_smp(np_smp, numele, iele_smp_stack,   &
-     &    SGS_factor, ak_sgs)
+      call ovwrt_coef_prod_tensor_smp(np_smp, ele1%numele,              &
+     &    iele_smp_stack, SGS_factor, ak_sgs)
 !$omp end parallel
 !
       end subroutine reduce_ele_tensor_model_coefs

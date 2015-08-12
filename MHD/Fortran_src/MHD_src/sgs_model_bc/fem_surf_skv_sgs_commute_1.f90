@@ -37,7 +37,7 @@
       use m_constants
       use m_machine_parameter
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
 !
       use t_group_data
@@ -68,10 +68,11 @@
       real (kind=kreal), intent(in) :: scalar_sf(sf_grp%num_item)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_sf_skv_sgs_commute_err_p(np_smp, numele, nnod_4_ele,     &
+      call fem_sf_skv_sgs_commute_err_p                                 &
+     &   (np_smp, ele1%numele, nnod_4_ele,                              &
      &    nnod_4_surf, nnod_4_surf, node_on_sf,                         &
      &    sf_grp%num_item, sf_grp%item_sf_grp, sf_grp%num_grp_smp,      &
      &    sf_grp%istack_grp_smp, jac1_sf_grp_2d_q%ntot_int,             &
@@ -102,10 +103,11 @@
       real (kind=kreal), intent(in) :: scalar_sf(sf_grp%num_item)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_sf_skv_grad_commute_posi(np_smp, numele, nnod_4_ele,     &
+      call fem_sf_skv_grad_commute_posi                                 &
+     &   (np_smp, ele1%numele, nnod_4_ele,                              &
      &    nnod_4_surf, nnod_4_surf, node_on_sf,                         &
      &    sf_grp%num_item, sf_grp%item_sf_grp, sf_grp%num_grp_smp,      &
      &    sf_grp%istack_grp_smp, jac1_sf_grp_2d_q%ntot_int,             &
@@ -136,10 +138,11 @@
       real(kind=kreal), intent(in) :: vect_sf(sf_grp%num_item,3)
 !
       real(kind=kreal), intent(inout)                                   &
-     &                 :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                 :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_sf_skv_div_flux_commute_p(np_smp, numele, nnod_4_ele,    &
+      call fem_sf_skv_div_flux_commute_p                                &
+     &   (np_smp, ele1%numele, nnod_4_ele,                              &
      &    nnod_4_surf, nnod_4_surf, node_on_sf,                         &
      &    sf_grp%num_item, sf_grp%item_sf_grp, sf_grp%num_grp_smp,      &
      &    sf_grp%istack_grp_smp, jac1_sf_grp_2d_q%ntot_int,             &
@@ -171,13 +174,13 @@
      &                  :: dxe_sf(sf_grp%num_item,4,nnod_4_surf)
       real (kind=kreal), intent(in) :: scalar_sf(sf_grp%num_item)
       real (kind=kreal), intent(in) :: coef
-      real (kind=kreal), intent(in) :: ak_diff(numele)
+      real (kind=kreal), intent(in) :: ak_diff(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_sf_skv_sgs_vect_diff_p(np_smp, numele, nnod_4_ele,       &
+      call fem_sf_skv_sgs_vect_diff_p(np_smp, ele1%numele, nnod_4_ele,  &
      &    nnod_4_surf, nnod_4_surf, node_on_sf,                         &
      &    sf_grp%num_item, sf_grp%item_sf_grp, sf_grp%num_grp_smp,      &
      &    sf_grp%istack_grp_smp, jac1_sf_grp_2d_q%ntot_int,             &
@@ -207,13 +210,13 @@
       real (kind=kreal), intent(in)                                     &
      &                  :: dxe_sf(sf_grp%num_item,4,nnod_4_surf)
       real (kind=kreal), intent(in) :: scalar_sf(sf_grp%num_item)
-      real (kind=kreal), intent(in) :: ak_diff(numele), coef
+      real (kind=kreal), intent(in) :: ak_diff(ele1%numele), coef
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_sf_skv_sgs_grad_posi(np_smp, numele, nnod_4_ele,         &
+      call fem_sf_skv_sgs_grad_posi(np_smp, ele1%numele, nnod_4_ele,    &
      &    nnod_4_surf, nnod_4_surf, node_on_sf,                         &
      &    sf_grp%num_item, sf_grp%item_sf_grp, sf_grp%num_grp_smp,      &
      &    sf_grp%istack_grp_smp, jac1_sf_grp_2d_q%ntot_int,             &
@@ -244,13 +247,14 @@
      &                  :: dxe_sf(sf_grp%num_item,4,nnod_4_surf)
       real (kind=kreal), intent(in) :: vect_sf(sf_grp%num_item,3)
       real (kind=kreal), intent(in) :: coef
-      real (kind=kreal), intent(in) :: ak_diff(numele)
+      real (kind=kreal), intent(in) :: ak_diff(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_sf_skv_sgs_div_flux_posi(np_smp, numele, nnod_4_ele,     &
+      call fem_sf_skv_sgs_div_flux_posi                                 &
+     &   (np_smp, ele1%numele, nnod_4_ele,                              &
      &    nnod_4_surf, nnod_4_surf, node_on_sf,                         &
      &    sf_grp%num_item, sf_grp%item_sf_grp, sf_grp%num_grp_smp,      &
      &    sf_grp%istack_grp_smp, jac1_sf_grp_2d_q%ntot_int,             &
@@ -281,13 +285,14 @@
       real (kind=kreal), intent(in)                                     &
      &                  :: dxe_sf(sf_grp%num_item,4,nnod_4_surf)
       real (kind=kreal), intent(in) :: scalar_sf(sf_grp%num_item)
-      real (kind=kreal), intent(in) :: ak_diff(numele)
+      real (kind=kreal), intent(in) :: ak_diff(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_sf_skv_sgs_vect_diff_p(np_smp, numele, num_t_linear,     &
+      call fem_sf_skv_sgs_vect_diff_p                                   &
+     &   (np_smp, ele1%numele, num_t_linear,                            &
      &    num_linear_sf, nnod_4_surf, node_on_sf,                       &
      &    sf_grp%num_item, sf_grp%item_sf_grp, sf_grp%num_grp_smp,      &
      &    sf_grp%istack_grp_smp, jac1_sf_grp_2d_q%ntot_int,             &
@@ -317,13 +322,13 @@
       real (kind=kreal), intent(in)                                     &
      &                  :: dxe_sf(sf_grp%num_item,4,nnod_4_surf)
       real (kind=kreal), intent(in) :: scalar_sf(sf_grp%num_item)
-      real (kind=kreal), intent(in) :: ak_diff(numele)
+      real (kind=kreal), intent(in) :: ak_diff(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_sf_skv_sgs_grad_posi(np_smp, numele, nnod_4_ele,         &
+      call fem_sf_skv_sgs_grad_posi(np_smp, ele1%numele, nnod_4_ele,    &
      &    nnod_4_surf, num_linear_sf, node_on_sf,                       &
      &    sf_grp%num_item, sf_grp%item_sf_grp, sf_grp%num_grp_smp,      &
      &    sf_grp%istack_grp_smp, jac1_sf_grp_2d_q%ntot_int,             &
@@ -351,13 +356,13 @@
       integer(kind = kint), intent(in) :: i_filter
 !
       real (kind=kreal), intent(in) :: phi_sf(sf_grp%num_item)
-      real (kind=kreal), intent(in) :: ak_diff(numele)
+      real (kind=kreal), intent(in) :: ak_diff(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_surf_skv_poisson_sgs(np_smp, numele, num_t_linear,       &
+      call fem_surf_skv_poisson_sgs(np_smp, ele1%numele, num_t_linear,  &
      &  num_t_linear, num_linear_sf, node_on_sf,                        &
      &  sf_grp%num_item, sf_grp%item_sf_grp, sf_grp%num_grp_smp,        &
      &  sf_grp%istack_grp_smp, ntot_int_3d, xjac, dnx, dnx,             &
@@ -382,14 +387,14 @@
       integer(kind = kint), intent(in) :: i_filter, nd_v
 !
       real (kind=kreal), intent(in) :: vect_sf(sf_grp%num_item,3)
-      real (kind=kreal), intent(in) :: ak_diff(numele)
-      real (kind=kreal), intent(in) :: ak_d(numele)
+      real (kind=kreal), intent(in) :: ak_diff(ele1%numele)
+      real (kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_surf_skv_diffusion_sgs(np_smp, numele, nnod_4_ele,       &
+      call fem_surf_skv_diffusion_sgs(np_smp, ele1%numele, nnod_4_ele,  &
      &  nnod_4_ele, nnod_4_surf, node_on_sf,                            &
      &  sf_grp%num_item, sf_grp%item_sf_grp, sf_grp%num_grp_smp,        &
      &  sf_grp%istack_grp_smp, ntot_int_3d, xjac, dwx, dwx,             &

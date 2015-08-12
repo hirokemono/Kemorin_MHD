@@ -1,15 +1,20 @@
-!itp_table_file_IO.f90
-!      module itp_table_file_IO
+!>@file   itp_table_file_IO.f90
+!!@brief  module itp_table_file_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep. 2006
 !
-!        programmed by H.Matsui on Sep. 2006 (ver 1.2)
-!
-!      subroutine write_itp_table_file_a(file_name, my_rank)
-!      subroutine read_itp_table_file_a(file_name, my_rank, ierr)
-!
-!      subroutine write_itp_coefs_dest_file_a(file_name, my_rank)
-!      subroutine read_itp_coefs_dest_file_a(file_name, my_rank, ierr)
-!      subroutine read_itp_table_dest_file_a(file_name, my_rank, ierr)
-!      subroutine read_itp_domain_dest_file_a(file_name, my_rank, ierr)
+!>@brief ASCII Interpolation table file IO
+!!
+!!@verbatim
+!!      subroutine write_itp_table_file_a(file_name, my_rank)
+!!      subroutine read_itp_table_file_a(file_name, my_rank, ierr)
+!!
+!!      subroutine write_itp_coefs_dest_file_a(file_name, my_rank)
+!!      subroutine read_itp_coefs_dest_file_a(file_name, my_rank, ierr)
+!!      subroutine read_itp_table_dest_file_a(file_name, my_rank, ierr)
+!!      subroutine read_itp_domain_dest_file_a(file_name, my_rank, ierr)
+!!@endverbatim
 !
       module itp_table_file_IO
 !

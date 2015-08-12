@@ -1,9 +1,14 @@
-!load_psf_data.f90
-!      module load_psf_data
+!>@file   load_psf_data.f90
+!!@brief  module load_psf_data
+!!
+!!@author H. Matsui
+!!@date Programmed in ????
 !
-!      Written by H. Matsui
-!
-!      subroutine s_load_psf_data(istep)
+!>@brief Load surfacing data from file
+!!
+!!@verbatim
+!!      subroutine s_load_psf_data(istep)
+!!@endverbatim
 !
       module load_psf_data
 !

@@ -20,7 +20,7 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
 !
       use m_jacobians
       use m_filter_elength
@@ -45,14 +45,14 @@
       integer(kind=kint), intent(in) :: i_filter
       integer(kind=kint), intent(in) :: n_int, k2
 !
-      real (kind=kreal), intent(in) :: ak_diff(numele)
-      real (kind=kreal), intent(in) :: phi_e(numele)
+      real (kind=kreal), intent(in) :: ak_diff(ele1%numele)
+      real (kind=kreal), intent(in) :: phi_e(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,num_t_linear)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,num_t_linear)
 !
 !
-      call fem_skv_poisson_sgs_fixed(numele, num_t_linear,              &
+      call fem_skv_poisson_sgs_fixed(ele1%numele, num_t_linear,         &
      &  num_t_linear, np_smp, num_index_ibc, ele_bc_id,                 &
      &  ibc_stack_smp, k2, n_int, ntot_int_3d, xjac, dnx, dnx,          &
      &  FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                  &
@@ -79,15 +79,16 @@
       integer(kind=kint), intent(in) :: i_filter
       integer(kind=kint), intent(in) :: n_int, k2, nd
 !
-      real (kind=kreal), intent(in) :: phi_e(numele)
-      real (kind=kreal), intent(in) :: ak_diff(numele)
-      real (kind=kreal), intent(in) :: ak_d(numele)
+      real (kind=kreal), intent(in) :: phi_e(ele1%numele)
+      real (kind=kreal), intent(in) :: ak_diff(ele1%numele)
+      real (kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_diffuse_sgs_fixed(numele, nnod_4_ele, nnod_4_ele,    &
+      call fem_skv_diffuse_sgs_fixed                                    &
+     & (ele1%numele, nnod_4_ele, nnod_4_ele,                            &
      &  np_smp, num_index_ibc, ele_bc_id, ibc_stack_smp,                &
      &  k2, nd, n_int, ntot_int_3d, xjac, dwx, dwx,                     &
      &  FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                  &

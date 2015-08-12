@@ -1,21 +1,26 @@
-!itp_table_data_IO.f90
-!      module itp_table_data_IO
+!>@file   itp_table_data_IO.f90
+!!@brief  module itp_table_data_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in Sep. 2006
 !
-!        programmed by H.Matsui on Sep. 2006 (ver 1.2)
-!
-!      subroutine write_interpolate_table_org(id_file, my_rank)
-!      subroutine write_interpolate_coefs_org(id_file)
-!
-!      subroutine read_interpolate_domain_org(id_file, n_rank)
-!      subroutine read_interpolate_table_org(id_file)
-!      subroutine read_interpolate_coefs_org(id_file)
-!
-!      subroutine write_interpolate_table_dest(id_file, my_rank)
-!      subroutine write_interpolate_coefs_dest(id_file)
-!
-!      subroutine read_interpolate_domain_dest(id_file, n_rank)
-!      subroutine read_interpolate_table_dest(id_file)
-!      subroutine read_interpolate_coefs_dest(id_file)
+!>@brief Routines for ASCII group data IO
+!!
+!!@verbatim
+!!      subroutine write_interpolate_table_org(id_file, my_rank)
+!!      subroutine write_interpolate_coefs_org(id_file)
+!!
+!!      subroutine read_interpolate_domain_org(id_file, n_rank)
+!!      subroutine read_interpolate_table_org(id_file)
+!!      subroutine read_interpolate_coefs_org(id_file)
+!!
+!!      subroutine write_interpolate_table_dest(id_file, my_rank)
+!!      subroutine write_interpolate_coefs_dest(id_file)
+!!
+!!      subroutine read_interpolate_domain_dest(id_file, n_rank)
+!!      subroutine read_interpolate_table_dest(id_file)
+!!      subroutine read_interpolate_coefs_dest(id_file)
+!!@endverbatim
 !
       module itp_table_data_IO
 !

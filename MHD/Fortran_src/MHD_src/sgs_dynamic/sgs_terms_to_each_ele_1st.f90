@@ -65,13 +65,14 @@
       integer(kind = kint), intent(in) :: k2
       integer(kind = kint), intent(in) :: i_scalar, i_vect, i_sgs
 !
-      real (kind=kreal), intent(inout) :: flux_e(numele,3)
-      real (kind=kreal), intent(inout) :: sgs_e(numele,3)
+      real (kind=kreal), intent(inout) :: flux_e(ele1%numele,3)
+      real (kind=kreal), intent(inout) :: sgs_e(ele1%numele,3)
 !
 !
-      call SGS_vector_2_each_element(node1%numnod, numele, nnod_4_ele,  &
-     &          ie, np_smp, iele_smp_stack, k2, i_vect, i_scalar,       &
-     &          i_sgs, num_tot_nod_phys, d_nod, sgs_e, flux_e)
+      call SGS_vector_2_each_element                                    &
+     &   (node1%numnod, ele1%numele, nnod_4_ele,                        &
+     &    ie, np_smp, iele_smp_stack, k2, i_vect, i_scalar,             &
+     &    i_sgs, num_tot_nod_phys, d_nod, sgs_e, flux_e)
 !
       end subroutine SGS_vector_each_ele_1st
 !
@@ -85,13 +86,14 @@
       integer(kind = kint), intent(in) :: k2
       integer(kind = kint), intent(in) :: i_vect, i_sgs
 !
-      real (kind=kreal), intent(inout) :: flux_e(numele,6)
-      real (kind=kreal), intent(inout) :: sgs_e(numele,6)
+      real (kind=kreal), intent(inout) :: flux_e(ele1%numele,6)
+      real (kind=kreal), intent(inout) :: sgs_e(ele1%numele,6)
 !
 !
-      call SGS_tensor_2_each_element(node1%numnod, numele, nnod_4_ele,  &
-     &          ie, np_smp, iele_smp_stack, k2, i_vect, i_sgs,          &
-     &          num_tot_nod_phys, d_nod, sgs_e, flux_e)
+      call SGS_tensor_2_each_element                                    &
+     &   (node1%numnod, ele1%numele, nnod_4_ele,                        &
+     &    ie, np_smp, iele_smp_stack, k2, i_vect, i_sgs,                &
+     &    num_tot_nod_phys, d_nod, sgs_e, flux_e)
 !
       end subroutine SGS_tensor_each_ele_1st
 !
@@ -105,13 +107,14 @@
       integer(kind = kint), intent(in) :: k2
       integer(kind = kint), intent(in) :: i_b, i_v, i_sgs
 !
-      real (kind=kreal), intent(inout) :: flux_e(numele,3)
-      real (kind=kreal), intent(inout) :: sgs_e(numele,3)
+      real (kind=kreal), intent(inout) :: flux_e(ele1%numele,3)
+      real (kind=kreal), intent(inout) :: sgs_e(ele1%numele,3)
 !
 !
-      call SGS_induct_to_each_element(node1%numnod, numele, nnod_4_ele, &
-     &          ie, np_smp, iele_smp_stack, k2, i_b, i_v, i_sgs,        &
-     &          num_tot_nod_phys, d_nod, sgs_e, flux_e)
+      call SGS_induct_to_each_element                                   &
+     &   (node1%numnod, ele1%numele, nnod_4_ele,                        &
+     &    ie, np_smp, iele_smp_stack, k2, i_b, i_v, i_sgs,              &
+     &    num_tot_nod_phys, d_nod, sgs_e, flux_e)
 !
       end subroutine SGS_induct_each_ele_1st
 !
@@ -127,11 +130,11 @@
       integer(kind = kint), intent(in) :: k2, nd
       integer(kind = kint), intent(in) :: i_vect, i_field, i_sgs
 !
-      real (kind=kreal), intent(inout) :: flux_e(numele,3)
-      real (kind=kreal), intent(inout) :: sgs_e(numele,3)
+      real (kind=kreal), intent(inout) :: flux_e(ele1%numele,3)
+      real (kind=kreal), intent(inout) :: sgs_e(ele1%numele,3)
 !
 !
-      call SGS_flux_2_each_element_vec(node1%numnod, numele,            &
+      call SGS_flux_2_each_element_vec(node1%numnod, ele1%numele,       &
      &          nnod_4_ele, ie, np_smp, iele_smp_stack, k2, nd,         &
      &          i_vect, i_field, i_sgs, num_tot_nod_phys, d_nod,        &
      &          sgs_e, flux_e)
@@ -149,11 +152,11 @@
       integer(kind = kint), intent(in) :: k2, nd
       integer(kind = kint), intent(in) :: i_b, i_v, i_sgs
 !
-      real (kind=kreal), intent(inout) :: flux_e(numele,3)
-      real (kind=kreal), intent(inout) :: sgs_e(numele,3)
+      real (kind=kreal), intent(inout) :: flux_e(ele1%numele,3)
+      real (kind=kreal), intent(inout) :: sgs_e(ele1%numele,3)
 !
 !
-      call SGS_induct_vec_2_each_element(node1%numnod, numele,          &
+      call SGS_induct_vec_2_each_element(node1%numnod, ele1%numele,     &
      &          nnod_4_ele, ie, np_smp, iele_smp_stack, k2, nd,         &
      &          i_b, i_v, i_sgs, num_tot_nod_phys, d_nod,               &
      &          sgs_e, flux_e)
@@ -171,15 +174,16 @@
 !
       integer(kind = kint), intent(in) :: k2
       integer(kind = kint), intent(in) :: i_scalar, i_vect, i_sgs
-      real (kind=kreal), intent(in) :: ak_e(numele)
+      real (kind=kreal), intent(in) :: ak_e(ele1%numele)
 !
-      real (kind=kreal), intent(inout) :: flux_e(numele,3)
-      real (kind=kreal), intent(inout) :: sgs_e(numele,3)
+      real (kind=kreal), intent(inout) :: flux_e(ele1%numele,3)
+      real (kind=kreal), intent(inout) :: sgs_e(ele1%numele,3)
 !
 !
-      call SGS_vector_coef_each_ele(node1%numnod, numele, nnod_4_ele,   &
-     &          ie, np_smp, iele_smp_stack, k2, i_vect, i_scalar,       &
-     &          i_sgs, num_tot_nod_phys, d_nod, ak_e, sgs_e, flux_e)
+      call SGS_vector_coef_each_ele                                     &
+     &   (node1%numnod, ele1%numele, nnod_4_ele,                        &
+     &    ie, np_smp, iele_smp_stack, k2, i_vect, i_scalar,             &
+     &    i_sgs, num_tot_nod_phys, d_nod, ak_e, sgs_e, flux_e)
 !
       end subroutine SGS_vector_coef_each_ele_1st
 !
@@ -192,15 +196,16 @@
 !
       integer(kind = kint), intent(in) :: k2
       integer(kind = kint), intent(in) :: i_vect, i_sgs
-      real (kind=kreal), intent(in) :: ak_e(numele)
+      real (kind=kreal), intent(in) :: ak_e(ele1%numele)
 !
-      real (kind=kreal), intent(inout) :: flux_e(numele,6)
-      real (kind=kreal), intent(inout) :: sgs_e(numele,6)
+      real (kind=kreal), intent(inout) :: flux_e(ele1%numele,6)
+      real (kind=kreal), intent(inout) :: sgs_e(ele1%numele,6)
 !
 !
-      call SGS_tensor_coef_each_ele(node1%numnod, numele, nnod_4_ele,   &
-     &          ie, np_smp, iele_smp_stack, k2, i_vect, i_sgs,          &
-     &          num_tot_nod_phys, d_nod, ak_e, sgs_e, flux_e)
+      call SGS_tensor_coef_each_ele                                     &
+     &   (node1%numnod, ele1%numele, nnod_4_ele,                        &
+     &    ie, np_smp, iele_smp_stack, k2, i_vect, i_sgs,                &
+     &    num_tot_nod_phys, d_nod, ak_e, sgs_e, flux_e)
 !
       end subroutine SGS_tensor_coef_each_ele_1st
 !
@@ -213,15 +218,16 @@
 !
       integer(kind = kint), intent(in) :: k2
       integer(kind = kint), intent(in) :: i_b, i_v, i_sgs
-      real (kind=kreal), intent(in) :: ak_e(numele)
+      real (kind=kreal), intent(in) :: ak_e(ele1%numele)
 !
-      real (kind=kreal), intent(inout) :: flux_e(numele,3)
-      real (kind=kreal), intent(inout) :: sgs_e(numele,3)
+      real (kind=kreal), intent(inout) :: flux_e(ele1%numele,3)
+      real (kind=kreal), intent(inout) :: sgs_e(ele1%numele,3)
 !
 !
-      call SGS_induct_coef_each_ele(node1%numnod, numele, nnod_4_ele,   &
-     &          ie, np_smp, iele_smp_stack, k2, i_b, i_v, i_sgs,        &
-     &          num_tot_nod_phys, d_nod, ak_e, sgs_e, flux_e)
+      call SGS_induct_coef_each_ele                                     &
+     &   (node1%numnod, ele1%numele, nnod_4_ele,                        &
+     &    ie, np_smp, iele_smp_stack, k2, i_b, i_v, i_sgs,              &
+     &    num_tot_nod_phys, d_nod, ak_e, sgs_e, flux_e)
 !
       end subroutine SGS_induct_coef_each_ele_1st
 !
@@ -236,13 +242,13 @@
 !
       integer(kind = kint), intent(in) :: k2, nd
       integer(kind = kint), intent(in) :: i_vect, i_field, i_sgs
-      real (kind=kreal), intent(in) :: ak_e(numele)
+      real (kind=kreal), intent(in) :: ak_e(ele1%numele)
 !
-      real (kind=kreal), intent(inout) :: flux_e(numele,3)
-      real (kind=kreal), intent(inout) :: sgs_e(numele,3)
+      real (kind=kreal), intent(inout) :: flux_e(ele1%numele,3)
+      real (kind=kreal), intent(inout) :: sgs_e(ele1%numele,3)
 !
 !
-      call SGS_flux_coef_each_ele_vec(node1%numnod, numele,             &
+      call SGS_flux_coef_each_ele_vec(node1%numnod, ele1%numele,        &
      &          nnod_4_ele, ie, np_smp, iele_smp_stack, k2, nd,         &
      &          i_vect, i_field, i_sgs, num_tot_nod_phys, d_nod, ak_e,  &
      &          sgs_e, flux_e)
@@ -259,13 +265,13 @@
 !
       integer(kind = kint), intent(in) :: k2, nd
       integer(kind = kint), intent(in) :: i_b, i_v, i_sgs
-      real (kind=kreal), intent(in) :: ak_e(numele)
+      real (kind=kreal), intent(in) :: ak_e(ele1%numele)
 !
-      real (kind=kreal), intent(inout) :: flux_e(numele,3)
-      real (kind=kreal), intent(inout) :: sgs_e(numele,3)
+      real (kind=kreal), intent(inout) :: flux_e(ele1%numele,3)
+      real (kind=kreal), intent(inout) :: sgs_e(ele1%numele,3)
 !
 !
-      call SGS_induct_vec_coef_each_ele(node1%numnod, numele,           &
+      call SGS_induct_vec_coef_each_ele(node1%numnod, ele1%numele,      &
      &          nnod_4_ele, ie, np_smp, iele_smp_stack, k2, nd,         &
      &          i_b, i_v, i_sgs, num_tot_nod_phys, d_nod, ak_e,         &
      &          sgs_e, flux_e)
@@ -285,13 +291,14 @@
       integer(kind = kint), intent(in) :: i_scalar, i_vect, i_sgs
       real (kind=kreal), intent(in) :: coef
 !
-      real (kind=kreal), intent(inout) :: flux_e(numele,3)
-      real (kind=kreal), intent(inout) :: sgs_e(numele,3)
+      real (kind=kreal), intent(inout) :: flux_e(ele1%numele,3)
+      real (kind=kreal), intent(inout) :: sgs_e(ele1%numele,3)
 !
 !
-      call SGS_vector_cst_each_ele(node1%numnod, numele, nnod_4_ele,    &
-     &          ie, np_smp, iele_smp_stack, k2, i_vect, i_scalar,       &
-     &          i_sgs, num_tot_nod_phys, d_nod, coef, sgs_e, flux_e)
+      call SGS_vector_cst_each_ele                                      &
+     &   (node1%numnod, ele1%numele, nnod_4_ele,                        &
+     &    ie, np_smp, iele_smp_stack, k2, i_vect, i_scalar,             &
+     &    i_sgs, num_tot_nod_phys, d_nod, coef, sgs_e, flux_e)
 !
       end subroutine SGS_vector_cst_each_ele_1st
 !
@@ -306,13 +313,14 @@
       integer(kind = kint), intent(in) :: i_vect, i_sgs
       real (kind=kreal), intent(in) :: coef
 !
-      real (kind=kreal), intent(inout) :: flux_e(numele,6)
-      real (kind=kreal), intent(inout) :: sgs_e(numele,6)
+      real (kind=kreal), intent(inout) :: flux_e(ele1%numele,6)
+      real (kind=kreal), intent(inout) :: sgs_e(ele1%numele,6)
 !
 !
-      call SGS_tensor_cst_each_ele(node1%numnod, numele, nnod_4_ele,    &
-     &          ie, np_smp, iele_smp_stack, k2, i_vect, i_sgs,          &
-     &          num_tot_nod_phys, d_nod, coef, sgs_e, flux_e)
+      call SGS_tensor_cst_each_ele                                      &
+     &   (node1%numnod, ele1%numele, nnod_4_ele,                        &
+     &    ie, np_smp, iele_smp_stack, k2, i_vect, i_sgs,                &
+     &    num_tot_nod_phys, d_nod, coef, sgs_e, flux_e)
 !
       end subroutine SGS_tensor_cst_each_ele_1st
 !
@@ -327,13 +335,14 @@
       integer(kind = kint), intent(in) :: i_b, i_v, i_sgs
       real (kind=kreal), intent(in) :: coef
 !
-      real (kind=kreal), intent(inout) :: flux_e(numele,3)
-      real (kind=kreal), intent(inout) :: sgs_e(numele,3)
+      real (kind=kreal), intent(inout) :: flux_e(ele1%numele,3)
+      real (kind=kreal), intent(inout) :: sgs_e(ele1%numele,3)
 !
 !
-      call SGS_induct_cst_each_ele(node1%numnod, numele, nnod_4_ele,    &
-     &          ie, np_smp, iele_smp_stack, k2, i_b, i_v, i_sgs,        &
-     &          num_tot_nod_phys, d_nod, coef, sgs_e, flux_e)
+      call SGS_induct_cst_each_ele                                      &
+     &   (node1%numnod, ele1%numele, nnod_4_ele,                        &
+     &    ie, np_smp, iele_smp_stack, k2, i_b, i_v, i_sgs,              &
+     &    num_tot_nod_phys, d_nod, coef, sgs_e, flux_e)
 !
       end subroutine SGS_induct_cst_each_ele_1st
 !
@@ -350,11 +359,11 @@
       integer(kind = kint), intent(in) :: i_vect, i_field, i_sgs
       real (kind=kreal), intent(in) :: coef
 !
-      real (kind=kreal), intent(inout) :: flux_e(numele,3)
-      real (kind=kreal), intent(inout) :: sgs_e(numele,3)
+      real (kind=kreal), intent(inout) :: flux_e(ele1%numele,3)
+      real (kind=kreal), intent(inout) :: sgs_e(ele1%numele,3)
 !
 !
-      call SGS_flux_cst_each_ele_vec(node1%numnod, numele,              &
+      call SGS_flux_cst_each_ele_vec(node1%numnod, ele1%numele,         &
      &          nnod_4_ele, ie, np_smp, iele_smp_stack, k2, nd,         &
      &          i_vect, i_field, i_sgs, num_tot_nod_phys, d_nod, coef,  &
      &          sgs_e, flux_e)
@@ -373,11 +382,11 @@
       integer(kind = kint), intent(in) :: i_b, i_v, i_sgs
       real (kind=kreal), intent(in) :: coef
 !
-      real (kind=kreal), intent(inout) :: flux_e(numele,3)
-      real (kind=kreal), intent(inout) :: sgs_e(numele,3)
+      real (kind=kreal), intent(inout) :: flux_e(ele1%numele,3)
+      real (kind=kreal), intent(inout) :: sgs_e(ele1%numele,3)
 !
 !
-      call SGS_induct_vec_cst_each_ele(node1%numnod, numele,            &
+      call SGS_induct_vec_cst_each_ele(node1%numnod, ele1%numele,       &
      &          nnod_4_ele, ie, np_smp, iele_smp_stack, k2, nd,         &
      &          i_b, i_v, i_sgs, num_tot_nod_phys, d_nod, coef,         &
      &          sgs_e, flux_e)

@@ -157,7 +157,7 @@
      &          id_grp_sf, i_filter, i_tensor, i_vect, i_scalar,        &
      &          ak_diff, coef_field)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_finite_element_matrix
       use m_int_surface_data
 !
@@ -170,7 +170,7 @@
       integer(kind=kint), intent(in) :: id_grp_sf(ngrp_sf)
       integer(kind=kint), intent(in) :: n_int, i_filter
       integer(kind=kint), intent(in) :: i_vect, i_scalar, i_tensor
-      real (kind = kreal), intent(in) :: ak_diff(numele)
+      real (kind = kreal), intent(in) :: ak_diff(ele1%numele)
       real (kind = kreal), intent(in) :: coef_field
 !
       integer(kind=kint) :: k2, i, igrp, num
@@ -207,7 +207,7 @@
      &          nmax_sf, ngrp_sf, id_grp_sf, i_filter,                  &
      &          i_tensor, i_vect, i_scalar, ak_diff, coef_field)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_finite_element_matrix
       use m_int_surface_data
 !
@@ -221,7 +221,7 @@
       integer(kind=kint), intent(in) :: id_grp_sf(nmax_sf,3)
       integer(kind=kint), intent(in) :: n_int, i_filter
       integer(kind=kint), intent(in) :: i_vect, i_scalar, i_tensor
-      real (kind = kreal), intent(in) :: ak_diff(numele)
+      real (kind = kreal), intent(in) :: ak_diff(ele1%numele)
       real (kind = kreal), intent(in) :: coef_field
 !
       integer(kind=kint) :: k2, i, igrp, nd, num

@@ -27,7 +27,7 @@
       use m_precision
       use m_machine_parameter
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_finite_element_matrix
       use m_int_vol_data
@@ -57,7 +57,7 @@
 !
       integer(kind=kint), intent(in) :: i_field
 !
-      real(kind = kreal), intent(in) :: ak_diff(numele)
+      real(kind = kreal), intent(in) :: ak_diff(ele1%numele)
 !
       integer(kind = kint) :: istart_smp, kk, k2
 !
@@ -103,8 +103,8 @@
       integer(kind=kint), intent(in) :: i_field
 !
       real(kind = kreal), intent(in) :: coef_implicit
-      real(kind = kreal), intent(in) :: ak_d(numele)
-      real(kind = kreal), intent(in) :: ak_diff(numele)
+      real(kind = kreal), intent(in) :: ak_d(ele1%numele)
+      real(kind = kreal), intent(in) :: ak_diff(ele1%numele)
 !
       integer(kind = kint) :: istart_smp, kk, k2
 !
@@ -151,8 +151,8 @@
       integer(kind=kint), intent(in) :: i_field
 !
       real(kind = kreal), intent(in) :: coef_implicit
-      real(kind = kreal), intent(in) :: ak_d(numele)
-      real(kind = kreal), intent(in) :: ak_diff(numele)
+      real(kind = kreal), intent(in) :: ak_d(ele1%numele)
+      real(kind = kreal), intent(in) :: ak_diff(ele1%numele)
 !
       integer(kind = kint) :: istart_smp, kk, k2, nd, i_comp
 !
@@ -204,8 +204,8 @@
       integer(kind=kint), intent(in) :: i_field
 !
       real(kind = kreal), intent(in) :: coef_implicit
-      real(kind = kreal), intent(in) :: ak_d(numele)
-      real(kind = kreal), intent(in) :: ak_diff(numele)
+      real(kind = kreal), intent(in) :: ak_d(ele1%numele)
+      real(kind = kreal), intent(in) :: ak_diff(ele1%numele)
 !
       integer(kind = kint) :: istart_smp, kk, k2, nd, i_comp
 !

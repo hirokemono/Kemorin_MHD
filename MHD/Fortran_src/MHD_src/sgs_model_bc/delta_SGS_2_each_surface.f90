@@ -23,7 +23,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_data
@@ -49,8 +48,9 @@
       real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
-      call delta_flux_t_2_each_surface(np_smp, node1%numnod, numele,    &
-     &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
+      call delta_flux_t_2_each_surface(np_smp, node1%numnod,            &
+     &    ele1%numele, nnod_4_ele, ie,                                  &
+     &    nnod_4_surf, node_on_sf, node_on_sf_n,                        &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_vect, i_field, i_flux, num_tot_nod_phys,      &
@@ -68,13 +68,14 @@
       type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: igrp, k2, nd
       integer (kind = kint), intent(in) :: i_vect, i_field, i_flux
-      real (kind=kreal), intent(in) :: ak_e(numele)
+      real (kind=kreal), intent(in) :: ak_e(ele1%numele)
 !
       real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
-      call delta_flux_t_2_each_sf_w_coef(np_smp, node1%numnod, numele,  &
-     &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
+      call delta_flux_t_2_each_sf_w_coef(np_smp, node1%numnod,          &
+     &    ele1%numele, nnod_4_ele, ie,                                  &
+     &    nnod_4_surf, node_on_sf, node_on_sf_n,                        &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_vect, i_field, i_flux, num_tot_nod_phys,      &
@@ -97,8 +98,9 @@
       real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
-      call delta_flux_t_2_each_sf_w_cst(np_smp, node1%numnod, numele,   &
-     &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
+      call delta_flux_t_2_each_sf_w_cst(np_smp, node1%numnod,           &
+     &    ele1%numele, nnod_4_ele, ie,                                  &
+     &    nnod_4_surf, node_on_sf, node_on_sf_n,                        &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_vect, i_field, i_flux, num_tot_nod_phys,      &
@@ -121,8 +123,9 @@
       real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
-      call delta_SGS_induct_t_2_surface(np_smp, node1%numnod, numele,   &
-     &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
+      call delta_SGS_induct_t_2_surface(np_smp, node1%numnod,           &
+     &    ele1%numele, nnod_4_ele, ie,                                  &
+     &    nnod_4_surf, node_on_sf, node_on_sf_n,                        &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_flux, i_b, i_v, num_tot_nod_phys,             &
@@ -140,13 +143,14 @@
       type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: i_b, i_v, i_flux
       integer (kind = kint), intent(in) :: igrp, k2, nd
-      real (kind=kreal), intent(in) :: ak_e(numele)
+      real (kind=kreal), intent(in) :: ak_e(ele1%numele)
 !
       real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
-      call delta_SGS_induct_t_2_sf_w_coef(np_smp, node1%numnod, numele, &
-     &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
+      call delta_SGS_induct_t_2_sf_w_coef(np_smp, node1%numnod,         &
+     &    ele1%numele, nnod_4_ele, ie,                                  &
+     &    nnod_4_surf, node_on_sf, node_on_sf_n,                        &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_flux, i_b, i_v, num_tot_nod_phys,             &
@@ -169,8 +173,9 @@
       real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
-      call delta_SGS_induct_t_2_sf_w_cst(np_smp, node1%numnod, numele,  &
-     &    nnod_4_ele, ie, nnod_4_surf, node_on_sf, node_on_sf_n,        &
+      call delta_SGS_induct_t_2_sf_w_cst(np_smp, node1%numnod,          &
+     &    ele1%numele, nnod_4_ele, ie,                                  &
+     &    nnod_4_surf, node_on_sf, node_on_sf_n,                        &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_flux, i_b, i_v, num_tot_nod_phys,             &
