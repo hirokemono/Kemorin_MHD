@@ -1,7 +1,10 @@
+!>@file   m_filter_file_names.f90
+!!@brief  module m_filter_file_names
+!!
+!!@author H. Matsui
+!!@date Programmed in Nov., 2009
 !
-!      module m_filter_file_names
-!
-!     Written by H. Matsui
+!>@brief Names of filter files
 !
       module m_filter_file_names
 !

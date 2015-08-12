@@ -5,7 +5,7 @@
 !
 !     Written by H. Matsui
 !
-!       subroutine allocate_model_coefs
+!       subroutine allocate_model_coefs(numele)
 !       subroutine allocate_nod_model_coefs(numnod)
 !
 !       subroutine deallocate_model_coefs
@@ -41,9 +41,10 @@
 !
 ! -------------------------------------------------------------------
 !
-       subroutine allocate_model_coefs
+      subroutine allocate_model_coefs(numele)
 !
-       use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numele
+!
 !
        allocate( ncomp_sgs_coefs(num_sgs_kinds) )
        allocate( istack_sgs_coefs(0:num_sgs_kinds) )

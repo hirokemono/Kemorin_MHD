@@ -120,7 +120,6 @@
       subroutine reset_aiccg_press
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
       use m_solver_djds_MHD

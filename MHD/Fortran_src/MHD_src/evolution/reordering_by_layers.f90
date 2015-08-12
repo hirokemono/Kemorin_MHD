@@ -107,7 +107,7 @@
 !
 !   ordereing of connectivity, element group, and surface group
 !
-      call allocate_element_connect_org
+      call allocate_element_connect_org(ele1%numele, nnod_4_ele)
       call reordering_element_info(ele_grp, sf_grp)
 !
 !   ordereing of element parameters for SGS model

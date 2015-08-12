@@ -29,7 +29,6 @@
 !
       subroutine reordering_element_info(ele_grp, sf_grp)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
       use m_work_4_MHD_layering
@@ -39,14 +38,14 @@
       type(surface_group_data), intent(inout) :: sf_grp
 !
 !
-      call reordering_element_connect(numele, nnod_4_ele,               &
+      call reordering_element_connect(ele1%numele, nnod_4_ele,          &
      &    new2oldele_layer(1), iele_global_org(1), iele_global(1),      &
      &    ie_org(1,1), ie(1,1) )
 !
-      call reordering_element_group(numele, old2newele_layer(1),        &
+      call reordering_element_group(ele1%numele, old2newele_layer(1),   &
      &    ele_grp%num_item, ele_grp%item_grp)
 !
-      call reordering_surface_group(numele, old2newele_layer(1),        &
+      call reordering_surface_group(ele1%numele, old2newele_layer(1),   &
      &    sf_grp%num_item, sf_grp%item_sf_grp)
 !
       end subroutine reordering_element_info

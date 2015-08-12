@@ -91,14 +91,13 @@
 !
       subroutine link_first_ele_connect_type(ele)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use t_geometry_data
 !
       type(element_data), intent(inout) :: ele
 !
 !
-      ele%numele =     numele
+      ele%numele =     ele1%numele
       ele%nnod_4_ele = nnod_4_ele
 !
       ele%iele_global => iele_global

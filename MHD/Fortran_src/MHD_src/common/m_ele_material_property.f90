@@ -5,7 +5,7 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine init_ele_material_property
+!      subroutine init_ele_material_property(numele)
 !
       module m_ele_material_property
 !
@@ -36,13 +36,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_ele_material_property
+      subroutine init_ele_material_property(numele)
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_geometry_parameter
       use m_physical_property
 !
+      integer(kind = kint), intent(in) :: numele
 !
 !    For thermal
 !

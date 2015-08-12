@@ -135,7 +135,7 @@
       end do
 !
       do k1 = 1, num_t_linear
-        do iele = 1, numele
+        do iele = 1, ele1%numele
           inod = ie(iele,k1)
           in = DJDS_linear%OLDtoNEW(inod)
           Fmat_DJDS%aiccg(in) = 0.0d0

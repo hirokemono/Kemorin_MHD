@@ -56,15 +56,15 @@
 !
       subroutine reordering_element_first_MG
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_work_4_MHD_layering
       use m_type_AMG_data
       use m_type_AMG_mesh
       use t_interpolate_table
 !
 !
-      call reordering_ele_interpolate_type(numele, old2newele_layer,    &
-     &    MG_itp(1)%f2c%tbl_org )
+      call reordering_ele_interpolate_type(ele1%numele,                 &
+     &    old2newele_layer, MG_itp(1)%f2c%tbl_org )
 !
       end subroutine reordering_element_first_MG
 !

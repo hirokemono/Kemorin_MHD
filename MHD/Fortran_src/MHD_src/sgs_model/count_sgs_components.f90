@@ -4,7 +4,7 @@
 !      Written by H. Matsui on 2004
 !      Modified by H. Matsui on July, 2007
 !
-!     subroutine s_count_sgs_components(numnod)
+!     subroutine s_count_sgs_components(numnod, numele)
 !
       module count_sgs_components
 !
@@ -18,7 +18,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_count_sgs_components(numnod)
+      subroutine s_count_sgs_components(numnod, numele)
 !
       use m_machine_parameter
       use calypso_mpi
@@ -30,7 +30,7 @@
       use m_SGS_model_coefs
       use m_SGS_address
 !
-      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint) :: i, j, id, jd
 !
 !
@@ -153,7 +153,7 @@
 !   set index for model coefficients
 !
       call allocate_sgs_coefs_layer(layer_tbl1%n_layer_d)
-      call allocate_model_coefs
+      call allocate_model_coefs(numele)
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
      &      .or. iflag_SGS_model.eq.id_SGS_similarity)  then

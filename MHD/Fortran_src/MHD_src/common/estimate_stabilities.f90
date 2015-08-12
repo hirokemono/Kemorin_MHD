@@ -15,7 +15,6 @@
       use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
       use m_physical_property
@@ -35,7 +34,7 @@
 !
 !
        min_length = 1.0d10
-       do iele = 1, numele
+       do iele = 1, ele1%numele
          min_length = min(min_length, volume_ele(iele))
        end do
        min_length = (min_length)**(2.0d0/3.0d0)*4.0d0 / 6.0d0

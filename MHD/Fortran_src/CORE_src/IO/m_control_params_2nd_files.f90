@@ -1,10 +1,15 @@
-!m_control_params_2nd_files.f90
-!      module m_control_params_2nd_files
+!>@file   m_control_params_2nd_files.f90
+!!@brief  module m_control_params_2nd_files
+!!
+!!@author H. Matsui
+!!@date Programmed in Nov., 2009
 !
-!        programmed by H.Matsui on Nov., 2009
-!
-!      subroutine set_control_org_sph_mesh
-!      subroutine set_control_org_fld_file_def
+!>@brief Array for the second mesh data
+!!
+!!@verbatim
+!!      subroutine set_control_org_sph_mesh
+!!      subroutine set_control_org_fld_file_def
+!!@endverbatim
 !
       module m_control_params_2nd_files
 !

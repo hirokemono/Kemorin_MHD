@@ -1,15 +1,20 @@
-!m_element_refinement_IO.f90
-!      module m_element_refinement_IO
+!>@file   m_element_refinement_IO.f90
+!!@brief  module m_element_refinement_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in Nov., 2009
 !
-!        programmed by H.Matsui on May, 2010
-!
-!      subroutine allocate_element_refine_IO
-!      subroutine deallocate_element_refine_IO
-!
-!      subroutine write_element_refine_data(id_file)
-!      subroutine read_element_refine_data(id_file)
-!      subroutine write_element_refine_data_b(id_file)
-!      subroutine read_element_refine_data_b(id_file)
+!>@brief Array for element refinement table data
+!!
+!!@verbatim
+!!      subroutine allocate_element_refine_IO
+!!      subroutine deallocate_element_refine_IO
+!!
+!!      subroutine write_element_refine_data(id_file)
+!!      subroutine read_element_refine_data(id_file)
+!!      subroutine write_element_refine_data_b(id_file)
+!!      subroutine read_element_refine_data_b(id_file)
+!!@endverbatim
 !
       module m_element_refinement_IO
 !

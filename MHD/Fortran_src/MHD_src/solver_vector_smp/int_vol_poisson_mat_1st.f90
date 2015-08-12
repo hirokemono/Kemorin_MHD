@@ -67,7 +67,7 @@
       integer(kind = kint), intent(in)                                  &
      &               :: idx_for_mat(num_sort_smp, nnod_4_ele)
       real(kind=kreal), intent(in) :: coef_imp
-      real(kind=kreal), intent(in) :: ak_d(numele)
+      real(kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
       integer(kind = kint), intent(in) :: n_int
 !
@@ -97,7 +97,7 @@
       integer(kind = kint), intent(in)                                  &
      &               :: idx_for_mat(num_sort_smp, nnod_4_ele)
       real(kind=kreal), intent(in) :: coef_imp
-      real(kind=kreal), intent(in) :: ak_d(numele)
+      real(kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
       integer(kind = kint), intent(in) :: n_int
 !
