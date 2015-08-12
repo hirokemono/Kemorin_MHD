@@ -24,7 +24,6 @@
 !
       subroutine CRE_LOCAL_DATA(NP, included_ele)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use t_near_mesh_id_4_node
       use m_domain_group_4_partition
@@ -34,17 +33,17 @@
 !
 !
       call alloc_num_4_near_nod(NP, included_ele)
-      allocate (imark_ele(numele))
+      allocate (imark_ele(ele1%numele))
 !
       call count_ele_in_subdomain(NP, nnod_s_domin, IGROUP_nod,         &
-     &    node1%numnod, numele, nnod_4_ele, ie, nodelm,                 &
+     &    node1%numnod, ele1%numele, nnod_4_ele, ie, nodelm,            &
      &    included_ele%ntot, included_ele%num_nod,                      &
      &    included_ele%istack_nod)
 !
       call alloc_near_element(included_ele)
 !
       call set_ele_in_subdomain(NP, nnod_s_domin, IGROUP_nod,           &
-     &          node1%numnod, numele, nnod_4_ele, ie, nodelm,           &
+     &          node1%numnod, ele1%numele, nnod_4_ele, ie, nodelm,      &
      &          included_ele%ntot, included_ele%istack_nod,             &
      &          included_ele%id_near_nod)
 

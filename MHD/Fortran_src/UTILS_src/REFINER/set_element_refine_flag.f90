@@ -105,7 +105,7 @@
 !
       subroutine count_triple_refine_table
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_refined_element_data
       use m_refine_flag_parameters
 !
@@ -113,7 +113,7 @@
 !
 !
       nele_tri = 0
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         if(iflag_refine_ele(iele) .eq. iflag_tri_full) then
           nele_tri = nele_tri + 1
         end if
@@ -125,7 +125,7 @@
 !
       subroutine set_triple_refine_table
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_refined_element_data
       use m_refine_flag_parameters
 !
@@ -133,7 +133,7 @@
 !
 !
       icou = 0
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         if(iflag_refine_ele(iele) .eq. iflag_tri_full) then
           icou = icou + 1
           iele_tri(icou) = iele

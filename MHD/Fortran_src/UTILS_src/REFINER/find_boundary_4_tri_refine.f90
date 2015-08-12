@@ -26,7 +26,6 @@
 !
       subroutine s_find_boundary_4_tri_refine(nele_tri, iele_tri)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_refine_flag_parameters
       use m_refined_element_data
@@ -236,7 +235,6 @@
 !
       subroutine set_domain_bc_list
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       integer(kind = kint) :: iele, isurf, icou
@@ -247,7 +245,7 @@
 !
 !   mark boundary of domain surface
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         isf1 = abs(isf_4_ele(iele,1))
         isf2 = abs(isf_4_ele(iele,2))
         isf3 = abs(isf_4_ele(iele,3))

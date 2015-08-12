@@ -53,7 +53,7 @@
 !
       end do
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         ist = ntot_nod_refine_nod + ntot_nod_refine_edge                &
      &       + ntot_nod_refine_surf + istack_nod_refine_ele(iele-1)
         jst = istack_nod_refine_ele(iele-1) + 1

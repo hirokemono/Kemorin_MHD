@@ -164,7 +164,7 @@
       use cal_differences_on_ele
 !
       real(kind = kreal), intent(in) :: org_nod_field(node1%numnod)
-      real(kind = kreal), intent(inout) :: diff_field(numele,3)
+      real(kind = kreal), intent(inout) :: diff_field(ele1%numele,3)
       integer(kind=kint) :: nd
 !
       do nd = 1, n_vector
@@ -183,7 +183,7 @@
       use cal_differences_on_ele
 !
       real(kind = kreal), intent(in) :: org_nod_field(node1%numnod,3)
-      real(kind = kreal), intent(inout) :: diff_field(numele,3)
+      real(kind = kreal), intent(inout) :: diff_field(ele1%numele,3)
       integer(kind=kint) :: nd
 !
       do nd = 1, n_vector

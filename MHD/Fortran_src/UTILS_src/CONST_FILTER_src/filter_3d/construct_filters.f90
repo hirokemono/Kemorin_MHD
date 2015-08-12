@@ -211,7 +211,7 @@
 !     correct filter function
 !  ---------------------------------------------------
 !
-      call allocate_correct_filter_flag(node1%numnod, numele)
+      call allocate_correct_filter_flag(node1%numnod, ele1%numele)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
       call s_correct_wrong_filters                                      &
@@ -283,7 +283,7 @@
 !     correct filter function
 !  ---------------------------------------------------
 !
-      call allocate_correct_filter_flag(node1%numnod, numele)
+      call allocate_correct_filter_flag(node1%numnod, ele1%numele)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
       call s_correct_wrong_filters                                      &

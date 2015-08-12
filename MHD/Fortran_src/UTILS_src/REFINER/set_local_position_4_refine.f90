@@ -28,7 +28,7 @@
 !
       subroutine s_set_local_position_4_refine
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint) :: iele, isurf, iedge, ist
 !
@@ -43,7 +43,7 @@
         call set_local_posi_refine_surf(isurf, ist)
       end do
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         ist = istack_nod_refine_ele(iele-1)
         call set_local_posi_refine_ele(iele, ist)
       end do

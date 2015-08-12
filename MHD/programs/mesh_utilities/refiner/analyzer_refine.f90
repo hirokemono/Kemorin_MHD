@@ -35,8 +35,9 @@
 
       subroutine  initialize_refine
 !
-      use load_mesh_data
+      use m_geometry_data
       use m_control_data_4_refine
+      use load_mesh_data
       use set_nnod_for_ele_by_type
       use set_control_id_4_refiner
       use refinment_info_IO
@@ -58,7 +59,7 @@
       if(iflag_read_old_refine_file .gt. 0) then
         call read_refinement_table
       else
-        call allocate_old_refine_level
+        call allocate_old_refine_level(numele)
       end if
 !C
 !C +--------------+
@@ -111,7 +112,8 @@
         call const_mesh_informations(my_rank)
 !
         write(*,*) 'allocate_refine_flags'
-        call allocate_refine_flags
+        call allocate_refine_flags(numele, numsurf, numedge,            &
+     &          nsurf_4_ele, nedge_4_ele)
 !
         if(iflag_tmp_tri_refine .eq. 0) then
           write(*,*) 's_set_element_refine_flag'
@@ -128,8 +130,9 @@
         write(*,*) 'check_hanging_surface'
         call check_hanging_surface
 !
-!      call check_refine_flags
-!      call check_local_refine_flags
+!      call check_refine_flags(ele1%numele, numsurf, numedge)
+!      call check_local_refine_flags                                    &
+!     &   (ele1%numele, nsurf_4_ele, nedge_4_ele)
 !
 !   set refined nodes
 !

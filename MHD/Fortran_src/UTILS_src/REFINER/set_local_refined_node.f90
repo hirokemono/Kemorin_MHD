@@ -1,9 +1,13 @@
 !set_local_refined_node.f90
 !      module set_local_refined_node
 !
-      module set_local_refined_node
-!
 !      Writen by H. Matsui on Oct., 2007
+!
+!      subroutine refined_node_on_ele_2_local(iele)
+!      subroutine refined_node_on_surf_2_local(iele)
+!      subroutine refined_node_on_edge_2_local(iele)
+!
+      module set_local_refined_node
 !
       use m_precision
 !
@@ -19,10 +23,6 @@
 !
       private :: rotate_refined_surface
 !
-!      subroutine refined_node_on_ele_2_local(iele)
-!      subroutine refined_node_on_surf_2_local(iele)
-!      subroutine refined_node_on_edge_2_local(iele)
-!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -32,7 +32,7 @@
       subroutine refined_node_on_ele_2_local(iele)
 !
       integer(kind = kint), intent(in) :: iele
-      integer(kind = kint) :: isurf, k1, icou
+      integer(kind = kint) :: k1, icou
 !
 !
       inod_refine_nod_local = 0

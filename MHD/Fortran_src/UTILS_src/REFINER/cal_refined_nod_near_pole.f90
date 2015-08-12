@@ -20,7 +20,6 @@
       subroutine s_cal_refined_nod_near_pole
 !
       use m_constants
-      use m_geometry_parameter
       use m_geometry_data
       use cal_xyz_4_refine
       use cal_sph_4_refine
@@ -60,7 +59,7 @@
       end do
 !
 !
-!      do iele = 1, numele
+!      do iele = 1, ele1%numele
 !        phi_max = 0.0d0
 !        phi_min = two*pi
 !        do k1 = 1, 8

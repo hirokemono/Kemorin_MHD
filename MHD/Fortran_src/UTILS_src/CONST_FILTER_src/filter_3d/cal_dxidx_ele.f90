@@ -22,13 +22,13 @@
 !
       subroutine cal_dxidx_ele_type(dx_ele)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use t_filter_dxdxi
 !
       type(dxidx_direction_type), intent(inout) :: dx_ele
 !
 !
-      call s_cal_dxidx_ele(numele,                                      &
+      call s_cal_dxidx_ele(ele1%numele,                                 &
      &      dx_ele%dxi%df_dx, dx_ele%dxi%df_dy, dx_ele%dxi%df_dz,       &
      &      dx_ele%dei%df_dx, dx_ele%dei%df_dy, dx_ele%dei%df_dz,       &
      &      dx_ele%dzi%df_dx, dx_ele%dzi%df_dy, dx_ele%dzi%df_dz)

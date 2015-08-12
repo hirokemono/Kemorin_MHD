@@ -63,7 +63,8 @@
       use volume_rendering
 !
 !
-      call pvr_init(node1%numnod, numele, numsurf, nnod_4_surf, xx,     &
+      call pvr_init                                                     &
+     &   (node1%numnod, ele1%numele, numsurf, nnod_4_surf, xx,          &
      &    e_multi, ie_surf, isf_4_ele, iele_4_surf,                     &
      &    ele_grp1, num_nod_phys, phys_nod_name)
 !
@@ -82,7 +83,7 @@
       integer(kind = kint), intent(in) :: istep_pvr
 !
 !
-      call pvr_main(istep_pvr, node1%numnod, numele, numsurf,           &
+      call pvr_main(istep_pvr, node1%numnod, ele1%numele, numsurf,      &
      &         nnod_4_ele, nnod_4_surf, inod_smp_stack, iele_smp_stack, &
      &         xx, radius, a_radius, s_cylinder, a_s_cylinder, ie,      &
      &         a_vol_ele, e_multi, ie_surf, isf_4_ele, iele_4_surf,     &

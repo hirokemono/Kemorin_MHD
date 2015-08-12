@@ -35,7 +35,7 @@
       character(len=kchara) :: file_name
 !
 !
-      call allocate_nod_ele_near_1nod(node1%numnod, numele)
+      call allocate_nod_ele_near_1nod(node1%numnod, ele1%numele)
 !
       call add_int_suffix(my_rank, org_filter_coef_head, file_name)
 !

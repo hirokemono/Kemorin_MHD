@@ -1,9 +1,14 @@
 !
 !      module count_edge_domain_4_viewer
 !
-      module count_edge_domain_4_viewer
-!
 !     Written by H. Matsui on Jan., 2007
+!
+!      subroutine count_nedge_4_each_domain
+!      subroutine count_nedge_domain_4_domain
+!      subroutine count_nedge_ele_grp_4_domain
+!      subroutine count_nedge_surf_grp_4_domain
+!
+      module count_edge_domain_4_viewer
 !
       use m_precision
 !
@@ -11,11 +16,6 @@
       use m_surface_mesh_4_merge
 !
       implicit    none
-!
-!      subroutine count_nedge_4_each_domain
-!      subroutine count_nedge_domain_4_domain
-!      subroutine count_nedge_ele_grp_4_domain
-!      subroutine count_nedge_surf_grp_4_domain
 !
 !------------------------------------------------------------------
 !

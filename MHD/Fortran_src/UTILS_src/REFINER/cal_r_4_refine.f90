@@ -12,7 +12,6 @@
       use m_precision
 !
       use m_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_refined_node_id
 !
@@ -117,7 +116,7 @@
       integer(kind = kint) :: iele, jst, jed, jnum
 !
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         inod1 = ie(iele,1)
         inod2 = ie(iele,2)
         inod3 = ie(iele,3)

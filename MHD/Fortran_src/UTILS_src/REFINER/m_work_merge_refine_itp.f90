@@ -117,7 +117,7 @@
 !
       nnod_org =       node1%numnod
       intnod_org =     internal_node
-      nele_org =       numele
+      nele_org =       ele1%numele
       nnod_4_ele_org = nnod_4_ele
 !
       call allocate_mesh_refine_org

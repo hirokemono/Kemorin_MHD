@@ -53,15 +53,15 @@
       call alloc_near_element(near_ele_tmp)
 !
       allocate( iflag_nod(node1%numnod) )
-      allocate( iflag_ele(numele) )
-      allocate( item_tmp_e(numele) )
+      allocate( iflag_ele(ele1%numele) )
+      allocate( item_tmp_e(ele1%numele) )
 !
       iflag_nod = 0
       iflag_ele = 0
       item_tmp_e = 0
       do ip= 1, NP
         call mark_extented_overlap(ip, n_overlap, i_sleeve_ele,         &
-     &      node1%numnod, numele, nnod_4_ele, ie, nodelm,               &
+     &      node1%numnod, ele1%numele, nnod_4_ele, ie, nodelm,          &
      &      included_ele%ntot, included_ele%istack_nod,                 &
      &      included_ele%id_near_nod, nnod_s_domin, IGROUP_nod)
 !

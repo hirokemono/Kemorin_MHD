@@ -34,7 +34,7 @@
 !
 !
       if (node1%numnod .le. 0) call ERROR_EXIT(ierr_ele, izero)
-      if (numele .le. 0) call ERROR_EXIT(ierr_ele, izero)
+      if (ele1%numele .le. 0) call ERROR_EXIT(ierr_ele, izero)
 !
       if (nod_grp%num_grp .lt. 0) call ERROR_EXIT(ierr_ngrp, ione)
       if (ele_grp%num_grp .lt. 0) call ERROR_EXIT(ierr_ngrp, itwo)
@@ -52,7 +52,7 @@
         do is= 1, ele_grp%istack_grp(ele_grp%num_grp)
           in= ele_grp%item_grp(is)
           if (in .le. 0) call ERROR_EXIT(ierr_grp, itwo)
-          if (in .gt. numele) call ERROR_EXIT(ierr_ov_grp, itwo)
+          if (in .gt. ele1%numele) call ERROR_EXIT(ierr_ov_grp, itwo)
         enddo
       endif
 !
@@ -62,7 +62,7 @@
           ik= sf_grp%item_sf_grp(2,is)
           if (in.le.0) call ERROR_EXIT(ierr_grp, ithree)
           if (ik.le.0) call ERROR_EXIT(ierr_grp, ithree)
-          if (in.gt.numele) call ERROR_EXIT(ierr_ov_grp, ithree)
+          if (in.gt.ele1%numele) call ERROR_EXIT(ierr_ov_grp, ithree)
         end do
       endif
 !
@@ -76,8 +76,8 @@
 !C
 !C-- check local surface ID
       if (sf_grp%num_grp.gt.0) then
-        call check_surface_def_in_surf_grp(numele, sf_grp%num_item,     &
-     &      elmtyp, sf_grp%item_sf_grp)
+        call check_surface_def_in_surf_grp(ele1%numele,                 &
+     &      sf_grp%num_item, elmtyp, sf_grp%item_sf_grp)
       end if
 !
       end subroutine quick_mesh_chk_4_part

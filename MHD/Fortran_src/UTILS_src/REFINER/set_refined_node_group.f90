@@ -97,9 +97,9 @@
         end do
 !
 !
-        do iele = 1, numele
-          call check_element_in_nod_group(iele, numele, nnod_4_ele,     &
-     &          ie, iflag)
+        do iele = 1, ele1%numele
+          call check_element_in_nod_group                               &
+     &       (iele, ele1%numele, nnod_4_ele, ie, iflag)
 !
           if(iflag .eq. 1) then
             new_nod_grp%istack_grp(i) = new_nod_grp%istack_grp(i)       &
@@ -166,9 +166,9 @@
         end do
 !
 !
-        do iele = 1, numele
-          call check_element_in_nod_group(iele, numele, nnod_4_ele,     &
-     &          ie, iflag)
+        do iele = 1, ele1%numele
+          call check_element_in_nod_group                               &
+     &       (iele, ele1%numele, nnod_4_ele, ie, iflag)
 !
           if(iflag .eq. 1) then
             call set_new_nod_grp_item(icou, ntot_nod_refine_ele,        &

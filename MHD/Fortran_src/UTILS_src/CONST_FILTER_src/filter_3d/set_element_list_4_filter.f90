@@ -13,7 +13,7 @@
 !
       use m_machine_parameter
       use m_element_list_4_filter
-      use m_geometry_parameter
+      use m_geometry_data
 !
       implicit none
 !
@@ -40,7 +40,7 @@
       type(group_data), intent(in) :: ele_grp
 !
 !
-      call allocate_mark_list_4_filter
+      call allocate_mark_list_4_filter(ele1%numele)
 !
       call mark_ele_list_4_filter(ele_grp)
 !
@@ -75,7 +75,9 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_mark_list_4_filter
+      subroutine allocate_mark_list_4_filter(numele)
+!
+      integer(kind = kint), intent(in) :: numele
 !
       allocate(imark_ele_filter(numele) )
       imark_ele_filter(1:numele) = 0

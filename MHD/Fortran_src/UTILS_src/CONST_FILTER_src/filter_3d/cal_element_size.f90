@@ -67,11 +67,11 @@
       call alloc_nodal_elen_type                                        &
      &   (FEM1_elen%nnod_filter_mom, FEM1_elen%elen_nod)
       call alloc_jacobians_node(FEM1_elen%nnod_filter_mom, filter_dxi)
-      call alloc_dxidxs_ele(numele, dxidxs)
+      call alloc_dxidxs_ele(ele1%numele, dxidxs)
       call alloc_dxidxs_node(node1%numnod, dxidxs)
 !
       call allocate_fem_mat_base
-      call allocate_scalar_ele_4_int
+      call allocate_scalar_ele_4_int(ele1%numele)
 !
       if (itype_mass_matrix .eq. 1) then
         if (iflag_debug.eq.1) write(*,*) 'set_mass_matrix_for_consist'

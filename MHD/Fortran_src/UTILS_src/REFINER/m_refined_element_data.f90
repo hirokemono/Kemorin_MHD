@@ -3,18 +3,20 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine allocate_refine_flags
-!      subroutine allocate_refined_num_element
+!!      subroutine allocate_refine_flags(numele, numsurf, numedge,      &
+!!     &          nsurf_4_ele, nedge_4_ele)
+!      subroutine allocate_refined_num_element(numele)
 !      subroutine allocate_refined_ele_connect
-!      subroutine allocate_old_refine_level
+!      subroutine allocate_old_refine_level(numele)
 !
 !      subroutine deallocate_refine_flags
 !      subroutine deallocate_refined_ele_connect
 !      subroutine deallocate_refined_num_element
 !
-!      subroutine check_refine_flags
-!      subroutine check_refine_stack
-!      subroutine check_local_refine_flags
+!      subroutine check_refine_flags(numele, numsurf, numedge)
+!      subroutine check_refine_stack(numele)
+!      subroutine check_local_refine_flags                              &
+!     &         (numele, nsurf_4_ele, nedge_4_ele)
 !
       module m_refined_element_data
 !
@@ -58,10 +60,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_refine_flags
+      subroutine allocate_refine_flags(numele, numsurf, numedge,        &
+     &          nsurf_4_ele, nedge_4_ele)
 !
-      use m_geometry_constants
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numele, numsurf, numedge
+      integer(kind = kint), intent(in) :: nsurf_4_ele, nedge_4_ele
 !
       allocate( ilevel_refine(numele) )
       allocate( iflag_refine_ele(numele) )
@@ -85,9 +88,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_refined_num_element
+      subroutine allocate_refined_num_element(numele)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numele
 !
       allocate(num_ele_refined(numele))
       allocate(istack_ele_refined(0:numele))
@@ -107,9 +110,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_old_refine_level
+      subroutine allocate_old_refine_level(numele)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numele
 !
       max_refine_level = 0
       allocate( ilevel_refine_old(numele) )
@@ -137,7 +140,6 @@
 !
       subroutine deallocate_refined_num_element
 !
-      use m_geometry_parameter
 !
       deallocate(num_ele_refined)
       deallocate(istack_ele_refined)
@@ -163,9 +165,9 @@
 ! -----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine check_refine_flags
+      subroutine check_refine_flags(numele, numsurf, numedge)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numele, numsurf, numedge
 !
       integer(kind = kint) :: i
 !
@@ -188,9 +190,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_refine_stack
+      subroutine check_refine_stack(numele)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numele
 !
       integer(kind = kint) :: i
 !
@@ -203,11 +205,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_local_refine_flags
+      subroutine check_local_refine_flags                               &
+     &         (numele, nsurf_4_ele, nedge_4_ele)
 !
-      use m_geometry_constants
-      use m_geometry_parameter
-      use m_geometry_data
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: nsurf_4_ele, nedge_4_ele
 !
       integer(kind = kint) :: i
 !

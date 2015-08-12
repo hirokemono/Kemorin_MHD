@@ -60,7 +60,6 @@
       subroutine check_hanging_surface
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_refine_flag_parameters
       use m_refined_element_data
@@ -71,7 +70,7 @@
 !
       call allocate_iflag_hangings
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         do k1 = 1, nsurf_4_ele
           isurf = abs( isf_4_ele(iele,k1) )
           if(iflag_refine_sf_lcl(k1,iele) .eq. iflag_dbl_sf             &
@@ -81,7 +80,7 @@
         end do
       end do
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         do k1 = 1, nedge_4_ele
           iedge = abs(iedge_4_ele(iele,k1))
           if(iflag_refine_ed_lcl(k1,iele) .eq. iflag_dbl_ed             &
@@ -110,7 +109,7 @@
         end if
       end do
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         do k1 = 1, nedge_4_ele
           iedge = abs(iedge_4_ele(iele,k1))
           if(iflag_refine_edge(iedge) .eq. iflag_dbl_sf                 &

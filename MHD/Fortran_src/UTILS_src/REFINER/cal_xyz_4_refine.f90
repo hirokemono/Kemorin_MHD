@@ -15,7 +15,6 @@
       use m_precision
 !
       use m_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_refined_node_id
 !
@@ -58,7 +57,7 @@
       integer(kind = kint) :: iele
 !
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         call cal_xyz_on_1ele_4_refine(iele)
       end do
 !

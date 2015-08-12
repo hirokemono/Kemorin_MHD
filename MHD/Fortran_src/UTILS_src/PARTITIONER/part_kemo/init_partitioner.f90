@@ -53,7 +53,7 @@
 !   set numbers of global mesh
 !
       nnod_s_domin =  node1%numnod
-      nele_s_domin =  numele
+      nele_s_domin =  ele1%numele
       intnod_s_domin = internal_node
 !
       call allocate_domain_nod_group

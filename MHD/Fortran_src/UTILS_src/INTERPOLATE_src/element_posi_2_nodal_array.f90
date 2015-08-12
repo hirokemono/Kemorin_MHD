@@ -31,8 +31,8 @@
       call deallocate_node_geometry
 !
 !
-      node1%numnod =  numele
-      internal_node = numele
+      node1%numnod =  ele1%numele
+      internal_node = ele1%numele
 !
       call allocate_node_geometry
 !

@@ -42,7 +42,7 @@
      &      num_nod_refine_surf(isurf) )
       end do
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         call count_num_nod_refine_ele(iflag_refine_ele(iele),           &
      &      num_nod_refine_ele(iele) )
       end do
@@ -59,7 +59,7 @@
      &    izero, istack_nod_refine_surf, ntot_nod_refine_surf,          &
      &    nmax_nod_refine_surf, nmin_nod_refine_surf)
 !
-      call s_cal_minmax_and_stacks(numele, num_nod_refine_ele,          &
+      call s_cal_minmax_and_stacks(ele1%numele, num_nod_refine_ele,     &
      &     izero, istack_nod_refine_ele, ntot_nod_refine_ele,           &
      &    nmax_nod_refine_ele, nmin_nod_refine_ele)
 !

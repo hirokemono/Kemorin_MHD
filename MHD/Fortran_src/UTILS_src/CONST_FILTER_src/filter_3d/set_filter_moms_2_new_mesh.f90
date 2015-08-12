@@ -86,7 +86,7 @@
       integer(kind = kint_gl) :: iele_gl
 !
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         iele_gl = iele_global(iele)
         if (ie(iele,1) .le. new_node%internal_node                      &
      &      .and. int(iele_gl) .le. max_gl_ele_newdomain                &
@@ -160,7 +160,7 @@
       integer(kind = kint_gl) :: iele_gl
 !
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         iele_gl = iele_global(iele)
         if (ie(iele,1) .le. new_node%internal_node                      &
      &      .and. iele_gl .le. max_gl_ele_newdomain                     &

@@ -83,7 +83,7 @@
 !
 !
       call cross_section_init                                           &
-     &   (node1%numnod, internal_node, numele, numsurf, numedge,        &
+     &   (node1%numnod, internal_node, ele1%numele, numsurf, numedge,   &
      &    nnod_4_ele, nnod_4_edge, ie, ie_edge, isf_4_ele,              &
      &    iedge_4_sf, iedge_4_ele, nod_comm, edge_comm,                 &
      &    interior_ele, xx, inod_smp_stack, iele_smp_stack,             &
@@ -103,11 +103,11 @@
 !
 !
       call isosurface_init                                              &
-     &         (node1%numnod, numele, numsurf, numedge, nnod_4_edge,    &
-     &          ie_edge, isf_4_ele, iedge_4_sf, interior_ele,           &
-     &          inod_smp_stack, iele_smp_stack,                         &
-     &          isurf_smp_stack, iedge_smp_stack,                       &
-     &          ele_grp1, num_nod_phys, phys_nod_name)
+     &   (node1%numnod, ele1%numele, numsurf, numedge, nnod_4_edge,     &
+     &    ie_edge, isf_4_ele, iedge_4_sf, interior_ele,                 &
+     &    inod_smp_stack, iele_smp_stack,                               &
+     &    isurf_smp_stack, iedge_smp_stack,                             &
+     &    ele_grp1, num_nod_phys, phys_nod_name)
 !
       end subroutine isosurface_init_1st
 !
@@ -141,7 +141,7 @@
       integer(kind = kint), intent(in) :: istep_iso
 !
       call isosurface_main(istep_iso, node1%numnod, internal_node,      &
-     &    numele, numedge, nnod_4_ele, nnod_4_edge, ie, ie_edge,        &
+     &    ele1%numele, numedge, nnod_4_ele, nnod_4_edge, ie, ie_edge,   &
      &    iedge_4_ele, xx, radius, a_radius, s_cylinder, a_s_cylinder,  &
      &    inod_smp_stack, edge_comm, num_nod_phys, num_tot_nod_phys,    &
      &    istack_nod_component, d_nod)

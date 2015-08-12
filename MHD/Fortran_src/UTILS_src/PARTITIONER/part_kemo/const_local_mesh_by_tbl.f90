@@ -111,8 +111,8 @@
 !
       call allocate_iele_4_subdomain
 !
-      call set_local_element_table                                      &
-     &   (node1%numnod, numele, ele_grp, n_domain, included_ele%ntot,                         &
+      call set_local_element_table(node1%numnod, ele1%numele,           &
+     &    ele_grp, n_domain, included_ele%ntot,                         &
      &    included_ele%istack_nod, included_ele%id_near_nod)
 !
       call dealloc_near_node(included_ele)

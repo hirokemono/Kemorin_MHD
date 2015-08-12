@@ -31,7 +31,6 @@
       subroutine s_set_refine_flags_4_tri
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_refine_flag_parameters
       use m_refined_element_data
@@ -39,7 +38,7 @@
       integer(kind = kint) :: inum, iele, icou, iflag
 !
 !
-      allocate(imark_ele(numele))
+      allocate(imark_ele(ele1%numele))
       imark_ele = 0
 !
       if(iflag_tmp_tri_refine .eq. 0) then
@@ -63,7 +62,7 @@
       if(iflag_debug .gt. 0) then
 !
         write(50,'(a)') 'error nummber of marks:  0'
-        do iele = 1, numele
+        do iele = 1, ele1%numele
           if(imark_ele(iele) .eq. 0) then
             icou = icou + 1
             if( iflag_refine_ele(iele) .ne. 0) then
@@ -75,7 +74,7 @@
 !
         inum = 3
         write(50,'(a,i2)') 'nummber of marks:  ', inum
-        do iele = 1, numele
+        do iele = 1, ele1%numele
           if(imark_ele(iele) .eq. inum) then
             write(50,'(i16,8i3,i6)') iele, imark_nod(ie(iele,1:8)),     &
      &                            iflag_refine_ele(iele)
@@ -84,7 +83,7 @@
 !
         do inum = 5, 7
           write(50,'(a,i2)') 'nummber of marks:  ', inum
-          do iele = 1, numele
+          do iele = 1, ele1%numele
             if(imark_ele(iele) .eq. inum) then
                write(50,'(i16,8i3,i6)') iele, imark_nod(ie(iele,1:8)),  &
      &                            iflag_refine_ele(iele)
@@ -94,7 +93,7 @@
 !
         icou = 0
         write(50,'(a)') 'error nummber of marks:  8'
-        do iele = 1, numele
+        do iele = 1, ele1%numele
           if(imark_ele(iele) .eq. 8) then
             icou = icou + 1
             if( iflag_refine_ele(iele) .ne. 300) then
@@ -103,7 +102,7 @@
             end if
           end if
         end do
-        write(50,'(a,2i16)') 'total refine ele: ', icou, numele
+        write(50,'(a,2i16)') 'total refine ele: ', icou, ele1%numele
       end if
 !
       write(*,*) 'deallocate imark_ele'
@@ -117,7 +116,6 @@
       subroutine remark_refine_data(iflag_retry)
 !
       use m_control_param_4_refiner
-      use m_geometry_parameter
       use m_geometry_data
       use m_refine_flag_parameters
       use m_refined_element_data
@@ -127,7 +125,7 @@
 !
 !
       imark_ele = 0
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         do k1 = 1, 8
           inod = ie(iele,k1)
           imark_ele(iele) = imark_ele(iele) + imark_nod(inod)
@@ -137,21 +135,21 @@
       write(*,*) 'marking finish'
 !
       iflag_retry = 0
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         if(imark_ele(iele) .eq. 5) then
           call change_refine_id_for_n5(iele,iflag_retry)
         end if
       end do
       write(*,*) 'n=5 fixed'
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         if(imark_ele(iele) .eq. 7) then
           call change_refine_id_for_n7(iele, iflag_retry)
         end if
       end do
       write(*,*) 'n=7 fixed'
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         if(imark_ele(iele) .eq. 2) then
             call set_refine_id_for_n2(iele, iflag_refine_ele(iele),     &
      &          iflag_retry)
@@ -167,7 +165,7 @@
       if (iflag_retry .gt. 0) return
 !
       iflag_tmp_tri_refine = 0
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         if( iflag_refine_ele(iele) .ge. iflag_five_x                    &
      &   .and. iflag_refine_ele(iele) .le. iflag_five_s6) then
           iflag_tmp_tri_refine = 1
@@ -177,7 +175,7 @@
 !
       if(iflag_tmp_tri_refine .eq. 0) then
         if (iflag_small_tri_refine .eq.1)  then
-          do iele = 1, numele
+          do iele = 1, ele1%numele
             if(imark_ele(iele) .eq. 1) then
               iflag_refine_ele(iele) = iflag_nothing
             else if(imark_ele(iele) .eq. 2) then
@@ -193,7 +191,7 @@
 !
         else
 !
-          do iele = 1, numele
+          do iele = 1, ele1%numele
             if(imark_ele(iele) .eq. 1) then
               call set_refine_id_for_n1(iele, iflag_refine_ele(iele))
             else if(imark_ele(iele) .eq. 2) then
@@ -209,7 +207,7 @@
 !
       else
 !
-        do iele = 1, numele
+        do iele = 1, ele1%numele
           if(    imark_ele(iele) .eq. 1 .or. imark_ele(iele) .eq. 2     &
      &      .or. imark_ele(iele) .eq. 4 .or. imark_ele(iele) .eq. 8     &
      &      ) then
@@ -728,7 +726,7 @@
       allocate(imark_nod(node1%numnod))
       imark_nod = 0
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         if(iflag_refine_ele(iele) .eq. iflag_tri_full) then
           do k1 = 1, 8
             inod = ie(iele,k1)

@@ -12,7 +12,7 @@
       use m_precision
 !
       use m_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use m_refined_element_data
       use m_element_refinement_IO
 !
@@ -100,12 +100,12 @@
 !
 !
       max_refine_level_IO = max_refine_level
-      nele_org_IO =         numele
-      nele_ref_IO =         istack_ele_refined(numele)
+      nele_org_IO =         ele1%numele
+      nele_ref_IO =         istack_ele_refined(ele1%numele)
 !
       call allocate_element_refine_IO
 !
-      do iele_org = 1, numele
+      do iele_org = 1, ele1%numele
         ist = istack_ele_refined(iele_org-1)
         do icou = 1, num_ele_refined(iele_org)
           iele_neo = icou + istack_ele_refined(iele_org-1)
@@ -133,12 +133,12 @@
 !
 !
       max_refine_level_IO = max_refine_level
-      nele_org_IO =         numele
-      nele_ref_IO =         istack_ele_refined(numele)
+      nele_org_IO =         ele1%numele
+      nele_ref_IO =         istack_ele_refined(ele1%numele)
 !
       call allocate_element_refine_IO
 !
-      do iele_1st = 1, numele
+      do iele_1st = 1, ele1%numele
         iflag_1st = iflag_refine_ele_1st(iele_1st)
         iele_org =  iele_org_1st(iele_1st,1)
         icou_1st =  iele_org_1st(iele_1st,2)
@@ -223,7 +223,7 @@
       integer(kind = kint) :: iele
 !
 !
-      call allocate_old_refine_level
+      call allocate_old_refine_level(ele1%numele)
 !
       max_refine_level = max_refine_level_IO
       do iele = 1, nele_ref_IO

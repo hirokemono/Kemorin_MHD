@@ -48,9 +48,9 @@
       end if
       nnod_filetering = inod_end_filter - inod_start_filter + 1
 !
-      call allocate_nod_ele_near_1nod(node1%numnod, numele)
-      call allocate_nod_ele_1nod_tmp(node1%numnod, numele)
-      call allocate_wk_exp_ele_nod_each(node1%numnod, numele)
+      call allocate_nod_ele_near_1nod(node1%numnod, ele1%numele)
+      call allocate_nod_ele_1nod_tmp(node1%numnod, ele1%numele)
+      call allocate_wk_exp_ele_nod_each(node1%numnod, ele1%numele)
 !
       max_mat_size =      0
       nmax_num_ele_1nod = 0
@@ -201,14 +201,14 @@
       nele_near_1nod_filter = nele_near_1nod_weight
 !
       call expand_near_ele_4_each_nod                                   &
-     &   (node1%numnod, numele, ele_4_nod1%ntot,                        &
+     &   (node1%numnod, ele1%numele, ele_4_nod1%ntot,                   &
      &    ele_4_nod1%istack_4_node, ele_4_nod1%iele_4_node,             &
      &    nnod_near_1nod_filter, inod_near_1nod_weight,                 &
      &    nele_near_1nod_filter, nele_near_1nod_weight,                 &
      &    iele_near_1nod_weight)
 !
       call add_nod_4_grp_each_nod                                       &
-     &   (node1%numnod, numele, nnod_4_ele, ie,                         &
+     &   (node1%numnod, ele1%numele, nnod_4_ele, ie,                    &
      &    nele_near_1nod_weight, iele_near_1nod_weight,                 &
      &    nnod_near_1nod_filter, nnod_near_1nod_weight,                 &
      &    inod_near_1nod_weight, iweight_1nod_weight,                   &

@@ -33,7 +33,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_scalar_ele_4_int
+      subroutine allocate_scalar_ele_4_int(numele)
+!
+      integer(kind = kint), intent(in) :: numele
 !
       allocate( scalar_ele(numele) )
       scalar_ele = 0.0d0

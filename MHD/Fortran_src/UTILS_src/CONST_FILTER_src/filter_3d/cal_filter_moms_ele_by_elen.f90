@@ -28,14 +28,14 @@
 !
       subroutine cal_fmoms_ele_by_elen_1st(mom_ele)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_filter_elength
       use t_filter_moments
 !
       type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !
 !
-      call s_cal_filter_moms_ele_by_elen(numele,                        &
+      call s_cal_filter_moms_ele_by_elen(ele1%numele,                   &
      &  FEM1_elen%filter_conf%nf_type,                                  &
      &  FEM1_elen%filter_conf%xmom_1d_org,                              &
      &  FEM1_elen%elen_ele%moms%f_x2,   FEM1_elen%elen_ele%moms%f_y2,   &
@@ -63,7 +63,6 @@
 !
       subroutine correct_fmoms_ele_by_elen_1st(mom_ele)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_filter_elength
       use t_filter_moments
@@ -71,7 +70,7 @@
       type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !
 !
-      call correct_filter_moms_ele_by_elen(numele, nnod_4_ele,          &
+      call correct_filter_moms_ele_by_elen(ele1%numele, nnod_4_ele,     &
      &  ie, FEM1_elen%filter_conf%nf_type,                              &
      &  FEM1_elen%filter_conf%xmom_1d_org,                              &
      &  FEM1_elen%elen_ele%moms%f_x2,   FEM1_elen%elen_ele%moms%f_y2,   &
@@ -99,10 +98,10 @@
 !
       subroutine delete_x_products_of_elen_1st
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_filter_elength
 !
-      call delete_cross_products_of_elen(numele,                        &
+      call delete_cross_products_of_elen(ele1%numele,                   &
      &  FEM1_elen%elen_ele%moms%f_xy,   FEM1_elen%elen_ele%moms%f_yz,   &
      &  FEM1_elen%elen_ele%moms%f_zx,   FEM1_elen%elen_ele%diff%df_xy,  &
      &  FEM1_elen%elen_ele%diff%df_yz,  FEM1_elen%elen_ele%diff%df_zx,  &

@@ -23,7 +23,6 @@
       use t_near_mesh_id_4_node
       use t_group_data
       use m_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_ctl_param_partitioner
       use m_subdomain_table_IO
@@ -45,7 +44,7 @@
 !C
 !C
 !C-- OVERLAPPED ELEMENTs
-      call count_overlapped_ele(numele, nodelm(1), ie)
+      call count_overlapped_ele(ele1%numele, nodelm(1), ie)
 !
       call CRE_LOCAL_DATA(num_domain, included_ele)
       call increase_overlapping(num_domain, n_overlap, i_sleeve_ele,    &

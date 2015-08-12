@@ -21,7 +21,6 @@
       subroutine s_const_refined_connectivity
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_refine_flag_parameters
       use m_control_param_4_refiner
@@ -34,16 +33,16 @@
       integer(kind = kint) :: iele
 !
 !
-      call allocate_refined_num_element
+      call allocate_refined_num_element(ele1%numele)
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         call count_refined_connection(iele, iflag_refine_ele(iele) )
       end do
 !
-      call s_cal_total_and_stacks(numele, num_ele_refined, izero,       &
+      call s_cal_total_and_stacks(ele1%numele, num_ele_refined, izero,  &
      &    istack_ele_refined, ntot_ele_refined)
 !
-!      call check_refine_stack
+!      call check_refine_stack(ele1%numele)
 !
       if (iflag_refine_type(1) .eq. iflag_8_to_20) then
         nnod_4_ele_refined = num_t_quad
@@ -55,7 +54,7 @@
 !
       call allocate_refined_ele_connect
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
 !
 !         write(*,*) 'iflag_refine_ele', iele, iflag_refine_ele(iele)
 !
@@ -69,7 +68,8 @@
         if(iflag_refine_ele(iele) .gt. 0) then
           ilevel_refine(iele) = 1
         end if
-!        if(iele.eq.numele) write(*,*) 'hehehe ', iedge_4_ele(numele,1:nedge_4_ele)
+!        if(iele.eq.ele1%numele) write(*,*) 'hehehe ',                  &
+!     &                        iedge_4_ele(ele1%numele,1:nedge_4_ele)
 !
       end do
       max_refine_level = max_refine_level + 1
