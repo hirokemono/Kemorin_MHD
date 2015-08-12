@@ -35,7 +35,7 @@
       mk_c = 0.0d0
       mk = 0.0d0
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         do i = 1, n_int
          ix = i + int_start1(n_int)
          do k1 = 1, 2

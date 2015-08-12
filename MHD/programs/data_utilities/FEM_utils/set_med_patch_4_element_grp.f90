@@ -55,7 +55,6 @@
 !
       use calypso_mpi
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_psf_case_table
       use t_group_data
@@ -95,7 +94,7 @@
         call dealloc_psf_search_list(ele_search)
         call dealloc_num_psf_search_list(ele_search)
 !
-        call set_psf_type_id(node1%numnod, numele, nnod_4_ele, ie,      &
+        call set_psf_type_id(node1%numnod, ele1%numele, nnod_4_ele, ie, &
      &      ele_search, mark_elegrp, xx(1,2))
 !
         call count_med_grp_patch(ele_grp, igrp, npatch_grp)

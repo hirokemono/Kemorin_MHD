@@ -14,7 +14,6 @@
       use m_precision
 !
       use m_constants
-      use m_geometry_parameter
       use m_geometry_data
 !
       implicit none
@@ -29,7 +28,7 @@
 !
       subroutine alloc_r_ele_cubed_sph
 !
-      allocate(r_ele_sph(numele))
+      allocate(r_ele_sph(ele1%numele))
       r_ele_sph = 0.0d0
 !
       end subroutine alloc_r_ele_cubed_sph
@@ -51,7 +50,7 @@
       real(kind = kreal) :: d2,d3,d4,d6,d7,d8
 !
 !$omp parallel do private(i,i1,i2,i3,i4,i5,i6,i7,i8,d2,d3,d4,d6,d7,d8)
-      do i = 1, numele
+      do i = 1, ele1%numele
         i1 = ie(i,1)
         i2 = ie(i,2)
         i3 = ie(i,3)

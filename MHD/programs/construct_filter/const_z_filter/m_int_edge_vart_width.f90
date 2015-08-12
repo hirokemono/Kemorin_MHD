@@ -38,9 +38,9 @@
       allocate ( delta_dz(node1%numnod) )
       allocate ( d2_dz(node1%numnod) )
 !
-      allocate ( delta_z_e(numele) )
-      allocate ( delta_dz_e(numele) )
-      allocate ( d2_dz_e(numele) )
+      allocate ( delta_z_e(ele1%numele) )
+      allocate ( delta_dz_e(ele1%numele) )
+      allocate ( d2_dz_e(ele1%numele) )
 !
       allocate( rhs_dz(node1%numnod) )
 !
@@ -60,7 +60,6 @@
 !
      subroutine int_edge_vart_width(n_int)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_jacobians_4_edge
@@ -73,7 +72,7 @@
 !
       rhs_dz = 0.0d0
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         do i = 1, n_int
           ix = i + int_start1(n_int)
           do k2 = 1, 2
@@ -170,7 +169,7 @@
 !
       delta_z = 0.0d0
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         do k2 = 1, 2
           inod2 = ie_edge(iele,k2)
           if (inod2 .eq. 1) then
@@ -190,7 +189,6 @@
 !
       subroutine int_edge_diff_vart_w(n_int)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_shape_functions
@@ -204,7 +202,7 @@
 !
       rhs_dz = 0.0d0
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         do i = 1, n_int
           ix = i + int_start1(n_int)
           do k1 = 1, 2
@@ -227,7 +225,6 @@
       subroutine int_edge_d2_vart_w(n_int)
 !
       use calypso_mpi
-      use m_geometry_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_shape_functions
@@ -241,7 +238,7 @@
 !
       rhs_dz = 0.0d0
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         do i = 1, n_int
           ix = i + int_start1(n_int)
           do k1 = 1, 2
@@ -267,7 +264,6 @@
       subroutine int_edge_d2_vart_w2(n_int)
 !
       use calypso_mpi
-      use m_geometry_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_shape_functions
@@ -281,7 +277,7 @@
 !
       rhs_dz = 0.0d0
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         do i = 1, n_int
           ix = i + int_start1(n_int)
           do k1 = 1, 2

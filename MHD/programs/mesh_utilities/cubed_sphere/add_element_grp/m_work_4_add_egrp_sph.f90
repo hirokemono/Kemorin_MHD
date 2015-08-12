@@ -1,9 +1,12 @@
 !
 !      module m_work_4_add_egrp_sph
 !
-      module  m_work_4_add_egrp_sph
-!
 !     Written by H. Matsui on Mar., 2008
+!
+!!      subroutine allocate_work_4_add_egrp_sph(numele)
+!!      subroutine deallocate_work_4_add_egrp_sph
+!
+      module  m_work_4_add_egrp_sph
 !
       use m_precision
 !
@@ -14,18 +17,15 @@
       real(kind = kreal), allocatable :: wk1_4_sort(:)
       real(kind = kreal), allocatable :: wk2_4_sort(:)
 !
-!      subroutine allocate_work_4_add_egrp_sph
-!      subroutine deallocate_work_4_add_egrp_sph
-!
 !   --------------------------------------------------------------------
 !
       contains
 !
 !   --------------------------------------------------------------------
 !
-      subroutine allocate_work_4_add_egrp_sph
+      subroutine allocate_work_4_add_egrp_sph(numele)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numele
 !
       allocate( iele_4_sort(numele) )
       allocate( wk1_4_sort(numele) )

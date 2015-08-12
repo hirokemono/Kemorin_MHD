@@ -24,6 +24,7 @@
       subroutine  initialize_add_egrp
 !
       use calypso_mpi
+      use m_geometry_data
       use m_control_data_add_ele_grp
       use m_add_ele_grp_parameter
       use m_element_group
@@ -50,7 +51,7 @@
       call alloc_r_ele_cubed_sph
       call set_rele_cubed_sph
 !
-      call allocate_work_4_add_egrp_sph
+      call allocate_work_4_add_egrp_sph(ele1%numele)
       call count_new_2d_element_group
 !
       if (iflag_debug.eq.1) write(*,*) 'set_new_2d_ele_group'

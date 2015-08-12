@@ -61,7 +61,7 @@
       call set_crs_connect_commute_z
 !
       if (my_rank.eq.0) write(*,*) 'allocate_int_edge_data'
-      call allocate_int_edge_data(node1%numnod, numele)
+      call allocate_int_edge_data(node1%numnod, ele1%numele)
       call set_spatial_difference(n_int)
 !
 !

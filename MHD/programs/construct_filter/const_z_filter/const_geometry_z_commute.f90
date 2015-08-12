@@ -83,8 +83,8 @@
       numele = node1%numnod - 1
 !
       first_ele_type = 331
-      numsurf = numele
-      numedge = numele
+      numsurf = ele1%numele
+      numedge = ele1%numele
       nnod_4_edge = 2
 !
       nfilter2_1 = 2*numfilter+1
@@ -107,7 +107,7 @@
         inod_global(i) = i
       end do
 !
-      do i = 1, numele
+      do i = 1, ele1%numele
         iedge_global(i) = inod_global(ie_edge(i,1))
       end do
 !

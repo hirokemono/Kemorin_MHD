@@ -38,7 +38,8 @@
       use m_edge_geometry_data
 !
 !
-      call count_ele_comm_test(numele, x_ele, ele_comm%ntot_import,     &
+      call count_ele_comm_test                                          &
+     &   (ele1%numele, x_ele, ele_comm%ntot_import,                     &
      &    ele_comm%item_import, x_ele_comm, nele_diff_local)
       call count_ele_comm_test(numsurf, x_surf, surf_comm%ntot_import,  &
      &    surf_comm%item_import, x_surf_comm, nsurf_diff_local)
@@ -56,7 +57,7 @@
       use m_edge_geometry_data
 !
 !
-      call compare_ele_comm_test(numele, x_ele,                         &
+      call compare_ele_comm_test(ele1%numele, x_ele,                    &
      &    ele_comm%ntot_import, ele_comm%item_import,                   &
      &    x_ele_comm, nele_diff_local, iele_diff, xele_diff)
       call compare_ele_comm_test(numsurf, x_surf,                       &

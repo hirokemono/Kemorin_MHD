@@ -9,7 +9,6 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_cutshell_nod_ele_flag
       use t_geometry_data
@@ -49,7 +48,7 @@
 !
        new_ele%nnod_4_ele = nnod_4_ele
        new_ele%numele = 0
-       do iele = 1, numele
+       do iele = 1, ele1%numele
 !
          isig = 1
          do i = 1, nnod_4_ele
@@ -75,7 +74,7 @@
 !
 !
        icou = 0
-       do iele = 1, numele
+       do iele = 1, ele1%numele
 !
          isig = 1
          do i = 1, nnod_4_ele

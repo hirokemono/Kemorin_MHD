@@ -45,7 +45,6 @@
       use m_geometry_data
       use m_array_for_send_recv
       use m_array_for_send_recv
-      use m_geometry_parameter
       use m_geometry_4_comm_test
       use m_read_mesh_data
       use m_ele_sf_eg_comm_tables
@@ -90,7 +89,7 @@
       call collect_diff_nod_comm_test
       call deallocate_diff_nod_comm_test
 !
-      call allocate_geom_4_comm_test(numele, numsurf, numedge)
+      call allocate_geom_4_comm_test(ele1%numele, numsurf, numedge)
       call s_mesh_send_recv_test
       call s_count_diff_geom_comm_test
 !

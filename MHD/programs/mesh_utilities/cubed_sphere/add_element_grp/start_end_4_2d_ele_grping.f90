@@ -28,12 +28,11 @@
 !
       use m_constants
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_work_4_add_egrp_sph
       use quicksort
 !
-      real(kind = kreal), intent(in) :: ref_ele(numele)
+      real(kind = kreal), intent(in) :: ref_ele(ele1%numele)
       real(kind = kreal), intent(in) :: dmin_grping
       real(kind = kreal), intent(in) :: dmax_grping
 !
@@ -48,17 +47,16 @@
       else
 !
         ist_ele = ione
-        do iele = 1, numele
+        do iele = 1, ele1%numele
           wk1_4_sort(iele) = ref_ele(iele)
           iele_4_sort(iele) = iele
         end do
-        call quicksort_real_w_index(numele, wk1_4_sort, ione, numele,   &
-     &      iele_4_sort)
-!
+        call quicksort_real_w_index(ele1%numele, wk1_4_sort, ione,      &
+     &      ele1%numele,iele_4_sort)
       end if
 !
-      call find_start_end_sorted_grping(ist_ele, numele, wk1_4_sort,    &
-     &    dmin_grping, dmax_grping, item_st, item_ed )
+      call find_start_end_sorted_grping(ist_ele, ele1%numele,           &
+     &     wk1_4_sort, dmin_grping, dmax_grping, item_st, item_ed )
       max_prev = dmax_grping
 !
       end subroutine set_start_end_egrping
@@ -69,12 +67,11 @@
      &          dmin_grping, dmax_grping, max_prev,                     &
      &          item_st, item_ed, jtem_st, jtem_ed)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_work_4_add_egrp_sph
       use quicksort
 !
-      real(kind = kreal), intent(in) :: ref_ele(numele)
+      real(kind = kreal), intent(in) :: ref_ele(ele1%numele)
       real(kind = kreal), intent(in) :: dmin_grping
       real(kind = kreal), intent(in) :: dmax_grping
       integer(kind = kint), intent(inout) :: item_st, item_ed

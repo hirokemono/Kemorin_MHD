@@ -44,7 +44,7 @@
       type(mesh_groups), intent(inout) :: new_group
 !
 !
-      call allocate_trans_table(node1%numnod, numele)
+      call allocate_trans_table(node1%numnod, ele1%numele)
 !
       if      (iflag_reduce_type .eq. 1) then
          call select_northern_hemisphere(newmesh, new_group)
@@ -56,7 +56,7 @@
          call select_hemispherical_shell(newmesh, new_group)
       end if
 !
-!      call check_trans_table(node1%numnod, numele)
+!      call check_trans_table(node1%numnod, ele1%numele)
 !
       call deallocate_trans_table
 !

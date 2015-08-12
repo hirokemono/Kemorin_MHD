@@ -10,7 +10,7 @@
       module  set_ele_grp2_by_2d
 !
       use m_precision
-      use m_geometry_parameter
+      use m_geometry_data
 !
 !
       implicit none
@@ -66,8 +66,8 @@
       character(len=kchara), intent(in)  :: ele_grp_name2(num_ele_grp2)
       real(kind = kreal), intent(in) :: dminmax_grp_2(num_ele_grp2,2)
 !
-      real(kind = kreal), intent(in) :: ref_ele1(numele)
-      real(kind = kreal), intent(in) :: ref_ele2(numele)
+      real(kind = kreal), intent(in) :: ref_ele1(ele1%numele)
+      real(kind = kreal), intent(in) :: ref_ele2(ele1%numele)
 !
       type(group_data), intent(inout) :: ele_grp
 !
@@ -166,8 +166,8 @@
       integer(kind = kint), intent(in) :: num_ele_grp2
       real(kind = kreal), intent(in) :: dminmax_grp_2(num_ele_grp2,2)
 !
-      real(kind = kreal), intent(in) :: ref_ele1(numele)
-      real(kind = kreal), intent(in) :: ref_ele2(numele)
+      real(kind = kreal), intent(in) :: ref_ele1(ele1%numele)
+      real(kind = kreal), intent(in) :: ref_ele2(ele1%numele)
 !
       integer(kind = kint) :: i, j
       integer(kind = kint) :: igrp
@@ -215,8 +215,8 @@
       integer(kind = kint), intent(in) :: num_ele_grp2
       real(kind = kreal), intent(in) :: dminmax_grp_2(num_ele_grp2,2)
 !
-      real(kind = kreal), intent(in) :: ref_ele1(numele)
-      real(kind = kreal), intent(in) :: ref_ele2(numele)
+      real(kind = kreal), intent(in) :: ref_ele1(ele1%numele)
+      real(kind = kreal), intent(in) :: ref_ele2(ele1%numele)
       type(group_data), intent(in) :: ele_grp
 !
       type(group_data), intent(inout) :: new_elegrp

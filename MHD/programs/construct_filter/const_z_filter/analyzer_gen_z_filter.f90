@@ -99,7 +99,7 @@
 !
 !
       if (my_rank.eq.0) write(*,*) 'allocate_int_edge_data'
-      call allocate_int_edge_data(node1%numnod, numele)
+      call allocate_int_edge_data(node1%numnod, ele1%numele)
       call set_spatial_difference(n_int)
 !
       if (my_rank.eq.0) write(*,*) 'cal_delta_z_analytical'
@@ -199,7 +199,7 @@
 !
 !
        ndep_filter = ncomp_mat
-       call allocate_int_commute_filter(node1%numnod, numele)
+       call allocate_int_commute_filter(node1%numnod, ele1%numele)
 !
        write(*,*) 's_copy_1darray_2_2darray'
        call s_copy_1darray_2_2darray                                    &
@@ -211,9 +211,9 @@
      &     nneib_nod2, ineib_nod2)
 !       call check_neib_nod_2nd(my_rank)
        write(*,*) 's_set_neib_ele_z'
-       call s_set_neib_ele_z(numele, ncomp_mat, nside, nneib_ele2,      &
+       call s_set_neib_ele_z(ele1%numele, ncomp_mat, nside, nneib_ele2, &
      &    ineib_ele2)
-!       call check_neib_ele_2nd(my_rank, numele)
+!       call check_neib_ele_2nd(my_rank, ele1%numele)
 !
        call int_edge_filter_peri(ndep_filter, totalnod_x, xsize,        &
      &      xmom_h_x, xmom_ht_x)
@@ -222,7 +222,7 @@
        write(*,*) 'xmom_ht_x', xmom_ht_x
        write(*,*) 'xmom_ht_x', xmom_ht_y
        if(my_rank.eq.0) write(*,*) 'int_edge_commutative_filter'
-       call int_edge_commutative_filter(node1%numnod, numele,           &
+       call int_edge_commutative_filter(node1%numnod, ele1%numele,      &
      &     xx(1,3), ie_edge)
 !       call check_int_commutative_filter(my_rank, node1%numnod)
 !

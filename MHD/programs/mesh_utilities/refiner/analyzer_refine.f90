@@ -59,7 +59,7 @@
       if(iflag_read_old_refine_file .gt. 0) then
         call read_refinement_table
       else
-        call allocate_old_refine_level(numele)
+        call allocate_old_refine_level(ele1%numele)
       end if
 !C
 !C +--------------+
@@ -112,12 +112,12 @@
         call const_mesh_informations(my_rank)
 !
         write(*,*) 'allocate_refine_flags'
-        call allocate_refine_flags(numele, numsurf, numedge,            &
+        call allocate_refine_flags(ele1%numele, numsurf, numedge,       &
      &          nsurf_4_ele, nedge_4_ele)
 !
         if(iflag_tmp_tri_refine .eq. 0) then
           write(*,*) 's_set_element_refine_flag'
-          call s_set_element_refine_flag(numele, ele_grp1)
+          call s_set_element_refine_flag(ele1%numele, ele_grp1)
         end if
 !
         write(*,*) 's_set_refine_flags_4_tri'

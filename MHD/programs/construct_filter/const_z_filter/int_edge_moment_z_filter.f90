@@ -33,7 +33,7 @@
       real(kind = kreal), parameter :: half = 0.5d0
 !
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
        do j1 = 1, 2
         do j2 = 1, 2
          inod1 = ie_edge(iele,j1)

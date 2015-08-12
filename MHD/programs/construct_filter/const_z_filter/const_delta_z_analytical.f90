@@ -12,7 +12,6 @@
       use m_constants
       use calypso_mpi
       use m_commute_filter_z
-      use m_geometry_parameter
       use m_geometry_data
       use m_int_edge_vart_width
 !
@@ -69,7 +68,7 @@
           d2_dz(i) =    zero
         end do
 !
-        do i = 1, numele
+        do i = 1, ele1%numele
           delta_z_e(i) =  zsize / dble(2*internal_node-1)
           delta_dz_e(i) = zero
           d2_dz_e(i) =    zero
@@ -105,7 +104,7 @@
           end if
         end do
 !
-        do i = 1, numele
+        do i = 1, ele1%numele
           inod1 = ie_edge(i,1)
           inod2 = ie_edge(i,2)
           delta_z_e(i)                                                  &
@@ -148,7 +147,7 @@
           end if
         end do
 !
-        do i = 1, numele
+        do i = 1, ele1%numele
           inod1 = ie_edge(i,1)
           inod2 = ie_edge(i,2)
           delta_z_e(i) =  xx(inod2,3) - xx(inod1,3)
@@ -172,7 +171,7 @@
           d2_dz(i) =    zero
         end do
 !
-        do i = 1, numele
+        do i = 1, ele1%numele
           delta_z_e(i) =  one
           delta_dz_e(i) = zero
           d2_dz_e(i) =    zero
@@ -203,7 +202,7 @@
      &         * sin(pi* dble(i - 1) / dble(internal_node-1))**3 )
         end do
 !
-        do i = 1, numele
+        do i = 1, ele1%numele
           inod1 = ie_edge(i,1)
           inod2 = ie_edge(i,2)
           delta_z_e(i) =  xx(inod2,3) - xx(inod1,3)

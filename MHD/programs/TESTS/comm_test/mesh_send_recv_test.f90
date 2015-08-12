@@ -358,7 +358,7 @@
       integer(kind = kint) :: iele, inum
 !
 !
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         x_ele_comm(3*iele-2) = x_ele(iele,1)
         x_ele_comm(3*iele-1) = x_ele(iele,2)
         x_ele_comm(3*iele  ) = x_ele(iele,3)
@@ -370,7 +370,7 @@
         x_ele_comm(3*iele  ) = 0.0d0
       end do
 !
-      call SOLVER_SEND_RECV_3_type(numele, ele_comm, x_ele_comm)
+      call SOLVER_SEND_RECV_3_type(ele1%numele, ele_comm, x_ele_comm)
 !
       end subroutine ele_send_recv_test
 !
