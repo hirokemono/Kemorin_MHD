@@ -1,39 +1,45 @@
-!filter_moments_type_file_IO.f90
-!     module filter_moments_type_file_IO
+!>@file   filter_moments_type_file_IO.f90
+!!@brief  module filter_moments_type_file_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in 2004
+!!@n     modified by H. Matsui in May., 2008
 !
-!     programmed by H. Matsui on May, 2008
-!
-!      subroutine read_num_filter_mom_type_file(file_name, my_rank,     &
-!     &          FEM_elens, FEM_moms)
-!
-!      subroutine read_filter_elen_type_file(file_name, my_rank,        &
-!     &          nnod, nele, FEM_elens, ierr)
-!      subroutine write_filter_elen_type_file(file_name, my_rank,       &
-!     &          FEM_elens)
-!
-!      subroutine read_filter_moms_type_file(file_name, my_rank,        &
-!     &          nnod, nele, FEM_elens, FEM_moms, ierr)
-!      subroutine write_filter_moms_type_file(file_name, my_rank,       &
-!     &          FEM_elens, FEM_moms)
-!
-!      subroutine read_num_filter_mom_type_file_b(file_name, my_rank,   &
-!     &          FEM_elens, FEM_moms)
-!
-!      subroutine read_filter_elen_type_file_b(file_name, my_rank,      &
-!     &          nnod, nele, FEM_elens, ierr)
-!      subroutine write_filter_elen_type_file_b(file_name, my_rank,     &
-!     &          FEM_elens)
-!
-!      subroutine read_filter_moms_type_file_b(file_name, my_rank,      &
-!     &          nnod, nele, FEM_elens, FEM_moms, ierr)
-!      subroutine write_filter_moms_type_file_b(file_name, my_rank,     &
-!     &          FEM_elens, FEM_moms)
-!        character(len=kchara), intent(in) :: file_name
-!        integer(kind = kint), intent(in) :: my_rank
-!        integer(kind = kint), intent(in) :: nnod, nele
-!        type(gradient_model_data_type), intent(inout) :: FEM_elens
-!        type(gradient_filter_mom_type), intent(inout) :: FEM_moms
-!        integer(kind = kint), intent(inout) :: ierr
+!> @brief file IO for filtering structure
+!!
+!!@verbatim
+!!      subroutine read_num_filter_mom_type_file(file_name, my_rank,    &
+!!     &          FEM_elens, FEM_moms)
+!!
+!!      subroutine read_filter_elen_type_file(file_name, my_rank,       &
+!!     &          nnod, nele, FEM_elens, ierr)
+!!      subroutine write_filter_elen_type_file(file_name, my_rank,      &
+!!     &          FEM_elens)
+!!
+!!      subroutine read_filter_moms_type_file(file_name, my_rank,       &
+!!     &          nnod, nele, FEM_elens, FEM_moms, ierr)
+!!      subroutine write_filter_moms_type_file(file_name, my_rank,      &
+!!     &          FEM_elens, FEM_moms)
+!!
+!!      subroutine read_num_filter_mom_type_file_b(file_name, my_rank,  &
+!!     &          FEM_elens, FEM_moms)
+!!
+!!      subroutine read_filter_elen_type_file_b(file_name, my_rank,     &
+!!     &          nnod, nele, FEM_elens, ierr)
+!!      subroutine write_filter_elen_type_file_b(file_name, my_rank,    &
+!!     &          FEM_elens)
+!!
+!!      subroutine read_filter_moms_type_file_b(file_name, my_rank,     &
+!!     &          nnod, nele, FEM_elens, FEM_moms, ierr)
+!!      subroutine write_filter_moms_type_file_b(file_name, my_rank,    &
+!!     &          FEM_elens, FEM_moms)
+!!        character(len=kchara), intent(in) :: file_name
+!!        integer(kind = kint), intent(in) :: my_rank
+!!        integer(kind = kint), intent(in) :: nnod, nele
+!!        type(gradient_model_data_type), intent(inout) :: FEM_elens
+!!        type(gradient_filter_mom_type), intent(inout) :: FEM_moms
+!!        integer(kind = kint), intent(inout) :: ierr
+!!@endverbatim
 !
       module filter_moments_type_file_IO
 !

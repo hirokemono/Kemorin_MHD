@@ -15,7 +15,7 @@
 !
       use m_control_parameter
       use m_phys_constants
-      use m_geometry_parameter
+      use m_geometry_data
 !
       implicit none
 !
@@ -37,7 +37,7 @@
       integer (kind = kint), intent(in) :: numdir, i_field
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
       if ( iflag_4_supg .eq. id_magnetic_SUPG) then
@@ -70,7 +70,7 @@
       integer (kind = kint), intent(in) :: numdir, i_field
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
       integer (kind = kint) :: icomp, nd, ndx, nd2, nd_t
       integer (kind = kint) :: k2, id_dvx2
@@ -114,7 +114,7 @@
       integer (kind = kint), intent(in) :: numdir, i_field, ie_upw
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
       integer (kind = kint) :: icomp, nd, ndx, nd2, nd_t
       integer (kind = kint) :: k2, id_dvx2

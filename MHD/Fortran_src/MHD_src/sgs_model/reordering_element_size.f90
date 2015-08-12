@@ -4,7 +4,7 @@
 !      Written by H. Matsui on Nov., 2006
 !      Modified by H. Matsui on Feb., 2008
 !
-!      subroutine reordering_ele_size
+!      subroutine reordering_ele_size(numele)
 !      subroutine reordering_scalar_by_layer
 !      subroutine reordering_vector_by_layer(numele, old2newele, elen)
 !      subroutine reordering_layer_info(numele, old2newele_layer,       &
@@ -27,9 +27,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine allocate_dx_ordering_tmp
+      subroutine allocate_dx_ordering_tmp(numele)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numele
 !
       allocate( dx_ordering_tmp(numele) )
       dx_ordering_tmp = 0.0d0
@@ -47,16 +47,17 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine reordering_ele_size
+      subroutine reordering_ele_size(numele)
 !
       use m_control_parameter
-      use m_geometry_parameter
       use m_work_4_MHD_layering
       use m_ele_info_4_dynamical
       use m_filter_elength
 !
+      integer(kind = kint), intent(in) :: numele
 !
-        call allocate_dx_ordering_tmp
+!
+        call allocate_dx_ordering_tmp(numele)
 !
         call reordering_scalar_by_layer(numele, old2newele_layer(1),    &
      &      FEM1_elen%elen_ele%moms%f_x2)
@@ -101,7 +102,7 @@
 !
 !
 !      if ( iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-!        call reordering_layer_info(numele, old2newele_layer(1),         &
+!        call reordering_layer_info(numele, old2newele_layer(1),        &
 !     &      layer_tbl1%n_item_layer_d, item_layer(1) )
 !      end if
 !

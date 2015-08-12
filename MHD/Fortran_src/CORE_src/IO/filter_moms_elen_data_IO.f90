@@ -1,55 +1,60 @@
-!filter_moms_elen_data_IO.f90
-!     module filter_moms_elen_data_IO
+!>@file   filter_moms_elen_data_IO.f90
+!!@brief  module filter_moms_elen_data_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in 2004
+!!@n     modified by H. Matsui in Nov., 2006
+!!@n     modified by H. Matsui in May, 2008
 !
-!     Written by H. Matsui
-!     modified by H. Matsui on Nov., 2006
-!     modified by H. Matsui on Mar., 2008
-!
-!      subroutine read_ref_filter_param(id_file, nf_type, filter_type,  &
-!     &          f_width, xmom_1d_org)
-!      subroutine write_ref_filter_param(id_file, nf_type, filter_type, &
-!     &          f_width, xmom_1d_org)
-!
-!      subroutine read_elens_ele(id_file, nele,                         &
-!     &         e_x2_ele, e_y2_ele, e_z2_ele,                           &
-!     &         e_xy_ele, e_yz_ele, e_zx_ele,                           &
-!     &         e_x2_ele_dx, e_y2_ele_dx, e_z2_ele_dx,                  &
-!     &         e_xy_ele_dx, e_yz_ele_dx, e_zx_ele_dx,                  &
-!     &         e_x2_ele_dx2, e_y2_ele_dx2, e_z2_ele_dx2,               &
-!     &         e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2)
-!      subroutine write_elens_ele(id_file, nele,                        &
-!     &         e_x2_ele, e_y2_ele, e_z2_ele,                           &
-!     &         e_xy_ele, e_yz_ele, e_zx_ele,                           &
-!     &         e_x2_ele_dx, e_y2_ele_dx, e_z2_ele_dx,                  &
-!     &         e_xy_ele_dx, e_yz_ele_dx, e_zx_ele_dx,                  &
-!     &         e_x2_ele_dx2, e_y2_ele_dx2, e_z2_ele_dx2,               &
-!     &         e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2)
-!      subroutine write_elens_nod(id_file, nnod,                        &
-!     &          e_x2_nod, e_y2_nod, e_z2_nod,                          &
-!     &          e_xy_nod, e_yz_nod, e_zx_nod,                          &
-!     &          e_x2_nod_dx, e_y2_nod_dx, e_z2_nod_dx,                 &
-!     &          e_xy_nod_dx, e_yz_nod_dx, e_zx_nod_dx)
-!
-!      subroutine read_filter_moms_ele(id_file, nele,                   &
-!     &         f_x2_ele, f_y2_ele, f_z2_ele,                           &
-!     &         f_xy_ele, f_yz_ele, f_zx_ele,                           &
-!     &         f_x_ele,  f_y_ele,  f_z_ele,                            &
-!     &         f_x2_ele_dx, f_y2_ele_dx, f_z2_ele_dx,                  &
-!     &         f_xy_ele_dx, f_yz_ele_dx, f_zx_ele_dx,                  &
-!     &         f_x_ele_dx,  f_y_ele_dx,  f_z_ele_dx,                   &
-!     &         f_x2_ele_dx2, f_y2_ele_dx2, f_z2_ele_dx2,               &
-!     &         f_xy_ele_dx2, f_yz_ele_dx2, f_zx_ele_dx2,               &
-!     &         f_x_ele_dx2,  f_y_ele_dx2,  f_z_ele_dx2)
-!      subroutine write_filter_moms_ele(id_file, nele,                  &
-!     &         f_x2_ele, f_y2_ele, f_z2_ele,                           &
-!     &         f_xy_ele, f_yz_ele, f_zx_ele,                           &
-!     &         f_x_ele,  f_y_ele,  f_z_ele,                            &
-!     &         f_x2_ele_dx, f_y2_ele_dx, f_z2_ele_dx,                  &
-!     &         f_xy_ele_dx, f_yz_ele_dx, f_zx_ele_dx,                  &
-!     &         f_x_ele_dx,  f_y_ele_dx,  f_z_ele_dx,                   &
-!     &         f_x2_ele_dx2, f_y2_ele_dx2, f_z2_ele_dx2,               &
-!     &         f_xy_ele_dx2, f_yz_ele_dx2, f_zx_ele_dx2,               &
-!     &         f_x_ele_dx2,  f_y_ele_dx2,  f_z_ele_dx2)
+!> @brief file IO for filtering structure
+!!
+!!@verbatim
+!!      subroutine read_ref_filter_param(id_file, nf_type, filter_type, &
+!!     &          f_width, xmom_1d_org)
+!!      subroutine write_ref_filter_param(id_file, nf_type, filter_type,&
+!!     &          f_width, xmom_1d_org)
+!!
+!!      subroutine read_elens_ele(id_file, nele,                        &
+!!     &         e_x2_ele, e_y2_ele, e_z2_ele,                          &
+!!     &         e_xy_ele, e_yz_ele, e_zx_ele,                          &
+!!     &         e_x2_ele_dx, e_y2_ele_dx, e_z2_ele_dx,                 &
+!!     &         e_xy_ele_dx, e_yz_ele_dx, e_zx_ele_dx,                 &
+!!     &         e_x2_ele_dx2, e_y2_ele_dx2, e_z2_ele_dx2,              &
+!!     &         e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2)
+!!      subroutine write_elens_ele(id_file, nele,                       &
+!!     &         e_x2_ele, e_y2_ele, e_z2_ele,                          &
+!!     &         e_xy_ele, e_yz_ele, e_zx_ele,                          &
+!!     &         e_x2_ele_dx, e_y2_ele_dx, e_z2_ele_dx,                 &
+!!     &         e_xy_ele_dx, e_yz_ele_dx, e_zx_ele_dx,                 &
+!!     &         e_x2_ele_dx2, e_y2_ele_dx2, e_z2_ele_dx2,              &
+!!     &         e_xy_ele_dx2, e_yz_ele_dx2, e_zx_ele_dx2)
+!!      subroutine write_elens_nod(id_file, nnod,                       &
+!!     &          e_x2_nod, e_y2_nod, e_z2_nod,                         &
+!!     &          e_xy_nod, e_yz_nod, e_zx_nod,                         &
+!!     &          e_x2_nod_dx, e_y2_nod_dx, e_z2_nod_dx,                &
+!!     &          e_xy_nod_dx, e_yz_nod_dx, e_zx_nod_dx)
+!!
+!!      subroutine read_filter_moms_ele(id_file, nele,                  &
+!!     &         f_x2_ele, f_y2_ele, f_z2_ele,                          &
+!!     &         f_xy_ele, f_yz_ele, f_zx_ele,                          &
+!!     &         f_x_ele,  f_y_ele,  f_z_ele,                           &
+!!     &         f_x2_ele_dx, f_y2_ele_dx, f_z2_ele_dx,                 &
+!!     &         f_xy_ele_dx, f_yz_ele_dx, f_zx_ele_dx,                 &
+!!     &         f_x_ele_dx,  f_y_ele_dx,  f_z_ele_dx,                  &
+!!     &         f_x2_ele_dx2, f_y2_ele_dx2, f_z2_ele_dx2,              &
+!!     &         f_xy_ele_dx2, f_yz_ele_dx2, f_zx_ele_dx2,              &
+!!     &         f_x_ele_dx2,  f_y_ele_dx2,  f_z_ele_dx2)
+!!      subroutine write_filter_moms_ele(id_file, nele,                 &
+!!     &         f_x2_ele, f_y2_ele, f_z2_ele,                          &
+!!     &         f_xy_ele, f_yz_ele, f_zx_ele,                          &
+!!     &         f_x_ele,  f_y_ele,  f_z_ele,                           &
+!!     &         f_x2_ele_dx, f_y2_ele_dx, f_z2_ele_dx,                 &
+!!     &         f_xy_ele_dx, f_yz_ele_dx, f_zx_ele_dx,                 &
+!!     &         f_x_ele_dx,  f_y_ele_dx,  f_z_ele_dx,                  &
+!!     &         f_x2_ele_dx2, f_y2_ele_dx2, f_z2_ele_dx2,              &
+!!     &         f_xy_ele_dx2, f_yz_ele_dx2, f_zx_ele_dx2,              &
+!!     &         f_x_ele_dx2,  f_y_ele_dx2,  f_z_ele_dx2)
+!!@verbatim
 !
       module filter_moms_elen_data_IO
 !

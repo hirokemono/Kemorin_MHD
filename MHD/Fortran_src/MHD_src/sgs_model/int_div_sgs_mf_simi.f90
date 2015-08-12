@@ -13,6 +13,7 @@
       module int_div_sgs_mf_simi
 !
       use m_precision
+       use m_machine_parameter
 !
       implicit none
 !
@@ -27,8 +28,7 @@
       subroutine int_div_sgs_mf_simi_pg(i_flux, i_vect)
 !
        use m_control_parameter
-       use m_geometry_parameter
-       use m_machine_parameter
+       use m_geometry_data
        use m_geometry_data_MHD
        use m_finite_element_matrix
        use m_int_vol_data
@@ -46,8 +46,9 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-      do k2=1, nnod_4_ele
-        call SGS_m_flux_2_each_element(k2, i_vect, i_flux, tensor_e)
+      do k2 = 1, nnod_4_ele
+        call SGS_m_flux_2_each_element(ele1%numele, nnod_4_ele, ie,     &
+     &      iele_smp_stack, k2, i_vect, i_flux, tensor_e)
         call fem_skv_div_tensor(iele_fl_smp_stack,                      &
      &      intg_point_t_evo, k2, tensor_e, sk6)
       end do
@@ -86,8 +87,7 @@
       subroutine int_div_sgs_mf_simi_upwind(i_flux, i_vect, ie_upw)
 !
       use m_control_parameter
-      use m_geometry_parameter
-      use m_machine_parameter
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_element_phys_address
       use m_element_phys_data
@@ -107,8 +107,9 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-      do k2=1, nnod_4_ele
-        call SGS_m_flux_2_each_element(k2, i_vect, i_flux, tensor_e)
+      do k2 = 1, nnod_4_ele
+        call SGS_m_flux_2_each_element(ele1%numele, nnod_4_ele, ie,     &
+     &          iele_smp_stack, k2, i_vect, i_flux, tensor_e)
         call fem_skv_div_tsr_upw(iele_fl_smp_stack, intg_point_t_evo,   &
      &      k2, d_ele(1,ie_upw), tensor_e, sk6)
       end do

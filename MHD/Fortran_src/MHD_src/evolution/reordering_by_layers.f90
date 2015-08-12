@@ -112,7 +112,7 @@
 !   ordereing of element parameters for SGS model
 !
       if ( iflag_SGS_model.eq.id_SGS_NL_grad) then
-        call reordering_ele_size
+        call reordering_ele_size(numele)
       end if
 !
       end subroutine s_reordering_by_layers

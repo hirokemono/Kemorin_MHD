@@ -13,7 +13,7 @@
       use m_precision
 !
       use m_control_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_phys_constants
       use m_int_vol_data
@@ -36,7 +36,7 @@
       integer (kind = kint), intent(in) :: ie_dvx, ie_dbx
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
@@ -63,7 +63,7 @@
       integer (kind = kint), intent(in) :: ie_dvx, ie_dbx
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
       integer (kind = kint) :: nd, nd2, nd3
       integer (kind = kint) :: icomp_v, icomp_b
@@ -112,7 +112,7 @@
       integer (kind = kint), intent(in) :: ie_dvx, ie_dbx
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
       integer (kind = kint) :: nd, nd2, nd3
       integer (kind = kint) :: icomp_v, icomp_b

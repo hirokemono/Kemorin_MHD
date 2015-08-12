@@ -35,7 +35,7 @@
       use m_phys_constants
       use m_fem_gauss_int_coefs
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use m_jacobians
       use m_filter_elength
 !
@@ -56,15 +56,16 @@
       integer(kind=kint), intent(in) :: n_int
       integer(kind=kint), intent(in) :: k2, i_filter
 !
-      real(kind=kreal), intent(in) :: sgs_1(numele,n_vector)
-      real(kind=kreal), intent(in) :: flux_1(numele,n_vector)
-      real(kind=kreal), intent(in) :: ak_diff(numele)
+      real(kind=kreal), intent(in) :: sgs_1(ele1%numele,n_vector)
+      real(kind=kreal), intent(in) :: flux_1(ele1%numele,n_vector)
+      real(kind=kreal), intent(in) :: ak_diff(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_div_sgs_vector_pg(numele, nnod_4_ele, nnod_4_ele,    &
+      call fem_skv_div_sgs_vector_pg                                    &
+     &   (ele1%numele, nnod_4_ele, nnod_4_ele,                          &
      &    np_smp, iele_fsmp_stack, n_int, k2,                           &
      &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
@@ -87,15 +88,16 @@
       integer(kind=kint), intent(in) :: n_int
       integer(kind=kint), intent(in) :: k2, i_filter
 !
-      real(kind=kreal), intent(in) :: sgs_1(numele,n_sym_tensor)
-      real(kind=kreal), intent(in) :: flux_1(numele,n_sym_tensor)
-      real(kind=kreal), intent(in) :: ak_diff(numele)
+      real(kind=kreal), intent(in) :: sgs_1(ele1%numele,n_sym_tensor)
+      real(kind=kreal), intent(in) :: flux_1(ele1%numele,n_sym_tensor)
+      real(kind=kreal), intent(in) :: ak_diff(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_div_tensor_w_sgs_pg(numele, nnod_4_ele, nnod_4_ele,  &
+      call fem_skv_div_tensor_w_sgs_pg                                  &
+     &   (ele1%numele, nnod_4_ele, nnod_4_ele,                          &
      &    np_smp, iele_fsmp_stack, n_int, k2,                           &
      &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
@@ -118,15 +120,16 @@
       integer(kind=kint), intent(in) :: n_int
       integer(kind=kint), intent(in) :: k2, i_filter
 !
-      real(kind=kreal), intent(in) :: sgs_1(numele,3)
-      real(kind=kreal), intent(in) :: flux_1(numele,3)
-      real(kind=kreal), intent(in) :: ak_diff(numele)
+      real(kind=kreal), intent(in) :: sgs_1(ele1%numele,3)
+      real(kind=kreal), intent(in) :: flux_1(ele1%numele,3)
+      real(kind=kreal), intent(in) :: ak_diff(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_div_sgs_asym_t_pg(numele, nnod_4_ele, nnod_4_ele,    &
+      call fem_skv_div_sgs_asym_t_pg                                    &
+     &   (ele1%numele, nnod_4_ele, nnod_4_ele,                          &
      &    np_smp, iele_fsmp_stack, n_int, k2,                           &
      &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
@@ -149,16 +152,16 @@
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(in) :: sgs_e(numele,3)
-      real (kind=kreal), intent(in) :: scalar_e(numele)
-      real (kind=kreal), intent(in) :: vxe(numele,3)
+      real (kind=kreal), intent(in) :: sgs_e(ele1%numele,3)
+      real (kind=kreal), intent(in) :: scalar_e(ele1%numele)
+      real (kind=kreal), intent(in) :: vxe(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
       call fem_skv_scalar_inertia_sgs                                   &
-     &   (numele, nnod_4_ele, nnod_4_ele, np_smp, iele_fsmp_stack,      &
+     &   (ele1%numele, nnod_4_ele, nnod_4_ele, np_smp, iele_fsmp_stack, &
      &    n_int, k2, ntot_int_3d, xjac, aw, dwx,                        &
      &    scalar_e, sgs_e, vxe, sk_v)
 !
@@ -174,16 +177,16 @@
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(in) :: sgs_e(numele,6)
-      real (kind=kreal), intent(in) :: vector_e(numele,3)
-      real (kind=kreal), intent(in) :: vxe(numele,3)
+      real (kind=kreal), intent(in) :: sgs_e(ele1%numele,6)
+      real (kind=kreal), intent(in) :: vector_e(ele1%numele,3)
+      real (kind=kreal), intent(in) :: vxe(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
       call fem_skv_vector_inertia_sgs                                   &
-     &   (numele, nnod_4_ele, nnod_4_ele, np_smp, iele_fsmp_stack,      &
+     &   (ele1%numele, nnod_4_ele, nnod_4_ele, np_smp, iele_fsmp_stack, &
      &    n_int, k2, ntot_int_3d, xjac, aw, dwx,                        &
      &    vector_e, sgs_e, vxe, sk_v)
 !
@@ -199,16 +202,16 @@
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(in) :: vector_e(numele,3)
-      real (kind=kreal), intent(in) :: sgs_e(numele,6)
-      real (kind=kreal), intent(in) :: wxe(numele,3)
+      real (kind=kreal), intent(in) :: vector_e(ele1%numele,3)
+      real (kind=kreal), intent(in) :: sgs_e(ele1%numele,6)
+      real (kind=kreal), intent(in) :: wxe(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
       call fem_skv_inertia_rot_sgs                                      &
-     &   (numele, nnod_4_ele, nnod_4_ele, np_smp, iele_fsmp_stack,      &
+     &   (ele1%numele, nnod_4_ele, nnod_4_ele, np_smp, iele_fsmp_stack, &
      &    n_int, k2, ntot_int_3d, xjac, aw, aw, dwx,                    &
      &    vector_e, sgs_e, wxe, sk_v)
 !
@@ -227,17 +230,17 @@
       integer(kind=kint), intent(in) :: n_int, k2, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(in) :: ak_diff(numele)
-      real (kind=kreal), intent(in) :: flux_e(numele,3)
-      real (kind=kreal), intent(in) :: sgs_e(numele,3)
-      real (kind=kreal), intent(in) :: scalar_e(numele)
-      real (kind=kreal), intent(in) :: vxe(numele,3)
+      real (kind=kreal), intent(in) :: ak_diff(ele1%numele)
+      real (kind=kreal), intent(in) :: flux_e(ele1%numele,3)
+      real (kind=kreal), intent(in) :: sgs_e(ele1%numele,3)
+      real (kind=kreal), intent(in) :: scalar_e(ele1%numele)
+      real (kind=kreal), intent(in) :: vxe(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
       call fem_skv_scalar_inertia_sgsmod                                &
-     &   (numele, nnod_4_ele, nnod_4_ele, np_smp,                       &
+     &   (ele1%numele, nnod_4_ele, nnod_4_ele, np_smp,                  &
      &    iele_fsmp_stack,n_int, k2,                                    &
      &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
@@ -261,18 +264,18 @@
       integer(kind=kint), intent(in) :: n_int, k2, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(in) :: ak_diff(numele)
-      real (kind=kreal), intent(in) :: flux_e(numele,6)
-      real (kind=kreal), intent(in) :: sgs_e(numele,6)
-      real (kind=kreal), intent(in) :: vector_e(numele,3)
-      real (kind=kreal), intent(in) :: vxe(numele,3)
+      real (kind=kreal), intent(in) :: ak_diff(ele1%numele)
+      real (kind=kreal), intent(in) :: flux_e(ele1%numele,6)
+      real (kind=kreal), intent(in) :: sgs_e(ele1%numele,6)
+      real (kind=kreal), intent(in) :: vector_e(ele1%numele,3)
+      real (kind=kreal), intent(in) :: vxe(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
       call fem_skv_vector_inertia_sgsmod                                &
-     &   (numele, nnod_4_ele, nnod_4_ele, np_smp,                       &
+     &   (ele1%numele, nnod_4_ele, nnod_4_ele, np_smp,                  &
      &    iele_fsmp_stack, n_int, k2,                                   &
      &    ntot_int_3d, xjac, aw, dwx, dwx,                              &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &

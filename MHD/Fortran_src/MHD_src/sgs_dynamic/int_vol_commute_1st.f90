@@ -137,8 +137,8 @@
 !
       call reset_sk6(n_scalar)
       do k2 = 1, nnod_4_ele
-        call SGS_v_flux_2_each_element(k2, i_vect, i_scalar,            &
-     &          i_flux, vect_e)
+        call SGS_v_flux_2_each_element(numele, nnod_4_ele, ie,          &
+     &      iele_smp_stack, k2, i_vect, i_scalar, i_flux, vect_e)
         call fem_skv_commute_err_div_1(iele_fsmp_stack,                 &
      &      n_int, k2, i_filter, vect_e, sk6)
        end do
@@ -164,7 +164,8 @@
 !
       call reset_sk6(n_vector)
       do k2 = 1, nnod_4_ele
-        call SGS_m_flux_2_each_element(k2, i_vect, i_flux, tensor_e)
+        call SGS_m_flux_2_each_element(numele, nnod_4_ele, ie,          &
+     &      iele_smp_stack, k2, i_vect, i_flux, tensor_e)
         call fem_skv_commute_err_div_tsr_1(iele_fsmp_stack,             &
      &      n_int, k2, i_filter, tensor_e, sk6)
       end do
@@ -188,9 +189,10 @@
 !
 !
       call reset_sk6(n_vector)
-      do k2=1, nnod_4_ele
-        call SGS_induct_2_each_element(k2, i_b, i_v, i_flux, vect_e)
-        call fem_skv_commute_err_div_ast_1(iele_fsmp_stack,           &
+      do k2 = 1, nnod_4_ele
+        call SGS_induct_2_each_element(numele, nnod_4_ele, ie,          &
+     &          iele_smp_stack, k2, i_b, i_v, i_flux, vect_e)
+        call fem_skv_commute_err_div_ast_1(iele_fsmp_stack,             &
      &      n_int, k2, i_filter, vect_e, sk6)
       end do
 !

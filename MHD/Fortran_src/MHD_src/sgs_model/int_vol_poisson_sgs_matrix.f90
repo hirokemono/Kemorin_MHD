@@ -16,7 +16,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_finite_element_matrix
       use m_sorted_node
@@ -38,7 +38,7 @@
      &               :: idx_for_mat(num_sort_smp, nnod_4_ele)
 !
       integer(kind = kint), intent(in) :: n_int, i_filter
-      real(kind=kreal), intent(in) :: ak_diff(numele)
+      real(kind=kreal), intent(in) :: ak_diff(ele1%numele)
 !
       integer (kind = kint), intent(in) :: nmat_size
       real(kind=kreal), intent(inout) :: aiccg(0:nmat_size)
@@ -68,8 +68,8 @@
       integer(kind = kint), intent(in)                                  &
      &               :: idx_for_mat(num_sort_smp, nnod_4_ele)
       real(kind=kreal), intent(in) :: coef_imp
-      real(kind=kreal), intent(in) :: ak_d(numele)
-      real(kind=kreal), intent(in) :: ak_diff(numele)
+      real(kind=kreal), intent(in) :: ak_d(ele1%numele)
+      real(kind=kreal), intent(in) :: ak_diff(ele1%numele)
 !
       integer(kind = kint), intent(in) :: n_int, i_filter
 !
@@ -100,8 +100,8 @@
       integer(kind = kint), intent(in)                                  &
      &               :: idx_for_mat(num_sort_smp, nnod_4_ele)
       real(kind=kreal), intent(in) :: coef_imp
-      real(kind=kreal), intent(in) :: ak_d(numele)
-      real(kind=kreal), intent(in) :: ak_diff(numele)
+      real(kind=kreal), intent(in) :: ak_d(ele1%numele)
+      real(kind=kreal), intent(in) :: ak_diff(ele1%numele)
 !
       integer(kind = kint), intent(in) :: n_int, i_filter
 !

@@ -9,6 +9,7 @@
       module int_sgs_induction
 !
       use m_precision
+      use m_machine_parameter
 !
       implicit none
 !
@@ -22,7 +23,6 @@
 !
       use m_control_parameter
       use m_geometry_parameter
-      use m_machine_parameter
       use m_geometry_data_MHD
       use m_geometry_data
       use m_phys_constants

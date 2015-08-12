@@ -13,9 +13,7 @@
 !
       use m_control_parameter
       use m_phys_constants
-      use m_geometry_parameter
-!      use m_physical_property
-!      use m_SGS_address
+      use m_geometry_data
 !
       implicit none
 !
@@ -33,7 +31,7 @@
       integer (kind=kint), intent(in) :: id_dx
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
       if (iflag_mag_supg .eq. id_turn_ON) then
@@ -60,7 +58,7 @@
       integer(kind = kint), intent(in) :: id_dx, i_filter
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
       integer(kind = kint) :: nd, k2
 !
@@ -99,7 +97,7 @@
       integer(kind = kint), intent(in) :: id_dx, i_filter
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
       integer(kind = kint) :: nd, k2
 !
