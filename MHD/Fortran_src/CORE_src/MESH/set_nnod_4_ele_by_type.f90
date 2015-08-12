@@ -7,7 +7,9 @@
 !>@brief  Set Number of element from element type ID
 !!
 !!@verbatim
-!!      subroutine s_set_nnod_4_ele_by_type(nnod_4_ele, itype)
+!!      subroutine set_3D_nnod_4_ele_by_type(itype,                &
+!!     &          nnod_4_ele, nnod_4_surf, nnod_4_edge)
+!!      subroutine s_set_nnod_4_ele_by_type(itype, nnod_4_ele)
 !!@endverbatim
 !
       module set_nnod_4_ele_by_type
@@ -22,26 +24,57 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine s_set_nnod_4_ele_by_type(nnod_4_ele, itype)
+      subroutine set_3D_nnod_4_ele_by_type(itype,                  &
+     &          nnod_4_ele, nnod_4_surf, nnod_4_edge)
+!
+      use m_geometry_constants
+!
+      integer(kind = kint), intent(in) :: itype
+      integer(kind = kint), intent(inout) :: nnod_4_ele
+      integer(kind = kint), intent(inout) :: nnod_4_surf
+      integer(kind = kint), intent(inout) :: nnod_4_edge
+!
+
+      if (itype .eq. 332) then
+        nnod_4_ele =  num_t_quad
+        nnod_4_surf = num_quad_sf
+        nnod_4_edge = num_quad_edge
+      else if (itype .eq. 331) then
+        nnod_4_ele =  num_t_linear
+        nnod_4_surf = num_linear_sf
+        nnod_4_edge = num_linear_edge
+      else if (itype .eq. 333) then
+        nnod_4_ele =  num_t_lag
+        nnod_4_surf = num_lag_sf
+        nnod_4_edge = num_quad_edge
+      end if
+!
+      end subroutine set_3D_nnod_4_ele_by_type
+!
+!------------------------------------------------------------------
+!
+      subroutine s_set_nnod_4_ele_by_type(itype, nnod_4_ele)
+!
+      use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: itype
       integer(kind = kint), intent(inout) :: nnod_4_ele
 !
 !
       if      (itype.eq.111) then
-        nnod_4_ele =  2
+        nnod_4_ele =  num_linear_edge
       else if (itype.eq.112) then
-        nnod_4_ele =  3
+        nnod_4_ele =  num_quad_edge
       else if (itype.eq.211) then
-        nnod_4_ele =  3
+        nnod_4_ele =  num_quad_edge
       else if (itype.eq.212) then
         nnod_4_ele =  6
       else if (itype.eq.221) then
-        nnod_4_ele =  4
+        nnod_4_ele =  num_linear_sf
       else if (itype.eq.222) then
-        nnod_4_ele =  8
+        nnod_4_ele =  num_quad_sf
       else if (itype.eq.223) then
-        nnod_4_ele =  9
+        nnod_4_ele =  num_lag_sf
       else if (itype.eq.311) then
         nnod_4_ele =  4
       else if (itype.eq.312) then
@@ -51,11 +84,11 @@
       else if (itype.eq.322) then
         nnod_4_ele = 15
       else if (itype.eq.331) then
-        nnod_4_ele =  8
+        nnod_4_ele = num_t_linear
       else if (itype.eq.332) then
-        nnod_4_ele = 20
+        nnod_4_ele = num_t_quad
       else if (itype.eq.333) then
-        nnod_4_ele = 27
+        nnod_4_ele = num_t_lag
       else if (itype.eq.411) then
         nnod_4_ele =  4
       else if (itype.eq.412) then

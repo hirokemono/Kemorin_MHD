@@ -45,7 +45,7 @@
 !
       numele_dummy = merge_tbl%nele_merged
       do i = 1, merge_tbl%nele_merged
-        call s_set_nnod_4_ele_by_type(nodelm_dummy(i),i_ele_dummy(i))
+        call s_set_nnod_4_ele_by_type(i_ele_dummy(i), nodelm_dummy(i))
       end do
 !
       call set_grp_data_type_to_IO(merged_grp)

@@ -147,6 +147,7 @@
       use m_geometry_parameter
       use m_geometry_data
       use t_geometry_data
+      use set_nnod_4_ele_by_type
 !
       type(element_data), intent(inout) :: ele
 !
@@ -157,19 +158,9 @@
       ele1%numele =       ele%numele
       first_ele_type = ele%first_ele_type
 !
-      if (first_ele_type .eq. 332) then
-        nnod_4_ele =  num_t_quad
-        nnod_4_surf = num_quad_sf
-        nnod_4_edge = num_quad_edge
-      else if (first_ele_type .eq. 331) then
-        nnod_4_ele =  num_t_linear
-        nnod_4_surf = num_linear_sf
-        nnod_4_edge = num_linear_edge
-      else if (first_ele_type .eq. 333) then
-        nnod_4_ele =  num_t_lag
-        nnod_4_surf = num_lag_sf
-        nnod_4_edge = num_quad_edge
-      end if
+      call set_3D_nnod_4_ele_by_type(first_ele_type,                    &
+     &    ele1%nnod_4_ele, nnod_4_surf, nnod_4_edge)
+      nnod_4_ele = ele1%nnod_4_ele
 !
       call allocate_element_connection
 !

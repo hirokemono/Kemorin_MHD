@@ -71,7 +71,7 @@
 !
        nnod_4_ele_dummy = 0
        do i = 1, numele_dummy
-         call s_set_nnod_4_ele_by_type(nodelm_dummy(i), i_ele_dummy(i))
+         call s_set_nnod_4_ele_by_type(i_ele_dummy(i), nodelm_dummy(i))
          nnod_4_ele_dummy = max(nnod_4_ele_dummy,nodelm_dummy(i))
        end do
 !

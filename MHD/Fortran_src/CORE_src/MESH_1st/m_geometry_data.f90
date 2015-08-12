@@ -80,7 +80,7 @@
 !
 !>  structure for element data (position and connectivity)
       type(element_data), save :: ele1
-!    ele1%numele
+!    ele1%nnod_4_ele
 !
 !>   Stack list of number of node
       integer(kind=kint_gl), allocatable, target  :: istack_numnod(:)

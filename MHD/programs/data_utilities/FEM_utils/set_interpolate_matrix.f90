@@ -204,14 +204,14 @@
      &          istack_wtype_smp, num_points, iele_gauss, itype_gauss,  &
      &          xi_gauss, NC, NCM, INM, IAM, AM, IEND_SUM_smp)
 !
+      use m_geometry_constants
       use interpolate_matrix_node
       use interpolate_matrix_edge2
       use interpolate_matrix_surf4
       use interpolate_matrix_ele28
 !
-      integer(kind = kint), parameter :: nnod_4_ele = 8
       integer (kind = kint), intent(in) :: np_smp, numele
-      integer (kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer (kind = kint), intent(in) :: ie(numele,num_t_linear)
       integer (kind = kint), intent(in) :: istack_wtype_smp(0:4*np_smp)
       integer (kind = kint), intent(in) :: num_points
       integer (kind = kint), intent(in) :: iele_gauss(num_points)
@@ -229,7 +229,7 @@
 !
 !
       ist = 0
-      call set_interpolate_mat_node(np_smp, numele, nnod_4_ele, ie,     &
+      call set_interpolate_mat_node(np_smp, numele, num_t_linear, ie,   &
      &    iele_gauss, itype_gauss, NC, NCM, INM, IAM, AM,               &
      &    IEND_SUM_smp(ist))
 !
@@ -256,14 +256,14 @@
      &          istack_wtype_smp, num_points, iele_gauss, itype_gauss,  &
      &          xi_gauss, NC, NCM, INM, IAM, AM, IEND_SUM_smp)
 !
+      use m_geometry_constants
       use interpolate_matrix_node
       use interpolate_matrix_edge3
       use interpolate_matrix_surf8
       use interpolate_matrix_ele20
 !
-      integer(kind = kint), parameter :: nnod_4_ele = 20
       integer (kind = kint), intent(in) :: np_smp, numele
-      integer (kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer (kind = kint), intent(in) :: ie(numele,num_t_quad)
       integer (kind = kint), intent(in) :: istack_wtype_smp(0:4*np_smp)
       integer (kind = kint), intent(in) :: num_points
       integer (kind = kint), intent(in) :: iele_gauss(num_points)
@@ -281,7 +281,7 @@
 !
 !
       ist = 0
-      call set_interpolate_mat_node(np_smp, numele, nnod_4_ele, ie,     &
+      call set_interpolate_mat_node(np_smp, numele, num_t_quad, ie,     &
      &    iele_gauss, itype_gauss, NC, NCM, INM, IAM, AM,               &
      &    IEND_SUM_smp(ist))
 !
@@ -308,14 +308,14 @@
      &          istack_wtype_smp, num_points, iele_gauss, itype_gauss,  &
      &          xi_gauss, NC, NCM, INM, IAM, AM, IEND_SUM_smp)
 !
+      use m_geometry_constants
       use interpolate_matrix_node
       use interpolate_matrix_edge3
       use interpolate_matrix_surf9
       use interpolate_matrix_ele27
 !
-      integer(kind = kint), parameter :: nnod_4_ele = 27
       integer (kind = kint), intent(in) :: np_smp, numele
-      integer (kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer (kind = kint), intent(in) :: ie(numele,num_t_lag)
       integer (kind = kint), intent(in) :: istack_wtype_smp(0:4*np_smp)
       integer (kind = kint), intent(in) :: num_points
       integer (kind = kint), intent(in) :: iele_gauss(num_points)
@@ -333,7 +333,7 @@
 !
 !
       ist = 0
-      call set_interpolate_mat_node(np_smp, numele, nnod_4_ele, ie,     &
+      call set_interpolate_mat_node(np_smp, numele, num_t_lag, ie,      &
      &    iele_gauss, itype_gauss, NC, NCM, INM, IAM, AM,               &
      &    IEND_SUM_smp(ist))
 !

@@ -35,7 +35,7 @@
 !
       subroutine count_numbers_4_mesh_merge
 !
-       use m_geometry_parameter
+       use m_geometry_data
        use m_comm_data_IO
        use m_read_boundary_data
        use mesh_IO_select
@@ -65,6 +65,7 @@
 !
       end do
 !
+      ele1%nnod_4_ele = nnod_4_ele_dummy
       nnod_4_ele = nnod_4_ele_dummy
 !
       end subroutine count_numbers_4_mesh_merge
