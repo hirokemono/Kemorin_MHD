@@ -19,7 +19,7 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_work_4_MHD_layering
 !
       implicit none
@@ -36,7 +36,7 @@
       use m_surface_group
 !
 !
-      call allocate_lists_4_layer(numele)
+      call allocate_lists_4_layer(ele1%numele)
       call s_reordering_by_layers(ele_grp1, sf_grp1)
       call deallocate_lists_4_layer
 !
@@ -84,13 +84,14 @@
 !      end if
 !
 !
-      call marking_by_layers(numele, ele_grp%num_grp, ele_grp%num_item, &
+      call marking_by_layers                                            &
+     &   (ele1%numele, ele_grp%num_grp, ele_grp%num_item,               &
      &    ele_grp%istack_grp, ele_grp%grp_name, ele_grp%item_grp,       &
      &    mat_flag_mhd(1) )
 !
 !  set list vector for ordering
 !
-      call const_table_by_layers(numele, mat_flag_mhd(1),               &
+      call const_table_by_layers(ele1%numele, mat_flag_mhd(1),          &
      &          iele_fl_start, iele_cd_start, iele_ins_start,           &
      &          iele_fl_end,   iele_cd_end,   iele_ins_end,             &
      &          new2oldele_layer(1), old2newele_layer(1) )
@@ -112,7 +113,7 @@
 !   ordereing of element parameters for SGS model
 !
       if ( iflag_SGS_model.eq.id_SGS_NL_grad) then
-        call reordering_ele_size(numele)
+        call reordering_ele_size(ele1%numele)
       end if
 !
       end subroutine s_reordering_by_layers

@@ -32,7 +32,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_node_phys_data
       use t_group_data
@@ -57,7 +56,7 @@
       real (kind=kreal), intent(inout) :: scalar_sf(sf_grp%num_item)
 !
 !
-      call scalar_phys_2_each_sf(np_smp, node1%numnod, numele,          &
+      call scalar_phys_2_each_sf(np_smp, node1%numnod, ele1%numele,     &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -79,7 +78,7 @@
       real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
-      call vector_phys_2_each_sf(np_smp, node1%numnod, numele,          &
+      call vector_phys_2_each_sf(np_smp, node1%numnod, ele1%numele,     &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -101,7 +100,7 @@
       real (kind=kreal), intent(inout) :: tensor_sf(sf_grp%num_item,6)
 !
 !
-      call vector_phys_2_each_sf(np_smp, node1%numnod, numele,          &
+      call vector_phys_2_each_sf(np_smp, node1%numnod, ele1%numele,     &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -120,12 +119,13 @@
       type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: i_scalar
       integer (kind = kint), intent(in) :: igrp, k2
-      real (kind=kreal), intent(in) :: ak_e(numele)
+      real (kind=kreal), intent(in) :: ak_e(ele1%numele)
 !
       real (kind=kreal), intent(inout) :: scalar_sf(sf_grp%num_item)
 !
 !
-      call scalar_phys_2_each_sf_w_coef(np_smp, node1%numnod, numele,   &
+      call scalar_phys_2_each_sf_w_coef                                 &
+     &   (np_smp, node1%numnod, ele1%numele,                            &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -143,12 +143,13 @@
       type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: i_vector
       integer (kind = kint), intent(in) :: igrp, k2
-      real (kind=kreal), intent(in) :: ak_e(numele)
+      real (kind=kreal), intent(in) :: ak_e(ele1%numele)
 !
       real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
-      call vector_phys_2_each_sf_w_coef(np_smp, node1%numnod, numele,   &
+      call vector_phys_2_each_sf_w_coef                                 &
+     &   (np_smp, node1%numnod, ele1%numele,                            &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -166,12 +167,13 @@
       type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: i_tensor
       integer (kind = kint), intent(in) :: igrp, k2
-      real (kind=kreal), intent(in) :: ak_e(numele)
+      real (kind=kreal), intent(in) :: ak_e(ele1%numele)
 !
       real (kind=kreal), intent(inout) :: tensor_sf(sf_grp%num_item,6)
 !
 !
-      call vector_phys_2_each_sf_w_coef(np_smp, node1%numnod, numele,   &
+      call vector_phys_2_each_sf_w_coef                                 &
+     &   (np_smp, node1%numnod, ele1%numele,                            &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -195,7 +197,8 @@
       real (kind=kreal), intent(inout) :: scalar_sf(sf_grp%num_item)
 !
 !
-      call scalar_phys_2_each_sf_w_const(np_smp, node1%numnod, numele,  &
+      call scalar_phys_2_each_sf_w_const                                &
+     &   (np_smp, node1%numnod, ele1%numele,                            &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -218,7 +221,8 @@
       real (kind=kreal), intent(inout) :: vector_sf(sf_grp%num_item,3)
 !
 !
-      call vector_phys_2_each_sf_w_const(np_smp, node1%numnod, numele,  &
+      call vector_phys_2_each_sf_w_const                                &
+     &   (np_smp, node1%numnod, ele1%numele,                            &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -241,7 +245,8 @@
       real (kind=kreal), intent(inout) :: tensor_sf(sf_grp%num_item,6)
 !
 !
-      call tensor_phys_2_each_sf_w_const(np_smp, node1%numnod, numele,  &
+      call tensor_phys_2_each_sf_w_const                                &
+     &   (np_smp, node1%numnod, ele1%numele,                            &
      &    nnod_4_ele, ie, nnod_4_surf, node_on_sf,                      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &

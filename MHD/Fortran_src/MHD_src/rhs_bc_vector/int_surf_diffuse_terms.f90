@@ -161,7 +161,7 @@
       subroutine int_surf_diffuse_term(sf_grp,                          &
      &          n_int, ngrp_sf, id_grp_sf, ak_d, i_field)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
       use m_finite_element_matrix
       use m_int_surface_data
@@ -174,7 +174,7 @@
       integer(kind = kint), intent(in) :: ngrp_sf
       integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
       integer(kind = kint), intent(in) :: n_int, i_field
-      real (kind = kreal), intent(in) :: ak_d(numele)
+      real (kind = kreal), intent(in) :: ak_d(ele1%numele)
 !
       integer(kind=kint) :: k2, i, igrp, num
 !
@@ -205,7 +205,7 @@
       subroutine int_surf_vect_diffuse_term(sf_grp,                     &
      &          n_int, nmax_sf, ngrp_sf, id_grp_sf, ak_d,  i_field)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
       use m_finite_element_matrix
       use m_int_surface_data
@@ -220,7 +220,7 @@
       integer(kind=kint), intent(in) :: id_grp_sf(nmax_sf,3)
 !
       integer(kind = kint), intent(in) :: n_int, i_field
-      real (kind = kreal), intent(in) :: ak_d(numele)
+      real (kind = kreal), intent(in) :: ak_d(ele1%numele)
 !
       integer(kind=kint) :: k2, i, igrp, nd, i_comp, num
 !

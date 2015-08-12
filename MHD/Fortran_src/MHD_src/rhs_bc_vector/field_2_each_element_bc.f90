@@ -13,7 +13,6 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
 !
@@ -35,7 +34,7 @@
       integer (kind=kint), intent(in) :: ibc_stack_smp(0:np_smp)
       integer (kind=kint), intent(in) :: i_comp
 !
-      real (kind=kreal), intent(inout) :: scalar_e(numele)
+      real (kind=kreal), intent(inout) :: scalar_e(ele1%numele)
 !
       integer (kind=kint) :: iproc, inod, iele, inum, k2
       integer (kind=kint) :: istart, iend
@@ -70,7 +69,7 @@
       integer (kind=kint), intent(in) :: ibc_stack_smp(0:np_smp)
       integer (kind=kint), intent(in) :: i_vect
 !
-      real (kind=kreal), intent(inout) :: vector_e(numele,3)
+      real (kind=kreal), intent(inout) :: vector_e(ele1%numele,3)
 !
       integer (kind=kint) :: iproc, inod, iele, inum, k2
       integer (kind=kint) :: istart, iend

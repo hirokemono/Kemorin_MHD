@@ -1,14 +1,19 @@
+!>@file   m_combained_filter_IO.f90
+!!@brief  module m_combained_filter_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in Nov., 2008
 !
-!      module m_combained_filter_IO
-!
-!     Written by H. Matsui on Nov., 2008
-!
-!      subroutine allocate_num_filtering_IO
-!      subroutine allocate_inod_filter_comb_IO
-!      subroutine allocate_3d_filter_data_IO
-!      subroutine deallocate_num_filtering_IO
-!      subroutine deallocate_inod_filter_comb_IO
-!      subroutine deallocate_3d_filter_data_IO
+!>@brief Array for filter data IO
+!!
+!!@verbatim
+!!      subroutine allocate_num_filtering_IO
+!!      subroutine allocate_inod_filter_comb_IO
+!!      subroutine allocate_3d_filter_data_IO
+!!      subroutine deallocate_num_filtering_IO
+!!      subroutine deallocate_inod_filter_comb_IO
+!!      subroutine deallocate_3d_filter_data_IO
+!!@endverbatim
 !
       module m_combained_filter_IO
 !

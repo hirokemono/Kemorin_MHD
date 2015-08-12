@@ -110,7 +110,8 @@
 !
 !
       call link_fem_node_data_2_ucd_out
-      call const_udt_global_connect(internal_node, numele, nnod_4_ele,  &
+      call const_udt_global_connect                                     &
+     &   (internal_node, ele1%numele, nnod_4_ele,                       &
      &    iele_global_org, ie_org, fem_ucd)
 !
       end subroutine link_global_org_mesh_4_ucd
@@ -126,7 +127,8 @@
 !
 !
       call const_udt_local_nodes(node1%numnod, xx, fem_ucd)
-      call const_udt_local_connect(internal_node, numele, nnod_4_ele,   &
+      call const_udt_local_connect                                      &
+     &   (internal_node, ele1%numele, nnod_4_ele,                       &
      &    ie_org, fem_ucd)
 !
       end subroutine link_local_org_mesh_4_ucd

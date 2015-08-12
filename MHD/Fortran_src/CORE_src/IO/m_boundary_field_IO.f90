@@ -1,13 +1,17 @@
+!>@file   m_boundary_field_IO.f90
+!!@brief  module m_boundary_field_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in ????
 !
-!     module m_boundary_field_IO
-!.......................................................................
-!
-!     module m_boundary_field_IO
-!
-!      subroutine allocate_num_bc_values
-!      subroutine allocate_boundary_values
-!
-!      subroutine deallocate_boundary_values
+!>@brief Array for boundary condition data IO
+!!
+!!@verbatim
+!!      subroutine allocate_num_bc_values
+!!      subroutine allocate_boundary_values
+!!
+!!      subroutine deallocate_boundary_values
+!!@endverbatim
 !
       module m_boundary_field_IO
 !

@@ -45,7 +45,7 @@
 !
       subroutine set_aiccg_bc_free_sph_in(sf_grp, num_int)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
       use m_ele_material_property
       use m_int_surface_data
@@ -73,7 +73,7 @@
 !
           if (num .gt. 0) then
             call fem_surf_crank_free_inside(igrp, k2, num_int,          &
-     &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,            &
+     &          ele1%numele, nnod_4_ele, nnod_4_surf, node_on_sf,       &
      &          sf_grp%num_item, sf_grp%num_grp_smp,                    &
      &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
      &          jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%an_sf,      &
@@ -91,7 +91,7 @@
 !
       subroutine set_aiccg_bc_free_sph_out(sf_grp, num_int)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
       use m_ele_material_property
       use m_int_surface_data
@@ -119,7 +119,7 @@
 !
           if (num .gt. 0) then
             call fem_surf_crank_free_outside(igrp, k2, num_int,         &
-     &          numele, nnod_4_ele, nnod_4_surf, node_on_sf,            &
+     &          ele1%numele, nnod_4_ele, nnod_4_surf, node_on_sf,       &
      &          sf_grp%num_item, sf_grp%num_grp_smp,                    &
      &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
      &          jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%an_sf,      &

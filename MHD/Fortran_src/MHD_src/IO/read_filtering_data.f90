@@ -64,7 +64,7 @@
         ifmt_filter_file = ifmt_filter_elen
         filter_file_head = filter_elen_head
         call sel_read_filter_elen_file                                  &
-     &      (my_rank, node1%numnod, numele, FEM1_elen, ierr)
+     &      (my_rank, node1%numnod, ele1%numele, FEM1_elen, ierr)
 !
         if (ierr.eq.500) then
           write(e_message,*)                                            &
@@ -165,7 +165,7 @@
       ifmt_filter_file = ifmt_filter_elen
       filter_file_head = filter_line_head
       call sel_read_filter_elen_file                                    &
-     &   (my_rank, node1%numnod, numele, FEM1_elen, ierr)
+     &   (my_rank, node1%numnod, ele1%numele, FEM1_elen, ierr)
 !
         if (ierr.eq.500) then
           write(e_message,*)                                            &
