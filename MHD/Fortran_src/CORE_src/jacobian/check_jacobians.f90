@@ -79,7 +79,7 @@
         write(50+my_rank,*) 'iele, integration point, dwx', ii, nd
         do iele = 1, ele1%numele
           write(50+my_rank,'(i16,1p20e25.14)') iele,                    &
-     &           (dwx(iele,k1,ii,nd), k1 = 1, nnod_4_ele)
+     &           (dwx(iele,k1,ii,nd), k1 = 1, ele1%nnod_4_ele)
         end do
        end do
       end do

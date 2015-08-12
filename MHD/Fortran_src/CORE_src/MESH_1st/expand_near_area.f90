@@ -176,7 +176,7 @@
       call alloc_num_4_near_nod(node1%numnod, near_node1_wide)
 !
       call add_num_nod_4_group                                          &
-     &   (np_smp, node1%numnod, ele1%numele, nnod_4_ele, ie,            &
+     &   (np_smp, node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,       &
      &    inod_smp_stack, node1%numnod, near_ele1_tbl%ntot,             &
      &    near_ele1_tbl%istack_nod, near_ele1_tbl%id_near_nod,          &
      &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &
@@ -191,7 +191,7 @@
       call alloc_near_node(near_node1_wide)
 !
       call add_nod_id_4_group                                           &
-     &   (np_smp, node1%numnod, ele1%numele, nnod_4_ele, ie,            &
+     &   (np_smp, node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,       &
      &    inod_smp_stack, node1%numnod, near_ele1_tbl%ntot,             &
      &    near_ele1_tbl%istack_nod, near_ele1_tbl%id_near_nod,          &
      &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &

@@ -70,7 +70,7 @@
 !
       ntot_int_3d = maxtot_int_3d
       call allocate_jacobians(ele1%numele)
-      call allocate_jacobians_quad(ele1%numele, nnod_4_ele)
+      call allocate_jacobians_quad(ele1%numele, ele1%nnod_4_ele)
       call allocate_dxi_dx_linear(ele1%numele)
       call allocate_dxi_dx_quad(ele1%numele)
 !

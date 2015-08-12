@@ -165,7 +165,7 @@
       call allocate_element_connection
 !
 !$omp parallel private(k1)
-      do k1 = 1, nnod_4_ele
+      do k1 = 1, ele1%nnod_4_ele
 !$omp do private(iele)
         do iele = 1, ele1%numele
           ie(iele,k1) = ele%ie(iele,k1)
@@ -239,12 +239,12 @@
       if(ele%first_ele_type .ne. first_ele_type) write(*,*)             &
      &       'first_ele_type', my_rank, ele%first_ele_type,             &
      &       first_ele_type
-      if(ele%nnod_4_ele .ne. nnod_4_ele) write(*,*) 'nnod_4_ele',       &
-     &      my_rank, ele%nnod_4_ele, nnod_4_ele
+      if(ele%nnod_4_ele .ne. ele1%nnod_4_ele) write(*,*) 'nnod_4_ele',  &
+     &      my_rank, ele%nnod_4_ele, ele1%nnod_4_ele
 !
       do i = 1, ele1%numele
         iflag = 0
-        do k1 = 1, nnod_4_ele
+        do k1 = 1, ele1%nnod_4_ele
           if(ele%ie(i,k1) .ne. ie(i,k1)) iflag = 1
         end do
         if(ele%iele_global(i) .ne. iele_global(i))                      &
@@ -255,7 +255,7 @@
         if(ele%nodelm(i) .ne. nodelm(i)) write(*,*) 'nodelm(i)',        &
      &       my_rank, i, ele%nodelm(i), nodelm(i)
         if(iflag .gt. 0) then
-          do k1 = 1, nnod_4_ele
+          do k1 = 1, ele1%nnod_4_ele
             if(ele%nodelm(i) .ne. nodelm(i)) write(*,*) 'ie(i,k)',      &
      &         my_rank, i, k1, ele%ie(i,k1), ie(i,k1)
           end do

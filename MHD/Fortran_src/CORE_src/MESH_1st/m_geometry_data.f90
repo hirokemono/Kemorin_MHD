@@ -376,7 +376,7 @@
       allocate(iele_global(ele1%numele))
       allocate(elmtyp(ele1%numele))
       allocate(nodelm(ele1%numele))
-      allocate(ie(ele1%numele,nnod_4_ele))
+      allocate(ie(ele1%numele,ele1%nnod_4_ele))
 !
       iele_global = 0
       elmtyp = 0

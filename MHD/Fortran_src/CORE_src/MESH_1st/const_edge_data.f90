@@ -44,7 +44,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'const_edge_hash_4_ele'
       call const_edge_hash_4_ele                                        &
-     &   (node1%numnod, ele1%numele, nnod_4_ele, nnod_4_edge, ie,       &
+     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, nnod_4_edge, ie,  &
      &    edge_ele_tbl%num_hash, edge_ele_tbl%istack_hash,              &
      &    edge_ele_tbl%iend_hash, edge_ele_tbl%id_hash,                 &
      &    edge_ele_tbl%iflag_hash)
@@ -60,7 +60,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_by_ele'
       call set_edges_connect_by_ele(node1%numnod, ele1%numele,          &
-     &    numedge, nnod_4_ele, nnod_4_edge, ie,                         &
+     &    numedge, ele1%nnod_4_ele, nnod_4_edge, ie,                    &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &
      &    edge_ele_tbl%id_hash, edge_ele_tbl%iflag_hash,                &
      &    ie_edge, iedge_4_ele, node_on_edge)

@@ -56,7 +56,8 @@
 !
       call alloc_numele_belonged(node1%numnod, ele_4_nod1)
 !
-      call count_iele_4_node(node1%numnod, ele1%numele, nnod_4_ele, ie, &
+      call count_iele_4_node                                            &
+     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,               &
      &    ione, ele1%numele, ele_4_nod1%nele_4_node)
       call s_cal_minmax_and_stacks(node1%numnod,                        &
      &    ele_4_nod1%nele_4_node, izero, ele_4_nod1%istack_4_node,      &
@@ -65,7 +66,8 @@
 !
       call alloc_iele_belonged(ele_4_nod1)
 !
-      call set_iele_4_node(node1%numnod, ele1%numele, nnod_4_ele, ie,   &
+      call set_iele_4_node                                              &
+     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,               &
      &    ione, ele1%numele, ele_4_nod1%ntot, ele_4_nod1%istack_4_node, &
      &    ele_4_nod1%nele_4_node, ele_4_nod1%iele_4_node,               &
      &    ele_4_nod1%iconn_4_node)
@@ -83,7 +85,8 @@
 !
       call alloc_numele_belonged(node1%numnod, ele_4_nod_comm)
 !
-      call count_iele_4_node(node1%numnod, ele1%numele, nnod_4_ele, ie, &
+      call count_iele_4_node                                            &
+     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,               &
      &    ione, ele1%numele, ele_4_nod_comm%nele_4_node)
       call s_cal_minmax_and_stacks                                      &
      &   (node1%numnod, ele_4_nod_comm%nele_4_node,                     &
@@ -93,8 +96,8 @@
 !
       call alloc_iele_belonged(ele_4_nod_comm)
 !
-      call set_iele_4_node                                              &
-     &   (node1%numnod, ele1%numele, nnod_4_ele, ie, ione, ele1%numele, &
+      call set_iele_4_node(node1%numnod, ele1%numele, ele1%nnod_4_ele,  &
+     &    ie, ione, ele1%numele,                                        &
      &    ele_4_nod_comm%ntot, ele_4_nod_comm%istack_4_node,            &
      &    ele_4_nod_comm%nele_4_node, ele_4_nod_comm%iele_4_node,       &
      &    ele_4_nod_comm%iconn_4_node)
@@ -205,7 +208,7 @@
       call alloc_numele_belonged(node1%numnod, ele_4_nod1)
 !
       call count_grp_iele_4_node                                        &
-     &   (node1%numnod, ele1%numele, nnod_4_ele, ie,                    &
+     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,               &
      &    nele_grp, iele_grp, ele_4_nod1%nele_4_node)
       call s_cal_minmax_and_stacks                                      &
      &   (node1%numnod, ele_4_nod1%nele_4_node, izero,                  &
@@ -215,7 +218,7 @@
       call alloc_iele_belonged(ele_4_nod1)
 !
       call set_grp_iele_4_node                                          &
-     &   (node1%numnod, ele1%numele, nnod_4_ele, ie,                    &
+     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,               &
      &    nele_grp, iele_grp,                                           &
      &    ele_4_nod1%ntot, ele_4_nod1%istack_4_node,                    &
      &    ele_4_nod1%nele_4_node, ele_4_nod1%iele_4_node,               &

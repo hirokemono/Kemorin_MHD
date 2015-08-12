@@ -140,11 +140,10 @@
       integer(kind = kint) :: iele
 !
 !
-      ele1%nnod_4_ele = nodelm(1)
+      nnod_4_ele = nodelm(1)
       do iele = 2, numele
-        ele1%nnod_4_ele = max(nnod_4_ele, nodelm(iele) )
+        nnod_4_ele = max(nnod_4_ele, nodelm(iele) )
       end do
-      nnod_4_ele = ele1%nnod_4_ele
 !
       end subroutine set_nnod_4_ele_by_max_connect
 !

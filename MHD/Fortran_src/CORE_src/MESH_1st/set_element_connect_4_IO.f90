@@ -26,14 +26,14 @@
       integer(kind = kint) :: iele, k1
 !
 !
-      numele_dummy = ele1%numele
-      nnod_4_ele_dummy = nnod_4_ele
+      numele_dummy =     ele1%numele
+      nnod_4_ele_dummy = ele1%nnod_4_ele
 !
       call allocate_ele_info_dummy
       call allocate_connect_dummy
 !
 !$omp parallel private(k1)
-      do k1 = 1, nnod_4_ele
+      do k1 = 1, ele1%nnod_4_ele
 !$omp do
         do iele = 1, ele1%numele
           ie_dummy(iele,k1) = ie(iele,k1)
@@ -59,6 +59,7 @@
       subroutine copy_element_connect_from_IO
 !
       use m_geometry_constants
+      use set_nnod_4_ele_by_type
 !
       integer(kind = kint) :: iele, k1
 !
@@ -79,7 +80,7 @@
       call allocate_element_connection
 !
 !$omp parallel private(k1)
-      do k1 = 1, nnod_4_ele
+      do k1 = 1, ele1%nnod_4_ele
 !$omp do
         do iele = 1, ele1%numele
           ie(iele,k1) = ie_dummy(iele,k1)

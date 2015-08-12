@@ -43,13 +43,13 @@
       use set_element_position
       use coordinate_converter
 !
-      if (nnod_4_ele .eq. num_t_quad) then
+      if (ele1%nnod_4_ele .eq. num_t_quad) then
         call set_quad_ele_position(node1%numnod, ele1%numele, ie, xx,   &
      &          x_ele)
-      else if (nnod_4_ele .eq. num_t_linear) then
+      else if (ele1%nnod_4_ele .eq. num_t_linear) then
         call set_linear_ele_position(node1%numnod, ele1%numele, ie, xx, &
      &          x_ele)
-      else if (nnod_4_ele .eq. num_t_lag) then
+      else if (ele1%nnod_4_ele .eq. num_t_lag) then
         call set_lag_ele_position(node1%numnod, ele1%numele, ie, xx,    &
      &          x_ele)
       end if

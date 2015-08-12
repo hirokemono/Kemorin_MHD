@@ -27,7 +27,7 @@
      &          edge_mesh_l, nod_fld_l)
 !
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use t_mesh_data
       use t_phys_data
       use const_mesh_types_info
@@ -42,13 +42,13 @@
       surf_mesh_l%surf%nnod_4_surf =  num_linear_sf
       edge_mesh_l%edge%nnod_4_edge =  num_linear_edge
 !
-      if      (nnod_4_ele .eq. num_t_linear) then
+      if      (ele1%nnod_4_ele .eq. num_t_linear) then
         call link_data_4_linear_grid(femmesh_l,                         &
      &          surf_mesh_l, edge_mesh_l, nod_fld_l)
-      else if (nnod_4_ele .eq. num_t_quad) then
+      else if (ele1%nnod_4_ele .eq. num_t_quad) then
         call set_linear_data_by_quad_data(femmesh_l,                    &
      &          surf_mesh_l, edge_mesh_l, nod_fld_l)
-      else if (nnod_4_ele .eq. num_t_lag) then
+      else if (ele1%nnod_4_ele .eq. num_t_lag) then
         call set_linear_data_by_lag_data(femmesh_l,                     &
      &          surf_mesh_l, edge_mesh_l, nod_fld_l)
       end if 
@@ -60,7 +60,7 @@
       subroutine set_linear_phys_data_type(femmesh_l, nod_fld_l)
 !
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use t_mesh_data
       use t_phys_data
 !
@@ -68,7 +68,7 @@
       type(phys_data), intent(inout) :: nod_fld_l
 !
 !
-      if (nnod_4_ele .eq. num_t_quad) then
+      if (ele1%nnod_4_ele .eq. num_t_quad) then
         call copy_nod_phys_2_linear_t(femmesh_l%mesh, nod_fld_l)
         call generate_phys_on_surf_t(femmesh_l%mesh, nod_fld_l)
       end if

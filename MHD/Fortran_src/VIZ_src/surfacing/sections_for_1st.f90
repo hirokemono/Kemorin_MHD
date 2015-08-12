@@ -84,7 +84,7 @@
 !
       call cross_section_init                                           &
      &   (node1%numnod, internal_node, ele1%numele, numsurf, numedge,   &
-     &    nnod_4_ele, nnod_4_edge, ie, ie_edge, isf_4_ele,              &
+     &    ele1%nnod_4_ele, nnod_4_edge, ie, ie_edge, isf_4_ele,         &
      &    iedge_4_sf, iedge_4_ele, nod_comm, edge_comm,                 &
      &    interior_ele, xx, inod_smp_stack, iele_smp_stack,             &
      &    isurf_smp_stack, iedge_smp_stack,                             &
@@ -141,8 +141,9 @@
       integer(kind = kint), intent(in) :: istep_iso
 !
       call isosurface_main(istep_iso, node1%numnod, internal_node,      &
-     &    ele1%numele, numedge, nnod_4_ele, nnod_4_edge, ie, ie_edge,   &
-     &    iedge_4_ele, xx, radius, a_radius, s_cylinder, a_s_cylinder,  &
+     &    ele1%numele, numedge, ele1%nnod_4_ele, nnod_4_edge,           &
+     &    ie, ie_edge, iedge_4_ele, xx,                                 &
+     &    radius, a_radius, s_cylinder, a_s_cylinder,                   &
      &    inod_smp_stack, edge_comm, num_nod_phys, num_tot_nod_phys,    &
      &    istack_nod_component, d_nod)
 !
