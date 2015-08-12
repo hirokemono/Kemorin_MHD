@@ -22,6 +22,7 @@
       module int_vol_inertia_1st
 !
       use m_precision
+      use m_geometry_data
       use m_phys_constants
 !
       implicit none
@@ -46,7 +47,7 @@
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       real(kind=kreal), intent(in) :: coef
-      real(kind=kreal), intent(in) :: vxe(numele,3)
+      real(kind=kreal), intent(in) :: vxe(ele1%numele,3)
 !
       integer(kind = kint) :: k2
 !
@@ -80,7 +81,7 @@
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       real(kind=kreal), intent(in) :: coef
-      real(kind=kreal), intent(in) :: vxe(numele,3)
+      real(kind=kreal), intent(in) :: vxe(ele1%numele,3)
 !
       integer(kind = kint) :: k2
 !
@@ -114,7 +115,7 @@
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       real(kind=kreal), intent(in) :: coef
-      real(kind=kreal), intent(in) :: wxe(numele,3)
+      real(kind=kreal), intent(in) :: wxe(ele1%numele,3)
 !
       integer(kind = kint) :: k2
 !
@@ -149,8 +150,8 @@
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       real(kind=kreal), intent(in) :: coef
-      real(kind=kreal), intent(in) :: vxe(numele,3)
-      real(kind=kreal), intent(in) :: vxe_up(numele,3)
+      real(kind=kreal), intent(in) :: vxe(ele1%numele,3)
+      real(kind=kreal), intent(in) :: vxe_up(ele1%numele,3)
 !
       integer(kind = kint) :: k2
 !
@@ -184,8 +185,8 @@
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       real(kind=kreal), intent(in) :: coef
-      real(kind=kreal), intent(in) :: vxe(numele,3)
-      real(kind=kreal), intent(in) :: vxe_up(numele,3)
+      real(kind=kreal), intent(in) :: vxe(ele1%numele,3)
+      real(kind=kreal), intent(in) :: vxe_up(ele1%numele,3)
 !
       integer(kind = kint) :: k2
 !
@@ -219,8 +220,8 @@
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       real(kind=kreal), intent(in) :: coef
-      real(kind=kreal), intent(in) :: wxe(numele,3)
-      real(kind=kreal), intent(in) :: vxe_up(numele,3)
+      real(kind=kreal), intent(in) :: wxe(ele1%numele,3)
+      real(kind=kreal), intent(in) :: vxe_up(ele1%numele,3)
 !
       integer(kind = kint) :: k2
 !

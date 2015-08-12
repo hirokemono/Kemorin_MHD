@@ -48,7 +48,6 @@
         call copy_node_geometry_from_IO
 !
         ele1%numele = numele_dummy
-        numele = numele_dummy
 !
 !     read filtering information
 !
@@ -82,7 +81,6 @@
         call copy_node_geometry_from_IO
 !
         ele1%numele = numele_dummy
-        numele = numele_dummy
 !
 !     read filtering information
 !

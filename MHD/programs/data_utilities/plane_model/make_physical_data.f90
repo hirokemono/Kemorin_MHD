@@ -38,7 +38,7 @@
        implicit none
 !
       integer(kind=kint ) :: ist, ied, iint
-      integer(kind=kint ) ::  istep, iflag, isig, ip
+      integer(kind=kint ) ::  istep, isig, ip
 !
 !  ===========
 ! . for local 

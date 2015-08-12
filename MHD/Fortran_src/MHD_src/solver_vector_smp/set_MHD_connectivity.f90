@@ -65,7 +65,7 @@
 !
       if ( nnod_4_ele .ne. num_t_linear) then
         call set_djds_layer_connectivity(num_t_linear,                  &
-     &     ione, numele, DJDS_comm_etr, solver_C, DJDS_linear)
+     &     ione, ele1%numele, DJDS_comm_etr, solver_C, DJDS_linear)
         call set_djds_layer_connectivity                                &
      &     (num_t_linear, iele_fl_start, iele_fl_end,                   &
      &      DJDS_comm_fl, solver_C, DJDS_fl_l)

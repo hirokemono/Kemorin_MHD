@@ -55,14 +55,13 @@
 !
       subroutine int_dx_ele2_node(itype_mass, elen_ele, elen_nod)
 !
-      use m_phys_constants
       use m_element_list_4_filter
       use int_element_field_2_node
       use cal_ff_smp_to_ffs
       use cal_sol_deltax_by_consist
 !
       integer(kind = kint), intent(in) :: itype_mass
-      real(kind = kreal), intent(in) :: elen_ele(numele)
+      real(kind = kreal), intent(in) :: elen_ele(ele1%numele)
       real(kind = kreal), intent(inout) :: elen_nod(node1%numnod)
 !
 !

@@ -136,8 +136,8 @@
 !
 !   set refined nodes
 !
-        call allocate_num_refine_node(node1%numnod, numele,             &
-     &      numsurf, numedge)
+        call allocate_num_refine_node(node1%numnod, ele1%numele,        &
+     &                                numsurf, numedge)
         write(*,*) 's_count_nnod_for_refine'
         call s_count_nnod_for_refine
 !
@@ -148,7 +148,8 @@
         write(*,*) 's_set_local_position_4_refine'
         call s_set_local_position_4_refine
 !
-!      call check_refine_items(node1%numnod, numele, numsurf, numedge)
+!      call check_refine_items(node1%numnod, ele1%numele,               &
+!     &                        numsurf, numedge)
 !
          refined_fem%mesh%nod_comm%num_neib = nod_comm%num_neib
         call allocate_type_comm_tbl_num(refined_fem%mesh%nod_comm)

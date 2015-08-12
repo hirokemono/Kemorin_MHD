@@ -93,6 +93,7 @@
       subroutine int_vol_scalar_diffuse_1st(iele_fsmp_stack,            &
      &          n_int, coef_crank, ak_d, i_scalar)
 !
+      use m_geometry_data
       use m_phys_constants
       use m_finite_element_matrix
       use m_int_vol_data
@@ -104,7 +105,7 @@
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: n_int, i_scalar
       real (kind=kreal), intent(in) :: coef_crank
-      real(kind=kreal), intent(in) :: ak_d(numele)
+      real(kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
       integer(kind=kint) :: k2
 !
@@ -127,6 +128,7 @@
       subroutine int_vol_vector_diffuse_1st(iele_fsmp_stack,            &
      &          n_int, coef_crank, ak_d, i_vector)
 !
+      use m_geometry_data
       use m_phys_constants
       use m_finite_element_matrix
       use m_int_vol_data
@@ -138,7 +140,7 @@
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: n_int, i_vector
       real (kind=kreal), intent(in) :: coef_crank
-      real(kind=kreal), intent(in) :: ak_d(numele)
+      real(kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
       integer(kind=kint) :: k2
 !

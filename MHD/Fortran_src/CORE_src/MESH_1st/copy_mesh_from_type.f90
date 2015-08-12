@@ -155,7 +155,6 @@
 !
 !
       ele1%numele =       ele%numele
-      numele =            ele%numele
       first_ele_type = ele%first_ele_type
 !
       if (first_ele_type .eq. 332) then

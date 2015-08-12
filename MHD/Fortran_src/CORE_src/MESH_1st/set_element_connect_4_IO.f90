@@ -69,7 +69,6 @@
       end if
 !
       ele1%numele = numele_dummy
-      numele = numele_dummy
       first_ele_type = i_ele_dummy(1)
 !
       if (first_ele_type .eq. 332) then

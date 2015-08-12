@@ -33,7 +33,7 @@
 !>     number of node on local PE
       integer( kind=kint )  ::  internal_node
 !>     number of element on local PE
-      integer( kind=kint )  ::  numele
+!      integer( kind=kint )  ::  numele
 !>     number of internal element on local PE
       integer( kind=kint )  ::  internal_ele
 !>     number of surface on local PE

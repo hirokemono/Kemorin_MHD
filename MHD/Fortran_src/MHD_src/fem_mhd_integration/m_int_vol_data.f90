@@ -1,12 +1,12 @@
 !
-!   module   m_int_vol_data
+!   module m_int_vol_data
 !.......................................................................
 !
 !      subroutine allocate_int_vol_data(numele)
-!      subroutine check_diff_elemental_data(my_rank, numdir, i_field)
+!      subroutine check_diff_elemental_data                             &
+!     &         (my_rank, numele, numdir, i_field)
 !
-      module   m_int_vol_data
-!
+      module m_int_vol_data
 !
       use m_precision
 !
@@ -195,12 +195,11 @@
 !  ------------------------------------------------------------------
 !  ------------------------------------------------------------------
 !
-      subroutine check_diff_elemental_data(my_rank, numdir, i_field)
-!
-       use m_geometry_parameter
+      subroutine check_diff_elemental_data                              &
+     &         (my_rank, numele, numdir, i_field)
 !
       integer(kind = kint), intent(in) :: my_rank
-      integer(kind = kint), intent(in) :: numdir, i_field
+      integer(kind = kint), intent(in) :: numele, numdir, i_field
       integer(kind = kint) :: iele, nd, ndiff
 !
       do nd = 1, numdir

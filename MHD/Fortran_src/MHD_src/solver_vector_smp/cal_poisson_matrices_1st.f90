@@ -21,7 +21,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_sorted_node
       use m_phys_constants
       use m_t_int_parameter
@@ -44,13 +44,13 @@
      &               :: idx_for_mat(num_sort_smp, nnod_4_ele)
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
       integer (kind = kint), intent(in) :: nmat_size
       real(kind=kreal), intent(inout) :: aiccg(0:nmat_size)
 !
 !
-      call add_skv1_2_matrix11(np_smp, numele, nnod_4_ele,              &
+      call add_skv1_2_matrix11(np_smp, ele1%numele, nnod_4_ele,         &
      &    inod_ele_max, num_sort_smp, nod_stack_smp, iele_sort_smp,     &
      &    iconn_sort_smp, idx_for_mat, k2, sk_v, nmat_size, aiccg)
 !
@@ -68,13 +68,13 @@
      &               :: idx_for_mat(num_sort_smp, nnod_4_ele)
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
       integer (kind = kint), intent(in) :: nmat_size
       real(kind=kreal), intent(inout) :: aiccg33(-8:nmat_size)
 !
 !
-      call add_skv1_2_matrix33(np_smp, numele, nnod_4_ele,              &
+      call add_skv1_2_matrix33(np_smp, ele1%numele, nnod_4_ele,         &
      &    inod_ele_max, num_sort_smp, nod_stack_smp, iele_sort_smp,     &
      &    iconn_sort_smp, idx_for_mat, k2, sk_v, nmat_size, aiccg33)
 !
@@ -92,16 +92,16 @@
       integer(kind = kint), intent(in)                                  &
      &               :: idx_for_mat(num_sort_smp, nnod_4_ele)
       real(kind=kreal), intent(in) :: coef_imp
-      real(kind=kreal), intent(in) :: ak_d(numele)
+      real(kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
       integer (kind = kint), intent(in) :: nmat_size
       real(kind=kreal), intent(inout) :: aiccg(0:nmat_size)
 !
 !
-      call cal_scalar_diffuse_evo_mat(np_smp, numele, nnod_4_ele,       &
+      call cal_scalar_diffuse_evo_mat(np_smp, ele1%numele, nnod_4_ele,  &
      &    inod_ele_max, num_sort_smp, nod_stack_smp, iele_sort_smp,     &
      &    iconn_sort_smp, idx_for_mat, coef_imp, dt, ak_d, k2, sk_v,    &
      &    nmat_size, aiccg)
@@ -119,16 +119,16 @@
       integer(kind = kint), intent(in)                                  &
      &               :: idx_for_mat(num_sort_smp, nnod_4_ele)
       real(kind=kreal), intent(in) :: coef_imp
-      real(kind=kreal), intent(in) :: ak_d(numele)
+      real(kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
       integer (kind = kint), intent(in) :: nmat_size
       real(kind=kreal), intent(inout) :: aiccg33(-8:nmat_size)
 !
 !
-      call cal_vector_diffuse_evo_mat(np_smp, numele, nnod_4_ele,       &
+      call cal_vector_diffuse_evo_mat(np_smp, ele1%numele, nnod_4_ele,  &
      &    inod_ele_max, num_sort_smp, nod_stack_smp, iele_sort_smp,     &
      &    iconn_sort_smp, idx_for_mat, coef_imp, dt, ak_d, k2, sk_v,    &
      &    nmat_size, aiccg33)
@@ -149,14 +149,14 @@
      &               :: idx_for_mat(num_sort_smp, nnod_4_ele)
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
       integer (kind = kint), intent(in) :: nmat_size
       real(kind=kreal), intent(inout) :: aiccg33(-8:nmat_size)
 !
 !
       call cal_consist_coriolis_matrix                                  &
-     &   (np_smp, numele, nnod_4_ele, nnod_4_ele,                       &
+     &   (np_smp, ele1%numele, nnod_4_ele, nnod_4_ele,                  &
      &     inod_ele_max, num_sort_smp, nod_stack_smp,                   &
      &     iele_sort_smp, iconn_sort_smp, idx_for_mat, k2,              &
      &     coef_cor, angular, sk_v, nmat_size, aiccg33)

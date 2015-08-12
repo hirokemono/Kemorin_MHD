@@ -19,7 +19,7 @@
       use m_constants
       use m_machine_parameter
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use m_jacobians
       use m_phys_constants
 !
@@ -41,13 +41,14 @@
       integer (kind=kint), intent(in) :: ibc_stack_smp(0:np_smp)
 !
       integer (kind=kint), intent(in) :: n_int, k2
-      real (kind=kreal), intent(in) :: phi_e(numele)
+      real (kind=kreal), intent(in) :: phi_e(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_poisson_fixed(numele, num_t_linear, num_t_linear,    &
+      call fem_skv_poisson_fixed                                        &
+     &         (ele1%numele, num_t_linear, num_t_linear,                &
      &          np_smp, num_index_ibc, ele_bc_id, ibc_stack_smp,        &
      &          k2, n_int, ntot_int_3d, xjac, dnx, dnx, phi_e, sk_v)
 !
@@ -66,15 +67,15 @@
       integer (kind=kint), intent(in) :: ibc_stack_smp(0:np_smp)
 !
       integer (kind=kint), intent(in) :: n_int, k2
-      real (kind=kreal), intent(in) :: phi_e(numele)
-      real (kind=kreal), intent(in) :: ak_d(numele)
+      real (kind=kreal), intent(in) :: phi_e(ele1%numele)
+      real (kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
       call fem_skv_scalar_diffuse_fixed                                 &
-     &         (numele, nnod_4_ele, nnod_4_ele, np_smp,                 &
+     &         (ele1%numele, nnod_4_ele, nnod_4_ele, np_smp,            &
      &          num_index_ibc, ele_bc_id, ibc_stack_smp,                &
      &          k2, ione, n_int, ntot_int_3d, xjac, dwx, dwx,           &
      &          ak_d, phi_e, sk_v)
@@ -93,15 +94,15 @@
       integer (kind=kint), intent(in) :: ibc_stack_smp(0:np_smp)
 !
       integer (kind=kint), intent(in) :: n_int, k2, nd
-      real (kind=kreal), intent(in) :: phi_e(numele)
-      real (kind=kreal), intent(in) :: ak_d(numele)
+      real (kind=kreal), intent(in) :: phi_e(ele1%numele)
+      real (kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
       call fem_skv_scalar_diffuse_fixed                                 &
-     &         (numele, nnod_4_ele, nnod_4_ele, np_smp,                 &
+     &         (ele1%numele, nnod_4_ele, nnod_4_ele, np_smp,            &
      &          num_index_ibc, ele_bc_id, ibc_stack_smp,                &
      &          k2, nd, n_int, ntot_int_3d, xjac, dwx, dwx,             &
      &          ak_d, phi_e, sk_v)

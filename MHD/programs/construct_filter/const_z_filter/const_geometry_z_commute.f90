@@ -80,7 +80,6 @@
       nmat_nod = internal_node*nfilter2_3
 !
       ele1%numele = node1%numnod - 1
-      numele = node1%numnod - 1
 !
       first_ele_type = 331
       numsurf = ele1%numele

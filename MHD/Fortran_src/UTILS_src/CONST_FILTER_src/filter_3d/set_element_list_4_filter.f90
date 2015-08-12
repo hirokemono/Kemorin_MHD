@@ -40,7 +40,7 @@
       type(group_data), intent(in) :: ele_grp
 !
 !
-      call allocate_mark_list_4_filter(ele1%numele)
+      call allocate_mark_list_4_filter
 !
       call mark_ele_list_4_filter(ele_grp)
 !
@@ -75,12 +75,11 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_mark_list_4_filter(numele)
+      subroutine allocate_mark_list_4_filter
 !
-      integer(kind = kint), intent(in) :: numele
 !
-      allocate(imark_ele_filter(numele) )
-      imark_ele_filter(1:numele) = 0
+      allocate(imark_ele_filter(ele1%numele) )
+      imark_ele_filter(1:ele1%numele) = 0
 !
       end subroutine allocate_mark_list_4_filter
 !
@@ -107,7 +106,7 @@
 !
       if (cmp_no_case(filter_area_name(1), 'all')) then
         id_filter_area_grp(1) = -1
-        imark_ele_filter(1:numele) = 1
+        imark_ele_filter(1:ele1%numele) = 1
       else
 !
         do igrp = 1, num_filtering_grp
@@ -136,7 +135,7 @@
       integer(kind = kint) :: iele
 !
       nele_4_filter = 0
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         nele_4_filter = nele_4_filter + imark_ele_filter(iele)
       end do
 !
@@ -150,7 +149,7 @@
 !
 !
       inum = 0
-      do iele = 1, numele
+      do iele = 1, ele1%numele
         if (imark_ele_filter(iele) .eq. 1) then
           inum = inum + 1
           iele_4_filter(inum) = iele
