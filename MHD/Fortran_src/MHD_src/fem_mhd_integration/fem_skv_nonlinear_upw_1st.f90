@@ -21,7 +21,7 @@
       use m_machine_parameter
       use m_t_int_parameter
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_jacobians
 !
@@ -41,14 +41,15 @@
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real(kind=kreal), intent(in) :: scalar_1(numele)
-      real(kind=kreal), intent(in) :: vxe(numele,3)
-      real (kind=kreal), intent(in) :: vxe_up(numele,3)
+      real(kind=kreal), intent(in) :: scalar_1(ele1%numele)
+      real(kind=kreal), intent(in) :: vxe(ele1%numele,3)
+      real (kind=kreal), intent(in) :: vxe_up(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
-      call fem_skv_scalar_inertia_upw(numele, nnod_4_ele, nnod_4_ele,   &
+      call fem_skv_scalar_inertia_upw                                   &
+     &   (ele1%numele, nnod_4_ele, nnod_4_ele,                          &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,          &
      &    xjac, aw, dwx, dwx, scalar_1, vxe, vxe_up, sk_v)
 !
@@ -64,15 +65,16 @@
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real(kind=kreal), intent(in) :: vect_1(numele,3)
-      real(kind=kreal), intent(in) :: vxe(numele,3)
-      real (kind=kreal), intent(in) :: vxe_up(numele,3)
+      real(kind=kreal), intent(in) :: vect_1(ele1%numele,3)
+      real(kind=kreal), intent(in) :: vxe(ele1%numele,3)
+      real (kind=kreal), intent(in) :: vxe_up(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_vector_inertia_upw(numele, nnod_4_ele, nnod_4_ele,   &
+      call fem_skv_vector_inertia_upw                                   &
+     &   (ele1%numele, nnod_4_ele, nnod_4_ele,                          &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,          &
      &    xjac, aw, dwx, dwx, vect_1, vxe, vxe_up, sk_v)
 !
@@ -88,15 +90,15 @@
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real(kind=kreal), intent(in) :: vect_1(numele,3)
-      real(kind=kreal), intent(in) :: wxe(numele,3)
-      real (kind=kreal), intent(in) :: vxe_up(numele,3)
+      real(kind=kreal), intent(in) :: vect_1(ele1%numele,3)
+      real(kind=kreal), intent(in) :: wxe(ele1%numele,3)
+      real (kind=kreal), intent(in) :: vxe_up(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_inertia_rot_upw(numele, nnod_4_ele, nnod_4_ele,      &
+      call fem_skv_inertia_rot_upw(ele1%numele, nnod_4_ele, nnod_4_ele, &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,          &
      &    xjac, aw, dwx, aw, vect_1, wxe, vxe_up, sk_v)
 !
@@ -112,15 +114,15 @@
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real(kind=kreal), intent(in) :: vect_1(numele,3)
+      real(kind=kreal), intent(in) :: vect_1(ele1%numele,3)
       real(kind=kreal), intent(in) :: angular(3)
-      real (kind=kreal), intent(in) :: vxe_up(numele,3)
+      real (kind=kreal), intent(in) :: vxe_up(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(numele,n_sym_tensor,nnod_4_ele)
+     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
 !
 !
-      call fem_skv_coriolis_upw(numele, nnod_4_ele, nnod_4_ele,         &
+      call fem_skv_coriolis_upw(ele1%numele, nnod_4_ele, nnod_4_ele,    &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,          &
      &    xjac, aw, dwx, aw, vect_1, angular, vxe_up, sk_v)
 !

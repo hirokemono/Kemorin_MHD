@@ -17,7 +17,7 @@
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_geometry_data_MHD
       use m_node_phys_address
@@ -51,7 +51,7 @@
 !
 !   include external magnetic field
 !$omp parallel
-      call add_const_to_vector_smp(np_smp, numele,  iele_smp_stack,     &
+      call add_const_to_vector_smp(np_smp, ele1%numele, iele_smp_stack, &
      &      d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
 !$omp end parallel
 !
@@ -86,7 +86,7 @@
       call reset_sk6(n_vector)
 !
 !$omp parallel
-      call add_const_to_vector_smp(np_smp, numele,  iele_smp_stack,     &
+      call add_const_to_vector_smp(np_smp, ele1%numele, iele_smp_stack, &
      &    d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
 !$omp end parallel
 !

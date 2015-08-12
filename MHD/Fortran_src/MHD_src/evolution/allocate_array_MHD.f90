@@ -26,7 +26,7 @@
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_finite_element_matrix
       use m_int_vol_data
@@ -39,7 +39,7 @@
       call allocate_finite_elem_mt
 !
       if (iflag_debug.ge.1) write(*,*) 'allocate_int_vol_data'
-      call allocate_int_vol_data
+      call allocate_int_vol_data(ele1%numele)
 !
 !
       if (iflag_debug.ge.1) write(*,*) 'allocate_phys_data'

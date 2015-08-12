@@ -32,7 +32,7 @@
       subroutine int_fl_ele_scalar_2_node(scalar_nod, scalar_ele)
 !
 !
-      real(kind = kreal), intent(in) :: scalar_ele(numele)
+      real(kind = kreal), intent(in) :: scalar_ele(ele1%numele)
       real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
 !
 !
@@ -45,7 +45,7 @@
 !
       subroutine int_fl_ele_vector_2_node(vector_nod, vector_ele)
 !
-      real(kind = kreal), intent(in) :: vector_ele(numele,3)
+      real(kind = kreal), intent(in) :: vector_ele(ele1%numele,3)
       real(kind = kreal), intent(inout) :: vector_nod(node1%numnod,3)
 !
 !
@@ -59,7 +59,7 @@
 !
       subroutine int_cd_ele_scalar_2_node(scalar_nod, scalar_ele)
 !
-      real(kind = kreal), intent(in) :: scalar_ele(numele)
+      real(kind = kreal), intent(in) :: scalar_ele(ele1%numele)
       real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
 !
 !
@@ -72,7 +72,7 @@
 !
       subroutine int_cd_ele_vector_2_node(vector_nod, vector_ele)
 !
-      real(kind = kreal), intent(in) :: vector_ele(numele,3)
+      real(kind = kreal), intent(in) :: vector_ele(ele1%numele,3)
       real(kind = kreal), intent(inout) :: vector_nod(node1%numnod,3)
 !
 !
@@ -86,7 +86,7 @@
 !
       subroutine int_ins_ele_scalar_2_node(scalar_nod, scalar_ele)
 !
-      real(kind = kreal), intent(in) :: scalar_ele(numele)
+      real(kind = kreal), intent(in) :: scalar_ele(ele1%numele)
       real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
 !
 !
@@ -99,7 +99,7 @@
 !
       subroutine int_ins_ele_vector_2_node(vector_nod, vector_ele)
 !
-      real(kind = kreal), intent(in) :: vector_ele(numele,3)
+      real(kind = kreal), intent(in) :: vector_ele(ele1%numele,3)
       real(kind = kreal), intent(inout) :: vector_nod(node1%numnod,3)
 !
 !

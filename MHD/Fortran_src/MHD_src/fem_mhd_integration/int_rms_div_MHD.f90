@@ -200,7 +200,6 @@
       subroutine int_rms_divergence(iele_fsmp_stack, i_res, i_field)
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_finite_element_matrix
       use m_int_vol_data
@@ -217,7 +216,9 @@
 !
 !
       num_int = 1
-      phi_e(1:numele) =  0.0d0
+!$omp workshare
+      phi_e(1:ele1%numele) =  0.0d0
+!$omp end workshare
 !
 ! -------- loop for shape function for phsical values
 !
@@ -230,7 +231,7 @@
 !
 ! --------- caliculate total divergence of velocity
 !
-      call sum_norm_of_div(numele, np_smp, iele_fsmp_stack,             &
+      call sum_norm_of_div(ele1%numele, np_smp, iele_fsmp_stack,        &
      &    e_multi, phi_e, rms_local(i_res) )
 !
       end subroutine int_rms_divergence

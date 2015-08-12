@@ -2,7 +2,7 @@
 !   module   m_int_vol_data
 !.......................................................................
 !
-!      subroutine allocate_int_vol_data
+!      subroutine allocate_int_vol_data(numele)
 !      subroutine check_diff_elemental_data(my_rank, numdir, i_field)
 !
       module   m_int_vol_data
@@ -44,57 +44,56 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_int_vol_data
+      subroutine allocate_int_vol_data(numele)
 !
       use m_control_parameter
       use m_phys_labels
       use m_node_phys_data
-      use m_geometry_parameter
       use m_machine_parameter
 !
-      integer (kind=kint) :: i
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint) :: i
 !
 !
       allocate(xe(numele,3))
       allocate(radius_e(numele))
-      xe = 0.0d0
-      radius_e = 0.0d0
-!
       allocate(phi_e(numele))
-      phi_e = 0.0d0
-!
       allocate(vect_e(numele,3))
       allocate(tensor_e(numele,6))
-      tensor_e = 0.0d0
-      vect_e = 0.0d0
+!
+      if(numele .gt. 0) then
+        xe = 0.0d0
+        radius_e = 0.0d0
+        phi_e = 0.0d0
+        tensor_e = 0.0d0
+        vect_e = 0.0d0
+      end if
 !
 !
        do i = 1, num_nod_phys
-!
         if      ( phys_nod_name(i) .eq. fhd_velo ) then
           allocate(velo_1(numele,3))
-          velo_1 = 0.0d0
+          if(numele .gt. 0) velo_1 = 0.0d0
         else if ( phys_nod_name(i) .eq. fhd_temp ) then
           allocate(temp_e(numele))
-          temp_e = 0.0d0
+          if(numele .gt. 0) temp_e = 0.0d0
         else if ( phys_nod_name(i) .eq. fhd_light ) then
           allocate(d_scalar_e(numele))
-          d_scalar_e = 0.0d0
+          if(numele .gt. 0) d_scalar_e = 0.0d0
         else if ( phys_nod_name(i) .eq. fhd_magne ) then
           allocate(magne_1(numele,3))
-          magne_1 = 0.0d0
+          if(numele .gt. 0) magne_1 = 0.0d0
         else if ( phys_nod_name(i) .eq. fhd_vecp ) then
           allocate(vect_1(numele,3))
-          vect_1 = 0.0d0
+          if(numele .gt. 0) vect_1 = 0.0d0
         end if
-!
        end do
 !
        if (iflag_SGS_model .ne. id_SGS_none) then
           allocate(sgs_e(numele,3))
           allocate(sgs_t(numele,6))
-          sgs_t = 0.0d0
-          sgs_e = 0.0d0
+          if(numele .gt. 0) sgs_t = 0.0d0
+          if(numele .gt. 0) sgs_e = 0.0d0
        end if
 !
        num_dvxi = 0
@@ -137,7 +136,7 @@
        end if
 !
        allocate(dvx(numele,num_dvxi))
-       dvx = 0.0d0
+       if(numele .gt. 0) dvx = 0.0d0
 !
        i = 1
        if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
@@ -190,8 +189,6 @@
         end if
 !
        end if
-!
-!
 !
        end subroutine allocate_int_vol_data
 !

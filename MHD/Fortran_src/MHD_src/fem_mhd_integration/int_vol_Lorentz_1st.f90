@@ -21,7 +21,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_phys_constants
       use m_physical_property
@@ -51,7 +50,8 @@
 !
 !
 !$omp parallel
-      call add_const_to_vector_smp(np_smp, numele, iele_fsmp_stack,     &
+      call add_const_to_vector_smp                                      &
+     &   (np_smp, ele1%numele, iele_fsmp_stack,                         &
      &    d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
 !$omp end parallel
 !
@@ -119,7 +119,7 @@
      &      coef_lor, vect_1)
 !
 !$omp parallel
-        call add_const_to_vector_smp(np_smp, numele,                    &
+        call add_const_to_vector_smp(np_smp, ele1%numele,               &
      &      iele_fsmp_stack, d_ele(1,iphys_ele%i_magne),                &
      &      ex_magne, vect_e)
 !$omp end parallel
@@ -149,7 +149,8 @@
 !
 !
 !$omp parallel
-      call add_const_to_vector_smp(np_smp, numele, iele_fsmp_stack,     &
+      call add_const_to_vector_smp                                      &
+     &   (np_smp, ele1%numele, iele_fsmp_stack,                         &
      &    d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
 !$omp end parallel
 !

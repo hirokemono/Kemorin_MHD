@@ -255,14 +255,14 @@
      &          iak_diff, coef_crank, ak_d, i_scalar)
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use int_vol_fractional_1st
       use int_vol_sgs_fractional_1st
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: i_scalar, iak_diff
       real (kind=kreal), intent(in) :: coef_crank
-      real(kind=kreal), intent(in) :: ak_d(numele)
+      real(kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
 !
       if (iak_diff .gt. 0) then
@@ -282,14 +282,14 @@
      &          iak_diff, coef_crank, ak_d, i_vector)
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use int_vol_fractional_1st
       use int_vol_sgs_fractional_1st
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: i_vector, iak_diff
       real (kind=kreal), intent(in) :: coef_crank
-      real(kind=kreal), intent(in) :: ak_d(numele)
+      real(kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
 !
       if (iak_diff .gt. 0) then

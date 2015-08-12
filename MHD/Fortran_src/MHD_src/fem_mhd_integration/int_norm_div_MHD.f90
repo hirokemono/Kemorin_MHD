@@ -20,7 +20,6 @@
 !
       use calypso_mpi
       use m_control_parameter
-      use m_geometry_data
       use m_bulk_values
 !
       implicit none
@@ -39,8 +38,9 @@
 !
       subroutine int_norm_div_v_monitor(iloop, rsig)
 !
-      use m_node_phys_address
+      use m_geometry_data
       use m_geometry_data_MHD
+      use m_node_phys_address
 !
       integer(kind = kint), intent(in) :: iloop
       real(kind = kreal), intent(inout) :: rsig
@@ -68,7 +68,7 @@
       subroutine int_norm_div_b_monitor(iloop, rsig)
 !
       use m_node_phys_address
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint), intent(in) :: iloop
       real(kind = kreal), intent(inout) :: rsig
@@ -94,7 +94,7 @@
       subroutine int_norm_div_a_monitor(iloop, rsig)
 !
       use m_node_phys_address
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint), intent(in) :: iloop
       real(kind = kreal), intent(inout) :: rsig
@@ -120,6 +120,7 @@
 !
       subroutine int_norm_div_v
 !
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_address
 !
@@ -132,7 +133,7 @@
 !
       subroutine int_norm_div_b
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
 !
 !
@@ -144,7 +145,7 @@
 !
       subroutine int_norm_div_a
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
 !
 !
@@ -157,6 +158,7 @@
 !
       subroutine int_norm_div_filter_v
 !
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_address
 !
@@ -169,7 +171,7 @@
 !
       subroutine int_norm_div_filter_b
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
 !
 !
@@ -182,7 +184,7 @@
 !
       subroutine int_norm_div_filter_a
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
 !
 !
@@ -197,7 +199,6 @@
       subroutine int_norm_divergence(iele_fsmp_stack, j_res, i_field)
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_finite_element_matrix
       use m_int_vol_data
@@ -214,7 +215,7 @@
 !
 !
       num_int = 1
-      phi_e(1:numele) = 0.0d0
+      phi_e(1:ele1%numele) = 0.0d0
 !
 ! -------- loop for shape function for phsical values
 !
@@ -229,7 +230,7 @@
 !
 ! --------- caliculate total divergence of velocity
 !
-      call sum_norm_of_div(numele, np_smp, iele_fsmp_stack,             &
+      call sum_norm_of_div(ele1%numele, np_smp, iele_fsmp_stack,        &
      &    e_multi, phi_e, bulk_local(j_res) )
 !
       end subroutine int_norm_divergence

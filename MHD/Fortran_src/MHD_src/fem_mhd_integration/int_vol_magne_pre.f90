@@ -16,8 +16,8 @@
       use m_precision
 !
       use m_control_parameter
-      use m_geometry_parameter
       use m_machine_parameter
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_phys_constants
       use m_node_phys_address
@@ -65,8 +65,9 @@
         call vector_phys_2_each_element(k2, iphys%i_magne, magne_1)
 !
 !$omp parallel
-        call add_const_to_vector_smp(np_smp, numele, iele_smp_stack,    &
-     &    d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
+        call add_const_to_vector_smp                                    &
+      &    (np_smp, ele1%numele, iele_smp_stack,                        &
+     &      d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
 !$omp end parallel
 !
         call fem_skv_induction_1st(iele_cd_smp_stack, num_int, k2,      &
@@ -123,7 +124,8 @@
         call vector_phys_2_each_element(k2, iphys%i_magne, magne_1)
 !
 !$omp parallel
-        call add_const_to_vector_smp(np_smp, numele, iele_smp_stack,    &
+        call add_const_to_vector_smp                                    &
+     &     (np_smp, ele1%numele, iele_smp_stack,                        &
      &      d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
 !$omp end parallel
 !

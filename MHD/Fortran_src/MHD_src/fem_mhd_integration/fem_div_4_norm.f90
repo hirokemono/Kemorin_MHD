@@ -14,7 +14,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_jacobians
 !
       use fem_skv_div_normal
@@ -33,11 +33,11 @@
       integer (kind=kint), intent(in) :: n_int, k2
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(in) :: vect_e(numele,3)
-      real (kind=kreal), intent(inout)  :: sk1(numele)
+      real (kind=kreal), intent(in) :: vect_e(ele1%numele,3)
+      real (kind=kreal), intent(inout)  :: sk1(ele1%numele)
 !
 !
-      call fem_skv_div_normal_pg(numele, nnod_4_ele,                    &
+      call fem_skv_div_normal_pg(ele1%numele, nnod_4_ele,               &
      &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int,            &
      &          xjac, dwx, k2, vect_e, sk1)
 !
@@ -51,11 +51,11 @@
       integer (kind=kint), intent(in) :: n_int, k2
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(in) :: vect_e(numele,3)
-      real (kind=kreal), intent(inout)  :: sk1(numele)
+      real (kind=kreal), intent(in) :: vect_e(ele1%numele,3)
+      real (kind=kreal), intent(inout)  :: sk1(ele1%numele)
 !
 !
-      call fem_skv_rms_flux_pg(numele, nnod_4_ele,                      &
+      call fem_skv_rms_flux_pg(ele1%numele, nnod_4_ele,                 &
      &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int,            &
      &          xjac, dwx, k2, vect_e, sk1)
 !

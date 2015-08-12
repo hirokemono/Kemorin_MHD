@@ -26,10 +26,12 @@
 !
       subroutine diff_velocity_on_ele
 !
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_address
 !
-      call diff_vector_on_ele(iele_fl_smp_stack, i_dvx, iphys%i_velo)
+      call diff_vector_on_ele(ele1%numele, nnod_4_ele, ie,              &
+     &    a_vol_ele, iele_fl_smp_stack, i_dvx, iphys%i_velo)
 !
       end subroutine diff_velocity_on_ele
 !
@@ -37,10 +39,12 @@
 !
       subroutine diff_magne_on_ele
 !
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_address
 !
-      call diff_vector_on_ele(iele_cd_smp_stack, i_dbx, iphys%i_magne)
+      call diff_vector_on_ele(ele1%numele, nnod_4_ele, ie,              &
+     &    a_vol_ele, iele_cd_smp_stack, i_dbx, iphys%i_magne)
 !
       end subroutine diff_magne_on_ele
 !
@@ -49,11 +53,12 @@
 !
       subroutine diff_filter_v_on_ele
 !
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_address
 !
-      call diff_vector_on_ele(iele_fl_smp_stack, i_dfvx,                &
-     &    iphys%i_filter_velo)
+      call diff_vector_on_ele(ele1%numele, nnod_4_ele, ie,              &
+     &    a_vol_ele, iele_fl_smp_stack, i_dfvx, iphys%i_filter_velo)
 !
       end subroutine diff_filter_v_on_ele
 !
@@ -61,11 +66,12 @@
 !
       subroutine diff_filter_b_on_ele
 !
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_address
 !
-      call diff_vector_on_ele(iele_fl_smp_stack, i_dfbx,                &
-     &    iphys%i_filter_magne)
+      call diff_vector_on_ele(ele1%numele, nnod_4_ele, ie,              &
+     &    a_vol_ele, iele_fl_smp_stack, i_dfbx, iphys%i_filter_magne)
 !
       return
       end subroutine diff_filter_b_on_ele
@@ -73,19 +79,21 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine diff_vector_on_ele(iele_fsmp_stack, i_diff, i_vec)
+      subroutine diff_vector_on_ele(numele, nnod_4_ele, ie, a_vol_ele,  &
+     &          iele_fsmp_stack, i_diff, i_vec)
 !
       use m_control_parameter
-      use m_geometry_parameter
       use m_machine_parameter
-      use m_geometry_data
       use m_node_phys_data
       use m_finite_element_matrix
       use m_fem_gauss_int_coefs
       use m_jacobians
 !
-       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-       integer(kind = kint), intent(in) :: i_diff, i_vec
+      integer(kind = kint), intent(in) :: numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+      integer(kind = kint), intent(in) :: i_diff, i_vec
+      real(kind = kreal), intent(in) :: a_vol_ele(numele)
 !
        integer(kind = kint) :: iproc, inod, iele, k1, ii, ix
        integer(kind = kint) :: istart, iend, nd, n_int

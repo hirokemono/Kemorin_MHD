@@ -19,7 +19,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
@@ -45,7 +44,7 @@
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int
       integer(kind = kint), intent(in) :: i_source
-      real(kind = kreal), intent(in) :: ak_buo(numele)
+      real(kind = kreal), intent(in) :: ak_buo(ele1%numele)
 !
       integer(kind = kint) :: k2
 !
@@ -80,7 +79,7 @@
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int
       integer(kind = kint), intent(in) :: i_source, ie_upw
-      real(kind = kreal), intent(in) :: ak_buo(numele)
+      real(kind = kreal), intent(in) :: ak_buo(ele1%numele)
 !
       integer(kind = kint) :: k2
 !

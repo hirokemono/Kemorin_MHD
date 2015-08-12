@@ -18,7 +18,6 @@
       use m_precision
 !
       use m_control_parameter
-      use m_geometry_parameter
       use m_geometry_data_MHD
       use m_geometry_data
       use m_phys_constants
@@ -131,7 +130,7 @@
             call vector_cst_phys_2_each_ele(k2, iphys%i_vecp,           &
      &          coef_lor, vect_1)
 !$omp parallel
-            call add_const_to_vector_smp(np_smp, numele,                &
+            call add_const_to_vector_smp(np_smp, ele1%numele,           &
      &          iele_smp_stack, d_ele(1,iphys_ele%i_magne),             &
      &          ex_magne, vect_e)
 !$omp end parallel
@@ -142,7 +141,7 @@
             call vector_cst_phys_2_each_ele(k2, iphys%i_magne,          &
      &          coef_lor, magne_1)
 !$omp parallel
-            call add_const_to_vector_smp(np_smp, numele,                &
+            call add_const_to_vector_smp(np_smp, ele1%numele,           &
      &          iele_smp_stack, d_ele(1,iphys_ele%i_magne),             &
      &          ex_magne, vect_e)
 !$omp end parallel
@@ -349,7 +348,7 @@
             call vector_cst_phys_2_each_ele(k2, iphys%i_vecp,           &
      &          coef_lor, vect_1)
 !$omp parallel
-            call add_const_to_vector_smp(np_smp, numele,                &
+            call add_const_to_vector_smp(np_smp, ele1%numele,           &
      &          iele_smp_stack, d_ele(1,iphys_ele%i_magne),             &
      &          ex_magne, vect_e)
 !$omp end parallel
@@ -360,7 +359,7 @@
             call vector_cst_phys_2_each_ele(k2, iphys%i_magne,          &
      &          coef_lor, magne_1)
 !$omp parallel
-            call add_const_to_vector_smp(np_smp, numele,                &
+            call add_const_to_vector_smp(np_smp, ele1%numele,           &
      &          iele_smp_stack, d_ele(1,iphys_ele%i_magne),             &
      &          ex_magne, vect_e)
 !$omp end parallel
