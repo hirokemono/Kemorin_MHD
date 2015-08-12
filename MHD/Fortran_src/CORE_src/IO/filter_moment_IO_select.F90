@@ -1,27 +1,32 @@
-!filter_moment_IO_select.F90
-!      module filter_moment_IO_select
+!>@file   filter_moment_IO_select.f90
+!!@brief  module filter_moment_IO_select
+!!
+!!@author H. Matsui
+!!@date Programmed in 2004
 !
-!     Written by H. Matsui in 2004
-!
-!      subroutine sel_read_sort_filter_coef_file(my_rank)
-!      subroutine sel_write_sort_filter_coef_file(my_rank)
-!      subroutine sel_read_filter_geometry_file(my_rank)
-!      subroutine sel_write_filter_geometry_file(my_rank)
-!
-!      subroutine sel_read_num_filter_mom_file(my_rank,                 &
-!     &          FEM_elens, FEM_moms)
-!      subroutine sel_read_filter_elen_file(my_rank, nnod, nele,        &
-!     &          FEM_elens, ierr)
-!      subroutine sel_write_filter_elen_file(my_rank, FEM_elens)
-!      subroutine sel_read_filter_moms_file(my_rank, nnod, nele,        &
-!     &          FEM_elens, FEM_moms, ierr)
-!      subroutine sel_write_filter_moms_file(my_rank,                   &
-!     &          FEM_elens, FEM_moms)
-!        integer(kind = kint), intent(in) :: my_rank
-!        integer(kind = kint), intent(in) :: nnod, nele
-!        type(gradient_model_data_type), intent(inout) :: FEM_elens
-!        type(gradient_filter_mom_type), intent(inout) :: FEM_moms
-!        integer(kind = kint), intent(inout) :: ierr
+!> @brief Filter data file IO selector
+!!
+!!@verbatim
+!!      subroutine sel_read_sort_filter_coef_file(my_rank)
+!!      subroutine sel_write_sort_filter_coef_file(my_rank)
+!!      subroutine sel_read_filter_geometry_file(my_rank)
+!!      subroutine sel_write_filter_geometry_file(my_rank)
+!!
+!!      subroutine sel_read_num_filter_mom_file(my_rank,                &
+!!     &          FEM_elens, FEM_moms)
+!!      subroutine sel_read_filter_elen_file(my_rank, nnod, nele,       &
+!!     &          FEM_elens, ierr)
+!!      subroutine sel_write_filter_elen_file(my_rank, FEM_elens)
+!!      subroutine sel_read_filter_moms_file(my_rank, nnod, nele,       &
+!!     &          FEM_elens, FEM_moms, ierr)
+!!      subroutine sel_write_filter_moms_file(my_rank,                  &
+!!     &          FEM_elens, FEM_moms)
+!!          integer(kind = kint), intent(in) :: my_rank
+!!          integer(kind = kint), intent(in) :: nnod, nele
+!!          type(gradient_model_data_type), intent(inout) :: FEM_elens
+!!          type(gradient_filter_mom_type), intent(inout) :: FEM_moms
+!!          integer(kind = kint), intent(inout) :: ierr
+!!@endverbatim
 !
 !
       module filter_moment_IO_select

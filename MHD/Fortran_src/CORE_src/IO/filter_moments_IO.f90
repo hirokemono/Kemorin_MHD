@@ -1,23 +1,28 @@
-!filter_moments_IO.f90
-!     module filter_moments_IO
+!>@file   filter_moments_IO.f90
+!!@brief  module filter_moments_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in 2004
+!!@n     modified by H. Matsui in Nov., 2006
+!!@n     modified by H. Matsui in Mar., 2008
 !
-!     Written by H. Matsui
-!     modified by H. Matsui on Nov., 2006
-!     modified by H. Matsui on Mar., 2008
-!
-!      subroutine read_filter_elen_head(id_file, nnod, nele, nf_type)
-!      subroutine write_filter_elen_head(id_file, nnod, nele, nf_type)
-!
-!      subroutine read_filter_moms_head(id_file, nnod, nele,            &
-!     &          n_filter, nf_type)
-!      subroutine write_filter_moms_head(id_file, nnod, nele,           &
-!     &          n_filter, nf_type)
-!
-!      subroutine read_elength(id_file, num, el1, el2, el3)
-!      subroutine read_mom_coefs_dx(id_file, num, el1, el2, el3)
-!
-!      subroutine write_elength(id_file, num, el1, el2, el3)
-!      subroutine write_mom_coefs_dx(id_file, num, el1, el2, el3)
+!> @brief Data IO routines for filtering data
+!!
+!!@verbatim
+!!      subroutine read_filter_elen_head(id_file, nnod, nele, nf_type)
+!!      subroutine write_filter_elen_head(id_file, nnod, nele, nf_type)
+!!
+!!      subroutine read_filter_moms_head(id_file, nnod, nele,           &
+!!     &          n_filter, nf_type)
+!!      subroutine write_filter_moms_head(id_file, nnod, nele,          &
+!!     &          n_filter, nf_type)
+!!
+!!      subroutine read_elength(id_file, num, el1, el2, el3)
+!!      subroutine read_mom_coefs_dx(id_file, num, el1, el2, el3)
+!!
+!!      subroutine write_elength(id_file, num, el1, el2, el3)
+!!      subroutine write_mom_coefs_dx(id_file, num, el1, el2, el3)
+!!@endverbatim
 !
       module filter_moments_IO
 !

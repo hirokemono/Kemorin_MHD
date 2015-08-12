@@ -86,7 +86,6 @@
 !
       subroutine const_global_numnod_list_1st
 !
-      use m_geometry_parameter
       use m_geometry_data
       use const_global_element_ids
 !
@@ -102,7 +101,6 @@
 !
       subroutine const_global_element_id_1st
 !
-      use m_geometry_parameter
       use m_geometry_data
       use const_global_element_ids
 !
@@ -110,10 +108,10 @@
 !
       call allocate_numele_stack(nprocs)
 !
-      call count_number_of_node_stack(numele, istack_numele)
+      call count_number_of_node_stack(ele1%numele, istack_numele)
       call count_number_of_node_stack(internal_ele, istack_interele)
 !
-      call set_global_ele_id(txt, numele, istack_interele,              &
+      call set_global_ele_id(txt, ele1%numele, istack_interele,         &
      &         interior_ele, ele_comm, iele_global)
 !
       end subroutine const_global_element_id_1st
@@ -164,7 +162,6 @@
       subroutine const_element_comm_table_1st
 !
       use m_nod_comm_table
-      use m_geometry_parameter
       use m_geometry_data
       use m_element_id_4_node
       use m_belonged_element_4_node
@@ -175,7 +172,7 @@
       call set_ele_id_4_node_comm
       call belonged_ele_id_4_node_1(blng_tbls%host_ele)
       call const_ele_comm_table_1st                                     &
-     &   (txt, node1%numnod, numele, inod_global,                       &
+     &   (txt, node1%numnod, ele1%numele, inod_global,                  &
      &    interior_ele, x_ele, nod_comm, ele_4_nod_comm,                &
      &    blng_tbls%host_ele, ele_comm)
       call dealloc_iele_belonged(blng_tbls%host_ele)
