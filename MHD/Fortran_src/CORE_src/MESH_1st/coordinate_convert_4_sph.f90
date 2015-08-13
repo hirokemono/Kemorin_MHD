@@ -47,13 +47,13 @@
         numdir = istack_nod_component(i  ) - istack_nod_component(i-1)
         if     (numdir .eq. 6) then
           call overwrite_xyz_tensor_by_sph_smp                          &
-     &       (np_smp, node1%numnod, inod_smp_stack, d_nod(1,i_fld),     &
-     &        xx(1,1), xx(1,2), xx(1,3), radius, s_cylinder,            &
-     &        a_radius, a_s_cylinder)
+     &       (np_smp, node1%numnod, node1%istack_nod_smp,               &
+     &        d_nod(1,i_fld), xx(1,1), xx(1,2), xx(1,3),                &
+     &         radius, s_cylinder, a_radius, a_s_cylinder)
         else if(numdir .eq. 3) then
           call overwrite_sph_vect_2_xyz_smp                             &
-     &       (np_smp, node1%numnod, inod_smp_stack, d_nod(1,i_fld),     &
-     &        colatitude(1), longitude(1))
+     &       (np_smp, node1%numnod, node1%istack_nod_smp,               &
+     &        d_nod(1,i_fld), colatitude(1), longitude(1))
         end if
       end do
 !$omp end parallel
@@ -76,12 +76,13 @@
         numdir = istack_nod_component(i  ) - istack_nod_component(i-1)
         if     (numdir .eq. 6) then
           call overwrite_xyz_tensor_by_cyl_smp                          &
-     &       (np_smp, node1%numnod, inod_smp_stack, d_nod(1,i_fld),     &
-     &        xx(1,1), xx(1,2), s_cylinder, a_s_cylinder)
+     &       (np_smp, node1%numnod, node1%istack_nod_smp,               &
+     &        d_nod(1,i_fld), xx(1,1), xx(1,2),                         &
+     &        s_cylinder, a_s_cylinder)
         else if(numdir .eq. 3) then
           call overwrite_cyl_vect_2_xyz_smp                             &
-     &       (np_smp, node1%numnod, inod_smp_stack, d_nod(1,i_fld),     &
-     &        longitude)
+     &       (np_smp, node1%numnod, node1%istack_nod_smp,               &
+     &        d_nod(1,i_fld), longitude)
         end if
       end do
 !$omp end parallel
@@ -105,14 +106,14 @@
         numdir = istack_nod_component(i  ) - istack_nod_component(i-1)
         if     (numdir .eq. 6) then
           call overwrite_sph_tensor_smp                                 &
-     &       (np_smp, node1%numnod, inod_smp_stack, d_nod(1,i_fld),     &
-     &        xx(1,1), xx(1,2), xx(1,3), radius, s_cylinder,            &
-     &        a_radius, a_s_cylinder)
+     &       (np_smp, node1%numnod, node1%istack_nod_smp,               &
+     &        d_nod(1,i_fld), xx(1,1), xx(1,2), xx(1,3),                &
+     &        radius, s_cylinder, a_radius, a_s_cylinder)
         else if(numdir .eq. 3) then
           call overwrite_vector_2_sph_smp                               &
-     &       (np_smp, node1%numnod, inod_smp_stack, d_nod(1,i_fld),     &
-     &        xx(1,1), xx(1,2), xx(1,3), radius, s_cylinder,            &
-     &        a_radius, a_s_cylinder)
+     &       (np_smp, node1%numnod, node1%istack_nod_smp,               &
+     &        d_nod(1,i_fld), xx(1,1), xx(1,2), xx(1,3),                &
+     &        radius, s_cylinder, a_radius, a_s_cylinder)
         end if
       end do
 !$omp end parallel
@@ -136,10 +137,10 @@
         numdir = istack_nod_component(i  ) - istack_nod_component(i-1)
         if     (numdir .eq. 6) then
           call overwrite_cyl_tensor_by_sph_smp(np_smp, node1%numnod,    &
-     &        inod_smp_stack, d_nod(1,i_fld), colatitude)
+     &        node1%istack_nod_smp, d_nod(1,i_fld), colatitude)
         else if(numdir .eq. 3) then
           call overwrite_sph_vect_2_cyl_smp(np_smp, node1%numnod,       &
-     &        inod_smp_stack, d_nod(1,i_fld), colatitude)
+     &        node1%istack_nod_smp, d_nod(1,i_fld), colatitude)
         end if
       end do
 !$omp end parallel

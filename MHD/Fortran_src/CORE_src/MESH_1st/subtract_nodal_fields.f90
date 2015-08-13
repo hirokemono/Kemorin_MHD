@@ -34,7 +34,8 @@
 !
 !
 !$omp parallel
-      call subtract_scalars_smp(np_smp, node1%numnod, inod_smp_stack,   &
+      call subtract_scalars_smp                                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,i_v1), d_nod(1,i_v2), d_nod(1,i_r))
 !$omp end parallel
 !
@@ -53,7 +54,8 @@
 !
 !
 !$omp parallel
-      call subtract_vectors_smp(np_smp, node1%numnod, inod_smp_stack,   &
+      call subtract_vectors_smp                                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,i_v1), d_nod(1,i_v2), d_nod(1,i_r))
 !$omp end parallel
 !
@@ -72,7 +74,8 @@
 !
 !
 !$omp parallel
-      call subtract_tensors_smp(np_smp, node1%numnod, inod_smp_stack,   &
+      call subtract_tensors_smp                                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,i_v1), d_nod(1,i_v2), d_nod(1,i_r))
 !$omp end parallel
 !

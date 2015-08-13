@@ -77,7 +77,7 @@
 !
 !
       call cal_scalar_prod_no_coef_smp                                  &
-     &   (np_smp, node1%numnod, inod_smp_stack,                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,i_s1), d_nod(1,i_s2),  d_nod(1,i_r) )
 !
       end subroutine cal_phys_product_4_scalar
@@ -92,7 +92,7 @@
 !
 !
       call cal_dot_prod_no_coef_smp                                     &
-     &   (np_smp, node1%numnod, inod_smp_stack,                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,i_v1), d_nod(1,i_v2),  d_nod(1,i_r) )
 !
       end subroutine cal_phys_dot_product
@@ -107,7 +107,7 @@
 !
 !
       call cal_cross_prod_no_coef_smp                                   &
-     &   (np_smp, node1%numnod, inod_smp_stack,                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,i_v1), d_nod(1,i_v2),  d_nod(1,i_r) )
 !
       end subroutine cal_phys_cross_product
@@ -124,7 +124,7 @@
 !
 !
       call cal_dot_prod_w_coef_smp                                      &
-     &   (np_smp, node1%numnod, inod_smp_stack,                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    coef, d_nod(1,i_v1), d_nod(1,i_v2),  d_nod(1,i_r) )
 !
       end subroutine cal_phys_dot_prod_w_coef
@@ -140,7 +140,7 @@
 !
 !
       call cal_cross_prod_w_coef_smp                                    &
-     &   (np_smp, node1%numnod, inod_smp_stack,                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    coef, d_nod(1,i_v1), d_nod(1,i_v2),  d_nod(1,i_r) )
 !
       end subroutine cal_phys_cross_prod_w_coef
@@ -157,7 +157,7 @@
 !
 !
       call cal_tri_product_w_coef_smp                                   &
-     &   (np_smp, node1%numnod, inod_smp_stack,                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    coef, d_nod(1,i_v1), d_nod(1,i_v2), d_nod(1,i_v3),            &
      &    d_nod(1,i_r) )
 !
@@ -172,8 +172,9 @@
       integer(kind = kint), intent(in) :: i_r, i_s1, i_v1
 !
 !
-      call cal_vec_scalar_prod_no_coef_smp(np_smp, node1%numnod,        &
-     &    inod_smp_stack, d_nod(1,i_v1), d_nod(1,i_s1), d_nod(1,i_r))
+      call cal_vec_scalar_prod_no_coef_smp                              &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
+     &    d_nod(1,i_v1), d_nod(1,i_s1), d_nod(1,i_r))
 !
       end subroutine cal_phys_scalar_product_vector
 !
@@ -186,8 +187,9 @@
       integer(kind = kint), intent(in) :: i_r, i_t1, i_v2
 !
 !
-      call cal_tensor_vec_prod_no_coef_smp(np_smp, node1%numnod,        &
-     &    inod_smp_stack, d_nod(1,i_t1), d_nod(1,i_v2), d_nod(1,i_r) )
+      call cal_tensor_vec_prod_no_coef_smp                              &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
+     &    d_nod(1,i_t1), d_nod(1,i_v2), d_nod(1,i_r) )
 !
       end subroutine cal_phys_sym_matvec
 !
@@ -199,8 +201,9 @@
 !
       integer(kind = kint), intent(in) :: i_r, i_s1, i_v2
 !
-      call cal_scalar_mag_vector_prod_smp(np_smp, node1%numnod,         &
-     &    inod_smp_stack, d_nod(1,i_s1), d_nod(1,i_v2), d_nod(1,i_r))
+      call cal_scalar_mag_vector_prod_smp                               &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
+     &    d_nod(1,i_s1), d_nod(1,i_v2), d_nod(1,i_r))
 !
       end subroutine prod_phys_scalar_mag_vector
 !
@@ -215,9 +218,9 @@
       integer(kind = kint), intent(in) :: i_r, i_s1, i_v1
 !
 !
-      call cal_vec_scalar_prod_w_coef_smp(np_smp, node1%numnod,         &
-     &    inod_smp_stack, coef, d_nod(1,i_v1), d_nod(1,i_s1),           &
-     &    d_nod(1,i_r) )
+      call cal_vec_scalar_prod_w_coef_smp                               &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp, coef,             &
+     &    d_nod(1,i_v1), d_nod(1,i_s1), d_nod(1,i_r) )
 !
       end subroutine phys_vec_scalar_prod_w_coef
 !

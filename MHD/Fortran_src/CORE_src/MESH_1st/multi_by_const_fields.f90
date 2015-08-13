@@ -38,7 +38,7 @@
 !
 !$omp parallel
       call cal_coef_prod_scalar_smp                                     &
-     &   (np_smp, node1%numnod, inod_smp_stack,                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    const, d_nod(1,i_v1), d_nod(1,i_r) )
 !$omp end parallel
 !
@@ -59,7 +59,7 @@
 !
 !$omp parallel
       call cal_coef_prod_vect_smp                                       &
-     &   (np_smp, node1%numnod, inod_smp_stack,                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    const, d_nod(1,i_v1), d_nod(1,i_r) )
 !$omp end parallel
 !
@@ -80,7 +80,7 @@
 !
 !$omp parallel
       call cal_coef_prod_tensor_smp                                     &
-     &   (np_smp, node1%numnod, inod_smp_stack,                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    const, d_nod(1,i_v1), d_nod(1,i_r) )
 !$omp end parallel
 !

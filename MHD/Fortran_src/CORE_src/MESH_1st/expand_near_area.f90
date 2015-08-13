@@ -119,9 +119,9 @@
 !
       call alloc_num_4_near_nod(node1%numnod, near_ele1_wide)
       call count_expanded_near_element                                  &
-     &   (np_smp, node1%numnod, ele1%numele,                            &
-     &    inod_smp_stack, iflag_expand, ele_4_nod1%ntot,                &
-     &    ele_4_nod1%istack_4_node, ele_4_nod1%iele_4_node,             &
+     &   (np_smp, node1%numnod, ele1%numele, node1%istack_nod_smp,      &
+     &    iflag_expand, ele_4_nod1%ntot, ele_4_nod1%istack_4_node,      &
+     &    ele_4_nod1%iele_4_node,                                       &
      &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &
      &    near_node1_tbl%id_near_nod, near_ele1_tbl%ntot,               &
      &    near_ele1_tbl%num_nod, near_ele1_tbl%istack_nod,              &
@@ -135,9 +135,9 @@
       call alloc_near_element(near_ele1_wide)
 !
       call set_expanded_near_element                                    &
-     &   (np_smp, node1%numnod, ele1%numele,                            &
-     &    inod_smp_stack, iflag_expand, ele_4_nod1%ntot,                &
-     &    ele_4_nod1%istack_4_node, ele_4_nod1%iele_4_node,             &
+     &   (np_smp, node1%numnod, ele1%numele, node1%istack_nod_smp,      &
+     &    iflag_expand, ele_4_nod1%ntot, ele_4_nod1%istack_4_node,      &
+     &    ele_4_nod1%iele_4_node,                                       &
      &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &
      &    near_node1_tbl%id_near_nod, near_ele1_tbl%ntot,               &
      &    near_ele1_tbl%num_nod, near_ele1_tbl%istack_nod,              &
@@ -177,7 +177,7 @@
 !
       call add_num_nod_4_group                                          &
      &   (np_smp, node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,       &
-     &    inod_smp_stack, node1%numnod, near_ele1_tbl%ntot,             &
+     &    node1%istack_nod_smp, node1%numnod, near_ele1_tbl%ntot,       &
      &    near_ele1_tbl%istack_nod, near_ele1_tbl%id_near_nod,          &
      &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &
      &    near_node1_tbl%id_near_nod, iflag_expand,                     &
@@ -192,7 +192,7 @@
 !
       call add_nod_id_4_group                                           &
      &   (np_smp, node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,       &
-     &    inod_smp_stack, node1%numnod, near_ele1_tbl%ntot,             &
+     &    node1%istack_nod_smp, node1%numnod, near_ele1_tbl%ntot,       &
      &    near_ele1_tbl%istack_nod, near_ele1_tbl%id_near_nod,          &
      &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &
      &    near_node1_tbl%id_near_nod, near_node1_tbl%iweight,           &
@@ -201,10 +201,10 @@
      &    near_node1_wide%id_near_nod, near_node1_wide%iweight)
 !
       call add_distance_flag                                            &
-     &   (np_smp, inod_smp_stack, node1%numnod,  near_node1_tbl%ntot,   &
-     &    near_node1_tbl%istack_nod, near_node1_tbl%idist,              &
-     &    near_node1_wide%ntot, near_node1_wide%istack_nod,             &
-     &    near_node1_wide%idist)
+     &   (np_smp, node1%istack_nod_smp, node1%numnod,                   &
+     &    near_node1_tbl%ntot, near_node1_tbl%istack_nod,               &
+     &    near_node1_tbl%idist, near_node1_wide%ntot,                   &
+     &    near_node1_wide%istack_nod, near_node1_wide%idist)
 !
       call sort_added_nod_4_group                                       &
      &   (node1%numnod, near_node1_tbl%istack_nod, iflag_expand,        &

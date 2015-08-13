@@ -36,7 +36,8 @@
 !
 !
 !$omp parallel
-      call copy_nod_scalar_smp(np_smp, node1%numnod, inod_smp_stack,    &
+      call copy_nod_scalar_smp                                          &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,i_org), d_nod(1,i_target) )
 !$omp end parallel
 !
@@ -54,7 +55,8 @@
 !
 !
 !$omp parallel
-      call copy_nod_vector_smp(np_smp, node1%numnod, inod_smp_stack,    &
+      call copy_nod_vector_smp                                          &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,i_org), d_nod(1,i_target) )
 !$omp end parallel
 !
@@ -73,7 +75,7 @@
 !
 !$omp parallel
       call copy_nod_sym_tensor_smp                                      &
-     &   (np_smp, node1%numnod, inod_smp_stack,                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,i_org), d_nod(1,i_target) )
 !$omp end parallel
 !
