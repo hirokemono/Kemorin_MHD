@@ -29,7 +29,7 @@
       subroutine s_int_element_length(nele_filter, dxi_ele, elen_ele)
 !
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use m_fem_gauss_int_coefs
       use t_filter_dxdxi
       use t_filter_elength
@@ -40,17 +40,17 @@
       type(elen_on_ele_type), intent(inout) :: elen_ele
 !
 !
-      if      (nnod_4_ele .eq. num_t_linear) then
+      if      (ele1%nnod_4_ele .eq. num_t_linear) then
         call fem_element_length_linear(max_int_point, nele_filter,      &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
-      else if (nnod_4_ele .eq. num_t_quad) then
+      else if (ele1%nnod_4_ele .eq. num_t_quad) then
         call fem_element_length_quad(max_int_point, nele_filter,        &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
-      else if (nnod_4_ele .eq. num_t_lag) then
+      else if (ele1%nnod_4_ele .eq. num_t_lag) then
         call fem_element_length_lag(max_int_point, nele_filter,         &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &

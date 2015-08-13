@@ -44,9 +44,10 @@
       real(kind=kreal), intent(in) :: vxe(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
-      call fem_skv_scalar_inertia(ele1%numele, nnod_4_ele, nnod_4_ele,  &
+      call fem_skv_scalar_inertia                                       &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
      &    xjac, aw, dwx, scalar_1, vxe, sk_v)
 !
@@ -66,10 +67,11 @@
       real(kind=kreal), intent(in) :: vxe(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
-      call fem_skv_vector_inertia(ele1%numele, nnod_4_ele, nnod_4_ele,  &
+      call fem_skv_vector_inertia                                       &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
      &    xjac, aw, dwx, vect_1, vxe, sk_v)
 !
@@ -89,10 +91,11 @@
       real(kind=kreal), intent(in) :: wxe(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
-      call fem_skv_rot_inertia(ele1%numele, nnod_4_ele, nnod_4_ele,     &
+      call fem_skv_rot_inertia                                          &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
      &    xjac, aw, aw, vect_1, wxe, sk_v)
 !
@@ -112,10 +115,11 @@
       real(kind=kreal), intent(in) :: angular(3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &              :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
-      call fem_skv_coriolis(ele1%numele, nnod_4_ele, nnod_4_ele,        &
+      call fem_skv_coriolis                                             &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
      &    xjac, aw, aw, vect_1, angular, sk_v)
 !

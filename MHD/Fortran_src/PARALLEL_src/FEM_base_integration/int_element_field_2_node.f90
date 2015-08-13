@@ -103,7 +103,7 @@
       ff_smp = 0.0d0
       call reset_sk6(n_scalar)
 !
-      if (nnod_4_ele .eq. num_t_linear) then
+      if (ele1%nnod_4_ele .eq. num_t_linear) then
         call fem_skv_scalar_on_ele_1st(iele_fsmp_stack,                 &
      &      max_int_point, scalar_ele, sk6)
       else
@@ -131,7 +131,7 @@
       ff_smp = 0.0d0
       call reset_sk6(n_vector)
 !
-      if (nnod_4_ele .eq. num_t_linear) then
+      if (ele1%nnod_4_ele .eq. num_t_linear) then
         call fem_skv_vector_on_ele_1st(iele_fsmp_stack,                 &
      &        max_int_point, vector_ele, sk6)
       else
@@ -159,7 +159,7 @@
       ff_t_smp = 0.0d0
       call reset_sk6(n_sym_tensor)
 !
-      if (nnod_4_ele .eq. num_t_linear) then
+      if (ele1%nnod_4_ele .eq. num_t_linear) then
         call fem_skv_tensor_on_ele_1st(iele_fsmp_stack,                 &
      &          max_int_point, tensor_ele, sk6)
       else
@@ -188,7 +188,7 @@
       ff_smp = 0.0d0
       call reset_sk6(n_scalar)
 !
-      if (nnod_4_ele .eq. num_t_linear) then
+      if (ele1%nnod_4_ele .eq. num_t_linear) then
         call fem_skv_scalar_on_ele_grp_1st(iele_fsmp_stack,             &
      &      nele_grp, iele_grp, max_int_point, scalar_ele, sk6)
       else
@@ -216,7 +216,7 @@
       ff_smp = 0.0d0
       call reset_sk6(n_vector)
 !
-      if (nnod_4_ele .eq. num_t_linear) then
+      if (ele1%nnod_4_ele .eq. num_t_linear) then
         call fem_skv_vector_on_ele_grp_1st(iele_fsmp_stack,             &
      &      nele_grp, iele_grp, max_int_point, vector_ele, sk6)
       else
@@ -244,7 +244,7 @@
       ff_t_smp = 0.0d0
       call reset_sk6(n_sym_tensor)
 !
-      if (nnod_4_ele .eq. num_t_linear) then
+      if (ele1%nnod_4_ele .eq. num_t_linear) then
         call fem_skv_tensor_on_ele_grp_1st(iele_fsmp_stack,             &
      &      nele_grp, iele_grp, max_int_point, tensor_ele, sk6)
       else

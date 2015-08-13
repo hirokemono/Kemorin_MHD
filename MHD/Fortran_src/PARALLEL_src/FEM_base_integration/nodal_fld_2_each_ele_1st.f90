@@ -40,7 +40,7 @@
 !
 !
       call position_to_local_ele(node1%numnod, ele1%numele,             &
-     &    nnod_4_ele, ie, np_smp, iele_smp_stack, k2, xx, radius,       &
+     &    ele1%nnod_4_ele, ie, np_smp, iele_smp_stack, k2, xx, radius,  &
      &    xe, radius_e)
 !
       end subroutine position_2_each_element
@@ -56,8 +56,9 @@
       real (kind=kreal), intent(inout) :: scalar_e(ele1%numele)
 !
 !
-      call scalar_to_local_ele(node1%numnod, ele1%numele, nnod_4_ele,   &
-     &    ie, np_smp, iele_smp_stack, k2, ione, ione, scalar(1),        &
+      call scalar_to_local_ele                                          &
+     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,               &
+     &    np_smp, iele_smp_stack, k2, ione, ione, scalar(1),            &
      &    scalar_e )
 !
       end subroutine scalar_2_each_element
@@ -73,8 +74,9 @@
       real (kind=kreal), intent(inout) :: vect_e(ele1%numele,3)
 !
 !
-      call vector_to_local_ele(node1%numnod, ele1%numele, nnod_4_ele,   &
-     &    ie, np_smp, iele_smp_stack, k2, ione, ithree, vector, vect_e)
+      call vector_to_local_ele                                          &
+     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,               &
+     &    np_smp, iele_smp_stack, k2, ione, ithree, vector, vect_e)
 !
       end subroutine vector_2_each_element
 !
@@ -90,8 +92,9 @@
       real (kind=kreal), intent(inout) :: scalar_e(ele1%numele)
 !
 !
-      call scalar_to_local_ele(node1%numnod, ele1%numele, nnod_4_ele,   &
-     &    ie, np_smp, iele_smp_stack, k2, i_field,                      &
+      call scalar_to_local_ele                                          &
+     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,               &
+     &    np_smp, iele_smp_stack, k2, i_field,                          &
      &    num_tot_nod_phys, d_nod, scalar_e)
 !
       end subroutine scalar_phys_2_each_element
@@ -107,8 +110,9 @@
       real (kind=kreal), intent(inout) :: vect_e(ele1%numele,3)
 !
 !
-      call vector_to_local_ele(node1%numnod, ele1%numele, nnod_4_ele,   &
-     &    ie, np_smp, iele_smp_stack, k2, i_field,                      &
+      call vector_to_local_ele                                          &
+     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,               &
+     &    np_smp, iele_smp_stack, k2, i_field,                          &
      &    num_tot_nod_phys, d_nod, vect_e)
 !
       end subroutine vector_phys_2_each_element
@@ -124,8 +128,9 @@
       real (kind=kreal), intent(inout) :: tensor_e(ele1%numele,6)
 !
 !
-      call tensor_to_local_ele(node1%numnod, ele1%numele, nnod_4_ele,   &
-     &    ie, np_smp, iele_smp_stack, k2, i_field,                      &
+      call tensor_to_local_ele                                          &
+     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,               &
+     &    np_smp, iele_smp_stack, k2, i_field,                          &
      &    num_tot_nod_phys, d_nod, tensor_e)
 !
       end subroutine tensor_phys_2_each_element
@@ -142,8 +147,9 @@
       integer(kind = kint), intent(in) :: k2, nd, i_flux
       real (kind=kreal), intent(inout) :: vect_e(ele1%numele,3)
 !
-      call tensor_to_local_ele_v(node1%numnod, ele1%numele, nnod_4_ele, &
-     &    ie, np_smp, iele_smp_stack, k2, i_flux, nd, l_sim_t,          &
+      call tensor_to_local_ele_v                                        &
+     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,               &
+     &    np_smp, iele_smp_stack, k2, i_flux, nd, l_sim_t,              &
      &    num_tot_nod_phys, d_nod, vect_e)
 !
       end subroutine tensor_2_vec_each_ele
@@ -161,7 +167,7 @@
 !
 !
       call as_tensor_to_local_ele_v                                     &
-     &   (node1%numnod, ele1%numele, nnod_4_ele,                        &
+     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele,                   &
      &    ie, np_smp, iele_smp_stack, k2, i_flux, nd, l_asim_t,         &
      &    num_tot_nod_phys, d_nod, vect_e)
 !

@@ -22,7 +22,7 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_finite_element_matrix
 !
@@ -54,7 +54,7 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call reset_sk6(n_scalar)
         call fem_grp_skv_mass_matrix_1(iele_fsmp_stack,                 &
      &      nele_grp, iele_grp, n_int, k2, sk6)
@@ -83,7 +83,7 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
        call fem_grp_skv_mass_matrix_1(iele_fsmp_stack,                  &
      &     nele_grp, iele_grp, n_int, k2, sk6)
       end do

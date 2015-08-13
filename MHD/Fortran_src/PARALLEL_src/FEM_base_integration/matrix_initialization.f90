@@ -30,7 +30,7 @@
 !
       integer(kind = kint), parameter :: ione = 1
 !
-      call s_crs_matrix_init(np_smp, nnod_4_ele,                        &
+      call s_crs_matrix_init(np_smp, ele1%nnod_4_ele,                   &
      &          inod_ele_max, num_sort_smp, nod_stack_smp, idx_4_mat,   &
      &          num_mat, ione, node1%numnod, aiccg)
 !

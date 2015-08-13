@@ -31,24 +31,24 @@
      &          xx_int, yy_int, zz_int)
 !
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint), intent(in) :: nele_grp
       integer(kind = kint), intent(in) :: iele_grp(nele_grp)
-      real(kind = kreal), intent(in) :: an(nnod_4_ele)
+      real(kind = kreal), intent(in) :: an(ele1%nnod_4_ele)
 !
       real(kind = kreal), intent(inout) :: xx_int(nele_grp)
       real(kind = kreal), intent(inout) :: yy_int(nele_grp)
       real(kind = kreal), intent(inout) :: zz_int(nele_grp)
 !
 !
-      if      (nnod_4_ele .eq. num_t_lag) then
+      if      (ele1%nnod_4_ele .eq. num_t_lag) then
         call set_int_point_position_27(nele_grp, iele_grp, an,          &
      &          xx_int, yy_int, zz_int)
-      else if (nnod_4_ele .eq. num_t_quad) then
+      else if (ele1%nnod_4_ele .eq. num_t_quad) then
         call set_int_point_position_20(nele_grp, iele_grp, an,          &
      &          xx_int, yy_int, zz_int)
-      else if (nnod_4_ele .eq. num_t_linear) then
+      else if (ele1%nnod_4_ele .eq. num_t_linear) then
         call set_int_point_position_8(nele_grp, iele_grp, an,           &
      &          xx_int, yy_int, zz_int)
       end if

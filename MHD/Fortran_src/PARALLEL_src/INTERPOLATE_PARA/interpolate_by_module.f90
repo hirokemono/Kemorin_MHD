@@ -263,7 +263,7 @@
       if (num_dest_domain.gt.0) then
         call s_interporate_imark_para                                   &
      &     (np_smp, node1%numnod, ele1%numele,                          &
-     &      nnod_4_ele, ie, ix_vec(1), istack_tbl_type_org_smp,         &
+     &      ele1%nnod_4_ele, ie, ix_vec(1), istack_tbl_type_org_smp,    &
      &      ntot_table_org, iele_org_4_org,                             &
      &      itype_inter_org, i_inter_org(1) )
       end if

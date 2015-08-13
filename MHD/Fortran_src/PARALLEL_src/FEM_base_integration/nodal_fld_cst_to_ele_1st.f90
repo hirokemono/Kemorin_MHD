@@ -43,9 +43,8 @@
 !
 !
       call const_scalar_2_each_ele(node1%numnod, ele1%numele,           &
-     &    nnod_4_ele, ie,                                               &
-     &    np_smp, iele_smp_stack, k2, ione, ione,                       &
-     &    scalar(1), coef, scalar_e)
+     &    ele1%nnod_4_ele, ie, np_smp, iele_smp_stack,                  &
+     &    k2, ione, ione, scalar(1), coef, scalar_e)
 !
       end subroutine scalar_const_2_each_ele
 !
@@ -60,9 +59,8 @@
 !
 !
       call const_vector_2_each_ele(node1%numnod, ele1%numele,           &
-     &    nnod_4_ele, ie,                                               &
-     &    np_smp, iele_smp_stack, k2, ione, ithree,                     &
-     &    vector, coef, vector_e)
+     &    ele1%nnod_4_ele, ie, np_smp, iele_smp_stack,                  &
+     &    k2, ione, ithree, vector, coef, vector_e)
 !
       end subroutine vector_const_2_each_ele
 !
@@ -77,9 +75,8 @@
 !
 !
       call const_tensor_2_each_ele(node1%numnod, ele1%numele,           &
-     &    nnod_4_ele, ie,                                               &
-     &    np_smp, iele_smp_stack, k2, ione, isix,                       &
-     &    tensor, coef, tensor_e)
+     &    ele1%nnod_4_ele, ie, np_smp, iele_smp_stack,                  &
+     &    k2, ione, isix, tensor, coef, tensor_e)
 !
       end subroutine tensor_const_2_each_ele
 !
@@ -96,9 +93,8 @@
 !
 !
       call const_scalar_2_each_ele(node1%numnod, ele1%numele,           &
-     &    nnod_4_ele, ie,                                               &
-     &    np_smp, iele_smp_stack, k2, i_fld, num_tot_nod_phys,          &
-     &    d_nod, coef, scalar_e)
+     &    ele1%nnod_4_ele, ie, np_smp, iele_smp_stack,                  &
+     &    k2, i_fld, num_tot_nod_phys, d_nod, coef, scalar_e)
 !
       end subroutine scalar_cst_phys_2_each_ele
 !
@@ -114,9 +110,8 @@
 !
 !
       call const_vector_2_each_ele(node1%numnod, ele1%numele,           &
-     &    nnod_4_ele, ie,                                               &
-     &    np_smp, iele_smp_stack, k2, i_fld, num_tot_nod_phys,          &
-     &    d_nod, coef, vector_e)
+     &    ele1%nnod_4_ele, ie, np_smp, iele_smp_stack,                  &
+     &    k2, i_fld, num_tot_nod_phys, d_nod, coef, vector_e)
 !
       end subroutine vector_cst_phys_2_each_ele
 !
@@ -132,9 +127,8 @@
 !
 !
       call const_tensor_2_each_ele(node1%numnod, ele1%numele,           &
-     &    nnod_4_ele, ie,                                               &
-     &    np_smp, iele_smp_stack, k2, i_fld, num_tot_nod_phys,          &
-     &    d_nod, coef, tensor_e)
+     &    ele1%nnod_4_ele, ie, np_smp, iele_smp_stack,                  &
+     &    k2, i_fld, num_tot_nod_phys, d_nod, coef, tensor_e)
 !
       end subroutine tensor_cst_phys_2_each_ele
 !
@@ -152,9 +146,8 @@
 !
 !
       call const_tensor_2_vec_each_ele(node1%numnod, ele1%numele,       &
-     &    nnod_4_ele, ie,                                               &
-     &    np_smp, iele_smp_stack, k2, i_flux, nd, num_tot_nod_phys,     &
-     &    d_nod, coef, vector_e)
+     &    ele1%nnod_4_ele, ie, np_smp, iele_smp_stack,                  &
+     &    k2, i_flux, nd, num_tot_nod_phys, d_nod, coef, vector_e)
 !
       end subroutine tensor_cst_phys_2_vec_each_ele
 !
@@ -170,10 +163,9 @@
       real (kind=kreal), intent(inout) :: vector_e(ele1%numele,3)
 !
 !
-      call const_as_tsr_2_vec_each_ele                                  &
-     &   (node1%numnod, ele1%numele, nnod_4_ele, ie,                    &
-     &    np_smp, iele_smp_stack, k2, i_flux, nd, num_tot_nod_phys,     &
-     &    d_nod, coef, vector_e)
+      call const_as_tsr_2_vec_each_ele(node1%numnod, ele1%numele,       &
+     &    ele1%nnod_4_ele, ie, np_smp, iele_smp_stack,                  &
+     &    k2, i_flux, nd, num_tot_nod_phys, d_nod, coef, vector_e)
 !
       end subroutine as_tsr_cst_phys_2_vec_each_ele
 !

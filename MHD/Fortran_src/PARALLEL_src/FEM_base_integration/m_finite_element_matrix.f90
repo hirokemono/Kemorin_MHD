@@ -108,8 +108,8 @@
       allocate(ff_m_smp(maxnod_4_smp,3,np_smp))
       allocate(ff_t_smp(maxnod_4_smp,6,np_smp))
 !
-      allocate(sk1(ele1%numele,nnod_4_ele))
-      allocate(sk6(ele1%numele,n_sym_tensor,nnod_4_ele))
+      allocate(sk1(ele1%numele,ele1%nnod_4_ele))
+      allocate(sk6(ele1%numele,n_sym_tensor,ele1%nnod_4_ele))
 !
       allocate(ml_ele_diag(ele1%numele))
       allocate(ml_o_ele_diag(ele1%numele))
@@ -204,7 +204,7 @@
 !
 !
 !$omp parallel private(iele)
-      do k1 = 1, nnod_4_ele
+      do k1 = 1, ele1%nnod_4_ele
 !$omp do
         do iele = 1, ele1%numele
           sk1(iele,k1) = 0.0d0
@@ -227,7 +227,7 @@
 !
 !
 !$omp parallel private(iele,nd)
-      do k1 = 1, nnod_4_ele
+      do k1 = 1, ele1%nnod_4_ele
         do nd = 1, numdir
 !$omp do
           do iele = 1, ele1%numele

@@ -62,7 +62,7 @@
       integer(kind = kint) :: igrp, ist_grp, nitem_grp
 !
 !
-      if (nnod_4_ele .eq. num_t_quad) then
+      if (ele1%nnod_4_ele .eq. num_t_quad) then
 !
 !$omp parallel do private(igrp,ist_grp,nitem_grp)
         do igrp = 1, num_egrp
@@ -106,7 +106,7 @@
       real(kind = kreal), intent(inout) :: ave_l, rms_l
 !
 !
-      if (nnod_4_ele .eq. num_t_quad) then
+      if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vol_rms_ave_1egrp_q                                    &
      &     (node1%numnod, ele1%numele, ie, e_multi,                     &
      &      nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, an,        &
@@ -145,7 +145,7 @@
       integer(kind = kint) :: igrp, ist_grp, nitem_grp
 !
 !
-      if (nnod_4_ele .eq. num_t_quad) then
+      if (ele1%nnod_4_ele .eq. num_t_quad) then
 !
 !$omp parallel do private(igrp,ist_grp,nitem_grp)
         do igrp = 1, num_egrp
@@ -193,7 +193,7 @@
       real(kind = kreal), intent(inout) :: ave_1, rms_1, ave_2, rms_2
 !
 !
-      if (nnod_4_ele .eq. num_t_quad) then
+      if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vol_2rms_ave_1egrp_q                                   &
      &     (node1%numnod, ele1%numele, ie, e_multi,                     &
      &      nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, aw,        &
@@ -233,7 +233,7 @@
 !
 !
 !
-      if (nnod_4_ele .eq. num_t_quad) then
+      if (ele1%nnod_4_ele .eq. num_t_quad) then
 !
 !$omp parallel do private(igrp,ist_grp,nitem_grp)
         do igrp = 1, num_egrp
@@ -282,7 +282,7 @@
       real(kind = kreal), intent(inout) :: sig_1, sig_2, cov_l
 !
 !
-      if (nnod_4_ele .eq. num_t_quad) then
+      if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vol_dev_cor_1egrp_q                                    &
      &     (node1%numnod, ele1%numele, ie, e_multi,                     &
      &      nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, aw,        &

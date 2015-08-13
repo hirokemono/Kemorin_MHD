@@ -48,7 +48,7 @@
       integer (kind = kint) :: igrp, ist, num_sgrp, ist_smp
 !
 !
-      if (nnod_4_ele .eq. num_t_quad) then
+      if (ele1%nnod_4_ele .eq. num_t_quad) then
 !
         do igrp = 1, n_layer_d
           ist =     layer_stack(igrp-1) + 1
@@ -96,7 +96,7 @@
       integer (kind = kint) :: igrp, ist, num_sgrp
 !
 !
-      if (nnod_4_ele .eq. num_t_quad) then
+      if (ele1%nnod_4_ele .eq. num_t_quad) then
 !
 !$omp parallel do private(igrp,ist,num_sgrp)
         do igrp = 1, n_layer_d

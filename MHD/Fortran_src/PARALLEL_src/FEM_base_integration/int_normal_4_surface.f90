@@ -23,14 +23,13 @@
 !
       subroutine s_int_normal_4_all_surface
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_surface_geometry_data
       use m_jacobians_4_surface
       use int_area_normal_4_surface
 !
 !
-      if (nnod_4_ele .eq. num_t_quad) then
+      if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_normal_all_surf(numsurf, isurf_smp_stack,              &
      &     jac1_2d_q%ntot_int, max_int_point, jac1_2d_q%xj_sf,          &
      &     jac1_2d_q%xsf_sf, area_surf, a_area_surf, vnorm_surf)

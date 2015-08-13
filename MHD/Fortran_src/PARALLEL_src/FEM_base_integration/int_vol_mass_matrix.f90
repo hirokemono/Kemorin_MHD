@@ -23,8 +23,8 @@
 !
       use m_precision
 !
+      use m_geometry_data
       use m_phys_constants
-      use m_geometry_parameter
       use m_finite_element_matrix
 !
       use cal_ff_smp_to_ffs
@@ -44,7 +44,8 @@
       integer (kind=kint), intent(in) :: num_int
 !
 !
-      if (nnod_4_ele.eq.num_t_quad .or. nnod_4_ele.eq.num_t_lag) then
+      if     (ele1%nnod_4_ele.eq.num_t_quad                             &
+     &   .or. ele1%nnod_4_ele.eq.num_t_lag) then
         call int_lump_mass_matrix_quad(num_int)
       else
         call int_lump_mass_matrix_linear(num_int)
@@ -101,7 +102,7 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call reset_sk6(n_scalar)
         call fem_skv_mass_matrix_1st(iele_fsmp_stack, num_int, k2, sk6)
         call add_skv1_2_matrix11_1st(k2, sk6, nmat_size, aiccg)
@@ -129,7 +130,7 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call fem_skv_mass_matrix_1st(iele_fsmp_stack, num_int, k2, sk6)
       end do
 !

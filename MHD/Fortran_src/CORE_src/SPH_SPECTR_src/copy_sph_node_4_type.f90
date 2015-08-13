@@ -1,15 +1,10 @@
-!copy_sph_node_4_type.f90
-!      module copy_sph_node_4_type
-!
-!     Written by H. Matsui on July, 2007
-!
 !>@file   copy_sph_node_4_type.f90
 !!@brief  module copy_sph_node_4_type
 !!
 !!@author H. Matsui
 !!@date Programmed in July, 2007
 !
-!>@brief Copy sphectr indices structure from IO buffer
+!>@brief Copy sphectr indices between structure
 !!
 !!@verbatim
 !!      subroutine copy_sph_node_rtp_from_type(ltr, ltr_type, rtp)

@@ -25,9 +25,9 @@
       use m_machine_parameter
       use m_sorted_node
 !
-      call allocate_marix_list_general(nnod_4_ele)
+      call allocate_marix_list_general(ele1%nnod_4_ele)
       call s_set_index_list_4_crs(np_smp, node1%numnod, internal_node,  &
-     &    ele1%numele, nnod_4_ele, ie)
+     &    ele1%numele, ele1%nnod_4_ele, ie)
 !
       end subroutine set_idx_list_4_whole_crs
 !
