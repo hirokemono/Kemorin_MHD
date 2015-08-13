@@ -178,12 +178,13 @@
       subroutine set_source_mesh_parameter
 !
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use m_surf_geometry_4_merge
       use m_node_quad_2_linear_sf
 !
       use m_geometry_data_4_merge
       use set_local_id_table_4_1ele
+      use set_nnod_4_ele_by_type
 !
 !  set array for number of surface
 !
@@ -194,19 +195,9 @@
 !
 !   set number of node in surface
 !
-      if ( nnod_4_ele .eq. num_t_lag ) then
-        nnod_4_surf = num_lag_sf
-        nnod_4_edge = num_quad_edge
-        call allocate_quad4_2_linear_tri
-      else if ( nnod_4_ele .eq. num_t_quad ) then
-        nnod_4_surf = num_quad_sf
-        nnod_4_edge = num_quad_edge
-        call allocate_quad8_2_linear_tri
-      else if ( nnod_4_ele .eq. num_t_linear ) then
-        nnod_4_surf = num_linear_sf
-        nnod_4_edge = num_linear_edge
-        call allocate_quad9_2_linear_tri
-      end if
+      call set_3D_nnod_4_sfed_by_ele                                    &
+     &   (ele1%nnod_4_ele, nnod_4_surf, nnod_4_edge)
+      call allocate_quad4_2_linear(ele1%nnod_4_ele)
 !
       call allocate_inod_in_surf
       call set_inod_in_surf(nnod_4_surf, node_on_sf, node_on_sf_n)

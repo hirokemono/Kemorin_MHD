@@ -118,14 +118,15 @@
       nnod_org =       node1%numnod
       intnod_org =     internal_node
       nele_org =       ele1%numele
-      nnod_4_ele_org = nnod_4_ele
+      nnod_4_ele_org = ele1%nnod_4_ele
 !
       call allocate_mesh_refine_org
 !
       inod_global_org(1:nnod_org) = inod_global(1:nnod_org)
       xx_org(1:nnod_org,1:3) =      xx(1:nnod_org,1:3)
       iele_global_org(1:nele_org) = iele_global(1:nele_org)
-      ie_org(1:nele_org,1:nnod_4_ele) = ie(1:nele_org,1:nnod_4_ele)
+      ie_org(1:nele_org,1:ele1%nnod_4_ele)                              &
+     &                       = ie(1:nele_org,1:ele1%nnod_4_ele)
 !
       ilevel_refine_org(1:nele_org) =     ilevel_refine(1:nele_org)
       iflag_refine_ele_org(1:nele_org) =  iflag_refine_ele(1:nele_org)

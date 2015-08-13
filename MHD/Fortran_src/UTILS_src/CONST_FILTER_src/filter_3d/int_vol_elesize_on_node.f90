@@ -100,7 +100,7 @@
 !
       call reset_sk6(n_vector)
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call scalar_2_each_element(k2, elen_org_nod, scalar_ele)
         call fem_skv_gradient(iele_smp_stack, num_int_points,           &
      &      k2, scalar_ele, sk6)

@@ -63,7 +63,7 @@
 !
       do iele = 1, ele1%numele
 !
-        do k1 = 1, nnod_4_ele
+        do k1 = 1, ele1%nnod_4_ele
           inod = ie(iele,k1)
 !
           if(itype_inter_org(inod) .eq. -1) then
@@ -193,7 +193,7 @@
 !
       do iele = 1, ntot_ele_refined
 !
-        do k1 = 1, nnod_4_ele
+        do k1 = 1, ele1%nnod_4_ele
           inod = ie_refined(iele,k1)
 !
           if(inod.le.ntot_nod_refine_nod) then

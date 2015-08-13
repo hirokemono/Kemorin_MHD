@@ -62,7 +62,6 @@
      &          deidx_nod, deidy_nod, deidz_nod,                        &
      &          dzidx_nod, dzidy_nod, dzidz_nod)
 !
-      use m_ctl_params_4_gen_filter
       use m_geometry_data
       use m_ctl_params_4_gen_filter
       use m_filter_coefs

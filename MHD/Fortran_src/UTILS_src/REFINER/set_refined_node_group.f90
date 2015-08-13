@@ -116,7 +116,6 @@
 !
       subroutine s_set_refined_node_group(nod_grp, new_nod_grp)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_refined_node_id
       use t_group_data
@@ -168,7 +167,7 @@
 !
         do iele = 1, ele1%numele
           call check_element_in_nod_group                               &
-     &       (iele, ele1%numele, nnod_4_ele, ie, iflag)
+     &       (iele, ele1%numele, ele1%nnod_4_ele, ie, iflag)
 !
           if(iflag .eq. 1) then
             call set_new_nod_grp_item(icou, ntot_nod_refine_ele,        &

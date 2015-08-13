@@ -188,7 +188,6 @@
 !
       subroutine s_expand_filter_area_4_1node(inod)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_element_id_4_node
       use add_nodes_elems_4_each_nod
@@ -208,7 +207,7 @@
      &    iele_near_1nod_weight)
 !
       call add_nod_4_grp_each_nod                                       &
-     &   (node1%numnod, ele1%numele, nnod_4_ele, ie,                    &
+     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,               &
      &    nele_near_1nod_weight, iele_near_1nod_weight,                 &
      &    nnod_near_1nod_filter, nnod_near_1nod_weight,                 &
      &    inod_near_1nod_weight, iweight_1nod_weight,                   &

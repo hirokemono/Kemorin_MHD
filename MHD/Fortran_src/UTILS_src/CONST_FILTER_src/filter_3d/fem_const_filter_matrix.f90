@@ -45,13 +45,13 @@
 !
       subroutine allocate_sk_filter
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_filter_coefs
       use m_matrix_4_filter
 !
-      allocate( mat_num_filter(nmax_num_ele_1nod,nnod_4_ele) )
-      allocate( mat_num_weight(nmax_num_ele_1nod,nnod_4_ele) )
-      allocate( sk_filter(nmax_num_ele_1nod,nnod_4_ele) )
+      allocate( mat_num_filter(nmax_num_ele_1nod,ele1%nnod_4_ele) )
+      allocate( mat_num_weight(nmax_num_ele_1nod,ele1%nnod_4_ele) )
+      allocate( sk_filter(nmax_num_ele_1nod,ele1%nnod_4_ele) )
       mat_num_filter = 0
       mat_num_weight = 0
       sk_filter = 0.0d0
@@ -93,7 +93,6 @@
       subroutine set_idx_list_4_filter_mat(nele_grp, iele_grp,          &
      &          nnod_mat_tbl, inod_mat_tbl, nnod_filter_mat)
 !
-      use m_geometry_parameter
       use m_geometry_data
 !
       integer(kind = kint), intent(in) :: nele_grp
@@ -111,10 +110,11 @@
 !      write(*,*) 'mat_num_filter, mat_num_weight',  &
 !     &           size(mat_num_filter,1), size(mat_num_filter,2), &
 !     &           size(mat_num_weight,1), size(mat_num_weight,2)
-!      write(*,*) 'nele_grp, nnod_4_ele', my_rank, nele_grp, nnod_4_ele
+!      write(*,*) 'nele_grp, nnod_4_ele',            &
+!     &           my_rank, nele_grp, ele1%nnod_4_ele
       do inum = 1, nele_grp
         iele = iele_grp(inum)
-        do k1 = 1, nnod_4_ele
+        do k1 = 1, ele1%nnod_4_ele
           inod1 = ie(iele,k1)
 !
           do jnum = 1, nnod_filter_mat
@@ -146,7 +146,6 @@
       subroutine fem_sk_filter_moments(nele_grp, iele_grp,              &
      &          inod, ix, k_order)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_reference_moments
       use m_jacobians
@@ -164,7 +163,7 @@
       do inum = 1, nele_grp
         iele = iele_grp(inum)
 !
-        do k1 = 1, nnod_4_ele
+        do k1 = 1, ele1%nnod_4_ele
           sk_filter(inum,k1)                                            &
      &     =  ( xx_int(inum,1) - xx(inod,1) )**iorder_mom_3d(k_order,1) &
      &      * ( xx_int(inum,2) - xx(inod,2) )**iorder_mom_3d(k_order,2) &
@@ -179,7 +178,6 @@
 !
       subroutine fem_sk_filter_weights(n_int, nele_grp, iele_grp)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_reference_moments
       use m_jacobians
@@ -196,9 +194,9 @@
 !
       sk_filter = 0.0d0
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
 !
-        do k1 = 1, nnod_4_ele
+        do k1 = 1, ele1%nnod_4_ele
           do ii = 1, n_int*n_int*n_int
             ix = int_start3(n_int) + ii
               do inum = 1, nele_grp
@@ -220,7 +218,7 @@
 !
       subroutine sum_sk_2_filter_mat(nele_grp, k_order)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_matrix_4_filter
 !
       integer(kind = kint), intent(in) :: nele_grp
@@ -230,7 +228,7 @@
 !
 !
       do inum = 1, nele_grp
-        do k1 = 1, nnod_4_ele
+        do k1 = 1, ele1%nnod_4_ele
           jnum = k_order + mat_num_filter(inum,k1)*max_mat_size
           mat_work(jnum) = mat_work(jnum) + sk_filter(inum,k1)
         end do
@@ -282,7 +280,7 @@
 !
       subroutine sum_sk_2_filter_weight(nele_grp)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_filter_coefs
 !
       integer(kind = kint), intent(in) :: nele_grp
@@ -292,7 +290,7 @@
 !
       weight_1nod = 0.0d0
       do inum = 1, nele_grp
-        do k2 = 1, nnod_4_ele
+        do k2 = 1, ele1%nnod_4_ele
           jnum = mat_num_weight(inum,k2)
           weight_1nod(jnum) = weight_1nod(jnum) + sk_filter(inum,k2)
         end do

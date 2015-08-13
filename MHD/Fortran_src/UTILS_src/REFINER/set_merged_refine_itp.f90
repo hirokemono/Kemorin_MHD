@@ -81,7 +81,7 @@
 !
       subroutine set_merged_itp_fine_to_course
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_refined_element_data
       use m_interpolate_table_orgin
       use copy_local_position_2_ele
@@ -111,7 +111,7 @@
 !
       do iele = 1, ntot_ele_refined
 !
-        do k1 = 1, nnod_4_ele
+        do k1 = 1, ele1%nnod_4_ele
           inod = ie_refined(iele,k1)
 !
           if(inod.le.nnod_org) then

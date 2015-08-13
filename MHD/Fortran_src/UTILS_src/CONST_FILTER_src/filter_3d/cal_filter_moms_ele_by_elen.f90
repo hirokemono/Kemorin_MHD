@@ -70,8 +70,9 @@
       type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !
 !
-      call correct_filter_moms_ele_by_elen(ele1%numele, nnod_4_ele,     &
-     &  ie, FEM1_elen%filter_conf%nf_type,                              &
+      call correct_filter_moms_ele_by_elen                              &
+     & (ele1%numele, ele1%nnod_4_ele, ie,                               &
+     &  FEM1_elen%filter_conf%nf_type,                                  &
      &  FEM1_elen%filter_conf%xmom_1d_org,                              &
      &  FEM1_elen%elen_ele%moms%f_x2,   FEM1_elen%elen_ele%moms%f_y2,   &
      &  FEM1_elen%elen_ele%moms%f_z2,   FEM1_elen%elen_ele%moms%f_xy,   &

@@ -23,13 +23,12 @@
 !
       subroutine set_ele_domain_groups
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_domain_group_4_partition
 !
 !
       call set_domain_group_4_ele(nnod_s_domin, nele_s_domin,           &
-     &    nnod_4_ele, ie, IGROUP_nod, IGROUP_ele)
+     &    ele1%nnod_4_ele, ie, IGROUP_nod, IGROUP_ele)
 !
       end subroutine set_ele_domain_groups
 !

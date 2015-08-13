@@ -11,7 +11,7 @@
 !
       use m_precision
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
 !
       implicit none
 !
@@ -51,7 +51,8 @@
       use cal_ff_smp_to_ffs
 !
 !
-      if (nnod_4_ele.eq.num_t_quad .or. nnod_4_ele.eq.num_t_lag) then
+      if     (ele1%nnod_4_ele.eq.num_t_quad                             &
+     &   .or. ele1%nnod_4_ele.eq.num_t_lag) then
         call int_grp_mass_matrix_HRZ_full(iele_filter_smp_stack,        &
      &    nele_4_filter, iele_4_filter, num_int_points)
       else

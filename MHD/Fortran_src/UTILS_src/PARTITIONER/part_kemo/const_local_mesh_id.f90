@@ -16,7 +16,7 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_internal_4_partitioner
       use set_local_by_subdomain_tbl
 !
@@ -96,8 +96,8 @@
       type(element_data), intent(inout) :: new_ele
 !
 !
-      new_ele%numele =       numele_4_subdomain(ip)
-      new_ele%nnod_4_ele = nnod_4_ele
+      new_ele%numele =     numele_4_subdomain(ip)
+      new_ele%nnod_4_ele = ele1%nnod_4_ele
       call allocate_ele_connect_type(new_ele)
 !
       call set_local_element(ip, new_ele)

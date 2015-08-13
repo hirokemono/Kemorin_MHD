@@ -26,7 +26,6 @@
 !
       use calypso_mpi
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_interpolate_table_dest
       use m_interpolate_coefs_dest
@@ -49,13 +48,13 @@
         ist_type = 4*(i-1)
 !
 !        write(*,*) 'count', i, ist, ied
-        if (nnod_4_ele .eq. num_t_linear) then
+        if (ele1%nnod_4_ele .eq. num_t_linear) then
           call s_count_interpolate_type_8(ist, ied,                     &
      &        nnod_table_wtype_dest(ist_type+1) )
-        else if (nnod_4_ele .eq. num_t_quad) then
+        else if (ele1%nnod_4_ele .eq. num_t_quad) then
           call s_count_interpolate_type_20(ist, ied,                    &
      &        nnod_table_wtype_dest(ist_type+1) )
-        else if (nnod_4_ele .eq. num_t_lag) then
+        else if (ele1%nnod_4_ele .eq. num_t_lag) then
           call s_count_interpolate_type_27(ist, ied,                    &
      &        nnod_table_wtype_dest(ist_type+1) )
         end if
@@ -78,15 +77,15 @@
         ied = istack_nod_tbl_dest(i)
         ist_type = 4*(i-1)
 !
-        if (nnod_4_ele .eq. num_t_linear) then
+        if (ele1%nnod_4_ele .eq. num_t_linear) then
           call s_order_interpolate_type_8(my_rank, ist, ied,            &
      &        istack_nod_tbl_wtype_dest(ist_type),                      &
      &        nnod_table_wtype_dest(ist_type+1) )
-        else if (nnod_4_ele .eq. num_t_quad) then
+        else if (ele1%nnod_4_ele .eq. num_t_quad) then
           call s_order_interpolate_type_20(my_rank, ist, ied,           &
      &        istack_nod_tbl_wtype_dest(ist_type),                      &
      &        nnod_table_wtype_dest(ist_type+1) )
-        else if (nnod_4_ele .eq. num_t_lag) then
+        else if (ele1%nnod_4_ele .eq. num_t_lag) then
           call s_order_interpolate_type_27(my_rank, ist, ied,           &
      &        istack_nod_tbl_wtype_dest(ist_type),                      &
      &        nnod_table_wtype_dest(ist_type+1) )

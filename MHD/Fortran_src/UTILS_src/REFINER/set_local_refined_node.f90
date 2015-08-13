@@ -11,7 +11,6 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_refined_element_data
       use m_refined_node_id
@@ -38,7 +37,7 @@
       inod_refine_nod_local = 0
       inod_refine_ele_local = 0
 !
-      do k1 = 1, nnod_4_ele
+      do k1 = 1, ele1%nnod_4_ele
         inod_refine_nod_local(k1) = ie(iele,k1)
       end do
 !
