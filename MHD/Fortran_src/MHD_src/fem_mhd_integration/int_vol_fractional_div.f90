@@ -13,7 +13,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_address
       use m_SGS_address
@@ -41,7 +41,7 @@
       subroutine int_vol_divergence_vect_p
 !
 !
-      call int_vol_fractional_div_ele(iele_smp_stack,                   &
+      call int_vol_fractional_div_ele(ele1%istack_ele_smp,              &
      &    iphys%i_vecp, iak_diff_b)
 !
       end subroutine int_vol_divergence_vect_p
@@ -51,7 +51,7 @@
       subroutine int_vol_divergence_magne
 !
 !
-      call int_vol_fractional_div_ele(iele_smp_stack,                   &
+      call int_vol_fractional_div_ele(ele1%istack_ele_smp,              &
      &    iphys%i_magne, iak_diff_b)
 !
       end subroutine int_vol_divergence_magne

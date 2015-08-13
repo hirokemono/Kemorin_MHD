@@ -13,7 +13,7 @@
       use calypso_mpi
       use m_constants
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_bulk_values
       use int_all_rms_scalar
@@ -83,7 +83,7 @@
 !
       rms_local(i_rms%i_mag_p) = zero
       bulk_local(j_ave%i_mag_p) = zero
-      call int_all_4_scalar (iele_smp_stack, num_int,                   &
+      call int_all_4_scalar (ele1%istack_ele_smp, num_int,              &
      &    i_rms%i_mag_p, j_ave%i_mag_p, iphys%i_mag_p)
 !
       call MPI_allREDUCE ( bulk_local(j_ave%i_mag_p) , ave_mp, ione,    &

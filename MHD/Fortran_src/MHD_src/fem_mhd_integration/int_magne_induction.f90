@@ -37,7 +37,7 @@
 !
       ff_nl_smp = 0.0d0
 !
-      call int_vol_rot_1st(iele_smp_stack, intg_point_poisson,          &
+      call int_vol_rot_1st(ele1%istack_ele_smp, intg_point_poisson,     &
           iphys%i_vp_induct)
 !
 !      call cal_multi_pass_4_vector_ff

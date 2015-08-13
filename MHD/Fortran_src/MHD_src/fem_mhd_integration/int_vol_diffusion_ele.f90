@@ -61,12 +61,12 @@
       subroutine int_vol_vecp_diffuse_ele
 !
       use m_node_phys_address
-      use m_geometry_parameter
+      use m_geometry_data
       use m_SGS_address
 !
 !
       if (coef_magne.gt.zero .and. coef_exp_b.gt.zero) then
-        call int_vol_vector_diffuse_ele(iele_smp_stack,                 &
+        call int_vol_vector_diffuse_ele(ele1%istack_ele_smp,            &
      &      iak_diff_b, coef_exp_b, ak_d_magne, iphys%i_vecp)
       end if
 !
@@ -153,11 +153,11 @@
       subroutine int_vol_vp_diffuse_ele_monitor
 !
       use m_node_phys_address
-      use m_geometry_parameter
+      use m_geometry_data
       use m_SGS_address
 !
 !
-      call int_vol_vector_diffuse_ele(iele_smp_stack,                   &
+      call int_vol_vector_diffuse_ele(ele1%istack_ele_smp,              &
      &    iak_diff_b, one, ak_d_magne, iphys%i_vecp)
 !
       end subroutine int_vol_vp_diffuse_ele_monitor
@@ -223,11 +223,11 @@
       subroutine int_vol_vecp_diffuse_co
 !
       use m_node_phys_address
-      use m_geometry_parameter
+      use m_geometry_data
       use m_SGS_address
 !
       if (coef_imp_b.gt.zero) then
-        call int_vol_vector_diffuse_ele(iele_smp_stack,                 &
+        call int_vol_vector_diffuse_ele(ele1%istack_ele_smp,            &
      &      iak_diff_b, coef_imp_b, ak_d_magne, iphys%i_vecp)
       end if
 !

@@ -28,7 +28,7 @@
       use m_node_phys_address
 !
       call diff_scalar_on_ele(ele1%numele, ele1%nnod_4_ele, ie,         &
-     &    a_vol_ele, iele_smp_stack, i_dtx, iphys%i_temp)
+     &    a_vol_ele, ele1%istack_ele_smp, i_dtx, iphys%i_temp)
 !
       end subroutine diff_temp_on_ele
 !
@@ -41,7 +41,7 @@
       use m_node_phys_address
 !
       call diff_scalar_on_ele(ele1%numele, ele1%nnod_4_ele, ie,         &
-     &    a_vol_ele, iele_smp_stack, i_dftx, iphys%i_filter_temp)
+     &    a_vol_ele, ele1%istack_ele_smp, i_dftx, iphys%i_filter_temp)
 !
       end subroutine diff_filter_t_on_ele
 !

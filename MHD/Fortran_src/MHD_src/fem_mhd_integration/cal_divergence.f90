@@ -42,7 +42,7 @@
        call reset_ff_smps
 !
        call choose_int_vol_divs(iflag_4_supg,                           &
-     &          iele_smp_stack, i_vector)
+     &          ele1%istack_ele_smp, i_vector)
 !
        call set_ff_nl_smp_2_ff(n_scalar)
        call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,         &

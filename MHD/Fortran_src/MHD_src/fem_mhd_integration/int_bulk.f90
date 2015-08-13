@@ -24,7 +24,6 @@
       use m_constants
       use calypso_mpi
       use m_control_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
       use m_finite_element_matrix
@@ -49,7 +48,7 @@
 !
       call int_all_4_scalar (iele_fl_smp_stack, intg_point_t_evo,       &
      &    i_rms%i_press, j_ave%i_press, iphys%i_press)
-      call int_all_4_scalar (iele_smp_stack, intg_point_t_evo,          &
+      call int_all_4_scalar (ele1%istack_ele_smp, intg_point_t_evo,     &
      &    i_rms%i_mag_p, j_ave%i_mag_p, iphys%i_mag_p)
       call int_all_4_scalar (iele_fl_smp_stack, intg_point_t_evo,       &
      &    i_rms%i_temp, j_ave%i_temp, iphys%i_temp)

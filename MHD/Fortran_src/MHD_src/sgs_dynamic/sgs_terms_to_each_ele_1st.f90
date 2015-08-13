@@ -71,7 +71,7 @@
 !
       call SGS_vector_2_each_element                                    &
      &   (node1%numnod, ele1%numele, ele1%nnod_4_ele,                   &
-     &    ie, np_smp, iele_smp_stack, k2, i_vect, i_scalar,             &
+     &    ie, np_smp, ele1%istack_ele_smp, k2, i_vect, i_scalar,        &
      &    i_sgs, num_tot_nod_phys, d_nod, sgs_e, flux_e)
 !
       end subroutine SGS_vector_each_ele_1st
@@ -92,7 +92,7 @@
 !
       call SGS_tensor_2_each_element                                    &
      &   (node1%numnod, ele1%numele, ele1%nnod_4_ele,                   &
-     &    ie, np_smp, iele_smp_stack, k2, i_vect, i_sgs,                &
+     &    ie, np_smp, ele1%istack_ele_smp, k2, i_vect, i_sgs,           &
      &    num_tot_nod_phys, d_nod, sgs_e, flux_e)
 !
       end subroutine SGS_tensor_each_ele_1st
@@ -113,7 +113,7 @@
 !
       call SGS_induct_to_each_element                                   &
      &   (node1%numnod, ele1%numele, ele1%nnod_4_ele,                   &
-     &    ie, np_smp, iele_smp_stack, k2, i_b, i_v, i_sgs,              &
+     &    ie, np_smp, ele1%istack_ele_smp, k2, i_b, i_v, i_sgs,         &
      &    num_tot_nod_phys, d_nod, sgs_e, flux_e)
 !
       end subroutine SGS_induct_each_ele_1st
@@ -135,7 +135,7 @@
 !
 !
       call SGS_flux_2_each_element_vec(node1%numnod, ele1%numele,       &
-     &    ele1%nnod_4_ele, ie, np_smp, iele_smp_stack, k2, nd,          &
+     &    ele1%nnod_4_ele, ie, np_smp, ele1%istack_ele_smp, k2, nd,     &
      &    i_vect, i_field, i_sgs, num_tot_nod_phys, d_nod,              &
      &    sgs_e, flux_e)
 !
@@ -157,7 +157,7 @@
 !
 !
       call SGS_induct_vec_2_each_element(node1%numnod, ele1%numele,     &
-     &    ele1%nnod_4_ele, ie, np_smp, iele_smp_stack, k2, nd,          &
+     &    ele1%nnod_4_ele, ie, np_smp, ele1%istack_ele_smp, k2, nd,     &
      &    i_b, i_v, i_sgs, num_tot_nod_phys, d_nod, sgs_e, flux_e)
 !
       end subroutine SGS_induct_vec_ele_1st
@@ -180,7 +180,7 @@
 !
       call SGS_vector_coef_each_ele                                     &
      &   (node1%numnod, ele1%numele, ele1%nnod_4_ele,                   &
-     &    ie, np_smp, iele_smp_stack, k2, i_vect, i_scalar,             &
+     &    ie, np_smp, ele1%istack_ele_smp, k2, i_vect, i_scalar,        &
      &    i_sgs, num_tot_nod_phys, d_nod, ak_e, sgs_e, flux_e)
 !
       end subroutine SGS_vector_coef_each_ele_1st
@@ -202,7 +202,7 @@
 !
       call SGS_tensor_coef_each_ele                                     &
      &   (node1%numnod, ele1%numele, ele1%nnod_4_ele,                   &
-     &    ie, np_smp, iele_smp_stack, k2, i_vect, i_sgs,                &
+     &    ie, np_smp, ele1%istack_ele_smp, k2, i_vect, i_sgs,           &
      &    num_tot_nod_phys, d_nod, ak_e, sgs_e, flux_e)
 !
       end subroutine SGS_tensor_coef_each_ele_1st
@@ -224,7 +224,7 @@
 !
       call SGS_induct_coef_each_ele                                     &
      &   (node1%numnod, ele1%numele, ele1%nnod_4_ele,                   &
-     &    ie, np_smp, iele_smp_stack, k2, i_b, i_v, i_sgs,              &
+     &    ie, np_smp, ele1%istack_ele_smp, k2, i_b, i_v, i_sgs,         &
      &    num_tot_nod_phys, d_nod, ak_e, sgs_e, flux_e)
 !
       end subroutine SGS_induct_coef_each_ele_1st
@@ -247,7 +247,7 @@
 !
 !
       call SGS_flux_coef_each_ele_vec(node1%numnod, ele1%numele,        &
-     &    ele1%nnod_4_ele, ie, np_smp, iele_smp_stack, k2, nd,          &
+     &    ele1%nnod_4_ele, ie, np_smp, ele1%istack_ele_smp, k2, nd,     &
      &    i_vect, i_field, i_sgs, num_tot_nod_phys, d_nod, ak_e,        &
      &    sgs_e, flux_e)
 !
@@ -270,7 +270,7 @@
 !
 !
       call SGS_induct_vec_coef_each_ele(node1%numnod, ele1%numele,      &
-     &    ele1%nnod_4_ele, ie, np_smp, iele_smp_stack, k2, nd,          &
+     &    ele1%nnod_4_ele, ie, np_smp, ele1%istack_ele_smp, k2, nd,     &
      &    i_b, i_v, i_sgs, num_tot_nod_phys, d_nod, ak_e,               &
      &    sgs_e, flux_e)
 !
@@ -294,7 +294,7 @@
 !
       call SGS_vector_cst_each_ele                                      &
      &   (node1%numnod, ele1%numele, ele1%nnod_4_ele,                   &
-     &    ie, np_smp, iele_smp_stack, k2, i_vect, i_scalar,             &
+     &    ie, np_smp, ele1%istack_ele_smp, k2, i_vect, i_scalar,        &
      &    i_sgs, num_tot_nod_phys, d_nod, coef, sgs_e, flux_e)
 !
       end subroutine SGS_vector_cst_each_ele_1st
@@ -316,7 +316,7 @@
 !
       call SGS_tensor_cst_each_ele                                      &
      &   (node1%numnod, ele1%numele, ele1%nnod_4_ele,                   &
-     &    ie, np_smp, iele_smp_stack, k2, i_vect, i_sgs,                &
+     &    ie, np_smp, ele1%istack_ele_smp, k2, i_vect, i_sgs,           &
      &    num_tot_nod_phys, d_nod, coef, sgs_e, flux_e)
 !
       end subroutine SGS_tensor_cst_each_ele_1st
@@ -338,7 +338,7 @@
 !
       call SGS_induct_cst_each_ele                                      &
      &   (node1%numnod, ele1%numele, ele1%nnod_4_ele,                   &
-     &    ie, np_smp, iele_smp_stack, k2, i_b, i_v, i_sgs,              &
+     &    ie, np_smp, ele1%istack_ele_smp, k2, i_b, i_v, i_sgs,         &
      &    num_tot_nod_phys, d_nod, coef, sgs_e, flux_e)
 !
       end subroutine SGS_induct_cst_each_ele_1st
@@ -361,7 +361,7 @@
 !
 !
       call SGS_flux_cst_each_ele_vec(node1%numnod, ele1%numele,         &
-     &    ele1%nnod_4_ele, ie, np_smp, iele_smp_stack, k2, nd,          &
+     &    ele1%nnod_4_ele, ie, np_smp, ele1%istack_ele_smp, k2, nd,     &
      &    i_vect, i_field, i_sgs, num_tot_nod_phys, d_nod, coef,        &
      &    sgs_e, flux_e)
 !
@@ -384,7 +384,7 @@
 !
 !
       call SGS_induct_vec_cst_each_ele(node1%numnod, ele1%numele,       &
-     &    ele1%nnod_4_ele, ie, np_smp, iele_smp_stack, k2, nd,          &
+     &    ele1%nnod_4_ele, ie, np_smp, ele1%istack_ele_smp, k2, nd,     &
      &    i_b, i_v, i_sgs, num_tot_nod_phys, d_nod, coef,               &
      &    sgs_e, flux_e)
 !

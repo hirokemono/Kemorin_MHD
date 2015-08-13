@@ -42,7 +42,7 @@
       do  k2 = 1, ele1%nnod_4_ele
         call reset_sk6(n_scalar)
 !
-        call fem_skv_mass_matrix_1st(iele_smp_stack,                    &
+        call fem_skv_mass_matrix_1st(ele1%istack_ele_smp,               &
      &      intg_point_t_evo, k2, sk6)
 !
         if ( iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass            &

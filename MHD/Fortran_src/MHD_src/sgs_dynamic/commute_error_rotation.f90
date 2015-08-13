@@ -52,7 +52,7 @@
 !
       call reset_ff_smps
 !
-      call int_vol_commute_rot(iele_smp_stack, intg_point_t_evo,        &
+      call int_vol_commute_rot(ele1%istack_ele_smp, intg_point_t_evo,   &
      &    i_filter, i_vect)
 !
       call int_surf_rot_commute_sgs(sf_grp1, intg_point_t_evo,          &

@@ -74,7 +74,8 @@
       real(kind = kreal), intent(inout) :: rsig
 !
 !
-      call int_norm_divergence(iele_smp_stack, ja_divb, iphys%i_magne)
+      call int_norm_divergence                                          &
+     &   (ele1%istack_ele_smp, ja_divb, iphys%i_magne)
       call MPI_allREDUCE ( bulk_local(ja_divb) , div_b_sig, ione,       &
      &  CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
@@ -100,7 +101,8 @@
       real(kind = kreal), intent(inout) :: rsig
 !
 !
-      call int_norm_divergence(iele_smp_stack, ja_diva, iphys%i_vecp)
+      call int_norm_divergence                                          &
+     &   (ele1%istack_ele_smp, ja_diva, iphys%i_vecp)
       call MPI_allREDUCE ( bulk_local(ja_diva) , div_a_sig, ione,       &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
@@ -137,7 +139,8 @@
       use m_node_phys_address
 !
 !
-      call int_norm_divergence(iele_smp_stack, ja_divb, iphys%i_magne)
+      call int_norm_divergence                                          &
+     &   (ele1%istack_ele_smp, ja_divb, iphys%i_magne)
 !
       end subroutine int_norm_div_b
 !
@@ -149,7 +152,8 @@
       use m_node_phys_address
 !
 !
-      call int_norm_divergence(iele_smp_stack, ja_diva, iphys%i_vecp)
+      call int_norm_divergence                                          &
+     &   (ele1%istack_ele_smp, ja_diva, iphys%i_vecp)
 !
       end subroutine int_norm_div_a
 !
@@ -175,7 +179,7 @@
       use m_node_phys_address
 !
 !
-      call int_norm_divergence(iele_smp_stack, ja_divb_f,               &
+      call int_norm_divergence(ele1%istack_ele_smp, ja_divb_f,          &
      &    iphys%i_filter_magne)
 !
       end subroutine int_norm_div_filter_b
@@ -188,7 +192,7 @@
       use m_node_phys_address
 !
 !
-      call int_norm_divergence(iele_smp_stack, ja_diva_f,               &
+      call int_norm_divergence(ele1%istack_ele_smp, ja_diva_f,          &
      &    iphys%i_filter_vecp)
 !
       end subroutine int_norm_div_filter_a

@@ -67,13 +67,14 @@
       subroutine int_rms_div_b_monitor(iloop, rsig)
 !
       use m_node_phys_address
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint), intent(in) :: iloop
       real(kind = kreal), intent(inout) :: rsig
 !
 !
-      call int_rms_divergence(iele_smp_stack, ir_divb, iphys%i_magne)
+      call int_rms_divergence                                           &
+     &   (ele1%istack_ele_smp, ir_divb, iphys%i_magne)
 !
       call MPI_allREDUCE (rms_local(ir_divb) , rms_div_b_sig, 1,        &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
@@ -96,13 +97,14 @@
       subroutine int_rms_div_a_monitor(iloop, rsig)
 !
       use m_node_phys_address
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint), intent(in) :: iloop
       real(kind = kreal), intent(inout) :: rsig
 !
 !
-      call int_rms_divergence(iele_smp_stack, ir_diva, iphys%i_vecp)
+      call int_rms_divergence                                           &
+     &   (ele1%istack_ele_smp, ir_diva, iphys%i_vecp)
 !
       call MPI_allREDUCE ( rms_local(ir_diva) , rms_div_a_sig, 1,       &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
@@ -135,11 +137,12 @@
 !
       subroutine int_rms_div_b
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
 !
 !
-      call int_rms_divergence(iele_smp_stack, ir_divb, iphys%i_magne)
+      call int_rms_divergence                                           &
+     &   (ele1%istack_ele_smp, ir_divb, iphys%i_magne)
 !
       end subroutine int_rms_div_b
 !
@@ -147,11 +150,12 @@
 !
       subroutine int_rms_div_a
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
 !
 !
-      call int_rms_divergence(iele_smp_stack, ir_diva, iphys%i_vecp)
+      call int_rms_divergence                                           &
+     &   (ele1%istack_ele_smp, ir_diva, iphys%i_vecp)
 !
       end subroutine int_rms_div_a
 !
@@ -172,11 +176,11 @@
 !
       subroutine int_rms_div_filter_b
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
 !
 !
-      call int_rms_divergence(iele_smp_stack, ir_divb_f,                &
+      call int_rms_divergence(ele1%istack_ele_smp, ir_divb_f,           &
      &    iphys%i_filter_magne)
 !
       end subroutine int_rms_div_filter_b
@@ -185,11 +189,11 @@
 !
       subroutine int_rms_div_filter_a
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
 !
 !
-      call int_rms_divergence(iele_smp_stack, ir_diva_f,                &
+      call int_rms_divergence(ele1%istack_ele_smp, ir_diva_f,           &
      &    iphys%i_filter_vecp)
 !
       end subroutine int_rms_div_filter_a

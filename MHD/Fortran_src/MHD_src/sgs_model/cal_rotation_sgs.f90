@@ -50,7 +50,7 @@
 !
       call reset_ff_smps
 !
-      call choose_int_vol_rot_sgs(iflag_4_supg, iele_smp_stack,         &
+      call choose_int_vol_rot_sgs(iflag_4_supg, ele1%istack_ele_smp,    &
      &     nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff, i_vector)
 !
       call set_ff_nl_smp_2_ff(n_vector)

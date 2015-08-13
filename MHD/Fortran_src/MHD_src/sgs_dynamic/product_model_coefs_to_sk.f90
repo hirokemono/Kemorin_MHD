@@ -45,39 +45,43 @@
       if(itype_csim .eq. 1) then
         if(icoord_SGS_model_coef .eq. iflag_spherical) then
           do k1 = 1, ele1%nnod_4_ele
-            call overwrite_sph_tensor_smp(np_smp, ele1%numele,          &
-     &        iele_smp_stack, sk6(1,1,k1), x_ele(1,1), x_ele(1,2),      &
-     &        x_ele(1,3), r_ele, s_ele, ar_ele, as_ele)
-            call ovwrt_tensor_tensor_prod_smp(np_smp, ele1%numele,      &
-     &          iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
-            call overwrite_xyz_tensor_by_sph_smp(np_smp, ele1%numele,   &
-     &        iele_smp_stack, sk6(1,1,k1), x_ele(1,1), x_ele(1,2),      &
-     &        x_ele(1,3), r_ele, s_ele, ar_ele, as_ele)
+            call overwrite_sph_tensor_smp                               &
+     &         (np_smp, ele1%numele,ele1%istack_ele_smp,                &
+     &          sk6(1,1,k1), x_ele(1,1), x_ele(1,2), x_ele(1,3),        &
+     &          r_ele, s_ele, ar_ele, as_ele)
+            call ovwrt_tensor_tensor_prod_smp                           &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          ak_sgs(1,1), sk6(1,1,k1) )
+            call overwrite_xyz_tensor_by_sph_smp                        &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          sk6(1,1,k1), x_ele(1,1), x_ele(1,2),                    &
+     &          x_ele(1,3), r_ele, s_ele, ar_ele, as_ele)
           end do
 !
         else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
           do k1 = 1, ele1%nnod_4_ele
-            call overwrite_cyl_tensor_smp(np_smp, ele1%numele,          &
-     &          iele_smp_stack, sk6(1,1,k1), x_ele(1,1), x_ele(1,2),    &
-     &          s_ele, as_ele)
-            call ovwrt_tensor_tensor_prod_smp(np_smp, ele1%numele,      &
-     &          iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
-            call overwrite_xyz_tensor_by_cyl_smp(np_smp, ele1%numele,   &
-     &          iele_smp_stack, sk6(1,1,k1), x_ele(1,1), x_ele(1,2),    &
-     &          s_ele, as_ele)
+            call overwrite_cyl_tensor_smp                               &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          sk6(1,1,k1), x_ele(1,1), x_ele(1,2), s_ele, as_ele)
+            call ovwrt_tensor_tensor_prod_smp                           &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          ak_sgs(1,1), sk6(1,1,k1) )
+            call overwrite_xyz_tensor_by_cyl_smp                        &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          sk6(1,1,k1), x_ele(1,1), x_ele(1,2), s_ele, as_ele)
           end do
 !
         else
           do k1 = 1, ele1%nnod_4_ele
             call ovwrt_tensor_tensor_prod_smp(np_smp, ele1%numele,      &
-     &          iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
+     &          ele1%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1) )
           end do
         end if
 !
       else
         do k1 = 1, ele1%nnod_4_ele
           call ovwrt_tensor_scalar_prod_smp(np_smp, ele1%numele,        &
-     &        iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
+     &        ele1%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1) )
          end do
       end if
 !$omp end parallel
@@ -106,37 +110,42 @@
       if(itype_csim .eq. 1) then
         if(icoord_SGS_model_coef .eq. iflag_spherical) then
           do k1 = 1, ele1%nnod_4_ele
-            call overwrite_vector_2_sph_smp(np_smp, ele1%numele,        &
-     &          iele_smp_stack, sk6(1,1,k1), x_ele(1,1), x_ele(1,2),    &
-     &           x_ele(1,3), r_ele, s_ele, ar_ele, as_ele)
-            call ovwrt_vector_vector_prod_smp(np_smp, ele1%numele,      &
-     &          iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1))
-            call overwrite_sph_vect_2_xyz_smp(np_smp, ele1%numele,      &
-     &          iele_smp_stack, sk6(1,1,k1), theta_ele, phi_ele)
+            call overwrite_vector_2_sph_smp                             &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          sk6(1,1,k1), x_ele(1,1), x_ele(1,2), x_ele(1,3),        &
+     &           r_ele, s_ele, ar_ele, as_ele)
+            call ovwrt_vector_vector_prod_smp                           &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          ak_sgs(1,1), sk6(1,1,k1))
+            call overwrite_sph_vect_2_xyz_smp                           &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          sk6(1,1,k1), theta_ele, phi_ele)
           end do
 !
         else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
           do k1 = 1, ele1%nnod_4_ele
-            call overwrite_vector_2_cyl_smp(np_smp, ele1%numele,        &
-     &          iele_smp_stack, sk6(1,1,k1), x_ele(1,1), x_ele(1,2),    &
-     &          s_ele, as_ele)
-            call ovwrt_vector_vector_prod_smp(np_smp, ele1%numele,      &
-     &          iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1))
-            call overwrite_cyl_vect_2_xyz_smp(np_smp, ele1%numele,      &
-     &          iele_smp_stack, sk6(1,1,k1), phi_ele)
+            call overwrite_vector_2_cyl_smp                             &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          sk6(1,1,k1), x_ele(1,1), x_ele(1,2), s_ele, as_ele)
+            call ovwrt_vector_vector_prod_smp                           &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          ak_sgs(1,1), sk6(1,1,k1))
+            call overwrite_cyl_vect_2_xyz_smp                           &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          sk6(1,1,k1), phi_ele)
           end do
 !
         else
           do k1 = 1, ele1%nnod_4_ele
             call ovwrt_vector_vector_prod_smp(np_smp, ele1%numele,      &
-     &          iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1))
+     &          ele1%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1))
           end do
         end if
 !
       else
         do k1 = 1, ele1%nnod_4_ele
           call ovwrt_vec_scalar_prod_smp(np_smp, ele1%numele,           &
-     &        iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
+     &        ele1%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1) )
          end do
       end if
 !$omp end parallel
@@ -165,32 +174,37 @@
       if(itype_csim .eq. 1) then
         if(icoord_SGS_model_coef .eq. iflag_spherical) then
           do k1 = 1, ele1%nnod_4_ele
-            call overwrite_sph_asym_t_smp(np_smp, ele1%numele,          &
-     &          iele_smp_stack, sk6(1,1,k1), x_ele(1,1), x_ele(1,2),    &
-     &          x_ele(1,3), r_ele, s_ele, ar_ele, as_ele)
-            call ovwrt_tensor_tensor_prod_smp(np_smp, ele1%numele,      &
-     &          iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
-            call overwrite_xyz_asym_t_by_sph_smp(np_smp, ele1%numele,   &
-     &          iele_smp_stack, sk6(1,1,k1), x_ele(1,1), x_ele(1,2),    &
+            call overwrite_sph_asym_t_smp                               &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          sk6(1,1,k1), x_ele(1,1), x_ele(1,2), x_ele(1,3),        &
+     &          r_ele, s_ele, ar_ele, as_ele)
+            call ovwrt_tensor_tensor_prod_smp                           &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          ak_sgs(1,1), sk6(1,1,k1) )
+            call overwrite_xyz_asym_t_by_sph_smp                        &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          sk6(1,1,k1), x_ele(1,1), x_ele(1,2),                    &
      &          x_ele(1,3), r_ele, s_ele, ar_ele, as_ele)
           end do
 !
         else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
           do k1 = 1, ele1%nnod_4_ele
-            call overwrite_cyl_asym_t_smp(np_smp, ele1%numele,          &
-     &          iele_smp_stack, sk6(1,1,k1), x_ele(1,1), x_ele(1,2),    &
+            call overwrite_cyl_asym_t_smp                               &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          sk6(1,1,k1), x_ele(1,1), x_ele(1,2),                    &
      &          s_ele, as_ele)
-            call ovwrt_tensor_tensor_prod_smp(np_smp, ele1%numele,      &
-     &          iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
-            call overwrite_xyz_asym_t_by_cyl_smp(np_smp, ele1%numele,   &
-     &          iele_smp_stack, sk6(1,1,k1), x_ele(1,1), x_ele(1,2),    &
-     &          s_ele, as_ele)
+            call ovwrt_tensor_tensor_prod_smp                           &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          ak_sgs(1,1), sk6(1,1,k1) )
+            call overwrite_xyz_asym_t_by_cyl_smp                        &
+     &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
+     &          sk6(1,1,k1), x_ele(1,1), x_ele(1,2), s_ele, as_ele)
           end do
 !
         else
           do k1 = 1, ele1%nnod_4_ele
             call ovwrt_tensor_tensor_prod_smp(np_smp, ele1%numele,      &
-     &          iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
+     &          ele1%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1) )
           end do
 !
         end if
@@ -198,7 +212,7 @@
       else
         do k1 = 1, ele1%nnod_4_ele
           call ovwrt_tensor_scalar_prod_smp(np_smp, ele1%numele,        &
-     &        iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
+     &        ele1%istack_ele_smp, ak_sgs(1,1), sk6(1,1,k1) )
          end do
 !
       end if

@@ -43,7 +43,7 @@
 !
 !    reset model coefficients
 !
-      call reset_diff_model_coefs(iak_diff_uxb, iele_smp_stack)
+      call reset_diff_model_coefs(iak_diff_uxb, ele1%istack_ele_smp)
       call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !   gradient model by filtered field (to iphys%i_sgs_grad_f)

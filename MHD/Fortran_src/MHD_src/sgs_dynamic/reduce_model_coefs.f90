@@ -48,7 +48,7 @@
 !
 !$omp parallel
       call ovwrt_coef_prod_vect_smp(np_smp, ele1%numele,                &
-     &    iele_smp_stack, SGS_factor, ak_sgs)
+     &    ele1%istack_ele_smp, SGS_factor, ak_sgs)
 !$omp end parallel
 !
       end subroutine reduce_ele_vect_model_coefs
@@ -67,7 +67,7 @@
 !
 !$omp parallel
       call ovwrt_coef_prod_tensor_smp(np_smp, ele1%numele,              &
-     &    iele_smp_stack, SGS_factor, ak_sgs)
+     &    ele1%istack_ele_smp, SGS_factor, ak_sgs)
 !$omp end parallel
 !
       end subroutine reduce_ele_tensor_model_coefs

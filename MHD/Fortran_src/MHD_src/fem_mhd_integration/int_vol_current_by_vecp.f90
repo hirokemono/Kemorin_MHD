@@ -40,7 +40,7 @@
 !
       do k2=1, ele1%nnod_4_ele
         call vactor_phys_2_each_element(k2, iphys%i_vecp, vect_1)
-        call fem_skv_rot_rot_by_laplace(iele_smp_stack,                 &
+        call fem_skv_rot_rot_by_laplace(ele1%istack_ele_smp,            &
      &      intg_point_poisson, k2, vect_1, sk6)
       end do
 !

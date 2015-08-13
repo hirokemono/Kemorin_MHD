@@ -104,14 +104,14 @@
 !
       subroutine rot_magne_on_element
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_address
       use m_element_phys_data
 !
 !
-      call rotation_on_element(iele_smp_stack, intg_point_t_evo,        &
+      call rotation_on_element(ele1%istack_ele_smp, intg_point_t_evo,   &
      &    d_ele(1,iphys_ele%i_magne), d_nod(1,iphys%i_vecp) )
       iflag_ele_update(iphys_ele%i_magne:iphys_ele%i_magne+2) = 1
 !
@@ -138,14 +138,14 @@
 !
       subroutine rot_filter_magne_on_element
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_address
       use m_element_phys_data
 !
 !
-      call rotation_on_element(iele_smp_stack, intg_point_t_evo,        &
+      call rotation_on_element(ele1%istack_ele_smp, intg_point_t_evo,   &
      &    d_ele(1,iphys_ele%i_filter_magne),                            &
      &    d_nod(1,iphys%i_filter_vecp) )
 !

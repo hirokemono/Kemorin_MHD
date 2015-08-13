@@ -49,7 +49,8 @@
       call reset_sk6(n_vector)
 !
 !$omp parallel
-      call add_const_to_vector_smp(np_smp, ele1%numele, iele_smp_stack, &
+      call add_const_to_vector_smp                                      &
+     &   (np_smp, ele1%numele, ele1%istack_ele_smp,                     &
      &    d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
 !$omp end parallel
 !
@@ -89,7 +90,8 @@
       call reset_sk6(n_vector)
 !
 !$omp parallel
-      call add_const_to_vector_smp(np_smp, ele1%numele, iele_smp_stack, &
+      call add_const_to_vector_smp                                      &
+     &   (np_smp, ele1%numele, ele1%istack_ele_smp,                     &
      &    d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
 !$omp end parallel
 !

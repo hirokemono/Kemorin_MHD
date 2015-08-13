@@ -52,7 +52,7 @@
         call cal_ff_smp_2_vector(ff_nl(1,1), ff_nl_smp(1,1,1), ml)
         call nod_vector_send_recv( ff_nl(1,1) )
 !
-        call int_vol_multi_pass_vector_upw(iele_smp_stack,              &
+        call int_vol_multi_pass_vector_upw(ele1%istack_ele_smp,         &
      &      iphys_ele%i_velo)
       end do
 !
@@ -73,7 +73,7 @@
         call cal_ff_smp_2_scalar(ff_nl(1,1), ff_nl_smp(1,1,1), ml)
         call nod_scalar_send_recv( ff_nl(1,1) )
 !
-        call int_vol_multi_pass_scalar_upw(iele_smp_stack,              &
+        call int_vol_multi_pass_scalar_upw(ele1%istack_ele_smp,         &
      &      iphys_ele%i_velo)
       end do
 !
@@ -95,7 +95,7 @@
         call cal_ff_smp_2_vector(ff_nl(1,1), ff_nl_smp(1,1,1), ml)
         call nod_vector_send_recv( ff_nl(1,1) )
 !
-        call int_vol_multi_pass_vector_upw(iele_smp_stack,              &
+        call int_vol_multi_pass_vector_upw(ele1%istack_ele_smp,         &
      &      iphys_ele%i_magne)
       end do
 !
@@ -116,7 +116,7 @@
         call cal_ff_smp_2_scalar(ff_nl(1,1), ff_nl_smp(1,1,1), ml)
         call nod_scalar_send_recv( ff_nl(1,1) )
 !
-        call int_vol_multi_pass_scalar_upw(iele_smp_stack,              &
+        call int_vol_multi_pass_scalar_upw(ele1%istack_ele_smp,         &
      &      iphys_ele%i_magne)
 !
       end do

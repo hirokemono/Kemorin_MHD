@@ -21,7 +21,7 @@
       use m_precision
 !
       use m_constants
-      use m_geometry_parameter
+      use m_geometry_data
 !
       implicit none
 !
@@ -274,8 +274,8 @@
 !
 !$omp parallel do private(ist,ied,iele)
       do ip = 1, np_smp
-        ist = iele_smp_stack(ip-1) + 1
-        ied = iele_smp_stack(ip  )
+        ist = ele1%istack_ele_smp(ip-1) + 1
+        ied = ele1%istack_ele_smp(ip  )
         do nd = nst, ned
 !cdir nodep
           do iele = ist, ied
@@ -379,8 +379,8 @@
 !
 !$omp parallel do private(is,ist,ied,inum,iele0,iele)
       do ip = 1, np_smp
-          ist = iele_smp_stack(ip-1) + 1
-          ied = iele_smp_stack(ip  )
+          ist = ele1%istack_ele_smp(ip-1) + 1
+          ied = ele1%istack_ele_smp(ip  )
 !cdir nodep
           do iele = ist, ied
             ak_diff(iele,ifield_d) = zero
@@ -422,8 +422,8 @@
 !
 !$omp parallel do private(ist,ied,iele)
       do ip = 1, np_smp
-        ist = iele_smp_stack(ip-1) + 1
-        ied = iele_smp_stack(ip  )
+        ist = ele1%istack_ele_smp(ip-1) + 1
+        ied = ele1%istack_ele_smp(ip  )
 !cdir nodep
         do iele = ist, ied
           ak_diff(iele,ifield_d) = zero

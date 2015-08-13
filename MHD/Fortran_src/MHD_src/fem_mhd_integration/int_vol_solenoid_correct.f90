@@ -10,7 +10,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_address
       use m_SGS_address
@@ -38,7 +38,7 @@
       subroutine int_vol_magne_co
 !
 !
-      call int_vol_solenoid_co(iele_smp_stack, iphys%i_m_phi,           &
+      call int_vol_solenoid_co(ele1%istack_ele_smp, iphys%i_m_phi,      &
      &    iak_diff_b)
 !
       end subroutine int_vol_magne_co

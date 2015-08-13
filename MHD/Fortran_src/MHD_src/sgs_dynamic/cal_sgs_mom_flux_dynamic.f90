@@ -40,7 +40,8 @@
 !
 !    reset model coefficients
 !
-      call reset_tensor_sgs_model_coefs(icomp_sgs_mf, iele_smp_stack)
+      call reset_tensor_sgs_model_coefs                                 &
+     &   (icomp_sgs_mf, ele1%istack_ele_smp)
       call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !    SGS term by similarity model

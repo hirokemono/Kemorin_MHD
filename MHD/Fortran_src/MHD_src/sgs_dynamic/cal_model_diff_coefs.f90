@@ -102,7 +102,6 @@
 !
       use m_control_parameter
       use m_geometry_data
-      use m_geometry_parameter
 !
       integer (kind = kint), intent(in) :: numdir
       integer (kind = kint), intent(in) :: ifield_d, icomp_f, n_int
@@ -110,7 +109,7 @@
       if (iset_DIFF_model_coefs .eq. 1) then
         call cal_layerd_diff_coef(numdir, ifield_d, icomp_f, n_int)
       else
-        call cal_whole_diff_coef(iele_smp_stack, numdir, ifield_d,      &
+        call cal_whole_diff_coef(ele1%istack_ele_smp, numdir, ifield_d, &
      &      icomp_f, n_int, volume)
       end if
 !

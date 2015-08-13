@@ -42,7 +42,8 @@
 !
 !    reset model coefficients
 !
-      call reset_vector_sgs_model_coefs(icomp_sgs_uxb, iele_smp_stack)
+      call reset_vector_sgs_model_coefs                                 &
+     &   (icomp_sgs_uxb, ele1%istack_ele_smp)
       call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !    SGS term by similarity model (to iphys%i_sgs_simi)
@@ -98,7 +99,8 @@
 !
 !    reset model coefficients
 !
-      call reset_vector_sgs_model_coefs(icomp_sgs_uxb, iele_smp_stack)
+      call reset_vector_sgs_model_coefs                                 &
+     &   (icomp_sgs_uxb, ele1%istack_ele_smp)
       call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !    SGS term by similarity model
