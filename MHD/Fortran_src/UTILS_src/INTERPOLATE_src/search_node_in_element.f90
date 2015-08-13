@@ -51,8 +51,8 @@
 !
 !
       do ip = 1, np_smp
-        ist = inter_smp_stack(ip-1) + 1
-        ied = inter_smp_stack(ip)
+        ist = node1%istack_internal_smp(ip-1) + 1
+        ied = node1%istack_internal_smp(ip)
 !
         do inod = ist, ied
           ihash = org_blk%iblock_tgt_node(inod,4)
@@ -105,8 +105,8 @@
 !
 !
       do ip = 1, np_smp
-        ist = inter_smp_stack(ip-1) + 1
-        ied = inter_smp_stack(ip)
+        ist = node1%istack_internal_smp(ip-1) + 1
+        ied = node1%istack_internal_smp(ip)
 !
         do inod = ist, ied
           igh(1:3) = org_blk%iblock_tgt_node(inod,1:3)
@@ -160,8 +160,8 @@
 !
 !
       do ip = 1, np_smp
-        ist = inter_smp_stack(ip-1) + 1
-        ied = inter_smp_stack(ip)
+        ist = node1%istack_internal_smp(ip-1) + 1
+        ied = node1%istack_internal_smp(ip)
 !
         do inod = ist, ied
 !
@@ -207,8 +207,8 @@
 !
 !
       do ip = 1, np_smp
-        ist = inter_smp_stack(ip-1) + 1
-        ied = inter_smp_stack(ip)
+        ist = node1%istack_internal_smp(ip-1) + 1
+        ied = node1%istack_internal_smp(ip)
 !
         do inod = ist, ied
 !

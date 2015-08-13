@@ -69,7 +69,7 @@
 !>     smp stack for total node on  local PE
 !      integer( kind=kint ), pointer :: inod_smp_stack(:)
 !>     smp stack for internal node on  local PE
-      integer( kind=kint ), allocatable, target :: inter_smp_stack(:)
+!      integer( kind=kint ), allocatable, target :: inter_smp_stack(:)
 !>     maximum number of smp node on local PE
       integer( kind=kint )  ::  maxnod_4_smp = 0
 !>     maximum number of smp internal node on local PE
@@ -154,7 +154,7 @@
 !
        allocate( iele_smp_stack(0:np_smp))
 !       allocate( inod_smp_stack(0:np_smp))
-       allocate( inter_smp_stack(0:np_smp))
+!       allocate( inter_smp_stack(0:np_smp))
 !
 !       allocate( iele_4_smp(numele,2))
 !
@@ -195,7 +195,7 @@
 !
       deallocate( iele_smp_stack  )
 !      deallocate( inod_smp_stack  )
-      deallocate( inter_smp_stack )
+!      deallocate( inter_smp_stack )
 !
 !       deallocate( iele_4_smp(numele,2))
 !
@@ -231,8 +231,6 @@
       integer(kind = kint), intent(in) :: my_rank
 !
        write(*,*) 'np_smp: ', np_smp
-       write(*,*) 'PE: ', my_rank,                                      &
-     &           'inter_smp_stack ', inter_smp_stack
        write(*,*) 'PE: ', my_rank,                                      &
      &           'iele_smp_stack ', iele_smp_stack
 !

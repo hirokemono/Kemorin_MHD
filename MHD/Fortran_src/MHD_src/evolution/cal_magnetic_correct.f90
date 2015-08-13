@@ -14,6 +14,7 @@
 !
       use m_machine_parameter
       use m_control_parameter
+      use m_geometry_data
 !
       use cal_multi_pass
       use set_magne_boundary
@@ -75,7 +76,7 @@
       call cal_multi_pass_4_vector_ff
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_sol_magne_co'
-      call cal_sol_magne_co
+      call cal_sol_magne_co(node1%istack_internal_smp)
 !
       end subroutine cal_magnetic_co_exp
 !
@@ -123,7 +124,7 @@
       call set_boundary_magne_4_rhs
 !
       if (iflag_debug.eq.1)   write(*,*) 'cal_sol_magne_co_crank'
-      call cal_sol_magne_co_crank
+      call cal_sol_magne_co_crank(node1%istack_internal_smp)
 !
       end subroutine cal_magnetic_co_crank
 !
@@ -144,7 +145,7 @@
       call set_boundary_magne_4_rhs
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_sol_magne_co_crank_consist'
-      call cal_sol_magne_co_crank_consist
+      call cal_sol_magne_co_crank_consist(node1%istack_internal_smp)
 !
       end subroutine cal_magne_co_consist_crank
 !

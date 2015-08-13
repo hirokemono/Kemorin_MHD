@@ -13,6 +13,7 @@
 !
       use m_machine_parameter
       use m_control_parameter
+      use m_geometry_data
 !
       use cal_multi_pass
       use set_velocity_boundary
@@ -77,7 +78,7 @@
       call cal_multi_pass_4_vector_fl
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_co'
-      call cal_sol_velo_co
+      call cal_sol_velo_co(node1%istack_internal_smp)
 !
       end subroutine cal_velocity_co_exp
 !
@@ -137,7 +138,7 @@
       call set_boundary_velo_4_rhs
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_co_crank'
-      call cal_sol_velo_co_crank
+      call cal_sol_velo_co_crank(node1%istack_internal_smp)
 !
       end subroutine cal_velocity_co_crank
 !
@@ -158,7 +159,7 @@
       call set_boundary_velo_4_rhs
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_co_crank_consist'
-      call cal_sol_velo_co_crank_consist
+      call cal_sol_velo_co_crank_consist(node1%istack_internal_smp)
 !
       end subroutine cal_velo_co_consist_crank
 !

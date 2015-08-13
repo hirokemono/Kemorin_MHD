@@ -13,6 +13,7 @@
 !
       use m_machine_parameter
       use m_control_parameter
+      use m_geometry_data
 !
       use cal_multi_pass
       use set_vecp_boundary
@@ -78,7 +79,7 @@
       call cal_multi_pass_4_vector_ff
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_vect_p_co'
-      call cal_sol_vect_p_co
+      call cal_sol_vect_p_co(node1%istack_internal_smp)
 !
       end subroutine cal_vector_p_co_exp
 !
@@ -126,7 +127,7 @@
       call set_boundary_vect_p_4_rhs
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_vect_p_co_crank'
-      call cal_sol_vect_p_co_crank
+      call cal_sol_vect_p_co_crank(node1%istack_internal_smp)
 !
       end subroutine cal_vector_p_co_crank
 !
@@ -148,7 +149,7 @@
       call set_boundary_vect_p_4_rhs
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_vect_p_co_crank_consist'
-      call cal_sol_vect_p_co_crank_consist
+      call cal_sol_vect_p_co_crank_consist(node1%istack_internal_smp)
 !
       end subroutine cal_vector_p_co_consist_crank
 !

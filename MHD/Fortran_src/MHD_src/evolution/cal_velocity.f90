@@ -40,10 +40,10 @@
 !
       if (iflag_4_lorentz .eq. id_turn_ON) then
         if (iflag_4_rotate .eq. id_turn_OFF) then
-          call cal_sol_pressure_w_mag_ene
+          call cal_sol_pressure_w_mag_ene(node1%istack_internal_smp)
         else if (iflag_magneto_cv .eq. id_turn_ON                       &
      &     .and. iflag_4_rotate .eq. id_turn_OFF) then
-          call cal_sol_pressure_mcv
+          call cal_sol_pressure_mcv(node1%istack_internal_smp)
         else
           call init_4_sol_k_potential(node1%istack_nod_smp)
         end if
@@ -66,7 +66,7 @@
 !
         call cal_mod_potential
 !
-        call cal_sol_pressure
+        call cal_sol_pressure(node1%istack_internal_smp)
 !
         call cal_velocity_co
 !
@@ -82,7 +82,7 @@
  10   continue
 !
       if (iflag_4_rotate .eq. id_turn_ON) then
-        call cal_sol_pressure_rotate
+        call cal_sol_pressure_rotate(node1%istack_internal_smp)
       end if
 !
       end subroutine velocity_evolution

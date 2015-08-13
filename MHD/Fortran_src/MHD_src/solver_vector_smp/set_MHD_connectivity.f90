@@ -128,7 +128,7 @@
 !C
       call s_reordering_djds_smp_type                                   &
      &   (np_smp, node1%numnod, internal_node,                          &
-     &    inter_smp_stack, solver_C, MHD_CRS, DJDS_entire)
+     &    node1%istack_internal_smp, solver_C, MHD_CRS, DJDS_entire)
 !C
 !      write(*,*) 'STACKmc', size(DJDS_entire%STACKmc)
 !      write(*,*) 'NLmaxHYP', size(DJDS_entire%NLmaxHYP),               &
@@ -199,7 +199,7 @@
 !
       call s_reordering_djds_smp_type                                   &
      &   (np_smp, node1%numnod, internal_node,                          &
-     &    inter_smp_stack, solver_C, MHD_CRS, djds_tbl)
+     &    node1%istack_internal_smp, solver_C, MHD_CRS, djds_tbl)
       call set_new_comm_table_type(node1%numnod, layer_comm, djds_tbl)
 !
       call dealloc_type_crs_connect(MHD_CRS)

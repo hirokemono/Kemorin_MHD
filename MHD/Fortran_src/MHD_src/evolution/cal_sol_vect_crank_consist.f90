@@ -24,13 +24,14 @@
 !
       subroutine cal_sol_velo_pre_consist
 !
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
       use m_physical_property
 !
 !
-      call cal_sol_vec_pre_consist(n_vector, iphys%i_pre_mom,           &
-     &    coef_velo)
+      call cal_sol_vec_pre_consist(node1%istack_internal_smp,           &
+     &    n_vector, iphys%i_pre_mom, coef_velo)
 !
       end subroutine cal_sol_velo_pre_consist
 !
@@ -38,13 +39,14 @@
 !
       subroutine cal_sol_temp_consist
 !
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
       use m_physical_property
 !
 !
-      call cal_sol_vec_pre_consist(n_scalar, iphys%i_pre_heat,          &
-     &    coef_temp)
+      call cal_sol_vec_pre_consist(node1%istack_internal_smp,           &
+     &    n_scalar, iphys%i_pre_heat, coef_temp)
 !
       end subroutine cal_sol_temp_consist
 !
@@ -52,13 +54,14 @@
 !
       subroutine cal_sol_vect_p_pre_consist
 !
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
       use m_physical_property
 !
 !
-      call cal_sol_vec_pre_consist(n_vector, iphys%i_pre_uxb,           &
-     &    coef_magne)
+      call cal_sol_vec_pre_consist(node1%istack_internal_smp,           &
+     &    n_vector, iphys%i_pre_uxb, coef_magne)
 !
       end subroutine cal_sol_vect_p_pre_consist
 !
@@ -66,29 +69,31 @@
 !
       subroutine cal_sol_d_scalar_consist
 !
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
       use m_physical_property
 !
 !
-      call cal_sol_vec_pre_consist(n_scalar,                            &
-     &    iphys%i_pre_composit, coef_light)
+      call cal_sol_vec_pre_consist(node1%istack_internal_smp,           &
+     &    n_scalar, iphys%i_pre_composit, coef_light)
 !
       end subroutine cal_sol_d_scalar_consist
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_vec_pre_consist(numdir, if_pre, coef_field)
+      subroutine cal_sol_vec_pre_consist                                &
+     &         (inter_smp_stack, numdir, if_pre, coef_field)
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_finite_element_matrix
       use m_t_int_parameter
       use m_node_phys_data
 !
       use cal_ff_smp_to_ffs
 !
+      integer(kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numdir, if_pre
       real(kind = kreal), intent(in) :: coef_field
 !

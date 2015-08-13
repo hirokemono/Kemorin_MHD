@@ -53,8 +53,8 @@
      &        nod_comm%istack_import(nod_comm%num_neib) )
         end if
 
-        call precond_DJDS33                                             &
-     &         ( internal_node, node1%numnod, np_smp, inter_smp_stack,  &
+        call precond_DJDS33(internal_node, node1%numnod,                &
+     &           np_smp, node1%istack_internal_smp,                     &
      &           OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,                      &
      &           aiccg(im_d), ALUG_L, ALUG_U, precond_4_solver,         &
      &           sigma_diag)
@@ -66,8 +66,8 @@
  
         write(*,*) 'init_solve33_DJDS_kemo', method_4_solver
       call init_solve33_DJDS_kemo(internal_node, node1%numnod,          &
-     &     NLmax, NUmax, itotal_l, itotal_u,                            &
-     &     NHYP, np_smp, inter_smp_stack, STACKmc, NLmaxHYP, NUmaxHYP,  &
+     &     NLmax, NUmax, itotal_l, itotal_u, NHYP, np_smp,              &
+     &     node1%istack_internal_smp, STACKmc, NLmaxHYP, NUmaxHYP,      &
      &     IVECT, NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,           &
      &     NEWtoOLD_DJDS_U, LtoU, aiccg(im_d), b_djds, x_djds,          &
      &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &

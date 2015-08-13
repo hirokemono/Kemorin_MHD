@@ -3,15 +3,14 @@
 !
 !      Written by H. Matsui on June, 2005
 !
-!      subroutine cal_sol_m_potential
-!      subroutine cal_sol_m_potential_crank
+!      subroutine cal_sol_m_potential(inter_smp_stack)
+!      subroutine cal_sol_m_potential_crank(inter_smp_stack)
 !
       module cal_sol_magne_potential
 !
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_finite_element_matrix
 !
       implicit none
@@ -22,12 +21,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_m_potential
+      subroutine cal_sol_m_potential(inter_smp_stack)
 !
       use m_node_phys_address
       use m_node_phys_data
 !
-      integer (kind = kint) :: iproc, inod, ist, ied
+      integer(kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
+      integer(kind = kint) :: iproc, inod, ist, ied
 !
 !
 !$omp parallel do private(inod, ist, ied)
@@ -51,11 +51,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_m_potential_crank
+      subroutine cal_sol_m_potential_crank(inter_smp_stack)
 !
       use m_node_phys_address
       use m_node_phys_data
 !
+      integer(kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint) :: inod, iproc, ist, ied
 !
 !$omp parallel do private(inod, ist, ied)

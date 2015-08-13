@@ -58,7 +58,7 @@
 
         call precond_DJDS11(internal_node, node1%numnod,                &
      &           NLmax, itotal_l, NHYP, np_smp,                         &
-     &           inter_smp_stack, STACKmc, NLmaxHYP, IVECT,             &
+     &           node1%istack_internal_smp, STACKmc, NLmaxHYP, IVECT,   &
      &           OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, LtoU,                &
      &           aiccg(im_d), indexDJDS_L, itemDJDS_L, aiccg(im_l),     &
      &           ALUG_L, ALUG_U, precond_4_solver, sigma_diag)
@@ -68,8 +68,8 @@
 
         write(*,*) 'init_solve_DJDS_kemo', my_rank
       call init_solve_DJDS_kemo(internal_node, node1%numnod,            &
-     &     NLmax, NUmax, itotal_l, itotal_u,                            &
-     &     NHYP, np_smp, inter_smp_stack, STACKmc, NLmaxHYP, NUmaxHYP,  &
+     &     NLmax, NUmax, itotal_l, itotal_u, NHYP, np_smp,              &
+     &     node1%istack_internal_smp, STACKmc, NLmaxHYP, NUmaxHYP,      &
      &     IVECT, NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,           &
      &     NEWtoOLD_DJDS_U, LtoU, aiccg(im_d), b_djds, x_djds,          &
      &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &

@@ -85,8 +85,8 @@
 !               OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U)
 !
       call set_djds_ordering(np_smp, node1%numnod, internal_node,       &
-     &      inter_smp_stack, NHYP, IVECT, STACKmcG, STACKmc, PEon,      &
-     &      npLX1, npUX1, NLmax, NUmax, NLmaxHYP, NUmaxHYP,             &
+     &      node1%istack_internal_smp, NHYP, IVECT, STACKmcG, STACKmc,  &
+     &      PEon, npLX1, npUX1, NLmax, NUmax, NLmaxHYP, NUmaxHYP,       &
      &      indexDJDS_L, indexDJDS_U, NEWtoOLD_DJDS_L, NEWtoOLD_DJDS_U, &
      &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U)
 !C

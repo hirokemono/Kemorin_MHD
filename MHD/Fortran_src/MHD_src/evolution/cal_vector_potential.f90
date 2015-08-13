@@ -59,7 +59,7 @@
         call cal_scalar_potential
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
-        call cal_sol_m_potential
+        call cal_sol_m_potential(node1%istack_internal_smp)
 !
         if (iflag_debug.gt.0) write(*,*) 'vector_potential_correct'
         call cal_vector_p_co

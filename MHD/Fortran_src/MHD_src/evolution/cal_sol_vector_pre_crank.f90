@@ -74,7 +74,7 @@
 !
 !
       call cal_sol_vec_conduct_linear(n_vector, iphys%i_vecp,           &
-     &    iphys%i_pre_uxb, inter_smp_stack)
+     &    iphys%i_pre_uxb, node1%istack_internal_smp)
 !
       end subroutine cal_sol_vect_p_pre_linear
 !
@@ -87,7 +87,7 @@
 !
 !
       call cal_sol_vec_conduct_linear(n_vector, iphys%i_magne,          &
-     &    iphys%i_pre_uxb, inter_smp_stack)
+     &    iphys%i_pre_uxb, node1%istack_internal_smp)
 !
       end subroutine cal_sol_magne_pre_linear
 !

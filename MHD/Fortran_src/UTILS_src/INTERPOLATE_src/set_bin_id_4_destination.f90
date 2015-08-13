@@ -21,7 +21,6 @@
       subroutine s_set_bin_id_4_destination(id_search_area)
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_sphere_bin_4_table
 !
@@ -38,8 +37,8 @@
 !$omp parallel do private (ist,ied,inod,j,jr,jt,jp,jr_st,jt_st,jp_st,   &
 !$omp& jr_bin,jt_bin,jp_bin)
       do ip = 1, np_smp
-        ist = inter_smp_stack(ip-1) + 1
-        ied = inter_smp_stack(ip)
+        ist = node1%istack_internal_smp(ip-1) + 1
+        ied = node1%istack_internal_smp(ip)
 !
         jp_st = 0
         jt_st = 0

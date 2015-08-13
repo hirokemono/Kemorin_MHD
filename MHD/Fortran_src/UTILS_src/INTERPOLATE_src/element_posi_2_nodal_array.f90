@@ -59,8 +59,7 @@
      &     node1%istack_nod_smp, maxnod_4_smp)
 !
        call count_number_4_smp( np_smp, ione, internal_node,            &
-     &     inter_smp_stack, max_in_nod_4_smp )
-!
+     &     node1%istack_internal_smp, max_in_nod_4_smp )
 !
       end subroutine s_element_posi_2_nodal_array
 !

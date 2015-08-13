@@ -72,7 +72,7 @@
       node%max_internal_nod_smp = max_in_nod_4_smp
 !
       node%istack_nod_smp =>      node1%istack_nod_smp
-      node%istack_internal_smp => inter_smp_stack
+      node%istack_internal_smp => node1%istack_internal_smp
 !
       end subroutine link_node_data_type
 !

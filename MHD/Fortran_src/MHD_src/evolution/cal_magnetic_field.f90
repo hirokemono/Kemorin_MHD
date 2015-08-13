@@ -60,7 +60,7 @@
 !
         call cal_mag_potential
 !
-        call cal_sol_m_potential
+        call cal_sol_m_potential(node1%istack_internal_smp)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'magnetic_correction'
