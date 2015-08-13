@@ -21,10 +21,9 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
 !
-      integer (kind = kint) :: iproc, iele
+      integer (kind = kint) :: iproc, iele, ist, ied
       integer (kind = kint) :: nele_l, nele_g
       integer (kind = kint) :: nele_smp(np_smp)
 !
@@ -33,9 +32,11 @@
       nele_l = 0
       nele_smp = 0
 !
-!$omp parallel do private(iele)
+!$omp parallel do private(iele,ist,ied)
       do iproc = 1, np_smp
-        do iele = iele_smp_stack(iproc-1)+1, iele_smp_stack(iproc)
+        ist = ele1%istack_ele_smp(iproc-1)+1
+        ied = ele1%istack_ele_smp(iproc)
+        do iele = ist, ied
           nele_smp(iproc) = nele_smp(iproc) + int(e_multi(iele))
         end do
       end do

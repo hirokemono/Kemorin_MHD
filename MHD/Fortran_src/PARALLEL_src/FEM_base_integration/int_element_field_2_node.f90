@@ -51,7 +51,7 @@
       real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
 !
 !
-      call int_area_ele_scalar_2_node(iele_smp_stack, scalar_ele)
+      call int_area_ele_scalar_2_node(ele1%istack_ele_smp, scalar_ele)
       call cal_ff_smp_2_scalar (scalar_nod, ff_smp, ml)
 !
       end subroutine cal_ele_scalar_2_node
@@ -67,7 +67,7 @@
       real(kind = kreal), intent(inout) :: vector_nod(node1%numnod,3)
 !
 !
-      call int_area_ele_vector_2_node(iele_smp_stack, vector_ele)
+      call int_area_ele_vector_2_node(ele1%istack_ele_smp, vector_ele)
       call cal_ff_smp_2_vector(vector_nod, ff_smp, ml)
 !
       end subroutine cal_ele_vector_2_node
@@ -83,7 +83,8 @@
       real(kind = kreal), intent(inout) :: tensor_nod(node1%numnod,6)
 !
 !
-      call int_area_ele_sym_tensor_2_node(iele_smp_stack, tensor_ele)
+      call int_area_ele_sym_tensor_2_node                               &
+     &   (ele1%istack_ele_smp, tensor_ele)
       call cal_ff_smp_2_tensor(tensor_nod, ff_t_smp, ml)
 !
       end subroutine cal_ele_sym_tensor_2_node

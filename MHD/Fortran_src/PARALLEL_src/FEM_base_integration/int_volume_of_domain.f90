@@ -65,7 +65,7 @@
 !     ---  lead total volume
 !
 !      write(*,*) 'sum_4_volume'
-      call sum_4_volume(iele_smp_stack, vol_local)
+      call sum_4_volume(ele1%istack_ele_smp, vol_local)
 !
 !      write(*,*) 'MPI_allREDUCE'
        call MPI_allREDUCE (vol_local, volume, 1,                        &

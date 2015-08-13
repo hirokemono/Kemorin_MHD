@@ -75,7 +75,7 @@
      &          elen_dx2_ele,  elen_dy2_ele,  elen_dz2_ele,             &
      &          elen_dxdy_ele, elen_dydz_ele, elen_dzdx_ele)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_shape_functions
 !
       integer(kind = kint), intent(in) :: nele_filter
@@ -103,8 +103,8 @@
 !
 !$omp parallel do private(iele,ist,ied)
       do iproc = 1, np_smp
-        ist = iele_smp_stack(iproc-1)+1
-        ied = iele_smp_stack(iproc)
+        ist = ele1%istack_ele_smp(iproc-1)+1
+        ied = ele1%istack_ele_smp(iproc)
         do iele = ist, ied
 !
           dxdxi_ele(iele) = dxdxi_ele(iele) * r125
@@ -180,8 +180,8 @@
 !$omp&                    inod4,inod5,inod6,inod7,inod8)
       do iproc = 1, np_smp
 !
-        ist = iele_smp_stack(iproc-1)+1
-        ied = iele_smp_stack(iproc)
+        ist = ele1%istack_ele_smp(iproc-1)+1
+        ied = ele1%istack_ele_smp(iproc)
 !
         dxdxi_ele(ist:ied) = 0.0d0
         dxdei_ele(ist:ied) = 0.0d0
@@ -353,8 +353,8 @@
 !$omp&                    inod17,inod18,inod19,inod20)
       do iproc = 1, np_smp
 !
-        ist = iele_smp_stack(iproc-1)+1
-        ied = iele_smp_stack(iproc)
+        ist = ele1%istack_ele_smp(iproc-1)+1
+        ied = ele1%istack_ele_smp(iproc)
 !
         dxdxi_ele(ist:ied) = 0.0d0
         dxdei_ele(ist:ied) = 0.0d0
@@ -649,8 +649,8 @@
 !$omp&                    inod23,inod24,inod25,inod26,inod27)
       do iproc = 1, np_smp
 !
-        ist = iele_smp_stack(iproc-1)+1
-        ied = iele_smp_stack(iproc)
+        ist = ele1%istack_ele_smp(iproc-1)+1
+        ied = ele1%istack_ele_smp(iproc)
 !
         dxdxi_ele(ist:ied) = 0.0d0
         dxdei_ele(ist:ied) = 0.0d0

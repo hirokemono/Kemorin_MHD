@@ -38,8 +38,8 @@
 !
 !$omp parallel do private(iele,inod,ist,ied) 
       do iproc = 1, np_smp
-        ist = iele_smp_stack(iproc-1) + 1
-        ied = iele_smp_stack(iproc)
+        ist = ele1%istack_ele_smp(iproc-1) + 1
+        ied = ele1%istack_ele_smp(iproc)
 !cdir nodep
         do iele = ist, ied
           inod = ie(iele,k2)
@@ -67,8 +67,8 @@
 !
 !$omp parallel do private(iele,ist,ied) 
       do iproc = 1, np_smp
-        ist = iele_smp_stack(iproc-1) + 1
-        ied = iele_smp_stack(iproc)
+        ist = ele1%istack_ele_smp(iproc-1) + 1
+        ied = ele1%istack_ele_smp(iproc)
 !cdir nodep
         do iele = ist, ied
            inod = ie(iele,k2)
@@ -100,8 +100,8 @@
 !
 !$omp parallel do private(iele,inod,ist,ied)
       do iproc = 1, np_smp
-        ist = iele_smp_stack(iproc-1) + 1
-        ied = iele_smp_stack(iproc)
+        ist = ele1%istack_ele_smp(iproc-1) + 1
+        ied = ele1%istack_ele_smp(iproc)
 !cdir nodep
         do iele = ist, ied
           inod = ie(iele,k2)
@@ -135,8 +135,8 @@
 !
 !$omp parallel do private(iele,inod,ist,ied) 
       do iproc = 1, np_smp
-        ist = iele_smp_stack(iproc-1) + 1
-        ied = iele_smp_stack(iproc)
+        ist = ele1%istack_ele_smp(iproc-1) + 1
+        ied = ele1%istack_ele_smp(iproc)
 !cdir nodep
         do iele = ist, ied
           inod = ie(iele,k2)

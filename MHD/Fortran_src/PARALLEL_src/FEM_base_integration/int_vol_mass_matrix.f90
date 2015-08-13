@@ -61,7 +61,7 @@
       integer (kind=kint), intent(in) :: num_int
 !
 !
-      call int_mass_matrix_diag(iele_smp_stack, num_int)
+      call int_mass_matrix_diag(ele1%istack_ele_smp, num_int)
       call cal_ff_smp_2_ml (ml, ml_o, ff_smp)
 !
 !      call check_mass_martix
@@ -75,7 +75,7 @@
       integer (kind=kint), intent(in) :: num_int
 !
 !
-      call int_mass_matrix_HRZ_full(iele_smp_stack, num_int)
+      call int_mass_matrix_HRZ_full(ele1%istack_ele_smp, num_int)
       call cal_ff_smp_2_ml (ml, ml_o, ff_smp)
 !
 !      call check_mass_martix

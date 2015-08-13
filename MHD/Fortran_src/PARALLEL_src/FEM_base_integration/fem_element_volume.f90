@@ -39,8 +39,8 @@
 !
 !$omp parallel do private(iele,ii,ix,istart,iend) 
        do ip = 1, np_smp
-         istart = iele_smp_stack(ip-1)+1
-         iend = iele_smp_stack(ip)
+         istart = ele1%istack_ele_smp(ip-1)+1
+         iend =   ele1%istack_ele_smp(ip)
 !
          do ii=1, n_int * n_int * n_int
            ix = int_start3(n_int) + ii

@@ -60,7 +60,8 @@
 !
 !
 !$omp parallel
-      call delete_phys_data_smp(np_smp, ele1%numele, iele_smp_stack,    &
+      call delete_phys_data_smp                                         &
+     &   (np_smp, ele1%numele, ele1%istack_ele_smp,                     &
      &    num_tot_ele_phys, numdir, i_res, d_ele)
 !$omp end parallel
 !

@@ -97,7 +97,7 @@
       ele%elmtyp => elmtyp
       ele%nodelm => nodelm
 !
-      ele%istack_ele_smp =>  iele_smp_stack
+      ele%istack_ele_smp =>  ele1%istack_ele_smp
       ele%max_ele_smp =     maxele_4_smp
 !
       end subroutine link_element_data_type
@@ -162,7 +162,7 @@
 !
 
       ele%max_ele_smp =     maxele_4_smp
-      ele%istack_ele_smp => iele_smp_stack
+      ele%istack_ele_smp => ele1%istack_ele_smp
 !
       ele%x_ele =>     x_ele
       ele%r_ele =>     r_ele

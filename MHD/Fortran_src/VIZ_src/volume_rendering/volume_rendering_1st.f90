@@ -85,7 +85,7 @@
 !
       call pvr_main(istep_pvr, node1%numnod, ele1%numele, numsurf,      &
      &    ele1%nnod_4_ele, nnod_4_surf, node1%istack_nod_smp,           &
-     &    iele_smp_stack,  xx, radius, a_radius,                        &
+     &    ele1%istack_ele_smp, xx, radius, a_radius,                    &
      &    s_cylinder, a_s_cylinder, ie,                                 &
      &    a_vol_ele, e_multi, ie_surf, isf_4_ele, iele_4_surf,          &
      &    ntot_int_3d, dwx, xjac, num_nod_phys, num_tot_nod_phys,       &

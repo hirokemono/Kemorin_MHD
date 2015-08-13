@@ -46,7 +46,7 @@
           ix = int_start3(i0) + ii
 !
           call s_cal_jacobian_3d_27(node1%numnod, ele1%numele, np_smp,  &
-     &      iele_smp_stack, ie, xx, xjac_q(1,ix), axjac_q(1,ix),        &
+     &      ele1%istack_ele_smp, ie, xx, xjac_q(1,ix), axjac_q(1,ix),   &
      &      dwx(1,1,ix,1), dwx(1,1,ix,2), dwx(1,1,ix,3),                &
      &      dxidx_20(1,ix,1,1), dxidx_20(1,ix,2,1), dxidx_20(1,ix,3,1), &
      &      dxidx_20(1,ix,1,2), dxidx_20(1,ix,2,2), dxidx_20(1,ix,3,2), &

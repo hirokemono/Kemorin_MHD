@@ -34,11 +34,11 @@
       use m_geometry_data
       use cal_minmax_and_stacks
 !
-       call allocate_node_param_smp_type(node1)
+      call allocate_node_param_smp_type(node1)
 !
-       call count_number_4_smp( np_smp, ione, node1%numnod,             &
+      call count_number_4_smp( np_smp, ione, node1%numnod,              &
      &       node1%istack_nod_smp, maxnod_4_smp )
-       call count_number_4_smp(np_smp, ione, internal_node,             &
+      call count_number_4_smp(np_smp, ione, internal_node,              &
      &       node1%istack_internal_smp, max_in_nod_4_smp)
 !
       end subroutine set_smp_data_4_node
@@ -53,10 +53,13 @@
 !
       call set_smp_data_4_node
 !
-      call allocate_geometry_param_smp
+      call allocate_ele_param_smp_type(ele1)
 !
-       call count_number_4_smp( np_smp, ione, ele1%numele,              &
-     &       iele_smp_stack, maxele_4_smp )
+      call count_number_4_smp( np_smp, ione, ele1%numele,              &
+     &    ele1%istack_ele_smp, maxele_4_smp )
+!
+      call allocate_geometry_param_smp
+      iele_smp_stack = ele1%istack_ele_smp
 !
       end subroutine count_size_4_sheard_para
 !
@@ -99,10 +102,10 @@
       use count_overlap
 !
 !
-      call set_overlap_flag(np_smp, iele_smp_stack, internal_node,      &
+      call set_overlap_flag(np_smp, ele1%istack_ele_smp, internal_node, &
      &    ele1%numele, ie(1,1), internal_ele, interior_ele)
 !
-      call copy_real_overlap_flag(np_smp, iele_smp_stack,               &
+      call copy_real_overlap_flag(np_smp, ele1%istack_ele_smp,          &
      &    ele1%numele, interior_ele, e_multi)
 !
       end subroutine count_overlap_element
