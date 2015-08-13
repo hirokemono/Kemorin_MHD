@@ -79,7 +79,7 @@
      &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, mesh%ele%nnod_4_ele
         call SGS_vector_cst_each_ele_type(mesh, nod_fld, k2,            &
      &        i_vector, i_scalar, i_SGS_flux, coef,                     &
      &        fem_wk%sgs_v, fem_wk%vector_1)
@@ -130,7 +130,7 @@
      &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, mesh%ele%nnod_4_ele
         call SGS_tensor_cst_each_ele_type(mesh, nod_fld, k2,            &
      &        i_vect, i_SGS_flux, coef, fem_wk%sgs_t, fem_wk%tensor_1)
         call fem_skv_div_sgs_tensor_type(iele_fsmp_stack,               &
@@ -182,7 +182,7 @@
      &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, mesh%ele%nnod_4_ele
         call SGS_vector_cst_each_ele_type(mesh, nod_fld, k2,            &
      &        i_vector, i_scalar, i_SGS_flux, coef,                     &
      &        fem_wk%sgs_v, fem_wk%vector_1)
@@ -235,7 +235,7 @@
      &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, mesh%ele%nnod_4_ele
         call SGS_tensor_cst_each_ele_type(mesh, nod_fld, k2,            &
      &        i_vect, i_SGS_flux, coef, fem_wk%sgs_t, fem_wk%tensor_1)
         call fem_skv_div_sgs_tensor_type_upw(iele_fsmp_stack,           &

@@ -119,7 +119,7 @@
       do nd = 1, n_vector
         if ( num_idx_ibc2_b(nd) .ne. 0 ) then
           do k0 = 1, num_idx_ibc2_b(nd)
-            call set_aiccg_bc_vector_nod(nnod_4_ele,                    &
+            call set_aiccg_bc_vector_nod(ele1%nnod_4_ele,               &
      &          ele_bc2_b_id(k0,nd), nod_bc2_b_id(k0,nd), nd, nd,       &
      &          DJDS_entire, Bmat_DJDS)
           end do
@@ -161,7 +161,7 @@
 !
       if(num_index_ibc2_temp .le. 0) return
       do k0 = 1, num_index_ibc2_temp
-        call set_aiccg_bc_scalar_nod(nnod_4_ele,                        &
+        call set_aiccg_bc_scalar_nod(ele1%nnod_4_ele,                   &
      &      ele_bc2_temp_id(k0), nod_bc2_temp_id(k0),                   &
      &      DJDS_fluid, Tmat_DJDS)
       end do
@@ -181,7 +181,7 @@
 !
       if(num_index_ibc2_compsition .le. 0)  return
       do k0 = 1, num_index_ibc2_compsition
-        call set_aiccg_bc_scalar_nod(nnod_4_ele,                        &
+        call set_aiccg_bc_scalar_nod(ele1%nnod_4_ele,                   &
      &      ele_bc2_composit_id(k0), nod_bc2_composit_id(k0),           &
      &      DJDS_fluid, Cmat_DJDS)
       end do

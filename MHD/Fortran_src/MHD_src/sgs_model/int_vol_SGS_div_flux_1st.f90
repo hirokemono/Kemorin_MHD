@@ -21,6 +21,7 @@
 !
       use m_precision
       use m_control_parameter
+      use m_geometry_data
 !
       implicit none
 !
@@ -55,7 +56,7 @@
       call reset_sk6(n_scalar)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call SGS_vector_cst_each_ele_1st(k2, i_vector,  i_scalar,       &
      &      i_SGS_flux, coef, sgs_e, vect_1)
         call fem_skv_div_sgs_vector_1st(iele_fsmp_stack, n_int, k2,     &
@@ -94,7 +95,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call SGS_tensor_cst_each_ele_1st(k2, i_vector,                  &
      &      i_SGS_flux, coef, sgs_t, tensor_e)
         call fem_skv_div_sgs_tensor_1st(iele_fsmp_stack, n_int, k2,     &
@@ -135,7 +136,7 @@
       call reset_sk6(n_scalar)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call SGS_vector_cst_each_ele_1st(k2, i_vector,  i_scalar,       &
      &      i_SGS_flux, coef, sgs_e, vect_1)
         call fem_skv_div_sgs_vector_1st_upw(iele_fsmp_stack,            &
@@ -176,7 +177,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call SGS_tensor_cst_each_ele_1st(k2, i_vector,                  &
      &      i_SGS_flux, coef, sgs_t, tensor_e)
         call fem_skv_div_sgs_tensor_1st_upw(iele_fsmp_stack,            &

@@ -1,92 +1,98 @@
-!sph_spectr_2_vector.f90
-!     module sph_spectr_2_vector
+!> @file  sph_spectr_2_vector.f90
+!!      module sph_spectr_2_vector
+!!
+!!@author  H. Matsui
+!!@date Programmed in 1997
+!!@n     modified by H. Matsui in June, 2006
 !
-!     Written by H. Matsui in 1997
-!     modified by H. Matsui on June, 2006
+!> @brief Copy between field data and IO data
+!!
+!!@verbatim
+!!      subroutine cvt(r, theta)
+!!******************************************************
+!!*
+!!*    subroutin of  spector => vector for vector field
+!!!*      of a point     expect for pole 
+!!*                                          '96, 7,30
+!!*
+!!******************************************************
+!!*
+!!*
+!!******************************************************
+!!*
+!!*      jmax_tri_sph  : the number of dimension of spector
+!!*      vp(j) : spector of poloidal compornent
+!!*     dvp(j) : differential of spector of poloidal compornent
+!!*      vt(j) : spector of toroidal compornent
+!!*      v_pole(m) : vector field ( 1:r , 2: theta , 3:phi)
+!!*      b_pole(m) : vector field ( 1:r , 2: theta , 3:phi)
+!!*       r1   : 1 / (radious)
+!!*       sit  : sin(theta)
+!!*     s(j,m) : spherical harmonics
+!!*   ( 0:original , 1:differentialof phi , 2:differential of thetra)
+!!*     g3(j)  : l*(l+1)
+!!*
+!!******************************************************
+!!*
+!!*
+!!******************************************************
+!!*
+!!*               l(l+1)
+!!*     Vr     = -------- Vs(r)Y(l,m)
+!!*                r^2
+!!*
+!!*               1    dVs   dY(l,m)          Vt        dY(l,m)
+!!*     Vtheta = --- [----- --------- + ------------- ----------]
+!!*               r    dr   d\theta      sin(\theta)     d\phi
+!!*
+!!*               1         1        dVs   dY(l,m)        dY(l,m)
+!!*     Vphi   = --- [------------- ----- --------- - Vt ---------]
+!!*               r    sin(\theta)   dr     d\phi         d\theta
+!!*
+!!*               
+!!*     Th     = Th(r)Y(l,m)
+!!*               
+!!*
+!!***********************************************************************
+!!*
+!!***********************************************************************
+!!*
+!!*       dY(l,m)     dP(l,m)
+!!*      --------- = ---------  {cos(mphi) or sin(mphi)}
+!!*       d\theta     d\theta
+!!*
+!!*       dY(l,m)
+!!*      --------- =  m P(l,m)  {-sin(mphi or cos(mphi)}
+!!*        d\phi
+!!*
+!!***********************************************************************
+!!*
+!!*
+!!
+!!      subroutine cvtp(r, theta)
+!!******************************************************
+!!*    subroutin of  spector => vector for vector field
+!!*      of a point    for pole 
+!!*                                          '97,12,10
+!!******************************************************
+!!*
+!!*
+!!******************************************************
+!!*      jmax_tri_sph  : the number of dimension of spector
+!!*      yp(j) : spector of poloidal compornent
+!!*     dyp(j) : differential of spector of poloidal compornent
+!!*      yt(j) : spector of toroidal compornent
+!!*      vp(m) : vector field ( 1:r , 2: theta , 3:phi)
+!!*       r1   : 1 / (radious)
+!!*       cst  : cos(theta)
+!!*     s(j,m) : spherical harmonics
+!!*   ( 0:original , 1:differentialof phi , 2:differential of thetra)
+!!*     g3(j)  : l*(l+1)
+!!******************************************************
+!!*
+!!@endverbatim
 !
-!      subroutine cvt(r, theta)
-!******************************************************
-!*
-!*    subroutin of  spector => vector for vector field
-!*      of a point     expect for pole 
-!*                                          '96, 7,30
-!*
-!******************************************************
-!*
-!*
-!******************************************************
-!*
-!*      jmax_tri_sph  : the number of dimension of spector
-!*      vp(j) : spector of poloidal compornent
-!*     dvp(j) : differential of spector of poloidal compornent
-!*      vt(j) : spector of toroidal compornent
-!*      v_pole(m) : vector field ( 1:r , 2: theta , 3:phi)
-!*      b_pole(m) : vector field ( 1:r , 2: theta , 3:phi)
-!*       r1   : 1 / (radious)
-!*       sit  : sin(theta)
-!*     s(j,m) : spherical harmonics
-!*   ( 0:original , 1:differentialof phi , 2:differential of thetra)
-!*     g3(j)  : l*(l+1)
-!*
-!******************************************************
-!*
-!*
-!******************************************************
-!*
-!*               l(l+1)
-!*     Vr     = -------- Vs(r)Y(l,m)
-!*                r^2
-!*
-!*               1    dVs   dY(l,m)          Vt        dY(l,m)
-!*     Vtheta = --- [----- --------- + ------------- ----------]
-!*               r    dr   d\theta      sin(\theta)     d\phi
-!*
-!*               1         1        dVs   dY(l,m)        dY(l,m)
-!*     Vphi   = --- [------------- ----- --------- - Vt ---------]
-!*               r    sin(\theta)   dr     d\phi         d\theta
-!*
-!*               
-!*     Th     = Th(r)Y(l,m)
-!*               
-!*
-!***********************************************************************
-!*
-!***********************************************************************
-!*
-!*       dY(l,m)     dP(l,m)
-!*      --------- = ---------  {cos(mphi) or sin(mphi)}
-!*       d\theta     d\theta
-!*
-!*       dY(l,m)
-!*      --------- =  m P(l,m)  {-sin(mphi or cos(mphi)}
-!*        d\phi
-!*
-!***********************************************************************
-!*
-!*
-!
-!      subroutine cvtp(r, theta)
-!******************************************************
-!*    subroutin of  spector => vector for vector field
-!*      of a point    for pole 
-!*                                          '97,12,10
-!******************************************************
-!*
-!*
-!******************************************************
-!*      jmax_tri_sph  : the number of dimension of spector
-!*      yp(j) : spector of poloidal compornent
-!*     dyp(j) : differential of spector of poloidal compornent
-!*      yt(j) : spector of toroidal compornent
-!*      vp(m) : vector field ( 1:r , 2: theta , 3:phi)
-!*       r1   : 1 / (radious)
-!*       cst  : cos(theta)
-!*     s(j,m) : spherical harmonics
-!*   ( 0:original , 1:differentialof phi , 2:differential of thetra)
-!*     g3(j)  : l*(l+1)
-!******************************************************
-!*
-      module sph_spectr_2_vector
+module sph_spectr_2_vector
 !
       use m_precision
 !

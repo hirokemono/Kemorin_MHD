@@ -21,7 +21,8 @@
 !!      dfdr =    d1nod_mat_fdm_2e(0) * d_ele(k  )
 !!              + d1nod_mat_fdm_2e(1) * d_ele(k+1)
 !!
-!! ----------------------------------------------------------------------!!      Work array to obtain 1d FDM
+!! ----------------------------------------------------------------------
+!!      Work array to obtain 1d FDM
 !!
 !!    derivatives on node by nodal field
 !!      dfdr =    mat_fdm_2(2,1,k) * d_nod(k  )

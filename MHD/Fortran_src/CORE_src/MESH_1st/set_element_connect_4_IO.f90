@@ -74,7 +74,6 @@
 !
       call set_3D_nnod_4_ele_by_type(first_ele_type,                    &
      &    ele1%nnod_4_ele, nnod_4_surf, nnod_4_edge)
-      nnod_4_ele = ele1%nnod_4_ele
 !
 !
       call allocate_element_connection

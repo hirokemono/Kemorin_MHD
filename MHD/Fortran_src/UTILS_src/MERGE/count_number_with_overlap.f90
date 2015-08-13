@@ -66,7 +66,6 @@
       end do
 !
       ele1%nnod_4_ele = nnod_4_ele_dummy
-      nnod_4_ele = ele1%nnod_4_ele
 !
       end subroutine count_numbers_4_mesh_merge
 !

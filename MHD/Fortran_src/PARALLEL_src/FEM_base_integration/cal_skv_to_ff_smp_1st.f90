@@ -48,12 +48,12 @@
       use cal_skv_to_ff_scalar_smp
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
       real (kind=kreal), intent(inout)                                  &
-     &                  :: ff_v_smp(maxnod_4_smp,n_vector,np_smp)
+     &            :: ff_v_smp(maxnod_4_smp,n_vector,np_smp)
 !
 !
-      call add_skv_scalar_2_ff_smp (ele1%numele, nnod_4_ele,            &
+      call add_skv_scalar_2_ff_smp (ele1%numele, ele1%nnod_4_ele,       &
      &    np_smp, maxnod_4_smp, inod_ele_max, num_sort_smp,             &
      &    nod_stack_smp, iele_sort_smp, iconn_sort_smp,                 &
      &    ff_v_smp, sk_v)
@@ -68,13 +68,13 @@
 !
       real (kind=kreal), intent(in) :: coef
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
       real (kind=kreal), intent(inout)                                  &
-     &                  :: ff_v_smp(maxnod_4_smp,n_vector,np_smp)
+     &            :: ff_v_smp(maxnod_4_smp,n_vector,np_smp)
 !
 !
       call add_skv_scalar_coef_2_ff_smp                                 &
-     &   (ele1%numele, nnod_4_ele, np_smp,                              &
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp,                         &
      &    maxnod_4_smp, inod_ele_max, num_sort_smp,                     &
      &    nod_stack_smp, iele_sort_smp, iconn_sort_smp, coef,           &
      &    ff_v_smp, sk_v)
@@ -89,12 +89,12 @@
       use cal_skv_to_ff_scalar_smp
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
       real (kind=kreal), intent(inout)                                  &
-     &                  :: ff_v_smp(maxnod_4_smp,n_vector,np_smp)
+     &            :: ff_v_smp(maxnod_4_smp,n_vector,np_smp)
 !
 !
-      call sub_skv_scalar_2_ff_smp (ele1%numele, nnod_4_ele,            &
+      call sub_skv_scalar_2_ff_smp (ele1%numele, ele1%nnod_4_ele,       &
      &    np_smp, maxnod_4_smp, inod_ele_max, num_sort_smp,             &
      &    nod_stack_smp, iele_sort_smp, iconn_sort_smp,                 &
      &    ff_v_smp, sk_v)
@@ -109,13 +109,13 @@
 !
       real (kind=kreal), intent(in) :: coef
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
       real (kind=kreal), intent(inout)                                  &
-     &                  :: ff_v_smp(maxnod_4_smp,n_vector,np_smp)
+     &            :: ff_v_smp(maxnod_4_smp,n_vector,np_smp)
 !
 !
       call sub_skv_scalar_coef_2_ff_smp                                 &
-     &   (ele1%numele, nnod_4_ele, np_smp,                              &
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp,                         &
      &    maxnod_4_smp, inod_ele_max, num_sort_smp,                     &
      &    nod_stack_smp, iele_sort_smp, iconn_sort_smp, coef,           &
      &    ff_v_smp, sk_v)
@@ -130,12 +130,12 @@
       use cal_skv_to_ff_vector_smp
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
       real (kind=kreal), intent(inout)                                  &
-     &                  :: ff_v_smp(maxnod_4_smp,n_vector,np_smp)
+     &            :: ff_v_smp(maxnod_4_smp,n_vector,np_smp)
 !
 !
-      call add_skv_vector_2_ff_smp (ele1%numele, nnod_4_ele,            &
+      call add_skv_vector_2_ff_smp (ele1%numele, ele1%nnod_4_ele,       &
      &    np_smp, maxnod_4_smp, inod_ele_max, num_sort_smp,             &
      &    nod_stack_smp, iele_sort_smp, iconn_sort_smp,                 &
      &    ff_v_smp, sk_v)
@@ -150,13 +150,13 @@
 !
       real (kind=kreal), intent(in) :: coef
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
       real (kind=kreal), intent(inout)                                  &
-     &                  :: ff_v_smp(maxnod_4_smp,n_vector,np_smp)
+     &            :: ff_v_smp(maxnod_4_smp,n_vector,np_smp)
 !
 !
       call add_skv_vector_coef_2_ff_smp                                 &
-         (ele1%numele, nnod_4_ele, np_smp,                              &
+         (ele1%numele, ele1%nnod_4_ele, np_smp,                         &
      &    maxnod_4_smp, inod_ele_max, num_sort_smp,                     &
      &    nod_stack_smp, iele_sort_smp, iconn_sort_smp, coef,           &
      &    ff_v_smp, sk_v)
@@ -171,12 +171,12 @@
       use cal_skv_to_ff_vector_smp
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
       real (kind=kreal), intent(inout)                                  &
-     &                  :: ff_v_smp(maxnod_4_smp,n_vector,np_smp)
+     &            :: ff_v_smp(maxnod_4_smp,n_vector,np_smp)
 !
 !
-      call sub_skv_vector_2_ff_smp (ele1%numele, nnod_4_ele,            &
+      call sub_skv_vector_2_ff_smp (ele1%numele, ele1%nnod_4_ele,       &
      &    np_smp, maxnod_4_smp, inod_ele_max, num_sort_smp,             &
      &    nod_stack_smp, iele_sort_smp, iconn_sort_smp,                 &
      &    ff_v_smp, sk_v)
@@ -191,13 +191,13 @@
 !
       real (kind=kreal), intent(in) :: coef
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
       real (kind=kreal), intent(inout)                                  &
-     &                  :: ff_v_smp(maxnod_4_smp,n_vector,np_smp)
+     &            :: ff_v_smp(maxnod_4_smp,n_vector,np_smp)
 !
 !
       call sub_skv_vector_coef_2_ff_smp                                 &
-     &   (ele1%numele, nnod_4_ele, np_smp,                              &
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp,                         &
      &    maxnod_4_smp, inod_ele_max, num_sort_smp,                     &
      &    nod_stack_smp, iele_sort_smp, iconn_sort_smp, coef,           &
      &    ff_v_smp, sk_v)
@@ -212,12 +212,12 @@
       use cal_skv_to_ff_tensor_smp
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
       real (kind=kreal), intent(inout)                                  &
-     &                  :: ff_t_smp(maxnod_4_smp,n_sym_tensor,np_smp)
+     &            :: ff_t_smp(maxnod_4_smp,n_sym_tensor,np_smp)
 !
 !
-      call add_skv_tensor_2_ff_smp (ele1%numele, nnod_4_ele,            &
+      call add_skv_tensor_2_ff_smp (ele1%numele, ele1%nnod_4_ele,       &
      &    np_smp, maxnod_4_smp, inod_ele_max, num_sort_smp,             &
      &    nod_stack_smp, iele_sort_smp, iconn_sort_smp,                 &
      &    ff_t_smp, sk_v)
@@ -232,13 +232,13 @@
 !
       real (kind=kreal), intent(in) :: coef
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
       real (kind=kreal), intent(inout)                                  &
-     &                  :: ff_t_smp(maxnod_4_smp,n_sym_tensor,np_smp)
+     &            :: ff_t_smp(maxnod_4_smp,n_sym_tensor,np_smp)
 !
 !
       call add_skv_tensor_coef_2_ff_smp                                 &
-     &   (ele1%numele, nnod_4_ele, np_smp,                              &
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp,                         &
      &    maxnod_4_smp, inod_ele_max, num_sort_smp,                     &
      &    nod_stack_smp, iele_sort_smp, iconn_sort_smp, coef,           &
      &    ff_t_smp, sk_v)
@@ -253,12 +253,12 @@
       use cal_skv_to_ff_tensor_smp
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
       real (kind=kreal), intent(inout)                                  &
-     &                  :: ff_t_smp(maxnod_4_smp,n_sym_tensor,np_smp)
+     &            :: ff_t_smp(maxnod_4_smp,n_sym_tensor,np_smp)
 !
 !
-      call sub_skv_tensor_2_ff_smp (ele1%numele, nnod_4_ele,            &
+      call sub_skv_tensor_2_ff_smp (ele1%numele, ele1%nnod_4_ele,       &
      &    np_smp, maxnod_4_smp, inod_ele_max, num_sort_smp,             &
      &    nod_stack_smp, iele_sort_smp, iconn_sort_smp,                 &
      &    ff_t_smp, sk_v)
@@ -273,13 +273,13 @@
 !
       real (kind=kreal), intent(in) :: coef
       real (kind=kreal), intent(in)                                     &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
       real (kind=kreal), intent(inout)                                  &
-     &                  :: ff_t_smp(maxnod_4_smp,n_sym_tensor,np_smp)
+     &            :: ff_t_smp(maxnod_4_smp,n_sym_tensor,np_smp)
 !
 !
       call sub_skv_tensor_coef_2_ff_smp                                 &
-     &   (ele1%numele, nnod_4_ele, np_smp,                              &
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp,                         &
      &    maxnod_4_smp, inod_ele_max, num_sort_smp,                     &
      &    nod_stack_smp, iele_sort_smp, iconn_sort_smp, coef,           &
      &    ff_t_smp, sk_v)

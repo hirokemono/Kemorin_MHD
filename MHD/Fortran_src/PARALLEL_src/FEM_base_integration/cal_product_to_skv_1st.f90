@@ -94,7 +94,7 @@
       real (kind=kreal), intent(in) :: ak_1(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &              :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &              :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call scalar_prod_to_skv_vector(ele1%numele, iele_fsmp_stack,      &

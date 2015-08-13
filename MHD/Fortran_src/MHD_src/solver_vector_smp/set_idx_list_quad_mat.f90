@@ -43,7 +43,7 @@
 !
 !
       call set_index_list_4_mat_whole                                   &
-     &   (nnod_4_ele, DJDS_entire, idx_4_mat)
+     &   (ele1%nnod_4_ele, DJDS_entire, idx_4_mat)
 !
       end subroutine set_index_list_4_mat_etr
 !
@@ -56,7 +56,7 @@
       use m_solver_djds_MHD
 !
 !
-      call set_index_list_4_DJDS_mat(nnod_4_ele,                        &
+      call set_index_list_4_DJDS_mat(ele1%nnod_4_ele,                   &
      &    iele_fl_start, iele_fl_end, DJDS_fluid, idx_4_fl_mat)
 !
       end subroutine set_index_list_4_mat_fl
@@ -70,9 +70,9 @@
       use m_solver_djds_MHD
 !
 !
-!      call set_index_list_4_DJDS_mat(nnod_4_ele,                       &
+!      call set_index_list_4_DJDS_mat(ele1%nnod_4_ele,                  &
 !     &    iele_cd_start, iele_cd_end, DJDS_conduct, idx_4_cd_mat)
-      call set_index_list_4_DJDS_mat(nnod_4_ele,                        &
+      call set_index_list_4_DJDS_mat(ele1%nnod_4_ele,                   &
      &    iele_cd_start, iele_cd_end, DJDS_entire, idx_4_cd_mat_full)
 !
       end subroutine set_index_list_4_mat_cd
@@ -86,7 +86,7 @@
       use m_solver_djds_MHD
 !
 !
-      call set_index_list_4_DJDS_mat(nnod_4_ele,                        &
+      call set_index_list_4_DJDS_mat(ele1%nnod_4_ele,                   &
      &    iele_ins_start, iele_ins_end, DJDS_insulator, idx_4_ins_mat)
 !
       end subroutine set_index_list_4_mat_ins
