@@ -67,7 +67,7 @@
 !
 !
 !>     smp stack for total node on  local PE
-      integer( kind=kint ), allocatable, target :: inod_smp_stack(:)
+      integer( kind=kint ), pointer :: inod_smp_stack(:)
 !>     smp stack for internal node on  local PE
       integer( kind=kint ), allocatable, target :: inter_smp_stack(:)
 !>     maximum number of smp node on local PE
@@ -160,7 +160,6 @@
 !
        iele_smp_stack = 0
        inod_smp_stack = 0
-!       iele_4_smp = 0
 !
        end subroutine allocate_geometry_param_smp
 !

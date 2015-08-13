@@ -84,13 +84,19 @@
 !
       subroutine set_smp_data_4_node
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use cal_minmax_and_stacks
 !
+       call allocate_node_param_smp_type(node1)
        call allocate_geometry_param_smp
        if (iflag_debug.eq.1)  write(*,*) 'count_number_4_smp'
+!
+       call count_number_4_smp( np_smp, ione, node1%numnod,             &
+     &       node1%istack_nod_smp, maxnod_4_smp )
        call count_number_4_smp(np_smp, ione, internal_node,             &
      &       inter_smp_stack, max_in_nod_4_smp)
+!
+      inod_smp_stack = node1%istack_nod_smp
 !
       end subroutine set_smp_data_4_node
 !

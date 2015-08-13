@@ -76,7 +76,7 @@
 !
 !>  structure for node data (position)
       type(node_data), save :: node1
-!    node1%numnod
+!    node1%istack_nod_smp
 !
 !>  structure for element data (position and connectivity)
       type(element_data), save :: ele1

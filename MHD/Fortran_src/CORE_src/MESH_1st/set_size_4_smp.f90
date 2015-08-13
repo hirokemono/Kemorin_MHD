@@ -35,17 +35,20 @@
       use cal_minmax_and_stacks
 !
 !
-       call allocate_geometry_param_smp
+      call allocate_node_param_smp_type(node1)
+      call allocate_geometry_param_smp
 !
 !
        call count_number_4_smp( np_smp, ione, node1%numnod,             &
-     &       inod_smp_stack, maxnod_4_smp )
+     &       node1%istack_nod_smp, maxnod_4_smp )
 !
        call count_number_4_smp( np_smp, ione, internal_node,            &
      &       inter_smp_stack, max_in_nod_4_smp )
 !
        call count_number_4_smp( np_smp, ione, ele1%numele,              &
      &       iele_smp_stack, maxele_4_smp )
+!
+      inod_smp_stack = node1%istack_nod_smp
 !
       end subroutine count_size_4_sheard_para
 !
