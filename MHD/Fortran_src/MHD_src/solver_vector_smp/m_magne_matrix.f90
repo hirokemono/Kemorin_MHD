@@ -101,7 +101,7 @@
           Bmat_DJDS%aiccg(9*inod  ) = 1.0d0
         end do
 !
-        do k1 = 1, nnod_4_ele
+        do k1 = 1, ele1%nnod_4_ele
           do iele = iele_cd_start, iele_cd_end
             inod = ie(iele,k1)
             in = DJDS_entire%OLDtoNEW(inod)

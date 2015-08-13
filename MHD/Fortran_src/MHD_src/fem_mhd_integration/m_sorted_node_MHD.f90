@@ -4,9 +4,9 @@
 !
 !     Written by H. Matsui
 !
-!       subroutine allocate_marix_list_fl
-!       subroutine allocate_marix_list_cd
-!       subroutine allocate_marix_list_ins
+!       subroutine allocate_marix_list_fl(nnod_4_ele)
+!       subroutine allocate_marix_list_cd(nnod_4_ele)
+!       subroutine allocate_marix_list_ins(nnod_4_ele)
 !
 !       subroutine deallocate_marix_list_fl
 !       subroutine deallocate_marix_list_cd
@@ -38,12 +38,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_marix_list_fl
+      subroutine allocate_marix_list_fl(nnod_4_ele)
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_sorted_node
 !
+!
+      integer(kind = kint), intent(in) :: nnod_4_ele
 !
       allocate (idx_4_fl_mat (num_sort_smp,nnod_4_ele))
       allocate (idx_4_fll_mat (num_sort_smp,num_t_linear))
@@ -55,11 +56,13 @@
 !
 ! ----------------------------------------------
 !
-      subroutine allocate_marix_list_cd
+      subroutine allocate_marix_list_cd(nnod_4_ele)
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_sorted_node
+!
+      integer(kind = kint), intent(in) :: nnod_4_ele
+!
 !
       allocate (idx_4_cd_mat (num_sort_smp,nnod_4_ele)) 
       allocate (idx_4_cd_mat_full (num_sort_smp,nnod_4_ele))
@@ -75,11 +78,13 @@
 !
 ! ----------------------------------------------
 !
-      subroutine allocate_marix_list_ins
+      subroutine allocate_marix_list_ins(nnod_4_ele)
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_sorted_node
+!
+      integer(kind = kint), intent(in) :: nnod_4_ele
+!
 !
       allocate (idx_4_ins_mat (num_sort_smp,nnod_4_ele))
       allocate (idx_4_insl_mat (num_sort_smp,num_t_linear))

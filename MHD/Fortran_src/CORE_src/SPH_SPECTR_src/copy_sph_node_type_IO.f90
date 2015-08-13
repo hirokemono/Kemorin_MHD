@@ -1,8 +1,3 @@
-!
-!      module copy_sph_node_type_IO
-!
-!     Written by H. Matsui on July, 2007
-!
 !>@file   copy_sph_node_type_IO.f90
 !!@brief  module copy_sph_node_type_IO
 !!

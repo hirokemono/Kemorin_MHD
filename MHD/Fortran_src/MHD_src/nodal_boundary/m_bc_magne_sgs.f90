@@ -5,6 +5,7 @@
 !     Written by Kemorin
 !
 !       subroutine allocate_bc_b_sgs(numnod)
+!       subroutine allocate_bc_b_sgs_ele(nnod_4_ele)
 !
       module m_bc_magne_sgs
 !
@@ -70,10 +71,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_b_sgs_ele
+       subroutine allocate_bc_b_sgs_ele(nnod_4_ele)
 !
-        use m_geometry_parameter
         use m_machine_parameter
+!
+       integer(kind = kint), intent(in) :: nnod_4_ele
+!
 !
         allocate ( ele_bc_b_sgs_id(nmax_idx_ibc_b_sgs,3) )
         allocate ( nod_bc_b_sgs_id(nmax_idx_ibc_b_sgs,3) )

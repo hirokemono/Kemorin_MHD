@@ -20,7 +20,7 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
       use m_element_phys_data
@@ -55,7 +55,7 @@
 !
 ! -------- loop for shape function for the field values
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call scalar_phys_2_each_element(k2, i_field, phi_e)
         call fem_skv_grad_sgs_upw_1st(iele_fsmp_stack, num_int, k2,     &
      &      i_filter, ak_diff(1,iak_diff), d_ele(1,iv_up), phi_e, sk6)
@@ -82,7 +82,7 @@
 !
 ! -------- loop for shape function for the field values
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_field, vect_e)
         call fem_skv_div_sgs_upw_1st(iele_fsmp_stack, num_int, k2,      &
      &      i_filter, ak_diff(1,iak_diff), d_ele(1,iv_up), vect_e, sk6)
@@ -109,7 +109,7 @@
 !
 ! -------- loop for shape function for the field values
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_field, vect_e)
         call fem_skv_rot_sgs_upw_1st(iele_fsmp_stack, num_int, k2,      &
      &      i_filter, ak_diff(1,iak_diff), d_ele(1,iv_up), vect_e, sk6)
@@ -137,7 +137,7 @@
 !
 ! -------- loop for shape function for the field values
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call tensor_phys_2_each_element(k2, i_field, tensor_e)
         call fem_skv_div_tsr_sgs_upw_1st(iele_fsmp_stack, num_int, k2,  &
      &      i_filter, ak_diff(1,iak_diff), d_ele(1,iv_up), tensor_e,    &
@@ -165,7 +165,7 @@
 !
 ! -------- loop for shape function for the field values
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_field, vect_e)
         call fem_skv_div_as_tsr_sgs_upw_1st(iele_fsmp_stack,            &
      &     num_int, k2, i_filter, ak_diff(1,iak_diff), d_ele(1,iv_up),  &

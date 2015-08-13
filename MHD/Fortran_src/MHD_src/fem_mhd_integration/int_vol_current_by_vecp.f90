@@ -22,7 +22,7 @@
       subroutine int_vol_current_diffuse
 !
       use m_control_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
       use m_finite_element_matrix
@@ -38,7 +38,7 @@
       ff_nl_smp = 0.0d0
       call reset_sk6(n_vector)
 !
-      do k2=1, nnod_4_ele
+      do k2=1, ele1%nnod_4_ele
         call vactor_phys_2_each_element(k2, iphys%i_vecp, vect_1)
         call fem_skv_rot_rot_by_laplace(iele_smp_stack,                 &
      &      intg_point_poisson, k2, vect_1, sk6)

@@ -67,7 +67,7 @@
         Tmat_DJDS%aiccg(inod) = 1.0d0
        end do
 !
-      do k1 = 1, nnod_4_ele
+      do k1 = 1, ele1%nnod_4_ele
         do iele = iele_fl_start, iele_fl_end
           inod = ie(iele,k1)
           in = DJDS_fluid%OLDtoNEW(inod)

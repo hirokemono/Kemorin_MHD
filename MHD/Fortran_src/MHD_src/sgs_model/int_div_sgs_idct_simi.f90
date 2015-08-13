@@ -39,9 +39,10 @@
 !
 !
       call reset_sk6(n_vector)
-      do k2 = 1, nnod_4_ele
-        call SGS_induct_2_each_element(ele1%numele, nnod_4_ele, ie,     &
-     &      iele_smp_stack, k2, i_b, i_v, i_flux, vect_e)
+      do k2 = 1, ele1%nnod_4_ele
+        call SGS_induct_2_each_element                                  &
+     &     (ele1%numele, ele1%nnod_4_ele, ie, iele_smp_stack,           &
+     &      k2, i_b, i_v, i_flux, vect_e)
         call fem_skv_div_asym_tsr(iele_cd_smp_stack,                    &
      &      intg_point_t_evo, k2, vect_e, sk6)
       end do
@@ -67,8 +68,9 @@
 !
 !
       call reset_sk6(n_vector)
-      do k2 = 1, nnod_4_ele
-        call SGS_induct_2_each_element(ele1%numele, nnod_4_ele, ie,     &
+      do k2 = 1, ele1%nnod_4_ele
+        call SGS_induct_2_each_element                                  &
+     &     (ele1%numele, ele1%nnod_4_ele, ie,                           &
      &      iele_smp_stack, k2, i_b, i_v, i_flux, vect_e)
         call fem_skv_div_as_tsr_upw(iele_cd_smp_stack,                  &
      &      intg_point_t_evo, k2, d_ele(1,iphys_ele%i_velo),            &

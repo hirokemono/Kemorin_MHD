@@ -16,6 +16,7 @@
       module int_vol_sgs_fractional_1st
 !
       use m_precision
+      use m_geometry_data
 !
       implicit none
 !
@@ -47,7 +48,7 @@
       call reset_sk6(n_scalar)
 !
 ! -------- loop for shape function for the phsical values
-      do k2=1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_vector, velo_1)
         call fem_skv_div_2l_sgs_1st(iele_fsmp_stack, n_int, k2,         &
      &      i_filter, ak_diff(1,iak_diff), velo_1, sk6)
@@ -82,7 +83,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the phsical values
-      do k2=1, num_t_linear
+      do k2 = 1, num_t_linear
         call scalar_phys_2_each_element(k2, i_scalar, phi_e)
         call fem_skv_linear_grad_sgs_1st(iele_fsmp_stack, n_int, k2,    &
      &      i_filter, ak_diff(1,iak_diff), phi_e, sk6)
@@ -98,7 +99,6 @@
       subroutine int_vol_scalar_sgs_diffuse_1st(iele_fsmp_stack,        &
      &          n_int, coef_crank, ak_d, i_scalar, i_filter, iak_diff)
 !
-      use m_geometry_data
       use m_phys_constants
       use m_finite_element_matrix
       use m_int_vol_data
@@ -120,7 +120,7 @@
       call reset_sk6(n_scalar)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call scalar_phys_2_each_element(k2, i_scalar, phi_e)
         call fem_skv_scalar_diffuse_sgs_1st(iele_fsmp_stack, n_int, k2, &
      &      i_filter, ak_diff(1,iak_diff), ak_d, phi_e, sk6)
@@ -135,7 +135,6 @@
       subroutine int_vol_vector_sgs_diffuse_1st(iele_fsmp_stack,        &
      &          n_int, coef_crank, ak_d, i_vector, i_filter, iak_diff)
 !
-      use m_geometry_data
       use m_phys_constants
       use m_finite_element_matrix
       use m_int_vol_data
@@ -157,7 +156,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the phsical values
-      do k2=1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_vector, velo_1)
         call fem_skv_vector_diffuse_sgs_1st(iele_fsmp_stack, n_int, k2, &
      &      i_filter, ak_diff(1,iak_diff), ak_d, velo_1, sk6)

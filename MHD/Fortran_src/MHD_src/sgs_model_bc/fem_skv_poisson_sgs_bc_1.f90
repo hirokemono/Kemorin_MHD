@@ -84,11 +84,11 @@
       real (kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_diffuse_sgs_fixed                                    &
-     & (ele1%numele, nnod_4_ele, nnod_4_ele,                            &
+     & (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                  &
      &  np_smp, num_index_ibc, ele_bc_id, ibc_stack_smp,                &
      &  k2, nd, n_int, ntot_int_3d, xjac, dwx, dwx,                     &
      &  FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                  &

@@ -5,6 +5,7 @@
 !     Written by H. Matsui
 !
 !       subroutine allocate_bc_vect_p(numnod)
+!       subroutine allocate_bc_vect_p_4_element(nnod_4_ele)
 !
       module m_bc_data_vect_p
 !
@@ -68,10 +69,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_vect_p_4_element
+       subroutine allocate_bc_vect_p_4_element(nnod_4_ele)
 !
-        use m_geometry_parameter
         use m_machine_parameter
+!
+       integer(kind = kint), intent(in) :: nnod_4_ele
+!
 !
         allocate ( ele_bc_vp_id(nmax_idx_ibc_vp,3) )
         allocate ( nod_bc_vp_id(nmax_idx_ibc_vp,3) )

@@ -22,7 +22,7 @@
       subroutine int_vol_crank_mat_consist
 !
       use m_control_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_physical_property
       use m_phys_constants
       use m_sorted_node_MHD
@@ -39,7 +39,7 @@
        integer(kind = kint) :: k2
 !
 !
-      do  k2 = 1, nnod_4_ele
+      do  k2 = 1, ele1%nnod_4_ele
         call reset_sk6(n_scalar)
 !
         call fem_skv_mass_matrix_1st(iele_smp_stack,                    &

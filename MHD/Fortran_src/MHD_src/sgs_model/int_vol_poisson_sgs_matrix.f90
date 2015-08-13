@@ -35,7 +35,7 @@
       use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, nnod_4_ele)
+     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
 !
       integer(kind = kint), intent(in) :: n_int, i_filter
       real(kind=kreal), intent(in) :: ak_diff(ele1%numele)
@@ -46,7 +46,7 @@
       integer(kind = kint) :: k2
 !
 !
-      do  k2 = 1, nnod_4_ele
+      do  k2 = 1, ele1%nnod_4_ele
         call reset_sk6(n_scalar)
         call fem_skv_poisson_linear_sgs_1st(iele_smp_stack, n_int,      &
      &      k2, i_filter, ak_diff, sk6)
@@ -66,7 +66,7 @@
       use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, nnod_4_ele)
+     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
       real(kind=kreal), intent(in) :: coef_imp
       real(kind=kreal), intent(in) :: ak_d(ele1%numele)
       real(kind=kreal), intent(in) :: ak_diff(ele1%numele)
@@ -79,7 +79,7 @@
       integer(kind = kint) :: k2
 !
 !
-      do  k2 = 1, nnod_4_ele
+      do  k2 = 1, ele1%nnod_4_ele
         call reset_sk6(n_scalar)
         call fem_skv_poisson_sgs_1st(iele_smp_stack, n_int, k2,         &
      &      i_filter, ak_diff, sk6)
@@ -98,7 +98,7 @@
       use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, nnod_4_ele)
+     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
       real(kind=kreal), intent(in) :: coef_imp
       real(kind=kreal), intent(in) :: ak_d(ele1%numele)
       real(kind=kreal), intent(in) :: ak_diff(ele1%numele)
@@ -111,7 +111,7 @@
       integer(kind = kint) :: k2
 !
 !
-      do  k2 = 1, nnod_4_ele
+      do  k2 = 1, ele1%nnod_4_ele
         call reset_sk6(n_scalar)
         call fem_skv_poisson_sgs_1st(iele_smp_stack, n_int, k2,         &
      &      i_filter, ak_diff,  sk6)

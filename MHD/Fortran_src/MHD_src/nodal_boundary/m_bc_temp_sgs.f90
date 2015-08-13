@@ -5,6 +5,7 @@
 !      Written by Kemorin on Feb., 2004
 !
 !       subroutine allocate_bc_t_sgs(numnod)
+!       subroutine allocate_bc_t_sgs_4_ele(nnod_4_ele)
 !
       module m_bc_temp_sgs
 !
@@ -64,10 +65,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine allocate_bc_t_sgs_4_ele
+       subroutine allocate_bc_t_sgs_4_ele(nnod_4_ele)
 !
-        use m_geometry_parameter
         use m_machine_parameter
+!
+       integer(kind = kint), intent(in) :: nnod_4_ele
+!
 !
         allocate ( ele_bc_t_sgs_id(num_index_ibc_t_sgs) )
         allocate ( nod_bc_t_sgs_id(num_index_ibc_t_sgs) )

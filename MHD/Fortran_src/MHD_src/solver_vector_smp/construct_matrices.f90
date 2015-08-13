@@ -25,7 +25,7 @@
 !
       use m_geometry_constants
 
-      use m_geometry_parameter
+      use m_geometry_data
       use t_solver_djds
       use m_solver_djds_MHD
 !
@@ -43,7 +43,7 @@
 !      call dealloc_type_4_djds_table(DJDS_conduct)
 !      call dealloc_type_4_djds_table(DJDS_insulator)
 !
-      if ( nnod_4_ele .ne. num_t_linear) then
+      if (ele1%nnod_4_ele .ne. num_t_linear) then
         call dealloc_type_4_djds_table(DJDS_linear)
         call dealloc_type_4_djds_table(DJDS_fl_l)
 !        call dealloc_type_4_djds_table(DJDS_cd_l)

@@ -5,7 +5,7 @@
 !      Written by Kemorin on Feb., 2004
 !
 !       subroutine allocate_bc_ene(numnod)
-!       subroutine allocate_bc_temp_4_element
+!       subroutine allocate_bc_temp_4_element(nnod_4_ele)
 !       subroutine deallocate_ibc_4_temp
 !       subroutine deallocate_bc2_temp
 !
@@ -67,10 +67,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine allocate_bc_temp_4_element
+       subroutine allocate_bc_temp_4_element(nnod_4_ele)
 !
-        use m_geometry_parameter
         use m_machine_parameter
+!
+       integer(kind = kint), intent(in) :: nnod_4_ele
+!
 !
         allocate ( ele_bc_temp_id(num_index_ibc_temp) )
         allocate ( nod_bc_temp_id(num_index_ibc_temp) )

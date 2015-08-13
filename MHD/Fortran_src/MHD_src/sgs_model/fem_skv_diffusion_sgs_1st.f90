@@ -47,11 +47,11 @@
       real(kind=kreal),   intent(in) :: scalar_1(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_scalar_diffuse_sgs                                   &
-     & (ele1%numele, nnod_4_ele, nnod_4_ele,                            &
+     & (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                  &
      &  np_smp, iele_fsmp_stack, n_int, k2,                             &
      &  ntot_int_3d, xjac, dwx, dwx,                                    &
      &  FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                  &
@@ -78,11 +78,11 @@
       real(kind=kreal), intent(in) :: vect_1(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_vector_diffuse_sgs                                   &
-     & (ele1%numele, nnod_4_ele, nnod_4_ele,                            &
+     & (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                  &
      &  np_smp, iele_fsmp_stack, n_int, k2,                             &
      &  ntot_int_3d, xjac, dwx, dwx,                                    &
      &  FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                  &
@@ -108,10 +108,11 @@
       real (kind=kreal), intent(in) :: ak_diff(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
-      call fem_skv_poisson_sgs_pg(ele1%numele, nnod_4_ele, nnod_4_ele,  &
+      call fem_skv_poisson_sgs_pg                                       &
+     & (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                  &
      &  np_smp, iele_fsmp_stack, n_int, k2,                             &
      &  ntot_int_3d, xjac, dwx, dwx,                                    &
      &  FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                  &
@@ -136,7 +137,7 @@
       real (kind=kreal), intent(in) :: ak_diff(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_poisson_sgs_pg                                       &

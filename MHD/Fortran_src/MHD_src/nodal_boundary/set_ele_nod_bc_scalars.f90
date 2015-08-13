@@ -39,7 +39,7 @@
       call count_bc_element_fl(num_index_ibc_vrot, ibc_velo_rot)
       call count_bc_element_fl(num_index_ibc2_vrot, ibc2_velo_rot)
 !
-      call allocate_bc_rot_4_ele
+      call allocate_bc_rot_4_ele(ele1%nnod_4_ele)
 !
       call set_ele_4_scalar_nodal_bc_fl                                 &
      &   (node1%numnod, ele1%nnod_4_ele, ibc_velo_rot, ibc2_velo_rot,   &
@@ -62,7 +62,7 @@
       call count_bc_element_fl(num_index_ibc_vfr, ibc_velo_fr)
       call count_bc_element_fl(num_index_ibc2_vfr, ibc2_velo_fr)
 !
-      call allocate_bc_vfr_4_ele
+      call allocate_bc_vfr_4_ele(ele1%nnod_4_ele)
 !
       call set_ele_4_scalar_nodal_bc_fl                                 &
      &   (node1%numnod, ele1%nnod_4_ele, ibc_velo_fr, ibc2_velo_fr,     &
@@ -84,7 +84,7 @@
       call count_bc_element_fl(num_index_ibc_vr0, ibc_velo_r0)
       call count_bc_element_fl(num_index_ibc2_vr0, ibc2_velo_r0)
 !
-      call allocate_bc_vr0_4_ele
+      call allocate_bc_vr0_4_ele(ele1%nnod_4_ele)
 !
       call set_ele_4_scalar_nodal_bc_fl                                 &
      &   (node1%numnod, ele1%nnod_4_ele, ibc_velo_r0, ibc2_velo_r0,     &
@@ -106,7 +106,7 @@
       call count_bc_element_fl(num_index_ibc_vsp, ibc_velo_vsp)
       call count_bc_element_fl(num_index_ibc2_vsp, ibc2_velo_vsp)
 !
-      call allocate_bc_vsp_4_ele
+      call allocate_bc_vsp_4_ele(ele1%nnod_4_ele)
 !
       call set_ele_4_scalar_nodal_bc_fl                                 &
      &   (node1%numnod, ele1%nnod_4_ele, ibc_velo_vsp, ibc2_velo_vsp,   &
@@ -129,7 +129,7 @@
       call count_bc_element_fl(num_index_ibc_temp, ibc_temp)
       call count_bc_element_fl(num_index_ibc2_temp, ibc2_temp)
 !
-      call allocate_bc_temp_4_element
+      call allocate_bc_temp_4_element(ele1%nnod_4_ele)
 !
       call set_ele_4_scalar_nodal_bc_fl                                 &
      &   (node1%numnod, ele1%nnod_4_ele, ibc_temp, ibc2_temp,           &
@@ -152,7 +152,7 @@
       call count_bc_element_fl(num_index_ibc_t_sgs, ibc_t_sgs)
       call count_bc_element_fl(num_index_ibc2_t_sgs, ibc2_t_sgs)
 !
-      call allocate_bc_t_sgs_4_ele
+      call allocate_bc_t_sgs_4_ele(ele1%nnod_4_ele)
 !
       call set_ele_4_scalar_nodal_bc_fl                                 &
      &   (node1%numnod, ele1%nnod_4_ele, ibc_t_sgs, ibc2_t_sgs,         &
@@ -176,7 +176,7 @@
       call count_bc_element_fl(num_index_ibc2_compsition,               &
      &                         ibc2_composit)
 !
-      call allocate_bc_composit_4_element
+      call allocate_bc_composit_4_element(ele1%nnod_4_ele)
 !
       call set_ele_4_scalar_nodal_bc_fl                                 &
      &   (node1%numnod, ele1%nnod_4_ele, ibc_composit, ibc2_composit,   &

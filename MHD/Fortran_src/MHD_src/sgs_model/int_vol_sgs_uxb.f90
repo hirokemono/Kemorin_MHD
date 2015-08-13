@@ -31,7 +31,7 @@
       integer (kind=kint), intent(in) :: id_dx
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       if (iflag_mag_supg .eq. id_turn_ON) then
@@ -58,7 +58,7 @@
       integer(kind = kint), intent(in) :: id_dx, i_filter
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
       integer(kind = kint) :: nd, k2
 !
@@ -67,7 +67,7 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-        do k2=1, nnod_4_ele
+        do k2 = 1, ele1%nnod_4_ele
 !
 ! --------- set magnetic field at each node in an element
 !
@@ -97,13 +97,13 @@
       integer(kind = kint), intent(in) :: id_dx, i_filter
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
       integer(kind = kint) :: nd, k2
 !
 !
       do nd = 1, n_vector
-        do k2 = 1, nnod_4_ele
+        do k2 = 1, ele1%nnod_4_ele
 !
           call vector_phys_2_each_element(k2, i_field, vect_e)
           call fem_skv_sgs_uxb_upw_1(iele_cd_smp_stack,                 &

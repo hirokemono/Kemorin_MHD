@@ -5,7 +5,7 @@
 !      Written by H. Matsui
 !
 !       subroutine allocate_bc_velo(numnod)
-!       subroutine allocate_bc_velo_4_element
+!       subroutine allocate_bc_velo_4_element(nnod_4_ele)
 !       subroutine deallocate_ibc_4_velo
 !       subroutine deallocate_bc2_velo
 !
@@ -71,10 +71,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_velo_4_element
+       subroutine allocate_bc_velo_4_element(nnod_4_ele)
 !
-        use m_geometry_parameter
         use m_machine_parameter
+!
+       integer(kind = kint), intent(in) :: nnod_4_ele
+!
 !
         allocate ( ele_bc_v_id(nmax_idx_ibc_v,3) )
         allocate ( nod_bc_v_id(nmax_idx_ibc_v,3) )

@@ -5,7 +5,7 @@
 !     Written by Kemorin
 !
 !       subroutine allocate_bc_magne(numnod)
-!       subroutine allocate_bc_magne_4_element
+!       subroutine allocate_bc_magne_4_element(nnod_4_ele)
 !
 !       subroutine deallocate_ibc_4_magne
 !       subroutine deallocate_bc2_magne
@@ -74,10 +74,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_magne_4_element
+       subroutine allocate_bc_magne_4_element(nnod_4_ele)
 !
-        use m_geometry_parameter
         use m_machine_parameter
+!
+       integer(kind = kint), intent(in) :: nnod_4_ele
+!
 !
         allocate ( ele_bc_b_id(nmax_idx_ibc_b,3) )
         allocate ( nod_bc_b_id(nmax_idx_ibc_b,3) )

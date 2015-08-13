@@ -11,7 +11,6 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
       use m_jacobians
@@ -39,9 +38,9 @@
       integer (kind = kint) :: iproc, nd
 !
 !
-      if (nnod_4_ele .eq. num_t_linear) then
+      if (ele1%nnod_4_ele .eq. num_t_linear) then
         call int_vol_rms_ave_d_l(iele_fsmp_stack, n_tensor, n_int)
-      else if (nnod_4_ele .eq. num_t_quad) then
+      else if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vol_rms_ave_d_q(iele_fsmp_stack, n_tensor, n_int)
       end if
 !

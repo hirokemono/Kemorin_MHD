@@ -66,7 +66,6 @@
 !
       subroutine allocate_bc_magp_sgs_4_ele
 !
-      use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_constants
 !

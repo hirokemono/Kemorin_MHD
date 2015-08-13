@@ -71,7 +71,6 @@
       subroutine allocate_bc_magne_p_4_element
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_machine_parameter
 !
         allocate ( ele_bc_mag_p_id(num_index_ibc_mag_p) )

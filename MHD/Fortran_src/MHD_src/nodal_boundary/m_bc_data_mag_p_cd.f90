@@ -42,7 +42,6 @@
       subroutine allocate_bc_mag_p_cd_4_ele
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_machine_parameter
 !
         allocate ( ele_bc_mag_pc_id(num_index_ibc_mag_pc) )

@@ -1,8 +1,11 @@
+!>@file   m_rms_4_sph_spectr.f90
+!!@brief  module m_rms_4_sph_spectr
+!!
+!!@author H. Matsui
+!!@date Programmed in Feb., 2008
 !
-!      module m_rms_4_sph_spectr
-!
-!     Written by H. Matsui on Feb., 2008
-!
+!>@brief Mean sqare data
+!!
 !!@verbatim
 !!      subroutine allocate_num_spec_layer
 !!      subroutine allocate_rms_name_sph_spec

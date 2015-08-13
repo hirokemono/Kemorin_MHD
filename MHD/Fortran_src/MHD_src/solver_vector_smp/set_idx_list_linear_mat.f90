@@ -33,9 +33,9 @@
       use set_idx_list_quad_mat
 !
 !
-      if (nnod_4_ele.ne.num_t_linear) then
+      if (ele1%nnod_4_ele .ne. num_t_linear) then
         call set_index_list_4_mat_whole                                 &
-     &     (nnod_4_ele, DJDS_linear, idx_4_l_mat)
+     &     (ele1%nnod_4_ele, DJDS_linear, idx_4_l_mat)
       else
         idx_4_l_mat = idx_4_mat
       end if
@@ -52,7 +52,7 @@
       use set_idx_list_quad_mat
 !
 !
-      if (nnod_4_ele.ne.num_t_linear) then
+      if (ele1%nnod_4_ele .ne. num_t_linear) then
         call set_index_list_4_DJDS_mat(num_t_linear,                    &
      &      iele_cd_start, iele_cd_end, DJDS_fl_l, idx_4_fll_mat)
       else
@@ -71,7 +71,7 @@
       use set_idx_list_quad_mat
 !
 !
-      if (nnod_4_ele.ne.num_t_linear) then
+      if (ele1%nnod_4_ele .ne. num_t_linear) then
         call set_index_list_4_DJDS_mat(num_t_linear,                    &
      &      iele_cd_start, iele_cd_end, DJDS_cd_l, idx_4_cdl_mat)
         call set_index_list_4_DJDS_mat(num_t_linear,                    &
@@ -94,7 +94,7 @@
       use set_idx_list_quad_mat
 !
 !
-      if (nnod_4_ele.ne.num_t_linear) then
+      if (ele1%nnod_4_ele .ne. num_t_linear) then
         call set_index_list_4_DJDS_mat(num_t_linear,                    &
      &      iele_ins_start, iele_ins_end, DJDS_ins_l, idx_4_insl_mat)
       else

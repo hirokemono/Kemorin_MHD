@@ -42,9 +42,10 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-      do k2 = 1, nnod_4_ele
-        call SGS_v_flux_2_each_element(ele1%numele, nnod_4_ele, ie,     &
-     &      iele_smp_stack, k2, i_vect, i_scalar, i_flux, vect_e)
+      do k2 = 1, ele1%nnod_4_ele
+        call SGS_v_flux_2_each_element                                  &
+     &     (ele1%numele, ele1%nnod_4_ele, ie, iele_smp_stack,           &
+     &      k2, i_vect, i_scalar, i_flux, vect_e)
         call fem_skv_divergence(iele_fl_smp_stack,                      &
      &      intg_point_t_evo, k2, vect_e, sk6)
       end do
@@ -72,9 +73,10 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-      do k2 = 1, nnod_4_ele
-        call SGS_v_flux_2_each_element(ele1%numele, nnod_4_ele, ie,     &
-     &      iele_smp_stack, k2, i_vect, i_scalar, i_flux, vect_e)
+      do k2 = 1, ele1%nnod_4_ele
+        call SGS_v_flux_2_each_element                                  &
+     &     (ele1%numele, ele1%nnod_4_ele, ie, iele_smp_stack,           &
+     &      k2, i_vect, i_scalar, i_flux, vect_e)
         call fem_skv_divergence_upw(iele_fl_smp_stack,                  &
      &      intg_point_t_evo, k2, d_ele(1,iphys_ele%i_velo), vect_e,    &
      &      sk6)

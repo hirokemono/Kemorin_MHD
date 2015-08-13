@@ -5,7 +5,7 @@
 !    Written by kemorin
 !
 !       subroutine allocate_bc_composition
-!       subroutine allocate_bc_composit_4_element
+!       subroutine allocate_bc_composit_4_element(ele1%nnod_4_ele)
 !
 !       subroutine deallocate_ibc_4_composit
 !       subroutine deallocate_bc2_composit
@@ -74,10 +74,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine allocate_bc_composit_4_element
+       subroutine allocate_bc_composit_4_element(nnod_4_ele)
 !
-        use m_geometry_parameter
-        use m_machine_parameter
+       use m_machine_parameter
+!
+       integer(kind = kint), intent(in) :: nnod_4_ele
+!
 !
         allocate ( ele_bc_composit_id(num_index_ibc_compsition) )
         allocate ( nod_bc_composit_id(num_index_ibc_compsition) )

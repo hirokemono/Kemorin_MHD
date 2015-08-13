@@ -5,6 +5,7 @@
 !      Written by H. Matsui
 !
 !       subroutine allocate_bc_vfr(numnod)
+!       subroutine allocate_bc_vfr_4_ele(nnod_4_ele)
 !
       module m_bc_data_vfree
 !
@@ -62,10 +63,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine allocate_bc_vfr_4_ele
+       subroutine allocate_bc_vfr_4_ele(nnod_4_ele)
 !
-        use m_geometry_parameter
         use m_machine_parameter
+!
+       integer(kind = kint), intent(in) :: nnod_4_ele
+!
 !
         allocate ( ele_bc_vfr_id(num_index_ibc_vfr) )
         allocate ( nod_bc_vfr_id(num_index_ibc_vfr) )

@@ -35,7 +35,7 @@
       use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, nnod_4_ele)
+     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
 !
       integer(kind = kint), intent(in) :: n_int
 !
@@ -45,7 +45,7 @@
       integer(kind = kint) :: k2
 !
 !
-      do  k2 = 1, nnod_4_ele
+      do  k2 = 1, ele1%nnod_4_ele
         call reset_sk6(n_scalar)
         call fem_skv_poisson_linear_1st(iele_smp_stack, n_int,          &
      &      k2, sk6)
@@ -65,7 +65,7 @@
       use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, nnod_4_ele)
+     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
       real(kind=kreal), intent(in) :: coef_imp
       real(kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
@@ -77,7 +77,7 @@
       integer(kind = kint) :: k2
 !
 !
-      do  k2 = 1, nnod_4_ele
+      do  k2 = 1, ele1%nnod_4_ele
         call reset_sk6(n_scalar)
         call fem_skv_poisson_1st(iele_smp_stack, n_int, k2, sk6)
         call cal_scalar_diffuse_evo_mat_1st(idx_for_mat, k2,            &
@@ -95,7 +95,7 @@
       use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, nnod_4_ele)
+     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
       real(kind=kreal), intent(in) :: coef_imp
       real(kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
@@ -107,7 +107,7 @@
       integer(kind = kint) :: k2
 !
 !
-      do  k2 = 1, nnod_4_ele
+      do  k2 = 1, ele1%nnod_4_ele
         call reset_sk6(n_scalar)
         call fem_skv_poisson_1st(iele_smp_stack, n_int, k2, sk6)
         call cal_vect_diffuse_evo_mat_1st(idx_for_mat, k2,              &

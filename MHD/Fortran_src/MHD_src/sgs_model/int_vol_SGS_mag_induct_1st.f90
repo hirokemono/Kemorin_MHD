@@ -15,7 +15,7 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_machine_parameter
       use m_phys_constants
       use m_physical_property
@@ -53,7 +53,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
          call SGS_induct_cst_each_ele_1st(k2,                           &
      &       iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,         &
      &       coef_induct, sgs_e, vect_e)
@@ -86,7 +86,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call SGS_induct_cst_each_ele_1st(k2,                            &
      &      iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,          &
      &      coef_induct, sgs_e, vect_e)

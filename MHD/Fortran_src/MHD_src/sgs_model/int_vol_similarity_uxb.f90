@@ -13,7 +13,7 @@
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_geometry_data_MHD
       use m_finite_element_matrix
@@ -64,7 +64,7 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-      do k2=1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, iphys%i_sgs_simi, vect_e)
         call fem_skv_vector_1st(iele_cd_smp_stack,                      &
      &      intg_point_t_evo, k2, vect_e, sk6)
@@ -91,7 +91,7 @@
       integer(kind = kint) :: k2
 !
 !
-      do k2=1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, iphys%i_sgs_simi, vect_e)
 !
         call fem_skv_vector_field_upw_1st(iele_cd_smp_stack,            &

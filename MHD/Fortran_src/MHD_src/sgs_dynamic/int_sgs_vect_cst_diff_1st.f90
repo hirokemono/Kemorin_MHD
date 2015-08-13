@@ -20,7 +20,7 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
       use m_element_phys_data
@@ -56,7 +56,7 @@
 !
 ! -------- loop for shape function for the field values
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call scalar_cst_phys_2_each_ele(k2, i_field, coef,  phi_e)
         call fem_skv_grad_sgs_pg_1st(iele_fsmp_stack, num_int, k2,     &
      &      i_filter, ak_diff(1,iak_diff), phi_e, sk6)
@@ -84,7 +84,7 @@
 !
 ! -------- loop for shape function for the field values
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, i_field, coef, vect_e)
         call fem_skv_div_sgs_pg_1st(iele_fsmp_stack, num_int, k2,      &
      &      i_filter, ak_diff(1,iak_diff), vect_e, sk6)
@@ -112,7 +112,7 @@
 !
 ! -------- loop for shape function for the field values
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, i_field, coef, vect_e)
         call fem_skv_rot_sgs_pg_1st(iele_fsmp_stack, num_int, k2,      &
      &      i_filter, ak_diff(1,iak_diff), vect_e, sk6)
@@ -141,7 +141,7 @@
 !
 ! -------- loop for shape function for the field values
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call tensor_cst_phys_2_each_ele(k2, i_field, coef, tensor_e)
         call fem_skv_div_tsr_sgs_pg_1st(iele_fsmp_stack, num_int, k2,  &
      &      i_filter, ak_diff(1,iak_diff), tensor_e, sk6)
@@ -169,7 +169,7 @@
 !
 ! -------- loop for shape function for the field values
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, i_field, coef, vect_e)
         call fem_skv_div_as_tsr_sgs_pg_1st(iele_fsmp_stack,            &
      &      num_int, k2, i_filter, ak_diff(1,iak_diff), vect_e, sk6)

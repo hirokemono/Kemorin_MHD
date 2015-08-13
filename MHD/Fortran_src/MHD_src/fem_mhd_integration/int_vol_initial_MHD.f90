@@ -130,7 +130,7 @@
       subroutine int_vol_initial_scalar(iele_fsmp_stack, i_field)
 !
       use m_control_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_finite_element_matrix
       use m_int_vol_data
 !
@@ -147,7 +147,7 @@
       call reset_sk6(n_scalar)
 !
 ! -------- loop for shape function for phsical values
-      do k2=1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call scalar_phys_2_each_element(k2, i_field, phi_e)
         call fem_skv_scalar_1st(iele_fsmp_stack, intg_point_t_evo, k2,  &
      &      phi_e, sk6)
@@ -162,7 +162,7 @@
       subroutine int_vol_initial_vector(iele_fsmp_stack, i_field)
 !
       use m_control_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_finite_element_matrix
       use m_int_vol_data
 !
@@ -179,7 +179,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for phsical values
-      do k2=1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_field, vect_e)
         call fem_skv_vector_1st(iele_fsmp_stack, intg_point_t_evo, k2,  &
      &      vect_e, sk6)

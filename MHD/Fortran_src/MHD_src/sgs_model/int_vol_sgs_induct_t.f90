@@ -36,7 +36,7 @@
       integer (kind = kint), intent(in) :: ie_dvx, ie_dbx
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
@@ -63,7 +63,7 @@
       integer (kind = kint), intent(in) :: ie_dvx, ie_dbx
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
       integer (kind = kint) :: nd, nd2, nd3
       integer (kind = kint) :: icomp_v, icomp_b
@@ -81,7 +81,7 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-        do k2=1, nnod_4_ele
+        do k2 = 1, ele1%nnod_4_ele
 !
 ! --------- set temperature at each node in an element
 !
@@ -112,7 +112,7 @@
       integer (kind = kint), intent(in) :: ie_dvx, ie_dbx
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
       integer (kind = kint) :: nd, nd2, nd3
       integer (kind = kint) :: icomp_v, icomp_b
@@ -128,7 +128,7 @@
         icomp_v = ifield_v + nd3 - 1
         icomp_b = ifield_b + nd3 - 1
 !
-        do k2=1, nnod_4_ele
+        do k2 = 1, ele1%nnod_4_ele
 !
           call scalar_phys_2_each_element(k2, icomp_v, vect_e(1,1) )
           call scalar_phys_2_each_element(k2, icomp_b, vect_e(1,2) )

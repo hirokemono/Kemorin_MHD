@@ -21,7 +21,7 @@
       use m_precision
 !
       use m_control_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_finite_element_matrix
 !
@@ -278,7 +278,7 @@
 !
       call reset_sk6(n_scalar)
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call scalar_2_each_element(k2, ff_nl(1,1), phi_e)
         call fem_skv_scalar_field_upw_1st(iele_fsmp_stack,              &
      &      intg_point_t_evo, k2, d_ele(1,ie_up), phi_e, sk6)
@@ -309,7 +309,7 @@
 !
       call reset_sk6(n_vector)
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_2_each_element(k2, ff_nl(1,1), vect_e)
         call fem_skv_vector_field_upw_1st(iele_fsmp_stack,              &
      &      intg_point_t_evo, k2, d_ele(1,ie_up), vect_e, sk6)

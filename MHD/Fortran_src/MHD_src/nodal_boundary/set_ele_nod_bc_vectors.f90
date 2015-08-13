@@ -41,7 +41,7 @@
       call cal_max_int_4_vector(nmax_idx_ibc_v,  num_idx_ibc_v)
       call cal_max_int_4_vector(nmax_idx_ibc2_v, num_idx_ibc2_v)
 !
-      call allocate_bc_velo_4_element
+      call allocate_bc_velo_4_element(ele1%nnod_4_ele)
 !
       call set_ele_4_vector_nodal_bc_fl                                 &
      &   (node1%numnod, ele1%nnod_4_ele, ibc_velo, ibc2_velo,           &
@@ -66,7 +66,7 @@
       call cal_max_int_4_vector(nmax_idx_ibc_v_sgs,  num_idx_ibc_v_sgs)
       call cal_max_int_4_vector(nmax_idx_ibc2_v_sgs, num_idx_ibc2_v_sgs)
 !
-      call allocate_bc_vsgs_4_ele
+      call allocate_bc_vsgs_4_ele(ele1%nnod_4_ele)
 !
       call set_ele_4_vector_nodal_bc_fl                                 &
      &   (node1%numnod, ele1%nnod_4_ele, ibc_v_sgs, ibc2_v_sgs,         &
@@ -93,7 +93,7 @@
       call cal_max_int_4_vector(nmax_idx_ibc_vp,  num_idx_ibc_vp)
       call cal_max_int_4_vector(nmax_idx_ibc2_vp, num_idx_ibc2_vp)
 !
-      call allocate_bc_vect_p_4_element
+      call allocate_bc_vect_p_4_element(ele1%nnod_4_ele)
 !
       call set_ele_4_vector_nodal_bc(node1%numnod, ele1%nnod_4_ele,     &
      &    ibc_vp, ibc2_vp, nmax_idx_ibc_vp,                             &
@@ -118,7 +118,7 @@
       call cal_max_int_4_vector(nmax_idx_ibc_a_sgs,  num_idx_ibc_a_sgs)
       call cal_max_int_4_vector(nmax_idx_ibc2_a_sgs, num_idx_ibc2_a_sgs)
 !
-      call allocate_bc_vecp_sgs_4_ele
+      call allocate_bc_vecp_sgs_4_ele(ele1%nnod_4_ele)
 !
       call set_ele_4_vector_nodal_bc                                    &
      &   (node1%numnod, ele1%nnod_4_ele, ibc_a_sgs, ibc2_a_sgs,         &
@@ -144,7 +144,7 @@
       call cal_max_int_4_vector(nmax_idx_ibc_b,  num_idx_ibc_b)
       call cal_max_int_4_vector(nmax_idx_ibc2_b, num_idx_ibc2_b)
 !
-      call allocate_bc_magne_4_element
+      call allocate_bc_magne_4_element(ele1%nnod_4_ele)
 !
       call set_ele_4_vector_nodal_bc                                    &
      &   (node1%numnod, ele1%nnod_4_ele, ibc_magne, ibc2_magne,         &
@@ -169,7 +169,7 @@
       call cal_max_int_4_vector(nmax_idx_ibc_b_sgs,  num_idx_ibc_b_sgs)
       call cal_max_int_4_vector(nmax_idx_ibc2_b_sgs, num_idx_ibc2_b_sgs)
 !
-      call allocate_bc_b_sgs_ele
+      call allocate_bc_b_sgs_ele(ele1%nnod_4_ele)
 !
       call set_ele_4_vector_nodal_bc                                    &
      &   (node1%numnod, ele1%nnod_4_ele, ibc_b_sgs, ibc2_b_sgs,         &

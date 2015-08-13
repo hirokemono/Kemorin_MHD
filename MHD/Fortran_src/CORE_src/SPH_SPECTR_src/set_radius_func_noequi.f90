@@ -1,4 +1,5 @@
 !>@file   set_radius_func_noequi.f90
+!!@brief  module set_radius_func_noequi
 !!
 !!@author H. Matsui
 !!@date Programmed in June., 1994

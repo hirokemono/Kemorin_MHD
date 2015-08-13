@@ -13,7 +13,8 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
+      use m_geometry_constants
+      use m_geometry_data
       use m_finite_element_matrix
 !
       use int_vol_mass_matrix
@@ -34,7 +35,6 @@
 !
       subroutine int_RHS_mass_matrices
 !
-      use m_geometry_constants
       use m_control_parameter
 !
       integer(kind = kint) :: num_int
@@ -42,7 +42,8 @@
 !
       num_int = intg_point_t_evo
 !
-      if (nnod_4_ele.eq.num_t_quad .or. nnod_4_ele.eq.num_t_lag) then
+      if     (ele1%nnod_4_ele.eq.num_t_quad                             &
+     &   .or. ele1%nnod_4_ele.eq.num_t_lag) then
         call int_mass_matrices_quad(num_int)
       else
         call int_mass_matrix_trilinear(num_int)

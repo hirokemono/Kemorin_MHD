@@ -70,7 +70,6 @@
       subroutine allocate_bc_p_sgs_4_ele
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_machine_parameter
 !
         allocate ( ele_bc_ps_id(num_index_ibc_p_sgs) )

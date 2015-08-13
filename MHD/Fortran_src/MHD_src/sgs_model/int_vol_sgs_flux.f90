@@ -37,7 +37,7 @@
       integer (kind = kint), intent(in) :: numdir, i_field
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       if ( iflag_4_supg .eq. id_magnetic_SUPG) then
@@ -70,7 +70,7 @@
       integer (kind = kint), intent(in) :: numdir, i_field
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
       integer (kind = kint) :: icomp, nd, ndx, nd2, nd_t
       integer (kind = kint) :: k2, id_dvx2
@@ -85,7 +85,7 @@
           nd_t = lst_sim_t(nd) + ndx
 !
 ! -------- loop for shape function for the phsical values
-          do k2 = 1, nnod_4_ele
+          do k2 = 1, ele1%nnod_4_ele
             call scalar_phys_2_each_element(k2, icomp, phi_e)
             call fem_skv_sgs_flux_pg_1(iele_fl_smp_stack,               &
      &          intg_point_t_evo, k2, phi_e, dvx(1,id_dvx2), i_filter,  &
@@ -114,7 +114,7 @@
       integer (kind = kint), intent(in) :: numdir, i_field, ie_upw
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
       integer (kind = kint) :: icomp, nd, ndx, nd2, nd_t
       integer (kind = kint) :: k2, id_dvx2
@@ -131,7 +131,7 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-          do k2=1, nnod_4_ele
+          do k2 = 1, ele1%nnod_4_ele
             call scalar_phys_2_each_element(k2, icomp, phi_e)
             call fem_skv_sgs_flux_upw_1(iele_fl_smp_stack,              &
      &          intg_point_t_evo, k2, phi_e, d_ele(1,ie_upw),           &

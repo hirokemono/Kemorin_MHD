@@ -49,7 +49,7 @@
 !
 !
       call delta_flux_t_2_each_surface(np_smp, node1%numnod,            &
-     &    ele1%numele, nnod_4_ele, ie,                                  &
+     &    ele1%numele, ele1%nnod_4_ele, ie,                             &
      &    nnod_4_surf, node_on_sf, node_on_sf_n,                        &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -74,7 +74,7 @@
 !
 !
       call delta_flux_t_2_each_sf_w_coef(np_smp, node1%numnod,          &
-     &    ele1%numele, nnod_4_ele, ie,                                  &
+     &    ele1%numele, ele1%nnod_4_ele, ie,                             &
      &    nnod_4_surf, node_on_sf, node_on_sf_n,                        &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -99,7 +99,7 @@
 !
 !
       call delta_flux_t_2_each_sf_w_cst(np_smp, node1%numnod,           &
-     &    ele1%numele, nnod_4_ele, ie,                                  &
+     &    ele1%numele, ele1%nnod_4_ele, ie,                             &
      &    nnod_4_surf, node_on_sf, node_on_sf_n,                        &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -124,7 +124,7 @@
 !
 !
       call delta_SGS_induct_t_2_surface(np_smp, node1%numnod,           &
-     &    ele1%numele, nnod_4_ele, ie,                                  &
+     &    ele1%numele, ele1%nnod_4_ele, ie,                             &
      &    nnod_4_surf, node_on_sf, node_on_sf_n,                        &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -149,7 +149,7 @@
 !
 !
       call delta_SGS_induct_t_2_sf_w_coef(np_smp, node1%numnod,         &
-     &    ele1%numele, nnod_4_ele, ie,                                  &
+     &    ele1%numele, ele1%nnod_4_ele, ie,                             &
      &    nnod_4_surf, node_on_sf, node_on_sf_n,                        &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
@@ -174,7 +174,7 @@
 !
 !
       call delta_SGS_induct_t_2_sf_w_cst(np_smp, node1%numnod,          &
-     &    ele1%numele, nnod_4_ele, ie,                                  &
+     &    ele1%numele, ele1%nnod_4_ele, ie,                             &
      &    nnod_4_surf, node_on_sf, node_on_sf_n,                        &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
