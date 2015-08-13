@@ -46,12 +46,12 @@
       integer(kind = kint) :: inod, iele, i, isig
 !
 !
-       new_ele%nnod_4_ele = nnod_4_ele
+       new_ele%nnod_4_ele = ele1%nnod_4_ele
        new_ele%numele = 0
        do iele = 1, ele1%numele
 !
          isig = 1
-         do i = 1, nnod_4_ele
+         do i = 1, ele1%nnod_4_ele
            inod = ie(iele,i)
            if (mark_new_node(inod) .eq. 0) then
              isig = 0
@@ -77,7 +77,7 @@
        do iele = 1, ele1%numele
 !
          isig = 1
-         do i = 1, nnod_4_ele
+         do i = 1, ele1%nnod_4_ele
            inod = ie(iele,i)
            if (mark_new_node(inod) .eq. 0) then
              isig = 0

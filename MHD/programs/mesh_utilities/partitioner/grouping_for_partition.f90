@@ -91,7 +91,7 @@
 !C===
       else if (NTYP_div .eq. iPART_CUBED_SPHERE) then
         call divide_by_sphere_coord(num_domain, node1%numnod,           &
-     &      nnod_4_ele, xx, radius, colatitude, longitude,              &
+     &      ele1%nnod_4_ele, xx, radius, colatitude, longitude,         &
      &      nod_grp%num_grp, nod_grp%num_item, nod_grp%istack_grp,      &
      &      nod_grp%item_grp, nod_grp%grp_name)
 !C

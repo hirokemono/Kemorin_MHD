@@ -94,7 +94,8 @@
         call dealloc_psf_search_list(ele_search)
         call dealloc_num_psf_search_list(ele_search)
 !
-        call set_psf_type_id(node1%numnod, ele1%numele, nnod_4_ele, ie, &
+        call set_psf_type_id(node1%numnod,                              &
+     &      ele1%numele, ele1%nnod_4_ele, ie,                           &
      &      ele_search, mark_elegrp, xx(1,2))
 !
         call count_med_grp_patch(ele_grp, igrp, npatch_grp)
