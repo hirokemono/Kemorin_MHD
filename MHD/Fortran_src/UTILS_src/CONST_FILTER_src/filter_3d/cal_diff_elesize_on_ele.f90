@@ -30,32 +30,32 @@
       subroutine cal_filter_moms_ele_by_nod(mom_nod, mom_ele)
 !
       use m_ctl_params_4_gen_filter
-      use m_geometry_parameter
+      use m_geometry_data
       use t_filter_moments
       use cal_fields_on_element
 !
       type(nod_mom_diffs_type), intent(in) :: mom_nod
       type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !
-      call scalar_on_element(iele_smp_stack, num_int_points,            &
+      call scalar_on_element(ele1%istack_ele_smp, num_int_points,       &
      &    mom_ele%moms%f_x, mom_nod%moms%f_x)
-      call scalar_on_element(iele_smp_stack, num_int_points,            &
+      call scalar_on_element(ele1%istack_ele_smp, num_int_points,       &
      &    mom_ele%moms%f_y, mom_nod%moms%f_y)
-      call scalar_on_element(iele_smp_stack, num_int_points,            &
+      call scalar_on_element(ele1%istack_ele_smp, num_int_points,       &
      &    mom_ele%moms%f_z, mom_nod%moms%f_z)
 !
-      call scalar_on_element(iele_smp_stack, num_int_points,            &
+      call scalar_on_element(ele1%istack_ele_smp, num_int_points,       &
      &    mom_ele%moms%f_x2, mom_nod%moms%f_x2)
-      call scalar_on_element(iele_smp_stack, num_int_points,            &
+      call scalar_on_element(ele1%istack_ele_smp, num_int_points,       &
      &    mom_ele%moms%f_y2, mom_nod%moms%f_y2)
-      call scalar_on_element(iele_smp_stack, num_int_points,            &
+      call scalar_on_element(ele1%istack_ele_smp, num_int_points,       &
      &    mom_ele%moms%f_z2, mom_nod%moms%f_z2)
 !
-      call scalar_on_element(iele_smp_stack, num_int_points,            &
+      call scalar_on_element(ele1%istack_ele_smp, num_int_points,       &
      &    mom_ele%moms%f_xy, mom_nod%moms%f_xy)
-      call scalar_on_element(iele_smp_stack, num_int_points,            &
+      call scalar_on_element(ele1%istack_ele_smp, num_int_points,       &
      &    mom_ele%moms%f_yz, mom_nod%moms%f_yz)
-      call scalar_on_element(iele_smp_stack, num_int_points,            &
+      call scalar_on_element(ele1%istack_ele_smp, num_int_points,       &
      &    mom_ele%moms%f_zx, mom_nod%moms%f_zx)
 !
       end subroutine cal_filter_moms_ele_by_nod
@@ -168,7 +168,7 @@
       integer(kind=kint) :: nd
 !
       do nd = 1, n_vector
-        call difference_on_element(iele_smp_stack, num_int_points,      &
+        call difference_on_element(ele1%istack_ele_smp, num_int_points, &
      &      nd, diff_field(1,nd), org_nod_field(1) )
       end do
 !
@@ -187,7 +187,7 @@
       integer(kind=kint) :: nd
 !
       do nd = 1, n_vector
-        call difference_on_element(iele_smp_stack, num_int_points,      &
+        call difference_on_element(ele1%istack_ele_smp, num_int_points, &
      &      nd, diff_field(1,nd), org_nod_field(1,nd) )
       end do
 !

@@ -9,7 +9,7 @@
 !
       use m_phys_constants
       use m_ctl_params_4_gen_filter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_crs_consist_mass_mat
 !
       implicit none
@@ -53,7 +53,7 @@
       use int_vol_mass_matrix
 !
 !
-      call int_consist_mass_matrix(iele_smp_stack, num_int_points,      &
+      call int_consist_mass_matrix(ele1%istack_ele_smp, num_int_points, &
      &    num_mass_mat, aiccg_mass)
 !
       end subroutine int_whole_consist_mass_matrix

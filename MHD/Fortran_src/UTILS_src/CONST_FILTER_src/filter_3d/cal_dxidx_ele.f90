@@ -42,7 +42,7 @@
      &          deidx_ele, deidy_ele, deidz_ele,                        &
      &          dzidx_ele, dzidy_ele, dzidz_ele)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_machine_parameter
       use m_fem_gauss_int_coefs
       use m_jacobians
@@ -64,8 +64,8 @@
 !
 !$omp parallel do private(ist,ied,iele)
       do ip = 1, np_smp
-        ist = iele_smp_stack(ip-1) + 1
-        ied = iele_smp_stack(ip)
+        ist = ele1%istack_ele_smp(ip-1) + 1
+        ied = ele1%istack_ele_smp(ip)
 !cdir nodep noloopchg
         do iele = ist, ied
           dxidx_ele(iele) = zero
@@ -88,8 +88,8 @@
           ix = int_start3(i0) + ii
 !$omp parallel do private(ist,ied,iele)
           do ip = 1, np_smp
-            ist = iele_smp_stack(ip-1) + 1
-            ied = iele_smp_stack(ip)
+            ist = ele1%istack_ele_smp(ip-1) + 1
+            ied = ele1%istack_ele_smp(ip)
 !
 !cdir nodep noloopchg
             do iele = ist, ied

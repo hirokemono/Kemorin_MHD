@@ -66,7 +66,7 @@
 !
 !
       if (id_filter_area_grp(1) .eq. -1) then
-        call int_area_ele_scalar_2_node(iele_smp_stack, elen_ele)
+        call int_area_ele_scalar_2_node(ele1%istack_ele_smp, elen_ele)
       else
         call int_grp_ele_scalar_2_node                                  &
      &     (ele1%numele, iele_filter_smp_stack,                         &
@@ -102,7 +102,7 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call scalar_2_each_element(k2, elen_org_nod, scalar_ele)
-        call fem_skv_gradient(iele_smp_stack, num_int_points,           &
+        call fem_skv_gradient(ele1%istack_ele_smp, num_int_points,      &
      &      k2, scalar_ele, sk6)
       end do
 !
