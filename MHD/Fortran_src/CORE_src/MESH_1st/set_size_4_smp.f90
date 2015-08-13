@@ -48,8 +48,6 @@
        call count_number_4_smp( np_smp, ione, ele1%numele,              &
      &       iele_smp_stack, maxele_4_smp )
 !
-      inod_smp_stack = node1%istack_nod_smp
-!
       end subroutine count_size_4_sheard_para
 !
 !-----------------------------------------------------------------------

@@ -31,6 +31,7 @@
 !
       subroutine const_mesh_informations(my_rank)
 !
+      use m_geometry_data
       use m_group_data
       use m_element_group_connect
       use m_surface_group_connect
@@ -43,9 +44,12 @@
        if (iflag_debug.gt.0) write(*,*) 'set_local_element_info'
       call set_local_element_info
 !
-       if (iflag_debug.gt.0) write(*,*) 'set_nod_and_ele_infos'
+      if (iflag_debug.gt.0) write(*,*) 'set_nod_and_ele_infos'
       call set_nod_and_ele_infos
-!      if (iflag_debug.gt.0) call check_size_4_sheard_para(my_rank)
+      if (iflag_debug.gt.0) then
+        call check_nod_size_smp_type(node1, my_rank)
+        call check_size_4_sheard_para(my_rank)
+      end if
 !
        if (iflag_debug.gt.0) write(*,*) 'set_edge_and_surf_data'
       call set_edge_and_surf_data(my_rank)
@@ -165,6 +169,7 @@
       call deallocate_grp_type(ele_grp1)
       call deallocate_grp_type(nod_grp1)
 !
+      call deallocate_node_param_smp_type(node1)
       call deallocate_geometry_param_smp
       call deallocate_inod_in_surf
       call deallocate_inod_in_edge

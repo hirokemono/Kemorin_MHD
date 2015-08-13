@@ -96,8 +96,6 @@
        call count_number_4_smp(np_smp, ione, internal_node,             &
      &       inter_smp_stack, max_in_nod_4_smp)
 !
-      inod_smp_stack = node1%istack_nod_smp
-!
       end subroutine set_smp_data_4_node
 !
 !-----------------------------------------------------------------------

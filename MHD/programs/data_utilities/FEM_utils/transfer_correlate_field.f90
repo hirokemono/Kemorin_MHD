@@ -152,7 +152,7 @@
 !$omp parallel
         if     (ncomp .eq. n_vector) then
           call overwrite_vector_2_sph_smp                               &
-     &       (np_smp, node1%numnd, node1%istack_nod_smp,                &
+     &       (np_smp, node1%numnod, node1%istack_nod_smp,               &
      &        d_nod(1,ist), xx(1,1), xx(1,2), xx(1,3),                  &
      &        radius, s_cylinder, a_radius, a_s_cylinder)
         else if(ncomp .eq. n_sym_tensor) then
