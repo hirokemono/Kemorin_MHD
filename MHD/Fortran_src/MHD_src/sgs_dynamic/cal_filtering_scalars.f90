@@ -24,6 +24,7 @@
 !
       subroutine cal_filtered_scalar(i_filter, i_scalar)
 !
+       use m_geometry_data
        use m_control_parameter
 !
        use cal_3d_filter_phys
@@ -60,7 +61,7 @@
         if (i_filter .ne. i_scalar) then
            call copy_scalar_component(i_filter, i_scalar)
         end if
-        call cal_l_filtering_scalar(i_filter)
+        call cal_l_filtering_scalar(i_filter, inod_smp_stack)
         call scalar_send_recv(i_filter)
 !
       end if
@@ -71,6 +72,7 @@
 !
       subroutine cal_filtered_scalar_in_fluid(i_filter, i_scalar)
 !
+       use m_geometry_data
        use m_control_parameter
 !
        use cal_3d_filter_phys
@@ -107,7 +109,7 @@
         if (i_filter .ne. i_scalar) then
            call copy_scalar_component(i_filter, i_scalar)
         end if
-        call cal_l_filtering_scalar(i_filter)
+        call cal_l_filtering_scalar(i_filter, inod_smp_stack)
         call scalar_send_recv(i_filter)
 !
       end if

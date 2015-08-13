@@ -4,7 +4,7 @@
 !     Written by H. Matsui in 2004
 !     Modified by H. Matsui on Oct., 2006
 !
-!      subroutine cal_l_filtering_tensor(i_filter)
+!      subroutine cal_l_filtering_tensor(i_filter, inod_smp_stack)
 !        filtering along each directions for vector field
 !          i_filter(input) :: node data ID for original field
 !          i_filter(output) :: node data ID for filtered field
@@ -21,15 +21,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_l_filtering_tensor(i_filter)
+      subroutine cal_l_filtering_tensor(i_filter, inod_smp_stack)
 !
-      use m_geometry_parameter
       use m_machine_parameter
       use m_node_phys_data
       use m_l_filtering_data
       use m_l_filtering_data_smp
 !
       integer (kind = kint), intent(in) :: i_filter
+      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
       integer (kind = kint) :: ip, inod, jnod, nd
       integer (kind = kint) :: ist, ied, idx, isum, i, ii

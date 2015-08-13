@@ -45,7 +45,7 @@
       do inod0 = 1, node1%numnod
         ip =     mod(inod0-1,np_smp) + 1
         inod1 = (inod0 - ip) / np_smp + 1
-        inod  = inod_smp_stack(ip-1) + inod1
+        inod  = node1%istack_nod_smp(ip-1) + inod1
         n2o_cyclic_l(inod) = inod0
         do nd = 1, 3
           inod_l_filter_tmp(inod,nd) = inod_l_filter(inod0,nd)
@@ -53,8 +53,8 @@
       end do
 !
       do ip = 1, np_smp
-        ist = inod_smp_stack(ip-1) + 1
-        ied = inod_smp_stack(ip)
+        ist = node1%istack_nod_smp(ip-1) + 1
+        ied = node1%istack_nod_smp(ip)
 !
         do inod = ist, ied
          inod0 = n2o_cyclic_l(inod)
@@ -75,8 +75,8 @@
       end do
 !
       do ip = 1, np_smp
-        ist = inod_smp_stack(ip-1) + 1
-        ied = inod_smp_stack(ip)
+        ist = node1%istack_nod_smp(ip-1) + 1
+        ied = node1%istack_nod_smp(ip)
 !
         do nd = 1, 3
           do inod = 1, node1%numnod
@@ -98,8 +98,8 @@
 !     count number of node for summuation
 !
       do ip = 1, np_smp
-        ist = inod_smp_stack(ip-1) + 1
-        ied = inod_smp_stack(ip)
+        ist = node1%istack_nod_smp(ip-1) + 1
+        ied = node1%istack_nod_smp(ip)
         do nd = 1, 3
           do inod = ist, ied
             inum = istack_l_filter(inod,nd) - istack_l_filter(inod-1,nd)
@@ -110,7 +110,7 @@
         end do
       end do
 !
-!     call check_num_4_lf_smp(my_rank)
+!     call check_num_4_lf_smp(my_rank, node1%istack_nod_smp)
 !
       istack_l_filter_smp(0,1) = 0
       istack_l_filter_smp(0,2) = 0
@@ -129,13 +129,13 @@
         end do
       end do
 !
-!      call check_istack_l_filter_smp(my_rank)
+!      call check_istack_l_filter_smp(my_rank, node1%istack_nod_smp)
 !
       do ip = 1, np_smp
         do nd = 1, 3
           do isum = 1, nmax_l_filter(nd)
             do i = 1, num_4_lf_smp(isum,ip,nd)
-              inod = inod_smp_stack(ip-1) + i
+              inod = node1%istack_nod_smp(ip-1) + i
               ii = (ip-1)*nsize_lf_smp + isum
               jdx = istack_l_filter(inod-1,nd) + isum
               idx = istack_l_filter_smp(ii-1,nd) + i

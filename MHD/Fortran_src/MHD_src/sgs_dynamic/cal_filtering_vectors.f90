@@ -25,6 +25,7 @@
       subroutine cal_filtered_vector(i_filter, i_vect)
 !
       use m_control_parameter
+      use m_geometry_data
 !
       use cal_3d_filter_phys
       use cal_3d_filter_phys_smp
@@ -60,7 +61,7 @@
         if (i_filter .ne. i_vect) then
           call copy_vector_component(i_filter, i_vect)
         end if
-        call cal_l_filtering_vector(i_filter)
+        call cal_l_filtering_vector(i_filter, inod_smp_stack)
         call vector_send_recv(i_filter)
 !
       end if
@@ -72,6 +73,7 @@
       subroutine cal_filtered_vector_in_fluid(i_filter, i_vect)
 !
        use m_control_parameter
+       use m_geometry_data
 !
        use cal_3d_filter_phys
        use cal_3d_filter_phys_smp
@@ -107,7 +109,7 @@
         if (i_filter .ne. i_vect) then
           call copy_vector_component(i_filter, i_vect)
         end if
-        call cal_l_filtering_vector(i_filter)
+        call cal_l_filtering_vector(i_filter, inod_smp_stack)
         call vector_send_recv(i_filter)
 !
       end if

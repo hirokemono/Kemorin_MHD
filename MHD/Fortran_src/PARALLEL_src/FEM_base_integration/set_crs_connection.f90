@@ -40,7 +40,7 @@
 !
       call allocate_crs_stack(node1%numnod)
 !
-      call count_item_crs(node1%numnod, np_smp, inod_smp_stack,         &
+      call count_item_crs(node1%numnod, np_smp, node1%istack_nod_smp,   &
      &    neib_nod1%ntot, neib_nod1%istack_next, neib_nod1%inod_next,   &
      &    num_crs_l, num_crs_u)
 !
@@ -51,7 +51,7 @@
 !
       call allocate_crs_connect
 !
-      call set_item_crs(node1%numnod, np_smp, inod_smp_stack,           &
+      call set_item_crs(node1%numnod, np_smp, node1%istack_nod_smp,     &
      &    neib_nod1%ntot, neib_nod1%istack_next, neib_nod1%inod_next,   &
      &    ntot_crs_l, ntot_crs_u, istack_crs_l, istack_crs_u,           &
      &    item_crs_l, item_crs_u)

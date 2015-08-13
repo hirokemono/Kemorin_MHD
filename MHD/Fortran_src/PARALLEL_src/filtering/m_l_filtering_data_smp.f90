@@ -8,8 +8,8 @@
 !      subroutine deallocate_l_filtering_smp
 !      subroutine deallocate_l_filtering_tmp
 !
-!      subroutine check_num_4_lf_smp(my_rank)
-!      subroutine check_istack_l_filter_smp(my_rank)
+!      subroutine check_num_4_lf_smp(my_rank, inod_smp_stack)
+!      subroutine check_istack_l_filter_smp(my_rank, inod_smp_stack)
 !
       module m_l_filtering_data_smp
 !
@@ -138,12 +138,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_num_4_lf_smp(my_rank)
+      subroutine check_num_4_lf_smp(my_rank, inod_smp_stack)
 !
       use m_machine_parameter
-      use m_geometry_parameter
 !
       integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer (kind = kint) :: ist, ied, nd, ip, i
 !
       write(50+my_rank,*) 'nd, ip, i, num_4_lf_smp(i,ip,nd)'
@@ -161,13 +161,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine check_istack_l_filter_smp(my_rank)
+      subroutine check_istack_l_filter_smp(my_rank, inod_smp_stack)
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_l_filtering_data
 !
       integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer(kind = kint) :: ist, ied, nd, ip, isum, ii
 !
       write(50+my_rank,*) 'nd, ip, isum, istack_l_filter_smp(i,ip,nd)'
