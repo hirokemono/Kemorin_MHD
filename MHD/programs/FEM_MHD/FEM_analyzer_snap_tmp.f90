@@ -193,8 +193,9 @@
 !
 !
 !$omp parallel
-      call overwrite_sph_tensor_smp(np_smp, node1%numnod,               &
-     &    inod_smp_stack, d_nod(1,iphys%i_SGS_m_flux),                  &
+      call overwrite_sph_tensor_smp                                     &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
+     &    d_nod(1,iphys%i_SGS_m_flux),                                  &
      &    xx(1,1), xx(1,2), xx(1,3), radius, s_cylinder,                &
      &    a_radius, a_s_cylinder)
 !$omp end parallel
@@ -209,8 +210,9 @@
 !$omp end parallel workshare
 !
 !$omp parallel
-      call overwrite_xyz_tensor_by_sph_smp(np_smp, node1%numnod,        &
-     &    inod_smp_stack, d_nod(1,iphys%i_SGS_m_flux),                  &
+      call overwrite_xyz_tensor_by_sph_smp                              &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
+     &    d_nod(1,iphys%i_SGS_m_flux),                                  &
      &    xx(1,1), xx(1,2), xx(1,3), radius, s_cylinder,                &
      &    a_radius, a_s_cylinder)
 !$omp end parallel
@@ -228,7 +230,7 @@
       end if
 !
       call overwrite_vector_2_sph_smp                                   &
-     &   (np_smp, node1%numnod, inod_smp_stack,                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,iphys%i_velo), xx(1,1), xx(1,2), xx(1,3),             &
      &    radius, s_cylinder,  a_radius, a_s_cylinder)
 !$omp end parallel
@@ -240,8 +242,9 @@
 !$omp end parallel workshare
 !
 !$omp parallel
-      call overwrite_sph_vect_2_xyz_smp(np_smp, node1%numnod,           &
-     &    inod_smp_stack, d_nod(1,iphys%i_velo), colatitude, longitude)
+      call overwrite_sph_vect_2_xyz_smp                                 &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
+     &    d_nod(1,iphys%i_velo), colatitude, longitude)
 !$omp end parallel
 !
       if (iphys%i_SGS_vp_induct .gt. 0) then

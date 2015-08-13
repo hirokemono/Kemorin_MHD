@@ -173,7 +173,7 @@
 !
 !$omp parallel
       call cal_len_scale_by_rot_smp                                     &
-     &   (np_smp, node1%numnod, inod_smp_stack,                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,i_v), d_nod(1,i_w), d_mag(1))
 !$omp end parallel
 !
@@ -191,7 +191,7 @@
 !
 !$omp parallel
      call cal_len_scale_by_diffuse_smp                                  &
-     &   (np_smp, node1%numnod, inod_smp_stack,                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,i_t), d_nod(1,i_d), d_mag(1))
 !$omp end parallel
 !
