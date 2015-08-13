@@ -116,7 +116,8 @@
 !C | set connectivity in CRS array |
 !C +-------------------------------+
 !C===
-      call s_set_crs_connect_type(np_smp, node1%numnod, inod_smp_stack, &
+      call s_set_crs_connect_type                                       &
+     &         (np_smp, node1%numnod, node1%istack_nod_smp,             &
      &          neib_nod1%ntot, neib_nod1%istack_next,                  &
      &          neib_nod1%inod_next, MHD_CRS)
 !
@@ -191,7 +192,8 @@
       call set_layerd_ele_id_4_node(nnod_1ele, iele_start, iele_end)
       call const_next_nod_id_4_node
 !
-      call s_set_crs_connect_type(np_smp, node1%numnod, inod_smp_stack, &
+      call s_set_crs_connect_type                                       &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    neib_nod1%ntot, neib_nod1%istack_next,                        &
      &    neib_nod1%inod_next, MHD_CRS)
 !

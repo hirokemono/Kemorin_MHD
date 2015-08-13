@@ -50,7 +50,7 @@
      &    iele_smp_stack, const, i_scalar)
 !
       call set_ff_nl_smp_2_ff(n_vector)
-      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    d_nod(1,i_res), ff_nl, ml)
 !
 ! ----------   communications
@@ -80,7 +80,7 @@
      &     iele_fl_smp_stack, const, i_scalar)
 !
       call set_ff_nl_smp_2_ff(n_vector)
-      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    d_nod(1,i_res), ff_nl, ml_fl)
 !
 ! ----------   communications
@@ -110,7 +110,7 @@
      &     iele_cd_smp_stack, const, i_scalar)
 !
       call set_ff_nl_smp_2_ff(n_vector)
-      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    d_nod(1,i_res), ff_nl, ml_cd)
 !
 ! ----------   communications

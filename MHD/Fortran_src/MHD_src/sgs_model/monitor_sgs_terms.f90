@@ -38,7 +38,7 @@
       call cal_sgs_uxb_2_evo
 !
       call set_ff_nl_smp_2_ff(n_vector)
-      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    d_nod(1,iphys%i_SGS_vp_induct), ff_nl, ml_cd)
       call vector_send_recv(iphys%i_SGS_vp_induct)
 !

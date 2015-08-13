@@ -33,7 +33,8 @@
       use poynting_flux_smp
 !
 !
-      call cal_electric_field_smp(np_smp, node1%numnod, inod_smp_stack, &
+      call cal_electric_field_smp                                       &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    coef_d_magne, d_nod(1,iphys%i_current),                       &
      &    d_nod(1,iphys%i_vp_induct), d_nod(1,iphys%i_electric))
 !
@@ -46,7 +47,8 @@
       use poynting_flux_smp
 !
 !
-      call cal_poynting_flux_smp(np_smp, node1%numnod, inod_smp_stack,  &
+      call cal_poynting_flux_smp                                        &
+     &    (np_smp, node1%numnod, node1%istack_nod_smp,                  &
      &     coef_d_magne, d_nod(1,iphys%i_current),                      &
      &     d_nod(1,iphys%i_vp_induct), d_nod(1,iphys%i_magne),          &
      &     d_nod(1,iphys%i_poynting))

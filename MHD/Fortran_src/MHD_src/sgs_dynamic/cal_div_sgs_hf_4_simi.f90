@@ -49,7 +49,7 @@
         end if
 !
        call set_ff_nl_smp_2_ff(numdir_d)
-       call cal_ff_2_scalar(node1%numnod, inod_smp_stack,               &
+       call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,         &
      &     d_nod(1,i_sgs), ff_nl, ml_fl)
 !
 ! ----------   communications

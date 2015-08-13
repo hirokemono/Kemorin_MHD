@@ -42,7 +42,7 @@
 !
 !    reset model coefficients
 !
-      call reset_diff_model_coefs(iak_diff_t)
+      call reset_diff_model_coefs(iak_diff_t, iele_smp_stack)
       call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !   take gradient of filtered temperature (to iphys%i_sgs_simi)

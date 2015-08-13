@@ -50,7 +50,7 @@
 !
 !    reset model coefficients
 !
-      call reset_diff_model_coefs(iak_diff_v)
+      call reset_diff_model_coefs(iak_diff_v, iele_smp_stack)
       call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !    get filtered pressure(to iphys%i_sgs_grad_f)

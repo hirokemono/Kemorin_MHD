@@ -48,7 +48,8 @@
       if ( num_multi_pass .gt. 1 ) then
 !
         call cal_ff_smp_2_multi_pass                                    &
-     &     (maxnod_4_smp, inod_smp_stack, n_vector, ff_nl_smp, ff_m_smp)
+     &     (maxnod_4_smp, node1%istack_nod_smp,                         &
+     &      n_vector, ff_nl_smp, ff_m_smp)
 !
         if (iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_vector_upw
@@ -74,7 +75,8 @@
       if ( num_multi_pass .gt. 1 ) then
 !
         call cal_ff_smp_2_multi_pass                                    &
-     &     (maxnod_4_smp, inod_smp_stack, n_scalar, ff_nl_smp, ff_m_smp)
+     &     (maxnod_4_smp, node1%istack_nod_smp,                         &
+     &      n_scalar, ff_nl_smp, ff_m_smp)
 !
         if (iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_scalar_upw
@@ -101,7 +103,8 @@
       if ( num_multi_pass .gt. 1 ) then
 !
         call cal_ff_smp_2_multi_pass                                    &
-     &     (maxnod_4_smp, inod_smp_stack, n_vector, ff_nl_smp, ff_m_smp)
+     &     (maxnod_4_smp, node1%istack_nod_smp,                         &
+     &      n_vector, ff_nl_smp, ff_m_smp)
 !
         if (iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_vector_fl_upw
@@ -127,7 +130,8 @@
       if ( num_multi_pass .gt. 1 ) then
 !
         call cal_ff_smp_2_multi_pass                                    &
-     &     (maxnod_4_smp, inod_smp_stack, n_scalar, ff_nl_smp, ff_m_smp)
+     &     (maxnod_4_smp, node1%istack_nod_smp,                         &
+     &      n_scalar, ff_nl_smp, ff_m_smp)
 !
         if (iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_scalar_fl_upw
@@ -154,7 +158,8 @@
       if ( num_multi_pass .gt. 1 ) then
 !
         call cal_ff_smp_2_multi_pass                                    &
-     &     (maxnod_4_smp, inod_smp_stack, n_vector, ff_nl_smp, ff_m_smp)
+     &     (maxnod_4_smp, node1%istack_nod_smp,                         &
+     &      n_vector, ff_nl_smp, ff_m_smp)
 !
         if (iflag_4_supg .gt. id_turn_OFF) then
           call int_multi_pass_vector_cd_upm
@@ -178,7 +183,8 @@
       if ( num_multi_pass .gt. 1 ) then
 !
         call cal_ff_smp_2_multi_pass                                    &
-     &     (maxnod_4_smp, inod_smp_stack, n_scalar, ff_nl_smp, ff_m_smp)
+     &     (maxnod_4_smp, node1%istack_nod_smp,                         &
+     &      n_scalar, ff_nl_smp, ff_m_smp)
 !
         if (iflag_4_supg .gt. id_turn_OFF) then
           call int_multi_pass_scalar_cd_upm
@@ -200,7 +206,8 @@
 !
       if ( num_multi_pass .gt. 1 ) then
         call cal_ff_smp_2_multi_pass                                    &
-     &     (maxnod_4_smp, inod_smp_stack, n_vector, ff_nl_smp, ff_m_smp)
+     &     (maxnod_4_smp, node1%istack_nod_smp,                         &
+     &      n_vector, ff_nl_smp, ff_m_smp)
         call int_multi_pass_vector
       end if
 !
@@ -216,7 +223,8 @@
 !
       if ( num_multi_pass .gt. 1 ) then
         call cal_ff_smp_2_multi_pass                                    &
-     &     (maxnod_4_smp, inod_smp_stack, n_scalar, ff_nl_smp, ff_m_smp)
+     &     (maxnod_4_smp, node1%istack_nod_smp,                         &
+     &      n_scalar, ff_nl_smp, ff_m_smp)
         call int_multi_pass_scalar
       end if
 !
@@ -233,7 +241,8 @@
 !
       if ( num_multi_pass .gt. 1 ) then
         call cal_ff_smp_2_multi_pass                                    &
-     &     (maxnod_4_smp, inod_smp_stack, n_vector, ff_nl_smp, ff_m_smp)
+     &     (maxnod_4_smp, node1%istack_nod_smp,                         &
+     &      n_vector, ff_nl_smp, ff_m_smp)
         call int_multi_pass_vector_fl
       end if
 !
@@ -249,7 +258,8 @@
 !
       if ( num_multi_pass .gt. 1 ) then
         call cal_ff_smp_2_multi_pass                                    &
-     &     (maxnod_4_smp, inod_smp_stack, n_scalar, ff_nl_smp, ff_m_smp)
+     &     (maxnod_4_smp, node1%istack_nod_smp,                         &
+     &      n_scalar, ff_nl_smp, ff_m_smp)
         call int_multi_pass_scalar_fl
       end if
 !
@@ -266,7 +276,8 @@
 !
       if ( num_multi_pass .gt. 1 ) then
         call cal_ff_smp_2_multi_pass                                    &
-     &     (maxnod_4_smp, inod_smp_stack, n_vector, ff_nl_smp, ff_m_smp)
+     &     (maxnod_4_smp, node1%istack_nod_smp,                         &
+     &      n_vector, ff_nl_smp, ff_m_smp)
         call int_multi_pass_vector_cd
       end if
 !
@@ -282,7 +293,8 @@
 !
       if ( num_multi_pass .gt. 1 ) then
         call cal_ff_smp_2_multi_pass                                    &
-     &     (maxnod_4_smp, inod_smp_stack, n_scalar, ff_nl_smp, ff_m_smp)
+     &     (maxnod_4_smp, node1%istack_nod_smp,                         &
+     &      n_scalar, ff_nl_smp, ff_m_smp)
         call int_multi_pass_scalar_cd
       end if
 !
@@ -299,7 +311,8 @@
 !
       if ( num_multi_pass .gt. 1 ) then
         call cal_ff_smp_2_multi_pass                                    &
-     &     (maxnod_4_smp, inod_smp_stack, n_vector, ff_nl_smp, ff_m_smp)
+     &     (maxnod_4_smp, node1%istack_nod_smp,                         &
+     &      n_vector, ff_nl_smp, ff_m_smp)
         call int_multi_pass_vector_ins
       end if
 !
@@ -315,7 +328,8 @@
 !
       if ( num_multi_pass .gt. 1 ) then
         call cal_ff_smp_2_multi_pass                                    &
-     &     (maxnod_4_smp, inod_smp_stack, n_scalar, ff_nl_smp, ff_m_smp)
+     &     (maxnod_4_smp, node1%istack_nod_smp,                         &
+     &      n_scalar, ff_nl_smp, ff_m_smp)
         call int_multi_pass_scalar_ins
       end if
 !

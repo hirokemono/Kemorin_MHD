@@ -33,8 +33,9 @@
 !
 !
 !$omp parallel
-      call cal_vec_scalar_prod_no_coef_smp(np_smp, node1%numnod,        &
-     &    inod_smp_stack, d_nod(1,i_v), d_nod(1,i_s), d_nod(1,i_r))
+      call cal_vec_scalar_prod_no_coef_smp                              &
+     &  (np_smp, node1%numnod, node1%istack_nod_smp,                    &
+     &   d_nod(1,i_v), d_nod(1,i_s), d_nod(1,i_r))
 !$omp end parallel
 !
       end subroutine cal_flux_vector

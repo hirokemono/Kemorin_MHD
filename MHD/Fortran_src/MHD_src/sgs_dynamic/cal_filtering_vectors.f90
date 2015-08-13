@@ -61,7 +61,7 @@
         if (i_filter .ne. i_vect) then
           call copy_vector_component(i_filter, i_vect)
         end if
-        call cal_l_filtering_vector(i_filter, inod_smp_stack)
+        call cal_l_filtering_vector(i_filter, node1%istack_nod_smp)
         call vector_send_recv(i_filter)
 !
       end if
@@ -109,7 +109,7 @@
         if (i_filter .ne. i_vect) then
           call copy_vector_component(i_filter, i_vect)
         end if
-        call cal_l_filtering_vector(i_filter, inod_smp_stack)
+        call cal_l_filtering_vector(i_filter, node1%istack_nod_smp)
         call vector_send_recv(i_filter)
 !
       end if

@@ -38,7 +38,7 @@
       real(kind = kreal) :: rel_correct
 !
 !
-      call init_4_sol_m_potential
+      call init_4_sol_m_potential(node1%istack_nod_smp)
 !
 !     --------------------- 
 !
@@ -51,7 +51,7 @@
       call int_norm_div_a_monitor(iloop, rel_correct)
 !      call int_rms_div_a_monitor(iloop, rel_correct)
 !
-      call init_4_sol_m_potential
+      call init_4_sol_m_potential(node1%istack_nod_smp)
 !
       do iloop = 0, maxiter_vecp
 !

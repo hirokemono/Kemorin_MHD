@@ -52,7 +52,7 @@
       call cal_t_evo_4_vector_cd(iflag_mag_supg)
       call set_boundary_magne_4_rhs
 !
-      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    d_nod(1,i_field), ff_nl, ml_cd)
       call vector_send_recv(i_field)
 !
@@ -80,7 +80,7 @@
 !
       call set_boundary_magne_4_rhs
 !
-      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    d_nod(1,iphys%i_b_diffuse), ff, ml)
       call vector_send_recv(iphys%i_b_diffuse)
 !

@@ -21,6 +21,7 @@
       module cal_sgs_fluxes_simi
 !
       use m_precision
+      use m_geometry_data
 !
       implicit none
 !
@@ -46,7 +47,8 @@
 !
 !  ----------   substruct flux obtained by filterd values
 !
-       call cal_sgs_flux_tensor(i_sgs, i_vect_f, i_vect_f, icm_sgs)
+       call cal_sgs_flux_tensor(node1%istack_nod_smp,                   &
+     &     i_sgs, i_vect_f, i_vect_f, icm_sgs)
 !
       end subroutine cal_sgs_mf_simi
 !
@@ -67,8 +69,8 @@
       call cal_flux_vector(i_sgs, iphys%i_velo, ifield)
       call cal_filtered_vector(i_sgs, i_sgs)
 !
-      call cal_sgs_flux_vector(i_sgs, iphys%i_filter_velo, ifield_f,    &
-     &    icm_sgs)
+      call cal_sgs_flux_vector(node1%istack_nod_smp,                    &
+     &    i_sgs, iphys%i_filter_velo, ifield_f, icm_sgs)
 !
       end subroutine cal_sgs_hf_simi
 !
@@ -91,8 +93,8 @@
 !
 !  ----------   substruct flux obtained by filterd values
 !
-       call subctract_induction_tensor(i_sgs, i_fil_b,                  &
-     &     i_fil_v, icm_sgs)
+       call subctract_induction_tensor(node1%istack_nod_smp,            &
+     &     i_sgs, i_fil_b, i_fil_v, icm_sgs)
 !
       end subroutine cal_sgs_induct_t_simi
 !
@@ -114,7 +116,8 @@
 !
       call cal_filtered_vector(i_sgs, i_sgs)
 !
-      call subctract_uxb_vector(i_sgs, i_fil_v, i_fil_b)
+      call subctract_uxb_vector(node1%istack_nod_smp,                   &
+     &    i_sgs, i_fil_v, i_fil_b)
 !
       end subroutine cal_sgs_uxb_simi
 !
@@ -153,7 +156,8 @@
 !
 !  ----------   substruct flux obtained by filterd values
 !
-       call cal_sgs_flux_tensor(i_sgs, i_vect_f, i_vect_f, icm_sgs)
+       call cal_sgs_flux_tensor(node1%istack_nod_smp,                   &
+     &     i_sgs, i_vect_f, i_vect_f, icm_sgs)
 !
       end subroutine cal_sgs_mf_simi_wide
 !
@@ -174,8 +178,8 @@
       call cal_flux_vector(i_sgs, iphys%i_velo, ifield)
       call cal_w_filtered_vector(i_sgs, i_sgs)
 !
-      call cal_sgs_flux_vector(i_sgs, iphys%i_filter_velo, ifield_f,    &
-     &    icm_sgs)
+      call cal_sgs_flux_vector(node1%istack_nod_smp,                    &
+     &    i_sgs, iphys%i_filter_velo, ifield_f, icm_sgs)
 !
       end subroutine cal_sgs_hf_simi_wide
 !
@@ -198,8 +202,8 @@
 !
 !  ----------   substruct flux obtained by filterd values
 !
-       call subctract_induction_tensor(i_sgs, i_fil_b,                  &
-     &     i_fil_v, icm_sgs)
+       call subctract_induction_tensor(node1%istack_nod_smp,            &
+     &     i_sgs, i_fil_b, i_fil_v, icm_sgs)
 !
       end subroutine cal_sgs_induct_t_simi_wide
 !
@@ -222,7 +226,8 @@
 !
       call cal_w_filtered_vector(i_sgs, i_sgs)
 !
-      call subctract_uxb_vector(i_sgs, i_fil_v, i_fil_b)
+      call subctract_uxb_vector(node1%istack_nod_smp,                   &
+     &    i_sgs, i_fil_v, i_fil_b)
 !
       end subroutine cal_sgs_uxb_simi_wide
 !

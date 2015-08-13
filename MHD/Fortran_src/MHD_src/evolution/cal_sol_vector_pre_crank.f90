@@ -26,12 +26,13 @@
 !
       subroutine cal_sol_velo_pre_linear
 !
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
 !
 !
       call cal_sol_vec_fluid_linear(n_vector, iphys%i_velo,             &
-     &    iphys%i_pre_mom)
+     &    iphys%i_pre_mom, node1%istack_nod_smp)
 !
       end subroutine cal_sol_velo_pre_linear
 !
@@ -39,12 +40,13 @@
 !
       subroutine cal_sol_temp_linear
 !
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
 !
 !
       call cal_sol_vec_fluid_linear(n_scalar, iphys%i_temp,             &
-     &    iphys%i_pre_heat)
+     &    iphys%i_pre_heat, node1%istack_nod_smp)
 !
       end subroutine cal_sol_temp_linear
 !
@@ -52,12 +54,13 @@
 !
       subroutine cal_sol_par_temp_linear
 !
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
 !
 !
       call cal_sol_vec_fluid_linear(n_scalar, iphys%i_par_temp,         &
-     &    iphys%i_pre_heat)
+     &    iphys%i_pre_heat, node1%istack_nod_smp)
 !
       end subroutine cal_sol_par_temp_linear
 !
@@ -65,24 +68,26 @@
 !
       subroutine cal_sol_vect_p_pre_linear
 !
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
 !
 !
       call cal_sol_vec_conduct_linear(n_vector, iphys%i_vecp,           &
-     &    iphys%i_pre_uxb)
+     &    iphys%i_pre_uxb, inter_smp_stack)
 !
       end subroutine cal_sol_vect_p_pre_linear
 !
 ! -----------------------------------------------------------------------!
       subroutine cal_sol_magne_pre_linear
 !
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
 !
 !
       call cal_sol_vec_conduct_linear(n_vector, iphys%i_magne,          &
-     &    iphys%i_pre_uxb)
+     &    iphys%i_pre_uxb, inter_smp_stack)
 !
       end subroutine cal_sol_magne_pre_linear
 !
@@ -90,26 +95,28 @@
 !
       subroutine cal_sol_d_scalar_linear
 !
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
 !
 !
       call cal_sol_vec_fluid_linear(n_scalar, iphys%i_light,            &
-     &    iphys%i_pre_composit)
+     &    iphys%i_pre_composit, node1%istack_nod_smp)
 !
       end subroutine cal_sol_d_scalar_linear
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_vec_fluid_linear(numdir, i_field, if_pre)
+      subroutine cal_sol_vec_fluid_linear                               &
+     &         (numdir, i_field, if_pre, inod_smp_stack)
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_node_phys_data
       use m_finite_element_matrix
       use m_t_int_parameter
 !
+      integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numdir, i_field, if_pre
 !
       integer (kind = kint) :: iproc, inod, nd
@@ -141,15 +148,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_vec_conduct_linear(numdir, i_field, if_pre)
+      subroutine cal_sol_vec_conduct_linear                             &
+     &         (numdir, i_field, if_pre, inter_smp_stack)
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data_MHD
       use m_node_phys_data
       use m_finite_element_matrix
       use m_t_int_parameter
 !
+      integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numdir, i_field, if_pre
 !
       integer (kind = kint) :: iproc, inum, inod, nd

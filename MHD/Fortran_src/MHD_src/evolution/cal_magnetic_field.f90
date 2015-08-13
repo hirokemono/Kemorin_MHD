@@ -45,7 +45,7 @@
         maxiter_insulater = 1
       end if
 !
-      call init_4_sol_m_potential
+      call init_4_sol_m_potential(node1%istack_nod_smp)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
       call cal_magnetic_field_pre

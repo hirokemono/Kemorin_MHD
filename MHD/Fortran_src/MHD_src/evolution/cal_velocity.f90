@@ -23,6 +23,7 @@
 !
       use m_control_parameter
       use m_machine_parameter
+      use m_geometry_data
 !
       use cal_velocity_pre
       use cal_mod_vel_potential
@@ -44,10 +45,10 @@
      &     .and. iflag_4_rotate .eq. id_turn_OFF) then
           call cal_sol_pressure_mcv
         else
-          call init_4_sol_k_potential
+          call init_4_sol_k_potential(node1%istack_nod_smp)
         end if
       else
-        call init_4_sol_k_potential
+        call init_4_sol_k_potential(node1%istack_nod_smp)
       end if
 !
 !     --------------------- 

@@ -54,7 +54,7 @@
       call cal_t_evo_4_vector_fl(iflag_velo_supg)
 !       call set_boundary_velo_4_rhs
 !
-      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    d_nod(1,i_field), ff_nl, ml_fl)
       call vector_send_recv(i_field)
 !
@@ -81,7 +81,7 @@
 !
       call set_boundary_velo_4_rhs
 !
-      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &     d_nod(1,iphys%i_v_diffuse), ff, ml_fl)
 !
       call vector_send_recv(iphys%i_v_diffuse)

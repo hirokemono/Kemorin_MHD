@@ -59,7 +59,7 @@
      &    nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter, i_vect)
 !
       call set_ff_nl_smp_2_ff(n_vector)
-      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    d_nod(1,i_sgs), ff_nl, ml)
 !
       end subroutine cal_rotation_commute
@@ -88,7 +88,7 @@
      &    nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter, i_vect)
 !
       call set_ff_nl_smp_2_ff(n_vector)
-      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    d_nod(1,i_sgs), ff_nl, ml_fl)
 !
       end subroutine cal_rotation_commute_fluid
@@ -117,7 +117,7 @@
      &    nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter, i_vect)
 !
       call set_ff_nl_smp_2_ff(n_vector)
-      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    d_nod(1,i_sgs), ff_nl, ml_cd)
 !
       end subroutine cal_rotation_commute_conduct

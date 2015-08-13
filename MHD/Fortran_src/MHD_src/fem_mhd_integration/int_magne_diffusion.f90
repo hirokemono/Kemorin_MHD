@@ -39,7 +39,7 @@
            iphys%i_vp_diffuse)
 !
 !      call cal_multi_pass_4_vector_ff
-!      call cal_ff_2_vector(node1%numnod, inod_smp_stack,               &
+!      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,         &
 !     &    d_nod(1,iphys%i_magne), ff, ml_cd)
        call cal_ff_smp_2_vector(d_nod(1,iphys%i_b_diffuse),             &
      &     ff_nl_smp, ml_cd) 

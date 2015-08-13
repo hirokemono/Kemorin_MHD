@@ -40,8 +40,9 @@
 !
 !    reset model coefficients
 !
-      call reset_vector_sgs_model_coefs(icomp_sgs_hf)
-      call reset_vector_sgs_nod_m_coefs(icomp_sgs_hf)
+      call reset_vector_sgs_model_coefs(icomp_sgs_hf, iele_smp_stack)
+      call reset_vector_sgs_nod_m_coefs                                 &
+     &   (icomp_sgs_hf, node1%istack_nod_smp)
       call s_clear_work_4_dynamic_model(node1%numnod)
 !
 !   similarity model with wider filter

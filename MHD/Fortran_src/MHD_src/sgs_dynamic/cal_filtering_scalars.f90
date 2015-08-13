@@ -61,7 +61,7 @@
         if (i_filter .ne. i_scalar) then
            call copy_scalar_component(i_filter, i_scalar)
         end if
-        call cal_l_filtering_scalar(i_filter, inod_smp_stack)
+        call cal_l_filtering_scalar(i_filter, node1%istack_nod_smp)
         call scalar_send_recv(i_filter)
 !
       end if
@@ -109,7 +109,7 @@
         if (i_filter .ne. i_scalar) then
            call copy_scalar_component(i_filter, i_scalar)
         end if
-        call cal_l_filtering_scalar(i_filter, inod_smp_stack)
+        call cal_l_filtering_scalar(i_filter, node1%istack_nod_smp)
         call scalar_send_recv(i_filter)
 !
       end if

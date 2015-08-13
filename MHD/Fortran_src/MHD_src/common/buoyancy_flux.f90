@@ -61,8 +61,8 @@
 !
 !$omp parallel do private(ip,ist,ied,inod)
       do ip = 1, np_smp
-        ist = inod_smp_stack(ip-1) + 1
-        ied = inod_smp_stack(ip)
+        ist = node1%istack_nod_smp(ip-1) + 1
+        ied = node1%istack_nod_smp(ip)
         do inod = ist, ied
           d_nod(inod,i_flux) = coef_buo * d_nod(inod,i_scalar)          &
      &                    * ( d_nod(inod,iphys%i_velo  ) * xx(inod,1)   &
@@ -89,8 +89,8 @@
 !
 !$omp parallel do private(ip,ist,ied,inod)
       do ip = 1, np_smp
-        ist = inod_smp_stack(ip-1) + 1
-        ied = inod_smp_stack(ip)
+        ist = node1%istack_nod_smp(ip-1) + 1
+        ied = node1%istack_nod_smp(ip)
         do inod = ist, ied
             d_nod(inod,i_flux) = coef_buo * d_nod(inod,i_scalar)        &
      &       * (d_nod(inod,iphys%i_velo  ) * xx(inod,1)*a_radius(inod)  &
@@ -120,8 +120,8 @@
 !
 !$omp parallel do private(ip,ist,ied,inod)
       do ip = 1, np_smp
-        ist = inod_smp_stack(ip-1) + 1
-        ied = inod_smp_stack(ip)
+        ist = node1%istack_nod_smp(ip-1) + 1
+        ied = node1%istack_nod_smp(ip)
         do inod = ist, ied
           d_nod(inod,i_flux) = coef_buo * d_nod(inod,i_scalar)          &
      &              * ( d_nod(inod,iphys%i_velo  ) * grav(1)            &

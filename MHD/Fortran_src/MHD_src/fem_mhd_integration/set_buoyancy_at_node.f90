@@ -13,7 +13,6 @@
 !
       use m_precision
 !
-      use m_control_parameter
       use m_machine_parameter
       use m_geometry_data
       use m_physical_property
@@ -85,8 +84,8 @@
        cratio = c_d/c_t
 !$omp parallel do private(inod,ist,ied)
        do iproc = 1, np_smp
-         ist = inod_smp_stack(iproc-1) + 1
-         ied = inod_smp_stack(iproc)
+         ist = node1%istack_nod_smp(iproc-1) + 1
+         ied = node1%istack_nod_smp(iproc)
 !cdir nodep
          do inod = ist, ied
            d_nod(inod,i_rho  ) = -(d_nod(inod,i_t)                      &
@@ -113,8 +112,8 @@
 !
 !$omp parallel do private(inod,ist,ied) 
        do iproc = 1, np_smp
-         ist = inod_smp_stack(iproc-1) + 1
-         ied = inod_smp_stack(iproc)
+         ist = node1%istack_nod_smp(iproc-1) + 1
+         ied = node1%istack_nod_smp(iproc)
 !cdir nodep
          do inod = ist, ied
            d_nod(inod,i_res  ) = coef * grav(1) * d_nod(inod,i_field)
@@ -141,8 +140,8 @@
 !
 !$omp parallel do private(inod,ist,ied) 
        do iproc = 1, np_smp
-         ist = inod_smp_stack(iproc-1) + 1
-         ied = inod_smp_stack(iproc)
+         ist = node1%istack_nod_smp(iproc-1) + 1
+         ied = node1%istack_nod_smp(iproc)
 !cdir nodep
          do inod = ist, ied
            d_nod(inod,i_res  ) = coef * xx(inod,1) * a_radius(inod)     &
@@ -172,8 +171,8 @@
 !
 !$omp parallel do private(inod,ist,ied) 
        do iproc = 1, np_smp
-         ist = inod_smp_stack(iproc-1) + 1
-         ied = inod_smp_stack(iproc)
+         ist = node1%istack_nod_smp(iproc-1) + 1
+         ied = node1%istack_nod_smp(iproc)
 !cdir nodep
          do inod = ist, ied
            d_nod(inod,i_res  ) = coef*xx(inod,1) * d_nod(inod,i_field)
@@ -201,8 +200,8 @@
 !
 !$omp parallel do private(inod,ist,ied) 
        do iproc = 1, np_smp
-         ist = inod_smp_stack(iproc-1) + 1
-         ied = inod_smp_stack(iproc)
+         ist = node1%istack_nod_smp(iproc-1) + 1
+         ied = node1%istack_nod_smp(iproc)
 !cdir nodep
          do inod = ist, ied
            d_nod(inod,i_r1  ) = grav(1) * (c1*d_nod(inod,i_f1)          &
@@ -232,8 +231,8 @@
 !
 !$omp parallel do private(inod,ist,ied) 
        do iproc = 1, np_smp
-         ist = inod_smp_stack(iproc-1) + 1
-         ied = inod_smp_stack(iproc)
+         ist = node1%istack_nod_smp(iproc-1) + 1
+         ied = node1%istack_nod_smp(iproc)
 !cdir nodep
          do inod = ist, ied
            d_nod(inod,i_r1  ) = xx(inod,1) * a_radius(inod)             &
@@ -266,8 +265,8 @@
 !
 !$omp parallel do private(inod,ist,ied) 
        do iproc = 1, np_smp
-         ist = inod_smp_stack(iproc-1) + 1
-         ied = inod_smp_stack(iproc)
+         ist = node1%istack_nod_smp(iproc-1) + 1
+         ied = node1%istack_nod_smp(iproc)
 !cdir nodep
          do inod = ist, ied
            d_nod(inod,i_r1  ) = xx(inod,1) * ( c1 * d_nod(inod,i_f1)    &
@@ -301,8 +300,8 @@
 !
 !$omp parallel do private(inod,ist,ied)
       do iproc = 1, np_smp
-        ist = inod_smp_stack(iproc-1)+1
-        ied = inod_smp_stack(iproc)
+        ist = node1%istack_nod_smp(iproc-1)+1
+        ied = node1%istack_nod_smp(iproc)
 !cdir nodep
         do inod = ist, ied
           ff(inod,1) = ff(inod,1) + d_nod(inod,i_fc  ) * ml_o_fl(inod)

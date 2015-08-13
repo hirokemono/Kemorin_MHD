@@ -116,7 +116,7 @@
       subroutine check_scalar_evo_by_previous(i_fld, i_chk, i_chk2,     &
      &          idrm)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
 !
       integer(kind = kint), intent(in) :: i_fld, i_chk, i_chk2, idrm
@@ -127,8 +127,8 @@
 !
 !$omp do private(ist,ied,inod,d_ratio)
       do ip = 1, np_smp
-        ist = inod_smp_stack(ip-1) + 1
-        ied = inod_smp_stack(ip)
+        ist = node1%istack_nod_smp(ip-1) + 1
+        ied = node1%istack_nod_smp(ip)
 !
         if( d_nod(ist,i_chk  ) .eq. d_nod(ist,i_chk2  )) then
           d_ratio_min_smp(ip,idrm  ) =  1.0d30
@@ -167,7 +167,7 @@
       subroutine check_vector_evo_by_previous(i_fld, i_chk, i_chk2,     &
      &          idrm)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_data
 !
       integer(kind = kint), intent(in) :: i_fld, i_chk, i_chk2, idrm
@@ -178,8 +178,8 @@
 !
 !$omp do private(ist,ied,inod,d_ratio)
       do ip = 1, np_smp
-        ist = inod_smp_stack(ip-1) + 1
-        ied = inod_smp_stack(ip)
+        ist = node1%istack_nod_smp(ip-1) + 1
+        ied = node1%istack_nod_smp(ip)
 !
         if( d_nod(ist,i_chk  ) .eq. d_nod(ist,i_chk2  )) then
           d_ratio_min_smp(ip,idrm  ) =  1.0d30

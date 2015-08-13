@@ -218,7 +218,7 @@
       end do
 !
       call sub1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
-      call cal_multi_pass_2_ff_smp(maxnod_4_smp, inod_smp_stack,        &
+      call cal_multi_pass_2_ff_smp(maxnod_4_smp, node1%istack_nod_smp,  &
      &    n_scalar, ff_nl_smp, ff_m_smp)
 !
       end subroutine int_vol_multi_pass_scalar
@@ -247,7 +247,7 @@
       end do
 !
       call sub3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
-      call cal_multi_pass_2_ff_smp(maxnod_4_smp, inod_smp_stack,        &
+      call cal_multi_pass_2_ff_smp(maxnod_4_smp, node1%istack_nod_smp,  &
      &    n_vector, ff_nl_smp, ff_m_smp)
 !
       end subroutine int_vol_multi_pass_vector

@@ -157,8 +157,8 @@
 !
 !$omp parallel do private(ist,ied,inod)
       do ip = 1, np_smp
-        ist = inod_smp_stack(ip-1)+1
-        ied = inod_smp_stack(ip)
+        ist = node1%istack_nod_smp(ip-1)+1
+        ied = node1%istack_nod_smp(ip)
 !cdir nodep
         do inod = ist, ied
           b_vec(3*inod-2) = ff(inod,1)
@@ -188,8 +188,8 @@
 !
 !$omp parallel do private(ist,ied,inod)
       do ip = 1, np_smp
-        ist = inod_smp_stack(ip-1)+1
-        ied = inod_smp_stack(ip)
+        ist = node1%istack_nod_smp(ip-1)+1
+        ied = node1%istack_nod_smp(ip)
 !cdir nodep
         do inod = ist, ied
           b_vec(inod) =    ff(inod,1)
@@ -217,8 +217,8 @@
 !
 !$omp parallel do private(ist,ied,inod)
       do ip = 1, np_smp
-        ist = inod_smp_stack(ip-1)+1
-        ied = inod_smp_stack(ip)
+        ist = node1%istack_nod_smp(ip-1)+1
+        ied = node1%istack_nod_smp(ip)
 !cdir nodep
         do inod = ist, ied
           b_vec(inod) = ff(inod,1)
@@ -246,8 +246,8 @@
 !
 !$omp parallel do private(ist,ied,inod)
       do ip = 1, np_smp
-        ist = inod_smp_stack(ip-1)+1
-        ied = inod_smp_stack(ip)
+        ist = node1%istack_nod_smp(ip-1)+1
+        ied = node1%istack_nod_smp(ip)
 !cdir nodep
         do inod = ist, ied
           d_nod(inod,i_field  ) = x_vec(3*inod-2)
@@ -275,8 +275,8 @@
 !
 !$omp parallel do private(ist,ied,inod)
       do ip = 1, np_smp
-        ist = inod_smp_stack(ip-1)+1
-        ied = inod_smp_stack(ip)
+        ist = node1%istack_nod_smp(ip-1)+1
+        ied = node1%istack_nod_smp(ip)
 !cdir nodep
         do inod = ist, ied
           d_nod(inod,i_field  ) = x_vec(inod)

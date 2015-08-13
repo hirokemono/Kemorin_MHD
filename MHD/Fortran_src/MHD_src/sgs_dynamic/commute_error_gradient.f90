@@ -58,7 +58,7 @@
      &    ngrp_sf, id_grp_sf, i_filter, i_scalar)
 !
       call set_ff_nl_smp_2_ff(n_vector)
-      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    d_nod(1,i_sgs), ff_nl, ml)
 !
       end subroutine cal_grad_commute
@@ -86,7 +86,7 @@
      &    ngrp_sf, id_grp_sf, i_filter, i_scalar)
 !
       call set_ff_nl_smp_2_ff(n_vector)
-      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    d_nod(1,i_sgs), ff_nl, ml_fl)
 !
       end subroutine cal_grad_commute_fluid
@@ -114,7 +114,7 @@
      &    ngrp_sf, id_grp_sf, i_filter, i_scalar)
 !
       call set_ff_nl_smp_2_ff(n_vector)
-      call cal_ff_2_vector(node1%numnod, inod_smp_stack,                &
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    d_nod(1,i_sgs), ff_nl, ml_cd)
 !
       end subroutine cal_grad_commute_conduct
