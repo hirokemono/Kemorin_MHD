@@ -16,7 +16,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_phys_constants
 !
@@ -49,7 +48,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, iphys%i_velo,               &
      &      coef_cor, velo_1)
         call fem_skv_coriolis_1st(iele_fsmp_stack, n_int, k2,           &
@@ -82,7 +81,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
           call vector_cst_phys_2_each_ele(k2, iphys%i_velo,             &
      &        coef_cor, velo_1)
           call fem_skv_coriolis_upw_1st(iele_fsmp_stack, n_int, k2,     &

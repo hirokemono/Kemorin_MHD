@@ -52,7 +52,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call set_gravity_vec_each_ele_1st(k2, i_source,                 &
      &      ak_buo, vect_e)
         call fem_skv_vector_1st(iele_fsmp_stack, n_int, k2,             &
@@ -87,7 +87,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call set_gravity_vec_each_ele_1st(k2, i_source,                 &
      &      ak_buo, vect_e)
         call fem_skv_vector_field_upw_1st(iele_fsmp_stack, n_int, k2,   &

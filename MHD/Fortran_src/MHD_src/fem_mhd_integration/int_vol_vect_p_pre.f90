@@ -56,7 +56,7 @@
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
-      do k2=1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, iphys%i_velo,               &
      &      coef_induct, velo_1)
 !
@@ -91,7 +91,7 @@
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, iphys%i_velo,               &
      &      coef_induct, velo_1)
 !

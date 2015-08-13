@@ -55,10 +55,11 @@
       real (kind=kreal), intent(in) :: bxe_ex(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &               :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
-      call fem_skv_lorentz_rot(ele1%numele, nnod_4_ele, nnod_4_ele,     &
+      call fem_skv_lorentz_rot                                          &
+     &         (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,          &
      &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2,        &
      &          xjac, dwx, dwx,  vect_1, bxe_ex, sk_v)
 !
@@ -81,10 +82,11 @@
       real (kind=kreal), intent(in) :: ex_magne(3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &               :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
-      call fem_skv_lorentz_full_pg(ele1%numele, nnod_4_ele, nnod_4_ele, &
+      call fem_skv_lorentz_full_pg                                      &
+     &         (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,          &
      &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2, xjac,  &
      &          aw, dwx, coef_lor, magne_1, bxe, ex_magne, sk_v)
 !
@@ -107,10 +109,11 @@
       real (kind=kreal), intent(in) :: bxe_ex(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &              :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
-      call fem_skv_induction_pg(ele1%numele, nnod_4_ele, nnod_4_ele,    &
+      call fem_skv_induction_pg                                         &
+     &         (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,          &
      &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2,        &
      &          xjac, aw, dwx, velo_1, magne_1, vxe, bxe_ex,            &
      &          coef_uxb, sk_v)
@@ -133,10 +136,11 @@
       real (kind=kreal), intent(in) :: xe(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
-      call fem_skv_stratified_pg(ele1%numele, nnod_4_ele, nnod_4_ele,   &
+      call fem_skv_stratified_pg                                        &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2,              &
      &    xjac, aw, aw, temp_1, vxe, xe, sk_v)
 !
@@ -160,11 +164,11 @@
       real (kind=kreal), intent(in) :: ex_magne(3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &              :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_lorentz_full_upw                                     &
-     &         (ele1%numele, nnod_4_ele, nnod_4_ele,                    &
+     &         (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,          &
      &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2, dt,    &
      &          xjac, aw, dwx, dwx, coef_lor, magne_1,                  &
      &          vxe, bxe, ex_magne, sk_v)
@@ -189,10 +193,11 @@
       real (kind=kreal), intent(in) :: bxe_up(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
-      call fem_skv_induction_upm(ele1%numele, nnod_4_ele, nnod_4_ele,   &
+      call fem_skv_induction_upm                                        &
+     &        (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,           &
      &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2, dt,    &
      &          xjac, aw, dwx, dwx, velo_1, magne_1, vxe, bxe_ex,       &
      &          bxe_up, coef_uxb, sk_v)
@@ -215,10 +220,11 @@
       real (kind=kreal), intent(in) :: xe(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
-      call fem_skv_stratified_upw(ele1%numele, nnod_4_ele, nnod_4_ele,  &
+      call fem_skv_stratified_upw                                       &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2, dt,          &
      &    xjac, aw, dwx, aw, temp_1, vxe, xe, sk_v)
 !

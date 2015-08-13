@@ -43,7 +43,7 @@
 !
       call allocate_flags_reduced_comm(nprocs, node1%numnod)
 !
-      call mark_4_fluid_nod_by_ele(ele1%numele, nnod_4_ele, ie,         &
+      call mark_4_fluid_nod_by_ele(ele1%numele, ele1%nnod_4_ele, ie,    &
      &    iele_fl_smp_stack(0), iele_fl_smp_stack(np_smp) )
 !
       call solver_send_recv_i                                           &

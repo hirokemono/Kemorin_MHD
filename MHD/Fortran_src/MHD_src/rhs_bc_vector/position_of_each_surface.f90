@@ -44,7 +44,7 @@
 !
 !
       call position_2_each_surf_grp                                     &
-     &   (np_smp, node1%numnod, ele1%numele, nnod_4_ele,                &
+     &   (np_smp, node1%numnod, ele1%numele, ele1%nnod_4_ele,           &
      &    nnod_4_surf, node_on_sf, ie, xx, a_radius,                    &
      &    sf_grp%num_grp, sf_grp%num_item, sf_grp%istack_grp,           &
      &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &
@@ -65,7 +65,7 @@
 !
 !
       call delta_x_2_each_surf_grp                                      &
-     &   (np_smp, node1%numnod, ele1%numele, nnod_4_ele,                &
+     &   (np_smp, node1%numnod, ele1%numele, ele1%nnod_4_ele,           &
      &    nnod_4_surf, node_on_sf, node_on_sf_n, ie, xx,                &
      &    sf_grp%num_grp, sf_grp%num_item, sf_grp%istack_grp,           &
      &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &

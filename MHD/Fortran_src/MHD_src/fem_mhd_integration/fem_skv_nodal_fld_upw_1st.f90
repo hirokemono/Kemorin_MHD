@@ -41,11 +41,11 @@
       real (kind=kreal), intent(in) :: scalar_e(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &           :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_scalar_field_upw                                     &
-     &         (ele1%numele, nnod_4_ele, nnod_4_ele,                    &
+     &         (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,          &
      &          ntot_int_3d, iele_fsmp_stack, n_int, k2, xjac,          &
      &          aw, aw, dwx, dt, vxe, scalar_e, sk_v) 
 !
@@ -65,11 +65,11 @@
       real (kind=kreal), intent(in) :: vector_e(ele1%numele,n_vector)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &           :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_vector_field_upw                                     &
-     &         (ele1%numele, nnod_4_ele, nnod_4_ele,                    &
+     &         (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,          &
      &          ntot_int_3d, iele_fsmp_stack, n_int, k2, xjac,          &
      &          aw, aw, dwx, dt, vxe, vector_e, sk_v) 
 !
@@ -90,11 +90,11 @@
      &                   :: tensor_e(ele1%numele,n_sym_tensor)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &           :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_tensor_field_upw                                     &
-     &         (ele1%numele, nnod_4_ele, nnod_4_ele,                    &
+     &         (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,          &
      &          ntot_int_3d, iele_fsmp_stack, n_int, k2, xjac,          &
      &          aw, aw, dwx, dt, vxe, tensor_e, sk_v) 
 !

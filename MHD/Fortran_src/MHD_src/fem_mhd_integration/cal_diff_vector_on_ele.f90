@@ -30,7 +30,7 @@
       use m_geometry_data_MHD
       use m_node_phys_address
 !
-      call diff_vector_on_ele(ele1%numele, nnod_4_ele, ie,              &
+      call diff_vector_on_ele(ele1%numele, ele1%nnod_4_ele, ie,         &
      &    a_vol_ele, iele_fl_smp_stack, i_dvx, iphys%i_velo)
 !
       end subroutine diff_velocity_on_ele
@@ -43,7 +43,7 @@
       use m_geometry_data_MHD
       use m_node_phys_address
 !
-      call diff_vector_on_ele(ele1%numele, nnod_4_ele, ie,              &
+      call diff_vector_on_ele(ele1%numele, ele1%nnod_4_ele, ie,         &
      &    a_vol_ele, iele_cd_smp_stack, i_dbx, iphys%i_magne)
 !
       end subroutine diff_magne_on_ele
@@ -57,7 +57,7 @@
       use m_geometry_data_MHD
       use m_node_phys_address
 !
-      call diff_vector_on_ele(ele1%numele, nnod_4_ele, ie,              &
+      call diff_vector_on_ele(ele1%numele, ele1%nnod_4_ele, ie,         &
      &    a_vol_ele, iele_fl_smp_stack, i_dfvx, iphys%i_filter_velo)
 !
       end subroutine diff_filter_v_on_ele
@@ -70,7 +70,7 @@
       use m_geometry_data_MHD
       use m_node_phys_address
 !
-      call diff_vector_on_ele(ele1%numele, nnod_4_ele, ie,              &
+      call diff_vector_on_ele(ele1%numele, ele1%nnod_4_ele, ie,         &
      &    a_vol_ele, iele_fl_smp_stack, i_dfbx, iphys%i_filter_magne)
 !
       return

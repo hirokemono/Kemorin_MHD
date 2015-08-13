@@ -42,16 +42,16 @@
 !
       if (i_grav .eq. iflag_const_g) then
         call const_gvec_each_element(node1%numnod, ele1%numele,         &
-     &      nnod_4_ele, ie, np_smp, iele_smp_stack, k2, i_field,        &
-     &      num_tot_nod_phys, d_nod, grav, ak_buo, vect_e)
+     &      ele1%nnod_4_ele, ie, np_smp, iele_smp_stack,                &
+     &      k2, i_field, num_tot_nod_phys, d_nod, grav, ak_buo, vect_e)
       else if (i_grav .eq. iflag_radial_g) then
         call radial_gvec_each_element(node1%numnod, ele1%numele,        &
-     &      nnod_4_ele, ie, np_smp, iele_smp_stack, xx, a_radius, k2,   &
-     &      i_field, num_tot_nod_phys, d_nod, ak_buo, vect_e)
+     &      ele1%nnod_4_ele, ie, np_smp, iele_smp_stack, xx, a_radius,  &
+     &      k2, i_field, num_tot_nod_phys, d_nod, ak_buo, vect_e)
       else if (i_grav .eq. iflag_self_r_g) then
         call self_gvec_each_element(node1%numnod, ele1%numele,          &
-     &      nnod_4_ele, ie, np_smp, iele_smp_stack, xx, k2,             &
-     &      i_field, num_tot_nod_phys, d_nod, ak_buo, vect_e)
+     &      ele1%nnod_4_ele, ie, np_smp, iele_smp_stack, xx,            &
+     &      k2, i_field, num_tot_nod_phys, d_nod, ak_buo, vect_e)
       end if
 !
       end subroutine set_gravity_vec_each_ele_1st
@@ -71,18 +71,19 @@
 !
       if (i_grav .eq. iflag_const_g) then
         call const_double_gvec_each_element(node1%numnod, ele1%numele,  &
-     &      nnod_4_ele, ie, np_smp, iele_smp_stack, k2, i_src1, i_src2, &
-     &      num_tot_nod_phys, d_nod, grav, ak_buo1, ak_buo2, vect_e)
+     &      ele1%nnod_4_ele, ie, np_smp, iele_smp_stack,                &
+     &      k2, i_src1, i_src2, num_tot_nod_phys, d_nod,                &
+     &      grav, ak_buo1, ak_buo2, vect_e)
       else if (i_grav .eq. iflag_radial_g) then
         call radial_double_gvec_each_element(node1%numnod, ele1%numele, &
-     &      nnod_4_ele, ie, np_smp, iele_smp_stack, xx, a_radius, k2,   &
-     &      i_src1, i_src2, num_tot_nod_phys, d_nod, ak_buo1, ak_buo2,  &
-     &      vect_e)
+     &      ele1%nnod_4_ele, ie, np_smp, iele_smp_stack, xx, a_radius,  &
+     &      k2, i_src1, i_src2, num_tot_nod_phys, d_nod,                &
+     &      ak_buo1, ak_buo2, vect_e)
       else if (i_grav .eq. iflag_self_r_g) then
         call self_double_gvec_each_element(node1%numnod, ele1%numele,   &
-     &      nnod_4_ele, ie, np_smp, iele_smp_stack, xx, k2,             &
-     &      i_src1, i_src2, num_tot_nod_phys, d_nod, ak_buo1, ak_buo2,  &
-     &      vect_e)
+     &      ele1%nnod_4_ele, ie, np_smp, iele_smp_stack, xx,            &
+     &      k2, i_src1, i_src2, num_tot_nod_phys, d_nod,                &
+     &      ak_buo1, ak_buo2, vect_e)
       end if
 !
       end subroutine set_double_gvec_each_ele_1st
@@ -102,16 +103,17 @@
 !
       if (i_grav .eq. iflag_const_g) then
         call const_g_each_element(node1%numnod, ele1%numele,            &
-     &      nnod_4_ele,  ie, np_smp, iele_smp_stack, nd, k2, i_field,   &
-     &      num_tot_nod_phys, d_nod, grav, ak_buo, buo_e)
+     &      ele1%nnod_4_ele,  ie, np_smp, iele_smp_stack,               &
+     &      nd, k2, i_field, num_tot_nod_phys, d_nod,                   &
+     &      grav, ak_buo, buo_e)
       else if (i_grav .eq. iflag_radial_g) then
         call radial_g_each_element(node1%numnod, ele1%numele,           &
-     &      nnod_4_ele, ie, np_smp, iele_smp_stack, xx, a_radius,       &
+     &      ele1%nnod_4_ele, ie, np_smp, iele_smp_stack, xx, a_radius,  &
      &      nd, k2, i_field, num_tot_nod_phys, d_nod, ak_buo, buo_e)
       else if (i_grav .eq. iflag_self_r_g) then
         call self_g_each_element(node1%numnod, ele1%numele,             &
-     &      nnod_4_ele, ie, np_smp, iele_smp_stack, xx, nd, k2,         &
-     &      i_field, num_tot_nod_phys, d_nod, ak_buo, buo_e)
+     &      ele1%nnod_4_ele, ie, np_smp, iele_smp_stack, xx,            &
+     &      nd, k2, i_field, num_tot_nod_phys, d_nod, ak_buo, buo_e)
       end if
 !
       end subroutine set_gravity_on_each_ele_1st
@@ -131,18 +133,18 @@
 !
       if (i_grav .eq. iflag_const_g) then
         call const_double_g_each_element                                &
-     &     (node1%numnod, ele1%numele, nnod_4_ele,                      &
+     &     (node1%numnod, ele1%numele, ele1%nnod_4_ele,                 &
      &      ie, np_smp, iele_smp_stack, nd, k2, i_src1, i_src2,         &
      &      num_tot_nod_phys, d_nod, grav, ak_buo1, ak_buo2, buo_e)
       else if (i_grav .eq. iflag_radial_g) then
         call radial_double_g_each_element                               &
-     &     (node1%numnod, ele1%numele, nnod_4_ele,                      &
+     &     (node1%numnod, ele1%numele, ele1%nnod_4_ele,                 &
      &      ie, np_smp, iele_smp_stack, xx, a_radius, nd, k2,           &
      &      i_src1, i_src2, num_tot_nod_phys, d_nod, ak_buo1, ak_buo2,  &
      &      buo_e)
       else if (i_grav .eq. iflag_self_r_g) then
         call self_double_g_each_element                                 &
-     &     (node1%numnod, ele1%numele, nnod_4_ele,                      &
+     &     (node1%numnod, ele1%numele, ele1%nnod_4_ele,                 &
      &      ie, np_smp, iele_smp_stack, xx, nd, k2, i_src1, i_src2,     &
      &      num_tot_nod_phys, d_nod, ak_buo1, ak_buo2, buo_e)
       end if

@@ -54,7 +54,7 @@
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, iphys%i_velo, velo_1)
         call vector_phys_2_each_element(k2, iphys%i_magne, magne_1)
 !
@@ -94,7 +94,7 @@
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, iphys%i_velo, velo_1)
         call vector_phys_2_each_element(k2, iphys%i_magne, magne_1)
 !

@@ -49,8 +49,8 @@
       integer(kind=kint), intent(in) :: ibc_end, num_index_ibc
       integer(kind=kint), intent(in) :: ele_bc_id(num_index_ibc)
       integer(kind=kint), intent(in)                                    &
-     &                    :: ibc_stack_smp(0:nnod_4_ele*np_smp)
-      integer(kind=kint), intent(in) :: ibc_shape(nnod_4_ele)
+     &                    :: ibc_stack_smp(0:ele1%nnod_4_ele*np_smp)
+      integer(kind=kint), intent(in) :: ibc_shape(ele1%nnod_4_ele)
 !
       integer(kind=kint), intent(in) :: i_field
 !
@@ -90,8 +90,8 @@
       integer(kind=kint), intent(in) :: ibc_end, num_index_ibc
       integer(kind=kint), intent(in) :: ele_bc_id(num_index_ibc)
       integer(kind=kint), intent(in)                                    &
-     &                    :: ibc_stack_smp(0:nnod_4_ele*np_smp)
-      integer(kind=kint), intent(in) :: ibc_shape(nnod_4_ele)
+     &                    :: ibc_stack_smp(0:ele1%nnod_4_ele*np_smp)
+      integer(kind=kint), intent(in) :: ibc_shape(ele1%nnod_4_ele)
 !
       integer(kind=kint), intent(in) :: i_field
 !
@@ -135,8 +135,8 @@
       integer(kind=kint), intent(in) :: ibc_end(3), num_index_ibc(3)
       integer(kind=kint), intent(in) :: ele_bc_id(nmax_index_ibc,3)
       integer(kind=kint), intent(in)                                    &
-     &                    :: ibc_stack_smp(0:nnod_4_ele*np_smp,3)
-      integer(kind=kint), intent(in) :: ibc_shape(nnod_4_ele)
+     &                    :: ibc_stack_smp(0:ele1%nnod_4_ele*np_smp,3)
+      integer(kind=kint), intent(in) :: ibc_shape(ele1%nnod_4_ele)
 !
       integer(kind=kint), intent(in) :: i_field
 !
@@ -186,8 +186,8 @@
       integer(kind=kint), intent(in) :: ibc_end, num_index_ibc
       integer(kind=kint), intent(in) :: ele_bc_id(num_index_ibc)
       integer(kind=kint), intent(in)                                    &
-     &                    :: ibc_stack_smp(0:nnod_4_ele*np_smp)
-      integer(kind=kint), intent(in) :: ibc_shape(nnod_4_ele)
+     &                    :: ibc_stack_smp(0:ele1%nnod_4_ele*np_smp)
+      integer(kind=kint), intent(in) :: ibc_shape(ele1%nnod_4_ele)
 !
       integer(kind=kint), intent(in) :: i_field
 !

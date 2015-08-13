@@ -65,7 +65,7 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-      do k2=1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
 !
 !  -----   set advection  --------
 !
@@ -263,7 +263,7 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-      do k2=1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
 !
 !  -----   set advection  --------
 !

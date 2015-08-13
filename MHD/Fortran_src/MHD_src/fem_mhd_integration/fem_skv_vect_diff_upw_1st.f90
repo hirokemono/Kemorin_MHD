@@ -62,9 +62,10 @@
       real(kind=kreal), intent(in) :: scalar_1(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
-      call fem_skv_all_grad_upw(ele1%numele, nnod_4_ele, nnod_4_ele,    &
+      call fem_skv_all_grad_upw                                         &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,          &
      &    xjac, aw, dwx, dwx, vxe, scalar_1, sk_v)
 !
@@ -84,11 +85,11 @@
       real(kind=kreal), intent(in) :: vect_1(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_all_div_upw                                          &
-     &   (ele1%numele, nnod_4_ele, nnod_4_ele, np_smp,                  &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele, np_smp,        &
      &    iele_fsmp_stack, n_int, k2, dt, ntot_int_3d, xjac,            &
      &    aw, dwx, dwx, vxe, vect_1, sk_v)
 !
@@ -108,10 +109,10 @@
       real(kind=kreal), intent(in) :: vect_1(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
       call fem_all_skv_rot_upw                                          &
-     &   (ele1%numele, nnod_4_ele, nnod_4_ele, np_smp,                  &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele, np_smp,        &
      &    iele_fsmp_stack, n_int, k2, dt, ntot_int_3d, xjac,            &
      &    aw, dwx, dwx, vxe, vect_1, sk_v)
 !
@@ -131,11 +132,11 @@
       real(kind=kreal), intent(in) :: flux_1(ele1%numele,n_sym_tensor)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_all_div_flux_upw                                     &
-     &   (ele1%numele, nnod_4_ele, nnod_4_ele,                          &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3d, xjac,    &
      &    aw, dwx, dwx, vxe, flux_1, sk_v)
 !
@@ -155,13 +156,13 @@
       real(kind=kreal), intent(in)    :: flux_1(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
-      call fem_skv_all_div_asym_t_upw(ele1%numele, nnod_4_ele,          &
-     &   nnod_4_ele, np_smp, iele_fsmp_stack,                           &
-     &    n_int, k2, dt, ntot_int_3d, xjac, aw, dwx, dwx,               &
-     &    vxe, flux_1, sk_v)
+      call fem_skv_all_div_asym_t_upw                                   &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
+     &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,          &
+     &    xjac, aw, dwx, dwx, vxe, flux_1, sk_v)
 !
       end subroutine fem_skv_div_as_tsr_upw
 !
@@ -182,10 +183,11 @@
       real(kind=kreal),   intent(in) :: scalar_1(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
-      call fem_skv_grp_grad_upw(ele1%numele, nnod_4_ele, nnod_4_ele,    &
+      call fem_skv_grp_grad_upw                                         &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp,                  &
      &    n_int, k2, dt, ntot_int_3d, xjac, aw, dwx, dwx,               &
      &    vxe, scalar_1, sk_v)
@@ -208,11 +210,11 @@
       real(kind=kreal), intent(in)    :: vect_1(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_grp_div_upw                                          &
-     &   (ele1%numele, nnod_4_ele, nnod_4_ele, np_smp,                  &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele, np_smp,        &
      &    iele_fsmp_stack, nele_grp, iele_grp, n_int, k2, dt,           &
      &    ntot_int_3d, xjac, aw, dwx, dwx, vxe, vect_1, sk_v)
 !
@@ -234,13 +236,13 @@
       real(kind=kreal), intent(in) :: vect_1(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_grp_rot_upw                                          &
-     &         (ele1%numele, nnod_4_ele, nnod_4_ele, np_smp,            &
-     &          iele_fsmp_stack, nele_grp, iele_grp, n_int, k2, dt,     &
-     &          ntot_int_3d, xjac, aw, dwx, dwx,  vxe, vect_1, sk_v)
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele, np_smp,        &
+     &    iele_fsmp_stack, nele_grp, iele_grp, n_int, k2, dt,           &
+     &    ntot_int_3d, xjac, aw, dwx, dwx,  vxe, vect_1, sk_v)
 !
       end subroutine fem_skv_grp_rotation_upw
 !
@@ -260,11 +262,11 @@
       real(kind=kreal), intent(in) :: flux_1(ele1%numele,n_sym_tensor)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_grp_div_flux_upw                                     &
-     &   (ele1%numele, nnod_4_ele, nnod_4_ele,                          &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp, n_int, k2, dt,   &
      &    ntot_int_3d, xjac, aw, dwx, dwx,  vxe, flux_1, sk_v)
 !
@@ -286,11 +288,11 @@
       real(kind=kreal), intent(in) :: flux_1(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_grp_div_asym_t_upw                                   &
-     &   (ele1%numele, nnod_4_ele, nnod_4_ele,                          &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp, n_int, k2, dt,   &
      &    ntot_int_3d, xjac, aw, vxe, dwx, dwx,  flux_1, sk_v)
 !
@@ -311,9 +313,10 @@
       real(kind=kreal),   intent(in) :: scalar_1(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &           :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
-      call fem_skv_all_grad_upw(ele1%numele, nnod_4_ele, num_t_linear,  &
+      call fem_skv_all_grad_upw                                         &
+     &   (ele1%numele, ele1%nnod_4_ele, num_t_linear,                   &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,          &
      &    xjac, aw, dwx, dnx, vxe, scalar_1, sk_v)
 !

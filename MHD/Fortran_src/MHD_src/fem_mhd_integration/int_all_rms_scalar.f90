@@ -51,7 +51,6 @@
       subroutine int_vol_ave_rms_4_scalar(iele_fsmp_stack, n_int,       &
      &          i_comp, rms_local, ave_local)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_jacobians
@@ -76,7 +75,7 @@
 !
       bulk_e_smp =  zero
       average_smp = zero
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
 !
         call scalar_phys_2_each_element(k2, i_comp, phi_e)
 !
@@ -121,7 +120,6 @@
       subroutine int_ave_rms_4_scalar(iele_fsmp_stack, n_int,           &
      &          i_comp, rms_local, ave_local)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_jacobians
@@ -146,7 +144,7 @@
 !
       bulk_e_smp =  zero
       average_smp = zero
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
 !
         call scalar_phys_2_each_element(k2, i_comp, phi_e)
 !

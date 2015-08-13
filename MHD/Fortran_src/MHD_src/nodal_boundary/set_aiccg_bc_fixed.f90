@@ -29,7 +29,7 @@
 !
       use m_constants
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
 !
       implicit none
@@ -54,7 +54,7 @@
       do nd = 1, n_vector
         if(num_idx_ibc2_v(nd) .ne. 0) then
           do k0 = 1, num_idx_ibc2_v(nd)
-            call set_aiccg_bc_vector_nod(nnod_4_ele,                    &
+            call set_aiccg_bc_vector_nod(ele1%nnod_4_ele,               &
      &          ele_bc2_v_id(k0,nd), nod_bc2_v_id(k0,nd), nd, nd,       &
      &          DJDS_fluid, Vmat_DJDS)
           end do
@@ -75,7 +75,7 @@
 !
 !
       do k0 = 1, num_index_ibc_vrot
-        call set_aiccg_bc_vector_nod(nnod_4_ele,                        &
+        call set_aiccg_bc_vector_nod(ele1%nnod_4_ele,                   &
      &      ele_bc_vrot_id(k0), nod_bc_vrot_id(k0), ione, n_vector,     &
      &      DJDS_fluid, Vmat_DJDS)
       end do
@@ -96,7 +96,7 @@
       do nd = 1, n_vector
         if ( num_idx_ibc2_vp(nd) .ne. 0 ) then
           do k0 = 1, num_idx_ibc2_vp(nd)
-            call set_aiccg_bc_vector_nod(nnod_4_ele,                    &
+            call set_aiccg_bc_vector_nod(ele1%nnod_4_ele,               &
      &          ele_bc2_vp_id(k0,nd), nod_bc2_vp_id(k0,nd), nd, nd,     &
      &          DJDS_entire, Bmat_DJDS)
           end do

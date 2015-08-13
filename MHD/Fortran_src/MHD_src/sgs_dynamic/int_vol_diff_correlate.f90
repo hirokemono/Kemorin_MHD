@@ -10,7 +10,6 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
       use m_jacobians
@@ -40,10 +39,10 @@
       integer(kind=kint) :: nd, iproc
 !
 !
-      if (nnod_4_ele .eq. num_t_linear) then
+      if (ele1%nnod_4_ele .eq. num_t_linear) then
         call int_vol_diff_correlate_l(iele_fsmp_stack, numdir,         &
      &          n_int, ave_s, ave_g)
-      else if (nnod_4_ele .eq. num_t_quad) then
+      else if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vol_diff_correlate_q(iele_fsmp_stack, numdir,         &
      &          n_int, ave_s, ave_g)
       end if

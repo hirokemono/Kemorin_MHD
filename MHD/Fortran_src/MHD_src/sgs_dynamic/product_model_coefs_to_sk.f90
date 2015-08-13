@@ -36,7 +36,7 @@
       integer (kind = kint), intent(in) :: itype_csim
       real (kind=kreal), intent(in) :: ak_sgs(1,n_sym_tensor)
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk6(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &             :: sk6(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
       integer(kind = kint) :: k1
 !
@@ -44,7 +44,7 @@
 !$omp parallel private(k1)
       if(itype_csim .eq. 1) then
         if(icoord_SGS_model_coef .eq. iflag_spherical) then
-          do k1 = 1, nnod_4_ele
+          do k1 = 1, ele1%nnod_4_ele
             call overwrite_sph_tensor_smp(np_smp, ele1%numele,          &
      &        iele_smp_stack, sk6(1,1,k1), x_ele(1,1), x_ele(1,2),      &
      &        x_ele(1,3), r_ele, s_ele, ar_ele, as_ele)
@@ -56,7 +56,7 @@
           end do
 !
         else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
-          do k1 = 1, nnod_4_ele
+          do k1 = 1, ele1%nnod_4_ele
             call overwrite_cyl_tensor_smp(np_smp, ele1%numele,          &
      &          iele_smp_stack, sk6(1,1,k1), x_ele(1,1), x_ele(1,2),    &
      &          s_ele, as_ele)
@@ -68,14 +68,14 @@
           end do
 !
         else
-          do k1 = 1, nnod_4_ele
+          do k1 = 1, ele1%nnod_4_ele
             call ovwrt_tensor_tensor_prod_smp(np_smp, ele1%numele,      &
      &          iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
           end do
         end if
 !
       else
-        do k1 = 1, nnod_4_ele
+        do k1 = 1, ele1%nnod_4_ele
           call ovwrt_tensor_scalar_prod_smp(np_smp, ele1%numele,        &
      &        iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
          end do
@@ -97,7 +97,7 @@
       integer (kind = kint), intent(in) :: itype_csim
       real (kind=kreal), intent(in) :: ak_sgs(1,n_vector)
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk6(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &              :: sk6(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
       integer(kind = kint) :: k1
 !
@@ -105,7 +105,7 @@
 !$omp parallel private(k1)
       if(itype_csim .eq. 1) then
         if(icoord_SGS_model_coef .eq. iflag_spherical) then
-          do k1 = 1, nnod_4_ele
+          do k1 = 1, ele1%nnod_4_ele
             call overwrite_vector_2_sph_smp(np_smp, ele1%numele,        &
      &          iele_smp_stack, sk6(1,1,k1), x_ele(1,1), x_ele(1,2),    &
      &           x_ele(1,3), r_ele, s_ele, ar_ele, as_ele)
@@ -116,7 +116,7 @@
           end do
 !
         else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
-          do k1 = 1, nnod_4_ele
+          do k1 = 1, ele1%nnod_4_ele
             call overwrite_vector_2_cyl_smp(np_smp, ele1%numele,        &
      &          iele_smp_stack, sk6(1,1,k1), x_ele(1,1), x_ele(1,2),    &
      &          s_ele, as_ele)
@@ -127,14 +127,14 @@
           end do
 !
         else
-          do k1 = 1, nnod_4_ele
+          do k1 = 1, ele1%nnod_4_ele
             call ovwrt_vector_vector_prod_smp(np_smp, ele1%numele,      &
      &          iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1))
           end do
         end if
 !
       else
-        do k1 = 1, nnod_4_ele
+        do k1 = 1, ele1%nnod_4_ele
           call ovwrt_vec_scalar_prod_smp(np_smp, ele1%numele,           &
      &        iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
          end do
@@ -156,7 +156,7 @@
       integer (kind = kint), intent(in) :: itype_csim
       real (kind=kreal), intent(in) :: ak_sgs(1,n_sym_tensor)
       real (kind=kreal), intent(inout)                                  &
-     &                   :: sk6(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &             :: sk6(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
       integer(kind = kint) :: k1
 !
@@ -164,7 +164,7 @@
 !$omp parallel private(k1)
       if(itype_csim .eq. 1) then
         if(icoord_SGS_model_coef .eq. iflag_spherical) then
-          do k1 = 1, nnod_4_ele
+          do k1 = 1, ele1%nnod_4_ele
             call overwrite_sph_asym_t_smp(np_smp, ele1%numele,          &
      &          iele_smp_stack, sk6(1,1,k1), x_ele(1,1), x_ele(1,2),    &
      &          x_ele(1,3), r_ele, s_ele, ar_ele, as_ele)
@@ -176,7 +176,7 @@
           end do
 !
         else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
-          do k1 = 1, nnod_4_ele
+          do k1 = 1, ele1%nnod_4_ele
             call overwrite_cyl_asym_t_smp(np_smp, ele1%numele,          &
      &          iele_smp_stack, sk6(1,1,k1), x_ele(1,1), x_ele(1,2),    &
      &          s_ele, as_ele)
@@ -188,7 +188,7 @@
           end do
 !
         else
-          do k1 = 1, nnod_4_ele
+          do k1 = 1, ele1%nnod_4_ele
             call ovwrt_tensor_tensor_prod_smp(np_smp, ele1%numele,      &
      &          iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
           end do
@@ -196,7 +196,7 @@
         end if
 !
       else
-        do k1 = 1, nnod_4_ele
+        do k1 = 1, ele1%nnod_4_ele
           call ovwrt_tensor_scalar_prod_smp(np_smp, ele1%numele,        &
      &        iele_smp_stack, ak_sgs(1,1), sk6(1,1,k1) )
          end do

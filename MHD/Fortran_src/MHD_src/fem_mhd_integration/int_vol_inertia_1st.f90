@@ -55,7 +55,7 @@
       call reset_sk6(n_scalar)
 !
 ! -------- loop for shape function for the physical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call scalar_cst_phys_2_each_ele(k2, i_scalar, coef, phi_e)
         call fem_skv_scalar_inertia_1st(iele_fsmp_stack, n_int, k2,     &
      &      phi_e, vxe, sk6)
@@ -89,7 +89,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the physical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, i_vector, coef, velo_1)
         call fem_skv_vector_inertia_1st(iele_fsmp_stack, n_int, k2,     &
      &      velo_1, vxe, sk6)
@@ -123,7 +123,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the physical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, i_vector, coef, velo_1)
         call fem_skv_rot_inertia_1st(iele_fsmp_stack, n_int, k2,        &
      &      velo_1, wxe, sk6)
@@ -159,7 +159,7 @@
       call reset_sk6(n_scalar)
 !
 ! -------- loop for shape function for the physical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call scalar_cst_phys_2_each_ele(k2, i_scalar, coef, phi_e)
         call fem_skv_scalar_inertia_upw_1st(iele_fsmp_stack, n_int, k2, &
      &      phi_e, vxe, vxe_up, sk6)
@@ -194,7 +194,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the physical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, i_vector, coef, velo_1)
         call fem_skv_vector_inertia_upw_1st(iele_fsmp_stack, n_int, k2, &
      &      velo_1, vxe, vxe_up, sk6)
@@ -229,7 +229,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the physical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, i_vector, coef, velo_1)
         call fem_skv_rot_inertia_upw_1st(iele_fsmp_stack, n_int, k2,    &
      &      velo_1, wxe, vxe_up, sk6)

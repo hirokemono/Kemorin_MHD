@@ -9,7 +9,6 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
       use m_jacobians
@@ -39,9 +38,9 @@
       sgs_w(1:18) =              0.0d0
       sgs_l_smp(1:np_smp,1:18) = 0.0d0
 !
-      if (nnod_4_ele .eq. num_t_linear) then
+      if (ele1%nnod_4_ele .eq. num_t_linear) then
         call int_vol_diff_coef_l(iele_fsmp_stack, numdir, n_int)
-      else if (nnod_4_ele .eq. num_t_quad) then
+      else if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vol_diff_coef_q(iele_fsmp_stack, numdir, n_int)
       end if
 !

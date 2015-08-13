@@ -62,7 +62,7 @@
       integer(kind=kint) :: k2
 !
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
           call vector_cst_phys_2_each_ele(k2, iphys%i_velo,             &
      &        coef_cor, velo_1)
           call fem_skv_coriolis_1st(iele_fl_smp_stack,                  &

@@ -81,7 +81,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the phsical values
-      do k2=1, nnod_4_ele
+      do k2=1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, iphys%i_magne, magne_1)
         call fem_skv_lorentz_full_pg_1st(iele_fsmp_stack, n_int, k2,    &
      &      coef_lor, magne_1, d_ele(1,iphys_ele%i_magne),              &
@@ -114,7 +114,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the phsical values
-      do k2=1, nnod_4_ele
+      do k2=1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, iphys%i_vecp,               &
      &      coef_lor, vect_1)
 !
@@ -182,7 +182,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, iphys%i_magne, magne_1)
         call fem_skv_lorentz_full_upw_1st(iele_fsmp_stack,              &
      &        n_int, k2, coef_lor, magne_1, d_ele(1,ie_upw),            &

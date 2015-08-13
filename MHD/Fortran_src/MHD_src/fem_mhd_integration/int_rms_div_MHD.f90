@@ -222,7 +222,7 @@
 !
 ! -------- loop for shape function for phsical values
 !
-      do k2=1, nnod_4_ele
+      do k2=1, ele1%nnod_4_ele
 !
 ! ---------  set vector at each node in an element
        call vector_phys_2_each_element(k2, i_field, vect_e)

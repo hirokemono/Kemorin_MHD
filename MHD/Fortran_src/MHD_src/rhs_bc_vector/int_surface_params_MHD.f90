@@ -85,7 +85,7 @@
       call allocate_work_norm_nod(node1%numnod)
       call alloc_vect_surf_grp_nod(sf_grp_nod)
 !
-      call cal_surf_grp_norm_node(ele1%numele, nnod_4_ele,              &
+      call cal_surf_grp_norm_node(ele1%numele, ele1%nnod_4_ele,         &
      &    nnod_4_surf, node_on_sf, ie,                                  &
      &    sf_grp%num_grp, sf_grp%num_item,                              &
      &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &

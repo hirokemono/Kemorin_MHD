@@ -10,8 +10,6 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
-!
       implicit none
 !
       private :: cal_pressure_on_edge
@@ -25,13 +23,14 @@
       subroutine cal_potential_on_edge
 !
       use m_geometry_constants
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
       use m_control_parameter
 !
       integer(kind = kint) :: i
 !
-      if (nnod_4_ele .eq. num_t_quad) then
+      if (ele1%nnod_4_ele .eq. num_t_quad) then
 !
         do i = 1, num_nod_phys
 !

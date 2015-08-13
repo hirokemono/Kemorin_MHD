@@ -30,9 +30,8 @@
       use m_precision
 !
       use m_control_parameter
-      use m_geometry_parameter
-      use m_geometry_data_MHD
       use m_geometry_data
+      use m_geometry_data_MHD
       use m_phys_constants
 !
       use nodal_fld_2_each_ele_1st
@@ -63,7 +62,7 @@
 !
       call reset_sk6(n_scalar)
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
 !
 ! --------- set position at each node in an element
        call position_2_each_element(k2, xe, radius_e)
@@ -100,7 +99,7 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-      do k2=1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
 !
 ! --------- set position at each node in an element
         call position_2_each_element(k2, xe, radius_e)

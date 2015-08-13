@@ -23,7 +23,6 @@
       subroutine int_all_angular_mom(iele_fsmp_stack, n_int,            &
      &          jres, icomp)
 !
-      use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
@@ -50,7 +49,7 @@
 !
       bulk_a_mom_smp = 0.0d0
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
 !
        call vector_phys_2_each_element(k2, icomp, velo_1)
        call position_2_each_element(k2, xe, radius_e)

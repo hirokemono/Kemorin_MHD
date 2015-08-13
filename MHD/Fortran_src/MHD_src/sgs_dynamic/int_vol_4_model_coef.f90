@@ -11,7 +11,6 @@
       use m_precision
 !
       use calypso_mpi
-      use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
       use m_jacobians
@@ -44,11 +43,11 @@
       if(layer_tbl1%minlayer_4_smp                                      &
      &     .gt. layer_tbl1%min_item_layer_d_smp) then
 !
-        if (nnod_4_ele .eq. num_t_linear) then
+        if (ele1%nnod_4_ele .eq. num_t_linear) then
           call int_vol_model_coef_l(n_tensor, n_int,                    &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
-        else if (nnod_4_ele .eq. num_t_quad) then
+        else if (ele1%nnod_4_ele .eq. num_t_quad) then
           call int_vol_model_coef_q(n_tensor, n_int,                    &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
@@ -57,12 +56,12 @@
       else
 !
         sgs_l_smp(1:np_smp,1:18) = 0.0d0
-        if (nnod_4_ele .eq. num_t_linear) then
+        if (ele1%nnod_4_ele .eq. num_t_linear) then
           call int_vol_model_coef_grpsmp_l(n_tensor, n_int,             &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer)
-        else if (nnod_4_ele .eq. num_t_quad) then
+        else if (ele1%nnod_4_ele .eq. num_t_quad) then
           call int_vol_model_coef_grpsmp_q(n_tensor, n_int,             &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &

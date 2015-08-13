@@ -45,7 +45,7 @@
       call reset_sk6(n_scalar)
 !
 ! -------- loop for shape function for the physical values
-      do k2=1, nnod_4_ele
+      do k2=1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_vector, velo_1)
         call fem_skv_div_to_linear(iele_fsmp_stack, n_int, k2,          &
      &     velo_1, sk6)
@@ -148,7 +148,7 @@
       call reset_sk6(n_vector)
 !
 ! -------- loop for shape function for the physical values
-       do k2=1, nnod_4_ele
+       do k2=1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_vector, velo_1)
         call fem_skv_vector_diffuse_1st(iele_fsmp_stack, n_int, k2,     &
      &      ak_d, velo_1, sk6)

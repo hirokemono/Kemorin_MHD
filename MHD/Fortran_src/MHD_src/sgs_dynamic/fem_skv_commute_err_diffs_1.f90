@@ -49,11 +49,11 @@
       real(kind=kreal), intent(in) :: scalar_1(ele1%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_commute_error_grad                                   &
-     &   (ele1%numele, nnod_4_ele, nnod_4_ele,                          &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2,                           &
      &    ntot_int_3d, xjac, dwx, dwx,                                  &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
@@ -80,11 +80,11 @@
       real(kind=kreal), intent(in) :: vector_1(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_commute_error_div                                    &
-     &   (ele1%numele, nnod_4_ele, nnod_4_ele,                          &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2,                           &
      &    ntot_int_3d, xjac, dwx, dwx,                                  &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
@@ -111,11 +111,11 @@
       real(kind=kreal), intent(in) :: vector_1(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_commute_error_rot                                    &
-     &   (ele1%numele, nnod_4_ele, nnod_4_ele,                          &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2,                           &
      &    ntot_int_3d, xjac, dwx, dwx,                                  &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
@@ -142,11 +142,11 @@
       real(kind=kreal), intent(in) :: tensor_1(ele1%numele,6)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_commute_error_div_tsr                                &
-     &   (ele1%numele, nnod_4_ele, nnod_4_ele,                          &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2,                           &
      &    ntot_int_3d, xjac, dwx, dwx,                                  &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
@@ -173,11 +173,11 @@
       real(kind=kreal), intent(in) :: as_tsr_1(ele1%numele,3)
 !
       real (kind=kreal), intent(inout)                                  &
-     &                  :: sk_v(ele1%numele,n_sym_tensor,nnod_4_ele)
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
 !
       call fem_skv_commute_error_div_ast                                &
-     &   (ele1%numele, nnod_4_ele, nnod_4_ele,                          &
+     &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2,                           &
      &    ntot_int_3d, xjac, dwx, dwx,                                  &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &

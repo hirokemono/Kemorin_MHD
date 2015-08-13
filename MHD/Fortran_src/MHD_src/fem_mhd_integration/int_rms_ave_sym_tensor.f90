@@ -23,7 +23,6 @@
       subroutine int_ave_4_sym_tensor(iele_fsmp_stack, n_int,           &
      &          ir_rms, ja_ave, i_vect)
 !
-      use m_geometry_parameter
       use m_machine_parameter
       use m_geometry_data
       use m_fem_gauss_int_coefs
@@ -53,7 +52,7 @@
       rms_smp = 0.0d0
       ave_smp = 0.0d0
 !
-      do k2 = 1, nnod_4_ele
+      do k2 = 1, ele1%nnod_4_ele
 !
        call vector_phys_2_each_element(k2, i_vect, vect_e)
 !

@@ -37,7 +37,7 @@
       real (kind=kreal), intent(inout)  :: sk1(ele1%numele)
 !
 !
-      call fem_skv_div_normal_pg(ele1%numele, nnod_4_ele,               &
+      call fem_skv_div_normal_pg(ele1%numele, ele1%nnod_4_ele,          &
      &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int,            &
      &          xjac, dwx, k2, vect_e, sk1)
 !
@@ -55,7 +55,7 @@
       real (kind=kreal), intent(inout)  :: sk1(ele1%numele)
 !
 !
-      call fem_skv_rms_flux_pg(ele1%numele, nnod_4_ele,                 &
+      call fem_skv_rms_flux_pg(ele1%numele, ele1%nnod_4_ele,            &
      &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int,            &
      &          xjac, dwx, k2, vect_e, sk1)
 !

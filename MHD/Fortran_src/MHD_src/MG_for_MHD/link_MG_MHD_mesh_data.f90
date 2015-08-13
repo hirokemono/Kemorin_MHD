@@ -98,7 +98,7 @@
 !
 !
       ele%numele =     ele1%numele
-      ele%nnod_4_ele = nnod_4_ele
+      ele%nnod_4_ele = ele1%nnod_4_ele
 !
       ele%iele_global => iele_global
       ele%elmtyp =>      elmtyp
