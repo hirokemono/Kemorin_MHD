@@ -52,7 +52,7 @@
 !
          isig = 1
          do i = 1, ele1%nnod_4_ele
-           inod = ie(iele,i)
+           inod = ele1%ie(iele,i)
            if (mark_new_node(inod) .eq. 0) then
              isig = 0
              exit
@@ -78,7 +78,7 @@
 !
          isig = 1
          do i = 1, ele1%nnod_4_ele
-           inod = ie(iele,i)
+           inod = ele1%ie(iele,i)
            if (mark_new_node(inod) .eq. 0) then
              isig = 0
              exit
@@ -91,7 +91,7 @@
            new_ele%elmtyp(icou) = elmtyp(iele)
            new_ele%nodelm(icou) = nodelm(iele)
            do i = 1, nodelm(iele)
-             inod = ie(iele,i)
+             inod = ele1%ie(iele,i)
              new_ele%ie(icou,i) = mark_new_node(inod)
            end do
 !

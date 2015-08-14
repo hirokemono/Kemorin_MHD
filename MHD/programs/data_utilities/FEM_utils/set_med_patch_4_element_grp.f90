@@ -95,7 +95,7 @@
         call dealloc_num_psf_search_list(ele_search)
 !
         call set_psf_type_id(node1%numnod,                              &
-     &      ele1%numele, ele1%nnod_4_ele, ie,                           &
+     &      ele1%numele, ele1%nnod_4_ele, ele1%ie,                      &
      &      ele_search, mark_elegrp, xx(1,2))
 !
         call count_med_grp_patch(ele_grp, igrp, npatch_grp)
@@ -141,7 +141,7 @@
       ied = ele_grp%istack_grp(igrp)
       do inum = ist, ied
         iele = ele_grp%item_grp(inum)
-        ie_1ele(1:8) = ie(iele,1:8)
+        ie_1ele(1:8) = ele1%ie(iele,1:8)
         xx_1ele(1,1:8) = xx(ie_1ele(1:8),1)
         xx_1ele(2,1:8) = xx(ie_1ele(1:8),2)
         xx_1ele(3,1:8) = xx(ie_1ele(1:8),3)
@@ -186,7 +186,7 @@
       ied = ele_grp%istack_grp(igrp)
       do inum = ist, ied
         iele = ele_grp%item_grp(inum)
-        ie_1ele(1:8) =   ie(iele,1:8)
+        ie_1ele(1:8) =   ele1%ie(iele,1:8)
         xx_1ele(1,1:8) = xx(ie_1ele(1:8),1)
         xx_1ele(2,1:8) = xx(ie_1ele(1:8),2)
         xx_1ele(3,1:8) = xx(ie_1ele(1:8),3)

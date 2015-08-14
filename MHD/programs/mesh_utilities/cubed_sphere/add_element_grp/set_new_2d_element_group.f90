@@ -3,10 +3,10 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!      subroutine alloc_r_ele_cubed_sph
+!      subroutine alloc_r_ele_cubed_sph(numele)
 !      subroutine dealloc_r_ele_cubed_sph
 !      subroutine count_new_2d_element_group
-!      subroutine set_rele_cubed_sph
+!      subroutine set_rele_cubed_sph(numnod, numele, ie, radius, r_ele)
 !      subroutine set_new_2d_ele_group(ele_grp)
 !
       module set_new_2d_element_group
@@ -14,7 +14,7 @@
       use m_precision
 !
       use m_constants
-      use m_geometry_data
+      use m_geometry_constants
 !
       implicit none
 !
@@ -26,10 +26,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine alloc_r_ele_cubed_sph
+      subroutine alloc_r_ele_cubed_sph(numele)
 !
-      allocate(r_ele_sph(ele1%numele))
-      r_ele_sph = 0.0d0
+      integer(kind = kint), intent(in) :: numele
+!
+      allocate(r_ele_sph(numele))
+      if(numele .gt. 0) r_ele_sph = 0.0d0
 !
       end subroutine alloc_r_ele_cubed_sph
 !
@@ -44,13 +46,18 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_rele_cubed_sph
+      subroutine set_rele_cubed_sph(numnod, numele, ie, radius, r_ele)
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
+      real(kind = kreal), intent(in) :: radius(numnod)
+      real(kind = kreal), intent(in) :: r_ele(numele)
 !
       integer(kind = kint) :: i,i1,i2,i3,i4,i5,i6,i7,i8
       real(kind = kreal) :: d2,d3,d4,d6,d7,d8
 !
 !$omp parallel do private(i,i1,i2,i3,i4,i5,i6,i7,i8,d2,d3,d4,d6,d7,d8)
-      do i = 1, ele1%numele
+      do i = 1, numele
         i1 = ie(i,1)
         i2 = ie(i,2)
         i3 = ie(i,3)
