@@ -160,13 +160,15 @@
       call set_3D_nnod_4_ele_by_type(first_ele_type,                    &
      &    ele1%nnod_4_ele, nnod_4_surf, nnod_4_edge)
 !
+      call allocate_ele_connect_type(ele1)
       call allocate_element_connection
 !
 !$omp parallel private(k1)
       do k1 = 1, ele1%nnod_4_ele
 !$omp do private(iele)
         do iele = 1, ele1%numele
-          ie(iele,k1) = ele%ie(iele,k1)
+          ele1%ie(iele,k1) = ele%ie(iele,k1)
+          ie(iele,k1) = ele1%ie(iele,k1) 
         end do
 !$omp end do nowait
       end do

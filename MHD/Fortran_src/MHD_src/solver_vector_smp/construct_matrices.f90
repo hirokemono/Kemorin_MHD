@@ -104,7 +104,9 @@
 !   Diffusion matrix
 !
       if (iflag_scheme .eq. id_Crank_nicolson) then
+        if (iflag_debug.eq.1) write(*,*) 'int_vol_crank_mat_lump'
         call int_vol_crank_mat_lump
+        if (iflag_debug.eq.1) write(*,*) 'int_vol_crank_matrices'
         call int_vol_crank_matrices
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call int_vol_crank_mat_consist
@@ -113,6 +115,7 @@
 !
 !     set boundary conditions
 !
+       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_bc_phys'
       call set_aiccg_bc_phys
 !
       if (iflag_debug.eq.1) write(*,*) 'preconditioning'

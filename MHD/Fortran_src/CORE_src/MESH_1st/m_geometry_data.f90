@@ -76,11 +76,11 @@
 !
 !>  structure for node data (position)
       type(node_data), save :: node1
-!    node1%istack_internal_smp
+!    node1%xx
 !
 !>  structure for element data (position and connectivity)
       type(element_data), save :: ele1
-!    ele1%nnod_4_ele
+!    ele1%ie
 !
 !>   Stack list of number of node
       integer(kind=kint_gl), allocatable, target  :: istack_numnod(:)
