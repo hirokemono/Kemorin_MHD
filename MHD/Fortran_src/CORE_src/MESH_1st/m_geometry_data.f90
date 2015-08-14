@@ -95,7 +95,7 @@
 !>   position of nodes (i:direction, j:node ID)
       real(kind=kreal)  , allocatable, target  :: xx(:,:)
 !>   element connectivity ie(i:element ID,j:element index)
-      integer(kind=kint), pointer  :: ie(:,:)
+!      integer(kind=kint), pointer  :: ie(:,:)
 !>   element type defined by the first element
       integer(kind=kint) ::  first_ele_type
 !
@@ -376,12 +376,12 @@
       allocate(iele_global(ele1%numele))
       allocate(elmtyp(ele1%numele))
       allocate(nodelm(ele1%numele))
-      allocate(ie(ele1%numele,ele1%nnod_4_ele))
+!      allocate(ie(ele1%numele,ele1%nnod_4_ele))
 !
       iele_global = 0
       elmtyp = 0
       nodelm = 0
-      ie = 0
+!      ie = 0
 !
       end subroutine allocate_element_connection
 !

@@ -84,7 +84,6 @@
 !$omp do
         do iele = 1, ele1%numele
           ele1%ie(iele,k1) = ie_dummy(iele,k1)
-          ie(iele,k1) = ele1%ie(iele,k1) 
         end do
 !$omp end do nowait
       end do

@@ -10,7 +10,7 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_data
+      use m_geometry_constants
       use m_jacobians
       use m_fem_gauss_int_coefs
       use m_work_4_dynamic_model
@@ -27,7 +27,7 @@
 !
       subroutine int_vol_diff_coef(iele_fsmp_stack, numdir, n_int)
 !
-      use m_geometry_constants
+      use m_geometry_data
 !
       integer(kind=kint), intent(in) :: numdir, n_int
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -39,9 +39,11 @@
       sgs_l_smp(1:np_smp,1:18) = 0.0d0
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
-        call int_vol_diff_coef_l(iele_fsmp_stack, numdir, n_int)
+        call int_vol_diff_coef_l(ele1%numele, ele1%ie, interior_ele,    &
+     &      iele_fsmp_stack, numdir, n_int)
       else if (ele1%nnod_4_ele .eq. num_t_quad) then
-        call int_vol_diff_coef_q(iele_fsmp_stack, numdir, n_int)
+        call int_vol_diff_coef_q(ele1%numele, ele1%ie, interior_ele,    &
+     &      iele_fsmp_stack, numdir, n_int)
       end if
 !
       do nd = 1, numdir
@@ -55,10 +57,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_diff_coef_l(iele_fsmp_stack, numdir, n_int)
+      subroutine int_vol_diff_coef_l(numele, ie, interior_ele,          &
+     &          iele_fsmp_stack, numdir, n_int)
 !
       use m_node_phys_address
       use m_node_phys_data
+!
+      integer (kind = kint), intent(in) :: numele
+      integer (kind = kint), intent(in) :: ie(numele,num_t_linear)
+      integer (kind = kint), intent(in) :: interior_ele(numele)
 !
       integer(kind=kint), intent(in) :: numdir, n_int
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -115,7 +122,8 @@
      &                * ( d_nod(i7, i_f) - d_nod(i7, i_g) )             &
      &               + an(8, ix) * d_nod(i8, i_s)                       &
      &                * ( d_nod(i8, i_f) - d_nod(i8, i_g) ) )           &
-     &                * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &             * dble(interior_ele(iele))                           &
+     &             * xjac(iele,ix) * owe3d(ix)
                  sgs_l_smp(iproc,nd+9) = sgs_l_smp(iproc,nd+9)          &
      &             + ( an(1, ix)                                        &
      &                * ( d_nod(i1, i_f) - d_nod(i1, i_g) )**2          &
@@ -133,8 +141,8 @@
      &                * ( d_nod(i7, i_f) - d_nod(i7, i_g) )**2          &
      &               + an(8, ix)                                        &
      &                * ( d_nod(i8, i_f) - d_nod(i8, i_g) )**2  )       &
-     &                * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
-!
+     &             * dble(interior_ele(iele))                           &
+     &             * xjac(iele,ix) * owe3d(ix)
               end do
 !
             end do
@@ -146,10 +154,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_diff_coef_q(iele_fsmp_stack, numdir, n_int)
+      subroutine int_vol_diff_coef_q(numele, ie, interior_ele,          &
+     &          iele_fsmp_stack, numdir, n_int)
 !
       use m_node_phys_address
       use m_node_phys_data
+!
+      integer (kind = kint), intent(in) :: numele
+      integer (kind = kint), intent(in) :: ie(numele,num_t_quad)
+      integer (kind = kint), intent(in) :: interior_ele(numele)
 !
       integer(kind=kint), intent(in) :: numdir, n_int
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -162,8 +175,8 @@
       integer (kind = kint) :: i17, i18, i19, i20
 !
 !
-!$omp parallel do private(ii,ix,iele,ist,ied,i_s,i_g,i_f,&
-!$omp&         i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14,i15,i16, &
+!$omp parallel do private(ii,ix,iele,ist,ied,i_s,i_g,i_f,               &
+!$omp&         i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14,i15,i16,  &
 !$omp&         i17,i18,i19,i20)
         do iproc = 1, np_smp
           ist = iele_fsmp_stack(iproc-1)+1
@@ -243,7 +256,8 @@
      &                * ( d_nod(i19,i_f) - d_nod(i19,i_g) )             &
      &               + aw(20,ix) * d_nod(210,i_s)                       &
      &                * ( d_nod(i20,i_f) - d_nod(i20,i_g) ) )           &
-     &                * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &              * dble(interior_ele(iele))                          &
+     &              * xjac(iele,ix) * owe3d(ix)
                 sgs_l_smp(iproc,nd+9) = sgs_l_smp(iproc,nd+9)           &
      &             + ( aw(1, ix)                                        &
      &                * ( d_nod(i1, i_f) - d_nod(i1, i_g) )**2          &
@@ -285,8 +299,8 @@
      &                * ( d_nod(i19,i_f) - d_nod(i19,i_g) )**2          &
      &               + aw(20,ix)                                        &
      &                * ( d_nod(i20,i_f) - d_nod(i20,i_g) )**2  )       &
-     &                * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
-!
+     &             * dble(interior_ele(iele))                           &
+     &             * xjac(iele,ix) * owe3d(ix)
               end do
 !
             end do

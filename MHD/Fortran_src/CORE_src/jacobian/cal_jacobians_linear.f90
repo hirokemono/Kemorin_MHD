@@ -152,7 +152,7 @@
           ix = int_start2(i0) + ii
 !
           call s_cal_jacobian_sf_grp_4                                  &
-     &       (node1%numnod, ele1%numele, ie, xx,                        &
+     &       (node1%numnod, ele1%numele, ele1%ie, xx,                   &
      &        sf_grp%num_grp, sf_grp%num_item, sf_grp%item_sf_grp,      &
      &        np_smp, sf_grp%num_grp_smp, sf_grp%istack_grp_smp,        &
      &        jac_sf_grp_l%xj_sf(1:sf_grp%num_item,ix),                 &
