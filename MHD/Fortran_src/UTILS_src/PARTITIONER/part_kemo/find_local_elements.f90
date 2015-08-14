@@ -36,16 +36,16 @@
       allocate (imark_ele(ele1%numele))
 !
       call count_ele_in_subdomain(NP, nnod_s_domin, IGROUP_nod,         &
-     &    node1%numnod, ele1%numele, ele1%nnod_4_ele, ie, nodelm,       &
+     &    node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie, nodelm,  &
      &    included_ele%ntot, included_ele%num_nod,                      &
      &    included_ele%istack_nod)
 !
       call alloc_near_element(included_ele)
 !
       call set_ele_in_subdomain(NP, nnod_s_domin, IGROUP_nod,           &
-     &          node1%numnod, ele1%numele, ele1%nnod_4_ele, ie, nodelm, &
-     &          included_ele%ntot, included_ele%istack_nod,             &
-     &          included_ele%id_near_nod)
+     &    node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie, nodelm,  &
+     &    included_ele%ntot, included_ele%istack_nod,                   &
+     &    included_ele%id_near_nod)
 
       deallocate (imark_ele)
 

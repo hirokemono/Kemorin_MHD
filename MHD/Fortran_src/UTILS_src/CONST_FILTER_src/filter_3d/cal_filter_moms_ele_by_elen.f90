@@ -71,7 +71,7 @@
 !
 !
       call correct_filter_moms_ele_by_elen                              &
-     & (ele1%numele, ele1%nnod_4_ele, ie,                               &
+     & (ele1%numele, ele1%nnod_4_ele, ele1%ie,                          &
      &  FEM1_elen%filter_conf%nf_type,                                  &
      &  FEM1_elen%filter_conf%xmom_1d_org,                              &
      &  FEM1_elen%elen_ele%moms%f_x2,   FEM1_elen%elen_ele%moms%f_y2,   &

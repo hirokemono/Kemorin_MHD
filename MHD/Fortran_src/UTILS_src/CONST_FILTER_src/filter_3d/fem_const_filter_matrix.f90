@@ -115,7 +115,7 @@
       do inum = 1, nele_grp
         iele = iele_grp(inum)
         do k1 = 1, ele1%nnod_4_ele
-          inod1 = ie(iele,k1)
+          inod1 = ele1%ie(iele,k1)
 !
           do jnum = 1, nnod_filter_mat
             jnod = inod_mat_tbl(jnum)

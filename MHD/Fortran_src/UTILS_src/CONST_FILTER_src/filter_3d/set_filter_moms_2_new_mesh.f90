@@ -88,7 +88,7 @@
 !
       do iele = 1, ele1%numele
         iele_gl = iele_global(iele)
-        if (ie(iele,1) .le. new_node%internal_node                      &
+        if (ele1%ie(iele,1) .le. new_node%internal_node                 &
      &      .and. int(iele_gl) .le. max_gl_ele_newdomain                &
      &      .and. iele_local_2nd(iele_gl) .gt. 0) then
 !
@@ -162,7 +162,7 @@
 !
       do iele = 1, ele1%numele
         iele_gl = iele_global(iele)
-        if (ie(iele,1) .le. new_node%internal_node                      &
+        if (ele1%ie(iele,1) .le. new_node%internal_node                 &
      &      .and. iele_gl .le. max_gl_ele_newdomain                     &
      &      .and. iele_local_2nd(iele_gl) .gt. 0) then
 !

@@ -64,7 +64,7 @@
       do iele = 1, ele1%numele
 !
         do k1 = 1, ele1%nnod_4_ele
-          inod = ie(iele,k1)
+          inod = ele1%ie(iele,k1)
 !
           if(itype_inter_org(inod) .eq. -1) then
             call copy_node_local_posi_2_element(k1, xi_ele)

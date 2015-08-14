@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Aug., 2007
 !
 !      subroutine s_set_local_connectivities(ele, surf, edge)
-!      subroutine set_local_connectivity_4_ele(ele)
+!      subroutine set_local_connectivity_4_ele(ele_new)
 !
       module set_local_connectivities
 !
@@ -52,21 +52,21 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_local_connectivity_4_ele(ele)
+      subroutine set_local_connectivity_4_ele(ele_new)
 !
       use t_geometry_data
 !
-      type(element_data), intent(inout) :: ele
+      type(element_data), intent(inout) :: ele_new
 !
       integer(kind = kint) :: inum, inod_g, k1
       integer(kind = kint_gl) :: iele
 !
 !
-      do inum = 1, ele%numele
-        iele = ele%iele_global(inum)
-        do k1 = 1, ele%nodelm(inum)
-          inod_g = ie(iele,k1)
-          ele%ie(inum,k1) = inod_local_part(inod_g)
+      do inum = 1, ele_new%numele
+        iele = ele_new%iele_global(inum)
+        do k1 = 1, ele_new%nodelm(inum)
+          inod_g = ele1%ie(iele,k1)
+          ele_new%ie(inum,k1) = inod_local_part(inod_g)
         end do
       end do
 !

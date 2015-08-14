@@ -38,7 +38,7 @@
       inod_refine_ele_local = 0
 !
       do k1 = 1, ele1%nnod_4_ele
-        inod_refine_nod_local(k1) = ie(iele,k1)
+        inod_refine_nod_local(k1) = ele1%ie(iele,k1)
       end do
 !
       icou = istack_nod_refine_ele(iele-1)

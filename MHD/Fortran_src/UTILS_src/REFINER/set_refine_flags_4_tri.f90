@@ -43,10 +43,10 @@
 !
       if(iflag_tmp_tri_refine .eq. 0) then
         write(*,*) 'mark_refine_node_flag '
-        call mark_refine_node_flag
+        call mark_refine_node_flag(node1%numnod, ele1%numele, ele1%ie)
       else
         write(*,*) 'redefine_refine_node_flag '
-        call redefine_refine_node_flag
+        call redefine_refine_node_flag(node1%numnod)
       end if
 !
       icou = 0
@@ -66,7 +66,8 @@
           if(imark_ele(iele) .eq. 0) then
             icou = icou + 1
             if( iflag_refine_ele(iele) .ne. 0) then
-              write(50,'(i16,8i3,i6)') iele, imark_nod(ie(iele,1:8)),   &
+              write(50,'(i16,8i3,i6)')                                  &
+     &                            iele, imark_nod(ele1%ie(iele,1:8)),   &
      &                            iflag_refine_ele(iele)
             end if
           end if
@@ -76,8 +77,9 @@
         write(50,'(a,i2)') 'nummber of marks:  ', inum
         do iele = 1, ele1%numele
           if(imark_ele(iele) .eq. inum) then
-            write(50,'(i16,8i3,i6)') iele, imark_nod(ie(iele,1:8)),     &
-     &                            iflag_refine_ele(iele)
+            write(50,'(i16,8i3,i6)')                                    &
+     &                          iele, imark_nod(ele1%ie(iele,1:8)),     &
+     &                          iflag_refine_ele(iele)
           end if
         end do
 !
@@ -85,7 +87,8 @@
           write(50,'(a,i2)') 'nummber of marks:  ', inum
           do iele = 1, ele1%numele
             if(imark_ele(iele) .eq. inum) then
-               write(50,'(i16,8i3,i6)') iele, imark_nod(ie(iele,1:8)),  &
+               write(50,'(i16,8i3,i6)')                                 &
+     &                            iele, imark_nod(ele1%ie(iele,1:8)),   &
      &                            iflag_refine_ele(iele)
             end if
           end do
@@ -97,7 +100,8 @@
           if(imark_ele(iele) .eq. 8) then
             icou = icou + 1
             if( iflag_refine_ele(iele) .ne. 300) then
-              write(50,'(i16,8i3,i6)') iele, imark_nod(ie(iele,1:8)),   &
+              write(50,'(i16,8i3,i6)')                                  &
+     &                            iele, imark_nod(ele1%ie(iele,1:8)),   &
      &                            iflag_refine_ele(iele)
             end if
           end if
@@ -127,7 +131,7 @@
       imark_ele = 0
       do iele = 1, ele1%numele
         do k1 = 1, 8
-          inod = ie(iele,k1)
+          inod = ele1%ie(iele,k1)
           imark_ele(iele) = imark_ele(iele) + imark_nod(inod)
         end do
       end do
@@ -137,27 +141,30 @@
       iflag_retry = 0
       do iele = 1, ele1%numele
         if(imark_ele(iele) .eq. 5) then
-          call change_refine_id_for_n5(iele,iflag_retry)
+          call change_refine_id_for_n5(ele1%numele, ele1%ie,            &
+     &        iele, iflag_retry)
         end if
       end do
       write(*,*) 'n=5 fixed'
 !
       do iele = 1, ele1%numele
         if(imark_ele(iele) .eq. 7) then
-          call change_refine_id_for_n7(iele, iflag_retry)
+          call change_refine_id_for_n7(ele1%numele, ele1%ie,            &
+     &        iele, iflag_retry)
         end if
       end do
       write(*,*) 'n=7 fixed'
 !
       do iele = 1, ele1%numele
         if(imark_ele(iele) .eq. 2) then
-            call set_refine_id_for_n2(iele, iflag_refine_ele(iele),     &
-     &          iflag_retry)
+          call set_refine_id_for_n2(ele1%numele, ele1%ie,               &
+     &        iele, iflag_refine_ele(iele), iflag_retry)
         else if(imark_ele(iele) .eq. 3) then
-          call set_refine_id_for_n3(iele, iflag_refine_ele(iele))
+          call set_refine_id_for_n3(ele1%numele, ele1%ie,               &
+     &        iele, iflag_refine_ele(iele))
         else if(imark_ele(iele) .eq. 6) then
-          call set_refine_id_for_n6(iele, iflag_refine_ele(iele),       &
-     &        iflag_retry)
+          call set_refine_id_for_n6(ele1%numele, ele1%ie,               &
+     &        iele, iflag_refine_ele(iele), iflag_retry)
         end if
       end do
       write(*,*) 'fifth marking finished'
@@ -179,11 +186,11 @@
             if(imark_ele(iele) .eq. 1) then
               iflag_refine_ele(iele) = iflag_nothing
             else if(imark_ele(iele) .eq. 2) then
-              call set_refine_id_for_stri_n2(iele,                      &
-     &            iflag_refine_ele(iele), iflag_retry)
+              call set_refine_id_for_stri_n2(ele1%numele, ele1%ie,      &
+     &            iele, iflag_refine_ele(iele), iflag_retry)
             else if(imark_ele(iele) .eq. 4) then
-              call set_refine_id_for_stri_n4(iele,                      &
-     &            iflag_refine_ele(iele) )
+              call set_refine_id_for_stri_n4(ele1%numele, ele1%ie,      &
+     &            iele, iflag_refine_ele(iele) )
             else if(imark_ele(iele) .eq. 8) then
               iflag_refine_ele(iele) = iflag_tri_full_eq
             end if
@@ -193,12 +200,14 @@
 !
           do iele = 1, ele1%numele
             if(imark_ele(iele) .eq. 1) then
-              call set_refine_id_for_n1(iele, iflag_refine_ele(iele))
+              call set_refine_id_for_n1(ele1%numele, ele1%ie,           &
+     &            iele, iflag_refine_ele(iele))
             else if(imark_ele(iele) .eq. 2) then
-              call set_refine_id_for_n2(iele, iflag_refine_ele(iele),   &
-     &          iflag_retry)
+              call set_refine_id_for_n2(ele1%numele, ele1%ie, iele,     &
+     &            iflag_refine_ele(iele), iflag_retry)
             else if(imark_ele(iele) .eq. 4) then
-              call set_refine_id_for_n4(iele, iflag_refine_ele(iele))
+              call set_refine_id_for_n4(ele1%numele, ele1%ie,           &
+     &            iele, iflag_refine_ele(iele))
             else if(imark_ele(iele) .eq. 8) then
               iflag_refine_ele(iele) = iflag_tri_full
             end if
@@ -221,11 +230,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_refine_id_for_n1(iele, iflag_refine_ele)
+      subroutine set_refine_id_for_n1                                   &
+     &         (numele, ie, iele, iflag_refine_ele)
 !
-      use m_geometry_parameter
-      use m_geometry_data
+      use m_geometry_constants
       use m_refine_flag_parameters
+!
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
 !
       integer(kind = kint), intent(in) :: iele
       integer(kind = kint), intent(inout) :: iflag_refine_ele
@@ -254,12 +266,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_refine_id_for_n2(iele, iflag_refine_ele,           &
-     &          iflag_retry)
+      subroutine set_refine_id_for_n2(numele, ie, iele,                 &
+     &          iflag_refine_ele, iflag_retry)
 !
-      use m_geometry_parameter
-      use m_geometry_data
+      use m_geometry_constants
       use m_refine_flag_parameters
+!
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
 !
       integer(kind = kint), intent(in) :: iele
       integer(kind = kint), intent(inout) :: iflag_retry
@@ -328,14 +342,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_refine_id_for_n4(iele, iflag_refine_ele)
+      subroutine set_refine_id_for_n4(numele, ie,                       &
+     &          iele, iflag_refine_ele)
 !
-      use m_geometry_parameter
-      use m_geometry_data
+      use m_geometry_constants
       use m_refine_flag_parameters
+!
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
 !
       integer(kind = kint), intent(in) :: iele
       integer(kind = kint), intent(inout) :: iflag_refine_ele
+!
       integer(kind = kint) :: i1, i2, i3, i4, i5, i6, i7, i8, isig
 !
 !
@@ -365,16 +383,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_refine_id_for_stri_n2(iele, iflag_refine_ele,      &
-     &          iflag_retry)
+      subroutine set_refine_id_for_stri_n2(numele, ie, iele,            &
+     &          iflag_refine_ele, iflag_retry)
 !
-      use m_geometry_parameter
-      use m_geometry_data
+      use m_geometry_constants
       use m_refine_flag_parameters
+!
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
 !
       integer(kind = kint), intent(in) :: iele
       integer(kind = kint), intent(inout) :: iflag_retry
       integer(kind = kint), intent(inout) :: iflag_refine_ele
+!
       integer(kind = kint) :: i1, i2, i3, i4, i5, i6, i7, i8
 !
 !
@@ -439,11 +460,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_refine_id_for_stri_n4(iele, iflag_refine_ele)
+      subroutine set_refine_id_for_stri_n4(numele, ie,                  &
+     &          iele, iflag_refine_ele)
 !
-      use m_geometry_parameter
-      use m_geometry_data
+      use m_geometry_constants
       use m_refine_flag_parameters
+!
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
 !
       integer(kind = kint), intent(in) :: iele
       integer(kind = kint), intent(inout) :: iflag_refine_ele
@@ -477,15 +501,18 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_refine_id_for_n3(iele, iflag_refine_ele)
+      subroutine set_refine_id_for_n3(numele, ie,                       &
+     &          iele, iflag_refine_ele)
 !
       use m_geometry_constants
-      use m_geometry_parameter
-      use m_geometry_data
       use m_refine_flag_parameters
+!
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
 !
       integer(kind = kint), intent(in) :: iele
       integer(kind = kint), intent(inout) :: iflag_refine_ele
+!
       integer(kind = kint) :: js1, isf, k1, inod
       integer(kind = kint) :: isig(6)
 !
@@ -517,16 +544,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_refine_id_for_n6(iele, iflag_refine_ele,           &
-     &          iflag_retry)
+      subroutine set_refine_id_for_n6(numele, ie, iele,                 &
+     &          iflag_refine_ele, iflag_retry)
 !
-      use m_geometry_parameter
-      use m_geometry_data
+      use m_geometry_constants
       use m_refine_flag_parameters
+!
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
 !
       integer(kind = kint), intent(in) :: iele
       integer(kind = kint), intent(inout) :: iflag_refine_ele
       integer(kind = kint), intent(inout) :: iflag_retry
+!
       integer(kind = kint) :: i1, i2, i3, i4, i5, i6, i7, i8
 !
 !
@@ -591,12 +621,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine change_refine_id_for_n5(iele, iflag_retry)
+      subroutine change_refine_id_for_n5(numele, ie, iele, iflag_retry)
 !
       use m_geometry_constants
-      use m_geometry_parameter
-      use m_geometry_data
       use m_refine_flag_parameters
+!
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
 !
       integer(kind = kint), intent(in) :: iele
       integer(kind = kint), intent(inout) :: iflag_retry
@@ -693,10 +724,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine change_refine_id_for_n7(iele, iflag_retry)
+      subroutine change_refine_id_for_n7(numele, ie, iele, iflag_retry)
 !
-      use m_geometry_parameter
-      use m_geometry_data
+      use m_geometry_constants
+!
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
 !
       integer(kind = kint), intent(in) :: iele
       integer(kind = kint), intent(inout) :: iflag_retry
@@ -715,20 +748,23 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine mark_refine_node_flag
+      subroutine mark_refine_node_flag(numnod, numele, ie)
 !
-      use m_geometry_data
+      use m_geometry_constants
       use m_refine_flag_parameters
       use m_refined_element_data
 !
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
+!
       integer(kind = kint) :: iele, k1, inod
 !
-      allocate(imark_nod(node1%numnod))
+      allocate(imark_nod(numnod))
       imark_nod = 0
 !
-      do iele = 1, ele1%numele
+      do iele = 1, numele
         if(iflag_refine_ele(iele) .eq. iflag_tri_full) then
-          do k1 = 1, 8
+          do k1 = 1, num_t_linear
             inod = ie(iele,k1)
             imark_nod(inod) = 1
           end do
@@ -739,9 +775,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine redefine_refine_node_flag
+      subroutine redefine_refine_node_flag(numnod)
 !
-      use m_geometry_data
+      integer(kind = kint), intent(in) :: numnod
 !
       integer(kind = kint) :: num
       integer(kind = kint), allocatable :: imark_tmp(:)
@@ -752,7 +788,7 @@
       imark_tmp(1:num) = imark_nod(1:num)
 !
       deallocate(imark_nod)
-      allocate(imark_nod(node1%numnod))
+      allocate(imark_nod(numnod))
       imark_nod = 0
 !
       imark_nod(1:num) = imark_tmp(1:num)

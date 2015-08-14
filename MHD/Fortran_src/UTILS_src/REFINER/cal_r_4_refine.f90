@@ -3,16 +3,18 @@
 !
 !     Written by H. Matsui on Oct., 2007
 !
-!      subroutine cal_r_on_edge_4_refine
-!      subroutine cal_r_on_surf_4_refine
-!      subroutine cal_r_on_ele_4_refine
+!!      subroutine cal_r_on_edge_4_refine                               &
+!!     &         (numnod, numedge, ie_edge, xx, radius)
+!!      subroutine cal_r_on_surf_4_refine                               &
+!!     &         (numnod, numsurf, ie_surf, radius)
+!!      subroutine cal_r_on_ele_4_refine(numnod, numele, ie, radius)
 !
       module cal_r_4_refine
 !
       use m_precision
 !
       use m_constants
-      use m_geometry_data
+      use m_geometry_constants
       use m_refined_node_id
 !
       implicit none
@@ -35,7 +37,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_r_on_edge_4_refine
+      subroutine cal_r_on_edge_4_refine                                 &
+     &         (numnod, numedge, ie_edge, xx, radius)
+!
+      integer(kind=kint), intent(in) :: numnod, numedge
+      integer(kind=kint), intent(in)                                    &
+     &                   :: ie_edge(numedge,num_linear_edge)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
+      real(kind = kreal), intent(in) :: radius(numnod)
 !
       integer(kind = kint) :: iedge, jst, jed, jnum
       real(kind = kreal) :: flag1, flag2, flag3
@@ -75,7 +84,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_r_on_surf_4_refine
+      subroutine cal_r_on_surf_4_refine                                 &
+     &         (numnod, numsurf, ie_surf, radius)
+!
+      integer(kind=kint), intent(in) :: numnod, numsurf
+      integer(kind=kint), intent(in) :: ie_surf(numsurf,num_linear_sf)
+      real(kind = kreal), intent(in) :: radius(numnod)
 !
       integer(kind = kint) :: isurf, jst, jed, jnum
 !
@@ -111,12 +125,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_r_on_ele_4_refine
+      subroutine cal_r_on_ele_4_refine(numnod, numele, ie, radius)
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
+      real(kind = kreal), intent(in) :: radius(numnod)
 !
       integer(kind = kint) :: iele, jst, jed, jnum
 !
 !
-      do iele = 1, ele1%numele
+      do iele = 1, numele
         inod1 = ie(iele,1)
         inod2 = ie(iele,2)
         inod3 = ie(iele,3)
@@ -145,7 +163,7 @@
           an7 = r125 * xi_posi * ei_posi * zi_posi
           an8 = r125 * xi_nega * ei_posi * zi_posi
 !
-          sph_refine_ele(jnum,1) =  an1*radius(inod1)                   &
+          sph_refine_ele(jnum,1) =   an1*radius(inod1)                  &
      &                             + an2*radius(inod2)                  &
      &                             + an3*radius(inod3)                  &
      &                             + an4*radius(inod4)                  &

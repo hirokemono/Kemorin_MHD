@@ -3,18 +3,24 @@
 !
 !     Written by H. Matsui on Oct., 2007
 !
-!      subroutine cal_sph_on_edge_4_refine
-!      subroutine cal_sph_on_surf_4_refine
-!      subroutine cal_sph_on_ele_4_refine
-!
-!      subroutine cal_sph_xing_med_edge_refine(iedge)
+!!      subroutine cal_sph_on_edge_4_refine(numnod, numedge, ie_edge,   &
+!!     &          radius, colatitude, longitude)
+!!      subroutine cal_sph_on_surf_4_refine(numnod, numsurf, ie_surf,   &
+!!     &          radius, colatitude, longitude)
+!!      subroutine cal_sph_on_ele_4_refine(numnod, numele, ie,          &
+!!     &          radius, colatitude, longitude)
+!!
+!!      subroutine cal_sph_xing_med_edge_refine(numnod, numedge,        &
+!!     &          ie_edge, longitude, iedge)
+!!      subroutine cal_sph_xing_med_surf_refine(numnod, numsurf,        &
+!!     &          ie_surf, longitude, isurf, phi_max)
 !
       module cal_sph_4_refine
 !
       use m_precision
 !
       use m_constants
-      use m_geometry_data
+      use m_geometry_constants
       use m_refined_node_id
 !
       implicit none
@@ -39,7 +45,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sph_on_edge_4_refine
+      subroutine cal_sph_on_edge_4_refine(numnod, numedge, ie_edge,     &
+     &          radius, colatitude, longitude)
+!
+      integer(kind=kint), intent(in) :: numnod, numedge
+      integer(kind=kint), intent(in)                                    &
+     &                   :: ie_edge(numedge,num_linear_edge)
+      real(kind = kreal), intent(in) :: radius(numnod)
+      real(kind = kreal), intent(in) :: colatitude(numnod)
+      real(kind = kreal), intent(in) :: longitude(numnod)
 !
       integer(kind = kint) :: iedge, jst, jed, jnum
 !
@@ -71,7 +85,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sph_on_surf_4_refine
+      subroutine cal_sph_on_surf_4_refine(numnod, numsurf, ie_surf,     &
+     &          radius, colatitude, longitude)
+!
+      integer(kind=kint), intent(in) :: numnod, numsurf
+      integer(kind=kint), intent(in) :: ie_surf(numsurf,num_linear_sf)
+      real(kind = kreal), intent(in) :: radius(numnod)
+      real(kind = kreal), intent(in) :: colatitude(numnod)
+      real(kind = kreal), intent(in) :: longitude(numnod)
 !
       integer(kind = kint) :: isurf, jst, jed, jnum
 !
@@ -115,12 +136,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sph_on_ele_4_refine
+      subroutine cal_sph_on_ele_4_refine(numnod, numele, ie,            &
+     &          radius, colatitude, longitude)
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
+      real(kind = kreal), intent(in) :: radius(numnod)
+      real(kind = kreal), intent(in) :: colatitude(numnod)
+      real(kind = kreal), intent(in) :: longitude(numnod)
 !
       integer(kind = kint) :: iele, jst, jed, jnum
 !
 !
-      do iele = 1, ele1%numele
+      do iele = 1, numele
         inod1 = ie(iele,1)
         inod2 = ie(iele,2)
         inod3 = ie(iele,3)
@@ -182,9 +210,15 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sph_xing_med_edge_refine(iedge)
+      subroutine cal_sph_xing_med_edge_refine(numnod, numedge,          &
+     &          ie_edge, longitude, iedge)
 !
+      integer(kind=kint), intent(in) :: numnod, numedge
+      integer(kind=kint), intent(in)                                    &
+     &                   :: ie_edge(numedge,num_linear_edge)
+      real(kind = kreal), intent(in) :: longitude(numnod)
       integer(kind = kint), intent(in) :: iedge
+!
       integer(kind = kint) :: jst, jed, jnum
       real(kind= kreal) :: phi_tmp1, phi_tmp2
 !
@@ -222,10 +256,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sph_xing_med_surf_refine(isurf, phi_max)
+      subroutine cal_sph_xing_med_surf_refine(numnod, numsurf,          &
+     &          ie_surf, longitude, isurf, phi_max)
 !
+      integer(kind=kint), intent(in) :: numnod, numsurf
+      integer(kind=kint), intent(in) :: ie_surf(numsurf,num_linear_sf)
+      real(kind = kreal), intent(in) :: longitude(numnod)
       integer(kind = kint), intent(in) :: isurf
       real(kind = kreal), intent(in) :: phi_max
+!
       integer(kind = kint) :: jst, jed, jnum
       real(kind= kreal) :: phi_tmp1, phi_tmp2, phi_tmp3, phi_tmp4
 !

@@ -3,19 +3,25 @@
 !
 !     Written by H. Matsui on Oct., 2007
 !
-!      subroutine cal_xyz_on_edge_4_refine
-!      subroutine cal_xyz_on_surf_4_refine
-!      subroutine cal_xyz_on_ele_4_refine
-!      subroutine cal_xyz_on_1edge_4_refine(iedge)
-!      subroutine cal_xyz_on_1surf_4_refine(isurf)
-!      subroutine cal_xyz_on_1ele_4_refine(iele)
+!!      subroutine cal_xyz_on_edge_4_refine                             &
+!!     &         (numnod, numedge, ie_edge, xx)
+!!      subroutine cal_xyz_on_surf_4_refine                             &
+!!     &         (numnod, numsurf, ie_surf, xx)
+!!      subroutine cal_xyz_on_ele_4_refine(numnod, numele, ie, xx)
+!!
+!!      subroutine cal_xyz_on_1edge_4_refine                            &
+!!     &         (numnod, numedge, ie_edge, xx, iedge)
+!!      subroutine cal_xyz_on_1surf_4_refine                            &
+!!     &         (numnod, numsurf, ie_surf, xx, isurf)
+!!      subroutine cal_xyz_on_1ele_4_refine                             &
+!!     &         (numnod, numele, ie, xx, iele)
 !
       module cal_xyz_4_refine
 !
       use m_precision
 !
       use m_constants
-      use m_geometry_data
+      use m_geometry_constants
       use m_refined_node_id
 !
       implicit none
@@ -26,39 +32,56 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_xyz_on_edge_4_refine
+      subroutine cal_xyz_on_edge_4_refine                               &
+     &         (numnod, numedge, ie_edge, xx)
+!
+      integer(kind=kint), intent(in) :: numnod, numedge
+      integer(kind=kint), intent(in)                                    &
+     &                   :: ie_edge(numedge,num_linear_edge)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint) :: iedge
 !
 !
       do iedge = 1, numedge
-        call cal_xyz_on_1edge_4_refine(iedge)
+        call cal_xyz_on_1edge_4_refine                                  &
+     &     (numnod, numedge, ie_edge, xx, iedge)
       end do
 !
       end subroutine cal_xyz_on_edge_4_refine
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_xyz_on_surf_4_refine
+      subroutine cal_xyz_on_surf_4_refine                               &
+     &         (numnod, numsurf, ie_surf, xx)
+!
+      integer(kind=kint), intent(in) :: numnod, numsurf
+      integer(kind=kint), intent(in) :: ie_surf(numsurf,num_linear_sf)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint) :: isurf
 !
 !
       do isurf = 1, numsurf
-        call cal_xyz_on_1surf_4_refine(isurf)
+        call cal_xyz_on_1surf_4_refine                                  &
+     &      (numnod, numsurf, ie_surf, xx, isurf)
       end do
 !
       end subroutine cal_xyz_on_surf_4_refine
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_xyz_on_ele_4_refine
+      subroutine cal_xyz_on_ele_4_refine(numnod, numele, ie, xx)
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint) :: iele
 !
 !
-      do iele = 1, ele1%numele
-        call cal_xyz_on_1ele_4_refine(iele)
+      do iele = 1, numele
+        call cal_xyz_on_1ele_4_refine(numnod, numele, ie, xx, iele)
       end do
 !
       end subroutine cal_xyz_on_ele_4_refine
@@ -66,9 +89,16 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_xyz_on_1edge_4_refine(iedge)
+      subroutine cal_xyz_on_1edge_4_refine                              &
+     &         (numnod, numedge, ie_edge, xx, iedge)
+!
+      integer(kind=kint), intent(in) :: numnod, numedge
+      integer(kind=kint), intent(in)                                    &
+     &                   :: ie_edge(numedge,num_linear_edge)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: iedge
+!
       integer(kind = kint) :: jst, jed, jnum
       integer(kind = kint) :: inod1, inod2
       real(kind = kreal) :: xi_nega, xi_posi
@@ -97,9 +127,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_xyz_on_1surf_4_refine(isurf)
+      subroutine cal_xyz_on_1surf_4_refine                              &
+     &         (numnod, numsurf, ie_surf, xx, isurf)
+!
+      integer(kind=kint), intent(in) :: numnod, numsurf
+      integer(kind=kint), intent(in) :: ie_surf(numsurf,num_linear_sf)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: isurf
+!
       integer(kind = kint) :: jst, jed, jnum
       integer(kind = kint) :: inod1, inod2, inod3, inod4
       real(kind = kreal) :: xi_nega, xi_posi
@@ -138,9 +174,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_xyz_on_1ele_4_refine(iele)
+      subroutine cal_xyz_on_1ele_4_refine                               &
+     &         (numnod, numele, ie, xx, iele)
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: iele
+!
       integer(kind = kint) :: jst, jed, jnum
       integer(kind = kint) :: inod1, inod2, inod3, inod4
       integer(kind = kint) :: inod5, inod6, inod7, inod8
