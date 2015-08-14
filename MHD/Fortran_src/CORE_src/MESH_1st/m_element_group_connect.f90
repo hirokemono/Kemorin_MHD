@@ -74,11 +74,11 @@
       type(group_data), intent(in) :: ele_grp
 !
 !
-      call allocate_imark_4_grp(numsurf)
+      call allocate_imark_4_grp(surf1%numsurf)
       call alloc_num_other_grp(ele_grp%num_grp, ele_grp_data1%surf)
 !
       call count_nod_4_ele_grp                                          &
-     &  (numsurf, ele1%numele, nsurf_4_ele, isf_4_ele,                  &
+     &  (surf1%numsurf, ele1%numele, nsurf_4_ele, isf_4_ele,            &
      &   ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,         &
      &   ele_grp%item_grp, ele_grp_data1%surf%ntot_e_grp,               &
      &   ele_grp_data1%surf%nitem_e_grp,                                &
@@ -88,7 +88,7 @@
       call alloc_item_other_grp(ele_grp_data1%surf)
 !
       call set_nod_4_ele_grp                                            &
-     &   (numsurf, ele1%numele, nsurf_4_ele, isf_4_ele,                 &
+     &   (surf1%numsurf, ele1%numele, nsurf_4_ele, isf_4_ele,           &
      &    ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,        &
      &    ele_grp%item_grp, ele_grp_data1%surf%ntot_e_grp,              &
      &    ele_grp_data1%surf%nitem_e_grp,                               &

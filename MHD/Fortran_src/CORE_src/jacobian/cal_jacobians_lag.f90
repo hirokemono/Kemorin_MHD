@@ -83,13 +83,13 @@
         do ii = 1, i0*i0
           ix = int_start2(i0) + ii
 !
-          call s_cal_jacobian_2d_9(node1%numnod, numsurf,               &
+          call s_cal_jacobian_2d_9(node1%numnod, surf1%numsurf,         &
      &        ie_surf, node1%xx, np_smp, isurf_smp_stack,               &
-     &        jac_2d_q%xj_sf(1:numsurf,ix),                             &
-     &        jac_2d_q%axj_sf(1:numsurf,ix),                            &
-     &        jac_2d_q%xsf_sf(1:numsurf,ix,1),                          &
-     &        jac_2d_q%xsf_sf(1:numsurf,ix,2),                          &
-     &        jac_2d_q%xsf_sf(1:numsurf,ix,3),                          &
+     &        jac_2d_q%xj_sf(1:surf1%numsurf,ix),                       &
+     &        jac_2d_q%axj_sf(1:surf1%numsurf,ix),                      &
+     &        jac_2d_q%xsf_sf(1:surf1%numsurf,ix,1),                    &
+     &        jac_2d_q%xsf_sf(1:surf1%numsurf,ix,2),                    &
+     &        jac_2d_q%xsf_sf(1:surf1%numsurf,ix,3),                    &
      &        dnxi_sf27(1,ix), dnei_sf27(1,ix) )
         end do
       end do

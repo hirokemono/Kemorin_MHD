@@ -83,7 +83,6 @@
       subroutine set_edge_4_surf_group(sf_grp)
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use t_group_data
 !
@@ -99,7 +98,7 @@
 !
       call alloc_num_other_grp(sf_grp%num_grp, sf_grp_data1%edge)
 !
-      call count_nod_4_ele_grp(numedge, numsurf, nedge_4_surf,          &
+      call count_nod_4_ele_grp(numedge, surf1%numsurf, nedge_4_surf,    &
      &    iedge_4_sf, sf_grp%num_grp, sf_grp%num_item,                  &
      &    sf_grp%istack_grp, sf_grp_data1%isurf_grp,                    &
      &    sf_grp_data1%edge%ntot_e_grp, sf_grp_data1%edge%nitem_e_grp,  &
@@ -107,7 +106,7 @@
 !
       call alloc_item_other_grp(sf_grp_data1%edge)
 !
-      call set_nod_4_ele_grp(numedge, numsurf, nedge_4_surf,            &
+      call set_nod_4_ele_grp(numedge, surf1%numsurf, nedge_4_surf,      &
      &    iedge_4_sf, sf_grp%num_grp, sf_grp%num_item,                  &
      &    sf_grp%istack_grp, sf_grp_data1%isurf_grp,                    &
      &    sf_grp_data1%edge%ntot_e_grp, sf_grp_data1%edge%nitem_e_grp,  &

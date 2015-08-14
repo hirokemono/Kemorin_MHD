@@ -113,7 +113,7 @@
       type(surface_data), intent(inout) :: surf
 !
 !
-      surf%numsurf =     numsurf
+      surf%numsurf =     surf1%numsurf
       surf%nnod_4_surf = nnod_4_surf
 !
       surf%ie_surf =>       ie_surf

@@ -35,7 +35,7 @@
       use m_geometry_constants
 !
 !
-      numele_dummy =        numsurf
+      numele_dummy =        surf1%numsurf
       nnod_4_ele_dummy =    nnod_4_surf
 !
       nsf_4_ele_IO = ele1%numele
@@ -47,17 +47,18 @@
       call allocate_surface_connect_IO
 !
       if      (nnod_4_surf .eq. 4) then
-        i_ele_dummy(1:numsurf) = 221
+        i_ele_dummy(1:surf1%numsurf) = 221
       else if (nnod_4_surf .eq. 8) then
-        i_ele_dummy(1:numsurf) = 222
+        i_ele_dummy(1:surf1%numsurf) = 222
       else if (nnod_4_surf .eq. 9) then
-        i_ele_dummy(1:numsurf) = 223
+        i_ele_dummy(1:surf1%numsurf) = 223
       end if
 !
-      nodelm_dummy(1:numsurf) = nnod_4_surf
-      globalelmid_dummy(1:numsurf) = isurf_global(1:numsurf)
-      ie_dummy(1:numsurf,1:nnod_4_surf)                                 &
-     &        = ie_surf(1:numsurf,1:nnod_4_surf)
+      nodelm_dummy(1:surf1%numsurf) = nnod_4_surf
+      globalelmid_dummy(1:surf1%numsurf)                                &
+     &        = isurf_global(1:surf1%numsurf)
+      ie_dummy(1:surf1%numsurf,1:nnod_4_surf)                           &
+     &        = ie_surf(1:surf1%numsurf,1:nnod_4_surf)
 !
       isf_4_ele_IO(1:ele1%numele,1:nsurf_4_ele)                         &
      &        = isf_4_ele(1:ele1%numele,1:nsurf_4_ele)
@@ -69,7 +70,7 @@
       subroutine copy_surf_geometry_to_IO
 !
 !
-      numnod_dummy =        numsurf
+      numnod_dummy =        surf1%numsurf
       internal_node_dummy = internal_surf
 !
       call allocate_node_data_dummy
@@ -77,11 +78,13 @@
       call allocate_ele_scalar_IO
 !
 !
-      globalnodid_dummy(1:numsurf) = isurf_global(1:numsurf)
-      xx_dummy(1:numsurf,1:3) = x_surf(1:numsurf,1:3)
+      globalnodid_dummy(1:surf1%numsurf)                                &
+     &      = isurf_global(1:surf1%numsurf)
+      xx_dummy(1:surf1%numsurf,1:3) = x_surf(1:surf1%numsurf,1:3)
 !
-      ele_scalar_IO(1:numsurf) =     area_surf(1:numsurf)
-      ele_vector_IO(1:numsurf,1:3) = vnorm_surf(1:numsurf,1:3)
+      ele_scalar_IO(1:surf1%numsurf) =     area_surf(1:surf1%numsurf)
+      ele_vector_IO(1:surf1%numsurf,1:3)                                &
+     &      = vnorm_surf(1:surf1%numsurf,1:3)
 !
       end subroutine copy_surf_geometry_to_IO
 !
@@ -89,20 +92,22 @@
 !
       subroutine copy_surf_geometry_to_IO_sph
 !
-      numnod_dummy =        numsurf
+      numnod_dummy =        surf1%numsurf
       internal_node_dummy = internal_surf
 !
       call allocate_node_data_dummy
       call allocate_ele_vector_IO
       call allocate_ele_scalar_IO
 !
-      globalnodid_dummy(1:numsurf) = isurf_global(1:numsurf)
-      xx_dummy(1:numsurf,1) = r_surf(1:numsurf)
-      xx_dummy(1:numsurf,2) = theta_surf(1:numsurf)
-      xx_dummy(1:numsurf,3) = phi_surf(1:numsurf)
+      globalnodid_dummy(1:surf1%numsurf)                                &
+     &     = isurf_global(1:surf1%numsurf)
+      xx_dummy(1:surf1%numsurf,1) = r_surf(1:surf1%numsurf)
+      xx_dummy(1:surf1%numsurf,2) = theta_surf(1:surf1%numsurf)
+      xx_dummy(1:surf1%numsurf,3) = phi_surf(1:surf1%numsurf)
 !
-      ele_scalar_IO(1:numsurf) =     area_surf(1:numsurf)
-      ele_vector_IO(1:numsurf,1:3) = vnorm_surf_sph(1:numsurf,1:3)
+      ele_scalar_IO(1:surf1%numsurf) =     area_surf(1:surf1%numsurf)
+      ele_vector_IO(1:surf1%numsurf,1:3)                                &
+     &      = vnorm_surf_sph(1:surf1%numsurf,1:3)
 !
       end subroutine copy_surf_geometry_to_IO_sph
 !
@@ -110,19 +115,21 @@
 !
       subroutine copy_surf_geometry_to_IO_cyl
 !
-      numnod_dummy =        numsurf
+      numnod_dummy =        surf1%numsurf
       internal_node_dummy = internal_surf
 !
       call allocate_node_data_dummy
       call allocate_ele_vector_IO
       call allocate_ele_scalar_IO
 !
-      globalnodid_dummy(1:numsurf) = isurf_global(1:numsurf)
-      xx_dummy(1:numsurf,1) = s_surf(1:numsurf)
-      xx_dummy(1:numsurf,2) = phi_surf(1:numsurf)
-      xx_dummy(1:numsurf,3) = x_surf(1:numsurf,3)
-      ele_scalar_IO(1:numsurf) =     area_surf(1:numsurf)
-      ele_vector_IO(1:numsurf,1:3) = vnorm_surf_cyl(1:numsurf,1:3)
+      globalnodid_dummy(1:surf1%numsurf)                                &
+     &      = isurf_global(1:surf1%numsurf)
+      xx_dummy(1:surf1%numsurf,1) = s_surf(1:surf1%numsurf)
+      xx_dummy(1:surf1%numsurf,2) = phi_surf(1:surf1%numsurf)
+      xx_dummy(1:surf1%numsurf,3) = x_surf(1:surf1%numsurf,3)
+      ele_scalar_IO(1:surf1%numsurf) =     area_surf(1:surf1%numsurf)
+      ele_vector_IO(1:surf1%numsurf,1:3)                                &
+     &      = vnorm_surf_cyl(1:surf1%numsurf,1:3)
 !
       end subroutine copy_surf_geometry_to_IO_cyl
 !
@@ -134,13 +141,15 @@
       use m_geometry_constants
 !
 !
-      numsurf = numele_dummy
+      surf1%numsurf = numele_dummy
+      numsurf =  surf1%numsurf
 !
       call allocate_surface_connect
 !
-      isurf_global(1:numsurf) = globalelmid_dummy(1:numsurf)
-      ie_surf(1:numsurf,1:nnod_4_surf)                                  &
-     &        = ie_dummy(1:numsurf,1:nnod_4_surf)
+      isurf_global(1:surf1%numsurf)                                     &
+     &        = globalelmid_dummy(1:surf1%numsurf)
+      ie_surf(1:surf1%numsurf,1:nnod_4_surf)                            &
+     &        = ie_dummy(1:surf1%numsurf,1:nnod_4_surf)
 !
       isf_4_ele(1:ele1%numele,1:nsurf_4_ele)                            &
      &        = isf_4_ele_IO(1:ele1%numele,1:nsurf_4_ele)
@@ -158,10 +167,11 @@
       call allocate_surface_geometry
       call allocate_normal_vectors
 !
-      x_surf(1:numsurf,1:3) = xx_dummy(1:numsurf,1:3)
+      x_surf(1:surf1%numsurf,1:3) = xx_dummy(1:surf1%numsurf,1:3)
 !
-      area_surf(1:numsurf) =      ele_scalar_IO(1:numsurf)
-      vnorm_surf(1:numsurf,1:3) = ele_vector_IO(1:numsurf,1:3)
+      area_surf(1:surf1%numsurf) =      ele_scalar_IO(1:surf1%numsurf)
+      vnorm_surf(1:surf1%numsurf,1:3)                                   &
+     &         = ele_vector_IO(1:surf1%numsurf,1:3)
 !
       call deallocate_ele_scalar_IO
       call deallocate_ele_vector_IO
@@ -177,12 +187,13 @@
       call allocate_normal_vectors
       call allocate_normal_vector_sph
 !
-      r_surf(1:numsurf) =     xx_dummy(1:numsurf,1)
-      theta_surf(1:numsurf) = xx_dummy(1:numsurf,2)
-      phi_surf(1:numsurf) =   xx_dummy(1:numsurf,3)
+      r_surf(1:surf1%numsurf) =     xx_dummy(1:surf1%numsurf,1)
+      theta_surf(1:surf1%numsurf) = xx_dummy(1:surf1%numsurf,2)
+      phi_surf(1:surf1%numsurf) =   xx_dummy(1:surf1%numsurf,3)
 !
-      area_surf(1:numsurf) =          ele_scalar_IO(1:numsurf)
-      vnorm_surf_sph(1:numsurf,1:3) = ele_vector_IO(1:numsurf,1:3)
+      area_surf(1:surf1%numsurf) = ele_scalar_IO(1:surf1%numsurf)
+      vnorm_surf_sph(1:surf1%numsurf,1:3)                               &
+     &      = ele_vector_IO(1:surf1%numsurf,1:3)
 !
       call deallocate_ele_scalar_IO
       call deallocate_ele_vector_IO
@@ -198,12 +209,13 @@
       call allocate_normal_vectors
       call allocate_normal_vector_cyl
 !
-      s_surf(1:numsurf) =   xx_dummy(1:numsurf,1)
-      phi_surf(1:numsurf) = xx_dummy(1:numsurf,2)
-      x_surf(1:numsurf,3) = xx_dummy(1:numsurf,3)
+      s_surf(1:surf1%numsurf) =   xx_dummy(1:surf1%numsurf,1)
+      phi_surf(1:surf1%numsurf) = xx_dummy(1:surf1%numsurf,2)
+      x_surf(1:surf1%numsurf,3) = xx_dummy(1:surf1%numsurf,3)
 !
-      area_surf(1:numsurf) =          ele_scalar_IO(1:numsurf)
-      vnorm_surf_cyl(1:numsurf,1:3) = ele_vector_IO(1:numsurf,1:3)
+      area_surf(1:surf1%numsurf) = ele_scalar_IO(1:surf1%numsurf)
+      vnorm_surf_cyl(1:surf1%numsurf,1:3)                               &
+     &      = ele_vector_IO(1:surf1%numsurf,1:3)
 !
       call deallocate_ele_scalar_IO
       call deallocate_ele_vector_IO

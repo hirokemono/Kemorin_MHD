@@ -70,8 +70,8 @@
 !
 !
       call allocate_ele_4_surf
-      call set_ele_list_4_surf(ele1%numele, numsurf, nsurf_4_ele,       &
-     &    isf_4_ele, iele_4_surf)
+      call set_ele_list_4_surf(ele1%numele, surf1%numsurf,              &
+     &    nsurf_4_ele, isf_4_ele, iele_4_surf)
 !
       end subroutine const_element_list_4_surface
 !
@@ -96,18 +96,20 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'count_all_surfaces'
       call count_all_surfaces                                           &
-     &   (ele1%numele, sf_ele_tbl%iflag_hash, numsurf)
+     &   (ele1%numele, sf_ele_tbl%iflag_hash, surf1%numsurf)
 !
+      numsurf = surf1%numsurf
       call allocate_surface_connect
 !
       if (iflag_debug.eq.1) write(*,*) 'set_all_surfaces'
-      call set_all_surfaces(ele1%numele, numsurf, ele1%nnod_4_ele,      &
+      call set_all_surfaces                                             &
+     &   (ele1%numele, surf1%numsurf, ele1%nnod_4_ele,                  &
      &    nnod_4_surf, ele1%ie, node_on_sf, sf_ele_tbl%id_hash,         &
      &    sf_ele_tbl%iflag_hash, ie_surf, isf_4_ele)
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_surf_rotation_flag'
       call set_surf_rotation_flag                                       &
-     &   (ele1%numele, numsurf, ele1%nnod_4_ele,                        &
+     &   (ele1%numele, surf1%numsurf, ele1%nnod_4_ele,                  &
      &    nnod_4_surf, ele1%ie, ie_surf, isf_4_ele, isf_rot_ele)
 !
       end subroutine const_all_surface_data

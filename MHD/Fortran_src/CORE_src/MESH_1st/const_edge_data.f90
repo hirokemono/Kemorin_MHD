@@ -67,7 +67,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_4_sf'
       call set_edges_connect_4_sf                                       &
-     &   (node1%numnod, ele1%numele, numsurf, numedge,                  &
+     &   (node1%numnod, ele1%numele, surf1%numsurf, numedge,            &
      &    nnod_4_surf, nnod_4_edge, ie_surf, iedge_4_ele,               &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%id_hash,               &
      &    edge_ele_tbl%iflag_hash, ie_edge, iedge_4_sf)
@@ -108,12 +108,12 @@
 !
 !
       call allocate_surf_4_edge_num
-      call count_ele_list_4_edge(numsurf, numedge, nedge_4_surf,        &
+      call count_ele_list_4_edge(surf1%numsurf, numedge, nedge_4_surf,  &
      &    iedge_4_sf, ntot_isurf_4_edge, num_isurf_4_edge,              &
      &    istack_isurf_4_edge)
 !
       call allocate_surf_4_edge_item
-      call set_ele_list_4_edge(numsurf, numedge, nedge_4_surf,          &
+      call set_ele_list_4_edge(surf1%numsurf, numedge, nedge_4_surf,    &
      &    iedge_4_sf, ntot_isurf_4_edge, num_isurf_4_edge,              &
      &    istack_isurf_4_edge, isurf_4_edge)
 !

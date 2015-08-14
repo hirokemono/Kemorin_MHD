@@ -36,7 +36,7 @@
 !
       numele_dummy = ele1%numele
 !
-      nsf_4_ele_IO = numsurf
+      nsf_4_ele_IO =    surf1%numsurf
       nsurf_in_ele_IO = nedge_4_surf
 !
       ned_4_ele_IO = ele1%numele
@@ -60,8 +60,8 @@
       ie_dummy(1:numedge,1:nnod_4_edge)                                 &
      &        = ie_edge(1:numedge,1:nnod_4_edge)
 !
-      isf_4_ele_IO(1:numsurf,1:nedge_4_surf)                            &
-     &        = iedge_4_sf(1:numsurf,1:nedge_4_surf)
+      isf_4_ele_IO(1:surf1%numsurf,1:nedge_4_surf)                      &
+     &        = iedge_4_sf(1:surf1%numsurf,1:nedge_4_surf)
       iedge_4_ele_IO(1:ele1%numele,1:nedge_4_ele)                       &
      &        = iedge_4_ele(1:ele1%numele,1:nedge_4_ele)
 !
@@ -142,8 +142,8 @@
       ie_edge(1:numedge,1:nnod_4_edge)                                  &
      &        = ie_dummy(1:numedge,1:nnod_4_edge)
 !
-      iedge_4_sf(1:numsurf,1:nedge_4_surf)                              &
-     &        = isf_4_ele_IO(1:numsurf,1:nedge_4_surf)
+      iedge_4_sf(1:surf1%numsurf,1:nedge_4_surf)                        &
+     &        = isf_4_ele_IO(1:surf1%numsurf,1:nedge_4_surf)
 !
       iedge_4_ele(1:ele1%numele,1:nedge_4_ele)                          &
      &        = iedge_4_ele_IO(1:ele1%numele,1:nedge_4_ele)

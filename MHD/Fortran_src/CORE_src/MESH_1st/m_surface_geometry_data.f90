@@ -59,17 +59,17 @@
 !
       subroutine allocate_surface_geometry
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
-      allocate( x_surf(numsurf,3) )
+      allocate( x_surf(surf1%numsurf,3) )
 !
-      allocate( r_surf(numsurf) )
-      allocate( ar_surf(numsurf) )
-      allocate( phi_surf(numsurf) )
-      allocate( theta_surf(numsurf) )
+      allocate( r_surf(surf1%numsurf) )
+      allocate( ar_surf(surf1%numsurf) )
+      allocate( phi_surf(surf1%numsurf) )
+      allocate( theta_surf(surf1%numsurf) )
 !
-      allocate( s_surf(numsurf) )
-      allocate( as_surf(numsurf) )
+      allocate( s_surf(surf1%numsurf) )
+      allocate( as_surf(surf1%numsurf) )
 !
       x_surf =      0.0d0
 !
@@ -100,11 +100,11 @@
 !
       subroutine allocate_normal_vectors
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
-      allocate( area_surf(numsurf) )
-      allocate( a_area_surf(numsurf) )
-      allocate( vnorm_surf(numsurf,3) )
+      allocate( area_surf(surf1%numsurf) )
+      allocate( a_area_surf(surf1%numsurf) )
+      allocate( vnorm_surf(surf1%numsurf,3) )
 !
       area_surf =   0.0d0
       a_area_surf = 0.0d0
@@ -116,9 +116,9 @@
 !
       subroutine allocate_normal_vector_sph
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
-      allocate( vnorm_surf_sph(numsurf,3) )
+      allocate( vnorm_surf_sph(surf1%numsurf,3) )
       vnorm_surf_sph =  0.0d0
 !
       end subroutine allocate_normal_vector_sph
@@ -127,9 +127,9 @@
 !
       subroutine allocate_normal_vector_cyl
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
-      allocate( vnorm_surf_cyl(numsurf,3) )
+      allocate( vnorm_surf_cyl(surf1%numsurf,3) )
       vnorm_surf_cyl =  0.0d0
 !
       end subroutine allocate_normal_vector_cyl

@@ -65,24 +65,23 @@
       subroutine set_center_of_surface
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_surface_geometry_data
       use set_surface_position
       use coordinate_converter
 !
       if (nnod_4_surf .eq. num_quad_sf) then
-        call set_quad_surf_position(node1%numnod, numsurf,              &
+        call set_quad_surf_position(node1%numnod, surf1%numsurf,        &
      &      ie_surf, node1%xx, x_surf)
       else if (nnod_4_surf .eq. num_linear_sf) then
-        call set_linear_surf_position(node1%numnod, numsurf,            &
+        call set_linear_surf_position(node1%numnod, surf1%numsurf,      &
      &      ie_surf, node1%xx, x_surf)
       else if (nnod_4_surf .eq. num_lag_sf) then
-        call set_lag_surf_position(node1%numnod, numsurf,               &
+        call set_lag_surf_position(node1%numnod, surf1%numsurf,         &
      &      ie_surf, node1%xx, x_surf)
       end if
 !
-      call position_2_sph(numsurf, x_surf, r_surf, theta_surf,          &
+      call position_2_sph(surf1%numsurf, x_surf, r_surf, theta_surf,    &
      &    phi_surf, ar_surf, s_surf, as_surf)
 !
       end subroutine set_center_of_surface

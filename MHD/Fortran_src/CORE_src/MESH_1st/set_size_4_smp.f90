@@ -64,13 +64,13 @@
 !
       subroutine count_surf_size_4_smp
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use cal_minmax_and_stacks
 !
 !
       call allocate_surf_param_smp
 !
-      call count_number_4_smp( np_smp, ione, numsurf,                   &
+      call count_number_4_smp( np_smp, ione, surf1%numsurf,             &
      &       isurf_smp_stack, maxsurf_4_smp )
 !
       end subroutine count_surf_size_4_smp
@@ -113,13 +113,12 @@
 !
       subroutine count_overlap_surface
 !
-      use m_geometry_parameter
       use m_geometry_data
       use count_overlap
 !
       call set_overlap_flag                                             &
      &   (np_smp, isurf_smp_stack, node1%internal_node,                 &
-     &    numsurf, ie_surf(1,1), internal_surf, interior_surf)
+     &    surf1%numsurf, ie_surf(1,1), internal_surf, interior_surf)
 !
       end subroutine count_overlap_surface
 !

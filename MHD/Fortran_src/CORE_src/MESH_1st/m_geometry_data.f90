@@ -70,6 +70,7 @@
 !
       use m_precision
       use t_geometry_data
+      use t_surface_data
       use m_geometry_parameter
 !
       implicit  none
@@ -81,6 +82,10 @@
 !>  structure for element data (position and connectivity)
       type(element_data), save :: ele1
 !    ele1%ie
+!
+!>      structure of surface data (geometry and connectivity)
+      type(surface_data), save :: surf1
+!surf1%numsurf
 !
 !>   Stack list of number of node
       integer(kind=kint_gl), allocatable, target  :: istack_numnod(:)
@@ -478,9 +483,9 @@
 !
       allocate( isf_4_ele(ele1%numele,nsurf_4_ele) )
       allocate( isf_rot_ele(ele1%numele,nsurf_4_ele) )
-      allocate( ie_surf(numsurf,nnod_4_surf) )
-      allocate( isurf_global(numsurf) )
-      allocate( interior_surf(numsurf) )
+      allocate( ie_surf(surf1%numsurf,nnod_4_surf) )
+      allocate( isurf_global(surf1%numsurf) )
+      allocate( interior_surf(surf1%numsurf) )
 !
       isf_rot_ele =   0
       ie_surf =       0
@@ -495,7 +500,7 @@
 !
       use m_geometry_constants
 !
-      allocate( iedge_4_sf(numsurf,nedge_4_surf) )
+      allocate( iedge_4_sf(surf1%numsurf,nedge_4_surf) )
       allocate( ie_edge(numedge,nnod_4_edge) )
       allocate( iedge_global(numedge) )
       allocate( interior_edge(numedge) )
@@ -524,7 +529,7 @@
       subroutine allocate_ele_4_surf
 !
 !
-      allocate( iele_4_surf(numsurf,2,2) )
+      allocate( iele_4_surf(surf1%numsurf,2,2) )
       iele_4_surf = 0
 !
       end subroutine allocate_ele_4_surf

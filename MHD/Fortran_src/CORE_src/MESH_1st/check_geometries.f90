@@ -76,10 +76,10 @@
 !
 !
       write(50+my_rank,*) 'numsurf, nnod_4_surf'
-      write(50+my_rank,'(2i16)') numsurf, nnod_4_surf
+      write(50+my_rank,'(2i16)') surf1%numsurf, nnod_4_surf
 !
       write(50+my_rank,*) 'isurf, connection'
-      do isurf = 1, numsurf
+      do isurf = 1, surf1%numsurf
         write(50+my_rank,'(10i16)') isurf, ie_surf(isurf,1:nnod_4_surf)
       end do
 !
@@ -115,10 +115,10 @@
 !
 !
       write(50+my_rank,*) 'numsurf, nedge_4_surf'
-      write(50+my_rank,'(2i16)') numsurf, nedge_4_surf
+      write(50+my_rank,'(2i16)') surf1%numsurf, nedge_4_surf
       write(50+my_rank,*) 'isurf, edge ID for surface'
 !
-      do isurf = 1, numsurf
+      do isurf = 1, surf1%numsurf
         write(50+my_rank,'(5i16)')                                      &
      &            isurf, iedge_4_sf(isurf,1:nedge_4_surf)
       end do
