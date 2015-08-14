@@ -48,7 +48,7 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call SGS_m_flux_2_each_element                                  &
-     &     (ele1%numele, ele1%nnod_4_ele, ie, ele1%istack_ele_smp,      &
+     &     (ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%istack_ele_smp, &
      &      k2, i_vect, i_flux, tensor_e)
         call fem_skv_div_tensor(iele_fl_smp_stack,                      &
      &      intg_point_t_evo, k2, tensor_e, sk6)
@@ -110,7 +110,7 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call SGS_m_flux_2_each_element                                  &
-     &     (ele1%numele, ele1%nnod_4_ele, ie, ele1%istack_ele_smp,      &
+     &     (ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%istack_ele_smp, &
      &      k2, i_vect, i_flux, tensor_e)
         call fem_skv_div_tsr_upw(iele_fl_smp_stack, intg_point_t_evo,   &
      &      k2, d_ele(1,ie_upw), tensor_e, sk6)

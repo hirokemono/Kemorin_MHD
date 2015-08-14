@@ -86,7 +86,7 @@
       call alloc_vect_surf_grp_nod(sf_grp_nod)
 !
       call cal_surf_grp_norm_node(ele1%numele, ele1%nnod_4_ele,         &
-     &    nnod_4_surf, node_on_sf, ie,                                  &
+     &    nnod_4_surf, node_on_sf, ele1%ie,                             &
      &    sf_grp%num_grp, sf_grp%num_item,                              &
      &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &
      &    sf_grp_v%vnorm_sf_grp, sf_grp_v%a_area_sf_grp,                &

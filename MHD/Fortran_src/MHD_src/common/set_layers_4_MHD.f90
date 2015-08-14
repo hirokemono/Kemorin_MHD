@@ -56,13 +56,13 @@
       call count_node_4_layer(node1%numnod, node1%internal_node,        &
      &     numnod_fluid, internal_node_fluid,                           &
      &     iele_fl_start, iele_fl_end,                                  &
-     &     ele1%numele, ele1%nnod_4_ele, ie)
+     &     ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
       call allocate_fluid_node_list
 !
         call set_node_4_layer(node1%numnod, numnod_fluid, inod_fluid,   &
      &      iele_fl_start, iele_fl_end,                                 &
-     &      ele1%numele, ele1%nnod_4_ele, ie)
+     &      ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
       call dealloc_mat_node_flag
 !
@@ -96,17 +96,17 @@
       call count_node_4_layer(node1%numnod, node1%internal_node,        &
      &    numnod_conduct, internal_node_conduct,                        &
      &    iele_cd_start, iele_cd_end,                                   &
-     &    ele1%numele, ele1%nnod_4_ele, ie)
+     &    ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
       call count_node_4_layer(node1%numnod, node1%internal_node,        &
      &    numnod_insulate, internal_node_insulate,                      &
      &    iele_ins_start, iele_ins_end,                                 &
-     &    ele1%numele, ele1%nnod_4_ele, ie)
+     &    ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
 !      call count_node_4_layer(node1%numnod, node1%internal_node,       &
 !     &    numnod_in_core, internal_node_in_core,                       &
 !     &    iele_ic_start, iele_ic_end,                                  &
-!     &    ele1%numele, ele1%nnod_4_ele, ie)
+!     &    ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
 !  allocate list vector for fluid and conductive layer
 !
@@ -117,17 +117,17 @@
         call set_node_4_layer                                           &
      &     (node1%numnod, numnod_conduct, inod_conduct,                 &
      &      iele_cd_start, iele_cd_end,                                 &
-     &      ele1%numele, ele1%nnod_4_ele, ie)
+     &      ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
         call set_node_4_layer                                           &
      &     (node1%numnod, numnod_insulate, inod_insulate,               &
      &      iele_ins_start, iele_ins_end,                               &
-     &      ele1%numele, ele1%nnod_4_ele, ie)
+     &      ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
 !        call set_node_4_layer                                          &
 !     &     (node1%numnod, numnod_in_core, inod_in_core,                &
 !     &      iele_ic_start, iele_ic_end,                                &
-!     &      ele1%numele, ele1%nnod_4_ele, ie)
+!     &      ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
       call dealloc_mat_node_flag
 !

@@ -5,7 +5,8 @@
 !                                    on July 2000 (ver 1.1)
 !      Modified by H. Matsui on Aug, 2007
 !
-!      subroutine s_cal_average_mag_potential
+!      subroutine s_cal_average_mag_potential                           &
+!     &          (numele, nnod_4_ele, ie, interior_ele)
 !
       module cal_average_mag_potential
 !
@@ -20,14 +21,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_average_mag_potential
+      subroutine s_cal_average_mag_potential                            &
+     &          (numele, nnod_4_ele, ie, interior_ele)
 !
       use calypso_mpi
       use m_control_parameter
       use m_geometry_constants
-      use m_geometry_parameter
       use m_machine_parameter
-      use m_geometry_data
       use m_geometry_data_MHD
       use m_finite_element_matrix
       use m_fem_gauss_int_coefs
@@ -36,6 +36,10 @@
       use m_node_phys_address
       use m_node_phys_data
       use m_bulk_values
+!
+      integer(kind=kint), intent(in) :: numele, nnod_4_ele
+      integer(kind=kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer(kind=kint), intent(in) :: interior_ele(numele)
 !
       real (kind=kreal) :: bulk_e_smp(np_smp)
 !
@@ -69,7 +73,8 @@
                 inod = ie(iele,k1)
 !
                 bulk_e_smp(iproc) = bulk_e_smp(iproc)                   &
-     &                      + e_multi(iele) * d_nod(inod,iphys%i_mag_p) &
+     &                      + dble(interior_ele(iele))                  &
+     &                       * d_nod(inod,iphys%i_mag_p)                &
      &                       * an(k1,ix)*xjac(iele,ix)*owe3d(ix)
               end do
             end do

@@ -229,14 +229,14 @@
 !
       k1 = nod_bc2_id
       do k2 = 1, nnod_1ele
-        call set_bc_4_scalar_mat_type(ie(iele,k1), ie(iele,k2),     &
-     &      djds_tbl, mat11)
+        call set_bc_4_scalar_mat_type                                   &
+     &     (ele1%ie(iele,k1), ele1%ie(iele,k2), djds_tbl, mat11)
       end do
 !
       k2 = nod_bc2_id
       do k1 = 1, nnod_1ele
-        call set_bc_4_scalar_mat_type(ie(iele,k1), ie(iele,k2),     &
-     &      djds_tbl, mat11)
+        call set_bc_4_scalar_mat_type                                   &
+     &     (ele1%ie(iele,k1), ele1%ie(iele,k2), djds_tbl, mat11)
       end do
 !
       end subroutine set_aiccg_bc_scalar_nod
@@ -262,13 +262,13 @@
       k1 = nod_bc2_id
       do k2 = 1, nnod_1ele
         call set_bc_4_vector_mat_type(nst, ned,                         &
-     &      ie(iele,k1), ie(iele,k2), djds_tbl, mat33)
+     &      ele1%ie(iele,k1), ele1%ie(iele,k2), djds_tbl, mat33)
       end do
 !
       k2 = nod_bc2_id
       do k1 = 1, nnod_1ele
         call set_bc_4_vector_mat_type(nst, ned,                         &
-     &      ie(iele,k1), ie(iele,k2), djds_tbl, mat33)
+     &      ele1%ie(iele,k1), ele1%ie(iele,k2), djds_tbl, mat33)
       end do
 !
       end subroutine set_aiccg_bc_vector_nod

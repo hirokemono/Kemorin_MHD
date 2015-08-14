@@ -103,7 +103,7 @@
       ele%iele_global => iele_global
       ele%elmtyp =>      elmtyp
       ele%nodelm =>      nodelm
-      ele%ie =>          ie
+      ele%ie =>          ele1%ie
 !
       end subroutine link_first_ele_connect_type
 !

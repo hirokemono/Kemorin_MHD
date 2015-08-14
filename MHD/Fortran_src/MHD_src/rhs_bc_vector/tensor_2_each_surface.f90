@@ -14,9 +14,9 @@
       module tensor_2_each_surface
 !
       use m_precision
-!
+      use m_constants
       use m_machine_parameter
-      use m_geometry_parameter
+!
       use m_geometry_data
       use m_phys_constants
       use m_int_surface_data
@@ -56,7 +56,7 @@
         nsf = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if (nsf.gt.0) then
 !
-!$omp parallel do &
+!$omp parallel do                                                       &
 !$omp& private(id_sf,ist,ied,inum,iele,isf,kk2,inod)
           do iproc = 1, np_smp
             id_sf = np_smp*(igrp-1) + iproc
@@ -69,7 +69,7 @@
                iele = sf_grp%item_sf_grp(1,inum)
                isf =  sf_grp%item_sf_grp(2,inum)
                kk2 =    node_on_sf(k2,isf)
-               inod =   ie(iele,kk2)
+               inod =   ele1%ie(iele,kk2)
 !
                vect_sf(inum,1) = d_nod(inod,n1)
                vect_sf(inum,2) = d_nod(inod,n2)
@@ -99,7 +99,6 @@
       integer (kind = kint) :: ist, ied, inum, iele, isf
       integer (kind = kint) :: kk2, inod
       integer (kind = kint) :: n1, n2, n3
-      real(kind = kreal), parameter :: zero = 0.0d0
 !
 !
        n1 = i_tensor + l_sim_t(1,nd)
@@ -112,7 +111,7 @@
         nsf = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if (nsf.gt.0) then
 !
-!$omp parallel do &
+!$omp parallel do                                                       &
 !$omp& private(id_sf,ist,ied,inum,iele,isf,kk2,inod)
           do iproc = 1, np_smp
             id_sf = np_smp*(igrp-1) + iproc
@@ -126,7 +125,7 @@
                 iele = sf_grp%item_sf_grp(1,inum)
                 isf =  sf_grp%item_sf_grp(2,inum)
                 kk2 =    node_on_sf(k2,isf)
-                inod =   ie(iele,kk2)
+                inod =   ele1%ie(iele,kk2)
 !
                 vect_sf(inum,1) =  zero
                 vect_sf(inum,2) =  d_nod(inod,i_tensor  )
@@ -139,7 +138,7 @@
                 iele = sf_grp%item_sf_grp(1,inum)
                 isf =  sf_grp%item_sf_grp(2,inum)
                 kk2 =    node_on_sf(k2,isf)
-                inod =   ie(iele,kk2)
+                inod =   ele1%ie(iele,kk2)
 !
                 vect_sf(inum,1) = -d_nod(inod,i_tensor  )
                 vect_sf(inum,2) =  zero
@@ -154,7 +153,7 @@
                 iele = sf_grp%item_sf_grp(1,inum)
                 isf =  sf_grp%item_sf_grp(2,inum)
                 kk2 =    node_on_sf(k2,isf)
-                inod =   ie(iele,kk2)
+                inod =   ele1%ie(iele,kk2)
 !
                 vect_sf(inum,1) = -d_nod(inod,i_tensor+1)
                 vect_sf(inum,2) = -d_nod(inod,i_tensor+2)

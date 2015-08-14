@@ -61,7 +61,7 @@
 !
       do k1 = 1, ele1%nnod_4_ele
         do iele = iele_fl_start, iele_fl_end
-          inod = ie(iele,k1)
+          inod = ele1%ie(iele,k1)
           in = DJDS_fluid%OLDtoNEW(inod)
           Cmat_DJDS%aiccg(in) = 0.0d0
         end do

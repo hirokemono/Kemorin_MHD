@@ -65,7 +65,8 @@
 !
         istart_smp = (kk-1)*np_smp
 !
-        call scalar_2_element_4_boundary(num_index_ibc,                 &
+        call scalar_2_element_4_boundary                                &
+     &     (ele1%numele, ele1%nnod_4_ele, ele1%ie, num_index_ibc,       &
      &      ele_bc_id, ibc_stack_smp(istart_smp), k2, i_field, phi_e)
 !
 !   'sf' = - \tilde{v}_{i,i} N(x)
@@ -109,7 +110,8 @@
 !
         istart_smp = (kk-1)*np_smp
 !
-        call scalar_2_element_4_boundary(num_index_ibc,                 &
+        call scalar_2_element_4_boundary                                &
+     &     (ele1%numele, ele1%nnod_4_ele, ele1%ie, num_index_ibc,       &
      &      ele_bc_id, ibc_stack_smp(istart_smp), k2, i_field, phi_e)
 !
 !   'sf' = - \tilde{v}_{i,i} N(x)
@@ -158,7 +160,8 @@
 !
             istart_smp = (kk-1)*np_smp
 !
-            call scalar_2_element_4_boundary(nmax_index_ibc,            &
+            call scalar_2_element_4_boundary                            &
+     &         (ele1%numele, ele1%nnod_4_ele, ele1%ie, nmax_index_ibc,  &
      &          ele_bc_id(1,nd), ibc_stack_smp(istart_smp,nd),          &
      &          k2, i_comp, phi_e)
 !
@@ -208,7 +211,8 @@
 !
             istart_smp = (kk-1)*np_smp
 !
-            call scalar_2_element_4_boundary(num_index_ibc,             &
+            call scalar_2_element_4_boundary                            &
+     &         (ele1%numele, ele1%nnod_4_ele, ele1%ie, num_index_ibc,   &
      &          ele_bc_id, ibc_stack_smp(istart_smp),                   &
      &          k2, i_comp, phi_e)
 !

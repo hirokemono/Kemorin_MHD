@@ -78,7 +78,7 @@
 !
       if ( num_idx_ibc.gt. 0 ) then
         call set_bc_ele                                                 &
-     &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,             &
+     &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
      &      num_idx_ibc, ione, ele1%numele, ibc,                        &
      &      ele_bc_id, nod_bc_id, num_t)
       end if
@@ -101,7 +101,8 @@
 !
 !
       if ( num_idx_ibc .gt. 0 ) then
-        call set_bc_ele(node1%numnod, ele1%numele, ele1%nnod_4_ele, ie, &
+        call set_bc_ele                                                 &
+     &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
      &      num_idx_ibc, iele_fl_start, iele_fl_end, ibc,               &
      &      ele_bc_id, nod_bc_id, num_t)
       end if
@@ -123,7 +124,8 @@
       integer (kind= kint), intent(inout) :: nod_bc_id(num_idx_ibc)
 !
       if ( num_idx_ibc.gt. 0 ) then
-        call set_bc_ele(node1%numnod, ele1%numele, ele1%nnod_4_ele, ie, &
+        call set_bc_ele                                                 &
+     &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
      &      num_idx_ibc, iele_cd_start, iele_cd_end, ibc,               &
      &      ele_bc_id, nod_bc_id, num_t)
       end if
@@ -146,7 +148,8 @@
 !
 !
       if ( num_idx_ibc.gt. 0 ) then
-        call set_bc_ele(node1%numnod, ele1%numele, ele1%nnod_4_ele, ie, &
+        call set_bc_ele                                                 &
+     &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
      &      num_idx_ibc, iele_ins_start, iele_ins_end, ibc,             &
      &      ele_bc_id, nod_bc_id, num_t)
       end if

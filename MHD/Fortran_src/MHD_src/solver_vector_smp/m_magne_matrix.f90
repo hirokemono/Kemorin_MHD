@@ -103,7 +103,7 @@
 !
         do k1 = 1, ele1%nnod_4_ele
           do iele = iele_cd_start, iele_cd_end
-            inod = ie(iele,k1)
+            inod = ele1%ie(iele,k1)
             in = DJDS_entire%OLDtoNEW(inod)
             Bmat_DJDS%aiccg(9*in-8) = 0.0d0
             Bmat_DJDS%aiccg(9*in-4) = 0.0d0
@@ -136,7 +136,7 @@
 !
       do k1 = 1, num_t_linear
         do iele = 1, ele1%numele
-          inod = ie(iele,k1)
+          inod = ele1%ie(iele,k1)
           in = DJDS_linear%OLDtoNEW(inod)
           Fmat_DJDS%aiccg(in) = 0.0d0
         end do

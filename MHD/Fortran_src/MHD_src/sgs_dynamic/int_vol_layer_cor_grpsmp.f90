@@ -3,10 +3,12 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine int_vol_layer_cor_grpsmp_l(n_tensor, n_int,          &
+!!      subroutine int_vol_layer_cor_grpsmp_l                           &
+!!     &         (numele, ie, interior_ele, n_tensor, n_int,            &
 !!     &          n_layer_d, n_item_layer_d, layer_stack,               &
 !!     &          istack_item_layer_d_smp, item_layer, ave_s, ave_g)
-!!      subroutine int_vol_layer_cor_grpsmp_q(n_tensor, n_int,          &
+!!      subroutine int_vol_layer_cor_grpsmp_q                           &
+!!     &         (numele, ie, interior_ele, n_tensor, n_int,            &
 !!     &          n_layer_d, n_item_layer_d, layer_stack,               &
 !!     &          istack_item_layer_d_smp, item_layer, ave_s, ave_g)
 !
@@ -16,7 +18,7 @@
 !
       use m_geometry_parameter
       use m_machine_parameter
-      use m_geometry_data
+      use m_geometry_constants
       use m_jacobians
       use m_fem_gauss_int_coefs
       use m_work_layer_correlate
@@ -29,12 +31,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_layer_cor_grpsmp_l(n_tensor, n_int,            &
+      subroutine int_vol_layer_cor_grpsmp_l                             &
+     &         (numele, ie, interior_ele, n_tensor, n_int,              &
      &          n_layer_d, n_item_layer_d, layer_stack,                 &
      &          istack_item_layer_d_smp, item_layer, ave_s, ave_g)
 !
       use m_node_phys_data
       use m_node_phys_address
+!
+      integer (kind = kint), intent(in) :: numele
+      integer (kind = kint), intent(in) :: ie(numele,num_t_linear)
+      integer (kind = kint), intent(in) :: interior_ele(numele)
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
 !
@@ -60,7 +67,7 @@
       sig_w(1:18) = 0.0d0
       cov_w(1:9) =  0.0d0
 !
-!$omp parallel do &
+!$omp parallel do                                                      &
 !$omp& private(ist_num,ied_num,nd,ist,ied,i_s,i_g,i_f,ii,ix,iele0,iele,&
 !$omp&         inum,i1,i2,i3,i4,i5,i6,i7,i8)
       do iproc = 1, np_smp
@@ -101,7 +108,7 @@
      &           + an(6, ix) * ( d_nod(i6, i_s) - ave_s(inum,nd) )**2   &
      &           + an(7, ix) * ( d_nod(i7, i_s) - ave_s(inum,nd) )**2   &
      &           + an(8, ix) * ( d_nod(i8, i_s) - ave_s(inum,nd) )**2 ) &
-     &                   * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &          * dble(interior_ele(iele)) * xjac(iele,ix) * owe3d(ix)
 !
                 sig_l(inum,nd+9) = sig_l(inum,nd+9)                     &
      &              + ( an(1, ix) * ( d_nod(i1, i_f)                    &
@@ -120,7 +127,8 @@
      &                         - d_nod(i7, i_g) - ave_g(inum,nd) )**2   &
      &                + an(8, ix) * ( d_nod(i8, i_f)                    &
      &                         - d_nod(i8, i_g) - ave_g(inum,nd) )**2 ) &
-     &               * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &               * dble(interior_ele(iele))                         &
+     &               * xjac(iele,ix) * owe3d(ix)
 !
                 cov_l(inum,nd) =   cov_l(inum,nd)                       &
      &              + ( an(1 ,ix) * ( d_nod(i1, i_f)                    &
@@ -147,7 +155,8 @@
      &                + an(8 ,ix) * ( d_nod(i8, i_f)                    &
      &                         - d_nod(i8, i_g) - ave_g(inum,nd) )      &
      &                       * ( d_nod(i8, i_s) - ave_s(inum,nd) ) )    &
-     &               * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &               * dble(interior_ele(iele))                         &
+     &               * xjac(iele,ix) * owe3d(ix)
 !
               end do
 !
@@ -179,12 +188,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_layer_cor_grpsmp_q(n_tensor, n_int,            &
+      subroutine int_vol_layer_cor_grpsmp_q                             &
+     &         (numele, ie, interior_ele, n_tensor, n_int,              &
      &          n_layer_d, n_item_layer_d, layer_stack,                 &
      &          istack_item_layer_d_smp, item_layer, ave_s, ave_g)
 !
       use m_node_phys_data
       use m_node_phys_address
+!
+      integer (kind = kint), intent(in) :: numele
+      integer (kind = kint), intent(in) :: ie(numele,num_t_quad)
+      integer (kind = kint), intent(in) :: interior_ele(numele)
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
 !
@@ -212,7 +226,7 @@
       sig_w(1:18) = 0.0d0
       cov_w(1:9) =  0.0d0
 !
-!$omp parallel do &
+!$omp parallel do                                              &
 !$omp& private(ist_num,ied_num,nd,ist,ied,i_s,i_g,i_f,ii,ix,   &
 !$omp&         iele0,iele,inum,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10, &
 !$omp&         i11,i12,i13,i14,i15,i16,i17,i18,i19,i20)
@@ -277,7 +291,7 @@
      &           + aw(18,ix) * ( d_nod(i18,i_s) - ave_s(inum,nd) )**2   &
      &           + aw(19,ix) * ( d_nod(i19,i_s) - ave_s(inum,nd) )**2   &
      &           + aw(20,ix) * ( d_nod(i20,i_s) - ave_s(inum,nd) )**2 ) &
-     &               * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &          * dble(interior_ele(iele)) * xjac(iele,ix) * owe3d(ix)
 !
                 sig_l(inum,nd+9) = sig_l(inum,nd+9)                     &
      &              + ( aw(1, ix) * ( d_nod(i1, i_f)                    &
@@ -320,7 +334,8 @@
      &                         - d_nod(i19,i_g) - ave_g(inum,nd) )**2   &
      &                + aw(20,ix) * ( d_nod(i20,i_f)                    &
      &                         - d_nod(i20,i_g) - ave_g(inum,nd) )**2 ) &
-     &               * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &               * dble(interior_ele(iele))                         &
+     &               * xjac(iele,ix) * owe3d(ix)
 !
                 cov_l(inum,nd  ) = cov_l(inum,nd  )                     &
      &              + ( aw(1 ,ix) * ( d_nod(i1, i_f)                    &
@@ -383,7 +398,8 @@
      &                + aw(20,ix) * ( d_nod(i20,i_f)                    &
      &                         - d_nod(i20,i_g) - ave_g(inum,nd) )      &
      &                       * ( d_nod(i20,i_s) - ave_s(inum,nd) ) )    &
-     &               * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &               * dble(interior_ele(iele))                         &
+     &               * xjac(iele,ix) * owe3d(ix)
 !
               end do
 !

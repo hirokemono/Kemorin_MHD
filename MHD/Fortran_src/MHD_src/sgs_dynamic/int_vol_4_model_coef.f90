@@ -12,7 +12,7 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_geometry_data
+      use m_geometry_constants
       use m_jacobians
       use m_fem_gauss_int_coefs
       use m_ele_info_4_dynamical
@@ -30,7 +30,7 @@
 !
       subroutine int_vol_model_coef(n_tensor, n_int)
 !
-      use m_geometry_constants
+      use m_geometry_data
       use m_layering_ele_list
       use int_vol_model_coef_grpsmp
 !
@@ -44,11 +44,13 @@
      &     .gt. layer_tbl1%min_item_layer_d_smp) then
 !
         if (ele1%nnod_4_ele .eq. num_t_linear) then
-          call int_vol_model_coef_l(n_tensor, n_int,                    &
+          call int_vol_model_coef_l                                     &
+     &       (ele1%numele, ele1%ie, interior_ele, n_tensor, n_int,      &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
         else if (ele1%nnod_4_ele .eq. num_t_quad) then
-          call int_vol_model_coef_q(n_tensor, n_int,                    &
+          call int_vol_model_coef_q                                     &
+     &       (ele1%numele, ele1%ie, interior_ele, n_tensor, n_int,      &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
         end if
@@ -57,12 +59,14 @@
 !
         sgs_l_smp(1:np_smp,1:18) = 0.0d0
         if (ele1%nnod_4_ele .eq. num_t_linear) then
-          call int_vol_model_coef_grpsmp_l(n_tensor, n_int,             &
+          call int_vol_model_coef_grpsmp_l                              &
+     &     (ele1%numele, ele1%ie, interior_ele, n_tensor, n_int,        &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer)
         else if (ele1%nnod_4_ele .eq. num_t_quad) then
-          call int_vol_model_coef_grpsmp_q(n_tensor, n_int,             &
+          call int_vol_model_coef_grpsmp_q                              &
+     &     (ele1%numele, ele1%ie, interior_ele, n_tensor, n_int,        &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer)
@@ -74,11 +78,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_model_coef_l(n_tensor, n_int,                  &
+      subroutine int_vol_model_coef_l                                   &
+     &         (numele, ie, interior_ele, n_tensor, n_int,              &
      &          n_layer_d, n_item_layer_d, layer_stack_smp, item_layer)
 !
       use m_node_phys_address
       use m_node_phys_data
+!
+      integer (kind = kint), intent(in) :: numele
+      integer (kind = kint), intent(in) :: ie(numele,num_t_linear)
+      integer (kind = kint), intent(in) :: interior_ele(numele)
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
 !
@@ -144,7 +153,8 @@
      &                   * ( d_nod(i7, i_f) - d_nod(i7, i_g) )          &
      &                  + an(8, ix) * d_nod(i8, i_s)                    &
      &                   * ( d_nod(i8, i_f) - d_nod(i8, i_g) ) )        &
-     &                   * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &                 * dble(interior_ele(iele))                       &
+     &                 * xjac(iele,ix) * owe3d(ix)
                     sgs_l_smp(iproc,nd+9) = sgs_l_smp(iproc,nd+9)       &
      &                + ( an(1, ix)                                     &
      &                   * ( d_nod(i1, i_f) - d_nod(i1, i_g) )**2       &
@@ -162,7 +172,8 @@
      &                   * ( d_nod(i7, i_f) - d_nod(i7, i_g) )**2       &
      &                  + an(8, ix)                                     &
      &                   * ( d_nod(i8, i_f) - d_nod(i8, i_g) )**2 )     &
-     &                   * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &                 * dble(interior_ele(iele))                       &
+     &                 * xjac(iele,ix) * owe3d(ix)
 !
               end do
 !
@@ -186,11 +197,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_model_coef_q(n_tensor, n_int,                  &
+      subroutine int_vol_model_coef_q                                   &
+     &         (numele, ie, interior_ele, n_tensor, n_int,              &
      &          n_layer_d, n_item_layer_d, layer_stack_smp, item_layer)
 !
       use m_node_phys_address
       use m_node_phys_data
+!
+      integer (kind = kint), intent(in) :: numele
+      integer (kind = kint), intent(in) :: ie(numele,num_t_quad)
+      integer (kind = kint), intent(in) :: interior_ele(numele)
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
 !
@@ -293,7 +309,8 @@
      &                   * ( d_nod(i19,i_f) - d_nod(i19,i_g) )          &
      &                  + aw(20,ix) * d_nod(i20,i_s)                    &
      &                   * ( d_nod(i20,i_f) - d_nod(i20,i_g) ) )        &
-     &                   * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &                   * dble(interior_ele(iele))                     &
+     &                 * xjac(iele,ix) * owe3d(ix)
                   sgs_l_smp(iproc,nd+9) = sgs_l_smp(iproc,nd+9)         &
      &                + ( aw(1, ix)                                     &
      &                   * ( d_nod(i1, i_f) - d_nod(i1, i_g) )**2       &
@@ -335,7 +352,8 @@
      &                   * ( d_nod(i19,i_f) - d_nod(i19,i_g) )**2       &
      &                  + aw(20,ix)                                     &
      &                   * ( d_nod(i20,i_f) - d_nod(i20,i_g) )**2 )     &
-     &                   * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &                   * dble(interior_ele(iele))                     &
+     &                 * xjac(iele,ix) * owe3d(ix)
 !
               end do
 !
