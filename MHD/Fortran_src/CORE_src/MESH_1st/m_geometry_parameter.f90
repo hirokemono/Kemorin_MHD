@@ -28,7 +28,7 @@
 !>     number of node on local PE (include external node)
 !      integer( kind=kint )  ::  numnod
 !>     number of node on local PE
-      integer( kind=kint )  ::  internal_node
+!      integer( kind=kint )  ::  internal_node
 !>     number of element on local PE
 !      integer( kind=kint )  ::  numele
 !>     number of internal element on local PE

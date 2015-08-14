@@ -33,7 +33,6 @@
 !
       node1%numnod =        ele1%numele
       node1%internal_node = ele1%numele
-      internal_node = node1%internal_node
 !
       call allocate_node_geometry
 !
@@ -59,7 +58,7 @@
        call count_number_4_smp( np_smp, ione, node1%numnod,             &
      &     node1%istack_nod_smp, maxnod_4_smp)
 !
-       call count_number_4_smp( np_smp, ione, internal_node,            &
+       call count_number_4_smp( np_smp, ione, node1%internal_node,      &
      &     node1%istack_internal_smp, max_in_nod_4_smp )
 !
       end subroutine s_element_posi_2_nodal_array

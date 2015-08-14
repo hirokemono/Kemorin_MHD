@@ -72,7 +72,6 @@
 !
 !
       node1%internal_node = totalnod
-      internal_node = node1%internal_node
       node1%numnod =  node1%internal_node
       totalele = node1%internal_node - 1
 !      nod_comm%num_neib = 2

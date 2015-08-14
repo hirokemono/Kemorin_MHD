@@ -107,7 +107,6 @@
 !
       node1%numnod =        numnod_dummy
       node1%internal_node = internal_node_dummy
-      internal_node = node1%internal_node
 !
       call allocate_node_geometry
 !
