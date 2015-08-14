@@ -35,6 +35,7 @@
       subroutine set_boundary_velo
 !
       use m_control_parameter
+      use m_geometry_data
       use m_group_data
       use m_surface_group_connect
       use m_node_phys_address
@@ -58,21 +59,22 @@
 !   set rotation boundary
 !
       if (num_bc_v10_nod .gt. 0) then
-       call set_rotation_boundary(num_bc_v10_nod, ibc_v10_id,           &
-     &    bc_v10_id_apt)
+       call set_rotation_boundary(node1%numnod, node1%xx,               &
+     &     num_bc_v10_nod, ibc_v10_id, bc_v10_id_apt)
       end if
 !
 !   boundary condition for special case
 !     ( please write every time!!)
 !
       if (num_bc_vsp_nod .gt. 0) then
-       call set_specific_boundary_velo(num_bc_vsp_nod, ibc_vsp_id,      &
-     &    bc_vsp_id_apt)
+        call set_specific_boundary_velo(node1%numnod, node1%xx,         &
+     &      num_bc_vsp_nod, ibc_vsp_id, bc_vsp_id_apt)
       end if
 !
 !
       if (num_bc_vr0_nod .gt. 0) then
-        call del_radial_velocity(iphys%i_velo)
+        call del_radial_velocity(node1%numnod, node1%xx, a_radius,      &
+     &      iphys%i_velo)
       end if
 !
       end subroutine set_boundary_velo

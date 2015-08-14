@@ -153,7 +153,7 @@
       call allocate_array
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
-      call set_reference_temp
+      call set_reference_temp(node1%numnod, node1%xx, radius, a_radius)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property

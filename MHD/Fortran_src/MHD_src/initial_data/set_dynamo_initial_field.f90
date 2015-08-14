@@ -75,6 +75,7 @@
       use calypso_mpi
       use m_error_IDs
       use m_control_parameter
+      use m_geometry_data
       use m_initial_field_control
       use m_t_step_parameter
       use m_node_phys_address
@@ -110,13 +111,13 @@
         call set_initial_temp(iflag_restart)
 !
       else if (iflag_restart .eq. i_rst_rotate_x) then
-        call set_initial_velo_1
+        call set_initial_velo_1(node1%numnod, node1%xx)
 !
       else if (iflag_restart .eq. i_rst_rotate_y) then
-        call set_initial_velo_2
+        call set_initial_velo_2(node1%numnod, node1%xx)
 !
       else if (iflag_restart .eq. i_rst_rotate_z) then
-        call set_initial_velo_3
+        call set_initial_velo_3(node1%numnod, node1%xx)
 !
 !   for kinematic dynamo
 !

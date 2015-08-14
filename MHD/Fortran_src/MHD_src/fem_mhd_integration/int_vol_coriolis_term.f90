@@ -77,6 +77,7 @@
 !
       subroutine int_buoyancy_nod_exp
 !
+      use m_geometry_data
       use m_node_phys_address
       use set_buoyancy_at_node
 !
@@ -86,22 +87,26 @@
      &     .and. iflag_4_composit_buo .eq. id_FORCE_at_node) then
         call set_double_gravity_2_each_node(iphys%i_temp,               &
      &      iphys%i_light, iphys%i_buoyancy, coef_buo, coef_comp_buo)
-        call int_vol_buoyancy_nod(iphys%i_buoyancy, ml_o_fl, ff_nl)
+        call int_vol_buoyancy_nod(node1%numnod, node1%istack_nod_smp,   &
+     &      iphys%i_buoyancy, ml_o_fl, ff_nl)
 !
       else if (iflag_4_gravity .eq. id_FORCE_at_node) then
         call set_gravity_2_each_node(iphys%i_temp, iphys%i_buoyancy,    &
      &      coef_buo)
-        call int_vol_buoyancy_nod(iphys%i_buoyancy, ml_o_fl, ff_nl)
+        call int_vol_buoyancy_nod(node1%numnod, node1%istack_nod_smp,   &
+     &      iphys%i_buoyancy, ml_o_fl, ff_nl)
 !
       else if (iflag_4_composit_buo .eq. id_FORCE_at_node) then
         call set_gravity_2_each_node(iphys%i_light, iphys%i_comp_buo,   &
      &      coef_comp_buo)
-        call int_vol_buoyancy_nod(iphys%i_comp_buo, ml_o_fl, ff_nl)
+        call int_vol_buoyancy_nod(node1%numnod, node1%istack_nod_smp,   &
+     &      iphys%i_comp_buo, ml_o_fl, ff_nl)
 !
       else if (iflag_4_filter_gravity .eq. id_FORCE_at_node) then
         call set_gravity_2_each_node(iphys%i_filter_temp,               &
      &      iphys%i_filter_buo, coef_buo)
-        call int_vol_buoyancy_nod(iphys%i_filter_buo, ml_o_fl, ff_nl)
+        call int_vol_buoyancy_nod(node1%numnod, node1%istack_nod_smp,   &
+     &      iphys%i_filter_buo, ml_o_fl, ff_nl)
       end if
 !
       end subroutine int_buoyancy_nod_exp
@@ -111,12 +116,14 @@
 !
       subroutine set_boussinesq_density_at_node
 !
+      use m_geometry_data
       use m_node_phys_address
       use set_buoyancy_at_node
 !
 !
-      call set_boussinesq_density_2_node(iphys%i_temp, iphys%i_light,   &
-     &    iphys%i_density, coef_buo, coef_comp_buo)
+      call set_boussinesq_density_2_node(node1%istack_nod_smp,          &
+     &    iphys%i_temp, iphys%i_light, iphys%i_density,                 &
+     &    coef_buo, coef_comp_buo)
 !
       end subroutine set_boussinesq_density_at_node
 !

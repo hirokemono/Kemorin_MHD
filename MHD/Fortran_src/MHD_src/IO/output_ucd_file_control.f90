@@ -126,7 +126,7 @@
       use set_and_cal_udt_data
 !
 !
-      call const_udt_local_nodes(node1%numnod, xx, fem_ucd)
+      call const_udt_local_nodes(node1%numnod, node1%xx, fem_ucd)
       call const_udt_local_connect                                      &
      &   (node1%internal_node, ele1%numele, ele1%nnod_4_ele,            &
      &    ie_org, fem_ucd)

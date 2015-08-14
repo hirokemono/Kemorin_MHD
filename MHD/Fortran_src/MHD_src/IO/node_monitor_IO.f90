@@ -206,7 +206,7 @@
         write(id_monitor_file,'(2i16,1pe25.15e3)',                      &
      &             advance='NO') i_step_MHD, inod, time
         write(id_monitor_file,'(1p3e25.15e3)',                          &
-     &             advance='NO') xx(inod,1:3)
+     &             advance='NO') node1%xx(inod,1:3)
         do i_fld = 1, num_nod_phys
           if(iflag_nod_fld_monitor(i_fld) .gt. 0) then
             ist = istack_nod_component(i_fld-1) + 1

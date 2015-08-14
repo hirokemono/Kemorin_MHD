@@ -24,7 +24,6 @@
       use m_bc_data_list
       use m_bc_data_magne
       use m_geometry_data
-      use m_geometry_parameter
       use m_node_phys_address
       use m_node_phys_data
       use m_schmidt_polynomial
@@ -65,7 +64,8 @@
           i_comp = iphys%i_magne + nd - 1
           ibc_magne(inod,nd) = 1
           ibc2_magne(inod,nd) = 1
-          bc_b_id_apt(l_f(nd),nd) = bmag * xx(inod,1) *a_radius(inod)
+          bc_b_id_apt(l_f(nd),nd) = bmag * node1%xx(inod,1)             &
+     &                                   * a_radius(inod)
           d_nod(inod,i_comp) = bc_b_id_apt(l_f(nd),nd)
         end do
       end do
