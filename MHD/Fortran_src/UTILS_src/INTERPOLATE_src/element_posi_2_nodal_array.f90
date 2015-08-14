@@ -34,15 +34,20 @@
       node1%numnod =        ele1%numele
       node1%internal_node = ele1%numele
 !
+      call allocate_node_geometry_type(node1)
       call allocate_node_geometry
 !
 !$omp parallel do
       do inod = 1, node1%numnod
 !
         inod_global(inod) = iele_global(inod)
-        xx(inod,1) =       x_ele(inod,1)
-        xx(inod,2) =       x_ele(inod,2)
-        xx(inod,3) =       x_ele(inod,3)
+        node1%xx(inod,1) =       x_ele(inod,1)
+        node1%xx(inod,2) =       x_ele(inod,2)
+        node1%xx(inod,3) =       x_ele(inod,3)
+!
+        xx(inod,1) = node1%xx(inod,1)
+        xx(inod,2) = node1%xx(inod,2)
+        xx(inod,3) = node1%xx(inod,3)
 !
         radius(inod) =       r_ele(inod)
         a_radius(inod) =     ar_ele(inod)

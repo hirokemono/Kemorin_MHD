@@ -124,14 +124,18 @@
       node1%numnod =        node_org%numnod
       node1%internal_node = node_org%internal_node
 !
+      call allocate_node_geometry_type(node1)
       call allocate_node_geometry
 !
 !$omp parallel do
       do inod = 1, node1%numnod
         inod_global(inod) = node_org%inod_global(inod)
-        xx(inod,1) = node_org%xx(inod,1)
-        xx(inod,2) = node_org%xx(inod,2)
-        xx(inod,3) = node_org%xx(inod,3)
+        node1%xx(inod,1) = node_org%xx(inod,1)
+        node1%xx(inod,2) = node_org%xx(inod,2)
+        node1%xx(inod,3) = node_org%xx(inod,3)
+        xx(inod,1) = node1%xx(inod,1)
+        xx(inod,2) = node1%xx(inod,2)
+        xx(inod,3) = node1%xx(inod,3)
       end do
 !$omp end parallel do
 !

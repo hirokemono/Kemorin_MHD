@@ -96,7 +96,7 @@
 !
         call set_psf_type_id(node1%numnod,                              &
      &      ele1%numele, ele1%nnod_4_ele, ele1%ie,                      &
-     &      ele_search, mark_elegrp, xx(1,2))
+     &      ele_search, mark_elegrp, xx(1:node1%numnod,2))
 !
         call count_med_grp_patch(ele_grp, igrp, npatch_grp)
         allocate(xyz_med(3,3*npatch_grp+3))

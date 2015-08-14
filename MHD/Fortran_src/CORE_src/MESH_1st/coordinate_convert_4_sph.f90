@@ -48,7 +48,8 @@
         if     (numdir .eq. 6) then
           call overwrite_xyz_tensor_by_sph_smp                          &
      &       (np_smp, node1%numnod, node1%istack_nod_smp,               &
-     &        d_nod(1,i_fld), xx(1,1), xx(1,2), xx(1,3),                &
+     &        d_nod(1,i_fld), xx(1:node1%numnod,1),                     &
+     &        xx(1:node1%numnod,2), xx(1:node1%numnod,3),               &
      &         radius, s_cylinder, a_radius, a_s_cylinder)
         else if(numdir .eq. 3) then
           call overwrite_sph_vect_2_xyz_smp                             &
@@ -77,7 +78,8 @@
         if     (numdir .eq. 6) then
           call overwrite_xyz_tensor_by_cyl_smp                          &
      &       (np_smp, node1%numnod, node1%istack_nod_smp,               &
-     &        d_nod(1,i_fld), xx(1,1), xx(1,2),                         &
+     &        d_nod(1,i_fld),                                           &
+     &        xx(1:node1%numnod,1), xx(1:node1%numnod,2),               &
      &        s_cylinder, a_s_cylinder)
         else if(numdir .eq. 3) then
           call overwrite_cyl_vect_2_xyz_smp                             &
@@ -107,12 +109,14 @@
         if     (numdir .eq. 6) then
           call overwrite_sph_tensor_smp                                 &
      &       (np_smp, node1%numnod, node1%istack_nod_smp,               &
-     &        d_nod(1,i_fld), xx(1,1), xx(1,2), xx(1,3),                &
+     &        d_nod(1,i_fld), xx(1:node1%numnod,1),                     &
+     &        xx(1:node1%numnod,2), xx(1:node1%numnod,3),               &
      &        radius, s_cylinder, a_radius, a_s_cylinder)
         else if(numdir .eq. 3) then
           call overwrite_vector_2_sph_smp                               &
      &       (np_smp, node1%numnod, node1%istack_nod_smp,               &
-     &        d_nod(1,i_fld), xx(1,1), xx(1,2), xx(1,3),                &
+     &        d_nod(1,i_fld), xx(1:node1%numnod,1),                     &
+     &        xx(1:node1%numnod,2), xx(1:node1%numnod,3),               &
      &        radius, s_cylinder, a_radius, a_s_cylinder)
         end if
       end do

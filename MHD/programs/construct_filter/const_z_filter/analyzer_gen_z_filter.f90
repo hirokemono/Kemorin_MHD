@@ -223,7 +223,7 @@
        write(*,*) 'xmom_ht_x', xmom_ht_y
        if(my_rank.eq.0) write(*,*) 'int_edge_commutative_filter'
        call int_edge_commutative_filter(node1%numnod, ele1%numele,      &
-     &     xx(1,3), ie_edge)
+     &     xx(1:node1%numnod,3), ie_edge)
 !       call check_int_commutative_filter(my_rank, node1%numnod)
 !
        if(my_rank.eq.0) write(*,*) 'int_edge_moment'

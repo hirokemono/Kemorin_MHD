@@ -93,7 +93,7 @@
       integer(kind=kint_gl), allocatable, target  :: istack_interele(:)
 !
 !>   position of nodes (i:direction, j:node ID)
-      real(kind=kreal)  , allocatable, target  :: xx(:,:)
+      real(kind=kreal)  , pointer  :: xx(:,:)
 !>   element connectivity ie(i:element ID,j:element index)
 !      integer(kind=kint), pointer  :: ie(:,:)
 !>   element type defined by the first element

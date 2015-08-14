@@ -40,6 +40,7 @@
 !
       call set_numnod_z_commute
 !
+      call allocate_node_geometry_type(node1)
       call allocate_node_geometry
       call allocate_edge_connect
 !
@@ -47,16 +48,18 @@
       call set_global_id_z_commute
 !
       if (iflag_grid .eq. igrid_Chebyshev) then
-        call set_chebyshev_grids
+        call set_chebyshev_grids(node1%numnod, node1%xx)
       else if (iflag_grid .eq. igrid_half_Chebyshev) then
-        call set_half_chebyshev_grids
+        call set_half_chebyshev_grids(node1%numnod, node1%xx)
       else if (iflag_grid.eq.-1) then
-        call set_test_grids
+        call set_test_grids(node1%numnod, node1%xx)
       else if (iflag_grid.eq.-2) then
-        call set_test_grids_2
+        call set_test_grids_2(node1%numnod, node1%xx)
       else
-        call set_liner_grids
+        call set_liner_grids(node1%numnod, node1%xx)
       end if
+!
+      xx(1:node1%numnod,1:3) = node1%xx(1:node1%numnod,1:3)
 !
       nod_comm%num_neib =    0
       nod_comm%ntot_import = 0
@@ -128,13 +131,14 @@
 ! ----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_liner_grids
+      subroutine set_liner_grids(numnod, xx)
 !
-      use m_geometry_data
+      integer (kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(inout) :: xx(numnod,3)
 !
       integer (kind = kint) :: i
 !
-      do i = 1, node1%numnod
+      do i = 1, numnod
         xx(i,3) = zsize * (-0.5d0 + dble(i-1)                           &
      &                   / dble(node1%internal_node-1) )
       end do
@@ -143,17 +147,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_chebyshev_grids
+      subroutine set_chebyshev_grids(numnod, xx)
 !
-      use m_geometry_data
+      integer (kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(inout) :: xx(numnod,3)
 !
       real (kind = kreal) :: pi
-      real (kind = kreal), parameter :: one = 1.0d0, four = 4.0d0
       integer (kind = kint) :: i
 !
       pi = four * atan(one)
 !
-        do i = 1, node1%numnod
+        do i = 1, numnod
           xx(i,3) = -0.5d0 * zsize                                      &
      &         * cos (pi* dble(i - 1) / dble(node1%internal_node-1) )
         end do
@@ -162,17 +166,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_half_chebyshev_grids
+      subroutine set_half_chebyshev_grids(numnod, xx)
 !
-      use m_geometry_data
+      integer (kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(inout) :: xx(numnod,3)
 !
       real (kind = kreal) :: pi
-      real (kind = kreal), parameter :: one = 1.0d0, four = 4.0d0
       integer (kind = kint) :: i
 !
       pi = four * atan(one)
 !
-        do i = 1, node1%numnod
+        do i = 1, numnod
           xx(i,3) = -0.5d0*zsize - zsize                                &
      &         * cos (pi* dble(i-1) / dble(2*(node1%internal_node-1)) )
         end do
@@ -181,14 +185,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_test_grids
+      subroutine set_test_grids(numnod, xx)
 !
-      use m_geometry_data
+      integer (kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(inout) :: xx(numnod,3)
 !
       integer (kind = kint) :: i
 !
 !
-        do i = 1, node1%numnod
+        do i = 1, numnod
           xx(i,3) = 2.0d0 * dble(i-1) - dble(node1%internal_node-1)
         end do
 !
@@ -196,16 +201,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_test_grids_2
+      subroutine set_test_grids_2(numnod, xx)
 !
-      use m_geometry_data
+      integer (kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(inout) :: xx(numnod,3)
 !
       real (kind = kreal) :: pi
       integer (kind = kint) :: i
 !
       pi = four * atan(one)
 !
-        do i = 1, node1%numnod
+        do i = 1, numnod
           xx(i,3) = - dble(node1%internal_node-1)                       &
      &         * cos (pi* dble(i - 1) / dble(node1%internal_node-1) ) 
         end do
