@@ -42,8 +42,8 @@
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'const_surf_hash'
-      call const_surf_hash                                              &
-     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, nnod_4_surf, ie,  &
+      call const_surf_hash(node1%numnod,                                &
+     &   ele1%numele, ele1%nnod_4_ele, nnod_4_surf, ele1%ie,            &
      &    surf_ele_tbl%num_hash, surf_ele_tbl%istack_hash,              &
      &    surf_ele_tbl%iend_hash, surf_ele_tbl%id_hash)
 !
@@ -87,8 +87,8 @@
 !   mark for all surfaces
 !
       if (iflag_debug.eq.1) write(*,*) 'mark_all_surfaces'
-      call mark_all_surfaces                                            &
-     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, nnod_4_surf, ie,  &
+      call mark_all_surfaces(node1%numnod,                              &
+     &    ele1%numele, ele1%nnod_4_ele, nnod_4_surf, ele1%ie,           &
      &    sf_ele_tbl%istack_hash, sf_ele_tbl%iend_hash,                 &
      &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash)
 !
@@ -102,13 +102,13 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_all_surfaces'
       call set_all_surfaces(ele1%numele, numsurf, ele1%nnod_4_ele,      &
-     &    nnod_4_surf, ie, node_on_sf, sf_ele_tbl%id_hash,              &
+     &    nnod_4_surf, ele1%ie, node_on_sf, sf_ele_tbl%id_hash,         &
      &    sf_ele_tbl%iflag_hash, ie_surf, isf_4_ele)
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_surf_rotation_flag'
       call set_surf_rotation_flag                                       &
      &   (ele1%numele, numsurf, ele1%nnod_4_ele,                        &
-     &    nnod_4_surf, ie, ie_surf, isf_4_ele, isf_rot_ele)
+     &    nnod_4_surf, ele1%ie, ie_surf, isf_4_ele, isf_rot_ele)
 !
       end subroutine const_all_surface_data
 !
@@ -124,14 +124,14 @@
 !   mark for all surfaces
 !
       if (iflag_debug.eq.1) write(*,*) 'mark_independent_surface'
-      call mark_independent_surface                                     &
-     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, nnod_4_surf, ie,  &
+      call mark_independent_surface(node1%numnod,                       &
+     &    ele1%numele, ele1%nnod_4_ele, nnod_4_surf, ele1%ie,           &
      &    sf_ele_tbl%istack_hash, sf_ele_tbl%iend_hash,                 &
      &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash)
 !
       if (iflag_debug.eq.1) write(*,*) 'mark_external_surface'
       call mark_external_surface(node1%internal_node, node1%numnod,     &
-     &    ele1%numele, ele1%nnod_4_ele, nnod_4_surf, ie,                &
+     &    ele1%numele, ele1%nnod_4_ele, nnod_4_surf, ele1%ie,           &
      &    sf_ele_tbl%istack_hash, sf_ele_tbl%iend_hash,                 &
      &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash)
 !
@@ -163,8 +163,8 @@
 !   mark independent surface
 !
       if (iflag_debug.eq.1) write(*,*) 'mark_independent_surface'
-      call mark_independent_surface                                     &
-     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, nnod_4_surf, ie,  &
+      call mark_independent_surface(node1%numnod,                       &
+     &   ele1%numele, ele1%nnod_4_ele, nnod_4_surf, ele1%ie,            &
      &    sf_ele_tbl%istack_hash, sf_ele_tbl%iend_hash,                 &
      &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash)
 !

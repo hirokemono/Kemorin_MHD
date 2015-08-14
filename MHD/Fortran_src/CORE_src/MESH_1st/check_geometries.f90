@@ -59,7 +59,8 @@
 !
       write(50+my_rank,*) 'iele, connection'
       do iele = 1, ele1%numele
-        write(50+my_rank,'(28i16)') iele, ie(iele,1:ele1%nnod_4_ele)
+        write(50+my_rank,'(28i16)')                                     &
+     &         iele, ele1%ie(iele,1:ele1%nnod_4_ele)
       end do
 !
       end subroutine check_element_data

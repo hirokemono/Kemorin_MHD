@@ -221,43 +221,43 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine compare_element_type_vs_1st(my_rank, ele)
+      subroutine compare_element_type_vs_1st(my_rank, ele_org)
 !
       use m_geometry_parameter
       use m_geometry_data
       use t_geometry_data
 !
       integer(kind = kint), intent(in)  :: my_rank
-      type(element_data), intent(inout) :: ele
+      type(element_data), intent(inout) :: ele_org
 !
 !
       integer(kind = kint) :: i, k1, iflag
 !
 !
-      if(ele%numele .ne. ele1%numele) write(*,*) 'numele',              &
-     &      my_rank, ele%numele, ele1%numele
-      if(ele%first_ele_type .ne. first_ele_type) write(*,*)             &
-     &       'first_ele_type', my_rank, ele%first_ele_type,             &
+      if(ele_org%numele .ne. ele1%numele) write(*,*) 'numele',          &
+     &      my_rank, ele_org%numele, ele1%numele
+      if(ele_org%first_ele_type .ne. first_ele_type) write(*,*)         &
+     &       'first_ele_type', my_rank, ele_org%first_ele_type,         &
      &       first_ele_type
-      if(ele%nnod_4_ele .ne. ele1%nnod_4_ele) write(*,*) 'nnod_4_ele',  &
-     &      my_rank, ele%nnod_4_ele, ele1%nnod_4_ele
+      if(ele_org%nnod_4_ele .ne. ele1%nnod_4_ele) write(*,*)            &
+     &      'nnod_4_ele', my_rank, ele_org%nnod_4_ele, ele1%nnod_4_ele
 !
       do i = 1, ele1%numele
         iflag = 0
         do k1 = 1, ele1%nnod_4_ele
-          if(ele%ie(i,k1) .ne. ie(i,k1)) iflag = 1
+          if(ele_org%ie(i,k1) .ne. ele1%ie(i,k1)) iflag = 1
         end do
-        if(ele%iele_global(i) .ne. iele_global(i))                      &
+        if(ele_org%iele_global(i) .ne. iele_global(i))                  &
      &       write(*,*) 'iele_global(i)', my_rank, i,                   &
-     &       ele%iele_global(i), iele_global(i)
-        if(ele%elmtyp(i) .ne. elmtyp(i)) write(*,*) 'elmtyp(i)',        &
-     &       my_rank, i, ele%elmtyp(i), elmtyp(i)
-        if(ele%nodelm(i) .ne. nodelm(i)) write(*,*) 'nodelm(i)',        &
-     &       my_rank, i, ele%nodelm(i), nodelm(i)
+     &       ele_org%iele_global(i), iele_global(i)
+        if(ele_org%elmtyp(i) .ne. elmtyp(i)) write(*,*) 'elmtyp(i)',    &
+     &       my_rank, i, ele_org%elmtyp(i), elmtyp(i)
+        if(ele_org%nodelm(i) .ne. nodelm(i)) write(*,*) 'nodelm(i)',    &
+     &       my_rank, i, ele_org%nodelm(i), nodelm(i)
         if(iflag .gt. 0) then
           do k1 = 1, ele1%nnod_4_ele
-            if(ele%nodelm(i) .ne. nodelm(i)) write(*,*) 'ie(i,k)',      &
-     &         my_rank, i, k1, ele%ie(i,k1), ie(i,k1)
+            if(ele_org%nodelm(i) .ne. nodelm(i)) write(*,*) 'ie(i,k)',  &
+     &         my_rank, i, k1, ele_org%ie(i,k1), ele1%ie(i,k1)
           end do
         end if
       end do
