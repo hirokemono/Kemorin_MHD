@@ -6,7 +6,7 @@
 !      subroutine link_single_ele_list_type(surf, edge)
 !
 !      subroutine link_node_data_type(node)
-!      subroutine link_element_data_type(ele)
+!      subroutine link_element_data_type(ele_new)
 !      subroutine link_surface_data_type(surf)
 !      subroutine link_edge_data_type(edge)
 !
@@ -78,27 +78,27 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine link_element_data_type(ele)
+      subroutine link_element_data_type(ele_new)
 !
       use t_geometry_data
       use m_geometry_data
 !
-      type(element_data), intent(inout) :: ele
+      type(element_data), intent(inout) :: ele_new
 !
 !
-      ele%numele = ele1%numele
-      ele%nnod_4_ele = ele1%nnod_4_ele
+      ele_new%numele = ele1%numele
+      ele_new%nnod_4_ele = ele1%nnod_4_ele
 !
-      ele%ie =>           ie
-      ele%interior_ele => interior_ele
-      ele%e_multi =>      e_multi
+      ele_new%ie =>           ele1%ie
+      ele_new%interior_ele => interior_ele
+      ele_new%e_multi =>      e_multi
 !
-      ele%iele_global => iele_global
-      ele%elmtyp => elmtyp
-      ele%nodelm => nodelm
+      ele_new%iele_global => iele_global
+      ele_new%elmtyp => elmtyp
+      ele_new%nodelm => nodelm
 !
-      ele%istack_ele_smp =>  ele1%istack_ele_smp
-      ele%max_ele_smp =     maxele_4_smp
+      ele_new%istack_ele_smp =>  ele1%istack_ele_smp
+      ele_new%max_ele_smp =     maxele_4_smp
 !
       end subroutine link_element_data_type
 !

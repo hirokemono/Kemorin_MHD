@@ -39,7 +39,7 @@
       call allocate_work_next_node(np_smp, node1%numnod)
 !
       call count_nod_4_grp_smp(np_smp, node1%numnod, ele1%numele,       &
-     &    ele1%nnod_4_ele, ie, node1%istack_nod_smp, node1%numnod,      &
+     &    ele1%nnod_4_ele, ele1%ie, node1%istack_nod_smp, node1%numnod, &
      &    ele_4_nod1%ntot, ele_4_nod1%istack_4_node,                    &
      &    ele_4_nod1%iele_4_node, neib_nod1%nnod_next)
 !
@@ -53,7 +53,7 @@
 !
 !
       call set_nod_4_grp_smp                                            &
-     &   (np_smp, node1%numnod, ele1%numele, ele1%nnod_4_ele, ie,       &
+     &   (np_smp, node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,  &
      &    node1%istack_nod_smp, node1%numnod, ele_4_nod1%ntot,          &
      &    ele_4_nod1%istack_4_node, ele_4_nod1%iele_4_node,             &
      &    neib_nod1%ntot, neib_nod1%istack_next,                        &

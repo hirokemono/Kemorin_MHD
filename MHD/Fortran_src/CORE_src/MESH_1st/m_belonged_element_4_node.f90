@@ -67,7 +67,8 @@
       call alloc_numele_belonged(node1%numnod, host_ele)
 !
       call count_belonged_ele_4_node(node1%numnod, ele1%numele,         &
-     &    ele1%nnod_4_ele, ie, ione, ele1%numele, host_ele%nele_4_node)
+     &    ele1%nnod_4_ele, ele1%ie, ione, ele1%numele,                  &
+     &    host_ele%nele_4_node)
       call s_cal_minmax_and_stacks(node1%numnod,                        &
      &    host_ele%nele_4_node, izero, host_ele%istack_4_node,          &
      &    host_ele%ntot, host_ele%nmax, host_ele%nmin)
@@ -76,7 +77,7 @@
       call alloc_iele_belonged(host_ele)
 !
       call set_belonged_ele_4_node(node1%numnod, ele1%numele,           &
-     &    ele1%nnod_4_ele, ie,  ione, ele1%numele,                      &
+     &    ele1%nnod_4_ele, ele1%ie, ione, ele1%numele,                  &
      &    host_ele%ntot, host_ele%istack_4_node, host_ele%nele_4_node,  &
      &    host_ele%iele_4_node, host_ele%iconn_4_node)
 !

@@ -79,7 +79,7 @@
       allocate(ie_4_333(ele1%numele,27) )
 !
       call gen_connect_quad27_from_quad20                               &
-     &   (node1%numnod, ele1%numele, numsurf, ie,                       &
+     &   (node1%numnod, ele1%numele, numsurf, ele1%ie,                  &
      &    isf_4_ele, ie_4_333)
 !
       call set_27quad_2_8x8linear(ele1%numele, ie_4_333,                &
@@ -108,7 +108,7 @@
       call allocate_ele_connect_type(mesh_l%ele)
       call allocate_ele_geometry_type(mesh_l%ele)
 !
-      call set_27quad_2_8x8linear(ele1%numele, ie,                      &
+      call set_27quad_2_8x8linear(ele1%numele, ele1%ie,                 &
      &    mesh_l%node%numnod, mesh_l%ele%ie)
 !
       end subroutine connect_lag_mesh_2_linear_t
@@ -262,7 +262,7 @@
 !
 !
       call set_fields_on_surf(node1%numnod, numsurf, ele1%numele,       &
-     &    ie, ie_surf, nod_fld_l%ntot_phys, mesh_l%node%numnod,         &
+     &    ele1%ie, ie_surf, nod_fld_l%ntot_phys, mesh_l%node%numnod,    &
      &    nod_fld_l%d_fld)
 !
       end subroutine generate_phys_on_surf_t

@@ -101,7 +101,8 @@
 !
       call set_overlap_flag                                             &
      &   (np_smp, ele1%istack_ele_smp, node1%internal_node,             &
-     &    ele1%numele, ie(1:ele1%numele,1), internal_ele, interior_ele)
+     &    ele1%numele, ele1%ie(1:ele1%numele,1), internal_ele,          &
+     &    interior_ele)
 !
       call copy_real_overlap_flag(np_smp, ele1%istack_ele_smp,          &
      &    ele1%numele, interior_ele, e_multi)
