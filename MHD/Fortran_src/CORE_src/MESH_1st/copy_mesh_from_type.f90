@@ -133,9 +133,6 @@
         node1%xx(inod,1) = node_org%xx(inod,1)
         node1%xx(inod,2) = node_org%xx(inod,2)
         node1%xx(inod,3) = node_org%xx(inod,3)
-        xx(inod,1) = node1%xx(inod,1)
-        xx(inod,2) = node1%xx(inod,2)
-        xx(inod,3) = node1%xx(inod,3)
       end do
 !$omp end parallel do
 !

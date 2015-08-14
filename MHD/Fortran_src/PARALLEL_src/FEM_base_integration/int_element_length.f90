@@ -42,21 +42,21 @@
 !
       if      (ele1%nnod_4_ele .eq. num_t_linear) then
         call fem_element_length_linear                                  &
-     &     (node1%numnod, ele1%numele, xx, ele1%ie,                     &
+     &     (node1%numnod, ele1%numele, node1%xx, ele1%ie,               &
      &      ele1%istack_ele_smp, max_int_point, nele_filter,            &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
       else if (ele1%nnod_4_ele .eq. num_t_quad) then
         call fem_element_length_quad                                    &
-     &     (node1%numnod, ele1%numele, xx, ele1%ie,                     &
+     &     (node1%numnod, ele1%numele, node1%xx, ele1%ie,               &
      &      ele1%istack_ele_smp, max_int_point, nele_filter,            &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
       else if (ele1%nnod_4_ele .eq. num_t_lag) then
         call fem_element_length_lag                                     &
-     &     (node1%numnod, ele1%numele, xx, ele1%ie,                     &
+     &     (node1%numnod, ele1%numele, node1%xx, ele1%ie,               &
      &      ele1%istack_ele_smp, max_int_point, nele_filter,            &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &

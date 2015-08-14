@@ -39,15 +39,10 @@
 !
 !$omp parallel do
       do inod = 1, node1%numnod
-!
         inod_global(inod) = iele_global(inod)
         node1%xx(inod,1) =       x_ele(inod,1)
         node1%xx(inod,2) =       x_ele(inod,2)
         node1%xx(inod,3) =       x_ele(inod,3)
-!
-        xx(inod,1) = node1%xx(inod,1)
-        xx(inod,2) = node1%xx(inod,2)
-        xx(inod,3) = node1%xx(inod,3)
 !
         radius(inod) =       r_ele(inod)
         a_radius(inod) =     ar_ele(inod)
@@ -55,7 +50,6 @@
         a_s_cylinder(inod) = as_ele(inod)
         longitude(inod) =    phi_ele(inod)
         colatitude(inod) =   theta_ele(inod)
-!
       end do
 !$omp end parallel do
 !

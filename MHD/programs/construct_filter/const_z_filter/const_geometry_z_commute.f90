@@ -59,8 +59,6 @@
         call set_liner_grids(node1%numnod, node1%xx)
       end if
 !
-      xx(1:node1%numnod,1:3) = node1%xx(1:node1%numnod,1:3)
-!
       nod_comm%num_neib =    0
       nod_comm%ntot_import = 0
       nod_comm%ntot_export = 0

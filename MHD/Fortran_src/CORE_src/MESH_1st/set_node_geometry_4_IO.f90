@@ -117,9 +117,6 @@
         node1%xx(inod,1) = xx_dummy(inod,1)
         node1%xx(inod,2) = xx_dummy(inod,2)
         node1%xx(inod,3) = xx_dummy(inod,3)
-        xx(inod,1) = node1%xx(inod,1)
-        xx(inod,2) = node1%xx(inod,2)
-        xx(inod,3) = node1%xx(inod,3)
       end do
 !$omp end parallel do
 !
@@ -159,7 +156,7 @@
 !        inod_global(inod) = globalnodid_dummy(inod)
         s_cylinder(inod) = xx_dummy(inod,1)
         longitude(inod) =  xx_dummy(inod,2)
-        xx(inod,3) =       xx_dummy(inod,3)
+        node1%xx(inod,3) =       xx_dummy(inod,3)
       end do
 !$omp end parallel do
 !

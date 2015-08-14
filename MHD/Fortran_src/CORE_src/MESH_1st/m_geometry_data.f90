@@ -93,7 +93,7 @@
       integer(kind=kint_gl), allocatable, target  :: istack_interele(:)
 !
 !>   position of nodes (i:direction, j:node ID)
-      real(kind=kreal)  , pointer  :: xx(:,:)
+!      real(kind=kreal)  , pointer  :: xx(:,:)
 !>   element connectivity ie(i:element ID,j:element index)
 !      integer(kind=kint), pointer  :: ie(:,:)
 !>   element type defined by the first element
@@ -347,7 +347,7 @@
 !
 !
       allocate(inod_global(node1%numnod))
-      allocate(xx(node1%numnod,3))
+!      allocate(xx(node1%numnod,3))
 !
       allocate(radius(node1%numnod))
       allocate(a_radius(node1%numnod))
@@ -357,7 +357,7 @@
       allocate(colatitude(node1%numnod))
 !
       inod_global = 0
-      xx = 0.0d00
+!      xx = 0.0d00
 !
       radius = 0.0d00
       a_radius = 0.0d00
@@ -391,7 +391,7 @@
       subroutine deallocate_node_geometry
 !
       deallocate(inod_global)
-      deallocate(xx)
+!      deallocate(xx)
 !
       deallocate(radius)
       deallocate(a_radius)
