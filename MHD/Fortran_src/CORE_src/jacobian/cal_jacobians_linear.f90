@@ -46,7 +46,8 @@
           ix = int_start3(i0) + ii
 !
           call s_cal_jacobian_3d_8(node1%numnod, ele1%numele, np_smp,   &
-     &        ele1%istack_ele_smp, ie, xx, xjac(1,ix), axjac(1,ix),     &
+     &        ele1%istack_ele_smp, ele1%ie, xx,                         &
+     &        xjac(1,ix), axjac(1,ix),                                  &
      &        dnx(1,1,ix,1), dnx(1,1,ix,2), dnx(1,1,ix,3),              &
      &        dxidx_1(1,ix,1,1), dxidx_1(1,ix,2,1), dxidx_1(1,ix,3,1),  &
      &        dxidx_1(1,ix,1,2), dxidx_1(1,ix,2,2), dxidx_1(1,ix,3,2),  &

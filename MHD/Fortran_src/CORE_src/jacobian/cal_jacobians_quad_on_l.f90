@@ -46,7 +46,7 @@
           ix = int_start3(i0) + ii
 !
           call cal_jacobian_3d_8_20(node1%numnod, ele1%numele,          &
-     &        np_smp, ele1%istack_ele_smp, ie, xx, xjac_lq(1,ix),       &
+     &        np_smp, ele1%istack_ele_smp, ele1%ie, xx, xjac_lq(1,ix),  &
      &        axjac_lq(1,ix), dmx(1,1,ix,1), dmx(1,1,ix,2),             &
      &        dmx(1,1,ix,3),  dxidx_lq(1,ix,1,1), dxidx_lq(1,ix,2,1),   &
      &        dxidx_lq(1,ix,3,1), dxidx_lq(1,ix,1,2),                   &
@@ -155,7 +155,7 @@
           ix = int_start2(i0) + ii
 !
           call s_cal_jacobian_sf_grp_4_8                                &
-     &       (node1%numnod, ele1%numele, ie, xx,                        &
+     &       (node1%numnod, ele1%numele, ele1%ie, xx,                   &
      &        sf_grp%num_grp, sf_grp%num_item, sf_grp%item_sf_grp,      &
      &        np_smp, sf_grp%num_grp_smp, sf_grp%istack_grp_smp,        &
      &        jac_sf_grp_ql%xj_sf(1:sf_grp%num_item,ix),                &

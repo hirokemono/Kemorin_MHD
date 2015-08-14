@@ -44,14 +44,14 @@
       use coordinate_converter
 !
       if (ele1%nnod_4_ele .eq. num_t_quad) then
-        call set_quad_ele_position(node1%numnod, ele1%numele, ie, xx,   &
-     &          x_ele)
+        call set_quad_ele_position(node1%numnod, ele1%numele,           &
+     &      ie, xx, x_ele)
       else if (ele1%nnod_4_ele .eq. num_t_linear) then
-        call set_linear_ele_position(node1%numnod, ele1%numele, ie, xx, &
-     &          x_ele)
+        call set_linear_ele_position(node1%numnod, ele1%numele,         &
+     &      ie, xx, x_ele)
       else if (ele1%nnod_4_ele .eq. num_t_lag) then
-        call set_lag_ele_position(node1%numnod, ele1%numele, ie, xx,    &
-     &          x_ele)
+        call set_lag_ele_position(node1%numnod, ele1%numele,            &
+     &      ie, xx, x_ele)
       end if
 !
       call position_2_sph(ele1%numele, x_ele, r_ele, theta_ele,         &

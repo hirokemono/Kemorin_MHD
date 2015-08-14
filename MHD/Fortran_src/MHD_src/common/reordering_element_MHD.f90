@@ -40,7 +40,10 @@
 !
       call reordering_element_connect(ele1%numele, ele1%nnod_4_ele,     &
      &    new2oldele_layer(1), iele_global_org(1), iele_global(1),      &
-     &    ie_org(1,1), ie(1,1) )
+     &    ie_org, ele1%ie)
+      call reordering_element_connect(ele1%numele, ele1%nnod_4_ele,     &
+     &    new2oldele_layer(1), iele_global_org(1), iele_global(1),      &
+     &    ie_org, ie)
 !
       call reordering_element_group(ele1%numele, old2newele_layer(1),   &
      &    ele_grp%num_item, ele_grp%item_grp)
