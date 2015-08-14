@@ -41,7 +41,7 @@
 !
       write(50+my_rank,*) 'inod, position'
       do inod = 1, node1%numnod
-        write(50+my_rank,'(i16,1p3e25.14)') inod, xx(inod,1:3)
+        write(50+my_rank,'(i16,1p3e25.14)') inod, node1%xx(inod,1:3)
       end do
 !
       end subroutine check_node_data

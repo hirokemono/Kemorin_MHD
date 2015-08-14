@@ -29,7 +29,7 @@
       use m_geometry_data
       use coordinate_converter
 !
-       call position_2_sph(node1%numnod, xx, radius, colatitude,        &
+       call position_2_sph(node1%numnod, node1%xx, radius, colatitude,  &
      &       longitude, a_radius, s_cylinder, a_s_cylinder)
 !
       end subroutine set_spherical_position
@@ -45,13 +45,13 @@
 !
       if (ele1%nnod_4_ele .eq. num_t_quad) then
         call set_quad_ele_position(node1%numnod, ele1%numele,           &
-     &      ele1%ie, xx, x_ele)
+     &      ele1%ie, node1%xx, x_ele)
       else if (ele1%nnod_4_ele .eq. num_t_linear) then
         call set_linear_ele_position(node1%numnod, ele1%numele,         &
-     &      ele1%ie, xx, x_ele)
+     &      ele1%ie, node1%xx, x_ele)
       else if (ele1%nnod_4_ele .eq. num_t_lag) then
         call set_lag_ele_position(node1%numnod, ele1%numele,            &
-     &      ele1%ie, xx, x_ele)
+     &      ele1%ie, node1%xx, x_ele)
       end if
 !
       call position_2_sph(ele1%numele, x_ele, r_ele, theta_ele,         &
@@ -72,14 +72,14 @@
       use coordinate_converter
 !
       if (nnod_4_surf .eq. num_quad_sf) then
-        call set_quad_surf_position(node1%numnod, numsurf, ie_surf, xx, &
-     &          x_surf)
+        call set_quad_surf_position(node1%numnod, numsurf,              &
+     &      ie_surf, node1%xx, x_surf)
       else if (nnod_4_surf .eq. num_linear_sf) then
         call set_linear_surf_position(node1%numnod, numsurf,            &
-     &      ie_surf, xx, x_surf)
+     &      ie_surf, node1%xx, x_surf)
       else if (nnod_4_surf .eq. num_lag_sf) then
-        call set_lag_surf_position(node1%numnod, numsurf, ie_surf, xx,  &
-     &          x_surf)
+        call set_lag_surf_position(node1%numnod, numsurf,               &
+     &      ie_surf, node1%xx, x_surf)
       end if
 !
       call position_2_sph(numsurf, x_surf, r_surf, theta_surf,          &
@@ -100,11 +100,11 @@
       use coordinate_converter
 !
       if (nnod_4_edge .eq. num_quad_edge) then
-        call set_quad_edge_position(node1%numnod, numedge, ie_edge, xx, &
-     &          x_edge )
+        call set_quad_edge_position(node1%numnod, numedge,              &
+     &      ie_edge, node1%xx, x_edge)
       else if (nnod_4_edge .eq. num_linear_edge) then
         call set_linear_edge_position(node1%numnod, numedge,            &
-     &      ie_edge, xx, x_edge)
+     &      ie_edge, node1%xx, x_edge)
       end if
 !
       call position_2_sph(numedge, x_edge, r_edge, theta_edge,          &

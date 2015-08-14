@@ -48,7 +48,7 @@
       call allocate_node_geometry_type(mesh_l%node)
 !
       call set_position_on_surf(node1%numnod, numsurf, ele1%numele,     &
-     &    xx, x_ele, x_surf, mesh_l%node%numnod,  mesh_l%node%xx)
+     &    node1%xx, x_ele, x_surf, mesh_l%node%numnod,  mesh_l%node%xx)
 !
       call position_2_sph(mesh_l%node%numnod, mesh_l%node%xx,           &
      &    mesh_l%node%rr, mesh_l%node%theta, mesh_l%node%phi,           &

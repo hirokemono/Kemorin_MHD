@@ -59,7 +59,7 @@
       node%internal_node = node1%internal_node
 !
       node%inod_global => inod_global
-      node%xx =>  xx
+      node%xx =>  node1%xx
 !
       node%rr =>    radius
       node%a_r =>   a_radius

@@ -192,32 +192,33 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine compare_node_type_vs_1st(my_rank, node)
+      subroutine compare_node_type_vs_1st(my_rank, node_org)
 !
       use m_geometry_parameter
       use m_geometry_data
       use t_geometry_data
 !
       integer(kind = kint), intent(in)  :: my_rank
-      type(node_data), intent(in) :: node
+      type(node_data), intent(in) :: node_org
 !
       integer(kind = kint) :: i
       real(kind = kreal) :: err
 !
 !
-      if(node%numnod .ne. node1%numnod) write(*,*) 'numnod',            &
-     &      my_rank, node%numnod, node1%numnod
-      if(node%internal_node .ne. node1%internal_node) write(*,*)        &
-     &      'numnod', my_rank, node%internal_node, node1%internal_node
+      if(node_org%numnod .ne. node1%numnod) write(*,*) 'numnod',        &
+     &      my_rank, node_org%numnod, node1%numnod
+      if(node_org%internal_node .ne. node1%internal_node) write(*,*)    &
+     &      'numnod', my_rank, node_org%internal_node,                  &
+     &      node1%internal_node
       do i = 1, node1%numnod
-        err = sqrt((node%xx(i,1) - xx(i,1))**2                          &
-     &           + (node%xx(i,2) - xx(i,2))**2                          &
-     &           + (node%xx(i,3) - xx(i,3))**2)
-        if(node%inod_global(i) .ne. inod_global(i))                     &
+        err = sqrt((node_org%xx(i,1) - node1%xx(i,1))**2                &
+     &           + (node_org%xx(i,2) - node1%xx(i,2))**2                &
+     &           + (node_org%xx(i,3) - node1%xx(i,3))**2)
+        if(node_org%inod_global(i) .ne. inod_global(i))                 &
      &       write(*,*) 'inod_global(i)', my_rank, i,                   &
-     &       node%inod_global(i), inod_global(i)
+     &       node_org%inod_global(i), inod_global(i)
         if(err .gt. 1d-11) write(*,*) 'xx', my_rank, err, i,            &
-     &       node%xx(i,1:3), xx(i,1:3)
+     &       node_org%xx(i,1:3), node1%xx(i,1:3)
       end do
 !
       end subroutine compare_node_type_vs_1st

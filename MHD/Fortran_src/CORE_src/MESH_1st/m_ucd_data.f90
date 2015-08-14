@@ -73,7 +73,7 @@
       use set_and_cal_udt_data
 !
 !
-      call const_udt_local_nodes(node1%numnod, xx, fem_ucd)
+      call const_udt_local_nodes(node1%numnod, node1%xx, fem_ucd)
       call const_udt_local_connect(node1%internal_node,                 &
      &    ele1%numele, ele1%nnod_4_ele, ele1%ie, fem_ucd)
 !
@@ -89,7 +89,7 @@
 !
 !
       call link_node_data_2_output                                      &
-     &   (node1%numnod, inod_global, xx, fem_ucd)
+     &   (node1%numnod, inod_global, node1%xx, fem_ucd)
       call const_udt_global_connect(node1%internal_node,                &
      &    ele1%numele, ele1%nnod_4_ele, iele_global, ele1%ie, fem_ucd)
 !
@@ -119,7 +119,7 @@
 !
 !
       call link_node_data_2_output                                      &
-     &   (node1%numnod, inod_global, xx, fem_ucd)
+     &   (node1%numnod, inod_global, node1%xx, fem_ucd)
 !
       end subroutine link_fem_node_data_2_ucd_out
 !
