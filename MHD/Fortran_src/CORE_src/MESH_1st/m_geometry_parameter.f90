@@ -10,15 +10,12 @@
 !      subroutine deallocate_inod_in_surf
 !      subroutine deallocate_inod_in_edge
 !
-!      subroutine allocate_geometry_param_smp
 !      subroutine allocate_surf_param_smp
 !      subroutine allocate_edge_param_smp
 !
-!      subroutine deallocate_geometry_param_smp
 !      subroutine deallocate_surf_param_smp
 !      subroutine deallocate_edge_param_smp
 !
-!      subroutine check_size_4_sheard_para(my_rank)
 !      subroutine check_edge_surf_size_4_smp
 !
 !
@@ -77,7 +74,7 @@
 !
 !
 !>     smp stack for element on  local PE
-      integer( kind=kint ), allocatable, target :: iele_smp_stack(:)
+!      integer( kind=kint ), allocatable, target :: iele_smp_stack(:)
 !>     maximum number of smp element on local PE
       integer( kind=kint )  ::  maxele_4_smp = 0
 !
@@ -147,24 +144,6 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-!>    allocate smp stack table for mesh
-       subroutine allocate_geometry_param_smp
-!
-      use m_machine_parameter
-!
-       allocate( iele_smp_stack(0:np_smp))
-!       allocate( inod_smp_stack(0:np_smp))
-!       allocate( inter_smp_stack(0:np_smp))
-!
-!       allocate( iele_4_smp(numele,2))
-!
-       iele_smp_stack = 0
-!       inod_smp_stack = 0
-!
-       end subroutine allocate_geometry_param_smp
-!
-!-----------------------------------------------------------------------
-!
 !>    allocate smp stack table for surface
        subroutine allocate_surf_param_smp
 !
@@ -190,19 +169,6 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-!>    release smp stack table for mesh
-      subroutine deallocate_geometry_param_smp
-!
-      deallocate( iele_smp_stack  )
-!      deallocate( inod_smp_stack  )
-!      deallocate( inter_smp_stack )
-!
-!       deallocate( iele_4_smp(numele,2))
-!
-      end subroutine deallocate_geometry_param_smp
-!
-!-----------------------------------------------------------------------
-!
 !>    release smp stack table for surface
        subroutine deallocate_surf_param_smp
 !
@@ -220,22 +186,6 @@
        end subroutine deallocate_edge_param_smp
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-!>    check smp stack data for mesh
-!!@n   @param my_rank domain (MPI rank) ID
-      subroutine check_size_4_sheard_para(my_rank)
-!
-      use m_machine_parameter
-!
-      integer(kind = kint), intent(in) :: my_rank
-!
-       write(*,*) 'np_smp: ', np_smp
-       write(*,*) 'PE: ', my_rank,                                      &
-     &           'iele_smp_stack ', iele_smp_stack
-!
-      end subroutine check_size_4_sheard_para
-!
 !-----------------------------------------------------------------------
 !
 !>    check smp stack data for surface and edge

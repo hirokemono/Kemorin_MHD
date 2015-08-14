@@ -48,7 +48,6 @@
       call set_nod_and_ele_infos
       if (iflag_debug.gt.0) then
         call check_nod_size_smp_type(node1, my_rank)
-        call check_size_4_sheard_para(my_rank)
       end if
 !
        if (iflag_debug.gt.0) write(*,*) 'set_edge_and_surf_data'
@@ -135,7 +134,8 @@
 !
       call deallocate_surf_param_smp
       call deallocate_edge_param_smp
-      call deallocate_geometry_param_smp
+      call deallocate_node_param_smp_type(node1)
+      call deallocate_ele_param_smp_type(ele1)
       call deallocate_inod_in_surf
       call deallocate_inod_in_edge
 !
@@ -170,7 +170,7 @@
       call deallocate_grp_type(nod_grp1)
 !
       call deallocate_node_param_smp_type(node1)
-      call deallocate_geometry_param_smp
+      call deallocate_ele_param_smp_type(ele1)
       call deallocate_inod_in_surf
       call deallocate_inod_in_edge
 !

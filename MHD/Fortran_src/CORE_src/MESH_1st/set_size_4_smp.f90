@@ -58,9 +58,6 @@
       call count_number_4_smp( np_smp, ione, ele1%numele,              &
      &    ele1%istack_ele_smp, maxele_4_smp )
 !
-      call allocate_geometry_param_smp
-      iele_smp_stack = ele1%istack_ele_smp
-!
       end subroutine count_size_4_sheard_para
 !
 !-----------------------------------------------------------------------
