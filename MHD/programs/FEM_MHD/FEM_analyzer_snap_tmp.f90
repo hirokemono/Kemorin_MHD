@@ -196,8 +196,8 @@
       call overwrite_sph_tensor_smp                                     &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,iphys%i_SGS_m_flux),                                  &
-     &    xx(1:node1%numnod,1), xx(1:node1%numnod,2),                   &
-     &    xx(1:node1%numnod,3), radius, s_cylinder,                     &
+     &    node1%xx(1:node1%numnod,1), node1%xx(1:node1%numnod,2),       &
+     &    node1%xx(1:node1%numnod,3), radius, s_cylinder,               &
      &    a_radius, a_s_cylinder)
 !$omp end parallel
 !
@@ -214,8 +214,8 @@
       call overwrite_xyz_tensor_by_sph_smp                              &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,iphys%i_SGS_m_flux),                                  &
-     &    xx(1:node1%numnod,1), xx(1:node1%numnod,2),                   &
-     &    xx(1:node1%numnod,3), radius, s_cylinder,                     &
+     &    node1%xx(1:node1%numnod,1), node1%xx(1:node1%numnod,2),       &
+     &    node1%xx(1:node1%numnod,3), radius, s_cylinder,               &
      &    a_radius, a_s_cylinder)
 !$omp end parallel
 !
@@ -233,8 +233,8 @@
 !
       call overwrite_vector_2_sph_smp                                   &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,iphys%i_velo), xx(1:node1%numnod,1),                  &
-     &    xx(1:node1%numnod,2), xx(1:node1%numnod,3),                   &
+     &    d_nod(1,iphys%i_velo), node1%xx(1:node1%numnod,1),            &
+     &    node1%xx(1:node1%numnod,2), node1%xx(1:node1%numnod,3),       &
      &    radius, s_cylinder,  a_radius, a_s_cylinder)
 !$omp end parallel
 

@@ -97,7 +97,8 @@
 !
         do inod = 1, node1%internal_node
           write(id_filter_z,'(i16,1p4E25.15e3)') inod_global(inod),     &
-     &      xx(inod,3), delta_z(inod), delta_dz(inod), d2_dz(inod)
+     &      node1%xx(inod,3), delta_z(inod), delta_dz(inod),            &
+     &      d2_dz(inod)
         end do
 !
         write(id_filter_z,*)                                            &

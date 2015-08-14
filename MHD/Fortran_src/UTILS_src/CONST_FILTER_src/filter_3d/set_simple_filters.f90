@@ -5,7 +5,7 @@
 !
 !!      subroutine set_tophat_filter_4_each_nod
 !!      subroutine set_linear_filter_4_each_nod
-!!      subroutine set_gaussian_filter_each_nod(inod, nnod,             &
+!!      subroutine set_gaussian_filter_each_nod(numnod, xx, inod, nnod, &
 !!     &          dxidx_nod, dxidy_nod, dxidz_nod,                      &
 !!     &          deidx_nod, deidy_nod, deidz_nod,                      &
 !!     &          dzidx_nod, dzidy_nod, dzidz_nod)
@@ -57,15 +57,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_gaussian_filter_each_nod(inod, nnod,               &
+      subroutine set_gaussian_filter_each_nod(numnod, xx, inod, nnod,   &
      &          dxidx_nod, dxidy_nod, dxidz_nod,                        &
      &          deidx_nod, deidy_nod, deidz_nod,                        &
      &          dzidx_nod, dzidy_nod, dzidz_nod)
 !
-      use m_geometry_data
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
       use m_matrix_4_filter
+!
+      integer(kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: inod, nnod
       real(kind=kreal), intent(in) :: dxidx_nod(nnod)

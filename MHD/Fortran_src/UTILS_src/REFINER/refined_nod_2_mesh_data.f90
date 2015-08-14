@@ -41,9 +41,9 @@
         new_node%inod_global(inod) = inod
       end do
 !
-      new_node%xx(1:node1%numnod,1) = xx(1:node1%numnod,1)
-      new_node%xx(1:node1%numnod,2) = xx(1:node1%numnod,2)
-      new_node%xx(1:node1%numnod,3) = xx(1:node1%numnod,3)
+      new_node%xx(1:node1%numnod,1) = node1%xx(1:node1%numnod,1)
+      new_node%xx(1:node1%numnod,2) = node1%xx(1:node1%numnod,2)
+      new_node%xx(1:node1%numnod,3) = node1%xx(1:node1%numnod,3)
 !
       icou = ntot_nod_refine_nod
       do inod = 1, ntot_nod_refine_edge

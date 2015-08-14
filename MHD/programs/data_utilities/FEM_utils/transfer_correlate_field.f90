@@ -153,14 +153,14 @@
         if     (ncomp .eq. n_vector) then
           call overwrite_vector_2_sph_smp                               &
      &       (np_smp, node1%numnod, node1%istack_nod_smp,               &
-     &        d_nod(1,ist), xx(1:node1%numnod,1),                       &
-     &        xx(1:node1%numnod,2), xx(1:node1%numnod,3),               &
+     &        d_nod(1,ist), node1%xx(1:node1%numnod,1),                 &
+     &        node1%xx(1:node1%numnod,2), node1%xx(1:node1%numnod,3),   &
      &        radius, s_cylinder, a_radius, a_s_cylinder)
         else if(ncomp .eq. n_sym_tensor) then
           call overwrite_sph_tensor_smp                                 &
      &       (np_smp, node1%numnod, node1%istack_nod_smp,               &
-     &        d_nod(1,ist), xx(1:node1%numnod,1),                       &
-     &        xx(1:node1%numnod,2), xx(1:node1%numnod,3),               &
+     &        d_nod(1,ist), node1%xx(1:node1%numnod,1),                 &
+     &        node1%xx(1:node1%numnod,2), node1%xx(1:node1%numnod,3),   &
      &        radius, s_cylinder, a_radius, a_s_cylinder)
         end if
 !$omp end parallel
@@ -191,12 +191,12 @@
         if     (ncomp .eq. n_vector) then
           call overwrite_vector_2_cyl_smp                               &
      &       (np_smp, node1%numnod, node1%istack_nod_smp, d_nod(1,ist), &
-     &        xx(1:node1%numnod,1), xx(1:node1%numnod,2),               &
+     &        node1%xx(1:node1%numnod,1), node1%xx(1:node1%numnod,2),   &
      &        s_cylinder, a_s_cylinder)
        else if(ncomp .eq. n_sym_tensor) then
           call overwrite_cyl_tensor_smp                                 &
      &       (np_smp, node1%numnod, node1%istack_nod_smp, d_nod(1,ist), &
-     &        xx(1:node1%numnod,1), xx(1:node1%numnod,2),               &
+     &        node1%xx(1:node1%numnod,1), node1%xx(1:node1%numnod,2),   &
      &        s_cylinder, a_s_cylinder)
         end if
 !$omp end parallel

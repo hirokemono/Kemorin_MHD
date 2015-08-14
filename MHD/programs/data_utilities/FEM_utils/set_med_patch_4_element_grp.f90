@@ -96,7 +96,7 @@
 !
         call set_psf_type_id(node1%numnod,                              &
      &      ele1%numele, ele1%nnod_4_ele, ele1%ie,                      &
-     &      ele_search, mark_elegrp, xx(1:node1%numnod,2))
+     &      ele_search, mark_elegrp, node1%xx(1:node1%numnod,2))
 !
         call count_med_grp_patch(ele_grp, igrp, npatch_grp)
         allocate(xyz_med(3,3*npatch_grp+3))
@@ -142,9 +142,9 @@
       do inum = ist, ied
         iele = ele_grp%item_grp(inum)
         ie_1ele(1:8) = ele1%ie(iele,1:8)
-        xx_1ele(1,1:8) = xx(ie_1ele(1:8),1)
-        xx_1ele(2,1:8) = xx(ie_1ele(1:8),2)
-        xx_1ele(3,1:8) = xx(ie_1ele(1:8),3)
+        xx_1ele(1,1:8) = node1%xx(ie_1ele(1:8),1)
+        xx_1ele(2,1:8) = node1%xx(ie_1ele(1:8),2)
+        xx_1ele(3,1:8) = node1%xx(ie_1ele(1:8),3)
 !
         mark = mark_elegrp(inum) * int(e_multi(iele))
         n_patch = psf_case_tbl(mark)%npatch
@@ -187,9 +187,9 @@
       do inum = ist, ied
         iele = ele_grp%item_grp(inum)
         ie_1ele(1:8) =   ele1%ie(iele,1:8)
-        xx_1ele(1,1:8) = xx(ie_1ele(1:8),1)
-        xx_1ele(2,1:8) = xx(ie_1ele(1:8),2)
-        xx_1ele(3,1:8) = xx(ie_1ele(1:8),3)
+        xx_1ele(1,1:8) = node1%xx(ie_1ele(1:8),1)
+        xx_1ele(2,1:8) = node1%xx(ie_1ele(1:8),2)
+        xx_1ele(3,1:8) = node1%xx(ie_1ele(1:8),3)
 !
         mark = mark_elegrp(inum) * int(e_multi(iele))
         n_patch = psf_case_tbl(mark)%npatch

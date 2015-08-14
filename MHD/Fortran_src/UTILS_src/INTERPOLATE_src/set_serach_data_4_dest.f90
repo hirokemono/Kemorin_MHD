@@ -34,7 +34,8 @@
 !
 !
       call set_all_block_points_4_itp                                   &
-     &   (num_sph_grid, node1%numnod, xx, nprocs_2nd, origin_mesh)
+     &   (num_sph_grid, node1%numnod, node1%xx,                         &
+     &   nprocs_2nd, origin_mesh)
 !      call check_block_points_4_itp(50+my_rank, nprocs_2nd)
 !
 !  -------------------------------

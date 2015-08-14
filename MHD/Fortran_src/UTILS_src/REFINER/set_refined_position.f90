@@ -50,14 +50,14 @@
       else if (iflag_interpolate_type .eq. 2) then
 !
         call cal_xyz_on_edge_4_refine                                   &
-     &     (node1%numnod, numedge, ie_edge, xx)
+     &     (node1%numnod, numedge, ie_edge, node1%xx)
         call cal_xyz_on_surf_4_refine                                   &
-     &     (node1%numnod, numsurf, ie_surf, xx)
+     &     (node1%numnod, numsurf, ie_surf, node1%xx)
         call cal_xyz_on_ele_4_refine                                    &
-     &     (node1%numnod, ele1%numele, ele1%ie, xx)
+     &     (node1%numnod, ele1%numele, ele1%ie, node1%xx)
 !
         call cal_r_on_edge_4_refine                                     &
-     &     (node1%numnod, numedge, ie_edge, xx, radius)
+     &     (node1%numnod, numedge, ie_edge, node1%xx, radius)
         call cal_r_on_surf_4_refine                                     &
      &     (node1%numnod, numsurf, ie_surf, radius)
         call cal_r_on_ele_4_refine                                      &
@@ -70,11 +70,11 @@
       else
 !
         call cal_xyz_on_edge_4_refine                                   &
-     &     (node1%numnod, numedge, ie_edge, xx)
+     &     (node1%numnod, numedge, ie_edge, node1%xx)
         call cal_xyz_on_surf_4_refine                                   &
-     &     (node1%numnod, numsurf, ie_surf, xx)
+     &     (node1%numnod, numsurf, ie_surf, node1%xx)
         call cal_xyz_on_ele_4_refine                                    &
-     &     (node1%numnod, ele1%numele, ele1%ie, xx)
+     &     (node1%numnod, ele1%numele, ele1%ie, node1%xx)
 !
       end if
 !

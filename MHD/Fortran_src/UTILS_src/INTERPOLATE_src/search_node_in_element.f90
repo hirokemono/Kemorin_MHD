@@ -64,12 +64,12 @@
             do jnum = jst, jed
               jele = org_blk%ele_list_by_rng%item_grp(jnum)
 !
-              if (   xx(inod,1) .ge. org_blk%xele_min(jele,1)           &
-     &         .and. xx(inod,1) .le. org_blk%xele_max(jele,1)           &
-     &         .and. xx(inod,2) .ge. org_blk%xele_min(jele,2)           &
-     &         .and. xx(inod,2) .le. org_blk%xele_max(jele,2)           &
-     &         .and. xx(inod,3) .ge. org_blk%xele_min(jele,3)           &
-     &         .and. xx(inod,3) .le. org_blk%xele_max(jele,3)           &
+              if (   node1%xx(inod,1) .ge. org_blk%xele_min(jele,1)     &
+     &         .and. node1%xx(inod,1) .le. org_blk%xele_max(jele,1)     &
+     &         .and. node1%xx(inod,2) .ge. org_blk%xele_min(jele,2)     &
+     &         .and. node1%xx(inod,2) .le. org_blk%xele_max(jele,2)     &
+     &         .and. node1%xx(inod,3) .ge. org_blk%xele_min(jele,3)     &
+     &         .and. node1%xx(inod,3) .le. org_blk%xele_max(jele,3)     &
      &              ) then
 !
                  call s_cal_interpolate_coefs                           &

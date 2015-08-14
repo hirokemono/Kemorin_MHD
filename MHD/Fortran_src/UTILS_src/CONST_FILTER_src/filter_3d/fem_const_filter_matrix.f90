@@ -10,8 +10,8 @@
 !
 !      subroutine set_idx_list_4_filter_mat(nele_grp, iele_grp,         &
 !     &          nnod_mat_tbl, inod_mat_tbl)
-!      subroutine fem_sk_filter_moments(nele_grp, iele_grp,             &
-!     &          inod, ix, k_order)
+!      subroutine fem_sk_filter_moments(numnod, nnod_4_ele, xx,         &
+!     &          nele_grp, iele_grp, inod, ix, k_order)
 !      subroutine sum_sk_2_filter_mat(nele_grp, k_order)
 !
       module fem_const_filter_matrix
@@ -143,13 +143,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_sk_filter_moments(nele_grp, iele_grp,              &
-     &          inod, ix, k_order)
+      subroutine fem_sk_filter_moments(numnod, nnod_4_ele, xx,          &
+     &          nele_grp, iele_grp, inod, ix, k_order)
 !
-      use m_geometry_data
       use m_reference_moments
       use m_jacobians
       use m_fem_gauss_int_coefs
+!
+      integer(kind = kint), intent(in) :: numnod, nnod_4_ele
+      real(kind = kreal), intent(in) :: xx(numnod, 3)
+
 !
       integer(kind = kint), intent(in) :: nele_grp
       integer(kind = kint), intent(in) :: iele_grp(nele_grp)
@@ -163,7 +166,7 @@
       do inum = 1, nele_grp
         iele = iele_grp(inum)
 !
-        do k1 = 1, ele1%nnod_4_ele
+        do k1 = 1, nnod_4_ele
           sk_filter(inum,k1)                                            &
      &     =  ( xx_int(inum,1) - xx(inod,1) )**iorder_mom_3d(k_order,1) &
      &      * ( xx_int(inum,2) - xx(inod,2) )**iorder_mom_3d(k_order,2) &

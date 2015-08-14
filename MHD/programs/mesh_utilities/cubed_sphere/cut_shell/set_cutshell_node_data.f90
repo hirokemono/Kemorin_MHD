@@ -108,7 +108,7 @@
 !
       new_node%numnod = 0
       do inod = 1, node1%numnod
-        if (xx(inod,3) .gt. -1.0d-11) then
+        if (node1%xx(inod,3) .gt. -1.0d-11) then
           new_node%numnod = new_node%numnod + 1
          end if
       end do
@@ -125,8 +125,9 @@
 !
       new_node%numnod = 0
       do inod = 1, node1%numnod
-        if (  xx(inod,1) .lt. 1.0d-11 .or. xx(inod,2) .lt. 1.0d-11      &
-     &   .or. xx(inod,3) .lt. 1.0d-11  ) then
+        if (  node1%xx(inod,1) .lt. 1.0d-11                             &
+     &   .or. node1%xx(inod,2) .lt. 1.0d-11                             &
+     &   .or. node1%xx(inod,3) .lt. 1.0d-11  ) then
           new_node%numnod = new_node%numnod + 1
         end if
       end do
@@ -161,7 +162,7 @@
       new_node%numnod = 0
       do inod = 1, node1%numnod
         if ( radius(inod) .ge. r_ICB .and. radius(inod).le. r_CMB       &
-     &    .and. xx(inod,3) .gt. -1.0d-11) then
+     &    .and. node1%xx(inod,3) .gt. -1.0d-11) then
           new_node%numnod = new_node%numnod + 1
         end if
       end do
@@ -180,10 +181,10 @@
       icou = 0
       do inod = 1, node1%numnod
 !
-        if ( xx(inod,3) .gt. -1.0d-11 ) then
+        if ( node1%xx(inod,3) .gt. -1.0d-11 ) then
           icou = icou + 1
           new_node%inod_global(icou) = icou
-          new_node%xx(icou,1:3) = xx(inod,1:3)
+          new_node%xx(icou,1:3) = node1%xx(inod,1:3)
 !
           mark_new_node(inod) = icou
         end if
@@ -202,11 +203,12 @@
       icou = 0
       do inod = 1, node1%numnod
 !
-        if (  xx(inod,1) .lt. 1.0d-11 .or. xx(inod,2) .lt. 1.0d-11      &
-     &   .or. xx(inod,3) .lt. 1.0d-11  ) then
+        if (  node1%xx(inod,1) .lt. 1.0d-11                             &
+     &   .or. node1%xx(inod,2) .lt. 1.0d-11                             &
+     &   .or. node1%xx(inod,3) .lt. 1.0d-11  ) then
           icou = icou + 1
           new_node%inod_global(icou) = icou
-          new_node%xx(icou,1:3) = xx(inod,1:3)
+          new_node%xx(icou,1:3) = node1%xx(inod,1:3)
 !
           mark_new_node(inod) = icou
         end if
@@ -228,7 +230,7 @@
         if ( radius(inod) .ge. r_ICB .and. radius(inod).le. r_CMB) then
           icou = icou + 1
           new_node%inod_global(icou) = icou
-          new_node%xx(icou,1:3) = xx(inod,1:3)
+          new_node%xx(icou,1:3) = node1%xx(inod,1:3)
 !
           mark_new_node(inod) = icou
         end if
@@ -248,10 +250,10 @@
       do inod = 1, node1%numnod
 !
         if ( radius(inod) .ge. r_ICB .and. radius(inod).le. r_CMB       &
-     &    .and. xx(inod,3) .gt. -1.0d-11) then
+     &    .and. node1%xx(inod,3) .gt. -1.0d-11) then
           icou = icou + 1
           new_node%inod_global(icou) = icou
-          new_node%xx(icou,1:3) = xx(inod,1:3)
+          new_node%xx(icou,1:3) = node1%xx(inod,1:3)
 !
           mark_new_node(inod) = icou
         end if

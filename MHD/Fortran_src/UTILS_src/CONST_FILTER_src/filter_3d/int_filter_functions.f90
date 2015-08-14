@@ -26,6 +26,7 @@
      &          nele_grp, iele_grp, nnod_mat_tbl, inod_mat_tbl,         &
      &          nnod_filter_mat)
 !
+      use m_geometry_data
       use m_jacobians
       use m_fem_gauss_int_coefs
       use m_matrix_4_filter
@@ -55,8 +56,9 @@
 !
         do k_order = 1, nnod_filter_mat
 !
-          call fem_sk_filter_moments(nele_grp, iele_grp,                &
-     &        inod, ix, k_order)
+          call fem_sk_filter_moments                                    &
+     &       (node1%numnod, ele1%nnod_4_ele, node1%xx,                  &
+     &        nele_grp, iele_grp, inod, ix, k_order)
 !
           call sum_sk_2_filter_mat(nele_grp, k_order)
 !

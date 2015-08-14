@@ -43,7 +43,7 @@
       do inum = 1, numnod_4_subdomain(ip)
         inod = inod_4_subdomain(inum+ist)
         new_node%inod_global(inum) = inod
-        new_node%xx(inum,1:3) = xx(inod,1:3)
+        new_node%xx(inum,1:3) = node1%xx(inod,1:3)
 !
         inod_local_part(inod)= inum
       end do

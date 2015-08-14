@@ -51,7 +51,7 @@
 !C +-----+
 !C===
       if (NTYP_div .eq. iPART_RCB_XYZ) then
-        call rc_bisection(node1%numnod, node1%internal_node, xx)
+        call rc_bisection(node1%numnod, node1%internal_node, node1%xx)
 !C===
 !C===
 !C
@@ -71,7 +71,8 @@
 !C===
 !
       else if (NTYP_div .eq. iPART_EQ_XYZ) then
-        call equaly_bisection(node1%numnod, node1%internal_node, xx)
+        call equaly_bisection                                           &
+     &     (node1%numnod, node1%internal_node, node1%xx)
 !
       else if (NTYP_div .eq. iPART_EQ_SPH) then
         call eb_spherical(node1%numnod, node1%internal_node,            &
@@ -91,7 +92,7 @@
 !C===
       else if (NTYP_div .eq. iPART_CUBED_SPHERE) then
         call divide_by_sphere_coord(num_domain, node1%numnod,           &
-     &      ele1%nnod_4_ele, xx, radius, colatitude, longitude,         &
+     &      ele1%nnod_4_ele, node1%xx, radius, colatitude, longitude,   &
      &      nod_grp%num_grp, nod_grp%num_item, nod_grp%istack_grp,      &
      &      nod_grp%item_grp, nod_grp%grp_name)
 !C

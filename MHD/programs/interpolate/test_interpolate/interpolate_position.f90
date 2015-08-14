@@ -50,9 +50,9 @@
 !
 !
       do inod = 1, node1%numnod
-        x_vec(3*inod-2) = xx(inod,1)
-        x_vec(3*inod-1) = xx(inod,2)
-        x_vec(3*inod  ) = xx(inod,3)
+        x_vec(3*inod-2) = node1%xx(inod,1)
+        x_vec(3*inod-1) = node1%xx(inod,2)
+        x_vec(3*inod  ) = node1%xx(inod,3)
       end do
 !
       call interpolate_mod_3(comm_dest, node1%numnod, NP_dest,          &
@@ -93,9 +93,9 @@
 !
 !
       do inod = 1, node1%numnod
-        x_vec(3*inod-2) = xx(inod,1)
-        x_vec(3*inod-1) = xx(inod,2)
-        x_vec(3*inod  ) = xx(inod,3)
+        x_vec(3*inod-2) = node1%xx(inod,1)
+        x_vec(3*inod-1) = node1%xx(inod,2)
+        x_vec(3*inod  ) = node1%xx(inod,3)
       end do
 !
       call interpolate_mod_N(comm_dest, node1%numnod, NP_dest, ithree,  &
@@ -141,7 +141,7 @@
 !
       do nd = 1, 3
         do inod = 1, node1%numnod
-          x_vec(inod  ) = xx(inod,nd)
+          x_vec(inod  ) = node1%xx(inod,nd)
         end do
 !
         call interpolate_mod_1(comm_dest, node1%numnod, NP_dest,        &

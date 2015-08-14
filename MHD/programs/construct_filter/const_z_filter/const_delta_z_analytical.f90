@@ -133,7 +133,7 @@
 !
       nz = node1%internal_node
         do i = 1, node1%numnod
-          xx(i,3) = -0.5d0*zsize - zsize                                &
+          node1%xx(i,3) = -0.5d0*zsize - zsize                          &
      &         * cos (pi* dble(i - 1) / dble(2*(nz-1)) )
         end do
         do i = 1, node1%numnod
@@ -153,7 +153,7 @@
         do i = 1, ele1%numele
           inod1 = ie_edge(i,1)
           inod2 = ie_edge(i,2)
-          delta_z_e(i) =  xx(inod2,3) - xx(inod1,3)
+          delta_z_e(i) =  node1%xx(inod2,3) - node1%xx(inod1,3)
           delta_dz_e(i) = ( delta_z(inod2) - delta_z(inod1) )           &
      &                   / ( two*delta_z_e(i) )
           d2_dz_e(i) =   ( delta_dz(inod2) - delta_dz(inod1) )          &
@@ -194,7 +194,7 @@
 !
       nz = node1%internal_node
         do i = 1, node1%numnod
-          xx(i,3) = - dble(nz-1)                                        &
+          node1%xx(i,3) = - dble(nz-1)                                  &
      &         * cos (pi* dble(i - 1) / dble(nz-1) ) 
         end do
         do i = 1, node1%numnod
@@ -209,7 +209,7 @@
         do i = 1, ele1%numele
           inod1 = ie_edge(i,1)
           inod2 = ie_edge(i,2)
-          delta_z_e(i) =  xx(inod2,3) - xx(inod1,3)
+          delta_z_e(i) =  node1%xx(inod2,3) - node1%xx(inod1,3)
           delta_dz_e(i) = ( delta_z(inod2) - delta_z(inod1) )           &
      &                   / ( two*delta_z_e(i) )
           d2_dz_e(i) =   ( delta_dz(inod2) - delta_dz(inod1) )          &

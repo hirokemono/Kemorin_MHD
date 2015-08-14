@@ -34,8 +34,8 @@
           inod2 = ie_edge(i,2)
           jnod1 = ie_edge(i,1)
           jnod2 = ie_edge(i,2)
-          dz0 =   xx(inod2,3) - xx(inod1,3)
-          dzeta = xx(jnod2,3) - xx(jnod1,3)
+          dz0 =   node1%xx(inod2,3) - node1%xx(inod1,3)
+          dzeta = node1%xx(jnod2,3) - node1%xx(jnod1,3)
           alpha(i,0,1) = dz0/dzeta - 1
           alpha(i,0,2) = alpha(i,1,1)
 !
@@ -43,7 +43,7 @@
             jele = ineib_ele(i,j,1)
             jnod1 = ie_edge(jele,1)
             jnod2 = ie_edge(jele,2)
-            dzeta = xx(jnod2,3) - xx(jnod1,3)
+            dzeta = node1%xx(jnod2,3) - node1%xx(jnod1,3)
             alpha(i,j,1) = dz0/dzeta - 1
           end do
 !
@@ -51,7 +51,7 @@
             jele = ineib_ele(i,j,2)
             jnod1 = ie_edge(jele,1)
             jnod2 = ie_edge(jele,2)
-            dzeta = xx(jnod2,3) - xx(jnod1,3)
+            dzeta = node1%xx(jnod2,3) - node1%xx(jnod1,3)
             alpha(i,j,2) = dz0/dzeta - 1
           end do
         end do

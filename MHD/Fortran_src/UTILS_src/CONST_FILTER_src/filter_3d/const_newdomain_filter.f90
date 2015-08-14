@@ -53,7 +53,9 @@
 !
         call read_original_filter_coefs(ifile_type, my_rank)
 !
-        call nod_marking_by_filtering_data(ip2)
+        call nod_marking_by_filtering_data                              &
+     &     (node1%numnod, node1%internal_node, inod_global,             &
+     &      node1%xx, ip2)
 !
         call deallocate_whole_filter_coefs
         call deallocate_fluid_filter_coefs
@@ -86,7 +88,9 @@
 !
         call read_original_filter_coefs(ifile_type, my_rank)
 !
-        call set_filter_for_new_each_domain(ip2, icou_st)
+        call set_filter_for_new_each_domain                             &
+     &     (node1%numnod, node1%internal_node, inod_global,             &
+     &      ip2, icou_st)
 !
         call deallocate_whole_filter_coefs
         call deallocate_fluid_filter_coefs

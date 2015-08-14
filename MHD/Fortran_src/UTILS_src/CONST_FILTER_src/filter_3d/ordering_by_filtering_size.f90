@@ -35,7 +35,7 @@
       integer(kind = kint), intent(in) :: inod
 !
 !
-      call cal_distance_from_filter(inod)
+      call cal_distance_from_filter(node1%numnod, node1%xx, inod)
 !
       call sort_added_nod_4_each_by_real(node1%numnod,                  &
      &    nnod_near_1nod_filter, nnod_near_1nod_weight,                 &
@@ -55,7 +55,7 @@
       integer(kind = kint), intent(in) :: inod
 !
 !
-      call cal_distance_ratio_2_filter(inod,                            &
+      call cal_distance_ratio_2_filter(node1%numnod, node1%xx, inod,    &
      &   FEM1_elen%elen_nod%moms%f_x2(inod),                            &
      &   FEM1_elen%elen_nod%moms%f_y2(inod),                            &
      &   FEM1_elen%elen_nod%moms%f_z2(inod))
@@ -88,12 +88,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_distance_ratio_2_filter(inod,                      &
+      subroutine cal_distance_ratio_2_filter(numnod, xx, inod,          &
      &          elen_dx2_nod, elen_dy2_nod, elen_dz2_nod)
 !
-      use m_geometry_parameter
-      use m_geometry_data
       use m_filter_coefs
+!
+      integer(kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: inod
       real(kind=kreal), intent(in) :: elen_dx2_nod
@@ -115,12 +116,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_distance_from_filter(inod)
+      subroutine cal_distance_from_filter(numnod, xx, inod)
 !
-      use m_geometry_parameter
-      use m_geometry_data
       use m_filter_coefs
       use m_filter_elength
+!
+      integer(kind = kint), intent(in) :: numnod
+      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: inod
       integer(kind = kint) :: inum, jnod

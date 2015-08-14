@@ -94,31 +94,31 @@
           if (merged_fld%phys_name(np) .eq. fhd_temp) then
 !
             do inod = 1, merged%node%numnod
-              if (xx(inod,3).eq.zmin) then
+              if (node1%xx(inod,3).eq.zmin) then
                 merged_fld%d_fld(inod,jst+1) = 1.0d0
-              else if (xx(inod,3).eq.zmax) then
+              else if (node1%xx(inod,3).eq.zmax) then
                 merged_fld%d_fld(inod,jst+1) = 0.0d0
               else
                 merged_fld%d_fld(inod,jst+1)                            &
-     &                    = -(xx(inod,3)-zmax)/(zmax-zmin)              &
-     &                     + 0.5*(xx(inod,3)-zmin)/(zmax-zmin)          &
-     &                      * sin(2.0d0*pi*xx(inod,1)/(xmax-xmin))      &
-     &                      * sin(2.0d0*pi*xx(inod,2)/(xmax-xmin))
+     &              = -(node1%xx(inod,3)-zmax)/(zmax-zmin)              &
+     &               + 0.5*(node1%xx(inod,3)-zmin)/(zmax-zmin)          &
+     &                * sin(2.0d0*pi*node1%xx(inod,1)/(xmax-xmin))      &
+     &                * sin(2.0d0*pi*node1%xx(inod,2)/(xmax-xmin))
               end if
             end do
 !
           else if (merged_fld%phys_name(np) .eq. fhd_vecp) then
 !
             do inod = 1, merged%node%numnod
-              merged_fld%d_fld(inod,jst+1) = 0.01d0*sin(pi*xx(inod,3)   &
-     &                            / (zmax-zmin))
+              merged_fld%d_fld(inod,jst+1)                              &
+     &               = 0.01d0*sin(pi*node1%xx(inod,3) / (zmax-zmin))
             end do
 !
           else if (merged_fld%phys_name(np) .eq. fhd_magne) then
 !
             do inod = 1, merged%node%numnod
               merged_fld%d_fld(inod,jst+2) = (0.01d0*pi/two)            &
-     &                            * cos( pi*xx(inod,3) / (zmax-zmin))
+     &                * cos( pi*node1%xx(inod,3) / (zmax-zmin))
             end do
           end if
         end do

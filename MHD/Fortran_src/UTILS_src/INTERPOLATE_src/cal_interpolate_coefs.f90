@@ -192,7 +192,7 @@
           call cal_position_and_gradient(new_ele%nnod_4_ele, xx_z,      &
      &        dnxi, dnei, dnzi, x_local_ele, xi)
 !
-          diff(1:3) = xx_z(1:3) - xx(inod,1:3)
+          diff(1:3) = xx_z(1:3) - node1%xx(inod,1:3)
 !
           write(id_file,*) inod, diff(1:3)
 !

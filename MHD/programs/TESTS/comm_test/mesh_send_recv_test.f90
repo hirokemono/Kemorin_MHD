@@ -52,9 +52,9 @@
 !
       do inod = 1, node1%internal_node
         i8x_vec(inod) = int(inod_global(inod))
-        x_vec(3*inod-2) = xx(inod,1)
-        x_vec(3*inod-1) = xx(inod,2)
-        x_vec(3*inod  ) = xx(inod,3)
+        x_vec(3*inod-2) = node1%xx(inod,1)
+        x_vec(3*inod-1) = node1%xx(inod,2)
+        x_vec(3*inod  ) = node1%xx(inod,3)
       end do
 !
       call SOLVER_SEND_RECV_int8_type(node1%numnod, nod_comm, i8x_vec)
@@ -85,18 +85,18 @@
 !
       do inod = 1, node1%internal_node
         i8x_vec(inod) = inod_global(inod)
-        xx4(12*inod-11) = xx(inod,1)
-        xx4(12*inod-10) = xx(inod,2)
-        xx4(12*inod- 9) = xx(inod,3)
-        xx4(12*inod- 8) = xx(inod,1) + 100.0
-        xx4(12*inod- 7) = xx(inod,2) + 100.0
-        xx4(12*inod- 6) = xx(inod,3) + 100.0
-        xx4(12*inod- 5) = xx(inod,1) + 200.0
-        xx4(12*inod- 4) = xx(inod,2) + 200.0
-        xx4(12*inod- 3) = xx(inod,3) + 200.0
-        xx4(12*inod- 2) = xx(inod,1) + 300.0
-        xx4(12*inod- 1) = xx(inod,2) + 300.0
-        xx4(12*inod   ) = xx(inod,3) + 300.0
+        xx4(12*inod-11) = node1%xx(inod,1)
+        xx4(12*inod-10) = node1%xx(inod,2)
+        xx4(12*inod- 9) = node1%xx(inod,3)
+        xx4(12*inod- 8) = node1%xx(inod,1) + 100.0
+        xx4(12*inod- 7) = node1%xx(inod,2) + 100.0
+        xx4(12*inod- 6) = node1%xx(inod,3) + 100.0
+        xx4(12*inod- 5) = node1%xx(inod,1) + 200.0
+        xx4(12*inod- 4) = node1%xx(inod,2) + 200.0
+        xx4(12*inod- 3) = node1%xx(inod,3) + 200.0
+        xx4(12*inod- 2) = node1%xx(inod,1) + 300.0
+        xx4(12*inod- 1) = node1%xx(inod,2) + 300.0
+        xx4(12*inod   ) = node1%xx(inod,3) + 300.0
       end do
 !
       call SOLVER_SEND_RECV_int8_type(node1%numnod, nod_comm, i8x_vec)

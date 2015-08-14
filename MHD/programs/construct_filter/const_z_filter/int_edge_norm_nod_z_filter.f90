@@ -40,7 +40,7 @@
 !
       do inod = 1, node1%numnod
         inod0 = inod_global(inod)
-        zz0 = xx(inod0,3) 
+        zz0 = node1%xx(inod0,3) 
         do je = 1, nfilter2_3 - 1
           j0 = je - nneib_nod(inod0,1) - 1
           jele = inod0 + j0
@@ -48,8 +48,8 @@
           ze = dble(2*(j0+1))
           jnod1 = ie_edge(jele,1)
           jnod2 = ie_edge(jele,2)
-          zz1 = xx(jnod1,3)
-          zz2 = xx(jnod2,3)
+          zz1 = node1%xx(jnod1,3)
+          zz2 = node1%xx(jnod2,3)
 !
 !
           call set_points_4_integration(zs, ze)

@@ -80,7 +80,8 @@
       else if ( abs(iflag_tgt_filter_type) .eq. 3) then
         call set_linear_filter_4_each_nod
       else if ( abs(iflag_tgt_filter_type) .eq. 4) then
-        call set_gaussian_filter_each_nod(inod, node1%numnod,           &
+        call set_gaussian_filter_each_nod                               &
+     &     (node1%numnod, node1%xx, inod, node1%numnod,                 &
      &      dx_nod%dxi%df_dx, dx_nod%dxi%df_dy, dx_nod%dxi%df_dz,       &
      &      dx_nod%dei%df_dx, dx_nod%dei%df_dy, dx_nod%dei%df_dz,       &
      &      dx_nod%dzi%df_dx, dx_nod%dzi%df_dy, dx_nod%dzi%df_dz)
@@ -169,7 +170,8 @@
           else if ( abs(iflag_tgt_filter_type) .eq. 3) then
             call set_linear_filter_4_each_nod
           else if ( abs(iflag_tgt_filter_type) .eq. 4) then
-            call set_gaussian_filter_each_nod(inod, node1%numnod,       &
+            call set_gaussian_filter_each_nod                           &
+     &         (node1%numnod, node1%xx, inod, node1%numnod,             &
      &          dx_nod%dxi%df_dx, dx_nod%dxi%df_dy, dx_nod%dxi%df_dz,   &
      &          dx_nod%dei%df_dx, dx_nod%dei%df_dy, dx_nod%dei%df_dz,   &
      &          dx_nod%dzi%df_dx, dx_nod%dzi%df_dy, dx_nod%dzi%df_dz)

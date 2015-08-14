@@ -37,7 +37,7 @@
       integer(kind = kint), intent(in) :: inod
       real(kind = kreal), intent(inout) :: x_target(3)
 !
-      x_target(1:3) = xx(inod,1:3)
+      x_target(1:3) = node1%xx(inod,1:3)
 !
       end subroutine copy_target_local_vector
 !
@@ -247,7 +247,7 @@
       do inod = 1, node1%internal_node
         if (iflag_org_domain(inod) .le. 0) then
           ierr = ierr + 1
-          write(id_miss_file,'(i16,1p3e16.7)') inod, xx(inod,1:3)
+          write(id_miss_file,'(i16,1p3e16.7)') inod, node1%xx(inod,1:3)
         end if
       end do
       close(id_miss_file)

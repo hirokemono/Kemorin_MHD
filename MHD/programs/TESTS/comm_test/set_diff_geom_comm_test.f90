@@ -79,7 +79,7 @@
 !
 !
       call count_node_comm_test(node1%numnod, node1%internal_node,      &
-     &    xx, x_vec, nnod_diff_local)
+     &    node1%xx, x_vec, nnod_diff_local)
 !
       end subroutine count_diff_node_comm_test
 !
@@ -93,7 +93,7 @@
 !
 !
       call compare_nod_comm_test(node1%numnod, node1%internal_node,     &
-     &    xx, x_vec, nnod_diff_local, inod_diff, xx_diff)
+     &    node1%xx, x_vec, nnod_diff_local, inod_diff, xx_diff)
 !
       end subroutine set_diff_node_comm_test
 !
