@@ -15,7 +15,6 @@
       use m_precision
 !
       use m_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_graph
       use set_geometry_graph
@@ -91,19 +90,20 @@
       subroutine const_internal_geometry_graph
 !
 !
-      call allocate_num_internod_graph(internal_node)
+      call allocate_num_internod_graph(node1%internal_node)
 !
-      call count_internal_graph(node1%numnod, internal_node,            &
+      call count_internal_graph(node1%numnod, node1%internal_node,      &
      &    ntot_graph_nod, istack_graph_nod, igraph_nod,                 &
      &    num_graph_inter_nod)
 !
-      call s_cal_minmax_and_stacks(internal_node, num_graph_inter_nod,  &
+      call s_cal_minmax_and_stacks                                      &
+     &   (node1%internal_node, num_graph_inter_nod,                     &
      &    izero, istack_graph_inter_nod, ntot_graph_inter_nod,          &
      &    nmax_graph_inter_nod, nmin_graph_inter_nod)
 !
       call allocate_internod_graph
 !
-      call set_internal_graph(node1%numnod, internal_node,              &
+      call set_internal_graph(node1%numnod, node1%internal_node,        &
      &    ntot_graph_nod, istack_graph_nod, igraph_nod,                 &
      &    ntot_graph_inter_nod, num_graph_inter_nod,                    &
      &    istack_graph_inter_nod, igraph_inter_nod)

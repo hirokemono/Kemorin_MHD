@@ -42,7 +42,7 @@
       PRESET_crs= 2
 
       call  solve                                                       &
-     &                  (internal_node, node1%numnod,                   &
+     &                  (node1%internal_node, node1%numnod,             &
      &                   ntot_crs_l, ntot_crs_u, D_crs, AL_crs,         &
      &                   istack_crs_l, item_crs_l, AU_crs,              &
      &                   istack_crs_u, item_crs_u,                      &
@@ -69,7 +69,7 @@
       PRESET_crs= 2
 
       call  solve33                                                     &
-     &                  (internal_node, node1%numnod,                   &
+     &                  (node1%internal_node, node1%numnod,             &
      &                   ntot_crs_l, ntot_crs_u, D_crs, AL_crs,         &
      &                   istack_crs_l, item_crs_l, AU_crs,              &
      &                   istack_crs_u, item_crs_u,                      &
@@ -96,7 +96,7 @@
       PRESET_crs= 2
 
       call  solveNN                                                     &
-     &                  (internal_node, node1%numnod, NB_crs,           &
+     &                  (node1%internal_node, node1%numnod, NB_crs,     &
      &                   ntot_crs_l, ntot_crs_u, D_crs, AL_crs,         &
      &                   istack_crs_l, item_crs_l, AU_crs,              &
      &                   istack_crs_u, item_crs_u,                      &

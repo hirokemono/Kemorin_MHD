@@ -44,7 +44,7 @@
 !
        write (id_file,*) 'domain ID: ', my_rank
        write (id_file,*) 'node_id, solutions'
-         do i= 1, internal_node
+         do i= 1, node1%internal_node
            ii = NB_crs*(i-1)
            write (id_file,'(i16,100(1pe23.12))') i,                     &
      &            (X_crs(ii+k),k=1,NB_crs)
@@ -80,7 +80,7 @@
 !
       use m_nod_comm_table
 !
-       read (id_file,'(10i16)') internal_node, node1%numnod,            &
+       read (id_file,'(10i16)') node1%internal_node, node1%numnod,      &
      &     ntot_crs_l, ntot_crs_u, NB_crs, nod_comm%num_neib
 
 !

@@ -67,7 +67,8 @@
      &              method_elesize, precond_elesize
       end if
 !
-      call solve(internal_node, node1%numnod, ntot_mass_l, ntot_mass_u, &
+      call solve(node1%internal_node, node1%numnod,                     &
+     &             ntot_mass_l, ntot_mass_u,                            &
      &             aiccg_mass(im_mass_d), aiccg_mass(im_mass_l),        &
      &             istack_mass_l, item_mass_l, aiccg_mass(im_mass_u),   &
      &             istack_mass_u, item_mass_u, b_vec(1), x_vec(1),      &

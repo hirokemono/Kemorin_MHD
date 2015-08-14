@@ -59,20 +59,21 @@
 !
       subroutine cal_dz_liner_grids
 !
-      integer (kind = kint) :: i
+      integer (kind = kint) :: i, nz
 !
 !
-        do i = 1, node1%numnod
-          delta_z(i) =  zsize / dble(2*internal_node-1)
-          delta_dz(i) = zero
-          d2_dz(i) =    zero
-        end do
+      nz = node1%internal_node
+      do i = 1, node1%numnod
+        delta_z(i) =  zsize / dble(2*nz-1)
+        delta_dz(i) = zero
+        d2_dz(i) =    zero
+      end do
 !
-        do i = 1, ele1%numele
-          delta_z_e(i) =  zsize / dble(2*internal_node-1)
-          delta_dz_e(i) = zero
-          d2_dz_e(i) =    zero
-        end do
+      do i = 1, ele1%numele
+        delta_z_e(i) =  zsize / dble(2*nz-1)
+        delta_dz_e(i) = zero
+        d2_dz_e(i) =    zero
+      end do
 !
       end subroutine cal_dz_liner_grids
 !
@@ -81,26 +82,27 @@
       subroutine cal_dz_chebyshev_grids
 !
       real (kind = kreal) :: pi
-      integer (kind = kint) :: i, inod1, inod2
+      integer (kind = kint) :: i, inod1, inod2, nz
 !
 !
       pi = four * atan(one)
 !
+      nz = node1%internal_node
         do i = 1, node1%numnod
           delta_z(i)                                                    &
-     &          = ( 0.5d0 * zsize * pi / (two*dble(internal_node-1)) )  &
-     &           * sin (pi* dble(i - 1) / dble(internal_node-1) )
+     &          = ( 0.5d0 * zsize * pi / (two*dble(nz-1)) )             &
+     &           * sin (pi* dble(i - 1) / dble(nz-1) )
           if ( i.eq.1 ) then
            delta_dz(i) = 1.0d20
            d2_dz(i) = -1.0d20
-          else if ( i .eq. internal_node ) then
+          else if ( i .eq. nz ) then
            delta_dz(i) = -1.0d20
            d2_dz(i) = -1.0d20
           else
-           delta_dz(i) =   pi / ( two * dble(internal_node-1)           &
-     &         * tan(pi* dble(i - 1) / dble(internal_node-1)) )
-           d2_dz(i) = - pi / ( zsize * dble(internal_node-1)            &
-     &         * sin(pi* dble(i - 1) / dble(internal_node-1))**3 )
+           delta_dz(i) =   pi / ( two * dble(nz-1)                      &
+     &         * tan(pi* dble(i - 1) / dble(nz-1)) )
+           d2_dz(i) = - pi / ( zsize * dble(nz-1)                       &
+     &         * sin(pi* dble(i - 1) / dble(nz-1))**3 )
           end if
         end do
 !
@@ -108,14 +110,14 @@
           inod1 = ie_edge(i,1)
           inod2 = ie_edge(i,2)
           delta_z_e(i)                                                  &
-     &          = (0.5d0 * zsize * pi / (two*dble(internal_node-1)))    &
-     &           * sin (pi*(dble(i)-0.5d0) / dble(internal_node-1) )
+     &          = (0.5d0 * zsize * pi / (two*dble(nz-1)))               &
+     &           * sin (pi*(dble(i)-0.5d0) / dble(nz-1) )
 
           delta_dz_e(i)                                                 &
-     &          =  pi / ( two * dble(internal_node-1)                   &
-     &           * tan(pi*(dble(i)-0.5d0) / dble(internal_node-1)) )
-          d2_dz_e(i) =  - pi / ( zsize * dble(internal_node-1)          &
-     &         * sin(pi*(dble(i)-0.5d0) / dble(internal_node-1))**3 )
+     &          =  pi / ( two * dble(nz-1)                              &
+     &           * tan(pi*(dble(i)-0.5d0) / dble(nz-1)) )
+          d2_dz_e(i) =  - pi / ( zsize * dble(nz-1)                     &
+     &         * sin(pi*(dble(i)-0.5d0) / dble(nz-1))**3 )
         end do
 !
       end subroutine cal_dz_chebyshev_grids
@@ -125,25 +127,26 @@
       subroutine cal_dz_half_chebyshev_grids
 !
       real (kind = kreal) :: pi
-      integer (kind = kint) :: i, inod1, inod2
+      integer (kind = kint) :: i, inod1, inod2, nz
 !
       pi = four * atan(one)
 !
+      nz = node1%internal_node
         do i = 1, node1%numnod
           xx(i,3) = -0.5d0*zsize - zsize                                &
-     &         * cos (pi* dble(i - 1) / dble(2*(internal_node-1)) )
+     &         * cos (pi* dble(i - 1) / dble(2*(nz-1)) )
         end do
         do i = 1, node1%numnod
-          delta_z(i) = ( zsize * pi / two*dble(2*(internal_node-1)) )   &
-     &           * sin (pi* dble(i - 1) / dble(2*(internal_node-1)) )
+          delta_z(i) = ( zsize * pi / two*dble(2*(nz-1)) )              &
+     &           * sin (pi* dble(i - 1) / dble(2*(nz-1)) )
           if ( i.eq.1 ) then
            delta_dz(i) = 1.0d20
            d2_dz(i) = -1.0d20
           else
-           delta_dz(i) =   pi / ( dble(4*(internal_node-1))             &
-     &         * tan(pi* dble(i - 1) / dble(2*(internal_node-1))) )
-           d2_dz(i) = - pi / ( zsize * dble(4*(internal_node-1))        &
-     &         * sin(pi* dble(i - 1) / dble(2*(internal_node-1)) )**3 )
+           delta_dz(i) =   pi / ( dble(4*(nz-1))                        &
+     &         * tan(pi* dble(i - 1) / dble(2*(nz-1))) )
+           d2_dz(i) = - pi / ( zsize * dble(4*(nz-1))                   &
+     &         * sin(pi* dble(i - 1) / dble(2*(nz-1)) )**3 )
           end if
         end do
 !
@@ -185,21 +188,22 @@
 !
 !
       real (kind = kreal) :: pi
-      integer (kind = kint) :: i, inod1, inod2
+      integer (kind = kint) :: i, inod1, inod2, nz
 !
       pi = four * atan(one)
 !
+      nz = node1%internal_node
         do i = 1, node1%numnod
-          xx(i,3) = - dble(internal_node-1)                             &
-     &         * cos (pi* dble(i - 1) / dble(internal_node-1) ) 
+          xx(i,3) = - dble(nz-1)                                        &
+     &         * cos (pi* dble(i - 1) / dble(nz-1) ) 
         end do
         do i = 1, node1%numnod
           delta_z(i)                                                    &
-     &          = 0.5*pi * sin(pi* dble(i - 1) / dble(internal_node-1))
-          delta_dz(i) =   pi / ( two * dble(internal_node-1)            &
-     &         * tan(pi* dble(i - 1) / dble(internal_node-1)) )
-          d2_dz(i) = - pi / ( dble(internal_node-1)**2                  &
-     &         * sin(pi* dble(i - 1) / dble(internal_node-1))**3 )
+     &          = 0.5*pi * sin(pi* dble(i - 1) / dble(nz-1))
+          delta_dz(i) =   pi / ( two * dble(nz-1)                       &
+     &         * tan(pi* dble(i - 1) / dble(nz-1)) )
+          d2_dz(i) = - pi / ( dble(nz-1)**2                             &
+     &         * sin(pi* dble(i - 1) / dble(nz-1))**3 )
         end do
 !
         do i = 1, ele1%numele

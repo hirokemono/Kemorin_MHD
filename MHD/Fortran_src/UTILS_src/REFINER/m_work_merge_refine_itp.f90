@@ -116,7 +116,7 @@
 !
 !
       nnod_org =       node1%numnod
-      intnod_org =     internal_node
+      intnod_org =     node1%internal_node
       nele_org =       ele1%numele
       nnod_4_ele_org = ele1%nnod_4_ele
 !

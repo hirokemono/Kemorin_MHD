@@ -29,14 +29,14 @@
       use m_geometry_data
 !
 !
-      call set_num_off_diag_z_commute(internal_node)
+      call set_num_off_diag_z_commute(node1%internal_node)
 !
       call allocate_crs_stack(node1%numnod)
       call allocate_crs_connect
 !
-      call set_stack_crs_z_commute(internal_node)
+      call set_stack_crs_z_commute(node1%internal_node)
 !
-      call set_item_crs_z_commute(internal_node)
+      call set_item_crs_z_commute(node1%internal_node)
 !
       end subroutine set_crs_connect_commute_z
 !

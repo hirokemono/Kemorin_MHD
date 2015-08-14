@@ -30,12 +30,13 @@
 !
       if (nnod_group_IO .ne. node1%numnod) stop 'check number of node'
 !
-      if (internod_group_IO .ne. internal_node) then
+      if (internod_group_IO .ne. node1%internal_node) then
         stop 'check number of internal node'
       end if
 !
       num_domain = nproc_group_IO
-      IGROUP_nod(1:internal_node) = IGROUP_IO(1:internal_node)
+      IGROUP_nod(1:node1%internal_node)                                 &
+     &      = IGROUP_IO(1:node1%internal_node)
 !
       call deallocate_domain_group_IO
 !
@@ -49,12 +50,13 @@
 !
 !
       nnod_group_IO =     node1%numnod
-      internod_group_IO = internal_node
+      internod_group_IO = node1%internal_node
       nproc_group_IO =    num_domain
 !
       call allocate_domain_group_IO
 !
-      IGROUP_IO(1:internal_node) = IGROUP_nod(1:internal_node)
+      IGROUP_IO(1:node1%internal_node)                                  &
+     &       = IGROUP_nod(1:node1%internal_node)
 !
       end subroutine copy_domain_list_to_IO
 !

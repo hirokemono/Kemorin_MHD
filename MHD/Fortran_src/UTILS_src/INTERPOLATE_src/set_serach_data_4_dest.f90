@@ -42,7 +42,7 @@
       if (iflag_debug.eq.1)                                             &
      &     write(*,*)  'allocate_interpolate_table'
 !
-      ntot_table_dest = internal_node
+      ntot_table_dest = node1%internal_node
       call allocate_itp_num_dest(nprocs_2nd)
       call allocate_itp_table_dest
       call allocate_itp_coef_dest

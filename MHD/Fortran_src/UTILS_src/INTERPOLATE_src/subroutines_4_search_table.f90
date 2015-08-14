@@ -225,7 +225,6 @@
 !
       subroutine check_missing_nodes(ierr, my_rank)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_work_const_itp_table
       use m_search_bolck_4_itp
@@ -245,7 +244,7 @@
 !
       ierr = 0
       write(id_miss_file,*) 'missing nodes: '
-      do inod = 1, internal_node
+      do inod = 1, node1%internal_node
         if (iflag_org_domain(inod) .le. 0) then
           ierr = ierr + 1
           write(id_miss_file,'(i16,1p3e16.7)') inod, xx(inod,1:3)
@@ -254,7 +253,7 @@
       close(id_miss_file)
 !
       write(*,*) 'Number of missing nodes: ', ierr,                     &
-     &          ' of  ', internal_node, ' at rank ', my_rank
+     &          ' of  ', node1%internal_node, ' at rank ', my_rank
 !
       end subroutine check_missing_nodes
 !

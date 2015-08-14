@@ -99,7 +99,7 @@
       integer(kind = kint) :: ist, ied
 !
 !
-      do inod = 1, internal_node
+      do inod = 1, node1%internal_node
         inod_g = inod_global(inod)
         if (IGROUP_nod(inod_g) .eq. ip2) then
           ist = istack_near_nod_w_filter(inod-1) + 1
@@ -365,7 +365,7 @@
       integer(kind = kint_gl) :: inod_g
 !
 !
-      do inod = 1, internal_node
+      do inod = 1, node1%internal_node
         inod_g = inod_global(inod)
         if (IGROUP_nod(inod_g) .eq. ip2) then
           icou_gl = icou_gl + 1
@@ -424,7 +424,7 @@
       end do
 !
 !
-      do inod = 1, internal_node
+      do inod = 1, node1%internal_node
         inod_g = inod_global(inod)
 !
         if (IGROUP_nod(inod_g) .eq. ip2) then

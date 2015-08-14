@@ -25,7 +25,7 @@
       use m_sphere_bin_4_table
 !
       integer(kind = kint), intent(inout)                               &
-     &           :: id_search_area(internal_node,3)
+     &           :: id_search_area(node1%internal_node,3)
 !
       integer(kind = kint) :: ip, ist, ied
       integer(kind = kint) :: inod, j, ihash

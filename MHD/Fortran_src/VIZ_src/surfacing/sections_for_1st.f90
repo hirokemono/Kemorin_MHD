@@ -82,8 +82,8 @@
       use m_cross_section
 !
 !
-      call cross_section_init                                           &
-     &   (node1%numnod, internal_node, ele1%numele, numsurf, numedge,   &
+      call cross_section_init(node1%numnod, node1%internal_node,        &
+     &    ele1%numele, numsurf, numedge,                                &
      &    ele1%nnod_4_ele, nnod_4_edge, ie, ie_edge, isf_4_ele,         &
      &    iedge_4_sf, iedge_4_ele, nod_comm, edge_comm,                 &
      &    interior_ele, xx, node1%istack_nod_smp, ele1%istack_ele_smp,  &
@@ -140,7 +140,8 @@
 !
       integer(kind = kint), intent(in) :: istep_iso
 !
-      call isosurface_main(istep_iso, node1%numnod, internal_node,      &
+      call isosurface_main                                              &
+     &   (istep_iso, node1%numnod, node1%internal_node,                 &
      &    ele1%numele, numedge, ele1%nnod_4_ele, nnod_4_edge,           &
      &    ie, ie_edge, iedge_4_ele, xx,                                 &
      &    radius, a_radius, s_cylinder, a_s_cylinder,                   &

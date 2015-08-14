@@ -158,7 +158,6 @@
       subroutine check_interpolation                                    &
      &         (new_node, new_ele, id_file, my_rank_org)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_interpolate_table_dest
       use m_interpolate_coefs_dest
@@ -182,7 +181,7 @@
       write(id_file,*) '#  node, difference from original node'
       write(id_file,*) '#'
 !
-      do inod = 1, internal_node
+      do inod = 1, node1%internal_node
 !
         if( iflag_org_domain(inod) .eq. my_rank_org) then
 !

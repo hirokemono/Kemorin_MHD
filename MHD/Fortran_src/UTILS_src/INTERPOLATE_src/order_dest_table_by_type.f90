@@ -96,7 +96,7 @@
 !
       ntot_table_dest = istack_nod_tbl_dest(num_org_domain)
 !
-      do i = 1, internal_node
+      do i = 1, node1%internal_node
         inod_gl_dest(i) = inod_global(inod_dest_4_dest(i))
       end do
 !

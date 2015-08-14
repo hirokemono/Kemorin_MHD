@@ -44,7 +44,7 @@
 !
 !
       if (inod_end_filter .eq. -1) then
-        inod_end_filter = internal_node
+        inod_end_filter = node1%internal_node
       end if
       nnod_filetering = inod_end_filter - inod_start_filter + 1
 !

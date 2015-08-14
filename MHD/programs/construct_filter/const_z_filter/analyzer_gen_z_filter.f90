@@ -111,13 +111,13 @@
 !
 !    set information for filtering for node
 !
-      call allocate_neib_nod(node1%numnod, internal_node)
+      call allocate_neib_nod(node1%numnod, node1%internal_node)
       if (my_rank.eq.0) write(*,*) 's_set_neib_nod_z'
-      call s_set_neib_nod_z(internal_node, nfilter2_2, numfilter+1,     &
-     &    nneib_nod, ineib_nod)
+      call s_set_neib_nod_z(node1%internal_node,                        &
+     &    nfilter2_2, numfilter+1,   nneib_nod, ineib_nod)
       if (my_rank.eq.0) write(*,*) 'set_connect_2_n_filter'
       call set_connect_2_n_filter
-!      call check_neib_nod(my_rank, node1%numnod, internal_node)
+!      call check_neib_nod(my_rank, node1%numnod, node1%internal_node)
 !
 !    set information for filtering for element
 !

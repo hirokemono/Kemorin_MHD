@@ -32,7 +32,8 @@
       open (id_filter_z,file=filter_z_file_name)
 !
         write(id_filter_z,*) '! number of node'
-        write(id_filter_z,*) totalnod_x, totalnod_y, internal_node
+        write(id_filter_z,*) totalnod_x, totalnod_y,                    &
+     &                      node1%internal_node
         write(id_filter_z,*) '! size of domain'
         write(id_filter_z,'(1p3E25.15e3)') xsize, ysize, zsize
         write(id_filter_z,*) '!grid type'
@@ -94,7 +95,7 @@
 !
         write(id_filter_z,*) '! node_id, z, dz/dzeta, diff of delta_z'
 !
-        do inod = 1, internal_node
+        do inod = 1, node1%internal_node
           write(id_filter_z,'(i16,1p4E25.15e3)') inod_global(inod),     &
      &      xx(inod,3), delta_z(inod), delta_dz(inod), d2_dz(inod)
         end do
@@ -112,7 +113,7 @@
 !
         write(id_filter_z,*) '! node_id, neighboring_nodes'
 !
-        do inod = 1, internal_node
+        do inod = 1, node1%internal_node
           write(id_filter_z,'(20i16)')                                  &
      &      inod_global(inod), (nneib_nod2(inod,i),i=1,2),              &
      &     (inod_global(inod+i-nneib_nod2(inod,1)-1),i=1,ncomp_mat)
@@ -121,7 +122,7 @@
 !
         write(id_filter_z,*) '! node_id, coefs of filter'
 !
-        do inod = 1, internal_node
+        do inod = 1, node1%internal_node
           write(id_filter_z,'(i16,1p20E25.15e3)') inod_global(inod),    &
      &          (c_filter(j,inod),j=1,ncomp_mat)
         end do
@@ -129,7 +130,7 @@
 !
          write(id_filter_z,*) '! node_id, 1d_momentum on node (modified)'
 !
-        do inod = 1, internal_node
+        do inod = 1, node1%internal_node
           write(id_filter_z,'(i16,1p6E25.15e3)') inod_global(inod),     &
      &          (xmom_int_t(inod,k),k=0,2)
         end do
@@ -137,7 +138,7 @@
          write(id_filter_z,*)                                           &
      &         '! node_id, diff. of 1d_momentum on node (modified)'
 !
-        do inod = 1, internal_node
+        do inod = 1, node1%internal_node
           write(id_filter_z,'(i16,1p6E25.15e3)') inod_global(inod),     &
      &          (xmom_dt(inod,k),k=0,2)
         end do
@@ -147,7 +148,7 @@
          write(id_filter_z,*) '! node_id, coefs_4_filtering (modified)'
 !
 !
-        do inod = 1, internal_node
+        do inod = 1, node1%internal_node
           write(id_filter_z,'(2i16,1p20E25.15e3)') k,                   &
      &         inod_global(inod), (xmom_int(inod,j,k),j=1,ncomp_mat)
         end do
@@ -155,7 +156,7 @@
 !
          write(id_filter_z,*) '! node_id, 1d_momentum on node (original)'
 !
-        do inod = 1, internal_node
+        do inod = 1, node1%internal_node
           write(id_filter_z,'(i16,1p6E25.15e3)') inod_global(inod),     &
      &          (xmom_int_to(inod,k),k=0,2)
         end do
@@ -164,7 +165,7 @@
      &         '! node_id, diff. of 1d_momentum on node (original)'
 !
 
-        do inod = 1, internal_node
+        do inod = 1, node1%internal_node
           write(id_filter_z,'(i16,1p6E25.15e3)') inod_global(inod),     &
      &          (xmom_dot(inod,k),k=0,2)
         end do
@@ -173,7 +174,7 @@
          write(id_filter_z,*) '! node_id, coefs_4_filtering (original)'
 !
 !
-        do inod = 1, internal_node
+        do inod = 1, node1%internal_node
           write(id_filter_z,'(2i16,1p20E25.15e3)') k,                   &
      &        inod_global(inod), (xmom_int_org(inod,j,k),j=1,ncomp_mat)
         end do

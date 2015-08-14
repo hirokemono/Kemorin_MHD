@@ -254,8 +254,8 @@
       end do
 !
       rhs_dz(1) = rhs_dz(1) - delta_dz(1)
-      rhs_dz(internal_node) = rhs_dz(internal_node)                     &
-     &    + delta_dz(internal_node)
+      rhs_dz(node1%internal_node) = rhs_dz(node1%internal_node)         &
+     &                             + delta_dz(node1%internal_node)
 !
       end subroutine int_edge_d2_vart_w
 !

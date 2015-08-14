@@ -14,7 +14,7 @@
 !
       use m_constants
       use m_ctl_params_4_gen_filter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_filter_coefs
 !
       use expand_filter_area_4_1node
@@ -48,7 +48,7 @@
 !
 !
       if (inod_end_filter .eq. -1) then
-        inod_end_filter = internal_node
+        inod_end_filter = node1%internal_node
       end if
 !
       call init_4_cal_fileters

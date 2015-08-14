@@ -50,7 +50,7 @@
       integer(kind = kint) :: inod
 !
 !
-      do inod = 1, internal_node
+      do inod = 1, node1%internal_node
         i8x_vec(inod) = int(inod_global(inod))
         x_vec(3*inod-2) = xx(inod,1)
         x_vec(3*inod-1) = xx(inod,2)
@@ -83,7 +83,7 @@
       allocate(irev_import(nod_comm%istack_import(nod_comm%num_neib)))
       allocate(xx4(NB*node1%numnod))
 !
-      do inod = 1, internal_node
+      do inod = 1, node1%internal_node
         i8x_vec(inod) = inod_global(inod)
         xx4(12*inod-11) = xx(inod,1)
         xx4(12*inod-10) = xx(inod,2)
@@ -104,7 +104,7 @@
       call SOLVER_SEND_RECV_N_type(node1%numnod, NB, nod_comm, xx4)
 !
       do ii = 1, nod_comm%istack_import(nod_comm%num_neib)
-        k = nod_comm%item_import(ii) - internal_node
+        k = nod_comm%item_import(ii) - node1%internal_node
         irev_import(k) = ii
       end do
 !
@@ -163,7 +163,7 @@
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= ist+1, ied
-            ii   = NB * (internal_node+k-1) + nd
+            ii   = NB * (node1%internal_node+k-1) + nd
             ix   = NB * (irev_import(k)-1) + nd
             xx4(ii)= WR(ix)
           end do
@@ -216,7 +216,7 @@
 !$omp do private(k,ii,ix)
         do nd = 1, NB
           do k= ist+1, ied
-            ii   = NB * (internal_node+k-1) + nd
+            ii   = NB * (node1%internal_node+k-1) + nd
             ix   = NB * (irev_import(k)-1) + nd
             xx4(ii)= WR(ix)
           end do
@@ -274,7 +274,7 @@
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= 1, num
-            ii   = NB * (internal_node+k+ist-1) + nd
+            ii   = NB * (node1%internal_node+k+ist-1) + nd
             ix   = NB * (irev_import(k+ist)-1) + nd
             xx4(ii)= WR(ix)
           end do
@@ -333,7 +333,7 @@
         do inum = 1, NB*num
           nd = mod(inum-ione,NB) + ione
           k = (inum-nd) / NB + ione
-            ii   = NB * (internal_node+k+ist-1) + nd
+            ii   = NB * (node1%internal_node+k+ist-1) + nd
             ix   = irev_import(k) + (nd-1) * num + NB*ist
             xx4(ii)= WR(ix)
         end do
