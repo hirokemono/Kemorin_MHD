@@ -42,15 +42,15 @@
 !
       if      (ele1%nnod_4_ele .eq. num_t_lag) then
         call set_int_point_position_27                                  &
-     &     (node1%numnod, ele1%numele, xx, ele1%ie,                     &
+     &     (node1%numnod, ele1%numele, node1%xx, ele1%ie,               &
      &      nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
       else if (ele1%nnod_4_ele .eq. num_t_quad) then
         call set_int_point_position_20                                  &
-     &     (node1%numnod, ele1%numele, xx, ele1%ie,                     &
+     &     (node1%numnod, ele1%numele, node1%xx, ele1%ie,               &
      &      nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
       else if (ele1%nnod_4_ele .eq. num_t_linear) then
         call set_int_point_position_8                                   &
-     &     (node1%numnod, ele1%numele, xx, ele1%ie,                     &
+     &     (node1%numnod, ele1%numele, node1%xx, ele1%ie,               &
      &      nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
       end if
 !

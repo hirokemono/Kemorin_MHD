@@ -31,9 +31,9 @@
 !
       id_globalnod_filtering(1:node1%numnod)                            &
      &                               = inod_global(1:node1%numnod)
-      xx_filtering(1:node1%numnod,1) = xx(1:node1%numnod,1)
-      xx_filtering(1:node1%numnod,2) = xx(1:node1%numnod,2)
-      xx_filtering(1:node1%numnod,3) = xx(1:node1%numnod,3)
+      xx_filtering(1:node1%numnod,1) = node1%xx(1:node1%numnod,1)
+      xx_filtering(1:node1%numnod,2) = node1%xx(1:node1%numnod,2)
+      xx_filtering(1:node1%numnod,3) = node1%xx(1:node1%numnod,3)
 !
       end subroutine copy_node_data_to_filter
 !

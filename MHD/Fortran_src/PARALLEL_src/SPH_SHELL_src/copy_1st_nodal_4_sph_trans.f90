@@ -59,8 +59,8 @@
 !
       call copy_1st_scl_from_sph_trans(d_rtp(1,i_trns), i_field)
       call copy_pole_scl_fld_from_trans                                 &
-     &   (node1%numnod, node1%internal_node, xx, v_pole(1,i_trns),      &
-     &    num_tot_nod_phys, i_field, d_nod)
+     &   (node1%numnod, node1%internal_node, node1%xx,                  &
+     &    v_pole(1,i_trns), num_tot_nod_phys, i_field, d_nod)
 !
       end subroutine copy_1st_scl_from_trans_wpole
 !
@@ -82,8 +82,8 @@
 !
       call copy_1st_vec_from_sph_trans(d_rtp(1,i_trns), i_field)
       call copy_pole_vec_fld_from_trans                                 &
-     &   (node1%numnod, node1%internal_node, xx, v_pole(1,i_trns),      &
-     &    num_tot_nod_phys, i_field, d_nod)
+     &   (node1%numnod, node1%internal_node, node1%xx,                  &
+     &    v_pole(1,i_trns), num_tot_nod_phys, i_field, d_nod)
 !
       end subroutine copy_1st_vec_from_trans_wpole
 !
@@ -105,8 +105,8 @@
 !
       call copy_1st_tsr_from_sph_trans(d_rtp(1,i_trns), i_field)
       call copy_pole_tsr_fld_from_trans                                 &
-     &   (node1%numnod, node1%internal_node, xx, v_pole(1,i_trns),      &
-     &    num_tot_nod_phys, i_field, d_nod)
+     &   (node1%numnod, node1%internal_node, node1%xx,                  &
+     &    v_pole(1,i_trns), num_tot_nod_phys, i_field, d_nod)
 !
       end subroutine copy_1st_tsr_from_trans_wpole
 !
@@ -162,7 +162,8 @@
 !
       call copy_xyz_tsr_from_sph_trans                                  &
      &   (nnod_rtp, m_folding, inod_rtp_smp_stack,                      &
-     &    node1%numnod, xx, radius, s_cylinder, a_radius, a_s_cylinder, &
+     &    node1%numnod, node1%xx, radius,                               &
+     &    s_cylinder, a_radius, a_s_cylinder,                           &
      &    d_rtp, i_field, num_tot_nod_phys, d_nod)
 !
       end subroutine copy_1st_tsr_from_sph_trans
@@ -199,7 +200,7 @@
 !
       call copy_xyz_vec_to_sph_trans                                    &
      &   (nnod_rtp, inod_rtp_smp_stack, node1%numnod,                   &
-     &    xx, radius, s_cylinder, a_radius, a_s_cylinder,               &
+     &    node1%xx, radius, s_cylinder, a_radius, a_s_cylinder,         &
      &    i_field, num_tot_nod_phys, d_nod, d_rtp)
 !
       end subroutine copy_1st_vec_to_sph_trans
@@ -218,7 +219,7 @@
 !
       call copy_xyz_tsr_to_sph_trans                                    &
      &   (nnod_rtp, inod_rtp_smp_stack, node1%numnod,                   &
-     &    xx, radius, s_cylinder, a_radius, a_s_cylinder,               &
+     &    node1%xx, radius, s_cylinder, a_radius, a_s_cylinder,         &
      &    i_field, num_tot_nod_phys, d_nod, d_rtp)
 !
       end subroutine copy_1st_tsr_to_sph_trans
