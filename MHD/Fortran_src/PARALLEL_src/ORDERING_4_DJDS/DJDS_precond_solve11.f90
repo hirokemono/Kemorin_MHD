@@ -56,7 +56,7 @@
      &        nod_comm%istack_import(nod_comm%num_neib) )
         end if
 
-        call precond_DJDS11(internal_node, node1%numnod,                &
+        call precond_DJDS11(node1%internal_node, node1%numnod,          &
      &           NLmax, itotal_l, NHYP, np_smp,                         &
      &           node1%istack_internal_smp, STACKmc, NLmaxHYP, IVECT,   &
      &           OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, LtoU,                &
@@ -67,7 +67,7 @@
 !C-- ICCG computation
 
         write(*,*) 'init_solve_DJDS_kemo', my_rank
-      call init_solve_DJDS_kemo(internal_node, node1%numnod,            &
+      call init_solve_DJDS_kemo(node1%internal_node, node1%numnod,      &
      &     NLmax, NUmax, itotal_l, itotal_u, NHYP, np_smp,              &
      &     node1%istack_internal_smp, STACKmc, NLmaxHYP, NUmaxHYP,      &
      &     IVECT, NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,           &

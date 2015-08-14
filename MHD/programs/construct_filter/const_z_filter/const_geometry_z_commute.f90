@@ -71,13 +71,14 @@
       subroutine  set_numnod_z_commute
 !
 !
-      internal_node = totalnod
-      node1%numnod = internal_node
-      totalele = internal_node - 1
+      node1%internal_node = totalnod
+      internal_node = node1%internal_node
+      node1%numnod =  node1%internal_node
+      totalele = node1%internal_node - 1
 !      nod_comm%num_neib = 2
 !
       nmat_ele = totalele*nfilter2_1
-      nmat_nod = internal_node*nfilter2_3
+      nmat_nod = node1%internal_node * nfilter2_3
 !
       ele1%numele = node1%numnod - 1
 !
@@ -102,7 +103,7 @@
 !
       integer (kind = kint) :: i
 !
-      do i = 1, internal_node
+      do i = 1, node1%internal_node
         inod_global(i) = i
       end do
 !
@@ -118,7 +119,7 @@
 !
       integer (kind = kint) :: i
 !
-      do i = 1, internal_node - 1
+      do i = 1, node1%internal_node - 1
         ie_edge(i,1) = i
         ie_edge(i,2) = i+1
       end do
@@ -135,7 +136,8 @@
       integer (kind = kint) :: i
 !
       do i = 1, node1%numnod
-        xx(i,3) = zsize * (-0.5d0 + dble(i-1) / dble(internal_node-1) )
+        xx(i,3) = zsize * (-0.5d0 + dble(i-1)                           &
+     &                   / dble(node1%internal_node-1) )
       end do
 !
       end subroutine set_liner_grids
@@ -154,7 +156,7 @@
 !
         do i = 1, node1%numnod
           xx(i,3) = -0.5d0 * zsize                                      &
-     &         * cos (pi* dble(i - 1) / dble(internal_node-1) )
+     &         * cos (pi* dble(i - 1) / dble(node1%internal_node-1) )
         end do
 !
       end subroutine set_chebyshev_grids
@@ -173,7 +175,7 @@
 !
         do i = 1, node1%numnod
           xx(i,3) = -0.5d0*zsize - zsize                                &
-     &         * cos (pi* dble(i - 1) / dble(2*(internal_node-1)) )
+     &         * cos (pi* dble(i-1) / dble(2*(node1%internal_node-1)) )
         end do
 !
       end subroutine set_half_chebyshev_grids
@@ -188,7 +190,7 @@
 !
 !
         do i = 1, node1%numnod
-          xx(i,3) = 2.0d0 * dble(i-1) - dble(internal_node-1)
+          xx(i,3) = 2.0d0 * dble(i-1) - dble(node1%internal_node-1)
         end do
 !
       end subroutine set_test_grids
@@ -205,8 +207,8 @@
       pi = four * atan(one)
 !
         do i = 1, node1%numnod
-          xx(i,3) = - dble(internal_node-1)                             &
-     &         * cos (pi* dble(i - 1) / dble(internal_node-1) ) 
+          xx(i,3) = - dble(node1%internal_node-1)                       &
+     &         * cos (pi* dble(i - 1) / dble(node1%internal_node-1) ) 
         end do
 !
       end subroutine set_test_grids_2

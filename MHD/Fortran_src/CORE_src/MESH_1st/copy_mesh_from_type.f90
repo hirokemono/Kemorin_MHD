@@ -110,32 +110,33 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine copy_node_geometry_from_type(node)
+      subroutine copy_node_geometry_from_type(node_org)
 !
       use m_geometry_parameter
       use m_geometry_data
       use t_geometry_data
 !
-      type(node_data), intent(inout) :: node
+      type(node_data), intent(inout) :: node_org
 !
       integer(kind = kint) :: inod
 !
 !
-      node1%numnod =  node%numnod
-      internal_node = node%internal_node
+      node1%numnod =        node_org%numnod
+      node1%internal_node = node_org%internal_node
+      internal_node = node1%internal_node
 !
       call allocate_node_geometry
 !
 !$omp parallel do
       do inod = 1, node1%numnod
-        inod_global(inod) = node%inod_global(inod)
-        xx(inod,1) = node%xx(inod,1)
-        xx(inod,2) = node%xx(inod,2)
-        xx(inod,3) = node%xx(inod,3)
+        inod_global(inod) = node_org%inod_global(inod)
+        xx(inod,1) = node_org%xx(inod,1)
+        xx(inod,2) = node_org%xx(inod,2)
+        xx(inod,3) = node_org%xx(inod,3)
       end do
 !$omp end parallel do
 !
-      call deallocate_node_geometry_type(node)
+      call deallocate_node_geometry_type(node_org)
 !
       end subroutine copy_node_geometry_from_type
 !
@@ -202,8 +203,8 @@
 !
       if(node%numnod .ne. node1%numnod) write(*,*) 'numnod',            &
      &      my_rank, node%numnod, node1%numnod
-      if(node%internal_node .ne. internal_node) write(*,*)              &
-     &      'numnod', my_rank, node%internal_node, internal_node
+      if(node%internal_node .ne. node1%internal_node) write(*,*)        &
+     &      'numnod', my_rank, node%internal_node, node1%internal_node
       do i = 1, node1%numnod
         err = sqrt((node%xx(i,1) - xx(i,1))**2                          &
      &           + (node%xx(i,2) - xx(i,2))**2                          &

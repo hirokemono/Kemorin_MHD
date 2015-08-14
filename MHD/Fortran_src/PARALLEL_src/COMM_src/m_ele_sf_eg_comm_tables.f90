@@ -93,7 +93,8 @@
       call allocate_numnod_stack(nprocs)
 !
       call count_number_of_node_stack(node1%numnod, istack_numnod)
-      call count_number_of_node_stack(internal_node, istack_internod)
+      call count_number_of_node_stack                                   &
+     &   (node1%internal_node, istack_internod)
 !
       end subroutine const_global_numnod_list_1st
 !

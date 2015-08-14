@@ -37,7 +37,7 @@
 !
 !
       write(50+my_rank,*) 'numnod, internal_node'
-      write(50+my_rank,'(2i16)') node1%numnod, internal_node
+      write(50+my_rank,'(2i16)') node1%numnod, node1%internal_node
 !
       write(50+my_rank,*) 'inod, position'
       do inod = 1, node1%numnod

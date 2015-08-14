@@ -132,7 +132,6 @@
 !
       use calypso_mpi
       use m_control_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use t_group_data
 !
@@ -168,7 +167,7 @@
         do inum = 1, num_monitor
           if (nod_grp%grp_name(i) .eq. monitor_grp(inum)) then
             do k= nod_grp%istack_grp(i-1)+1, nod_grp%istack_grp(i)
-              if( nod_grp%item_grp(k) .le. internal_node ) then 
+              if( nod_grp%item_grp(k) .le. node1%internal_node ) then 
                 num_monitor_local = num_monitor_local + 1
                 monitor_local(num_monitor_local) = nod_grp%item_grp(k)
               end if

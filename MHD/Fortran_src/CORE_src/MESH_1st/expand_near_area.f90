@@ -75,8 +75,9 @@
 !
       call allocate_iflag_expand(node1%numnod)
 !
-      call set_expand_flag(node1%numnod, internal_node, nref_neib,      &
-     &    near_node1_tbl%num_nod, iflag_expand, iflag_finish)
+      call set_expand_flag(node1%numnod, node1%internal_node,           &
+     &    nref_neib, near_node1_tbl%num_nod, iflag_expand,              &
+     &    iflag_finish)
 !
 !      call check_near_elements(my_rank, node1%numnod, near_ele1_tbl)
 !
@@ -88,8 +89,9 @@
         call expand_element_list
         call expand_node_list
 !
-        call set_expand_flag(node1%numnod, internal_node, nref_neib,    &
-     &      near_node1_tbl%num_nod, iflag_expand, iflag_finish)
+        call set_expand_flag(node1%numnod, node1%internal_node,         &
+     &      nref_neib, near_node1_tbl%num_nod, iflag_expand,            &
+     &      iflag_finish)
 !
         if (iflag_finish .eq. 0) exit
       end do

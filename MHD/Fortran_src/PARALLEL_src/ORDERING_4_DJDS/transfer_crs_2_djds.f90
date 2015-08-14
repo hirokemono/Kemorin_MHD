@@ -68,10 +68,11 @@
 !C +-------------+
 !
       call allocate_vector_data_4_djds(node1%numnod)
-      call allocate_matrix_data_4_djds(internal_node, node1%numnod)
+      call allocate_matrix_data_4_djds                                  &
+     &   (node1%internal_node, node1%numnod)
 !
        if (iflag_debug.eq.1) write(*,*) 'copy_matrix_2_djds_NN'
-      call copy_matrix_2_djds_NN(internal_node, node1%numnod)
+      call copy_matrix_2_djds_NN(node1%internal_node, node1%numnod)
        if (iflag_debug.eq.1) write(*,*) 'copy_RH_vect_2_crs_nn'
       call copy_RH_vect_2_crs_nn(node1%numnod)
 !

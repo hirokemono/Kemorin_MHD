@@ -38,7 +38,7 @@
 !
       call count_number_4_smp( np_smp, ione, node1%numnod,              &
      &       node1%istack_nod_smp, maxnod_4_smp )
-      call count_number_4_smp(np_smp, ione, internal_node,              &
+      call count_number_4_smp(np_smp, ione, node1%internal_node,        &
      &       node1%istack_internal_smp, max_in_nod_4_smp)
 !
       end subroutine set_smp_data_4_node
@@ -99,7 +99,8 @@
       use count_overlap
 !
 !
-      call set_overlap_flag(np_smp, ele1%istack_ele_smp, internal_node, &
+      call set_overlap_flag                                             &
+     &   (np_smp, ele1%istack_ele_smp, node1%internal_node,             &
      &    ele1%numele, ie(1,1), internal_ele, interior_ele)
 !
       call copy_real_overlap_flag(np_smp, ele1%istack_ele_smp,          &
@@ -115,7 +116,8 @@
       use m_geometry_data
       use count_overlap
 !
-      call set_overlap_flag(np_smp, isurf_smp_stack, internal_node,     &
+      call set_overlap_flag                                             &
+     &   (np_smp, isurf_smp_stack, node1%internal_node,                 &
      &    numsurf, ie_surf(1,1), internal_surf, interior_surf)
 !
       end subroutine count_overlap_surface
@@ -128,7 +130,8 @@
       use m_geometry_data
       use count_overlap
 !
-      call set_overlap_flag(np_smp, iedge_smp_stack, internal_node,     &
+      call set_overlap_flag                                             &
+     &   (np_smp, iedge_smp_stack, node1%internal_node,                 &
      &    numedge, ie_edge(1,1), internal_edge, interior_edge)
 !
       end subroutine count_overlap_edge

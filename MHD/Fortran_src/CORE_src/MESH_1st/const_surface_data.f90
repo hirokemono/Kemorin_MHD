@@ -130,7 +130,7 @@
      &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash)
 !
       if (iflag_debug.eq.1) write(*,*) 'mark_external_surface'
-      call mark_external_surface(internal_node, node1%numnod,           &
+      call mark_external_surface(node1%internal_node, node1%numnod,     &
      &    ele1%numele, ele1%nnod_4_ele, nnod_4_surf, ie,                &
      &    sf_ele_tbl%istack_hash, sf_ele_tbl%iend_hash,                 &
      &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash)

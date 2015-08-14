@@ -35,7 +35,7 @@
       use m_solver_djds_MHD
 !
 !
-      call alloc_type_djds11_mat(node1%numnod, internal_node,           &
+      call alloc_type_djds11_mat(node1%numnod, node1%internal_node,     &
      &    DJDS_fluid, Tmat_DJDS)
       call reset_aiccg_temp
 !

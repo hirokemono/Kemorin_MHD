@@ -55,7 +55,7 @@
 
         write(*,*) 'precond_DJDSNN'
         call precond_DJDSNN                                             &
-     &    (internal_node, node1%numnod, NB_djds, np_smp,                &
+     &    (node1%internal_node, node1%numnod, NB_djds, np_smp,          &
      &     node1%istack_internal_smp, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, &
      &     aiccg(im_d), ALUG_L, ALUG_U, precond_4_solver, sigma_diag)
 !
@@ -66,7 +66,7 @@
         write(*,*) 'init_solveNN_DJDS_kemo', my_rank
 !       if (my_rank.eq.0) write(*,*) 'init_solveNN_DJDS_kemo'
       call init_solveNN_DJDS_kemo                                       &
-     &   ( internal_node, node1%numnod, NB_djds, NLmax, NUmax,          &
+     &   ( node1%internal_node, node1%numnod, NB_djds, NLmax, NUmax,    &
      &     itotal_l, itotal_u, NHYP, np_smp, node1%istack_internal_smp, &
      &     STACKmc, NLmaxHYP, NUmaxHYP, IVECT,                          &
      &     NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,                  &

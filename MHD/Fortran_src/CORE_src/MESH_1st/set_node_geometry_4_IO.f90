@@ -33,8 +33,8 @@
       integer(kind = kint) :: inod
 !
 !
-      numnod_dummy = node1%numnod
-      internal_node_dummy = internal_node
+      numnod_dummy =        node1%numnod
+      internal_node_dummy = node1%internal_node
 !
       call allocate_node_data_dummy
 !
@@ -56,8 +56,8 @@
       integer(kind = kint) :: inod
 !
 !
-      numnod_dummy = node1%numnod
-      internal_node_dummy = internal_node
+      numnod_dummy =        node1%numnod
+      internal_node_dummy = node1%internal_node
 !
       call allocate_node_data_dummy
 !
@@ -80,8 +80,8 @@
       integer(kind = kint) :: inod
 !
 !
-      numnod_dummy = node1%numnod
-      internal_node_dummy = internal_node
+      numnod_dummy =        node1%numnod
+      internal_node_dummy = node1%internal_node
 !
       call allocate_node_data_dummy
 !
@@ -105,8 +105,9 @@
       integer(kind = kint) :: inod
 !
 !
-      node1%numnod = numnod_dummy
-      internal_node = internal_node_dummy
+      node1%numnod =        numnod_dummy
+      node1%internal_node = internal_node_dummy
+      internal_node = node1%internal_node
 !
       call allocate_node_geometry
 !

@@ -56,7 +56,7 @@
 !
 !
       node%numnod =        node1%numnod
-      node%internal_node = internal_node
+      node%internal_node = node1%internal_node
 !
       node%inod_global => inod_global
       node%xx =>  xx

@@ -42,7 +42,7 @@
       use m_solver_djds_MHD
 !
 !
-      call alloc_type_djds33_mat(node1%numnod, internal_node,           &
+      call alloc_type_djds33_mat(node1%numnod, node1%internal_node,     &
      &    DJDS_fluid, Vmat_DJDS)
       call reset_aiccg_velo
 !
@@ -56,7 +56,7 @@
       use m_solver_djds_MHD
 !
 !
-      call alloc_type_djds11_mat(node1%numnod, internal_node,           &
+      call alloc_type_djds11_mat(node1%numnod, node1%internal_node,     &
      &    DJDS_fl_l, Pmat_DJDS)
       call reset_aiccg_press
 !

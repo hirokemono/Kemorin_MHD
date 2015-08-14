@@ -25,8 +25,8 @@
       use m_geometry_data
 !
 !
-      inter_nod_3dfilter = internal_node
-      nnod_filtering = node1%numnod
+      inter_nod_3dfilter = node1%internal_node
+      nnod_filtering =     node1%numnod
       call allocate_globalnod_filter
 !
       id_globalnod_filtering(1:node1%numnod)                            &
