@@ -46,7 +46,7 @@
           ix = int_start3(i0) + ii
 !
           call s_cal_jacobian_3d_8(node1%numnod, ele1%numele, np_smp,   &
-     &        ele1%istack_ele_smp, ele1%ie, xx,                         &
+     &        ele1%istack_ele_smp, ele1%ie, node1%xx,                   &
      &        xjac(1,ix), axjac(1,ix),                                  &
      &        dnx(1,1,ix,1), dnx(1,1,ix,2), dnx(1,1,ix,3),              &
      &        dxidx_1(1,ix,1,1), dxidx_1(1,ix,2,1), dxidx_1(1,ix,3,1),  &
@@ -80,7 +80,7 @@
           ix = int_start2(i0) + ii
 !
           call s_cal_jacobian_2d_4(node1%numnod, numsurf,               &
-     &        ie_surf, xx, np_smp, isurf_smp_stack,                     &
+     &        ie_surf, node1%xx, np_smp, isurf_smp_stack,               &
      &        jac_2d_l%xj_sf(1:numsurf,ix),                             &
      &        jac_2d_l%axj_sf(1:numsurf,ix),                            &
      &        jac_2d_l%xsf_sf(1:numsurf,ix,1),                          &
@@ -114,7 +114,7 @@
           ix = int_start1(i0) + ii
 !
           call s_cal_jacobian_1d_2(node1%numnod, numedge,               &
-     &        ie_edge, xx, np_smp, iedge_smp_stack,                     &
+     &        ie_edge, node1%xx, np_smp, iedge_smp_stack,               &
      &        jac_1d_l%xj_edge(1:numedge,ix),                           &
      &        jac_1d_l%axj_edge(1:numedge,ix),                          &
      &        jac_1d_l%xeg_edge(1:numedge,ix,1),                        &
@@ -152,7 +152,7 @@
           ix = int_start2(i0) + ii
 !
           call s_cal_jacobian_sf_grp_4                                  &
-     &       (node1%numnod, ele1%numele, ele1%ie, xx,                   &
+     &       (node1%numnod, ele1%numele, ele1%ie, node1%xx,             &
      &        sf_grp%num_grp, sf_grp%num_item, sf_grp%item_sf_grp,      &
      &        np_smp, sf_grp%num_grp_smp, sf_grp%istack_grp_smp,        &
      &        jac_sf_grp_l%xj_sf(1:sf_grp%num_item,ix),                 &
