@@ -41,17 +41,23 @@
 !
 !
       if      (ele1%nnod_4_ele .eq. num_t_linear) then
-        call fem_element_length_linear(max_int_point, nele_filter,      &
+        call fem_element_length_linear                                  &
+     &     (node1%numnod, ele1%numele, xx, ele1%ie,                     &
+     &      ele1%istack_ele_smp, max_int_point, nele_filter,            &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
       else if (ele1%nnod_4_ele .eq. num_t_quad) then
-        call fem_element_length_quad(max_int_point, nele_filter,        &
+        call fem_element_length_quad                                    &
+     &     (node1%numnod, ele1%numele, xx, ele1%ie,                     &
+     &      ele1%istack_ele_smp, max_int_point, nele_filter,            &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
       else if (ele1%nnod_4_ele .eq. num_t_lag) then
-        call fem_element_length_lag(max_int_point, nele_filter,         &
+        call fem_element_length_lag                                     &
+     &     (node1%numnod, ele1%numele, xx, ele1%ie,                     &
+     &      ele1%istack_ele_smp, max_int_point, nele_filter,            &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
@@ -147,16 +153,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_element_length_linear(n_int, nele_filter,          &
+      subroutine fem_element_length_linear(numnod, numele, xx,          &
+     &          ie, iele_smp_stack, n_int, nele_filter,                 &
      &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
      &          dydxi_ele, dydei_ele, dydzi_ele,                        &
      &          dzdxi_ele, dzdei_ele, dzdzi_ele)
 !
-      use m_geometry_parameter
       use m_machine_parameter
-      use m_geometry_data
+      use m_geometry_constants
       use m_fem_gauss_int_coefs
       use m_shape_functions
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
+      integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: n_int
       integer(kind = kint), intent(in) :: nele_filter
@@ -180,8 +191,8 @@
 !$omp&                    inod4,inod5,inod6,inod7,inod8)
       do iproc = 1, np_smp
 !
-        ist = ele1%istack_ele_smp(iproc-1)+1
-        ied = ele1%istack_ele_smp(iproc)
+        ist = iele_smp_stack(iproc-1)+1
+        ied = iele_smp_stack(iproc)
 !
         dxdxi_ele(ist:ied) = 0.0d0
         dxdei_ele(ist:ied) = 0.0d0
@@ -316,16 +327,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_element_length_quad(n_int, nele_filter,            &
+      subroutine fem_element_length_quad(numnod, numele, xx,            &
+     &          ie, iele_smp_stack, n_int, nele_filter,                 &
      &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
      &          dydxi_ele, dydei_ele, dydzi_ele,                        &
      &          dzdxi_ele, dzdei_ele, dzdzi_ele)
 !
-      use m_geometry_parameter
       use m_machine_parameter
-      use m_geometry_data
+      use m_geometry_constants
       use m_fem_gauss_int_coefs
       use m_shape_functions
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_quad)
+      integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: n_int
       integer(kind = kint), intent(in) :: nele_filter
@@ -353,8 +369,8 @@
 !$omp&                    inod17,inod18,inod19,inod20)
       do iproc = 1, np_smp
 !
-        ist = ele1%istack_ele_smp(iproc-1)+1
-        ied = ele1%istack_ele_smp(iproc)
+        ist = iele_smp_stack(iproc-1)+1
+        ied = iele_smp_stack(iproc)
 !
         dxdxi_ele(ist:ied) = 0.0d0
         dxdei_ele(ist:ied) = 0.0d0
@@ -609,16 +625,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_element_length_lag(n_int, nele_filter,             &
+      subroutine fem_element_length_lag(numnod, numele, xx,             &
+     &          ie, iele_smp_stack, n_int, nele_filter,                 &
      &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
      &          dydxi_ele, dydei_ele, dydzi_ele,                        &
      &          dzdxi_ele, dzdei_ele, dzdzi_ele)
 !
-      use m_geometry_parameter
       use m_machine_parameter
-      use m_geometry_data
+      use m_geometry_constants
       use m_fem_gauss_int_coefs
       use m_shape_functions
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_lag)
+      integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: n_int
       integer(kind = kint), intent(in) :: nele_filter
@@ -649,8 +670,8 @@
 !$omp&                    inod23,inod24,inod25,inod26,inod27)
       do iproc = 1, np_smp
 !
-        ist = ele1%istack_ele_smp(iproc-1)+1
-        ied = ele1%istack_ele_smp(iproc)
+        ist = iele_smp_stack(iproc-1)+1
+        ied = iele_smp_stack(iproc)
 !
         dxdxi_ele(ist:ied) = 0.0d0
         dxdei_ele(ist:ied) = 0.0d0

@@ -69,7 +69,7 @@
           ist_grp =   istack_egrp(igrp-1) + 1
           nitem_grp = istack_egrp(igrp) - istack_egrp(igrp-1)
           call int_vol_rms_ave_1egrp_q                                  &
-     &       (node1%numnod, ele1%numele, ie, e_multi,                   &
+     &       (node1%numnod, ele1%numele, ele1%ie, e_multi,              &
      &        nitem_grp, iele_grp(ist_grp), num_int, ntot_int_3d,       &
      &        xjac, an, d_nod, ave_l(igrp), rms_l(igrp) )
         end do
@@ -82,7 +82,7 @@
           ist_grp =   istack_egrp(igrp-1) + 1
           nitem_grp = istack_egrp(igrp) - istack_egrp(igrp-1)
           call int_vol_rms_ave_1egrp_l                                  &
-     &       (node1%numnod, ele1%numele, ie, e_multi,                   &
+     &       (node1%numnod, ele1%numele, ele1%ie, e_multi,              &
      &        nitem_grp, iele_grp(ist_grp), num_int, ntot_int_3d,       &
      &        xjac, an, d_nod, ave_l(igrp), rms_l(igrp) )
         end do
@@ -108,12 +108,12 @@
 !
       if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vol_rms_ave_1egrp_q                                    &
-     &     (node1%numnod, ele1%numele, ie, e_multi,                     &
+     &     (node1%numnod, ele1%numele, ele1%ie, e_multi,                &
      &      nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, an,        &
      &      d_nod, ave_l, rms_l)
       else
         call int_vol_rms_ave_1egrp_l                                    &
-     &     (node1%numnod, ele1%numele, ie, e_multi,                     &
+     &     (node1%numnod, ele1%numele, ele1%ie, e_multi,                &
      &      nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, an,        &
      &      d_nod, ave_l, rms_l)
       end if
@@ -152,7 +152,7 @@
           ist_grp =   istack_egrp(igrp-1) + 1
           nitem_grp = istack_egrp(igrp) - istack_egrp(igrp-1)
           call int_vol_2rms_ave_1egrp_q                                 &
-     &       (node1%numnod, ele1%numele, ie, e_multi,                   &
+     &       (node1%numnod, ele1%numele, ele1%ie, e_multi,              &
      &        nitem_grp, iele_grp(ist_grp), num_int, ntot_int_3d,       &
      &        xjac, an, d1_nod, d2_nod, ave_1(igrp), rms_1(igrp),       &
      &        ave_2(igrp), rms_2(igrp) )
@@ -166,7 +166,7 @@
           ist_grp =   istack_egrp(igrp-1) + 1
           nitem_grp = istack_egrp(igrp) - istack_egrp(igrp-1)
           call int_vol_2rms_ave_1egrp_l                                 &
-     &       (node1%numnod, ele1%numele, ie, e_multi,                   &
+     &       (node1%numnod, ele1%numele, ele1%ie, e_multi,              &
      &        nitem_grp, iele_grp(ist_grp), num_int, ntot_int_3d,       &
      &        xjac, an, d1_nod, d2_nod, ave_1(igrp), rms_1(igrp),       &
      &        ave_2(igrp), rms_2(igrp) )
@@ -195,12 +195,12 @@
 !
       if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vol_2rms_ave_1egrp_q                                   &
-     &     (node1%numnod, ele1%numele, ie, e_multi,                     &
+     &     (node1%numnod, ele1%numele, ele1%ie, e_multi,                &
      &      nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, aw,        &
      &      d1_nod, d2_nod, ave_1, rms_1, ave_2, rms_2)
       else
         call int_vol_2rms_ave_1egrp_l                                   &
-     &     (node1%numnod, ele1%numele, ie, e_multi,                     &
+     &     (node1%numnod, ele1%numele, ele1%ie, e_multi,                &
      &      nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, an,        &
      &      d1_nod, d2_nod, ave_1, rms_1, ave_2, rms_2)
       end if
@@ -240,7 +240,7 @@
           ist_grp =   istack_egrp(igrp-1) + 1
           nitem_grp = istack_egrp(igrp) - istack_egrp(igrp-1)
           call int_vol_dev_cor_1egrp_q                                  &
-     &       (node1%numnod, ele1%numele, ie, e_multi,                   &
+     &       (node1%numnod, ele1%numele, ele1%ie, e_multi,              &
      &        nitem_grp, iele_grp(ist_grp), num_int, ntot_int_3d,       &
      &        xjac, aw, d1_nod, d2_nod, ave_1(igrp), ave_2(igrp),       &
      &        sig_1(igrp), sig_2(igrp), cov_l(igrp) )
@@ -254,7 +254,7 @@
           ist_grp =   istack_egrp(igrp-1) + 1
           nitem_grp = istack_egrp(igrp) - istack_egrp(igrp-1)
           call int_vol_dev_cor_1egrp_l                                  &
-     &       (node1%numnod, ele1%numele, ie, e_multi,                   &
+     &       (node1%numnod, ele1%numele, ele1%ie, e_multi,              &
      &        nitem_grp, iele_grp(ist_grp), num_int, ntot_int_3d,       &
      &        xjac, an, d1_nod, d2_nod, ave_1(igrp), ave_2(igrp),       &
      &        sig_1(igrp), sig_2(igrp), cov_l(igrp) )
@@ -284,12 +284,12 @@
 !
       if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vol_dev_cor_1egrp_q                                    &
-     &     (node1%numnod, ele1%numele, ie, e_multi,                     &
+     &     (node1%numnod, ele1%numele, ele1%ie, e_multi,                &
      &      nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, aw,        &
      &      d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
       else
         call int_vol_dev_cor_1egrp_l                                    &
-     &     (node1%numnod, ele1%numele, ie, e_multi,                     &
+     &     (node1%numnod, ele1%numele, ele1%ie, e_multi,                &
      &      nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, an,        &
      &      d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
       end if

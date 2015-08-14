@@ -1,16 +1,21 @@
-!m_radial_fem_jacobian.f90
-!     module m_radial_fem_jacobian
+!>@file   m_radial_fem_jacobian.f90
+!!@brief  module m_radial_fem_jacobian
+!!
+!!@author H. Matsui
+!!@date Programmed on June., 2013
 !
-!     Written by H. Matsui on Sep. 2010
-!
-!      subroutine alloc_linear_radial_jac
-!      subroutine alloc_quad_radial_jac
-!      subroutine dealloc_linear_radial_jac
-!      subroutine dealloc_quad_radial_jac
-!
-!      subroutine set_num_radial_element(nri)
-!      subroutine set_radial_linear_fem_connect
-!      subroutine set_radial_quad_fem_connect
+!>@brief  Jacobians for radial FEM 
+!!
+!!@verbatim
+!!      subroutine alloc_linear_radial_jac
+!!      subroutine alloc_quad_radial_jac
+!!      subroutine dealloc_linear_radial_jac
+!!      subroutine dealloc_quad_radial_jac
+!!
+!!      subroutine set_num_radial_element(nri)
+!!      subroutine set_radial_linear_fem_connect
+!!      subroutine set_radial_quad_fem_connect
+!!@verbatim
 !
       module m_radial_fem_jacobian
 !

@@ -61,7 +61,7 @@
       call set_stack_tbl_wtype_org_smp
 !
       if (iflag_debug.eq.1) write(*,*) 'const_interporate_mat'
-      call const_interporate_mat(ele1%numele, ele1%nnod_4_ele, ie)
+      call const_interporate_mat(ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
       call verify_vector_for_solver(n_sym_tensor, node1%numnod)
       call verify_2nd_iccg_matrix(n_sym_tensor, nod_dest%numnod)

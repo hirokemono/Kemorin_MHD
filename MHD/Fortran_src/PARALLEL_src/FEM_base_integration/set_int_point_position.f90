@@ -17,8 +17,6 @@
 !
       use m_precision
 !
-      use m_geometry_data
-!
       implicit none
 !
 ! ----------------------------------------------------------------------
@@ -43,24 +41,31 @@
 !
 !
       if      (ele1%nnod_4_ele .eq. num_t_lag) then
-        call set_int_point_position_27(nele_grp, iele_grp, an,          &
-     &          xx_int, yy_int, zz_int)
+        call set_int_point_position_27                                  &
+     &     (node1%numnod, ele1%numele, xx, ele1%ie,                     &
+     &      nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
       else if (ele1%nnod_4_ele .eq. num_t_quad) then
-        call set_int_point_position_20(nele_grp, iele_grp, an,          &
-     &          xx_int, yy_int, zz_int)
+        call set_int_point_position_20                                  &
+     &     (node1%numnod, ele1%numele, xx, ele1%ie,                     &
+     &      nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
       else if (ele1%nnod_4_ele .eq. num_t_linear) then
-        call set_int_point_position_8(nele_grp, iele_grp, an,           &
-     &          xx_int, yy_int, zz_int)
+        call set_int_point_position_8                                   &
+     &     (node1%numnod, ele1%numele, xx, ele1%ie,                     &
+     &      nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
       end if
 !
       end subroutine s_set_int_point_position
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_int_point_position_27(nele_grp, iele_grp, an,      &
-     &          xx_int, yy_int, zz_int)
+      subroutine set_int_point_position_27(numnod, numele, xx, ie,      &
+     &          nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
 !
-      use m_geometry_data
+      use m_geometry_constants
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_lag)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: nele_grp
       integer(kind = kint), intent(in) :: iele_grp(nele_grp)
@@ -164,11 +169,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_int_point_position_20(nele_grp, iele_grp, an,      &
-     &          xx_int, yy_int, zz_int)
+      subroutine set_int_point_position_20(numnod, numele, xx, ie,      &
+     &          nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
 !
-      use m_finite_element_matrix
-      use m_geometry_data
+      use m_geometry_constants
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_quad)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: nele_grp
       integer(kind = kint), intent(in) :: iele_grp(nele_grp)
@@ -252,11 +260,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_int_point_position_8(nele_grp, iele_grp, an,       &
-     &          xx_int, yy_int, zz_int)
+      subroutine set_int_point_position_8(numnod, numele, xx, ie,       &
+     &          nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
 !
-      use m_finite_element_matrix
-      use m_geometry_data
+      use m_geometry_constants
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: ie(numele,num_t_linear)
+      real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: nele_grp
       integer(kind = kint), intent(in) :: iele_grp(nele_grp)

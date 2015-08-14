@@ -3,12 +3,18 @@
 !
 !      Written by H. Matsui on Nov., 2009
 !
-!      subroutine set_vector_2_each_ele_cnst(k2, vect_e, d_nod, coef)
-!      subroutine set_scalar_2_each_ele_cnst(k2, scalar_e, d_nod, coef)
-!      subroutine set_tensor_2_vec_each_ele_cnst(k2, nd, l_sim_t,       &
-!     &          vect_e, d_nod, coef)
-!      subroutine set_as_tsr_2_vec_each_ele_cnst(k2, nd, l_asim_t,      &
-!     &          vect_e, d_nod, coef)
+!!      subroutine set_vector_2_each_ele_cnst                           &
+!!     &         (numnod, numele, nnod_4_ele, ie, iele_smp_stack,       &
+!!     &          k2, vect_e, d_nod, coef)
+!!      subroutine set_scalar_2_each_ele_cnst                           &
+!!     &         (numnod, numele, nnod_4_ele, ie, iele_smp_stack,       &
+!!     &          k2, scalar_e, d_nod, coef)
+!!      subroutine set_tensor_2_vec_each_ele_cnst                       &
+!!     &         (numnod, numele, nnod_4_ele, ie, iele_smp_stack,       &
+!!     &          k2, nd, l_sim_t, vect_e, d_nod, coef)
+!!      subroutine set_as_tsr_2_vec_each_ele_cnst                       &
+!!     &         (numnod, numele, nnod_4_ele, ie, iele_smp_stack,       &
+!!     &          k2, nd, l_asim_t, vect_e, d_nod, coef)
 !
       module set_nodal_each_ele_w_const
 !
@@ -16,7 +22,7 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_geometry_data
+      use m_geometry_constants
 !
       implicit none
 !
@@ -26,20 +32,26 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_vector_2_each_ele_cnst(k2, vect_e, d_nod, coef)
+      subroutine set_vector_2_each_ele_cnst                             &
+     &         (numnod, numele, nnod_4_ele, ie, iele_smp_stack,         &
+     &          k2, vect_e, d_nod, coef)
+!
+      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: k2
-      real (kind=kreal), intent(in) :: d_nod(node1%numnod,3)
+      real (kind=kreal), intent(in) :: d_nod(numnod,3)
       real (kind=kreal), intent(in) :: coef
-      real (kind=kreal), intent(inout) :: vect_e(ele1%numele,3)
+      real (kind=kreal), intent(inout) :: vect_e(numele,3)
 !
       integer(kind = kint) :: iproc, inod, iele, ist, ied
 !
 !
 !$omp parallel do private(iele,inod,ist,ied) 
       do iproc = 1, np_smp
-        ist = ele1%istack_ele_smp(iproc-1) + 1
-        ied = ele1%istack_ele_smp(iproc)
+        ist = iele_smp_stack(iproc-1) + 1
+        ied = iele_smp_stack(iproc)
 !cdir nodep
         do iele = ist, ied
           inod = ie(iele,k2)
@@ -55,20 +67,26 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_scalar_2_each_ele_cnst(k2, scalar_e, d_nod, coef)
+      subroutine set_scalar_2_each_ele_cnst                             &
+     &         (numnod, numele, nnod_4_ele, ie, iele_smp_stack,         &
+     &          k2, scalar_e, d_nod, coef)
+!
+      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: k2
-      real (kind=kreal), intent(in) :: d_nod(node1%numnod)
+      real (kind=kreal), intent(in) :: d_nod(numnod)
       real (kind=kreal), intent(in) :: coef
-      real (kind=kreal), intent(inout) :: scalar_e(ele1%numele)
+      real (kind=kreal), intent(inout) :: scalar_e(numele)
 !
       integer(kind = kint) :: iproc, inod, iele, ist, ied
 !
 !
 !$omp parallel do private(iele,ist,ied) 
       do iproc = 1, np_smp
-        ist = ele1%istack_ele_smp(iproc-1) + 1
-        ied = ele1%istack_ele_smp(iproc)
+        ist = iele_smp_stack(iproc-1) + 1
+        ied = iele_smp_stack(iproc)
 !cdir nodep
         do iele = ist, ied
            inod = ie(iele,k2)
@@ -81,14 +99,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_tensor_2_vec_each_ele_cnst(k2, nd, l_sim_t,        &
-     &          vect_e, d_nod, coef)
+      subroutine set_tensor_2_vec_each_ele_cnst                         &
+     &         (numnod, numele, nnod_4_ele, ie, iele_smp_stack,         &
+     &          k2, nd, l_sim_t, vect_e, d_nod, coef)
+!
+      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: k2, nd
       integer(kind = kint), intent(in) :: l_sim_t(3,3)
-      real (kind=kreal), intent(in) :: d_nod(node1%numnod,6)
+      real (kind=kreal), intent(in) :: d_nod(numnod,6)
       real (kind=kreal), intent(in) :: coef
-      real (kind=kreal), intent(inout) :: vect_e(ele1%numele,3)
+      real (kind=kreal), intent(inout) :: vect_e(numele,3)
 !
       integer(kind = kint) :: iproc, inod, iele, ist, ied
       integer(kind = kint) :: n1, n2, n3
@@ -100,8 +123,8 @@
 !
 !$omp parallel do private(iele,inod,ist,ied)
       do iproc = 1, np_smp
-        ist = ele1%istack_ele_smp(iproc-1) + 1
-        ied = ele1%istack_ele_smp(iproc)
+        ist = iele_smp_stack(iproc-1) + 1
+        ied = iele_smp_stack(iproc)
 !cdir nodep
         do iele = ist, ied
           inod = ie(iele,k2)
@@ -116,14 +139,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_as_tsr_2_vec_each_ele_cnst(k2, nd, l_asim_t,       &
-     &          vect_e, d_nod, coef)
+      subroutine set_as_tsr_2_vec_each_ele_cnst                         &
+     &         (numnod, numele, nnod_4_ele, ie, iele_smp_stack,         &
+     &          k2, nd, l_asim_t, vect_e, d_nod, coef)
+!
+      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: k2, nd
       integer(kind = kint), intent(in) :: l_asim_t(3,3,2)
-      real (kind=kreal), intent(in) :: d_nod(node1%numnod,3)
+      real (kind=kreal), intent(in) :: d_nod(numnod,3)
       real (kind=kreal), intent(in) :: coef
-      real (kind=kreal), intent(inout) :: vect_e(ele1%numele,3)
+      real (kind=kreal), intent(inout) :: vect_e(numele,3)
 !
       integer(kind = kint) :: iproc, inod, iele, ist, ied
       integer(kind = kint) :: n1, n2, n3
@@ -135,8 +163,8 @@
 !
 !$omp parallel do private(iele,inod,ist,ied) 
       do iproc = 1, np_smp
-        ist = ele1%istack_ele_smp(iproc-1) + 1
-        ied = ele1%istack_ele_smp(iproc)
+        ist = iele_smp_stack(iproc-1) + 1
+        ied = iele_smp_stack(iproc)
 !cdir nodep
         do iele = ist, ied
           inod = ie(iele,k2)
