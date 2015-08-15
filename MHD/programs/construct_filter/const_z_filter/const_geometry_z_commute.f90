@@ -83,7 +83,7 @@
       ele1%numele = node1%numnod - 1
 !
       first_ele_type = 331
-      numsurf = ele1%numele
+      surf1%numsurf = ele1%numele
       numedge = ele1%numele
       nnod_4_edge = 2
 !

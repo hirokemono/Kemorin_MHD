@@ -142,7 +142,6 @@
 !
 !
       surf1%numsurf = numele_dummy
-      numsurf =  surf1%numsurf
 !
       call allocate_surface_connect
 !

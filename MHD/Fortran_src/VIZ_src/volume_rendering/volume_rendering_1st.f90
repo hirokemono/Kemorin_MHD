@@ -83,7 +83,8 @@
       integer(kind = kint), intent(in) :: istep_pvr
 !
 !
-      call pvr_main(istep_pvr, node1%numnod, ele1%numele, numsurf,      &
+      call pvr_main                                                     &
+     &   (istep_pvr, node1%numnod, ele1%numele, surf1%numsurf,          &
      &    ele1%nnod_4_ele, nnod_4_surf, node1%istack_nod_smp,           &
      &    ele1%istack_ele_smp, node1%xx, radius, a_radius,              &
      &    s_cylinder, a_s_cylinder, ele1%ie,                            &

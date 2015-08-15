@@ -385,7 +385,7 @@
       integer(kind = kint) :: isurf, inum
 !
 !
-      do isurf = 1, numsurf
+      do isurf = 1, surf1%numsurf
         x_surf_comm(3*isurf-2) = x_surf(isurf,1)
         x_surf_comm(3*isurf-1) = x_surf(isurf,2)
         x_surf_comm(3*isurf  ) = x_surf(isurf,3)
@@ -397,7 +397,8 @@
         x_surf_comm(3*isurf  ) = 0.0d0
       end do
 !
-      call SOLVER_SEND_RECV_3_type(numsurf, surf_comm, x_surf_comm)
+      call SOLVER_SEND_RECV_3_type                                      &
+     &   (surf1%numsurf, surf_comm, x_surf_comm)
 !
       end subroutine surf_send_recv_test
 !
