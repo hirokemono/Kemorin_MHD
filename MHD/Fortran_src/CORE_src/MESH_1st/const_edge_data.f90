@@ -54,7 +54,6 @@
      &   (node1%numnod, ele1%numele, nnod_4_edge,                       &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &
      &    edge_ele_tbl%iflag_hash, edge1%numedge)
-      numedge = edge1%numedge
 !
       call allocate_edge_connect
       call allocate_edge_4_ele

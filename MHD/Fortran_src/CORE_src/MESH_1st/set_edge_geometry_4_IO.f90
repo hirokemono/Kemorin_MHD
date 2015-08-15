@@ -142,7 +142,6 @@
 !
 !
       edge1%numedge = numele_dummy
-      numedge =       edge1%numedge
 !
       call allocate_edge_connect
       call allocate_edge_4_ele

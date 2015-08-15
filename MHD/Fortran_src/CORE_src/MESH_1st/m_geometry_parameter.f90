@@ -37,7 +37,7 @@
 !>     number of internal surface on local PE
       integer( kind=kint )  ::  internal_surf
 !>     number of edge on local PE
-      integer( kind=kint )  ::  numedge
+!      integer( kind=kint )  ::  numedge
 !>     number of internal edge on local PE
       integer( kind=kint )  ::  internal_edge
 !

@@ -32,7 +32,7 @@
         inod_refine_nod(inod) = inod
       end do
 !
-      do iedge = 1, numedge
+      do iedge = 1, edge1%numedge
         ist = ntot_nod_refine_nod + istack_nod_refine_edge(iedge-1)
         jst = istack_nod_refine_edge(iedge-1) + 1
         jed = istack_nod_refine_edge(iedge)
