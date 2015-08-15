@@ -196,7 +196,7 @@
 !   set number of node in surface
 !
       call set_3D_nnod_4_sfed_by_ele                                    &
-     &   (ele1%nnod_4_ele, surf1%nnod_4_surf, nnod_4_edge)
+     &   (ele1%nnod_4_ele, surf1%nnod_4_surf, edge1%nnod_4_edge)
       call allocate_quad4_2_linear(ele1%nnod_4_ele)
 !
       call allocate_inod_in_surf
@@ -204,7 +204,7 @@
      &   (surf1%nnod_4_surf, node_on_sf, node_on_sf_n)
 !
       call allocate_inod_in_edge
-      call copy_inod_in_edge(nnod_4_edge,                               &
+      call copy_inod_in_edge(edge1%nnod_4_edge,                         &
      &    node_on_edge, node_on_edge_sf)
 !
       merged_surf%nnod_4_surf = surf1%nnod_4_surf

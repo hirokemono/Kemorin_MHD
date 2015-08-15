@@ -55,6 +55,7 @@
 !!      subroutine deallocate_iso_edge
 !!
 !!       subroutine allocate_inod_in_surf
+!!       subroutine allocate_inod_in_edge
 !!@endverbatim
 !!
 !>
@@ -88,7 +89,7 @@
 !
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
-!surf1%nnod_4_surf
+!surf1%istack_surf_smp
 !
 !>     Structure for edge data
       type(edge_data), save :: edge1
@@ -508,7 +509,7 @@
       use m_geometry_constants
 !
       allocate( iedge_4_sf(surf1%numsurf,nedge_4_surf) )
-      allocate( ie_edge(edge1%numedge,nnod_4_edge) )
+      allocate( ie_edge(edge1%numedge,edge1%nnod_4_edge) )
       allocate( iedge_global(edge1%numedge) )
       allocate( interior_edge(edge1%numedge) )
 !
@@ -714,5 +715,20 @@
        end subroutine allocate_inod_in_surf
 !
 !  ---------------------------------------------------------------------
+!
+       subroutine allocate_inod_in_edge
+!
+       use m_geometry_constants
+!
+!
+       allocate ( node_on_edge(edge1%nnod_4_edge,nedge_4_ele) )
+       allocate ( node_on_edge_sf(edge1%nnod_4_edge,nedge_4_surf) )
+!
+       node_on_edge =    0
+       node_on_edge_sf = 0
+!
+       end subroutine allocate_inod_in_edge
+!
+!-----------------------------------------------------------------------
 !
       end module m_geometry_data

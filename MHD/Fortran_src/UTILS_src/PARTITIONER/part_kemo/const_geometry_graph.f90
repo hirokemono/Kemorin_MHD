@@ -33,7 +33,7 @@
       use m_geometry_constants
 !
 !
-      if (nnod_4_edge .eq. num_quad_edge) then
+      if (edge1%nnod_4_edge .eq. num_quad_edge) then
         call const_geometry_graph_quad
       else
         call const_geometry_graph_linear

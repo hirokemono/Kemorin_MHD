@@ -128,7 +128,7 @@
       call alloc_numele_belonged(node1%numnod, host_edge)
 !
       call count_belonged_ele_4_node(node1%numnod, edge1%numedge,       &
-     &    nnod_4_edge, ie_edge, ione, edge1%numedge,                    &
+     &    edge1%nnod_4_edge, ie_edge, ione, edge1%numedge,              &
      &    host_edge%nele_4_node)
       call s_cal_minmax_and_stacks(node1%numnod,                        &
      &    host_edge%nele_4_node, izero, host_edge%istack_4_node,        &
@@ -138,7 +138,7 @@
       call alloc_iele_belonged(host_edge)
 !
       call set_belonged_ele_4_node(node1%numnod, edge1%numedge,         &
-     &    nnod_4_edge, ie_edge,  ione, edge1%numedge,                   &
+     &    edge1%nnod_4_edge, ie_edge,  ione, edge1%numedge,             &
      &    host_edge%ntot, host_edge%istack_4_node,                      &
      &    host_edge%nele_4_node, host_edge%iele_4_node,                 &
      &    host_edge%iconn_4_node)

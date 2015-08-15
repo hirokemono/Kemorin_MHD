@@ -139,7 +139,7 @@
 !
 !
       new_edge%numedge = numedge_4_subdomain(ip)
-      new_edge%nnod_4_edge = nnod_4_edge
+      new_edge%nnod_4_edge = edge1%nnod_4_edge
       call allocate_edge_connect_type(new_edge, new_surf%numsurf)
       call allocate_edge_4_ele_type(new_edge, new_ele%numele)
 !

@@ -54,7 +54,7 @@
       if(first_ele_type .eq. 332 .or. first_ele_type .eq. 333) then
         if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_edge_quad'
         call alloc_1d_jac_type                                          &
-     &     (edge1%numedge, nnod_4_edge, maxtot_int_1d, jac1_1d_q)
+     &     (edge1%numedge, edge1%nnod_4_edge, maxtot_int_1d, jac1_1d_q)
         call cal_jacobian_edge_quad(jac1_1d_q)
       else
         if (iflag_debug.eq.1) write(*,*) 'copy_1d_jacobians'

@@ -120,7 +120,7 @@
       surf%isf_4_ele =>     isf_4_ele
       surf%interior_surf => interior_surf
 !
-      surf%istack_surf_smp => isurf_smp_stack
+      surf%istack_surf_smp => surf1%istack_surf_smp
       surf%max_surf_smp =    maxsurf_4_smp
 !
       end subroutine link_surface_data_type
@@ -137,7 +137,7 @@
 !
 !
       edge%numedge =       edge1%numedge
-      edge%nnod_4_edge =   nnod_4_edge
+      edge%nnod_4_edge =   edge1%nnod_4_edge
 !
       edge%ie_edge =>       ie_edge
       edge%iedge_4_sf =>    iedge_4_sf

@@ -38,20 +38,20 @@
 !
 !
       call alloc_sum_hash(node1%numnod, ele1%numele, nedge_4_ele,       &
-     &    nnod_4_edge, edge_ele_tbl)
+     &    edge1%nnod_4_edge, edge_ele_tbl)
 !
 !   set hash data for edge elements using sum of local node ID
 !
       if (iflag_debug.eq.1) write(*,*) 'const_edge_hash_4_ele'
       call const_edge_hash_4_ele(node1%numnod,                          &
-     &    ele1%numele, ele1%nnod_4_ele, nnod_4_edge, ele1%ie,           &
+     &    ele1%numele, ele1%nnod_4_ele, edge1%nnod_4_edge, ele1%ie,     &
      &    edge_ele_tbl%num_hash, edge_ele_tbl%istack_hash,              &
      &    edge_ele_tbl%iend_hash, edge_ele_tbl%id_hash,                 &
      &    edge_ele_tbl%iflag_hash)
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_edges_by_ele'
       call count_num_edges_by_ele                                       &
-     &   (node1%numnod, ele1%numele, nnod_4_edge,                       &
+     &   (node1%numnod, ele1%numele, edge1%nnod_4_edge,                 &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &
      &    edge_ele_tbl%iflag_hash, edge1%numedge)
 !
@@ -60,7 +60,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_by_ele'
       call set_edges_connect_by_ele(node1%numnod, ele1%numele,          &
-     &    edge1%numedge, ele1%nnod_4_ele, nnod_4_edge, ele1%ie,         &
+     &    edge1%numedge, ele1%nnod_4_ele, edge1%nnod_4_edge, ele1%ie,   &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &
      &    edge_ele_tbl%id_hash, edge_ele_tbl%iflag_hash,                &
      &    ie_edge, iedge_4_ele, node_on_edge)
@@ -68,7 +68,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_4_sf'
       call set_edges_connect_4_sf                                       &
      &   (node1%numnod, ele1%numele, surf1%numsurf, edge1%numedge,      &
-     &    surf1%nnod_4_surf, nnod_4_edge, ie_surf, iedge_4_ele,         &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge, ie_surf, iedge_4_ele,   &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%id_hash,               &
      &    edge_ele_tbl%iflag_hash, ie_edge, iedge_4_sf)
 !

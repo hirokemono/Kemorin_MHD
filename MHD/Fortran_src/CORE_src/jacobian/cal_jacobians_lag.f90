@@ -84,7 +84,7 @@
           ix = int_start2(i0) + ii
 !
           call s_cal_jacobian_2d_9(node1%numnod, surf1%numsurf,         &
-     &        ie_surf, node1%xx, np_smp, isurf_smp_stack,               &
+     &        ie_surf, node1%xx, np_smp, surf1%istack_surf_smp,         &
      &        jac_2d_q%xj_sf(1:surf1%numsurf,ix),                       &
      &        jac_2d_q%axj_sf(1:surf1%numsurf,ix),                      &
      &        jac_2d_q%xsf_sf(1:surf1%numsurf,ix,1),                    &

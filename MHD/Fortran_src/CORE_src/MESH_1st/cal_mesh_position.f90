@@ -97,10 +97,10 @@
       use set_edge_position
       use coordinate_converter
 !
-      if (nnod_4_edge .eq. num_quad_edge) then
+      if (edge1%nnod_4_edge .eq. num_quad_edge) then
         call set_quad_edge_position(node1%numnod, edge1%numedge,        &
      &      ie_edge, node1%xx, x_edge)
-      else if (nnod_4_edge .eq. num_linear_edge) then
+      else if (edge1%nnod_4_edge .eq. num_linear_edge) then
         call set_linear_edge_position(node1%numnod, edge1%numedge,      &
      &      ie_edge, node1%xx, x_edge)
       end if

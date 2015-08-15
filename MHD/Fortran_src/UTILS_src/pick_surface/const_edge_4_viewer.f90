@@ -35,7 +35,7 @@
 !
 !
       call alloc_sum_hash(nodpetot_viewer, surfpetot_viewer,        &
-     &    nedge_4_surf, nnod_4_edge, edge_sf_tbl)
+     &    nedge_4_surf, edge1%nnod_4_edge, edge_sf_tbl)
 !
       call const_all_edge_4_viewer(edge_sf_tbl)
 !
@@ -72,13 +72,14 @@
 !
       write(*,*) 'const_edge_hash_4_sf'
       call const_edge_hash_4_sf(nodpetot_viewer, surfpetot_viewer,      &
-     &    surf1%nnod_4_surf, nnod_4_edge, ie_sf_viewer,                 &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge, ie_sf_viewer,           &
      &    ed_sf_tbl%num_hash, ed_sf_tbl%istack_hash,                    &
      &    ed_sf_tbl%iend_hash, ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash)
 !
       write(*,*) 'count_num_edges_by_sf'
-      call count_num_edges_by_sf(nodpetot_viewer, surfpetot_viewer,     &
-     &    nnod_4_edge, ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash,      &
+      call count_num_edges_by_sf                                        &
+     &   (nodpetot_viewer, surfpetot_viewer, edge1%nnod_4_edge,         &
+     &    ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash,                   &
      &    ed_sf_tbl%iflag_hash, edgepetot_viewer)
 !
       call allocate_edge_data_4_sf
@@ -86,7 +87,7 @@
       write(*,*) 'set_edges_connect_by_sf'
       call set_edges_connect_by_sf                                      &
      &   (nodpetot_viewer, surfpetot_viewer, edgepetot_viewer,          &
-     &    surf1%nnod_4_surf, nnod_4_edge, ie_sf_viewer,                 &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge, ie_sf_viewer,           &
      &    ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash,                   &
      &    ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash,                      &
      &    ie_edge_viewer, iedge_sf_viewer, node_on_edge_sf)
@@ -109,21 +110,22 @@
       write(*,*) 'const_part_edge_hash_4_sf'
       call const_part_edge_hash_4_sf                                    &
      &   (nodpetot_viewer, surfpetot_viewer, nsurf_domain_sf,           &
-     &    surf1%nnod_4_surf, nnod_4_edge,                               &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge,                         &
      &    ie_sf_viewer, isurf_domain_sf,                                &
      &    ed_sf_tbl%num_hash, ed_sf_tbl%istack_hash,                    &
      &    ed_sf_tbl%iend_hash, ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash)
 !
 !
-      call count_num_edges_by_sf(nodpetot_viewer, surfpetot_viewer,     &
-     &    nnod_4_edge, ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash,      &
+      call count_num_edges_by_sf                                        &
+     &   (nodpetot_viewer, surfpetot_viewer, edge1%nnod_4_edge,         &
+     &    ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash,                   &
      &    ed_sf_tbl%iflag_hash, nedge_domain_sf)
 !
       call allocate_domain_edge_item_sf
 !
       write(*,*) 'set_part_edges_4_sf'
       call set_part_edges_4_sf(nodpetot_viewer, surfpetot_viewer,       &
-     &    nnod_4_edge, nedge_domain_sf, iedge_sf_viewer,                &
+     &    edge1%nnod_4_edge, nedge_domain_sf, iedge_sf_viewer,          &
      &    ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash,                   &
      &    ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash,                      &
      &    edge_item_domain_sf)

@@ -73,7 +73,7 @@
       first_ele_type = i_ele_dummy(1)
 !
       call set_3D_nnod_4_ele_by_type(first_ele_type,                    &
-     &    ele1%nnod_4_ele, surf1%nnod_4_surf, nnod_4_edge)
+     &    ele1%nnod_4_ele, surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
 !
       call allocate_ele_connect_type(ele1)

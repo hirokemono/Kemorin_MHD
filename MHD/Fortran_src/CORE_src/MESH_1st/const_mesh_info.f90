@@ -132,7 +132,7 @@
       call deallocate_surface_geometry
       call deallocate_edge_geometry
 !
-      call deallocate_surf_param_smp
+      call deallocate_surf_param_smp_type(surf1)
       call deallocate_edge_param_smp
       call deallocate_node_param_smp_type(node1)
       call deallocate_ele_param_smp_type(ele1)
@@ -198,8 +198,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'allocate_inod_in_edge'
       call allocate_inod_in_edge
-      call copy_inod_in_edge(nnod_4_edge,                               &
-     &    node_on_edge, node_on_edge_sf)
+      call copy_inod_in_edge                                            &
+     &   (edge1%nnod_4_edge, node_on_edge, node_on_edge_sf)
 !
       end subroutine set_local_element_info
 !
@@ -284,8 +284,6 @@
         call count_overlap_edge
 !
       end if
-!
-!      if (iflag_debug.eq.1 ) call check_edge_surf_size_4_smp
 !
       end subroutine set_edge_and_surf_data
 !

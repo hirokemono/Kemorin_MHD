@@ -68,10 +68,10 @@
       use cal_minmax_and_stacks
 !
 !
-      call allocate_surf_param_smp
+      call allocate_surf_param_smp_type(surf1)
 !
       call count_number_4_smp( np_smp, ione, surf1%numsurf,             &
-     &       isurf_smp_stack, maxsurf_4_smp )
+     &    surf1%istack_surf_smp, maxsurf_4_smp )
 !
       end subroutine count_surf_size_4_smp
 !
@@ -117,7 +117,7 @@
       use count_overlap
 !
       call set_overlap_flag                                             &
-     &   (np_smp, isurf_smp_stack, node1%internal_node,                 &
+     &   (np_smp, surf1%istack_surf_smp, node1%internal_node,           &
      &    surf1%numsurf, ie_surf(1,1), internal_surf, interior_surf)
 !
       end subroutine count_overlap_surface

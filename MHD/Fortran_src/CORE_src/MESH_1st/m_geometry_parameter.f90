@@ -5,17 +5,12 @@
 !
 !   Written by H. Matsui & H. Okuda
 !
-!      subroutine allocate_inod_in_edge
 !      subroutine deallocate_inod_in_surf
 !      subroutine deallocate_inod_in_edge
 !
-!      subroutine allocate_surf_param_smp
 !      subroutine allocate_edge_param_smp
 !
-!      subroutine deallocate_surf_param_smp
 !      subroutine deallocate_edge_param_smp
-!
-!      subroutine check_edge_surf_size_4_smp
 !
 !
       module m_geometry_parameter
@@ -49,7 +44,7 @@
 !>   number of nodes in each surface
 !      integer(kind=kint) :: nnod_4_surf
 !>   number of nodes in each edge
-      integer(kind=kint) :: nnod_4_edge
+!      integer(kind=kint) :: nnod_4_edge
 !
 !>   local index for surface on each element
       integer (kind=kint), allocatable, target :: node_on_sf(:,:)
@@ -78,7 +73,7 @@
       integer( kind=kint )  ::  maxele_4_smp = 0
 !
 !>     smp stack for surface on  local PE
-      integer( kind=kint ), allocatable, target :: isurf_smp_stack(:)
+!a      integer( kind=kint ), allocatable, target :: isurf_smp_stack(:)
 !>     maximum number of smp surface on local PE
       integer( kind=kint )  ::  maxsurf_4_smp = 0
 !
@@ -90,21 +85,6 @@
 !-----------------------------------------------------------------------
 !
       contains
-!
-!-----------------------------------------------------------------------
-!
-       subroutine allocate_inod_in_edge
-!
-       use m_geometry_constants
-!
-!
-       allocate ( node_on_edge(nnod_4_edge,nedge_4_ele) )
-       allocate ( node_on_edge_sf(nnod_4_edge,nedge_4_surf) )
-!
-       node_on_edge =    0
-       node_on_edge_sf = 0
-!
-       end subroutine allocate_inod_in_edge
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -128,18 +108,6 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-!>    allocate smp stack table for surface
-       subroutine allocate_surf_param_smp
-!
-      use m_machine_parameter
-!
-       allocate( isurf_smp_stack(0:np_smp))
-       isurf_smp_stack = 0
-!
-       end subroutine allocate_surf_param_smp
-!
-!-----------------------------------------------------------------------
-!
 !>    allocate smp stack table for edge
       subroutine allocate_edge_param_smp
 !
@@ -153,33 +121,12 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-!>    release smp stack table for surface
-       subroutine deallocate_surf_param_smp
-!
-       deallocate( isurf_smp_stack)
-!
-       end subroutine deallocate_surf_param_smp
-!
-!-----------------------------------------------------------------------
-!
 !>    release smp stack table for edge
        subroutine deallocate_edge_param_smp
 !
        deallocate( iedge_smp_stack)
 !
        end subroutine deallocate_edge_param_smp
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-!>    check smp stack data for surface and edge
-      subroutine check_edge_surf_size_4_smp
-!
-!
-        write(*,*) 'isurf_smp_stack ', isurf_smp_stack
-        write(*,*) 'iedge_smp_stack ', iedge_smp_stack
-!
-      end subroutine check_edge_surf_size_4_smp
 !
 !-----------------------------------------------------------------------
 !

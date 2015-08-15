@@ -160,7 +160,7 @@
       read(surface_id,*) surftyp_viewer(1:surfpetot_viewer)
 !
       call set_3D_nnod_4_sfed_by_ele                                    &
-     &   (ele1%nnod_4_ele, surf1%nnod_4_surf, nnod_4_edge)
+     &   (ele1%nnod_4_ele, surf1%nnod_4_surf, edge1%nnod_4_edge)
       call allocate_quad4_2_linear(ele1%nnod_4_ele)
 !
       call allocate_surf_connect_viewer(surf1%nnod_4_surf)
@@ -177,7 +177,7 @@
       subroutine write_edge_connect_viewer
 !
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint) :: i
 !
@@ -190,7 +190,8 @@
       write(surface_id,'(i16)') edgepetot_viewer
 !
       do i = 1, edgepetot_viewer
-       write(surface_id,'(10i16)') i, ie_edge_viewer(i,1:nnod_4_edge)
+       write(surface_id,'(10i16)')                                      &
+     &               i, ie_edge_viewer(i,1:edge1%nnod_4_edge)
       end do
 !
       write(surface_id,'(a)') '!'
@@ -208,7 +209,7 @@
       subroutine read_edge_connect_viewer
 !
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_quad_2_linear_sf
       use skip_comment_f
 !
@@ -220,7 +221,7 @@
       call allocate_edge_data_4_sf
 !
       do i = 1, edgepetot_viewer
-       read(surface_id,*) itmp, ie_edge_viewer(i,1:nnod_4_edge)
+       read(surface_id,*) itmp, ie_edge_viewer(i,1:edge1%nnod_4_edge)
       end do
 !
       call skip_comment(tmp_character, surface_id)

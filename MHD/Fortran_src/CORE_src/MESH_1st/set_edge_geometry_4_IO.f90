@@ -42,24 +42,24 @@
       ned_4_ele_IO = ele1%numele
 !
       numele_dummy =     edge1%numedge
-      nnod_4_ele_dummy = nnod_4_edge
+      nnod_4_ele_dummy = edge1%nnod_4_edge
 !
       call allocate_ele_info_dummy
       call allocate_connect_dummy
       call allocate_surface_connect_IO
       call allocate_edge_connect_IO
 !
-      if      (nnod_4_edge .eq. num_linear_edge) then
+      if      (edge1%nnod_4_edge .eq. num_linear_edge) then
         i_ele_dummy(1:edge1%numedge) = 111
-      else if (nnod_4_edge .eq. num_quad_edge) then
+      else if (edge1%nnod_4_edge .eq. num_quad_edge) then
         i_ele_dummy(1:edge1%numedge) = 112
       end if
 !
       globalelmid_dummy(1:edge1%numedge)                                &
      &        = iedge_global(1:edge1%numedge)
-      nodelm_dummy(1:edge1%numedge) = nnod_4_edge
-      ie_dummy(1:edge1%numedge,1:nnod_4_edge)                           &
-     &        = ie_edge(1:edge1%numedge,1:nnod_4_edge)
+      nodelm_dummy(1:edge1%numedge) = edge1%nnod_4_edge
+      ie_dummy(1:edge1%numedge,1:edge1%nnod_4_edge)                     &
+     &        = ie_edge(1:edge1%numedge,1:edge1%nnod_4_edge)
 !
       isf_4_ele_IO(1:surf1%numsurf,1:nedge_4_surf)                      &
      &        = iedge_4_sf(1:surf1%numsurf,1:nedge_4_surf)
@@ -148,8 +148,8 @@
 !
       iedge_global(1:edge1%numedge)                                     &
      &        = globalelmid_dummy(1:edge1%numedge)
-      ie_edge(1:edge1%numedge,1:nnod_4_edge)                            &
-     &        = ie_dummy(1:edge1%numedge,1:nnod_4_edge)
+      ie_edge(1:edge1%numedge,1:edge1%nnod_4_edge)                      &
+     &        = ie_dummy(1:edge1%numedge,1:edge1%nnod_4_edge)
 !
       iedge_4_sf(1:surf1%numsurf,1:nedge_4_surf)                        &
      &        = isf_4_ele_IO(1:surf1%numsurf,1:nedge_4_surf)
