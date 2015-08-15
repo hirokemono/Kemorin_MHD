@@ -48,7 +48,7 @@
 !
       call allocate_num_geometry_graph(node1%numnod)
 !
-      call count_graph_4_linear(node1%numnod, numedge, ie_edge,         &
+      call count_graph_4_linear(node1%numnod, edge1%numedge, ie_edge,   &
      &          num_graph_nod)
 !
       call s_cal_minmax_and_stacks(node1%numnod, num_graph_nod, izero,  &
@@ -58,7 +58,7 @@
       call allocate_geometry_graph
 !
       call set_graph_4_linear                                           &
-     &   (node1%numnod, numedge, ie_edge, ntot_graph_nod,               &
+     &   (node1%numnod, edge1%numedge, ie_edge, ntot_graph_nod,         &
      &    num_graph_nod, istack_graph_nod, igraph_nod)
 !
       end subroutine const_geometry_graph_linear
@@ -71,7 +71,7 @@
       call allocate_num_geometry_graph(node1%numnod)
 !
       call count_graph_4_quad                                           &
-     &   (node1%numnod, numedge, ie_edge, num_graph_nod)
+     &   (node1%numnod, edge1%numedge, ie_edge, num_graph_nod)
 !
       call s_cal_minmax_and_stacks(node1%numnod, num_graph_nod, izero,  &
      &    istack_graph_nod, ntot_graph_nod,                             &
@@ -80,7 +80,7 @@
       call allocate_geometry_graph
 !
       call set_graph_4_quad                                             &
-     &   (node1%numnod, numedge, ie_edge, ntot_graph_nod,               &
+     &   (node1%numnod, edge1%numedge, ie_edge, ntot_graph_nod,         &
      &    num_graph_nod, istack_graph_nod, igraph_nod)
 !
       end subroutine const_geometry_graph_quad

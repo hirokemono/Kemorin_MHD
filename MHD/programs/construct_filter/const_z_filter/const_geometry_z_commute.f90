@@ -84,7 +84,7 @@
 !
       first_ele_type = 331
       surf1%numsurf = ele1%numele
-      numedge = ele1%numele
+      edge1%numedge = ele1%numele
       nnod_4_edge = 2
 !
       nfilter2_1 = 2*numfilter+1

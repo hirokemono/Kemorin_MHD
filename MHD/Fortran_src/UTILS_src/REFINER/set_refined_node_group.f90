@@ -75,9 +75,9 @@
      &                             + nod_grp%istack_grp(i)              &
      &                             - nod_grp%istack_grp(i-1)
 !
-        do iedge = 1, numedge
-          call check_element_in_nod_group(iedge, numedge, nnod_4_edge,  &
-     &          ie_edge, iflag)
+        do iedge = 1, edge1%numedge
+          call check_element_in_nod_group(iedge,                        &
+     &        edge1%numedge, nnod_4_edge, ie_edge, iflag)
 !
           if(iflag .eq. 1) then
             new_nod_grp%istack_grp(i) = new_nod_grp%istack_grp(i)       &
@@ -141,9 +141,9 @@
           new_nod_grp%item_grp(icou) = inod
         end do
 !
-        do iedge = 1, numedge
-          call check_element_in_nod_group(iedge, numedge, nnod_4_edge,  &
-     &          ie_edge, iflag)
+        do iedge = 1, edge1%numedge
+          call check_element_in_nod_group(iedge,                        &
+     &        edge1%numedge, nnod_4_edge, ie_edge, iflag)
 !
           if(iflag .eq. 1) then
             call set_new_nod_grp_item(icou, ntot_nod_refine_edge,       &

@@ -33,7 +33,7 @@
       integer(kind = kint) :: iele, isurf, iedge, ist
 !
 !
-      do iedge = 1, numedge
+      do iedge = 1, edge1%numedge
         ist = istack_nod_refine_edge(iedge-1)
         call set_local_posi_refine_edge(iedge, ist)
       end do

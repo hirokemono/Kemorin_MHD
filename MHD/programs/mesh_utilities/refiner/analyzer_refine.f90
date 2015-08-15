@@ -113,7 +113,7 @@
 !
         write(*,*) 'allocate_refine_flags'
         call allocate_refine_flags                                      &
-     &     (ele1%numele, surf1%numsurf, numedge,                        &
+     &     (ele1%numele, surf1%numsurf, edge1%numedge,                  &
      &      nsurf_4_ele, nedge_4_ele)
 !
         if(iflag_tmp_tri_refine .eq. 0) then
@@ -130,17 +130,17 @@
 !
         write(*,*) 'check_hanging_surface'
         call check_hanging_surface                                      &
-     &     (ele1%numele, surf1%numsurf, numedge,                        &
+     &     (ele1%numele, surf1%numsurf, edge1%numedge,                  &
      &      isf_4_ele, iele_4_surf, iedge_4_ele)
 !
-!      call check_refine_flags(ele1%numele, surf1%numsurf, numedge)
+!      call check_refine_flags(ele1%numele, surf1%numsurf, edge1%numedge)
 !      call check_local_refine_flags                                    &
 !     &   (ele1%numele, nsurf_4_ele, nedge_4_ele)
 !
 !   set refined nodes
 !
         call allocate_num_refine_node(node1%numnod, ele1%numele,        &
-     &                                surf1%numsurf, numedge)
+     &                                surf1%numsurf, edge1%numedge)
         write(*,*) 's_count_nnod_for_refine'
         call s_count_nnod_for_refine
 !
@@ -152,7 +152,7 @@
         call s_set_local_position_4_refine
 !
 !      call check_refine_items(node1%numnod, ele1%numele,               &
-!     &                        surf1%numsurf, numedge)
+!     &                        surf1%numsurf, edge1%numedge)
 !
          refined_fem%mesh%nod_comm%num_neib = nod_comm%num_neib
         call allocate_type_comm_tbl_num(refined_fem%mesh%nod_comm)
@@ -174,7 +174,7 @@
      &      finer_edgemesh, refined_fem%mesh%ele%nnod_4_ele)
 !
         call set_hanging_nodes(surf1%numsurf, surf1%nnod_4_surf,        &
-     &          numedge, nnod_4_edge, ie_surf, ie_edge)
+     &      edge1%numedge, nnod_4_edge, ie_surf, ie_edge)
 !
         call s_const_refined_group(refined_fem%mesh, refined_fem%group)
 !

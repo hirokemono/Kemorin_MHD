@@ -35,11 +35,14 @@
         do i = 1, num_nod_phys
 !
           if ( phys_nod_name(i) .eq. 'pressure' ) then
-            call cal_pressure_on_edge(iphys%i_press)
+            call cal_pressure_on_edge(edge1%numedge, nnod_4_edge,       &
+     &          ie_edge, iphys%i_press)
           else if ( phys_nod_name(i) .eq. 'magnetic_potential' ) then
-            call cal_pressure_on_edge(iphys%i_mag_p)
+            call cal_pressure_on_edge(edge1%numedge, nnod_4_edge,       &
+     &          ie_edge, iphys%i_mag_p)
           else if ( phys_nod_name(i) .eq. 'scalar_potential' ) then
-            call cal_pressure_on_edge(iphys%i_scalar_p)
+            call cal_pressure_on_edge(edge1%numedge, nnod_4_edge,       &
+     &          ie_edge, iphys%i_scalar_p)
           end if
 !
         end do
@@ -51,13 +54,15 @@
 !
 !    interpolate data on tri-linear to quadrature
 !
-      subroutine cal_pressure_on_edge(i_phys)
+      subroutine cal_pressure_on_edge                                   &
+     &         (numedge, nnod_4_edge, ie_edge, i_phys)
 !
       use m_constants
-      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
 !
+      integer(kind = kint), intent(in) :: numedge, nnod_4_edge
+      integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
       integer(kind = kint), intent(in) :: i_phys
 !
       integer (kind = kint) :: i, i1,  i2,  i3
@@ -65,7 +70,6 @@
 !
 !$omp parallel do private(i,i1,i2,i3)
        do i = 1, numedge
-!
         i1  = ie_edge(i, 1)
         i2  = ie_edge(i, 2)
         i3  = ie_edge(i, 3)

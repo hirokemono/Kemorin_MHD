@@ -413,7 +413,7 @@
       integer(kind = kint) :: iedge, inum
 !
 !
-      do iedge = 1, numedge
+      do iedge = 1, edge1%numedge
         x_edge_comm(3*iedge-2) = x_edge(iedge,1)
         x_edge_comm(3*iedge-1) = x_edge(iedge,2)
         x_edge_comm(3*iedge  ) = x_edge(iedge,3)
@@ -425,7 +425,8 @@
         x_edge_comm(3*iedge  ) = 0.0d0
       end do
 !
-      call SOLVER_SEND_RECV_3_type(numedge, edge_comm, x_edge_comm)
+      call SOLVER_SEND_RECV_3_type                                      &
+     &   (edge1%numedge, edge_comm, x_edge_comm)
 !
       end subroutine edge_send_recv_test
 !

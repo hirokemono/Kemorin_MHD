@@ -32,7 +32,7 @@
 !
       num_nod_refine_nod(1:node1%numnod) = 1
 !
-      do iedge = 1, numedge
+      do iedge = 1, edge1%numedge
         call count_num_nod_refine_edge(iflag_refine_edge(iedge),        &
      &      num_nod_refine_edge(iedge) )
       end do
@@ -51,7 +51,7 @@
      &    izero, istack_nod_refine_nod, ntot_nod_refine_nod,            &
      &    nmax_nod_refine_nod, nmin_nod_refine_nod)
 !
-      call s_cal_minmax_and_stacks(numedge, num_nod_refine_edge,        &
+      call s_cal_minmax_and_stacks(edge1%numedge, num_nod_refine_edge,  &
      &    izero, istack_nod_refine_edge, ntot_nod_refine_edge,          &
      &    nmax_nod_refine_edge, nmin_nod_refine_edge)
 !

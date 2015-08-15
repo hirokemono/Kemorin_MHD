@@ -11,7 +11,7 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_machine_parameter
 !
       use m_edge_geometry_data
@@ -44,7 +44,7 @@
       call allocate_edge_vector_sph
 !
 !$omp parallel
-      call cvt_vector_2_sph_smp(np_smp, numedge, iedge_smp_stack,       &
+      call cvt_vector_2_sph_smp(np_smp, edge1%numedge, iedge_smp_stack, &
      &    edge_vect, edge_vect_sph, x_edge(1,1), x_edge(1,2),           &
      &    x_edge(1,3), r_edge, s_edge, ar_edge, as_edge)
 !$omp end parallel
@@ -61,7 +61,7 @@
       call allocate_edge_vector_cyl
 !
 !$omp parallel
-      call cvt_vector_2_cyl_smp(np_smp, numedge, iedge_smp_stack,       &
+      call cvt_vector_2_cyl_smp(np_smp, edge1%numedge, iedge_smp_stack, &
      &    edge_vect, edge_vect_cyl, x_edge(1,1), x_edge(1,2),           &
      &    s_edge, as_edge)
 !$omp end parallel

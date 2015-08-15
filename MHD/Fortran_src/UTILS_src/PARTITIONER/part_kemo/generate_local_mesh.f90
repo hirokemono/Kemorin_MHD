@@ -59,7 +59,8 @@
 !C===
 !C
       call s_const_local_mesh_by_tbl(ele_grp, num_domain, included_ele)
-      call open_partition_log(num_domain, numedge, org_mesh_header)
+      call open_partition_log                                           &
+     &   (num_domain, edge1%numedge, org_mesh_header)
 !C
 !C +---------------------------------------+
 !C | create INITIAL FILE : IMPORT pointers |

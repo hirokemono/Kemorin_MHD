@@ -140,7 +140,6 @@
 !
       subroutine const_global_edge_id_1st
 !
-      use m_geometry_parameter
       use m_geometry_data
       use const_global_element_ids
 !
@@ -148,10 +147,10 @@
 !
       call allocate_numedge_stack(nprocs)
 !
-      call count_number_of_node_stack(numedge, istack_numedge)
+      call count_number_of_node_stack(edge1%numedge, istack_numedge)
       call count_number_of_node_stack(internal_edge, istack_interedge)
 !
-      call set_global_ele_id(txt, numedge, istack_interele,             &
+      call set_global_ele_id(txt, edge1%numedge, istack_interele,       &
      &         interior_edge, edge_comm, iedge_global)
 !
       end subroutine const_global_edge_id_1st
@@ -209,7 +208,6 @@
       subroutine const_edge_comm_table_1st
 !
       use m_nod_comm_table
-      use m_geometry_parameter
       use m_geometry_data
       use m_edge_geometry_data
       use m_element_id_4_node
@@ -221,7 +219,7 @@
       call set_edge_id_4_node
       call belonged_edge_id_4_node_1(blng_tbls%host_edge)
       call const_ele_comm_table_1st                                     &
-     &   (txt, node1%numnod, numedge, inod_global,                      &
+     &   (txt, node1%numnod, edge1%numedge, inod_global,                &
      &    interior_edge, x_edge, nod_comm, edge_4_nod1,                 &
      &    blng_tbls%host_edge,  edge_comm)
       call dealloc_iele_belonged(blng_tbls%host_edge)

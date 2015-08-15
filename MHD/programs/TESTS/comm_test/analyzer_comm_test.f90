@@ -90,7 +90,7 @@
       call deallocate_diff_nod_comm_test
 !
       call allocate_geom_4_comm_test                                    &
-     &   (ele1%numele, surf1%numsurf, numedge)
+     &   (ele1%numele, surf1%numsurf, edge1%numedge)
       call s_mesh_send_recv_test
       call s_count_diff_geom_comm_test
 !

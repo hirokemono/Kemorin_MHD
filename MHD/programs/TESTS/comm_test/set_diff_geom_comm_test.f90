@@ -44,8 +44,9 @@
       call count_ele_comm_test(surf1%numsurf, x_surf,                   &
      &    surf_comm%ntot_import, surf_comm%item_import,                 &
      &    x_surf_comm, nsurf_diff_local)
-      call count_ele_comm_test(numedge, x_edge, edge_comm%ntot_import,  &
-     &    edge_comm%item_import, x_edge_comm, nedge_diff_local)
+      call count_ele_comm_test(edge1%numedge, x_edge,                   &
+     &    edge_comm%ntot_import,  edge_comm%item_import,                &
+     &    x_edge_comm, nedge_diff_local)
 !
       end subroutine s_count_diff_geom_comm_test
 !
@@ -64,7 +65,7 @@
       call compare_ele_comm_test(surf1%numsurf, x_surf,                 &
      &    surf_comm%ntot_import, surf_comm%item_import,                 &
      &    x_surf_comm, nsurf_diff_local, isurf_diff, xsurf_diff)
-      call compare_ele_comm_test(numedge, x_edge,                       &
+      call compare_ele_comm_test(edge1%numedge, x_edge,                 &
      &    edge_comm%ntot_import, edge_comm%item_import,                 &
      &    x_edge_comm, nedge_diff_local, iedge_diff, xedge_diff)
 !
