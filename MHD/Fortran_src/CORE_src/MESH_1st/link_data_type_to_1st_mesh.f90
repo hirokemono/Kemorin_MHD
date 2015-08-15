@@ -136,7 +136,7 @@
       type(edge_data), intent(inout) :: edge
 !
 !
-      edge%numedge =       numedge
+      edge%numedge =       edge1%numedge
       edge%nnod_4_edge =   nnod_4_edge
 !
       edge%ie_edge =>       ie_edge

@@ -107,10 +107,10 @@
 !
 !
       write(50+my_rank,*) 'numedge, nnod_4_edge'
-      write(50+my_rank,'(2i16)') numedge, nnod_4_edge
+      write(50+my_rank,'(2i16)') edge1%numedge, nnod_4_edge
 !
       write(50+my_rank,*) 'iedge, connection'
-      do iedge = 1, numedge
+      do iedge = 1, edge1%numedge
         write(50+my_rank,'(4i16)') iedge, ie_edge(iedge,1:nnod_4_edge)
       end do
 !

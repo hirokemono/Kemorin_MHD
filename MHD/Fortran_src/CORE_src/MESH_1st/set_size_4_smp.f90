@@ -79,13 +79,13 @@
 !
       subroutine count_edge_size_4_smp
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use cal_minmax_and_stacks
 !
 !
       call allocate_edge_param_smp
 !
-      call count_number_4_smp( np_smp, ione, numedge,                   &
+      call count_number_4_smp( np_smp, ione, edge1%numedge,             &
      &       iedge_smp_stack, maxedge_4_smp )
 !
       end subroutine count_edge_size_4_smp
@@ -126,13 +126,12 @@
 !
       subroutine count_overlap_edge
 !
-      use m_geometry_parameter
       use m_geometry_data
       use count_overlap
 !
       call set_overlap_flag                                             &
      &   (np_smp, iedge_smp_stack, node1%internal_node,                 &
-     &    numedge, ie_edge(1,1), internal_edge, interior_edge)
+     &    edge1%numedge, ie_edge(1,1), internal_edge, interior_edge)
 !
       end subroutine count_overlap_edge
 !

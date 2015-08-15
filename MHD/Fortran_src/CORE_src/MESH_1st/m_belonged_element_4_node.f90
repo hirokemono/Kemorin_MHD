@@ -118,7 +118,6 @@
 !
       subroutine belonged_edge_id_4_node_1(host_edge)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use find_element_id_4_node
       use cal_minmax_and_stacks
@@ -128,8 +127,9 @@
 !
       call alloc_numele_belonged(node1%numnod, host_edge)
 !
-      call count_belonged_ele_4_node(node1%numnod, numedge,             &
-     &    nnod_4_edge, ie_edge, ione, numedge, host_edge%nele_4_node)
+      call count_belonged_ele_4_node(node1%numnod, edge1%numedge,       &
+     &    nnod_4_edge, ie_edge, ione, edge1%numedge,                    &
+     &    host_edge%nele_4_node)
       call s_cal_minmax_and_stacks(node1%numnod,                        &
      &    host_edge%nele_4_node, izero, host_edge%istack_4_node,        &
      &    host_edge%ntot, host_edge%nmax, host_edge%nmin)
@@ -137,8 +137,8 @@
 !
       call alloc_iele_belonged(host_edge)
 !
-      call set_belonged_ele_4_node(node1%numnod, numedge,               &
-     &    nnod_4_edge, ie_edge,  ione, numedge,                         &
+      call set_belonged_ele_4_node(node1%numnod, edge1%numedge,         &
+     &    nnod_4_edge, ie_edge,  ione, edge1%numedge,                   &
      &    host_edge%ntot, host_edge%istack_4_node,                      &
      &    host_edge%nele_4_node, host_edge%iele_4_node,                 &
      &    host_edge%iconn_4_node)

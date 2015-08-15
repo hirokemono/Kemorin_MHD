@@ -73,6 +73,7 @@
       use m_precision
       use t_geometry_data
       use t_surface_data
+      use t_edge_data
       use m_geometry_parameter
 !
       implicit  none
@@ -88,6 +89,10 @@
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
 !surf1%nnod_4_surf
+!
+!>     Structure for edge data
+      type(edge_data), save :: edge1
+!edge1%numedge
 !
 !>   Stack list of number of node
       integer(kind=kint_gl), allocatable, target  :: istack_numnod(:)
@@ -503,9 +508,9 @@
       use m_geometry_constants
 !
       allocate( iedge_4_sf(surf1%numsurf,nedge_4_surf) )
-      allocate( ie_edge(numedge,nnod_4_edge) )
-      allocate( iedge_global(numedge) )
-      allocate( interior_edge(numedge) )
+      allocate( ie_edge(edge1%numedge,nnod_4_edge) )
+      allocate( iedge_global(edge1%numedge) )
+      allocate( interior_edge(edge1%numedge) )
 !
       iedge_4_sf = 0
       ie_edge = 0
@@ -541,8 +546,8 @@
       subroutine allocate_ele_4_edge_num
 !
 !
-      allocate( num_iele_4_edge(numedge) )
-      allocate( istack_iele_4_edge(0:numedge) )
+      allocate( num_iele_4_edge(edge1%numedge) )
+      allocate( istack_iele_4_edge(0:edge1%numedge) )
       num_iele_4_edge =    0
       istack_iele_4_edge = 0
 !
@@ -553,7 +558,7 @@
       subroutine allocate_ele_4_edge_item
 !
 !
-      ntot_iele_4_edge = istack_iele_4_edge(numedge)
+      ntot_iele_4_edge = istack_iele_4_edge(edge1%numedge)
       allocate( iele_4_edge(ntot_iele_4_edge,2) )
       iele_4_edge = 0
 !
@@ -564,8 +569,8 @@
       subroutine allocate_surf_4_edge_num
 !
 !
-      allocate( num_isurf_4_edge(numedge) )
-      allocate( istack_isurf_4_edge(0:numedge) )
+      allocate( num_isurf_4_edge(edge1%numedge) )
+      allocate( istack_isurf_4_edge(0:edge1%numedge) )
       num_isurf_4_edge =    0
       istack_isurf_4_edge = 0
 !
@@ -576,7 +581,7 @@
       subroutine allocate_surf_4_edge_item
 !
 !
-      ntot_isurf_4_edge = istack_isurf_4_edge(numedge)
+      ntot_isurf_4_edge = istack_isurf_4_edge(edge1%numedge)
       allocate( isurf_4_edge(ntot_isurf_4_edge,2) )
       isurf_4_edge = 0
 !

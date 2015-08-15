@@ -93,12 +93,13 @@
       integer(kind=kint), allocatable :: imark_4_grp(:)
 !
 !
-      allocate(imark_4_grp(numedge))
-      if(numedge .gt. 0) imark_4_grp = 0
+      allocate(imark_4_grp(edge1%numedge))
+      if(edge1%numedge .gt. 0) imark_4_grp = 0
 !
       call alloc_num_other_grp(sf_grp%num_grp, sf_grp_data1%edge)
 !
-      call count_nod_4_ele_grp(numedge, surf1%numsurf, nedge_4_surf,    &
+      call count_nod_4_ele_grp                                          &
+     &   (edge1%numedge, surf1%numsurf, nedge_4_surf,                   &
      &    iedge_4_sf, sf_grp%num_grp, sf_grp%num_item,                  &
      &    sf_grp%istack_grp, sf_grp_data1%isurf_grp,                    &
      &    sf_grp_data1%edge%ntot_e_grp, sf_grp_data1%edge%nitem_e_grp,  &
@@ -106,7 +107,8 @@
 !
       call alloc_item_other_grp(sf_grp_data1%edge)
 !
-      call set_nod_4_ele_grp(numedge, surf1%numsurf, nedge_4_surf,      &
+      call set_nod_4_ele_grp                                            &
+     &   (edge1%numedge, surf1%numsurf, nedge_4_surf,                   &
      &    iedge_4_sf, sf_grp%num_grp, sf_grp%num_item,                  &
      &    sf_grp%istack_grp, sf_grp_data1%isurf_grp,                    &
      &    sf_grp_data1%edge%ntot_e_grp, sf_grp_data1%edge%nitem_e_grp,  &

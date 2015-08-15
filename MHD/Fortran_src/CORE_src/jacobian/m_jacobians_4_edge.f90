@@ -38,7 +38,7 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
 !
       use cal_jacobians_linear
       use cal_jacobians_quad
@@ -46,7 +46,7 @@
 !
 !
       call alloc_1d_jac_type                                            &
-     &   (numedge, num_linear_edge, maxtot_int_1d, jac1_1d_l)
+     &   (edge1%numedge, num_linear_edge, maxtot_int_1d, jac1_1d_l)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_edge_linear'
       call cal_jacobian_edge_linear(jac1_1d_l)
@@ -54,12 +54,12 @@
       if(first_ele_type .eq. 332 .or. first_ele_type .eq. 333) then
         if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_edge_quad'
         call alloc_1d_jac_type                                          &
-     &     (numedge, nnod_4_edge, maxtot_int_1d, jac1_1d_q)
+     &     (edge1%numedge, nnod_4_edge, maxtot_int_1d, jac1_1d_q)
         call cal_jacobian_edge_quad(jac1_1d_q)
       else
         if (iflag_debug.eq.1) write(*,*) 'copy_1d_jacobians'
         call copy_1d_jacobians                                          &
-     &     (numedge, num_linear_edge, jac1_1d_l, jac1_1d_q)
+     &     (edge1%numedge, num_linear_edge, jac1_1d_l, jac1_1d_q)
       end if
 !
       end subroutine cal_jacobian_edge
@@ -70,13 +70,13 @@
       subroutine allocate_jacobians_edge_l_quad(n_int)
 !
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use m_fem_gauss_int_coefs
 !
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call alloc_1d_jac_type(numedge, num_quad_edge, n_int,           &
+      call alloc_1d_jac_type(edge1%numedge, num_quad_edge, n_int,       &
      &                       jac1_1d_ql)
 !
       end subroutine allocate_jacobians_edge_l_quad

@@ -92,21 +92,20 @@
       subroutine set_center_of_edge
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_edge_geometry_data
       use set_edge_position
       use coordinate_converter
 !
       if (nnod_4_edge .eq. num_quad_edge) then
-        call set_quad_edge_position(node1%numnod, numedge,              &
+        call set_quad_edge_position(node1%numnod, edge1%numedge,        &
      &      ie_edge, node1%xx, x_edge)
       else if (nnod_4_edge .eq. num_linear_edge) then
-        call set_linear_edge_position(node1%numnod, numedge,            &
+        call set_linear_edge_position(node1%numnod, edge1%numedge,      &
      &      ie_edge, node1%xx, x_edge)
       end if
 !
-      call position_2_sph(numedge, x_edge, r_edge, theta_edge,          &
+      call position_2_sph(edge1%numedge, x_edge, r_edge, theta_edge,    &
      &    phi_edge, ar_edge, s_edge, as_edge)
 !
       end subroutine set_center_of_edge

@@ -113,13 +113,13 @@
         do ii = 1, i0
           ix = int_start1(i0) + ii
 !
-          call s_cal_jacobian_1d_2(node1%numnod, numedge,               &
+          call s_cal_jacobian_1d_2(node1%numnod, edge1%numedge,         &
      &        ie_edge, node1%xx, np_smp, iedge_smp_stack,               &
-     &        jac_1d_l%xj_edge(1:numedge,ix),                           &
-     &        jac_1d_l%axj_edge(1:numedge,ix),                          &
-     &        jac_1d_l%xeg_edge(1:numedge,ix,1),                        &
-     &        jac_1d_l%xeg_edge(1:numedge,ix,2),                        &
-     &        jac_1d_l%xeg_edge(1:numedge,ix,3),                        &
+     &        jac_1d_l%xj_edge(1:edge1%numedge,ix),                     &
+     &        jac_1d_l%axj_edge(1:edge1%numedge,ix),                    &
+     &        jac_1d_l%xeg_edge(1:edge1%numedge,ix,1),                  &
+     &        jac_1d_l%xeg_edge(1:edge1%numedge,ix,2),                  &
+     &        jac_1d_l%xeg_edge(1:edge1%numedge,ix,3),                  &
      &        dnxi_ed1(1,ix))
         end do
       end do

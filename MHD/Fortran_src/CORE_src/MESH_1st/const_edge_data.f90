@@ -53,21 +53,22 @@
       call count_num_edges_by_ele                                       &
      &   (node1%numnod, ele1%numele, nnod_4_edge,                       &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &
-     &    edge_ele_tbl%iflag_hash, numedge)
+     &    edge_ele_tbl%iflag_hash, edge1%numedge)
+      numedge = edge1%numedge
 !
       call allocate_edge_connect
       call allocate_edge_4_ele
 !
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_by_ele'
       call set_edges_connect_by_ele(node1%numnod, ele1%numele,          &
-     &    numedge, ele1%nnod_4_ele, nnod_4_edge, ele1%ie,               &
+     &    edge1%numedge, ele1%nnod_4_ele, nnod_4_edge, ele1%ie,         &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &
      &    edge_ele_tbl%id_hash, edge_ele_tbl%iflag_hash,                &
      &    ie_edge, iedge_4_ele, node_on_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_4_sf'
       call set_edges_connect_4_sf                                       &
-     &   (node1%numnod, ele1%numele, surf1%numsurf, numedge,            &
+     &   (node1%numnod, ele1%numele, surf1%numsurf, edge1%numedge,      &
      &    surf1%nnod_4_surf, nnod_4_edge, ie_surf, iedge_4_ele,         &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%id_hash,               &
      &    edge_ele_tbl%iflag_hash, ie_edge, iedge_4_sf)
@@ -88,12 +89,12 @@
 !
 !
       call allocate_ele_4_edge_num
-      call count_ele_list_4_edge(ele1%numele, numedge, nedge_4_ele,     &
-     &    iedge_4_ele, ntot_iele_4_edge, num_iele_4_edge,               &
+      call count_ele_list_4_edge(ele1%numele, edge1%numedge,            &
+     &    nedge_4_ele, iedge_4_ele, ntot_iele_4_edge, num_iele_4_edge,  &
      &    istack_iele_4_edge)
 !
       call allocate_ele_4_edge_item
-      call set_ele_list_4_edge(ele1%numele, numedge, nedge_4_ele,       &
+      call set_ele_list_4_edge(ele1%numele, edge1%numedge, nedge_4_ele, &
      &    iedge_4_ele, ntot_iele_4_edge, num_iele_4_edge,               &
      &    istack_iele_4_edge, iele_4_edge)
 !
@@ -108,14 +109,14 @@
 !
 !
       call allocate_surf_4_edge_num
-      call count_ele_list_4_edge(surf1%numsurf, numedge, nedge_4_surf,  &
-     &    iedge_4_sf, ntot_isurf_4_edge, num_isurf_4_edge,              &
-     &    istack_isurf_4_edge)
+      call count_ele_list_4_edge(surf1%numsurf, edge1%numedge,          &
+     &    nedge_4_surf, iedge_4_sf, ntot_isurf_4_edge,                  &
+     &    num_isurf_4_edge, istack_isurf_4_edge)
 !
       call allocate_surf_4_edge_item
-      call set_ele_list_4_edge(surf1%numsurf, numedge, nedge_4_surf,    &
-     &    iedge_4_sf, ntot_isurf_4_edge, num_isurf_4_edge,              &
-     &    istack_isurf_4_edge, isurf_4_edge)
+      call set_ele_list_4_edge(surf1%numsurf, edge1%numedge,            &
+     &    nedge_4_surf, iedge_4_sf, ntot_isurf_4_edge,                  &
+     &    num_isurf_4_edge, istack_isurf_4_edge, isurf_4_edge)
 !
       end subroutine const_surface_list_4_edge
 !

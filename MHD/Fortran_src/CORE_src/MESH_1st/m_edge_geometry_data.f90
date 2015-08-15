@@ -57,17 +57,17 @@
 !
       subroutine allocate_edge_geometry
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
-      allocate( x_edge(numedge,3) )
+      allocate( x_edge(edge1%numedge,3) )
 !
-      allocate( r_edge(numedge) )
-      allocate( ar_edge(numedge) )
-      allocate( phi_edge(numedge) )
-      allocate( theta_edge(numedge) )
+      allocate( r_edge(edge1%numedge) )
+      allocate( ar_edge(edge1%numedge) )
+      allocate( phi_edge(edge1%numedge) )
+      allocate( theta_edge(edge1%numedge) )
 !
-      allocate( s_edge(numedge) )
-      allocate( as_edge(numedge) )
+      allocate( s_edge(edge1%numedge) )
+      allocate( as_edge(edge1%numedge) )
 !
       x_edge =      0.0d0
 !
@@ -85,11 +85,11 @@
 !
       subroutine allocate_edge_vectors
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
-      allocate( edge_length(numedge) )
-      allocate( a_edge_length(numedge) )
-      allocate( edge_vect(numedge,3) )
+      allocate( edge_length(edge1%numedge) )
+      allocate( a_edge_length(edge1%numedge) )
+      allocate( edge_vect(edge1%numedge,3) )
 !
       edge_length =   0.0d0
       a_edge_length = 0.0d0
@@ -101,9 +101,9 @@
 !
       subroutine allocate_edge_vector_sph
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
-      allocate( edge_vect_sph(numedge,3) )
+      allocate( edge_vect_sph(edge1%numedge,3) )
       edge_vect_sph =     0.0d0
 !
       end subroutine allocate_edge_vector_sph
@@ -112,9 +112,9 @@
 !
       subroutine allocate_edge_vector_cyl
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
-      allocate( edge_vect_cyl(numedge,3) )
+      allocate( edge_vect_cyl(edge1%numedge,3) )
       edge_vect_cyl =     0.0d0
 !
       end subroutine allocate_edge_vector_cyl
