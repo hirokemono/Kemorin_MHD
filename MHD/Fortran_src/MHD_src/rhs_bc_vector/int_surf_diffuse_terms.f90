@@ -114,7 +114,7 @@
 !
       subroutine int_surf_current_diffuse(sf_grp)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_finite_element_matrix
       use m_surf_data_vector_p
       use m_ele_material_property
@@ -140,7 +140,7 @@
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if (num .gt. 0) then
 !
-            do k2 = 1, nnod_4_surf
+            do k2 = 1, surf1%nnod_4_surf
               call dlt_scl_phys_2_each_surface(sf_grp, igrp, k2,        &
      &            i_comp, scalar_sf)
               call fem_surf_skv_current_diffuse_1(sf_grp, igrp,         &
@@ -187,7 +187,7 @@
         num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if (num .gt. 0) then
 !
-          do k2=1, nnod_4_surf
+          do k2 = 1, surf1%nnod_4_surf
             call dlt_scl_phys_2_each_surface(sf_grp, igrp, k2,          &
      &          i_field, scalar_sf)
             call fem_surf_skv_diffuse_1st(sf_grp, igrp, k2,             &
@@ -236,7 +236,7 @@
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if (num .gt. 0) then
 !
-            do k2=1, nnod_4_surf
+            do k2 = 1, surf1%nnod_4_surf
               call dlt_scl_phys_2_each_surface(sf_grp, igrp, k2,        &
      &            i_comp, scalar_sf)
               call fem_surf_skv_diffuse_1st(sf_grp, igrp, k2,           &

@@ -116,7 +116,7 @@
       call alloc_numele_belonged(node1%numnod, surf_4_nod1)
 !
       call count_iele_4_node                                            &
-     &   (node1%numnod, surf1%numsurf, nnod_4_surf, ie_surf,            &
+     &   (node1%numnod, surf1%numsurf, surf1%nnod_4_surf, ie_surf,      &
      &    ione, surf1%numsurf, surf_4_nod1%nele_4_node)
       call s_cal_minmax_and_stacks(node1%numnod,                        &
      &    surf_4_nod1%nele_4_node, izero, surf_4_nod1%istack_4_node,    &
@@ -125,8 +125,8 @@
 !
       call alloc_iele_belonged(surf_4_nod1)
 !
-      call set_iele_4_node(node1%numnod, surf1%numsurf, nnod_4_surf,    &
-     &    ie_surf, ione, surf1%numsurf,                                 &
+      call set_iele_4_node(node1%numnod, surf1%numsurf,                 &
+     &    surf1%nnod_4_surf, ie_surf, ione, surf1%numsurf,              &
      &    surf_4_nod1%ntot, surf_4_nod1%istack_4_node,                  &
      &    surf_4_nod1%nele_4_node, surf_4_nod1%iele_4_node,             &
      &    surf_4_nod1%iconn_4_node)

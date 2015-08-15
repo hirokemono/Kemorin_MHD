@@ -116,8 +116,8 @@
       type(surface_data), intent(inout) :: new_surf
 !
 !
-      new_surf%numsurf =       numsurf_4_subdomain(ip)
-      new_surf%nnod_4_surf = nnod_4_surf
+      new_surf%numsurf =     numsurf_4_subdomain(ip)
+      new_surf%nnod_4_surf = surf1%nnod_4_surf
       call allocate_surface_connect_type(new_surf, new_ele%numele)
 !
       call set_local_surface(ip, new_surf)

@@ -76,11 +76,12 @@
 !
 !
       write(50+my_rank,*) 'numsurf, nnod_4_surf'
-      write(50+my_rank,'(2i16)') surf1%numsurf, nnod_4_surf
+      write(50+my_rank,'(2i16)') surf1%numsurf, surf1%nnod_4_surf
 !
       write(50+my_rank,*) 'isurf, connection'
       do isurf = 1, surf1%numsurf
-        write(50+my_rank,'(10i16)') isurf, ie_surf(isurf,1:nnod_4_surf)
+        write(50+my_rank,'(10i16)')                                     &
+     &            isurf, ie_surf(isurf,1:surf1%nnod_4_surf)
       end do
 !
       write(50+my_rank,*) 'numele, nsurf_4_ele'

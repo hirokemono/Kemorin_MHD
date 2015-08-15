@@ -58,8 +58,8 @@
 !
 !
       call fem_surf_skv_poisson_wall                                    &
-     &   (np_smp, ele1%numele, ele1%nnod_4_ele, nnod_4_surf,            &
-     &    nnod_4_surf, node_on_sf, sf_grp%num_item,                     &
+     &   (np_smp, ele1%numele, ele1%nnod_4_ele, surf1%nnod_4_surf,      &
+     &    surf1%nnod_4_surf, node_on_sf, sf_grp%num_item,               &
      &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &
      &    sf_grp%istack_grp_smp, igrp, k2, n_int,                       &
      &    jac1_sf_grp_2d_l%ntot_int, jac1_sf_grp_2d_l%xsf_sf,           &
@@ -79,7 +79,7 @@
       integer (kind = kint), intent(in) :: n_int, k2, igrp
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: xe_sf(sf_grp%num_item,4,nnod_4_surf)
+     &                  :: xe_sf(sf_grp%num_item,4,surf1%nnod_4_surf)
       real (kind=kreal), intent(in) :: vect_sf(sf_grp%num_item,3)
 !
       real (kind=kreal), intent(inout)                                  &
@@ -87,8 +87,8 @@
 !
 !
       call fem_surf_skv_poisson_sph_out                                 &
-     &   (np_smp, ele1%numele,  ele1%nnod_4_ele, nnod_4_surf,           &
-     &    nnod_4_surf, node_on_sf, sf_grp%num_item,                     &
+     &   (np_smp, ele1%numele,  ele1%nnod_4_ele, surf1%nnod_4_surf,     &
+     &    surf1%nnod_4_surf, node_on_sf, sf_grp%num_item,               &
      &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &
      &    sf_grp%istack_grp_smp, igrp, k2, n_int,                       &
      &    jac1_sf_grp_2d_l%ntot_int, jac1_sf_grp_2d_l%xj_sf,            &
@@ -109,7 +109,7 @@
       integer (kind = kint), intent(in) :: igrp, n_int, k2, nd
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: dxe_sf(sf_grp%num_item,4,nnod_4_surf)
+     &                  :: dxe_sf(sf_grp%num_item,4,surf1%nnod_4_surf)
       real (kind=kreal), intent(in) :: scalar_sf(sf_grp%num_item)
 !
       real (kind=kreal), intent(inout)                                  &
@@ -118,7 +118,7 @@
 !
       call fem_surf_skv_current_diffuse                                 &
      &   (np_smp, ele1%numele, ele1%nnod_4_ele,                         &
-     &    nnod_4_surf, nnod_4_surf, node_on_sf,                         &
+     &    surf1%nnod_4_surf, surf1%nnod_4_surf, node_on_sf,             &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, n_int, jac1_sf_grp_2d_q%ntot_int,               &
@@ -138,7 +138,7 @@
       integer (kind = kint), intent(in) :: igrp, n_int, k2, nd
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: dxe_sf(sf_grp%num_item,4,nnod_4_surf)
+     &                  :: dxe_sf(sf_grp%num_item,4,surf1%nnod_4_surf)
       real (kind=kreal), intent(in) :: scalar_sf(sf_grp%num_item)
       real (kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
@@ -148,7 +148,7 @@
 !
       call fem_surf_skv_diffuse_term                                    &
      &   (np_smp, ele1%numele, ele1%nnod_4_ele,                         &
-     &    nnod_4_surf, nnod_4_surf, node_on_sf,                         &
+     &    surf1%nnod_4_surf, surf1%nnod_4_surf, node_on_sf,             &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, n_int, jac1_sf_grp_2d_q%ntot_int,               &
@@ -169,7 +169,7 @@
       integer (kind = kint), intent(in) :: igrp, k2, n_int
 !
       real (kind=kreal), intent(in)                                     &
-     &                  :: xe_sf(sf_grp%num_item,4,nnod_4_surf)
+     &                  :: xe_sf(sf_grp%num_item,4,surf1%nnod_4_surf)
       real (kind=kreal), intent(in) :: vect_sf(sf_grp%num_item,3)
       real (kind=kreal), intent(in) :: ak_d_velo(ele1%numele)
 !
@@ -179,7 +179,7 @@
 !
       call fem_surf_skv_trq_sph_out                                     &
      &   (np_smp, ele1%numele, ele1%nnod_4_ele,                         &
-     &    nnod_4_surf, nnod_4_surf, node_on_sf,                         &
+     &    surf1%nnod_4_surf, surf1%nnod_4_surf, node_on_sf,             &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, n_int, jac1_sf_grp_2d_q%ntot_int,                   &
@@ -215,7 +215,7 @@
 !
 !
       call fem_surf_skv_norm_grad_pg(np_smp,                            &
-     &    ele1%numele, ele1%nnod_4_ele, nnod_4_surf, node_on_sf,        &
+     &    ele1%numele, ele1%nnod_4_ele, surf1%nnod_4_surf, node_on_sf,  &
      &    sf_grp%num_grp, sf_grp%num_item, sf_grp%istack_grp,           &
      &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &
      &    sf_grp%istack_grp_smp, nmax_surf, nmax_ele_surf, ngrp_sf,     &
@@ -248,7 +248,7 @@
 !
 !
       call fem_surf_skv_norm_poisson(np_smp,                            &
-     &    ele1%numele, ele1%nnod_4_ele, nnod_4_surf, node_on_sf,        &
+     &    ele1%numele, ele1%nnod_4_ele, surf1%nnod_4_surf, node_on_sf,  &
      &    sf_grp%num_grp, sf_grp%num_item, sf_grp%istack_grp,           &
      &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &
      &    sf_grp%istack_grp_smp, nmax_surf, nmax_ele_surf, ngrp_sf,     &

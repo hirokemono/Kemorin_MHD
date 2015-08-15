@@ -25,7 +25,7 @@
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_geometry_parameter
+      use m_geometry_data
       use m_surface_group
       use m_surface_group_connect
       use m_surface_group_geometry
@@ -43,7 +43,7 @@
 !
       if (num_surf .le. 0) return
 !
-      call allocate_int_surf_data(sf_grp1%num_item, nnod_4_surf)
+      call allocate_int_surf_data(sf_grp1%num_item, surf1%nnod_4_surf)
 !
       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
       call pick_normal_of_surf_group(sf_grp1, sf_grp_v1)
@@ -86,7 +86,7 @@
       call alloc_vect_surf_grp_nod(sf_grp_nod)
 !
       call cal_surf_grp_norm_node(ele1%numele, ele1%nnod_4_ele,         &
-     &    nnod_4_surf, node_on_sf, ele1%ie,                             &
+     &    surf1%nnod_4_surf, node_on_sf, ele1%ie,                       &
      &    sf_grp%num_grp, sf_grp%num_item,                              &
      &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &
      &    sf_grp_v%vnorm_sf_grp, sf_grp_v%a_area_sf_grp,                &

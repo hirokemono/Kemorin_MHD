@@ -61,17 +61,17 @@
 !
       if (first_ele_type .eq. 332) then
         if (iflag_debug.eq.1)  write(*,*) 'cal_jacobian_dyquad'
-        call alloc_2d_jac_type(sf_grp%num_item, nnod_4_surf,            &
+        call alloc_2d_jac_type(sf_grp%num_item, surf1%nnod_4_surf,      &
      &        maxtot_int_2d, jac1_sf_grp_2d_q)
         call cal_jacobian_dyquad(sf_grp, jac1_sf_grp_2d_q)
       else if (first_ele_type .eq. 333) then
         if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_dylag'
-        call alloc_2d_jac_type(sf_grp%num_item, nnod_4_surf,            &
+        call alloc_2d_jac_type(sf_grp%num_item, surf1%nnod_4_surf,      &
      &        maxtot_int_2d, jac1_sf_grp_2d_q)
         call cal_jacobian_dylag(sf_grp, jac1_sf_grp_2d_q)
       else
         if (iflag_debug.eq.1) write(*,*) 'copy_jacobians_2d_quad'
-        call copy_jacobians_2d(sf_grp%num_item, nnod_4_surf,            &
+        call copy_jacobians_2d(sf_grp%num_item, surf1%nnod_4_surf,      &
      &        jac1_sf_grp_2d_l, jac1_sf_grp_2d_q)
       end if
 !

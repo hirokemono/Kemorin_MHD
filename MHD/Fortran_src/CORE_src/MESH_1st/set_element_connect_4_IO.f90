@@ -10,6 +10,7 @@
 !
       use m_precision
 !
+      use m_geometry_constants
       use m_geometry_data
       use m_read_mesh_data
 !
@@ -58,7 +59,6 @@
 !
       subroutine copy_element_connect_from_IO
 !
-      use m_geometry_constants
       use set_nnod_4_ele_by_type
 !
       integer(kind = kint) :: iele, k1
@@ -73,7 +73,8 @@
       first_ele_type = i_ele_dummy(1)
 !
       call set_3D_nnod_4_ele_by_type(first_ele_type,                    &
-     &    ele1%nnod_4_ele, nnod_4_surf, nnod_4_edge)
+     &    ele1%nnod_4_ele, surf1%nnod_4_surf, nnod_4_edge)
+      nnod_4_surf = surf1%nnod_4_surf
 !
 !
       call allocate_ele_connect_type(ele1)

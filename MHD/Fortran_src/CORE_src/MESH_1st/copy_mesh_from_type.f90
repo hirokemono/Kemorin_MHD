@@ -159,7 +159,8 @@
       first_ele_type = ele%first_ele_type
 !
       call set_3D_nnod_4_ele_by_type(first_ele_type,                    &
-     &    ele1%nnod_4_ele, nnod_4_surf, nnod_4_edge)
+     &    ele1%nnod_4_ele, surf1%nnod_4_surf, nnod_4_edge)
+      nnod_4_surf = surf1%nnod_4_surf
 !
       call allocate_ele_connect_type(ele1)
       call allocate_element_connection

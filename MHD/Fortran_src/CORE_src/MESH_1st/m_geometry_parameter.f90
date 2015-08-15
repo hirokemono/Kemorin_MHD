@@ -5,7 +5,6 @@
 !
 !   Written by H. Matsui & H. Okuda
 !
-!      subroutine allocate_inod_in_surf
 !      subroutine allocate_inod_in_edge
 !      subroutine deallocate_inod_in_surf
 !      subroutine deallocate_inod_in_edge
@@ -93,21 +92,6 @@
       contains
 !
 !-----------------------------------------------------------------------
-!
-       subroutine allocate_inod_in_surf
-!
-       use m_geometry_constants
-!
-!
-       allocate ( node_on_sf  (nnod_4_surf,nsurf_4_ele) )
-       allocate ( node_on_sf_n(nnod_4_surf,nsurf_4_ele) )
-!
-       node_on_sf =   0
-       node_on_sf_n = 0
-!
-       end subroutine allocate_inod_in_surf
-!
-!  ---------------------------------------------------------------------
 !
        subroutine allocate_inod_in_edge
 !

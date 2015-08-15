@@ -64,7 +64,7 @@
       integer (kind = kint) :: i, igrp, k2, num
 !
 !
-      do k2 = 1, nnod_4_surf
+      do k2 = 1, surf1%nnod_4_surf
         call reset_sk6(n_scalar)
 !
         do i = 1, ngrp_sf_fr_in
@@ -73,7 +73,8 @@
 !
           if (num .gt. 0) then
             call fem_surf_crank_free_inside(igrp, k2, num_int,          &
-     &          ele1%numele, ele1%nnod_4_ele, nnod_4_surf, node_on_sf,  &
+     &          ele1%numele, ele1%nnod_4_ele,                           &
+     &          surf1%nnod_4_surf, node_on_sf,                          &
      &          sf_grp%num_item, sf_grp%num_grp_smp,                    &
      &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
      &          jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%an_sf,      &
@@ -110,7 +111,7 @@
       integer (kind = kint) :: i, igrp, k2, num
 !
 !
-      do k2 = 1, nnod_4_surf
+      do k2 = 1, surf1%nnod_4_surf
         call reset_sk6(n_scalar)
 !
         do i = 1, ngrp_sf_fr_out
@@ -119,7 +120,8 @@
 !
           if (num .gt. 0) then
             call fem_surf_crank_free_outside(igrp, k2, num_int,         &
-     &          ele1%numele, ele1%nnod_4_ele, nnod_4_surf, node_on_sf,  &
+     &          ele1%numele, ele1%nnod_4_ele,                           &
+     &          surf1%nnod_4_surf, node_on_sf,                          &
      &          sf_grp%num_item, sf_grp%num_grp_smp,                    &
      &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
      &          jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%an_sf,      &

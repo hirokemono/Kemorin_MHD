@@ -13,7 +13,7 @@
       use m_precision
 !
       use m_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_finite_element_matrix
       use m_surf_data_magne
@@ -55,7 +55,7 @@
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if (num .gt.0) then
 !
-            do k2=1, nnod_4_surf
+            do k2 = 1, surf1%nnod_4_surf
               call d_SGS_induct_t_2_each_surface(sf_grp, igrp, k2, nd,  &
      &            i_flux, i_b, i_v, vect_sf)
               call fem_sf_skv_sgs_div_flux_p1(sf_grp, igrp, k2, nd,     &
@@ -97,7 +97,7 @@
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if(num .gt. 0) then
 !
-            do k2=1, nnod_4_surf
+            do k2 = 1, surf1%nnod_4_surf
               call d_SGS_induct_t_2_each_surface(sf_grp, igrp, k2,      &
      &            nd, i_flux, i_b, i_v, vect_sf)
               call fem_sf_skv_div_flux_commute_p1(sf_grp, igrp, k2,     &

@@ -70,13 +70,13 @@
       use set_surface_position
       use coordinate_converter
 !
-      if (nnod_4_surf .eq. num_quad_sf) then
+      if (surf1%nnod_4_surf .eq. num_quad_sf) then
         call set_quad_surf_position(node1%numnod, surf1%numsurf,        &
      &      ie_surf, node1%xx, x_surf)
-      else if (nnod_4_surf .eq. num_linear_sf) then
+      else if (surf1%nnod_4_surf .eq. num_linear_sf) then
         call set_linear_surf_position(node1%numnod, surf1%numsurf,      &
      &      ie_surf, node1%xx, x_surf)
-      else if (nnod_4_surf .eq. num_lag_sf) then
+      else if (surf1%nnod_4_surf .eq. num_lag_sf) then
         call set_lag_surf_position(node1%numnod, surf1%numsurf,         &
      &      ie_surf, node1%xx, x_surf)
       end if

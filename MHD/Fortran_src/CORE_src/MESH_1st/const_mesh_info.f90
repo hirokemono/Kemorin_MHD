@@ -187,13 +187,14 @@
 !
       subroutine set_local_element_info
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use set_local_id_table_4_1ele
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'allocate_inod_in_surf'
       call allocate_inod_in_surf
-      call set_inod_in_surf(nnod_4_surf, node_on_sf, node_on_sf_n)
+      call set_inod_in_surf                                             &
+     &   (surf1%nnod_4_surf, node_on_sf, node_on_sf_n)
 !
       if (iflag_debug.gt.0) write(*,*) 'allocate_inod_in_edge'
       call allocate_inod_in_edge

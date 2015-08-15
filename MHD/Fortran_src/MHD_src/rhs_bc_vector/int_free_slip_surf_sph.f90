@@ -34,7 +34,7 @@
       use m_precision
       use m_constants
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_int_vol_data
       use m_finite_element_matrix
       use m_ele_material_property
@@ -75,7 +75,7 @@
         num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if (num .gt.0 ) then
 !
-          do k2 = 1, nnod_4_surf
+          do k2 = 1, surf1%nnod_4_surf
             call vector_phys_2_each_surface(sf_grp, igrp, k2, i_field,  &
      &          vect_sf)
             call fem_surf_skv_trq_sph_out_1(sf_grp, igrp, k2, n_int,    &
@@ -114,7 +114,7 @@
         num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if (num .gt.0 ) then
 !
-           do k2 = 1, nnod_4_surf
+           do k2 = 1, surf1%nnod_4_surf
             call vector_phys_2_each_surf_cst(sf_grp, igrp, k2,          &
      &          i_field, dminus, vect_sf)
             call fem_surf_skv_trq_sph_out_1(sf_grp, igrp, k2, n_int,    &

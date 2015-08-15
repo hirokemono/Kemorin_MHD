@@ -51,17 +51,17 @@
       if (first_ele_type .eq. 332) then
         if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_surface_quad'
         call alloc_2d_jac_type                                          &
-     &     (surf1%numsurf, nnod_4_surf, maxtot_int_2d, jac1_2d_q)
+     &     (surf1%numsurf, surf1%nnod_4_surf, maxtot_int_2d, jac1_2d_q)
         call cal_jacobian_surface_quad(jac1_2d_q)
       else if (first_ele_type .eq. 333) then
         if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_surface_lag'
         call alloc_2d_jac_type                                          &
-     &     (surf1%numsurf, nnod_4_surf, maxtot_int_2d, jac1_2d_q)
+     &     (surf1%numsurf, surf1%nnod_4_surf, maxtot_int_2d, jac1_2d_q)
         call cal_jacobian_surface_lag(jac1_2d_q)
       else
         if (iflag_debug.eq.1) write(*,*) 'copy_jacobians_2d'
         call copy_jacobians_2d                                          &
-     &     (surf1%numsurf, nnod_4_surf, jac1_2d_l, jac1_2d_q)
+     &     (surf1%numsurf, surf1%nnod_4_surf, jac1_2d_l, jac1_2d_q)
       end if
 !
       end subroutine cal_jacobian_surface

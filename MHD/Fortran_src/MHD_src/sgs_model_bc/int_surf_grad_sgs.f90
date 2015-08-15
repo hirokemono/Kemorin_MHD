@@ -15,7 +15,7 @@
 !
       use m_constants
       use m_phys_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use m_finite_element_matrix
       use t_group_data
 !
@@ -57,7 +57,7 @@
         num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if (num .gt. 0) then
 !
-          do k2=1, nnod_4_surf
+          do k2 = 1, surf1%nnod_4_surf
             call dlt_scl_phys_2_each_surface(sf_grp, igrp, k2,          &
      &          i_scalar, vect_sf(1,1) )
             call fem_sf_skv_sgs_grad_p1(sf_grp, igrp, k2,               &
@@ -101,7 +101,7 @@
         num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if (num .gt. 0) then
 !
-          do k2=1, nnod_4_surf
+          do k2 = 1, surf1%nnod_4_surf
             call dlt_scl_phys_2_each_surface(sf_grp, igrp, k2,          &
      &          i_scalar, scalar_sf )
             call fem_sf_skv_grad_commute_p1(sf_grp, igrp, k2,           &

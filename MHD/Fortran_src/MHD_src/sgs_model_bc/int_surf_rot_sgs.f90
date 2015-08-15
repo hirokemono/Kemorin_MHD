@@ -16,7 +16,7 @@
       use m_precision
 !
       use m_constants
-      use m_geometry_parameter
+      use m_geometry_data
       use m_finite_element_matrix
       use m_phys_constants
       use t_group_data
@@ -66,7 +66,7 @@
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if(num .gt. 0) then
 !
-            do k2=1, nnod_4_surf
+            do k2 = 1, surf1%nnod_4_surf
               call dlt_scl_phys_2_each_surface(sf_grp, igrp, k2,        &
      &            i_comp, scalar_sf)
               call fem_sf_skv_sgs_vect_diff_p1(sf_grp, igrp, k2,        &
@@ -83,7 +83,7 @@
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if(num .gt. 0) then
 !
-            do k2=1, nnod_4_surf
+            do k2 = 1, surf1%nnod_4_surf
               call dlt_scl_phys_2_each_surf_cst(sf_grp, igrp, k2,       &
      &            i_comp, dminus, scalar_sf)
               call fem_sf_skv_sgs_vect_diff_p1(sf_grp, igrp, k2,        &
@@ -135,7 +135,7 @@
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if(num .gt. 0) then
 !
-            do k2=1, nnod_4_surf
+            do k2 = 1, surf1%nnod_4_surf
              call dlt_scl_phys_2_each_surface(sf_grp, igrp, k2,         &
      &           i_comp, scalar_sf)
              call fem_sf_skv_sgs_commute_err_p1(sf_grp, igrp, k2,       &
@@ -151,7 +151,7 @@
          num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
          if(num .gt. 0) then
 !
-            do k2=1, nnod_4_surf
+            do k2 = 1, surf1%nnod_4_surf
               call dlt_scl_phys_2_each_surf_cst(sf_grp, igrp, k2,       &
      &            i_comp, dminus, scalar_sf)
               call fem_sf_skv_sgs_commute_err_p1(sf_grp, igrp, k2,      &

@@ -36,7 +36,7 @@
 !
 !
       numele_dummy =        surf1%numsurf
-      nnod_4_ele_dummy =    nnod_4_surf
+      nnod_4_ele_dummy =    surf1%nnod_4_surf
 !
       nsf_4_ele_IO = ele1%numele
       nsurf_in_ele_IO = nsurf_4_ele
@@ -46,19 +46,19 @@
 !
       call allocate_surface_connect_IO
 !
-      if      (nnod_4_surf .eq. 4) then
+      if      (surf1%nnod_4_surf .eq. 4) then
         i_ele_dummy(1:surf1%numsurf) = 221
-      else if (nnod_4_surf .eq. 8) then
+      else if (surf1%nnod_4_surf .eq. 8) then
         i_ele_dummy(1:surf1%numsurf) = 222
-      else if (nnod_4_surf .eq. 9) then
+      else if (surf1%nnod_4_surf .eq. 9) then
         i_ele_dummy(1:surf1%numsurf) = 223
       end if
 !
-      nodelm_dummy(1:surf1%numsurf) = nnod_4_surf
+      nodelm_dummy(1:surf1%numsurf) = surf1%nnod_4_surf
       globalelmid_dummy(1:surf1%numsurf)                                &
      &        = isurf_global(1:surf1%numsurf)
-      ie_dummy(1:surf1%numsurf,1:nnod_4_surf)                           &
-     &        = ie_surf(1:surf1%numsurf,1:nnod_4_surf)
+      ie_dummy(1:surf1%numsurf,1:surf1%nnod_4_surf)                     &
+     &        = ie_surf(1:surf1%numsurf,1:surf1%nnod_4_surf)
 !
       isf_4_ele_IO(1:ele1%numele,1:nsurf_4_ele)                         &
      &        = isf_4_ele(1:ele1%numele,1:nsurf_4_ele)
@@ -147,8 +147,8 @@
 !
       isurf_global(1:surf1%numsurf)                                     &
      &        = globalelmid_dummy(1:surf1%numsurf)
-      ie_surf(1:surf1%numsurf,1:nnod_4_surf)                            &
-     &        = ie_dummy(1:surf1%numsurf,1:nnod_4_surf)
+      ie_surf(1:surf1%numsurf,1:surf1%nnod_4_surf)                      &
+     &        = ie_dummy(1:surf1%numsurf,1:surf1%nnod_4_surf)
 !
       isf_4_ele(1:ele1%numele,1:nsurf_4_ele)                            &
      &        = isf_4_ele_IO(1:ele1%numele,1:nsurf_4_ele)

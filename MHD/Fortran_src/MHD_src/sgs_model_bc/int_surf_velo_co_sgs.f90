@@ -64,7 +64,7 @@
       subroutine int_surf_sgs_velo_co_ele(sf_grp, n_int,                &
      &          ngrp_sf, id_grp_sf, i_filter, iak_diff, i_comp)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_node_phys_address
       use m_phys_constants
       use m_SGS_address
@@ -97,7 +97,7 @@
         num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if(num .gt. 0) then
 !
-          do k2 = 1, nnod_4_surf
+          do k2 = 1, surf1%nnod_4_surf
             call dlt_scl_phys_2_each_surf_cst(sf_grp, igrp, k2,         &
      &          i_comp, dminus, scalar_sf )
             call fem_sf_skv_sgs_velo_co_p1(sf_grp, igrp, k2, n_int,     &

@@ -57,7 +57,7 @@
 !
 !
       call scalar_phys_2_each_sf(np_smp, node1%numnod, ele1%numele,     &
-     &    ele1%nnod_4_ele, ele1%ie, nnod_4_surf, node_on_sf,            &
+     &    ele1%nnod_4_ele, ele1%ie, surf1%nnod_4_surf, node_on_sf,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, i_scalar, num_tot_nod_phys, d_nod, scalar_sf)
@@ -79,7 +79,7 @@
 !
 !
       call vector_phys_2_each_sf(np_smp, node1%numnod, ele1%numele,     &
-     &    ele1%nnod_4_ele, ele1%ie, nnod_4_surf, node_on_sf,            &
+     &    ele1%nnod_4_ele, ele1%ie, surf1%nnod_4_surf, node_on_sf,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, i_vector, num_tot_nod_phys, d_nod, vector_sf)
@@ -101,7 +101,7 @@
 !
 !
       call vector_phys_2_each_sf(np_smp, node1%numnod, ele1%numele,     &
-     &    ele1%nnod_4_ele, ele1%ie, nnod_4_surf, node_on_sf,            &
+     &    ele1%nnod_4_ele, ele1%ie, surf1%nnod_4_surf, node_on_sf,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, i_tensor, num_tot_nod_phys, d_nod, tensor_sf)
@@ -126,7 +126,7 @@
 !
       call scalar_phys_2_each_sf_w_coef                                 &
      &   (np_smp, node1%numnod, ele1%numele,                            &
-     &    ele1%nnod_4_ele, ele1%ie, nnod_4_surf, node_on_sf,            &
+     &    ele1%nnod_4_ele, ele1%ie, surf1%nnod_4_surf, node_on_sf,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, i_scalar, num_tot_nod_phys, d_nod, ak_e, scalar_sf)
@@ -150,7 +150,7 @@
 !
       call vector_phys_2_each_sf_w_coef                                 &
      &   (np_smp, node1%numnod, ele1%numele,                            &
-     &    ele1%nnod_4_ele, ele1%ie, nnod_4_surf, node_on_sf,            &
+     &    ele1%nnod_4_ele, ele1%ie, surf1%nnod_4_surf, node_on_sf,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, i_vector, num_tot_nod_phys, d_nod, ak_e, vector_sf)
@@ -174,7 +174,7 @@
 !
       call vector_phys_2_each_sf_w_coef                                 &
      &   (np_smp, node1%numnod, ele1%numele,                            &
-     &    ele1%nnod_4_ele, ele1%ie, nnod_4_surf, node_on_sf,            &
+     &    ele1%nnod_4_ele, ele1%ie, surf1%nnod_4_surf, node_on_sf,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, i_tensor, num_tot_nod_phys, d_nod, ak_e, tensor_sf)
@@ -199,7 +199,7 @@
 !
       call scalar_phys_2_each_sf_w_const                                &
      &   (np_smp, node1%numnod, ele1%numele,                            &
-     &    ele1%nnod_4_ele, ele1%ie, nnod_4_surf, node_on_sf,            &
+     &    ele1%nnod_4_ele, ele1%ie, surf1%nnod_4_surf, node_on_sf,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, i_scalar, num_tot_nod_phys, d_nod, coef, scalar_sf)
@@ -223,7 +223,7 @@
 !
       call vector_phys_2_each_sf_w_const                                &
      &   (np_smp, node1%numnod, ele1%numele,                            &
-     &    ele1%nnod_4_ele, ele1%ie, nnod_4_surf, node_on_sf,            &
+     &    ele1%nnod_4_ele, ele1%ie, surf1%nnod_4_surf, node_on_sf,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, i_vector, num_tot_nod_phys, d_nod, coef, vector_sf)
@@ -247,7 +247,7 @@
 !
       call tensor_phys_2_each_sf_w_const                                &
      &   (np_smp, node1%numnod, ele1%numele,                            &
-     &    ele1%nnod_4_ele, ele1%ie, nnod_4_surf, node_on_sf,            &
+     &    ele1%nnod_4_ele, ele1%ie, surf1%nnod_4_surf, node_on_sf,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, i_tensor, num_tot_nod_phys, d_nod, coef, tensor_sf)
