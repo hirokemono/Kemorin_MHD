@@ -128,7 +128,9 @@
         call s_set_all_refine_flags
 !
         write(*,*) 'check_hanging_surface'
-        call check_hanging_surface
+        call check_hanging_surface                                      &
+     &     (ele1%numele, surf1%numsurf, numedge,                        &
+     &      isf_4_ele, iele_4_surf, iedge_4_ele)
 !
 !      call check_refine_flags(ele1%numele, numsurf, numedge)
 !      call check_local_refine_flags                                    &
@@ -170,7 +172,8 @@
         call set_nnod_surf_edge_for_type(finer_surfmesh,                &
      &      finer_edgemesh, refined_fem%mesh%ele%nnod_4_ele)
 !
-        call set_hanging_nodes
+        call set_hanging_nodes(surf1%numsurf, nnod_4_surf,              &
+     &          numedge, nnod_4_edge, ie_surf, ie_edge)
 !
         call s_const_refined_group(refined_fem%mesh, refined_fem%group)
 !

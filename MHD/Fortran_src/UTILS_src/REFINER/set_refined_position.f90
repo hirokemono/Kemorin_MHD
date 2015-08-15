@@ -29,13 +29,13 @@
       if (iflag_interpolate_type .eq. 1) then
         call cal_sph_on_edge_4_refine(node1%numnod, numedge,            &
      &      ie_edge, radius, colatitude, longitude)
-        call cal_sph_on_surf_4_refine(node1%numnod, numsurf,            &
+        call cal_sph_on_surf_4_refine(node1%numnod, surf1%numsurf,      &
      &      ie_surf, radius, colatitude, longitude)
         call cal_sph_on_ele_4_refine(node1%numnod, ele1%numele,         &
      &      ele1%ie, radius, colatitude, longitude)
 !
         call s_cal_refined_nod_near_pole(node1%numnod,                  &
-     &      numsurf, numedge, ie_surf, ie_edge, longitude)
+     &      surf1%numsurf, numedge, ie_surf, ie_edge, longitude)
 !
         call position_2_xyz(ntot_nod_refine_ele, sph_refine_ele(1,1),   &
      &      sph_refine_ele(1,2), sph_refine_ele(1,3),                   &
@@ -52,14 +52,14 @@
         call cal_xyz_on_edge_4_refine                                   &
      &     (node1%numnod, numedge, ie_edge, node1%xx)
         call cal_xyz_on_surf_4_refine                                   &
-     &     (node1%numnod, numsurf, ie_surf, node1%xx)
+     &     (node1%numnod, surf1%numsurf, ie_surf, node1%xx)
         call cal_xyz_on_ele_4_refine                                    &
      &     (node1%numnod, ele1%numele, ele1%ie, node1%xx)
 !
         call cal_r_on_edge_4_refine                                     &
      &     (node1%numnod, numedge, ie_edge, node1%xx, radius)
         call cal_r_on_surf_4_refine                                     &
-     &     (node1%numnod, numsurf, ie_surf, radius)
+     &     (node1%numnod, surf1%numsurf, ie_surf, radius)
         call cal_r_on_ele_4_refine                                      &
      &     (node1%numnod, ele1%numele, ele1%ie, radius)
 !
@@ -72,7 +72,7 @@
         call cal_xyz_on_edge_4_refine                                   &
      &     (node1%numnod, numedge, ie_edge, node1%xx)
         call cal_xyz_on_surf_4_refine                                   &
-     &     (node1%numnod, numsurf, ie_surf, node1%xx)
+     &     (node1%numnod, surf1%numsurf, ie_surf, node1%xx)
         call cal_xyz_on_ele_4_refine                                    &
      &     (node1%numnod, ele1%numele, ele1%ie, node1%xx)
 !

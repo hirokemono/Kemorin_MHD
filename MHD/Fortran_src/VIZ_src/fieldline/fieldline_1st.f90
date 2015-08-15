@@ -84,7 +84,7 @@
 !
 !
       call field_line_main                                              &
-     &   (istep_psf, node1%numnod, ele1%numele, numsurf,                &
+     &   (istep_psf, node1%numnod, ele1%numele, surf1%numsurf,          &
      &    nnod_4_surf, node1%istack_nod_smp, inod_global,               &
      &    node1%xx, radius, a_radius, s_cylinder, a_s_cylinder,         &
      &    iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,        &

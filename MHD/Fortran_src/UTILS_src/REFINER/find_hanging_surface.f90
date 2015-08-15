@@ -2,11 +2,13 @@
 !      module find_hanging_surface
 !
 !
-!      subroutine allocate_iflag_hangings
+!      subroutine allocate_iflag_hangings(numsurf, numedge)
 !      subroutine deallocate_iflag_hangings
 !
-!      subroutine check_hanging_surface
-!      subroutine set_hanging_nodes
+!      subroutine check_hanging_surface(numele, numsurf, numedge,       &
+!     &          isf_4_ele, iele_4_surf, iedge_4_ele)
+!      subroutine set_hanging_nodes(numsurf, nnod_4_surf,               &
+!     &          numedge, nnod_4_edge, ie_surf, ie_edge)
 !
 !      subroutine add_hanging_node_group_num(new_nod_grp)
 !      subroutine add_hanging_node_group_name(num_bc, new_nod_grp)
@@ -33,9 +35,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_iflag_hangings
+      subroutine allocate_iflag_hangings(numsurf, numedge)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: numsurf, numedge
 !
       allocate( iflag_hang_sf(numsurf) )
       allocate( iflag_hang_ed(numedge) )
@@ -57,20 +59,25 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine check_hanging_surface
+      subroutine check_hanging_surface(numele, numsurf, numedge,        &
+     &          isf_4_ele, iele_4_surf, iedge_4_ele)
 !
       use m_geometry_constants
-      use m_geometry_data
       use m_refine_flag_parameters
       use m_refined_element_data
+!
+      integer(kind = kint), intent(in) :: numele, numsurf, numedge
+      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
+      integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
+      integer(kind = kint), intent(in) :: iedge_4_ele(numele,nedge_4_ele)
 !
       integer(kind = kint) :: iele, isurf, iedge, iflag1, iflag2
       integer(kind = kint) :: iele1,  iele2, k1, k2
 !
 !
-      call allocate_iflag_hangings
+      call allocate_iflag_hangings(numsurf, numedge)
 !
-      do iele = 1, ele1%numele
+      do iele = 1, numele
         do k1 = 1, nsurf_4_ele
           isurf = abs( isf_4_ele(iele,k1) )
           if(iflag_refine_sf_lcl(k1,iele) .eq. iflag_dbl_sf             &
@@ -80,7 +87,7 @@
         end do
       end do
 !
-      do iele = 1, ele1%numele
+      do iele = 1, numele
         do k1 = 1, nedge_4_ele
           iedge = abs(iedge_4_ele(iele,k1))
           if(iflag_refine_ed_lcl(k1,iele) .eq. iflag_dbl_ed             &
@@ -109,7 +116,7 @@
         end if
       end do
 !
-      do iele = 1, ele1%numele
+      do iele = 1, numele
         do k1 = 1, nedge_4_ele
           iedge = abs(iedge_4_ele(iele,k1))
           if(iflag_refine_edge(iedge) .eq. iflag_dbl_sf                 &
@@ -125,14 +132,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_hanging_nodes
+      subroutine set_hanging_nodes(numsurf, nnod_4_surf,                &
+     &          numedge, nnod_4_edge, ie_surf, ie_edge)
 !
       use m_geometry_constants
-      use m_geometry_parameter
-      use m_geometry_data
       use m_refine_flag_parameters
       use m_refined_element_data
       use m_refined_node_id
+!
+      integer(kind = kint), intent(in) :: numsurf, nnod_4_surf
+      integer(kind = kint), intent(in) :: numedge, nnod_4_edge
+      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
+      integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
 !
       integer(kind = kint) :: isurf, iedge
       integer(kind = kint) :: icou, ist, k1

@@ -3,11 +3,13 @@
 !
 !      Writen by H. Matsui on Oct., 2007
 !
-!      subroutine s_find_boundary_4_tri_refine(nele_tri, iele_tri)
+!!      subroutine s_find_boundary_4_tri_refine                         &
+!!     &          (numele, numsurf, isf_4_ele, nele_tri, iele_tri)
 !
       module find_boundary_4_tri_refine
 !
       use m_precision
+      use m_geometry_constants
 !
       implicit none
 !
@@ -16,7 +18,7 @@
 !
       integer(kind = kint), allocatable, private :: imark_sf(:)
 !
-      private :: set_triple_refine_by_surf
+      private :: set_triple_refine_by_surf, set_domain_bc_list
 !
 !  ---------------------------------------------------------------------
 !
@@ -24,11 +26,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_find_boundary_4_tri_refine(nele_tri, iele_tri)
+      subroutine s_find_boundary_4_tri_refine                           &
+     &          (numele, numsurf, isf_4_ele, nele_tri, iele_tri)
 !
-      use m_geometry_data
       use m_refine_flag_parameters
       use m_refined_element_data
+!
+      integer(kind = kint), intent(in) :: numele, numsurf
+      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
 !
       integer(kind = kint), intent(in) :: nele_tri
       integer(kind = kint), intent(in) :: iele_tri(nele_tri)
@@ -42,7 +47,7 @@
 !
 !   mark boundary of domain surface
 !
-      call set_domain_bc_list
+      call set_domain_bc_list(numele, numsurf, isf_4_ele)
 !
 ! interior... imark_sf = 0
 !
@@ -72,7 +77,8 @@
 !
       icou = 0
       do
-        call set_triple_refine_by_surf(nele_tri, iele_tri, iflag)
+        call set_triple_refine_by_surf(numele, isf_4_ele,               &
+     &      nele_tri, iele_tri, iflag)
         if(iflag .eq. 0) exit
         icou = icou + 1
       end do
@@ -84,12 +90,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_triple_refine_by_surf(nele_tri, iele_tri, iflag)
+      subroutine set_triple_refine_by_surf                              &
+     &         (numele, isf_4_ele, nele_tri, iele_tri, iflag)
 !
-      use m_geometry_parameter
-      use m_geometry_data
       use m_refine_flag_parameters
       use m_refined_element_data
+!
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
 !
       integer(kind = kint), intent(in) :: nele_tri
       integer(kind = kint), intent(in) :: iele_tri(nele_tri)
@@ -233,9 +241,10 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_domain_bc_list
+      subroutine set_domain_bc_list(numele, numsurf, isf_4_ele)
 !
-      use m_geometry_data
+      integer(kind = kint), intent(in) :: numele, numsurf
+      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
 !
       integer(kind = kint) :: iele, isurf, icou
       integer(kind = kint) :: isf1, isf2, isf3, isf4, isf5, isf6
@@ -245,7 +254,7 @@
 !
 !   mark boundary of domain surface
 !
-      do iele = 1, ele1%numele
+      do iele = 1, numele
         isf1 = abs(isf_4_ele(iele,1))
         isf2 = abs(isf_4_ele(iele,2))
         isf3 = abs(isf_4_ele(iele,3))

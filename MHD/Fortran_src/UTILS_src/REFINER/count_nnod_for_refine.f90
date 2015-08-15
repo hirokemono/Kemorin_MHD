@@ -37,7 +37,7 @@
      &      num_nod_refine_edge(iedge) )
       end do
 !
-      do isurf = 1, numsurf
+      do isurf = 1, surf1%numsurf
         call count_num_nod_refine_surf(iflag_refine_surf(isurf),        &
      &      num_nod_refine_surf(isurf) )
       end do
@@ -55,7 +55,7 @@
      &    izero, istack_nod_refine_edge, ntot_nod_refine_edge,          &
      &    nmax_nod_refine_edge, nmin_nod_refine_edge)
 !
-      call s_cal_minmax_and_stacks(numsurf, num_nod_refine_surf,        &
+      call s_cal_minmax_and_stacks(surf1%numsurf, num_nod_refine_surf,  &
      &    izero, istack_nod_refine_surf, ntot_nod_refine_surf,          &
      &    nmax_nod_refine_surf, nmin_nod_refine_surf)
 !

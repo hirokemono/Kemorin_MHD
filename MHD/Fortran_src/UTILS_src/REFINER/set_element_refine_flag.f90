@@ -29,6 +29,7 @@
 !
       subroutine s_set_element_refine_flag(numele, ele_grp)
 !
+      use m_geometry_data
       use t_group_data
       use find_boundary_4_tri_refine
 !
@@ -43,7 +44,8 @@
       call const_triple_refine_table
 !
       write(*,*) 's_find_boundary_4_tri_refine'
-      call s_find_boundary_4_tri_refine(nele_tri, iele_tri)
+      call s_find_boundary_4_tri_refine(ele1%numele, surf1%numsurf,     &
+     &    isf_4_ele, nele_tri, iele_tri)
 !
       deallocate(iele_tri)
 !

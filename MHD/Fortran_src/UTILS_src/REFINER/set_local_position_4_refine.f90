@@ -38,7 +38,7 @@
         call set_local_posi_refine_edge(iedge, ist)
       end do
 !
-      do isurf = 1, numsurf
+      do isurf = 1, surf1%numsurf
         ist = istack_nod_refine_surf(isurf-1)
         call set_local_posi_refine_surf(isurf, ist)
       end do

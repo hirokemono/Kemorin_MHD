@@ -42,7 +42,7 @@
 !
       end do
 !
-      do isurf = 1, numsurf
+      do isurf = 1, surf1%numsurf
         ist = ntot_nod_refine_nod + ntot_nod_refine_edge                &
      &       + istack_nod_refine_surf(isurf-1)
         jst = istack_nod_refine_surf(isurf-1) + 1
