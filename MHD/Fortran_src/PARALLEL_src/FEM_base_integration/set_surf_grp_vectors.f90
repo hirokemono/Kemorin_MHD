@@ -33,7 +33,7 @@
 !
       subroutine pick_normal_of_surf_group(sf_grp, sf_grp_v)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_surface_geometry_data
       use m_surface_group_connect
       use t_surface_group_geometry
@@ -47,12 +47,12 @@
       call alloc_vectors_surf_grp_type                                  &
      &   (sf_grp%num_grp, sf_grp%num_item, sf_grp_v)
 !
-      call pick_vector_4_surf_grp_side(sf_grp, numsurf, vnorm_surf,     &
-     &    sf_grp_v%vnorm_sf_grp)
-      call pick_scalar_4_surf_grp(sf_grp, numsurf, area_surf,           &
-     &    sf_grp_v%area_sf_grp)
-      call pick_scalar_4_surf_grp(sf_grp, numsurf, a_area_surf,         &
-     &    sf_grp_v%a_area_sf_grp)
+      call pick_vector_4_surf_grp_side(sf_grp, surf1%numsurf,           &
+     &    vnorm_surf, sf_grp_v%vnorm_sf_grp)
+      call pick_scalar_4_surf_grp(sf_grp, surf1%numsurf,                &
+     &    area_surf, sf_grp_v%area_sf_grp)
+      call pick_scalar_4_surf_grp(sf_grp, surf1%numsurf,                &
+     &    a_area_surf, sf_grp_v%a_area_sf_grp)
 !
       end subroutine pick_normal_of_surf_group
 !
@@ -61,7 +61,6 @@
       subroutine pick_surface_group_geometry(sf_grp, sf_grp_v)
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_surface_geometry_data
       use m_surface_group_connect
@@ -78,7 +77,7 @@
       call alloc_surf_grp_type_geom(sf_grp%num_item, sf_grp_v)
 !
       call pick_vector_4_surf_grp                                       &
-     &   (sf_grp, numsurf, x_surf, sf_grp_v%x_sf_grp)
+     &   (sf_grp, surf1%numsurf, x_surf, sf_grp_v%x_sf_grp)
 !
       call position_2_sph                                               &
      &   (sf_grp%num_item, sf_grp_v%x_sf_grp, sf_grp_v%r_sf_grp,        &

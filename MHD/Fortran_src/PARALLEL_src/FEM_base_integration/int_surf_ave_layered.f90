@@ -54,7 +54,8 @@
           ist =     layer_stack(igrp-1) + 1
           ist_smp = (igrp-1) * np_smp
           num_sgrp = layer_stack(igrp) - layer_stack(igrp-1)
-          call int_surf_ave_1sgrp_8(node1%numnod, ele1%numele, numsurf, &
+          call int_surf_ave_1sgrp_8                                     &
+     &       (node1%numnod, ele1%numele, surf1%numsurf,                 &
      &        nnod_4_surf, ie_surf, isf_4_ele, e_multi,                 &
      &        jac1_2d_q%ntot_int, num_int, jac1_2d_q%an_sf,             &
      &        jac1_2d_q%xj_sf, num_sgrp, item_layer(1,ist),             &
@@ -67,7 +68,8 @@
           ist = layer_stack(igrp-1) + 1
           ist_smp = (igrp-1) * np_smp
           num_sgrp = layer_stack(igrp) - layer_stack(igrp-1)
-          call int_surf_ave_1sgrp_4(node1%numnod, ele1%numele, numsurf, &
+          call int_surf_ave_1sgrp_4                                     &
+     &       (node1%numnod, ele1%numele, surf1%numsurf,                 &
      &        nnod_4_surf, ie_surf, isf_4_ele, e_multi,                 &
      &        jac1_2d_l%ntot_int, num_int, jac1_2d_l%an_sf,             &
      &        jac1_2d_l%xj_sf, num_sgrp, item_layer(1,ist),             &
@@ -102,7 +104,7 @@
         do igrp = 1, n_layer_d
           ist = layer_stack(igrp-1) + 1
           num_sgrp = layer_stack(igrp) - layer_stack(igrp-1)
-          call int_surf_area_1_surf_grp(ele1%numele, numsurf,           &
+          call int_surf_area_1_surf_grp(ele1%numele, surf1%numsurf,     &
      &           isf_4_ele, e_multi, jac1_2d_q%ntot_int, num_int,       &
      &           jac1_2d_q%xj_sf, num_sgrp, item_layer(1,ist),          &
      &           area_l(igrp))
@@ -115,7 +117,7 @@
         do igrp = 1, n_layer_d
           ist = layer_stack(igrp-1) + 1
           num_sgrp = layer_stack(igrp) - layer_stack(igrp-1)
-          call int_surf_area_1_surf_grp(ele1%numele, numsurf,           &
+          call int_surf_area_1_surf_grp(ele1%numele, surf1%numsurf,     &
      &           isf_4_ele, e_multi, jac1_2d_l%ntot_int, num_int,       &
      &           jac1_2d_l%xj_sf, num_sgrp, item_layer(1,ist),          &
      &           area_l(igrp))

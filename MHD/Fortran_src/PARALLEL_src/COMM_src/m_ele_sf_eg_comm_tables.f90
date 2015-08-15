@@ -121,7 +121,6 @@
 !
       subroutine const_global_surface_id_1st
 !
-      use m_geometry_parameter
       use m_geometry_data
       use const_global_element_ids
 !
@@ -129,10 +128,10 @@
 !
       call allocate_numsurf_stack(nprocs)
 !
-      call count_number_of_node_stack(numsurf, istack_numsurf)
+      call count_number_of_node_stack(surf1%numsurf, istack_numsurf)
       call count_number_of_node_stack(internal_surf, istack_intersurf)
 !
-      call set_global_ele_id(txt, numsurf, istack_intersurf,            &
+      call set_global_ele_id(txt, surf1%numsurf, istack_intersurf,      &
      &         interior_surf, surf_comm, isurf_global)
 !
       end subroutine const_global_surface_id_1st
@@ -186,7 +185,6 @@
       subroutine const_surf_comm_table_1st
 !
       use m_nod_comm_table
-      use m_geometry_parameter
       use m_geometry_data
       use m_surface_geometry_data
       use m_element_id_4_node
@@ -198,7 +196,7 @@
       call set_surf_id_4_node
       call belonged_surf_id_4_node_1(blng_tbls%host_surf)
       call const_ele_comm_table_1st                                     &
-     &   (txt, node1%numnod, numsurf, inod_global,                      &
+     &   (txt, node1%numnod, surf1%numsurf, inod_global,                &
      &    interior_surf, x_surf, nod_comm, surf_4_nod1,                 &
      &    blng_tbls%host_surf, surf_comm)
       call dealloc_iele_belonged(blng_tbls%host_surf)
