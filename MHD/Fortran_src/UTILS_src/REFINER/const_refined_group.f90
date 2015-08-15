@@ -94,7 +94,7 @@
       subroutine const_refined_surf_group                               &
      &         (sf_grp, nnod_2nd, new_sf_grp)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use t_group_data
       use set_refined_surf_group
 !
@@ -109,11 +109,11 @@
       call allocate_sf_grp_type_num(new_sf_grp)
 !
       call count_refined_surf_group                                     &
-     &   (nnod_4_surf, node_on_sf, sf_grp, new_sf_grp)
+     &   (surf1%nnod_4_surf, node_on_sf, sf_grp, new_sf_grp)
       call allocate_sf_grp_type_item(new_sf_grp)
 !
       call s_set_refined_surf_group                                     &
-     &   (nnod_4_surf, node_on_sf, sf_grp, new_sf_grp)
+     &   (surf1%nnod_4_surf, node_on_sf, sf_grp, new_sf_grp)
       call deallocate_mark_refine_sf_grp
 !
       end subroutine const_refined_surf_group

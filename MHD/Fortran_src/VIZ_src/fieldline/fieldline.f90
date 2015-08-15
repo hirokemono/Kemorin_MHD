@@ -9,7 +9,7 @@
 !!@verbatim
 !!      subroutine field_line_init(numnod, numele, e_multi,             &
 !!     &          ele_grp, sf_grp,  num_nod_phys, phys_nod_name)
-!
+!!
 !!
 !!      subroutine field_line_main(istep_psf, numnod, numele, numsurf,  &
 !!     &       nnod_4_surf, inod_smp_stack, inod_global,                &

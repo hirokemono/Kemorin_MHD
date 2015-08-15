@@ -118,7 +118,7 @@
 !
       subroutine write_surf_connect_viewer
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint) :: i
 !
@@ -132,7 +132,8 @@
       write(surface_id,1003) surftyp_viewer(1:surfpetot_viewer)
 !
       do i = 1, surfpetot_viewer
-       write(surface_id,'(10i16)') i, ie_sf_viewer(i,1:nnod_4_surf)
+       write(surface_id,'(10i16)')                                      &
+     &          i, ie_sf_viewer(i,1:surf1%nnod_4_surf)
       end do
 !
  1003 format(10i16)
@@ -159,13 +160,13 @@
       read(surface_id,*) surftyp_viewer(1:surfpetot_viewer)
 !
       call set_3D_nnod_4_sfed_by_ele                                    &
-     &   (ele1%nnod_4_ele, nnod_4_surf, nnod_4_edge)
+     &   (ele1%nnod_4_ele, surf1%nnod_4_surf, nnod_4_edge)
       call allocate_quad4_2_linear(ele1%nnod_4_ele)
 !
-      call allocate_surf_connect_viewer
+      call allocate_surf_connect_viewer(surf1%nnod_4_surf)
 !
       do i = 1, surfpetot_viewer
-       read(surface_id,*) itmp, ie_sf_viewer(i,1:nnod_4_surf)
+       read(surface_id,*) itmp, ie_sf_viewer(i,1:surf1%nnod_4_surf)
       end do
 !
       end subroutine read_surf_connect_viewer

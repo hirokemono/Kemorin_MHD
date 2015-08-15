@@ -26,7 +26,7 @@
 !
       subroutine mark_used_node_4_viewer
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_geometry_data_4_merge
       use m_surface_mesh_4_merge
 !
@@ -34,7 +34,7 @@
 !
 !
       do isurf = 1, surfpetot_viewer
-        do k1 = 1, nnod_4_surf
+        do k1 = 1, surf1%nnod_4_surf
           inod = ie_sf_viewer(isurf,k1)
           imark_node(inod) = 1
         end do
@@ -94,14 +94,14 @@
 !
       subroutine renumber_surf_connect_4_viewer
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_surface_mesh_4_merge
 !
       integer(kind = kint) :: isurf, k1, inod
 !
 !
       do isurf = 1, surfpetot_viewer
-        do k1 = 1, nnod_4_surf
+        do k1 = 1, surf1%nnod_4_surf
           inod = ie_sf_viewer(isurf,k1)
           ie_sf_viewer(isurf,k1) = inod_merge2viewer(inod)
         end do

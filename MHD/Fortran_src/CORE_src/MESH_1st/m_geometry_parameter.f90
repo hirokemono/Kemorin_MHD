@@ -47,7 +47,7 @@
 !>   number of nodes in each element
 !      integer(kind=kint) :: nnod_4_ele
 !>   number of nodes in each surface
-      integer(kind=kint) :: nnod_4_surf
+!      integer(kind=kint) :: nnod_4_surf
 !>   number of nodes in each edge
       integer(kind=kint) :: nnod_4_edge
 !

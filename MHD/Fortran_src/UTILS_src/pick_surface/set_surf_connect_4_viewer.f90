@@ -24,6 +24,7 @@
 !
       subroutine s_set_surf_connect_4_viewer
 !
+      use m_geometry_data
       use m_surf_geometry_4_merge
       use m_pickup_table_4_viewer
       use pickup_surface_4_viewer
@@ -44,7 +45,7 @@
       call deallocate_imark_surf
 !
        write(*,*) 'allocate_surf_connect_viewer'
-      call allocate_surf_connect_viewer
+      call allocate_surf_connect_viewer(surf1%nnod_4_surf)
       call set_surf_connect_viewer
 !
       call s_set_groups_4_viewer_surface

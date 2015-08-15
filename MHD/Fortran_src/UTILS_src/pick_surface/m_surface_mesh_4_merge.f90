@@ -6,7 +6,7 @@
 !      subroutine allocate_num_mesh_sf
 !      subroutine allocate_nod_position_viewer
 !      subroutine allocate_surf_type_viewer
-!      subroutine allocate_surf_connect_viewer
+!      subroutine allocate_surf_connect_viewer(nnod_4_surf)
 !      subroutine allocate_edge_data_4_sf
 !      subroutine allocate_edge_type_viewer
 !      subroutine allocate_domain_stack_4_surf
@@ -135,9 +135,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine allocate_surf_connect_viewer
+      subroutine allocate_surf_connect_viewer(nnod_4_surf)
 !
-      use m_geometry_parameter
+      integer(kind = kint), intent(in) :: nnod_4_surf
 !
       allocate( ie_sf_viewer(surfpetot_viewer,nnod_4_surf) )
       ie_sf_viewer = 0

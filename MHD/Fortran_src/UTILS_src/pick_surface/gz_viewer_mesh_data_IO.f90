@@ -133,7 +133,7 @@
 !
       subroutine write_surf_connect_viewer_gz
 !
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint) :: i
       character(len=kchara) :: fmt_txt
@@ -155,9 +155,9 @@
       call write_gz_multi_int_10i8(surfpetot_viewer, surftyp_viewer)
 !
       write(fmt_txt,'(a5,i2,a9)')                                       &
-     &                '(i15,', nnod_4_surf, '(i15),a1)'
+     &                '(i15,', surf1%nnod_4_surf, '(i15),a1)'
       do i = 1, surfpetot_viewer
-        write(textbuf,fmt_txt) i, ie_sf_viewer(i,1:nnod_4_surf),        &
+        write(textbuf,fmt_txt) i, ie_sf_viewer(i,1:surf1%nnod_4_surf),  &
      &                        char(0)
         call gz_write_textbuf_w_lf
       end do
@@ -183,14 +183,14 @@
       call read_gz_multi_int(surfpetot_viewer, surftyp_viewer)
 !
       call set_3D_nnod_4_sfed_by_ele                                    &
-     &   (ele1%nnod_4_ele, nnod_4_surf, nnod_4_edge)
+     &   (ele1%nnod_4_ele, surf1%nnod_4_surf, nnod_4_edge)
       call allocate_quad4_2_linear(ele1%nnod_4_ele)
 !
-      call allocate_surf_connect_viewer
+      call allocate_surf_connect_viewer(surf1%nnod_4_surf)
 !
       do i = 1, surfpetot_viewer
         call get_one_line_from_gz_f
-        read(textbuf,*) itmp, ie_sf_viewer(i,1:nnod_4_surf)
+        read(textbuf,*) itmp, ie_sf_viewer(i,1:surf1%nnod_4_surf)
       end do
 !
       end subroutine read_surf_connect_viewer_gz

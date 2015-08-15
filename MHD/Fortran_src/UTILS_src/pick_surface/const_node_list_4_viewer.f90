@@ -33,7 +33,7 @@
       subroutine mark_node_4_domain_viewer
 !
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint) :: k1, inum, isurf, iedge, inod
 !
@@ -47,7 +47,7 @@
         end do
       end do
 !
-      if (nnod_4_surf .eq. num_lag_sf) then
+      if (surf1%nnod_4_surf .eq. num_lag_sf) then
         do inum = 1, nedge_domain_sf
           isurf = isurf_domain_sf(inum)
           inod = ie_sf_viewer(isurf,num_lag_sf)
@@ -62,7 +62,7 @@
       subroutine mark_node_4_ele_grp_viewer(igrp)
 !
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint), intent(in) :: igrp
       integer(kind = kint) :: k1, ist, ied, inum, isurf, iedge, inod
@@ -80,7 +80,7 @@
         end do
       end do
 !
-      if (nnod_4_surf .eq. num_lag_sf) then
+      if (surf1%nnod_4_surf .eq. num_lag_sf) then
         ist = ele_stack_sf( (igrp-1)*num_pe_sf ) + 1
         ied = ele_stack_sf( (igrp  )*num_pe_sf )
         do inum = 1, nedge_domain_sf
@@ -97,7 +97,7 @@
       subroutine mark_node_4_surf_grp_viewer(igrp)
 !
       use m_geometry_constants
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint), intent(in) :: igrp
       integer(kind = kint) :: k1, ist, ied, inum, isurf, iedge, inod
@@ -115,7 +115,7 @@
         end do
       end do
 !
-      if (nnod_4_surf .eq. num_lag_sf) then
+      if (surf1%nnod_4_surf .eq. num_lag_sf) then
         ist = surf_stack_sf( (igrp-1)*num_pe_sf ) + 1
         ied = surf_stack_sf( (igrp  )*num_pe_sf )
         do inum = 1, nedge_domain_sf

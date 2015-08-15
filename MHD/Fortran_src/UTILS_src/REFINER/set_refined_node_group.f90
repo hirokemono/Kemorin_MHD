@@ -88,7 +88,7 @@
 !
         do isurf = 1, surf1%numsurf
           call check_element_in_nod_group                               &
-     &       (isurf, surf1%numsurf, nnod_4_surf, ie_surf, iflag)
+     &       (isurf, surf1%numsurf, surf1%nnod_4_surf, ie_surf, iflag)
 !
           if(iflag .eq. 1) then
             new_nod_grp%istack_grp(i) = new_nod_grp%istack_grp(i)       &
@@ -155,7 +155,7 @@
 !
         do isurf = 1, surf1%numsurf
           call check_element_in_nod_group                               &
-     &       (isurf, surf1%numsurf, nnod_4_surf, ie_surf, iflag)
+     &       (isurf, surf1%numsurf, surf1%nnod_4_surf, ie_surf, iflag)
 !
           if(iflag .eq. 1) then
             call set_new_nod_grp_item(icou, ntot_nod_refine_surf,       &

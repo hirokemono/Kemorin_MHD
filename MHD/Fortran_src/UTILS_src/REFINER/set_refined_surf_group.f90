@@ -177,7 +177,6 @@
       subroutine mark_refined_node_4_surf_grp(iele, isf, mark_no)
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_refined_node_id
 !
@@ -189,7 +188,7 @@
 !
 !
       isurf = abs(isf_4_ele(iele,isf))
-      do k1 = 1, nnod_4_surf
+      do k1 = 1, surf1%nnod_4_surf
         inod = ie_surf(isurf,k1)
         inod_mark_2(inod) = mark_no
       end do

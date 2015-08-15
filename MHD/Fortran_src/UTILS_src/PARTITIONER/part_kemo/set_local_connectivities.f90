@@ -139,7 +139,7 @@
 !
       do inum = 1, surf%numsurf
         isurf = surf%isurf_global(inum)
-        do k1 = 1, nnod_4_surf
+        do k1 = 1, surf1%nnod_4_surf
           inod_g = ie_surf(isurf,k1)
           surf%ie_surf(inum,k1) = inod_local_part(inod_g)
         end do

@@ -11,7 +11,7 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use m_surface_mesh_4_merge
       use m_pickup_table_4_viewer
 !
@@ -49,7 +49,8 @@
 !        write(*,*) 'const_part_edge_hash_4_sf', igrp
         call const_part_edge_hash_4_sf                                  &
      &     (nodpetot_viewer, surfpetot_viewer, ngrp,                    &
-     &      nnod_4_surf, nnod_4_edge, ie_sf_viewer, ele_item_sf(ist),   &
+     &      surf1%nnod_4_surf, nnod_4_edge,                             &
+     &      ie_sf_viewer, ele_item_sf(ist),                             &
      &      edge_sf_tbl%num_hash, edge_sf_tbl%istack_hash,              &
      &      edge_sf_tbl%iend_hash, edge_sf_tbl%id_hash,                 &
      &      edge_sf_tbl%iflag_hash)
@@ -111,7 +112,7 @@
 !
 !        write(*,*) 'const_part_edge_hash_4_sf', igrp
         call const_part_edge_hash_4_sf                                  &
-     &     (nodpetot_viewer, surfpetot_viewer, ngrp, nnod_4_surf,       &
+     &     (nodpetot_viewer, surfpetot_viewer, ngrp, surf1%nnod_4_surf, &
      &      nnod_4_edge, ie_sf_viewer, surf_item_sf(ist),               &
      &      edge_sf_tbl%num_hash, edge_sf_tbl%istack_hash,              &
      &      edge_sf_tbl%iend_hash, edge_sf_tbl%id_hash,                 &

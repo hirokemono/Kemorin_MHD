@@ -173,7 +173,7 @@
         call set_nnod_surf_edge_for_type(finer_surfmesh,                &
      &      finer_edgemesh, refined_fem%mesh%ele%nnod_4_ele)
 !
-        call set_hanging_nodes(surf1%numsurf, nnod_4_surf,              &
+        call set_hanging_nodes(surf1%numsurf, surf1%nnod_4_surf,        &
      &          numedge, nnod_4_edge, ie_surf, ie_edge)
 !
         call s_const_refined_group(refined_fem%mesh, refined_fem%group)
@@ -195,7 +195,7 @@
         write(*,*) 'set_mesh_from_type'
         call set_mesh_from_type(refined_fem%mesh, refined_fem%group)
 !
-        nnod_4_surf = finer_surfmesh%surf%nnod_4_surf
+        surf1%nnod_4_surf = finer_surfmesh%surf%nnod_4_surf
         nnod_4_edge = finer_edgemesh%edge%nnod_4_edge
       end do
 !
