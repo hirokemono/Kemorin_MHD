@@ -93,7 +93,7 @@
 !
 !>     Structure for edge data
       type(edge_data), save :: edge1
-!edge1%numedge
+!edge1%istack_edge_smp
 !
 !>   Stack list of number of node
       integer(kind=kint_gl), allocatable, target  :: istack_numnod(:)

@@ -117,7 +117,7 @@
           ix = int_start1(i0) + ii
 !
           call s_cal_jacobian_1d_2_3(node1%numnod, edge1%numedge,       &
-     &       ie_edge, node1%xx, np_smp, iedge_smp_stack,                &
+     &       ie_edge, node1%xx, np_smp, edge1%istack_edge_smp,          &
      &        jac_1d_ql%xj_edge(1:edge1%numedge,ix),                    &
      &        jac_1d_ql%axj_edge(1:edge1%numedge,ix),                   &
      &        jac_1d_ql%xeg_edge(1:edge1%numedge,ix,1),                 &

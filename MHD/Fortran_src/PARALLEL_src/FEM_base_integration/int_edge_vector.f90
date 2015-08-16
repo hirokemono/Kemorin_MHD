@@ -35,11 +35,11 @@
 !
 !
       if(ele1%nnod_4_ele .eq. num_quad_edge) then
-        call int_edge_vect(edge1%numedge, iedge_smp_stack,              &
+        call int_edge_vect(edge1%numedge, edge1%istack_edge_smp,        &
      &      jac1_1d_q%ntot_int, max_int_point, jac1_1d_q%xj_edge,       &
      &      jac1_1d_q%xeg_edge, edge_vect, edge_length, a_edge_length)
       else
-        call int_edge_vect(edge1%numedge, iedge_smp_stack,              &
+        call int_edge_vect(edge1%numedge, edge1%istack_edge_smp,        &
      &      jac1_1d_l%ntot_int, max_int_point, jac1_1d_l%xj_edge,       &
      &      jac1_1d_l%xeg_edge, edge_vect, edge_length, a_edge_length)
       end if

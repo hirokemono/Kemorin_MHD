@@ -83,10 +83,10 @@
       use cal_minmax_and_stacks
 !
 !
-      call allocate_edge_param_smp
+      call allocate_edge_param_smp_type(edge1)
 !
       call count_number_4_smp( np_smp, ione, edge1%numedge,             &
-     &       iedge_smp_stack, maxedge_4_smp )
+     &    edge1%istack_edge_smp, maxedge_4_smp )
 !
       end subroutine count_edge_size_4_smp
 !
@@ -130,7 +130,7 @@
       use count_overlap
 !
       call set_overlap_flag                                             &
-     &   (np_smp, iedge_smp_stack, node1%internal_node,                 &
+     &   (np_smp, edge1%istack_edge_smp, node1%internal_node,           &
      &    edge1%numedge, ie_edge(1,1), internal_edge, interior_edge)
 !
       end subroutine count_overlap_edge

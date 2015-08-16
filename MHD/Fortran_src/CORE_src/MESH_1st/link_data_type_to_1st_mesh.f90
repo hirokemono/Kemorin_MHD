@@ -144,7 +144,7 @@
       edge%iedge_4_ele =>   iedge_4_ele
       edge%interior_edge => interior_edge
 !
-      edge%istack_edge_smp => iedge_smp_stack
+      edge%istack_edge_smp => edge1%istack_edge_smp
       edge%max_edge_smp =    maxedge_4_smp
 !
       end subroutine link_edge_data_type

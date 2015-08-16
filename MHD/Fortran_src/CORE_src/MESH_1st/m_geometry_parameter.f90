@@ -8,10 +8,6 @@
 !      subroutine deallocate_inod_in_surf
 !      subroutine deallocate_inod_in_edge
 !
-!      subroutine allocate_edge_param_smp
-!
-!      subroutine deallocate_edge_param_smp
-!
 !
       module m_geometry_parameter
 !
@@ -78,7 +74,7 @@
       integer( kind=kint )  ::  maxsurf_4_smp = 0
 !
 !>     smp stack for edge on  local PE
-      integer( kind=kint ), allocatable, target :: iedge_smp_stack(:)
+!      integer( kind=kint ), allocatable, target :: iedge_smp_stack(:)
 !>     maximum number of smp edge on local PE
       integer(kind = kint)  ::  maxedge_4_smp = 0
 !
@@ -104,29 +100,6 @@
        deallocate ( node_on_edge, node_on_edge_sf)
 !
        end subroutine deallocate_inod_in_edge
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-!>    allocate smp stack table for edge
-      subroutine allocate_edge_param_smp
-!
-      use m_machine_parameter
-!
-      allocate( iedge_smp_stack(0:np_smp))
-      iedge_smp_stack = 0
-!
-      end subroutine allocate_edge_param_smp
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-!>    release smp stack table for edge
-       subroutine deallocate_edge_param_smp
-!
-       deallocate( iedge_smp_stack)
-!
-       end subroutine deallocate_edge_param_smp
 !
 !-----------------------------------------------------------------------
 !

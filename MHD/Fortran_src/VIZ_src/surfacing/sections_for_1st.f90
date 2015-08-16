@@ -85,10 +85,10 @@
       call cross_section_init(node1%numnod, node1%internal_node,        &
      &    ele1%numele, surf1%numsurf, edge1%numedge,                    &
      &    ele1%nnod_4_ele, edge1%nnod_4_edge, ele1%ie, ie_edge,         &
-     &    isf_4_ele,                                                    &
-     &    iedge_4_sf, iedge_4_ele, nod_comm, edge_comm,                 &
-     &    interior_ele, node1%xx, node1%istack_nod_smp,                 &
-     &    ele1%istack_ele_smp, surf1%istack_surf_smp, iedge_smp_stack,  &
+     &    isf_4_ele, iedge_4_sf,                                        &
+     &    iedge_4_ele, nod_comm, edge_comm, interior_ele,               &
+     &    node1%xx, node1%istack_nod_smp, ele1%istack_ele_smp,          &
+     &    surf1%istack_surf_smp, edge1%istack_edge_smp,                 &
      &    ele_grp1, sf_grp1, sf_grp_nod1, num_nod_phys, phys_nod_name)
 !
       end subroutine cross_section_init_1st
@@ -108,7 +108,7 @@
      &    edge1%nnod_4_edge, ie_edge, isf_4_ele,                        &
      &    iedge_4_sf, interior_ele,                                     &
      &    node1%istack_nod_smp, ele1%istack_ele_smp,                    &
-     &    surf1%istack_surf_smp, iedge_smp_stack,                       &
+     &    surf1%istack_surf_smp, edge1%istack_edge_smp,                 &
      &    ele_grp1, num_nod_phys, phys_nod_name)
 !
       end subroutine isosurface_init_1st
