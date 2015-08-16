@@ -124,7 +124,7 @@
 !
       write(50+my_rank,*) 'ip, inod, ff_smp', numdir
       do ip = 1, np_smp
-       do inod = 1, maxnod_4_smp
+       do inod = 1, node1%max_nod_smp
         write(50+my_rank,'(2i16,1p10e25.14)')                           &
      &         ip, inod, (ff_smp(inod,nd,ip),nd=1, numdir)
       end do
@@ -143,7 +143,7 @@
 !
       write(50+my_rank,*) 'ip, inod, ff_nl_smp', numdir
       do ip = 1, np_smp
-       do inod = 1, maxnod_4_smp
+       do inod = 1, node1%max_nod_smp
         write(50+my_rank,'(2i16,1p10e25.14)')                           &
      &         ip, inod, (ff_nl_smp(inod,nd,ip),nd=1, numdir)
       end do
@@ -162,7 +162,7 @@
 !
       write(50+my_rank,*) 'ip, inod, ff_m_smp', numdir
       do ip = 1, np_smp
-       do inod = 1, maxnod_4_smp
+       do inod = 1, node1%max_nod_smp
         write(50+my_rank,'(2i16,1p10e25.14)')                           &
      &         ip, inod, (ff_m_smp(inod,nd,ip),nd=1, numdir)
       end do

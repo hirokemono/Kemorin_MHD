@@ -37,7 +37,7 @@
       call allocate_node_param_smp_type(node1)
 !
       call count_number_4_smp( np_smp, ione, node1%numnod,              &
-     &       node1%istack_nod_smp, maxnod_4_smp )
+     &       node1%istack_nod_smp, node1%max_nod_smp)
       call count_number_4_smp(np_smp, ione, node1%internal_node,        &
      &       node1%istack_internal_smp, max_in_nod_4_smp)
 !

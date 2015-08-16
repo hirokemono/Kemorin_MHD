@@ -67,7 +67,7 @@
       node%ss =>    s_cylinder
       node%a_s =>   a_s_cylinder
 !
-      node%max_nod_smp =          maxnod_4_smp
+      node%max_nod_smp =          node1%max_nod_smp
       node%max_internal_nod_smp = max_in_nod_4_smp
 !
       node%istack_nod_smp =>      node1%istack_nod_smp

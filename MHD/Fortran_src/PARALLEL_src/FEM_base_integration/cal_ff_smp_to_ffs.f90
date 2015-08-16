@@ -39,9 +39,9 @@
       integer(kind = kint), intent(in) :: numdir
 !
 !
-      call s_set_ff_nl_smp_2_ff(node1%numnod, np_smp, maxnod_4_smp,     &
-     &    node1%istack_nod_smp, node_sort_list_smp, numdir,             &
-     &    ff_smp, ff_nl_smp, ff, ff_nl)
+      call s_set_ff_nl_smp_2_ff(node1%numnod, np_smp,                   &
+     &    node1%max_nod_smp, node1%istack_nod_smp,                      &
+     &    node_sort_list_smp, numdir, ff_smp, ff_nl_smp, ff, ff_nl)
 !
       end subroutine set_ff_nl_smp_2_ff
 !
@@ -52,12 +52,13 @@
       use cal_rhs_node_order
 !
       integer(kind = kint), intent(in) :: numdir
+      real(kind = kreal), intent(in)                                    &
+     &           :: ff_smp(node1%max_nod_smp,3,np_smp)
 !
       real(kind = kreal), intent(inout) :: ff(node1%numnod,3)
-      real(kind = kreal), intent(in) :: ff_smp(maxnod_4_smp,3,np_smp)
 !
 !
-      call s_cal_ff_smp_2_ff (node1%numnod, np_smp, maxnod_4_smp,       &
+      call s_cal_ff_smp_2_ff (node1%numnod, np_smp, node1%max_nod_smp,  &
      &    node1%istack_nod_smp, node_sort_list_smp, numdir, ff_smp, ff)
 !
       end subroutine cal_ff_smp_2_ff
@@ -68,12 +69,13 @@
 !
       use cal_rhs_node_order
 !
-      real(kind=kreal), intent(in) :: ff_smp(maxnod_4_smp,3,np_smp)
+      real(kind=kreal), intent(in)                                      &
+     &         :: ff_smp(node1%max_nod_smp,3,np_smp)
       real(kind=kreal), intent(inout) :: ml(node1%numnod)
       real(kind=kreal), intent(inout) :: ml_o(node1%numnod)
 !
 !
-      call s_cal_ff_smp_2_ml (node1%numnod, np_smp, maxnod_4_smp,       &
+      call s_cal_ff_smp_2_ml (node1%numnod, np_smp, node1%max_nod_smp,  &
      &    node1%istack_nod_smp, node_sort_list_smp, ml, ml_o, ff_smp)
 !
       end subroutine cal_ff_smp_2_ml
@@ -85,13 +87,15 @@
 !
       use cal_rhs_node_order
 !
-      real(kind=kreal), intent(inout) :: scalar(node1%numnod)
       real(kind=kreal), intent(in) :: ml(node1%numnod)
-      real(kind=kreal), intent(in) :: ff_smp(maxnod_4_smp,3,np_smp)
+      real(kind=kreal), intent(in)                                      &
+     &           :: ff_smp(node1%max_nod_smp,3,np_smp)
+      real(kind=kreal), intent(inout) :: scalar(node1%numnod)
 !
 !
-      call s_cal_ff_smp_2_scalar (node1%numnod, np_smp, maxnod_4_smp,   &
-     &    node1%istack_nod_smp, node_sort_list_smp, scalar, ff_smp, ml)
+      call s_cal_ff_smp_2_scalar(node1%numnod, np_smp,                  &
+     &    node1%max_nod_smp, node1%istack_nod_smp,                      &
+     &    node_sort_list_smp, scalar, ff_smp, ml)
 !
       end subroutine cal_ff_smp_2_scalar
 !
@@ -104,13 +108,14 @@
 !
       real(kind=kreal), intent(in) :: ml(node1%numnod)
       real(kind=kreal), intent(in)                                      &
-     &                  :: ff_smp(maxnod_4_smp,n_vector,np_smp)
+     &                  :: ff_smp(node1%max_nod_smp,n_vector,np_smp)
 !
       real(kind=kreal), intent(inout) :: vector(node1%numnod,n_vector)
 !
 !
-      call s_cal_ff_smp_2_vector (node1%numnod, np_smp, maxnod_4_smp,   &
-     &    node1%istack_nod_smp, node_sort_list_smp, vector, ff_smp, ml)
+      call s_cal_ff_smp_2_vector(node1%numnod, np_smp,                  &
+     &    node1%max_nod_smp, node1%istack_nod_smp,                      &
+     &    node_sort_list_smp, vector, ff_smp, ml)
 !
       end subroutine cal_ff_smp_2_vector
 !
@@ -123,15 +128,15 @@
 !
       real(kind=kreal), intent(in) :: ml(node1%numnod)
       real(kind=kreal), intent(in)                                      &
-     &                 :: ff_t_smp(maxnod_4_smp,n_sym_tensor,np_smp)
+     &            :: ff_t_smp(node1%max_nod_smp,n_sym_tensor,np_smp)
 !
       real(kind=kreal), intent(inout)                                   &
      &                 :: tensor(node1%numnod,n_sym_tensor)
 !
 !
-      call s_cal_ff_smp_2_tensor(node1%numnod, np_smp, maxnod_4_smp,    &
-     &    node1%istack_nod_smp, node_sort_list_smp, tensor,             &
-     &    ff_t_smp, ml)
+      call s_cal_ff_smp_2_tensor(node1%numnod, np_smp,                  &
+     &    node1%max_nod_smp, node1%istack_nod_smp,                      &
+     &    node_sort_list_smp, tensor, ff_t_smp, ml)
 !
       end subroutine cal_ff_smp_2_tensor
 !

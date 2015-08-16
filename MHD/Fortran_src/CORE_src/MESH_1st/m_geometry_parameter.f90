@@ -55,7 +55,7 @@
 !>     smp stack for internal node on  local PE
 !      integer( kind=kint ), allocatable, target :: inter_smp_stack(:)
 !>     maximum number of smp node on local PE
-      integer( kind=kint )  ::  maxnod_4_smp = 0
+!      integer( kind=kint )  ::  maxnod_4_smp = 0
 !>     maximum number of smp internal node on local PE
       integer( kind=kint )  ::  max_in_nod_4_smp = 0
 !

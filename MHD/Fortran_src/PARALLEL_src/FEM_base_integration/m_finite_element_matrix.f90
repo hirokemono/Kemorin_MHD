@@ -103,10 +103,10 @@
       allocate(ml(node1%numnod))
       allocate(ml_o(node1%numnod))
 !
-      allocate(ff_smp(maxnod_4_smp,3,np_smp))
-      allocate(ff_nl_smp(maxnod_4_smp,3,np_smp))
-      allocate(ff_m_smp(maxnod_4_smp,3,np_smp))
-      allocate(ff_t_smp(maxnod_4_smp,6,np_smp))
+      allocate(ff_smp(node1%max_nod_smp,3,np_smp))
+      allocate(ff_nl_smp(node1%max_nod_smp,3,np_smp))
+      allocate(ff_m_smp(node1%max_nod_smp,3,np_smp))
+      allocate(ff_t_smp(node1%max_nod_smp,6,np_smp))
 !
       allocate(sk1(ele1%numele,ele1%nnod_4_ele))
       allocate(sk6(ele1%numele,n_sym_tensor,ele1%nnod_4_ele))
@@ -119,7 +119,7 @@
         ml_o =0.0d0
       end if
 !
-      if(maxnod_4_smp .gt. 0) then
+      if(node1%max_nod_smp .gt. 0) then
         ff_m_smp = 0.0d0
         ff_t_smp = 0.0d0
       end if
@@ -246,14 +246,14 @@
       subroutine reset_ff_smp
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint) :: ip
 !
 !
 !$omp parallel do
       do ip = 1, np_smp
-        ff_smp(1:maxnod_4_smp,1:3,ip) =   0.0d0
+        ff_smp(1:node1%max_nod_smp,1:3,ip) =   0.0d0
       end do
 !$omp end parallel do
 !
@@ -264,15 +264,15 @@
       subroutine reset_ff_smps
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint) :: ip
 !
 !
 !$omp parallel do
       do ip = 1, np_smp
-        ff_smp(1:maxnod_4_smp,1:3,ip) =   0.0d0
-        ff_nl_smp(1:maxnod_4_smp,1:3,ip) = 0.0d0
+        ff_smp(1:node1%max_nod_smp,1:3,ip) =   0.0d0
+        ff_nl_smp(1:node1%max_nod_smp,1:3,ip) = 0.0d0
       end do
 !$omp end parallel do
 !
@@ -303,14 +303,14 @@
       subroutine reset_ff_t_smp
 !
       use m_machine_parameter
-      use m_geometry_parameter
+      use m_geometry_data
 !
       integer(kind = kint) :: ip
 !
 !
 !$omp parallel do
       do ip = 1, np_smp
-        ff_t_smp(1:maxnod_4_smp,1:6,ip) =   0.0d0
+        ff_t_smp(1:node1%max_nod_smp,1:6,ip) =   0.0d0
       end do
 !$omp end parallel do
 !
