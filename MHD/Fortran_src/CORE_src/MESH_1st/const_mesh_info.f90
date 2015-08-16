@@ -237,7 +237,6 @@
 !
       subroutine set_edge_and_surf_data(my_rank)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use const_surface_data
       use const_edge_data

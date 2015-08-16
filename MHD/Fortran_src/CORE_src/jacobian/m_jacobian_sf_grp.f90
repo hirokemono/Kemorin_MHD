@@ -43,7 +43,6 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_geometry_parameter
       use t_group_data
 !
       use cal_jacobians_linear
@@ -83,7 +82,6 @@
       subroutine allocate_jacobians_2d_l_quad(sf_grp, n_int)
 !
        use m_geometry_constants
-       use m_geometry_parameter
        use t_group_data
 !
       type(surface_group_data), intent(in) :: sf_grp

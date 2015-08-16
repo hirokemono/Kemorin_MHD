@@ -109,7 +109,6 @@
       subroutine copy_paramters_4_djds
 !
        use m_iccg_parameter
-       use m_geometry_parameter
        use m_solver_djds
        use m_crs_connect
        use m_crs_matrix

@@ -66,7 +66,6 @@
 !
       use m_geometry_data
       use m_geometry_data_MHD
-      use m_geometry_parameter
       use m_node_phys_data
 !
       real(kind = kreal), intent(in) :: const
@@ -96,7 +95,6 @@
 !
       use m_geometry_data
       use m_geometry_data_MHD
-      use m_geometry_parameter
       use m_node_phys_data
 !
       real(kind = kreal), intent(in) :: const

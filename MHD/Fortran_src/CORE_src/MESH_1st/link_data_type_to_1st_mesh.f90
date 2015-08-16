@@ -68,7 +68,7 @@
       node%a_s =>   a_s_cylinder
 !
       node%max_nod_smp =          node1%max_nod_smp
-      node%max_internal_nod_smp = max_in_nod_4_smp
+      node%max_internal_nod_smp = node1%max_internal_nod_smp
 !
       node%istack_nod_smp =>      node1%istack_nod_smp
       node%istack_internal_smp => node1%istack_internal_smp
@@ -97,7 +97,7 @@
       ele_new%nodelm => nodelm
 !
       ele_new%istack_ele_smp =>  ele1%istack_ele_smp
-      ele_new%max_ele_smp =     maxele_4_smp
+      ele_new%max_ele_smp =      ele1%max_ele_smp
 !
       end subroutine link_element_data_type
 !
@@ -106,7 +106,6 @@
       subroutine link_surface_data_type(surf)
 !
       use t_surface_data
-      use m_geometry_parameter
       use m_geometry_data
 !
       type(surface_data), intent(inout) :: surf
@@ -120,7 +119,7 @@
       surf%interior_surf => interior_surf
 !
       surf%istack_surf_smp => surf1%istack_surf_smp
-      surf%max_surf_smp =    maxsurf_4_smp
+      surf%max_surf_smp =     surf1%max_surf_smp
 !
       end subroutine link_surface_data_type
 !
@@ -129,7 +128,6 @@
       subroutine link_edge_data_type(edge)
 !
       use t_edge_data
-      use m_geometry_parameter
       use m_geometry_data
 !
       type(edge_data), intent(inout) :: edge
@@ -144,7 +142,7 @@
       edge%interior_edge => interior_edge
 !
       edge%istack_edge_smp => edge1%istack_edge_smp
-      edge%max_edge_smp =    maxedge_4_smp
+      edge%max_edge_smp =     edge1%max_edge_smp
 !
       end subroutine link_edge_data_type
 !
@@ -154,13 +152,12 @@
       subroutine link_ele_geometry_type(ele)
 !
       use t_geometry_data
-      use m_geometry_parameter
       use m_geometry_data
 !
       type(element_data), intent(inout) :: ele
 !
 
-      ele%max_ele_smp =     maxele_4_smp
+      ele%max_ele_smp =     ele1%max_ele_smp
       ele%istack_ele_smp => ele1%istack_ele_smp
 !
       ele%x_ele =>     x_ele

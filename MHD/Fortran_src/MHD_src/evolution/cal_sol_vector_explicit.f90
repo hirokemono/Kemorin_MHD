@@ -200,7 +200,6 @@
      &         (inter_smp_stack, numdir, i_field)
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_node_phys_data
       use m_finite_element_matrix
       use m_t_int_parameter
@@ -233,7 +232,6 @@
       subroutine cal_sol_vect_pre_conduct_euler(numdir, i_field)
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data_MHD
       use m_node_phys_data
       use m_finite_element_matrix

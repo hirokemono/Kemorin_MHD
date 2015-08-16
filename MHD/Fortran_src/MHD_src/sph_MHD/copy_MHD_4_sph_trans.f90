@@ -92,7 +92,6 @@
 !
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
-      use m_geometry_parameter
       use sel_fld_copy_4_sph_trans
 !
       integer(kind = kint), intent(in) :: i_trns

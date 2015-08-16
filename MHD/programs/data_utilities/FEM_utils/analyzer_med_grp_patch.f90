@@ -24,7 +24,6 @@
 !
       subroutine initialize_med_grp_patch
 !
-      use m_geometry_parameter
       use input_control_udt_diff
       use const_mesh_info
       use initialize_phys_data

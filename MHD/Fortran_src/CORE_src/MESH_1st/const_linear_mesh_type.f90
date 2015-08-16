@@ -122,7 +122,6 @@
      &          surf_mesh_l, edge_mesh_l, nod_fld_l)
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_group_data
       use t_mesh_data
@@ -178,7 +177,6 @@
      &          surf_mesh_l, edge_mesh_l, nod_fld_l)
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use t_mesh_data
       use t_phys_data

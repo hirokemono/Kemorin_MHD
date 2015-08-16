@@ -16,8 +16,6 @@
 !
       use m_precision
 !
-      use m_geometry_parameter
-!
       implicit none
 !
 !  ---------------------------------------------------------------------

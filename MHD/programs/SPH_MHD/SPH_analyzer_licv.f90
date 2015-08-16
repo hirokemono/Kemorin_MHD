@@ -26,7 +26,6 @@
       use m_machine_parameter
       use m_control_parameter
 !
-      use m_geometry_parameter
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_sph_phys_address

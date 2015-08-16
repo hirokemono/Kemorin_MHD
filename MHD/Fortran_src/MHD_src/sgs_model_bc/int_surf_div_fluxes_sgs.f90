@@ -259,7 +259,6 @@
       subroutine int_sf_skv_commute_sgs_v_flux(sf_grp, n_int, ngrp_sf,  &
      &          id_grp_sf, i_filter, i_tensor, i_vect, i_scalar)
 !
-      use m_geometry_parameter
       use m_finite_element_matrix
       use m_int_surface_data
 !
@@ -306,7 +305,6 @@
      &         (sf_grp, n_int, nmax_sf, ngrp_sf,                        &
      &          id_grp_sf, i_filter, i_tensor, i_vect, i_scalar)
 !
-      use m_geometry_parameter
       use m_finite_element_matrix
       use m_int_surface_data
 !

@@ -67,7 +67,6 @@
       use m_precision
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_fem_gauss_int_coefs
       use t_mesh_data
       use t_jacobians

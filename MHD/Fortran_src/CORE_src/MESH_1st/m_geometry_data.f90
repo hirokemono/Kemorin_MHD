@@ -72,7 +72,6 @@
       use t_geometry_data
       use t_surface_data
       use t_edge_data
-      use m_geometry_parameter
 !
       implicit  none
 !

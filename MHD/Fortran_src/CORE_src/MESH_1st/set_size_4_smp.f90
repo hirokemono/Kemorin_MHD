@@ -39,7 +39,7 @@
       call count_number_4_smp( np_smp, ione, node1%numnod,              &
      &       node1%istack_nod_smp, node1%max_nod_smp)
       call count_number_4_smp(np_smp, ione, node1%internal_node,        &
-     &       node1%istack_internal_smp, max_in_nod_4_smp)
+     &       node1%istack_internal_smp, node1%max_internal_nod_smp)
 !
       end subroutine set_smp_data_4_node
 !
@@ -55,8 +55,8 @@
 !
       call allocate_ele_param_smp_type(ele1)
 !
-      call count_number_4_smp( np_smp, ione, ele1%numele,              &
-     &    ele1%istack_ele_smp, maxele_4_smp )
+      call count_number_4_smp(np_smp, ione, ele1%numele,                &
+     &    ele1%istack_ele_smp, ele1%max_ele_smp)
 !
       end subroutine count_size_4_sheard_para
 !
@@ -70,8 +70,8 @@
 !
       call allocate_surf_param_smp_type(surf1)
 !
-      call count_number_4_smp( np_smp, ione, surf1%numsurf,             &
-     &    surf1%istack_surf_smp, maxsurf_4_smp )
+      call count_number_4_smp(np_smp, ione, surf1%numsurf,              &
+     &    surf1%istack_surf_smp, surf1%max_surf_smp)
 !
       end subroutine count_surf_size_4_smp
 !
@@ -85,8 +85,8 @@
 !
       call allocate_edge_param_smp_type(edge1)
 !
-      call count_number_4_smp( np_smp, ione, edge1%numedge,             &
-     &    edge1%istack_edge_smp, maxedge_4_smp )
+      call count_number_4_smp(np_smp, ione, edge1%numedge,              &
+     &    edge1%istack_edge_smp, edge1%max_edge_smp)
 !
       end subroutine count_edge_size_4_smp
 !

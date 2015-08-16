@@ -24,7 +24,6 @@
       use calypso_mpi
       use m_machine_parameter
       use m_ctl_params_4_gen_table
-      use m_geometry_parameter
       use m_next_node_id_4_node
       use m_2nd_pallalel_vector
       use m_read_mesh_data

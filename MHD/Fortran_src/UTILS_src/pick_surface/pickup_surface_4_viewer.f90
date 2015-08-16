@@ -92,7 +92,6 @@
 !
       subroutine set_surf_connect_viewer
 !
-      use m_geometry_parameter
       use m_surf_geometry_4_merge
       use m_surface_mesh_4_merge
 !

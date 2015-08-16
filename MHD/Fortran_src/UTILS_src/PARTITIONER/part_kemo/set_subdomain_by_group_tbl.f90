@@ -111,7 +111,6 @@
       subroutine count_subdomain_surf_by_tbl(n_domain)
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_internal_4_partitioner
       use m_domain_group_4_partition
@@ -146,7 +145,6 @@
       subroutine set_subdomain_surf_by_tbl(n_domain)
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_internal_4_partitioner
       use m_domain_group_4_partition
@@ -184,7 +182,6 @@
       subroutine count_subdomain_edge_by_tbl(n_domain)
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_internal_4_partitioner
       use m_domain_group_4_partition
@@ -219,7 +216,6 @@
       subroutine set_subdomain_edge_by_tbl(n_domain)
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_internal_4_partitioner
       use m_domain_group_4_partition

@@ -22,7 +22,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_geometry_parameter
       use t_solver_djds
 !
       implicit none

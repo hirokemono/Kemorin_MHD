@@ -74,7 +74,6 @@
 !
       use t_geometry_data
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_filter_elength
       use t_filter_elength
@@ -145,7 +144,6 @@
       subroutine set_new_filter_moms_ele                                &
      &         (FEM_moms, new_node, num_filter_moms_2nd, mom2_ele)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use t_geometry_data
       use t_filter_moments

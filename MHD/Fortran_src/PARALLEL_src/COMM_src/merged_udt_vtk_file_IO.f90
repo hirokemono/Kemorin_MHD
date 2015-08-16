@@ -44,7 +44,6 @@
 !
       subroutine init_merged_ucd(ucd, m_ucd)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_nod_comm_table
       use m_merged_ucd_data

@@ -16,7 +16,6 @@
       use m_precision
 !
       use m_control_parameter
-      use m_geometry_parameter
       use m_machine_parameter
       use m_phys_constants
       use m_geometry_data_MHD

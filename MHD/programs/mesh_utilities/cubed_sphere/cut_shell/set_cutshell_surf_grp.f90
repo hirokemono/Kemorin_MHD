@@ -126,7 +126,6 @@
      &         (num_surf, new_node, new_ele, new_sf_grp)
 !
       use m_geometry_constants
-      use m_geometry_parameter
 !
       integer(kind = kint), intent(in) :: num_surf
       type(node_data), intent(in) :: new_node
@@ -164,7 +163,6 @@
      &         (num_surf, new_node, new_ele, new_sf_grp)
 !
       use m_geometry_constants
-      use m_geometry_parameter
 !
       integer(kind = kint), intent(in) :: num_surf
       type(node_data), intent(in) :: new_node

@@ -31,7 +31,6 @@
       use m_machine_parameter
       use m_phys_constants
 !
-      use m_geometry_parameter
       use m_geometry_data
       use m_node_phys_data
 !

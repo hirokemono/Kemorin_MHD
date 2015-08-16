@@ -163,7 +163,6 @@
       subroutine set_ele_nodal_bc_type_potential(mesh, scaler_bc)
 !
       use m_geometry_constants
-      use m_geometry_parameter
 !
       type(mesh_geometry),    intent(in) :: mesh
       type(scaler_fixed_nod_bc_type), intent(inout) :: scaler_bc
@@ -188,7 +187,6 @@
       subroutine set_ele_nodal_bc_type_part_pot(mesh, layer, scaler_bc)
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use t_geometry_data_MHD
 !
       type(mesh_geometry),       intent(in) :: mesh

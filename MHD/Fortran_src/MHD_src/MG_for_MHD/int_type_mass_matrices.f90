@@ -40,7 +40,6 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_geometry_parameter
       use t_finite_element_mat_MHD
 !
       type(mesh_geometry), intent(in) ::          mesh

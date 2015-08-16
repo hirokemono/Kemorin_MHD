@@ -25,7 +25,6 @@
 !
       subroutine set_spherical_position
 !
-      use m_geometry_parameter
       use m_geometry_data
       use coordinate_converter
 !

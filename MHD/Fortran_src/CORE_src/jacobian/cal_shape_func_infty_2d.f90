@@ -15,7 +15,6 @@
       use m_precision
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use set_shape_elements_infty_sf
 !
       implicit none

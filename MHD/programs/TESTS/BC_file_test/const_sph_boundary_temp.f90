@@ -66,7 +66,6 @@
       subroutine set_sph_temp_bc                                        &
      &         (igrp, l, m, nod_grp, n_data, inod_bc, bc_temp)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use t_group_data
 !

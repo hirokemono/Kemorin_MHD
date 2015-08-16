@@ -119,7 +119,6 @@
       subroutine count_med_grp_patch(ele_grp, igrp, npatch)
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_psf_case_table
       use t_group_data
@@ -164,7 +163,6 @@
       subroutine set_med_grp_patch(ele_grp, igrp, npatch, x_patch)
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_geometry_data
       use m_psf_case_table
       use t_group_data

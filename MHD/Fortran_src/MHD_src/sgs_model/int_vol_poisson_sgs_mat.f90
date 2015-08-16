@@ -23,7 +23,6 @@
       use m_precision
 !
       use m_control_parameter
-      use m_geometry_parameter
 !
       implicit none
 !

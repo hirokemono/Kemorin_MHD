@@ -11,7 +11,6 @@
 !
       use m_constants
       use m_file_format_switch
-      use m_geometry_parameter
       use m_geometry_data_4_merge
       use m_2nd_geometry_4_merge
       use m_read_mesh_data

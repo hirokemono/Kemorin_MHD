@@ -23,7 +23,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
       use sum_volume_of_domain

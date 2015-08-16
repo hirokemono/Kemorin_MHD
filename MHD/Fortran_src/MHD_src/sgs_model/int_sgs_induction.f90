@@ -22,7 +22,6 @@
       subroutine int_vol_sgs_induction
 !
       use m_control_parameter
-      use m_geometry_parameter
       use m_geometry_data_MHD
       use m_geometry_data
       use m_phys_constants

@@ -18,7 +18,6 @@
 !
       use m_control_parameter
       use m_machine_parameter
-      use m_geometry_parameter
       use m_geometry_data
       use m_geometry_data_MHD
       use m_phys_constants

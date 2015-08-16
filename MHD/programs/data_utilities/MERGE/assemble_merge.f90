@@ -16,7 +16,6 @@
 !
       use m_constants
       use m_read_mesh_data
-      use m_geometry_parameter
       use m_geometry_data_4_merge
       use m_control_data_4_merge
       use m_control_param_merge

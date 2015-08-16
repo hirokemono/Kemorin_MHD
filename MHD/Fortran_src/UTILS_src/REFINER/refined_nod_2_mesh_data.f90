@@ -79,7 +79,6 @@
       subroutine s_refined_ele_2_mesh_data(new_ele)
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_refined_element_data
 !
       type(element_data), intent(inout) :: new_ele

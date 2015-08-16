@@ -7,7 +7,6 @@
 !> @brief structure of surface data (geometry and connectivity)
 !!
 !> Substitution of
-!> @n      (module m_geometry_parameter)
 !> @n      (module m_geometry_data)
 !> @n      (module m_surface_geometry_data)
 !!

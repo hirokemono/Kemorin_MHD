@@ -41,7 +41,6 @@
       subroutine initialize_itp_rst
 !
       use m_ctl_params_4_gen_table
-      use m_geometry_parameter
       use m_node_phys_address
 !
       use input_control_interpolate

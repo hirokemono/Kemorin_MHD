@@ -112,7 +112,6 @@
 !
       subroutine copy_node_geometry_from_type(node_org)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use t_geometry_data
 !
@@ -191,7 +190,6 @@
 !
       subroutine compare_node_type_vs_1st(my_rank, node_org)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use t_geometry_data
 !
@@ -224,7 +222,6 @@
 !
       subroutine compare_element_type_vs_1st(my_rank, ele_org)
 !
-      use m_geometry_parameter
       use m_geometry_data
       use t_geometry_data
 !

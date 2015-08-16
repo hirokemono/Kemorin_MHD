@@ -7,7 +7,6 @@
 !> @brief Structure of edge geometry data
 !!
 !> Substitution of
-!> @n      (module m_geometry_parameter)
 !> @n      (module m_geometry_data)
 !> @n      (module m_edgerime_geometry_data)
 !!

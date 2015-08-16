@@ -16,7 +16,6 @@
       use m_precision
 !
       use m_control_parameter
-      use m_geometry_parameter
       use m_geometry_data_MHD
       use m_physical_property
       use m_SGS_model_coefs

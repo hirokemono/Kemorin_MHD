@@ -123,7 +123,6 @@
 !
       subroutine allocate_array_4_element
 !
-      use m_geometry_parameter
       use t_geometry_data
 !
       integer(kind = kint) :: i

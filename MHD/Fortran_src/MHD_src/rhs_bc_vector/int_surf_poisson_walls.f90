@@ -17,7 +17,6 @@
       use m_constants
 !
       use m_geometry_constants
-      use m_geometry_parameter
       use m_phys_constants
       use m_finite_element_matrix
       use t_group_data

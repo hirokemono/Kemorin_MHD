@@ -18,7 +18,6 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_geometry_parameter
       use set_bc_element
       use count_bc_element
       use ordering_ele_4_fix_bd
