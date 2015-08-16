@@ -138,7 +138,7 @@
 !
       call count_surf_nod_grp_stack(np_smp, node1%istack_nod_smp,       &
      &    ele1%numele, ele1%nnod_4_ele, ele1%ie, surf1%nnod_4_surf,     &
-     &    node_on_sf, sf_grp%num_grp, sf_grp%num_item,                  &
+     &    surf1%node_on_sf, sf_grp%num_grp, sf_grp%num_item,            &
      &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &
      &    sf_grp_nod1%ntot_node_sf_grp, sf_grp_nod1%nnod_sf_grp,        &
      &    sf_grp_nod1%inod_stack_sf_grp)
@@ -158,7 +158,7 @@
 !
         call set_surf_nod_grp_item                                      &
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
-     &      surf1%nnod_4_surf, node_on_sf, node_on_sf_n,                &
+     &      surf1%nnod_4_surf, surf1%node_on_sf, surf1%node_on_sf_n,    &
      &      sf_grp%num_grp, sf_grp%num_item,                            &
      &      sf_grp%istack_grp, sf_grp%item_sf_grp,                      &
      &      sf_grp_nod1%ntot_node_sf_grp,                               &

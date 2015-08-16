@@ -68,7 +68,7 @@
              do inum = ist, ied
                iele = sf_grp%item_sf_grp(1,inum)
                isf =  sf_grp%item_sf_grp(2,inum)
-               kk2 =    node_on_sf(k2,isf)
+               kk2 =    surf1%node_on_sf(k2,isf)
                inod =   ele1%ie(iele,kk2)
 !
                vect_sf(inum,1) = d_nod(inod,n1)
@@ -124,7 +124,7 @@
               do inum = ist, ied
                 iele = sf_grp%item_sf_grp(1,inum)
                 isf =  sf_grp%item_sf_grp(2,inum)
-                kk2 =    node_on_sf(k2,isf)
+                kk2 =    surf1%node_on_sf(k2,isf)
                 inod =   ele1%ie(iele,kk2)
 !
                 vect_sf(inum,1) =  zero
@@ -137,7 +137,7 @@
               do inum = ist, ied
                 iele = sf_grp%item_sf_grp(1,inum)
                 isf =  sf_grp%item_sf_grp(2,inum)
-                kk2 =    node_on_sf(k2,isf)
+                kk2 =    surf1%node_on_sf(k2,isf)
                 inod =   ele1%ie(iele,kk2)
 !
                 vect_sf(inum,1) = -d_nod(inod,i_tensor  )
@@ -152,7 +152,7 @@
 !
                 iele = sf_grp%item_sf_grp(1,inum)
                 isf =  sf_grp%item_sf_grp(2,inum)
-                kk2 =    node_on_sf(k2,isf)
+                kk2 =    surf1%node_on_sf(k2,isf)
                 inod =   ele1%ie(iele,kk2)
 !
                 vect_sf(inum,1) = -d_nod(inod,i_tensor+1)

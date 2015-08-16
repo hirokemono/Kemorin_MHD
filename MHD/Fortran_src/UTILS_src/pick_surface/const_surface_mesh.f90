@@ -199,16 +199,16 @@
      &   (ele1%nnod_4_ele, surf1%nnod_4_surf, edge1%nnod_4_edge)
       call allocate_quad4_2_linear(ele1%nnod_4_ele)
 !
-      call allocate_inod_in_surf
+      call allocate_inod_in_surf(surf1)
       call set_inod_in_surf                                             &
-     &   (surf1%nnod_4_surf, node_on_sf, node_on_sf_n)
+     &   (surf1%nnod_4_surf, surf1%node_on_sf, surf1%node_on_sf_n)
 !
       call allocate_inod_in_edge
       call copy_inod_in_edge(edge1%nnod_4_edge,                         &
      &    node_on_edge, node_on_edge_sf)
 !
       merged_surf%nnod_4_surf = surf1%nnod_4_surf
-      call allocate_inod_in_surf_type(merged_surf)
+      call allocate_inod_in_surf(merged_surf)
       call set_inod_in_surf(merged_surf%nnod_4_surf,                    &
      &    merged_surf%node_on_sf, merged_surf%node_on_sf_n)
 !

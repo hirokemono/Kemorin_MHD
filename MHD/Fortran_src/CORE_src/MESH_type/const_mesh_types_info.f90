@@ -139,8 +139,8 @@
       type(edge_data),    intent(inout) :: edge
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'allocate_inod_in_surf_type'
-      call allocate_inod_in_surf_type(surf)
+      if (iflag_debug.eq.1) write(*,*) 'allocate_inod_in_surf'
+      call allocate_inod_in_surf(surf)
       call set_inod_in_surf(surf%nnod_4_surf,                           &
      &    surf%node_on_sf, surf%node_on_sf_n)
 !

@@ -109,7 +109,7 @@
       call set_surf_bc_on_node_dat                                      &
      &   (ngrp_sf, nnod_surf, igrp, id_sf_dat, i_dest,                  &
      &    node1%numnod, ele1%numele, ele1%nnod_4_ele,                   &
-     &    surf1%nnod_4_surf, ele1%ie, node_on_sf,                       &
+     &    surf1%nnod_4_surf, ele1%ie, surf1%node_on_sf,                 &
      &    sf_grp%num_grp, sf_grp%num_item,                              &
      &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &
      &    sf_grp_nod%ntot_node_sf_grp, sf_grp_nod%inod_stack_sf_grp,    &

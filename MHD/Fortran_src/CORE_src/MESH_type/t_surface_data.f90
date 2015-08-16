@@ -13,7 +13,7 @@
 !!
 !!@verbatim
 !!      subroutine alloc_numsurf_stack(nprocs, surf)
-!!      subroutine allocate_inod_in_surf_type(surf)
+!!      subroutine allocate_inod_in_surf(surf)
 !!      subroutine allocate_surface_connect_type(surf, nele)
 !!      subroutine allocate_ext_surface_type(surf)
 !!      subroutine allocate_iso_surface_type(surf)
@@ -156,7 +156,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine allocate_inod_in_surf_type(surf)
+       subroutine allocate_inod_in_surf(surf)
 !
       use m_geometry_constants
 !
@@ -169,7 +169,7 @@
        surf%node_on_sf =   0
        surf%node_on_sf_n = 0
 !
-       end subroutine allocate_inod_in_surf_type
+       end subroutine allocate_inod_in_surf
 !
 !  ---------------------------------------------------------------------
 !

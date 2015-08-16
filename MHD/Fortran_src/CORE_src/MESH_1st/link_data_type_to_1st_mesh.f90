@@ -29,15 +29,15 @@
 !
       subroutine link_single_ele_list_type(surf, edge)
 !
-      use m_geometry_parameter
+      use m_geometry_data
       use t_surface_data
       use t_edge_data
 !
       type(surface_data), intent(inout) :: surf
       type(edge_data), intent(inout) :: edge
 !
-      surf%node_on_sf =>   node_on_sf
-      surf%node_on_sf_n => node_on_sf_n
+      surf%node_on_sf =>   surf1%node_on_sf
+      surf%node_on_sf_n => surf1%node_on_sf_n
 !
       edge%node_on_edge =>    node_on_edge
       edge%node_on_edge_sf => node_on_edge_sf
@@ -49,7 +49,6 @@
       subroutine link_node_data_type(node)
 !
       use t_geometry_data
-      use m_geometry_parameter
       use m_geometry_data
 !
       type(node_data), intent(inout) :: node

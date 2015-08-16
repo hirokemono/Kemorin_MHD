@@ -54,7 +54,6 @@
 !!      subroutine deallocate_iso_surface
 !!      subroutine deallocate_iso_edge
 !!
-!!       subroutine allocate_inod_in_surf
 !!       subroutine allocate_inod_in_edge
 !!@endverbatim
 !!
@@ -89,11 +88,11 @@
 !
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
-!surf1%istack_surf_smp
+!  surf1%node_on_sf
 !
 !>     Structure for edge data
       type(edge_data), save :: edge1
-!edge1%istack_edge_smp
+!  edge1%istack_edge_smp
 !
 !>   Stack list of number of node
       integer(kind=kint_gl), allocatable, target  :: istack_numnod(:)
@@ -700,21 +699,6 @@
       end subroutine deallocate_iso_edge
 !
 ! ------------------------------------------------------
-!
-       subroutine allocate_inod_in_surf
-!
-       use m_geometry_constants
-!
-!
-       allocate ( node_on_sf  (surf1%nnod_4_surf,nsurf_4_ele) )
-       allocate ( node_on_sf_n(surf1%nnod_4_surf,nsurf_4_ele) )
-!
-       node_on_sf =   0
-       node_on_sf_n = 0
-!
-       end subroutine allocate_inod_in_surf
-!
-!  ---------------------------------------------------------------------
 !
        subroutine allocate_inod_in_edge
 !

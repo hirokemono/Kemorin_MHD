@@ -136,7 +136,7 @@
       call deallocate_surf_param_smp_type(surf1)
       call deallocate_ele_param_smp_type(ele1)
       call deallocate_node_param_smp_type(node1)
-      call deallocate_inod_in_surf
+      call deallocate_inod_in_surf_type(surf1)
       call deallocate_inod_in_edge
 !
       call deallocate_edge_4_ele
@@ -171,7 +171,7 @@
 !
       call deallocate_node_param_smp_type(node1)
       call deallocate_ele_param_smp_type(ele1)
-      call deallocate_inod_in_surf
+      call deallocate_inod_in_surf_type(surf1)
       call deallocate_inod_in_edge
 !
       call deallocate_element_geometry
@@ -192,9 +192,9 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'allocate_inod_in_surf'
-      call allocate_inod_in_surf
+      call allocate_inod_in_surf(surf1)
       call set_inod_in_surf                                             &
-     &   (surf1%nnod_4_surf, node_on_sf, node_on_sf_n)
+     &   (surf1%nnod_4_surf, surf1%node_on_sf, surf1%node_on_sf_n)
 !
       if (iflag_debug.gt.0) write(*,*) 'allocate_inod_in_edge'
       call allocate_inod_in_edge

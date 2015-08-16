@@ -74,7 +74,7 @@
           if (num .gt. 0) then
             call fem_surf_crank_free_inside(igrp, k2, num_int,          &
      &          ele1%numele, ele1%nnod_4_ele,                           &
-     &          surf1%nnod_4_surf, node_on_sf,                          &
+     &          surf1%nnod_4_surf, surf1%node_on_sf,                    &
      &          sf_grp%num_item, sf_grp%num_grp_smp,                    &
      &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
      &          jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%an_sf,      &
@@ -121,7 +121,7 @@
           if (num .gt. 0) then
             call fem_surf_crank_free_outside(igrp, k2, num_int,         &
      &          ele1%numele, ele1%nnod_4_ele,                           &
-     &          surf1%nnod_4_surf, node_on_sf,                          &
+     &          surf1%nnod_4_surf, surf1%node_on_sf,                    &
      &          sf_grp%num_item, sf_grp%num_grp_smp,                    &
      &          sf_grp%istack_grp_smp, sf_grp%item_sf_grp,              &
      &          jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%an_sf,      &

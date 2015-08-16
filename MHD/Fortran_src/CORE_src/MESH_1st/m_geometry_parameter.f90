@@ -5,7 +5,6 @@
 !
 !   Written by H. Matsui & H. Okuda
 !
-!      subroutine deallocate_inod_in_surf
 !      subroutine deallocate_inod_in_edge
 !
 !
@@ -43,9 +42,9 @@
 !      integer(kind=kint) :: nnod_4_edge
 !
 !>   local index for surface on each element
-      integer (kind=kint), allocatable, target :: node_on_sf(:,:)
+!      integer (kind=kint), allocatable, target :: node_on_sf(:,:)
 !>   local index for opposite surface on each element
-      integer (kind=kint), allocatable, target :: node_on_sf_n(:,:)
+!      integer (kind=kint), allocatable, target :: node_on_sf_n(:,:)
 !
 !>   local index for edge on each element
       integer (kind=kint), allocatable, target :: node_on_edge(:,:)
@@ -83,15 +82,6 @@
       contains
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-       subroutine deallocate_inod_in_surf
-!
-!
-       deallocate (node_on_sf, node_on_sf_n)
-!
-       end subroutine deallocate_inod_in_surf
-!
 !  ---------------------------------------------------------------------
 !
        subroutine deallocate_inod_in_edge
