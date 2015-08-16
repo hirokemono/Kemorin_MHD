@@ -71,7 +71,7 @@
 !
 !
       numnod_dummy =        surf1%numsurf
-      internal_node_dummy = internal_surf
+      internal_node_dummy = surf1%internal_surf
 !
       call allocate_node_data_dummy
       call allocate_ele_vector_IO
@@ -93,7 +93,7 @@
       subroutine copy_surf_geometry_to_IO_sph
 !
       numnod_dummy =        surf1%numsurf
-      internal_node_dummy = internal_surf
+      internal_node_dummy = surf1%internal_surf
 !
       call allocate_node_data_dummy
       call allocate_ele_vector_IO
@@ -116,7 +116,7 @@
       subroutine copy_surf_geometry_to_IO_cyl
 !
       numnod_dummy =        surf1%numsurf
-      internal_node_dummy = internal_surf
+      internal_node_dummy = surf1%internal_surf
 !
       call allocate_node_data_dummy
       call allocate_ele_vector_IO

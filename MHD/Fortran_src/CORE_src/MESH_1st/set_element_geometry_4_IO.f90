@@ -31,7 +31,7 @@
 !
 !
       numnod_dummy = ele1%numele
-      internal_node_dummy = internal_ele
+      internal_node_dummy = ele1%internal_ele
 !
       call allocate_node_data_dummy
       call allocate_ele_scalar_IO
@@ -56,7 +56,7 @@
 !
 !
       numnod_dummy = ele1%numele
-      internal_node_dummy = internal_ele
+      internal_node_dummy = ele1%internal_ele
 !
       call allocate_node_data_dummy
       call allocate_ele_scalar_IO
@@ -82,7 +82,7 @@
 !
 !
       numnod_dummy = ele1%numele
-      internal_node_dummy = internal_ele
+      internal_node_dummy = ele1%internal_ele
 !
       call allocate_node_data_dummy
       call allocate_ele_scalar_IO

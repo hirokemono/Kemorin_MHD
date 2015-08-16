@@ -19,15 +19,15 @@
 !>     number of element on local PE
 !      integer( kind=kint )  ::  numele
 !>     number of internal element on local PE
-      integer( kind=kint )  ::  internal_ele
+!      integer( kind=kint )  ::  internal_ele
 !>     number of surface on local PE
 !      integer( kind=kint )  ::  numsurf
 !>     number of internal surface on local PE
-      integer( kind=kint )  ::  internal_surf
+!      integer( kind=kint )  ::  internal_surf
 !>     number of edge on local PE
 !      integer( kind=kint )  ::  numedge
 !>     number of internal edge on local PE
-      integer( kind=kint )  ::  internal_edge
+!      integer( kind=kint )  ::  internal_edge
 !
 !
 !   number of nodes in each edge

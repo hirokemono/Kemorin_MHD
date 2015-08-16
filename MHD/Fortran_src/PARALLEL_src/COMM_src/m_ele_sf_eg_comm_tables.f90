@@ -110,7 +110,8 @@
       call allocate_numele_stack(nprocs)
 !
       call count_number_of_node_stack(ele1%numele, istack_numele)
-      call count_number_of_node_stack(internal_ele, istack_interele)
+      call count_number_of_node_stack                                   &
+     &   (ele1%internal_ele, istack_interele)
 !
       call set_global_ele_id(txt, ele1%numele, istack_interele,         &
      &         interior_ele, ele_comm, iele_global)
@@ -129,7 +130,8 @@
       call allocate_numsurf_stack(nprocs)
 !
       call count_number_of_node_stack(surf1%numsurf, istack_numsurf)
-      call count_number_of_node_stack(internal_surf, istack_intersurf)
+      call count_number_of_node_stack                                   &
+     &   (surf1%internal_surf, istack_intersurf)
 !
       call set_global_ele_id(txt, surf1%numsurf, istack_intersurf,      &
      &         interior_surf, surf_comm, isurf_global)
@@ -148,7 +150,8 @@
       call allocate_numedge_stack(nprocs)
 !
       call count_number_of_node_stack(edge1%numedge, istack_numedge)
-      call count_number_of_node_stack(internal_edge, istack_interedge)
+      call count_number_of_node_stack                                   &
+     &   (edge1%internal_edge, istack_interedge)
 !
       call set_global_ele_id(txt, edge1%numedge, istack_interele,       &
      &         interior_edge, edge_comm, iedge_global)

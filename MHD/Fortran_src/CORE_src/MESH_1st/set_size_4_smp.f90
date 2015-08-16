@@ -101,7 +101,7 @@
 !
       call set_overlap_flag                                             &
      &   (np_smp, ele1%istack_ele_smp, node1%internal_node,             &
-     &    ele1%numele, ele1%ie(1:ele1%numele,1), internal_ele,          &
+     &    ele1%numele, ele1%ie(1:ele1%numele,1), ele1%internal_ele,     &
      &    interior_ele)
 !
       call copy_real_overlap_flag(np_smp, ele1%istack_ele_smp,          &
@@ -118,7 +118,8 @@
 !
       call set_overlap_flag                                             &
      &   (np_smp, surf1%istack_surf_smp, node1%internal_node,           &
-     &    surf1%numsurf, ie_surf(1,1), internal_surf, interior_surf)
+     &    surf1%numsurf, ie_surf, surf1%internal_surf,                  &
+     &    interior_surf)
 !
       end subroutine count_overlap_surface
 !
@@ -131,7 +132,7 @@
 !
       call set_overlap_flag                                             &
      &   (np_smp, edge1%istack_edge_smp, node1%internal_node,           &
-     &    edge1%numedge, ie_edge(1,1), internal_edge, interior_edge)
+     &    edge1%numedge, ie_edge, edge1%internal_edge, interior_edge)
 !
       end subroutine count_overlap_edge
 !

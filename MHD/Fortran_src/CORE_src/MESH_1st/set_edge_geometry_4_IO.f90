@@ -74,7 +74,7 @@
 !
 !
       numnod_dummy =        edge1%numedge
-      internal_node_dummy = internal_edge
+      internal_node_dummy = edge1%internal_edge
 !
       call allocate_node_data_dummy
       call allocate_ele_vector_IO
@@ -94,7 +94,7 @@
       subroutine copy_edge_geometry_to_IO_sph
 !
       numnod_dummy =        edge1%numedge
-      internal_node_dummy = internal_edge
+      internal_node_dummy = edge1%internal_edge
 !
       call allocate_node_data_dummy
       call allocate_ele_vector_IO
@@ -116,7 +116,7 @@
       subroutine copy_edge_geometry_to_IO_cyl
 !
       numnod_dummy =        edge1%numedge
-      internal_node_dummy = internal_edge
+      internal_node_dummy = edge1%internal_edge
 !
       call allocate_node_data_dummy
       call allocate_ele_vector_IO
