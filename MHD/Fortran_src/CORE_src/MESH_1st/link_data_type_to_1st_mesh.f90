@@ -39,8 +39,8 @@
       surf%node_on_sf =>   surf1%node_on_sf
       surf%node_on_sf_n => surf1%node_on_sf_n
 !
-      edge%node_on_edge =>    node_on_edge
-      edge%node_on_edge_sf => node_on_edge_sf
+      edge%node_on_edge =>    edge1%node_on_edge
+      edge%node_on_edge_sf => edge1%node_on_edge_sf
 !
       end subroutine link_single_ele_list_type
 !

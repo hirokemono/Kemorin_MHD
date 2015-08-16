@@ -144,8 +144,8 @@
       call set_inod_in_surf(surf%nnod_4_surf,                           &
      &    surf%node_on_sf, surf%node_on_sf_n)
 !
-      if (iflag_debug.eq.1) write(*,*) 'allocate_inod_in_edge_type'
-      call allocate_inod_in_edge_type(edge)
+      if (iflag_debug.eq.1) write(*,*) 'allocate_inod_in_edge'
+      call allocate_inod_in_edge(edge)
       call copy_inod_in_edge(edge%nnod_4_edge,                          &
      &    edge%node_on_edge, edge%node_on_edge_sf)
 !

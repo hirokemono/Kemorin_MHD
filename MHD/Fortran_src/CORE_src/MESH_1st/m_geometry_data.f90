@@ -53,8 +53,6 @@
 !!      subroutine deallocate_ext_surface
 !!      subroutine deallocate_iso_surface
 !!      subroutine deallocate_iso_edge
-!!
-!!       subroutine allocate_inod_in_edge
 !!@endverbatim
 !!
 !>
@@ -699,20 +697,5 @@
       end subroutine deallocate_iso_edge
 !
 ! ------------------------------------------------------
-!
-       subroutine allocate_inod_in_edge
-!
-       use m_geometry_constants
-!
-!
-       allocate ( node_on_edge(edge1%nnod_4_edge,nedge_4_ele) )
-       allocate ( node_on_edge_sf(edge1%nnod_4_edge,nedge_4_surf) )
-!
-       node_on_edge =    0
-       node_on_edge_sf = 0
-!
-       end subroutine allocate_inod_in_edge
-!
-!-----------------------------------------------------------------------
 !
       end module m_geometry_data

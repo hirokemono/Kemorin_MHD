@@ -5,8 +5,6 @@
 !
 !   Written by H. Matsui & H. Okuda
 !
-!      subroutine deallocate_inod_in_edge
-!
 !
       module m_geometry_parameter
 !
@@ -47,9 +45,9 @@
 !      integer (kind=kint), allocatable, target :: node_on_sf_n(:,:)
 !
 !>   local index for edge on each element
-      integer (kind=kint), allocatable, target :: node_on_edge(:,:)
+!      integer (kind=kint), allocatable, target :: node_on_edge(:,:)
 !>   local index for edge on each surface
-      integer (kind=kint), allocatable, target :: node_on_edge_sf(:,:)
+!      integer (kind=kint), allocatable, target :: node_on_edge_sf(:,:)
 !
 !
 !>     smp stack for total node on  local PE
@@ -76,21 +74,5 @@
 !      integer( kind=kint ), allocatable, target :: iedge_smp_stack(:)
 !>     maximum number of smp edge on local PE
       integer(kind = kint)  ::  maxedge_4_smp = 0
-!
-!-----------------------------------------------------------------------
-!
-      contains
-!
-!-----------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-       subroutine deallocate_inod_in_edge
-!
-!
-       deallocate ( node_on_edge, node_on_edge_sf)
-!
-       end subroutine deallocate_inod_in_edge
-!
-!-----------------------------------------------------------------------
 !
       end module   m_geometry_parameter

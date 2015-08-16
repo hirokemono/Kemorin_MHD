@@ -108,9 +108,7 @@
 !
       use m_nod_comm_table
 !
-      use m_geometry_parameter
       use m_geometry_data
-!
       use m_group_data
 !
       use m_surface_geometry_data
@@ -133,11 +131,11 @@
       call deallocate_edge_geometry
 !
       call deallocate_edge_param_smp_type(edge1)
+      call deallocate_inod_in_edge_type(edge1)
       call deallocate_surf_param_smp_type(surf1)
+      call deallocate_inod_in_surf_type(surf1)
       call deallocate_ele_param_smp_type(ele1)
       call deallocate_node_param_smp_type(node1)
-      call deallocate_inod_in_surf_type(surf1)
-      call deallocate_inod_in_edge
 !
       call deallocate_edge_4_ele
       call deallocate_edge_connect
@@ -156,9 +154,7 @@
 !
       use m_nod_comm_table
 !
-      use m_geometry_parameter
       use m_geometry_data
-!
       use m_group_data
 !
 !
@@ -169,10 +165,10 @@
       call deallocate_grp_type(ele_grp1)
       call deallocate_grp_type(nod_grp1)
 !
-      call deallocate_node_param_smp_type(node1)
-      call deallocate_ele_param_smp_type(ele1)
+      call deallocate_inod_in_edge_type(edge1)
       call deallocate_inod_in_surf_type(surf1)
-      call deallocate_inod_in_edge
+      call deallocate_ele_param_smp_type(ele1)
+      call deallocate_node_param_smp_type(node1)
 !
       call deallocate_element_geometry
 !
@@ -197,9 +193,9 @@
      &   (surf1%nnod_4_surf, surf1%node_on_sf, surf1%node_on_sf_n)
 !
       if (iflag_debug.gt.0) write(*,*) 'allocate_inod_in_edge'
-      call allocate_inod_in_edge
+      call allocate_inod_in_edge(edge1)
       call copy_inod_in_edge                                            &
-     &   (edge1%nnod_4_edge, node_on_edge, node_on_edge_sf)
+     &   (edge1%nnod_4_edge, edge1%node_on_edge, edge1%node_on_edge_sf)
 !
       end subroutine set_local_element_info
 !

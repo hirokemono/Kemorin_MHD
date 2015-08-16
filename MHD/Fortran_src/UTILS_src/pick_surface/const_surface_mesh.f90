@@ -203,9 +203,9 @@
       call set_inod_in_surf                                             &
      &   (surf1%nnod_4_surf, surf1%node_on_sf, surf1%node_on_sf_n)
 !
-      call allocate_inod_in_edge
+      call allocate_inod_in_edge(edge1)
       call copy_inod_in_edge(edge1%nnod_4_edge,                         &
-     &    node_on_edge, node_on_edge_sf)
+     &    edge1%node_on_edge, edge1%node_on_edge_sf)
 !
       merged_surf%nnod_4_surf = surf1%nnod_4_surf
       call allocate_inod_in_surf(merged_surf)

@@ -13,7 +13,7 @@
 !!
 !!@verbatim
 !!      subroutine alloc_numedge_stack(nprocs, edge)
-!!      subroutine allocate_inod_in_edge_type(edge)
+!!      subroutine allocate_inod_in_edge(edge)
 !!      subroutine allocate_edge_connect_type(edge, nsurf)
 !!      subroutine allocate_edge_4_ele_type(edge, nele)
 !!      subroutine allocate_iso_edge_type(edge)
@@ -171,7 +171,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_inod_in_edge_type(edge)
+      subroutine allocate_inod_in_edge(edge)
 !
       use m_geometry_constants
 !
@@ -181,7 +181,7 @@
       allocate ( edge%node_on_edge(edge%nnod_4_edge,nedge_4_ele) )
       allocate ( edge%node_on_edge_sf(edge%nnod_4_edge,nedge_4_surf) )
 !
-      end subroutine allocate_inod_in_edge_type
+      end subroutine allocate_inod_in_edge
 !
 !  ---------------------------------------------------------------------
 !

@@ -90,7 +90,7 @@
      &    surf1%nnod_4_surf, edge1%nnod_4_edge, ie_sf_viewer,           &
      &    ed_sf_tbl%istack_hash, ed_sf_tbl%iend_hash,                   &
      &    ed_sf_tbl%id_hash, ed_sf_tbl%iflag_hash,                      &
-     &    ie_edge_viewer, iedge_sf_viewer, node_on_edge_sf)
+     &    ie_edge_viewer, iedge_sf_viewer, edge1%node_on_edge_sf)
 !
       end subroutine const_all_edge_4_viewer
 !
