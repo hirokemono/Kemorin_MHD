@@ -170,10 +170,10 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      write(50+my_rank,*) 'numsurf_iso', numsurf_iso
+      write(50+my_rank,*) 'numsurf_iso', surf1%numsurf_iso
 !
       write(50+my_rank,*) 'isf_isolate'
-      write(50+my_rank,'(8i16)') isf_isolate(1:numsurf_iso)
+      write(50+my_rank,'(8i16)') isf_isolate(1:surf1%numsurf_iso)
 !
       end subroutine check_iso_surface
 !

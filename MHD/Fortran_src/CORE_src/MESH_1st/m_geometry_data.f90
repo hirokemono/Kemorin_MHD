@@ -68,7 +68,7 @@
 !
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
-!  surf1%numsurf_ext
+!  surf1%numsurf_iso
 !
 !>     Structure for edge data
       type(edge_data), save :: edge1
@@ -152,7 +152,7 @@
 !>     number of external surface
 !      integer(kind=kint) ::  numsurf_ext
 !>     number of isolated surface
-      integer(kind=kint) ::  numsurf_iso
+!      integer(kind=kint) ::  numsurf_iso
 !>     external surface list
       integer(kind=kint), allocatable  ::  isf_external(:)
 !>     isolated surface list
@@ -452,7 +452,7 @@
 !
       subroutine allocate_iso_surface
 !
-      allocate( isf_isolate(numsurf_iso) )
+      allocate( isf_isolate(surf1%numsurf_iso) )
       isf_isolate = 0
 !
       end subroutine allocate_iso_surface

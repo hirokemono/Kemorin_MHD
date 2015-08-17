@@ -160,14 +160,14 @@
 !   set surface data
 !
       if (iflag_debug.eq.1) write(*,*) 'count_part_surface'
-      call count_part_surface                                           &
-     &   (ele1%numele, ele1%numele, sf_ele_tbl%iflag_hash, numsurf_iso)
+      call count_part_surface(ele1%numele, ele1%numele,                 &
+     &    sf_ele_tbl%iflag_hash, surf1%numsurf_iso)
 !
       call allocate_iso_surface
 !
       if (iflag_debug.eq.1) write(*,*) 'set_part_surface'
       call set_part_surface                                             &
-     &   (ele1%numele, ele1%numele, numsurf_iso, surf1%isf_4_ele,       &
+     &   (ele1%numele, ele1%numele, surf1%numsurf_iso, surf1%isf_4_ele, &
      &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash, isf_isolate)
 !
       end subroutine const_isolate_surface_data
