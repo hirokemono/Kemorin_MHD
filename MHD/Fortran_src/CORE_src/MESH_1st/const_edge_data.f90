@@ -72,7 +72,6 @@
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%id_hash,               &
      &    edge_ele_tbl%iflag_hash, edge1%ie_edge, edge1%iedge_4_sf)
 !
-      iedge_4_sf = edge1%iedge_4_sf
       call dealloc_sum_hash(edge_ele_tbl)
 !
 !

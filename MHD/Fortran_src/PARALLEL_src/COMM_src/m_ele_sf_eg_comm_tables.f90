@@ -154,7 +154,7 @@
      &   (edge1%internal_edge, istack_interedge)
 !
       call set_global_ele_id(txt, edge1%numedge, istack_interele,       &
-     &         interior_edge, edge_comm, iedge_global)
+     &    edge1%interior_edge, edge_comm, iedge_global)
 !
       end subroutine const_global_edge_id_1st
 !
@@ -223,7 +223,7 @@
       call belonged_edge_id_4_node_1(blng_tbls%host_edge)
       call const_ele_comm_table_1st                                     &
      &   (txt, node1%numnod, edge1%numedge, node1%inod_global,          &
-     &    interior_edge, x_edge, nod_comm, edge_4_nod1,                 &
+     &    edge1%interior_edge, x_edge, nod_comm, edge_4_nod1,           &
      &    blng_tbls%host_edge,  edge_comm)
       call dealloc_iele_belonged(blng_tbls%host_edge)
       call dealloc_iele_belonged(edge_4_nod1)

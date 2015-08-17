@@ -139,7 +139,7 @@
       edge%ie_edge =>       edge1%ie_edge
       edge%iedge_4_sf =>    edge1%iedge_4_sf
       edge%iedge_4_ele =>   iedge_4_ele
-      edge%interior_edge => interior_edge
+      edge%interior_edge => edge1%interior_edge
 !
       edge%istack_edge_smp => edge1%istack_edge_smp
       edge%max_edge_smp =     edge1%max_edge_smp

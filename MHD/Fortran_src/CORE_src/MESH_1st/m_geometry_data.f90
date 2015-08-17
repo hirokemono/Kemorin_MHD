@@ -79,7 +79,7 @@
 !
 !>     Structure for edge data
       type(edge_data), save :: edge1
-!  edge1%istack_edge_smp
+!  edge1%interior_edge
 !
 !>   Stack list of number of node
       integer(kind=kint_gl), allocatable, target  :: istack_numnod(:)
@@ -125,7 +125,7 @@
 !>@n          0: normal direction  1-4: rotation flag for reverse surface
 !      integer(kind=kint), allocatable, target  :: isf_rot_ele(:,:)
 !>   edge ID for each surface
-      integer(kind=kint), allocatable, target  :: iedge_4_sf(:,:)
+!      integer(kind=kint), allocatable, target  :: iedge_4_sf(:,:)
 !>   edge ID for each element
       integer(kind=kint), allocatable, target  :: iedge_4_ele(:,:)
 !>   number of isolated edges
@@ -391,14 +391,12 @@
 !
       call allocate_edge_connect_type(edge1, surf1%numsurf)
 !
-      allocate( iedge_4_sf(surf1%numsurf,nedge_4_surf) )
+!      allocate( iedge_4_sf(surf1%numsurf,nedge_4_surf) )
 !      allocate( ie_edge(edge1%numedge,edge1%nnod_4_edge) )
       allocate( iedge_global(edge1%numedge) )
       allocate( interior_edge(edge1%numedge) )
 !
-      iedge_4_sf = 0
       iedge_global = 0
-      interior_edge = 0
 !
       end subroutine allocate_edge_connect
 !
@@ -475,7 +473,6 @@
 !
       subroutine deallocate_edge_connect
 !
-      deallocate( iedge_4_sf )
       deallocate( iedge_global )
       deallocate( interior_edge )
 !
