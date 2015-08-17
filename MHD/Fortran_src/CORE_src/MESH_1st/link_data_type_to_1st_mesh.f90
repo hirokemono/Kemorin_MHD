@@ -57,7 +57,7 @@
       node%numnod =        node1%numnod
       node%internal_node = node1%internal_node
 !
-      node%inod_global => inod_global
+      node%inod_global => node1%inod_global
       node%xx =>  node1%xx
 !
       node%rr =>    radius

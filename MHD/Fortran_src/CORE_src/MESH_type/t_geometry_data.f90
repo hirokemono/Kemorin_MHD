@@ -11,6 +11,8 @@
 !!      subroutine alloc_numnod_stack(nprocs, node)
 !!      subroutine alloc_numele_stack(nprocs, ele)
 !!      subroutine allocate_node_geometry_type(node)
+!!      subroutine allocate_node_geometry_base(node)
+!!      subroutine allocate_sph_node_geometry(node)
 !!      subroutine allocate_ele_connect_type(ele)
 !!      subroutine allocate_overlaped_ele_type(ele)
 !!      subroutine allocate_ele_geometry_type(ele)
@@ -20,6 +22,8 @@
 !!      subroutine dealloc_numnod_stack(node)
 !!      subroutine dealloc_numele_stack(ele)
 !!      subroutine deallocate_node_geometry_type(node)
+!!      subroutine deallocate_node_geometry_base(node)
+!!      subroutine deallocate_sph_node_geometry(node)
 !!      subroutine deallocate_ele_connect_type(ele)
 !!      subroutine deallocate_overlaped_ele_type(ele)
 !!      subroutine deallocate_ele_geometry_type(ele)
@@ -198,8 +202,32 @@
 !
       type(node_data), intent(inout) :: node
 !
+      call allocate_node_geometry_base(node)
+      call allocate_sph_node_geometry(node)
+!
+      end subroutine allocate_node_geometry_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine allocate_node_geometry_base(node)
+!
+      type(node_data), intent(inout) :: node
+!
       allocate(node%inod_global(node%numnod))
       allocate(node%xx(node%numnod,3))
+!
+      if (node%numnod .gt. 0) then
+        node%inod_global = 0
+        node%xx = 0.0d00
+      end if
+!
+      end subroutine allocate_node_geometry_base
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine allocate_sph_node_geometry(node)
+!
+      type(node_data), intent(inout) :: node
 !
       allocate(node%rr(node%numnod))
       allocate(node%a_r(node%numnod))
@@ -209,9 +237,6 @@
       allocate(node%theta(node%numnod))
 !
       if (node%numnod .gt. 0) then
-        node%inod_global = 0
-        node%xx = 0.0d00
-!
         node%rr = 0.0d00
         node%a_r = 0.0d00
         node%ss = 0.0d00
@@ -220,7 +245,7 @@
         node%theta = 0.0d00
       end if
 !
-      end subroutine allocate_node_geometry_type
+      end subroutine allocate_sph_node_geometry
 !
 !  ---------------------------------------------------------------------
 !
@@ -352,12 +377,31 @@
 !
       type(node_data), intent(inout) :: node
 !
+      call deallocate_sph_node_geometry(node)
+      call deallocate_node_geometry_base(node)
+!
+      end subroutine deallocate_node_geometry_type
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine deallocate_node_geometry_base(node)
+!
+      type(node_data), intent(inout) :: node
+!
       deallocate(node%inod_global, node%xx)
+!
+      end subroutine deallocate_node_geometry_base
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine deallocate_sph_node_geometry(node)
+!
+      type(node_data), intent(inout) :: node
 !
       deallocate(node%rr, node%a_r, node%ss)
       deallocate(node%a_s, node%phi, node%theta)
 !
-      end subroutine deallocate_node_geometry_type
+      end subroutine deallocate_sph_node_geometry
 !
 !  ---------------------------------------------------------------------
 !

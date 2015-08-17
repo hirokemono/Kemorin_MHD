@@ -77,7 +77,7 @@
 !
 !>  structure for node data (position)
       type(node_data), save :: node1
-!    node1%max_nod_smp
+!    node1%inod_global
 !
 !>  structure for element data (position and connectivity)
       type(element_data), save :: ele1
@@ -181,7 +181,7 @@
 !>     element type id   (where i:element id)
       integer(kind=kint), allocatable, target  ::  nodelm(:)
 !>     global node    id (where i:node id)
-      integer(kind=kint_gl), allocatable, target  ::  inod_global(:)
+      integer(kind=kint_gl), pointer  ::  inod_global(:)
 !>     global element id (where i:element id)
       integer(kind=kint_gl), allocatable, target  ::  iele_global(:)
 !>     global surface id (where i:surface id)
@@ -354,6 +354,7 @@
       subroutine allocate_node_geometry
 !
 !
+      call allocate_node_geometry_type(node1)
 !
       allocate(inod_global(node1%numnod))
 !      allocate(xx(node1%numnod,3))
@@ -364,9 +365,6 @@
       allocate(a_s_cylinder(node1%numnod))
       allocate(longitude(node1%numnod))
       allocate(colatitude(node1%numnod))
-!
-      inod_global = 0
-!      xx = 0.0d00
 !
       radius = 0.0d00
       a_radius = 0.0d00
@@ -398,9 +396,6 @@
 ! ------------------------------------------------------
 !
       subroutine deallocate_node_geometry
-!
-      deallocate(inod_global)
-!      deallocate(xx)
 !
       deallocate(radius)
       deallocate(a_radius)

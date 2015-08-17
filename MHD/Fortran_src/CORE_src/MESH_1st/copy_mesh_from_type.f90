@@ -123,18 +123,18 @@
       node1%numnod =        node_org%numnod
       node1%internal_node = node_org%internal_node
 !
-      call allocate_node_geometry_type(node1)
       call allocate_node_geometry
 !
 !$omp parallel do
       do inod = 1, node1%numnod
-        inod_global(inod) = node_org%inod_global(inod)
+        node1%inod_global(inod) = node_org%inod_global(inod)
         node1%xx(inod,1) = node_org%xx(inod,1)
         node1%xx(inod,2) = node_org%xx(inod,2)
         node1%xx(inod,3) = node_org%xx(inod,3)
       end do
 !$omp end parallel do
 !
+      inod_global = node1%inod_global
       call deallocate_node_geometry_type(node_org)
 !
       end subroutine copy_node_geometry_from_type
@@ -209,9 +209,9 @@
         err = sqrt((node_org%xx(i,1) - node1%xx(i,1))**2                &
      &           + (node_org%xx(i,2) - node1%xx(i,2))**2                &
      &           + (node_org%xx(i,3) - node1%xx(i,3))**2)
-        if(node_org%inod_global(i) .ne. inod_global(i))                 &
+        if(node_org%inod_global(i) .ne. node1%inod_global(i))           &
      &       write(*,*) 'inod_global(i)', my_rank, i,                   &
-     &       node_org%inod_global(i), inod_global(i)
+     &       node_org%inod_global(i), node1%inod_global(i)
         if(err .gt. 1d-11) write(*,*) 'xx', my_rank, err, i,            &
      &       node_org%xx(i,1:3), node1%xx(i,1:3)
       end do

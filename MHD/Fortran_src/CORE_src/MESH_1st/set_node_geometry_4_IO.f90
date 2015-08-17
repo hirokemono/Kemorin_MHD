@@ -39,7 +39,7 @@
 !
 !$omp parallel do
       do inod = 1, node1%numnod
-        globalnodid_dummy(inod) = inod_global(inod)
+        globalnodid_dummy(inod) = node1%inod_global(inod)
         xx_dummy(inod,1) = node1%xx(inod,1)
         xx_dummy(inod,2) = node1%xx(inod,2)
         xx_dummy(inod,3) = node1%xx(inod,3)
@@ -62,7 +62,7 @@
 !
 !$omp parallel do
       do inod = 1, node1%numnod
-        globalnodid_dummy(inod) = inod_global(inod)
+        globalnodid_dummy(inod) = node1%inod_global(inod)
         xx_dummy(inod,1) = radius(inod)
         xx_dummy(inod,2) = colatitude(inod)
         xx_dummy(inod,3) = longitude(inod)
@@ -86,7 +86,7 @@
 !
 !$omp parallel do
       do inod = 1, node1%numnod
-        globalnodid_dummy(inod) = inod_global(inod)
+        globalnodid_dummy(inod) = node1%inod_global(inod)
         xx_dummy(inod,1) = s_cylinder(inod)
         xx_dummy(inod,2) = longitude(inod)
         xx_dummy(inod,3) = node1%xx(inod,3)
@@ -107,18 +107,18 @@
       node1%numnod =        numnod_dummy
       node1%internal_node = internal_node_dummy
 !
-      call allocate_node_geometry_type(node1)
       call allocate_node_geometry
 !
 !$omp parallel do
       do inod = 1, node1%numnod
-        inod_global(inod) = globalnodid_dummy(inod)
+        node1%inod_global(inod) = globalnodid_dummy(inod)
         node1%xx(inod,1) = xx_dummy(inod,1)
         node1%xx(inod,2) = xx_dummy(inod,2)
         node1%xx(inod,3) = xx_dummy(inod,3)
       end do
 !$omp end parallel do
 !
+      inod_global = node1%inod_global
       call deallocate_node_data_dummy
 !
       end subroutine copy_node_geometry_from_IO
@@ -132,7 +132,7 @@
 !
 !$omp parallel do
       do inod = 1, node1%numnod
-!        inod_global(inod) = globalnodid_dummy(inod)
+!        node1%inod_global(inod) = globalnodid_dummy(inod)
         radius(inod) =     xx_dummy(inod,1)
         colatitude(inod) = xx_dummy(inod,2)
         longitude(inod) =  xx_dummy(inod,3)
@@ -152,7 +152,7 @@
 !
 !$omp parallel do
       do inod = 1, node1%numnod
-!        inod_global(inod) = globalnodid_dummy(inod)
+!        node1%inod_global(inod) = globalnodid_dummy(inod)
         s_cylinder(inod) = xx_dummy(inod,1)
         longitude(inod) =  xx_dummy(inod,2)
         node1%xx(inod,3) =       xx_dummy(inod,3)

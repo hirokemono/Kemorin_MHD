@@ -111,17 +111,17 @@
 !
 !       write(50+my_rank,*) 'i, inod_global(i), iflag_nod(i)'
 !       do i = 1, node1%numnod
-!         write(50+my_rank,*) i, inod_global(i), iflag_nod(i)
+!         write(50+my_rank,*) i, node1%inod_global(i), iflag_nod(i)
 !       end do
 !       write(50+my_rank,*) 'i, item_import(i)'
 !       do i = 1, nod_comm%ntot_import
 !         write(50+my_rank,*) i, nod_comm%item_import(i),               &
-!     &                          inod_global(item_import(i))
+!     &                  node1%inod_global(nod_comm%item_import(i))
 !       end do
 !       write(50+my_rank,*) 'i, nod_comm%item_export(i)'
 !       do i = 1, nod_comm%ntot_export
 !         write(50+my_rank,*) i, nod_comm%item_export(i),               &
-!     &                          inod_global(item_export(i))
+!     &                  node1%inod_global(nod_comm%item_export(i))
 !       end do
 !
       call deallocate_flags_reduced_comm

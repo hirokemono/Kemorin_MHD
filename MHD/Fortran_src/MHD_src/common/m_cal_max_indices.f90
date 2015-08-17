@@ -139,11 +139,11 @@
       do nd = 1, num_tot_nod_phys_vis
         if ( phys_max(nd) .eq. phys_max_local(nd) ) then
           inod = inod_max_lc(nd)
-          node_max_local(nd) = inod_global(inod)
+          node_max_local(nd) = node1%inod_global(inod)
         end if
         if ( phys_min(nd) .eq. phys_min_local(nd) ) then
           inod = inod_min_lc(nd)
-          node_min_local(nd) = inod_global(inod)
+          node_min_local(nd) = node1%inod_global(inod)
         end if
       end do
 !$omp end parallel do
