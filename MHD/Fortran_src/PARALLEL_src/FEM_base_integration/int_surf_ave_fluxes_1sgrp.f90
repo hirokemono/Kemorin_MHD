@@ -48,12 +48,14 @@
 !
       if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_surf_area_1_surf_grp(ele1%numele, surf1%numsurf,       &
-     &      surf1%isf_4_ele, e_multi, jac1_2d_q%ntot_int, num_int,      &
-     &      jac1_2d_q%xj_sf, num_sgrp, isurf_grp, area)
+     &      surf1%isf_4_ele, ele1%interior_ele,                         &
+     &      jac1_2d_q%ntot_int, num_int, jac1_2d_q%xj_sf, num_sgrp,     &
+     &      isurf_grp, area)
       else
         call int_surf_area_1_surf_grp(ele1%numele, surf1%numsurf,       &
-     &      surf1%isf_4_ele, e_multi, jac1_2d_l%ntot_int, num_int,      &
-     &      jac1_2d_l%xj_sf, num_sgrp, isurf_grp, area)
+     &      surf1%isf_4_ele, ele1%interior_ele,                         &
+     &      jac1_2d_l%ntot_int, num_int, jac1_2d_l%xj_sf, num_sgrp,     &
+     &      isurf_grp, area)
       end if
 !
       end subroutine s_int_surf_area_1sgrp
@@ -79,14 +81,14 @@
       if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_surf_ave_1sgrp_8(node1%numnod, ele1%numele,            &
      &      surf1%numsurf, surf1%nnod_4_surf, surf1%ie_surf,            &
-     &      surf1%isf_4_ele, e_multi,                                   &
+     &      surf1%isf_4_ele, ele1%interior_ele,                         &
      &      jac1_2d_q%ntot_int, num_int, jac1_2d_q%an_sf,               &
      &      jac1_2d_q%xj_sf, num_sgrp, isurf_grp, istack_sf_grp_smp,    &
      &      d1_nod, ave_l)
       else
         call int_surf_ave_1sgrp_4(node1%numnod, ele1%numele,            &
      &      surf1%numsurf, surf1%nnod_4_surf, surf1%ie_surf,            &
-     &      surf1%isf_4_ele, e_multi,                                   &
+     &      surf1%isf_4_ele, ele1%interior_ele,                         &
      &      jac1_2d_l%ntot_int, num_int, jac1_2d_l%an_sf,               &
      &      jac1_2d_l%xj_sf, num_sgrp, isurf_grp, istack_sf_grp_smp,    &
      &      d1_nod, ave_l)
@@ -115,14 +117,14 @@
       if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vec_flux_1sgrp_8(node1%numnod, ele1%numele,            &
      &      surf1%numsurf, surf1%nnod_4_surf, surf1%ie_surf,            &
-     &      surf1%isf_4_ele, e_multi, num_sgrp,                         &
+     &      surf1%isf_4_ele, ele1%interior_ele, num_sgrp,               &
      &      isurf_grp, istack_sf_grp_smp, jac1_2d_q%ntot_int,           &
      &      num_int, jac1_2d_q%an_sf, jac1_2d_q%xsf_sf,                 &
      &      d1_nod, flux)
       else
         call int_vec_flux_1sgrp_4(node1%numnod, ele1%numele,            &
      &      surf1%numsurf, surf1%nnod_4_surf, surf1%ie_surf,            &
-     &      surf1%isf_4_ele, e_multi, num_sgrp,                         &
+     &      surf1%isf_4_ele, ele1%interior_ele, num_sgrp,               &
      &      isurf_grp, istack_sf_grp_smp, jac1_2d_l%ntot_int,           &
      &      num_int, jac1_2d_l%an_sf, jac1_2d_l%xsf_sf,                 &
      &      d1_nod, flux)
@@ -150,14 +152,14 @@
       if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vec_tflux_1sgrp_8(node1%numnod, ele1%numele,           &
      &      surf1%numsurf, surf1%nnod_4_surf, surf1%ie_surf,            &
-     &      surf1%isf_4_ele, e_multi, num_sgrp,                         &
+     &      surf1%isf_4_ele, ele1%interior_ele, num_sgrp,               &
      &      isurf_grp, istack_sf_grp_smp, jac1_2d_q%ntot_int,           &
      &      num_int, jac1_2d_q%an_sf, jac1_2d_q%xsf_sf,                 &
      &      d1_nod, flux_l)
       else
         call int_vec_tflux_1sgrp_4(node1%numnod, ele1%numele,           &
      &      surf1%numsurf, surf1%nnod_4_surf, surf1%ie_surf,            &
-     &      surf1%isf_4_ele, e_multi, num_sgrp,                         &
+     &      surf1%isf_4_ele, ele1%interior_ele, num_sgrp,               &
      &      isurf_grp, istack_sf_grp_smp, jac1_2d_l%ntot_int,           &
      &      num_int, jac1_2d_l%an_sf, jac1_2d_l%xsf_sf,                 &
      &      d1_nod, flux_l)

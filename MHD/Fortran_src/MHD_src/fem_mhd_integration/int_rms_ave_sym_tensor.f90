@@ -54,95 +54,93 @@
 !
       do k2 = 1, ele1%nnod_4_ele
 !
-       call vector_phys_2_each_element(k2, i_vect, vect_e)
+        call vector_phys_2_each_element(k2, i_vect, vect_e)
 !
 !$omp parallel do private(ii,ix,iele,istart,iend)
-       do iproc = 1, np_smp
-        istart = iele_fsmp_stack(iproc-1)+1
-        iend = iele_fsmp_stack(iproc)
+        do iproc = 1, np_smp
+          istart = iele_fsmp_stack(iproc-1)+1
+          iend = iele_fsmp_stack(iproc)
 !
-         do ii= 1, n_int * n_int * n_int 
-          ix = int_start3(n_int) + ii
+          do ii= 1, n_int * n_int * n_int 
+            ix = int_start3(n_int) + ii
 !
 !cdir nodep
 !ocl vector, novrec
 !voption, indep, vec
-          do iele = istart, iend
+            do iele = istart, iend
 !
-           rms_smp(iproc) = rms_smp(iproc)                              &
-     &    + e_multi(iele)                                               &
-     &     * (   vect_e(iele,1) * vect_e(iele,1)                        &
-     &       + 2*vect_e(iele,2) * vect_e(iele,2)                        &
-     &       + 2*vect_e(iele,3) * vect_e(iele,3) )                      &
-     &     * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
+              rms_smp(iproc) = rms_smp(iproc)                           &
+     &          + dble(ele1%interior_ele(iele))                         &
+     &           * (   vect_e(iele,1) * vect_e(iele,1)                  &
+     &             + 2*vect_e(iele,2) * vect_e(iele,2)                  &
+     &             + 2*vect_e(iele,3) * vect_e(iele,3) )                &
+     &           * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
 !
-           ave_smp(iproc,1) = ave_smp(iproc,1)                          &
-     &    + e_multi(iele) * vect_e(iele,1)                              &
-     &     * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
-           ave_smp(iproc,2) = ave_smp(iproc,2)                          &
-     &    + e_multi(iele) * vect_e(iele,2)                              &
-     &     * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
-           ave_smp(iproc,3) = ave_smp(iproc,3)                          &
-     &    + e_multi(iele) * vect_e(iele,3)                              &
-     &     * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
+              ave_smp(iproc,1) = ave_smp(iproc,1)                       &
+     &          + dble(ele1%interior_ele(iele)) * vect_e(iele,1)        &
+     &           * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
+              ave_smp(iproc,2) = ave_smp(iproc,2)                       &
+     &          + dble(ele1%interior_ele(iele)) * vect_e(iele,2)        &
+     &           * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
+              ave_smp(iproc,3) = ave_smp(iproc,3)                       &
+     &          + dble(ele1%interior_ele(iele)) * vect_e(iele,3)        &
+     &           * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
 !
+            end do
           end do
-         end do
         end do
 !$omp end parallel do
 !
 !
-       call vector_phys_2_each_element(k2, (i_vect+3), vect_e)
+      call vector_phys_2_each_element(k2, (i_vect+3), vect_e)
 !
 !$omp parallel do private(ii,ix,iele,istart,iend)
-       do iproc = 1, np_smp
+      do iproc = 1, np_smp
         istart = iele_fsmp_stack(iproc-1)+1
         iend = iele_fsmp_stack(iproc)
 !
          do ii= 1, n_int * n_int * n_int 
-          ix = int_start3(n_int) + ii
+           ix = int_start3(n_int) + ii
 !
 !cdir nodep
 !ocl vector, novrec
 !voption, indep, vec
-          do iele = istart, iend
+           do iele = istart, iend
 !
-           rms_smp(iproc) = rms_smp(iproc)                              &
-     &    + e_multi(iele)                                               &
-     &     * (   vect_e(iele,1) * vect_e(iele,1)                        &
-     &       + 2*vect_e(iele,2) * vect_e(iele,2)                        &
-     &       +   vect_e(iele,3) * vect_e(iele,3) )                      &
-     &     * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
+             rms_smp(iproc) = rms_smp(iproc)                            &
+     &          + dble(ele1%interior_ele(iele))                         &
+     &           * (   vect_e(iele,1) * vect_e(iele,1)                  &
+     &             + 2*vect_e(iele,2) * vect_e(iele,2)                  &
+     &             +   vect_e(iele,3) * vect_e(iele,3) )                &
+     &           * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
 !
-           ave_smp(iproc,4) = ave_smp(iproc,4)                          &
-     &    + e_multi(iele) * vect_e(iele,1)                              &
-     &     * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
-           ave_smp(iproc,5) = ave_smp(iproc,5)                          &
-     &    + e_multi(iele) * vect_e(iele,2)                              &
-     &     * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
-           ave_smp(iproc,6) = ave_smp(iproc,6)                          &
-     &    + e_multi(iele) * vect_e(iele,3)                              &
-     &     * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
+             ave_smp(iproc,4) = ave_smp(iproc,4)                        &
+     &          + dble(ele1%interior_ele(iele)) * vect_e(iele,1)        &
+     &           * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
+             ave_smp(iproc,5) = ave_smp(iproc,5)                        &
+     &          + dble(ele1%interior_ele(iele)) * vect_e(iele,2)        &
+     &           * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
+             ave_smp(iproc,6) = ave_smp(iproc,6)                        &
+     &          + dble(ele1%interior_ele(iele)) * vect_e(iele,3)        &
+     &           * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
 !
-          end do
+             end do
+           end do
          end do
-        end do
 !$omp end parallel do
 !
        end do
 !
-!poption noparallel
-!cdir noconcur
       do iproc = 1, np_smp
-       rms_local(ir_rms)     = rms_local(ir_rms) + rms_smp(iproc)
-       bulk_local(ja_ave  ) = bulk_local(ja_ave  ) + ave_smp(iproc,1)
-       bulk_local(ja_ave+1) = bulk_local(ja_ave+1) + ave_smp(iproc,2)
-       bulk_local(ja_ave+2) = bulk_local(ja_ave+2) + ave_smp(iproc,3)
-       bulk_local(ja_ave+3) = bulk_local(ja_ave+3) + ave_smp(iproc,4)
-       bulk_local(ja_ave+4) = bulk_local(ja_ave+4) + ave_smp(iproc,5)
-       bulk_local(ja_ave+5) = bulk_local(ja_ave+5) + ave_smp(iproc,6)
+        rms_local(ir_rms)     = rms_local(ir_rms) + rms_smp(iproc)
+        bulk_local(ja_ave  ) = bulk_local(ja_ave  ) + ave_smp(iproc,1)
+        bulk_local(ja_ave+1) = bulk_local(ja_ave+1) + ave_smp(iproc,2)
+        bulk_local(ja_ave+2) = bulk_local(ja_ave+2) + ave_smp(iproc,3)
+        bulk_local(ja_ave+3) = bulk_local(ja_ave+3) + ave_smp(iproc,4)
+        bulk_local(ja_ave+4) = bulk_local(ja_ave+4) + ave_smp(iproc,5)
+        bulk_local(ja_ave+5) = bulk_local(ja_ave+5) + ave_smp(iproc,6)
       end do
-
+!
       end subroutine int_ave_4_sym_tensor
 !
 ! ----------------------------------------------------------------------

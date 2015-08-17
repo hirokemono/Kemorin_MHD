@@ -7,17 +7,17 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
-!!      subroutine field_line_init(numnod, numele, e_multi,             &
+!!      subroutine field_line_init(numnod, numele, interior_ele,        &
 !!     &          ele_grp, sf_grp,  num_nod_phys, phys_nod_name)
 !!
 !!
 !!      subroutine field_line_main(istep_psf, numnod, numele, numsurf,  &
-!!     &       nnod_4_surf, inod_smp_stack, inod_global,                &
-!!     &       xx, radius, a_radius, s_cylinder, a_s_cylinder,          &
-!!     &       iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,   &
-!!     &       x_surf, vnorm_surf, area_surf, interior_surf,            &
-!!     &       ele_grp, ele_4_nod,  num_nod_phys, num_tot_nod_phys,     &
-!!     &       istack_nod_component, d_nod, nod_comm)
+!!     &      nnod_4_surf, inod_smp_stack, inod_global,                 &
+!!     &      xx, radius, a_radius, s_cylinder, a_s_cylinder,           &
+!!     &      iele_global, interior_ele, ie_surf, isf_4_ele,            &
+!!     &      iele_4_surf, x_surf, vnorm_surf, area_surf, interior_surf,&
+!!     &      ele_grp, ele_4_nod,  num_nod_phys, num_tot_nod_phys,      &
+!!     &      istack_nod_component, d_nod, nod_comm)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: sf_grp
@@ -44,7 +44,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine field_line_init(numnod, numele, e_multi,               &
+      subroutine field_line_init(numnod, numele, interior_ele,          &
      &          ele_grp, sf_grp,  num_nod_phys, phys_nod_name)
 !
       use calypso_mpi
@@ -52,8 +52,8 @@
       use m_local_fline
       use set_fline_control
 !
-      integer(kind=kint), intent(in) :: numnod, numele
-      real(kind = kreal), intent(in) :: e_multi(numele)
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: interior_ele(numele)
 !
       integer(kind = kint), intent(in) :: num_nod_phys
       character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
@@ -63,7 +63,7 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_fline_control'
-      call s_set_fline_control(numele, e_multi,                         &
+      call s_set_fline_control(numele, interior_ele,                    &
      &    ele_grp%num_grp, ele_grp%num_item, ele_grp%grp_name,          &
      &    ele_grp%istack_grp, ele_grp%item_grp,                         &
      &    sf_grp%num_grp, sf_grp%num_item, sf_grp%grp_name,             &
@@ -82,12 +82,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine field_line_main(istep_psf, numnod, numele, numsurf,    &
-     &       nnod_4_surf, inod_smp_stack, inod_global,                  &
-     &       xx, radius, a_radius, s_cylinder, a_s_cylinder,            &
-     &       iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,     &
-     &       x_surf, vnorm_surf, area_surf, interior_surf,              &
-     &       ele_grp, ele_4_nod,  num_nod_phys, num_tot_nod_phys,       &
-     &       istack_nod_component, d_nod, nod_comm)
+     &      nnod_4_surf, inod_smp_stack, inod_global,                   &
+     &      xx, radius, a_radius, s_cylinder, a_s_cylinder,             &
+     &      iele_global, interior_ele, ie_surf, isf_4_ele,              &
+     &      iele_4_surf, x_surf, vnorm_surf, area_surf, interior_surf,  &
+     &      ele_grp, ele_4_nod,  num_nod_phys, num_tot_nod_phys,        &
+     &      istack_nod_component, d_nod, nod_comm)
 !
       use set_fields_for_fieldline
       use const_field_lines
@@ -106,7 +106,7 @@
       real(kind = kreal), intent(in) :: a_s_cylinder(numnod)
 !
       integer(kind = kint_gl), intent(in) :: iele_global(numele)
-      real(kind = kreal), intent(in) :: e_multi(numele)
+      integer(kind=kint), intent(in) :: interior_ele(numele)
 !
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
@@ -138,11 +138,11 @@
       do i_fln = 1, num_fline
         if (iflag_debug.eq.1) write(*,*) 's_set_fields_for_fieldline'
         call s_set_fields_for_fieldline(i_fln,                          &
-     &        numnod, numele, numsurf, nnod_4_surf,                     &
-     &        iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,    &
-     &        x_surf, vnorm_surf, area_surf,                            &
-     &        ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,    &
-     &        ele_grp%item_grp)
+     &      numnod, numele, numsurf, nnod_4_surf, iele_global,          &
+     &      interior_ele, ie_surf, isf_4_ele, iele_4_surf,              &
+     &      x_surf, vnorm_surf, area_surf,                              &
+     &      ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,      &
+     &      ele_grp%item_grp)
       end do
 !
       do i_fln = 1, num_fline

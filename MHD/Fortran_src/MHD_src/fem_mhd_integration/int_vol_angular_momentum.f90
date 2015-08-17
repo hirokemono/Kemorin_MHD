@@ -67,19 +67,19 @@
          do iele = istart, iend
 !
            bulk_a_mom_smp(iproc,1)=bulk_a_mom_smp(iproc,1)              &
-     &      + e_multi(iele)                                             &
+     &      + dble(ele1%interior_ele(iele))                             &
      &      * (xe(iele,2)*velo_1(iele,3)                                &
      &       - xe(iele,3)*velo_1(iele,2))                               &
      &     * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
 !
            bulk_a_mom_smp(iproc,2)=bulk_a_mom_smp(iproc,2)              &
-     &       + e_multi(iele)                                            &
+     &       + dble(ele1%interior_ele(iele))                            &
      &      * (xe(iele,3)*velo_1(iele,1)                                &
      &       - xe(iele,1)*velo_1(iele,3))                               &
      &     * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
 !
            bulk_a_mom_smp(iproc,3)=bulk_a_mom_smp(iproc,3)              &
-     &       + e_multi(iele)                                            &
+     &       + dble(ele1%interior_ele(iele))                            &
      &      * (xe(iele,1)*velo_1(iele,2)                                &
      &       - xe(iele,2)*velo_1(iele,1))                               &
      &     * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)

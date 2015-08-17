@@ -11,9 +11,9 @@
 !!     &         (numele, numsurf, nnod_4_surf, ie_surf, isf_4_ele,     &
 !!     &          proj, field_pvr, view_param, pvr_bound)
 !!      subroutine rendering_image                                      &
-!!     &      (i_rot, istep_pvr, numnod, numele, numsurf,               &
-!!     &      nnod_4_surf, e_multi, xx, ie_surf, isf_4_ele, iele_4_surf,&
-!!     &      file_param, color_param, cbar_param, view_param,          &
+!!     &       (i_rot, istep_pvr, numnod, numele, numsurf, nnod_4_surf, &
+!!     &       interior_ele, xx, ie_surf, isf_4_ele, iele_4_surf,       &
+!!     &       file_param, color_param, cbar_param, view_param,         &
 !!     &       field_pvr, pixel_xy, pvr_bound, pvr_start, pvr_img)
 !!@endverbatim
 !
@@ -87,8 +87,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine rendering_image                                        &
-     &       (i_rot, istep_pvr, numnod, numele, numsurf,                &
-     &       nnod_4_surf, e_multi, xx, ie_surf, isf_4_ele, iele_4_surf, &
+     &       (i_rot, istep_pvr, numnod, numele, numsurf, nnod_4_surf,   &
+     &       interior_ele, xx, ie_surf, isf_4_ele, iele_4_surf,         &
      &       file_param, color_param, cbar_param, view_param,           &
      &       field_pvr, pixel_xy, pvr_bound, pvr_start, pvr_img)
 !
@@ -106,8 +106,8 @@
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
       integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
+      integer(kind = kint), intent(in) :: interior_ele(numele)
       real(kind = kreal), intent(in)  :: xx(numnod,3)
-      real(kind = kreal), intent(in) :: e_multi(numele)
 !
       type(pvr_output_parameter), intent(in) :: file_param
       type(pvr_colormap_parameter), intent(in) :: color_param
@@ -123,8 +123,8 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
-      call ray_trace_local(numnod, numele, numsurf,                     &
-     &       nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf, e_multi, xx, &
+      call ray_trace_local(numnod, numele, numsurf, nnod_4_surf,        &
+     &       ie_surf, isf_4_ele, iele_4_surf, interior_ele, xx,         &
      &       view_param%viewpoint_vec, field_pvr%x_nod_model,           &
      &       field_pvr, color_param, pixel_xy, pvr_bound,               &
      &       pvr_start, pvr_img)
@@ -193,8 +193,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine ray_trace_local(numnod, numele, numsurf,               &
-     &    nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf, e_multi, xx,    &
+      subroutine ray_trace_local(numnod, numele, numsurf, nnod_4_surf,  &
+     &    ie_surf, isf_4_ele, iele_4_surf, interior_ele, xx,            &
      &    viewpoint_vec, x_nod_screen, field_pvr, color_param,          &
      &    pixel_xy, pvr_bound, pvr_start, pvr_img)
 !
@@ -212,7 +212,7 @@
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
       integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
-      real(kind = kreal), intent(in) :: e_multi(numele)
+      integer(kind = kint), intent(in) :: interior_ele(numele)
       real(kind = kreal), intent(in) :: xx(numnod,3)
       real(kind = kreal), intent(in) :: viewpoint_vec(3)
 !
@@ -240,8 +240,9 @@
      &    pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,               &
      &    pvr_start%xx_pvr_ray_start, pvr_start%pvr_ray_dir)
 !
-      call s_ray_trace_4_each_image(numnod, numele, numsurf,            &
-     &    nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf, e_multi, xx,    &
+      call s_ray_trace_4_each_image                                     &
+     &   (numnod, numele, numsurf, nnod_4_surf, ie_surf,                &
+     &    isf_4_ele, iele_4_surf, interior_ele, xx,                     &
      &    field_pvr%iflag_used_ele, x_nod_screen, field_pvr%d_pvr,      &
      &    field_pvr%grad_ele, viewpoint_vec, color_param, ray_vec,      &
      &    pvr_start%num_pvr_ray, pvr_start%icount_pvr_trace,            &

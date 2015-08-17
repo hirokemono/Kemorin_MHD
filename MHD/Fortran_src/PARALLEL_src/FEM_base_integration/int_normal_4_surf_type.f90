@@ -69,10 +69,11 @@
       write(*,*) 'sf_grp%num_grp', sf_grp%num_grp
 !
       if(ele%numele .gt. 0) then
-        call s_sum_norm_of_surf_group(np_smp, ele%numele, ele%e_multi,  &
-     &    sf_grp%num_grp, sf_grp%num_item, sf_grp%item_sf_grp,          &
-     &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    sf_grp_v%area_sf_grp)
+        call sum_norm_of_surf_group                                     &
+     &     (np_smp, ele%numele, ele%interior_ele,                       &
+     &      sf_grp%num_grp, sf_grp%num_item, sf_grp%item_sf_grp,        &
+     &      sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                  &
+     &      sf_grp_v%area_sf_grp)
       end if
 !
       call s_sum_norm_of_surf_grp_para(sf_grp%num_grp,                  &

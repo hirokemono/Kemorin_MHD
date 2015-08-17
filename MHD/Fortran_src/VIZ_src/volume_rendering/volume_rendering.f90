@@ -4,15 +4,16 @@
 !      Written by H. Matsui on July, 2006
 !
 !!      subroutine pvr_init(numnod, numele, numsurf, nnod_4_surf, xx,   &
-!!     &          e_multi, ie_surf, isf_4_ele, iele_4_surf,             &
+!!     &          interior_ele, ie_surf, isf_4_ele, iele_4_surf,        &
 !!     &          ele_grp, num_nod_phys, phys_nod_name)
-!
-!      subroutine pvr_main(istep_pvr, numnod, numele, numsurf,          &
-!     &         nnod_4_ele, nnod_4_surf, inod_smp_stack, iele_smp_stack,&
-!     &         xx, radius, a_radius, s_cylinder, a_s_cylinder, ie,     &
-!     &         a_vol_ele, e_multi, ie_surf, isf_4_ele, iele_4_surf,    &
-!     &         ntot_int_3d, dnx, xjac, num_nod_phys, num_tot_nod_phys, &
-!     &         istack_nod_component, d_nod)
+!!
+!!      subroutine pvr_main(istep_pvr,                                  &
+!!     &         numnod, numele, numsurf, nnod_4_ele, nnod_4_surf,      &
+!!     &         inod_smp_stack, iele_smp_stack, xx, radius, a_radius,  &
+!!     &         s_cylinder, a_s_cylinder, ie, a_vol_ele,               &
+!!     &         interior_ele, ie_surf, isf_4_ele, iele_4_surf,         &
+!!     &         ntot_int_3d, dnx, xjac, num_nod_phys, num_tot_nod_phys,&
+!!     &         istack_nod_component, d_nod)
 !
 !      subroutine deallocate_pvr_data
 !
@@ -84,7 +85,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine pvr_init(numnod, numele, numsurf, nnod_4_surf, xx,     &
-     &          e_multi, ie_surf, isf_4_ele, iele_4_surf,               &
+     &          interior_ele, ie_surf, isf_4_ele, iele_4_surf,          &
      &          ele_grp, num_nod_phys, phys_nod_name)
 !
       use t_group_data
@@ -94,8 +95,8 @@
 !
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
+      integer(kind = kint), intent(in) :: interior_ele(numele)
       real(kind = kreal), intent(in) :: xx(numnod,3)
-      real(kind = kreal), intent(in) :: e_multi(numele)
 !
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
@@ -119,7 +120,8 @@
      &    view_params, color_params, cbar_params)
 !
       call allocate_nod_data_4_pvr(num_pvr, numnod, numele, field_pvr)
-      call s_find_pvr_surf_domain(num_pvr, numele, numsurf, e_multi,    &
+      call s_find_pvr_surf_domain                                       &
+     &   (num_pvr, numele, numsurf, interior_ele,                       &
      &    isf_4_ele, iele_4_surf, ele_grp%num_grp, ele_grp%num_item,    &
      &    ele_grp%istack_grp, ele_grp%item_grp,                         &
      &    fld_params, pvr_bound, field_pvr)
@@ -158,10 +160,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine pvr_main(istep_pvr, numnod, numele, numsurf,           &
-     &         nnod_4_ele, nnod_4_surf, inod_smp_stack, iele_smp_stack, &
-     &         xx, radius, a_radius, s_cylinder, a_s_cylinder, ie,      &
-     &         a_vol_ele, e_multi, ie_surf, isf_4_ele, iele_4_surf,     &
+      subroutine pvr_main(istep_pvr,                                    &
+     &         numnod, numele, numsurf, nnod_4_ele, nnod_4_surf,        &
+     &         inod_smp_stack, iele_smp_stack, xx, radius, a_radius,    &
+     &         s_cylinder, a_s_cylinder, ie, a_vol_ele,                 &
+     &         interior_ele, ie_surf, isf_4_ele, iele_4_surf,           &
      &         ntot_int_3d, dnx, xjac, num_nod_phys, num_tot_nod_phys,  &
      &         istack_nod_component, d_nod)
 !
@@ -179,9 +182,9 @@
       real(kind = kreal), intent(in) :: s_cylinder(numnod)
       real(kind = kreal), intent(in) :: a_s_cylinder(numnod)
 !
-      integer (kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer(kind = kint), intent(in) :: interior_ele(numele)
       real(kind = kreal), intent(in) :: a_vol_ele(numele)
-      real(kind = kreal), intent(in) :: e_multi(numele)
 !
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
@@ -229,8 +232,8 @@
           end if
 !
           call rendering_image                                          &
-     &      (i_rot, istep_pvr, numnod, numele, numsurf,                 &
-     &       nnod_4_surf, e_multi, xx, ie_surf, isf_4_ele, iele_4_surf, &
+     &      (i_rot, istep_pvr, numnod, numele, numsurf, nnod_4_surf,    &
+     &       interior_ele, xx, ie_surf, isf_4_ele, iele_4_surf,         &
      &       file_params(i_pvr), color_params(i_pvr),                   &
      &       cbar_params(i_pvr), view_params(i_pvr), field_pvr(i_pvr),  &
      &       pixel_xy(i_pvr), pvr_bound(i_pvr), pvr_start(i_pvr),       &

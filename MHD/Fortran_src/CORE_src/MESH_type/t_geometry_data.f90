@@ -132,8 +132,6 @@
 !
 !>       flag for interior element
         integer(kind = kint), pointer :: interior_ele(:)
-!>       parameter for overlap
-        real(kind=kreal)  , pointer  :: e_multi(:)
 !
 !>       position of centre of element
         real(kind=kreal)  , pointer :: x_ele(:,:)
@@ -275,11 +273,7 @@
 !
 !
       allocate(ele%interior_ele(ele%numele) )
-      allocate(ele%e_multi(ele%numele) )
-!
-      if(ele%numele .le. 0) return
-      ele%interior_ele = 1
-      ele%e_multi = 1.0d0
+      if(ele%numele .gt. 0) ele%interior_ele = 1
 !
       end subroutine allocate_overlaped_ele_type
 !
@@ -422,7 +416,7 @@
       type(element_data), intent(inout) :: ele
 !
 !
-      deallocate(ele%interior_ele, ele%e_multi)
+      deallocate(ele%interior_ele)
 !
       end subroutine deallocate_overlaped_ele_type
 !
@@ -443,7 +437,6 @@
       deallocate( ele%as_ele)
 
       deallocate ( ele%interior_ele )
-      deallocate ( ele%e_multi )
 !
       deallocate( ele%volume_ele )
       deallocate( ele%a_vol_ele )
@@ -558,7 +551,6 @@
 !
 !
       ele%interior_ele => ele_org%interior_ele
-      ele%e_multi =>      ele_org%e_multi
 !
       end subroutine link_new_overlaped_ele_type
 !
@@ -642,7 +634,7 @@
       type(element_data), intent(inout) :: ele
 !
 !
-      deallocate(ele%interior_ele, ele%e_multi)
+      deallocate(ele%interior_ele)
 !
       end subroutine unlink_overlaped_ele_type
 !

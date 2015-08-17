@@ -4,8 +4,9 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!!      subroutine s_ray_trace_4_each_image(numnod, numele, numsurf,    &
-!!     &      nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf, e_multi, xx,&
+!!      subroutine s_ray_trace_4_each_image                             &
+!!     &     (numnod, numele, numsurf, nnod_4_surf, ie_surf,            &
+!!     &      isf_4_ele, iele_4_surf, interior_ele, xx,                 &
 !!     &      iflag_pvr_used_ele, x_nod_screen, d_nod_pvr, grad_ele_pvr,&
 !!     &      viewpoint_vec, color_param, ray_vec, num_pvr_ray,         &
 !!     &      icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,        &
@@ -33,8 +34,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_ray_trace_4_each_image(numnod, numele, numsurf,      &
-     &      nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf, e_multi, xx,  &
+      subroutine s_ray_trace_4_each_image                               &
+     &     (numnod, numele, numsurf, nnod_4_surf, ie_surf,              &
+     &      isf_4_ele, iele_4_surf, interior_ele, xx,                   &
      &      iflag_pvr_used_ele, x_nod_screen, d_nod_pvr, grad_ele_pvr,  &
      &      viewpoint_vec, color_param, ray_vec, num_pvr_ray,           &
      &      icount_pvr_trace, isf_pvr_ray_start, xi_pvr_start,          &
@@ -47,7 +49,7 @@
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
       integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
-      real(kind = kreal), intent(in) :: e_multi(numele)
+      integer(kind = kint), intent(in) :: interior_ele(numele)
       real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: iflag_pvr_used_ele(numele)
@@ -77,8 +79,9 @@
 !$omp parallel do private(inum, iflag_comm)
       do inum = 1, num_pvr_ray
           rgba_ray(1:4,inum) = zero
-          call ray_trace_each_pixel(numnod, numele, numsurf,            &
-     &       nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf, e_multi, xx, &
+          call ray_trace_each_pixel                                     &
+     &      (numnod, numele, numsurf, nnod_4_surf, ie_surf,             &
+     &       isf_4_ele, iele_4_surf, interior_ele, xx,                  &
      &       iflag_pvr_used_ele, x_nod_screen, d_nod_pvr, grad_ele_pvr, &
      &       viewpoint_vec, color_param, ray_vec,                       &
      &       isf_pvr_ray_start(1,inum), xx_pvr_ray_start(1,inum),       &
@@ -133,9 +136,10 @@
 !
       subroutine ray_trace_each_pixel(numnod, numele, numsurf,          &
      &        nnod_4_surf, ie_surf, isf_4_ele, iele_4_surf,             &
-     &        e_multi, xx, iflag_used_ele, x_nod_screen, color_nod,     &
-     &        grad_ele, viewpoint_vec, color_param, ray_vec, isurf_org, &
-     &        screen_st, xx_st, xi, rgba_ray, icount_line, iflag_comm)
+     &        interior_ele, xx, iflag_used_ele, x_nod_screen,           &
+     &        color_nod, grad_ele, viewpoint_vec, color_param,          &
+     &        ray_vec, isurf_org, screen_st, xx_st, xi, rgba_ray,       &
+     &        icount_line, iflag_comm)
 !
       use t_control_params_4_pvr
       use cal_field_on_surf_viz
@@ -146,7 +150,7 @@
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
       integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
-      real(kind = kreal), intent(in) :: e_multi(numele)
+      integer(kind = kint), intent(in) :: interior_ele(numele)
       real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: iflag_used_ele(numele)
@@ -219,7 +223,7 @@
 !
         c_tgt(1) = half*(c_tgt(1) + c_org(1))
 !
-        if(e_multi(iele) .gt. 0.0d0) then
+        if(interior_ele(iele) .gt. 0) then
           call s_set_rgba_4_each_pixel(viewpoint_vec, xx_st, xx_tgt,    &
      &        c_tgt(1), grad_tgt, color_param, rgba_ray)
         end if

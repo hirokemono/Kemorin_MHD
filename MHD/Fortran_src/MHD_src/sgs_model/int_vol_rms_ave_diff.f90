@@ -40,11 +40,11 @@
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
         call int_vol_rms_ave_d_l                                        &
-     &     (ele1%numele, ele1%ie, interior_ele, iele_fsmp_stack,        &
+     &     (ele1%numele, ele1%ie, ele1%interior_ele, iele_fsmp_stack,   &
      &      n_tensor, n_int)
       else if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vol_rms_ave_d_q                                        &
-     &     (ele1%numele, ele1%ie, interior_ele, iele_fsmp_stack,        &
+     &     (ele1%numele, ele1%ie, ele1%interior_ele, iele_fsmp_stack,   &
      &      n_tensor, n_int)
       end if
 !

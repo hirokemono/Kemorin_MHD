@@ -21,13 +21,11 @@
 !!
 !!      subroutine allocate_element_geometry
 !!
-!!      subroutine allocate_ele_4_surf
 !!      subroutine allocate_ele_4_edge_num
 !!      subroutine allocate_ele_4_edge_item
 !!      subroutine allocate_surf_4_edge_num
 !!      subroutine allocate_surf_4_edge_item
 !!
-!!      subroutine deallocate_ele_4_surf
 !!      subroutine deallocate_ele_4_edge_item
 !!      subroutine deallocate_surf_4_edge_item
 !!
@@ -66,7 +64,7 @@
 !
 !>  structure for element data (position and connectivity)
       type(element_data), save :: ele1
-!    ele1%ie
+!    ele1%interior_ele
 !
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
@@ -131,7 +129,7 @@
 !
 !>   belonged element for surface(surface#,face#,
 !>                                1:element or 2:local surface)
-      integer(kind=kint), allocatable, target :: iele_4_surf(:,:,:)
+!      integer(kind=kint), allocatable, target :: iele_4_surf(:,:,:)
 !
 !>   total number of element list for edge
       integer(kind=kint) :: ntot_iele_4_edge
@@ -190,10 +188,10 @@
 !>  integer flag for interior element 1...interior, 0...exterior
       integer(kind = kint), allocatable, target :: interior_ele(:)
 !>  double flag for interior element  1.0...interior, 0.0...exterior
-      real(kind=kreal)  , allocatable, target  :: e_multi(:)
+!      real(kind=kreal)  , allocatable, target  :: e_multi(:)
 !
 !>  integer flag for interior surface 1...interior, 0...exterior
-      integer(kind = kint), allocatable, target :: interior_surf(:)
+!      integer(kind = kint), allocatable, target :: interior_surf(:)
 !>  integer flag for interior edge 1...interior, 0...exterior
 !      integer(kind = kint), allocatable, target :: interior_edge(:)
 !
@@ -327,6 +325,8 @@
        subroutine allocate_element_geometry
 !
 !
+      call allocate_overlaped_ele_type(ele1)
+!
         allocate(x_ele(ele1%numele,3))
         allocate(r_ele(ele1%numele))
         allocate(ar_ele(ele1%numele))
@@ -336,13 +336,11 @@
         allocate(as_ele(ele1%numele))
 !
         allocate ( interior_ele(ele1%numele) )
-        allocate ( e_multi(ele1%numele) )
 !
         allocate( volume_ele (ele1%numele))
         allocate( a_vol_ele (ele1%numele))
 !
        interior_ele = 1
-       e_multi = 1.0d0
 !
        x_ele = 0.0d0
 !
@@ -362,6 +360,9 @@
 !
        subroutine deallocate_element_geometry
 !
+!
+      call deallocate_overlaped_ele_type(ele1)
+!
         deallocate(x_ele)
         deallocate(r_ele)
         deallocate(ar_ele)
@@ -371,7 +372,6 @@
         deallocate(as_ele)
 !
         deallocate ( interior_ele )
-        deallocate ( e_multi )
 !
         deallocate( volume_ele )
         deallocate( a_vol_ele )
@@ -379,16 +379,6 @@
        end subroutine deallocate_element_geometry
 !
 ! ------------------------------------------------------
-! ------------------------------------------------------
-!
-      subroutine allocate_ele_4_surf
-!
-!
-      call alloc_ele_4_surf_type(surf1)
-      allocate( iele_4_surf(surf1%numsurf,2,2) )
-!
-      end subroutine allocate_ele_4_surf
-!
 ! ------------------------------------------------------
 !
       subroutine allocate_ele_4_edge_num
@@ -436,16 +426,6 @@
       end subroutine allocate_surf_4_edge_item
 !
 ! ------------------------------------------------------
-! ------------------------------------------------------
-!
-      subroutine deallocate_ele_4_surf
-!
-!
-      call dealloc_ele_4_surf_type(surf1)
-      deallocate( iele_4_surf )
-!
-      end subroutine deallocate_ele_4_surf
-!
 ! ------------------------------------------------------
 !
       subroutine deallocate_ele_4_edge_item

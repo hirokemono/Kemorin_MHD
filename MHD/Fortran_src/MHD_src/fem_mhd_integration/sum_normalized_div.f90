@@ -5,7 +5,7 @@
 !      Modified by H. Matsui on Aug, 2007
 !
 !      subroutine sum_norm_of_div(numele, np_smp, iele_fsmp_stack,      &
-!     &          e_multi, sk1, bulk_d)
+!     &          interior_ele, sk1, bulk_d)
 !
       module sum_normalized_div
 !
@@ -20,12 +20,12 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sum_norm_of_div(numele, np_smp, iele_fsmp_stack,       &
-     &          e_multi, sk1, bulk_d)
+     &          interior_ele, sk1, bulk_d)
 !
       integer (kind=kint), intent(in) :: numele, np_smp
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+      integer (kind=kint), intent(in) :: interior_ele(numele)
 !
-      real (kind=kreal), intent(in) :: e_multi(numele)
       real (kind=kreal), intent(in) :: sk1(numele)
       real (kind=kreal), intent(inout) :: bulk_d(1)
 !
@@ -44,7 +44,7 @@
 !voption, indep, vec
          do iele = istart, iend
            bulk_d_smp(iproc) = bulk_d_smp(iproc) + sk1(iele)            &
-     &                        * e_multi(iele)
+     &                        * dble(interior_ele(iele))
          end do
        end do
 !$omp end parallel do

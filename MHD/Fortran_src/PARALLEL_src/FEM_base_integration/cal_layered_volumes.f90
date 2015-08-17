@@ -144,8 +144,8 @@
 !$cdir nodep
           do iele0 = ist, ied
             iele = item_layer(iele0)
-            vol_l_smp(iproc) = vol_l_smp(iproc)                         &
-     &                        + volume_ele(iele) * e_multi(iele)
+            vol_l_smp(iproc) = vol_l_smp(iproc) + volume_ele(iele)      &
+     &                       * dble(ele1%interior_ele(iele))
           end do
         end do
 !$omp end parallel do
@@ -191,8 +191,8 @@
 !$cdir nodep
           do iele0 = ist, ied
             iele = item_layer(iele0)
-            vol_l(igrp) = vol_l(igrp)                                   &
-     &                   + volume_ele(iele) * e_multi(iele)
+            vol_l(igrp) = vol_l(igrp) + volume_ele(iele)                &
+     &                   * dble(ele1%interior_ele(iele))
           end do
           vol_l_smp(iproc) = vol_l_smp(iproc) + vol_l(igrp)
         end do

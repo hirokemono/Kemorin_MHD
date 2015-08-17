@@ -62,7 +62,8 @@
       use fieldline
 !
 !
-      call field_line_init(node1%numnod, ele1%numele, e_multi,          &
+      call field_line_init                                              &
+     &   (node1%numnod, ele1%numele, ele1%interior_ele,                 &
      &    ele_grp1, sf_grp1, num_nod_phys, phys_nod_name)
 !
       end subroutine field_line_init_1st
@@ -87,7 +88,7 @@
      &   (istep_psf, node1%numnod, ele1%numele, surf1%numsurf,          &
      &    surf1%nnod_4_surf, node1%istack_nod_smp, node1%inod_global,   &
      &    node1%xx, node1%rr, node1%a_r, node1%ss, node1%a_s,           &
-     &    ele1%iele_global, e_multi, surf1%ie_surf,                     &
+     &    ele1%iele_global, ele1%interior_ele, surf1%ie_surf,           &
      &    surf1%isf_4_ele, surf1%iele_4_surf,                           &
      &    x_surf, vnorm_surf, area_surf, surf1%interior_surf,           &
      &    ele_grp1, ele_4_nod1, num_nod_phys, num_tot_nod_phys,         &

@@ -3,15 +3,15 @@
 !
 !        programmed by H.Matsui on May. 2006
 !
-!      subroutine count_control_4_fline                                 &
-!     &       (i_fln, fln, numele, e_multi, num_mat, mat_name,          &
-!     &        num_surf, num_surf_bc, surf_name, surf_istack, surf_item)
-!      subroutine set_control_4_fline(i_fln, fln,                       &
-!     &          numele, e_multi, num_mat, mat_name,                    &
-!     &          num_surf, num_surf_bc, surf_istack, surf_item,         &
-!     &          num_nod_phys, phys_nod_name)
-!      subroutine set_iflag_fline_used_ele(i_fln, numele, e_multi,      &
-!     &          num_mat, num_mat_bc, mat_istack, mat_item)
+!!      subroutine count_control_4_fline                                &
+!!     &       (i_fln, fln, numele, interior_ele, num_mat, mat_name,    &
+!!     &        num_surf, num_surf_bc, surf_name, surf_istack, surf_item)
+!!      subroutine set_control_4_fline(i_fln, fln,                      &
+!!     &          numele, interior_ele, num_mat, mat_name,              &
+!!     &          num_surf, num_surf_bc, surf_istack, surf_item,        &
+!!     &          num_nod_phys, phys_nod_name)
+!!      subroutine set_iflag_fline_used_ele(i_fln, numele, interior_ele,&
+!!     &          num_mat, num_mat_bc, mat_istack, mat_item)
 !
       module set_control_each_fline
 !
@@ -37,13 +37,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_control_4_fline                                  &
-     &       (i_fln, fln, numele, e_multi, num_mat, mat_name,           &
+     &       (i_fln, fln, numele, interior_ele, num_mat, mat_name,      &
      &        num_surf, num_surf_bc, surf_name, surf_istack, surf_item)
 !
       use set_area_4_viz
 !
       integer(kind=kint), intent(in) :: numele
-      real(kind = kreal), intent(in) :: e_multi(numele)
+      integer(kind=kint), intent(in) :: interior_ele(numele)
 !
       integer(kind = kint), intent(in) :: num_mat
       character(len=kchara), intent(in) :: mat_name(num_mat)
@@ -146,8 +146,8 @@
      &        fln%start_surf_grp_ctl, igrp_start_fline_surf_grp(i_fln))
         end if
 !
-        call count_nsurf_for_starting(i_fln, numele, e_multi,           &
-     &          num_surf, num_surf_bc, surf_istack, surf_item)
+        call count_nsurf_for_starting(i_fln, numele, interior_ele,      &
+     &      num_surf, num_surf_bc, surf_istack, surf_item)
 !
       else if(id_fline_start_type(i_fln) .eq.  1) then
         if(fln%seed_surface_ctl%num .gt. 0) then
@@ -167,15 +167,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_control_4_fline(i_fln, fln,                        &
-     &          numele, e_multi, num_mat, mat_name,                     &
+     &          numele, interior_ele, num_mat, mat_name,                &
      &          num_surf, num_surf_bc, surf_istack, surf_item,          &
      &          num_nod_phys, phys_nod_name)
 !
       use set_components_flags
       use set_area_4_viz
 !
-      integer(kind=kint), intent(in) :: numele
-      real(kind = kreal), intent(in) :: e_multi(numele)
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: interior_ele(numele)
 !
       integer(kind = kint), intent(in) :: num_mat
       character(len=kchara), intent(in) :: mat_name(num_mat)
@@ -220,7 +220,7 @@
 !
       ist = istack_each_field_line(i_fln-1)
       if(id_fline_start_type(i_fln) .eq.  0) then
-        call set_isurf_for_starting(i_fln, numele, e_multi,             &
+        call set_isurf_for_starting(i_fln, numele, interior_ele,        &
      &          num_surf, num_surf_bc, surf_istack, surf_item)
       else if(id_fline_start_type(i_fln) .eq.  1) then
         do i = 1, num_each_field_line(i_fln)
@@ -241,25 +241,25 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_iflag_fline_used_ele(i_fln, numele, e_multi,       &
+      subroutine set_iflag_fline_used_ele(i_fln, numele, interior_ele,  &
      &          num_mat, num_mat_bc, mat_istack, mat_item)
 !
       use set_iflag_for_used_ele
 !
       integer(kind = kint), intent(in) :: i_fln
 !
-      integer(kind=kint), intent(in) :: numele
-      real(kind = kreal), intent(in) :: e_multi(numele)
-      integer(kind=kint), intent(in) :: num_mat, num_mat_bc
-      integer(kind=kint), intent(in) :: mat_istack(0:num_mat)
-      integer(kind=kint), intent(in) :: mat_item(num_mat_bc)
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: interior_ele(numele)
+      integer(kind = kint), intent(in) :: num_mat, num_mat_bc
+      integer(kind = kint), intent(in) :: mat_istack(0:num_mat)
+      integer(kind = kint), intent(in) :: mat_item(num_mat_bc)
 !
 !
       integer(kind = kint) :: jst_grp
 !
 !
       jst_grp = istack_grp_area_fline(i_fln-1) + 1
-      call s_set_iflag_for_used_ele(numele, e_multi,                    &
+      call s_set_iflag_for_used_ele(numele, interior_ele,               &
      &    num_mat, num_mat_bc, mat_istack, mat_item,                    &
      &    nele_grp_area_fline(i_fln), id_ele_grp_area_fline(jst_grp),   &
      &    iflag_fline_used_ele(1,i_fln))

@@ -37,7 +37,7 @@
         ist = ele1%istack_ele_smp(iproc-1)+1
         ied = ele1%istack_ele_smp(iproc)
         do iele = ist, ied
-          nele_smp(iproc) = nele_smp(iproc) + int(e_multi(iele))
+          nele_smp(iproc) = nele_smp(iproc) + ele1%interior_ele(iele)
         end do
       end do
 !$omp end parallel do

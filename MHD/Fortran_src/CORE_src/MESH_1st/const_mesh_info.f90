@@ -36,6 +36,7 @@
       use m_element_group_connect
       use m_surface_group_connect
       use const_surface_data
+      use const_surface_type_data
 !      use check_surface_groups
 !
       integer(kind = kint), intent(in) :: my_rank
@@ -69,8 +70,8 @@
       call set_surface_node_grp(sf_grp1)
 !       call check_surface_node_id(my_rank, sf_grp_nod1)
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_element_list_4_surface'
-      call const_element_list_4_surface
+      if (iflag_debug.gt.0) write(*,*) 'const_ele_list_4_surf_type'
+      call const_ele_list_4_surf_type(ele1, surf1)
 !
 !       if (iflag_debug.gt.0) call check_surf_nod_4_sheard_para         &
 !     &                     (my_rank, sf_grp1%num_grp, sf_grp_nod1)
@@ -140,6 +141,7 @@
       call deallocate_edge_4_ele_type(edge1)
       call deallocate_edge_connect_type(edge1)
       call deallocate_surface_connect_type(surf1)
+!      call dealloc_ele_4_surf_type(surf1)
       call deallocate_element_geometry
 !
       call deallocate_ele_connect_type(ele1)

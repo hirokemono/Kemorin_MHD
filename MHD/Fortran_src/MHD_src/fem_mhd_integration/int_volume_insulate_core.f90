@@ -32,8 +32,9 @@
 !
       if ( numele_in_core .gt. 0 ) then
 !
-        call sum_of_volume_by_ele_table(numele_in_core,                 &
-     &     iele_in_core_smp_stack, iele_in_core, vol_i_core_local)
+        call sum_of_volume_by_ele_table(ele1%numele, ele1%interior_ele, &
+     &      volume_ele, numele_in_core, iele_in_core_smp_stack,         &
+     &      iele_in_core, vol_i_core_local)
 !
         call MPI_allREDUCE (vol_i_core_local, vol_i_core, 1,            &
      &       CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)

@@ -41,11 +41,11 @@
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
         call int_vol_diff_correlate_l                                   &
-     &     (ele1%numele, ele1%ie, interior_ele, iele_fsmp_stack,        &
+     &     (ele1%numele, ele1%ie, ele1%interior_ele, iele_fsmp_stack,   &
      &      numdir, n_int, ave_s, ave_g)
       else if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vol_diff_correlate_q                                   &
-     &     (ele1%numele, ele1%ie, interior_ele, iele_fsmp_stack,        &
+     &     (ele1%numele, ele1%ie, ele1%interior_ele, iele_fsmp_stack,   &
      &      numdir, n_int, ave_s, ave_g)
       end if
 !

@@ -5,12 +5,14 @@
 !     Modified by H. Matsui on Nov., 2008
 !     Modified by H. Matsui on June, 2011
 !
-!      subroutine int_vol_2rms_ave_1egrp_l(numnod, numele, ie, e_multi, &
-!     &          nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, an,   &
-!     &          d1_nod, d2_nod, ave_1, rms_1, ave_2, rms_2)
-!      subroutine int_vol_2rms_ave_1egrp_q(numnod, numele, ie, e_multi, &
-!     &          nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, aw,   &
-!     &          d1_nod, d2_nod, ave_1, rms_1, ave_2, rms_2)
+!!      subroutine int_vol_2rms_ave_1egrp_l                             &
+!!     &         (numnod, numele, ie, interior_ele,                     &
+!!     &          nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, an,  &
+!!     &          d1_nod, d2_nod, ave_1, rms_1, ave_2, rms_2)
+!!      subroutine int_vol_2rms_ave_1egrp_q                             &
+!!     &         (numnod, numele, ie, interior_ele,                     &
+!!     &          nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, aw,  &
+!!     &          d1_nod, d2_nod, ave_1, rms_1, ave_2, rms_2)
 !
       module int_vol_2rms_ave_1egrp
 !
@@ -27,13 +29,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_2rms_ave_1egrp_l(numnod, numele, ie, e_multi,  &
+      subroutine int_vol_2rms_ave_1egrp_l                               &
+     &         (numnod, numele, ie, interior_ele,                       &
      &          nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, an,    &
      &          d1_nod, d2_nod, ave_1, rms_1, ave_2, rms_2)
 !
       integer (kind = kint), intent(in) :: numnod, numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_linear)
-      real (kind = kreal), intent(in) :: e_multi(numele)
+      integer (kind = kint), intent(in) :: interior_ele(numele)
 !
       integer (kind = kint), intent(in) :: nitem_grp
       integer (kind = kint), intent(in) :: iele_grp(nitem_grp)
@@ -77,28 +80,28 @@
      &           + an(3, ix)*d1_nod(i3 ) + an(4, ix)*d1_nod(i4 )        &
      &           + an(5, ix)*d1_nod(i5 ) + an(6, ix)*d1_nod(i6 )        &
      &           + an(7, ix)*d1_nod(i7 ) + an(8, ix)*d1_nod(i8 ))       &
-     &            * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &         * dble(interior_ele(iele)) * xjac(iele,ix) * owe3d(ix)
 !
           rms_1 = rms_1                                                 &
      &          + (an(1, ix)*d1_nod(i1 )**2 + an(2, ix)*d1_nod(i2 )**2  &
      &           + an(3, ix)*d1_nod(i3 )**2 + an(4, ix)*d1_nod(i4 )**2  &
      &           + an(5, ix)*d1_nod(i5 )**2 + an(6, ix)*d1_nod(i6 )**2  &
      &           + an(7, ix)*d1_nod(i7 )**2 + an(8, ix)*d1_nod(i8 )**2) &
-     &            * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &         * dble(interior_ele(iele)) * xjac(iele,ix) * owe3d(ix)
 !
           ave_2 = ave_2                                                 &
      &          + (an(1, ix)*d2_nod(i1 ) + an(2, ix)*d2_nod(i2 )        &
      &           + an(3, ix)*d2_nod(i3 ) + an(4, ix)*d2_nod(i4 )        &
      &           + an(5, ix)*d2_nod(i5 ) + an(6, ix)*d2_nod(i6 )        &
      &           + an(7, ix)*d2_nod(i7 ) + an(8, ix)*d2_nod(i8 ))       &
-     &            * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &         * dble(interior_ele(iele)) * xjac(iele,ix) * owe3d(ix)
 !
           rms_2 = rms_2                                                 &
      &          + (an(1, ix)*d2_nod(i1 )**2 + an(2, ix)*d2_nod(i2 )**2  &
      &           + an(3, ix)*d2_nod(i3 )**2 + an(4, ix)*d2_nod(i4 )**2  &
      &           + an(5, ix)*d2_nod(i5 )**2 + an(6, ix)*d2_nod(i6 )**2  &
      &           + an(7, ix)*d2_nod(i7 )**2 + an(8, ix)*d2_nod(i8 )**2) &
-     &            * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &         * dble(interior_ele(iele)) * xjac(iele,ix) * owe3d(ix)
         end do
       end do
 !
@@ -106,13 +109,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_2rms_ave_1egrp_q(numnod, numele, ie, e_multi,  &
+      subroutine int_vol_2rms_ave_1egrp_q                               &
+     &         (numnod, numele, ie, interior_ele,                       &
      &          nitem_grp, iele_grp, num_int, ntot_int_3d, xjac, aw,    &
      &          d1_nod, d2_nod, ave_1, rms_1, ave_2, rms_2)
 !
       integer (kind = kint), intent(in) :: numnod, numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_quad)
-      real (kind = kreal), intent(in) :: e_multi(numele)
+      integer (kind = kint), intent(in) :: interior_ele(numele)
 !
       integer (kind = kint), intent(in) :: nitem_grp
       integer (kind = kint), intent(in) :: iele_grp(nitem_grp)
@@ -176,7 +180,7 @@
      &           + aw(15,ix)*d1_nod(i15) + aw(16,ix)*d1_nod(i16)        &
      &           + aw(17,ix)*d1_nod(i17) + aw(18,ix)*d1_nod(i18)        &
      &           + aw(19,ix)*d1_nod(i19) + aw(20,ix)*d1_nod(i20))       &
-     &            * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &         * dble(interior_ele(iele)) * xjac(iele,ix) * owe3d(ix)
 !
           rms_1 = rms_1                                                 &
      &          + (aw(1, ix)*d1_nod(i1 )**2 + aw(2, ix)*d1_nod(i2 )**2  &
@@ -189,7 +193,7 @@
      &           + aw(15,ix)*d1_nod(i15)**2 + aw(16,ix)*d1_nod(i16)**2  &
      &           + aw(17,ix)*d1_nod(i17)**2 + aw(18,ix)*d1_nod(i18)**2  &
      &           + aw(19,ix)*d1_nod(i19)**2 + aw(20,ix)*d1_nod(i20)**2) &
-     &            * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &         * dble(interior_ele(iele)) * xjac(iele,ix) * owe3d(ix)
 !
           ave_2 = ave_2                                                 &
      &          + (aw(1, ix)*d2_nod(i1 ) + aw(2, ix)*d2_nod(i2 )        &
@@ -202,7 +206,7 @@
      &           + aw(15,ix)*d2_nod(i15) + aw(16,ix)*d2_nod(i16)        &
      &           + aw(17,ix)*d2_nod(i17) + aw(18,ix)*d2_nod(i18)        &
      &           + aw(19,ix)*d2_nod(i19) + aw(20,ix)*d2_nod(i20))       &
-     &            * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &         * dble(interior_ele(iele)) * xjac(iele,ix) * owe3d(ix)
 !
           rms_2 = rms_2                                                 &
      &          + (aw(1, ix)*d2_nod(i1 )**2 + aw(2, ix)*d2_nod(i2 )**2  &
@@ -215,7 +219,7 @@
      &           + aw(15,ix)*d2_nod(i15)**2 + aw(16,ix)*d2_nod(i16)**2  &
      &           + aw(17,ix)*d2_nod(i17)**2 + aw(18,ix)*d2_nod(i18)**2  &
      &           + aw(19,ix)*d2_nod(i19)**2 + aw(20,ix)*d2_nod(i20)**2) &
-     &            * e_multi(iele) * xjac(iele,ix) * owe3d(ix)
+     &         * dble(interior_ele(iele)) * xjac(iele,ix) * owe3d(ix)
         end do
       end do
 !

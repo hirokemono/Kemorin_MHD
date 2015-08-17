@@ -89,8 +89,7 @@
       ele_new%nnod_4_ele = ele1%nnod_4_ele
 !
       ele_new%ie =>           ele1%ie
-      ele_new%interior_ele => interior_ele
-      ele_new%e_multi =>      e_multi
+      ele_new%interior_ele => ele1%interior_ele
 !
       ele_new%iele_global => ele1%iele_global
       ele_new%elmtyp =>      ele1%elmtyp

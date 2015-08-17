@@ -4,15 +4,19 @@
 !
 !      Written by H. Matsui on Aug., 2011
 !
-!      subroutine set_local_field_4_fline(numnod, inod_smp_stack,       &
-!     &          xx, radius, a_radius, s_cylinder, a_s_cylinder,        &
-!     &          num_nod_phys, num_tot_nod_phys, istack_nod_component,  &
-!     &          d_nod)
-!      subroutine s_set_fields_for_fieldline(i_fln,                     &
-!     &        numnod, numele, numsurf, nnod_4_surf,                    &
-!     &        iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,   &
-!     &        x_surf, vnorm_surf, area_surf,                           &
-!     &        num_mat, num_mat_bc, mat_istack, mat_item)
+!!      subroutine set_local_field_4_fline(numnod, inod_smp_stack,      &
+!!     &          xx, radius, a_radius, s_cylinder, a_s_cylinder,       &
+!!     &          num_nod_phys, num_tot_nod_phys, istack_nod_component, &
+!!     &          d_nod)
+!!      subroutine count_nsurf_for_starting(i_fln, numele, interior_ele,&
+!!     &          num_surf, num_surf_bc, surf_istack, surf_item)
+!!      subroutine set_isurf_for_starting(i_fln, numele, interior_ele,  &
+!!     &          num_surf, num_surf_bc, surf_istack, surf_item)
+!!      subroutine s_set_fields_for_fieldline(i_fln,                    &
+!!     &        numnod, numele, numsurf, nnod_4_surf, iele_global,      &
+!!     &        interior_ele, ie_surf, isf_4_ele, iele_4_surf,          &
+!!     &        x_surf, vnorm_surf, area_surf,                          &
+!!     &        num_mat, num_mat_bc, mat_istack, mat_item)
 !
       module set_fields_for_fieldline
 !
@@ -25,6 +29,8 @@
       use m_source_4_filed_line
 !
       implicit  none
+!
+      private :: cnt_start_surface_by_gl_table, cal_flux_for_1sgrp
 !
 !  ---------------------------------------------------------------------
 !
@@ -85,16 +91,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_nsurf_for_starting(i_fln, numele, e_multi,       &
+      subroutine count_nsurf_for_starting(i_fln, numele, interior_ele,  &
      &          num_surf, num_surf_bc, surf_istack, surf_item)
 !
       integer(kind = kint), intent(in) :: i_fln
 !
-      integer(kind=kint), intent(in) :: numele
-      real(kind = kreal), intent(in) :: e_multi(numele)
-      integer(kind=kint), intent(in) :: num_surf, num_surf_bc
-      integer(kind=kint), intent(in) :: surf_istack(0:num_surf)
-      integer(kind=kint), intent(in) :: surf_item(2,num_surf_bc)
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: interior_ele(numele)
+      integer(kind = kint), intent(in) :: num_surf, num_surf_bc
+      integer(kind = kint), intent(in) :: surf_istack(0:num_surf)
+      integer(kind = kint), intent(in) :: surf_item(2,num_surf_bc)
 !
       integer(kind = kint) :: igrp, isurf, iele, icou
 !
@@ -104,7 +110,7 @@
       icou = 0
       do isurf = surf_istack(igrp-1)+1, surf_istack(igrp)
         iele = surf_item(1,isurf)
-        if(e_multi(iele) .ne. zero) icou = icou + 1
+        if(interior_ele(iele) .ne. izero) icou = icou + 1
       end do
 !
       nele_start_grp(i_fln) = icou
@@ -116,16 +122,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_isurf_for_starting(i_fln, numele, e_multi,         &
+      subroutine set_isurf_for_starting(i_fln, numele, interior_ele,    &
      &          num_surf, num_surf_bc, surf_istack, surf_item)
 !
       integer(kind = kint), intent(in) :: i_fln
 !
-      integer(kind=kint), intent(in) :: numele
-      real(kind = kreal), intent(in) :: e_multi(numele)
-      integer(kind=kint), intent(in) :: num_surf, num_surf_bc
-      integer(kind=kint), intent(in) :: surf_istack(0:num_surf)
-      integer(kind=kint), intent(in) :: surf_item(2,num_surf_bc)
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: interior_ele(numele)
+      integer(kind = kint), intent(in) :: num_surf, num_surf_bc
+      integer(kind = kint), intent(in) :: surf_istack(0:num_surf)
+      integer(kind = kint), intent(in) :: surf_item(2,num_surf_bc)
 !
       integer(kind = kint) :: igrp, isurf, inum, iele
 !
@@ -135,7 +141,7 @@
       inum = istack_ele_start_grp(i_fln-1)
       do isurf = surf_istack(igrp-1)+1, surf_istack(igrp)
         iele = surf_item(1,isurf)
-        if(e_multi(iele) .ne. zero) then
+        if(interior_ele(iele) .ne. izero) then
           inum = inum + 1
           iele_start_item(1,inum) = surf_item(1,isurf)
           iele_start_item(2,inum) = surf_item(2,isurf)
@@ -147,8 +153,8 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_fields_for_fieldline(i_fln,                      &
-     &        numnod, numele, numsurf, nnod_4_surf,                     &
-     &        iele_global, e_multi, ie_surf, isf_4_ele, iele_4_surf,    &
+     &        numnod, numele, numsurf, nnod_4_surf, iele_global,        &
+     &        interior_ele, ie_surf, isf_4_ele, iele_4_surf,            &
      &        x_surf, vnorm_surf, area_surf,                            &
      &        num_mat, num_mat_bc, mat_istack, mat_item)
 !
@@ -161,7 +167,7 @@
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
       integer(kind = kint_gl), intent(in) :: iele_global(numele)
-      real(kind = kreal), intent(in) :: e_multi(numele)
+      integer(kind=kint), intent(in) :: interior_ele(numele)
 !
       integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
@@ -198,7 +204,7 @@
         num_grp = nele_start_grp(i_fln)
 !
         call cal_flux_for_1sgrp(numnod, numele, numsurf,                &
-     &      nnod_4_surf, ie_surf, isf_4_ele, e_multi,                   &
+     &      nnod_4_surf, ie_surf, isf_4_ele, interior_ele,              &
      &      vnorm_surf, area_surf, num_grp,                             &
      &      iele_start_item(1,ist_grp), vector_nod_fline(1,1,i_fln),    &
      &      flux_start(ist_grp) )
@@ -292,10 +298,10 @@
 !
       else if(id_fline_start_type(i_fln) .eq. 1) then
         call cnt_start_surface_by_gl_table(i_fln, numele,               &
-     &          iele_global, e_multi, num_mat, num_mat_bc,              &
+     &          iele_global, interior_ele, num_mat, num_mat_bc,         &
      &          mat_istack, mat_item)
         call set_start_surface_by_gl_table(i_fln, numele,               &
-     &          iele_global, e_multi, num_mat, num_mat_bc,              &
+     &          iele_global, interior_ele, num_mat, num_mat_bc,         &
      &          mat_istack, mat_item)
       end if
 !
@@ -370,14 +376,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cnt_start_surface_by_gl_table(i_fln, numele,           &
-     &          iele_global, e_multi, num_mat, num_mat_bc,              &
+     &          iele_global, interior_ele, num_mat, num_mat_bc,         &
      &          mat_istack, mat_item)
 !
       integer(kind = kint), intent(in) :: i_fln
 !
       integer(kind=kint), intent(in) :: numele
       integer(kind=kint_gl), intent(in) :: iele_global(numele)
-      real(kind = kreal), intent(in) :: e_multi(numele)
+      integer(kind = kint), intent(in) :: interior_ele(numele)
 !
       integer(kind=kint), intent(in) :: num_mat, num_mat_bc
       integer(kind=kint), intent(in) :: mat_istack(0:num_mat)
@@ -403,7 +409,7 @@
             do jnum = jst, jed
               jele = mat_item(jnum)
               if(iele_g.eq.iele_global(jele)                            &
-     &           .and. e_multi(jele) .gt. 0.0d0) then
+     &           .and. interior_ele(jele) .gt. 0) then
                 icou = icou + 1
                 exit
               end if
@@ -417,14 +423,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_start_surface_by_gl_table(i_fln, numele,           &
-     &          iele_global, e_multi, num_mat, num_mat_bc,              &
+     &          iele_global, interior_ele, num_mat, num_mat_bc,         &
      &          mat_istack, mat_item)
 !
       integer(kind = kint), intent(in) :: i_fln
 !
-      integer(kind=kint), intent(in) :: numele
-      integer(kind=kint_gl), intent(in) :: iele_global(numele)
-      real(kind = kreal), intent(in) :: e_multi(numele)
+      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint_gl), intent(in) :: iele_global(numele)
+      integer(kind = kint), intent(in) :: interior_ele(numele)
 !
       integer(kind=kint), intent(in) :: num_mat, num_mat_bc
       integer(kind=kint), intent(in) :: mat_istack(0:num_mat)
@@ -450,7 +456,7 @@
             do jnum = jst, jed
               jele = mat_item(jnum)
               if(iele_g.eq.iele_global(jele)                            &
-     &           .and. e_multi(jele) .gt. 0.0d0) then
+     &           .and. interior_ele(jele) .gt. 0) then
                 icou = icou + 1
                 id_surf_start_fline(1,icou) = jele
                 id_surf_start_fline(2,icou)                             &
@@ -466,7 +472,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_flux_for_1sgrp(numnod, numele, numsurf,            &
-     &          nnod_4_surf, ie_surf, isf_4_ele, e_multi,               &
+     &          nnod_4_surf, ie_surf, isf_4_ele, interior_ele,          &
      &          vnorm_surf, area_surf, num_sgrp,                        &
      &          isurf_grp, d_nod, flux)
 !
@@ -478,7 +484,7 @@
       integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
       integer(kind = kint), intent(in) :: num_sgrp
       integer(kind = kint), intent(in) :: isurf_grp(2,num_sgrp)
-      real(kind = kreal), intent(in) :: e_multi(numele)
+      integer(kind = kint), intent(in) :: interior_ele(numele)
       real(kind = kreal), intent(in) :: vnorm_surf(numsurf,3)
       real(kind = kreal), intent(in) :: area_surf(numsurf)
       real(kind = kreal), intent(in) :: d_nod(numnod,3)
@@ -516,7 +522,8 @@
         flux(inum) = flux(inum) + ( vnorm_surf(isurf,1) * d_surf(1)     &
      &                            + vnorm_surf(isurf,2) * d_surf(2)     &
      &                            + vnorm_surf(isurf,3) * d_surf(3) )   &
-     &              * area_surf(isurf) * e_multi(iele) * sign_surf
+     &              * area_surf(isurf) * sign_surf                      &
+     &              * dble(interior_ele(iele))
       end do
 !$omp end parallel do
 !

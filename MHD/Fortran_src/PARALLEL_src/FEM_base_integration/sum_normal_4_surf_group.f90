@@ -41,7 +41,8 @@
 !
       call allocate_sum_local_area_grp(sf_grp%num_grp)
 !
-      call s_sum_norm_of_surf_group(np_smp, ele1%numele, e_multi,       &
+      call sum_norm_of_surf_group                                       &
+     &   (np_smp, ele1%numele, ele1%interior_ele,                       &
      &    sf_grp%num_grp, sf_grp%num_item, sf_grp%item_sf_grp,          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    sf_grp_v%area_sf_grp)
@@ -87,14 +88,14 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine s_sum_norm_of_surf_group(np_smp, numele, e_multi,      &
+      subroutine sum_norm_of_surf_group(np_smp, numele, interior_ele,   &
      &          num_surf, num_surf_bc, surf_item, num_surf_smp,         &
      &          isurf_grp_smp_stack, area_sf_grp)
 !
       use calypso_mpi
 !
       integer(kind = kint) , intent(in) :: numele
-      real(kind = kreal), intent(in) :: e_multi(numele)
+      integer (kind = kint), intent(in) :: interior_ele(numele)
       integer(kind = kint), intent(in) :: np_smp, num_surf_smp
       integer(kind = kint), intent(in)                                  &
      &            :: isurf_grp_smp_stack(0:num_surf_smp)
@@ -119,8 +120,8 @@
 !
           do isurf = ist, ied
             iele = surf_item(1,isurf)
-            area_grp_smp(ip) = area_grp_smp(ip)                         &
-     &                        + area_sf_grp(isurf) * e_multi(iele)
+            area_grp_smp(ip) = area_grp_smp(ip) + area_sf_grp(isurf)    &
+     &                        * dble(interior_ele(iele))
           end do
         end do
 !$omp end parallel do
@@ -131,7 +132,7 @@
         end do
       end do
 !
-      end subroutine s_sum_norm_of_surf_group
+      end subroutine sum_norm_of_surf_group
 !
 ! ----------------------------------------------------------------------
 !

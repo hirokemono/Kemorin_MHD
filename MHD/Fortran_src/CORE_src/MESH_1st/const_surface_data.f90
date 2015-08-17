@@ -5,7 +5,6 @@
 !
 !
 !      subroutine construct_surface_data
-!      subroutine const_element_list_4_surface
 !
       module const_surface_data
 !
@@ -62,20 +61,6 @@
       end subroutine construct_surface_data
 !
 !------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine const_element_list_4_surface
-!
-      use set_element_list_4_surface
-!
-!
-      call allocate_ele_4_surf
-      call set_ele_list_4_surf(ele1%numele, surf1%numsurf,              &
-     &    nsurf_4_ele, surf1%isf_4_ele, surf1%iele_4_surf)
-      iele_4_surf = surf1%iele_4_surf
-!
-      end subroutine const_element_list_4_surface
-!
 !------------------------------------------------------------------
 !
       subroutine const_all_surface_data(sf_ele_tbl)

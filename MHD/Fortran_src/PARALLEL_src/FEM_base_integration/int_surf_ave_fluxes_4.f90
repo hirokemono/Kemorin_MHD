@@ -4,19 +4,19 @@
 !     Written by H. Matsui on Aug., 2007
 !     Modified by H. Matsui on Nov., 2008
 !
-!      subroutine int_surf_ave_1sgrp_4(numnod, numele, numsurf,         &
-!     &          nnod_4_surf, ie_surf, isf_4_ele, e_multi, ntot_int_2d, &
-!     &          num_int, an_surf, xj_surf, num_sgrp, isurf_grp,        &
-!     &          istack_sf_grp_smp, d1_nod, ave_l)
-!
-!      subroutine int_vec_flux_1sgrp_4(numnod, numele, numsurf,         &
-!     &          nnod_4_surf, ie_surf, isf_4_ele, e_multi, num_sgrp,    &
-!     &          isurf_grp, istack_sf_grp_smp, ntot_int_2d, num_int,    &
-!     &          an_surf, xsf_surf, d1_nod, flux)
-!      subroutine int_vec_tflux_1sgrp_4(numnod, numele, numsurf,        &
-!     &          nnod_4_surf, ie_surf, isf_4_ele, e_multi, num_sgrp,    &
-!     &          isurf_grp, istack_sf_grp_smp, ntot_int_2d, num_int,    &
-!     &          an_surf, xsf_surf, d1_nod, flux_l)
+!!      subroutine int_surf_ave_1sgrp_4(numnod, numele, numsurf,        &
+!!     &          nnod_4_surf, ie_surf, isf_4_ele, interior_ele,        &
+!!     &          ntot_int_2d, num_int, an_surf, xj_surf,               &
+!!     &          num_sgrp, isurf_grp, istack_sf_grp_smp, d1_nod, ave_l)
+!!
+!!      subroutine int_vec_flux_1sgrp_4(numnod, numele, numsurf,        &
+!!     &          nnod_4_surf, ie_surf, isf_4_ele, interior_ele,        &
+!!     &          num_sgrp, isurf_grp, istack_sf_grp_smp, ntot_int_2d,  &
+!!     &          num_int,  an_surf, xsf_surf, d1_nod, flux)
+!!      subroutine int_vec_tflux_1sgrp_4(numnod, numele, numsurf,       &
+!!     &          nnod_4_surf, ie_surf, isf_4_ele, interior_ele,        &
+!!     &          num_sgrp, isurf_grp, istack_sf_grp_smp, ntot_int_2d,  &
+!!     &          num_int, an_surf, xsf_surf, d1_nod, flux_l)
 !
       module int_surf_ave_fluxes_4
 !
@@ -35,9 +35,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_surf_ave_1sgrp_4(numnod, numele, numsurf,          &
-     &          nnod_4_surf, ie_surf, isf_4_ele, e_multi, ntot_int_2d,  &
-     &          num_int, an_surf, xj_surf, num_sgrp, isurf_grp,         &
-     &          istack_sf_grp_smp, d1_nod, ave_l)
+     &          nnod_4_surf, ie_surf, isf_4_ele, interior_ele,          &
+     &          ntot_int_2d, num_int, an_surf, xj_surf,                 &
+     &          num_sgrp, isurf_grp, istack_sf_grp_smp, d1_nod, ave_l)
 !
       integer (kind = kint), intent(in) :: numnod, numele, numsurf
       integer (kind = kint), intent(in) :: nnod_4_surf
@@ -47,7 +47,7 @@
       integer (kind = kint), intent(in) :: num_sgrp
       integer (kind = kint), intent(in) :: isurf_grp(2,num_sgrp)
       integer (kind = kint), intent(in) :: istack_sf_grp_smp(0:np_smp)
-      real(kind= kreal), intent(in) :: e_multi(numele)
+      integer (kind= kint), intent(in) :: interior_ele(numele)
       real(kind= kreal), intent(in) :: an_surf(nnod_4_surf,ntot_int_2d)
       real(kind= kreal), intent(in) :: xj_surf(numsurf,ntot_int_2d)
       real(kind= kreal), intent(in) :: d1_nod(numnod)
@@ -86,7 +86,8 @@
      &                                 + an_surf(2, ix)*d1_nod(i2 )     &
      &                                 + an_surf(3, ix)*d1_nod(i3 )     &
      &                                 + an_surf(4, ix)*d1_nod(i4 ))    &
-     &                     * e_multi(iele)*xj_surf(isurf,ix)*owe2d(ix)
+     &                     * dble(interior_ele(iele))                   &
+     &                     * xj_surf(isurf,ix)*owe2d(ix)
             end do
           end do
         end do
@@ -101,9 +102,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vec_flux_1sgrp_4(numnod, numele, numsurf,          &
-     &          nnod_4_surf, ie_surf, isf_4_ele, e_multi, num_sgrp,     &
-     &          isurf_grp, istack_sf_grp_smp, ntot_int_2d, num_int,     &
-     &          an_surf, xsf_surf, d1_nod, flux)
+     &          nnod_4_surf, ie_surf, isf_4_ele, interior_ele,          &
+     &          num_sgrp, isurf_grp, istack_sf_grp_smp, ntot_int_2d,    &
+     &          num_int,  an_surf, xsf_surf, d1_nod, flux)
 !
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
@@ -113,7 +114,7 @@
       integer(kind = kint), intent(in) :: num_sgrp
       integer(kind = kint), intent(in) :: isurf_grp(2,num_sgrp)
       integer(kind = kint), intent(in) :: istack_sf_grp_smp(0:np_smp)
-      real(kind = kreal), intent(in) :: e_multi(numele)
+      integer (kind= kint), intent(in) :: interior_ele(numele)
       real(kind= kreal), intent(in) :: an_surf(nnod_4_surf,ntot_int_2d)
       real(kind = kreal), intent(in)                                    &
      &           :: xsf_surf(numsurf,ntot_int_2d,3)
@@ -167,7 +168,8 @@
      &                     + an_surf(4, ix)*d1_nod(i4,3))               &
      &                   * xsf_surf(isurf,ix,3) 
 !
-            flux(inum) = flux(inum) + sign_surf * e_multi(iele)         &
+            flux(inum) = flux(inum)                                     &
+     &                  + sign_surf * dble(interior_ele(iele))          &
      &                  * (flux_ele(1) + flux_ele(2) + flux_ele(3))     &
      &                  * owe2d(ix)
           end do
@@ -180,9 +182,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vec_tflux_1sgrp_4(numnod, numele, numsurf,         &
-     &          nnod_4_surf, ie_surf, isf_4_ele, e_multi, num_sgrp,     &
-     &          isurf_grp, istack_sf_grp_smp, ntot_int_2d, num_int,     &
-     &          an_surf, xsf_surf, d1_nod, flux_l)
+     &          nnod_4_surf, ie_surf, isf_4_ele, interior_ele,          &
+     &          num_sgrp, isurf_grp, istack_sf_grp_smp, ntot_int_2d,    &
+     &          num_int, an_surf, xsf_surf, d1_nod, flux_l)
 !
       integer(kind = kint), intent(in) :: numnod, numele, numsurf
       integer(kind = kint), intent(in) :: nnod_4_surf
@@ -192,7 +194,7 @@
       integer(kind = kint), intent(in) :: num_sgrp
       integer(kind = kint), intent(in) :: isurf_grp(2,num_sgrp)
       integer(kind = kint), intent(in) :: istack_sf_grp_smp(0:np_smp)
-      real(kind = kreal), intent(in) :: e_multi(numele)
+      integer (kind= kint), intent(in) :: interior_ele(numele)
       real(kind= kreal), intent(in) :: an_surf(nnod_4_surf,ntot_int_2d)
       real(kind = kreal), intent(in)                                    &
      &           :: xsf_surf(numsurf,ntot_int_2d,3)
@@ -247,7 +249,8 @@
      &                     + an_surf(4, ix)*d1_nod(i4,3))               &
      &                   * xsf_surf(isurf,ix,3) 
 !
-            flux_smp(ip) = flux_smp(ip) + sign_surf * e_multi(iele)     &
+            flux_smp(ip) = flux_smp(ip)                                 &
+     &                 + sign_surf * dble(interior_ele(iele))           &
      &                  * (flux_ele(1) + flux_ele(2) + flux_ele(3))     &
      &                  * owe2d(ix)
           end do

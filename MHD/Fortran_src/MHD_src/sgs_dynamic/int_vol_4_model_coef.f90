@@ -45,12 +45,12 @@
 !
         if (ele1%nnod_4_ele .eq. num_t_linear) then
           call int_vol_model_coef_l                                     &
-     &       (ele1%numele, ele1%ie, interior_ele, n_tensor, n_int,      &
+     &       (ele1%numele, ele1%ie, ele1%interior_ele, n_tensor, n_int, &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
         else if (ele1%nnod_4_ele .eq. num_t_quad) then
           call int_vol_model_coef_q                                     &
-     &       (ele1%numele, ele1%ie, interior_ele, n_tensor, n_int,      &
+     &       (ele1%numele, ele1%ie, ele1%interior_ele, n_tensor, n_int, &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
         end if
@@ -60,13 +60,13 @@
         sgs_l_smp(1:np_smp,1:18) = 0.0d0
         if (ele1%nnod_4_ele .eq. num_t_linear) then
           call int_vol_model_coef_grpsmp_l                              &
-     &     (ele1%numele, ele1%ie, interior_ele, n_tensor, n_int,        &
+     &     (ele1%numele, ele1%ie, ele1%interior_ele, n_tensor, n_int,   &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer)
         else if (ele1%nnod_4_ele .eq. num_t_quad) then
           call int_vol_model_coef_grpsmp_q                              &
-     &     (ele1%numele, ele1%ie, interior_ele, n_tensor, n_int,        &
+     &     (ele1%numele, ele1%ie, ele1%interior_ele, n_tensor, n_int,   &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer)

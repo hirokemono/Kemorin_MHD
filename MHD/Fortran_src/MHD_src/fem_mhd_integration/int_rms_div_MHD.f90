@@ -236,7 +236,7 @@
 ! --------- caliculate total divergence of velocity
 !
       call sum_norm_of_div(ele1%numele, np_smp, iele_fsmp_stack,        &
-     &    e_multi, phi_e, rms_local(i_res) )
+     &    ele1%interior_ele, phi_e, rms_local(i_res) )
 !
       end subroutine int_rms_divergence
 !

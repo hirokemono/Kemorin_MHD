@@ -41,12 +41,12 @@
 !
         if (ele1%nnod_4_ele .eq. num_t_linear) then
           call int_vol_rms_ave_dynamic_l                                &
-     &       (ele1%numele, ele1%ie, interior_ele, n_tensor, n_int,      &
+     &       (ele1%numele, ele1%ie, ele1%interior_ele, n_tensor, n_int, &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
         else if (ele1%nnod_4_ele .eq. num_t_quad) then
           call int_vol_rms_ave_dynamic_q                                &
-     &       (ele1%numele, ele1%ie, interior_ele, n_tensor, n_int,      &
+     &       (ele1%numele, ele1%ie, ele1%interior_ele, n_tensor, n_int, &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
         end if
@@ -55,13 +55,13 @@
 !
         if (ele1%nnod_4_ele .eq. num_t_linear) then
           call int_vol_rms_dynamic_grpsmp_l                             &
-     &     (ele1%numele, ele1%ie, interior_ele, n_tensor, n_int,        &
+     &     (ele1%numele, ele1%ie, ele1%interior_ele, n_tensor, n_int,   &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer)
         else if (ele1%nnod_4_ele .eq. num_t_quad) then
           call int_vol_rms_dynamic_grpsmp_q                             &
-     &     (ele1%numele, ele1%ie, interior_ele, n_tensor, n_int,        &
+     &     (ele1%numele, ele1%ie, ele1%interior_ele, n_tensor, n_int,   &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer)

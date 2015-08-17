@@ -90,12 +90,14 @@
 !cdir nodep
             do iele = ist, ied
 !
-              bulk_e_smp(iproc) = bulk_e_smp(iproc)  + e_multi(iele)    &
+              bulk_e_smp(iproc) = bulk_e_smp(iproc)                     &
+     &                           + dble(ele1%interior_ele(iele))        &
      &                             * ( phi_e(iele) * phi_e(iele) )      &
      &                             * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
 !
               average_smp(iproc) = average_smp(iproc)                   &
-     &                            + e_multi(iele) * phi_e(iele)         &
+     &                            + dble(ele1%interior_ele(iele))       &
+     &                             * phi_e(iele)                        &
      &                             * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
 !
            end do
@@ -159,12 +161,14 @@
 !cdir nodep
             do iele = ist, ied
 !
-              bulk_e_smp(iproc) = bulk_e_smp(iproc)  + e_multi(iele)    &
+              bulk_e_smp(iproc) = bulk_e_smp(iproc)                     &
+     &                           + dble(ele1%interior_ele(iele))        &
      &                             * ( phi_e(iele) * phi_e(iele) )      &
      &                             * aw(k2,ix)*owe3d(ix)
 !
               average_smp(iproc) = average_smp(iproc)                   &
-     &                            + e_multi(iele) * phi_e(iele)         &
+     &                           + dble(ele1%interior_ele(iele))        &
+     &                             * phi_e(iele)                        &
      &                             * aw(k2,ix)*owe3d(ix)
 !
            end do

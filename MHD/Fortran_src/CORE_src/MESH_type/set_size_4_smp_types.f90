@@ -146,9 +146,6 @@
      &    nod%internal_node, ele%numele, ele%ie(1:ele%numele,1),        &
      &    ele%internal_ele, ele%interior_ele)
 !
-      call copy_real_overlap_flag(np_smp, ele%istack_ele_smp,           &
-     &    ele%numele, ele%interior_ele, ele%e_multi)
-!
       end subroutine count_overlap_ele_type
 !
 ! ----------------------------------------------------------------------

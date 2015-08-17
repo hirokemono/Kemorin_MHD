@@ -9,7 +9,7 @@
 !     &           a_area_surf, vnorm_surf)
 !
 !      subroutine int_surf_area_1_surf_grp(numele, numsurf,             &
-!     &           isf_4_ele, e_multi, ntot_int_2d, num_int,             &
+!     &           isf_4_ele, interior_ele, ntot_int_2d, num_int,        &
 !     &           xj_surf, num_sgrp, isurf_grp, area)
 !
       module int_area_normal_4_surface
@@ -100,7 +100,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_surf_area_1_surf_grp(numele, numsurf,              &
-     &           isf_4_ele, e_multi, ntot_int_2d, num_int,              &
+     &           isf_4_ele, interior_ele, ntot_int_2d, num_int,         &
      &           xj_surf, num_sgrp, isurf_grp, area)
 !
       integer (kind = kint), intent(in) :: numele, numsurf
@@ -108,7 +108,7 @@
       integer (kind = kint), intent(in) :: num_sgrp
       integer (kind = kint), intent(in) :: isurf_grp(2,num_sgrp)
       integer (kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      real(kind = kreal), intent(in) :: e_multi(numele)
+      integer (kind = kint), intent(in) :: interior_ele(numele)
       real(kind = kreal), intent(in) :: xj_surf(numsurf,ntot_int_2d)
 !
       real(kind = kreal), intent(inout) :: area
@@ -127,7 +127,8 @@
           isf =  isurf_grp(2,inum)
           isurf = abs(isf_4_ele(iele,isf))
 !
-          area = area + e_multi(iele)*xj_surf(isurf,ix)*owe2d(ix)
+          area = area + dble(interior_ele(iele))                        &
+     &                 * xj_surf(isurf,ix)*owe2d(ix)
         end do
       end do
 !

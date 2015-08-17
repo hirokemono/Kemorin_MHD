@@ -45,13 +45,13 @@
 !
         if (ele1%nnod_4_ele .eq. num_t_linear) then
           call int_vol_layer_cor_l                                      &
-     &       (ele1%numele, ele1%ie, interior_ele, n_tensor, n_int,      &
+     &       (ele1%numele, ele1%ie, ele1%interior_ele, n_tensor, n_int, &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
      &        ave_s, ave_g)
         else if (ele1%nnod_4_ele .eq. num_t_quad) then
           call int_vol_layer_cor_q                                      &
-     &       (ele1%numele, ele1%ie, interior_ele, n_tensor, n_int,      &
+     &       (ele1%numele, ele1%ie, ele1%interior_ele, n_tensor, n_int, &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
      &        ave_s, ave_g)
@@ -61,13 +61,13 @@
 !
         if (ele1%nnod_4_ele .eq. num_t_linear) then
           call int_vol_layer_cor_grpsmp_l                               &
-     &       (ele1%numele, ele1%ie, interior_ele, n_tensor, n_int,      &
+     &       (ele1%numele, ele1%ie, ele1%interior_ele, n_tensor, n_int, &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer, ave_s, ave_g)
         else if (ele1%nnod_4_ele .eq. num_t_quad) then
           call int_vol_layer_cor_grpsmp_q                               &
-     &       (ele1%numele, ele1%ie, interior_ele, n_tensor, n_int,      &
+     &       (ele1%numele, ele1%ie, ele1%interior_ele, n_tensor, n_int, &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer, ave_s, ave_g)

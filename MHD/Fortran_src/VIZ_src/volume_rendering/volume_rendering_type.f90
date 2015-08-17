@@ -99,7 +99,7 @@
 !
       call pvr_init(fem%mesh%node%numnod, fem%mesh%ele%numele,          &
      &    surf%numsurf, surf%nnod_4_surf, fem%mesh%node%xx,             &
-     &    fem%mesh%ele%e_multi, surf%ie_surf,                           &
+     &    fem%mesh%ele%interior_ele, surf%ie_surf,                      &
      &    surf%isf_4_ele, surf%iele_4_surf, fem%group%ele_grp,          &
      &    fld_nod%num_phys, fld_nod%phys_name)
 !
@@ -126,7 +126,7 @@
      &    fem%mesh%node%istack_nod_smp, fem%mesh%ele%istack_ele_smp,    &
      &    fem%mesh%node%xx, fem%mesh%node%rr, fem%mesh%node%a_r,        &
      &    fem%mesh%node%ss, fem%mesh%node%a_s, fem%mesh%ele%ie,         &
-     &     fem%mesh%ele%a_vol_ele, fem%mesh%ele%e_multi,                &
+     &    fem%mesh%ele%a_vol_ele, fem%mesh%ele%interior_ele,            &
      &    surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,               &
      &    jac_3d%ntot_int, jac_3d%dnx, jac_3d%xjac,                     &
      &    fld_nod%num_phys, fld_nod%ntot_phys,                          &

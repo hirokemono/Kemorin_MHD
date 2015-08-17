@@ -5,12 +5,14 @@
 !                                    on July 2000 (ver 1.1)
 !        Modified by H. Matsui on Aug., 2006
 !
-!       subroutine allocate_volume_4_smp
-!       subroutine deallocate_volume_4_smp
-!
-!       subroutine sum_4_volume(iele_fsmp_stack, volume, xvol_smp)
-!       subroutine sum_of_volume_by_ele_table(numele_field,             &
-!     &           iele_fsmp_stack, iele_field, volume)
+!!       subroutine allocate_volume_4_smp
+!!       subroutine deallocate_volume_4_smp
+!!
+!!      subroutine sum_4_volume(numele, interior_ele, iele_fsmp_stack,  &
+!!     &          volume_ele, vol_local)
+!!       subroutine sum_of_volume_by_ele_table(numele, interior_ele,    &
+!!     &           volume_ele, numele_field, iele_fsmp_stack,           &
+!!     &           iele_field, vol_local)
 !
       module sum_volume_of_domain
 !
@@ -48,11 +50,13 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine sum_4_volume(iele_fsmp_stack, vol_local)
+      subroutine sum_4_volume(numele, interior_ele, iele_fsmp_stack,    &
+     &          volume_ele, vol_local)
 !
-      use m_geometry_data
-!
+      integer (kind = kint), intent(in) :: numele
+      integer (kind = kint), intent(in) :: interior_ele(numele)
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+      real (kind=kreal), intent(in) :: volume_ele(numele)
 !
       real (kind=kreal), intent(inout) :: vol_local
 !
@@ -70,7 +74,7 @@
         do iele = istart, iend
 !
           xvol_smp(iproc) = xvol_smp(iproc)                             &
-     &                     + volume_ele(iele)*e_multi(iele)
+     &                     + volume_ele(iele)*dble(interior_ele(iele))
 !
         end do
       end do
@@ -85,10 +89,15 @@
 !
 !-----------------------------------------------------------------------
 !
-       subroutine sum_of_volume_by_ele_table(numele_field,              &
-     &           iele_fsmp_stack, iele_field, vol_local)
+       subroutine sum_of_volume_by_ele_table(numele, interior_ele,      &
+     &           volume_ele, numele_field, iele_fsmp_stack,             &
+     &           iele_field, vol_local)
 !
-      use m_geometry_data
+!      use m_geometry_data
+!
+      integer (kind = kint), intent(in) :: numele
+      integer (kind = kint), intent(in) :: interior_ele(numele)
+      real (kind=kreal), intent(in) :: volume_ele(numele)
 !
       integer (kind=kint), intent(in) :: numele_field
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -103,9 +112,7 @@
       vol_local = 0.0d0
       xvol_smp = 0.0d0
 !
-!cdir parallel do private(inum,iele,istart,iend)
 !$omp parallel do private(inum,iele,istart,iend)
-!poption parallel
       do iproc = 1, np_smp
         istart = iele_fsmp_stack(iproc-1)+1
         iend = iele_fsmp_stack(iproc)
@@ -113,7 +120,7 @@
 !
           iele = iele_field(inum)
           xvol_smp(iproc) = xvol_smp(iproc)                             &
-     &                      + volume_ele(iele)*e_multi(iele)
+     &                      + volume_ele(iele)*dble(interior_ele(iele))
 !
         end do
        end do

@@ -4,8 +4,9 @@
 !        programmed by H.Matsui on Aug., 2011
 !
 !!      subroutine s_find_pvr_surf_domain(num_pvr, numele, numsurf,     &
-!!     &          e_multi, isf_4_ele, iele_4_surf, num_mat, num_mat_bc, &
-!!     &          mat_istack, mat_item, fld_params, pvr_bound, field_pvr)
+!!     &          interior_ele, isf_4_ele, iele_4_surf,                 &
+!!     &          num_mat, num_mat_bc, mat_istack, mat_item,            &
+!!     &          fld_params, pvr_bound, field_pvr)
 !!      subroutine set_pvr_domain_surface_data                          &
 !!     &       (n_pvr_pixel, numnod, numele, numsurf, nnod_4_surf,      &
 !!     &        ie_surf, isf_4_ele, x_nod_screen, pvr_bound)
@@ -34,8 +35,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_find_pvr_surf_domain(num_pvr, numele, numsurf,       &
-     &          e_multi, isf_4_ele, iele_4_surf, num_mat, num_mat_bc,   &
-     &          mat_istack, mat_item, fld_params, pvr_bound, field_pvr)
+     &          interior_ele, isf_4_ele, iele_4_surf,                   &
+     &          num_mat, num_mat_bc, mat_istack, mat_item,              &
+     &          fld_params, pvr_bound, field_pvr)
 !
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
@@ -43,16 +45,16 @@
       use find_selected_domain_bd
       use set_iflag_for_used_ele
 !
-      integer(kind=kint), intent(in) :: numele, numsurf
-      real(kind = kreal), intent(in) :: e_multi(numele)
-      integer(kind=kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      integer(kind=kint), intent(in) :: iele_4_surf(numsurf,2,2)
+      integer(kind = kint), intent(in) :: numele, numsurf
+      integer(kind = kint), intent(in) :: interior_ele(numele)
+      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
+      integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
 !
-      integer(kind=kint), intent(in) :: num_mat, num_mat_bc
-      integer(kind=kint), intent(in) :: mat_istack(0:num_mat)
-      integer(kind=kint), intent(in) :: mat_item(num_mat_bc)
+      integer(kind = kint), intent(in) :: num_mat, num_mat_bc
+      integer(kind = kint), intent(in) :: mat_istack(0:num_mat)
+      integer(kind = kint), intent(in) :: mat_item(num_mat_bc)
 !
-      integer(kind=kint), intent(in) :: num_pvr
+      integer(kind = kint), intent(in) :: num_pvr
       type(pvr_field_parameter), intent(in) :: fld_params(num_pvr)
       type(pvr_bounds_surf_ctl), intent(inout) :: pvr_bound(num_pvr)
       type(pvr_projected_field), intent(inout) :: field_pvr(num_pvr)
@@ -63,7 +65,7 @@
       call allocate_imark_4_surface(numsurf)
 !
       do i_pvr = 1, num_pvr
-        call s_set_iflag_for_used_ele(numele, e_multi,                  &
+        call s_set_iflag_for_used_ele(numele, interior_ele,             &
      &      num_mat, num_mat_bc, mat_istack, mat_item,                  &
      &      fld_params(i_pvr)%nele_grp_area_pvr,                        &
      &      fld_params(i_pvr)%id_ele_grp_area_pvr,                      &

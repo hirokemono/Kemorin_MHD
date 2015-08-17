@@ -70,20 +70,20 @@
           do iele = istart, iend
 !
            rms_smp(iproc) = rms_smp(iproc)                              &
-     &    + e_multi(iele)                                               &
+     &    + dble(ele1%interior_ele(iele))                               &
      &     * (   vect_e(iele,1) * vect_e(iele,1)                        &
      &       + 2*vect_e(iele,2) * vect_e(iele,2)                        &
      &       + 2*vect_e(iele,3) * vect_e(iele,3) )                      &
      &     * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
 !
            ave_smp(iproc,1) = ave_smp(iproc,1)                          &
-     &    + e_multi(iele) * vect_e(iele,1)                              &
+     &    + dble(ele1%interior_ele(iele)) * vect_e(iele,1)              &
      &     * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
            ave_smp(iproc,2) = ave_smp(iproc,2)                          &
-     &    + e_multi(iele) * vect_e(iele,2)                              &
+     &    + dble(ele1%interior_ele(iele)) * vect_e(iele,2)              &
      &     * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
            ave_smp(iproc,3) = ave_smp(iproc,3)                          &
-     &    + e_multi(iele) * vect_e(iele,3)                              &
+     &    + dble(ele1%interior_ele(iele)) * vect_e(iele,3)              &
      &     * aw(k2,ix)*xjac(iele,ix)*owe3d(ix)
 !
           end do

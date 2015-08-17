@@ -68,7 +68,7 @@
           nitem_grp = ele_grp%istack_grp(igrp)                          &
      &               - ele_grp%istack_grp(igrp-1)
           call int_vol_rms_ave_1egrp_q(mesh%node%numnod,                &
-     &        mesh%ele%numele, mesh%ele%ie, mesh%ele%e_multi,           &
+     &        mesh%ele%numele, mesh%ele%ie, mesh%ele%interior_ele,      &
      &        nitem_grp, ele_grp%item_grp(ist_grp+1:ist_grp+nitem_grp), &
      &        num_int, jac_3d%ntot_int, jac_3d%xjac, jac_3d%an,         &
      &        d_nod, ave_l(igrp), rms_l(igrp) )
@@ -83,7 +83,7 @@
           nitem_grp = ele_grp%istack_grp(igrp)                          &
      &               - ele_grp%istack_grp(igrp-1)
           call int_vol_rms_ave_1egrp_l(mesh%node%numnod,                &
-     &        mesh%ele%numele, mesh%ele%ie, mesh%ele%e_multi,           &
+     &        mesh%ele%numele, mesh%ele%ie, mesh%ele%interior_ele,      &
      &        nitem_grp, ele_grp%item_grp(ist_grp+1:ist_grp+nitem_grp), &
      &        num_int, jac_3d%ntot_int, jac_3d%xjac, jac_3d%an,         &
      &        d_nod, ave_l(igrp), rms_l(igrp) )
@@ -113,12 +113,12 @@
 !
       if (mesh%ele%nnod_4_ele .eq. num_t_quad) then
         call int_vol_rms_ave_1egrp_q(mesh%node%numnod,                  &
-     &      mesh%ele%numele, mesh%ele%ie, mesh%ele%e_multi,             &
+     &      mesh%ele%numele, mesh%ele%ie, mesh%ele%interior_ele,        &
      &      nitem_grp, iele_grp, num_int, jac_3d%ntot_int,              &
      &      jac_3d%xjac, jac_3d%an, d_nod, ave_l, rms_l)
       else
         call int_vol_rms_ave_1egrp_(mesh%node%numnod,                   &
-     &      mesh%ele%numele, mesh%ele%ie, mesh%ele%e_multi,             &
+     &      mesh%ele%numele, mesh%ele%ie, mesh%ele%interior_ele,        &
      &      nitem_grp, iele_grp, num_int, jac_3d%ntot_int,              &
      &      jac_3d%xjac, jac_3d%an, d_nod, ave_l, rms_l)
       end if
@@ -157,7 +157,7 @@
           nitem_grp = ele_grp%istack_grp(igrp)                          &
      &               - ele_grp%istack_grp(igrp-1)
           call int_vol_2rms_ave_1egrp_q(mesh%node%numnod,               &
-     &        mesh%ele%numele, mesh%ele%ie, mesh%ele%e_multi,           &
+     &        mesh%ele%numele, mesh%ele%ie, mesh%ele%interior_ele,      &
      &        nitem_grp, ele_grp%item_grp(ist_grp+1:ist_grp+nitem_grp), &
      &        num_int, jac_3d%ntot_int, jac_3d%xjac, jac_3d%an,         &
      &        d1_nod, d2_nod, ave_1(igrp), rms_1(igrp),                 &
@@ -173,7 +173,7 @@
           nitem_grp = ele_grp%istack_grp(igrp)                          &
      &               - ele_grp%istack_grp(igrp-1)
           call int_vol_2rms_ave_1egrp_l(mesh%node%numnod,               &
-     &        mesh%ele%numele, mesh%ele%ie, mesh%ele%e_multi,           &
+     &        mesh%ele%numele, mesh%ele%ie, mesh%ele%interior_ele,      &
      &        nitem_grp, ele_grp%item_grp(ist_grp+1:ist_grp+nitem_grp), &
      &        num_int, jac_3d%ntot_int, jac_3d%xjac, jac_3d%an,         &
      &        d1_nod, d2_nod, ave_1(igrp), rms_1(igrp),                 &
@@ -207,13 +207,13 @@
 !
       if (mesh%ele%nnod_4_ele .eq. num_t_quad) then
         call int_vol_2rms_ave_1egrp_q(mesh%node%numnod,                 &
-     &      mesh%ele%numele, mesh%ele%ie, mesh%ele%e_multi,             &
+     &      mesh%ele%numele, mesh%ele%ie, mesh%ele%interior_ele,        &
      &      nitem_grp, iele_grp, num_int, jac_3d%ntot_int,              &
      &      jac_3d%xjac, jac_3d%an, d1_nod, d2_nod,                     &
      &      ave_1, rms_1, ave_2, rms_2)
       else
         call int_vol_2rms_ave_1egrp_l(mesh%node%numnod,                 &
-     &      mesh%ele%numele, mesh%ele%ie, mesh%ele%e_multi,             &
+     &      mesh%ele%numele, mesh%ele%ie, mesh%ele%interior_ele,        &
      &      nitem_grp, iele_grp, num_int, jac_3d%ntot_int,              &
      &      jac_3d%xjac, jac_3d%an, d1_nod, d2_nod,                     &
      &      ave_1, rms_1, ave_2, rms_2)
@@ -256,7 +256,7 @@
           nitem_grp = ele_grp%istack_grp(igrp)                          &
      &               - ele_grp%istack_grp(igrp-1)
           call int_vol_dev_cor_1egrp_q(mesh%node%numnod,                &
-     &        mesh%ele%numele, mesh%ele%ie, mesh%ele%e_multi,           &
+     &        mesh%ele%numele, mesh%ele%ie, mesh%ele%interior_ele,      &
      &        nitem_grp, ele_grp%item_grp(ist_grp+1:ist_grp+nitem_grp), &
      &        num_int, jac_3d%ntot_int, jac_3d%xjac, jac_3d%an,         &
      &        d1_nod, d2_nod, ave_1(igrp), ave_2(igrp),                 &
@@ -272,7 +272,7 @@
           nitem_grp = ele_grp%istack_grp(igrp)                          &
      &               - ele_grp%istack_grp(igrp-1)
           call int_vol_dev_cor_1egrp_l(mesh%node%numnod,                &
-     &        mesh%ele%numele, mesh%ele%ie, mesh%ele%e_multi,           &
+     &        mesh%ele%numele, mesh%ele%ie, mesh%ele%interior_ele,      &
      &        nitem_grp, ele_grp%item_grp(ist_grp+1:ist_grp+nitem_grp), &
      &        num_int, jac_3d%ntot_int, jac_3d%xjac, jac_3d%an,         &
      &        d1_nod, d2_nod, ave_1(igrp), ave_2(igrp),                 &
@@ -307,13 +307,13 @@
 !
       if (mesh%ele%nnod_4_ele .eq. num_t_quad) then
         call int_vol_dev_cor_1egrp_q(mesh%node%numnod,                  &
-     &      mesh%ele%numele, mesh%ele%ie, mesh%ele%e_multi,             &
+     &      mesh%ele%numele, mesh%ele%ie, mesh%ele%interior_ele,        &
      &      nitem_grp, iele_grp, num_int, jac_3d%ntot_int,              &
      &      jac_3d%xjac, jac_3d%an, d1_nod, d2_nod,                     &
      &      ave_1, ave_2, sig_1, sig_2, cov_l)
       else
         call int_vol_dev_cor_1egrp_l(mesh%node%numnod,                  &
-     &      mesh%ele%numele, mesh%ele%ie, mesh%ele%e_multi,             &
+     &      mesh%ele%numele, mesh%ele%ie, mesh%ele%interior_ele,        &
      &      nitem_grp, iele_grp, num_int, jac_3d%ntot_int,              &
      &      jac_3d%xjac, jac_3d%an, d1_nod, d2_nod,                     &
      &       ave_1, ave_2, sig_1, sig_2, cov_l)

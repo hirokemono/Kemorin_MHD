@@ -145,7 +145,7 @@
         xx_1ele(2,1:8) = node1%xx(ie_1ele(1:8),2)
         xx_1ele(3,1:8) = node1%xx(ie_1ele(1:8),3)
 !
-        mark = mark_elegrp(inum) * int(e_multi(iele))
+        mark = mark_elegrp(inum) * ele1%interior_ele(iele)
         n_patch = psf_case_tbl(mark)%npatch
         if(n_patch .gt. 0) then
           do n = 1, n_patch
@@ -189,7 +189,7 @@
         xx_1ele(2,1:8) = node1%xx(ie_1ele(1:8),2)
         xx_1ele(3,1:8) = node1%xx(ie_1ele(1:8),3)
 !
-        mark = mark_elegrp(inum) * int(e_multi(iele))
+        mark = mark_elegrp(inum) * ele1%interior_ele(iele)
         n_patch = psf_case_tbl(mark)%npatch
         if(n_patch .gt. 0) then
           do n = 1, n_patch

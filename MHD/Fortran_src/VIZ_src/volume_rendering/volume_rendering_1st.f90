@@ -63,10 +63,9 @@
       use volume_rendering
 !
 !
-      call pvr_init                                                     &
-     &   (node1%numnod, ele1%numele, surf1%numsurf, surf1%nnod_4_surf,  &
-     &    node1%xx, e_multi, surf1%ie_surf,                             &
-     &    surf1%isf_4_ele, surf1%iele_4_surf,                           &
+      call pvr_init(node1%numnod, ele1%numele, surf1%numsurf,           &
+     &    surf1%nnod_4_surf, node1%xx, ele1%interior_ele,               &
+     &    surf1%ie_surf, surf1%isf_4_ele, surf1%iele_4_surf,            &
      &    ele_grp1, num_nod_phys, phys_nod_name)
 !
       end subroutine pvr_init_1st
@@ -88,7 +87,7 @@
      &   (istep_pvr, node1%numnod, ele1%numele, surf1%numsurf,          &
      &    ele1%nnod_4_ele, surf1%nnod_4_surf, node1%istack_nod_smp,     &
      &    ele1%istack_ele_smp, node1%xx, node1%rr, node1%a_r,           &
-     &    node1%ss, node1%a_s, ele1%ie, a_vol_ele, e_multi,             &
+     &    node1%ss, node1%a_s, ele1%ie, a_vol_ele, ele1%interior_ele,   &
      &    surf1%ie_surf, surf1%isf_4_ele, surf1%iele_4_surf,            &
      &    ntot_int_3d, dwx, xjac, num_nod_phys, num_tot_nod_phys,       &
      &    istack_nod_component, d_nod)

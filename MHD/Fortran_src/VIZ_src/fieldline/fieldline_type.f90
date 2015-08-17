@@ -39,7 +39,7 @@
 !
 !
       call field_line_init(fem%mesh%node%numnod,                        &
-     &    fem%mesh%ele%numele, fem%mesh%ele%e_multi,                    &
+     &    fem%mesh%ele%numele, fem%mesh%ele%interior_ele,               &
      &    fem%group%ele_grp, fem%group%surf_grp,                        &
      &    fld_nod%num_phys, fld_nod%phys_name)
 !
@@ -70,7 +70,7 @@
      &    fem%mesh%node%inod_global, fem%mesh%node%xx,                  &
      &    fem%mesh%node%rr, fem%mesh%node%a_r,                          &
      &    fem%mesh%node%ss, fem%mesh%node%a_s,                          &
-     &    fem%mesh%ele%iele_global, fem%mesh%ele%e_multi,               &
+     &    fem%mesh%ele%iele_global, fem%mesh%ele%interior_ele,          &
      &    surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf, surf%x_surf,  &
      &    surf%vnorm_surf, surf%area_surf, surf%interior_surf,          &
      &    fem%group%ele_grp, next_tbl%neib_ele,                         &
