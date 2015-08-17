@@ -36,7 +36,7 @@
 !$omp parallel do
       do inod = 1, node1%numnod
         globalnodid_dummy(inod) = node1%inod_global(inod)
-        xx_dummy(inod,1) = s_cylinder(inod)
+        xx_dummy(inod,1) = node1%ss(inod)
         xx_dummy(inod,2) = node1%phi(inod)
         xx_dummy(inod,3) = node1%xx(inod,3)
       end do

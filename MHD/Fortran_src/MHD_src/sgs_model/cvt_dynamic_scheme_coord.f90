@@ -74,17 +74,17 @@
       call overwrite_vector_2_cyl_smp(np_smp, node1%numnod,             &
      &    node1%istack_nod_smp, d_nod(1,iphys%i_sgs_simi),              &
      &    node1%xx(1:node1%numnod,1), node1%xx(1:node1%numnod,2),       &
-     &     s_cylinder, a_s_cylinder)
+     &    node1%ss, a_s_cylinder)
 
       call overwrite_vector_2_cyl_smp(np_smp, node1%numnod,             &
      &    node1%istack_nod_smp, d_nod(1,iphys%i_sgs_grad),              &
      &    node1%xx(1:node1%numnod,1), node1%xx(1:node1%numnod,2),       &
-     &    s_cylinder, a_s_cylinder)
+     &    node1%ss, a_s_cylinder)
 
       call overwrite_vector_2_cyl_smp(np_smp, node1%numnod,             &
      &    node1%istack_nod_smp, d_nod(1,iphys%i_sgs_grad_f),            &
      &    node1%xx(1:node1%numnod,1), node1%xx(1:node1%numnod,2),       &
-     &    s_cylinder, a_s_cylinder)
+     &    node1%ss, a_s_cylinder)
 !$omp end parallel
 !
       end subroutine convert_dynamic_vectors_2_cyl
@@ -105,19 +105,19 @@
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,iphys%i_sgs_simi), node1%xx(1:node1%numnod,1),        &
      &    node1%xx(1:node1%numnod,2), node1%xx(1:node1%numnod,3),       &
-     &    node1%rr, s_cylinder, a_radius, a_s_cylinder)
+     &    node1%rr, node1%ss, a_radius, a_s_cylinder)
 
       call overwrite_vector_2_sph_smp                                   &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,iphys%i_sgs_grad), node1%xx(1:node1%numnod,1),        &
      &    node1%xx(1:node1%numnod,2), node1%xx(1:node1%numnod,3),       &
-     &    node1%rr, s_cylinder, a_radius, a_s_cylinder)
+     &    node1%rr, node1%ss, a_radius, a_s_cylinder)
 
       call overwrite_vector_2_sph_smp                                   &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,iphys%i_sgs_grad_f), node1%xx(1:node1%numnod,1),      &
      &    node1%xx(1:node1%numnod,2), node1%xx(1:node1%numnod,3),       &
-     &    node1%rr, s_cylinder, a_radius, a_s_cylinder)
+     &    node1%rr, node1%ss, a_radius, a_s_cylinder)
 !$omp end parallel
 !
       end subroutine convert_dynamic_vectors_2_sph
@@ -139,19 +139,19 @@
          (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,iphys%i_sgs_simi),                                    &
      &    node1%xx(1:node1%numnod,1), node1%xx(1:node1%numnod,2),       &
-     &    s_cylinder, a_s_cylinder)
+     &    node1%ss, a_s_cylinder)
 
       call overwrite_cyl_tensor_smp                                     &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,iphys%i_sgs_grad),                                    &
      &    node1%xx(1:node1%numnod,1), node1%xx(1:node1%numnod,2),       &
-     &    s_cylinder, a_s_cylinder)
+     &    node1%ss, a_s_cylinder)
 
       call overwrite_cyl_tensor_smp                                     &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,iphys%i_sgs_grad_f),                                  &
      &    node1%xx(1:node1%numnod,1), node1%xx(1:node1%numnod,2),       &
-     &    s_cylinder, a_s_cylinder)
+     &    node1%ss, a_s_cylinder)
 !$omp end parallel
 !
       end subroutine convert_dynamic_tensors_2_cyl
@@ -172,19 +172,19 @@
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,iphys%i_sgs_simi), node1%xx(1:node1%numnod,1),        &
      &    node1%xx(1:node1%numnod,2), node1%xx(1:node1%numnod,3),       &
-     &    node1%rr, s_cylinder, a_radius, a_s_cylinder)
+     &    node1%rr, node1%ss, a_radius, a_s_cylinder)
 !
       call overwrite_sph_tensor_smp                                     &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,iphys%i_sgs_grad), node1%xx(1:node1%numnod,1),        &
      &    node1%xx(1:node1%numnod,2), node1%xx(1:node1%numnod,3),       &
-     &    node1%rr, s_cylinder, a_radius, a_s_cylinder)
+     &    node1%rr, node1%ss, a_radius, a_s_cylinder)
 !
       call overwrite_sph_tensor_smp                                     &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,iphys%i_sgs_grad_f), node1%xx(1:node1%numnod,1),      &
      &    node1%xx(1:node1%numnod,2), node1%xx(1:node1%numnod,3),       &
-     &    node1%rr, s_cylinder, a_radius, a_s_cylinder)
+     &    node1%rr, node1%ss, a_radius, a_s_cylinder)
 !$omp end parallel
 !
       end subroutine convert_dynamic_tensors_2_sph

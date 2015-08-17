@@ -46,10 +46,10 @@
 !
         node1%rr(inod) =       r_ele(inod)
         a_radius(inod) =     ar_ele(inod)
-        s_cylinder(inod) =   s_ele(inod)
+        node1%ss(inod) =     s_ele(inod)
         a_s_cylinder(inod) = as_ele(inod)
         node1%phi(inod) =    phi_ele(inod)
-        node1%theta(inod) =   theta_ele(inod)
+        node1%theta(inod) =  theta_ele(inod)
       end do
 !$omp end parallel do
 !
