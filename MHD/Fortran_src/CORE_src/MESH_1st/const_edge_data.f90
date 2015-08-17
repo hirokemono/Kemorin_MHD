@@ -66,9 +66,9 @@
      &    ie_edge, iedge_4_ele, edge1%node_on_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_4_sf'
-      call set_edges_connect_4_sf                                       &
-     &   (node1%numnod, ele1%numele, surf1%numsurf, edge1%numedge,      &
-     &    surf1%nnod_4_surf, edge1%nnod_4_edge, ie_surf, iedge_4_ele,   &
+      call set_edges_connect_4_sf(node1%numnod, ele1%numele,            &
+     &    surf1%numsurf, edge1%numedge, surf1%nnod_4_surf,              &
+     &    edge1%nnod_4_edge, surf1%ie_surf, iedge_4_ele,                &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%id_hash,               &
      &    edge_ele_tbl%iflag_hash, ie_edge, iedge_4_sf)
 !

@@ -65,7 +65,7 @@
 !
       call pvr_init                                                     &
      &   (node1%numnod, ele1%numele, surf1%numsurf, surf1%nnod_4_surf,  &
-     &    node1%xx, e_multi, ie_surf, isf_4_ele, iele_4_surf,           &
+     &    node1%xx, e_multi, surf1%ie_surf, isf_4_ele, iele_4_surf,     &
      &    ele_grp1, num_nod_phys, phys_nod_name)
 !
       end subroutine pvr_init_1st
@@ -88,7 +88,7 @@
      &    ele1%nnod_4_ele, surf1%nnod_4_surf, node1%istack_nod_smp,     &
      &    ele1%istack_ele_smp, node1%xx, radius, a_radius,              &
      &    s_cylinder, a_s_cylinder, ele1%ie,                            &
-     &    a_vol_ele, e_multi, ie_surf, isf_4_ele, iele_4_surf,          &
+     &    a_vol_ele, e_multi, surf1%ie_surf, isf_4_ele, iele_4_surf,    &
      &    ntot_int_3d, dwx, xjac, num_nod_phys, num_tot_nod_phys,       &
      &    istack_nod_component, d_nod)
 !

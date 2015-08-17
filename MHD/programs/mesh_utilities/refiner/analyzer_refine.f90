@@ -174,7 +174,7 @@
      &      finer_edgemesh, refined_fem%mesh%ele%nnod_4_ele)
 !
         call set_hanging_nodes(surf1%numsurf, surf1%nnod_4_surf,        &
-     &      edge1%numedge, edge1%nnod_4_edge, ie_surf, ie_edge)
+     &      edge1%numedge, edge1%nnod_4_edge, surf1%ie_surf, ie_edge)
 !
         call s_const_refined_group(refined_fem%mesh, refined_fem%group)
 !

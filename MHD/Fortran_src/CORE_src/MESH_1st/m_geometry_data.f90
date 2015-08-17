@@ -121,7 +121,7 @@
 !
 !
 !>   surface connectivity ie_surf(i:surface ID,j:surface index)
-      integer(kind=kint), allocatable, target  :: ie_surf(:,:)
+      integer(kind=kint), pointer  :: ie_surf(:,:)
 !>   edge connectivity ie_edge(i:edge ID,j:surface index)
       integer(kind=kint), allocatable, target  :: ie_edge(:,:)
 !
@@ -485,6 +485,8 @@
 !
       use m_geometry_constants
 !
+      call allocate_surface_connect_type(surf1, ele1%numele)
+!
       allocate( isf_4_ele(ele1%numele,nsurf_4_ele) )
       allocate( isf_rot_ele(ele1%numele,nsurf_4_ele) )
       allocate( ie_surf(surf1%numsurf,surf1%nnod_4_surf) )
@@ -589,8 +591,10 @@
 !
       subroutine deallocate_surface_connect
 !
+      call deallocate_surface_connect_type(surf1)
+!
       deallocate( isf_4_ele, isf_rot_ele)
-      deallocate( ie_surf )
+!      deallocate( ie_surf )
       deallocate( isurf_global )
       deallocate( interior_surf )
 !

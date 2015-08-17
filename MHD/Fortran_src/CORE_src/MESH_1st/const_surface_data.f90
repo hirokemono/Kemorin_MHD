@@ -105,12 +105,15 @@
      &   (ele1%numele, surf1%numsurf, ele1%nnod_4_ele,                  &
      &    surf1%nnod_4_surf, ele1%ie, surf1%node_on_sf,                 &
      &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash,                    &
-     &    ie_surf, isf_4_ele)
+     &    surf1%ie_surf, isf_4_ele)
+!
+      ie_surf = surf1%ie_surf
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_surf_rotation_flag'
       call set_surf_rotation_flag                                       &
      &   (ele1%numele, surf1%numsurf, ele1%nnod_4_ele,                  &
-     &    surf1%nnod_4_surf, ele1%ie, ie_surf, isf_4_ele, isf_rot_ele)
+     &    surf1%nnod_4_surf, ele1%ie, surf1%ie_surf,                    &
+     &    isf_4_ele, isf_rot_ele)
 !
       end subroutine const_all_surface_data
 !

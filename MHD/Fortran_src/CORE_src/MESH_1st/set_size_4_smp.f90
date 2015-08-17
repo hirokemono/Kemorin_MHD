@@ -118,7 +118,7 @@
 !
       call set_overlap_flag                                             &
      &   (np_smp, surf1%istack_surf_smp, node1%internal_node,           &
-     &    surf1%numsurf, ie_surf, surf1%internal_surf,                  &
+     &    surf1%numsurf, surf1%ie_surf, surf1%internal_surf,            &
      &    interior_surf)
 !
       end subroutine count_overlap_surface

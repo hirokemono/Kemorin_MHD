@@ -58,7 +58,7 @@
       globalelmid_dummy(1:surf1%numsurf)                                &
      &        = isurf_global(1:surf1%numsurf)
       ie_dummy(1:surf1%numsurf,1:surf1%nnod_4_surf)                     &
-     &        = ie_surf(1:surf1%numsurf,1:surf1%nnod_4_surf)
+     &        = surf1%ie_surf(1:surf1%numsurf,1:surf1%nnod_4_surf)
 !
       isf_4_ele_IO(1:ele1%numele,1:nsurf_4_ele)                         &
      &        = isf_4_ele(1:ele1%numele,1:nsurf_4_ele)
@@ -147,8 +147,9 @@
 !
       isurf_global(1:surf1%numsurf)                                     &
      &        = globalelmid_dummy(1:surf1%numsurf)
-      ie_surf(1:surf1%numsurf,1:surf1%nnod_4_surf)                      &
+      surf1%ie_surf(1:surf1%numsurf,1:surf1%nnod_4_surf)                &
      &        = ie_dummy(1:surf1%numsurf,1:surf1%nnod_4_surf)
+      ie_surf = surf1%ie_surf
 !
       isf_4_ele(1:ele1%numele,1:nsurf_4_ele)                            &
      &        = isf_4_ele_IO(1:ele1%numele,1:nsurf_4_ele)

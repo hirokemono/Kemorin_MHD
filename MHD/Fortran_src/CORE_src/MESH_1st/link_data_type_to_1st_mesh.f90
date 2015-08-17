@@ -114,7 +114,7 @@
       surf%numsurf =     surf1%numsurf
       surf%nnod_4_surf = surf1%nnod_4_surf
 !
-      surf%ie_surf =>       ie_surf
+      surf%ie_surf =>       surf1%ie_surf
       surf%isf_4_ele =>     isf_4_ele
       surf%interior_surf => interior_surf
 !
