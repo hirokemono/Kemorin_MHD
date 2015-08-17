@@ -47,8 +47,8 @@
 !
           do j = 1, num_sph_grid(3)
             jp = mod( (jp_st+j-ione), num_sph_grid(3) ) + ione
-            if (    longitude(inod) .ge. phi_divide(jp-1)               &
-     &        .and. longitude(inod) .lt. phi_divide(jp) ) then
+            if (    node1%phi(inod) .ge. phi_divide(jp-1)               &
+     &        .and. node1%phi(inod) .lt. phi_divide(jp) ) then
               jp_bin = jp
               jp_st = jp - 1
               exit
@@ -101,7 +101,7 @@
              write(*,*) inod, jr_bin, jt_bin, jp_bin
              write(*,*) 'position'
              write(*,*) node1%rr(inod), node1%theta(inod),              &
-     &                  longitude(inod)
+     &                  node1%phi(inod)
           end if
 !
         end do

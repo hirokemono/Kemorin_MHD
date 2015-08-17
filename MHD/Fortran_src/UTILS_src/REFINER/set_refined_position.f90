@@ -28,15 +28,15 @@
 !
       if (iflag_interpolate_type .eq. 1) then
         call cal_sph_on_edge_4_refine(node1%numnod, edge1%numedge,      &
-     &      edge1%ie_edge, node1%rr, node1%theta, longitude)
+     &      edge1%ie_edge, node1%rr, node1%theta, node1%phi)
         call cal_sph_on_surf_4_refine(node1%numnod, surf1%numsurf,      &
-     &      surf1%ie_surf, node1%rr, node1%theta, longitude)
+     &      surf1%ie_surf, node1%rr, node1%theta, node1%phi)
         call cal_sph_on_ele_4_refine(node1%numnod, ele1%numele,         &
-     &      ele1%ie, node1%rr, node1%theta, longitude)
+     &      ele1%ie, node1%rr, node1%theta, node1%phi)
 !
         call s_cal_refined_nod_near_pole(node1%numnod,                  &
      &      surf1%numsurf, edge1%numedge, surf1%ie_surf,                &
-     &      edge1%ie_edge, longitude)
+     &      edge1%ie_edge, node1%phi)
 !
         call position_2_xyz(ntot_nod_refine_ele, sph_refine_ele(1,1),   &
      &      sph_refine_ele(1,2), sph_refine_ele(1,3),                   &

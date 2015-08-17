@@ -74,7 +74,7 @@
 !
 !>  structure for node data (position)
       type(node_data), save :: node1
-!    node1%theta
+!    node1%phi
 !
 !>  structure for element data (position and connectivity)
       type(element_data), save :: ele1
@@ -193,7 +193,7 @@
 !>   longitude of node
       real(kind=kreal)  , pointer  :: longitude(:)
 !>   colatitude of node
-      real(kind=kreal)  , pointer  :: colatitude(:)
+!      real(kind=kreal)  , pointer  :: colatitude(:)
 !>   cylindorical radius of node
       real(kind=kreal)  , pointer  :: s_cylinder(:)
 !>   1 / (cylindorical radius)
@@ -347,12 +347,11 @@
       allocate(s_cylinder(node1%numnod))
       allocate(a_s_cylinder(node1%numnod))
       allocate(longitude(node1%numnod))
-      allocate(colatitude(node1%numnod))
+!      allocate(colatitude(node1%numnod))
 !
       a_radius = 0.0d00
       s_cylinder = 0.0d00
       a_s_cylinder = 0.0d00
-      longitude = 0.0d00
 !
       end subroutine allocate_node_geometry
 !
@@ -365,7 +364,6 @@
       deallocate(s_cylinder)
       deallocate(a_s_cylinder)
       deallocate(longitude)
-      deallocate(colatitude)
 !
       end subroutine deallocate_node_geometry
 !

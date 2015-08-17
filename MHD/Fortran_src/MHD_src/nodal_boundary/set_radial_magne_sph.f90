@@ -55,9 +55,9 @@
         call dschmidt(node1%theta(inod))
 !
         if (mm.ge.0) then
-          bmag = p(mm,ll) * cos( longitude(inod)*dble(mm) )
+          bmag = p(mm,ll) * cos( node1%phi(inod)*dble(mm) )
         else
-          bmag = p(mm,ll) * sin( longitude(inod)*dble(mm) )
+          bmag = p(mm,ll) * sin( node1%phi(inod)*dble(mm) )
         end if
 !
         do nd = 1, 3

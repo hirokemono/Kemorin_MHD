@@ -66,7 +66,7 @@
      &      - one * (depth_low_t+depth_high_t)                          &
      &       / (depth_low_t-depth_high_t)
         sit = sin( node1%theta(inod) )
-        csp = cos( real_m*longitude(inod) )
+        csp = cos( real_m*node1%phi(inod) )
 !
         d_nod(inod,iphys%i_temp) =                                      &
      &            - depth_high_t/(depth_low_t-depth_high_t)             &

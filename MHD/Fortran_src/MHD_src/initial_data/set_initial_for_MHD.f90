@@ -59,7 +59,7 @@
 !
         do inod = 1, node1%numnod
          call dschmidt(node1%theta(inod))
-         call spheric(longitude(inod))
+         call spheric(node1%phi(inod))
 !
          call radial_function_sph_vecp                                  &
      &      (node1%rr(inod), ifl, j_rst, l_rst,                         &
@@ -74,7 +74,7 @@
          call cvt_spectr_2_field(node1%rr(inod), node1%theta(inod))
 !
          call cvt_one_vector_2_cart                                     &
-     &      (b_cart, b_pole, node1%theta(inod), longitude(inod))
+     &      (b_cart, b_pole, node1%theta(inod), node1%phi(inod))
          d_nod(inod,iphys%i_vecp  ) = b_cart(1)
          d_nod(inod,iphys%i_vecp+1) = b_cart(2)
          d_nod(inod,iphys%i_vecp+2) = b_cart(3)
@@ -123,7 +123,7 @@
 !
         do inod = 1, node1%numnod
          call dschmidt(node1%theta(inod))
-         call spheric(longitude(inod))
+         call spheric(node1%phi(inod))
 !
          call radial_function_sph(node1%rr(inod), ifl, j_rst, l_rst,    &
      &       depth_high_t, depth_low_t)
@@ -137,7 +137,7 @@
          call cvt_spectr_2_field(node1%rr(inod), node1%theta(inod))
 !
          call cvt_one_vector_2_cart                                     &
-     &      (b_cart, b_pole, node1%theta(inod), longitude(inod))
+     &      (b_cart, b_pole, node1%theta(inod), node1%phi(inod))
          d_nod(inod,iphys%i_magne  ) = b_cart(1)
          d_nod(inod,iphys%i_magne+1) = b_cart(2)
          d_nod(inod,iphys%i_magne+2) = b_cart(3)
@@ -182,16 +182,16 @@
          inod = inod_fluid(inum)
 !
          call dschmidt(node1%theta(inod))
-         call spheric(longitude(inod))
+         call spheric(node1%phi(inod))
 !
          call radial_function_sph_velo( node1%rr(inod) )
 !
          call cvt_spectr_2_field(node1%rr(inod), node1%theta(inod))
 !
          call cvt_one_vector_2_cart                                     &
-     &      (v_cart, v_pole, node1%theta(inod), longitude(inod))
+     &      (v_cart, v_pole, node1%theta(inod), node1%phi(inod))
          call cvt_one_vector_2_cart                                     &
-     &      (b_cart, b_pole, node1%theta(inod), longitude(inod))
+     &      (b_cart, b_pole, node1%theta(inod), node1%phi(inod))
 !
          d_nod(inod,iphys%i_velo  ) = v_cart(1)
          d_nod(inod,iphys%i_velo+1) = v_cart(2)

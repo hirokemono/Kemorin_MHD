@@ -93,7 +93,7 @@
         inod = nod_grp%item_grp(ist+inum)
 !
         call dschmidt(node1%theta(inod))
-        call spheric(longitude(inod))
+        call spheric(node1%phi(inod))
 !
         inod_bc(inum) = inod
         bc_temp(inum) = s(j,0)

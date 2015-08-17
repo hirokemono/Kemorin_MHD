@@ -27,6 +27,7 @@
       use const_mesh_info
       use cal_jacobian
 !
+      use set_node_types_4_IO
       use set_element_geometry_4_IO
       use set_surface_geometry_4_IO
       use set_edge_geometry_4_IO
@@ -148,7 +149,7 @@
      &      form = 'formatted')
 !
       num_neib_domain_IO = 0
-      call copy_node_geom_sph_to_IO
+      call copy_node_type_sph_to_IO(node1)
 !
       call output_node_sph_geometry
       close(input_file_code)

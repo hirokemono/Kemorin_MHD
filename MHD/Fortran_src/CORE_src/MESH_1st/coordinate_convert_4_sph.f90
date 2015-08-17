@@ -54,7 +54,7 @@
         else if(numdir .eq. 3) then
           call overwrite_sph_vect_2_xyz_smp                             &
      &       (np_smp, node1%numnod, node1%istack_nod_smp,               &
-     &        d_nod(1,i_fld), node1%theta, longitude)
+     &        d_nod(1,i_fld), node1%theta, node1%phi)
         end if
       end do
 !$omp end parallel
@@ -84,7 +84,7 @@
         else if(numdir .eq. 3) then
           call overwrite_cyl_vect_2_xyz_smp                             &
      &       (np_smp, node1%numnod, node1%istack_nod_smp,               &
-     &        d_nod(1,i_fld), longitude)
+     &        d_nod(1,i_fld), node1%phi)
         end if
       end do
 !$omp end parallel
