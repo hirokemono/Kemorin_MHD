@@ -3,7 +3,6 @@
 !
 !     Written by H. Matsui on Aug., 2006
 !
-!      subroutine copy_node_geometry_to_IO
 !      subroutine copy_node_geom_sph_to_IO
 !      subroutine copy_node_geom_cyl_to_IO
 !
@@ -24,19 +23,6 @@
 !------------------------------------------------------------------
 !
        contains
-!
-!------------------------------------------------------------------
-!
-      subroutine copy_node_geometry_to_IO
-!
-      use set_node_types_4_IO
-!
-      integer(kind = kint) :: inod
-!
-!
-      call copy_node_type_to_IO(node1)
-!
-      end subroutine copy_node_geometry_to_IO
 !
 !------------------------------------------------------------------
 !

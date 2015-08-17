@@ -19,11 +19,8 @@
 !!      subroutine deallocate_numsurf_stack
 !!      subroutine deallocate_numedge_stack
 !!
-!!      subroutine allocate_geometry_data
 !!      subroutine allocate_node_geometry
-!!      subroutine allocate_element_connection
 !!      subroutine deallocate_node_geometry
-!!      subroutine deallocate_element_connection
 !!
 !!      subroutine allocate_element_geometry
 !!
@@ -179,7 +176,7 @@
 !>     element type id   (where i:element id)
 !      integer(kind=kint), allocatable, target  ::  elmtyp(:)
 !>     element type id   (where i:element id)
-      integer(kind=kint), allocatable, target  ::  nodelm(:)
+!      integer(kind=kint), allocatable, target  ::  nodelm(:)
 !>     global node    id (where i:node id)
 !      integer(kind=kint_gl), pointer  ::  inod_global(:)
 !>     global element id (where i:element id)
@@ -244,18 +241,6 @@
       contains
 !
 !------------------------------------------------------------------
-!
-      subroutine allocate_geometry_data
-!
-!
-      call allocate_node_geometry
-      call allocate_element_connection
-      call allocate_element_geometry
-!
-      end subroutine allocate_geometry_data
-!
-! ------------------------------------------------------
-! ------------------------------------------------------
 !
       subroutine allocate_numnod_stack(nprocs)
 !
@@ -374,18 +359,6 @@
       end subroutine allocate_node_geometry
 !
 ! ------------------------------------------------------
-!
-      subroutine allocate_element_connection
-!
-!
-!      allocate(iele_global(ele1%numele))
-!      allocate(elmtyp(ele1%numele))
-      allocate(nodelm(ele1%numele))
-!      allocate(ie(ele1%numele,ele1%nnod_4_ele))
-!
-      end subroutine allocate_element_connection
-!
-! ------------------------------------------------------
 ! ------------------------------------------------------
 !
       subroutine deallocate_node_geometry
@@ -398,14 +371,6 @@
       deallocate(colatitude)
 !
       end subroutine deallocate_node_geometry
-!
-! ------------------------------------------------------
-!
-      subroutine deallocate_element_connection
-!
-      deallocate(nodelm)
-!
-      end subroutine deallocate_element_connection
 !
 ! ------------------------------------------------------
 ! ------------------------------------------------------

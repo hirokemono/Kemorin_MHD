@@ -161,7 +161,6 @@
      &    ele1%nnod_4_ele, surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
       call allocate_ele_connect_type(ele1)
-      call allocate_element_connection
 !
 !$omp parallel private(k1)
       do k1 = 1, ele1%nnod_4_ele
@@ -181,7 +180,6 @@
 !$omp end do
 !$omp end parallel
 !
-      nodelm = ele1%nodelm
       call deallocate_ele_connect_type(ele)
 !
       end subroutine copy_element_connect_from_type

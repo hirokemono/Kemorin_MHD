@@ -142,7 +142,7 @@
       call deallocate_surface_connect
       call deallocate_element_geometry
 !
-      call deallocate_element_connection
+      call deallocate_ele_connect_type(ele1)
       call deallocate_node_geometry
       call deallocate_type_comm_tbl(nod_comm)
 !
@@ -172,7 +172,7 @@
 !
       call deallocate_element_geometry
 !
-      call deallocate_element_connection
+      call deallocate_ele_connect_type(ele1)
       call deallocate_node_geometry
       call deallocate_type_comm_tbl(nod_comm)
 !

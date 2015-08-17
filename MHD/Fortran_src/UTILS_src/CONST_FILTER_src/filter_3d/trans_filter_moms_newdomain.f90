@@ -321,7 +321,7 @@
           end if
         end if
 !
-        call deallocate_element_connection
+        call deallocate_ele_connect_type(ele1)
       end do
 !
       end subroutine const_filter_moms_newdomain

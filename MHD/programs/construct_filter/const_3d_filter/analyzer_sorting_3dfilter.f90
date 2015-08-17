@@ -105,7 +105,7 @@
         call s_sorting_by_filtering_area
 !
         call deallocate_num_near_all_w
-        call deallocate_element_connection
+        call deallocate_ele_connect_type(ele1)
 !
 !  ---------------------------------------------------
 !       output filter moment
