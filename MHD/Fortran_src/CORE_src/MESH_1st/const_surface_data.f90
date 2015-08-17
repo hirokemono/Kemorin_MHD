@@ -107,8 +107,6 @@
      &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash,                    &
      &    surf1%ie_surf, isf_4_ele)
 !
-      ie_surf = surf1%ie_surf
-!
       if (iflag_debug.eq.1)  write(*,*) 'set_surf_rotation_flag'
       call set_surf_rotation_flag                                       &
      &   (ele1%numele, surf1%numsurf, ele1%nnod_4_ele,                  &

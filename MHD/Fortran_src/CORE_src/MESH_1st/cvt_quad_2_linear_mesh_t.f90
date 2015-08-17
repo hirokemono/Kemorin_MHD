@@ -263,8 +263,8 @@
 !
 !
       call set_fields_on_surf(node1%numnod, surf1%numsurf, ele1%numele, &
-     &    ele1%ie, ie_surf, nod_fld_l%ntot_phys, mesh_l%node%numnod,    &
-     &    nod_fld_l%d_fld)
+     &    ele1%ie, surf1%ie_surf, nod_fld_l%ntot_phys,                  &
+     &    mesh_l%node%numnod, nod_fld_l%d_fld)
 !
       end subroutine generate_phys_on_surf_t
 !
