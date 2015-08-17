@@ -249,8 +249,8 @@
         if(ele_org%iele_global(i) .ne. ele1%iele_global(i))             &
      &       write(*,*) 'iele_global(i)', my_rank, i,                   &
      &       ele_org%iele_global(i), ele1%iele_global(i)
-        if(ele_org%elmtyp(i) .ne. elmtyp(i)) write(*,*) 'elmtyp(i)',    &
-     &       my_rank, i, ele_org%elmtyp(i), elmtyp(i)
+        if(ele_org%elmtyp(i) .ne. ele1%elmtyp(i)) write(*,*)            &
+     &       'elmtyp(i)', my_rank, i, ele_org%elmtyp(i), ele1%elmtyp(i)
         if(ele_org%nodelm(i) .ne. nodelm(i)) write(*,*) 'nodelm(i)',    &
      &       my_rank, i, ele_org%nodelm(i), nodelm(i)
         if(iflag .gt. 0) then

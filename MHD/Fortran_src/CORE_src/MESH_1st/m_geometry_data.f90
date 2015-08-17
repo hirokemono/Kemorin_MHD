@@ -383,7 +383,6 @@
       allocate(nodelm(ele1%numele))
 !      allocate(ie(ele1%numele,ele1%nnod_4_ele))
 !
-      elmtyp = 0
       nodelm = 0
 !
       end subroutine allocate_element_connection
@@ -406,7 +405,6 @@
 !
       subroutine deallocate_element_connection
 !
-!      deallocate(iele_global)
       deallocate(elmtyp)
       deallocate(nodelm)
 !

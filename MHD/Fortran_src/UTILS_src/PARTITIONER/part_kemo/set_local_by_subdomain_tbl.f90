@@ -67,7 +67,7 @@
         iele = iele_4_subdomain(inum+ist)
         new_ele%iele_global(inum) = iele
         new_ele%nodelm(inum) = nodelm(iele)
-        new_ele%elmtyp(inum) = elmtyp(iele)
+        new_ele%elmtyp(inum) = ele1%elmtyp(iele)
 !
         iele_local_part(iele)= inum 
       end do

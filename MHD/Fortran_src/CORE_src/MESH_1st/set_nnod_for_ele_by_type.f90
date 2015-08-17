@@ -72,7 +72,7 @@
 !
 !
       call set_nnod_for_ele_by_eletype                                  &
-     &   (ele1%numele, elmtyp, nodelm, ierr)
+     &   (ele1%numele, ele1%elmtyp, nodelm, ierr)
       call check_wrong_element_list(node1%numnod,                       &
      &    ele1%numele, ele1%nnod_4_ele, nodelm, ele1%ie, ierr)
 !

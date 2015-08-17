@@ -88,7 +88,7 @@
          if ( isig .ne. 0 ) then
            icou = icou + 1
            new_ele%iele_global(icou) = icou
-           new_ele%elmtyp(icou) = elmtyp(iele)
+           new_ele%elmtyp(icou) = ele1%elmtyp(iele)
            new_ele%nodelm(icou) = nodelm(iele)
            do i = 1, nodelm(iele)
              inod = ele1%ie(iele,i)
