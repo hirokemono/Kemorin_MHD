@@ -89,7 +89,7 @@
      &    node1%xx, node1%rr, node1%a_r, node1%ss, node1%a_s,           &
      &    ele1%iele_global, e_multi, surf1%ie_surf,                     &
      &    surf1%isf_4_ele, iele_4_surf,                                 &
-     &    x_surf, vnorm_surf, area_surf, interior_surf,                 &
+     &    x_surf, vnorm_surf, area_surf, surf1%interior_surf,           &
      &    ele_grp1, ele_4_nod1, num_nod_phys, num_tot_nod_phys,         &
      &    istack_nod_component, d_nod, nod_comm)
 !

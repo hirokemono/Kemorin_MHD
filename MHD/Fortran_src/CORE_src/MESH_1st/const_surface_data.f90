@@ -112,7 +112,6 @@
      &   (ele1%numele, surf1%numsurf, ele1%nnod_4_ele,                  &
      &    surf1%nnod_4_surf, ele1%ie, surf1%ie_surf,                    &
      &    surf1%isf_4_ele, surf1%isf_rot_ele)
-      isf_rot_ele = surf1%isf_rot_ele
 !
       end subroutine const_all_surface_data
 !

@@ -175,7 +175,7 @@
 !
       call set_internal_list_4_linear_20                                &
      &   (node1%numnod, node1%internal_node, ele1%numele,               &
-     &    surf1%numsurf, interior_ele, interior_surf,                   &
+     &    surf1%numsurf, interior_ele, surf1%interior_surf,             &
      &    mesh_l%node%numnod, mesh_l%ele%numele, surf_l%numsurf,        &
      &    edge_l%numedge, mesh_l%ele%ie, surf_l%ie_surf,                &
      &    edge_l%ie_edge, mesh_l%ele%interior_ele,                      &

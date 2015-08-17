@@ -116,7 +116,7 @@
 !
       surf%ie_surf =>       surf1%ie_surf
       surf%isf_4_ele =>     surf1%isf_4_ele
-      surf%interior_surf => interior_surf
+      surf%interior_surf => surf1%interior_surf
 !
       surf%istack_surf_smp => surf1%istack_surf_smp
       surf%max_surf_smp =     surf1%max_surf_smp
