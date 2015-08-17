@@ -141,7 +141,7 @@
       call deallocate_edge_4_ele_type(edge1)
       call deallocate_edge_connect_type(edge1)
       call deallocate_surface_connect_type(surf1)
-!      call dealloc_ele_4_surf_type(surf1)
+      call dealloc_ele_4_surf_type(surf1)
       call deallocate_element_geometry
 !
       call deallocate_ele_connect_type(ele1)
@@ -219,7 +219,6 @@
       subroutine set_nod_and_ele_infos
 !
       use m_geometry_data
-      use set_size_4_smp
       use set_size_4_smp_types
       use cal_mesh_position
       use cal_mesh_position_type
@@ -233,8 +232,8 @@
        if (iflag_debug.gt.0) write(*,*) 'set_center_of_element'
       call set_center_of_element
 !
-       if (iflag_debug.gt.0) write(*,*) 'count_overlap_element'
-      call count_overlap_element
+       if (iflag_debug.gt.0) write(*,*) 'count_overlap_ele_type'
+      call count_overlap_ele_type(node1, ele1)
 !
       end subroutine set_nod_and_ele_infos
 !
@@ -245,7 +244,6 @@
       use m_geometry_data
       use const_surface_data
       use const_edge_data
-      use set_size_4_smp
       use set_size_4_smp_types
 !
       integer(kind = kint), intent(in) :: my_rank

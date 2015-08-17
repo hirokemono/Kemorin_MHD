@@ -68,7 +68,7 @@
 !
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
-!  surf1%iele_4_surf
+!  surf1%numsurf_ext
 !
 !>     Structure for edge data
       type(edge_data), save :: edge1
@@ -150,7 +150,7 @@
       integer(kind=kint), allocatable, target :: isurf_4_edge(:,:)
 !
 !>     number of external surface
-      integer(kind=kint) ::  numsurf_ext
+!      integer(kind=kint) ::  numsurf_ext
 !>     number of isolated surface
       integer(kind=kint) ::  numsurf_iso
 !>     external surface list
@@ -186,7 +186,7 @@
 !      real(kind=kreal)  , pointer  :: a_s_cylinder(:)
 !
 !>  integer flag for interior element 1...interior, 0...exterior
-      integer(kind = kint), allocatable, target :: interior_ele(:)
+!      integer(kind = kint), allocatable, target :: interior_ele(:)
 !>  double flag for interior element  1.0...interior, 0.0...exterior
 !      real(kind=kreal)  , allocatable, target  :: e_multi(:)
 !
@@ -335,12 +335,8 @@
         allocate(s_ele(ele1%numele))
         allocate(as_ele(ele1%numele))
 !
-        allocate ( interior_ele(ele1%numele) )
-!
         allocate( volume_ele (ele1%numele))
         allocate( a_vol_ele (ele1%numele))
-!
-       interior_ele = 1
 !
        x_ele = 0.0d0
 !
@@ -370,8 +366,6 @@
         deallocate(theta_ele)
         deallocate(s_ele)
         deallocate(as_ele)
-!
-        deallocate ( interior_ele )
 !
         deallocate( volume_ele )
         deallocate( a_vol_ele )
@@ -449,7 +443,7 @@
 !
       subroutine allocate_ext_surface
 !
-      allocate( isf_external(numsurf_ext) )
+      allocate( isf_external(surf1%numsurf_ext) )
       isf_external = 0
 !
       end subroutine allocate_ext_surface

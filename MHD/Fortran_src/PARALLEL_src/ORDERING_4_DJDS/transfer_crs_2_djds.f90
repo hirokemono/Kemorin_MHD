@@ -34,7 +34,6 @@
       use m_crs_connect
       use m_nod_comm_table
       use m_solver_djds
-      use set_size_4_smp
       use set_size_4_smp_types
       use copy_matrix_2_djds_array
       use DJDS_const_solver_list

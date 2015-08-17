@@ -156,10 +156,10 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      write(50+my_rank,*) 'numsurf_ext', numsurf_ext
+      write(50+my_rank,*) 'numsurf_ext', surf1%numsurf_ext
 !
       write(50+my_rank,*) 'isf_external'
-      write(50+my_rank,'(8i16)') isf_external(1:numsurf_ext)
+      write(50+my_rank,'(8i16)') isf_external(1:surf1%numsurf_ext)
 !
       end subroutine check_external_surface
 !
