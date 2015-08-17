@@ -52,7 +52,7 @@
       end if
 !
       globalelmid_dummy(1:edge1%numedge)                                &
-     &        = iedge_global(1:edge1%numedge)
+     &        = edge1%iedge_global(1:edge1%numedge)
       nodelm_dummy(1:edge1%numedge) = edge1%nnod_4_edge
       ie_dummy(1:edge1%numedge,1:edge1%nnod_4_edge)                     &
      &        = edge1%ie_edge(1:edge1%numedge,1:edge1%nnod_4_edge)
@@ -77,7 +77,7 @@
       call allocate_ele_scalar_IO
 !
       globalnodid_dummy(1:edge1%numedge)                                &
-     &      = iedge_global(1:edge1%numedge)
+     &      = edge1%iedge_global(1:edge1%numedge)
       xx_dummy(1:edge1%numedge,1:3) =  x_edge(1:edge1%numedge,1:3)
       ele_scalar_IO(1:edge1%numedge) = edge_length(1:edge1%numedge)
       ele_vector_IO(1:edge1%numedge,1:3)                                &
@@ -97,7 +97,7 @@
       call allocate_ele_scalar_IO
 !
       globalnodid_dummy(1:edge1%numedge)                                &
-     &       = iedge_global(1:edge1%numedge)
+     &       = edge1%iedge_global(1:edge1%numedge)
       xx_dummy(1:edge1%numedge,1) = r_edge(1:edge1%numedge)
       xx_dummy(1:edge1%numedge,2) = theta_edge(1:edge1%numedge)
       xx_dummy(1:edge1%numedge,3) = phi_edge(1:edge1%numedge)
@@ -119,7 +119,7 @@
       call allocate_ele_scalar_IO
 !
       globalnodid_dummy(1:edge1%numedge)                                &
-     &      = iedge_global(1:edge1%numedge)
+     &      = edge1%iedge_global(1:edge1%numedge)
       xx_dummy(1:edge1%numedge,1) = s_edge(1:edge1%numedge)
       xx_dummy(1:edge1%numedge,2) = phi_edge(1:edge1%numedge)
       xx_dummy(1:edge1%numedge,3) = x_edge(1:edge1%numedge,3)

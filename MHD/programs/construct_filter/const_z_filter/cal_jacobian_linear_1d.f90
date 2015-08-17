@@ -23,6 +23,7 @@
       use m_gauss_int_parameters
       use m_jacobians_4_edge
       use set_size_4_smp
+      use set_size_4_smp_types
       use set_integration_indices
       use set_gauss_int_parameters
       use cal_jacobian
@@ -31,8 +32,8 @@
 !
 !  data allocation
 !
-      call count_surf_size_4_smp
-      call count_edge_size_4_smp
+      call count_surf_size_smp_type(surf1)
+      call count_edge_size_smp_type(edge1)
 !
       call maximum_integration_points(num_int)
       call allocate_integrate_parameters

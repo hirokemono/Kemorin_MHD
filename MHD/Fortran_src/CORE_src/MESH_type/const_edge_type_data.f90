@@ -149,7 +149,7 @@
       call allocate_edge_connect_type(edge, surf%numsurf)
       call allocate_edge_4_ele_type(edge, ele%numele)
 !
-      if (iflag_debug.eq.1) write(*,*) 'count_overlap_edge'
+      if (iflag_debug.eq.1) write(*,*) 'allocate_edge_param_smp_type'
       call allocate_edge_param_smp_type(edge)
 !
       end subroutine empty_edge_connect_type

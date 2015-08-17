@@ -218,11 +218,12 @@
 !
       use m_geometry_data
       use set_size_4_smp
+      use set_size_4_smp_types
       use cal_mesh_position
       use cal_mesh_position_type
 !
 !
-      call count_size_4_sheard_para
+      call count_size_4_smp_mesh_type(node1, ele1)
 !
        if (iflag_debug.gt.0) write(*,*) 'set_spherical_position'
       call set_spherical_position_type(node1)
@@ -250,15 +251,15 @@
 !
 !
       read_surface = associated(surf1%isurf_global)
-      read_edge =    allocated(iedge_global)
+      read_edge =    associated(edge1%iedge_global)
 !
       if(read_surface .eqv. .false.) then
         if (iflag_debug.gt.0) write(*,*) 'construct_surface_data'
         call construct_surface_data
       end if
 !
-      call count_surf_size_4_smp
       if (iflag_debug.gt.0) write(*,*) 'count_overlap_surface'
+      call count_surf_size_smp_type(surf1)
       call count_overlap_surf_type(node1, surf1)
 !
       if(read_edge .eqv. .false.) then
@@ -267,8 +268,8 @@
       end if
 !
       if (iflag_debug.gt.0) write(*,*) 'count_overlap_edge'
-      call count_edge_size_4_smp
-      call count_overlap_edge
+      call count_edge_size_smp_type(edge1)
+      call count_overlap_edge_type(node1, edge1)
 !
       end subroutine set_edge_and_surf_data
 !

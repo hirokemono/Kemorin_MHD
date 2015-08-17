@@ -79,7 +79,7 @@
 !
 !>     Structure for edge data
       type(edge_data), save :: edge1
-!  edge1%interior_edge
+!  edge1%iedge_global
 !
 !>   Stack list of number of node
       integer(kind=kint_gl), allocatable, target  :: istack_numnod(:)
@@ -200,7 +200,7 @@
 !>  integer flag for interior surface 1...interior, 0...exterior
       integer(kind = kint), allocatable, target :: interior_surf(:)
 !>  integer flag for interior edge 1...interior, 0...exterior
-      integer(kind = kint), allocatable, target :: interior_edge(:)
+!      integer(kind = kint), allocatable, target :: interior_edge(:)
 !
 !
 !>   position of centre of element
@@ -394,9 +394,7 @@
 !      allocate( iedge_4_sf(surf1%numsurf,nedge_4_surf) )
 !      allocate( ie_edge(edge1%numedge,edge1%nnod_4_edge) )
       allocate( iedge_global(edge1%numedge) )
-      allocate( interior_edge(edge1%numedge) )
-!
-      iedge_global = 0
+!      allocate( interior_edge(edge1%numedge) )
 !
       end subroutine allocate_edge_connect
 !
@@ -474,7 +472,6 @@
       subroutine deallocate_edge_connect
 !
       deallocate( iedge_global )
-      deallocate( interior_edge )
 !
       end subroutine deallocate_edge_connect
 !

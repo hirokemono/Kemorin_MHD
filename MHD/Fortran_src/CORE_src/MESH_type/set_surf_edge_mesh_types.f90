@@ -79,7 +79,7 @@
      &      surf_mesh%surf, edge_mesh%edge)
       end if
 !
-      if (iflag_debug.eq.1) write(*,*) 'count_overlap_edge'
+      if (iflag_debug.eq.1) write(*,*) 'count_overlap_edge_type'
       call count_edge_size_smp_type(edge_mesh%edge)
       call count_overlap_edge_type(mesh%node, edge_mesh%edge)
 !

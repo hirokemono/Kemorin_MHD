@@ -35,6 +35,7 @@
       use m_nod_comm_table
       use m_solver_djds
       use set_size_4_smp
+      use set_size_4_smp_types
       use copy_matrix_2_djds_array
       use DJDS_const_solver_list
       use DJDS_new_comm_table
@@ -42,7 +43,7 @@
 !
       call copy_paramters_4_djds
 !
-      call set_smp_data_4_node
+      call count_node_4_smp_mesh_type(node1)
 !
 !C +-----------------+
 !C | DJDS reordering |

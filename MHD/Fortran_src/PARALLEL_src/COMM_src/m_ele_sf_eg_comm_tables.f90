@@ -154,7 +154,8 @@
      &   (edge1%internal_edge, istack_interedge)
 !
       call set_global_ele_id(txt, edge1%numedge, istack_interele,       &
-     &    edge1%interior_edge, edge_comm, iedge_global)
+     &    edge1%interior_edge, edge_comm, edge1%iedge_global)
+      iedge_global = edge1%iedge_global
 !
       end subroutine const_global_edge_id_1st
 !
