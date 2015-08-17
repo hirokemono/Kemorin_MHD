@@ -26,12 +26,10 @@
       subroutine set_spherical_position
 !
       use m_geometry_data
-      use coordinate_converter
+      use cal_mesh_position_type
 !
-       call position_2_sph(node1%numnod, node1%xx,                      &
-     &     node1%rr, node1%theta, node1%phi,                            &
-     &     node1%a_r, node1%ss, a_s_cylinder)
-      a_radius = node1%a_r
+      call set_spherical_position_type(node1)
+      a_s_cylinder = node1%a_s
 !
       end subroutine set_spherical_position
 !

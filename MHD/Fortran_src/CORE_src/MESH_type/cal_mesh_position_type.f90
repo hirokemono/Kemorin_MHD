@@ -35,8 +35,8 @@
       type(node_data), intent(inout) :: nod
 !
 !
-       call position_2_sph( nod%numnod, nod%xx, nod%rr, nod%theta,      &
-     &     nod%phi, nod%a_r, nod%ss, nod%a_s)
+       call position_2_sph(nod%numnod, nod%xx,                          &
+     &     nod%rr, nod%theta, nod%phi, nod%a_r, nod%ss, nod%a_s)
 !
       end subroutine set_spherical_position_type
 !

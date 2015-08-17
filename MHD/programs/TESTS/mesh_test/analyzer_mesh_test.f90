@@ -184,7 +184,7 @@
 !
       num_neib_domain_IO = 0
       call allocate_neib_domain_IO
-      call copy_node_geom_cyl_to_IO
+      call copy_node_type_cyl_to_IO(node1)
 !
       call output_node_cyl_geometry
       close(input_file_code)

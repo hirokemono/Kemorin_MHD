@@ -74,7 +74,7 @@
 !
 !>  structure for node data (position)
       type(node_data), save :: node1
-!    node1%a_r
+!    node1%a_s
 !
 !>  structure for element data (position and connectivity)
       type(element_data), save :: ele1
@@ -189,7 +189,7 @@
 !>   distance from the center
 !      real(kind=kreal)  , pointer  :: radius(:)
 !>   1/radius
-      real(kind=kreal)  , pointer  :: a_radius(:)
+!      real(kind=kreal)  , pointer  :: a_radius(:)
 !>   longitude of node
 !      real(kind=kreal)  , pointer  :: longitude(:)
 !>   colatitude of node
@@ -343,13 +343,11 @@
 !      allocate(xx(node1%numnod,3))
 !
 !      allocate(radius(node1%numnod))
-      allocate(a_radius(node1%numnod))
+!      allocate(a_radius(node1%numnod))
 !      allocate(s_cylinder(node1%numnod))
       allocate(a_s_cylinder(node1%numnod))
 !      allocate(longitude(node1%numnod))
 !      allocate(colatitude(node1%numnod))
-!
-      a_s_cylinder = 0.0d00
 !
       end subroutine allocate_node_geometry
 !
@@ -358,7 +356,6 @@
 !
       subroutine deallocate_node_geometry
 !
-      deallocate(a_radius)
       deallocate(a_s_cylinder)
 !
       end subroutine deallocate_node_geometry
