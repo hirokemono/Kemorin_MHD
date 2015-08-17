@@ -42,7 +42,7 @@
      &       i_field, i_res, coef)
        else if (i_grav .eq. iflag_radial_g) then
          call radial_g_2_each_node                                      &
-     &      (node1%numnod, node1%istack_nod_smp, node1%xx, a_radius,    &
+     &      (node1%numnod, node1%istack_nod_smp, node1%xx, node1%a_r,   &
      &       i_field, i_res, coef)
        else if (i_grav .eq. iflag_self_r_g) then
          call self_g_2_each_node                                        &
@@ -68,7 +68,7 @@
      &       i_f1, i_f2, i_res, c1, c2)
        else if(i_grav .eq. iflag_radial_g) then
          call radial_double_g_2_each_node                               &
-     &      (node1%numnod, node1%istack_nod_smp, node1%xx, a_radius,    &
+     &      (node1%numnod, node1%istack_nod_smp, node1%xx, node1%a_r,   &
      &       i_f1, i_f2, i_res, c1, c2)
        else if(i_grav .eq. iflag_self_r_g) then
          call self_double_g_2_each_node                                 &

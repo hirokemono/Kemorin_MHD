@@ -61,7 +61,7 @@
       node_new%xx =>  node1%xx
 !
       node_new%rr =>    node1%rr
-      node_new%a_r =>   a_radius
+      node_new%a_r =>   node1%a_r
       node_new%theta => node1%theta
       node_new%phi =>   node1%phi
       node_new%ss =>    node1%ss

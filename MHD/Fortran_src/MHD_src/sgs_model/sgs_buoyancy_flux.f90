@@ -37,7 +37,7 @@
      &      grav, coef, i_sgs, i_flux)
       else if (i_grav .eq. iflag_radial_g) then
         call cal_SGS_gravity_flux_radial                                &
-     &     (node1%numnod, node1%istack_nod_smp, node1%xx, a_radius,     &
+     &     (node1%numnod, node1%istack_nod_smp, node1%xx, node1%a_r,    &
      &      coef, i_sgs, i_flux)
       else if (i_grav .eq. iflag_self_r_g) then
         call cal_SGS_gravity_flux_self                                  &

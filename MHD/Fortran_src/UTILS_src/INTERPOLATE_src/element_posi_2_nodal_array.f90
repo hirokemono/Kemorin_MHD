@@ -45,7 +45,7 @@
         node1%xx(inod,3) =       x_ele(inod,3)
 !
         node1%rr(inod) =       r_ele(inod)
-        a_radius(inod) =     ar_ele(inod)
+        node1%a_r(inod) =     ar_ele(inod)
         node1%ss(inod) =     s_ele(inod)
         a_s_cylinder(inod) = as_ele(inod)
         node1%phi(inod) =    phi_ele(inod)

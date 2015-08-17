@@ -173,7 +173,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp                                           &
-     &   (node1%numnod, node1%xx, node1%rr, a_radius)
+     &   (node1%numnod, node1%xx, node1%rr, node1%a_r)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property

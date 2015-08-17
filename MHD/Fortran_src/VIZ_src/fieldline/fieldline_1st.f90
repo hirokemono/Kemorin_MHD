@@ -86,7 +86,7 @@
       call field_line_main                                              &
      &   (istep_psf, node1%numnod, ele1%numele, surf1%numsurf,          &
      &    surf1%nnod_4_surf, node1%istack_nod_smp, node1%inod_global,   &
-     &    node1%xx, node1%rr, a_radius, node1%ss, a_s_cylinder,         &
+     &    node1%xx, node1%rr, node1%a_r, node1%ss, a_s_cylinder,        &
      &    ele1%iele_global, e_multi, surf1%ie_surf,                     &
      &    isf_4_ele, iele_4_surf,                                       &
      &    x_surf, vnorm_surf, area_surf, interior_surf,                 &

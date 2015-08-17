@@ -47,7 +47,7 @@
       else if (i_grav .eq. iflag_radial_g) then
         call radial_gvec_each_element(node1%numnod, ele1%numele,        &
      &      ele1%nnod_4_ele, ele1%ie, np_smp, ele1%istack_ele_smp,      &
-     &      node1%xx, a_radius, k2, i_field, num_tot_nod_phys,          &
+     &      node1%xx, node1%a_r, k2, i_field, num_tot_nod_phys,         &
      &      d_nod, ak_buo, vect_e)
       else if (i_grav .eq. iflag_self_r_g) then
         call self_gvec_each_element(node1%numnod, ele1%numele,          &
@@ -79,7 +79,7 @@
       else if (i_grav .eq. iflag_radial_g) then
         call radial_double_gvec_each_element(node1%numnod, ele1%numele, &
      &      ele1%nnod_4_ele, ele1%ie, np_smp, ele1%istack_ele_smp,      &
-     &      node1%xx, a_radius, k2, i_src1, i_src2, num_tot_nod_phys,   &
+     &      node1%xx, node1%a_r, k2, i_src1, i_src2, num_tot_nod_phys,  &
      &      d_nod, ak_buo1, ak_buo2, vect_e)
       else if (i_grav .eq. iflag_self_r_g) then
         call self_double_gvec_each_element(node1%numnod, ele1%numele,   &
@@ -111,7 +111,7 @@
       else if (i_grav .eq. iflag_radial_g) then
         call radial_g_each_element(node1%numnod, ele1%numele,           &
      &      ele1%nnod_4_ele, ele1%ie, np_smp, ele1%istack_ele_smp,      &
-     &      node1%xx, a_radius, nd, k2, i_field, num_tot_nod_phys,      &
+     &      node1%xx, node1%a_r, nd, k2, i_field, num_tot_nod_phys,     &
      &      d_nod, ak_buo, buo_e)
       else if (i_grav .eq. iflag_self_r_g) then
         call self_g_each_element(node1%numnod, ele1%numele,             &
@@ -144,7 +144,7 @@
       else if (i_grav .eq. iflag_radial_g) then
         call radial_double_g_each_element                               &
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
-     &      np_smp, ele1%istack_ele_smp, node1%xx, a_radius, nd, k2,    &
+     &      np_smp, ele1%istack_ele_smp, node1%xx, node1%a_r, nd, k2,   &
      &      i_src1, i_src2, num_tot_nod_phys, d_nod, ak_buo1, ak_buo2,  &
      &      buo_e)
       else if (i_grav .eq. iflag_self_r_g) then

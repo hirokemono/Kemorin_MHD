@@ -30,8 +30,8 @@
 !
        call position_2_sph(node1%numnod, node1%xx,                      &
      &     node1%rr, node1%theta, node1%phi,                            &
-     &     a_radius, node1%ss, a_s_cylinder)
-      s_cylinder = node1%ss
+     &     node1%a_r, node1%ss, a_s_cylinder)
+      a_radius = node1%a_r
 !
       end subroutine set_spherical_position
 !

@@ -45,7 +45,7 @@
 !
       call position_2_each_surf_grp(np_smp, node1%numnod, ele1%numele,  &
      &    ele1%nnod_4_ele, surf1%nnod_4_surf, surf1%node_on_sf,         &
-     &    ele1%ie, node1%xx, a_radius,                                  &
+     &    ele1%ie, node1%xx, node1%a_r,                                 &
      &    sf_grp%num_grp, sf_grp%num_item, sf_grp%istack_grp,           &
      &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &
      &    sf_grp%istack_grp_smp, xe_sf)

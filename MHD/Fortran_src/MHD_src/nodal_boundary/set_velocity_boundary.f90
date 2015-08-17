@@ -73,7 +73,7 @@
 !
 !
       if (num_bc_vr0_nod .gt. 0) then
-        call del_radial_velocity(node1%numnod, node1%xx, a_radius,      &
+        call del_radial_velocity(node1%numnod, node1%xx, node1%a_r,     &
      &      iphys%i_velo)
       end if
 !

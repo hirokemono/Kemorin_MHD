@@ -65,7 +65,7 @@
           ibc_magne(inod,nd) = 1
           ibc2_magne(inod,nd) = 1
           bc_b_id_apt(l_f(nd),nd) = bmag * node1%xx(inod,1)             &
-     &                                   * a_radius(inod)
+     &                                   * node1%a_r(inod)
           d_nod(inod,i_comp) = bc_b_id_apt(l_f(nd),nd)
         end do
       end do
