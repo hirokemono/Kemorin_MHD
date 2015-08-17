@@ -21,8 +21,6 @@
 !!
 !!      subroutine allocate_element_geometry
 !!
-!!      subroutine allocate_surface_connect
-!!
 !!      subroutine allocate_edge_connect
 !!      subroutine allocate_edge_4_ele
 !!
@@ -31,8 +29,6 @@
 !!      subroutine allocate_ele_4_edge_item
 !!      subroutine allocate_surf_4_edge_num
 !!      subroutine allocate_surf_4_edge_item
-!!
-!!      subroutine deallocate_surface_connect
 !!
 !!      subroutine deallocate_edge_connect
 !!      subroutine deallocate_edge_4_ele
@@ -179,7 +175,7 @@
 !>     global element id (where i:element id)
 !      integer(kind=kint_gl), allocatable, target  ::  iele_global(:)
 !>     global surface id (where i:surface id)
-      integer(kind=kint_gl), allocatable, target  ::  isurf_global(:)
+!      integer(kind=kint_gl), allocatable, target  ::  isurf_global(:)
 !>     global edge id (where i:edge id)
       integer(kind=kint_gl), allocatable, target  ::  iedge_global(:)
 !
@@ -389,22 +385,6 @@
 !
 ! ------------------------------------------------------
 !
-      subroutine allocate_surface_connect
-!
-      use m_geometry_constants
-!
-      call allocate_surface_connect_type(surf1, ele1%numele)
-!
-!      allocate( isf_4_ele(ele1%numele,nsurf_4_ele) )
-!      allocate( isf_rot_ele(ele1%numele,nsurf_4_ele) )
-!      allocate( ie_surf(surf1%numsurf,surf1%nnod_4_surf) )
-      allocate( isurf_global(surf1%numsurf) )
-!      allocate( interior_surf(surf1%numsurf) )
-!
-      end subroutine allocate_surface_connect
-!
-! ------------------------------------------------------
-!
       subroutine allocate_edge_connect
 !
       use m_geometry_constants
@@ -491,16 +471,6 @@
       end subroutine allocate_surf_4_edge_item
 !
 ! ------------------------------------------------------
-! ------------------------------------------------------
-!
-      subroutine deallocate_surface_connect
-!
-      call deallocate_surface_connect_type(surf1)
-!
-      deallocate( isurf_global )
-!
-      end subroutine deallocate_surface_connect
-!
 ! ------------------------------------------------------
 !
       subroutine deallocate_edge_connect

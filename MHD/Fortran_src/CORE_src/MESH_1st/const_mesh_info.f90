@@ -139,7 +139,7 @@
 !
       call deallocate_edge_4_ele
       call deallocate_edge_connect
-      call deallocate_surface_connect
+      call deallocate_surface_connect_type(surf1)
       call deallocate_element_geometry
 !
       call deallocate_ele_connect_type(ele1)

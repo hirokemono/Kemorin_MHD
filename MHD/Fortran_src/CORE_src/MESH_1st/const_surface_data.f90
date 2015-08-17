@@ -98,7 +98,7 @@
       call count_all_surfaces                                           &
      &   (ele1%numele, sf_ele_tbl%iflag_hash, surf1%numsurf)
 !
-      call allocate_surface_connect
+      call allocate_surface_connect_type(surf1, ele1%numele)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_all_surfaces'
       call set_all_surfaces                                             &

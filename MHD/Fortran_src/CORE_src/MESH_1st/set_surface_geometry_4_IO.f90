@@ -3,12 +3,10 @@
 !
 !     Written by H. Matsui on Aug., 2006
 !
-!      subroutine copy_surf_connect_to_IO
 !      subroutine copy_surf_geometry_to_IO
 !      subroutine copy_surf_geometry_to_IO_sph
 !      subroutine copy_surf_geometry_to_IO_cyl
 !
-!      subroutine copy_surf_connect_from_IO
 !      subroutine copy_surf_geometry_from_IO
 !      subroutine copy_surf_geometry_from_IO_sph
 !      subroutine copy_surf_geometry_from_IO_cyl
@@ -27,43 +25,6 @@
 !------------------------------------------------------------------
 !
        contains
-!
-!------------------------------------------------------------------
-!
-      subroutine copy_surf_connect_to_IO
-!
-      use m_geometry_constants
-!
-!
-      numele_dummy =        surf1%numsurf
-      nnod_4_ele_dummy =    surf1%nnod_4_surf
-!
-      nsf_4_ele_IO = ele1%numele
-      nsurf_in_ele_IO = nsurf_4_ele
-!
-      call allocate_ele_info_dummy
-      call allocate_connect_dummy
-!
-      call allocate_surface_connect_IO
-!
-      if      (surf1%nnod_4_surf .eq. 4) then
-        i_ele_dummy(1:surf1%numsurf) = 221
-      else if (surf1%nnod_4_surf .eq. 8) then
-        i_ele_dummy(1:surf1%numsurf) = 222
-      else if (surf1%nnod_4_surf .eq. 9) then
-        i_ele_dummy(1:surf1%numsurf) = 223
-      end if
-!
-      nodelm_dummy(1:surf1%numsurf) = surf1%nnod_4_surf
-      globalelmid_dummy(1:surf1%numsurf)                                &
-     &        = surf1%isurf_global(1:surf1%numsurf)
-      ie_dummy(1:surf1%numsurf,1:surf1%nnod_4_surf)                     &
-     &        = surf1%ie_surf(1:surf1%numsurf,1:surf1%nnod_4_surf)
-!
-      isf_4_ele_IO(1:ele1%numele,1:nsurf_4_ele)                         &
-     &        = surf1%isf_4_ele(1:ele1%numele,1:nsurf_4_ele)
-!
-      end subroutine copy_surf_connect_to_IO
 !
 !------------------------------------------------------------------
 !
@@ -132,32 +93,6 @@
      &      = vnorm_surf_cyl(1:surf1%numsurf,1:3)
 !
       end subroutine copy_surf_geometry_to_IO_cyl
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine copy_surf_connect_from_IO
-!
-      use m_geometry_constants
-!
-!
-      surf1%numsurf = numele_dummy
-!
-      call allocate_surface_connect
-!
-      surf1%isurf_global(1:surf1%numsurf)                               &
-     &        = globalelmid_dummy(1:surf1%numsurf)
-      surf1%ie_surf(1:surf1%numsurf,1:surf1%nnod_4_surf)                &
-     &        = ie_dummy(1:surf1%numsurf,1:surf1%nnod_4_surf)
-!
-      surf1%isf_4_ele(1:ele1%numele,1:nsurf_4_ele)                      &
-     &        = isf_4_ele_IO(1:ele1%numele,1:nsurf_4_ele)
-!
-      isurf_global = surf1%isurf_global
-      call deallocate_surface_connect_IO
-      call deallocate_ele_info_dummy
-!
-      end subroutine copy_surf_connect_from_IO
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------

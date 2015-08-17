@@ -30,6 +30,7 @@
       use cal_jacobian
 !
       use set_node_types_4_IO
+      use set_surface_geom_type_IO
       use set_element_geometry_4_IO
       use set_surface_geometry_4_IO
       use set_edge_geometry_4_IO
@@ -205,7 +206,7 @@
       mesh_surf_file_head = mesh_def_surf_head
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO'
       call copy_comm_tbl_type_to_IO(my_rank, surf_comm)
-      call copy_surf_connect_to_IO
+      call copy_surf_conn_type_to_IO(surf1, ele1%numele)
       call copy_surf_geometry_to_IO
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_output_surface_file'

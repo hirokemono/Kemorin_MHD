@@ -58,17 +58,20 @@
         i_ele_dummy(1:surf%numsurf) = 223
       end if
 !
-      do isurf = 1, surf%numsurf
-        nodelm_dummy(isurf) =      surf%nnod_4_surf
-        globalelmid_dummy(isurf) = surf%isurf_global(isurf)
-        ie_dummy(isurf,1:surf%nnod_4_surf)                              &
-     &        = surf%ie_surf(isurf,1:surf%nnod_4_surf)
-      end do
+!$omp workshare
+      nodelm_dummy(1:surf%numsurf) = surf%nnod_4_surf
+      globalelmid_dummy(1:surf%numsurf)                                 &
+     &        = surf%isurf_global(1:surf%numsurf)
+!$omp end workshare
+!$omp workshare
+      ie_dummy(1:surf%numsurf,1:surf%nnod_4_surf)                       &
+     &        = surf%ie_surf(1:surf%numsurf,1:surf%nnod_4_surf)
+!$omp end workshare
 !
-      do iele = 1, nele
-        isf_4_ele_IO(iele,1:nsurf_4_ele)                                &
-     &        = surf%isf_4_ele(iele,1:nsurf_4_ele)
-      end do
+!$omp workshare
+      isf_4_ele_IO(1:nele,1:nsurf_4_ele)                                &
+     &        = surf%isf_4_ele(1:nele,1:nsurf_4_ele)
+!$omp end workshare
 !
       end subroutine copy_surf_conn_type_to_IO
 !
@@ -168,23 +171,25 @@
 !
       integer(kind = kint), intent(in) :: nele
       type(surface_data), intent(inout) :: surf
-      integer(kind = kint) :: isurf, iele
 !
 !
       surf%numsurf = numele_dummy
 !
       call allocate_surface_connect_type(surf, nele)
 !
-      do isurf = 1, surf%numsurf
-        surf%isurf_global(isurf) = globalelmid_dummy(isurf)
-        surf%ie_surf(isurf,1:surf%nnod_4_surf)                          &
-     &          = ie_dummy(isurf,1:surf%nnod_4_surf)
-      end do
+!$omp workshare
+      surf%isurf_global(1:surf%numsurf)                                 &
+     &        = globalelmid_dummy(1:surf%numsurf)
+!$omp end workshare
+!$omp workshare
+      surf%ie_surf(1:surf%numsurf,1:surf%nnod_4_surf)                   &
+     &        = ie_dummy(1:surf%numsurf,1:surf%nnod_4_surf)
+!$omp end workshare
 !
-      do iele = 1, nele
-        surf%isf_4_ele(iele,1:nsurf_4_ele)                              &
-     &        = isf_4_ele_IO(iele,1:nsurf_4_ele)
-      end do
+!$omp workshare
+      surf%isf_4_ele(1:nele,1:nsurf_4_ele)                              &
+     &        = isf_4_ele_IO(1:nele,1:nsurf_4_ele)
+!$omp end workshare
 !
       call deallocate_surface_connect_IO
       call deallocate_ele_info_dummy

@@ -135,7 +135,6 @@
 !
       call set_global_ele_id(txt, surf1%numsurf, istack_intersurf,      &
      &    surf1%interior_surf, surf_comm, surf1%isurf_global)
-      isurf_global = surf1%isurf_global
 !
       end subroutine const_global_surface_id_1st
 !
