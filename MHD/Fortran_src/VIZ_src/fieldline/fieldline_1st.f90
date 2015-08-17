@@ -88,7 +88,7 @@
      &    surf1%nnod_4_surf, node1%istack_nod_smp, node1%inod_global,   &
      &    node1%xx, node1%rr, node1%a_r, node1%ss, node1%a_s,           &
      &    ele1%iele_global, e_multi, surf1%ie_surf,                     &
-     &    surf1%isf_4_ele, iele_4_surf,                                 &
+     &    surf1%isf_4_ele, surf1%iele_4_surf,                           &
      &    x_surf, vnorm_surf, area_surf, surf1%interior_surf,           &
      &    ele_grp1, ele_4_nod1, num_nod_phys, num_tot_nod_phys,         &
      &    istack_nod_component, d_nod, nod_comm)

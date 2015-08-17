@@ -21,15 +21,12 @@
 !!
 !!      subroutine allocate_element_geometry
 !!
-!!      subroutine allocate_edge_4_ele
-!!
 !!      subroutine allocate_ele_4_surf
 !!      subroutine allocate_ele_4_edge_num
 !!      subroutine allocate_ele_4_edge_item
 !!      subroutine allocate_surf_4_edge_num
 !!      subroutine allocate_surf_4_edge_item
 !!
-!!      subroutine deallocate_edge_4_ele
 !!      subroutine deallocate_ele_4_surf
 !!      subroutine deallocate_ele_4_edge_item
 !!      subroutine deallocate_surf_4_edge_item
@@ -73,7 +70,7 @@
 !
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
-!  surf1%isurf_global
+!  surf1%iele_4_surf
 !
 !>     Structure for edge data
       type(edge_data), save :: edge1
@@ -125,7 +122,7 @@
 !>   edge ID for each surface
 !      integer(kind=kint), allocatable, target  :: iedge_4_sf(:,:)
 !>   edge ID for each element
-      integer(kind=kint), allocatable, target  :: iedge_4_ele(:,:)
+!      integer(kind=kint), allocatable, target  :: iedge_4_ele(:,:)
 !>   number of isolated edges
       integer(kind=kint) ::  numedge_iso
 !>     isolated edge list
@@ -382,24 +379,13 @@
        end subroutine deallocate_element_geometry
 !
 ! ------------------------------------------------------
-!
-      subroutine allocate_edge_4_ele
-!
-      use m_geometry_constants
-!
-      call allocate_edge_4_ele_type(edge1, ele1%numele)
-      allocate( iedge_4_ele(ele1%numele,nedge_4_ele) )
-!
-      end subroutine allocate_edge_4_ele
-!
-! ------------------------------------------------------
 ! ------------------------------------------------------
 !
       subroutine allocate_ele_4_surf
 !
 !
+      call alloc_ele_4_surf_type(surf1)
       allocate( iele_4_surf(surf1%numsurf,2,2) )
-      iele_4_surf = 0
 !
       end subroutine allocate_ele_4_surf
 !
@@ -452,18 +438,10 @@
 ! ------------------------------------------------------
 ! ------------------------------------------------------
 !
-      subroutine deallocate_edge_4_ele
-!
-      call deallocate_edge_4_ele_type(edge1)
-      deallocate( iedge_4_ele )
-!
-      end subroutine deallocate_edge_4_ele
-!
-! ------------------------------------------------------
-!
       subroutine deallocate_ele_4_surf
 !
 !
+      call dealloc_ele_4_surf_type(surf1)
       deallocate( iele_4_surf )
 !
       end subroutine deallocate_ele_4_surf

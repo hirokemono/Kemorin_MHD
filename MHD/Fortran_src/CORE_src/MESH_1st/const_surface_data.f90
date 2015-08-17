@@ -71,7 +71,8 @@
 !
       call allocate_ele_4_surf
       call set_ele_list_4_surf(ele1%numele, surf1%numsurf,              &
-     &    nsurf_4_ele, surf1%isf_4_ele, iele_4_surf)
+     &    nsurf_4_ele, surf1%isf_4_ele, surf1%iele_4_surf)
+      iele_4_surf = surf1%iele_4_surf
 !
       end subroutine const_element_list_4_surface
 !

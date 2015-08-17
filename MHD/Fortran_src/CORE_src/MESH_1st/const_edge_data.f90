@@ -56,7 +56,7 @@
      &    edge_ele_tbl%iflag_hash, edge1%numedge)
 !
       call allocate_edge_connect_type(edge1, surf1%numsurf)
-      call allocate_edge_4_ele
+      call allocate_edge_4_ele_type(edge1, ele1%numele)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_by_ele'
       call set_edges_connect_by_ele(node1%numnod, ele1%numele,          &
@@ -64,7 +64,6 @@
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &
      &    edge_ele_tbl%id_hash, edge_ele_tbl%iflag_hash,                &
      &    edge1%ie_edge, edge1%iedge_4_ele, edge1%node_on_edge)
-      iedge_4_ele = edge1%iedge_4_ele
 !
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_4_sf'
       call set_edges_connect_4_sf(node1%numnod, ele1%numele,            &
