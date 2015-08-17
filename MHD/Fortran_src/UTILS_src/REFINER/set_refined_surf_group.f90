@@ -194,7 +194,7 @@
       end do
 !
       do k2 = 1, nedge_4_surf
-        iedge = abs( iedge_4_sf(isurf,k2) )
+        iedge = abs( edge1%iedge_4_sf(isurf,k2) )
         jst = istack_nod_refine_edge(iedge-1) + 1
         jed = istack_nod_refine_edge(iedge)
         do jnum = jst, jed

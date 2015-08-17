@@ -163,9 +163,9 @@
       do inum = 1, surf%numsurf
         isurf = surf%isurf_global(inum)
         do k1 = 1, nedge_4_surf
-          iedge = abs(iedge_4_sf(isurf,k1))
+          iedge = abs(edge1%iedge_4_sf(isurf,k1))
           edge%iedge_4_sf(inum,k1) = iedge_local_part(iedge)            &
-     &                             * (iedge_4_sf(isurf,k1) / iedge)
+     &                           * (edge1%iedge_4_sf(isurf,k1) / iedge)
         end do
       end do
 !

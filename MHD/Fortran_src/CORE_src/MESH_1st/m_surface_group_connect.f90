@@ -100,7 +100,7 @@
 !
       call count_nod_4_ele_grp                                          &
      &   (edge1%numedge, surf1%numsurf, nedge_4_surf,                   &
-     &    iedge_4_sf, sf_grp%num_grp, sf_grp%num_item,                  &
+     &    edge1%iedge_4_sf, sf_grp%num_grp, sf_grp%num_item,            &
      &    sf_grp%istack_grp, sf_grp_data1%isurf_grp,                    &
      &    sf_grp_data1%edge%ntot_e_grp, sf_grp_data1%edge%nitem_e_grp,  &
      &    sf_grp_data1%edge%istack_e_grp, imark_4_grp)
@@ -109,7 +109,7 @@
 !
       call set_nod_4_ele_grp                                            &
      &   (edge1%numedge, surf1%numsurf, nedge_4_surf,                   &
-     &    iedge_4_sf, sf_grp%num_grp, sf_grp%num_item,                  &
+     &    edge1%iedge_4_sf, sf_grp%num_grp, sf_grp%num_item,            &
      &    sf_grp%istack_grp, sf_grp_data1%isurf_grp,                    &
      &    sf_grp_data1%edge%ntot_e_grp, sf_grp_data1%edge%nitem_e_grp,  &
      &    sf_grp_data1%edge%istack_e_grp, sf_grp_data1%edge%item_e_grp, &

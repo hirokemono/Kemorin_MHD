@@ -70,8 +70,9 @@
      &    surf1%numsurf, edge1%numedge, surf1%nnod_4_surf,              &
      &    edge1%nnod_4_edge, surf1%ie_surf, iedge_4_ele,                &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%id_hash,               &
-     &    edge_ele_tbl%iflag_hash, edge1%ie_edge, iedge_4_sf)
+     &    edge_ele_tbl%iflag_hash, edge1%ie_edge, edge1%iedge_4_sf)
 !
+      iedge_4_sf = edge1%iedge_4_sf
       call dealloc_sum_hash(edge_ele_tbl)
 !
 !
@@ -110,12 +111,12 @@
 !
       call allocate_surf_4_edge_num
       call count_ele_list_4_edge(surf1%numsurf, edge1%numedge,          &
-     &    nedge_4_surf, iedge_4_sf, ntot_isurf_4_edge,                  &
+     &    nedge_4_surf, edge1%iedge_4_sf, ntot_isurf_4_edge,            &
      &    num_isurf_4_edge, istack_isurf_4_edge)
 !
       call allocate_surf_4_edge_item
       call set_ele_list_4_edge(surf1%numsurf, edge1%numedge,            &
-     &    nedge_4_surf, iedge_4_sf, ntot_isurf_4_edge,                  &
+     &    nedge_4_surf, edge1%iedge_4_sf, ntot_isurf_4_edge,            &
      &    num_isurf_4_edge, istack_isurf_4_edge, isurf_4_edge)
 !
       end subroutine const_surface_list_4_edge

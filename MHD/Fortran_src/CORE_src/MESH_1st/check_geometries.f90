@@ -122,7 +122,7 @@
 !
       do isurf = 1, surf1%numsurf
         write(50+my_rank,'(5i16)')                                      &
-     &            isurf, iedge_4_sf(isurf,1:nedge_4_surf)
+     &            isurf, edge1%iedge_4_sf(isurf,1:nedge_4_surf)
       end do
 !
       end subroutine check_edge_data
