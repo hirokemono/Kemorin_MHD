@@ -81,7 +81,7 @@
 !
       call gen_connect_quad27_from_quad20                               &
      &   (node1%numnod, ele1%numele, surf1%numsurf, ele1%ie,            &
-     &    isf_4_ele, ie_4_333)
+     &    surf1%isf_4_ele, ie_4_333)
 !
       call set_27quad_2_8x8linear(ele1%numele, ie_4_333,                &
      &    mesh_l%node%numnod, mesh_l%ele%ie)

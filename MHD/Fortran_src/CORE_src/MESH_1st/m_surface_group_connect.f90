@@ -71,7 +71,7 @@
 !
       call alloc_surf_item_sf_grp_type(sf_grp%num_item, sf_grp_data1)
 !
-      call set_surface_id_4_surf_group(ele1%numele, isf_4_ele,          &
+      call set_surface_id_4_surf_group(ele1%numele, surf1%isf_4_ele,    &
      &    sf_grp%num_grp, sf_grp%num_item,                              &
      &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &
      &    sf_grp_data1%isurf_grp, sf_grp_data1%isurf_grp_n)

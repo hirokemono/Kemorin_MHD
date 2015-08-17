@@ -89,9 +89,9 @@
       do inum = 1, ele%numele
         iele = ele%iele_global(inum)
         do k1 = 1, nsurf_4_ele
-          isurf = abs(isf_4_ele(iele,k1))
+          isurf = abs(surf1%isf_4_ele(iele,k1))
           surf%isf_4_ele(inum,k1) = isurf_local_part(isurf)             &
-     &                              * (isf_4_ele(iele,k1) / isurf)
+     &                           * (surf1%isf_4_ele(iele,k1) / isurf)
         end do
       end do
 !

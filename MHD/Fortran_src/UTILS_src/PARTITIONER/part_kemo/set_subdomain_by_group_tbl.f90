@@ -129,7 +129,7 @@
         do inum = ist, ied
           iele = iele_4_subdomain(inum)
           do k = 1, nsurf_4_ele
-            isurf = abs( isf_4_ele(iele,k) )
+            isurf = abs( surf1%isf_4_ele(iele,k) )
             if (imark_surf(isurf).eq.0) then
               numsurf_4_subdomain(ip) = numsurf_4_subdomain(ip) + 1
               imark_surf(isurf) = 1
@@ -162,7 +162,7 @@
         do inum = ist, ied
           iele= iele_4_subdomain(inum)
           do k = 1, nsurf_4_ele
-            isurf = abs( isf_4_ele(iele,k) )
+            isurf = abs( surf1%isf_4_ele(iele,k) )
             if (imark_surf(isurf).eq.0) then
               icou = icou + 1
               isurf_4_subdomain(icou) = isurf

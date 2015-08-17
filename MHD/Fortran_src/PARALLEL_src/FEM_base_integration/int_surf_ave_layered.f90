@@ -54,9 +54,9 @@
           ist =     layer_stack(igrp-1) + 1
           ist_smp = (igrp-1) * np_smp
           num_sgrp = layer_stack(igrp) - layer_stack(igrp-1)
-          call int_surf_ave_1sgrp_8                                     &
-     &       (node1%numnod, ele1%numele, surf1%numsurf,                 &
-     &        surf1%nnod_4_surf, surf1%ie_surf, isf_4_ele, e_multi,     &
+          call int_surf_ave_1sgrp_8(node1%numnod, ele1%numele,          &
+     &        surf1%numsurf, surf1%nnod_4_surf, surf1%ie_surf,          &
+     &        surf1%isf_4_ele, e_multi,                                 &
      &        jac1_2d_q%ntot_int, num_int, jac1_2d_q%an_sf,             &
      &        jac1_2d_q%xj_sf, num_sgrp, item_layer(1,ist),             &
      &        istack_layer_grp_smp(ist_smp), d1_nod, ave_l(igrp) )
@@ -68,9 +68,9 @@
           ist = layer_stack(igrp-1) + 1
           ist_smp = (igrp-1) * np_smp
           num_sgrp = layer_stack(igrp) - layer_stack(igrp-1)
-          call int_surf_ave_1sgrp_4                                     &
-     &       (node1%numnod, ele1%numele, surf1%numsurf,                 &
-     &        surf1%nnod_4_surf, surf1%ie_surf, isf_4_ele, e_multi,     &
+          call int_surf_ave_1sgrp_4(node1%numnod, ele1%numele,          &
+     &        surf1%numsurf, surf1%nnod_4_surf, surf1%ie_surf,          &
+     &        surf1%isf_4_ele, e_multi,                                 &
      &        jac1_2d_l%ntot_int, num_int, jac1_2d_l%an_sf,             &
      &        jac1_2d_l%xj_sf, num_sgrp, item_layer(1,ist),             &
      &        istack_layer_grp_smp(ist_smp), d1_nod, ave_l(igrp) )
@@ -105,7 +105,7 @@
           ist = layer_stack(igrp-1) + 1
           num_sgrp = layer_stack(igrp) - layer_stack(igrp-1)
           call int_surf_area_1_surf_grp(ele1%numele, surf1%numsurf,     &
-     &           isf_4_ele, e_multi, jac1_2d_q%ntot_int, num_int,       &
+     &           surf1%isf_4_ele, e_multi, jac1_2d_q%ntot_int, num_int, &
      &           jac1_2d_q%xj_sf, num_sgrp, item_layer(1,ist),          &
      &           area_l(igrp))
         end do
@@ -118,7 +118,7 @@
           ist = layer_stack(igrp-1) + 1
           num_sgrp = layer_stack(igrp) - layer_stack(igrp-1)
           call int_surf_area_1_surf_grp(ele1%numele, surf1%numsurf,     &
-     &           isf_4_ele, e_multi, jac1_2d_l%ntot_int, num_int,       &
+     &           surf1%isf_4_ele, e_multi, jac1_2d_l%ntot_int, num_int, &
      &           jac1_2d_l%xj_sf, num_sgrp, item_layer(1,ist),          &
      &           area_l(igrp))
         end do

@@ -98,8 +98,8 @@
         end do
 !
         do isf_ele = 1, nsurf_4_ele
-          isurf = abs(isf_4_ele(iele,isf_ele))
-          if(isf_4_ele(iele,isf_ele) .gt. 0) then
+          isurf = abs(surf1%isf_4_ele(iele,isf_ele))
+          if(surf1%isf_4_ele(iele,isf_ele) .gt. 0) then
             ist = istack_nod_refine_surf(isurf-1) + 1
             ied = istack_nod_refine_surf(isurf)
             do inum = ist, ied
@@ -109,7 +109,7 @@
                 xi_surf(1) = xi_refine_surf(inum,1)
                 xi_surf(2) = xi_refine_surf(inum,2)
                 call copy_surf_local_posi_2_element(isf_ele,            &
-     &              isf_rot_ele(iele,isf_ele), xi_surf, xi_ele)
+     &              surf1%isf_rot_ele(iele,isf_ele), xi_surf, xi_ele)
 !
                 inod_gl_dest_4_org(inod) = inod
                 iele_org_4_org(inod) =     iele

@@ -61,7 +61,7 @@
      &        = surf1%ie_surf(1:surf1%numsurf,1:surf1%nnod_4_surf)
 !
       isf_4_ele_IO(1:ele1%numele,1:nsurf_4_ele)                         &
-     &        = isf_4_ele(1:ele1%numele,1:nsurf_4_ele)
+     &        = surf1%isf_4_ele(1:ele1%numele,1:nsurf_4_ele)
 !
       end subroutine copy_surf_connect_to_IO
 !
@@ -150,7 +150,7 @@
       surf1%ie_surf(1:surf1%numsurf,1:surf1%nnod_4_surf)                &
      &        = ie_dummy(1:surf1%numsurf,1:surf1%nnod_4_surf)
 !
-      isf_4_ele(1:ele1%numele,1:nsurf_4_ele)                            &
+      surf1%isf_4_ele(1:ele1%numele,1:nsurf_4_ele)                      &
      &        = isf_4_ele_IO(1:ele1%numele,1:nsurf_4_ele)
 !
       call deallocate_surface_connect_IO

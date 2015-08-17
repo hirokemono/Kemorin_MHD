@@ -45,7 +45,7 @@
 !
       write(*,*) 's_find_boundary_4_tri_refine'
       call s_find_boundary_4_tri_refine(ele1%numele, surf1%numsurf,     &
-     &    isf_4_ele, nele_tri, iele_tri)
+     &    surf1%isf_4_ele, nele_tri, iele_tri)
 !
       deallocate(iele_tri)
 !

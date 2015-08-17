@@ -187,7 +187,7 @@
       integer(kind = kint) :: jst, jed, jnum, jnod
 !
 !
-      isurf = abs(isf_4_ele(iele,isf))
+      isurf = abs(surf1%isf_4_ele(iele,isf))
       do k1 = 1, surf1%nnod_4_surf
         inod = surf1%ie_surf(isurf,k1)
         inod_mark_2(inod) = mark_no

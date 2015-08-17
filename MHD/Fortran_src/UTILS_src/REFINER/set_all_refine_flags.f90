@@ -34,8 +34,8 @@
 !
       do iele = 1, ele1%numele
         do k1 = 1, nsurf_4_ele
-          isurf = abs( isf_4_ele(iele,k1) )
-          if (isurf .eq. isf_4_ele(iele,k1) ) then
+          isurf = abs( surf1%isf_4_ele(iele,k1) )
+          if (isurf .eq. surf1%isf_4_ele(iele,k1) ) then
             iflag_refine_surf(isurf) = iflag_refine_sf_lcl(k1,iele)
           end if
         end do

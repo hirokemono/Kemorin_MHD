@@ -79,7 +79,7 @@
 !
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
-!  surf1%isf_4_ele
+!  surf1%isf_rot_ele
 !
 !>     Structure for edge data
       type(edge_data), save :: edge1
@@ -123,7 +123,7 @@
 !>   surface ID for element surface isf_4_ele(:,:)
 !>          ...i:element ID, j:surface ID
 !>@n          Positive: normal direction negative: reverse direction
-      integer(kind=kint), allocatable, target  :: isf_4_ele(:,:)
+!      integer(kind=kint), allocatable, target  :: isf_4_ele(:,:)
 !>   rotation ID for element surface isf_rot_ele(:,:)
 !>          ...i:element ID, j:surface ID
 !>@n          0: normal direction  1-4: rotation flag for reverse surface
@@ -395,13 +395,12 @@
 !
       call allocate_surface_connect_type(surf1, ele1%numele)
 !
-      allocate( isf_4_ele(ele1%numele,nsurf_4_ele) )
+!      allocate( isf_4_ele(ele1%numele,nsurf_4_ele) )
       allocate( isf_rot_ele(ele1%numele,nsurf_4_ele) )
 !      allocate( ie_surf(surf1%numsurf,surf1%nnod_4_surf) )
       allocate( isurf_global(surf1%numsurf) )
       allocate( interior_surf(surf1%numsurf) )
 !
-      isf_rot_ele =   0
       isurf_global =  0
       interior_surf = 0
 !
@@ -501,7 +500,7 @@
 !
       call deallocate_surface_connect_type(surf1)
 !
-      deallocate( isf_4_ele, isf_rot_ele)
+      deallocate( isf_rot_ele)
       deallocate( isurf_global )
       deallocate( interior_surf )
 !

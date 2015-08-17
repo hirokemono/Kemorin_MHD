@@ -90,7 +90,7 @@
 !
       do iele = 1, ele1%numele
         write(50+my_rank,'(7i16)')                                     &
-     &            iele, isf_4_ele(iele,1:nsurf_4_ele)
+     &            iele, surf1%isf_4_ele(iele,1:nsurf_4_ele)
       end do
 !
 !
