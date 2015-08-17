@@ -64,7 +64,6 @@
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &
      &    edge_ele_tbl%id_hash, edge_ele_tbl%iflag_hash,                &
      &    edge1%ie_edge, iedge_4_ele, edge1%node_on_edge)
-      ie_edge = edge1%ie_edge
 !
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_4_sf'
       call set_edges_connect_4_sf(node1%numnod, ele1%numele,            &

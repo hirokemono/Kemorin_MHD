@@ -157,8 +157,6 @@
       iedge_4_ele(1:ele1%numele,1:nedge_4_ele)                          &
      &        = iedge_4_ele_IO(1:ele1%numele,1:nedge_4_ele)
 !
-      ie_edge = edge1%ie_edge
-!
       call deallocate_surface_connect_IO
       call deallocate_ele_info_dummy
       call deallocate_edge_connect_IO

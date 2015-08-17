@@ -123,7 +123,7 @@
 !>   surface connectivity ie_surf(i:surface ID,j:surface index)
 !      integer(kind=kint), pointer  :: ie_surf(:,:)
 !>   edge connectivity ie_edge(i:edge ID,j:surface index)
-      integer(kind=kint), pointer  :: ie_edge(:,:)
+!      integer(kind=kint), pointer  :: ie_edge(:,:)
 !
 !
 !>   surface ID for element surface isf_4_ele(:,:)
@@ -508,7 +508,7 @@
       call allocate_edge_connect_type(edge1, surf1%numsurf)
 !
       allocate( iedge_4_sf(surf1%numsurf,nedge_4_surf) )
-      allocate( ie_edge(edge1%numedge,edge1%nnod_4_edge) )
+!      allocate( ie_edge(edge1%numedge,edge1%nnod_4_edge) )
       allocate( iedge_global(edge1%numedge) )
       allocate( interior_edge(edge1%numedge) )
 !
