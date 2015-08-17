@@ -54,7 +54,7 @@
         else if(numdir .eq. 3) then
           call overwrite_sph_vect_2_xyz_smp                             &
      &       (np_smp, node1%numnod, node1%istack_nod_smp,               &
-     &        d_nod(1,i_fld), colatitude, longitude)
+     &        d_nod(1,i_fld), node1%theta, longitude)
         end if
       end do
 !$omp end parallel
@@ -141,10 +141,10 @@
         numdir = istack_nod_component(i  ) - istack_nod_component(i-1)
         if     (numdir .eq. 6) then
           call overwrite_cyl_tensor_by_sph_smp(np_smp, node1%numnod,    &
-     &        node1%istack_nod_smp, d_nod(1,i_fld), colatitude)
+     &        node1%istack_nod_smp, d_nod(1,i_fld), node1%theta)
         else if(numdir .eq. 3) then
           call overwrite_sph_vect_2_cyl_smp(np_smp, node1%numnod,       &
-     &        node1%istack_nod_smp, d_nod(1,i_fld), colatitude)
+     &        node1%istack_nod_smp, d_nod(1,i_fld), node1%theta)
         end if
       end do
 !$omp end parallel

@@ -142,7 +142,7 @@
 !
       call copy_xyz_vec_from_sph_trans                                  &
      &   (nnod_rtp, m_folding, inod_rtp_smp_stack,                      &
-     &    node1%numnod, colatitude, longitude, d_rtp,                   &
+     &    node1%numnod, node1%theta, longitude, d_rtp,                  &
      &    i_field, num_tot_nod_phys, d_nod)
 !
       end subroutine copy_1st_vec_from_sph_trans

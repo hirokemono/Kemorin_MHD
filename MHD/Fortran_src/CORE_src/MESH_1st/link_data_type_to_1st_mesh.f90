@@ -62,7 +62,7 @@
 !
       node_new%rr =>    node1%rr
       node_new%a_r =>   a_radius
-      node_new%theta => colatitude
+      node_new%theta => node1%theta
       node_new%phi =>   longitude
       node_new%ss =>    s_cylinder
       node_new%a_s =>   a_s_cylinder

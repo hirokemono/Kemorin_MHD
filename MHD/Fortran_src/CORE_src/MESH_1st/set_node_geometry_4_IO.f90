@@ -40,7 +40,7 @@
       do inod = 1, node1%numnod
         globalnodid_dummy(inod) = node1%inod_global(inod)
         xx_dummy(inod,1) = node1%rr(inod)
-        xx_dummy(inod,2) = colatitude(inod)
+        xx_dummy(inod,2) = node1%theta(inod)
         xx_dummy(inod,3) = longitude(inod)
       end do
 !$omp end parallel do
@@ -97,12 +97,11 @@
       do inod = 1, node1%numnod
 !        node1%inod_global(inod) = globalnodid_dummy(inod)
         node1%rr(inod) =     xx_dummy(inod,1)
-        colatitude(inod) = xx_dummy(inod,2)
+        node1%theta(inod) =  xx_dummy(inod,2)
         longitude(inod) =  xx_dummy(inod,3)
       end do
 !$omp end parallel do
 !
-      radius = node1%rr
       call deallocate_node_data_dummy
 !
       end subroutine copy_sph_geometry_from_IO

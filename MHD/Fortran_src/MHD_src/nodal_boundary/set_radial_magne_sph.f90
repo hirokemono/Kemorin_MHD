@@ -52,7 +52,7 @@
           ibc_b_id(l_f(nd),nd) = inod
         end do
 !
-        call dschmidt(colatitude(inod))
+        call dschmidt(node1%theta(inod))
 !
         if (mm.ge.0) then
           bmag = p(mm,ll) * cos( longitude(inod)*dble(mm) )

@@ -48,7 +48,7 @@
         inod = nod_grp%item_grp(k+nod_grp%istack_grp(i-1))
         ibc_mag_p_id(ii)=inod
 !
-        call dschmidt(colatitude(inod))
+        call dschmidt(node1%theta(inod))
 !
         if (mm.ge.0) then
           bc_mag_p_id_apt(ii) = p(mm,ll) * cos(longitude(inod)*dble(mm))

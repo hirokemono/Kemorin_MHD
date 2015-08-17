@@ -29,8 +29,9 @@
       use coordinate_converter
 !
        call position_2_sph(node1%numnod, node1%xx,                      &
-     &     node1%rr, colatitude, longitude,                             &
+     &     node1%rr, node1%theta, longitude,                            &
      &     a_radius, s_cylinder, a_s_cylinder)
+      colatitude = node1%theta
 !
       end subroutine set_spherical_position
 !

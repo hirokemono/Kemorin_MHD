@@ -61,8 +61,8 @@
 !
           do j = 1, num_sph_grid(2)
             jt = mod( (jt_st+j-ione), num_sph_grid(2) ) + ione
-            if (    colatitude(inod) .ge. theta_divide(jt-1)            &
-     &        .and. colatitude(inod) .lt. theta_divide(jt) ) then
+            if (    node1%theta(inod) .ge. theta_divide(jt-1)           &
+     &        .and. node1%theta(inod) .lt. theta_divide(jt) ) then
               jt_bin = jt
               jt_st = jt - 1
               exit
@@ -100,7 +100,8 @@
              write(*,*) 'inod, jr_bin, jt_bin, jp_bin'
              write(*,*) inod, jr_bin, jt_bin, jp_bin
              write(*,*) 'position'
-             write(*,*) node1%rr(inod), colatitude(inod), longitude(inod)
+             write(*,*) node1%rr(inod), node1%theta(inod),              &
+     &                  longitude(inod)
           end if
 !
         end do

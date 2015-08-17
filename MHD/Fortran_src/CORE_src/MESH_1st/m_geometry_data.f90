@@ -74,7 +74,7 @@
 !
 !>  structure for node data (position)
       type(node_data), save :: node1
-!    node1%inod_global
+!    node1%theta
 !
 !>  structure for element data (position and connectivity)
       type(element_data), save :: ele1
@@ -187,7 +187,7 @@
       integer(kind=kint_gl), allocatable, target  ::  iedge_global(:)
 !
 !>   distance from the center
-      real(kind=kreal)  , pointer  :: radius(:)
+!      real(kind=kreal)  , pointer  :: radius(:)
 !>   1/radius
       real(kind=kreal)  , pointer  :: a_radius(:)
 !>   longitude of node
@@ -342,7 +342,7 @@
 !      allocate(inod_global(node1%numnod))
 !      allocate(xx(node1%numnod,3))
 !
-      allocate(radius(node1%numnod))
+!      allocate(radius(node1%numnod))
       allocate(a_radius(node1%numnod))
       allocate(s_cylinder(node1%numnod))
       allocate(a_s_cylinder(node1%numnod))
@@ -353,7 +353,6 @@
       s_cylinder = 0.0d00
       a_s_cylinder = 0.0d00
       longitude = 0.0d00
-      colatitude = 0.0d00
 !
       end subroutine allocate_node_geometry
 !
@@ -362,7 +361,6 @@
 !
       subroutine deallocate_node_geometry
 !
-      deallocate(radius)
       deallocate(a_radius)
       deallocate(s_cylinder)
       deallocate(a_s_cylinder)

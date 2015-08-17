@@ -65,7 +65,7 @@
         xr = two * node1%rr(inod)                                       &
      &      - one * (depth_low_t+depth_high_t)                          &
      &       / (depth_low_t-depth_high_t)
-        sit = sin( colatitude(inod) )
+        sit = sin( node1%theta(inod) )
         csp = cos( real_m*longitude(inod) )
 !
         d_nod(inod,iphys%i_temp) =                                      &

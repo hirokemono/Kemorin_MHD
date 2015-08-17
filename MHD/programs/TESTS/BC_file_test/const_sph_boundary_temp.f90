@@ -92,7 +92,7 @@
       do inum = 1, num
         inod = nod_grp%item_grp(ist+inum)
 !
-        call dschmidt(colatitude(inod))
+        call dschmidt(node1%theta(inod))
         call spheric(longitude(inod))
 !
         inod_bc(inum) = inod

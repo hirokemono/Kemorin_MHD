@@ -247,7 +247,7 @@
 !$omp parallel
       call overwrite_sph_vect_2_xyz_smp                                 &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,iphys%i_velo), colatitude, longitude)
+     &    d_nod(1,iphys%i_velo), node1%theta, longitude)
 !$omp end parallel
 !
       if (iphys%i_SGS_vp_induct .gt. 0) then
