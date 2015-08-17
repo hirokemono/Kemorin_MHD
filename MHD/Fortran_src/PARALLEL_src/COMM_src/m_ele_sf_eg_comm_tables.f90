@@ -114,7 +114,7 @@
      &   (ele1%internal_ele, istack_interele)
 !
       call set_global_ele_id(txt, ele1%numele, istack_interele,         &
-     &         interior_ele, ele_comm, iele_global)
+     &         interior_ele, ele_comm, ele1%iele_global)
 !
       end subroutine const_global_element_id_1st
 !

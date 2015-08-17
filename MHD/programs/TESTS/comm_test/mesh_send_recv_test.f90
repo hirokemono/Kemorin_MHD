@@ -51,7 +51,7 @@
 !
 !
       do inod = 1, node1%internal_node
-        i8x_vec(inod) = int(inod_global(inod))
+        i8x_vec(inod) = int(node1%inod_global(inod))
         x_vec(3*inod-2) = node1%xx(inod,1)
         x_vec(3*inod-1) = node1%xx(inod,2)
         x_vec(3*inod  ) = node1%xx(inod,3)
@@ -84,7 +84,7 @@
       allocate(xx4(NB*node1%numnod))
 !
       do inod = 1, node1%internal_node
-        i8x_vec(inod) = inod_global(inod)
+        i8x_vec(inod) = node1%inod_global(inod)
         xx4(12*inod-11) = node1%xx(inod,1)
         xx4(12*inod-10) = node1%xx(inod,2)
         xx4(12*inod- 9) = node1%xx(inod,3)

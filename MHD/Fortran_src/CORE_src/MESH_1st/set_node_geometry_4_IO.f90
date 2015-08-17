@@ -101,25 +101,12 @@
 !
       subroutine copy_node_geometry_from_IO
 !
-      integer(kind = kint) :: inod
+      use set_node_types_4_IO
 !
 !
-      node1%numnod =        numnod_dummy
-      node1%internal_node = internal_node_dummy
-!
+      call copy_node_type_from_IO(node1)
+      call allocate_sph_node_geometry(node1)
       call allocate_node_geometry
-!
-!$omp parallel do
-      do inod = 1, node1%numnod
-        node1%inod_global(inod) = globalnodid_dummy(inod)
-        node1%xx(inod,1) = xx_dummy(inod,1)
-        node1%xx(inod,2) = xx_dummy(inod,2)
-        node1%xx(inod,3) = xx_dummy(inod,3)
-      end do
-!$omp end parallel do
-!
-      inod_global = node1%inod_global
-      call deallocate_node_data_dummy
 !
       end subroutine copy_node_geometry_from_IO
 !

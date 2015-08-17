@@ -30,7 +30,7 @@
       call allocate_globalnod_filter
 !
       id_globalnod_filtering(1:node1%numnod)                            &
-     &                               = inod_global(1:node1%numnod)
+     &                      = node1%inod_global(1:node1%numnod)
       xx_filtering(1:node1%numnod,1) = node1%xx(1:node1%numnod,1)
       xx_filtering(1:node1%numnod,2) = node1%xx(1:node1%numnod,2)
       xx_filtering(1:node1%numnod,3) = node1%xx(1:node1%numnod,3)

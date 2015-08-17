@@ -90,6 +90,8 @@
       call copy_node_type_from_IO(mesh%node)
       call copy_ele_connect_type_from_IO(mesh%ele)
 !
+      call allocate_sph_node_geometry(mesh%node)
+!
       end subroutine set_geometry_types_data
 !
 !  ---------------------------------------------------------------------

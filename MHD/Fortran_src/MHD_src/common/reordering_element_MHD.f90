@@ -39,7 +39,7 @@
 !
 !
       call reordering_element_connect(ele1%numele, ele1%nnod_4_ele,     &
-     &    new2oldele_layer(1), iele_global_org(1), iele_global(1),      &
+     &    new2oldele_layer(1), iele_global_org(1), ele1%iele_global,    &
      &    ie_org, ele1%ie)
 !
       call reordering_element_group(ele1%numele, old2newele_layer(1),   &

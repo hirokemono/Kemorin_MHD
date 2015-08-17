@@ -38,7 +38,7 @@
 !
 !$omp parallel do
       do iele = 1, ele1%numele
-        globalnodid_dummy(iele) = iele_global(iele)
+        globalnodid_dummy(iele) = ele1%iele_global(iele)
         xx_dummy(iele,1) = x_ele(iele,1)
         xx_dummy(iele,2) = x_ele(iele,2)
         xx_dummy(iele,3) = x_ele(iele,3)
@@ -63,7 +63,7 @@
 !
 !$omp parallel do
       do iele = 1, ele1%numele
-        globalnodid_dummy(iele) = iele_global(iele)
+        globalnodid_dummy(iele) = ele1%iele_global(iele)
 !
         xx_dummy(iele,1) = r_ele(iele)
         xx_dummy(iele,2) = theta_ele(iele)
@@ -89,7 +89,7 @@
 !
 !$omp parallel do
       do iele = 1, ele1%numele
-        globalnodid_dummy(iele) = iele_global(iele)
+        globalnodid_dummy(iele) = ele1%iele_global(iele)
 !
         xx_dummy(iele,1) = s_ele(iele)
         xx_dummy(iele,2) = phi_ele(iele)

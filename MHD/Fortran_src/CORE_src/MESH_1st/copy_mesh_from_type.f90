@@ -89,6 +89,8 @@
 !
       call allocate_element_geometry
 !
+      call deallocate_node_geometry_type(mesh%node)
+!
       end subroutine set_geometry_data_from_type
 !
 !-----------------------------------------------------------------------
@@ -123,6 +125,7 @@
       node1%numnod =        node_org%numnod
       node1%internal_node = node_org%internal_node
 !
+      call allocate_node_geometry_type(node1)
       call allocate_node_geometry
 !
 !$omp parallel do
@@ -133,9 +136,6 @@
         node1%xx(inod,3) = node_org%xx(inod,3)
       end do
 !$omp end parallel do
-!
-      inod_global = node1%inod_global
-      call deallocate_node_geometry_type(node_org)
 !
       end subroutine copy_node_geometry_from_type
 !
@@ -174,13 +174,14 @@
 !
 !$omp do
       do iele = 1, ele1%numele
-        iele_global(iele) = ele%iele_global(iele)
+        ele1%iele_global(iele) = ele%iele_global(iele)
         elmtyp(iele) =      ele%elmtyp(iele)
         nodelm(iele) =      ele%nodelm(iele)
       end do
 !$omp end do
 !$omp end parallel
 !
+      iele_global = ele1%iele_global
       call deallocate_ele_connect_type(ele)
 !
       end subroutine copy_element_connect_from_type
@@ -245,9 +246,9 @@
         do k1 = 1, ele1%nnod_4_ele
           if(ele_org%ie(i,k1) .ne. ele1%ie(i,k1)) iflag = 1
         end do
-        if(ele_org%iele_global(i) .ne. iele_global(i))                  &
+        if(ele_org%iele_global(i) .ne. ele1%iele_global(i))             &
      &       write(*,*) 'iele_global(i)', my_rank, i,                   &
-     &       ele_org%iele_global(i), iele_global(i)
+     &       ele_org%iele_global(i), ele1%iele_global(i)
         if(ele_org%elmtyp(i) .ne. elmtyp(i)) write(*,*) 'elmtyp(i)',    &
      &       my_rank, i, ele_org%elmtyp(i), elmtyp(i)
         if(ele_org%nodelm(i) .ne. nodelm(i)) write(*,*) 'nodelm(i)',    &

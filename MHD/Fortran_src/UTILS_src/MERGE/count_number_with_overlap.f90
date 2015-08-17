@@ -58,6 +58,8 @@
         call copy_node_type_from_IO(subdomain(ip)%node)
         call copy_ele_connect_type_from_IO(subdomain(ip)%ele)
 !
+        call allocate_sph_node_geometry(subdomain(ip)%node)
+!
 !  set node group
         call set_nod_grp_type_from_IO(sub_nod_grp(ip))
         call set_ele_grp_type_from_IO(sub_ele_grp(ip))

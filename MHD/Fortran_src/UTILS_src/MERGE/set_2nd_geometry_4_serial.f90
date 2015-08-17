@@ -60,6 +60,8 @@
         call copy_node_type_from_IO(subdomains_2(ip)%node)
         call copy_ele_connect_type_from_IO(subdomains_2(ip)%ele)
 !
+        call allocate_sph_node_geometry(subdomains_2(ip)%node)
+!
         call deallocate_comm_item_IO
       end do
 !

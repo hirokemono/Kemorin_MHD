@@ -181,7 +181,7 @@
 !>     element type id   (where i:element id)
       integer(kind=kint), allocatable, target  ::  nodelm(:)
 !>     global node    id (where i:node id)
-      integer(kind=kint_gl), pointer  ::  inod_global(:)
+!      integer(kind=kint_gl), pointer  ::  inod_global(:)
 !>     global element id (where i:element id)
       integer(kind=kint_gl), allocatable, target  ::  iele_global(:)
 !>     global surface id (where i:surface id)
@@ -354,9 +354,7 @@
       subroutine allocate_node_geometry
 !
 !
-      call allocate_node_geometry_type(node1)
-!
-      allocate(inod_global(node1%numnod))
+!      allocate(inod_global(node1%numnod))
 !      allocate(xx(node1%numnod,3))
 !
       allocate(radius(node1%numnod))
@@ -385,10 +383,8 @@
       allocate(nodelm(ele1%numele))
 !      allocate(ie(ele1%numele,ele1%nnod_4_ele))
 !
-      iele_global = 0
       elmtyp = 0
       nodelm = 0
-!      ie = 0
 !
       end subroutine allocate_element_connection
 !
@@ -413,7 +409,6 @@
       deallocate(iele_global)
       deallocate(elmtyp)
       deallocate(nodelm)
-!      deallocate(ie)
 !
       end subroutine deallocate_element_connection
 !

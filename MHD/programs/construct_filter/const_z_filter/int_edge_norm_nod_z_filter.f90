@@ -39,8 +39,8 @@
 !
 !
       do inod = 1, node1%numnod
-        inod0 = inod_global(inod)
-        zz0 = node1%xx(inod0,3) 
+        inod0 = node1%inod_global(inod)
+        zz0 =   node1%xx(inod0,3) 
         do je = 1, nfilter2_3 - 1
           j0 = je - nneib_nod(inod0,1) - 1
           jele = inod0 + j0

@@ -96,9 +96,9 @@
         write(id_filter_z,*) '! node_id, z, dz/dzeta, diff of delta_z'
 !
         do inod = 1, node1%internal_node
-          write(id_filter_z,'(i16,1p4E25.15e3)') inod_global(inod),     &
-     &      node1%xx(inod,3), delta_z(inod), delta_dz(inod),            &
-     &      d2_dz(inod)
+          write(id_filter_z,'(i16,1p4E25.15e3)')                        &
+     &      node1%inod_global(inod), node1%xx(inod,3),                  &
+     &      delta_z(inod), delta_dz(inod), d2_dz(inod)
         end do
 !
         write(id_filter_z,*)                                            &
@@ -116,32 +116,33 @@
 !
         do inod = 1, node1%internal_node
           write(id_filter_z,'(20i16)')                                  &
-     &      inod_global(inod), (nneib_nod2(inod,i),i=1,2),              &
-     &     (inod_global(inod+i-nneib_nod2(inod,1)-1),i=1,ncomp_mat)
+     &      node1%inod_global(inod), nneib_nod2(inod,1:2),              &
+     &     (node1%inod_global(inod+i-nneib_nod2(inod,1)-1),             &
+     &        i=1,ncomp_mat)
         end do
 !
 !
         write(id_filter_z,*) '! node_id, coefs of filter'
 !
         do inod = 1, node1%internal_node
-          write(id_filter_z,'(i16,1p20E25.15e3)') inod_global(inod),    &
-     &          (c_filter(j,inod),j=1,ncomp_mat)
+          write(id_filter_z,'(i16,1p20E25.15e3)')                      &
+     &          node1%inod_global(inod), c_filter(1:ncomp_mat,inod)
         end do
 !
 !
          write(id_filter_z,*) '! node_id, 1d_momentum on node (modified)'
 !
         do inod = 1, node1%internal_node
-          write(id_filter_z,'(i16,1p6E25.15e3)') inod_global(inod),     &
-     &          (xmom_int_t(inod,k),k=0,2)
+          write(id_filter_z,'(i16,1p6E25.15e3)')                        &
+     &          node1%inod_global(inod), xmom_int_t(inod,0:2)
         end do
 !
          write(id_filter_z,*)                                           &
      &         '! node_id, diff. of 1d_momentum on node (modified)'
 !
         do inod = 1, node1%internal_node
-          write(id_filter_z,'(i16,1p6E25.15e3)') inod_global(inod),     &
-     &          (xmom_dt(inod,k),k=0,2)
+          write(id_filter_z,'(i16,1p6E25.15e3)')                        &
+     &          node1%inod_global(inod), xmom_dt(inod,0:2)
         end do
 !
 !
@@ -151,15 +152,15 @@
 !
         do inod = 1, node1%internal_node
           write(id_filter_z,'(2i16,1p20E25.15e3)') k,                   &
-     &         inod_global(inod), (xmom_int(inod,j,k),j=1,ncomp_mat)
+     &         node1%inod_global(inod), xmom_int(inod,1:ncomp_mat,k)
         end do
       end do
 !
          write(id_filter_z,*) '! node_id, 1d_momentum on node (original)'
 !
         do inod = 1, node1%internal_node
-          write(id_filter_z,'(i16,1p6E25.15e3)') inod_global(inod),     &
-     &          (xmom_int_to(inod,k),k=0,2)
+          write(id_filter_z,'(i16,1p6E25.15e3)')                        &
+     &          node1%inod_global(inod), xmom_int_to(inod,0:2)
         end do
 !
          write(id_filter_z,*)                                           &
@@ -167,8 +168,8 @@
 !
 
         do inod = 1, node1%internal_node
-          write(id_filter_z,'(i16,1p6E25.15e3)') inod_global(inod),     &
-     &          (xmom_dot(inod,k),k=0,2)
+          write(id_filter_z,'(i16,1p6E25.15e3)')                        &
+     &          node1%inod_global(inod), xmom_dot(inod,0:2)
         end do
 !
       do k = 0, 2
@@ -177,7 +178,7 @@
 !
         do inod = 1, node1%internal_node
           write(id_filter_z,'(2i16,1p20E25.15e3)') k,                   &
-     &        inod_global(inod), (xmom_int_org(inod,j,k),j=1,ncomp_mat)
+     &        node1%inod_global(inod), xmom_int_org(inod,1:ncomp_mat,k)
         end do
       end do
 !

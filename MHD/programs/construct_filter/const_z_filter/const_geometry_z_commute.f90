@@ -40,6 +40,7 @@
 !
       call set_numnod_z_commute
 !
+      call allocate_node_geometry_type(node1)
       call allocate_node_geometry
       call allocate_edge_connect
 !
@@ -103,11 +104,11 @@
       integer (kind = kint) :: i
 !
       do i = 1, node1%internal_node
-        inod_global(i) = i
+        node1%inod_global(i) = i
       end do
 !
       do i = 1, ele1%numele
-        iedge_global(i) = inod_global(edge1%ie_edge(i,1))
+        iedge_global(i) = node1%inod_global(edge1%ie_edge(i,1))
       end do
 !
       end subroutine set_global_id_z_commute

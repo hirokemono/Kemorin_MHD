@@ -111,7 +111,7 @@
       node%numnod =        numnod_dummy
       node%internal_node = internal_node_dummy
 !
-      call allocate_node_geometry_type(node)
+      call allocate_node_geometry_base(node)
 !
 !$omp parallel do
       do inod = 1, node%numnod

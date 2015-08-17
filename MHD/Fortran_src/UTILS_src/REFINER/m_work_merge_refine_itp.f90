@@ -124,7 +124,7 @@
 !
       inod_global_org(1:nnod_org) = node1%inod_global(1:nnod_org)
       xx_org(1:nnod_org,1:3) =      node1%xx(1:nnod_org,1:3)
-      iele_global_org(1:nele_org) = iele_global(1:nele_org)
+      iele_global_org(1:nele_org) = ele1%iele_global(1:nele_org)
       ie_org(1:nele_org,1:ele1%nnod_4_ele)                              &
      &                       = ele1%ie(1:nele_org,1:ele1%nnod_4_ele)
 !

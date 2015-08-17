@@ -28,7 +28,7 @@
 !
 !
       do inod = 1, node1%numnod
-        i = inod_global(inod)
+        i = node1%inod_global(inod)
         ncomp_st(inod) = max(1, 1+nneib_nod(i,1) - (ncomp_mat-1)/2 )
         ncomp_st(inod) = min(ncomp_st(inod)+ncomp_mat-1, nfilter2_3)    &
                   - ncomp_mat + 1

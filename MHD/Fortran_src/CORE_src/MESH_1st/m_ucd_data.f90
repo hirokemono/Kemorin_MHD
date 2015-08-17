@@ -91,7 +91,8 @@
       call link_node_data_2_output                                      &
      &   (node1%numnod, node1%inod_global, node1%xx, fem_ucd)
       call const_udt_global_connect(node1%internal_node,                &
-     &    ele1%numele, ele1%nnod_4_ele, iele_global, ele1%ie, fem_ucd)
+     &    ele1%numele, ele1%nnod_4_ele, ele1%iele_global, ele1%ie,      &
+     &    fem_ucd)
 !
       end subroutine link_global_mesh_4_ucd_out
 !

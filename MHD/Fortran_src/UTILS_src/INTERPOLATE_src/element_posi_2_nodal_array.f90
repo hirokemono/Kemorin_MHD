@@ -34,11 +34,12 @@
       node1%numnod =        ele1%numele
       node1%internal_node = ele1%numele
 !
+      call allocate_node_geometry_type(node1)
       call allocate_node_geometry
 !
 !$omp parallel do
       do inod = 1, node1%numnod
-        node1%inod_global(inod) = iele_global(inod)
+        node1%inod_global(inod) = ele1%iele_global(inod)
         node1%xx(inod,1) =       x_ele(inod,1)
         node1%xx(inod,2) =       x_ele(inod,2)
         node1%xx(inod,3) =       x_ele(inod,3)
@@ -51,8 +52,6 @@
         colatitude(inod) =   theta_ele(inod)
       end do
 !$omp end parallel do
-!
-       inod_global = node1%inod_global
 !
        call count_number_4_smp( np_smp, ione, node1%numnod,             &
      &     node1%istack_nod_smp, node1%max_nod_smp)
