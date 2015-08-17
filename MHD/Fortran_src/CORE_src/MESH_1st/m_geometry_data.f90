@@ -103,7 +103,7 @@
 !>   element connectivity ie(i:element ID,j:element index)
 !      integer(kind=kint), pointer  :: ie(:,:)
 !>   element type defined by the first element
-      integer(kind=kint) ::  first_ele_type
+!      integer(kind=kint) ::  first_ele_type
 !
 !
 !
@@ -187,17 +187,17 @@
       integer(kind=kint_gl), allocatable, target  ::  iedge_global(:)
 !
 !>   distance from the center
-      real(kind=kreal)  , allocatable, target  :: radius(:)
+      real(kind=kreal)  , pointer  :: radius(:)
 !>   1/radius
-      real(kind=kreal)  , allocatable, target  :: a_radius(:)
+      real(kind=kreal)  , pointer  :: a_radius(:)
 !>   longitude of node
-      real(kind=kreal)  , allocatable, target  :: longitude(:)
+      real(kind=kreal)  , pointer  :: longitude(:)
 !>   colatitude of node
-      real(kind=kreal)  , allocatable, target  :: colatitude(:)
+      real(kind=kreal)  , pointer  :: colatitude(:)
 !>   cylindorical radius of node
-      real(kind=kreal)  , allocatable, target  :: s_cylinder(:)
+      real(kind=kreal)  , pointer  :: s_cylinder(:)
 !>   1 / (cylindorical radius)
-      real(kind=kreal)  , allocatable, target  :: a_s_cylinder(:)
+      real(kind=kreal)  , pointer  :: a_s_cylinder(:)
 !
 !>  integer flag for interior element 1...interior, 0...exterior
       integer(kind = kint), allocatable, target :: interior_ele(:)
@@ -349,7 +349,6 @@
       allocate(longitude(node1%numnod))
       allocate(colatitude(node1%numnod))
 !
-      radius = 0.0d00
       a_radius = 0.0d00
       s_cylinder = 0.0d00
       a_s_cylinder = 0.0d00

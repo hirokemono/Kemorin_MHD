@@ -50,7 +50,7 @@
 !
       call alloc_r_ele_cubed_sph(ele1%numele)
       call set_rele_cubed_sph(node1%numnod, ele1%numele, ele1%ie,       &
-     &    radius, r_ele)
+     &    node1%rr, r_ele)
 !
       call allocate_work_4_add_egrp_sph(ele1%numele)
       call count_new_2d_element_group

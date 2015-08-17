@@ -28,8 +28,9 @@
       use m_geometry_data
       use coordinate_converter
 !
-       call position_2_sph(node1%numnod, node1%xx, radius, colatitude,  &
-     &       longitude, a_radius, s_cylinder, a_s_cylinder)
+       call position_2_sph(node1%numnod, node1%xx,                      &
+     &     node1%rr, colatitude, longitude,                             &
+     &     a_radius, s_cylinder, a_s_cylinder)
 !
       end subroutine set_spherical_position
 !

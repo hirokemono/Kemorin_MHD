@@ -48,12 +48,12 @@
      &   (surf1%numsurf, num_linear_sf, maxtot_int_2d, jac1_2d_l)
       call cal_jacobian_surface_linear(jac1_2d_l)
 !
-      if (first_ele_type .eq. 332) then
+      if (ele1%first_ele_type .eq. 332) then
         if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_surface_quad'
         call alloc_2d_jac_type                                          &
      &     (surf1%numsurf, surf1%nnod_4_surf, maxtot_int_2d, jac1_2d_q)
         call cal_jacobian_surface_quad(jac1_2d_q)
-      else if (first_ele_type .eq. 333) then
+      else if (ele1%first_ele_type .eq. 333) then
         if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_surface_lag'
         call alloc_2d_jac_type                                          &
      &     (surf1%numsurf, surf1%nnod_4_surf, maxtot_int_2d, jac1_2d_q)

@@ -41,7 +41,7 @@
 !
       call position_to_local_ele(node1%numnod, ele1%numele,             &
      &    ele1%nnod_4_ele, ele1%ie, np_smp, ele1%istack_ele_smp, k2,    &
-     &    node1%xx, radius, xe, radius_e)
+     &    node1%xx, node1%rr, xe, radius_e)
 !
       end subroutine position_2_each_element
 !

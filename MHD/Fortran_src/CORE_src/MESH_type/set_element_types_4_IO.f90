@@ -65,6 +65,7 @@
       subroutine copy_ele_connect_type_from_IO(ele)
 !
       use m_geometry_constants
+      use set_nnod_4_ele_by_type
 !
       type(element_data), intent(inout) :: ele
       integer(kind = kint) :: iele, k1
@@ -78,13 +79,8 @@
       ele%numele = numele_dummy
       ele%first_ele_type = i_ele_dummy(1)
 !
-      if (ele%first_ele_type .eq. 332) then
-        ele%nnod_4_ele =  num_t_quad
-      else if (ele%first_ele_type .eq. 331) then
-        ele%nnod_4_ele =  num_t_linear
-      else if (ele%first_ele_type .eq. 333) then
-        ele%nnod_4_ele =  num_t_lag
-      end if
+      call set_nnod_4_ele_by_eletype                                    &
+     &   (ele%first_ele_type, ele%nnod_4_ele)
 !
       call allocate_ele_connect_type(ele)
 !

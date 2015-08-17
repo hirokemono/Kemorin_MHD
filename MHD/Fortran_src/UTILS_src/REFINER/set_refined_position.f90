@@ -28,11 +28,11 @@
 !
       if (iflag_interpolate_type .eq. 1) then
         call cal_sph_on_edge_4_refine(node1%numnod, edge1%numedge,      &
-     &      edge1%ie_edge, radius, colatitude, longitude)
+     &      edge1%ie_edge, node1%rr, colatitude, longitude)
         call cal_sph_on_surf_4_refine(node1%numnod, surf1%numsurf,      &
-     &      surf1%ie_surf, radius, colatitude, longitude)
+     &      surf1%ie_surf, node1%rr, colatitude, longitude)
         call cal_sph_on_ele_4_refine(node1%numnod, ele1%numele,         &
-     &      ele1%ie, radius, colatitude, longitude)
+     &      ele1%ie, node1%rr, colatitude, longitude)
 !
         call s_cal_refined_nod_near_pole(node1%numnod,                  &
      &      surf1%numsurf, edge1%numedge, surf1%ie_surf,                &
@@ -58,11 +58,11 @@
      &     (node1%numnod, ele1%numele, ele1%ie, node1%xx)
 !
         call cal_r_on_edge_4_refine (node1%numnod, edge1%numedge,       &
-     &      edge1%ie_edge, node1%xx, radius)
+     &      edge1%ie_edge, node1%xx, node1%rr)
         call cal_r_on_surf_4_refine                                     &
-     &     (node1%numnod, surf1%numsurf, surf1%ie_surf, radius)
+     &     (node1%numnod, surf1%numsurf, surf1%ie_surf, node1%rr)
         call cal_r_on_ele_4_refine                                      &
-     &     (node1%numnod, ele1%numele, ele1%ie, radius)
+     &     (node1%numnod, ele1%numele, ele1%ie, node1%rr)
 !
         call set_x_refine_edge_2_sphere
         call set_x_refine_surf_2_sphere

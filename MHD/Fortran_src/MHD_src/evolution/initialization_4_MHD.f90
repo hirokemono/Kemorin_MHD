@@ -172,7 +172,8 @@
       call s_init_check_delta_t_data
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
-      call set_reference_temp(node1%numnod, node1%xx, radius, a_radius)
+      call set_reference_temp                                           &
+     &   (node1%numnod, node1%xx, node1%rr, a_radius)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property

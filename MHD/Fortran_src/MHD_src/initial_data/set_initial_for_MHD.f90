@@ -61,7 +61,8 @@
          call dschmidt(colatitude(inod))
          call spheric(longitude(inod))
 !
-         call radial_function_sph_vecp(radius(inod), ifl, j_rst, l_rst, &
+         call radial_function_sph_vecp                                  &
+     &      (node1%rr(inod), ifl, j_rst, l_rst,                         &
      &       depth_high_t, depth_low_t)
 !
 !         d_nod(inod,iphys%i_mag_p) = 0.0d0
@@ -70,7 +71,7 @@
 !     &                               + mp(j)*s(j,0)
 !         end do
 !
-         call cvt_spectr_2_field(radius(inod), colatitude(inod))
+         call cvt_spectr_2_field(node1%rr(inod), colatitude(inod))
 !
          call cvt_one_vector_2_cart                                     &
      &      (b_cart, b_pole, colatitude(inod), longitude(inod))
@@ -78,7 +79,7 @@
          d_nod(inod,iphys%i_vecp+1) = b_cart(2)
          d_nod(inod,iphys%i_vecp+2) = b_cart(3)
 !
-         if ( radius(inod) .le. 1.0d-20 ) then
+         if ( node1%rr(inod) .le. 1.0d-20 ) then
            d_nod(inod,iphys%i_magne  ) = 0.0d0
            d_nod(inod,iphys%i_magne+1) = 0.0d0
            d_nod(inod,iphys%i_magne+2) = 0.0d0
@@ -124,7 +125,7 @@
          call dschmidt(colatitude(inod))
          call spheric(longitude(inod))
 !
-         call radial_function_sph(radius(inod), ifl, j_rst, l_rst,      &
+         call radial_function_sph(node1%rr(inod), ifl, j_rst, l_rst,    &
      &       depth_high_t, depth_low_t)
 !
          d_nod(inod,iphys%i_mag_p) = 0.0d0
@@ -133,7 +134,7 @@
      &                               + mp(j)*s(j,0)
          end do
 !
-         call cvt_spectr_2_field(radius(inod), colatitude(inod))
+         call cvt_spectr_2_field(node1%rr(inod), colatitude(inod))
 !
          call cvt_one_vector_2_cart                                     &
      &      (b_cart, b_pole, colatitude(inod), longitude(inod))
@@ -141,7 +142,7 @@
          d_nod(inod,iphys%i_magne+1) = b_cart(2)
          d_nod(inod,iphys%i_magne+2) = b_cart(3)
 !
-         if ( radius(inod)  .le. 1.0d-20 ) then
+         if ( node1%rr(inod)  .le. 1.0d-20 ) then
            d_nod(inod,iphys%i_magne  ) = 0.0d0
            d_nod(inod,iphys%i_magne+1) = 0.0d0
            d_nod(inod,iphys%i_magne+2) = 2.83351986832173d-1
@@ -183,9 +184,9 @@
          call dschmidt(colatitude(inod))
          call spheric(longitude(inod))
 !
-         call radial_function_sph_velo( radius(inod) )
+         call radial_function_sph_velo( node1%rr(inod) )
 !
-         call cvt_spectr_2_field(radius(inod), colatitude(inod))
+         call cvt_spectr_2_field(node1%rr(inod), colatitude(inod))
 !
          call cvt_one_vector_2_cart                                     &
      &      (v_cart, v_pole, colatitude(inod), longitude(inod))

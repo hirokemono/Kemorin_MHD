@@ -155,9 +155,9 @@
 !
 !
       ele1%numele =       ele%numele
-      first_ele_type = ele%first_ele_type
+      ele1%first_ele_type = ele%first_ele_type
 !
-      call set_3D_nnod_4_ele_by_type(first_ele_type,                    &
+      call set_3D_nnod_4_ele_by_type(ele1%first_ele_type,               &
      &    ele1%nnod_4_ele, surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
       call allocate_ele_connect_type(ele1)
@@ -233,9 +233,9 @@
 !
       if(ele_org%numele .ne. ele1%numele) write(*,*) 'numele',          &
      &      my_rank, ele_org%numele, ele1%numele
-      if(ele_org%first_ele_type .ne. first_ele_type) write(*,*)         &
+      if(ele_org%first_ele_type .ne. ele1%first_ele_type) write(*,*)    &
      &       'first_ele_type', my_rank, ele_org%first_ele_type,         &
-     &       first_ele_type
+     &       ele1%first_ele_type
       if(ele_org%nnod_4_ele .ne. ele1%nnod_4_ele) write(*,*)            &
      &      'nnod_4_ele', my_rank, ele_org%nnod_4_ele, ele1%nnod_4_ele
 !

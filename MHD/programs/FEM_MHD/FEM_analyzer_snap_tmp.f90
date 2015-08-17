@@ -197,7 +197,7 @@
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,iphys%i_SGS_m_flux),                                  &
      &    node1%xx(1:node1%numnod,1), node1%xx(1:node1%numnod,2),       &
-     &    node1%xx(1:node1%numnod,3), radius, s_cylinder,               &
+     &    node1%xx(1:node1%numnod,3), node1%rr, s_cylinder,             &
      &    a_radius, a_s_cylinder)
 !$omp end parallel
 !
@@ -215,7 +215,7 @@
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,iphys%i_SGS_m_flux),                                  &
      &    node1%xx(1:node1%numnod,1), node1%xx(1:node1%numnod,2),       &
-     &    node1%xx(1:node1%numnod,3), radius, s_cylinder,               &
+     &    node1%xx(1:node1%numnod,3), node1%rr, s_cylinder,             &
      &    a_radius, a_s_cylinder)
 !$omp end parallel
 !
@@ -235,7 +235,7 @@
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
      &    d_nod(1,iphys%i_velo), node1%xx(1:node1%numnod,1),            &
      &    node1%xx(1:node1%numnod,2), node1%xx(1:node1%numnod,3),       &
-     &    radius, s_cylinder,  a_radius, a_s_cylinder)
+     &    node1%rr, s_cylinder,  a_radius, a_s_cylinder)
 !$omp end parallel
 
 !$omp parallel workshare

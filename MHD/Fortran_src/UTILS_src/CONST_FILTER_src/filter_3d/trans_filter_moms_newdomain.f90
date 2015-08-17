@@ -261,7 +261,8 @@
       use t_filter_moments
       use t_filter_elength
       use filter_moment_IO_select
-      use set_element_connect_4_IO
+      use set_element_types_4_IO
+      use set_nnod_4_ele_by_type
       use set_filter_moms_2_new_mesh
 !
       use t_geometry_data
@@ -287,7 +288,9 @@
         call deallocate_node_data_dummy
         call deallocate_comm_item_IO
 !
-        call copy_element_connect_from_IO
+        call copy_ele_connect_type_from_IO(ele1)
+        call set_3D_nnod_4_sfed_by_ele                                 &
+     &     (ele1%nnod_4_ele, surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
 !  read element length data
 !

@@ -76,13 +76,13 @@
           do j = 1, num_sph_grid(1)+1
             jr = mod( (jr_st+j-ione), (num_sph_grid(1)+1) ) + ione
             if ( jr.eq. num_sph_grid(1)+1 ) then
-              if (radius(inod) .ge. r_divide(num_sph_grid(1)) ) then
+              if (node1%rr(inod) .ge. r_divide(num_sph_grid(1)) ) then
                 jr_bin = jr
                 jr_st = jr - 1
                 exit
               end if
-            else if ( radius(inod) .ge. r_divide(jr-1)                  &
-     &          .and. radius(inod) .lt. r_divide(jr) ) then
+            else if ( node1%rr(inod) .ge. r_divide(jr-1)                &
+     &          .and. node1%rr(inod) .lt. r_divide(jr) ) then
                 jr_bin = jr
                 jr_st = jr - 1
                 exit
@@ -100,7 +100,7 @@
              write(*,*) 'inod, jr_bin, jt_bin, jp_bin'
              write(*,*) inod, jr_bin, jt_bin, jp_bin
              write(*,*) 'position'
-             write(*,*) radius(inod), colatitude(inod), longitude(inod)
+             write(*,*) node1%rr(inod), colatitude(inod), longitude(inod)
           end if
 !
         end do

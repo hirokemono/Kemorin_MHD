@@ -59,8 +59,10 @@
       subroutine set_mesh_data
 !
       use m_nod_comm_table
+      use m_geometry_data
       use set_node_geometry_4_IO
-      use set_element_connect_4_IO
+      use set_element_types_4_IO
+      use set_nnod_4_ele_by_type
       use set_group_data_4_IO
       use set_comm_table_4_IO
 !
@@ -68,7 +70,10 @@
       call copy_comm_tbl_type_from_IO(nod_comm)
 !
       call copy_node_geometry_from_IO
-      call copy_element_connect_from_IO
+      call copy_ele_connect_type_from_IO(ele1)
+!
+      call set_3D_nnod_4_sfed_by_ele                                   &
+     &   (ele1%nnod_4_ele, surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
       call copy_group_data_from_IO
 !
@@ -81,9 +86,9 @@
       use m_nod_comm_table
       use m_geometry_data
       use set_node_types_4_IO
+      use set_element_types_4_IO
       use set_comm_table_4_IO
       use set_node_geometry_4_IO
-      use set_element_connect_4_IO
       use set_group_data_4_IO
 !
       integer(kind = kint), intent(in) :: my_rank
@@ -91,8 +96,10 @@
 !
       call copy_comm_tbl_type_to_IO(my_rank, nod_comm)
       call copy_node_type_to_IO(node1)
-      call copy_element_connect_to_IO
+      call copy_ele_connect_type_to_IO(ele1)
       call copy_group_data_to_IO
+!
+      call deallocate_ele_connect_type(ele1)
       call deallocate_node_geometry
 !
       end subroutine set_mesh_to_IO

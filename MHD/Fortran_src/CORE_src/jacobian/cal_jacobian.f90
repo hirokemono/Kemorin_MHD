@@ -34,7 +34,8 @@
 !
       use m_fem_gauss_int_coefs
 !
-      if    (first_ele_type .eq. 332 .or. first_ele_type .eq. 333) then
+      if      (ele1%first_ele_type .eq. 332                             &
+     &    .or. ele1%first_ele_type .eq. 333) then
         call maximum_integration_points(ithree)
       else
         call maximum_integration_points(itwo)
@@ -94,24 +95,24 @@
 !
       call cal_jacobian_trilinear
 !
-      if (first_ele_type .eq. 332) then
+      if (ele1%first_ele_type .eq. 332) then
         call cal_jacobian_quad
-      else if (first_ele_type .eq. 333) then
+      else if (ele1%first_ele_type .eq. 333) then
         call cal_jacobian_lag
       end if
 !
       if (infty_list%ngrp_sf .ne. 0) then
         call cal_jacobian_infinity(sf_grp1)
 !
-        if (first_ele_type .eq. 332) then
+        if (ele1%first_ele_type .eq. 332) then
           call cal_jacobian_infty_quad(sf_grp1)
-        else if (first_ele_type .eq. 333) then
+        else if (ele1%first_ele_type .eq. 333) then
           call cal_jacobian_infty_lag(sf_grp1)
         end if
 !
       end if
 !
-      if (first_ele_type .eq. 331) then
+      if (ele1%first_ele_type .eq. 331) then
         call copy_jacobians_quad
         call copy_dxi_dx_2_quad
         if (infty_list%ngrp_sf .ne. 0) then

@@ -9,6 +9,7 @@
 !!@verbatim
 !!      subroutine set_3D_nnod_4_ele_by_type(itype,                     &
 !!     &          nnod_4_ele, nnod_4_surf, nnod_4_edge)
+!!      subroutine set_nnod_4_ele_by_eletype(itype, nnod_4_ele)
 !!      subroutine set_3D_nnod_4_sfed_by_ele                            &
 !!     &         (nnod_4_ele, nnod_4_surf, nnod_4_edge)
 !!      subroutine set_3D_nnod_4_sfed_by_ele,                           &
@@ -38,22 +39,32 @@
       integer(kind = kint), intent(inout) :: nnod_4_surf
       integer(kind = kint), intent(inout) :: nnod_4_edge
 !
-
-      if (itype .eq. 332) then
-        nnod_4_ele =  num_t_quad
-        nnod_4_surf = num_quad_sf
-        nnod_4_edge = num_quad_edge
-      else if (itype .eq. 331) then
-        nnod_4_ele =  num_t_linear
-        nnod_4_surf = num_linear_sf
-        nnod_4_edge = num_linear_edge
-      else if (itype .eq. 333) then
-        nnod_4_ele =  num_t_lag
-        nnod_4_surf = num_lag_sf
-        nnod_4_edge = num_quad_edge
-      end if
+!
+      call set_nnod_4_ele_by_eletype(itype, nnod_4_ele)
+      call set_3D_nnod_4_sfed_by_ele                                   &
+     &   (nnod_4_ele, nnod_4_surf, nnod_4_edge)
 !
       end subroutine set_3D_nnod_4_ele_by_type
+!
+!------------------------------------------------------------------
+!
+      subroutine set_nnod_4_ele_by_eletype(itype, nnod_4_ele)
+!
+      use m_geometry_constants
+!
+      integer(kind = kint), intent(in) :: itype
+      integer(kind = kint), intent(inout) :: nnod_4_ele
+!
+!
+      if (itype .eq. 332) then
+        nnod_4_ele =  num_t_quad
+      else if (itype .eq. 333) then
+        nnod_4_ele =  num_t_lag
+      else if (itype .eq. 331) then
+        nnod_4_ele =  num_t_linear
+      end if
+!
+      end subroutine set_nnod_4_ele_by_eletype
 !
 !------------------------------------------------------------------
 !

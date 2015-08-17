@@ -62,7 +62,7 @@
 
       else if (NTYP_div .eq. iPART_RCB_SPH) then
         call rcb_spherical(node1%numnod, node1%internal_node,           &
-     &      radius, colatitude, longitude)
+     &      node1%rr, colatitude, longitude)
 !
 !C
 !C +------------------------------+
@@ -76,13 +76,14 @@
 !
       else if (NTYP_div .eq. iPART_EQ_SPH) then
         call eb_spherical(node1%numnod, node1%internal_node,            &
-     &      radius, colatitude, longitude)
+     &      node1%rr, colatitude, longitude)
 !
       else if (NTYP_div .eq. iPART_LAYER_SPH) then
         call eb_spherical_w_egrp(node1%numnod, node1%internal_node,     &
      &    ele_grp%num_grp, ele_grp%grp_name,                            &
      &    ele_grp_data%node%ntot_e_grp, ele_grp_data%node%istack_e_grp, &
-     &    ele_grp_data%node%item_e_grp, radius, colatitude, longitude)
+     &    ele_grp_data%node%item_e_grp,                                 &
+     &    node1%rr, colatitude, longitude)
 !
 !
 !C
@@ -91,8 +92,9 @@
 !C +------------------------------+
 !C===
       else if (NTYP_div .eq. iPART_CUBED_SPHERE) then
-        call divide_by_sphere_coord(num_domain, node1%numnod,           &
-     &      ele1%nnod_4_ele, node1%xx, radius, colatitude, longitude,   &
+        call divide_by_sphere_coord(num_domain,                         &
+     &      node1%numnod, ele1%nnod_4_ele, node1%xx,                    &
+     &      node1%rr, colatitude, longitude,                            &
      &      nod_grp%num_grp, nod_grp%num_item, nod_grp%istack_grp,      &
      &      nod_grp%item_grp, nod_grp%grp_name)
 !C

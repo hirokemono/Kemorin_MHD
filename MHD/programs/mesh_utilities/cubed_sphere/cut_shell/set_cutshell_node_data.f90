@@ -144,7 +144,8 @@
 !
       new_node%numnod = 0
       do inod = 1, node1%numnod
-        if ( radius(inod) .ge. r_ICB .and. radius(inod).le. r_CMB) then
+        if      (node1%rr(inod) .ge. r_ICB                              &
+     &     .and. node1%rr(inod) .le. r_CMB) then
           new_node%numnod = new_node%numnod + 1
         end if
       end do
@@ -161,7 +162,8 @@
 !
       new_node%numnod = 0
       do inod = 1, node1%numnod
-        if ( radius(inod) .ge. r_ICB .and. radius(inod).le. r_CMB       &
+        if     (node1%rr(inod) .ge. r_ICB                               &
+     &    .and. node1%rr(inod) .le. r_CMB                               &
      &    .and. node1%xx(inod,3) .gt. -1.0d-11) then
           new_node%numnod = new_node%numnod + 1
         end if
@@ -227,7 +229,8 @@
       icou = 0
       do inod = 1, node1%numnod
 !
-        if ( radius(inod) .ge. r_ICB .and. radius(inod).le. r_CMB) then
+        if       (node1%rr(inod) .ge. r_ICB                             &
+     &      .and. node1%rr(inod) .le. r_CMB) then
           icou = icou + 1
           new_node%inod_global(icou) = icou
           new_node%xx(icou,1:3) = node1%xx(inod,1:3)
@@ -249,7 +252,8 @@
       icou = 0
       do inod = 1, node1%numnod
 !
-        if ( radius(inod) .ge. r_ICB .and. radius(inod).le. r_CMB       &
+        if     (node1%rr(inod) .ge. r_ICB                               &
+     &    .and. node1%rr(inod) .le. r_CMB                               &
      &    .and. node1%xx(inod,3) .gt. -1.0d-11) then
           icou = icou + 1
           new_node%inod_global(icou) = icou
@@ -278,12 +282,12 @@
         if (nod_grp%grp_name(i) .eq. 'ICB') then
           do inum = nod_grp%istack_grp(i-1)+1, nod_grp%istack_grp(i)
             inod = nod_grp%item_grp(inum)
-            r_ICB = min(r_ICB,radius(inod))
+            r_ICB = min(r_ICB,node1%rr(inod))
           end do
         else if (nod_grp%grp_name(i) .eq. 'CMB') then
           do inum = nod_grp%istack_grp(i-1)+1, nod_grp%istack_grp(i)
             inod = nod_grp%item_grp(inum)
-            r_CMB = max(r_CMB,radius(inod))
+            r_CMB = max(r_CMB,node1%rr(inod))
           end do
         end if
       end do

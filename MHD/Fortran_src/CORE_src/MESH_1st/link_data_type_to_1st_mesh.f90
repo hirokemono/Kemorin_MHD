@@ -5,7 +5,7 @@
 !
 !      subroutine link_single_ele_list_type(surf, edge)
 !
-!      subroutine link_node_data_type(node)
+!      subroutine link_node_data_type(node_new)
 !      subroutine link_element_data_type(ele_new)
 !      subroutine link_surface_data_type(surf)
 !      subroutine link_edge_data_type(edge)
@@ -46,32 +46,32 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine link_node_data_type(node)
+      subroutine link_node_data_type(node_new)
 !
       use t_geometry_data
       use m_geometry_data
 !
-      type(node_data), intent(inout) :: node
+      type(node_data), intent(inout) :: node_new
 !
 !
-      node%numnod =        node1%numnod
-      node%internal_node = node1%internal_node
+      node_new%numnod =        node1%numnod
+      node_new%internal_node = node1%internal_node
 !
-      node%inod_global => node1%inod_global
-      node%xx =>  node1%xx
+      node_new%inod_global => node1%inod_global
+      node_new%xx =>  node1%xx
 !
-      node%rr =>    radius
-      node%a_r =>   a_radius
-      node%theta => colatitude
-      node%phi =>   longitude
-      node%ss =>    s_cylinder
-      node%a_s =>   a_s_cylinder
+      node_new%rr =>    node1%rr
+      node_new%a_r =>   a_radius
+      node_new%theta => colatitude
+      node_new%phi =>   longitude
+      node_new%ss =>    s_cylinder
+      node_new%a_s =>   a_s_cylinder
 !
-      node%max_nod_smp =          node1%max_nod_smp
-      node%max_internal_nod_smp = node1%max_internal_nod_smp
+      node_new%max_nod_smp =          node1%max_nod_smp
+      node_new%max_internal_nod_smp = node1%max_internal_nod_smp
 !
-      node%istack_nod_smp =>      node1%istack_nod_smp
-      node%istack_internal_smp => node1%istack_internal_smp
+      node_new%istack_nod_smp =>      node1%istack_nod_smp
+      node_new%istack_internal_smp => node1%istack_internal_smp
 !
       end subroutine link_node_data_type
 !

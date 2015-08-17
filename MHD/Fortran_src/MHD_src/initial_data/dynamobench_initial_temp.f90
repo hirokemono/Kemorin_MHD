@@ -51,9 +51,9 @@
 !
 !$omp parallel do
       do inod = 1, node1%numnod
-        if(radius(inod) .lt. depth_high_t)                              &
+        if(node1%rr(inod) .lt. depth_high_t)                            &
      &                 d_nod(inod,iphys%i_temp) = one
-        if(radius(inod) .gt. depth_low_t)                               &
+        if(node1%rr(inod) .gt. depth_low_t)                             &
      &                 d_nod(inod,iphys%i_temp) = zero
       end do
 !$omp end parallel do
@@ -62,7 +62,7 @@
       do inum = 1, numnod_fluid
         inod = inod_fluid(inum)
 !
-        xr = two * radius(inod)                                         &
+        xr = two * node1%rr(inod)                                       &
      &      - one * (depth_low_t+depth_high_t)                          &
      &       / (depth_low_t-depth_high_t)
         sit = sin( colatitude(inod) )
@@ -71,7 +71,7 @@
         d_nod(inod,iphys%i_temp) =                                      &
      &            - depth_high_t/(depth_low_t-depth_high_t)             &
      &             + (depth_high_t*depth_low_t)*one                     &
-     &             / ( ( depth_low_t-depth_high_t )**2 * radius(inod) ) &
+     &           / ( ( depth_low_t-depth_high_t )**2 * node1%rr(inod) ) &
      &            + 0.1d0 * ( one - 3.0d0*xr**2 + 3.0d0*xr**4           &
      &             - xr**6) * sit**4 * csp                              &
      &           * 2.10d2 / (sqrt( 1.792d4 *pi ))
