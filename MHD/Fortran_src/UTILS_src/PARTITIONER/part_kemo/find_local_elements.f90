@@ -35,15 +35,17 @@
       call alloc_num_4_near_nod(NP, included_ele)
       allocate (imark_ele(ele1%numele))
 !
-      call count_ele_in_subdomain(NP, nnod_s_domin, IGROUP_nod,         &
-     &    node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie, nodelm,  &
+      call count_ele_in_subdomain                                       &
+     &   (NP, nnod_s_domin, IGROUP_nod, node1%numnod,                   &
+     &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%nodelm,           &
      &    included_ele%ntot, included_ele%num_nod,                      &
      &    included_ele%istack_nod)
 !
       call alloc_near_element(included_ele)
 !
-      call set_ele_in_subdomain(NP, nnod_s_domin, IGROUP_nod,           &
-     &    node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie, nodelm,  &
+      call set_ele_in_subdomain                                         &
+     &   (NP, nnod_s_domin, IGROUP_nod, node1%numnod,                   &
+     &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%nodelm,           &
      &    included_ele%ntot, included_ele%istack_nod,                   &
      &    included_ele%id_near_nod)
 

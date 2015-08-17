@@ -94,7 +94,7 @@
 !
       ele_new%iele_global => ele1%iele_global
       ele_new%elmtyp =>      ele1%elmtyp
-      ele_new%nodelm => nodelm
+      ele_new%nodelm =>      ele1%nodelm
 !
       ele_new%istack_ele_smp =>  ele1%istack_ele_smp
       ele_new%max_ele_smp =      ele1%max_ele_smp

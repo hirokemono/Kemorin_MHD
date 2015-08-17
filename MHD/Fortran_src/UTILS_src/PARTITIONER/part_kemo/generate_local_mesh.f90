@@ -44,7 +44,7 @@
 !C
 !C
 !C-- OVERLAPPED ELEMENTs
-      call count_overlapped_ele(ele1%numele, nodelm(1), ele1%ie)
+      call count_overlapped_ele(ele1%numele, ele1%nodelm(1), ele1%ie)
 !
       call CRE_LOCAL_DATA(num_domain, included_ele)
       call increase_overlapping(num_domain, n_overlap, i_sleeve_ele,    &

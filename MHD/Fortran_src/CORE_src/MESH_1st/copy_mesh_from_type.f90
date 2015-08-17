@@ -176,12 +176,12 @@
       do iele = 1, ele1%numele
         ele1%iele_global(iele) = ele%iele_global(iele)
         ele1%elmtyp(iele) =      ele%elmtyp(iele)
-        nodelm(iele) =      ele%nodelm(iele)
+        ele1%nodelm(iele) =      ele%nodelm(iele)
       end do
 !$omp end do
 !$omp end parallel
 !
-      elmtyp = ele1%elmtyp
+      nodelm = ele1%nodelm
       call deallocate_ele_connect_type(ele)
 !
       end subroutine copy_element_connect_from_type
@@ -251,12 +251,13 @@
      &       ele_org%iele_global(i), ele1%iele_global(i)
         if(ele_org%elmtyp(i) .ne. ele1%elmtyp(i)) write(*,*)            &
      &       'elmtyp(i)', my_rank, i, ele_org%elmtyp(i), ele1%elmtyp(i)
-        if(ele_org%nodelm(i) .ne. nodelm(i)) write(*,*) 'nodelm(i)',    &
-     &       my_rank, i, ele_org%nodelm(i), nodelm(i)
+        if(ele_org%nodelm(i) .ne. ele1%nodelm(i)) write(*,*)            &
+     &       'nodelm(i)', my_rank, i, ele_org%nodelm(i), ele1%nodelm(i)
         if(iflag .gt. 0) then
           do k1 = 1, ele1%nnod_4_ele
-            if(ele_org%nodelm(i) .ne. nodelm(i)) write(*,*) 'ie(i,k)',  &
-     &         my_rank, i, k1, ele_org%ie(i,k1), ele1%ie(i,k1)
+            if(ele_org%nodelm(i) .ne. ele1%nodelm(i)) write(*,*)        &
+     &         'ie(i,k)', my_rank, i, k1,                               &
+     &         ele_org%ie(i,k1), ele1%ie(i,k1)
           end do
         end if
       end do

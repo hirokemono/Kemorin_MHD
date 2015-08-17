@@ -50,7 +50,7 @@
         ied = istack_numele_sub(ip)
         do inum = ist, ied
           iele = iele_4_subdomain(inum)
-          do k = 1, nodelm(iele)
+          do k = 1, ele1%nodelm(iele)
             inod= ele1%ie(iele,k)
             if (IGROUP_nod(inod).ne.ip .and. imark_nod(inod).eq.0) then
               numnod_4_subdomain(ip) = numnod_4_subdomain(ip) + 1
@@ -90,7 +90,7 @@
         ied = istack_numele_sub(ip)
         do inum = ist, ied
           iele = iele_4_subdomain(inum)
-          do k = 1, nodelm(iele)
+          do k = 1, ele1%nodelm(iele)
             inod = ele1%ie(iele,k)
             if (IGROUP_nod(inod).ne.ip .and. imark_nod(inod).eq.0) then
               icou = icou + 1

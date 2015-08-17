@@ -177,7 +177,7 @@
 !
 
 !>     element type id   (where i:element id)
-      integer(kind=kint), allocatable, target  ::  elmtyp(:)
+!      integer(kind=kint), allocatable, target  ::  elmtyp(:)
 !>     element type id   (where i:element id)
       integer(kind=kint), allocatable, target  ::  nodelm(:)
 !>     global node    id (where i:node id)
@@ -379,11 +379,9 @@
 !
 !
 !      allocate(iele_global(ele1%numele))
-      allocate(elmtyp(ele1%numele))
+!      allocate(elmtyp(ele1%numele))
       allocate(nodelm(ele1%numele))
 !      allocate(ie(ele1%numele,ele1%nnod_4_ele))
-!
-      nodelm = 0
 !
       end subroutine allocate_element_connection
 !
@@ -405,7 +403,6 @@
 !
       subroutine deallocate_element_connection
 !
-      deallocate(elmtyp)
       deallocate(nodelm)
 !
       end subroutine deallocate_element_connection

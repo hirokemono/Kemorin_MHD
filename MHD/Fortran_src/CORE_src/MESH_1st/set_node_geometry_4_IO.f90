@@ -29,22 +29,12 @@
 !
       subroutine copy_node_geometry_to_IO
 !
+      use set_node_types_4_IO
+!
       integer(kind = kint) :: inod
 !
 !
-      numnod_dummy =        node1%numnod
-      internal_node_dummy = node1%internal_node
-!
-      call allocate_node_data_dummy
-!
-!$omp parallel do
-      do inod = 1, node1%numnod
-        globalnodid_dummy(inod) = node1%inod_global(inod)
-        xx_dummy(inod,1) = node1%xx(inod,1)
-        xx_dummy(inod,2) = node1%xx(inod,2)
-        xx_dummy(inod,3) = node1%xx(inod,3)
-      end do
-!$omp end parallel do
+      call copy_node_type_to_IO(node1)
 !
       end subroutine copy_node_geometry_to_IO
 !

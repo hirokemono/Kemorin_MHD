@@ -102,7 +102,7 @@
 !
       ele%iele_global => ele1%iele_global
       ele%elmtyp =>      ele1%elmtyp
-      ele%nodelm =>      nodelm
+      ele%nodelm =>      ele1%nodelm
       ele%ie =>          ele1%ie
 !
       end subroutine link_first_ele_connect_type

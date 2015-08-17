@@ -66,7 +66,7 @@
       do inum = 1, numele_4_subdomain(ip)
         iele = iele_4_subdomain(inum+ist)
         new_ele%iele_global(inum) = iele
-        new_ele%nodelm(inum) = nodelm(iele)
+        new_ele%nodelm(inum) = ele1%nodelm(iele)
         new_ele%elmtyp(inum) = ele1%elmtyp(iele)
 !
         iele_local_part(iele)= inum 

@@ -89,8 +89,8 @@
            icou = icou + 1
            new_ele%iele_global(icou) = icou
            new_ele%elmtyp(icou) = ele1%elmtyp(iele)
-           new_ele%nodelm(icou) = nodelm(iele)
-           do i = 1, nodelm(iele)
+           new_ele%nodelm(icou) = ele1%nodelm(iele)
+           do i = 1, ele1%nodelm(iele)
              inod = ele1%ie(iele,i)
              new_ele%ie(icou,i) = mark_new_node(inod)
            end do
