@@ -55,7 +55,7 @@
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &
      &    edge_ele_tbl%iflag_hash, edge1%numedge)
 !
-      call allocate_edge_connect
+      call allocate_edge_connect_type(edge1, surf1%numsurf)
       call allocate_edge_4_ele
 !
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_by_ele'
@@ -63,12 +63,13 @@
      &    edge1%numedge, ele1%nnod_4_ele, edge1%nnod_4_edge, ele1%ie,   &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &
      &    edge_ele_tbl%id_hash, edge_ele_tbl%iflag_hash,                &
-     &    edge1%ie_edge, iedge_4_ele, edge1%node_on_edge)
+     &    edge1%ie_edge, edge1%iedge_4_ele, edge1%node_on_edge)
+      iedge_4_ele = edge1%iedge_4_ele
 !
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_4_sf'
       call set_edges_connect_4_sf(node1%numnod, ele1%numele,            &
      &    surf1%numsurf, edge1%numedge, surf1%nnod_4_surf,              &
-     &    edge1%nnod_4_edge, surf1%ie_surf, iedge_4_ele,                &
+     &    edge1%nnod_4_edge, surf1%ie_surf, edge1%iedge_4_ele,          &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%id_hash,               &
      &    edge_ele_tbl%iflag_hash, edge1%ie_edge, edge1%iedge_4_sf)
 !
@@ -89,13 +90,13 @@
 !
 !
       call allocate_ele_4_edge_num
-      call count_ele_list_4_edge(ele1%numele, edge1%numedge,            &
-     &    nedge_4_ele, iedge_4_ele, ntot_iele_4_edge, num_iele_4_edge,  &
-     &    istack_iele_4_edge)
+      call count_ele_list_4_edge                                        &
+     &   (ele1%numele, edge1%numedge, nedge_4_ele, edge1%iedge_4_ele,   &
+     &    ntot_iele_4_edge, num_iele_4_edge, istack_iele_4_edge)
 !
       call allocate_ele_4_edge_item
       call set_ele_list_4_edge(ele1%numele, edge1%numedge, nedge_4_ele, &
-     &    iedge_4_ele, ntot_iele_4_edge, num_iele_4_edge,               &
+     &    edge1%iedge_4_ele, ntot_iele_4_edge, num_iele_4_edge,         &
      &    istack_iele_4_edge, iele_4_edge)
 !
       end subroutine const_element_list_4_edge

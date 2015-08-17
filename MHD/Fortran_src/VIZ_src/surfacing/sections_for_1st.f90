@@ -85,8 +85,8 @@
       call cross_section_init(node1%numnod, node1%internal_node,        &
      &    ele1%numele, surf1%numsurf, edge1%numedge,                    &
      &    ele1%nnod_4_ele, edge1%nnod_4_edge, ele1%ie, edge1%ie_edge,   &
-     &    surf1%isf_4_ele, edge1%iedge_4_sf,                            &
-     &    iedge_4_ele, nod_comm, edge_comm, interior_ele,               &
+     &    surf1%isf_4_ele, edge1%iedge_4_sf, edge1%iedge_4_ele,         &
+     &    nod_comm, edge_comm, interior_ele,                            &
      &    node1%xx, node1%istack_nod_smp, ele1%istack_ele_smp,          &
      &    surf1%istack_surf_smp, edge1%istack_edge_smp,                 &
      &    ele_grp1, sf_grp1, sf_grp_nod1, num_nod_phys, phys_nod_name)
@@ -145,7 +145,7 @@
       call isosurface_main                                              &
      &   (istep_iso, node1%numnod, node1%internal_node, ele1%numele,    &
      &    edge1%numedge, ele1%nnod_4_ele, edge1%nnod_4_edge,            &
-     &    ele1%ie, edge1%ie_edge, iedge_4_ele, node1%xx,                &
+     &    ele1%ie, edge1%ie_edge, edge1%iedge_4_ele, node1%xx,          &
      &    node1%rr, node1%a_r, node1%ss, node1%a_s,                     &
      &    node1%istack_nod_smp, edge_comm,                              &
      &    num_nod_phys, num_tot_nod_phys, istack_nod_component, d_nod)

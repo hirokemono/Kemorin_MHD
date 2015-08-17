@@ -42,7 +42,7 @@
 !
       call allocate_node_geometry_type(node1)
       call allocate_sph_node_geometry(node1)
-      call allocate_edge_connect
+      call allocate_edge_connect_type(edge1, surf1%numsurf)
 !
       call set_element_z_commute
       call set_global_id_z_commute
@@ -108,7 +108,7 @@
       end do
 !
       do i = 1, ele1%numele
-        iedge_global(i) = node1%inod_global(edge1%ie_edge(i,1))
+        edge1%iedge_global(i) = node1%inod_global(edge1%ie_edge(i,1))
       end do
 !
       end subroutine set_global_id_z_commute

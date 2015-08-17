@@ -115,9 +115,9 @@
       do inum = 1, ele%numele
         iele = ele%iele_global(inum)
         do k1 = 1, nedge_4_ele
-          iedge = abs(iedge_4_ele(iele,k1))
+          iedge = abs(edge1%iedge_4_ele(iele,k1))
           edge%iedge_4_ele(inum,k1) = iedge_local_part(iedge)           &
-     &                               * (iedge_4_ele(iele,k1) / iedge)
+     &                           * (edge1%iedge_4_ele(iele,k1) / iedge)
         end do
       end do
 !

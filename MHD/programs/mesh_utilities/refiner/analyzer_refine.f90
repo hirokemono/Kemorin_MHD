@@ -131,7 +131,7 @@
         write(*,*) 'check_hanging_surface'
         call check_hanging_surface                                      &
      &     (ele1%numele, surf1%numsurf, edge1%numedge,                  &
-     &      surf1%isf_4_ele, iele_4_surf, iedge_4_ele)
+     &      surf1%isf_4_ele, iele_4_surf, edge1%iedge_4_ele)
 !
 !      call check_refine_flags(ele1%numele, surf1%numsurf, edge1%numedge)
 !      call check_local_refine_flags                                    &

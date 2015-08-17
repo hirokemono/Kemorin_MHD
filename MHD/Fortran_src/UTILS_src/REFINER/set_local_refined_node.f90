@@ -313,12 +313,12 @@
       inod_refine_edge_local = 0
 !
       do k1 = 1, nedge_4_ele
-        iedge = abs( iedge_4_ele(iele,k1) )
+        iedge = abs( edge1%iedge_4_ele(iele,k1) )
         icou = istack_nod_refine_edge(iedge-1)
         if ( num_nod_refine_edge(iedge) .eq. 1) then
           inod_refine_edge_local(k1,1) = inod_refine_edge(icou+1)
         else if (num_nod_refine_edge(iedge) .eq. 2) then
-          if (iedge .eq. iedge_4_ele(iele,k1)) then
+          if (iedge .eq. edge1%iedge_4_ele(iele,k1)) then
             inod_refine_edge_local(k1,1) = inod_refine_edge(icou+1)
             inod_refine_edge_local(k1,2) = inod_refine_edge(icou+2)
           else

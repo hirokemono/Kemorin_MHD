@@ -60,7 +60,7 @@
       isf_4_ele_IO(1:surf1%numsurf,1:nedge_4_surf)                      &
      &        = edge1%iedge_4_sf(1:surf1%numsurf,1:nedge_4_surf)
       iedge_4_ele_IO(1:ele1%numele,1:nedge_4_ele)                       &
-     &        = iedge_4_ele(1:ele1%numele,1:nedge_4_ele)
+     &        = edge1%iedge_4_ele(1:ele1%numele,1:nedge_4_ele)
 !
       end subroutine copy_edge_connect_to_IO
 !

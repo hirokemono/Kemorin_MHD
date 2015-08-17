@@ -8,7 +8,7 @@
 !      subroutine link_node_data_type(node_new)
 !      subroutine link_element_data_type(ele_new)
 !      subroutine link_surface_data_type(surf)
-!      subroutine link_edge_data_type(edge)
+!      subroutine link_edge_data_type(edge_new)
 !
 !      subroutine link_ele_geometry_type(ele)
 !
@@ -103,46 +103,46 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine link_surface_data_type(surf)
+      subroutine link_surface_data_type(surf_new)
 !
       use t_surface_data
       use m_geometry_data
 !
-      type(surface_data), intent(inout) :: surf
+      type(surface_data), intent(inout) :: surf_new
 !
 !
-      surf%numsurf =     surf1%numsurf
-      surf%nnod_4_surf = surf1%nnod_4_surf
+      surf_new%numsurf =     surf1%numsurf
+      surf_new%nnod_4_surf = surf1%nnod_4_surf
 !
-      surf%ie_surf =>       surf1%ie_surf
-      surf%isf_4_ele =>     surf1%isf_4_ele
-      surf%interior_surf => surf1%interior_surf
+      surf_new%ie_surf =>       surf1%ie_surf
+      surf_new%isf_4_ele =>     surf1%isf_4_ele
+      surf_new%interior_surf => surf1%interior_surf
 !
-      surf%istack_surf_smp => surf1%istack_surf_smp
-      surf%max_surf_smp =     surf1%max_surf_smp
+      surf_new%istack_surf_smp => surf1%istack_surf_smp
+      surf_new%max_surf_smp =     surf1%max_surf_smp
 !
       end subroutine link_surface_data_type
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine link_edge_data_type(edge)
+      subroutine link_edge_data_type(edge_new)
 !
       use t_edge_data
       use m_geometry_data
 !
-      type(edge_data), intent(inout) :: edge
+      type(edge_data), intent(inout) :: edge_new
 !
 !
-      edge%numedge =       edge1%numedge
-      edge%nnod_4_edge =   edge1%nnod_4_edge
+      edge_new%numedge =       edge1%numedge
+      edge_new%nnod_4_edge =   edge1%nnod_4_edge
 !
-      edge%ie_edge =>       edge1%ie_edge
-      edge%iedge_4_sf =>    edge1%iedge_4_sf
-      edge%iedge_4_ele =>   iedge_4_ele
-      edge%interior_edge => edge1%interior_edge
+      edge_new%ie_edge =>       edge1%ie_edge
+      edge_new%iedge_4_sf =>    edge1%iedge_4_sf
+      edge_new%iedge_4_ele =>   edge1%iedge_4_ele
+      edge_new%interior_edge => edge1%interior_edge
 !
-      edge%istack_edge_smp => edge1%istack_edge_smp
-      edge%max_edge_smp =     edge1%max_edge_smp
+      edge_new%istack_edge_smp => edge1%istack_edge_smp
+      edge_new%max_edge_smp =     edge1%max_edge_smp
 !
       end subroutine link_edge_data_type
 !

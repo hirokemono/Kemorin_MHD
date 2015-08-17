@@ -21,7 +21,6 @@
 !!
 !!      subroutine allocate_element_geometry
 !!
-!!      subroutine allocate_edge_connect
 !!      subroutine allocate_edge_4_ele
 !!
 !!      subroutine allocate_ele_4_surf
@@ -30,7 +29,6 @@
 !!      subroutine allocate_surf_4_edge_num
 !!      subroutine allocate_surf_4_edge_item
 !!
-!!      subroutine deallocate_edge_connect
 !!      subroutine deallocate_edge_4_ele
 !!      subroutine deallocate_ele_4_surf
 !!      subroutine deallocate_ele_4_edge_item
@@ -79,7 +77,7 @@
 !
 !>     Structure for edge data
       type(edge_data), save :: edge1
-!  edge1%iedge_global
+!  edge1%iedge_4_ele
 !
 !>   Stack list of number of node
       integer(kind=kint_gl), allocatable, target  :: istack_numnod(:)
@@ -177,7 +175,7 @@
 !>     global surface id (where i:surface id)
 !      integer(kind=kint_gl), allocatable, target  ::  isurf_global(:)
 !>     global edge id (where i:edge id)
-      integer(kind=kint_gl), allocatable, target  ::  iedge_global(:)
+!      integer(kind=kint_gl), allocatable, target  ::  iedge_global(:)
 !
 !>   distance from the center
 !      real(kind=kreal)  , pointer  :: radius(:)
@@ -385,27 +383,12 @@
 !
 ! ------------------------------------------------------
 !
-      subroutine allocate_edge_connect
-!
-      use m_geometry_constants
-!
-      call allocate_edge_connect_type(edge1, surf1%numsurf)
-!
-!      allocate( iedge_4_sf(surf1%numsurf,nedge_4_surf) )
-!      allocate( ie_edge(edge1%numedge,edge1%nnod_4_edge) )
-      allocate( iedge_global(edge1%numedge) )
-!      allocate( interior_edge(edge1%numedge) )
-!
-      end subroutine allocate_edge_connect
-!
-! ------------------------------------------------------
-!
       subroutine allocate_edge_4_ele
 !
       use m_geometry_constants
 !
+      call allocate_edge_4_ele_type(edge1, ele1%numele)
       allocate( iedge_4_ele(ele1%numele,nedge_4_ele) )
-      iedge_4_ele = 0
 !
       end subroutine allocate_edge_4_ele
 !
@@ -469,16 +452,9 @@
 ! ------------------------------------------------------
 ! ------------------------------------------------------
 !
-      subroutine deallocate_edge_connect
-!
-      deallocate( iedge_global )
-!
-      end subroutine deallocate_edge_connect
-!
-! ------------------------------------------------------
-!
       subroutine deallocate_edge_4_ele
 !
+      call deallocate_edge_4_ele_type(edge1)
       deallocate( iedge_4_ele )
 !
       end subroutine deallocate_edge_4_ele

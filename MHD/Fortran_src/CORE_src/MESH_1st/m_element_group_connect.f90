@@ -115,7 +115,7 @@
       call alloc_num_other_grp(ele_grp%num_grp, ele_grp_data1%edge)
 !
       call count_nod_4_ele_grp                                          &
-     &   (edge1%numedge, ele1%numele, nedge_4_ele, iedge_4_ele,         &
+     &   (edge1%numedge, ele1%numele, nedge_4_ele, edge1%iedge_4_ele,   &
      &    ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,        &
      &    ele_grp%item_grp, ele_grp_data1%edge%ntot_e_grp,              &
      &    ele_grp_data1%edge%nitem_e_grp,                               &
@@ -125,7 +125,7 @@
       call alloc_item_other_grp(ele_grp_data1%edge)
 !
       call set_nod_4_ele_grp                                            &
-     &   (edge1%numedge, ele1%numele, nedge_4_ele, iedge_4_ele,         &
+     &   (edge1%numedge, ele1%numele, nedge_4_ele, edge1%iedge_4_ele,   &
      &    ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,        &
      &    ele_grp%item_grp, ele_grp_data1%edge%ntot_e_grp,              &
      &    ele_grp_data1%edge%nitem_e_grp,                               &

@@ -77,8 +77,8 @@
         end do
 !
         do ied_ele = 1, nedge_4_ele
-          iedge = abs(iedge_4_ele(iele,ied_ele))
-          isig = iedge_4_ele(iele,ied_ele) / iedge
+          iedge = abs(edge1%iedge_4_ele(iele,ied_ele))
+          isig = edge1%iedge_4_ele(iele,ied_ele) / iedge
 !
             ist = istack_nod_refine_edge(iedge-1) + 1
             ied = istack_nod_refine_edge(iedge)

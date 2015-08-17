@@ -43,8 +43,8 @@
 !
       do iele = 1, ele1%numele
         do k1 = 1, nedge_4_ele
-          iedge = abs(iedge_4_ele(iele,k1))
-          if (iedge .eq. iedge_4_ele(iele,k1) ) then
+          iedge = abs(edge1%iedge_4_ele(iele,k1))
+          if (iedge .eq. edge1%iedge_4_ele(iele,k1) ) then
             iflag_refine_edge(iedge) = iflag_refine_ed_lcl(k1,iele)
           end if
         end do

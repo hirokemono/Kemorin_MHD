@@ -138,7 +138,7 @@
       call deallocate_node_param_smp_type(node1)
 !
       call deallocate_edge_4_ele
-      call deallocate_edge_connect
+      call deallocate_edge_connect_type(edge1)
       call deallocate_surface_connect_type(surf1)
       call deallocate_element_geometry
 !

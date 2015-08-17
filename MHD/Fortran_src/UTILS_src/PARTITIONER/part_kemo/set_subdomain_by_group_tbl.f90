@@ -200,7 +200,7 @@
         do inum = ist, ied
           iele = iele_4_subdomain(inum)
           do k = 1, nedge_4_ele
-            iedge = abs( iedge_4_ele(iele,k) )
+            iedge = abs( edge1%iedge_4_ele(iele,k) )
             if (imark_edge(iedge).eq.0) then
               numedge_4_subdomain(ip) = numedge_4_subdomain(ip) + 1
               imark_edge(iedge) = 1
@@ -233,7 +233,7 @@
         do inum = ist, ied
           iele= iele_4_subdomain(inum)
           do k = 1, nedge_4_ele
-            iedge = abs( iedge_4_ele(iele,k) )
+            iedge = abs( edge1%iedge_4_ele(iele,k) )
             if (imark_edge(iedge).eq.0) then
               icou = icou + 1
               iedge_4_subdomain(icou) = iedge

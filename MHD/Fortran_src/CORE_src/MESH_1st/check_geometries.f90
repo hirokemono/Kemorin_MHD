@@ -143,7 +143,7 @@
 !
       do iele = 1, ele1%numele
         write(50+my_rank,'(13i16)')                                     &
-     &            iele, iedge_4_ele(iele,1:nedge_4_ele)
+     &            iele, edge1%iedge_4_ele(iele,1:nedge_4_ele)
       end do
 !
       end subroutine check_edge_hexa_data
