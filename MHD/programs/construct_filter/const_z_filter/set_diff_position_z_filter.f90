@@ -30,10 +30,10 @@
         write(*,*) size(alpha,1), size(alpha,2), size(alpha,3)
 !
         do i = 1, totalele
-          inod1 = ie_edge(i,1)
-          inod2 = ie_edge(i,2)
-          jnod1 = ie_edge(i,1)
-          jnod2 = ie_edge(i,2)
+          inod1 = edge1%ie_edge(i,1)
+          inod2 = edge1%ie_edge(i,2)
+          jnod1 = edge1%ie_edge(i,1)
+          jnod2 = edge1%ie_edge(i,2)
           dz0 =   node1%xx(inod2,3) - node1%xx(inod1,3)
           dzeta = node1%xx(jnod2,3) - node1%xx(jnod1,3)
           alpha(i,0,1) = dz0/dzeta - 1
@@ -41,16 +41,16 @@
 !
           do j = 1, nneib_ele(i,1)
             jele = ineib_ele(i,j,1)
-            jnod1 = ie_edge(jele,1)
-            jnod2 = ie_edge(jele,2)
+            jnod1 = edge1%ie_edge(jele,1)
+            jnod2 = edge1%ie_edge(jele,2)
             dzeta = node1%xx(jnod2,3) - node1%xx(jnod1,3)
             alpha(i,j,1) = dz0/dzeta - 1
           end do
 !
           do j = 1, nneib_ele(i,2)
             jele = ineib_ele(i,j,2)
-            jnod1 = ie_edge(jele,1)
-            jnod2 = ie_edge(jele,2)
+            jnod1 = edge1%ie_edge(jele,1)
+            jnod2 = edge1%ie_edge(jele,2)
             dzeta = node1%xx(jnod2,3) - node1%xx(jnod1,3)
             alpha(i,j,2) = dz0/dzeta - 1
           end do

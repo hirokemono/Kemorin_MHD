@@ -107,8 +107,8 @@
         end do
 !
         do i = 1, ele1%numele
-          inod1 = ie_edge(i,1)
-          inod2 = ie_edge(i,2)
+          inod1 = edge1%ie_edge(i,1)
+          inod2 = edge1%ie_edge(i,2)
           delta_z_e(i)                                                  &
      &          = (0.5d0 * zsize * pi / (two*dble(nz-1)))               &
      &           * sin (pi*(dble(i)-0.5d0) / dble(nz-1) )
@@ -151,8 +151,8 @@
         end do
 !
         do i = 1, ele1%numele
-          inod1 = ie_edge(i,1)
-          inod2 = ie_edge(i,2)
+          inod1 = edge1%ie_edge(i,1)
+          inod2 = edge1%ie_edge(i,2)
           delta_z_e(i) =  node1%xx(inod2,3) - node1%xx(inod1,3)
           delta_dz_e(i) = ( delta_z(inod2) - delta_z(inod1) )           &
      &                   / ( two*delta_z_e(i) )
@@ -207,8 +207,8 @@
         end do
 !
         do i = 1, ele1%numele
-          inod1 = ie_edge(i,1)
-          inod2 = ie_edge(i,2)
+          inod1 = edge1%ie_edge(i,1)
+          inod2 = edge1%ie_edge(i,2)
           delta_z_e(i) =  node1%xx(inod2,3) - node1%xx(inod1,3)
           delta_dz_e(i) = ( delta_z(inod2) - delta_z(inod1) )           &
      &                   / ( two*delta_z_e(i) )

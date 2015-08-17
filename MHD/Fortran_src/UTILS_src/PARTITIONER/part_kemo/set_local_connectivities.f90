@@ -186,7 +186,7 @@
       do inum = 1, edge%numedge
         iedge = edge%iedge_global(inum)
         do k1 = 1, edge1%nnod_4_edge
-          inod_g = ie_edge(iedge,k1)
+          inod_g = edge1%ie_edge(iedge,k1)
           edge%ie_edge(inum,k1) = inod_local_part(inod_g)
         end do
       end do

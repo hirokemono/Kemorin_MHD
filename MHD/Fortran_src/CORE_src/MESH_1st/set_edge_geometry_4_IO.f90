@@ -59,7 +59,7 @@
      &        = iedge_global(1:edge1%numedge)
       nodelm_dummy(1:edge1%numedge) = edge1%nnod_4_edge
       ie_dummy(1:edge1%numedge,1:edge1%nnod_4_edge)                     &
-     &        = ie_edge(1:edge1%numedge,1:edge1%nnod_4_edge)
+     &        = edge1%ie_edge(1:edge1%numedge,1:edge1%nnod_4_edge)
 !
       isf_4_ele_IO(1:surf1%numsurf,1:nedge_4_surf)                      &
      &        = iedge_4_sf(1:surf1%numsurf,1:nedge_4_surf)
@@ -148,7 +148,7 @@
 !
       iedge_global(1:edge1%numedge)                                     &
      &        = globalelmid_dummy(1:edge1%numedge)
-      ie_edge(1:edge1%numedge,1:edge1%nnod_4_edge)                      &
+      edge1%ie_edge(1:edge1%numedge,1:edge1%nnod_4_edge)                &
      &        = ie_dummy(1:edge1%numedge,1:edge1%nnod_4_edge)
 !
       iedge_4_sf(1:surf1%numsurf,1:nedge_4_surf)                        &
@@ -156,6 +156,8 @@
 !
       iedge_4_ele(1:ele1%numele,1:nedge_4_ele)                          &
      &        = iedge_4_ele_IO(1:ele1%numele,1:nedge_4_ele)
+!
+      ie_edge = edge1%ie_edge
 !
       call deallocate_surface_connect_IO
       call deallocate_ele_info_dummy

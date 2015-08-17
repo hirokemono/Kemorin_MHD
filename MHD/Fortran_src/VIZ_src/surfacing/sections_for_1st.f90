@@ -84,7 +84,7 @@
 !
       call cross_section_init(node1%numnod, node1%internal_node,        &
      &    ele1%numele, surf1%numsurf, edge1%numedge,                    &
-     &    ele1%nnod_4_ele, edge1%nnod_4_edge, ele1%ie, ie_edge,         &
+     &    ele1%nnod_4_ele, edge1%nnod_4_edge, ele1%ie, edge1%ie_edge,   &
      &    isf_4_ele, iedge_4_sf,                                        &
      &    iedge_4_ele, nod_comm, edge_comm, interior_ele,               &
      &    node1%xx, node1%istack_nod_smp, ele1%istack_ele_smp,          &
@@ -105,7 +105,7 @@
 !
       call isosurface_init                                              &
      &   (node1%numnod, ele1%numele, surf1%numsurf, edge1%numedge,      &
-     &    edge1%nnod_4_edge, ie_edge, isf_4_ele,                        &
+     &    edge1%nnod_4_edge, edge1%ie_edge, isf_4_ele,                  &
      &    iedge_4_sf, interior_ele,                                     &
      &    node1%istack_nod_smp, ele1%istack_ele_smp,                    &
      &    surf1%istack_surf_smp, edge1%istack_edge_smp,                 &
@@ -125,9 +125,9 @@
       integer(kind = kint), intent(in) :: istep_psf
 !
 !
-      call cross_section_main(istep_psf, node1%numnod, edge1%numedge,   &
-     &    edge1%nnod_4_edge, ie_edge, num_nod_phys, num_tot_nod_phys,   &
-     &    istack_nod_component, d_nod)
+      call cross_section_main(istep_psf, node1%numnod,                  &
+     &    edge1%numedge, edge1%nnod_4_edge, edge1%ie_edge,              &
+     &    num_nod_phys, num_tot_nod_phys, istack_nod_component, d_nod)
 !
       end subroutine cross_section_main_1st
 !
@@ -145,7 +145,7 @@
       call isosurface_main                                              &
      &   (istep_iso, node1%numnod, node1%internal_node, ele1%numele,    &
      &    edge1%numedge, ele1%nnod_4_ele, edge1%nnod_4_edge,            &
-     &    ele1%ie, ie_edge, iedge_4_ele, node1%xx,                      &
+     &    ele1%ie, edge1%ie_edge, iedge_4_ele, node1%xx,                &
      &    radius, a_radius, s_cylinder, a_s_cylinder,                   &
      &    node1%istack_nod_smp, edge_comm,                              &
      &    num_nod_phys, num_tot_nod_phys, istack_nod_component, d_nod)

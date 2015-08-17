@@ -98,10 +98,10 @@
 !
       if (edge1%nnod_4_edge .eq. num_quad_edge) then
         call set_quad_edge_position(node1%numnod, edge1%numedge,        &
-     &      ie_edge, node1%xx, x_edge)
+     &      edge1%ie_edge, node1%xx, x_edge)
       else if (edge1%nnod_4_edge .eq. num_linear_edge) then
         call set_linear_edge_position(node1%numnod, edge1%numedge,      &
-     &      ie_edge, node1%xx, x_edge)
+     &      edge1%ie_edge, node1%xx, x_edge)
       end if
 !
       call position_2_sph(edge1%numedge, x_edge, r_edge, theta_edge,    &

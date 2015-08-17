@@ -112,7 +112,7 @@
       write(50+my_rank,*) 'iedge, connection'
       do iedge = 1, edge1%numedge
         write(50+my_rank,'(4i16)')                                      &
-     &             iedge, ie_edge(iedge,1:edge1%nnod_4_edge)
+     &             iedge, edge1%ie_edge(iedge,1:edge1%nnod_4_edge)
       end do
 !
 !

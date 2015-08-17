@@ -63,16 +63,18 @@
      &    edge1%numedge, ele1%nnod_4_ele, edge1%nnod_4_edge, ele1%ie,   &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%iend_hash,             &
      &    edge_ele_tbl%id_hash, edge_ele_tbl%iflag_hash,                &
-     &    ie_edge, iedge_4_ele, edge1%node_on_edge)
+     &    edge1%ie_edge, iedge_4_ele, edge1%node_on_edge)
+      ie_edge = edge1%ie_edge
 !
       if (iflag_debug.eq.1) write(*,*) 'set_edges_connect_4_sf'
       call set_edges_connect_4_sf(node1%numnod, ele1%numele,            &
      &    surf1%numsurf, edge1%numedge, surf1%nnod_4_surf,              &
      &    edge1%nnod_4_edge, surf1%ie_surf, iedge_4_ele,                &
      &    edge_ele_tbl%istack_hash, edge_ele_tbl%id_hash,               &
-     &    edge_ele_tbl%iflag_hash, ie_edge, iedge_4_sf)
+     &    edge_ele_tbl%iflag_hash, edge1%ie_edge, iedge_4_sf)
 !
       call dealloc_sum_hash(edge_ele_tbl)
+!
 !
 !      call check_edge_data(id_rank)
 !      call check_edge_hexa_data(id_rank)

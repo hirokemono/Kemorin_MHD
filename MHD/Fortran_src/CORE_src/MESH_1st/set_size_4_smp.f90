@@ -132,7 +132,8 @@
 !
       call set_overlap_flag                                             &
      &   (np_smp, edge1%istack_edge_smp, node1%internal_node,           &
-     &    edge1%numedge, ie_edge, edge1%internal_edge, interior_edge)
+     &    edge1%numedge, edge1%ie_edge, edge1%internal_edge,            &
+     &    interior_edge)
 !
       end subroutine count_overlap_edge
 !

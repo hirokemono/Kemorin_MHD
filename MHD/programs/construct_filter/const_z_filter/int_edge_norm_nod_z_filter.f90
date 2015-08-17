@@ -46,8 +46,8 @@
           jele = inod0 + j0
           zs = dble(2*(j0)  )
           ze = dble(2*(j0+1))
-          jnod1 = ie_edge(jele,1)
-          jnod2 = ie_edge(jele,2)
+          jnod1 = edge1%ie_edge(jele,1)
+          jnod2 = edge1%ie_edge(jele,2)
           zz1 = node1%xx(jnod1,3)
           zz2 = node1%xx(jnod2,3)
 !

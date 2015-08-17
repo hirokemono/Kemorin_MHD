@@ -136,7 +136,7 @@
       edge%numedge =       edge1%numedge
       edge%nnod_4_edge =   edge1%nnod_4_edge
 !
-      edge%ie_edge =>       ie_edge
+      edge%ie_edge =>       edge1%ie_edge
       edge%iedge_4_sf =>    iedge_4_sf
       edge%iedge_4_ele =>   iedge_4_ele
       edge%interior_edge => interior_edge

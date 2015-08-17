@@ -106,8 +106,8 @@
 !
         do iele = 1, ele1%numele
           write(id_filter_z,'(3i16,1p3E25.15e3)') iedge_global(iele),   &
-     &          ie_edge(iele,1), ie_edge(iele,2), delta_z_e(iele),      &
-     &          delta_dz_e(iele), d2_dz_e(iele)
+     &          edge1%ie_edge(iele,1), edge1%ie_edge(iele,2),           &
+     &          delta_z_e(iele), delta_dz_e(iele), d2_dz_e(iele)
         end do
 !
 !

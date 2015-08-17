@@ -40,8 +40,8 @@
          ix = i + int_start1(n_int)
          do k1 = 1, 2
           do k2 = 1, 2
-           inod1 = ie_edge(iele,k1)
-           inod2 = ie_edge(iele,k2)
+           inod1 = edge1%ie_edge(iele,k1)
+           inod2 = edge1%ie_edge(iele,k2)
            wk = jac1_1d_l%an_edge(k1,ix) * jac1_1d_l%an_edge(k2,ix)     &
      &         * jac1_1d_l%xeg_edge(iele,ix,3) * owe(ix)
            mk_c(inod1,inod2) = mk_c(inod1,inod2) + wk

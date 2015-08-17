@@ -36,8 +36,8 @@
       do iele = 1, ele1%numele
        do j1 = 1, 2
         do j2 = 1, 2
-         inod1 = ie_edge(iele,j1)
-         inod2 = ie_edge(iele,j2)
+         inod1 = edge1%ie_edge(iele,j1)
+         inod2 = edge1%ie_edge(iele,j2)
 !
          do kf = 0, 2
           do i = 1, n_int

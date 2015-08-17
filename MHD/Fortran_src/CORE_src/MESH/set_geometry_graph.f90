@@ -3,12 +3,6 @@
 !
 !     Written by H. Matsui on Aug., 2007
 !
-      module set_geometry_graph
-!
-      use m_precision
-!
-      implicit  none
-!
 !      subroutine count_graph_4_linear(nnod, nedge, ie_edge,            &
 !     &          num_graph_nod)
 !      subroutine set_graph_4_linear(nnod, nedge, ie_edge,              &
@@ -27,6 +21,12 @@
 !     &          ntot_graph_nod, istack_graph_nod, igraph_nod,          &
 !     &          ntot_graph_inter_nod, num_graph_inter_nod,             &
 !     &          istack_graph_inter_nod, igraph_inter_nod)
+!
+      module set_geometry_graph
+!
+      use m_precision
+!
+      implicit  none
 !
 ! ----------------------------------------------------------------------
 !

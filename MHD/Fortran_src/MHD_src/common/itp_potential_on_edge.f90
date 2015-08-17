@@ -36,13 +36,13 @@
 !
           if ( phys_nod_name(i) .eq. 'pressure' ) then
             call cal_pressure_on_edge(edge1%numedge, edge1%nnod_4_edge, &
-     &          ie_edge, iphys%i_press)
+     &          edge1%ie_edge, iphys%i_press)
           else if ( phys_nod_name(i) .eq. 'magnetic_potential' ) then
             call cal_pressure_on_edge(edge1%numedge, edge1%nnod_4_edge, &
-     &          ie_edge, iphys%i_mag_p)
+     &          edge1%ie_edge, iphys%i_mag_p)
           else if ( phys_nod_name(i) .eq. 'scalar_potential' ) then
             call cal_pressure_on_edge(edge1%numedge, edge1%nnod_4_edge, &
-     &          ie_edge, iphys%i_scalar_p)
+     &          edge1%ie_edge, iphys%i_scalar_p)
           end if
 !
         end do
