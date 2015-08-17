@@ -79,7 +79,7 @@
 !
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
-!  surf1%interior_surf
+!  surf1%isurf_global
 !
 !>     Structure for edge data
       type(edge_data), save :: edge1
@@ -399,9 +399,7 @@
 !      allocate( isf_rot_ele(ele1%numele,nsurf_4_ele) )
 !      allocate( ie_surf(surf1%numsurf,surf1%nnod_4_surf) )
       allocate( isurf_global(surf1%numsurf) )
-      allocate( interior_surf(surf1%numsurf) )
-!
-      isurf_global =  0
+!      allocate( interior_surf(surf1%numsurf) )
 !
       end subroutine allocate_surface_connect
 !
@@ -500,7 +498,6 @@
       call deallocate_surface_connect_type(surf1)
 !
       deallocate( isurf_global )
-      deallocate( interior_surf )
 !
       end subroutine deallocate_surface_connect
 !

@@ -243,44 +243,32 @@
       use const_surface_data
       use const_edge_data
       use set_size_4_smp
+      use set_size_4_smp_types
 !
       integer(kind = kint), intent(in) :: my_rank
       logical :: read_surface, read_edge
 !
 !
-      read_surface = allocated(isurf_global)
+      read_surface = associated(surf1%isurf_global)
       read_edge =    allocated(iedge_global)
 !
       if(read_surface .eqv. .false.) then
         if (iflag_debug.gt.0) write(*,*) 'construct_surface_data'
         call construct_surface_data
-!
-        call count_surf_size_4_smp
-        if (iflag_debug.gt.0) write(*,*) 'count_overlap_surface'
-        call count_overlap_surface
-      else
-!
-        call count_surf_size_4_smp
-        if (iflag_debug.gt.0) write(*,*) 'count_overlap_surface'
-        call count_overlap_surface
       end if
 !
-!
+      call count_surf_size_4_smp
+      if (iflag_debug.gt.0) write(*,*) 'count_overlap_surface'
+      call count_overlap_surf_type(node1, surf1)
 !
       if(read_edge .eqv. .false.) then
         if (iflag_debug.gt.0) write(*,*) 'construct_edge_data'
         call construct_edge_data(my_rank)
-!
-        if (iflag_debug.gt.0) write(*,*) 'count_overlap_edge'
-        call count_edge_size_4_smp
-        call count_overlap_edge
-      else
-!
-        if (iflag_debug.gt.0) write(*,*) 'count_overlap_edge'
-        call count_edge_size_4_smp
-        call count_overlap_edge
-!
       end if
+!
+      if (iflag_debug.gt.0) write(*,*) 'count_overlap_edge'
+      call count_edge_size_4_smp
+      call count_overlap_edge
 !
       end subroutine set_edge_and_surf_data
 !

@@ -9,7 +9,6 @@
 !      subroutine count_edge_size_4_smp
 !
 !      subroutine count_overlap_element
-!      subroutine count_overlap_surface
 !      subroutine count_overlap_edge
 !
 !> @brief set numbers for SMP parallelization
@@ -108,21 +107,6 @@
      &    ele1%numele, interior_ele, e_multi)
 !
       end subroutine count_overlap_element
-!
-! ----------------------------------------------------------------------
-!
-      subroutine count_overlap_surface
-!
-      use m_geometry_data
-      use count_overlap
-!
-      call set_overlap_flag                                             &
-     &   (np_smp, surf1%istack_surf_smp, node1%internal_node,           &
-     &    surf1%numsurf, surf1%ie_surf, surf1%internal_surf,            &
-     &    surf1%interior_surf)
-      interior_surf = surf1%interior_surf
-!
-      end subroutine count_overlap_surface
 !
 ! ----------------------------------------------------------------------
 !

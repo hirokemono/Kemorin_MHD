@@ -152,7 +152,7 @@
       if (iflag_debug.eq.1) write(*,*) 'allocate_surface_connect_type'
       call allocate_surface_connect_type(surf, ele%numele)
 !
-      if (iflag_debug.eq.1) write(*,*) 'count_overlap_surface'
+      if (iflag_debug.eq.1) write(*,*) 'allocate_surf_param_smp_type'
       call allocate_surf_param_smp_type(surf)
 !
       end subroutine empty_surf_connect_type

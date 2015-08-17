@@ -56,7 +56,7 @@
 !
       nodelm_dummy(1:surf1%numsurf) = surf1%nnod_4_surf
       globalelmid_dummy(1:surf1%numsurf)                                &
-     &        = isurf_global(1:surf1%numsurf)
+     &        = surf1%isurf_global(1:surf1%numsurf)
       ie_dummy(1:surf1%numsurf,1:surf1%nnod_4_surf)                     &
      &        = surf1%ie_surf(1:surf1%numsurf,1:surf1%nnod_4_surf)
 !
@@ -79,7 +79,7 @@
 !
 !
       globalnodid_dummy(1:surf1%numsurf)                                &
-     &      = isurf_global(1:surf1%numsurf)
+     &      = surf1%isurf_global(1:surf1%numsurf)
       xx_dummy(1:surf1%numsurf,1:3) = x_surf(1:surf1%numsurf,1:3)
 !
       ele_scalar_IO(1:surf1%numsurf) =     area_surf(1:surf1%numsurf)
@@ -100,7 +100,7 @@
       call allocate_ele_scalar_IO
 !
       globalnodid_dummy(1:surf1%numsurf)                                &
-     &     = isurf_global(1:surf1%numsurf)
+     &     = surf1%isurf_global(1:surf1%numsurf)
       xx_dummy(1:surf1%numsurf,1) = r_surf(1:surf1%numsurf)
       xx_dummy(1:surf1%numsurf,2) = theta_surf(1:surf1%numsurf)
       xx_dummy(1:surf1%numsurf,3) = phi_surf(1:surf1%numsurf)
@@ -123,7 +123,7 @@
       call allocate_ele_scalar_IO
 !
       globalnodid_dummy(1:surf1%numsurf)                                &
-     &      = isurf_global(1:surf1%numsurf)
+     &      = surf1%isurf_global(1:surf1%numsurf)
       xx_dummy(1:surf1%numsurf,1) = s_surf(1:surf1%numsurf)
       xx_dummy(1:surf1%numsurf,2) = phi_surf(1:surf1%numsurf)
       xx_dummy(1:surf1%numsurf,3) = x_surf(1:surf1%numsurf,3)
@@ -145,7 +145,7 @@
 !
       call allocate_surface_connect
 !
-      isurf_global(1:surf1%numsurf)                                     &
+      surf1%isurf_global(1:surf1%numsurf)                               &
      &        = globalelmid_dummy(1:surf1%numsurf)
       surf1%ie_surf(1:surf1%numsurf,1:surf1%nnod_4_surf)                &
      &        = ie_dummy(1:surf1%numsurf,1:surf1%nnod_4_surf)
@@ -153,6 +153,7 @@
       surf1%isf_4_ele(1:ele1%numele,1:nsurf_4_ele)                      &
      &        = isf_4_ele_IO(1:ele1%numele,1:nsurf_4_ele)
 !
+      isurf_global = surf1%isurf_global
       call deallocate_surface_connect_IO
       call deallocate_ele_info_dummy
 !

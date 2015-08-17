@@ -49,17 +49,11 @@
         if (iflag_debug.eq.1) write(*,*) 's_const_surface_type_data'
         call s_const_surface_type_data(mesh%node,                       &
      &      mesh%ele, surf_mesh%surf)
-!
-        if (iflag_debug.eq.1) write(*,*) 'count_overlap_surface'
-        call count_surf_size_smp_type(surf_mesh%surf)
-        call count_overlap_surf_type(mesh%node, surf_mesh%surf)
-      else
-!
-        if (iflag_debug.eq.1) write(*,*) 'count_overlap_surface'
-        call count_surf_size_smp_type(surf_mesh%surf)
-        call count_overlap_surf_type(mesh%node, surf_mesh%surf)
-!
       end if
+!
+      if (iflag_debug.eq.1) write(*,*) 'count_overlap_surf_type'
+      call count_surf_size_smp_type(surf_mesh%surf)
+      call count_overlap_surf_type(mesh%node, surf_mesh%surf)
 !
       end subroutine set_surf_connect_type
 !
@@ -83,16 +77,11 @@
         if (iflag_debug.eq.1) write(*,*) 's_const_edge_type_data'
         call s_const_edge_type_data(mesh%node, mesh%ele,                &
      &      surf_mesh%surf, edge_mesh%edge)
-!
-        if (iflag_debug.eq.1) write(*,*) 'count_overlap_edge'
-        call count_edge_size_smp_type(edge_mesh%edge)
-        call count_overlap_edge_type(mesh%node, edge_mesh%edge)
-      else
-!
-        if (iflag_debug.eq.1) write(*,*) 'count_overlap_edge'
-        call count_edge_size_smp_type(edge_mesh%edge)
-        call count_overlap_edge_type(mesh%node, edge_mesh%edge)
       end if
+!
+      if (iflag_debug.eq.1) write(*,*) 'count_overlap_edge'
+      call count_edge_size_smp_type(edge_mesh%edge)
+      call count_overlap_edge_type(mesh%node, edge_mesh%edge)
 !
       end subroutine set_edge_connect_type
 !
