@@ -175,13 +175,13 @@
 !$omp do
       do iele = 1, ele1%numele
         ele1%iele_global(iele) = ele%iele_global(iele)
-        elmtyp(iele) =      ele%elmtyp(iele)
+        ele1%elmtyp(iele) =      ele%elmtyp(iele)
         nodelm(iele) =      ele%nodelm(iele)
       end do
 !$omp end do
 !$omp end parallel
 !
-      iele_global = ele1%iele_global
+      elmtyp = ele1%elmtyp
       call deallocate_ele_connect_type(ele)
 !
       end subroutine copy_element_connect_from_type

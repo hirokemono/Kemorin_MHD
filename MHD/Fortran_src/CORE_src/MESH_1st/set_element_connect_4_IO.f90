@@ -91,13 +91,13 @@
 !$omp do
       do iele = 1, ele1%numele
         ele1%iele_global(iele) = globalelmid_dummy(iele)
-        elmtyp(iele) =      i_ele_dummy(iele)
+        ele1%elmtyp(iele) =      i_ele_dummy(iele)
         nodelm(iele) =      nodelm_dummy(iele)
       end do
 !$omp end do
 !$omp end parallel
 !
-      iele_global = ele1%iele_global
+      elmtyp = ele1%elmtyp
       call deallocate_ele_info_dummy
 !
       end subroutine copy_element_connect_from_IO

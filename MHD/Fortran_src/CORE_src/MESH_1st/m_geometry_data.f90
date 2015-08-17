@@ -183,7 +183,7 @@
 !>     global node    id (where i:node id)
 !      integer(kind=kint_gl), pointer  ::  inod_global(:)
 !>     global element id (where i:element id)
-      integer(kind=kint_gl), allocatable, target  ::  iele_global(:)
+!      integer(kind=kint_gl), allocatable, target  ::  iele_global(:)
 !>     global surface id (where i:surface id)
       integer(kind=kint_gl), allocatable, target  ::  isurf_global(:)
 !>     global edge id (where i:edge id)
@@ -378,7 +378,7 @@
       subroutine allocate_element_connection
 !
 !
-      allocate(iele_global(ele1%numele))
+!      allocate(iele_global(ele1%numele))
       allocate(elmtyp(ele1%numele))
       allocate(nodelm(ele1%numele))
 !      allocate(ie(ele1%numele,ele1%nnod_4_ele))
@@ -406,7 +406,7 @@
 !
       subroutine deallocate_element_connection
 !
-      deallocate(iele_global)
+!      deallocate(iele_global)
       deallocate(elmtyp)
       deallocate(nodelm)
 !
