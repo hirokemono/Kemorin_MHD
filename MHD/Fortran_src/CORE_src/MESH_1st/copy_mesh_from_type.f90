@@ -87,6 +87,7 @@
       call copy_node_geometry_from_type(mesh%node)
       call copy_element_connect_from_type(mesh%ele)
 !
+      call allocate_sph_node_geometry(mesh%node)
       call allocate_element_geometry
 !
       call deallocate_node_geometry_type(mesh%node)
@@ -126,7 +127,6 @@
       node1%internal_node = node_org%internal_node
 !
       call allocate_node_geometry_type(node1)
-      call allocate_node_geometry
 !
 !$omp parallel do
       do inod = 1, node1%numnod

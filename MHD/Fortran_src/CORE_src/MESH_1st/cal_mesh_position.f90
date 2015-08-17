@@ -3,7 +3,6 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine set_spherical_position
 !      subroutine set_center_of_element
 !
 !      subroutine set_center_of_surface
@@ -20,18 +19,6 @@
 ! ----------------------------------------------------------------------
 !
       contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_spherical_position
-!
-      use m_geometry_data
-      use cal_mesh_position_type
-!
-      call set_spherical_position_type(node1)
-      a_s_cylinder = node1%a_s
-!
-      end subroutine set_spherical_position
 !
 ! ----------------------------------------------------------------------
 !

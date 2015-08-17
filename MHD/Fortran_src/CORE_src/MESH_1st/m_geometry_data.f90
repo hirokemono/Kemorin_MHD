@@ -19,9 +19,6 @@
 !!      subroutine deallocate_numsurf_stack
 !!      subroutine deallocate_numedge_stack
 !!
-!!      subroutine allocate_node_geometry
-!!      subroutine deallocate_node_geometry
-!!
 !!      subroutine allocate_element_geometry
 !!
 !!      subroutine allocate_surface_connect
@@ -82,7 +79,7 @@
 !
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
-!  surf1%node_on_sf
+!  surf1%isf_4_ele
 !
 !>     Structure for edge data
       type(edge_data), save :: edge1
@@ -197,7 +194,7 @@
 !>   cylindorical radius of node
 !      real(kind=kreal)  , pointer  :: s_cylinder(:)
 !>   1 / (cylindorical radius)
-      real(kind=kreal)  , pointer  :: a_s_cylinder(:)
+!      real(kind=kreal)  , pointer  :: a_s_cylinder(:)
 !
 !>  integer flag for interior element 1...interior, 0...exterior
       integer(kind = kint), allocatable, target :: interior_ele(:)
@@ -332,33 +329,6 @@
       deallocate(istack_numedge, istack_interedge)
 !
       end subroutine deallocate_numedge_stack
-!
-! ------------------------------------------------------
-! ------------------------------------------------------
-!
-      subroutine allocate_node_geometry
-!
-!
-!      allocate(inod_global(node1%numnod))
-!      allocate(xx(node1%numnod,3))
-!
-!      allocate(radius(node1%numnod))
-!      allocate(a_radius(node1%numnod))
-!      allocate(s_cylinder(node1%numnod))
-      allocate(a_s_cylinder(node1%numnod))
-!      allocate(longitude(node1%numnod))
-!      allocate(colatitude(node1%numnod))
-!
-      end subroutine allocate_node_geometry
-!
-! ------------------------------------------------------
-! ------------------------------------------------------
-!
-      subroutine deallocate_node_geometry
-!
-      deallocate(a_s_cylinder)
-!
-      end subroutine deallocate_node_geometry
 !
 ! ------------------------------------------------------
 ! ------------------------------------------------------

@@ -48,7 +48,6 @@
       use mesh_data_IO
       use sum_normal_4_surf_group
       use set_parallel_file_name
-      use set_node_geometry_4_IO
       use sum_normal_4_surf_group
 !
 !

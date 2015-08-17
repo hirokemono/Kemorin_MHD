@@ -143,7 +143,7 @@
       call deallocate_element_geometry
 !
       call deallocate_ele_connect_type(ele1)
-      call deallocate_node_geometry
+      call deallocate_node_geometry_type(node1)
       call deallocate_type_comm_tbl(nod_comm)
 !
       end subroutine deallocate_mesh_infomations
@@ -173,7 +173,7 @@
       call deallocate_element_geometry
 !
       call deallocate_ele_connect_type(ele1)
-      call deallocate_node_geometry
+      call deallocate_node_geometry_type(node1)
       call deallocate_type_comm_tbl(nod_comm)
 !
       end subroutine deallocate_nod_ele_infos
@@ -216,14 +216,16 @@
 !
       subroutine set_nod_and_ele_infos
 !
+      use m_geometry_data
       use set_size_4_smp
       use cal_mesh_position
+      use cal_mesh_position_type
 !
 !
       call count_size_4_sheard_para
 !
        if (iflag_debug.gt.0) write(*,*) 'set_spherical_position'
-      call set_spherical_position
+      call set_spherical_position_type(node1)
 !
        if (iflag_debug.gt.0) write(*,*) 'set_center_of_element'
       call set_center_of_element

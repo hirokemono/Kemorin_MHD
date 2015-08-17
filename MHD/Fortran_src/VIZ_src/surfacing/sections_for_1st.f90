@@ -146,7 +146,7 @@
      &   (istep_iso, node1%numnod, node1%internal_node, ele1%numele,    &
      &    edge1%numedge, ele1%nnod_4_ele, edge1%nnod_4_edge,            &
      &    ele1%ie, edge1%ie_edge, iedge_4_ele, node1%xx,                &
-     &    node1%rr, node1%a_r, node1%ss, a_s_cylinder,                  &
+     &    node1%rr, node1%a_r, node1%ss, node1%a_s,                     &
      &    node1%istack_nod_smp, edge_comm,                              &
      &    num_nod_phys, num_tot_nod_phys, istack_nod_component, d_nod)
 !

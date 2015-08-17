@@ -41,7 +41,7 @@
       call set_numnod_z_commute
 !
       call allocate_node_geometry_type(node1)
-      call allocate_node_geometry
+      call allocate_sph_node_geometry(node1)
       call allocate_edge_connect
 !
       call set_element_z_commute

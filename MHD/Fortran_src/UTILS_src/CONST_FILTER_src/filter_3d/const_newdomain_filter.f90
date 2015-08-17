@@ -16,7 +16,7 @@
       use set_parallel_file_name
       use mesh_IO_select
       use read_org_filter_coefs
-      use set_node_geometry_4_IO
+      use set_node_types_4_IO
       use set_filters_4_new_domains
 !
       implicit none
@@ -44,8 +44,8 @@
 !
         mesh_file_head = mesh_file_head
         call sel_read_geometry_size(my_rank)
+        call copy_node_type_from_IO(node1)
         call deallocate_neib_domain_IO
-        call copy_node_geometry_from_IO
 !
         ele1%numele = numele_dummy
 !
@@ -60,8 +60,7 @@
         call deallocate_whole_filter_coefs
         call deallocate_fluid_filter_coefs
 !
-        call deallocate_node_geometry
-!
+        call deallocate_node_geometry_base(node1)
       end do
 !
       end subroutine marking_used_node_4_filtering
@@ -79,8 +78,8 @@
         my_rank = ip - 1
 !
         call sel_read_geometry_size(my_rank)
+        call copy_node_type_from_IO(node1)
         call deallocate_neib_domain_IO
-        call copy_node_geometry_from_IO
 !
         ele1%numele = numele_dummy
 !
@@ -95,7 +94,7 @@
         call deallocate_whole_filter_coefs
         call deallocate_fluid_filter_coefs
 !
-        call deallocate_node_geometry
+        call deallocate_node_geometry_base(node1)
       end do
 !
       end subroutine trans_filter_4_new_domains

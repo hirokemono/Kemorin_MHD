@@ -162,7 +162,7 @@
       call copy_xyz_tsr_from_sph_trans                                  &
      &   (nnod_rtp, m_folding, inod_rtp_smp_stack,                      &
      &    node1%numnod, node1%xx, node1%rr,                             &
-     &    node1%ss, node1%a_r, a_s_cylinder,                            &
+     &    node1%ss, node1%a_r, node1%a_s,                               &
      &    d_rtp, i_field, num_tot_nod_phys, d_nod)
 !
       end subroutine copy_1st_tsr_from_sph_trans
@@ -199,7 +199,7 @@
 !
       call copy_xyz_vec_to_sph_trans                                    &
      &   (nnod_rtp, inod_rtp_smp_stack, node1%numnod,                   &
-     &    node1%xx, node1%rr, node1%ss, node1%a_r, a_s_cylinder,        &
+     &    node1%xx, node1%rr, node1%ss, node1%a_r, node1%a_s,           &
      &    i_field, num_tot_nod_phys, d_nod, d_rtp)
 !
       end subroutine copy_1st_vec_to_sph_trans
@@ -218,7 +218,7 @@
 !
       call copy_xyz_tsr_to_sph_trans                                    &
      &   (nnod_rtp, inod_rtp_smp_stack, node1%numnod,                   &
-     &    node1%xx, node1%rr, node1%ss, node1%a_r, a_s_cylinder,        &
+     &    node1%xx, node1%rr, node1%ss, node1%a_r, node1%a_s,           &
      &    i_field, num_tot_nod_phys, d_nod, d_rtp)
 !
       end subroutine copy_1st_tsr_to_sph_trans

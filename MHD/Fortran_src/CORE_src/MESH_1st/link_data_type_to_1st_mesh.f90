@@ -65,7 +65,7 @@
       node_new%theta => node1%theta
       node_new%phi =>   node1%phi
       node_new%ss =>    node1%ss
-      node_new%a_s =>   a_s_cylinder
+      node_new%a_s =>   node1%a_s
 !
       node_new%max_nod_smp =          node1%max_nod_smp
       node_new%max_internal_nod_smp = node1%max_internal_nod_smp

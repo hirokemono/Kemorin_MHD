@@ -33,7 +33,7 @@
       use load_mesh_data
       use set_control_cut_shell
       use const_mesh_info
-      use cal_mesh_position
+      use cal_mesh_position_type
       use const_cutshell_mesh
 !
 !
@@ -50,7 +50,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
       call set_local_element_info
-      call set_spherical_position
+      call set_spherical_position_type(node1)
 !
       end subroutine  initialize_cutshell
 !

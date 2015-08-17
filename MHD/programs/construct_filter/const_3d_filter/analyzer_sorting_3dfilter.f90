@@ -86,7 +86,7 @@
         call deallocate_grp_type(ele_grp1)
         call deallocate_grp_type(nod_grp1)
         call deallocate_element_geometry
-        call deallocate_node_geometry
+        call deallocate_node_geometry_type(node1)
         call deallocate_type_comm_tbl(nod_comm)
 !
 !     read filtering information

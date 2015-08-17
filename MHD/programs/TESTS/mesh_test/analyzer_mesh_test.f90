@@ -57,7 +57,6 @@
       use nodal_vector_send_recv
       use sum_normal_4_surf_group
       use set_parallel_file_name
-      use set_node_geometry_4_IO
       use set_comm_table_4_IO
 !
       use m_ctl_data_test_mesh
