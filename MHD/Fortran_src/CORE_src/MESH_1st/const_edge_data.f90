@@ -6,6 +6,9 @@
 !      subroutine construct_edge_data(my_rank)
 !      subroutine const_element_list_4_edge
 !      subroutine const_surface_list_4_edge
+!!
+!!      subroutine deallocate_ele_4_edge_item
+!!      subroutine deallocate_surf_4_edge_item
 !
       module const_edge_data
 !
@@ -88,15 +91,17 @@
       use set_element_list_4_surface
 !
 !
-      call allocate_ele_4_edge_num
+      call alloc_ele_4_edge_num_type(edge1)
       call count_ele_list_4_edge                                        &
      &   (ele1%numele, edge1%numedge, nedge_4_ele, edge1%iedge_4_ele,   &
-     &    ntot_iele_4_edge, num_iele_4_edge, istack_iele_4_edge)
+     &    edge1%ntot_iele_4_edge, edge1%num_iele_4_edge,                &
+     &    edge1%istack_iele_4_edge)
 !
-      call allocate_ele_4_edge_item
+      call alloc_ele_4_edge_item_type(edge1)
       call set_ele_list_4_edge(ele1%numele, edge1%numedge, nedge_4_ele, &
-     &    edge1%iedge_4_ele, ntot_iele_4_edge, num_iele_4_edge,         &
-     &    istack_iele_4_edge, iele_4_edge)
+     &    edge1%iedge_4_ele, edge1%ntot_iele_4_edge,                    &
+     &    edge1%num_iele_4_edge, edge1%istack_iele_4_edge,              &
+     &    edge1%iele_4_edge)
 !
       end subroutine const_element_list_4_edge
 !
@@ -108,18 +113,40 @@
       use set_element_list_4_surface
 !
 !
-      call allocate_surf_4_edge_num
+      call alloc_surf_4_edge_num_type(edge1)
       call count_ele_list_4_edge(surf1%numsurf, edge1%numedge,          &
-     &    nedge_4_surf, edge1%iedge_4_sf, ntot_isurf_4_edge,            &
-     &    num_isurf_4_edge, istack_isurf_4_edge)
+     &    nedge_4_surf, edge1%iedge_4_sf, edge1%ntot_isurf_4_edge,      &
+     &    edge1%num_isurf_4_edge, edge1%istack_isurf_4_edge)
 !
-      call allocate_surf_4_edge_item
+      call alloc_surf_4_edge_item_type(edge1)
       call set_ele_list_4_edge(surf1%numsurf, edge1%numedge,            &
-     &    nedge_4_surf, edge1%iedge_4_sf, ntot_isurf_4_edge,            &
-     &    num_isurf_4_edge, istack_isurf_4_edge, isurf_4_edge)
+     &    nedge_4_surf, edge1%iedge_4_sf, edge1%ntot_isurf_4_edge,      &
+     &    edge1%num_isurf_4_edge, edge1%istack_isurf_4_edge,            &
+     &    edge1%isurf_4_edge)
 !
       end subroutine const_surface_list_4_edge
 !
 !------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine deallocate_ele_4_edge_item
+!
+      use m_geometry_data
+!
+      call dealloc_ele_4_edge_item_type(edge1)
+!
+      end subroutine deallocate_ele_4_edge_item
+!
+! ------------------------------------------------------
+!
+      subroutine deallocate_surf_4_edge_item
+!
+      use m_geometry_data
+!
+      call dealloc_surf_4_edge_item_type(edge1)
+!
+      end subroutine deallocate_surf_4_edge_item
+!
+! ------------------------------------------------------
 !
       end module const_edge_data
