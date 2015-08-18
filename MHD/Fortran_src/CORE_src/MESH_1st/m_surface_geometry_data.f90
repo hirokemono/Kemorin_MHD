@@ -22,7 +22,7 @@
 !
       implicit  none
 !
-      real(kind=kreal)  , allocatable  :: x_surf(:,:)
+!      real(kind=kreal)  , allocatable  :: x_surf(:,:)
 !<   position of center of surface
       real(kind=kreal)  , allocatable  :: r_surf(:)
 !<   distance from the center of surface
@@ -61,7 +61,7 @@
 !
       use m_geometry_data
 !
-      allocate( x_surf(surf1%numsurf,3) )
+!      allocate( x_surf(surf1%numsurf,3) )
 !
       allocate( r_surf(surf1%numsurf) )
       allocate( ar_surf(surf1%numsurf) )
@@ -70,8 +70,6 @@
 !
       allocate( s_surf(surf1%numsurf) )
       allocate( as_surf(surf1%numsurf) )
-!
-      x_surf =      0.0d0
 !
       r_surf =      0.0d0
       ar_surf =     0.0d0
@@ -86,8 +84,6 @@
 ! ------------------------------------------------------
 !
       subroutine deallocate_surface_geometry
-!
-      deallocate( x_surf )
 !
       deallocate( r_surf, phi_surf, theta_surf )
       deallocate( ar_surf )

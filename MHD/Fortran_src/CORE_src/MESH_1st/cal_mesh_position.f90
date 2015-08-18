@@ -59,17 +59,17 @@
 !
       if (surf1%nnod_4_surf .eq. num_quad_sf) then
         call set_quad_surf_position(node1%numnod, surf1%numsurf,        &
-     &      surf1%ie_surf, node1%xx, x_surf)
+     &      surf1%ie_surf, node1%xx, surf1%x_surf)
       else if (surf1%nnod_4_surf .eq. num_linear_sf) then
         call set_linear_surf_position(node1%numnod, surf1%numsurf,      &
-     &      surf1%ie_surf, node1%xx, x_surf)
+     &      surf1%ie_surf, node1%xx, surf1%x_surf)
       else if (surf1%nnod_4_surf .eq. num_lag_sf) then
         call set_lag_surf_position(node1%numnod, surf1%numsurf,         &
-     &      surf1%ie_surf, node1%xx, x_surf)
+     &      surf1%ie_surf, node1%xx, surf1%x_surf)
       end if
 !
-      call position_2_sph(surf1%numsurf, x_surf, r_surf, theta_surf,    &
-     &    phi_surf, ar_surf, s_surf, as_surf)
+      call position_2_sph(surf1%numsurf, surf1%x_surf,                  &
+     &    r_surf, theta_surf, phi_surf, ar_surf, s_surf, as_surf)
 !
       end subroutine set_center_of_surface
 !

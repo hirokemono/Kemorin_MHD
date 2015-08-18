@@ -289,10 +289,12 @@
       subroutine set_edge_and_surf_geometry
 !
       use cal_mesh_position
+      use m_geometry_data
       use m_surface_geometry_data
       use m_edge_geometry_data
 !
 !
+      call allocate_surface_geom_type(surf1)
       call allocate_surface_geometry
       call set_center_of_surface
 !

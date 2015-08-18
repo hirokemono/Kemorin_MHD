@@ -77,7 +77,7 @@
       call alloc_surf_grp_type_geom(sf_grp%num_item, sf_grp_v)
 !
       call pick_vector_4_surf_grp                                       &
-     &   (sf_grp, surf1%numsurf, x_surf, sf_grp_v%x_sf_grp)
+     &   (sf_grp, surf1%numsurf, surf1%x_surf, sf_grp_v%x_sf_grp)
 !
       call position_2_sph                                               &
      &   (sf_grp%num_item, sf_grp_v%x_sf_grp, sf_grp_v%r_sf_grp,        &

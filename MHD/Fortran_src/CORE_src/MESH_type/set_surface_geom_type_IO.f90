@@ -9,9 +9,6 @@
 !      subroutine copy_surf_geom_type_to_IO_cyl(surf)
 !
 !      subroutine copy_surf_conn_type_from_IO(surf, nele)
-!      subroutine copy_surf_geom_type_from_IO(surf)
-!      subroutine copy_surf_geom_type_from_IO_sph(surf)
-!      subroutine copy_surf_geom_type_from_IO_cyl(surf)
 !        integer(kind = kint), intent(in) :: nele
 !        type(surface_data), intent(inout) :: surf
 !
@@ -195,93 +192,6 @@
       call deallocate_ele_info_dummy
 !
       end subroutine copy_surf_conn_type_from_IO
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine copy_surf_geom_type_from_IO(surf)
-!
-      type(surface_data), intent(inout) :: surf
-      integer(kind = kint) :: isurf
-!
-!
-      call allocate_surface_geom_type(surf)
-      call allocate_normal_vect_type(surf)
-!
-      do isurf = 1, surf%numsurf
-        surf%x_surf(isurf,1) = xx_dummy(isurf,1)
-        surf%x_surf(isurf,2) = xx_dummy(isurf,2)
-        surf%x_surf(isurf,3) = xx_dummy(isurf,3)
-!
-        surf%area_surf(isurf) =    ele_scalar_IO(isurf)
-        surf%vnorm_surf(isurf,1) = ele_vector_IO(isurf,1)
-        surf%vnorm_surf(isurf,2) = ele_vector_IO(isurf,2)
-        surf%vnorm_surf(isurf,3) = ele_vector_IO(isurf,3)
-      end do
-!
-      call deallocate_ele_scalar_IO
-      call deallocate_ele_vector_IO
-      call deallocate_node_data_dummy
-!
-      end subroutine copy_surf_geom_type_from_IO
-!
-!------------------------------------------------------------------
-!
-      subroutine copy_surf_geom_type_from_IO_sph(surf)
-!
-      type(surface_data), intent(inout) :: surf
-      integer(kind = kint) :: isurf
-!
-!
-      call allocate_surface_geom_type(surf)
-      call allocate_normal_vect_type(surf)
-      call allocate_normal_vect_sph_type(surf)
-!
-      do isurf = 1, surf%numsurf
-        surf%r_surf(isurf) =     xx_dummy(isurf,1)
-        surf%theta_surf(isurf) = xx_dummy(isurf,2)
-        surf%phi_surf(isurf) =   xx_dummy(isurf,3)
-!
-        surf%area_surf(isurf) =        ele_scalar_IO(isurf)
-        surf%vnorm_surf_sph(isurf,1) = ele_vector_IO(isurf,1)
-        surf%vnorm_surf_sph(isurf,2) = ele_vector_IO(isurf,2)
-        surf%vnorm_surf_sph(isurf,3) = ele_vector_IO(isurf,3)
-      end do
-!
-      call deallocate_ele_scalar_IO
-      call deallocate_ele_vector_IO
-      call deallocate_node_data_dummy
-!
-      end subroutine copy_surf_geom_type_from_IO_sph
-!
-!------------------------------------------------------------------
-!
-      subroutine copy_surf_geom_type_from_IO_cyl(surf)
-!
-      type(surface_data), intent(inout) :: surf
-      integer(kind = kint) :: isurf
-!
-!
-      call allocate_surface_geom_type(surf)
-      call allocate_normal_vect_type(surf)
-      call allocate_normal_vect_cyl_type(surf)
-!
-      do isurf = 1, surf%numsurf
-        surf%s_surf(isurf) =   xx_dummy(isurf,1)
-        surf%phi_surf(isurf) = xx_dummy(isurf,2)
-        surf%x_surf(isurf,3) = xx_dummy(isurf,3)
-!
-        surf%area_surf(isurf) =        ele_scalar_IO(isurf)
-        surf%vnorm_surf_cyl(isurf,1) = ele_vector_IO(isurf,1)
-        surf%vnorm_surf_cyl(isurf,2) = ele_vector_IO(isurf,2)
-        surf%vnorm_surf_cyl(isurf,3) = ele_vector_IO(isurf,3)
-      end do
-!
-      call deallocate_ele_scalar_IO
-      call deallocate_ele_vector_IO
-      call deallocate_node_data_dummy
-!
-      end subroutine copy_surf_geom_type_from_IO_cyl
 !
 !------------------------------------------------------------------
 !

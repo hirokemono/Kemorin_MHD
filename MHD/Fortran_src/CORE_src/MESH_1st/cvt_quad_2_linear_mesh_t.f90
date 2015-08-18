@@ -49,7 +49,7 @@
 !
       call set_position_on_surf                                         &
      &   (node1%numnod, surf1%numsurf, ele1%numele,                     &
-     &    node1%xx, ele1%x_ele, x_surf,                                 &
+     &    node1%xx, ele1%x_ele, surf1%x_surf,                           &
      &    mesh_l%node%numnod,  mesh_l%node%xx)
 !
       call position_2_sph(mesh_l%node%numnod, mesh_l%node%xx,           &

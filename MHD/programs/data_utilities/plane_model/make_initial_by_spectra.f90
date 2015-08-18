@@ -285,7 +285,7 @@
 !
           do j = 1, num_fft
             do i = 1, subdomain(ip)%node%numnod
-              inod = subdomain(ip)%node%inod_global(i)
+              inod = int(subdomain(ip)%node%inod_global(i))
               if (inod .le. merge_tbl%inter_nod_m) then
                 i1 = (j-1)*num_spectr + inod
                 rst_from_sp(i,j) = phys_d(i1)

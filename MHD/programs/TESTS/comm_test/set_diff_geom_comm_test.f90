@@ -41,7 +41,7 @@
       call count_ele_comm_test                                          &
      &   (ele1%numele, ele1%x_ele, ele_comm%ntot_import,                &
      &    ele_comm%item_import, x_ele_comm, nele_diff_local)
-      call count_ele_comm_test(surf1%numsurf, x_surf,                   &
+      call count_ele_comm_test(surf1%numsurf, surf1%x_surf,             &
      &    surf_comm%ntot_import, surf_comm%item_import,                 &
      &    x_surf_comm, nsurf_diff_local)
       call count_ele_comm_test(edge1%numedge, x_edge,                   &
@@ -62,7 +62,7 @@
       call compare_ele_comm_test(ele1%numele, ele1%x_ele,               &
      &    ele_comm%ntot_import, ele_comm%item_import,                   &
      &    x_ele_comm, nele_diff_local, iele_diff, xele_diff)
-      call compare_ele_comm_test(surf1%numsurf, x_surf,                 &
+      call compare_ele_comm_test(surf1%numsurf, surf1%x_surf,           &
      &    surf_comm%ntot_import, surf_comm%item_import,                 &
      &    x_surf_comm, nsurf_diff_local, isurf_diff, xsurf_diff)
       call compare_ele_comm_test(edge1%numedge, x_edge,                 &

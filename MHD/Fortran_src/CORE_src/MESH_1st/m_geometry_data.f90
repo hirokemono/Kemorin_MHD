@@ -29,7 +29,7 @@
 !
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
-!  surf1%istack_intersurf
+!  surf1%x_surf
 !
 !>     Structure for edge data
       type(edge_data), save :: edge1

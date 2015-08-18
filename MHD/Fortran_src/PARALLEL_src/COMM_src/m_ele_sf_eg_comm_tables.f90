@@ -134,7 +134,7 @@
       call belonged_surf_id_4_node_1(blng_tbls%host_surf)
       call const_ele_comm_table_1st                                     &
      &   (txt, node1%numnod, surf1%numsurf, node1%inod_global,          &
-     &    surf1%interior_surf, x_surf, nod_comm, surf_4_nod1,           &
+     &    surf1%interior_surf, surf1%x_surf, nod_comm, surf_4_nod1,     &
      &    blng_tbls%host_surf, surf_comm)
       call dealloc_iele_belonged(blng_tbls%host_surf)
       call dealloc_iele_belonged(surf_4_nod1)

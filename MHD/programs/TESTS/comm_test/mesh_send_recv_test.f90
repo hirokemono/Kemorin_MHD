@@ -378,6 +378,7 @@
 !
       subroutine surf_send_recv_test
 !
+      use m_geometry_data
       use m_surface_geometry_data
       use m_ele_sf_eg_comm_tables
       use solver_SR_type
@@ -386,9 +387,9 @@
 !
 !
       do isurf = 1, surf1%numsurf
-        x_surf_comm(3*isurf-2) = x_surf(isurf,1)
-        x_surf_comm(3*isurf-1) = x_surf(isurf,2)
-        x_surf_comm(3*isurf  ) = x_surf(isurf,3)
+        x_surf_comm(3*isurf-2) = surf1%x_surf(isurf,1)
+        x_surf_comm(3*isurf-1) = surf1%x_surf(isurf,2)
+        x_surf_comm(3*isurf  ) = surf1%x_surf(isurf,3)
       end do
       do inum = 1, surf_comm%ntot_import
         isurf = surf_comm%item_import(inum)
