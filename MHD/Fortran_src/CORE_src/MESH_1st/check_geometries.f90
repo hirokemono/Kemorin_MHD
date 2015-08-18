@@ -185,10 +185,11 @@
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-      write(50+my_rank,*) 'numedge_iso', numedge_iso
+      write(50+my_rank,*) 'numedge_iso', edge1%numedge_iso
 !
       write(50+my_rank,*) 'iedge_isolate'
-      write(50+my_rank,'(8i16)') iedge_isolate(1:numedge_iso)
+      write(50+my_rank,'(8i16)')                                        &
+     &                 edge1%iedge_isolate(1:edge1%numedge_iso)
 !
       end subroutine check_bc_edge
 !

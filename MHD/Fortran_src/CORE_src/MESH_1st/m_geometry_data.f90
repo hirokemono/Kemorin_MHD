@@ -28,9 +28,6 @@
 !!
 !!      subroutine deallocate_ele_4_edge_item
 !!      subroutine deallocate_surf_4_edge_item
-!!
-!!      subroutine allocate_iso_edge
-!!      subroutine deallocate_iso_edge
 !!@endverbatim
 !!
 !>
@@ -67,7 +64,7 @@
 !
 !>     Structure for edge data
       type(edge_data), save :: edge1
-!  edge1%iedge_4_ele
+!  edge1%numedge_iso
 !
 !>   Stack list of number of node
       integer(kind=kint_gl), allocatable, target  :: istack_numnod(:)
@@ -117,9 +114,9 @@
 !>   edge ID for each element
 !      integer(kind=kint), allocatable, target  :: iedge_4_ele(:,:)
 !>   number of isolated edges
-      integer(kind=kint) ::  numedge_iso
+!      integer(kind=kint) ::  numedge_iso
 !>     isolated edge list
-      integer(kind=kint), allocatable  ::  iedge_isolate(:)
+!      integer(kind=kint), allocatable  ::  iedge_isolate(:)
 !
 !
 !>   belonged element for surface(surface#,face#,
@@ -432,24 +429,6 @@
       deallocate( isurf_4_edge, num_isurf_4_edge, istack_isurf_4_edge)
 !
       end subroutine deallocate_surf_4_edge_item
-!
-! ------------------------------------------------------
-! ------------------------------------------------------
-!
-      subroutine allocate_iso_edge
-!
-      allocate( iedge_isolate(numedge_iso) )
-      iedge_isolate = 0
-!
-      end subroutine allocate_iso_edge
-!
-! ------------------------------------------------------
-!
-      subroutine deallocate_iso_edge
-!
-      deallocate( iedge_isolate )
-!
-      end subroutine deallocate_iso_edge
 !
 ! ------------------------------------------------------
 !
