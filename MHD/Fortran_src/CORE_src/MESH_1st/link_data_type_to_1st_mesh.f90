@@ -159,7 +159,7 @@
       ele%max_ele_smp =     ele1%max_ele_smp
       ele%istack_ele_smp => ele1%istack_ele_smp
 !
-      ele%x_ele =>     x_ele
+      ele%x_ele =>     ele1%x_ele
       ele%r_ele =>     r_ele
       ele%ar_ele =>    ar_ele
       ele%phi_ele =>   phi_ele

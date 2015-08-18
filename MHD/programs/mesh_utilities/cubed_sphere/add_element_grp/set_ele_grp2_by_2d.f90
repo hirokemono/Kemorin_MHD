@@ -3,14 +3,15 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!      subroutine const_ele_grp_item_by_2d(ref_ele1, ref_ele2,          &
+!      subroutine const_ele_grp_item_by_2d(numele, ref_ele1, ref_ele2,  &
 !     &          num_ele_grp1, ele_grp_name1, dminmax_grp_1,            &
 !     &          num_ele_grp2, ele_grp_name2, dminmax_grp_2, ele_grp)
+!      subroutine count_added_egrp_item(numele, ref_ele1, ref_ele2,     &
+!     &       num_ele_grp1, dminmax_grp_1, num_ele_grp2, dminmax_grp_2)
 !
       module  set_ele_grp2_by_2d
 !
       use m_precision
-      use m_geometry_data
 !
 !
       implicit none
@@ -51,7 +52,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_ele_grp_item_by_2d(ref_ele1, ref_ele2,           &
+      subroutine const_ele_grp_item_by_2d(numele, ref_ele1, ref_ele2,   &
      &          num_ele_grp1, ele_grp_name1, dminmax_grp_1,             &
      &          num_ele_grp2, ele_grp_name2, dminmax_grp_2, ele_grp)
 !
@@ -59,6 +60,7 @@
       use m_work_4_add_egrp_sph
       use start_end_4_2d_ele_grping
 !
+      integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: num_ele_grp1
       character(len=kchara), intent(in)  :: ele_grp_name1(num_ele_grp1)
       real(kind = kreal), intent(in) :: dminmax_grp_1(num_ele_grp1,2)
@@ -66,8 +68,8 @@
       character(len=kchara), intent(in)  :: ele_grp_name2(num_ele_grp2)
       real(kind = kreal), intent(in) :: dminmax_grp_2(num_ele_grp2,2)
 !
-      real(kind = kreal), intent(in) :: ref_ele1(ele1%numele)
-      real(kind = kreal), intent(in) :: ref_ele2(ele1%numele)
+      real(kind = kreal), intent(in) :: ref_ele1(numele)
+      real(kind = kreal), intent(in) :: ref_ele2(numele)
 !
       type(group_data), intent(inout) :: ele_grp
 !
@@ -82,7 +84,7 @@
 !
       call allocate_grp_type_item(new_elegrp)
 !
-      call add_ele_grp_item_by_2d(ref_ele1, ref_ele2,                   &
+      call add_ele_grp_item_by_2d(numele, ref_ele1, ref_ele2,           &
      &    num_ele_grp1, dminmax_grp_1, num_ele_grp2, dminmax_grp_2,     &
      &    ele_grp, new_elegrp)
 !
@@ -153,7 +155,7 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_added_egrp_item(ref_ele1, ref_ele2,              &
+      subroutine count_added_egrp_item(numele, ref_ele1, ref_ele2,      &
      &       num_ele_grp1, dminmax_grp_1, num_ele_grp2, dminmax_grp_2)
 !
       use m_add_ele_grp_parameter
@@ -161,13 +163,14 @@
       use m_work_4_add_egrp_sph
       use start_end_4_2d_ele_grping
 !
+      integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: num_ele_grp1
       real(kind = kreal), intent(in) :: dminmax_grp_1(num_ele_grp1,2)
       integer(kind = kint), intent(in) :: num_ele_grp2
       real(kind = kreal), intent(in) :: dminmax_grp_2(num_ele_grp2,2)
 !
-      real(kind = kreal), intent(in) :: ref_ele1(ele1%numele)
-      real(kind = kreal), intent(in) :: ref_ele2(ele1%numele)
+      real(kind = kreal), intent(in) :: ref_ele1(numele)
+      real(kind = kreal), intent(in) :: ref_ele2(numele)
 !
       integer(kind = kint) :: i, j
       integer(kind = kint) :: igrp
@@ -202,7 +205,7 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine add_ele_grp_item_by_2d(ref_ele1, ref_ele2,             &
+      subroutine add_ele_grp_item_by_2d(numele, ref_ele1, ref_ele2,     &
      &       num_ele_grp1, dminmax_grp_1, num_ele_grp2, dminmax_grp_2,  &
      &       ele_grp, new_elegrp)
 !
@@ -210,13 +213,14 @@
       use start_end_4_2d_ele_grping
       use t_group_data
 !
+      integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: num_ele_grp1
       real(kind = kreal), intent(in) :: dminmax_grp_1(num_ele_grp1,2)
       integer(kind = kint), intent(in) :: num_ele_grp2
       real(kind = kreal), intent(in) :: dminmax_grp_2(num_ele_grp2,2)
 !
-      real(kind = kreal), intent(in) :: ref_ele1(ele1%numele)
-      real(kind = kreal), intent(in) :: ref_ele2(ele1%numele)
+      real(kind = kreal), intent(in) :: ref_ele1(numele)
+      real(kind = kreal), intent(in) :: ref_ele2(numele)
       type(group_data), intent(in) :: ele_grp
 !
       type(group_data), intent(inout) :: new_elegrp

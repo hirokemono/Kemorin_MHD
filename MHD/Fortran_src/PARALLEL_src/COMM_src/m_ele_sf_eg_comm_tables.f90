@@ -175,7 +175,7 @@
       call belonged_ele_id_4_node_1(blng_tbls%host_ele)
       call const_ele_comm_table_1st                                     &
      &   (txt, node1%numnod, ele1%numele, node1%inod_global,            &
-     &    ele1%interior_ele, x_ele, nod_comm, ele_4_nod_comm,           &
+     &    ele1%interior_ele, ele1%x_ele, nod_comm, ele_4_nod_comm,      &
      &    blng_tbls%host_ele, ele_comm)
       call dealloc_iele_belonged(blng_tbls%host_ele)
       call dealloc_iele_belonged(ele_4_nod_comm)

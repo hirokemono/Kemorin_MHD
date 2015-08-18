@@ -31,16 +31,17 @@
 !
       if (ele1%nnod_4_ele .eq. num_t_quad) then
         call set_quad_ele_position(node1%numnod, ele1%numele,           &
-     &      ele1%ie, node1%xx, x_ele)
+     &      ele1%ie, node1%xx, ele1%x_ele)
       else if (ele1%nnod_4_ele .eq. num_t_linear) then
         call set_linear_ele_position(node1%numnod, ele1%numele,         &
-     &      ele1%ie, node1%xx, x_ele)
+     &      ele1%ie, node1%xx, ele1%x_ele)
       else if (ele1%nnod_4_ele .eq. num_t_lag) then
         call set_lag_ele_position(node1%numnod, ele1%numele,            &
-     &      ele1%ie, node1%xx, x_ele)
+     &      ele1%ie, node1%xx, ele1%x_ele)
       end if
+      x_ele = ele1%x_ele
 !
-      call position_2_sph(ele1%numele, x_ele, r_ele, theta_ele,         &
+      call position_2_sph(ele1%numele, ele1%x_ele, r_ele, theta_ele,    &
      &       phi_ele, ar_ele, s_ele, as_ele)
 !
       end subroutine set_center_of_element

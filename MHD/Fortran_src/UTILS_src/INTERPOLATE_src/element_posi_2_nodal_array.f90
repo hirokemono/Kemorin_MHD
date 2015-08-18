@@ -39,9 +39,9 @@
 !$omp parallel do
       do inod = 1, node1%numnod
         node1%inod_global(inod) = ele1%iele_global(inod)
-        node1%xx(inod,1) =       x_ele(inod,1)
-        node1%xx(inod,2) =       x_ele(inod,2)
-        node1%xx(inod,3) =       x_ele(inod,3)
+        node1%xx(inod,1) =        ele1%x_ele(inod,1)
+        node1%xx(inod,2) =        ele1%x_ele(inod,2)
+        node1%xx(inod,3) =        ele1%x_ele(inod,3)
 !
         node1%rr(inod) =    r_ele(inod)
         node1%a_r(inod) =   ar_ele(inod)

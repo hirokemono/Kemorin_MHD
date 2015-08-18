@@ -359,9 +359,9 @@
 !
 !
       do iele = 1, ele1%numele
-        x_ele_comm(3*iele-2) = x_ele(iele,1)
-        x_ele_comm(3*iele-1) = x_ele(iele,2)
-        x_ele_comm(3*iele  ) = x_ele(iele,3)
+        x_ele_comm(3*iele-2) = ele1%x_ele(iele,1)
+        x_ele_comm(3*iele-1) = ele1%x_ele(iele,2)
+        x_ele_comm(3*iele  ) = ele1%x_ele(iele,3)
       end do
       do inum = 1, ele_comm%ntot_import
         iele = ele_comm%item_import(inum)
