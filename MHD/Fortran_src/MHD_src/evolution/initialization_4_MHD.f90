@@ -27,7 +27,6 @@
 !
       use m_geometry_data
       use m_group_data
-      use m_edge_geometry_data
       use m_surf_data_infinity
       use m_layering_ele_list
       use m_node_phys_address
@@ -121,7 +120,7 @@
       if(i_debug .eq. iflag_full_msg) call check_whole_num_of_elements
 !
       call deallocate_surface_geom_type(surf1)
-      call deallocate_edge_geometry
+      call deallocate_edge_geom_type(edge1)
 !
 !     ---------------------
 !

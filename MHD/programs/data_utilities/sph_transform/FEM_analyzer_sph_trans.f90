@@ -25,7 +25,6 @@
       use m_geometry_data
       use m_control_params_2nd_files
       use m_array_for_send_recv
-      use m_edge_geometry_data
       use m_jacobians
       use m_t_step_parameter
       use m_ucd_input_data
@@ -58,7 +57,7 @@
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
       call const_element_comm_tables_1st
 !
-      call deallocate_edge_geometry
+      call deallocate_edge_geom_type(edge1)
 !
 !  -------------------------------
 !

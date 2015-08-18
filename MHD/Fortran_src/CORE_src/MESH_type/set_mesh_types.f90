@@ -79,7 +79,7 @@
       subroutine set_geometry_types_data(mesh)
 !
       use set_comm_table_4_IO
-      use set_node_types_4_IO
+      use set_node_data_4_IO
       use set_element_data_4_IO
 !
       type(mesh_geometry), intent(inout) :: mesh
@@ -87,7 +87,7 @@
 !
       call copy_comm_tbl_type_from_IO(mesh%nod_comm)
 !
-      call copy_node_type_from_IO(mesh%node)
+      call copy_node_geometry_from_IO(mesh%node)
       call copy_ele_connect_from_IO(mesh%ele)
 !
       call allocate_sph_node_geometry(mesh%node)
@@ -101,14 +101,14 @@
       use t_mesh_data
       use set_comm_table_4_IO
       use set_element_data_4_IO
-      use set_node_types_4_IO
+      use set_node_data_4_IO
 !
       integer(kind = kint), intent(in) :: my_rank
       type(mesh_geometry), intent(inout) :: mesh
 !
 !
       call copy_comm_tbl_type_to_IO(my_rank, mesh%nod_comm)
-      call copy_node_type_to_IO(mesh%node)
+      call copy_node_geometry_to_IO(mesh%node)
       call copy_ele_connect_to_IO(mesh%ele)
 !
       end subroutine set_mesh_type_to_IO
@@ -151,7 +151,7 @@
       use t_surface_data
       use t_edge_data
       use set_comm_table_4_IO
-      use set_edge_geom_type_IO
+      use set_edge_data_4_IO
 !
       type(mesh_geometry),    intent(in) :: mesh
       type(surface_geometry), intent(in) ::  surf_mesh
@@ -159,7 +159,7 @@
 !
 !
       call copy_comm_tbl_type_from_IO(edge_mesh%edge_comm)
-      call copy_edge_conn_type_from_IO(edge_mesh%edge, mesh%ele%numele, &
+      call copy_edge_connect_from_IO(edge_mesh%edge, mesh%ele%numele,   &
       &   surf_mesh%surf%numsurf)
 !
       end subroutine set_edge_connect_type_data
@@ -189,7 +189,7 @@
 !
       use t_mesh_data
       use set_comm_table_4_IO
-      use set_edge_geom_type_IO
+      use set_edge_data_4_IO
       use edge_IO_select
 !
       integer(kind = kint), intent(in) :: my_rank, numele, numsurf
@@ -198,7 +198,7 @@
 !
 !
       call copy_comm_tbl_type_to_IO(my_rank, edge_mesh%edge_comm)
-      call copy_edge_conn_type_to_IO(edge_mesh%edge, numele, numsurf)
+      call copy_edge_connect_to_IO(edge_mesh%edge, numele, numsurf)
 !
       end subroutine set_edge_mesh_type_to_IO
 !

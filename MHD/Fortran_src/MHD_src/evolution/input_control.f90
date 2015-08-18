@@ -99,7 +99,7 @@
       use set_3d_filtering_group_id
       use read_filtering_data
       use set_surface_data_4_IO
-      use set_edge_geometry_4_IO
+      use set_edge_data_4_IO
       use node_monitor_IO
       use read_bc_values_file
 !

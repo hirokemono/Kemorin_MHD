@@ -47,7 +47,6 @@
       use m_node_group
       use m_array_for_send_recv
       use m_t_step_parameter
-      use m_edge_geometry_data
       use m_node_phys_address
       use m_cal_max_indices
       use m_ele_sf_eg_comm_tables
@@ -79,7 +78,7 @@
       call const_element_comm_tables_1st
 !
       call deallocate_surface_geom_type(surf1)
-      call deallocate_edge_geometry
+      call deallocate_edge_geom_type(edge1)
 !
 !  -------------------------------
 !

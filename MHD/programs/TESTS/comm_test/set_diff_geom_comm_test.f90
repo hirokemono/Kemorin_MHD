@@ -34,7 +34,6 @@
       subroutine s_count_diff_geom_comm_test
 !
       use m_ele_sf_eg_comm_tables
-      use m_edge_geometry_data
 !
 !
       call count_ele_comm_test                                          &
@@ -43,7 +42,7 @@
       call count_ele_comm_test(surf1%numsurf, surf1%x_surf,             &
      &    surf_comm%ntot_import, surf_comm%item_import,                 &
      &    x_surf_comm, nsurf_diff_local)
-      call count_ele_comm_test(edge1%numedge, x_edge,                   &
+      call count_ele_comm_test(edge1%numedge, edge1%x_edge,             &
      &    edge_comm%ntot_import,  edge_comm%item_import,                &
      &    x_edge_comm, nedge_diff_local)
 !
@@ -54,7 +53,6 @@
       subroutine s_set_diff_geom_comm_test
 !
       use m_ele_sf_eg_comm_tables
-      use m_edge_geometry_data
 !
 !
       call compare_ele_comm_test(ele1%numele, ele1%x_ele,               &
@@ -63,7 +61,7 @@
       call compare_ele_comm_test(surf1%numsurf, surf1%x_surf,           &
      &    surf_comm%ntot_import, surf_comm%item_import,                 &
      &    x_surf_comm, nsurf_diff_local, isurf_diff, xsurf_diff)
-      call compare_ele_comm_test(edge1%numedge, x_edge,                 &
+      call compare_ele_comm_test(edge1%numedge, edge1%x_edge,           &
      &    edge_comm%ntot_import, edge_comm%item_import,                 &
      &    x_edge_comm, nedge_diff_local, iedge_diff, xedge_diff)
 !

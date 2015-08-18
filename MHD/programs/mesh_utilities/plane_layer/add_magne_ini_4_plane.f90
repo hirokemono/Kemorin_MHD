@@ -36,7 +36,7 @@
       use set_ctl_data_plane_mesh
       use set_parallel_file_name
       use mesh_IO_select
-      use set_node_types_4_IO
+      use set_node_data_4_IO
       use field_IO_select
       use set_field_type_to_restart
 
@@ -114,7 +114,7 @@
         iflag_mesh_file_fmt = izero
         mesh_file_head = 'mesh/in'
         call sel_read_geometry_size(id_rank)
-        call copy_node_type_from_IO(node1)
+        call copy_node_geometry_from_IO(node1)
 !
         call deallocate_neib_domain_IO
 !

@@ -111,7 +111,7 @@
       use m_node_id_spherical_IO
       use m_read_mesh_data
       use set_comm_table_4_IO
-      use set_node_types_4_IO
+      use set_node_data_4_IO
       use set_element_data_4_IO
       use set_group_types_4_IO
       use mesh_IO_select
@@ -129,7 +129,7 @@
       call s_const_FEM_mesh_for_sph(ip_rank, radius_1d_gl, mesh, group)
 !
       call copy_comm_tbl_type_to_IO(ip_rank, mesh%nod_comm)
-      call copy_node_type_to_IO(mesh%node)
+      call copy_node_geometry_to_IO(mesh%node)
       call copy_ele_connect_to_IO(mesh%ele)
       call set_grp_data_type_to_IO(group)
 !

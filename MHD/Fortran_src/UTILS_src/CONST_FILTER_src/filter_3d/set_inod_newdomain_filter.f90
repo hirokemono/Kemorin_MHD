@@ -32,7 +32,7 @@
       use m_internal_4_partitioner
       use m_filter_file_names
       use m_field_file_format
-      use set_node_types_4_IO
+      use set_node_data_4_IO
 !
       type(node_data), intent(inout) :: new_node
 !
@@ -43,7 +43,7 @@
 !
         mesh_file_head = target_mesh_head
         call sel_read_geometry_size(my_rank2)
-        call copy_node_type_from_IO(new_node)
+        call copy_node_geometry_from_IO(new_node)
 !
         call deallocate_neib_domain_IO
 !

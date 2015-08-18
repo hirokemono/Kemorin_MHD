@@ -146,7 +146,6 @@
 !
       use m_nod_comm_table
       use m_geometry_data
-      use m_edge_geometry_data
       use m_element_id_4_node
       use m_belonged_element_4_node
 !
@@ -157,7 +156,7 @@
       call belonged_edge_id_4_node_1(blng_tbls%host_edge)
       call const_ele_comm_table_1st                                     &
      &   (txt, node1%numnod, edge1%numedge, node1%inod_global,          &
-     &    edge1%interior_edge, x_edge, nod_comm, edge_4_nod1,           &
+     &    edge1%interior_edge, edge1%x_edge, nod_comm, edge_4_nod1,     &
      &    blng_tbls%host_edge,  edge_comm)
       call dealloc_iele_belonged(blng_tbls%host_edge)
       call dealloc_iele_belonged(edge_4_nod1)

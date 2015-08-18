@@ -27,7 +27,7 @@
       use m_read_mesh_data
       use m_comm_data_IO
       use set_nnod_4_ele_by_type
-      use set_node_types_4_IO
+      use set_node_data_4_IO
       use set_element_data_4_IO
       use set_group_types_4_IO
 !
@@ -37,7 +37,7 @@
       num_neib_domain_IO = izero
       call allocate_neib_comm_stack_IO
       call allocate_comm_item_IO
-      call copy_node_type_to_IO(merged%node)
+      call copy_node_geometry_to_IO(merged%node)
       call copy_ele_connect_to_IO(merged%ele)
 !
       numnod_dummy =        merge_tbl%nnod_merged

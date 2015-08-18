@@ -1,18 +1,18 @@
-!set_surface_geom_type_IO.f90
-!      module set_surface_geom_type_IO
+!set_surface_data_4_IO.f90
+!      module set_surface_data_4_IO
 !
 !     Written by H. Matsui on Dec., 2008
 !
-!      subroutine copy_surf_conn_type_to_IO(surf, nele)
-!      subroutine copy_surf_geom_type_to_IO(surf)
-!      subroutine copy_surf_geom_type_to_IO_sph(surf)
-!      subroutine copy_surf_geom_type_to_IO_cyl(surf)
+!!      subroutine copy_surf_connect_to_IO(surf, nele)
+!!      subroutine copy_surf_geometry_to_IO(surf)
+!!      subroutine copy_surf_geometry_to_IO_sph(surf)
+!!      subroutine copy_surf_geometry_to_IO_cyl(surf)
+!!
+!!      subroutine copy_surf_connect_from_IO(surf, nele)
+!!        integer(kind = kint), intent(in) :: nele
+!!        type(surface_data), intent(inout) :: surf
 !
-!      subroutine copy_surf_conn_type_from_IO(surf, nele)
-!        integer(kind = kint), intent(in) :: nele
-!        type(surface_data), intent(inout) :: surf
-!
-      module set_surface_geom_type_IO
+      module set_surface_data_4_IO
 !
       use m_precision
 !
@@ -27,13 +27,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_surf_conn_type_to_IO(surf, nele)
+      subroutine copy_surf_connect_to_IO(surf, nele)
 !
       use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: nele
       type(surface_data), intent(in) :: surf
-      integer(kind = kint) :: isurf, iele
 !
 !
       numele_dummy =        surf%numsurf
@@ -70,11 +69,11 @@
      &        = surf%isf_4_ele(1:nele,1:nsurf_4_ele)
 !$omp end workshare
 !
-      end subroutine copy_surf_conn_type_to_IO
+      end subroutine copy_surf_connect_to_IO
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_surf_geom_type_to_IO(surf)
+      subroutine copy_surf_geometry_to_IO(surf)
 !
       type(surface_data), intent(inout) :: surf
       integer(kind = kint) :: isurf
@@ -88,6 +87,7 @@
       call allocate_ele_scalar_IO
 !
 !
+!omp parallel do
       do isurf = 1, surf%numsurf
         globalnodid_dummy(isurf) = surf%isurf_global(isurf)
         xx_dummy(isurf,1) =        surf%x_surf(isurf,1)
@@ -99,12 +99,13 @@
         ele_vector_IO(isurf,2) =   surf%vnorm_surf(isurf,2)
         ele_vector_IO(isurf,3) =   surf%vnorm_surf(isurf,3)
       end do
+!omp end parallel do
 !
-      end subroutine copy_surf_geom_type_to_IO
+      end subroutine copy_surf_geometry_to_IO
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_surf_geom_type_to_IO_sph(surf)
+      subroutine copy_surf_geometry_to_IO_sph(surf)
 !
       type(surface_data), intent(inout) :: surf
       integer(kind = kint) :: isurf
@@ -117,6 +118,7 @@
       call allocate_ele_vector_IO
       call allocate_ele_scalar_IO
 !
+!omp parallel do
       do isurf = 1, surf%numsurf
         globalnodid_dummy(isurf) = surf%isurf_global(isurf)
         xx_dummy(isurf,1) = surf%r_surf(isurf)
@@ -128,12 +130,13 @@
         ele_vector_IO(isurf,2) = surf%vnorm_surf_sph(isurf,2)
         ele_vector_IO(isurf,3) = surf%vnorm_surf_sph(isurf,3)
       end do
+!omp end parallel do
 !
-      end subroutine copy_surf_geom_type_to_IO_sph
+      end subroutine copy_surf_geometry_to_IO_sph
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_surf_geom_type_to_IO_cyl(surf)
+      subroutine copy_surf_geometry_to_IO_cyl(surf)
 !
       type(surface_data), intent(inout) :: surf
       integer(kind = kint) :: isurf
@@ -146,6 +149,7 @@
       call allocate_ele_vector_IO
       call allocate_ele_scalar_IO
 !
+!omp parallel do
       do isurf = 1, surf%numsurf
         globalnodid_dummy(isurf) = surf%isurf_global(isurf)
         xx_dummy(isurf,1) = surf%s_surf(isurf)
@@ -156,13 +160,14 @@
         ele_vector_IO(isurf,2) = surf%vnorm_surf_cyl(isurf,2)
         ele_vector_IO(isurf,3) = surf%vnorm_surf_cyl(isurf,3)
       end do
+!omp end parallel do
 !
-      end subroutine copy_surf_geom_type_to_IO_cyl
+      end subroutine copy_surf_geometry_to_IO_cyl
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine copy_surf_conn_type_from_IO(surf, nele)
+      subroutine copy_surf_connect_from_IO(surf, nele)
 !
       use m_geometry_constants
 !
@@ -191,8 +196,8 @@
       call deallocate_surface_connect_IO
       call deallocate_ele_info_dummy
 !
-      end subroutine copy_surf_conn_type_from_IO
+      end subroutine copy_surf_connect_from_IO
 !
 !------------------------------------------------------------------
 !
-      end module set_surface_geom_type_IO
+      end module set_surface_data_4_IO

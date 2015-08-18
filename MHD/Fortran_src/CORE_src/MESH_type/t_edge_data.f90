@@ -287,7 +287,7 @@
       type(edge_data), intent(inout) :: edge
 !
       allocate( edge%edge_vect_sph(edge%numedge,3) )
-      edge%edge_vect_sph =     0.0d0
+      if(edge%numedge .gt. 0) edge%edge_vect_sph =     0.0d0
 !
       end subroutine allocate_edge_vect_sph_type
 !
@@ -298,7 +298,7 @@
       type(edge_data), intent(inout) :: edge
 !
       allocate( edge%edge_vect_cyl(edge%numedge,3) )
-      edge%edge_vect_cyl =     0.0d0
+      if(edge%numedge .gt. 0) edge%edge_vect_cyl =     0.0d0
 !
       end subroutine allocate_edge_vect_cyl_type
 !

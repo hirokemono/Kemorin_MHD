@@ -46,7 +46,7 @@
        use m_read_mesh_data
        use m_comm_data_IO
        use mesh_IO_select
-       use set_node_types_4_IO
+       use set_node_data_4_IO
        use set_element_data_4_IO
 !
       integer (kind = kint) :: ip, my_rank
@@ -57,7 +57,7 @@
 !
         call sel_read_mesh_geometry(my_rank)
 !
-        call copy_node_type_from_IO(subdomains_2(ip)%node)
+        call copy_node_geometry_from_IO(subdomains_2(ip)%node)
         call copy_ele_connect_from_IO(subdomains_2(ip)%ele)
 !
         call allocate_sph_node_geometry(subdomains_2(ip)%node)

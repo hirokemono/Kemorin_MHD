@@ -27,7 +27,6 @@
       use m_geometry_data
       use m_group_data
       use m_surf_data_infinity
-      use m_edge_geometry_data
       use m_layering_ele_list
       use m_node_phys_address
       use m_ele_material_property
@@ -164,7 +163,7 @@
       call s_const_comm_table_fluid
 !
       call deallocate_surface_geom_type(surf1)
-      call deallocate_edge_geometry
+      call deallocate_edge_geom_type(edge1)
 !
 !     --------------------- 
 !

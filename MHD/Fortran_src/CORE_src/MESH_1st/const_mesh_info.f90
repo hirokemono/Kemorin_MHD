@@ -111,7 +111,6 @@
       use m_geometry_data
       use m_group_data
 !
-      use m_edge_geometry_data
       use m_element_group_connect
       use m_surface_group_connect
 !
@@ -127,7 +126,7 @@
       call deallocate_grp_type(nod_grp1)
 !
       call deallocate_surface_geom_type(surf1)
-      call deallocate_edge_geometry
+      call deallocate_edge_geom_type(edge1)
 !
 !      call deallocate_iso_surface_type(surf1)
 !      call deallocate_ext_surface_type(surf1)
@@ -289,13 +288,12 @@
 !
       use cal_mesh_position
       use m_geometry_data
-      use m_edge_geometry_data
 !
 !
       call allocate_surface_geom_type(surf1)
       call set_center_of_surface
 !
-      call allocate_edge_geometry
+      call allocate_edge_geom_type(edge1)
       call set_center_of_edge
 !
       end subroutine set_edge_and_surf_geometry

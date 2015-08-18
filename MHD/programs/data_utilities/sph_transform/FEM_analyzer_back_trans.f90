@@ -28,7 +28,6 @@
       use m_array_for_send_recv
       use m_geometry_data
       use m_node_phys_data
-      use m_edge_geometry_data
       use m_element_id_4_node
       use m_surface_group
       use m_surface_group_connect
@@ -96,7 +95,7 @@
 !  -------------------------------
 !  -------------------------------
 !
-      call deallocate_edge_geometry
+      call deallocate_edge_geom_type(edge1)
 !
       if (iflag_debug.gt.0) write(*,*) 'allocate_data_arrays'
       call allocate_data_arrays

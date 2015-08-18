@@ -28,7 +28,6 @@
 !
       use m_read_mesh_data
       use m_geometry_data
-      use m_edge_geometry_data
       use m_control_params_2nd_files
       use m_ucd_input_data
       use m_array_for_send_recv
@@ -61,7 +60,7 @@
 !     --------------------- 
 !
       call deallocate_surface_geom_type(surf1)
-      call deallocate_edge_geometry
+      call deallocate_edge_geom_type(edge1)
 !
 !     ---------------------
 !

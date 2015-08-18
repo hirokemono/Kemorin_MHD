@@ -27,10 +27,10 @@
       use const_mesh_info
       use cal_jacobian
 !
-      use set_node_types_4_IO
+      use set_node_data_4_IO
       use set_element_data_4_IO
       use set_surface_data_4_IO
-      use set_edge_geometry_4_IO
+      use set_edge_data_4_IO
       use element_IO_select
       use surface_IO_select
       use edge_IO_select
@@ -148,7 +148,7 @@
      &      form = 'formatted')
 !
       num_neib_domain_IO = 0
-      call copy_node_type_sph_to_IO(node1)
+      call copy_node_sph_to_IO(node1)
 !
       call output_node_sph_geometry
       close(input_file_code)
@@ -160,7 +160,7 @@
      &      form = 'formatted')
 !
       num_neib_domain_IO = 0
-      call copy_node_type_cyl_to_IO(node1)
+      call copy_node_cyl_to_IO(node1)
 !
       call output_node_cyl_geometry
       close(input_file_code)
@@ -218,24 +218,24 @@
 !
       mesh_edge_file_head = mesh_def_edge_head
       if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO'
-      call copy_edge_connect_to_IO
-      call copy_edge_geometry_to_IO
+      call copy_edge_connect_to_IO(edge1, ele1%numele, surf1%numsurf)
+      call copy_edge_geometry_to_IO(edge1)
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_output_edge_geometries'
       call sel_output_edge_geometries(my_rank)
 !
       write(mesh_edge_file_head,'(a,a4)') mesh_def_edge_head, '_sph'
-      if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO'
-      call copy_edge_connect_to_IO
-      call copy_edge_geometry_to_IO_sph
+      if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO_sph'
+      call copy_edge_connect_to_IO(edge1, ele1%numele, surf1%numsurf)
+      call copy_edge_geometry_to_IO_sph(edge1)
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_output_edge_geometries_sph'
       call sel_output_edge_geometries_sph(my_rank)
 !
       write(mesh_edge_file_head,'(a,a4)') mesh_def_edge_head, '_cyl'
-      if (iflag_debug.gt.0) write(*,*) 'copy_edge_connect_to_IO'
-      call copy_edge_connect_to_IO
-      call copy_edge_geometry_to_IO_cyl
+      if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO_cyl'
+      call copy_edge_connect_to_IO(edge1, ele1%numele, surf1%numsurf)
+      call copy_edge_geometry_to_IO_cyl(edge1)
       if (iflag_debug.gt.0) write(*,*) 'sel_output_edge_geometries_cyl'
       call sel_output_edge_geometries_cyl(my_rank)
 !

@@ -406,7 +406,7 @@
 !
       subroutine edge_send_recv_test
 !
-      use m_edge_geometry_data
+      use m_geometry_data
       use m_ele_sf_eg_comm_tables
       use solver_SR_type
 !
@@ -414,9 +414,9 @@
 !
 !
       do iedge = 1, edge1%numedge
-        x_edge_comm(3*iedge-2) = x_edge(iedge,1)
-        x_edge_comm(3*iedge-1) = x_edge(iedge,2)
-        x_edge_comm(3*iedge  ) = x_edge(iedge,3)
+        x_edge_comm(3*iedge-2) = edge1%x_edge(iedge,1)
+        x_edge_comm(3*iedge-1) = edge1%x_edge(iedge,2)
+        x_edge_comm(3*iedge  ) = edge1%x_edge(iedge,3)
       end do
       do inum = 1, edge_comm%ntot_import
         iedge = edge_comm%item_import(inum)

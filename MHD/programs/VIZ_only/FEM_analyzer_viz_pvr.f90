@@ -30,7 +30,6 @@
       use m_geometry_data
       use m_surface_group
       use m_control_params_2nd_files
-      use m_edge_geometry_data
       use m_element_id_4_node
       use m_jacobians
       use m_ucd_input_data
@@ -81,7 +80,7 @@
 !
 !     --------------------- 
 !
-      call deallocate_edge_geometry
+      call deallocate_edge_geom_type(edge1)
 !
 !     ---------------------
 !

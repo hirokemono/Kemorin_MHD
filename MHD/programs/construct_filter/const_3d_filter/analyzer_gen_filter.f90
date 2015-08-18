@@ -41,7 +41,7 @@
 !
       use set_element_data_4_IO
       use set_surface_data_4_IO
-      use set_edge_geometry_4_IO
+      use set_edge_data_4_IO
       use m_geometry_data
       use m_element_group
       use m_surface_group
