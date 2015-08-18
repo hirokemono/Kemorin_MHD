@@ -5,9 +5,6 @@
 !
 !     Written by H. Matsui on Aug., 2006
 !
-!      subroutine allocate_surface_geometry
-!      subroutine deallocate_surface_geometry
-!
 !      subroutine allocate_normal_vectors
 !      subroutine allocate_normal_vector_sph
 !      subroutine allocate_normal_vector_cyl
@@ -24,17 +21,17 @@
 !
 !      real(kind=kreal)  , allocatable  :: x_surf(:,:)
 !<   position of center of surface
-      real(kind=kreal)  , allocatable  :: r_surf(:)
+!      real(kind=kreal)  , allocatable  :: r_surf(:)
 !<   distance from the center of surface
-      real(kind=kreal)  , allocatable  :: ar_surf(:)
+!      real(kind=kreal)  , allocatable  :: ar_surf(:)
 !<   1/r_surf
-      real(kind=kreal)  , allocatable  :: phi_surf(:)
+!      real(kind=kreal)  , allocatable  :: phi_surf(:)
 !<   longitude of center of surface
-      real(kind=kreal)  , allocatable  :: theta_surf(:)
+!      real(kind=kreal)  , allocatable  :: theta_surf(:)
 !<   colatitude of center of surface
-      real(kind=kreal)  , allocatable  :: s_surf(:)
+!      real(kind=kreal)  , allocatable  :: s_surf(:)
 !<   cylindorical radius of center of surface
-      real(kind=kreal)  , allocatable  :: as_surf(:)
+!      real(kind=kreal)  , allocatable  :: as_surf(:)
 !<   1 / s_surf
 !
       real (kind=kreal), allocatable :: area_surf(:)
@@ -56,42 +53,6 @@
       contains
 !
 !------------------------------------------------------------------
-!
-      subroutine allocate_surface_geometry
-!
-      use m_geometry_data
-!
-!      allocate( x_surf(surf1%numsurf,3) )
-!
-      allocate( r_surf(surf1%numsurf) )
-      allocate( ar_surf(surf1%numsurf) )
-      allocate( phi_surf(surf1%numsurf) )
-      allocate( theta_surf(surf1%numsurf) )
-!
-      allocate( s_surf(surf1%numsurf) )
-      allocate( as_surf(surf1%numsurf) )
-!
-      r_surf =      0.0d0
-      ar_surf =     0.0d0
-      phi_surf =    0.0d0
-      theta_surf =  0.0d0
-!
-      s_surf =      0.0d0
-      as_surf =     0.0d0
-!
-      end subroutine allocate_surface_geometry
-!
-! ------------------------------------------------------
-!
-      subroutine deallocate_surface_geometry
-!
-      deallocate( r_surf, phi_surf, theta_surf )
-      deallocate( ar_surf )
-      deallocate( s_surf, as_surf )
-!
-      end subroutine deallocate_surface_geometry
-!
-! ------------------------------------------------------
 ! ------------------------------------------------------
 !
       subroutine allocate_normal_vectors

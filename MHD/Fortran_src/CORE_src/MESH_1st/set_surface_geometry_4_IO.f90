@@ -58,9 +58,9 @@
 !
       globalnodid_dummy(1:surf1%numsurf)                                &
      &     = surf1%isurf_global(1:surf1%numsurf)
-      xx_dummy(1:surf1%numsurf,1) = r_surf(1:surf1%numsurf)
-      xx_dummy(1:surf1%numsurf,2) = theta_surf(1:surf1%numsurf)
-      xx_dummy(1:surf1%numsurf,3) = phi_surf(1:surf1%numsurf)
+      xx_dummy(1:surf1%numsurf,1) = surf1%r_surf(1:surf1%numsurf)
+      xx_dummy(1:surf1%numsurf,2) = surf1%theta_surf(1:surf1%numsurf)
+      xx_dummy(1:surf1%numsurf,3) = surf1%phi_surf(1:surf1%numsurf)
 !
       ele_scalar_IO(1:surf1%numsurf) =     area_surf(1:surf1%numsurf)
       ele_vector_IO(1:surf1%numsurf,1:3)                                &
@@ -81,8 +81,8 @@
 !
       globalnodid_dummy(1:surf1%numsurf)                                &
      &      = surf1%isurf_global(1:surf1%numsurf)
-      xx_dummy(1:surf1%numsurf,1) = s_surf(1:surf1%numsurf)
-      xx_dummy(1:surf1%numsurf,2) = phi_surf(1:surf1%numsurf)
+      xx_dummy(1:surf1%numsurf,1) = surf1%s_surf(1:surf1%numsurf)
+      xx_dummy(1:surf1%numsurf,2) = surf1%phi_surf(1:surf1%numsurf)
       xx_dummy(1:surf1%numsurf,3) = surf1%x_surf(1:surf1%numsurf,3)
       ele_scalar_IO(1:surf1%numsurf) =     area_surf(1:surf1%numsurf)
       ele_vector_IO(1:surf1%numsurf,1:3)                                &

@@ -79,7 +79,7 @@
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
       call const_element_comm_tables_1st
 !
-      call deallocate_surface_geometry
+      call deallocate_surface_geom_type(surf1)
       call deallocate_edge_geometry
 !
 !  -------------------------------

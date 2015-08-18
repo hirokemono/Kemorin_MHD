@@ -61,7 +61,7 @@
 !
 !     --------------------- 
 !
-      call deallocate_surface_geometry
+      call deallocate_surface_geom_type(surf1)
       call deallocate_edge_geometry
 !
 !     ---------------------

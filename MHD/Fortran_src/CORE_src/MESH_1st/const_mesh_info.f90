@@ -127,7 +127,7 @@
       call deallocate_grp_type(ele_grp1)
       call deallocate_grp_type(nod_grp1)
 !
-      call deallocate_surface_geometry
+      call deallocate_surface_geom_type(surf1)
       call deallocate_edge_geometry
 !
 !      call deallocate_iso_surface_type(surf1)
@@ -295,7 +295,6 @@
 !
 !
       call allocate_surface_geom_type(surf1)
-      call allocate_surface_geometry
       call set_center_of_surface
 !
       call allocate_edge_geometry

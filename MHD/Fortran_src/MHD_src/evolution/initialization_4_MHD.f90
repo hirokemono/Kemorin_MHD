@@ -121,7 +121,7 @@
 !
       if(i_debug .eq. iflag_full_msg) call check_whole_num_of_elements
 !
-      call deallocate_surface_geometry
+      call deallocate_surface_geom_type(surf1)
       call deallocate_edge_geometry
 !
 !     ---------------------

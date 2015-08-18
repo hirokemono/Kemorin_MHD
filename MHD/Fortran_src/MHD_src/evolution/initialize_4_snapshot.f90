@@ -164,7 +164,7 @@
       if (iflag_debug.gt.0)  write(*,*)' make comm. table for fluid'
       call s_const_comm_table_fluid
 !
-      call deallocate_surface_geometry
+      call deallocate_surface_geom_type(surf1)
       call deallocate_edge_geometry
 !
 !     --------------------- 

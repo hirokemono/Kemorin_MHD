@@ -61,7 +61,7 @@
      &    surf1%x_surf(1:surf1%numsurf,1),                              &
      &    surf1%x_surf(1:surf1%numsurf,2),                              &
      &    surf1%x_surf(1:surf1%numsurf,3),                              &
-     &    r_surf, s_surf, ar_surf, as_surf)
+     &    surf1%r_surf, surf1%s_surf, surf1%ar_surf, surf1%as_surf)
 !$omp end parallel
 !
       end subroutine s_cal_normal_vector_spherical
@@ -80,7 +80,7 @@
       call cvt_vector_2_cyl_smp(np_smp, surf1%numsurf,                  &
      &    surf1%istack_surf_smp, vnorm_surf, vnorm_surf_cyl,            &
      &    surf1%x_surf(1:surf1%numsurf,1),                              &
-     &    surf1%x_surf(1:surf1%numsurf,2), s_surf, as_surf)
+     &    surf1%x_surf(1:surf1%numsurf,2), surf1%s_surf, surf1%as_surf)
 !$omp end parallel
 !
       end subroutine s_cal_normal_vector_cylindrical
