@@ -1,18 +1,22 @@
-!set_edge_geom_type_IO.f90
-!      module set_edge_geom_type_IO
+!>@file   set_edge_data_4_IO.f90
+!!@brief  module set_edge_data_4_IO
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2006
+!!@n    modified in July, 2014
 !
-!     Written by H. Matsui on Dec., 2008
+!>@brief Copy edge data between IO buffer
+!!
+!!@verbatim
+!!      subroutine copy_edge_connect_to_IO(edge, nele, nsurf)
+!!      subroutine copy_edge_geometry_to_IO(edge)
+!!      subroutine copy_edge_geometry_to_IO_sph(edge)
+!!      subroutine copy_edge_geometry_to_IO_cyl(edge)
+!!
+!!      subroutine copy_edge_connect_from_IO(edge, nele, nsurf)
+!!@endverbatim
 !
-!      subroutine copy_edge_conn_type_to_IO(edge, nele, nsurf)
-!      subroutine copy_edge_conn_type_from_IO(edge, nele, nsurf)
-!      subroutine copy_edge_geom_type_to_IO(edge)
-!      subroutine copy_edge_geom_type_to_IO_sph(edge)
-!      subroutine copy_edge_geom_type_to_IO_cyl(edge)
-!      subroutine copy_edge_geom_type_from_IO(edge)
-!      subroutine copy_edge_geom_type_from_IO_sph(edge)
-!      subroutine copy_edge_geom_type_from_IO_cyl(edge)
-!
-      module set_edge_geom_type_IO
+      module set_edge_data_4_IO
 !
       use m_precision
 !
@@ -27,7 +31,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_edge_conn_type_to_IO(edge, nele, nsurf)
+      subroutine copy_edge_connect_to_IO(edge, nele, nsurf)
 !
       use m_geometry_constants
 !
@@ -58,28 +62,34 @@
         i_ele_dummy(1:edge%numedge) = 112
       end if
 !
+!omp parallel do
       do iedge = 1, edge%numedge
         globalelmid_dummy(iedge) = edge%iedge_global(iedge)
         nodelm_dummy(iedge) =      edge%nnod_4_edge
         ie_dummy(iedge,1:edge%nnod_4_edge)                              &
      &        = edge%ie_edge(iedge,1:edge%nnod_4_edge)
       end do
+!omp end parallel do
 !
+!omp parallel do
       do isurf = 1, nsurf
         isf_4_ele_IO(isurf,1:nedge_4_surf)                              &
      &        = edge%iedge_4_sf(isurf,1:nedge_4_surf)
       end do
+!omp end parallel do
 !
+!omp parallel do
       do iele = 1, nele
         iedge_4_ele_IO(iele,1:nedge_4_ele)                              &
      &        = edge%iedge_4_ele(iele,1:nedge_4_ele)
       end do
+!omp end parallel do
 !
-      end subroutine copy_edge_conn_type_to_IO
+      end subroutine copy_edge_connect_to_IO
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_edge_geom_type_to_IO(edge)
+      subroutine copy_edge_geometry_to_IO(edge)
 !
       type(edge_data), intent(inout) :: edge
       integer(kind = kint) :: iedge
@@ -92,6 +102,7 @@
       call allocate_ele_vector_IO
       call allocate_ele_scalar_IO
 !
+!omp parallel do
       do iedge = 1, edge%numedge
         globalnodid_dummy(iedge) = edge%iedge_global(iedge)
         xx_dummy(iedge,1) =        edge%x_edge(iedge,1)
@@ -102,12 +113,13 @@
         ele_vector_IO(iedge,2) =   edge%edge_vect(iedge,2)
         ele_vector_IO(iedge,3) =   edge%edge_vect(iedge,3)
       end do
+!omp end parallel do
 !
-      end subroutine copy_edge_geom_type_to_IO
+      end subroutine copy_edge_geometry_to_IO
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_edge_geom_type_to_IO_sph(edge)
+      subroutine copy_edge_geometry_to_IO_sph(edge)
 !
       type(edge_data), intent(inout) :: edge
       integer(kind = kint) :: iedge
@@ -120,6 +132,7 @@
       call allocate_ele_vector_IO
       call allocate_ele_scalar_IO
 !
+!omp parallel do
       do iedge = 1, edge%numedge
         globalnodid_dummy(iedge) = edge%iedge_global(iedge)
         xx_dummy(iedge,1) =        edge%r_edge(iedge)
@@ -130,12 +143,13 @@
         ele_vector_IO(iedge,2) =   edge%edge_vect_sph(iedge,2)
         ele_vector_IO(iedge,3) =   edge%edge_vect_sph(iedge,3)
       end do
+!omp end parallel do
 !
-      end subroutine copy_edge_geom_type_to_IO_sph
+      end subroutine copy_edge_geometry_to_IO_sph
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_edge_geom_type_to_IO_cyl(edge)
+      subroutine copy_edge_geometry_to_IO_cyl(edge)
 !
       type(edge_data), intent(inout) :: edge
       integer(kind = kint) :: iedge
@@ -148,6 +162,7 @@
       call allocate_ele_vector_IO
       call allocate_ele_scalar_IO
 !
+!omp parallel do
       do iedge = 1, edge%numedge
         globalnodid_dummy(iedge) = edge%iedge_global(iedge)
         xx_dummy(iedge,1) =        edge%s_edge(iedge)
@@ -158,13 +173,14 @@
         ele_vector_IO(iedge,2) =   edge%edge_vect_cyl(iedge,2)
         ele_vector_IO(iedge,3) =   edge%edge_vect_cyl(iedge,3)
       end do
+!omp end parallel do
 !
-      end subroutine copy_edge_geom_type_to_IO_cyl
+      end subroutine copy_edge_geometry_to_IO_cyl
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine copy_edge_conn_type_from_IO(edge, nele, nsurf)
+      subroutine copy_edge_connect_from_IO(edge, nele, nsurf)
 !
       use m_geometry_constants
 !
@@ -198,91 +214,8 @@
       call deallocate_ele_info_dummy
       call deallocate_edge_connect_IO
 !
-      end subroutine copy_edge_conn_type_from_IO
+      end subroutine copy_edge_connect_from_IO
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_edge_geom_type_from_IO(edge)
-!
-      type(edge_data), intent(inout) :: edge
-      integer(kind = kint) :: iedge
-!
-!
-      call allocate_edge_geom_type(edge)
-      call allocate_edge_vect_type(edge)
-!
-      do iedge = 1, edge%numedge
-        edge%x_edge(iedge,1) =    xx_dummy(iedge,1)
-        edge%x_edge(iedge,2) =    xx_dummy(iedge,2)
-        edge%x_edge(iedge,3) =    xx_dummy(iedge,3)
-        edge%edge_length(iedge) = ele_scalar_IO(iedge)
-        edge%edge_vect(iedge,1) = ele_vector_IO(iedge,1)
-        edge%edge_vect(iedge,2) = ele_vector_IO(iedge,2)
-        edge%edge_vect(iedge,3) = ele_vector_IO(iedge,3)
-      end do
-!
-      call deallocate_ele_scalar_IO
-      call deallocate_ele_vector_IO
-      call deallocate_node_data_dummy
-!
-      end subroutine copy_edge_geom_type_from_IO
-!
-!------------------------------------------------------------------
-!
-      subroutine copy_edge_geom_type_from_IO_sph(edge)
-!
-      type(edge_data), intent(inout) :: edge
-      integer(kind = kint) :: iedge
-!
-!
-      call allocate_edge_geom_type(edge)
-      call allocate_edge_vect_type(edge)
-      call allocate_edge_vect_sph_type(edge)
-!
-      do iedge = 1, edge%numedge
-        edge%r_edge(iedge) =          xx_dummy(iedge,1)
-        edge%theta_edge(iedge) =      xx_dummy(iedge,2)
-        edge%phi_edge(iedge) =        xx_dummy(iedge,3)
-        edge%edge_length(iedge) =     ele_scalar_IO(iedge)
-        edge%edge_vect_sph(iedge,1) = ele_vector_IO(iedge,1)
-        edge%edge_vect_sph(iedge,2) = ele_vector_IO(iedge,2)
-        edge%edge_vect_sph(iedge,3) = ele_vector_IO(iedge,3)
-      end do
-!
-      call deallocate_ele_scalar_IO
-      call deallocate_ele_vector_IO
-      call deallocate_node_data_dummy
-!
-      end subroutine copy_edge_geom_type_from_IO_sph
-!
-!------------------------------------------------------------------
-!
-      subroutine copy_edge_geom_type_from_IO_cyl(edge)
-!
-      type(edge_data), intent(inout) :: edge
-      integer(kind = kint) :: iedge
-!
-!
-      call allocate_edge_geom_type(edge)
-      call allocate_edge_vect_type(edge)
-      call allocate_edge_vect_cyl_type(edge)
-!
-      do iedge = 1, edge%numedge
-        edge%s_edge(iedge) =          xx_dummy(iedge,1)
-        edge%phi_edge(iedge) =        xx_dummy(iedge,2)
-        edge%x_edge(iedge,3) =        xx_dummy(iedge,3)
-        edge%edge_length(iedge) =     ele_scalar_IO(iedge)
-        edge%edge_vect_cyl(iedge,1) = ele_vector_IO(iedge,1)
-        edge%edge_vect_cyl(iedge,2) = ele_vector_IO(iedge,2)
-        edge%edge_vect_cyl(iedge,3) = ele_vector_IO(iedge,3)
-      end do
-!
-      call deallocate_ele_scalar_IO
-      call deallocate_ele_vector_IO
-      call deallocate_node_data_dummy
-!
-      end subroutine copy_edge_geom_type_from_IO_cyl
-!
-!------------------------------------------------------------------
-!
-      end module set_edge_geom_type_IO
+      end module set_edge_data_4_IO

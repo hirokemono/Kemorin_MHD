@@ -1,18 +1,16 @@
-!set_node_types_4_IO.f90
-!      module set_node_types_4_IO
+!set_node_data_4_IO.f90
+!      module set_node_data_4_IO
 !
 !     Written by H. Matsui on Dec., 2008
 !
-!      subroutine copy_node_type_to_IO(node)
-!      subroutine copy_node_type_sph_to_IO(node)
-!      subroutine copy_node_type_cyl_to_IO(node)
+!      subroutine copy_node_geometry_to_IO(node)
+!      subroutine copy_node_sph_to_IO(node)
+!      subroutine copy_node_cyl_to_IO(node)
 !
-!      subroutine copy_node_type_from_IO(node)
-!      subroutine copy_sph_type_from_IO(node)
-!      subroutine copy_cyl_type_from_IO(node)
+!      subroutine copy_node_geometry_from_IO(node)
 !        type(node_data), intent(inout) :: node
 !
-      module set_node_types_4_IO
+      module set_node_data_4_IO
 !
       use m_precision
 !
@@ -27,7 +25,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_node_type_to_IO(node)
+      subroutine copy_node_geometry_to_IO(node)
 !
       integer(kind = kint) :: inod
       type(node_data), intent(inout) :: node
@@ -47,11 +45,11 @@
       end do
 !$omp end parallel do
 !
-      end subroutine copy_node_type_to_IO
+      end subroutine copy_node_geometry_to_IO
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_node_type_sph_to_IO(node)
+      subroutine copy_node_sph_to_IO(node)
 !
       integer(kind = kint) :: inod
       type(node_data), intent(inout) :: node
@@ -72,11 +70,11 @@
 !$omp end parallel do
 !
 !
-      end subroutine copy_node_type_sph_to_IO
+      end subroutine copy_node_sph_to_IO
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_node_type_cyl_to_IO(node)
+      subroutine copy_node_cyl_to_IO(node)
 !
       integer(kind = kint) :: inod
       type(node_data), intent(inout) :: node
@@ -97,12 +95,12 @@
 !$omp end parallel do
 !
 !
-      end subroutine copy_node_type_cyl_to_IO
+      end subroutine copy_node_cyl_to_IO
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine copy_node_type_from_IO(node)
+      subroutine copy_node_geometry_from_IO(node)
 !
       integer(kind = kint) :: inod
       type(node_data), intent(inout) :: node
@@ -124,50 +122,8 @@
 !
       call deallocate_node_data_dummy
 !
-      end subroutine copy_node_type_from_IO
+      end subroutine copy_node_geometry_from_IO
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_sph_type_from_IO(node)
-!
-      integer(kind = kint) :: inod
-      type(node_data), intent(inout) :: node
-!
-!
-!$omp parallel do
-      do inod = 1, node%numnod
-!        node%inod_global(inod) = globalnodid_dummy(inod)
-        node%rr(inod) =    xx_dummy(inod,1)
-        node%theta(inod) = xx_dummy(inod,2)
-        node%phi(inod) =   xx_dummy(inod,3)
-      end do
-!$omp end parallel do
-!
-      call deallocate_node_data_dummy
-!
-      end subroutine copy_sph_type_from_IO
-!
-!------------------------------------------------------------------
-!
-      subroutine copy_cyl_type_from_IO(node)
-!
-      integer(kind = kint) :: inod
-      type(node_data), intent(inout) :: node
-!
-!
-!$omp parallel do
-      do inod = 1, node%numnod
-!        node%inod_global(inod) = globalnodid_dummy(inod)
-        node%ss(inod) =   xx_dummy(inod,1)
-        node%phi(inod) =  xx_dummy(inod,2)
-        node%xx(inod,3) = xx_dummy(inod,3)
-      end do
-!$omp end parallel do
-!
-      call deallocate_node_data_dummy
-!
-      end subroutine copy_cyl_type_from_IO
-!
-!------------------------------------------------------------------
-!
-      end module set_node_types_4_IO
+      end module set_node_data_4_IO
