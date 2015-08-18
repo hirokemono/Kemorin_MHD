@@ -131,6 +131,9 @@
       call deallocate_surface_geometry
       call deallocate_edge_geometry
 !
+!      call deallocate_iso_surface_type(surf1)
+!      call deallocate_ext_surface_type(surf1)
+!
       call deallocate_edge_param_smp_type(edge1)
       call deallocate_inod_in_edge_type(edge1)
       call deallocate_surf_param_smp_type(surf1)

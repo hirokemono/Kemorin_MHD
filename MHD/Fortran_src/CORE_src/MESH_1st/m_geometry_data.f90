@@ -29,12 +29,7 @@
 !!      subroutine deallocate_ele_4_edge_item
 !!      subroutine deallocate_surf_4_edge_item
 !!
-!!      subroutine allocate_ext_surface
-!!      subroutine allocate_iso_surface
 !!      subroutine allocate_iso_edge
-!!
-!!      subroutine deallocate_ext_surface
-!!      subroutine deallocate_iso_surface
 !!      subroutine deallocate_iso_edge
 !!@endverbatim
 !!
@@ -68,7 +63,7 @@
 !
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
-!  surf1%numsurf_iso
+!  surf1%isf_isolate
 !
 !>     Structure for edge data
       type(edge_data), save :: edge1
@@ -154,9 +149,9 @@
 !>     number of isolated surface
 !      integer(kind=kint) ::  numsurf_iso
 !>     external surface list
-      integer(kind=kint), allocatable  ::  isf_external(:)
+!      integer(kind=kint), allocatable  ::  isf_external(:)
 !>     isolated surface list
-      integer(kind=kint), allocatable  ::  isf_isolate(:)
+!      integer(kind=kint), allocatable  ::  isf_isolate(:)
 !
 
 !>     element type id   (where i:element id)
@@ -441,47 +436,12 @@
 ! ------------------------------------------------------
 ! ------------------------------------------------------
 !
-      subroutine allocate_ext_surface
-!
-      allocate( isf_external(surf1%numsurf_ext) )
-      isf_external = 0
-!
-      end subroutine allocate_ext_surface
-!
-! ------------------------------------------------------
-!
-      subroutine allocate_iso_surface
-!
-      allocate( isf_isolate(surf1%numsurf_iso) )
-      isf_isolate = 0
-!
-      end subroutine allocate_iso_surface
-!
-! ------------------------------------------------------
-!
       subroutine allocate_iso_edge
 !
       allocate( iedge_isolate(numedge_iso) )
       iedge_isolate = 0
 !
       end subroutine allocate_iso_edge
-!
-! ------------------------------------------------------
-! ------------------------------------------------------
-!
-      subroutine deallocate_ext_surface
-!
-      deallocate( isf_external )
-!
-      end subroutine deallocate_ext_surface
-!
-! ------------------------------------------------------
-!
-      subroutine deallocate_iso_surface
-!
-      deallocate( isf_isolate )
-!
-      end subroutine deallocate_iso_surface
 !
 ! ------------------------------------------------------
 !

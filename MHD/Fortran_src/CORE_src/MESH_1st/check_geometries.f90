@@ -159,7 +159,8 @@
       write(50+my_rank,*) 'numsurf_ext', surf1%numsurf_ext
 !
       write(50+my_rank,*) 'isf_external'
-      write(50+my_rank,'(8i16)') isf_external(1:surf1%numsurf_ext)
+      write(50+my_rank,'(8i16)')                                        &
+     &         surf1%isf_external(1:surf1%numsurf_ext)
 !
       end subroutine check_external_surface
 !
@@ -173,7 +174,7 @@
       write(50+my_rank,*) 'numsurf_iso', surf1%numsurf_iso
 !
       write(50+my_rank,*) 'isf_isolate'
-      write(50+my_rank,'(8i16)') isf_isolate(1:surf1%numsurf_iso)
+      write(50+my_rank,'(8i16)') surf1%isf_isolate(1:surf1%numsurf_iso)
 !
       end subroutine check_iso_surface
 !

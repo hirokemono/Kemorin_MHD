@@ -130,12 +130,13 @@
       call count_part_surface(ele1%numele, ele1%numele,                 &
      &   sf_ele_tbl%iflag_hash, surf1%numsurf_ext)
 !
-      call allocate_ext_surface
+      call allocate_ext_surface_type(surf1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_part_surface'
       call set_part_surface                                             &
      &   (ele1%numele, ele1%numele, surf1%numsurf_ext, surf1%isf_4_ele, &
-     &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash, isf_external)
+     &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash,                    &
+     &    surf1%isf_external)
 !
       end subroutine const_external_surface_data
 !
@@ -163,12 +164,12 @@
       call count_part_surface(ele1%numele, ele1%numele,                 &
      &    sf_ele_tbl%iflag_hash, surf1%numsurf_iso)
 !
-      call allocate_iso_surface
+      call allocate_iso_surface_type(surf1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_part_surface'
       call set_part_surface                                             &
      &   (ele1%numele, ele1%numele, surf1%numsurf_iso, surf1%isf_4_ele, &
-     &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash, isf_isolate)
+     &    sf_ele_tbl%id_hash, sf_ele_tbl%iflag_hash, surf1%isf_isolate)
 !
       end subroutine const_isolate_surface_data
 !
