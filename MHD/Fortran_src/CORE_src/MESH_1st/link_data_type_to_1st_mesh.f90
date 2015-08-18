@@ -167,8 +167,8 @@
       ele%s_ele =>     ele1%s_ele
       ele%as_ele =>    ele1%as_ele
 !
-      ele%volume_ele => volume_ele
-      ele%a_vol_ele =>  a_vol_ele
+      ele%volume_ele => ele1%volume_ele
+      ele%a_vol_ele =>  ele1%a_vol_ele
 !
       ele%volume =       volume
       ele%a_vol =        a_vol

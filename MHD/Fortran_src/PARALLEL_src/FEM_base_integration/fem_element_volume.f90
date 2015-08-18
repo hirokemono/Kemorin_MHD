@@ -34,7 +34,7 @@
 !
 !
 !$omp workshare
-      volume_ele(1:ele1%numele) = 0.0d0
+      ele1%volume_ele(1:ele1%numele) = 0.0d0
 !$omp end workshare
 !
 !$omp parallel do private(iele,ii,ix,istart,iend) 
@@ -45,17 +45,17 @@
          do ii=1, n_int * n_int * n_int
            ix = int_start3(n_int) + ii
            do iele = istart, iend
-             volume_ele(iele) = volume_ele(iele)                        &
+             ele1%volume_ele(iele) = ele1%volume_ele(iele)              &
      &                          + xjac(iele,ix)*owe3d(ix)
            end do
          end do
 !
 !
          do iele = istart, iend
-           if (volume_ele(iele).eq.0.0d0) then
-             a_vol_ele(iele) = 1.0d60
+           if (ele1%volume_ele(iele).eq.0.0d0) then
+             ele1%a_vol_ele(iele) = 1.0d60
            else
-             a_vol_ele(iele) = 1.0d0 / volume_ele(iele)
+             ele1%a_vol_ele(iele) = 1.0d0 / ele1%volume_ele(iele)
            end if
          end do
        end do

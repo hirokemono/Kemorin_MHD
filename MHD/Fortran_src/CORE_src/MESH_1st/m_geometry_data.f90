@@ -48,7 +48,7 @@
 !
 !>  structure for element data (position and connectivity)
       type(element_data), save :: ele1
-!    ele1%volume_ele
+!    ele1%a_vol_ele
 !
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
@@ -94,9 +94,9 @@
 !      real(kind=kreal)  , pointer :: as_ele(:)
 !
 !>  Volume of each element
-      real (kind=kreal), pointer :: volume_ele(:)
+!      real (kind=kreal), pointer :: volume_ele(:)
 !>  1 / volume of each element
-      real (kind=kreal), pointer :: a_vol_ele(:)
+!      real (kind=kreal), pointer :: a_vol_ele(:)
 !
 !
 !>  Total volume of domain
@@ -217,11 +217,8 @@
 !        allocate(s_ele(ele1%numele))
 !        allocate(as_ele(ele1%numele))
 !
-        allocate( volume_ele (ele1%numele))
-        allocate( a_vol_ele (ele1%numele))
-!
-       volume_ele = 0.0d0
-       a_vol_ele = 0.0d0
+!        allocate( volume_ele (ele1%numele))
+!        allocate( a_vol_ele (ele1%numele))
 !
        end subroutine allocate_element_geometry
 !
@@ -231,9 +228,6 @@
 !
 !
       call deallocate_ele_geometry_type(ele1)
-!
-        deallocate( volume_ele )
-        deallocate( a_vol_ele )
 !
        end subroutine deallocate_element_geometry
 !

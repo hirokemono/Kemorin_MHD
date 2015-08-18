@@ -202,7 +202,8 @@
 !
 !
       call fem_skv_scalar_on_ele_HRZ_m(ele1%numele, ele1%nnod_4_ele,    &
-     &    iele_fsmp_stack, volume_ele, ml_ele_diag, scalar_ele, sk_v)
+     &    iele_fsmp_stack, ele1%volume_ele, ml_ele_diag,                &
+     &    scalar_ele, sk_v)
 !
       end subroutine fem_skv_scalar_on_ele_HRZ_1st
 !
@@ -222,7 +223,8 @@
 !
 !
       call fem_skv_vector_on_ele_HRZ_m(ele1%numele, ele1%nnod_4_ele,    &
-     &    iele_fsmp_stack, volume_ele, ml_ele_diag, vector_ele, sk_v)
+     &    iele_fsmp_stack, ele1%volume_ele, ml_ele_diag,                &
+     &    vector_ele, sk_v)
 !
       end subroutine fem_skv_vector_on_ele_HRZ_1st
 !
@@ -243,7 +245,8 @@
 !
 !
       call fem_skv_tensor_on_ele_HRZ_m(ele1%numele, ele1%nnod_4_ele,    &
-     &    iele_fsmp_stack, volume_ele, ml_ele_diag, tensor_ele, sk_v)
+     &    iele_fsmp_stack, ele1%volume_ele, ml_ele_diag,                &
+     &    tensor_ele, sk_v)
 !
       end subroutine fem_skv_tensor_on_ele_HRZ_1st
 !
@@ -340,8 +343,8 @@
 !
 !
       call fem_skv_scalar_on_ele_grp_HRZ(ele1%numele, ele1%nnod_4_ele,  &
-     &    iele_fsmp_stack, volume_ele, nele_grp, iele_grp, ml_ele_diag, &
-     &    scalar_ele, sk_v)
+     &    iele_fsmp_stack, ele1%volume_ele, nele_grp, iele_grp,         &
+     &    ml_ele_diag, scalar_ele, sk_v)
 !
       end subroutine fem_skv_scalar_on_egrp_HRZ_1st
 !
@@ -364,8 +367,8 @@
 !
 !
       call fem_skv_vector_on_ele_grp_HRZ(ele1%numele, ele1%nnod_4_ele,  &
-     &    iele_fsmp_stack, volume_ele, nele_grp, iele_grp, ml_ele_diag, &
-     &    vector_ele, sk_v)
+     &    iele_fsmp_stack, ele1%volume_ele, nele_grp, iele_grp,         &
+     &    ml_ele_diag, vector_ele, sk_v)
 !
       end subroutine fem_skv_vector_on_egrp_HRZ_1st
 !
@@ -388,8 +391,8 @@
 !
 !
       call fem_skv_tensor_on_ele_grp_HRZ(ele1%numele, ele1%nnod_4_ele,  &
-     &    iele_fsmp_stack, volume_ele, nele_grp, iele_grp, ml_ele_diag, &
-     &    tensor_ele, sk_v)
+     &    iele_fsmp_stack, ele1%volume_ele, nele_grp, iele_grp,         &
+     &    ml_ele_diag, tensor_ele, sk_v)
 !
       end subroutine fem_skv_tensor_on_egrp_HRZ_1st
 !

@@ -144,7 +144,7 @@
 !$cdir nodep
           do iele0 = ist, ied
             iele = item_layer(iele0)
-            vol_l_smp(iproc) = vol_l_smp(iproc) + volume_ele(iele)      &
+            vol_l_smp(iproc) = vol_l_smp(iproc) + ele1%volume_ele(iele) &
      &                       * dble(ele1%interior_ele(iele))
           end do
         end do
@@ -191,7 +191,7 @@
 !$cdir nodep
           do iele0 = ist, ied
             iele = item_layer(iele0)
-            vol_l(igrp) = vol_l(igrp) + volume_ele(iele)                &
+            vol_l(igrp) = vol_l(igrp) + ele1%volume_ele(iele)           &
      &                   * dble(ele1%interior_ele(iele))
           end do
           vol_l_smp(iproc) = vol_l_smp(iproc) + vol_l(igrp)

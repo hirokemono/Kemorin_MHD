@@ -89,7 +89,7 @@
       use m_geometry_data_MHD
 !
       call sum_4_volume(ele1%numele, ele1%interior_ele,                 &
-     &    iele_fl_smp_stack, volume_ele, vol_fl_local)
+     &    iele_fl_smp_stack, ele1%volume_ele, vol_fl_local)
 !
       call MPI_allREDUCE (vol_fl_local, vol_fluid, 1,                   &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
@@ -112,7 +112,7 @@
 !
 !
       call sum_4_volume(ele1%numele, ele1%interior_ele,                 &
-     &    iele_cd_smp_stack, volume_ele, vol_cd_local)
+     &    iele_cd_smp_stack, ele1%volume_ele, vol_cd_local)
 !
       call MPI_allREDUCE (vol_cd_local, vol_conduct, 1,                 &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
@@ -135,7 +135,7 @@
 !
 !
       call sum_4_volume(ele1%numele, ele1%interior_ele,                 &
-     &    iele_ins_smp_stack, volume_ele, vol_ins_local)
+     &    iele_ins_smp_stack, ele1%volume_ele, vol_ins_local)
 !
       call MPI_allREDUCE (vol_ins_local, vol_insulate, 1,               &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)

@@ -35,7 +35,7 @@
 !
        min_length = 1.0d10
        do iele = 1, ele1%numele
-         min_length = min(min_length, volume_ele(iele))
+         min_length = min(min_length, ele1%volume_ele(iele))
        end do
        min_length = (min_length)**(2.0d0/3.0d0)*4.0d0 / 6.0d0
 !
@@ -92,7 +92,7 @@
 !
       do iele = iele_fl_start, iele_fl_end
 !
-        cfl_tmp = volume_ele(iele)**(1/3)*2.0d0                         &
+        cfl_tmp = ele1%volume_ele(iele)**(1/3)*2.0d0                    &
      &            / (sqrt(d_ele(iele,iphys_ele%i_velo  )**2             &
      &                  + d_ele(iele,iphys_ele%i_velo+1)**2             &
      &                  + d_ele(iele,iphys_ele%i_velo+2)**2) + 1.0d-10)

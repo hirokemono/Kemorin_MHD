@@ -150,7 +150,7 @@
 !
 !
       call volume_average_skv_HRZ(ele1%numele, ele1%nnod_4_ele,         &
-     &    np_smp, iele_fsmp_stack, volume_ele, sk_v, ml_e)
+     &    np_smp, iele_fsmp_stack, ele1%volume_ele, sk_v, ml_e)
 !
       end subroutine vol_average_skv_HRZ_1st
 !
@@ -247,7 +247,7 @@
 !
 !
       call grp_volume_average_skv_HRZ(ele1%numele, ele1%nnod_4_ele,     &
-     &    np_smp, iele_fsmp_stack, nele_grp, iele_grp, volume_ele,      &
+     &    np_smp, iele_fsmp_stack, nele_grp, iele_grp, ele1%volume_ele, &
      &    sk_v, ml_e)
 !
       end subroutine grp_volume_average_skv_HRZ_1

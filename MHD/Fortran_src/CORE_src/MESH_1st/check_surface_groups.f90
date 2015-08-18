@@ -128,7 +128,7 @@
          iele = sf_grp%item_sf_grp(1,isurf)
          write(id_check,'(2i16, 1p6E25.15e3)') isurf, iele,             &
      &           sf_grp_v%vnorm_sf_grp(isurf,1:3),                      &
-     &           sf_grp_v%area_sf_grp(isurf), volume_ele(iele)
+     &           sf_grp_v%area_sf_grp(isurf), ele1%volume_ele(iele)
        end do
 !
        end subroutine check_norm_surface_grp

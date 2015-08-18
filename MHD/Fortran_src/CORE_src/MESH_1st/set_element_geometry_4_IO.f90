@@ -39,7 +39,7 @@
         xx_dummy(iele,1) = ele1%x_ele(iele,1)
         xx_dummy(iele,2) = ele1%x_ele(iele,2)
         xx_dummy(iele,3) = ele1%x_ele(iele,3)
-        ele_scalar_IO(iele) = volume_ele(iele)
+        ele_scalar_IO(iele) = ele1%volume_ele(iele)
       end do
 !$omp end parallel do
 !
@@ -65,7 +65,7 @@
         xx_dummy(iele,1) = ele1%r_ele(iele)
         xx_dummy(iele,2) = ele1%theta_ele(iele)
         xx_dummy(iele,3) = ele1%phi_ele(iele)
-        ele_scalar_IO(iele) = volume_ele(iele)
+        ele_scalar_IO(iele) = ele1%volume_ele(iele)
       end do
 !$omp end parallel do
 !
@@ -91,7 +91,7 @@
         xx_dummy(iele,1) = ele1%s_ele(iele)
         xx_dummy(iele,2) = ele1%phi_ele(iele)
         xx_dummy(iele,3) = ele1%x_ele(iele,3)
-        ele_scalar_IO(iele) = volume_ele(iele)
+        ele_scalar_IO(iele) = ele1%volume_ele(iele)
       end do
 !$omp end parallel do
 !
