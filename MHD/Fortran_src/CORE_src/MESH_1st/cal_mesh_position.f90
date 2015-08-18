@@ -39,10 +39,10 @@
         call set_lag_ele_position(node1%numnod, ele1%numele,            &
      &      ele1%ie, node1%xx, ele1%x_ele)
       end if
-      x_ele = ele1%x_ele
 !
-      call position_2_sph(ele1%numele, ele1%x_ele, r_ele, theta_ele,    &
-     &       phi_ele, ar_ele, s_ele, as_ele)
+      call position_2_sph(ele1%numele, ele1%x_ele,                      &
+     &    ele1%r_ele, theta_ele, phi_ele, ar_ele, s_ele, as_ele)
+      r_ele = ele1%r_ele
 !
       end subroutine set_center_of_element
 !

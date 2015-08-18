@@ -43,7 +43,7 @@
         node1%xx(inod,2) =        ele1%x_ele(inod,2)
         node1%xx(inod,3) =        ele1%x_ele(inod,3)
 !
-        node1%rr(inod) =    r_ele(inod)
+        node1%rr(inod) =    ele1%r_ele(inod)
         node1%a_r(inod) =   ar_ele(inod)
         node1%ss(inod) =    s_ele(inod)
         node1%a_s(inod) =   as_ele(inod)

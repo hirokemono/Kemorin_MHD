@@ -48,7 +48,7 @@
 !
 !>  structure for element data (position and connectivity)
       type(element_data), save :: ele1
-!    ele1%x_ele
+!    ele1%r_ele
 !
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
@@ -79,7 +79,7 @@
 !
 !
 !>   position of centre of element
-      real(kind=kreal)  , pointer :: x_ele(:,:)
+!      real(kind=kreal)  , pointer :: x_ele(:,:)
 !>   distance from the centre of element
       real(kind=kreal)  , pointer :: r_ele(:)
 !>   1/r_ele
@@ -209,7 +209,7 @@
 !
       call allocate_ele_geometry_type(ele1)
 !
-        allocate(x_ele(ele1%numele,3))
+!        allocate(x_ele(ele1%numele,3))
         allocate(r_ele(ele1%numele))
         allocate(ar_ele(ele1%numele))
         allocate(phi_ele(ele1%numele))
@@ -220,7 +220,6 @@
         allocate( volume_ele (ele1%numele))
         allocate( a_vol_ele (ele1%numele))
 !
-       r_ele = 0.0d0
        ar_ele = 0.0d0
        phi_ele = 0.0d0
        theta_ele = 0.0d0
@@ -239,7 +238,6 @@
 !
       call deallocate_ele_geometry_type(ele1)
 !
-        deallocate(x_ele)
         deallocate(r_ele)
         deallocate(ar_ele)
         deallocate(phi_ele)
