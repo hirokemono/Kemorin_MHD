@@ -25,7 +25,7 @@
       use m_t_step_parameter
 !
       use m_geometry_data
-      use m_surface_group
+      use m_group_data
       use m_surface_geometry_data
       use m_surf_data_infinity
       use m_edge_geometry_data
@@ -87,7 +87,7 @@
       if (iflag_dynamic_SGS  .ne. id_SGS_DYNAMIC_OFF) then
         ncomp_correlate = 9
         if (iflag_debug.eq.1) write(*,*)' const_layers_4_dynamic'
-        call const_layers_4_dynamic
+        call const_layers_4_dynamic(ele_grp1, layer_tbl1)
         call allocate_work_4_dynamic(layer_tbl1%n_layer_d)
         call allocate_work_layer_correlate(layer_tbl1%n_layer_d)
       end if

@@ -1,14 +1,14 @@
-!const_surface_type_data.f90
-!      module const_surface_type_data
+!const_surface_data.f90
+!      module const_surface_data
 !
 !     Written by H. Matsui on Dec., 2008
 !
 !
-!      subroutine s_const_surface_type_data(nod, ele, surf)
+!      subroutine construct_surface_data(nod, ele, surf)
 !      subroutine const_isolated_surface_t_data(nod, ele, surf)
 !      subroutine const_external_surface_t_data(nod, ele, surf)
-!      subroutine const_surface_type_hash(nod, ele, surf, sf_ele_tbl)
-!      subroutine const_part_surface_type_hash(nele_grp, item_grp,      &
+!      subroutine const_surface_hash(nod, ele, surf, sf_ele_tbl)
+!      subroutine const_part_surface_hash(nele_grp, item_grp,         &
 !     &          nod, ele, surf, sf_ele_tbl)
 !        integer(kind = kint) :: nele_grp
 !        integer(kind = kint) :: item_grp(nele_grp)
@@ -17,13 +17,13 @@
 !        type(surface_data), intent(inout) :: surf
 !        type(sum_hash_tbl), intent(inout) :: sf_ele_tbl
 !
-!      subroutine const_ele_list_4_surf_type(ele, surf)
-!      subroutine empty_surf_connect_type(ele, surf)
+!      subroutine const_ele_list_4_surface(ele, surf)
+!      subroutine empty_surface_connect(ele, surf)
 !        type(node_data),    intent(in) :: nod
 !        type(element_data), intent(in) :: ele
 !        type(surface_data), intent(inout) :: surf
 !
-      module const_surface_type_data
+      module const_surface_data
 !
       use m_precision
 !
@@ -35,15 +35,11 @@
 !
       implicit none
 !
-      private :: const_external_surf_type_data
 !
       type(sum_hash_tbl), save, private :: surf_ele_tbl
 !
-!   sf_ele_tbl%iend_hash
-!   sf_ele_tbl%num_hash
-!   sf_ele_tbl%istack_hash
-!   sf_ele_tbl%id_hash
-!   sf_ele_tbl%iflag_hash
+      private :: const_external_surface_data
+      private :: const_surface_hash
 !
 !------------------------------------------------------------------
 !
@@ -51,7 +47,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine s_const_surface_type_data(nod, ele, surf)
+      subroutine construct_surface_data(nod, ele, surf)
 !
       use set_surface_hash
 !
@@ -64,18 +60,18 @@
       call alloc_sum_hash(nod%numnod, ele%numele,                       &
      &    nsurf_4_ele, surf%nnod_4_surf, surf_ele_tbl)
 !
-      call const_surface_type_hash(nod, ele, surf, surf_ele_tbl)
+      call const_surface_hash(nod, ele, surf, surf_ele_tbl)
 !
-      call const_all_surf_type_data(nod, ele, surf, surf_ele_tbl)
+      call const_all_surface_data(nod, ele, surf, surf_ele_tbl)
 !
-!      call const_external_surf_type_data(nod, ele, surf, surf_ele_tbl)
-!      call const_isolate_surf_type_data(nod, ele, surf, surf_ele_tbl)
+!      call const_external_surface_data(nod, ele, surf, surf_ele_tbl)
+!      call const_isolate_surface_data(nod, ele, surf, surf_ele_tbl)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'dealloc_sum_hash(surf_ele_tbl)'
       call dealloc_sum_hash(surf_ele_tbl)
 !
-      end subroutine s_const_surface_type_data
+      end subroutine construct_surface_data
 !
 !------------------------------------------------------------------
 !
@@ -91,10 +87,10 @@
       call alloc_sum_hash(nod%numnod, ele%numele,                       &
      &    nsurf_4_ele, surf%nnod_4_surf, surf_ele_tbl)
 !
-      call const_surface_type_hash(nod, ele, surf, surf_ele_tbl)
-      call const_all_surf_type_data(nod, ele, surf, surf_ele_tbl)
+      call const_surface_hash(nod, ele, surf, surf_ele_tbl)
+      call const_all_surface_data(nod, ele, surf, surf_ele_tbl)
 !
-      call const_isolate_surf_type_data(nod, ele, surf, surf_ele_tbl)
+      call const_isolate_surface_data(nod, ele, surf, surf_ele_tbl)
 !
       call dealloc_sum_hash(surf_ele_tbl)
 !
@@ -114,10 +110,10 @@
       call alloc_sum_hash(nod%numnod, ele%numele,                       &
      &    nsurf_4_ele, surf%nnod_4_surf, surf_ele_tbl)
 !
-      call const_surface_type_hash(nod, ele, surf, surf_ele_tbl)
-      call const_all_surf_type_data(nod, ele, surf, surf_ele_tbl)
+      call const_surface_hash(nod, ele, surf, surf_ele_tbl)
+      call const_all_surface_data(nod, ele, surf, surf_ele_tbl)
 !
-      call const_external_surf_type_data(nod, ele, surf, surf_ele_tbl)
+      call const_external_surface_data(nod, ele, surf, surf_ele_tbl)
 !
       call dealloc_sum_hash(surf_ele_tbl)
 !
@@ -125,7 +121,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine const_ele_list_4_surf_type(ele, surf)
+      subroutine const_ele_list_4_surface(ele, surf)
 !
       use set_element_list_4_surface
 !
@@ -137,12 +133,12 @@
       call set_ele_list_4_surf(ele%numele, surf%numsurf,                &
      &     nsurf_4_ele, surf%isf_4_ele, surf%iele_4_surf)
 !
-      end subroutine const_ele_list_4_surf_type
+      end subroutine const_ele_list_4_surface
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine empty_surf_connect_type(ele, surf)
+      subroutine empty_surface_connect(ele, surf)
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(inout) :: surf
@@ -155,12 +151,12 @@
       if (iflag_debug.eq.1) write(*,*) 'allocate_surf_param_smp_type'
       call allocate_surf_param_smp_type(surf)
 !
-      end subroutine empty_surf_connect_type
+      end subroutine empty_surface_connect
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_surface_type_hash(nod, ele, surf, sf_ele_tbl)
+      subroutine const_surface_hash(nod, ele, surf, sf_ele_tbl)
 !
       use set_surface_hash
 !
@@ -179,11 +175,11 @@
      &    sf_ele_tbl%num_hash, sf_ele_tbl%istack_hash,                  &
      &    sf_ele_tbl%iend_hash, sf_ele_tbl%id_hash)
 !
-      end subroutine const_surface_type_hash
+      end subroutine const_surface_hash
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_part_surface_type_hash(nele_grp, item_grp,       &
+      subroutine const_part_surface_hash(nele_grp, item_grp,            &
      &          nod, ele, surf, sf_ele_tbl)
 !
       use set_surface_hash
@@ -202,12 +198,12 @@
      &    sf_ele_tbl%num_hash, sf_ele_tbl%istack_hash,                  &
      &    sf_ele_tbl%iend_hash, sf_ele_tbl%id_hash)
 !
-      end subroutine const_part_surface_type_hash
+      end subroutine const_part_surface_hash
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_all_surf_type_data(nod, ele, surf, sf_ele_tbl)
+      subroutine const_all_surface_data(nod, ele, surf, sf_ele_tbl)
 !
       use mark_surf_hash
       use set_surface_data
@@ -246,11 +242,11 @@
      &    ele%nnod_4_ele, surf%nnod_4_surf, ele%ie, surf%ie_surf,       &
      &    surf%isf_4_ele, surf%isf_rot_ele)
 !
-      end subroutine const_all_surf_type_data
+      end subroutine const_all_surface_data
 !
 !------------------------------------------------------------------
 !
-      subroutine const_external_surf_type_data                          &
+      subroutine const_external_surface_data                            &
      &         (nod, ele, surf, sf_ele_tbl)
 !
       use mark_surf_hash
@@ -289,11 +285,11 @@
      &    surf%numsurf_ext, surf%isf_4_ele, sf_ele_tbl%id_hash,         &
      &    sf_ele_tbl%iflag_hash, surf%isf_external)
 !
-      end subroutine const_external_surf_type_data
+      end subroutine const_external_surface_data
 !
 !------------------------------------------------------------------
 !
-      subroutine const_isolate_surf_type_data                           &
+      subroutine const_isolate_surface_data                             &
      &         (nod, ele, surf, sf_ele_tbl)
 !
       use mark_surf_hash
@@ -326,8 +322,8 @@
      &    surf%numsurf_iso, surf%isf_4_ele, sf_ele_tbl%id_hash,         &
      &    sf_ele_tbl%iflag_hash, surf%isf_isolate)
 !
-      end subroutine const_isolate_surf_type_data
+      end subroutine const_isolate_surface_data
 !
 !------------------------------------------------------------------
 !
-      end module const_surface_type_data
+      end module const_surface_data

@@ -29,7 +29,7 @@
 !
       use set_node_types_4_IO
       use set_surface_geom_type_IO
-      use set_element_geometry_4_IO
+      use set_element_data_4_IO
       use set_surface_geometry_4_IO
       use set_edge_geometry_4_IO
       use element_IO_select
@@ -172,17 +172,17 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_ele_geometry_to_IO'
       mesh_ele_file_head = mesh_ele_def_head
-      call copy_ele_geometry_to_IO
+      call copy_ele_geometry_to_IO(ele1)
       call sel_output_element_file(my_rank)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_ele_sph_geom_to_IO'
       write(mesh_ele_file_head,'(a,a4)') mesh_ele_def_head, '_sph'
-      call copy_ele_sph_geom_to_IO
+      call copy_ele_sph_geom_to_IO(ele1)
       call sel_output_element_sph_file(my_rank)
 !
       if (iflag_debug.gt.0) write(*,*) 'copy_ele_cyl_geom_to_IO'
       write(mesh_ele_file_head,'(a,a4)') mesh_ele_def_head, '_cyl'
-      call copy_ele_cyl_geom_to_IO
+      call copy_ele_cyl_geom_to_IO(ele1)
       call sel_output_element_cyl_file(my_rank)
 !
 !  -------------------------------

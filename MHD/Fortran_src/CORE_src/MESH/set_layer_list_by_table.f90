@@ -1,26 +1,33 @@
-!set_layer_list_by_table.f90
-!      module set_layer_list_by_table
+!>@file   set_layer_list_by_table.f90
+!!@brief  module set_layer_list_by_table
+!!
+!!@author H. Matsui
+!!@date Programmed in Nov., 2009
+!!@n    modified in Aug., 2015
 !
-!      written by Kemorin on Nov., 2009
-!
-!       subroutine allocate_layering_ele_grp
-!       subroutine deallocate_layering_ele_grp
-!
-!      subroutine set_layerd_group_id(num_mat, mat_name)
-!      subroutine count_ele_layer_by_table(num_mat, mat_istack,         &
-!     &          n_layer_d, n_item_layer_d, layer_stack)
-!      subroutine set_ele_layer_by_table(num_mat, num_mat_bc,           &
-!     &          mat_istack, mat_item, n_layer_d, n_item_layer_d,       &
-!     &          layer_stack, item_layer)
-!
-!      subroutine count_layering_ele_grp_list(num_mat, mat_name,        &
-!     &          ist_grp)
-!      subroutine set_layering_ele_grp_list(num_mat, mat_name, ist_grp)
-!
-!      subroutine count_ele_4_dynamic_smp(n_layer_d, layer_stack,       &
-!     &          maxlayer_4_smp, minlayer_4_smp,                        &
-!     &          min_item_layer_d_smp, max_item_layer_d_smp,            &
-!     &          layer_stack_smp, istack_item_layer_d_smp)
+!>@brief Set layering list for dynamic mscheme
+!!
+!!@verbatim
+!!      subroutine allocate_layering_ele_grp
+!!      subroutine deallocate_layering_ele_grp
+!!      subroutine check_layering_ele_grp
+!!
+!!      subroutine set_layerd_group_id(num_mat, mat_name)
+!!      subroutine count_ele_layer_by_table(num_mat, mat_istack,        &
+!!     &          n_layer_d, n_item_layer_d, layer_stack)
+!!      subroutine set_ele_layer_by_table(num_mat, num_mat_bc,          &
+!!     &          mat_istack, mat_item, n_layer_d, n_item_layer_d,      &
+!!     &          layer_stack, item_layer)
+!!
+!!      subroutine count_layering_ele_grp_list(num_mat, mat_name,       &
+!!     &          ist_grp)
+!!      subroutine set_layering_ele_grp_list(num_mat, mat_name, ist_grp)
+!!
+!!      subroutine count_ele_4_dynamic_smp(n_layer_d, layer_stack,      &
+!!     &          maxlayer_4_smp, minlayer_4_smp,                       &
+!!     &          min_item_layer_d_smp, max_item_layer_d_smp,           &
+!!     &          layer_stack_smp, istack_item_layer_d_smp)
+!!@endverbatim
 !
       module set_layer_list_by_table
 !
@@ -54,26 +61,41 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine allocate_layering_ele_grp
+      subroutine allocate_layering_ele_grp
 !
-       allocate(dynamic_layer_grp_name(ntotal_layer_grp))
-       allocate(igrp_stack_each_layer(0:num_layer_grp))
-       allocate(id_layer_ele_grp(ntotal_layer_grp))
+      allocate(dynamic_layer_grp_name(ntotal_layer_grp))
+      allocate(igrp_stack_each_layer(0:num_layer_grp))
+      allocate(id_layer_ele_grp(ntotal_layer_grp))
 !
-       igrp_stack_each_layer = 0
-       if(ntotal_layer_grp .gt. 0) id_layer_ele_grp = 0
+      igrp_stack_each_layer = 0
+      if(ntotal_layer_grp .gt. 0) id_layer_ele_grp = 0
 !
-       end subroutine allocate_layering_ele_grp
+      end subroutine allocate_layering_ele_grp
 !
 ! -----------------------------------------------------------------------
 !
-       subroutine deallocate_layering_ele_grp
+      subroutine deallocate_layering_ele_grp
 !
-       deallocate(dynamic_layer_grp_name)
-       deallocate(igrp_stack_each_layer)
-       deallocate(id_layer_ele_grp)
+      deallocate(dynamic_layer_grp_name)
+      deallocate(igrp_stack_each_layer)
+      deallocate(id_layer_ele_grp)
 !
-       end subroutine deallocate_layering_ele_grp
+      end subroutine deallocate_layering_ele_grp
+!
+! -----------------------------------------------------------------------
+!
+      subroutine check_layering_ele_grp
+!
+      integer(kind = kint) :: i
+!
+      write(*,*) 'igrp_stack_each_layer'
+      write(*,'(8i16)') igrp_stack_each_layer(0:num_layer_grp)
+      write(*,*) 'i, dynamic_layer_grp_name(i)', ntotal_layer_grp
+      do i = 1, ntotal_layer_grp
+        write(*,*) i, ': ', trim(dynamic_layer_grp_name(i))
+      end do
+!
+      end subroutine check_layering_ele_grp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

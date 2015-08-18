@@ -1,4 +1,3 @@
-!!
 !>@file  t_near_mesh_id_4_node.f90
 !!       module t_near_mesh_id_4_node
 !!

@@ -1,18 +1,23 @@
-!const_edge_type_data.f90
-!      module const_edge_type_data
+!>@file   const_edge_data.f90
+!!@brief  module const_edge_data
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2008
 !
-!     Written by H. Matsui on Dec., 2008
+!>@brief Construct edge connectivity by element connectivity
+!!
+!!@verbatim
+!!      subroutine construct_edge_data(nod, ele, surf, edge)
+!!      subroutine const_element_list_4_edge(ele, edge)
+!!      subroutine const_surface_list_4_edge(surf, edge)
+!!      subroutine empty_edge_connect_type(ele, surf, edge)
+!!        type(node_data),    intent(in) :: nod
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(edge_data),    intent(inout) :: edge
+!!@endverbatim
 !
-!      subroutine s_const_edge_type_data(nod, ele, surf, edge)
-!      subroutine const_ele_list_4_edge_type(ele, edge)
-!      subroutine const_surf_list_4_edge_type(surf, edge)
-!      subroutine empty_edge_connect_type(ele, surf, edge)
-!        type(node_data),    intent(in) :: nod
-!        type(element_data), intent(in) :: ele
-!        type(surface_data), intent(in) :: surf
-!        type(edge_data),    intent(inout) :: edge
-!
-      module const_edge_type_data
+      module const_edge_data
 !
       use m_precision
 !
@@ -33,7 +38,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine s_const_edge_type_data(nod, ele, surf, edge)
+      subroutine construct_edge_data(nod, ele, surf, edge)
 !
       use m_machine_parameter
       use set_edge_hash_by_ele
@@ -85,11 +90,11 @@
 !
       call dealloc_sum_hash(edge_ele_tbl)
 !
-      end subroutine s_const_edge_type_data
+      end subroutine construct_edge_data
 !
 !------------------------------------------------------------------
 !
-      subroutine const_ele_list_4_edge_type(ele, edge)
+      subroutine const_element_list_4_edge(ele, edge)
 !
       use set_element_list_4_surface
 !
@@ -107,11 +112,11 @@
      &    edge%num_iele_4_edge, edge%istack_iele_4_edge,                &
      &    edge%iele_4_edge)
 !
-      end subroutine const_ele_list_4_edge_type
+      end subroutine const_element_list_4_edge
 !
 !------------------------------------------------------------------
 !
-      subroutine const_surf_list_4_edge_type(surf, edge)
+      subroutine const_surface_list_4_edge(surf, edge)
 !
       use set_element_list_4_surface
 !
@@ -130,7 +135,7 @@
      &    edge%num_isurf_4_edge, edge%istack_isurf_4_edge,              &
      &    edge%isurf_4_edge)
 !
-      end subroutine const_surf_list_4_edge_type
+      end subroutine const_surface_list_4_edge
 !
 !------------------------------------------------------------------
 ! ----------------------------------------------------------------------
@@ -145,7 +150,7 @@
 !
 !
       edge%numedge = 0
-      if (iflag_debug.eq.1) write(*,*) 's_const_edge_type_data'
+      if (iflag_debug.eq.1) write(*,*) 'empty edge data'
       call allocate_edge_connect_type(edge, surf%numsurf)
       call allocate_edge_4_ele_type(edge, ele%numele)
 !
@@ -156,4 +161,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module const_edge_type_data
+      end module const_edge_data

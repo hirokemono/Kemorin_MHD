@@ -44,7 +44,7 @@
 !     --------------------- 
 !
 !      if (iflag_debug.eq.1) write(*,*) 'const_layers_4_dynamic'
-!      call const_layers_4_dynamic
+!      call const_layers_4_dynamic(ele_grp1, layer_tbl1)
 !
 !     --------------------- 
 !

@@ -1,19 +1,16 @@
 !
-!      module set_element_types_4_IO
+!      module set_element_data_4_IO
 !
 !     Written by H. Matsui on Dec., 2008
 !
-!      subroutine copy_ele_connect_type_to_IO(ele)
-!      subroutine copy_ele_connect_type_from_IO(ele)
+!      subroutine copy_ele_connect_to_IO(ele)
+!      subroutine copy_ele_connect_from_IO(ele)
 !
-!      subroutine copy_ele_geom_type_to_IO(ele)
-!      subroutine copy_ele_sph_geom_type_to_IO(ele)
-!      subroutine copy_ele_cyl_geom_type_to_IO(ele)
-!      subroutine copy_ele_geom_type_from_IO(ele)
-!      subroutine copy_ele_sph_geom_type_from_IO(ele)
-!      subroutine copy_ele_cyl_geom_type_from_IO(ele)
+!      subroutine copy_ele_geometry_to_IO(ele)
+!      subroutine copy_ele_sph_geom_to_IO(ele)
+!      subroutine copy_ele_cyl_geom_to_IO(ele)
 !
-      module set_element_types_4_IO
+      module set_element_data_4_IO
 !
       use m_precision
 !
@@ -28,7 +25,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_ele_connect_type_to_IO(ele)
+      subroutine copy_ele_connect_to_IO(ele)
 !
       type(element_data), intent(inout) :: ele
       integer(kind = kint) :: iele, k1
@@ -58,11 +55,11 @@
 !$omp end do
 !$omp end parallel
 !
-      end subroutine copy_ele_connect_type_to_IO
+      end subroutine copy_ele_connect_to_IO
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_ele_connect_type_from_IO(ele)
+      subroutine copy_ele_connect_from_IO(ele)
 !
       use m_geometry_constants
       use set_nnod_4_ele_by_type
@@ -104,12 +101,12 @@
 !
       call deallocate_ele_info_dummy
 !
-      end subroutine copy_ele_connect_type_from_IO
+      end subroutine copy_ele_connect_from_IO
 !
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine copy_ele_geom_type_to_IO(ele)
+      subroutine copy_ele_geometry_to_IO(ele)
 !
       type(element_data), intent(inout) :: ele
       integer(kind = kint) :: iele
@@ -131,11 +128,11 @@
       end do
 !$omp end parallel do
 !
-      end subroutine copy_ele_geom_type_to_IO
+      end subroutine copy_ele_geometry_to_IO
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_ele_sph_geom_type_to_IO(ele)
+      subroutine copy_ele_sph_geom_to_IO(ele)
 !
       type(element_data), intent(inout) :: ele
       integer(kind = kint) :: iele
@@ -158,11 +155,11 @@
       end do
 !$omp end parallel do
 !
-      end subroutine copy_ele_sph_geom_type_to_IO
+      end subroutine copy_ele_sph_geom_to_IO
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_ele_cyl_geom_type_to_IO(ele)
+      subroutine copy_ele_cyl_geom_to_IO(ele)
 !
       type(element_data), intent(inout) :: ele
       integer(kind = kint) :: iele
@@ -185,81 +182,8 @@
       end do
 !$omp end parallel do
 !
-      end subroutine copy_ele_cyl_geom_type_to_IO
-!
-!------------------------------------------------------------------
-!------------------------------------------------------------------
-!
-      subroutine copy_ele_geom_type_from_IO(ele)
-!
-      type(element_data), intent(inout) :: ele
-      integer(kind = kint) :: iele
-!
-!
-!      call allocate_ele_geometry_type(ele)
-!
-!$omp parallel do
-      do iele = 1, ele%numele
-        ele%x_ele(iele,1) =    xx_dummy(iele,1)
-        ele%x_ele(iele,2) =    xx_dummy(iele,2)
-        ele%x_ele(iele,3) =    xx_dummy(iele,3)
-        ele%volume_ele(iele) = ele_scalar_IO(iele)
-      end do
-!$omp end parallel do
-!
-      call deallocate_ele_scalar_IO
-      call deallocate_node_data_dummy
-!
-      end subroutine copy_ele_geom_type_from_IO
+      end subroutine copy_ele_cyl_geom_to_IO
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_ele_sph_geom_type_from_IO(ele)
-!
-      type(element_data), intent(inout) :: ele
-      integer(kind = kint) :: iele
-!
-!
-!      call allocate_ele_geometry_type(ele)
-!
-!$omp parallel do
-      do iele = 1, ele%numele
-        ele%r_ele(iele) =      xx_dummy(iele,1)
-        ele%theta_ele(iele) =  xx_dummy(iele,2)
-        ele%phi_ele(iele) =    xx_dummy(iele,3)
-        ele%volume_ele(iele) = ele_scalar_IO(iele)
-      end do
-!$omp end parallel do
-!
-      call deallocate_ele_scalar_IO
-      call deallocate_node_data_dummy
-!
-      end subroutine copy_ele_sph_geom_type_from_IO
-!
-!------------------------------------------------------------------
-!
-      subroutine copy_ele_cyl_geom_type_from_IO(ele)
-!
-      type(element_data), intent(inout) :: ele
-      integer(kind = kint) :: iele
-!
-!
-!      call allocate_ele_geometry_type(ele)
-!
-!$omp parallel do
-      do iele = 1, ele%numele
-        ele%s_ele(iele) =      xx_dummy(iele,1)
-        ele%phi_ele(iele) =    xx_dummy(iele,2)
-        ele%x_ele(iele,3) =    xx_dummy(iele,3)
-        ele%volume_ele(iele) = ele_scalar_IO(iele)
-      end do
-!$omp end parallel do
-!
-      call deallocate_ele_scalar_IO
-      call deallocate_node_data_dummy
-!
-      end subroutine copy_ele_cyl_geom_type_from_IO
-!
-!------------------------------------------------------------------
-!
-      end module set_element_types_4_IO
+      end module set_element_data_4_IO

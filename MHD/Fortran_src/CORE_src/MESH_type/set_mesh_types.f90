@@ -80,7 +80,7 @@
 !
       use set_comm_table_4_IO
       use set_node_types_4_IO
-      use set_element_types_4_IO
+      use set_element_data_4_IO
 !
       type(mesh_geometry), intent(inout) :: mesh
 !
@@ -88,7 +88,7 @@
       call copy_comm_tbl_type_from_IO(mesh%nod_comm)
 !
       call copy_node_type_from_IO(mesh%node)
-      call copy_ele_connect_type_from_IO(mesh%ele)
+      call copy_ele_connect_from_IO(mesh%ele)
 !
       call allocate_sph_node_geometry(mesh%node)
 !
@@ -100,7 +100,7 @@
 !
       use t_mesh_data
       use set_comm_table_4_IO
-      use set_element_types_4_IO
+      use set_element_data_4_IO
       use set_node_types_4_IO
 !
       integer(kind = kint), intent(in) :: my_rank
@@ -109,7 +109,7 @@
 !
       call copy_comm_tbl_type_to_IO(my_rank, mesh%nod_comm)
       call copy_node_type_to_IO(mesh%node)
-      call copy_ele_connect_type_to_IO(mesh%ele)
+      call copy_ele_connect_to_IO(mesh%ele)
 !
       end subroutine set_mesh_type_to_IO
 !

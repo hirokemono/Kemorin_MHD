@@ -1,29 +1,42 @@
-!expand_near_area_type.f90
-!      module expand_near_area_type
+!>@file  expand_near_area.f90
+!!       module expand_near_area
+!!
+!!@author H. Matsui
+!!@date   Programmed in Oct., 2006
 !
-!      Written by H. Matsui on Oct., 2006
+!> @brief Expand close node and element list
+!!
+!!@verbatim
+!!      subroutine extend_near_area_no_flag(my_rank, iloop, mesh,       &
+!!     &          next_ele_tbl, near_ele_tbl, near_node_tbl,            &
+!!     &          near_ele_wide, near_node_wide)
+!!        integer(kind = kint), intent(in) :: my_rank, iloop
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(element_around_node), intent(in) :: next_ele_tbl
+!!        type(near_mesh), intent(inout) :: near_ele_tbl
+!!        type(near_mesh), intent(inout) :: near_node_tbl
+!!        type(near_mesh), intent(inout) :: near_ele_wide
+!!        type(near_mesh), intent(inout) :: near_node_wide
+!!
+!!      subroutine extend_near_area_with_flag(my_rank, nref_neib,       &
+!!     &          node, ele, next_ele_tbl, near_ele_tbl, near_node_tbl, &
+!!     &          near_ele_wide, near_node_wide)
+!!        integer(kind = kint), intent(in) :: my_rank, nref_neib
+!!        type(mesh_geometry), intent(in) :: mesh
+!!        type(element_around_node), intent(in) :: next_ele_tbl
+!!        type(near_mesh), intent(inout) :: near_ele_tbl
+!!        type(near_mesh), intent(inout) :: near_node_tbl
+!!        type(near_mesh), intent(inout) :: near_ele_wide
+!!        type(near_mesh), intent(inout) :: near_node_wide
+!!@endverbatim
 !
-!      subroutine extend_near_area_no_flag_type(my_rank, iloop,         &
-!     &          mesh, next_ele_tbl, near_mesh_tbl)
-!        integer(kind = kint), intent(in) :: my_rank, iloop
-!        type(mesh_geometry), intent(in) :: mesh
-!        type(element_around_node), intent(in) :: next_ele_tbl
-!        type(fem_near_mesh), intent(inout) :: near_mesh_tbl
-!
-!      subroutine extend_near_area_w_flag_type(my_rank, nref_neib,      &
-!     &          mesh, next_ele_tbl, near_mesh_tbl)
-!        integer(kind = kint), intent(in) :: my_rank, nref_neib
-!        type(mesh_geometry), intent(in) :: mesh
-!        type(element_around_node), intent(in) :: next_ele_tbl
-!        type(fem_near_mesh), intent(inout) :: near_mesh_tbl
-!
-      module expand_near_area_type
+      module expand_near_area
 !
       use m_precision
 !
       implicit none
 !
-      private :: expand_element_list_type, expand_node_list_type
+      private :: expand_element_list, expand_node_list
 !
 !-----------------------------------------------------------------------
 !
@@ -31,8 +44,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine extend_near_area_no_flag_type(my_rank, iloop,          &
-     &          mesh, next_ele_tbl, near_mesh_tbl)
+      subroutine extend_near_area_no_flag(my_rank, iloop, mesh,         &
+     &          next_ele_tbl, near_ele_tbl, near_node_tbl,              &
+     &          near_ele_wide, near_node_wide)
 !
       use m_machine_parameter
       use t_mesh_data
@@ -46,7 +60,11 @@
       integer(kind = kint), intent(in) :: my_rank, iloop
       type(mesh_geometry), intent(in) :: mesh
       type(element_around_node), intent(in) :: next_ele_tbl
-      type(fem_near_mesh), intent(inout) :: near_mesh_tbl
+!
+      type(near_mesh), intent(inout) :: near_ele_tbl
+      type(near_mesh), intent(inout) :: near_node_tbl
+      type(near_mesh), intent(inout) :: near_ele_wide
+      type(near_mesh), intent(inout) :: near_node_wide
 !
       integer(kind = kint) :: i
 !
@@ -60,27 +78,26 @@
 !
         if(my_rank.eq. 0) write(*,*) 'expand loop ', i
 !
-        call expand_element_list_type(mesh%node, mesh%ele,              &
-     &      next_ele_tbl, near_mesh_tbl%near_node_tbl,                  &
-     &       near_mesh_tbl%near_ele_tbl, near_mesh_tbl%near_ele_wide)
-        call expand_node_list_type(mesh%node, mesh%ele,                 &
-     &      near_mesh_tbl%near_ele_tbl, near_mesh_tbl%near_node_tbl,    &
-     &      near_mesh_tbl%near_node_wide)
+        call expand_element_list(mesh%node, mesh%ele,                   &
+     &      next_ele_tbl, near_node_tbl, near_ele_tbl, near_ele_wide)
+        call expand_node_list(mesh%node, mesh%ele,                      &
+     &      near_ele_tbl, near_node_tbl, near_node_wide)
       end do
 !
       call deallocate_iflag_expand
       call deallocate_imark_4_ele
       call deallocate_mark_4_near_node
 !
-      end subroutine extend_near_area_no_flag_type
+      end subroutine extend_near_area_no_flag
 !
 !-----------------------------------------------------------------------
 !
-      subroutine extend_near_area_w_flag_type(my_rank, nref_neib,       &
-     &          mesh, next_ele_tbl, near_mesh_tbl)
+      subroutine extend_near_area_with_flag(my_rank, nref_neib,         &
+     &          node, ele, next_ele_tbl, near_ele_tbl, near_node_tbl,   &
+     &          near_ele_wide, near_node_wide)
 !
       use m_machine_parameter
-      use t_mesh_data
+      use t_geometry_data
       use t_next_node_ele_4_node
       use t_near_mesh_id_4_node
       use expand_near_element
@@ -88,20 +105,25 @@
       use expand_near_flag
 !
       integer(kind = kint), intent(in) :: my_rank, nref_neib
-      type(mesh_geometry), intent(in) :: mesh
+      type(node_data), intent(in) ::    node
+      type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: next_ele_tbl
-      type(fem_near_mesh), intent(inout) :: near_mesh_tbl
+!
+      type(near_mesh), intent(inout) :: near_ele_tbl
+      type(near_mesh), intent(inout) :: near_node_tbl
+      type(near_mesh), intent(inout) :: near_ele_wide
+      type(near_mesh), intent(inout) :: near_node_wide
 !
       integer(kind = kint) :: i, iflag_finish
 !
 !
-      call allocate_mark_4_near_node(np_smp, mesh%node%numnod)
-      call allocate_imark_4_ele(np_smp, mesh%ele%numele)
+      call allocate_mark_4_near_node(np_smp, node%numnod)
+      call allocate_imark_4_ele(np_smp, ele%numele)
 !
-      call allocate_iflag_expand(mesh%node%numnod)
+      call allocate_iflag_expand(node%numnod)
 !
-      call set_expand_flag(mesh%node%numnod, mesh%node%internal_node,   &
-     &    nref_neib, near_mesh_tbl%near_node_tbl%num_nod, iflag_expand, &
+      call set_expand_flag(node%numnod, node%internal_node,             &
+     &    nref_neib, near_node_tbl%num_nod, iflag_expand, &
      &    iflag_finish)
 !
       i = 0
@@ -109,15 +131,13 @@
         i = i + 1
         if(my_rank.eq. 0) write(*,*) 'expand loop ', i
 !
-        call expand_element_list_type(mesh%node, mesh%ele,              &
-     &      next_ele_tbl, near_mesh_tbl%near_node_tbl,                  &
-     &      near_mesh_tbl%near_ele_tbl, near_mesh_tbl%near_ele_wide)
-        call expand_node_list_type(mesh%node, mesh%ele,                 &
-     &      near_mesh_tbl%near_ele_tbl, near_mesh_tbl%near_node_tbl,    &
-     &      near_mesh_tbl%near_node_wide)
+        call expand_element_list(node, ele,                             &
+     &      next_ele_tbl, near_node_tbl, near_ele_tbl, near_ele_wide)
+        call expand_node_list(node, ele,                                &
+     &      near_ele_tbl, near_node_tbl, near_node_wide)
 !
-        call set_expand_flag(mesh%node%numnod, mesh%node%internal_node, &
-     &      nref_neib, near_mesh_tbl%near_node_tbl%num_nod,             &
+        call set_expand_flag(node%numnod, node%internal_node,           &
+     &      nref_neib, near_node_tbl%num_nod,                           &
      &      iflag_expand, iflag_finish)
 !
         if (iflag_finish .eq. 0) exit
@@ -127,12 +147,12 @@
       call deallocate_imark_4_ele
       call deallocate_mark_4_near_node
 !
-      end subroutine extend_near_area_w_flag_type
+      end subroutine extend_near_area_with_flag
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine expand_element_list_type(node, ele, next_ele_tbl,      &
+      subroutine expand_element_list(node, ele, next_ele_tbl,           &
      &          near_node_tbl, near_ele_tbl, near_ele_wide)
 !
       use m_constants
@@ -180,17 +200,20 @@
      &    near_ele_wide%ntot, near_ele_wide%num_nod,                    &
      &    near_ele_wide%istack_nod, near_ele_wide%id_near_nod)
 !
-      call copy_extended_ele_id(node%numnod,                       &
-     &    near_ele_tbl, near_ele_wide)
+      call copy_extended_ele_id                                         &
+     &   (node%numnod, near_ele_tbl, near_ele_wide)
 !
       call dealloc_near_node(near_ele_wide)
       call dealloc_num_4_near_node(near_ele_wide)
 !
-      end subroutine expand_element_list_type
+!      write(*,*) 'nmax_ele_near_nod',near_ele_tbl%nmax
+!      write(*,*) 'nmin_ele_near_nod',near_ele_tbl%nmin
+!
+      end subroutine expand_element_list
 !
 !-----------------------------------------------------------------------
 !
-      subroutine expand_node_list_type(node, ele,                       &
+      subroutine expand_node_list(node, ele,                            &
      &          near_ele_tbl, near_node_tbl, near_node_wide)
 !
       use m_constants
@@ -250,8 +273,8 @@
       call dealloc_near_node(near_node_wide)
       call dealloc_num_4_near_node(near_node_wide)
 !
-      end subroutine expand_node_list_type
+      end subroutine expand_node_list
 !
 !-----------------------------------------------------------------------
 !
-      end module expand_near_area_type
+      end module expand_near_area

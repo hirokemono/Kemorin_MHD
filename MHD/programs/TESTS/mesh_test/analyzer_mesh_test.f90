@@ -31,7 +31,7 @@
 !
       use set_node_types_4_IO
       use set_surface_geom_type_IO
-      use set_element_geometry_4_IO
+      use set_element_data_4_IO
       use set_surface_geometry_4_IO
       use set_edge_geometry_4_IO
       use element_IO_select
@@ -196,7 +196,7 @@
       if (iflag_debug.gt.0) write(*,*) 'copy_ele_geometry_to_IO'
       mesh_ele_file_head = mesh_ele_def_head
       call copy_comm_tbl_type_to_IO(my_rank, ele_comm)
-      call copy_ele_geometry_to_IO
+      call copy_ele_geometry_to_IO(ele1)
       call sel_output_element_file(my_rank)
 !
 !  -------------------------------
