@@ -223,15 +223,15 @@
 !
       use t_surface_data
       use t_edge_data
-      use const_surface_type_data
-      use const_edge_type_data
+      use const_surface_data
+      use const_edge_data
 !
       type(mesh_data), intent(in) :: femmesh
       type(surface_geometry), intent(inout) :: surf_mesh
       type(edge_geometry),    intent(inout) :: edge_mesh
 !
 !
-      call empty_surf_connect_type(femmesh%mesh%ele, surf_mesh%surf)
+      call empty_surface_connect(femmesh%mesh%ele, surf_mesh%surf)
       call empty_edge_connect_type(femmesh%mesh%ele, surf_mesh%surf,    &
      &    edge_mesh%edge)
 !

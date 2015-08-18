@@ -24,7 +24,7 @@
 !
       subroutine s_const_merged_surf_data
 !
-      use const_surface_type_data
+      use const_surface_data
 !
 !   set hash data for suface elements using sum of local node ID
 !

@@ -170,10 +170,10 @@
       if (iflag_debug.eq.1) write(*,*) 'gen_linear_grp_type_by_t'
       call gen_linear_grp_type_by_t(femmesh_q%group, femmesh_l%group)
 !
-      if (iflag_debug.eq.1) write(*,*) 's_const_surface_type_data'
-      call s_const_surface_type_data(femmesh_l%mesh%node,               &
+      if (iflag_debug.eq.1) write(*,*) 'construct_surface_data'
+      call construct_surface_data(femmesh_l%mesh%node,                  &
      &    femmesh_l%mesh%ele, surf_mesh_l%surf)
-      call s_const_edge_type_data(femmesh_l%mesh%node,                  &
+      call construct_edge_data(femmesh_l%mesh%node,                     &
      &    femmesh_l%mesh%ele, surf_mesh_l%surf, edge_mesh_l%edge)
 !
       if (iflag_debug.eq.1) write(*,*) 's_const_group_type_info'
@@ -204,8 +204,8 @@
       use t_phys_data
 !
       use cvt_quad_t_2_linear_t
-      use const_surface_type_data
-      use const_edge_type_data
+      use const_surface_data
+      use const_edge_data
       use const_group_type_info
       use set_size_4_smp_types
 !
@@ -231,10 +231,10 @@
       if (iflag_debug.eq.1) write(*,*) 'gen_linear_grp_type_by_t'
       call gen_linear_grp_type_by_t(femmesh_q%group, femmesh_l%group)
 !
-      if (iflag_debug.eq.1) write(*,*) 's_const_surface_type_data'
-      call s_const_surface_type_data(femmesh_l%mesh%node,               &
+      if (iflag_debug.eq.1) write(*,*) 'construct_surface_data'
+      call construct_surface_data(femmesh_l%mesh%node,                  &
      &    femmesh_l%mesh%ele, surf_mesh_l%surf)
-      call s_const_edge_type_data(femmesh_l%mesh%node,                  &
+      call construct_edge_data(femmesh_l%mesh%node,                     &
      &    femmesh_l%mesh%ele, surf_mesh_l%surf, edge_mesh_l%edge)
 !
       if (iflag_debug.eq.1) write(*,*) 's_const_group_type_info'

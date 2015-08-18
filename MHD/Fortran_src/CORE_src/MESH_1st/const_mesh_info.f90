@@ -36,7 +36,6 @@
       use m_element_group_connect
       use m_surface_group_connect
       use const_surface_data
-      use const_surface_type_data
 !      use check_surface_groups
 !
       integer(kind = kint), intent(in) :: my_rank
@@ -70,8 +69,8 @@
       call set_surface_node_grp(sf_grp1)
 !       call check_surface_node_id(my_rank, sf_grp_nod1)
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_ele_list_4_surf_type'
-      call const_ele_list_4_surf_type(ele1, surf1)
+      if (iflag_debug.gt.0) write(*,*) 'const_ele_list_4_surface'
+      call const_ele_list_4_surface(ele1, surf1)
 !
 !       if (iflag_debug.gt.0) call check_surf_nod_4_sheard_para         &
 !     &                     (my_rank, sf_grp1%num_grp, sf_grp_nod1)
@@ -249,6 +248,8 @@
       use const_edge_data
       use set_size_4_smp_types
 !
+!      use check_geometries
+!
       integer(kind = kint), intent(in) :: my_rank
       logical :: read_surface, read_edge
 !
@@ -258,7 +259,11 @@
 !
       if(read_surface .eqv. .false.) then
         if (iflag_debug.gt.0) write(*,*) 'construct_surface_data'
-        call construct_surface_data
+        call construct_surface_data(node1, ele1, surf1)
+!
+!        call check_surface_data(my_rank)
+!        call check_external_surface(my_rank)
+!        call check_iso_surface(my_rank)
       end if
 !
       if (iflag_debug.gt.0) write(*,*) 'count_overlap_surface'
@@ -267,7 +272,10 @@
 !
       if(read_edge .eqv. .false.) then
         if (iflag_debug.gt.0) write(*,*) 'construct_edge_data'
-        call construct_edge_data(my_rank)
+        call construct_edge_data(node1, ele1, surf1, edge1)
+!
+!        call check_edge_data(id_rank)
+!        call check_edge_hexa_data(id_rank)
       end if
 !
       if (iflag_debug.gt.0) write(*,*) 'count_overlap_edge'

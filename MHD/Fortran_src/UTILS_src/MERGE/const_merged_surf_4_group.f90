@@ -30,7 +30,7 @@
       use set_surface_hash
       use mark_surf_hash
       use set_surface_data
-      use const_surface_type_data
+      use const_surface_data
 !
       integer(kind = kint) :: igrp
       integer(kind = kint) :: ist_grp, ied_grp, nele_grp
@@ -47,7 +47,7 @@
         call alloc_sum_hash(merged%node%numnod, merged%ele%numele,      &
      &      nsurf_4_ele, merged_surf%nnod_4_surf, surf_ele_tbl)
 !
-        call const_part_surface_type_hash(nele_grp,                     &
+        call const_part_surface_hash(nele_grp,                          &
      &      merged_grp%ele_grp%item_grp(ist_grp:ied_grp),               &
      &      merged%node, merged%ele, merged_surf, surf_ele_tbl)
 !

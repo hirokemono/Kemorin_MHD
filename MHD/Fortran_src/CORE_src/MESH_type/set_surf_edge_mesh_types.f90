@@ -35,7 +35,7 @@
       subroutine set_surf_connect_type(mesh, surf_mesh)
 !
       use m_machine_parameter
-      use const_surface_type_data
+      use const_surface_data
       use set_size_4_smp_types
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -46,9 +46,8 @@
       read_surface = associated(surf_mesh%surf%isurf_global)
 !
       if(read_surface .eqv. .false.) then
-        if (iflag_debug.eq.1) write(*,*) 's_const_surface_type_data'
-        call s_const_surface_type_data(mesh%node,                       &
-     &      mesh%ele, surf_mesh%surf)
+        if (iflag_debug.eq.1) write(*,*) 'construct_surface_data'
+        call construct_surface_data(mesh%node, mesh%ele, surf_mesh%surf)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'count_overlap_surf_type'
@@ -62,7 +61,7 @@
       subroutine set_edge_connect_type(mesh, surf_mesh, edge_mesh)
 !
       use m_machine_parameter
-      use const_edge_type_data
+      use const_edge_data
       use set_size_4_smp_types
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -74,8 +73,8 @@
       read_edge =    associated(edge_mesh%edge%iedge_global)
 !
       if(read_edge .eqv. .false.) then
-        if (iflag_debug.eq.1) write(*,*) 's_const_edge_type_data'
-        call s_const_edge_type_data(mesh%node, mesh%ele,                &
+        if (iflag_debug.eq.1) write(*,*) 'construct_edge_data'
+        call construct_edge_data(mesh%node, mesh%ele,                   &
      &      surf_mesh%surf, edge_mesh%edge)
       end if
 !
