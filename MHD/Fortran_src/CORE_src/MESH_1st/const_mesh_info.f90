@@ -145,7 +145,7 @@
       call deallocate_edge_connect_type(edge1)
       call deallocate_surface_connect_type(surf1)
       call dealloc_ele_4_surf_type(surf1)
-      call deallocate_element_geometry
+      call deallocate_ele_geometry_type(ele1)
 !
       call deallocate_ele_connect_type(ele1)
       call deallocate_node_geometry_type(node1)
@@ -175,7 +175,7 @@
       call deallocate_ele_param_smp_type(ele1)
       call deallocate_node_param_smp_type(node1)
 !
-      call deallocate_element_geometry
+      call deallocate_ele_geometry_type(ele1)
 !
       call deallocate_ele_connect_type(ele1)
       call deallocate_node_geometry_type(node1)

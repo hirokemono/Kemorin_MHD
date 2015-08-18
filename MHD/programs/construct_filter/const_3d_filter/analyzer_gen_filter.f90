@@ -114,7 +114,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*)  's_int_whole_volume_only'
       call s_int_whole_volume_only
-      if (my_rank.eq.0) write(*,*)  'Volume of Domain: ', volume
+      if (my_rank.eq.0) write(*,*)  'Volume of Domain: ', ele1%volume
 !
       if (iflag_debug.eq.1)  write(*,*)  'int_element_length_1st'
       FEM1_elen%nnod_filter_mom = node1%numnod

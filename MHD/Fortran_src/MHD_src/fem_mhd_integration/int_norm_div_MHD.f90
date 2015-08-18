@@ -79,7 +79,7 @@
       call MPI_allREDUCE ( bulk_local(ja_divb) , div_b_sig, ione,       &
      &  CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
-      div_b_sig = abs(div_b_sig) / volume
+      div_b_sig = abs(div_b_sig) / ele1%volume
 !
       if (div_b_sig .ne. 0.0d0 .and. iloop .ge.0) then
         rsig = ( div_b_sig0-div_b_sig ) / div_b_sig
@@ -106,7 +106,7 @@
       call MPI_allREDUCE ( bulk_local(ja_diva) , div_a_sig, ione,       &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
-      div_a_sig = abs(div_a_sig) / volume
+      div_a_sig = abs(div_a_sig) / ele1%volume
 !
       if (div_a_sig .ne. 0.0d0 .and. iloop .ge.0) then
         rsig = ( div_a_sig0-div_a_sig ) / div_a_sig

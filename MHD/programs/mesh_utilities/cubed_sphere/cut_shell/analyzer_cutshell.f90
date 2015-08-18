@@ -45,7 +45,7 @@
       mesh_file_head = original_mesh_head
       call input_mesh(my_rank)
 !
-      call deallocate_element_geometry
+      call deallocate_ele_geometry_type(ele1)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'

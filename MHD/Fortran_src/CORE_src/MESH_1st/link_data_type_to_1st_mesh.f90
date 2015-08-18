@@ -170,8 +170,8 @@
       ele%volume_ele => ele1%volume_ele
       ele%a_vol_ele =>  ele1%a_vol_ele
 !
-      ele%volume =       volume
-      ele%a_vol =        a_vol
+      ele%volume =       ele1%volume
+      ele%a_vol =        ele1%a_vol
 !
       end subroutine link_ele_geometry_type
 !

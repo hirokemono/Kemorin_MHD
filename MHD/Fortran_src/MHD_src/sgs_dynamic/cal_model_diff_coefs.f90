@@ -110,7 +110,7 @@
         call cal_layerd_diff_coef(numdir, ifield_d, icomp_f, n_int)
       else
         call cal_whole_diff_coef(ele1%istack_ele_smp, numdir, ifield_d, &
-     &      icomp_f, n_int, volume)
+     &      icomp_f, n_int, ele1%volume)
       end if
 !
       end subroutine cal_diff_coef

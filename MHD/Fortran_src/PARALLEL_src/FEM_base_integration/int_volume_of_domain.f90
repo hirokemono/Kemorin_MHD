@@ -13,6 +13,7 @@
       module int_volume_of_domain
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -69,13 +70,13 @@
      &    ele1%istack_ele_smp, ele1%volume_ele, vol_local)
 !
 !      write(*,*) 'MPI_allREDUCE'
-       call MPI_allREDUCE (vol_local, volume, 1,                        &
+       call MPI_allREDUCE (vol_local, ele1%volume, ione,                 &
      &  CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
-       if (volume .eq. 0.0d0) then
-         a_vol = 1.0d30
+       if (ele1%volume .eq. 0.0d0) then
+         ele1%a_vol = 1.0d30
        else
-         a_vol = 1.0d0 / volume
+         ele1%a_vol = 1.0d0 / ele1%volume
        end if
 !
        end subroutine s_int_volume_of_domain

@@ -73,7 +73,7 @@
 !
 !
        if (iflag_debug.eq.1) then
-         write(*,*) 'volume:       ', volume
+         write(*,*) 'volume:       ', ele1%volume
          write(*,*) 'vol_fluid:    ', vol_fluid
          write(*,*) 'vol_conduct:  ', vol_conduct
          write(*,*) 'vol_insulate: ', vol_insulate

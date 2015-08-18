@@ -79,7 +79,7 @@
       call MPI_allREDUCE (rms_local(ir_divb) , rms_div_b_sig, 1,        &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
-      rms_div_b_sig = sqrt(rms_div_b_sig / volume)
+      rms_div_b_sig = sqrt(rms_div_b_sig / ele1%volume)
 !
       if (rms_div_b_sig .ne. 0.0d0 .and. iloop .ge.0) then
         rsig = ( rms_div_b_sig0-rms_div_b_sig ) / rms_div_b_sig
@@ -109,7 +109,8 @@
       call MPI_allREDUCE ( rms_local(ir_diva) , rms_div_a_sig, 1,       &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
-      rms_div_a_sig = sqrt(rms_div_a_sig / volume)
+      rms_div_a_sig = sqrt(rms_div_a_sig / ele1%volume)
+!
       if (rms_div_a_sig .ne. 0.0d0 .and. iloop .ge.0) then
         rsig = ( rms_div_a_sig0-rms_div_a_sig ) / rms_div_a_sig
       end if

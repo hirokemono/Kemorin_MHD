@@ -88,7 +88,7 @@
       call copy_element_connect_from_type(mesh%ele)
 !
       call allocate_sph_node_geometry(mesh%node)
-      call allocate_element_geometry
+      call allocate_ele_geometry_type(ele1)
 !
       call deallocate_node_geometry_type(mesh%node)
 !

@@ -34,7 +34,7 @@
       call sel_read_mesh(my_rank)
       call set_mesh_data
 !
-      call allocate_element_geometry
+      call allocate_ele_geometry_type(ele1)
 !
       end subroutine input_mesh
 !

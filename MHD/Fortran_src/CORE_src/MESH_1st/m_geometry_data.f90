@@ -18,8 +18,6 @@
 !!      subroutine deallocate_numele_stack
 !!      subroutine deallocate_numsurf_stack
 !!      subroutine deallocate_numedge_stack
-!!
-!!      subroutine allocate_element_geometry
 !!@endverbatim
 !!
 !>
@@ -48,7 +46,7 @@
 !
 !>  structure for element data (position and connectivity)
       type(element_data), save :: ele1
-!    ele1%a_vol_ele
+!    ele1%a_vol
 !
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
@@ -76,33 +74,6 @@
       integer(kind=kint_gl), allocatable, target  :: istack_numedge(:)
 !>   Stack list of number of internal edge
       integer(kind=kint_gl), allocatable, target  :: istack_interedge(:)
-!
-!
-!>   position of centre of element
-!      real(kind=kreal)  , pointer :: x_ele(:,:)
-!>   distance from the centre of element
-!      real(kind=kreal)  , pointer :: r_ele(:)
-!>   1/r_ele
-!      real(kind=kreal)  , pointer :: ar_ele(:)
-!>   longitude of element
-!      real(kind=kreal)  , pointer :: phi_ele(:)
-!>  colatitude of element
-!      real(kind=kreal)  , pointer :: theta_ele(:)
-!>  cylindorical radius of element
-!      real(kind=kreal)  , pointer :: s_ele(:)
-!>  1 / s_ele
-!      real(kind=kreal)  , pointer :: as_ele(:)
-!
-!>  Volume of each element
-!      real (kind=kreal), pointer :: volume_ele(:)
-!>  1 / volume of each element
-!      real (kind=kreal), pointer :: a_vol_ele(:)
-!
-!
-!>  Total volume of domain
-      real(kind=kreal) :: volume
-!>  1 / volume of domain
-      real(kind=kreal) :: a_vol
 !
 !------------------------------------------------------------------
 !
@@ -201,37 +172,6 @@
 !
       end subroutine deallocate_numedge_stack
 !
-! ------------------------------------------------------
-! ------------------------------------------------------
-!
-       subroutine allocate_element_geometry
-!
-!
-      call allocate_ele_geometry_type(ele1)
-!
-!        allocate(x_ele(ele1%numele,3))
-!        allocate(r_ele(ele1%numele))
-!        allocate(ar_ele(ele1%numele))
-!        allocate(phi_ele(ele1%numele))
-!        allocate(theta_ele(ele1%numele))
-!        allocate(s_ele(ele1%numele))
-!        allocate(as_ele(ele1%numele))
-!
-!        allocate( volume_ele (ele1%numele))
-!        allocate( a_vol_ele (ele1%numele))
-!
-       end subroutine allocate_element_geometry
-!
-! ------------------------------------------------------
-!
-       subroutine deallocate_element_geometry
-!
-!
-      call deallocate_ele_geometry_type(ele1)
-!
-       end subroutine deallocate_element_geometry
-!
-! ------------------------------------------------------
 ! ------------------------------------------------------
 !
       end module m_geometry_data
