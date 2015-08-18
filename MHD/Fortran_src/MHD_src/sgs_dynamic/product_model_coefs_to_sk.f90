@@ -50,7 +50,7 @@
      &          ele1%x_ele(1:ele1%numele,1),                            &
      &          ele1%x_ele(1:ele1%numele,2),                            &
      &          ele1%x_ele(1:ele1%numele,3),                            &
-     &          ele1%r_ele, s_ele, ar_ele, as_ele)
+     &          ele1%r_ele, ele1%s_ele, ele1%ar_ele, ele1%as_ele)
             call ovwrt_tensor_tensor_prod_smp                           &
      &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
      &          ak_sgs(1,1), sk6(1,1,k1) )
@@ -59,7 +59,7 @@
      &          ele1%x_ele(1:ele1%numele,1),                            &
      &          ele1%x_ele(1:ele1%numele,2),                            &
      &          ele1%x_ele(1:ele1%numele,3),                            &
-     &          ele1%r_ele, s_ele, ar_ele, as_ele)
+     &          ele1%r_ele, ele1%s_ele, ele1%ar_ele, ele1%as_ele)
           end do
 !
         else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
@@ -67,14 +67,14 @@
             call overwrite_cyl_tensor_smp                               &
      &         (np_smp, ele1%numele, ele1%istack_ele_smp, sk6(1,1,k1),  &
      &          ele1%x_ele(1:ele1%numele,1),                            &
-     &          ele1%x_ele(1:ele1%numele,2), s_ele, as_ele)
+     &          ele1%x_ele(1:ele1%numele,2), ele1%s_ele, ele1%as_ele)
             call ovwrt_tensor_tensor_prod_smp                           &
      &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
      &          ak_sgs(1,1), sk6(1,1,k1) )
             call overwrite_xyz_tensor_by_cyl_smp                        &
      &         (np_smp, ele1%numele, ele1%istack_ele_smp, sk6(1,1,k1),  &
      &          ele1%x_ele(1:ele1%numele,1),                            &
-     &          ele1%x_ele(1:ele1%numele,2), s_ele, as_ele)
+     &          ele1%x_ele(1:ele1%numele,2), ele1%s_ele, ele1%as_ele)
           end do
 !
         else
@@ -121,7 +121,7 @@
      &          ele1%x_ele(1:ele1%numele,1),                            &
      &          ele1%x_ele(1:ele1%numele,2),                            &
      &          ele1%x_ele(1:ele1%numele,3),                            &
-     &          ele1%r_ele, s_ele, ar_ele, as_ele)
+     &          ele1%r_ele, ele1%s_ele, ele1%ar_ele, ele1%as_ele)
             call ovwrt_vector_vector_prod_smp                           &
      &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
      &          ak_sgs(1,1), sk6(1,1,k1))
@@ -135,7 +135,7 @@
             call overwrite_vector_2_cyl_smp                             &
      &         (np_smp, ele1%numele, ele1%istack_ele_smp, sk6(1,1,k1),  &
      &          ele1%x_ele(1:ele1%numele,1),                            &
-     &          ele1%x_ele(1:ele1%numele,2), s_ele, as_ele)
+     &          ele1%x_ele(1:ele1%numele,2), ele1%s_ele, ele1%as_ele)
             call ovwrt_vector_vector_prod_smp                           &
      &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
      &          ak_sgs(1,1), sk6(1,1,k1))
@@ -188,7 +188,7 @@
      &          ele1%x_ele(1:ele1%numele,1),                            &
      &          ele1%x_ele(1:ele1%numele,2),                            &
      &          ele1%x_ele(1:ele1%numele,3),                            &
-     &          ele1%r_ele, s_ele, ar_ele, as_ele)
+     &          ele1%r_ele, ele1%s_ele, ele1%ar_ele, ele1%as_ele)
             call ovwrt_tensor_tensor_prod_smp                           &
      &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
      &          ak_sgs(1,1), sk6(1,1,k1) )
@@ -197,7 +197,7 @@
      &          ele1%x_ele(1:ele1%numele,1),                            &
      &          ele1%x_ele(1:ele1%numele,2),                            &
      &          ele1%x_ele(1:ele1%numele,3),                            &
-     &          ele1%r_ele, s_ele, ar_ele, as_ele)
+     &          ele1%r_ele, ele1%s_ele, ele1%ar_ele, ele1%as_ele)
           end do
 !
         else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
@@ -206,14 +206,14 @@
      &         (np_smp, ele1%numele, ele1%istack_ele_smp, sk6(1,1,k1),  &
      &          ele1%x_ele(1:ele1%numele,1),                            &
      &          ele1%x_ele(1:ele1%numele,2),                            &
-     &          s_ele, as_ele)
+     &          ele1%s_ele, ele1%as_ele)
             call ovwrt_tensor_tensor_prod_smp                           &
      &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
      &          ak_sgs(1,1), sk6(1,1,k1) )
             call overwrite_xyz_asym_t_by_cyl_smp                        &
      &         (np_smp, ele1%numele, ele1%istack_ele_smp, sk6(1,1,k1),  &
      &          ele1%x_ele(1:ele1%numele,1),                            &
-     &          ele1%x_ele(1:ele1%numele,2), s_ele, as_ele)
+     &          ele1%x_ele(1:ele1%numele,2), ele1%s_ele, ele1%as_ele)
           end do
 !
         else

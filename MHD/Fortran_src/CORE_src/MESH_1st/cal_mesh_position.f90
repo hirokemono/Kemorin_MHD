@@ -42,8 +42,7 @@
 !
       call position_2_sph(ele1%numele, ele1%x_ele,                      &
      &    ele1%r_ele, ele1%theta_ele, ele1%phi_ele,                     &
-     &    ar_ele, ele1%s_ele, as_ele)
-      s_ele = ele1%s_ele
+     &    ele1%ar_ele, ele1%s_ele, ele1%as_ele)
 !
       end subroutine set_center_of_element
 !

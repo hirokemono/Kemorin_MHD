@@ -48,7 +48,7 @@
 !
 !>  structure for element data (position and connectivity)
       type(element_data), save :: ele1
-!    ele1%s_ele
+!    ele1%volume_ele
 !
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
@@ -83,15 +83,15 @@
 !>   distance from the centre of element
 !      real(kind=kreal)  , pointer :: r_ele(:)
 !>   1/r_ele
-      real(kind=kreal)  , pointer :: ar_ele(:)
+!      real(kind=kreal)  , pointer :: ar_ele(:)
 !>   longitude of element
 !      real(kind=kreal)  , pointer :: phi_ele(:)
 !>  colatitude of element
 !      real(kind=kreal)  , pointer :: theta_ele(:)
 !>  cylindorical radius of element
-      real(kind=kreal)  , pointer :: s_ele(:)
+!      real(kind=kreal)  , pointer :: s_ele(:)
 !>  1 / s_ele
-      real(kind=kreal)  , pointer :: as_ele(:)
+!      real(kind=kreal)  , pointer :: as_ele(:)
 !
 !>  Volume of each element
       real (kind=kreal), pointer :: volume_ele(:)
@@ -211,18 +211,14 @@
 !
 !        allocate(x_ele(ele1%numele,3))
 !        allocate(r_ele(ele1%numele))
-        allocate(ar_ele(ele1%numele))
+!        allocate(ar_ele(ele1%numele))
 !        allocate(phi_ele(ele1%numele))
 !        allocate(theta_ele(ele1%numele))
-        allocate(s_ele(ele1%numele))
-        allocate(as_ele(ele1%numele))
+!        allocate(s_ele(ele1%numele))
+!        allocate(as_ele(ele1%numele))
 !
         allocate( volume_ele (ele1%numele))
         allocate( a_vol_ele (ele1%numele))
-!
-       ar_ele = 0.0d0
-       s_ele = 0.0d0
-       as_ele = 0.0d0
 !
        volume_ele = 0.0d0
        a_vol_ele = 0.0d0
@@ -235,10 +231,6 @@
 !
 !
       call deallocate_ele_geometry_type(ele1)
-!
-        deallocate(ar_ele)
-        deallocate(s_ele)
-        deallocate(as_ele)
 !
         deallocate( volume_ele )
         deallocate( a_vol_ele )
