@@ -173,6 +173,7 @@
       use t_crs_connect
       use t_solver_djds
       use t_vector_for_solver
+      use m_geometry_data
       use m_next_node_id_4_node
       use m_element_id_4_node
 !

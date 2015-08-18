@@ -12,6 +12,10 @@
 !!      subroutine dealloc_ele_comm_tbls_gl_nele                        &
 !!     &         (mesh, ele_mesh, surf_mesh, edge_mesh)
 !!
+!!      subroutine const_global_surface_id(surf, sf_comm)
+!!        type(surface_data), intent(inout) :: surf
+!!        type(communication_table), intent(in) :: sf_comm
+!!
 !!      subroutine const_global_numnod_list(node)
 !!@endverbatim
 !
@@ -30,10 +34,9 @@
 !
       implicit none
 !
-      private :: const_global_surface_id,  const_global_edge_id
       private :: const_element_comm_table, const_surf_comm_table
       private :: const_edge_comm_table
-      private :: const_ele_comm_table_type, set_global_ele_id_type
+      private :: const_ele_comm_table_type
 !
 !-----------------------------------------------------------------------
 !
@@ -61,10 +64,10 @@
       call const_global_numele_list(mesh%ele)
 !
       call const_surf_comm_table(mesh, belongs, surf_mesh)
-      call const_global_surface_id(surf_mesh)
+      call const_global_surface_id(surf_mesh%surf, surf_mesh%surf_comm)
 !
       call const_edge_comm_table(mesh, belongs, edge_mesh)
-      call const_global_edge_id(edge_mesh)
+      call const_global_edge_id(edge_mesh%edge, edge_mesh%edge_comm)
 !
       end subroutine const_ele_comm_tbl_global_id
 !
@@ -128,49 +131,51 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_global_surface_id(surf_mesh)
+      subroutine const_global_surface_id(surf, sf_comm)
 !
+      use t_surface_data
       use const_global_element_ids
 !
-      type(surface_geometry), intent(inout) :: surf_mesh
+      type(surface_data), intent(inout) :: surf
+      type(communication_table), intent(in) :: sf_comm
       character(len=kchara), parameter :: txt = 'surface'
 !
 !
-      call alloc_numsurf_stack(nprocs, surf_mesh%surf)
+      call alloc_numsurf_stack(nprocs, surf)
 !
       call count_number_of_node_stack                                   &
-     &  (surf_mesh%surf%numsurf, surf_mesh%surf%istack_numsurf)
+     &  (surf%numsurf, surf%istack_numsurf)
       call count_number_of_node_stack                                   &
-     &  (surf_mesh%surf%internal_surf, surf_mesh%surf%istack_intersurf)
+     &  (surf%internal_surf, surf%istack_intersurf)
 !
-      call set_global_ele_id_type                                       &
-     &   (txt, surf_mesh%surf%numsurf, surf_mesh%surf%istack_intersurf, &
-     &    surf_mesh%surf%interior_surf, surf_mesh%surf_comm,            &
-     &    surf_mesh%surf%isurf_global)
+      call set_global_ele_id                                            &
+     &   (txt, surf%numsurf, surf%istack_intersurf,                     &
+     &    surf%interior_surf, sf_comm, surf%isurf_global)
 !
       end subroutine const_global_surface_id
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_global_edge_id(edge_mesh)
+      subroutine const_global_edge_id(edge, ed_comm)
 !
+      use t_edge_data
       use const_global_element_ids
 !
-      type(edge_geometry),    intent(inout) :: edge_mesh
+      type(edge_data), intent(inout) :: edge
+      type(communication_table), intent(in) :: ed_comm
       character(len=kchara), parameter :: txt = 'edge'
 !
 !
-      call alloc_numedge_stack(nprocs, edge_mesh%edge)
+      call alloc_numedge_stack(nprocs, edge)
 !
       call count_number_of_node_stack                                   &
-     &  (edge_mesh%edge%numedge, edge_mesh%edge%istack_numedge)
+     &  (edge%numedge, edge%istack_numedge)
       call count_number_of_node_stack                                   &
-     &  (edge_mesh%edge%internal_edge, edge_mesh%edge%istack_interedge)
+     &  (edge%internal_edge, edge%istack_interedge)
 !
-      call set_global_ele_id_type                                       &
-     &   (txt, edge_mesh%edge%numedge, edge_mesh%edge%istack_interedge, &
-     &    edge_mesh%edge%interior_edge, edge_mesh%edge_comm,            &
-     &    edge_mesh%edge%iedge_global)
+      call set_global_ele_id                                            &
+     &   (txt, edge%numedge, edge%istack_interedge,                     &
+     &    edge%interior_edge, ed_comm, edge%iedge_global)
 !
       end subroutine const_global_edge_id
 !
@@ -317,31 +322,6 @@
       call check_element_position(txt, numele, x_ele, e_comm)
 !
       end subroutine const_ele_comm_table_type
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_global_ele_id_type                                 &
-     &         (txt, nele, istack_internal_e, internal_flag, e_comm,    &
-     &          iele_global)
-!
-      use solver_SR_int
-      use const_global_element_ids
-!
-      character(len=kchara), intent(in) :: txt
-      integer(kind = kint), intent(in) :: nele
-      integer(kind = kint), intent(in) :: internal_flag(nele)
-      integer(kind = kint_gl), intent(in)                               &
-     &              :: istack_internal_e(0:nprocs)
-!
-      type(communication_table), intent(inout) :: e_comm
-!
-      integer(kind = kint_gl), intent(inout)  :: iele_global(nele)
-!
-!
-      call set_global_ele_id(txt, nele, istack_internal_e,              &
-     &    internal_flag, e_comm, iele_global)
-!
-      end subroutine set_global_ele_id_type
 !
 !-----------------------------------------------------------------------
 !

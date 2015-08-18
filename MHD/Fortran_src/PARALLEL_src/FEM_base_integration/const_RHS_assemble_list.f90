@@ -28,8 +28,7 @@
 !
 !      Search surrounding node and element
 !
-      call set_ele_id_4_node
-      call const_next_nod_id_4_node
+      call set_belonged_ele_and_next_nod
 !
 !      set RHS assemble table
 !
@@ -41,9 +40,9 @@
 !
       subroutine set_belonged_ele_and_next_nod
 !
+      use m_geometry_data
       use m_element_id_4_node
       use m_next_node_id_4_node
-!
 !
 !      Search surrounding node and element
 !

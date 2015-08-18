@@ -9,15 +9,6 @@
 !!@verbatim
 !!      subroutine dealloc_ele_sf_eg_comm_tables
 !!      subroutine const_element_comm_tables_1st
-!!
-!!      subroutine copy_ele_comm_tbl_from_type(org_ele_comm)
-!!      subroutine copy_ele_comm_tbl_to_type(new_ele_comm)
-!!
-!!      subroutine copy_surf_comm_tbl_from_type(org_surf_comm)
-!!      subroutine copy_surf_comm_tbl_to_type(new_surf_comm)
-!!
-!!      subroutine copy_edge_comm_tbl_from_type(org_edge_comm)
-!!      subroutine copy_edge_comm_tbl_to_type(new_edge_comm)
 !!@endverbatim
 !
       module m_ele_sf_eg_comm_tables
@@ -37,9 +28,7 @@
       private :: const_edge_comm_table_1st
       private :: const_surf_comm_table_1st
       private :: const_ele_comm_table_1st
-      private :: const_global_numnod_list_1st
       private :: const_global_element_id_1st
-      private :: const_global_surface_id_1st, const_global_edge_id_1st
 !
 !-----------------------------------------------------------------------
 !
@@ -52,10 +41,10 @@
       use m_geometry_data
 !
 !
-      call deallocate_numnod_stack
-      call deallocate_numele_stack
-      call deallocate_numsurf_stack
-      call deallocate_numedge_stack
+      call dealloc_numnod_stack(node1)
+      call dealloc_numele_stack(ele1)
+      call dealloc_numsurf_stack(surf1)
+      call dealloc_numedge_stack(edge1)
 !
       call deallocate_type_comm_tbl(ele_comm)
       call deallocate_type_comm_tbl(surf_comm)
@@ -67,96 +56,42 @@
 !
       subroutine const_element_comm_tables_1st
 !
+      use m_geometry_data
+      use const_element_comm_tables
 !
-      call const_global_numnod_list_1st
+!
+      call const_global_numnod_list(node1)
+
 !
       call const_element_comm_table_1st
       call const_global_element_id_1st
 !
       call const_surf_comm_table_1st
-      call const_global_surface_id_1st
+      call const_global_surface_id(surf1, surf_comm)
 !
       call const_edge_comm_table_1st
-      call const_global_edge_id_1st
+      call const_global_edge_id(edge1, edge_comm)
 !
       end subroutine const_element_comm_tables_1st
 !
 !-----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine const_global_numnod_list_1st
-!
-      use m_geometry_data
-      use const_global_element_ids
-!
-!
-      call allocate_numnod_stack(nprocs)
-!
-      call count_number_of_node_stack(node1%numnod, istack_numnod)
-      call count_number_of_node_stack                                   &
-     &   (node1%internal_node, istack_internod)
-!
-      end subroutine const_global_numnod_list_1st
-!
-!  ---------------------------------------------------------------------
-!
       subroutine const_global_element_id_1st
 !
       use m_geometry_data
+      use const_element_comm_tables
       use const_global_element_ids
 !
       character(len=kchara), parameter :: txt = 'element'
 !
-      call allocate_numele_stack(nprocs)
 !
-      call count_number_of_node_stack(ele1%numele, istack_numele)
-      call count_number_of_node_stack                                   &
-     &   (ele1%internal_ele, istack_interele)
+      call const_global_numele_list(ele1)
 !
-      call set_global_ele_id(txt, ele1%numele, istack_interele,         &
+      call set_global_ele_id(txt, ele1%numele, ele1%istack_interele,    &
      &   ele1%interior_ele, ele_comm, ele1%iele_global)
 !
       end subroutine const_global_element_id_1st
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine const_global_surface_id_1st
-!
-      use m_geometry_data
-      use const_global_element_ids
-!
-      character(len=kchara), parameter :: txt = 'surface'
-!
-      call allocate_numsurf_stack(nprocs)
-!
-      call count_number_of_node_stack(surf1%numsurf, istack_numsurf)
-      call count_number_of_node_stack                                   &
-     &   (surf1%internal_surf, istack_intersurf)
-!
-      call set_global_ele_id(txt, surf1%numsurf, istack_intersurf,      &
-     &    surf1%interior_surf, surf_comm, surf1%isurf_global)
-!
-      end subroutine const_global_surface_id_1st
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine const_global_edge_id_1st
-!
-      use m_geometry_data
-      use const_global_element_ids
-!
-      character(len=kchara), parameter :: txt = 'edge'
-!
-      call allocate_numedge_stack(nprocs)
-!
-      call count_number_of_node_stack(edge1%numedge, istack_numedge)
-      call count_number_of_node_stack                                   &
-     &   (edge1%internal_edge, istack_interedge)
-!
-      call set_global_ele_id(txt, edge1%numedge, istack_interele,       &
-     &    edge1%interior_edge, edge_comm, edge1%iedge_global)
-!
-      end subroutine const_global_edge_id_1st
 !
 !  ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -297,75 +232,6 @@
       call check_element_position(txt, numele, x_ele, e_comm)
 !
       end subroutine const_ele_comm_table_1st
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine copy_ele_comm_tbl_from_type(org_ele_comm)
-!
-      type(communication_table), intent(in) :: org_ele_comm
-!
-!
-      call copy_comm_tbl_types(org_ele_comm, ele_comm)
-!
-      end subroutine copy_ele_comm_tbl_from_type
-!
-!-----------------------------------------------------------------------
-!
-      subroutine copy_ele_comm_tbl_to_type(new_ele_comm)
-!
-      type(communication_table), intent(inout) :: new_ele_comm
-!
-!
-      call copy_comm_tbl_types(ele_comm, new_ele_comm)
-!
-      end subroutine copy_ele_comm_tbl_to_type
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine copy_surf_comm_tbl_from_type(org_surf_comm)
-!
-      type(communication_table), intent(in) :: org_surf_comm
-!
-!
-      call copy_comm_tbl_types(org_surf_comm, surf_comm)
-!
-      end subroutine copy_surf_comm_tbl_from_type
-!
-!-----------------------------------------------------------------------
-!
-      subroutine copy_surf_comm_tbl_to_type(new_surf_comm)
-!
-      type(communication_table), intent(inout) :: new_surf_comm
-!
-!
-      call copy_comm_tbl_types(surf_comm, new_surf_comm)
-!
-      end subroutine copy_surf_comm_tbl_to_type
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine copy_edge_comm_tbl_from_type(org_edge_comm)
-!
-      type(communication_table), intent(in) :: org_edge_comm
-!
-!
-      call copy_comm_tbl_types(org_edge_comm, edge_comm)
-!
-      end subroutine copy_edge_comm_tbl_from_type
-!
-!-----------------------------------------------------------------------
-!
-      subroutine copy_edge_comm_tbl_to_type(new_edge_comm)
-!
-      type(communication_table), intent(inout) :: new_edge_comm
-!
-!
-      call copy_comm_tbl_types(edge_comm, new_edge_comm)
-!
-      end subroutine copy_edge_comm_tbl_to_type
 !
 !-----------------------------------------------------------------------
 !

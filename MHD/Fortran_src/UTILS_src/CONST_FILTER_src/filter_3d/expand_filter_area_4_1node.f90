@@ -89,6 +89,7 @@
 !
       subroutine init_4_cal_fluid_fileters
 !
+      use m_geometry_data
       use m_filter_file_names
       use m_field_file_format
       use m_next_node_id_4_node
@@ -102,9 +103,7 @@
       end if
 !
       call set_ele_id_4_filter_grp
-!
       call const_next_nod_id_4_node
-!
 !
       end subroutine init_4_cal_fluid_fileters
 !

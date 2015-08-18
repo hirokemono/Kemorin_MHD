@@ -124,9 +124,11 @@
       integer(kind = kint_gl) :: inod, iele
 !
       do ip = 1, nprocs
-        if(m_ucd%istack_merged_intnod(ip-1) .ne. istack_internod(ip-1)) &
-     &      write(*,*) 'aho', ip, m_ucd%istack_merged_intnod(ip-1) ,    &
-     &                           istack_internod(ip-1)
+        if(m_ucd%istack_merged_intnod(ip-1)                             &
+     &      .ne. node1%istack_internod(ip-1)) then
+           write(*,*) 'aho', ip, m_ucd%istack_merged_intnod(ip-1) ,     &
+     &                           node1%istack_internod(ip-1)
+        end if
       end do
 !
 !$omp parallel private(iele)

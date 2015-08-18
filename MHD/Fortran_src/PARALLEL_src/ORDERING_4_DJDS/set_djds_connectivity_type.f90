@@ -116,7 +116,7 @@
       call set_layerd_ele_id_4_node_type(nnod_1ele,                     &
      &    iele_start, iele_end, mesh, FEM_next%neib_ele)
 !
-      call const_next_nod_id_4_node_type(mesh,                          &
+      call const_next_nod_id_4_node_type(mesh%node, mesh%ele,           &
      &    FEM_next%neib_ele, FEM_next%neib_nod)
 !
       call s_set_crs_connect_type(np_smp,                               &

@@ -149,8 +149,8 @@
       integer(kind = kint),  intent(in) :: nprocs
 !
 !
-      call link_numnod_stacks_2_output(nprocs, istack_numnod,           &
-     &    istack_internod, istack_numele, merged_ucd)
+      call link_numnod_stacks_2_output(nprocs, node1%istack_numnod,     &
+     &    node1%istack_internod, ele1%istack_numele, merged_ucd)
 !
       end subroutine link_nnod_stacks_2_ucd_out
 !

@@ -42,7 +42,7 @@
 !
       call s_set_ele_id_4_node_type(mesh, next_tbl%neib_ele)
 !
-      call const_next_nod_id_4_node_type(mesh,                          &
+      call const_next_nod_id_4_node_type(mesh%node, mesh%ele,           &
      &    next_tbl%neib_ele, next_tbl%neib_nod)
 !
 !      set RHS assemble table
