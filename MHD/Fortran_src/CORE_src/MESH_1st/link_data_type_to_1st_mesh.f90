@@ -162,8 +162,8 @@
       ele%x_ele =>     ele1%x_ele
       ele%r_ele =>     ele1%r_ele
       ele%ar_ele =>    ar_ele
-      ele%phi_ele =>   phi_ele
-      ele%theta_ele => theta_ele
+      ele%phi_ele =>   ele1%phi_ele
+      ele%theta_ele => ele1%theta_ele
       ele%s_ele =>     s_ele
       ele%as_ele =>    as_ele
 !

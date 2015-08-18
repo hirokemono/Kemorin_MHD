@@ -127,7 +127,7 @@
      &          ak_sgs(1,1), sk6(1,1,k1))
             call overwrite_sph_vect_2_xyz_smp                           &
      &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
-     &          sk6(1,1,k1), theta_ele, phi_ele)
+     &          sk6(1,1,k1), ele1%theta_ele, ele1%phi_ele)
           end do
 !
         else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
@@ -141,7 +141,7 @@
      &          ak_sgs(1,1), sk6(1,1,k1))
             call overwrite_cyl_vect_2_xyz_smp                           &
      &         (np_smp, ele1%numele, ele1%istack_ele_smp,               &
-     &          sk6(1,1,k1), phi_ele)
+     &          sk6(1,1,k1), ele1%phi_ele)
           end do
 !
         else

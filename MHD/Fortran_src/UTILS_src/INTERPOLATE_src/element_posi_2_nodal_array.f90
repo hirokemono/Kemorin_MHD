@@ -47,8 +47,8 @@
         node1%a_r(inod) =   ar_ele(inod)
         node1%ss(inod) =    s_ele(inod)
         node1%a_s(inod) =   as_ele(inod)
-        node1%phi(inod) =   phi_ele(inod)
-        node1%theta(inod) = theta_ele(inod)
+        node1%phi(inod) =   ele1%phi_ele(inod)
+        node1%theta(inod) = ele1%theta_ele(inod)
       end do
 !$omp end parallel do
 !

@@ -63,8 +63,8 @@
         globalnodid_dummy(iele) = ele1%iele_global(iele)
 !
         xx_dummy(iele,1) = ele1%r_ele(iele)
-        xx_dummy(iele,2) = theta_ele(iele)
-        xx_dummy(iele,3) = phi_ele(iele)
+        xx_dummy(iele,2) = ele1%theta_ele(iele)
+        xx_dummy(iele,3) = ele1%phi_ele(iele)
         ele_scalar_IO(iele) = volume_ele(iele)
       end do
 !$omp end parallel do
@@ -89,7 +89,7 @@
         globalnodid_dummy(iele) = ele1%iele_global(iele)
 !
         xx_dummy(iele,1) = s_ele(iele)
-        xx_dummy(iele,2) = phi_ele(iele)
+        xx_dummy(iele,2) = ele1%phi_ele(iele)
         xx_dummy(iele,3) = ele1%x_ele(iele,3)
         ele_scalar_IO(iele) = volume_ele(iele)
       end do

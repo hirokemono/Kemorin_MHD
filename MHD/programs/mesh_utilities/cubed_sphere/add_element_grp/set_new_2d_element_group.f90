@@ -97,7 +97,8 @@
 !
 !
       if (iflag_grping_direction .eq. 0) then
-        call count_added_egrp_item(ele1%numele, r_ele_sph, theta_ele,   &
+        call count_added_egrp_item                                      &
+     &     (ele1%numele, r_ele_sph, ele1%theta_ele,                     &
      &      num_r_ele_grp, minmax_r_ele_grping,                         &
      &      num_t_ele_grp, minmax_t_ele_grping)
 !
@@ -108,12 +109,12 @@
 !
       else if (iflag_grping_direction .eq. 2) then
         call count_added_egrp_item                                      &
-     &     (ele1%numele, s_ele,  x_ele(1:ele1%numele,3),                &
+     &     (ele1%numele, s_ele,  ele1%x_ele(1:ele1%numele,3),           &
      &      num_s_ele_grp, minmax_s_ele_grping,                         &
      &      num_z_ele_grp, minmax_z_ele_grping)
       else if (iflag_grping_direction .eq. 3) then
         call count_added_egrp_item                                      &
-     &     (ele1%numele, x_ele(1:ele1%numele,3), theta_ele,             &
+     &     (ele1%numele, ele1%x_ele(1:ele1%numele,3), ele1%theta_ele,   &
      &      num_z_ele_grp, minmax_z_ele_grping,                         &
      &      num_t_ele_grp, minmax_t_ele_grping)
       end if
@@ -137,7 +138,7 @@
 !
       if (iflag_grping_direction .eq. 0) then
         call const_ele_grp_item_by_2d                                   &
-     &     (ele1%numele, r_ele_sph, theta_ele,                          &
+     &     (ele1%numele, r_ele_sph, ele1%theta_ele,                     &
      &      num_r_ele_grp, r_ele_grp_name, minmax_r_ele_grping,         &
      &      num_t_ele_grp, t_ele_grp_name, minmax_t_ele_grping,         &
      &      ele_grp)
@@ -151,14 +152,14 @@
 !
       else if (iflag_grping_direction .eq. 2) then
         call const_ele_grp_item_by_2d                                   &
-     &     (ele1%numele, s_ele, x_ele(1:ele1%numele,3),                 &
+     &     (ele1%numele, s_ele, ele1%x_ele(1:ele1%numele,3),            &
      &      num_s_ele_grp, s_ele_grp_name, minmax_s_ele_grping,         &
      &      num_z_ele_grp, z_ele_grp_name, minmax_z_ele_grping,         &
      &      ele_grp)
 
       else if (iflag_grping_direction .eq. 3) then
         call const_ele_grp_item_by_2d                                   &
-     &     (ele1%numele, x_ele(1:ele1%numele,3), theta_ele,             &
+     &     (ele1%numele, ele1%x_ele(1:ele1%numele,3), ele1%theta_ele,   &
      &      num_z_ele_grp, z_ele_grp_name, minmax_z_ele_grping,         &
      &      num_t_ele_grp, t_ele_grp_name, minmax_t_ele_grping,         &
      &      ele_grp)
