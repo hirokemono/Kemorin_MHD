@@ -26,7 +26,6 @@
 !
       use m_geometry_data
       use m_group_data
-      use m_surface_geometry_data
       use m_surf_data_infinity
       use m_edge_geometry_data
       use m_layering_ele_list

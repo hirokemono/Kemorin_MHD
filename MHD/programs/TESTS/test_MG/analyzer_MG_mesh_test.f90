@@ -29,9 +29,8 @@
       use cal_jacobian
 !
       use set_node_types_4_IO
-      use set_surface_geom_type_IO
       use set_element_data_4_IO
-      use set_surface_geometry_4_IO
+      use set_surface_data_4_IO
       use set_edge_geometry_4_IO
       use m_geometry_data
       use m_surface_group
@@ -181,24 +180,24 @@
 !
       mesh_surf_file_head = mesh_def_surf_head
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO'
-      call copy_surf_conn_type_to_IO(surf1, ele1%numele)
-      call copy_surf_geometry_to_IO
+      call copy_surf_connect_to_IO(surf1, ele1%numele)
+      call copy_surf_geometry_to_IO(surf1)
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_output_surface_file'
       call sel_output_surface_file(my_rank)
 !
       write(mesh_surf_file_head,'(a,a4)') mesh_def_surf_head, '_sph'
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO_sph'
-      call copy_surf_conn_type_to_IO(surf1, ele1%numele)
-      call copy_surf_geometry_to_IO_sph
+      call copy_surf_connect_to_IO(surf1, ele1%numele)
+      call copy_surf_geometry_to_IO_sph(surf1)
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_output_surface_sph_file'
       call sel_output_surface_sph_file(my_rank)
 !
       write(mesh_surf_file_head,'(a,a4)') mesh_def_surf_head, '_cyl'
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO_cyl'
-      call copy_surf_conn_type_to_IO(surf1, ele1%numele)
-      call copy_surf_geometry_to_IO_cyl
+      call copy_surf_connect_to_IO(surf1, ele1%numele)
+      call copy_surf_geometry_to_IO_cyl(surf1)
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_output_surface_cyl_file'
       call sel_output_surface_cyl_file(my_rank)

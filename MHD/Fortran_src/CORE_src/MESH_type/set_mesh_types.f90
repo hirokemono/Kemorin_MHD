@@ -132,7 +132,7 @@
 !
       use t_surface_data
       use set_comm_table_4_IO
-      use set_surface_geom_type_IO
+      use set_surface_data_4_IO
 !
 !
       type(mesh_geometry), intent(in) ::    mesh
@@ -140,7 +140,7 @@
 !
 !
       call copy_comm_tbl_type_from_IO(surf_mesh%surf_comm)
-      call copy_surf_conn_type_from_IO(surf_mesh%surf, mesh%ele%numele)
+      call copy_surf_connect_from_IO(surf_mesh%surf, mesh%ele%numele)
 !
       end subroutine set_surf_connect_type_data
 !
@@ -171,14 +171,14 @@
 !
       use t_mesh_data
       use set_comm_table_4_IO
-      use set_surface_geom_type_IO
+      use set_surface_data_4_IO
 !
       integer(kind = kint), intent(in) :: my_rank, numele
       type(surface_geometry), intent(in) :: surf_mesh
 !
 !
       call copy_comm_tbl_type_to_IO(my_rank, surf_mesh%surf_comm)
-      call copy_surf_conn_type_to_IO(surf_mesh%surf, numele)
+      call copy_surf_connect_to_IO(surf_mesh%surf, numele)
 !
       end subroutine set_surf_mesh_type_to_IO
 !

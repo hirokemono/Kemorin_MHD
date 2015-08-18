@@ -111,7 +111,6 @@
       use m_geometry_data
       use m_group_data
 !
-      use m_surface_geometry_data
       use m_edge_geometry_data
       use m_element_group_connect
       use m_surface_group_connect
@@ -290,7 +289,6 @@
 !
       use cal_mesh_position
       use m_geometry_data
-      use m_surface_geometry_data
       use m_edge_geometry_data
 !
 !

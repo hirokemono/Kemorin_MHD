@@ -379,7 +379,6 @@
       subroutine surf_send_recv_test
 !
       use m_geometry_data
-      use m_surface_geometry_data
       use m_ele_sf_eg_comm_tables
       use solver_SR_type
 !

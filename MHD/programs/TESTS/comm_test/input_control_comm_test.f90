@@ -30,7 +30,7 @@
       use element_IO_select
       use surface_IO_select
       use edge_IO_select
-      use set_surface_geometry_4_IO
+      use set_surface_data_4_IO
       use set_edge_geometry_4_IO
 !
 !

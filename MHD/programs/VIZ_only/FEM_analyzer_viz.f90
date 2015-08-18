@@ -31,7 +31,6 @@
       use m_geometry_data
       use m_surface_group
       use m_control_params_2nd_files
-      use m_surface_geometry_data
       use m_edge_geometry_data
       use m_surface_group
       use m_surface_group_connect

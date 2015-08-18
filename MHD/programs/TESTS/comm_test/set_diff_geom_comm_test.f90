@@ -34,7 +34,6 @@
       subroutine s_count_diff_geom_comm_test
 !
       use m_ele_sf_eg_comm_tables
-      use m_surface_geometry_data
       use m_edge_geometry_data
 !
 !
@@ -55,7 +54,6 @@
       subroutine s_set_diff_geom_comm_test
 !
       use m_ele_sf_eg_comm_tables
-      use m_surface_geometry_data
       use m_edge_geometry_data
 !
 !

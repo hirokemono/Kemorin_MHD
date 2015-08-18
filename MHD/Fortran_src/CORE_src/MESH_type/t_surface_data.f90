@@ -8,7 +8,6 @@
 !!
 !> Substitution of
 !> @n      (module m_geometry_data)
-!> @n      (module m_surface_geometry_data)
 !!
 !!@verbatim
 !!      subroutine alloc_numsurf_stack(nprocs, surf)

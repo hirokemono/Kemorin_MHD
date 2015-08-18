@@ -35,7 +35,6 @@
 !
       use t_mesh_data
       use m_geometry_data
-      use m_surface_geometry_data
 !
       use set_geometry_4_quad27
       use coordinate_converter

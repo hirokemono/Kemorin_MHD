@@ -123,7 +123,6 @@
 !
       use m_nod_comm_table
       use m_geometry_data
-      use m_surface_geometry_data
       use m_element_id_4_node
       use m_belonged_element_4_node
 !
