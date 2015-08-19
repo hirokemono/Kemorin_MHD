@@ -34,7 +34,7 @@
 !
       implicit none
 !
-      private :: const_element_comm_table, const_surf_comm_table
+      private :: const_ele_comm_tbl, const_surf_comm_table
       private :: const_edge_comm_table
       private :: const_ele_comm_table_type
 !
@@ -60,7 +60,7 @@
 !
       call const_global_numnod_list(mesh%node)
 !
-      call const_element_comm_table(mesh, belongs, ele_mesh)
+      call const_ele_comm_tbl(mesh, belongs, ele_mesh)
       call const_global_numele_list(mesh%ele)
 !
       call const_surf_comm_table(mesh, belongs, surf_mesh)
@@ -182,7 +182,7 @@
 !  ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine const_element_comm_table(mesh, belongs, ele_mesh)
+      subroutine const_ele_comm_tbl(mesh, belongs, ele_mesh)
 !
       use set_ele_id_4_node_type
 !
@@ -202,7 +202,7 @@
       call dealloc_iele_belonged(belongs%host_ele)
       call dealloc_iele_belonged(belongs%blng_ele)
 !
-      end subroutine const_element_comm_table
+      end subroutine const_ele_comm_tbl
 !
 !-----------------------------------------------------------------------
 !

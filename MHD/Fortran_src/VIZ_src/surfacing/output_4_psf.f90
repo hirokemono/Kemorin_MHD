@@ -53,6 +53,7 @@
 !
 !
       do i_psf = 1, num_psf
+        psf_out(i_psf)%ifmt_file = itype_psf_file(i_psf)
         if((psf_out(i_psf)%ifmt_file/iflag_single) .eq. 0) then
           irank_tgt = mod(i_psf-1,nprocs)
           call merge_ucd_psf_mesh                                       &
@@ -75,7 +76,6 @@
 !
       do i_psf = 1, num_psf
         psf_out(i_psf)%file_prefix = psf_header(i_psf)
-        psf_out(i_psf)%ifmt_file = itype_psf_file(i_psf)
         if((psf_out(i_psf)%ifmt_file/iflag_single) .eq. 0) then
           if(my_rank .eq. mod(i_psf-1,nprocs)) then
             call sel_write_grd_file(iminus, psf_out(i_psf))
@@ -157,6 +157,7 @@
 !
 !
       do i_iso = 1, num_iso
+        iso_out(i_iso)%ifmt_file = itype_iso_file(i_iso)
         if((iso_out(i_iso)%ifmt_file/iflag_single) .eq. 0) then
           irank_tgt = mod(i_iso-1,nprocs)
           call merge_ucd_psf_mesh                                       &
@@ -181,7 +182,6 @@
 !
       do i_iso = 1, num_iso
         iso_out(i_iso)%file_prefix = iso_header(i_iso)
-        iso_out(i_iso)%ifmt_file = itype_iso_file(i_iso)
         if((iso_out(i_iso)%ifmt_file/iflag_single) .eq. 0) then
           if(my_rank .eq. mod(i_iso-1,nprocs)) then
             call sel_write_ucd_file(iminus, istep_iso, iso_out(i_iso))

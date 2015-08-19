@@ -225,4 +225,43 @@
 !
       call calypso_MPI_finalize
 !
+! -----------------------------------------------------------------------
+!
+      contains
+!
+! -----------------------------------------------------------------------
+!
+      subroutine load_org_fld_data(org_sph_fst_head, ifmt_org_sph_fst,  &
+     &          ip, istep, org_sph, org_phys)
+!
+      use input_old_file_sel_4_zlib
+      use copy_rj_phys_type_4_IO
+!
+      character(len=kchara), intent(in) :: org_sph_fst_head
+      integer(kind=kint ), intent(in) :: ifmt_org_sph_fst
+!
+      integer(kind = kint), intent(in) :: ip, istep
+      type(sph_grids), intent(in) :: org_sph
+      type(phys_data), intent(inout) :: org_phys
+!
+!>      Field data IO structure for original data
+      type(field_IO) :: org_fst_IO
+      integer(kind = kint) :: irank_org
+!
+      irank_org = ip - 1
+      call copy_rst_prefix_and_fmt                                      &
+     &   (org_sph_fst_head, ifmt_org_sph_fst, org_fst_IO)
+      call sel_read_alloc_field_file(irank_org, istep, org_fst_IO)
+!
+      call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)
+      call copy_rj_phys_type_from_IO                                    &
+     &       (org_sph%sph_rj%nnod_rj, org_fst_IO, org_phys)
+!
+      call dealloc_phys_data_IO(org_fst_IO)
+      call dealloc_phys_name_IO(org_fst_IO)
+!
+      end subroutine load_org_fld_data
+!
+! ----------------------------------------------------------------------
+!
       end program add_time_step_to_sph

@@ -38,6 +38,7 @@ dnl Include zlib Check related definitions
 builtin(include,MHD/confdb/ax_check_zlib.m4)
 dnl Include pgplot Check related definitions
 builtin(include,MHD/confdb/ax_check_pgplot.m4)
+#
 dnl Include hdf5 Check
 builtin(include,MHD/confdb/ax_lib_hdf5.m4)
 #
@@ -76,7 +77,7 @@ AC_MSG_RESULT(enable-glui...  "${USE_glui}")
 
 AC_MSG_RESULT(enable-fftw3... "${USE_fftw3}")
 AC_MSG_RESULT(enable-libpng..."${USE_libpng}")
-AC_MSG_RESULT(enable-gtk...  "${USE_gtk}")
+AC_MSG_RESULT(enable-gtk...   "${USE_gtk}")
 
 AC_MSG_RESULT(with-blas...     "${with_blas}")
 AC_MSG_RESULT(with-zlib...     "${with_zlib}")

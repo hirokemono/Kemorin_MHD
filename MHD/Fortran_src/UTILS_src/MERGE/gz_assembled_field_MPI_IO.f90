@@ -1,5 +1,5 @@
-!>@file  t_assembled_field_IO.f90
-!!       module t_assembled_field_IO
+!>@file  gz_assembled_field_MPI_IO.f90
+!!       module gz_assembled_field_MPI_IO
 !!
 !!@author H. Matsui
 !!@date   Programmed in May, 2015
@@ -7,8 +7,10 @@
 !> @brief gzipped data IO for 
 !!
 !!@verbatim
-!!      subroutine sel_write_SPH_assemble_field                         &
-!!     &         (nprocs_in, istep_fld, nloop, fld_IO, gz_bufs)
+!!      subroutine gz_write_step_asbl_fld_mpi                           &
+!!     &         (file_name, nprocs_in, nloop, fld_IO)
+!!      subroutine gz_write_step_asbl_fld_mpi_b                         &
+!!     &         (file_name, nprocs_in, nloop, fld_IO)
 !!
 !!   Data format for the merged ascii field data
 !!     1.   Number of process
@@ -34,7 +36,7 @@
 !!     9.   All Field data
 !!@endverbatim
 !
-      module t_assembled_field_IO
+      module gz_assembled_field_MPI_IO
 !
       use m_precision
       use m_constants
@@ -55,8 +57,10 @@
         character(len = 1), pointer :: buffer(:)
       end type mul_zlib_buffers
 !
-      private :: gz_write_step_asbl_fld_mpi_b
-      private :: gz_write_step_asbl_fld_mpi
+      type(mul_zlib_buffers), allocatable, save :: gz_bufs(:)
+!
+      private :: gz_bufs
+      private :: alloc_assemble_gz_buffer, dealloc_assemble_gz_buffer
       private :: gz_write_asmbl_fld_mpi, gz_write_asmbl_fld_mpi_b
 !
 ! -----------------------------------------------------------------------
@@ -65,58 +69,28 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sel_write_SPH_assemble_field                           &
-     &         (nprocs_in, istep_fld, nloop, fld_IO, gz_bufs)
+      subroutine alloc_assemble_gz_buffer(nloop)
 !
-      use field_IO_select
-      use set_field_file_names
-!
-      integer(kind = kint), intent(in) :: istep_fld
-      integer(kind = kint), intent(in) :: nloop, nprocs_in
-!
-      type(field_IO), intent(inout) :: fld_IO(nloop)
-      type(mul_zlib_buffers), intent(inout) :: gz_bufs(nloop)
-!
-      integer(kind = kint) :: iloop, id_rank
-      character(len=kchara) :: file_name
+      integer(kind = kint), intent(in) :: nloop
 !
 !
-      if(nprocs_in .ne. nprocs) then
-        do iloop = 1, nloop
-          id_rank = my_rank + (iloop-1) * nprocs
+      allocate(gz_bufs(nloop))
 !
-          call set_SPH_fld_file_name(fld_IO(iloop)%file_prefix,         &
-     &       fld_IO(iloop)%iflag_file_fmt, id_rank, istep_fld,          &
-     &       file_name)
-        end do 
+      end subroutine alloc_assemble_gz_buffer
 !
-        if(fld_IO(1)%iflag_file_fmt                                     &
-     &       .eq. iflag_single+id_gzip_bin_file_fmt) then
-          call gz_write_step_asbl_fld_mpi_b                             &
-     &         (file_name, nprocs_in, nloop, fld_IO, gz_bufs)
-          return
-        else if(fld_IO(1)%iflag_file_fmt                                &
-     &       .eq. iflag_single+id_gzip_txt_file_fmt) then
-          call gz_write_step_asbl_fld_mpi                               &
-     &         (file_name, nprocs_in, nloop, fld_IO, gz_bufs)
-          return
-        end if
-      end if
+! -----------------------------------------------------------------------
 !
-      do iloop = 1, nloop
-        id_rank = my_rank + (iloop-1) * nprocs
+      subroutine dealloc_assemble_gz_buffer
 !
-        call sel_write_step_SPH_field_file                              &
-     &     (nprocs_in, id_rank, istep_fld, fld_IO(iloop))
-      end do 
+      deallocate(gz_bufs)
 !
-      end subroutine sel_write_SPH_assemble_field
+      end subroutine dealloc_assemble_gz_buffer
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine gz_write_step_asbl_fld_mpi                             &
-     &         (file_name, nprocs_in, nloop, fld_IO, gz_bufs)
+     &         (file_name, nprocs_in, nloop, fld_IO)
 !
       use field_data_IO
       use gz_field_file_MPI_IO
@@ -128,13 +102,14 @@
 !
       integer(kind = kint), intent(in) :: nloop
       type(field_IO), intent(in) :: fld_IO(nloop)
-      type(mul_zlib_buffers), intent(inout) :: gz_bufs(nloop)
 !
       integer ::  id_fld
 !
       integer(kind = kint_gl) :: ioff_gl
       integer(kind = kint) :: icou, j
 !
+!
+      call alloc_assemble_gz_buffer(nloop)
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &      'Write compressed data by MPI-IO: ', trim(file_name)
@@ -155,13 +130,14 @@
       end do
 !
       call calypso_close_mpi_file(id_fld)
+      call dealloc_assemble_gz_buffer
 !
       end subroutine gz_write_step_asbl_fld_mpi
 !
 ! -----------------------------------------------------------------------
 !
       subroutine gz_write_step_asbl_fld_mpi_b                           &
-     &         (file_name, nprocs_in, nloop, fld_IO, gz_bufs)
+     &         (file_name, nprocs_in, nloop, fld_IO)
 !
       use gz_field_file_MPI_IO_b
       use gz_field_data_MPI_IO_b
@@ -172,11 +148,12 @@
 !
       integer(kind = kint), intent(in) :: nloop
       type(field_IO), intent(in) :: fld_IO(nloop)
-      type(mul_zlib_buffers), intent(inout) :: gz_bufs(nloop)
 !
       integer ::  id_fld
       integer(kind = kint_gl) :: ioff_gl
 !
+!
+      call alloc_assemble_gz_buffer(nloop)
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &     'Write compressed binary data by MPI-IO: ', trim(file_name)
@@ -194,6 +171,7 @@
      &    ioff_gl, nloop, fld_IO, gz_bufs)
 !
       call calypso_close_mpi_file(id_fld)
+      call dealloc_assemble_gz_buffer
 !
       end subroutine gz_write_step_asbl_fld_mpi_b
 !
@@ -363,4 +341,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module t_assembled_field_IO
+      end module gz_assembled_field_MPI_IO

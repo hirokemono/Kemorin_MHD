@@ -1,0 +1,1 @@
+/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/PARALLEL_src/COMM_src/solver_SR_type.f90

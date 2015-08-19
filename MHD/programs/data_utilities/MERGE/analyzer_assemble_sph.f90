@@ -36,7 +36,6 @@
 !
       integer(kind = kint) :: nloop_new
       type(field_IO), allocatable, save :: new_fst_IO(:)
-      type(mul_zlib_buffers), allocatable, save :: gz_bufs(:)
 !
       integer(kind = kint), allocatable :: nnod_list_lc(:)
       integer(kind = kint), allocatable :: nnod_list(:)
@@ -111,7 +110,6 @@
 !
       nloop_new = (np_sph_new-1)/nprocs + 1
       allocate(new_fst_IO(nloop_new))
-      allocate(gz_bufs(nloop_new))
 !
       allocate(nnod_list_lc(np_sph_new))
       allocate(nnod_list(np_sph_new))
@@ -245,7 +243,7 @@
 !
 !
         call sel_write_SPH_assemble_field                               &
-     &     (np_sph_new, istep, nloop_new, new_fst_IO, gz_bufs)
+     &     (np_sph_new, istep, nloop_new, new_fst_IO)
 !
         do jloop = 1, nloop_new
           irank_new = my_rank + (jloop-1) * nprocs

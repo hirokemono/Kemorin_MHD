@@ -54,6 +54,7 @@
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
+      write(*,*) 'init_merged_ucd', my_rank
       call link_numnod_stacks_2_output(nprocs, node1%istack_numnod,     &
      &    node1%istack_internod, ele1%istack_interele, m_ucd)
 !
