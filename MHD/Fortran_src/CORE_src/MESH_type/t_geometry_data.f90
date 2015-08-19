@@ -435,8 +435,6 @@
       deallocate( ele%theta_ele)
       deallocate( ele%s_ele)
       deallocate( ele%as_ele)
-
-      deallocate ( ele%interior_ele )
 !
       deallocate( ele%volume_ele )
       deallocate( ele%a_vol_ele )
