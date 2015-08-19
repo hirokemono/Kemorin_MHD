@@ -24,8 +24,8 @@
 !
       use m_machine_parameter
       use m_geometry_data
+      use m_group_data
       use m_geometry_data_MHD
-      use m_surface_group
       use m_finite_element_matrix
       use m_int_vol_data
 !

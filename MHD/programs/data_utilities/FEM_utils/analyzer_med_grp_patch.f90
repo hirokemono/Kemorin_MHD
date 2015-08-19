@@ -57,7 +57,7 @@
 !
       subroutine analyze_med_grp_patch
 !
-      use m_element_group
+      use m_group_data
       use m_ctl_params_4_diff_udt
       use set_med_patch_4_element_grp
 !

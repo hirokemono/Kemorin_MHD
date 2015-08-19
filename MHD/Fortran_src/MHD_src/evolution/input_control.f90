@@ -88,10 +88,9 @@
       subroutine input_meshes_4_MHD
 !
       use m_machine_parameter
+      use m_group_data
       use m_control_parameter
       use m_read_mesh_data
-      use m_node_group
-      use m_surface_group
 !
       use element_IO_select
       use surface_IO_select

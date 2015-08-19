@@ -15,12 +15,18 @@
       module m_group_data
 !
       use m_precision
-!
-      use m_node_group
-      use m_element_group
-      use m_surface_group
+      use t_group_data
 !
       implicit  none
+!
+!>  Structure for node and node group
+      type(group_data), save :: nod_grp1
+!
+!>  Structure for element group
+      type(group_data), save :: ele_grp1
+!
+!>  Structure for surfacet group
+      type(surface_group_data), save :: sf_grp1
 !
 ! ----------------------------------------------------------------------
 !

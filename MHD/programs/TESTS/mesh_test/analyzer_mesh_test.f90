@@ -29,15 +29,8 @@
       use const_mesh_info
       use cal_jacobian
 !
-      use set_node_data_4_IO
-      use set_element_data_4_IO
-      use set_surface_data_4_IO
-      use set_edge_data_4_IO
-      use element_IO_select
-      use surface_IO_select
-      use edge_IO_select
       use m_geometry_data
-      use m_surface_group
+      use m_group_data
       use m_surface_group_connect
       use m_surface_group_geometry
       use m_jacobians_4_surface
@@ -45,6 +38,13 @@
       use m_jacobian_sf_grp
       use m_ele_sf_eg_comm_tables
       use m_array_for_send_recv
+      use set_node_data_4_IO
+      use set_element_data_4_IO
+      use set_surface_data_4_IO
+      use set_edge_data_4_IO
+      use element_IO_select
+      use surface_IO_select
+      use edge_IO_select
       use check_jacobians
       use int_volume_of_domain
       use set_surf_grp_vectors

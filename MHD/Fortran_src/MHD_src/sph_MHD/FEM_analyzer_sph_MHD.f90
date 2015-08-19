@@ -44,7 +44,7 @@
       subroutine FEM_initialize_sph_MHD
 !
       use m_geometry_data
-      use m_node_group
+      use m_group_data
       use m_array_for_send_recv
       use m_t_step_parameter
       use m_node_phys_address

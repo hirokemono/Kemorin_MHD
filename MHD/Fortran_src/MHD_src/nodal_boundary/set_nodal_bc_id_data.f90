@@ -25,7 +25,7 @@
       use m_control_parameter
 !
       use m_geometry_data
-      use m_node_group
+      use m_group_data
 !
       use m_bc_data_ene
       use m_bc_temp_sgs

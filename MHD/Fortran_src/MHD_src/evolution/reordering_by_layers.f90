@@ -32,8 +32,7 @@
 !
       subroutine s_reordering_by_layers_snap
 !
-      use m_element_group
-      use m_surface_group
+      use m_group_data
 !
 !
       call allocate_lists_4_layer(ele1%numele)

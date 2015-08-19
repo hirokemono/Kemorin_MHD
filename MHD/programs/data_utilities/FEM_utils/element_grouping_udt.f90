@@ -5,7 +5,7 @@
       use m_precision
 !
       use m_constants
-      use m_element_group
+      use m_group_data
       use m_merdional_grouping_patch
       use m_ctl_data_ele_grp_udt
       use m_ctl_params_ele_grp_udt

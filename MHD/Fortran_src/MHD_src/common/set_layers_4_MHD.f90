@@ -26,7 +26,7 @@
 !
       subroutine set_layers
 !
-      use m_element_group
+      use m_group_data
 !
 !    set node list for fluid
 !

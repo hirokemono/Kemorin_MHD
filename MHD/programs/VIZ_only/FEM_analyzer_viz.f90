@@ -29,9 +29,8 @@
       use m_array_for_send_recv
       use m_read_mesh_data
       use m_geometry_data
-      use m_surface_group
+      use m_group_data
       use m_control_params_2nd_files
-      use m_surface_group
       use m_surface_group_connect
       use m_surface_group_geometry
       use m_element_id_4_node

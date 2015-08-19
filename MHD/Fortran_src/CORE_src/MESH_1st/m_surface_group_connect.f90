@@ -12,6 +12,7 @@
       module m_surface_group_connect
 !
       use m_precision
+      use m_machine_parameter
       use t_group_connects
       use t_surface_group_connect
 !
@@ -33,8 +34,7 @@
 !
       subroutine const_surf_group_connect
 !
-      use m_machine_parameter
-      use m_surface_group
+      use m_group_data
 !
 !
        if (iflag_debug.eq.1) write(*,*) 'set_surf_id_4_surf_group'

@@ -25,9 +25,9 @@
 !
       use calypso_mpi
       use m_geometry_data
+      use m_group_data
       use m_control_data_add_ele_grp
       use m_add_ele_grp_parameter
-      use m_element_group
       use m_read_mesh_data
       use m_work_4_add_egrp_sph
       use load_mesh_data

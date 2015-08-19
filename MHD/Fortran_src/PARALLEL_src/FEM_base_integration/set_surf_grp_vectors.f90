@@ -131,7 +131,7 @@
       subroutine pick_scalar_4_surf_grp                                 &
      &         (sf_grp, numsurf, x_surf, x_sf_grp)
 !
-      use m_surface_group
+      use m_group_data
       use m_surface_group_connect
 !
       type(surface_group_data), intent(in) :: sf_grp

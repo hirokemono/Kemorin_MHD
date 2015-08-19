@@ -20,10 +20,9 @@
       subroutine s_reordering_by_layers_MHD
 !
       use m_geometry_data
+      use m_group_data
       use m_iccg_parameter
       use m_work_4_MHD_layering
-      use m_element_group
-      use m_surface_group
 !
       use reordering_by_layers
       use reordering_MG_ele_by_layers

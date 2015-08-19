@@ -6,11 +6,6 @@
 !
 !> @brief Structure of group data
 !
-!>@n    Substitution of 
-!>@n        (module m_node_group)
-!>@n        (module m_element_group)
-!>@n        (module m_surface_group)
-!!
 !!@verbatim
 !!      subroutine allocate_grp_type(grp)
 !!      subroutine allocate_grp_type_num(grp)

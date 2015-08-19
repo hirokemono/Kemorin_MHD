@@ -16,8 +16,6 @@
 !
       use t_mesh_data
 !
-      use m_element_group
-!
       implicit none
 !
       integer(kind = kint), parameter, private :: my_rank = 0
@@ -36,6 +34,7 @@
       subroutine  initialize_refine
 !
       use m_geometry_data
+      use m_group_data
       use m_control_data_4_refine
       use load_mesh_data
       use set_nnod_for_ele_by_type
@@ -79,9 +78,10 @@
 !
       subroutine analyze_refine
 !
-      use m_nod_comm_table
       use m_geometry_constants
       use m_geometry_data
+      use m_group_data
+      use m_nod_comm_table
       use m_refined_node_id
       use m_refined_element_data
       use m_work_merge_refine_itp

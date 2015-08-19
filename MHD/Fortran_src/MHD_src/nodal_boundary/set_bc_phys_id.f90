@@ -19,7 +19,7 @@
 !
       use m_precision
       use m_geometry_data
-      use m_node_group
+      use m_group_data
 !
       implicit none
 !

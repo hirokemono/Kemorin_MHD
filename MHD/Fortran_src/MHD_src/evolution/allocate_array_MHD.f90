@@ -11,6 +11,7 @@
       module allocate_array_MHD
 !
       use m_precision
+      use m_machine_parameter
 !
       use calypso_mpi
 !
@@ -24,14 +25,13 @@
 !
       subroutine allocate_array
 !
-      use m_machine_parameter
-      use m_control_parameter
       use m_geometry_data
+      use m_group_data
+      use m_control_parameter
       use m_phys_constants
       use m_finite_element_matrix
       use m_int_vol_data
       use m_bulk_values
-      use m_surface_group
       use initialize_phys_data
 !
 !

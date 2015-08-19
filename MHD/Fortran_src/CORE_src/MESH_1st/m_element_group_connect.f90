@@ -36,7 +36,7 @@
       subroutine const_ele_group_connect
 !
       use m_machine_parameter
-      use m_element_group
+      use m_group_data
 !
 !
        if (iflag_debug.eq.1) write(*,*) 'set_surf_4_ele_group'

@@ -49,7 +49,7 @@
 !
       subroutine cal_jacobian_element
 !
-      use m_surface_group
+      use m_group_data
 !
       use m_fem_gauss_int_coefs
       use m_surf_data_infinity
