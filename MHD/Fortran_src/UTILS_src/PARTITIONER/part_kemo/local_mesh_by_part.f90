@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui on Sep., 2007
 !
-!      subroutine local_fem_mesh                                        &
-!     &         (my_rank, nprocs, work_f_head, para_fem)
+!!      subroutine local_fem_mesh(my_rank, nprocs, work_f_head,         &
+!!     &          node_org, ele_org, para_fem)
 !
       module local_mesh_by_part
 !
@@ -19,10 +19,11 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine local_fem_mesh                                         &
-     &         (my_rank, nprocs, work_f_head, para_fem)
+      subroutine local_fem_mesh(my_rank, nprocs, work_f_head,           &
+     &          node_org, ele_org, para_fem)
 !
       use t_mesh_data
+      use t_geometry_data
       use m_partitioner_comm_table
       use m_ctl_param_partitioner
       use m_read_mesh_data
@@ -41,6 +42,8 @@
 !
       integer(kind = kint), intent(in) :: my_rank, nprocs
       character(len=kchara), intent(in) :: work_f_head
+      type(node_data), intent(in) :: node_org
+      type(element_data), intent(in) :: ele_org
 !
       type(mesh_data), intent(inout) :: para_fem
 !
@@ -71,8 +74,8 @@
      &        = para_fem%mesh%nod_comm%id_neib(i) - 1
         end do
 
-        call s_const_local_meshes(ip, para_fem%mesh)
-        call set_local_connectivity_4_ele(para_fem%mesh%ele)
+        call s_const_local_meshes(ip, node_org, ele_org, para_fem%mesh)
+        call set_local_connectivity_4_ele(ele_org, para_fem%mesh%ele)
         call s_const_local_groups(para_fem%group)
 !C
 !C +-------------------------+

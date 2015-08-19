@@ -1,17 +1,18 @@
 !element_posi_2_nodal_array.f90
 !      module element_posi_2_nodal_array
 !
-      module element_posi_2_nodal_array
-!
 !      modified by H. Matsui on Jan., 2009
+!
+!      subroutine s_element_posi_2_nodal_array(ele, node)
+!      subroutine s_2nd_ele_posi_2_nodal_array(newmesh)
+!
+      module element_posi_2_nodal_array
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
 !
       implicit none
-!
-!      subroutine s_element_posi_2_nodal_array
-!      subroutine s_2nd_ele_posi_2_nodal_array
 !
 ! ----------------------------------------------------------------------
 !
@@ -19,44 +20,46 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_element_posi_2_nodal_array
+      subroutine s_element_posi_2_nodal_array(ele, node)
 !
-      use m_machine_parameter
-      use m_geometry_data
+      use t_geometry_data
       use cal_minmax_and_stacks
+!
+      type(element_data), intent(in) :: ele
+      type(node_data), intent(inout) :: node
 !
 !
       integer(kind = kint) :: inod
 !
 !
-      call deallocate_node_geometry_type(node1)
+      call deallocate_node_geometry_type(node)
 !
-      node1%numnod =        ele1%numele
-      node1%internal_node = ele1%numele
+      node%numnod =        ele%numele
+      node%internal_node = ele%numele
 !
-      call allocate_node_geometry_type(node1)
+      call allocate_node_geometry_type(node)
 !
 !$omp parallel do
-      do inod = 1, node1%numnod
-        node1%inod_global(inod) = ele1%iele_global(inod)
-        node1%xx(inod,1) =        ele1%x_ele(inod,1)
-        node1%xx(inod,2) =        ele1%x_ele(inod,2)
-        node1%xx(inod,3) =        ele1%x_ele(inod,3)
+      do inod = 1, node%numnod
+        node%inod_global(inod) = ele%iele_global(inod)
+        node%xx(inod,1) =        ele%x_ele(inod,1)
+        node%xx(inod,2) =        ele%x_ele(inod,2)
+        node%xx(inod,3) =        ele%x_ele(inod,3)
 !
-        node1%rr(inod) =    ele1%r_ele(inod)
-        node1%a_r(inod) =   ele1%ar_ele(inod)
-        node1%ss(inod) =    ele1%s_ele(inod)
-        node1%a_s(inod) =   ele1%as_ele(inod)
-        node1%phi(inod) =   ele1%phi_ele(inod)
-        node1%theta(inod) = ele1%theta_ele(inod)
+        node%rr(inod) =    ele%r_ele(inod)
+        node%a_r(inod) =   ele%ar_ele(inod)
+        node%ss(inod) =    ele%s_ele(inod)
+        node%a_s(inod) =   ele%as_ele(inod)
+        node%phi(inod) =   ele%phi_ele(inod)
+        node%theta(inod) = ele%theta_ele(inod)
       end do
 !$omp end parallel do
 !
-       call count_number_4_smp( np_smp, ione, node1%numnod,             &
-     &     node1%istack_nod_smp, node1%max_nod_smp)
+       call count_number_4_smp( np_smp, ione, node%numnod,              &
+     &     node%istack_nod_smp, node%max_nod_smp)
 !
-       call count_number_4_smp( np_smp, ione, node1%internal_node,      &
-     &     node1%istack_internal_smp, node1%max_internal_nod_smp)
+       call count_number_4_smp( np_smp, ione, node%internal_node,       &
+     &     node%istack_internal_smp, node%max_internal_nod_smp)
 !
       end subroutine s_element_posi_2_nodal_array
 !

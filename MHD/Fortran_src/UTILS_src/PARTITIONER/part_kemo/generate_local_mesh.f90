@@ -3,11 +3,13 @@
 !
 !      Written by H. Matsui on Aug., 2007
 !
-!      subroutine PROC_LOCAL_MESH(ele_grp, new_fem, included_ele)
+!!      subroutine PROC_LOCAL_MESH(node_org, ele_org, edge_org,         &
+!!     &          ele_grp, new_fem, included_ele)
 !
       module generate_local_mesh
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -17,13 +19,14 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine PROC_LOCAL_MESH(ele_grp, new_fem, included_ele)
+      subroutine PROC_LOCAL_MESH(node_org, ele_org, edge_org,           &
+     &          ele_grp, new_fem, included_ele)
 !
       use t_mesh_data
       use t_near_mesh_id_4_node
+      use t_geometry_data
       use t_group_data
-      use m_constants
-      use m_geometry_data
+      use t_edge_data
       use m_ctl_param_partitioner
       use m_subdomain_table_IO
 !
@@ -36,6 +39,9 @@
       use local_mesh_by_part
       use const_mesh_info
 !
+      type(node_data), intent(in) :: node_org
+      type(element_data), intent(in) :: ele_org
+      type(edge_data), intent(in) :: edge_org
       type(group_data), intent(in) :: ele_grp
       type(mesh_data), intent(inout) :: new_fem
       type(near_mesh), intent(inout) :: included_ele
@@ -44,11 +50,13 @@
 !C
 !C
 !C-- OVERLAPPED ELEMENTs
-      call count_overlapped_ele(ele1%numele, ele1%nodelm(1), ele1%ie)
+      call count_overlapped_ele                                         &
+     &   (ele_org%numele, ele_org%nodelm(1), ele_org%ie)
 !
-      call CRE_LOCAL_DATA(num_domain, included_ele)
-      call increase_overlapping(num_domain, n_overlap, i_sleeve_ele,    &
-     &    included_ele)
+      call CRE_LOCAL_DATA(num_domain, node_org%numnod,                  &
+     &    ele_org, included_ele)
+      call increase_overlapping(num_domain, node_org%numnod, ele_org,   &
+     &    n_overlap, i_sleeve_ele, included_ele)
 !
 !C
 !C-- INTERFACE info.
@@ -58,9 +66,10 @@
 !C +---------------------------------------------+
 !C===
 !C
-      call s_const_local_mesh_by_tbl(ele_grp, num_domain, included_ele)
+      call s_const_local_mesh_by_tbl(node_org%numnod, ele_org,          &
+     &    ele_grp, num_domain, included_ele)
       call open_partition_log                                           &
-     &   (num_domain, edge1%numedge, org_mesh_header)
+     &   (num_domain, edge_org%numedge, org_mesh_header)
 !C
 !C +---------------------------------------+
 !C | create INITIAL FILE : IMPORT pointers |
@@ -79,7 +88,7 @@
 !C
 !C-- distributed Local DATA
       call local_fem_mesh                                               &
-     &    (izero, ione, work_file_header, new_fem)
+     &    (izero, ione, work_file_header, node_org, ele_org, new_fem)
 !C
 !C-- Finalize
 !

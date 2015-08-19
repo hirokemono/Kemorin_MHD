@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on Nov., 2006
 !
-!      subroutine s_set_constant_filter_coefs(inod, num_fixed)
+!      subroutine s_set_constant_filter_coefs(node, inod, num_fixed)
 !
       module set_constant_filter_coefs
 !
@@ -20,15 +20,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_constant_filter_coefs(inod, num_fixed)
+      subroutine s_set_constant_filter_coefs(node, inod, num_fixed)
 !
+      use t_geometry_data
       use m_ctl_params_4_gen_filter
-      use m_geometry_data
       use m_filter_elength
       use m_filter_coefs
       use m_matrix_4_filter
       use cal_gaussian_at_node
 !
+      type(node_data), intent(in) :: node
       integer(kind = kint), intent(in) :: inod, num_fixed
 !
       real(kind = kreal) :: g
@@ -42,8 +43,8 @@
 !        j = mat_size-i+1
         jnod = inod_near_1nod_weight(i)
         call s_cal_gaussian_at_node(ref_filter_width(1),                &
-     &      node1%xx(jnod,1), node1%xx(jnod,2), node1%xx(jnod,3),       &
-     &      node1%xx(inod,1), node1%xx(inod,2), node1%xx(inod,3),       &
+     &      node%xx(jnod,1), node%xx(jnod,2), node%xx(jnod,3),          &
+     &      node%xx(inod,1), node%xx(inod,2), node%xx(inod,3),          &
      &      FEM1_elen%elen_nod%moms%f_x2(inod),                         &
      &      FEM1_elen%elen_nod%moms%f_y2(inod),                         &
      &      FEM1_elen%elen_nod%moms%f_z2(inod), g)

@@ -45,7 +45,7 @@
       call resize_matrix_size_gen_filter
 !
       do i = 1, maximum_neighbour
-        call s_expand_filter_area_4_1node(inod)
+        call s_expand_filter_area_4_1node(node1%numnod, inod, ele1)
         call resize_matrix_size_gen_filter
       end do
       mat_size = nnod_near_1nod_weight

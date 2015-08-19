@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on Aug., 2006
 !
-!      subroutine copy_target_local_vector(inod, x_target)
+!      subroutine copy_target_local_vector(node, inod, x_target)
 !      subroutine copy_position_2_2nd_local_ele(new_node, new_ele,      &
 !     &          iele, x_local)
 !      subroutine cal_3vector_4_tet_2nd(nnod_4_ele_2, itet,             &
@@ -13,7 +13,7 @@
 !      subroutine set_results_2_array(n_rank_org, inod, jele, xi)
 !      subroutine set_results_2_array_fin(inod, jele, xi,               &
 !     &          differ_tmp, differ_res, iflag_org_tmp)
-!      subroutine check_missing_nodes(ierr, my_rank)
+!      subroutine check_missing_nodes(ierr, my_rank, node)
 !
       module subroutines_4_search_table
 !
@@ -30,14 +30,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_target_local_vector(inod, x_target)
+      subroutine copy_target_local_vector(node, inod, x_target)
 !
-      use m_geometry_data
+      use t_geometry_data
 !
+      type(node_data), intent(in) :: node
       integer(kind = kint), intent(in) :: inod
       real(kind = kreal), intent(inout) :: x_target(3)
 !
-      x_target(1:3) = node1%xx(inod,1:3)
+      x_target(1:3) = node%xx(inod,1:3)
 !
       end subroutine copy_target_local_vector
 !
@@ -223,9 +224,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_missing_nodes(ierr, my_rank)
+      subroutine check_missing_nodes(ierr, my_rank, node)
 !
-      use m_geometry_data
+      use t_geometry_data
       use m_work_const_itp_table
       use m_search_bolck_4_itp
 !
@@ -233,6 +234,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) ::ierr
+      type(node_data), intent(in) :: node
 !
       integer(kind= kint), parameter :: id_miss_file = 12
       character(len=kchara) :: miss_file_name
@@ -244,16 +246,16 @@
 !
       ierr = 0
       write(id_miss_file,*) 'missing nodes: '
-      do inod = 1, node1%internal_node
+      do inod = 1, node%internal_node
         if (iflag_org_domain(inod) .le. 0) then
           ierr = ierr + 1
-          write(id_miss_file,'(i16,1p3e16.7)') inod, node1%xx(inod,1:3)
+          write(id_miss_file,'(i16,1p3e16.7)') inod, node%xx(inod,1:3)
         end if
       end do
       close(id_miss_file)
 !
       write(*,*) 'Number of missing nodes: ', ierr,                     &
-     &          ' of  ', node1%internal_node, ' at rank ', my_rank
+     &          ' of  ', node%internal_node, ' at rank ', my_rank
 !
       end subroutine check_missing_nodes
 !

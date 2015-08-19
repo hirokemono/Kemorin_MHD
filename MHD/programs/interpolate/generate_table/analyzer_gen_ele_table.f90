@@ -30,6 +30,7 @@
       subroutine init_analyzer
 !
 !
+      use m_geometry_data
       use cal_jacobian
 !
       use input_control_gen_table
@@ -76,12 +77,12 @@
 !
 !  -------------------------------
 !
-      call s_element_posi_2_nodal_array
+      call s_element_posi_2_nodal_array(ele1, node1)
 !
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_serach_data_4_dest'
-      call s_set_serach_data_4_dest
+      call s_set_serach_data_4_dest(node1)
 !
       end subroutine init_analyzer
 !

@@ -21,14 +21,16 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_ele_domain_groups
+      subroutine set_ele_domain_groups(ele)
 !
-      use m_geometry_data
+      use t_geometry_data
       use m_domain_group_4_partition
+!
+      type(element_data), intent(in) :: ele
 !
 !
       call set_domain_group_4_ele(nnod_s_domin, nele_s_domin,           &
-     &    ele1%nnod_4_ele, ele1%ie, IGROUP_nod, IGROUP_ele)
+     &    ele%nnod_4_ele, ele%ie, IGROUP_nod, IGROUP_ele)
 !
       end subroutine set_ele_domain_groups
 !

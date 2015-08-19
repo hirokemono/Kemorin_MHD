@@ -67,6 +67,7 @@
 !
       subroutine filters_4_each_newdomain(my_rank2, new_node, new_ele)
 !
+      use m_geometry_data
       use m_ctl_param_newdom_filter
       use m_2nd_pallalel_vector
       use m_nod_filter_comm_table
@@ -142,11 +143,13 @@
         call allocate_fluid_filter_coefs2
 !
 !        write(*,*) 'trans_filter_4_new_domains'
-        call trans_filter_4_new_domains(ip2, ifmt_3d_filter)
+        call trans_filter_4_new_domains                                 &
+     &     (ip2, ifmt_3d_filter, node1, ele1%numele)
 !        write(*,*) 'reorder_filter_new_domain'
         call reorder_filter_new_domain
 !
-        call allocate_nod_ele_near_1nod(new_node%numnod, new_ele%numele)
+        call allocate_nod_ele_near_1nod                                 &
+     &     (new_node%numnod, new_ele%numele)
 !
         call write_new_whole_filter_coef
         call write_new_fluid_filter_coef

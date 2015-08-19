@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on Oct., 2007
 !
-!      subroutine s_refined_nod_2_mesh_data(new_node)
+!      subroutine s_refined_nod_2_mesh_data(org_node, new_node)
 !      subroutine s_refined_ele_2_mesh_data
 !
       module refined_nod_2_mesh_data
@@ -20,11 +20,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_refined_nod_2_mesh_data(new_node)
+      subroutine s_refined_nod_2_mesh_data(org_node, new_node)
 !
-      use m_geometry_data
       use m_refined_node_id
 !
+      type(node_data), intent(in) :: org_node
       type(node_data), intent(inout) :: new_node
 !
       integer(kind = kint) :: inod, icou
@@ -41,9 +41,11 @@
         new_node%inod_global(inod) = inod
       end do
 !
-      new_node%xx(1:node1%numnod,1) = node1%xx(1:node1%numnod,1)
-      new_node%xx(1:node1%numnod,2) = node1%xx(1:node1%numnod,2)
-      new_node%xx(1:node1%numnod,3) = node1%xx(1:node1%numnod,3)
+      do inod = 1, new_node%numnod
+        new_node%xx(inod,1) = org_node%xx(inod,1)
+        new_node%xx(inod,2) = org_node%xx(inod,2)
+        new_node%xx(inod,3) = org_node%xx(inod,3)
+      end do
 !
       icou = ntot_nod_refine_nod
       do inod = 1, ntot_nod_refine_edge

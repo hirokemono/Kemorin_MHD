@@ -3,13 +3,14 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!      subroutine search_node_in_element_1st(my_rank, org_node, org_ele)
-!      subroutine search_node_in_element_2nd(my_rank, i_sleeve,         &
-!     &          error_level, org_node, org_ele)
-!      subroutine search_node_in_all_element(my_rank_2nd, error_level   &
-!     &          org_node, org_ele)
-!      subroutine giveup_to_search_element(my_rank_2nd, error_level,    &
-!     &          inod_next_stack_4_node, org_node, org_ele)
+!!      subroutine search_node_in_element_1st(my_rank,                  &
+!!     &          org_node, org_ele, org_blk, dest_node)
+!!      subroutine search_node_in_element_2nd(iinc, my_rank,            &
+!!     &          org_node, org_ele, org_blk, dest_node)
+!!      subroutine search_node_in_all_element(my_rank_2nd, error_level  &
+!!     &          org_node, org_ele, dest_node)
+!!      subroutine giveup_to_search_element(my_rank_2nd, error_level,   &
+!!     &          inod_next_stack_4_node, org_node, org_ele, dest_node)
 !
       module search_node_in_element
 !
@@ -17,7 +18,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_geometry_data
       use m_interpolate_table_dest
       use m_work_const_itp_table
       use cal_interpolate_coefs
@@ -36,8 +36,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine search_node_in_element_1st(my_rank, org_node, org_ele, &
-     &          org_blk)
+      subroutine search_node_in_element_1st(my_rank,                    &
+     &          org_node, org_ele, org_blk, dest_node)
 !
       integer(kind = kint), intent(in) :: my_rank
 !
@@ -45,14 +45,16 @@
       type(element_data), intent(in) :: org_ele
       type(block_4_interpolate), intent(in) :: org_blk
 !
+      type(node_data), intent(in) :: dest_node
+!
       integer(kind = kint) :: ip, ist, ied, inod
       integer(kind = kint) :: ihash, jst, jed, jnum, jele
       integer(kind = kint), parameter :: iflag_nomessage = 0
 !
 !
       do ip = 1, np_smp
-        ist = node1%istack_internal_smp(ip-1) + 1
-        ied = node1%istack_internal_smp(ip)
+        ist = dest_node%istack_internal_smp(ip-1) + 1
+        ied = dest_node%istack_internal_smp(ip)
 !
         do inod = ist, ied
           ihash = org_blk%iblock_tgt_node(inod,4)
@@ -64,12 +66,12 @@
             do jnum = jst, jed
               jele = org_blk%ele_list_by_rng%item_grp(jnum)
 !
-              if (   node1%xx(inod,1) .ge. org_blk%xele_min(jele,1)     &
-     &         .and. node1%xx(inod,1) .le. org_blk%xele_max(jele,1)     &
-     &         .and. node1%xx(inod,2) .ge. org_blk%xele_min(jele,2)     &
-     &         .and. node1%xx(inod,2) .le. org_blk%xele_max(jele,2)     &
-     &         .and. node1%xx(inod,3) .ge. org_blk%xele_min(jele,3)     &
-     &         .and. node1%xx(inod,3) .le. org_blk%xele_max(jele,3)     &
+              if (   dest_node%xx(inod,1) .ge. org_blk%xele_min(jele,1) &
+     &         .and. dest_node%xx(inod,1) .le. org_blk%xele_max(jele,1) &
+     &         .and. dest_node%xx(inod,2) .ge. org_blk%xele_min(jele,2) &
+     &         .and. dest_node%xx(inod,2) .le. org_blk%xele_max(jele,2) &
+     &         .and. dest_node%xx(inod,3) .ge. org_blk%xele_min(jele,3) &
+     &         .and. dest_node%xx(inod,3) .le. org_blk%xele_max(jele,3) &
      &              ) then
 !
                  call s_cal_interpolate_coefs                           &
@@ -89,14 +91,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine search_node_in_element_2nd(iinc, my_rank, org_node, org_ele, &
-     &          org_blk)
+      subroutine search_node_in_element_2nd(iinc, my_rank,              &
+     &          org_node, org_ele, org_blk, dest_node)
 !
       integer(kind = kint), intent(in) :: my_rank, iinc
 !
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
       type(block_4_interpolate), intent(in) :: org_blk
+!
+      type(node_data), intent(in) :: dest_node
 !
       integer(kind = kint) :: ip, ist, ied, inod, i1, i2, i3
       integer(kind = kint) :: igh(3)
@@ -105,8 +109,8 @@
 !
 !
       do ip = 1, np_smp
-        ist = node1%istack_internal_smp(ip-1) + 1
-        ied = node1%istack_internal_smp(ip)
+        ist = dest_node%istack_internal_smp(ip-1) + 1
+        ied = dest_node%istack_internal_smp(ip)
 !
         do inod = ist, ied
           igh(1:3) = org_blk%iblock_tgt_node(inod,1:3)
@@ -147,7 +151,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine search_node_in_all_element(my_rank_2nd, error_level,   &
-     &          org_node, org_ele)
+     &          org_node, org_ele, dest_node)
 !
       integer(kind = kint), intent(in) :: my_rank_2nd
       real(kind = kreal), intent(in) :: error_level
@@ -155,13 +159,15 @@
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
 !
+      type(node_data), intent(in) :: dest_node
+!
       integer(kind = kint) :: ip, ist, ied, inod, jele
       integer(kind = kint), parameter :: iflag_message = 1
 !
 !
       do ip = 1, np_smp
-        ist = node1%istack_internal_smp(ip-1) + 1
-        ied = node1%istack_internal_smp(ip)
+        ist = dest_node%istack_internal_smp(ip-1) + 1
+        ied = dest_node%istack_internal_smp(ip)
 !
         do inod = ist, ied
 !
@@ -188,18 +194,20 @@
 !-----------------------------------------------------------------------
 !
       subroutine giveup_to_search_element(my_rank_2nd, error_level,     &
-     &          inod_next_stack_4_node, org_node, org_ele)
+     &          inod_next_stack_4_node, org_node, org_ele, dest_node)
 !
       use m_element_id_4_node
 !
+      type(node_data), intent(in) :: org_node
+      type(element_data), intent(in) :: org_ele
+!
+      type(node_data), intent(in) :: dest_node
+!
       integer(kind = kint), intent(in)                                  &
-     &                     :: inod_next_stack_4_node(0:node1%numnod)
+     &                 :: inod_next_stack_4_node(0:dest_node%numnod)
 !
       integer(kind = kint), intent(in) :: my_rank_2nd
       real(kind = kreal), intent(in) :: error_level
-!
-      type(node_data), intent(in) :: org_node
-      type(element_data), intent(in) :: org_ele
 !
       integer(kind = kint) :: ip, ist, ied, inod, jele
       integer(kind = kint) :: kst, ked
@@ -207,8 +215,8 @@
 !
 !
       do ip = 1, np_smp
-        ist = node1%istack_internal_smp(ip-1) + 1
-        ied = node1%istack_internal_smp(ip)
+        ist = dest_node%istack_internal_smp(ip-1) + 1
+        ied = dest_node%istack_internal_smp(ip)
 !
         do inod = ist, ied
 !

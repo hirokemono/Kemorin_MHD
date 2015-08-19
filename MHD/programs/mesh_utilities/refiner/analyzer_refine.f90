@@ -159,12 +159,12 @@
         call allocate_type_comm_tbl_item(refined_fem%mesh%nod_comm)
 !
         write(*,*) 's_set_refined_position'
-        call s_set_refined_position
+        call s_set_refined_position(node1, ele1, surf1, edge1)
 !
         refined_fem%mesh%nod_comm%num_neib = 0
 !
         write(*,*) 's_refined_nod_2_mesh_data'
-        call s_refined_nod_2_mesh_data(refined_fem%mesh%node)
+        call s_refined_nod_2_mesh_data(node1, refined_fem%mesh%node)
 !
 !
         call s_const_refined_connectivity

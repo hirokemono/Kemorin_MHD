@@ -3,8 +3,8 @@
 !
 !     written by H. Matsui on Sep., 2007
 !
-!      subroutine increase_overlapping(NP, n_overlap, i_sleeve_ele,     &
-!     &          included_ele)
+!!      subroutine increase_overlapping(Ndomain, numnod, ele,           &
+!!     &           n_overlap, i_sleeve_ele, included_ele)
 !
       module increase_overlap
 !
@@ -34,35 +34,37 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine increase_overlapping(NP, n_overlap, i_sleeve_ele,      &
-     &          included_ele)
+      subroutine increase_overlapping(Ndomain, numnod, ele,             &
+     &           n_overlap, i_sleeve_ele, included_ele)
 !
-      use m_geometry_data
+      use t_geometry_data
       use m_domain_group_4_partition
 !
-      integer(kind = kint), intent(in) :: NP
+      type(element_data), intent(in) :: ele
+      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: Ndomain
       integer(kind = kint), intent(in) :: n_overlap, i_sleeve_ele
       type(near_mesh), intent(inout) :: included_ele
 !
       integer(kind= kint) :: ip, inum, icel
 !
 !
-      included_ele%ntot = included_ele%istack_nod(NP)
+      included_ele%ntot = included_ele%istack_nod(Ndomain)
       near_ele_tmp%ntot = included_ele%ntot
-      call alloc_num_4_near_nod(NP, near_ele_tmp)
+      call alloc_num_4_near_nod(Ndomain, near_ele_tmp)
       call alloc_near_element(near_ele_tmp)
 !
-      allocate( iflag_nod(node1%numnod) )
-      allocate( iflag_ele(ele1%numele) )
-      allocate( item_tmp_e(ele1%numele) )
+      allocate( iflag_nod(numnod) )
+      allocate( iflag_ele(ele%numele) )
+      allocate( item_tmp_e(ele%numele) )
 !
       iflag_nod = 0
       iflag_ele = 0
       item_tmp_e = 0
-      do ip= 1, NP
+      do ip= 1, Ndomain
         call mark_extented_overlap                                      &
-     &     (ip, n_overlap, i_sleeve_ele, node1%numnod,                  &
-     &      ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%nodelm,         &
+     &     (ip, n_overlap, i_sleeve_ele, numnod,                        &
+     &      ele%numele, ele%nnod_4_ele, ele%ie, ele%nodelm,             &
      &      included_ele%ntot, included_ele%istack_nod,                 &
      &      included_ele%id_near_nod, nnod_s_domin, IGROUP_nod)
 !
@@ -85,7 +87,7 @@
           inum = near_ele_tmp%istack_nod(ip-1) + icel
           near_ele_tmp%id_near_nod(inum) = item_tmp_e(icel)
         end do
-        near_ele_tmp%ntot = near_ele_tmp%istack_nod(NP)
+        near_ele_tmp%ntot = near_ele_tmp%istack_nod(Ndomain)
 !
         write(*,*) 'ip, nele_subdomain',                                &
      &             ip, nele_subdomain, near_ele_tmp%istack_nod(ip)
@@ -98,7 +100,7 @@
 !
       included_ele%nmax = 0
       included_ele%nmin = near_ele_tmp%ntot
-      do ip= 1, NP
+      do ip= 1, Ndomain
         included_ele%istack_nod(ip) = near_ele_tmp%istack_nod(ip)
         included_ele%num_nod(ip) = included_ele%istack_nod(ip)          &
      &                             - included_ele%istack_nod(ip-1)
@@ -112,7 +114,7 @@
       call dealloc_near_node(included_ele)
       call alloc_near_element(included_ele)
 !
-      do inum = 1, included_ele%istack_nod(NP)
+      do inum = 1, included_ele%istack_nod(Ndomain)
         included_ele%id_near_nod(inum)                                  &
      &              = near_ele_tmp%id_near_nod(inum)
       end do

@@ -27,6 +27,7 @@
 !
       subroutine const_commute_filter_coefs(mom_nod)
 !
+      use m_geometry_data
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
       use t_filter_moments
@@ -38,7 +39,8 @@
       integer(kind = kint) :: inod, ierr
 !
 !
-      call init_4_cal_fileters
+      call init_4_cal_fileters(node1%numnod, node1%internal_node,       &
+     &    ele1%numele)
 !
       write(70+my_rank,*) ' Best condition for filter'
 !
@@ -78,6 +80,7 @@
 !
       subroutine set_simple_filter(dxidxs, mom_nod)
 !
+      use m_geometry_data
       use m_ctl_params_4_gen_filter
       use t_filter_dxdxi
       use t_filter_moments
@@ -91,11 +94,12 @@
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !
 !
-      call init_4_cal_fileters
+      call init_4_cal_fileters(node1%numnod, node1%internal_node,       &
+     &    ele1%numele)
 !
       i_exp_level_1nod_weight = maximum_neighbour
       do inod = inod_start_filter, inod_end_filter
-        call set_simple_filter_nod_by_nod(inod, dxidxs%dx_nod)
+        call set_simple_filter_nod_by_nod(node1, inod, dxidxs%dx_nod)
 !
         nnod_near_nod_weight(inod) = nnod_near_1nod_weight
         call cal_filter_moms_each_nod_type(inod, mom_nod)
@@ -107,6 +111,7 @@
 !
       subroutine set_simple_fluid_filter(dxidxs, mom_nod)
 !
+      use m_geometry_data
       use m_ctl_params_4_gen_filter
       use t_filter_dxdxi
       use t_filter_moments
@@ -127,7 +132,7 @@
       i_exp_level_1nod_weight = maximum_neighbour
       do inod = inod_start_filter, inod_end_filter
         call set_simple_fl_filter_nod_by_nod                            &
-     &     (inod, dxidxs%dx_nod, mom_nod)
+     &     (node1, inod, dxidxs%dx_nod, mom_nod)
       end do
 !
       end subroutine set_simple_fluid_filter

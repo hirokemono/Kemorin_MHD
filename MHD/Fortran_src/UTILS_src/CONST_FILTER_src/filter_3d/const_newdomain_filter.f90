@@ -1,14 +1,19 @@
 !
 !      module const_newdomain_filter
 !
-      module const_newdomain_filter
-!
 !      modified by H. Matsui on Apr., 2008
+!
+!!      subroutine marking_used_node_4_filtering                        &
+!!     &         (ip2, ifile_type, node, numele)
+!!      subroutine trans_filter_4_new_domains                           &
+!!     &         (ip2, ifile_type, node, numele)
+!
+      module const_newdomain_filter
 !
       use m_precision
 !
       use calypso_mpi
-      use m_geometry_data
+      use t_geometry_data
       use m_read_mesh_data
       use m_filter_func_4_sorting
       use m_filter_coefs
@@ -21,19 +26,18 @@
 !
       implicit none
 !
-!      subroutine marking_used_node_4_filtering(ip2, ifile_type)
-!
-!      subroutine trans_filter_4_new_domains(ip2, ifile_type)
-!
 !------------------------------------------------------------------
 !
       contains
 !
 !------------------------------------------------------------------
 !
-      subroutine marking_used_node_4_filtering(ip2, ifile_type)
+      subroutine marking_used_node_4_filtering                          &
+     &         (ip2, ifile_type, node, numele)
 !
       integer(kind = kint), intent(in) :: ip2, ifile_type
+      integer(kind = kint), intent(inout) :: numele
+      type(node_data), intent(inout) :: node
       integer(kind = kint) :: ip, my_rank
 !
 !
@@ -44,32 +48,36 @@
 !
         mesh_file_head = mesh_file_head
         call sel_read_geometry_size(my_rank)
-        call copy_node_geometry_from_IO(node1)
+        call copy_node_geometry_from_IO(node)
         call deallocate_neib_domain_IO
 !
-        ele1%numele = numele_dummy
+        numele = numele_dummy
 !
 !     read filtering information
 !
-        call read_original_filter_coefs(ifile_type, my_rank)
+        call read_original_filter_coefs(ifile_type, my_rank,            &
+     &      node%numnod, numele)
 !
         call nod_marking_by_filtering_data                              &
-     &     (node1%numnod, node1%internal_node, node1%inod_global,       &
-     &      node1%xx, ip2)
+     &     (node%numnod, node%internal_node, node%inod_global, node%xx, &
+     &      ip2)
 !
         call deallocate_whole_filter_coefs
         call deallocate_fluid_filter_coefs
 !
-        call deallocate_node_geometry_base(node1)
+        call deallocate_node_geometry_base(node)
       end do
 !
       end subroutine marking_used_node_4_filtering
 !
 !------------------------------------------------------------------
 !
-      subroutine trans_filter_4_new_domains(ip2, ifile_type)
+      subroutine trans_filter_4_new_domains                             &
+     &         (ip2, ifile_type, node, numele)
 !
       integer(kind = kint), intent(in) :: ip2, ifile_type
+      integer(kind = kint), intent(inout) :: numele
+      type(node_data), intent(inout) :: node
       integer(kind = kint) :: ip, my_rank, icou_st
 !
 !
@@ -78,23 +86,24 @@
         my_rank = ip - 1
 !
         call sel_read_geometry_size(my_rank)
-        call copy_node_geometry_from_IO(node1)
+        call copy_node_geometry_from_IO(node)
         call deallocate_neib_domain_IO
 !
-        ele1%numele = numele_dummy
+        numele = numele_dummy
 !
 !     read filtering information
 !
-        call read_original_filter_coefs(ifile_type, my_rank)
+        call read_original_filter_coefs(ifile_type, my_rank,            &
+     &      node%numnod, numele)
 !
         call set_filter_for_new_each_domain                             &
-     &     (node1%numnod, node1%internal_node, node1%inod_global,       &
+     &     (node%numnod, node%internal_node, node%inod_global,          &
      &      ip2, icou_st)
 !
         call deallocate_whole_filter_coefs
         call deallocate_fluid_filter_coefs
 !
-        call deallocate_node_geometry_base(node1)
+        call deallocate_node_geometry_base(node)
       end do
 !
       end subroutine trans_filter_4_new_domains

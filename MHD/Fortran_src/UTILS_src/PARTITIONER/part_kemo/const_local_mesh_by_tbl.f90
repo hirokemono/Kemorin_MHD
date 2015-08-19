@@ -4,25 +4,27 @@
 !      Written by H. Matsui on Sep., 2007
 !
 !      subroutine s_const_local_mesh_by_tbl                             &
-!     &         (ele_grp, n_domain, included_ele)
+!     &          (numnod, ele, ele_grp, n_domain, included_ele)
 !
 !      subroutine const_local_node_by_near_tbl(n_domain)
 !      subroutine const_local_ele_by_near_tbl                           &
 !     &         (ele_grp, n_domain, included_ele)
-!      subroutine const_local_surf_by_near_tbl(n_domain)
-!      subroutine const_local_edge_by_near_tbl(n_domain)
+!      subroutine const_local_surf_by_near_tbl(ele, surf, n_domain)
+!      subroutine const_local_edge_by_near_tbl(ele, edge, n_domain)
 !
       module const_local_mesh_by_tbl
 !
       use m_precision
       use m_constants
 !
+      use t_geometry_data
       use cal_minmax_and_stacks
       use set_internals_by_group_tbl
       use set_subdomain_by_group_tbl
 !
       implicit none
 !
+      private :: const_local_node_by_near_tbl
       private :: const_local_ele_by_near_tbl
 !
 !   --------------------------------------------------------------------
@@ -32,28 +34,32 @@
 !   --------------------------------------------------------------------
 !
       subroutine s_const_local_mesh_by_tbl                              &
-     &          (ele_grp, n_domain, included_ele)
+     &          (numnod, ele, ele_grp, n_domain, included_ele)
 !
       use t_group_data
       use t_near_mesh_id_4_node
 !
       type(group_data), intent(in) :: ele_grp
+      integer(kind = kint), intent(in) :: numnod
+      type(element_data), intent(in) :: ele
       integer(kind = kint), intent(in) :: n_domain
       type(near_mesh), intent(inout) :: included_ele
 !
 !
-      call const_local_ele_by_near_tbl(ele_grp, n_domain, included_ele)
-      call const_local_node_by_near_tbl(n_domain)
+      call const_local_ele_by_near_tbl                                  &
+     &   (numnod, ele%numele, ele_grp, n_domain, included_ele)
+      call const_local_node_by_near_tbl(ele, n_domain)
 !
       end subroutine s_const_local_mesh_by_tbl
 !
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine const_local_node_by_near_tbl(n_domain)
+      subroutine const_local_node_by_near_tbl(ele, n_domain)
 !
       use m_internal_4_partitioner
 !
+      type(element_data), intent(in) :: ele
       integer(kind = kint), intent(in) :: n_domain
 !
 !
@@ -70,7 +76,7 @@
 !C
 !C-- count INTERIOR and EXTERIOR NODEs
 
-      call count_subdomain_nod_by_tbl(n_domain)
+      call count_subdomain_nod_by_tbl(ele, n_domain)
 !
       call s_cal_minmax_and_stacks(n_domain, numnod_4_subdomain, izero, &
      &    istack_numnod_sub, ntot_numnod_sub,                           &
@@ -79,22 +85,22 @@
 !C-- define INTERIOR and EXTERIOR NODEs
 !
       call allocate_inod_4_subdomain
-      call set_subdomain_nod_by_tbl(n_domain)
+      call set_subdomain_nod_by_tbl(ele, n_domain)
 !
       end subroutine const_local_node_by_near_tbl
 !
 !   --------------------------------------------------------------------
 !
       subroutine const_local_ele_by_near_tbl                            &
-     &         (ele_grp, n_domain, included_ele)
+     &         (numnod, numele, ele_grp, n_domain, included_ele)
 !
-      use m_geometry_data
       use m_internal_4_partitioner
       use t_group_data
       use t_near_mesh_id_4_node
       use ordering_by_element_group
 !
       type(group_data), intent(in) :: ele_grp
+      integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: n_domain
       type(near_mesh), intent(inout) :: included_ele
 !
@@ -111,7 +117,7 @@
 !
       call allocate_iele_4_subdomain
 !
-      call set_local_element_table(node1%numnod, ele1%numele,           &
+      call set_local_element_table(numnod, numele,                      &
      &    ele_grp, n_domain, included_ele%ntot,                         &
      &    included_ele%istack_nod, included_ele%id_near_nod)
 !
@@ -132,10 +138,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_local_surf_by_near_tbl(n_domain)
+      subroutine const_local_surf_by_near_tbl(ele, surf, n_domain)
 !
+      use t_surface_data
       use m_internal_4_partitioner
 !
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       integer(kind = kint), intent(in) :: n_domain
 !
 !
@@ -143,7 +152,8 @@
 !C
 !C-- count INTERIOR and EXTERIOR surfaces
 !
-      call count_subdomain_surf_by_tbl(n_domain)
+      call count_subdomain_surf_by_tbl(ele%numele, surf%isf_4_ele,      &
+     &    n_domain)
 !
       call s_cal_minmax_and_stacks(n_domain, numsurf_4_subdomain,       &
      &    izero, istack_numsurf_sub, ntot_numsurf_sub,                  &
@@ -152,7 +162,8 @@
 !C
 !C-- define INTERIOR and EXTERIOR surfaces
       call allocate_isurf_4_subdomain
-      call set_subdomain_surf_by_tbl(n_domain)
+      call set_subdomain_surf_by_tbl(ele%numele, surf%isf_4_ele,        &
+     &    n_domain)
 !C
 !C-- count INTERIOR and surfaces
 
@@ -171,10 +182,13 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine const_local_edge_by_near_tbl(n_domain)
+      subroutine const_local_edge_by_near_tbl(ele, edge, n_domain)
 !
+      use t_edge_data
       use m_internal_4_partitioner
 !
+      type(element_data), intent(in) :: ele
+      type(edge_data), intent(in) :: edge
       integer(kind = kint), intent(in) :: n_domain
 !
 !
@@ -182,7 +196,8 @@
 !C
 !C-- count INTERIOR and EXTERIOR edges
 !
-      call count_subdomain_edge_by_tbl(n_domain)
+      call count_subdomain_edge_by_tbl(ele%numele, edge%iedge_4_ele,    &
+     &    n_domain)
 !
       call s_cal_minmax_and_stacks(n_domain, numedge_4_subdomain,       &
      &    izero, istack_numedge_sub, ntot_numedge_sub,                  &
@@ -191,7 +206,8 @@
 !C
 !C-- define INTERIOR and EXTERIOR edges
       call allocate_iedge_4_subdomain
-      call set_subdomain_edge_by_tbl(n_domain)
+      call set_subdomain_edge_by_tbl(ele%numele, edge%iedge_4_ele,      &
+     &    n_domain)
 !C
 !C-- count INTERIOR edges
 

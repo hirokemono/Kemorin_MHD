@@ -3,13 +3,14 @@
 !
 !      Written by H. Matsui on May, 2008
 !
-!      subroutine read_original_filter_coefs(ifile_type, my_rank)
+!!      subroutine read_original_filter_coefs                           &
+!!     &         (ifile_type, my_rank, numnod, numele)
 !
       module read_org_filter_coefs
 !
       use m_precision
 !
-      use m_geometry_data
+      use t_geometry_data
       use m_ctl_param_newdom_filter
       use set_parallel_file_name
       use filter_IO_for_newdomain
@@ -23,19 +24,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_original_filter_coefs(ifile_type, my_rank)
+      subroutine read_original_filter_coefs                             &
+     &         (ifile_type, my_rank, numnod, numele)
 !
       use m_filter_file_names
       use m_filter_coefs
       use m_read_mesh_data
       use m_comm_data_IO
 !
-      integer(kind = kint), intent(in) :: ifile_type
       integer(kind = kint), intent(in) :: my_rank
+      integer(kind = kint), intent(in) :: ifile_type
+      integer(kind = kint), intent(in) :: numnod, numele
       character(len=kchara) :: file_name
 !
 !
-      call allocate_nod_ele_near_1nod(node1%numnod, ele1%numele)
+      call allocate_nod_ele_near_1nod(numnod, numele)
 !
       call add_int_suffix(my_rank, org_filter_coef_head, file_name)
 !

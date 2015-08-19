@@ -3,10 +3,10 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!      subroutine init_4_cal_fileters
+!      subroutine init_4_cal_fileters(numnod, internal_node, numele)
 !      subroutine finalize_4_cal_fileters
 !      subroutine resize_matrix_size_gen_filter
-!      subroutine s_expand_filter_area_4_1node(inod)
+!      subroutine s_expand_filter_area_4_1node(numnod, inod, ele)
 !      subroutine copy_next_nod_ele_4_each(inod, numnod)
 !
       module expand_filter_area_4_1node
@@ -28,9 +28,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_4_cal_fileters
+      subroutine init_4_cal_fileters(numnod, internal_node, numele)
 !
-      use m_geometry_data
       use m_reference_moments
       use m_matrix_4_filter
       use m_filter_file_names
@@ -42,19 +41,21 @@
       use const_RHS_assemble_list
       use delete_small_weighting
 !
+      integer(kind = kint), intent(in) :: numnod, internal_node, numele
+!
 !
       if (inod_end_filter .eq. -1) then
-        inod_end_filter = node1%internal_node
+        inod_end_filter = internal_node
       end if
       nnod_filetering = inod_end_filter - inod_start_filter + 1
 !
-      call allocate_nod_ele_near_1nod(node1%numnod, ele1%numele)
-      call allocate_nod_ele_1nod_tmp(node1%numnod, ele1%numele)
-      call allocate_wk_exp_ele_nod_each(node1%numnod, ele1%numele)
+      call allocate_nod_ele_near_1nod(numnod, numele)
+      call allocate_nod_ele_1nod_tmp(numnod, numele)
+      call allocate_wk_exp_ele_nod_each(numnod, numele)
 !
       max_mat_size =      0
       nmax_num_ele_1nod = 0
-      call allocate_mat_num_weight(node1%numnod)
+      call allocate_mat_num_weight(numnod)
       call allocate_matrix_4_filter
       call allocate_sk_filter
 !
@@ -65,10 +66,10 @@
       call allocate_array_4_crs_item
 !
       if (iflag_ordering_list .gt. 0) then
-        call allocate_dist_ratio(node1%numnod)
+        call allocate_dist_ratio(numnod)
       end if
 !
-      call allocate_tmp_4_filter_sort(node1%numnod)
+      call allocate_tmp_4_filter_sort(numnod)
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
         write(filter_coef_code,'(a)') '!'
@@ -89,7 +90,6 @@
 !
       subroutine init_4_cal_fluid_fileters
 !
-      use m_geometry_data
       use m_filter_file_names
       use m_field_file_format
       use m_next_node_id_4_node
@@ -185,41 +185,43 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_expand_filter_area_4_1node(inod)
+      subroutine s_expand_filter_area_4_1node(numnod, inod, ele)
 !
+      use t_geometry_data
       use m_geometry_data
       use m_element_id_4_node
       use add_nodes_elems_4_each_nod
       use ordering_by_filtering_size
 !
-      integer(kind = kint) :: inod
+      type(element_data), intent(in) :: ele
+      integer(kind = kint), intent(in) :: numnod, inod
 !
 !
       nnod_near_1nod_filter = nnod_near_1nod_weight
       nele_near_1nod_filter = nele_near_1nod_weight
 !
       call expand_near_ele_4_each_nod                                   &
-     &   (node1%numnod, ele1%numele, ele_4_nod1%ntot,                   &
+     &   (numnod, ele%numele, ele_4_nod1%ntot,                          &
      &    ele_4_nod1%istack_4_node, ele_4_nod1%iele_4_node,             &
      &    nnod_near_1nod_filter, inod_near_1nod_weight,                 &
      &    nele_near_1nod_filter, nele_near_1nod_weight,                 &
      &    iele_near_1nod_weight)
 !
       call add_nod_4_grp_each_nod                                       &
-     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,          &
+     &   (numnod, ele%numele, ele%nnod_4_ele, ele%ie,                   &
      &    nele_near_1nod_weight, iele_near_1nod_weight,                 &
      &    nnod_near_1nod_filter, nnod_near_1nod_weight,                 &
      &    inod_near_1nod_weight, iweight_1nod_weight,                   &
      &    idist_from_center_1nod)
 !
       if     (iflag_ordering_list .eq. 0) then
-        call sort_added_nod_4_each_nod(node1%numnod,                    &
+        call sort_added_nod_4_each_nod(numnod,                          &
      &      nnod_near_1nod_filter, nnod_near_1nod_weight,               &
      &      inod_near_1nod_weight, iweight_1nod_weight)
       else if(iflag_ordering_list .eq. 1) then
-        call filter_ordering_by_distance(inod)
+        call filter_ordering_by_distance(node1, inod)
       else if(iflag_ordering_list .eq. 2) then
-        call filter_ordering_by_dist_ratio(inod)
+        call filter_ordering_by_dist_ratio(node1, inod)
       end if
 !
       end subroutine s_expand_filter_area_4_1node

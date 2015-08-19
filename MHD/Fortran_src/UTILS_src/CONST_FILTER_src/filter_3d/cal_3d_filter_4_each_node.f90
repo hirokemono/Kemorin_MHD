@@ -23,6 +23,7 @@
 !
       subroutine const_filter_mat_each_nod(inod, num_fixed_point, ierr)
 !
+      use m_geometry_data
       use m_matrix_4_filter
       use set_constant_filter_coefs
       use copy_moments_2_matrix
@@ -37,7 +38,7 @@
       ierr = 0
 !
       if ( num_fixed_point .gt. 0 ) then
-        call s_set_constant_filter_coefs(inod, num_fixed_point)
+        call s_set_constant_filter_coefs(node1, inod, num_fixed_point)
       end if
 !
       call set_filter_moments_on_node(inod, num_fixed_point )

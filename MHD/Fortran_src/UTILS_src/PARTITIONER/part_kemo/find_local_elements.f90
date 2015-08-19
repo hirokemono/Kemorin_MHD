@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on Sep., 2007
 !
-!      subroutine CRE_LOCAL_DATA(NP, included_ele)
+!      subroutine CRE_LOCAL_DATA(Ndomain, included_ele)
 !
       module find_local_elements
 !
@@ -22,30 +22,31 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine CRE_LOCAL_DATA(NP, included_ele)
+      subroutine CRE_LOCAL_DATA(Ndomain, numnod, ele, included_ele)
 !
-      use m_geometry_data
+      use t_geometry_data
       use t_near_mesh_id_4_node
       use m_domain_group_4_partition
 !
-      integer(kind = kint), intent(in) :: NP
+      integer(kind = kint), intent(in) :: Ndomain, numnod
+      type(element_data), intent(in) :: ele
       type(near_mesh), intent(inout) :: included_ele
 !
 !
-      call alloc_num_4_near_nod(NP, included_ele)
-      allocate (imark_ele(ele1%numele))
+      call alloc_num_4_near_nod(Ndomain, included_ele)
+      allocate (imark_ele(ele%numele))
 !
       call count_ele_in_subdomain                                       &
-     &   (NP, nnod_s_domin, IGROUP_nod, node1%numnod,                   &
-     &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%nodelm,           &
+     &   (Ndomain, nnod_s_domin, IGROUP_nod, numnod,                    &
+     &    ele%numele, ele%nnod_4_ele, ele%ie, ele%nodelm,               &
      &    included_ele%ntot, included_ele%num_nod,                      &
      &    included_ele%istack_nod)
 !
       call alloc_near_element(included_ele)
 !
       call set_ele_in_subdomain                                         &
-     &   (NP, nnod_s_domin, IGROUP_nod, node1%numnod,                   &
-     &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%nodelm,           &
+     &   (Ndomain, nnod_s_domin, IGROUP_nod, numnod,                    &
+     &    ele%numele, ele%nnod_4_ele, ele%ie, ele%nodelm,               &
      &    included_ele%ntot, included_ele%istack_nod,                   &
      &    included_ele%id_near_nod)
 
@@ -56,11 +57,12 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_ele_in_subdomain(NP, nnod_s_domin, IGROUP_nod,   &
+      subroutine count_ele_in_subdomain                                 &
+     &         (Ndomain, nnod_s_domin, IGROUP_nod,                      &
      &          numnod, numele, nnod_4_ele, ie, nodelm,                 &
      &          ntot_ele_near_nod, nele_near_nod, iele_stack_near_nod)
 !
-      integer(kind = kint), intent(in) :: NP
+      integer(kind = kint), intent(in) :: Ndomain
       integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer(kind = kint), intent(in) :: nodelm(numele)
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
@@ -77,7 +79,7 @@
 !
 !
       iele_stack_near_nod(0)= 0
-      do ip= 1, NP
+      do ip= 1, Ndomain
 !
         imark_ele(1:numele)= 0
         do icel= 1, numele
@@ -93,17 +95,18 @@
         iele_stack_near_nod(ip) = iele_stack_near_nod(ip-1)             &
      &                           + nele_near_nod(ip)
       end do
-      ntot_ele_near_nod = iele_stack_near_nod(NP)
+      ntot_ele_near_nod = iele_stack_near_nod(Ndomain)
 !
       end subroutine count_ele_in_subdomain
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ele_in_subdomain(NP, nnod_s_domin, IGROUP_nod,     &
+      subroutine set_ele_in_subdomain                                   &
+     &         (Ndomain, nnod_s_domin, IGROUP_nod,                      &
      &          numnod, numele, nnod_4_ele, ie, nodelm,                 &
      &          ntot_ele_near_nod, iele_stack_near_nod, iele_near_nod)
 !
-      integer(kind = kint), intent(in) :: NP
+      integer(kind = kint), intent(in) :: Ndomain
       integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       integer(kind = kint), intent(in) :: nodelm(numele)
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
@@ -120,7 +123,7 @@
       integer(kind = kint) :: ip, icel, in, k, icou
 !
 !
-      do ip= 1, NP
+      do ip= 1, Ndomain
         imark_ele(1:numele)= 0
         do icel= 1, numele
           do k= 1, nodelm(icel)

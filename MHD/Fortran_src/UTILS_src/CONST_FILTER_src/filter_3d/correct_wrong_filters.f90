@@ -51,7 +51,8 @@
         inod_end_filter = node1%internal_node
       end if
 !
-      call init_4_cal_fileters
+      call init_4_cal_fileters(node1%numnod, node1%internal_node,       &
+     &    ele1%numele)
 !
       write(70+my_rank,*) ' Best condition for filter'
 !
@@ -84,7 +85,8 @@
             call const_filter_func_nod_by_nod(inod, ierr)
           else if(iflag_tgt_filter_type .ge. -4                         &
      &      .and. iflag_tgt_filter_type.le. -2) then
-            call set_simple_filter_nod_by_nod(inod, dxidxs%dx_nod)
+            call set_simple_filter_nod_by_nod                           &
+     &         (node1, inod, dxidxs%dx_nod)
           end if
 !
           nnod_near_nod_weight(inod) = nnod_near_1nod_weight
@@ -150,8 +152,8 @@
             call const_fluid_filter_nod_by_nod(inod, ierr)
           else if(iflag_tgt_filter_type .ge. -4                         &
      &      .and. iflag_tgt_filter_type.le. -2) then
-            call set_simple_fl_filter_nod_by_nod(inod, dxidxs%dx_nod,   &
-     &          mom_nod)
+            call set_simple_fl_filter_nod_by_nod(node1, inod,           &
+     &          dxidxs%dx_nod, mom_nod)
           end if
 !
         end if

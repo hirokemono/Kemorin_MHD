@@ -31,6 +31,7 @@
 !
 !
       use m_2nd_pallalel_vector
+      use m_geometry_data
       use cal_jacobian
 !
       use input_control_gen_table
@@ -74,7 +75,7 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_serach_data_4_dest'
-      call s_set_serach_data_4_dest
+      call s_set_serach_data_4_dest(node1)
 !
       end subroutine init_make_interpolate_table
 !

@@ -29,6 +29,7 @@
 !
       use t_geometry_data
 !
+      use m_geometry_data
       use m_internal_4_partitioner
       use m_filter_file_names
       use m_field_file_format
@@ -47,7 +48,8 @@
 !
         call deallocate_neib_domain_IO
 !
-        call marking_used_node_4_filtering(ip2, ifmt_3d_filter)
+        call marking_used_node_4_filtering                              &
+     &     (ip2, ifmt_3d_filter, node1, ele1%numele)
 !
         call set_num_globalnod_4_newdomain(ip2, new_node)
 !

@@ -57,8 +57,9 @@
      &          my_rank_org, inod, jele, error_level, iflag_message,    &
      &          iflag_org_tmp)
 !
-      use m_ctl_params_4_gen_table
       use calypso_mpi
+      use m_geometry_data
+      use m_ctl_params_4_gen_table
       use m_connect_hexa_2_tetra
       use subroutines_4_search_table
       use cal_local_position_by_tetra
@@ -87,7 +88,7 @@
 !
       ierr_inter = 1
 !
-      call copy_target_local_vector(inod, x_target)
+      call copy_target_local_vector(node1, inod, x_target)
       call copy_position_2_2nd_local_ele(new_node, new_ele,             &
      &    jele, x_local_ele)
 !

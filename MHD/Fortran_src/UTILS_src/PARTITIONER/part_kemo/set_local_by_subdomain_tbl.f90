@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on Aug., 2007
 !
-!      subroutine set_local_node(ip, new_node)
-!      subroutine set_local_element(ip, new_ele)
+!      subroutine set_local_node(ip, org_node, new_node)
+!      subroutine set_local_element(ip, org_ele, new_ele)
 !      subroutine set_local_surface(ip, new_surf)
 !      subroutine set_local_edge(ip, new_edge)
 !
@@ -17,7 +17,6 @@
 !
       module set_local_by_subdomain_tbl
 !
-      use m_geometry_data
       use m_internal_4_partitioner
       use m_domain_group_4_partition
 !
@@ -29,11 +28,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_local_node(ip, new_node)
+      subroutine set_local_node(ip, org_node, new_node)
 !
       use t_geometry_data
 !
       integer(kind = kint), intent(in) :: ip
+      type(node_data), intent(in) :: org_node
       type(node_data), intent(inout) :: new_node
 !
       integer(kind = kint) :: ist, inum, inod
@@ -43,7 +43,7 @@
       do inum = 1, numnod_4_subdomain(ip)
         inod = inod_4_subdomain(inum+ist)
         new_node%inod_global(inum) = inod
-        new_node%xx(inum,1:3) = node1%xx(inod,1:3)
+        new_node%xx(inum,1:3) = org_node%xx(inod,1:3)
 !
         inod_local_part(inod)= inum
       end do
@@ -52,11 +52,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_local_element(ip, new_ele)
+      subroutine set_local_element(ip, org_ele, new_ele)
 !
       use t_geometry_data
 !
       integer(kind = kint), intent(in) :: ip
+      type(element_data), intent(in) :: org_ele
       type(element_data), intent(inout) :: new_ele
 !
       integer(kind = kint) :: ist, inum, iele
@@ -66,8 +67,8 @@
       do inum = 1, numele_4_subdomain(ip)
         iele = iele_4_subdomain(inum+ist)
         new_ele%iele_global(inum) = iele
-        new_ele%nodelm(inum) = ele1%nodelm(iele)
-        new_ele%elmtyp(inum) = ele1%elmtyp(iele)
+        new_ele%nodelm(inum) = org_ele%nodelm(iele)
+        new_ele%elmtyp(inum) = org_ele%elmtyp(iele)
 !
         iele_local_part(iele)= inum 
       end do
