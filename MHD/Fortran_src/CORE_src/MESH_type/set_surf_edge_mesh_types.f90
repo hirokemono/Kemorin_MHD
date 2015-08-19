@@ -89,14 +89,14 @@
 !
       subroutine set_surf_geometry_type(mesh, surf_mesh)
 !
-      use cal_mesh_position_type
+      use cal_mesh_position
 !
       type(mesh_geometry), intent(in) :: mesh
       type(surface_geometry), intent(inout) :: surf_mesh
 !
 !
       call allocate_surface_geom_type(surf_mesh%surf)
-      call set_center_of_surf_type(mesh%node, surf_mesh%surf)
+      call set_center_of_surface(mesh%node, surf_mesh%surf)
 !
       end subroutine set_surf_geometry_type
 !
@@ -104,14 +104,14 @@
 !
       subroutine set_edge_geometry_type(mesh, edge_mesh)
 !
-      use cal_mesh_position_type
+      use cal_mesh_position
 !
       type(mesh_geometry), intent(in) :: mesh
       type(edge_geometry), intent(inout) :: edge_mesh
 !
 !
       call allocate_edge_geom_type(edge_mesh%edge)
-      call set_center_of_edge_type(mesh%node, edge_mesh%edge)
+      call set_center_of_edge(mesh%node, edge_mesh%edge)
 !
       end subroutine set_edge_geometry_type
 !

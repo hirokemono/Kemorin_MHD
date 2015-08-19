@@ -47,10 +47,9 @@
           call sel_read_mesh(my_rank)
           call set_mesh_data_types( MG_mesh(i_level) )
 !
-          call set_nnod_surf_by_eletype(MG_surf_mesh(i_level),          &
-     &          MG_mesh(i_level)%mesh%ele%nnod_4_ele)
-          call set_nnod_edge_by_eletype(MG_edge_mesh(i_level),          &
-     &          MG_mesh(i_level)%mesh%ele%nnod_4_ele)
+          call set_nnod_surf_edge_for_type                              &
+     &       (MG_surf_mesh(i_level), MG_edge_mesh(i_level),             &
+     &        MG_mesh(i_level)%mesh)
         else
           call alloc_zero_mesh_data( MG_mesh(i_level),                  &
      &        MG_surf_mesh(i_level), MG_edge_mesh(i_level))
@@ -154,7 +153,7 @@
       call allocate_ele_connect_type(mesh_info%mesh%ele)
 !
       call set_nnod_surf_edge_for_type(surf_mesh, edge_mesh,            &
-     &    mesh_info%mesh%ele%nnod_4_ele)
+     &    mesh_info%mesh)
 !
       end subroutine alloc_zero_mesh_data
 !

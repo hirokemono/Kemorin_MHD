@@ -90,6 +90,7 @@
       call allocate_sph_node_geometry(mesh%node)
       call allocate_ele_geometry_type(ele1)
 !
+      call deallocate_ele_connect_type(mesh%ele)
       call deallocate_node_geometry_type(mesh%node)
 !
       end subroutine set_geometry_data_from_type
@@ -141,21 +142,21 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine copy_element_connect_from_type(ele)
+      subroutine copy_element_connect_from_type(ele_org)
 !
       use m_geometry_constants
       use m_geometry_data
       use t_geometry_data
       use set_nnod_4_ele_by_type
 !
-      type(element_data), intent(inout) :: ele
+      type(element_data), intent(inout) :: ele_org
 !
 !
       integer(kind = kint) :: iele, k1
 !
 !
-      ele1%numele =       ele%numele
-      ele1%first_ele_type = ele%first_ele_type
+      ele1%numele =         ele_org%numele
+      ele1%first_ele_type = ele_org%first_ele_type
 !
       call set_3D_nnod_4_ele_by_type(ele1%first_ele_type,               &
      &    ele1%nnod_4_ele, surf1%nnod_4_surf, edge1%nnod_4_edge)
@@ -166,21 +167,19 @@
       do k1 = 1, ele1%nnod_4_ele
 !$omp do private(iele)
         do iele = 1, ele1%numele
-          ele1%ie(iele,k1) = ele%ie(iele,k1)
+          ele1%ie(iele,k1) = ele_org%ie(iele,k1)
         end do
 !$omp end do nowait
       end do
 !
 !$omp do
       do iele = 1, ele1%numele
-        ele1%iele_global(iele) = ele%iele_global(iele)
-        ele1%elmtyp(iele) =      ele%elmtyp(iele)
-        ele1%nodelm(iele) =      ele%nodelm(iele)
+        ele1%iele_global(iele) = ele_org%iele_global(iele)
+        ele1%elmtyp(iele) =      ele_org%elmtyp(iele)
+        ele1%nodelm(iele) =      ele_org%nodelm(iele)
       end do
 !$omp end do
 !$omp end parallel
-!
-      call deallocate_ele_connect_type(ele)
 !
       end subroutine copy_element_connect_from_type
 !

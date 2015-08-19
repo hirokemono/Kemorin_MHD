@@ -31,6 +31,7 @@
 !
       use m_finite_element_matrix
       use m_node_phys_address
+!      use m_surface_group_connect
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -44,7 +45,7 @@
 !
 !
 !      call check_surface_param_smp('cal_magnetic_field_pre start',     &
-!     &    my_rank, sf_grp1)
+!     &    my_rank, sf_grp1, sf_grp_nod1)
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         call cal_sgs_magne_induction
       end if

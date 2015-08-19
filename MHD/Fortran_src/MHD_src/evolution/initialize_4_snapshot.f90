@@ -43,7 +43,6 @@
       use m_check_subroutines
 !
       use const_mesh_info
-      use cal_mesh_position
       use count_whole_num_element
 !
       use cal_jacobian

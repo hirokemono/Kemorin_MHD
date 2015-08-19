@@ -7,9 +7,11 @@
 !!     &         (id_check, sf_grp, sf_grp_v)
 !!      subroutine check_center_of_surface_grp_sph                      &
 !!     &          (id_check, sf_grp, sf_grp_v)
-!      subroutine check_surface_param_smp(txt, id_check, sf_grp)
-!
-!       subroutine check_norm_surface_grp(id_check)
+!!       subroutine check_surface_param_smp                             &
+!!     &         (txt, id_check, sf_grp, sf_grp_nod)
+!!
+!!      subroutine check_norm_surface_grp                               &
+!!     &         (id_check, ele, sf_grp, sf_grp_v)
 !
       module check_surface_groups
 !
@@ -78,15 +80,17 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-       subroutine check_surface_param_smp(txt, id_check, sf_grp)
+       subroutine check_surface_param_smp                               &
+      &         (txt, id_check, sf_grp, sf_grp_nod)
 !
        use m_machine_parameter
        use t_group_data
-       use m_surface_group_connect
+       use t_surface_group_connect
 !
        integer(kind = kint), intent(in) :: id_check
        character(*), intent(in) :: txt
       type(surface_group_data), intent(in) :: sf_grp
+      type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
        integer(kind = kint) :: isurf, ist, ied
 !
@@ -95,7 +99,7 @@
        write(50+id_check,*) sf_grp%istack_grp(0:sf_grp%num_grp)
        write(50+id_check,*) 'inod_stack_sf_grp'
        write(50+id_check,*)                                             &
-     &     sf_grp_nod1%inod_stack_sf_grp(0:sf_grp%num_grp)
+     &     sf_grp_nod%inod_stack_sf_grp(0:sf_grp%num_grp)
 !
        write(50+id_check,*) 'isurf_grp_smp_stack'
        do isurf = 1, sf_grp%num_grp
@@ -104,20 +108,23 @@
          write(50+id_check,*) isurf, sf_grp%istack_grp_smp(ist:ied)
        end do
       write(50+id_check,*) 'isurf_nod_smp_stack'
+!
       call check_surf_nod_4_sheard_para                                 &
-     &   (id_check, sf_grp%num_grp, sf_grp_nod1)
+     &   (id_check, sf_grp%num_grp, sf_grp_nod)
 !
       end subroutine check_surface_param_smp
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_norm_surface_grp(id_check, sf_grp, sf_grp_v)
+      subroutine check_norm_surface_grp                                 &
+     &         (id_check, ele, sf_grp, sf_grp_v)
 !
-      use m_geometry_data
+      use t_geometry_data
       use t_group_data
       use t_surface_group_geometry
 !
       integer(kind = kint), intent(in) :: id_check
+      type(element_data), intent(in) :: ele
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_group_geometry), intent(in) :: sf_grp_v
 !
@@ -128,7 +135,7 @@
          iele = sf_grp%item_sf_grp(1,isurf)
          write(id_check,'(2i16, 1p6E25.15e3)') isurf, iele,             &
      &           sf_grp_v%vnorm_sf_grp(isurf,1:3),                      &
-     &           sf_grp_v%area_sf_grp(isurf), ele1%volume_ele(iele)
+     &           sf_grp_v%area_sf_grp(isurf), ele%volume_ele(iele)
        end do
 !
        end subroutine check_norm_surface_grp

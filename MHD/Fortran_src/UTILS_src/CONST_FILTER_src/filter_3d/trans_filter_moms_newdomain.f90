@@ -181,7 +181,7 @@
       newmesh%node%internal_node = internal_node_dummy
       call copy_ele_connect_from_IO(newmesh%ele)
       call set_nnod_surf_edge_for_type(new_surf_mesh, new_edge_mesh,    &
-     &    newmesh%ele%nnod_4_ele)
+     &    newmesh)
 !
 !    construct new filter table
 !

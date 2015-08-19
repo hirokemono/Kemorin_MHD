@@ -1,21 +1,21 @@
-!cal_mesh_position_type.f90
-!      module cal_mesh_position_type
+!cal_mesh_position.f90
+!      module cal_mesh_position
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine set_spherical_position_type(nod)
+!      subroutine set_spherical_position(nod)
 !        type(node_data), intent(inout) :: nod
-!      subroutine set_center_of_ele_type(nod, ele)
+!      subroutine set_center_of_element(nod, ele)
 !        type(node_data),    intent(in) :: nod
 !        type(element_data), intent(inout) :: ele
-!      subroutine set_center_of_surf_type(nod, surf)
+!      subroutine set_center_of_surface(nod, surf)
 !        type(node_data),    intent(in) :: nod
 !        type(surface_data), intent(inout) :: surf
-!      subroutine set_center_of_edge_type(nod, edge)
+!      subroutine set_center_of_edge(nod, edge)
 !        type(node_data), intent(in) :: nod
 !        type(edge_data), intent(inout) :: edge
 !
-      module cal_mesh_position_type
+      module cal_mesh_position
 !
       use m_precision
 !
@@ -27,7 +27,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_spherical_position_type(nod)
+      subroutine set_spherical_position(nod)
 !
       use t_geometry_data
       use coordinate_converter
@@ -38,11 +38,11 @@
        call position_2_sph(nod%numnod, nod%xx,                          &
      &     nod%rr, nod%theta, nod%phi, nod%a_r, nod%ss, nod%a_s)
 !
-      end subroutine set_spherical_position_type
+      end subroutine set_spherical_position
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_center_of_ele_type(nod, ele)
+      subroutine set_center_of_element(nod, ele)
 !
       use m_geometry_constants
       use t_geometry_data
@@ -68,11 +68,11 @@
      &    ele%r_ele, ele%theta_ele,   ele%phi_ele,                      &
      &    ele%ar_ele, ele%s_ele, ele%as_ele)
 !
-      end subroutine set_center_of_ele_type
+      end subroutine set_center_of_element
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_center_of_surf_type(nod, surf)
+      subroutine set_center_of_surface(nod, surf)
 !
       use m_geometry_constants
       use t_geometry_data
@@ -99,11 +99,11 @@
      &    surf%r_surf, surf%theta_surf, surf%phi_surf,                  &
      &    surf%ar_surf, surf%s_surf, surf%as_surf)
 !
-      end subroutine set_center_of_surf_type
+      end subroutine set_center_of_surface
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_center_of_edge_type(nod, edge)
+      subroutine set_center_of_edge(nod, edge)
 !
       use m_geometry_constants
       use t_geometry_data
@@ -127,8 +127,8 @@
      &    edge%r_edge, edge%theta_edge, edge%phi_edge,                  &
      &    edge%ar_edge, edge%s_edge, edge%as_edge)
 !
-      end subroutine set_center_of_edge_type
+      end subroutine set_center_of_edge
 !
 ! ----------------------------------------------------------------------
 !
-      end module cal_mesh_position_type
+      end module cal_mesh_position

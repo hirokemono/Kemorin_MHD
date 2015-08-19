@@ -101,12 +101,13 @@
 !
       subroutine set_djds_whole_connectivity
 !
+      use t_comm_table
       use t_crs_connect
       use t_solver_djds
 !
+      use m_nod_comm_table
       use m_solver_djds_MHD
       use set_crs_connect_type
-      use set_geometry_to_types
       use reordering_djds_smp_type
       use set_djds_smp_ordering_type
 !
@@ -155,7 +156,7 @@
 !C +--------------------------------------+
 !C===
 !C
-      call set_nod_comm_tbl_2_type(DJDS_comm_etr)
+      call link_comm_tbl_types(nod_comm, DJDS_comm_etr)
       call set_new_comm_table_type                                      &
      &   (node1%numnod, DJDS_comm_etr, DJDS_entire)
 !

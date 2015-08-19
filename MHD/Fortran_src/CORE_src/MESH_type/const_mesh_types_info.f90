@@ -157,7 +157,7 @@
 !
       use m_machine_parameter
       use set_size_4_smp_types
-      use cal_mesh_position_type
+      use cal_mesh_position
 !
       type(mesh_geometry), intent(inout) :: geom
 !
@@ -167,11 +167,11 @@
        if (iflag_debug.eq.1) write(*,*) 'count_size_4_smp_mesh_type'
       call count_size_4_smp_mesh_type(geom%node, geom%ele)
 !
-       if (iflag_debug.eq.1) write(*,*) 'set_spherical_position_type'
-      call set_spherical_position_type(geom%node)
+       if (iflag_debug.eq.1) write(*,*) 'set_spherical_position'
+      call set_spherical_position(geom%node)
 !
-       if (iflag_debug.eq.1) write(*,*) 'set_center_of_ele_type'
-      call set_center_of_ele_type(geom%node, geom%ele)
+       if (iflag_debug.eq.1) write(*,*) 'set_center_of_element'
+      call set_center_of_element(geom%node, geom%ele)
 !
        if (iflag_debug.eq.1) write(*,*) 'count_overlap_ele_type'
       call count_overlap_ele_type(geom%node, geom%ele)

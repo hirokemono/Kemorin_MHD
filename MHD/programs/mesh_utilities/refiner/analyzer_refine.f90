@@ -66,7 +66,7 @@
 !C | ELEMENT-TYPE |
 !C +--------------+
 !C
-      call set_num_node_for_ele_by_etype(ierr)
+      call set_num_node_for_ele_by_etype(node1, ele1, ierr)
 !C
 !    set refine flags
 !
@@ -171,7 +171,7 @@
 !
         call s_refined_ele_2_mesh_data(refined_fem%mesh%ele)
         call set_nnod_surf_edge_for_type(finer_surfmesh,                &
-     &      finer_edgemesh, refined_fem%mesh%ele%nnod_4_ele)
+     &      finer_edgemesh, refined_fem%mesh)
 !
         call set_hanging_nodes(surf1%numsurf, surf1%nnod_4_surf,        &
      &      edge1%numedge, edge1%nnod_4_edge,                           &

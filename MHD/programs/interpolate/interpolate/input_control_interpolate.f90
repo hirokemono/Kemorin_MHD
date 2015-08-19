@@ -75,7 +75,7 @@
         iflag_mesh_file_fmt = ifmt_itp_mesh_file
         call input_mesh_data_type(my_rank, new_femmesh)
         call set_nnod_surf_edge_for_type(new_surf_mesh, new_edge_mesh,  &
-     &      new_femmesh%mesh%ele%nnod_4_ele)
+     &      new_femmesh%mesh)
       end if
 !
 !  --  read interpolate table

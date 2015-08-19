@@ -221,16 +221,15 @@
       use m_geometry_data
       use set_size_4_smp_types
       use cal_mesh_position
-      use cal_mesh_position_type
 !
 !
       call count_size_4_smp_mesh_type(node1, ele1)
 !
        if (iflag_debug.gt.0) write(*,*) 'set_spherical_position'
-      call set_spherical_position_type(node1)
+      call set_spherical_position(node1)
 !
        if (iflag_debug.gt.0) write(*,*) 'set_center_of_element'
-      call set_center_of_element
+      call set_center_of_element(node1, ele1)
 !
        if (iflag_debug.gt.0) write(*,*) 'count_overlap_ele_type'
       call count_overlap_ele_type(node1, ele1)
@@ -286,15 +285,15 @@
 !
       subroutine set_edge_and_surf_geometry
 !
-      use cal_mesh_position
       use m_geometry_data
+      use cal_mesh_position
 !
 !
       call allocate_surface_geom_type(surf1)
-      call set_center_of_surface
+      call set_center_of_surface(node1, surf1)
 !
       call allocate_edge_geom_type(edge1)
-      call set_center_of_edge
+      call set_center_of_edge(node1, edge1)
 !
       end subroutine set_edge_and_surf_geometry
 !

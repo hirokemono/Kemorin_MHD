@@ -24,12 +24,9 @@
 !        type(edge_geometry), intent(inout) ::  edge_mesh
 !
 !      subroutine set_nnod_surf_edge_for_type(surf_mesh, edge_mesh,     &
-!     &          nnod_4_ele)
-!      subroutine set_nnod_surf_by_eletype(surf_mesh, nnod_4_ele)
-!        integer(kind = kint), intent(in) :: nnod_4_ele
+!     &          mesh)
+!        type(mesh_geometry),    intent(in) :: mesh
 !        type(surface_geometry), intent(inout) :: surf_mesh
-!      subroutine set_nnod_edge_by_eletype(edge_mesh, nnod_4_ele)
-!        integer(kind = kint), intent(in) :: nnod_4_ele
 !        type(edge_geometry), intent(inout) ::  edge_mesh
 !
       module set_mesh_types
@@ -206,64 +203,23 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_nnod_surf_edge_for_type(surf_mesh, edge_mesh,      &
-     &          nnod_4_ele)
+     &          mesh)
 !
+      use t_mesh_data
       use t_surface_data
       use t_edge_data
+      use set_nnod_4_ele_by_type
 !
 !
-      integer(kind = kint), intent(in) :: nnod_4_ele
+      type(mesh_geometry),    intent(in) :: mesh
       type(surface_geometry), intent(inout) :: surf_mesh
       type(edge_geometry), intent(inout) ::  edge_mesh
 !
 !
-      call set_nnod_surf_by_eletype(surf_mesh, nnod_4_ele)
-      call set_nnod_edge_by_eletype(edge_mesh, nnod_4_ele)
+      call set_3D_nnod_4_sfed_by_ele(mesh%ele%nnod_4_ele,               &
+     &    surf_mesh%surf%nnod_4_surf, edge_mesh%edge%nnod_4_edge)
 !
       end subroutine set_nnod_surf_edge_for_type
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_nnod_surf_by_eletype(surf_mesh, nnod_4_ele)
-!
-      use t_surface_data
-      use m_geometry_constants
-!
-!
-      integer(kind = kint), intent(in) :: nnod_4_ele
-      type(surface_geometry), intent(inout) :: surf_mesh
-!
-!
-      if      (nnod_4_ele .eq. num_t_quad) then
-        surf_mesh%surf%nnod_4_surf = num_quad_sf
-      else if (nnod_4_ele .eq. num_t_linear) then
-        surf_mesh%surf%nnod_4_surf = num_linear_sf
-      else if (nnod_4_ele .eq. num_t_lag) then
-        surf_mesh%surf%nnod_4_surf = num_lag_sf
-      end if
-!
-      end subroutine set_nnod_surf_by_eletype
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_nnod_edge_by_eletype(edge_mesh, nnod_4_ele)
-!
-      use t_edge_data
-      use m_geometry_constants
-!
-      integer(kind = kint), intent(in) :: nnod_4_ele
-      type(edge_geometry), intent(inout) ::  edge_mesh
-!
-!
-      if      (nnod_4_ele .eq. num_t_quad) then
-        edge_mesh%edge%nnod_4_edge = num_quad_edge
-      else if (nnod_4_ele .eq. num_t_linear) then
-        edge_mesh%edge%nnod_4_edge = num_linear_edge
-      else if (nnod_4_ele .eq. num_t_lag) then
-        edge_mesh%edge%nnod_4_edge = num_quad_edge
-      end if
-!
-      end subroutine set_nnod_edge_by_eletype
 !
 !  ---------------------------------------------------------------------
 !

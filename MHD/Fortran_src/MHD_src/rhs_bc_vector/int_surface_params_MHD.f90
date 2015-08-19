@@ -62,7 +62,7 @@
       call delta_x_2_each_surface(sf_grp1)
 !
 !      call check_surface_param_smp('int_surface_parameters end',       &
-!     &    my_rank, sf_grp1)
+!     &    my_rank, sf_grp1, sf_grp_nod1)
 !
       end subroutine int_surface_parameters
 !

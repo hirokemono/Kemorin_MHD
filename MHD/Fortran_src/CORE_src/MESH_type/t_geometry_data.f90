@@ -515,6 +515,7 @@
 !
       node%istack_nod_smp =>      nod_org%istack_nod_smp
       node%istack_internal_smp => nod_org%istack_internal_smp
+!
       node%max_nod_smp =          nod_org%max_nod_smp
       node%max_internal_nod_smp = nod_org%max_internal_nod_smp
 !
@@ -576,6 +577,7 @@
        ele%a_vol_ele =>  ele_org%a_vol_ele
 !
        ele%volume =      ele_org%volume
+       ele%a_vol =       ele_org%a_vol
 !
        end subroutine link_new_ele_geometry_type
 !

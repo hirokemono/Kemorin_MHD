@@ -34,36 +34,37 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_next_nod_hang_type(mesh, nod_hang, neib_nod,     &
+      subroutine const_next_nod_hang_type(node, nod_hang, neib_nod,     &
      &          neib_hang)
 !
+      use t_geometry_data
       use t_hanging_mesh_data
       use cal_minmax_and_stacks
       use set_next_node_w_hanging
 !
-      type(mesh_geometry), intent(in) :: mesh
+      type(node_data), intent(in) :: node
       type(hangining_list), intent(in) :: nod_hang
       type(next_nod_id_4_nod), intent(in) :: neib_nod
 !
       type(next_nod_id_4_nod), intent(inout) :: neib_hang
 !
 !
-      call alloc_num_next_node(mesh%node%numnod, neib_hang)
-      call allocate_iflag_nod_hang(mesh%node%numnod)
+      call alloc_num_next_node(node%numnod, neib_hang)
+      call allocate_iflag_nod_hang(node%numnod)
 !
-      call count_next_node_w_hanging(mesh%node%numnod,                  &
+      call count_next_node_w_hanging(node%numnod,                       &
      &          nod_hang%iflag_hang,  nod_hang%n_sf, nod_hang%id_sf,    &
      &          nod_hang%n_ed, nod_hang%id_ed,                          &
      &          neib_nod%ntot, neib_nod%istack_next,                    &
      &          neib_nod%inod_next, neib_hang%nnod_next)
 !
-      call s_cal_minmax_and_stacks(mesh%node%numnod,                    &
+      call s_cal_minmax_and_stacks(node%numnod,                         &
      &    neib_hang%nnod_next, izero, neib_hang%istack_next,            &
      &    neib_hang%ntot, neib_hang%nmax, neib_hang%nmin)
 !
       call alloc_inod_next_node(neib_hang)
 !
-      call s_set_next_node_w_hanging(mesh%node%numnod,                  &
+      call s_set_next_node_w_hanging(node%numnod,                       &
      &          nod_hang%iflag_hang, nod_hang%n_sf, nod_hang%id_sf,     &
      &          nod_hang%n_ed, nod_hang%id_ed,                          &
      &          neib_nod%ntot, neib_nod%istack_next,                    &
@@ -76,10 +77,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine overwrt_next_nod_by_hang_type(mesh, neib_hang,         &
+      subroutine overwrt_next_nod_by_hang_type(node, neib_hang,         &
      &          neib_nod)
 !
-      type(mesh_geometry), intent(in) :: mesh
+      type(node_data), intent(in) :: node
       type(next_nod_id_4_nod), intent(in) :: neib_hang
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !
@@ -90,13 +91,13 @@
       neib_nod%nmin = neib_hang%nmin
       neib_nod%nmax = neib_hang%nmax
 !
-      call alloc_num_next_node(mesh%node%numnod, neib_nod)
+      call alloc_num_next_node(node%numnod, neib_nod)
       call alloc_inod_next_node(neib_nod)
 !
-      neib_nod%nnod_next(1:mesh%node%numnod)                            &
-     &      = neib_hang%nnod_next(1:mesh%node%numnod)
-      neib_nod%istack_next(0:mesh%node%numnod)                          &
-     &      = neib_hang%istack_next(0:mesh%node%numnod)
+      neib_nod%nnod_next(1:node%numnod)                                 &
+     &      = neib_hang%nnod_next(1:node%numnod)
+      neib_nod%istack_next(0:node%numnod)                               &
+     &      = neib_hang%istack_next(0:node%numnod)
 !
       neib_nod%inod_next(1:neib_nod%ntot)                               &
      &      = neib_hang%inod_next(1:neib_nod%ntot) 

@@ -141,7 +141,7 @@
       use t_psf_geometry_list
       use t_psf_patch_data
       use set_node_on_edge_quad_psf
-      use cal_mesh_position_type
+      use cal_mesh_position
       use psf_global_nod_id
 !
       integer(kind = kint), intent(in) :: num_psf
@@ -201,7 +201,7 @@
      &     psf_mesh(i)%node%numnod, psf_mesh(i)%node%inod_global,       &
      &     psf_mesh(i)%node%xx, psf_list(i))
 !
-        call set_spherical_position_type(psf_mesh(i)%node)
+        call set_spherical_position(psf_mesh(i)%node)
 !
       end do
 !
@@ -219,7 +219,7 @@
       use t_psf_geometry_list
       use t_psf_patch_data
       use set_node_on_edge_quad_psf
-      use cal_mesh_position_type
+      use cal_mesh_position
       use psf_global_nod_id
 !
       integer(kind = kint), intent(in) :: num_iso
@@ -263,7 +263,7 @@
      &     iso_mesh(i)%node%numnod, iso_mesh(i)%node%inod_global,       &
      &     iso_mesh(i)%node%xx, iso_list(i))
 !
-        call set_spherical_position_type(iso_mesh(i)%node)
+        call set_spherical_position(iso_mesh(i)%node)
       end do
 !
       end subroutine set_nodes_4_iso

@@ -85,8 +85,9 @@
 !
       call copy_num_processes_to_2nd
       call copy_node_comm_tbl_to_type(mesh_ref%nod_comm)
-      call link_node_data_type(mesh_ref%node)
-      call link_element_data_type(mesh_ref%ele)
+      call link_new_nod_geometry_type(node1, mesh_ref%node)
+      call link_new_ele_connect_type(ele1, mesh_ref%ele)
+      call link_new_overlaped_ele_type(ele1, mesh_ref%ele)
 !
       call link_group_type(nod_grp1, group_ref%nod_grp)
       call link_group_type(ele_grp1, group_ref%ele_grp)

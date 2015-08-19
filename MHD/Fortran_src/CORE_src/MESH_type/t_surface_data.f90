@@ -37,8 +37,6 @@
 !!        type(surface_data), intent(inout) :: surf
 !!
 !!      subroutine link_new_surf_connect_type(surf_org, surf)
-!!        type(surface_data), intent(in) :: surf_org
-!!        type(surface_data), intent(inout) :: surf
 !!@endverbatim
 !
       module t_surface_data

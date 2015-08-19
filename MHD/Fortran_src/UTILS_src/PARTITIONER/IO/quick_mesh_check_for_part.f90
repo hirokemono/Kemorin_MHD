@@ -71,7 +71,7 @@
 !C | ELEMENT-TYPE |
 !C +--------------+
 !C
-      call set_num_node_for_ele_by_etype(ierr)
+      call set_num_node_for_ele_by_etype(node1, ele1, ierr)
       if (ierr.gt.0) call ERROR_EXIT(ierr, izero)
 !C
 !C-- check local surface ID

@@ -81,6 +81,7 @@
       subroutine link_data_4_linear_grid(femmesh_l,                   &
      &          surf_mesh_l, edge_mesh_l, nod_fld_l)
 !
+      use m_geometry_data
       use m_surface_group_connect
       use m_element_group_connect
       use m_group_data
@@ -94,18 +95,16 @@
       type(phys_data), intent(inout) :: nod_fld_l
 !
 !
-      call link_single_ele_list_type(surf_mesh_l%surf,                  &
-     &    edge_mesh_l%edge)
-!
-      call link_node_data_type(femmesh_l%mesh%node)
-      call link_element_data_type(femmesh_l%mesh%ele)
+      call link_new_nod_geometry_type(node1, femmesh_l%mesh%node)
+      call link_new_ele_connect_type(ele1, femmesh_l%mesh%ele)
+      call link_new_overlaped_ele_type(ele1, femmesh_l%mesh%ele)
 !
       call link_group_type(nod_grp1, femmesh_l%group%nod_grp)
       call link_group_type(ele_grp1, femmesh_l%group%ele_grp)
       call link_surf_group_type(sf_grp1, femmesh_l%group%surf_grp)
 !
-      call link_surface_data_type(surf_mesh_l%surf)
-      call link_edge_data_type(edge_mesh_l%edge)
+      call link_new_surf_connect_type(surf1, surf_mesh_l%surf)
+      call link_new_edge_connect_type(edge1, edge_mesh_l%edge)
 !
       call link_ele_grp_connect_type                                    &
      &    (ele_grp_data1, femmesh_l%group%tbls_ele_grp)
@@ -196,7 +195,7 @@
       call set_local_element_type_info(surf_mesh_l%surf,                &
      &      edge_mesh_l%edge)
 !
-      call link_node_data_type(femmesh_l%mesh%node)
+      call link_new_nod_geometry_type(node1, femmesh_l%mesh%node)
 !
       if (iflag_debug.eq.1) write(*,*) 'connect_lag_mesh_2_linear_t'
       call connect_lag_mesh_2_linear_t(femmesh_l%mesh)

@@ -5,34 +5,20 @@
 !
 !      Written by H.Matsui on Oct., 2006
 !
-!      subroutine allocate_num_next_nod_w_hang(numnod)
-!      subroutine allocate_inod_next_nod_w_hang
-!
+!      subroutine const_next_nod_id_w_hang
+!      subroutine overwrite_next_nod_by_hanged
 !      subroutine deallocate_next_nod_w_hang
-!
 !      subroutine check_next_node_id_nod_hang(my_rank, numnod)
 !
       module m_next_nod_id_nod_w_hang
 !
       use m_precision
+      use t_next_node_ele_4_node
 !
       implicit none
 !
-      integer (kind=kint) :: ntot_next_node_hanged
-!<   total number of neighbouring node list for each node
-      integer (kind=kint) :: nmin_next_node_hanged
-!<   minimum number of neighbouring node for each node
-      integer (kind=kint) :: nmax_next_node_hanged
-!<   maximum number of neighbouring node for each node
-      integer (kind=kint), allocatable :: nnod_next_node_hanged(:)
-!<   number of neighbouring node list for each node
-      integer (kind=kint), allocatable :: istack_next_node_hanged(:)
-!<   end number of neighbouring node list for each node
-!
-      integer (kind=kint), allocatable :: inod_next_node_hanged(:)
-!<   local node ID of neighbouring node for each node
-      integer (kind=kint), allocatable :: iweight_next_hanged(:)
-!<   Weighting count for neighbouring node
+!>   Structure of neighbouring node list for hanging node
+      type(next_nod_id_4_nod), save :: neib_hang1
 !
 !-----------------------------------------------------------------------
 !
@@ -40,40 +26,40 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_num_next_nod_w_hang(numnod)
+      subroutine const_next_nod_id_w_hang
 !
-      integer(kind= kint), intent(in) :: numnod
+      use m_geometry_data
+      use m_hanging_mesh_data
+      use m_next_node_id_4_node
+      use expand_next_nod_hang_type
 !
-      allocate( nnod_next_node_hanged(numnod) )
-      allocate( istack_next_node_hanged(0:numnod) )
-      nmin_next_node_hanged = 0
-      nmax_next_node_hanged = 0
-      nnod_next_node_hanged = 0
-      istack_next_node_hanged = 0
 !
-      end subroutine allocate_num_next_nod_w_hang
+      call const_next_nod_hang_type(node1, hang1%nod_hang, neib_nod1,   &
+     &    neib_hang1)
+!
+!
+      end subroutine const_next_nod_id_w_hang
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_inod_next_nod_w_hang
+      subroutine overwrite_next_nod_by_hanged
 !
-      allocate( inod_next_node_hanged(ntot_next_node_hanged) )
-      allocate( iweight_next_hanged(ntot_next_node_hanged) )
-      inod_next_node_hanged = 0
-      iweight_next_hanged = 0
+      use m_geometry_data
+      use m_next_node_id_4_node
+      use expand_next_nod_hang_type
 !
-      end subroutine allocate_inod_next_nod_w_hang
+!
+      call overwrt_next_nod_by_hang_type(node1, neib_hang1,         &
+     &    neib_nod1)
+!
+      end subroutine overwrite_next_nod_by_hanged
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine deallocate_next_nod_w_hang
 !
-      deallocate( nnod_next_node_hanged )
-      deallocate( istack_next_node_hanged )
-!
-      deallocate( inod_next_node_hanged )
-      deallocate( iweight_next_hanged )
+      call dealloc_inod_next_node(neib_hang1)
 !
       end subroutine deallocate_next_nod_w_hang
 !
@@ -84,16 +70,7 @@
       integer(kind = kint), intent(in) :: my_rank, numnod
       integer(kind = kint) :: inod, ist, ied
 !
-      do inod = 1, numnod
-        ist = istack_next_node_hanged(inod-1) + 1
-        ied = istack_next_node_hanged(inod)
-        write(50+my_rank,*)                                             &
-     &                 'next node ID for node inod_next_node_hanged ',  &
-     &                  inod, ist, ied, nnod_next_node_hanged(inod)
-        write(50+my_rank,'(8i16)') inod_next_node_hanged(ist:ied)
-        write(50+my_rank,*) 'iweight_next_hanged'
-        write(50+my_rank,'(8i16)') iweight_next_hanged(ist:ied)
-      end do
+      call check_next_node_id_4_node(my_rank, numnod, neib_hang1)
 !
       end subroutine check_next_node_id_nod_hang
 !

@@ -67,7 +67,7 @@
       use m_machine_parameter
       use cal_minmax_and_stacks
       use set_size_4_smp_types
-      use cal_mesh_position_type
+      use cal_mesh_position
 !
       use t_mesh_data
 !
@@ -77,10 +77,10 @@
 !
 !
       call count_size_4_smp_mesh_type(newmesh%node, newmesh%ele)
-      call set_spherical_position_type(newmesh%node)
+      call set_spherical_position(newmesh%node)
 !
       call allocate_ele_geometry_type(newmesh%ele)
-      call set_center_of_ele_type(newmesh%node, newmesh%ele)
+      call set_center_of_element(newmesh%node, newmesh%ele)
 !
 !
       call deallocate_node_geometry_type(newmesh%node)

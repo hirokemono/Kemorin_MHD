@@ -48,7 +48,6 @@
       use m_ele_sf_eg_comm_tables
 !
       use const_mesh_info
-      use cal_mesh_position
       use count_whole_num_element
 !
       use set_MHD_connectivity
