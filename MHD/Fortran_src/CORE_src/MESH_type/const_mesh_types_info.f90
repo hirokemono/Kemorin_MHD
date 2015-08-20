@@ -47,6 +47,7 @@
      &         (femmesh, surf_mesh, edge_mesh)
 !
       use m_machine_parameter
+      use const_surface_data
       use set_smp_4_group_types
       use set_surface_node_grp_type
       use const_group_type_info
@@ -65,11 +66,15 @@
 !
       call set_surf_and_edge_types(femmesh, surf_mesh, edge_mesh)
 !
+      if (iflag_debug.gt.0) write(*,*) 'const_ele_list_4_surface'
+      call const_ele_list_4_surface(femmesh%mesh%ele, surf_mesh%surf)
+!
+!
        if (iflag_debug.eq.1) write(*,*) 'count_num_groups_type_smp'
       call count_num_groups_type_smp( femmesh%group )
 !
-       if (iflag_debug.eq.1) write(*,*) 's_set_surface_node_grp_type'
-      call s_set_surface_node_grp_type(femmesh%mesh%node,               &
+       if (iflag_debug.eq.1) write(*,*) 'set_node_4_surf_group'
+      call set_node_4_surf_group(femmesh%mesh%node,                     &
      &    femmesh%mesh%ele, surf_mesh%surf,                             &
      &    femmesh%group%surf_grp, femmesh%group%surf_nod_grp)
 !
@@ -87,7 +92,7 @@
       use set_smp_4_group_types
       use const_group_type_info
       use set_surface_node_grp_type
-      use set_tables_4_ele_grp_type
+      use set_tables_4_ele_group
       use set_surface_node_grp_type
 !
       type(mesh_data),      intent(inout) :: femmesh
@@ -109,7 +114,7 @@
       call count_grp_type_smp(femmesh%group%nod_grp)
       call count_grp_type_smp(femmesh%group%ele_grp)
 !
-     if (iflag_debug.eq.1) write(*,*) 's_set_surface_node_grp_type'
+     if (iflag_debug.eq.1) write(*,*) 'empty_surface_node_grp_type'
       call empty_surface_node_grp_type(femmesh%group%surf_grp,          &
      &    femmesh%group%surf_nod_grp)
 !

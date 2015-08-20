@@ -42,6 +42,7 @@
 !
       use m_ctl_params_4_gen_table
       use m_node_phys_address
+      use m_node_phys_data
 !
       use input_control_interpolate
       use const_mesh_info
@@ -49,7 +50,6 @@
       use nodal_vector_send_recv
       use set_field_to_restart
       use field_IO_select
-      use link_data_type_to_1st_mesh
 !
       use m_node_phys_data
 !

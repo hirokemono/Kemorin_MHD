@@ -216,7 +216,6 @@
       use m_node_phys_data
       use t_mesh_data
       use t_phys_data
-      use link_data_type_to_1st_mesh
 !
       type(mesh_geometry), intent(in) :: mesh_l
       type(phys_data), intent(inout) :: nod_fld_l

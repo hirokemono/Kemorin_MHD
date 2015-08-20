@@ -37,12 +37,12 @@
       use m_ctl_params_4_gen_table
       use m_t_step_parameter
       use m_node_phys_address
+      use m_node_phys_data
 !
       use input_control_interpolate
       use const_mesh_info
       use set_size_4_smp_types
       use nodal_vector_send_recv
-      use link_data_type_to_1st_mesh
 !
       integer(kind = kint) :: ierr
 !

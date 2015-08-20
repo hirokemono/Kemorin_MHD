@@ -26,8 +26,6 @@
       use m_machine_parameter
       use m_geometry_data
       use m_group_data
-      use m_surface_group_connect
-      use m_surface_group_geometry
 !
       use count_num_surface_bc
       use set_surface_id_MHD

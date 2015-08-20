@@ -4,29 +4,28 @@
 !
 !        programmed by H. Matsui on Dec., 2010
 !
-!      subroutine set_surf_id_4_surf_grp_type(ele, surf,                &
+!      subroutine set_surf_id_4_surf_group(ele, surf,                   &
 !     &          surf_grp, sf_grp_tbl)
 !        type(element_data),       intent(in) :: ele
 !        type(surface_data),       intent(in) :: surf
 !        type(surface_group_data), intent(in) :: surf_grp
 !        type(surface_group_table), intent(inout) :: sf_grp_tbl
 !
-!      subroutine set_edge_4_surf_grp_type(surf, edge, surf_grp,        &
+!      subroutine set_edge_4_surf_group(surf, edge, surf_grp,           &
 !     &          sf_grp_tbl)
 !        type(surface_data),        intent(in) :: surf
 !        type(edge_data),           intent(in) :: edge
 !        type(surface_group_data), intent(in) :: surf_grp
 !        type(surface_group_table), intent(inout) :: sf_grp_tbl
 !
-!      subroutine s_set_surface_node_grp_type(nod, ele, surf, sf_grp,   &
-!     &          sf_nod)
+!      subroutine set_node_4_surf_group(nod, ele, surf, sf_grp, sf_nod)
 !        type(node_data),    intent(in) ::       nod
 !        type(element_data), intent(in) ::       ele
 !        type(surface_data), intent(in) ::       surf
 !        type(surface_group_data), intent(in) :: sf_grp
 !        type(surface_node_grp_data), intent(inout) :: sf_nod
 !
-!      subroutine cal_surf_norm_nod_type(mesh, surf, sf_grp,            &
+!      subroutine cal_surf_normal_at_nod(mesh, surf, sf_grp,            &
 !     &          sf_grp_v, sf_nod)
 !        type(mesh_geometry),          intent(in) :: mesh
 !        type(surface_data),           intent(in) :: surf
@@ -53,7 +52,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_surf_id_4_surf_grp_type(ele, surf,                 &
+      subroutine set_surf_id_4_surf_group(ele, surf,                    &
      &          surf_grp, sf_grp_tbl)
 !
       use t_geometry_data
@@ -75,11 +74,11 @@
      &    surf_grp%istack_grp, surf_grp%item_sf_grp,                    &
      &    sf_grp_tbl%isurf_grp, sf_grp_tbl%isurf_grp_n)
 !
-      end subroutine set_surf_id_4_surf_grp_type
+      end subroutine set_surf_id_4_surf_group
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_edge_4_surf_grp_type(surf, edge, surf_grp,         &
+      subroutine set_edge_4_surf_group(surf, edge, surf_grp,            &
      &          sf_grp_tbl)
 !
       use m_geometry_constants
@@ -121,12 +120,11 @@
 !
       deallocate(imark_surf_grp)
 !
-      end subroutine set_edge_4_surf_grp_type
+      end subroutine set_edge_4_surf_group
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_surface_node_grp_type(nod, ele, surf, sf_grp,    &
-     &          sf_nod)
+      subroutine set_node_4_surf_group(nod, ele, surf, sf_grp, sf_nod)
 !
       use m_machine_parameter
       use t_geometry_data
@@ -177,11 +175,11 @@
 !
       call deallocate_make_4_surf_nod_grp
 !
-      end subroutine s_set_surface_node_grp_type
+      end subroutine set_node_4_surf_group
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_surf_norm_nod_type(mesh, surf, sf_grp,             &
+      subroutine cal_surf_normal_at_nod(mesh, surf, sf_grp,             &
      &          sf_grp_v, sf_nod)
 !
       use t_mesh_data
@@ -211,7 +209,7 @@
 !
       call deallocate_work_norm_nod
 !
-      end subroutine cal_surf_norm_nod_type
+      end subroutine cal_surf_normal_at_nod
 !
 ! -----------------------------------------------------------------------
 !-----------------------------------------------------------------------

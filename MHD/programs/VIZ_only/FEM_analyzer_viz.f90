@@ -31,8 +31,6 @@
       use m_geometry_data
       use m_group_data
       use m_control_params_2nd_files
-      use m_surface_group_connect
-      use m_surface_group_geometry
       use m_element_id_4_node
       use m_jacobians
       use m_jacobians_4_surface

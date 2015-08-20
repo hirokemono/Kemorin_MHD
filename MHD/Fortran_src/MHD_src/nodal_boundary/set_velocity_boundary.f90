@@ -37,7 +37,6 @@
       use m_control_parameter
       use m_geometry_data
       use m_group_data
-      use m_surface_group_connect
       use m_node_phys_address
 !
       use set_normal_field

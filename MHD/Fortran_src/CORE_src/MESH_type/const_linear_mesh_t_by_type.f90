@@ -98,7 +98,6 @@
 !
       use t_mesh_data
       use t_phys_data
-      use link_data_type_to_1st_mesh
 !
       type(mesh_data), intent(in) :: femmesh_q
       type(surface_geometry), intent(in) :: surf_mesh_q

@@ -1,23 +1,21 @@
-!set_tables_4_ele_grp_type.f90
-!     module set_tables_4_ele_grp_type
+!set_tables_4_ele_group.f90
+!     module set_tables_4_ele_group
 !
 !     Writteg by H.Matsui on Dec., 2008
 !
-!      subroutine set_surf_4_ele_grp_type(ele, surf, ele_grp,           &
-!     &          ele_grp_tbl)
+!      subroutine set_surf_4_ele_group(ele, surf, ele_grp, ele_grp_tbl)
 !        type(element_data), intent(in) :: ele
 !        type(surface_data), intent(in) :: surf
 !        type(group_data),   intent(in) :: ele_grp
 !        type(element_group_table), intent(inout) :: ele_grp_tbl
 !
-!      subroutine set_edge_4_ele_grp_type(ele, edge, ele_grp,           &
-!     &          ele_grp_tbl)
+!      subroutine set_edge_4_ele_group(ele, edge, ele_grp, ele_grp_tbl)
 !        type(element_data), intent(in) :: ele
 !        type(edge_data), intent(in) :: edge
 !        type(group_data),   intent(in) :: ele_grp
 !        type(element_group_table), intent(inout) :: ele_grp_tbl
 !
-!      subroutine set_nod_4_ele_grp_type(ele, nod, ele_grp, ele_grp_tbl)
+!      subroutine set_node_4_ele_group(ele, nod, ele_grp, ele_grp_tbl)
 !        type(element_data), intent(in) :: ele
 !        type(node_data),    intent(in) :: nod
 !        type(group_data),   intent(in) :: ele_grp
@@ -27,7 +25,7 @@
 !        type(group_data),   intent(in) :: ele_grp
 !        type(element_group_table), intent(inout) :: ele_grp_tbl
 !
-      module set_tables_4_ele_grp_type
+      module set_tables_4_ele_group
 !
       use m_precision
 !
@@ -50,8 +48,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_surf_4_ele_grp_type(ele, surf, ele_grp,            &
-     &          ele_grp_tbl)
+      subroutine set_surf_4_ele_group(ele, surf, ele_grp, ele_grp_tbl)
 !
       use m_geometry_constants
       use t_surface_data
@@ -84,12 +81,11 @@
 !
       call deallocate_imark_ele_grp
 !
-      end subroutine set_surf_4_ele_grp_type
+      end subroutine set_surf_4_ele_group
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_edge_4_ele_grp_type(ele, edge, ele_grp,            &
-     &          ele_grp_tbl)
+      subroutine set_edge_4_ele_group(ele, edge, ele_grp, ele_grp_tbl)
 !
       use m_geometry_constants
       use t_edge_data
@@ -122,11 +118,11 @@
 !
       call deallocate_imark_ele_grp
 !
-      end subroutine set_edge_4_ele_grp_type
+      end subroutine set_edge_4_ele_group
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_nod_4_ele_grp_type(ele, nod, ele_grp, ele_grp_tbl)
+      subroutine set_node_4_ele_group(ele, nod, ele_grp, ele_grp_tbl)
 !
       type(element_data), intent(in) :: ele
       type(node_data),    intent(in) :: nod
@@ -156,7 +152,7 @@
 !
       call deallocate_imark_ele_grp
 !
-      end subroutine set_nod_4_ele_grp_type
+      end subroutine set_node_4_ele_group
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -202,4 +198,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module set_tables_4_ele_grp_type
+      end module set_tables_4_ele_group

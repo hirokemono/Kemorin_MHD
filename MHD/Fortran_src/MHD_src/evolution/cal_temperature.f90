@@ -31,7 +31,7 @@
 !
       use m_node_phys_address
       use m_finite_element_matrix
-!      use m_surface_group_connect
+!      use m_group_data
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes

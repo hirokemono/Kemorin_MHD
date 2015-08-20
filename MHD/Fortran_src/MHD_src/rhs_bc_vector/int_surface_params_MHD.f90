@@ -27,8 +27,6 @@
       use m_control_parameter
       use m_geometry_data
       use m_group_data
-      use m_surface_group_connect
-      use m_surface_group_geometry
       use m_finite_element_matrix
       use m_int_surface_data
 !

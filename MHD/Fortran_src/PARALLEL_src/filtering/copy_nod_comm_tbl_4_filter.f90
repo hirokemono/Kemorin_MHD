@@ -43,6 +43,7 @@
 !
       use m_nod_comm_table
       use t_comm_table
+      use copy_mesh_structures
 !
 !
       call copy_comm_tbl_types(nod_comm, flt_comm)

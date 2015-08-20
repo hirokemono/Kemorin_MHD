@@ -31,8 +31,6 @@
 !
       use m_geometry_data
       use m_group_data
-      use m_surface_group_connect
-      use m_surface_group_geometry
       use m_jacobians_4_surface
       use m_jacobians_4_edge
       use m_jacobian_sf_grp

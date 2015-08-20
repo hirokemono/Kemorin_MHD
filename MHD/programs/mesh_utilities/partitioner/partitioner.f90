@@ -12,7 +12,6 @@
       use m_read_mesh_data
       use m_geometry_data
       use m_group_data
-      use m_element_group_connect
 !
       use init_partitioner
       use grouping_for_partition
@@ -46,7 +45,7 @@
       call initialize_partitioner(node1, ele1,                          &
      &    nod_grp1, ele_grp1, sf_grp1)
       call grouping_for_partitioner(node1, ele1, edge1,                 &
-     &   nod_grp1, ele_grp1, ele_grp_data1)
+     &   nod_grp1, ele_grp1, ele_grp_tbl1)
 !
 !C===
 !C-- create subdomain mesh

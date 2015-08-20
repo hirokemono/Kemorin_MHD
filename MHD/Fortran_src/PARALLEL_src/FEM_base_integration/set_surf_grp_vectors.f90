@@ -34,7 +34,7 @@
       subroutine pick_normal_of_surf_group(sf_grp, sf_grp_v)
 !
       use m_geometry_data
-      use m_surface_group_connect
+      use m_group_data
       use t_surface_group_geometry
 !
       use sum_normal_4_surf_group
@@ -61,7 +61,7 @@
 !
       use m_geometry_constants
       use m_geometry_data
-      use m_surface_group_connect
+      use m_group_data
       use t_surface_group_geometry
 !
       use coordinate_converter
@@ -90,7 +90,7 @@
       subroutine pick_vector_4_surf_grp                                 &
      &         (sf_grp, numsurf, x_surf, x_sf_grp)
 !
-      use m_surface_group_connect
+      use m_group_data
 !
       type(surface_group_data), intent(in) :: sf_grp
       integer(kind = kint), intent(in) :: numsurf
@@ -101,7 +101,7 @@
 !
       call pick_vector_by_surf_grp(sf_grp%num_grp, sf_grp%num_item,     &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    sf_grp_data1%isurf_grp, numsurf, x_surf, x_sf_grp)
+     &    sf_grp_tbl1%isurf_grp, numsurf, x_surf, x_sf_grp)
 !
       end subroutine pick_vector_4_surf_grp
 !
@@ -110,7 +110,7 @@
       subroutine pick_vector_4_surf_grp_side                            &
      &         (sf_grp, numsurf, x_surf, x_sf_grp)
 !
-      use m_surface_group_connect
+      use m_group_data
 !
       type(surface_group_data), intent(in) :: sf_grp
       integer(kind = kint), intent(in) :: numsurf
@@ -121,7 +121,7 @@
 !
       call pick_vect_by_surf_grp_w_side                                 &
      &   (sf_grp%num_grp, sf_grp%num_item, sf_grp%num_grp_smp,          &
-     &    sf_grp%istack_grp_smp, sf_grp_data1%isurf_grp,                &
+     &    sf_grp%istack_grp_smp, sf_grp_tbl1%isurf_grp,                 &
      &    numsurf, x_surf, x_sf_grp)
 !
       end subroutine pick_vector_4_surf_grp_side
@@ -132,7 +132,6 @@
      &         (sf_grp, numsurf, x_surf, x_sf_grp)
 !
       use m_group_data
-      use m_surface_group_connect
 !
       type(surface_group_data), intent(in) :: sf_grp
       integer(kind = kint), intent(in) :: numsurf
@@ -143,7 +142,7 @@
 !
       call pick_scalar_by_surf_grp(sf_grp%num_grp, sf_grp%num_item,     &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    sf_grp_data1%isurf_grp, numsurf, x_surf, x_sf_grp)
+     &    sf_grp_tbl1%isurf_grp, numsurf, x_surf, x_sf_grp)
 !
       end subroutine pick_scalar_4_surf_grp
 !

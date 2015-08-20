@@ -39,14 +39,15 @@
       use m_geometry_data
       use m_group_data
       use m_node_phys_address
+      use m_node_phys_data
       use m_ele_sf_eg_comm_tables
 !
+      use copy_mesh_structures
       use input_control_udt_diff
       use const_mesh_info
       use nodal_vector_send_recv
 !
       use m_2nd_pallalel_vector
-      use link_data_type_to_1st_mesh
       use const_ele_layering_table
       use int_volume_of_domain
       use correlation_all_layerd_data
@@ -85,7 +86,7 @@
 !     --------------------- 
 !
       call copy_num_processes_to_2nd
-      call copy_node_comm_tbl_to_type(mesh_ref%nod_comm)
+      call copy_comm_tbl_types(nod_comm, mesh_ref%nod_comm)
       call link_new_nod_geometry_type(node1, mesh_ref%node)
       call link_new_ele_connect_type(ele1, mesh_ref%ele)
       call link_new_overlaped_ele_type(ele1, mesh_ref%ele)
