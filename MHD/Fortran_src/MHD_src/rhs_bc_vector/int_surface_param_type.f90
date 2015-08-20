@@ -41,7 +41,7 @@
 !
       use int_normal_4_surf_type
       use position_2_each_surf_type
-      use set_surface_node_grp_type
+      use set_connects_4_surf_group
       use set_surf_grp_vectors_type
 !
       type(mesh_geometry),      intent(in) :: mesh

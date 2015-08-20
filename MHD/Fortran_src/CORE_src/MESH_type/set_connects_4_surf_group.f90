@@ -1,5 +1,5 @@
-!set_surface_node_grp_type.f90
-!     module set_surface_node_grp_type
+!set_connects_4_surf_group.f90
+!     module set_connects_4_surf_group
 !
 !
 !        programmed by H. Matsui on Dec., 2010
@@ -40,7 +40,7 @@
 !        type(surface_group_data), intent(in) :: sf_grp
 !        type(surface_node_grp_data), intent(inout) :: sf_nod
 !
-      module set_surface_node_grp_type
+      module set_connects_4_surf_group
 !
       use m_precision
 !
@@ -252,4 +252,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module set_surface_node_grp_type
+      end module set_connects_4_surf_group

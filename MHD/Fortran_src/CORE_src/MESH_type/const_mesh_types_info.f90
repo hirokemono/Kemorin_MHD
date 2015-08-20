@@ -49,7 +49,7 @@
       use m_machine_parameter
       use const_surface_data
       use set_smp_4_group_types
-      use set_surface_node_grp_type
+      use set_connects_4_surf_group
       use const_group_type_info
 !
       type(mesh_data),      intent(inout) :: femmesh
@@ -91,9 +91,8 @@
       use m_machine_parameter
       use set_smp_4_group_types
       use const_group_type_info
-      use set_surface_node_grp_type
-      use set_tables_4_ele_group
-      use set_surface_node_grp_type
+      use set_connects_4_ele_group
+      use set_connects_4_surf_group
 !
       type(mesh_data),      intent(inout) :: femmesh
       type(surface_geometry), intent(inout) :: surf_mesh

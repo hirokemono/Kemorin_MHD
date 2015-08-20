@@ -1,5 +1,5 @@
-!set_tables_4_ele_group.f90
-!     module set_tables_4_ele_group
+!set_connects_4_ele_group.f90
+!     module set_connects_4_ele_group
 !
 !     Writteg by H.Matsui on Dec., 2008
 !
@@ -25,7 +25,7 @@
 !        type(group_data),   intent(in) :: ele_grp
 !        type(element_group_table), intent(inout) :: ele_grp_tbl
 !
-      module set_tables_4_ele_group
+      module set_connects_4_ele_group
 !
       use m_precision
 !
@@ -198,4 +198,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module set_tables_4_ele_group
+      end module set_connects_4_ele_group

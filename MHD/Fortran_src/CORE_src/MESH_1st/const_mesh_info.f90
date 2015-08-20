@@ -34,7 +34,7 @@
       use m_geometry_data
       use m_group_data
       use const_surface_data
-      use set_surface_node_grp_type
+      use set_connects_4_surf_group
 !      use check_surface_groups
 !
       integer(kind = kint), intent(in) :: my_rank

@@ -96,8 +96,8 @@
       use m_machine_parameter
       use m_geometry_data
 !
-      use set_tables_4_ele_group
-      use set_surface_node_grp_type
+      use set_connects_4_ele_group
+      use set_connects_4_surf_group
 !
 !
        if (iflag_debug.eq.1) write(*,*) 'set_surf_4_ele_group'
