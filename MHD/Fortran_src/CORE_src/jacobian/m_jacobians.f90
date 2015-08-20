@@ -109,6 +109,7 @@
       module m_jacobians
 !
       use m_precision
+      use t_jacobian_3d
 !
       implicit  none
 !
@@ -125,6 +126,7 @@
       real (kind=kreal), allocatable :: axjac(:,:)
 ! 
 !
+      integer(kind = kint) :: ntot_int_3q
       real (kind=kreal), allocatable :: aw(:,:)
       real (kind=kreal), allocatable :: dwx(:,:,:,:)
 ! 
@@ -135,6 +137,7 @@
       real (kind=kreal), allocatable :: axjac_q(:,:)
 !
 !
+      integer(kind = kint) :: ntot_int_3l
       real (kind=kreal), allocatable :: am(:,:)
       real (kind=kreal), allocatable :: dmx(:,:,:,:)
 ! 
@@ -186,13 +189,14 @@
        integer(kind = kint), intent(in) :: numele, nnod_4_ele
 !
 !
-       allocate(aw(nnod_4_ele,ntot_int_3d))
-       allocate(aw_infty(nnod_4_ele,nsurf_4_ele,ntot_int_3d))
+       ntot_int_3q = ntot_int_3d
+       allocate(aw(nnod_4_ele,ntot_int_3q))
+       allocate(aw_infty(nnod_4_ele,nsurf_4_ele,ntot_int_3q))
 !
-       allocate(dwx(numele,nnod_4_ele,ntot_int_3d,3))
+       allocate(dwx(numele,nnod_4_ele,ntot_int_3q,3))
 !
-       allocate(xjac_q(numele,ntot_int_3d))
-       allocate(axjac_q(numele,ntot_int_3d)) 
+       allocate(xjac_q(numele,ntot_int_3q))
+       allocate(axjac_q(numele,ntot_int_3q)) 
 !
        aw = 0.0d0
        dwx = 0.0d0
@@ -214,13 +218,14 @@
        integer(kind = kint), intent(in) :: numele
 !
 !
-       allocate(am(num_t_quad,ntot_int_3d))
-       allocate(am_infty(num_t_quad,nsurf_4_ele,ntot_int_3d))
+       ntot_int_3l = ntot_int_3d
+       allocate(am(num_t_quad,ntot_int_3l))
+       allocate(am_infty(num_t_quad,nsurf_4_ele,ntot_int_3l))
 !
-       allocate(dmx(numele,num_t_quad,ntot_int_3d,3))
+       allocate(dmx(numele,num_t_quad,ntot_int_3l,3))
 !
-       allocate(xjac_lq(numele,ntot_int_3d))
-       allocate(axjac_lq(numele,ntot_int_3d)) 
+       allocate(xjac_lq(numele,ntot_int_3l))
+       allocate(axjac_lq(numele,ntot_int_3l)) 
 !
        am = 0.0d0
        dmx = 0.0d0

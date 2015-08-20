@@ -60,7 +60,7 @@
 !
       call fem_skv_lorentz_rot                                          &
      &         (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,          &
-     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2,        &
+     &          np_smp, iele_fsmp_stack, ntot_int_3q, n_int, k2,        &
      &          xjac, dwx, dwx,  vect_1, bxe_ex, sk_v)
 !
       end subroutine fem_skv_lorentz_rot_1st
@@ -87,7 +87,7 @@
 !
       call fem_skv_lorentz_full_pg                                      &
      &         (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,          &
-     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2, xjac,  &
+     &          np_smp, iele_fsmp_stack, ntot_int_3q, n_int, k2, xjac,  &
      &          aw, dwx, coef_lor, magne_1, bxe, ex_magne, sk_v)
 !
       end subroutine fem_skv_lorentz_full_pg_1st
@@ -114,7 +114,7 @@
 !
       call fem_skv_induction_pg                                         &
      &         (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,          &
-     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2,        &
+     &          np_smp, iele_fsmp_stack, ntot_int_3q, n_int, k2,        &
      &          xjac, aw, dwx, velo_1, magne_1, vxe, bxe_ex,            &
      &          coef_uxb, sk_v)
 !
@@ -141,7 +141,7 @@
 !
       call fem_skv_stratified_pg                                        &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
-     &    np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2,              &
+     &    np_smp, iele_fsmp_stack, ntot_int_3q, n_int, k2,              &
      &    xjac, aw, aw, temp_1, vxe, xe, sk_v)
 !
       end subroutine fem_skv_stratified_1st
@@ -169,7 +169,7 @@
 !
       call fem_skv_lorentz_full_upw                                     &
      &         (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,          &
-     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2, dt,    &
+     &          np_smp, iele_fsmp_stack, ntot_int_3q, n_int, k2, dt,    &
      &          xjac, aw, dwx, dwx, coef_lor, magne_1,                  &
      &          vxe, bxe, ex_magne, sk_v)
 !
@@ -198,7 +198,7 @@
 !
       call fem_skv_induction_upm                                        &
      &        (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,           &
-     &          np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2, dt,    &
+     &          np_smp, iele_fsmp_stack, ntot_int_3q, n_int, k2, dt,    &
      &          xjac, aw, dwx, dwx, velo_1, magne_1, vxe, bxe_ex,       &
      &          bxe_up, coef_uxb, sk_v)
 !
@@ -225,7 +225,7 @@
 !
       call fem_skv_stratified_upw                                       &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
-     &    np_smp, iele_fsmp_stack, ntot_int_3d, n_int, k2, dt,          &
+     &    np_smp, iele_fsmp_stack, ntot_int_3q, n_int, k2, dt,          &
      &    xjac, aw, dwx, aw, temp_1, vxe, xe, sk_v)
 !
       end subroutine fem_skv_stratified_upw_1st

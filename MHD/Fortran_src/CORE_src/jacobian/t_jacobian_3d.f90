@@ -1,35 +1,38 @@
-!t_jacobian_3d.f90
-!     module t_jacobian_3d
+!>@file  t_jacobian_3d.f90
+!!       module t_jacobian_3d
+!!
+!!@author H. Matsui
+!!@date   Programmed on Dec., 2008
+!!@n      Modified by H. Matsui on Feb., 2012
 !
-!      Written by H. Matsui on Dec., 2008
-!
-!>   Structure of 3D Jacobian and difference of shape functions
-!
-!
-!      subroutine alloc_jacobians_type(numele, nnod_4_ele, jac_3d)
-!      subroutine alloc_dxi_dx_type(numele, jac_3d)
-!        integer(kind = kint), intent(in) :: numele, nnod_4_ele
-!        type(jacobians_3d), intent(inout) :: jac_3d
-!
-!      subroutine dealloc_jacobians_type(jac_3d)
-!      subroutine dealloc_inv_jac_type(jac_3d)
-!      subroutine dealloc_dxi_dx_type(jac_3d)
-!
-!  definision of matrix
-!         dxidx_3d(iele,ix,1,1) :: dxi / dx
-!         dxidx_3d(iele,ix,2,1) :: dei / dx
-!         dxidx_3d(iele,ix,3,1) :: dzi / dx
-!
-!         dxidx_3d(iele,ix,1,2) :: dxi / dy
-!         dxidx_3d(iele,ix,2,2) :: dei / dy
-!         dxidx_3d(iele,ix,3,2) :: dzi / dy
-!
-!         dxidx_3d(iele,ix,1,3) :: dxi / dz
-!         dxidx_3d(iele,ix,2,3) :: dei / dz
-!         dxidx_3d(iele,ix,3,3) :: dzi / dz
-!
-!         iele: element ID
-!         ix:   integration point ID
+!> @brief  Structure of 3D Jacobian and difference of shape functions
+!!
+!!@verbatim
+!!      subroutine alloc_jacobians_type(numele, nnod_4_ele, jac_3d)
+!!      subroutine alloc_dxi_dx_type(numele, jac_3d)
+!!        integer(kind = kint), intent(in) :: numele, nnod_4_ele
+!!        type(jacobians_3d), intent(inout) :: jac_3d
+!!
+!!      subroutine dealloc_jacobians_type(jac_3d)
+!!      subroutine dealloc_inv_jac_type(jac_3d)
+!!      subroutine dealloc_dxi_dx_type(jac_3d)
+!!
+!!  definision of matrix
+!!         dxidx_3d(iele,ix,1,1) :: dxi / dx
+!!         dxidx_3d(iele,ix,2,1) :: dei / dx
+!!         dxidx_3d(iele,ix,3,1) :: dzi / dx
+!!
+!!         dxidx_3d(iele,ix,1,2) :: dxi / dy
+!!         dxidx_3d(iele,ix,2,2) :: dei / dy
+!!         dxidx_3d(iele,ix,3,2) :: dzi / dy
+!!
+!!         dxidx_3d(iele,ix,1,3) :: dxi / dz
+!!         dxidx_3d(iele,ix,2,3) :: dei / dz
+!!         dxidx_3d(iele,ix,3,3) :: dzi / dz
+!!
+!!         iele: element ID
+!!         ix:   integration point ID
+!!@endverbatim
 !
       module t_jacobian_3d
 !
@@ -39,15 +42,22 @@
 !
 !>     Stracture for Jacobians for element
       type jacobians_3d
+!>   Total number of integration points
         integer(kind = kint) :: ntot_int
+!>   Shape function at integration points
         real (kind=kreal), pointer :: an(:,:)
+!>   Spatial differnce of Shape function  at integration points
         real (kind=kreal), pointer :: dnx(:,:,:,:)
 !
+!>   Shape function for infinite element at integration points
         real (kind=kreal), pointer :: an_infty(:,:,:)
 !
+!>   Jacobian at integration points
         real (kind=kreal), pointer :: xjac(:,:)
+!>   1 / Jacbian
         real (kind=kreal), pointer :: axjac(:,:)
 !
+!>   dxi / dx
         real(kind=kreal),   pointer :: dxidx_3d(:,:,:,:)
       end type jacobians_3d
 !

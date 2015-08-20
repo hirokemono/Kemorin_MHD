@@ -50,7 +50,7 @@
 !
       call fem_skv_scalar_diffuse                                       &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
-     &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
+     &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3q,              &
      &    xjac, dwx, dwx, ak_d, scalar_1, sk_v)
 !
       end subroutine fem_skv_scalar_diffuse_1st
@@ -74,7 +74,7 @@
 !
       call fem_skv_vector_diffuse                                       &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
-     &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
+     &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3q,              &
      &    xjac, dwx, dwx, ak_d, vect_1, sk_v)
 !
       end subroutine fem_skv_vector_diffuse_1st
@@ -95,7 +95,7 @@
 !
       call fem_skv_poisson                                              &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
-     &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3d,              &
+     &    np_smp, iele_fsmp_stack, n_int, k2, ntot_int_3q,              &
      &    xjac, dwx, dwx, sk_v)
 !
       end subroutine fem_skv_poisson_1st

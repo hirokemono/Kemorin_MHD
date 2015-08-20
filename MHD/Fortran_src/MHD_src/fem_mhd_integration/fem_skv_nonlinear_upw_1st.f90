@@ -50,7 +50,7 @@
 !
       call fem_skv_scalar_inertia_upw                                   &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,          &
+     &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3q,          &
      &    xjac, aw, dwx, dwx, scalar_1, vxe, vxe_up, sk_v)
 !
       end subroutine fem_skv_scalar_inertia_upw_1st
@@ -75,7 +75,7 @@
 !
       call fem_skv_vector_inertia_upw                                   &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,          &
+     &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3q,          &
      &    xjac, aw, dwx, dwx, vect_1, vxe, vxe_up, sk_v)
 !
       end subroutine fem_skv_vector_inertia_upw_1st
@@ -100,7 +100,7 @@
 !
       call fem_skv_inertia_rot_upw                                      &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,          &
+     &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3q,          &
      &    xjac, aw, dwx, aw, vect_1, wxe, vxe_up, sk_v)
 !
       end subroutine fem_skv_rot_inertia_upw_1st
@@ -125,7 +125,7 @@
 !
       call fem_skv_coriolis_upw                                         &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
-     &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3d,          &
+     &    np_smp, iele_fsmp_stack, n_int, k2, dt, ntot_int_3q,          &
      &    xjac, aw, dwx, aw, vect_1, angular, vxe_up, sk_v)
 !
       end subroutine fem_skv_coriolis_upw_1st

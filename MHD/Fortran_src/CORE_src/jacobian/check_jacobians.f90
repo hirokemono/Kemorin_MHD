@@ -68,13 +68,13 @@
 !
 !
       write(50+my_rank,*) 'integration point, aw'
-      do ii = 1, ntot_int_3d
+      do ii = 1, ntot_int_3q
           write(50+my_rank,'(i16,1p20e25.14)') ii,                      &
      &         (aw(k1,ii),k1 = 1, num_t_linear)
       end do
 !
 !
-      do ii = 1, ntot_int_3d
+      do ii = 1, ntot_int_3q
        do nd = 1, 3
         write(50+my_rank,*) 'iele, integration point, dwx', ii, nd
         do iele = 1, ele1%numele
@@ -87,7 +87,7 @@
 !      write(50+my_rank,*) 'iele, jacobian'
 !      do iele = 1, ele1%numele
 !          write(50+my_rank,'(i16,1p20e25.14)') iele,                   &
-!     &           (xjac_q(iele,ii), k1 = 1, ntot_int_3d)
+!     &           (xjac_q(iele,ii), k1 = 1, ntot_int_3q)
 !      end do
 !
       end subroutine check_jacobians_triquad

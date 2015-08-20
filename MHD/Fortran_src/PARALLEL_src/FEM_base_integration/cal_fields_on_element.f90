@@ -46,7 +46,7 @@
 !
       call fem_scalar_on_element(iele_fsmp_stack, node1%numnod,         &
      &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
+     &    ntot_int_3q, n_int, aw, xjac, d_ele, d_nod)
 !
       end subroutine scalar_on_element
 !
@@ -66,7 +66,7 @@
 !
       call fem_vector_on_element(iele_fsmp_stack, node1%numnod,         &
      &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
+     &    ntot_int_3q, n_int, aw, xjac, d_ele, d_nod)
 !
       end subroutine vector_on_element
 !
@@ -86,7 +86,7 @@
 !
       call fem_sym_tensor_on_element(iele_fsmp_stack, node1%numnod,     &
      &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    ntot_int_3d, n_int, aw, xjac, d_ele, d_nod)
+     &    ntot_int_3q, n_int, aw, xjac, d_ele, d_nod)
 !
       end subroutine sym_tensor_on_element
 !
@@ -108,7 +108,7 @@
 !
       call fem_scalar_grp_on_element(iele_fsmp_stack, node1%numnod,     &
      &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    nele_grp, iele_grp, ntot_int_3d, n_int, aw, xjac,             &
+     &    nele_grp, iele_grp, ntot_int_3q, n_int, aw, xjac,             &
      &    d_ele, d_nod)
 !
       end subroutine scalar_grp_on_element
@@ -131,7 +131,7 @@
 !
       call fem_vector_grp_on_element(iele_fsmp_stack, node1%numnod,     &
      &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    nele_grp, iele_grp, ntot_int_3d, n_int, aw, xjac,             &
+     &    nele_grp, iele_grp, ntot_int_3q, n_int, aw, xjac,             &
      &    d_ele, d_nod)
 !
       end subroutine vector_grp_on_element
@@ -154,7 +154,7 @@
 !
       call fem_sym_tensor_grp_on_element(iele_fsmp_stack, node1%numnod, &
      &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    nele_grp, iele_grp, ntot_int_3d, n_int, aw, xjac,             &
+     &    nele_grp, iele_grp, ntot_int_3q, n_int, aw, xjac,             &
      &    d_ele, d_nod)
 !
       end subroutine sym_tensor_grp_on_element
