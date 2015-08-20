@@ -46,7 +46,7 @@
 !
       call fem_skv_scalar_field_upw                                     &
      &         (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,          &
-     &          ntot_int_3q, iele_fsmp_stack, n_int, k2, xjac,          &
+     &          jac1_3d_q%ntot_int, iele_fsmp_stack, n_int, k2, xjac,   &
      &          aw, aw, dwx, dt, vxe, scalar_e, sk_v) 
 !
       end subroutine fem_skv_scalar_field_upw_1st
@@ -70,7 +70,7 @@
 !
       call fem_skv_vector_field_upw                                     &
      &         (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,          &
-     &          ntot_int_3q, iele_fsmp_stack, n_int, k2, xjac,          &
+     &          jac1_3d_q%ntot_int, iele_fsmp_stack, n_int, k2, xjac,   &
      &          aw, aw, dwx, dt, vxe, vector_e, sk_v) 
 !
       end subroutine fem_skv_vector_field_upw_1st
@@ -95,7 +95,7 @@
 !
       call fem_skv_tensor_field_upw                                     &
      &         (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,          &
-     &          ntot_int_3q, iele_fsmp_stack, n_int, k2, xjac,          &
+     &          jac1_3d_q%ntot_int, iele_fsmp_stack, n_int, k2, xjac,   &
      &          aw, aw, dwx, dt, vxe, tensor_e, sk_v) 
 !
       end subroutine fem_skv_tensor_field_upw_1st

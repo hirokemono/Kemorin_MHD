@@ -89,8 +89,8 @@
      &    ele1%istack_ele_smp, node1%xx, node1%rr, node1%a_r, node1%ss, &
      &    node1%a_s, ele1%ie, ele1%a_vol_ele, ele1%interior_ele,        &
      &    surf1%ie_surf, surf1%isf_4_ele, surf1%iele_4_surf,            &
-     &    ntot_int_3q, dwx, xjac, num_nod_phys, num_tot_nod_phys,       &
-     &    istack_nod_component, d_nod)
+     &    jac1_3d_q%ntot_int, dwx, xjac,                                &
+     &    num_nod_phys, num_tot_nod_phys, istack_nod_component, d_nod)
 !
 !
       end subroutine pvr_main_1st

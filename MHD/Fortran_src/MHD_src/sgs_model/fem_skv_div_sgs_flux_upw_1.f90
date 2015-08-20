@@ -68,7 +68,7 @@
       call fem_skv_div_sgs_vector_upw                                   &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt,                       &
-     &    ntot_int_3q, xjac, aw, dwx, dwx,                              &
+     &    jac1_3d_q%ntot_int, xjac, aw, dwx, dwx,                       &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
@@ -101,7 +101,7 @@
       call fem_skv_div_tensor_w_sgs_upw                                 &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt,                       &
-     &    ntot_int_3q, xjac, aw, dwx, dwx,                              &
+     &    jac1_3d_q%ntot_int, xjac, aw, dwx, dwx,                       &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
@@ -134,7 +134,7 @@
       call fem_skv_div_as_tsr_w_sgs_upw                                 &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt,                       &
-     &    ntot_int_3q, xjac, aw, dwx, dwx,                              &
+     &    jac1_3d_q%ntot_int, xjac, aw, dwx, dwx,                       &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
@@ -167,7 +167,7 @@
       call fem_skv_scalar_inertia_sgs_upw                               &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack,                                      &
-     &    n_int, k2, dt, ntot_int_3q, xjac, aw, dwx, dwx,               &
+     &    n_int, k2, dt, jac1_3d_q%ntot_int, xjac, aw, dwx, dwx,        &
      &    scalar_e, sgs_e, vxe, vxe_up, sk_v)
 !
       end subroutine fem_skv_scl_inertia_sgs_upw_1
@@ -194,7 +194,7 @@
       call fem_skv_vector_inertia_sgs_upw                               &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack,                                      &
-     &    n_int, k2, dt, ntot_int_3q, xjac, aw, dwx, dwx,               &
+     &    n_int, k2, dt, jac1_3d_q%ntot_int, xjac, aw, dwx, dwx,        &
      &    vector_e, sgs_e, vxe, vxe_up, sk_v)
 !
       end subroutine fem_skv_vcl_inertia_sgs_upw_1
@@ -221,7 +221,7 @@
       call fem_skv_intertia_rot_sgs_upw                                 &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack,                                      &
-     &    n_int, k2, dt, ntot_int_3q, xjac, aw, aw, dwx, dwx,           &
+     &    n_int, k2, dt, jac1_3d_q%ntot_int, xjac, aw, aw, dwx, dwx,    &
      &    vector_e, sgs_e, wxe, vxe_up, sk_v)
 !
       end subroutine fem_skv_inertia_rot_sgs_upw_1
@@ -252,7 +252,7 @@
       call fem_skv_sclr_inertia_modsgs_upw                              &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele, np_smp,        &
      &    iele_fsmp_stack,n_int, k2, dt,                                &
-     &    ntot_int_3q, xjac, aw, dwx, dwx,                              &
+     &    jac1_3d_q%ntot_int, xjac, aw, dwx, dwx,                       &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
@@ -288,7 +288,7 @@
       call fem_skv_vect_inertia_modsgs_upw                              &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele, np_smp,        &
      &    iele_fsmp_stack, n_int, k2, dt,                               &
-     &    ntot_int_3q, xjac, aw, dwx, dwx,                              &
+     &    jac1_3d_q%ntot_int, xjac, aw, dwx, dwx,                       &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &

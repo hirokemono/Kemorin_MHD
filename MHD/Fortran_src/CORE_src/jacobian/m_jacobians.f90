@@ -114,7 +114,19 @@
       implicit  none
 !
 !
-      integer(kind = kint) :: ntot_int_3d
+!>     Stracture for Jacobians for linear element
+      type(jacobians_3d), save :: jac1_3d_l
+!  jac1_3d_l%ntot_int
+!>     Stracture for Jacobians for quad element
+      type(jacobians_3d), save :: jac1_3d_q
+!  jac1_3d_q%ntot_int
+!
+!>     Stracture for linear Jacobians for quad element
+      type(jacobians_3d), save :: jac1_3d_lq
+!  jac1_3d_lq%ntot_int
+!
+!
+!      integer(kind = kint) :: ntot_int_3d
       real (kind=kreal), allocatable :: an(:,:)
       real (kind=kreal), allocatable :: dnx(:,:,:,:)
 !
@@ -126,7 +138,7 @@
       real (kind=kreal), allocatable :: axjac(:,:)
 ! 
 !
-      integer(kind = kint) :: ntot_int_3q
+!      integer(kind = kint) :: ntot_int_3q
       real (kind=kreal), allocatable :: aw(:,:)
       real (kind=kreal), allocatable :: dwx(:,:,:,:)
 ! 
@@ -137,7 +149,7 @@
       real (kind=kreal), allocatable :: axjac_q(:,:)
 !
 !
-      integer(kind = kint) :: ntot_int_3l
+!      integer(kind = kint) :: ntot_int_3l
       real (kind=kreal), allocatable :: am(:,:)
       real (kind=kreal), allocatable :: dmx(:,:,:,:)
 ! 
@@ -161,13 +173,13 @@
        integer(kind = kint), intent(in) :: numele
 !
 !
-       allocate(an(num_t_linear,ntot_int_3d))
-       allocate(an_infty(num_t_linear,nsurf_4_ele,ntot_int_3d))
+       allocate(an(num_t_linear,jac1_3d_l%ntot_int))
+       allocate(an_infty(num_t_linear,nsurf_4_ele,jac1_3d_l%ntot_int))
 !
-       allocate(dnx(numele,num_t_linear,ntot_int_3d,3))
+       allocate(dnx(numele,num_t_linear,jac1_3d_l%ntot_int,3))
 !
-       allocate(xjac(numele,ntot_int_3d))
-       allocate(axjac(numele,ntot_int_3d))
+       allocate(xjac(numele,jac1_3d_l%ntot_int))
+       allocate(axjac(numele,jac1_3d_l%ntot_int))
 !
        an = 0.0d0
        dnx = 0.0d0
@@ -189,14 +201,14 @@
        integer(kind = kint), intent(in) :: numele, nnod_4_ele
 !
 !
-       ntot_int_3q = ntot_int_3d
-       allocate(aw(nnod_4_ele,ntot_int_3q))
-       allocate(aw_infty(nnod_4_ele,nsurf_4_ele,ntot_int_3q))
+       jac1_3d_q%ntot_int = jac1_3d_l%ntot_int
+       allocate(aw(nnod_4_ele,jac1_3d_q%ntot_int))
+       allocate(aw_infty(nnod_4_ele,nsurf_4_ele,jac1_3d_q%ntot_int))
 !
-       allocate(dwx(numele,nnod_4_ele,ntot_int_3q,3))
+       allocate(dwx(numele,nnod_4_ele,jac1_3d_q%ntot_int,3))
 !
-       allocate(xjac_q(numele,ntot_int_3q))
-       allocate(axjac_q(numele,ntot_int_3q)) 
+       allocate(xjac_q(numele,jac1_3d_q%ntot_int))
+       allocate(axjac_q(numele,jac1_3d_q%ntot_int)) 
 !
        aw = 0.0d0
        dwx = 0.0d0
@@ -218,14 +230,14 @@
        integer(kind = kint), intent(in) :: numele
 !
 !
-       ntot_int_3l = ntot_int_3d
-       allocate(am(num_t_quad,ntot_int_3l))
-       allocate(am_infty(num_t_quad,nsurf_4_ele,ntot_int_3l))
+       jac1_3d_lq%ntot_int = jac1_3d_l%ntot_int
+       allocate(am(num_t_quad,jac1_3d_lq%ntot_int))
+       allocate(am_infty(num_t_quad,nsurf_4_ele,jac1_3d_lq%ntot_int))
 !
-       allocate(dmx(numele,num_t_quad,ntot_int_3l,3))
+       allocate(dmx(numele,num_t_quad,jac1_3d_lq%ntot_int,3))
 !
-       allocate(xjac_lq(numele,ntot_int_3l))
-       allocate(axjac_lq(numele,ntot_int_3l)) 
+       allocate(xjac_lq(numele,jac1_3d_lq%ntot_int))
+       allocate(axjac_lq(numele,jac1_3d_lq%ntot_int)) 
 !
        am = 0.0d0
        dmx = 0.0d0
@@ -320,7 +332,7 @@
       integer(kind = kint), intent(in) :: numele
 !
 !
-      allocate( dxidx_1(numele,ntot_int_3d,3,3) )
+      allocate( dxidx_1(numele,jac1_3d_l%ntot_int,3,3) )
       dxidx_1 = 0.0d0
 !
       end subroutine allocate_dxi_dx_linear
@@ -334,7 +346,7 @@
       integer(kind = kint), intent(in) :: numele
 !
 !
-      allocate( dxidx_20(numele,ntot_int_3d,3,3) )
+      allocate( dxidx_20(numele,jac1_3d_q%ntot_int,3,3) )
       dxidx_20 = 0.0d0
 !
       end subroutine allocate_dxi_dx_quad
@@ -348,7 +360,7 @@
       integer(kind = kint), intent(in) :: numele
 !
 !
-      allocate( dxidx_lq(numele,ntot_int_3d,3,3) )
+      allocate( dxidx_lq(numele,ntot_int_3l,3,3) )
       dxidx_lq = 0.0d0
 !
       end subroutine allocate_dxi_dx_l_quad

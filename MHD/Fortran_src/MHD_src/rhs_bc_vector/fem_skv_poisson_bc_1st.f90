@@ -48,9 +48,10 @@
 !
 !
       call fem_skv_poisson_fixed                                        &
-     &         (ele1%numele, num_t_linear, num_t_linear,                &
-     &          np_smp, num_index_ibc, ele_bc_id, ibc_stack_smp,        &
-     &          k2, n_int, ntot_int_3d, xjac, dnx, dnx, phi_e, sk_v)
+     &   (ele1%numele, num_t_linear, num_t_linear,                      &
+     &    np_smp, num_index_ibc, ele_bc_id, ibc_stack_smp,              &
+     &    k2, n_int, jac1_3d_l%ntot_int, xjac, dnx, dnx,                &
+     &    phi_e, sk_v)
 !
       end subroutine fem_skv_poisson_bc_1
 !
@@ -77,7 +78,7 @@
       call fem_skv_scalar_diffuse_fixed                                 &
      &         (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele, np_smp,  &
      &          num_index_ibc, ele_bc_id, ibc_stack_smp,                &
-     &          k2, ione, n_int, ntot_int_3q, xjac, dwx, dwx,           &
+     &          k2, ione, n_int, jac1_3d_q%ntot_int, xjac, dwx, dwx,    &
      &          ak_d, phi_e, sk_v)
 !
       end subroutine fem_skv_scalar_diffuse_bc_1
@@ -104,7 +105,7 @@
       call fem_skv_scalar_diffuse_fixed                                 &
      &         (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele, np_smp,  &
      &          num_index_ibc, ele_bc_id, ibc_stack_smp,                &
-     &          k2, nd, n_int, ntot_int_3q, xjac, dwx, dwx,             &
+     &          k2, nd, n_int, jac1_3d_q%ntot_int, xjac, dwx, dwx,      &
      &          ak_d, phi_e, sk_v)
 !
       end subroutine fem_skv_vector_diffuse_bc_1

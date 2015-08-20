@@ -38,7 +38,7 @@
       integer (kind=kint) :: ii, ix, i0
 !
 !
-      call s_cal_shape_function_quad(ntot_int_3q, aw,                   &
+      call s_cal_shape_function_quad(jac1_3d_q%ntot_int, aw,            &
      &    dnxi_20, dnei_20, dnzi_20, xi3, ei3, zi3)
 !
 !   jacobian for tri-linear elaments

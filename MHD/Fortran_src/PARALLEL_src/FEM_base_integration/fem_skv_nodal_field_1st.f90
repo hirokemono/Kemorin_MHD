@@ -71,7 +71,7 @@
 !
       call fem_skv_scalar_field                                         &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
-     &    ntot_int_3q, iele_fsmp_stack, n_int, k2, xjac, aw, aw,        &
+     &    jac1_3d_q%ntot_int, iele_fsmp_stack, n_int, k2, xjac, aw, aw, &
      &    scalar_1, sk_v)
 !
       end subroutine fem_skv_scalar_1st
@@ -93,7 +93,7 @@
 !
       call fem_skv_vector_field                                         &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
-     &    ntot_int_3q, iele_fsmp_stack, n_int, k2, xjac, aw, aw,        &
+     &    jac1_3d_q%ntot_int, iele_fsmp_stack, n_int, k2, xjac, aw, aw, &
      &    vect_1, sk_v)
 !
       end subroutine fem_skv_vector_1st
@@ -116,7 +116,7 @@
 !
       call fem_skv_tensor_field                                         &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
-     &    ntot_int_3q, iele_fsmp_stack, n_int, k2, xjac, aw, aw,        &
+     &    jac1_3d_q%ntot_int, iele_fsmp_stack, n_int, k2, xjac, aw, aw, &
      &    tensor_1, sk_v)
 !
       end subroutine fem_skv_tensor_1st
@@ -138,7 +138,7 @@
 !
 !
       call fem_skv_scalar_on_ele_m(ele1%numele, ele1%nnod_4_ele,        &
-     &          iele_fsmp_stack, ntot_int_3q, n_int, xjac, aw,          &
+     &          iele_fsmp_stack, jac1_3d_q%ntot_int, n_int, xjac, aw,   &
      &          scalar_ele, sk_v)
 !
       end subroutine fem_skv_scalar_on_ele_1st
@@ -159,7 +159,7 @@
 !
 !
       call fem_skv_vector_on_ele_m(ele1%numele, ele1%nnod_4_ele,        &
-     &          iele_fsmp_stack, ntot_int_3q, n_int, xjac, aw,          &
+     &          iele_fsmp_stack, jac1_3d_q%ntot_int, n_int, xjac, aw,   &
      &          vector_ele, sk_v)
 !
       end subroutine fem_skv_vector_on_ele_1st
@@ -180,7 +180,7 @@
 !
 !
       call fem_skv_tensor_on_ele_m(ele1%numele, ele1%nnod_4_ele,        &
-     &          iele_fsmp_stack, ntot_int_3q, n_int, xjac, aw,          &
+     &          iele_fsmp_stack, jac1_3d_q%ntot_int, n_int, xjac, aw,   &
      &          tensor_ele, sk_v)
 !
       end subroutine fem_skv_tensor_on_ele_1st
@@ -270,8 +270,8 @@
 !
 !
       call fem_skv_scalar_on_ele_grp_m(ele1%numele, ele1%nnod_4_ele,    &
-     &    iele_fsmp_stack, nele_grp, iele_grp, ntot_int_3q, n_int,      &
-     &     xjac, aw, scalar_ele, sk_v)
+     &    iele_fsmp_stack, nele_grp, iele_grp, jac1_3d_q%ntot_int,      &
+     &    n_int, xjac, aw, scalar_ele, sk_v)
 !
       end subroutine fem_skv_scalar_on_ele_grp_1st
 !
@@ -294,8 +294,8 @@
 !
 !
       call fem_skv_vector_on_ele_grp_m(ele1%numele, ele1%nnod_4_ele,    &
-     &    iele_fsmp_stack, nele_grp, iele_grp, ntot_int_3q, n_int,      &
-     &     xjac, aw, vector_ele, sk_v)
+     &    iele_fsmp_stack, nele_grp, iele_grp, jac1_3d_q%ntot_int,      &
+     &    n_int, xjac, aw, vector_ele, sk_v)
 !
       end subroutine fem_skv_vector_on_ele_grp_1st
 !
@@ -318,8 +318,8 @@
 !
 !
       call fem_skv_tensor_on_ele_grp_m(ele1%numele, ele1%nnod_4_ele,    &
-     &    iele_fsmp_stack, nele_grp, iele_grp, ntot_int_3q, n_int,      &
-     &     xjac, aw, tensor_ele, sk_v)
+     &    iele_fsmp_stack, nele_grp, iele_grp, jac1_3d_q%ntot_int,      &
+     &    n_int, xjac, aw, tensor_ele, sk_v)
 !
       end subroutine fem_skv_tensor_on_ele_grp_1st
 !
