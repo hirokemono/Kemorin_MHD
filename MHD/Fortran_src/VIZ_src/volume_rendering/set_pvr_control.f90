@@ -61,6 +61,8 @@
 !
       do i_pvr = 1, num_pvr
         call read_control_pvr(i_pvr)
+        call read_control_modelview(i_pvr)
+        call read_control_colormap(i_pvr)
       end do
 !
       do i_pvr = 1, num_pvr
@@ -101,6 +103,55 @@
       close(pvr_ctl_file_code)
 !
       end subroutine read_control_pvr
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine read_control_modelview(i_pvr)
+!
+      use calypso_mpi
+      use m_ctl_data_4_view_transfer
+!
+      integer(kind = kint), intent(in) :: i_pvr
+!
+      if(pvr_ctl_struct(i_pvr)%view_file_ctl .eq. 'NO_FILE') then
+        if(my_rank .eq. 0) write(*,*)  'Modelview control:', i_pvr,     &
+     &                               ' is included'
+        return
+      end if
+!
+      if(my_rank .eq. 0) write(*,*) 'Modelview control:', i_pvr,':  ',  &
+     &                 trim(pvr_ctl_struct(i_pvr)%view_file_ctl)
+!
+      open(pvr_ctl_file_code, file=pvr_ctl_struct(i_pvr)%view_file_ctl, &
+     &     status='old')
+      call read_control_data_modelview(pvr_ctl_struct(i_pvr)%mat)
+      close(pvr_ctl_file_code)
+!
+      end subroutine read_control_modelview
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine read_control_colormap(i_pvr)
+!
+      use calypso_mpi
+!
+      integer(kind = kint), intent(in) :: i_pvr
+!
+      if(pvr_ctl_struct(i_pvr)%color_file_ctl .eq. 'NO_FILE') then
+        if(my_rank .eq. 0) write(*,*)  'Colormap control:', i_pvr,      &
+     &                               ' is included'
+        return
+      end if
+!
+      if(my_rank .eq. 0) write(*,*) 'Colormap control:', i_pvr,':  ',   &
+     &                 trim(pvr_ctl_struct(i_pvr)%color_file_ctl)
+!
+      open(pvr_ctl_file_code,                                           &
+     &     file=pvr_ctl_struct(i_pvr)%color_file_ctl,  status='old')
+      call read_control_data_colormap(pvr_ctl_struct(i_pvr))
+      close(pvr_ctl_file_code)
+!
+      end subroutine read_control_colormap
 !
 !  ---------------------------------------------------------------------
 !

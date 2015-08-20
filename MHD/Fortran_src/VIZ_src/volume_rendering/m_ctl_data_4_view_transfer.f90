@@ -3,12 +3,21 @@
 !
 !        programmed by H.Matsui on May. 2006
 !
-!      subroutine read_view_transfer_ctl(mat)
-!      subroutine reset_view_transfer_ctl(mat)
 !
+!>@file   m_ctl_data_4_view_transfer.f90
+!!@brief  module m_ctl_data_4_view_transfer
+!!
+!!@author  H. Matsui
+!!@date Programmed in May. 2006
 !
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!  example
+!>@brief Control inputs for PVR view parameter
+!!
+!!@verbatim
+!!      subroutine read_view_transfer_ctl(mat)
+!!      subroutine reset_view_transfer_ctl(mat)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!  Input example
+!
 !!  begin view_transform_ctl
 !!
 !!     begin image_size_ctl
@@ -87,7 +96,7 @@
 !!    end projection_matrix_ctl
 !!  end view_transform_ctl
 !!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!@endverbatim
 !!
 !
@@ -98,28 +107,40 @@
       use m_constants
       use m_machine_parameter
       use m_read_control_elements
+      use t_control_elements
       use t_read_control_arrays
       use skip_comment_f
 !
       implicit  none
 !
 !
+!>    Structure for modelview marices
       type modeview_ctl
-        integer(kind = kint) :: num_pixel_ctl(2)
 !
-!>      Structure for opacity controls
-!!@n      opacity_ctl%c1_tbl:  1st component name for matrix
-!!@n      opacity_ctl%c2_tbl:  2nd component name for matrix
-!!@n      opacity_ctl%vect:    Modelview matrix
+!>    Structure for number of horizontal pixels
+        type(read_integer_item) :: num_xpixel_ctl
+!>    Structure for number of vertical pixels
+        type(read_integer_item) :: num_ypixel_ctl
+!
+!>    Structure for opacity controls
+!!@n      modelview_mat_ctl%c1_tbl:  1st component name for matrix
+!!@n      modelview_mat_ctl%c2_tbl:  2nd component name for matrix
+!!@n      modelview_mat_ctl%vect:    Modelview matrix
         type(ctl_array_c2r) :: modelview_mat_ctl
 !
-        real(kind = kreal) :: perspective_angle_ctl
-        real(kind = kreal) :: perspective_xy_ratio_ctl
-        real(kind = kreal) :: perspective_near_ctl
-        real(kind = kreal) :: perspective_far_ctl
+!>    Structure for perspective view angle
+        type(read_real_item) :: perspective_angle_ctl
+!>    Structure for aspect ration of screen
+        type(read_real_item) :: perspective_xy_ratio_ctl
+!>    Structure for Near point of view
+        type(read_real_item) :: perspective_near_ctl
+!>    Structure for Far point of view
+        type(read_real_item) :: perspective_far_ctl
 !
-        real(kind = kreal) :: focalpoint_ctl
-        real(kind = kreal) :: eye_separation_ctl
+!>    Structure for focal point
+        type(read_real_item) :: focalpoint_ctl
+!>    Structure for eye separation
+        type(read_real_item) :: eye_separation_ctl
 !
 !
 !>      Structure for look at  controls
@@ -142,8 +163,10 @@
 !!@n      view_rot_vec_ctl%vect:    rotation vector
         type(ctl_array_cr) :: view_rot_vec_ctl
 !
-        real(kind = kreal) :: view_rotation_deg_ctl = 0.0d0
-        real(kind = kreal) :: scale_factor_ctl =      1.0d0
+!>      Structure for rotation of rotatin angle of view
+        type(read_real_item) :: view_rotation_deg_ctl
+!>      Structure for scale factor
+        type(read_real_item) :: scale_factor_ctl
 !
 !>      Structure for scale factor controls
 !!@n      scale_vector_ctl%c_tbl:   Direction of scale factor
@@ -164,24 +187,6 @@
         integer (kind=kint) :: i_project_mat = 0
 !
         integer (kind=kint) :: i_stereo_view = 0
-!
-        integer (kind=kint) :: i_view_point =     0
-        integer (kind=kint) :: i_view_rot_deg =   0
-        integer (kind=kint) :: i_scale_factor =   0
-!
-!     4th level for projection_matrix
-        integer (kind=kint) :: i_perspect_angle =  0
-        integer (kind=kint) :: i_perspect_xy =     0
-        integer (kind=kint) :: i_perspect_near =   0
-        integer (kind=kint) :: i_perspect_far =    0
-!
-!     4th level for image size
-        integer (kind=kint) :: i_x_pixel = 0
-        integer (kind=kint) :: i_y_pixel = 0
-!
-!     4th level for stereo view
-        integer (kind=kint) :: i_focalpoint =     0
-        integer (kind=kint) :: i_eye_separation = 0
       end type modeview_ctl
 !
 !
@@ -234,7 +239,6 @@
       character(len=kchara) :: hd_eye_separation = 'eye_separation_ctl'
 !
 !
-      private :: hd_view_transform
       private :: hd_x_pixel, hd_y_pixel
       private :: hd_project_mat, hd_view_point, hd_up_dir, hd_image_size
       private :: hd_model_mat
@@ -253,12 +257,30 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine read_control_data_modelview(mat)
+!
+      use calypso_mpi
+      use m_error_IDs
+!
+      type(modeview_ctl), intent(inout) :: mat
+!
+      call load_ctl_label_and_line
+!
+      if(right_begin_flag(hd_view_transform) .gt. 0) then
+        call read_view_transfer_ctl(mat)
+      else
+        call calypso_mpi_abort(ierr_PVR, 'Set view matrix file')
+      end if
+!
+      end subroutine read_control_data_modelview
+!
+!  ---------------------------------------------------------------------
+!
       subroutine read_view_transfer_ctl(mat)
 !
       type(modeview_ctl), intent(inout) :: mat
 !
 !
-      if(right_begin_flag(hd_view_transform) .eq. 0) return
       if (mat%i_view_transform .gt. 0) return
       do
         call load_ctl_label_and_line
@@ -286,10 +308,10 @@
         call read_control_array_c2_r                                    &
      &     (hd_model_mat, mat%modelview_mat_ctl)
 !
-        call read_real_ctl_item(hd_view_rot_deg,                        &
-     &        mat%i_view_rot_deg,  mat%view_rotation_deg_ctl)
-        call read_real_ctl_item(hd_scale_factor,                        &
-     &        mat%i_scale_factor,  mat%scale_factor_ctl)
+        call read_real_ctl_type(hd_view_rot_deg,                        &
+     &        mat%view_rotation_deg_ctl)
+        call read_real_ctl_type(hd_scale_factor,                        &
+     &        mat%scale_factor_ctl)
       end do
 !
       end subroutine read_view_transfer_ctl
@@ -310,14 +332,14 @@
         call find_control_end_flag(hd_project_mat, mat%i_project_mat)
         if(mat%i_project_mat .gt. 0) exit
 !
-        call read_real_ctl_item(hd_perspect_angle,                      &
-     &          mat%i_perspect_angle,  mat%perspective_angle_ctl )
-        call read_real_ctl_item(hd_perspect_xy,                         &
-     &          mat%i_perspect_xy,  mat%perspective_xy_ratio_ctl )
-        call read_real_ctl_item(hd_perspect_near,                       &
-     &          mat%i_perspect_near, mat%perspective_near_ctl )
-        call read_real_ctl_item(hd_perspect_far,                        &
-     &          mat%i_perspect_far, mat%perspective_far_ctl )
+        call read_real_ctl_type(hd_perspect_angle,                      &
+     &          mat%perspective_angle_ctl)
+        call read_real_ctl_type(hd_perspect_xy,                         &
+     &          mat%perspective_xy_ratio_ctl)
+        call read_real_ctl_type(hd_perspect_near,                       &
+     &          mat%perspective_near_ctl)
+        call read_real_ctl_type(hd_perspect_far,                        &
+     &          mat%perspective_far_ctl)
       end do
 !
       end subroutine read_projection_mat_ctl
@@ -337,10 +359,8 @@
         call find_control_end_flag(hd_image_size, mat%i_image_size)
         if(mat%i_image_size .gt. 0) exit
 !
-        call read_integer_ctl_item(hd_x_pixel,                          &
-     &        mat%i_x_pixel,  mat%num_pixel_ctl(1) )
-        call read_integer_ctl_item(hd_y_pixel,                          &
-     &        mat%i_y_pixel,  mat%num_pixel_ctl(2) )
+        call read_integer_ctl_type(hd_x_pixel, mat%num_xpixel_ctl)
+        call read_integer_ctl_type(hd_y_pixel, mat%num_ypixel_ctl)
       end do
 !
       end subroutine read_image_size_ctl
@@ -360,10 +380,9 @@
         call find_control_end_flag(hd_stereo_view, mat%i_stereo_view)
         if(mat%i_stereo_view .gt. 0) exit
 !
-        call read_real_ctl_item(hd_focalpoint,                          &
-     &        mat%i_focalpoint,  mat%focalpoint_ctl )
-        call read_real_ctl_item(hd_eye_separation,                      &
-     &        mat%i_eye_separation,  mat%eye_separation_ctl )
+        call read_real_ctl_type(hd_focalpoint, mat%focalpoint_ctl)
+        call read_real_ctl_type(hd_eye_separation,                      &
+     &        mat%eye_separation_ctl)
       end do
 !
       end subroutine read_stereo_view_ctl
@@ -386,13 +405,18 @@
       mat%scale_vector_ctl%num =     0
       mat%viewpt_in_viewer_ctl%num = 0
 !
-      mat%perspective_angle_ctl =    0.0d0
-      mat%perspective_xy_ratio_ctl = 0.0d0
-      mat%perspective_near_ctl =     0.0d0
-      mat%perspective_far_ctl =      0.0d0
+      mat%perspective_angle_ctl%realvalue =    0.0d0
+      mat%perspective_xy_ratio_ctl%realvalue = 0.0d0
+      mat%perspective_near_ctl%realvalue =     0.0d0
+      mat%perspective_far_ctl%realvalue =      0.0d0
 !
-      mat%view_rotation_deg_ctl =      0.0d0
-      mat%scale_factor_ctl =           1.0d0
+      mat%perspective_far_ctl%realvalue =      0.0d0
+!
+      mat%focalpoint_ctl%realvalue =    0.0d0
+      mat%eye_separation_ctl%realvalue = 0.0d0
+!
+      mat%view_rotation_deg_ctl%realvalue =      0.0d0
+      mat%scale_factor_ctl%realvalue =           1.0d0
 !
 !
       mat%modelview_mat_ctl%icou =   0
@@ -406,8 +430,8 @@
       mat%scale_vector_ctl%icou =     0
       mat%viewpt_in_viewer_ctl%icou = 0
 !
-      mat%i_view_rot_deg = 0
-      mat%i_scale_factor = 0
+      mat%view_rotation_deg_ctl%iflag = 0
+      mat%scale_factor_ctl%iflag = 0
 !
       mat%i_image_size =  0
       mat%i_stereo_view = 0

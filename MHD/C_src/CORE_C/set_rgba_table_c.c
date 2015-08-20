@@ -126,19 +126,19 @@ void output_colormap_control_s(FILE *fp, struct colormap_params *cmap_s){
 		fprintf(fp, "	color_table_ctl    %.4E   %.4E end\n",
 				cmap_s->color_data[i], cmap_s->color_value[i]);
 	}
-	fprintf(fp, "	end array\n");
+	fprintf(fp, "	end array pvr_color_ctl\n");
 	fprintf(fp, "!\n");
-	fprintf(fp, "    opacity_style_ctl   Point_linear\n");
-	fprintf(fp, "    array  opacity_table_ctl         %d\n",cmap_s->n_opacity_point);
+	fprintf(fp, "    opacity_style_ctl   point_linear\n");
+	fprintf(fp, "    array  linear_opacity_ctl         %d\n",cmap_s->n_opacity_point);
 	for(i=0; i<cmap_s->n_opacity_point; i++){
 		color = color_normalize_linear_segment_c(cmap_s->n_color_point, 
 					 cmap_s->color_data, cmap_s->color_value, cmap_s->opacity_data[i]);
-		fprintf(fp, "	opacity_table_ctl    %.4E   %.4E   %.4E end\n",
-				cmap_s->opacity_data[i], color, cmap_s->opacity_value[i]);
+		fprintf(fp, "	linear_opacity_ctl    %.4E   %.4E end\n",
+				cmap_s->opacity_data[i], cmap_s->opacity_value[i]);
 	}
 	fprintf(fp, "    end array\n");
 	fprintf(fp, "    constant_opacity_ctl     %.8E end\n",cmap_s->min_opacity);
-	fprintf(fp, "  end\n");
+	fprintf(fp, "  end array linear_opacity_ctl\n");
 	fprintf(fp, "!\n");
 
 	fprintf(fp, "  begin colorbar_ctl\n");
@@ -149,7 +149,7 @@ void output_colormap_control_s(FILE *fp, struct colormap_params *cmap_s){
 	fprintf(fp, "    colorbar_range      %.4E   %.4E \n",
 			cmap_s->color_data[IZERO], cmap_s->color_data[cmap_s->n_color_point-1]);
 	fprintf(fp, "    font_size_ctl          1\n");
-	fprintf(fp, "  end\n");
+	fprintf(fp, "  end colorbar_ctl\n");
 	
 	return;
 }

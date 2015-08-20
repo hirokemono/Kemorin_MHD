@@ -300,21 +300,21 @@
 !          color_param%id_pvr_color(3) = iflag_intense
 !        end if
         if     (cmp_no_case(tmpchara, hd_pointdelta)) then
-          if( pvr%opacity_ctl%num .gt. 0) then
+          if( pvr%step_opacity_ctl%num .gt. 0) then
             color_param%id_pvr_color(3) = iflag_pointdelta
-            color_param%num_opacity_pnt = pvr%opacity_ctl%num
+            color_param%num_opacity_pnt = pvr%step_opacity_ctl%num
           end if
 !
         else if(cmp_no_case(tmpchara, hd_pointrange)) then
-          if( pvr%opacity_ctl%num .gt. 0) then
+          if( pvr%step_opacity_ctl%num .gt. 0) then
             color_param%id_pvr_color(3) = iflag_pointrange
-            color_param%num_opacity_pnt = pvr%opacity_ctl%num
+            color_param%num_opacity_pnt = pvr%step_opacity_ctl%num
           end if
 !
         else if(cmp_no_case(tmpchara, hd_pointlinear)) then
-          if( pvr%opacity_ctl%num .gt. 0) then
+          if( pvr%linear_opacity_ctl%num .gt. 0) then
             color_param%id_pvr_color(3) = iflag_pointlinear
-            color_param%num_opacity_pnt = pvr%opacity_ctl%num
+            color_param%num_opacity_pnt = pvr%linear_opacity_ctl%num
           end if
         end if
       end if
@@ -324,9 +324,12 @@
       if    (color_param%id_pvr_color(3) .eq. iflag_pointdelta          &
      &  .or. color_param%id_pvr_color(3) .eq. iflag_pointrange) then
         do i = 1, color_param%num_opacity_pnt
-          color_param%pvr_opacity_param(1,i) = pvr%opacity_ctl%vec1(i)
-          color_param%pvr_opacity_param(2,i) = pvr%opacity_ctl%vec2(i)
-          color_param%pvr_opacity_param(3,i) = pvr%opacity_ctl%vec3(i)
+          color_param%pvr_opacity_param(1,i)                            &
+     &                  = pvr%step_opacity_ctl%vec1(i)
+          color_param%pvr_opacity_param(2,i)                            &
+     &                  = pvr%step_opacity_ctl%vec2(i)
+          color_param%pvr_opacity_param(3,i)                            &
+     &                  = pvr%step_opacity_ctl%vec3(i)
           color_param%pvr_max_opacity                                   &
      &       = max(color_param%pvr_max_opacity,                         &
      &             color_param%pvr_opacity_param(3,i))
@@ -334,9 +337,12 @@
 !
       else if(color_param%id_pvr_color(3) .eq. iflag_pointlinear) then
         do i = 1, color_param%num_opacity_pnt
-          color_param%pvr_opacity_param(1,i) = pvr%opacity_ctl%vec1(i)
-          color_param%pvr_opacity_param(2,i) = pvr%opacity_ctl%vec1(i)
-          color_param%pvr_opacity_param(3,i) = pvr%opacity_ctl%vec3(i)
+          color_param%pvr_opacity_param(1,i)                            &
+     &                  = pvr%linear_opacity_ctl%vec1(i)
+          color_param%pvr_opacity_param(2,i)                            &
+     &                   = pvr%linear_opacity_ctl%vec1(i)
+          color_param%pvr_opacity_param(3,i)                            &
+     &                   = pvr%linear_opacity_ctl%vec2(i)
           color_param%pvr_max_opacity                                   &
      &       = max(color_param%pvr_max_opacity,                         &
      &             color_param%pvr_opacity_param(3,i))

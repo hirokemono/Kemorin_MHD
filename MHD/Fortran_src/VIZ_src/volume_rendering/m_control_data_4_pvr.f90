@@ -5,7 +5,8 @@
 !
 !      subroutine deallocate_cont_dat_pvr(pvr)
 !
-!      subroutine read_control_data_pvr
+!      subroutine read_control_data_pvr(pvr)
+!      subroutine read_control_data_colormap(pvr)
 !      subroutine read_vr_psf_ctl(pvr)
 !      subroutine reset_pvr_control_flags
 !
@@ -107,15 +108,25 @@
 !!    end array color_table_ctl
 !!!
 !!    opacity_style_ctl              point_linear
-!!    array  opacity_table_ctl         7
-!!      opacity_table_ctl   0.0     0.01    0.01
-!!      opacity_table_ctl   0.01    0.2     0.015
-!!      opacity_table_ctl   0.2     0.35    0.02
-!!      opacity_table_ctl   0.6     0.7     0.04
-!!      opacity_table_ctl   0.7     0.85    0.03
-!!      opacity_table_ctl   0.85    0.95    0.01
-!!      opacity_table_ctl   0.95    1.0     0.001
-!!    end array opacity_table_ctl
+!!    array  linear_opacity_ctl         7
+!!      linear_opacity_ctl   0.0     0.01
+!!      linear_opacity_ctl   0.01    0.015
+!!      linear_opacity_ctl   0.2     0.02
+!!      linear_opacity_ctl   0.6     0.04
+!!      linear_opacity_ctl   0.7     0.03
+!!      linear_opacity_ctl   0.85    0.01
+!!      linear_opacity_ctl   0.95    0.001
+!!    end array linear_opacity_ctl
+!!
+!!    array  step_opacity_ctl         7
+!!      step_opacity_ctl   0.0     0.01    0.01
+!!      step_opacity_ctl   0.01    0.2     0.015
+!!      step_opacity_ctl   0.2     0.35    0.02
+!!      step_opacity_ctl   0.6     0.7     0.04
+!!      step_opacity_ctl   0.7     0.85    0.03
+!!      step_opacity_ctl   0.85    0.95    0.01
+!!      step_opacity_ctl   0.95    1.0     0.001
+!!    end array step_opacity_ctl
 !!    constant_opacity_ctl           0.003
 !!!
 !!    range_min_ctl   0.0
@@ -156,6 +167,12 @@
 !
 !
       type pvr_ctl
+!>  file name for modelves matrix
+        character(len=kchara) :: view_file_ctl
+!>  file name for modelves matrix
+        character(len=kchara) :: color_file_ctl
+!
+!>    Structure for modelview marices
         type(modeview_ctl) :: mat
 !
         type(read_character_item) :: file_head_ctl
@@ -199,20 +216,27 @@
         type(read_real_item) :: fix_opacity_ctl
 !
 !>      Structure for color map controls
-!!@n      opacity_ctl%vec1:  field data value
-!!@n      opacity_ctl%vec2:  color map value
+!!@n      colortbl_ctl%vec1:  field data value
+!!@n      colortbl_ctl%vec2:  color map value
         type(ctl_array_r2) :: colortbl_ctl
 !
-!>      Structure for opacity controls
-!!@n      opacity_ctl%vec1:  Minimum value for one opacity
-!!@n      opacity_ctl%vec2:  Maximum value for one opacity
-!!@n      opacity_ctl%vec3:  Opacity for each level
-        type(ctl_array_r3) :: opacity_ctl
+!>        Structure for opacity controls
+!!@n        linear_opacity_ctl%vec1:  field value to define opacity
+!!@n        linear_opacity_ctl%vec3:  Opacity at this point
+        type(ctl_array_r2) :: linear_opacity_ctl
+!>        Structure for opacity controls
+!!@n        step_opacity_ctl%vec1:  Minimum value for one opacity
+!!@n        step_opacity_ctl%vec2:  Maximum value for one opacity
+!!@n        step_opacity_ctl%vec3:  Opacity for each level
+        type(ctl_array_r3) :: step_opacity_ctl
 !
 !
 !     Top level
 !
         integer (kind=kint) :: i_pvr_ctl = 0
+!
+        integer (kind=kint) :: i_view_file =  0
+        integer (kind=kint) :: i_color_file = 0
 !
 !     2nd level for volume rendering
         integer (kind=kint) :: i_output_field_def =    0
@@ -268,7 +292,8 @@
       character(len=kchara) :: hd_opacity_style = 'opacity_style_ctl'
       character(len=kchara) :: hd_constant_opacity                      &
      &                        = 'constant_opacity_ctl'
-      character(len=kchara) :: hd_opacity_def = 'opacity_table_ctl'
+      character(len=kchara) :: hd_linear_opacity = 'linear_opacity_ctl'
+      character(len=kchara) :: hd_opacity_def =    'step_opacity_ctl'
 !
 !     3rd level for colorbar
 !
@@ -295,7 +320,7 @@
       private :: hd_pvr_numgrid_cbar, hd_zeromarker_flag
       private :: hd_pvr_range_min, hd_pvr_range_max
       private :: hd_colortable, hd_opacity_style
-      private :: hd_constant_opacity, hd_opacity_def
+      private :: hd_constant_opacity, hd_opacity_def, hd_linear_opacity
 !
       private :: read_plot_area_ctl
       private :: read_lighting_ctl
@@ -313,8 +338,11 @@
       type(pvr_ctl), intent(inout) :: pvr
 !
 !
-      if(pvr%opacity_ctl%num .gt. 0) then
-        call dealloc_control_array_r3(pvr%opacity_ctl)
+      if(pvr%step_opacity_ctl%num .gt. 0) then
+        call dealloc_control_array_r3(pvr%step_opacity_ctl)
+      end if
+      if(pvr%linear_opacity_ctl%num .gt. 0) then
+        call dealloc_control_array_r2(pvr%linear_opacity_ctl)
       end if
       if(pvr%light_position_ctl%num .gt. 0) then
         call dealloc_control_array_r3(pvr%light_position_ctl)
@@ -337,9 +365,29 @@
 !
 !
       call load_ctl_label_and_line
+!
       call read_vr_psf_ctl(pvr)
 !
       end subroutine read_control_data_pvr
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine read_control_data_colormap(pvr)
+!
+      use calypso_mpi
+      use m_error_IDs
+!
+      type(pvr_ctl), intent(inout) :: pvr
+!
+      call load_ctl_label_and_line
+!
+      if(right_begin_flag(hd_pvr_colordef) .gt. 0) then
+        call read_pvr_colordef_ctl(pvr)
+      else
+        call calypso_mpi_abort(ierr_PVR, 'Set correct colormap file')
+      end if
+!
+      end subroutine read_control_data_colormap
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
@@ -358,11 +406,24 @@
         if(pvr%i_pvr_ctl .gt. 0) exit
 !
 !
-        call read_view_transfer_ctl(pvr%mat)
+        if(right_file_flag(hd_view_transform) .gt. 0) then
+          call read_file_name_from_ctl_line(pvr%i_view_file,            &
+     &        pvr%view_file_ctl)
+        else if(right_begin_flag(hd_view_transform) .gt. 0) then
+          pvr%view_file_ctl = 'NO_FILE'
+          call read_view_transfer_ctl(pvr%mat)
+        end if
+!
+        if(right_file_flag(hd_pvr_colordef) .gt. 0) then
+          call read_file_name_from_ctl_line(pvr%i_color_file,           &
+     &        pvr%color_file_ctl)
+        else if(right_begin_flag(hd_pvr_colordef) .gt. 0) then
+          pvr%color_file_ctl = 'NO_FILE'
+          call read_pvr_colordef_ctl(pvr)
+        end if
 !
         call read_plot_area_ctl(pvr)
         call read_lighting_ctl(pvr)
-        call read_pvr_colordef_ctl(pvr)
         call read_pvr_colorbar_ctl(pvr)
         call read_pvr_rotation_ctl(pvr)
 !
@@ -431,7 +492,6 @@
       type(pvr_ctl), intent(inout) :: pvr
 !
 !
-      if(right_begin_flag(hd_pvr_colordef) .eq. 0) return
       if (pvr%i_pvr_colordef.gt.0) return
       do
         call load_ctl_label_and_line
@@ -441,8 +501,11 @@
 !
 !
         call read_control_array_r2(hd_colortable, pvr%colortbl_ctl)
+        call read_control_array_r2                                      &
+     &     (hd_linear_opacity, pvr%linear_opacity_ctl)
 !
-        call read_control_array_r3(hd_opacity_def, pvr%opacity_ctl)
+        call read_control_array_r3                                      &
+     &     (hd_opacity_def, pvr%step_opacity_ctl)
 !
 !
         call read_chara_ctl_type(hd_colormap, pvr%colormap_ctl)
@@ -525,7 +588,8 @@
       pvr%pvr_area_ctl%num =       0
       pvr%light_position_ctl%num = 0
       pvr%colortbl_ctl%num =       0
-      pvr%opacity_ctl%num =        0
+      pvr%step_opacity_ctl%num =   0
+      pvr%linear_opacity_ctl%num = 0
 !
       pvr%file_head_ctl%iflag =   0
       pvr%file_fmt_ctl%iflag =    0
@@ -563,7 +627,8 @@
 !
       pvr%i_pvr_colordef = 0
       pvr%colortbl_ctl%icou = 0
-      pvr%opacity_ctl%icou =  0
+      pvr%step_opacity_ctl%icou =    0
+      pvr%linear_opacity_ctl%icou =  0
 !
       call reset_view_transfer_ctl(pvr%mat)
 !

@@ -53,14 +53,15 @@
         call dealloc_control_array_c_r(mat%up_dir_ctl)
       end if
 !
-      if(mat%i_view_rot_deg.gt.0                                        &
-     &    .and. mat%view_rot_vec_ctl%num.ge.3) then
+      if(mat%view_rotation_deg_ctl%iflag .gt. 0                         &
+     &    .and. mat%view_rot_vec_ctl%num .ge. 3) then
         call set_view_rotation_vect_ctl(mat, view_param)
         call dealloc_control_array_c_r(mat%view_rot_vec_ctl)
       end if
 !
-      if(mat%i_scale_factor .gt. 0) then
-        view_param%scale_factor_pvr(1:3) = mat%scale_factor_ctl
+      if(mat%scale_factor_ctl%iflag .gt. 0) then
+        view_param%scale_factor_pvr(1:3)                                &
+     &            = mat%scale_factor_ctl%realvalue
         view_param%iflag_scale_fact = 1
       else if(mat%scale_vector_ctl%num .ge. 3) then
         call set_view_scale_factor_ctl(mat, view_param)
@@ -82,14 +83,14 @@
       type(pvr_view_parameter), intent(inout) :: view_param
 !
 !
-      if (mat%i_x_pixel .gt. 0) then
-        view_param%n_pvr_pixel(1) = mat%num_pixel_ctl(1)
+      if (mat%num_xpixel_ctl%iflag .gt. 0) then
+        view_param%n_pvr_pixel(1) = mat%num_xpixel_ctl%intvalue
       else
         view_param%n_pvr_pixel(1) = 640
       end if
 !
-      if (mat%i_y_pixel .gt. 0) then
-        view_param%n_pvr_pixel(2) = mat%num_pixel_ctl(2)
+      if (mat%num_ypixel_ctl%iflag .gt. 0) then
+        view_param%n_pvr_pixel(2) = mat%num_ypixel_ctl%intvalue
       else
         view_param%n_pvr_pixel(2) = 480
       end if
@@ -104,49 +105,55 @@
       type(pvr_view_parameter), intent(inout) :: view_param
 !
 !
-      if (mat%i_perspect_angle .gt. 0) then
-        view_param%perspective_angle = mat%perspective_angle_ctl
+      if (mat%perspective_angle_ctl%iflag .gt. 0) then
+        view_param%perspective_angle                                    &
+     &          = mat%perspective_angle_ctl%realvalue
       else
         view_param%perspective_angle = 10.0d0
       end if
 !
-      if (mat%i_perspect_xy .gt. 0) then
-        view_param%perspective_xy_ratio = mat%perspective_xy_ratio_ctl
+      if (mat%perspective_xy_ratio_ctl%iflag .gt. 0) then
+        view_param%perspective_xy_ratio                                 &
+     &          = mat%perspective_xy_ratio_ctl%realvalue
       else
         view_param%perspective_xy_ratio = one
       end if
 !
-      if (mat%i_perspect_near .gt. 0) then
-        view_param%perspective_near = mat%perspective_near_ctl
+      if (mat%perspective_near_ctl%iflag .gt. 0) then
+        view_param%perspective_near                                     &
+     &          = mat%perspective_near_ctl%realvalue
       else
         view_param%perspective_near = 0.1d0
       end if
 !
-      if (mat%i_perspect_far .gt. 0) then
-        view_param%perspective_far = mat%perspective_far_ctl
+      if (mat%perspective_far_ctl%iflag .gt. 0) then
+        view_param%perspective_far                                      &
+     &          = mat%perspective_far_ctl%realvalue
       else
         view_param%perspective_far = 1.0d2
       end if
 !
       view_param%iflag_perspective                                      &
-     &      = mat%i_perspect_angle*mat%i_perspect_xy                    &
-     &       *mat%i_perspect_near*mat%i_perspect_far
+     &      = mat%perspective_angle_ctl%iflag                           &
+     &       * mat%perspective_xy_ratio_ctl%iflag                       &
+     &       * mat%perspective_near_ctl%iflag                           &
+     &       * mat%perspective_far_ctl%iflag
 !
 !
-      if (mat%i_focalpoint .gt. 0) then
-        view_param%focalLength = mat%focalpoint_ctl
+      if (mat%focalpoint_ctl%iflag .gt. 0) then
+        view_param%focalLength = mat%focalpoint_ctl%realvalue
       else
         view_param%focalLength = 1.0d1
       end if
 !
-      if (mat%i_eye_separation .gt. 0) then
-        view_param%eye_separation = mat%eye_separation_ctl
+      if (mat%eye_separation_ctl%iflag .gt. 0) then
+        view_param%eye_separation = mat%eye_separation_ctl%realvalue
       else
         view_param%eye_separation = 1.0d-1
       end if
 !
       view_param%iflag_stereo_pvr                                       &
-     &      = mat%i_focalpoint*mat%i_eye_separation
+     &      = mat%focalpoint_ctl%iflag * mat%eye_separation_ctl%iflag
 !
       end subroutine copy_pvr_perspective_matrix
 !
@@ -267,8 +274,9 @@
         call calypso_MPI_abort(ierr_PVR, e_message)
       end if
 !
-      if (mat%i_view_rot_deg .gt. 0) then
-        view_param%rotation_pvr(1) = mat%view_rotation_deg_ctl
+      if (mat%view_rotation_deg_ctl%iflag .gt. 0) then
+        view_param%rotation_pvr(1)                                      &
+     &     = mat%view_rotation_deg_ctl%realvalue
       else
         view_param%rotation_pvr(1) = 0.0d0
       end if
@@ -278,8 +286,14 @@
         if(nd .eq. 0) cycle
         view_param%rotation_pvr(nd+1) = mat%view_rot_vec_ctl%vect(i)
       end do
-      if(mat%view_rot_vec_ctl%num .ge. 4) then
+      if(mat%view_rot_vec_ctl%num.ge.3                                  &
+     &     .and. mat%view_rotation_deg_ctl%iflag .gt. 0) then
         view_param%iflag_rotation = 1
+      end if
+!
+      if (iflag_debug .gt. 0) then
+        write(*,*) 'rotation_vect', view_param%rotation_pvr(2:4)
+        write(*,*) 'rotation_angle', view_param%rotation_pvr(1)
       end if
 !
       end subroutine set_view_rotation_vect_ctl

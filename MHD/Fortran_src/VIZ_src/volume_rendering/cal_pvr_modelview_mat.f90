@@ -199,6 +199,7 @@
       end if
 !
 !
+      write(*,*) 'tako 2'
       if (view_param%iflag_rotate_snap .gt. 0) then
         call Kemo_Unit(view_param%modelview_mat)
 !
