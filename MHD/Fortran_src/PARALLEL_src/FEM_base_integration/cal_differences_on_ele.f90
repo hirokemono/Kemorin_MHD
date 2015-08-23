@@ -184,9 +184,10 @@
       real(kind = kreal), intent(inout) :: d_ele(ele1%numele)
 !
 !
-      call fem_difference_grp_on_element(iele_fsmp_stack, node1%numnod, &
-     &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    nele_grp, iele_grp, jac1_3d_q%ntot_int, n_int, dwx, xjac, nd, &
+      call fem_difference_grp_on_element                                &
+     &   (iele_fsmp_stack, node1%numnod, ele1%numele, ele1%nnod_4_ele,  &
+     &    ele1%ie, ele1%a_vol_ele, nele_grp, iele_grp,                  &
+     &    jac1_3d_q%ntot_int, n_int, dwx, jac1_3d_q%xjac, nd,           &
      &    d_ele, d_nod)
 !
       end subroutine difference_grp_on_element
@@ -207,9 +208,10 @@
       real(kind = kreal), intent(inout) :: d_ele(ele1%numele,3)
 !
 !
-      call fem_gradient_grp_on_element(iele_fsmp_stack, node1%numnod,   &
-     &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    nele_grp, iele_grp, jac1_3d_q%ntot_int, n_int, dwx, xjac,     &
+      call fem_gradient_grp_on_element                                  &
+     &   (iele_fsmp_stack, node1%numnod, ele1%numele, ele1%nnod_4_ele,  &
+     &    ele1%ie, ele1%a_vol_ele, nele_grp, iele_grp,                  &
+     &    jac1_3d_q%ntot_int, n_int, dwx, jac1_3d_q%xjac,               &
      &    d_ele, d_nod)
 !
       end subroutine gradient_grp_on_element
@@ -229,9 +231,10 @@
 !
       real(kind = kreal), intent(inout) :: d_ele(ele1%numele)
 !
-      call fem_divergence_grp_on_element(iele_fsmp_stack, node1%numnod, &
-     &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    nele_grp, iele_grp, jac1_3d_q%ntot_int, n_int, dwx, xjac,     &
+      call fem_divergence_grp_on_element                                &
+     &   (iele_fsmp_stack, node1%numnod, ele1%numele, ele1%nnod_4_ele,  &
+     &    ele1%ie, ele1%a_vol_ele, nele_grp, iele_grp,                  &
+     &    jac1_3d_q%ntot_int, n_int, dwx, jac1_3d_q%xjac,               &
      &    d_ele, d_nod)
 !
       end subroutine divergence_grp_on_element
@@ -252,9 +255,10 @@
       real(kind = kreal), intent(inout) :: d_ele(ele1%numele,3)
 !
 !
-      call fem_rotation_grp_on_element(iele_fsmp_stack, node1%numnod,   &
-     &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    nele_grp, iele_grp, jac1_3d_q%ntot_int, n_int, dwx, xjac,     &
+      call fem_rotation_grp_on_element                                  &
+     &   (iele_fsmp_stack, node1%numnod, ele1%numele, ele1%nnod_4_ele,  &
+     &    ele1%ie, ele1%a_vol_ele, nele_grp, iele_grp,                  &
+     &    jac1_3d_q%ntot_int, n_int, dwx, jac1_3d_q%xjac,               &
      &    d_ele, d_nod)
 !
       end subroutine rotation_grp_on_element
@@ -275,9 +279,10 @@
       real(kind = kreal), intent(inout) :: d_ele(ele1%numele,3)
 !
 !
-      call fem_div_sym_tensor_grp_on_ele(iele_fsmp_stack, node1%numnod, &
-     &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    nele_grp, iele_grp, jac1_3d_q%ntot_int, n_int, dwx, xjac,     &
+      call fem_div_sym_tensor_grp_on_ele&
+     &   (iele_fsmp_stack, node1%numnod, ele1%numele, ele1%nnod_4_ele,  &
+     &    ele1%ie, ele1%a_vol_ele, nele_grp, iele_grp,                  &
+     &    jac1_3d_q%ntot_int, n_int, dwx, jac1_3d_q%xjac,               &
      &    d_ele, d_nod)
 !
       end subroutine div_sym_tensor_grp_on_element
@@ -298,9 +303,9 @@
       real(kind = kreal), intent(inout) :: d_ele(ele1%numele,3)
 !
       call fem_div_asym_tensor_grp_on_ele                               &
-     &   (iele_fsmp_stack, node1%numnod,                                &
-     &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    nele_grp, iele_grp, jac1_3d_q%ntot_int, n_int, dwx, xjac,     &
+     &   (iele_fsmp_stack, node1%numnod, ele1%numele, ele1%nnod_4_ele,  &
+     &    ele1%ie, ele1%a_vol_ele, nele_grp, iele_grp,                  &
+     &    jac1_3d_q%ntot_int, n_int, dwx, jac1_3d_q%xjac,               &
      &    d_ele, d_nod)
 !
       end subroutine div_asym_tensor_grp_on_element

@@ -57,7 +57,6 @@
         end do
       end do
 !
-      xjac = jac1_3d_q%xjac
       axjac = axjac_q
 !
       end subroutine cal_jacobian_lag

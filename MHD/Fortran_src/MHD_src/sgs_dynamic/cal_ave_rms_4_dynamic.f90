@@ -88,7 +88,7 @@
       subroutine cal_ave_rms_diff_area(iele_fsmp_stack, n_tensor,       &
      &          icomp_f, n_int, volume_d)
 !
-      use int_vol_rms_ave_diff
+      use int_vol_4_model_coef
 !
       integer (kind = kint), intent(in) :: n_tensor
       integer (kind = kint), intent(in) :: n_int, icomp_f
@@ -96,7 +96,7 @@
       real(kind = kreal), intent(in) :: volume_d
 !
 !
-      call s_int_vol_rms_ave_diff(iele_fsmp_stack, n_tensor, n_int)
+      call int_vol_rms_ave_diff(iele_fsmp_stack, n_tensor, n_int)
 !
       call sum_whole_averages
       call divide_all_layer_ave_by_vol(n_tensor, volume_d,              &

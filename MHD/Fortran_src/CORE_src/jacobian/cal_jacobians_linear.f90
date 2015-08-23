@@ -56,7 +56,6 @@
      &        dnxi_1(1,ix), dnei_1(1,ix), dnzi_1(1,ix) )
         end do
       end do
-      xjac = jac1_3d_l%xjac
 !
       end subroutine cal_jacobian_trilinear
 !

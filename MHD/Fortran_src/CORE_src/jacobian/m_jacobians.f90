@@ -134,7 +134,7 @@
 ! 
 ! 
       real (kind=kreal), allocatable :: dxidx_1(:,:,:,:)
-      real (kind=kreal), allocatable :: xjac(:,:)
+!      real (kind=kreal), allocatable :: xjac(:,:)
       real (kind=kreal), allocatable :: axjac(:,:)
 ! 
 !
@@ -181,7 +181,7 @@
 !
        allocate(dnx(numele,num_t_linear,jac1_3d_l%ntot_int,3))
 !
-       allocate(xjac(numele,jac1_3d_l%ntot_int))
+!       allocate(xjac(numele,jac1_3d_l%ntot_int))
        allocate(axjac(numele,jac1_3d_l%ntot_int))
 !
        an = 0.0d0
@@ -189,7 +189,6 @@
 !
        an_infty = 0.0d0
 !
-       xjac = 0.0d0
        axjac = 0.0d0
 !
        end subroutine allocate_jacobians
@@ -264,7 +263,7 @@
        aw      = an
        dwx     = dnx
 !
-       jac1_3d_q%xjac  = xjac
+       jac1_3d_q%xjac  = jac1_3d_l%xjac
        axjac_q = axjac
 !
        end subroutine copy_jacobians_quad
@@ -283,7 +282,7 @@
        subroutine deallocate_jacobians
 !
        deallocate(an, an_infty)
-       deallocate(xjac, dnx)
+       deallocate(dnx)
 !
        end subroutine deallocate_jacobians
 !

@@ -56,7 +56,8 @@
      &        sf_grp%num_item, sf_grp%item_sf_grp,                      &
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
      &        sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                &
-     &        xjac(1,ix), axjac(1,ix),                                  &
+     &        jac1_3d_l%xjac(1:ele1%numele,ix),                         &
+     &        axjac(1,ix),                                              &
      &        dnx(1,1,ix,1), dnx(1,1,ix,2), dnx(1,1,ix,3),              &
      &        dxidx_1(1,ix,1,1), dxidx_1(1,ix,2,1), dxidx_1(1,ix,3,1),  &
      &        dxidx_1(1,ix,1,2), dxidx_1(1,ix,2,2), dxidx_1(1,ix,3,2),  &

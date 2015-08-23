@@ -51,7 +51,7 @@
       write(50+my_rank,*) 'iele, jacobian'
       do iele = 1, ele1%numele
           write(50+my_rank,'(i16,1p20e25.14)') iele,                    &
-     &           (xjac(iele,ii), k1 = 1, jac1_3d_l%ntot_int)
+     &           (jac1_3d_l%xjac(iele,ii), k1 = 1, jac1_3d_l%ntot_int)
       end do
 !
       end subroutine check_jacobians_trilinear
