@@ -57,11 +57,11 @@
         do k_order = 1, nnod_filter_mat
 !
           call fem_sk_filter_moments                                    &
-     &       (node1%numnod, ele1%nnod_4_ele, node1%xx,                  &
+     &       (node1%numnod, ele1%numele, ele1%nnod_4_ele, node1%xx,     &
+     &        jac1_3d_q%ntot_int, jac1_3d_q%xjac, aw,                   &
      &        nele_grp, iele_grp, inod, ix, k_order)
 !
           call sum_sk_2_filter_mat(nele_grp, k_order)
-!
         end do
       end do
 !
@@ -71,6 +71,7 @@
 !
       subroutine int_node_filter_weights(n_int, nele_grp, iele_grp)
 !
+      use m_geometry_data
       use m_jacobians
       use m_fem_gauss_int_coefs
       use set_int_point_position
@@ -81,7 +82,9 @@
       integer(kind = kint), intent(in) :: iele_grp(nele_grp)
 !
 !
-      call fem_sk_filter_weights(n_int, nele_grp, iele_grp)
+      call fem_sk_filter_weights(ele1%numele, ele1%nnod_4_ele,          &
+     &    jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw,                &
+     &    nele_grp, iele_grp)
 !
       call sum_sk_2_filter_weight(nele_grp)
 !

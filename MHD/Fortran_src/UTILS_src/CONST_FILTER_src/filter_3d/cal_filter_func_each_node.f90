@@ -64,7 +64,7 @@
           end if
 !
           call s_expand_filter_area_4_1node(node1%numnod, inod, ele1)
-          call resize_matrix_size_gen_filter
+          call resize_matrix_size_gen_filter(ele1%nnod_4_ele)
 !
         end do
 !
@@ -196,7 +196,7 @@
 !
           do i = 1, maximum_neighbour
             call s_expand_filter_area_4_1node(node1%numnod, inod, ele1)
-            call resize_matrix_size_gen_filter
+            call resize_matrix_size_gen_filter(ele1%nnod_4_ele)
           end do
 !
 !    use same filter for fluid area

@@ -47,7 +47,7 @@
 !
 !
       call copy_next_nod_ele_4_each(inod, node%numnod)
-      call resize_matrix_size_gen_filter
+      call resize_matrix_size_gen_filter(ele1%nnod_4_ele)
 !
 !   set filter area for tophat filter
       if ( abs(iflag_tgt_filter_type) .eq. 2) then
@@ -55,14 +55,14 @@
           call s_expand_filter_area_4_1node(node1%numnod, inod, ele1)
           nnod_near_1nod_filter = nnod_near_1nod_weight
           nele_near_1nod_filter = nele_near_1nod_weight
-          call resize_matrix_size_gen_filter
+          call resize_matrix_size_gen_filter(ele1%nnod_4_ele)
         end do
 !
 !   set filter area for other filters
       else
         do i = 1, maximum_neighbour
           call s_expand_filter_area_4_1node(node1%numnod, inod, ele1)
-          call resize_matrix_size_gen_filter
+          call resize_matrix_size_gen_filter(ele1%nnod_4_ele)
         end do
       end if
       mat_size = nnod_near_1nod_weight

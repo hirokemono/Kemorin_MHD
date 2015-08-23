@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on Nov., 2006
 !
-!      subroutine allocate_sk_filter
+!      subroutine allocate_sk_filter(nnod_4_ele)
 !      subroutine allocate_mat_num_weight(numnod)
 !      subroutine deallocate_sk_filter
 !      subroutine deallocate_mat_num_weight
@@ -12,6 +12,8 @@
 !     &          nnod_mat_tbl, inod_mat_tbl)
 !      subroutine fem_sk_filter_moments(numnod, nnod_4_ele, xx,         &
 !     &          nele_grp, iele_grp, inod, ix, k_order)
+!      subroutine fem_sk_filter_weights(numele, nnod_4_ele,             &
+!     &          ntot_int_3d, n_int, xjac, aw, nele_grp, iele_grp)
 !      subroutine sum_sk_2_filter_mat(nele_grp, k_order)
 !
       module fem_const_filter_matrix
@@ -43,15 +45,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_sk_filter
+      subroutine allocate_sk_filter(nnod_4_ele)
 !
-      use m_geometry_data
       use m_filter_coefs
       use m_matrix_4_filter
 !
-      allocate( mat_num_filter(nmax_num_ele_1nod,ele1%nnod_4_ele) )
-      allocate( mat_num_weight(nmax_num_ele_1nod,ele1%nnod_4_ele) )
-      allocate( sk_filter(nmax_num_ele_1nod,ele1%nnod_4_ele) )
+      integer(kind = kint), intent(in) :: nnod_4_ele
+!
+!
+      allocate( mat_num_filter(nmax_num_ele_1nod,nnod_4_ele) )
+      allocate( mat_num_weight(nmax_num_ele_1nod,nnod_4_ele) )
+      allocate( sk_filter(nmax_num_ele_1nod,nnod_4_ele) )
       mat_num_filter = 0
       mat_num_weight = 0
       sk_filter = 0.0d0
@@ -143,16 +147,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_sk_filter_moments(numnod, nnod_4_ele, xx,          &
-     &          nele_grp, iele_grp, inod, ix, k_order)
+      subroutine fem_sk_filter_moments(numnod, numele, nnod_4_ele, xx,  &
+     &          ntot_int_3d, xjac, aw, nele_grp, iele_grp,              &
+     &          inod, ix, k_order)
 !
       use m_reference_moments
-      use m_jacobians
       use m_fem_gauss_int_coefs
 !
-      integer(kind = kint), intent(in) :: numnod, nnod_4_ele
+      integer(kind = kint), intent(in) :: numnod, numele, nnod_4_ele
       real(kind = kreal), intent(in) :: xx(numnod, 3)
-
+!
+      integer (kind=kint), intent(in) :: ntot_int_3d
+      real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
+      real(kind=kreal), intent(in) :: aw(nnod_4_ele,ntot_int_3d)
 !
       integer(kind = kint), intent(in) :: nele_grp
       integer(kind = kint), intent(in) :: iele_grp(nele_grp)
@@ -179,17 +186,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_sk_filter_weights(n_int, nele_grp, iele_grp)
+      subroutine fem_sk_filter_weights(numele, nnod_4_ele,              &
+     &          ntot_int_3d, n_int, xjac, aw, nele_grp, iele_grp)
 !
-      use m_geometry_data
-      use m_reference_moments
-      use m_jacobians
       use m_fem_gauss_int_coefs
       use m_filter_coefs
 !
+      integer (kind=kint), intent(in) :: numele, nnod_4_ele
+!
+      integer (kind=kint), intent(in) :: ntot_int_3d, n_int
+      real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
+      real(kind=kreal), intent(in) :: aw(nnod_4_ele,ntot_int_3d)
+!
       integer(kind = kint), intent(in) :: nele_grp
       integer(kind = kint), intent(in) :: iele_grp(nele_grp)
-      integer(kind = kint), intent(in) :: n_int
 !
       integer(kind = kint) :: inum, iele, ii, ix, k1, k2, jnum
 !
@@ -197,9 +207,9 @@
 !
       sk_filter = 0.0d0
 !
-      do k2 = 1, ele1%nnod_4_ele
+      do k2 = 1, nnod_4_ele
 !
-        do k1 = 1, ele1%nnod_4_ele
+        do k1 = 1, nnod_4_ele
           do ii = 1, n_int*n_int*n_int
             ix = int_start3(n_int) + ii
               do inum = 1, nele_grp

@@ -3,9 +3,10 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!      subroutine init_4_cal_fileters(numnod, internal_node, numele)
+!      subroutine init_4_cal_fileters                                   &
+!     &          (numnod, internal_node, numele, nnod_4_ele)
 !      subroutine finalize_4_cal_fileters
-!      subroutine resize_matrix_size_gen_filter
+!      subroutine resize_matrix_size_gen_filter(nnod_4_ele)
 !      subroutine s_expand_filter_area_4_1node(numnod, inod, ele)
 !      subroutine copy_next_nod_ele_4_each(inod, numnod)
 !
@@ -28,7 +29,8 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_4_cal_fileters(numnod, internal_node, numele)
+      subroutine init_4_cal_fileters                                    &
+     &          (numnod, internal_node, numele, nnod_4_ele)
 !
       use m_reference_moments
       use m_matrix_4_filter
@@ -41,7 +43,8 @@
       use const_RHS_assemble_list
       use delete_small_weighting
 !
-      integer(kind = kint), intent(in) :: numnod, internal_node, numele
+      integer(kind = kint), intent(in) :: numnod, internal_node
+      integer(kind = kint), intent(in) :: numele, nnod_4_ele
 !
 !
       if (inod_end_filter .eq. -1) then
@@ -57,7 +60,7 @@
       nmax_num_ele_1nod = 0
       call allocate_mat_num_weight(numnod)
       call allocate_matrix_4_filter
-      call allocate_sk_filter
+      call allocate_sk_filter(nnod_4_ele)
 !
       nmax_crs = max_mat_size
       imax_l = nmax_crs * (nmax_crs - 1) / 2
@@ -144,13 +147,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine resize_matrix_size_gen_filter
+      subroutine resize_matrix_size_gen_filter(nnod_4_ele)
 !
       use m_next_node_id_4_node
       use m_reference_moments
       use m_matrix_4_filter
       use m_crs_matrix_4_filter
       use fem_const_filter_matrix
+!
+      integer(kind = kint), intent(in) :: nnod_4_ele
 !
 !
       if (max_mat_size .lt. nnod_near_1nod_weight) then
@@ -178,7 +183,7 @@
 !
         nmax_num_ele_1nod = nele_near_1nod_weight
         call deallocate_sk_filter
-        call allocate_sk_filter
+        call allocate_sk_filter(nnod_4_ele)
       end if
 !
       end subroutine resize_matrix_size_gen_filter

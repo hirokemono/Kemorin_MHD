@@ -40,7 +40,7 @@
 !
 !
       call init_4_cal_fileters(node1%numnod, node1%internal_node,       &
-     &    ele1%numele)
+     &    ele1%numele, ele1%nnod_4_ele)
 !
       write(70+my_rank,*) ' Best condition for filter'
 !
@@ -95,7 +95,7 @@
 !
 !
       call init_4_cal_fileters(node1%numnod, node1%internal_node,       &
-     &    ele1%numele)
+     &    ele1%numele, ele1%nnod_4_ele)
 !
       i_exp_level_1nod_weight = maximum_neighbour
       do inod = inod_start_filter, inod_end_filter
