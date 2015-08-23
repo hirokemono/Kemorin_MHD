@@ -57,7 +57,7 @@
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
      &        sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                &
      &        jac1_3d_l%xjac(1:ele1%numele,ix),                         &
-     &        axjac(1,ix),                                              &
+     &        jac1_3d_l%axjac(1:ele1%numele,ix),                        &
      &        dnx(1,1,ix,1), dnx(1,1,ix,2), dnx(1,1,ix,3),              &
      &        dxidx_1(1,ix,1,1), dxidx_1(1,ix,2,1), dxidx_1(1,ix,3,1),  &
      &        dxidx_1(1,ix,1,2), dxidx_1(1,ix,2,2), dxidx_1(1,ix,3,2),  &
@@ -96,7 +96,7 @@
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
      &        sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                &
      &        jac1_3d_q%xjac(1:ele1%numele,ix),                         &
-     &        axjac_q(1,ix),                              &
+     &        jac1_3d_q%axjac(1:ele1%numele,ix),                        &
      &      dwx(1,1,ix,1), dwx(1,1,ix,2), dwx(1,1,ix,3),                &
      &      dxidx_20(1,ix,1,1), dxidx_20(1,ix,2,1), dxidx_20(1,ix,3,1), &
      &      dxidx_20(1,ix,1,2), dxidx_20(1,ix,2,2), dxidx_20(1,ix,3,2), &
@@ -136,7 +136,7 @@
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
      &        sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                &
      &        jac1_3d_q%xjac(1:ele1%numele,ix),                         &
-     &        axjac_q(1,ix),                              &
+     &        jac1_3d_q%axjac(1:ele1%numele,ix),                        &
      &      dwx(1,1,ix,1), dwx(1,1,ix,2), dwx(1,1,ix,3),                &
      &      dxidx_20(1,ix,1,1), dxidx_20(1,ix,2,1), dxidx_20(1,ix,3,1), &
      &      dxidx_20(1,ix,1,2), dxidx_20(1,ix,2,2), dxidx_20(1,ix,3,2), &
@@ -176,7 +176,7 @@
      &        infty_list%ngrp_sf, infty_list%igrp_sf,                   &
      &        sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                &
      &        jac1_3d_lq%xjac(1:ele1%numele,ix),                        &
-     &        axjac_lq(1,ix),                            &
+     &        jac1_3d_lq%axjac(1:ele1%numele,ix),                       &
      &      dmx(1,1,ix,1), dmx(1,1,ix,2), dmx(1,1,ix,3),                &
      &      dxidx_lq(1,ix,1,1), dxidx_lq(1,ix,2,1), dxidx_lq(1,ix,3,1), &
      &      dxidx_lq(1,ix,1,2), dxidx_lq(1,ix,2,2), dxidx_lq(1,ix,3,2), &

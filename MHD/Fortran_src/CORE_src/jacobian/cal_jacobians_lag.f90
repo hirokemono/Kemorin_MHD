@@ -48,7 +48,7 @@
           call s_cal_jacobian_3d_27(node1%numnod, ele1%numele, np_smp,  &
      &      ele1%istack_ele_smp, ele1%ie, node1%xx,                     &
      &      jac1_3d_q%xjac(1:ele1%numele,ix),                           &
-     &      axjac_q(1,ix),                                              &
+     &      jac1_3d_q%axjac(1:ele1%numele,ix),                          &
      &      dwx(1,1,ix,1), dwx(1,1,ix,2), dwx(1,1,ix,3),                &
      &      dxidx_20(1,ix,1,1), dxidx_20(1,ix,2,1), dxidx_20(1,ix,3,1), &
      &      dxidx_20(1,ix,1,2), dxidx_20(1,ix,2,2), dxidx_20(1,ix,3,2), &
@@ -57,7 +57,7 @@
         end do
       end do
 !
-      axjac = axjac_q
+!      jac1_3d_l%axjac = jac1_3d_q%axjac
 !
       end subroutine cal_jacobian_lag
 !
