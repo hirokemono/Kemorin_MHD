@@ -119,7 +119,7 @@
 !  jac1_3d_l%ntot_int
 !>     Stracture for Jacobians for quad element
       type(jacobians_3d), save :: jac1_3d_q
-!  jac1_3d_q%ntot_int
+!  jac1_3d_q%xjac
 !
 !>     Stracture for linear Jacobians for quad element
       type(jacobians_3d), save :: jac1_3d_lq
@@ -145,7 +145,7 @@
       real (kind=kreal), allocatable :: aw_infty(:,:,:)
 ! 
       real (kind=kreal), allocatable :: dxidx_20(:,:,:,:)
-      real (kind=kreal), allocatable :: xjac_q(:,:)
+!      real (kind=kreal), allocatable :: xjac_q(:,:)
       real (kind=kreal), allocatable :: axjac_q(:,:)
 !
 !
@@ -213,7 +213,7 @@
 !
        allocate(dwx(numele,nnod_4_ele,jac1_3d_q%ntot_int,3))
 !
-       allocate(xjac_q(numele,jac1_3d_q%ntot_int))
+!       allocate(xjac_q(numele,jac1_3d_q%ntot_int))
        allocate(axjac_q(numele,jac1_3d_q%ntot_int)) 
 !
        aw = 0.0d0
@@ -221,7 +221,6 @@
 !
        aw_infty = 0.0d0
 !
-       xjac_q = 0.0d0
        axjac_q = 0.0d0 
 !
        end subroutine allocate_jacobians_quad
@@ -265,7 +264,7 @@
        aw      = an
        dwx     = dnx
 !
-       xjac_q  = xjac
+       jac1_3d_q%xjac  = xjac
        axjac_q = axjac
 !
        end subroutine copy_jacobians_quad
@@ -301,7 +300,7 @@
        subroutine deallocate_jacobians_quad
 !
        deallocate(aw, aw_infty)
-       deallocate(xjac_q, dwx)
+       deallocate(dwx)
 !
        end subroutine deallocate_jacobians_quad
 !

@@ -87,7 +87,7 @@
 !      write(50+my_rank,*) 'iele, jacobian'
 !      do iele = 1, ele1%numele
 !          write(50+my_rank,'(i16,1p20e25.14)') iele,                   &
-!     &           (xjac_q(iele,ii), k1 = 1, jac1_3d_q%ntot_int)
+!     &           (jac1_3d_q%xjac(iele,ii), k1 = 1, jac1_3d_q%ntot_int)
 !      end do
 !
       end subroutine check_jacobians_triquad
