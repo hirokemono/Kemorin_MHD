@@ -47,7 +47,8 @@
 !
           call s_cal_jacobian_3d_8(node1%numnod, ele1%numele, np_smp,   &
      &        ele1%istack_ele_smp, ele1%ie, node1%xx,                   &
-     &        xjac(1,ix), axjac(1,ix),                                  &
+     &        jac1_3d_l%xjac(1:ele1%numele,ix),                         &
+     &        axjac(1,ix),                                              &
      &        dnx(1,1,ix,1), dnx(1,1,ix,2), dnx(1,1,ix,3),              &
      &        dxidx_1(1,ix,1,1), dxidx_1(1,ix,2,1), dxidx_1(1,ix,3,1),  &
      &        dxidx_1(1,ix,1,2), dxidx_1(1,ix,2,2), dxidx_1(1,ix,3,2),  &
@@ -55,6 +56,7 @@
      &        dnxi_1(1,ix), dnei_1(1,ix), dnzi_1(1,ix) )
         end do
       end do
+      xjac = jac1_3d_l%xjac
 !
       end subroutine cal_jacobian_trilinear
 !

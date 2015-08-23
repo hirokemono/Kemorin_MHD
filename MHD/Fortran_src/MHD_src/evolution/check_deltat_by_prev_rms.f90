@@ -19,7 +19,7 @@
       use m_t_step_parameter
       use m_t_int_parameter
 !
-      use int_all_rms_scalar
+      use int_all_energy
 !
       implicit  none
 !

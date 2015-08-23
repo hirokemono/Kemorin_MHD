@@ -49,17 +49,17 @@
       if(layer_tbl1%minlayer_4_smp                                      &
      &     .gt. layer_tbl1%min_item_layer_d_smp) then
 !
-        if (ele1%nnod_4_ele .eq. num_t_linear) then
-          call int_vol_model_coef_l(node1%numnod,                       &
-     &        ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,        &
-     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,            &
-     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
-     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
-     &        num_tot_nod_phys, d_nod, sgs_l_smp, sgs_l, sgs_w)
-        else if (ele1%nnod_4_ele .eq. num_t_quad) then 
+        if (ele1%nnod_4_ele .eq. num_t_quad) then 
           call int_vol_model_coef_q(node1%numnod,                       &
      &        ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,        &
      &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw,            &
+     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
+     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
+     &        num_tot_nod_phys, d_nod, sgs_l_smp, sgs_l, sgs_w)
+        else
+          call int_vol_model_coef_l(node1%numnod,                       &
+     &        ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,        &
+     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,            &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
      &        num_tot_nod_phys, d_nod, sgs_l_smp, sgs_l, sgs_w)
@@ -68,18 +68,18 @@
       else
 !
         sgs_l_smp(1:np_smp,1:18) = 0.0d0
-        if (ele1%nnod_4_ele .eq. num_t_linear) then
-          call int_vol_model_coef_grpsmp_l(node1%numnod,                &
+        if (ele1%nnod_4_ele .eq. num_t_quad) then
+          call int_vol_model_coef_grpsmp_q(node1%numnod,                &
      &      ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,          &
-     &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,              &
+     &      jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw,              &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer, num_tot_nod_phys, d_nod,             &
      &      sgs_l_smp, sgs_l, sgs_w)
-        else if (ele1%nnod_4_ele .eq. num_t_quad) then
-          call int_vol_model_coef_grpsmp_q(node1%numnod,                &
+        else
+          call int_vol_model_coef_grpsmp_l(node1%numnod,                &
      &      ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,          &
-     &      jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw,              &
+     &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,              &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer, num_tot_nod_phys, d_nod,             &
@@ -104,15 +104,15 @@
       sgs_w(1:18) =              0.0d0
       sgs_l_smp(1:np_smp,1:18) = 0.0d0
 !
-      if (ele1%nnod_4_ele .eq. num_t_linear) then
-        call int_vol_diff_coef_l(node1%numnod, ele1%numele,             &
-     &      ele1%ie, ele1%interior_ele, iele_fsmp_stack, numdir,        &
-     &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,              &
-     &      num_tot_nod_phys, d_nod, sgs_l_smp, sgs_w)
-      else if (ele1%nnod_4_ele .eq. num_t_quad) then
+      if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vol_diff_coef_q(node1%numnod, ele1%numele,             &
      &      ele1%ie, ele1%interior_ele, iele_fsmp_stack, numdir,        &
      &      jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw,              &
+     &      num_tot_nod_phys, d_nod, sgs_l_smp, sgs_w)
+        else
+        call int_vol_diff_coef_l(node1%numnod, ele1%numele,             &
+     &      ele1%ie, ele1%interior_ele, iele_fsmp_stack, numdir,        &
+     &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,              &
      &      num_tot_nod_phys, d_nod, sgs_l_smp, sgs_w)
       end if
 !
@@ -134,18 +134,18 @@
       if(layer_tbl1%minlayer_4_smp                                      &
      &     .gt. layer_tbl1%min_item_layer_d_smp) then
 !
-        if (ele1%nnod_4_ele .eq. num_t_linear) then
-          call int_vol_rms_ave_dynamic_l(node1%numnod,                  &
+        if (ele1%nnod_4_ele .eq. num_t_quad) then
+          call int_vol_rms_ave_dynamic_q(node1%numnod,                  &
      &        ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,        &
-     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,            &
+     &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw,            &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
      &        num_tot_nod_phys, d_nod, ncomp_correlate_2,               &
      &        ave_l_smp, rms_l_smp, ave_l, rms_l, ave_w, rms_w)
-        else if (ele1%nnod_4_ele .eq. num_t_quad) then
-          call int_vol_rms_ave_dynamic_q(node1%numnod,                  &
+        else
+          call int_vol_rms_ave_dynamic_l(node1%numnod,                  &
      &        ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,        &
-     &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw,            &
+     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,            &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
      &        num_tot_nod_phys, d_nod, ncomp_correlate_2,               &
@@ -154,19 +154,19 @@
 !
       else
 !
-        if (ele1%nnod_4_ele .eq. num_t_linear) then
-          call int_vol_rms_dynamic_grpsmp_l(node1%numnod,               &
+        if (ele1%nnod_4_ele .eq. num_t_quad) then
+          call int_vol_rms_dynamic_grpsmp_q(node1%numnod,               &
      &      ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,          &
-     &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,              &
+     &      jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw,              &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer, num_tot_nod_phys, d_nod,             &
      &      ncomp_correlate_2, ave_l_smp, rms_l_smp, ave_l, rms_l,      &
      &      ave_w, rms_w)
-        else if (ele1%nnod_4_ele .eq. num_t_quad) then
-          call int_vol_rms_dynamic_grpsmp_q(node1%numnod,               &
+        else
+          call int_vol_rms_dynamic_grpsmp_l(node1%numnod,               &
      &      ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,          &
-     &      jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw,              &
+     &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,              &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer, num_tot_nod_phys, d_nod,             &
@@ -190,16 +190,16 @@
       integer (kind = kint), intent(in) :: n_tensor, n_int
 !
 !
-      if (ele1%nnod_4_ele .eq. num_t_linear) then
-        call int_vol_rms_ave_d_l(node1%numnod, ele1%numele, ele1%ie,    &
-     &      ele1%interior_ele, iele_fsmp_stack, n_tensor,               &
-     &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,              &
-     &      num_tot_nod_phys, d_nod, ncomp_correlate_2,                 &
-     &      ave_l_smp, rms_l_smp, ave_w, rms_w)
-      else if (ele1%nnod_4_ele .eq. num_t_quad) then
+      if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vol_rms_ave_d_q(node1%numnod, ele1%numele, ele1%ie,    &
      &      ele1%interior_ele, iele_fsmp_stack, n_tensor,               &
      &      jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw,              &
+     &      num_tot_nod_phys, d_nod, ncomp_correlate_2,                 &
+     &      ave_l_smp, rms_l_smp, ave_w, rms_w)
+      else
+        call int_vol_rms_ave_d_l(node1%numnod, ele1%numele, ele1%ie,    &
+     &      ele1%interior_ele, iele_fsmp_stack, n_tensor,               &
+     &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,              &
      &      num_tot_nod_phys, d_nod, ncomp_correlate_2,                 &
      &      ave_l_smp, rms_l_smp, ave_w, rms_w)
       end if
@@ -225,19 +225,19 @@
       if(layer_tbl1%minlayer_4_smp                                      &
      &      .gt. layer_tbl1%min_item_layer_d_smp) then
 !
-        if (ele1%nnod_4_ele .eq. num_t_linear) then
-          call int_vol_layer_cor_l(node1%numnod,                        &
+        if (ele1%nnod_4_ele .eq. num_t_quad) then
+          call int_vol_layer_cor_q(node1%numnod,                        &
      &        ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,        &
-     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,            &
+     &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw,            &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
      &        ave_s, ave_g, num_tot_nod_phys, d_nod,                    &
      &        ncomp_correlate, ncomp_correlate_2,                       &
      &        sig_l_smp, cor_l_smp, sig_l, cov_l, sig_w, cov_w)
-        else if (ele1%nnod_4_ele .eq. num_t_quad) then
-          call int_vol_layer_cor_q(node1%numnod,                        &
+        else
+          call int_vol_layer_cor_l(node1%numnod,                        &
      &        ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,        &
-     &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw,            &
+     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,            &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
      &        ave_s, ave_g, num_tot_nod_phys, d_nod,                    &
@@ -247,19 +247,19 @@
 !
       else
 !
-        if (ele1%nnod_4_ele .eq. num_t_linear) then
-          call int_vol_layer_cor_grpsmp_l(node1%numnod,                 &
+        if (ele1%nnod_4_ele .eq. num_t_quad) then
+          call int_vol_layer_cor_grpsmp_q(node1%numnod,                 &
      &      ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,          &
-     &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,              &
+     &      jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw,              &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer, ave_s, ave_g, num_tot_nod_phys,      &
      &      d_nod, ncomp_correlate, ncomp_correlate_2,                  &
      &      sig_l_smp, cor_l_smp, sig_l, cov_l, sig_w, cov_w)
-        else if (ele1%nnod_4_ele .eq. num_t_quad) then
-          call int_vol_layer_cor_grpsmp_q(node1%numnod,                 &
+        else
+          call int_vol_layer_cor_grpsmp_l(node1%numnod,                 &
      &      ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,          &
-     &      jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw,              &
+     &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,              &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer, ave_s, ave_g, num_tot_nod_phys,      &
@@ -287,17 +287,17 @@
       real(kind = kreal), intent(in) :: ave_g(numdir)
 !
 !
-      if (ele1%nnod_4_ele .eq. num_t_linear) then
-        call int_vol_diff_correlate_l(node1%numnod,                     &
-     &      ele1%numele, ele1%ie, ele1%interior_ele, iele_fsmp_stack,   &
-     &      numdir, jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,      &
-     &      ave_s, ave_g, num_tot_nod_phys, d_nod,                      &
-     &      ncomp_correlate, ncomp_correlate_2,                         &
-     &      sig_l_smp, cor_l_smp, sig_w, cov_w)
-      else if (ele1%nnod_4_ele .eq. num_t_quad) then
+      if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vol_diff_correlate_q(node1%numnod,                     &
      &      ele1%numele, ele1%ie, ele1%interior_ele, iele_fsmp_stack,   &
      &      numdir, jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw,      &
+     &      ave_s, ave_g, num_tot_nod_phys, d_nod,                      &
+     &      ncomp_correlate, ncomp_correlate_2,                         &
+     &      sig_l_smp, cor_l_smp, sig_w, cov_w)
+        else
+        call int_vol_diff_correlate_l(node1%numnod,                     &
+     &      ele1%numele, ele1%ie, ele1%interior_ele, iele_fsmp_stack,   &
+     &      numdir, jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an,      &
      &      ave_s, ave_g, num_tot_nod_phys, d_nod,                      &
      &      ncomp_correlate, ncomp_correlate_2,                         &
      &      sig_l_smp, cor_l_smp, sig_w, cov_w)

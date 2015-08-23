@@ -16,7 +16,7 @@
       use m_geometry_data
       use m_geometry_data_MHD
       use m_bulk_values
-      use int_all_rms_scalar
+      use int_all_energy
 !
       implicit none
 !

@@ -95,29 +95,29 @@
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_vect, vect_e)
 !
-        if (ele1%nnod_4_ele .eq. num_t_linear) then
-          call fem_vol_ave_sym_tensor_1(ele1%numele, ele1%nnod_4_ele,   &
-     &        iele_fsmp_stack, ele1%interior_ele,                       &
-     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an, k2,        &
-     &        vect_e, rms_local, ave_local)
-        else if (ele1%nnod_4_ele .eq. num_t_quad) then
+        if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_sym_tensor_1(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
      &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw, k2,        &
+     &        vect_e, rms_local, ave_local)
+        else
+          call fem_vol_ave_sym_tensor_1(ele1%numele, ele1%nnod_4_ele,   &
+     &        iele_fsmp_stack, ele1%interior_ele,                       &
+     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an, k2,        &
      &        vect_e, rms_local, ave_local)
         end if
 !
         call vector_phys_2_each_element(k2, (i_vect+3), vect_e)
 !
-        if (ele1%nnod_4_ele .eq. num_t_linear) then
-          call fem_vol_ave_sym_tensor_2(ele1%numele, ele1%nnod_4_ele,   &
-     &        iele_fsmp_stack, ele1%interior_ele,                       &
-     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an, k2,        &
-     &        vect_e, rms_local, ave_local)
-        else if (ele1%nnod_4_ele .eq. num_t_quad) then
+        if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_sym_tensor_2(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
      &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw, k2,        &
+     &        vect_e, rms_local, ave_local)
+        else
+          call fem_vol_ave_sym_tensor_2(ele1%numele, ele1%nnod_4_ele,   &
+     &        iele_fsmp_stack, ele1%interior_ele,                       &
+     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an, k2,        &
      &        vect_e, rms_local, ave_local)
         end if
       end do
@@ -153,15 +153,15 @@
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_vect, vect_e)
 !
-        if (ele1%nnod_4_ele .eq. num_t_linear) then
-          call fem_vol_ave_asym_tensor(ele1%numele, ele1%nnod_4_ele,    &
-     &        iele_fsmp_stack, ele1%interior_ele,                       &
-     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an, k2,        &
-     &        vect_e, rms_local, ave_local)
-        else if (ele1%nnod_4_ele .eq. num_t_quad) then
+        if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_asym_tensor(ele1%numele, ele1%nnod_4_ele,    &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
      &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw, k2,        &
+     &        vect_e, rms_local, ave_local)
+        else
+          call fem_vol_ave_asym_tensor(ele1%numele, ele1%nnod_4_ele,    &
+     &        iele_fsmp_stack, ele1%interior_ele,                       &
+     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an, k2,        &
      &        vect_e, rms_local, ave_local)
         end if
       end do

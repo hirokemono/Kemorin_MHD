@@ -33,10 +33,7 @@
       use m_node_phys_address
       use m_bulk_values
       use int_all_energy
-      use int_vol_angular_momentum
-      use int_all_rms_scalar
-      use int_rms_ave_sym_tensor
-      use int_rms_ave_asym_tensor
+      use int_all_ave_tensors
 !
 !
 ! ---------  initialize
@@ -314,19 +311,19 @@
 !
 ! ----- lead average values for symmetric tensor data-------------
 !
-      call int_ave_4_sym_tensor( iele_fl_smp_stack, intg_point_t_evo,   &
+      call int_all_4_sym_tensor( iele_fl_smp_stack, intg_point_t_evo,   &
      &    i_rms%i_m_flux, j_ave%i_m_flux, iphys%i_m_flux)
-      call int_ave_4_sym_tensor( iele_fl_smp_stack, intg_point_t_evo,   &
+      call int_all_4_sym_tensor( iele_fl_smp_stack, intg_point_t_evo,   &
      &    i_rms%i_maxwell, j_ave%i_maxwell, iphys%i_maxwell)
-      call int_ave_4_sym_tensor( iele_fl_smp_stack, intg_point_t_evo,   &
+      call int_all_4_sym_tensor( iele_fl_smp_stack, intg_point_t_evo,   &
      &    i_rms%i_SGS_m_flux, j_ave%i_SGS_m_flux, iphys%i_SGS_m_flux)
-      call int_ave_4_sym_tensor( iele_fl_smp_stack, intg_point_t_evo,   &
+      call int_all_4_sym_tensor( iele_fl_smp_stack, intg_point_t_evo,   &
      &    i_rms%i_SGS_maxwell, j_ave%i_SGS_maxwell,                     &
      &    iphys%i_SGS_maxwell)
 !
-      call int_ave_4_asym_tensor( iele_cd_smp_stack, intg_point_t_evo,  &
+      call int_all_4_asym_tensor( iele_cd_smp_stack, intg_point_t_evo,  &
      &    i_rms%i_induct_t, j_ave%i_induct_t, iphys%i_induct_t)
-      call int_ave_4_asym_tensor( iele_cd_smp_stack, intg_point_t_evo,  &
+      call int_all_4_asym_tensor( iele_cd_smp_stack, intg_point_t_evo,  &
      &    i_rms%i_SGS_induct_t, j_ave%i_SGS_induct_t,                   &
      &    iphys%i_SGS_induct_t)
 !
