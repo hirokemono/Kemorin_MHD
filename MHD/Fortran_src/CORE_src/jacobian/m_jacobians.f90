@@ -127,7 +127,7 @@
 !
 !
 !      integer(kind = kint) :: ntot_int_3d
-      real (kind=kreal), allocatable :: an(:,:)
+!      real (kind=kreal), allocatable :: an(:,:)
       real (kind=kreal), allocatable :: dnx(:,:,:,:)
 !
       real (kind=kreal), allocatable :: an_infty(:,:,:)
@@ -176,7 +176,7 @@
 !
       call alloc_jacobians_type(numele, num_t_linear, jac1_3d_l)
 !
-       allocate(an(num_t_linear,jac1_3d_l%ntot_int))
+!       allocate(an(num_t_linear,jac1_3d_l%ntot_int))
        allocate(an_infty(num_t_linear,nsurf_4_ele,jac1_3d_l%ntot_int))
 !
        allocate(dnx(numele,num_t_linear,jac1_3d_l%ntot_int,3))
