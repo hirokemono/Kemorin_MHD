@@ -86,7 +86,7 @@
      &          icomp_f, n_int)
 !
       use m_layering_ele_list
-      use int_vol_diff_correlate
+      use int_vol_4_model_coef
 !
       integer (kind = kint), intent(in) :: n_tensor
       integer (kind = kint), intent(in) :: n_int, icomp_f
@@ -97,7 +97,7 @@
       cov_w(1:9) =  0.0d0
 !
 !  Volume integration:                      int_vol_model_coef
-      call s_int_vol_diff_correlate(iele_fsmp_stack, n_tensor, n_int,   &
+      call int_vol_diff_correlate(iele_fsmp_stack, n_tensor, n_int,     &
      &     ave_diff_grad_w(icomp_f), ave_diff_grad_w(icomp_f) )
 !
       call sum_whole_correlation
