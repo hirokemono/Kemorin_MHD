@@ -31,13 +31,13 @@
       subroutine cal_ave_rms_sgs_dynamic(n_tensor, icomp_f, n_int)
 !
       use m_layering_ele_list
-      use int_vol_rms_ave_dynamic
+      use int_vol_4_model_coef
 !
       integer (kind = kint), intent(in) :: n_tensor
       integer (kind = kint), intent(in) :: n_int, icomp_f
 !
 !
-      call s_int_vol_rms_ave_dynamic(n_tensor, n_int)
+      call int_vol_rms_ave_dynamic(n_tensor, n_int)
 !
       call sum_layerd_averages(layer_tbl1%n_layer_d)
       call divide_layers_ave_by_vol(layer_tbl1%n_layer_d, n_tensor,     &
@@ -60,13 +60,13 @@
       subroutine cal_ave_rms_diff_layerd(n_tensor, icomp_f, n_int)
 !
       use m_layering_ele_list
-      use int_vol_rms_ave_dynamic
+      use int_vol_4_model_coef
 !
       integer (kind = kint), intent(in) :: n_tensor
       integer (kind = kint), intent(in) :: n_int, icomp_f
 !
 !
-      call s_int_vol_rms_ave_dynamic(n_tensor, n_int)
+      call int_vol_rms_ave_dynamic(n_tensor, n_int)
 !
       call sum_layerd_averages(layer_tbl1%n_layer_d)
       call divide_layers_ave_by_vol(layer_tbl1%n_layer_d, n_tensor,     &

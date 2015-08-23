@@ -4,25 +4,28 @@
 !     Written by H. Matsui on Nov., 2008
 !
 !!      subroutine int_vol_rms_dynamic_grpsmp_l                         &
-!!     &         (numele, ie, interior_ele, n_tensor, n_int,            &
+!!     &         (numnod, numele, ie, interior_ele, n_tensor,           &
+!!     &          ntot_int_3d, n_int, xjac, an,                         &
 !!     &          n_layer_d, n_item_layer_d, layer_stack,               &
-!!     &          istack_item_layer_d_smp, item_layer)
+!!     &          istack_item_layer_d_smp, item_layer, ntot_phys, d_nod,&
+!!     &          ncomp_cor2, ave_l_smp, rms_l_smp, ave_l, rms_l,       &
+!!     &          ave_w, rms_w)
 !!      subroutine int_vol_rms_dynamic_grpsmp_q                         &
-!!     &         (numele, ie, interior_ele, n_tensor, n_int,            &
+!!     &         (numnod, numele, ie, interior_ele, n_tensor,           &
+!!     &          ntot_int_3d, n_int, xjac, aw,                         &
 !!     &          n_layer_d, n_item_layer_d, layer_stack,               &
-!!     &          istack_item_layer_d_smp, item_layer)
+!!     &          istack_item_layer_d_smp, item_layer, ntot_phys, d_nod,&
+!!     &          ncomp_cor2, ave_l_smp, rms_l_smp, ave_l, rms_l,       &
+!!     &          ave_w, rms_w)
 !
       module int_vol_rms_dynamic_grpsmp
 !
       use m_precision
 !
-      use calypso_mpi
       use m_machine_parameter
       use m_geometry_constants
-      use m_jacobians
+      use m_node_phys_address
       use m_fem_gauss_int_coefs
-      use m_ele_info_4_dynamical
-      use m_work_layer_correlate
 !
       implicit none
 !
@@ -33,24 +36,39 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_rms_dynamic_grpsmp_l                           &
-     &         (numele, ie, interior_ele, n_tensor, n_int,              &
+     &         (numnod, numele, ie, interior_ele, n_tensor,             &
+     &          ntot_int_3d, n_int, xjac, an,                           &
      &          n_layer_d, n_item_layer_d, layer_stack,                 &
-     &          istack_item_layer_d_smp, item_layer)
-!
-      use m_node_phys_data
-      use m_node_phys_address
+     &          istack_item_layer_d_smp, item_layer, ntot_phys, d_nod,  &
+     &          ncomp_cor2, ave_l_smp, rms_l_smp, ave_l, rms_l,         &
+     &          ave_w, rms_w)
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_linear)
       integer (kind = kint), intent(in) :: interior_ele(numele)
 !
-      integer (kind = kint), intent(in) :: n_tensor, n_int
+      integer (kind = kint), intent(in) :: n_tensor
+!
+      integer (kind=kint), intent(in) :: ntot_int_3d, n_int
+      real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
+      real(kind=kreal), intent(in) :: an(num_t_linear,ntot_int_3d)
 !
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in) :: layer_stack(0:n_layer_d)
       integer (kind = kint), intent(in)                                 &
      &               :: istack_item_layer_d_smp(0:np_smp)
       integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
+!
+      integer (kind = kint), intent(in) :: numnod, ntot_phys
+      real(kind=kreal), intent(in) :: d_nod(numnod,ntot_phys)
+!
+      integer (kind = kint), intent(in) :: ncomp_cor2
+      real(kind=kreal), intent(inout) :: ave_l_smp(np_smp,ncomp_cor2)
+      real(kind=kreal), intent(inout) :: rms_l_smp(np_smp,ncomp_cor2)
+      real(kind=kreal), intent(inout) :: ave_l(n_layer_d,ncomp_cor2)
+      real(kind=kreal), intent(inout) :: rms_l(n_layer_d,ncomp_cor2)
+      real(kind=kreal), intent(inout) :: ave_w(ncomp_cor2)
+      real(kind=kreal), intent(inout) :: rms_w(ncomp_cor2)
 !
       integer (kind = kint) :: inum, nd, iele, iele0
       integer (kind = kint) :: ist, ied, ist_num, ied_num
@@ -182,24 +200,39 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_rms_dynamic_grpsmp_q                           &
-     &         (numele, ie, interior_ele, n_tensor, n_int,              &
+     &         (numnod, numele, ie, interior_ele, n_tensor,             &
+     &          ntot_int_3d, n_int, xjac, aw,                           &
      &          n_layer_d, n_item_layer_d, layer_stack,                 &
-     &          istack_item_layer_d_smp, item_layer)
-!
-      use m_node_phys_data
-      use m_node_phys_address
+     &          istack_item_layer_d_smp, item_layer, ntot_phys, d_nod,  &
+     &          ncomp_cor2, ave_l_smp, rms_l_smp, ave_l, rms_l,         &
+     &          ave_w, rms_w)
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_quad)
       integer (kind = kint), intent(in) :: interior_ele(numele)
 !
-      integer (kind = kint), intent(in) :: n_tensor, n_int
+      integer (kind = kint), intent(in) :: n_tensor
+!
+      integer (kind=kint), intent(in) :: ntot_int_3d, n_int
+      real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
+      real(kind=kreal), intent(in) :: aw(num_t_quad,ntot_int_3d)
 !
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in) :: layer_stack(0:n_layer_d)
       integer (kind = kint), intent(in)                                 &
      &               :: istack_item_layer_d_smp(0:np_smp)
       integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
+!
+      integer (kind = kint), intent(in) :: numnod, ntot_phys
+      real(kind=kreal), intent(in) :: d_nod(numnod,ntot_phys)
+!
+      integer (kind = kint), intent(in) :: ncomp_cor2
+      real(kind=kreal), intent(inout) :: ave_l_smp(np_smp,ncomp_cor2)
+      real(kind=kreal), intent(inout) :: rms_l_smp(np_smp,ncomp_cor2)
+      real(kind=kreal), intent(inout) :: ave_l(n_layer_d,ncomp_cor2)
+      real(kind=kreal), intent(inout) :: rms_l(n_layer_d,ncomp_cor2)
+      real(kind=kreal), intent(inout) :: ave_w(ncomp_cor2)
+      real(kind=kreal), intent(inout) :: rms_w(ncomp_cor2)
 !
       integer (kind = kint) :: inum, nd, iele, iele0
       integer (kind = kint) :: ist, ied, ist_num, ied_num

@@ -75,7 +75,7 @@
       subroutine cal_lsq_diff_coef(iele_fsmp_stack, numdir, ifield_d,   &
      &          icomp_f, n_int)
 !
-      use int_vol_4_diff_coef
+      use int_vol_4_model_coef
 !
       integer(kind=kint), intent(in) :: numdir
       integer(kind=kint), intent(in) :: ifield_d, icomp_f, n_int

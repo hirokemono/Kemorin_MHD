@@ -17,7 +17,7 @@
       use m_ele_info_4_dynamical
       use m_work_layer_correlate
 !
-      use int_vol_cor_dynamic
+      use int_vol_4_model_coef
       use cal_layerd_ave_correlate
 !
 !

@@ -3,7 +3,12 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine int_vol_diff_coef(iele_fsmp_stack, numdir, n_int)
+!!      subroutine int_vol_diff_coef_l(numnod, numele, ie, interior_ele,&
+!!     &          iele_fsmp_stack, numdir, ntot_int_3d, n_int, xjac, an,&
+!!     &          ntot_phys, d_nod, sgs_l_smp, sgs_w)
+!!      subroutine int_vol_diff_coef_q(numnod, numele, ie, interior_ele,&
+!!     &          iele_fsmp_stack, numdir, ntot_int_3d, n_int, xjac, aw,&
+!!     &          ntot_phys, d_nod, sgs_l_smp, sgs_w)
 !
       module int_vol_4_diff_coef
 !
@@ -11,13 +16,10 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_jacobians
+      use m_node_phys_address
       use m_fem_gauss_int_coefs
-      use m_work_4_dynamic_model
 !
       implicit none
-!
-      private :: int_vol_diff_coef_l, int_vol_diff_coef_q
 !
 !-----------------------------------------------------------------------
 !
@@ -25,52 +27,26 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_diff_coef(iele_fsmp_stack, numdir, n_int)
-!
-      use m_geometry_data
-!
-      integer(kind=kint), intent(in) :: numdir, n_int
-      integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-!
-      integer(kind=kint) :: nd, iproc
-!
-!
-      sgs_w(1:18) =              0.0d0
-      sgs_l_smp(1:np_smp,1:18) = 0.0d0
-!
-      if (ele1%nnod_4_ele .eq. num_t_linear) then
-        call int_vol_diff_coef_l                                        &
-     &     (ele1%numele, ele1%ie, ele1%interior_ele,                    &
-     &      iele_fsmp_stack, numdir, n_int)
-      else if (ele1%nnod_4_ele .eq. num_t_quad) then
-        call int_vol_diff_coef_q                                        &
-     &     (ele1%numele, ele1%ie, ele1%interior_ele,                    &
-     &      iele_fsmp_stack, numdir, n_int)
-      end if
-!
-      do nd = 1, numdir
-        do iproc = 1, np_smp
-          sgs_w(nd)   = sgs_w(nd)   + sgs_l_smp(iproc,nd)
-          sgs_w(nd+9) = sgs_w(nd+9) + sgs_l_smp(iproc,nd+9)
-        end do
-      end do
-!
-      end subroutine int_vol_diff_coef
-!
-!-----------------------------------------------------------------------
-!
-      subroutine int_vol_diff_coef_l(numele, ie, interior_ele,          &
-     &          iele_fsmp_stack, numdir, n_int)
-!
-      use m_node_phys_address
-      use m_node_phys_data
+      subroutine int_vol_diff_coef_l(numnod, numele, ie, interior_ele,  &
+     &          iele_fsmp_stack, numdir, ntot_int_3d, n_int, xjac, an,  &
+     &          ntot_phys, d_nod, sgs_l_smp, sgs_w)
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_linear)
       integer (kind = kint), intent(in) :: interior_ele(numele)
 !
-      integer(kind=kint), intent(in) :: numdir, n_int
+      integer(kind=kint), intent(in) :: numdir
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer (kind=kint), intent(in) :: ntot_int_3d, n_int
+      real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
+      real(kind=kreal), intent(in) :: an(num_t_linear,ntot_int_3d)
+!
+      integer (kind = kint), intent(in) :: numnod, ntot_phys
+      real(kind=kreal), intent(in) :: d_nod(numnod,ntot_phys)
+!
+      real(kind=kreal), intent(inout) :: sgs_l_smp(np_smp,18)
+      real(kind=kreal), intent(inout) :: sgs_w(18)
 !
       integer(kind=kint) :: iproc, iele
       integer(kind=kint) :: ii, ix, nd, ist, ied
@@ -152,22 +128,37 @@
         end do
 !$omp end parallel do
 !
+      do nd = 1, numdir
+        do iproc = 1, np_smp
+          sgs_w(nd)   = sgs_w(nd)   + sgs_l_smp(iproc,nd)
+          sgs_w(nd+9) = sgs_w(nd+9) + sgs_l_smp(iproc,nd+9)
+        end do
+      end do
+!
       end subroutine int_vol_diff_coef_l
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_diff_coef_q(numele, ie, interior_ele,          &
-     &          iele_fsmp_stack, numdir, n_int)
-!
-      use m_node_phys_address
-      use m_node_phys_data
+      subroutine int_vol_diff_coef_q(numnod, numele, ie, interior_ele,  &
+     &          iele_fsmp_stack, numdir, ntot_int_3d, n_int, xjac, aw,  &
+     &          ntot_phys, d_nod, sgs_l_smp, sgs_w)
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_quad)
       integer (kind = kint), intent(in) :: interior_ele(numele)
 !
-      integer(kind=kint), intent(in) :: numdir, n_int
+      integer(kind=kint), intent(in) :: numdir
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer (kind=kint), intent(in) :: ntot_int_3d, n_int
+      real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
+      real(kind=kreal), intent(in) :: aw(num_t_quad,ntot_int_3d)
+!
+      integer (kind = kint), intent(in) :: numnod, ntot_phys
+      real(kind=kreal), intent(in) :: d_nod(numnod,ntot_phys)
+!
+      real(kind=kreal), intent(inout) :: sgs_l_smp(np_smp,18)
+      real(kind=kreal), intent(inout) :: sgs_w(18)
 !
       integer(kind=kint) :: iproc, iele
       integer(kind=kint) :: ii, ix, nd, ist, ied
@@ -309,6 +300,13 @@
           end do
         end do
 !$omp end parallel do
+!
+      do nd = 1, numdir
+        do iproc = 1, np_smp
+          sgs_w(nd)   = sgs_w(nd)   + sgs_l_smp(iproc,nd)
+          sgs_w(nd+9) = sgs_w(nd+9) + sgs_l_smp(iproc,nd+9)
+        end do
+      end do
 !
       end subroutine int_vol_diff_coef_q
 !

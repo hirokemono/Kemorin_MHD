@@ -5,13 +5,17 @@
 !
 !  Volume integration:                      int_vol_model_coef
 !!      subroutine int_vol_model_coef_grpsmp_l                          &
-!!     &         (numele, ie, interior_ele, n_tensor, n_int,            &
+!!     &         (numnod, numele, ie, interior_ele, n_tensor,           &
+!!     &          ntot_int_3d, n_int, xjac, an,                         &
 !!     &          n_layer_d, n_item_layer_d, layer_stack,               &
-!!     &          istack_item_layer_d_smp, item_layer)
+!!     &          istack_item_layer_d_smp, item_layer, ntot_phys, d_nod,&
+!!     &          sgs_l_smp, sgs_l, sgs_w)
 !!      subroutine int_vol_model_coef_grpsmp_q                          &
-!!     &         (numele, ie, interior_ele, n_tensor, n_int,            &
+!!     &         (numnod, numele, ie, interior_ele, n_tensor,           &
+!!     &          ntot_int_3d, n_int, xjac, aw,                         &
 !!     &          n_layer_d, n_item_layer_d, layer_stack,               &
-!!     &          istack_item_layer_d_smp, item_layer)
+!!     &          istack_item_layer_d_smp, item_layer, ntot_phys, d_nod,&
+!!     &          sgs_l_smp, sgs_l, sgs_w)
 !
       module int_vol_model_coef_grpsmp
 !
@@ -19,10 +23,8 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_jacobians
+      use m_node_phys_address
       use m_fem_gauss_int_coefs
-      use m_ele_info_4_dynamical
-      use m_work_4_dynamic_model
 !
       implicit none
 !
@@ -33,24 +35,34 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_model_coef_grpsmp_l                            &
-     &         (numele, ie, interior_ele, n_tensor, n_int,              &
+     &         (numnod, numele, ie, interior_ele, n_tensor,             &
+     &          ntot_int_3d, n_int, xjac, an,                           &
      &          n_layer_d, n_item_layer_d, layer_stack,                 &
-     &          istack_item_layer_d_smp, item_layer)
-!
-      use m_node_phys_address
-      use m_node_phys_data
+     &          istack_item_layer_d_smp, item_layer, ntot_phys, d_nod,  &
+     &          sgs_l_smp, sgs_l, sgs_w)
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_linear)
       integer (kind = kint), intent(in) :: interior_ele(numele)
 !
-      integer (kind = kint), intent(in) :: n_tensor, n_int
+      integer (kind = kint), intent(in) :: n_tensor
+!
+      integer (kind=kint), intent(in) :: ntot_int_3d, n_int
+      real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
+      real(kind=kreal), intent(in) :: an(num_t_linear,ntot_int_3d)
 !
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in) :: layer_stack(0:n_layer_d)
       integer (kind = kint), intent(in)                                 &
      &               :: istack_item_layer_d_smp(0:np_smp)
       integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
+!
+      integer (kind = kint), intent(in) :: numnod, ntot_phys
+      real(kind=kreal), intent(in) :: d_nod(numnod,ntot_phys)
+!
+      real(kind=kreal), intent(inout) :: sgs_l_smp(np_smp,18)
+      real(kind=kreal), intent(inout) :: sgs_l(n_layer_d,18)
+      real(kind=kreal), intent(inout) :: sgs_w(18)
 !
       integer (kind = kint) :: iproc, nd, ist_num, ied_num, iele, iele0
       integer (kind = kint) :: ii, ix, inum, is, ist, ied
@@ -154,24 +166,34 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_model_coef_grpsmp_q                            &
-     &         (numele, ie, interior_ele, n_tensor, n_int,              &
+     &         (numnod, numele, ie, interior_ele, n_tensor,             &
+     &          ntot_int_3d, n_int, xjac, aw,                           &
      &          n_layer_d, n_item_layer_d, layer_stack,                 &
-     &          istack_item_layer_d_smp, item_layer)
-!
-      use m_node_phys_address
-      use m_node_phys_data
+     &          istack_item_layer_d_smp, item_layer, ntot_phys, d_nod,  &
+     &          sgs_l_smp, sgs_l, sgs_w)
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_quad)
       integer (kind = kint), intent(in) :: interior_ele(numele)
 !
-      integer (kind = kint), intent(in) :: n_tensor, n_int
+      integer (kind = kint), intent(in) :: n_tensor
+!
+      integer (kind=kint), intent(in) :: ntot_int_3d, n_int
+      real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
+      real(kind=kreal), intent(in) :: aw(num_t_quad,ntot_int_3d)
 !
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in) :: layer_stack(0:n_layer_d)
       integer (kind = kint), intent(in)                                 &
      &               :: istack_item_layer_d_smp(0:np_smp)
       integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
+!
+      integer (kind = kint), intent(in) :: numnod, ntot_phys
+      real(kind=kreal), intent(in) :: d_nod(numnod,ntot_phys)
+!
+      real(kind=kreal), intent(inout) :: sgs_l_smp(np_smp,18)
+      real(kind=kreal), intent(inout) :: sgs_l(n_layer_d,18)
+      real(kind=kreal), intent(inout) :: sgs_w(18)
 !
       integer (kind = kint) :: iproc, nd, ist_num, ied_num, iele, iele0
       integer (kind = kint) :: ii, ix, inum, is, ist, ied
@@ -193,7 +215,6 @@
           ied = layer_stack(inum)
 !
           do nd = 1, n_tensor
-!
             i_s = iphys%i_sgs_simi +   nd-1
             i_g = iphys%i_sgs_grad +   nd-1
             i_f = iphys%i_sgs_grad_f + nd-1

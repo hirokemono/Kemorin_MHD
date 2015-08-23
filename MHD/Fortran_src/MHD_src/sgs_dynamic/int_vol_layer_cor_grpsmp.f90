@@ -4,13 +4,19 @@
 !     Written by H. Matsui
 !
 !!      subroutine int_vol_layer_cor_grpsmp_l                           &
-!!     &         (numele, ie, interior_ele, n_tensor, n_int,            &
+!!     &         (numnod, numele, ie, interior_ele, n_tensor,           &
+!!     &          ntot_int_3d, n_int, xjac, an,                         &
 !!     &          n_layer_d, n_item_layer_d, layer_stack,               &
-!!     &          istack_item_layer_d_smp, item_layer, ave_s, ave_g)
+!!     &          istack_item_layer_d_smp, item_layer, ave_s, ave_g,    &
+!!     &          ntot_phys, d_nod, ncomp_cor, ncomp_cor2,              &
+!!     &          sig_l_smp, cor_l_smp, sig_l, cov_l, sig_w, cov_w)
 !!      subroutine int_vol_layer_cor_grpsmp_q                           &
-!!     &         (numele, ie, interior_ele, n_tensor, n_int,            &
+!!     &         (numnod, numele, ie, interior_ele, n_tensor,           &
+!!     &          ntot_int_3d, n_int, xjac, aw,                         &
 !!     &          n_layer_d, n_item_layer_d, layer_stack,               &
-!!     &          istack_item_layer_d_smp, item_layer, ave_s, ave_g)
+!!     &          istack_item_layer_d_smp, item_layer, ave_s, ave_g,    &
+!!     &          ntot_phys, d_nod, ncomp_cor, ncomp_cor2,              &
+!!     &          sig_l_smp, cor_l_smp, sig_l, cov_l, sig_w, cov_w)
 !
       module int_vol_layer_cor_grpsmp
 !
@@ -18,9 +24,8 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_jacobians
+      use m_node_phys_address
       use m_fem_gauss_int_coefs
-      use m_work_layer_correlate
 !
       implicit none
 !
@@ -31,18 +36,18 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_layer_cor_grpsmp_l                             &
-     &         (numele, ie, interior_ele, n_tensor, n_int,              &
+     &         (numnod, numele, ie, interior_ele, n_tensor,             &
+     &          ntot_int_3d, n_int, xjac, an,                           &
      &          n_layer_d, n_item_layer_d, layer_stack,                 &
-     &          istack_item_layer_d_smp, item_layer, ave_s, ave_g)
-!
-      use m_node_phys_data
-      use m_node_phys_address
+     &          istack_item_layer_d_smp, item_layer, ave_s, ave_g,      &
+     &          ntot_phys, d_nod, ncomp_cor, ncomp_cor2,                &
+     &          sig_l_smp, cor_l_smp, sig_l, cov_l, sig_w, cov_w)
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_linear)
       integer (kind = kint), intent(in) :: interior_ele(numele)
 !
-      integer (kind = kint), intent(in) :: n_tensor, n_int
+      integer (kind = kint), intent(in) :: n_tensor
 !
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in) :: layer_stack(0:n_layer_d)
@@ -50,8 +55,23 @@
      &               :: istack_item_layer_d_smp(0:np_smp)
       integer (kind = kint), intent(in) :: item_layer(n_item_layer_d)
 !
+      integer (kind=kint), intent(in) :: ntot_int_3d, n_int
+      real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
+      real(kind=kreal), intent(in) :: an(num_t_linear,ntot_int_3d)
+!
       real(kind = kreal), intent(in) :: ave_s(n_layer_d,n_tensor)
       real(kind = kreal), intent(in) :: ave_g(n_layer_d,n_tensor)
+!
+      integer (kind = kint), intent(in) :: numnod, ntot_phys
+      real(kind=kreal), intent(in) :: d_nod(numnod,ntot_phys)
+!
+      integer (kind = kint), intent(in) :: ncomp_cor, ncomp_cor2
+      real(kind=kreal), intent(inout) :: sig_l_smp(np_smp,ncomp_cor2)
+      real(kind=kreal), intent(inout) :: cor_l_smp(np_smp,ncomp_cor)
+      real(kind=kreal), intent(inout) :: sig_l(n_layer_d,ncomp_cor)
+      real(kind=kreal), intent(inout) :: cov_l(n_layer_d,ncomp_cor2)
+      real(kind=kreal), intent(inout) :: sig_w(ncomp_cor2)
+      real(kind=kreal), intent(inout) :: cov_w(ncomp_cor)
 !
       integer (kind = kint) :: iproc, nd, iele, iele0, inum
       integer (kind = kint) :: ist_num, ied_num, ii, ix, ist, ied
@@ -188,18 +208,22 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_layer_cor_grpsmp_q                             &
-     &         (numele, ie, interior_ele, n_tensor, n_int,              &
+     &         (numnod, numele, ie, interior_ele, n_tensor,             &
+     &          ntot_int_3d, n_int, xjac, aw,                           &
      &          n_layer_d, n_item_layer_d, layer_stack,                 &
-     &          istack_item_layer_d_smp, item_layer, ave_s, ave_g)
-!
-      use m_node_phys_data
-      use m_node_phys_address
+     &          istack_item_layer_d_smp, item_layer, ave_s, ave_g,      &
+     &          ntot_phys, d_nod, ncomp_cor, ncomp_cor2,                &
+     &          sig_l_smp, cor_l_smp, sig_l, cov_l, sig_w, cov_w)
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_quad)
       integer (kind = kint), intent(in) :: interior_ele(numele)
 !
-      integer (kind = kint), intent(in) :: n_tensor, n_int
+      integer (kind = kint), intent(in) :: n_tensor
+!
+      integer (kind=kint), intent(in) :: ntot_int_3d, n_int
+      real (kind=kreal), intent(in) :: xjac(numele,ntot_int_3d)
+      real(kind=kreal), intent(in) :: aw(num_t_quad,ntot_int_3d)
 !
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in) :: layer_stack(0:n_layer_d)
@@ -209,6 +233,17 @@
 !
       real(kind = kreal), intent(in) :: ave_s(n_layer_d,n_tensor)
       real(kind = kreal), intent(in) :: ave_g(n_layer_d,n_tensor)
+!
+      integer (kind = kint), intent(in) :: numnod, ntot_phys
+      real(kind=kreal), intent(in) :: d_nod(numnod,ntot_phys)
+!
+      integer (kind = kint), intent(in) :: ncomp_cor, ncomp_cor2
+      real(kind=kreal), intent(inout) :: sig_l_smp(np_smp,ncomp_cor2)
+      real(kind=kreal), intent(inout) :: cor_l_smp(np_smp,ncomp_cor)
+      real(kind=kreal), intent(inout) :: sig_l(n_layer_d,ncomp_cor)
+      real(kind=kreal), intent(inout) :: cov_l(n_layer_d,ncomp_cor2)
+      real(kind=kreal), intent(inout) :: sig_w(ncomp_cor2)
+      real(kind=kreal), intent(inout) :: cov_w(ncomp_cor)
 !
       integer (kind = kint) :: iproc, nd, iele, iele0, inum
       integer (kind = kint) :: ist_num, ied_num, ii, ix, ist, ied
