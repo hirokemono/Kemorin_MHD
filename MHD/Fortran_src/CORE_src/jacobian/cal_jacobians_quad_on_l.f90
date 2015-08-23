@@ -47,7 +47,8 @@
 !
           call cal_jacobian_3d_8_20(node1%numnod, ele1%numele,          &
      &        np_smp, ele1%istack_ele_smp, ele1%ie, node1%xx,           &
-     &        xjac_lq(1,ix), axjac_lq(1,ix),                            &
+     &        jac1_3d_lq%xjac(1:ele1%numele,ix),                        &
+     &        axjac_lq(1,ix),     &
      &        dmx(1,1,ix,1), dmx(1,1,ix,2),                             &
      &        dmx(1,1,ix,3),  dxidx_lq(1,ix,1,1), dxidx_lq(1,ix,2,1),   &
      &        dxidx_lq(1,ix,3,1), dxidx_lq(1,ix,1,2),                   &
@@ -57,6 +58,7 @@
      &        dnzi_20(1,ix) )
         end do
       end do
+      xjac_lq = jac1_3d_lq%xjac
 !
       end subroutine cal_jacobian_quad_on_linear
 !

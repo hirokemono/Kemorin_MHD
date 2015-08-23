@@ -173,6 +173,9 @@
        integer(kind = kint), intent(in) :: numele
 !
 !
+!
+      call alloc_jacobians_type(numele, num_t_linear, jac1_3d_l)
+!
        allocate(an(num_t_linear,jac1_3d_l%ntot_int))
        allocate(an_infty(num_t_linear,nsurf_4_ele,jac1_3d_l%ntot_int))
 !
@@ -202,6 +205,9 @@
 !
 !
        jac1_3d_q%ntot_int = jac1_3d_l%ntot_int
+!
+      call alloc_jacobians_type(numele, nnod_4_ele, jac1_3d_q)
+!
        allocate(aw(nnod_4_ele,jac1_3d_q%ntot_int))
        allocate(aw_infty(nnod_4_ele,nsurf_4_ele,jac1_3d_q%ntot_int))
 !
@@ -231,6 +237,9 @@
 !
 !
        jac1_3d_lq%ntot_int = jac1_3d_l%ntot_int
+!
+      call alloc_jacobians_type(numele, num_t_quad, jac1_3d_lq)
+!
        allocate(am(num_t_quad,jac1_3d_lq%ntot_int))
        allocate(am_infty(num_t_quad,nsurf_4_ele,jac1_3d_lq%ntot_int))
 !
@@ -360,7 +369,7 @@
       integer(kind = kint), intent(in) :: numele
 !
 !
-      allocate( dxidx_lq(numele,ntot_int_3l,3,3) )
+      allocate( dxidx_lq(numele,jac1_3d_lq%ntot_int,3,3) )
       dxidx_lq = 0.0d0
 !
       end subroutine allocate_dxi_dx_l_quad
