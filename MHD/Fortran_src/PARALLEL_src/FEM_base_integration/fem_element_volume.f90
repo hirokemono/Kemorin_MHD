@@ -46,7 +46,7 @@
            ix = int_start3(n_int) + ii
            do iele = istart, iend
              ele1%volume_ele(iele) = ele1%volume_ele(iele)              &
-     &                          + xjac(iele,ix)*owe3d(ix)
+     &                          + jac1_3d_q%xjac(iele,ix)*owe3d(ix)
            end do
          end do
 !

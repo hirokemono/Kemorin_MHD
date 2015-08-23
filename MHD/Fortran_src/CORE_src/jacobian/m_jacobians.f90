@@ -116,7 +116,7 @@
 !
 !>     Stracture for Jacobians for linear element
       type(jacobians_3d), save :: jac1_3d_l
-!  jac1_3d_l%ntot_int
+!  jac1_3d_l%xjac
 !>     Stracture for Jacobians for quad element
       type(jacobians_3d), save :: jac1_3d_q
 !  jac1_3d_q%xjac

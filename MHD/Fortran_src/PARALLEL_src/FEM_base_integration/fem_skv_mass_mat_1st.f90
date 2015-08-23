@@ -66,7 +66,7 @@
       call fem_skv_mass_matrix                                          &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, jac1_3d_q%ntot_int, num_int,         &
-     &          xjac, aw, aw, k2, sk_v)
+     &    jac1_3d_q%xjac, aw, aw, k2, sk_v)
 !
       end  subroutine fem_skv_mass_matrix_1st
 !
@@ -88,7 +88,7 @@
 !
       call fem_skv_mass_matrix_diag(ele1%numele, ele1%nnod_4_ele,       &
      &    np_smp, iele_fsmp_stack, jac1_3d_q%ntot_int,                  &
-     &    num_int, xjac, aw, sk_v)
+     &    num_int, jac1_3d_q%xjac, aw, sk_v)
 !
       end  subroutine fem_skv_mass_matrix_diag_1st
 !
@@ -110,7 +110,7 @@
 !
       call fem_skv_mass_mat_diag_HRZ(ele1%numele, ele1%nnod_4_ele,      &
      &    np_smp, iele_fsmp_stack, jac1_3d_q%ntot_int,                  &
-     &    num_int, aw, xjac, sk_v)
+     &    num_int, aw, jac1_3d_q%xjac, sk_v)
 !
       end  subroutine fem_skv_mass_mat_diag_HRZ_1st
 !
@@ -177,7 +177,8 @@
       call fem_grp_skv_mass_matrix                                      &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp,                  &
-     &    jac1_3d_q%ntot_int, num_int, xjac, aw, aw, k2, sk_v)
+     &    jac1_3d_q%ntot_int, num_int, jac1_3d_q%xjac, aw, aw,          &
+     &    k2, sk_v)
 !
       end  subroutine fem_grp_skv_mass_matrix_1
 !
@@ -201,7 +202,7 @@
 !
       call fem_grp_skv_mass_matrix_diag(ele1%numele, ele1%nnod_4_ele,   &
      &          np_smp, iele_fsmp_stack, nele_grp, iele_grp,            &
-     &          jac1_3d_q%ntot_int, num_int, xjac, aw, sk_v)
+     &          jac1_3d_q%ntot_int, num_int, jac1_3d_q%xjac, aw, sk_v)
 !
       end  subroutine fem_grp_skv_mass_matrix_diag_1
 !
@@ -225,7 +226,7 @@
 !
       call fem_grp_skv_mass_mat_diag_HRZ(ele1%numele, ele1%nnod_4_ele,  &
      &          np_smp, iele_fsmp_stack, nele_grp, iele_grp,            &
-     &          jac1_3d_q%ntot_int, num_int, xjac, aw, sk_v)
+     &          jac1_3d_q%ntot_int, num_int, jac1_3d_q%xjac, aw, sk_v)
 !
       end  subroutine fem_grp_skv_mass_mat_diag_HRZ_1
 !

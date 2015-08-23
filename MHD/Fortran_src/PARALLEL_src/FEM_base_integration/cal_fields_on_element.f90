@@ -46,7 +46,8 @@
 !
       call fem_scalar_on_element(iele_fsmp_stack, node1%numnod,         &
      &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    jac1_3d_q%ntot_int, n_int, aw, xjac, d_ele, d_nod)
+     &    jac1_3d_q%ntot_int, n_int, aw, jac1_3d_q%xjac,                &
+     &    d_ele, d_nod)
 !
       end subroutine scalar_on_element
 !
@@ -66,7 +67,8 @@
 !
       call fem_vector_on_element(iele_fsmp_stack, node1%numnod,         &
      &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    jac1_3d_q%ntot_int, n_int, aw, xjac, d_ele, d_nod)
+     &    jac1_3d_q%ntot_int, n_int, aw, jac1_3d_q%xjac,                &
+     &    d_ele, d_nod)
 !
       end subroutine vector_on_element
 !
@@ -86,7 +88,8 @@
 !
       call fem_sym_tensor_on_element(iele_fsmp_stack, node1%numnod,     &
      &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    jac1_3d_q%ntot_int, n_int, aw, xjac, d_ele, d_nod)
+     &    jac1_3d_q%ntot_int, n_int, aw, jac1_3d_q%xjac,                &
+     &    d_ele, d_nod)
 !
       end subroutine sym_tensor_on_element
 !
@@ -106,9 +109,10 @@
 !
       real(kind = kreal), intent(inout) :: d_ele(ele1%numele)
 !
-      call fem_scalar_grp_on_element(iele_fsmp_stack, node1%numnod,     &
-     &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    nele_grp, iele_grp, jac1_3d_q%ntot_int, n_int, aw, xjac,      &
+      call fem_scalar_grp_on_element                                    &
+     &   (iele_fsmp_stack, node1%numnod, ele1%numele, ele1%nnod_4_ele,  &
+     &    ele1%ie, ele1%a_vol_ele, nele_grp, iele_grp,                  &
+     &    jac1_3d_q%ntot_int, n_int, aw, jac1_3d_q%xjac,                &
      &    d_ele, d_nod)
 !
       end subroutine scalar_grp_on_element
@@ -129,9 +133,10 @@
       real(kind = kreal), intent(inout) :: d_ele(ele1%numele,3)
 !
 !
-      call fem_vector_grp_on_element(iele_fsmp_stack, node1%numnod,     &
-     &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    nele_grp, iele_grp, jac1_3d_q%ntot_int, n_int, aw, xjac,      &
+      call fem_vector_grp_on_element                                    &
+     &   (iele_fsmp_stack, node1%numnod, ele1%numele, ele1%nnod_4_ele,  &
+     &    ele1%ie, ele1%a_vol_ele,  nele_grp, iele_grp,                 &
+     &    jac1_3d_q%ntot_int, n_int, aw, jac1_3d_q%xjac,                &
      &    d_ele, d_nod)
 !
       end subroutine vector_grp_on_element
@@ -152,9 +157,10 @@
       real(kind = kreal), intent(inout) :: d_ele(ele1%numele,6)
 !
 !
-      call fem_sym_tensor_grp_on_element(iele_fsmp_stack, node1%numnod, &
-     &    ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%a_vol_ele,        &
-     &    nele_grp, iele_grp, jac1_3d_q%ntot_int, n_int, aw, xjac,      &
+      call fem_sym_tensor_grp_on_element                                &
+     &   (iele_fsmp_stack, node1%numnod, ele1%numele, ele1%nnod_4_ele,  &
+     &    ele1%ie, ele1%a_vol_ele, nele_grp, iele_grp,                  &
+     &    jac1_3d_q%ntot_int, n_int, aw, jac1_3d_q%xjac,                &
      &    d_ele, d_nod)
 !
       end subroutine sym_tensor_grp_on_element
