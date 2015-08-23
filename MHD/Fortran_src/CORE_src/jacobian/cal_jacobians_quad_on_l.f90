@@ -58,7 +58,6 @@
      &        dnzi_20(1,ix) )
         end do
       end do
-      xjac_lq = jac1_3d_lq%xjac
 !
       end subroutine cal_jacobian_quad_on_linear
 !
