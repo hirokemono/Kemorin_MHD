@@ -37,7 +37,8 @@
         call fem_icore_mag_potential_icore(node1%numnod,                &
      &      ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%interior_ele,   &
      &      numele_in_core, iele_in_core_smp_stack, iele_in_core,       &
-     &      jac1_3d_l%ntot_int, intg_point_t_evo, jac1_3d_l%xjac, an,   &
+     &      jac1_3d_l%ntot_int, intg_point_t_evo,                       &
+     &      jac1_3d_l%xjac, jac1_3d_l%an,                               &
      &      num_tot_nod_phys, d_nod, iphys%i_mag_p, ave_mp_core_local)
 !
         call MPI_allREDUCE (ave_mp_core_local, ave_mp_core, 1,          &

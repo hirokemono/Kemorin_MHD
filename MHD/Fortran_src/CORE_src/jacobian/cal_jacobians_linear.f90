@@ -36,8 +36,10 @@
 !
       integer (kind = kint) :: ii, ix, i0
 !
-      call s_cal_shape_function_linear(jac1_3d_l%ntot_int, an,          &
+      call s_cal_shape_function_linear                                  &
+     &   (jac1_3d_l%ntot_int, jac1_3d_l%an,                             &
      &    dnxi_1, dnei_1, dnzi_1, xi3, ei3, zi3)
+      an = jac1_3d_l%an
 !
 !   jacobian for tri-linear elaments
 !

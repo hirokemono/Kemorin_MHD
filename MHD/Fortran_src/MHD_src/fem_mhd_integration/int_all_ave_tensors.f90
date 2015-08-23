@@ -103,8 +103,8 @@
         else
           call fem_vol_ave_sym_tensor_1(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
-     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an, k2,        &
-     &        vect_e, rms_local, ave_local)
+     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
+     &        k2, vect_e, rms_local, ave_local)
         end if
 !
         call vector_phys_2_each_element(k2, (i_vect+3), vect_e)
@@ -117,8 +117,8 @@
         else
           call fem_vol_ave_sym_tensor_2(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
-     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an, k2,        &
-     &        vect_e, rms_local, ave_local)
+     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
+     &        k2, vect_e, rms_local, ave_local)
         end if
       end do
 !
@@ -138,7 +138,6 @@
 !
       use nodal_fld_2_each_ele_1st
       use fem_vol_average_tensors
-!
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
@@ -161,8 +160,8 @@
         else
           call fem_vol_ave_asym_tensor(ele1%numele, ele1%nnod_4_ele,    &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
-     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an, k2,        &
-     &        vect_e, rms_local, ave_local)
+     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
+     &        k2, vect_e, rms_local, ave_local)
         end if
       end do
 !

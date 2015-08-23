@@ -126,8 +126,8 @@
         else
           call fem_vol_all_energy(ele1%numele, ele1%nnod_4_ele,         &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
-     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an, k2,        &
-     &        vect_e, rms_local, ave_local)
+     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
+     &        k2, vect_e, rms_local, ave_local)
         end if
       end do
 !
@@ -170,8 +170,8 @@
         else
           call fem_vol_ave_rms_4_scalar(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
-     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an, k2,        &
-     &        phi_e, rms_local, ave_local)
+     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
+     &        k2, phi_e, rms_local, ave_local)
         end if
       end do
 !
@@ -216,8 +216,8 @@
         else
           call fem_vol_angular_momentum(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
-     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, an, k2,        &
-     &        xe, vect_e, amom_local)
+     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
+     &        k2, xe, vect_e, amom_local)
         end if
       end do
 !
@@ -257,7 +257,7 @@
         else
           call fem_ave_rms_4_scalar(ele1%numele, ele1%nnod_4_ele,       &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
-     &        jac1_3d_l%ntot_int, n_int, an, k2,                        &
+     &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%an, k2,              &
      &        phi_e, rms_local, ave_local)
         end if
       end do

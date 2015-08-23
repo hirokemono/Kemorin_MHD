@@ -43,7 +43,7 @@
 !
 !
       call copy_shape_func_from_array(mesh%ele%nnod_4_ele,              &
-     &    jac_3d%ntot_int, an, jac_3d%an)
+     &    jac_3d%ntot_int, jac1_3d_l%an, jac_3d%an)
 !
 !   jacobian for tri-linear elaments
 !

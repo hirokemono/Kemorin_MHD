@@ -34,7 +34,7 @@
       write(50+my_rank,*) 'integration point, an'
       do ii = 1, jac1_3d_l%ntot_int
           write(50+my_rank,'(i16,1p20e25.14)') ii,                    &
-     &         (an(k1,ii),k1 = 1, num_t_linear)
+     &         (jac1_3d_l%an(k1,ii),k1 = 1, num_t_linear)
       end do
 !
 !

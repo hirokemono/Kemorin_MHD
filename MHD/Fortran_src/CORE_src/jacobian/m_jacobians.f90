@@ -184,7 +184,6 @@
 !       allocate(xjac(numele,jac1_3d_l%ntot_int))
 !       allocate(axjac(numele,jac1_3d_l%ntot_int))
 !
-       an = 0.0d0
        dnx = 0.0d0
 !
        an_infty = 0.0d0
@@ -254,7 +253,7 @@
 !
       subroutine copy_jacobians_quad
 !
-       aw      = an
+       aw      = jac1_3d_l%an
        dwx     = dnx
 !
        jac1_3d_q%xjac  = jac1_3d_l%xjac
@@ -275,7 +274,7 @@
 !
        subroutine deallocate_jacobians
 !
-       deallocate(an, an_infty)
+       deallocate(an_infty)
        deallocate(dnx)
 !
        end subroutine deallocate_jacobians

@@ -70,9 +70,9 @@
           nitem_grp = istack_egrp(igrp) - istack_egrp(igrp-1)
           call int_vol_rms_ave_1egrp_q                                  &
      &       (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,    &
-     &        nitem_grp, iele_grp(ist_grp),                             &
-     &        num_int, jac1_3d_q%ntot_int,                              &
-     &        jac1_3d_q%xjac, an, d_nod, ave_l(igrp), rms_l(igrp) )
+     &        nitem_grp, iele_grp(ist_grp), num_int,                    &
+     &        jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_l%an,         &
+     &        d_nod, ave_l(igrp), rms_l(igrp) )
         end do
 !$omp end parallel do
 !
@@ -84,9 +84,9 @@
           nitem_grp = istack_egrp(igrp) - istack_egrp(igrp-1)
           call int_vol_rms_ave_1egrp_l                                  &
      &       (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,    &
-     &        nitem_grp, iele_grp(ist_grp),                             &
-     &        num_int, jac1_3d_l%ntot_int,                              &
-     &        jac1_3d_l%xjac, an, d_nod, ave_l(igrp), rms_l(igrp) )
+     &        nitem_grp, iele_grp(ist_grp), num_int,                    &
+     &        jac1_3d_l%ntot_int, jac1_3d_l%xjac, jac1_3d_l%an,         &
+     &        d_nod, ave_l(igrp), rms_l(igrp) )
         end do
 !$omp end parallel do
 !
@@ -111,12 +111,12 @@
       if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_vol_rms_ave_1egrp_q(node1%numnod, ele1%numele,         &
      &      ele1%ie, ele1%interior_ele, nitem_grp, iele_grp, num_int,   &
-     &      jac1_3d_q%ntot_int, jac1_3d_q%xjac, an,                     &
+     &      jac1_3d_q%ntot_int, jac1_3d_q%xjac, aw,                     &
      &      d_nod, ave_l, rms_l)
       else
         call int_vol_rms_ave_1egrp_l(node1%numnod, ele1%numele,         &
      &      ele1%ie, ele1%interior_ele, nitem_grp, iele_grp, num_int,   &
-     &      jac1_3d_l%ntot_int, jac1_3d_l%xjac, an,                     &
+     &      jac1_3d_l%ntot_int, jac1_3d_l%xjac, jac1_3d_l%an,           &
      &      d_nod, ave_l, rms_l)
       end if
 !
@@ -170,9 +170,9 @@
           nitem_grp = istack_egrp(igrp) - istack_egrp(igrp-1)
           call int_vol_2rms_ave_1egrp_l                                 &
      &       (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,    &
-     &        nitem_grp, iele_grp(ist_grp),                             &
-     &        num_int, jac1_3d_l%ntot_int, jac1_3d_l%xjac,              &
-     &        an, d1_nod, d2_nod, ave_1(igrp), rms_1(igrp),             &
+     &        nitem_grp, iele_grp(ist_grp), num_int,                    &
+     &        jac1_3d_l%ntot_int, jac1_3d_l%xjac,  jac1_3d_l%an,        &
+     &        d1_nod, d2_nod, ave_1(igrp), rms_1(igrp),                 &
      &        ave_2(igrp), rms_2(igrp) )
         end do
 !$omp end parallel do
@@ -207,7 +207,7 @@
         call int_vol_2rms_ave_1egrp_l                                   &
      &     (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,      &
      &      nitem_grp, iele_grp, num_int,                               &
-     &      jac1_3d_l%ntot_int, jac1_3d_l%xjac, an,                     &
+     &      jac1_3d_l%ntot_int, jac1_3d_l%xjac, jac1_3d_l%an,           &
      &      d1_nod, d2_nod, ave_1, rms_1, ave_2, rms_2)
       end if
 !
@@ -262,9 +262,9 @@
           nitem_grp = istack_egrp(igrp) - istack_egrp(igrp-1)
           call int_vol_dev_cor_1egrp_l                                  &
      &       (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,    &
-     &        nitem_grp, iele_grp(ist_grp),                             &
-     &        num_int, jac1_3d_l%ntot_int, jac1_3d_l%xjac,              &
-     &        an, d1_nod, d2_nod, ave_1(igrp), ave_2(igrp),             &
+     &        nitem_grp, iele_grp(ist_grp), num_int,                    &
+     &        jac1_3d_l%ntot_int, jac1_3d_l%xjac, jac1_3d_l%an,         &
+     &        d1_nod, d2_nod, ave_1(igrp), ave_2(igrp),                 &
      &        sig_1(igrp), sig_2(igrp), cov_l(igrp) )
         end do
 !$omp end parallel do
@@ -300,7 +300,7 @@
         call int_vol_dev_cor_1egrp_l                                    &
      &     (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,      &
      &      nitem_grp, iele_grp, num_int,                               &
-     &      jac1_3d_l%ntot_int, jac1_3d_l%xjac, an,                     &
+     &      jac1_3d_l%ntot_int, jac1_3d_l%xjac, jac1_3d_l%an,           &
      &      d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
       end if
 !
