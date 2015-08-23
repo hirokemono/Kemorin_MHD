@@ -67,7 +67,7 @@
       call fem_skv_all_grad_upw                                         &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac1_3d_q%ntot_int,   &
-     &    xjac, aw, dwx, dwx, vxe, scalar_1, sk_v)
+     &    jac1_3d_q%xjac, aw, dwx, dwx, vxe, scalar_1, sk_v)
 !
       end subroutine fem_skv_gradient_upw
 !
@@ -90,8 +90,8 @@
 !
       call fem_skv_all_div_upw                                          &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele, np_smp,        &
-     &    iele_fsmp_stack, n_int, k2, dt, jac1_3d_q%ntot_int, xjac,     &
-     &    aw, dwx, dwx, vxe, vect_1, sk_v)
+     &    iele_fsmp_stack, n_int, k2, dt, jac1_3d_q%ntot_int,           &
+     &    jac1_3d_q%xjac, aw, dwx, dwx, vxe, vect_1, sk_v)
 !
       end subroutine fem_skv_divergence_upw
 !
@@ -113,8 +113,8 @@
 !
       call fem_all_skv_rot_upw                                          &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele, np_smp,        &
-     &    iele_fsmp_stack, n_int, k2, dt, jac1_3d_q%ntot_int, xjac,     &
-     &    aw, dwx, dwx, vxe, vect_1, sk_v)
+     &    iele_fsmp_stack, n_int, k2, dt, jac1_3d_q%ntot_int,           &
+     &    jac1_3d_q%xjac, aw, dwx, dwx, vxe, vect_1, sk_v)
 !
       end subroutine fem_skv_rotation_upw
 !
@@ -138,7 +138,7 @@
       call fem_skv_all_div_flux_upw                                     &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac1_3d_q%ntot_int,   &
-     &    xjac, aw, dwx, dwx, vxe, flux_1, sk_v)
+     &    jac1_3d_q%xjac, aw, dwx, dwx, vxe, flux_1, sk_v)
 !
       end subroutine fem_skv_div_tsr_upw
 !
@@ -162,7 +162,7 @@
       call fem_skv_all_div_asym_t_upw                                   &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac1_3d_q%ntot_int,   &
-     &    xjac, aw, dwx, dwx, vxe, flux_1, sk_v)
+     &    jac1_3d_q%xjac, aw, dwx, dwx, vxe, flux_1, sk_v)
 !
       end subroutine fem_skv_div_as_tsr_upw
 !
@@ -188,8 +188,8 @@
 !
       call fem_skv_grp_grad_upw                                         &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
-     &    np_smp, iele_fsmp_stack, nele_grp, iele_grp,                  &
-     &    n_int, k2, dt, jac1_3d_q%ntot_int, xjac, aw, dwx, dwx,        &
+     &    np_smp, iele_fsmp_stack, nele_grp, iele_grp, n_int, k2, dt,   &
+     &    jac1_3d_q%ntot_int, jac1_3d_q%xjac, aw, dwx, dwx,             &
      &    vxe, scalar_1, sk_v)
 !
       end subroutine fem_skv_grp_gradient_upw
@@ -216,7 +216,8 @@
       call fem_skv_grp_div_upw                                          &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele, np_smp,        &
      &    iele_fsmp_stack, nele_grp, iele_grp, n_int, k2, dt,           &
-     &    jac1_3d_q%ntot_int, xjac, aw, dwx, dwx, vxe, vect_1, sk_v)
+     &    jac1_3d_q%ntot_int, jac1_3d_q%xjac, aw, dwx, dwx,             &
+     &    vxe, vect_1, sk_v)
 !
       end subroutine fem_skv_grp_divergence_upw
 !
@@ -242,7 +243,8 @@
       call fem_skv_grp_rot_upw                                          &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele, np_smp,        &
      &    iele_fsmp_stack, nele_grp, iele_grp, n_int, k2, dt,           &
-     &    jac1_3d_q%ntot_int, xjac, aw, dwx, dwx,  vxe, vect_1, sk_v)
+     &    jac1_3d_q%ntot_int, jac1_3d_q%xjac, aw, dwx, dwx,             &
+     &    vxe, vect_1, sk_v)
 !
       end subroutine fem_skv_grp_rotation_upw
 !
@@ -268,7 +270,8 @@
       call fem_skv_grp_div_flux_upw                                     &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp, n_int, k2, dt,   &
-     &    jac1_3d_q%ntot_int, xjac, aw, dwx, dwx,  vxe, flux_1, sk_v)
+     &    jac1_3d_q%ntot_int, jac1_3d_q%xjac, aw, dwx, dwx,             &
+     &    vxe, flux_1, sk_v)
 !
       end subroutine fem_skv_grp_div_tsr_upw
 !
@@ -294,7 +297,8 @@
       call fem_skv_grp_div_asym_t_upw                                   &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp, n_int, k2, dt,   &
-     &    jac1_3d_q%ntot_int, xjac, aw, vxe, dwx, dwx,  flux_1, sk_v)
+     &    jac1_3d_q%ntot_int, jac1_3d_q%xjac, aw,                       &
+     &    vxe, dwx, dwx,  flux_1, sk_v)
 !
       end subroutine fem_skv_grp_div_as_tsr_upw
 !
@@ -318,7 +322,7 @@
       call fem_skv_all_grad_upw                                         &
      &   (ele1%numele, ele1%nnod_4_ele, num_t_linear,                   &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac1_3d_q%ntot_int,   &
-     &    xjac, aw, dwx, dnx, vxe, scalar_1, sk_v)
+     &    jac1_3d_q%xjac, aw, dwx, dnx, vxe, scalar_1, sk_v)
 !
       end subroutine fem_skv_linear_gradient_upw
 !
