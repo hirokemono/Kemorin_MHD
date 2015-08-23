@@ -36,7 +36,8 @@
       integer (kind=kint) :: ii, ix, i0
 !
 !
-      call s_cal_shape_function_quad(jac1_3d_lq%ntot_int, am,           &
+      call s_cal_shape_function_quad                                    &
+     &   (jac1_3d_lq%ntot_int, jac1_3d_lq%an,                           &
      &    dnxi_20, dnei_20, dnzi_20, xi3, ei3, zi3)
 !
 !   jacobian for quadrature elaments

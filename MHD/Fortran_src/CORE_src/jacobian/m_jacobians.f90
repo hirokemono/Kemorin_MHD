@@ -150,7 +150,7 @@
 !
 !
 !      integer(kind = kint) :: ntot_int_3l
-      real (kind=kreal), allocatable :: am(:,:)
+!      real (kind=kreal), allocatable :: am(:,:)
       real (kind=kreal), allocatable :: dmx(:,:,:,:)
 ! 
       real (kind=kreal), allocatable :: am_infty(:,:,:)
@@ -233,7 +233,7 @@
 !
       call alloc_jacobians_type(numele, num_t_quad, jac1_3d_lq)
 !
-       allocate(am(num_t_quad,jac1_3d_lq%ntot_int))
+!       allocate(am(num_t_quad,jac1_3d_lq%ntot_int))
        allocate(am_infty(num_t_quad,nsurf_4_ele,jac1_3d_lq%ntot_int))
 !
        allocate(dmx(numele,num_t_quad,jac1_3d_lq%ntot_int,3))
@@ -241,7 +241,6 @@
 !       allocate(xjac_lq(numele,jac1_3d_lq%ntot_int))
 !       allocate(axjac_lq(numele,jac1_3d_lq%ntot_int)) 
 !
-       am = 0.0d0
        dmx = 0.0d0
 !
        am_infty = 0.0d0
@@ -308,7 +307,7 @@
 !
        subroutine deallocate_jacobians_lq
 !
-       deallocate(am, am_infty)
+       deallocate(am_infty)
        deallocate(dmx)
 !
        end subroutine deallocate_jacobians_lq
