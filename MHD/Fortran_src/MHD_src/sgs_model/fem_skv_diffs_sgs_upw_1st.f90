@@ -57,7 +57,8 @@
       call fem_skv_grad_sgs_upw                                         &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt,                       &
-     &    jac1_3d_q%ntot_int, jac1_3d_q%xjac, aw, dwx, dwx,             &
+     &    jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%an,             &
+     &    dwx, dwx,             &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
@@ -90,7 +91,8 @@
       call fem_skv_div_sgs_upw                                          &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele, np_smp,        &
      &    iele_fsmp_stack, n_int, k2, dt,                               &
-     &    jac1_3d_q%ntot_int, jac1_3d_q%xjac, aw, dwx, dwx,             &
+     &    jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%an,             &
+     &    dwx, dwx,             &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
@@ -123,7 +125,8 @@
       call fem_skv_rot_sgs_upw                                          &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele, np_smp,        &
      &    iele_fsmp_stack, n_int, k2, dt,                               &
-     &    jac1_3d_q%ntot_int, jac1_3d_q%xjac, aw, dwx, dwx,             &
+     &    jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%an,             &
+     &    dwx, dwx,             &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
@@ -156,7 +159,8 @@
       call fem_skv_div_tsr_sgs_upw                                      &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt,                       &
-     &    jac1_3d_q%ntot_int, jac1_3d_q%xjac, aw, dwx, dwx,             &
+     &    jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%an,             &
+     &    dwx, dwx,             &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
@@ -189,7 +193,8 @@
       call fem_skv_div_ast_sgs_upw                                      &
      &   (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt,                       &
-     &    jac1_3d_q%ntot_int, jac1_3d_q%xjac, aw, dwx, dwx,             &
+     &    jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%an,             &
+     &    dwx, dwx,             &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &

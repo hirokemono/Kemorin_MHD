@@ -51,14 +51,15 @@
       do ii = 1, n_int*n_int*n_int
         ix = int_start3(n_int) + ii
 !
-        call s_set_int_point_position(nele_grp, iele_grp, aw(1,ix),     &
+        call s_set_int_point_position                                   &
+     &     (nele_grp, iele_grp, jac1_3d_q%an(1:ele1%nnod_4_ele,ix),     &
      &      xx_int(1,1), xx_int(1,2), xx_int(1,3) )
 !
         do k_order = 1, nnod_filter_mat
 !
           call fem_sk_filter_moments                                    &
      &       (node1%numnod, ele1%numele, ele1%nnod_4_ele, node1%xx,     &
-     &        jac1_3d_q%ntot_int, jac1_3d_q%xjac, aw,                   &
+     &        jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%an,         &
      &        nele_grp, iele_grp, inod, ix, k_order)
 !
           call sum_sk_2_filter_mat(nele_grp, k_order)
@@ -83,7 +84,7 @@
 !
 !
       call fem_sk_filter_weights(ele1%numele, ele1%nnod_4_ele,          &
-     &    jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw,                &
+     &    jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,      &
      &    nele_grp, iele_grp)
 !
       call sum_sk_2_filter_weight(nele_grp)

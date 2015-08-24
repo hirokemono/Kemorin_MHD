@@ -98,8 +98,8 @@
         if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_sym_tensor_1(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
-     &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw, k2,        &
-     &        vect_e, rms_local, ave_local)
+     &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,  &
+     &        k2, vect_e, rms_local, ave_local)
         else
           call fem_vol_ave_sym_tensor_1(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
@@ -112,8 +112,8 @@
         if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_sym_tensor_2(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
-     &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw, k2,        &
-     &        vect_e, rms_local, ave_local)
+     &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,  &
+     &        k2, vect_e, rms_local, ave_local)
         else
           call fem_vol_ave_sym_tensor_2(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
@@ -155,8 +155,8 @@
         if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_asym_tensor(ele1%numele, ele1%nnod_4_ele,    &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
-     &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, aw, k2,        &
-     &        vect_e, rms_local, ave_local)
+     &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,  &
+     &        k2, vect_e, rms_local, ave_local)
         else
           call fem_vol_ave_asym_tensor(ele1%numele, ele1%nnod_4_ele,    &
      &        iele_fsmp_stack, ele1%interior_ele,                       &

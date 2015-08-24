@@ -212,9 +212,7 @@
 !       allocate(xjac_q(numele,jac1_3d_q%ntot_int))
 !       allocate(axjac_q(numele,jac1_3d_q%ntot_int)) 
 !
-       aw = 0.0d0
        dwx = 0.0d0
-!
        aw_infty = 0.0d0
 !
        end subroutine allocate_jacobians_quad
@@ -252,7 +250,8 @@
 !
       subroutine copy_jacobians_quad
 !
-       aw      = jac1_3d_l%an
+       jac1_3d_q%an = jac1_3d_l%an
+       aw = jac1_3d_q%an
        dwx     = dnx
 !
        jac1_3d_q%xjac  = jac1_3d_l%xjac
