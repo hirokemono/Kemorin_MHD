@@ -139,7 +139,7 @@
 ! 
 !
 !      integer(kind = kint) :: ntot_int_3q
-      real (kind=kreal), allocatable :: aw(:,:)
+!      real (kind=kreal), allocatable :: aw(:,:)
       real (kind=kreal), allocatable :: dwx(:,:,:,:)
 ! 
       real (kind=kreal), allocatable :: aw_infty(:,:,:)
@@ -204,7 +204,7 @@
 !
       call alloc_jacobians_type(numele, nnod_4_ele, jac1_3d_q)
 !
-       allocate(aw(nnod_4_ele,jac1_3d_q%ntot_int))
+!       allocate(aw(nnod_4_ele,jac1_3d_q%ntot_int))
        allocate(aw_infty(nnod_4_ele,nsurf_4_ele,jac1_3d_q%ntot_int))
 !
        allocate(dwx(numele,nnod_4_ele,jac1_3d_q%ntot_int,3))
@@ -251,7 +251,6 @@
       subroutine copy_jacobians_quad
 !
        jac1_3d_q%an = jac1_3d_l%an
-       aw = jac1_3d_q%an
        dwx     = dnx
 !
        jac1_3d_q%xjac  = jac1_3d_l%xjac
@@ -289,7 +288,7 @@
 !
        subroutine deallocate_jacobians_quad
 !
-       deallocate(aw, aw_infty)
+       deallocate(aw_infty)
        deallocate(dwx)
 !
        end subroutine deallocate_jacobians_quad

@@ -40,7 +40,6 @@
 !
       call s_cal_shape_function_quad(jac1_3d_q%ntot_int, jac1_3d_q%an,  &
      &    dnxi_20, dnei_20, dnzi_20, xi3, ei3, zi3)
-      aw = jac1_3d_q%an
 !
 !   jacobian for tri-linear elaments
 !
