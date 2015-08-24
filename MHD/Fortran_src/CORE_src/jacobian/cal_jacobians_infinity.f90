@@ -43,8 +43,8 @@
 !
 !
       call s_cal_shape_func_infty_linear                                &
-     &   (jac1_3d_l%ntot_int, infty_list%sf_apt(1),                     &
-     &    an_infty, dnxi_infty, dnei_infty, dnzi_infty,                 &
+     &   (jac1_3d_l%ntot_int, infty_list%sf_apt(1), jac1_3d_l%an_infty, &
+     &    dnxi_infty, dnei_infty, dnzi_infty,                           &
      &    xi3, ei3, zi3)
 !
       do i0 = 1, max_int_point
@@ -82,8 +82,8 @@
 !
 !
       call s_cal_shape_func_infty_quad                                  &
-     &   (jac1_3d_q%ntot_int, infty_list%sf_apt(1),                     &
-     &    aw_infty, dnxi_infty20, dnei_infty20, dnzi_infty20,           &
+     &   (jac1_3d_q%ntot_int, infty_list%sf_apt(1), jac1_3d_q%an_infty, &
+     &    dnxi_infty20, dnei_infty20, dnzi_infty20,                     &
      &    xi3, ei3, zi3)
 !
       do i0 = 1, max_int_point
@@ -121,8 +121,8 @@
 !
 !
       call s_cal_shape_func_infty_lag                                   &
-     &   (jac1_3d_q%ntot_int, infty_list%sf_apt(1),                     &
-     &    aw_infty, dnxi_infty27, dnei_infty27, dnzi_infty27,           &
+     &   (jac1_3d_q%ntot_int, infty_list%sf_apt(1), jac1_3d_q%an_infty, &
+     &    dnxi_infty27, dnei_infty27, dnzi_infty27,                     &
      &    xi3, ei3, zi3)
 !
       do i0 = 1, max_int_point
@@ -161,9 +161,9 @@
       integer (kind=kint) :: ii, ix, i0
 !
 !
-      call s_cal_shape_func_infty_quad                                  &
-     &   (jac1_3d_lq%ntot_int, infty_list%sf_apt(1),                    &
-     &    am_infty, dnxi_infty20, dnei_infty20, dnzi_infty20,           &
+      call s_cal_shape_func_infty_quad(jac1_3d_lq%ntot_int,             &
+     &    infty_list%sf_apt(1), jac1_3d_lq%an_infty,                    &
+     &    dnxi_infty20, dnei_infty20, dnzi_infty20,                     &
      &    xi3, ei3, zi3)
 !
       do i0 = 1, max_int_point

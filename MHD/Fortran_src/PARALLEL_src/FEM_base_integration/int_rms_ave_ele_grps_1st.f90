@@ -71,7 +71,7 @@
           call int_vol_rms_ave_1egrp_q                                  &
      &       (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,    &
      &        nitem_grp, iele_grp(ist_grp), num_int,                    &
-     &        jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_l%an,         &
+     &        jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%an,         &
      &        d_nod, ave_l(igrp), rms_l(igrp) )
         end do
 !$omp end parallel do

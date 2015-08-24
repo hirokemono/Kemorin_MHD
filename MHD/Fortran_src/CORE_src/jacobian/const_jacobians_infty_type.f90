@@ -46,7 +46,7 @@
 !
 !
       call copy_shape_func_inf_from_array(jac_3d%ntot_int,              &
-     &    mesh%ele%nnod_4_ele, an_infty, jac_3d%an_infty)
+     &    mesh%ele%nnod_4_ele, jac1_3d_l%an_infty, jac_3d%an_infty)
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0*i0
@@ -100,7 +100,7 @@
 !
 !
       call copy_shape_func_inf_from_array(jac_3d%ntot_int,              &
-     &    mesh%ele%nnod_4_ele, aw_infty, jac_3d%an_infty)
+     &    mesh%ele%nnod_4_ele, jac1_3d_q%an_infty, jac_3d%an_infty)
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0*i0
@@ -154,7 +154,7 @@
 !
 !
       call copy_shape_func_inf_from_array(jac_3d%ntot_int,              &
-     &    mesh%ele%nnod_4_ele, aw_infty, jac_3d%an_infty)
+     &    mesh%ele%nnod_4_ele, jac1_3d_q%an_infty, jac_3d%an_infty)
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0*i0
@@ -209,7 +209,7 @@
 !
 !
       call copy_shape_func_inf_from_array(jac_3d%ntot_int,              &
-     &    num_t_quad, aw_infty, jac_3d%an_infty)
+     &    num_t_quad, jac1_3d_q%an_infty, jac_3d%an_infty)
 !
       do i0 = 1, max_int_point
         do ii = 1, i0*i0*i0

@@ -254,7 +254,7 @@
       call fem_skv_div_sgs_pg                                           &
      &   (ele1%numele, num_t_linear, ele1%nnod_4_ele, np_smp,           &
      &    iele_fsmp_stack, n_int, k2,                                   &
-     &    jac1_3d_l%ntot_int, jac1_3d_l%xjac, jac1_3d_l%an, dnx, dwx,   &
+     &    jac1_3d_q%ntot_int, jac1_3d_l%xjac, jac1_3d_l%an, dnx, dwx,   &
      &    FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                &
      &    FEM1_elen%nele_filter_mom,                                    &
      &    FEM1_elen%elen_ele%diff%df_x2, FEM1_elen%elen_ele%diff%df_y2, &
