@@ -31,10 +31,9 @@
       subroutine cal_jacobian_trilinear
 !
       use m_jacobians
-      use cal_jacobian_3d_linear
+      use cal_1point_jacobian_linear
       use cal_shape_function_3d
 !
-      integer (kind = kint) :: ii, ix, i0
 !
       call s_cal_shape_function_linear                                  &
      &   (jac1_3d_l%ntot_int, jac1_3d_l%an,                             &
@@ -42,21 +41,11 @@
 !
 !   jacobian for tri-linear elaments
 !
-      do i0 = 1, max_int_point
-        do ii = 1, i0*i0*i0
-          ix = int_start3(i0) + ii
-!
-          call s_cal_jacobian_3d_8(node1%numnod, ele1%numele, np_smp,   &
+      call cal_jacobian_3d_8                                            &
+     &       (node1%numnod, ele1%numele, ele1%nnod_4_ele, np_smp,       &
      &        ele1%istack_ele_smp, ele1%ie, node1%xx,                   &
-     &        jac1_3d_l%xjac(1:ele1%numele,ix),                         &
-     &        jac1_3d_l%axjac(1:ele1%numele,ix),                        &
-     &        dnx(1,1,ix,1), dnx(1,1,ix,2), dnx(1,1,ix,3),              &
-     &        dxidx_1(1,ix,1,1), dxidx_1(1,ix,2,1), dxidx_1(1,ix,3,1),  &
-     &        dxidx_1(1,ix,1,2), dxidx_1(1,ix,2,2), dxidx_1(1,ix,3,2),  &
-     &        dxidx_1(1,ix,1,3), dxidx_1(1,ix,2,3), dxidx_1(1,ix,3,3),  &
-     &        dnxi_1(1,ix), dnei_1(1,ix), dnzi_1(1,ix) )
-        end do
-      end do
+     &        jac1_3d_l%ntot_int, jac1_3d_l%xjac, jac1_3d_l%axjac,      &
+     &        dnx, dxidx_1, dnxi_1, dnei_1, dnzi_1)
 !
       end subroutine cal_jacobian_trilinear
 !
