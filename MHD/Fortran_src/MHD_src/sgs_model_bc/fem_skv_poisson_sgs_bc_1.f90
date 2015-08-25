@@ -54,8 +54,8 @@
 !
       call fem_skv_poisson_sgs_fixed(ele1%numele, num_t_linear,         &
      &  num_t_linear, np_smp, num_index_ibc, ele_bc_id,                 &
-     &  ibc_stack_smp, k2, n_int,                                       &
-     &  jac1_3d_l%ntot_int, jac1_3d_l%xjac, dnx, dnx,                   &
+     &  ibc_stack_smp, k2, n_int, jac1_3d_l%ntot_int,                   &
+     &  jac1_3d_l%xjac, jac1_3d_l%dnx, jac1_3d_l%dnx,                   &
      &  FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                  &
      &  FEM1_elen%nele_filter_mom,                                      &
      &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &

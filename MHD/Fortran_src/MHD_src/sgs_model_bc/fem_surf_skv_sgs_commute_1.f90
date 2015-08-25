@@ -369,7 +369,8 @@
      &  num_t_linear, num_linear_sf, surf1%node_on_sf,                  &
      &  sf_grp%num_item, sf_grp%item_sf_grp,                            &
      &  sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                      &
-     &  jac1_3d_l%ntot_int, jac1_3d_l%xjac, dnx, dnx,                   &
+     &  jac1_3d_l%ntot_int, jac1_3d_l%xjac,                             &
+     &  jac1_3d_l%dnx, jac1_3d_l%dnx,                                   &
      &  FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                  &
      &  FEM1_elen%nele_filter_mom,                                      &
      &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &

@@ -43,7 +43,7 @@
         write(50+my_rank,*) 'iele, integration point, dnx', ii, nd
         do iele = 1, ele1%numele
           write(50+my_rank,'(i16,1p20e25.14)') iele,                    &
-     &           (dnx(iele,k1,ii,nd), k1 = 1, num_t_linear)
+     &           (jac1_3d_l%dnx(iele,k1,ii,nd), k1 = 1, num_t_linear)
         end do
        end do
       end do

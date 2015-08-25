@@ -116,19 +116,19 @@
 !
 !>     Stracture for Jacobians for linear element
       type(jacobians_3d), save :: jac1_3d_l
-!  jac1_3d_l%an_infty
+!  jac1_3d_l%dnx
 !>     Stracture for Jacobians for quad element
       type(jacobians_3d), save :: jac1_3d_q
-!  jac1_3d_q%an_infty
+!  jac1_3d_q%dnx
 !
 !>     Stracture for linear Jacobians for quad element
       type(jacobians_3d), save :: jac1_3d_lq
-!  jac1_3d_lq%an_infty
+!  jac1_3d_lq%dnx
 !
 !
 !      integer(kind = kint) :: ntot_int_3d
 !      real (kind=kreal), allocatable :: an(:,:)
-      real (kind=kreal), allocatable :: dnx(:,:,:,:)
+!      real (kind=kreal), allocatable :: dnx(:,:,:,:)
 !
 !      real (kind=kreal), allocatable :: an_infty(:,:,:)
 ! 
@@ -151,7 +151,7 @@
 !
 !      integer(kind = kint) :: ntot_int_3l
 !      real (kind=kreal), allocatable :: am(:,:)
-      real (kind=kreal), allocatable :: dmx(:,:,:,:)
+!      real (kind=kreal), allocatable :: dmx(:,:,:,:)
 ! 
 !      real (kind=kreal), allocatable :: am_infty(:,:,:)
 ! 
@@ -179,12 +179,10 @@
 !       allocate(an(num_t_linear,jac1_3d_l%ntot_int))
 !       allocate(an_infty(num_t_linear,nsurf_4_ele,jac1_3d_l%ntot_int))
 !
-       allocate(dnx(numele,num_t_linear,jac1_3d_l%ntot_int,3))
+!       allocate(dnx(numele,num_t_linear,jac1_3d_l%ntot_int,3))
 !
 !       allocate(xjac(numele,jac1_3d_l%ntot_int))
 !       allocate(axjac(numele,jac1_3d_l%ntot_int))
-!
-       dnx = 0.0d0
 !
        end subroutine allocate_jacobians
 !
@@ -231,12 +229,10 @@
 !       allocate(am(num_t_quad,jac1_3d_lq%ntot_int))
 !       allocate(am_infty(num_t_quad,nsurf_4_ele,jac1_3d_lq%ntot_int))
 !
-       allocate(dmx(numele,num_t_quad,jac1_3d_lq%ntot_int,3))
+!       allocate(dmx(numele,num_t_quad,jac1_3d_lq%ntot_int,3))
 !
 !       allocate(xjac_lq(numele,jac1_3d_lq%ntot_int))
 !       allocate(axjac_lq(numele,jac1_3d_lq%ntot_int)) 
-!
-       dmx = 0.0d0
 !
        end subroutine allocate_jacobians_linear_quad
 !
@@ -246,7 +242,7 @@
       subroutine copy_jacobians_quad
 !
        jac1_3d_q%an = jac1_3d_l%an
-       dwx     = dnx
+       dwx     = jac1_3d_l%dnx
 !
        jac1_3d_q%xjac  = jac1_3d_l%xjac
        jac1_3d_q%axjac = jac1_3d_l%axjac
@@ -266,7 +262,8 @@
 !
        subroutine deallocate_jacobians
 !
-       deallocate(dnx)
+      call dealloc_jacobians_type(jac1_3d_l)
+!       deallocate(dnx)
 !
        end subroutine deallocate_jacobians
 !
@@ -282,6 +279,7 @@
 !
        subroutine deallocate_jacobians_quad
 !
+      call dealloc_jacobians_type(jac1_3d_q)
        deallocate(dwx)
 !
        end subroutine deallocate_jacobians_quad
@@ -298,7 +296,7 @@
 !
        subroutine deallocate_jacobians_lq
 !
-       deallocate(dmx)
+      call dealloc_jacobians_type(jac1_3d_lq)
 !
        end subroutine deallocate_jacobians_lq
 !

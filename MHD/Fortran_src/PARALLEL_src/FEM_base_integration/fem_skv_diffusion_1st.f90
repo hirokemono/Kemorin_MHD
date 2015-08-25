@@ -116,7 +116,7 @@
 !
       call fem_skv_poisson(ele1%numele, num_t_linear, num_t_linear,     &
      &    np_smp, iele_fsmp_stack, n_int, k2, jac1_3d_l%ntot_int,       &
-     &    jac1_3d_l%xjac, dnx, dnx, sk_v)
+     &    jac1_3d_l%xjac, jac1_3d_l%dnx, jac1_3d_l%dnx, sk_v)
 !
       end subroutine fem_skv_poisson_linear_1st
 !

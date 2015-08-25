@@ -354,8 +354,8 @@
      &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
 !
       call fem_skv_all_grad(ele1%numele, ele1%nnod_4_ele, num_t_linear, &
-     &    np_smp, iele_fsmp_stack, n_int, k2,                           &
-     &    jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%an, dnx,        &
+     &    np_smp, iele_fsmp_stack, n_int, k2, jac1_3d_q%ntot_int,       &
+     &    jac1_3d_q%xjac, jac1_3d_q%an, jac1_3d_l%dnx,                  &
      &    scalar_1, sk_v)
 !
       end subroutine fem_skv_linear_gradient

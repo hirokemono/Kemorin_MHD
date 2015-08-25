@@ -45,7 +45,7 @@
      &       (node1%numnod, ele1%numele, ele1%nnod_4_ele, np_smp,       &
      &        ele1%istack_ele_smp, ele1%ie, node1%xx,                   &
      &        jac1_3d_l%ntot_int, jac1_3d_l%xjac, jac1_3d_l%axjac,      &
-     &        dnx, dxidx_1, dnxi_1, dnei_1, dnzi_1)
+     &        jac1_3d_l%dnx, dxidx_1, dnxi_1, dnei_1, dnzi_1)
 !
       end subroutine cal_jacobian_trilinear
 !
@@ -113,7 +113,7 @@
      &       (node1%numnod, ele1%numele, ele1%nnod_4_ele,               &
      &        np_smp, ele1%istack_ele_smp, ele1%ie, node1%xx,           &
      &        jac1_3d_lq%ntot_int, jac1_3d_lq%xjac, jac1_3d_lq%axjac,   &
-     &        dmx, dxidx_lq, dnxi_20, dnei_20, dnzi_20)
+     &        jac1_3d_lq%dnx, dxidx_lq, dnxi_20, dnei_20, dnzi_20)
 !
       end subroutine cal_jacobian_quad_on_linear
 !

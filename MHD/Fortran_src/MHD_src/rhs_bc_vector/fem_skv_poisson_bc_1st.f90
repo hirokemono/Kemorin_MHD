@@ -50,8 +50,8 @@
       call fem_skv_poisson_fixed                                        &
      &   (ele1%numele, num_t_linear, num_t_linear,                      &
      &    np_smp, num_index_ibc, ele_bc_id, ibc_stack_smp, k2, n_int,   &
-     &    jac1_3d_l%ntot_int, jac1_3d_l%xjac, dnx, dnx,                 &
-     &    phi_e, sk_v)
+     &    jac1_3d_l%ntot_int, jac1_3d_l%xjac,                           &
+     &    jac1_3d_l%dnx, jac1_3d_l%dnx, phi_e, sk_v)
 !
       end subroutine fem_skv_poisson_bc_1
 !
