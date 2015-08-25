@@ -31,7 +31,7 @@
       subroutine cal_jacobian_trilinear
 !
       use m_jacobians
-      use cal_1point_jacobian_linear
+      use cal_1ele_jacobians
       use cal_shape_function_3d
 !
 !
@@ -54,32 +54,21 @@
       subroutine cal_jacobian_surface_linear(jac_2d_l)
 !
       use t_jacobian_2d
-      use cal_jacobian_2d_linear
+      use cal_1surf_jacobians
       use cal_shape_function_2d
 !
       type(jacobians_2d), intent(inout) :: jac_2d_l
-      integer (kind = kint) :: ii, ix, i0
 !
 !
       call s_cal_shape_function_2d_linear(jac_2d_l%ntot_int,            &
      &    jac_2d_l%an_sf, dnxi_sf1, dnei_sf1, xi2, ei2)
 !
 !   jacobian for tri-linear elaments
-!
-      do i0 = 1, max_int_point
-        do ii = 1, i0*i0
-          ix = int_start2(i0) + ii
-!
-          call s_cal_jacobian_2d_4(node1%numnod, surf1%numsurf,         &
+      call cal_jacobian_2d_4                                            &
+     &       (node1%numnod, surf1%numsurf, surf1%nnod_4_surf,           &
      &        surf1%ie_surf, node1%xx, np_smp, surf1%istack_surf_smp,   &
-     &        jac_2d_l%xj_sf(1:surf1%numsurf,ix),                       &
-     &        jac_2d_l%axj_sf(1:surf1%numsurf,ix),                      &
-     &        jac_2d_l%xsf_sf(1:surf1%numsurf,ix,1),                    &
-     &        jac_2d_l%xsf_sf(1:surf1%numsurf,ix,2),                    &
-     &        jac_2d_l%xsf_sf(1:surf1%numsurf,ix,3),                    &
-     &        dnxi_sf1(1,ix), dnei_sf1(1,ix) )
-        end do
-      end do
+     &        jac_2d_l%ntot_int, jac_2d_l%xj_sf, jac_2d_l%axj_sf,       &
+     &        jac_2d_l%xsf_sf, dnxi_sf1, dnei_sf1)
 !
       end subroutine cal_jacobian_surface_linear
 !
@@ -88,11 +77,10 @@
       subroutine cal_jacobian_edge_linear(jac_1d_l)
 !
       use t_jacobian_1d
-      use cal_jacobian_1d
+      use cal_1edge_jacobians
       use cal_shape_function_1d
 !
       type(jacobians_1d), intent(inout) :: jac_1d_l
-      integer (kind = kint) :: ii, ix, i0
 !
 !
       call s_cal_shape_function_1d_linear(jac_1d_l%ntot_int,            &
@@ -100,20 +88,11 @@
 !
 !   jacobian for tri-linear elaments
 !
-      do i0 = 1, max_int_point
-        do ii = 1, i0
-          ix = int_start1(i0) + ii
-!
-          call s_cal_jacobian_1d_2(node1%numnod, edge1%numedge,         &
-     &        edge1%ie_edge, node1%xx, np_smp, edge1%istack_edge_smp,   &
-     &        jac_1d_l%xj_edge(1:edge1%numedge,ix),                     &
-     &        jac_1d_l%axj_edge(1:edge1%numedge,ix),                    &
-     &        jac_1d_l%xeg_edge(1:edge1%numedge,ix,1),                  &
-     &        jac_1d_l%xeg_edge(1:edge1%numedge,ix,2),                  &
-     &        jac_1d_l%xeg_edge(1:edge1%numedge,ix,3),                  &
-     &        dnxi_ed1(1,ix))
-        end do
-      end do
+      call cal_jacobian_1d_2                                            &
+     &   (node1%numnod, edge1%numedge, edge1%nnod_4_edge,               &
+     &    edge1%ie_edge, node1%xx, np_smp, edge1%istack_edge_smp,       &
+     &    jac_1d_l%ntot_int, jac_1d_l%xj_edge, jac_1d_l%axj_edge,       &
+     &    jac_1d_l%xeg_edge, dnxi_ed1)
 !
       end subroutine cal_jacobian_edge_linear
 !

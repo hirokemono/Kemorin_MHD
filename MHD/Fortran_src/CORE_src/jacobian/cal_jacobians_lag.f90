@@ -30,7 +30,7 @@
       subroutine cal_jacobian_lag
 !
       use m_jacobians
-      use cal_1point_jacobian_lag
+      use cal_1ele_jacobians
       use cal_shape_function_3d
 !
 !
@@ -52,33 +52,21 @@
       subroutine cal_jacobian_surface_lag(jac_2d_q)
 !
       use t_jacobian_2d
-      use cal_jacobian_2d_lag
+      use cal_1surf_jacobians
       use cal_shape_function_2d
 !
       type(jacobians_2d), intent(inout) :: jac_2d_q
-!
-      integer (kind = kint) :: ii, ix, i0
 !
 !
       call s_cal_shape_function_2d_lag(jac_2d_q%ntot_int,               &
      &    jac_2d_q%an_sf, dnxi_sf27, dnei_sf27, xi2, ei2)
 !
 !   jacobian for quadrature  elaments
-!
-      do i0 = 1, max_int_point
-        do ii = 1, i0*i0
-          ix = int_start2(i0) + ii
-!
-          call s_cal_jacobian_2d_9(node1%numnod, surf1%numsurf,         &
+      call cal_jacobian_2d_9                                            &
+     &       (node1%numnod, surf1%numsurf, surf1%nnod_4_surf,           &
      &        surf1%ie_surf, node1%xx, np_smp, surf1%istack_surf_smp,   &
-     &        jac_2d_q%xj_sf(1:surf1%numsurf,ix),                       &
-     &        jac_2d_q%axj_sf(1:surf1%numsurf,ix),                      &
-     &        jac_2d_q%xsf_sf(1:surf1%numsurf,ix,1),                    &
-     &        jac_2d_q%xsf_sf(1:surf1%numsurf,ix,2),                    &
-     &        jac_2d_q%xsf_sf(1:surf1%numsurf,ix,3),                    &
-     &        dnxi_sf27(1,ix), dnei_sf27(1,ix) )
-        end do
-      end do
+     &        jac_2d_q%ntot_int, jac_2d_q%xj_sf, jac_2d_q%axj_sf,       &
+     &        jac_2d_q%xsf_sf, dnxi_sf1, dnei_sf1)
 !
       end subroutine cal_jacobian_surface_lag
 !

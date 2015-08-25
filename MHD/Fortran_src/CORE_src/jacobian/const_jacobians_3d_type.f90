@@ -35,7 +35,7 @@
       use t_mesh_data
       use t_jacobians
       use m_jacobians
-      use cal_1point_jacobian_linear
+      use cal_1ele_jacobians
 !
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(inout) :: jac_3d
@@ -61,7 +61,7 @@
       use t_mesh_data
       use t_jacobians
       use m_jacobians
-      use cal_1point_jacobian_quad
+      use cal_1ele_jacobians
 !
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(inout) :: jac_3d
@@ -87,11 +87,10 @@
       use t_mesh_data
       use t_jacobians
       use m_jacobians
-      use cal_1point_jacobian_lag
+      use cal_1ele_jacobians
 !
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(inout) :: jac_3d
-      integer (kind = kint) :: ii, ix, i0
 !
 !
       call copy_shape_func_from_array(mesh%ele%nnod_4_ele,              &
@@ -99,17 +98,11 @@
 !
 !   jacobian for tri-linear elaments
 !
-      do i0 = 1, max_int_point
-        do ii = 1, i0*i0*i0
-          ix = int_start3(i0) + ii
-!
-          call cal_jacobian_3d_27(mesh%node%numnod, mesh%ele%numele,    &
+      call cal_jacobian_3d_27(mesh%node%numnod, mesh%ele%numele,        &
      &        mesh%ele%nnod_4_ele, np_smp, mesh%ele%istack_ele_smp,     &
      &        mesh%ele%ie, mesh%node%xx, jac_3d%ntot_int,               &
      &        jac_3d%xjac, jac_3d%axjac, jac_3d%dnx, jac_3d%dxidx_3d,   &
      &        dnxi_27, dnei_27, dnzi_27)
-        end do
-      end do
 !
       end subroutine cal_jacobian_type_trilag
 !
@@ -120,43 +113,20 @@
       use t_mesh_data
       use t_jacobians
       use m_jacobians
-      use cal_jacobian_3d_linear_quad
+      use cal_1ele_jacobians
 !
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(inout) :: jac_3d
-      integer (kind = kint) :: ii, ix, i0
 !
 !
       call copy_shape_func_from_array(mesh%ele%nnod_4_ele,              &
      &    jac_3d%ntot_int, jac1_3d_q%an, jac_3d%an)
 !
-!   jacobian for tri-linear elaments
-!
-      do i0 = 1, max_int_point
-        do ii = 1, i0*i0*i0
-          ix = int_start3(i0) + ii
-!
-          call cal_jacobian_3d_8_20                                     &
-     &       (mesh%node%numnod, mesh%ele%numele, np_smp,                &
-     &        mesh%ele%istack_ele_smp, mesh%ele%ie, mesh%node%xx,       &
-     &        jac_3d%xjac(1:mesh%ele%numele,ix),                        &
-     &        jac_3d%axjac(1:mesh%ele%numele,ix),                       &
-     &        jac_3d%dnx(1:mesh%ele%numele,1:num_t_quad,ix,1),          &
-     &        jac_3d%dnx(1:mesh%ele%numele,1:num_t_quad,ix,2),          &
-     &        jac_3d%dnx(1:mesh%ele%numele,1:num_t_quad,ix,3),          &
-     &        jac_3d%dxidx_3d(1:mesh%ele%numele,ix,1,1),                &
-     &        jac_3d%dxidx_3d(1:mesh%ele%numele,ix,2,1),                &
-     &        jac_3d%dxidx_3d(1:mesh%ele%numele,ix,3,1),                &
-     &        jac_3d%dxidx_3d(1:mesh%ele%numele,ix,1,2),                &
-     &        jac_3d%dxidx_3d(1:mesh%ele%numele,ix,2,2),                &
-     &        jac_3d%dxidx_3d(1:mesh%ele%numele,ix,3,2),                &
-     &        jac_3d%dxidx_3d(1:mesh%ele%numele,ix,1,3),                &
-     &        jac_3d%dxidx_3d(1:mesh%ele%numele,ix,2,3),                &
-     &        jac_3d%dxidx_3d(1:mesh%ele%numele,ix,3,3),                &
-     &        dnxi_20(1:num_t_quad,ix), dnei_20(1:num_t_quad,ix),       &
-     &        dnzi_20(1:num_t_quad,ix) )
-        end do
-      end do
+      call cal_jacobian_3d_8_20(mesh%node%numnod, mesh%ele%numele,      &
+     &        mesh%ele%nnod_4_ele, np_smp, mesh%ele%istack_ele_smp,     &
+     &        mesh%ele%ie, mesh%node%xx,                                &
+     &        jac_3d%ntot_int, jac_3d%xjac, jac_3d%axjac, jac_3d%dnx,   &
+     &        jac_3d%dxidx_3d, dnxi_20, dnei_20, dnzi_20 )
 !
       end subroutine cal_jacobian_type_triquad_on_l
 !

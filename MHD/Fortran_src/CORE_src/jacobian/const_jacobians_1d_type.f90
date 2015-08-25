@@ -37,13 +37,11 @@
       use m_jacobians_4_edge
       use t_mesh_data
       use t_jacobians
-      use cal_jacobian_1d
+      use cal_1edge_jacobians
 !
       type(mesh_geometry), intent(in) :: mesh
       type(edge_geometry), intent(in)  :: edge_mesh
       type(jacobians_1d), intent(inout) :: jac_1d
-!
-      integer (kind = kint) :: ii, ix, i0
 !
 !
       call copy_shape_func_from_array(jac_1d%ntot_int,                  &
@@ -51,23 +49,11 @@
      &    jac_1d%an_edge)
 !
 !   jacobian for tri-linear elaments
-!
-      do i0 = 1, max_int_point
-        do ii = 1, i0
-          ix = int_start1(i0) + ii
-!
-          call s_cal_jacobian_1d_2(mesh%node%numnod,                    &
-     &        edge_mesh%edge%numedge, edge_mesh%edge%ie_edge,           &
-     &        mesh%node%xx, np_smp, edge_mesh%edge%istack_edge_smp,     &
-     &        jac_1d%xj_edge(1:edge_mesh%edge%numedge,ix),              &
-     &        jac_1d%axj_edge(1:edge_mesh%edge%numedge,ix),             &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,1),           &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,2),           &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,3),           &
-     &        dnxi_ed1(1:edge_mesh%edge%nnod_4_edge,ix) )
-        end do
-      end do
-!
+      call cal_jacobian_1d_2(mesh%node%numnod, edge_mesh%edge%numedge,  &
+     &    edge_mesh%edge%nnod_4_edge, edge_mesh%edge%ie_edge,           &
+     &    mesh%node%xx, np_smp, edge_mesh%edge%istack_edge_smp,         &
+     &    jac_1d%ntot_int, jac_1d%xj_edge, jac_1d%axj_edge,             &
+     &    jac_1d%xeg_edge, dnxi_ed1)
 !
       end subroutine cal_jacobian_type_1d_linear
 !
@@ -78,13 +64,11 @@
       use m_jacobians_4_edge
       use t_mesh_data
       use t_jacobians
-      use cal_jacobian_1d
+      use cal_1edge_jacobians
 !
       type(mesh_geometry), intent(in) :: mesh
       type(edge_geometry), intent(in)  :: edge_mesh
       type(jacobians_1d), intent(inout) :: jac_1d
-!
-      integer (kind = kint) :: ii, ix, i0
 !
 !
       call copy_shape_func_from_array(jac_1d%ntot_int,                  &
@@ -93,21 +77,11 @@
 !
 !   jacobian for quadrature elaments
 !
-      do i0 = 1, max_int_point
-        do ii = 1, i0
-          ix = int_start1(i0) + ii
-!
-          call s_cal_jacobian_1d_3(mesh%node%numnod,                    &
-     &        edge_mesh%edge%numedge, edge_mesh%edge%ie_edge,           &
-     &        mesh%node%xx, np_smp, edge_mesh%edge%istack_edge_smp,     &
-     &        jac_1d%xj_edge(1:edge_mesh%edge%numedge,ix),              &
-     &        jac_1d%axj_edge(1:edge_mesh%edge%numedge,ix),             &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,1),           &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,2),           &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,3),           &
-     &        dnxi_ed20(1:edge_mesh%edge%nnod_4_edge,ix) )
-        end do
-      end do
+      call cal_jacobian_1d_3(mesh%node%numnod, edge_mesh%edge%numedge,  &
+     &    edge_mesh%edge%nnod_4_edge, edge_mesh%edge%ie_edge,           &
+     &    mesh%node%xx, np_smp, edge_mesh%edge%istack_edge_smp,         &
+     &    jac_1d%ntot_int, jac_1d%xj_edge, jac_1d%axj_edge,             &
+     &    jac_1d%xeg_edge, dnxi_ed1)
 !
       end subroutine cal_jacobian_type_1d_quad
 !
@@ -118,7 +92,7 @@
       use m_jacobians_4_edge
       use t_mesh_data
       use t_jacobians
-      use cal_jacobian_1d
+      use cal_1edge_jacobians
 !
       type(mesh_geometry), intent(in) :: mesh
       type(edge_geometry), intent(in)  :: edge_mesh
@@ -132,22 +106,11 @@
      &    jac_1d%an_edge)
 !
 !   jacobian for quadrature elaments
-!
-      do i0 = 1, max_int_point
-        do ii = 1, i0
-          ix = int_start1(i0) + ii
-!
-          call s_cal_jacobian_1d_2_3(mesh%node%numnod,                  &
-     &        edge_mesh%edge%numedge, edge_mesh%edge%ie_edge,           &
-     &        mesh%node%xx, np_smp, edge_mesh%edge%istack_edge_smp,     &
-     &        jac_1d%xj_edge(1:edge_mesh%edge%numedge,ix),              &
-     &        jac_1d%axj_edge(1:edge_mesh%edge%numedge,ix),             &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,1),           &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,2),           &
-     &        jac_1d%xeg_edge(1:edge_mesh%edge%numedge,ix,3),           &
-     &        dnxi_ed20(1:edge_mesh%edge%nnod_4_edge,ix) )
-        end do
-      end do
+      call cal_jacobian_1d_2_3(mesh%node%numnod, edge_mesh%edge%numedge,  &
+     &    edge_mesh%edge%nnod_4_edge, edge_mesh%edge%ie_edge,           &
+     &    mesh%node%xx, np_smp, edge_mesh%edge%istack_edge_smp,         &
+     &    jac_1d%ntot_int, jac_1d%xj_edge, jac_1d%axj_edge,             &
+     &    jac_1d%xeg_edge, dnxi_ed1)
 !
       end subroutine cal_jacobian_type_1d_l_quad
 !

@@ -30,10 +30,8 @@
       subroutine cal_jacobian_quad_on_linear
 !
       use m_jacobians
-      use cal_jacobian_3d_linear_quad
+      use cal_1ele_jacobians
       use cal_shape_function_3d
-!
-      integer (kind=kint) :: ii, ix, i0
 !
 !
       call s_cal_shape_function_quad                                    &
@@ -42,23 +40,11 @@
 !
 !   jacobian for quadrature elaments
 !
-      do i0 = 1, max_int_point
-        do ii = 1, i0*i0*i0
-          ix = int_start3(i0) + ii
-!
-          call cal_jacobian_3d_8_20(node1%numnod, ele1%numele,          &
+      call cal_jacobian_3d_8_20                                         &
+     &       (node1%numnod, ele1%numele, ele1%nnod_4_ele,               &
      &        np_smp, ele1%istack_ele_smp, ele1%ie, node1%xx,           &
-     &        jac1_3d_lq%xjac(1:ele1%numele,ix),                        &
-     &        jac1_3d_lq%axjac(1:ele1%numele,ix),                       &
-     &        dmx(1,1,ix,1), dmx(1,1,ix,2),                             &
-     &        dmx(1,1,ix,3),  dxidx_lq(1,ix,1,1), dxidx_lq(1,ix,2,1),   &
-     &        dxidx_lq(1,ix,3,1), dxidx_lq(1,ix,1,2),                   &
-     &        dxidx_lq(1,ix,2,2), dxidx_lq(1,ix,3,2),                   &
-     &        dxidx_lq(1,ix,1,3), dxidx_lq(1,ix,2,3),                   &
-     &        dxidx_lq(1,ix,3,3), dnxi_20(1,ix), dnei_20(1,ix),         &
-     &        dnzi_20(1,ix) )
-        end do
-      end do
+     &        jac1_3d_lq%ntot_int, jac1_3d_lq%xjac, jac1_3d_lq%axjac,   &
+     &        dmx, dxidx_lq, dnxi_20, dnei_20, dnzi_20)
 !
       end subroutine cal_jacobian_quad_on_linear
 !
@@ -67,33 +53,21 @@
       subroutine cal_jacobian_surface_quad_on_l(jac_2d_ql)
 !
       use t_jacobian_2d
-      use cal_jacobian_2d_linear_quad
+      use cal_1surf_jacobians
       use cal_shape_function_2d
 !
       type(jacobians_2d), intent(inout) :: jac_2d_ql
-!
-      integer (kind = kint) :: ii, ix, i0
 !
 !
       call s_cal_shape_function_2d_quad(jac_2d_ql%ntot_int,             &
      &    jac_2d_ql%an_sf, dnxi_sf20, dnei_sf20, xi2, ei2)
 !
 !   jacobian for quadrature  elaments
-!
-      do i0 = 1, max_int_point
-        do ii = 1, i0*i0
-          ix = int_start2(i0) + ii
-!
-          call s_cal_jacobian_2d_4_8(node1%numnod, surf1%numsurf,       &
+      call cal_jacobian_2d_4_8                                          &
+     &       (node1%numnod, surf1%numsurf, surf1%nnod_4_surf,           &
      &        surf1%ie_surf, node1%xx, np_smp, surf1%istack_surf_smp,   &
-     &        jac_2d_ql%xj_sf(1:surf1%numsurf,ix),                      &
-     &        jac_2d_ql%axj_sf(1:surf1%numsurf,ix),                     &
-     &        jac_2d_ql%xsf_sf(1:surf1%numsurf,ix,1),                   &
-     &        jac_2d_ql%xsf_sf(1:surf1%numsurf,ix,2),                   &
-     &        jac_2d_ql%xsf_sf(1:surf1%numsurf,ix,3),                   &
-     &        dnxi_sf20(1,ix), dnei_sf20(1,ix) )
-        end do
-      end do
+     &        jac_2d_ql%ntot_int, jac_2d_ql%xj_sf, jac_2d_ql%axj_sf,    &
+     &        jac_2d_ql%xsf_sf, dnxi_sf1, dnei_sf1)
 !
       end subroutine cal_jacobian_surface_quad_on_l
 !
@@ -102,33 +76,21 @@
       subroutine cal_jacobian_edge_quad_on_l(jac_1d_ql)
 !
       use t_jacobian_1d
-      use cal_jacobian_1d
+      use cal_1edge_jacobians
       use cal_shape_function_1d
 !
       type(jacobians_1d), intent(inout) :: jac_1d_ql
-      integer (kind = kint) :: ii, ix, i0
 !
 !
       call s_cal_shape_function_1d_quad(jac_1d_ql%ntot_int,             &
      &    jac_1d_ql%an_edge, dnxi_ed20, xi1)
 !
 !   jacobian for quadrature elaments
-!
-      do i0 = 1, max_int_point
-        do ii = 1, i0
-          ix = int_start1(i0) + ii
-!
-          call s_cal_jacobian_1d_2_3(node1%numnod, edge1%numedge,       &
-     &        edge1%ie_edge, node1%xx, np_smp, edge1%istack_edge_smp,   &
-     &        jac_1d_ql%xj_edge(1:edge1%numedge,ix),                    &
-     &        jac_1d_ql%axj_edge(1:edge1%numedge,ix),                   &
-     &        jac_1d_ql%xeg_edge(1:edge1%numedge,ix,1),                 &
-     &        jac_1d_ql%xeg_edge(1:edge1%numedge,ix,2),                 &
-     &        jac_1d_ql%xeg_edge(1:edge1%numedge,ix,3),                 &
-     &        dnxi_ed20(1,ix))
-        end do
-      end do
-!
+      call cal_jacobian_1d_2_3                                          &
+     &   (node1%numnod, edge1%numedge, edge1%nnod_4_edge,               &
+     &    edge1%ie_edge, node1%xx, np_smp, edge1%istack_edge_smp,       &
+     &    jac_1d_ql%ntot_int, jac_1d_ql%xj_edge, jac_1d_ql%axj_edge,    &
+     &    jac_1d_ql%xeg_edge, dnxi_ed1)
 !
       end subroutine cal_jacobian_edge_quad_on_l
 !

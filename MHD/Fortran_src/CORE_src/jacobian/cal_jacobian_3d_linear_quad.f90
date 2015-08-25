@@ -6,7 +6,7 @@
 !        modified by H. Matsui on June. 2006
 !        modified by H. Matsui on Dec., 2008
 !
-!      subroutine cal_jacobian_3d_8_20(numnod, numele,                  &
+!      subroutine s_cal_jacobian_3d_8_20(numnod, numele,                &
 !     &          np_smp, iele_smp_stack, ie, xx, xjac, axjac,           &
 !     &          dnx, dny, dnz, dxidx, deidx, dzidx, dxidy, deidy,      &
 !     &          dzidy, dxidz, deidz, dzidz, dnxi, dnei, dnzi)
@@ -28,7 +28,7 @@
 !
 !>      Caliculate jacobian by quadrature shape function
 !>      for linear element
-      subroutine cal_jacobian_3d_8_20(numnod, numele,                   &
+      subroutine s_cal_jacobian_3d_8_20(numnod, numele,                 &
      &          np_smp, iele_smp_stack, ie, xx, xjac, axjac,            &
      &          dnx, dny, dnz, dxidx, deidx, dzidx, dxidy, deidy,       &
      &          dzidy, dxidz, deidz, dzidz, dnxi, dnei, dnzi)
@@ -442,7 +442,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine cal_jacobian_3d_8_20
+      end subroutine s_cal_jacobian_3d_8_20
 !
 !-----------------------------------------------------------------------
 !

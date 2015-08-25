@@ -51,37 +51,23 @@
       use m_jacobians_4_surface
       use t_mesh_data
       use t_jacobians
-      use cal_jacobian_2d_linear
+      use cal_1surf_jacobians
 !
       type(mesh_geometry), intent(in) :: mesh
       type(surface_geometry), intent(in)  :: surf_mesh
       type(jacobians_2d), intent(inout) :: jac_2d
-!
-      integer (kind = kint) :: ii, ix, i0
 !
 !
       call copy_shape_func_from_array(jac_2d%ntot_int,                  &
      &    surf_mesh%surf%nnod_4_surf, jac1_2d_l%an_sf, jac_2d%an_sf)
 !
 !   jacobian for tri-linear elaments
-!
-      do i0 = 1, max_int_point
-        do ii = 1, i0*i0
-          ix = int_start2(i0) + ii
-!
-          call s_cal_jacobian_2d_4(mesh%node%numnod,                    &
-     &        surf_mesh%surf%numsurf, surf_mesh%surf%ie_surf,           &
-     &        mesh%node%xx, np_smp, surf_mesh%surf%istack_surf_smp,     &
-     &        jac_2d%xj_sf(1:surf_mesh%surf%numsurf,ix),                &
-     &        jac_2d%axj_sf(1:surf_mesh%surf%numsurf,ix),               &
-     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,1),             &
-     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,2),             &
-     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,3),             &
-     &        dnxi_sf1(1:surf_mesh%surf%nnod_4_surf,ix),                &
-     &        dnei_sf1(1:surf_mesh%surf%nnod_4_surf,ix) )
-        end do
-      end do
-!
+      call cal_jacobian_2d_4(mesh%node%numnod, surf_mesh%surf%numsurf,  &
+     &     surf_mesh%surf%nnod_4_surf, surf_mesh%surf%ie_surf,          &
+     &     mesh%node%xx, np_smp, surf_mesh%surf%istack_surf_smp,        &
+     &     jac_2d%ntot_int, jac_2d%xj_sf, jac_2d%axj_sf, jac_2d%xsf_sf, &
+     &     dnxi_sf1, dnei_sf1)
+
       end subroutine cal_jacobian_type_2d_linear
 !
 !-----------------------------------------------------------------------
@@ -91,7 +77,7 @@
       use m_jacobians_4_surface
       use t_mesh_data
       use t_jacobians
-      use cal_jacobian_2d_quad
+      use cal_1surf_jacobians
 !
       type(mesh_geometry), intent(in) :: mesh
       type(surface_geometry), intent(in)  :: surf_mesh
@@ -104,23 +90,11 @@
      &    surf_mesh%surf%nnod_4_surf, jac1_2d_q%an_sf, jac_2d%an_sf)
 !
 !   jacobian for quadrature  elaments
-!
-      do i0 = 1, max_int_point
-        do ii = 1, i0*i0
-          ix = int_start2(i0) + ii
-!
-          call s_cal_jacobian_2d_8(mesh%node%numnod,                    &
-     &        surf_mesh%surf%numsurf, surf_mesh%surf%ie_surf,           &
-     &        mesh%node%xx, np_smp, surf_mesh%surf%istack_surf_smp,     &
-     &        jac_2d%xj_sf(1:surf_mesh%surf%numsurf,ix),                &
-     &        jac_2d%axj_sf(1:surf_mesh%surf%numsurf,ix),               &
-     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,1),             &
-     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,2),             &
-     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,3),             &
-     &        dnxi_sf20(1:surf_mesh%surf%nnod_4_surf,ix),               &
-     &        dnxi_sf20(1:surf_mesh%surf%nnod_4_surf,ix) )
-        end do
-      end do
+      call cal_jacobian_2d_8(mesh%node%numnod, surf_mesh%surf%numsurf,  &
+     &     surf_mesh%surf%nnod_4_surf, surf_mesh%surf%ie_surf,          &
+     &     mesh%node%xx, np_smp, surf_mesh%surf%istack_surf_smp,        &
+     &     jac_2d%ntot_int, jac_2d%xj_sf, jac_2d%axj_sf, jac_2d%xsf_sf, &
+     &     dnxi_sf1, dnei_sf1)
 !
       end subroutine cal_jacobian_type_2d_quad
 !
@@ -131,36 +105,22 @@
       use m_jacobians_4_surface
       use t_mesh_data
       use t_jacobians
-      use cal_jacobian_2d_lag
+      use cal_1surf_jacobians
 !
       type(mesh_geometry), intent(in) :: mesh
       type(surface_geometry), intent(in)  :: surf_mesh
       type(jacobians_2d), intent(inout) :: jac_2d
-!
-      integer (kind = kint) :: ii, ix, i0
 !
 !
       call copy_shape_func_from_array(jac_2d%ntot_int,                  &
      &   surf_mesh%surf%nnod_4_surf, jac1_2d_q%an_sf, jac_2d%an_sf)
 !
 !   jacobian for quadrature  elaments
-!
-      do i0 = 1, max_int_point
-        do ii = 1, i0*i0
-          ix = int_start2(i0) + ii
-!
-          call s_cal_jacobian_2d_9(mesh%node%numnod,                    &
-     &        surf_mesh%surf%numsurf, surf_mesh%surf%ie_surf,           &
-     &        mesh%node%xx, np_smp, surf_mesh%surf%istack_surf_smp,     &
-     &        jac_2d%xj_sf(1:surf_mesh%surf%numsurf,ix),                &
-     &        jac_2d%axj_sf(1:surf_mesh%surf%numsurf,ix),               &
-     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,1),             &
-     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,2),             &
-     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,3),             &
-     &        dnxi_sf27(1:surf_mesh%surf%nnod_4_surf,ix),               &
-     &        dnxi_sf27(1:surf_mesh%surf%nnod_4_surf,ix) )
-        end do
-      end do
+      call cal_jacobian_2d_9(mesh%node%numnod, surf_mesh%surf%numsurf,  &
+     &     surf_mesh%surf%nnod_4_surf, surf_mesh%surf%ie_surf,          &
+     &     mesh%node%xx, np_smp, surf_mesh%surf%istack_surf_smp,        &
+     &     jac_2d%ntot_int, jac_2d%xj_sf, jac_2d%axj_sf, jac_2d%xsf_sf, &
+     &     dnxi_sf1, dnei_sf1)
 !
       end subroutine cal_jacobian_type_2d_lag
 !
@@ -173,7 +133,7 @@
       use m_jacobians_4_surface
       use t_mesh_data
       use t_jacobians
-      use cal_jacobian_2d_linear_quad
+      use cal_1surf_jacobians
 !
       type(mesh_geometry), intent(in) :: mesh
       type(surface_geometry), intent(in)  :: surf_mesh
@@ -186,23 +146,11 @@
      &    surf_mesh%surf%nnod_4_surf, jac1_2d_q%an_sf, jac_2d%an_sf)
 !
 !   jacobian for quadrature elaments
-!
-      do i0 = 1, max_int_point
-        do ii = 1, i0*i0
-          ix = int_start2(i0) + ii
-!
-          call s_cal_jacobian_2d_4_8(mesh%node%numnod,                  &
-     &        surf_mesh%surf%numsurf, surf_mesh%surf%ie_surf,           &
-     &        mesh%node%xx, np_smp, surf_mesh%surf%istack_surf_smp,     &
-     &        jac_2d%xj_sf(1:surf_mesh%surf%numsurf,ix),                &
-     &        jac_2d%axj_sf(1:surf_mesh%surf%numsurf,ix),               &
-     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,1),             &
-     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,2),             &
-     &        jac_2d%xsf_sf(1:surf_mesh%surf%numsurf,ix,3),             &
-     &        dnxi_sf20(1:surf_mesh%surf%nnod_4_surf,ix),               &
-     &        dnxi_sf20(1:surf_mesh%surf%nnod_4_surf,ix) )
-        end do
-      end do
+      call cal_jacobian_2d_4_8(mesh%node%numnod, surf_mesh%surf%numsurf,  &
+     &     surf_mesh%surf%nnod_4_surf, surf_mesh%surf%ie_surf,          &
+     &     mesh%node%xx, np_smp, surf_mesh%surf%istack_surf_smp,        &
+     &     jac_2d%ntot_int, jac_2d%xj_sf, jac_2d%axj_sf, jac_2d%xsf_sf, &
+     &     dnxi_sf1, dnei_sf1)
 !
       end subroutine cal_jacobian_type_2d_l_quad
 !
