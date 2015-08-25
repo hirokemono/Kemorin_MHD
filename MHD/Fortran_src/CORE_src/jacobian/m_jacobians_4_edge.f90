@@ -40,23 +40,21 @@
       use m_geometry_constants
       use m_geometry_data
 !
-      use cal_jacobians_linear
-      use cal_jacobians_quad
-      use cal_jacobians_lag
+      use const_jacobians_1d
 !
 !
       call alloc_1d_jac_type                                            &
      &   (edge1%numedge, num_linear_edge, maxtot_int_1d, jac1_1d_l)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_edge_linear'
-      call cal_jacobian_edge_linear(jac1_1d_l)
+      call cal_jacobian_edge_linear(node1, edge1, jac1_1d_l)
 !
       if    (ele1%first_ele_type .eq. 332                               &
      &  .or. ele1%first_ele_type .eq. 333) then
         if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_edge_quad'
         call alloc_1d_jac_type                                          &
      &     (edge1%numedge, edge1%nnod_4_edge, maxtot_int_1d, jac1_1d_q)
-        call cal_jacobian_edge_quad(jac1_1d_q)
+        call cal_jacobian_edge_quad(node1, edge1, jac1_1d_q)
       else
         if (iflag_debug.eq.1) write(*,*) 'copy_1d_jacobians'
         call copy_1d_jacobians                                          &

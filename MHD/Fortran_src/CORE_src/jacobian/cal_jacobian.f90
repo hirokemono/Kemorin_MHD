@@ -60,8 +60,6 @@
       use cal_jacobians_infinity
 !
       use cal_jacobians_linear
-      use cal_jacobians_quad
-      use cal_jacobians_lag
 !
 !  data allocation
 !

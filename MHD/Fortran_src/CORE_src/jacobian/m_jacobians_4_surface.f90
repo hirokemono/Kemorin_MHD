@@ -38,26 +38,25 @@
       use m_geometry_constants
       use m_geometry_data
 !
-      use cal_jacobians_linear
-      use cal_jacobians_quad
-      use cal_jacobians_lag
+      use const_jacobians_1d
+      use const_jacobians_2d_type
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_surface_linear'
       call alloc_2d_jac_type                                            &
      &   (surf1%numsurf, num_linear_sf, maxtot_int_2d, jac1_2d_l)
-      call cal_jacobian_surface_linear(jac1_2d_l)
+      call cal_jacobian_surface_linear(node1, surf1, jac1_2d_l)
 !
       if (ele1%first_ele_type .eq. 332) then
         if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_surface_quad'
         call alloc_2d_jac_type                                          &
      &     (surf1%numsurf, surf1%nnod_4_surf, maxtot_int_2d, jac1_2d_q)
-        call cal_jacobian_surface_quad(jac1_2d_q)
+        call cal_jacobian_surface_quad(node1, surf1, jac1_2d_q)
       else if (ele1%first_ele_type .eq. 333) then
         if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_surface_lag'
         call alloc_2d_jac_type                                          &
      &     (surf1%numsurf, surf1%nnod_4_surf, maxtot_int_2d, jac1_2d_q)
-        call cal_jacobian_surface_lag(jac1_2d_q)
+        call cal_jacobian_surface_lag(node1, surf1, jac1_2d_q)
       else
         if (iflag_debug.eq.1) write(*,*) 'copy_jacobians_2d'
         call copy_jacobians_2d                                          &

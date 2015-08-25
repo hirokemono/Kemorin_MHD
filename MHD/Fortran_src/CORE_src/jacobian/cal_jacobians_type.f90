@@ -144,11 +144,14 @@
      &    surf_mesh%surf%nnod_4_surf, maxtot_int_2d, jac_2d)
 !
       if      (surf_mesh%surf%nnod_4_surf .eq. num_linear_sf) then
-        call cal_jacobian_type_2d_linear(mesh, surf_mesh, jac_2d)
+        call cal_jacobian_surface_linear                                &
+     &     (mesh%node, surf_mesh%surf, jac_2d)
       else if (surf_mesh%surf%nnod_4_surf .eq. num_quad_sf)   then
-        call cal_jacobian_type_2d_quad(mesh, surf_mesh, jac_2d)
+        call cal_jacobian_surface_quad                                  &
+     &     (mesh%node, surf_mesh%surf, jac_2d)
       else if (surf_mesh%surf%nnod_4_surf .eq. num_lag_sf)   then
-        call cal_jacobian_type_2d_quad(mesh, surf_mesh, jac_2d)
+        call cal_jacobian_surface_lag                                   &
+     &     (mesh%node, surf_mesh%surf, jac_2d)
       end if
 !
       end subroutine const_jacobian_surface_type
@@ -158,7 +161,7 @@
 !
       subroutine const_jacobian_edge_type(mesh, edge_mesh, jac_1d)
 !
-      use const_jacobians_1d_type
+      use const_jacobians_1d
 !
       type(mesh_geometry), intent(in) :: mesh
       type(edge_geometry), intent(in) :: edge_mesh
@@ -169,9 +172,10 @@
      &    edge_mesh%edge%nnod_4_edge, maxtot_int_1d, jac_1d)
 !
       if      (edge_mesh%edge%nnod_4_edge .eq. num_linear_edge) then
-        call cal_jacobian_type_1d_linear(mesh, edge_mesh, jac_1d)
+        call cal_jacobian_edge_linear                                   &
+     &     (mesh%node, edge_mesh%edge, jac_1d)
       else if (edge_mesh%edge%nnod_4_edge .eq. num_quad_edge) then
-        call cal_jacobian_type_1d_quad(mesh, edge_mesh, jac_1d)
+        call cal_jacobian_edge_quad(mesh%node, edge_mesh%edge, jac_1d)
       end if
 !
       end subroutine const_jacobian_edge_type
@@ -195,14 +199,14 @@
 !
       if (group%surf_grp%num_grp .gt. 0) then
         if      (surf_mesh%surf%nnod_4_surf .eq. num_linear_sf) then
-          call cal_jacobian_type_sf_grp_linear(mesh, surf_mesh,         &
-     &        group, jac_sf_grp)
+          call cal_jacobian_sf_grp_linear(mesh%node, mesh%ele,          &
+     &        group%surf_grp, jac_sf_grp)
         else if (surf_mesh%surf%nnod_4_surf .eq. num_quad_sf)   then
-          call cal_jacobian_type_sf_grp_quad(mesh, surf_mesh,           &
-     &        group, jac_sf_grp)
+          call cal_jacobian_sf_grp_quad(mesh%node, mesh%ele,            &
+     &        group%surf_grp, jac_sf_grp)
         else if (surf_mesh%surf%nnod_4_surf .eq. num_lag_sf)   then
-          call cal_jacobian_type_sf_grp_lag(mesh, surf_mesh,            &
-     &        group, jac_sf_grp)
+          call cal_jacobian_sf_grp_lag(mesh%node, mesh%ele,             &
+     &        group%surf_grp, jac_sf_grp)
         end if
       end if
 !
@@ -263,7 +267,8 @@
       if(surf_mesh%surf%nnod_4_surf .ne. num_linear_sf) then
         call alloc_2d_jac_type(surf_mesh%surf%numsurf,                  &
      &      num_linear_sf, maxtot_int_2d, jac_2d_l)
-        call cal_jacobian_type_2d_linear(mesh, surf_mesh, jac_2d_l)
+        call cal_jacobian_surface_linear                                &
+     &     (mesh%node, surf_mesh%surf, jac_2d_l)
       end if
 !
       end subroutine cal_linear_jac_surf_type
@@ -272,7 +277,7 @@
 !
       subroutine cal_linear_jac_edge_type(mesh, edge_mesh, jac_1d_l)
 !
-      use const_jacobians_1d_type
+      use const_jacobians_1d
 !
       type(mesh_geometry), intent(in) :: mesh
       type(edge_geometry), intent(in) :: edge_mesh
@@ -282,7 +287,8 @@
       if (edge_mesh%edge%nnod_4_edge .ne. num_linear_edge) then
         call alloc_1d_jac_type(edge_mesh%edge%numedge, num_linear_edge, &
      &      maxtot_int_1d, jac_1d_l)
-        call cal_jacobian_type_1d_linear(mesh, edge_mesh, jac_1d_l)
+        call cal_jacobian_edge_linear                                   &
+     &     (mesh%node, edge_mesh%edge, jac_1d_l)
       end if
 !
       end subroutine cal_linear_jac_edge_type
@@ -301,8 +307,8 @@
 !
 !
       if(surf_mesh%surf%nnod_4_surf .ne. num_linear_sf) then
-        call cal_jacobian_type_sf_grp_linear(mesh, surf_mesh,           &
-     &      group, jac_sf_grp_l)
+        call cal_jacobian_sf_grp_linear(mesh%node, mesh%ele,            &
+     &      group%surf_grp, jac_sf_grp_l)
       end if
 !
       end subroutine cal_linear_jac_surf_grp_type

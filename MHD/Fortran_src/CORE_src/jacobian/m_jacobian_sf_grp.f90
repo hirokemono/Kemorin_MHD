@@ -43,11 +43,10 @@
 !
       use m_machine_parameter
       use m_geometry_constants
+      use m_geometry_data
       use t_group_data
 !
-      use cal_jacobians_linear
-      use cal_jacobians_quad
-      use cal_jacobians_lag
+      use const_jacobians_2d_type
 !
       type(surface_group_data), intent(in) :: sf_grp
 !
@@ -55,19 +54,22 @@
       if (sf_grp%num_grp .le. 0) return
       call alloc_2d_jac_type(sf_grp%num_item, num_linear_sf,            &
      &                       maxtot_int_2d, jac1_sf_grp_2d_l)
-      if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_dylinear'
-      call cal_jacobian_dylinear(sf_grp, jac1_sf_grp_2d_l)
+      if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_sf_grp_linear'
+      call cal_jacobian_sf_grp_linear(node1, ele1, sf_grp,              &
+     &    jac1_sf_grp_2d_l)
 !
       if (ele1%first_ele_type .eq. 332) then
-        if (iflag_debug.eq.1)  write(*,*) 'cal_jacobian_dyquad'
+        if (iflag_debug.eq.1)  write(*,*) 'cal_jacobian_sf_grp_quad'
         call alloc_2d_jac_type(sf_grp%num_item, surf1%nnod_4_surf,      &
-     &        maxtot_int_2d, jac1_sf_grp_2d_q)
-        call cal_jacobian_dyquad(sf_grp, jac1_sf_grp_2d_q)
+     &      maxtot_int_2d, jac1_sf_grp_2d_q)
+        call cal_jacobian_sf_grp_quad(node1, ele1, sf_grp,              &
+     &      jac1_sf_grp_2d_q)
       else if (ele1%first_ele_type .eq. 333) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_dylag'
+        if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_sf_grp_lag'
         call alloc_2d_jac_type(sf_grp%num_item, surf1%nnod_4_surf,      &
      &        maxtot_int_2d, jac1_sf_grp_2d_q)
-        call cal_jacobian_dylag(sf_grp, jac1_sf_grp_2d_q)
+        call cal_jacobian_sf_grp_lag(node1, ele1, sf_grp,               &
+     &      jac1_sf_grp_2d_q)
       else
         if (iflag_debug.eq.1) write(*,*) 'copy_jacobians_2d_quad'
         call copy_jacobians_2d(sf_grp%num_item, surf1%nnod_4_surf,      &

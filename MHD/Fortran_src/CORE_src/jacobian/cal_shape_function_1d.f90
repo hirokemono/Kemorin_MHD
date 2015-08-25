@@ -1,5 +1,5 @@
-!>@file  const_jacobians_1d_type.f90
-!!       module const_jacobians_1d_type
+!>@file  cal_shape_function_1d.f90
+!!       module cal_shape_function_1d
 !!
 !!@author H. Matsui
 !!@date   Programmed in Dec., 2008
