@@ -62,7 +62,6 @@
      &        ele1%istack_ele_smp, ele1%ie, node1%xx,                   &
      &        jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%axjac,      &
      &        jac1_3d_q%dnx, dxidx_20, dnxi_20, dnei_20, dnzi_20)
-      dwx = jac1_3d_q%dnx
 !
       end subroutine cal_jacobian_quad
 !

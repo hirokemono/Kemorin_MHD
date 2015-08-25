@@ -140,7 +140,7 @@
 !
 !      integer(kind = kint) :: ntot_int_3q
 !      real (kind=kreal), allocatable :: aw(:,:)
-      real (kind=kreal), allocatable :: dwx(:,:,:,:)
+!      real (kind=kreal), allocatable :: dwx(:,:,:,:)
 ! 
 !      real (kind=kreal), allocatable :: aw_infty(:,:,:)
 ! 
@@ -203,7 +203,7 @@
 !       allocate(aw(nnod_4_ele,jac1_3d_q%ntot_int))
 !       allocate(aw_infty(nnod_4_ele,nsurf_4_ele,jac1_3d_q%ntot_int))
 !
-       allocate(dwx(numele,nnod_4_ele,jac1_3d_q%ntot_int,3))
+!       allocate(dwx(numele,nnod_4_ele,jac1_3d_q%ntot_int,3))
 !
 !       allocate(xjac_q(numele,jac1_3d_q%ntot_int))
 !       allocate(axjac_q(numele,jac1_3d_q%ntot_int)) 
@@ -241,7 +241,6 @@
 !
        jac1_3d_q%an = jac1_3d_l%an
        jac1_3d_q%dnx     = jac1_3d_l%dnx
-       dwx = jac1_3d_q%dnx
 !
        jac1_3d_q%xjac  = jac1_3d_l%xjac
        jac1_3d_q%axjac = jac1_3d_l%axjac
