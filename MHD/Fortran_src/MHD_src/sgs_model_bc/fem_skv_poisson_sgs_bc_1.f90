@@ -89,9 +89,10 @@
 !
 !
       call fem_skv_diffuse_sgs_fixed                                    &
-     & (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,                  &
-     &  np_smp, num_index_ibc, ele_bc_id, ibc_stack_smp,                &
-     &  k2, nd, n_int, jac1_3d_q%ntot_int, jac1_3d_q%xjac, dwx, dwx,    &
+     & (ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele, np_smp,          &
+     &  num_index_ibc, ele_bc_id, ibc_stack_smp, k2, nd, n_int,         &
+     &  jac1_3d_q%ntot_int, jac1_3d_q%xjac,                             &
+     &  jac1_3d_q%dnx, jac1_3d_q%dnx,                                   &
      &  FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                  &
      &  FEM1_elen%nele_filter_mom,                                      &
      &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &

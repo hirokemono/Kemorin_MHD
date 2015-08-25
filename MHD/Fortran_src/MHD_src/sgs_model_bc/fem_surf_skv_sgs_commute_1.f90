@@ -403,8 +403,8 @@
      & (np_smp, ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,          &
      &  surf1%nnod_4_surf, surf1%node_on_sf,                            &
      &  sf_grp%num_item, sf_grp%item_sf_grp,                            &
-     &  sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                      &
-     &  jac1_3d_q%ntot_int, jac1_3d_q%xjac, dwx, dwx,                   &
+     &  sf_grp%num_grp_smp, sf_grp%istack_grp_smp, jac1_3d_q%ntot_int,  &
+     &  jac1_3d_q%xjac, jac1_3d_q%dnx, jac1_3d_q%dnx,                   &
      &  FEM1_elen%filter_conf%xmom_1d_org(i_filter,2),                  &
      &  FEM1_elen%nele_filter_mom,                                      &
      &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &

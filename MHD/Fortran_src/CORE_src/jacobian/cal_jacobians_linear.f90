@@ -20,6 +20,10 @@
       use m_fem_gauss_int_coefs
       use m_shape_functions
 !
+      use m_jacobians
+      use cal_1ele_jacobians
+      use cal_shape_function_3d
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -29,11 +33,6 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_jacobian_trilinear
-!
-      use m_jacobians
-      use cal_1ele_jacobians
-      use cal_shape_function_3d
-!
 !
       call s_cal_shape_function_linear                                  &
      &   (jac1_3d_l%ntot_int, jac1_3d_l%an,                             &
@@ -53,11 +52,6 @@
 !
       subroutine cal_jacobian_quad
 !
-      use m_jacobians
-      use cal_1ele_jacobians
-      use cal_shape_function_3d
-!
-!
       call s_cal_shape_function_quad(jac1_3d_q%ntot_int, jac1_3d_q%an,  &
      &    dnxi_20, dnei_20, dnzi_20, xi3, ei3, zi3)
 !
@@ -67,18 +61,14 @@
      &       (node1%numnod, ele1%numele, ele1%nnod_4_ele, np_smp,       &
      &        ele1%istack_ele_smp, ele1%ie, node1%xx,                   &
      &        jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%axjac,      &
-     &        dwx, dxidx_20, dnxi_20, dnei_20, dnzi_20)
+     &        jac1_3d_q%dnx, dxidx_20, dnxi_20, dnei_20, dnzi_20)
+      dwx = jac1_3d_q%dnx
 !
       end subroutine cal_jacobian_quad
 !
 !-----------------------------------------------------------------------
 !
       subroutine cal_jacobian_lag
-!
-      use m_jacobians
-      use cal_1ele_jacobians
-      use cal_shape_function_3d
-!
 !
       call s_cal_shape_function_lag(jac1_3d_q%ntot_int, jac1_3d_q%an,   &
      &    dnxi_27, dnei_27, dnzi_27, xi3, ei3, zi3)
@@ -88,8 +78,8 @@
       call cal_jacobian_3d_27                                           &
      &       (node1%numnod, ele1%numele, ele1%nnod_4_ele,               &
      &        np_smp, ele1%istack_ele_smp, ele1%ie, node1%xx,           &
-     &        jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%axjac, dwx, &
-     &        dxidx_20, dnxi_27, dnei_27, dnzi_27)
+     &        jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%axjac,      &
+     &        jac1_3d_q%dnx, dxidx_20, dnxi_27, dnei_27, dnzi_27)
 !
       end subroutine cal_jacobian_lag
 !
@@ -97,10 +87,6 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_jacobian_quad_on_linear
-!
-      use m_jacobians
-      use cal_1ele_jacobians
-      use cal_shape_function_3d
 !
 !
       call s_cal_shape_function_quad                                    &

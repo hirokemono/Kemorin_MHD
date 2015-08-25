@@ -39,7 +39,7 @@
 !
       call fem_skv_div_normal_pg(ele1%numele, ele1%nnod_4_ele,          &
      &    np_smp, iele_fsmp_stack, jac1_3d_q%ntot_int, n_int,           &
-     &    jac1_3d_q%xjac, dwx, k2, vect_e, sk1)
+     &    jac1_3d_q%xjac, jac1_3d_q%dnx, k2, vect_e, sk1)
 !
       end subroutine fem_div_4_norm_pg
 !
@@ -57,7 +57,7 @@
 !
       call fem_skv_rms_flux_pg(ele1%numele, ele1%nnod_4_ele,            &
      &    np_smp, iele_fsmp_stack, jac1_3d_q%ntot_int, n_int,           &
-     &    jac1_3d_q%xjac, dwx, k2, vect_e, sk1)
+     &    jac1_3d_q%xjac, jac1_3d_q%dnx, k2, vect_e, sk1)
 !
       end subroutine fem_rms_flux_pg
 !
