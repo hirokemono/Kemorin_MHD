@@ -57,7 +57,7 @@
 !
       use set_gauss_int_parameters
       use set_integration_indices
-      use cal_jacobians_infinity
+      use const_jacobians_infty_type
 !
       use cal_jacobians_linear
 !
@@ -100,12 +100,15 @@
       end if
 !
       if (infty_list%ngrp_sf .ne. 0) then
-        call cal_jacobian_infinity(sf_grp1)
+        call cal_jacobian_infty_linear                                  &
+     &     (node1, ele1, sf_grp1, infty_list, jac1_3d_l)
 !
         if (ele1%first_ele_type .eq. 332) then
-          call cal_jacobian_infty_quad(sf_grp1)
+          call cal_jacobian_infty_quad                                  &
+     &       (node1, ele1, sf_grp1, infty_list, jac1_3d_q)
         else if (ele1%first_ele_type .eq. 333) then
-          call cal_jacobian_infty_lag(sf_grp1)
+          call cal_jacobian_infty_lag                                   &
+     &       (node1, ele1, sf_grp1, infty_list, jac1_3d_q)
         end if
 !
       end if

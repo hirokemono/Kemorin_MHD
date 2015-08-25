@@ -106,21 +106,24 @@
         call cal_jacobian_type_trilinear(mesh, jac_3d)
 !
         if (group%infty_grp%ngrp_sf .gt. 0) then
-          call cal_jacobian_infty_linear_type(mesh, group, jac_3d)
+        call cal_jacobian_infty_linear(mesh%node, mesh%ele,             &
+     &      group%surf_grp, group%infty_grp, jac_3d)
         end if
 !
       else if (mesh%ele%nnod_4_ele .eq. num_t_quad) then
         call cal_jacobian_type_triquad(mesh, jac_3d)
 !
         if (group%infty_grp%ngrp_sf .gt. 0) then
-          call cal_jacobian_infty_quad_type(mesh, group, jac_3d)
+        call cal_jacobian_infty_quad(mesh%node, mesh%ele,               &
+     &        group%surf_grp, group%infty_grp, jac_3d)
         end if
 !
       else if (mesh%ele%nnod_4_ele .eq. num_t_lag) then
         call cal_jacobian_type_trilag(mesh, jac_3d)
 !
         if (group%infty_grp%ngrp_sf .gt. 0) then
-          call cal_jacobian_infty_lag_type(mesh, group, jac_3d)
+          call cal_jacobian_infty_lag(mesh%node, mesh%ele,              &
+     &        group%surf_grp, group%infty_grp, jac_3d)
         end if
       end if
 !
@@ -243,8 +246,8 @@
         call cal_jacobian_type_trilinear(mesh, jacobians%jac_3d_l)
 !
         if (group%infty_grp%ngrp_sf .gt. 0) then
-          call cal_jacobian_infty_linear_type(mesh, group,              &
-     &        jacobians%jac_3d_l)
+          call cal_jacobian_infty_linear(mesh%node, mesh%ele,           &
+     &        group%surf_grp, group%infty_grp, jacobians%jac_3d_l)
         end if
 !
         call dealloc_inv_jac_type(jacobians%jac_3d_l)
