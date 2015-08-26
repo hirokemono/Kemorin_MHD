@@ -72,8 +72,6 @@
 !>@n      \f[ Ja = \det \left(\frac{ d{\bf x} }{ d {\bf \xi}} \right)\f]
 !>@n @param   axjac_lq(element_ID,integration_point)
 !>        \f[ Ja^{-1}\f]
-
-
 !  define of matrix
 !     jac1_3d_l%dxidx_3d(iele,ix,1,1) :: dxi / dx
 !     jac1_3d_l%dxidx_3d(iele,ix,2,1) :: dei / dx
@@ -89,25 +87,18 @@
 !
 !     iele: element ID
 !     ix:   integration point ID
-!       subroutine allocate_jacobians(numele)
-!       subroutine allocate_jacobians_quad(numele, nnod_4_ele)
-!       subroutine allocate_jacobians_linear_quad(numele)
 !
-!      subroutine copy_jacobians_quad
-!      subroutine copy_jacobians_inf_quad
+!      subroutine cal_jacobian_element
+!      subroutine allocate_jacobians_linear_quad(numele)
 !
-!       subroutine deallocate_inv_jacobians
-!       subroutine deallocate_inv_jacobians_quad
-!
-!      subroutine allocate_dxi_dx_linear(numele)
-!      subroutine allocate_dxi_dx_quad(numele)
-!      subroutine allocate_dxi_dx_l_quad(numele)
-!      subroutine deallocate_dxi_dx_linear
-!      subroutine deallocate_dxi_dx_quad
-!      subroutine copy_dxi_dx_2_quad
+!       subroutine deallocate_jacobians
+!       subroutine deallocate_jacobians_quad
+!       subroutine deallocate_jacobians_lq
+!       subroutine deallocate_inv_jacobians_lq
 !
       module m_jacobians
 !
+      use m_constants
       use m_precision
       use t_jacobian_3d
 !
@@ -131,72 +122,119 @@
       contains
 !
 !  ---------------------------------------------------------------------
+!> Set maximum number for integration points of FEM
 !
-       subroutine allocate_jacobians(numele)
+      subroutine set_max_int_point_by_etype
+!
+      use m_geometry_data
+      use m_fem_gauss_int_coefs
+!
+      if      (ele1%first_ele_type .eq. 332                             &
+     &    .or. ele1%first_ele_type .eq. 333) then
+        call maximum_integration_points(ithree)
+      else
+        call maximum_integration_points(itwo)
+      end if
+!
+      end subroutine set_max_int_point_by_etype
+!
+! ----------------------------------------------------------------------
+!> Construct shape function, difference of shape function, and Jacobian
+!> for hexadedral element
+!
+      subroutine cal_jacobian_element
+!
+      use m_geometry_data
+      use m_group_data
+!
+      use m_fem_gauss_int_coefs
+      use m_surf_data_infinity
+!
+      use set_gauss_int_parameters
+      use set_integration_indices
+      use const_jacobians_infty_type
+!
+      use const_jacobians_3d
+!
+!  data allocation
+!
+      call allocate_integrate_parameters
+      call allocate_gauss_coef_4_fem
+!
+      call alloc_jacobians_type(ele1%numele, num_t_linear,              &
+     &                          maxtot_int_3d, jac1_3d_l)
+      call alloc_jacobians_type(ele1%numele, ele1%nnod_4_ele,           &
+     &                          jac1_3d_l%ntot_int, jac1_3d_q)
+      call alloc_dxi_dx_type(ele1%numele, jac1_3d_l)
+      call alloc_dxi_dx_type(ele1%numele, jac1_3d_q)
+!
+!  set constant for gauss integration with roots
+!
+      call init_gauss_int_parameters
+!
+!  set indices for gauss integration
+!
+      call set_integrate_indices_1d
+      call set_integrate_indices_2d
+      call set_integrate_indices_3d
+!
+!  set weighting for integration
+!
+      call set_gauss_coefs_4_1d
+      call set_gauss_coefs_4_2d
+      call set_gauss_coefs_4_3d
+!
+!  set jacobians
+!
+      call cal_jacobian_trilinear(node1, ele1, jac1_3d_l)
+!
+      if (ele1%first_ele_type .eq. 332) then
+        call cal_jacobian_quad(node1, ele1, jac1_3d_q)
+      else if (ele1%first_ele_type .eq. 333) then
+        call cal_jacobian_lag(node1, ele1, jac1_3d_q)
+      end if
+!
+      if (infty_list%ngrp_sf .ne. 0) then
+        call cal_jacobian_infty_linear                                  &
+     &     (node1, ele1, sf_grp1, infty_list, jac1_3d_l)
+!
+        if (ele1%first_ele_type .eq. 332) then
+          call cal_jacobian_infty_quad                                  &
+     &       (node1, ele1, sf_grp1, infty_list, jac1_3d_q)
+        else if (ele1%first_ele_type .eq. 333) then
+          call cal_jacobian_infty_lag                                   &
+     &       (node1, ele1, sf_grp1, infty_list, jac1_3d_q)
+        end if
+!
+      end if
+!
+      if (ele1%first_ele_type .eq. 331) then
+        call copy_jacobians_3d(jac1_3d_l, jac1_3d_q)
+        call copy_dxidx_3d(jac1_3d_l, jac1_3d_q)
+        if (infty_list%ngrp_sf .ne. 0) then
+          call copy_shape_func_infty(jac1_3d_l, jac1_3d_q)
+        end if
+      end if
+!
+      call dealloc_inv_jac_type(jac1_3d_q)
+      call dealloc_inv_jac_type(jac1_3d_l)
+!
+      end subroutine cal_jacobian_element
+!
+!-----------------------------------------------------------------------
+!
+       subroutine allocate_jacobians_linear_quad(numele, ntot_int_3d)
 !
        use m_geometry_constants
        use m_fem_gauss_int_coefs
 !
-       integer(kind = kint), intent(in) :: numele
+       integer(kind = kint), intent(in) :: numele, ntot_int_3d
 !
 !
-!
-      call alloc_jacobians_type(numele, num_t_linear, jac1_3d_l)
-!
-       end subroutine allocate_jacobians
-!
-!  ---------------------------------------------------------------------
-!
-       subroutine allocate_jacobians_quad(numele, nnod_4_ele)
-!
-       use m_geometry_constants
-       use m_fem_gauss_int_coefs
-!
-       integer(kind = kint), intent(in) :: numele, nnod_4_ele
-!
-!
-       jac1_3d_q%ntot_int = jac1_3d_l%ntot_int
-!
-      call alloc_jacobians_type(numele, nnod_4_ele, jac1_3d_q)
-!
-       end subroutine allocate_jacobians_quad
-!
-!  ------------------------------------------------------------------
-!
-       subroutine allocate_jacobians_linear_quad(numele)
-!
-       use m_geometry_constants
-       use m_fem_gauss_int_coefs
-!
-       integer(kind = kint), intent(in) :: numele
-!
-!
-       jac1_3d_lq%ntot_int = jac1_3d_l%ntot_int
-!
-      call alloc_jacobians_type(numele, num_t_quad, jac1_3d_lq)
+      call alloc_jacobians_type                                         &
+     &   (numele, num_t_quad, ntot_int_3d, jac1_3d_lq)
 !
        end subroutine allocate_jacobians_linear_quad
-!
-!  ------------------------------------------------------------------
-!  ------------------------------------------------------------------
-!
-      subroutine copy_jacobians_quad
-!
-       jac1_3d_q%an = jac1_3d_l%an
-       jac1_3d_q%dnx = jac1_3d_l%dnx
-!
-       jac1_3d_q%xjac  = jac1_3d_l%xjac
-       jac1_3d_q%axjac = jac1_3d_l%axjac
-!
-       end subroutine copy_jacobians_quad
-!
-!  ------------------------------------------------------------------
-!
-       subroutine copy_jacobians_inf_quad
-!
-       jac1_3d_q%an_infty = jac1_3d_l%an_infty
-!
-       end subroutine copy_jacobians_inf_quad
 !
 !  ------------------------------------------------------------------
 !  ------------------------------------------------------------------
@@ -209,14 +247,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine deallocate_inv_jacobians
-!
-      call dealloc_inv_jac_type(jac1_3d_l)
-!
-       end subroutine deallocate_inv_jacobians
-!
-!  ------------------------------------------------------------------
-!
        subroutine deallocate_jacobians_quad
 !
       call dealloc_jacobians_type(jac1_3d_q)
@@ -224,14 +254,6 @@
        end subroutine deallocate_jacobians_quad
 !
 !  ---------------------------------------------------------------------
-!
-       subroutine deallocate_inv_jacobians_quad
-!
-      call dealloc_inv_jac_type(jac1_3d_q)
-!
-       end subroutine deallocate_inv_jacobians_quad
-!
-!  ------------------------------------------------------------------
 !
        subroutine deallocate_jacobians_lq
 !
@@ -248,82 +270,5 @@
        end subroutine deallocate_inv_jacobians_lq
 !
 !  ------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine allocate_dxi_dx_linear(numele)
-!
-      use m_fem_gauss_int_coefs
-!
-      integer(kind = kint), intent(in) :: numele
-!
-!
-      call alloc_dxi_dx_type(numele, jac1_3d_l)
-!      allocate( dxidx_1(numele,jac1_3d_l%ntot_int,3,3) )
-!
-      end subroutine allocate_dxi_dx_linear
-!
-!-----------------------------------------------------------------------
-!
-      subroutine allocate_dxi_dx_quad(numele)
-!
-      use m_fem_gauss_int_coefs
-!
-      integer(kind = kint), intent(in) :: numele
-!
-!
-      call alloc_dxi_dx_type(numele, jac1_3d_q)
-!      allocate( dxidx_20(numele,jac1_3d_q%ntot_int,3,3) )
-!
-      end subroutine allocate_dxi_dx_quad
-!
-!-----------------------------------------------------------------------
-!
-      subroutine allocate_dxi_dx_l_quad(numele)
-!
-      use m_fem_gauss_int_coefs
-!
-      integer(kind = kint), intent(in) :: numele
-!
-!
-      call alloc_dxi_dx_type(numele, jac1_3d_lq)
-!
-      end subroutine allocate_dxi_dx_l_quad
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine deallocate_dxi_dx_linear
-!
-      call dealloc_dxi_dx_type(jac1_3d_l)
-!
-      end subroutine deallocate_dxi_dx_linear
-!
-!-----------------------------------------------------------------------
-!
-      subroutine deallocate_dxi_dx_quad
-!
-      call dealloc_dxi_dx_type(jac1_3d_q)
-!
-      end subroutine deallocate_dxi_dx_quad
-!
-!-----------------------------------------------------------------------
-!
-      subroutine deallocate_dxi_dx_l_quad
-!
-      call dealloc_dxi_dx_type(jac1_3d_lq)
-!
-      end subroutine deallocate_dxi_dx_l_quad
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine copy_dxi_dx_2_quad
-!
-!
-      jac1_3d_q%dxidx_3d = jac1_3d_l%dxidx_3d
-!
-      end subroutine copy_dxi_dx_2_quad
-!
-!-----------------------------------------------------------------------
 !
       end module m_jacobians

@@ -33,7 +33,6 @@
 !
       use nodal_vector_send_recv
       use const_mesh_info
-      use cal_jacobian
       use int_volume_of_domain
       use set_normal_vectors
       use set_surf_grp_vectors

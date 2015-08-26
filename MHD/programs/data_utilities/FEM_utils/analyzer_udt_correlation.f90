@@ -53,7 +53,6 @@
       use correlation_all_layerd_data
 !
       use m_jacobians
-      use cal_jacobian
 !
 !
       if (my_rank.eq.0) then
@@ -116,8 +115,8 @@
       call set_max_int_point_by_etype
       call cal_jacobian_element
 !
-      call deallocate_dxi_dx_quad
-      call deallocate_dxi_dx_linear
+      call dealloc_dxi_dx_type(jac1_3d_q)
+      call dealloc_dxi_dx_type(jac1_3d_l)
 !
 !     --------------------- 
 !

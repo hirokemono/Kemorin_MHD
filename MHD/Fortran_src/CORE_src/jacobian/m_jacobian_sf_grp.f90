@@ -46,7 +46,7 @@
       use m_geometry_data
       use t_group_data
 !
-      use const_jacobians_2d_type
+      use const_jacobians_2d
 !
       type(surface_group_data), intent(in) :: sf_grp
 !

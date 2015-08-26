@@ -1,5 +1,5 @@
-!>@file  const_jacobians_2d_type.f90
-!!       module const_jacobians_2d_type
+!>@file  const_jacobians_2d.f90
+!!       module const_jacobians_2d
 !!
 !!@author H. Matsui
 !!@date   Programmed on Nov., 2008
@@ -30,7 +30,7 @@
 !!        type(jacobians_2d), intent(inout) :: jac_sf_grp
 !!@endverbatim
 !
-      module const_jacobians_2d_type
+      module const_jacobians_2d
 !
       use m_precision
       use m_machine_parameter
@@ -281,4 +281,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module const_jacobians_2d_type
+      end module const_jacobians_2d

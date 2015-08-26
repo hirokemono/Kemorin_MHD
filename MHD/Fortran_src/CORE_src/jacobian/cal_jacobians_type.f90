@@ -85,7 +85,7 @@
 !
       subroutine const_jacobian_type(mesh, group, jac_3d)
 !
-      use const_jacobians_3d_type
+      use const_jacobians_3d
       use const_jacobians_infty_type
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -95,15 +95,14 @@
 !
 !  data allocation
 !
-      jac_3d%ntot_int = maxtot_int_3d
       call alloc_jacobians_type(mesh%ele%numele, mesh%ele%nnod_4_ele,   &
-     &    jac_3d)
+     &    maxtot_int_3d, jac_3d)
       call alloc_dxi_dx_type(mesh%ele%numele, jac_3d)
 !
 !  set jacobians
 !
       if (mesh%ele%nnod_4_ele .eq. num_t_linear) then
-        call cal_jacobian_type_trilinear(mesh, jac_3d)
+        call cal_jacobian_trilinear(mesh%node, mesh%ele, jac_3d)
 !
         if (group%infty_grp%ngrp_sf .gt. 0) then
         call cal_jacobian_infty_linear(mesh%node, mesh%ele,             &
@@ -111,7 +110,7 @@
         end if
 !
       else if (mesh%ele%nnod_4_ele .eq. num_t_quad) then
-        call cal_jacobian_type_triquad(mesh, jac_3d)
+        call cal_jacobian_quad(mesh%node, mesh%ele, jac_3d)
 !
         if (group%infty_grp%ngrp_sf .gt. 0) then
         call cal_jacobian_infty_quad(mesh%node, mesh%ele,               &
@@ -119,7 +118,7 @@
         end if
 !
       else if (mesh%ele%nnod_4_ele .eq. num_t_lag) then
-        call cal_jacobian_type_trilag(mesh, jac_3d)
+        call cal_jacobian_lag(mesh%node, mesh%ele, jac_3d)
 !
         if (group%infty_grp%ngrp_sf .gt. 0) then
           call cal_jacobian_infty_lag(mesh%node, mesh%ele,              &
@@ -136,7 +135,7 @@
 !
       subroutine const_jacobian_surface_type(mesh, surf_mesh, jac_2d)
 !
-      use const_jacobians_2d_type
+      use const_jacobians_2d
 !
       type(mesh_geometry), intent(in) :: mesh
       type(surface_geometry), intent(in) :: surf_mesh
@@ -189,7 +188,7 @@
       subroutine cal_jacobian_surf_grp_type(mesh, surf_mesh,            &
      &          group, jac_sf_grp)
 !
-      use const_jacobians_2d_type
+      use const_jacobians_2d
 !
       type(mesh_geometry),    intent(in) :: mesh
       type(surface_geometry), intent(in) :: surf_mesh
@@ -220,7 +219,7 @@
 !
       subroutine const_linear_jac_3d_type(mesh, group, jacobians)
 !
-      use const_jacobians_3d_type
+      use const_jacobians_3d
       use const_jacobians_infty_type
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -236,14 +235,14 @@
 !
 !  data allocation
 !
-        jacobians%jac_3d_l%ntot_int = maxtot_int_3d
         call alloc_jacobians_type(mesh%ele%numele, num_t_linear,        &
-     &      jacobians%jac_3d_l)
+     &      maxtot_int_3d, jacobians%jac_3d_l)
         call alloc_dxi_dx_type(mesh%ele%numele, jacobians%jac_3d_l)
 !
 !  set jacobians
 !
-        call cal_jacobian_type_trilinear(mesh, jacobians%jac_3d_l)
+        call cal_jacobian_trilinear                                     &
+     &     (mesh%node, mesh%ele, jacobians%jac_3d_l)
 !
         if (group%infty_grp%ngrp_sf .gt. 0) then
           call cal_jacobian_infty_linear(mesh%node, mesh%ele,           &
@@ -260,7 +259,7 @@
 !
       subroutine cal_linear_jac_surf_type(mesh, surf_mesh, jac_2d_l)
 !
-      use const_jacobians_2d_type
+      use const_jacobians_2d
 !
       type(mesh_geometry), intent(in) :: mesh
       type(surface_geometry), intent(in) :: surf_mesh
@@ -301,7 +300,7 @@
       subroutine cal_linear_jac_surf_grp_type(mesh, surf_mesh, group,   &
      &          jac_sf_grp_l)
 !
-      use const_jacobians_2d_type
+      use const_jacobians_2d
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::  group
@@ -327,9 +326,8 @@
 !
 !  data allocation
 !
-      jac_3d%ntot_int = maxtot_int_3d
       call alloc_jacobians_type(mesh%ele%numele, mesh%ele%nnod_4_ele,   &
-     &    jac_3d)
+     &    maxtot_int_3d, jac_3d)
       call alloc_dxi_dx_type(mesh%ele%numele, jac_3d)
 !
       call dealloc_inv_jac_type(jac_3d)
@@ -376,9 +374,8 @@
 !
 !  data allocation
 !
-      jacobians%jac_3d_l%ntot_int = maxtot_int_3d
       call alloc_jacobians_type(mesh%ele%numele, num_t_linear,          &
-     &    jacobians%jac_3d_l)
+     &    maxtot_int_3d, jacobians%jac_3d_l)
       call alloc_dxi_dx_type(mesh%ele%numele, jacobians%jac_3d_l)
 !
       call dealloc_inv_jac_type(jacobians%jac_3d_l)

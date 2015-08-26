@@ -8,14 +8,20 @@
 !> @brief  Structure of 3D Jacobian and difference of shape functions
 !!
 !!@verbatim
-!!      subroutine alloc_jacobians_type(numele, nnod_4_ele, jac_3d)
+!!      subroutine alloc_jacobians_type                                 &
+!!     &         (numele, nnod_4_ele, ntot_int_3d, jac_3d)
 !!      subroutine alloc_dxi_dx_type(numele, jac_3d)
 !!        integer(kind = kint), intent(in) :: numele, nnod_4_ele
+!!        integer(kind = kint), intent(in) :: ntot_int_3d
 !!        type(jacobians_3d), intent(inout) :: jac_3d
 !!
 !!      subroutine dealloc_jacobians_type(jac_3d)
 !!      subroutine dealloc_inv_jac_type(jac_3d)
 !!      subroutine dealloc_dxi_dx_type(jac_3d)
+!!
+!!      subroutine copy_jacobians_3d(jac_org, jac_new)
+!!      subroutine copy_shape_func_infty(jac_org, jac_new)
+!!      subroutine copy_dxidx_3d(jac_org, jac_new)
 !!
 !!  definision of matrix
 !!         dxidx_3d(iele,ix,1,1) :: dxi / dx
@@ -134,15 +140,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_jacobians_type(numele, nnod_4_ele, jac_3d)
+      subroutine alloc_jacobians_type                                   &
+     &         (numele, nnod_4_ele, ntot_int_3d, jac_3d)
 !
       use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: ntot_int_3d
 !
       type(jacobians_3d), intent(inout) :: jac_3d
 !
 !
+      jac_3d%ntot_int = ntot_int_3d
       allocate(jac_3d%an(nnod_4_ele,jac_3d%ntot_int))
       allocate(jac_3d%an_infty(nnod_4_ele,nsurf_4_ele,jac_3d%ntot_int))
 !
@@ -212,5 +221,46 @@
       end subroutine dealloc_dxi_dx_type
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine copy_jacobians_3d(jac_org, jac_new)
+!
+      type(jacobians_3d), intent(in) :: jac_org
+      type(jacobians_3d), intent(inout) :: jac_new
+!
+!
+       jac_new%an = jac_org%an
+       jac_new%dnx = jac_org%dnx
+!
+       jac_new%xjac  = jac_org%xjac
+       jac_new%axjac = jac_org%axjac
+!
+       end subroutine copy_jacobians_3d
+!
+!  ------------------------------------------------------------------
+!
+      subroutine copy_shape_func_infty(jac_org, jac_new)
+!
+      type(jacobians_3d), intent(in) :: jac_org
+      type(jacobians_3d), intent(inout) :: jac_new
+!
+!
+      jac_new%an_infty = jac_org%an_infty
+!
+      end subroutine copy_shape_func_infty
+!
+!  ------------------------------------------------------------------
+!
+      subroutine copy_dxidx_3d(jac_org, jac_new)
+!
+      type(jacobians_3d), intent(in) :: jac_org
+      type(jacobians_3d), intent(inout) :: jac_new
+!
+!
+      jac_new%dxidx_3d = jac_org%dxidx_3d
+!
+      end subroutine copy_dxidx_3d
+!
+!  ------------------------------------------------------------------
 !
       end module t_jacobian_3d

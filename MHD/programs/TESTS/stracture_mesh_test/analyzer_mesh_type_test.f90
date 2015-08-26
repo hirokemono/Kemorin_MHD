@@ -25,10 +25,10 @@
 !
       use calypso_mpi
       use const_mesh_info
-      use cal_jacobian
 !
       use m_geometry_data
       use m_group_data
+      use m_jacobians
       use m_jacobians_4_surface
       use m_jacobians_4_edge
       use m_jacobian_sf_grp
@@ -96,7 +96,7 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_edge'
       call cal_jacobian_edge
 !
-!      call check_jacobians_trilinear(my_rank)
+!      call check_jacobians_trilinear(my_rank, ele1, jac_3d_l)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_surf_grp'
       call cal_jacobian_surf_grp(sf_grp1)

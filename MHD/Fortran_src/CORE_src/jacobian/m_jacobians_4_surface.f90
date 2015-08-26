@@ -39,7 +39,7 @@
       use m_geometry_data
 !
       use const_jacobians_1d
-      use const_jacobians_2d_type
+      use const_jacobians_2d
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_surface_linear'

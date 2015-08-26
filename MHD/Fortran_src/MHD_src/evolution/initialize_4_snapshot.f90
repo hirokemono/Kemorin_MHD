@@ -45,7 +45,6 @@
       use const_mesh_info
       use count_whole_num_element
 !
-      use cal_jacobian
       use cal_volume_node_MHD
       use int_MHD_mass_matrices
       use int_surface_params_MHD
@@ -182,8 +181,8 @@
       call cal_jacobian_element
       call cal_jacobian_surface
 !
-      call deallocate_dxi_dx_quad
-      call deallocate_dxi_dx_linear
+      call dealloc_dxi_dx_type(jac1_3d_q)
+      call dealloc_dxi_dx_type(jac1_3d_l)
 !
       call cal_jacobian_surf_grp(sf_grp1)
 !

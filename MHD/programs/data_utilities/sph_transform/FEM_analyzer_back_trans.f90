@@ -37,7 +37,6 @@
 !
       use nodal_vector_send_recv
       use const_mesh_info
-      use cal_jacobian
       use int_volume_of_domain
       use set_normal_vectors
       use set_surf_grp_vectors
@@ -69,8 +68,8 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_element'
         call cal_jacobian_element
 !
-        call deallocate_dxi_dx_quad
-        call deallocate_dxi_dx_linear
+        call dealloc_dxi_dx_type(jac1_3d_q)
+        call dealloc_dxi_dx_type(jac1_3d_l)
 !
 !     --------------------- Surface jacobian for fieldline
 !

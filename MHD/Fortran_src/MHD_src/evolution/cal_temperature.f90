@@ -47,7 +47,7 @@
 !
 !      call check_surface_param_smp('cal_velocity_pre start',           &
 !     &    my_rank, sf_grp1, sf_grp_nod1)
-!      call check_jacobians_triquad
+!      call check_jacobians_triquad(ele1, jac1_3d_q)
 !
       if (iflag_SGS_heat .ne. id_SGS_none) call cal_sgs_heat_flux
 !

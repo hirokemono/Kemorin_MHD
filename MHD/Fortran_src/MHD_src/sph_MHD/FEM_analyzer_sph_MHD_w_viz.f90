@@ -43,7 +43,6 @@
       use m_element_id_4_node
 !
       use FEM_analyzer_sph_MHD
-      use cal_jacobian
       use int_volume_of_domain
 !
 !   --------------------------------
@@ -70,8 +69,8 @@
       call maximum_integration_points(ione)
       call cal_jacobian_element 
 !
-      call deallocate_dxi_dx_quad
-      call deallocate_dxi_dx_linear
+      call dealloc_dxi_dx_type(jac1_3d_q)
+      call dealloc_dxi_dx_type(jac1_3d_l)
 !
 !     --------------------- volume
 !
