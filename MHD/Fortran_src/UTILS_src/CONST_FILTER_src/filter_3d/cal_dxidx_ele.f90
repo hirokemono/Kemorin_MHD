@@ -23,12 +23,14 @@
       subroutine cal_dxidx_ele_type(dx_ele)
 !
       use m_geometry_data
+      use m_jacobians
       use t_filter_dxdxi
 !
       type(dxidx_direction_type), intent(inout) :: dx_ele
 !
 !
-      call s_cal_dxidx_ele(ele1%numele,                                 &
+      call s_cal_dxidx_ele                                              &
+     &     (ele1%numele, jac1_3d_l%ntot_int, jac1_3d_l%dxidx_3d,        &
      &      dx_ele%dxi%df_dx, dx_ele%dxi%df_dy, dx_ele%dxi%df_dz,       &
      &      dx_ele%dei%df_dx, dx_ele%dei%df_dy, dx_ele%dei%df_dz,       &
      &      dx_ele%dzi%df_dx, dx_ele%dzi%df_dy, dx_ele%dzi%df_dz)
@@ -37,7 +39,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_dxidx_ele(nele,                                  &
+      subroutine s_cal_dxidx_ele(nele, ntot_int, dxidx,                 &
      &          dxidx_ele, dxidy_ele, dxidz_ele,                        &
      &          deidx_ele, deidy_ele, deidz_ele,                        &
      &          dzidx_ele, dzidy_ele, dzidz_ele)
@@ -45,10 +47,10 @@
       use m_geometry_data
       use m_machine_parameter
       use m_fem_gauss_int_coefs
-      use m_jacobians
 !
-      integer(kind = kint), intent(in) :: nele
+      integer(kind = kint), intent(in) :: nele, ntot_int
 !
+      real(kind=kreal), intent(in) :: dxidx(nele,ntot_int,3,3)
 !
       real(kind=kreal), intent(inout) :: dxidx_ele(nele)
       real(kind=kreal), intent(inout) :: deidx_ele(nele)
@@ -96,25 +98,25 @@
 !cdir nodep noloopchg
             do iele = ist, ied
               dxidx_ele(iele) = dxidx_ele(iele)                         &
-     &                         + dxidx_1(iele,ix,1,1)*owe3d(ix)*r125
+     &                         + dxidx(iele,ix,1,1)*owe3d(ix)*r125
               deidx_ele(iele) = deidx_ele(iele)                         &
-     &                         + dxidx_1(iele,ix,2,1)*owe3d(ix)*r125
+     &                         + dxidx(iele,ix,2,1)*owe3d(ix)*r125
               dzidx_ele(iele) = dzidx_ele(iele)                         &
-     &                         + dxidx_1(iele,ix,3,1)*owe3d(ix)*r125
+     &                         + dxidx(iele,ix,3,1)*owe3d(ix)*r125
 !
               dxidy_ele(iele) = dxidy_ele(iele)                         &
-     &                         + dxidx_1(iele,ix,1,2)*owe3d(ix)*r125
+     &                         + dxidx(iele,ix,1,2)*owe3d(ix)*r125
               deidy_ele(iele) = deidy_ele(iele)                         &
-     &                         + dxidx_1(iele,ix,2,2)*owe3d(ix)*r125
+     &                         + dxidx(iele,ix,2,2)*owe3d(ix)*r125
               dzidy_ele(iele) = dzidy_ele(iele)                         &
-     &                         + dxidx_1(iele,ix,3,2)*owe3d(ix)*r125
+     &                         + dxidx(iele,ix,3,2)*owe3d(ix)*r125
 !
               dxidz_ele(iele) = dxidz_ele(iele)                         &
-     &                         + dxidx_1(iele,ix,1,3)*owe3d(ix)*r125
+     &                         + dxidx(iele,ix,1,3)*owe3d(ix)*r125
               deidz_ele(iele) = deidz_ele(iele)                         &
-     &                         + dxidx_1(iele,ix,2,3)*owe3d(ix)*r125
+     &                         + dxidx(iele,ix,2,3)*owe3d(ix)*r125
               dzidz_ele(iele) = dzidz_ele(iele)                         &
-     &                         + dxidx_1(iele,ix,3,3)*owe3d(ix)*r125
+     &                         + dxidx(iele,ix,3,3)*owe3d(ix)*r125
             end do
           end do
 !$omp end parallel do

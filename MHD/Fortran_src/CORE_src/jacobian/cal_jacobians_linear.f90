@@ -41,10 +41,10 @@
 !   jacobian for tri-linear elaments
 !
       call cal_jacobian_3d_8                                            &
-     &       (node1%numnod, ele1%numele, ele1%nnod_4_ele, np_smp,       &
-     &        ele1%istack_ele_smp, ele1%ie, node1%xx,                   &
-     &        jac1_3d_l%ntot_int, jac1_3d_l%xjac, jac1_3d_l%axjac,      &
-     &        jac1_3d_l%dnx, dxidx_1, dnxi_1, dnei_1, dnzi_1)
+     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, np_smp,           &
+     &    ele1%istack_ele_smp, ele1%ie, node1%xx,                       &
+     &    jac1_3d_l%ntot_int, jac1_3d_l%xjac, jac1_3d_l%axjac,          &
+     &    jac1_3d_l%dnx, jac1_3d_l%dxidx_3d, dnxi_1, dnei_1, dnzi_1)
 !
       end subroutine cal_jacobian_trilinear
 !
@@ -61,7 +61,8 @@
      &       (node1%numnod, ele1%numele, ele1%nnod_4_ele, np_smp,       &
      &        ele1%istack_ele_smp, ele1%ie, node1%xx,                   &
      &        jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%axjac,      &
-     &        jac1_3d_q%dnx, dxidx_20, dnxi_20, dnei_20, dnzi_20)
+     &        jac1_3d_q%dnx, jac1_3d_q%dxidx_3d,                        &
+     &        dnxi_20, dnei_20, dnzi_20)
 !
       end subroutine cal_jacobian_quad
 !
@@ -78,7 +79,8 @@
      &       (node1%numnod, ele1%numele, ele1%nnod_4_ele,               &
      &        np_smp, ele1%istack_ele_smp, ele1%ie, node1%xx,           &
      &        jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%axjac,      &
-     &        jac1_3d_q%dnx, dxidx_20, dnxi_27, dnei_27, dnzi_27)
+     &        jac1_3d_q%dnx, jac1_3d_q%dxidx_3d,                        &
+     &        dnxi_27, dnei_27, dnzi_27)
 !
       end subroutine cal_jacobian_lag
 !
@@ -98,7 +100,8 @@
      &       (node1%numnod, ele1%numele, ele1%nnod_4_ele,               &
      &        np_smp, ele1%istack_ele_smp, ele1%ie, node1%xx,           &
      &        jac1_3d_lq%ntot_int, jac1_3d_lq%xjac, jac1_3d_lq%axjac,   &
-     &        jac1_3d_lq%dnx, dxidx_lq, dnxi_20, dnei_20, dnzi_20)
+     &        jac1_3d_lq%dnx, jac1_3d_lq%dxidx_3d,                      &
+     &        dnxi_20, dnei_20, dnzi_20)
 !
       end subroutine cal_jacobian_quad_on_linear
 !

@@ -33,6 +33,73 @@
 !!         iele: element ID
 !!         ix:   integration point ID
 !!@endverbatim
+!>@n @param   ntot_int_3d
+!>     Total number of integration point for 3D element
+!
+!>@n @param   an(Shape_function_ID,integration_point)
+!>      Shape function at integration point for linear element
+!>@n      \f[ N_\alpha(\xi,\chi,\eta) \f]
+!
+!>@n @param   dnx(element_ID,Shape_function_ID,integration_point,direction)
+!>      Spatial differnce of linear shape function at integration
+!>      point for element
+!>@n      \f[ \frac{ dN_\alpha(\xi,\chi,\eta) }{ dx}, 
+!>            \frac{ dN_\alpha(\xi,\chi,\eta) }{ dy}, 
+!>            \frac{ dN_\alpha(\xi,\chi,\eta) }{ dz} \f]
+!
+!>@n @param    an_infty(Shape_function_ID,surface_ID,integration_point)
+!>      Shape function at integration point for linear infinity element
+!>@n      \f[ N_{\infty\alpha}(\xi,\chi,\eta) \f]
+!
+!>@n @param   xjac(element_ID,integration_point)
+!>      Jacobian at integration point for linear element
+!>@n      \f[ Ja = \det \left(\frac{ d{\bf x} }{ d {\bf \xi}} \right)\f]
+!>@n @param   axjac(element_ID,integration_point)
+!>        \f[ Ja^{-1}\f]
+!
+!>
+!>@n @param   aw(Shape_function_ID,integration_point)
+!>      Shape function at integration point for element
+!>@n      \f[ N_\alpha(\xi,\chi,\eta) \f]
+!
+!>@n @param   dwx(element_ID,Shape_function_ID,integration_point,direction)
+!>      Spatial differnce of shape function at integration
+!>      point for element
+!>@n      \f[ \frac{ dN_\alpha(\xi,\chi,\eta) }{ dx}, 
+!>            \frac{ dN_\alpha(\xi,\chi,\eta) }{ dy}, 
+!>            \frac{ dN_\alpha(\xi,\chi,\eta) }{ dz} \f]
+!
+!>@n @param    aw_infty(Shape_function_ID,surface_ID,integration_point)
+!>      Shape function at integration point for infinity element
+!>@n      \f[ N_{\infty\alpha}(\xi,\chi,\eta) \f]
+!
+!>@n @param   xjac_q(element_ID,integration_point)
+!>      Jacobian at integration point for element
+!>@n      \f[ Ja = \det \left(\frac{ d{\bf x} }{ d {\bf \xi}} \right)\f]
+!>@n @param   axjac_q(element_ID,integration_point)
+!>        \f[ Ja^{-1}\f]
+!
+!>
+!>@n @param   am(Shape_function_ID,integration_point)
+!>      Shape function at integration point for element
+!>@n      \f[ N_\alpha(\xi,\chi,\eta) \f]
+!
+!>@n @param   dmx(element_ID,Shape_function_ID,integration_point,direction)
+!>      Spatial differnce of shape function at integration
+!>      point for element
+!>@n      \f[ \frac{ dN_\alpha(\xi,\chi,\eta) }{ dx}, 
+!>            \frac{ dN_\alpha(\xi,\chi,\eta) }{ dy}, 
+!>            \frac{ dN_\alpha(\xi,\chi,\eta) }{ dz} \f]
+!
+!>@n @param    am_infty(Shape_function_ID,surface_ID,integration_point)
+!>      Shape function at integration point for infinity element
+!>@n      \f[ N_{\infty\alpha}(\xi,\chi,\eta) \f]
+!
+!>@n @param   xjac_lq(element_ID,integration_point)
+!>      Jacobian at integration point for element
+!>@n      \f[ Ja = \det \left(\frac{ d{\bf x} }{ d {\bf \xi}} \right)\f]
+!>@n @param   axjac_lq(element_ID,integration_point)
+!>        \f[ Ja^{-1}\f]
 !
       module t_jacobian_3d
 !

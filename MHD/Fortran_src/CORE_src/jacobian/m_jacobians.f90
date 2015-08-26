@@ -75,17 +75,17 @@
 
 
 !  define of matrix
-!     dxidx_1(iele,ix,1,1) :: dxi / dx
-!     dxidx_1(iele,ix,2,1) :: dei / dx
-!     dxidx_1(iele,ix,3,1) :: dzi / dx
+!     jac1_3d_l%dxidx_3d(iele,ix,1,1) :: dxi / dx
+!     jac1_3d_l%dxidx_3d(iele,ix,2,1) :: dei / dx
+!     jac1_3d_l%dxidx_3d(iele,ix,3,1) :: dzi / dx
 !
-!     dxidx_1(iele,ix,1,2) :: dxi / dy
-!     dxidx_1(iele,ix,2,2) :: dei / dy
-!     dxidx_1(iele,ix,3,2) :: dzi / dy
+!     jac1_3d_l%dxidx_3d(iele,ix,1,2) :: dxi / dy
+!     jac1_3d_l%dxidx_3d(iele,ix,2,2) :: dei / dy
+!     jac1_3d_l%dxidx_3d(iele,ix,3,2) :: dzi / dy
 !
-!     dxidx_1(iele,ix,1,3) :: dxi / dz
-!     dxidx_1(iele,ix,2,3) :: dei / dz
-!     dxidx_1(iele,ix,3,3) :: dzi / dz
+!     jac1_3d_l%dxidx_3d(iele,ix,1,3) :: dxi / dz
+!     jac1_3d_l%dxidx_3d(iele,ix,2,3) :: dei / dz
+!     jac1_3d_l%dxidx_3d(iele,ix,3,3) :: dzi / dz
 !
 !     iele: element ID
 !     ix:   integration point ID
@@ -116,48 +116,15 @@
 !
 !>     Stracture for Jacobians for linear element
       type(jacobians_3d), save :: jac1_3d_l
-!  jac1_3d_l%dnx
+!  jac1_3d_l%dxidx_3d
 !>     Stracture for Jacobians for quad element
       type(jacobians_3d), save :: jac1_3d_q
-!  jac1_3d_q%dnx
+!  jac1_3d_q%dxidx_3d
 !
 !>     Stracture for linear Jacobians for quad element
       type(jacobians_3d), save :: jac1_3d_lq
-!  jac1_3d_lq%dnx
+!  jac1_3d_lq%dxidx_3d
 !
-!
-!      integer(kind = kint) :: ntot_int_3d
-!      real (kind=kreal), allocatable :: an(:,:)
-!      real (kind=kreal), allocatable :: dnx(:,:,:,:)
-!
-!      real (kind=kreal), allocatable :: an_infty(:,:,:)
-! 
-! 
-      real (kind=kreal), allocatable :: dxidx_1(:,:,:,:)
-!      real (kind=kreal), allocatable :: xjac(:,:)
-!      real (kind=kreal), allocatable :: axjac(:,:)
-! 
-!
-!      integer(kind = kint) :: ntot_int_3q
-!      real (kind=kreal), allocatable :: aw(:,:)
-!      real (kind=kreal), allocatable :: dwx(:,:,:,:)
-! 
-!      real (kind=kreal), allocatable :: aw_infty(:,:,:)
-! 
-      real (kind=kreal), allocatable :: dxidx_20(:,:,:,:)
-!      real (kind=kreal), allocatable :: xjac_q(:,:)
-!      real (kind=kreal), allocatable :: axjac_q(:,:)
-!
-!
-!      integer(kind = kint) :: ntot_int_3l
-!      real (kind=kreal), allocatable :: am(:,:)
-!      real (kind=kreal), allocatable :: dmx(:,:,:,:)
-! 
-!      real (kind=kreal), allocatable :: am_infty(:,:,:)
-! 
-      real (kind=kreal), allocatable :: dxidx_lq(:,:,:,:)
-!      real (kind=kreal), allocatable :: xjac_lq(:,:)
-!      real (kind=kreal), allocatable :: axjac_lq(:,:)
 ! 
 !  ---------------------------------------------------------------------
 !
@@ -176,14 +143,6 @@
 !
       call alloc_jacobians_type(numele, num_t_linear, jac1_3d_l)
 !
-!       allocate(an(num_t_linear,jac1_3d_l%ntot_int))
-!       allocate(an_infty(num_t_linear,nsurf_4_ele,jac1_3d_l%ntot_int))
-!
-!       allocate(dnx(numele,num_t_linear,jac1_3d_l%ntot_int,3))
-!
-!       allocate(xjac(numele,jac1_3d_l%ntot_int))
-!       allocate(axjac(numele,jac1_3d_l%ntot_int))
-!
        end subroutine allocate_jacobians
 !
 !  ---------------------------------------------------------------------
@@ -199,14 +158,6 @@
        jac1_3d_q%ntot_int = jac1_3d_l%ntot_int
 !
       call alloc_jacobians_type(numele, nnod_4_ele, jac1_3d_q)
-!
-!       allocate(aw(nnod_4_ele,jac1_3d_q%ntot_int))
-!       allocate(aw_infty(nnod_4_ele,nsurf_4_ele,jac1_3d_q%ntot_int))
-!
-!       allocate(dwx(numele,nnod_4_ele,jac1_3d_q%ntot_int,3))
-!
-!       allocate(xjac_q(numele,jac1_3d_q%ntot_int))
-!       allocate(axjac_q(numele,jac1_3d_q%ntot_int)) 
 !
        end subroutine allocate_jacobians_quad
 !
@@ -224,14 +175,6 @@
 !
       call alloc_jacobians_type(numele, num_t_quad, jac1_3d_lq)
 !
-!       allocate(am(num_t_quad,jac1_3d_lq%ntot_int))
-!       allocate(am_infty(num_t_quad,nsurf_4_ele,jac1_3d_lq%ntot_int))
-!
-!       allocate(dmx(numele,num_t_quad,jac1_3d_lq%ntot_int,3))
-!
-!       allocate(xjac_lq(numele,jac1_3d_lq%ntot_int))
-!       allocate(axjac_lq(numele,jac1_3d_lq%ntot_int)) 
-!
        end subroutine allocate_jacobians_linear_quad
 !
 !  ------------------------------------------------------------------
@@ -240,7 +183,7 @@
       subroutine copy_jacobians_quad
 !
        jac1_3d_q%an = jac1_3d_l%an
-       jac1_3d_q%dnx     = jac1_3d_l%dnx
+       jac1_3d_q%dnx = jac1_3d_l%dnx
 !
        jac1_3d_q%xjac  = jac1_3d_l%xjac
        jac1_3d_q%axjac = jac1_3d_l%axjac
@@ -261,7 +204,6 @@
        subroutine deallocate_jacobians
 !
       call dealloc_jacobians_type(jac1_3d_l)
-!       deallocate(dnx)
 !
        end subroutine deallocate_jacobians
 !
@@ -315,8 +257,8 @@
       integer(kind = kint), intent(in) :: numele
 !
 !
-      allocate( dxidx_1(numele,jac1_3d_l%ntot_int,3,3) )
-      dxidx_1 = 0.0d0
+      call alloc_dxi_dx_type(numele, jac1_3d_l)
+!      allocate( dxidx_1(numele,jac1_3d_l%ntot_int,3,3) )
 !
       end subroutine allocate_dxi_dx_linear
 !
@@ -329,8 +271,8 @@
       integer(kind = kint), intent(in) :: numele
 !
 !
-      allocate( dxidx_20(numele,jac1_3d_q%ntot_int,3,3) )
-      dxidx_20 = 0.0d0
+      call alloc_dxi_dx_type(numele, jac1_3d_q)
+!      allocate( dxidx_20(numele,jac1_3d_q%ntot_int,3,3) )
 !
       end subroutine allocate_dxi_dx_quad
 !
@@ -343,8 +285,7 @@
       integer(kind = kint), intent(in) :: numele
 !
 !
-      allocate( dxidx_lq(numele,jac1_3d_lq%ntot_int,3,3) )
-      dxidx_lq = 0.0d0
+      call alloc_dxi_dx_type(numele, jac1_3d_lq)
 !
       end subroutine allocate_dxi_dx_l_quad
 !
@@ -353,7 +294,7 @@
 !
       subroutine deallocate_dxi_dx_linear
 !
-      deallocate( dxidx_1 )
+      call dealloc_dxi_dx_type(jac1_3d_l)
 !
       end subroutine deallocate_dxi_dx_linear
 !
@@ -361,7 +302,7 @@
 !
       subroutine deallocate_dxi_dx_quad
 !
-      deallocate( dxidx_20 )
+      call dealloc_dxi_dx_type(jac1_3d_q)
 !
       end subroutine deallocate_dxi_dx_quad
 !
@@ -369,7 +310,7 @@
 !
       subroutine deallocate_dxi_dx_l_quad
 !
-      deallocate( dxidx_lq )
+      call dealloc_dxi_dx_type(jac1_3d_lq)
 !
       end subroutine deallocate_dxi_dx_l_quad
 !
@@ -379,7 +320,7 @@
       subroutine copy_dxi_dx_2_quad
 !
 !
-      dxidx_20 = dxidx_1
+      jac1_3d_q%dxidx_3d = jac1_3d_l%dxidx_3d
 !
       end subroutine copy_dxi_dx_2_quad
 !
