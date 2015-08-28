@@ -43,7 +43,7 @@
 !
       call vector_on_element(iele_fl_smp_stack, intg_point_t_evo,       &
      &    d_ele(1,iphys_ele%i_velo), d_nod(1,iphys%i_velo) )
-      iflag_ele_update(iphys_ele%i_velo:iphys_ele%i_velo+2) = 1
+      fld_ele1%iflag_update(iphys_ele%i_velo:iphys_ele%i_velo+2) = 1
 !
       end subroutine velocity_on_element
 !
@@ -60,6 +60,7 @@
 !
       call vector_on_element(iele_cd_smp_stack, intg_point_t_evo,       &
      &    d_ele(1,iphys_ele%i_magne), d_nod(1,iphys%i_magne) )
+      fld_ele1%iflag_update(iphys_ele%i_magne:iphys_ele%i_magne+2) = 1
 !
       end subroutine magnetic_on_element
 !
@@ -77,9 +78,9 @@
       call vector_on_element(iele_cd_smp_stack, intg_point_t_evo,       &
      &    d_ele(1,iphys_ele%i_filter_magne),                            &
      &    d_nod(1,iphys%i_filter_magne) )
-      iflag_ele_update(iphys_ele%i_filter_magne  ) = 1
-      iflag_ele_update(iphys_ele%i_filter_magne+1) = 1
-      iflag_ele_update(iphys_ele%i_filter_magne+2) = 1
+      fld_ele1%iflag_update(iphys_ele%i_filter_magne  ) = 1
+      fld_ele1%iflag_update(iphys_ele%i_filter_magne+1) = 1
+      fld_ele1%iflag_update(iphys_ele%i_filter_magne+2) = 1
 !
 !
       end subroutine filtered_magne_on_ele
@@ -97,6 +98,7 @@
 !
       call rotation_on_element(iele_fl_smp_stack, intg_point_t_evo,     &
      &    d_ele(1,iphys_ele%i_vort), d_nod(1,iphys%i_velo) )
+      fld_ele1%iflag_update(iphys_ele%i_vort:iphys_ele%i_vort+2) = 1
 !
       end subroutine vorticity_on_element
 !
@@ -113,7 +115,7 @@
 !
       call rotation_on_element(ele1%istack_ele_smp, intg_point_t_evo,   &
      &    d_ele(1,iphys_ele%i_magne), d_nod(1,iphys%i_vecp) )
-      iflag_ele_update(iphys_ele%i_magne:iphys_ele%i_magne+2) = 1
+      fld_ele1%iflag_update(iphys_ele%i_magne:iphys_ele%i_magne+2) = 1
 !
       end subroutine rot_magne_on_element
 !
@@ -130,7 +132,9 @@
 !
       call rotation_on_element(iele_cd_smp_stack, intg_point_t_evo,     &
      &    d_ele(1,iphys_ele%i_current), d_nod(1,iphys%i_magne) )
-      iflag_ele_update(iphys_ele%i_current:iphys_ele%i_current+2) = 1
+      fld_ele1%iflag_update(iphys_ele%i_current  ) = 1
+      fld_ele1%iflag_update(iphys_ele%i_current+1) = 1
+      fld_ele1%iflag_update(iphys_ele%i_current+2) = 1
 !
       end subroutine current_on_element
 !
@@ -148,6 +152,9 @@
       call rotation_on_element(ele1%istack_ele_smp, intg_point_t_evo,   &
      &    d_ele(1,iphys_ele%i_filter_magne),                            &
      &    d_nod(1,iphys%i_filter_vecp) )
+     fld_ele1%iflag_update(iphys_ele%i_filter_vecp  ) = 1
+     fld_ele1%iflag_update(iphys_ele%i_filter_vecp+1) = 1
+     fld_ele1%iflag_update(iphys_ele%i_filter_vecp+2) = 1
 !
       end subroutine rot_filter_magne_on_element
 !

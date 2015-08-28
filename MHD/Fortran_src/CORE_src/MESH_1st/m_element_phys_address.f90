@@ -52,34 +52,34 @@
       integer(kind = kint) :: i, i0
 !
        i0 = 1
-       do i = 1, num_ele_phys
+       do i = 1, fld_ele1%num_phys
 !
-        if      (phys_ele_name(i) .eq. fhd_velo) then
+        if      (fld_ele1%phys_name(i) .eq. fhd_velo) then
           iphys_ele%i_velo = i0
-        else if (phys_ele_name(i) .eq. fhd_vort) then
+        else if (fld_ele1%phys_name(i) .eq. fhd_vort) then
           iphys_ele%i_vort = i0
-        else if (phys_ele_name(i) .eq. fhd_filter_v) then
+        else if (fld_ele1%phys_name(i) .eq. fhd_filter_v) then
           iphys_ele%i_filter_velo = i0
 !
-        else if (phys_ele_name(i) .eq. fhd_magne) then
+        else if (fld_ele1%phys_name(i) .eq. fhd_magne) then
           iphys_ele%i_magne = i0
-        else if (phys_ele_name(i) .eq. fhd_current) then
+        else if (fld_ele1%phys_name(i) .eq. fhd_current) then
           iphys_ele%i_current = i0
-        else if (phys_ele_name(i) .eq. fhd_filter_b) then
+        else if (fld_ele1%phys_name(i) .eq. fhd_filter_b) then
           iphys_ele%i_filter_magne = i0
 !
-        else if (phys_ele_name(i) .eq. fhd_temp) then
+        else if (fld_ele1%phys_name(i) .eq. fhd_temp) then
           iphys_ele%i_temp = i0
-        else if (phys_ele_name(i) .eq. fhd_filter_temp) then
+        else if (fld_ele1%phys_name(i) .eq. fhd_filter_temp) then
           iphys_ele%i_filter_temp = i0
 !
-        else if (phys_ele_name(i) .eq. fhd_light) then
+        else if (fld_ele1%phys_name(i) .eq. fhd_light) then
           iphys_ele%i_light = i0
-        else if (phys_ele_name(i) .eq. fhd_filter_comp) then
+        else if (fld_ele1%phys_name(i) .eq. fhd_filter_comp) then
           iphys_ele%i_filter_comp = i0
         end if
 !
-        i0 = i0 + num_ele_component(i)
+        i0 = i0 + fld_ele1%num_component(i)
       end do
 !
       end subroutine set_element_field_address

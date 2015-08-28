@@ -28,9 +28,9 @@
 !
 !  allocation for physical values
 !
-!      write(*,*) 'allocate_data_arrays', num_tot_nod_phys
+!      write(*,*) 'allocate_data_arrays'
       call initialize_nod_field_data
-!      write(*,*) 'allocate_ele_data_arrays', num_tot_ele_phys
+!      write(*,*) 'allocate_ele_data_arrays'
       call initialize_ele_field_data
 !
        end subroutine allocate_phys_data
