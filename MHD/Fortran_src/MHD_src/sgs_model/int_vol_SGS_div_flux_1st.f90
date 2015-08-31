@@ -11,11 +11,11 @@
 !     &          i_filter, iak_diff, coef)
 !
 !      subroutine int_vol_div_SGS_vec_flux_upw                          &
-!     &         (iele_fsmp_stack, n_int, ie_upw, i_vector, i_scalar,    &
-!     &          i_SGS_flux, i_filter, iak_diff, coef)
+!     &        (iele_fsmp_stack, n_int, i_vector, i_scalar, i_SGS_flux, &
+!     &         i_filter, iak_diff, ncomp_ele, ie_upw, d_ele, coef)
 !      subroutine int_vol_div_SGS_tsr_flux_upw                          &
-!     &         (iele_fsmp_stack, n_int,  ie_upw, i_vector, i_SGS_flux, &
-!     &          i_filter, iak_diff, coef)
+!     &         (iele_fsmp_stack, n_int, i_vector, i_SGS_flux,          &
+!     &          i_filter, iak_diff, ncomp_ele, ie_upw, d_ele, coef)
 !
       module int_vol_SGS_div_flux_1st
 !
@@ -110,10 +110,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_div_SGS_vec_flux_upw                           &
-     &         (iele_fsmp_stack, n_int, ie_upw, i_vector, i_scalar,     &
-     &          i_SGS_flux, i_filter, iak_diff, coef)
+     &        (iele_fsmp_stack, n_int, i_vector, i_scalar, i_SGS_flux,  &
+     &         i_filter, iak_diff, ncomp_ele, ie_upw, d_ele, coef)
 !
-      use m_element_phys_data
       use m_SGS_model_coefs
       use m_finite_element_matrix
       use m_int_vol_data
@@ -127,7 +126,8 @@
       integer(kind = kint), intent(in) :: i_vector, i_scalar
       integer(kind = kint), intent(in) :: i_SGS_flux
       integer(kind = kint), intent(in) :: i_filter, iak_diff
-      integer(kind = kint), intent(in) :: ie_upw
+      integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
       real(kind = kreal), intent(in) :: coef
 !
       integer(kind = kint) :: k2
@@ -151,10 +151,9 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_div_SGS_tsr_flux_upw                           &
-     &         (iele_fsmp_stack, n_int,  ie_upw, i_vector, i_SGS_flux,  &
-     &          i_filter, iak_diff, coef)
+     &         (iele_fsmp_stack, n_int, i_vector, i_SGS_flux,           &
+     &          i_filter, iak_diff, ncomp_ele, ie_upw, d_ele, coef)
 !
-      use m_element_phys_data
       use m_SGS_model_coefs
       use m_finite_element_matrix
       use m_int_vol_data
@@ -168,7 +167,8 @@
       integer(kind = kint), intent(in) :: n_int
       integer(kind = kint), intent(in) :: i_vector, i_SGS_flux
       integer(kind = kint), intent(in) :: i_filter, iak_diff
-      integer(kind = kint), intent(in) :: ie_upw
+      integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
       real(kind = kreal), intent(in) :: coef
 !
       integer(kind = kint) :: k2

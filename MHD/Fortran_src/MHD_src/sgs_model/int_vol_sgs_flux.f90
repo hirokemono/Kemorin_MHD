@@ -31,6 +31,7 @@
      &           i_field, id_dx, sk_v)
 !
       use m_element_phys_address
+      use m_element_phys_data
 !
       integer(kind = kint), intent(in) :: iflag_4_supg
       integer (kind = kint), intent(in) :: id_dx, i_filter
@@ -41,11 +42,11 @@
 !
 !
       if ( iflag_4_supg .eq. id_magnetic_SUPG) then
-        call int_vol_sgs_flux_upwind(i_filter, iphys_ele%i_magne,       &
-     &      numdir, i_field, id_dx, sk_v)
+        call int_vol_sgs_flux_upwind(i_filter, numdir, i_field, id_dx,  &
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele, sk_v)
       else if ( iflag_4_supg .eq. id_turn_ON) then
-        call int_vol_sgs_flux_upwind(i_filter, iphys_ele%i_velo,        &
-     &      numdir, i_field, id_dx, sk_v)
+        call int_vol_sgs_flux_upwind(i_filter, numdir, i_field, id_dx,  &
+     &      fld_ele1%ntot_phys, iphys_ele%i_velo, d_ele, sk_v)
       else
         call int_vol_sgs_flux_pg(i_filter, numdir,                      &
      &      i_field, id_dx, sk_v)
@@ -99,11 +100,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_sgs_flux_upwind(i_filter, ie_upw, numdir,      &
-     &          i_field, id_dx, sk_v)
+      subroutine int_vol_sgs_flux_upwind(i_filter, numdir,              &
+     &          i_field, id_dx, ncomp_ele, ie_upw, d_ele, sk_v)
 !
       use m_geometry_data_MHD
-      use m_element_phys_data
       use m_int_vol_data
       use m_SGS_model_coefs
 !
@@ -111,7 +111,9 @@
       use nodal_fld_2_each_ele_1st
 !
       integer (kind = kint), intent(in) :: i_filter, id_dx
-      integer (kind = kint), intent(in) :: numdir, i_field, ie_upw
+      integer (kind = kint), intent(in) :: numdir, i_field
+      integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       real (kind=kreal), intent(inout)                                  &
      &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)

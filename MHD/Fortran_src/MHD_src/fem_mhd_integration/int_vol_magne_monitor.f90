@@ -68,6 +68,8 @@
 !
       subroutine int_vol_magne_monitor_upm(i_field)
 !
+      use m_element_phys_address
+      use m_element_phys_data
       use int_vol_vect_diff_upw_1st
       use int_vol_vect_cst_diff_upw_1
       use int_vol_mag_induct_1st
@@ -86,8 +88,9 @@
 !
       else if (i_field .eq. iphys%i_SGS_induction) then
         if(iflag_commute_induction .eq. id_SGS_commute_ON) then
-          call int_vol_div_SGS_idct_mod_upm(iele_cd_smp_stack,          &
-     &        intg_point_t_evo, ifilter_final)
+          call int_vol_div_SGS_idct_mod_upm                             &
+     &       (iele_cd_smp_stack, intg_point_t_evo, ifilter_final,       &
+     &        fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele)
         else
           call int_vol_div_as_tsr_cst_upw_1(iele_cd_smp_stack,          &
      &        intg_point_t_evo, iphys%i_SGS_induct_t, coef_induct,      &

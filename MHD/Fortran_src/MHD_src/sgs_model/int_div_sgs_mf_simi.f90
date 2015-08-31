@@ -63,10 +63,12 @@
       subroutine int_div_sgs_mf_simi_upw(i_flux, i_vect)
 !
       use m_element_phys_address
+      use m_element_phys_data
 !
       integer(kind = kint), intent(in) :: i_flux, i_vect
 !
-      call int_div_sgs_mf_simi_upwind(i_flux, i_vect, iphys_ele%i_velo)
+      call int_div_sgs_mf_simi_upwind(i_flux, i_vect,                   &
+     &    fld_ele1%ntot_phys, iphys_ele%i_velo, d_ele)
 !
       end subroutine int_div_sgs_mf_simi_upw
 !
@@ -75,23 +77,23 @@
       subroutine int_div_sgs_mf_simi_upm(i_flux, i_vect)
 !
       use m_element_phys_address
+      use m_element_phys_data
 !
       integer(kind = kint), intent(in) :: i_flux, i_vect
 !
       call int_div_sgs_mf_simi_upwind(i_flux, i_vect,                   &
-     &    iphys_ele%i_magne)
+     &    fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele)
 !
       end subroutine int_div_sgs_mf_simi_upm
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_div_sgs_mf_simi_upwind(i_flux, i_vect, ie_upw)
+      subroutine int_div_sgs_mf_simi_upwind(i_flux, i_vect,             &
+     &          ncomp_ele, ie_upw, d_ele)
 !
       use m_control_parameter
       use m_geometry_data
       use m_geometry_data_MHD
-      use m_element_phys_address
-      use m_element_phys_data
       use m_finite_element_matrix
       use m_int_vol_data
 !
@@ -99,9 +101,12 @@
       use cal_skv_to_ff_smp_1st
       use fem_skv_vect_diff_upw_1st
 !
-       integer(kind = kint), intent(in) :: i_flux, i_vect, ie_upw
+      integer(kind = kint), intent(in) :: i_flux, i_vect
+      integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
-       integer(kind=kint) :: k2
+!
+      integer(kind=kint) :: k2
 !
 !
       call reset_sk6(n_vector)

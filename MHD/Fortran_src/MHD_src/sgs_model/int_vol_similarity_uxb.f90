@@ -31,13 +31,16 @@
 !
       subroutine sel_int_simi_vp_induct
 !
+      use m_element_phys_address
+      use m_element_phys_data
       use cal_skv_to_ff_smp_1st
 !
 !
       call reset_sk6(n_vector)
 !
       if (iflag_mag_supg .eq. id_turn_ON) then
-        call int_simi_vp_induct_upm
+        call int_simi_vp_induct_upm                                     &
+     &     (fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele)
       else
         call int_simi_vp_induct
       end if
@@ -76,17 +79,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_simi_vp_induct_upm
+      subroutine int_simi_vp_induct_upm(ncomp_ele, iele_magne, d_ele)
 !
       use m_node_phys_address
-      use m_element_phys_address
-      use m_element_phys_data
       use m_SGS_model_coefs
       use m_SGS_address
 !
       use nodal_fld_2_each_ele_1st
       use fem_skv_nodal_fld_upw_1st
       use cal_product_to_skv_1st
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind = kint) :: k2
 !
@@ -95,8 +99,7 @@
         call vector_phys_2_each_element(k2, iphys%i_sgs_simi, vect_e)
 !
         call fem_skv_vector_field_upw_1st(iele_cd_smp_stack,            &
-     &      intg_point_t_evo, k2, d_ele(1,iphys_ele%i_magne),           &
-     &      vect_e, sk6)
+     &      intg_point_t_evo, k2, d_ele(1,iele_magne), vect_e, sk6)
 !
         call scalar_prod_to_skv_tensor_1st(iele_cd_smp_stack,           &
      &      ak_sgs(1,icomp_sgs_uxb), sk6)

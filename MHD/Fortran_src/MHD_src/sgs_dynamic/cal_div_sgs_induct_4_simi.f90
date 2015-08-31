@@ -51,6 +51,8 @@
       use m_finite_element_matrix
       use m_int_vol_data
       use m_node_phys_data
+      use m_element_phys_address
+      use m_element_phys_data
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -64,7 +66,8 @@
       call reset_ff_smps
 !
       if ( iflag_mag_supg .gt. id_turn_OFF) then
-        call int_div_sgs_idct_simi_upw(i_flux, i_v, i_b)
+        call int_div_sgs_idct_simi_upw(i_flux, i_v, i_b,                &
+     &      fld_ele1%ntot_phys, iphys_ele%i_velo, d_ele)
       else
         call int_div_sgs_idct_simi_pg(i_flux, i_v, i_b)
       end if

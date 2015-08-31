@@ -151,6 +151,7 @@
 !
       subroutine int_vol_velo_monitor_upwind(i_field, iv_upw)
 !
+      use m_element_phys_data
       use int_vol_inertia_1st
       use int_vol_vect_cst_diff_upw_1
       use int_vol_SGS_div_flux_1st
@@ -214,10 +215,10 @@
 !
       else if(i_field .eq. iphys%i_SGS_div_m_flux) then 
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
-          call int_vol_div_SGS_tsr_flux_upw(iele_fl_smp_stack,          &
-     &        intg_point_t_evo, iv_upw, iphys%i_velo,                   &
+          call int_vol_div_SGS_tsr_flux_upw                             &
+     &       (iele_fl_smp_stack, intg_point_t_evo, iphys%i_velo,        &
      &        iphys%i_SGS_m_flux, ifilter_final, iak_diff_mf,           &
-     &        coef_nega_v)
+     &        fld_ele1%ntot_phys, iv_upw, d_ele, coef_nega_v)
         else
           call int_vol_div_tsr_w_const_upw_1(iele_fl_smp_stack,         &
      &        intg_point_t_evo, iv_upw, iphys%i_SGS_m_flux,             &
@@ -226,10 +227,10 @@
 !
       else if(i_field .eq. iphys%i_SGS_Lorentz) then
         if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
-          call int_vol_div_SGS_tsr_flux_upw(iele_fl_smp_stack,          &
-     &        intg_point_t_evo, iv_upw, iphys%i_magne,                  &
+          call int_vol_div_SGS_tsr_flux_upw                             &
+     &       (iele_fl_smp_stack, intg_point_t_evo, iphys%i_magne,       &
      &        iphys%i_SGS_maxwell, ifilter_final, iak_diff_lor,         &
-     &        coef_lor)
+     &        fld_ele1%ntot_phys, iv_upw, d_ele, coef_lor)
         else
           call int_vol_div_tsr_w_const_upw_1(iele_fl_smp_stack,         &
      &        intg_point_t_evo, iv_upw, iphys%i_SGS_maxwell, coef_lor)

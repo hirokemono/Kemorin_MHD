@@ -115,9 +115,9 @@
       else if (i_field .eq. iphys%i_SGS_div_h_flux) then
         if(iflag_commute_heat .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_vec_flux_upw(iele_fl_smp_stack,          &
-     &        intg_point_t_evo, iphys_ele%i_velo, iphys%i_velo,         &
-     &        iphys%i_temp, iphys%i_SGS_h_flux, ifilter_final,          &
-     &        iak_diff_hf, coef_nega_t)
+     &        intg_point_t_evo, iphys%i_velo, iphys%i_temp,             &
+     &        iphys%i_SGS_h_flux, ifilter_final, iak_diff_hf,           &
+     &        fld_ele1%ntot_phys, iphys_ele%i_velo, d_ele, coef_nega_t)
         else
           call int_vol_div_w_const_upw_1(iele_fl_smp_stack,             &
               intg_point_t_evo, iphys_ele%i_velo, iphys%i_SGS_h_flux,   &

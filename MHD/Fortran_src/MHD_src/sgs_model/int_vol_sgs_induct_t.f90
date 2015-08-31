@@ -31,6 +31,9 @@
       subroutine sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,     &
      &           ifield_v, ifield_b, sk_v)
 !
+      use m_element_phys_address
+      use m_element_phys_data
+!
       integer (kind = kint), intent(in) :: i_filter
       integer (kind = kint), intent(in) :: ifield_v, ifield_b
       integer (kind = kint), intent(in) :: ie_dvx, ie_dbx
@@ -41,7 +44,8 @@
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
         call int_vol_sgs_induct_t_upm(i_filter, ie_dvx, ie_dbx,         &
-     &      ifield_v, ifield_b, sk_v)
+     &      ifield_v, ifield_b, fld_ele1%ntot_phys, iphys_ele%i_magne,  &
+     &      d_ele, sk_v)
       else
         call int_vol_sgs_induct_t_pg(i_filter, ie_dvx, ie_dbx,          &
      &      ifield_v, ifield_b, sk_v)
@@ -99,10 +103,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_sgs_induct_t_upm(i_filter, ie_dvx, ie_dbx,     &
-     &           ifield_v, ifield_b, sk_v)
-!
-      use m_element_phys_address
-      use m_element_phys_data
+     &           ifield_v, ifield_b, ncomp_ele, i_magne, d_ele, sk_v)
 !
       use nodal_fld_2_each_ele_1st
       use fem_skv_sgs_flux_1st
@@ -110,6 +111,9 @@
       integer (kind = kint), intent(in) :: i_filter
       integer (kind = kint), intent(in) :: ifield_v, ifield_b
       integer (kind = kint), intent(in) :: ie_dvx, ie_dbx
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, i_magne
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       real (kind=kreal), intent(inout)                                  &
      &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
@@ -134,7 +138,7 @@
           call scalar_phys_2_each_element(k2, icomp_b, vect_e(1,2) )
 !
           call fem_skv_sgs_induct_t_upw_1(iele_cd_smp_stack,            &
-     &        intg_point_t_evo, k2, vect_e, d_ele(1,iphys_ele%i_magne), &
+     &        intg_point_t_evo, k2, vect_e, d_ele(1,i_magne),           &
      &        dvx(1,id_dvx2), dvx(1,id_dbx2), i_filter, nd, sk_v)
 !
         end do

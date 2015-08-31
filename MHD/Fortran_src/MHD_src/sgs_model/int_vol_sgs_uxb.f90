@@ -27,6 +27,9 @@
 !
       subroutine sel_int_vol_sgs_uxb(i_filter, i_field, id_dx, sk_v)
 !
+      use m_element_phys_address
+      use m_element_phys_data
+!
       integer (kind=kint), intent(in) :: i_field, i_filter
       integer (kind=kint), intent(in) :: id_dx
 !
@@ -35,7 +38,8 @@
 !
 !
       if (iflag_mag_supg .eq. id_turn_ON) then
-        call int_vol_sgs_uxb_upm(i_filter, i_field, id_dx, sk_v)
+        call int_vol_sgs_uxb_upm(i_filter, i_field, id_dx,              &
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele, sk_v)
       else
         call int_vol_sgs_uxb_pg(i_filter, i_field, id_dx, sk_v)
       end if
@@ -82,10 +86,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_sgs_uxb_upm(i_filter, i_field, id_dx, sk_v)
+      subroutine int_vol_sgs_uxb_upm(i_filter, i_field, id_dx,          &
+     &          ncomp_ele, i_magne, d_ele, sk_v)
 !
-      use m_element_phys_address
-      use m_element_phys_data
       use m_SGS_model_coefs
       use m_geometry_data_MHD
       use m_int_vol_data
@@ -95,6 +98,9 @@
 !
       integer(kind = kint), intent(in) :: i_field
       integer(kind = kint), intent(in) :: id_dx, i_filter
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, i_magne
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       real (kind=kreal), intent(inout)                                  &
      &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
@@ -107,7 +113,7 @@
 !
           call vector_phys_2_each_element(k2, i_field, vect_e)
           call fem_skv_sgs_uxb_upw_1(iele_cd_smp_stack,                 &
-     &        intg_point_t_evo, k2, vect_e, d_ele(1,iphys_ele%i_magne), &
+     &        intg_point_t_evo, k2, vect_e, d_ele(1,i_magne),           &
      &        dvx(1,id_dx), i_filter, nd, sk_v)
         end do
       end do

@@ -9,7 +9,8 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !      subroutine int_vol_div_SGS_idct_mod_pg(iele_fsmp_stack, n_int)
-!      subroutine int_vol_div_SGS_idct_mod_upm(iele_fsmp_stack, n_int)
+!      subroutine int_vol_div_SGS_idct_mod_upm(iele_fsmp_stack, n_int,  &
+!     &          i_filter, ncomp_ele, i_magne, d_ele)
 !
       module int_vol_SGS_mag_induct_1st
 !
@@ -22,8 +23,6 @@
       use m_SGS_model_coefs
       use m_SGS_address
       use m_node_phys_address
-      use m_element_phys_address
-      use m_element_phys_data
       use m_fem_gauss_int_coefs
 !
       implicit none
@@ -68,7 +67,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_div_SGS_idct_mod_upm(iele_fsmp_stack, n_int,   &
-     &          i_filter)
+     &          i_filter, ncomp_ele, i_magne, d_ele)
 !
       use m_finite_element_matrix
       use m_int_vol_data
@@ -79,6 +78,9 @@
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int, i_filter
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, i_magne
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2
 !
@@ -91,8 +93,8 @@
      &      iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,          &
      &      coef_induct, sgs_e, vect_e)
         call fem_skv_div_sgs_asym_t_1st_upw(iele_fsmp_stack, n_int, k2, &
-     &      i_filter, ak_diff(1,iak_diff_uxb),                          &
-     &      d_ele(1,iphys_ele%i_magne), sgs_e, vect_e, sk6)
+     &      i_filter, ak_diff(1,iak_diff_uxb), d_ele(1,i_magne), sgs_e, &
+     &      vect_e, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
