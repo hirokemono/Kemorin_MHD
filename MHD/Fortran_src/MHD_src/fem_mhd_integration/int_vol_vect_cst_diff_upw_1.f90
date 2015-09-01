@@ -5,16 +5,16 @@
 !     Modified by H. Matsui on Oct., 2006
 !
 !      subroutine int_vol_grad_w_const_upw_1(iele_fsmp_stack, num_int,  &
-!     &          i_field, coef, iv_up)
+!     &          i_field, ncomp_ele, iv_up, d_ele, coef)
 !      subroutine int_vol_div_w_const_upw_1(iele_fsmp_stack, num_int,   &
-!     &          iv_up, i_field, coef)
+!     &          i_field, ncomp_ele, iv_up, d_ele, coef)
 !      subroutine int_vol_rot_w_const_upw_1(iele_fsmp_stack, num_int,   &
-!     &          i_field, coef, iv_up)
+!     &          i_field, ncomp_ele, iv_up, d_ele, coef)
 !
 !      subroutine int_vol_div_tsr_w_const_upw_1(iele_fsmp_stack,        &
-!     &          num_int, iv_up, i_field, coef)
+!     &          num_int, i_field, ncomp_ele, iv_up, d_ele, coef)
 !      subroutine int_vol_div_as_tsr_cst_upw_1(iele_fsmp_stack,         &
-!     &          num_int, i_field, coef, iv_up)
+!     &          num_int, i_field, ncomp_ele, iv_up, d_ele, coef)
 !
       module int_vol_vect_cst_diff_upw_1
 !
@@ -23,7 +23,6 @@
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
-      use m_element_phys_data
       use m_finite_element_matrix
       use m_int_vol_data
 !
@@ -40,11 +39,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_grad_w_const_upw_1(iele_fsmp_stack, num_int,   &
-     &          i_field, coef, iv_up)
+     &          i_field, ncomp_ele, iv_up, d_ele, coef)
 !
       integer(kind=kint), intent(in) :: num_int
-      integer(kind=kint), intent(in) :: i_field, iv_up
+      integer(kind=kint), intent(in) :: i_field
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
       real(kind = kreal), intent(in) :: coef
 !
       integer(kind=kint) :: k2
@@ -67,11 +69,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_div_w_const_upw_1(iele_fsmp_stack, num_int,    &
-     &          iv_up, i_field, coef)
+     &          i_field, ncomp_ele, iv_up, d_ele, coef)
 !
       integer(kind=kint), intent(in) :: num_int
-      integer(kind=kint), intent(in) :: i_field, iv_up
+      integer(kind=kint), intent(in) :: i_field
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
       real(kind = kreal), intent(in) :: coef
 !
       integer(kind=kint) :: k2
@@ -94,11 +99,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_rot_w_const_upw_1(iele_fsmp_stack, num_int,    &
-     &          i_field, coef, iv_up)
+     &          i_field, ncomp_ele, iv_up, d_ele, coef)
 !
       integer(kind=kint), intent(in) :: num_int
-      integer(kind=kint), intent(in) :: i_field, iv_up
+      integer(kind=kint), intent(in) :: i_field
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
       real(kind = kreal), intent(in) :: coef
 !
       integer(kind=kint) :: k2
@@ -122,11 +130,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_div_tsr_w_const_upw_1(iele_fsmp_stack,         &
-     &          num_int, iv_up, i_field, coef)
+     &          num_int, i_field, ncomp_ele, iv_up, d_ele, coef)
 !
       integer(kind=kint), intent(in) :: num_int
-      integer(kind=kint), intent(in) :: i_field, iv_up
+      integer(kind=kint), intent(in) :: i_field
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
       real(kind = kreal), intent(in) :: coef
 !
       integer(kind=kint) :: k2
@@ -149,11 +160,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_div_as_tsr_cst_upw_1(iele_fsmp_stack,          &
-     &          num_int, i_field, coef, iv_up)
+     &          num_int, i_field, ncomp_ele, iv_up, d_ele, coef)
 !
       integer(kind=kint), intent(in) :: num_int
-      integer(kind=kint), intent(in) :: i_field, iv_up
+      integer(kind=kint), intent(in) :: i_field
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
       real(kind = kreal), intent(in) :: coef
 !
       integer(kind=kint) :: k2

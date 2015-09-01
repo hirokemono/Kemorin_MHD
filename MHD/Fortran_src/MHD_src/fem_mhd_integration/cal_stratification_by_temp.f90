@@ -4,8 +4,8 @@
 !        modified by H. Matsui in 2003
 !        modified by H. Matsui on Aug., 2007
 !
-!      subroutine cal_stratified_layer
-!      subroutine cal_stratified_layer_upw
+!      subroutine cal_stratified_layer(ncomp_ele, d_ele)
+!      subroutine cal_stratified_layer_upw(ncomp_ele, d_ele)
 !
 !*****************************************************
 !
@@ -44,17 +44,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_stratified_layer
+      subroutine cal_stratified_layer(ncomp_ele, d_ele)
 !
       use m_node_phys_address
       use m_element_phys_address
-      use m_element_phys_data
       use m_finite_element_matrix
       use m_int_vol_data
 !
       use nodal_fld_2_each_ele_1st
       use cal_skv_to_ff_smp_1st
       use fem_skv_lorentz_full_1st
+!
+      integer(kind = kint), intent(in) :: ncomp_ele
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer (kind = kint) :: k2
 !
@@ -80,17 +82,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_stratified_layer_upw
+      subroutine cal_stratified_layer_upw(ncomp_ele, d_ele)
 !
       use m_node_phys_address
       use m_element_phys_address
-      use m_element_phys_data
       use m_finite_element_matrix
       use m_int_vol_data
 !
       use nodal_fld_2_each_ele_1st
       use cal_skv_to_ff_smp_1st
       use fem_skv_lorentz_full_1st
+!
+      integer(kind = kint), intent(in) :: ncomp_ele
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
        integer(kind = kint) :: k2
 !

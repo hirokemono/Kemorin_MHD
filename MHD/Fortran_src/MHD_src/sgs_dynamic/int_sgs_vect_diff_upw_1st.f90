@@ -5,16 +5,17 @@
 !     Modified by H. Matsui on Oct., 2006
 !
 !      subroutine int_sgs_grad_upw_1st(iele_fsmp_stack, num_int,        &
-!     &          i_filter, iak_diff, i_field, iv_up)
+!     &          i_filter, iak_diff, i_field, ncomp_ele, iv_up, d_ele)
 !      subroutine int_sgs_div_upw_1st(iele_fsmp_stack, num_int,         &
-!     &          i_filter, iak_diff, i_field, iv_up)
+!     &          i_filter, iak_diff, i_field, ncomp_ele, iv_up, d_ele)
 !      subroutine int_sgs_rot_upw_1st(iele_fsmp_stack, num_int,         &
-!     &          i_filter, iak_diff, i_field, iv_up)
+!     &          i_filter, iak_diff, i_field, ncomp_ele, iv_up, d_ele)
 !
 !      subroutine int_sgs_div_tsr_upw_1st(iele_fsmp_stack, num_int,     &
-!     &          i_filter, iak_diff, i_field, iv_up)
+!     &          i_filter, iak_diff, i_field, ncomp_ele, iv_up, d_ele)
 !      subroutine int_sgs_div_as_tsr_upw_1st(iele_fsmp_stack,           &
-!     &          num_int, i_filter, iak_diff, i_field, iv_up)
+!     &          num_int, i_filter, iak_diff, i_field,                  &
+!     &          ncomp_ele, iv_up, d_ele)
 !
       module int_sgs_vect_diff_upw_1st
 !
@@ -23,7 +24,6 @@
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
-      use m_element_phys_data
       use m_SGS_model_coefs
       use m_finite_element_matrix
       use m_int_vol_data
@@ -41,12 +41,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_sgs_grad_upw_1st(iele_fsmp_stack, num_int,         &
-     &          i_filter, iak_diff, i_field, iv_up)
+     &          i_filter, iak_diff, i_field, ncomp_ele, iv_up, d_ele)
 !
       integer(kind=kint), intent(in) :: num_int
-      integer(kind=kint), intent(in) :: i_field, iv_up
-      integer(kind=kint), intent(in) :: i_filter, iak_diff
+      integer(kind=kint), intent(in) :: i_field, i_filter, iak_diff
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2
 !
@@ -68,12 +70,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_sgs_div_upw_1st(iele_fsmp_stack, num_int,          &
-     &          i_filter, iak_diff, i_field, iv_up)
+     &          i_filter, iak_diff, i_field, ncomp_ele, iv_up, d_ele)
 !
       integer(kind=kint), intent(in) :: num_int
-      integer(kind=kint), intent(in) :: i_field, iv_up
-      integer(kind=kint), intent(in) :: i_filter, iak_diff
+      integer(kind=kint), intent(in) :: i_field, i_filter, iak_diff
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2
 !
@@ -95,12 +99,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_sgs_rot_upw_1st(iele_fsmp_stack, num_int,          &
-     &          i_filter, iak_diff, i_field, iv_up)
+     &          i_filter, iak_diff, i_field, ncomp_ele, iv_up, d_ele)
 !
       integer(kind=kint), intent(in) :: num_int
-      integer(kind=kint), intent(in) :: i_field, iv_up
-      integer(kind=kint), intent(in) :: i_filter, iak_diff
+      integer(kind=kint), intent(in) :: i_field, i_filter, iak_diff
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2
 !
@@ -123,12 +129,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_sgs_div_tsr_upw_1st(iele_fsmp_stack, num_int,      &
-     &          i_filter, iak_diff, i_field, iv_up)
+     &          i_filter, iak_diff, i_field, ncomp_ele, iv_up, d_ele)
 !
       integer(kind=kint), intent(in) :: num_int
-      integer(kind=kint), intent(in) :: i_field, iv_up
-      integer(kind=kint), intent(in) :: i_filter, iak_diff
+      integer(kind=kint), intent(in) :: i_field, i_filter, iak_diff
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2
 !
@@ -151,12 +159,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_sgs_div_as_tsr_upw_1st(iele_fsmp_stack,            &
-     &          num_int, i_filter, iak_diff, i_field, iv_up)
+     &          num_int, i_filter, iak_diff, i_field,                   &
+     &          ncomp_ele, iv_up, d_ele)
 !
       integer(kind=kint), intent(in) :: num_int
-      integer(kind=kint), intent(in) :: i_field, iv_up
-      integer(kind=kint), intent(in) :: i_filter, iak_diff
+      integer(kind=kint), intent(in) :: i_field, i_filter, iak_diff
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2
 !

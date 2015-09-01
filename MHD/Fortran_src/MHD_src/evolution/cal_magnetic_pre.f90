@@ -31,6 +31,7 @@
 !
       use m_finite_element_matrix
       use m_node_phys_address
+      use m_element_phys_data
 !      use m_group_data
 !
       use nod_phys_send_recv
@@ -60,9 +61,9 @@
 !
       if (iflag_debug .eq. 0 ) write(*,*) 'coefs_4_time_evolution'
       if (iflag_mag_supg .gt. id_turn_OFF) then
-       call int_vol_magne_pre_ele_upm
+       call int_vol_magne_pre_ele_upm(fld_ele1%ntot_phys, d_ele)
       else
-       call int_vol_magne_pre_ele
+       call int_vol_magne_pre_ele(fld_ele1%ntot_phys, d_ele)
       end if
 !
 !

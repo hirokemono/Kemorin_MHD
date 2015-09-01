@@ -8,8 +8,8 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!      subroutine int_vol_magne_pre_ele
-!      subroutine int_vol_magne_pre_ele_upm
+!      subroutine int_vol_magne_pre_ele(ncomp_ele, d_ele)
+!      subroutine int_vol_magne_pre_ele_upm(ncomp_ele, d_ele)
 !
       module int_vol_magne_pre
 !
@@ -22,7 +22,6 @@
       use m_phys_constants
       use m_node_phys_address
       use m_element_phys_address
-      use m_element_phys_data
       use m_fem_gauss_int_coefs
       use m_physical_property
       use m_SGS_model_coefs
@@ -36,7 +35,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_magne_pre_ele
+      subroutine int_vol_magne_pre_ele(ncomp_ele, d_ele)
 !
       use m_finite_element_matrix
       use m_int_vol_data
@@ -49,6 +48,9 @@
       use fem_skv_vector_diff_1st
       use fem_skv_lorentz_full_1st
       use fem_skv_div_sgs_flux_1st
+!
+      integer(kind = kint), intent(in) :: ncomp_ele
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2, num_int
 !
@@ -96,7 +98,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_magne_pre_ele_upm
+      subroutine int_vol_magne_pre_ele_upm(ncomp_ele, d_ele)
 !
       use m_finite_element_matrix
       use m_int_vol_data
@@ -109,6 +111,9 @@
       use fem_skv_lorentz_full_1st
       use fem_skv_div_sgs_flux_upw_1
       use fem_skv_vect_diff_upw_1st
+!
+      integer(kind = kint), intent(in) :: ncomp_ele
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2, num_int
 !

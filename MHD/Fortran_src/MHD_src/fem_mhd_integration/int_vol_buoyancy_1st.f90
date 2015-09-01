@@ -12,7 +12,7 @@
 !      subroutine int_vol_buoyancy_pg(iele_fsmp_stack, n_int,           &
 !     &          i_source, ak_buo)
 !      subroutine int_vol_buoyancy_upw(iele_fsmp_stack, n_int,          &
-!     &          i_source, ak_buo, ie_upw)
+!     &          i_source, ak_buo, ncomp_ele, ie_upw, d_ele)
 !
       module int_vol_buoyancy_1st
 !
@@ -66,9 +66,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_buoyancy_upw(iele_fsmp_stack, n_int,           &
-     &          i_source, ak_buo, ie_upw)
+     &          i_source, ak_buo, ncomp_ele, ie_upw, d_ele)
 !
-      use m_element_phys_data
       use m_finite_element_matrix
       use m_int_vol_data
 !
@@ -78,8 +77,11 @@
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int
-      integer(kind = kint), intent(in) :: i_source, ie_upw
+      integer(kind = kint), intent(in) :: i_source
       real(kind = kreal), intent(in) :: ak_buo(ele1%numele)
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind = kint) :: k2
 !

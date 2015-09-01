@@ -8,9 +8,8 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!      subroutine int_vol_velo_pre_ele
-!      subroutine int_vol_velo_pre_ele_upw
-!      subroutine int_vol_velo_pre_ele_upm
+!      subroutine int_vol_velo_pre_ele(ncomp_ele, d_ele)
+!      subroutine int_vol_velo_pre_ele_upwind(ncomp_ele, ie_upw, d_ele)
 !
 !
       module int_vol_velo_pre
@@ -28,19 +27,16 @@
 !
       implicit none
 !
-      private :: int_vol_velo_pre_ele_upwind
-!
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_velo_pre_ele
+      subroutine int_vol_velo_pre_ele(ncomp_ele, d_ele)
 !
       use m_node_phys_address
       use m_element_phys_address
-      use m_element_phys_data
       use m_finite_element_matrix
       use m_fem_gauss_int_coefs
       use m_int_vol_data
@@ -55,6 +51,9 @@
       use fem_skv_nonlinear_1st
       use fem_skv_div_sgs_flux_1st
       use fem_skv_lorentz_full_1st
+!
+      integer(kind = kint), intent(in) :: ncomp_ele
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2, num_int
 !
@@ -212,32 +211,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_velo_pre_ele_upw
-!
-      use m_element_phys_address
-!
-      call int_vol_velo_pre_ele_upwind(iphys_ele%i_velo)
-!
-      end subroutine int_vol_velo_pre_ele_upw
-!
-!-----------------------------------------------------------------------
-!
-      subroutine int_vol_velo_pre_ele_upm
-!
-      use m_element_phys_address
-!
-      call int_vol_velo_pre_ele_upwind(iphys_ele%i_magne)
-!
-      end subroutine int_vol_velo_pre_ele_upm
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine int_vol_velo_pre_ele_upwind(ie_upw)
+      subroutine int_vol_velo_pre_ele_upwind(ncomp_ele, ie_upw, d_ele)
 !
       use m_node_phys_address
       use m_element_phys_address
-      use m_element_phys_data
       use m_finite_element_matrix
       use m_fem_gauss_int_coefs
       use m_int_vol_data
@@ -253,7 +230,9 @@
       use fem_skv_div_sgs_flux_upw_1
       use fem_skv_lorentz_full_1st
 !
-      integer(kind = kint), intent(in) :: ie_upw
+      integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
+!
       integer(kind = kint) :: k2, num_int
 !
 !  ---------  set number of integral points

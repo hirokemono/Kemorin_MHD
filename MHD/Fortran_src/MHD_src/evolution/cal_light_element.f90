@@ -31,6 +31,7 @@
 !
       use m_finite_element_matrix
       use m_node_phys_address
+      use m_element_phys_data
       use m_group_data
 !
       use nod_phys_send_recv
@@ -46,9 +47,9 @@
       call int_vol_composition_diffuse_ele
 !
       if (iflag_comp_supg .gt. id_turn_OFF) then
-        call int_vol_composition_ele_upw
+        call int_vol_composition_ele_upw(fld_ele1%ntot_phys, d_ele)
       else
-        call int_vol_composition_ele
+        call int_vol_composition_ele(fld_ele1%ntot_phys, d_ele)
       end if
 !
 !

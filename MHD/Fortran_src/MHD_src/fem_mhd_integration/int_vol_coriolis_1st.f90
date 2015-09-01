@@ -9,7 +9,8 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !      subroutine int_vol_coriolis_pg(iele_fsmp_stack, n_int)
-!      subroutine int_vol_coriolis_upw(iele_fsmp_stack, n_int, ie_upw)
+!      subroutine int_vol_coriolis_upw(iele_fsmp_stack, n_int,          &
+!     &          ncomp_ele, ie_upw, d_ele)
 !
       module int_vol_coriolis_1st
 !
@@ -61,9 +62,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_coriolis_upw(iele_fsmp_stack, n_int, ie_upw)
+      subroutine int_vol_coriolis_upw(iele_fsmp_stack, n_int,           &
+     &          ncomp_ele, ie_upw, d_ele)
 !
-      use m_element_phys_data
       use m_finite_element_matrix
       use m_int_vol_data
 !
@@ -73,7 +74,9 @@
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int
-      integer(kind = kint), intent(in) :: ie_upw
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind = kint) :: k2
 !
@@ -82,9 +85,9 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
-          call vector_cst_phys_2_each_ele(k2, iphys%i_velo,             &
+        call vector_cst_phys_2_each_ele(k2, iphys%i_velo,               &
      &        coef_cor, velo_1)
-          call fem_skv_coriolis_upw_1st(iele_fsmp_stack, n_int, k2,     &
+        call fem_skv_coriolis_upw_1st(iele_fsmp_stack, n_int, k2,       &
      &         velo_1, angular, d_ele(1,ie_upw), sk6)
       end do
 !

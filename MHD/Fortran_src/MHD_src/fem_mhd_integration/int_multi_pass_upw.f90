@@ -42,6 +42,7 @@
       subroutine int_multi_pass_vector_upw
 !
       use m_element_phys_address
+      use m_element_phys_data
 !
       integer (kind = kint) :: imulti
 !
@@ -53,7 +54,7 @@
         call nod_vector_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_vector_upw(ele1%istack_ele_smp,         &
-     &      iphys_ele%i_velo)
+     &      fld_ele1%ntot_phys, iphys_ele%i_velo, d_ele)
       end do
 !
       end subroutine int_multi_pass_vector_upw
@@ -63,6 +64,7 @@
       subroutine int_multi_pass_scalar_upw
 !
       use m_element_phys_address
+      use m_element_phys_data
 !
       integer (kind = kint) :: imulti
 !
@@ -74,7 +76,7 @@
         call nod_scalar_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_scalar_upw(ele1%istack_ele_smp,         &
-     &      iphys_ele%i_velo)
+     &      fld_ele1%ntot_phys, iphys_ele%i_velo, d_ele)
       end do
 !
       end subroutine int_multi_pass_scalar_upw
@@ -85,6 +87,7 @@
       subroutine int_multi_pass_vector_upm
 !
       use m_element_phys_address
+      use m_element_phys_data
 !
       integer (kind = kint) :: imulti
 !
@@ -96,7 +99,7 @@
         call nod_vector_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_vector_upw(ele1%istack_ele_smp,         &
-     &      iphys_ele%i_magne)
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele)
       end do
 !
       end subroutine int_multi_pass_vector_upm
@@ -106,6 +109,7 @@
       subroutine int_multi_pass_scalar_upm
 !
       use m_element_phys_address
+      use m_element_phys_data
 !
       integer (kind = kint) :: imulti
 !
@@ -117,8 +121,7 @@
         call nod_scalar_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_scalar_upw(ele1%istack_ele_smp,         &
-     &      iphys_ele%i_magne)
-!
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele)
       end do
 !
       end subroutine int_multi_pass_scalar_upm
@@ -130,6 +133,7 @@
 !
       use m_geometry_data_MHD
       use m_element_phys_address
+      use m_element_phys_data
 !
       integer (kind = kint) :: imulti
 !
@@ -141,7 +145,7 @@
         call nod_vector_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_vector_upw(iele_fl_smp_stack,           &
-     &      iphys_ele%i_velo)
+     &      fld_ele1%ntot_phys, iphys_ele%i_velo, d_ele)
       end do
 !
       end subroutine int_multi_pass_vector_fl_upw
@@ -152,6 +156,7 @@
 !
       use m_geometry_data_MHD
       use m_element_phys_address
+      use m_element_phys_data
 !
       integer (kind = kint) :: imulti
 !
@@ -163,7 +168,7 @@
         call nod_scalar_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_scalar_upw(iele_fl_smp_stack,           &
-     &      iphys_ele%i_velo)
+     &      fld_ele1%ntot_phys, iphys_ele%i_velo, d_ele)
       end do
 !
       end subroutine int_multi_pass_scalar_fl_upw
@@ -175,6 +180,7 @@
 !
       use m_geometry_data_MHD
       use m_element_phys_address
+      use m_element_phys_data
 !
       integer (kind = kint) :: imulti
 !
@@ -186,7 +192,7 @@
         call nod_vector_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_vector_upw(iele_fl_smp_stack,           &
-     &      iphys_ele%i_magne)
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele)
       end do
 !
       end subroutine int_multi_pass_vector_fl_upm
@@ -197,6 +203,7 @@
 !
       use m_geometry_data_MHD
       use m_element_phys_address
+      use m_element_phys_data
 !
       integer (kind = kint) :: imulti
 !
@@ -208,7 +215,7 @@
         call nod_scalar_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_scalar_upw(iele_fl_smp_stack,           &
-     &      iphys_ele%i_magne)
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele)
       end do
 !
       end subroutine int_multi_pass_scalar_fl_upm
@@ -220,6 +227,7 @@
 !
       use m_geometry_data_MHD
       use m_element_phys_address
+      use m_element_phys_data
 !
       integer (kind = kint) :: imulti
 !
@@ -230,7 +238,7 @@
         call nod_vector_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_vector_upw(iele_cd_smp_stack,           &
-     &      iphys_ele%i_magne)
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele)
       end do
 !
       end subroutine int_multi_pass_vector_cd_upm
@@ -241,19 +249,18 @@
 !
       use m_geometry_data_MHD
       use m_element_phys_address
+      use m_element_phys_data
 !
       integer (kind = kint) :: imulti
 !
 !
       ff_nl = 0.0d0
       do imulti = 2, num_multi_pass
-!
         call cal_ff_smp_2_scalar(ff_nl(1,1), ff_nl_smp(1,1,1), ml_cd)
         call nod_scalar_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_scalar_upw(iele_cd_smp_stack,           &
-     &      iphys_ele%i_magne)
-!
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele)
       end do
 !
       end subroutine int_multi_pass_scalar_cd_upm
@@ -261,17 +268,19 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_multi_pass_scalar_upw(iele_fsmp_stack, ie_up)
+      subroutine int_vol_multi_pass_scalar_upw                          &
+     &         (iele_fsmp_stack, ncomp_ele, ie_up, d_ele)
 !
-      use m_element_phys_data
       use m_int_vol_data
       use nodal_fld_2_each_ele_1st
       use cal_skv_to_ff_smp_1st
       use cal_for_ffs
       use fem_skv_nodal_fld_upw_1st
 !
-      integer (kind = kint), intent(in) :: ie_up
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+      integer(kind = kint), intent(in) :: ncomp_ele, ie_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
+!
 !
       integer (kind = kint) :: k2
 !
@@ -293,17 +302,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_multi_pass_vector_upw(iele_fsmp_stack, ie_up)
+      subroutine int_vol_multi_pass_vector_upw                          &
+     &         (iele_fsmp_stack, ncomp_ele, ie_up, d_ele)
 !
-      use m_element_phys_data
       use m_int_vol_data
       use nodal_fld_2_each_ele_1st
       use cal_skv_to_ff_smp_1st
       use cal_for_ffs
       use fem_skv_nodal_fld_upw_1st
 !
-      integer (kind = kint), intent(in) :: ie_up
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+      integer(kind = kint), intent(in) :: ncomp_ele, ie_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer (kind = kint) :: k2
 !

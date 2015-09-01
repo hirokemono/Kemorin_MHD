@@ -46,7 +46,8 @@
 !
 !
       if (i_field .eq. iphys%i_induction) then
-        call int_vol_mag_induct_pg(iele_cd_smp_stack, intg_point_t_evo)
+        call int_vol_mag_induct_pg(iele_cd_smp_stack, intg_point_t_evo, &
+     &      fld_ele1%ntot_phys, d_ele)
 !
       else if (i_field .eq. iphys%i_induct_div) then
         call int_vol_div_as_tsr_1st(iele_cd_smp_stack,                  &
@@ -80,11 +81,12 @@
 !
       if (i_field .eq. iphys%i_induction) then
         call int_vol_mag_induct_upm(iele_cd_smp_stack,                  &
-     &      intg_point_t_evo)
+     &      intg_point_t_evo, fld_ele1%ntot_phys, d_ele)
 !
       else if (i_field .eq. iphys%i_induct_div) then
         call int_vol_div_as_tsr_upw_1st(iele_cd_smp_stack,              &
-     &    intg_point_t_evo, iphys%i_induct_t, iphys_ele%i_magne)
+     &      intg_point_t_evo, iphys%i_induct_t,                         &
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele)
 !
       else if (i_field .eq. iphys%i_SGS_induction) then
         if(iflag_commute_induction .eq. id_SGS_commute_ON) then
@@ -93,8 +95,9 @@
      &        fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele)
         else
           call int_vol_div_as_tsr_cst_upw_1(iele_cd_smp_stack,          &
-     &        intg_point_t_evo, iphys%i_SGS_induct_t, coef_induct,      &
-     &        iphys_ele%i_magne)
+     &        intg_point_t_evo, iphys%i_SGS_induct_t,                   &
+     &        fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele,             &
+     &        coef_induct)
         end if
       end if
 !

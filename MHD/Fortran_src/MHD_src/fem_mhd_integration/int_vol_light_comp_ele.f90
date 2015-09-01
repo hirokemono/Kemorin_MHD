@@ -6,8 +6,8 @@
 !     modified by H. Matsui on Aug., 2005
 !     modified by H. Matsui on Aug., 2007
 !
-!      subroutine int_vol_composition_ele
-!      subroutine int_vol_composition_ele_upw
+!      subroutine int_vol_composition_ele(ncomp_ele, d_ele)
+!      subroutine int_vol_composition_ele_upw(ncomp_ele, d_ele)
 !
       module int_vol_light_comp_ele
 !
@@ -19,7 +19,6 @@
       use m_phys_constants
       use m_node_phys_address
       use m_element_phys_address
-      use m_element_phys_data
       use m_physical_property
 !      use m_SGS_model_coefs
 !      use m_SGS_address
@@ -32,7 +31,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_composition_ele
+      subroutine int_vol_composition_ele(ncomp_ele, d_ele)
 !
       use m_finite_element_matrix
       use m_int_vol_data
@@ -42,6 +41,9 @@
       use cal_skv_to_ff_smp_1st
       use fem_skv_nonlinear_1st
       use fem_skv_div_sgs_flux_1st
+!
+      integer(kind = kint), intent(in) :: ncomp_ele
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2, num_int
 !
@@ -82,7 +84,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_composition_ele_upw
+      subroutine int_vol_composition_ele_upw(ncomp_ele, d_ele)
 !
       use m_finite_element_matrix
       use m_int_vol_data
@@ -92,6 +94,9 @@
       use cal_skv_to_ff_smp_1st
       use fem_skv_nonlinear_upw_1st
       use fem_skv_div_sgs_flux_upw_1
+!
+      integer(kind = kint), intent(in) :: ncomp_ele
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2, num_int
 !

@@ -33,6 +33,7 @@
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
+      use m_element_phys_data
 !
       use int_vol_vect_p_pre
 !
@@ -40,9 +41,9 @@
       call reset_ff_smps
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
-        call int_vol_vect_p_pre_ele_upm
+        call int_vol_vect_p_pre_ele_upm(fld_ele1%ntot_phys, d_ele)
       else
-        call int_vol_vect_p_pre_ele
+        call int_vol_vect_p_pre_ele(fld_ele1%ntot_phys, d_ele)
       end if
 !
       call cal_t_evo_4_vector_cd(iflag_mag_supg)

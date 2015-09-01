@@ -8,8 +8,8 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!      subroutine int_vol_vect_p_pre_ele
-!      subroutine int_vol_vect_p_pre_ele_upm
+!!      subroutine int_vol_vect_p_pre_ele(ncomp_ele, d_ele)
+!!      subroutine int_vol_vect_p_pre_ele_upm(ncomp_ele, d_ele)
 !
       module int_vol_vect_p_pre
 !
@@ -22,7 +22,6 @@
       use m_geometry_data_MHD
       use m_node_phys_address
       use m_element_phys_address
-      use m_element_phys_data
 !
       use m_physical_property
 !
@@ -34,7 +33,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_vect_p_pre_ele
+      subroutine int_vol_vect_p_pre_ele(ncomp_ele, d_ele)
 !
       use m_finite_element_matrix
       use m_int_vol_data
@@ -43,6 +42,9 @@
       use nodal_fld_cst_to_ele_1st
       use cal_skv_to_ff_smp_1st
       use fem_skv_nonlinear_1st
+!
+      integer(kind = kint), intent(in) :: ncomp_ele
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2
 !
@@ -71,7 +73,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_vect_p_pre_ele_upm
+      subroutine int_vol_vect_p_pre_ele_upm(ncomp_ele, d_ele)
 !
       use m_finite_element_matrix
       use m_int_vol_data
@@ -80,6 +82,9 @@
       use nodal_fld_cst_to_ele_1st
       use cal_skv_to_ff_smp_1st
       use fem_skv_nonlinear_upw_1st
+!
+      integer(kind = kint), intent(in) :: ncomp_ele
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind = kint) :: k2
 !

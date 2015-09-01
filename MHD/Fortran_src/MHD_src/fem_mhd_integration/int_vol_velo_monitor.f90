@@ -54,12 +54,12 @@
       if(i_field .eq. iphys%i_m_advect) then
         if (iflag_4_rotate .eq. id_turn_ON) then
           call int_vol_rot_inertia_1st(iele_fl_smp_stack,               &
-     &        intg_point_t_evo, iphys%i_velo,                           &
-     &        d_ele(1,iphys_ele%i_vort), coef_nega_v)
+     &        intg_point_t_evo, iphys%i_velo, fld_ele1%ntot_phys,       &
+     &        iphys_ele%i_vort, d_ele, coef_nega_v)
         else
           call int_vol_vector_inertia_1st(iele_fl_smp_stack,            &
-     &        intg_point_t_evo, iphys%i_velo,                           &
-     &        d_ele(1,iphys_ele%i_velo), coef_nega_v)
+     &        intg_point_t_evo, iphys%i_velo, fld_ele1%ntot_phys,       &
+     &        iphys_ele%i_velo, d_ele, coef_nega_v)
         end if
 !
       else if(i_field .eq. iphys%i_m_flux_div) then
@@ -85,14 +85,14 @@
 !
       if(i_field .eq. iphys%i_m_tension) then
         call int_vol_Lorentz_pg(iele_fl_smp_stack,                      &
-     &        intg_point_t_evo)
+     &        intg_point_t_evo, fld_ele1%ntot_phys, d_ele)
       else if(i_field .eq. iphys%i_lorentz) then
         if (iflag_4_rotate .eq. id_turn_ON) then
           call int_vol_full_rot_Lorentz_pg(iele_fl_smp_stack,           &
-     &        intg_point_t_evo)
+     &        intg_point_t_evo, fld_ele1%ntot_phys, d_ele)
         else
           call int_vol_full_Lorentz_pg(iele_fl_smp_stack,               &
-     &        intg_point_t_evo)
+     &        intg_point_t_evo, fld_ele1%ntot_phys, d_ele)
         end if
       end if
 !
@@ -165,53 +165,58 @@
       if(i_field .eq. iphys%i_m_advect) then
         if (iflag_4_rotate .eq. id_turn_ON) then
           call int_vol_rot_inertia_upw_1st(iele_fl_smp_stack,           &
-     &        intg_point_t_evo, iphys%i_velo,                           &
-     &        d_ele(1,iphys_ele%i_vort), d_ele(1,iv_upw), coef_nega_v)
+     &        intg_point_t_evo, iphys%i_velo, fld_ele1%ntot_phys,       &
+     &        iphys_ele%i_vort, iv_upw, d_ele, coef_nega_v)
         else
           call int_vol_vector_inertia_upw_1st(iele_fl_smp_stack,        &
-     &        intg_point_t_evo, iphys%i_velo,                           &
-     &        d_ele(1,iphys_ele%i_velo), d_ele(1,iv_upw), coef_nega_v)
+     &        intg_point_t_evo, iphys%i_velo, fld_ele1%ntot_phys,       &
+     &        iphys_ele%i_velo, iv_upw, d_ele, coef_nega_v)
         end if
 !
       else if(i_field .eq. iphys%i_m_flux_div) then
         call int_vol_div_tsr_w_const_upw_1(iele_fl_smp_stack,           &
-     &      intg_point_t_evo, iv_upw, iphys%i_m_flux, coef_nega_v)
+     &      intg_point_t_evo, iphys%i_m_flux,                           &
+     &      fld_ele1%ntot_phys, iv_upw, d_ele, coef_nega_v)
       end if
 !
       if(i_field .eq. iphys%i_coriolis) then
         call int_vol_coriolis_upw(iele_fl_smp_stack, intg_point_t_evo,  &
-     &      iv_upw)
+     &      fld_ele1%ntot_phys, iv_upw, d_ele)
       end if
 !
       if(i_field .eq. iphys%i_buoyancy) then
         call int_vol_buoyancy_upw(iele_fl_smp_stack,                    &
-     &      intg_point_t_evo, iphys%i_temp, ak_buo, iv_upw)
+     &      intg_point_t_evo, iphys%i_temp, ak_buo,                     &
+     &      fld_ele1%ntot_phys, iv_upw, d_ele)
       else if(i_field .eq. iphys%i_comp_buo) then
         call int_vol_buoyancy_upw(iele_fl_smp_stack,                    &
-     &      intg_point_t_evo, iphys%i_light, ak_comp_buo, iv_upw)
+     &      intg_point_t_evo, iphys%i_light, ak_comp_buo,               &
+     &      fld_ele1%ntot_phys, iv_upw, d_ele)
       else if(i_field .eq. iphys%i_filter_buo) then
         call int_vol_buoyancy_upw(iele_fl_smp_stack,                    &
-     &      intg_point_t_evo, iphys%i_filter_temp, ak_buo, iv_upw)
+     &      intg_point_t_evo, iphys%i_filter_temp, ak_buo,              &
+     &      fld_ele1%ntot_phys, iv_upw, d_ele)
       end if
 !
 !
       if(i_field .eq. iphys%i_m_tension) then
         call int_vol_Lorentz_upw(iele_fl_smp_stack,                     &
-     &        intg_point_t_evo, iv_upw)
+     &        intg_point_t_evo, fld_ele1%ntot_phys, iv_upw, d_ele)
       else if(i_field .eq. iphys%i_lorentz) then
         if (iflag_4_rotate .eq. id_turn_ON) then
           call int_vol_full_rot_Lorentz_pg(iele_fl_smp_stack,           &
-     &        intg_point_t_evo)
+     &        intg_point_t_evo, fld_ele1%ntot_phys, d_ele)
         else
           call int_vol_full_Lorentz_upw(iele_fl_smp_stack,              &
-     &        intg_point_t_evo, iv_upw)
+     &        intg_point_t_evo, fld_ele1%ntot_phys, iv_upw, d_ele)
         end if
       end if
 !
 !
       if(i_field .eq. iphys%i_maxwell_div)  then
         call int_vol_div_tsr_w_const_upw_1(iele_fl_smp_stack,           &
-     &      intg_point_t_evo, iv_upw, iphys%i_maxwell, coef_lor)
+     &      intg_point_t_evo, iphys%i_maxwell, fld_ele1%ntot_phys,      &
+     &      iv_upw, d_ele, coef_lor)
 !
       else if(i_field .eq. iphys%i_SGS_div_m_flux) then 
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
@@ -221,8 +226,8 @@
      &        fld_ele1%ntot_phys, iv_upw, d_ele, coef_nega_v)
         else
           call int_vol_div_tsr_w_const_upw_1(iele_fl_smp_stack,         &
-     &        intg_point_t_evo, iv_upw, iphys%i_SGS_m_flux,             &
-     &        coef_nega_v)
+     &        intg_point_t_evo, iphys%i_SGS_m_flux, fld_ele1%ntot_phys, &
+     &        iv_upw, d_ele, coef_nega_v)
         end if
 !
       else if(i_field .eq. iphys%i_SGS_Lorentz) then
@@ -233,7 +238,8 @@
      &        fld_ele1%ntot_phys, iv_upw, d_ele, coef_lor)
         else
           call int_vol_div_tsr_w_const_upw_1(iele_fl_smp_stack,         &
-     &        intg_point_t_evo, iv_upw, iphys%i_SGS_maxwell, coef_lor)
+     &        intg_point_t_evo, iphys%i_SGS_maxwell,                    &
+     &        fld_ele1%ntot_phys, iv_upw, d_ele, coef_lor)
         end if
       end if
 !

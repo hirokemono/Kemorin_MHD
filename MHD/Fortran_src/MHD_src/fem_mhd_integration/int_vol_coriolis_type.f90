@@ -8,9 +8,9 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!      subroutine int_vol_coriolis_pg(mesh, jac_3d, nod_fld, rhs_tbl,   &
+!      subroutine int_vol_coriolis_pg_t(mesh, jac_3d, nod_fld, rhs_tbl, &
 !     &          iele_fsmp_stack, n_int, fem_wk, f_nl)
-!      subroutine int_vol_coriolis_upw(mesh, jac_3d, nod_fld, rhs_tbl,  &
+!      subroutine int_vol_coriolis_upw_t(mesh, jac_3d, nod_fld, rhs_tbl,&
 !     &          iele_fsmp_stack, n_int, vxe_up, fem_wk, f_nl)
 !
       module int_vol_coriolis_type
@@ -36,7 +36,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_coriolis_pg(mesh, jac_3d, nod_fld, rhs_tbl,    &
+      subroutine int_vol_coriolis_pg_t(mesh, jac_3d, nod_fld, rhs_tbl,  &
      &          iele_fsmp_stack, n_int, fem_wk, f_nl)
 !
       use nodal_fld_cst_to_ele_type
@@ -70,11 +70,11 @@
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
 !
-      end subroutine int_vol_coriolis_pg
+      end subroutine int_vol_coriolis_pg_t
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_coriolis_upw(mesh, jac_3d, nod_fld, rhs_tbl,   &
+      subroutine int_vol_coriolis_upw_t(mesh, jac_3d, nod_fld, rhs_tbl, &
      &          iele_fsmp_stack, n_int, vxe_up, fem_wk, f_nl)
 !
       use nodal_fld_cst_to_ele_type
@@ -109,7 +109,7 @@
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
 !
-      end subroutine int_vol_coriolis_upw
+      end subroutine int_vol_coriolis_upw_t
 !
 !-----------------------------------------------------------------------
 !

@@ -113,6 +113,7 @@
 !
       use m_control_parameter
       use m_element_phys_address
+      use m_element_phys_data
 !
       use int_vol_vect_diff_1st
       use int_vol_vect_diff_upw_1st
@@ -122,10 +123,10 @@
 !
        if ( iflag_4_supg .eq. id_magnetic_SUPG) then
         call int_vol_rot_upw_1st(iele_fsmp_stack, intg_point_t_evo,     &
-     &      i_vector, iphys_ele%i_magne)
+     &      i_vector, fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele)
        else if ( iflag_4_supg .eq. id_turn_ON) then
         call int_vol_rot_upw_1st(iele_fsmp_stack, intg_point_t_evo,     &
-     &      i_vector, iphys_ele%i_velo)
+     &      i_vector, fld_ele1%ntot_phys, iphys_ele%i_velo, d_ele)
        else
         call int_vol_rot_1st(iele_fsmp_stack, intg_point_t_evo,         &
      &      i_vector)

@@ -5,16 +5,16 @@
 !     Modified by H. Matsui on Oct., 2006
 !
 !      subroutine int_vol_grad_upw_1st(iele_fsmp_stack, num_int,        &
-!     &           i_field, iv_up)
+!     &           i_field, ncomp_ele, iv_up, d_ele)
 !      subroutine int_vol_div_upw_1st(iele_fsmp_stack, num_int,         &
-!     &           i_field, iv_up)
+!     &           i_field, ncomp_ele, iv_up, d_ele)
 !      subroutine int_vol_rot_upw_1st(iele_fsmp_stack, num_int,         &
-!     &           i_field, iv_up)
+!     &           i_field, ncomp_ele, iv_up, d_ele)
 !
 !      subroutine int_vol_div_tsr_upw_1st(iele_fsmp_stack, num_int,     &
-!     &           i_field, iv_up)
+!     &           i_field, ncomp_ele, iv_up, d_ele)
 !      subroutine int_vol_div_as_tsr_upw_1st(iele_fsmp_stack,           &
-!     &          num_int, i_field, iv_up)
+!     &          num_int, i_field, ncomp_ele, iv_up, d_ele)
 !
       module int_vol_vect_diff_upw_1st
 !
@@ -23,7 +23,6 @@
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
-      use m_element_phys_data
       use m_finite_element_matrix
       use m_int_vol_data
 !
@@ -40,11 +39,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_grad_upw_1st(iele_fsmp_stack, num_int,         &
-     &           i_field, iv_up)
+     &           i_field, ncomp_ele, iv_up, d_ele)
 !
       integer(kind=kint), intent(in) :: num_int
-      integer(kind=kint), intent(in) :: i_field, iv_up
+      integer(kind=kint), intent(in) :: i_field
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2
 !
@@ -66,11 +68,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_div_upw_1st(iele_fsmp_stack, num_int,          &
-     &          i_field, iv_up)
+     &          i_field, ncomp_ele, iv_up, d_ele)
 !
       integer(kind=kint), intent(in) :: num_int
-      integer(kind=kint), intent(in) :: i_field, iv_up
+      integer(kind=kint), intent(in) :: i_field
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2
 !
@@ -92,11 +97,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_rot_upw_1st(iele_fsmp_stack, num_int,          &
-     &          i_field, iv_up)
+     &          i_field, ncomp_ele, iv_up, d_ele)
 !
       integer(kind=kint), intent(in) :: num_int
-      integer(kind=kint), intent(in) :: i_field, iv_up
+      integer(kind=kint), intent(in) :: i_field
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2
 !
@@ -119,11 +127,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_div_tsr_upw_1st(iele_fsmp_stack, num_int,      &
-     &           i_field, iv_up)
+     &           i_field, ncomp_ele, iv_up, d_ele)
 !
       integer(kind=kint), intent(in) :: num_int
-      integer(kind=kint), intent(in) :: i_field, iv_up
+      integer(kind=kint), intent(in) :: i_field
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2
 !
@@ -145,11 +156,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_div_as_tsr_upw_1st(iele_fsmp_stack,            &
-     &          num_int, i_field, iv_up)
+     &          num_int, i_field, ncomp_ele, iv_up, d_ele)
 !
       integer(kind=kint), intent(in) :: num_int
-      integer(kind=kint), intent(in) :: i_field, iv_up
+      integer(kind=kint), intent(in) :: i_field
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2
 !

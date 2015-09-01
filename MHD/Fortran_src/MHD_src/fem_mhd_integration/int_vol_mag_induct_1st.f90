@@ -8,6 +8,11 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
+!!      subroutine int_vol_mag_induct_pg                                &
+!!     &         (iele_fsmp_stack, n_int, ncomp_ele, d_ele)
+!!      subroutine int_vol_mag_induct_upm                               &
+!!     &         (iele_fsmp_stack, n_int, ncomp_ele, d_ele)
+!
       module int_vol_mag_induct_1st
 !
       use m_precision
@@ -18,7 +23,6 @@
       use m_physical_property
       use m_node_phys_address
       use m_element_phys_address
-      use m_element_phys_data
       use m_fem_gauss_int_coefs
 !
       implicit none
@@ -29,7 +33,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_mag_induct_pg(iele_fsmp_stack, n_int)
+      subroutine int_vol_mag_induct_pg                                  &
+     &         (iele_fsmp_stack, n_int, ncomp_ele, d_ele)
 !
       use m_finite_element_matrix
       use m_int_vol_data
@@ -41,6 +46,9 @@
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int
+!
+      integer(kind = kint), intent(in) :: ncomp_ele
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2
 !
@@ -70,7 +78,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_mag_induct_upm(iele_fsmp_stack, n_int)
+      subroutine int_vol_mag_induct_upm                                 &
+     &         (iele_fsmp_stack, n_int, ncomp_ele, d_ele)
 !
       use m_finite_element_matrix
       use m_int_vol_data
@@ -82,6 +91,9 @@
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int
+!
+      integer(kind = kint), intent(in) :: ncomp_ele
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2
 !
