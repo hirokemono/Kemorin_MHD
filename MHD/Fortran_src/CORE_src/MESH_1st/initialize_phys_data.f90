@@ -30,7 +30,7 @@
 !
 !      write(*,*) 'allocate_data_arrays'
       call initialize_nod_field_data
-!      write(*,*) 'allocate_ele_data_arrays'
+!      write(*,*) 'initialize_ele_field_data'
       call initialize_ele_field_data
 !
        end subroutine allocate_phys_data

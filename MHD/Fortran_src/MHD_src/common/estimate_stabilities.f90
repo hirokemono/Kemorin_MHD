@@ -5,7 +5,7 @@
 !      Modified by H. Matsui on july, 2006
 !
 !      subroutine cal_stability_4_diffuse
-!      subroutine cal_stability_4_advect
+!      subroutine cal_stability_4_advect(ncomp_ele, ivelo_ele, d_ele)
 !
       module estimate_stabilities
 !
@@ -80,10 +80,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_stability_4_advect
+      subroutine cal_stability_4_advect(ncomp_ele, ivelo_ele, d_ele)
 !
-      use m_element_phys_address
-      use m_element_phys_data
+      integer(kind = kint), intent(in) :: ncomp_ele, ivelo_ele
+      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer (kind = kint) :: iele
 !
@@ -93,12 +93,11 @@
       do iele = iele_fl_start, iele_fl_end
 !
         cfl_tmp = ele1%volume_ele(iele)**(1/3)*2.0d0                    &
-     &            / (sqrt(d_ele(iele,iphys_ele%i_velo  )**2             &
-     &                  + d_ele(iele,iphys_ele%i_velo+1)**2             &
-     &                  + d_ele(iele,iphys_ele%i_velo+2)**2) + 1.0d-10)
+     &            / (sqrt(d_ele(iele,ivelo_ele  )**2                    &
+     &                  + d_ele(iele,ivelo_ele+1)**2                    &
+     &                  + d_ele(iele,ivelo_ele+2)**2) + 1.0d-10)
 !
         cfl_advect0 = min(cfl_advect0,cfl_tmp)
-!
       end do
 !
       call MPI_allREDUCE (cfl_advect0, cfl_advect, 1,                   &

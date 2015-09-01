@@ -41,9 +41,10 @@
       call reset_ff_smps
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
-        call int_vol_vect_p_pre_ele_upm(fld_ele1%ntot_phys, d_ele)
+        call int_vol_vect_p_pre_ele_upm                                 &
+     &     (fld_ele1%ntot_phys, fld_ele1%d_fld)
       else
-        call int_vol_vect_p_pre_ele(fld_ele1%ntot_phys, d_ele)
+        call int_vol_vect_p_pre_ele(fld_ele1%ntot_phys, fld_ele1%d_fld)
       end if
 !
       call cal_t_evo_4_vector_cd(iflag_mag_supg)

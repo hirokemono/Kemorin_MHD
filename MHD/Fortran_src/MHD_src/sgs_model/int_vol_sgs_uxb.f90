@@ -39,7 +39,8 @@
 !
       if (iflag_mag_supg .eq. id_turn_ON) then
         call int_vol_sgs_uxb_upm(i_filter, i_field, id_dx,              &
-     &      fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele, sk_v)
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld,      &
+     &      sk_v)
       else
         call int_vol_sgs_uxb_pg(i_filter, i_field, id_dx, sk_v)
       end if

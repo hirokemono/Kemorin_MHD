@@ -62,7 +62,7 @@
 !$omp parallel
       call delete_phys_data_smp                                         &
      &   (np_smp, ele1%numele, ele1%istack_ele_smp,                     &
-     &    fld_ele1%ntot_phys, numdir, i_res, d_ele)
+     &    fld_ele1%ntot_phys, numdir, i_res, fld_ele1%d_fld)
 !$omp end parallel
 !
       end subroutine clear_elemental_data

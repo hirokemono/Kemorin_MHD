@@ -46,7 +46,7 @@
 !
         if ( iflag_temp_supg .gt. id_turn_OFF) then
           call int_div_sgs_hf_simi_upw(i_flux, i_vect, i_scalar,        &
-     &        fld_ele1%ntot_phys, iphys_ele%i_velo, d_ele)
+     &        fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
         else
           call int_div_sgs_hf_simi_pg(i_flux, i_vect, i_scalar)
         end if

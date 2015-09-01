@@ -79,12 +79,12 @@
 !
       if (iflag_velo_supg .eq. id_turn_ON) then
         call int_vol_velo_pre_ele_upwind                                &
-     &     (fld_ele1%ntot_phys, iphys_ele%i_velo, d_ele)
+     &     (fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
       else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_vol_velo_pre_ele_upwind                                &
-     &     (fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele)
+     &     (fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
       else
-        call int_vol_velo_pre_ele(fld_ele1%ntot_phys, d_ele)
+        call int_vol_velo_pre_ele(fld_ele1%ntot_phys, fld_ele1%d_fld)
       end if
 !
 !    ---  lead surface boundaries

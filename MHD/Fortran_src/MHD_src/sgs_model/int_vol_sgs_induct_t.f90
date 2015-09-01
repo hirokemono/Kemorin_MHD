@@ -45,7 +45,7 @@
       if (iflag_mag_supg .gt. id_turn_OFF) then
         call int_vol_sgs_induct_t_upm(i_filter, ie_dvx, ie_dbx,         &
      &      ifield_v, ifield_b, fld_ele1%ntot_phys, iphys_ele%i_magne,  &
-     &      d_ele, sk_v)
+     &      fld_ele1%d_fld, sk_v)
       else
         call int_vol_sgs_induct_t_pg(i_filter, ie_dvx, ie_dbx,          &
      &      ifield_v, ifield_b, sk_v)

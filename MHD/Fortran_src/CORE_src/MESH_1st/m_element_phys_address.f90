@@ -6,6 +6,7 @@
 !     Written by H. Matsui
 !
 !      subroutine initialize_ele_field_data
+!      subroutine deallocate_ele_data_arrays
 !
       module m_element_phys_address
 !
@@ -35,11 +36,23 @@
 !
 !  allocatie element field
 !
-      call allocate_ele_data_arrays(ele1%numele)
+      call alloc_phys_data_type(ele1%numele, fld_ele1)
       call set_element_field_address
 !
       end subroutine initialize_ele_field_data
 !
+!  --------------------------------------------------------------------
+!
+      subroutine deallocate_ele_data_arrays
+!
+      use m_element_phys_data
+!
+      call dealloc_phys_data_type(fld_ele1)
+      call dealloc_phys_name_type(fld_ele1)
+!
+      end subroutine deallocate_ele_data_arrays
+!
+!  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
 !
       subroutine set_element_field_address

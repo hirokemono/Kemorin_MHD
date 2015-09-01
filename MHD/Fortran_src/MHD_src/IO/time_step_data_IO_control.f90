@@ -25,6 +25,8 @@
       use m_control_parameter
       use m_geometry_data
       use m_node_phys_address
+      use m_element_phys_address
+      use m_element_phys_data
       use m_t_step_parameter
       use m_t_int_parameter
       use m_bulk_values
@@ -50,7 +52,8 @@
         if  (iflag_t_evo_4_velo .gt. id_no_evolution) then
           call int_norm_div_v
           call int_rms_div_v
-          call cal_stability_4_advect
+          call cal_stability_4_advect                                   &
+     &       (fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
         end if
         if  (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
           call int_norm_div_a

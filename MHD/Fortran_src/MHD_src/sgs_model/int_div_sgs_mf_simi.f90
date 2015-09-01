@@ -68,7 +68,7 @@
       integer(kind = kint), intent(in) :: i_flux, i_vect
 !
       call int_div_sgs_mf_simi_upwind(i_flux, i_vect,                   &
-     &    fld_ele1%ntot_phys, iphys_ele%i_velo, d_ele)
+     &    fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
 !
       end subroutine int_div_sgs_mf_simi_upw
 !
@@ -82,7 +82,7 @@
       integer(kind = kint), intent(in) :: i_flux, i_vect
 !
       call int_div_sgs_mf_simi_upwind(i_flux, i_vect,                   &
-     &    fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele)
+     &    fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
 !
       end subroutine int_div_sgs_mf_simi_upm
 !

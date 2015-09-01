@@ -40,7 +40,7 @@
 !
       if (iflag_mag_supg .eq. id_turn_ON) then
         call int_simi_vp_induct_upm                                     &
-     &     (fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele)
+     &     (fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
       else
         call int_simi_vp_induct
       end if

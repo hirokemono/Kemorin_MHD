@@ -67,7 +67,7 @@
 !
       if ( iflag_mag_supg .gt. id_turn_OFF) then
         call int_div_sgs_idct_simi_upw(i_flux, i_v, i_b,                &
-     &      fld_ele1%ntot_phys, iphys_ele%i_velo, d_ele)
+     &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
       else
         call int_div_sgs_idct_simi_pg(i_flux, i_v, i_b)
       end if

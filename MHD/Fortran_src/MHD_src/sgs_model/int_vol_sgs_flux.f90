@@ -43,10 +43,12 @@
 !
       if ( iflag_4_supg .eq. id_magnetic_SUPG) then
         call int_vol_sgs_flux_upwind(i_filter, numdir, i_field, id_dx,  &
-     &      fld_ele1%ntot_phys, iphys_ele%i_magne, d_ele, sk_v)
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld,      &
+     &      sk_v)
       else if ( iflag_4_supg .eq. id_turn_ON) then
         call int_vol_sgs_flux_upwind(i_filter, numdir, i_field, id_dx,  &
-     &      fld_ele1%ntot_phys, iphys_ele%i_velo, d_ele, sk_v)
+     &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,       &
+     &      sk_v)
       else
         call int_vol_sgs_flux_pg(i_filter, numdir,                      &
      &      i_field, id_dx, sk_v)

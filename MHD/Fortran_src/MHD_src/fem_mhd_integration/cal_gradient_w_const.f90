@@ -137,11 +137,11 @@
       if ( iflag_4_supg .eq. id_magnetic_SUPG) then
         call int_vol_grad_w_const_upw_1(iele_fsmp_stack,                &
      &      intg_point_t_evo, i_scalar, fld_ele1%ntot_phys,             &
-     &      iphys_ele%i_magne, d_ele, const)
+     &      iphys_ele%i_magne, fld_ele1%d_fld, const)
       else if ( iflag_4_supg .eq. id_turn_ON) then
         call int_vol_grad_w_const_upw_1(iele_fsmp_stack,                &
      &      intg_point_t_evo, i_scalar, fld_ele1%ntot_phys,             &
-     &      iphys_ele%i_velo, d_ele, const)
+     &      iphys_ele%i_velo, fld_ele1%d_fld, const)
       else
          call int_vol_grad_w_const_1st(iele_fsmp_stack,                 &
      &     intg_point_t_evo, i_scalar, const)

@@ -55,15 +55,17 @@
       end if
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
-        call int_vol_vect_p_pre_ele_upm(fld_ele1%ntot_phys, d_ele)
+        call int_vol_vect_p_pre_ele_upm                                 &
+     &     (fld_ele1%ntot_phys, fld_ele1%d_fld)
       else
-        call int_vol_vect_p_pre_ele(fld_ele1%ntot_phys, d_ele)
+        call int_vol_vect_p_pre_ele(fld_ele1%ntot_phys, fld_ele1%d_fld)
       end if
 !
       call int_sf_grad_vecp(sf_grp1, intg_point_t_evo)
 !
 !      call check_nodal_data(my_rank, n_vector, iphys%i_velo)
-!      call check_elemental_data(my_rank, n_vector, iphys_ele%i_magne)
+!      call check_nodal_data_type(my_rank, fld_ele1, ele1%numele,        &
+!     &    n_vector, iphys_ele%i_magne)
 !      call check_ff_smp(n_vector)
 !      call check_ff_nl_smp(n_vector)
 !
