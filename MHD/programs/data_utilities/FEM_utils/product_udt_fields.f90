@@ -320,12 +320,12 @@
       end if
 !
 !
-      if(ncomp_4_result .eq. 1) then
-        call scalar_send_recv(ione)
-      else if(ncomp_4_result .eq. 3) then
-        call vector_send_recv(ione)
-      else if(ncomp_4_result .eq. 6) then
-        call sym_tensor_send_recv(ione)
+      if(ncomp_4_result .eq. ione) then
+        call scalar_send_recv(ione, ione, d_nod)
+      else if(ncomp_4_result .eq. ithree) then
+        call vector_send_recv(ithree, ione, d_nod)
+      else if(ncomp_4_result .eq. isix) then
+        call sym_tensor_send_recv(isix, ione, d_nod)
       end if
 !
 !      write(50+my_rank,*) 'd_nod'

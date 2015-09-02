@@ -44,7 +44,8 @@
        call cal_ff_smp_2_vector(d_nod(1,iphys%i_b_diffuse),             &
      &     ff_nl_smp, ml_cd) 
 !
-       call vector_send_recv(iphys%i_b_diffuse)
+       call vector_send_recv                                            &
+     &    (num_tot_nod_phys, iphys%i_b_diffuse, d_nod)
 !
       end subroutine s_int_magne_diffusion
 !

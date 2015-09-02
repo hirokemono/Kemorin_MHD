@@ -50,7 +50,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_res)
+      call vector_send_recv(num_tot_nod_phys, i_res, d_nod)
 !
       end subroutine cal_divergence_whole
 !
@@ -77,7 +77,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_res)
+      call vector_send_recv(num_tot_nod_phys, i_res, d_nod)
 !
       end subroutine cal_divergence_in_fluid
 !
@@ -105,7 +105,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_res)
+      call vector_send_recv(num_tot_nod_phys, i_res, d_nod)
 !
       end subroutine cal_divergence_in_conduct
 !

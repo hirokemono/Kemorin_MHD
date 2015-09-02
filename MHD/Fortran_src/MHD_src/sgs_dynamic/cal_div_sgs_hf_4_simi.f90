@@ -56,7 +56,7 @@
 !
 ! ----------   communications
 !
-      call scalar_send_recv(i_sgs)
+      call scalar_send_recv(num_tot_nod_phys, i_sgs, d_nod)
 !
       end subroutine cal_div_sgs_hf_simi
 !

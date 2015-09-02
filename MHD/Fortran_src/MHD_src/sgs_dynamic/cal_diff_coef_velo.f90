@@ -110,7 +110,8 @@
       call cal_commute_error_f_velo(ifilter_4delta, iphys%i_sgs_grad_f)
       call cal_commute_error_f_press(ifilter_4delta, i_sgs_grad_fp)
 !
-      call sym_tensor_send_recv(iphys%i_sgs_grad_f)
+      call sym_tensor_send_recv                                         &
+     &   (num_tot_nod_phys, iphys%i_sgs_grad_f, d_nod)
 !
 !      call check_nodal_data(my_rank, n_sym_tensor, iphys%i_sgs_grad_f)
 !
@@ -119,7 +120,8 @@
       call cal_commute_error_velo(ifilter_2delta, iphys%i_sgs_grad)
       call cal_commute_error_press(ifilter_2delta, i_sgs_grad_p)
 !
-!!      call sym_tensor_send_recv(iphys%i_sgs_grad)
+!!      call sym_tensor_send_recv                                       &
+!     &    (num_tot_nod_phys, iphys%i_sgs_grad, d_nod)
 !
 !    filtering (to iphys%i_sgs_grad)
 !

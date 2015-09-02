@@ -48,7 +48,7 @@
 !
 !    communication
 !
-       call vector_send_recv(iphys%i_induction)
+      call vector_send_recv(num_tot_nod_phys, iphys%i_induction, d_nod)
 !
       end subroutine s_int_magne_induction
 !

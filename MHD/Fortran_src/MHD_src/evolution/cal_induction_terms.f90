@@ -53,7 +53,7 @@
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    d_nod(1,iphys%i_vp_induct), ff_nl, ml_cd)
-      call vector_send_recv(iphys%i_vp_induct)
+      call vector_send_recv(num_tot_nod_phys, iphys%i_vp_induct, d_nod)
 !
       end subroutine cal_vecp_induction
 !
@@ -84,7 +84,8 @@
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    d_nod(1,iphys%i_vp_diffuse), ff, ml_cd)
 !
-      call vector_send_recv(iphys%i_vp_diffuse)
+      call vector_send_recv                                             &
+     &   (num_tot_nod_phys, iphys%i_vp_diffuse, d_nod)
 !
       end subroutine cal_vecp_diffusion
 !

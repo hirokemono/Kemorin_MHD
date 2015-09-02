@@ -31,6 +31,8 @@
 !
       use m_node_phys_address
       use m_finite_element_matrix
+      use m_node_phys_address
+      use m_node_phys_data
       use m_element_phys_data
 !
       use nod_phys_send_recv
@@ -105,7 +107,7 @@
 !
       call set_boundary_ene
 !
-      call scalar_send_recv(iphys%i_temp)
+      call scalar_send_recv(num_tot_nod_phys, iphys%i_temp, d_nod)
 !
       if (iphys%i_par_temp .gt. 0) then
         call subtract_2_nod_scalars(iphys%i_par_temp, iphys%i_temp,     &

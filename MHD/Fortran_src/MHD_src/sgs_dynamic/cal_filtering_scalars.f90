@@ -62,8 +62,7 @@
            call copy_scalar_component(i_filter, i_scalar)
         end if
         call cal_l_filtering_scalar(i_filter, node1%istack_nod_smp)
-        call scalar_send_recv(i_filter)
-!
+        call scalar_send_recv(num_tot_nod_phys, i_filter, d_nod)
       end if
 !
       end subroutine cal_filtered_scalar
@@ -110,8 +109,7 @@
            call copy_scalar_component(i_filter, i_scalar)
         end if
         call cal_l_filtering_scalar(i_filter, node1%istack_nod_smp)
-        call scalar_send_recv(i_filter)
-!
+        call scalar_send_recv(num_tot_nod_phys, i_filter, d_nod)
       end if
 !
       end subroutine cal_filtered_scalar_in_fluid

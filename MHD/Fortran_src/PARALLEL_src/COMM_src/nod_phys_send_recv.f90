@@ -7,9 +7,9 @@
 !      subroutine phys_send_recv_all
 !      subroutine phys_send_recv_4_viz
 !
-!      subroutine scalar_send_recv(id_phys)
-!      subroutine vector_send_recv(id_phys)
-!      subroutine sym_tensor_send_recv(id_phys)
+!      subroutine scalar_send_recv(ntot_comp, id_phys, d_nod)
+!      subroutine vector_send_recv(ntot_comp, id_phys, d_nod)
+!      subroutine sym_tensor_send_recv(ntot_comp, id_phys, d_nod)
 !         id_phys:  field ID of nodal fields
 !
       module nod_phys_send_recv
@@ -17,7 +17,7 @@
       use m_precision
 !
       use calypso_mpi
-      use m_node_phys_data
+      use m_geometry_data
 !
       implicit none
 !
@@ -31,6 +31,7 @@
 !
       subroutine phys_send_recv_all
 !
+      use m_node_phys_data
 !
       call  nod_fields_send_recv(num_nod_phys)
 !
@@ -40,6 +41,7 @@
 !
       subroutine phys_send_recv_4_viz
 !
+      use m_node_phys_data
 !
       call  nod_fields_send_recv(num_nod_phys_vis)
 !
@@ -52,6 +54,7 @@
 !
       use m_machine_parameter
       use m_phys_constants
+      use m_node_phys_data
 !
       integer (kind=kint), intent(in) :: num_fld
       integer (kind=kint) :: i, ist
@@ -63,17 +66,17 @@
         if (num_nod_component(i) .eq. n_vector) then
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &      write(*,*) 'comm. for vector of ', trim(phys_nod_name(i))
-          call vector_send_recv(ist)
+          call vector_send_recv(num_tot_nod_phys, ist, d_nod)
 !
         else if (num_nod_component(i) .eq. n_scalar) then
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &       write(*,*) 'comm. for scaler of ', trim(phys_nod_name(i))
-          call scalar_send_recv(ist)
+          call scalar_send_recv(num_tot_nod_phys, ist, d_nod)
 !
         else if (num_nod_component(i) .eq. n_sym_tensor) then
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &       write(*,*) 'comm. for tensor of ', trim(phys_nod_name(i))
-          call sym_tensor_send_recv(ist)
+          call sym_tensor_send_recv(num_tot_nod_phys, ist, d_nod)
         end if
       end do
 !
@@ -82,11 +85,13 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine scalar_send_recv(id_phys)
+      subroutine scalar_send_recv(ntot_comp, id_phys, d_nod)
 !
       use nodal_vector_send_recv
 !
-      integer (kind = kint), intent(in) :: id_phys
+      integer(kind = kint), intent(in) :: ntot_comp, id_phys
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: d_nod(node1%numnod,ntot_comp)
 !
 !
       call nod_scalar_send_recv( d_nod(1,id_phys) )
@@ -95,11 +100,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine vector_send_recv(id_phys)
+      subroutine vector_send_recv(ntot_comp, id_phys, d_nod)
 !
       use nodal_vector_send_recv
 !
-      integer (kind = kint), intent(in) :: id_phys
+      integer(kind = kint), intent(in) :: ntot_comp, id_phys
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: d_nod(node1%numnod,ntot_comp)
 !
 !
       call nod_vector_send_recv( d_nod(1,id_phys) )
@@ -108,11 +115,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sym_tensor_send_recv(id_phys)
+      subroutine sym_tensor_send_recv(ntot_comp, id_phys, d_nod)
 !
       use nodal_vector_send_recv
 !
-      integer (kind = kint), intent(in) :: id_phys
+      integer(kind = kint), intent(in) :: ntot_comp, id_phys
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: d_nod(node1%numnod,ntot_comp)
 !
 !
       call nod_tensor_send_recv( d_nod(1,id_phys) )

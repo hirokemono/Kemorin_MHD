@@ -35,6 +35,7 @@
       subroutine cal_velocity_co
 !
       use m_node_phys_address
+      use m_node_phys_data
 !
       use nod_phys_send_recv
       use int_vol_solenoid_correct
@@ -62,8 +63,8 @@
       call set_boundary_velo
 !
       if (iflag_debug.eq.1) write(*,*) 'vector_send_recv(iphys%i_velo)'
-      call vector_send_recv(iphys%i_velo)
-      call scalar_send_recv(iphys%i_press)
+      call vector_send_recv(num_tot_nod_phys, iphys%i_velo, d_nod)
+      call scalar_send_recv(num_tot_nod_phys, iphys%i_press, d_nod)
 !
 !
       end subroutine cal_velocity_co

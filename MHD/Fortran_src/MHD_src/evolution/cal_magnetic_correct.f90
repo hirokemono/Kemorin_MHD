@@ -36,6 +36,7 @@
       subroutine cal_magnetic_co
 !
       use m_node_phys_address
+      use m_node_phys_data
 !
       use nod_phys_send_recv
       use int_vol_solenoid_correct
@@ -62,8 +63,8 @@
       if (iflag_debug.eq.1)   write(*,*) 'set_boundary_magne'
       call set_boundary_magne
 !
-      call vector_send_recv(iphys%i_magne)
-      call scalar_send_recv(iphys%i_mag_p)
+      call vector_send_recv(num_tot_nod_phys, iphys%i_magne, d_nod)
+      call scalar_send_recv(num_tot_nod_phys, iphys%i_mag_p, d_nod)
 !
       end subroutine cal_magnetic_co
 !
@@ -155,6 +156,7 @@
       subroutine cal_magnetic_co_outside
 !
       use m_node_phys_address
+      use m_node_phys_data
       use nod_phys_send_recv
       use int_vol_solenoid_correct
       use int_surf_velo_co_sgs
@@ -172,7 +174,7 @@
 !
       call set_boundary_magne
 !
-      call vector_send_recv(iphys%i_magne)
+      call vector_send_recv(num_tot_nod_phys, iphys%i_magne, d_nod)
 !
       end subroutine cal_magnetic_co_outside
 !

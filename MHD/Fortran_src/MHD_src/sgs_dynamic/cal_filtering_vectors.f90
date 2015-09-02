@@ -62,7 +62,7 @@
           call copy_vector_component(i_filter, i_vect)
         end if
         call cal_l_filtering_vector(i_filter, node1%istack_nod_smp)
-        call vector_send_recv(i_filter)
+        call vector_send_recv(num_tot_nod_phys, i_filter, d_nod)
 !
       end if
 !
@@ -110,7 +110,7 @@
           call copy_vector_component(i_filter, i_vect)
         end if
         call cal_l_filtering_vector(i_filter, node1%istack_nod_smp)
-        call vector_send_recv(i_filter)
+        call vector_send_recv(num_tot_nod_phys, i_filter, d_nod)
 !
       end if
 !

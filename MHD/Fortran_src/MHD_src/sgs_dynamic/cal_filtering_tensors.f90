@@ -61,7 +61,7 @@
           call copy_tensor_components(i_filter, i_vect)
         end if
         call cal_l_filtering_tensor(i_filter, node1%istack_nod_smp)
-        call sym_tensor_send_recv(i_filter)
+        call sym_tensor_send_recv(num_tot_nod_phys, i_filter, d_nod)
       end if
 !
       end subroutine cal_filtered_sym_tensor
@@ -107,7 +107,7 @@
           call copy_tensor_components(i_filter, i_vect)
         end if
         call cal_l_filtering_tensor(i_filter, node1%istack_nod_smp)
-        call sym_tensor_send_recv(i_filter)
+        call sym_tensor_send_recv(num_tot_nod_phys, i_filter, d_nod)
       end if
 !
       end subroutine cal_filtered_tensor_in_fluid

@@ -33,6 +33,7 @@
 !
       use m_finite_element_matrix
       use m_node_phys_address
+      use m_node_phys_data
       use m_element_phys_data
 !
       use nod_phys_send_recv
@@ -107,7 +108,7 @@
 !
       call set_boundary_velo
 !
-      call vector_send_recv(iphys%i_velo)
+      call vector_send_recv(num_tot_nod_phys, iphys%i_velo, d_nod)
 !
       end subroutine s_cal_velocity_pre
 !

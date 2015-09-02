@@ -35,6 +35,7 @@
       subroutine cal_vector_p_co
 !
       use m_node_phys_address
+      use m_node_phys_data
 !
       use nod_phys_send_recv
       use int_vol_solenoid_correct
@@ -63,9 +64,9 @@
       call set_boundary_vect_p
 !
       if (iflag_debug.eq.1) write(*,*) 'vector_send_recv for vector_p'
-      call vector_send_recv(iphys%i_vecp)
+      call vector_send_recv(num_tot_nod_phys, iphys%i_vecp, d_nod)
       if (iflag_debug.eq.1) write(*,*) 'scalar_send_recv for potential'
-      call scalar_send_recv(iphys%i_mag_p)
+      call scalar_send_recv(num_tot_nod_phys, iphys%i_mag_p, d_nod)
 !
       end subroutine cal_vector_p_co
 !

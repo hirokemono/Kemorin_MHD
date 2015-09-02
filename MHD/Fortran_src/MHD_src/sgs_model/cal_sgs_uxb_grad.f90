@@ -85,7 +85,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_sgs)
+      call vector_send_recv(num_tot_nod_phys, i_sgs, d_nod)
 !
       end subroutine cal_sgs_vp_induct_grad_no_coef
 !

@@ -24,6 +24,7 @@
       use m_control_parameter
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
 !
       use reset_dynamic_model_coefs
@@ -76,7 +77,8 @@
 !
       call cal_commute_error_4_filter_mxwl(ifilter_4delta)
 !
-      call vector_send_recv(iphys%i_sgs_grad_f)
+      call vector_send_recv                                             &
+     &   (num_tot_nod_phys, iphys%i_sgs_grad_f, d_nod)
       call delete_field_by_fixed_v_bc(iphys%i_sgs_grad_f)
 !
 !      call check_nodal_data(my_rank, n_vector, iphys%i_sgs_grad_f)
@@ -85,7 +87,7 @@
 !
       call cal_commute_error_4_maxwell(ifilter_2delta)
 !
-      call vector_send_recv(iphys%i_sgs_grad)
+      call vector_send_recv(num_tot_nod_phys, iphys%i_sgs_grad, d_nod)
 !
 !    filtering (to iphys%i_sgs_grad)
 !

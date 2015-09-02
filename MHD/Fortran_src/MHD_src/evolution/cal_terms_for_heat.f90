@@ -62,7 +62,7 @@
 !
 !   communication
 !
-      call scalar_send_recv(i_field)
+      call scalar_send_recv(num_tot_nod_phys, i_field, d_nod)
 !
 !
       end subroutine cal_terms_4_heat
@@ -93,7 +93,7 @@
 !
 !   communication
 !
-      call scalar_send_recv(iphys%i_t_diffuse)
+      call scalar_send_recv(num_tot_nod_phys, iphys%i_t_diffuse, d_nod)
 !
       end subroutine cal_thermal_diffusion
 !

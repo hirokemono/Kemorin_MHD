@@ -54,7 +54,7 @@
 !
 !    communication
 !
-      call vector_send_recv(iphys%i_current)
+      call vector_send_recv(num_tot_nod_phys, iphys%i_current, d_nod)
 !
       end subroutine int_current_diffuse
 !

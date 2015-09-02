@@ -55,7 +55,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_res)
+      call vector_send_recv(num_tot_nod_phys, i_res, d_nod)
 !
       end subroutine cal_gradent_w_const
 !
@@ -84,7 +84,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_res)
+      call vector_send_recv(num_tot_nod_phys, i_res, d_nod)
 !
       end subroutine cal_gradent_in_fluid_w_const
 !
@@ -113,7 +113,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_res)
+      call vector_send_recv(num_tot_nod_phys, i_res, d_nod)
 !
       end subroutine cal_gradent_in_conduct_w_const
 !

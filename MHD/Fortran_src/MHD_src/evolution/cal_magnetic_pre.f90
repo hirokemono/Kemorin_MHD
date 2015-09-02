@@ -29,10 +29,11 @@
 !
       subroutine cal_magnetic_field_pre
 !
+!      use m_group_data
       use m_finite_element_matrix
       use m_node_phys_address
+      use m_node_phys_data
       use m_element_phys_data
-!      use m_group_data
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -85,7 +86,7 @@
       end if
 !
        call set_boundary_magne
-       call vector_send_recv(iphys%i_magne)
+       call vector_send_recv(num_tot_nod_phys, iphys%i_magne, d_nod)
 !
       end subroutine cal_magnetic_field_pre
 !

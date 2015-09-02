@@ -31,6 +31,7 @@
 !
       use m_finite_element_matrix
       use m_node_phys_address
+      use m_node_phys_data
       use m_element_phys_data
       use m_group_data
 !
@@ -73,7 +74,7 @@
 !
       call set_boundary_composition
 !
-      call scalar_send_recv(iphys%i_light)
+      call scalar_send_recv(num_tot_nod_phys, iphys%i_light, d_nod)
 !
       end subroutine cal_light_element_variation
 !

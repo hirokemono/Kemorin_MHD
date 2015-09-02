@@ -45,7 +45,8 @@
        call cal_ff_smp_2_vector(d_nod(1,iphys%i_SGS_induction),         &
      &    ff_nl_smp, ml_cd)
 !
-       call vector_send_recv(iphys%i_SGS_induction)
+       call vector_send_recv                                            &
+     &    (num_tot_nod_phys, iphys%i_SGS_induction, d_nod)
 !
       end subroutine int_vol_sgs_induction
 !
