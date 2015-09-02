@@ -4,9 +4,9 @@
 !      Written by H. Matsui on July, 2005
 !      Modified by H. Matsui on July, 2008
 !
-!      subroutine prepare_scalar_2_filter(id_phys)
-!      subroutine prepare_vector_2_filter(id_phys)
-!      subroutine prepare_sym_tensor_2_filter(id_phys)
+!      subroutine prepare_scalar_2_filter(ntot_comp, id_phys, d_nod)
+!      subroutine prepare_vector_2_filter(ntot_comp, id_phys, d_nod)
+!      subroutine prepare_sym_tensor_2_filter(ntot_comp, id_phys, d_nod)
 !         id_phys:  field ID of nodal fields
 !
       module prepare_field_2_filter
@@ -26,12 +26,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine prepare_scalar_2_filter(id_phys)
+      subroutine prepare_scalar_2_filter(ntot_comp, id_phys, d_nod)
 !
-      use m_node_phys_data
       use solver_SR_type
 !
-      integer (kind = kint), intent(in) :: id_phys
+      integer(kind = kint), intent(in) :: ntot_comp, id_phys
+      real(kind = kreal), intent(in) :: d_nod(node1%numnod,ntot_comp)
+!
       integer (kind = kint) :: inod
 !
 !
@@ -56,12 +57,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine prepare_vector_2_filter(id_phys)
+      subroutine prepare_vector_2_filter(ntot_comp, id_phys, d_nod)
 !
-      use m_node_phys_data
       use solver_SR_type
 !
-      integer (kind = kint), intent(in) :: id_phys
+      integer(kind = kint), intent(in) :: ntot_comp, id_phys
+      real(kind = kreal), intent(in) :: d_nod(node1%numnod,ntot_comp)
+!
       integer (kind = kint) :: inod
 !
 !
@@ -97,12 +99,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine prepare_sym_tensor_2_filter(id_phys)
+      subroutine prepare_sym_tensor_2_filter(ntot_comp, id_phys, d_nod)
 !
-      use m_node_phys_data
       use solver_SR_type
 !
-      integer (kind = kint), intent(in) :: id_phys
+      integer(kind = kint), intent(in) :: ntot_comp, id_phys
+      real(kind = kreal), intent(in) :: d_nod(node1%numnod,ntot_comp)
+!
       integer (kind = kint) :: inod
 !
 !
