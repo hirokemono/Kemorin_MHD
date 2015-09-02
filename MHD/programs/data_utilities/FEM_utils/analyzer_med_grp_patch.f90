@@ -26,7 +26,6 @@
 !
       use input_control_udt_diff
       use const_mesh_info
-      use initialize_phys_data
 !
 !
       if (my_rank.eq.0) then
