@@ -31,7 +31,6 @@
 !
       subroutine sel_int_simi_vp_induct
 !
-      use m_element_phys_address
       use m_element_phys_data
       use cal_skv_to_ff_smp_1st
 !

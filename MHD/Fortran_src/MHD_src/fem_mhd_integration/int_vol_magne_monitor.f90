@@ -23,7 +23,6 @@
       use m_SGS_model_coefs
       use m_SGS_address
       use m_node_phys_address
-      use m_element_phys_address
       use m_element_phys_data
       use m_fem_gauss_int_coefs
 !
@@ -47,7 +46,7 @@
 !
       if (i_field .eq. iphys%i_induction) then
         call int_vol_mag_induct_pg(iele_cd_smp_stack, intg_point_t_evo, &
-     &      fld_ele1%ntot_phys, fld_ele1%d_fld)
+     &      fld_ele1%ntot_phys, fld_ele1%d_fld, iphys_ele)
 !
       else if (i_field .eq. iphys%i_induct_div) then
         call int_vol_div_as_tsr_1st(iele_cd_smp_stack,                  &
@@ -69,7 +68,6 @@
 !
       subroutine int_vol_magne_monitor_upm(i_field)
 !
-      use m_element_phys_address
       use m_element_phys_data
       use int_vol_vect_diff_upw_1st
       use int_vol_vect_cst_diff_upw_1
@@ -80,8 +78,9 @@
 !
 !
       if (i_field .eq. iphys%i_induction) then
-        call int_vol_mag_induct_upm(iele_cd_smp_stack,                  &
-     &      intg_point_t_evo, fld_ele1%ntot_phys, fld_ele1%d_fld)
+        call int_vol_mag_induct_upm                                     &
+     &     (iele_cd_smp_stack, intg_point_t_evo,                        &
+     &      fld_ele1%ntot_phys, fld_ele1%d_fld, iphys_ele)
 !
       else if (i_field .eq. iphys%i_induct_div) then
         call int_vol_div_as_tsr_upw_1st(iele_cd_smp_stack,              &

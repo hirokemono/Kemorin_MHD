@@ -27,7 +27,6 @@
 !
       subroutine sel_int_vol_sgs_uxb(i_filter, i_field, id_dx, sk_v)
 !
-      use m_element_phys_address
       use m_element_phys_data
 !
       integer (kind=kint), intent(in) :: i_field, i_filter

@@ -41,7 +41,6 @@
 !
       subroutine int_multi_pass_vector_upw
 !
-      use m_element_phys_address
       use m_element_phys_data
 !
       integer (kind = kint) :: imulti
@@ -63,7 +62,6 @@
 !
       subroutine int_multi_pass_scalar_upw
 !
-      use m_element_phys_address
       use m_element_phys_data
 !
       integer (kind = kint) :: imulti
@@ -86,7 +84,6 @@
 !
       subroutine int_multi_pass_vector_upm
 !
-      use m_element_phys_address
       use m_element_phys_data
 !
       integer (kind = kint) :: imulti
@@ -108,7 +105,6 @@
 !
       subroutine int_multi_pass_scalar_upm
 !
-      use m_element_phys_address
       use m_element_phys_data
 !
       integer (kind = kint) :: imulti
@@ -132,7 +128,6 @@
       subroutine int_multi_pass_vector_fl_upw
 !
       use m_geometry_data_MHD
-      use m_element_phys_address
       use m_element_phys_data
 !
       integer (kind = kint) :: imulti
@@ -155,7 +150,6 @@
       subroutine int_multi_pass_scalar_fl_upw
 !
       use m_geometry_data_MHD
-      use m_element_phys_address
       use m_element_phys_data
 !
       integer (kind = kint) :: imulti
@@ -179,7 +173,6 @@
       subroutine int_multi_pass_vector_fl_upm
 !
       use m_geometry_data_MHD
-      use m_element_phys_address
       use m_element_phys_data
 !
       integer (kind = kint) :: imulti
@@ -202,7 +195,6 @@
       subroutine int_multi_pass_scalar_fl_upm
 !
       use m_geometry_data_MHD
-      use m_element_phys_address
       use m_element_phys_data
 !
       integer (kind = kint) :: imulti
@@ -226,7 +218,6 @@
       subroutine int_multi_pass_vector_cd_upm
 !
       use m_geometry_data_MHD
-      use m_element_phys_address
       use m_element_phys_data
 !
       integer (kind = kint) :: imulti
@@ -248,7 +239,6 @@
       subroutine int_multi_pass_scalar_cd_upm
 !
       use m_geometry_data_MHD
-      use m_element_phys_address
       use m_element_phys_data
 !
       integer (kind = kint) :: imulti

@@ -9,9 +9,9 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !!      subroutine int_vol_mag_induct_pg                                &
-!!     &         (iele_fsmp_stack, n_int, ncomp_ele, d_ele)
+!!     &         (iele_fsmp_stack, n_int, ncomp_ele, d_ele, iphys_ele)
 !!      subroutine int_vol_mag_induct_upm                               &
-!!     &         (iele_fsmp_stack, n_int, ncomp_ele, d_ele)
+!!     &         (iele_fsmp_stack, n_int, ncomp_ele, d_ele, iphys_ele)
 !
       module int_vol_mag_induct_1st
 !
@@ -22,8 +22,9 @@
       use m_phys_constants
       use m_physical_property
       use m_node_phys_address
-      use m_element_phys_address
       use m_fem_gauss_int_coefs
+!
+      use t_phys_address
 !
       implicit none
 !
@@ -34,7 +35,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_mag_induct_pg                                  &
-     &         (iele_fsmp_stack, n_int, ncomp_ele, d_ele)
+     &         (iele_fsmp_stack, n_int, ncomp_ele, d_ele, iphys_ele)
 !
       use m_finite_element_matrix
       use m_int_vol_data
@@ -49,6 +50,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
+      type(phys_address), intent(in) :: iphys_ele
 !
       integer(kind=kint) :: k2
 !
@@ -79,7 +81,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_mag_induct_upm                                 &
-     &         (iele_fsmp_stack, n_int, ncomp_ele, d_ele)
+     &         (iele_fsmp_stack, n_int, ncomp_ele, d_ele, iphys_ele)
 !
       use m_finite_element_matrix
       use m_int_vol_data
@@ -94,6 +96,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
+      type(phys_address), intent(in) :: iphys_ele
 !
       integer(kind=kint) :: k2
 !

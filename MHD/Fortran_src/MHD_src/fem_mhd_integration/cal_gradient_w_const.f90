@@ -124,7 +124,6 @@
      &          iele_fsmp_stack, const, i_scalar)
 !
       use m_control_parameter
-      use m_element_phys_address
       use m_element_phys_data
       use int_vol_vect_cst_diff_1st
       use int_vol_vect_cst_diff_upw_1

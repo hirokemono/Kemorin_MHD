@@ -29,11 +29,14 @@
       use m_group_data
       use m_control_parameter
       use m_phys_constants
+      use m_node_phys_address
+      use m_element_phys_data
       use m_finite_element_matrix
       use m_int_vol_data
       use m_bulk_values
-      use initialize_phys_data
 !
+!
+      label_sim = 'GeoFEM_MHD'
 !
       if (iflag_debug.ge.1) write(*,*) 'allocate_finite_elem_mt'
       call allocate_finite_elem_mt
@@ -42,8 +45,11 @@
       call allocate_int_vol_data(ele1%numele)
 !
 !
-      if (iflag_debug.ge.1) write(*,*) 'allocate_phys_data'
-      call allocate_phys_data
+!  allocation for field values
+     if (iflag_debug.ge.1)  write(*,*) 'allocate_data_arrays'
+      call initialize_nod_field_data
+     if (iflag_debug.ge.1)  write(*,*) 'initialize_ele_field_data'
+      call initialize_ele_field_data
 !
 !
       if ( iflag_debug.ge.1 ) write(*,*) 'set_bulk_values'

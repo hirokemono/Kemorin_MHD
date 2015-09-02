@@ -4,8 +4,8 @@
 !        modified by H. Matsui in 2003
 !        modified by H. Matsui on Aug., 2007
 !
-!      subroutine cal_stratified_layer(ncomp_ele, d_ele)
-!      subroutine cal_stratified_layer_upw(ncomp_ele, d_ele)
+!      subroutine cal_stratified_layer(ncomp_ele, iele_velo, d_ele)
+!      subroutine cal_stratified_layer_upw(ncomp_ele, iele_velo, d_ele)
 !
 !*****************************************************
 !
@@ -44,10 +44,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_stratified_layer(ncomp_ele, d_ele)
+      subroutine cal_stratified_layer(ncomp_ele, iele_velo, d_ele)
 !
       use m_node_phys_address
-      use m_element_phys_address
       use m_finite_element_matrix
       use m_int_vol_data
 !
@@ -55,7 +54,7 @@
       use cal_skv_to_ff_smp_1st
       use fem_skv_lorentz_full_1st
 !
-      integer(kind = kint), intent(in) :: ncomp_ele
+      integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer (kind = kint) :: k2
@@ -71,8 +70,7 @@
        call scalar_phys_2_each_element(k2, iphys%i_gref_t, temp_e)
 !
         call fem_skv_stratified_1st(iele_fl_smp_stack,                  &
-     &      intg_point_t_evo, k2, temp_e, d_ele(1,iphys_ele%i_velo),    &
-     &      xe, sk6)
+     &      intg_point_t_evo, k2, temp_e, d_ele(1,iele_velo), xe, sk6)
 !
       end do
 !
@@ -82,10 +80,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_stratified_layer_upw(ncomp_ele, d_ele)
+      subroutine cal_stratified_layer_upw(ncomp_ele, iele_velo, d_ele)
 !
       use m_node_phys_address
-      use m_element_phys_address
       use m_finite_element_matrix
       use m_int_vol_data
 !
@@ -93,7 +90,7 @@
       use cal_skv_to_ff_smp_1st
       use fem_skv_lorentz_full_1st
 !
-      integer(kind = kint), intent(in) :: ncomp_ele
+      integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
        integer(kind = kint) :: k2
@@ -110,8 +107,7 @@
         call scalar_phys_2_each_element(k2, iphys%i_gref_t, temp_e)
 !
         call fem_skv_stratified_upw_1st(iele_fl_smp_stack,              &
-     &      intg_point_t_evo, k2, temp_e, d_ele(1,iphys_ele%i_velo),    &
-     &      xe, sk6)
+     &      intg_point_t_evo, k2, temp_e, d_ele(1,iele_velo), xe, sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)

@@ -8,8 +8,9 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!!      subroutine int_vol_vect_p_pre_ele(ncomp_ele, d_ele)
-!!      subroutine int_vol_vect_p_pre_ele_upm(ncomp_ele, d_ele)
+!!      subroutine int_vol_vect_p_pre_ele(ncomp_ele, iele_magne, d_ele)
+!!      subroutine int_vol_vect_p_pre_ele_upm                           &
+!!     &         (ncomp_ele, iele_magne, d_ele)
 !
       module int_vol_vect_p_pre
 !
@@ -21,7 +22,6 @@
       use m_phys_constants
       use m_geometry_data_MHD
       use m_node_phys_address
-      use m_element_phys_address
 !
       use m_physical_property
 !
@@ -33,7 +33,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_vect_p_pre_ele(ncomp_ele, d_ele)
+      subroutine int_vol_vect_p_pre_ele(ncomp_ele, iele_magne, d_ele)
 !
       use m_finite_element_matrix
       use m_int_vol_data
@@ -43,7 +43,7 @@
       use cal_skv_to_ff_smp_1st
       use fem_skv_nonlinear_1st
 !
-      integer(kind = kint), intent(in) :: ncomp_ele
+      integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2
@@ -55,7 +55,7 @@
 !$omp parallel
       call add_const_to_vector_smp                                      &
      &   (np_smp, ele1%numele, ele1%istack_ele_smp,                     &
-     &    d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
+     &    d_ele(1,iele_magne), ex_magne, vect_e)
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
@@ -73,7 +73,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_vect_p_pre_ele_upm(ncomp_ele, d_ele)
+      subroutine int_vol_vect_p_pre_ele_upm                             &
+     &         (ncomp_ele, iele_magne, d_ele)
 !
       use m_finite_element_matrix
       use m_int_vol_data
@@ -83,7 +84,7 @@
       use cal_skv_to_ff_smp_1st
       use fem_skv_nonlinear_upw_1st
 !
-      integer(kind = kint), intent(in) :: ncomp_ele
+      integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind = kint) :: k2
@@ -94,7 +95,7 @@
 !$omp parallel
       call add_const_to_vector_smp                                      &
      &   (np_smp, ele1%numele, ele1%istack_ele_smp, &
-     &    d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
+     &    d_ele(1,iele_magne), ex_magne, vect_e)
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
@@ -104,7 +105,7 @@
 !
         call fem_skv_rot_inertia_upw_1st(iele_cd_smp_stack,             &
      &      intg_point_t_evo, k2, velo_1, vect_e,                       &
-     &      d_ele(1,iphys_ele%i_magne), sk6)
+     &      d_ele(1,iele_magne), sk6)
       end do
 !
       call sub3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)

@@ -31,7 +31,6 @@
       subroutine sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,     &
      &           ifield_v, ifield_b, sk_v)
 !
-      use m_element_phys_address
       use m_element_phys_data
 !
       integer (kind = kint), intent(in) :: i_filter

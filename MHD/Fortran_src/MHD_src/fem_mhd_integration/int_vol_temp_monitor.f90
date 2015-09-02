@@ -32,7 +32,6 @@
       subroutine int_vol_ene_monitor(i_field)
 !
       use m_node_phys_address
-      use m_element_phys_address
       use m_element_phys_data
       use m_SGS_address
 !
@@ -80,7 +79,6 @@
       subroutine int_vol_ene_monitor_upw(i_field)
 !
       use m_node_phys_address
-      use m_element_phys_address
       use m_element_phys_data
       use m_SGS_address
 !

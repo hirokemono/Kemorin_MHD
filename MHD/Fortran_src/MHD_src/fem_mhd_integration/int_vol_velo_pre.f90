@@ -8,8 +8,9 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!      subroutine int_vol_velo_pre_ele(ncomp_ele, d_ele)
-!      subroutine int_vol_velo_pre_ele_upwind(ncomp_ele, ie_upw, d_ele)
+!      subroutine int_vol_velo_pre_ele(ncomp_ele, d_ele, iphys_ele)
+!      subroutine int_vol_velo_pre_ele_upwind                           &
+!     &         (ncomp_ele, ie_upw, d_ele, iphys_ele)
 !
 !
       module int_vol_velo_pre
@@ -25,6 +26,8 @@
       use m_SGS_model_coefs
       use m_SGS_address
 !
+      use t_phys_address
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -33,10 +36,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_velo_pre_ele(ncomp_ele, d_ele)
+      subroutine int_vol_velo_pre_ele(ncomp_ele, d_ele, iphys_ele)
 !
       use m_node_phys_address
-      use m_element_phys_address
       use m_finite_element_matrix
       use m_fem_gauss_int_coefs
       use m_int_vol_data
@@ -54,6 +56,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
+      type(phys_address), intent(in) :: iphys_ele
 !
       integer(kind=kint) :: k2, num_int
 !
@@ -211,10 +214,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_velo_pre_ele_upwind(ncomp_ele, ie_upw, d_ele)
+      subroutine int_vol_velo_pre_ele_upwind                            &
+     &         (ncomp_ele, ie_upw, d_ele, iphys_ele)
 !
       use m_node_phys_address
-      use m_element_phys_address
       use m_finite_element_matrix
       use m_fem_gauss_int_coefs
       use m_int_vol_data
@@ -232,6 +235,7 @@
 !
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
+      type(phys_address), intent(in) :: iphys_ele
 !
       integer(kind = kint) :: k2, num_int
 !

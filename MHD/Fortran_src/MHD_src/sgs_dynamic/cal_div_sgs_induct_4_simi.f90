@@ -51,7 +51,6 @@
       use m_finite_element_matrix
       use m_int_vol_data
       use m_node_phys_data
-      use m_element_phys_address
       use m_element_phys_data
 !
       use cal_ff_smp_to_ffs

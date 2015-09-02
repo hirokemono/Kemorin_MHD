@@ -136,7 +136,6 @@
 !
       use m_group_data
       use m_control_parameter
-      use m_element_phys_address
       use m_element_phys_data
       use int_sgs_vect_diff_1st
       use int_sgs_vect_diff_upw_1st

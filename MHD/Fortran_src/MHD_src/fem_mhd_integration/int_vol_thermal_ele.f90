@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on Aug., 2005
 !
-!      subroutine int_vol_thermal_ele(ncomp_ele, d_ele)
-!      subroutine int_vol_temp_ele_upw(ncomp_ele, d_ele)
+!      subroutine int_vol_temp_ele(ncomp_ele, iele_velo, d_ele)
+!      subroutine int_vol_temp_ele_upw(ncomp_ele, iele_velo, d_ele)
 !
       module int_vol_thermal_ele
 !
@@ -16,7 +16,6 @@
       use m_geometry_data_MHD
       use m_phys_constants
       use m_node_phys_address
-      use m_element_phys_address
       use m_fem_gauss_int_coefs
       use m_physical_property
       use m_SGS_model_coefs
@@ -30,7 +29,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_temp_ele(ncomp_ele, d_ele)
+      subroutine int_vol_temp_ele(ncomp_ele, iele_velo, d_ele)
 !
       use m_finite_element_matrix
       use m_int_vol_data
@@ -41,7 +40,7 @@
       use fem_skv_nonlinear_1st
       use fem_skv_div_sgs_flux_1st
 !
-      integer(kind = kint), intent(in) :: ncomp_ele
+      integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2, num_int
@@ -65,16 +64,15 @@
      &        sgs_e, vect_e)
           call fem_skv_scl_inertia_modsgs_1st(iele_fl_smp_stack,        &
      &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_hf),       &
-     &        temp_e, sgs_e, vect_e, d_ele(1,iphys_ele%i_velo), sk6)
+     &        temp_e, sgs_e, vect_e, d_ele(1,iele_velo), sk6)
         else if(iflag_SGS_heat .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_h_flux,       &
      &        coef_nega_t, sgs_e)
           call fem_skv_scl_inertia_sgs_1st(iele_fl_smp_stack,           &
-     &        num_int, k2, temp_e, sgs_e, d_ele(1,iphys_ele%i_velo),    &
-     &        sk6)
+     &        num_int, k2, temp_e, sgs_e, d_ele(1,iele_velo), sk6)
         else
           call fem_skv_scalar_inertia_1st(iele_fl_smp_stack,            &
-     &        num_int, k2, temp_e, d_ele(1,iphys_ele%i_velo), sk6)
+     &        num_int, k2, temp_e, d_ele(1,iele_velo), sk6)
         end if
       end do
 !
@@ -85,7 +83,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_temp_ele_upw(ncomp_ele, d_ele)
+      subroutine int_vol_temp_ele_upw(ncomp_ele, iele_velo, d_ele)
 !
       use m_finite_element_matrix
       use m_int_vol_data
@@ -96,7 +94,7 @@
       use fem_skv_nonlinear_upw_1st
       use fem_skv_div_sgs_flux_upw_1
 !
-      integer(kind = kint), intent(in) :: ncomp_ele
+      integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
       integer(kind=kint) :: k2, num_int
@@ -120,18 +118,18 @@
      &        sgs_e, vect_e)
           call fem_skv_scl_inertia_msgs_upw_1(iele_fl_smp_stack,        &
      &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_hf),       &
-     &        temp_e, sgs_e, vect_e, d_ele(1,iphys_ele%i_velo),         &
-     &        d_ele(1,iphys_ele%i_velo), sk6)
+     &        temp_e, sgs_e, vect_e, d_ele(1,iele_velo),                &
+     &        d_ele(1,iele_velo), sk6)
         else if(iflag_SGS_heat .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_h_flux,       &
      &        coef_nega_t, sgs_e)
           call fem_skv_scl_inertia_sgs_upw_1(iele_fl_smp_stack,         &
-     &       num_int, k2, temp_e, sgs_e, d_ele(1,iphys_ele%i_velo),     &
-     &       d_ele(1,iphys_ele%i_velo), sk6)
+     &       num_int, k2, temp_e, sgs_e, d_ele(1,iele_velo),            &
+     &       d_ele(1,iele_velo), sk6)
         else
           call fem_skv_scalar_inertia_upw_1st(iele_fl_smp_stack,        &
-     &       num_int, k2, temp_e, d_ele(1,iphys_ele%i_velo),            &
-     &       d_ele(1,iphys_ele%i_velo), sk6)
+     &       num_int, k2, temp_e, d_ele(1,iele_velo),                   &
+     &       d_ele(1,iele_velo), sk6)
         end if
       end do
 !

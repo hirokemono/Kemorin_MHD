@@ -31,7 +31,6 @@
 !
       use m_node_phys_address
       use m_finite_element_matrix
-      use m_element_phys_address
       use m_element_phys_data
 !
       use nod_phys_send_recv
@@ -63,9 +62,11 @@
 !  ----------  lead advection term
 !
       if (iflag_temp_supg .gt. id_turn_OFF) then
-        call int_vol_temp_ele_upw(fld_ele1%ntot_phys, fld_ele1%d_fld)
+        call int_vol_temp_ele_upw                                       &
+     &     (fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
       else
-        call int_vol_temp_ele(fld_ele1%ntot_phys, fld_ele1%d_fld)
+        call int_vol_temp_ele                                           &
+     &     (fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
       end if
 !
 !      call check_ff_smp(n_scalar)
@@ -82,9 +83,10 @@
       if (iflag_t_strat .gt. id_turn_OFF) then
         if (iflag_temp_supg .gt. id_turn_OFF) then
           call cal_stratified_layer_upw                                 &
-     &       (fld_ele1%ntot_phys, fld_ele1%d_fld)
+     &       (fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
         else
-          call cal_stratified_layer(fld_ele1%ntot_phys, fld_ele1%d_fld)
+          call cal_stratified_layer                                     &
+     &       (fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
         end if
       end if
 !

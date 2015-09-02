@@ -48,10 +48,10 @@
 !
       if (iflag_comp_supg .gt. id_turn_OFF) then
         call int_vol_composition_ele_upw                                &
-     &     (fld_ele1%ntot_phys, fld_ele1%d_fld)
+     &     (fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
       else
         call int_vol_composition_ele                                    &
-     &     (fld_ele1%ntot_phys, fld_ele1%d_fld)
+     &     (fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
       end if
 !
 !

@@ -62,7 +62,6 @@
 !
       subroutine int_div_sgs_mf_simi_upw(i_flux, i_vect)
 !
-      use m_element_phys_address
       use m_element_phys_data
 !
       integer(kind = kint), intent(in) :: i_flux, i_vect
@@ -76,7 +75,6 @@
 !
       subroutine int_div_sgs_mf_simi_upm(i_flux, i_vect)
 !
-      use m_element_phys_address
       use m_element_phys_data
 !
       integer(kind = kint), intent(in) :: i_flux, i_vect
