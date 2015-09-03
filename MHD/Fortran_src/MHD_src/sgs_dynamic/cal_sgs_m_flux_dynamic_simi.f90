@@ -65,8 +65,8 @@
 !
 !    copy to work array
 !
-       call copy_tensor_components(iphys%i_sgs_simi,                    &
-     &     iphys%i_SGS_m_flux)
+       call copy_tensor_components                                      &
+     &    (iphys%i_SGS_m_flux, iphys%i_sgs_simi)
 !       call check_nodal_data(my_rank, n_sym_tensor, iphys%i_sgs_simi)
 !
 !      filtering
@@ -136,8 +136,8 @@
 !
 !    copy to work array
 !
-       call copy_tensor_components(iphys%i_sgs_simi,                    &
-     &     iphys%i_SGS_maxwell)
+       call copy_tensor_components                                      &
+     &    (iphys%i_SGS_maxwell, iphys%i_sgs_simi)
 !
 !    filtering
 !

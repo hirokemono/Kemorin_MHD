@@ -7,9 +7,9 @@
 !>@brief  Copy field data (Need OMP PARALLEL)
 !!
 !!@verbatim
-!!      subroutine copy_scalar_component(i_target, i_org)
-!!      subroutine copy_vector_component(i_target, i_org)
-!!      subroutine copy_tensor_components(i_target, i_org)
+!!      subroutine copy_scalar_component(i_org, i_target)
+!!      subroutine copy_vector_component(i_org, i_target)
+!!      subroutine copy_tensor_components(i_org, i_target)
 !!@endverbatim
 !
       module copy_nodal_fields
@@ -26,7 +26,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_scalar_component(i_target, i_org)
+      subroutine copy_scalar_component(i_org, i_target)
 !
       use m_geometry_data
       use m_node_phys_data
@@ -45,7 +45,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_vector_component(i_target, i_org)
+      subroutine copy_vector_component(i_org, i_target)
 !
       use m_geometry_data
       use m_node_phys_data
@@ -64,7 +64,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_tensor_components(i_target, i_org)
+      subroutine copy_tensor_components(i_org, i_target)
 !
       use m_geometry_data
       use m_node_phys_data

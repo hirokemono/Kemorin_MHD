@@ -12,9 +12,9 @@
 !>@brief Copy fields in structure
 !!
 !!@verbatim
-!!      subroutine copy_scalar_type(i_target, i_org, node, fld_nod)
-!!      subroutine copy_vector_type(i_target, i_org, node, fld_nod)
-!!      subroutine copy_tensor_type(i_target, i_org, node, fld_nod)
+!!      subroutine copy_scalar_type(i_org, i_target, node, fld_nod)
+!!      subroutine copy_vector_type(i_org, i_target, node, fld_nod)
+!!      subroutine copy_tensor_type(i_org, i_target, node, fld_nod)
 !!        integer (kind = kint), intent(in) :: i_target, i_org
 !!        type(node_data), intent(in) :: node
 !!        type(phys_data), intent(inout) :: fld_nod
@@ -34,7 +34,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_scalar_type(i_target, i_org, node, fld_nod)
+      subroutine copy_scalar_type(i_org, i_target, node, fld_nod)
 !
       use m_machine_parameter
       use t_geometry_data
@@ -46,13 +46,13 @@
 !
 !
       call copy_scalar_fld(np_smp, node%numnod, node%istack_nod_smp,    &
-     &    fld_nod%ntot_phys, i_target, i_org, fld_nod%d_fld )
+     &    fld_nod%ntot_phys, i_org, i_target, fld_nod%d_fld )
 !
       end subroutine copy_scalar_type
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_vector_type(i_target, i_org, node, fld_nod)
+      subroutine copy_vector_type(i_org, i_target, node, fld_nod)
 !
       use m_machine_parameter
       use t_geometry_data
@@ -64,13 +64,13 @@
 !
 !
       call copy_vector_fld(np_smp, node%numnod, node%istack_nod_smp,    &
-     &    fld_nod%ntot_phys, i_target, i_org, fld_nod%d_fld )
+     &    fld_nod%ntot_phys, i_org, i_target, fld_nod%d_fld )
 !
       end subroutine copy_vector_type
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine copy_tensor_type(i_target, i_org, node, fld_nod)
+      subroutine copy_tensor_type(i_org, i_target, node, fld_nod)
 !
       use m_machine_parameter
       use t_geometry_data
@@ -82,7 +82,7 @@
 !
 !
       call copy_tensor_fld(np_smp, node%numnod, node%istack_nod_smp,    &
-     &    fld_nod%ntot_phys, i_target, i_org, fld_nod%d_fld )
+     &    fld_nod%ntot_phys, i_org, i_target, fld_nod%d_fld )
 !
       end subroutine copy_tensor_type
 !
@@ -90,7 +90,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_scalar_fld(np_smp, numnod, inod_smp_stack,        &
-     &          n_comp, i_target, i_org, d_nod)
+     &          n_comp, i_org, i_target, d_nod)
 !
       use copy_field_smp
 !
@@ -110,7 +110,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_vector_fld(np_smp, numnod, inod_smp_stack,        &
-     &          n_comp, i_target, i_org, d_nod)
+     &          n_comp, i_org, i_target, d_nod)
 !
       use copy_field_smp
 !
@@ -130,7 +130,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine copy_tensor_fld(np_smp, numnod, inod_smp_stack,        &
-     &          n_comp, i_target, i_org, d_nod)
+     &          n_comp, i_org, i_target, d_nod)
 !
       use copy_field_smp
 !

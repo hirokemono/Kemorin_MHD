@@ -23,8 +23,8 @@
       use subtract_nodal_fields
 !
 !
-      call subtract_2_nod_scalars(iphys%i_par_temp, iphys%i_temp,       &
-     &    iphys%i_ref_t)
+      call subtract_2_nod_scalars(iphys%i_temp, iphys%i_ref_t,          &
+     &    iphys%i_par_temp)
 !
       end subroutine set_2_perturbation_temp
 !

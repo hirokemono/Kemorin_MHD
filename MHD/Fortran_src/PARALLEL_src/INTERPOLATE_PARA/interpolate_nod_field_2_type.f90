@@ -117,6 +117,7 @@
       subroutine s_interpolate_scalar(i_dest, i_origin,                 &
      &          comm_dest, nod_dest, phys_dest)
 !
+      use m_array_for_send_recv
       use m_2nd_pallalel_vector
       use interpolate_by_module
 !
@@ -130,8 +131,14 @@
 !
       call verify_2nd_iccg_matrix(n_scalar, nod_dest%numnod)
 !
+!$omp parallel do
+      do inod = 1, node1%numnod
+        x_vec(inod) = d_nod(inod,i_origin)
+      end do
+!$omp end parallel do
+!
       call interpolate_mod_1(comm_dest, node1%numnod, nod_dest%numnod,  &
-     &    d_nod(1,i_origin), xvec_2nd(1))
+     &    x_vec(1), xvec_2nd(1))
 !
 !$omp parallel do
       do inod = 1, nod_dest%numnod

@@ -62,7 +62,7 @@
 !
 !    copy to work array
 !
-       call copy_vector_component(iphys%i_sgs_simi, iphys%i_SGS_h_flux)
+       call copy_vector_component(iphys%i_SGS_h_flux, iphys%i_sgs_simi)
 !
 !      filtering
 !

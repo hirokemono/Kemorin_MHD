@@ -110,8 +110,8 @@
       call scalar_send_recv(num_tot_nod_phys, iphys%i_temp, d_nod)
 !
       if (iphys%i_par_temp .gt. 0) then
-        call subtract_2_nod_scalars(iphys%i_par_temp, iphys%i_temp,     &
-     &      iphys%i_ref_t)
+        call subtract_2_nod_scalars(iphys%i_temp, iphys%i_ref_t,        &
+     &      iphys%i_par_temp)
       end if
 !
       end subroutine cal_temperature_field

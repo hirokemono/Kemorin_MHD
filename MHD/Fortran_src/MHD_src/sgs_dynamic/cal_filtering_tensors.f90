@@ -63,7 +63,7 @@
 !
       else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
         if (i_filter .ne. i_vect) then
-          call copy_tensor_components(i_filter, i_vect)
+          call copy_tensor_components(i_vect, i_filter)
         end if
         call cal_l_filtering_tensor(i_filter, node1%istack_nod_smp)
         call sym_tensor_send_recv(num_tot_nod_phys, i_filter, d_nod)
@@ -114,7 +114,7 @@
 !
       else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
         if (i_filter .ne. i_vect) then
-          call copy_tensor_components(i_filter, i_vect)
+          call copy_tensor_components(i_vect, i_filter)
         end if
         call cal_l_filtering_tensor(i_filter, node1%istack_nod_smp)
         call sym_tensor_send_recv(num_tot_nod_phys, i_filter, d_nod)

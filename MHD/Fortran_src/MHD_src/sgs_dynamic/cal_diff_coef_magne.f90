@@ -55,8 +55,8 @@
 !
 !    get filtered scalar potential(to iphys%i_sgs_grad_f)
 !
-      call copy_vector_component(iphys%i_sgs_grad_f,                    &
-     &    iphys%i_filter_magne)
+      call copy_vector_component                                        &
+     &   (iphys%i_filter_magne, iphys%i_sgs_grad_f)
       call cal_filtered_scalar(i_sgs_grad_fp, iphys%i_mag_p)
 !
 !   take rotation and gradient of filtered B (to iphys%i_sgs_simi)
@@ -91,8 +91,8 @@
 !
 !    take difference (to iphys%i_sgs_simi)
 !
-      call subtract_2_nod_tensors(iphys%i_sgs_simi,                     &
-     &    iphys%i_sgs_grad, iphys%i_sgs_simi)
+      call subtract_2_nod_tensors                                       &
+     &   (iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
 !
 !      call check_nodal_data(my_rank, n_sym_tensor, iphys%i_sgs_simi)
 !

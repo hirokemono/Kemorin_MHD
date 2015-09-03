@@ -64,7 +64,7 @@
       else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
 !
         if (i_filter .ne. i_scalar) then
-           call copy_scalar_component(i_filter, i_scalar)
+           call copy_scalar_component(i_scalar, i_filter)
         end if
         call cal_l_filtering_scalar(i_filter, node1%istack_nod_smp)
         call scalar_send_recv(num_tot_nod_phys, i_filter, d_nod)
@@ -116,7 +116,7 @@
       else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
 !
         if (i_filter .ne. i_scalar) then
-           call copy_scalar_component(i_filter, i_scalar)
+           call copy_scalar_component(i_scalar, i_filter)
         end if
         call cal_l_filtering_scalar(i_filter, node1%istack_nod_smp)
         call scalar_send_recv(num_tot_nod_phys, i_filter, d_nod)

@@ -52,8 +52,8 @@
 !
 !    copy to work array
 !
-       call copy_tensor_components(iphys%i_sgs_simi,                    &
-     &     iphys%i_SGS_maxwell)
+       call copy_tensor_components                                      &
+     &    (iphys%i_SGS_maxwell, iphys%i_sgs_simi)
 !
 !   gradient model by filtered field
 !

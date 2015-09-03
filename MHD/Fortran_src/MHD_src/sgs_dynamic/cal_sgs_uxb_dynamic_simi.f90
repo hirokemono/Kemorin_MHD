@@ -122,8 +122,8 @@
 !
 !    copy to work array
 !
-       call copy_vector_component(iphys%i_sgs_simi,                     &
-     &     iphys%i_SGS_induct_t)
+       call copy_vector_component                                       &
+     &    (iphys%i_SGS_induct_t, iphys%i_sgs_simi)
 !
 !      filtering
 !

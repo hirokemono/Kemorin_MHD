@@ -3,9 +3,9 @@
 !
 !      Written by H. Matsui
 !
-!       subroutine subtract_2_nod_scalars(i_r, i_v1, i_v2)
-!       subroutine subtract_2_nod_vectors(i_r, i_v1, i_v2)
-!       subroutine subtract_2_nod_tensors(i_r, i_v1, i_v2)
+!       subroutine subtract_2_nod_scalars(i_v1, i_v2, i_r)
+!       subroutine subtract_2_nod_vectors(i_v1, i_v2, i_r)
+!       subroutine subtract_2_nod_tensors(i_v1, i_v2, i_r)
 !
 !         d_nod(inod,i_r) =  d_nod(inod,i_v1) - d_nod(inod,i_v2)
 !        i_r: result field ID
@@ -23,61 +23,55 @@
 !
 !-----------------------------------------------------------------------
 !
-       subroutine subtract_2_nod_scalars(i_r, i_v1, i_v2)
+       subroutine subtract_2_nod_scalars(i_v1, i_v2, i_r)
 !
       use m_machine_parameter
       use m_geometry_data
       use m_node_phys_data
-      use cal_subtract_smp
+      use subtract_nodal_field_type
 !
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
 !
 !
-!$omp parallel
-      call subtract_scalars_smp                                         &
+      call subtract_scalar_array_smp                                    &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,i_v1), d_nod(1,i_v2), d_nod(1,i_r))
-!$omp end parallel
+     &    num_tot_nod_phys, d_nod, i_v1, i_v2, i_r)
 !
       end subroutine subtract_2_nod_scalars
 !
 !-----------------------------------------------------------------------
 !
-      subroutine subtract_2_nod_vectors(i_r, i_v1, i_v2)
+      subroutine subtract_2_nod_vectors(i_v1, i_v2, i_r)
 !
       use m_machine_parameter
       use m_geometry_data
       use m_node_phys_data
-      use cal_subtract_smp
+      use subtract_nodal_field_type
 !
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
 !
 !
-!$omp parallel
-      call subtract_vectors_smp                                         &
+      call subtract_vector_array_smp                                    &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,i_v1), d_nod(1,i_v2), d_nod(1,i_r))
-!$omp end parallel
+     &    num_tot_nod_phys, d_nod, i_v1, i_v2, i_r)
 !
       end subroutine subtract_2_nod_vectors
 !
 !-----------------------------------------------------------------------
 !
-      subroutine subtract_2_nod_tensors(i_r, i_v1, i_v2)
+      subroutine subtract_2_nod_tensors(i_v1, i_v2, i_r)
 !
       use m_machine_parameter
       use m_geometry_data
       use m_node_phys_data
-      use cal_subtract_smp
+      use subtract_nodal_field_type
 !
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
 !
 !
-!$omp parallel
-      call subtract_tensors_smp                                         &
+      call subtract_tensor_array_smp                                    &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,i_v1), d_nod(1,i_v2), d_nod(1,i_r))
-!$omp end parallel
+     &    num_tot_nod_phys, d_nod, i_v1, i_v2, i_r)
 !
       end subroutine subtract_2_nod_tensors
 !

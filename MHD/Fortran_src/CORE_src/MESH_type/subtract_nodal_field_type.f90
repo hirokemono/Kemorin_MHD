@@ -17,8 +17,8 @@
 !
       implicit none
 !
-      private :: subtract_scalar_type_smp, subtract_vector_array_smp
-      private :: subtract_tensor_array_smp
+!      private :: subtract_scalar_type_smp, subtract_vector_array_smp
+!      private :: subtract_tensor_array_smp
 !
 !-----------------------------------------------------------------------
 !

@@ -107,8 +107,8 @@
 !
       call scalar_send_recv(num_tot_nod_phys, iphys%i_par_temp, d_nod)
 !
-      call add_2_nod_scalars(iphys%i_temp, iphys%i_par_temp,            &
-     &    iphys%i_ref_t)
+      call add_2_nod_scalars(iphys%i_ref_t, iphys%i_par_temp,           &
+     &    iphys%i_temp)
 !
       end subroutine cal_parturbation_temp
 !

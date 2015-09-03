@@ -17,8 +17,8 @@
 !
       implicit none
 !
-      private :: add_scalar_type_smp, add_vector_array_smp
-      private :: add_tensor_array_smp
+!      private :: add_scalar_type_smp, add_vector_array_smp
+!      private :: add_tensor_array_smp
 !
 !-----------------------------------------------------------------------
 !
