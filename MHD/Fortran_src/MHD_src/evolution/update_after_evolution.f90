@@ -191,7 +191,6 @@
       use average_on_elements
       use cal_filtering_scalars
       use cal_diff_vector_on_ele
-      use add_nodal_fields
       use cal_diff_coef_temp
       use cal_w_filtering_scalars
       use copy_nodal_fields
@@ -571,7 +570,6 @@
       use average_on_elements
       use cal_filtering_scalars
       use cal_diff_vector_on_ele
-      use add_nodal_fields
       use cal_diff_coef_temp
       use cal_w_filtering_scalars
       use copy_nodal_fields

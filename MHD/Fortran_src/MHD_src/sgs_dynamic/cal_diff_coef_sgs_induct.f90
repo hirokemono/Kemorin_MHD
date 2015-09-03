@@ -29,7 +29,6 @@
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
-      use subtract_nodal_fields
       use cal_filtering_vectors
       use cal_sgs_fluxes_simi
       use commute_error_h_flux

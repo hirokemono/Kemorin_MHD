@@ -26,7 +26,7 @@
 !
       implicit none
 !
-      private :: copy_scalar_fld, copy_vector_fld, copy_tensor_fld
+!      private :: copy_scalar_fld, copy_vector_fld, copy_tensor_fld
 !
 ! ----------------------------------------------------------------------
 !

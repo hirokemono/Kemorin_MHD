@@ -241,8 +241,7 @@
 !
       use buoyancy_flux
       use products_nodal_fields_smp
-      use add_nodal_fields
-      use subtract_nodal_fields
+      use copy_nodal_field
       use multi_by_const_fields
       use int_magne_diffusion
       use int_magne_induction

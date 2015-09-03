@@ -20,7 +20,7 @@
       subroutine set_2_perturbation_temp
 !
       use m_node_phys_address
-      use subtract_nodal_fields
+      use copy_nodal_fields
 !
 !
       call subtract_2_nod_scalars(iphys%i_temp, iphys%i_ref_t,          &

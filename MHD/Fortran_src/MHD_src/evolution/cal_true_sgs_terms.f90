@@ -18,7 +18,6 @@
 !
       use cal_filtering_scalars
       use cal_filtering_vectors
-      use subtract_nodal_fields
 !
       implicit none
 !

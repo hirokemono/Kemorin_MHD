@@ -32,7 +32,6 @@
       use cal_filtering_scalars
       use cal_filtering_vectors
       use cal_filtering_tensors
-      use subtract_nodal_fields
       use cal_rotation
       use cal_gradient
       use cal_divergence

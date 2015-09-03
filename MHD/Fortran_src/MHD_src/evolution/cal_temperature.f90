@@ -42,7 +42,7 @@
       use int_surf_temp
       use int_vol_thermal_ele
       use cal_stratification_by_temp
-      use subtract_nodal_fields
+      use copy_nodal_fields
 !
       use check_finite_element_mat
 !

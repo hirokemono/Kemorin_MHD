@@ -28,7 +28,6 @@
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
-      use subtract_nodal_fields
       use cal_filtering_scalars
       use cal_filtering_vectors
       use cal_gradient
