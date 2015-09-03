@@ -24,8 +24,8 @@
 !
       implicit none
 !
-      private :: multi_by_const_nod_phys1, multi_by_const_nod_phys3
-      private :: multi_by_const_nod_phys6
+!      private :: multi_by_const_nod_phys1, multi_by_const_nod_phys3
+!      private :: multi_by_const_nod_phys6
 !
 !-----------------------------------------------------------------------
 !
@@ -168,4 +168,5 @@
       end subroutine multi_by_const_nod_phys6
 !
 !-----------------------------------------------------------------------
+!
       end module multi_by_const_fields_type

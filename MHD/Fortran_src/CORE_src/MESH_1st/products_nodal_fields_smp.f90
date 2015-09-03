@@ -71,14 +71,14 @@
 !
       subroutine cal_phys_product_4_scalar(i_s1, i_s2, i_r)
 !
-      use cal_products_smp
+      use products_nod_field_t_smp
 !
       integer (kind = kint), intent(in) :: i_r, i_s1, i_s2
 !
 !
-      call cal_scalar_prod_no_coef_smp                                  &
+      call cal_nod_phys_product_4_scalar                                &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,i_s1), d_nod(1,i_s2),  d_nod(1,i_r) )
+     &    num_tot_nod_phys, d_nod, i_s1, i_s2, i_r)
 !
       end subroutine cal_phys_product_4_scalar
 !
@@ -86,14 +86,14 @@
 !
       subroutine cal_phys_dot_product(i_v1, i_v2, i_r)
 !
-      use cal_products_smp
+      use products_nod_field_t_smp
 !
       integer (kind = kint), intent(in) :: i_r, i_v1, i_v2
 !
 !
-      call cal_dot_prod_no_coef_smp                                     &
+      call cal_nod_phys_dot_product                                     &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,i_v1), d_nod(1,i_v2),  d_nod(1,i_r) )
+     &    num_tot_nod_phys, d_nod, i_v1, i_v2, i_r)
 !
       end subroutine cal_phys_dot_product
 !
@@ -101,14 +101,14 @@
 !
       subroutine cal_phys_cross_product(i_v1, i_v2, i_r)
 !
-      use cal_products_smp
+      use products_nod_field_t_smp
 !
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
 !
 !
-      call cal_cross_prod_no_coef_smp                                   &
+      call cal_nod_phys_cross_product                                   &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,i_v1), d_nod(1,i_v2),  d_nod(1,i_r) )
+     &    num_tot_nod_phys, d_nod, i_v1, i_v2, i_r)
 !
       end subroutine cal_phys_cross_product
 !
@@ -117,15 +117,15 @@
 !
       subroutine cal_phys_dot_prod_w_coef(coef, i_v1, i_v2, i_r)
 !
-      use cal_products_smp
+      use products_nod_field_t_smp
 !
       real (kind = kreal), intent(in) :: coef
       integer (kind = kint), intent(in) :: i_r, i_v1, i_v2
 !
 !
-      call cal_dot_prod_w_coef_smp                                      &
+      call cal_nod_phys_dot_prod_w_coef                                 &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    coef, d_nod(1,i_v1), d_nod(1,i_v2),  d_nod(1,i_r) )
+     &    num_tot_nod_phys, d_nod, coef, i_v1, i_v2, i_r)
 !
       end subroutine cal_phys_dot_prod_w_coef
 !
@@ -133,15 +133,15 @@
 !
       subroutine cal_phys_cross_prod_w_coef(coef, i_v1, i_v2, i_r)
 !
-      use cal_products_smp
+      use products_nod_field_t_smp
 !
       real (kind = kreal), intent(in) :: coef
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
 !
 !
-      call cal_cross_prod_w_coef_smp                                    &
+      call cal_nod_phys_cross_prod_w_coef                               &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    coef, d_nod(1,i_v1), d_nod(1,i_v2),  d_nod(1,i_r) )
+     &    num_tot_nod_phys, d_nod, coef, i_v1, i_v2, i_r)
 !
       end subroutine cal_phys_cross_prod_w_coef
 !
@@ -149,17 +149,16 @@
 !
       subroutine cal_tri_product_4_scalar(coef, i_v1, i_v2, i_v3, i_r)
 !
-      use cal_products_smp
+      use products_nod_field_t_smp
 !
       real (kind = kreal), intent(in) :: coef
       integer (kind = kint), intent(in) :: i_r
       integer (kind = kint), intent(in) :: i_v1, i_v2, i_v3
 !
 !
-      call cal_tri_product_w_coef_smp                                   &
+      call cal_nod_tri_product_w_coef                                   &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    coef, d_nod(1,i_v1), d_nod(1,i_v2), d_nod(1,i_v3),            &
-     &    d_nod(1,i_r) )
+     &    num_tot_nod_phys, d_nod, coef, i_v1, i_v2, i_v3, i_r)
 !
       end subroutine cal_tri_product_4_scalar
 !
@@ -167,14 +166,14 @@
 !
       subroutine cal_phys_scalar_product_vector(i_v1, i_s1, i_r)
 !
-      use cal_products_smp
+      use products_nod_field_t_smp
 !
       integer(kind = kint), intent(in) :: i_r, i_s1, i_v1
 !
 !
-      call cal_vec_scalar_prod_no_coef_smp                              &
+      call cal_nod_phys_scalar_prod_vect                                &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,i_v1), d_nod(1,i_s1), d_nod(1,i_r))
+     &    num_tot_nod_phys, d_nod, i_v1, i_s1, i_r)
 !
       end subroutine cal_phys_scalar_product_vector
 !
@@ -182,14 +181,14 @@
 !
       subroutine cal_phys_sym_matvec(i_t1, i_v2, i_r)
 !
-      use cal_products_smp
+      use products_nod_field_t_smp
 !
       integer(kind = kint), intent(in) :: i_r, i_t1, i_v2
 !
 !
-      call cal_tensor_vec_prod_no_coef_smp                              &
+      call cal_nod_phys_sym_matvec                                      &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,i_t1), d_nod(1,i_v2), d_nod(1,i_r) )
+     &    num_tot_nod_phys, d_nod, i_t1, i_v2, i_r)
 !
       end subroutine cal_phys_sym_matvec
 !
@@ -197,13 +196,13 @@
 !
       subroutine prod_phys_scalar_mag_vector(i_s1, i_v2, i_r)
 !
-      use cal_products_smp
+      use products_nod_field_t_smp
 !
       integer(kind = kint), intent(in) :: i_r, i_s1, i_v2
 !
-      call cal_scalar_mag_vector_prod_smp                               &
+      call prod_nod_phys_scalar_mag_vect                                &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,i_s1), d_nod(1,i_v2), d_nod(1,i_r))
+     &    num_tot_nod_phys, d_nod, i_s1, i_v2, i_r)
 !
       end subroutine prod_phys_scalar_mag_vector
 !
@@ -212,15 +211,15 @@
 !
       subroutine phys_vec_scalar_prod_w_coef(coef, i_v1, i_s1, i_r)
 !
-      use cal_products_smp
+      use products_nod_field_t_smp
 !
       real (kind = kreal), intent(in) :: coef
       integer(kind = kint), intent(in) :: i_r, i_s1, i_v1
 !
 !
-      call cal_vec_scalar_prod_w_coef_smp                               &
-     &   (np_smp, node1%numnod, node1%istack_nod_smp, coef,             &
-     &    d_nod(1,i_v1), d_nod(1,i_s1), d_nod(1,i_r) )
+      call nod_phys_vec_scalar_prod_w_c                                 &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
+     &    num_tot_nod_phys, d_nod, coef, i_v1, i_s1, i_r)
 !
       end subroutine phys_vec_scalar_prod_w_coef
 !

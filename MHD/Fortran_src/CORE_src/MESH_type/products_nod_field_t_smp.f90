@@ -44,7 +44,7 @@
 !!     &                 + d_nod(,i_t1+4)*d_nod(,i_v2+1)      &
 !!     &                 + d_nod(,i_t1+5)*d_nod(,i_v2+2)
 !!      subroutine prod_phys_type_scalar_mag_vec(node, nod_fld,         &
-!!     &          i_s1, i_v1, i_r)
+!!     &          i_s1, i_v2, i_r)
 !!      subroutine phys_type_vec_scalar_prod_w_c(node, nod_fld,         &
 !!     &          coef, i_v1, i_s1, i_r)
 !!
@@ -70,15 +70,15 @@
 !
       implicit none
 !
-      private :: cal_nod_phys_product_4_scalar
-      private :: cal_nod_phys_dot_product, cal_nod_phys_cross_product
-      private :: cal_nod_phys_dot_prod_w_coef
-      private :: cal_nod_phys_cross_prod_w_coef
-      private :: cal_nod_tri_product_w_coef
-      private :: cal_nod_phys_scalar_prod_vect
-      private :: cal_nod_phys_sym_matvec
-      private :: prod_nod_phys_scalar_mag_vect
-      private :: nod_phys_vec_scalar_prod_w_c
+!      private :: cal_nod_phys_product_4_scalar
+!      private :: cal_nod_phys_dot_product, cal_nod_phys_cross_product
+!      private :: cal_nod_phys_dot_prod_w_coef
+!      private :: cal_nod_phys_cross_prod_w_coef
+!      private :: cal_nod_tri_product_w_coef
+!      private :: cal_nod_phys_scalar_prod_vect
+!      private :: cal_nod_phys_sym_matvec
+!      private :: prod_nod_phys_scalar_mag_vect
+!      private :: nod_phys_vec_scalar_prod_w_c
 !
 !-----------------------------------------------------------------------
 !
@@ -252,20 +252,20 @@
 !-----------------------------------------------------------------------
 !
       subroutine prod_phys_type_scalar_mag_vec(node, nod_fld,           &
-     &          i_s1, i_v1, i_r)
+     &          i_s1, i_v2, i_r)
 !
       use m_machine_parameter
       use t_geometry_data
       use t_phys_data
 !
-      integer(kind = kint), intent(in) :: i_r, i_s1, i_v1
+      integer(kind = kint), intent(in) :: i_r, i_s1, i_v2
       type(node_data), intent(in) :: node
       type(phys_data), intent(inout) :: nod_fld
 !
 !
       call prod_nod_phys_scalar_mag_vect(np_smp, node%numnod,           &
      &    node%istack_nod_smp, nod_fld%ntot_phys, nod_fld%d_fld,        &
-     &    i_s1, i_v1, i_r)
+     &    i_s1, i_v2, i_r)
 !
       end subroutine prod_phys_type_scalar_mag_vec
 !
@@ -455,7 +455,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine prod_nod_phys_scalar_mag_vect(np_smp, nnod,            &
-     &          inod_smp_stack, ntot_comp, d_fld, i_s1, i_v1, i_r)
+     &          inod_smp_stack, ntot_comp, d_fld, i_s1, i_v2, i_r)
 !
       use cal_products_smp
 !
@@ -463,10 +463,10 @@
       integer (kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
       real (kind=kreal), intent(inout) :: d_fld(nnod,ntot_comp)
 !
-      integer(kind = kint), intent(in) :: i_r, i_s1, i_v1
+      integer(kind = kint), intent(in) :: i_r, i_s1, i_v2
 !
       call cal_scalar_mag_vector_prod_smp(np_smp, nnod, inod_smp_stack, &
-     &    d_fld(1,i_s1), d_fld(1,i_v1), d_fld(1,i_r))
+     &    d_fld(1,i_s1), d_fld(1,i_v2), d_fld(1,i_r))
 !
       end subroutine prod_nod_phys_scalar_mag_vect
 !

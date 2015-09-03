@@ -16,6 +16,8 @@
       use m_precision
 !
       use m_machine_parameter
+      use m_geometry_data
+      use m_node_phys_data
 !
       implicit none
 !
@@ -27,20 +29,15 @@
 !
       subroutine multi_by_const_nod_scalar(const, i_v1, i_r)
 !
-      use m_geometry_data
-      use m_node_phys_data
-!
-      use cal_products_w_const_smp
+      use multi_by_const_fields_type
 !
       integer(kind = kint), intent(in) :: i_r, i_v1
       real(kind = kreal), intent(in) :: const
 !
 !
-!$omp parallel
-      call cal_coef_prod_scalar_smp                                     &
+      call multi_by_const_nod_phys1                                     &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    const, d_nod(1,i_v1), d_nod(1,i_r) )
-!$omp end parallel
+     &    num_tot_nod_phys, d_nod, const, i_v1, i_r)
 !
       end subroutine multi_by_const_nod_scalar
 !
@@ -48,20 +45,15 @@
 !
       subroutine multi_by_const_nod_vector(const, i_v1, i_r)
 !
-      use m_geometry_data
-      use m_node_phys_data
-!
-      use cal_products_w_const_smp
+      use multi_by_const_fields_type
 !
       integer(kind = kint), intent(in) :: i_r, i_v1
       real(kind = kreal), intent(in) :: const
 !
 !
-!$omp parallel
-      call cal_coef_prod_vect_smp                                       &
+      call multi_by_const_nod_phys3                                     &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    const, d_nod(1,i_v1), d_nod(1,i_r) )
-!$omp end parallel
+     &    num_tot_nod_phys, d_nod, const, i_v1, i_r)
 !
       end subroutine multi_by_const_nod_vector
 !
@@ -69,20 +61,15 @@
 !
       subroutine multi_by_const_nod_tensor(const, i_v1, i_r)
 !
-      use m_geometry_data
-      use m_node_phys_data
-!
-      use cal_products_w_const_smp
+      use multi_by_const_fields_type
 !
       integer(kind = kint), intent(in) :: i_r, i_v1
       real(kind = kreal), intent(in) :: const
 !
 !
-!$omp parallel
-      call cal_coef_prod_tensor_smp                                     &
+      call multi_by_const_nod_phys6                                     &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    const, d_nod(1,i_v1), d_nod(1,i_r) )
-!$omp end parallel
+     &    num_tot_nod_phys, d_nod, const, i_v1, i_r)
 !
       end subroutine multi_by_const_nod_tensor
 !
