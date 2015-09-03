@@ -33,11 +33,11 @@
         ist = istack_nod_component(i-1) + 1
 !
         if      ( num_nod_component(i) .eq. 1) then
-          call multi_by_const_nod_scalar(ist, ist, ddt)
+          call multi_by_const_nod_scalar(ddt, ist, ist)
         else if ( num_nod_component(i) .eq. 3) then
-          call multi_by_const_nod_vector(ist, ist, ddt)
+          call multi_by_const_nod_vector(ddt, ist, ist)
         else if ( num_nod_component(i) .eq. 6) then
-          call multi_by_const_nod_tensor(ist, ist, ddt)
+          call multi_by_const_nod_tensor(ddt, ist, ist)
         end if
 !
       end do
@@ -63,11 +63,11 @@
         ist = istack_nod_component(i-1) + 1
 !
         if      ( num_nod_component(i) .eq. 1) then
-          call multi_by_const_nod_scalar(ist, ist, dnum)
+          call multi_by_const_nod_scalar(dnum, ist, ist)
         else if ( num_nod_component(i) .eq. 3) then
-          call multi_by_const_nod_vector(ist, ist, dnum)
+          call multi_by_const_nod_vector(dnum, ist, ist)
         else if ( num_nod_component(i) .eq. 6) then
-          call multi_by_const_nod_tensor(ist, ist, dnum)
+          call multi_by_const_nod_tensor(dnum, ist, ist)
         end if
 !
       end do

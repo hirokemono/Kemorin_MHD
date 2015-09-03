@@ -3,9 +3,9 @@
 !
 !      Written by H. Matsui
 !
-!       subroutine multi_by_const_nod_scalar(i_r, i_v1, const)
-!       subroutine multi_by_const_nod_vector(i_r, i_v1, const)
-!       subroutine multi_by_const_nod_tensor(i_r, i_v1, const)
+!       subroutine multi_by_const_nod_scalar(const, i_v1, i_r)
+!       subroutine multi_by_const_nod_vector(const, i_v1, i_r)
+!       subroutine multi_by_const_nod_tensor(const, i_v1, i_r)
 !
 !         d_nod(inod,i_r) =  const * d_nod(inod,i_v1)
 !        i_r: result field ID
@@ -25,7 +25,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine multi_by_const_nod_scalar(i_r, i_v1, const)
+      subroutine multi_by_const_nod_scalar(const, i_v1, i_r)
 !
       use m_geometry_data
       use m_node_phys_data
@@ -46,7 +46,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine multi_by_const_nod_vector(i_r, i_v1, const)
+      subroutine multi_by_const_nod_vector(const, i_v1, i_r)
 !
       use m_geometry_data
       use m_node_phys_data
@@ -67,7 +67,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine multi_by_const_nod_tensor(i_r, i_v1, const)
+      subroutine multi_by_const_nod_tensor(const, i_v1, i_r)
 !
       use m_geometry_data
       use m_node_phys_data

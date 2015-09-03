@@ -4,11 +4,11 @@
 !      Written by H. Matsui
 !
 !      subroutine multi_by_const_nod_scalar_type(node, fld,             &
-!     &          i_r, i_v1, const)
+!     &          const, i_v1, i_r)
 !      subroutine multi_by_const_nod_vector_type(node, fld,             &
-!     &          i_r, i_v1, const)
+!     &          const, i_v1, i_r)
 !      subroutine multi_by_const_nod_tensor_type(node, fld,             &
-!     &          i_r, i_v1, const)
+!     &          const, i_v1, i_r)
 !        integer(kind = kint), intent(in) :: i_r, i_v1
 !        real(kind = kreal), intent(in) :: const
 !        type(node_data), intent(in) :: node
@@ -34,7 +34,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine multi_by_const_nod_scalar_type(node, fld,              &
-     &          i_r, i_v1, const)
+     &          const, i_v1, i_r)
 !
       use m_machine_parameter
       use t_geometry_data
@@ -50,14 +50,14 @@
 !
       call multi_by_const_nod_phys1(np_smp,                             &
      &    node%numnod, node%istack_nod_smp, fld%ntot_phys,              &
-     &    fld%d_fld, i_r, i_v1, const)
+     &    fld%d_fld, const, i_v1, i_r)
 !
       end subroutine multi_by_const_nod_scalar_type
 !
 !-----------------------------------------------------------------------
 !
       subroutine multi_by_const_nod_vector_type(node, fld,              &
-     &          i_r, i_v1, const)
+     &          const, i_v1, i_r)
 !
       use m_machine_parameter
       use t_geometry_data
@@ -73,14 +73,14 @@
 !
       call multi_by_const_nod_phys3(np_smp,                             &
      &    node%numnod, node%istack_nod_smp, fld%ntot_phys,              &
-     &    fld%d_fld, i_r, i_v1, const)
+     &    fld%d_fld, const, i_v1, i_r)
 !
       end subroutine multi_by_const_nod_vector_type
 !
 !-----------------------------------------------------------------------
 !
       subroutine multi_by_const_nod_tensor_type(node, fld,              &
-     &          i_r, i_v1, const)
+     &          const, i_v1, i_r)
 !
       use m_machine_parameter
       use t_geometry_data
@@ -96,7 +96,7 @@
 !
       call multi_by_const_nod_phys6(np_smp,                             &
      &    node%numnod, node%istack_nod_smp, fld%ntot_phys,              &
-     &    fld%d_fld, i_r, i_v1, const)
+     &    fld%d_fld, const, i_v1, i_r)
 !
       end subroutine multi_by_const_nod_tensor_type
 !
@@ -104,7 +104,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine multi_by_const_nod_phys1(np_smp, nnod,                 &
-     &          inod_smp_stack, ntot_comp, d_phys, i_r, i_v1, const)
+     &          inod_smp_stack, ntot_comp, d_phys, const, i_v1, i_r)
 !
       use cal_products_w_const_smp
 !
@@ -126,7 +126,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine multi_by_const_nod_phys3(np_smp, nnod,                 &
-     &          inod_smp_stack, ntot_comp, d_phys, i_r, i_v1, const)
+     &          inod_smp_stack, ntot_comp, d_phys, const, i_v1, i_r)
 !
       use cal_products_w_const_smp
 !
@@ -148,7 +148,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine multi_by_const_nod_phys6(np_smp, nnod,                 &
-     &          inod_smp_stack, ntot_comp, d_phys, i_r, i_v1, const)
+     &          inod_smp_stack, ntot_comp, d_phys, const, i_v1, i_r)
 !
       use cal_products_w_const_smp
 !
