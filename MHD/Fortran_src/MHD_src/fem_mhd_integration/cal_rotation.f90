@@ -98,7 +98,8 @@
        call choose_int_vol_rotations(iflag_4_supg,                      &
      &     iele_cd_smp_stack, i_vector)
 !
-       call cal_ff_smp_2_vector(d_nod(1,i_res), ff_nl_smp, ml_cd)
+       call cal_ff_smp_2_vector                                         &
+     &    (ff_nl_smp, ml_cd, num_tot_nod_phys, i_res, d_nod)
 !
 ! ----------   communications
 !

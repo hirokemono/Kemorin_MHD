@@ -175,11 +175,13 @@
       use cal_ff_smp_to_ffs
 !
       real(kind = kreal), intent(inout) :: org_field(node1%numnod)
-      real(kind = kreal), intent(inout) :: diff_field(node1%numnod,3)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: diff_field(node1%numnod,n_vector)
 !
       ff_nl_smp = 0.0d0
       call int_vol_diff_dxs(org_field)
-      call cal_ff_smp_2_vector(diff_field, ff_nl_smp, ml)
+      call cal_ff_smp_2_vector                                          &
+     &   (ff_nl_smp, ml, n_vector, ione, diff_field)
 !
       end subroutine take_1st_diffs_nod_by_lump
 !

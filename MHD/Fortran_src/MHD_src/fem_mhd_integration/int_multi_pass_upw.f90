@@ -19,6 +19,7 @@
       module int_multi_pass_upw
 !
       use m_precision
+      use m_constants
 !
       use m_control_parameter
       use m_geometry_data
@@ -49,8 +50,9 @@
       ff_nl = 0.0d0
 !
       do imulti = 2, num_multi_pass
-        call cal_ff_smp_2_vector(ff_nl(1,1), ff_nl_smp(1,1,1), ml)
-        call nod_vector_send_recv( ff_nl(1,1) )
+        call cal_ff_smp_2_vector                                        &
+     &     (ff_nl_smp(1,1,1), ml, n_vector, ione, ff_nl)
+        call nod_vector_send_recv(ff_nl(1,1))
 !
         call int_vol_multi_pass_vector_upw(ele1%istack_ele_smp,         &
      &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
@@ -70,7 +72,8 @@
       ff_nl = 0.0d0
 !
       do imulti = 2, num_multi_pass
-        call cal_ff_smp_2_scalar(ff_nl(1,1), ff_nl_smp(1,1,1), ml)
+        call cal_ff_smp_2_scalar                                        &
+     &     (ff_nl_smp(1,1,1), ml, n_vector, ione, ff_nl)
         call nod_scalar_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_scalar_upw(ele1%istack_ele_smp,         &
@@ -92,7 +95,8 @@
       ff_nl = 0.0d0
 !
       do imulti = 2, num_multi_pass
-        call cal_ff_smp_2_vector(ff_nl(1,1), ff_nl_smp(1,1,1), ml)
+        call cal_ff_smp_2_vector                                        &
+     &     (ff_nl_smp(1,1,1), ml, n_vector, ione, ff_nl)
         call nod_vector_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_vector_upw(ele1%istack_ele_smp,         &
@@ -113,7 +117,8 @@
       ff_nl = 0.0d0
       do imulti = 2, num_multi_pass
 !
-        call cal_ff_smp_2_scalar(ff_nl(1,1), ff_nl_smp(1,1,1), ml)
+        call cal_ff_smp_2_scalar                                        &
+     &     (ff_nl_smp(1,1,1), ml, n_vector, ione, ff_nl)
         call nod_scalar_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_scalar_upw(ele1%istack_ele_smp,         &
@@ -136,7 +141,8 @@
       ff_nl = 0.0d0
 !
       do imulti = 2, num_multi_pass
-        call cal_ff_smp_2_vector(ff_nl(1,1), ff_nl_smp(1,1,1), ml_fl)
+        call cal_ff_smp_2_vector                                        &
+     &     (ff_nl_smp(1,1,1), ml_fl, n_vector, ione, ff_nl)
         call nod_vector_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_vector_upw(iele_fl_smp_stack,           &
@@ -158,7 +164,8 @@
       ff_nl = 0.0d0
 !
       do imulti = 2, num_multi_pass
-        call cal_ff_smp_2_scalar(ff_nl(1,1), ff_nl_smp(1,1,1), ml_fl)
+        call cal_ff_smp_2_scalar                                        &
+     &     (ff_nl_smp(1,1,1), ml_fl, n_vector, ione, ff_nl)
         call nod_scalar_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_scalar_upw(iele_fl_smp_stack,           &
@@ -181,7 +188,8 @@
       ff_nl = 0.0d0
 !
       do imulti = 2, num_multi_pass
-        call cal_ff_smp_2_vector(ff_nl(1,1), ff_nl_smp(1,1,1), ml_fl)
+        call cal_ff_smp_2_vector                                        &
+     &     (ff_nl_smp(1,1,1), ml_fl, n_vector, ione, ff_nl)
         call nod_vector_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_vector_upw(iele_fl_smp_stack,           &
@@ -203,7 +211,8 @@
       ff_nl = 0.0d0
 !
       do imulti = 2, num_multi_pass
-        call cal_ff_smp_2_scalar(ff_nl(1,1), ff_nl_smp(1,1,1), ml_fl)
+        call cal_ff_smp_2_scalar                                        &
+     &     (ff_nl_smp(1,1,1), ml_fl, n_vector, ione, ff_nl)
         call nod_scalar_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_scalar_upw(iele_fl_smp_stack,           &
@@ -225,7 +234,8 @@
 !
       ff_nl = 0.0d0
       do imulti = 2, num_multi_pass
-        call cal_ff_smp_2_vector(ff_nl(1,1), ff_nl_smp(1,1,1), ml_cd)
+        call cal_ff_smp_2_vector                                        &
+     &     (ff_nl_smp(1,1,1), ml_cd, n_vector, ione, ff_nl)
         call nod_vector_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_vector_upw(iele_cd_smp_stack,           &
@@ -246,7 +256,8 @@
 !
       ff_nl = 0.0d0
       do imulti = 2, num_multi_pass
-        call cal_ff_smp_2_scalar(ff_nl(1,1), ff_nl_smp(1,1,1), ml_cd)
+        call cal_ff_smp_2_scalar                                        &
+     &     (ff_nl_smp(1,1,1), ml_cd, n_vector, ione, ff_nl)
         call nod_scalar_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_scalar_upw(iele_cd_smp_stack,           &

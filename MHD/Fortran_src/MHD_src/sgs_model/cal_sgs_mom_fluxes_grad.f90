@@ -188,7 +188,8 @@
      &    ak_sgs(1,icm_sgs), sk6)
 !
       call add6_skv_to_ff_t_smp_1st(ff_t_smp, sk6)
-      call cal_ff_smp_2_tensor(d_nod(1,i_sgs), ff_t_smp, ml_fl)
+      call cal_ff_smp_2_tensor                                          &
+     &   (ff_t_smp, ml_fl, num_tot_nod_phys, i_sgs, d_nod)
 !
 ! ----------   communications
 !
@@ -219,10 +220,11 @@
       call reset_ff_t_smp
 !
       call sel_int_vol_sgs_flux(iflag_velo_supg, i_filter,              &
-     &   n_sym_tensor, i_field, ie_dvx, sk6)
+     &    n_sym_tensor, i_field, ie_dvx, sk6)
 !
       call add6_skv_to_ff_t_smp_1st(ff_t_smp, sk6)
-      call cal_ff_smp_2_tensor(d_nod(1,i_sgs), ff_t_smp, ml_fl)
+      call cal_ff_smp_2_tensor                                          &
+     &   (ff_t_smp, ml_fl, num_tot_nod_phys, i_sgs, d_nod)
 !
 ! ----------   communications
 !

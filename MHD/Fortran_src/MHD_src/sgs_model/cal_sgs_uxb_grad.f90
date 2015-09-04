@@ -81,7 +81,8 @@
       call sel_int_vol_sgs_uxb(i_filter, i_field, id_dx, sk6)
 !
       call add3_skv_coef_to_ff_v_smp_1st(coef_induct, ff_smp, sk6)
-      call cal_ff_smp_2_vector(d_nod(1,i_sgs), ff_smp, ml_cd)
+      call cal_ff_smp_2_vector                                          &
+     &   (ff_smp, ml_cd, num_tot_nod_phys, i_sgs, d_nod)
 !
 ! ----------   communications
 !

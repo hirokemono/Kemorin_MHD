@@ -75,7 +75,7 @@
 !
 !
       if (itype_mass .eq. 1) then
-        call cal_ff_smp_2_scalar(elen_nod, ff_smp, ml)
+        call cal_ff_smp_2_scalar(ff_smp, ml, n_scalar, ione, elen_nod)
       else
         ff = 0.0d0
         call cal_ff_smp_2_ff(n_scalar, ff_smp, ff)

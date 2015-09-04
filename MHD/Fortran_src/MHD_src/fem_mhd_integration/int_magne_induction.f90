@@ -43,8 +43,8 @@
 !      call cal_multi_pass_4_vector_ff
 !      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,         &
 !     &    ff, ml_cd, num_tot_nod_phys, iphys%i_magne, d_nod)
-      call cal_ff_smp_2_vector(d_nod(1,iphys%i_induction),              &
-     &    ff_nl_smp, ml_cd)
+      call cal_ff_smp_2_vector(ff_nl_smp, ml_cd,                        &
+     &    num_tot_nod_phys, iphys%i_induction, d_nod)
 !
 !    communication
 !

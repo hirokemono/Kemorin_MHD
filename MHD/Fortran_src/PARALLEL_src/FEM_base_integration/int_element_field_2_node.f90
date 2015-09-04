@@ -52,7 +52,7 @@
 !
 !
       call int_area_ele_scalar_2_node(ele1%istack_ele_smp, scalar_ele)
-      call cal_ff_smp_2_scalar (scalar_nod, ff_smp, ml)
+      call cal_ff_smp_2_scalar(ff_smp, ml, n_scalar, ione, scalar_nod)
 !
       end subroutine cal_ele_scalar_2_node
 !
@@ -63,12 +63,14 @@
       use m_geometry_data
       use cal_ff_smp_to_ffs
 !
-      real(kind = kreal), intent(in) :: vector_ele(ele1%numele,3)
-      real(kind = kreal), intent(inout) :: vector_nod(node1%numnod,3)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: vector_ele(ele1%numele,n_vector)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: vector_nod(node1%numnod,n_vector)
 !
 !
       call int_area_ele_vector_2_node(ele1%istack_ele_smp, vector_ele)
-      call cal_ff_smp_2_vector(vector_nod, ff_smp, ml)
+      call cal_ff_smp_2_vector(ff_smp, ml, n_vector, ione, vector_nod)
 !
       end subroutine cal_ele_vector_2_node
 !
@@ -79,13 +81,16 @@
       use m_geometry_data
       use cal_ff_smp_to_ffs
 !
-      real(kind = kreal), intent(in) :: tensor_ele(ele1%numele,6)
-      real(kind = kreal), intent(inout) :: tensor_nod(node1%numnod,6)
+      real(kind = kreal), intent(in)                                    &
+     &                   :: tensor_ele(ele1%numele,n_sym_tensor)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: tensor_nod(node1%numnod,n_sym_tensor)
 !
 !
       call int_area_ele_sym_tensor_2_node                               &
      &   (ele1%istack_ele_smp, tensor_ele)
-      call cal_ff_smp_2_tensor(tensor_nod, ff_t_smp, ml)
+      call cal_ff_smp_2_tensor                                          &
+     &   (ff_t_smp, ml, n_sym_tensor, ione, tensor_nod)
 !
       end subroutine cal_ele_sym_tensor_2_node
 !
