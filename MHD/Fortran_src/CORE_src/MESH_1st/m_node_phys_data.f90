@@ -37,7 +37,7 @@
 !
       character (len=kchara), allocatable, target :: phys_nod_name(:)
 ! 
-      real (kind=kreal), allocatable, target :: d_nod(:,:)
+      real (kind=kreal), pointer :: d_nod(:,:)
 ! 
       integer (kind=kint), allocatable :: iflag_nod_update(:)
 !

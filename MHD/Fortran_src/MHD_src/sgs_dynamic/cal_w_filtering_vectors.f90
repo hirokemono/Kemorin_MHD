@@ -29,29 +29,34 @@
 !
       subroutine cal_w_filtered_vector(i_filter, i_vect)
 !
-       integer (kind=kint), intent(in) :: i_filter, i_vect
+      use m_node_phys_data
+!
+      integer (kind=kint), intent(in) :: i_filter, i_vect
 !
 !
       if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING ) then
 !
-        call cal_w_ez_filter_vector_phys(num_whole_filter_grp,          &
-     &      id_whole_filter_grp, i_filter, i_vect)
+        call cal_w_ez_filter_vector_phys                                &
+     &     (num_whole_filter_grp, id_whole_filter_grp, i_vect,          &
+     &      num_tot_nod_phys, i_filter, d_nod)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING ) then
 !
-        call cal_w_filter_vector_phys_smp(num_whole_filter_grp,         &
-     &      id_whole_filter_grp, i_filter, i_vect)
+        call cal_w_filter_vector_phys_smp                               &
+     &     (num_whole_filter_grp, id_whole_filter_grp, i_vect,          &
+     &      num_tot_nod_phys, i_filter, d_nod)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING) then
 !
-        call cal_w_ez_filter_vector_smp(num_whole_filter_grp,           &
-     &      id_whole_filter_grp, i_filter, i_vect)
+        call cal_w_ez_filter_vector_smp                                 &
+     &     (num_whole_filter_grp, id_whole_filter_grp, i_vect,          &
+     &      num_tot_nod_phys, i_filter, d_nod)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_FILTERING) then
 !
-        call cal_w_filter_vector_phys(num_whole_filter_grp,             &
-     &      id_whole_filter_grp, i_filter, i_vect)
-!
+        call cal_w_filter_vector_phys                                   &
+     &     (num_whole_filter_grp, id_whole_filter_grp, i_vect,          &
+     &      num_tot_nod_phys, i_filter, d_nod)
       end if
 !
       end subroutine cal_w_filtered_vector
@@ -60,29 +65,34 @@
 !
       subroutine cal_w_filtered_vector_in_fluid(i_filter, i_vect)
 !
-       integer (kind=kint), intent(in) :: i_filter, i_vect
+      use m_node_phys_data
+!
+      integer (kind=kint), intent(in) :: i_filter, i_vect
 !
 !
       if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING ) then
 !
-        call cal_w_ez_filter_vector_phys(num_fluid_filter_grp,          &
-     &      id_fluid_filter_grp, i_filter, i_vect)
+        call cal_w_ez_filter_vector_phys                                &
+     &     (num_fluid_filter_grp, id_fluid_filter_grp, i_vect,          &
+     &      num_tot_nod_phys, i_filter, d_nod)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING ) then
 !
-        call cal_w_filter_vector_phys_smp(num_fluid_filter_grp,         &
-     &      id_fluid_filter_grp, i_filter, i_vect)
+        call cal_w_filter_vector_phys_smp                               &
+     &     (num_fluid_filter_grp, id_fluid_filter_grp, i_vect,          &
+     &      num_tot_nod_phys, i_filter, d_nod)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING) then
 !
-        call cal_w_ez_filter_vector_smp(num_fluid_filter_grp,           &
-     &      id_fluid_filter_grp, i_filter, i_vect)
+        call cal_w_ez_filter_vector_smp                                 &
+     &     (num_fluid_filter_grp, id_fluid_filter_grp, i_vect,          &
+     &      num_tot_nod_phys, i_filter, d_nod)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_FILTERING) then
 !
-        call cal_w_filter_vector_phys(num_fluid_filter_grp,             &
-     &      id_fluid_filter_grp, i_filter, i_vect)
-!
+        call cal_w_filter_vector_phys                                   &
+     &     (num_fluid_filter_grp, id_fluid_filter_grp, i_vect,          &
+     &      num_tot_nod_phys, i_filter, d_nod)
       end if
 !
       end subroutine cal_w_filtered_vector_in_fluid

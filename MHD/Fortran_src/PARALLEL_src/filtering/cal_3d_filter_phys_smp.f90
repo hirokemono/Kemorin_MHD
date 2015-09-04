@@ -66,7 +66,7 @@
      &    node1%numnod, x_vec(1))
 !
       call scalar_send_recv_3d_filter(node1%numnod, x_vec(1),           &
-     &    d_nod(1,i_filter))
+     &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_3d_filter_scalar_phys_smp
 !
@@ -98,7 +98,7 @@
      &    node1%numnod, x_vec(1))
 !
       call vector_send_recv_3d_filter(node1%numnod, x_vec(1),           &
-     &    d_nod(1,i_filter))
+     &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_3d_filter_vector_phys_smp
 !
@@ -130,7 +130,7 @@
      &    node1%numnod, x_vec(1))
 !
       call tensor_send_recv_3d_filter(node1%numnod, x_vec(1),           &
-     &    d_nod(1,i_filter))
+     &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_3d_filter_tensor_phys_smp
 !
@@ -161,7 +161,7 @@
 
 !
       call scalar_send_recv_3d_filter(node1%numnod, x_vec(1),           &
-     &    d_nod(1,i_filter))
+     &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_3d_ez_filter_scalar_smp
 !
@@ -190,7 +190,7 @@
      &    nnod_filtering, x_vec_filtering(1), node1%numnod, x_vec(1))
 !
       call vector_send_recv_3d_filter(node1%numnod, x_vec(1),           &
-     &    d_nod(1,i_filter))
+     &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_3d_ez_filter_vector_smp
 !
@@ -219,7 +219,7 @@
      &    nnod_filtering, x_vec_filtering(1), node1%numnod, x_vec(1))
 !
       call tensor_send_recv_3d_filter(node1%numnod, x_vec(1),           &
-     &    d_nod(1,i_filter))
+     &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_3d_ez_filter_tensor_smp
 !
