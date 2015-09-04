@@ -26,6 +26,14 @@
 !!         d_nod(inod,i_r) =  d_nod(inod,i_v1) - d_nod(inod,i_v2)
 !!        i_r: result field ID
 !!        i_v1, i_v2: source field IDs
+!!
+!!       subroutine multi_by_const_nod_scalar(const, i_v1, i_r)
+!!       subroutine multi_by_const_nod_vector(const, i_v1, i_r)
+!!       subroutine multi_by_const_nod_tensor(const, i_v1, i_r)
+!!
+!!         d_nod(inod,i_r) =  const * d_nod(inod,i_v1)
+!!        i_r: result field ID
+!!        i_v1: source field IDs
 !!@endverbatim
 !
       module copy_nodal_fields
@@ -177,6 +185,55 @@
      &    num_tot_nod_phys, d_nod, i_v1, i_v2, i_r)
 !
       end subroutine subtract_2_nod_tensors
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine multi_by_const_nod_scalar(const, i_v1, i_r)
+!
+      use multi_by_const_fields_type
+!
+      integer(kind = kint), intent(in) :: i_r, i_v1
+      real(kind = kreal), intent(in) :: const
+!
+!
+      call multi_by_const_nod_phys1                                     &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
+     &    num_tot_nod_phys, d_nod, const, i_v1, i_r)
+!
+      end subroutine multi_by_const_nod_scalar
+!
+!-----------------------------------------------------------------------
+!
+      subroutine multi_by_const_nod_vector(const, i_v1, i_r)
+!
+      use multi_by_const_fields_type
+!
+      integer(kind = kint), intent(in) :: i_r, i_v1
+      real(kind = kreal), intent(in) :: const
+!
+!
+      call multi_by_const_nod_phys3                                     &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
+     &    num_tot_nod_phys, d_nod, const, i_v1, i_r)
+!
+      end subroutine multi_by_const_nod_vector
+!
+!-----------------------------------------------------------------------
+!
+      subroutine multi_by_const_nod_tensor(const, i_v1, i_r)
+!
+      use multi_by_const_fields_type
+!
+      integer(kind = kint), intent(in) :: i_r, i_v1
+      real(kind = kreal), intent(in) :: const
+!
+!
+      call multi_by_const_nod_phys6                                     &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
+     &    num_tot_nod_phys, d_nod, const, i_v1, i_r)
+!
+      end subroutine multi_by_const_nod_tensor
 !
 !-----------------------------------------------------------------------
 !

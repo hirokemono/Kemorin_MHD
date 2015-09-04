@@ -24,7 +24,7 @@
       use m_ctl_params_4_diff_udt
       use m_node_phys_address
       use m_node_phys_data
-      use multi_by_const_fields
+      use copy_nodal_fields
 !
       integer(kind = kint) :: i, ist
 !
@@ -51,7 +51,7 @@
       use m_constants
       use m_node_phys_address
       use m_node_phys_data
-      use multi_by_const_fields
+      use copy_nodal_fields
 !
       integer(kind = kint), intent(in) :: icou
       integer(kind = kint) :: i, ist

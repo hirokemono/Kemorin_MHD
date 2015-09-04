@@ -4,13 +4,15 @@
 !     Written by H.Matsui
 !
 !!      subroutine int_diff_scalar_on_ele                               &
-!!     &         (numnod, numele, nnod_4_ele, ie, a_vol_ele,            &
-!!     &          iele_fsmp_stack, ntot_int_3d, n_int, xjac, dnx,       &
-!!     &          d_nod, dvx)
+!!     &         (node, ele, jac_3d, iele_fsmp_stack, n_int,            &
+!!     &          ncomp_nod, i_fld, d_nod, ncomp_ele, i_diff, dvx)
 !!      subroutine int_diff_vector_on_ele                               &
-!!     &         (numnod, numele, nnod_4_ele, ie, a_vol_ele,            &
-!!     &          iele_fsmp_stack, ntot_int_3d, n_int, xjac, dnx,       &
-!!     &          d_nod, dvx)
+!!     &         (node, ele, jac_3d, iele_fsmp_stack, n_int,            &
+!!     &          ncomp_nod, i_fld, d_nod, ncomp_ele, i_diff, dvx)
+!!        type(node_data), intent(inout) :: node
+!!        type(element_data), intent(inout) :: ele
+!!        type(jacobians_3d), intent(inout) :: jac_3d
+!
 !
       module int_differenciate_on_ele
 !
@@ -19,6 +21,8 @@
 !
       implicit none
 !
+      private :: int_vol_diff_scalar_on_ele, int_vol_diff_vector_on_ele
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -26,6 +30,67 @@
 ! -----------------------------------------------------------------------
 !
       subroutine int_diff_scalar_on_ele                                 &
+     &         (node, ele, jac_3d, iele_fsmp_stack, n_int,              &
+     &          ncomp_nod, i_fld, d_nod, ncomp_ele, i_diff, dvx)
+!
+      use t_geometry_data
+      use t_jacobian_3d
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d
+!
+      integer (kind=kint), intent(in) :: n_int
+      integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer (kind=kint), intent(in) :: ncomp_nod, i_fld
+      real(kind=kreal), intent(in) :: d_nod(node%numnod,ncomp_nod)
+!
+      integer (kind=kint), intent(in) :: ncomp_ele, i_diff
+      real(kind=kreal), intent(inout) :: dvx(ele%numele,ncomp_ele)
+!
+!
+      call int_vol_diff_scalar_on_ele(node%numnod, ele%numele,          &
+     &    ele%nnod_4_ele, ele%ie, ele%a_vol_ele, iele_fsmp_stack,       &
+     &    jac_3d%ntot_int, n_int, jac_3d%xjac, jac_3d%dnx,              &
+     &    d_nod(1,i_fld), dvx(1,i_diff))
+!
+      end subroutine int_diff_scalar_on_ele
+!
+! -----------------------------------------------------------------------
+!
+      subroutine int_diff_vector_on_ele                                 &
+     &         (node, ele, jac_3d, iele_fsmp_stack, n_int,              &
+     &          ncomp_nod, i_fld, d_nod, ncomp_ele, i_diff, dvx)
+!
+      use t_geometry_data
+      use t_jacobian_3d
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d
+!
+      integer (kind=kint), intent(in) :: n_int
+      integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer (kind=kint), intent(in) :: ncomp_nod, i_fld
+      real(kind=kreal), intent(in) :: d_nod(node%numnod,ncomp_nod)
+!
+      integer (kind=kint), intent(in) :: ncomp_ele, i_diff
+      real(kind=kreal), intent(inout) :: dvx(ele%numele,ncomp_ele)
+!
+!
+      call int_vol_diff_vector_on_ele(node%numnod, ele%numele,          &
+     &    ele%nnod_4_ele, ele%ie, ele%a_vol_ele, iele_fsmp_stack,       &
+     &    jac_3d%ntot_int, n_int, jac_3d%xjac, jac_3d%dnx,              &
+     &    d_nod(1,i_fld), dvx(1,i_diff))
+!
+      end subroutine int_diff_vector_on_ele
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine int_vol_diff_scalar_on_ele                             &
      &         (numnod, numele, nnod_4_ele, ie, a_vol_ele,              &
      &          iele_fsmp_stack, ntot_int_3d, n_int, xjac, dnx,         &
      &          d_nod, dvx)
@@ -42,9 +107,9 @@
       real(kind=kreal), intent(in)                                      &
      &                  :: dnx(numele,nnod_4_ele,ntot_int_3d,3)
 !
-      real(kind=kreal), intent(inout) :: d_nod(numnod)
+      real(kind=kreal), intent(in) :: d_nod(numnod)
 !
-      real(kind=kreal), intent(inout) :: dvx(numele,9)
+      real(kind=kreal), intent(inout) :: dvx(numele,3)
 !
        integer(kind = kint) :: iproc, inod, iele, k1, ii, ix
        integer(kind = kint) :: istart, iend, nd
@@ -92,11 +157,11 @@
        end do
 !$omp end parallel do
 !
-      end subroutine int_diff_scalar_on_ele
+      end subroutine int_vol_diff_scalar_on_ele
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine int_diff_vector_on_ele                                 &
+      subroutine int_vol_diff_vector_on_ele                             &
      &         (numnod, numele, nnod_4_ele, ie, a_vol_ele,              &
      &          iele_fsmp_stack, ntot_int_3d, n_int, xjac, dnx,         &
      &          d_nod, dvx)
@@ -113,7 +178,7 @@
       real(kind=kreal), intent(in)                                      &
      &                  :: dnx(numele,nnod_4_ele,ntot_int_3d,3)
 !
-      real(kind=kreal), intent(inout) :: d_nod(numnod,3)
+      real(kind=kreal), intent(in) :: d_nod(numnod,3)
 !
       real(kind=kreal), intent(inout) :: dvx(numele,9)
 !
@@ -189,7 +254,7 @@
        end do
 !$omp end parallel do
 !
-      end subroutine int_diff_vector_on_ele
+      end subroutine int_vol_diff_vector_on_ele
 !
 ! -----------------------------------------------------------------------
 !

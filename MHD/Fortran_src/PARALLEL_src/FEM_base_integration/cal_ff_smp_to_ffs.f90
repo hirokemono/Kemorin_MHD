@@ -47,7 +47,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_ff_smp_2_ff (numdir, ff_smp, ff)
+      subroutine cal_ff_smp_2_ff(numdir, ff_smp, ff)
 !
       use cal_rhs_node_order
 !
@@ -65,7 +65,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_ff_smp_2_ml (ml, ml_o, ff_smp)
+      subroutine cal_ff_smp_2_ml(ml, ml_o, ff_smp)
 !
       use cal_rhs_node_order
 !
@@ -83,7 +83,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_ff_smp_2_scalar (scalar, ff_smp, ml)
+      subroutine cal_ff_smp_2_scalar(scalar, ff_smp, ml)
 !
       use cal_rhs_node_order
 !

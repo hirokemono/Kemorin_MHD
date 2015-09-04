@@ -58,7 +58,7 @@
 !       call check_ff_nl(n_scalar)
 !
       call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,          &
-     &   d_nod(1,i_field), ff_nl, ml_fl)
+     &    ff_nl, ml_fl, num_tot_nod_phys, i_field, d_nod)
 !
 !   communication
 !
@@ -89,7 +89,7 @@
       call set_boundary_ene_4_rhs
 !
       call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,          &
-     &    d_nod(1,iphys%i_t_diffuse), ff, ml_fl)
+     &    ff, ml_fl, num_tot_nod_phys, iphys%i_t_diffuse, d_nod)
 !
 !   communication
 !

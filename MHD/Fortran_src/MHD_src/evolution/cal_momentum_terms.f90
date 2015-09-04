@@ -55,7 +55,7 @@
 !       call set_boundary_velo_4_rhs
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    d_nod(1,i_field), ff_nl, ml_fl)
+     &    ff_nl, ml_fl, num_tot_nod_phys, i_field, d_nod)
       call vector_send_recv(num_tot_nod_phys, i_field, d_nod)
 !
       end subroutine cal_terms_4_momentum
@@ -82,7 +82,7 @@
       call set_boundary_velo_4_rhs
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &     d_nod(1,iphys%i_v_diffuse), ff, ml_fl)
+     &    ff, ml_fl, num_tot_nod_phys, iphys%i_v_diffuse, d_nod)
 !
       call vector_send_recv(num_tot_nod_phys, iphys%i_v_diffuse, d_nod)
 !

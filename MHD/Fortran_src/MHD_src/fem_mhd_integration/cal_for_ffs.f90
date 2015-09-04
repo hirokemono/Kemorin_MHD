@@ -3,12 +3,12 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!!      subroutine cal_ff_2_field                                       &
-!!     &         (numnod, inod_smp_stack, numdir, vector, ff, ml)
-!!      subroutine cal_ff_2_vector                                      &
-!!     &         (numnod, inod_smp_stack, vector, ff, ml)
-!!      subroutine cal_ff_2_scalar                                      &
-!!     &         (numnod, inod_smp_stack, scalar, ff, ml)
+!!      subroutine cal_ff_2_field(numnod, inod_smp_stack, numdir,       &
+!!     &         ff, ml, ncomp_nod, i_fld, d_nod)
+!!      subroutine cal_ff_2_vector(numnod, inod_smp_stack, ff, ml,      &
+!!     &          ncomp_nod, i_fld, d_nod)
+!!      subroutine cal_ff_2_scalar(numnod, inod_smp_stack, ff, ml,      &
+!!     &          ncomp_nod, i_fld, d_nod)
 !!
 !!      subroutine cal_ff_smp_2_multi_pass(maxnod_4_smp, inod_smp_stack,&
 !!     &          numdir, ff_smp, ff_m_smp)
@@ -28,15 +28,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_ff_2_field                                         &
-     &         (numnod, inod_smp_stack, numdir, vector, ff, ml)
+      subroutine cal_ff_2_field(numnod, inod_smp_stack, numdir,         &
+     &         ff, ml, ncomp_nod, i_fld, d_nod)
 !
       integer(kind=kint), intent(in) :: numnod, numdir
       integer(kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
       real(kind=kreal), intent(in) :: ff(numnod,numdir) 
       real(kind=kreal), intent(in) :: ml(numnod)
-      real(kind=kreal), intent(inout) :: vector(numnod,numdir)
+!
+      integer(kind=kint), intent(in) :: ncomp_nod, i_fld
+      real(kind=kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer(kind = kint) :: iproc, inod, nd
       integer(kind = kint) :: istart, iend
@@ -49,7 +51,7 @@
         do nd = 1, numdir
 !cdir nodep
           do inod = istart, iend
-            vector(inod,nd) = ff(inod,nd) * ml(inod)
+            d_nod(inod,i_fld+nd-1) = ff(inod,nd) * ml(inod)
           end do
         end do
       end do
@@ -59,14 +61,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_ff_2_vector                                        &
-     &         (numnod, inod_smp_stack, vector, ff, ml)
+      subroutine cal_ff_2_vector(numnod, inod_smp_stack, ff, ml,        &
+     &          ncomp_nod, i_fld, d_nod)
 !
       integer(kind=kint), intent(in) :: numnod
       integer(kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind=kreal), intent(in) :: ff(numnod,3) 
       real(kind=kreal), intent(in) :: ml(numnod)
-      real(kind=kreal), intent(inout) :: vector(numnod,3)
+!
+      integer(kind=kint), intent(in) :: ncomp_nod, i_fld
+      real(kind=kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer(kind = kint) :: iproc, inod
       integer(kind = kint) :: istart, iend
@@ -78,9 +82,9 @@
        iend   = inod_smp_stack(iproc)
 !cdir nodep
         do inod = istart, iend
-          vector(inod,1) = ff(inod,1) * ml(inod)
-          vector(inod,2) = ff(inod,2) * ml(inod)
-          vector(inod,3) = ff(inod,3) * ml(inod)
+          d_nod(inod,i_fld  ) = ff(inod,1) * ml(inod)
+          d_nod(inod,i_fld+1) = ff(inod,2) * ml(inod)
+          d_nod(inod,i_fld+2) = ff(inod,3) * ml(inod)
         end do
       end do
 !$omp end parallel do
@@ -89,14 +93,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_ff_2_scalar                                        &
-     &         (numnod, inod_smp_stack, scalar, ff, ml)
+      subroutine cal_ff_2_scalar(numnod, inod_smp_stack, ff, ml,        &
+     &          ncomp_nod, i_fld, d_nod)
 !
       integer(kind=kint), intent(in) :: numnod
       integer(kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind=kreal), intent(in) :: ff(numnod,1) 
       real(kind=kreal), intent(in) :: ml(numnod)
-      real(kind=kreal), intent(inout) :: scalar(numnod)
+!
+      integer(kind=kint), intent(in) :: ncomp_nod, i_fld
+      real(kind=kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer(kind = kint) :: iproc, inod, nd
       integer(kind = kint) :: istart, iend
@@ -108,7 +114,7 @@
         iend   = inod_smp_stack(iproc)
 !cdir nodep
         do inod = istart, iend
-          scalar(inod) = ff(inod,1) * ml(inod)
+          d_nod(inod,i_fld) = ff(inod,1) * ml(inod)
         end do
       end do
 !$omp end parallel do

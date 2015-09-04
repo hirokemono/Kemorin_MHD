@@ -50,7 +50,7 @@
 !
       call cal_multi_pass_4_vector_ff
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    d_nod(1,iphys%i_current), ff, ml)
+     &    ff, ml, num_tot_nod_phys, iphys%i_current, d_nod)
 !
 !    communication
 !

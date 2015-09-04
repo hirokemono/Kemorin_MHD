@@ -46,7 +46,7 @@
 !
       call set_ff_nl_smp_2_ff(n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    d_nod(1,i_res), ff_nl, ml)
+     &    ff_nl, ml, num_tot_nod_phys, i_res, d_nod)
 !
 ! ----------   communications
 !
@@ -73,7 +73,7 @@
 !
       call set_ff_nl_smp_2_ff(n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    d_nod(1,i_res), ff_nl, ml_fl)
+     &    ff_nl, ml_fl, num_tot_nod_phys, i_res, d_nod)
 !
 ! ----------   communications
 !

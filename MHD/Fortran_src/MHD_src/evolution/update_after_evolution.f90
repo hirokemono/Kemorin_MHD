@@ -78,6 +78,7 @@
       use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
+      use m_geometry_data_MHD
       use m_SGS_model_coefs
       use m_SGS_address
 !
@@ -153,7 +154,8 @@
          if (iphys_ele%i_filter_velo.ne.0) then
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_filter_v_on_ele'
-           call diff_filter_v_on_ele
+           call sel_int_diff_vector_on_ele                              &
+     &        (iele_fl_smp_stack, iphys%i_filter_velo, i_dfvx)
          end if
 !
          if (iflag_commute_velo .eq. id_SGS_commute_ON                  &
@@ -171,7 +173,8 @@
          if ( iflag_SGS_model .eq. id_SGS_NL_grad) then
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_velocity_on_ele'
-            call diff_velocity_on_ele
+           call sel_int_diff_vector_on_ele                              &
+     &        (iele_fl_smp_stack, iphys%i_velo, i_dvx)
          end if
        end if
 !
@@ -259,7 +262,8 @@
 !
 !       if ( i_dtx .ne. 0 ) then
 !         if (iflag_debug.gt.0) write(*,*) 'diff_temp_on_ele'
-!         call diff_temp_on_ele
+!         call sel_int_diff_scalar_on_ele                               &
+!     &      (ele1%istack_ele_smp, iphys%i_temp, i_dtx)
 !       end if
 !
        if (iflag_dynamic.eq.0                                           &
@@ -268,7 +272,8 @@
 !         if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
 !           if ( i_dftx .ne. 0) then
 !             if (iflag_debug.gt.0) write(*,*) 'diff_filter_t_on_ele'
-!             call diff_filter_t_on_ele
+!             call sel_int_diff_scalar_on_ele                           &
+!     &          (ele1%istack_ele_smp, iphys%i_filter_temp, i_dftx)
 !           end if
 !         end if
 !       end if
@@ -421,7 +426,8 @@
          if(iflag2.eq.2 .and. i_dfbx.ne.0) then
            if (iflag_debug .ge. iflag_routine_msg) write(*,*)           &
      &                         'diff_filter_b_on_ele'
-           call diff_filter_b_on_ele
+           call sel_int_diff_vector_on_ele                              &
+     &        (ele1%istack_ele_smp, iphys%i_filter_magne, i_dfbx)
          end if
 !
          if(iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
@@ -441,7 +447,8 @@
      &  .or. iflag_SGS_induction .eq. id_SGS_NL_grad) then
          if ( i_dbx.ne.0 ) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
-           call diff_magne_on_ele
+           call sel_int_diff_vector_on_ele                              &
+     &        (ele1%istack_ele_smp, iphys%i_magne, i_dbx)
         end if
        end if
 !
@@ -515,7 +522,8 @@
 !
          if (iflag2.eq.2 .and. i_dfbx.ne.0) then
            if (iflag_debug.gt.0) write(*,*) 'diff_filter_b_on_ele'
-           call diff_filter_b_on_ele
+           call sel_int_diff_vector_on_ele                              &
+     &        (ele1%istack_ele_smp, iphys%i_filter_magne, i_dfbx)
          end if
 !
          if (iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
@@ -545,7 +553,8 @@
      &  .or. iflag_SGS_induction .eq. id_SGS_NL_grad) then
         if ( i_dbx.ne.0 ) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
-            call diff_magne_on_ele
+            call sel_int_diff_vector_on_ele                             &
+     &         (ele1%istack_ele_smp, iphys%i_magne, i_dbx)
         end if
        end if
 !
