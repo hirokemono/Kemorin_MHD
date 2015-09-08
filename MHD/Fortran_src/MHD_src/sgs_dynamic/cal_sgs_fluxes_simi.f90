@@ -33,6 +33,7 @@
 !
       subroutine cal_sgs_mf_simi(i_sgs, i_vect, i_vect_f, icm_sgs)
 !
+      use m_node_phys_data
       use cal_fluxes
       use cal_similarity_terms
       use cal_filtering_tensors
@@ -42,7 +43,8 @@
 !
 !  ----------   set filtered flux into array
 !
-       call cal_flux_tensor(i_sgs, i_vect, i_vect)
+       call cal_flux_tensor(node1, num_tot_nod_phys,                    &
+     &     i_vect, i_vect, i_sgs, d_nod)
        call cal_filtered_sym_tensor(i_sgs, i_sgs)
 !
 !  ----------   substruct flux obtained by filterd values
@@ -57,6 +59,7 @@
       subroutine cal_sgs_hf_simi(i_sgs, ifield, ifield_f, icm_sgs)
 !
       use m_node_phys_address
+      use m_node_phys_data
 !
       use cal_fluxes
       use cal_similarity_terms
@@ -66,7 +69,8 @@
       integer (kind=kint), intent(in) :: icm_sgs
 !
 !
-      call cal_flux_vector(i_sgs, iphys%i_velo, ifield)
+      call cal_flux_vector(node1, num_tot_nod_phys,                     &
+     &    iphys%i_velo, ifield, i_sgs, d_nod)
       call cal_filtered_vector(i_sgs, i_sgs)
 !
       call cal_sgs_flux_vector(node1%istack_nod_smp,                    &
@@ -79,6 +83,7 @@
       subroutine cal_sgs_induct_t_simi(i_sgs, i_v, i_b,                 &
      &          i_fil_v, i_fil_b, icm_sgs)
 !
+      use m_node_phys_data
       use cal_fluxes
       use cal_similarity_terms
       use cal_filtering_vectors
@@ -88,7 +93,8 @@
 !
 !  ----------   set filtered flux into array
 !
-       call cal_induction_tensor(i_sgs, i_b, i_v)
+       call cal_induction_tensor(node1, num_tot_nod_phys,               &
+     &     i_b, i_v, i_sgs, d_nod)
        call cal_filtered_vector(i_sgs, i_sgs)
 !
 !  ----------   substruct flux obtained by filterd values
@@ -142,6 +148,7 @@
 !
       subroutine cal_sgs_mf_simi_wide(i_sgs, i_vect, i_vect_f, icm_sgs)
 !
+      use m_node_phys_data
       use cal_fluxes
       use cal_similarity_terms
       use cal_w_filtering_tensors
@@ -151,7 +158,8 @@
 !
 !  ----------   set filtered flux into array
 !
-       call cal_flux_tensor(i_sgs, i_vect, i_vect)
+       call cal_flux_tensor(node1, num_tot_nod_phys,                    &
+     &     i_vect, i_vect, i_sgs, d_nod)
        call cal_w_filtered_sym_tensor(i_sgs, i_sgs)
 !
 !  ----------   substruct flux obtained by filterd values
@@ -166,6 +174,7 @@
       subroutine cal_sgs_hf_simi_wide(i_sgs, ifield, ifield_f, icm_sgs)
 !
       use m_node_phys_address
+      use m_node_phys_data
 !
       use cal_fluxes
       use cal_similarity_terms
@@ -175,7 +184,8 @@
       integer (kind=kint), intent(in) :: icm_sgs
 !
 !
-      call cal_flux_vector(i_sgs, iphys%i_velo, ifield)
+      call cal_flux_vector(node1, num_tot_nod_phys,                     &
+     &    iphys%i_velo, ifield, i_sgs, d_nod)
       call cal_w_filtered_vector(i_sgs, i_sgs)
 !
       call cal_sgs_flux_vector(node1%istack_nod_smp,                    &
@@ -188,6 +198,7 @@
       subroutine cal_sgs_induct_t_simi_wide(i_sgs, i_v, i_b,            &
      &          i_fil_v, i_fil_b, icm_sgs)
 !
+      use m_node_phys_data
       use cal_fluxes
       use cal_similarity_terms
       use cal_w_filtering_vectors
@@ -197,7 +208,8 @@
 !
 !  ----------   set filtered flux into array
 !
-       call cal_induction_tensor(i_sgs, i_b, i_v)
+       call cal_induction_tensor(node1, num_tot_nod_phys,               &
+     &     i_b, i_v, i_sgs, d_nod)
        call cal_w_filtered_vector(i_sgs, i_sgs)
 !
 !  ----------   substruct flux obtained by filterd values

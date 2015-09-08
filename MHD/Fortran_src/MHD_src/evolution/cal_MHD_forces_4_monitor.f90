@@ -26,7 +26,10 @@
 !
       subroutine cal_fluxes_4_monitor
 !
+      use m_geometry_data
       use m_node_phys_address
+      use m_node_phys_data
+      use m_physical_property
 !
       use cal_fluxes
       use int_vol_coriolis_term
@@ -34,27 +37,28 @@
 !
       if (iphys%i_h_flux .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_h_flux)
-        call cal_flux_vector(iphys%i_h_flux,                            &
-     &      iphys%i_velo, iphys%i_temp)
+        call cal_flux_vector(node1, num_tot_nod_phys,                   &
+     &      iphys%i_velo, iphys%i_temp, iphys%i_h_flux, d_nod)
       else if (iphys%i_ph_flux .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_ph_flux)
-        call cal_flux_vector(iphys%i_ph_flux,                           &
-     &      iphys%i_velo, iphys%i_par_temp)
+        call cal_flux_vector(node1, num_tot_nod_phys,                   &
+     &      iphys%i_velo, iphys%i_par_temp, iphys%i_ph_flux, d_nod)
       else if (iphys%i_c_flux .gt.  izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_c_flux)
-        call cal_flux_vector(iphys%i_c_flux,                            &
-     &      iphys%i_velo, iphys%i_light)
+        call cal_flux_vector(node1, num_tot_nod_phys,                   &
+     &      iphys%i_velo, iphys%i_light, iphys%i_c_flux, d_nod)
       else if (iphys%i_m_flux .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_mom_flux)
-        call cal_flux_tensor(iphys%i_m_flux,                            &
-     &      iphys%i_velo, iphys%i_velo)
+        call cal_flux_tensor(node1, num_tot_nod_phys,                   &
+     &      iphys%i_velo, iphys%i_velo, iphys%i_m_flux, d_nod)
       else if (iphys%i_maxwell .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_maxwell_t)
-        call cal_maxwell_tensor(iphys%i_maxwell, iphys%i_magne)
+        call cal_maxwell_tensor(node1, ex_magne, num_tot_nod_phys,      &
+     &      iphys%i_magne, iphys%i_maxwell, d_nod)
       else if (iphys%i_induct_t .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_induct_t)
-        call cal_induction_tensor(iphys%i_induct_t,                     &
-     &      iphys%i_magne, iphys%i_velo)
+        call cal_induction_tensor(node1, num_tot_nod_phys,              &
+     &      iphys%i_magne, iphys%i_velo, iphys%i_induct_t, d_nod)
       else if (iphys%i_density .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_density)
         call set_boussinesq_density_at_node
@@ -236,8 +240,10 @@
 !
       subroutine cal_work_4_forces
 !
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
+      use m_physical_property
 !
       use buoyancy_flux
       use products_nodal_fields_smp
@@ -265,7 +271,9 @@
       if (iphys%i_electric .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_e_field)
-        call cal_nod_electric_field_smp
+        call cal_nod_electric_field_smp                                 &
+     &     (node1, coef_d_magne, num_tot_nod_phys, iphys%i_current,     &
+     &      iphys%i_vp_induct, iphys%i_electric, d_nod)
       end if
 !
       if (iphys%i_ujb .gt. izero) then
@@ -346,7 +354,10 @@
       end if
 !
       if (iphys%i_poynting .gt. izero) then
-        call cal_nod_poynting_flux_smp
+        call cal_nod_poynting_flux_smp                                  &
+     &     (node1, coef_d_magne, num_tot_nod_phys, iphys%i_current,     &
+     &      iphys%i_vp_induct, iphys%i_magne, iphys%i_poynting,         &
+     &      d_nod)
       end if
 !$omp end parallel
 !

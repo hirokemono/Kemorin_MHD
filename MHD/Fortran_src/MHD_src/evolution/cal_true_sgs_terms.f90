@@ -103,8 +103,9 @@
       use cal_terms_for_heat
 !
 !
-      call cal_flux_vector(iphys%i_h_flux, iphys%i_filter_velo,         &
-     &    iphys%i_filter_temp)
+      call cal_flux_vector(node1, num_tot_nod_phys,                     &
+     &    iphys%i_filter_velo, iphys%i_filter_temp, iphys%i_h_flux,     &
+     &    d_nod)
       call cal_terms_4_heat(iphys%i_h_flux_div)
       call copy_scalar_component                                        &
      &   (iphys%i_h_flux_div, iphys%i_SGS_div_hf_true)
@@ -119,8 +120,9 @@
       use cal_momentum_terms
 !
 !
-      call cal_flux_tensor(iphys%i_m_flux, iphys%i_filter_velo,         &
-     &    iphys%i_filter_velo)
+      call cal_flux_tensor(node1, num_tot_nod_phys,                     &
+     &    iphys%i_filter_velo, iphys%i_filter_velo, iphys%i_m_flux,     &
+     &    d_nod)
       call cal_terms_4_momentum(iphys%i_m_flux_div)
       call copy_vector_component                                        &
      &   (iphys%i_m_flux_div, iphys%i_SGS_div_mf_true)
@@ -132,10 +134,12 @@
       subroutine cal_div_sgs_maxwell_true_pre
 !
       use m_node_phys_address
+      use m_physical_property
       use cal_momentum_terms
 !
 !
-      call cal_maxwell_tensor(iphys%i_maxwell, iphys%i_filter_magne)
+      call cal_maxwell_tensor(node1, ex_magne, num_tot_nod_phys,        &
+     &    iphys%i_filter_magne, iphys%i_maxwell, d_nod)
       call cal_terms_4_momentum(iphys%i_maxwell_div)
       call copy_vector_component                                        &
      &   (iphys%i_maxwell_div, iphys%i_SGS_Lor_true)
@@ -150,8 +154,9 @@
       use cal_magnetic_terms
 !
 !
-      call cal_induction_tensor(iphys%i_induct_t,                       &
-     &    iphys%i_filter_magne, iphys%i_filter_velo)
+      call cal_induction_tensor(node1, num_tot_nod_phys,                &
+     &    iphys%i_filter_magne, iphys%i_filter_velo, iphys%i_induct_t,  &
+     &    d_nod)
       call cal_terms_4_magnetic(iphys%i_induct_div)
       call copy_vector_component                                        &
      &   (iphys%i_induct_div, iphys%i_SGS_idct_true)

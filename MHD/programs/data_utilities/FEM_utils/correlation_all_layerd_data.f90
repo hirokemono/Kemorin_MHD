@@ -111,7 +111,8 @@
         call int_vol_2rms_ave_ele_grps_1st(max_int_point,               &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%item_layer,              &
-     &      d_nod(1,icomp), d_nod_trans2(1,1), ave_l(1,icomp),          &
+     &      num_tot_nod_phys, icomp, d_nod,                             &
+     &      ione, ione, d_nod_trans2(1,1), ave_l(1,icomp),              &
      &      rms_l(1,icomp), ave_l(1,icomp_2), rms_l(1,icomp_2))
       end do
 !
@@ -139,7 +140,8 @@
         call int_vol_dev_cor_ele_grps_1st(max_int_point,                &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%item_layer,              &
-     &      d_nod(1,icomp), d_nod_trans2(1,1),                          &
+     &      num_tot_nod_phys, icomp, d_nod,                             &
+     &      ione, ione, d_nod_trans2(1,1),                              &
      &      ave_ref(1,icomp), ave_tgt(1,icomp),                         &
      &      sig_l(1,icomp), sig_l(1,icomp_2),  cov_l(1,icomp) )
       end do

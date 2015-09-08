@@ -5,25 +5,29 @@
 !     Modified by H. Matsui on Nov., 2008
 !     Modified by H. Matsui on June, 2011
 !
-!      subroutine int_vol_rms_ave_ele_grps_1st(num_int,                 &
-!     &          num_egrp, ntot_egrp, istack_egrp, iele_grp,            &
-!     &          d_nod, ave_l, rms_l)
-!      subroutine int_vol_rms_ave_1egrp_1st(num_int,                    &
-!     &          nitem_grp, iele_grp, d_nod, ave_l, rms_l)
-!
-!      subroutine int_vol_2rms_ave_ele_grps_1st(num_int,                &
-!     &          num_egrp, ntot_egrp, istack_egrp, iele_grp,            &
-!     &          d1_nod, d2_nod, ave_1, rms_1, ave_2, rms_2)
-!      subroutine int_vol_2rms_ave_1egrp_1st(num_int,                   &
-!     &          nitem_grp, iele_grp, d1_nod, d2_nod,                   &
-!     &          ave_1, rms_1, ave_2, rms_2)
-!
-!      subroutine int_vol_dev_cor_ele_grps_1st(num_int,                 &
-!     &          num_egrp, ntot_egrp, istack_egrp, iele_grp,            &
-!     &          d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
-!      subroutine int_vol_dev_cor_1egrp_1st(num_int,                    &
-!     &          nitem_grp, iele_grp, d1_nod, d2_nod,                   &
-!     &          ave_1, ave_2, sig_1, sig_2, cov_l)
+!!      subroutine int_vol_rms_ave_ele_grps_1st(num_int,                &
+!!     &          num_egrp, ntot_egrp, istack_egrp, iele_grp,           &
+!!     &          ncomp_nod, i_fld, d_nod, ave_l, rms_l)
+!!      subroutine int_vol_rms_ave_1egrp_1st(num_int,                   &
+!!     &          nitem_grp, iele_grp, ncomp_nod, i_fld, d_nod,         &
+!!     &          ave_l, rms_l)
+!!
+!!      subroutine int_vol_2rms_ave_ele_grps_1st(num_int,               &
+!!     &          num_egrp, ntot_egrp, istack_egrp, iele_grp,           &
+!!     &          ncomp_1, ifld_1, d1_nod, ncomp_2, ifld_2, d2_nod,     &
+!!     &          ave_1, rms_1, ave_2, rms_2)
+!!      subroutine int_vol_2rms_ave_1egrp_1st(num_int,                  &
+!!     &          nitem_grp, iele_grp, ncomp_1, ifld_1, d1_nod,         &
+!!     &          ncomp_2, ifld_2, d2_nod, ave_1, rms_1, ave_2, rms_2)
+!!
+!!      subroutine int_vol_dev_cor_ele_grps_1st(num_int,                &
+!!     &          num_egrp, ntot_egrp, istack_egrp, iele_grp,           &
+!!     &          ncomp_1, ifld_1, d1_nod, ncomp_2, ifld_2, d2_nod,     &
+!!     &          ave_1, ave_2, sig_1, sig_2, cov_l)
+!!      subroutine int_vol_dev_cor_1egrp_1st                            &
+!!     &         (num_int, nitem_grp, iele_grp, ncomp_1, ifld_1, d1_nod,&
+!!     &          ncomp_2, ifld_2, d2_nod, ave_1, ave_2, sig_1, sig_2,  &
+!!     &          cov_l)
 !
       module int_rms_ave_ele_grps_1st
 !
@@ -45,7 +49,7 @@
 !
       subroutine int_vol_rms_ave_ele_grps_1st(num_int,                  &
      &          num_egrp, ntot_egrp, istack_egrp, iele_grp,             &
-     &          d_nod, ave_l, rms_l)
+     &          ncomp_nod, i_fld, d_nod, ave_l, rms_l)
 !
       use int_vol_rms_ave_1egrp
 !
@@ -54,7 +58,8 @@
       integer (kind = kint), intent(in) :: num_egrp, ntot_egrp
       integer (kind = kint), intent(in) :: istack_egrp(0:num_egrp)
       integer (kind = kint), intent(in) :: iele_grp(ntot_egrp)
-      real(kind = kreal), intent(in) :: d_nod(node1%numnod)
+      integer (kind = kint), intent(in) :: ncomp_nod, i_fld
+      real(kind = kreal), intent(in) :: d_nod(node1%numnod,ncomp_nod)
 !
       real(kind = kreal), intent(inout) :: ave_l(num_egrp)
       real(kind = kreal), intent(inout) :: rms_l(num_egrp)
@@ -72,7 +77,7 @@
      &       (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,    &
      &        nitem_grp, iele_grp(ist_grp), num_int,                    &
      &        jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%an,         &
-     &        d_nod, ave_l(igrp), rms_l(igrp) )
+     &         d_nod(1,i_fld), ave_l(igrp), rms_l(igrp) )
         end do
 !$omp end parallel do
 !
@@ -86,7 +91,7 @@
      &       (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,    &
      &        nitem_grp, iele_grp(ist_grp), num_int,                    &
      &        jac1_3d_l%ntot_int, jac1_3d_l%xjac, jac1_3d_l%an,         &
-     &        d_nod, ave_l(igrp), rms_l(igrp) )
+     &         d_nod(1,i_fld), ave_l(igrp), rms_l(igrp) )
         end do
 !$omp end parallel do
 !
@@ -97,14 +102,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_rms_ave_1egrp_1st(num_int,                     &
-     &          nitem_grp, iele_grp, d_nod, ave_l, rms_l)
+     &          nitem_grp, iele_grp, ncomp_nod, i_fld, d_nod,           &
+     &          ave_l, rms_l)
 !
       use int_vol_rms_ave_1egrp
 !
       integer (kind = kint), intent(in) :: num_int
       integer (kind = kint), intent(in) :: nitem_grp
       integer (kind = kint), intent(in) :: iele_grp(nitem_grp)
-      real(kind = kreal), intent(in) :: d_nod(node1%numnod)
+      integer (kind = kint), intent(in) :: ncomp_nod, i_fld
+      real(kind = kreal), intent(in) :: d_nod(node1%numnod,ncomp_nod)
       real(kind = kreal), intent(inout) :: ave_l, rms_l
 !
 !
@@ -112,12 +119,12 @@
         call int_vol_rms_ave_1egrp_q(node1%numnod, ele1%numele,         &
      &      ele1%ie, ele1%interior_ele, nitem_grp, iele_grp, num_int,   &
      &      jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%an,           &
-     &      d_nod, ave_l, rms_l)
+     &      d_nod(1,i_fld), ave_l, rms_l)
       else
         call int_vol_rms_ave_1egrp_l(node1%numnod, ele1%numele,         &
      &      ele1%ie, ele1%interior_ele, nitem_grp, iele_grp, num_int,   &
      &      jac1_3d_l%ntot_int, jac1_3d_l%xjac, jac1_3d_l%an,           &
-     &      d_nod, ave_l, rms_l)
+     &      d_nod(1,i_fld), ave_l, rms_l)
       end if
 !
       end subroutine int_vol_rms_ave_1egrp_1st
@@ -127,7 +134,8 @@
 !
       subroutine int_vol_2rms_ave_ele_grps_1st(num_int,                 &
      &          num_egrp, ntot_egrp, istack_egrp, iele_grp,             &
-     &          d1_nod, d2_nod, ave_1, rms_1, ave_2, rms_2)
+     &          ncomp_1, ifld_1, d1_nod, ncomp_2, ifld_2, d2_nod,       &
+     &          ave_1, rms_1, ave_2, rms_2)
 ! 
       use int_vol_2rms_ave_1egrp
 !
@@ -136,8 +144,10 @@
       integer (kind = kint), intent(in) :: num_egrp, ntot_egrp
       integer (kind = kint), intent(in) :: istack_egrp(0:num_egrp)
       integer (kind = kint), intent(in) :: iele_grp(ntot_egrp)
-      real(kind = kreal), intent(in) :: d1_nod(node1%numnod)
-      real(kind = kreal), intent(in) :: d2_nod(node1%numnod)
+      integer (kind = kint), intent(in) :: ncomp_1, ifld_1
+      integer (kind = kint), intent(in) :: ncomp_2, ifld_2
+      real(kind = kreal), intent(in) :: d1_nod(node1%numnod,ncomp_1)
+      real(kind = kreal), intent(in) :: d2_nod(node1%numnod,ncomp_2)
 !
       real(kind = kreal), intent(inout) :: ave_1(num_egrp)
       real(kind = kreal), intent(inout) :: rms_1(num_egrp)
@@ -157,8 +167,8 @@
      &       (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,    &
      &        nitem_grp, iele_grp(ist_grp),                             &
      &        num_int, jac1_3d_q%ntot_int, jac1_3d_q%xjac,              &
-     &        jac1_3d_q%an, d1_nod, d2_nod, ave_1(igrp), rms_1(igrp),   &
-     &        ave_2(igrp), rms_2(igrp) )
+     &        jac1_3d_q%an, d1_nod(1,ifld_1), d2_nod(1,ifld_2),         &
+     &         ave_1(igrp), rms_1(igrp), ave_2(igrp), rms_2(igrp) )
         end do
 !$omp end parallel do
 !
@@ -171,9 +181,9 @@
           call int_vol_2rms_ave_1egrp_l                                 &
      &       (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,    &
      &        nitem_grp, iele_grp(ist_grp), num_int,                    &
-     &        jac1_3d_l%ntot_int, jac1_3d_l%xjac,  jac1_3d_l%an,        &
-     &        d1_nod, d2_nod, ave_1(igrp), rms_1(igrp),                 &
-     &        ave_2(igrp), rms_2(igrp) )
+     &        jac1_3d_l%ntot_int, jac1_3d_l%xjac, jac1_3d_l%an,         &
+     &        d1_nod(1,ifld_1), d2_nod(1,ifld_2),                       &
+     &        ave_1(igrp), rms_1(igrp), ave_2(igrp), rms_2(igrp) )
         end do
 !$omp end parallel do
 !
@@ -184,16 +194,18 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_2rms_ave_1egrp_1st(num_int,                    &
-     &          nitem_grp, iele_grp, d1_nod, d2_nod,                    &
-     &          ave_1, rms_1, ave_2, rms_2)
+     &          nitem_grp, iele_grp, ncomp_1, ifld_1, d1_nod,           &
+     &          ncomp_2, ifld_2, d2_nod, ave_1, rms_1, ave_2, rms_2)
 !
       use int_vol_2rms_ave_1egrp
 !
       integer (kind = kint), intent(in) :: num_int
       integer (kind = kint), intent(in) :: nitem_grp
       integer (kind = kint), intent(in) :: iele_grp(nitem_grp)
-      real(kind = kreal), intent(in) :: d1_nod(node1%numnod)
-      real(kind = kreal), intent(in) :: d2_nod(node1%numnod)
+      integer (kind = kint), intent(in) :: ncomp_1, ifld_1
+      integer (kind = kint), intent(in) :: ncomp_2, ifld_2
+      real(kind = kreal), intent(in) :: d1_nod(node1%numnod,ncomp_1)
+      real(kind = kreal), intent(in) :: d2_nod(node1%numnod,ncomp_2)
       real(kind = kreal), intent(inout) :: ave_1, rms_1, ave_2, rms_2
 !
 !
@@ -202,13 +214,15 @@
      &     (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,      &
      &      nitem_grp, iele_grp, num_int,                               &
      &      jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%an,           &
-     &      d1_nod, d2_nod, ave_1, rms_1, ave_2, rms_2)
+     &      d1_nod(1,ifld_1), d2_nod(1,ifld_2), ave_1, rms_1, ave_2,    &
+     &      rms_2)
       else
         call int_vol_2rms_ave_1egrp_l                                   &
      &     (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,      &
      &      nitem_grp, iele_grp, num_int,                               &
      &      jac1_3d_l%ntot_int, jac1_3d_l%xjac, jac1_3d_l%an,           &
-     &      d1_nod, d2_nod, ave_1, rms_1, ave_2, rms_2)
+     &      d1_nod(1,ifld_1), d2_nod(1,ifld_2), ave_1, rms_1, ave_2,    &
+     &      rms_2)
       end if
 !
       end subroutine int_vol_2rms_ave_1egrp_1st
@@ -218,7 +232,8 @@
 !
       subroutine int_vol_dev_cor_ele_grps_1st(num_int,                  &
      &          num_egrp, ntot_egrp, istack_egrp, iele_grp,             &
-     &          d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
+     &          ncomp_1, ifld_1, d1_nod, ncomp_2, ifld_2, d2_nod,       &
+     &          ave_1, ave_2, sig_1, sig_2, cov_l)
 !
       use int_vol_dev_cor_1egrp
 !
@@ -226,8 +241,10 @@
       integer (kind = kint), intent(in) :: num_egrp, ntot_egrp
       integer (kind = kint), intent(in) :: istack_egrp(0:num_egrp)
       integer (kind = kint), intent(in) :: iele_grp(ntot_egrp)
-      real(kind = kreal), intent(in) :: d1_nod(node1%numnod)
-      real(kind = kreal), intent(in) :: d2_nod(node1%numnod)
+      integer (kind = kint), intent(in) :: ncomp_1, ifld_1
+      integer (kind = kint), intent(in) :: ncomp_2, ifld_2
+      real(kind = kreal), intent(in) :: d1_nod(node1%numnod,ncomp_1)
+      real(kind = kreal), intent(in) :: d2_nod(node1%numnod,ncomp_2)
       real(kind = kreal), intent(in) :: ave_1(num_egrp)
       real(kind = kreal), intent(in) :: ave_2(num_egrp)
 !
@@ -249,8 +266,9 @@
      &       (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,    &
      &        nitem_grp, iele_grp(ist_grp),                             &
      &        num_int, jac1_3d_q%ntot_int, jac1_3d_q%xjac,              &
-     &        jac1_3d_q%an, d1_nod, d2_nod, ave_1(igrp), ave_2(igrp),   &
-     &        sig_1(igrp), sig_2(igrp), cov_l(igrp) )
+     &        jac1_3d_q%an, d1_nod(1,ifld_1), d2_nod(1,ifld_2),         &
+     &        ave_1(igrp), ave_2(igrp), sig_1(igrp), sig_2(igrp),       &
+     &        cov_l(igrp) )
         end do
 !$omp end parallel do
 !
@@ -264,8 +282,9 @@
      &       (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,    &
      &        nitem_grp, iele_grp(ist_grp), num_int,                    &
      &        jac1_3d_l%ntot_int, jac1_3d_l%xjac, jac1_3d_l%an,         &
-     &        d1_nod, d2_nod, ave_1(igrp), ave_2(igrp),                 &
-     &        sig_1(igrp), sig_2(igrp), cov_l(igrp) )
+     &        d1_nod(1,ifld_1), d2_nod(1,ifld_2),                       &
+     &        ave_1(igrp), ave_2(igrp), sig_1(igrp), sig_2(igrp),       &
+     &        cov_l(igrp) )
         end do
 !$omp end parallel do
 !
@@ -275,17 +294,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_dev_cor_1egrp_1st(num_int,                     &
-     &          nitem_grp, iele_grp, d1_nod, d2_nod,                    &
-     &          ave_1, ave_2, sig_1, sig_2, cov_l)
+      subroutine int_vol_dev_cor_1egrp_1st                              &
+     &         (num_int, nitem_grp, iele_grp, ncomp_1, ifld_1, d1_nod,  &
+     &          ncomp_2, ifld_2, d2_nod, ave_1, ave_2, sig_1, sig_2,    &
+     &          cov_l)
 !
       use int_vol_dev_cor_1egrp
 !
       integer (kind = kint), intent(in) :: num_int
       integer (kind = kint), intent(in) :: nitem_grp
       integer (kind = kint), intent(in) :: iele_grp(nitem_grp)
-      real(kind = kreal), intent(in) :: d1_nod(node1%numnod)
-      real(kind = kreal), intent(in) :: d2_nod(node1%numnod)
+      integer (kind = kint), intent(in) :: ncomp_1, ifld_1
+      integer (kind = kint), intent(in) :: ncomp_2, ifld_2
+      real(kind = kreal), intent(in) :: d1_nod(node1%numnod,ncomp_1)
+      real(kind = kreal), intent(in) :: d2_nod(node1%numnod,ncomp_2)
       real(kind = kreal), intent(in) :: ave_1, ave_2
       real(kind = kreal), intent(inout) :: sig_1, sig_2, cov_l
 !
@@ -295,13 +317,15 @@
      &     (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,      &
      &      nitem_grp, iele_grp, num_int,                               &
      &      jac1_3d_q%ntot_int, jac1_3d_q%xjac, jac1_3d_q%an,           &
-     &      d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
+     &      d1_nod(1,ifld_1), d2_nod(1,ifld_2), ave_1, ave_2,           &
+     &      sig_1, sig_2, cov_l)
       else
         call int_vol_dev_cor_1egrp_l                                    &
      &     (node1%numnod, ele1%numele, ele1%ie, ele1%interior_ele,      &
      &      nitem_grp, iele_grp, num_int,                               &
      &      jac1_3d_l%ntot_int, jac1_3d_l%xjac, jac1_3d_l%an,           &
-     &      d1_nod, d2_nod, ave_1, ave_2, sig_1, sig_2, cov_l)
+     &      d1_nod(1,ifld_1), d2_nod(1,ifld_2), ave_1, ave_2,           &
+     &      sig_1, sig_2, cov_l)
       end if
 !
       end subroutine int_vol_dev_cor_1egrp_1st
