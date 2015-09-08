@@ -120,9 +120,10 @@
 !
 !
       if( (i_field*i_trns) .le. 0) return
-      call copy_vector_from_trans                                       &
+      call copy_nodal_vector_from_trans                                 &
      &  (nnod_rtp, m_folding, inod_rtp_smp_stack,                       &
-     &   node1%numnod, frm_rtp(1,i_trns), d_nod(1,i_field) )
+     &   node1%numnod, ncomp_rtp_2_rj, i_trns, frm_rtp,                 &
+     &   num_tot_nod_phys, i_field, d_nod)
 !
       end subroutine copy_force_from_MHD_trans
 !

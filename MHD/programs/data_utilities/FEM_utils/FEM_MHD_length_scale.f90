@@ -172,9 +172,9 @@
 !
 !
 !$omp parallel
-      call cal_len_scale_by_rot_smp                                     &
+      call nodal_lscale_by_rot_smp                                      &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,i_v), d_nod(1,i_w), d_mag(1))
+     &    num_tot_nod_phys, i_v, i_w, d_nod, d_mag(1))
 !$omp end parallel
 !
       end subroutine cal_vect_length_scale_by_rot
@@ -190,9 +190,9 @@
       integer(kind = kint),  intent(in) :: i_t, i_d
 !
 !$omp parallel
-     call cal_len_scale_by_diffuse_smp                                  &
+     call nodal_lscale_by_diffuse_smp                                   &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,i_t), d_nod(1,i_d), d_mag(1))
+     &    num_tot_nod_phys, i_t, i_d, d_nod, d_mag(1))
 !$omp end parallel
 !
      end subroutine cal_length_scale_by_diffuse1

@@ -10,7 +10,7 @@
 !      subroutine set_field_id_4_product
 !
 !      subroutine set_data_for_product(numnod, istep_ucd)
-!      subroutine cal_products_of_fields
+!      subroutine cal_products_of_fields(ncomp_nod,d_nod)
 !
       module product_udt_fields
 !
@@ -195,13 +195,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_products_of_fields
+      subroutine cal_products_of_fields(ncomp_nod,d_nod)
 !
       use m_geometry_data
       use m_ctl_params_4_prod_udt
-      use m_node_phys_data
       use cal_products_smp
       use nod_phys_send_recv
+!
+      integer(kind = kint), intent(in) :: ncomp_nod
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: d_nod(node1%numnod,ncomp_nod)
 !
 !
       if(ncomp_4_product1.eq.1) then

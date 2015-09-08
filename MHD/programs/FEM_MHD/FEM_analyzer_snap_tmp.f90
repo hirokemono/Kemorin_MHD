@@ -184,6 +184,7 @@
       use cvt_xyz_vector_2_sph_smp
       use cvt_sph_tensor_2_xyz_smp
       use cvt_xyz_tensor_2_sph_smp
+      use coordinate_convert_4_sph
 !
       use products_nodal_fields_smp
       use int_sgs_induction
@@ -193,12 +194,8 @@
 !
 !
 !$omp parallel
-      call overwrite_sph_tensor_smp                                     &
-     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,iphys%i_SGS_m_flux),                                  &
-     &    node1%xx(1:node1%numnod,1), node1%xx(1:node1%numnod,2),       &
-     &    node1%xx(1:node1%numnod,3), node1%rr, node1%ss,               &
-     &    node1%a_r, node1%a_s)
+      call overwrite_nodal_xyz_2_sph_smp(node1, num_tot_nod_phys,       &
+     &    iphys%i_SGS_m_flux, n_sym_tensor, d_nod)
 !$omp end parallel
 !
 !$omp parallel workshare
@@ -211,12 +208,8 @@
 !$omp end parallel workshare
 !
 !$omp parallel
-      call overwrite_xyz_tensor_by_sph_smp                              &
-     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,iphys%i_SGS_m_flux),                                  &
-     &    node1%xx(1:node1%numnod,1), node1%xx(1:node1%numnod,2),       &
-     &    node1%xx(1:node1%numnod,3), node1%rr, node1%ss,               &
-     &    node1%a_r, node1%a_s)
+      call overwrite_nodal_sph_2_xyz_smp(node1, num_tot_nod_phys,       &
+     &   iphys%i_SGS_m_flux, n_sym_tensor, d_nod)
 !$omp end parallel
 !
       if (iphys%i_SGS_div_m_flux .gt. 0) then
@@ -231,11 +224,8 @@
      &      iphys%i_reynolds_wk)
       end if
 !
-      call overwrite_vector_2_sph_smp                                   &
-     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,iphys%i_velo), node1%xx(1:node1%numnod,1),            &
-     &    node1%xx(1:node1%numnod,2), node1%xx(1:node1%numnod,3),       &
-     &    node1%rr, node1%ss, node1%a_r, node1%a_s)
+      call overwrite_nodal_xyz_2_sph_smp                                &
+     &   (node1, num_tot_nod_phys, iphys%i_velo, n_vector, d_nod)
 !$omp end parallel
 
 !$omp parallel workshare
@@ -245,9 +235,8 @@
 !$omp end parallel workshare
 !
 !$omp parallel
-      call overwrite_sph_vect_2_xyz_smp                                 &
-     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    d_nod(1,iphys%i_velo), node1%theta, node1%phi)
+      call overwrite_nodal_sph_2_xyz_smp                                &
+     &   (node1, num_tot_nod_phys, iphys%i_velo, n_vector, d_nod)
 !$omp end parallel
 !
       if (iphys%i_SGS_vp_induct .gt. 0) then

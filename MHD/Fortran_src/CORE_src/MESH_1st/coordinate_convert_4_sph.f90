@@ -26,9 +26,7 @@
 !
       implicit  none
 !
-      private :: overwrite_nodal_sph_2_xyz_smp
       private :: overwrite_nodal_cyl_2_xyz_smp
-      private :: overwrite_nodal_xyz_2_sph_smp
       private :: overwrite_nodal_sph_2_cyl_smp
 !
 ! -------------------------------------------------------------------
