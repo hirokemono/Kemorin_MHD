@@ -33,8 +33,6 @@
 !!     &          istack_merged)
 !!
 !!  External routines in this file
-!!      subroutine calypso_mpi_seek_write_ext                           &
-!!     &         (id_mpi_file, ioffset, ilength, textbuf)
 !!      subroutine read_step_data_buf_ext(textbuf, id_rank)
 !!      subroutine read_field_istack_nod_buf_ext                        &
 !!     &         (textbuf, nprocs, istack_nod)
@@ -394,8 +392,8 @@
         charatmp => textbuf_n(i)
         write(charatmp,'(1p3E23.12e3,a1)') vect(i,1:ncomp), char(10)
       end do
-      call calypso_mpi_seek_write_ext(id_fld, ioffset, (num*ilength),   &
-     &    textbuf_n(1))
+      call calypso_mpi_seek_wrt_mul_chara(id_fld, ioffset, ilength,     &
+     &    num, textbuf_n)
 !
       deallocate(textbuf_n)
 !
@@ -476,24 +474,6 @@
 !      External routine to pass character lengh check
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine calypso_mpi_seek_write_ext                             &
-     &         (id_mpi_file, ioffset, ilength, textbuf)
-!
-      use m_calypso_mpi_IO
-!
-      integer, intent(in) ::  id_mpi_file
-      integer(kind = kint), intent(in) :: ilength
-      character(len=ilength), intent(in) :: textbuf
-      integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
-!
-!
-      call calypso_mpi_seek_write_chara                                 &
-     &         (id_mpi_file, ioffset, ilength, textbuf)
-!
-      end subroutine calypso_mpi_seek_write_ext
-!
-! -------------------------------------------------------------------
 !
       subroutine read_step_data_buf_ext(textbuf, id_rank)
 !

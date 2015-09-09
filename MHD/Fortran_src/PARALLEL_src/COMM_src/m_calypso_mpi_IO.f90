@@ -16,6 +16,8 @@
 !!
 !!      subroutine calypso_mpi_seek_write_chara                         &
 !!     &         (id_mpi_file, ioffset, ilength, textbuf)
+!!      subroutine calypso_mpi_seek_wrt_mul_chara                       &
+!!     &         (id_mpi_file, ioffset, ilength, nline, textbuf)
 !!      subroutine calypso_mpi_seek_write_real                          &
 !!     &         (id_mpi_file, ioffset, ilength, vector)
 !!      subroutine calypso_mpi_seek_write_int                           &
@@ -154,6 +156,25 @@
         ioffset = ioffset + ilength
 !
       end subroutine calypso_mpi_seek_write_chara
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine calypso_mpi_seek_wrt_mul_chara                         &
+     &         (id_mpi_file, ioffset, ilength, nline, textbuf)
+!
+      integer, intent(in) ::  id_mpi_file
+      integer(kind = kint), intent(in) :: ilength
+      integer(kind = kint_gl), intent(in) :: nline
+      character(len=ilength), intent(in) :: textbuf(nline)
+      integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
+!
+!
+      call MPI_FILE_SEEK(id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
+      call MPI_FILE_WRITE(id_mpi_file, textbuf, (ilength*nline),        &
+     &      CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
+      ioffset = ioffset + ilength*nline
+!
+      end subroutine calypso_mpi_seek_wrt_mul_chara
 !
 !  ---------------------------------------------------------------------
 !

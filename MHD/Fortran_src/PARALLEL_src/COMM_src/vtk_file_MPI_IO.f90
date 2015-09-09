@@ -247,8 +247,9 @@
         charatmp => textbuf_n(i)
         write(charatmp,fmt_txt) vect(i,1:ncomp), char(10)
       end do
-      call calypso_mpi_seek_write_ext(id_vtk, ioffset, (num*ilength),   &
-     &    textbuf_n(1))
+      write(*,*) 'call calypso_mpi_seek_wrt_mul_chara'
+      call calypso_mpi_seek_wrt_mul_chara(id_vtk, ioffset, ilength,     &
+     &    num, textbuf_n)
 !
       deallocate(textbuf_n)
 !
@@ -273,11 +274,12 @@
       character(len=kchara), parameter :: fmt_txt = '(6(1pE25.15e3),a1)'
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint_gl) :: i, num
+      integer(kind = kint_gl) :: i, num, num3
 !
 !
       num = istack_merged_intnod(my_rank+1)                             &
      &     - istack_merged_intnod(my_rank)
+      num3 = 3 * num
       ioffset = int(ioff_gl + ilength * istack_merged_intnod(my_rank))
       ioff_gl = ioff_gl + ilength * istack_merged_intnod(nprocs)
 !
@@ -295,8 +297,8 @@
         write(charatmp,fmt_txt)                                         &
      &                    vect(i,3), vect(i,5), vect(i,6), char(10)
       end do
-      call calypso_mpi_seek_write_ext(id_vtk, ioffset, (3*num*ilength), &
-     &    textbuf_n(1))
+      call calypso_mpi_seek_wrt_mul_chara(id_vtk, ioffset, ilength,     &
+     &    num3, textbuf_n)
 !
       deallocate(textbuf_n)
 !
@@ -339,8 +341,8 @@
         ie0(1:nnod_ele) = ie(iele,1:nnod_ele) - 1
         textbuf_n(iele) = vtk_each_connect(nnod_ele,ie0)
       end do
-      call calypso_mpi_seek_write_ext(id_vtk, ioffset, (nele*ilength),  &
-     &    textbuf_n(1))
+      call calypso_mpi_seek_wrt_mul_chara(id_vtk, ioffset, ilength,     &
+     &    nele, textbuf_n)
       deallocate(textbuf_n)
 !
       end subroutine write_vtk_connect_mpi
@@ -377,8 +379,8 @@
       do iele = 1, nele
         textbuf_n(iele) = vtk_each_cell_type(icellid)
       end do
-      call calypso_mpi_seek_write_ext(id_vtk, ioffset, (nele*ilength),  &
-     &    textbuf_n(1))
+      call calypso_mpi_seek_wrt_mul_chara(id_vtk, ioffset, ilength,     &
+     &    nele, textbuf_n)
       deallocate(textbuf_n)
 !
       end subroutine write_vtk_celltype_mpi

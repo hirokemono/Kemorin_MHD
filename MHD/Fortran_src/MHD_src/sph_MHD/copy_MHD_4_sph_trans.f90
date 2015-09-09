@@ -120,6 +120,8 @@
 !
 !
       if( (i_field*i_trns) .le. 0) return
+      write(*,*) 'copy_nodal_vector_from_trans', ncomp_rtp_2_rj, i_trns, size(frm_rtp,2)
+      write(*,*) 'num_tot_nod_phys', num_tot_nod_phys, i_field, size(d_nod,2), m_folding
       call copy_nodal_vector_from_trans                                 &
      &  (nnod_rtp, m_folding, inod_rtp_smp_stack,                       &
      &   node1%numnod, ncomp_rtp_2_rj, i_trns, frm_rtp,                 &
