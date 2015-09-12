@@ -202,7 +202,7 @@
      &     (ilength, header_txt, ilen_gz, ilen_gzipped, gzip_buf(1))
         ilength = ilen_gzipped
 !
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_write_chara                               &
      &     (id_vtk, ioffset, ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)

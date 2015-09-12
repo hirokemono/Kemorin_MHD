@@ -37,6 +37,8 @@
 !!      subroutine calypso_gz_mpi_seek_write(id_mpi_file,               &
 !!     &          ioff_gl, ilen_gzipped, gzip_buf)
 !!
+!!      subroutine calypso_mpi_seek_read_lenchara                       &
+!!     &         (id_mpi_file, ioffset, ilength, charabuf)
 !!      subroutine calypso_mpi_seek_read_chara                          &
 !!     &         (id_mpi_file, ioffset, ilength, c1buf)
 !!      subroutine calypso_mpi_seek_read_real                           &
@@ -168,11 +170,14 @@
       character(len=ilength), intent(in) :: textbuf(nline)
       integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
 !
+      integer(kind = kint) :: ntot
 !
+!
+      ntot = ilength * int(nline)
       call MPI_FILE_SEEK(id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
-      call MPI_FILE_WRITE(id_mpi_file, textbuf, (ilength*nline),        &
+      call MPI_FILE_WRITE(id_mpi_file, textbuf, ntot,                   &
      &      CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
-      ioffset = ioffset + ilength*nline
+      ioffset = ioffset + ntot
 !
       end subroutine calypso_mpi_seek_wrt_mul_chara
 !
@@ -243,7 +248,7 @@
 !
       ilength = len(textbuf)
       if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_write_chara                               &
      &     (id_mpi_file, ioffset, ilength, textbuf)
       end if
@@ -265,7 +270,7 @@
 !
 !
       if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_write_real                                &
      &         (id_mpi_file, ioffset, ilength, vector)
       end if
@@ -287,7 +292,7 @@
 !
 !
       if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_write_int                                 &
      &         (id_mpi_file, ioffset, ilength, int_vector)
       end if
@@ -309,7 +314,7 @@
 !
 !
       if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_write_int8                                &
      &         (id_mpi_file, ioffset, ilength, i8_vector)
       end if
@@ -353,6 +358,24 @@
       end subroutine calypso_gz_mpi_seek_write
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine calypso_mpi_seek_read_lenchara                         &
+     &         (id_mpi_file, ioffset, ilength, charabuf)
+!
+      integer, intent(in) ::  id_mpi_file
+      integer(kind = MPI_OFFSET_KIND), intent(inout) :: ioffset
+      integer(kind = kint), intent(in) :: ilength
+      character(len=ilength), intent(inout) :: charabuf
+!
+!
+      call MPI_FILE_SEEK(id_mpi_file, ioffset, MPI_SEEK_SET, ierr_MPI)
+      call MPI_FILE_READ(id_mpi_file, charabuf, ilength,                &
+     &      CALYPSO_CHARACTER, sta1_IO, ierr_MPI)
+      ioffset = ioffset + ilength
+!
+      end subroutine calypso_mpi_seek_read_lenchara
+!
 !  ---------------------------------------------------------------------
 !
       subroutine calypso_mpi_seek_read_chara                            &

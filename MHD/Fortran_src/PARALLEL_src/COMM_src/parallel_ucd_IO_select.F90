@@ -176,6 +176,7 @@
       end if
 !
       if     (cmp_no_case(file_fmt_ctl, 'merged_UDT_ascii')             &
+     &   .or. cmp_no_case(file_fmt_ctl, 'merged_UDT')                   &
      &   .or. cmp_no_case(file_fmt_ctl, 'merged_ascii')                 &
      &   .or. cmp_no_case(file_fmt_ctl, 'ascii_merged_UDT')             &
      &   .or. cmp_no_case(file_fmt_ctl, 'ascii_merged')                 &

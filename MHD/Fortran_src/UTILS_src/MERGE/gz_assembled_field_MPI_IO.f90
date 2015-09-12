@@ -210,7 +210,7 @@
 !
       len_gz_lc(1:nprocs_in) = 0
       v1(1:ndir) = 0.0d0
-      ilength = len(each_field_data_buffer(ndir, v1))
+      ilength = len_each_field_data_buf(ndir)
 !
 !        deflate data
       do iloop = 1, nloop

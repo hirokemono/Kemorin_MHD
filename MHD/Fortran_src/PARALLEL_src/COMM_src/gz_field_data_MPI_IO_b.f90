@@ -69,7 +69,7 @@
      &     (ilength, int_dat, ilen_gz, ilen_gzipped, gzip_buf(1))
         ilength = ilen_gzipped
 !
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_write_chara                               &
      &     (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)
@@ -102,7 +102,7 @@
      &     (ilength, real_dat, ilen_gz, ilen_gzipped, gzip_buf(1))
         ilength = ilen_gzipped
 !
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_write_chara                               &
      &     (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)
@@ -138,7 +138,7 @@
      &     (ilength, int_gl_dat, ilen_gz, ilen_gzipped, gzip_buf(1))
         ilength = ilen_gzipped
 !
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_write_chara                               &
      &     (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)
@@ -173,7 +173,7 @@
      &     (ilength, int_dat, ilen_gz, ilen_gzipped, gzip_buf(1))
         ilength = ilen_gzipped
 !
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_write_chara                               &
      &     (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)
@@ -208,7 +208,7 @@
      &     (ilength, chara_dat, ilen_gz, ilen_gzipped, gzip_buf(1))
         ilength = ilen_gzipped
 !
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_write_chara                               &
      &     (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)
@@ -286,7 +286,7 @@
 !
 !
       if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         ilength = num * kint
         ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
@@ -322,7 +322,7 @@
 !
 !
       if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         ilength = ione * kreal
         ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
@@ -360,7 +360,7 @@
 !
 !
       if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         ilength = num * kint_gl
         ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
@@ -399,7 +399,7 @@
 !
       ilength = num * kchara
       if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
         call calypso_mpi_seek_read_chara                                &
@@ -444,7 +444,7 @@
 !
       if(id_rank .ge. nprocs_in) return
 !
-      ioffset = int(ioff_gl) + istack_buffer(id_rank)
+      ioffset = ioff_gl + istack_buffer(id_rank)
       ilength = n1 * n2 * kreal
       ilen_gz = int(istack_buffer(id_rank+1) - istack_buffer(id_rank))
       allocate(gzip_buf(ilen_gz))

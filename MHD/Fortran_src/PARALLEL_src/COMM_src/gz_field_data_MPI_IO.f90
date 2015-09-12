@@ -61,7 +61,7 @@
 !
 !
       v1(1:ndir) = 0.0d0
-      ilength = len(each_field_data_buffer(ndir, v1))
+      ilength = len_each_field_data_buf(ndir)
       ilen_gz = int(real(nnod*ilength) * 1.01) + 24
       allocate(gzip_buf(ilen_gz))
       ilen_gzipped = gz_defleat_vector_txt(nnod, ndir, vector, ilength, &
@@ -111,7 +111,7 @@
      &     (ilength, header_txt, ilen_gz, ilen_gzipped, gzip_buf(1))
         ilength = ilen_gzipped
 !
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_write_chara                               &
      &         (id_fld, ioffset, ilen_gzipped, gzip_buf(1))
         deallocate(gzip_buf)
@@ -205,7 +205,7 @@
       integer(kind = kint_gl), intent(inout) :: ioff_gl
 !
       integer(kind=kint), intent(in) :: ilength
-      character(len=1), intent(inout) :: chara_dat(ilength)
+      character(len=ilength), intent(inout) :: chara_dat
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint) :: ilen_gz, ilen_gzipped
@@ -214,14 +214,14 @@
 !
 !
       if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         ilen_gz = int(real(ilength) *1.01) + 24
         allocate(gzip_buf(ilen_gz))
         call calypso_mpi_seek_read_chara                                &
      &         (id_fld, ioffset, ilen_gz, gzip_buf(1))
 !
         call gzip_infleat_once                                          &
-     &     (ilen_gz, gzip_buf(1), ilength, chara_dat(1), ilen_gzipped)
+     &     (ilen_gz, gzip_buf(1), ilength, chara_dat, ilen_gzipped)
         deallocate(gzip_buf)
       end if
 !
@@ -246,22 +246,23 @@
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
 !
       character(len=1), allocatable :: gzip_buf(:), textbuf(:)
+      character(len=kchara) :: textbuf_c
 !
 !
       if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         ilen_gz = int(real(kchara) *1.01) + 24
-        allocate(textbuf(kchara))
         allocate(gzip_buf(ilen_gz))
         call calypso_mpi_seek_read_chara                                &
      &     (id_fld, ioffset, ilen_gz, gzip_buf(1))
 !
         call gzip_infleat_once                                          &
-     &     (ilen_gz, gzip_buf(1), kchara, textbuf(1), ilen_gzipped)
+     &     (ilen_gz, gzip_buf(1), kchara, textbuf_c, ilen_gzipped)
 !
-        call read_each_field_name_buf_ext(textbuf(1), field_name)
+        call read_each_field_name_buffer(textbuf_c, field_name)
         ilength = len_trim(field_name) + 1
 !
+        allocate(textbuf(ilength))
         call gzip_infleat_once                                          &
      &     (ilen_gz, gzip_buf(1), ilength, textbuf(1), ilen_gzipped)
 !
@@ -292,21 +293,20 @@
       integer(kind = MPI_OFFSET_KIND) :: ioffset
       integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, inod
 !
-      character(len=1), allocatable :: gzip_buf(:), textbuf(:)
+      character(len=1), allocatable :: gzip_buf(:)
+      character(len=nprocs_in*16+1) :: textbuf_p
+      character(len=ndir*25+1) :: textbuf_d
 !
       integer(kind = kint_gl) :: istack_buf(0:nprocs_in)
       real(kind = kreal) :: v1(ndir)
 !
 !
-      ilength = len(buffer_istack_nod_buffer(nprocs_in,istack_buf))
-      allocate(textbuf(ilength))
-!
+      ilength = len(textbuf_p)
       call gz_read_fld_charhead_mpi                                     &
-     &   (id_fld, ioff_gl, ilength, textbuf(1))
+     &   (id_fld, ioff_gl, ilength, textbuf_p)
 
       if(my_rank .eq. 0) call read_bufer_istack_nod_buffer              &
-     &                      (textbuf(1), nprocs_in, istack_buf)
-      deallocate(textbuf)
+     &                      (textbuf_p, nprocs_in, istack_buf)
 !
       call MPI_BCAST(istack_buf, (nprocs_in+1), CALYPSO_GLOBAL_INT,     &
      &    izero, CALYPSO_COMM, ierr_MPI)
@@ -315,37 +315,36 @@
       if(id_rank .ge. nprocs_in) return
 !
       ilen_gz = int(istack_buf(id_rank+1) - istack_buf(id_rank))
-      ilength = len(each_field_data_buffer(ndir, v1))
-      allocate(textbuf(ilength))
+      ilength = len(textbuf_d)
       allocate(gzip_buf(ilen_gz))
 !
-      ioffset = int(ioff_gl) + istack_buf(id_rank)
+      ioffset = ioff_gl + istack_buf(id_rank)
       call calypso_mpi_seek_read_chara                                  &
      &         (id_fld, ioffset, ilen_gz, gzip_buf(1))
       ioff_gl = ioff_gl + istack_buf(nprocs_in)
 !
       if(nnod .eq. 1) then
         call gzip_infleat_once                                          &
-     &   (ilen_gz, gzip_buf(1), ilength, textbuf(1), ilen_gzipped)
-        call read_each_field_data_buf_ext(textbuf(1), ndir, v1)
+     &   (ilen_gz, gzip_buf(1), ilength, textbuf_d, ilen_gzipped)
+        call read_each_field_data_buffer(textbuf_d, ndir, v1)
         vector(1,1:ndir) = v1(1:ndir)
       else if(nnod .gt. 0) then
         call gzip_infleat_begin                                         &
-     &   (ilen_gz, gzip_buf(1), ilength, textbuf(1), ilen_gzipped)
-        call read_each_field_data_buf_ext(textbuf(1), ndir, v1)
+     &   (ilen_gz, gzip_buf(1), ilength, textbuf_d, ilen_gzipped)
+        call read_each_field_data_buffer(textbuf_d, ndir, v1)
         vector(1,1:ndir) = v1(1:ndir)
         do inod = 2, nnod-1
           call gzip_infleat_cont                                        &
-     &        (ilen_gz, ilength, textbuf(1), ilen_gzipped)
-          call read_each_field_data_buf_ext(textbuf(1), ndir, v1)
+     &        (ilen_gz, ilength, textbuf_d, ilen_gzipped)
+          call read_each_field_data_buffer(textbuf_d, ndir, v1)
           vector(inod,1:ndir) = v1(1:ndir)
         end do
         call gzip_infleat_last                                          &
-     &     (ilen_gz, ilength, textbuf(1), ilen_gzipped)
-        call read_each_field_data_buf_ext(textbuf(1), ndir, v1)
+     &     (ilen_gz, ilength, textbuf_d, ilen_gzipped)
+        call read_each_field_data_buffer(textbuf_d, ndir, v1)
         vector(nnod,1:ndir) = v1(1:ndir)
       end if
-      deallocate(gzip_buf, textbuf)
+      deallocate(gzip_buf)
 !
       end subroutine gz_read_each_field_mpi
 !
@@ -362,19 +361,17 @@
 !
       integer(kind = kint) :: ilength
 !
-      character(len=1), allocatable :: textbuf(:)
+      character(nprocs_in*16+1) :: textbuf_c
 !
       integer(kind = kint_gl) :: istack_buf(0:nprocs_in)
 !
 !
       ilength = len(buffer_istack_nod_buffer(nprocs_in,istack_buf))
-      allocate(textbuf(ilength))
 !
       call gz_read_fld_charhead_mpi                                     &
-     &   (id_fld, ioff_gl, ilength, textbuf(1))
-      call read_bufer_istack_nod_buf_ext                                &
-     &   (textbuf(1), nprocs_in, istack_buf)
-      deallocate(textbuf)
+     &   (id_fld, ioff_gl, ilength, textbuf_c)
+      call read_bufer_istack_nod_buffer                                 &
+     &   (textbuf_c, nprocs_in, istack_buf)
 !
       if(id_rank .ge. nprocs_in) return
 !

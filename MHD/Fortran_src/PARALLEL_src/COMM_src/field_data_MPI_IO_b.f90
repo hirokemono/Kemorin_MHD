@@ -141,7 +141,7 @@
 !
       ilength = num_field * kchara
       if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_write_chara                               &
      &     (id_fld, ioffset, ilength, field_name(1))
       end if
@@ -151,14 +151,14 @@
      &          = ncomp * istack_merged(0:nprocs_in) * kreal
       ilength = nprocs_in * kint_gl
       if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_write_int8                                &
      &     (id_fld, ioffset, ilength, istack_buffer(1))
       end if
       ioff_gl = ioff_gl + ilength
 !
       ilength = nnod * ncomp
-      ioffset = int(ioff_gl + kreal * ncomp*istack_merged(id_rank))
+      ioffset = ioff_gl + kreal * ncomp*istack_merged(id_rank)
       call calypso_mpi_seek_write_real                                  &
      &    (id_fld, ioffset, ilength, vector(1,1))
       ioff_gl = ioff_gl + kreal * ncomp*istack_merged(nprocs_in)
@@ -186,7 +186,7 @@
 !
 !
       if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_read_int(id_fld, ioffset, ione, itmp_IO)
         iread_e = itmp_IO(1)
         ioffset = ioffset + kint
@@ -252,7 +252,7 @@
       ilength = nprocs_in
       if(my_rank .eq. 0) then
         istack_merged(0) = 0
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_read_int8                                 &
      &         (id_fld, ioffset, nprocs_in, istack_merged(1))
       end if
@@ -260,7 +260,7 @@
 !
 !
       if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_read_int                                  &
      &         (id_fld, ioffset, ione, itmp_IO)
         num_field = itmp_IO(1)
@@ -291,7 +291,7 @@
 !
 !
       if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_read_int                                  &
      &         (id_fld, ioffset, num_field, ncomp_field(1))
       end if
@@ -325,7 +325,7 @@
       if(id_rank .ge. nprocs_in) return
       ioff_gl = ioff_gl + nprocs_in * kint_gl
 !
-      ioffset = int(ioff_gl + kreal * ncomp*istack_merged(id_rank))
+      ioffset = ioff_gl + kreal * ncomp*istack_merged(id_rank)
       ilength = nnod * ncomp
       call calypso_mpi_seek_read_real                                   &
      &         (id_fld, ioffset, ilength, vect(1,1))
@@ -354,7 +354,7 @@
 !
       ilength = num_field * kchara
       if(my_rank .eq. 0) then
-        ioffset = int(ioff_gl)
+        ioffset = ioff_gl
         call calypso_mpi_seek_read_chara                                &
      &         (id_fld, ioffset, ilength, field_name(1))
       end if

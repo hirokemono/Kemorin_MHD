@@ -308,16 +308,13 @@
 !
       integer(kind = kint), intent(in) :: nprocs_in
 !
-      integer(kind=kint) :: iread, ilength
-      character(len=1), allocatable :: textbuf(:)
+      integer(kind=kint) :: iread
+      character(len=len_step_data_buf) :: textbuf_c
 !
 !
-      ilength = len_step_data_buf
-      allocate(textbuf(ilength))
       call gz_read_fld_charhead_mpi                                     &
-     &   (id_fld, ioff_gl, ilength, textbuf(1))
-      if(my_rank .eq. 0) call read_step_data_buf_ext(textbuf(1), iread)
-      deallocate(textbuf)
+     &   (id_fld, ioff_gl, len_step_data_buf, textbuf_c)
+      if(my_rank .eq. 0) call read_step_data_buffer(textbuf_c, iread)
 !
       if(my_rank.eq.0 .and. nprocs_in .ne. iread) then
         call calypso_mpi_abort(ierr_fld, 'Set correct field data file')
@@ -345,24 +342,21 @@
      &                       :: istack_merged(0:nprocs_in)
 !
       integer(kind=kint) :: ilength
-      character(len=1), allocatable :: textbuf(:)
+      character(len=31+1+16+1) ::           textbuf_c
+      character(len=25+1+nprocs_in*16+1) :: textbuf_d
 !
 !
-      ilength = len(field_istack_nod_buffer(nprocs_in,istack_merged))
-      allocate(textbuf(ilength))
+      ilength = len(textbuf_d)
       call gz_read_fld_charhead_mpi                                     &
-     &   (id_fld, ioff_gl, ilength, textbuf(1))
-      if(my_rank .eq. 0) call read_field_istack_nod_buf_ext             &
-     &                      (textbuf(1), nprocs_in, istack_merged)
-      deallocate(textbuf)
+     &   (id_fld, ioff_gl, ilength, textbuf_d)
+      if(my_rank .eq. 0) call read_field_istack_nod_buffer              &
+     &                      (textbuf_d, nprocs_in, istack_merged)
 !
       ilength = len(field_num_buffer(izero))
-      allocate(textbuf(ilength))
       call gz_read_fld_charhead_mpi                                     &
-     &   (id_fld, ioff_gl, ilength, textbuf(1))
-      if(my_rank .eq. 0) call read_field_num_buf_ext                    &
-     &                      (textbuf(1), num_field)
-      deallocate(textbuf)
+     &   (id_fld, ioff_gl, ilength, textbuf_c)
+      if(my_rank .eq. 0) call read_field_num_buffer                     &
+     &                      (textbuf_c, num_field)
 !
       call sync_field_header_mpi(nprocs_in, id_rank, nnod,              &
      &    num_field, istack_merged)
@@ -385,16 +379,14 @@
       integer(kind=kint), intent(inout) :: ncomp_field(num_field)
 !
       integer(kind=kint) :: ilength
-      character(len=1), allocatable :: textbuf(:)
+      character(len=num_field*5+1) :: textbuf
 !
 !
-      ilength = len(field_comp_buffer(num_field, ncomp_field))
-      allocate(textbuf(ilength))
+      ilength = len(textbuf)
       call gz_read_fld_charhead_mpi                                     &
-     &   (id_fld, ioff_gl, ilength, textbuf(1))
-      if(my_rank .eq. 0) call read_field_comp_buf_ext                   &
-     &                      (textbuf(1), num_field, ncomp_field)
-      deallocate(textbuf)
+     &   (id_fld, ioff_gl, ilength, textbuf)
+      if(my_rank .eq. 0) call read_field_comp_buffer                    &
+     &                      (textbuf, num_field, ncomp_field)
 !
       call sync_field_comp_mpi(num_field, ncomp_field)
 !
