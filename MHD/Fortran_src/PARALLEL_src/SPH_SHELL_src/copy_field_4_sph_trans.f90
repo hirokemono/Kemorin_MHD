@@ -94,7 +94,7 @@
       integer(kind = kint) :: ist, ied, m_sym, mst, ip
 !
 !
-!$omp do private(ist,ied,m_sym,mst)
+!$omp parallel do private(ist,ied,m_sym,mst)
       do ip = 1, np_smp
         ist = inod_rtp_smp_stack(ip-1) + 1
         ied = inod_rtp_smp_stack(ip)
@@ -103,7 +103,7 @@
           d_sph(ist+mst:ied+mst) = v_rtp(ist:ied)
         end do
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine copy_scalar_from_trans
 !
@@ -120,7 +120,7 @@
       integer(kind = kint) :: ist, ied, m_sym, mst, ip
 !
 !
-!$omp do private(ist,ied,m_sym,mst)
+!$omp parallel do private(ist,ied,m_sym,mst)
       do ip = 1, np_smp
         ist = inod_rtp_smp_stack(ip-1) + 1
         ied = inod_rtp_smp_stack(ip)
@@ -131,7 +131,7 @@
           d_sph(ist+mst:ied+mst,3) = v_rtp(ist:ied,3)
         end do
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine copy_vector_from_trans
 !
@@ -148,7 +148,7 @@
       integer(kind = kint) :: ist, ied, m_sym, mst, ip
 !
 !
-!$omp do private(ist,ied,m_sym,mst)
+!$omp parallel do private(ist,ied,m_sym,mst)
       do ip = 1, np_smp
         ist = inod_rtp_smp_stack(ip-1) + 1
         ied = inod_rtp_smp_stack(ip)
@@ -162,7 +162,7 @@
           d_sph(ist+mst:ied+mst,6) = v_rtp(ist:ied,6)
         end do
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine copy_tensor_from_trans
 !
@@ -180,13 +180,13 @@
       integer(kind = kint) :: ist, ied, ip
 !
 !
-!$omp do private(ist,ied)
+!$omp parallel do private(ist,ied)
       do ip = 1, np_smp
         ist = inod_rtp_smp_stack(ip-1) + 1
         ied = inod_rtp_smp_stack(ip)
         v_rtp(ist:ied) = d_sph(ist:ied)
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine copy_scalar_to_trans
 !
@@ -203,7 +203,7 @@
       integer(kind = kint) :: ist, ied, ip
 !
 !
-!$omp do private(ist,ied)
+!$omp parallel do private(ist,ied)
       do ip = 1, np_smp
         ist = inod_rtp_smp_stack(ip-1) + 1
         ied = inod_rtp_smp_stack(ip)
@@ -211,7 +211,7 @@
         v_rtp(ist:ied,2) = d_sph(ist:ied,2)
         v_rtp(ist:ied,3) = d_sph(ist:ied,3)
       end do
-!$omp end do
+!$omp end parallel do
 !
       end subroutine copy_vector_to_trans
 !
@@ -228,7 +228,7 @@
       integer(kind = kint) :: ist, ied, ip
 !
 !
-!$omp do private(ist,ied)
+!$omp parallel do private(ist,ied)
       do ip = 1, np_smp
         ist = inod_rtp_smp_stack(ip-1) + 1
         ied = inod_rtp_smp_stack(ip)
@@ -239,7 +239,7 @@
         v_rtp(ist:ied,5) = d_sph(ist:ied,5)
         v_rtp(ist:ied,6) = d_sph(ist:ied,6)
       end do
-!$omp end do nowait
+!$omp end parallel do
 !
       end subroutine copy_tensor_to_trans
 !

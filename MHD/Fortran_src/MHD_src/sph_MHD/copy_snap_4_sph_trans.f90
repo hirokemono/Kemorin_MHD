@@ -30,7 +30,6 @@
       use m_addresses_trans_sph_snap
 !
 !
-!$omp parallel
 !  Copy vectors
       call copy_vector_from_snap_trans(bs_trns%i_velo, iphys%i_velo)
       call copy_vector_from_snap_trans(bs_trns%i_vort, iphys%i_vort)
@@ -91,7 +90,6 @@
 !
       call copy_scalar_from_snap_trans                                  &
      &      (bs_trns%i_div_Coriolis, iphys%i_div_Coriolis)
-!$omp end parallel
 !
       end subroutine copy_snap_vec_fld_from_trans
 !
@@ -104,7 +102,6 @@
       use m_addresses_trans_sph_snap
 !
 !
-!$omp parallel
       call copy_vector_from_snap_force                                  &
      &    (fs_trns%i_coriolis, iphys%i_Coriolis)
 !
@@ -137,7 +134,6 @@
      &   (fs_trns%i_temp_scale, iphys%i_temp_scale)
       call copy_scalar_from_snap_force                                  &
      &   (fs_trns%i_comp_scale, iphys%i_comp_scale)
-!$omp end parallel
 !
       end  subroutine copy_snap_vec_fld_to_trans
 !
@@ -157,10 +153,13 @@
 !
 !
       if( (i_field*i_trns) .le. 0) return
-      call copy_nodal_scalar_from_trans                                 &
+      call copy_scalar_from_trans                                       &
      &   (nnod_rtp, m_folding, inod_rtp_smp_stack,                      &
-     &    node1%numnod, ncomp_snap_rj_2_rtp, i_trns, fls_rtp,           &
-     &    num_tot_nod_phys, i_field, d_nod)
+     &    node1%numnod, fls_rtp(1,i_trns), d_nod(1,i_field) )
+!      call copy_nodal_scalar_from_trans                                 &
+!     &   (nnod_rtp, m_folding, inod_rtp_smp_stack,                      &
+!     &    node1%numnod, ncomp_snap_rj_2_rtp, i_trns, fls_rtp,           &
+!     &    num_tot_nod_phys, i_field, d_nod)
 !
       end subroutine copy_scalar_from_snap_trans
 !
@@ -179,10 +178,13 @@
 !
 !
       if( (i_field*i_trns) .le. 0) return
-      call copy_nodal_vector_from_trans                                 &
+      call copy_vector_from_trans                                       &
      &   (nnod_rtp, m_folding, inod_rtp_smp_stack,                      &
-     &    node1%numnod, ncomp_snap_rj_2_rtp, i_trns, fls_rtp,           &
-     &    num_tot_nod_phys, i_field, d_nod)
+     &    node1%numnod, fls_rtp(1,i_trns), d_nod(1,i_field) )
+!      call copy_nodal_vector_from_trans                                 &
+!     &   (nnod_rtp, m_folding, inod_rtp_smp_stack,                      &
+!     &    node1%numnod, ncomp_snap_rj_2_rtp, i_trns, fls_rtp,           &
+!     &    num_tot_nod_phys, i_field, d_nod)
 !
       end subroutine copy_vector_from_snap_trans
 !
@@ -202,10 +204,13 @@
 !
 !
       if( (i_field*i_trns) .le. 0) return
-      call copy_nodal_scalar_from_trans                                 &
+      call copy_scalar_from_trans                                       &
      &   (nnod_rtp, m_folding, inod_rtp_smp_stack,                      &
-     &    node1%numnod, ncomp_snap_rtp_2_rj, i_trns, frs_rtp,           &
-     &    num_tot_nod_phys, i_field, d_nod)
+     &    node1%numnod, frs_rtp(1,i_trns), d_nod(1,i_field) )
+!      call copy_nodal_scalar_from_trans                                 &
+!     &   (nnod_rtp, m_folding, inod_rtp_smp_stack,                      &
+!     &    node1%numnod, ncomp_snap_rtp_2_rj, i_trns, frs_rtp,           &
+!     &    num_tot_nod_phys, i_field, d_nod)
 !
       end subroutine copy_scalar_from_snap_force
 !
@@ -224,10 +229,13 @@
 !
 !
       if( (i_field*i_trns) .le. 0) return
-      call copy_nodal_vector_from_trans                                 &
+      call copy_vector_from_trans                                       &
      &   (nnod_rtp, m_folding, inod_rtp_smp_stack,                      &
-     &    node1%numnod, ncomp_snap_rtp_2_rj, i_trns, frs_rtp,           &
-     &    num_tot_nod_phys, i_field, d_nod)
+     &    node1%numnod, frs_rtp(1,i_trns), d_nod(1,i_field) )
+!      call copy_nodal_vector_from_trans                                 &
+!     &   (nnod_rtp, m_folding, inod_rtp_smp_stack,                      &
+!     &    node1%numnod, ncomp_snap_rtp_2_rj, i_trns, frs_rtp,           &
+!     &    num_tot_nod_phys, i_field, d_nod)
 !
       end subroutine copy_vector_from_snap_force
 !
