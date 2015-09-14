@@ -203,7 +203,7 @@
 !
       if(my_rank .eq. 0) then
         ioffset = ioff_gl
-        call calypso_mpi_seek_read_chara                                &
+        call calypso_mpi_seek_read_lenchara                             &
      &     (id_fld, ioffset, len_step_data_buf, textbuf_c)
         call read_step_data_buffer(textbuf_c, iread)
 !
