@@ -39,15 +39,11 @@
 !
       subroutine write_modes_rj_groups_gz
 !
+      use m_sph_modes_grid_labels
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(a,a1)') '! Group data', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_grphd() // char(0)
+      call gz_write_textbuf_no_lf
 !
       call write_rj_radial_grp_data_gz
       call write_rj_sphere_grp_data_gz
@@ -108,16 +104,11 @@
 !
       subroutine write_rj_radial_grp_data_gz
 !
+      use m_sph_modes_grid_labels
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(a,a1)') '! radial groups in spectr', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
+      textbuf = hd_kgrphd() // char(0)
+      call gz_write_textbuf_no_lf
 !
       call write_group_data_gz(num_radial_grp_rj_IO,                    &
      &    ntot_radial_grp_rj_IO, istack_radial_grp_rj_IO,               &
@@ -131,15 +122,11 @@
 !
       subroutine write_rj_sphere_grp_data_gz
 !
+      use m_sph_modes_grid_labels
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(a,a1)') '! spehrical harmonics groups', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_jgrphd() // char(0)
+      call gz_write_textbuf_no_lf
 !
       call write_group_data_gz(num_sphere_grp_rj_IO,                    &
      &    ntot_sphere_grp_rj_IO, istack_sphere_grp_rj_IO,               &

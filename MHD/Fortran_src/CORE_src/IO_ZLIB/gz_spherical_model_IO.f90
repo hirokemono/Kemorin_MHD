@@ -55,7 +55,6 @@
       subroutine read_gl_nodes_sph_gz
 !
       integer(kind = kint) :: i
-      integer(kind = kint_gl) :: i8
 !
 !
       call skip_gz_comment_int( nnod_sph_IO )
@@ -75,18 +74,13 @@
 !
       subroutine write_rank_4_sph_gz
 !
+      use m_sph_modes_grid_labels
+!
       character(len=kchara) :: fmt_txt
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! Domain ID', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! segment ID for each direction',       &
-     &                         char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_rtp_glbl() // char(0)
+      call gz_write_textbuf_no_lf
 !
       write(fmt_txt,'(a1,i2,a9)')                                       &
      &                '(', ndir_sph_IO, '(i16),a1)'
@@ -99,18 +93,13 @@
 !
       subroutine write_gl_resolution_sph_gz
 !
+      use m_sph_modes_grid_labels
+!
       character(len=kchara) :: fmt_txt
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! num. of global grids', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)')                                           &
-     &    '! truncation level for spherical harmonics', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_trunc() // char(0)
+      call gz_write_textbuf_no_lf
 !
       write(fmt_txt,'(a1,i2,a9)')                                       &
      &                '(', ndir_sph_IO, '(i16),a1)'

@@ -50,15 +50,12 @@
 !
       subroutine write_geom_rtp_groups_gz
 !
+      use m_sph_modes_grid_labels
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(a,a1)') '! Group data', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_grphd() // char(0)
+      call gz_write_textbuf_no_lf
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
 !
       call write_rtp_node_grp_data_gz
       call write_rtp_radial_grp_data_gz
@@ -169,16 +166,11 @@
 !
       subroutine write_rtp_node_grp_data_gz
 !
+      use m_sph_modes_grid_labels
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(a,a1)') '! Node groups', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
+      textbuf = hd_ngrphd() // char(0)
+      call gz_write_textbuf_no_lf
 !
       call write_group_data_gz(num_bc_grp_rtp_IO, ntot_bc_grp_rtp_IO,   &
      &    istack_bc_grp_rtp_IO, name_bc_grp_rtp_IO, item_bc_grp_rtp_IO)
@@ -191,15 +183,11 @@
 !
       subroutine write_rtp_radial_grp_data_gz
 !
+      use m_sph_modes_grid_labels
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(a,a1)') '! radial groups', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_rgrphd() // char(0)
+      call gz_write_textbuf_no_lf
 !
 !
       call write_group_data_gz(num_radial_grp_rtp_IO,                   &
@@ -214,16 +202,11 @@
 !
       subroutine write_rtp_theta_grp_data_gz
 !
+      use m_sph_modes_grid_labels
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(a,a1)') '! meridional groups', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
+      textbuf = hd_tgrphd() // char(0)
+      call gz_write_textbuf_no_lf
 !
       call write_group_data_gz(num_theta_grp_rtp_IO,                    &
      &    ntot_theta_grp_rtp_IO, istack_theta_grp_rtp_IO,               &
@@ -237,16 +220,11 @@
 !
       subroutine write_rtp_zonal_grp_data_gz
 !
+      use m_sph_modes_grid_labels
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
 !
-      write(textbuf,'(a,a1)') '! zonal groups', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
+      textbuf = hd_pgrphd() // char(0)
+      call gz_write_textbuf_no_lf
 !
       call write_group_data_gz(num_zonal_grp_rtp_IO,                    &
      &    ntot_zonal_grp_rtp_IO, istack_zonal_grp_rtp_IO,               &

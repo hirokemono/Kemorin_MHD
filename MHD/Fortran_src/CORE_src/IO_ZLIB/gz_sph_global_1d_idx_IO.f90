@@ -97,22 +97,14 @@
 ! -----------------------------------------------------------------------! -----------------------------------------------------------------------!
       subroutine write_rtp_gl_1d_table_gz
 !
+      use m_sph_modes_grid_labels
+!
       character(len=kchara) :: fmt_txt
       integer(kind = kint) :: i
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &       '! num. start and end global grids', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! r-direction', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_rgrid() // char(0)
+      call gz_write_textbuf_no_lf
 !
       write(textbuf,'(3i16,a1)') nidx_sph_IO(1),                        &
      &                        ist_sph_IO(1), ied_sph_IO(1), char(0)
@@ -125,18 +117,8 @@
       end do
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &      '! num. start and end global grids', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! theta direction', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_tgrid() // char(0)
+      call gz_write_textbuf_no_lf
 !
       write(textbuf,'(3i16,a1)') nidx_sph_IO(2),                        &
      &                        ist_sph_IO(2), ied_sph_IO(2), char(0)
@@ -150,18 +132,8 @@
         call gz_write_textbuf_w_lf
       end do
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &      '! num. of start and end global grids and modes', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! phi direction', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_pgrid() // char(0)
+      call gz_write_textbuf_no_lf
 !
       write(textbuf,'(3i16,a1)') nidx_sph_IO(3),                        &
      &                        ist_sph_IO(3), ied_sph_IO(3), char(0)
@@ -185,22 +157,14 @@
 !
       subroutine write_rj_gl_1d_table_gz
 !
+      use m_sph_modes_grid_labels
+!
       character(len=kchara) :: fmt_txt
       integer(kind = kint) :: i
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &      '! num. start and end global grids', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! r-direction', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_rgrid() // char(0)
+      call gz_write_textbuf_no_lf
 !
       write(textbuf,'(3i16,a1)') nidx_sph_IO(1),                        &
      &                        ist_sph_IO(1), ied_sph_IO(1), char(0)
@@ -212,19 +176,8 @@
         call gz_write_textbuf_w_lf
       end do
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &      '! num. start and end global modes', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &      '! on sphere surface wuth degree and order', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_jmode() // char(0)
+      call gz_write_textbuf_no_lf
 !
       write(textbuf,'(3i16,a1)') nidx_sph_IO(2),                        &
      &                        ist_sph_IO(2), ied_sph_IO(2), char(0)

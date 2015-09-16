@@ -120,30 +120,14 @@
 !
       subroutine write_geom_rtp_data_gz
 !
+      use m_sph_modes_grid_labels
       use gz_sph_rtp_groups_IO
 !
 !
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! 1.parallel information', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!    domain ID', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &      '!    number of domain for transfer', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!    domain ID for transfer', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
-!
-!
+      textbuf = hd_sph_para() // char(0)
+      call gz_write_textbuf_no_lf
       call write_domain_info_gz
+!
 !
 !      write(*,*) '! truncation level for spherical harmonics'
       call write_gl_resolution_sph_gz
@@ -153,34 +137,12 @@
 !      write(*,*) '! global ID for each direction'
       call write_rtp_gl_1d_table_gz
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                          &
-     &      '! number of stack number for each domain', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! local wavenumber ID', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! global radial ID and grid ID', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
+      textbuf = hd_rtp_glbl() // char(0)
+      call gz_write_textbuf_no_lf
       call write_gl_nodes_sph_gz
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &     '! communication table between spectr data', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
+      textbuf = hd_rtp_comm() // char(0)
+      call gz_write_textbuf_no_lf
       call write_import_data_gz
 !
 !      write(*,*) '! Group data'
@@ -194,30 +156,13 @@
 !
       subroutine write_spectr_modes_rj_data_gz
 !
+      use m_sph_modes_grid_labels
       use gz_sph_rj_groups_IO
 !
 !
 !
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! 1.parallel information', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!    domain ID', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &     '!    number of domain for transfer', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!    domain ID for transfer', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
-!
-!
+      textbuf = hd_sph_para() // char(0)
+      call gz_write_textbuf_no_lf
       call write_domain_info_gz
 !
 !      write(*,*) '! truncation level for spherical harmonics'
@@ -228,36 +173,12 @@
 !      write(*,*) '! global ID for each direction'
       call write_rj_gl_1d_table_gz
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &     '! number of stack number for each domain', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! local wavenumber ID', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &     '! global radial ID and spectr ID', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
+      textbuf = hd_rj_comm() // char(0)
+      call gz_write_textbuf_no_lf
       call write_gl_nodes_sph_gz
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &     '! communication table between spectr data', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
-!
+      textbuf = hd_rtp_comm() // char(0)
+      call gz_write_textbuf_no_lf
       call write_import_data_gz
 !
 !      write(*,*) '! Group data'
@@ -269,28 +190,13 @@
 !
       subroutine write_geom_rtm_data_gz
 !
-!
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! 1.parallel information', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!    domain ID', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &     '!    number of domain for transfer', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!    domain ID for transfer', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
+      use m_sph_modes_grid_labels
 !
 !
+      textbuf = hd_sph_para() // char(0)
+      call gz_write_textbuf_no_lf
       call write_domain_info_gz
+!
 !      write(*,*) '! truncation level for spherical harmonics'
       call write_gl_resolution_sph_gz
 !      write(*,*) '! segment ID for each direction'
@@ -299,36 +205,12 @@
 !      write(*,*) '! global ID for each direction'
       call write_rtp_gl_1d_table_gz
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &     '! number of stack number for each domain', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! local wavenumber ID', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &     '! global radial ID and grid ID', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
-!
+      textbuf = hd_rtp_glbl() // char(0)
+      call gz_write_textbuf_no_lf
       call write_gl_nodes_sph_gz
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &     '! communication table between grid data', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
+      textbuf = hd_rtp_comm() // char(0)
+      call gz_write_textbuf_no_lf
       call write_import_data_gz
 !
       end subroutine write_geom_rtm_data_gz
@@ -337,27 +219,11 @@
 !
       subroutine write_modes_rlm_data_gz
 !
-!
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! 1.parallel information', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!    domain ID', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &     '!    number of domain for transfer', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!    domain ID for transfer', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
+      use m_sph_modes_grid_labels
 !
 !
+      textbuf = hd_sph_para() // char(0)
+      call gz_write_textbuf_no_lf
       call write_domain_info_gz
 !
 !      write(*,*) '! truncation level for spherical harmonics'
@@ -368,35 +234,12 @@
 !      write(*,*) '! global ID for each direction'
       call write_rj_gl_1d_table_gz
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &     '! number of stack number for each domain', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '! local wavenumber ID', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &     '! global radial ID and wavenumber ID', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
+      textbuf = hd_rlm_glbl() // char(0)
+      call gz_write_textbuf_no_lf
       call write_gl_nodes_sph_gz
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)')                                           &
-     &     '! communication table between spectr data', char(0)
-      call gz_write_textbuf_w_lf
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
+      textbuf = hd_rj_comm() // char(0)
+      call gz_write_textbuf_no_lf
       call write_import_data_gz
 !
       end subroutine write_modes_rlm_data_gz
