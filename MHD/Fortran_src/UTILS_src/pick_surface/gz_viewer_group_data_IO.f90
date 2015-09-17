@@ -118,18 +118,11 @@
 !
       subroutine write_nod_group_viewer_gz
 !
+      use m_fem_mesh_labels
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 4. group information', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 4.1 node group', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(i16,a1)') ngrp_nod_sf, char(0)
-      call gz_write_textbuf_w_lf
 !
+      textbuf = hd_fem_nodgrp() // char(0)
+      call gz_write_textbuf_no_lf
       call write_viewer_group_data_gz(num_pe_sf, ngrp_nod_sf,           &
      &    nnod_nod_sf, nod_stack_sf, nod_gp_name_sf, nod_item_sf)
 !
@@ -160,11 +153,11 @@
 !
       subroutine write_ele_group_viewer_gz
 !
+      use m_fem_mesh_labels
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 4.2 element group', char(0)
-      call gz_write_textbuf_w_lf
+!
+      textbuf = hd_fem_elegrp() // char(0)
+      call gz_write_textbuf_no_lf
       write(textbuf,'(a,a1)') '! 4.2.1 element data', char(0)
       call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)
@@ -256,11 +249,11 @@
 !
       subroutine write_surf_group_viewer_gz
 !
+      use m_fem_mesh_labels
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 4.3 surface group', char(0)
-      call gz_write_textbuf_w_lf
+!
+      textbuf = hd_fem_sfgrp() // char(0)
+      call gz_write_textbuf_no_lf
       write(textbuf,'(a,a1)') '! 4.3.1 surface data', char(0)
       call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!', char(0)

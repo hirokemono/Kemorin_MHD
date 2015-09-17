@@ -47,6 +47,7 @@
 !
        subroutine write_labels_4_group
 !
+       use m_fem_mesh_labels
        use m_size_4_plane
        use m_size_of_cube
        use m_cube_files_data
@@ -54,15 +55,9 @@
 !
 ! ..... write 4.group information
 !
-          if ( iflag_data_f .ne. 1) then
-            write(l_out,'( a )') '!'
-            write(l_out,'( a )')                                        &
-              '! boundary condition (x,y,z sym., x-forc.)'
-            write(l_out,'( a )')                                        &
-     &        '! 4. group information'
-            write(l_out,'( a )')                                        &
-     &        '! 4.1 node group'
-          end if
+       if ( iflag_data_f .ne. 1) then
+         write(l_out,'(a)', advance='NO') hd_fem_nodgrp()
+       end if
 ! 
 ! ***** write boundary condition (x,y,z=0 plane sym., x-force)
 !

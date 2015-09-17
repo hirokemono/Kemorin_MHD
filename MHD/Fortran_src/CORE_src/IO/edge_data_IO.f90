@@ -31,6 +31,7 @@
 !
       subroutine write_edge_connection
 !
+      use m_fem_mesh_labels
       use domain_data_IO
       use comm_stack_item_IO
       use element_connect_IO
@@ -40,9 +41,7 @@
       write(input_file_code,'(a)') '!  edge connectivity '
       write(input_file_code,'(a)') '!  and communication table '
       write(input_file_code,'(a)') '!' 
-      write(input_file_code,'(a)') '!'
-      write(input_file_code,'(a)') '! 1.parallel information'
-      write(input_file_code,'(a)') '! '
+      write(input_file_code,'(a)', advance='NO') hd_fem_para()
 !
       call write_domain_info(input_file_code)
 !

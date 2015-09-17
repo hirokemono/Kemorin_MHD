@@ -34,62 +34,35 @@
 !
       subroutine write_geometry_data_gz
 !
+      use m_fem_mesh_labels
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 1.parallel information', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+!
+      textbuf = hd_fem_para() // char(0)
+      call gz_write_textbuf_no_lf
 !
       call write_domain_info_gz
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)')                                           &
-     &      '! 2.mesh information (nodes and elements in partition)',   &
-     &      char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 2.1 node (position) ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_fem_node() // char(0)
+      call gz_write_textbuf_no_lf
 !
       call write_geometry_info_gz
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 2.2 element (connection) ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_fem_elem() // char(0)
+      call gz_write_textbuf_no_lf
 !
       call write_element_info_gz
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)')                                           &
-     &         '! 3.import / export information ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 3.1 import ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_fem_import() // char(0)
+      call gz_write_textbuf_no_lf
 !
       call write_import_data_gz
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 3.2 export ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_fem_export() // char(0)
+      call gz_write_textbuf_no_lf
 !
       call write_export_data_gz
 !
@@ -99,52 +72,29 @@
 !
       subroutine write_filter_geometry_gz
 !
+      use m_fem_mesh_labels
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 1.parallel information', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+!
+      textbuf = hd_fem_para() // char(0)
+      call gz_write_textbuf_no_lf
 !
       call write_domain_info_gz
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)')                                           &
-     &      '! 2.mesh information (nodes and elements in partition)',   &
-     &      char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 2.1 node (position) ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_fem_node() // char(0)
+      call gz_write_textbuf_no_lf
 !
       call write_geometry_info_gz
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)')                                           &
-     &         '! 3.import / export information ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 3.1 import ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_fem_import() // char(0)
+      call gz_write_textbuf_no_lf
 !
       call write_import_data_gz
 !
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 3.2 export ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_fem_export() // char(0)
+      call gz_write_textbuf_no_lf
 !
       call write_export_data_gz
 !
@@ -236,6 +186,8 @@
 !
       subroutine output_node_sph_geometry_gz
 !
+      use m_fem_mesh_labels
+!
 !
       write(textbuf,'(a,a1)') '!' , char(0)
       call gz_write_textbuf_w_lf
@@ -245,12 +197,8 @@
       call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!' , char(0)
       call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 1.parallel information', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_fem_para() // char(0)
+      call gz_write_textbuf_no_lf
 !
 !
       call write_domain_info_gz
@@ -276,6 +224,8 @@
 !
       subroutine output_node_cyl_geometry_gz
 !
+      use m_fem_mesh_labels
+!
 !
       write(textbuf,'(a,a1)') '!' , char(0)
       call gz_write_textbuf_w_lf
@@ -285,12 +235,8 @@
       call gz_write_textbuf_w_lf
       write(textbuf,'(a,a1)') '!' , char(0)
       call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 1.parallel information', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_fem_para() // char(0)
+      call gz_write_textbuf_no_lf
 !
 !
       call write_domain_info_gz

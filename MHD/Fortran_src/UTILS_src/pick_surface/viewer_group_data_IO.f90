@@ -101,11 +101,9 @@
 !
       subroutine write_nod_group_viewer
 !
+      use m_fem_mesh_labels
 !
-      write(surface_id,'(a)') '!'
-      write(surface_id,'(a)') '! 4. group information'
-      write(surface_id,'(a)') '! 4.1 node group'
-      write(surface_id,'(a)') '!'
+      write(surface_id,'(a)', advance='NO') hd_fem_nodgrp()
       write(surface_id,'(i16)') ngrp_nod_sf
 !
       call write_viewer_group_data(surface_id, num_pe_sf, ngrp_nod_sf,  &
@@ -139,9 +137,9 @@
 !
       subroutine write_ele_group_viewer
 !
+      use m_fem_mesh_labels
 !
-      write(surface_id,'(a)') '!'
-      write(surface_id,'(a)') '! 4.2 element group'
+      write(surface_id,'(a)', advance='NO') hd_fem_elegrp()
       write(surface_id,'(a)') '! 4.2.1 element data'
       write(surface_id,'(a)') '!'
 !
@@ -223,9 +221,9 @@
 !
       subroutine write_surf_group_viewer
 !
+      use m_fem_mesh_labels
 !
-      write(surface_id,'(a)') '!'
-      write(surface_id,'(a)') '! 4.3 surface group'
+      write(surface_id,'(a)', advance='NO') hd_fem_sfgrp()
       write(surface_id,'(a)') '! 4.3.1 surface data'
       write(surface_id,'(a)') '!'
       write(surface_id,'(2i16)') ngrp_surf_sf, nsurf_surf_sf

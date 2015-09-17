@@ -24,7 +24,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-     subroutine set_ele_connect(elm_type, ipe, jpe, kpe)
+      subroutine set_ele_connect(elm_type, ipe, jpe, kpe)
+!
+      use m_fem_mesh_labels
 !
       integer (kind = kint) :: elm_type
       integer (kind = kint) :: ipe, jpe, kpe
@@ -44,7 +46,7 @@
         write(l_out)   elmtot
         write(l_out)  (elm_type,i=1,elmtot)
       else
-        write(l_out,'( a )') '! 2.2 element (connection)'
+        write(l_out,'(a)', advance='NO') hd_fem_elem()
         write(l_out,'(10i16)')   elmtot
         write(l_out,'(10i16)')  (elm_type,i=1,elmtot)
       end if

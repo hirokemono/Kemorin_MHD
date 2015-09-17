@@ -73,39 +73,22 @@
 !
       subroutine write_filter_geometry(id_file)
 !
+      use m_fem_mesh_labels
+!
       integer(kind = kint), intent(in) :: id_file
 !
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '! 1.parallel information'
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_fem_para()
       call write_domain_info(id_file)
 !
-!
-!
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)')                                     &
-     &      '! 2.mesh information (nodes and elements in partition)'
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '! 2.1 node (position) '
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_fem_node()
       call write_geometry_info(id_file)
 !
 !
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '! 3.import / export information '
-      write(id_file,'(a)') '! 3.1 import '
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_fem_import()
       call write_import_data(id_file)
 !
-!
-      write(id_file,'(a)') '!'
-      write(id_file,'(a)') '! 3.2 export '
-      write(id_file,'(a)') '!'
-!
+      write(id_file,'(a)', advance='NO') hd_fem_export()
       call write_export_data(id_file)
 !
       end subroutine write_filter_geometry

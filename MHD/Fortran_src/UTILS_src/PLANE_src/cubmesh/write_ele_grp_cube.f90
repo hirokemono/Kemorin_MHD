@@ -56,6 +56,7 @@
        use m_size_of_cube
        use m_offset_size_cube
        use m_cube_files_data
+       use m_fem_mesh_labels
 !
        integer(kind = kint) :: kpe
 !
@@ -165,20 +166,19 @@
 !
        else
 !
-        write(l_out,'( a )')    '!'
-        write(l_out,'(  a  )')  '! 4.2 element group'
-        write(l_out,'(10i16)') elmgrptot
-        write(l_out,'(10i16)') (index(i),i=1,elmgrptot)
+         write(l_out,'(a)', advance='NO') hd_fem_elegrp()
+         write(l_out,'(10i16)') elmgrptot
+         write(l_out,'(10i16)') (index(i),i=1,elmgrptot)
 !
-        write(l_out,'(  a  )') 'layer_start'
-        write(l_out,'(6i16)') (iele_group_id(i),i=1, index(1))
+         write(l_out,'(  a  )') 'layer_start'
+         write(l_out,'(6i16)') (iele_group_id(i),i=1, index(1))
 !
-        write(l_out,'(  a  )') 'layer_end'
-        write(l_out,'(6i16)')                                           &
+         write(l_out,'(  a  )') 'layer_end'
+         write(l_out,'(6i16)')                                          &
      &            (iele_group_id(i),i=index(1)+1, index(2))
 !
-        write(l_out,'(  a  )') 'conductive_fluid'
-        write(l_out,'(6i16)')                                           &
+         write(l_out,'(  a  )') 'conductive_fluid'
+         write(l_out,'(6i16)')                                          &
      &            (iele_group_id(i),i=index(2)+1, index(3))
 !
         do k = 1, (nz_all-1)

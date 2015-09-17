@@ -76,19 +76,13 @@
 !
       subroutine write_boundary_data_gz
 !
+      use m_fem_mesh_labels
       use gz_group_data_IO
 !
 !   write node group
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 4. group information  ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 4.1 node group ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
+      textbuf = hd_fem_nodgrp() // char(0)
+      call gz_write_textbuf_no_lf
       call write_group_data_gz(num_bc_dummy, num_nod_bc_dummy,          &
      &    bc_istack_dummy, bc_name_dummy, bc_item_dummy)
 !
@@ -96,13 +90,8 @@
 !
 !  write element group
 !
-!
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 4.2 element group ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
+      textbuf = hd_fem_elegrp() // char(0)
+      call gz_write_textbuf_no_lf
 !
       call write_group_data_gz(num_mat_dummy, num_mat_bc_dummy,         &
      &    mat_istack_dummy, mat_name_dummy, mat_item_dummy)
@@ -111,13 +100,8 @@
 !
 !  write surface group
 !
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 4.3 surface group ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!', char(0)
-      call gz_write_textbuf_w_lf
-!
+      textbuf = hd_fem_sfgrp() // char(0)
+      call gz_write_textbuf_no_lf
       call write_surf_group_data_gz(num_surf_dummy, num_surf_bc_dummy,  &
      &    surf_istack_dummy, surf_name_dummy, surf_item_dummy)
 !

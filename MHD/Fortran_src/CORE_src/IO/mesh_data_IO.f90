@@ -47,44 +47,25 @@
 !
       subroutine write_geometry_data
 !
+      use m_fem_mesh_labels
 !
-      write(input_file_code,'(a)') '!'
-      write(input_file_code,'(a)') '! 1.parallel information'
-      write(input_file_code,'(a)') '!'
 !
+      write(input_file_code,'(a)', advance='NO') hd_fem_para()
       call write_domain_info(input_file_code)
 !
-!
-!
-      write(input_file_code,'(a)') '!'
-      write(input_file_code,'(a)')                                      &
-     &      '! 2.mesh information (nodes and elements in partition)'
-      write(input_file_code,'(a)') '!'
-      write(input_file_code,'(a)') '! 2.1 node (position) '
-      write(input_file_code,'(a)') '!'
-!
+      write(input_file_code,'(a)', advance='NO') hd_fem_node()
       call write_geometry_info(input_file_code)
 !
 !
-      write(input_file_code,'(a)') '!'
-      write(input_file_code,'(a)') '! 2.2 element (connection) '
-      write(input_file_code,'(a)') '!'
-!
+      write(input_file_code,'(a)', advance='NO') hd_fem_elem()
       call write_element_info(input_file_code)
 !
 !
-      write(input_file_code,'(a)') '!'
-      write(input_file_code,'(a)') '! 3.import / export information '
-      write(input_file_code,'(a)') '! 3.1 import '
-      write(input_file_code,'(a)') '!'
-!
+      write(input_file_code,'(a)', advance='NO') hd_fem_import()
       call write_import_data(input_file_code)
 !
 !
-      write(input_file_code,'(a)') '!'
-      write(input_file_code,'(a)') '! 3.2 export '
-      write(input_file_code,'(a)') '!'
-!
+      write(input_file_code,'(a)', advance='NO') hd_fem_export()
       call write_export_data(input_file_code)
 !
       end subroutine write_geometry_data
@@ -159,14 +140,14 @@
 !
       subroutine output_node_sph_geometry
 !
+      use m_fem_mesh_labels
+!
 !
       write(input_file_code,'(a)') '!' 
       write(input_file_code,'(a)') '!  node position '
       write(input_file_code,'(a)') '!  by spherical coordinate'
       write(input_file_code,'(a)') '!' 
-      write(input_file_code,'(a)') '! '
-      write(input_file_code,'(a)') '! 1.parallel information'
-      write(input_file_code,'(a)') '! '
+      write(input_file_code,'(a)', advance='NO') hd_fem_para()
 !
 !
       call write_domain_info(input_file_code)
@@ -186,14 +167,14 @@
 !
       subroutine output_node_cyl_geometry
 !
+      use m_fem_mesh_labels
+!
 !
       write(input_file_code,'(a)') '!' 
       write(input_file_code,'(a)') '!  node position '
       write(input_file_code,'(a)') '!  by cylindrical coordinate'
       write(input_file_code,'(a)') '!' 
-      write(input_file_code,'(a)') '! '
-      write(input_file_code,'(a)') '! 1.parallel information'
-      write(input_file_code,'(a)') '! '
+      write(input_file_code,'(a)', advance='NO') hd_fem_para()
 !
 !
       call write_domain_info(input_file_code)

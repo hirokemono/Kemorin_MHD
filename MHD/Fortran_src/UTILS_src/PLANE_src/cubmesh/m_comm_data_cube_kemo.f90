@@ -156,24 +156,17 @@
        subroutine write_pe_data(pe_id)
 !
        use m_cube_files_data
+       use m_fem_mesh_labels
 !
        integer(kind = kint) :: pe_id
        integer(kind = kint) :: i
 !
-!            write(29+pe_id,'( a )') '!'
-!            write(29+pe_id,'( a )') '! 1.parallel information'
 
-!            write(29+pe_id,'(10i16)')  pe_id-1
-!            write(29+pe_id,'(10i16)')  neibpetot
-!            write(29+pe_id,'(10i16)') (neibpe(i)-1,i=1,neibpetot)
+       write(pe_id,'(a)', advance='NO') hd_fem_para()
 
-            write(l_out,'( a )')  '!'
-            write(l_out,'( a )')  '! 1.parallel information'
-
-            write(l_out,'(10i16)')  pe_id-1
-            write(l_out,'(10i16)')  neibpetot_new
-            write(l_out,'(10i16)') (neibpe_new(i)-1,i=1,neibpetot_new)
-!
+       write(l_out,'(10i16)')  pe_id-1
+       write(l_out,'(10i16)')  neibpetot_new
+       write(l_out,'(10i16)') (neibpe_new(i)-1,i=1,neibpetot_new)
 !
        end subroutine write_pe_data
 !
@@ -198,35 +191,25 @@
 !
        subroutine write_communication_data
 !
-!
+       use m_fem_mesh_labels
        use m_cube_files_data
 !
-       integer(kind = kint) :: i, inod
+       integer(kind = kint) :: inod
 !
-            write(l_out,'( a )') '!'
-            write(l_out,'( a )')                                        &
-     &        '! 3.import / export information'
-            write(l_out,'( a )')                                        &
-     &        '! 3.1 import'
 !
+       write(l_out,'(a)', advance='NO') hd_fem_import()
+       write(l_out,'(10i16)') stack_import_new(1:neibpetot_new)
 
-            write(l_out,'(10i16)')                                      &
-     &              (stack_import_new(i)  ,i=1,neibpetot_new)
+       do inod = 1, num_import
+         write(l_out,'(10i16)') item_import_new(inod)
+       end do
+!
+       write(l_out,'(a)', advance='NO') hd_fem_export()
+       write(l_out,'(10i16)') stack_export_new(1:neibpetot_new)
 
-            do inod = 1, num_import
-             write(l_out,'(10i16)') item_import_new(inod)
-            end do
-            write(l_out,'( a )')                                        &
-     &        '!'
-            write(l_out,'( a )')                                        &
-     &        '! 3.2 export'
-
-            write(l_out,'(10i16)')                                      &
-     &              (stack_export_new(i)  ,i=1,neibpetot_new)
-
-            do inod = 1, num_export
-             write(l_out,'(10i16)') item_export_new(inod)
-            end do
+       do inod = 1, num_export
+         write(l_out,'(10i16)') item_export_new(inod)
+       end do
 !
        end subroutine write_communication_data
 !
@@ -257,36 +240,25 @@
 !
        subroutine write_org_communication_data(pe_id)
 !
-!
+       use m_fem_mesh_labels
        use m_cube_files_data
 !
        integer(kind = kint) :: i, inod, pe_id, ifile
 !
        ifile = 29 + pe_id
-            write(ifile,'( a )') '!'
-            write(ifile,'( a )')                                        &
-     &        '! 3.import / export information'
-            write(ifile,'( a )')                                        &
-     &        '! 3.1 import'
+       write(ifile,'(a)', advance='NO') hd_fem_import()
+       write(ifile,'(10i16)') stack_import(1:neibpetot)
+
+      do inod = 1, num_import
+        write(ifile,'(10i16)') item_import(inod)
+      end do
 !
+      write(ifile,'(a)', advance='NO') hd_fem_export()
+      write(ifile,'(10i16)') stack_export(1:neibpetot)
 
-            write(ifile,'(10i16)')                                      &
-     &              (stack_import(i)  ,i=1,neibpetot)
-
-            do inod = 1, num_import
-             write(ifile,'(10i16)') item_import(inod)
-            end do
-            write(ifile,'( a )')                                        &
-     &        '!'
-            write(ifile,'( a )')                                        &
-     &        '! 3.2 export'
-
-            write(ifile,'(10i16)')                                      &
-     &              (stack_export(i)  ,i=1,neibpetot)
-
-            do inod = 1, num_export
-             write(ifile,'(10i16)') item_export(inod)
-            end do
+      do inod = 1, num_export
+        write(ifile,'(10i16)') item_export(inod)
+      end do
 !
        end subroutine write_org_communication_data
 !

@@ -24,21 +24,21 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine write_surface_group(kpe)
+      subroutine write_surface_group(kpe)
 !
-       integer(kind = kint) :: kpe
+      use m_fem_mesh_labels
 !
-       integer(kind = kint) :: ibd
-       integer(kind = kint) :: i, j, istart
+      integer(kind = kint) :: kpe
 !
-       integer(kind=kint), parameter ::  isix = 6, ifive = 5
+      integer(kind = kint) :: ibd
+      integer(kind = kint) :: i, j, istart
+!
+      integer(kind=kint), parameter ::  isix = 6, ifive = 5
 !
 !
-            write(l_out,'( a )') '!'
-            write(l_out,'(  a  )')                                      &
-     &        '! 4.3 surface group'
-            write(l_out,'(10i16)') sufgrptot
-            write(l_out,'(10i16)') (index(i),i=1,sufgrptot)
+       write(l_out,'(a)', advance='NO') hd_fem_sfgrp()
+       write(l_out,'(10i16)') sufgrptot
+       write(l_out,'(10i16)') (index(i),i=1,sufgrptot)
 !
 !
             do ibd = 1, neib
