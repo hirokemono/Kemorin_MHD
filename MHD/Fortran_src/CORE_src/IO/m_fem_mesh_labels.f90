@@ -4,7 +4,7 @@
 !!@author H. Matsui
 !!@date        programmed by H.Matsui in July, 2007
 !
-!> @brief Comments for spherical harmonics indexing data
+!> @brief Comments for mesh data
 !!
 !!@verbatim
 !!      character(len=ilen_fem_para) function hd_fem_para()
