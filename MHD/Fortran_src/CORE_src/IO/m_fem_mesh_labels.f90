@@ -17,6 +17,12 @@
 !!      character(len=ilen_fem_nodgrp) function hd_fem_nodgrp()
 !!      character(len=ilen_fem_elegrp) function hd_fem_elegrp()
 !!      character(len=ilen_fem_sfgrp) function hd_fem_sfgrp()
+!!
+!!      character(len=ilen_fem_para_sph) function hd_fem_para_sph()
+!!      character(len=ilen_fem_node_sph) function hd_fem_node_sph()
+!!
+!!      character(len=ilen_fem_para_cyl) function hd_fem_para_cyl()
+!!      character(len=ilen_fem_node_cyl) function hd_fem_node_cyl()
 !!@endverbatim
 !
       module m_fem_mesh_labels
@@ -41,6 +47,20 @@
       integer(kind = kint), parameter :: ilen_fem_elegrp = 1+20+1+3
 !>      length of hd_fem_sfgrp
       integer(kind = kint), parameter :: ilen_fem_sfgrp =  1+20+1+3
+!
+!>      length of hd_fem_nod_sph
+      integer(kind = kint), parameter                                   &
+     &      :: ilen_fem_para_sph = 1+17+26+1+4
+!>      length of hd_fem_node
+      integer(kind = kint), parameter                                   &
+     &      :: ilen_fem_node_sph = 1+54+1+27+1+5
+!
+!>      length of hd_fem_nod_sph
+      integer(kind = kint), parameter                                   &
+     &      :: ilen_fem_para_cyl = 1+17+28+1+4
+!>      length of hd_fem_node
+      integer(kind = kint), parameter                                   &
+     &      :: ilen_fem_node_cyl = 1+54+1+23+1+5
 !
 !------------------------------------------------------------------
 !
@@ -143,6 +163,60 @@
      &          // '!' // char(10)
 !
       end function hd_fem_sfgrp
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      character(len=ilen_fem_para_sph) function hd_fem_para_sph()
+!
+      hd_fem_para_sph                                                   &
+     &      = '!' // char(10)                                           &
+     &     // '!  node position ' // char(10)                           &
+     &     // '!  by spherical coordinate' // char(10)                  &
+     &     // '!' // char(10)
+!
+      end function hd_fem_para_sph
+!
+!------------------------------------------------------------------
+!
+      character(len=ilen_fem_node_sph) function hd_fem_node_sph()
+!
+      hd_fem_node_sph                                                   &
+     &      = '!' // char(10)                                           &
+     &     // '! 2.mesh information (nodes and elements in partition)'  &
+     &     // char(10)                                                  &
+     &     // '!' // char(10)                                           &
+     &     // '! 2.1 node (r, theta, phi) ' // char(10)                 &
+     &     // '!' // char(10)
+!
+      end function hd_fem_node_sph
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      character(len=ilen_fem_para_cyl) function hd_fem_para_cyl()
+!
+      hd_fem_para_cyl                                                   &
+     &      = '!' // char(10)                                           &
+     &     // '!  node position ' // char(10)                           &
+     &     // '!  by cylindrical coordinate' // char(10)                &
+     &     // '!' // char(10)
+!
+      end function hd_fem_para_cyl
+!
+!------------------------------------------------------------------
+!
+      character(len=ilen_fem_node_cyl) function hd_fem_node_cyl()
+!
+      hd_fem_node_cyl                                                   &
+     &      = '!' // char(10)                                           &
+     &     // '! 2.mesh information (nodes and elements in partition)'  &
+     &     // char(10)                                                  &
+     &     // '!' // char(10)                                           &
+     &     // '! 2.1 node (s, phi, z) ' // char(10)                     &
+     &     // '!' // char(10)
+!
+      end function hd_fem_node_cyl
 !
 !------------------------------------------------------------------
 !

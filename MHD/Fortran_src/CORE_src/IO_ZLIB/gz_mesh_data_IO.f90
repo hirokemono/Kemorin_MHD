@@ -189,33 +189,12 @@
       use m_fem_mesh_labels
 !
 !
-      write(textbuf,'(a,a1)') '!' , char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!  node position ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!  by spherical coordinate', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!' , char(0)
-      call gz_write_textbuf_w_lf
-      textbuf = hd_fem_para() // char(0)
+      textbuf = hd_fem_para_sph() // hd_fem_para() // char(0)
       call gz_write_textbuf_no_lf
-!
-!
       call write_domain_info_gz
 !
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)')                                           &
-     &      '! 2.mesh information (nodes and elements in partition)',   &
-     &        char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 2.1 node (r, theta, phi) ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
-!
+      textbuf = hd_fem_node_sph() // char(0)
+      call gz_write_textbuf_no_lf
       call write_geometry_info_gz
 !
       end subroutine output_node_sph_geometry_gz
@@ -227,33 +206,12 @@
       use m_fem_mesh_labels
 !
 !
-      write(textbuf,'(a,a1)') '!' , char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!  node position ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!  by cylindrical coordinate', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '!' , char(0)
-      call gz_write_textbuf_w_lf
-      textbuf = hd_fem_para() // char(0)
+      textbuf = hd_fem_para_cyl() // hd_fem_para() // char(0)
       call gz_write_textbuf_no_lf
-!
-!
       call write_domain_info_gz
 !
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)')                                           &
-     &      '! 2.mesh information (nodes and elements in partition)',   &
-     &      char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! 2.1 node (s, phi, z) ', char(0)
-      call gz_write_textbuf_w_lf
-      write(textbuf,'(a,a1)') '! ', char(0)
-      call gz_write_textbuf_w_lf
-!
+      textbuf = hd_fem_node_cyl() // char(0)
+      call gz_write_textbuf_no_lf
       call write_geometry_info_gz
 !
       end subroutine output_node_cyl_geometry_gz

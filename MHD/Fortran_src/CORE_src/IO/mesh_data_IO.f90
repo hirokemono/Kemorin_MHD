@@ -143,22 +143,11 @@
       use m_fem_mesh_labels
 !
 !
-      write(input_file_code,'(a)') '!' 
-      write(input_file_code,'(a)') '!  node position '
-      write(input_file_code,'(a)') '!  by spherical coordinate'
-      write(input_file_code,'(a)') '!' 
+      write(input_file_code,'(a)', advance='NO') hd_fem_para_sph()
       write(input_file_code,'(a)', advance='NO') hd_fem_para()
-!
-!
       call write_domain_info(input_file_code)
 !
-      write(input_file_code,'(a)') '! '
-      write(input_file_code,'(a)')                                      &
-     &      '! 2.mesh information (nodes and elements in partition)'
-      write(input_file_code,'(a)') '! '
-      write(input_file_code,'(a)') '! 2.1 node (r, theta, phi) '
-      write(input_file_code,'(a)') '! '
-!
+      write(input_file_code,'(a)', advance='NO') hd_fem_node_sph()
       call write_geometry_info(input_file_code)
 !
       end subroutine output_node_sph_geometry
@@ -170,22 +159,13 @@
       use m_fem_mesh_labels
 !
 !
-      write(input_file_code,'(a)') '!' 
-      write(input_file_code,'(a)') '!  node position '
-      write(input_file_code,'(a)') '!  by cylindrical coordinate'
-      write(input_file_code,'(a)') '!' 
+      write(input_file_code,'(a)', advance='NO') hd_fem_para_cyl()
       write(input_file_code,'(a)', advance='NO') hd_fem_para()
 !
 !
       call write_domain_info(input_file_code)
 !
-      write(input_file_code,'(a)') '! '
-      write(input_file_code,'(a)')                                      &
-     &      '! 2.mesh information (nodes and elements in partition)'
-      write(input_file_code,'(a)') '! '
-      write(input_file_code,'(a)') '! 2.1 node (s, phi, z) '
-      write(input_file_code,'(a)') '! '
-!
+      write(input_file_code,'(a)', advance='NO') hd_fem_node_cyl()
       call write_geometry_info(input_file_code)
 !
       end subroutine output_node_cyl_geometry
