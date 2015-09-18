@@ -41,6 +41,8 @@
 ! 
 !>       Structure for field data
       type phys_data
+!>       number of data points
+        integer (kind=kint) :: n_point
 !>       number of field
         integer (kind=kint) :: num_phys
 !>       total number of component
@@ -104,9 +106,10 @@
       type(phys_data), intent(inout) :: fld
 !
 !
-      allocate( fld%d_fld(num,fld%ntot_phys) )
+      fld%n_point = num
+      allocate( fld%d_fld(fld%n_point,fld%ntot_phys) )
       allocate( fld%iflag_update(fld%ntot_phys) )
-      if(num*fld%ntot_phys .gt. 0)  then
+      if(fld%n_point*fld%ntot_phys .gt. 0)  then
         fld%d_fld =        0.0d0
         fld%iflag_update = 0
       end if

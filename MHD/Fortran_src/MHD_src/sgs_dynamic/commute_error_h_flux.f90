@@ -59,7 +59,7 @@
 !
       call set_ff_nl_smp_2_ff(n_scalar)
       call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, ml_fl, num_tot_nod_phys, i_sgs, d_nod)
+     &    ff_nl, ml_fl, nod_fld1%ntot_phys, i_sgs, d_nod)
 !
       end subroutine cal_commute_error_4_hf
 !

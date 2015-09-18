@@ -64,9 +64,9 @@
       call set_boundary_vect_p
 !
       if (iflag_debug.eq.1) write(*,*) 'vector_send_recv for vector_p'
-      call vector_send_recv(num_tot_nod_phys, iphys%i_vecp, d_nod)
+      call vector_send_recv(nod_fld1%ntot_phys, iphys%i_vecp, d_nod)
       if (iflag_debug.eq.1) write(*,*) 'scalar_send_recv for potential'
-      call scalar_send_recv(num_tot_nod_phys, iphys%i_mag_p, d_nod)
+      call scalar_send_recv(nod_fld1%ntot_phys, iphys%i_mag_p, d_nod)
 !
       end subroutine cal_vector_p_co
 !

@@ -82,11 +82,11 @@
 !
       call add3_skv_coef_to_ff_v_smp_1st(coef_induct, ff_smp, sk6)
       call cal_ff_smp_2_vector                                          &
-     &   (ff_smp, ml_cd, num_tot_nod_phys, i_sgs, d_nod)
+     &   (ff_smp, ml_cd, nod_fld1%ntot_phys, i_sgs, d_nod)
 !
 ! ----------   communications
 !
-      call vector_send_recv(num_tot_nod_phys, i_sgs, d_nod)
+      call vector_send_recv(nod_fld1%ntot_phys, i_sgs, d_nod)
 !
       end subroutine cal_sgs_vp_induct_grad_no_coef
 !

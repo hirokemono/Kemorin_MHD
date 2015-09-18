@@ -41,7 +41,7 @@
 !$omp parallel
       call delete_phys_data_smp                                         &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    num_tot_nod_phys, numdir, i_res, d_nod)
+     &    nod_fld1%ntot_phys, numdir, i_res, d_nod)
 !$omp end parallel
 !
       end subroutine clear_nodal_data

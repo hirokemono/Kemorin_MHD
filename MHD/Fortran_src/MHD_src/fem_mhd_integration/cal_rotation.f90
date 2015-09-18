@@ -46,11 +46,11 @@
 !
       call set_ff_nl_smp_2_ff(n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, ml, num_tot_nod_phys, i_res, d_nod)
+     &    ff_nl, ml, nod_fld1%ntot_phys, i_res, d_nod)
 !
 ! ----------   communications
 !
-      call vector_send_recv(num_tot_nod_phys, i_res, d_nod)
+      call vector_send_recv(nod_fld1%ntot_phys, i_res, d_nod)
 !
       end subroutine cal_rotation_whole
 !
@@ -73,11 +73,11 @@
 !
       call set_ff_nl_smp_2_ff(n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, ml_fl, num_tot_nod_phys, i_res, d_nod)
+     &    ff_nl, ml_fl, nod_fld1%ntot_phys, i_res, d_nod)
 !
 ! ----------   communications
 !
-      call vector_send_recv(num_tot_nod_phys, i_res, d_nod)
+      call vector_send_recv(nod_fld1%ntot_phys, i_res, d_nod)
 !
       end subroutine cal_rotation_in_fluid
 !
@@ -99,11 +99,11 @@
      &     iele_cd_smp_stack, i_vector)
 !
        call cal_ff_smp_2_vector                                         &
-     &    (ff_nl_smp, ml_cd, num_tot_nod_phys, i_res, d_nod)
+     &    (ff_nl_smp, ml_cd, nod_fld1%ntot_phys, i_res, d_nod)
 !
 ! ----------   communications
 !
-      call vector_send_recv(num_tot_nod_phys, i_res, d_nod)
+      call vector_send_recv(nod_fld1%ntot_phys, i_res, d_nod)
 !
       end subroutine cal_rotation_in_conduct
 !

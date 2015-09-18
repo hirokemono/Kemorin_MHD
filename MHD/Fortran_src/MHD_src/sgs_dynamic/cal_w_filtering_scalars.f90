@@ -38,25 +38,25 @@
 !
         call cal_w_ez_filter_scalar_phys                                &
      &     (num_whole_w_filter_grp, id_whole_w_filter_grp, i_scalar,    &
-     &      num_tot_nod_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, d_nod)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING ) then
 !
         call cal_w_filter_scalar_phys_smp                               &
      &     (num_whole_w_filter_grp, id_whole_w_filter_grp, i_scalar,    &
-     &      num_tot_nod_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, d_nod)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING) then
 !
         call cal_w_ez_filter_scalar_smp                                 &
      &     (num_whole_w_filter_grp, id_whole_w_filter_grp, i_scalar,    &
-     &      num_tot_nod_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, d_nod)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_FILTERING) then
 !
         call cal_w_filter_scalar_phys                                   &
      &     (num_whole_w_filter_grp, id_whole_w_filter_grp, i_scalar,    &
-     &      num_tot_nod_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, d_nod)
       end if
 !
       end subroutine cal_w_filtered_scalar
@@ -74,25 +74,25 @@
 !
         call cal_w_ez_filter_scalar_phys                                &
      &     (num_fluid_w_filter_grp, id_fluid_w_filter_grp, i_scalar,    &
-     &      num_tot_nod_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, d_nod)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING ) then
 !
         call cal_w_filter_scalar_phys_smp                               &
      &     (num_fluid_w_filter_grp, id_fluid_w_filter_grp, i_scalar,    &
-     &      num_tot_nod_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, d_nod)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING) then
 !
         call cal_w_ez_filter_scalar_smp                                 &
      &     (num_fluid_w_filter_grp, id_fluid_w_filter_grp, i_scalar,    &
-     &      num_tot_nod_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, d_nod)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_FILTERING) then
 !
         call cal_w_filter_scalar_phys                                   &
      &     (num_fluid_w_filter_grp, id_fluid_w_filter_grp, i_scalar,    &
-     &      num_tot_nod_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, d_nod)
       end if
 !
       end subroutine cal_w_filtered_scalar_in_fluid

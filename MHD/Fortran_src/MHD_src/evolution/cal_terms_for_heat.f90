@@ -58,12 +58,11 @@
 !       call check_ff_nl(n_scalar)
 !
       call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, ml_fl, num_tot_nod_phys, i_field, d_nod)
+     &    ff_nl, ml_fl, nod_fld1%ntot_phys, i_field, d_nod)
 !
 !   communication
 !
-      call scalar_send_recv(num_tot_nod_phys, i_field, d_nod)
-!
+      call scalar_send_recv(nod_fld1%ntot_phys, i_field, d_nod)
 !
       end subroutine cal_terms_4_heat
 !
@@ -89,11 +88,12 @@
       call set_boundary_ene_4_rhs
 !
       call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,          &
-     &    ff, ml_fl, num_tot_nod_phys, iphys%i_t_diffuse, d_nod)
+     &    ff, ml_fl, nod_fld1%ntot_phys, iphys%i_t_diffuse, d_nod)
 !
 !   communication
 !
-      call scalar_send_recv(num_tot_nod_phys, iphys%i_t_diffuse, d_nod)
+      call scalar_send_recv                                             &
+     &   (nod_fld1%ntot_phys, iphys%i_t_diffuse, d_nod)
 !
       end subroutine cal_thermal_diffusion
 !

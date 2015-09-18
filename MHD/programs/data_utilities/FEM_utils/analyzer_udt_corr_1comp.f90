@@ -152,8 +152,8 @@
 !
 !     ---------------------
 !
-      ntot_correlate = num_tot_nod_phys
-      ncomp_correlate = num_tot_nod_phys
+      ntot_correlate =  nod_fld1%ntot_phys
+      ncomp_correlate = nod_fld1%ntot_phys
       nlayer_correlate = layer_tbl1%n_layer_d
       call allocate_name_layer_correlate
       call allocate_all_layer_correlate

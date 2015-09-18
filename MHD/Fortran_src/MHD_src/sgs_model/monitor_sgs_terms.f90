@@ -39,9 +39,10 @@
 !
       call set_ff_nl_smp_2_ff(n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, ml_cd, num_tot_nod_phys, iphys%i_SGS_vp_induct, d_nod)
+     &    ff_nl, ml_cd, nod_fld1%ntot_phys, iphys%i_SGS_vp_induct,      &
+     &    d_nod)
       call vector_send_recv                                             &
-     &   (num_tot_nod_phys, iphys%i_SGS_vp_induct, d_nod)
+     &   (nod_fld1%ntot_phys, iphys%i_SGS_vp_induct, d_nod)
 !
       end subroutine cal_sgs_uxb_2_monitor
 !

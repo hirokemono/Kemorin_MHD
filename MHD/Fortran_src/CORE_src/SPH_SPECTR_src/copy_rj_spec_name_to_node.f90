@@ -27,8 +27,8 @@
       use m_node_phys_data
       use m_sph_spectr_data
 !
-      nod_fld1%num_phys =     num_phys_rj
-      num_tot_nod_phys = ntot_phys_rj
+      nod_fld1%num_phys =  num_phys_rj
+      nod_fld1%ntot_phys = ntot_phys_rj
 !
       num_nod_phys_vis =     num_phys_rj_vis
       num_tot_nod_phys_vis = ntot_comp_rj_vis

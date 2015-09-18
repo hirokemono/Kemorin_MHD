@@ -39,7 +39,8 @@
      &      numele_in_core, iele_in_core_smp_stack, iele_in_core,       &
      &      jac1_3d_l%ntot_int, intg_point_t_evo,                       &
      &      jac1_3d_l%xjac, jac1_3d_l%an,                               &
-     &      num_tot_nod_phys, d_nod, iphys%i_mag_p, ave_mp_core_local)
+     &      nod_fld1%ntot_phys, d_nod, iphys%i_mag_p,                   &
+     &      ave_mp_core_local)
 !
         call MPI_allREDUCE (ave_mp_core_local, ave_mp_core, 1,          &
      &       CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)

@@ -64,7 +64,7 @@
 !
 !     reset monitoring flag
 !
-      iflag_nod_update(1:num_tot_nod_phys) = 0
+      iflag_nod_update(1:nod_fld1%ntot_phys) = 0
       iflag_sgs_coefs(1:num_sgs_kinds) =    0
       iflag_diff_coefs(1:num_diff_kinds) =  0
 !

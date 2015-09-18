@@ -37,11 +37,11 @@
 !
       if ( iflag_4_coriolis .eq. id_FORCE_at_node) then
         call cal_coriolis_nod(node1%numnod, node1%istack_nod_smp,       &
-     &      angular, coef_cor, ml_o_fl, num_tot_nod_phys,               &
+     &      angular, coef_cor, ml_o_fl, nod_fld1%ntot_phys,             &
      &      iphys%i_velo, d_nod, ff_nl)
       else if ( iflag_4_coriolis .eq. id_Coriolis_nod_imp) then
         call cal_coriolis_nod(node1%numnod, node1%istack_nod_smp,       &
-     &      angular, coef_cor, ml_o_fl, num_tot_nod_phys,               &
+     &      angular, coef_cor, ml_o_fl, nod_fld1%ntot_phys,             &
      &      iphys%i_velo, d_nod, ff)
       end if
 !

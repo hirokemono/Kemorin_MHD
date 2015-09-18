@@ -107,7 +107,7 @@
 !
       call set_boundary_ene
 !
-      call scalar_send_recv(num_tot_nod_phys, iphys%i_temp, d_nod)
+      call scalar_send_recv(nod_fld1%ntot_phys, iphys%i_temp, d_nod)
 !
       if (iphys%i_par_temp .gt. 0) then
         call subtract_2_nod_scalars(iphys%i_temp, iphys%i_ref_t,        &

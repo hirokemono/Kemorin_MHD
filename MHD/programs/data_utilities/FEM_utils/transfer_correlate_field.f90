@@ -73,10 +73,10 @@
 !
       if     (iflag_correlate_coord .eq. iflag_spherical) then
         call transfer_nod_fld_to_sph(node1%numnod, nod_fld1%num_phys,   &
-     &      num_tot_nod_phys, istack_nod_component, d_nod)
+     &      nod_fld1%ntot_phys, istack_nod_component, d_nod)
       else if(iflag_correlate_coord .eq. iflag_cylindrical) then
         call transfer_nod_fld_to_cyl(node1%numnod, nod_fld1%num_phys,   &
-     &     num_tot_nod_phys, istack_nod_component, d_nod)
+     &     nod_fld1%ntot_phys, istack_nod_component, d_nod)
       end if
 !
 !

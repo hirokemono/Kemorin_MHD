@@ -71,8 +71,8 @@
       iflag_nod_fld_monitor(1) = 1
       phys_nod_name(1) = result_field_name
 !
-      num_tot_nod_phys =     ncomp_4_result
-      num_tot_nod_phys_vis = ncomp_4_result
+      nod_fld1%ntot_phys =     ncomp_4_result
+      num_tot_nod_phys_vis =   ncomp_4_result
       call allocate_data_arrays
 !
       end subroutine allocate_product_result

@@ -63,8 +63,8 @@
       call set_boundary_velo
 !
       if (iflag_debug.eq.1) write(*,*) 'vector_send_recv(iphys%i_velo)'
-      call vector_send_recv(num_tot_nod_phys, iphys%i_velo, d_nod)
-      call scalar_send_recv(num_tot_nod_phys, iphys%i_press, d_nod)
+      call vector_send_recv(nod_fld1%ntot_phys, iphys%i_velo, d_nod)
+      call scalar_send_recv(nod_fld1%ntot_phys, iphys%i_press, d_nod)
 !
 !
       end subroutine cal_velocity_co

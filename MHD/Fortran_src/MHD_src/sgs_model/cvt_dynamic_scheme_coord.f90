@@ -40,13 +40,13 @@
       if(icoord_SGS_model_coef .eq. iflag_spherical) then
         call convert_dynamic_vectors_2_sph                              &
      &     (node1%numnod, node1%istack_nod_smp, node1%xx,               &
-     &      node1%rr, node1%ss, node1%a_r, node1%a_s, num_tot_nod_phys, &
-     &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
-     &      d_nod)
+     &      node1%rr, node1%ss, node1%a_r, node1%a_s,                   &
+     &      nod_fld1%ntot_phys, iphys%i_sgs_simi, iphys%i_sgs_grad,     &
+     &      iphys%i_sgs_grad_f, d_nod)
       else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
         call convert_dynamic_vectors_2_cyl                              &
      &     (node1%numnod, node1%istack_nod_smp, node1%xx,               &
-     &      node1%ss, node1%a_s, num_tot_nod_phys,                      &
+     &      node1%ss, node1%a_s, nod_fld1%ntot_phys,                    &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
      &      d_nod)
       end if
@@ -68,13 +68,13 @@
       if(icoord_SGS_model_coef .eq. iflag_spherical) then
         call convert_dynamic_tensors_2_sph                              &
      &     (node1%numnod, node1%istack_nod_smp, node1%xx,               &
-     &      node1%rr, node1%ss, node1%a_r, node1%a_s, num_tot_nod_phys, &
-     &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
-     &      d_nod)
+     &      node1%rr, node1%ss, node1%a_r, node1%a_s,                   &
+     &      nod_fld1%ntot_phys, iphys%i_sgs_simi, iphys%i_sgs_grad,     &
+     &      iphys%i_sgs_grad_f, d_nod)
       else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
       call convert_dynamic_tensors_2_cyl                                &
      &     (node1%numnod, node1%istack_nod_smp, node1%xx,               &
-     &      node1%ss, node1%a_s, num_tot_nod_phys,                      &
+     &      node1%ss, node1%a_s, nod_fld1%ntot_phys,                    &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
      &      d_nod)
       end if

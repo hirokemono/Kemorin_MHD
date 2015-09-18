@@ -66,17 +66,17 @@
         if (num_nod_component(i) .eq. n_vector) then
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &      write(*,*) 'comm. for vector of ', trim(phys_nod_name(i))
-          call vector_send_recv(num_tot_nod_phys, ist, d_nod)
+          call vector_send_recv(nod_fld1%ntot_phys, ist, d_nod)
 !
         else if (num_nod_component(i) .eq. n_scalar) then
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &       write(*,*) 'comm. for scaler of ', trim(phys_nod_name(i))
-          call scalar_send_recv(num_tot_nod_phys, ist, d_nod)
+          call scalar_send_recv(nod_fld1%ntot_phys, ist, d_nod)
 !
         else if (num_nod_component(i) .eq. n_sym_tensor) then
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &       write(*,*) 'comm. for tensor of ', trim(phys_nod_name(i))
-          call sym_tensor_send_recv(num_tot_nod_phys, ist, d_nod)
+          call sym_tensor_send_recv(nod_fld1%ntot_phys, ist, d_nod)
         end if
       end do
 !

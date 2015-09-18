@@ -39,8 +39,6 @@
       do nd = 1, 3
 !
 !$omp parallel do private(inod,ist,ied)
-!cdir parallel do private(inod,ist,ied)
-!poption parallel
        do ip = 1, np_smp
         ist = inod_smp_stack(ip-1) + 1
         ied = inod_smp_stack(ip)

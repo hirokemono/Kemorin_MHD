@@ -41,12 +41,12 @@
 !
 !      call cal_multi_pass_4_vector_ff
 !      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,         &
-!    &     ff, ml_cd, num_tot_nod_phys, iphys%i_magne, d_nod)
+!    &     ff, ml_cd, nod_fld1%ntot_phys, iphys%i_magne, d_nod)
        call cal_ff_smp_2_vector(ff_nl_smp, ml_cd,                       &
-     &    num_tot_nod_phys, iphys%i_SGS_induction, d_nod)
+     &    nod_fld1%ntot_phys, iphys%i_SGS_induction, d_nod)
 !
        call vector_send_recv                                            &
-     &    (num_tot_nod_phys, iphys%i_SGS_induction, d_nod)
+     &    (nod_fld1%ntot_phys, iphys%i_SGS_induction, d_nod)
 !
       end subroutine int_vol_sgs_induction
 !

@@ -103,7 +103,7 @@
       use cal_terms_for_heat
 !
 !
-      call cal_flux_vector(node1, num_tot_nod_phys,                     &
+      call cal_flux_vector(node1, nod_fld1%ntot_phys,                   &
      &    iphys%i_filter_velo, iphys%i_filter_temp, iphys%i_h_flux,     &
      &    d_nod)
       call cal_terms_4_heat(iphys%i_h_flux_div)
@@ -120,7 +120,7 @@
       use cal_momentum_terms
 !
 !
-      call cal_flux_tensor(node1, num_tot_nod_phys,                     &
+      call cal_flux_tensor(node1, nod_fld1%ntot_phys,                   &
      &    iphys%i_filter_velo, iphys%i_filter_velo, iphys%i_m_flux,     &
      &    d_nod)
       call cal_terms_4_momentum(iphys%i_m_flux_div)
@@ -138,7 +138,7 @@
       use cal_momentum_terms
 !
 !
-      call cal_maxwell_tensor(node1, ex_magne, num_tot_nod_phys,        &
+      call cal_maxwell_tensor(node1, ex_magne, nod_fld1%ntot_phys,      &
      &    iphys%i_filter_magne, iphys%i_maxwell, d_nod)
       call cal_terms_4_momentum(iphys%i_maxwell_div)
       call copy_vector_component                                        &
@@ -154,7 +154,7 @@
       use cal_magnetic_terms
 !
 !
-      call cal_induction_tensor(node1, num_tot_nod_phys,                &
+      call cal_induction_tensor(node1, nod_fld1%ntot_phys,              &
      &    iphys%i_filter_magne, iphys%i_filter_velo, iphys%i_induct_t,  &
      &    d_nod)
       call cal_terms_4_magnetic(iphys%i_induct_div)

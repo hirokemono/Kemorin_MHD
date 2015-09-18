@@ -194,7 +194,7 @@
 !
 !
 !$omp parallel
-      call overwrite_nodal_xyz_2_sph_smp(node1, num_tot_nod_phys,       &
+      call overwrite_nodal_xyz_2_sph_smp(node1, nod_fld1%ntot_phys,     &
      &    iphys%i_SGS_m_flux, n_sym_tensor, d_nod)
 !$omp end parallel
 !
@@ -208,7 +208,7 @@
 !$omp end parallel workshare
 !
 !$omp parallel
-      call overwrite_nodal_sph_2_xyz_smp(node1, num_tot_nod_phys,       &
+      call overwrite_nodal_sph_2_xyz_smp(node1, nod_fld1%ntot_phys,     &
      &   iphys%i_SGS_m_flux, n_sym_tensor, d_nod)
 !$omp end parallel
 !
@@ -225,7 +225,7 @@
       end if
 !
       call overwrite_nodal_xyz_2_sph_smp                                &
-     &   (node1, num_tot_nod_phys, iphys%i_velo, n_vector, d_nod)
+     &   (node1, nod_fld1%ntot_phys, iphys%i_velo, n_vector, d_nod)
 !$omp end parallel
 
 !$omp parallel workshare
@@ -236,7 +236,7 @@
 !
 !$omp parallel
       call overwrite_nodal_sph_2_xyz_smp                                &
-     &   (node1, num_tot_nod_phys, iphys%i_velo, n_vector, d_nod)
+     &   (node1, nod_fld1%ntot_phys, iphys%i_velo, n_vector, d_nod)
 !$omp end parallel
 !
       if (iphys%i_SGS_vp_induct .gt. 0) then

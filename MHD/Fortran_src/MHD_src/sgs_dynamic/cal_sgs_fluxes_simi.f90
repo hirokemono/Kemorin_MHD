@@ -43,7 +43,7 @@
 !
 !  ----------   set filtered flux into array
 !
-       call cal_flux_tensor(node1, num_tot_nod_phys,                    &
+       call cal_flux_tensor(node1, nod_fld1%ntot_phys,                  &
      &     i_vect, i_vect, i_sgs, d_nod)
        call cal_filtered_sym_tensor(i_sgs, i_sgs)
 !
@@ -69,7 +69,7 @@
       integer (kind=kint), intent(in) :: icm_sgs
 !
 !
-      call cal_flux_vector(node1, num_tot_nod_phys,                     &
+      call cal_flux_vector(node1, nod_fld1%ntot_phys,                   &
      &    iphys%i_velo, ifield, i_sgs, d_nod)
       call cal_filtered_vector(i_sgs, i_sgs)
 !
@@ -93,7 +93,7 @@
 !
 !  ----------   set filtered flux into array
 !
-       call cal_induction_tensor(node1, num_tot_nod_phys,               &
+       call cal_induction_tensor(node1, nod_fld1%ntot_phys,             &
      &     i_b, i_v, i_sgs, d_nod)
        call cal_filtered_vector(i_sgs, i_sgs)
 !
@@ -158,7 +158,7 @@
 !
 !  ----------   set filtered flux into array
 !
-       call cal_flux_tensor(node1, num_tot_nod_phys,                    &
+       call cal_flux_tensor(node1, nod_fld1%ntot_phys,                  &
      &     i_vect, i_vect, i_sgs, d_nod)
        call cal_w_filtered_sym_tensor(i_sgs, i_sgs)
 !
@@ -184,7 +184,7 @@
       integer (kind=kint), intent(in) :: icm_sgs
 !
 !
-      call cal_flux_vector(node1, num_tot_nod_phys,                     &
+      call cal_flux_vector(node1, nod_fld1%ntot_phys,                   &
      &    iphys%i_velo, ifield, i_sgs, d_nod)
       call cal_w_filtered_vector(i_sgs, i_sgs)
 !
@@ -208,7 +208,7 @@
 !
 !  ----------   set filtered flux into array
 !
-       call cal_induction_tensor(node1, num_tot_nod_phys,               &
+       call cal_induction_tensor(node1, nod_fld1%ntot_phys,             &
      &     i_b, i_v, i_sgs, d_nod)
        call cal_w_filtered_vector(i_sgs, i_sgs)
 !

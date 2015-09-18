@@ -153,7 +153,7 @@
       if( (i_field*i_trns) .le. 0) return
       call copy_nodal_scalar_from_trans                                 &
      &   (ncomp_snap_rj_2_rtp, i_trns, fls_rtp,                         &
-     &    node1%numnod, num_tot_nod_phys, i_field, d_nod)
+     &    node1%numnod, nod_fld1%ntot_phys, i_field, d_nod)
 !
       end subroutine copy_scalar_from_snap_trans
 !
@@ -172,7 +172,7 @@
       if( (i_field*i_trns) .le. 0) return
       call copy_nodal_vector_from_trans                                 &
      &    (ncomp_snap_rj_2_rtp, i_trns, fls_rtp,                        &
-     &     node1%numnod, num_tot_nod_phys, i_field, d_nod)
+     &     node1%numnod, nod_fld1%ntot_phys, i_field, d_nod)
 !
       end subroutine copy_vector_from_snap_trans
 !
@@ -192,7 +192,7 @@
       if( (i_field*i_trns) .le. 0) return
       call copy_nodal_scalar_from_trans                                 &
      &   (ncomp_snap_rtp_2_rj, i_trns, frs_rtp,                         &
-     &    node1%numnod, num_tot_nod_phys, i_field, d_nod)
+     &    node1%numnod, nod_fld1%ntot_phys, i_field, d_nod)
 !
       end subroutine copy_scalar_from_snap_force
 !
@@ -211,7 +211,7 @@
       if( (i_field*i_trns) .le. 0) return
       call copy_nodal_vector_from_trans                                 &
      &   (ncomp_snap_rtp_2_rj, i_trns, frs_rtp,                         &
-     &    node1%numnod, num_tot_nod_phys, i_field, d_nod)
+     &    node1%numnod, nod_fld1%ntot_phys, i_field, d_nod)
 !
       end subroutine copy_vector_from_snap_force
 !

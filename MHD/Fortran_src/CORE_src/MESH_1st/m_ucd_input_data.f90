@@ -107,8 +107,8 @@
      &     = input_ucd%phys_name(1:nod_fld1%num_phys)
 !
       call s_cal_total_and_stacks(nod_fld1%num_phys, num_nod_component, &
-     &    izero, istack_nod_component, num_tot_nod_phys)
-      num_tot_nod_phys_vis = num_tot_nod_phys
+     &    izero, istack_nod_component, nod_fld1%ntot_phys)
+      num_tot_nod_phys_vis = nod_fld1%ntot_phys
 !
       call allocate_data_arrays
 !
@@ -129,7 +129,7 @@
 !
       call sel_read_udt_file(my_rank, istep_ucd, input_ucd)
       call set_field_by_udt_data(node1%numnod, nod_fld1%num_phys,       &
-     &    num_tot_nod_phys, istack_nod_component, phys_nod_name,        &
+     &    nod_fld1%ntot_phys, istack_nod_component, phys_nod_name,      &
      &    d_nod, input_ucd)
 !
       end subroutine set_data_by_read_ucd
@@ -159,7 +159,7 @@
       local_ucd%nnod =      node1%numnod
       call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
       call set_field_by_udt_data(node1%numnod, nod_fld1%num_phys,       &
-     &    num_tot_nod_phys, istack_nod_component, phys_nod_name,        &
+     &    nod_fld1%ntot_phys, istack_nod_component, phys_nod_name,      &
      &    d_nod, local_ucd)
       call deallocate_ucd_data(local_ucd)
 !
@@ -189,7 +189,7 @@
       local_ucd%nnod =      node1%numnod
       call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
       call add_field_by_udt_data(node1%numnod, nod_fld1%num_phys,       &
-     &    num_tot_nod_phys, istack_nod_component, phys_nod_name,        &
+     &    nod_fld1%ntot_phys, istack_nod_component, phys_nod_name,      &
      &    d_nod, local_ucd)
       call deallocate_ucd_data(local_ucd)
 !
@@ -219,7 +219,7 @@
       local_ucd%nnod = node1%numnod
       call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
       call subtract_field_by_udt_data(node1%numnod, nod_fld1%num_phys,  &
-     &    num_tot_nod_phys, istack_nod_component, phys_nod_name,        &
+     &    nod_fld1%ntot_phys, istack_nod_component, phys_nod_name,      &
      &    d_nod, local_ucd)
       call deallocate_ucd_data(local_ucd)
 !

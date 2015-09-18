@@ -65,7 +65,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'divide_layers_ave_by_vol'
       call divide_layers_ave_by_vol(layer_tbl1%n_layer_d,               &
-     &    num_tot_nod_phys, layer_tbl1%a_vol_layer,                     &
+     &    nod_fld1%ntot_phys, layer_tbl1%a_vol_layer,                   &
      &    ave_ref(1,1), ave_tgt(1,1), rms_ref(1,1), rms_tgt(1,1),       &
      &    rms_ratio(1,1))
 !
@@ -80,7 +80,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_layered_correlation'
       call cal_layered_correlation                                      &
-     &   (layer_tbl1%n_layer_d, num_tot_nod_phys,                       &
+     &   (layer_tbl1%n_layer_d, nod_fld1%ntot_phys,                     &
      &    layer_tbl1%a_vol_layer, cor_data(1,1), cov_data(1,1))
 !
       call take_sqrt_rms_data
@@ -104,14 +104,14 @@
       integer(kind = kint) :: icomp, icomp_2
 !
 !
-      do icomp = 1, num_tot_nod_phys
-        icomp_2 = icomp+num_tot_nod_phys
+      do icomp = 1, nod_fld1%ntot_phys
+        icomp_2 = icomp + nod_fld1%ntot_phys
         d_nod_trans2(1:nnod_2,1) = phys_2nd%d_fld(1:nnod_2,icomp)
 !
         call int_vol_2rms_ave_ele_grps_1st(max_int_point,               &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%item_layer,              &
-     &      num_tot_nod_phys, icomp, d_nod,                             &
+     &      nod_fld1%ntot_phys, icomp, d_nod,                           &
      &      ione, ione, d_nod_trans2(1,1), ave_l(1,icomp),              &
      &      rms_l(1,icomp), ave_l(1,icomp_2), rms_l(1,icomp_2))
       end do
@@ -133,14 +133,14 @@
       integer(kind = kint) :: icomp, icomp_2
 !
 !
-      do icomp = 1, num_tot_nod_phys
-        icomp_2 = icomp+num_tot_nod_phys
+      do icomp = 1, nod_fld1%ntot_phys
+        icomp_2 = icomp + nod_fld1%ntot_phys
         d_nod_trans2(1:node1%numnod,1)                                  &
      &          = phys_2nd%d_fld(1:node1%numnod,icomp)
         call int_vol_dev_cor_ele_grps_1st(max_int_point,                &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%item_layer,              &
-     &      num_tot_nod_phys, icomp, d_nod,                             &
+     &      nod_fld1%ntot_phys, icomp, d_nod,                           &
      &      ione, ione, d_nod_trans2(1,1),                              &
      &      ave_ref(1,icomp), ave_tgt(1,icomp),                         &
      &      sig_l(1,icomp), sig_l(1,icomp_2),  cov_l(1,icomp) )

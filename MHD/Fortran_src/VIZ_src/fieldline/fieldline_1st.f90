@@ -90,7 +90,7 @@
      &    ele1%iele_global, ele1%interior_ele, surf1%ie_surf,           &
      &    surf1%isf_4_ele, surf1%iele_4_surf, surf1%x_surf,             &
      &    surf1%vnorm_surf, surf1%area_surf, surf1%interior_surf,       &
-     &    ele_grp1, ele_4_nod1, nod_fld1%num_phys, num_tot_nod_phys,    &
+     &    ele_grp1, ele_4_nod1, nod_fld1%num_phys, nod_fld1%ntot_phys,  &
      &    istack_nod_component, d_nod, nod_comm)
 !
       end subroutine field_line_main_1st

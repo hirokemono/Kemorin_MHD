@@ -41,14 +41,14 @@
       if( (iphys%i_m_advect*iflag_t_evo_4_velo) .gt. 0) then
         call pole_fld_cst_cross_prod                                    &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
-     &      nnod_rtp, nidx_rtp(1), coef_velo, num_tot_nod_phys,         &
+     &      nnod_rtp, nidx_rtp(1), coef_velo, nod_fld1%ntot_phys,       &
      &      iphys%i_vort, iphys%i_velo, iphys%i_m_advect, d_nod)
       end if
 !
       if( (iphys%i_lorentz*iflag_4_lorentz) .gt. 0) then
         call pole_fld_cst_cross_prod                                    &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
-     &      nnod_rtp, nidx_rtp(1), coef_lor, num_tot_nod_phys,          &
+     &      nnod_rtp, nidx_rtp(1), coef_lor, nod_fld1%ntot_phys,        &
      &      iphys%i_current, iphys%i_velo, iphys%i_lorentz, d_nod)
       end if
 !
@@ -56,7 +56,7 @@
       if( (iphys%i_vp_induct*iflag_t_evo_4_magne) .gt. 0) then
         call pole_fld_cst_cross_prod                                    &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
-     &      nnod_rtp, nidx_rtp(1), coef_induct, num_tot_nod_phys,       &
+     &      nnod_rtp, nidx_rtp(1), coef_induct, nod_fld1%ntot_phys,     &
      &      iphys%i_velo, iphys%i_velo, iphys%i_vp_induct, d_nod)
       end if
 !
@@ -64,14 +64,14 @@
       if( (iphys%i_h_flux*iflag_t_evo_4_temp) .gt. 0) then
         call pole_fld_cst_vec_scalar_prod                               &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
-     &      nnod_rtp, nidx_rtp(1), coef_induct, num_tot_nod_phys,       &
+     &      nnod_rtp, nidx_rtp(1), coef_induct, nod_fld1%ntot_phys,     &
      &      iphys%i_velo, iphys%i_temp, iphys%i_h_flux, d_nod)
       end if
 !
       if( (iphys%i_c_flux*iflag_t_evo_4_composit) .gt. 0) then
         call pole_fld_cst_vec_scalar_prod                               &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
-     &      nnod_rtp, nidx_rtp(1), coef_induct, num_tot_nod_phys,       &
+     &      nnod_rtp, nidx_rtp(1), coef_induct, nod_fld1%ntot_phys,     &
      &      iphys%i_velo, iphys%i_light, iphys%i_c_flux, d_nod)
       end if
 !
@@ -96,21 +96,21 @@
       if( (iphys%i_lorentz*iphys%i_ujb) .gt. 0) then
         call pole_fld_cst_dot_prod                                      &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
-     &      nnod_rtp, nidx_rtp(1), one, num_tot_nod_phys,               &
+     &      nnod_rtp, nidx_rtp(1), one, nod_fld1%ntot_phys,             &
      &      iphys%i_lorentz, iphys%i_velo, iphys%i_ujb, d_nod)
       end if
 !
       if( (iphys%i_lorentz*iphys%i_nega_ujb) .gt. 0) then
         call pole_fld_cst_dot_prod                                      &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
-     &      nnod_rtp, nidx_rtp(1), dminus, num_tot_nod_phys,            &
+     &      nnod_rtp, nidx_rtp(1), dminus, nod_fld1%ntot_phys,          &
      &      iphys%i_lorentz, iphys%i_velo, iphys%i_nega_ujb, d_nod)
       end if
 !
       if( (iphys%i_induction*iphys%i_me_gen) .gt. 0) then
         call pole_fld_cst_dot_prod                                      &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
-     &      nnod_rtp, nidx_rtp(1), one, num_tot_nod_phys,               &
+     &      nnod_rtp, nidx_rtp(1), one, nod_fld1%ntot_phys,             &
      &      iphys%i_induction, iphys%i_magne, iphys%i_me_gen, d_nod)
       end if
 !
@@ -119,7 +119,7 @@
      &     then
         call cal_pole_electric_field_smp                                &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
-     &      nnod_rtp, nidx_rtp(1), coef_d_magne, num_tot_nod_phys,      &
+     &      nnod_rtp, nidx_rtp(1), coef_d_magne, nod_fld1%ntot_phys,    &
      &      iphys%i_current, iphys%i_vp_induct, iphys%i_electric,       &
      &      d_nod)
       end if
@@ -128,7 +128,7 @@
      &     then
         call cal_pole_poynting_flux_smp                                 &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
-     &      nnod_rtp, nidx_rtp(1), coef_d_magne, num_tot_nod_phys,      &
+     &      nnod_rtp, nidx_rtp(1), coef_d_magne, nod_fld1%ntot_phys,    &
      &      iphys%i_current, iphys%i_vp_induct, iphys%i_magne,          &
      &      iphys%i_poynting, d_nod)
       end if
@@ -138,12 +138,12 @@
         if(iflag_4_ref_temp .eq. id_sphere_ref_temp) then
           call pole_sph_buoyancy_flux                                   &
      &       (node1%numnod, node1%internal_node, node1%xx,              &
-     &         nnod_rtp, nidx_rtp(1), coef_buo, num_tot_nod_phys,       &
+     &         nnod_rtp, nidx_rtp(1), coef_buo, nod_fld1%ntot_phys,     &
      &         iphys%i_par_temp, iphys%i_velo, iphys%i_buo_gen, d_nod)
         else
           call pole_sph_buoyancy_flux                                   &
      &       (node1%numnod, node1%internal_node, node1%xx,              &
-     &        nnod_rtp, nidx_rtp(1), coef_buo, num_tot_nod_phys,        &
+     &        nnod_rtp, nidx_rtp(1), coef_buo, nod_fld1%ntot_phys,      &
      &        iphys%i_temp ,iphys%i_velo, iphys%i_buo_gen, d_nod)
         end if
       end if
@@ -151,14 +151,14 @@
       if(iphys%i_c_buo_gen .gt. 0) then
         call pole_sph_buoyancy_flux                                     &
      &       (node1%numnod, node1%internal_node, node1%xx,              &
-     &        nnod_rtp, nidx_rtp(1), coef_comp_buo, num_tot_nod_phys,   &
+     &        nnod_rtp, nidx_rtp(1), coef_comp_buo, nod_fld1%ntot_phys, &
      &        iphys%i_light, iphys%i_velo, iphys%i_c_buo_gen, d_nod)
       end if
 !
       if(iphys%i_f_buo_gen .gt. 0) then
         call pole_sph_buoyancy_flux                                     &
      &       (node1%numnod, node1%internal_node, node1%xx,              &
-     &        nnod_rtp, nidx_rtp(1), coef_buo, num_tot_nod_phys,        &
+     &        nnod_rtp, nidx_rtp(1), coef_buo, nod_fld1%ntot_phys,      &
      &        iphys%i_filter_temp, iphys%i_velo, iphys%i_f_buo_gen,     &
      &        d_nod)
       end if

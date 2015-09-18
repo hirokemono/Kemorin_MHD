@@ -27,11 +27,11 @@
 !
 !>       Structure for nodal field data
       type(phys_data), save :: nod_fld1
-!nod_fld1%num_phys
+!nod_fld1%ntot_phys
 !
 !      integer (kind=kint) :: num_nod_phys
 !    number of physical data
-      integer (kind=kint) :: num_tot_nod_phys
+!      integer (kind=kint) :: num_tot_nod_phys
 !
       integer (kind=kint), pointer :: num_nod_component(:)
 ! 
@@ -86,8 +86,8 @@
 !
        use m_geometry_data
 !
-       allocate( iflag_nod_update(num_tot_nod_phys) )
-       allocate( d_nod(node1%numnod,num_tot_nod_phys) )
+       allocate( iflag_nod_update(nod_fld1%ntot_phys) )
+       allocate( d_nod(node1%numnod,nod_fld1%ntot_phys) )
 !
        iflag_nod_update = 0
        d_nod = 0.0d0
@@ -163,7 +163,7 @@
 !
 !
       nod_fld%num_phys =  nod_fld1%num_phys
-      nod_fld%ntot_phys = num_tot_nod_phys
+      nod_fld%ntot_phys = nod_fld1%ntot_phys
 !
       nod_fld%num_phys_viz =  num_nod_phys_vis
       nod_fld%ntot_phys_viz = num_tot_nod_phys_vis

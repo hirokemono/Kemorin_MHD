@@ -104,7 +104,7 @@
           istep_ucd = istep / i_step_output_ucd
           call set_data_for_product(node1%numnod, istep_ucd)
           call cal_rev_of_2nd_field
-          call cal_products_of_fields(num_tot_nod_phys, d_nod)
+          call cal_products_of_fields(nod_fld1%ntot_phys, d_nod)
 !
 !    output udt data
           call link_output_ucd_file_once(my_rank, istep_ucd,            &

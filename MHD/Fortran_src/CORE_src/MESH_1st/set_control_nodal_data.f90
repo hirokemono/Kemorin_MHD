@@ -67,7 +67,7 @@
 !
       call set_istack_4_nodal_field                                     &
      &   (nod_fld1%num_phys, num_nod_phys_vis,                          &
-     &    num_nod_component, num_tot_nod_phys, num_tot_nod_phys_vis,    &
+     &    num_nod_component, nod_fld1%ntot_phys, num_tot_nod_phys_vis,  &
      &    istack_nod_component)
 !
       end subroutine ordering_nod_field_by_viz
@@ -86,7 +86,7 @@
 !
       call set_istack_4_nodal_field                                     &
      &   (nod_fld1%num_phys, num_nod_phys_vis,                          &
-     &    num_nod_component, num_tot_nod_phys,  num_tot_nod_phys_vis,   &
+     &    num_nod_component, nod_fld1%ntot_phys,  num_tot_nod_phys_vis, &
      &    istack_nod_component)
 !
       end subroutine ordering_nod_field_by_comp_viz

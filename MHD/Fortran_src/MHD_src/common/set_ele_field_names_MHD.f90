@@ -128,7 +128,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
      &                      'num_tot_nod_phys, num_tot_ele_phys',       &
-     &                       num_tot_nod_phys, fld_ele1%ntot_phys
+     &                       nod_fld1%ntot_phys, fld_ele1%ntot_phys
 !
       end subroutine s_set_ele_field_names_MHD
 !
