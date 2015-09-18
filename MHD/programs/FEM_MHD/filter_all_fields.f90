@@ -34,15 +34,15 @@
       do i = 1, nod_fld1%num_phys_viz
         if ( nod_fld1%num_component(i) .eq. n_scalar) then
           if (my_rank.eq.0) write(*,*)'filtering scalar field: ',       &
-     &      trim(phys_nod_name(i))
+     &      trim(nod_fld1%phys_name(i))
          call cal_filtered_scalar(j, j)
         else if ( nod_fld1%num_component(i) .eq. n_vector) then
           if (my_rank.eq.0) write(*,*)'filtering vector field: ',       &
-     &      trim(phys_nod_name(i))
+     &      trim(nod_fld1%phys_name(i))
          call cal_filtered_vector(j, j)
         else if ( nod_fld1%num_component(i) .eq. n_sym_tensor) then
           if (my_rank.eq.0) write(*,*)'filtering tensor field: ',       &
-     &      trim(phys_nod_name(i))
+     &      trim(nod_fld1%phys_name(i))
          call cal_filtered_sym_tensor(j, j)
         end if
         j = j + nod_fld1%num_component(i)

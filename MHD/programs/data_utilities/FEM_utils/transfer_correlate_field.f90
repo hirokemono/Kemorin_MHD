@@ -37,7 +37,7 @@
 !
       i_field_4_correlate = 0
       do ifld = 1, nod_fld1%num_phys
-        if(correlate_field_name .eq. phys_nod_name(ifld)) then
+        if(correlate_field_name .eq. nod_fld1%phys_name(ifld)) then
           i_field_4_correlate = ifld
           exit
         end if

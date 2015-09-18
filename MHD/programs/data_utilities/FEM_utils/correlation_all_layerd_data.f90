@@ -163,12 +163,13 @@
       do i_fld = 1, nod_fld1%num_phys
         ist = nod_fld1%istack_component(i_fld-1) + 1
         if     (nod_fld1%num_component(i_fld) .eq. n_vector) then
-          call set_vector_label(phys_nod_name(i_fld), cor_name(ist))
+          call set_vector_label                                         &
+     &       (nod_fld1%phys_name(i_fld), cor_name(ist))
         else if(nod_fld1%num_component(i_fld) .eq. n_sym_tensor) then
-          call set_sym_tensor_label(phys_nod_name(i_fld),               &
-     &        cor_name(ist))
+          call set_sym_tensor_label                                     &
+     &       (nod_fld1%phys_name(i_fld), cor_name(ist))
         else
-          cor_name(ist) = phys_nod_name(i_fld)
+          cor_name(ist) = nod_fld1%phys_name(i_fld)
         end if
       end do
 !

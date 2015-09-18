@@ -71,19 +71,19 @@
 !
 !
        do i = 1, nod_fld1%num_phys
-        if      ( phys_nod_name(i) .eq. fhd_velo ) then
+        if      ( nod_fld1%phys_name(i) .eq. fhd_velo ) then
           allocate(velo_1(numele,3))
           if(numele .gt. 0) velo_1 = 0.0d0
-        else if ( phys_nod_name(i) .eq. fhd_temp ) then
+        else if ( nod_fld1%phys_name(i) .eq. fhd_temp ) then
           allocate(temp_e(numele))
           if(numele .gt. 0) temp_e = 0.0d0
-        else if ( phys_nod_name(i) .eq. fhd_light ) then
+        else if ( nod_fld1%phys_name(i) .eq. fhd_light ) then
           allocate(d_scalar_e(numele))
           if(numele .gt. 0) d_scalar_e = 0.0d0
-        else if ( phys_nod_name(i) .eq. fhd_magne ) then
+        else if ( nod_fld1%phys_name(i) .eq. fhd_magne ) then
           allocate(magne_1(numele,3))
           if(numele .gt. 0) magne_1 = 0.0d0
-        else if ( phys_nod_name(i) .eq. fhd_vecp ) then
+        else if ( nod_fld1%phys_name(i) .eq. fhd_vecp ) then
           allocate(vect_1(numele,3))
           if(numele .gt. 0) vect_1 = 0.0d0
         end if

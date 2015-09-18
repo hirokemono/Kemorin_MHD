@@ -89,7 +89,7 @@
      &    node1%xx, node1%istack_nod_smp, ele1%istack_ele_smp,          &
      &    surf1%istack_surf_smp, edge1%istack_edge_smp,                 &
      &    ele_grp1, sf_grp1, sf_grp_nod1,                               &
-     &    nod_fld1%num_phys, phys_nod_name)
+     &    nod_fld1%num_phys, nod_fld1%phys_name)
 !
       end subroutine cross_section_init_1st
 !
@@ -109,7 +109,7 @@
      &    edge1%iedge_4_sf, ele1%interior_ele,                          &
      &    node1%istack_nod_smp, ele1%istack_ele_smp,                    &
      &    surf1%istack_surf_smp, edge1%istack_edge_smp,                 &
-     &    ele_grp1, nod_fld1%num_phys, phys_nod_name)
+     &    ele_grp1, nod_fld1%num_phys, nod_fld1%phys_name)
 !
       end subroutine isosurface_init_1st
 !

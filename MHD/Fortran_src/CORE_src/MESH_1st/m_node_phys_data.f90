@@ -27,7 +27,7 @@
 !
 !>       Structure for nodal field data
       type(phys_data), save :: nod_fld1
-!nod_fld1%iflag_update
+!nod_fld1%phys_name
 !
 !      integer (kind=kint) :: num_nod_phys
 !    number of physical data
@@ -40,7 +40,7 @@
 ! 
 !      integer (kind=kint), pointer :: iorder_nod_phys(:)
 !
-      character (len=kchara), pointer :: phys_nod_name(:)
+!      character (len=kchara), pointer :: phys_nod_name(:)
 ! 
       real (kind=kreal), pointer :: d_nod(:,:)
 ! 
@@ -66,13 +66,13 @@
        subroutine allocate_phys_name
 !
 !
-       allocate( phys_nod_name(nod_fld1%num_phys) )
+       allocate( nod_fld1%phys_name(nod_fld1%num_phys) )
        allocate( nod_fld1%num_component(nod_fld1%num_phys) )
        allocate( nod_fld1%istack_component(0:nod_fld1%num_phys) )
        allocate( nod_fld1%iorder_eletype(nod_fld1%num_phys) )
        allocate( nod_fld1%iflag_monitor(nod_fld1%num_phys) )
 !
-       phys_nod_name = ''
+       nod_fld1%phys_name = ''
        nod_fld1%num_component =    0
        nod_fld1%istack_component = 0
        nod_fld1%iflag_monitor   =  0
@@ -99,7 +99,7 @@
 !
        subroutine deallocate_phys_name
 !
-       deallocate( phys_nod_name )
+       deallocate( nod_fld1%phys_name )
        deallocate( nod_fld1%num_component )
        deallocate( nod_fld1%istack_component )
        deallocate( nod_fld1%iorder_eletype )
@@ -129,7 +129,8 @@
       write(*,*) 'id#, num_component, stack_component, field_name '
       do i = 1, nod_fld1%num_phys
         write(*,'(3i6,2x,a2,a)') i, nod_fld1%num_component(i),          &
-     &      nod_fld1%istack_component(i), '  ', trim(phys_nod_name(i))
+     &      nod_fld1%istack_component(i), '  ',                         &
+     &      trim(nod_fld1%phys_name(i))
       end do
 !
       end subroutine check_nodal_field_name
@@ -172,7 +173,7 @@
       nod_fld%istack_component => nod_fld1%istack_component
       nod_fld%iorder_eletype =>   nod_fld1%iorder_eletype
       nod_fld%iflag_monitor =>    nod_fld1%iflag_monitor
-      nod_fld%phys_name =>        phys_nod_name
+      nod_fld%phys_name =>        nod_fld1%phys_name
 !
       end subroutine link_nodal_fld_type_names
 !

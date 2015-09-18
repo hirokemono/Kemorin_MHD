@@ -103,7 +103,7 @@
 !
       nod_fld1%num_component(1:nod_fld1%num_phys)                       &
      &     = input_ucd%num_comp(1:nod_fld1%num_phys)
-      phys_nod_name(1:nod_fld1%num_phys)                                &
+      nod_fld1%phys_name(1:nod_fld1%num_phys)                           &
      &     = input_ucd%phys_name(1:nod_fld1%num_phys)
 !
       call s_cal_total_and_stacks                                       &
@@ -131,7 +131,7 @@
       call sel_read_udt_file(my_rank, istep_ucd, input_ucd)
       call set_field_by_udt_data(node1%numnod, nod_fld1%num_phys,       &
      &    nod_fld1%ntot_phys, nod_fld1%istack_component,                &
-     &    phys_nod_name, d_nod, input_ucd)
+     &    nod_fld1%phys_name, d_nod, input_ucd)
 !
       end subroutine set_data_by_read_ucd
 !
@@ -161,7 +161,7 @@
       call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
       call set_field_by_udt_data(node1%numnod, nod_fld1%num_phys,       &
      &    nod_fld1%ntot_phys, nod_fld1%istack_component,                &
-     &    phys_nod_name, d_nod, local_ucd)
+     &    nod_fld1%phys_name, d_nod, local_ucd)
       call deallocate_ucd_data(local_ucd)
 !
       end subroutine set_data_by_read_ucd_once
@@ -191,7 +191,7 @@
       call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
       call add_field_by_udt_data(node1%numnod, nod_fld1%num_phys,       &
      &    nod_fld1%ntot_phys, nod_fld1%istack_component,                &
-     &    phys_nod_name, d_nod, local_ucd)
+     &    nod_fld1%phys_name, d_nod, local_ucd)
       call deallocate_ucd_data(local_ucd)
 !
       end subroutine add_ucd_to_data
@@ -221,7 +221,7 @@
       call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
       call subtract_field_by_udt_data(node1%numnod, nod_fld1%num_phys,  &
      &    nod_fld1%ntot_phys, nod_fld1%istack_component,                &
-     &    phys_nod_name, d_nod, local_ucd)
+     &    nod_fld1%phys_name, d_nod, local_ucd)
       call deallocate_ucd_data(local_ucd)
 !
       end subroutine subtract_by_ucd_data

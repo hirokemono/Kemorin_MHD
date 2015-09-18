@@ -68,8 +68,8 @@
 !
       nod_fld1%num_component(1) =    ncomp_4_result
       nod_fld1%istack_component(1) = ncomp_4_result
-      nod_fld1%iflag_monitor(1) = 1
-      phys_nod_name(1) = result_field_name
+      nod_fld1%iflag_monitor(1) =    1
+      nod_fld1%phys_name(1) =        result_field_name
 !
       nod_fld1%ntot_phys =     ncomp_4_result
       nod_fld1%ntot_phys_viz = ncomp_4_result

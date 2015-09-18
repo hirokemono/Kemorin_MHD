@@ -64,7 +64,7 @@
 !
       call field_line_init                                              &
      &   (node1%numnod, ele1%numele, ele1%interior_ele,                 &
-     &    ele_grp1, sf_grp1, nod_fld1%num_phys, phys_nod_name)
+     &    ele_grp1, sf_grp1, nod_fld1%num_phys, nod_fld1%phys_name)
 !
       end subroutine field_line_init_1st
 !

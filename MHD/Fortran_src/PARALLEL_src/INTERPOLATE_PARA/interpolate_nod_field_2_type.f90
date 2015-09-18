@@ -86,24 +86,24 @@
         i_dest =   phys_dest%istack_component(i-1) + 1
         if      (nod_fld1%num_component(i) .eq. n_scalar) then
           if (my_rank.eq.0) write(*,*) ' interpolate scalar: ',         &
-     &            trim(phys_nod_name(i)), '  ', i_dest, i_origin
+     &            trim(nod_fld1%phys_name(i)), '  ', i_dest, i_origin
           call s_interpolate_scalar                                     &
      &       (i_dest, i_origin, comm_dest, nod_dest, phys_dest)
 !
         else if (nod_fld1%num_component(i) .eq. n_vector) then
           if (my_rank.eq.0) write(*,*) ' interpolate vector: ',         &
-     &            trim(phys_nod_name(i)), '  ', i_dest, i_origin
+     &            trim(nod_fld1%phys_name(i)), '  ', i_dest, i_origin
           call s_interpolate_vector                                     &
      &       (i_dest, i_origin, comm_dest, nod_dest, phys_dest)
 !
         else if (nod_fld1%num_component(i) .eq. n_sym_tensor) then
           if (my_rank.eq.0) write(*,*) ' interpolate tensor: ',         &
-     &            trim(phys_nod_name(i)), '  ', i_dest, i_origin
+     &            trim(nod_fld1%phys_name(i)), '  ', i_dest, i_origin
           call s_interpolate_tensor                                     &
      &       (i_dest, i_origin, comm_dest, nod_dest, phys_dest)
         else
           if (my_rank.eq.0) write(*,*) ' interpolate tensor: ',         &
-     &            trim(phys_nod_name(i)), '  ', i_dest, i_origin
+     &            trim(nod_fld1%phys_name(i)), '  ', i_dest, i_origin
           call s_interpolate_fields(nod_fld1%num_component(i),          &
      &        i_dest, i_origin, comm_dest, nod_dest, phys_dest)
         end if

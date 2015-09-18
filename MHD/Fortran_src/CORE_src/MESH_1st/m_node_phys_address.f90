@@ -41,8 +41,8 @@
 !
 !   set address of nodal values
 !
-      call set_field_addresses(ione, nod_fld1%num_phys, phys_nod_name,  &
-     &    nod_fld1%num_component, iphys)
+      call set_field_addresses(ione, nod_fld1%num_phys,                 &
+     &    nod_fld1%phys_name, nod_fld1%num_component, iphys)
 !
        end subroutine initialize_nod_field_data
 !

@@ -97,7 +97,7 @@
      &   (nod_fld1%num_phys, nod_fld1%num_component,                    &
      &    nod_fld1%iflag_monitor, num_field_monitor, ntot_comp_monitor)
 !
-      call check_dependencies(nod_fld1%num_phys, phys_nod_name)
+      call check_dependencies(nod_fld1%num_phys, nod_fld1%phys_name)
 !
       end subroutine check_FEM_MHD_dependencies
 !

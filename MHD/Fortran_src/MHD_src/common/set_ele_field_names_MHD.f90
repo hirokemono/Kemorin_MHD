@@ -34,10 +34,10 @@
       fld_ele1%num_phys =     0
       fld_ele1%num_phys_viz = 0
       do i = 1, nod_fld1%num_phys
-       if (  phys_nod_name(i) .eq. fhd_velo                             &
-     &  .or. phys_nod_name(i) .eq. fhd_magne                            &
-     &  .or. phys_nod_name(i) .eq. fhd_light                            &
-     &  .or. phys_nod_name(i) .eq. fhd_temp     ) then
+       if (  nod_fld1%phys_name(i) .eq. fhd_velo                        &
+     &  .or. nod_fld1%phys_name(i) .eq. fhd_magne                       &
+     &  .or. nod_fld1%phys_name(i) .eq. fhd_light                       &
+     &  .or. nod_fld1%phys_name(i) .eq. fhd_temp     ) then
         fld_ele1%num_phys = fld_ele1%num_phys + 1
         if ( iflag_4_rotate .eq. id_turn_ON ) then
           fld_ele1%num_phys = fld_ele1%num_phys + 1
@@ -56,7 +56,7 @@
 !
       j = 1
       do i = 1, nod_fld1%num_phys
-        if (  phys_nod_name(i) .eq. fhd_velo  ) then
+        if (  nod_fld1%phys_name(i) .eq. fhd_velo  ) then
           fld_ele1%num_component(j) = 3
           fld_ele1%phys_name(j) = fhd_velo
           j = j + 1
@@ -74,7 +74,7 @@
           end if
         end if
 !
-        if (  phys_nod_name(i) .eq. fhd_magne ) then
+        if (  nod_fld1%phys_name(i) .eq. fhd_magne ) then
           fld_ele1%num_component(j) = 3
           fld_ele1%phys_name(j) = fhd_magne
           j = j + 1
@@ -91,7 +91,7 @@
           end if
         end if
 !
-        if ( phys_nod_name(i) .eq. fhd_temp ) then
+        if ( nod_fld1%phys_name(i) .eq. fhd_temp ) then
           fld_ele1%num_component(j) = 1
           fld_ele1%phys_name(j) = fhd_temp
           j = j + 1
@@ -103,7 +103,7 @@
           end if
         end if
 !
-        if ( phys_nod_name(i) .eq. fhd_light ) then
+        if ( nod_fld1%phys_name(i) .eq. fhd_light ) then
           fld_ele1%num_component(j) = 1
           fld_ele1%phys_name(j) = fhd_light
           j = j + 1

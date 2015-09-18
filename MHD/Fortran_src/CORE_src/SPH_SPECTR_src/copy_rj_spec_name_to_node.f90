@@ -37,7 +37,7 @@
 !
       nod_fld1%num_component(1:nod_fld1%num_phys)                       &
      &                     = num_phys_comp_rj(1:nod_fld1%num_phys)
-      phys_nod_name(1:nod_fld1%num_phys)                                &
+      nod_fld1%phys_name(1:nod_fld1%num_phys)                           &
      &                     = phys_name_rj(1:nod_fld1%num_phys)
       nod_fld1%iflag_monitor(1:nod_fld1%num_phys)                       &
      &                     = iflag_monitor_rj(1:nod_fld1%num_phys)

@@ -24,6 +24,7 @@
 !
       use m_geometry_constants
       use m_geometry_data
+      use m_phys_labels
       use m_node_phys_address
       use m_node_phys_data
       use m_control_parameter
@@ -34,13 +35,13 @@
 !
         do i = 1, nod_fld1%num_phys
 !
-          if ( phys_nod_name(i) .eq. 'pressure' ) then
+          if     (nod_fld1%phys_name(i) .eq. fhd_press) then
             call cal_pressure_on_edge(edge1%numedge, edge1%nnod_4_edge, &
      &          edge1%ie_edge, iphys%i_press)
-          else if ( phys_nod_name(i) .eq. 'magnetic_potential' ) then
+          else if(nod_fld1%phys_name(i) .eq. fhd_mag_potential) then
             call cal_pressure_on_edge(edge1%numedge, edge1%nnod_4_edge, &
      &          edge1%ie_edge, iphys%i_mag_p)
-          else if ( phys_nod_name(i) .eq. 'scalar_potential' ) then
+          else if(nod_fld1%phys_name(i) .eq. fhd_scalar_potential) then
             call cal_pressure_on_edge(edge1%numedge, edge1%nnod_4_edge, &
      &          edge1%ie_edge, iphys%i_scalar_p)
           end if

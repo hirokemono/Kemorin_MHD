@@ -68,13 +68,13 @@
      &    'ID step time x y z     '
 !
       call write_multi_labels(maximum_data_code,                        &
-     &    nod_fld1%ntot_phys_viz, phys_nod_name)
+     &    nod_fld1%ntot_phys_viz, nod_fld1%phys_name)
       call write_multi_labels(maximum_data_code,                        &
-     &    nod_fld1%ntot_phys_viz, phys_nod_name)
+     &    nod_fld1%ntot_phys_viz, nod_fld1%phys_name)
       call write_multi_labels(maximum_position_code,                    &
-     &    nod_fld1%ntot_phys_viz, phys_nod_name)
+     &    nod_fld1%ntot_phys_viz, nod_fld1%phys_name)
       call write_multi_labels(maximum_position_code,                    &
-     &    nod_fld1%ntot_phys_viz, phys_nod_name)
+     &    nod_fld1%ntot_phys_viz, nod_fld1%phys_name)
 !
       write(maximum_data_code,'(a)')     ''
       write(maximum_position_code,'(a)') ''

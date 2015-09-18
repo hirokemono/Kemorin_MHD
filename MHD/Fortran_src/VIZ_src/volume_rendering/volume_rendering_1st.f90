@@ -66,7 +66,7 @@
       call pvr_init(node1%numnod, ele1%numele, surf1%numsurf,           &
      &    surf1%nnod_4_surf, node1%xx, ele1%interior_ele,               &
      &    surf1%ie_surf, surf1%isf_4_ele, surf1%iele_4_surf,            &
-     &    ele_grp1, nod_fld1%num_phys, phys_nod_name)
+     &    ele_grp1, nod_fld1%num_phys, nod_fld1%phys_name)
 !
       end subroutine pvr_init_1st
 !

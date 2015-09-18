@@ -104,7 +104,7 @@
         if (nod_fld1%iflag_monitor(i) .eq. 1 ) then
           j = j + 1
           num_comp_phys_monitor(j) = nod_fld1%num_component(i)
-          phys_name_monitor(j) =     phys_nod_name(i)
+          phys_name_monitor(j) =     nod_fld1%phys_name(i)
         end if
       end do
 !
