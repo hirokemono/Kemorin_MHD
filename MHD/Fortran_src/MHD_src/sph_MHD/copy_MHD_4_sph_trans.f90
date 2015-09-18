@@ -22,7 +22,6 @@
       implicit  none
 !
       private :: sel_force_from_MHD_trans
-      private :: nodal_force_from_MHD_trans
 !
 !-----------------------------------------------------------------------
 !
@@ -107,39 +106,19 @@
 !
       use m_geometry_data
       use m_node_phys_data
-!
-      integer(kind = kint), intent(in) :: i_field, i_trns
-!
-!
-      if( (i_field*i_trns) .le. 0) return
-      call nodal_force_from_MHD_trans(i_field, i_trns,                  &
-     &    node1%numnod, num_tot_nod_phys, d_nod)
-!
-      end subroutine copy_force_from_MHD_trans
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine nodal_force_from_MHD_trans(i_trns, i_field,            &
-     &          numnod, ncomp_nod, d_nod)
-!
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
-      use m_spheric_parameter
-      use m_spheric_param_smp
       use copy_field_4_sph_trans
 !
       integer(kind = kint), intent(in) :: i_field, i_trns
-      integer(kind = kint), intent(in) :: numnod, ncomp_nod
-      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
 !
       if( (i_field*i_trns) .le. 0) return
-      call copy_vector_from_trans                                       &
-     &   (nnod_rtp, m_folding, inod_rtp_smp_stack,                      &
-     &    numnod, frm_rtp(1,i_trns), d_nod(1,i_field) )
+      call copy_nodal_vector_from_trans                                 &
+     &   (ncomp_rtp_2_rj, i_trns, frm_rtp,                              &
+     &    node1%numnod, num_tot_nod_phys, i_field, d_nod)
 !
-      end subroutine nodal_force_from_MHD_trans
+      end subroutine copy_force_from_MHD_trans
 !
 !-----------------------------------------------------------------------
 !

@@ -7,12 +7,12 @@
 !>@brief  Copy spherical harmonics data
 !!
 !!@verbatim
-!!      subroutine copy_nodal_vector_from_trans(nnod_rtp, m_folding,    &
-!!     &          inod_rtp_smp_stack, numnod, ncomp_rtp, i_trns, v_rtp, &
-!!     &          ncomp_nod, i_field, d_nod)
-!!      subroutine copy_nodal_scalar_from_trans(nnod_rtp, m_folding,    &
-!!     &          inod_rtp_smp_stack, numnod, ncomp_rtp, i_trns, v_rtp, &
-!!     &          ncomp_nod, i_field, d_nod)
+!!      subroutine copy_nodal_vector_from_trans                         &
+!!     &         (ncomp_rtp, i_trns, v_rtp,                             &
+!!     &          numnod, ncomp_nod, i_field, d_nod)
+!!      subroutine copy_nodal_scalar_from_trans                         &
+!!     &         (ncomp_rtp, i_trns, v_rtp,                             &
+!!     &          numnod, ncomp_nod, i_field, d_nod)
 !!
 !!      subroutine copy_scalar_from_trans(nnod_rtp, m_folding,          &
 !!     &         inod_rtp_smp_stack, nnod, v_rtp, d_sph)
@@ -42,15 +42,16 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine copy_nodal_vector_from_trans(nnod_rtp, m_folding,      &
-     &          inod_rtp_smp_stack, numnod, ncomp_rtp, i_trns, v_rtp,   &
-     &          ncomp_nod, i_field, d_nod)
+      subroutine copy_nodal_vector_from_trans                           &
+     &         (ncomp_rtp, i_trns, v_rtp,                               &
+     &          numnod, ncomp_nod, i_field, d_nod)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp, numnod, m_folding
-      integer(kind = kint), intent(in) :: inod_rtp_smp_stack(0:np_smp)
+      use m_spheric_parameter
+      use m_spheric_param_smp
+!
       integer(kind = kint), intent(in) :: ncomp_rtp, i_trns
       real(kind = kreal), intent(in) :: v_rtp(nnod_rtp,ncomp_rtp)
-      integer(kind = kint), intent(in) :: ncomp_nod, i_field
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod, i_field
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
 !
@@ -62,15 +63,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_nodal_scalar_from_trans(nnod_rtp, m_folding,      &
-     &          inod_rtp_smp_stack, numnod, ncomp_rtp, i_trns, v_rtp,   &
-     &          ncomp_nod, i_field, d_nod)
+      subroutine copy_nodal_scalar_from_trans                           &
+     &         (ncomp_rtp, i_trns, v_rtp,                               &
+     &          numnod, ncomp_nod, i_field, d_nod)
 !
-      integer(kind = kint), intent(in) :: nnod_rtp, numnod, m_folding
-      integer(kind = kint), intent(in) :: inod_rtp_smp_stack(0:np_smp)
+      use m_spheric_parameter
+      use m_spheric_param_smp
+!
       integer(kind = kint), intent(in) :: ncomp_rtp, i_trns
       real(kind = kreal), intent(in) :: v_rtp(nnod_rtp,ncomp_rtp)
-      integer(kind = kint), intent(in) :: ncomp_nod, i_field
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod, i_field
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
 !
