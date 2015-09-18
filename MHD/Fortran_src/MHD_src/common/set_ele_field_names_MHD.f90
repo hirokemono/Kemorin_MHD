@@ -33,7 +33,7 @@
 !
       fld_ele1%num_phys =     0
       fld_ele1%num_phys_viz = 0
-      do i = 1, num_nod_phys
+      do i = 1, nod_fld1%num_phys
        if (  phys_nod_name(i) .eq. fhd_velo                             &
      &  .or. phys_nod_name(i) .eq. fhd_magne                            &
      &  .or. phys_nod_name(i) .eq. fhd_light                            &
@@ -55,7 +55,7 @@
       call alloc_phys_name_type(fld_ele1)
 !
       j = 1
-      do i = 1, num_nod_phys
+      do i = 1, nod_fld1%num_phys
         if (  phys_nod_name(i) .eq. fhd_velo  ) then
           fld_ele1%num_component(j) = 3
           fld_ele1%phys_name(j) = fhd_velo

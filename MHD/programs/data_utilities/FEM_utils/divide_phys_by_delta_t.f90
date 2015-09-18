@@ -29,7 +29,7 @@
       integer(kind = kint) :: i, ist
 !
 !
-      do i = 1, num_nod_phys
+      do i = 1, nod_fld1%num_phys
         ist = istack_nod_component(i-1) + 1
 !
         if      ( num_nod_component(i) .eq. 1) then
@@ -59,7 +59,7 @@
 !
 !
       dnum = one / dble(icou)
-      do i = 1, num_nod_phys
+      do i = 1, nod_fld1%num_phys
         ist = istack_nod_component(i-1) + 1
 !
         if      ( num_nod_component(i) .eq. 1) then

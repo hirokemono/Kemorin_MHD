@@ -245,7 +245,6 @@
         charatmp => textbuf_n(i)
         write(charatmp,fmt_txt) vect(i,1:ncomp), char(10)
       end do
-      write(*,*) 'call calypso_mpi_seek_wrt_mul_chara'
       call calypso_mpi_seek_wrt_mul_chara(id_vtk, ioffset, ilength,     &
      &    num, textbuf_n(1))
 !

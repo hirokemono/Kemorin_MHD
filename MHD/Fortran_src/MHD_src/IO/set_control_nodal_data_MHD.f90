@@ -93,10 +93,10 @@
       use check_dependency_for_MHD
 !
 !
-      call count_field_4_monitor(num_nod_phys, num_nod_component,       &
+      call count_field_4_monitor(nod_fld1%num_phys, num_nod_component,  &
      &    iflag_nod_fld_monitor, num_field_monitor, ntot_comp_monitor)
 !
-      call check_dependencies(num_nod_phys, phys_nod_name)
+      call check_dependencies(nod_fld1%num_phys, phys_nod_name)
 !
       end subroutine check_FEM_MHD_dependencies
 !

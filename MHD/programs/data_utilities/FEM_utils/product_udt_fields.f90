@@ -62,7 +62,7 @@
       use m_node_phys_data
 !
 !
-      num_nod_phys =     ione
+      nod_fld1%num_phys = ione
       num_nod_phys_vis = ione
       call allocate_phys_name
 !

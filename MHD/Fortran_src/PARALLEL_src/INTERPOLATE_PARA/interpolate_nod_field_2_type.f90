@@ -81,7 +81,7 @@
       type(phys_data), intent(inout) :: phys_dest
 !
 !
-      do i = 1, num_nod_phys
+      do i = 1, nod_fld1%num_phys
         i_origin = istack_nod_component(i-1) + 1
         i_dest =   phys_dest%istack_component(i-1) + 1
         if      (num_nod_component(i) .eq. n_scalar) then

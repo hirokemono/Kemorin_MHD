@@ -37,12 +37,12 @@
         e_message = 'Set field for simulation'
         ierr = ierr_file
       else
-        num_nod_phys = field_ctl%num
+        nod_fld1%num_phys = field_ctl%num
       end if
 !
 !    set nodal data
 !
-      if ( num_nod_phys .gt. 0 ) then
+      if ( nod_fld1%num_phys .gt. 0 ) then
         call allocate_phys_name
         call ordering_nod_field_by_viz
 !
@@ -62,10 +62,11 @@
       use ordering_field_by_viz
 !
 !
-      call s_ordering_field_by_viz(num_nod_phys, num_nod_phys_vis,      &
+      call s_ordering_field_by_viz(nod_fld1%num_phys, num_nod_phys_vis, &
      &    num_nod_component, phys_nod_name, iflag_nod_fld_monitor)
 !
-      call set_istack_4_nodal_field(num_nod_phys, num_nod_phys_vis,     &
+      call set_istack_4_nodal_field                                     &
+     &   (nod_fld1%num_phys, num_nod_phys_vis,                          &
      &    num_nod_component, num_tot_nod_phys, num_tot_nod_phys_vis,    &
      &    istack_nod_component)
 !
@@ -79,10 +80,12 @@
       use ordering_field_by_viz
 !
 !
-      call ordering_field_by_comp_viz(num_nod_phys, num_nod_phys_vis,   &
+      call ordering_field_by_comp_viz                                   &
+     &   (nod_fld1%num_phys, num_nod_phys_vis,                          &
      &    num_nod_component, phys_nod_name, iflag_nod_fld_monitor)
 !
-      call set_istack_4_nodal_field(num_nod_phys, num_nod_phys_vis,     &
+      call set_istack_4_nodal_field                                     &
+     &   (nod_fld1%num_phys, num_nod_phys_vis,                          &
      &    num_nod_component, num_tot_nod_phys,  num_tot_nod_phys_vis,   &
      &    istack_nod_component)
 !

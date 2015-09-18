@@ -130,7 +130,7 @@
 !
       i0 = 0
       j0 = 0
-      do i = 1, num_nod_phys
+      do i = 1, nod_fld1%num_phys
        if (iflag_nod_fld_monitor(i) .eq. 1) then
         if      ( phys_nod_name(i) .eq. fhd_velo                        &
      &       .or. phys_nod_name(i) .eq. fhd_filter_v                    &
@@ -304,7 +304,7 @@
 !
       i0 = 0
       j0 = 0
-      do i = 1, num_nod_phys
+      do i = 1, nod_fld1%num_phys
         if (iflag_nod_fld_monitor(i) .eq. 1) then
           if ( phys_nod_name(i) .eq. fhd_velo) then
             call set_rms_address(num_nod_component(i), i0, j0,          &

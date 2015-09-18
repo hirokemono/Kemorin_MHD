@@ -36,7 +36,7 @@
 !
 !
       i_field_4_correlate = 0
-      do ifld = 1, num_nod_phys
+      do ifld = 1, nod_fld1%num_phys
         if(correlate_field_name .eq. phys_nod_name(ifld)) then
           i_field_4_correlate = ifld
           exit
@@ -72,10 +72,10 @@
 !
 !
       if     (iflag_correlate_coord .eq. iflag_spherical) then
-        call transfer_nod_fld_to_sph(node1%numnod, num_nod_phys,        &
+        call transfer_nod_fld_to_sph(node1%numnod, nod_fld1%num_phys,   &
      &      num_tot_nod_phys, istack_nod_component, d_nod)
       else if(iflag_correlate_coord .eq. iflag_cylindrical) then
-        call transfer_nod_fld_to_cyl(node1%numnod, num_nod_phys,        &
+        call transfer_nod_fld_to_cyl(node1%numnod, nod_fld1%num_phys,   &
      &     num_tot_nod_phys, istack_nod_component, d_nod)
       end if
 !

@@ -97,16 +97,16 @@
 !
 !
       call init_read_ucd_data(my_rank, istep_ucd)
-      num_nod_phys = input_ucd%num_field
+      nod_fld1%num_phys = input_ucd%num_field
 !
       call allocate_phys_name
 !
-      num_nod_component(1:num_nod_phys)                                 &
-     &     = input_ucd%num_comp(1:num_nod_phys)
-      phys_nod_name(1:num_nod_phys)                                     &
-     &     = input_ucd%phys_name(1:num_nod_phys)
+      num_nod_component(1:nod_fld1%num_phys)                            &
+     &     = input_ucd%num_comp(1:nod_fld1%num_phys)
+      phys_nod_name(1:nod_fld1%num_phys)                                &
+     &     = input_ucd%phys_name(1:nod_fld1%num_phys)
 !
-      call s_cal_total_and_stacks(num_nod_phys, num_nod_component,      &
+      call s_cal_total_and_stacks(nod_fld1%num_phys, num_nod_component, &
      &    izero, istack_nod_component, num_tot_nod_phys)
       num_tot_nod_phys_vis = num_tot_nod_phys
 !
@@ -128,7 +128,7 @@
 !
 !
       call sel_read_udt_file(my_rank, istep_ucd, input_ucd)
-      call set_field_by_udt_data(node1%numnod, num_nod_phys,            &
+      call set_field_by_udt_data(node1%numnod, nod_fld1%num_phys,       &
      &    num_tot_nod_phys, istack_nod_component, phys_nod_name,        &
      &    d_nod, input_ucd)
 !
@@ -158,7 +158,7 @@
 !
       local_ucd%nnod =      node1%numnod
       call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
-      call set_field_by_udt_data(node1%numnod, num_nod_phys,            &
+      call set_field_by_udt_data(node1%numnod, nod_fld1%num_phys,       &
      &    num_tot_nod_phys, istack_nod_component, phys_nod_name,        &
      &    d_nod, local_ucd)
       call deallocate_ucd_data(local_ucd)
@@ -188,7 +188,7 @@
 !
       local_ucd%nnod =      node1%numnod
       call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
-      call add_field_by_udt_data(node1%numnod, num_nod_phys,            &
+      call add_field_by_udt_data(node1%numnod, nod_fld1%num_phys,       &
      &    num_tot_nod_phys, istack_nod_component, phys_nod_name,        &
      &    d_nod, local_ucd)
       call deallocate_ucd_data(local_ucd)
@@ -218,7 +218,7 @@
 !
       local_ucd%nnod = node1%numnod
       call sel_read_alloc_udt_file(my_rank, istep_ucd, local_ucd)
-      call subtract_field_by_udt_data(node1%numnod, num_nod_phys,       &
+      call subtract_field_by_udt_data(node1%numnod, nod_fld1%num_phys,  &
      &    num_tot_nod_phys, istack_nod_component, phys_nod_name,        &
      &    d_nod, local_ucd)
       call deallocate_ucd_data(local_ucd)

@@ -43,15 +43,16 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      num_nod_phys =     fld_IO%num_field_IO
+      nod_fld1%num_phys = fld_IO%num_field_IO
       num_tot_nod_phys = fld_IO%ntot_comp_IO
       call allocate_phys_name
 !
-      phys_nod_name(1:num_nod_phys) = fld_IO%fld_name(1:num_nod_phys)
-      num_nod_component(1:num_nod_phys)                                 &
-     &    = fld_IO%num_comp_IO(1:num_nod_phys)
-      istack_nod_component(0:num_nod_phys)                              &
-     &    = fld_IO%istack_comp_IO(0:num_nod_phys)
+      phys_nod_name(1:nod_fld1%num_phys)                                &
+     &    = fld_IO%fld_name(1:nod_fld1%num_phys)
+      num_nod_component(1:nod_fld1%num_phys)                            &
+     &    = fld_IO%num_comp_IO(1:nod_fld1%num_phys)
+      istack_nod_component(0:nod_fld1%num_phys)                         &
+     &    = fld_IO%istack_comp_IO(0:nod_fld1%num_phys)
 !
       end subroutine init_field_name_by_restart
 !
@@ -63,7 +64,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      call count_field_num_to_rst_IO(num_nod_phys, phys_nod_name,       &
+      call count_field_num_to_rst_IO(nod_fld1%num_phys, phys_nod_name,  &
      &    fld_IO%num_field_IO)
 !
       end subroutine count_field_num_to_restart
@@ -75,7 +76,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      call copy_field_name_to_rst_IO(node1%numnod, num_nod_phys,        &
+      call copy_field_name_to_rst_IO(node1%numnod, nod_fld1%num_phys,   &
      &    istack_nod_component, phys_nod_name,                          &
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO, fld_IO%num_comp_IO, &
      &    fld_IO%istack_comp_IO, fld_IO%fld_name, fld_IO%nnod_IO)
@@ -90,7 +91,7 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      call copy_field_data_to_rst_IO(node1%numnod, num_nod_phys,        &
+      call copy_field_data_to_rst_IO(node1%numnod, nod_fld1%num_phys,   &
      &    num_tot_nod_phys, istack_nod_component, phys_nod_name, d_nod, &
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
      &    fld_IO%istack_comp_IO, fld_IO%fld_name, fld_IO%nnod_IO,       &
@@ -105,7 +106,7 @@
       type(field_IO), intent(in) :: fld_IO
 !
 !
-      call copy_field_data_from_rst_IO(node1%numnod, num_nod_phys,      &
+      call copy_field_data_from_rst_IO(node1%numnod, nod_fld1%num_phys, &
      &    num_tot_nod_phys, istack_nod_component, phys_nod_name, d_nod, &
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
      &    fld_IO%istack_comp_IO, fld_IO%fld_name, fld_IO%nnod_IO,       &
@@ -122,7 +123,7 @@
 !
 !
       call simple_copy_fld_name_to_rst_IO                               &
-     &   (num_nod_phys, istack_nod_component, phys_nod_name,            &
+     &   (nod_fld1%num_phys, istack_nod_component, phys_nod_name,       &
      &    fld_IO%num_field_IO, fld_IO%num_comp_IO,                      &
      &    fld_IO%istack_comp_IO, fld_IO%fld_name)
 !

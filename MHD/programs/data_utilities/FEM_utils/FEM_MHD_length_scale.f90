@@ -140,7 +140,7 @@
       iphys%i_current =   0
       iphys%i_temp =      0
       iphys%i_t_diffuse = 0
-      do i_fld = 1, num_nod_phys
+      do i_fld = 1, nod_fld1%num_phys
         if(phys_nod_name(i_fld) .eq. fhd_velo) then
           iphys%i_velo = istack_nod_component(i_fld-1) + 1
         else if(phys_nod_name(i_fld) .eq. fhd_vort) then

@@ -33,7 +33,7 @@
 !
       use m_node_phys_data
 !
-      call  nod_fields_send_recv(num_nod_phys)
+      call  nod_fields_send_recv(nod_fld1%num_phys)
 !
       end subroutine phys_send_recv_all
 !

@@ -43,7 +43,7 @@
 !
       integer(kind = kint) :: i
 !
-       do i = 1, num_nod_phys
+       do i = 1, nod_fld1%num_phys
          if ( phys_nod_name(i).eq.'SGS_div_h_flux_true') then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(phys_nod_name(i) )
@@ -73,7 +73,7 @@
 !
       integer(kind = kint) :: i
 !
-       do i = 1, num_nod_phys
+       do i = 1, nod_fld1%num_phys
          if ( phys_nod_name(i).eq.'SGS_div_h_flux_true') then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(phys_nod_name(i) )

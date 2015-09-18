@@ -159,7 +159,7 @@
       integer(kind = kint) :: i_fld, ist
 !
 !
-      do i_fld = 1, num_nod_phys
+      do i_fld = 1, nod_fld1%num_phys
         ist = istack_nod_component(i_fld-1) + 1
         if     (num_nod_component(i_fld) .eq. 3) then
           call set_vector_label(phys_nod_name(i_fld), cor_name(ist))

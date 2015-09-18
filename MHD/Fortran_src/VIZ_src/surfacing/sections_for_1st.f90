@@ -88,7 +88,8 @@
      &    nod_comm, edge_comm, ele1%interior_ele,                       &
      &    node1%xx, node1%istack_nod_smp, ele1%istack_ele_smp,          &
      &    surf1%istack_surf_smp, edge1%istack_edge_smp,                 &
-     &    ele_grp1, sf_grp1, sf_grp_nod1, num_nod_phys, phys_nod_name)
+     &    ele_grp1, sf_grp1, sf_grp_nod1,                               &
+     &    nod_fld1%num_phys, phys_nod_name)
 !
       end subroutine cross_section_init_1st
 !
@@ -108,7 +109,7 @@
      &    edge1%iedge_4_sf, ele1%interior_ele,                          &
      &    node1%istack_nod_smp, ele1%istack_ele_smp,                    &
      &    surf1%istack_surf_smp, edge1%istack_edge_smp,                 &
-     &    ele_grp1, num_nod_phys, phys_nod_name)
+     &    ele_grp1, nod_fld1%num_phys, phys_nod_name)
 !
       end subroutine isosurface_init_1st
 !
@@ -126,7 +127,8 @@
 !
       call cross_section_main(istep_psf, node1%numnod,                  &
      &    edge1%numedge, edge1%nnod_4_edge, edge1%ie_edge,              &
-     &    num_nod_phys, num_tot_nod_phys, istack_nod_component, d_nod)
+     &    nod_fld1%num_phys, num_tot_nod_phys,                          &
+     &    istack_nod_component, d_nod)
 !
       end subroutine cross_section_main_1st
 !
@@ -147,7 +149,8 @@
      &    ele1%ie, edge1%ie_edge, edge1%iedge_4_ele, node1%xx,          &
      &    node1%rr, node1%a_r, node1%ss, node1%a_s,                     &
      &    node1%istack_nod_smp, edge_comm,                              &
-     &    num_nod_phys, num_tot_nod_phys, istack_nod_component, d_nod)
+     &    nod_fld1%num_phys, num_tot_nod_phys,                          &
+     &    istack_nod_component, d_nod)
 !
       end subroutine isosurface_main_1st
 !

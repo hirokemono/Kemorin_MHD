@@ -150,22 +150,22 @@
 !*
 !*  -----------  data transfer to FEM array --------------
 !*
-      if (iflag_debug.ge.0) write(*,*) 'copy_forces_to_snapshot_rtp'
+      if (iflag_debug.gt.0) write(*,*) 'copy_forces_to_snapshot_rtp'
       call copy_forces_to_snapshot_rtp
-      if (iflag_debug.ge.0) write(*,*) 'copy_snap_vec_fld_from_trans'
+      if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_from_trans'
       call copy_snap_vec_fld_from_trans
-      if (iflag_debug.ge.0) write(*,*) 'copy_snap_vec_fld_to_trans'
+      if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_to_trans'
       call copy_snap_vec_fld_to_trans
 !
-      if (iflag_debug.ge.0) write(*,*) 'overwrite_nodal_sph_2_xyz'
+      if (iflag_debug.gt.0) write(*,*) 'overwrite_nodal_sph_2_xyz'
       call overwrite_nodal_sph_2_xyz
 !
 !*  ----------- transform field at pole and center --------------
 !*
-      if (iflag_debug.ge.0) write(*,*) 'lead_pole_fields_4_sph_mhd'
+      if (iflag_debug.gt.0) write(*,*) 'lead_pole_fields_4_sph_mhd'
       call lead_pole_fields_4_sph_mhd
 !
-      if (iflag_debug.ge.0) write(*,*) 'phys_send_recv_all'
+      if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
       call phys_send_recv_all
 !
       end subroutine SPH_to_FEM_bridge_MHD

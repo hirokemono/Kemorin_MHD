@@ -70,7 +70,7 @@
       end if
 !
 !
-       do i = 1, num_nod_phys
+       do i = 1, nod_fld1%num_phys
         if      ( phys_nod_name(i) .eq. fhd_velo ) then
           allocate(velo_1(numele,3))
           if(numele .gt. 0) velo_1 = 0.0d0

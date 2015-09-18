@@ -52,7 +52,7 @@
         j0 = istart_scalar_rtp + j - 1
         itrans = j + 3*num_vector_rtp
 !
-        do i = 1, num_nod_phys
+        do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
             call copy_1st_scl_to_sph_trans(i_field, v_rtp(1,itrans))
@@ -82,7 +82,7 @@
         j0 = istart_scalar_rtp + j - 1
         itrans = j + 3*num_vector_rtp
 !
-        do i = 1, num_nod_phys
+        do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
             call copy_1st_scl_from_trans_wpole(ncomp_trans, itrans,     &
@@ -113,7 +113,7 @@
         j0 = istart_vector_rtp + j - 1
         itrans = 3*j - 2
 !
-        do i = 1, num_nod_phys
+        do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
             call copy_1st_vec_to_sph_trans(i_field, v_rtp(1,itrans))
@@ -143,7 +143,7 @@
         j0 = istart_vector_rtp + j - 1
         itrans = 3*j - 2
 !
-        do i = 1, num_nod_phys
+        do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
             call copy_1st_vec_from_trans_wpole(ncomp_trans,             &
@@ -174,7 +174,7 @@
         j0 = istart_tensor_rtp + j - 1
         itrans = 1 + 6*(j-1) + num_scalar_rtp + 3*num_vector_rtp
 !
-        do i = 1, num_nod_phys
+        do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
             call copy_1st_tsr_to_sph_trans(i_field, v_rtp(1,itrans))
@@ -204,7 +204,7 @@
         j0 = istart_tensor_rtp + j - 1
         itrans = 1 + 6*(j-1) + num_scalar_rtp + 3*num_vector_rtp
 !
-        do i = 1, num_nod_phys
+        do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
             i_field = istack_nod_component(i- 1) + 1
             call copy_1st_tsr_from_trans_wpole(ncomp_trans, itrans,     &

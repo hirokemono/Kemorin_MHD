@@ -32,7 +32,7 @@
 !
       if (ele1%nnod_4_ele .eq. num_t_quad) then
 !
-        do i = 1, num_nod_phys
+        do i = 1, nod_fld1%num_phys
 !
           if ( phys_nod_name(i) .eq. 'pressure' ) then
             call cal_pressure_on_edge(edge1%numedge, edge1%nnod_4_edge, &

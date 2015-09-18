@@ -21,25 +21,30 @@
       module m_node_phys_data
 !
       use m_precision
+      use t_phys_data
 !
       implicit  none
 !
-      integer (kind=kint) :: num_nod_phys
+!>       Structure for nodal field data
+      type(phys_data), save :: nod_fld1
+!nod_fld1%num_phys
+!
+!      integer (kind=kint) :: num_nod_phys
 !    number of physical data
       integer (kind=kint) :: num_tot_nod_phys
 !
-      integer (kind=kint), allocatable, target :: num_nod_component(:)
+      integer (kind=kint), pointer :: num_nod_component(:)
 ! 
-      integer (kind=kint), allocatable, target                          &
+      integer (kind=kint), pointer                          &
      &                    :: istack_nod_component(:)
 ! 
-      integer (kind=kint), allocatable, target :: iorder_nod_phys(:)
+      integer (kind=kint), pointer :: iorder_nod_phys(:)
 !
-      character (len=kchara), allocatable, target :: phys_nod_name(:)
+      character (len=kchara), pointer :: phys_nod_name(:)
 ! 
       real (kind=kreal), pointer :: d_nod(:,:)
 ! 
-      integer (kind=kint), allocatable :: iflag_nod_update(:)
+      integer (kind=kint), pointer :: iflag_nod_update(:)
 !
 !     paraamaters to visualizer
 !
@@ -49,7 +54,7 @@
 !
 !     paramaters for monitoring
 !
-      integer(kind=kint), allocatable, target                           &
+      integer(kind=kint), pointer                           &
      &                   :: iflag_nod_fld_monitor(:)
 !
 !   ---------------------------------------------------------------------
@@ -60,17 +65,18 @@
 !
        subroutine allocate_phys_name
 !
-          allocate( phys_nod_name(num_nod_phys) )
-          allocate( num_nod_component(num_nod_phys) )
-          allocate( istack_nod_component(0:num_nod_phys) )
-          allocate( iorder_nod_phys(num_nod_phys) )
-          allocate( iflag_nod_fld_monitor(num_nod_phys) )
 !
-          phys_nod_name = ''
-          num_nod_component =    0
-          istack_nod_component = 0
-          iflag_nod_fld_monitor   =  0
-          iorder_nod_phys =      1
+       allocate( phys_nod_name(nod_fld1%num_phys) )
+       allocate( num_nod_component(nod_fld1%num_phys) )
+       allocate( istack_nod_component(0:nod_fld1%num_phys) )
+       allocate( iorder_nod_phys(nod_fld1%num_phys) )
+       allocate( iflag_nod_fld_monitor(nod_fld1%num_phys) )
+!
+       phys_nod_name = ''
+       num_nod_component =    0
+       istack_nod_component = 0
+       iflag_nod_fld_monitor   =  0
+       iorder_nod_phys =      1
 !
        end subroutine allocate_phys_name
 !
@@ -93,11 +99,11 @@
 !
        subroutine deallocate_phys_name
 !
-          deallocate( phys_nod_name )
-          deallocate( num_nod_component )
-          deallocate( istack_nod_component )
-          deallocate( iorder_nod_phys )
-          deallocate( iflag_nod_fld_monitor )
+       deallocate( phys_nod_name )
+       deallocate( num_nod_component )
+       deallocate( istack_nod_component )
+       deallocate( iorder_nod_phys )
+       deallocate( iflag_nod_fld_monitor )
 !
        end subroutine deallocate_phys_name
 !
@@ -118,10 +124,10 @@
 !
       integer(kind = kint) :: i
 !
-      write(*,*) 'num_nod_phys ',num_nod_phys
+      write(*,*) 'num_nod_phys ',nod_fld1%num_phys
       write(*,*) 'num_nod_phys_vis ',num_nod_phys_vis
       write(*,*) 'id#, num_component, stack_component, field_name '
-      do i = 1, num_nod_phys
+      do i = 1, nod_fld1%num_phys
         write(*,'(3i6,2x,a2,a)') i, num_nod_component(i),               &
      &         istack_nod_component(i), '  ', trim(phys_nod_name(i))
       end do
@@ -156,7 +162,7 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      nod_fld%num_phys =  num_nod_phys
+      nod_fld%num_phys =  nod_fld1%num_phys
       nod_fld%ntot_phys = num_tot_nod_phys
 !
       nod_fld%num_phys_viz =  num_nod_phys_vis

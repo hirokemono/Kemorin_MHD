@@ -133,7 +133,7 @@
       use set_ucd_data
 !
 !
-      call link_field_data_2_output(node1%numnod, num_nod_phys,         &
+      call link_field_data_2_output(node1%numnod, nod_fld1%num_phys,    &
      &    num_tot_nod_phys, num_nod_phys_vis, num_tot_nod_phys_vis,     &
      &    num_nod_component, phys_nod_name, d_nod, fem_ucd)
 !
@@ -173,7 +173,7 @@
       type(ucd_data) :: local_ucd
 !
 !
-      call link_field_data_2_output(node1%numnod, num_nod_phys,         &
+      call link_field_data_2_output(node1%numnod, nod_fld1%num_phys,    &
      &    num_tot_nod_phys, num_nod_phys_vis, num_tot_nod_phys_vis,     &
      &    num_nod_component, phys_nod_name, d_nod, local_ucd)
 !
