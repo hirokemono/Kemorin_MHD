@@ -30,6 +30,7 @@
 !
       use m_control_parameter
       use m_cal_max_indices
+      use m_node_phys_data
 !
       use initialization_4_MHD
       use lead_physical_values
@@ -95,7 +96,7 @@
 !
       call output_grd_file_w_org_connect
 !
-      call allocate_phys_range
+      call allocate_phys_range(nod_fld1%ntot_phys_viz)
 !       call s_open_boundary_monitor(my_rank, sf_grp1)
       call end_eleps_time(4)
 !

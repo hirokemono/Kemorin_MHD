@@ -30,6 +30,7 @@
 !
       use m_control_parameter
       use m_cal_max_indices
+      use m_node_phys_data
 !
       use initialize_4_snapshot
 !
@@ -45,7 +46,7 @@
 !
       call output_grd_file_w_org_connect
 !
-      call allocate_phys_range
+      call allocate_phys_range(nod_fld1%ntot_phys_viz)
 !
       end subroutine FEM_initialize_snap_tmp
 !

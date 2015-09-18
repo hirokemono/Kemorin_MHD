@@ -62,13 +62,14 @@
       use ordering_field_by_viz
 !
 !
-      call s_ordering_field_by_viz(nod_fld1%num_phys, num_nod_phys_vis, &
+      call s_ordering_field_by_viz                                      &
+     &   (nod_fld1%num_phys, nod_fld1%num_phys_viz,                     &
      &    num_nod_component, phys_nod_name, iflag_nod_fld_monitor)
 !
       call set_istack_4_nodal_field                                     &
-     &   (nod_fld1%num_phys, num_nod_phys_vis,                          &
-     &    num_nod_component, nod_fld1%ntot_phys, num_tot_nod_phys_vis,  &
-     &    istack_nod_component)
+     &   (nod_fld1%num_phys, nod_fld1%num_phys_viz,                     &
+     &    num_nod_component, nod_fld1%ntot_phys,                        &
+     &    nod_fld1%ntot_phys_viz, istack_nod_component)
 !
       end subroutine ordering_nod_field_by_viz
 !
@@ -81,13 +82,13 @@
 !
 !
       call ordering_field_by_comp_viz                                   &
-     &   (nod_fld1%num_phys, num_nod_phys_vis,                          &
+     &   (nod_fld1%num_phys, nod_fld1%num_phys_viz,                     &
      &    num_nod_component, phys_nod_name, iflag_nod_fld_monitor)
 !
       call set_istack_4_nodal_field                                     &
-     &   (nod_fld1%num_phys, num_nod_phys_vis,                          &
-     &    num_nod_component, nod_fld1%ntot_phys,  num_tot_nod_phys_vis, &
-     &    istack_nod_component)
+     &   (nod_fld1%num_phys, nod_fld1%num_phys_viz,                     &
+     &    num_nod_component, nod_fld1%ntot_phys,                        &
+     &    nod_fld1%ntot_phys_viz, istack_nod_component)
 !
       end subroutine ordering_nod_field_by_comp_viz
 !

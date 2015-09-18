@@ -62,8 +62,8 @@
       use m_node_phys_data
 !
 !
-      nod_fld1%num_phys = ione
-      num_nod_phys_vis = ione
+      nod_fld1%num_phys =     ione
+      nod_fld1%num_phys_viz = ione
       call allocate_phys_name
 !
       num_nod_component(1) =    ncomp_4_result
@@ -72,7 +72,7 @@
       phys_nod_name(1) = result_field_name
 !
       nod_fld1%ntot_phys =     ncomp_4_result
-      num_tot_nod_phys_vis =   ncomp_4_result
+      nod_fld1%ntot_phys_viz = ncomp_4_result
       call allocate_data_arrays
 !
       end subroutine allocate_product_result
@@ -333,10 +333,10 @@
 !
 !      write(50+my_rank,*) 'd_nod'
 !      do i = 1, node1%numnod
-!        write(50+my_rank,*) i, inod_global(i),   &
-!     &          d_prod1(i,1:ncomp_4_product1),   &
-!     &          d_prod2(i,1:ncomp_4_product2),   &
-!     &         d_nod(i,1:num_tot_nod_phys_vis)
+!        write(50+my_rank,*) i, inod_global(i),                         &
+!     &          d_prod1(i,1:ncomp_4_product1),                         &
+!     &          d_prod2(i,1:ncomp_4_product2),                         &
+!     &         d_nod(i,1:nod_fld1%ntot_phys_viz)
 !      end do
 !
       end subroutine cal_products_of_fields

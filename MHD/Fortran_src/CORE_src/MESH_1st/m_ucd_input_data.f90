@@ -80,7 +80,7 @@
 !
 !
       input_ucd%nnod =      node1%numnod
-      input_ucd%ntot_comp = num_nod_phys_vis
+      input_ucd%ntot_comp = nod_fld1%num_phys_viz
       call sel_read_udt_param(my_rank, istep_ucd, input_ucd)
 !
       end subroutine init_read_ucd_data
@@ -108,7 +108,7 @@
 !
       call s_cal_total_and_stacks(nod_fld1%num_phys, num_nod_component, &
      &    izero, istack_nod_component, nod_fld1%ntot_phys)
-      num_tot_nod_phys_vis = nod_fld1%ntot_phys
+      nod_fld1%ntot_phys_viz = nod_fld1%ntot_phys
 !
       call allocate_data_arrays
 !

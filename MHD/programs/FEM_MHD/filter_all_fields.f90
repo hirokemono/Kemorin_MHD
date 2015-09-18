@@ -30,7 +30,7 @@
 !
 !
       j = 1
-      do i = 1, num_nod_phys_vis
+      do i = 1, nod_fld1%num_phys_viz
         if ( num_nod_component(i) .eq.1 ) then
           if (my_rank.eq.0) write(*,*)'filtering scalar field: ',       &
      &      trim(phys_nod_name(i))

@@ -27,22 +27,24 @@
 !
       use m_geometry_data
       use m_physical_property
+      use m_node_phys_data
 !
       integer (kind = kint), intent(in) :: i_sgs, i_flux
       real (kind = kreal), intent(in) :: coef
 !
 !
       if      (i_grav .eq. iflag_const_g) then
-        call cal_SGS_gravity_flux_const(node1%istack_nod_smp,           &
-     &      grav, coef, i_sgs, i_flux)
+        call cal_SGS_gravity_flux_const                                 &
+     &     (node1%numnod, node1%istack_nod_smp, grav,                   &
+     &      coef, nod_fld1%ntot_phys, i_sgs, i_flux, d_nod)
       else if (i_grav .eq. iflag_radial_g) then
         call cal_SGS_gravity_flux_radial                                &
      &     (node1%numnod, node1%istack_nod_smp, node1%xx, node1%a_r,    &
-     &      coef, i_sgs, i_flux)
+     &      coef, nod_fld1%ntot_phys, i_sgs, i_flux, d_nod)
       else if (i_grav .eq. iflag_self_r_g) then
         call cal_SGS_gravity_flux_self                                  &
      &     (node1%numnod, node1%istack_nod_smp, node1%xx,               &
-     &      coef, i_sgs, i_flux)
+     &      coef, nod_fld1%ntot_phys, i_sgs, i_flux, d_nod)
       end if
 !
       end subroutine cal_SGS_gravity_flux
@@ -51,17 +53,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_SGS_gravity_flux_self(numnod, inod_smp_stack,      &
-     &          xx, coef_buo, i_sgs, i_flux)
+     &          xx, coef_buo, ncomp_nod, i_sgs, i_flux, d_nod)
 !
-      use m_node_phys_address
-      use m_node_phys_data
-!
-      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: xx(numnod,3)
 !
       integer (kind = kint), intent(in) :: i_sgs, i_flux
       real (kind = kreal), intent(in) :: coef_buo
+!
+      real (kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: inod, ip, ist, ied
 !
@@ -83,18 +84,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_SGS_gravity_flux_radial(numnod, inod_smp_stack,   &
-     &          xx, a_radius, coef_buo, i_sgs, i_flux)
+     &          xx, a_radius, coef_buo, ncomp_nod, i_sgs, i_flux,      &
+     &          d_nod)
 !
-      use m_node_phys_address
-      use m_node_phys_data
-!
-      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: xx(numnod,3)
       real(kind = kreal), intent(in) :: a_radius(numnod)
 !
       integer (kind = kint), intent(in) :: i_sgs, i_flux
       real (kind = kreal), intent(in) :: coef_buo
+!
+      real (kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: inod, ip, ist, ied
 !
@@ -117,16 +118,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_SGS_gravity_flux_const(inod_smp_stack,             &
-     &          grav, coef_buo, i_sgs, i_flux)
+      subroutine cal_SGS_gravity_flux_const(numnod, inod_smp_stack,     &
+     &          grav, coef_buo, ncomp_nod, i_sgs, i_flux, d_nod)
 !
-      use m_node_phys_address
-      use m_node_phys_data
-!
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: i_sgs, i_flux
       real (kind = kreal), intent(in) :: coef_buo
       real (kind = kreal), intent(in) :: grav(3)
+!
+      real (kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: inod, ip, ist, ied
 !

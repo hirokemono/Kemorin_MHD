@@ -30,8 +30,8 @@
       nod_fld1%num_phys =  num_phys_rj
       nod_fld1%ntot_phys = ntot_phys_rj
 !
-      num_nod_phys_vis =     num_phys_rj_vis
-      num_tot_nod_phys_vis = ntot_comp_rj_vis
+      nod_fld1%num_phys_viz =  num_phys_rj_vis
+      nod_fld1%ntot_phys_viz = ntot_comp_rj_vis
 !
       call allocate_phys_name
 !

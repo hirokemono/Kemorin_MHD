@@ -27,7 +27,7 @@
 !
 !>       Structure for nodal field data
       type(phys_data), save :: nod_fld1
-!nod_fld1%ntot_phys
+!nod_fld1%ntot_phys_viz
 !
 !      integer (kind=kint) :: num_nod_phys
 !    number of physical data
@@ -48,9 +48,9 @@
 !
 !     paraamaters to visualizer
 !
-      integer (kind=kint) :: num_nod_phys_vis
+!      integer (kind=kint) :: num_nod_phys_vis
 !    number of physical data to visualizer
-      integer (kind=kint) :: num_tot_nod_phys_vis
+!      integer (kind=kint) :: num_tot_nod_phys_vis
 !
 !     paramaters for monitoring
 !
@@ -125,7 +125,7 @@
       integer(kind = kint) :: i
 !
       write(*,*) 'num_nod_phys ',nod_fld1%num_phys
-      write(*,*) 'num_nod_phys_vis ',num_nod_phys_vis
+      write(*,*) 'num_nod_phys_vis ',nod_fld1%num_phys_viz
       write(*,*) 'id#, num_component, stack_component, field_name '
       do i = 1, nod_fld1%num_phys
         write(*,'(3i6,2x,a2,a)') i, num_nod_component(i),               &
@@ -165,8 +165,8 @@
       nod_fld%num_phys =  nod_fld1%num_phys
       nod_fld%ntot_phys = nod_fld1%ntot_phys
 !
-      nod_fld%num_phys_viz =  num_nod_phys_vis
-      nod_fld%ntot_phys_viz = num_tot_nod_phys_vis
+      nod_fld%num_phys_viz =  nod_fld1%num_phys_viz
+      nod_fld%ntot_phys_viz = nod_fld1%ntot_phys_viz
 !
       nod_fld%num_component =>    num_nod_component
       nod_fld%istack_component => istack_nod_component
