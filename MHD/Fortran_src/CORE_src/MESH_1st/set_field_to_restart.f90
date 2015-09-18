@@ -136,7 +136,7 @@
 !
 !
       call simple_copy_fld_dat_to_rst_IO                                &
-     &   (node1%numnod, num_nod_phys, d_nod,                            &
+     &   (node1%numnod, num_tot_nod_phys, d_nod,                        &
      &    fld_IO%ntot_comp_IO, fld_IO%nnod_IO, fld_IO%d_IO)
 !
       end subroutine simple_copy_fld_data_to_rst
