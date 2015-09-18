@@ -153,6 +153,7 @@
 !
       subroutine set_correlate_data_names
 !
+      use m_phys_constants
       use m_node_phys_data
       use m_volume_average_labels
 !
@@ -161,9 +162,9 @@
 !
       do i_fld = 1, nod_fld1%num_phys
         ist = istack_nod_component(i_fld-1) + 1
-        if     (num_nod_component(i_fld) .eq. 3) then
+        if     (nod_fld1%num_component(i_fld) .eq. n_vector) then
           call set_vector_label(phys_nod_name(i_fld), cor_name(ist))
-        else if(num_nod_component(i_fld) .eq. 6) then
+        else if(nod_fld1%num_component(i_fld) .eq. n_sym_tensor) then
           call set_sym_tensor_label(phys_nod_name(i_fld),               &
      &        cor_name(ist))
         else

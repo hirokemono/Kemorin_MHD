@@ -63,17 +63,17 @@
       do i = 1, num_fld
         ist = istack_nod_component(i-1) + 1
 !
-        if (num_nod_component(i) .eq. n_vector) then
+        if (nod_fld1%num_component(i) .eq. n_vector) then
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &      write(*,*) 'comm. for vector of ', trim(phys_nod_name(i))
           call vector_send_recv(nod_fld1%ntot_phys, ist, d_nod)
 !
-        else if (num_nod_component(i) .eq. n_scalar) then
+        else if (nod_fld1%num_component(i) .eq. n_scalar) then
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &       write(*,*) 'comm. for scaler of ', trim(phys_nod_name(i))
           call scalar_send_recv(nod_fld1%ntot_phys, ist, d_nod)
 !
-        else if (num_nod_component(i) .eq. n_sym_tensor) then
+        else if (nod_fld1%num_component(i) .eq. n_sym_tensor) then
           if (iflag_debug .ge. iflag_routine_msg)                       &
      &       write(*,*) 'comm. for tensor of ', trim(phys_nod_name(i))
           call sym_tensor_send_recv(nod_fld1%ntot_phys, ist, d_nod)

@@ -103,8 +103,8 @@
       do i = 1, nod_fld1%num_phys
         if (iflag_nod_fld_monitor(i) .eq. 1 ) then
           j = j + 1
-          num_comp_phys_monitor(j) = num_nod_component(i)
-          phys_name_monitor(j) = phys_nod_name(i)
+          num_comp_phys_monitor(j) = nod_fld1%num_component(i)
+          phys_name_monitor(j) =     phys_nod_name(i)
         end if
       end do
 !
@@ -112,7 +112,7 @@
         write(id_monitor_file,'(a)') 'ID step time x y z '
         write(id_monitor_file,1001)  num_field_monitor
         write(id_monitor_file,1002)                                     &
-     &        num_nod_component(1:num_field_monitor)
+     &        nod_fld1%num_component(1:num_field_monitor)
  1001   format('number_of_fields: ',i16)
  1002   format('number_of_components: ',200i3)
 !

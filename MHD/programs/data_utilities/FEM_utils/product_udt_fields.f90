@@ -66,8 +66,8 @@
       nod_fld1%num_phys_viz = ione
       call allocate_phys_name
 !
-      num_nod_component(1) =    ncomp_4_result
-      istack_nod_component(1) = ncomp_4_result
+      nod_fld1%num_component(1) = ncomp_4_result
+      istack_nod_component(1) =   ncomp_4_result
       iflag_nod_fld_monitor(1) = 1
       phys_nod_name(1) = result_field_name
 !

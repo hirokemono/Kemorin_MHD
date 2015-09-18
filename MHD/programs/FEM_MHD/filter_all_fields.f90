@@ -20,6 +20,7 @@
       subroutine filtering_all_fields
 !
       use calypso_mpi
+      use m_phys_constants
       use m_node_phys_data
 !
       use cal_filtering_scalars
@@ -31,20 +32,20 @@
 !
       j = 1
       do i = 1, nod_fld1%num_phys_viz
-        if ( num_nod_component(i) .eq.1 ) then
+        if ( nod_fld1%num_component(i) .eq. n_scalar) then
           if (my_rank.eq.0) write(*,*)'filtering scalar field: ',       &
      &      trim(phys_nod_name(i))
          call cal_filtered_scalar(j, j)
-        else if ( num_nod_component(i) .eq.3 ) then
+        else if ( nod_fld1%num_component(i) .eq. n_vector) then
           if (my_rank.eq.0) write(*,*)'filtering vector field: ',       &
      &      trim(phys_nod_name(i))
          call cal_filtered_vector(j, j)
-        else if ( num_nod_component(i) .eq.6 ) then
+        else if ( nod_fld1%num_component(i) .eq. n_sym_tensor) then
           if (my_rank.eq.0) write(*,*)'filtering tensor field: ',       &
      &      trim(phys_nod_name(i))
          call cal_filtered_sym_tensor(j, j)
         end if
-        j = j + num_nod_component(i)
+        j = j + nod_fld1%num_component(i)
       end do
 !
       end subroutine filtering_all_fields

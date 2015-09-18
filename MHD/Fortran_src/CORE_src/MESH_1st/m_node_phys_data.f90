@@ -27,13 +27,13 @@
 !
 !>       Structure for nodal field data
       type(phys_data), save :: nod_fld1
-!nod_fld1%ntot_phys_viz
+!nod_fld1%num_component
 !
 !      integer (kind=kint) :: num_nod_phys
 !    number of physical data
 !      integer (kind=kint) :: num_tot_nod_phys
 !
-      integer (kind=kint), pointer :: num_nod_component(:)
+!      integer (kind=kint), pointer :: num_nod_component(:)
 ! 
       integer (kind=kint), pointer                          &
      &                    :: istack_nod_component(:)
@@ -67,13 +67,13 @@
 !
 !
        allocate( phys_nod_name(nod_fld1%num_phys) )
-       allocate( num_nod_component(nod_fld1%num_phys) )
+       allocate( nod_fld1%num_component(nod_fld1%num_phys) )
        allocate( istack_nod_component(0:nod_fld1%num_phys) )
        allocate( iorder_nod_phys(nod_fld1%num_phys) )
        allocate( iflag_nod_fld_monitor(nod_fld1%num_phys) )
 !
        phys_nod_name = ''
-       num_nod_component =    0
+       nod_fld1%num_component =    0
        istack_nod_component = 0
        iflag_nod_fld_monitor   =  0
        iorder_nod_phys =      1
@@ -100,7 +100,7 @@
        subroutine deallocate_phys_name
 !
        deallocate( phys_nod_name )
-       deallocate( num_nod_component )
+       deallocate( nod_fld1%num_component )
        deallocate( istack_nod_component )
        deallocate( iorder_nod_phys )
        deallocate( iflag_nod_fld_monitor )
@@ -128,7 +128,7 @@
       write(*,*) 'num_nod_phys_vis ',nod_fld1%num_phys_viz
       write(*,*) 'id#, num_component, stack_component, field_name '
       do i = 1, nod_fld1%num_phys
-        write(*,'(3i6,2x,a2,a)') i, num_nod_component(i),               &
+        write(*,'(3i6,2x,a2,a)') i, nod_fld1%num_component(i),          &
      &         istack_nod_component(i), '  ', trim(phys_nod_name(i))
       end do
 !
@@ -168,7 +168,7 @@
       nod_fld%num_phys_viz =  nod_fld1%num_phys_viz
       nod_fld%ntot_phys_viz = nod_fld1%ntot_phys_viz
 !
-      nod_fld%num_component =>    num_nod_component
+      nod_fld%num_component =>    nod_fld1%num_component
       nod_fld%istack_component => istack_nod_component
       nod_fld%iorder_eletype =>   iorder_nod_phys
       nod_fld%iflag_monitor =>    iflag_nod_fld_monitor

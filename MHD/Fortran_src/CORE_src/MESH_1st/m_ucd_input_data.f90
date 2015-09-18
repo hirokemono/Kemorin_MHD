@@ -101,12 +101,13 @@
 !
       call allocate_phys_name
 !
-      num_nod_component(1:nod_fld1%num_phys)                            &
+      nod_fld1%num_component(1:nod_fld1%num_phys)                       &
      &     = input_ucd%num_comp(1:nod_fld1%num_phys)
       phys_nod_name(1:nod_fld1%num_phys)                                &
      &     = input_ucd%phys_name(1:nod_fld1%num_phys)
 !
-      call s_cal_total_and_stacks(nod_fld1%num_phys, num_nod_component, &
+      call s_cal_total_and_stacks                                       &
+     &   (nod_fld1%num_phys, nod_fld1%num_component,                    &
      &    izero, istack_nod_component, nod_fld1%ntot_phys)
       nod_fld1%ntot_phys_viz = nod_fld1%ntot_phys
 !

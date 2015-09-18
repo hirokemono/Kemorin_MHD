@@ -49,7 +49,7 @@
 !
       phys_nod_name(1:nod_fld1%num_phys)                                &
      &    = fld_IO%fld_name(1:nod_fld1%num_phys)
-      num_nod_component(1:nod_fld1%num_phys)                            &
+      nod_fld1%num_component(1:nod_fld1%num_phys)                       &
      &    = fld_IO%num_comp_IO(1:nod_fld1%num_phys)
       istack_nod_component(0:nod_fld1%num_phys)                         &
      &    = fld_IO%istack_comp_IO(0:nod_fld1%num_phys)

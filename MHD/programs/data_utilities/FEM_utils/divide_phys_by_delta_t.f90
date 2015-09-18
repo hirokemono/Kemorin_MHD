@@ -20,6 +20,7 @@
 !
       subroutine s_divide_phys_by_delta_t
 !
+      use m_phys_constants
       use m_t_int_parameter
       use m_ctl_params_4_diff_udt
       use m_node_phys_address
@@ -32,11 +33,11 @@
       do i = 1, nod_fld1%num_phys
         ist = istack_nod_component(i-1) + 1
 !
-        if      ( num_nod_component(i) .eq. 1) then
+        if      ( nod_fld1%num_component(i) .eq. n_scalar) then
           call multi_by_const_nod_scalar(ddt, ist, ist)
-        else if ( num_nod_component(i) .eq. 3) then
+        else if ( nod_fld1%num_component(i) .eq. n_vector) then
           call multi_by_const_nod_vector(ddt, ist, ist)
-        else if ( num_nod_component(i) .eq. 6) then
+        else if ( nod_fld1%num_component(i) .eq. n_sym_tensor) then
           call multi_by_const_nod_tensor(ddt, ist, ist)
         end if
 !
@@ -49,6 +50,7 @@
       subroutine s_divide_phys_by_num_udt(icou)
 !
       use m_constants
+      use m_phys_constants
       use m_node_phys_address
       use m_node_phys_data
       use copy_nodal_fields
@@ -62,11 +64,11 @@
       do i = 1, nod_fld1%num_phys
         ist = istack_nod_component(i-1) + 1
 !
-        if      ( num_nod_component(i) .eq. 1) then
+        if      ( nod_fld1%num_component(i) .eq. n_scalar) then
           call multi_by_const_nod_scalar(dnum, ist, ist)
-        else if ( num_nod_component(i) .eq. 3) then
+        else if ( nod_fld1%num_component(i) .eq. n_vector) then
           call multi_by_const_nod_vector(dnum, ist, ist)
-        else if ( num_nod_component(i) .eq. 6) then
+        else if ( nod_fld1%num_component(i) .eq. n_sym_tensor) then
           call multi_by_const_nod_tensor(dnum, ist, ist)
         end if
 !
