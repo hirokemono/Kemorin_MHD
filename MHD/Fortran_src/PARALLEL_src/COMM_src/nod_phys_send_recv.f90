@@ -61,7 +61,7 @@
 !
 !
       do i = 1, num_fld
-        ist = istack_nod_component(i-1) + 1
+        ist = nod_fld1%istack_component(i-1) + 1
 !
         if (nod_fld1%num_component(i) .eq. n_vector) then
           if (iflag_debug .ge. iflag_routine_msg)                       &

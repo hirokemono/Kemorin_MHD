@@ -117,7 +117,7 @@
 !
       end do
 !
-      istack_nod_component(0) = 0
+      fld_ele1%istack_component(0) = 0
       do i = 1, fld_ele1%num_phys
         fld_ele1%istack_component(i) = fld_ele1%istack_component(i-1)   &
      &                               + fld_ele1%num_component(i)

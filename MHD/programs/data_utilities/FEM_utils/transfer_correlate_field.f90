@@ -51,11 +51,12 @@
      &    correlate_field_name, icomp, ncomp, ncomp_org,                &
      &    field_comp_name)
 !
-      icomp_4_correlate = istack_nod_component(i_field_4_correlate-1)   &
-     &                   + mod(icomp,iten)
+      icomp_4_correlate                                                 &
+     &          = nod_fld1%istack_component(i_field_4_correlate-1)      &
+     &              + mod(icomp,iten)
       if(icomp .eq. icomp_CYLINDER_R) then
-        icomp_4_correlate = istack_nod_component(i_field_4_correlate-1) &
-     &                     + 1
+        icomp_4_correlate                                               &
+     &          = nod_fld1%istack_component(i_field_4_correlate-1) + 1
       end if
 !
       if(iflag_debug .gt. 0) write(*,*)                                 &
@@ -73,10 +74,10 @@
 !
       if     (iflag_correlate_coord .eq. iflag_spherical) then
         call transfer_nod_fld_to_sph(node1%numnod, nod_fld1%num_phys,   &
-     &      nod_fld1%ntot_phys, istack_nod_component, d_nod)
+     &      nod_fld1%ntot_phys, nod_fld1%istack_component, d_nod)
       else if(iflag_correlate_coord .eq. iflag_cylindrical) then
         call transfer_nod_fld_to_cyl(node1%numnod, nod_fld1%num_phys,   &
-     &     nod_fld1%ntot_phys, istack_nod_component, d_nod)
+     &     nod_fld1%ntot_phys, nod_fld1%istack_component, d_nod)
       end if
 !
 !

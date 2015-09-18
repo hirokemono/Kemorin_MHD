@@ -161,7 +161,7 @@
 !
 !
       do i_fld = 1, nod_fld1%num_phys
-        ist = istack_nod_component(i_fld-1) + 1
+        ist = nod_fld1%istack_component(i_fld-1) + 1
         if     (nod_fld1%num_component(i_fld) .eq. n_vector) then
           call set_vector_label(phys_nod_name(i_fld), cor_name(ist))
         else if(nod_fld1%num_component(i_fld) .eq. n_sym_tensor) then

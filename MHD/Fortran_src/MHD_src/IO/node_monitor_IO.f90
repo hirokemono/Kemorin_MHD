@@ -208,8 +208,8 @@
      &             advance='NO') node1%xx(inod,1:3)
         do i_fld = 1, nod_fld1%num_phys
           if(iflag_nod_fld_monitor(i_fld) .gt. 0) then
-            ist = istack_nod_component(i_fld-1) + 1
-            ied = istack_nod_component(i_fld)
+            ist = nod_fld1%istack_component(i_fld-1) + 1
+            ied = nod_fld1%istack_component(i_fld)
             write(id_monitor_file,'(1p6E25.15e3)',                      &
      &             advance='NO')  d_nod(inod,ist:ied)
           end if

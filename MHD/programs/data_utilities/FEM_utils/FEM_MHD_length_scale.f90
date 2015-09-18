@@ -142,17 +142,17 @@
       iphys%i_t_diffuse = 0
       do i_fld = 1, nod_fld1%num_phys
         if(phys_nod_name(i_fld) .eq. fhd_velo) then
-          iphys%i_velo = istack_nod_component(i_fld-1) + 1
+          iphys%i_velo =      nod_fld1%istack_component(i_fld-1) + 1
         else if(phys_nod_name(i_fld) .eq. fhd_vort) then
-          iphys%i_vort = istack_nod_component(i_fld-1) + 1
+          iphys%i_vort =      nod_fld1%istack_component(i_fld-1) + 1
         else if(phys_nod_name(i_fld) .eq. fhd_magne) then
-          iphys%i_magne = istack_nod_component(i_fld-1) + 1
+          iphys%i_magne =     nod_fld1%istack_component(i_fld-1) + 1
         else if(phys_nod_name(i_fld) .eq. fhd_current) then
-          iphys%i_current = istack_nod_component(i_fld-1) + 1
+          iphys%i_current =   nod_fld1%istack_component(i_fld-1) + 1
         else if(phys_nod_name(i_fld) .eq. fhd_temp) then
-          iphys%i_temp = istack_nod_component(i_fld-1) + 1
+          iphys%i_temp =      nod_fld1%istack_component(i_fld-1) + 1
         else if(phys_nod_name(i_fld) .eq. fhd_thermal_diffusion) then
-          iphys%i_t_diffuse = istack_nod_component(i_fld-1) + 1
+          iphys%i_t_diffuse = nod_fld1%istack_component(i_fld-1) + 1
         end if
       end do
 !

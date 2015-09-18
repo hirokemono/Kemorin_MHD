@@ -183,9 +183,9 @@
 !
       do i = 1, num_phys_rj
         if     (phys_name_rj(i) .eq. fhd_velo) then
-          i_velo = istack_nod_component(i- 1) + 1
+          i_velo =  nod_fld1%istack_component(i- 1) + 1
         else if(phys_name_rj(i) .eq. fhd_press) then
-          i_press = istack_nod_component(i- 1) + 1
+          i_press = nod_fld1%istack_component(i- 1) + 1
         end if
       end do
 !

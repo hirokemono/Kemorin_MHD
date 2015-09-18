@@ -31,7 +31,7 @@
 !
 !
       do i = 1, nod_fld1%num_phys
-        ist = istack_nod_component(i-1) + 1
+        ist = nod_fld1%istack_component(i-1) + 1
 !
         if      ( nod_fld1%num_component(i) .eq. n_scalar) then
           call multi_by_const_nod_scalar(ddt, ist, ist)
@@ -62,7 +62,7 @@
 !
       dnum = one / dble(icou)
       do i = 1, nod_fld1%num_phys
-        ist = istack_nod_component(i-1) + 1
+        ist = nod_fld1%istack_component(i-1) + 1
 !
         if      ( nod_fld1%num_component(i) .eq. n_scalar) then
           call multi_by_const_nod_scalar(dnum, ist, ist)

@@ -51,7 +51,7 @@
      &    = fld_IO%fld_name(1:nod_fld1%num_phys)
       nod_fld1%num_component(1:nod_fld1%num_phys)                       &
      &    = fld_IO%num_comp_IO(1:nod_fld1%num_phys)
-      istack_nod_component(0:nod_fld1%num_phys)                         &
+      nod_fld1%istack_component(0:nod_fld1%num_phys)                    &
      &    = fld_IO%istack_comp_IO(0:nod_fld1%num_phys)
 !
       end subroutine init_field_name_by_restart
@@ -77,7 +77,7 @@
 !
 !
       call copy_field_name_to_rst_IO(node1%numnod, nod_fld1%num_phys,   &
-     &    istack_nod_component, phys_nod_name,                          &
+     &    nod_fld1%istack_component, phys_nod_name,                     &
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO, fld_IO%num_comp_IO, &
      &    fld_IO%istack_comp_IO, fld_IO%fld_name, fld_IO%nnod_IO)
 !
@@ -92,7 +92,7 @@
 !
 !
       call copy_field_data_to_rst_IO(node1%numnod, nod_fld1%num_phys,   &
-     &    nod_fld1%ntot_phys, istack_nod_component,                     &
+     &    nod_fld1%ntot_phys, nod_fld1%istack_component,                &
      &    phys_nod_name, d_nod,                                         &
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
      &    fld_IO%istack_comp_IO, fld_IO%fld_name, fld_IO%nnod_IO,       &
@@ -108,7 +108,7 @@
 !
 !
       call copy_field_data_from_rst_IO(node1%numnod, nod_fld1%num_phys, &
-     &    nod_fld1%ntot_phys, istack_nod_component,                     &
+     &    nod_fld1%ntot_phys, nod_fld1%istack_component,                &
      &    phys_nod_name, d_nod,                                         &
      &    fld_IO%num_field_IO, fld_IO%ntot_comp_IO,                     &
      &    fld_IO%istack_comp_IO, fld_IO%fld_name, fld_IO%nnod_IO,       &
@@ -124,8 +124,8 @@
       type(field_IO), intent(inout) :: fld_IO
 !
 !
-      call simple_copy_fld_name_to_rst_IO                               &
-     &   (nod_fld1%num_phys, istack_nod_component, phys_nod_name,       &
+      call simple_copy_fld_name_to_rst_IO(nod_fld1%num_phys,            &
+     &    nod_fld1%istack_component, phys_nod_name,                     &
      &    fld_IO%num_field_IO, fld_IO%num_comp_IO,                      &
      &    fld_IO%istack_comp_IO, fld_IO%fld_name)
 !

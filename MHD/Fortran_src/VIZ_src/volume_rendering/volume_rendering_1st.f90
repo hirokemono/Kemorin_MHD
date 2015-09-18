@@ -91,7 +91,7 @@
      &    surf1%ie_surf, surf1%isf_4_ele, surf1%iele_4_surf,            &
      &    jac1_3d_q%ntot_int, jac1_3d_q%dnx, jac1_3d_q%xjac,            &
      &    nod_fld1%num_phys, nod_fld1%ntot_phys,                        &
-     &    istack_nod_component, d_nod)
+     &    nod_fld1%istack_component, d_nod)
 !
 !
       end subroutine pvr_main_1st

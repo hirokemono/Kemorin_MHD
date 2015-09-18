@@ -45,8 +45,8 @@
 !
 !$omp parallel private(i,i_fld,numdir)
       do i = 1, nod_fld1%num_phys
-        i_fld =  istack_nod_component(i-1) + 1
-        numdir = istack_nod_component(i  ) - istack_nod_component(i-1)
+        i_fld =  nod_fld1%istack_component(i-1) + 1
+        numdir = nod_fld1%num_component(i)
         call overwrite_nodal_sph_2_xyz_smp                              &
      &     (node1, nod_fld1%ntot_phys, i_fld, numdir, d_nod)
       end do
@@ -66,8 +66,8 @@
 !
 !$omp parallel private(i,i_fld,numdir)
       do i = 1, nod_fld1%num_phys
-        i_fld =  istack_nod_component(i-1) + 1
-        numdir = istack_nod_component(i  ) - istack_nod_component(i-1)
+        i_fld =  nod_fld1%istack_component(i-1) + 1
+        numdir = nod_fld1%num_component(i)
         call overwrite_nodal_cyl_2_xyz_smp                              &
      &     (node1, nod_fld1%ntot_phys, i_fld, numdir, d_nod)
       end do
@@ -88,8 +88,8 @@
 !
 !$omp parallel private(i,i_fld,numdir)
       do i = 1, nod_fld1%num_phys
-        i_fld =  istack_nod_component(i-1) + 1
-        numdir = istack_nod_component(i  ) - istack_nod_component(i-1)
+        i_fld =  nod_fld1%istack_component(i-1) + 1
+        numdir = nod_fld1%num_component(i)
         call overwrite_nodal_xyz_2_sph_smp                              &
      &     (node1, nod_fld1%ntot_phys, i_fld, numdir, d_nod)
       end do
@@ -110,8 +110,8 @@
 !
 !$omp parallel private(i,i_fld,numdir)
       do i = 1, nod_fld1%num_phys
-        i_fld =  istack_nod_component(i-1) + 1
-        numdir = istack_nod_component(i  ) - istack_nod_component(i-1)
+        i_fld =  nod_fld1%istack_component(i-1) + 1
+        numdir = nod_fld1%num_component(i)
         call overwrite_nodal_sph_2_cyl_smp                              &
      &     (node1, nod_fld1%ntot_phys, i_fld, numdir, d_nod)
       end do

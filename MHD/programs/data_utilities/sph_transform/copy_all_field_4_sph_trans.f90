@@ -54,7 +54,7 @@
 !
         do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
-            i_field = istack_nod_component(i- 1) + 1
+            i_field = nod_fld1%istack_component(i- 1) + 1
             call copy_1st_scl_to_sph_trans(i_field, v_rtp(1,itrans))
             exit
           end if
@@ -84,7 +84,7 @@
 !
         do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
-            i_field = istack_nod_component(i- 1) + 1
+            i_field = nod_fld1%istack_component(i- 1) + 1
             call copy_1st_scl_from_trans_wpole(ncomp_trans, itrans,     &
      &          v_rtp(1,1), v_pole(1,1), i_field)
             exit
@@ -115,7 +115,7 @@
 !
         do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
-            i_field = istack_nod_component(i- 1) + 1
+            i_field = nod_fld1%istack_component(i- 1) + 1
             call copy_1st_vec_to_sph_trans(i_field, v_rtp(1,itrans))
             exit
           end if
@@ -145,7 +145,7 @@
 !
         do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
-            i_field = istack_nod_component(i- 1) + 1
+            i_field = nod_fld1%istack_component(i- 1) + 1
             call copy_1st_vec_from_trans_wpole(ncomp_trans,             &
      &          itrans, v_rtp(1,1), v_pole(1,1), i_field)
             exit
@@ -176,7 +176,7 @@
 !
         do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
-            i_field = istack_nod_component(i- 1) + 1
+            i_field = nod_fld1%istack_component(i- 1) + 1
             call copy_1st_tsr_to_sph_trans(i_field, v_rtp(1,itrans))
             exit
           end if
@@ -206,7 +206,7 @@
 !
         do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. phys_nod_name(i)) then
-            i_field = istack_nod_component(i- 1) + 1
+            i_field = nod_fld1%istack_component(i- 1) + 1
             call copy_1st_tsr_from_trans_wpole(ncomp_trans, itrans,     &
      &          v_rtp(1,1), v_pole(1,1), i_field)
             exit
