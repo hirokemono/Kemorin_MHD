@@ -64,9 +64,9 @@
 !
 !     reset monitoring flag
 !
-      iflag_nod_update(1:nod_fld1%ntot_phys) = 0
-      iflag_sgs_coefs(1:num_sgs_kinds) =    0
-      iflag_diff_coefs(1:num_diff_kinds) =  0
+      nod_fld1%iflag_update(1:nod_fld1%ntot_phys) = 0
+      iflag_sgs_coefs(1:num_sgs_kinds) =            0
+      iflag_diff_coefs(1:num_diff_kinds) =          0
 !
       end subroutine reset_update_flag
 !
@@ -128,9 +128,9 @@
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &      write(*,*) 'cal_filtered_vector', iphys%i_filter_velo
           call cal_filtered_vector(iphys%i_filter_velo, iphys%i_velo)
-          iflag_nod_update(iphys%i_filter_velo  ) = 1
-          iflag_nod_update(iphys%i_filter_velo+1) = 1
-          iflag_nod_update(iphys%i_filter_velo+2) = 1
+          nod_fld1%iflag_update(iphys%i_filter_velo  ) = 1
+          nod_fld1%iflag_update(iphys%i_filter_velo+1) = 1
+          nod_fld1%iflag_update(iphys%i_filter_velo+2) = 1
         end if
       end if
 !
@@ -139,9 +139,9 @@
      &    .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           call cal_w_filtered_vector(iphys%i_wide_fil_velo,             &
      &        iphys%i_filter_velo)
-          iflag_nod_update(iphys%i_wide_fil_velo  ) = 1
-          iflag_nod_update(iphys%i_wide_fil_velo+1) = 1
-          iflag_nod_update(iphys%i_wide_fil_velo+2) = 1
+          nod_fld1%iflag_update(iphys%i_wide_fil_velo  ) = 1
+          nod_fld1%iflag_update(iphys%i_wide_fil_velo+1) = 1
+          nod_fld1%iflag_update(iphys%i_wide_fil_velo+2) = 1
         end if
       end if
 !
@@ -240,7 +240,7 @@
             if (iflag_debug.gt.0) write(*,*) 'cal_filtered_temperature'
             call cal_filtered_scalar(iphys%i_filter_temp,               &
      &          iphys%i_sgs_temp)
-            iflag_nod_update(iphys%i_filter_temp) = 1
+            nod_fld1%iflag_update(iphys%i_filter_temp) = 1
           end if
 !
           if (iphys%i_wide_fil_temp.ne.0 .and. iflag_dynamic.eq.0) then
@@ -248,14 +248,14 @@
      &        write(*,*) 'cal_w_filtered_scalar', iphys%i_wide_fil_temp
             call cal_w_filtered_scalar(iphys%i_wide_fil_temp,           &
      &          iphys%i_filter_temp)
-                iflag_nod_update(iphys%i_wide_fil_temp) = 1
+                nod_fld1%iflag_update(iphys%i_wide_fil_temp) = 1
           end if
         end if
 !
         if( (iphys%i_filter_buo+iphys%i_f_buo_gen) .gt. 0) then
           if (iflag_debug.gt.0) write(*,*) 'filter temp for buoyancy'
           call cal_filtered_scalar(iphys%i_filter_temp, iphys%i_temp)
-          iflag_nod_update(iphys%i_filter_temp) = 1
+          nod_fld1%iflag_update(iphys%i_filter_temp) = 1
         end if
       end if
 !
@@ -327,9 +327,9 @@
         if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           if (iflag_debug.gt.0) write(*,*) 'cal_filtered_vector_p'
           call cal_filtered_vector(iphys%i_filter_vecp, iphys%i_vecp)
-          iflag_nod_update(iphys%i_filter_vecp  ) = 1
-          iflag_nod_update(iphys%i_filter_vecp+1) = 1
-          iflag_nod_update(iphys%i_filter_vecp+2) = 1
+          nod_fld1%iflag_update(iphys%i_filter_vecp  ) = 1
+          nod_fld1%iflag_update(iphys%i_filter_vecp+1) = 1
+          nod_fld1%iflag_update(iphys%i_filter_vecp+2) = 1
         end if
 !
         if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                   &
@@ -339,9 +339,9 @@
      &         write(*,*) 'cal_filtered_vector_p i_wide_fil_vecp'
           call cal_w_filtered_vector(iphys%i_wide_fil_vecp,             &
      &        iphys%i_filter_vecp)
-          iflag_nod_update(iphys%i_wide_fil_vecp  ) = 1
-          iflag_nod_update(iphys%i_wide_fil_vecp+1) = 1
-          iflag_nod_update(iphys%i_wide_fil_vecp+2) = 1
+          nod_fld1%iflag_update(iphys%i_wide_fil_vecp  ) = 1
+          nod_fld1%iflag_update(iphys%i_wide_fil_vecp+1) = 1
+          nod_fld1%iflag_update(iphys%i_wide_fil_vecp+2) = 1
         end if
 !
 !
@@ -410,9 +410,9 @@
      &        write(*,*) 'cal_filtered_vector', iphys%i_filter_magne
            call cal_filtered_vector(iphys%i_filter_magne,               &
      &         iphys%i_magne)
-           iflag_nod_update(iphys%i_filter_magne  ) = 1
-           iflag_nod_update(iphys%i_filter_magne+1) = 1
-           iflag_nod_update(iphys%i_filter_magne+2) = 1
+           nod_fld1%iflag_update(iphys%i_filter_magne  ) = 1
+           nod_fld1%iflag_update(iphys%i_filter_magne+1) = 1
+           nod_fld1%iflag_update(iphys%i_filter_magne+2) = 1
          end if
 !
            if (iflag_debug .ge. iflag_routine_msg) write(*,*)           &
@@ -433,9 +433,9 @@
          if(iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
            call cal_w_filtered_vector(iphys%i_wide_fil_magne,           &
      &         iphys%i_filter_magne)
-           iflag_nod_update(iphys%i_wide_fil_magne  ) = 1
-           iflag_nod_update(iphys%i_wide_fil_magne+1) = 1
-           iflag_nod_update(iphys%i_wide_fil_magne+2) = 1
+           nod_fld1%iflag_update(iphys%i_wide_fil_magne  ) = 1
+           nod_fld1%iflag_update(iphys%i_wide_fil_magne+1) = 1
+           nod_fld1%iflag_update(iphys%i_wide_fil_magne+2) = 1
          end if
 !
        end if
@@ -510,9 +510,9 @@
      &         write(*,*) 'cal_filtered_vector', iphys%i_filter_magne
            call cal_filtered_vector(iphys%i_filter_magne,               &
      &         iphys%i_magne)
-           iflag_nod_update(iphys%i_filter_magne  ) = 1
-           iflag_nod_update(iphys%i_filter_magne+1) = 1
-           iflag_nod_update(iphys%i_filter_magne+2) = 1
+           nod_fld1%iflag_update(iphys%i_filter_magne  ) = 1
+           nod_fld1%iflag_update(iphys%i_filter_magne+1) = 1
+           nod_fld1%iflag_update(iphys%i_filter_magne+2) = 1
          end if
 !
          if (iflag2.eq.2 .and. iphys_ele%i_filter_magne.ne.0) then
@@ -529,9 +529,9 @@
          if (iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
            call cal_w_filtered_vector(iphys%i_wide_fil_magne,           &
      &         iphys%i_filter_magne)
-            iflag_nod_update(iphys%i_wide_fil_magne  ) = 1
-            iflag_nod_update(iphys%i_wide_fil_magne+1) = 1
-            iflag_nod_update(iphys%i_wide_fil_magne+2) = 1
+            nod_fld1%iflag_update(iphys%i_wide_fil_magne  ) = 1
+            nod_fld1%iflag_update(iphys%i_wide_fil_magne+1) = 1
+            nod_fld1%iflag_update(iphys%i_wide_fil_magne+2) = 1
          end if
        end if
 !
@@ -604,7 +604,7 @@
           if (iflag_debug.gt.0)   write(*,*) 'cal_filtered_composition'
           call cal_filtered_scalar(iphys%i_filter_comp,                 &
      &        iphys%i_sgs_composit)
-          iflag_nod_update(iphys%i_filter_comp) = 1
+          nod_fld1%iflag_update(iphys%i_filter_comp) = 1
         end if
 !
 !        if (iphys%i_wide_fil_temp.ne.0 .and. iflag_dynamic.eq.0) then
@@ -612,7 +612,7 @@
 !     &      write(*,*) 'cal_w_filtered_scalar', iphys%i_wide_fil_temp
 !          call cal_w_filtered_scalar(iphys%i_wide_fil_temp,            &
 !     &        iphys%i_filter_comp)
-!              iflag_nod_update(iphys%i_wide_fil_temp) = 1
+!              nod_fld1%iflag_update(iphys%i_wide_fil_temp) = 1
 !        end if
       end if
 !

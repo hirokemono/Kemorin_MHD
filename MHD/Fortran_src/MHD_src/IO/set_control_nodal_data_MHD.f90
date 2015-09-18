@@ -95,7 +95,7 @@
 !
       call count_field_4_monitor                                        &
      &   (nod_fld1%num_phys, nod_fld1%num_component,                    &
-     &    iflag_nod_fld_monitor, num_field_monitor, ntot_comp_monitor)
+     &    nod_fld1%iflag_monitor, num_field_monitor, ntot_comp_monitor)
 !
       call check_dependencies(nod_fld1%num_phys, phys_nod_name)
 !

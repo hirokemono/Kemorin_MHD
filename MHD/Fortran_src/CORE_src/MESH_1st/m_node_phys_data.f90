@@ -27,7 +27,7 @@
 !
 !>       Structure for nodal field data
       type(phys_data), save :: nod_fld1
-!nod_fld1%istack_component
+!nod_fld1%iflag_update
 !
 !      integer (kind=kint) :: num_nod_phys
 !    number of physical data
@@ -38,13 +38,13 @@
 !      integer (kind=kint), pointer                          &
 !     &                    :: istack_nod_component(:)
 ! 
-      integer (kind=kint), pointer :: iorder_nod_phys(:)
+!      integer (kind=kint), pointer :: iorder_nod_phys(:)
 !
       character (len=kchara), pointer :: phys_nod_name(:)
 ! 
       real (kind=kreal), pointer :: d_nod(:,:)
 ! 
-      integer (kind=kint), pointer :: iflag_nod_update(:)
+!      integer (kind=kint), pointer :: iflag_nod_update(:)
 !
 !     paraamaters to visualizer
 !
@@ -54,8 +54,8 @@
 !
 !     paramaters for monitoring
 !
-      integer(kind=kint), pointer                           &
-     &                   :: iflag_nod_fld_monitor(:)
+!      integer(kind=kint), pointer                           &
+!     &                   :: iflag_nod_fld_monitor(:)
 !
 !   ---------------------------------------------------------------------
 !
@@ -69,14 +69,14 @@
        allocate( phys_nod_name(nod_fld1%num_phys) )
        allocate( nod_fld1%num_component(nod_fld1%num_phys) )
        allocate( nod_fld1%istack_component(0:nod_fld1%num_phys) )
-       allocate( iorder_nod_phys(nod_fld1%num_phys) )
-       allocate( iflag_nod_fld_monitor(nod_fld1%num_phys) )
+       allocate( nod_fld1%iorder_eletype(nod_fld1%num_phys) )
+       allocate( nod_fld1%iflag_monitor(nod_fld1%num_phys) )
 !
        phys_nod_name = ''
        nod_fld1%num_component =    0
        nod_fld1%istack_component = 0
-       iflag_nod_fld_monitor   =  0
-       iorder_nod_phys =      1
+       nod_fld1%iflag_monitor   =  0
+       nod_fld1%iorder_eletype =   1
 !
        end subroutine allocate_phys_name
 !
@@ -86,10 +86,10 @@
 !
        use m_geometry_data
 !
-       allocate( iflag_nod_update(nod_fld1%ntot_phys) )
+       allocate( nod_fld1%iflag_update(nod_fld1%ntot_phys) )
        allocate( d_nod(node1%numnod,nod_fld1%ntot_phys) )
 !
-       iflag_nod_update = 0
+       nod_fld1%iflag_update = 0
        d_nod = 0.0d0
 !
        end subroutine allocate_data_arrays
@@ -102,8 +102,8 @@
        deallocate( phys_nod_name )
        deallocate( nod_fld1%num_component )
        deallocate( nod_fld1%istack_component )
-       deallocate( iorder_nod_phys )
-       deallocate( iflag_nod_fld_monitor )
+       deallocate( nod_fld1%iorder_eletype )
+       deallocate( nod_fld1%iflag_monitor )
 !
        end subroutine deallocate_phys_name
 !
@@ -111,7 +111,7 @@
 !
        subroutine deallocate_data_arrays
 !
-       deallocate( iflag_nod_update )
+       deallocate( nod_fld1%iflag_update )
        deallocate( d_nod )
 !
        end subroutine deallocate_data_arrays
@@ -170,8 +170,8 @@
 !
       nod_fld%num_component =>    nod_fld1%num_component
       nod_fld%istack_component => nod_fld1%istack_component
-      nod_fld%iorder_eletype =>   iorder_nod_phys
-      nod_fld%iflag_monitor =>    iflag_nod_fld_monitor
+      nod_fld%iorder_eletype =>   nod_fld1%iorder_eletype
+      nod_fld%iflag_monitor =>    nod_fld1%iflag_monitor
       nod_fld%phys_name =>        phys_nod_name
 !
       end subroutine link_nodal_fld_type_names

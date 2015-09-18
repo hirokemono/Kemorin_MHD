@@ -34,13 +34,13 @@
 !
 !
       if(iphys%i_vort .gt. izero)then
-        if(iflag_nod_update(iphys%i_vort) .eq. izero) then
+        if(nod_fld1%iflag_update(iphys%i_vort) .eq. izero) then
           call cal_vorticity
         end if
       end if
 !
       if(iphys%i_current .gt. izero)then
-        if(iflag_nod_update(iphys%i_current) .eq.0 ) then
+        if(nod_fld1%iflag_update(iphys%i_current) .eq.0 ) then
           if(iflag_t_evo_4_vect_p .gt. id_no_evolution) then
             if (iflag_debug .ge. iflag_routine_msg)                     &
      &        write(*,*) 'cal_current_density'

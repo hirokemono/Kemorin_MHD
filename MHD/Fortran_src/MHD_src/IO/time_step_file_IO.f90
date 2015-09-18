@@ -139,7 +139,7 @@
       call write_one_label(time_step_data_code, fhd_time)
 !
       do i = 1, nod_fld1%num_phys
-        if (iflag_nod_fld_monitor(i) .eq. 1) then
+        if (nod_fld1%iflag_monitor(i) .eq. 1) then
           if ( phys_nod_name(i) .eq. fhd_velo ) then
             call write_one_label(rms_data_code, e_hd_k_ene)
             call write_one_label(rms_data_code, e_hd_div_v)
