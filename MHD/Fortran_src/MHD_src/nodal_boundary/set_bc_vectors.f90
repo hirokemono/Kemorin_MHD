@@ -126,7 +126,7 @@
      &    ibc_magne, ibc2_magne, nmax_bc_b_nod,                         &
      &    ibc_b_id, bc_b_id_apt, field_name, l_f)
 !
-      call set_sph_magne_id(nod_grp, magne_nod%num_bc,                  &
+      call set_sph_magne_id(node1, nod_grp, magne_nod%num_bc,           &
      &    magne_nod%bc_name, magne_nod%ibc_type, l_f)
 !
       l_s(1:3) = 0

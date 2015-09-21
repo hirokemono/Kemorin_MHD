@@ -14,6 +14,7 @@
       module set_nodal_bc_4_velo
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -113,7 +114,6 @@
       integer(kind=kint), intent(in) :: num_bc_vsp_nod
       integer(kind=kint), intent(in) :: ibc_vsp_id(num_bc_vsp_nod)
 !
-      real(kind=kreal), parameter :: two = 2.0d0
       integer (kind = kint) :: inum, inod
 !
 !

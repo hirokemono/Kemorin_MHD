@@ -58,7 +58,9 @@
 !
       subroutine cal_sgs_momentum_flux
 !
+      use m_geometry_data
       use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
 !
       use cal_sgs_mom_fluxes_grad
@@ -78,7 +80,9 @@
       else if (iflag_SGS_inertia .eq. id_SGS_diffusion) then
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_m_flux_diffuse', iphys%i_SGS_m_flux
-        call cal_sgs_m_flux_diffuse(iphys%i_SGS_m_flux, iphys%i_velo)
+        call cal_sgs_m_flux_diffuse(node1%numnod, nod_fld1%ntot_phys,   &
+     &      iphys%i_velo, iphys%i_sgs_diffuse, iphys%i_SGS_m_flux,      &
+     &      d_nod)
       end if
 !
       end subroutine cal_sgs_momentum_flux
@@ -87,7 +91,9 @@
 !
       subroutine cal_sgs_maxwell
 !
+      use m_geometry_data
       use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
       use cal_sgs_mom_fluxes_grad
 !
@@ -106,7 +112,9 @@
       else if (iflag_SGS_lorentz .eq. id_SGS_diffusion) then
         if (iflag_debug.eq.1)                                           &
      &     write(*,*) 'cal_sgs_m_flux_diffuse', iphys%i_SGS_maxwell
-        call cal_sgs_m_flux_diffuse(iphys%i_SGS_maxwell, iphys%i_magne)
+        call cal_sgs_m_flux_diffuse(node1%numnod, nod_fld1%ntot_phys,   &
+     &      iphys%i_magne, iphys%i_sgs_diffuse, iphys%i_SGS_maxwell,    &
+     &      d_nod)
       end if
 !
       end subroutine cal_sgs_maxwell

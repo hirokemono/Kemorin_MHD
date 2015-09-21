@@ -3,9 +3,12 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine set_initial_vect_p(isig)
-!      subroutine set_initial_magne(isig)
-!      subroutine set_initial_kinematic
+!!      subroutine set_initial_vect_p(isig, node, ncomp_nod,            &
+!!     &          i_vecp, i_magne, i_mag_p, d_nod)
+!!      subroutine set_initial_magne(isig, node, ncomp_nod,             &
+!!     &          i_magne, i_mag_p, d_nod)
+!!      subroutine set_initial_kinematic(numnod, nnod_fl, inod_fluid,   &
+!!     &          ncomp_nod, i_velo, i_press, i_magne, d_nod)
 !
       module set_initial_for_MHD
 !
@@ -13,10 +16,10 @@
       use m_constants
 !
       use m_control_parameter
-      use m_geometry_data
-      use m_physical_property
       use m_schmidt_polynomial
       use m_spherical_harmonics
+!
+      use t_geometry_data
 !
       use spherical_harmonics
       use cvt_vector_2_cartecian
@@ -31,17 +34,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_vect_p(isig)
+      subroutine set_initial_vect_p(isig, node, ncomp_nod,              &
+     &          i_vecp, i_magne, i_mag_p, d_nod)
 !
-      use m_geometry_data_MHD
-      use m_node_phys_address
-      use m_node_phys_data
       use m_physical_property
       use spherical_harmonics
 !
       use dynamobench_r_func_sph_vecp
 !
+      type(node_data), intent(in) :: node
       integer(kind = kint), intent(in) :: isig
+      integer(kind = kint), intent(in) :: ncomp_nod
+      integer(kind = kint), intent(in) :: i_vecp, i_magne, i_mag_p
+      real(kind = kreal), intent(inout) :: d_nod(node%numnod,ncomp_nod)
+!
       integer(kind = kint) :: inod, ifl, j_rst, l_rst, m_rst
 !
 !
@@ -57,35 +63,33 @@
 !
       call idx28
 !
-        do inod = 1, node1%numnod
-         call dschmidt(node1%theta(inod))
-         call spheric(node1%phi(inod))
+        do inod = 1, node%numnod
+         call dschmidt(node%theta(inod))
+         call spheric(node%phi(inod))
 !
          call radial_function_sph_vecp                                  &
-     &      (node1%rr(inod), ifl, j_rst, l_rst,                         &
+     &      (node%rr(inod), ifl, j_rst, l_rst,                          &
      &       depth_high_t, depth_low_t)
 !
-!         d_nod(inod,iphys%i_mag_p) = 0.0d0
+!         d_nod(inod,i_mag_p) = 0.0d0
 !         do j = 1, jmax_tri_sph
-!          d_nod(inod,iphys%i_mag_p) = d_nod(inod,iphys%i_mag_p)        &
-!     &                               + mp(j)*s(j,0)
+!          d_nod(inod,i_mag_p) = d_nod(inod,i_mag_p) + mp(j)*s(j,0)
 !         end do
 !
-         call cvt_spectr_2_field(node1%rr(inod), node1%theta(inod))
+         call cvt_spectr_2_field(node%rr(inod), node%theta(inod))
 !
          call cvt_one_vector_2_cart                                     &
-     &      (b_cart, b_pole, node1%theta(inod), node1%phi(inod))
-         d_nod(inod,iphys%i_vecp  ) = b_cart(1)
-         d_nod(inod,iphys%i_vecp+1) = b_cart(2)
-         d_nod(inod,iphys%i_vecp+2) = b_cart(3)
+     &      (b_cart, b_pole, node%theta(inod), node%phi(inod))
+         d_nod(inod,i_vecp  ) = b_cart(1)
+         d_nod(inod,i_vecp+1) = b_cart(2)
+         d_nod(inod,i_vecp+2) = b_cart(3)
 !
-         if ( node1%rr(inod) .le. 1.0d-20 ) then
-           d_nod(inod,iphys%i_magne  ) = 0.0d0
-           d_nod(inod,iphys%i_magne+1) = 0.0d0
-           d_nod(inod,iphys%i_magne+2) = 0.0d0
-           d_nod(inod,iphys%i_mag_p)   = 0.0d0
+         if ( node%rr(inod) .le. 1.0d-20 ) then
+           d_nod(inod,i_magne  ) = 0.0d0
+           d_nod(inod,i_magne+1) = 0.0d0
+           d_nod(inod,i_magne+2) = 0.0d0
+           d_nod(inod,i_mag_p)   = 0.0d0
          end if
-!
       end do
 !
       call deallocate_schmidt_polynomial
@@ -95,17 +99,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_magne(isig)
+      subroutine set_initial_magne(isig, node, ncomp_nod,               &
+     &          i_magne, i_mag_p, d_nod)
 !
-      use m_geometry_data_MHD
-      use m_node_phys_address
-      use m_node_phys_data
       use m_physical_property
 !
       use radial_func_sph_magne
       use spherical_harmonics
 !
+      type(node_data), intent(in) :: node
       integer ( kind = kint), intent(in) :: isig
+      integer(kind = kint), intent(in) :: ncomp_nod, i_magne, i_mag_p
+      real(kind = kreal), intent(inout) :: d_nod(node%numnod,ncomp_nod)
+!
       integer ( kind = kint) :: inod, j, ifl, j_rst, l_rst, m_rst
 !
 !
@@ -121,32 +127,31 @@
 !
       call idx28
 !
-        do inod = 1, node1%numnod
-         call dschmidt(node1%theta(inod))
-         call spheric(node1%phi(inod))
+        do inod = 1, node%numnod
+         call dschmidt(node%theta(inod))
+         call spheric(node%phi(inod))
 !
-         call radial_function_sph(node1%rr(inod), ifl, j_rst, l_rst,    &
+         call radial_function_sph(node%rr(inod), ifl, j_rst, l_rst,    &
      &       depth_high_t, depth_low_t)
 !
-         d_nod(inod,iphys%i_mag_p) = 0.0d0
+         d_nod(inod,i_mag_p) = 0.0d0
          do j = 1, jmax_tri_sph
-          d_nod(inod,iphys%i_mag_p) = d_nod(inod,iphys%i_mag_p)         &
-     &                               + mp(j)*s(j,0)
+          d_nod(inod,i_mag_p) = d_nod(inod,i_mag_p) + mp(j)*s(j,0)
          end do
 !
-         call cvt_spectr_2_field(node1%rr(inod), node1%theta(inod))
+         call cvt_spectr_2_field(node%rr(inod), node%theta(inod))
 !
          call cvt_one_vector_2_cart                                     &
-     &      (b_cart, b_pole, node1%theta(inod), node1%phi(inod))
-         d_nod(inod,iphys%i_magne  ) = b_cart(1)
-         d_nod(inod,iphys%i_magne+1) = b_cart(2)
-         d_nod(inod,iphys%i_magne+2) = b_cart(3)
+     &      (b_cart, b_pole, node%theta(inod), node%phi(inod))
+         d_nod(inod,i_magne  ) = b_cart(1)
+         d_nod(inod,i_magne+1) = b_cart(2)
+         d_nod(inod,i_magne+2) = b_cart(3)
 !
-         if ( node1%rr(inod)  .le. 1.0d-20 ) then
-           d_nod(inod,iphys%i_magne  ) = 0.0d0
-           d_nod(inod,iphys%i_magne+1) = 0.0d0
-           d_nod(inod,iphys%i_magne+2) = 2.83351986832173d-1
-           d_nod(inod,iphys%i_mag_p)   = 0.0d0
+         if ( node%rr(inod)  .le. 1.0d-20 ) then
+           d_nod(inod,i_magne  ) = 0.0d0
+           d_nod(inod,i_magne+1) = 0.0d0
+           d_nod(inod,i_magne+2) = 2.83351986832173d-1
+           d_nod(inod,i_mag_p)   = 0.0d0
          end if
 !
       end do
@@ -158,19 +163,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_kinematic
-!
-      use m_geometry_data_MHD
-      use m_node_phys_address
-      use m_node_phys_data
+      subroutine set_initial_kinematic(node, nnod_fl, inod_fluid,       &
+     &          ncomp_nod, i_velo, i_press, i_magne, d_nod)
 !
       use dynamobench_r_func_sph_velo
+!
+      type(node_data), intent(in) :: node
+      integer(kind = kint), intent(in) :: nnod_fl, ncomp_nod
+      integer(kind = kint), intent(in) :: inod_fluid(nnod_fl)
+      integer(kind = kint), intent(in) :: i_velo, i_press, i_magne
+      real(kind = kreal), intent(inout) :: d_nod(node%numnod,ncomp_nod)
 !
       integer (kind = kint) :: inod, inum
 !
 !
-      do inod = 1, node1%numnod
-       d_nod(inod,iphys%i_press) = 0.0d0
+      do inod = 1, node%numnod
+       d_nod(inod,i_press) = 0.0d0
       end do
 !
       call allocate_schmidt_polynomial
@@ -178,27 +186,27 @@
 !
       call idx28
 !
-        do inum = 1, numnod_fluid
+        do inum = 1, nnod_fl
          inod = inod_fluid(inum)
 !
-         call dschmidt(node1%theta(inod))
-         call spheric(node1%phi(inod))
+         call dschmidt(node%theta(inod))
+         call spheric(node%phi(inod))
 !
-         call radial_function_sph_velo( node1%rr(inod) )
+         call radial_function_sph_velo( node%rr(inod) )
 !
-         call cvt_spectr_2_field(node1%rr(inod), node1%theta(inod))
+         call cvt_spectr_2_field(node%rr(inod), node%theta(inod))
 !
          call cvt_one_vector_2_cart                                     &
-     &      (v_cart, v_pole, node1%theta(inod), node1%phi(inod))
+     &      (v_cart, v_pole, node%theta(inod), node%phi(inod))
          call cvt_one_vector_2_cart                                     &
-     &      (b_cart, b_pole, node1%theta(inod), node1%phi(inod))
+     &      (b_cart, b_pole, node%theta(inod), node%phi(inod))
 !
-         d_nod(inod,iphys%i_velo  ) = v_cart(1)
-         d_nod(inod,iphys%i_velo+1) = v_cart(2)
-         d_nod(inod,iphys%i_velo+2) = v_cart(3)
-         d_nod(inod,iphys%i_magne  ) = b_cart(1)
-         d_nod(inod,iphys%i_magne+1) = b_cart(2)
-         d_nod(inod,iphys%i_magne+2) = b_cart(3)
+         d_nod(inod,i_velo  ) = v_cart(1)
+         d_nod(inod,i_velo+1) = v_cart(2)
+         d_nod(inod,i_velo+2) = v_cart(3)
+         d_nod(inod,i_magne  ) = b_cart(1)
+         d_nod(inod,i_magne+1) = b_cart(2)
+         d_nod(inod,i_magne+2) = b_cart(3)
 !
       end do
 !

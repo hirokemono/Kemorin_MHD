@@ -26,6 +26,7 @@
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
+      use m_physical_property
 !
       use cal_velocity_pre
       use cal_mod_vel_potential
@@ -53,10 +54,14 @@
      &        nod_fld1%ntot_phys, iphys%i_p_phi, iphys%i_magne,         &
      &        iphys%i_press, d_nod)
         else
-          call init_4_sol_k_potential(node1%istack_nod_smp)
+          call init_sol_potential(node1%numnod, node1%istack_nod_smp,   &
+     &        coef_press, nod_fld1%ntot_phys, iphys%i_p_phi,            &
+     &        iphys%i_press, d_nod)
         end if
       else
-        call init_4_sol_k_potential(node1%istack_nod_smp)
+        call init_sol_potential(node1%numnod, node1%istack_nod_smp,     &
+     &      coef_press, nod_fld1%ntot_phys, iphys%i_p_phi,              &
+     &      iphys%i_press, d_nod)
       end if
 !
 !     --------------------- 

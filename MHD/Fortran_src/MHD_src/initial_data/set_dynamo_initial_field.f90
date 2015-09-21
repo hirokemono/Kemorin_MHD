@@ -76,9 +76,11 @@
       use m_error_IDs
       use m_control_parameter
       use m_geometry_data
+      use m_geometry_data_MHD
       use m_initial_field_control
       use m_t_step_parameter
       use m_node_phys_address
+      use m_node_phys_data
       use m_physical_property
 !
       use set_initial_rotation
@@ -92,50 +94,72 @@
 !
       if (iflag_restart .eq. i_rst_dbench0) then
         isig = 400
-        call set_initial_temp(isig)
+        call set_initial_temp(isig, node1, numnod_fluid, inod_fluid,    &
+     &      nod_fld1%ntot_phys, iphys%i_velo, iphys%i_press,            &
+     &      iphys%i_temp, d_nod)
 !
 !   for dynamo benchmark case 1
 !
       else if (iflag_restart .eq. i_rst_dbench1                         &
      &    .or. iflag_restart .eq. i_rst_dbench2) then
         isig = 400
-        call set_initial_temp(isig)
+        call set_initial_temp(isig, node1, numnod_fluid, inod_fluid,    &
+     &      nod_fld1%ntot_phys, iphys%i_velo, iphys%i_press,            &
+     &      iphys%i_temp, d_nod)
         isig = 0
         if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-          call set_initial_vect_p(isig)
+          call set_initial_vect_p(isig, node1, nod_fld1%ntot_phys,      &
+     &        iphys%i_vecp, iphys%i_magne, iphys%i_mag_p, d_nod)
         else
-          call set_initial_magne(isig)
+          call set_initial_magne(isig, node1, nod_fld1%ntot_phys,       &
+     &        iphys%i_magne, iphys%i_mag_p, d_nod)
         end if
 !
       else if (iflag_restart .le. -100) then
-        call set_initial_temp(iflag_restart)
+        call set_initial_temp                                           &
+     &     (iflag_restart, node1, numnod_fluid, inod_fluid,             &
+     &      nod_fld1%ntot_phys, iphys%i_velo, iphys%i_press,            &
+     &      iphys%i_temp, d_nod)
 !
       else if (iflag_restart .eq. i_rst_rotate_x) then
-        call set_initial_velo_1(node1%numnod, node1%xx)
+        call set_initial_velo_1(node1%numnod, node1%xx,                 &
+     &      nod_fld1%ntot_phys, iphys%i_velo, iphys%i_press, d_nod)
 !
       else if (iflag_restart .eq. i_rst_rotate_y) then
-        call set_initial_velo_2(node1%numnod, node1%xx)
+        call set_initial_velo_2(node1%numnod, node1%xx,                 &
+     &      nod_fld1%ntot_phys, iphys%i_velo, iphys%i_press, d_nod)
 !
       else if (iflag_restart .eq. i_rst_rotate_z) then
-        call set_initial_velo_3(node1%numnod, node1%xx)
+        call set_initial_velo_3(node1%numnod, node1%xx,                 &
+     &      nod_fld1%ntot_phys, iphys%i_velo, iphys%i_press, d_nod)
 !
 !   for kinematic dynamo
 !
       else if (iflag_restart .eq. i_rst_kinematic) then
-        call set_initial_kinematic
+        call set_initial_kinematic                                      &
+     &     (node1, numnod_fluid, inod_fluid, nod_fld1%ntot_phys,        &
+     &      iphys%i_velo, iphys%i_press, iphys%i_magne, d_nod)
         isig = 2000
         if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-          call set_initial_vect_p(isig)
+          call set_initial_vect_p(isig, node1, nod_fld1%ntot_phys,      &
+     &        iphys%i_vecp, iphys%i_magne, iphys%i_mag_p, d_nod)
         else
-          call set_initial_magne(isig)
+          call set_initial_magne(isig, node1, nod_fld1%ntot_phys,       &
+     &        iphys%i_magne, iphys%i_mag_p, d_nod)
         end if
 !
       else if ( iflag_restart .ge. 1000  ) then
-        call set_initial_temp(iflag_restart)
+        call set_initial_temp                                           &
+     &     (iflag_restart, node1, numnod_fluid, inod_fluid,             &
+     &      nod_fld1%ntot_phys, iphys%i_velo, iphys%i_press,            &
+     &      iphys%i_temp, d_nod)
         if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-          call set_initial_vect_p(iflag_restart)
+          call set_initial_vect_p(iflag_restart, node1,                 &
+     &        nod_fld1%ntot_phys, iphys%i_vecp, iphys%i_magne,          &
+     &        iphys%i_mag_p, d_nod)
         else
-          call set_initial_magne(iflag_restart)
+          call set_initial_magne(iflag_restart, node1,                  &
+     &        nod_fld1%ntot_phys, iphys%i_magne, iphys%i_mag_p, d_nod)
         end if
 !
       else if (iflag_restart .ne. i_rst_no_file                         &

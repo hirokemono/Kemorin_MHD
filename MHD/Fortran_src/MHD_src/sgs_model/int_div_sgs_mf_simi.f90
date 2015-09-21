@@ -27,19 +27,20 @@
 !
       subroutine int_div_sgs_mf_simi_pg(i_flux, i_vect)
 !
-       use m_control_parameter
-       use m_geometry_data
-       use m_geometry_data_MHD
-       use m_finite_element_matrix
-       use m_int_vol_data
+      use m_control_parameter
+      use m_geometry_data
+      use m_geometry_data_MHD
+      use m_node_phys_data
+      use m_finite_element_matrix
+      use m_int_vol_data
 !
-       use sgs_terms_2_each_ele
-       use fem_skv_vector_diff_1st
-       use cal_skv_to_ff_smp_1st
+      use sgs_terms_2_each_ele
+      use fem_skv_vector_diff_1st
+      use cal_skv_to_ff_smp_1st
 !
-       integer(kind = kint), intent(in) :: i_flux, i_vect
+      integer(kind = kint), intent(in) :: i_flux, i_vect
 !
-       integer(kind=kint) :: k2
+      integer(kind=kint) :: k2
 !
 !
       call reset_sk6(n_vector)
@@ -48,8 +49,9 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call SGS_m_flux_2_each_element                                  &
-     &     (ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%istack_ele_smp, &
-     &      k2, i_vect, i_flux, tensor_e)
+     &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
+     &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
+     &      i_vect, i_flux, d_nod, tensor_e)
         call fem_skv_div_tensor(iele_fl_smp_stack,                      &
      &      intg_point_t_evo, k2, tensor_e, sk6)
       end do
@@ -92,6 +94,7 @@
       use m_control_parameter
       use m_geometry_data
       use m_geometry_data_MHD
+      use m_node_phys_data
       use m_finite_element_matrix
       use m_int_vol_data
 !
@@ -113,8 +116,9 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call SGS_m_flux_2_each_element                                  &
-     &     (ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%istack_ele_smp, &
-     &      k2, i_vect, i_flux, tensor_e)
+     &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
+     &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
+     &      i_vect, i_flux, d_nod, tensor_e)
         call fem_skv_div_tsr_upw(iele_fl_smp_stack, intg_point_t_evo,   &
      &      k2, d_ele(1,ie_upw), tensor_e, sk6)
       end do

@@ -51,13 +51,13 @@
       integer (kind = kint) :: nd, inum, inod
 !
        do nd = 1, 3
-        if (num_phys_bc(nd).gt.0) then
-         do inum=1, num_phys_bc(nd)
-           inod = ibc_id(inum,nd)
-           ff(inod,nd)=    0.0d0
-           ff_nl(inod,nd)= 0.0d0
-         end do
-        end if
+         if (num_phys_bc(nd).gt.0) then
+           do inum=1, num_phys_bc(nd)
+             inod = ibc_id(inum,nd)
+             ff(inod,nd)=    0.0d0
+             ff_nl(inod,nd)= 0.0d0
+           end do
+         end if
        end do
 !
       end subroutine set_fixed_bc_zero_ff_vect

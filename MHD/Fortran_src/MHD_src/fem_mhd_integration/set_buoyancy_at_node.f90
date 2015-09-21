@@ -3,11 +3,12 @@
 !
 !      Written by H. Matsui on July, 2010
 !
-!      subroutine set_gravity_2_each_node(i_field, i_res, coef)
-!      subroutine set_double_gravity_2_each_node(i_f1, i_f2, i_r1,      &
-!     &          c1, c2)
-!
-!      subroutine int_vol_buoyancy_nod(i_fc, ml_o_fl, ff)
+!!      subroutine set_gravity_2_each_node(i_field, i_res, coef)
+!!      subroutine set_double_gravity_2_each_node(i_f1, i_f2, i_r1,     &
+!!     &          c1, c2)
+!!
+!!      subroutine int_vol_buoyancy_nod(numnod, inod_smp_stack,         &
+!!     &          ncomp_nod, i_fc, d_nod, ml_o_fl, ff)
 !
       module set_buoyancy_at_node
 !
@@ -32,22 +33,24 @@
       subroutine set_gravity_2_each_node(i_field, i_res, coef)
 !
       use m_geometry_data
+      use m_node_phys_data
 !
        integer(kind = kint), intent(in) :: i_field, i_res
        real(kind = kreal), intent(in) :: coef
 !
 !
        if      (i_grav .eq. iflag_const_g) then
-         call const_g_2_each_node(node1%istack_nod_smp,                 &
-     &       i_field, i_res, coef)
+         call const_g_2_each_node                                       &
+     &      (node1%numnod, node1%istack_nod_smp, coef,                  &
+     &       nod_fld1%ntot_phys, i_field, i_res, d_nod)
        else if (i_grav .eq. iflag_radial_g) then
          call radial_g_2_each_node                                      &
      &      (node1%numnod, node1%istack_nod_smp, node1%xx, node1%a_r,   &
-     &       i_field, i_res, coef)
+     &       coef, nod_fld1%ntot_phys, i_field, i_res, d_nod)
        else if (i_grav .eq. iflag_self_r_g) then
          call self_g_2_each_node                                        &
-     &      (node1%numnod, node1%istack_nod_smp, node1%xx,              &
-     &       i_field, i_res, coef)
+     &      (node1%numnod, node1%istack_nod_smp, node1%xx, coef,        &
+     &       nod_fld1%ntot_phys, i_field, i_res, d_nod)
        end if
 !
       end subroutine set_gravity_2_each_node
@@ -58,22 +61,24 @@
      &          c1, c2)
 !
       use m_geometry_data
+      use m_node_phys_data
 !
        integer(kind = kint), intent(in) :: i_f1, i_f2, i_res
        real(kind = kreal), intent(in) :: c1, c2
 !
 !
        if     (i_grav .eq. iflag_const_g) then
-         call const_double_g_2_each_node(node1%istack_nod_smp,          &
-     &       i_f1, i_f2, i_res, c1, c2)
+         call const_double_g_2_each_node                                &
+     &      (node1%numnod, node1%istack_nod_smp, c1, c2,                &
+     &       nod_fld1%ntot_phys, i_f1, i_f2, i_res, d_nod)
        else if(i_grav .eq. iflag_radial_g) then
          call radial_double_g_2_each_node                               &
      &      (node1%numnod, node1%istack_nod_smp, node1%xx, node1%a_r,   &
-     &       i_f1, i_f2, i_res, c1, c2)
+     &       c1, c2, nod_fld1%ntot_phys, i_f1, i_f2, i_res, d_nod)
        else if(i_grav .eq. iflag_self_r_g) then
          call self_double_g_2_each_node                                 &
-     &      (node1%numnod, node1%istack_nod_smp, node1%xx,              &
-     &       i_f1, i_f2, i_res, c1, c2)
+     &      (node1%numnod, node1%istack_nod_smp, node1%xx, c1, c2,      &
+     &       nod_fld1%ntot_phys, i_f1, i_f2, i_res, d_nod)
        end if
 !
       end subroutine set_double_gravity_2_each_node
@@ -114,15 +119,16 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine const_g_2_each_node(inod_smp_stack,                    &
-     &          i_field, i_res, coef)
+      subroutine const_g_2_each_node(numnod, inod_smp_stack,            &
+     &          coef, ncomp_nod, i_field, i_res, d_nod)
 !
-      use m_node_phys_data
-!
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: i_field, i_res
       real(kind = kreal), intent(in) :: coef
+!
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer(kind = kint) :: iproc, inod
       integer(kind = kint) :: ist, ied
@@ -146,17 +152,17 @@
 !  ---------------------------------------------------------------------
 !
       subroutine radial_g_2_each_node(numnod, inod_smp_stack, xx,       &
-     &          a_radius, i_field, i_res, coef)
+     &          a_radius, coef, ncomp_nod, i_field, i_res, d_nod)
 !
-      use m_node_phys_data
-!
-      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) ::xx(numnod,3)
       real(kind = kreal), intent(in) ::a_radius(numnod)
 !
       integer(kind = kint), intent(in) :: i_field, i_res
       real(kind = kreal), intent(in) :: coef
+!
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer(kind = kint) :: iproc, inod
       integer(kind = kint) :: ist, ied
@@ -183,16 +189,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine self_g_2_each_node(numnod, inod_smp_stack, xx,         &
-     &          i_field, i_res, coef)
+     &          coef, ncomp_nod, i_field, i_res, d_nod)
 !
-      use m_node_phys_data
-!
-      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) ::xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: i_field, i_res
       real(kind = kreal), intent(in) :: coef
+!
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer(kind = kint) :: iproc, inod
       integer(kind = kint) :: ist, ied
@@ -216,15 +222,16 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine const_double_g_2_each_node(inod_smp_stack,             &
-     &          i_f1, i_f2, i_r1, c1, c2)
+      subroutine const_double_g_2_each_node(numnod, inod_smp_stack,     &
+     &          c1, c2, ncomp_nod, i_f1, i_f2, i_r1, d_nod)
 !
-      use m_node_phys_data
-!
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: i_f1, i_f2, i_r1
       real(kind = kreal), intent(in) :: c1, c2
+!
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer(kind = kint) :: iproc, inod
       integer(kind = kint) :: ist, ied
@@ -251,17 +258,18 @@
 !  ---------------------------------------------------------------------
 !
       subroutine radial_double_g_2_each_node(numnod, inod_smp_stack,    &
-     &          xx, a_radius, i_f1, i_f2, i_r1, c1, c2)
+     &          xx, a_radius, c1, c2, ncomp_nod, i_f1, i_f2, i_r1,      &
+     &          d_nod)
 !
-      use m_node_phys_data
-!
-      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: xx(numnod,3)
       real(kind = kreal), intent(in) :: a_radius(numnod)
 !
       integer(kind = kint), intent(in) :: i_f1, i_f2, i_r1
       real(kind = kreal), intent(in) :: c1, c2
+!
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer(kind = kint) :: iproc, inod
       integer(kind = kint) :: ist, ied
@@ -291,16 +299,16 @@
 !  ---------------------------------------------------------------------
 !
       subroutine self_double_g_2_each_node(numnod, inod_smp_stack, xx,  &
-     &          i_f1, i_f2, i_r1, c1, c2)
+     &          c1, c2, ncomp_nod, i_f1, i_f2, i_r1, d_nod)
 !
-      use m_node_phys_data
-!
-      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) ::xx(numnod,3)
 !
       integer(kind = kint), intent(in) :: i_f1, i_f2, i_r1
       real(kind = kreal), intent(in) :: c1, c2
+!
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer(kind = kint) :: iproc, inod
       integer(kind = kint) :: ist, ied
@@ -328,15 +336,13 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_buoyancy_nod(numnod, inod_smp_stack,           &
-     &           i_fc, ml_o_fl, ff)
-!
-      use calypso_mpi
-      use m_node_phys_data
+     &          ncomp_nod, i_fc, d_nod, ml_o_fl, ff)
 !
       integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
-      integer (kind=kint), intent(in) :: i_fc
+      integer (kind=kint), intent(in) :: ncomp_nod, i_fc
+      real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
       real (kind=kreal), intent(in) :: ml_o_fl(numnod)
 !
       real (kind=kreal), intent(inout) :: ff(numnod,3)

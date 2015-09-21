@@ -4,7 +4,8 @@
 !     Written by H. Matsui in 2004
 !     Modified by H. Matsui on Oct., 2006
 !
-!      subroutine cal_l_filtering_scalar(i_filter, inod_smp_stack)
+!!      subroutine cal_l_filtering_scalar(numnod, inod_smp_stack,       &
+!!     &          ncomp_nod, i_filter, d_nod)
 !        filtering along each directions for scalar field
 !          i_filter(input) :: node data ID for original field
 !          i_filter(output) :: node data ID for filtered field
@@ -21,15 +22,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_l_filtering_scalar(i_filter, inod_smp_stack)
+      subroutine cal_l_filtering_scalar(numnod, inod_smp_stack,         &
+     &          ncomp_nod, i_filter, d_nod)
 !
       use m_machine_parameter
-      use m_node_phys_data
       use m_l_filtering_data
       use m_l_filtering_data_smp
 !
-      integer (kind = kint), intent(in) :: i_filter
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_filter
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: ip, inod, jnod, nd
       integer (kind = kint) :: ist, ied, idx, isum, i, ii

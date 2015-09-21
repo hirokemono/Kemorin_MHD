@@ -3,11 +3,13 @@
 !
 !      programmed by H. Matsui on Oct., 2005
 !
-!      subroutine pick_sym_tensor_component(numnod, i_comp, i_flux, nd)
-!       i_comp: solution vector ID
-!       i_flux: tensor ID
-!       nd: direction for pick up
-!      subroutine pick_asym_tensor_component(numnod, i_comp, i_flux, nd)
+!!      subroutine pick_sym_tensor_component                            &
+!!     &         (numnod, ncomp_nod, i_comp, i_flux, nd, d_nod)
+!!      subroutine pick_asym_tensor_component                           &
+!!     &         (numnod, ncomp_nod, i_comp, i_flux, nd, d_nod)
+!!       i_comp: solution vector ID
+!!       i_flux: tensor ID
+!!       nd: direction for pick up
 !
       module pick_tensor_component
 !
@@ -25,12 +27,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine pick_sym_tensor_component(numnod, i_comp, i_flux, nd)
+      subroutine pick_sym_tensor_component                              &
+     &         (numnod, ncomp_nod, i_comp, i_flux, nd, d_nod)
 !
-      use m_node_phys_data
-!
-      integer (kind = kint), intent(in) :: numnod
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer (kind = kint), intent(in) :: i_comp, i_flux, nd
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: inod, n1, n2, n3
 !
@@ -52,12 +54,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine pick_asym_tensor_component(numnod, i_comp, i_flux, nd)
+      subroutine pick_asym_tensor_component                             &
+     &         (numnod, ncomp_nod, i_comp, i_flux, nd, d_nod)
 !
-      use m_node_phys_data
-!
-      integer (kind = kint), intent(in) :: numnod
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer (kind = kint), intent(in) :: i_comp, i_flux, nd
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: inod, n1, n2, n3
 !

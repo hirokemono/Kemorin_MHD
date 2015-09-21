@@ -36,14 +36,17 @@
         do i = 1, nod_fld1%num_phys
 !
           if     (nod_fld1%phys_name(i) .eq. fhd_press) then
-            call cal_pressure_on_edge(edge1%numedge, edge1%nnod_4_edge, &
-     &          edge1%ie_edge, iphys%i_press)
+            call cal_pressure_on_edge(node1%numnod,                     &
+     &          edge1%numedge, edge1%nnod_4_edge, edge1%ie_edge,        &
+     &          nod_fld1%ntot_phys, iphys%i_press, d_nod)
           else if(nod_fld1%phys_name(i) .eq. fhd_mag_potential) then
-            call cal_pressure_on_edge(edge1%numedge, edge1%nnod_4_edge, &
-     &          edge1%ie_edge, iphys%i_mag_p)
+            call cal_pressure_on_edge(node1%numnod,                     &
+     &          edge1%numedge, edge1%nnod_4_edge, edge1%ie_edge,        &
+     &          nod_fld1%ntot_phys, iphys%i_mag_p, d_nod)
           else if(nod_fld1%phys_name(i) .eq. fhd_scalar_potential) then
-            call cal_pressure_on_edge(edge1%numedge, edge1%nnod_4_edge, &
-     &          edge1%ie_edge, iphys%i_scalar_p)
+            call cal_pressure_on_edge(node1%numnod,                     &
+     &          edge1%numedge, edge1%nnod_4_edge, edge1%ie_edge,        &
+     &          nod_fld1%ntot_phys, iphys%i_scalar_p, d_nod)
           end if
 !
         end do
@@ -53,18 +56,16 @@
 !
 !-----------------------------------------------------------------------
 !
-!    interpolate data on tri-linear to quadrature
-!
       subroutine cal_pressure_on_edge                                   &
-     &         (numedge, nnod_4_edge, ie_edge, i_phys)
+     &         (numnod, numedge, nnod_4_edge, ie_edge,                  &
+     &          ncomp_nod, i_phys, d_nod)
 !
       use m_constants
-      use m_node_phys_address
-      use m_node_phys_data
 !
       integer(kind = kint), intent(in) :: numedge, nnod_4_edge
       integer(kind = kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
-      integer(kind = kint), intent(in) :: i_phys
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_phys
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: i, i1,  i2,  i3
 !

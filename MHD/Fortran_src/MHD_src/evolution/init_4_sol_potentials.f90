@@ -11,7 +11,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_physical_property
       use m_t_int_parameter
 !
       implicit none
@@ -22,49 +21,30 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_4_sol_k_potential(inod_smp_stack)
+      subroutine init_sol_potential(numnod, inod_smp_stack,             &
+     &          coef_p, ncomp_nod, i_p_phi, i_press, d_nod)
 !
-      use m_node_phys_address
-      use m_node_phys_data
-!
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
-      integer (kind = kint) :: iproc, inod
+      integer(kind = kint), intent(in) :: i_p_phi, i_press
+      real(kind = kreal), intent(in) :: coef_p
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
-!$omp parallel do private(inod)
+      integer (kind = kint) :: iproc, inod, ist, ied
+!
+!$omp parallel do private(inod,ist,ied)
       do iproc = 1, np_smp
+        ist = inod_smp_stack(iproc-1)+1
+        ied = inod_smp_stack(iproc)
 !cdir nodep
-        do inod = inod_smp_stack(iproc-1)+1, inod_smp_stack(iproc)
-          d_nod(inod,iphys%i_p_phi) = - coef_press * dt                 &
-     &                           * d_nod(inod,iphys%i_press)
-          d_nod(inod,iphys%i_press) = 0.0d0
+        do inod = ist, ied
+          d_nod(inod,i_p_phi) = - coef_p * dt * d_nod(inod,i_press)
+          d_nod(inod,i_press) = 0.0d0
         end do
       end do
 !$omp end parallel do
 !
-       end subroutine init_4_sol_k_potential
-!
-! -----------------------------------------------------------------------
-!
-      subroutine init_4_sol_m_potential(inod_smp_stack)
-!
-      use m_node_phys_address
-      use m_node_phys_data
-!
-      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
-      integer (kind = kint) :: iproc, inod
-!
-!$omp parallel do private(inod)
-      do iproc = 1, np_smp
-!cdir nodep
-        do inod = inod_smp_stack(iproc-1)+1, inod_smp_stack(iproc)
-          d_nod(inod,iphys%i_m_phi) = - coef_mag_p * dt                 &
-     &                                 * d_nod(inod,iphys%i_mag_p)
-          d_nod(inod,iphys%i_mag_p) = 0.0d0
-        end do
-      end do
-!$omp end parallel do
-!
-       end subroutine init_4_sol_m_potential
+       end subroutine init_sol_potential
 !
 ! -----------------------------------------------------------------------
 !

@@ -4,12 +4,14 @@
 !      programmed by H.Matsui and H.Okuda on July 2000 (ver 1.1)
 !      modified by H. Matsui on July, 2006
 !
-!      subroutine set_initial_temp(isig)
+!!      subroutine set_initial_temp(isig, node, ncomp_nod,              &
+!!     &          i_velo, i_press, i_temp, d_nod)
 !
 !
       module dynamobench_initial_temp
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -19,17 +21,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_initial_temp (isig)
+      subroutine set_initial_temp(isig, node, nnod_fl, inod_fluid,      &
+     &          ncomp_nod, i_velo, i_press, i_temp, d_nod)
 !
-      use m_constants
+      use t_geometry_data
       use m_control_parameter
-      use m_geometry_data
-      use m_geometry_data_MHD
-      use m_node_phys_address
-      use m_node_phys_data
-      use m_physical_property
 !
+      type(node_data), intent(in) :: node
       integer ( kind = kint), intent(in) :: isig
+      integer (kind = kint), intent(in) :: nnod_fl
+      integer (kind = kint), intent(in) :: inod_fluid(nnod_fl)
+      integer (kind = kint), intent(in) :: ncomp_nod
+      integer (kind = kint), intent(in) :: i_velo, i_press, i_temp
+      real(kind = kreal), intent(inout) :: d_nod(node%numnod,ncomp_nod)
 !
       integer ( kind = kint) :: inod, inum
       real (kind = kreal) :: real_m
@@ -40,38 +44,38 @@
       pi = four * atan(one)
 !
 !$omp parallel do
-      do inod = 1, node1%numnod
-       d_nod(inod,iphys%i_velo  ) = 0.0d0
-       d_nod(inod,iphys%i_velo+1) = 0.0d0
-       d_nod(inod,iphys%i_velo+2) = 0.0d0
-       d_nod(inod,iphys%i_press ) = 0.0d0
+      do inod = 1, node%numnod
+       d_nod(inod,i_velo  ) = 0.0d0
+       d_nod(inod,i_velo+1) = 0.0d0
+       d_nod(inod,i_velo+2) = 0.0d0
+       d_nod(inod,i_press ) = 0.0d0
       end do
 !$omp end parallel do
 !
 !
 !$omp parallel do
-      do inod = 1, node1%numnod
-        if(node1%rr(inod) .lt. depth_high_t)                            &
-     &                 d_nod(inod,iphys%i_temp) = one
-        if(node1%rr(inod) .gt. depth_low_t)                             &
-     &                 d_nod(inod,iphys%i_temp) = zero
+      do inod = 1, node%numnod
+        if(node%rr(inod) .lt. depth_high_t)                             &
+     &                 d_nod(inod,i_temp) = one
+        if(node%rr(inod) .gt. depth_low_t)                              &
+     &                 d_nod(inod,i_temp) = zero
       end do
 !$omp end parallel do
 !
 !$omp parallel do private(inod, xr, sit, csp)
-      do inum = 1, numnod_fluid
+      do inum = 1, nnod_fl
         inod = inod_fluid(inum)
 !
-        xr = two * node1%rr(inod)                                       &
+        xr = two * node%rr(inod)                                        &
      &      - one * (depth_low_t+depth_high_t)                          &
      &       / (depth_low_t-depth_high_t)
-        sit = sin( node1%theta(inod) )
-        csp = cos( real_m*node1%phi(inod) )
+        sit = sin( node%theta(inod) )
+        csp = cos( real_m*node%phi(inod) )
 !
-        d_nod(inod,iphys%i_temp) =                                      &
+        d_nod(inod,i_temp) =                                            &
      &            - depth_high_t/(depth_low_t-depth_high_t)             &
      &             + (depth_high_t*depth_low_t)*one                     &
-     &           / ( ( depth_low_t-depth_high_t )**2 * node1%rr(inod) ) &
+     &           / ( ( depth_low_t-depth_high_t )**2 * node%rr(inod) )  &
      &            + 0.1d0 * ( one - 3.0d0*xr**2 + 3.0d0*xr**4           &
      &             - xr**6) * sit**4 * csp                              &
      &           * 2.10d2 / (sqrt( 1.792d4 *pi ))

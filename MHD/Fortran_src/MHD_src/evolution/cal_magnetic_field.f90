@@ -26,6 +26,7 @@
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
+      use m_physical_property
 !
       use cal_magnetic_pre
       use cal_sol_magne_potential
@@ -47,7 +48,9 @@
         maxiter_insulater = 1
       end if
 !
-      call init_4_sol_m_potential(node1%istack_nod_smp)
+      call init_sol_potential(node1%numnod, node1%istack_nod_smp,       &
+     &    coef_mag_p, nod_fld1%ntot_phys, iphys%i_m_phi, iphys%i_mag_p, &
+     &    d_nod)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
       call cal_magnetic_field_pre

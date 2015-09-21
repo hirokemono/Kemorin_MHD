@@ -4,7 +4,10 @@
 !        programmed by H.Matsui on July 2000 (ver 1.1)
 !        modified by H.Matsui on Aug., 2007
 !
-!      subroutine set_r_magne_sph(nod_grp, l_f, i, j)
+!!      subroutine set_r_magne_sph(node, nod_grp, l_f, i, j,            &
+!!     &          ncomp_nod, i_magne, d_nod)
+!!        type(node_data), intent(in) :: node
+!!        type(group_data), intent(in) :: nod_grp
 !
       module set_radial_magne_sph
 !
@@ -18,20 +21,24 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_r_magne_sph(nod_grp, l_f, i, j)
+      subroutine set_r_magne_sph(node, nod_grp, l_f, i, j,              &
+     &          ncomp_nod, i_magne, d_nod)
 !
+      use t_geometry_data
       use t_group_data
       use m_bc_data_list
       use m_bc_data_magne
-      use m_geometry_data
-      use m_node_phys_address
-      use m_node_phys_data
       use m_schmidt_polynomial
       use spherical_harmonics
 !
+      type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
       integer(kind = kint), intent(in) :: i, j
+      integer (kind = kint), intent(in) :: ncomp_nod, i_magne
+!
+      real(kind = kreal), intent(inout) :: d_nod(node%numnod,ncomp_nod)
       integer(kind = kint), intent(inout) :: l_f(3)
+!
       integer(kind = kint) :: k
 !
       integer(kind = kint) :: inod, nd, i_comp
@@ -52,20 +59,20 @@
           ibc_b_id(l_f(nd),nd) = inod
         end do
 !
-        call dschmidt(node1%theta(inod))
+        call dschmidt(node%theta(inod))
 !
         if (mm.ge.0) then
-          bmag = p(mm,ll) * cos( node1%phi(inod)*dble(mm) )
+          bmag = p(mm,ll) * cos( node%phi(inod)*dble(mm) )
         else
-          bmag = p(mm,ll) * sin( node1%phi(inod)*dble(mm) )
+          bmag = p(mm,ll) * sin( node%phi(inod)*dble(mm) )
         end if
 !
         do nd = 1, 3
-          i_comp = iphys%i_magne + nd - 1
+          i_comp = i_magne + nd - 1
           ibc_magne(inod,nd) = 1
           ibc2_magne(inod,nd) = 1
-          bc_b_id_apt(l_f(nd),nd) = bmag * node1%xx(inod,1)             &
-     &                                   * node1%a_r(inod)
+          bc_b_id_apt(l_f(nd),nd) = bmag * node%xx(inod,1)              &
+     &                                   * node%a_r(inod)
           d_nod(inod,i_comp) = bc_b_id_apt(l_f(nd),nd)
         end do
       end do

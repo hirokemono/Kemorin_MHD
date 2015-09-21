@@ -30,6 +30,7 @@
 !
       subroutine int_div_sgs_hf_simi_pg(i_flux, i_vect, i_scalar)
 !
+      use m_node_phys_data
       use sgs_terms_2_each_ele
       use cal_skv_to_ff_smp_1st
       use fem_skv_vector_diff_1st
@@ -45,8 +46,9 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call SGS_v_flux_2_each_element                                  &
-     &     (ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%istack_ele_smp, &
-     &      k2, i_vect, i_scalar, i_flux, vect_e)
+     &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
+     &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
+     &      i_vect, i_scalar, i_flux, d_nod, vect_e)
         call fem_skv_divergence(iele_fl_smp_stack,                      &
      &      intg_point_t_evo, k2, vect_e, sk6)
       end do
@@ -60,6 +62,7 @@
       subroutine int_div_sgs_hf_simi_upw(i_flux, i_vect, i_scalar,      &
      &          ncomp_ele, iele_velo, d_ele)
 !
+      use m_node_phys_data
       use sgs_terms_2_each_ele
       use cal_skv_to_ff_smp_1st
       use fem_skv_vect_diff_upw_1st
@@ -77,8 +80,9 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call SGS_v_flux_2_each_element                                  &
-     &     (ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%istack_ele_smp, &
-     &      k2, i_vect, i_scalar, i_flux, vect_e)
+     &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
+     &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
+     &      i_vect, i_scalar, i_flux, d_nod, vect_e)
         call fem_skv_divergence_upw(iele_fl_smp_stack,                  &
      &      intg_point_t_evo, k2, d_ele(1,iele_velo), vect_e, sk6)
       end do

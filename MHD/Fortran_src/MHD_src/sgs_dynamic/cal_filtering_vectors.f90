@@ -66,7 +66,8 @@
         if (i_filter .ne. i_vect) then
           call copy_vector_component(i_vect, i_filter)
         end if
-        call cal_l_filtering_vector(i_filter, node1%istack_nod_smp)
+        call cal_l_filtering_vector(node1%numnod, node1%istack_nod_smp, &
+     &      nod_fld1%ntot_phys, i_filter, d_nod)
         call vector_send_recv(nod_fld1%ntot_phys, i_filter, d_nod)
 !
       end if
@@ -119,7 +120,8 @@
         if (i_filter .ne. i_vect) then
           call copy_vector_component(i_vect, i_filter)
         end if
-        call cal_l_filtering_vector(i_filter, node1%istack_nod_smp)
+        call cal_l_filtering_vector(node1%numnod, node1%istack_nod_smp, &
+     &      nod_fld1%ntot_phys, i_filter, d_nod)
         call vector_send_recv(nod_fld1%ntot_phys, i_filter, d_nod)
 !
       end if

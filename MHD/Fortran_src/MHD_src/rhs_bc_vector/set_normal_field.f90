@@ -31,6 +31,7 @@
       subroutine set_normal_velocity(sf_grp, sf_grp_nod)
 !
       use m_node_phys_address
+      use m_node_phys_data
       use m_surf_data_torque
       use t_group_data
       use t_surface_group_connect
@@ -45,7 +46,8 @@
      &      sf_grp_nod%istack_surf_nod_smp, sf_grp_nod%inod_surf_grp,   &
      &      sf_grp_nod%surf_norm_nod, ngrp_sf_fix_vn, nnod_sf_fix_vn,   &
      &      id_grp_sf_fix_vn, ist_nod_sf_fix_vn, sf_fix_vn_apt,         &
-     &      iphys%i_velo)
+     &      nod_fld1%n_point, nod_fld1%ntot_phys, iphys%i_velo,         &
+     &      d_nod)
       end if
 !
       end subroutine set_normal_velocity
@@ -55,9 +57,8 @@
       subroutine set_normal_comp(num_surf, num_surf_smp,                &
      &         ntot_node_sf_grp, inod_stack_sf_grp,                     &
      &         isurf_nod_smp_stack, inod_surf_grp, surf_norm_nod,       &
-     &         ngrp_sf, nnod_sf, id_grp_sf, ist_nod_sf, sf_apt, i_vect)
-!
-      use m_node_phys_data
+     &         ngrp_sf, nnod_sf, id_grp_sf, ist_nod_sf, sf_apt,         &
+     &         numnod, ncomp_nod, i_vect, d_nod)
 !
       integer (kind = kint), intent(in) :: num_surf, num_surf_smp
       integer (kind = kint), intent(in) :: ntot_node_sf_grp
@@ -69,10 +70,13 @@
      &                      :: inod_surf_grp(ntot_node_sf_grp)
       real(kind=kreal), intent(in) :: surf_norm_nod(ntot_node_sf_grp,3)
 !
-      integer (kind = kint), intent(in) :: i_vect, ngrp_sf, nnod_sf
+      integer (kind = kint), intent(in) :: ngrp_sf, nnod_sf
       integer (kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
       integer (kind = kint), intent(in) :: ist_nod_sf(0:ngrp_sf)
       real (kind=kreal), intent(in) :: sf_apt(nnod_sf)
+!
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_vect
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: i, igrp, nsf
       integer (kind = kint) :: iproc, id_sf

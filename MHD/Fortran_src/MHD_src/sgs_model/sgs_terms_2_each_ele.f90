@@ -3,12 +3,15 @@
 !
 !      Written by H. Matsui on July, 2005
 !
-!!      subroutine SGS_v_flux_2_each_element(numele, nnod_4_ele, ie,    &
-!!     &          iele_smp_stack, k2, i_vect, i_scalar, i_flux, flux_e)
-!!      subroutine SGS_m_flux_2_each_element(numele, nnod_4_ele, ie,    &
-!!     &          iele_smp_stack, k2, i_v1, i_flux, flux_e)
-!!      subroutine SGS_induct_2_each_element(numele, nnod_4_ele, ie,    &
-!!     &          iele_smp_stack, k2, i_b, i_v, i_flux, flux_a)
+!!      subroutine SGS_v_flux_2_each_element                            &
+!!     &         (numnod, numele, nnod_4_ele, ie, iele_smp_stack, k2,   &
+!!     &          ncomp_nod, i_vect, i_scalar, i_flux, d_nod, flux_e)
+!!      subroutine SGS_m_flux_2_each_element(numnod, numele, nnod_4_ele,&
+!!     &          ie, iele_smp_stack, k2, ncomp_nod, i_v1, i_flux,      &
+!!     &          d_nod, flux_e)
+!!      subroutine SGS_induct_2_each_element(numnod, numele, nnod_4_ele,&
+!!     &          ie, iele_smp_stack, k2, ncomp_nod, i_b, i_v,          &
+!!     &          i_flux, d_nod, flux_a)
 !
       module sgs_terms_2_each_ele
 !
@@ -23,17 +26,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine SGS_v_flux_2_each_element(numele, nnod_4_ele, ie,      &
-     &          iele_smp_stack, k2, i_vect, i_scalar, i_flux, flux_e)
+      subroutine SGS_v_flux_2_each_element                              &
+     &         (numnod, numele, nnod_4_ele, ie, iele_smp_stack, k2,     &
+     &          ncomp_nod, i_vect, i_scalar, i_flux, d_nod, flux_e)
 !
-      use m_node_phys_data
       use m_phys_constants
 !
-       integer(kind = kint), intent(in) :: numele, nnod_4_ele
-       integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
-       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
-       integer(kind = kint), intent(in) :: k2
-       integer(kind = kint), intent(in) :: i_vect, i_scalar, i_flux
+      integer(kind = kint), intent(in) :: numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer(kind = kint), intent(in) :: k2
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
+      integer(kind = kint), intent(in) :: i_vect, i_scalar, i_flux
+      real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
 !
        real (kind=kreal), intent(inout) :: flux_e(numele,3)
 !
@@ -62,17 +67,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine SGS_m_flux_2_each_element(numele, nnod_4_ele, ie,      &
-     &          iele_smp_stack, k2, i_v1, i_flux, flux_e)
+      subroutine SGS_m_flux_2_each_element(numnod, numele, nnod_4_ele,  &
+     &          ie, iele_smp_stack, k2, ncomp_nod, i_v1, i_flux,        &
+     &          d_nod, flux_e)
 !
-      use m_node_phys_data
       use m_phys_constants
 !
-       integer(kind = kint), intent(in) :: numele, nnod_4_ele
-       integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
-       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
-       integer(kind = kint), intent(in) :: k2
-       integer(kind = kint), intent(in) :: i_v1, i_flux
+      integer(kind = kint), intent(in) :: numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
+      integer(kind = kint), intent(in) :: k2
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
+      integer(kind = kint), intent(in) :: i_v1, i_flux
+      real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
 !
        real (kind=kreal), intent(inout) :: flux_e(numele,6)
 !
@@ -107,17 +114,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine SGS_induct_2_each_element(numele, nnod_4_ele, ie,      &
-     &          iele_smp_stack, k2, i_b, i_v, i_flux, flux_a)
+      subroutine SGS_induct_2_each_element(numnod, numele, nnod_4_ele,  &
+     &          ie, iele_smp_stack, k2, ncomp_nod, i_b, i_v,            &
+     &          i_flux, d_nod, flux_a)
 !
-      use m_node_phys_data
       use m_phys_constants
 !
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
       integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
       integer(kind = kint), intent(in) :: k2
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: i_b, i_v, i_flux
+      real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
 !
       real (kind=kreal), intent(inout) :: flux_a(numele,3)
 !

@@ -66,7 +66,8 @@
         if (i_filter .ne. i_scalar) then
            call copy_scalar_component(i_scalar, i_filter)
         end if
-        call cal_l_filtering_scalar(i_filter, node1%istack_nod_smp)
+        call cal_l_filtering_scalar(node1%numnod, node1%istack_nod_smp, &
+     &      nod_fld1%ntot_phys, i_filter, d_nod)
         call scalar_send_recv(nod_fld1%ntot_phys, i_filter, d_nod)
       end if
 !
@@ -118,7 +119,8 @@
         if (i_filter .ne. i_scalar) then
            call copy_scalar_component(i_scalar, i_filter)
         end if
-        call cal_l_filtering_scalar(i_filter, node1%istack_nod_smp)
+        call cal_l_filtering_scalar(node1%numnod, node1%istack_nod_smp, &
+     &      nod_fld1%ntot_phys, i_filter, d_nod)
         call scalar_send_recv(nod_fld1%ntot_phys, i_filter, d_nod)
       end if
 !

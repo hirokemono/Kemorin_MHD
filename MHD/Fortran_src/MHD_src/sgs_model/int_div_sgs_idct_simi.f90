@@ -31,6 +31,7 @@
 !
       subroutine int_div_sgs_idct_simi_pg(i_flux, i_v, i_b)
 !
+      use m_node_phys_data
       use sgs_terms_2_each_ele
       use fem_skv_vector_diff_1st
       use cal_skv_to_ff_smp_1st
@@ -43,8 +44,9 @@
       call reset_sk6(n_vector)
       do k2 = 1, ele1%nnod_4_ele
         call SGS_induct_2_each_element                                  &
-     &     (ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%istack_ele_smp, &
-     &      k2, i_b, i_v, i_flux, vect_e)
+     &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
+     &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
+     &      i_b, i_v, i_flux, d_nod, vect_e)
         call fem_skv_div_asym_tsr(iele_cd_smp_stack,                    &
      &      intg_point_t_evo, k2, vect_e, sk6)
       end do
@@ -58,6 +60,7 @@
       subroutine int_div_sgs_idct_simi_upw(i_flux, i_v, i_b,            &
      &          ncomp_ele, iele_velo, d_ele)
 !
+      use m_node_phys_data
       use sgs_terms_2_each_ele
       use fem_skv_vect_diff_upw_1st
       use cal_skv_to_ff_smp_1st
@@ -72,8 +75,9 @@
       call reset_sk6(n_vector)
       do k2 = 1, ele1%nnod_4_ele
         call SGS_induct_2_each_element                                  &
-     &     (ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%istack_ele_smp, &
-     &      k2, i_b, i_v, i_flux, vect_e)
+     &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
+     &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
+     &      i_b, i_v, i_flux, d_nod, vect_e)
         call fem_skv_div_as_tsr_upw(iele_cd_smp_stack,                  &
      &      intg_point_t_evo, k2, d_ele(1,iele_velo), vect_e, sk6)
       end do
