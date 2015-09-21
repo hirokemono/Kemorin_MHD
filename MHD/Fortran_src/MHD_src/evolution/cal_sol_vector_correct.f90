@@ -56,11 +56,14 @@
 !
       subroutine cal_sol_vect_p_co(inter_smp_stack)
 !
+      use m_geometry_data
       use m_node_phys_address
+      use m_node_phys_data
 !
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
 !
-      call cal_sol_vector_co(inter_smp_stack, iphys%i_vecp)
+      call cal_sol_vector_co(node1%numnod, inter_smp_stack,             &
+     &    nod_fld1%ntot_phys, iphys%i_vecp, d_nod)
 !
       end subroutine cal_sol_vect_p_co
 !
@@ -68,23 +71,27 @@
 !
       subroutine cal_sol_magne_co(inter_smp_stack)
 !
+      use m_geometry_data
       use m_node_phys_address
+      use m_node_phys_data
 !
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
 !
-      call cal_sol_vector_co(inter_smp_stack, iphys%i_magne)
+      call cal_sol_vector_co(node1%numnod, inter_smp_stack,             &
+     &    nod_fld1%ntot_phys, iphys%i_magne, d_nod)
 !
       end subroutine cal_sol_magne_co
 !
 ! -----------------------------------------------------------------------! -----------------------------------------------------------------------!
-      subroutine cal_sol_vector_co(inter_smp_stack, i_field)
+      subroutine cal_sol_vector_co(numnod, inter_smp_stack,             &
+     &          ncomp_nod, i_field, d_nod)
 !
       use m_phys_constants
-      use m_node_phys_data
       use m_finite_element_matrix
 !
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
-      integer (kind = kint), intent(in) :: i_field
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_field
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: iproc, inod, nd, icomp, ist, ied
 !

@@ -38,6 +38,7 @@
       use m_geometry_data
       use m_group_data
       use m_node_phys_address
+      use m_node_phys_data
 !
       use set_normal_field
       use set_fixed_phys_boundary
@@ -52,7 +53,8 @@
 !
       if (nmax_bc_v_nod .gt. 0) then
         call set_fixed_bc_vect_phys(nmax_bc_v_nod, num_bc_v_nod,        &
-     &      ibc_v_id, bc_v_id_apt, iphys%i_velo )
+     &      ibc_v_id, bc_v_id_apt, node1%numnod, nod_fld1%ntot_phys,    &
+     &      iphys%i_velo, d_nod)
       end if
 !
 !   set rotation boundary
@@ -73,7 +75,7 @@
 !
       if (num_bc_vr0_nod .gt. 0) then
         call del_radial_velocity(node1%numnod, node1%xx, node1%a_r,     &
-     &      iphys%i_velo)
+     &      nod_fld1%ntot_phys, iphys%i_velo, d_nod)
       end if
 !
       end subroutine set_boundary_velo
@@ -102,10 +104,11 @@
       end subroutine set_boundary_velo_4_rhs
 !
 !  ---------------------------------------------------------------------
-!--- subroutine delete_field_by_fixed_v_bc -------------
 !
       subroutine delete_field_by_fixed_v_bc(i_field)
 !
+      use m_geometry_data
+      use m_node_phys_data
       use set_fixed_phys_boundary
 !
       integer(kind = kint), intent(in) :: i_field
@@ -113,15 +116,18 @@
 !
       if (nmax_bc_v_nod/=0) then
        call del_vector_phys_on_bc(nmax_bc_v_nod, num_bc_v_nod,          &
-     &     ibc_v_id, i_field)
+     &     ibc_v_id, node1%numnod, nod_fld1%ntot_phys, i_field,         &
+     &     d_nod)
       end if
 !
       if (num_bc_v10_nod/=0) then
-       call del_vector_phys_on_1bc(num_bc_v10_nod, ibc_v10_id, i_field)
+       call del_vector_phys_on_1bc(num_bc_v10_nod, ibc_v10_id,          &
+     &     node1%numnod, nod_fld1%ntot_phys, i_field, d_nod)
       end if
 !
       if (num_bc_vsp_nod/=0) then
-       call del_vector_phys_on_1bc(num_bc_vsp_nod, ibc_vsp_id, i_field)
+       call del_vector_phys_on_1bc(num_bc_vsp_nod, ibc_vsp_id,          &
+     &     node1%numnod, nod_fld1%ntot_phys, i_field, d_nod)
       end if
 !
 !

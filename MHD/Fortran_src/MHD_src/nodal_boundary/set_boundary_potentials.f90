@@ -27,6 +27,8 @@
 !
       subroutine set_boundary_phi
 !
+      use m_geometry_data
+      use m_node_phys_data
       use m_node_phys_address
       use m_bc_data_press
       use m_surf_data_press
@@ -34,7 +36,8 @@
 !
       if (num_bc_p_nod/=0) then
        call set_fixed_bc_scalar_phys(num_bc_p_nod, ibc_p_id,            &
-     &     bc_p_id_apt, iphys%i_p_phi)
+     &     bc_p_id_apt, node1%numnod, nod_fld1%ntot_phys,               &
+     &     iphys%i_p_phi, d_nod)
       end if
 !
       end subroutine set_boundary_phi
@@ -43,6 +46,8 @@
 !
       subroutine set_boundary_m_phi
 !
+      use m_geometry_data
+      use m_node_phys_data
       use m_node_phys_address
       use m_bc_data_magne_p
       use m_surf_data_magne_p
@@ -50,7 +55,8 @@
 !
       if (num_bc_mag_p_nod/=0) then
        call set_fixed_bc_scalar_phys(num_bc_mag_p_nod, ibc_mag_p_id,    &
-     &     bc_mag_p_id_apt, iphys%i_m_phi)
+     &     bc_mag_p_id_apt, node1%numnod, nod_fld1%ntot_phys,           &
+     &     iphys%i_m_phi, d_nod)
       end if
 !
       end subroutine set_boundary_m_phi

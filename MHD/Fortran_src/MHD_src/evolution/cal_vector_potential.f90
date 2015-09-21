@@ -24,6 +24,8 @@
       use m_machine_parameter
       use m_control_parameter
       use m_geometry_data
+      use m_node_phys_address
+      use m_node_phys_data
 !
       use cal_vector_potential_pre
       use cal_electric_potential
@@ -59,7 +61,9 @@
         call cal_scalar_potential
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
-        call cal_sol_m_potential(node1%istack_internal_smp)
+        call cal_sol_m_potential                                        &
+     &     (node1%numnod, node1%istack_internal_smp,                    &
+     &      nod_fld1%ntot_phys, iphys%i_m_phi, iphys%i_mag_p, d_nod)
 !
         if (iflag_debug.gt.0) write(*,*) 'vector_potential_correct'
         call cal_vector_p_co
@@ -72,10 +76,8 @@
         call int_norm_div_a_monitor(iloop, rel_correct)
 !        call int_rms_div_a_monitor(iloop, rel_correct)
 !
-        if ( abs(rel_correct) .lt. eps_4_magne ) go to 20
-!
+        if ( abs(rel_correct) .lt. eps_4_magne ) exit
       end do
- 20   continue
 !
       end subroutine cal_magne_vector_potential
 !

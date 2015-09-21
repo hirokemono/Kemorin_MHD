@@ -4,7 +4,8 @@
 !        programmed by H.Matsui on July 2000 (ver 1.1)
 !        modified by H.Matsui on Aug., 2007
 !
-!      subroutine del_radial_velocity(numnod, xx, a_radius, i_field)
+!!      subroutine del_radial_velocity(numnod, xx, a_radius,            &
+!!     &          ncomp_nod, i_field, d_nod)
 !
       module delete_radial_velocity
 !
@@ -18,14 +19,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine del_radial_velocity(numnod, xx, a_radius, i_field)
+      subroutine del_radial_velocity(numnod, xx, a_radius,              &
+     &          ncomp_nod, i_field, d_nod)
 !
-      use m_node_phys_data
       use m_bc_data_vr0
 !
-      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
       real(kind = kreal), intent(in) :: xx(numnod,3)
       real(kind = kreal), intent(in) :: a_radius(numnod)
+!
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: i_field
 !

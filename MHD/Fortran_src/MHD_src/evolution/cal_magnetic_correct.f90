@@ -170,7 +170,7 @@
 !
       call cal_multi_pass_4_vector_ins
 !
-      call cal_sol_magne_insulate
+      call cal_sol_magne_insulator
 !
       call set_boundary_magne
 !

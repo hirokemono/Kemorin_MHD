@@ -9,15 +9,6 @@
 !!@verbatim
 !!      subroutine init_interpolate_nodal_data(nod_dest)
 !!      subroutine interpolate_nodal_data(comm_dest, nod_dest, phys_dest)
-!!
-!!      subroutine s_interpolate_scalar(i_dest, i_origin,               &
-!!     &          comm_dest, nod_dest, phys_dest)
-!!      subroutine s_interpolate_vector(i_dest, i_origin,               &
-!!     &          comm_dest, nod_dest, phys_dest)
-!!      subroutine s_interpolate_tensor(i_dest, i_origin,               &
-!!     &          comm_dest, nod_dest, phys_dest)
-!!      subroutine s_interpolate_fields(numdir, i_dest, i_origin,       &
-!!     &          comm_dest, nod_dest, phys_dest)
 !!        integer(kind = kint), intent(in) :: numdir, i_dest, i_origin
 !!        type(node_data), intent(in) :: nod_dest
 !!        type(communication_table), intent(in) :: comm_dest
@@ -31,7 +22,6 @@
 !
       use m_geometry_data
       use m_phys_constants
-      use m_node_phys_data
       use t_geometry_data
       use t_comm_table
       use t_phys_data
@@ -74,6 +64,7 @@
       subroutine interpolate_nodal_data(comm_dest, nod_dest, phys_dest)
 !
       use calypso_mpi
+      use m_node_phys_data
 !
       integer(kind = kint) :: i, i_dest, i_origin
       type(node_data), intent(in) :: nod_dest
@@ -88,24 +79,28 @@
           if (my_rank.eq.0) write(*,*) ' interpolate scalar: ',         &
      &            trim(nod_fld1%phys_name(i)), '  ', i_dest, i_origin
           call s_interpolate_scalar                                     &
-     &       (i_dest, i_origin, comm_dest, nod_dest, phys_dest)
+     &       (i_dest, i_origin, nod_fld1%ntot_phys, d_nod,              &
+     &        comm_dest, nod_dest, phys_dest)
 !
         else if (nod_fld1%num_component(i) .eq. n_vector) then
           if (my_rank.eq.0) write(*,*) ' interpolate vector: ',         &
      &            trim(nod_fld1%phys_name(i)), '  ', i_dest, i_origin
           call s_interpolate_vector                                     &
-     &       (i_dest, i_origin, comm_dest, nod_dest, phys_dest)
+     &       (i_dest, i_origin, nod_fld1%ntot_phys, d_nod,              &
+     &        comm_dest, nod_dest, phys_dest)
 !
         else if (nod_fld1%num_component(i) .eq. n_sym_tensor) then
           if (my_rank.eq.0) write(*,*) ' interpolate tensor: ',         &
      &            trim(nod_fld1%phys_name(i)), '  ', i_dest, i_origin
           call s_interpolate_tensor                                     &
-     &       (i_dest, i_origin, comm_dest, nod_dest, phys_dest)
+     &       (i_dest, i_origin, nod_fld1%ntot_phys, d_nod,              &
+     &        comm_dest, nod_dest, phys_dest)
         else
           if (my_rank.eq.0) write(*,*) ' interpolate tensor: ',         &
      &            trim(nod_fld1%phys_name(i)), '  ', i_dest, i_origin
           call s_interpolate_fields(nod_fld1%num_component(i),          &
-     &        i_dest, i_origin, comm_dest, nod_dest, phys_dest)
+     &        i_dest, i_origin, nod_fld1%ntot_phys, d_nod,              &
+     &        comm_dest, nod_dest, phys_dest)
         end if
       end do
 !
@@ -115,13 +110,17 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_scalar(i_dest, i_origin,                 &
-     &          comm_dest, nod_dest, phys_dest)
+     &          ncomp_nod, d_nod, comm_dest, nod_dest, phys_dest)
 !
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
       use interpolate_by_module
 !
       integer(kind = kint), intent(in) :: i_dest, i_origin
+!
+      integer(kind = kint), intent(in) :: ncomp_nod
+      real(kind = kreal), intent(in) :: d_nod(node1%numnod,ncomp_nod)
+!
       type(node_data), intent(in) :: nod_dest
       type(communication_table), intent(in) :: comm_dest
       type(phys_data), intent(inout) :: phys_dest
@@ -151,7 +150,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_vector(i_dest, i_origin,                 &
-     &          comm_dest, nod_dest, phys_dest)
+     &          ncomp_nod, d_nod, comm_dest, nod_dest, phys_dest)
 !
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
@@ -159,6 +158,10 @@
 !
 !
       integer(kind = kint), intent(in) :: i_dest, i_origin
+!
+      integer(kind = kint), intent(in) :: ncomp_nod
+      real(kind = kreal), intent(in) :: d_nod(node1%numnod,ncomp_nod)
+!
       type(node_data), intent(in) :: nod_dest
       type(communication_table), intent(in) :: comm_dest
       type(phys_data), intent(inout) :: phys_dest
@@ -195,7 +198,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_tensor(i_dest, i_origin,                 &
-     &          comm_dest, nod_dest, phys_dest)
+     &          ncomp_nod, d_nod, comm_dest, nod_dest, phys_dest)
 !
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
@@ -203,9 +206,15 @@
 !
 !
       integer(kind = kint), intent(in) :: i_dest, i_origin
+!
+      integer(kind = kint), intent(in) :: ncomp_nod
+      real(kind = kreal), intent(in) :: d_nod(node1%numnod,ncomp_nod)
+!
       type(node_data), intent(in) :: nod_dest
       type(communication_table), intent(in) :: comm_dest
+!
       type(phys_data), intent(inout) :: phys_dest
+!
       integer(kind = kint) :: inod
 !
 !     initialize
@@ -246,7 +255,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_interpolate_fields(numdir, i_dest, i_origin,         &
-     &          comm_dest, nod_dest, phys_dest)
+     &          ncomp_nod, d_nod, comm_dest, nod_dest, phys_dest)
 !
       use m_array_for_send_recv
       use m_2nd_pallalel_vector
@@ -254,6 +263,10 @@
 !
 !
       integer(kind = kint), intent(in) :: numdir, i_dest, i_origin
+!
+      integer(kind = kint), intent(in) :: ncomp_nod
+      real(kind = kreal), intent(in) :: d_nod(node1%numnod,ncomp_nod)
+!
       type(node_data), intent(in) :: nod_dest
       type(communication_table), intent(in) :: comm_dest
       type(phys_data), intent(inout) :: phys_dest

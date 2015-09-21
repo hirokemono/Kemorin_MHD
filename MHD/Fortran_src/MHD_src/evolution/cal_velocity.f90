@@ -24,6 +24,8 @@
       use m_control_parameter
       use m_machine_parameter
       use m_geometry_data
+      use m_node_phys_address
+      use m_node_phys_data
 !
       use cal_velocity_pre
       use cal_mod_vel_potential
@@ -40,10 +42,16 @@
 !
       if (iflag_4_lorentz .eq. id_turn_ON) then
         if (iflag_4_rotate .eq. id_turn_OFF) then
-          call cal_sol_pressure_w_mag_ene(node1%istack_internal_smp)
+          call cal_sol_pressure_w_mag_ene                               &
+     &       (node1%numnod, node1%istack_internal_smp,                  &
+     &        nod_fld1%ntot_phys, iphys%i_p_phi, iphys%i_magne,         &
+     &        iphys%i_press, d_nod)
         else if (iflag_magneto_cv .eq. id_turn_ON                       &
      &     .and. iflag_4_rotate .eq. id_turn_OFF) then
-          call cal_sol_pressure_mcv(node1%istack_internal_smp)
+          call cal_sol_pressure_mcv                                     &
+     &       (node1%numnod, node1%istack_internal_smp,                  &
+     &        nod_fld1%ntot_phys, iphys%i_p_phi, iphys%i_magne,         &
+     &        iphys%i_press, d_nod)
         else
           call init_4_sol_k_potential(node1%istack_nod_smp)
         end if
@@ -66,7 +74,9 @@
 !
         call cal_mod_potential
 !
-        call cal_sol_pressure(node1%istack_internal_smp)
+        call cal_sol_pressure                                           &
+     &     (node1%numnod, node1%istack_internal_smp,                    &
+     &      nod_fld1%ntot_phys, iphys%i_p_phi, iphys%i_press, d_nod)
 !
         call cal_velocity_co
 !
@@ -82,7 +92,9 @@
  10   continue
 !
       if (iflag_4_rotate .eq. id_turn_ON) then
-        call cal_sol_pressure_rotate(node1%istack_internal_smp)
+        call cal_sol_pressure_rotate                                    &
+     &     (node1%numnod, node1%istack_internal_smp,                    &
+     &      nod_fld1%ntot_phys, iphys%i_velo, iphys%i_press, d_nod)
       end if
 !
       end subroutine velocity_evolution

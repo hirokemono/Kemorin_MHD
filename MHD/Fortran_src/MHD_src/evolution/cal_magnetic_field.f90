@@ -24,6 +24,8 @@
       use m_machine_parameter
       use m_control_parameter
       use m_geometry_data
+      use m_node_phys_address
+      use m_node_phys_data
 !
       use cal_magnetic_pre
       use cal_sol_magne_potential
@@ -57,10 +59,11 @@
 !
 !
       do iloop = 0, maxiter
-!
         call cal_mag_potential
 !
-        call cal_sol_m_potential(node1%istack_internal_smp)
+        call cal_sol_m_potential                                        &
+     &     (node1%numnod, node1%istack_internal_smp,                    &
+     &      nod_fld1%ntot_phys, iphys%i_m_phi, iphys%i_mag_p, d_nod)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'magnetic_correction'
@@ -71,10 +74,8 @@
         call int_norm_div_b_monitor(iloop, rel_correct)
 !        call int_rms_div_b_monitor(iloop, rel_correct)
 !
-        if ( abs(rel_correct) .lt. eps_4_magne ) go to 20
-!
+        if ( abs(rel_correct) .lt. eps_4_magne ) exit
       end do
- 20   continue
 !
 !
       end subroutine s_cal_magnetic_field

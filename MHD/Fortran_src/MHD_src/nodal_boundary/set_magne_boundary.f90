@@ -29,15 +29,16 @@
 !
       subroutine set_boundary_magne
 !
-!    boundary condition setting
-!
       use m_control_parameter
+      use m_geometry_data
+      use m_node_phys_data
       use m_node_phys_address
 !
 !
       if (nmax_bc_b_nod/=0) then
           call set_fixed_bc_vect_phys(nmax_bc_b_nod, num_bc_b_nod,      &
-     &        ibc_b_id, bc_b_id_apt, iphys%i_magne)
+     &        ibc_b_id, bc_b_id_apt, node1%numnod, nod_fld1%ntot_phys,  &
+     &        iphys%i_magne, d_nod)
       end if
 !
       end subroutine set_boundary_magne
@@ -60,12 +61,16 @@
 !
       subroutine delete_field_by_fixed_b_bc(i_field)
 !
+      use m_geometry_data
+      use m_node_phys_data
+!
       integer(kind = kint), intent(in) :: i_field
 !
 !
       if (nmax_bc_b_nod/=0) then
-          call del_vector_phys_on_bc(nmax_bc_b_nod, num_bc_b_nod,       &
-     &     ibc_b_id, i_field)
+        call del_vector_phys_on_bc(nmax_bc_b_nod, num_bc_b_nod,         &
+     &      ibc_b_id, node1%numnod, nod_fld1%ntot_phys, i_field,        &
+     &      d_nod)
       end if
 !
       end subroutine delete_field_by_fixed_b_bc

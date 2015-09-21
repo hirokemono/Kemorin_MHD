@@ -39,10 +39,12 @@
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
 !
 !
-      call cal_sol_vect_pre_fluid_euler(node1%istack_internal_smp,      &
-     &    n_vector, iphys%i_velo)
+      call cal_sol_vect_pre_fluid_euler                                 &
+     &   (node1%numnod, node1%istack_internal_smp, nod_fld1%ntot_phys,  &
+     &    n_vector, iphys%i_velo, d_nod)
 !
       end subroutine cal_sol_velo_pre_euler
 !
@@ -53,10 +55,12 @@
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
 !
 !
-      call cal_sol_vect_pre_fluid_euler(node1%istack_internal_smp,      &
-     &    n_scalar, iphys%i_temp)
+      call cal_sol_vect_pre_fluid_euler                                 &
+     &   (node1%numnod, node1%istack_internal_smp, nod_fld1%ntot_phys,  &
+     &    n_scalar, iphys%i_temp, d_nod)
 !
       end subroutine cal_sol_temp_euler
 !
@@ -66,21 +70,28 @@
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
 !
 !
-      call cal_sol_vect_pre_fluid_euler(node1%istack_internal_smp,      &
-     &    n_scalar, iphys%i_par_temp)
+      call cal_sol_vect_pre_fluid_euler                                 &
+     &   (node1%numnod, node1%istack_internal_smp, nod_fld1%ntot_phys,  &
+     &    n_scalar, iphys%i_par_temp, d_nod)
 !
       end subroutine cal_sol_part_temp_euler
 !
 ! -----------------------------------------------------------------------!
       subroutine cal_sol_vect_p_pre_euler
 !
+      use m_geometry_data
+      use m_geometry_data_MHD
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
 !
 !
-      call cal_sol_vect_pre_conduct_euler(n_vector, iphys%i_vecp)
+      call cal_sol_vect_pre_conduct_euler(node1%numnod,                 &
+     &    inter_cd_smp_stack, numnod_conduct, inod_conduct,             &
+     &    nod_fld1%ntot_phys, n_vector, iphys%i_vecp, d_nod)
 !
       end subroutine cal_sol_vect_p_pre_euler
 !
@@ -88,11 +99,16 @@
 !
       subroutine cal_sol_magne_pre_euler
 !
+      use m_geometry_data
+      use m_geometry_data_MHD
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
 !
 !
-      call cal_sol_vect_pre_conduct_euler(n_vector, iphys%i_magne)
+      call cal_sol_vect_pre_conduct_euler(node1%numnod,                 &
+     &   inter_cd_smp_stack, numnod_conduct, inod_conduct,              &
+     &   nod_fld1%ntot_phys, n_vector, iphys%i_magne, d_nod)
 !
       end subroutine cal_sol_magne_pre_euler
 !
@@ -103,10 +119,12 @@
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
 !
 !
-      call cal_sol_vect_pre_fluid_euler(node1%istack_internal_smp,      &
-     &    n_scalar, iphys%i_light)
+      call cal_sol_vect_pre_fluid_euler                                 &
+     &   (node1%numnod, node1%istack_internal_smp, nod_fld1%ntot_phys,  &
+     &    n_scalar, iphys%i_light, d_nod)
 !
       end subroutine cal_sol_d_scalar_euler
 !
@@ -118,10 +136,13 @@
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
 !
 !
-      call cal_sol_vect_pre_fluid_adams(node1%istack_internal_smp,      &
-     &    n_vector, iphys%i_velo,iphys%i_pre_mom)
+      call cal_sol_vect_pre_fluid_adams                                 &
+     &   (node1%numnod, node1%istack_internal_smp,                      &
+     &    nod_fld1%ntot_phys, n_vector, iphys%i_velo, iphys%i_pre_mom,  &
+     &    d_nod)
 !
       end subroutine cal_sol_velo_pre_adams
 !
@@ -132,10 +153,13 @@
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
 !
 !
-      call cal_sol_vect_pre_fluid_adams(node1%istack_internal_smp,      &
-     &    n_scalar, iphys%i_temp, iphys%i_pre_heat)
+      call cal_sol_vect_pre_fluid_adams                                 &
+     &   (node1%numnod, node1%istack_internal_smp,                      &
+     &    nod_fld1%ntot_phys, n_scalar, iphys%i_temp, iphys%i_pre_heat, &
+     &    d_nod)
 !
       end subroutine cal_sol_temp_adams
 !
@@ -146,10 +170,13 @@
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
 !
 !
-      call cal_sol_vect_pre_fluid_adams(node1%istack_internal_smp,      &
-     &    n_scalar, iphys%i_par_temp, iphys%i_pre_heat)
+      call cal_sol_vect_pre_fluid_adams                                 &
+     &   (node1%numnod, node1%istack_internal_smp,                      &
+     &    nod_fld1%ntot_phys, n_scalar, iphys%i_par_temp,               &
+     &    iphys%i_pre_heat, d_nod)
 !
       end subroutine cal_sol_part_temp_adams
 !
@@ -157,12 +184,17 @@
 !
       subroutine cal_sol_vect_p_pre_adams
 !
+      use m_geometry_data
+      use m_geometry_data_MHD
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
 !
 !
-      call cal_sol_vect_pre_conduct_adams(n_vector, iphys%i_vecp,       &
-     &    iphys%i_pre_uxb)
+      call cal_sol_vect_pre_conduct_adams(node1%numnod,                 &
+     &   inter_cd_smp_stack, numnod_conduct, inod_conduct,              &
+     &   nod_fld1%ntot_phys, n_vector, iphys%i_vecp, iphys%i_pre_uxb,   &
+     &   d_nod)
 !
       end subroutine cal_sol_vect_p_pre_adams
 !
@@ -170,12 +202,17 @@
 !
       subroutine cal_sol_magne_pre_adams
 !
+      use m_geometry_data
+      use m_geometry_data_MHD
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
 !
 !
-      call cal_sol_vect_pre_conduct_adams(n_vector, iphys%i_magne,      &
-     &    iphys%i_pre_uxb)
+      call cal_sol_vect_pre_conduct_adams(node1%numnod,                 &
+     &    inter_cd_smp_stack, numnod_conduct, inod_conduct,             &
+     &    nod_fld1%ntot_phys, n_vector, iphys%i_magne, iphys%i_pre_uxb, &
+     &    d_nod)
 !
       end subroutine cal_sol_magne_pre_adams
 !
@@ -186,10 +223,13 @@
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
 !
 !
-      call cal_sol_vect_pre_fluid_adams(node1%istack_internal_smp,      &
-     &    n_scalar, iphys%i_light, iphys%i_pre_composit)
+      call cal_sol_vect_pre_fluid_adams                                 &
+     &   (node1%numnod, node1%istack_internal_smp,                      &
+     &    nod_fld1%ntot_phys, n_scalar, iphys%i_light,                  &
+     &    iphys%i_pre_composit, d_nod)
 !
       end subroutine cal_sol_d_scalar_adams
 !
@@ -197,15 +237,18 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_vect_pre_fluid_euler                           &
-     &         (inter_smp_stack, numdir, i_field)
+     &         (numnod, inter_smp_stack, ncomp_nod, numdir, i_field,    &
+     &          d_nod)
 !
       use m_machine_parameter
-      use m_node_phys_data
       use m_finite_element_matrix
       use m_t_int_parameter
 !
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
+!
       integer (kind = kint), intent(in) :: numdir, i_field
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: iproc, inod, nd, icomp, ist, ied
 !
@@ -229,15 +272,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_vect_pre_conduct_euler(numdir, i_field)
+      subroutine cal_sol_vect_pre_conduct_euler                         &
+     &         (numnod, inter_smp_stack, nnod_cd, inod_conduct,         &
+     &          ncomp_nod, numdir, i_field, d_nod)
 !
       use m_machine_parameter
-      use m_geometry_data_MHD
-      use m_node_phys_data
       use m_finite_element_matrix
       use m_t_int_parameter
 !
+      integer (kind = kint), intent(in) :: numnod, nnod_cd, ncomp_nod
+      integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
+      integer (kind = kint), intent(in) :: inod_conduct(nnod_cd)
+!
       integer (kind = kint), intent(in) :: numdir, i_field
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: iproc, inum, inod, nd, icomp
       integer (kind = kint) :: istart, iend
@@ -245,8 +293,8 @@
 !
 !$omp parallel do private(nd,icomp,inum,inod)
       do iproc = 1, np_smp
-        istart = inter_cd_smp_stack(iproc-1) + 1
-        iend = inter_cd_smp_stack(iproc)
+        istart = inter_smp_stack(iproc-1) + 1
+        iend =   inter_smp_stack(iproc)
         do nd=1, numdir
           icomp = i_field + nd - 1
 !cdir nodep
@@ -255,7 +303,6 @@
 !
             d_nod(inod,icomp) = d_nod(inod,icomp)                       &
      &           + ml_cd(inod) * ( ff(inod,nd) + ff_nl(inod,nd) ) * dt
-!
           end do
         end do
       end do
@@ -267,15 +314,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_vect_pre_fluid_adams                           &
-     &         (inter_smp_stack, numdir, i_field, if_pre)
+     &         (numnod, inter_smp_stack, ncomp_nod, numdir,             &
+     &          i_field, if_pre, d_nod)
 !
       use m_machine_parameter
-      use m_node_phys_data
       use m_finite_element_matrix
       use m_t_int_parameter
 !
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numdir, i_field, if_pre
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: iproc, inod, nd, icomp, if_comp
       integer (kind = kint) :: ist, ied
@@ -302,16 +351,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_vect_pre_conduct_adams(numdir, i_field,        &
-     &          if_pre)
+      subroutine cal_sol_vect_pre_conduct_adams                         &
+     &         (numnod, inter_smp_stack, nnod_cd, inod_conduct,         &
+     &          ncomp_nod, numdir, i_field, if_pre, d_nod)
 !
       use m_machine_parameter
-      use m_geometry_data_MHD
-      use m_node_phys_data
       use m_finite_element_matrix
       use m_t_int_parameter
 !
+      integer (kind = kint), intent(in) :: numnod, nnod_cd, ncomp_nod
+      integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
+      integer (kind = kint), intent(in) :: inod_conduct(nnod_cd)
+!
       integer (kind = kint), intent(in) :: numdir, i_field, if_pre
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: nd, icomp, if_comp
       integer (kind = kint) :: istart, iend
@@ -320,8 +373,8 @@
 !
 !$omp parallel do private(nd,istart,iend,icomp,if_comp,inum,inod)
       do iproc = 1, np_smp
-        istart = inter_cd_smp_stack(iproc-1) + 1
-        iend = inter_cd_smp_stack(iproc)
+        istart = inter_smp_stack(iproc-1) + 1
+        iend = inter_smp_stack(iproc)
         do nd = 1, numdir
           icomp = i_field + nd - 1
           if_comp = if_pre + nd - 1
@@ -334,8 +387,8 @@
      &       + adam_1 * ml_cd(inod) * d_nod(inod,if_comp) * dt
             d_nod(inod,if_comp) = ff(inod,nd) + ff_nl(inod,nd)
 !
+          end do
         end do
-       end do
       end do
 !$omp end parallel do
 !

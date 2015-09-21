@@ -27,7 +27,7 @@
 !
 !>       Structure for nodal field data
       type(phys_data), save :: nod_fld1
-!nod_fld1%phys_name
+!nod_fld1%ntot_phys
 !
 !      integer (kind=kint) :: num_nod_phys
 !    number of physical data
