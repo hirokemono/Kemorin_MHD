@@ -41,33 +41,34 @@
 !
         call cal_3d_ez_filter_tensor_phys(num_whole_filter_grp,         &
      &      id_whole_filter_grp, i_vect,                                &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING ) then
 !
         call cal_3d_filter_tensor_phys_smp(num_whole_filter_grp,        &
      &      id_whole_filter_grp, i_vect,                                &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING) then
 !
         call cal_3d_ez_filter_tensor_smp(num_whole_filter_grp,          &
      &      id_whole_filter_grp, i_vect,                                &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_FILTERING) then
 !
         call cal_3d_filter_tensor_phys(num_whole_filter_grp,            &
      &      id_whole_filter_grp, i_vect,                                &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
         if (i_filter .ne. i_vect) then
           call copy_tensor_components(i_vect, i_filter)
         end if
         call cal_l_filtering_tensor(node1%numnod, node1%istack_nod_smp, &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
-        call sym_tensor_send_recv(nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
+        call sym_tensor_send_recv                                       &
+     &     (nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
       end if
 !
       end subroutine cal_filtered_sym_tensor
@@ -93,33 +94,34 @@
 !
         call cal_3d_ez_filter_tensor_phys(num_fluid_filter_grp,         &
      &      id_fluid_filter_grp, i_vect,                                &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING ) then
 !
         call cal_3d_filter_tensor_phys_smp(num_fluid_filter_grp,        &
      &      id_fluid_filter_grp, i_vect,                                &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING) then
 !
         call cal_3d_ez_filter_tensor_smp(num_fluid_filter_grp,          &
      &      id_fluid_filter_grp, i_vect,                                &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_FILTERING) then
 !
         call cal_3d_filter_tensor_phys(num_fluid_filter_grp,            &
      &      id_fluid_filter_grp, i_vect,                                &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
         if (i_filter .ne. i_vect) then
           call copy_tensor_components(i_vect, i_filter)
         end if
         call cal_l_filtering_tensor(node1%numnod, node1%istack_nod_smp, &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
-        call sym_tensor_send_recv(nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
+        call sym_tensor_send_recv                                       &
+     &     (nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
       end if
 !
       end subroutine cal_filtered_tensor_in_fluid

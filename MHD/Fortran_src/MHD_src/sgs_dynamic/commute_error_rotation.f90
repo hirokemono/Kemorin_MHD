@@ -60,7 +60,7 @@
 !
       call set_ff_nl_smp_2_ff(n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, ml, nod_fld1%ntot_phys, i_sgs, d_nod)
+     &    ff_nl, ml, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
       end subroutine cal_rotation_commute
 !
@@ -89,7 +89,7 @@
 !
       call set_ff_nl_smp_2_ff(n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, ml_fl, nod_fld1%ntot_phys, i_sgs, d_nod)
+     &    ff_nl, ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
       end subroutine cal_rotation_commute_fluid
 !
@@ -118,7 +118,7 @@
 !
       call set_ff_nl_smp_2_ff(n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, ml_cd, nod_fld1%ntot_phys, i_sgs, d_nod)
+     &    ff_nl, ml_cd, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
       end subroutine cal_rotation_commute_conduct
 !

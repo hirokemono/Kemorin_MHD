@@ -136,7 +136,7 @@
       call link_field_data_2_output(node1%numnod, nod_fld1%num_phys,    &
      &    nod_fld1%ntot_phys, nod_fld1%num_phys_viz,                    &
      &    nod_fld1%ntot_phys_viz, nod_fld1%num_component,               &
-     &    nod_fld1%phys_name, d_nod, fem_ucd)
+     &    nod_fld1%phys_name, nod_fld1%d_fld, fem_ucd)
 !
       end subroutine link_fem_field_data_2_ucd_out
 !
@@ -177,7 +177,7 @@
       call link_field_data_2_output(node1%numnod, nod_fld1%num_phys,    &
      &    nod_fld1%ntot_phys, nod_fld1%num_phys_viz,                    &
      &    nod_fld1%ntot_phys_viz, nod_fld1%num_component,               &
-     &    nod_fld1%phys_name, d_nod, local_ucd)
+     &    nod_fld1%phys_name, nod_fld1%d_fld, local_ucd)
 !
       call set_ucd_file_format(ifile_format)
       call set_ucd_file_prefix(ucd_prefix)

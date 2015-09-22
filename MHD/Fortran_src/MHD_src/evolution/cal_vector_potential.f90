@@ -43,7 +43,7 @@
 !
       call init_sol_potential(node1%numnod, node1%istack_nod_smp,       &
      &    coef_mag_p, nod_fld1%ntot_phys, iphys%i_m_phi, iphys%i_mag_p, &
-     &    d_nod)
+     &    nod_fld1%d_fld)
 !
 !     --------------------- 
 !
@@ -58,7 +58,7 @@
 !
       call init_sol_potential(node1%numnod, node1%istack_nod_smp,       &
      &    coef_mag_p, nod_fld1%ntot_phys, iphys%i_m_phi, iphys%i_mag_p, &
-     &    d_nod)
+     &    nod_fld1%d_fld)
 !
       do iloop = 0, maxiter_vecp
 !
@@ -68,7 +68,8 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
         call cal_sol_m_potential                                        &
      &     (node1%numnod, node1%istack_internal_smp,                    &
-     &      nod_fld1%ntot_phys, iphys%i_m_phi, iphys%i_mag_p, d_nod)
+     &      nod_fld1%ntot_phys, iphys%i_m_phi, iphys%i_mag_p,           &
+     &      nod_fld1%d_fld)
 !
         if (iflag_debug.gt.0) write(*,*) 'vector_potential_correct'
         call cal_vector_p_co

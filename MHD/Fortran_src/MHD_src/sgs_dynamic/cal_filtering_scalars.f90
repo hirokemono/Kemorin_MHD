@@ -41,25 +41,25 @@
 !
         call cal_3d_ez_filter_scalar_phys(num_whole_filter_grp,         &
      &      id_whole_filter_grp, i_scalar,                              &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING ) then
 !
         call cal_3d_filter_scalar_phys_smp(num_whole_filter_grp,        &
      &      id_whole_filter_grp, i_scalar,                              &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING) then
 !
         call cal_3d_ez_filter_scalar_smp(num_whole_filter_grp,          &
      &      id_whole_filter_grp, i_scalar,                              &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_FILTERING) then
 !
         call cal_3d_filter_scalar_phys(num_whole_filter_grp,            &
      &      id_whole_filter_grp, i_scalar,                              &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
 !
@@ -67,8 +67,9 @@
            call copy_scalar_component(i_scalar, i_filter)
         end if
         call cal_l_filtering_scalar(node1%numnod, node1%istack_nod_smp, &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
-        call scalar_send_recv(nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
+        call scalar_send_recv                                           &
+     &     (nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
       end if
 !
       end subroutine cal_filtered_scalar
@@ -94,25 +95,25 @@
 !
         call cal_3d_ez_filter_scalar_phys(num_fluid_filter_grp,         &
      &         id_fluid_filter_grp, i_scalar,                           &
-     &         nod_fld1%ntot_phys, i_filter, d_nod)
+     &         nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING ) then
 !
         call cal_3d_filter_scalar_phys_smp(num_fluid_filter_grp,        &
      &      id_fluid_filter_grp, i_scalar,                              &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING) then
 !
         call cal_3d_ez_filter_scalar_smp(num_fluid_filter_grp,          &
      &      id_fluid_filter_grp, i_scalar,                              &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_FILTERING) then
 !
         call cal_3d_filter_scalar_phys(num_fluid_filter_grp,            &
      &      id_fluid_filter_grp, i_scalar,                              &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
 !
@@ -120,8 +121,9 @@
            call copy_scalar_component(i_scalar, i_filter)
         end if
         call cal_l_filtering_scalar(node1%numnod, node1%istack_nod_smp, &
-     &      nod_fld1%ntot_phys, i_filter, d_nod)
-        call scalar_send_recv(nod_fld1%ntot_phys, i_filter, d_nod)
+     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
+        call scalar_send_recv                                           &
+     &     (nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
       end if
 !
       end subroutine cal_filtered_scalar_in_fluid

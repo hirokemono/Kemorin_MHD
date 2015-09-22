@@ -153,7 +153,7 @@
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp(node1%numnod, numnod_fluid, inod_fluid,   &
      &    node1%xx, node1%rr, node1%a_r, nod_fld1%ntot_phys,            &
-     &    iphys%i_ref_t, iphys%i_gref_t, d_nod)
+     &    iphys%i_ref_t, iphys%i_gref_t, nod_fld1%d_fld)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property

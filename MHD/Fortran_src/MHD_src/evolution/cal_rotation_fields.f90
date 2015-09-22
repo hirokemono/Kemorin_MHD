@@ -41,7 +41,8 @@
      &      iphys%i_vort, iphys%i_velo)
       end if
 !
-      call vector_send_recv(nod_fld1%ntot_phys, iphys%i_vort, d_nod)
+      call vector_send_recv                                             &
+     &   (nod_fld1%ntot_phys, iphys%i_vort, nod_fld1%d_fld)
       nod_fld1%iflag_update(iphys%i_vort:iphys%i_vort+2) = 1
 !
       end subroutine cal_vorticity
@@ -76,7 +77,8 @@
       end if
 !
       call set_boundary_current
-      call vector_send_recv(nod_fld1%ntot_phys, iphys%i_current, d_nod)
+      call vector_send_recv                                             &
+     &   (nod_fld1%ntot_phys, iphys%i_current, nod_fld1%d_fld)
       nod_fld1%iflag_update(iphys%i_current:iphys%i_current+2) = 1
 !
       end subroutine cal_current_density
@@ -107,7 +109,8 @@
       end if
 !
       call set_boundary_magne
-      call vector_send_recv(nod_fld1%ntot_phys, iphys%i_magne, d_nod)
+      call vector_send_recv                                             &
+     &   (nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld)
       nod_fld1%iflag_update(iphys%i_magne:iphys%i_magne+2) = 1
 !
       end subroutine cal_magnetic_f_by_vect_p

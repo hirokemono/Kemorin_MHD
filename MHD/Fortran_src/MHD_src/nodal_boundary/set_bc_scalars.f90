@@ -100,7 +100,7 @@
 !
       if (iflag_4_ref_temp .ne. id_no_ref_temp) then
         call set_fixed_bc_4_par_temp(numnod, nod_fld1%ntot_phys,        &
-     &      iphys%i_ref_t, d_nod)
+     &      iphys%i_ref_t, nod_fld1%d_fld)
       end if
 !
       end subroutine set_bc_fixed_temp_id
@@ -138,10 +138,10 @@
      &    ibc_ps_id, bc_ps_id_apt, iflag_bc_sgs_s, i0)
 !
       call set_potential_4_fixed_press(numnod, nod_fld1%ntot_phys,      &
-     &    iphys%i_press, iphys%i_p_phi, d_nod)
+     &    iphys%i_press, iphys%i_p_phi, nod_fld1%d_fld)
 
       call set_potential_4_sgs_press(numnod, nod_fld1%ntot_phys,        &
-     &    iphys%i_press, iphys%i_p_phi, d_nod)
+     &    iphys%i_press, iphys%i_p_phi, nod_fld1%d_fld)
 !
       end subroutine set_bc_fixed_press_id
 !

@@ -22,7 +22,7 @@
 !
 !>       Structure for nodal field data
       type(phys_data), save :: nod_fld1
-!nod_fld1%ntot_phys
+!nod_fld1%d_fld
 !
 !      integer (kind=kint) :: num_nod_phys
 !    number of physical data
@@ -37,7 +37,7 @@
 !
 !      character (len=kchara), pointer :: phys_nod_name(:)
 ! 
-      real (kind=kreal), pointer :: d_nod(:,:)
+!      real (kind=kreal), pointer :: d_nod(:,:)
 ! 
 !      integer (kind=kint), pointer :: iflag_nod_update(:)
 !
@@ -64,10 +64,10 @@
 !
        nod_fld1%n_point = node1%numnod
        allocate( nod_fld1%iflag_update(nod_fld1%ntot_phys) )
-       allocate( d_nod(nod_fld1%n_point,nod_fld1%ntot_phys) )
+       allocate( nod_fld1%d_fld(nod_fld1%n_point,nod_fld1%ntot_phys) )
 !
        nod_fld1%iflag_update = 0
-       d_nod = 0.0d0
+       nod_fld1%d_fld = 0.0d0
 !
        end subroutine allocate_data_arrays
 !
@@ -85,7 +85,7 @@
        subroutine deallocate_data_arrays
 !
        deallocate( nod_fld1%iflag_update )
-       deallocate( d_nod )
+       deallocate( nod_fld1%d_fld )
 !
        end subroutine deallocate_data_arrays
 !
@@ -103,7 +103,7 @@
       write(50+my_rank,*) 'inod, nodal field: ', i_field, numdir
       do inod = 1, node1%numnod
         write(50+my_rank,'(i16,1p10e25.14)')                            &
-     &         inod, (d_nod(inod,i_field+nd-1),nd=1, numdir)
+     &         inod, (nod_fld1%d_fld(inod,i_field+nd-1),nd=1, numdir)
       end do
 !
       end subroutine check_nodal_data
@@ -120,7 +120,7 @@
 !
       call link_field_name_type(nod_fld1, nod_fld)
       nod_fld%n_point = nod_fld1%n_point
-      nod_fld%d_fld =>   d_nod
+      nod_fld%d_fld =>   nod_fld1%d_fld
 !
       end subroutine link_nodal_fld_type
 !

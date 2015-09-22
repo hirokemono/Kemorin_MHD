@@ -42,13 +42,13 @@
      &     (node1%numnod, node1%istack_nod_smp, node1%xx,               &
      &      node1%rr, node1%ss, node1%a_r, node1%a_s,                   &
      &      nod_fld1%ntot_phys, iphys%i_sgs_simi, iphys%i_sgs_grad,     &
-     &      iphys%i_sgs_grad_f, d_nod)
+     &      iphys%i_sgs_grad_f, nod_fld1%d_fld)
       else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
         call convert_dynamic_vectors_2_cyl                              &
      &     (node1%numnod, node1%istack_nod_smp, node1%xx,               &
      &      node1%ss, node1%a_s, nod_fld1%ntot_phys,                    &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
-     &      d_nod)
+     &      nod_fld1%d_fld)
       end if
 !
       end subroutine cvt_vector_dynamic_scheme_coord
@@ -70,13 +70,13 @@
      &     (node1%numnod, node1%istack_nod_smp, node1%xx,               &
      &      node1%rr, node1%ss, node1%a_r, node1%a_s,                   &
      &      nod_fld1%ntot_phys, iphys%i_sgs_simi, iphys%i_sgs_grad,     &
-     &      iphys%i_sgs_grad_f, d_nod)
+     &      iphys%i_sgs_grad_f, nod_fld1%d_fld)
       else if(icoord_SGS_model_coef .eq. iflag_cylindrical) then
       call convert_dynamic_tensors_2_cyl                                &
      &     (node1%numnod, node1%istack_nod_smp, node1%xx,               &
      &      node1%ss, node1%a_s, nod_fld1%ntot_phys,                    &
      &      iphys%i_sgs_simi, iphys%i_sgs_grad, iphys%i_sgs_grad_f,     &
-     &      d_nod)
+     &      nod_fld1%d_fld)
       end if
 !
       end subroutine cvt_tensor_dynamic_scheme_coord

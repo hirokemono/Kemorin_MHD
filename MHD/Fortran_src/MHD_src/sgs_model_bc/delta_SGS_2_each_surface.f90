@@ -54,7 +54,7 @@
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_vect, i_field, i_flux, nod_fld1%ntot_phys,    &
-     &    d_nod, vector_sf)
+     &    nod_fld1%d_fld, vector_sf)
 !
       end subroutine d_SGS_flux_2_each_surface
 !
@@ -79,7 +79,7 @@
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_vect, i_field, i_flux, nod_fld1%ntot_phys,    &
-     &    d_nod, ak_e, vector_sf)
+     &    nod_fld1%d_fld, ak_e, vector_sf)
 !
       end subroutine d_SGS_flux_2_each_sf_w_coef
 !
@@ -104,7 +104,7 @@
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_vect, i_field, i_flux, nod_fld1%ntot_phys,    &
-     &    d_nod, coef, vector_sf)
+     &    nod_fld1%d_fld, coef, vector_sf)
 !
       end subroutine d_SGS_flux_2_each_sf_w_cst
 !
@@ -129,7 +129,7 @@
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_flux, i_b, i_v, nod_fld1%ntot_phys,           &
-     &    d_nod, vector_sf)
+     &    nod_fld1%d_fld, vector_sf)
 !
       end subroutine d_SGS_induct_t_2_each_surface
 !
@@ -154,7 +154,7 @@
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_flux, i_b, i_v, nod_fld1%ntot_phys,           &
-     &    d_nod, ak_e, vector_sf)
+     &    nod_fld1%d_fld, ak_e, vector_sf)
 !
       end subroutine d_SGS_induct_t_2_each_sf_w_coef
 !
@@ -179,7 +179,7 @@
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
      &    igrp, k2, nd, i_flux, i_b, i_v, nod_fld1%ntot_phys,           &
-     &    d_nod, coef, vector_sf)
+     &    nod_fld1%d_fld, coef, vector_sf)
 !
       end subroutine d_SGS_induct_t_2_each_sf_w_cst
 !

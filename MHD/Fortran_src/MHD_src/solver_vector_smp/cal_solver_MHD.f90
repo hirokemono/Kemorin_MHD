@@ -40,7 +40,7 @@
 !
       call copy_solver_vec_to_vector                                    &
      &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
-     &    iphys%i_velo, d_nod)
+     &    iphys%i_velo, nod_fld1%d_fld)
 !
       end subroutine cal_sol_velo_pre_crank
 !
@@ -56,12 +56,12 @@
 !
       call copy_ff_potential_to_rhs                                     &
      &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
-     &    iphys%i_p_phi, d_nod)
+     &    iphys%i_p_phi, nod_fld1%d_fld)
       call solver_MGCG_press
 !
       call copy_solver_vec_to_scalar                                    &
      &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
-     &    iphys%i_p_phi, d_nod)
+     &    iphys%i_p_phi, nod_fld1%d_fld)
 !
       end subroutine cal_sol_mod_po
 !
@@ -82,7 +82,7 @@
 !
       call copy_solver_vec_to_vector                                    &
      &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
-     &    iphys%i_vecp, d_nod)
+     &    iphys%i_vecp, nod_fld1%d_fld)
 !
       call clear_nodal_data(n_scalar, iphys%i_m_phi)
 !
@@ -104,7 +104,7 @@
 !
       call copy_solver_vec_to_vector                                    &
      &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
-     &    iphys%i_magne, d_nod)
+     &    iphys%i_magne, nod_fld1%d_fld)
 !
       end subroutine cal_sol_magne_pre_crank
 !
@@ -120,12 +120,12 @@
 !
       call copy_ff_potential_to_rhs                                     &
      &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
-     &    iphys%i_m_phi, d_nod)
+     &    iphys%i_m_phi, nod_fld1%d_fld)
       call solver_MGCG_magne_p
 !
       call copy_solver_vec_to_scalar                                    &
      &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
-     &    iphys%i_m_phi, d_nod)
+     &    iphys%i_m_phi, nod_fld1%d_fld)
 !
       end subroutine cal_sol_mag_po
 !
@@ -146,7 +146,7 @@
 !
       call copy_solver_vec_to_scalar                                    &
      &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
-     &    i_fld, d_nod)
+     &    i_fld, nod_fld1%d_fld)
 !
       end subroutine cal_sol_energy_crank
 !
@@ -166,7 +166,7 @@
 !
       call copy_solver_vec_to_scalar                                    &
      &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
-     &    i_fld, d_nod)
+     &    i_fld, nod_fld1%d_fld)
 !
       end subroutine cal_sol_d_scalar_crank
 !

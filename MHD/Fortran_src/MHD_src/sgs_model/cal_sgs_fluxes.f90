@@ -82,7 +82,7 @@
      &    write(*,*) 'cal_sgs_m_flux_diffuse', iphys%i_SGS_m_flux
         call cal_sgs_m_flux_diffuse(node1%numnod, nod_fld1%ntot_phys,   &
      &      iphys%i_velo, iphys%i_sgs_diffuse, iphys%i_SGS_m_flux,      &
-     &      d_nod)
+     &      nod_fld1%d_fld)
       end if
 !
       end subroutine cal_sgs_momentum_flux
@@ -114,7 +114,7 @@
      &     write(*,*) 'cal_sgs_m_flux_diffuse', iphys%i_SGS_maxwell
         call cal_sgs_m_flux_diffuse(node1%numnod, nod_fld1%ntot_phys,   &
      &      iphys%i_magne, iphys%i_sgs_diffuse, iphys%i_SGS_maxwell,    &
-     &      d_nod)
+     &      nod_fld1%d_fld)
       end if
 !
       end subroutine cal_sgs_maxwell

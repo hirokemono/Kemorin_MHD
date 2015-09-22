@@ -48,7 +48,7 @@
         call SGS_v_flux_2_each_element                                  &
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
      &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
-     &      i_vect, i_scalar, i_flux, d_nod, vect_e)
+     &      i_vect, i_scalar, i_flux, nod_fld1%d_fld, vect_e)
         call fem_skv_divergence(iele_fl_smp_stack,                      &
      &      intg_point_t_evo, k2, vect_e, sk6)
       end do
@@ -82,7 +82,7 @@
         call SGS_v_flux_2_each_element                                  &
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
      &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
-     &      i_vect, i_scalar, i_flux, d_nod, vect_e)
+     &      i_vect, i_scalar, i_flux, nod_fld1%d_fld, vect_e)
         call fem_skv_divergence_upw(iele_fl_smp_stack,                  &
      &      intg_point_t_evo, k2, d_ele(1,iele_velo), vect_e, sk6)
       end do

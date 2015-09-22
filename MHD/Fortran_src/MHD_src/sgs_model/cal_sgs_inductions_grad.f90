@@ -61,11 +61,11 @@
 !
       call add3_skv_coef_to_ff_v_smp_1st(coef_induct, ff_smp, sk6)
       call cal_ff_smp_2_vector                                          &
-     &   (ff_smp, ml_cd, nod_fld1%ntot_phys, i_sgs, d_nod)
+     &   (ff_smp, ml_cd, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_sgs, d_nod)
+      call vector_send_recv(nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
       end subroutine cal_sgs_induct_t_grad_w_coef
 !
@@ -99,11 +99,11 @@
 !
       call add3_skv_coef_to_ff_v_smp_1st(coef_induct, ff_smp, sk6)
       call cal_ff_smp_2_vector                                          &
-     &   (ff_smp, ml_cd, nod_fld1%ntot_phys, i_sgs, d_nod)
+     &   (ff_smp, ml_cd, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_sgs, d_nod)
+      call vector_send_recv(nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
       end subroutine cal_sgs_induct_t_grad_no_coef
 !

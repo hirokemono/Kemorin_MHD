@@ -38,7 +38,7 @@
       if (num_bc_e_nod .gt. 0) then
        call set_fixed_bc_scalar_phys(num_bc_e_nod, ibc_e_id,            &
      &     bc_e_id_apt, node1%numnod, nod_fld1%ntot_phys, iphys%i_temp, &
-     &     d_nod)
+     &     nod_fld1%d_fld)
       end if
 !
       end subroutine set_boundary_ene
@@ -56,7 +56,7 @@
       if (num_bc_e_nod .gt. 0) then
        call set_fixed_bc_scalar_phys(num_bc_e_nod, ibc_e_id,            &
      &     bc_e_id_apt, node1%numnod, nod_fld1%ntot_phys,               &
-     &     iphys%i_par_temp, d_nod)
+     &     iphys%i_par_temp, nod_fld1%d_fld)
       end if
 !
       end subroutine set_boundary_part_temp
@@ -91,7 +91,7 @@
 !
       if (num_bc_e_nod .gt. 0) then
        call del_scalar_phys_on_bc(num_bc_e_nod, ibc_e_id,               &
-     &     node1%numnod, nod_fld1%ntot_phys, i_field, d_nod)
+     &     node1%numnod, nod_fld1%ntot_phys, i_field, nod_fld1%d_fld)
       end if
 !
       end subroutine delete_field_by_fixed_t_bc
@@ -110,7 +110,7 @@
 !
       if (num_bc_e_nod .gt. 0) then
        call del_vector_phys_on_1bc(num_bc_e_nod, ibc_e_id,              &
-     &     node1%numnod, nod_fld1%ntot_phys, i_field, d_nod)
+     &     node1%numnod, nod_fld1%ntot_phys, i_field, nod_fld1%d_fld)
       end if
 !
       end subroutine delete_vector_by_fixed_t_bc
@@ -128,8 +128,8 @@
 !
       if (num_bc_composition_nod .gt. 0) then
         call set_fixed_bc_scalar_phys(num_bc_composition_nod,           &
-     &     ibc_composit_id, bc_composit_id_apt,                         &
-     &     node1%numnod, nod_fld1%ntot_phys, iphys%i_light, d_nod)
+     &     ibc_composit_id, bc_composit_id_apt, node1%numnod,           &
+     &     nod_fld1%ntot_phys, iphys%i_light, nod_fld1%d_fld)
       end if
 !
       end subroutine set_boundary_composition

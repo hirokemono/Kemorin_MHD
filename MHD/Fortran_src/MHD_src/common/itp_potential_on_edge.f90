@@ -38,15 +38,15 @@
           if     (nod_fld1%phys_name(i) .eq. fhd_press) then
             call cal_pressure_on_edge(node1%numnod,                     &
      &          edge1%numedge, edge1%nnod_4_edge, edge1%ie_edge,        &
-     &          nod_fld1%ntot_phys, iphys%i_press, d_nod)
+     &          nod_fld1%ntot_phys, iphys%i_press, nod_fld1%d_fld)
           else if(nod_fld1%phys_name(i) .eq. fhd_mag_potential) then
             call cal_pressure_on_edge(node1%numnod,                     &
      &          edge1%numedge, edge1%nnod_4_edge, edge1%ie_edge,        &
-     &          nod_fld1%ntot_phys, iphys%i_mag_p, d_nod)
+     &          nod_fld1%ntot_phys, iphys%i_mag_p, nod_fld1%d_fld)
           else if(nod_fld1%phys_name(i) .eq. fhd_scalar_potential) then
             call cal_pressure_on_edge(node1%numnod,                     &
      &          edge1%numedge, edge1%nnod_4_edge, edge1%ie_edge,        &
-     &          nod_fld1%ntot_phys, iphys%i_scalar_p, d_nod)
+     &          nod_fld1%ntot_phys, iphys%i_scalar_p, nod_fld1%d_fld)
           end if
 !
         end do

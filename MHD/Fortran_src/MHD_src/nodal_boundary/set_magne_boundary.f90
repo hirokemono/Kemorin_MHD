@@ -38,7 +38,7 @@
       if (nmax_bc_b_nod .gt. 0) then
           call set_fixed_bc_vect_phys(nmax_bc_b_nod, num_bc_b_nod,      &
      &        ibc_b_id, bc_b_id_apt, node1%numnod, nod_fld1%ntot_phys,  &
-     &        iphys%i_magne, d_nod)
+     &        iphys%i_magne, nod_fld1%d_fld)
       end if
 !
       end subroutine set_boundary_magne
@@ -69,7 +69,7 @@
       if (nmax_bc_b_nod/=0) then
         call del_vector_phys_on_bc(nmax_bc_b_nod, num_bc_b_nod,         &
      &      ibc_b_id, node1%numnod, nod_fld1%ntot_phys, i_field,        &
-     &      d_nod)
+     &      nod_fld1%d_fld)
       end if
 !
       end subroutine delete_field_by_fixed_b_bc

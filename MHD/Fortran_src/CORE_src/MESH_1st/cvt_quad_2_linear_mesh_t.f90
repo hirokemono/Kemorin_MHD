@@ -242,7 +242,7 @@
 !
 !
       call copy_original_data(node1%numnod, nod_fld1%ntot_phys,         &
-     &    d_nod, mesh_l%node%numnod, nod_fld_l%d_fld)
+     &    nod_fld1%d_fld, mesh_l%node%numnod, nod_fld_l%d_fld)
 !
       end subroutine copy_nod_phys_2_linear_t
 !

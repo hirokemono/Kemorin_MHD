@@ -42,14 +42,16 @@
         call pole_fld_cst_cross_prod                                    &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
      &      nnod_rtp, nidx_rtp(1), coef_velo, nod_fld1%ntot_phys,       &
-     &      iphys%i_vort, iphys%i_velo, iphys%i_m_advect, d_nod)
+     &      iphys%i_vort, iphys%i_velo, iphys%i_m_advect,               &
+     &      nod_fld1%d_fld)
       end if
 !
       if( (iphys%i_lorentz*iflag_4_lorentz) .gt. 0) then
         call pole_fld_cst_cross_prod                                    &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
      &      nnod_rtp, nidx_rtp(1), coef_lor, nod_fld1%ntot_phys,        &
-     &      iphys%i_current, iphys%i_velo, iphys%i_lorentz, d_nod)
+     &      iphys%i_current, iphys%i_velo, iphys%i_lorentz,             &
+     &      nod_fld1%d_fld)
       end if
 !
 !
@@ -57,7 +59,8 @@
         call pole_fld_cst_cross_prod                                    &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
      &      nnod_rtp, nidx_rtp(1), coef_induct, nod_fld1%ntot_phys,     &
-     &      iphys%i_velo, iphys%i_velo, iphys%i_vp_induct, d_nod)
+     &      iphys%i_velo, iphys%i_velo, iphys%i_vp_induct,              &
+     &      nod_fld1%d_fld)
       end if
 !
 !
@@ -65,14 +68,15 @@
         call pole_fld_cst_vec_scalar_prod                               &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
      &      nnod_rtp, nidx_rtp(1), coef_induct, nod_fld1%ntot_phys,     &
-     &      iphys%i_velo, iphys%i_temp, iphys%i_h_flux, d_nod)
+     &      iphys%i_velo, iphys%i_temp, iphys%i_h_flux, nod_fld1%d_fld)
       end if
 !
       if( (iphys%i_c_flux*iflag_t_evo_4_composit) .gt. 0) then
         call pole_fld_cst_vec_scalar_prod                               &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
      &      nnod_rtp, nidx_rtp(1), coef_induct, nod_fld1%ntot_phys,     &
-     &      iphys%i_velo, iphys%i_light, iphys%i_c_flux, d_nod)
+     &      iphys%i_velo, iphys%i_light, iphys%i_c_flux,                &
+     &      nod_fld1%d_fld)
       end if
 !
       end subroutine pole_nonlinear_sph_MHD
@@ -97,21 +101,23 @@
         call pole_fld_cst_dot_prod                                      &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
      &      nnod_rtp, nidx_rtp(1), one, nod_fld1%ntot_phys,             &
-     &      iphys%i_lorentz, iphys%i_velo, iphys%i_ujb, d_nod)
+     &      iphys%i_lorentz, iphys%i_velo, iphys%i_ujb, nod_fld1%d_fld)
       end if
 !
       if( (iphys%i_lorentz*iphys%i_nega_ujb) .gt. 0) then
         call pole_fld_cst_dot_prod                                      &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
      &      nnod_rtp, nidx_rtp(1), dminus, nod_fld1%ntot_phys,          &
-     &      iphys%i_lorentz, iphys%i_velo, iphys%i_nega_ujb, d_nod)
+     &      iphys%i_lorentz, iphys%i_velo, iphys%i_nega_ujb,            &
+     &      nod_fld1%d_fld)
       end if
 !
       if( (iphys%i_induction*iphys%i_me_gen) .gt. 0) then
         call pole_fld_cst_dot_prod                                      &
      &     (node1%numnod, node1%internal_node, node1%xx,                &
      &      nnod_rtp, nidx_rtp(1), one, nod_fld1%ntot_phys,             &
-     &      iphys%i_induction, iphys%i_magne, iphys%i_me_gen, d_nod)
+     &      iphys%i_induction, iphys%i_magne, iphys%i_me_gen,           &
+     &      nod_fld1%d_fld)
       end if
 !
 !
@@ -121,7 +127,7 @@
      &     (node1%numnod, node1%internal_node, node1%xx,                &
      &      nnod_rtp, nidx_rtp(1), coef_d_magne, nod_fld1%ntot_phys,    &
      &      iphys%i_current, iphys%i_vp_induct, iphys%i_electric,       &
-     &      d_nod)
+     &      nod_fld1%d_fld)
       end if
 !
       if((iphys%i_current*iphys%i_vp_induct*iphys%i_poynting) .gt. 0)   &
@@ -130,7 +136,7 @@
      &     (node1%numnod, node1%internal_node, node1%xx,                &
      &      nnod_rtp, nidx_rtp(1), coef_d_magne, nod_fld1%ntot_phys,    &
      &      iphys%i_current, iphys%i_vp_induct, iphys%i_magne,          &
-     &      iphys%i_poynting, d_nod)
+     &      iphys%i_poynting, nod_fld1%d_fld)
       end if
 !
 !
@@ -138,13 +144,15 @@
         if(iflag_4_ref_temp .eq. id_sphere_ref_temp) then
           call pole_sph_buoyancy_flux                                   &
      &       (node1%numnod, node1%internal_node, node1%xx,              &
-     &         nnod_rtp, nidx_rtp(1), coef_buo, nod_fld1%ntot_phys,     &
-     &         iphys%i_par_temp, iphys%i_velo, iphys%i_buo_gen, d_nod)
+     &        nnod_rtp, nidx_rtp(1), coef_buo, nod_fld1%ntot_phys,      &
+     &        iphys%i_par_temp, iphys%i_velo, iphys%i_buo_gen,          &
+     &        nod_fld1%d_fld)
         else
           call pole_sph_buoyancy_flux                                   &
      &       (node1%numnod, node1%internal_node, node1%xx,              &
      &        nnod_rtp, nidx_rtp(1), coef_buo, nod_fld1%ntot_phys,      &
-     &        iphys%i_temp ,iphys%i_velo, iphys%i_buo_gen, d_nod)
+     &        iphys%i_temp ,iphys%i_velo, iphys%i_buo_gen,              &
+     &        nod_fld1%d_fld)
         end if
       end if
 !
@@ -152,7 +160,8 @@
         call pole_sph_buoyancy_flux                                     &
      &       (node1%numnod, node1%internal_node, node1%xx,              &
      &        nnod_rtp, nidx_rtp(1), coef_comp_buo, nod_fld1%ntot_phys, &
-     &        iphys%i_light, iphys%i_velo, iphys%i_c_buo_gen, d_nod)
+     &        iphys%i_light, iphys%i_velo, iphys%i_c_buo_gen,           &
+     &        nod_fld1%d_fld)
       end if
 !
       if(iphys%i_f_buo_gen .gt. 0) then
@@ -160,7 +169,7 @@
      &       (node1%numnod, node1%internal_node, node1%xx,              &
      &        nnod_rtp, nidx_rtp(1), coef_buo, nod_fld1%ntot_phys,      &
      &        iphys%i_filter_temp, iphys%i_velo, iphys%i_f_buo_gen,     &
-     &        d_nod)
+     &        nod_fld1%d_fld)
       end if
 !$omp end parallel
 !

@@ -211,7 +211,7 @@
             ist = nod_fld1%istack_component(i_fld-1) + 1
             ied = nod_fld1%istack_component(i_fld)
             write(id_monitor_file,'(1p6E25.15e3)',                      &
-     &             advance='NO')  d_nod(inod,ist:ied)
+     &             advance='NO')  nod_fld1%d_fld(inod,ist:ied)
           end if
         end do
         write(id_monitor_file,'(a)') ''

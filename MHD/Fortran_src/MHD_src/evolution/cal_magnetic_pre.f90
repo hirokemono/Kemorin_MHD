@@ -85,8 +85,9 @@
        call cal_magne_pre_consist_crank
       end if
 !
-       call set_boundary_magne
-       call vector_send_recv(nod_fld1%ntot_phys, iphys%i_magne, d_nod)
+      call set_boundary_magne
+      call vector_send_recv                                             &
+     &   (nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld)
 !
       end subroutine cal_magnetic_field_pre
 !

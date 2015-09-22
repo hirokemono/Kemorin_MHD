@@ -41,7 +41,7 @@
 !
 !
       call vector_on_element_1st(iele_fl_smp_stack, intg_point_t_evo,   &
-     &    nod_fld1%ntot_phys, iphys%i_velo, d_nod,                      &
+     &    nod_fld1%ntot_phys, iphys%i_velo, nod_fld1%d_fld,             &
      &    fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%iflag_update,  &
      &    fld_ele1%d_fld)
 !
@@ -58,7 +58,7 @@
 !
 !
       call vector_on_element_1st(ele1%istack_ele_smp, intg_point_t_evo, &
-     &    nod_fld1%ntot_phys, iphys%i_magne, d_nod,                     &
+     &    nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld,            &
      &    fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%iflag_update, &
      &    fld_ele1%d_fld)
 !
@@ -75,7 +75,7 @@
 !
 !
       call vector_on_element_1st(ele1%istack_ele_smp, intg_point_t_evo, &
-     &    nod_fld1%ntot_phys, iphys%i_filter_magne, d_nod,              &
+     &    nod_fld1%ntot_phys, iphys%i_filter_magne, nod_fld1%d_fld,     &
      &    fld_ele1%ntot_phys, iphys_ele%i_filter_magne,                 &
      &    fld_ele1%iflag_update, fld_ele1%d_fld)
 !
@@ -92,7 +92,7 @@
 !
 !
       call rotation_on_element_1st(iele_fl_smp_stack, intg_point_t_evo, &
-     &    nod_fld1%ntot_phys, iphys%i_velo, d_nod,                      &
+     &    nod_fld1%ntot_phys, iphys%i_velo, nod_fld1%d_fld,             &
      &    fld_ele1%ntot_phys, iphys_ele%i_vort,                         &
      &    fld_ele1%iflag_update, fld_ele1%d_fld)
 !
@@ -110,7 +110,7 @@
 !
       call rotation_on_element_1st                                      &
      &   (ele1%istack_ele_smp, intg_point_t_evo,                        &
-     &    nod_fld1%ntot_phys, iphys%i_vecp, d_nod,                      &
+     &    nod_fld1%ntot_phys, iphys%i_vecp, nod_fld1%d_fld,             &
      &    fld_ele1%ntot_phys, iphys_ele%i_magne,                        &
      &    fld_ele1%iflag_update, fld_ele1%d_fld)
 !
@@ -127,7 +127,7 @@
 !
 !
       call rotation_on_element_1st(iele_cd_smp_stack, intg_point_t_evo, &
-     &    nod_fld1%ntot_phys, iphys%i_magne, d_nod,                     &
+     &    nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld,            &
      &    fld_ele1%ntot_phys, iphys_ele%i_current,                      &
      &    fld_ele1%iflag_update, fld_ele1%d_fld)
 !
@@ -145,7 +145,7 @@
 !
       call rotation_on_element_1st                                      &
      &   (ele1%istack_ele_smp, intg_point_t_evo,                        &
-     &    nod_fld1%ntot_phys, iphys%i_filter_vecp, d_nod,               &
+     &    nod_fld1%ntot_phys, iphys%i_filter_vecp, nod_fld1%d_fld,      &
      &    fld_ele1%ntot_phys, iphys_ele%i_filter_magne,                 &
      &    fld_ele1%iflag_update, fld_ele1%d_fld)
 !

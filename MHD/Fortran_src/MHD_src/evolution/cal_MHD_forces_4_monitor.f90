@@ -38,27 +38,28 @@
       if (iphys%i_h_flux .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_h_flux)
         call cal_flux_vector(node1, nod_fld1%ntot_phys,                 &
-     &      iphys%i_velo, iphys%i_temp, iphys%i_h_flux, d_nod)
+     &      iphys%i_velo, iphys%i_temp, iphys%i_h_flux, nod_fld1%d_fld)
       else if (iphys%i_ph_flux .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_ph_flux)
-        call cal_flux_vector(node1, nod_fld1%ntot_phys,                 &
-     &      iphys%i_velo, iphys%i_par_temp, iphys%i_ph_flux, d_nod)
+        call cal_flux_vector(node1, nod_fld1%ntot_phys, iphys%i_velo,   &
+     &      iphys%i_par_temp, iphys%i_ph_flux, nod_fld1%d_fld)
       else if (iphys%i_c_flux .gt.  izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_c_flux)
-        call cal_flux_vector(node1, nod_fld1%ntot_phys,                 &
-     &      iphys%i_velo, iphys%i_light, iphys%i_c_flux, d_nod)
+        call cal_flux_vector(node1, nod_fld1%ntot_phys, iphys%i_velo,   &
+     &      iphys%i_light, iphys%i_c_flux, nod_fld1%d_fld)
       else if (iphys%i_m_flux .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_mom_flux)
         call cal_flux_tensor(node1, nod_fld1%ntot_phys,                 &
-     &      iphys%i_velo, iphys%i_velo, iphys%i_m_flux, d_nod)
+     &      iphys%i_velo, iphys%i_velo, iphys%i_m_flux, nod_fld1%d_fld)
       else if (iphys%i_maxwell .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_maxwell_t)
         call cal_maxwell_tensor(node1, ex_magne, nod_fld1%ntot_phys,    &
-     &      iphys%i_magne, iphys%i_maxwell, d_nod)
+     &      iphys%i_magne, iphys%i_maxwell, nod_fld1%d_fld)
       else if (iphys%i_induct_t .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_induct_t)
         call cal_induction_tensor(node1, nod_fld1%ntot_phys,            &
-     &      iphys%i_magne, iphys%i_velo, iphys%i_induct_t, d_nod)
+     &      iphys%i_magne, iphys%i_velo, iphys%i_induct_t,              &
+     &      nod_fld1%d_fld)
       else if (iphys%i_density .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_density)
         call set_boussinesq_density_at_node
@@ -273,7 +274,7 @@
      &             write(*,*) 'lead  ', trim(fhd_e_field)
         call cal_nod_electric_field_smp                                 &
      &     (node1, coef_d_magne, nod_fld1%ntot_phys, iphys%i_current,   &
-     &      iphys%i_vp_induct, iphys%i_electric, d_nod)
+     &      iphys%i_vp_induct, iphys%i_electric, nod_fld1%d_fld)
       end if
 !
       if (iphys%i_ujb .gt. izero) then
@@ -357,7 +358,7 @@
         call cal_nod_poynting_flux_smp                                  &
      &     (node1, coef_d_magne, nod_fld1%ntot_phys, iphys%i_current,   &
      &      iphys%i_vp_induct, iphys%i_magne, iphys%i_poynting,         &
-     &      d_nod)
+     &      nod_fld1%d_fld)
       end if
 !$omp end parallel
 !

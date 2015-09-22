@@ -62,8 +62,10 @@
       if (iflag_debug.eq.1)   write(*,*) 'set_boundary_magne'
       call set_boundary_magne
 !
-      call vector_send_recv(nod_fld1%ntot_phys, iphys%i_magne, d_nod)
-      call scalar_send_recv(nod_fld1%ntot_phys, iphys%i_mag_p, d_nod)
+      call vector_send_recv                                             &
+     &   (nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld)
+      call scalar_send_recv                                             &
+     &   (nod_fld1%ntot_phys, iphys%i_mag_p, nod_fld1%d_fld)
 !
       end subroutine cal_magnetic_co
 !
@@ -173,7 +175,8 @@
 !
       call set_boundary_magne
 !
-      call vector_send_recv(nod_fld1%ntot_phys, iphys%i_magne, d_nod)
+      call vector_send_recv                                             &
+     &   (nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld)
 !
       end subroutine cal_magnetic_co_outside
 !

@@ -80,24 +80,25 @@
         call int_vol_2rms_ave_ele_grps_1st(intg_point_t_evo,            &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%item_layer,              &
-     &      nod_fld1%ntot_phys, iphys%i_reynolds_wk, d_nod,             &
-     &      nod_fld1%ntot_phys, iphys%i_SGS_buo_wk, d_nod,              &
+     &      nod_fld1%ntot_phys, iphys%i_reynolds_wk, nod_fld1%d_fld,    &
+     &      nod_fld1%ntot_phys, iphys%i_SGS_buo_wk, nod_fld1%d_fld,     &
      &      sgs_l(1,1), sgs_l(1,4), sgs_l(1,2), sgs_l(1,5) )
 !
         if(iflag_4_composit_buo .gt. id_turn_OFF) then
           call int_vol_rms_ave_ele_grps_1st(intg_point_t_evo,           &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack, layer_tbl1%item_layer,            &
-     &        nod_fld1%ntot_phys, iphys%i_SGS_comp_buo_wk, d_nod,       &
-     &        sgs_l(1,3), sgs_l(1,6))
+     &        nod_fld1%ntot_phys, iphys%i_SGS_comp_buo_wk,              &
+     &        nod_fld1%d_fld, sgs_l(1,3), sgs_l(1,6))
         end if
       else if(iflag_4_composit_buo .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps_1st(intg_point_t_evo,            &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%item_layer,              &
-     &      nod_fld1%ntot_phys, iphys%i_reynolds_wk, d_nod,             &
-     &      nod_fld1%ntot_phys, iphys%i_SGS_comp_buo_wk, d_nod,         &
-     &      sgs_l(1,1), sgs_l(1,4), sgs_l(1,3), sgs_l(1,6) )
+     &      nod_fld1%ntot_phys, iphys%i_reynolds_wk, nod_fld1%d_fld,    &
+     &      nod_fld1%ntot_phys, iphys%i_SGS_comp_buo_wk,                &
+     &      nod_fld1%d_fld, sgs_l(1,1), sgs_l(1,4), sgs_l(1,3),         &
+     &      sgs_l(1,6) )
       end if
 !
 !

@@ -55,7 +55,7 @@
       if (nmax_bc_v_nod .gt. 0) then
         call set_fixed_bc_vect_phys(nmax_bc_v_nod, num_bc_v_nod,        &
      &      ibc_v_id, bc_v_id_apt, node1%numnod, nod_fld1%ntot_phys,    &
-     &      iphys%i_velo, d_nod)
+     &      iphys%i_velo, nod_fld1%d_fld)
       end if
 !
 !   set rotation boundary
@@ -63,7 +63,7 @@
       if (num_bc_v10_nod .gt. 0) then
        call set_rotation_boundary(node1%numnod, node1%xx,               &
      &     num_bc_v10_nod, ibc_v10_id, bc_v10_id_apt,                   &
-     &     nod_fld1%ntot_phys, iphys%i_velo, d_nod)
+     &     nod_fld1%ntot_phys, iphys%i_velo, nod_fld1%d_fld)
       end if
 !
 !   boundary condition for special case
@@ -72,13 +72,13 @@
       if (num_bc_vsp_nod .gt. 0) then
         call set_specific_boundary_velo(node1%numnod, node1%xx,         &
      &      num_bc_vsp_nod, ibc_vsp_id, bc_vsp_id_apt,                  &
-     &      nod_fld1%ntot_phys, iphys%i_velo, d_nod)
+     &      nod_fld1%ntot_phys, iphys%i_velo, nod_fld1%d_fld)
       end if
 !
 !
       if (num_bc_vr0_nod .gt. 0) then
         call del_radial_velocity(node1%numnod, node1%xx, node1%a_r,     &
-     &      nod_fld1%ntot_phys, iphys%i_velo, d_nod)
+     &      nod_fld1%ntot_phys, iphys%i_velo, nod_fld1%d_fld)
       end if
 !
       end subroutine set_boundary_velo
@@ -121,17 +121,17 @@
       if (nmax_bc_v_nod/=0) then
        call del_vector_phys_on_bc(nmax_bc_v_nod, num_bc_v_nod,          &
      &     ibc_v_id, node1%numnod, nod_fld1%ntot_phys, i_field,         &
-     &     d_nod)
+     &     nod_fld1%d_fld)
       end if
 !
       if (num_bc_v10_nod/=0) then
        call del_vector_phys_on_1bc(num_bc_v10_nod, ibc_v10_id,          &
-     &     node1%numnod, nod_fld1%ntot_phys, i_field, d_nod)
+     &     node1%numnod, nod_fld1%ntot_phys, i_field, nod_fld1%d_fld)
       end if
 !
       if (num_bc_vsp_nod/=0) then
        call del_vector_phys_on_1bc(num_bc_vsp_nod, ibc_vsp_id,          &
-     &     node1%numnod, nod_fld1%ntot_phys, i_field, d_nod)
+     &     node1%numnod, nod_fld1%ntot_phys, i_field, nod_fld1%d_fld)
       end if
 !
 !

@@ -208,7 +208,7 @@
 !
             if ( ibc_field_type(j) == 999 ) then
               call set_r_magne_sph(node, nod_grp, l_f, i, j,            &
-     &            nod_fld1%ntot_phys, iphys%i_magne, d_nod)
+     &            nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld)
             end if
 !
           end if

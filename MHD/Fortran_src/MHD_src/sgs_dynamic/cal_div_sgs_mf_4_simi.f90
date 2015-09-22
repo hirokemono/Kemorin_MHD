@@ -97,11 +97,11 @@
 !
       call set_ff_nl_smp_2_ff(n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, ml_fl, nod_fld1%ntot_phys, i_sgs, d_nod)
+     &    ff_nl, ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_sgs, d_nod)
+      call vector_send_recv(nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
       end subroutine cal_div_sgs_mf_simi
 !

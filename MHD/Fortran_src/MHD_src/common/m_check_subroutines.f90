@@ -29,7 +29,8 @@
        write(50+my_rank,*) 'inum, inod, ref_temp'
        do inum = 1, numnod_fluid
          inod = inod_fluid(inum)
-         write(50+my_rank,*) inum, inod, d_nod(inod,iphys%i_ref_t)
+         write(50+my_rank,*)                                            &
+     &          inum, inod, nod_fld1%d_fld(inod,iphys%i_ref_t)
        end do
 !
        end subroutine check_reference_temp

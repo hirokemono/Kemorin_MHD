@@ -189,11 +189,12 @@
 !
       call add6_skv_to_ff_t_smp_1st(ff_t_smp, sk6)
       call cal_ff_smp_2_tensor                                          &
-     &   (ff_t_smp, ml_fl, nod_fld1%ntot_phys, i_sgs, d_nod)
+     &   (ff_t_smp, ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
 !
-      call sym_tensor_send_recv(nod_fld1%ntot_phys, i_sgs, d_nod)
+      call sym_tensor_send_recv                                         &
+     &   (nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
       end subroutine cal_sgs_m_flux_grad_w_coef
 !
@@ -224,11 +225,12 @@
 !
       call add6_skv_to_ff_t_smp_1st(ff_t_smp, sk6)
       call cal_ff_smp_2_tensor                                          &
-     &   (ff_t_smp, ml_fl, nod_fld1%ntot_phys, i_sgs, d_nod)
+     &   (ff_t_smp, ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
 !
-      call sym_tensor_send_recv(nod_fld1%ntot_phys, i_sgs, d_nod)
+      call sym_tensor_send_recv                                         &
+     &   (nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
       end subroutine cal_sgs_m_flux_grad_no_coef
 !

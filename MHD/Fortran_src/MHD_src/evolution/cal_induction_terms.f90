@@ -52,9 +52,10 @@
       call set_boundary_vect_p_4_rhs
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, ml_cd, nod_fld1%ntot_phys, iphys%i_vp_induct, d_nod)
+     &    ff_nl, ml_cd, nod_fld1%ntot_phys, iphys%i_vp_induct,          &
+     &    nod_fld1%d_fld)
       call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_vp_induct, d_nod)
+     &   (nod_fld1%ntot_phys, iphys%i_vp_induct, nod_fld1%d_fld)
 !
       end subroutine cal_vecp_induction
 !
@@ -83,10 +84,11 @@
       call set_boundary_vect_p_4_rhs
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff, ml_cd, nod_fld1%ntot_phys, iphys%i_vp_diffuse, d_nod)
+     &    ff, ml_cd, nod_fld1%ntot_phys, iphys%i_vp_diffuse,            &
+     &    nod_fld1%d_fld)
 !
       call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_vp_diffuse, d_nod)
+     &   (nod_fld1%ntot_phys, iphys%i_vp_diffuse, nod_fld1%d_fld)
 !
       end subroutine cal_vecp_diffusion
 !

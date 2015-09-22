@@ -44,14 +44,14 @@
 !  ----------   set filtered flux into array
 !
        call cal_flux_tensor(node1, nod_fld1%ntot_phys,                  &
-     &     i_vect, i_vect, i_sgs, d_nod)
+     &     i_vect, i_vect, i_sgs, nod_fld1%d_fld)
        call cal_filtered_sym_tensor(i_sgs, i_sgs)
 !
 !  ----------   substruct flux obtained by filterd values
 !
        call cal_sgs_flux_tensor(node1%numnod, node1%istack_nod_smp,     &
      &     nod_fld1%ntot_phys, i_sgs, i_vect_f, i_vect_f, icm_sgs,      &
-     &     d_nod)
+     &     nod_fld1%d_fld)
 !
       end subroutine cal_sgs_mf_simi
 !
@@ -71,12 +71,12 @@
 !
 !
       call cal_flux_vector(node1, nod_fld1%ntot_phys,                   &
-     &    iphys%i_velo, ifield, i_sgs, d_nod)
+     &    iphys%i_velo, ifield, i_sgs, nod_fld1%d_fld)
       call cal_filtered_vector(i_sgs, i_sgs)
 !
       call cal_sgs_flux_vector(node1%numnod, node1%istack_nod_smp,      &
      &    nod_fld1%ntot_phys, i_sgs, iphys%i_filter_velo, ifield_f,     &
-     &    icm_sgs, d_nod)
+     &    icm_sgs, nod_fld1%d_fld)
 !
       end subroutine cal_sgs_hf_simi
 !
@@ -96,14 +96,14 @@
 !  ----------   set filtered flux into array
 !
        call cal_induction_tensor(node1, nod_fld1%ntot_phys,             &
-     &     i_b, i_v, i_sgs, d_nod)
+     &     i_b, i_v, i_sgs, nod_fld1%d_fld)
        call cal_filtered_vector(i_sgs, i_sgs)
 !
 !  ----------   substruct flux obtained by filterd values
 !
        call subctract_induction_tensor                                  &
      &    (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,      &
-     &     i_sgs, i_fil_b, i_fil_v, icm_sgs, d_nod)
+     &     i_sgs, i_fil_b, i_fil_v, icm_sgs, nod_fld1%d_fld)
 !
       end subroutine cal_sgs_induct_t_simi
 !
@@ -127,7 +127,7 @@
       call cal_filtered_vector(i_sgs, i_sgs)
 !
       call subctract_uxb_vector(node1%numnod, node1%istack_nod_smp,     &
-     &    nod_fld1%ntot_phys, i_sgs, i_fil_v, i_fil_b, d_nod)
+     &    nod_fld1%ntot_phys, i_sgs, i_fil_v, i_fil_b, nod_fld1%d_fld)
 !
       end subroutine cal_sgs_uxb_simi
 !
@@ -163,14 +163,14 @@
 !  ----------   set filtered flux into array
 !
        call cal_flux_tensor(node1, nod_fld1%ntot_phys,                  &
-     &     i_vect, i_vect, i_sgs, d_nod)
+     &     i_vect, i_vect, i_sgs, nod_fld1%d_fld)
        call cal_w_filtered_sym_tensor(i_sgs, i_sgs)
 !
 !  ----------   substruct flux obtained by filterd values
 !
        call cal_sgs_flux_tensor(node1%numnod, node1%istack_nod_smp,     &
      &     nod_fld1%ntot_phys, i_sgs, i_vect_f, i_vect_f, icm_sgs,      &
-     &     d_nod)
+     &     nod_fld1%d_fld)
 !
       end subroutine cal_sgs_mf_simi_wide
 !
@@ -190,12 +190,12 @@
 !
 !
       call cal_flux_vector(node1, nod_fld1%ntot_phys,                   &
-     &    iphys%i_velo, ifield, i_sgs, d_nod)
+     &    iphys%i_velo, ifield, i_sgs, nod_fld1%d_fld)
       call cal_w_filtered_vector(i_sgs, i_sgs)
 !
       call cal_sgs_flux_vector(node1%numnod, node1%istack_nod_smp,      &
      &    nod_fld1%ntot_phys, i_sgs, iphys%i_filter_velo, ifield_f,     &
-     &    icm_sgs, d_nod)
+     &    icm_sgs, nod_fld1%d_fld)
 !
       end subroutine cal_sgs_hf_simi_wide
 !
@@ -215,14 +215,14 @@
 !  ----------   set filtered flux into array
 !
        call cal_induction_tensor(node1, nod_fld1%ntot_phys,             &
-     &     i_b, i_v, i_sgs, d_nod)
+     &     i_b, i_v, i_sgs, nod_fld1%d_fld)
        call cal_w_filtered_vector(i_sgs, i_sgs)
 !
 !  ----------   substruct flux obtained by filterd values
 !
        call subctract_induction_tensor                                  &
      &    (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,      &
-     &     i_sgs, i_fil_b, i_fil_v, icm_sgs, d_nod)
+     &     i_sgs, i_fil_b, i_fil_v, icm_sgs, nod_fld1%d_fld)
 !
       end subroutine cal_sgs_induct_t_simi_wide
 !
@@ -247,7 +247,7 @@
       call cal_w_filtered_vector(i_sgs, i_sgs)
 !
       call subctract_uxb_vector(node1%numnod, node1%istack_nod_smp,     &
-     &    nod_fld1%ntot_phys, i_sgs, i_fil_v, i_fil_b, d_nod)
+     &    nod_fld1%ntot_phys, i_sgs, i_fil_v, i_fil_b, nod_fld1%d_fld)
 !
       end subroutine cal_sgs_uxb_simi_wide
 !

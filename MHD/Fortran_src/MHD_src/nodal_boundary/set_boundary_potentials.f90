@@ -37,7 +37,7 @@
       if (num_bc_p_nod/=0) then
        call set_fixed_bc_scalar_phys(num_bc_p_nod, ibc_p_id,            &
      &     bc_p_id_apt, node1%numnod, nod_fld1%ntot_phys,               &
-     &     iphys%i_p_phi, d_nod)
+     &     iphys%i_p_phi, nod_fld1%d_fld)
       end if
 !
       end subroutine set_boundary_phi
@@ -55,7 +55,7 @@
       if (num_bc_mag_p_nod/=0) then
        call set_fixed_bc_scalar_phys(num_bc_mag_p_nod, ibc_mag_p_id,    &
      &     bc_mag_p_id_apt, node1%numnod, nod_fld1%ntot_phys,           &
-     &     iphys%i_m_phi, d_nod)
+     &     iphys%i_m_phi, nod_fld1%d_fld)
       end if
 !
       end subroutine set_boundary_m_phi

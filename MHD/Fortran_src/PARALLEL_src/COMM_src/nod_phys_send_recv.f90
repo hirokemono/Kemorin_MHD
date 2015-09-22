@@ -66,17 +66,20 @@
         if (nod_fld1%num_component(i) .eq. n_vector) then
           if (iflag_debug .ge. iflag_routine_msg) write(*,*)            &
      &      'comm. for vector of ', trim(nod_fld1%phys_name(i))
-          call vector_send_recv(nod_fld1%ntot_phys, ist, d_nod)
+          call vector_send_recv                                         &
+     &       (nod_fld1%ntot_phys, ist, nod_fld1%d_fld)
 !
         else if (nod_fld1%num_component(i) .eq. n_scalar) then
           if (iflag_debug .ge. iflag_routine_msg) write(*,*)            &
      &      'comm. for scaler of ', trim(nod_fld1%phys_name(i))
-          call scalar_send_recv(nod_fld1%ntot_phys, ist, d_nod)
+          call scalar_send_recv                                         &
+     &       (nod_fld1%ntot_phys, ist, nod_fld1%d_fld)
 !
         else if (nod_fld1%num_component(i) .eq. n_sym_tensor) then
           if (iflag_debug .ge. iflag_routine_msg) write(*,*)            &
      &      'comm. for tensor of ', trim(nod_fld1%phys_name(i))
-          call sym_tensor_send_recv(nod_fld1%ntot_phys, ist, d_nod)
+          call sym_tensor_send_recv                                     &
+     &       (nod_fld1%ntot_phys, ist, nod_fld1%d_fld)
         end if
       end do
 !

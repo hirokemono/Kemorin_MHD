@@ -74,7 +74,8 @@
 !
       call set_boundary_composition
 !
-      call scalar_send_recv(nod_fld1%ntot_phys, iphys%i_light, d_nod)
+      call scalar_send_recv                                             &
+     &   (nod_fld1%ntot_phys, iphys%i_light, nod_fld1%d_fld)
 !
       end subroutine cal_light_element_variation
 !

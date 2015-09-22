@@ -77,7 +77,7 @@
       call delete_field_by_fixed_t_bc(iphys%i_sgs_grad_f)
 !
       call scalar_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_sgs_grad_f, d_nod)
+     &   (nod_fld1%ntot_phys, iphys%i_sgs_grad_f, nod_fld1%d_fld)
 !
 !      call check_nodal_data(my_rank, n_scalar, iphys%i_sgs_grad_f)
 !
@@ -86,7 +86,7 @@
       call cal_commute_error_4_h_flux(ifilter_2delta)
 !
       call scalar_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_sgs_grad, d_nod)
+     &   (nod_fld1%ntot_phys, iphys%i_sgs_grad, nod_fld1%d_fld)
 !
 !    filtering (to iphys%i_sgs_grad)
 !

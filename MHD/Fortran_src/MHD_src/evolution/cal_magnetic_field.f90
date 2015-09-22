@@ -50,7 +50,7 @@
 !
       call init_sol_potential(node1%numnod, node1%istack_nod_smp,       &
      &    coef_mag_p, nod_fld1%ntot_phys, iphys%i_m_phi, iphys%i_mag_p, &
-     &    d_nod)
+     &    nod_fld1%d_fld)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_magnetic_field_pre'
       call cal_magnetic_field_pre
@@ -66,7 +66,8 @@
 !
         call cal_sol_m_potential                                        &
      &     (node1%numnod, node1%istack_internal_smp,                    &
-     &      nod_fld1%ntot_phys, iphys%i_m_phi, iphys%i_mag_p, d_nod)
+     &      nod_fld1%ntot_phys, iphys%i_m_phi, iphys%i_mag_p,           &
+     &      nod_fld1%d_fld)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'magnetic_correction'

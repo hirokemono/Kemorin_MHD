@@ -37,8 +37,9 @@
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
 !
 !
-      call cal_sol_velocity_co(node1%numnod, inter_smp_stack,           &
-     &    nod_fld1%ntot_phys, iphys%i_velo, iphys%i_p_phi, d_nod)
+      call cal_sol_velocity_co                                          &
+     &   (node1%numnod, inter_smp_stack, nod_fld1%ntot_phys,            &
+     &    iphys%i_velo, iphys%i_p_phi, nod_fld1%d_fld)
 !
       end subroutine cal_sol_velo_co
 !
@@ -53,7 +54,7 @@
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
 !
       call cal_sol_vector_co(node1%numnod, inter_smp_stack,             &
-     &    nod_fld1%ntot_phys, iphys%i_vecp, d_nod)
+     &    nod_fld1%ntot_phys, iphys%i_vecp, nod_fld1%d_fld)
 !
       end subroutine cal_sol_vect_p_co
 !
@@ -68,7 +69,7 @@
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
 !
       call cal_sol_vector_co(node1%numnod, inter_smp_stack,             &
-     &    nod_fld1%ntot_phys, iphys%i_magne, d_nod)
+     &    nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld)
 !
       end subroutine cal_sol_magne_co
 !
@@ -84,7 +85,7 @@
 !
 !
       call cal_sol_velo_co_crank_lump(node1%numnod, inter_smp_stack,    &
-     &    nod_fld1%ntot_phys, iphys%i_velo, d_nod)
+     &    nod_fld1%ntot_phys, iphys%i_velo, nod_fld1%d_fld)
 !
       end subroutine cal_sol_velo_co_crank
 !
@@ -99,7 +100,7 @@
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
 !
       call cal_sol_vect_co_crank(node1%numnod, inter_smp_stack,         &
-     &    nod_fld1%ntot_phys, iphys%i_vecp, d_nod)
+     &    nod_fld1%ntot_phys, iphys%i_vecp, nod_fld1%d_fld)
 !
       end subroutine cal_sol_vect_p_co_crank
 !
@@ -114,7 +115,7 @@
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
 !
       call cal_sol_vect_co_crank(node1%numnod, inter_smp_stack,         &
-     &    nod_fld1%ntot_phys, iphys%i_magne, d_nod)
+     &    nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld)
 !
       end subroutine cal_sol_magne_co_crank
 !
@@ -168,7 +169,7 @@
 !
       call cal_sol_magne_insulate(node1%numnod, inter_ins_smp_stack,    &
      &    numnod_insulate, inod_insulate, nod_fld1%ntot_phys,           &
-     &    iphys%i_magne, d_nod)
+     &    iphys%i_magne, nod_fld1%d_fld)
 !
       end subroutine cal_sol_magne_insulator
 !

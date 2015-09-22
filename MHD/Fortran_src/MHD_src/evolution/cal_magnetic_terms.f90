@@ -53,8 +53,9 @@
       call set_boundary_magne_4_rhs
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, ml_cd, nod_fld1%ntot_phys, i_field, d_nod)
-      call vector_send_recv(nod_fld1%ntot_phys, i_field, d_nod)
+     &    ff_nl, ml_cd, nod_fld1%ntot_phys, i_field, nod_fld1%d_fld)
+      call vector_send_recv                                             &
+     &   (nod_fld1%ntot_phys, i_field, nod_fld1%d_fld)
 !
       end subroutine cal_terms_4_magnetic
 !
@@ -80,10 +81,10 @@
 !
       call set_boundary_magne_4_rhs
 !
-      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff, ml, nod_fld1%ntot_phys, iphys%i_b_diffuse, d_nod)
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp, ff, ml,  &
+     &    nod_fld1%ntot_phys, iphys%i_b_diffuse, nod_fld1%d_fld)
       call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_b_diffuse, d_nod)
+     &   (nod_fld1%ntot_phys, iphys%i_b_diffuse, nod_fld1%d_fld)
 !
       end subroutine cal_magnetic_diffusion
 !

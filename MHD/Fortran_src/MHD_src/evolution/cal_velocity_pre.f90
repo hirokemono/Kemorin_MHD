@@ -108,7 +108,8 @@
 !
       call set_boundary_velo
 !
-      call vector_send_recv(nod_fld1%ntot_phys, iphys%i_velo, d_nod)
+      call vector_send_recv                                             &
+     &   (nod_fld1%ntot_phys, iphys%i_velo, nod_fld1%d_fld)
 !
       end subroutine s_cal_velocity_pre
 !

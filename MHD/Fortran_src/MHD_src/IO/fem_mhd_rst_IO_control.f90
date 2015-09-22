@@ -153,19 +153,19 @@
 !
       if(iphys%i_pre_mom .gt. 0) then
         call vector_send_recv                                           &
-     &     (nod_fld1%ntot_phys, iphys%i_pre_mom, d_nod)
+     &     (nod_fld1%ntot_phys, iphys%i_pre_mom, nod_fld1%d_fld)
       end if
       if(iphys%i_pre_uxb .gt. 0) then
         call vector_send_recv                                           &
-     &     (nod_fld1%ntot_phys, iphys%i_pre_uxb, d_nod)
+     &     (nod_fld1%ntot_phys, iphys%i_pre_uxb, nod_fld1%d_fld)
       end if
       if(iphys%i_pre_heat .gt. 0) then
         call scalar_send_recv                                           &
-     &     (nod_fld1%ntot_phys, iphys%i_pre_heat, d_nod)
+     &     (nod_fld1%ntot_phys, iphys%i_pre_heat, nod_fld1%d_fld)
       end if
       if(iphys%i_pre_composit .gt. 0) then
         call scalar_send_recv                                           &
-     &     (nod_fld1%ntot_phys, iphys%i_pre_composit, d_nod)
+     &     (nod_fld1%ntot_phys, iphys%i_pre_composit, nod_fld1%d_fld)
       end if
 !
       call copy_time_steps_to_restart

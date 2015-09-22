@@ -36,15 +36,15 @@
       if      (i_grav .eq. iflag_const_g) then
         call cal_SGS_gravity_flux_const                                 &
      &     (node1%numnod, node1%istack_nod_smp, grav,                   &
-     &      coef, nod_fld1%ntot_phys, i_sgs, i_flux, d_nod)
+     &      coef, nod_fld1%ntot_phys, i_sgs, i_flux, nod_fld1%d_fld)
       else if (i_grav .eq. iflag_radial_g) then
         call cal_SGS_gravity_flux_radial                                &
      &     (node1%numnod, node1%istack_nod_smp, node1%xx, node1%a_r,    &
-     &      coef, nod_fld1%ntot_phys, i_sgs, i_flux, d_nod)
+     &      coef, nod_fld1%ntot_phys, i_sgs, i_flux, nod_fld1%d_fld)
       else if (i_grav .eq. iflag_self_r_g) then
         call cal_SGS_gravity_flux_self                                  &
      &     (node1%numnod, node1%istack_nod_smp, node1%xx,               &
-     &      coef, nod_fld1%ntot_phys, i_sgs, i_flux, d_nod)
+     &      coef, nod_fld1%ntot_phys, i_sgs, i_flux, nod_fld1%d_fld)
       end if
 !
       end subroutine cal_SGS_gravity_flux

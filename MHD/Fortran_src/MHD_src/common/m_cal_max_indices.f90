@@ -112,20 +112,22 @@
 !
         inod_max_lc(nd) = 1
         do inod = 1, node1%numnod
-          if (d_nod(inod,nd) .gt. d_nod(inod_max_lc(nd),nd)) then
+          if (nod_fld1%d_fld(inod,nd)                                   &
+     &      .gt. nod_fld1%d_fld(inod_max_lc(nd),nd)) then
             inod_max_lc(nd) = inod
           end if
         end do
 !
         inod_min_lc(nd) = 1
         do inod = 1, node1%numnod
-          if (d_nod(inod,nd) .lt. d_nod(inod_min_lc(nd),nd)) then
+          if (nod_fld1%d_fld(inod,nd)                                   &
+     &      .lt. nod_fld1%d_fld(inod_min_lc(nd),nd)) then
             inod_min_lc(nd) = inod
           end if
         end do
 !
-        phys_max_local(nd) = d_nod(inod_max_lc(nd),nd)
-        phys_min_local(nd) = d_nod(inod_min_lc(nd),nd)
+        phys_max_local(nd) = nod_fld1%d_fld(inod_max_lc(nd),nd)
+        phys_min_local(nd) = nod_fld1%d_fld(inod_min_lc(nd),nd)
       end do
 !$omp end parallel do
 !

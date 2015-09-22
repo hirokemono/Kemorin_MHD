@@ -46,22 +46,22 @@
           call cal_sol_pressure_w_mag_ene                               &
      &       (node1%numnod, node1%istack_internal_smp,                  &
      &        nod_fld1%ntot_phys, iphys%i_p_phi, iphys%i_magne,         &
-     &        iphys%i_press, d_nod)
+     &        iphys%i_press, nod_fld1%d_fld)
         else if (iflag_magneto_cv .eq. id_turn_ON                       &
      &     .and. iflag_4_rotate .eq. id_turn_OFF) then
           call cal_sol_pressure_mcv                                     &
      &       (node1%numnod, node1%istack_internal_smp,                  &
      &        nod_fld1%ntot_phys, iphys%i_p_phi, iphys%i_magne,         &
-     &        iphys%i_press, d_nod)
+     &        iphys%i_press, nod_fld1%d_fld)
         else
           call init_sol_potential(node1%numnod, node1%istack_nod_smp,   &
      &        coef_press, nod_fld1%ntot_phys, iphys%i_p_phi,            &
-     &        iphys%i_press, d_nod)
+     &        iphys%i_press, nod_fld1%d_fld)
         end if
       else
         call init_sol_potential(node1%numnod, node1%istack_nod_smp,     &
      &      coef_press, nod_fld1%ntot_phys, iphys%i_p_phi,              &
-     &      iphys%i_press, d_nod)
+     &      iphys%i_press, nod_fld1%d_fld)
       end if
 !
 !     --------------------- 
@@ -81,7 +81,8 @@
 !
         call cal_sol_pressure                                           &
      &     (node1%numnod, node1%istack_internal_smp,                    &
-     &      nod_fld1%ntot_phys, iphys%i_p_phi, iphys%i_press, d_nod)
+     &      nod_fld1%ntot_phys, iphys%i_p_phi, iphys%i_press,           &
+     &      nod_fld1%d_fld)
 !
         call cal_velocity_co
 !
@@ -99,7 +100,8 @@
       if (iflag_4_rotate .eq. id_turn_ON) then
         call cal_sol_pressure_rotate                                    &
      &     (node1%numnod, node1%istack_internal_smp,                    &
-     &      nod_fld1%ntot_phys, iphys%i_velo, iphys%i_press, d_nod)
+     &      nod_fld1%ntot_phys, iphys%i_velo, iphys%i_press,            &
+     &      nod_fld1%d_fld)
       end if
 !
       end subroutine velocity_evolution

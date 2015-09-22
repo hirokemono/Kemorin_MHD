@@ -46,11 +46,11 @@
 !
       call set_ff_nl_smp_2_ff(n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, ml, nod_fld1%ntot_phys, i_res, d_nod)
+     &    ff_nl, ml, nod_fld1%ntot_phys, i_res, nod_fld1%d_fld)
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_res, d_nod)
+      call vector_send_recv(nod_fld1%ntot_phys, i_res, nod_fld1%d_fld)
 !
       end subroutine cal_gradent_whole
 !
@@ -73,11 +73,11 @@
 !
       call set_ff_nl_smp_2_ff(n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, ml_fl, nod_fld1%ntot_phys, i_res, d_nod)
+     &    ff_nl, ml_fl, nod_fld1%ntot_phys, i_res, nod_fld1%d_fld)
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_res, d_nod)
+      call vector_send_recv(nod_fld1%ntot_phys, i_res, nod_fld1%d_fld)
 !
       end subroutine cal_gradent_in_fluid
 !
@@ -100,11 +100,11 @@
 !
       call set_ff_nl_smp_2_ff(n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, ml_cd, nod_fld1%ntot_phys, i_res, d_nod)
+     &    ff_nl, ml_cd, nod_fld1%ntot_phys, i_res, nod_fld1%d_fld)
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_res, d_nod)
+      call vector_send_recv(nod_fld1%ntot_phys, i_res, nod_fld1%d_fld)
 !
       end subroutine cal_gradent_in_conduct
 !

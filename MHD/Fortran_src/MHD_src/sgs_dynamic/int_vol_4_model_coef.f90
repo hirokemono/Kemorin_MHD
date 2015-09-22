@@ -55,14 +55,16 @@
      &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,  &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
-     &        nod_fld1%ntot_phys, d_nod, sgs_l_smp, sgs_l, sgs_w)
+     &        nod_fld1%ntot_phys, nod_fld1%d_fld,                       &
+     &        sgs_l_smp, sgs_l, sgs_w)
         else
           call int_vol_model_coef_l(node1%numnod,                       &
      &        ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,        &
      &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
-     &        nod_fld1%ntot_phys, d_nod, sgs_l_smp, sgs_l, sgs_w)
+     &        nod_fld1%ntot_phys, nod_fld1%d_fld,                       &
+     &        sgs_l_smp, sgs_l, sgs_w)
         end if
 !
       else
@@ -74,7 +76,7 @@
      &      jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,    &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
-     &      layer_tbl1%item_layer, nod_fld1%ntot_phys, d_nod,           &
+     &      layer_tbl1%item_layer, nod_fld1%ntot_phys, nod_fld1%d_fld,  &
      &      sgs_l_smp, sgs_l, sgs_w)
         else
           call int_vol_model_coef_grpsmp_l(node1%numnod,                &
@@ -82,7 +84,7 @@
      &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,    &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
-     &      layer_tbl1%item_layer, nod_fld1%ntot_phys, d_nod,           &
+     &      layer_tbl1%item_layer, nod_fld1%ntot_phys, nod_fld1%d_fld,  &
      &      sgs_l_smp, sgs_l, sgs_w)
         end if
       end if
@@ -108,12 +110,12 @@
         call int_vol_diff_coef_q(node1%numnod, ele1%numele,             &
      &      ele1%ie, ele1%interior_ele, iele_fsmp_stack, numdir,        &
      &      jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,    &
-     &      nod_fld1%ntot_phys, d_nod, sgs_l_smp, sgs_w)
+     &      nod_fld1%ntot_phys, nod_fld1%d_fld, sgs_l_smp, sgs_w)
         else
         call int_vol_diff_coef_l(node1%numnod, ele1%numele,             &
      &      ele1%ie, ele1%interior_ele, iele_fsmp_stack, numdir,        &
      &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,    &
-     &      nod_fld1%ntot_phys, d_nod, sgs_l_smp, sgs_w)
+     &      nod_fld1%ntot_phys, nod_fld1%d_fld, sgs_l_smp, sgs_w)
       end if
 !
       end subroutine int_vol_diff_coef
@@ -140,7 +142,7 @@
      &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,  &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
-     &        nod_fld1%ntot_phys, d_nod, ncomp_correlate_2,             &
+     &        nod_fld1%ntot_phys, nod_fld1%d_fld, ncomp_correlate_2,    &
      &        ave_l_smp, rms_l_smp, ave_l, rms_l, ave_w, rms_w)
         else
           call int_vol_rms_ave_dynamic_l(node1%numnod,                  &
@@ -148,7 +150,7 @@
      &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
-     &        nod_fld1%ntot_phys, d_nod, ncomp_correlate_2,             &
+     &        nod_fld1%ntot_phys, nod_fld1%d_fld, ncomp_correlate_2,    &
      &        ave_l_smp, rms_l_smp, ave_l, rms_l, ave_w, rms_w)
         end if
 !
@@ -160,7 +162,7 @@
      &      jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,    &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
-     &      layer_tbl1%item_layer, nod_fld1%ntot_phys, d_nod,           &
+     &      layer_tbl1%item_layer, nod_fld1%ntot_phys, nod_fld1%d_fld,  &
      &      ncomp_correlate_2, ave_l_smp, rms_l_smp, ave_l, rms_l,      &
      &      ave_w, rms_w)
         else
@@ -169,7 +171,7 @@
      &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,    &
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
-     &      layer_tbl1%item_layer, nod_fld1%ntot_phys, d_nod,           &
+     &      layer_tbl1%item_layer, nod_fld1%ntot_phys, nod_fld1%d_fld,  &
      &      ncomp_correlate_2, ave_l_smp, rms_l_smp, ave_l, rms_l,      &
      &      ave_w, rms_w)
         end if
@@ -194,13 +196,13 @@
         call int_vol_rms_ave_d_q(node1%numnod, ele1%numele, ele1%ie,    &
      &      ele1%interior_ele, iele_fsmp_stack, n_tensor,               &
      &      jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,    &
-     &      nod_fld1%ntot_phys, d_nod, ncomp_correlate_2,               &
+     &      nod_fld1%ntot_phys, nod_fld1%d_fld, ncomp_correlate_2,      &
      &      ave_l_smp, rms_l_smp, ave_w, rms_w)
       else
         call int_vol_rms_ave_d_l(node1%numnod, ele1%numele, ele1%ie,    &
      &      ele1%interior_ele, iele_fsmp_stack, n_tensor,               &
      &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,    &
-     &      nod_fld1%ntot_phys, d_nod, ncomp_correlate_2,               &
+     &      nod_fld1%ntot_phys, nod_fld1%d_fld, ncomp_correlate_2,      &
      &      ave_l_smp, rms_l_smp, ave_w, rms_w)
       end if
 !
@@ -231,7 +233,7 @@
      &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,  &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
-     &        ave_s, ave_g, nod_fld1%ntot_phys, d_nod,                  &
+     &        ave_s, ave_g, nod_fld1%ntot_phys, nod_fld1%d_fld,         &
      &        ncomp_correlate, ncomp_correlate_2,                       &
      &        sig_l_smp, cor_l_smp, sig_l, cov_l, sig_w, cov_w)
         else
@@ -240,7 +242,7 @@
      &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
      &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
      &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
-     &        ave_s, ave_g, nod_fld1%ntot_phys, d_nod,                  &
+     &        ave_s, ave_g, nod_fld1%ntot_phys, nod_fld1%d_fld,         &
      &        ncomp_correlate, ncomp_correlate_2,                       &
      &        sig_l_smp, cor_l_smp, sig_l, cov_l, sig_w, cov_w)
         end if
@@ -254,7 +256,7 @@
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer, ave_s, ave_g, nod_fld1%ntot_phys,    &
-     &      d_nod, ncomp_correlate, ncomp_correlate_2,                  &
+     &      nod_fld1%d_fld, ncomp_correlate, ncomp_correlate_2,         &
      &      sig_l_smp, cor_l_smp, sig_l, cov_l, sig_w, cov_w)
         else
           call int_vol_layer_cor_grpsmp_l(node1%numnod,                 &
@@ -263,7 +265,7 @@
      &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
      &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
      &      layer_tbl1%item_layer, ave_s, ave_g, nod_fld1%ntot_phys,    &
-     &      d_nod, ncomp_correlate, ncomp_correlate_2,                  &
+     &      nod_fld1%d_fld, ncomp_correlate, ncomp_correlate_2,         &
      &      sig_l_smp, cor_l_smp, sig_l, cov_l, sig_w, cov_w)
         end if
 !
@@ -291,14 +293,14 @@
         call int_vol_diff_correlate_q(node1%numnod, ele1%numele,        &
      &      ele1%ie, ele1%interior_ele, iele_fsmp_stack, numdir,        &
      &      jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,    &
-     &      ave_s, ave_g, nod_fld1%ntot_phys, d_nod,                    &
+     &      ave_s, ave_g, nod_fld1%ntot_phys, nod_fld1%d_fld,           &
      &      ncomp_correlate, ncomp_correlate_2,                         &
      &      sig_l_smp, cor_l_smp, sig_w, cov_w)
         else
         call int_vol_diff_correlate_l(node1%numnod, ele1%numele,        &
      &      ele1%ie, ele1%interior_ele, iele_fsmp_stack, numdir,        &
      &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,    &
-     &      ave_s, ave_g, nod_fld1%ntot_phys, d_nod,                    &
+     &      ave_s, ave_g, nod_fld1%ntot_phys, nod_fld1%d_fld,           &
      &      ncomp_correlate, ncomp_correlate_2,                         &
      &      sig_l_smp, cor_l_smp, sig_w, cov_w)
       end if

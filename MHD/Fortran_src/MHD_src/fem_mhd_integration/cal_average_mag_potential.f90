@@ -39,7 +39,7 @@
      &      numele_in_core, iele_in_core_smp_stack, iele_in_core,       &
      &      jac1_3d_l%ntot_int, intg_point_t_evo,                       &
      &      jac1_3d_l%xjac, jac1_3d_l%an,                               &
-     &      nod_fld1%ntot_phys, d_nod, iphys%i_mag_p,                   &
+     &      nod_fld1%ntot_phys, nod_fld1%d_fld, iphys%i_mag_p,          &
      &      ave_mp_core_local)
 !
         call MPI_allREDUCE (ave_mp_core_local, ave_mp_core, 1,          &

@@ -69,7 +69,7 @@
         call scalar_2_element_4_boundary(node1%numnod,                  &
      &      ele1%numele, ele1%nnod_4_ele, ele1%ie, num_index_ibc,       &
      &      ele_bc_id, ibc_stack_smp(istart_smp), k2,                   &
-     &      nod_fld1%ntot_phys, i_field, d_nod, phi_e)
+     &      nod_fld1%ntot_phys, i_field, nod_fld1%d_fld, phi_e)
 !
 !   'sf' = - \tilde{v}_{i,i} N(x)
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
@@ -115,7 +115,7 @@
         call scalar_2_element_4_boundary(node1%numnod,                  &
      &      ele1%numele, ele1%nnod_4_ele, ele1%ie, num_index_ibc,       &
      &      ele_bc_id, ibc_stack_smp(istart_smp), k2,                   &
-     &      nod_fld1%ntot_phys, i_field, d_nod, phi_e)
+     &      nod_fld1%ntot_phys, i_field, nod_fld1%d_fld, phi_e)
 !
 !   'sf' = - \tilde{v}_{i,i} N(x)
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
@@ -166,7 +166,7 @@
             call scalar_2_element_4_boundary(node1%numnod,              &
      &          ele1%numele, ele1%nnod_4_ele, ele1%ie, nmax_index_ibc,  &
      &          ele_bc_id(1,nd), ibc_stack_smp(istart_smp,nd), k2,      &
-     &          nod_fld1%ntot_phys, i_comp, d_nod, phi_e)
+     &          nod_fld1%ntot_phys, i_comp, nod_fld1%d_fld, phi_e)
 !
 !   'sf' = - \tilde{v}_{i,i} N(x)
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
@@ -217,7 +217,7 @@
             call scalar_2_element_4_boundary(node1%numnod,              &
      &          ele1%numele, ele1%nnod_4_ele, ele1%ie, num_index_ibc,   &
      &          ele_bc_id, ibc_stack_smp(istart_smp), k2,               &
-     &          nod_fld1%ntot_phys, i_comp, d_nod, phi_e)
+     &          nod_fld1%ntot_phys, i_comp, nod_fld1%d_fld, phi_e)
 !
 !   'sf' = - \tilde{v}_{i,i} N(x)
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }

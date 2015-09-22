@@ -64,7 +64,7 @@
 !$omp parallel
       call delete_phys_data_smp                                         &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    nod_fld1%ntot_phys, numdir, i_target, d_nod)
+     &    nod_fld1%ntot_phys, numdir, i_target, nod_fld1%d_fld)
 !$omp end parallel
 !
       end subroutine clear_nodal_data
@@ -99,7 +99,7 @@
 !
       call copy_scalar_fld                                              &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    nod_fld1%ntot_phys, i_org, i_target, d_nod)
+     &    nod_fld1%ntot_phys, i_org, i_target, nod_fld1%d_fld)
 !
       end subroutine copy_scalar_component
 !
@@ -114,7 +114,7 @@
 !
       call copy_vector_fld                                              &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    nod_fld1%ntot_phys, i_org, i_target, d_nod)
+     &    nod_fld1%ntot_phys, i_org, i_target, nod_fld1%d_fld)
 !
       end subroutine copy_vector_component
 !
@@ -129,7 +129,7 @@
 !
       call copy_tensor_fld                                              &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    nod_fld1%ntot_phys, i_org, i_target, d_nod)
+     &    nod_fld1%ntot_phys, i_org, i_target, nod_fld1%d_fld)
 !
       end subroutine copy_tensor_components
 !
@@ -145,7 +145,7 @@
 !
       call add_scalar_array_smp                                         &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    nod_fld1%ntot_phys, d_nod, i_v1, i_v2, i_r)
+     &    nod_fld1%ntot_phys, nod_fld1%d_fld, i_v1, i_v2, i_r)
 !
        end subroutine add_2_nod_scalars
 !
@@ -160,7 +160,7 @@
 !
       call add_vector_array_smp                                         &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    nod_fld1%ntot_phys, d_nod, i_v1, i_v2, i_r)
+     &    nod_fld1%ntot_phys, nod_fld1%d_fld, i_v1, i_v2, i_r)
 !
        end subroutine add_2_nod_vectors
 !
@@ -175,7 +175,7 @@
 !
       call add_tensor_array_smp                                         &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    nod_fld1%ntot_phys, d_nod, i_v1, i_v2, i_r)
+     &    nod_fld1%ntot_phys, nod_fld1%d_fld, i_v1, i_v2, i_r)
 !
       end subroutine add_2_nod_tensors
 !
@@ -191,7 +191,7 @@
 !
       call subtract_scalar_array_smp                                    &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    nod_fld1%ntot_phys, d_nod, i_v1, i_v2, i_r)
+     &    nod_fld1%ntot_phys, nod_fld1%d_fld, i_v1, i_v2, i_r)
 !
       end subroutine subtract_2_nod_scalars
 !
@@ -206,7 +206,7 @@
 !
       call subtract_vector_array_smp                                    &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    nod_fld1%ntot_phys, d_nod, i_v1, i_v2, i_r)
+     &    nod_fld1%ntot_phys, nod_fld1%d_fld, i_v1, i_v2, i_r)
 !
       end subroutine subtract_2_nod_vectors
 !
@@ -221,7 +221,7 @@
 !
       call subtract_tensor_array_smp                                    &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    nod_fld1%ntot_phys, d_nod, i_v1, i_v2, i_r)
+     &    nod_fld1%ntot_phys, nod_fld1%d_fld, i_v1, i_v2, i_r)
 !
       end subroutine subtract_2_nod_tensors
 !
@@ -238,7 +238,7 @@
 !
       call multi_by_const_nod_phys1                                     &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    nod_fld1%ntot_phys, d_nod, const, i_v1, i_r)
+     &    nod_fld1%ntot_phys, nod_fld1%d_fld, const, i_v1, i_r)
 !
       end subroutine multi_by_const_nod_scalar
 !
@@ -254,7 +254,7 @@
 !
       call multi_by_const_nod_phys3                                     &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    nod_fld1%ntot_phys, d_nod, const, i_v1, i_r)
+     &    nod_fld1%ntot_phys, nod_fld1%d_fld, const, i_v1, i_r)
 !
       end subroutine multi_by_const_nod_vector
 !
@@ -270,7 +270,7 @@
 !
       call multi_by_const_nod_phys6                                     &
      &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    nod_fld1%ntot_phys, d_nod, const, i_v1, i_r)
+     &    nod_fld1%ntot_phys, nod_fld1%d_fld, const, i_v1, i_r)
 !
       end subroutine multi_by_const_nod_tensor
 !

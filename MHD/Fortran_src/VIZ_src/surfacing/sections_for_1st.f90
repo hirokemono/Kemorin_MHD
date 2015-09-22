@@ -128,7 +128,7 @@
       call cross_section_main(istep_psf, node1%numnod,                  &
      &    edge1%numedge, edge1%nnod_4_edge, edge1%ie_edge,              &
      &    nod_fld1%num_phys, nod_fld1%ntot_phys,                        &
-     &    nod_fld1%istack_component, d_nod)
+     &    nod_fld1%istack_component, nod_fld1%d_fld)
 !
       end subroutine cross_section_main_1st
 !
@@ -150,7 +150,7 @@
      &    node1%rr, node1%a_r, node1%ss, node1%a_s,                     &
      &    node1%istack_nod_smp, edge_comm,                              &
      &    nod_fld1%num_phys, nod_fld1%ntot_phys,                        &
-     &    nod_fld1%istack_component, d_nod)
+     &    nod_fld1%istack_component, nod_fld1%d_fld)
 !
       end subroutine isosurface_main_1st
 !

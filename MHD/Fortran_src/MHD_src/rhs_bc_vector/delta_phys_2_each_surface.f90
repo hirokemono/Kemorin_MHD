@@ -61,7 +61,8 @@
      &    surf1%nnod_4_surf, surf1%node_on_sf, surf1%node_on_sf_n,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    igrp, k2, i_scalar, nod_fld1%ntot_phys, d_nod, scalar_sf)
+     &    igrp, k2, i_scalar, nod_fld1%ntot_phys, nod_fld1%d_fld,       &
+     &    scalar_sf)
 !
       end subroutine dlt_scl_phys_2_each_surface
 !
@@ -84,7 +85,8 @@
      &    surf1%nnod_4_surf, surf1%node_on_sf, surf1%node_on_sf_n,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    igrp, k2, i_vector, nod_fld1%ntot_phys, d_nod, vector_sf)
+     &    igrp, k2, i_vector, nod_fld1%ntot_phys, nod_fld1%d_fld,       &
+     &    vector_sf)
 !
       end subroutine dlt_vect_phys_2_each_surface
 !
@@ -107,7 +109,8 @@
      &    surf1%nnod_4_surf, surf1%node_on_sf, surf1%node_on_sf_n,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    igrp, k2, i_tensor, nod_fld1%ntot_phys, d_nod, tensor_sf)
+     &    igrp, k2, i_tensor, nod_fld1%ntot_phys, nod_fld1%d_fld,       &
+     &    tensor_sf)
 !
       end subroutine dlt_tsr_phys_2_each_surface
 !
@@ -132,7 +135,7 @@
      &    surf1%nnod_4_surf, surf1%node_on_sf, surf1%node_on_sf_n,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    igrp, k2, i_scalar, nod_fld1%ntot_phys, d_nod,                &
+     &    igrp, k2, i_scalar, nod_fld1%ntot_phys, nod_fld1%d_fld,       &
      &    ak_e, scalar_sf)
 !
       end subroutine dlt_scl_phys_2_each_surf_coef
@@ -157,7 +160,7 @@
      &    surf1%nnod_4_surf, surf1%node_on_sf, surf1%node_on_sf_n,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    igrp, k2, i_vector, nod_fld1%ntot_phys, d_nod,                &
+     &    igrp, k2, i_vector, nod_fld1%ntot_phys, nod_fld1%d_fld,       &
      &    ak_e, vector_sf)
 !
       end subroutine dlt_vect_phys_2_each_surf_coef
@@ -182,7 +185,7 @@
      &    surf1%nnod_4_surf, surf1%node_on_sf, surf1%node_on_sf_n,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    igrp, k2, i_tensor, nod_fld1%ntot_phys, d_nod,                &
+     &    igrp, k2, i_tensor, nod_fld1%ntot_phys, nod_fld1%d_fld,       &
      &    ak_e, tensor_sf)
 !
       end subroutine dlt_tsr_phys_2_each_surf_coef
@@ -208,7 +211,7 @@
      &    surf1%nnod_4_surf, surf1%node_on_sf, surf1%node_on_sf_n,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    igrp, k2, i_scalar, nod_fld1%ntot_phys, d_nod,                &
+     &    igrp, k2, i_scalar, nod_fld1%ntot_phys, nod_fld1%d_fld,       &
      &    coef, scalar_sf)
 !
       end subroutine dlt_scl_phys_2_each_surf_cst
@@ -233,7 +236,7 @@
      &    surf1%nnod_4_surf, surf1%node_on_sf, surf1%node_on_sf_n,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    igrp, k2, i_vector, nod_fld1%ntot_phys, d_nod,                &
+     &    igrp, k2, i_vector, nod_fld1%ntot_phys, nod_fld1%d_fld,       &
      &    coef, vector_sf)
 !
       end subroutine dlt_vect_phys_2_each_surf_cst
@@ -258,7 +261,7 @@
      &    surf1%nnod_4_surf, surf1%node_on_sf, surf1%node_on_sf_n,      &
      &    sf_grp%num_item, sf_grp%item_sf_grp,                          &
      &    sf_grp%num_grp_smp, sf_grp%istack_grp_smp,                    &
-     &    igrp, k2, i_tensor, nod_fld1%ntot_phys, d_nod,                &
+     &    igrp, k2, i_tensor, nod_fld1%ntot_phys, nod_fld1%d_fld,       &
      &    coef, tensor_sf)
 !
       end subroutine dlt_tsr_phys_2_each_surf_cst

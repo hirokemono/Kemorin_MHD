@@ -52,11 +52,11 @@
 !
        call set_ff_nl_smp_2_ff(numdir_d)
        call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,         &
-     &     ff_nl, ml_fl, nod_fld1%ntot_phys, i_sgs, d_nod)
+     &     ff_nl, ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
 !
-      call scalar_send_recv(nod_fld1%ntot_phys, i_sgs, d_nod)
+      call scalar_send_recv(nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
       end subroutine cal_div_sgs_hf_simi
 !

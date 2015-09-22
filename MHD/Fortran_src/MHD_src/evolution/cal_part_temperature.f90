@@ -106,7 +106,7 @@
       call set_boundary_part_temp
 !
       call scalar_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_par_temp, d_nod)
+     &   (nod_fld1%ntot_phys, iphys%i_par_temp, nod_fld1%d_fld)
 !
       call add_2_nod_scalars(iphys%i_ref_t, iphys%i_par_temp,           &
      &    iphys%i_temp)

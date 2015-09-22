@@ -107,7 +107,7 @@
       call cal_commute_error_f_magne_p(ifilter_4delta, i_sgs_grad_fp)
 !
       call sym_tensor_send_recv                                         &
-     &   (nod_fld1%ntot_phys, iphys%i_sgs_grad_f, d_nod)
+     &   (nod_fld1%ntot_phys, iphys%i_sgs_grad_f, nod_fld1%d_fld)
 !
 !      call check_nodal_data(my_rank, n_sym_tensor, iphys%i_sgs_grad_f)
 !
@@ -117,7 +117,7 @@
       call cal_commute_error_magne_p(ifilter_2delta, i_sgs_grad_p)
 !
       call sym_tensor_send_recv                                         &
-     &   (nod_fld1%ntot_phys, iphys%i_sgs_grad, d_nod)
+     &   (nod_fld1%ntot_phys, iphys%i_sgs_grad, nod_fld1%d_fld)
 !
 !    filtering (to iphys%i_sgs_grad)
 !

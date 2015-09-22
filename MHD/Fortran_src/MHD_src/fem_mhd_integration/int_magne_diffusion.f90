@@ -40,12 +40,12 @@
 !
 !      call cal_multi_pass_4_vector_ff
 !      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,         &
-!     &    ff, ml_cd, nod_fld1%ntot_phys, iphys%i_magne, d_nod)
+!     &   ff, ml_cd, nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld)
        call cal_ff_smp_2_vector(ff_nl_smp, ml_cd,                       &
-     &     nod_fld1%ntot_phys, iphys%i_b_diffuse, d_nod) 
+     &     nod_fld1%ntot_phys, iphys%i_b_diffuse, nod_fld1%d_fld) 
 !
        call vector_send_recv                                            &
-     &    (nod_fld1%ntot_phys, iphys%i_b_diffuse, d_nod)
+     &    (nod_fld1%ntot_phys, iphys%i_b_diffuse, nod_fld1%d_fld)
 !
       end subroutine s_int_magne_diffusion
 !

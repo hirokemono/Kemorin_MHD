@@ -50,11 +50,12 @@
 !
       call cal_multi_pass_4_vector_ff
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff, ml, nod_fld1%ntot_phys, iphys%i_current, d_nod)
+     &    ff, ml, nod_fld1%ntot_phys, iphys%i_current, nod_fld1%d_fld)
 !
 !    communication
 !
-      call vector_send_recv(nod_fld1%ntot_phys, iphys%i_current, d_nod)
+      call vector_send_recv                                             &
+     &   (nod_fld1%ntot_phys, iphys%i_current, nod_fld1%d_fld)
 !
       end subroutine int_current_diffuse
 !

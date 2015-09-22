@@ -43,11 +43,13 @@
       if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_diff_vector_on_ele(node1, ele1, jac1_3d_q,             &
      &      iele_fsmp_stack, intg_point_t_evo,                          &
-     &      nod_fld1%ntot_phys, i_fld, d_nod, num_dvxi, i_diff, dvx)
+     &      nod_fld1%ntot_phys, i_fld, nod_fld1%d_fld,                  &
+     &      num_dvxi, i_diff, dvx)
       else
         call int_diff_vector_on_ele(node1, ele1, jac1_3d_l,             &
      &      iele_fsmp_stack, intg_point_t_evo,                          &
-     &      nod_fld1%ntot_phys, i_fld, d_nod, num_dvxi, i_diff, dvx)
+     &      nod_fld1%ntot_phys, i_fld, nod_fld1%d_fld,                  &
+     &      num_dvxi, i_diff, dvx)
       end if
 !
       end subroutine sel_int_diff_vector_on_ele
@@ -66,11 +68,13 @@
       if (ele1%nnod_4_ele .eq. num_t_quad) then
         call int_diff_scalar_on_ele(node1, ele1, jac1_3d_q,             &
      &      iele_fsmp_stack, intg_point_t_evo,                          &
-     &      nod_fld1%ntot_phys, i_fld, d_nod, num_dvxi, i_diff, dvx)
+     &      nod_fld1%ntot_phys, i_fld, nod_fld1%d_fld,                  &
+     &      num_dvxi, i_diff, dvx)
       else
         call int_diff_scalar_on_ele(node1, ele1, jac1_3d_l,             &
      &      iele_fsmp_stack, intg_point_t_evo,                          &
-     &      nod_fld1%ntot_phys, i_fld, d_nod, num_dvxi, i_diff, dvx)
+     &      nod_fld1%ntot_phys, i_fld, nod_fld1%d_fld,                  &
+     &      num_dvxi, i_diff, dvx)
       end if
 !
       end subroutine sel_int_diff_scalar_on_ele

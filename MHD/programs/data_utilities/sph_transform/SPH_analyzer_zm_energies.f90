@@ -76,7 +76,7 @@
         call sph_b_trans_all_field
         call cal_zm_energy_to_pressure(nod_fld1%n_point,                &
      &      nod_fld1%num_phys, nod_fld1%ntot_phys,                      &
-     &      nod_fld1%istack_component, d_nod)
+     &      nod_fld1%istack_component, nod_fld1%d_fld)
 !
       end if
 !

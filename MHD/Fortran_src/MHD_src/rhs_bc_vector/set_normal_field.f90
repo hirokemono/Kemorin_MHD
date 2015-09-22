@@ -47,7 +47,7 @@
      &      sf_grp_nod%surf_norm_nod, ngrp_sf_fix_vn, nnod_sf_fix_vn,   &
      &      id_grp_sf_fix_vn, ist_nod_sf_fix_vn, sf_fix_vn_apt,         &
      &      nod_fld1%n_point, nod_fld1%ntot_phys, iphys%i_velo,         &
-     &      d_nod)
+     &      nod_fld1%d_fld)
       end if
 !
       end subroutine set_normal_velocity

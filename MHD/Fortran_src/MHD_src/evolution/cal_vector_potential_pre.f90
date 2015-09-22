@@ -93,7 +93,8 @@
 !
       call set_boundary_vect_p
 !
-      call vector_send_recv(nod_fld1%ntot_phys, iphys%i_vecp, d_nod)
+      call vector_send_recv                                             &
+     &   (nod_fld1%ntot_phys, iphys%i_vecp, nod_fld1%d_fld)
 !
 !      call check_nodal_data(my_rank, n_vector, iphys%i_vecp)
 !

@@ -41,7 +41,7 @@
 !
       call cal_sol_vect_pre_fluid_euler                                 &
      &   (node1%numnod, node1%istack_internal_smp, nod_fld1%ntot_phys,  &
-     &    n_vector, iphys%i_velo, d_nod)
+     &    n_vector, iphys%i_velo, nod_fld1%d_fld)
 !
       end subroutine cal_sol_velo_pre_euler
 !
@@ -52,7 +52,7 @@
 !
       call cal_sol_vect_pre_fluid_euler                                 &
      &   (node1%numnod, node1%istack_internal_smp, nod_fld1%ntot_phys,  &
-     &    n_scalar, iphys%i_temp, d_nod)
+     &    n_scalar, iphys%i_temp, nod_fld1%d_fld)
 !
       end subroutine cal_sol_temp_euler
 !
@@ -62,7 +62,7 @@
 !
       call cal_sol_vect_pre_fluid_euler                                 &
      &   (node1%numnod, node1%istack_internal_smp, nod_fld1%ntot_phys,  &
-     &    n_scalar, iphys%i_par_temp, d_nod)
+     &    n_scalar, iphys%i_par_temp, nod_fld1%d_fld)
 !
       end subroutine cal_sol_part_temp_euler
 !
@@ -74,7 +74,7 @@
 !
       call cal_sol_vect_pre_conduct_euler(node1%numnod,                 &
      &    inter_cd_smp_stack, numnod_conduct, inod_conduct,             &
-     &    nod_fld1%ntot_phys, n_vector, iphys%i_vecp, d_nod)
+     &    nod_fld1%ntot_phys, n_vector, iphys%i_vecp, nod_fld1%d_fld)
 !
       end subroutine cal_sol_vect_p_pre_euler
 !
@@ -87,7 +87,7 @@
 !
       call cal_sol_vect_pre_conduct_euler(node1%numnod,                 &
      &   inter_cd_smp_stack, numnod_conduct, inod_conduct,              &
-     &   nod_fld1%ntot_phys, n_vector, iphys%i_magne, d_nod)
+     &   nod_fld1%ntot_phys, n_vector, iphys%i_magne, nod_fld1%d_fld)
 !
       end subroutine cal_sol_magne_pre_euler
 !
@@ -98,7 +98,7 @@
 !
       call cal_sol_vect_pre_fluid_euler                                 &
      &   (node1%numnod, node1%istack_internal_smp, nod_fld1%ntot_phys,  &
-     &    n_scalar, iphys%i_light, d_nod)
+     &    n_scalar, iphys%i_light, nod_fld1%d_fld)
 !
       end subroutine cal_sol_d_scalar_euler
 !
@@ -111,7 +111,7 @@
       call cal_sol_vect_pre_fluid_adams                                 &
      &   (node1%numnod, node1%istack_internal_smp,                      &
      &    nod_fld1%ntot_phys, n_vector, iphys%i_velo, iphys%i_pre_mom,  &
-     &    d_nod)
+     &    nod_fld1%d_fld)
 !
       end subroutine cal_sol_velo_pre_adams
 !
@@ -123,7 +123,7 @@
       call cal_sol_vect_pre_fluid_adams                                 &
      &   (node1%numnod, node1%istack_internal_smp,                      &
      &    nod_fld1%ntot_phys, n_scalar, iphys%i_temp, iphys%i_pre_heat, &
-     &    d_nod)
+     &    nod_fld1%d_fld)
 !
       end subroutine cal_sol_temp_adams
 !
@@ -135,7 +135,7 @@
       call cal_sol_vect_pre_fluid_adams                                 &
      &   (node1%numnod, node1%istack_internal_smp,                      &
      &    nod_fld1%ntot_phys, n_scalar, iphys%i_par_temp,               &
-     &    iphys%i_pre_heat, d_nod)
+     &    iphys%i_pre_heat, nod_fld1%d_fld)
 !
       end subroutine cal_sol_part_temp_adams
 !
@@ -149,7 +149,7 @@
       call cal_sol_vect_pre_conduct_adams(node1%numnod,                 &
      &   inter_cd_smp_stack, numnod_conduct, inod_conduct,              &
      &   nod_fld1%ntot_phys, n_vector, iphys%i_vecp, iphys%i_pre_uxb,   &
-     &   d_nod)
+     &   nod_fld1%d_fld)
 !
       end subroutine cal_sol_vect_p_pre_adams
 !
@@ -163,7 +163,7 @@
       call cal_sol_vect_pre_conduct_adams(node1%numnod,                 &
      &    inter_cd_smp_stack, numnod_conduct, inod_conduct,             &
      &    nod_fld1%ntot_phys, n_vector, iphys%i_magne, iphys%i_pre_uxb, &
-     &    d_nod)
+     &    nod_fld1%d_fld)
 !
       end subroutine cal_sol_magne_pre_adams
 !
@@ -175,7 +175,7 @@
       call cal_sol_vect_pre_fluid_adams                                 &
      &   (node1%numnod, node1%istack_internal_smp,                      &
      &    nod_fld1%ntot_phys, n_scalar, iphys%i_light,                  &
-     &    iphys%i_pre_composit, d_nod)
+     &    iphys%i_pre_composit, nod_fld1%d_fld)
 !
       end subroutine cal_sol_d_scalar_adams
 !

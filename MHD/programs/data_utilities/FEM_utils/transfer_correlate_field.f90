@@ -74,10 +74,12 @@
 !
       if     (iflag_correlate_coord .eq. iflag_spherical) then
         call transfer_nod_fld_to_sph(node1%numnod, nod_fld1%num_phys,   &
-     &      nod_fld1%ntot_phys, nod_fld1%istack_component, d_nod)
+     &      nod_fld1%ntot_phys, nod_fld1%istack_component,              &
+     &      nod_fld1%d_fld)
       else if(iflag_correlate_coord .eq. iflag_cylindrical) then
         call transfer_nod_fld_to_cyl(node1%numnod, nod_fld1%num_phys,   &
-     &     nod_fld1%ntot_phys, nod_fld1%istack_component, d_nod)
+     &      nod_fld1%ntot_phys, nod_fld1%istack_component,              &
+     &      nod_fld1%d_fld)
       end if
 !
 !
@@ -123,7 +125,8 @@
       do nd = 1, phys_2nd%ntot_phys
 !$omp do 
         do inod = 1, node1%numnod
-          phys_2nd%d_fld(inod,nd) = d_nod(inod,icomp_4_correlate)
+          phys_2nd%d_fld(inod,nd)                                       &
+     &       = nod_fld1%d_fld(inod,icomp_4_correlate)
         end do
 !$omp end do nowait
       end do

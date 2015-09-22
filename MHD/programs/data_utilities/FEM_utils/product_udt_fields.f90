@@ -195,7 +195,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_products_of_fields(ncomp_nod,d_nod)
+      subroutine cal_products_of_fields(ncomp_nod, d_nod)
 !
       use m_geometry_data
       use m_ctl_params_4_prod_udt

@@ -6,6 +6,8 @@
 !!      subroutine set_gravity_2_each_node(i_field, i_res, coef)
 !!      subroutine set_double_gravity_2_each_node(i_f1, i_f2, i_r1,     &
 !!     &          c1, c2)
+!!      subroutine set_boussinesq_density_2_node(numnod, inod_smp_stack,&
+!!     &          c_t, c_d, ncomp_nod, i_t, i_d, i_rho, d_nod)
 !!
 !!      subroutine int_vol_buoyancy_nod(numnod, inod_smp_stack,         &
 !!     &          ncomp_nod, i_fc, d_nod, ml_o_fl, ff)
@@ -42,15 +44,15 @@
        if      (i_grav .eq. iflag_const_g) then
          call const_g_2_each_node                                       &
      &      (node1%numnod, node1%istack_nod_smp, coef,                  &
-     &       nod_fld1%ntot_phys, i_field, i_res, d_nod)
+     &       nod_fld1%ntot_phys, i_field, i_res, nod_fld1%d_fld)
        else if (i_grav .eq. iflag_radial_g) then
          call radial_g_2_each_node                                      &
      &      (node1%numnod, node1%istack_nod_smp, node1%xx, node1%a_r,   &
-     &       coef, nod_fld1%ntot_phys, i_field, i_res, d_nod)
+     &       coef, nod_fld1%ntot_phys, i_field, i_res, nod_fld1%d_fld)
        else if (i_grav .eq. iflag_self_r_g) then
          call self_g_2_each_node                                        &
      &      (node1%numnod, node1%istack_nod_smp, node1%xx, coef,        &
-     &       nod_fld1%ntot_phys, i_field, i_res, d_nod)
+     &       nod_fld1%ntot_phys, i_field, i_res, nod_fld1%d_fld)
        end if
 !
       end subroutine set_gravity_2_each_node
@@ -70,15 +72,16 @@
        if     (i_grav .eq. iflag_const_g) then
          call const_double_g_2_each_node                                &
      &      (node1%numnod, node1%istack_nod_smp, c1, c2,                &
-     &       nod_fld1%ntot_phys, i_f1, i_f2, i_res, d_nod)
+     &       nod_fld1%ntot_phys, i_f1, i_f2, i_res, nod_fld1%d_fld)
        else if(i_grav .eq. iflag_radial_g) then
          call radial_double_g_2_each_node                               &
      &      (node1%numnod, node1%istack_nod_smp, node1%xx, node1%a_r,   &
-     &       c1, c2, nod_fld1%ntot_phys, i_f1, i_f2, i_res, d_nod)
+     &       c1, c2, nod_fld1%ntot_phys, i_f1, i_f2, i_res,             &
+     &       nod_fld1%d_fld)
        else if(i_grav .eq. iflag_self_r_g) then
          call self_double_g_2_each_node                                 &
      &      (node1%numnod, node1%istack_nod_smp, node1%xx, c1, c2,      &
-     &       nod_fld1%ntot_phys, i_f1, i_f2, i_res, d_nod)
+     &       nod_fld1%ntot_phys, i_f1, i_f2, i_res, nod_fld1%d_fld)
        end if
 !
       end subroutine set_double_gravity_2_each_node
@@ -86,15 +89,16 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_boussinesq_density_2_node(inod_smp_stack,          &
-     &          i_t, i_d, i_rho, c_t, c_d)
+      subroutine set_boussinesq_density_2_node(numnod, inod_smp_stack,  &
+     &          c_t, c_d, ncomp_nod, i_t, i_d, i_rho, d_nod)
 !
-      use m_node_phys_data
-!
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
       integer(kind = kint), intent(in) :: i_t, i_d, i_rho
       real(kind = kreal), intent(in) :: c_t, c_d
+!
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer(kind = kint) :: iproc, inod
       integer(kind = kint) :: ist, ied
