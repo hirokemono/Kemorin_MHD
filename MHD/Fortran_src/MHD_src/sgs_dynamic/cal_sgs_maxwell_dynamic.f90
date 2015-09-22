@@ -41,7 +41,7 @@
 !
       call reset_tensor_sgs_model_coefs                                 &
      &   (icomp_sgs_lor, ele1%istack_ele_smp)
-      call s_clear_work_4_dynamic_model(node1%numnod)
+      call s_clear_work_4_dynamic_model
 !
 !    SGS term by similarity model
 !

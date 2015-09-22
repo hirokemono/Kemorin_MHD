@@ -3,22 +3,22 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine cal_sgs_flux_vector                                  &
-!!     &         (inod_smp_stack, i_r, i_v, i_s, icm_sgs)
-!!      subroutine cal_sgs_flux_tensor                                  &
-!!     &         (inod_smp_stack, i_r, i_v1, i_v2, icm_sgs)
+!!      subroutine cal_sgs_flux_vector(numnod, inod_smp_stack,          &
+!!     &          ncomp_nod, i_r, i_v, i_s, icm_sgs, d_nod)
+!!      subroutine cal_sgs_flux_tensor(numnod, inod_smp_stack,          &
+!!     &          ncomp_nod, i_r, i_v1, i_v2, icm_sgs, d_nod)
 !!
-!!      subroutine subctract_maxwell_tensor                             &
-!!     &         (inod_smp_stack, i_r, i_v1, icm_sgs)
-!!      subroutine subctract_uxb_vector                                 &
-!!     &         (inod_smp_stack, i_r, i_v1, i_v2)
-!!      subroutine subctract_induction_tensor                           &
-!!     &         (inod_smp_stack, i_r, i_v1, i_v2, icm_sgs)
+!!      subroutine subctract_maxwell_tensor(numnod, inod_smp_stack,     &
+!!     &          ncomp_nod, i_r, i_v1, icm_sgs, d_nod)
+!!      subroutine subctract_uxb_vector(numnod, inod_smp_stack,         &
+!!     &         ncomp_nod, i_r, i_v1, i_v2, d_nod)
+!!      subroutine subctract_induction_tensor(numnod, inod_smp_stack,   &
+!!     &          ncomp_nod, i_r, i_v1, i_v2, icm_sgs, d_nod)
 !!
-!!      subroutine multi_model_coefs_vect_simi                          &
-!!     &         (i_r, icm_sgs, inod_smp_stack)
-!!      subroutine multi_model_coefs_tensor_simi                        &
-!!     &         (inod_smp_stack, i_r, icm_sgs)
+!!      subroutine multi_model_coefs_vect_simi(numnod, inod_smp_stack,  &
+!!     &          ncomp_nod, i_r, icm_sgs, d_nod)
+!!      subroutine multi_model_coefs_tensor_simi(numnod, inod_smp_stack,&
+!!     &         ncomp_nod, i_r, icm_sgs, d_nod)
 !
       module cal_similarity_terms
 !
@@ -33,14 +33,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_flux_vector                                    &
-     &         (inod_smp_stack, i_r, i_v, i_s, icm_sgs)
+      subroutine cal_sgs_flux_vector(numnod, inod_smp_stack,            &
+     &          ncomp_nod, i_r, i_v, i_s, icm_sgs, d_nod)
 !
-      use m_node_phys_data
       use m_SGS_model_coefs
 !
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_r, i_s, i_v, icm_sgs
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+!
       integer(kind = kint) :: inod, ip, ist, ied
 !
 !
@@ -66,14 +68,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_flux_tensor                                    &
-     &         (inod_smp_stack, i_r, i_v1, i_v2, icm_sgs)
+      subroutine cal_sgs_flux_tensor(numnod, inod_smp_stack,            &
+     &          ncomp_nod, i_r, i_v1, i_v2, icm_sgs, d_nod)
 !
-      use m_node_phys_data
       use m_SGS_model_coefs
 !
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2, icm_sgs
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+!
       integer(kind = kint) :: inod, ip, ist, ied
 !
 !
@@ -108,15 +112,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine subctract_maxwell_tensor                               &
-     &         (inod_smp_stack, i_r, i_v1, icm_sgs)
+      subroutine subctract_maxwell_tensor(numnod, inod_smp_stack,       &
+     &          ncomp_nod, i_r, i_v1, icm_sgs, d_nod)
 !
-      use m_node_phys_data
       use m_physical_property
       use m_SGS_model_coefs
 !
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_r, i_v1, icm_sgs
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+!
       integer(kind = kint) :: inod, ip, ist, ied
 !
 !
@@ -158,14 +164,16 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine subctract_uxb_vector                                   &
-     &         (inod_smp_stack, i_r, i_v1, i_v2)
+      subroutine subctract_uxb_vector(numnod, inod_smp_stack,           &
+     &         ncomp_nod, i_r, i_v1, i_v2, d_nod)
 !
-      use m_node_phys_data
       use m_SGS_model_coefs
 !
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+!
       integer(kind = kint) :: inod, ip, ist, ied
 !
 !
@@ -191,14 +199,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine subctract_induction_tensor                             &
-     &         (inod_smp_stack, i_r, i_v1, i_v2, icm_sgs)
+      subroutine subctract_induction_tensor(numnod, inod_smp_stack,     &
+     &          ncomp_nod, i_r, i_v1, i_v2, icm_sgs, d_nod)
 !
-      use m_node_phys_data
       use m_SGS_model_coefs
 !
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_r, i_v1, i_v2, icm_sgs
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+!
       integer(kind = kint) :: inod, ip, ist, ied
 !
 !$omp parallel do private(inod,ist,ied)
@@ -227,14 +237,16 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine multi_model_coefs_vect_simi                            &
-     &         (i_r, icm_sgs, inod_smp_stack)
+      subroutine multi_model_coefs_vect_simi(numnod, inod_smp_stack,    &
+     &          ncomp_nod, i_r, icm_sgs, d_nod)
 !
-      use m_node_phys_data
       use m_SGS_model_coefs
 !
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_r, icm_sgs
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+!
       integer(kind = kint) :: inod, ip, ist, ied
 !
 !
@@ -257,14 +269,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine multi_model_coefs_tensor_simi                          &
-     &         (inod_smp_stack, i_r, icm_sgs)
+      subroutine multi_model_coefs_tensor_simi(numnod, inod_smp_stack,  &
+     &         ncomp_nod, i_r, icm_sgs, d_nod)
 !
-      use m_node_phys_data
       use m_SGS_model_coefs
 !
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_r, icm_sgs
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+!
       integer(kind = kint) :: inod, ip, ist, ied
 !
 !

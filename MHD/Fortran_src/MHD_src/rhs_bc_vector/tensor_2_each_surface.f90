@@ -3,11 +3,13 @@
 !
 !      Written by H. Matsui on Sep., 2005
 !
-!!      subroutine sym_tensor_2_each_surface(sf_grp, ngrp_sf, id_grp_sf,&
-!!     &          nd, k2, i_tensor)
+!!      subroutine sym_tensor_2_each_surface(ele, surf, sf_grp,         &
+!!     &          ngrp_sf, id_grp_sf, nd, k2, numnod, ncomp_nod,        &
+!!     &          i_tensor, d_nod)
 !!        Input:  d_nod(1,i_tensor), Output:  vect_sf
-!!      subroutine asym_tensor_2_each_surface(sf_grp, ngrp_sf,          &
-!!     &          id_grp_sf, nd, k2, i_tensor)
+!!      subroutine asym_tensor_2_each_surface(ele, surf, sf_grp,        &
+!!     &          ngrp_sf, id_grp_sf, nd, k2, numnod, ncomp_nod,        &
+!!     &          i_tensor, d_nod)
 !!        Input:  d_nod(1,i_tensor), Output:  vect_sf
 !!         type(surface_group_data), intent(in) :: sf_grp
 !
@@ -17,9 +19,10 @@
       use m_constants
       use m_machine_parameter
 !
-      use m_geometry_data
       use m_phys_constants
       use m_int_surface_data
+      use t_geometry_data
+      use t_surface_data
       use t_group_data
 !
       implicit none
@@ -30,15 +33,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sym_tensor_2_each_surface(sf_grp, ngrp_sf, id_grp_sf,  &
-     &          nd, k2, i_tensor)
+      subroutine sym_tensor_2_each_surface(ele, surf, sf_grp,           &
+     &          ngrp_sf, id_grp_sf, nd, k2, numnod, ncomp_nod,          &
+     &          i_tensor, d_nod)
 !
-      use m_node_phys_data
-!
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: ngrp_sf
       integer (kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
-      integer (kind = kint), intent(in) :: nd, k2, i_tensor
+      integer (kind = kint), intent(in) :: nd, k2
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_tensor
+      real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: i, igrp, iproc, id_sf, nsf
       integer (kind = kint) :: ist, ied, inum, iele, isf
@@ -68,8 +74,8 @@
              do inum = ist, ied
                iele = sf_grp%item_sf_grp(1,inum)
                isf =  sf_grp%item_sf_grp(2,inum)
-               kk2 =    surf1%node_on_sf(k2,isf)
-               inod =   ele1%ie(iele,kk2)
+               kk2 =    surf%node_on_sf(k2,isf)
+               inod =   ele%ie(iele,kk2)
 !
                vect_sf(inum,1) = d_nod(inod,n1)
                vect_sf(inum,2) = d_nod(inod,n2)
@@ -85,15 +91,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine asym_tensor_2_each_surface(sf_grp, ngrp_sf,            &
-     &          id_grp_sf, nd, k2, i_tensor)
+      subroutine asym_tensor_2_each_surface(ele, surf, sf_grp,          &
+     &          ngrp_sf, id_grp_sf, nd, k2, numnod, ncomp_nod,          &
+     &          i_tensor, d_nod)
 !
-      use m_node_phys_data
-!
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: ngrp_sf
       integer (kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
-      integer (kind = kint), intent(in) :: nd, k2, i_tensor
+      integer (kind = kint), intent(in) :: nd, k2
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_tensor
+      real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: i, igrp, iproc, id_sf, nsf
       integer (kind = kint) :: ist, ied, inum, iele, isf
@@ -124,8 +133,8 @@
               do inum = ist, ied
                 iele = sf_grp%item_sf_grp(1,inum)
                 isf =  sf_grp%item_sf_grp(2,inum)
-                kk2 =    surf1%node_on_sf(k2,isf)
-                inod =   ele1%ie(iele,kk2)
+                kk2 =    surf%node_on_sf(k2,isf)
+                inod =   ele%ie(iele,kk2)
 !
                 vect_sf(inum,1) =  zero
                 vect_sf(inum,2) =  d_nod(inod,i_tensor  )
@@ -137,8 +146,8 @@
               do inum = ist, ied
                 iele = sf_grp%item_sf_grp(1,inum)
                 isf =  sf_grp%item_sf_grp(2,inum)
-                kk2 =    surf1%node_on_sf(k2,isf)
-                inod =   ele1%ie(iele,kk2)
+                kk2 =    surf%node_on_sf(k2,isf)
+                inod =   ele%ie(iele,kk2)
 !
                 vect_sf(inum,1) = -d_nod(inod,i_tensor  )
                 vect_sf(inum,2) =  zero
@@ -152,8 +161,8 @@
 !
                 iele = sf_grp%item_sf_grp(1,inum)
                 isf =  sf_grp%item_sf_grp(2,inum)
-                kk2 =    surf1%node_on_sf(k2,isf)
-                inod =   ele1%ie(iele,kk2)
+                kk2 =    surf%node_on_sf(k2,isf)
+                inod =   ele%ie(iele,kk2)
 !
                 vect_sf(inum,1) = -d_nod(inod,i_tensor+1)
                 vect_sf(inum,2) = -d_nod(inod,i_tensor+2)

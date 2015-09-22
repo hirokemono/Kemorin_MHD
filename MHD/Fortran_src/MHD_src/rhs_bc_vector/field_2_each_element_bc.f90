@@ -7,9 +7,9 @@
 !!      subroutine scalar_2_element_4_boundary(numele, nnod_4_ele, ie,  &
 !!     &          num_idx_ibc, ele_bc_id, ibc_stack_smp,                &
 !!     &          k2, i_comp, scalar_e )
-!!      subroutine vector_2_element_4_boundary(numele, nnod_4_ele, ie,  &
-!!     &          num_idx_ibc, ele_bc_id, ibc_stack_smp,                &
-!!     &          k2, i_vect, vector_e)
+!!      subroutine vector_2_element_4_boundary(numnod, numele,          &
+!!     &          nnod_4_ele, ie, num_idx_ibc, ele_bc_id, ibc_stack_smp,&
+!!     &          k2, ncomp_nod, i_vect, d_nod, vector_e)
 !
       module field_2_each_element_bc
 !
@@ -24,11 +24,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine scalar_2_element_4_boundary(numele, nnod_4_ele, ie,    &
-     &          num_idx_ibc, ele_bc_id, ibc_stack_smp,                  &
-     &          k2, i_comp, scalar_e )
-!
-      use m_node_phys_data
+      subroutine scalar_2_element_4_boundary(numnod, numele,            &
+     &          nnod_4_ele, ie, num_idx_ibc, ele_bc_id, ibc_stack_smp,  &
+     &          k2, ncomp_nod, i_comp, d_nod, scalar_e)
 !
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
@@ -36,7 +34,8 @@
       integer (kind=kint), intent(in) :: num_idx_ibc
       integer (kind=kint), intent(in) :: ele_bc_id(num_idx_ibc)
       integer (kind=kint), intent(in) :: ibc_stack_smp(0:np_smp)
-      integer (kind=kint), intent(in) :: i_comp
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod, i_comp
+      real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
 !
       real (kind=kreal), intent(inout) :: scalar_e(numele)
 !
@@ -63,19 +62,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine vector_2_element_4_boundary(numele, nnod_4_ele, ie,    &
-     &          num_idx_ibc, ele_bc_id, ibc_stack_smp,                  &
-     &          k2, i_vect, vector_e)
-!
-      use m_node_phys_data
+      subroutine vector_2_element_4_boundary(numnod, numele,            &
+     &          nnod_4_ele, ie, num_idx_ibc, ele_bc_id, ibc_stack_smp,  &
+     &          k2, ncomp_nod, i_vect, d_nod, vector_e)
 !
       integer(kind = kint), intent(in) :: numele, nnod_4_ele
       integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
 !
-      integer (kind=kint), intent(in) :: num_idx_ibc
-      integer (kind=kint), intent(in) :: ele_bc_id(num_idx_ibc)
-      integer (kind=kint), intent(in) :: ibc_stack_smp(0:np_smp)
-      integer (kind=kint), intent(in) :: i_vect
+      integer(kind = kint), intent(in) :: num_idx_ibc
+      integer(kind = kint), intent(in) :: ele_bc_id(num_idx_ibc)
+      integer(kind = kint), intent(in) :: ibc_stack_smp(0:np_smp)
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod, i_vect
+      real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
+!
 !
       real (kind=kreal), intent(inout) :: vector_e(numele,3)
 !

@@ -1,9 +1,11 @@
 !check_deltat_by_previous.f90
 !     module check_deltat_by_previous
 !
-      module check_deltat_by_previous
-!
 !      Written by H. Matsui on Nov., 2009
+!
+!      subroutine s_check_deltat_by_previous
+!
+      module check_deltat_by_previous
 !
       use m_precision
 !
@@ -17,8 +19,6 @@
       private :: check_scalar_evo_by_previous
       private :: check_vector_evo_by_previous
 !
-!      subroutine s_check_deltat_by_previous
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -28,7 +28,9 @@
       subroutine s_check_deltat_by_previous
 !
       use m_control_parameter
+      use m_geometry_data
       use m_node_phys_address
+      use m_node_phys_data
 !
       integer(kind = kint) :: ip, nd
 !
@@ -37,15 +39,19 @@
       if(i_drmax_v .gt. izero) then
         if(iflag_debug .gt. izero)                                      &
      &      write(*,*) 'check_vector_evo_by_previous velo'
-        call check_vector_evo_by_previous(iphys%i_velo,                 &
-     &      iphys%i_chk_mom, iphys%i_chk_mom_2, i_drmax_v)
+        call check_vector_evo_by_previous                               &
+     &     (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,     &
+     &      iphys%i_velo, iphys%i_chk_mom, iphys%i_chk_mom_2,           &
+     &      i_drmax_v, d_nod)
       end if
 !
       if(i_drmax_p .gt. izero) then
         if(iflag_debug .gt. izero)                                      &
      &      write(*,*) 'check_scalar_evo_by_previous press'
-        call check_scalar_evo_by_previous(iphys%i_press,                &
-     &      iphys%i_chk_press, iphys%i_chk_press_2, i_drmax_p)
+        call check_scalar_evo_by_previous                               &
+     &     (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,     &
+     &      iphys%i_press, iphys%i_chk_press, iphys%i_chk_press_2,      &
+     &      i_drmax_p, d_nod)
       end if
 !
 !
@@ -53,34 +59,44 @@
         if(iflag_t_evo_4_vect_p .gt. id_no_evolution) then
           if(iflag_debug .gt. izero)                                    &
      &      write(*,*) 'check_vector_evo_by_previous vecp'
-          call check_vector_evo_by_previous(iphys%i_vecp,               &
-     &        iphys%i_chk_uxb, iphys%i_chk_uxb_2, i_drmax_b)
+          call check_vector_evo_by_previous                             &
+     &       (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,   &
+     &        iphys%i_vecp, iphys%i_chk_uxb, iphys%i_chk_uxb_2,         &
+     &        i_drmax_b, d_nod)
         else
           if(iflag_debug .gt. izero)                                    &
      &      write(*,*) 'check_vector_evo_by_previous magne'
-          call check_vector_evo_by_previous(iphys%i_magne,              &
-     &        iphys%i_chk_uxb, iphys%i_chk_uxb_2, i_drmax_b)
+          call check_vector_evo_by_previous                             &
+     &       (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,   &
+     &        iphys%i_magne, iphys%i_chk_uxb, iphys%i_chk_uxb_2,        &
+     &        i_drmax_b, d_nod)
         end if
       end if
 !
       if(i_drmax_f .gt. izero) then
         if(iflag_debug .gt. izero)                                      &
      &      write(*,*) 'check_scalar_evo_by_previous mag_p'
-        call check_scalar_evo_by_previous(iphys%i_mag_p,                &
-     &      iphys%i_chk_potential, iphys%i_chk_potential_2, i_drmax_f)
+        call check_scalar_evo_by_previous                               &
+     &     (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,     &
+     &      iphys%i_mag_p, iphys%i_chk_potential,                       &
+     &      iphys%i_chk_potential_2, i_drmax_f, d_nod)
       end if
 !
 !
       if(i_drmax_t .gt. izero) then
         if(iflag_debug .gt. izero)                                      &
      &      write(*,*) 'check_scalar_evo_by_previous temp'
-        call check_scalar_evo_by_previous(iphys%i_temp,                 &
-     &      iphys%i_chk_heat, iphys%i_chk_heat_2, i_drmax_t)
+        call check_scalar_evo_by_previous                               &
+     &     (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,     &
+     &      iphys%i_temp, iphys%i_chk_heat, iphys%i_chk_heat_2,         &
+     &      i_drmax_t, d_nod)
       end if
 !
       if(i_drmax_d .gt. izero) then
-        call check_scalar_evo_by_previous(iphys%i_light,                &
-     &      iphys%i_chk_composit, iphys%i_chk_composit_2, i_drmax_d)
+        call check_scalar_evo_by_previous                               &
+     &     (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,     &
+     &      iphys%i_light, iphys%i_chk_composit,                        &
+     &      iphys%i_chk_composit_2, i_drmax_d, d_nod)
       end if
 !$omp end parallel
 !
@@ -113,13 +129,13 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine check_scalar_evo_by_previous(i_fld, i_chk, i_chk2,     &
-     &          idrm)
+      subroutine check_scalar_evo_by_previous(numnod, inod_smp_stack,   &
+     &          ncomp_nod, i_fld, i_chk, i_chk2, idrm, d_nod)
 !
-      use m_geometry_data
-      use m_node_phys_data
-!
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod
+      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_fld, i_chk, i_chk2, idrm
+      real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
 !
       integer(kind = kint) :: ip, ist, ied, inod
       real(kind = kreal) :: d_ratio
@@ -127,8 +143,8 @@
 !
 !$omp do private(ist,ied,inod,d_ratio)
       do ip = 1, np_smp
-        ist = node1%istack_nod_smp(ip-1) + 1
-        ied = node1%istack_nod_smp(ip)
+        ist = inod_smp_stack(ip-1) + 1
+        ied = inod_smp_stack(ip)
 !
         if( d_nod(ist,i_chk  ) .eq. d_nod(ist,i_chk2  )) then
           d_ratio_min_smp(ip,idrm  ) =  1.0d30
@@ -164,13 +180,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine check_vector_evo_by_previous(i_fld, i_chk, i_chk2,     &
-     &          idrm)
+      subroutine check_vector_evo_by_previous(numnod, inod_smp_stack,   &
+     &          ncomp_nod, i_fld, i_chk, i_chk2, idrm, d_nod)
 !
-      use m_geometry_data
-      use m_node_phys_data
+!      use m_node_phys_data
 !
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod
+      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_fld, i_chk, i_chk2, idrm
+      real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
 !
       integer(kind = kint) :: ip, ist, ied, inod
       real(kind = kreal) :: d_ratio
@@ -178,8 +196,8 @@
 !
 !$omp do private(ist,ied,inod,d_ratio)
       do ip = 1, np_smp
-        ist = node1%istack_nod_smp(ip-1) + 1
-        ied = node1%istack_nod_smp(ip)
+        ist = inod_smp_stack(ip-1) + 1
+        ied = inod_smp_stack(ip)
 !
         if( d_nod(ist,i_chk  ) .eq. d_nod(ist,i_chk2  )) then
           d_ratio_min_smp(ip,idrm  ) =  1.0d30

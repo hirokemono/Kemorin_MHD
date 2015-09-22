@@ -61,7 +61,8 @@
 !
       if (num_bc_v10_nod .gt. 0) then
        call set_rotation_boundary(node1%numnod, node1%xx,               &
-     &     num_bc_v10_nod, ibc_v10_id, bc_v10_id_apt)
+     &     num_bc_v10_nod, ibc_v10_id, bc_v10_id_apt,                   &
+     &     nod_fld1%ntot_phys, iphys%i_velo, d_nod)
       end if
 !
 !   boundary condition for special case
@@ -69,7 +70,8 @@
 !
       if (num_bc_vsp_nod .gt. 0) then
         call set_specific_boundary_velo(node1%numnod, node1%xx,         &
-     &      num_bc_vsp_nod, ibc_vsp_id, bc_vsp_id_apt)
+     &      num_bc_vsp_nod, ibc_vsp_id, bc_vsp_id_apt,                  &
+     &      nod_fld1%ntot_phys, iphys%i_velo, d_nod)
       end if
 !
 !

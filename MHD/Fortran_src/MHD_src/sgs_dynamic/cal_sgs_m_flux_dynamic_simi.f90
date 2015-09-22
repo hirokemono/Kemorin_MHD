@@ -47,7 +47,7 @@
      &   (icomp_sgs_mf, ele1%istack_ele_smp)
       call reset_tensor_sgs_nod_m_coefs                                 &
      &   (icomp_sgs_mf, node1%istack_nod_smp)
-      call s_clear_work_4_dynamic_model(node1%numnod)
+      call s_clear_work_4_dynamic_model
 !
 !   similarity model with wider filter
 !
@@ -117,7 +117,7 @@
      &   (icomp_sgs_lor, ele1%istack_ele_smp)
       call reset_tensor_sgs_nod_m_coefs                                 &
      &   (icomp_sgs_lor, node1%istack_nod_smp)
-      call s_clear_work_4_dynamic_model(node1%numnod)
+      call s_clear_work_4_dynamic_model
 !
 !   similarity model with wider filter
 !

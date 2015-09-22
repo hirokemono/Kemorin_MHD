@@ -177,10 +177,12 @@
 !
       use m_constants
       use m_geometry_data
+      use m_phys_constants
       use m_phys_labels
       use m_node_phys_address
       use m_node_phys_data
 !
+      use clear_phys_data
       use cvt_sph_vector_2_xyz_smp
       use cvt_xyz_vector_2_sph_smp
       use cvt_sph_tensor_2_xyz_smp
@@ -199,14 +201,7 @@
      &    iphys%i_SGS_m_flux, n_sym_tensor, d_nod)
 !$omp end parallel
 !
-!$omp parallel workshare
-      d_nod(1:node1%numnod,iphys%i_SGS_m_flux  ) = zero
-      d_nod(1:node1%numnod,iphys%i_SGS_m_flux+1) = zero
-      d_nod(1:node1%numnod,iphys%i_SGS_m_flux+2) = zero
-!      d_nod(1:node1%numnod,iphys%i_SGS_m_flux+3) = zero
-!      d_nod(1:node1%numnod,iphys%i_SGS_m_flux+4) = zero
-!      d_nod(1:node1%numnod,iphys%i_SGS_m_flux+5) = zero
-!$omp end parallel workshare
+      call clear_nodal_data(n_sym_tensor, iphys%i_SGS_m_flux)
 !
 !$omp parallel
       call overwrite_nodal_sph_2_xyz_smp(node1, nod_fld1%ntot_phys,     &
@@ -229,11 +224,7 @@
      &   (node1, nod_fld1%ntot_phys, iphys%i_velo, n_vector, d_nod)
 !$omp end parallel
 
-!$omp parallel workshare
-!      d_nod(1:node1%numnod,iphys%i_velo  ) = zero
-      d_nod(1:node1%numnod,iphys%i_velo+1) = zero
-      d_nod(1:node1%numnod,iphys%i_velo+2) = zero
-!$omp end parallel workshare
+      call clear_nodal_data(n_vector, iphys%i_velo)
 !
 !$omp parallel
       call overwrite_nodal_sph_2_xyz_smp                                &

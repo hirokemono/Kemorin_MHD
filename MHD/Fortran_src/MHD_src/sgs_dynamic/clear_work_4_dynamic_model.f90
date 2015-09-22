@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Oct. 2005
 !     Modified by H. Matsui on Aug., 2007
 !
-!     subroutine s_clear_work_4_dynamic_model(numnod)
+!     subroutine s_clear_work_4_dynamic_model
 !
       module clear_work_4_dynamic_model
 !
@@ -18,40 +18,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine s_clear_work_4_dynamic_model(numnod)
+      subroutine s_clear_work_4_dynamic_model
 !
-       use m_node_phys_address
-       use m_node_phys_data
+      use m_phys_constants
+      use m_node_phys_address
+      use clear_phys_data
 !
-       integer(kind = kint), intent(in) :: numnod
-       integer(kind = kint) :: inod
 !
-!$omp parallel do
-         do inod = 1, numnod
-           d_nod(inod,iphys%i_sgs_simi  ) =   0.0d0
-           d_nod(inod,iphys%i_sgs_simi+1) =   0.0d0
-           d_nod(inod,iphys%i_sgs_simi+2) =   0.0d0
-           d_nod(inod,iphys%i_sgs_simi+3) =   0.0d0
-           d_nod(inod,iphys%i_sgs_simi+4) =   0.0d0
-           d_nod(inod,iphys%i_sgs_simi+5) =   0.0d0
+      call clear_nodal_data(n_sym_tensor, iphys%i_sgs_simi)
+      call clear_nodal_data(n_sym_tensor, iphys%i_sgs_grad)
+      call clear_nodal_data(n_sym_tensor, iphys%i_sgs_grad_f)
 !
-           d_nod(inod,iphys%i_sgs_grad  ) =   0.0d0
-           d_nod(inod,iphys%i_sgs_grad+1) =   0.0d0
-           d_nod(inod,iphys%i_sgs_grad+2) =   0.0d0
-           d_nod(inod,iphys%i_sgs_grad+3) =   0.0d0
-           d_nod(inod,iphys%i_sgs_grad+4) =   0.0d0
-           d_nod(inod,iphys%i_sgs_grad+5) =   0.0d0
-!
-           d_nod(inod,iphys%i_sgs_grad_f  ) = 0.0d0
-           d_nod(inod,iphys%i_sgs_grad_f+1) = 0.0d0
-           d_nod(inod,iphys%i_sgs_grad_f+2) = 0.0d0
-           d_nod(inod,iphys%i_sgs_grad_f+3) = 0.0d0
-           d_nod(inod,iphys%i_sgs_grad_f+4) = 0.0d0
-           d_nod(inod,iphys%i_sgs_grad_f+5) = 0.0d0
-         end do
-!$omp end parallel do
-!
-       end subroutine s_clear_work_4_dynamic_model
+      end subroutine s_clear_work_4_dynamic_model
 !
 !  --------------------------------------------------------------------
 !

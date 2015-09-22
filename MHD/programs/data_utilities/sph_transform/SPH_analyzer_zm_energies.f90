@@ -26,6 +26,7 @@
 !
       use m_sph_spectr_data
       use m_t_step_parameter
+      use m_node_phys_data
       use m_control_params_2nd_files
       use m_node_id_spherical_IO
       use t_field_data_IO
@@ -73,7 +74,9 @@
 !
 !  spherical transform for vector
         call sph_b_trans_all_field
-        call cal_zm_energy_to_pressure
+        call cal_zm_energy_to_pressure(nod_fld1%n_point,                &
+     &      nod_fld1%num_phys, nod_fld1%ntot_phys,                      &
+     &      nod_fld1%istack_component, d_nod)
 !
       end if
 !
@@ -168,12 +171,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_zm_energy_to_pressure
+      subroutine cal_zm_energy_to_pressure(numnod,                      &
+     &          nfield_nod, ncomp_nod, istack_comp, d_nod)
 !
       use m_phys_labels
       use m_spheric_parameter
       use m_sph_spectr_data
-      use m_node_phys_data
+!
+      integer (kind = kint), intent(in) :: numnod
+      integer (kind = kint), intent(in) :: nfield_nod, ncomp_nod
+      integer (kind = kint), intent(in) :: istack_comp(0:nfield_nod)
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
 !
       integer(kind = kint) :: inod, i, k, l, m, jnod
@@ -183,9 +191,9 @@
 !
       do i = 1, num_phys_rj
         if     (phys_name_rj(i) .eq. fhd_velo) then
-          i_velo =  nod_fld1%istack_component(i- 1) + 1
+          i_velo =  istack_comp(i- 1) + 1
         else if(phys_name_rj(i) .eq. fhd_press) then
-          i_press = nod_fld1%istack_component(i- 1) + 1
+          i_press = istack_comp(i- 1) + 1
         end if
       end do
 !

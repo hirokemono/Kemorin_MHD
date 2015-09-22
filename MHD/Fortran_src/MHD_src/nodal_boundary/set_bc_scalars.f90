@@ -69,6 +69,8 @@
 !
       subroutine set_bc_fixed_temp_id(numnod, nod_grp)
 !
+      use m_node_phys_address
+      use m_node_phys_data
       use m_control_parameter
       use m_bc_data_list
       use m_bc_data_ene
@@ -97,7 +99,8 @@
 !
 !
       if (iflag_4_ref_temp .ne. id_no_ref_temp) then
-        call set_fixed_bc_4_par_temp
+        call set_fixed_bc_4_par_temp(numnod, nod_fld1%ntot_phys,        &
+     &      iphys%i_ref_t, d_nod)
       end if
 !
       end subroutine set_bc_fixed_temp_id
@@ -107,6 +110,8 @@
 !
       subroutine set_bc_fixed_press_id(numnod, nod_grp)
 !
+      use m_node_phys_address
+      use m_node_phys_data
       use m_bc_data_list
       use m_bc_data_press
       use m_bc_press_sgs
@@ -132,8 +137,11 @@
      &    ibc_press_sgs, ibc2_press_sgs, num_bc_ps_nod,                 &
      &    ibc_ps_id, bc_ps_id_apt, iflag_bc_sgs_s, i0)
 !
-      call set_potential_4_fixed_press
-      call set_potential_4_sgs_press
+      call set_potential_4_fixed_press(numnod, nod_fld1%ntot_phys,      &
+     &    iphys%i_press, iphys%i_p_phi, d_nod)
+
+      call set_potential_4_sgs_press(numnod, nod_fld1%ntot_phys,        &
+     &    iphys%i_press, iphys%i_p_phi, d_nod)
 !
       end subroutine set_bc_fixed_press_id
 !

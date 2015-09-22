@@ -29,14 +29,18 @@
 !
       subroutine cal_sol_velo_pre_crank
 !
+      use m_geometry_data
       use m_node_phys_address
+      use m_node_phys_data
       use solver_MGCG_MHD
 !
 !
-      call copy_ff_to_rhs33
+      call copy_ff_to_rhs33(node1%istack_nod_smp)
       call solver_MGCG_velo
 !
-      call copy_solver_vec_to_vector(iphys%i_velo)
+      call copy_solver_vec_to_vector                                    &
+     &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
+     &    iphys%i_velo, d_nod)
 !
       end subroutine cal_sol_velo_pre_crank
 !
@@ -44,14 +48,20 @@
 !
       subroutine cal_sol_mod_po
 !
+      use m_geometry_data
       use m_node_phys_address
+      use m_node_phys_data
       use solver_MGCG_MHD
 !
 !
-      call copy_ff_potential_to_rhs(iphys%i_p_phi)
+      call copy_ff_potential_to_rhs                                     &
+     &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
+     &    iphys%i_p_phi, d_nod)
       call solver_MGCG_press
 !
-      call copy_solver_vec_to_scalar(iphys%i_p_phi)
+      call copy_solver_vec_to_scalar                                    &
+     &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
+     &    iphys%i_p_phi, d_nod)
 !
       end subroutine cal_sol_mod_po
 !
@@ -61,18 +71,20 @@
 !
       use m_geometry_data
       use m_node_phys_address
+      use m_phys_constants
       use m_node_phys_data
       use solver_MGCG_MHD
+      use clear_phys_data
 !
 !
-      call copy_ff_to_rhs33
+      call copy_ff_to_rhs33(node1%istack_nod_smp)
       call solver_MGCG_magne
 !
-      call copy_solver_vec_to_vector(iphys%i_vecp)
+      call copy_solver_vec_to_vector                                    &
+     &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
+     &    iphys%i_vecp, d_nod)
 !
-!$omp workshare
-      d_nod(1:node1%numnod,iphys%i_m_phi) = 0.0d0
-!$omp end workshare
+      call clear_nodal_data(n_scalar, iphys%i_m_phi)
 !
       end subroutine cal_sol_vect_p_pre_crank
 !
@@ -83,13 +95,16 @@
       use calypso_mpi
       use m_geometry_data
       use m_node_phys_address
+      use m_node_phys_data
       use solver_MGCG_MHD
 !
 !
-      call copy_ff_to_rhs33
+      call copy_ff_to_rhs33(node1%istack_nod_smp)
       call solver_MGCG_magne
 !
-      call copy_solver_vec_to_vector(iphys%i_magne)
+      call copy_solver_vec_to_vector                                    &
+     &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
+     &    iphys%i_magne, d_nod)
 !
       end subroutine cal_sol_magne_pre_crank
 !
@@ -97,14 +112,20 @@
 !
       subroutine cal_sol_mag_po
 !
+      use m_geometry_data
       use m_node_phys_address
+      use m_node_phys_data
       use solver_MGCG_MHD
 !
 !
-      call copy_ff_potential_to_rhs(iphys%i_m_phi)
+      call copy_ff_potential_to_rhs                                     &
+     &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
+     &    iphys%i_m_phi, d_nod)
       call solver_MGCG_magne_p
 !
-      call copy_solver_vec_to_scalar(iphys%i_m_phi)
+      call copy_solver_vec_to_scalar                                    &
+     &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
+     &    iphys%i_m_phi, d_nod)
 !
       end subroutine cal_sol_mag_po
 !
@@ -113,15 +134,19 @@
 !
       subroutine cal_sol_energy_crank(i_fld)
 !
+      use m_geometry_data
+      use m_node_phys_data
       use solver_MGCG_MHD
 !
       integer (kind = kint), intent(in) :: i_fld
 !
 !
-      call copy_ff_to_rhs11
+      call copy_ff_to_rhs11(node1%istack_nod_smp)
       call solver_MGCG_temp
 !
-      call copy_solver_vec_to_scalar(i_fld)
+      call copy_solver_vec_to_scalar                                    &
+     &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
+     &    i_fld, d_nod)
 !
       end subroutine cal_sol_energy_crank
 !
@@ -129,36 +154,41 @@
 !
       subroutine cal_sol_d_scalar_crank(i_fld)
 !
+      use m_geometry_data
+      use m_node_phys_data
       use solver_MGCG_MHD
 !
       integer (kind = kint), intent(in) :: i_fld
 !
 !
-      call copy_ff_to_rhs11
+      call copy_ff_to_rhs11(node1%istack_nod_smp)
       call solver_MGCG_d_scalar
 !
-      call copy_solver_vec_to_scalar(i_fld)
+      call copy_solver_vec_to_scalar                                    &
+     &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
+     &    i_fld, d_nod)
 !
       end subroutine cal_sol_d_scalar_crank
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine copy_ff_to_rhs33
+      subroutine copy_ff_to_rhs33(inod_smp_stack)
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_geometry_data
       use m_array_for_send_recv
       use m_finite_element_matrix
+!
+      integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
       integer (kind = kint) :: ip, ist, ied, inod
 !
 !
 !$omp parallel do private(ist,ied,inod)
       do ip = 1, np_smp
-        ist = node1%istack_nod_smp(ip-1)+1
-        ied = node1%istack_nod_smp(ip)
+        ist = inod_smp_stack(ip-1)+1
+        ied = inod_smp_stack(ip)
 !cdir nodep
         do inod = ist, ied
           b_vec(3*inod-2) = ff(inod,1)
@@ -175,24 +205,25 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_ff_to_rhs11
+      subroutine copy_ff_to_rhs11(inod_smp_stack)
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_geometry_data
       use m_array_for_send_recv
       use m_finite_element_matrix
+!
+      integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
 !
       integer (kind = kint) :: ip, ist, ied, inod
 !
 !
 !$omp parallel do private(ist,ied,inod)
       do ip = 1, np_smp
-        ist = node1%istack_nod_smp(ip-1)+1
-        ied = node1%istack_nod_smp(ip)
+        ist = inod_smp_stack(ip-1)+1
+        ied = inod_smp_stack(ip)
 !cdir nodep
         do inod = ist, ied
-          b_vec(inod) =    ff(inod,1)
+          b_vec(inod) = ff(inod,1)
           x_vec(inod) = ff(inod,1)
         end do
       end do
@@ -202,23 +233,24 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_ff_potential_to_rhs(i_field)
+      subroutine copy_ff_potential_to_rhs(numnod, inod_smp_stack,       &
+     &           ncomp_nod, i_field, d_nod)
 !
-      use calypso_mpi
       use m_machine_parameter
-      use m_geometry_data
       use m_array_for_send_recv
-      use m_node_phys_data
       use m_finite_element_matrix
 !
-      integer (kind = kint), intent(in) :: i_field
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_field
+      integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
+!
       integer (kind = kint) :: ip, ist, ied, inod
 !
 !
 !$omp parallel do private(ist,ied,inod)
       do ip = 1, np_smp
-        ist = node1%istack_nod_smp(ip-1)+1
-        ied = node1%istack_nod_smp(ip)
+        ist = inod_smp_stack(ip-1)+1
+        ied = inod_smp_stack(ip)
 !cdir nodep
         do inod = ist, ied
           b_vec(inod) = ff(inod,1)
@@ -232,22 +264,23 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine copy_solver_vec_to_vector(i_field)
+      subroutine copy_solver_vec_to_vector(numnod, inod_smp_stack,      &
+     &          ncomp_nod, i_field, d_nod)
 !
-      use calypso_mpi
       use m_machine_parameter
-      use m_geometry_data
       use m_array_for_send_recv
-      use m_node_phys_data
 !
-      integer (kind = kint), intent(in) :: i_field
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_field
+      integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+!
       integer (kind = kint) :: ip, ist, ied, inod
 !
 !
 !$omp parallel do private(ist,ied,inod)
       do ip = 1, np_smp
-        ist = node1%istack_nod_smp(ip-1)+1
-        ied = node1%istack_nod_smp(ip)
+        ist = inod_smp_stack(ip-1)+1
+        ied = inod_smp_stack(ip)
 !cdir nodep
         do inod = ist, ied
           d_nod(inod,i_field  ) = x_vec(3*inod-2)
@@ -261,22 +294,23 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_solver_vec_to_scalar(i_field)
+      subroutine copy_solver_vec_to_scalar(numnod, inod_smp_stack,      &
+     &          ncomp_nod, i_field, d_nod)
 !
-      use calypso_mpi
       use m_machine_parameter
-      use m_geometry_data
       use m_array_for_send_recv
-      use m_node_phys_data
 !
-      integer (kind = kint), intent(in) :: i_field
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_field
+      integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+!
       integer (kind = kint) :: ip, ist, ied, inod
 !
 !
 !$omp parallel do private(ist,ied,inod)
       do ip = 1, np_smp
-        ist = node1%istack_nod_smp(ip-1)+1
-        ied = node1%istack_nod_smp(ip)
+        ist = inod_smp_stack(ip-1)+1
+        ied = inod_smp_stack(ip)
 !cdir nodep
         do inod = ist, ied
           d_nod(inod,i_field  ) = x_vec(inod)

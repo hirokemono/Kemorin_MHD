@@ -52,7 +52,7 @@
 !    reset model coefficients
 !
       call reset_diff_model_coefs(iak_diff_b, ele1%istack_ele_smp)
-      call s_clear_work_4_dynamic_model(node1%numnod)
+      call s_clear_work_4_dynamic_model
 !
 !    get filtered scalar potential(to iphys%i_sgs_grad_f)
 !

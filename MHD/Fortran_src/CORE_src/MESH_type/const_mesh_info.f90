@@ -251,9 +251,9 @@
         if (iflag_debug.gt.0) write(*,*) 'construct_surface_data'
         call construct_surface_data(node1, ele1, surf1)
 !
-!        call check_surface_data(my_rank)
-!        call check_external_surface(my_rank)
-!        call check_iso_surface(my_rank)
+!        call check_surface_data(my_rank, ele1, surf1)
+!        call check_external_surface(my_rank, surf1)
+!        call check_iso_surface(my_rank, surf1)
       end if
 !
       if (iflag_debug.gt.0) write(*,*) 'count_overlap_surface'
@@ -264,8 +264,8 @@
         if (iflag_debug.gt.0) write(*,*) 'construct_edge_data'
         call construct_edge_data(node1, ele1, surf1, edge1)
 !
-!        call check_edge_data(id_rank)
-!        call check_edge_hexa_data(id_rank)
+!        call check_edge_data(id_rank, surf1, edge1)
+!        call check_edge_hexa_data(id_rank, ele1, edge1)
       end if
 !
       if (iflag_debug.gt.0) write(*,*) 'count_overlap_edge'
