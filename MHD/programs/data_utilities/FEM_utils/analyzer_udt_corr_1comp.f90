@@ -1,4 +1,4 @@
-!analyzer_udt_corr_1comp.f90
+ !analyzer_udt_corr_1comp.f90
 !      module analyzer_udt_corr_1comp
 !
 !      subroutine initialize_udt_corre_1comp
@@ -93,7 +93,7 @@
       call link_group_type(ele_grp1, group_ref%ele_grp)
       call link_surf_group_type(sf_grp1, group_ref%surf_grp)
 !
-      call link_nodal_fld_type_names(phys_ref)
+      call link_field_name_type(nod_fld1, phys_ref)
       call alloc_phys_data_type(mesh_ref%node%numnod, phys_ref)
       call allocate_vec_transfer(node1%numnod)
 !

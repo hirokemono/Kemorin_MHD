@@ -106,8 +106,8 @@
       if (iflag_debug.eq.1) write(*,*) 'initialize_nod_field_data'
       call initialize_nod_field_data
 !
-      if (iflag_debug.eq.1) write(*,*) 'link_nodal_fld_type_names'
-      call link_nodal_fld_type_names(new_phys)
+      if (iflag_debug.eq.1) write(*,*) 'link_field_name_type'
+      call link_field_name_type(nod_fld1, new_phys)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data_type'
       call alloc_phys_data_type(new_femmesh%mesh%node%numnod, new_phys)

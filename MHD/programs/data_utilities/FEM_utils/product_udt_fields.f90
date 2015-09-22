@@ -64,7 +64,7 @@
 !
       nod_fld1%num_phys =     ione
       nod_fld1%num_phys_viz = ione
-      call allocate_phys_name
+      call alloc_phys_name_type(nod_fld1)
 !
       nod_fld1%num_component(1) =    ncomp_4_result
       nod_fld1%istack_component(1) = ncomp_4_result

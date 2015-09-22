@@ -74,7 +74,7 @@
       use m_phys_constants
       use m_node_phys_data
       use solver_MGCG_MHD
-      use clear_phys_data
+      use copy_nodal_fields
 !
 !
       call copy_ff_to_rhs33(node1%istack_nod_smp)

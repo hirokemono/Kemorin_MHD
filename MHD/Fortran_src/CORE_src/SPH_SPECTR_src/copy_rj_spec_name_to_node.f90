@@ -33,7 +33,7 @@
       nod_fld1%num_phys_viz =  num_phys_rj_vis
       nod_fld1%ntot_phys_viz = ntot_comp_rj_vis
 !
-      call allocate_phys_name
+      call alloc_phys_name_type(nod_fld1)
 !
       nod_fld1%num_component(1:nod_fld1%num_phys)                       &
      &                     = num_phys_comp_rj(1:nod_fld1%num_phys)

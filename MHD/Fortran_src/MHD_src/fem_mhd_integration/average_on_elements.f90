@@ -23,7 +23,6 @@
 !
       use cal_fields_on_element
       use cal_differences_on_ele
-      use clear_phys_data
 !
       implicit none
 !

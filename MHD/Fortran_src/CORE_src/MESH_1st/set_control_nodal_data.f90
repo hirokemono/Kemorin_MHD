@@ -43,11 +43,11 @@
 !    set nodal data
 !
       if ( nod_fld1%num_phys .gt. 0 ) then
-        call allocate_phys_name
+        call alloc_phys_name_type(nod_fld1)
         call ordering_nod_field_by_viz
 !
         if (iflag_debug .ge. iflag_routine_msg)                         &
-     &      call check_nodal_field_name
+     &      call check_nodal_field_name_type(nod_fld1)
         call deallocate_phys_control
       end if
 !

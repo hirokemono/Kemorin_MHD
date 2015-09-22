@@ -22,7 +22,7 @@
 !
       use m_phys_constants
       use m_node_phys_address
-      use clear_phys_data
+      use copy_nodal_fields
 !
 !
       call clear_nodal_data(n_sym_tensor, iphys%i_sgs_simi)

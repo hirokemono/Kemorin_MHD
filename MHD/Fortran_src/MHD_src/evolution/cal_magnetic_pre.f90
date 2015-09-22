@@ -155,7 +155,7 @@
 !
        use m_t_step_parameter
        use m_phys_constants
-       use cal_sol_vect_crank_consist
+       use cal_sol_vector_pre_crank
        use set_magne_boundary
        use int_sk_4_fixed_boundary
        use cal_ff_smp_to_ffs

@@ -5,17 +5,12 @@
 !
 !     Written by H. Matsui
 !
-!       subroutine allocate_phys_name
 !       subroutine allocate_data_arrays
 !
 !       subroutine deallocate_phys_name
 !       subroutine deallocate_data_arrays
-!
-!
-!      subroutine check_nodal_field_name
 !      subroutine check_nodal_data(my_rank, numdir, i_field)
 !
-!      subroutine link_nodal_fld_type_names(nod_fld)
 !      subroutine link_nodal_fld_type(nod_fld)
 !
       module m_node_phys_data
@@ -63,31 +58,13 @@
 !
 !   ---------------------------------------------------------------------
 !
-       subroutine allocate_phys_name
-!
-!
-       allocate( nod_fld1%phys_name(nod_fld1%num_phys) )
-       allocate( nod_fld1%num_component(nod_fld1%num_phys) )
-       allocate( nod_fld1%istack_component(0:nod_fld1%num_phys) )
-       allocate( nod_fld1%iorder_eletype(nod_fld1%num_phys) )
-       allocate( nod_fld1%iflag_monitor(nod_fld1%num_phys) )
-!
-       nod_fld1%phys_name = ''
-       nod_fld1%num_component =    0
-       nod_fld1%istack_component = 0
-       nod_fld1%iflag_monitor   =  0
-       nod_fld1%iorder_eletype =   1
-!
-       end subroutine allocate_phys_name
-!
-!  --------------------------------------------------------------------
-!
        subroutine allocate_data_arrays
 !
        use m_geometry_data
 !
+       nod_fld1%n_point = node1%numnod
        allocate( nod_fld1%iflag_update(nod_fld1%ntot_phys) )
-       allocate( d_nod(node1%numnod,nod_fld1%ntot_phys) )
+       allocate( d_nod(nod_fld1%n_point,nod_fld1%ntot_phys) )
 !
        nod_fld1%iflag_update = 0
        d_nod = 0.0d0
@@ -99,11 +76,7 @@
 !
        subroutine deallocate_phys_name
 !
-       deallocate( nod_fld1%phys_name )
-       deallocate( nod_fld1%num_component )
-       deallocate( nod_fld1%istack_component )
-       deallocate( nod_fld1%iorder_eletype )
-       deallocate( nod_fld1%iflag_monitor )
+       call dealloc_phys_name_type(nod_fld1)
 !
        end subroutine deallocate_phys_name
 !
@@ -118,24 +91,6 @@
 !
 !  --------------------------------------------------------------------
 !  --------------------------------------------------------------------
-!
-      subroutine check_nodal_field_name
-!
-!
-      integer(kind = kint) :: i
-!
-      write(*,*) 'num_nod_phys ',nod_fld1%num_phys
-      write(*,*) 'num_nod_phys_vis ',nod_fld1%num_phys_viz
-      write(*,*) 'id#, num_component, stack_component, field_name '
-      do i = 1, nod_fld1%num_phys
-        write(*,'(3i6,2x,a2,a)') i, nod_fld1%num_component(i),          &
-     &      nod_fld1%istack_component(i), '  ',                         &
-     &      trim(nod_fld1%phys_name(i))
-      end do
-!
-      end subroutine check_nodal_field_name
-!
-!   ---------------------------------------------------------------------
 !
       subroutine check_nodal_data(my_rank, numdir, i_field)
 !
@@ -154,30 +109,6 @@
       end subroutine check_nodal_data
 !
 !  --------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine link_nodal_fld_type_names(nod_fld)
-!
-      use t_phys_data
-!
-      type(phys_data), intent(inout) :: nod_fld
-!
-!
-      nod_fld%num_phys =  nod_fld1%num_phys
-      nod_fld%ntot_phys = nod_fld1%ntot_phys
-!
-      nod_fld%num_phys_viz =  nod_fld1%num_phys_viz
-      nod_fld%ntot_phys_viz = nod_fld1%ntot_phys_viz
-!
-      nod_fld%num_component =>    nod_fld1%num_component
-      nod_fld%istack_component => nod_fld1%istack_component
-      nod_fld%iorder_eletype =>   nod_fld1%iorder_eletype
-      nod_fld%iflag_monitor =>    nod_fld1%iflag_monitor
-      nod_fld%phys_name =>        nod_fld1%phys_name
-!
-      end subroutine link_nodal_fld_type_names
-!
-! -------------------------------------------------------------------
 ! -------------------------------------------------------------------
 !
       subroutine link_nodal_fld_type(nod_fld)
@@ -187,9 +118,9 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call link_nodal_fld_type_names(nod_fld)
-!
-      nod_fld%d_fld => d_nod
+      call link_field_name_type(nod_fld1, nod_fld)
+      nod_fld%n_point = nod_fld1%n_point
+      nod_fld%d_fld =>   d_nod
 !
       end subroutine link_nodal_fld_type
 !

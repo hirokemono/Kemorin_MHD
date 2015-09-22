@@ -29,7 +29,7 @@
       use m_physical_property
 !
       use cal_magnetic_pre
-      use cal_sol_magne_potential
+      use cal_sol_pressure_MHD
       use init_4_sol_potentials
       use int_rms_div_MHD
       use int_norm_div_MHD

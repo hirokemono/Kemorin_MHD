@@ -99,7 +99,7 @@
       call init_read_ucd_data(my_rank, istep_ucd)
       nod_fld1%num_phys = input_ucd%num_field
 !
-      call allocate_phys_name
+      call alloc_phys_name_type(nod_fld1)
 !
       nod_fld1%num_component(1:nod_fld1%num_phys)                       &
      &     = input_ucd%num_comp(1:nod_fld1%num_phys)

@@ -11,6 +11,9 @@
 !!      subroutine copy_vector_component(i_org, i_target)
 !!      subroutine copy_tensor_components(i_org, i_target)
 !!
+!!      subroutine clear_nodal_data(numdir,     i_target)
+!!      subroutine clear_elemental_data(numdir, i_target)
+!!
 !!       subroutine add_2_nod_scalars(i_v1, i_v2, i_r)
 !!       subroutine add_2_nod_vectors(i_v1, i_v2, i_r)
 !!       subroutine add_2_nod_tensors(i_v1, i_v2, i_r)
@@ -49,6 +52,42 @@
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine clear_nodal_data(numdir, i_target)
+!
+      use delete_field_smp
+!
+      integer (kind = kint), intent(in) :: i_target, numdir
+!
+!
+!$omp parallel
+      call delete_phys_data_smp                                         &
+     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
+     &    nod_fld1%ntot_phys, numdir, i_target, d_nod)
+!$omp end parallel
+!
+      end subroutine clear_nodal_data
+!
+! ----------------------------------------------------------------------
+!
+      subroutine clear_elemental_data(numdir, i_target)
+!
+      use m_element_phys_data
+      use delete_field_smp
+!
+      integer (kind = kint), intent(in) :: i_target, numdir
+!
+!
+!$omp parallel
+      call delete_phys_data_smp                                         &
+     &   (np_smp, ele1%numele, ele1%istack_ele_smp,                     &
+     &    fld_ele1%ntot_phys, numdir, i_target, fld_ele1%d_fld)
+!$omp end parallel
+!
+      end subroutine clear_elemental_data
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine copy_scalar_component(i_org, i_target)

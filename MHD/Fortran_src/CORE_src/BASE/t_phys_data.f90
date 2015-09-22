@@ -92,7 +92,7 @@
         fld%phys_name = ''
         fld%num_component =    0
         fld%istack_component = 0
-        fld%iorder_eletype =   0
+        fld%iorder_eletype =   1
         fld%iflag_monitor =    0
       end if
 !
@@ -172,6 +172,9 @@
 !
 !
       call link_field_name_type(org_fld, new_fld)
+!
+      new_fld%n_point =       org_fld%n_point
+!
       new_fld%d_fld =>        org_fld%d_fld
       new_fld%iflag_update => org_fld%iflag_update
 !

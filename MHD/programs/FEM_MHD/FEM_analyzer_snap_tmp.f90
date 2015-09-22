@@ -182,7 +182,7 @@
       use m_node_phys_address
       use m_node_phys_data
 !
-      use clear_phys_data
+      use copy_nodal_fields
       use cvt_sph_vector_2_xyz_smp
       use cvt_xyz_vector_2_sph_smp
       use cvt_sph_tensor_2_xyz_smp

@@ -14,6 +14,9 @@
       module set_velocity_boundary
 !
       use m_precision
+      use m_constants
+!
+      use m_geometry_data
 !
       use m_bc_data_velo
       use m_bc_data_rotate
@@ -35,13 +38,11 @@
       subroutine set_boundary_velo
 !
       use m_control_parameter
-      use m_geometry_data
       use m_group_data
       use m_node_phys_address
       use m_node_phys_data
 !
       use set_normal_field
-      use set_fixed_phys_boundary
       use set_nodal_bc_4_velo
       use delete_radial_velocity
 !
@@ -87,17 +88,20 @@
       subroutine set_boundary_velo_4_rhs
 !
       use set_nodal_bc_4_velo
+      use m_phys_constants
+      use m_finite_element_matrix
 !
-      if (nmax_bc_v_nod/=0) then
-       call set_fixed_bc_zero_ff_vect(nmax_bc_v_nod, num_bc_v_nod,      &
-     &     ibc_v_id)
+!
+      if (nmax_bc_v_nod .gt. 0) then
+        call del_2vector_phys_on_bc(nmax_bc_v_nod, num_bc_v_nod,        &
+     &      ibc_v_id, node1%numnod, n_vector, ione, ff, ff_nl)
       end if
 !
-      if (num_bc_v10_nod/=0) then
+      if (num_bc_v10_nod .gt. 0) then
         call set_fixed_bc_zero_ff_rot(num_bc_v10_nod, ibc_v10_id)
       end if
 !
-      if (num_bc_vsp_nod/=0) then
+      if (num_bc_vsp_nod .gt. 0) then
         call set_specific_boundary_velo_rhs(num_bc_vsp_nod,             &
      &    ibc_vsp_id)
       end if
@@ -109,9 +113,7 @@
 !
       subroutine delete_field_by_fixed_v_bc(i_field)
 !
-      use m_geometry_data
       use m_node_phys_data
-      use set_fixed_phys_boundary
 !
       integer(kind = kint), intent(in) :: i_field
 !

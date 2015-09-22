@@ -13,11 +13,13 @@
       module set_magne_boundary
 !
       use m_precision
+      use m_constants
 !
+      use m_geometry_data
       use m_bc_data_magne
       use m_surf_data_magne
 !
-      use set_fixed_phys_boundary
+      use set_fixed_boundaries
 !
       implicit none
 !
@@ -29,13 +31,11 @@
 !
       subroutine set_boundary_magne
 !
-      use m_control_parameter
-      use m_geometry_data
       use m_node_phys_data
       use m_node_phys_address
 !
 !
-      if (nmax_bc_b_nod/=0) then
+      if (nmax_bc_b_nod .gt. 0) then
           call set_fixed_bc_vect_phys(nmax_bc_b_nod, num_bc_b_nod,      &
      &        ibc_b_id, bc_b_id_apt, node1%numnod, nod_fld1%ntot_phys,  &
      &        iphys%i_magne, d_nod)
@@ -47,13 +47,13 @@
 !
       subroutine set_boundary_magne_4_rhs
 !
-      use set_fixed_boundaries
+      use m_phys_constants
+      use m_finite_element_matrix
 !
 !
-        if (nmax_bc_b_nod/=0) then
-          call set_fixed_bc_zero_ff_vect(nmax_bc_b_nod, num_bc_b_nod,   &
-     &        ibc_b_id)
-        end if
+      if (nmax_bc_b_nod .le. 0) return
+      call del_2vector_phys_on_bc(nmax_bc_b_nod, num_bc_b_nod,          &
+     &    ibc_b_id, node1%numnod, n_vector, ione, ff, ff_nl)
 !
       end subroutine set_boundary_magne_4_rhs
 !
@@ -61,7 +61,6 @@
 !
       subroutine delete_field_by_fixed_b_bc(i_field)
 !
-      use m_geometry_data
       use m_node_phys_data
 !
       integer(kind = kint), intent(in) :: i_field
