@@ -46,7 +46,7 @@
 !
 !
 !  allocation for field values
-     if (iflag_debug.ge.1)  write(*,*) 'allocate_data_arrays'
+     if (iflag_debug.ge.1)  write(*,*) 'initialize_nod_field_data'
       call initialize_nod_field_data
      if (iflag_debug.ge.1)  write(*,*) 'initialize_ele_field_data'
       call initialize_ele_field_data

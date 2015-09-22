@@ -109,7 +109,7 @@
       call link_surf_grp_connect_type                                   &
      &    (sf_grp_tbl1, femmesh_l%group%tbls_surf_grp)
 !
-      call link_nodal_fld_type(nod_fld_l)
+      call link_field_data_type(nod_fld1, nod_fld_l)
 !
       end subroutine link_data_4_linear_grid
 !
@@ -220,7 +220,7 @@
       call set_internal_list_4_ltype_27(femmesh_l%mesh,                 &
      &    surf_mesh_l%surf, edge_mesh_l%edge)
 !
-      call link_nodal_fld_type(nod_fld_l)
+      call link_field_data_type(nod_fld1, nod_fld_l)
 !
       end subroutine set_linear_data_by_lag_data
 !

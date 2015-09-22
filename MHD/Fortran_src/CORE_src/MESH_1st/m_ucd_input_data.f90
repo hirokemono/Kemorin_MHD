@@ -89,6 +89,7 @@
 !
       subroutine allocate_phys_data_by_output(my_rank, istep_ucd)
 !
+      use m_geometry_data
       use m_node_phys_data
       use cal_minmax_and_stacks
       use ucd_IO_select
@@ -111,7 +112,7 @@
      &    izero, nod_fld1%istack_component, nod_fld1%ntot_phys)
       nod_fld1%ntot_phys_viz = nod_fld1%ntot_phys
 !
-      call allocate_data_arrays
+      call alloc_phys_data_type(node1%numnod, nod_fld1)
 !
       end subroutine allocate_phys_data_by_output
 !

@@ -70,7 +70,8 @@
       call subtract_2_nod_vectors                                       &
      &   (iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
 !
-!      call check_nodal_data(my_rank, n_vector, iphys%i_sgs_simi)
+!      call check_nodal_data                                            &
+!     &   (my_rank, nod_fld1, n_vector, iphys%i_sgs_simi)
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
@@ -79,7 +80,8 @@
       call vector_send_recv                                             &
      &   (nod_fld1%ntot_phys, iphys%i_sgs_grad_f, nod_fld1%d_fld)
 !
-!      call check_nodal_data(my_rank, n_vector, iphys%i_sgs_grad_f)
+!      call check_nodal_data                                            &
+!     &   (my_rank, nod_fld1, n_vector, iphys%i_sgs_grad_f)
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
@@ -92,7 +94,8 @@
 !
       call cal_filtered_vector(iphys%i_sgs_grad, iphys%i_sgs_grad)
 !
-!      call check_nodal_data(my_rank, n_vector, iphys%i_sgs_grad)
+!      call check_nodal_data                                            &
+!     &   (my_rank, nod_fld1, n_vector, iphys%i_sgs_grad)
 !
 !     obtain model coefficient
 !

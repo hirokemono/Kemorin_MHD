@@ -56,14 +56,16 @@
 !
       subroutine init_MHD_restart_output
 !
+      use m_geometry_data
+      use m_node_phys_data
       use set_field_to_restart
       use const_global_element_ids
 !
 !
-      call count_field_num_to_restart(fem_fst_IO)
+      call count_field_num_to_restart(nod_fld1, fem_fst_IO)
       call alloc_phys_name_IO(fem_fst_IO)
 !
-      call copy_field_name_to_restart(fem_fst_IO)
+      call copy_field_name_to_restart(node1, nod_fld1, fem_fst_IO)
       call alloc_phys_data_IO(fem_fst_IO)
 !
       call alloc_merged_field_stack(nprocs, fem_fst_IO)
@@ -142,6 +144,8 @@
 !
       subroutine output_restart_files(index_rst)
 !
+      use m_geometry_data
+      use m_node_phys_data
       use m_node_phys_address
       use field_IO_select
       use copy_time_steps_4_restart
@@ -169,7 +173,7 @@
       end if
 !
       call copy_time_steps_to_restart
-      call copy_field_data_to_restart(fem_fst_IO)
+      call copy_field_data_to_restart(node1, nod_fld1, fem_fst_IO)
 !
       call sel_write_step_FEM_field_file                                &
      &   (nprocs, my_rank, index_rst, fem_fst_IO)
@@ -181,6 +185,8 @@
       subroutine input_restart_files
 !
       use m_control_parameter
+      use m_geometry_data
+      use m_node_phys_data
       use m_t_int_parameter
       use m_file_format_switch
 !
@@ -198,7 +204,7 @@
       call sel_read_alloc_step_FEM_file                                 &
      &   (nprocs, my_rank, istep_rst_start, fem_fst_IO)
 !
-      call copy_field_data_from_restart(fem_fst_IO)
+      call copy_field_data_from_restart(node1, fem_fst_IO, nod_fld1)
       call dealloc_phys_data_IO(fem_fst_IO)
       call dealloc_phys_name_IO(fem_fst_IO)
 !
@@ -216,6 +222,7 @@
 !
       subroutine input_restart_4_snapshot
 !
+      use m_geometry_data
       use m_node_phys_data
 !
       use set_field_to_restart
@@ -230,7 +237,7 @@
       call sel_read_step_FEM_field_file                                 &
      &    (nprocs, my_rank, index_rst, fem_fst_IO)
 !
-      call copy_field_data_from_restart(fem_fst_IO)
+      call copy_field_data_from_restart(node1, fem_fst_IO, nod_fld1)
       time =       time_init
       i_step_MHD = istep_max_dt
 !

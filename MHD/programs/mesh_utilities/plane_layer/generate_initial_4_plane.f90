@@ -37,7 +37,7 @@
       use mesh_IO_select
       use set_node_data_4_IO
       use field_IO_select
-      use set_field_type_to_restart
+      use set_field_to_restart
 !
       implicit none
 !
@@ -133,8 +133,8 @@
         call alloc_phys_name_IO(plane_fst_IO)
         call alloc_phys_data_IO(plane_fst_IO)
 !
-        call simple_copy_fld_name_t_to_rst(merged_fld, plane_fst_IO)
-        call simple_copy_fld_dat_t_to_rst                               &
+        call simple_copy_fld_name_to_rst(merged_fld, plane_fst_IO)
+        call simple_copy_fld_data_to_rst                                &
      &     (merged%node, merged_fld, plane_fst_IO)
 !
         call set_field_file_fmt_prefix                                  &

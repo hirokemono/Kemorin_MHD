@@ -59,6 +59,7 @@
       subroutine allocate_product_result
 !
       use m_ctl_params_4_prod_udt
+      use m_geometry_data
       use m_node_phys_data
 !
 !
@@ -73,7 +74,8 @@
 !
       nod_fld1%ntot_phys =     ncomp_4_result
       nod_fld1%ntot_phys_viz = ncomp_4_result
-      call allocate_data_arrays
+!
+      call alloc_phys_data_type(node1%numnod, nod_fld1)
 !
       end subroutine allocate_product_result
 !

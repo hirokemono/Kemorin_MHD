@@ -39,14 +39,14 @@
       subroutine count_restart_data_fields
 !
       use field_IO_select
-      use set_field_type_to_restart
+      use set_field_to_restart
 !
       call set_field_file_fmt_prefix                                    &
      &   (iorg_rst_file_fmt, org_rst_head, merged_IO)
       call sel_read_alloc_FEM_fld_head                                  &
      &   (num_pe, izero, istep_start, merged_IO)
 !
-      call init_fld_name_type_by_rst(merged_IO, merged_fld)
+      call init_field_name_by_restart(merged_IO, merged_fld)
       call alloc_phys_data_type(merged%node%numnod, merged_fld)
 !
       end subroutine count_restart_data_fields
@@ -127,13 +127,13 @@
       subroutine init_by_old_restart_data
 !
       use input_old_file_sel_4_zlib
-      use set_field_type_to_restart
+      use set_field_to_restart
 !
       call set_field_file_fmt_prefix                                    &
      &   (iorg_rst_file_fmt, org_rst_head, merged_IO)
       call sel_read_rst_comps(izero, istep_start, merged_IO)
 !
-      call init_fld_name_type_by_rst(merged_IO, merged_fld)
+      call init_field_name_by_restart(merged_IO, merged_fld)
       call alloc_phys_data_type(merged%node%numnod, merged_fld)
 !
       end subroutine init_by_old_restart_data

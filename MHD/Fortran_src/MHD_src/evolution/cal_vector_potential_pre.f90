@@ -65,8 +65,8 @@
 !
       call int_sf_grad_vecp(sf_grp1, intg_point_t_evo)
 !
-!      call check_nodal_data(my_rank, n_vector, iphys%i_velo)
-!      call check_nodal_data_type(my_rank, fld_ele1, ele1%numele,       &
+!      call check_nodal_data(my_rank, nod_fld1, n_vector, iphys%i_velo)
+!      call check_nodal_data(my_rank, fld_ele1,                         &
 !     &    n_vector, iphys_ele%i_magne)
 !      call check_ff_smp(n_vector)
 !      call check_ff_nl_smp(n_vector)
@@ -96,7 +96,7 @@
       call vector_send_recv                                             &
      &   (nod_fld1%ntot_phys, iphys%i_vecp, nod_fld1%d_fld)
 !
-!      call check_nodal_data(my_rank, n_vector, iphys%i_vecp)
+!      call check_nodal_data(my_rank, nod_fld1, n_vector, iphys%i_vecp)
 !
       end subroutine cal_vector_p_pre
 !

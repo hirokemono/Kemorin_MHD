@@ -51,7 +51,7 @@
 !
       if (iflag_SGS_heat .ne. id_SGS_none) call cal_sgs_heat_flux
 !
-!      call check_nodal_data(my_rank, 3, iphys%i_SGS_h_flux)
+!      call check_nodal_data(my_rank, nod_fld1, 3, iphys%i_SGS_h_flux)
 !
 !  ----------  clear the vector and lumped mass matrix
 !
@@ -76,8 +76,8 @@
 !
       call int_surf_temp_ele
 !
-!      call check_nodal_data(my_rank, n_scalar, iphys%i_temp)
-!      call check_nodal_data_type(my_rank, fld_ele1, ele1%numele,        &
+!      call check_nodal_data(my_rank, nod_fld1, n_scalar, iphys%i_temp)
+!      call check_nodal_data(my_rank, fld_ele1,                         &
 !     &    n_vector, iphys_ele%i_velo)
 !      call check_ff_smp(n_scalar)
 !      call check_ff_nl_smp(n_scalar)

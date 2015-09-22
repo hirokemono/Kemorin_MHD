@@ -55,13 +55,15 @@
 !
        call copy_tensor_components                                      &
      &    (iphys%i_SGS_m_flux, iphys%i_sgs_simi)
-!       call check_nodal_data(my_rank, n_sym_tensor, iphys%i_sgs_simi)
+!      call check_nodal_data                                            &
+!     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_simi)
 !
 !   gradient model by filtered field
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_mf_grad_4_dyn'
       call cal_sgs_filter_mf_grad_4_dyn
-!       call check_nodal_data(my_rank, n_sym_tensor, iphys%i_sgs_grad_f)
+!      call check_nodal_data                                            &
+!     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_grad_f)
 !
 !   gradient model by original field
 !
@@ -72,7 +74,8 @@
 !
       call cal_filtered_sym_tensor(iphys%i_sgs_grad,                    &
      &    iphys%i_SGS_m_flux)
-!      call check_nodal_data(my_rank, n_sym_tensor, iphys%i_sgs_grad)
+!      call check_nodal_data                                            &
+!     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_grad)
 !
 !   Change coordinate
 !

@@ -67,13 +67,16 @@
 !
        call copy_tensor_components                                      &
      &    (iphys%i_SGS_m_flux, iphys%i_sgs_simi)
-!       call check_nodal_data(my_rank, n_sym_tensor, iphys%i_sgs_simi)
+!      call check_nodal_data                                            &
+!     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_simi)
 !
 !      filtering
 !
       call cal_filtered_sym_tensor(iphys%i_sgs_grad,                    &
      &    iphys%i_SGS_m_flux)
-!      call check_nodal_data(my_rank, n_sym_tensor, iphys%i_sgs_grad)
+!
+!      call check_nodal_data                                            &
+!     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_grad)
 !
 !   Change coordinate
 !
@@ -125,7 +128,9 @@
      &     write(*,*) 'cal_sgs_mf_simi_wide i_wide_fil_magne'
       call cal_sgs_mf_simi_wide(iphys%i_sgs_grad_f,                     &
      &    iphys%i_filter_magne, iphys%i_wide_fil_magne, icomp_sgs_lor)
-!       call check_nodal_data(my_rank, n_sym_tensor, iphys%i_sgs_grad_f)
+!
+!      call check_nodal_data                                            &
+!     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_grad_f)
 !
 !    SGS term by similarity model
 !

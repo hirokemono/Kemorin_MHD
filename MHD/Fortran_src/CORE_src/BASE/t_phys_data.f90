@@ -24,10 +24,8 @@
 !!        type(phys_data), intent(inout) :: fld
 !!
 !!      subroutine check_nodal_field_name_type(fld)
-!!      subroutine check_nodal_data_type(my_rank, fld, nnod,            &
-!!     &          numdir, i_field)
-!!        integer(kind = kint), intent(in) :: my_rank
-!!        integer(kind = kint), intent(in) :: nnod, numdir, i_field
+!!      subroutine check_nodal_data(my_rank, fld, numdir, i_field)
+!!        integer(kind = kint), intent(in) :: my_rank, numdir, i_field
 !!        type(phys_data), intent(in) :: fld
 !!@endverbatim
 !
@@ -226,21 +224,19 @@
 !
 !   ---------------------------------------------------------------------
 !
-      subroutine check_nodal_data_type(my_rank, fld, nnod,              &
-     &          numdir, i_field)
+      subroutine check_nodal_data(my_rank, fld, numdir, i_field)
 !
-      integer(kind = kint), intent(in) :: my_rank
-      integer(kind = kint), intent(in) :: nnod, numdir, i_field
+      integer(kind = kint), intent(in) :: my_rank, numdir, i_field
       type(phys_data), intent(in) :: fld
       integer(kind = kint) :: inod, nd
 !
       write(50+my_rank,*) 'inod, nodal field: ', i_field, numdir
-      do inod = 1, nnod
+      do inod = 1, fld%n_point
         write(50+my_rank,'(i16,1p10e25.14)')                            &
      &         inod, (fld%d_fld(inod,i_field+nd-1),nd=1, numdir)
       end do
 !
-      end subroutine check_nodal_data_type
+      end subroutine check_nodal_data
 !
 !  --------------------------------------------------------------------
 !

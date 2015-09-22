@@ -52,7 +52,8 @@
      &     write(*,*) 'cal_sgs_hf_simi_wide i_wide_fil_temp'
       call cal_sgs_hf_simi_wide(iphys%i_sgs_grad_f,                     &
      &    iphys%i_filter_temp, iphys%i_wide_fil_temp, icomp_sgs_hf)
-!       call check_nodal_data(my_rank, n_vector, iphys%i_sgs_grad_f)
+!      call check_nodal_data                                            &
+!     &   (my_rank, nod_fld1, n_vector, iphys%i_sgs_grad_f)
 !
 !    SGS term by similarity model
 !

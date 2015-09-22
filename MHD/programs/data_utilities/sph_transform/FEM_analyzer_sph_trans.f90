@@ -60,8 +60,8 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'allocate_data_arrays'
-      call allocate_data_arrays
+      if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data_type'
+      call alloc_phys_data_type(node1%numnod, nod_fld1)
 !
 !  -------------------------------
 !

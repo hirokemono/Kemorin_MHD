@@ -73,7 +73,7 @@
       use m_geometry_data_4_merge
       use field_IO_select
       use set_list_4_FFT
-      use set_field_type_to_restart
+      use set_field_to_restart
       use set_restart_data
 !
       integer(kind=kint), intent(in) :: ip, nnod
@@ -90,7 +90,7 @@
       call alloc_phys_name_IO(pl_fld_IO)
       call alloc_phys_data_IO(pl_fld_IO)
 !
-      call simple_copy_fld_name_t_to_rst(merged_fld, pl_fld_IO)
+      call simple_copy_fld_name_to_rst(merged_fld, pl_fld_IO)
       call simple_copy_fld_dat_to_rst_IO                                &
      &   (nnod, merged_fld%ntot_phys, rst_from_sp,                      &
      &    pl_fld_IO%ntot_comp_IO, pl_fld_IO%nnod_IO, pl_fld_IO%d_IO)

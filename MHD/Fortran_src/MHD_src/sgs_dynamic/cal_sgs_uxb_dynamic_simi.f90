@@ -52,7 +52,8 @@
       call cal_sgs_uxb_simi_wide(iphys%i_sgs_grad_f,                    &
      &    iphys%i_filter_velo, iphys%i_filter_magne,                    &
      &    iphys%i_wide_fil_velo, iphys%i_wide_fil_magne)
-!       call check_nodal_data(my_rank, n_vector, iphys%i_sgs_grad_f)
+!      call check_nodal_data                                            &
+!     &   (my_rank, nod_fld1, n_vector, iphys%i_sgs_simi)
 !
 !    SGS term by similarity model (to iphys%i_sgs_simi)
 !
@@ -110,7 +111,8 @@
       call cal_sgs_induct_t_simi_wide(iphys%i_sgs_grad_f,               &
      &    iphys%i_filter_velo, iphys%i_filter_magne,                    &
      &    iphys%i_wide_fil_velo, iphys%i_wide_fil_magne, icomp_sgs_uxb)
-!       call check_nodal_data(my_rank, n_asym_tensor, iphys%i_sgs_grad_f)
+!      call check_nodal_data                                            &
+!     &   (my_rank, nod_fld1, n_vector, iphys%i_sgs_grad_f)
 !
 !    SGS term by similarity model
 !

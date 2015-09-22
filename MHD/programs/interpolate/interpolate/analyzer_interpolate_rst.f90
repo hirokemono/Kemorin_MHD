@@ -41,6 +41,7 @@
       subroutine initialize_itp_rst
 !
       use m_ctl_params_4_gen_table
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
 !
@@ -98,7 +99,7 @@
       call sel_read_alloc_step_FEM_file                                 &
      &   (ndomain_org, izero, istep_rst_start, itp_fld_IO)
       if (iflag_debug.eq.1) write(*,*) 'init_field_name_by_restart'
-      call init_field_name_by_restart(itp_fld_IO)
+      call init_field_name_by_restart(itp_fld_IO, nod_fld1)
       call dealloc_phys_data_IO(itp_fld_IO)
 !
 !     --------------------- 
@@ -119,16 +120,16 @@
       subroutine analyze_itp_rst
 !
       use calypso_mpi
+      use m_geometry_data
       use m_node_phys_data
       use m_ctl_params_4_gen_table
       use m_time_data_IO
-      use m_geometry_data
       use field_IO_select
       use set_parallel_file_name
       use copy_time_steps_4_restart
       use nod_phys_send_recv
       use set_field_to_restart
-      use set_field_type_to_restart
+      use set_field_to_restart
       use interpolate_nod_field_2_type
       use const_global_element_ids
 !
@@ -148,7 +149,8 @@
           call sel_read_step_FEM_field_file                             &
      &       (nprocs, my_rank, i_step, itp_fld_IO)
 !
-          call copy_field_data_from_restart(itp_fld_IO)
+          call copy_field_data_from_restart                             &
+     &       (node1, itp_fld_IO, nod_fld1)
           call dealloc_phys_data_IO(itp_fld_IO)
           time =       time_IO
           i_step_MHD = i_time_step_IO
@@ -170,7 +172,7 @@
 !
           itp_fld_IO%nnod_IO = new_femmesh%mesh%node%numnod
           call alloc_phys_data_IO(itp_fld_IO)
-          call copy_field_type_to_rst                                   &
+          call copy_field_data_to_restart                               &
      &       (new_femmesh%mesh%node, new_phys, itp_fld_IO)
 !
           call alloc_merged_field_stack(nprocs, itp_fld_IO)
