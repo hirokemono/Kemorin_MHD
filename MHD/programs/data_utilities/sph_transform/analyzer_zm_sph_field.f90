@@ -76,6 +76,9 @@
 !
       subroutine analyze_zm_sph_field
 !
+      use m_geometry_data
+      use m_node_phys_data
+!
       use m_ucd_data
       use m_ucd_input_data
       use m_control_params_2nd_files
@@ -97,7 +100,7 @@
 !
 !   Take zonal RMS
         if (iflag_debug.gt.0) write(*,*) 'zonal_mean_all_rtp_field'
-        call overwrite_nodal_xyz_2_sph
+        call overwrite_nodal_xyz_2_sph(node1, nod_fld1)
         call zonal_mean_all_rtp_field
 !
         call set_ucd_file_prefix(zonal_udt_head)

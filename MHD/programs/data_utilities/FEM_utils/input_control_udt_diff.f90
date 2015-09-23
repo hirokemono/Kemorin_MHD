@@ -28,6 +28,7 @@
       use calypso_mpi
       use calypso_mpi
 !
+      use m_node_phys_data
       use m_ctl_params_4_diff_udt
       use m_ctl_data_diff_udt
 !
@@ -44,7 +45,7 @@
       call set_ctl_params_diff_udt
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
-      call s_set_control_nodal_data(ierr)
+      call s_set_control_nodal_data(nod_fld1, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'
@@ -58,6 +59,7 @@
 !
       use calypso_mpi
 !
+      use m_node_phys_data
       use m_ctl_params_4_diff_udt
       use m_ctl_data_diff_udt
 !
@@ -74,7 +76,7 @@
       call set_ctl_params_diff_udt
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
-      call s_set_control_nodal_data(ierr)
+      call s_set_control_nodal_data(nod_fld1, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'

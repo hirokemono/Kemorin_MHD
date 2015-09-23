@@ -1,22 +1,28 @@
-!cvt_quad_2_linear_mesh_t.f90
-!      module cvt_quad_2_linear_mesh_t
+!cvt_quad_2_linear_mesh.f90
+!      module cvt_quad_2_linear_mesh
 !
 !      Written by H. Matsui on Apr., 2006
 !
-!      subroutine generate_linear_nod_t_by_1st(mesh_l)
-!      subroutine connect_quad_mesh_2_linear_t(mesh_l)
-!      subroutine connect_lag_mesh_2_linear_t(mesh_l)
-!      subroutine gen_linear_group_type                                 &
-!     &         (nod_grp, ele_grp, sf_grp, group_l)
+!!      subroutine generate_linear_nod_by_quad                          &
+!!     &         (node_q, ele_q, surf_q, mesh_l)
+!!      subroutine connect_quad_mesh_2_linear                           &
+!!     &         (node_q, ele_q, surf_q, mesh_l)
+!!      subroutine connect_lag_mesh_2_linear(ele_q, mesh_l)
+!!      subroutine gen_linear_group_info                                &
+!!     &         (nod_grp, ele_grp, sf_grp, group_l)
+!!
+!!      subroutine set_internal_list_lin_20(node_q, ele_q, surf_q,      &
+!!     &          mesh_l, surf_l, edge_l)
+!!      subroutine set_internal_list_lin_27                             &
+!!     &         (node_q, mesh_l, surf_l, edge_l)
+!!
+!!      subroutine init_linear_nod_phys(mesh_l, nod_fld_q, nod_fld_l)
+!!      subroutine copy_nod_phys_2_linear                               &
+!!     &         (node_q, nod_fld_q, mesh_l, nod_fld_l)
+!!      subroutine generate_phys_on_surf(node_q, ele_q, surf_q,         &
+!!     &          mesh_l, nod_fld_l)
 !
-!      subroutine set_internal_list_4_ltype_20(mesh_l, surf_l, edge_l)
-!      subroutine set_internal_list_4_ltype_27(mesh_l, surf_l, edge_l)
-!
-!      subroutine init_linear_phys_type_by_1st(mesh_l, nod_fld_l)
-!      subroutine copy_nod_phys_2_linear_t(mesh_l, nod_fld_l)
-!      subroutine generate_phys_on_surf_t(mesh_l, nod_fld_l)
-!
-      module cvt_quad_2_linear_mesh_t
+      module cvt_quad_2_linear_mesh
 !
       use m_precision
 !
@@ -31,93 +37,105 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine generate_linear_nod_t_by_1st(mesh_l)
+      subroutine generate_linear_nod_by_quad                            &
+     &         (node_q, ele_q, surf_q, mesh_l)
 !
       use t_mesh_data
-      use m_geometry_data
+      use t_geometry_data
+      use t_surface_data
 !
       use set_geometry_4_quad27
       use coordinate_converter
 !
+      type(node_data), intent(in) ::    node_q
+      type(element_data), intent(in) :: ele_q
+      type(surface_data), intent(in) :: surf_q
+!
       type(mesh_geometry), intent(inout) :: mesh_l
 !
 !
-      mesh_l%node%numnod = node1%numnod + surf1%numsurf + ele1%numele
+      mesh_l%node%numnod = node_q%numnod                                &
+     &                    + surf_q%numsurf + ele_q%numele
 !
       call allocate_node_geometry_type(mesh_l%node)
 !
       call set_position_on_surf                                         &
-     &   (node1%numnod, surf1%numsurf, ele1%numele,                     &
-     &    node1%xx, ele1%x_ele, surf1%x_surf,                           &
+     &   (node_q%numnod, surf_q%numsurf, ele_q%numele,                  &
+     &    node_q%xx, ele_q%x_ele, surf_q%x_surf,                        &
      &    mesh_l%node%numnod,  mesh_l%node%xx)
 !
       call position_2_sph(mesh_l%node%numnod, mesh_l%node%xx,           &
      &    mesh_l%node%rr, mesh_l%node%theta, mesh_l%node%phi,           &
      &    mesh_l%node%a_r, mesh_l%node%ss, mesh_l%node%a_s)
 !
-      end subroutine generate_linear_nod_t_by_1st
+      end subroutine generate_linear_nod_by_quad
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine connect_quad_mesh_2_linear_t(mesh_l)
+      subroutine connect_quad_mesh_2_linear                             &
+     &         (node_q, ele_q, surf_q, mesh_l)
 !
-      use t_mesh_data
       use m_geometry_constants
-      use m_geometry_data
+      use t_mesh_data
+      use t_geometry_data
 !
       use m_27quad_2_8x8linear
 !
+      type(node_data), intent(in) ::    node_q
+      type(element_data), intent(in) :: ele_q
+      type(surface_data), intent(in) :: surf_q
       type(mesh_geometry), intent(inout) :: mesh_l
 !
 !
-      mesh_l%ele%numele = 8 * ele1%numele
+      mesh_l%ele%numele = 8 * ele_q%numele
       mesh_l%ele%nnod_4_ele = num_t_linear
 !
       call allocate_ele_connect_type(mesh_l%ele)
       call allocate_ele_geometry_type(mesh_l%ele)
 !
-      allocate(ie_4_333(ele1%numele,27) )
+      allocate(ie_4_333(ele_q%numele,27) )
 !
       call gen_connect_quad27_from_quad20                               &
-     &   (node1%numnod, ele1%numele, surf1%numsurf, ele1%ie,            &
-     &    surf1%isf_4_ele, ie_4_333)
+     &   (node_q%numnod, ele_q%numele, surf_q%numsurf, ele_q%ie,        &
+     &    surf_q%isf_4_ele, ie_4_333)
 !
-      call set_27quad_2_8x8linear(ele1%numele, ie_4_333,                &
+      call set_27quad_2_8x8linear(ele_q%numele, ie_4_333,               &
      &    mesh_l%node%numnod, mesh_l%ele%ie)
 !
       deallocate(ie_4_333)
 !
-      end subroutine connect_quad_mesh_2_linear_t
+      end subroutine connect_quad_mesh_2_linear
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine connect_lag_mesh_2_linear_t(mesh_l)
+      subroutine connect_lag_mesh_2_linear(ele_q, mesh_l)
 !
-      use t_mesh_data
       use m_geometry_constants
-      use m_geometry_data
+      use t_mesh_data
+      use t_geometry_data
 !
       use m_27quad_2_8x8linear
 !
+      type(element_data), intent(in) :: ele_q
       type(mesh_geometry), intent(inout) :: mesh_l
 !
 !
-      mesh_l%ele%numele = 8 * ele1%numele
+      mesh_l%ele%numele = 8 * ele_q%numele
       mesh_l%ele%nnod_4_ele = num_t_linear
 !
       call allocate_ele_connect_type(mesh_l%ele)
       call allocate_ele_geometry_type(mesh_l%ele)
 !
-      call set_27quad_2_8x8linear(ele1%numele, ele1%ie,                 &
+      call set_27quad_2_8x8linear(ele_q%numele, ele_q%ie,               &
      &    mesh_l%node%numnod, mesh_l%ele%ie)
 !
-      end subroutine connect_lag_mesh_2_linear_t
+      end subroutine connect_lag_mesh_2_linear
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine gen_linear_group_type                                  &
+      subroutine gen_linear_group_info                                  &
      &         (nod_grp, ele_grp, sf_grp, group_l)
 !
       use t_mesh_data
@@ -126,7 +144,7 @@
 !
       type(group_data), intent(in) :: nod_grp
       type(group_data), intent(in) :: ele_grp
-      type(surface_group_data), intent(inout) :: sf_grp
+      type(surface_group_data), intent(in) :: sf_grp
       type(mesh_groups), intent(inout) :: group_l
 !
 !
@@ -148,25 +166,30 @@
       call allocate_sf_grp_type_num(group_l%surf_grp)
       call allocate_sf_grp_type_item(group_l%surf_grp)
 !
-      call convert_surf_group_2_linear                                  &
-     &   (sf_grp%num_grp, sf_grp%num_item, sf_grp%grp_name,             &
-     &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &
+      call convert_surf_group_2_linear(sf_grp%num_grp, sf_grp%num_item, &
+     &    sf_grp%grp_name, sf_grp%istack_grp, sf_grp%item_sf_grp,       &
      &    group_l%surf_grp%num_item, group_l%surf_grp%grp_name,         &
      &    group_l%surf_grp%istack_grp, group_l%surf_grp%item_sf_grp)
 !
-      end subroutine gen_linear_group_type
+      end subroutine gen_linear_group_info
 !
 !  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
-      subroutine set_internal_list_4_ltype_20(mesh_l, surf_l, edge_l)
+      subroutine set_internal_list_lin_20(node_q, ele_q, surf_q,        &
+     &          mesh_l, surf_l, edge_l)
 !
       use m_machine_parameter
-      use m_geometry_data
+      use t_geometry_data
       use t_mesh_data
       use t_surface_data
       use t_edge_data
 !
       use set_internal_list_4_linear
+!
+      type(node_data), intent(in) ::    node_q
+      type(element_data), intent(in) :: ele_q
+      type(surface_data), intent(in) :: surf_q
 !
       type(mesh_geometry), intent(inout) :: mesh_l
       type(surface_data), intent(inout) :: surf_l
@@ -174,100 +197,110 @@
 !
 !
       call set_internal_list_4_linear_20                                &
-     &   (node1%numnod, node1%internal_node, ele1%numele,               &
-     &    surf1%numsurf, ele1%interior_ele, surf1%interior_surf,        &
+     &   (node_q%numnod, node_q%internal_node, ele_q%numele,            &
+     &    surf_q%numsurf, ele_q%interior_ele, surf_q%interior_surf,     &
      &    mesh_l%node%numnod, mesh_l%ele%numele, surf_l%numsurf,        &
      &    edge_l%numedge, mesh_l%ele%ie, surf_l%ie_surf,                &
      &    edge_l%ie_edge, mesh_l%ele%interior_ele,                      &
      &    surf_l%interior_surf, edge_l%interior_edge)
 !
-      end subroutine set_internal_list_4_ltype_20
+      end subroutine set_internal_list_lin_20
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_internal_list_4_ltype_27(mesh_l, surf_l, edge_l)
+      subroutine set_internal_list_lin_27                               &
+     &         (node_q, mesh_l, surf_l, edge_l)
 !
       use m_machine_parameter
-      use m_geometry_data
+      use t_geometry_data
       use t_mesh_data
       use t_surface_data
       use t_edge_data
 !
       use set_internal_list_4_linear
 !
+      type(node_data), intent(in) ::    node_q
+!
       type(mesh_geometry), intent(inout) :: mesh_l
       type(surface_data), intent(inout) :: surf_l
       type(edge_data),    intent(inout) :: edge_l
 !
 !
-      call set_internal_list_4_linear_27(node1%internal_node,           &
+      call set_internal_list_4_linear_27(node_q%internal_node,          &
      &    mesh_l%node%numnod, mesh_l%ele%numele, surf_l%numsurf,        &
      &    edge_l%numedge, mesh_l%ele%ie, surf_l%ie_surf,                &
      &    edge_l%ie_edge, mesh_l%ele%interior_ele,                      &
      &    surf_l%interior_surf, edge_l%interior_edge)
 !
-      end subroutine set_internal_list_4_ltype_27
+      end subroutine set_internal_list_lin_27
 !
 ! ----------------------------------------------------------------------
-!  ---------------------------------------------------------------------
+! ----------------------------------------------------------------------
 !
-      subroutine init_linear_phys_type_by_1st(mesh_l, nod_fld_l)
+      subroutine init_linear_nod_phys(mesh_l, nod_fld_q, nod_fld_l)
 !
-      use m_node_phys_data
       use t_mesh_data
       use t_phys_data
 !
       type(mesh_geometry), intent(in) :: mesh_l
+      type(phys_data), intent(in) :: nod_fld_q
       type(phys_data), intent(inout) :: nod_fld_l
 !
 !
-      call link_field_name_type(nod_fld1, nod_fld_l)
+      call link_field_name_type(nod_fld_q, nod_fld_l)
       call alloc_phys_data_type(mesh_l%node%numnod, nod_fld_l)
 !
-      end subroutine init_linear_phys_type_by_1st
+      end subroutine init_linear_nod_phys
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_nod_phys_2_linear_t(mesh_l, nod_fld_l)
+      subroutine copy_nod_phys_2_linear                                 &
+     &         (node_q, nod_fld_q, mesh_l, nod_fld_l)
 !
-      use m_geometry_data
-      use m_node_phys_data
+      use t_geometry_data
       use t_mesh_data
       use t_phys_data
 !
       use set_data_4_quad27
 !
+      type(node_data), intent(in) ::    node_q
+      type(phys_data), intent(in) :: nod_fld_q
+!
       type(mesh_geometry), intent(in) :: mesh_l
       type(phys_data), intent(inout) :: nod_fld_l
 !
 !
-      call copy_original_data(node1%numnod, nod_fld1%ntot_phys,         &
-     &    nod_fld1%d_fld, mesh_l%node%numnod, nod_fld_l%d_fld)
+      call copy_original_data(node_q%numnod, nod_fld_q%ntot_phys,       &
+     &    nod_fld_q%d_fld, mesh_l%node%numnod, nod_fld_l%d_fld)
 !
-      end subroutine copy_nod_phys_2_linear_t
+      end subroutine copy_nod_phys_2_linear
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine generate_phys_on_surf_t(mesh_l, nod_fld_l)
+      subroutine generate_phys_on_surf(node_q, ele_q, surf_q,           &
+     &          mesh_l, nod_fld_l)
 !
-      use m_geometry_data
-      use m_node_phys_data
+      use t_geometry_data
       use t_mesh_data
       use t_phys_data
 !
       use set_data_4_quad27
 !
+      type(node_data), intent(in) ::    node_q
+      type(element_data), intent(in) :: ele_q
+      type(surface_data), intent(in) :: surf_q
+!
       type(mesh_geometry), intent(in) :: mesh_l
       type(phys_data), intent(inout) :: nod_fld_l
 !
 !
-      call set_fields_on_surf(node1%numnod, surf1%numsurf, ele1%numele, &
-     &    ele1%ie, surf1%ie_surf, nod_fld_l%ntot_phys,                  &
+      call set_fields_on_surf                                           &
+     &   (node_q%numnod, surf_q%numsurf, ele_q%numele,                  &
+     &    ele_q%ie, surf_q%ie_surf, nod_fld_l%ntot_phys,                &
      &    mesh_l%node%numnod, nod_fld_l%d_fld)
 !
-      end subroutine generate_phys_on_surf_t
+      end subroutine generate_phys_on_surf
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
 !
-      end module cvt_quad_2_linear_mesh_t
+      end module cvt_quad_2_linear_mesh

@@ -52,9 +52,6 @@
       call allocate_hbd_trans_rtp
       call check_add_trans_hbd_MHD
 !
-      call s_const_linear_mesh_type(mesh_fem, surf_mesh_fem,            &
-     &    edge_mesh_fem, fem_fld)
-!
 !     ---------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_mesh'

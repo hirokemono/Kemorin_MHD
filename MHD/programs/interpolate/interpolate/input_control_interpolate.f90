@@ -101,12 +101,13 @@
       subroutine set_ctl_interpolate_udt
 !
       use calypso_mpi
+      use m_node_phys_data
       use set_control_nodal_data
 !
       integer(kind = kint) :: ierr
 !
 !
-      call s_set_control_nodal_data(ierr)
+      call s_set_control_nodal_data(nod_fld1, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       end subroutine set_ctl_interpolate_udt

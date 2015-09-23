@@ -61,7 +61,7 @@
 !
 !    set nodal data
 !
-        call s_set_control_nodal_data(ierr)
+        call s_set_control_nodal_data(nod_fld1, ierr)
       end if
 !
       call s_set_ele_field_names_MHD

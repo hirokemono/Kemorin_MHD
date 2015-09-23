@@ -1,17 +1,16 @@
-!set_control_field_type.f90
-!      module set_control_field_type
+!set_control_nodal_data.f90
+!      module set_control_nodal_data
 !
 !        programmed by H.Matsui on Sep., 2006
 !
-!     subroutine set_control_field_data_type(fld, ierr, error_message)
+!     subroutine s_set_control_nodal_data(fld, ierr)
 !        type(phys_data), intent(inout) :: fld
 !        integer (kind = kint), intent(inout) :: ierr
-!        character(len=128), intent(inout) :: error_message
 !
 !     subroutine ordering_field_type_by_viz(fld)
 !     subroutine ordering_field_type_by_comp_viz(fld)
 !
-      module set_control_field_type
+      module set_control_nodal_data
 !
       use m_precision
 !
@@ -23,22 +22,21 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_field_data_type(fld, ierr, error_message)
+      subroutine s_set_control_nodal_data(fld, ierr)
 !
       use m_machine_parameter
+      use m_error_IDs
       use m_ctl_data_4_fields
       use t_phys_data
 !
       type(phys_data), intent(inout) :: fld
       integer (kind = kint), intent(inout) :: ierr
-      character(len=128), intent(inout) :: error_message
-!
 !
 !   set physical values
 !
       if(field_ctl%icou .le. 0) then
-        error_message = 'Set field for simulation'
-        ierr = 90
+        e_message = 'Set field for simulation'
+        ierr = ierr_file
       else
         fld%num_phys = field_ctl%num
         ierr = 0
@@ -50,13 +48,12 @@
         call alloc_phys_name_type(fld)
         call ordering_field_type_by_viz(fld)
 !
-        if (iflag_debug.eq.1) call check_nodal_field_name_type(fld)
+        if (iflag_debug .ge. iflag_routine_msg)                         &
+     &                 call check_nodal_field_name_type(fld)
         call deallocate_phys_control
       end if
 !
-      if (iflag_debug.eq.1) write(*,*) 'fld%num_phys ', fld%num_phys
-!
-      end subroutine set_control_field_data_type
+      end subroutine s_set_control_nodal_data
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
@@ -101,4 +98,4 @@
 !
 ! -----------------------------------------------------------------------
 !
-      end module set_control_field_type
+      end module set_control_nodal_data

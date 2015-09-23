@@ -81,7 +81,7 @@
        enddo
       enddo
 !
-     end subroutine set_ele_connect
+      end subroutine set_ele_connect
 !
 ! ----------------------------------------------------------------------
 !
@@ -155,14 +155,14 @@
      &     i1 , i2 , i3 , i4 , i5 , i6 , i7 , i8 , i9 , i10,            &
      &     i11, i12, i13, i14, i15, i16, i17, i18, i19, i20
          end if
-
-        enddo
-       enddo
-      enddo
 !
-       end subroutine set_ele_connect_quad
-
+        end do
+       end do
+      end do
+!
+      end subroutine set_ele_connect_quad
 !
 ! ----------------------------------------------------------------------
 !
       end module set_cube_ele_connect
+      

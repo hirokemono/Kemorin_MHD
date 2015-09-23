@@ -53,10 +53,8 @@
       use m_control_data_sections
       use m_cross_section
       use m_isosurface
-!
       use m_quad_2_triangle
 !
-      use const_linear_mesh_type
       use set_psf_case_table
 !
       type(mesh_data), intent(inout) :: fem
@@ -68,9 +66,6 @@
       if ( (num_psf_ctl+num_iso_ctl) .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'set_sectioning_case_table'
         call set_sectioning_case_table
-        if (iflag_debug.eq.1)  write(*,*) 's_const_linear_mesh_type'
-        call s_const_linear_mesh_type(fem, sf_mesh_psf,                 &
-     &      eg_mesh_psf, fld_nod)
       end if
 !
       num_psf = num_psf_ctl
@@ -95,16 +90,12 @@
       use m_cross_section
       use m_isosurface
 !
-      use const_linear_mesh_type
-!
       type(mesh_data), intent(in) :: fem
       type(edge_geometry), intent(in) :: eg_mesh_psf
       type(phys_data), intent(in) :: fld_nod
 !
       integer(kind = kint), intent(in) :: istep_psf, istep_iso
 !
-!
-!      call set_linear_phys_data_type(fem, fld_nod)
 !
       if (num_psf.gt.0 .and. istep_psf.gt.0) then
         call cross_section_main_type(istep_psf, fem,                    &

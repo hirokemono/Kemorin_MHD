@@ -33,6 +33,7 @@
       subroutine set_control_4_sph_transform
 !
       use calypso_mpi
+      use m_node_phys_data
       use m_global_gauss_coefs
       use m_ucd_data
       use m_FFT_selector
@@ -87,7 +88,7 @@
 !   set physical values
 !
       call s_set_control_sph_data(ierr)
-      call s_set_control_nodal_data(ierr)
+      call s_set_control_nodal_data(nod_fld1, ierr)
 !
 !
       if(i_cmb_grp .gt. 0) then
@@ -107,6 +108,7 @@
       subroutine set_control_4_sph_back_trans
 !
       use calypso_mpi
+      use m_node_phys_data
       use m_global_gauss_coefs
       use m_ucd_data
 !
@@ -163,7 +165,7 @@
 !   set physical values
 !
       call s_set_control_sph_data(ierr)
-      call s_set_control_nodal_data(ierr)
+      call s_set_control_nodal_data(nod_fld1, ierr)
 !
 !
       if(i_cmb_grp .gt. 0) then
@@ -273,7 +275,7 @@
 !   set physical values
 !
       call s_set_control_sph_data(ierr)
-      call s_set_control_nodal_data(ierr)
+      call s_set_control_nodal_data(nod_fld1, ierr)
 !
 !
       if(i_cmb_grp .gt. 0) then
