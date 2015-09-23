@@ -29,11 +29,11 @@
 !
       subroutine cal_temperature_field
 !
-      use m_node_phys_address
-      use m_finite_element_matrix
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
+      use m_finite_element_matrix
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -111,8 +111,8 @@
      &   (nod_fld1%ntot_phys, iphys%i_temp, nod_fld1%d_fld)
 !
       if (iphys%i_par_temp .gt. 0) then
-        call subtract_2_nod_scalars(iphys%i_temp, iphys%i_ref_t,        &
-     &      iphys%i_par_temp)
+        call subtract_2_nod_scalars(node1, nod_fld1,                    &
+     &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
       end if
 !
       end subroutine cal_temperature_field

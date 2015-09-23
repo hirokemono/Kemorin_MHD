@@ -66,8 +66,8 @@
 !
 !    take difference (to iphys%i_sgs_simi)
 !
-      call subtract_2_nod_vectors                                       &
-     &   (iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
+      call subtract_2_nod_vectors(node1, nod_fld1,                      &
+     &    iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
       call delete_field_by_fixed_v_bc(iphys%i_sgs_simi)
 !
 !      call check_nodal_data                                            &

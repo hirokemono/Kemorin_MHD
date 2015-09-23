@@ -113,10 +113,11 @@
 !
       subroutine cal_work_4_sgs_terms
 !
+      use m_geometry_data
       use m_node_phys_address
-      use m_physical_property
       use m_node_phys_data
-
+      use m_physical_property
+!
       use products_nodal_fields_smp
       use int_sgs_induction
       use sgs_buoyancy_flux
@@ -132,24 +133,24 @@
 !
 !$omp parallel
       if (iphys%i_SGS_temp_gen .gt. 0) then
-        call cal_phys_product_4_scalar(iphys%i_temp,                    &
-     &      iphys%i_SGS_div_h_flux, iphys%i_SGS_temp_gen)
+        call cal_phys_product_4_scalar(node1, nod_fld1,                 &
+     &      iphys%i_temp, iphys%i_SGS_div_h_flux, iphys%i_SGS_temp_gen)
       end if
 !
 !
       if (iphys%i_reynolds_wk .gt. 0) then
-        call cal_phys_dot_product(iphys%i_velo, iphys%i_SGS_div_m_flux, &
-     &      iphys%i_reynolds_wk)
+        call cal_phys_dot_product(node1, nod_fld1,                      &
+     &      iphys%i_velo, iphys%i_SGS_div_m_flux, iphys%i_reynolds_wk)
       end if
 !
       if (iphys%i_SGS_Lor_wk .gt. 0) then
-        call cal_phys_dot_product(iphys%i_velo, iphys%i_SGS_Lorentz,    &
-     &      iphys%i_SGS_Lor_wk)
+        call cal_phys_dot_product(node1, nod_fld1,                      &
+     &      iphys%i_velo, iphys%i_SGS_Lorentz, iphys%i_SGS_Lor_wk)
       end if
 !
       if (iphys%i_SGS_me_gen .gt. 0) then
-        call cal_phys_dot_product(iphys%i_magne, iphys%i_SGS_induction, &
-     &      iphys%i_SGS_me_gen)
+        call cal_phys_dot_product(node1, nod_fld1,                      &
+     &      iphys%i_magne, iphys%i_SGS_induction, iphys%i_SGS_me_gen)
       end if
 !$omp end parallel
 !
@@ -170,23 +171,27 @@
 !
 !$omp parallel
       if (iphys%i_SGS_Lor_wk_tr .gt. 0) then
-          call cal_phys_dot_product(iphys%i_filter_velo,                &
-     &        iphys%i_SGS_Lor_true, iphys%i_SGS_Lor_wk_tr)
+          call cal_phys_dot_product(node1, nod_fld1,                    &
+     &        iphys%i_filter_velo, iphys%i_SGS_Lor_true,                &
+     &        iphys%i_SGS_Lor_wk_tr)
       end if
 !
       if (iphys%i_reynolds_wk_tr .gt. 0) then
-          call cal_phys_dot_product(iphys%i_filter_velo,                &
-     &        iphys%i_SGS_div_mf_true, iphys%i_reynolds_wk_tr)
+          call cal_phys_dot_product(node1, nod_fld1,                    &
+     &        iphys%i_filter_velo, iphys%i_SGS_div_mf_true,             &
+     &        iphys%i_reynolds_wk_tr)
       end if
 !
       if (iphys%i_SGS_t_gen_tr .gt. 0) then
-          call cal_phys_product_4_scalar(iphys%i_filter_temp,           &
-     &        iphys%i_SGS_div_hf_true, iphys%i_SGS_t_gen_tr)
+          call cal_phys_product_4_scalar(node1, nod_fld1,               &
+     &        iphys%i_filter_temp, iphys%i_SGS_div_hf_true,             &
+     &        iphys%i_SGS_t_gen_tr)
       end if
 !
       if (iphys%i_SGS_me_gen_tr .gt. 0) then
-          call cal_phys_dot_product(iphys%i_filter_magne,               &
-     &        iphys%i_SGS_idct_true, iphys%i_SGS_me_gen_tr)
+          call cal_phys_dot_product(node1, nod_fld1,                    &
+     &        iphys%i_filter_magne, iphys%i_SGS_idct_true,              &
+     &        iphys%i_SGS_me_gen_tr)
       end if
 !$omp end parallel
 !

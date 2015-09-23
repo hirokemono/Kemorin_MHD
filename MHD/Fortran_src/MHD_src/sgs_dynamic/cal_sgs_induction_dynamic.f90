@@ -85,6 +85,7 @@
 !
       use m_geometry_data
       use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
 !
       use reset_dynamic_model_coefs
@@ -112,8 +113,8 @@
 !
 !    copy to work array
 !
-       call copy_vector_component                                       &
-      &   (iphys%i_SGS_induct_t, iphys%i_sgs_simi)
+       call copy_vector_component(node1, nod_fld1,                      &
+      &    iphys%i_SGS_induct_t, iphys%i_sgs_simi)
 !
 !   gradient model by filtered field
 !

@@ -20,11 +20,12 @@
 !
       subroutine cal_sgs_m_flux_dynamic
 !
-      use m_geometry_data
       use m_machine_parameter
+      use m_geometry_data
+      use m_node_phys_address
+      use m_node_phys_data
       use m_control_parameter
       use m_phys_constants
-      use m_node_phys_address
       use m_SGS_address
 !
       use reset_dynamic_model_coefs
@@ -53,8 +54,8 @@
 !
 !    copy to work array
 !
-       call copy_tensor_components                                      &
-     &    (iphys%i_SGS_m_flux, iphys%i_sgs_simi)
+       call copy_tensor_component(node1, nod_fld1,                      &
+     &     iphys%i_SGS_m_flux, iphys%i_sgs_simi)
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_simi)
 !

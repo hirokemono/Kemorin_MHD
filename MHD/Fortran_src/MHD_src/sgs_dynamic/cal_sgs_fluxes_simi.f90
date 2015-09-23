@@ -121,7 +121,7 @@
 !
 !
 !$omp parallel
-      call cal_phys_cross_product(i_v, i_b, i_sgs)
+      call cal_phys_cross_product(node1, nod_fld1, i_v, i_b, i_sgs)
 !$omp end parallel
 !
       call cal_filtered_vector(i_sgs, i_sgs)
@@ -241,7 +241,7 @@
 !
 !
 !$omp parallel
-      call cal_phys_cross_product(i_v, i_b, i_sgs)
+      call cal_phys_cross_product(node1, nod_fld1, i_v, i_b, i_sgs)
 !$omp end parallel
 !
       call cal_w_filtered_vector(i_sgs, i_sgs)

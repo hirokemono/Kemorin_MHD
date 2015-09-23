@@ -24,6 +24,7 @@
       use m_control_parameter
       use m_geometry_data
       use m_phys_constants
+      use m_node_phys_data
       use m_node_phys_address
       use m_SGS_address
 !
@@ -52,8 +53,8 @@
 !
 !    copy to work array
 !
-       call copy_tensor_components                                      &
-     &    (iphys%i_SGS_maxwell, iphys%i_sgs_simi)
+       call copy_tensor_component(node1, nod_fld1,                      &
+     &     iphys%i_SGS_maxwell, iphys%i_sgs_simi)
 !
 !   gradient model by filtered field
 !

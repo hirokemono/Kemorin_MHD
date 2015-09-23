@@ -70,8 +70,8 @@
       subroutine cal_sol_vect_p_pre_crank
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_phys_constants
+      use m_node_phys_address
       use m_node_phys_data
       use solver_MGCG_MHD
       use copy_nodal_fields
@@ -84,7 +84,7 @@
      &   (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,       &
      &    iphys%i_vecp, nod_fld1%d_fld)
 !
-      call clear_nodal_data(n_scalar, iphys%i_m_phi)
+      call clear_nodal_data(node1, nod_fld1, n_scalar, iphys%i_m_phi)
 !
       end subroutine cal_sol_vect_p_pre_crank
 !

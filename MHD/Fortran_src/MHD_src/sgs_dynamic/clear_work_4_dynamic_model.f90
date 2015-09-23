@@ -20,14 +20,19 @@
 !
       subroutine s_clear_work_4_dynamic_model
 !
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
       use copy_nodal_fields
 !
 !
-      call clear_nodal_data(n_sym_tensor, iphys%i_sgs_simi)
-      call clear_nodal_data(n_sym_tensor, iphys%i_sgs_grad)
-      call clear_nodal_data(n_sym_tensor, iphys%i_sgs_grad_f)
+      call clear_nodal_data                                             &
+     &   (node1, nod_fld1, n_sym_tensor, iphys%i_sgs_simi)
+      call clear_nodal_data                                             &
+     &   (node1, nod_fld1, n_sym_tensor, iphys%i_sgs_grad)
+      call clear_nodal_data                                             &
+     &   (node1, nod_fld1, n_sym_tensor, iphys%i_sgs_grad_f)
 !
       end subroutine s_clear_work_4_dynamic_model
 !

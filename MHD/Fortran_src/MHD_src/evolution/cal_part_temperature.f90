@@ -29,11 +29,11 @@
 !
       subroutine cal_parturbation_temp
 !
-      use m_node_phys_address
-      use m_finite_element_matrix
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
+      use m_finite_element_matrix
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -108,8 +108,8 @@
       call scalar_send_recv                                             &
      &   (nod_fld1%ntot_phys, iphys%i_par_temp, nod_fld1%d_fld)
 !
-      call add_2_nod_scalars(iphys%i_ref_t, iphys%i_par_temp,           &
-     &    iphys%i_temp)
+      call add_2_nod_scalars(node1, nod_fld1,                           &
+     &    iphys%i_ref_t, iphys%i_par_temp, iphys%i_temp)
 !
       end subroutine cal_parturbation_temp
 !

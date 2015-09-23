@@ -59,8 +59,8 @@
       call cal_terms_4_momentum(iphys%i_SGS_div_m_flux)
 !
 !$omp parallel
-      call cal_phys_dot_product(iphys%i_velo, iphys%i_SGS_div_m_flux,   &
-     &    iphys%i_reynolds_wk)
+      call cal_phys_dot_product(node1, nod_fld1,                        &
+     &    iphys%i_velo, iphys%i_SGS_div_m_flux, iphys%i_reynolds_wk)
 !$omp end parallel
 !
 !   lead SGS buoyancy flux

@@ -185,6 +185,7 @@
       subroutine update_with_temperature
 !
       use m_t_step_parameter
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
@@ -212,10 +213,11 @@
         if(iflag_debug .ge. iflag_routine_msg) write(*,*)               &
      &          'iflag_SGS_parterbuation', iflag_SGS_parterbuation
         if(iflag_SGS_parterbuation .eq. 1) then
-          call copy_scalar_component                                    &
-     &       (iphys%i_par_temp, iphys%i_sgs_temp)
+          call copy_scalar_component(node1, nod_fld1,                   &
+     &        iphys%i_par_temp, iphys%i_sgs_temp)
         else
-          call copy_scalar_component(iphys%i_temp, iphys%i_sgs_temp)
+          call copy_scalar_component(node1, nod_fld1,                   &
+     &        iphys%i_temp, iphys%i_sgs_temp)
         end if
       end if
 !
@@ -593,7 +595,8 @@
       end if
 !
       if (iphys%i_sgs_composit .ne. 0) then
-        call copy_scalar_component(iphys%i_light, iphys%i_sgs_composit)
+        call copy_scalar_component(node1, nod_fld1,                     &
+     &      iphys%i_light, iphys%i_sgs_composit)
       end if
 !
       iflag2 = 0

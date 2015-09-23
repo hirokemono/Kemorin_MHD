@@ -26,6 +26,7 @@
       subroutine s_cal_sgs_m_flux_dynamic_simi
 !
       use m_geometry_data
+      use m_node_phys_data
       use m_node_phys_address
       use m_SGS_model_coefs
       use m_SGS_address
@@ -65,8 +66,8 @@
 !
 !    copy to work array
 !
-       call copy_tensor_components                                      &
-     &    (iphys%i_SGS_m_flux, iphys%i_sgs_simi)
+       call copy_tensor_component(node1, nod_fld1,                      &
+     &     iphys%i_SGS_m_flux, iphys%i_sgs_simi)
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_simi)
 !
@@ -99,6 +100,7 @@
       subroutine cal_sgs_maxwell_dynamic_simi
 !
       use m_geometry_data
+      use m_node_phys_data
       use m_node_phys_address
       use m_SGS_model_coefs
       use m_SGS_address
@@ -141,8 +143,8 @@
 !
 !    copy to work array
 !
-       call copy_tensor_components                                      &
-     &    (iphys%i_SGS_maxwell, iphys%i_sgs_simi)
+       call copy_tensor_component(node1, nod_fld1,                      &
+     &     iphys%i_SGS_maxwell, iphys%i_sgs_simi)
 !
 !    filtering
 !

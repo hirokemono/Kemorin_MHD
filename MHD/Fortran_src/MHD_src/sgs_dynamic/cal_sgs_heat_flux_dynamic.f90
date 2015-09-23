@@ -25,6 +25,7 @@
       use m_control_parameter
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
 !
       use reset_dynamic_model_coefs
@@ -40,7 +41,7 @@
 !
 !    reset model coefficients
 !
-      call reset_vector_sgs_model_coefs(                               &
+      call reset_vector_sgs_model_coefs(                                &
      &   icomp_sgs_hf, ele1%istack_ele_smp)
       call s_clear_work_4_dynamic_model
 !
@@ -52,7 +53,8 @@
 !
 !    copy to work array
 !
-      call copy_vector_component(iphys%i_SGS_h_flux, iphys%i_sgs_simi)
+      call copy_vector_component(node1, nod_fld1,                       &
+     &    iphys%i_SGS_h_flux, iphys%i_sgs_simi)
 !
 !   gradient model by filtered field
 !

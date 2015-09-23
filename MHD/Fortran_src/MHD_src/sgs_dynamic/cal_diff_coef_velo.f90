@@ -19,9 +19,9 @@
 !
       subroutine s_cal_diff_coef_velo
 !
-      use m_geometry_data
       use m_machine_parameter
       use m_control_parameter
+      use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
       use m_SGS_address
@@ -55,8 +55,8 @@
 !
 !    get filtered pressure(to iphys%i_sgs_grad_f)
 !
-      call copy_vector_component                                        &
-     &   (iphys%i_filter_velo, iphys%i_sgs_grad_f)
+      call copy_vector_component(node1, nod_fld1,                       &
+     &    iphys%i_filter_velo, iphys%i_sgs_grad_f)
       call cal_filtered_scalar(i_sgs_grad_fp, iphys%i_press)
 !
 !   take rotation and gradient of filtered velocity(to iphys%i_sgs_simi)
@@ -98,10 +98,10 @@
 !
 !    take difference (to iphys%i_sgs_simi)
 !
-      call subtract_2_nod_tensors                                       &
-     &   (iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
-!      call subtract_2_nod_scalars                                      &
-!     &   (iphys%i_sgs_grad+6, iphys%i_sgs_simi+6, iphys%i_sgs_simi+6)
+      call subtract_2_nod_tensors(node1, nod_fld1,                      &
+     &    iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
+!      call subtract_2_nod_scalars(node1, nod_fld1,                     &
+!     &    iphys%i_sgs_grad+6, iphys%i_sgs_simi+6, iphys%i_sgs_simi+6)
 !
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_simi)

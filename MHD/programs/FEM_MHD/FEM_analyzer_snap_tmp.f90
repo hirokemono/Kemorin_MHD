@@ -201,7 +201,8 @@
      &    iphys%i_SGS_m_flux, n_sym_tensor, nod_fld1%d_fld)
 !$omp end parallel
 !
-      call clear_nodal_data(n_sym_tensor, iphys%i_SGS_m_flux)
+      call clear_nodal_data(node1, nod_fld1,                            &
+     &    n_sym_tensor, iphys%i_SGS_m_flux)
 !
 !$omp parallel
       call overwrite_nodal_sph_2_xyz_smp(node1, nod_fld1%ntot_phys,     &
@@ -216,15 +217,15 @@
 !
 !$omp parallel
       if (iphys%i_reynolds_wk .gt. 0) then
-        call cal_phys_dot_product(iphys%i_velo, iphys%i_SGS_div_m_flux, &
-     &      iphys%i_reynolds_wk)
+        call cal_phys_dot_product(node1, nod_fld1,                      &
+     &      iphys%i_velo, iphys%i_SGS_div_m_flux, iphys%i_reynolds_wk)
       end if
 !
       call overwrite_nodal_xyz_2_sph_smp(node1, nod_fld1%ntot_phys,     &
      &   iphys%i_velo, n_vector, nod_fld1%d_fld)
 !$omp end parallel
 
-      call clear_nodal_data(n_vector, iphys%i_velo)
+      call clear_nodal_data(node1, nod_fld1, n_vector, iphys%i_velo)
 !
 !$omp parallel
       call overwrite_nodal_sph_2_xyz_smp(node1, nod_fld1%ntot_phys,     &
@@ -245,8 +246,8 @@
 !
 !$omp parallel
       if (iphys%i_SGS_me_gen .gt. 0) then
-        call cal_phys_dot_product(iphys%i_magne, iphys%i_SGS_induction, &
-     &      iphys%i_SGS_me_gen)
+        call cal_phys_dot_product(node1, nod_fld1,                      &
+     &      iphys%i_magne, iphys%i_SGS_induction, iphys%i_SGS_me_gen)
       end if
 !$omp end parallel
 !
