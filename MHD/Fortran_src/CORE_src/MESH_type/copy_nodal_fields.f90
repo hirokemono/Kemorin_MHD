@@ -73,7 +73,7 @@
 !
       integer (kind = kint), intent(in) :: i_target, numdir
       type(element_data), intent(in) :: ele
-      type(phys_data), intent(in) :: fld_ele
+      type(phys_data), intent(inout) :: fld_ele
 !
 !
 !$omp parallel

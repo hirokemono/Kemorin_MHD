@@ -26,11 +26,13 @@
       use m_precision
 !
       use m_geometry_constants
+      use m_geometry_data
       use m_phys_constants
+      use m_jacobians
       use m_fem_gauss_int_coefs
       use m_finite_element_matrix
 !
-      use fem_skv_mass_mat_1st
+      use fem_skv_mass_mat_type
       use fem_skv_nodal_field_1st
       use cal_skv_to_ff_smp_1st
 !
@@ -113,8 +115,8 @@
         call fem_skv_scalar_on_ele_1st(iele_fsmp_stack,                 &
      &      max_int_point, scalar_ele, sk6)
       else
-        call fem_skv_mass_mat_diag_HRZ_1st(iele_fsmp_stack,             &
-     &      max_int_point, sk6)
+        call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack,            &
+     &      max_int_point, ele1, jac1_3d_q, sk6)
         call fem_skv_scalar_on_ele_HRZ_1st(iele_fsmp_stack,             &
      &      ml_ele_diag, scalar_ele, sk6)
       end if
@@ -141,8 +143,8 @@
         call fem_skv_vector_on_ele_1st(iele_fsmp_stack,                 &
      &        max_int_point, vector_ele, sk6)
       else
-        call fem_skv_mass_mat_diag_HRZ_1st(iele_fsmp_stack,             &
-     &        max_int_point, sk6)
+        call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack,            &
+     &        max_int_point, ele1, jac1_3d_q, sk6)
         call fem_skv_vector_on_ele_HRZ_1st(iele_fsmp_stack,             &
      &        ml_ele_diag, vector_ele, sk6 )
       end if
@@ -169,8 +171,8 @@
         call fem_skv_tensor_on_ele_1st(iele_fsmp_stack,                 &
      &          max_int_point, tensor_ele, sk6)
       else
-        call fem_skv_mass_mat_diag_HRZ_1st(iele_fsmp_stack,             &
-     &          max_int_point, sk6)
+        call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack,            &
+     &          max_int_point, ele1, jac1_3d_q, sk6)
         call fem_skv_tensor_on_ele_HRZ_1st(iele_fsmp_stack,             &
      &          ml_ele_diag, tensor_ele, sk6)
       end if
@@ -198,8 +200,8 @@
         call fem_skv_scalar_on_ele_grp_1st(iele_fsmp_stack,             &
      &      nele_grp, iele_grp, max_int_point, scalar_ele, sk6)
       else
-        call fem_grp_skv_mass_mat_diag_HRZ_1(iele_fsmp_stack,           &
-     &      nele_grp, iele_grp, max_int_point, sk6)
+        call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,           &
+     &      nele_grp, iele_grp, max_int_point, ele1, jac1_3d_q, sk6)
         call fem_skv_scalar_on_egrp_HRZ_1st(iele_fsmp_stack,            &
      &      nele_grp, iele_grp, ml_ele_diag, scalar_ele, sk6)
       end if
@@ -226,8 +228,8 @@
         call fem_skv_vector_on_ele_grp_1st(iele_fsmp_stack,             &
      &      nele_grp, iele_grp, max_int_point, vector_ele, sk6)
       else
-        call fem_grp_skv_mass_mat_diag_HRZ_1(iele_fsmp_stack,           &
-     &      nele_grp, iele_grp,  max_int_point, sk6)
+        call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,           &
+     &      nele_grp, iele_grp,  max_int_point, ele1, jac1_3d_q, sk6)
         call fem_skv_vector_on_egrp_HRZ_1st(iele_fsmp_stack,            &
      &      nele_grp, iele_grp, ml_ele_diag, vector_ele, sk6 )
       end if
@@ -254,8 +256,8 @@
         call fem_skv_tensor_on_ele_grp_1st(iele_fsmp_stack,             &
      &      nele_grp, iele_grp, max_int_point, tensor_ele, sk6)
       else
-        call fem_grp_skv_mass_mat_diag_HRZ_1(iele_fsmp_stack,           &
-     &      nele_grp, iele_grp, max_int_point, sk6)
+        call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,           &
+     &      nele_grp, iele_grp, max_int_point, ele1, jac1_3d_q, sk6)
         call fem_skv_tensor_on_egrp_HRZ_1st(iele_fsmp_stack,            &
      &      nele_grp, iele_grp, ml_ele_diag, tensor_ele, sk6)
       end if

@@ -58,7 +58,7 @@
       do  k2 = 1, num_t_linear
         call reset_sk6_type(n_scalar, ele%numele, num_t_linear, fem_wk)
         call fem_skv_poisson_linear_type(ele%istack_ele_smp, n_int, k2, &
-     &      ele, jac_3d_l, fem_wk)
+     &      ele, jac_3d_l, fem_wk%sk6)
         call add_skv1_2_matrix11_type(ele, rhs_tbl,                     &
      &      djds_const%idx_4_mat, fem_wk%sk6, k2, mat11)
       end do
@@ -94,7 +94,7 @@
         call reset_sk6_type(n_scalar, ele%numele, ele%nnod_4_ele,       &
      &      fem_wk)
         call fem_skv_poisson_type(ele%istack_ele_smp, n_int, k2,        &
-     &      ele, jac_3d, fem_wk)
+     &      ele, jac_3d, fem_wk%sk6)
         call cal_scalar_diffuse_mat_type(ele, rhs_tbl, djds_const,      &
      &      fem_wk, k2, coef_imp, ak_d, mat11)
       end do
@@ -129,7 +129,7 @@
         call reset_sk6_type(n_scalar, ele%numele, ele%nnod_4_ele,       &
      &      fem_wk)
         call fem_skv_poisson_type(ele%istack_ele_smp, n_int, k2,        &
-     &      ele, jac_3d, fem_wk)
+     &      ele, jac_3d, fem_wk%sk6)
         call cal_vect_diffuse_mat_type(ele, rhs_tbl, djds_const,        &
      &      fem_wk, k2, coef_imp, ak_d, mat33)
       end do

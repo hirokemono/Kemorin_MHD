@@ -96,12 +96,13 @@
 !
       use m_geometry_data
       use m_phys_constants
+      use m_jacobians
       use m_finite_element_matrix
       use m_int_vol_data
 !
       use cal_skv_to_ff_smp_1st
       use nodal_fld_2_each_ele_1st
-      use fem_skv_diffusion_1st
+      use fem_skv_diffusion_type
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: n_int, i_scalar
@@ -116,8 +117,8 @@
 ! -------- loop for shape function for the physical values
       do k2 = 1, ele1%nnod_4_ele
         call scalar_phys_2_each_element(k2, i_scalar, phi_e)
-        call fem_skv_scalar_diffuse_1st(iele_fsmp_stack, n_int, k2,     &
-     &      ak_d, phi_e, sk6)
+        call fem_skv_scalar_diffuse_type(iele_fsmp_stack, n_int, k2,    &
+     &      ak_d, ele1, jac1_3d_q, phi_e, sk6)
       end do
 !
       call add1_skv_coef_to_ff_v_smp_1st(coef_crank, ff_smp, sk6)
@@ -131,12 +132,13 @@
 !
       use m_geometry_data
       use m_phys_constants
+      use m_jacobians
       use m_finite_element_matrix
       use m_int_vol_data
 !
       use cal_skv_to_ff_smp_1st
       use nodal_fld_2_each_ele_1st
-      use fem_skv_diffusion_1st
+      use fem_skv_diffusion_type
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: n_int, i_vector
@@ -151,8 +153,8 @@
 ! -------- loop for shape function for the physical values
        do k2=1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_vector, velo_1)
-        call fem_skv_vector_diffuse_1st(iele_fsmp_stack, n_int, k2,     &
-     &      ak_d, velo_1, sk6)
+        call fem_skv_vector_diffuse_type(iele_fsmp_stack, n_int, k2,    &
+     &      ak_d, ele1, jac1_3d_q, velo_1, sk6)
       end do
 !
       call add3_skv_coef_to_ff_v_smp_1st(coef_crank, ff_smp, sk6)

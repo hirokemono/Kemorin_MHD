@@ -4,8 +4,8 @@
 !     programmed by H.Matsui on July 2005
 !     Modified by H. Matsui on Oct., 2006
 !
-!      subroutine fem_skv_scalar_diffuse_1st(iele_fsmp_stack,           &
-!     &          n_int, k2, ak_d, scalar_1, sk_v)
+!       subroutine fem_skv_scalar_diffuse_sgs_1st(iele_fsmp_stack,      &
+!     &          n_int, k2, i_filter, ak_diff, ak_d, scalar_1, sk_v)
 !      subroutine fem_skv_vector_diffuse_sgs_1st(iele_fsmp_stack,       &
 !     &          n_int, k2, i_filter, ak_diff, ak_d, vect_1, sk_v)
 !

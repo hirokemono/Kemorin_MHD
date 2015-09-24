@@ -24,6 +24,7 @@
       use m_precision
 !
       use m_geometry_data
+      use m_jacobians
       use m_phys_constants
       use m_finite_element_matrix
 !
@@ -88,7 +89,7 @@
       subroutine int_consist_mass_matrix(iele_fsmp_stack, num_int,      &
      &          nmat_size, aiccg)
 !
-      use fem_skv_mass_mat_1st
+      use fem_skv_mass_mat_type
       use add_skv1_2_matrix_1st
 !
 !
@@ -104,7 +105,8 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call reset_sk6(n_scalar)
-        call fem_skv_mass_matrix_1st(iele_fsmp_stack, num_int, k2, sk6)
+        call fem_skv_mass_matrix_type(iele_fsmp_stack, num_int, k2,     &
+     &      ele1, jac1_3d_q, sk6)
         call add_skv1_2_matrix11_1st(k2, sk6, nmat_size, aiccg)
       end do
 !
@@ -115,7 +117,7 @@
 !
       subroutine int_mass_matrix(iele_fsmp_stack, num_int)
 !
-      use fem_skv_mass_mat_1st
+      use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp_1st
 !
       integer (kind=kint), intent(in) :: num_int
@@ -131,7 +133,8 @@
 ! -------- loop for shape function for the phsical values
 !
       do k2 = 1, ele1%nnod_4_ele
-        call fem_skv_mass_matrix_1st(iele_fsmp_stack, num_int, k2, sk6)
+        call fem_skv_mass_matrix_type(iele_fsmp_stack, num_int, k2,     &
+     &      ele1, jac1_3d_q, sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
@@ -142,7 +145,7 @@
 !
       subroutine int_mass_matrix_diag(iele_fsmp_stack, num_int)
 !
-      use fem_skv_mass_mat_1st
+      use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp_1st
 !
       integer (kind=kint), intent(in) :: num_int
@@ -152,7 +155,8 @@
       call reset_ff_smp
       call reset_sk6(n_scalar)
 !
-      call fem_skv_mass_matrix_diag_1st(iele_fsmp_stack, num_int, sk6)
+      call fem_skv_mass_matrix_diag_type                                &
+     &   (iele_fsmp_stack, num_int, ele1, jac1_3d_q, sk6)
 !
       call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
 !
@@ -162,7 +166,7 @@
 !
       subroutine int_mass_matrix_HRZ_full(iele_fsmp_stack, num_int)
 !
-      use fem_skv_mass_mat_1st
+      use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp_1st
 !
       integer (kind=kint), intent(in) :: num_int
@@ -172,11 +176,13 @@
       call reset_ff_smp
       call reset_sk6(n_scalar)
 !
-      call fem_skv_mass_mat_diag_HRZ_1st(iele_fsmp_stack, num_int, sk6)
-      call sum_skv_diagonal_4_HRZ_1st(iele_fsmp_stack, sk6,             &
+      call fem_skv_mass_mat_diag_HRZ_type                               &
+     &   (iele_fsmp_stack, num_int, ele1, jac1_3d_q, sk6)
+      call sum_skv_diagonal_4_HRZ_type(iele_fsmp_stack, ele1, sk6,      &
      &    ml_o_ele_diag, ml_ele_diag)
 !
-      call vol_average_skv_HRZ_1st(iele_fsmp_stack, sk6, ml_ele_diag)
+      call vol_average_skv_HRZ_type                                     &
+     &   (iele_fsmp_stack, ele1, sk6, ml_ele_diag)
 !
       call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
 !
@@ -186,7 +192,7 @@
 !
       subroutine int_mass_matrix_HRZ(iele_fsmp_stack, num_int)
 !
-      use fem_skv_mass_mat_1st
+      use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp_1st
 !
       integer (kind=kint), intent(in) :: num_int
@@ -196,8 +202,10 @@
       call reset_ff_smp
       call reset_sk6(n_scalar)
 !
-      call fem_skv_mass_mat_diag_HRZ_1st(iele_fsmp_stack, num_int, sk6)
-      call vol_average_skv_HRZ_1st(iele_fsmp_stack, sk6, ml_ele_diag)
+      call fem_skv_mass_mat_diag_HRZ_type                               &
+     &   (iele_fsmp_stack, num_int, ele1, jac1_3d_q, sk6)
+      call vol_average_skv_HRZ_type                                     &
+     &   (iele_fsmp_stack, ele1, sk6, ml_ele_diag)
 !
       call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
 !

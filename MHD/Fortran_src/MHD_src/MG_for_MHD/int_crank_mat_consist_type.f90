@@ -68,7 +68,7 @@
         call reset_sk6_type(n_scalar, mesh%ele%numele,                  &
      &      mesh%ele%nnod_4_ele, fem_wk)
         call fem_skv_mass_matrix_type(mesh%ele%istack_ele_smp,          &
-     &      intg_point_t_evo, k2, mesh%ele, jac_3d, fem_wk)
+     &      intg_point_t_evo, k2, mesh%ele, jac_3d, fem_wk%sk6)
 !
         if ( iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass            &
      &      .and. coef_velo.gt.0.0d0 ) then

@@ -183,10 +183,10 @@
      &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
 !
       call fem_skv_mass_mat_diag_HRZ_type(mesh%ele%istack_ele_smp,      &
-     &    intg_point_t_evo, mesh%ele, jac_3d, fem_wk)
+     &    intg_point_t_evo, mesh%ele, jac_3d, fem_wk%sk6)
 !
       call sum_skv_diagonal_4_HRZ_type(mesh%ele%istack_ele_smp,         &
-     &    mesh%ele, fem_wk, ele_diag)
+     &    mesh%ele, fem_wk%sk6, ele_diag%ml_o, ele_diag%ml)
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, rhs_l)
       call cal_ff_smp_2_ml_type(mesh, rhs_tbl, rhs_l, ml_node)

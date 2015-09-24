@@ -26,6 +26,7 @@
       use m_physical_property
       use m_phys_constants
       use m_sorted_node_MHD
+      use m_jacobians
       use m_finite_element_matrix
 !
       use m_temp_matrix
@@ -33,7 +34,7 @@
       use m_velo_matrix
       use m_magne_matrix
 !
-      use fem_skv_mass_mat_1st
+      use fem_skv_mass_mat_type
       use cal_poisson_matrices_1st
 !
        integer(kind = kint) :: k2
@@ -42,8 +43,8 @@
       do  k2 = 1, ele1%nnod_4_ele
         call reset_sk6(n_scalar)
 !
-        call fem_skv_mass_matrix_1st(ele1%istack_ele_smp,               &
-     &      intg_point_t_evo, k2, sk6)
+        call fem_skv_mass_matrix_type(ele1%istack_ele_smp,              &
+     &      intg_point_t_evo, k2, ele1, jac1_3d_q, sk6)
 !
         if ( iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass            &
      &      .and. coef_velo.gt.0.0d0 ) then

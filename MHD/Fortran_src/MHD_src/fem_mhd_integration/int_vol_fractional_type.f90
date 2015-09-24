@@ -148,7 +148,7 @@
         call scalar_phys_2_each_ele_type(mesh, nod_fld, k2,             &
      &      i_scalar, fem_wk%scalar_1)
         call fem_skv_scalar_diffuse_type(iele_fsmp_stack, n_int, k2,    &
-     &      ak_d, mesh%ele, jac_3d, fem_wk)
+     &      ak_d, mesh%ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add1_skv_coef_to_ff_v_smp_type(mesh, rhs_tbl,                &
@@ -190,7 +190,7 @@
         call vector_phys_2_each_ele_type(mesh, nod_fld, k2,             &
      &      i_vector, fem_wk%vector_1)
         call fem_skv_vector_diffuse_type(iele_fsmp_stack, n_int, k2,    &
-     &      ak_d, mesh%ele, jac_3d, fem_wk)
+     &      ak_d, mesh%ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_coef_to_ff_v_smp_type(mesh, rhs_tbl,                &

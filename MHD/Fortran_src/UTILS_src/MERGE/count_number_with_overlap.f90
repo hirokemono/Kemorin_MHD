@@ -61,10 +61,8 @@
         call allocate_sph_node_geometry(subdomain(ip)%node)
 !
 !  set node group
-        call set_nod_grp_type_from_IO(sub_nod_grp(ip))
-        call set_ele_grp_type_from_IO(sub_ele_grp(ip))
-        call set_surf_grp_type_from_IO(sub_surf_grp(ip))
-!
+        call set_grp_data_from_IO                                       &
+     &     (sub_nod_grp(ip), sub_ele_grp(ip), sub_surf_grp(ip))
       end do
 !
       ele1%nnod_4_ele = nnod_4_ele_dummy
