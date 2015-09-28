@@ -203,7 +203,7 @@ void gzip_infleat_once(int *len_gzipbuf, const char *gzipbuf, int *len_buf,
     strm.next_out = (unsigned char *) buf;
     CALL_ZLIB (inflate (& strm, Z_NO_FLUSH));
     *len_gzipped = *len_gzipbuf - strm.avail_in;
-/*    printf("compressed size:%d %d %d \n",*len_buf, *len_gzipbuf, *len_gzipped); */
+/*    printf("compressed size:%d %d %d \n",*len_buf, *len_gzipbuf, *len_gzipped);*/
     inflateEnd (& strm);
     return;
 }

@@ -243,7 +243,7 @@
       character(len=kchara), intent(inout) :: field_name
 !
       integer(kind = MPI_OFFSET_KIND) :: ioffset
-      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength
+      integer(kind = kint) :: ilen_gz, ilen_gzipped, ilength, i
 !
       character(len=1), allocatable :: gzip_buf(:), textbuf(:)
       character(len=kchara) :: textbuf_c
@@ -259,8 +259,14 @@
         call gzip_infleat_once                                          &
      &     (ilen_gz, gzip_buf(1), kchara, textbuf_c, ilen_gzipped)
 !
-        call read_each_field_name_buffer(textbuf_c, field_name)
-        ilength = len_trim(field_name) + 1
+        ilength = read_each_field_name_buffer(textbuf_c, field_name)
+        ilength = ilength + 1
+!        do i = 1, kchara
+!          write(*,*) ilength, i, field_name(i:i),                      &
+!     &         iachar(textbuf_c(i:i)), iachar(field_name(i:i))
+!        end do
+!
+!        write(*,*) 'field_name', ilength, trim(field_name)
 !
         allocate(textbuf(ilength))
         call gzip_infleat_once                                          &
