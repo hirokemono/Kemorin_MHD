@@ -53,7 +53,7 @@
       use fem_skv_vector_diff_type
       use fem_skv_nonlinear_type
       use fem_skv_div_sgs_flux_1st
-      use fem_skv_lorentz_full_1st
+      use fem_skv_lorentz_full_type
 !
       integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
@@ -141,8 +141,8 @@
      &          ex_magne, vect_e)
 !$omp end parallel
 !
-            call fem_skv_lorentz_rot_1st(iele_fl_smp_stack,             &
-     &          num_int, k2, vect_1, vect_e, sk6)
+            call fem_skv_lorentz_rot_galerkin(iele_fl_smp_stack,        &
+     &          num_int, k2, vect_1, vect_e, ele1, jac1_3d_q, sk6)
           else if (iflag_4_rotate .eq. id_turn_OFF) then
             call vector_cst_phys_2_each_ele(k2, iphys%i_magne,          &
      &          coef_lor, magne_1)
@@ -224,6 +224,7 @@
       use m_node_phys_address
       use m_finite_element_matrix
       use m_fem_gauss_int_coefs
+      use m_jacobians
       use m_int_vol_data
 !
       use cal_add_smp
@@ -235,7 +236,7 @@
       use fem_skv_vect_diff_upw_1st
       use fem_skv_nonlinear_upw_1st
       use fem_skv_div_sgs_flux_upw_1
-      use fem_skv_lorentz_full_1st
+      use fem_skv_lorentz_full_type
 !
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
@@ -340,8 +341,8 @@
      &          ex_magne, vect_e)
 !$omp end parallel
 !
-            call fem_skv_lorentz_rot_1st(iele_fl_smp_stack,             &
-     &          num_int, k2, vect_1, vect_e, sk6)
+            call fem_skv_lorentz_rot_galerkin(iele_fl_smp_stack,        &
+     &          num_int, k2, vect_1, vect_e, ele1, jac1_3d_q, sk6)
           else
             call vector_cst_phys_2_each_ele(k2, iphys%i_magne,          &
      &          coef_lor, magne_1)

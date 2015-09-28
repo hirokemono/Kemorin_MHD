@@ -80,12 +80,13 @@
      &          ncomp_ele, iele_magne, d_ele)
 !
       use m_finite_element_matrix
+      use m_jacobians
       use m_int_vol_data
 !
       use cal_add_smp
       use nodal_fld_2_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_lorentz_full_1st
+      use fem_skv_lorentz_full_type
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int
@@ -101,8 +102,9 @@
 ! -------- loop for shape function for the phsical values
       do k2=1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, iphys%i_magne, magne_1)
-        call fem_skv_lorentz_full_pg_1st(iele_fsmp_stack, n_int, k2,    &
-     &      coef_lor, magne_1, d_ele(1,iele_magne), ex_magne, sk6)
+        call fem_skv_lorentz_full_galerkin(iele_fsmp_stack, n_int, k2,  &
+     &      coef_lor, magne_1, d_ele(1,iele_magne), ex_magne,           &
+     &      ele1, jac1_3d_q, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
@@ -115,12 +117,13 @@
      &          ncomp_ele, iele_magne, d_ele)
 !
       use m_finite_element_matrix
+      use m_jacobians
       use m_int_vol_data
 !
       use cal_add_smp
       use nodal_fld_cst_to_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_lorentz_full_1st
+      use fem_skv_lorentz_full_type
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int
@@ -143,8 +146,8 @@
      &      iele_fsmp_stack, d_ele(1,iele_magne), ex_magne, vect_e)
 !$omp end parallel
 !
-        call fem_skv_lorentz_rot_1st(iele_fsmp_stack,                   &
-     &        n_int, k2, vect_1, vect_e, sk6)
+        call fem_skv_lorentz_rot_galerkin(iele_fsmp_stack,              &
+     &        n_int, k2, vect_1, vect_e, ele1, jac1_3d_q, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
@@ -195,12 +198,13 @@
      &          ncomp_ele, iele_magne, ie_upw, d_ele)
 !
       use m_finite_element_matrix
+      use m_jacobians
       use m_int_vol_data
 !
       use cal_add_smp
       use nodal_fld_2_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_lorentz_full_1st
+      use fem_skv_lorentz_full_type
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int
@@ -216,9 +220,9 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, iphys%i_magne, magne_1)
-        call fem_skv_lorentz_full_upw_1st(iele_fsmp_stack,              &
+        call fem_skv_lorentz_full_upwind(iele_fsmp_stack,               &
      &        n_int, k2, coef_lor, magne_1, d_ele(1,ie_upw),            &
-     &        d_ele(1,iele_magne), ex_magne, sk6)
+     &        d_ele(1,iele_magne), ex_magne, ele1, jac1_3d_q, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)

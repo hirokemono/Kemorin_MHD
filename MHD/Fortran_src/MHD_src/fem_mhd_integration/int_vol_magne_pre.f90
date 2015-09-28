@@ -49,7 +49,7 @@
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp_1st
       use fem_skv_vector_diff_type
-      use fem_skv_lorentz_full_1st
+      use fem_skv_lorentz_full_type
       use fem_skv_div_sgs_flux_1st
 !
       integer(kind = kint), intent(in) :: ncomp_ele
@@ -76,9 +76,9 @@
      &      d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
 !$omp end parallel
 !
-        call fem_skv_induction_1st(iele_cd_smp_stack, num_int, k2,      &
+        call fem_skv_induction_galerkin(iele_cd_smp_stack, num_int, k2, &
      &      coef_induct, velo_1, magne_1, d_ele(1,iphys_ele%i_velo),    &
-     &      vect_e, sk6)
+     &      vect_e, ele1, jac1_3d_q, sk6)
 !
         if (iflag_SGS_induction .ne. id_SGS_none                        &
      &    .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
@@ -106,6 +106,7 @@
      &          (ncomp_ele, d_ele, iphys_ele)
 !
       use m_finite_element_matrix
+      use m_jacobians
       use m_int_vol_data
 !
       use cal_add_smp
@@ -113,7 +114,7 @@
       use nodal_fld_cst_to_ele_1st
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_lorentz_full_1st
+      use fem_skv_lorentz_full_type
       use fem_skv_div_sgs_flux_upw_1
       use fem_skv_vect_diff_upw_1st
 !
@@ -140,9 +141,9 @@
      &      d_ele(1,iphys_ele%i_magne), ex_magne, vect_e)
 !$omp end parallel
 !
-        call fem_skv_induction_upm_1st(iele_cd_smp_stack, num_int, k2,  &
+        call fem_skv_induction_upmagne(iele_cd_smp_stack, num_int, k2,  &
      &      coef_induct, velo_1, magne_1, d_ele(1,iphys_ele%i_velo),    &
-     &      vect_e, d_ele(1,iphys_ele%i_magne), sk6)
+     &      vect_e, d_ele(1,iphys_ele%i_magne), ele1, jac1_3d_q, sk6)
 !
         if (iflag_SGS_induction .ne. id_SGS_none                        &
      &    .and. iflag_commute_induction .eq. id_SGS_commute_ON) then

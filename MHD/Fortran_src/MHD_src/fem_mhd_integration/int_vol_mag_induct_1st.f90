@@ -23,6 +23,10 @@
       use m_physical_property
       use m_node_phys_address
       use m_fem_gauss_int_coefs
+      use m_finite_element_matrix
+      use m_jacobians
+      use m_int_vol_data
+!
 !
       use t_phys_address
 !
@@ -37,13 +41,10 @@
       subroutine int_vol_mag_induct_pg                                  &
      &         (iele_fsmp_stack, n_int, ncomp_ele, d_ele, iphys_ele)
 !
-      use m_finite_element_matrix
-      use m_int_vol_data
-!
       use cal_add_smp
       use nodal_fld_2_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_lorentz_full_1st
+      use fem_skv_lorentz_full_type
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int
@@ -69,9 +70,9 @@
         call vector_phys_2_each_element(k2, iphys%i_velo, velo_1)
         call vector_phys_2_each_element(k2, iphys%i_magne, magne_1)
 !
-        call fem_skv_induction_1st(iele_fsmp_stack, n_int, k2,          &
+        call fem_skv_induction_galerkin(iele_fsmp_stack, n_int, k2,     &
      &      coef_induct, velo_1, magne_1, d_ele(1,iphys_ele%i_velo),    &
-     &      vect_e, sk6)
+     &      vect_e, ele1, jac1_3d_q, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
@@ -83,13 +84,10 @@
       subroutine int_vol_mag_induct_upm                                 &
      &         (iele_fsmp_stack, n_int, ncomp_ele, d_ele, iphys_ele)
 !
-      use m_finite_element_matrix
-      use m_int_vol_data
-!
       use cal_add_smp
       use nodal_fld_2_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_lorentz_full_1st
+      use fem_skv_lorentz_full_type
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int
@@ -115,9 +113,9 @@
         call vector_phys_2_each_element(k2, iphys%i_velo, velo_1)
         call vector_phys_2_each_element(k2, iphys%i_magne, magne_1)
 !
-        call fem_skv_induction_upm_1st(iele_fsmp_stack, n_int, k2,      &
+        call fem_skv_induction_upmagne(iele_fsmp_stack, n_int, k2,      &
      &      coef_induct, velo_1, magne_1, d_ele(1,iphys_ele%i_velo),    &
-     &      vect_e, d_ele(1,iphys_ele%i_magne), sk6)
+     &      vect_e, d_ele(1,iphys_ele%i_magne), ele1, jac1_3d_q, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)

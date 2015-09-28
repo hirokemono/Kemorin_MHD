@@ -33,7 +33,15 @@
       use m_geometry_data
       use m_geometry_data_MHD
       use m_phys_constants
+      use m_node_phys_address
 !
+      use m_finite_element_matrix
+      use m_jacobians
+      use m_int_vol_data
+!
+      use nodal_fld_2_each_ele_1st
+      use cal_skv_to_ff_smp_1st
+      use fem_skv_lorentz_full_type
       use nodal_fld_2_each_ele_1st
 !
       implicit none
@@ -45,14 +53,6 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_stratified_layer(ncomp_ele, iele_velo, d_ele)
-!
-      use m_node_phys_address
-      use m_finite_element_matrix
-      use m_int_vol_data
-!
-      use nodal_fld_2_each_ele_1st
-      use cal_skv_to_ff_smp_1st
-      use fem_skv_lorentz_full_1st
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
@@ -69,9 +69,9 @@
        call position_2_each_element(k2, xe, radius_e)
        call scalar_phys_2_each_element(k2, iphys%i_gref_t, temp_e)
 !
-        call fem_skv_stratified_1st(iele_fl_smp_stack,                  &
-     &      intg_point_t_evo, k2, temp_e, d_ele(1,iele_velo), xe, sk6)
-!
+        call fem_skv_stratified_galerkin(iele_fl_smp_stack,             &
+     &      intg_point_t_evo, k2, temp_e, d_ele(1,iele_velo), xe,       &
+     &      ele1, jac1_3d_q, sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
@@ -81,14 +81,6 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_stratified_layer_upw(ncomp_ele, iele_velo, d_ele)
-!
-      use m_node_phys_address
-      use m_finite_element_matrix
-      use m_int_vol_data
-!
-      use nodal_fld_2_each_ele_1st
-      use cal_skv_to_ff_smp_1st
-      use fem_skv_lorentz_full_1st
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
@@ -106,8 +98,9 @@
         call position_2_each_element(k2, xe, radius_e)
         call scalar_phys_2_each_element(k2, iphys%i_gref_t, temp_e)
 !
-        call fem_skv_stratified_upw_1st(iele_fl_smp_stack,              &
-     &      intg_point_t_evo, k2, temp_e, d_ele(1,iele_velo), xe, sk6)
+        call fem_skv_stratified_upwind(iele_fl_smp_stack,               &
+     &      intg_point_t_evo, k2, temp_e, d_ele(1,iele_velo), xe,       &
+     &      ele1, jac1_3d_q, sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
