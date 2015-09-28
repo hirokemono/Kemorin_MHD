@@ -3,32 +3,37 @@
 !
 !     programmed by H.Matsui on May 2012
 !
-!      subroutine fem_skv_grad_upw_type(iele_fsmp_stack, n_int, k2, vxe,&
-!     &          ele, jac_3d, fem_wk)
-!      subroutine fem_skv_div_upw_type(iele_fsmp_stack, n_int, k2, vxe, &
-!     &          ele, jac_3d, fem_wk)
-!      subroutine fem_skv_rot_upw_type(iele_fsmp_stack, n_int, k2, vxe, &
-!     &          ele, jac_3d, fem_wk)
+!      subroutine fem_skv_gradient_upw(iele_fsmp_stack, n_int, k2,      &
+!     &          vxe, ele, jac_3d, scalar_1, sk_v)
+!      subroutine fem_skv_divergence_upw(iele_fsmp_stack, n_int, k2,    &
+!     &          vxe, ele, jac_3d, vector_1, sk_v)
+!      subroutine fem_skv_rotation_upw(iele_fsmp_stack, n_int, k2, vxe, &
+!     &          ele, jac_3d, vector_1, sk_v)
 !
-!      subroutine fem_skv_div_tsr_upw_type(iele_fsmp_stack,             &
-!     &          n_int, k2, vxe, ele, jac_3d, fem_wk)
-!      subroutine fem_skv_div_asym_t_upw_type(iele_fsmp_stack,          &
-!     &          n_int, k2, vxe, ele, jac_3d, fem_wk)
+!      subroutine fem_skv_div_tsr_upw(iele_fsmp_stack,                  &
+!     &          n_int, k2, vxe, ele, jac_3d, flux_1, sk_v)
+!      subroutine fem_skv_div_as_tsr_upw(iele_fsmp_stack,               &
+!     &          n_int, k2, vxe, ele, jac_3d, flux_1, sk_v)
 !
-!      subroutine fem_skv_grp_grad_upw_type(iele_fsmp_stack,            &
-!     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d, fem_wk)
-!      subroutine fem_skv_grp_div_upw_type(iele_fsmp_stack,             &
-!     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d, fem_wk)
-!      subroutine fem_skv_grp_rot_upw_type(iele_fsmp_stack,             &
-!     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d, fem_wk)
+!      subroutine fem_skv_grp_gradient_upw(iele_fsmp_stack,             &
+!     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d,        &
+!     &         scalar_1, sk_v)
+!      subroutine fem_skv_grp_divergence_upw(iele_fsmp_stack,           &
+!     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d,        &
+!     &         vector_1, sk_v)
+!      subroutine fem_skv_grp_rotation_upw(iele_fsmp_stack,             &
+!     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d,        &
+!     &         vector_1, sk_v)
 !
-!      subroutine fem_skv_grp_div_flux_upw_type(iele_fsmp_stack,        &
-!     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d, fem_wk)
-!      subroutine fem_skv_grp_div_asym_t_upw_type(iele_fsmp_stack,      &
-!     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d, fem_wk)
+!      subroutine fem_skv_grp_div_tsr_upw(iele_fsmp_stack,              &
+!     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d,        &
+!     &         flux_1, sk_v)
+!      subroutine fem_skv_grp_div_as_tsr_upw(iele_fsmp_stack,           &
+!     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d,        &
+!     &         flux_1, sk_v)
 !
-!      subroutine fem_skv_linear_grad_upw_type(iele_fsmp_stack,         &
-!     &          n_int, k2, vxe, ele, jac_3d, jac_3d_l, fem_wk)
+!      subroutine fem_skv_linear_gradient_upw(iele_fsmp_stack,         &
+!     &         n_int, k2, vxe, ele, jac_3d, jac_3d_l, scalar_1, sk_v)
 !        type(element_data), intent(in) :: ele
 !        type(jacobians_3d), intent(in) :: jac_3d
 !        type(jacobians_3d), intent(in) :: jac_3d_l
@@ -47,7 +52,6 @@
       use m_fem_gauss_int_coefs
       use m_t_int_parameter
       use t_geometry_data
-      use t_finite_element_mat
       use t_jacobians
 !
       implicit none
@@ -58,8 +62,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_grad_upw_type(iele_fsmp_stack, n_int, k2, vxe, &
-     &          ele, jac_3d, fem_wk)
+      subroutine fem_skv_gradient_upw(iele_fsmp_stack, n_int, k2,       &
+     &          vxe, ele, jac_3d, scalar_1, sk_v)
 !
       use fem_skv_grad_upw
 !
@@ -69,21 +73,24 @@
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real (kind=kreal), intent(in) :: vxe(ele%numele,3)
+      real(kind=kreal), intent(in) :: scalar_1(ele%numele)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
+!
 !
       call fem_skv_all_grad_upw                                         &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac_3d%ntot_int,      &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
-     &    vxe, fem_wk%scalar_1, fem_wk%sk6)
+     &    vxe, scalar_1, sk_v)
 !
-      end subroutine fem_skv_grad_upw_type
+      end subroutine fem_skv_gradient_upw
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_div_upw_type(iele_fsmp_stack, n_int, k2, vxe,  &
-     &          ele, jac_3d, fem_wk)
+      subroutine fem_skv_divergence_upw(iele_fsmp_stack, n_int, k2,     &
+     &          vxe, ele, jac_3d, vector_1, sk_v)
 !
       use fem_skv_div_upw
 !
@@ -93,22 +100,24 @@
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real (kind=kreal), intent(in) :: vxe(ele%numele,3)
+      real(kind=kreal), intent(in) :: vector_1(ele%numele,3)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_all_div_upw                                          &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac_3d%ntot_int,      &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
-     &    vxe, fem_wk%vector_1, fem_wk%sk6)
+     &    vxe, vector_1, sk_v)
 !
-      end subroutine fem_skv_div_upw_type
+      end subroutine fem_skv_divergence_upw
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_rot_upw_type(iele_fsmp_stack, n_int, k2, vxe,  &
-     &          ele, jac_3d, fem_wk)
+      subroutine fem_skv_rotation_upw(iele_fsmp_stack, n_int, k2, vxe,  &
+     &          ele, jac_3d, vector_1, sk_v)
 !
       use fem_skv_rot_upw
 !
@@ -118,21 +127,24 @@
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real (kind=kreal), intent(in) :: vxe(ele%numele,3)
+      real(kind=kreal), intent(in) :: vector_1(ele%numele,3)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
+!
 !
       call fem_all_skv_rot_upw                                          &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac_3d%ntot_int,      &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
-     &    vxe, fem_wk%vector_1, fem_wk%sk6)
+     &    vxe, vector_1, sk_v)
 !
-      end subroutine fem_skv_rot_upw_type
+      end subroutine fem_skv_rotation_upw
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_div_tsr_upw_type(iele_fsmp_stack,              &
-     &          n_int, k2, vxe, ele, jac_3d, fem_wk)
+      subroutine fem_skv_div_tsr_upw(iele_fsmp_stack,                   &
+     &          n_int, k2, vxe, ele, jac_3d, flux_1, sk_v)
 !
       use fem_skv_div_flux_upw
 !
@@ -142,22 +154,24 @@
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real (kind=kreal), intent(in) :: vxe(ele%numele,3)
+      real(kind=kreal), intent(in) :: flux_1(ele%numele,n_sym_tensor)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_all_div_flux_upw                                     &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac_3d%ntot_int,      &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
-     &    vxe, fem_wk%tensor_1, fem_wk%sk6)
+     &    vxe, flux_1, sk_v)
 !
-      end subroutine fem_skv_div_tsr_upw_type
+      end subroutine fem_skv_div_tsr_upw
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_div_asym_t_upw_type(iele_fsmp_stack,           &
-     &          n_int, k2, vxe, ele, jac_3d, fem_wk)
+      subroutine fem_skv_div_as_tsr_upw(iele_fsmp_stack,                &
+     &          n_int, k2, vxe, ele, jac_3d, flux_1, sk_v)
 !
       use fem_skv_div_asym_t_upw
 !
@@ -167,23 +181,26 @@
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real (kind=kreal), intent(in) :: vxe(ele%numele,3)
+      real(kind=kreal), intent(in)    :: flux_1(ele%numele,3)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_all_div_asym_t_upw                                   &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac_3d%ntot_int,      &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d%dnx,               &
-     &    vxe, fem_wk%vector_1, fem_wk%sk6)
+     &    vxe, flux_1, sk_v)
 !
-      end subroutine fem_skv_div_asym_t_upw_type
+      end subroutine fem_skv_div_as_tsr_upw
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_grp_grad_upw_type(iele_fsmp_stack,             &
-     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d, fem_wk)
+      subroutine fem_skv_grp_gradient_upw(iele_fsmp_stack,              &
+     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d,         &
+     &         scalar_1, sk_v)
 !
       use fem_skv_grad_upw
 !
@@ -195,8 +212,10 @@
       integer(kind=kint), intent(in) :: nele_grp
       integer(kind=kint), intent(in) :: iele_grp(nele_grp)
       real (kind=kreal), intent(in) :: vxe(ele%numele,3)
+      real(kind=kreal),   intent(in) :: scalar_1(ele%numele)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_grp_grad_upw                                         &
@@ -204,14 +223,15 @@
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp,                  &
      &    n_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,                  &
      &    jac_3d%an, jac_3d%dnx, jac_3d%dnx,                            &
-     &    vxe, fem_wk%scalar_1, fem_wk%sk6)
+     &    vxe, scalar_1, sk_v)
 !
-      end subroutine fem_skv_grp_grad_upw_type
+      end subroutine fem_skv_grp_gradient_upw
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_grp_div_upw_type(iele_fsmp_stack,              &
-     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d, fem_wk)
+      subroutine fem_skv_grp_divergence_upw(iele_fsmp_stack,            &
+     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d,         &
+     &         vector_1, sk_v)
 !
       use fem_skv_div_upw
 !
@@ -223,23 +243,25 @@
       integer(kind=kint), intent(in) :: nele_grp
       integer(kind=kint), intent(in) :: iele_grp(nele_grp)
       real (kind=kreal), intent(in) :: vxe(ele%numele,3)
+      real(kind=kreal), intent(in)    :: vector_1(ele%numele,3)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_grp_div_upw                                          &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp,                  &
      &    n_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,                  &
-     &    jac_3d%an, jac_3d%dnx, jac_3d%dnx,                            &
-     &    vxe, fem_wk%vector_1, fem_wk%sk6)
+     &    jac_3d%an, jac_3d%dnx, jac_3d%dnx, vxe, vector_1, sk_v)
 !
-      end subroutine fem_skv_grp_div_upw_type
+      end subroutine fem_skv_grp_divergence_upw
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_grp_rot_upw_type(iele_fsmp_stack,              &
-     &         nele_grp, iele_grp, n_int, k2, ele, vxe, jac_3d, fem_wk)
+      subroutine fem_skv_grp_rotation_upw(iele_fsmp_stack,              &
+     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d,         &
+     &         vector_1, sk_v)
 !
       use fem_skv_rot_upw
 !
@@ -251,23 +273,25 @@
       integer(kind=kint), intent(in) :: nele_grp
       integer(kind=kint), intent(in) :: iele_grp(nele_grp)
       real (kind=kreal), intent(in) :: vxe(ele%numele,3)
+      real(kind=kreal), intent(in) :: vector_1(ele%numele,3)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call fem_skv_grp_rot_upw                                         &
-     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                  &
-     &    np_smp, iele_fsmp_stack, nele_grp, iele_grp,                 &
-     &    n_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,                 &
-     &    jac_3d%an, jac_3d%dnx, jac_3d%dnx,                           &
-     &    vxe, fem_wk%vector_1, fem_wk%sk6)
+      call fem_skv_grp_rot_upw                                          &
+     &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
+     &    np_smp, iele_fsmp_stack, nele_grp, iele_grp,                  &
+     &    n_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,                  &
+     &    jac_3d%an, jac_3d%dnx, jac_3d%dnx, vxe, vector_1, sk_v)
 !
-      end subroutine fem_skv_grp_rot_upw_type
+      end subroutine fem_skv_grp_rotation_upw
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_grp_div_flux_upw_type(iele_fsmp_stack,         &
-     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d, fem_wk)
+      subroutine fem_skv_grp_div_tsr_upw(iele_fsmp_stack,               &
+     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d,         &
+     &         flux_1, sk_v)
 !
       use fem_skv_div_flux_upw
 !
@@ -279,23 +303,25 @@
       integer(kind=kint), intent(in) :: nele_grp
       integer(kind=kint), intent(in) :: iele_grp(nele_grp)
       real (kind=kreal), intent(in) :: vxe(ele%numele,3)
+      real(kind=kreal), intent(in) :: flux_1(ele%numele,n_sym_tensor)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_grp_div_flux_upw                                     &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp,                  &
      &    n_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,                  &
-     &    jac_3d%an, jac_3d%dnx, jac_3d%dnx,                            &
-     &    vxe, fem_wk%tensor_1, fem_wk%sk6)
+     &    jac_3d%an, jac_3d%dnx, jac_3d%dnx, vxe, flux_1, sk_v)
 !
-      end subroutine fem_skv_grp_div_flux_upw_type
+      end subroutine fem_skv_grp_div_tsr_upw
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_grp_div_asym_t_upw_type(iele_fsmp_stack,       &
-     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d, fem_wk)
+      subroutine fem_skv_grp_div_as_tsr_upw(iele_fsmp_stack,            &
+     &         nele_grp, iele_grp, n_int, k2, vxe, ele, jac_3d,         &
+     &         flux_1, sk_v)
 !
       use fem_skv_div_asym_t_upw
 !
@@ -307,24 +333,25 @@
       integer(kind=kint), intent(in) :: nele_grp
       integer(kind=kint), intent(in) :: iele_grp(nele_grp)
       real (kind=kreal), intent(in) :: vxe(ele%numele,3)
+      real(kind=kreal), intent(in)    :: flux_1(ele%numele,3)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_grp_div_asym_t_upw                                   &
      &   (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                   &
      &    np_smp, iele_fsmp_stack, nele_grp, iele_grp,                  &
      &    n_int, k2, dt, jac_3d%ntot_int, jac_3d%xjac,                  &
-     &    jac_3d%an, jac_3d%dnx, jac_3d%dnx,                            &
-     &    vxe, fem_wk%vector_1, fem_wk%sk6)
+     &    jac_3d%an, jac_3d%dnx, jac_3d%dnx, vxe, flux_1, sk_v)
 !
-      end subroutine fem_skv_grp_div_asym_t_upw_type
+      end subroutine fem_skv_grp_div_as_tsr_upw
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_linear_grad_upw_type(iele_fsmp_stack,          &
-     &          n_int, k2, vxe, ele, jac_3d, jac_3d_l, fem_wk)
+      subroutine fem_skv_linear_gradient_upw(iele_fsmp_stack,          &
+     &         n_int, k2, vxe, ele, jac_3d, jac_3d_l, scalar_1, sk_v)
 !
       use fem_skv_grad_upw
 !
@@ -335,17 +362,19 @@
       integer(kind=kint), intent(in) :: n_int, k2
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real (kind=kreal), intent(in) :: vxe(ele%numele,3)
+      real(kind=kreal),   intent(in) :: scalar_1(ele%numele)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &           :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_all_grad_upw                                         &
      &   (ele%numele, ele%nnod_4_ele, num_t_linear,                     &
      &    np_smp, iele_fsmp_stack, n_int, k2, dt, jac_3d%ntot_int,      &
      &    jac_3d%xjac, jac_3d%an, jac_3d%dnx, jac_3d_l%dnx,             &
-     &    vxe, fem_wk%scalar_1, fem_wk%sk6)
+     &    vxe, scalar_1, sk_v)
 !
-      end subroutine fem_skv_linear_grad_upw_type
+      end subroutine fem_skv_linear_gradient_upw
 !
 !-----------------------------------------------------------------------
 !

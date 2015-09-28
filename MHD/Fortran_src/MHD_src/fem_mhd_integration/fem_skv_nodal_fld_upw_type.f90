@@ -3,19 +3,18 @@
 !
 !     programmed by H.Matsui on May 2012
 !
-!      subroutine fem_skv_scalar_field_upw_type(iele_fsmp_stack,        &
-!     &          n_int, k2, vxe, ele, jac_3d, fem_wk) 
-!      subroutine fem_skv_vector_field_upw_type(iele_fsmp_stack,        &
-!     &          n_int, k2, vxe, ele, jac_3d, fem_wk) 
-!      subroutine fem_skv_tensor_field_upw_type(iele_fsmp_stack,        &
-!     &          n_int, k2, vxe, ele, jac_3d, fem_wk) 
+!      subroutine fem_skv_scalar_field_upwind(iele_fsmp_stack,          &
+!     &          n_int, k2, vxe, ele, jac_3d, scalar_1, sk_v) 
+!      subroutine fem_skv_vector_field_upwind(iele_fsmp_stack,          &
+!     &          n_int, k2, vxe, ele, jac_3d, vector_1, sk_v) 
+!      subroutine fem_skv_tensor_field_upwind(iele_fsmp_stack,          &
+!     &          n_int, k2, vxe, ele, jac_3d, tensor_1, sk_v) 
 !
       module fem_skv_nodal_fld_upw_type
 !
       use m_precision
 !
       use t_geometry_data
-      use t_finite_element_mat
       use t_jacobians
       use m_machine_parameter
       use m_phys_constants
@@ -30,8 +29,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_skv_scalar_field_upw_type(iele_fsmp_stack,         &
-     &          n_int, k2, vxe, ele, jac_3d, fem_wk) 
+      subroutine fem_skv_scalar_field_upwind(iele_fsmp_stack,           &
+     &          n_int, k2, vxe, ele, jac_3d, scalar_1, sk_v) 
 !
       use fem_skv_nodal_field_upw
 !
@@ -41,22 +40,24 @@
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       real (kind=kreal), intent(in) :: vxe(ele%numele,3)
+      real (kind=kreal), intent(in) :: scalar_1(ele%numele)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &           :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_scalar_field_upw                                     &
      &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
      &      jac_3d%ntot_int, iele_fsmp_stack, n_int, k2,                &
      &      jac_3d%xjac, jac_3d%an, jac_3d%an, jac_3d%dnx,              &
-     &      dt, vxe, fem_wk%scalar_1, fem_wk%sk6) 
+     &      dt, vxe, scalar_1, sk_v) 
 !
-      end subroutine fem_skv_scalar_field_upw_type
+      end subroutine fem_skv_scalar_field_upwind
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_skv_vector_field_upw_type(iele_fsmp_stack,         &
-     &          n_int, k2, vxe, ele, jac_3d, fem_wk) 
+      subroutine fem_skv_vector_field_upwind(iele_fsmp_stack,           &
+     &          n_int, k2, vxe, ele, jac_3d, vector_1, sk_v) 
 !
       use fem_skv_nodal_field_upw
 !
@@ -66,22 +67,24 @@
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       real (kind=kreal), intent(in) :: vxe(ele%numele,3)
+      real (kind=kreal), intent(in) :: vector_1(ele%numele,n_vector)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &           :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_vector_field_upw                                     &
      &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
      &      jac_3d%ntot_int, iele_fsmp_stack, n_int, k2,                &
      &      jac_3d%xjac, jac_3d%an, jac_3d%an, jac_3d%dnx,              &
-     &      dt, vxe, fem_wk%vector_1, fem_wk%sk6) 
+     &      dt, vxe, vector_1, sk_v) 
 !
-      end subroutine fem_skv_vector_field_upw_type
+      end subroutine fem_skv_vector_field_upwind
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_skv_tensor_field_upw_type(iele_fsmp_stack,         &
-     &          n_int, k2, vxe, ele, jac_3d, fem_wk) 
+      subroutine fem_skv_tensor_field_upwind(iele_fsmp_stack,           &
+     &          n_int, k2, vxe, ele, jac_3d, tensor_1, sk_v) 
 !
       use fem_skv_nodal_field_upw
 !
@@ -91,17 +94,20 @@
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       real (kind=kreal), intent(in) :: vxe(ele%numele,3)
+      real (kind=kreal), intent(in)                                     &
+     &                   :: tensor_1(ele%numele,n_sym_tensor)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &           :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_tensor_field_upw                                     &
      &     (ele%numele, ele%nnod_4_ele, ele%nnod_4_ele,                 &
      &      jac_3d%ntot_int, iele_fsmp_stack, n_int, k2,                &
      &      jac_3d%xjac, jac_3d%an, jac_3d%an, jac_3d%dnx,              &
-     &      dt, vxe, fem_wk%tensor_1, fem_wk%sk6) 
+     &      dt, vxe, tensor_1, sk_v) 
 !
-      end subroutine fem_skv_tensor_field_upw_type
+      end subroutine fem_skv_tensor_field_upwind
 !
 ! ----------------------------------------------------------------------
 !

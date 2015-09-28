@@ -97,11 +97,12 @@
       use m_geometry_data_MHD
       use m_node_phys_data
       use m_finite_element_matrix
+      use m_jacobians
       use m_int_vol_data
 !
       use sgs_terms_2_each_ele
       use cal_skv_to_ff_smp_1st
-      use fem_skv_vect_diff_upw_1st
+      use fem_skv_vect_diff_upw_type
 !
       integer(kind = kint), intent(in) :: i_flux, i_vect
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
@@ -121,7 +122,7 @@
      &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
      &      i_vect, i_flux, nod_fld1%d_fld, tensor_e)
         call fem_skv_div_tsr_upw(iele_fl_smp_stack, intg_point_t_evo,   &
-     &      k2, d_ele(1,ie_upw), tensor_e, sk6)
+     &      k2, d_ele(1,ie_upw), ele1, jac1_3d_q, tensor_e, sk6)
       end do
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
 !

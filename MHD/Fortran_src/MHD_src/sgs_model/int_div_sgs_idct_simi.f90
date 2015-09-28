@@ -63,7 +63,7 @@
 !
       use m_node_phys_data
       use sgs_terms_2_each_ele
-      use fem_skv_vect_diff_upw_1st
+      use fem_skv_vect_diff_upw_type
       use cal_skv_to_ff_smp_1st
 !
       integer(kind = kint), intent(in) :: i_flux, i_v, i_b
@@ -80,7 +80,8 @@
      &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
      &      i_b, i_v, i_flux, nod_fld1%d_fld, vect_e)
         call fem_skv_div_as_tsr_upw(iele_cd_smp_stack,                  &
-     &      intg_point_t_evo, k2, d_ele(1,iele_velo), vect_e, sk6)
+     &      intg_point_t_evo, k2, d_ele(1,iele_velo), ele1, jac1_3d_q,  &
+     &      vect_e, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)

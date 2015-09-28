@@ -67,11 +67,12 @@
      &          ncomp_ele, ie_upw, d_ele)
 !
       use m_finite_element_matrix
+      use m_jacobians
       use m_int_vol_data
 !
       use nodal_fld_cst_to_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_nonlinear_upw_1st
+      use fem_skv_nonlinear_upw_type
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int
@@ -88,8 +89,8 @@
       do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, iphys%i_velo,               &
      &        coef_cor, velo_1)
-        call fem_skv_coriolis_upw_1st(iele_fsmp_stack, n_int, k2,       &
-     &         velo_1, angular, d_ele(1,ie_upw), sk6)
+        call fem_skv_coriolis_upwind(iele_fsmp_stack, n_int, k2,        &
+     &         velo_1, angular, d_ele(1,ie_upw), ele1, jac1_3d_q, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)

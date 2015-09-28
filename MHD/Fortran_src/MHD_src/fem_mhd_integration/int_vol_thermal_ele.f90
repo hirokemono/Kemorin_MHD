@@ -17,6 +17,10 @@
       use m_phys_constants
       use m_node_phys_address
       use m_fem_gauss_int_coefs
+      use m_finite_element_matrix
+      use m_jacobians
+      use m_int_vol_data
+!
       use m_physical_property
       use m_SGS_model_coefs
       use m_SGS_address
@@ -30,10 +34,6 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_temp_ele(ncomp_ele, iele_velo, d_ele)
-!
-      use m_finite_element_matrix
-      use m_jacobians
-      use m_int_vol_data
 !
       use nodal_fld_cst_to_ele_1st
       use sgs_terms_to_each_ele_1st
@@ -87,13 +87,10 @@
 !
       subroutine int_vol_temp_ele_upw(ncomp_ele, iele_velo, d_ele)
 !
-      use m_finite_element_matrix
-      use m_int_vol_data
-!
       use nodal_fld_cst_to_ele_1st
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_nonlinear_upw_1st
+      use fem_skv_nonlinear_upw_type
       use fem_skv_div_sgs_flux_upw_1
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
@@ -129,9 +126,9 @@
      &       num_int, k2, temp_e, sgs_e, d_ele(1,iele_velo),            &
      &       d_ele(1,iele_velo), sk6)
         else
-          call fem_skv_scalar_inertia_upw_1st(iele_fl_smp_stack,        &
+          call fem_skv_scalar_inertia_upwind(iele_fl_smp_stack,         &
      &       num_int, k2, temp_e, d_ele(1,iele_velo),                   &
-     &       d_ele(1,iele_velo), sk6)
+     &       d_ele(1,iele_velo), ele1, jac1_3d_q, sk6)
         end if
       end do
 !

@@ -116,7 +116,7 @@
       use cal_skv_to_ff_smp_1st
       use fem_skv_lorentz_full_type
       use fem_skv_div_sgs_flux_upw_1
-      use fem_skv_vect_diff_upw_1st
+      use fem_skv_vect_diff_upw_type
 !
       integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
@@ -157,7 +157,7 @@
           call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_induct_t,     &
      &        coef_induct, sgs_e)
           call fem_skv_div_as_tsr_upw(iele_cd_smp_stack, num_int, k2,   &
-     &        d_ele(1,iphys_ele%i_magne), sgs_e, sk6)
+     &        d_ele(1,iphys_ele%i_magne), ele1, jac1_3d_q, sgs_e, sk6)
         end if
 !
       end do

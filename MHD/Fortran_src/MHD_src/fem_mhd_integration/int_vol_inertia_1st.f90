@@ -27,6 +27,10 @@
       use m_geometry_data
       use m_phys_constants
 !
+      use m_finite_element_matrix
+      use m_jacobians
+      use m_int_vol_data
+!
       implicit none
 !
 ! ----------------------------------------------------------------------
@@ -37,10 +41,6 @@
 !
       subroutine int_vol_scalar_inertia_1st(iele_fsmp_stack,            &
      &          n_int, i_scalar, ncomp_ele, iele_velo, d_ele, coef)
-!
-      use m_finite_element_matrix
-      use m_jacobians
-      use m_int_vol_data
 !
       use cal_skv_to_ff_smp_1st
       use nodal_fld_cst_to_ele_1st
@@ -74,10 +74,6 @@
       subroutine int_vol_vector_inertia_1st(iele_fsmp_stack,            &
      &          n_int, i_vector, ncomp_ele, iele_velo, d_ele, coef)
 !
-      use m_finite_element_matrix
-      use m_jacobians
-      use m_int_vol_data
-!
       use cal_skv_to_ff_smp_1st
       use nodal_fld_cst_to_ele_1st
       use fem_skv_nonlinear_type
@@ -109,10 +105,6 @@
 !
       subroutine int_vol_rot_inertia_1st(iele_fsmp_stack,               &
      &          n_int, i_vector, ncomp_ele, iele_vort, d_ele, coef)
-!
-      use m_finite_element_matrix
-      use m_jacobians
-      use m_int_vol_data
 !
       use cal_skv_to_ff_smp_1st
       use nodal_fld_cst_to_ele_1st
@@ -148,12 +140,9 @@
      &          n_int, i_scalar, ncomp_ele, iele_velo, ie_upw, d_ele,   &
      &          coef)
 !
-      use m_finite_element_matrix
-      use m_int_vol_data
-!
       use cal_skv_to_ff_smp_1st
       use nodal_fld_cst_to_ele_1st
-      use fem_skv_nonlinear_upw_1st
+      use fem_skv_nonlinear_upw_type
 !
       integer(kind=kint), intent(in) :: n_int, i_scalar
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -170,8 +159,9 @@
 ! -------- loop for shape function for the physical values
       do k2 = 1, ele1%nnod_4_ele
         call scalar_cst_phys_2_each_ele(k2, i_scalar, coef, phi_e)
-        call fem_skv_scalar_inertia_upw_1st(iele_fsmp_stack, n_int, k2, &
-     &      phi_e, d_ele(1,iele_velo), d_ele(1,ie_upw), sk6)
+        call fem_skv_scalar_inertia_upwind(iele_fsmp_stack, n_int, k2,  &
+     &      phi_e, d_ele(1,iele_velo), d_ele(1,ie_upw),                 &
+     &      ele1, jac1_3d_q, sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
@@ -184,12 +174,9 @@
      &         (iele_fsmp_stack, n_int, i_vector,                       &
      &          ncomp_ele, iele_velo, ie_upw, d_ele, coef)
 !
-      use m_finite_element_matrix
-      use m_int_vol_data
-!
       use cal_skv_to_ff_smp_1st
       use nodal_fld_cst_to_ele_1st
-      use fem_skv_nonlinear_upw_1st
+      use fem_skv_nonlinear_upw_type
 !
       integer(kind = kint), intent(in) :: n_int, i_vector
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -206,8 +193,9 @@
 ! -------- loop for shape function for the physical values
       do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, i_vector, coef, velo_1)
-        call fem_skv_vector_inertia_upw_1st(iele_fsmp_stack, n_int, k2, &
-     &      velo_1, d_ele(1,iele_velo), d_ele(1,ie_upw), sk6)
+        call fem_skv_vector_inertia_upwind(iele_fsmp_stack, n_int, k2,  &
+     &      velo_1, d_ele(1,iele_velo), d_ele(1,ie_upw),                &
+     &      ele1, jac1_3d_q,  sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
@@ -219,12 +207,9 @@
       subroutine int_vol_rot_inertia_upw_1st(iele_fsmp_stack, n_int,    &
      &          i_vector, ncomp_ele, iele_vort, ie_upw, d_ele, coef)
 !
-      use m_finite_element_matrix
-      use m_int_vol_data
-!
       use cal_skv_to_ff_smp_1st
       use nodal_fld_cst_to_ele_1st
-      use fem_skv_nonlinear_upw_1st
+      use fem_skv_nonlinear_upw_type
 !
       integer(kind = kint), intent(in) :: n_int, i_vector
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -241,8 +226,9 @@
 ! -------- loop for shape function for the physical values
       do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, i_vector, coef, velo_1)
-        call fem_skv_rot_inertia_upw_1st(iele_fsmp_stack, n_int, k2,    &
-     &      velo_1, d_ele(1,iele_vort), d_ele(1,ie_upw), sk6)
+        call fem_skv_rot_inertia_upwind(iele_fsmp_stack, n_int, k2,     &
+     &      velo_1, d_ele(1,iele_vort), d_ele(1,ie_upw),                &
+     &      ele1, jac1_3d_q, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)

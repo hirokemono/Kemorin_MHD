@@ -23,6 +23,10 @@
       use m_phys_constants
       use m_node_phys_address
 !
+      use m_finite_element_matrix
+      use m_jacobians
+      use m_int_vol_data
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -33,10 +37,6 @@
 !
       subroutine int_vol_buoyancy_pg(iele_fsmp_stack, n_int,            &
      &          i_source, ak_buo)
-!
-      use m_finite_element_matrix
-      use m_jacobians
-      use m_int_vol_data
 !
       use gravity_vec_each_ele_1st
       use cal_skv_to_ff_smp_1st
@@ -69,12 +69,9 @@
       subroutine int_vol_buoyancy_upw(iele_fsmp_stack, n_int,           &
      &          i_source, ak_buo, ncomp_ele, ie_upw, d_ele)
 !
-      use m_finite_element_matrix
-      use m_int_vol_data
-!
       use gravity_vec_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_nodal_fld_upw_1st
+      use fem_skv_nodal_fld_upw_type
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int
@@ -93,8 +90,8 @@
       do k2 = 1, ele1%nnod_4_ele
         call set_gravity_vec_each_ele_1st(k2, i_source,                 &
      &      ak_buo, vect_e)
-        call fem_skv_vector_field_upw_1st(iele_fsmp_stack, n_int, k2,   &
-     &      d_ele(1,ie_upw), vect_e, sk6)
+        call fem_skv_vector_field_upwind(iele_fsmp_stack, n_int, k2,    &
+     &      d_ele(1,ie_upw), ele1, jac1_3d_q, vect_e, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)

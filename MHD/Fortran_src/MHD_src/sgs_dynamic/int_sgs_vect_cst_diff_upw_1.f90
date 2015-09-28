@@ -66,7 +66,7 @@
       do k2 = 1, ele1%nnod_4_ele
         call scalar_cst_phys_2_each_ele(k2, i_field, coef,  phi_e)
         call fem_skv_gradient_upw(iele_fsmp_stack, num_int, k2,         &
-     &      d_ele(1,iv_up), phi_e, sk6)
+     &      d_ele(1,iv_up), ele1, jac1_3d_q, phi_e, sk6)
         call fem_skv_grad_sgs_upw_1st(iele_fsmp_stack, num_int, k2,     &
      &      i_filter, ak_diff(1,iak_diff), d_ele(1,iv_up), phi_e, sk6)
       end do

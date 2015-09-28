@@ -204,7 +204,8 @@
         call scalar_cst_phys_each_ele_type(mesh, nod_fld,               &
      &      k2, i_scalar, coef, fem_wk%scalar_1)
         call fem_skv_scalar_inertia_upw_type(iele_fsmp_stack,           &
-     &      n_int, k2, vxe, vxe_up, mesh%ele, jac_3d, fem_wk)
+     &      n_int, k2, fem_wk%scalar_1, vxe, vxe_up,                    &
+     &      mesh%ele, jac_3d, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
@@ -246,8 +247,9 @@
       do k2 = 1, mesh%ele%nnod_4_ele
         call vector_cst_phys_each_ele_type(mesh, nod_fld,               &
      &      k2, i_vector, coef, fem_wk%vector_1)
-        call fem_skv_vector_inertia_upw_type(iele_fsmp_stack,           &
-     &      n_int, k2, vxe, vxe_up, mesh%ele, jac_3d, fem_wk)
+        call fem_skv_vector_inertia_upwind(iele_fsmp_stack,             &
+     &      n_int, k2, fem_wk%vector_1, vxe, vxe_up,                    &
+     &      mesh%ele, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
@@ -289,8 +291,8 @@
       do k2 = 1, mesh%ele%nnod_4_ele
         call vector_cst_phys_each_ele_type(mesh, nod_fld,               &
      &      k2, i_vector, coef, fem_wk%vector_1)
-        call fem_skv_rot_inertia_upw_type(iele_fsmp_stack, n_int, k2,   &
-     &      wxe, vxe_up, mesh%ele, jac_3d, fem_wk)
+        call fem_skv_rot_inertia_upwind(iele_fsmp_stack, n_int, k2,     &
+     &      fem_wk%vector_1, wxe, vxe_up, mesh%ele, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
