@@ -33,7 +33,7 @@
       use m_finite_element_matrix
 !
       use fem_skv_mass_mat_type
-      use fem_skv_nodal_field_1st
+      use fem_skv_nodal_field_type
       use cal_skv_to_ff_smp_1st
 !
       implicit none
@@ -46,7 +46,6 @@
 !
       subroutine cal_ele_scalar_2_node(scalar_nod, scalar_ele)
 !
-      use m_geometry_data
       use cal_ff_smp_to_ffs
 !
       real(kind = kreal), intent(in) :: scalar_ele(ele1%numele)
@@ -62,7 +61,6 @@
 !
       subroutine cal_ele_vector_2_node(vector_nod, vector_ele)
 !
-      use m_geometry_data
       use cal_ff_smp_to_ffs
 !
       real(kind = kreal), intent(in)                                    &
@@ -80,7 +78,6 @@
 !
       subroutine cal_ele_sym_tensor_2_node(tensor_nod, tensor_ele)
 !
-      use m_geometry_data
       use cal_ff_smp_to_ffs
 !
       real(kind = kreal), intent(in)                                    &
@@ -102,8 +99,6 @@
       subroutine int_area_ele_scalar_2_node(iele_fsmp_stack,            &
      &          scalar_ele)
 !
-      use m_geometry_data
-!
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: scalar_ele(ele1%numele)
 !
@@ -112,13 +107,13 @@
       call reset_sk6(n_scalar)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
-        call fem_skv_scalar_on_ele_1st(iele_fsmp_stack,                 &
-     &      max_int_point, scalar_ele, sk6)
+        call fem_skv_scalar_on_ele_type(iele_fsmp_stack,                &
+     &      max_int_point, ele1, jac1_3d_q, scalar_ele, sk6)
       else
         call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack,            &
      &      max_int_point, ele1, jac1_3d_q, sk6)
-        call fem_skv_scalar_on_ele_HRZ_1st(iele_fsmp_stack,             &
-     &      ml_ele_diag, scalar_ele, sk6)
+        call fem_skv_scalar_on_ele_HRZ_type(iele_fsmp_stack,            &
+     &      ml_ele_diag, ele1, scalar_ele, sk6)
       end if
 !
       call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
@@ -130,8 +125,6 @@
       subroutine int_area_ele_vector_2_node(iele_fsmp_stack,            &
      &          vector_ele)
 !
-      use m_geometry_data
-!
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: vector_ele(ele1%numele,3)
 !
@@ -140,13 +133,13 @@
       call reset_sk6(n_vector)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
-        call fem_skv_vector_on_ele_1st(iele_fsmp_stack,                 &
-     &        max_int_point, vector_ele, sk6)
+        call fem_skv_vector_on_ele_type(iele_fsmp_stack,                &
+     &        max_int_point, ele1, jac1_3d_q, vector_ele, sk6)
       else
         call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack,            &
      &        max_int_point, ele1, jac1_3d_q, sk6)
-        call fem_skv_vector_on_ele_HRZ_1st(iele_fsmp_stack,             &
-     &        ml_ele_diag, vector_ele, sk6 )
+        call fem_skv_vector_on_ele_HRZ_type(iele_fsmp_stack,            &
+     &        ml_ele_diag, ele1, vector_ele, sk6)
       end if
 !
       call add3_skv_to_ff_v_smp_1st(ff_smp, sk6)
@@ -158,8 +151,6 @@
       subroutine int_area_ele_sym_tensor_2_node(iele_fsmp_stack,        &
      &          tensor_ele)
 !
-      use m_geometry_data
-!
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: tensor_ele(ele1%numele,6)
 !
@@ -168,13 +159,13 @@
       call reset_sk6(n_sym_tensor)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
-        call fem_skv_tensor_on_ele_1st(iele_fsmp_stack,                 &
-     &          max_int_point, tensor_ele, sk6)
+        call fem_skv_tensor_on_ele_type(iele_fsmp_stack,                &
+     &          max_int_point, ele1, jac1_3d_q, tensor_ele, sk6)
       else
         call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack,            &
      &          max_int_point, ele1, jac1_3d_q, sk6)
-        call fem_skv_tensor_on_ele_HRZ_1st(iele_fsmp_stack,             &
-     &          ml_ele_diag, tensor_ele, sk6)
+        call fem_skv_tensor_on_ele_HRZ_type(iele_fsmp_stack,            &
+     &          ml_ele_diag, ele1, tensor_ele, sk6)
       end if
 !
       call add6_skv_to_ff_t_smp_1st(ff_t_smp, sk6)
@@ -197,13 +188,14 @@
       call reset_sk6(n_scalar)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
-        call fem_skv_scalar_on_ele_grp_1st(iele_fsmp_stack,             &
-     &      nele_grp, iele_grp, max_int_point, scalar_ele, sk6)
+        call fem_skv_scalar_on_ele_grp_type(iele_fsmp_stack,            &
+     &      nele_grp, iele_grp, max_int_point, ele1, jac1_3d_q,         &
+     &      scalar_ele, sk6)
       else
         call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,           &
      &      nele_grp, iele_grp, max_int_point, ele1, jac1_3d_q, sk6)
-        call fem_skv_scalar_on_egrp_HRZ_1st(iele_fsmp_stack,            &
-     &      nele_grp, iele_grp, ml_ele_diag, scalar_ele, sk6)
+        call fem_skv_scalar_on_egrp_HRZ_type(iele_fsmp_stack,           &
+     &      nele_grp, iele_grp, ml_ele_diag, ele1, scalar_ele, sk6)
       end if
 !
       call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
@@ -225,13 +217,14 @@
       call reset_sk6(n_vector)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
-        call fem_skv_vector_on_ele_grp_1st(iele_fsmp_stack,             &
-     &      nele_grp, iele_grp, max_int_point, vector_ele, sk6)
+        call fem_skv_vector_on_ele_grp_type(iele_fsmp_stack,            &
+     &      nele_grp, iele_grp, max_int_point, ele1, jac1_3d_q,         &
+     &      vector_ele, sk6)
       else
         call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,           &
      &      nele_grp, iele_grp,  max_int_point, ele1, jac1_3d_q, sk6)
-        call fem_skv_vector_on_egrp_HRZ_1st(iele_fsmp_stack,            &
-     &      nele_grp, iele_grp, ml_ele_diag, vector_ele, sk6 )
+        call fem_skv_vector_on_egrp_HRZ_type(iele_fsmp_stack,           &
+     &      nele_grp, iele_grp, ml_ele_diag, ele1, vector_ele, sk6)
       end if
 !
       call add3_skv_to_ff_v_smp_1st(ff_smp, sk6)
@@ -253,13 +246,14 @@
       call reset_sk6(n_sym_tensor)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
-        call fem_skv_tensor_on_ele_grp_1st(iele_fsmp_stack,             &
-     &      nele_grp, iele_grp, max_int_point, tensor_ele, sk6)
+        call fem_skv_tensor_on_ele_grp_type(iele_fsmp_stack,            &
+     &      nele_grp, iele_grp, max_int_point, ele1, jac1_3d_q,         &
+     &      tensor_ele, sk6)
       else
         call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,           &
      &      nele_grp, iele_grp, max_int_point, ele1, jac1_3d_q, sk6)
-        call fem_skv_tensor_on_egrp_HRZ_1st(iele_fsmp_stack,            &
-     &      nele_grp, iele_grp, ml_ele_diag, tensor_ele, sk6)
+        call fem_skv_tensor_on_egrp_HRZ_type(iele_fsmp_stack,           &
+     &      nele_grp, iele_grp, ml_ele_diag, ele1, tensor_ele, sk6)
       end if
 !
       call add6_skv_to_ff_t_smp_1st(ff_t_smp, sk6)

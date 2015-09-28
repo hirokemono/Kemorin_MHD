@@ -56,19 +56,20 @@
       use m_geometry_data_MHD
       use m_node_phys_address
       use m_int_vol_data
+      use m_jacobians
 !
       use nodal_fld_cst_to_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_nonlinear_1st
+      use fem_skv_nonlinear_type
 !
       integer(kind=kint) :: k2
 !
 !
       do k2 = 1, ele1%nnod_4_ele
-          call vector_cst_phys_2_each_ele(k2, iphys%i_velo,             &
-     &        coef_cor, velo_1)
-          call fem_skv_coriolis_1st(iele_fl_smp_stack,                  &
-     &        intg_point_t_evo, k2, velo_1, angular, sk6)
+        call vector_cst_phys_2_each_ele(k2, iphys%i_velo,               &
+     &      coef_cor, velo_1)
+        call fem_skv_coriolis_type(iele_fl_smp_stack, intg_point_t_evo, &
+     &      k2, velo_1, angular, ele1, jac1_3d_q, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_smp, sk6)

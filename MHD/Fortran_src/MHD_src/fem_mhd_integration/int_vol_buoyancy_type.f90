@@ -68,7 +68,7 @@
         call set_gravity_vec_each_ele_type(mesh, nod_fld,               &
      &      k2, i_source, ak_buo, fem_wk%vector_1)
         call fem_skv_vector_type(iele_fsmp_stack, n_int, k2,            &
-     &      mesh%ele, jac_3d, fem_wk)
+     &      mesh%ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)

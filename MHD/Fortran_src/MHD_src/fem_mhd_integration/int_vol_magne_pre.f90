@@ -40,6 +40,7 @@
       subroutine int_vol_magne_pre_ele(ncomp_ele, d_ele, iphys_ele)
 !
       use m_finite_element_matrix
+      use m_jacobians
       use m_int_vol_data
 !
       use cal_add_smp
@@ -47,7 +48,7 @@
       use nodal_fld_cst_to_ele_1st
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_vector_diff_1st
+      use fem_skv_vector_diff_type
       use fem_skv_lorentz_full_1st
       use fem_skv_div_sgs_flux_1st
 !
@@ -90,8 +91,8 @@
         else if (iflag_SGS_induction .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_induct_t,     &
      &        coef_induct, sgs_e)
-          call fem_skv_div_asym_tsr(iele_cd_smp_stack,                  &
-     &        num_int, k2, sgs_e, sk6)
+          call fem_skv_div_asym_tsr(iele_cd_smp_stack, num_int, k2,     &
+     &        ele1, jac1_3d_q, sgs_e, sk6)
         end if
       end do
 !

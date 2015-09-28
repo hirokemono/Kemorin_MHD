@@ -65,8 +65,8 @@
       do k2 = 1, mesh%ele%nnod_4_ele
         call vector_phys_2_each_ele_type(mesh, nod_fld, k2,             &
      &      i_vector, fem_wk%vector_1)
-        call fem_skv_div_to_linear_type(iele_fsmp_stack, n_int, k2,     &
-     &      mesh%ele, jac_3d, jac_3d_l, fem_wk)
+        call fem_skv_div_to_linear(iele_fsmp_stack, n_int, k2,          &
+     &      mesh%ele, jac_3d, jac_3d_l, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_l)
@@ -105,8 +105,8 @@
       do k2=1, num_t_linear
         call scalar_phys_2_each_ele_type(mesh, nod_fld, k2,             &
      &      i_scalar, fem_wk%scalar_1)
-        call fem_skv_linear_grad_type(iele_fsmp_stack, n_int, k2,       &
-     &      mesh%ele, jac_3d, jac_3d_l, fem_wk)
+        call fem_skv_linear_gradient(iele_fsmp_stack, n_int, k2,        &
+     &      mesh%ele, jac_3d, jac_3d_l, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)

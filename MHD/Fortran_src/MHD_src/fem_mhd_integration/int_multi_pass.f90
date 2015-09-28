@@ -207,11 +207,12 @@
 !
       subroutine int_vol_multi_pass_scalar(iele_fsmp_stack)
 !
+      use m_jacobians
       use m_int_vol_data
       use nodal_fld_2_each_ele_1st
       use cal_skv_to_ff_smp_1st
       use cal_for_ffs
-      use fem_skv_nodal_field_1st
+      use fem_skv_nodal_field_type
 !
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
@@ -222,8 +223,8 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call scalar_2_each_element(k2, ff_nl(1,1), phi_e)
-        call fem_skv_scalar_1st(iele_fsmp_stack, intg_point_t_evo, k2,  &
-     &      phi_e, sk6)
+        call fem_skv_scalar_type(iele_fsmp_stack, intg_point_t_evo, k2, &
+     &      ele1, jac1_3d_q, phi_e, sk6)
       end do
 !
       call sub1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
@@ -237,11 +238,12 @@
 !
       subroutine int_vol_multi_pass_vector(iele_fsmp_stack)
 !
+      use m_jacobians
       use m_int_vol_data
       use nodal_fld_2_each_ele_1st
       use cal_skv_to_ff_smp_1st
       use cal_for_ffs
-      use fem_skv_nodal_field_1st
+      use fem_skv_nodal_field_type
 !
       integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
@@ -252,8 +254,8 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call vector_2_each_element(k2, ff_nl(1,1), vect_e)
-        call fem_skv_vector_1st(iele_fsmp_stack, intg_point_t_evo, k2,  &
-     &      vect_e, sk6)
+        call fem_skv_vector_type(iele_fsmp_stack, intg_point_t_evo, k2, &
+     &      ele1, jac1_3d_q, vect_e, sk6)
       end do
 !
       call sub3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)

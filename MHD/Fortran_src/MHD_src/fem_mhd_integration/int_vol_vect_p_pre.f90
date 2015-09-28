@@ -36,12 +36,13 @@
       subroutine int_vol_vect_p_pre_ele(ncomp_ele, iele_magne, d_ele)
 !
       use m_finite_element_matrix
+      use m_jacobians
       use m_int_vol_data
 !
       use cal_add_smp
       use nodal_fld_cst_to_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_nonlinear_1st
+      use fem_skv_nonlinear_type
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
@@ -63,8 +64,8 @@
         call vector_cst_phys_2_each_ele(k2, iphys%i_velo,               &
      &      coef_induct, velo_1)
 !
-        call fem_skv_rot_inertia_1st(iele_cd_smp_stack,                 &
-     &      intg_point_t_evo, k2, velo_1, vect_e, sk6)
+        call fem_skv_rot_inertia_type(iele_cd_smp_stack,                &
+     &      intg_point_t_evo, k2, velo_1, vect_e, ele1, jac1_3d_q, sk6)
       end do
 !
       call sub3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)

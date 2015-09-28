@@ -80,7 +80,6 @@
       use nodal_fld_cst_to_ele_1st
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_vector_diff_1st
       use fem_skv_div_sgs_flux_1st
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)

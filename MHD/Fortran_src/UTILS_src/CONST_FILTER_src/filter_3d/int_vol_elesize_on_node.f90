@@ -89,9 +89,10 @@
 !
       subroutine int_vol_diff_dxs(elen_org_nod)
 !
+      use m_jacobians
       use nodal_fld_2_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_vector_diff_1st
+      use fem_skv_vector_diff_type
 !
       real(kind = kreal), intent(inout) :: elen_org_nod(node1%numnod)
 !
@@ -103,7 +104,7 @@
       do k2 = 1, ele1%nnod_4_ele
         call scalar_2_each_element(k2, elen_org_nod, scalar_ele)
         call fem_skv_gradient(ele1%istack_ele_smp, num_int_points,      &
-     &      k2, scalar_ele, sk6)
+     &      k2, ele1, jac1_3d_q, scalar_ele, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)

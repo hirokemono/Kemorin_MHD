@@ -132,11 +132,12 @@
       use m_control_parameter
       use m_geometry_data
       use m_finite_element_matrix
+      use m_jacobians
       use m_int_vol_data
 !
       use nodal_fld_2_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_nodal_field_1st
+      use fem_skv_nodal_field_type
 !
       integer(kind = kint), intent(in) :: i_field
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -149,8 +150,8 @@
 ! -------- loop for shape function for phsical values
       do k2 = 1, ele1%nnod_4_ele
         call scalar_phys_2_each_element(k2, i_field, phi_e)
-        call fem_skv_scalar_1st(iele_fsmp_stack, intg_point_t_evo, k2,  &
-     &      phi_e, sk6)
+        call fem_skv_scalar_type(iele_fsmp_stack, intg_point_t_evo, k2, &
+     &      ele1, jac1_3d_q, phi_e, sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_m_smp, sk6)
@@ -164,11 +165,12 @@
       use m_control_parameter
       use m_geometry_data
       use m_finite_element_matrix
+      use m_jacobians
       use m_int_vol_data
 !
       use nodal_fld_2_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_nodal_field_1st
+      use fem_skv_nodal_field_type
 !
       integer(kind = kint), intent(in) :: i_field
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -181,8 +183,8 @@
 ! -------- loop for shape function for phsical values
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_field, vect_e)
-        call fem_skv_vector_1st(iele_fsmp_stack, intg_point_t_evo, k2,  &
-     &      vect_e, sk6)
+        call fem_skv_vector_type(iele_fsmp_stack, intg_point_t_evo, k2, &
+     &      ele1, jac1_3d_q, vect_e, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_m_smp, sk6)

@@ -53,12 +53,13 @@
 !
       subroutine int_simi_vp_induct
 !
+      use m_jacobians
       use m_node_phys_address
       use m_SGS_model_coefs
       use m_SGS_address
 !
       use nodal_fld_2_each_ele_1st
-      use fem_skv_nodal_field_1st
+      use fem_skv_nodal_field_type
       use cal_product_to_skv_1st
 !
       integer(kind = kint) :: k2
@@ -68,8 +69,8 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, iphys%i_sgs_simi, vect_e)
-        call fem_skv_vector_1st(iele_cd_smp_stack,                      &
-     &      intg_point_t_evo, k2, vect_e, sk6)
+        call fem_skv_vector_type(iele_cd_smp_stack,                     &
+     &      intg_point_t_evo, k2, ele1, jac1_3d_q, vect_e, sk6)
         call scalar_prod_to_skv_tensor_1st(iele_cd_smp_stack,           &
      &      ak_sgs(1,icomp_sgs_uxb), sk6)
       end do

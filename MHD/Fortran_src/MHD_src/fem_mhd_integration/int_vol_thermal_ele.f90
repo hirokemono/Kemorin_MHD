@@ -32,12 +32,13 @@
       subroutine int_vol_temp_ele(ncomp_ele, iele_velo, d_ele)
 !
       use m_finite_element_matrix
+      use m_jacobians
       use m_int_vol_data
 !
       use nodal_fld_cst_to_ele_1st
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_nonlinear_1st
+      use fem_skv_nonlinear_type
       use fem_skv_div_sgs_flux_1st
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
@@ -71,8 +72,9 @@
           call fem_skv_scl_inertia_sgs_1st(iele_fl_smp_stack,           &
      &        num_int, k2, temp_e, sgs_e, d_ele(1,iele_velo), sk6)
         else
-          call fem_skv_scalar_inertia_1st(iele_fl_smp_stack,            &
-     &        num_int, k2, temp_e, d_ele(1,iele_velo), sk6)
+          call fem_skv_scalar_inertia_type(iele_fl_smp_stack,           &
+     &        num_int, k2, temp_e, d_ele(1,iele_velo),                  &
+     &        ele1, jac1_3d_q, sk6)
         end if
       end do
 !

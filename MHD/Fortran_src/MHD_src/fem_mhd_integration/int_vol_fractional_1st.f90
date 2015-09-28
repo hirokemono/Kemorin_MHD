@@ -31,11 +31,12 @@
       use m_geometry_data
       use m_phys_constants
       use m_finite_element_matrix
+      use m_jacobians
       use m_int_vol_data
 !
       use cal_skv_to_ff_smp_1st
       use nodal_fld_2_each_ele_1st
-      use fem_skv_vector_diff_1st
+      use fem_skv_vector_diff_type
 !
       integer(kind = kint), intent(in) :: n_int, i_vector
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -49,7 +50,7 @@
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_vector, velo_1)
         call fem_skv_div_to_linear(iele_fsmp_stack, n_int, k2,          &
-     &     velo_1, sk6)
+     &      ele1, jac1_3d_q, jac1_3d_l, velo_1, sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
@@ -63,11 +64,12 @@
 !
       use m_phys_constants
       use m_finite_element_matrix
+      use m_jacobians
       use m_int_vol_data
 !
       use cal_skv_to_ff_smp_1st
       use nodal_fld_2_each_ele_1st
-      use fem_skv_vector_diff_1st
+      use fem_skv_vector_diff_type
 !
       integer(kind=kint), intent(in) :: n_int, i_scalar
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -81,7 +83,7 @@
       do k2=1, num_t_linear
         call scalar_phys_2_each_element(k2, i_scalar, phi_e)
         call fem_skv_linear_gradient(iele_fsmp_stack, n_int, k2,        &
-     &      phi_e, sk6)
+     &      ele1, jac1_3d_q, jac1_3d_l, phi_e, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
