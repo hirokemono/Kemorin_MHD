@@ -22,7 +22,6 @@
 !
       use t_geometry_data
       use t_filter_elength
-      use t_finite_element_mat
       use t_jacobians
       use m_machine_parameter
       use m_geometry_constants
@@ -39,7 +38,7 @@
 !
       subroutine fem_skv_scalar_diffuse_sgs_type(iele_fsmp_stack,       &
      &          n_int, k2, i_filter, ak_diff, ak_d,                     &
-     &          ele, jac_3d, FEM_elens, fem_wk)
+     &          ele, jac_3d, FEM_elens, scalar_1, sk_v)
 !
       use fem_skv_diffusion_sgs
 !
@@ -50,10 +49,12 @@
       integer(kind=kint), intent(in) :: n_int, k2, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
-      real (kind=kreal), intent(in) :: ak_d(ele%numele)
-      real (kind=kreal), intent(in) :: ak_diff(ele%numele)
+      real(kind=kreal), intent(in) :: ak_d(ele%numele)
+      real(kind=kreal), intent(in) :: ak_diff(ele%numele)
+      real(kind=kreal), intent(in) :: scalar_1(ele%numele)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_scalar_diffuse_sgs(ele%numele, ele%nnod_4_ele,       &
@@ -64,7 +65,7 @@
      &  FEM_elens%elen_ele%diff2%df_x2, FEM_elens%elen_ele%diff2%df_y2, &
      &  FEM_elens%elen_ele%diff2%df_z2, FEM_elens%elen_ele%diff2%df_xy, &
      &  FEM_elens%elen_ele%diff2%df_yz, FEM_elens%elen_ele%diff2%df_zx, &
-     &  ak_diff, ak_d, fem_wk%scalar_1, fem_wk%sk6)
+     &  ak_diff, ak_d, scalar_1, sk_v)
 !
       end subroutine fem_skv_scalar_diffuse_sgs_type
 !
@@ -72,7 +73,7 @@
 !
       subroutine fem_skv_vector_diffuse_sgs_type(iele_fsmp_stack,       &
      &          n_int, k2, i_filter, ak_diff, ak_d,                     &
-     &          ele, jac_3d, FEM_elens, fem_wk)
+     &          ele, jac_3d, FEM_elens, vector_1, sk_v)
 !
       use fem_skv_diffusion_sgs
 !
@@ -85,8 +86,10 @@
 !
       real (kind=kreal), intent(in) :: ak_d(ele%numele)
       real (kind=kreal), intent(in) :: ak_diff(ele%numele)
+      real(kind=kreal), intent(in) :: vector_1(ele%numele,3)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_vector_diffuse_sgs(ele%numele, ele%nnod_4_ele,       &
@@ -97,14 +100,14 @@
      &  FEM_elens%elen_ele%diff2%df_x2, FEM_elens%elen_ele%diff2%df_y2, &
      &  FEM_elens%elen_ele%diff2%df_z2, FEM_elens%elen_ele%diff2%df_xy, &
      &  FEM_elens%elen_ele%diff2%df_yz, FEM_elens%elen_ele%diff2%df_zx, &
-     &  ak_diff, ak_d, fem_wk%vector_1, fem_wk%sk6)
+     &  ak_diff, ak_d, vector_1, sk_v)
 !
       end subroutine fem_skv_vector_diffuse_sgs_type
 !
 !-----------------------------------------------------------------------
 !
       subroutine fem_skv_poisson_sgs_type(iele_fsmp_stack, n_int, k2,   &
-     &          i_filter, ak_diff, ele, jac_3d, FEM_elens, fem_wk)
+     &          i_filter, ak_diff, ele, jac_3d, FEM_elens, sk_v)
 !
       use fem_skv_poisson_sgs
 !
@@ -117,7 +120,8 @@
 !
       real (kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_poisson_sgs_pg(ele%numele, ele%nnod_4_ele,           &
@@ -128,7 +132,7 @@
      &  FEM_elens%elen_ele%diff2%df_x2, FEM_elens%elen_ele%diff2%df_y2, &
      &  FEM_elens%elen_ele%diff2%df_z2, FEM_elens%elen_ele%diff2%df_xy, &
      &  FEM_elens%elen_ele%diff2%df_yz, FEM_elens%elen_ele%diff2%df_zx, &
-     &  ak_diff, fem_wk%sk6)
+     &  ak_diff, sk_v)
 !
       end subroutine fem_skv_poisson_sgs_type
 !
@@ -136,7 +140,7 @@
 !
       subroutine fem_skv_poisson_linear_sgs_type(iele_fsmp_stack,       &
      &          n_int, k2, i_filter, ak_diff, ele, jac_3d_l, FEM_elens, &
-     &          fem_wk)
+     &          sk_v)
 !
       use fem_skv_poisson_sgs
 !
@@ -149,7 +153,8 @@
 !
       real (kind=kreal), intent(in) :: ak_diff(ele%numele)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_poisson_sgs_pg(ele%numele, num_t_linear,             &
@@ -160,7 +165,7 @@
      &  FEM_elens%elen_ele%diff2%df_x2, FEM_elens%elen_ele%diff2%df_y2, &
      &  FEM_elens%elen_ele%diff2%df_z2, FEM_elens%elen_ele%diff2%df_xy, &
      &  FEM_elens%elen_ele%diff2%df_yz, FEM_elens%elen_ele%diff2%df_zx, &
-     &  ak_diff, fem_wk%sk6)
+     &  ak_diff, sk_v)
 !
       end subroutine fem_skv_poisson_linear_sgs_type
 !

@@ -23,6 +23,9 @@
       use m_phys_constants
       use m_node_phys_address
       use m_fem_gauss_int_coefs
+      use m_finite_element_matrix
+      use m_jacobians
+      use m_int_vol_data
       use m_physical_property
       use m_SGS_model_coefs
       use m_SGS_address
@@ -39,9 +42,7 @@
 !
       subroutine int_vol_magne_pre_ele(ncomp_ele, d_ele, iphys_ele)
 !
-      use m_finite_element_matrix
-      use m_jacobians
-      use m_int_vol_data
+      use m_filter_elength
 !
       use cal_add_smp
       use nodal_fld_2_each_ele_1st
@@ -50,7 +51,7 @@
       use cal_skv_to_ff_smp_1st
       use fem_skv_vector_diff_type
       use fem_skv_lorentz_full_type
-      use fem_skv_div_sgs_flux_1st
+      use fem_skv_div_sgs_flux_type
 !
       integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
@@ -85,9 +86,9 @@
            call SGS_induct_cst_each_ele_1st(k2, iphys%i_magne,          &
      &         iphys%i_velo, iphys%i_SGS_induct_t, coef_induct,         &
      &         sgs_e, vect_e)
-           call fem_skv_div_sgs_asym_t_1st(iele_cd_smp_stack,           &
+           call fem_skv_div_sgs_asym_tsr(iele_cd_smp_stack,             &
       &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_uxb),     &
-      &        sgs_e, vect_e, sk6)
+      &        ele1, jac1_3d_q, FEM1_elen, sgs_e, vect_e, sk6)
         else if (iflag_SGS_induction .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_induct_t,     &
      &        coef_induct, sgs_e)
@@ -104,10 +105,6 @@
 !
       subroutine int_vol_magne_pre_ele_upm                              &
      &          (ncomp_ele, d_ele, iphys_ele)
-!
-      use m_finite_element_matrix
-      use m_jacobians
-      use m_int_vol_data
 !
       use cal_add_smp
       use nodal_fld_2_each_ele_1st

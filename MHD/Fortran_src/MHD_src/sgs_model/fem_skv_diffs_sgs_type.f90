@@ -4,23 +4,28 @@
 !        programmed by H.Matsui on July, 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!      subroutine fem_skv_grad_sgs_pg_type(iele_fsmp_stack, n_int, k2,  &
-!     &          i_filter, ak_diff, ele, jac_3d, FEM_elens, fem_wk)
-!      subroutine fem_skv_div_sgs_pg_type(iele_fsmp_stack, n_int, k2,   &
-!     &          i_filter, ak_diff, ele, jac_3d, FEM_elens, fem_wk)
-!      subroutine fem_skv_rot_sgs_pg_type(iele_fsmp_stack, n_int, k2,   &
-!     &          i_filter, ak_diff, ele, jac_3d, FEM_elens, fem_wk)
-!      subroutine fem_skv_div_tsr_sgs_pg_type(iele_fsmp_stack, n_int,   &
-!     &          k2, i_filter, ak_diff, ele, jac_3d, FEM_elens, fem_wk)
-!      subroutine fem_skv_div_as_tsr_sgs_pg_type(iele_fsmp_stack, n_int,&
-!     &          k2, i_filter, ak_diff, ele, jac_3d, FEM_elens, fem_wk)
+!      subroutine fem_skv_grad_sgs_galerkin(iele_fsmp_stack, n_int, k2, &
+!     &          i_filter, ak_diff, ele, jac_3d, FEM_elens,             &
+!     &          scalar_1, sk_v)
+!      subroutine fem_skv_div_sgs_galerkin(iele_fsmp_stack, n_int, k2,  &
+!     &          i_filter, ak_diff, ele, jac_3d, FEM_elens,             &
+!     &          vector_1, sk_v)
+!      subroutine fem_skv_rot_sgs_galerkin(iele_fsmp_stack, n_int, k2,  &
+!     &          i_filter, ak_diff, ele, jac_3d, FEM_elens,             &
+!     &          vector_1, sk_v)
+!      subroutine fem_skv_div_tensor_sgs_galerkin(iele_fsmp_stack,      &
+!     &          n_int, k2, i_filter, ak_diff, ele, jac_3d, FEM_elens,  &
+!     &          tensor_1, sk_v)
+!      subroutine fem_skv_div_as_tsr_sgs_galerkin(iele_fsmp_stack,      &
+!     &          n_int, k2, i_filter, ak_diff, ele, jac_3d, FEM_elens,  &
+!     &          as_tsr_1, sk_v)
 !
-!      subroutine fem_skv_linear_grad_sgs_type(iele_fsmp_stack, n_int,  &
-!     &          k2, i_filter, ak_diff, ele, jac_3d, jac_3d_l,          &
-!     &          FEM_elens, fem_wk)
-!      subroutine fem_skv_div_2l_sgs_type(iele_fsmp_stack, n_int, k2,   &
+!      subroutine fem_skv_grad_sgs_linear(iele_fsmp_stack, n_int, k2,   &
 !     &          i_filter, ak_diff, ele, jac_3d, jac_3d_l, FEM_elens,   &
-!     &          fem_wk)
+!     &          scalar_1, sk_v)
+!      subroutine fem_skv_div_sgs_linear(iele_fsmp_stack, n_int, k2,    &
+!     &          i_filter, ak_diff, ele, jac_3d, jac_3d_l, FEM_elens,   &
+!     &          vector_1, sk_v)
 !
       module fem_skv_diffs_sgs_type
 !
@@ -28,7 +33,6 @@
 !
       use t_geometry_data
       use t_filter_elength
-      use t_finite_element_mat
       use t_jacobians
       use m_constants
       use m_machine_parameter
@@ -44,8 +48,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_grad_sgs_pg_type(iele_fsmp_stack, n_int, k2,   &
-     &          i_filter, ak_diff, ele, jac_3d, FEM_elens, fem_wk)
+      subroutine fem_skv_grad_sgs_galerkin(iele_fsmp_stack, n_int, k2,  &
+     &          i_filter, ak_diff, ele, jac_3d, FEM_elens,              &
+     &          scalar_1, sk_v)
 !
       use fem_skv_gradient_sgs
 !
@@ -58,8 +63,10 @@
       integer(kind=kint), intent(in) :: k2, i_filter
 !
       real(kind=kreal), intent(in) :: ak_diff(ele%numele)
+      real(kind=kreal), intent(in) :: scalar_1(ele%numele)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &             :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_grad_sgs_pg                                          &
@@ -71,14 +78,15 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    ak_diff, fem_wk%scalar_1, fem_wk%sk6)
+     &    ak_diff, scalar_1, sk_v)
 !
-      end subroutine fem_skv_grad_sgs_pg_type
+      end subroutine fem_skv_grad_sgs_galerkin
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_div_sgs_pg_type(iele_fsmp_stack, n_int, k2,    &
-     &          i_filter, ak_diff, ele, jac_3d, FEM_elens, fem_wk)
+      subroutine fem_skv_div_sgs_galerkin(iele_fsmp_stack, n_int, k2,   &
+     &          i_filter, ak_diff, ele, jac_3d, FEM_elens,              &
+     &          vector_1, sk_v)
 !
       use fem_skv_divergence_sgs
 !
@@ -91,8 +99,10 @@
       integer(kind=kint), intent(in) :: k2, i_filter
 !
       real(kind=kreal), intent(in) :: ak_diff(ele%numele)
+      real(kind=kreal), intent(in) :: vector_1(ele%numele,3)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_div_sgs_pg                                           &
@@ -104,14 +114,15 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    ak_diff, fem_wk%vector_1, fem_wk%sk6)
+     &    ak_diff, vector_1, sk_v)
 !
-      end subroutine fem_skv_div_sgs_pg_type
+      end subroutine fem_skv_div_sgs_galerkin
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_rot_sgs_pg_type(iele_fsmp_stack, n_int, k2,    &
-     &          i_filter, ak_diff, ele, jac_3d, FEM_elens, fem_wk)
+      subroutine fem_skv_rot_sgs_galerkin(iele_fsmp_stack, n_int, k2,   &
+     &          i_filter, ak_diff, ele, jac_3d, FEM_elens,              &
+     &          vector_1, sk_v)
 !
       use fem_skv_rotation_sgs
 !
@@ -124,8 +135,10 @@
       integer(kind=kint), intent(in) :: k2, i_filter
 !
       real(kind=kreal), intent(in) :: ak_diff(ele%numele)
+      real(kind=kreal), intent(in) :: vector_1(ele%numele,3)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_rot_sgs_pg                                           &
@@ -137,14 +150,15 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    ak_diff, fem_wk%vector_1, fem_wk%sk6)
+     &    ak_diff, vector_1, sk_v)
 !
-      end subroutine fem_skv_rot_sgs_pg_type
+      end subroutine fem_skv_rot_sgs_galerkin
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_div_tsr_sgs_pg_type(iele_fsmp_stack, n_int,    &
-     &          k2, i_filter, ak_diff, ele, jac_3d, FEM_elens, fem_wk)
+      subroutine fem_skv_div_tensor_sgs_galerkin(iele_fsmp_stack,       &
+     &          n_int, k2, i_filter, ak_diff, ele, jac_3d, FEM_elens,   &
+     &          tensor_1, sk_v)
 !
       use fem_skv_div_tensor_sgs
 !
@@ -157,8 +171,10 @@
       integer(kind=kint), intent(in) :: k2, i_filter
 !
       real(kind=kreal), intent(in) :: ak_diff(ele%numele)
+      real(kind=kreal), intent(in) :: tensor_1(ele%numele,6)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &             :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_div_tsr_sgs_pg                                       &
@@ -170,14 +186,15 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    ak_diff, fem_wk%tensor_1, fem_wk%sk6)
+     &    ak_diff, tensor_1, sk_v)
 !
-      end subroutine fem_skv_div_tsr_sgs_pg_type
+      end subroutine fem_skv_div_tensor_sgs_galerkin
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_div_as_tsr_sgs_pg_type(iele_fsmp_stack, n_int, &
-     &          k2, i_filter, ak_diff, ele, jac_3d, FEM_elens, fem_wk)
+      subroutine fem_skv_div_as_tsr_sgs_galerkin(iele_fsmp_stack,       &
+     &          n_int, k2, i_filter, ak_diff, ele, jac_3d, FEM_elens,   &
+     &          as_tsr_1, sk_v)
 !
       use fem_skv_div_as_tsr_sgs
 !
@@ -190,8 +207,10 @@
       integer(kind=kint), intent(in) :: k2, i_filter
 !
       real(kind=kreal), intent(in) :: ak_diff(ele%numele)
+      real(kind=kreal), intent(in) :: as_tsr_1(ele%numele,3)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &             :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_div_ast_sgs_pg                                       &
@@ -203,16 +222,16 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    ak_diff, fem_wk%vector_1, fem_wk%sk6)
+     &    ak_diff, as_tsr_1, sk_v)
 !
-      end subroutine fem_skv_div_as_tsr_sgs_pg_type
+      end subroutine fem_skv_div_as_tsr_sgs_galerkin
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_linear_grad_sgs_type(iele_fsmp_stack, n_int,   &
-     &          k2, i_filter, ak_diff, ele, jac_3d, jac_3d_l,           &
-     &          FEM_elens, fem_wk)
+      subroutine fem_skv_grad_sgs_linear(iele_fsmp_stack, n_int, k2,    &
+     &          i_filter, ak_diff, ele, jac_3d, jac_3d_l, FEM_elens,    &
+     &          scalar_1, sk_v)
 !
       use fem_skv_gradient_sgs
 !
@@ -226,8 +245,10 @@
       integer(kind=kint), intent(in) :: k2, i_filter
 !
       real(kind=kreal), intent(in) :: ak_diff(ele%numele)
+      real(kind=kreal), intent(in) :: scalar_1(ele%numele)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &             :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_grad_sgs_pg                                          &
@@ -239,15 +260,15 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    ak_diff, fem_wk%scalar_1, fem_wk%sk6)
+     &    ak_diff, scalar_1, sk_v)
 !
-      end subroutine fem_skv_linear_grad_sgs_type
+      end subroutine fem_skv_grad_sgs_linear
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_skv_div_2l_sgs_type(iele_fsmp_stack, n_int, k2,    &
+      subroutine fem_skv_div_sgs_linear(iele_fsmp_stack, n_int, k2,     &
      &          i_filter, ak_diff, ele, jac_3d, jac_3d_l, FEM_elens,    &
-     &          fem_wk)
+     &          vector_1, sk_v)
 !
       use fem_skv_divergence_sgs
 !
@@ -261,8 +282,10 @@
       integer(kind=kint), intent(in) :: k2, i_filter
 !
       real(kind=kreal), intent(in) :: ak_diff(ele%numele)
+      real(kind=kreal), intent(in) :: vector_1(ele%numele,3)
 !
-      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real (kind=kreal), intent(inout)                                  &
+     &             :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
       call fem_skv_div_sgs_pg                                           &
@@ -274,9 +297,9 @@
      &    FEM_elens%elen_ele%diff%df_x2, FEM_elens%elen_ele%diff%df_y2, &
      &    FEM_elens%elen_ele%diff%df_z2, FEM_elens%elen_ele%diff%df_xy, &
      &    FEM_elens%elen_ele%diff%df_yz, FEM_elens%elen_ele%diff%df_zx, &
-     &    ak_diff, fem_wk%vector_1, fem_wk%sk6)
+     &    ak_diff, vector_1, sk_v)
 !
-      end subroutine fem_skv_div_2l_sgs_type
+      end subroutine fem_skv_div_sgs_linear
 !
 !-----------------------------------------------------------------------
 !

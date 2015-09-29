@@ -18,6 +18,13 @@
       use m_precision
       use m_geometry_data
 !
+      use m_phys_constants
+      use m_finite_element_matrix
+      use m_jacobians
+      use m_int_vol_data
+      use m_filter_elength
+      use m_SGS_model_coefs
+!
       implicit none
 !
 ! ----------------------------------------------------------------------
@@ -29,14 +36,9 @@
       subroutine int_vol_sgs_div_v_linear_1st(iele_fsmp_stack,          &
      &          n_int, i_vector, i_filter, iak_diff)
 !
-      use m_phys_constants
-      use m_finite_element_matrix
-      use m_int_vol_data
-      use m_SGS_model_coefs
-!
       use cal_skv_to_ff_smp_1st
       use nodal_fld_2_each_ele_1st
-      use fem_skv_diffs_sgs_1st
+      use fem_skv_diffs_sgs_type
 !
       integer(kind = kint), intent(in) :: n_int, i_vector
       integer(kind = kint), intent(in) :: i_filter, iak_diff
@@ -50,8 +52,9 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_vector, velo_1)
-        call fem_skv_div_2l_sgs_1st(iele_fsmp_stack, n_int, k2,         &
-     &      i_filter, ak_diff(1,iak_diff), velo_1, sk6)
+        call fem_skv_div_sgs_linear(iele_fsmp_stack,                    &
+     &      n_int, k2, i_filter, ak_diff(1,iak_diff),                   &
+     &      ele1, jac1_3d_q, jac1_3d_l, FEM1_elen, velo_1, sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
@@ -63,15 +66,11 @@
       subroutine int_vol_sgs_solenoidal_co_1st(iele_fsmp_stack,         &
      &          n_int, i_scalar, i_filter, iak_diff)
 !
-      use m_phys_constants
-      use m_finite_element_matrix
-      use m_int_vol_data
-      use m_control_parameter
-      use m_SGS_model_coefs
+!      use m_control_parameter
 !
       use cal_skv_to_ff_smp_1st
       use nodal_fld_2_each_ele_1st
-      use fem_skv_diffs_sgs_1st
+      use fem_skv_diffs_sgs_type
 !
       integer(kind=kint), intent(in) :: n_int, i_scalar
       integer(kind=kint), intent(in) :: i_filter, iak_diff
@@ -85,8 +84,9 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, num_t_linear
         call scalar_phys_2_each_element(k2, i_scalar, phi_e)
-        call fem_skv_linear_grad_sgs_1st(iele_fsmp_stack, n_int, k2,    &
-     &      i_filter, ak_diff(1,iak_diff), phi_e, sk6)
+        call fem_skv_grad_sgs_linear(iele_fsmp_stack,                   &
+     &      n_int, k2, i_filter, ak_diff(1,iak_diff),                   &
+     &      ele1, jac1_3d_q, jac1_3d_l, FEM1_elen, phi_e, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
@@ -99,14 +99,9 @@
       subroutine int_vol_scalar_sgs_diffuse_1st(iele_fsmp_stack,        &
      &          n_int, coef_crank, ak_d, i_scalar, i_filter, iak_diff)
 !
-      use m_phys_constants
-      use m_finite_element_matrix
-      use m_int_vol_data
-      use m_SGS_model_coefs
-!
       use cal_skv_to_ff_smp_1st
       use nodal_fld_2_each_ele_1st
-      use fem_skv_diffusion_sgs_1st
+      use fem_skv_diffusion_sgs_type
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: n_int, i_scalar
@@ -122,8 +117,9 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
         call scalar_phys_2_each_element(k2, i_scalar, phi_e)
-        call fem_skv_scalar_diffuse_sgs_1st(iele_fsmp_stack, n_int, k2, &
-     &      i_filter, ak_diff(1,iak_diff), ak_d, phi_e, sk6)
+        call fem_skv_scalar_diffuse_sgs_type(iele_fsmp_stack,           &
+     &      n_int, k2, i_filter, ak_diff(1,iak_diff), ak_d,             &
+     &      ele1, jac1_3d_q, FEM1_elen, phi_e, sk6)
       end do
 !
       call add1_skv_coef_to_ff_v_smp_1st(coef_crank, ff_smp, sk6)
@@ -135,14 +131,9 @@
       subroutine int_vol_vector_sgs_diffuse_1st(iele_fsmp_stack,        &
      &          n_int, coef_crank, ak_d, i_vector, i_filter, iak_diff)
 !
-      use m_phys_constants
-      use m_finite_element_matrix
-      use m_int_vol_data
-      use m_SGS_model_coefs
-!
       use cal_skv_to_ff_smp_1st
       use nodal_fld_2_each_ele_1st
-      use fem_skv_diffusion_sgs_1st
+      use fem_skv_diffusion_sgs_type
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: n_int, i_vector
@@ -158,8 +149,9 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_vector, velo_1)
-        call fem_skv_vector_diffuse_sgs_1st(iele_fsmp_stack, n_int, k2, &
-     &      i_filter, ak_diff(1,iak_diff), ak_d, velo_1, sk6)
+        call fem_skv_vector_diffuse_sgs_type(iele_fsmp_stack,           &
+     &      n_int, k2, i_filter, ak_diff(1,iak_diff), ak_d,             &
+     &      ele1, jac1_3d_q, FEM1_elen, velo_1, sk6)
       end do
 !
       call add3_skv_coef_to_ff_v_smp_1st(coef_crank, ff_smp, sk6)

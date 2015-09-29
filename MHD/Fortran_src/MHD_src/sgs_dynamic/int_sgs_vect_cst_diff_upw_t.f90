@@ -79,8 +79,9 @@
       do k2 = 1, mesh%ele%nnod_4_ele
         call scalar_cst_phys_each_ele_type(mesh, nod_fld,               &
      &          k2, i_field, coef, fem_wk%scalar_1)
-        call fem_skv_grad_sgs_upw_type(iele_fsmp_stack, num_int, k2,    &
-     &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens, fem_wk)
+        call fem_skv_grad_sgs_upwind(iele_fsmp_stack, num_int, k2,      &
+     &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,             &
+     &      fem_wk%vxe, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
@@ -126,7 +127,8 @@
         call vector_cst_phys_each_ele_type(mesh, nod_fld,               &
      &          k2, i_field, coef, fem_wk%vector_1)
         call fem_skv_div_sgs_upw_type(iele_fsmp_stack, num_int, k2,     &
-     &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens, fem_wk)
+     &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,             &
+     &      fem_wk%vxe, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
@@ -171,8 +173,9 @@
       do k2 = 1, mesh%ele%nnod_4_ele
         call vector_cst_phys_each_ele_type(mesh, nod_fld,               &
      &          k2, i_field, coef, fem_wk%vector_1)
-        call fem_skv_rot_sgs_upw_type(iele_fsmp_stack, num_int, k2,     &
-     &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens, fem_wk)
+        call fem_skv_rot_sgs_upwind(iele_fsmp_stack, num_int, k2,       &
+     &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,             &
+     &      fem_wk%vxe, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
@@ -218,8 +221,9 @@
       do k2 = 1, mesh%ele%nnod_4_ele
         call tensor_cst_phys_each_ele_type(mesh, nod_fld,               &
      &          k2, i_field, coef, fem_wk%tensor_1)
-        call fem_skv_div_tsr_sgs_upw_type(iele_fsmp_stack, num_int, k2, &
-     &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens, fem_wk)
+        call fem_skv_div_tsr_sgs_upwind(iele_fsmp_stack, num_int, k2,   &
+     &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,             &
+     &      fem_wk%vxe, fem_wk%tensor_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
@@ -264,9 +268,9 @@
       do k2 = 1, mesh%ele%nnod_4_ele
         call vector_cst_phys_each_ele_type(mesh, nod_fld,               &
      &          k2, i_field, coef, fem_wk%vector_1)
-        call fem_skv_div_as_tsr_sgs_upw_type(iele_fsmp_stack,           &
+        call fem_skv_div_as_tsr_sgs_upwind(iele_fsmp_stack,             &
      &      num_int, k2, i_filter, ak_diff, mesh%ele, jac_3d,           &
-     &      FEM_elens, fem_wk)
+     &      FEM_elens, fem_wk%vxe, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)

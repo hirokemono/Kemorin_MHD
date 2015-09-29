@@ -26,6 +26,12 @@
       use m_SGS_model_coefs
       use m_SGS_address
 !
+      use m_node_phys_address
+      use m_finite_element_matrix
+      use m_fem_gauss_int_coefs
+      use m_jacobians
+      use m_int_vol_data
+!
       use t_phys_address
 !
       implicit none
@@ -38,11 +44,7 @@
 !
       subroutine int_vol_velo_pre_ele(ncomp_ele, d_ele, iphys_ele)
 !
-      use m_node_phys_address
-      use m_finite_element_matrix
-      use m_fem_gauss_int_coefs
-      use m_jacobians
-      use m_int_vol_data
+      use m_filter_elength
 !
       use cal_add_smp
       use nodal_fld_cst_to_ele_1st
@@ -52,7 +54,7 @@
       use fem_skv_nodal_field_type
       use fem_skv_vector_diff_type
       use fem_skv_nonlinear_type
-      use fem_skv_div_sgs_flux_1st
+      use fem_skv_div_sgs_flux_type
       use fem_skv_lorentz_full_type
 !
       integer(kind = kint), intent(in) :: ncomp_ele
@@ -88,15 +90,16 @@
               call fem_skv_rot_inertia_type(iele_fl_smp_stack,          &
      &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_vort),       &
      &            ele1, jac1_3d_q, sk6)
-              call fem_skv_div_sgs_tensor_1st                           &
-     &               (iele_fl_smp_stack, num_int, k2, ifilter_final,    &
-     &                ak_diff(1,iak_diff_mf), sgs_t, tensor_e, sk6)
+              call fem_skv_div_sgs_tensor                               &
+     &           (iele_fl_smp_stack, num_int, k2, ifilter_final,        &
+     &            ak_diff(1,iak_diff_mf), ele1, jac1_3d_q, FEM1_elen,   &
+     &            sgs_t, tensor_e, sk6)
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
-     &              coef_nega_v, sgs_t)
-              call fem_skv_inertia_rot_sgs_1st(iele_fl_smp_stack,       &
-     &              num_int, k2, velo_1, sgs_t,                         &
-     &              d_ele(1,iphys_ele%i_vort), sk6)
+     &            coef_nega_v, sgs_t)
+              call fem_skv_inertia_rot_sgs_pg(iele_fl_smp_stack,        &
+     &            num_int, k2, ele1, jac1_3d_q,                         &
+     &            velo_1, sgs_t, d_ele(1,iphys_ele%i_vort), sk6)
             else
               call fem_skv_rot_inertia_type(iele_fl_smp_stack,          &
      &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_vort),       &
@@ -110,16 +113,16 @@
      &        .and. iflag_commute_inertia .eq. id_SGS_commute_ON) then
               call SGS_tensor_cst_each_ele_1st(k2, iphys%i_velo,        &
      &            iphys%i_SGS_m_flux, coef_nega_v, sgs_t, tensor_e)
-              call fem_skv_vec_inertia_modsgs_1st(iele_fl_smp_stack,    &
+              call fem_skv_vec_inertia_modsgs_pg(iele_fl_smp_stack,     &
      &            num_int, k2, ifilter_final, ak_diff(1,iak_diff_mf),   &
-     &            velo_1, sgs_t, tensor_e, d_ele(1,iphys_ele%i_velo),   &
-     &            sk6)
+     &            ele1, jac1_3d_q, FEM1_elen, velo_1, sgs_t, tensor_e,  &
+     &            d_ele(1,iphys_ele%i_velo), sk6)
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
      &              coef_nega_v, sgs_t)
-              call fem_skv_vec_inertia_sgs_1st(iele_fl_smp_stack,       &
-     &            num_int, k2, velo_1, sgs_t,                           &
-     &            d_ele(1,iphys_ele%i_velo), sk6)
+              call fem_skv_vec_inertia_sgs_pg(iele_fl_smp_stack,        &
+     &            num_int, k2, ele1, jac1_3d_q,                         &
+     &            velo_1, sgs_t, d_ele(1,iphys_ele%i_velo), sk6)
             else
               call fem_skv_vector_inertia_type(iele_fl_smp_stack,       &
      &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_velo),       &
@@ -162,9 +165,10 @@
             if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
               call SGS_tensor_cst_each_ele_1st(k2, iphys%i_magne,       &
      &              iphys%i_SGS_maxwell, coef_lor, sgs_t, tensor_e)
-              call fem_skv_div_sgs_tensor_1st                           &
+              call fem_skv_div_sgs_tensor                               &
      &            (iele_fl_smp_stack, num_int, k2, ifilter_final,       &
-     &             ak_diff(1,iak_diff_lor), sgs_t, tensor_e, sk6)
+     &             ak_diff(1,iak_diff_lor), ele1, jac1_3d_q, FEM1_elen, &
+     &             sgs_t, tensor_e, sk6)
             else
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_maxwell,  &
      &             coef_lor, tensor_e)
@@ -220,12 +224,6 @@
 !
       subroutine int_vol_velo_pre_ele_upwind                            &
      &         (ncomp_ele, ie_upw, d_ele, iphys_ele)
-!
-      use m_node_phys_address
-      use m_finite_element_matrix
-      use m_fem_gauss_int_coefs
-      use m_jacobians
-      use m_int_vol_data
 !
       use cal_add_smp
       use nodal_fld_cst_to_ele_1st

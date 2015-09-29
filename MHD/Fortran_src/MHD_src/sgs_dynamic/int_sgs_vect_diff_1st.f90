@@ -26,11 +26,13 @@
       use m_element_phys_data
       use m_SGS_model_coefs
       use m_finite_element_matrix
+      use m_jacobians
       use m_int_vol_data
+      use m_filter_elength
 !
       use nodal_fld_2_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_diffs_sgs_1st
+      use fem_skv_diffs_sgs_type
 !
       implicit none
 !
@@ -57,8 +59,9 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call scalar_phys_2_each_element(k2, i_field, phi_e)
-        call fem_skv_grad_sgs_pg_1st(iele_fsmp_stack, num_int, k2,      &
-     &      i_filter, ak_diff(1,iak_diff), phi_e, sk6)
+        call fem_skv_grad_sgs_galerkin(iele_fsmp_stack,                 &
+     &      num_int, k2, i_filter, ak_diff(1,iak_diff),                 &
+     &      ele1, jac1_3d_q, FEM1_elen, phi_e, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
@@ -84,8 +87,9 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_field, vect_e)
-        call fem_skv_div_sgs_pg_1st(iele_fsmp_stack, num_int, k2,       &
-     &      i_filter, ak_diff(1,iak_diff), vect_e, sk6)
+        call fem_skv_div_sgs_galerkin(iele_fsmp_stack,                  &
+     &      num_int, k2, i_filter, ak_diff(1,iak_diff),                 &
+     &      ele1, jac1_3d_q, FEM1_elen, vect_e, sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
@@ -111,8 +115,9 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_field, vect_e)
-        call fem_skv_rot_sgs_pg_1st(iele_fsmp_stack, num_int, k2,       &
-     &      i_filter, ak_diff(1,iak_diff), vect_e, sk6)
+        call fem_skv_rot_sgs_galerkin(iele_fsmp_stack,                  &
+     &      num_int, k2, i_filter, ak_diff(1,iak_diff),                 &
+     &      ele1, jac1_3d_q, FEM1_elen, vect_e, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
@@ -139,8 +144,9 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call tensor_phys_2_each_element(k2, i_field, tensor_e)
-        call fem_skv_div_tsr_sgs_pg_1st(iele_fsmp_stack, num_int, k2,  &
-     &      i_filter, ak_diff(1,iak_diff), tensor_e, sk6)
+        call fem_skv_div_tensor_sgs_galerkin(iele_fsmp_stack,           &
+     &      num_int, k2, i_filter, ak_diff(1,iak_diff),                 &
+     &      ele1, jac1_3d_q, FEM1_elen, tensor_e, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
@@ -166,8 +172,9 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_field, vect_e)
-        call fem_skv_div_as_tsr_sgs_pg_1st(iele_fsmp_stack,            &
-     &      num_int, k2, i_filter, ak_diff(1,iak_diff), vect_e, sk6)
+        call fem_skv_div_as_tsr_sgs_galerkin(iele_fsmp_stack,           &
+     &      num_int, k2, i_filter, ak_diff(1,iak_diff),                 &
+     &      ele1, jac1_3d_q, FEM1_elen, vect_e, sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)

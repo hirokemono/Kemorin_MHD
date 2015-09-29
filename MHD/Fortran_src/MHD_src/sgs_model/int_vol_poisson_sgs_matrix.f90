@@ -19,8 +19,13 @@
       use m_geometry_data
       use m_phys_constants
       use m_finite_element_matrix
+      use m_jacobians
+      use m_filter_elength
       use m_sorted_node
       use m_t_int_parameter
+!
+      use fem_skv_diffusion_sgs_type
+      use cal_poisson_matrices_1st
 !
 !-----------------------------------------------------------------------
 !
@@ -30,9 +35,6 @@
 !
       subroutine int_vol_poisson_sgs_mat11(n_int, idx_for_mat,          &
      &          i_filter, ak_diff, nmat_size, aiccg)
-!
-      use fem_skv_diffusion_sgs_1st
-      use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
      &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
@@ -48,8 +50,9 @@
 !
       do  k2 = 1, ele1%nnod_4_ele
         call reset_sk6(n_scalar)
-        call fem_skv_poisson_linear_sgs_1st(ele1%istack_ele_smp,        &
-     &      n_int, k2, i_filter, ak_diff, sk6)
+        call fem_skv_poisson_linear_sgs_type(ele1%istack_ele_smp,       &
+     &      n_int, k2, i_filter, ak_diff, ele1, jac1_3d_l, FEM1_elen,   &
+     &      sk6)
         call add_skv1_2_MHD_matrix11(idx_for_mat, k2, sk6,              &
      &      nmat_size, aiccg)
       end do
@@ -61,9 +64,6 @@
 !
       subroutine int_vol_crank_sgs_mat11(n_int, idx_for_mat, coef_imp,  &
      &          i_filter, ak_diff, ak_d, nmat_size, aiccg)
-!
-      use fem_skv_diffusion_sgs_1st
-      use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
      &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
@@ -81,8 +81,8 @@
 !
       do  k2 = 1, ele1%nnod_4_ele
         call reset_sk6(n_scalar)
-        call fem_skv_poisson_sgs_1st(ele1%istack_ele_smp, n_int, k2,    &
-     &      i_filter, ak_diff, sk6)
+        call fem_skv_poisson_sgs_type(ele1%istack_ele_smp, n_int, k2,   &
+     &      i_filter, ak_diff, ele1, jac1_3d_q, FEM1_elen, sk6)
         call cal_scalar_diffuse_evo_mat_1st(idx_for_mat, k2,            &
      &      coef_imp, ak_d, sk6, nmat_size, aiccg)
       end do
@@ -93,9 +93,6 @@
 !
       subroutine int_vol_crank_sgs_mat33(n_int, idx_for_mat, coef_imp,  &
      &          i_filter, ak_diff, ak_d, nmat_size, aiccg33)
-!
-      use fem_skv_diffusion_sgs_1st
-      use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
      &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
@@ -113,8 +110,8 @@
 !
       do  k2 = 1, ele1%nnod_4_ele
         call reset_sk6(n_scalar)
-        call fem_skv_poisson_sgs_1st(ele1%istack_ele_smp, n_int, k2,    &
-     &      i_filter, ak_diff,  sk6)
+        call fem_skv_poisson_sgs_type(ele1%istack_ele_smp, n_int, k2,   &
+     &      i_filter, ak_diff, ele1, jac1_3d_q, FEM1_elen, sk6)
         call cal_vect_diffuse_evo_mat_1st(idx_for_mat, k2,              &
      &      coef_imp, ak_d, sk6, nmat_size, aiccg33)
       end do

@@ -83,9 +83,9 @@
         call SGS_vector_cst_each_ele_type(mesh, nod_fld, k2,            &
      &        i_vector, i_scalar, i_SGS_flux, coef,                     &
      &        fem_wk%sgs_v, fem_wk%vector_1)
-        call fem_skv_div_sgs_vector_type(iele_fsmp_stack,               &
+        call fem_skv_div_sgs_vector(iele_fsmp_stack,                    &
      &        n_int, k2, i_filter, ak_diff, mesh%ele, jac_3d,           &
-     &        FEM_elens, fem_wk)
+     &        FEM_elens, fem_wk%sgs_v, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
@@ -133,9 +133,9 @@
       do k2 = 1, mesh%ele%nnod_4_ele
         call SGS_tensor_cst_each_ele_type(mesh, nod_fld, k2,            &
      &        i_vect, i_SGS_flux, coef, fem_wk%sgs_t, fem_wk%tensor_1)
-        call fem_skv_div_sgs_tensor_type(iele_fsmp_stack,               &
+        call fem_skv_div_sgs_tensor(iele_fsmp_stack,                    &
      &        n_int, k2, i_filter, ak_diff, mesh%ele, jac_3d,           &
-     &        FEM_elens, fem_wk)
+     &        FEM_elens, fem_wk%sgs_t, fem_wk%tensor_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)

@@ -77,9 +77,9 @@
       do k2=1, num_t_linear
         call vector_phys_2_each_ele_type(mesh, nod_fld, k2,             &
      &      i_vector, fem_wk%vector_1)
-        call fem_skv_div_2l_sgs_type(iele_fsmp_stack, n_int, k2,        &
+        call fem_skv_div_sgs_linear(iele_fsmp_stack, n_int, k2,         &
      &      i_filter, ak_diff, mesh%ele, jac_3d, jac_3d_l, FEM_elens,   &
-     &      fem_wk)
+     &      fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_l)
@@ -128,9 +128,9 @@
       do k2=1, num_t_linear
         call scalar_phys_2_each_ele_type(mesh, nod_fld, k2,             &
      &      i_scalar, fem_wk%scalar_1)
-        call fem_skv_linear_grad_sgs_type(iele_fsmp_stack, n_int, k2,   &
+        call fem_skv_grad_sgs_linear(iele_fsmp_stack, n_int, k2,        &
      &      i_filter, ak_diff, mesh%ele, jac_3d, jac_3d_l, FEM_elens,   &
-     &      fem_wk)
+     &      fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
@@ -184,7 +184,7 @@
      &      i_scalar, fem_wk%scalar_1)
         call fem_skv_scalar_diffuse_sgs_type(iele_fsmp_stack, n_int,    &
      &      k2, i_filter, ak_diff, ak_d, mesh%ele, jac_3d, FEM_elens,   &
-     &      fem_wk)
+     &      fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add1_skv_coef_to_ff_v_smp_type(mesh, rhs_tbl,                &
@@ -238,7 +238,7 @@
      &      i_vector, fem_wk%vector_1)
         call fem_skv_vector_diffuse_sgs_type(iele_fsmp_stack, n_int,    &
      &      k2, i_filter, ak_diff, ak_d, mesh%ele, jac_3d, FEM_elens,   &
-     &      fem_wk)
+     &      fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_coef_to_ff_v_smp_type(mesh, rhs_tbl,                &
