@@ -20,6 +20,7 @@
       use m_finite_element_matrix
       use m_jacobians
       use m_int_vol_data
+      use m_filter_elength
 !
       use m_physical_property
       use m_SGS_model_coefs
@@ -34,8 +35,6 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_temp_ele(ncomp_ele, iele_velo, d_ele)
-!
-      use m_filter_elength
 !
       use nodal_fld_cst_to_ele_1st
       use sgs_terms_to_each_ele_1st
@@ -95,7 +94,7 @@
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp_1st
       use fem_skv_nonlinear_upw_type
-      use fem_skv_div_sgs_flux_upw_1
+      use fem_skv_div_sgs_flux_upw_t
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
@@ -119,16 +118,16 @@
           call SGS_vector_cst_each_ele_1st(k2, iphys%i_velo,            &
      &        iphys%i_temp, iphys%i_SGS_h_flux, coef_nega_t,            &
      &        sgs_e, vect_e)
-          call fem_skv_scl_inertia_msgs_upw_1(iele_fl_smp_stack,        &
+          call fem_skv_scl_inertia_msgs_upw(iele_fl_smp_stack,          &
      &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_hf),       &
-     &        temp_e, sgs_e, vect_e, d_ele(1,iele_velo),                &
-     &        d_ele(1,iele_velo), sk6)
+     &        ele1, jac1_3d_q, FEM1_elen, temp_e, sgs_e, vect_e,        &
+     &        d_ele(1,iele_velo), d_ele(1,iele_velo), sk6)
         else if(iflag_SGS_heat .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_h_flux,       &
      &        coef_nega_t, sgs_e)
-          call fem_skv_scl_inertia_sgs_upw_1(iele_fl_smp_stack,         &
-     &       num_int, k2, temp_e, sgs_e, d_ele(1,iele_velo),            &
-     &       d_ele(1,iele_velo), sk6)
+          call fem_skv_scl_inertia_sgs_upwind(iele_fl_smp_stack,        &
+     &       num_int, k2, ele1, jac1_3d_q, temp_e, sgs_e,               &
+     &       d_ele(1,iele_velo), d_ele(1,iele_velo), sk6)
         else
           call fem_skv_scalar_inertia_upwind(iele_fl_smp_stack,         &
      &       num_int, k2, temp_e, d_ele(1,iele_velo),                   &

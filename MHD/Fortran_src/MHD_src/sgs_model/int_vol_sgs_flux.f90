@@ -63,9 +63,11 @@
 !
       use m_geometry_data_MHD
       use m_int_vol_data
+      use m_jacobians
+      use m_filter_elength
       use m_SGS_model_coefs
 !
-      use fem_skv_sgs_flux_1st
+      use fem_skv_sgs_flux_type
       use nodal_fld_2_each_ele_1st
 !
       integer (kind = kint), intent(in) :: id_dx, i_filter
@@ -89,9 +91,10 @@
 ! -------- loop for shape function for the phsical values
           do k2 = 1, ele1%nnod_4_ele
             call scalar_phys_2_each_element(k2, icomp, phi_e)
-            call fem_skv_sgs_flux_pg_1(iele_fl_smp_stack,               &
-     &          intg_point_t_evo, k2, phi_e, dvx(1,id_dvx2), i_filter,  &
-     &          nd_t, sk_v)
+            call fem_skv_sgs_flux_galerkin(iele_fl_smp_stack,           &
+     &          intg_point_t_evo, k2, i_filter, nd_t,                   &
+     &          ele1, jac1_3d_q, FEM1_elen, phi_e, dvx(1,id_dvx2),      &
+     &          sk_v)
           end do
 !
         end do
@@ -106,9 +109,11 @@
 !
       use m_geometry_data_MHD
       use m_int_vol_data
+      use m_jacobians
+      use m_filter_elength
       use m_SGS_model_coefs
 !
-      use fem_skv_sgs_flux_1st
+      use fem_skv_sgs_flux_type
       use nodal_fld_2_each_ele_1st
 !
       integer (kind = kint), intent(in) :: i_filter, id_dx
@@ -136,9 +141,10 @@
 !
           do k2 = 1, ele1%nnod_4_ele
             call scalar_phys_2_each_element(k2, icomp, phi_e)
-            call fem_skv_sgs_flux_upw_1(iele_fl_smp_stack,              &
-     &          intg_point_t_evo, k2, phi_e, d_ele(1,ie_upw),           &
-     &          dvx(1,id_dvx2), i_filter, nd_t, sk_v)
+            call fem_skv_sgs_flux_upwind(iele_fl_smp_stack,             &
+     &          intg_point_t_evo, k2, i_filter, nd_t,                   &
+     &          ele1, jac1_3d_q, FEM1_elen, phi_e, d_ele(1,ie_upw),     &
+     &          dvx(1,id_dvx2), sk_v)
           end do
         end do
       end do

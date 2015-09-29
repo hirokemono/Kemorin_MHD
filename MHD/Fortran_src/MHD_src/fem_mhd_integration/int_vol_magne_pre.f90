@@ -29,6 +29,7 @@
       use m_physical_property
       use m_SGS_model_coefs
       use m_SGS_address
+      use m_filter_elength
 !
       use t_phys_address
 !
@@ -41,8 +42,6 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_magne_pre_ele(ncomp_ele, d_ele, iphys_ele)
-!
-      use m_filter_elength
 !
       use cal_add_smp
       use nodal_fld_2_each_ele_1st
@@ -112,7 +111,7 @@
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp_1st
       use fem_skv_lorentz_full_type
-      use fem_skv_div_sgs_flux_upw_1
+      use fem_skv_div_sgs_flux_upw_t
       use fem_skv_vect_diff_upw_type
 !
       integer(kind = kint), intent(in) :: ncomp_ele
@@ -147,9 +146,10 @@
           call SGS_induct_cst_each_ele_1st(k2, iphys%i_magne,           &
      &        iphys%i_velo, iphys%i_SGS_induct_t, coef_induct,          &
      &        sgs_e, vect_e)
-          call fem_skv_div_sgs_asym_t_1st_upw(iele_cd_smp_stack,        &
-      &       num_int, k2, ifilter_final, ak_diff(1,iak_diff_uxb),      &
-      &       d_ele(1,iphys_ele%i_magne), sgs_e, vect_e, sk6)
+          call fem_skv_div_sgs_asym_t_upwind(iele_cd_smp_stack,         &
+     &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_uxb),      &
+     &        ele1, jac1_3d_q, FEM1_elen, d_ele(1,iphys_ele%i_magne),   &
+     &        sgs_e, vect_e, sk6)
         else if (iflag_SGS_induction .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_induct_t,     &
      &        coef_induct, sgs_e)

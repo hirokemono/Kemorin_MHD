@@ -25,6 +25,11 @@
       use m_node_phys_address
       use m_fem_gauss_int_coefs
 !
+      use m_finite_element_matrix
+      use m_int_vol_data
+      use m_jacobians
+      use m_filter_elength
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -35,11 +40,6 @@
 !
       subroutine int_vol_div_SGS_idct_mod_pg(iele_fsmp_stack, n_int,    &
      &          i_filter)
-!
-      use m_finite_element_matrix
-      use m_int_vol_data
-      use m_jacobians
-      use m_filter_elength
 !
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp_1st
@@ -72,12 +72,9 @@
       subroutine int_vol_div_SGS_idct_mod_upm(iele_fsmp_stack, n_int,   &
      &          i_filter, ncomp_ele, i_magne, d_ele)
 !
-      use m_finite_element_matrix
-      use m_int_vol_data
-!
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_div_sgs_flux_upw_1
+      use fem_skv_div_sgs_flux_upw_t
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int, i_filter
@@ -95,8 +92,9 @@
         call SGS_induct_cst_each_ele_1st(k2,                            &
      &      iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,          &
      &      coef_induct, sgs_e, vect_e)
-        call fem_skv_div_sgs_asym_t_1st_upw(iele_fsmp_stack, n_int, k2, &
-     &      i_filter, ak_diff(1,iak_diff_uxb), d_ele(1,i_magne), sgs_e, &
+        call fem_skv_div_sgs_asym_t_upwind(iele_fsmp_stack,             &
+     &      n_int, k2, i_filter, ak_diff(1,iak_diff_uxb),               &
+     &      ele1, jac1_3d_q, FEM1_elen, d_ele(1,i_magne), sgs_e,        &
      &      vect_e, sk6)
       end do
 !

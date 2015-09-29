@@ -23,6 +23,12 @@
       use m_control_parameter
       use m_geometry_data
 !
+      use m_finite_element_matrix
+      use m_SGS_model_coefs
+      use m_int_vol_data
+      use m_jacobians
+      use m_filter_elength
+!
       implicit none
 !
 ! ----------------------------------------------------------------------
@@ -34,12 +40,6 @@
       subroutine int_vol_div_SGS_vec_flux                               &
      &         (iele_fsmp_stack, n_int,  i_vector, i_scalar,            &
      &          i_SGS_flux, i_filter, iak_diff, coef)
-!
-      use m_finite_element_matrix
-      use m_SGS_model_coefs
-      use m_int_vol_data
-      use m_jacobians
-      use m_filter_elength
 !
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp_1st
@@ -75,12 +75,6 @@
       subroutine int_vol_div_SGS_tsr_flux                               &
      &         (iele_fsmp_stack, n_int, i_vector, i_SGS_flux,           &
      &          i_filter, iak_diff, coef)
-!
-      use m_finite_element_matrix
-      use m_SGS_model_coefs
-      use m_int_vol_data
-      use m_jacobians
-      use m_filter_elength
 !
       use nodal_fld_cst_to_ele_1st
       use sgs_terms_to_each_ele_1st
@@ -118,13 +112,9 @@
      &        (iele_fsmp_stack, n_int, i_vector, i_scalar, i_SGS_flux,  &
      &         i_filter, iak_diff, ncomp_ele, ie_upw, d_ele, coef)
 !
-      use m_SGS_model_coefs
-      use m_finite_element_matrix
-      use m_int_vol_data
-!
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_div_sgs_flux_upw_1
+      use fem_skv_div_sgs_flux_upw_t
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int
@@ -144,8 +134,8 @@
       do k2 = 1, ele1%nnod_4_ele
         call SGS_vector_cst_each_ele_1st(k2, i_vector,  i_scalar,       &
      &      i_SGS_flux, coef, sgs_e, vect_1)
-        call fem_skv_div_sgs_vector_1st_upw(iele_fsmp_stack,            &
-     &      n_int, k2, i_filter, ak_diff(1,iak_diff),                   &
+        call fem_skv_div_sgs_vector_upwind(iele_fsmp_stack, n_int, k2,  &
+     &      i_filter, ak_diff(1,iak_diff), ele1, jac1_3d_q, FEM1_elen,  &
      &      d_ele(1,ie_upw), sgs_e, vect_1, sk6)
       end do
 !
@@ -159,14 +149,10 @@
      &         (iele_fsmp_stack, n_int, i_vector, i_SGS_flux,           &
      &          i_filter, iak_diff, ncomp_ele, ie_upw, d_ele, coef)
 !
-      use m_SGS_model_coefs
-      use m_finite_element_matrix
-      use m_int_vol_data
-!
       use nodal_fld_cst_to_ele_1st
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp_1st
-      use fem_skv_div_sgs_flux_upw_1
+      use fem_skv_div_sgs_flux_upw_t
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int
@@ -185,8 +171,8 @@
       do k2 = 1, ele1%nnod_4_ele
         call SGS_tensor_cst_each_ele_1st(k2, i_vector,                  &
      &      i_SGS_flux, coef, sgs_t, tensor_e)
-        call fem_skv_div_sgs_tensor_1st_upw(iele_fsmp_stack,            &
-     &      n_int, k2, i_filter, ak_diff(1,iak_diff),                   &
+        call fem_skv_div_sgs_tensor_upwind(iele_fsmp_stack, n_int, k2,  &
+     &      i_filter, ak_diff(1,iak_diff), ele1, jac1_3d_q, FEM1_elen,  &
      &      d_ele(1,ie_upw), sgs_t, tensor_e, sk6)
       end do
 !

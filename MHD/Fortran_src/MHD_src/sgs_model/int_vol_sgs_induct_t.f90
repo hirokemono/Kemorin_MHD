@@ -58,8 +58,10 @@
       subroutine int_vol_sgs_induct_t_pg(i_filter, ie_dvx, ie_dbx,      &
      &           ifield_v, ifield_b, sk_v)
 !
+      use m_jacobians
+      use m_filter_elength
       use nodal_fld_2_each_ele_1st
-      use fem_skv_sgs_flux_1st
+      use fem_skv_sgs_flux_type
 !
       integer (kind = kint), intent(in) :: i_filter
       integer (kind = kint), intent(in) :: ifield_v, ifield_b
@@ -91,9 +93,10 @@
           call scalar_phys_2_each_element(k2, icomp_b, vect_e(1,1) )
           call scalar_phys_2_each_element(k2, icomp_v, vect_e(1,2) )
 !
-          call fem_skv_sgs_induct_t_pg_1(iele_cd_smp_stack,             &
-     &        intg_point_t_evo, k2, vect_e, dvx(1,id_dvx2),             &
-     &        dvx(1,id_dbx2),  i_filter, nd, sk_v)
+          call fem_skv_sgs_induct_t_galerkin(iele_cd_smp_stack,         &
+     &        intg_point_t_evo, k2, i_filter, nd,                       &
+     &        ele1, jac1_3d_q, FEM1_elen,                               &
+     &        vect_e, dvx(1,id_dvx2), dvx(1,id_dbx2), sk_v)
         end do
       end do
 !
@@ -104,8 +107,10 @@
       subroutine int_vol_sgs_induct_t_upm(i_filter, ie_dvx, ie_dbx,     &
      &           ifield_v, ifield_b, ncomp_ele, i_magne, d_ele, sk_v)
 !
+      use m_jacobians
+      use m_filter_elength
       use nodal_fld_2_each_ele_1st
-      use fem_skv_sgs_flux_1st
+      use fem_skv_sgs_flux_type
 !
       integer (kind = kint), intent(in) :: i_filter
       integer (kind = kint), intent(in) :: ifield_v, ifield_b
@@ -132,14 +137,13 @@
         icomp_b = ifield_b + nd3 - 1
 !
         do k2 = 1, ele1%nnod_4_ele
-!
           call scalar_phys_2_each_element(k2, icomp_v, vect_e(1,1) )
           call scalar_phys_2_each_element(k2, icomp_b, vect_e(1,2) )
 !
-          call fem_skv_sgs_induct_t_upw_1(iele_cd_smp_stack,            &
-     &        intg_point_t_evo, k2, vect_e, d_ele(1,i_magne),           &
-     &        dvx(1,id_dvx2), dvx(1,id_dbx2), i_filter, nd, sk_v)
-!
+          call fem_skv_sgs_induct_t_upwind(iele_cd_smp_stack,           &
+     &        intg_point_t_evo, k2, i_filter, nd,                       &
+     &        ele1, jac1_3d_q, FEM1_elen, vect_e, d_ele(1,i_magne),     &
+     &        dvx(1,id_dvx2), dvx(1,id_dbx2), sk_v)
         end do
       end do
 !
