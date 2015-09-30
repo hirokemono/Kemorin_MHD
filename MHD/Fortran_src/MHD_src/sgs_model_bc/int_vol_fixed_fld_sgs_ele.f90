@@ -31,10 +31,12 @@
       use m_phys_constants
       use m_node_phys_data
       use m_finite_element_matrix
+      use m_jacobians
       use m_int_vol_data
+      use m_filter_elength
 !
       use cal_skv_to_ff_smp_1st
-      use fem_skv_poisson_sgs_bc_1
+      use fem_skv_poisson_sgs_bc_t
       use field_2_each_element_bc
 !
       implicit none
@@ -80,8 +82,8 @@
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
 !
-        call fem_skv_poisson_sgs_fix_1st(num_index_ibc,                 &
-     &      ele_bc_id, ibc_stack_smp(istart_smp), k2,                   &
+        call fem_skv_poisson_sgs_fix_bc(ele1, jac1_3d_l, FEM1_elen,     &
+     &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp), k2,    &
      &      n_int, i_filter, ak_diff, phi_e, sk6)
       end do
 !
@@ -129,9 +131,9 @@
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
 !
-        call fem_skv_diffuse_sgs_fix_1st(num_index_ibc,                 &
-     &      ele_bc_id, ibc_stack_smp(istart_smp), k2, ione,             &
-     &      n_int, i_filter, ak_diff, ak_d, phi_e, sk6)
+        call fem_skv_diffuse_sgs_fix_bc(ele1, jac1_3d_q, FEM1_elen,     &
+     &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp),        &
+     &      k2, ione, n_int, i_filter, ak_diff, ak_d, phi_e, sk6)
       end do
 !
       call add1_skv_coef_to_ff_v_smp_1st(coef_implicit, ff_smp, sk6)
@@ -182,7 +184,8 @@
 !   'sf' = - \tilde{v}_{i,i} N(x)
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
-            call fem_skv_diffuse_sgs_fix_1st(nmax_index_ibc,            &
+            call fem_skv_diffuse_sgs_fix_bc                             &
+     &         (ele1, jac1_3d_q, FEM1_elen, nmax_index_ibc,             &
      &          ele_bc_id(1,nd), ibc_stack_smp(istart_smp,nd), k2, nd,  &
      &          n_int, i_filter, ak_diff, ak_d, phi_e, sk6)
           end do
@@ -235,7 +238,8 @@
 !   'sf' = - \tilde{v}_{i,i} N(x)
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
-            call fem_skv_diffuse_sgs_fix_1st(num_index_ibc,             &
+            call fem_skv_diffuse_sgs_fix_bc                             &
+     &         (ele1, jac1_3d_q, FEM1_elen, num_index_ibc,              &
      &          ele_bc_id, ibc_stack_smp(istart_smp), k2, nd,           &
      &          n_int, i_filter, ak_diff,  ak_d, phi_e, sk6)
           end do

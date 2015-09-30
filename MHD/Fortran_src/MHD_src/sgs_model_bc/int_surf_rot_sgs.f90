@@ -35,8 +35,12 @@
 !
       use m_int_surface_data
       use m_SGS_model_coefs
+      use m_jacobians
+      use m_jacobian_sf_grp
+      use m_filter_elength
+!
       use delta_phys_2_each_surface
-      use fem_surf_skv_sgs_commute_1
+      use fem_surf_skv_sgs_commute_t
       use cal_skv_to_ff_smp_1st
 !
       type(surface_group_data), intent(in) :: sf_grp
@@ -69,9 +73,10 @@
             do k2 = 1, surf1%nnod_4_surf
               call dlt_scl_phys_2_each_surface(sf_grp, igrp, k2,        &
      &            i_comp, scalar_sf)
-              call fem_sf_skv_sgs_vect_diff_p1(sf_grp, igrp, k2,        &
-     &            nd, n_int, i_filter, nrot1, dxe_sf, scalar_sf,        &
-     &            ak_diff(1,iak_diff), one, sk6)
+              call fem_sf_grp_skv_sgs_vect_diff_p                       &
+     &           (ele1, surf1, sf_grp, jac1_sf_grp_2d_q, FEM1_elen,     &
+     &            igrp, k2, nd, n_int, i_filter, nrot1,                 &
+     &            dxe_sf, scalar_sf, ak_diff(1,iak_diff), one, sk6)
               end do
 !
           end if
@@ -86,9 +91,10 @@
             do k2 = 1, surf1%nnod_4_surf
               call dlt_scl_phys_2_each_surf_cst(sf_grp, igrp, k2,       &
      &            i_comp, dminus, scalar_sf)
-              call fem_sf_skv_sgs_vect_diff_p1(sf_grp, igrp, k2,        &
-     &            nd, n_int, i_filter, nrot2, dxe_sf, scalar_sf,        &
-     &            ak_diff(1,iak_diff), one, sk6)
+              call fem_sf_grp_skv_sgs_vect_diff_p                       &
+     &           (ele1, surf1, sf_grp, jac1_sf_grp_2d_q, FEM1_elen,     &
+     &            igrp, k2, nd, n_int, i_filter, nrot2,                 &
+     &            dxe_sf, scalar_sf, ak_diff(1,iak_diff), one, sk6)
             end do
 !
           end if
@@ -107,8 +113,12 @@
      &          id_grp_sf, i_filter, i_vect)
 !
       use m_int_surface_data
+      use m_jacobians
+      use m_jacobian_sf_grp
+      use m_filter_elength
+!
       use delta_phys_2_each_surface
-      use fem_surf_skv_sgs_commute_1
+      use fem_surf_skv_sgs_commute_t
       use cal_skv_to_ff_smp_1st
 !
       type(surface_group_data), intent(in) :: sf_grp
@@ -138,8 +148,10 @@
             do k2 = 1, surf1%nnod_4_surf
              call dlt_scl_phys_2_each_surface(sf_grp, igrp, k2,         &
      &           i_comp, scalar_sf)
-             call fem_sf_skv_sgs_commute_err_p1(sf_grp, igrp, k2,       &
-     &           nd, n_int, i_filter, nrot1, dxe_sf, scalar_sf, sk6)
+             call fem_sf_grp_skv_commute_err_p                          &
+     &          (ele1, surf1, sf_grp, jac1_sf_grp_2d_q, FEM1_elen,      &
+     &           igrp, k2, nd, n_int, i_filter, nrot1, dxe_sf,          &
+     &           scalar_sf, sk6)
            end do
 !
          end if
@@ -154,8 +166,10 @@
             do k2 = 1, surf1%nnod_4_surf
               call dlt_scl_phys_2_each_surf_cst(sf_grp, igrp, k2,       &
      &            i_comp, dminus, scalar_sf)
-              call fem_sf_skv_sgs_commute_err_p1(sf_grp, igrp, k2,      &
-     &            nd, n_int, i_filter, nrot2, dxe_sf, scalar_sf, sk6)
+              call fem_sf_grp_skv_commute_err_p                         &
+     &           (ele1, surf1, sf_grp, jac1_sf_grp_2d_q, FEM1_elen,     &
+     &            igrp, k2, nd, n_int, i_filter, nrot2, dxe_sf,         &
+     &            scalar_sf, sk6)
             end do
 !
           end if
