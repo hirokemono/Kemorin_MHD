@@ -17,10 +17,11 @@
 !     &          nmax_ele_surf, ngrp_sf, id_grp_sf, ist_surf, sf_apt,   &
 !     &          n_int, ntot_int_sf_grp, xj_sf, an1_sf, sk_v)
 !
-!      subroutine fem_surf_skv_trq_sph_out(np_smp, numele, nnod_4_e1,   &
-!     &          nnod_4_sf1, nnod_4_sf2, node_on_sf, num_surf_bc,       &
-!     &          surf_item, num_surf_smp, isurf_grp_smp_stack, igrp,    &
-!     &          k2, n_int, ntot_int_sf_grp, xj_sf, an1_sf, an2_sf,     &
+!      subroutine fem_surf_skv_trq_sph_out_pg                           &
+!     &         (np_smp, numele, nnod_4_e1, nnod_4_sf1, nnod_4_sf2,     &
+!     &          node_on_sf, num_surf_bc, surf_item, num_surf_smp,      &
+!     &          isurf_grp_smp_stack, igrp, k2, n_int,                  &
+!     &          ntot_int_sf_grp, xj_sf, an1_sf, an2_sf,                &
 !     &          ak_d_velo, xe_sf, vect_sf, sk_v)
 !
       module fem_surf_skv_norm_grad
@@ -214,10 +215,11 @@
 !-----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine fem_surf_skv_trq_sph_out(np_smp, numele, nnod_4_e1,    &
-     &          nnod_4_sf1, nnod_4_sf2, node_on_sf, num_surf_bc,        &
-     &          surf_item, num_surf_smp, isurf_grp_smp_stack, igrp,     &
-     &          k2, n_int, ntot_int_sf_grp, xj_sf, an1_sf, an2_sf,      &
+      subroutine fem_surf_skv_trq_sph_out_pg                            &
+     &         (np_smp, numele, nnod_4_e1, nnod_4_sf1, nnod_4_sf2,      &
+     &          node_on_sf, num_surf_bc, surf_item, num_surf_smp,       &
+     &          isurf_grp_smp_stack, igrp, k2, n_int,                   &
+     &          ntot_int_sf_grp, xj_sf, an1_sf, an2_sf,                 &
      &          ak_d_velo, xe_sf, vect_sf, sk_v)
 !
       integer(kind = kint), intent(in) :: np_smp, numele, nnod_4_e1
@@ -289,7 +291,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine fem_surf_skv_trq_sph_out
+      end subroutine fem_surf_skv_trq_sph_out_pg
 !
 ! ----------------------------------------------------------------------
 !

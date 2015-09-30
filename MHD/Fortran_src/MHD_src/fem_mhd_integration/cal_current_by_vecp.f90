@@ -27,6 +27,7 @@
       use m_group_data
       use m_geometry_data_MHD
       use m_finite_element_matrix
+      use m_jacobian_sf_grp
       use m_int_vol_data
 !
       use m_node_phys_data
@@ -46,7 +47,8 @@
 !
 !  for boundary conditions
 !
-      call int_surf_current_diffuse(sf_grp1)
+      call int_surf_current_diffuse                                     &
+     &   (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q)
 !
       call cal_multi_pass_4_vector_ff
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &

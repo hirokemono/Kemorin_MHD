@@ -10,11 +10,16 @@
 !!
 !!
 !!@verbatim
-!!      subroutine int_free_slip_surf_sph_out(sf_grp, n_int,            &
+!!      subroutine int_free_slip_surf_sph_out                           &
+!!     &         (ele, surf, sf_grp, jac_sf_grp, n_int,                 &
 !!     &          ngrp_surf_outside, id_grp_outside, i_field)
-!!      subroutine int_free_slip_surf_sph_in(sf_grp, n_int,             &
+!!      subroutine int_free_slip_surf_sph_in                            &
+!!     &         (ele, surf, sf_grp, jac_sf_grp, n_int,                 &
 !!     &          ngrp_surf_inside, id_grp_inside, i_field)
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!@endverbatim
 !!
 !@param    n_int       numbper of integration points
@@ -34,13 +39,19 @@
       use m_precision
       use m_constants
 !
-      use m_geometry_data
       use m_int_vol_data
       use m_finite_element_matrix
       use m_ele_material_property
-      use t_group_data
 !
-      use fem_surf_skv_poisson_1st
+      use m_node_phys_address
+      use m_int_surface_data
+!
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
+      use t_jacobian_2d
+!
+      use fem_surf_skv_poisson_type
       use cal_skv_to_ff_smp_1st
       use node_phys_2_each_surface
 !
@@ -52,13 +63,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_free_slip_surf_sph_out(sf_grp, n_int,              &
+      subroutine int_free_slip_surf_sph_out                             &
+     &         (ele, surf, sf_grp, jac_sf_grp, n_int,                   &
      &          ngrp_surf_outside, id_grp_outside, i_field)
 !
-      use m_node_phys_address
-      use m_int_surface_data
-!
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       integer (kind = kint), intent(in) :: n_int, i_field
       integer (kind = kint), intent(in) ::ngrp_surf_outside
       integer (kind = kint), intent(in)                                 &
@@ -75,10 +87,11 @@
         num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if (num .gt.0 ) then
 !
-          do k2 = 1, surf1%nnod_4_surf
+          do k2 = 1, surf%nnod_4_surf
             call vector_phys_2_each_surface(sf_grp, igrp, k2, i_field,  &
      &          vect_sf)
-            call fem_surf_skv_trq_sph_out_1(sf_grp, igrp, k2, n_int,    &
+            call fem_surf_skv_trq_sph_out                               &
+     &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2, n_int,         &
      &          ak_d_velo, xe_sf, vect_sf, sk6)
           end do
 !
@@ -91,13 +104,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_free_slip_surf_sph_in(sf_grp, n_int,               &
+      subroutine int_free_slip_surf_sph_in                              &
+     &         (ele, surf, sf_grp, jac_sf_grp, n_int,                   &
      &          ngrp_surf_inside, id_grp_inside, i_field)
 !
-      use m_node_phys_address
-      use m_int_surface_data
-!
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       integer (kind = kint), intent(in) :: n_int, i_field
       integer (kind = kint), intent(in) ::ngrp_surf_inside
       integer (kind = kint), intent(in)                                 &
@@ -114,10 +128,11 @@
         num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if (num .gt.0 ) then
 !
-           do k2 = 1, surf1%nnod_4_surf
+           do k2 = 1, surf%nnod_4_surf
             call vector_phys_2_each_surf_cst(sf_grp, igrp, k2,          &
      &          i_field, dminus, vect_sf)
-            call fem_surf_skv_trq_sph_out_1(sf_grp, igrp, k2, n_int,    &
+            call fem_surf_skv_trq_sph_out                               &
+     &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2, n_int,         &
      &          ak_d_velo, xe_sf, vect_sf, sk6)
           end do
         end if

@@ -27,8 +27,10 @@
       subroutine cal_vector_p_pre
 !
       use calypso_mpi
+      use m_geometry_data
       use m_group_data
       use m_finite_element_matrix
+      use m_jacobian_sf_grp
       use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
@@ -63,7 +65,8 @@
      &     (fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
       end if
 !
-      call int_sf_grad_vecp(sf_grp1, intg_point_t_evo)
+      call int_sf_grad_vecp                                             &
+     &   (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, intg_point_t_evo)
 !
 !      call check_nodal_data(my_rank, nod_fld1, n_vector, iphys%i_velo)
 !      call check_nodal_data(my_rank, fld_ele1,                         &

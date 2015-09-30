@@ -65,9 +65,11 @@
 !
       use m_geometry_data
       use m_phys_constants
+      use m_geometry_data
       use m_group_data
       use m_node_phys_address
       use m_node_phys_data
+      use m_jacobian_sf_grp
 !
       use int_vol_diffusion_ele
       use int_surf_fixed_gradients
@@ -77,7 +79,8 @@
 !
       call int_vol_vp_diffuse_ele_monitor
 !
-      call int_sf_grad_vecp(sf_grp1, intg_point_t_evo)
+      call int_sf_grad_vecp                                             &
+     &   (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, intg_point_t_evo)
 !
       call set_ff_nl_smp_2_ff(n_vector)
 !

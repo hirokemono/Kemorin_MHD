@@ -28,10 +28,11 @@
       use m_phys_constants
       use m_node_phys_data
       use m_finite_element_matrix
+      use m_jacobians
       use m_int_vol_data
 !
       use cal_skv_to_ff_smp_1st
-      use fem_skv_poisson_bc_1st
+      use fem_skv_poisson_bc_type
       use field_2_each_element_bc
 !
       implicit none
@@ -75,8 +76,9 @@
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
 !
-        call fem_skv_poisson_bc_1(num_index_ibc, ele_bc_id,             &
-     &      ibc_stack_smp(istart_smp), k2, n_int, phi_e, sk6)
+        call fem_skv_poisson_linear_bc(num_index_ibc, ele_bc_id,        &
+     &      ibc_stack_smp(istart_smp), k2, n_int, ele1, jac1_3d_l,      &
+     &      phi_e, sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
@@ -121,8 +123,9 @@
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
 !
-        call fem_skv_scalar_diffuse_bc_1(num_index_ibc, ele_bc_id,      &
-     &      ibc_stack_smp(istart_smp), k2, n_int, ak_d, phi_e, sk6)
+        call fem_skv_vector_diffuse_bc(num_index_ibc, ele_bc_id,        &
+     &      ibc_stack_smp(istart_smp), k2, ione, n_int, ak_d,           &
+     &      ele1, jac1_3d_q, phi_e, sk6)
       end do
 !
       call add1_skv_coef_to_ff_v_smp_1st(coef_implicit, ff_smp, sk6)
@@ -133,7 +136,7 @@
 !
       subroutine int_vol_fixed_vector_surf(n_int, nmax_index_ibc,       &
      &          ibc_end, num_index_ibc, ele_bc_id, ibc_stack_smp,       &
-     &           ibc_shape, i_field, ak_d, coef_implicit)
+     &          ibc_shape, i_field, ak_d, coef_implicit)
 !
       integer(kind=kint), intent(in) :: n_int
       integer(kind=kint), intent(in) :: nmax_index_ibc
@@ -171,9 +174,9 @@
 !   'sf' = - \tilde{v}_{i,i} N(x)
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
-            call fem_skv_vector_diffuse_bc_1(nmax_index_ibc,            &
+            call fem_skv_vector_diffuse_bc(nmax_index_ibc,              &
      &          ele_bc_id(1,nd), ibc_stack_smp(istart_smp,nd), k2, nd,  &
-     &          n_int, ak_d, phi_e, sk6)
+     &          n_int, ak_d, ele1, jac1_3d_q, phi_e, sk6)
           end do
         end if
       end do
@@ -222,9 +225,9 @@
 !   'sf' = - \tilde{v}_{i,i} N(x)
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
 !
-            call fem_skv_vector_diffuse_bc_1(num_index_ibc,             &
+            call fem_skv_vector_diffuse_bc(num_index_ibc,               &
      &          ele_bc_id, ibc_stack_smp(istart_smp), k2, nd,           &
-     &          n_int, ak_d, phi_e, sk6)
+     &          n_int, ak_d, ele1, jac1_3d_q, phi_e, sk6)
           end do
       end do
 !

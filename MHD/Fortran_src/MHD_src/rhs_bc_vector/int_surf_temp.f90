@@ -11,7 +11,9 @@
       use m_precision
 !
       use m_control_parameter
+      use m_geometry_data
       use m_group_data
+      use m_jacobian_sf_grp
 !
       use int_surf_div_fluxes_sgs
       use int_surf_fixed_gradients
@@ -31,7 +33,8 @@
 !
       num_int = intg_point_t_evo
 !
-      call int_sf_h_flux(sf_grp1, num_int)
+      call int_sf_h_flux                                                &
+     &   (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, num_int)
 !
       if (iflag_SGS_heat .ne. id_SGS_none                               &
      &     .and. iflag_commute_temp .eq. id_SGS_commute_ON) then
@@ -53,7 +56,8 @@
       num_int = intg_point_t_evo
 !
       if (i_field .eq. iphys%i_t_diffuse) then
-        call int_sf_h_flux(sf_grp1, num_int)
+        call int_sf_h_flux                                              &
+     &      (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, num_int)
       end if
 !
       if (iflag_commute_heat .eq. id_SGS_commute_ON                     &

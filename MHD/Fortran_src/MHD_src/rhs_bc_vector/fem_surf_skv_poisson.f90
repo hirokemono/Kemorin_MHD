@@ -3,12 +3,12 @@
 !
 !      Written by H. Matsui on Sep., 2005
 !
-!      subroutine fem_surf_skv_poisson_wall(np_smp, numele,             &
+!      subroutine fem_surf_skv_poisson_wall_pg(np_smp, numele,          &
 !     &          nnod_4_e1, nnod_4_sf1, nnod_4_sf2, node_on_sf,         &
 !     &          num_surf_bc, surf_item, num_surf_smp,                  &
 !     &          isurf_grp_smp_stack, igrp, n_int, k2,                  &
 !     &          ntot_int_sf_grp, xsf_sf, an1_sf, an2_sf, vect_sf, sk_v)
-!      subroutine fem_surf_skv_poisson_sph_out(np_smp, numele,          &
+!      subroutine fem_surf_skv_poisson_sph_out_pg(np_smp, numele,       &
 !     &          nnod_4_e1, nnod_4_sf1, nnod_4_sf2, node_on_sf,         &
 !     &          num_surf_bc, surf_item, num_surf_smp,                  &
 !     &          isurf_grp_smp_stack, igrp, n_int, k2,                  &
@@ -31,7 +31,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_surf_skv_poisson_wall(np_smp, numele,              &
+      subroutine fem_surf_skv_poisson_wall_pg(np_smp, numele,           &
      &          nnod_4_e1, nnod_4_sf1, nnod_4_sf2, node_on_sf,          &
      &          num_surf_bc, surf_item, num_surf_smp,                   &
      &          isurf_grp_smp_stack, igrp, n_int, k2,                   &
@@ -97,11 +97,11 @@
       end do
 !$omp end parallel do
 !
-      end subroutine fem_surf_skv_poisson_wall
+      end subroutine fem_surf_skv_poisson_wall_pg
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fem_surf_skv_poisson_sph_out(np_smp, numele,           &
+      subroutine fem_surf_skv_poisson_sph_out_pg(np_smp, numele,        &
      &          nnod_4_e1, nnod_4_sf1, nnod_4_sf2, node_on_sf,          &
      &          num_surf_bc, surf_item, num_surf_smp,                   &
      &          isurf_grp_smp_stack, igrp, n_int, k2,                   &
@@ -170,7 +170,7 @@
       end do
 !$omp end parallel do
 !
-      end subroutine fem_surf_skv_poisson_sph_out
+      end subroutine fem_surf_skv_poisson_sph_out_pg
 !
 !-----------------------------------------------------------------------
 !

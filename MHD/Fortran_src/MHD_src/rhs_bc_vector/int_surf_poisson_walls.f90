@@ -3,12 +3,15 @@
 !
 !      Written by H. Matsui on Sep. 2005
 !
-!!      subroutine int_surf_poisson_wall(sf_grp, n_int, ngrp_sf,        &
-!!     &          id_grp_sf, i_vect)
-!!      subroutine int_surf_poisson_sph_in(sf_grp, n_int, ngrp_sf,      &
-!!     &          id_grp_sf, i_vect)
-!!      subroutine int_surf_poisson_sph_out(sf_grp, n_int, ngrp_sf,     &
-!!     &          id_grp_sf, i_vect)
+!!      subroutine int_surf_poisson_wall                                &
+!!     &         (ele, surf, sf_grp, jac_sf_grp_l, n_int,               &
+!!     &          ngrp_sf, id_grp_sf, i_vect)
+!!      subroutine int_surf_poisson_sph_in                              &
+!!     &         (ele, surf, sf_grp, jac_sf_grp_l, n_int,               &
+!!     &          ngrp_sf, id_grp_sf, i_vect)
+!!      subroutine int_surf_poisson_sph_out                             &
+!!     &         (ele, surf, sf_grp, jac_sf_grp_l, n_int,               &
+!!     &          ngrp_sf, id_grp_sf, i_vect)
 !!        type(surface_group_data), intent(in) :: sf_grp
 !
       module int_surf_poisson_walls
@@ -19,10 +22,15 @@
       use m_geometry_constants
       use m_phys_constants
       use m_finite_element_matrix
+      use m_int_surface_data
+!
+      use t_geometry_data
+      use t_surface_data
       use t_group_data
+      use t_jacobian_2d
 !
       use node_phys_2_each_surface
-      use fem_surf_skv_poisson_1st
+      use fem_surf_skv_poisson_type
       use cal_skv_to_ff_smp_1st
 !
       implicit  none
@@ -33,12 +41,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_poisson_wall(sf_grp, n_int, ngrp_sf,          &
-     &          id_grp_sf, i_vect)
+      subroutine int_surf_poisson_wall                                  &
+     &         (ele, surf, sf_grp, jac_sf_grp_l, n_int,                 &
+     &          ngrp_sf, id_grp_sf, i_vect)
 !
-      use m_int_surface_data
-!
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp_l
+!
       integer(kind = kint), intent(in) :: n_int, ngrp_sf
       integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
       integer(kind = kint), intent(in) :: i_vect
@@ -58,7 +69,8 @@
           do k2=1, num_linear_sf
             call vector_phys_2_each_surface(sf_grp, igrp, k2,           &
      &          i_vect, vect_sf)
-            call fem_surf_skv_poisson_wall_1(sf_grp, igrp, k2, n_int,   &
+            call fem_surf_skv_poisson_wall                              &
+     &         (ele, surf, sf_grp, jac_sf_grp_l, igrp, k2, n_int,       &
      &          vect_sf, sk6)
           end do
 !
@@ -71,12 +83,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_poisson_sph_in(sf_grp, n_int, ngrp_sf,        &
-     &          id_grp_sf, i_vect)
+      subroutine int_surf_poisson_sph_in                                &
+     &         (ele, surf, sf_grp, jac_sf_grp_l, n_int,                 &
+     &          ngrp_sf, id_grp_sf, i_vect)
 !
-      use m_int_surface_data
-!
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp_l
+!
       integer(kind = kint), intent(in) :: n_int, ngrp_sf
       integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
       integer(kind = kint), intent(in) :: i_vect
@@ -95,7 +110,8 @@
           do k2=1, num_linear_sf
             call vector_phys_2_each_surf_cst(sf_grp, igrp, k2,          &
      &          i_vect, dminus, vect_sf)
-            call fem_surf_skv_poisson_sph_out_1(sf_grp, igrp, k2,       &
+            call fem_surf_skv_poisson_sph_out                           &
+     &         (ele, surf, sf_grp, jac_sf_grp_l, igrp, k2,              &
      &          n_int, xe_sf, vect_sf, sk6)
           end do
 !
@@ -108,12 +124,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_poisson_sph_out(sf_grp, n_int, ngrp_sf,       &
-     &          id_grp_sf, i_vect)
+      subroutine int_surf_poisson_sph_out                               &
+     &         (ele, surf, sf_grp, jac_sf_grp_l, n_int,                 &
+     &          ngrp_sf, id_grp_sf, i_vect)
 !
-      use m_int_surface_data
-!
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp_l
+!
       integer(kind = kint), intent(in) :: n_int, ngrp_sf
       integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
       integer(kind = kint), intent(in) :: i_vect
@@ -134,8 +153,9 @@
           do k2=1, num_linear_sf
             call vector_phys_2_each_surface(sf_grp, igrp, k2,           &
      &          i_vect, vect_sf)
-            call fem_surf_skv_poisson_sph_out_1(sf_grp, igrp, k2,       &
-     &          n_int, xe_sf, vect_sf, sk6)
+            call fem_surf_skv_poisson_sph_out                           &
+     &         (ele, surf, sf_grp, jac_sf_grp_l, igrp, k2, n_int,       &
+     &          xe_sf, vect_sf, sk6)
           end do
 !
         end if

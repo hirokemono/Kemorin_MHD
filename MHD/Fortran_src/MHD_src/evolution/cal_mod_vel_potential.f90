@@ -24,6 +24,7 @@
       use m_finite_element_matrix
       use m_geometry_data
       use m_group_data
+      use m_jacobian_sf_grp
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -41,13 +42,14 @@
 !
       call int_vol_divergence_velo
 !
-      call int_surf_normal_velocity(sf_grp1)
+      call int_surf_normal_velocity                                     &
+     &   (ele1, surf1, sf_grp1, jac1_sf_grp_2d_l)
 !
 !      call int_surf_sgs_div_velo
 !
 !   set boundary condition for wall
 !
-      call int_sf_grad_press(sf_grp1)
+      call int_sf_grad_press(ele1, surf1, sf_grp1, jac1_sf_grp_2d_q)
 !
 !   add boundary term for fixed velocity
 !

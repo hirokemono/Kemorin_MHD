@@ -33,7 +33,9 @@
       use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
+      use m_geometry_data
       use m_group_data
+      use m_jacobian_sf_grp
 !
       use nod_phys_send_recv
       use set_boundary_scalars
@@ -56,7 +58,8 @@
       end if
 !
 !
-      call int_sf_grad_composition(sf_grp1, intg_point_t_evo)
+      call int_sf_grad_composition                                      &
+     &   (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, intg_point_t_evo)
 !
 !
       if     (iflag_t_evo_4_composit .eq. id_explicit_euler) then

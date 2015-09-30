@@ -11,8 +11,11 @@
       use m_precision
 !
       use m_control_parameter
+      use m_geometry_data
       use m_group_data
+      use m_jacobian_sf_grp
       use m_surf_data_torque
+      use m_node_phys_address
 !
       use int_surf_div_fluxes_sgs
       use int_surf_fixed_gradients
@@ -27,8 +30,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_surf_velo_pre_ele
-!
-      use m_node_phys_address
 !
       integer (kind=kint) :: num_int
 !
@@ -49,17 +50,18 @@
       end if
 !
 !
-        call int_sf_torque(sf_grp1, num_int)
-        call int_free_surf_sph_in(sf_grp1, num_int)
-        call int_free_surf_sph_out(sf_grp1, num_int)
+        call int_sf_torque                                              &
+     &     (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, num_int)
+        call int_free_surf_sph_in                                       &
+     &     (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, num_int)
+        call int_free_surf_sph_out                                      &
+     &     (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, num_int)
 !
       end subroutine int_surf_velo_pre_ele
 !
 ! ----------------------------------------------------------------------
 !
       subroutine int_surf_velo_monitor(i_field)
-!
-      use m_node_phys_address
 !
       integer(kind= kint), intent(in) :: i_field
 !
@@ -83,9 +85,12 @@
 !
 !
       if (i_field .eq. iphys%i_v_diffuse) then
-        call int_sf_torque(sf_grp1, num_int)
-        call int_free_surf_sph_in(sf_grp1, num_int)
-        call int_free_surf_sph_out(sf_grp1, num_int)
+        call int_sf_torque                                              &
+     &     (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, num_int)
+        call int_free_surf_sph_in                                       &
+     &     (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, num_int)
+        call int_free_surf_sph_out                                      &
+     &     (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, num_int)
       end if
 !
       end subroutine int_surf_velo_monitor
