@@ -41,7 +41,7 @@
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_poisson_mat11(n_int, idx_4_fll_mat,                  &
+      call int_vol_poisson_mat11(n_int, mat_tbl_fl_l%idx_4_mat,         &
      &    Pmat_DJDS%num_non0, Pmat_DJDS%aiccg)
 !
       end subroutine int_vol_velo_poisson_mat
@@ -57,7 +57,7 @@
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_poisson_mat11(n_int, idx_4_l_mat,                    &
+      call int_vol_poisson_mat11(n_int, mat_tbl_l1%idx_4_mat,           &
      &    Fmat_DJDS%num_non0, Fmat_DJDS%aiccg)
 !
       end subroutine int_vol_magne_poisson_mat
@@ -76,8 +76,8 @@
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_crank_mat33(n_int, idx_4_fl_mat, coef_imp_v,         &
-     &    ak_d_velo, Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
+      call int_vol_crank_mat33(n_int, mat_tbl_fl_q%idx_4_mat,           &
+     &    coef_imp_v, ak_d_velo, Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
 !
       end subroutine int_vol_velo_crank_mat
 !
@@ -93,8 +93,8 @@
 !
       integer(kind = kint), intent(in) :: n_int
 !
-      call int_vol_crank_mat33(n_int, idx_4_cd_mat_full, coef_imp_b,    &
-     &    ak_d_magne, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
+      call int_vol_crank_mat33(n_int, mat_tbl_full_cd_q%idx_4_mat,      &
+     &    coef_imp_b, ak_d_magne, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
 !
       end subroutine int_vol_magne_crank_mat
 !
@@ -111,7 +111,7 @@
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_crank_mat33(n_int, idx_4_mat, coef_imp_b,            &
+      call int_vol_crank_mat33(n_int, mat_tbl_q1%idx_4_mat, coef_imp_b, &
      &      ak_d_magne, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
 !
       end subroutine int_vol_vecp_crank_mat
@@ -130,8 +130,8 @@
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_crank_mat11(n_int, idx_4_fl_mat, coef_imp_t,         &
-     &    ak_d_temp, Tmat_DJDS%num_non0, Tmat_DJDS%aiccg)
+      call int_vol_crank_mat11(n_int, mat_tbl_fl_q%idx_4_mat,           &
+     &    coef_imp_t, ak_d_temp, Tmat_DJDS%num_non0, Tmat_DJDS%aiccg)
 !
       end subroutine int_vol_temp_crank_mat
 !
@@ -149,8 +149,9 @@
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_crank_mat11(n_int, idx_4_fl_mat, coef_imp_c,         &
-     &      ak_d_composit, Cmat_DJDS%num_non0, Cmat_DJDS%aiccg)
+      call int_vol_crank_mat11(n_int, mat_tbl_fl_q%idx_4_mat,           &
+     &    coef_imp_c, ak_d_composit, Cmat_DJDS%num_non0,                &
+     &    Cmat_DJDS%aiccg)
 !
       end subroutine int_vol_composit_crank_mat
 !

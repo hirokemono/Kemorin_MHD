@@ -32,7 +32,7 @@
 !
       call s_crs_matrix_init(np_smp, ele1%nnod_4_ele,                   &
      &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
-     &    rhs_tbl1%nod_stack_smp, idx_4_mat,  &
+     &    rhs_tbl1%nod_stack_smp, mat_tbl_q1%idx_4_mat,                 &
      &    num_mat, ione, node1%numnod, aiccg)
 !
       end subroutine iccg_matrix_init

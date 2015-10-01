@@ -15,6 +15,8 @@
 !
       implicit none
 !
+      private :: set_index_list_4_matrix
+!
 ! ----------------------------------------------------------------------
 !
        contains
@@ -28,8 +30,6 @@
       use m_geometry_data
       use t_solver_djds
       use m_solver_djds_MHD
-!
-      use set_index_list_MHD_matrix
 !
 !   set off_diagonal information
 !
@@ -89,6 +89,7 @@
       use init_iccg_matrices
       use precond_djds_MHD
       use initialize_4_MHD_AMG
+      use skip_comment_f
 !
 !
       call reset_aiccg_matrices
@@ -124,19 +125,61 @@
 !
 !     set marrix for the Multigrid
 !
-      if (     ((method_4_solver(1:1).eq.'M')                           &
-     &      .or.(method_4_solver(1:1).eq.'m'))                          &
-     &   .and. ((method_4_solver(2:2).eq.'G')                           &
-     &      .or.(method_4_solver(2:2).eq.'g'))                          &
-     &   .and. ((method_4_solver(3:3).eq.'C')                           &
-     &      .or.(method_4_solver(3:3).eq.'c'))                          &
-     &   .and. ((method_4_solver(4:4).eq.'G')                           &
-     &      .or.(method_4_solver(4:4).eq.'g')) ) then
+      if(cmp_no_case(method_4_solver, 'MGCG')) then
         call const_MGCG_MHD_matrices
       end if
 !
 !
       end subroutine set_aiccg_matrices
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine set_index_list_4_matrix
+!
+      use calypso_mpi
+      use m_control_parameter
+      use m_geometry_constants
+      use m_geometry_data
+      use m_sorted_node
+      use m_sorted_node_MHD
+      use m_solver_djds_MHD
+!
+      use set_index_list_4_djds
+!
+!
+!      write(*,*) 'set_index_list_4_DJDS_mat_etr'
+      call alloc_type_marix_list(ele1%nnod_4_ele, rhs_tbl1, mat_tbl_q1)
+      call set_index_list_4_DJDS_mat_etr                                &
+     &   (node1, ele1, rhs_tbl1, DJDS_entire, mat_tbl_q1)
+!
+!      write(*,*) 'set_index_list_4_mat_etr_l'
+      call set_index_list_4_mat_etr_l
+!
+      if (iflag_t_evo_4_velo .ne. id_no_evolution                       &
+     &  .or. iflag_t_evo_4_temp .ne. id_no_evolution                    &
+     &  .or. iflag_t_evo_4_composit .ne. id_no_evolution) then
+!        write(*,*) 'set_index_list_4_mat_fl'
+        call set_index_list_4_mat_fl
+!        write(*,*) 'set_index_list_4_mat_fl_l'
+        call set_index_list_4_mat_fl_l
+      end if
+!
+      if (iflag_t_evo_4_magne .ne. id_no_evolution                      &
+     &     .or. iflag_t_evo_4_vect_p .eq. id_Crank_nicolson_cmass) then
+        write(*,*) 'set_index_list_4_mat_cd'
+        call set_index_list_4_mat_cd
+!        write(*,*) 'set_index_list_4_mat_ins'
+!        call set_index_list_4_mat_ins
+!
+!        write(*,*) 'set_index_list_4_mat_cd_l'
+!        call set_index_list_4_mat_cd_l
+!        write(*,*) 'set_index_list_4_mat_ins_l'
+!        call set_index_list_4_mat_ins_l
+      end if
+!
+!
+      end subroutine set_index_list_4_matrix
 !
 ! ----------------------------------------------------------------------
 !

@@ -23,7 +23,7 @@
 !
       use m_element_id_4_node
       use m_next_node_id_4_node
-      use ordering_4_rhs_assemble
+      use m_sorted_node
 !
 !
 !      Search surrounding node and element

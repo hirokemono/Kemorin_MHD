@@ -4,9 +4,9 @@
 !      Written by H.Matsui on Nov., 2008
 !
 !      subroutine s_sort_node_index_type(nod, neib_ele, rhs_tbl)
-!      type(node_data),           intent(in) :: nod
-!      type(element_around_node), intent(in) :: neib_ele
-!      type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
+!        type(node_data),           intent(in) :: nod
+!        type(element_around_node), intent(in) :: neib_ele
+!        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
 !
       module ordering_rhs_assemble_type
 !

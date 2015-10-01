@@ -187,7 +187,7 @@
       integer (kind = kint) :: nd2, mat_num
 !
 !
-      call set_off_diag_type(mat33%num_diag, mat33%internal_diag,       &
+      call set_DJDS_off_diag_type(mat33%num_diag, mat33%internal_diag,  &
      &    djds_tbl, nod1, nod2, mat_num)
 !
       do nd2 = nst, ned
@@ -212,7 +212,7 @@
       integer (kind = kint) :: mat_num
 !
 !
-      call set_off_diag_type(mat11%num_diag, mat11%internal_diag,       &
+      call set_DJDS_off_diag_type(mat11%num_diag, mat11%internal_diag,  &
      &    djds_tbl, nod1, nod2, mat_num)
       call correct_matrix11_4_boundary                                  &
      &   (mat11%num_diag, djds_tbl%itotal_u, djds_tbl%itotal_l,         &

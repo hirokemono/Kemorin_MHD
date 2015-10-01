@@ -55,6 +55,7 @@
       end type tables_4_FEM_assembles
 !
       type table_mat_const
+        integer (kind=kint) :: nnod_1ele
         integer (kind=kint), pointer :: idx_4_mat(:,:)
       end type table_mat_const
 !
@@ -108,7 +109,9 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(inout) :: mat_tbl
 !
-      allocate (mat_tbl%idx_4_mat (rhs_tbl%num_sort_smp,nnod_4_ele))
+!
+      mat_tbl%nnod_1ele = nnod_4_ele
+      allocate(mat_tbl%idx_4_mat(rhs_tbl%num_sort_smp,nnod_4_ele))
       if (rhs_tbl%num_sort_smp .gt. 0) mat_tbl%idx_4_mat = 0
 !
       end subroutine alloc_type_marix_list

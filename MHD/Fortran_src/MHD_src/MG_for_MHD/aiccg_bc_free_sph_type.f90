@@ -235,7 +235,7 @@
 !
 !   ------ coefficients for Crank-Nicolson Scheme
 !
-            call set_off_diag_type                                      &
+            call set_DJDS_off_diag_type                                 &
      &         (mesh%node%numnod, mesh%node%internal_node,              &
      &          djds_tbl, nod1, nod2, mat_num)
 !

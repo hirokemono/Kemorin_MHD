@@ -181,8 +181,8 @@
       use m_geometry_data
       use m_crs_connect
       use m_crs_consist_mass_mat
+      use m_sorted_node
       use set_crs_connection
-      use set_index_list_4_crs
       use set_consist_mass_connect
       use int_consist_mass_mat_filter
 !

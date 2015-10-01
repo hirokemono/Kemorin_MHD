@@ -15,7 +15,7 @@
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(DJDS_ordering_table), intent(in) :: djds_tbl
 !!        type(table_mat_const), intent(inout) :: whole_mat
-!!      subroutine set_off_diag_type(NP, N, djds_tbl,                   &
+!!      subroutine set_DJDS_off_diag_type(NP, N, djds_tbl,              &
 !!     &          nod1, nod2, mat_num)
 !!        integer (kind = kint), intent(in) :: N, NP
 !!        integer (kind = kint), intent(in) :: nod1, nod2
@@ -71,7 +71,7 @@
               nod1 = mesh%ele%ie(iele,iconn)
               nod2 = mesh%ele%ie(iele,k2)
 !
-              call set_off_diag_type                                    &
+              call set_DJDS_off_diag_type                               &
      &           (mesh%node%numnod, mesh%node%internal_node,            &
      &            djds_tbl, nod1, nod2, mat_num)
               whole_mat%idx_4_mat(in,k2) = mat_num
@@ -87,7 +87,7 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_off_diag_type(NP, N, djds_tbl,                     &
+      subroutine set_DJDS_off_diag_type(NP, N, djds_tbl,                &
      &          nod1, nod2, mat_num)
 !
       use t_geometry_data
@@ -111,7 +111,7 @@
      &     djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                    &
      &     djds_tbl%PEon, djds_tbl%COLORon, nod1, nod2, mat_num)
 !
-      end subroutine set_off_diag_type
+      end subroutine set_DJDS_off_diag_type
 !
 !-----------------------------------------------------------------------
 !

@@ -80,8 +80,8 @@
      &          jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%an_sf,      &
      &          jac1_sf_grp_2d_q%xj_sf, xe_sf, ak_d_velo, sk6)
 !
-            call add_skv1_2_MHD_matrix33(idx_4_fl_mat, k2, sk6,         &
-     &          Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
+            call add_skv1_2_MHD_matrix33(mat_tbl_fl_q%idx_4_mat,        &
+     &          k2, sk6, Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
           end if
         end do
       end do
@@ -127,8 +127,8 @@
      &          jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%an_sf,      &
      &          jac1_sf_grp_2d_q%xj_sf, xe_sf, ak_d_velo, sk6)
 !
-            call add_skv1_2_MHD_matrix33(idx_4_fl_mat, k2, sk6,         &
-     &          Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
+            call add_skv1_2_MHD_matrix33(mat_tbl_fl_q%idx_4_mat,        &
+     &          k2, sk6, Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
           end if
         end do
       end do

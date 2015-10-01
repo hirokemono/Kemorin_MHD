@@ -203,7 +203,7 @@
 !
               if (iele.ge.fluid%iele_start_fld                          &
      &          .and. iele.le.fluid%iele_end_fld) then
-                call set_off_diag_type                                  &
+                call set_DJDS_off_diag_type                             &
      &             (mesh%node%numnod, mesh%node%internal_node,          &
      &              djds_part_tbl, nod1, nod2, mat_num )
                 mat_tbl%idx_4_mat(in,k2) = mat_num

@@ -5,8 +5,6 @@
 !      Modified by H.Matsui on Oct., 2006
 !      Modified by H.Matsui on Dec., 2008
 !
-!      subroutine sort_node_index
-!
 !      subroutine count_nele_4_RHS_assemble(numnod, nmax_ele_4_node,    &
 !     &          nele_4_node, np_smp, inod_ele_max, nnod_sort_smp)
 !         output:  nnod_sort_smp
@@ -28,55 +26,6 @@
 !
       contains
 !
-!-----------------------------------------------------------------------
-!
-      subroutine sort_node_index
-!
-      use m_constants
-!
-      use m_geometry_data
-      use m_machine_parameter
-      use m_element_id_4_node
-      use m_sorted_node
-!
-      use cal_minmax_and_stacks
-!
-!
-      rhs_tbl1%inod_ele_max = ele_4_nod1%nmax
-      call allocate_sorted_node(node1%numnod)
-!
-!    count number of node to RHS assemble
-!
-      call count_nele_4_RHS_assemble(node1%numnod,                      &
-     &    ele_4_nod1%nmax, ele_4_nod1%nele_4_node, np_smp,              &
-     &    rhs_tbl1%inod_ele_max, rhs_tbl1%nnod_sort_smp)
-!
-!    stacking for SMP
-!
-      call s_cal_dbl_minmax_and_stacks(np_smp, ele_4_nod1%nmax,         &
-     &    rhs_tbl1%nnod_sort_smp, izero, rhs_tbl1%nod_stack_smp,        &
-     &    rhs_tbl1%num_sort_smp, rhs_tbl1%nmax_sort_smp,                &
-     &    rhs_tbl1%nmin_sort_smp)
-!
-!       write(*,*) 'num_sort_smp', rhs_tbl1%num_sort_smp
-!
-      call allocate_sort_smp
-!
-!       write(*,*) 'allocate smp end'
-!
-      call set_iele_4_RHS_assemble(node1%numnod, ele_4_nod1%nmax,       &
-     &    ele_4_nod1%nele_4_node, ele_4_nod1%istack_4_node,             &
-     &    np_smp, rhs_tbl1%inod_ele_max, rhs_tbl1%nod_stack_smp,        &
-     &    ele_4_nod1%ntot, ele_4_nod1%iele_4_node,                      &
-     &    ele_4_nod1%iconn_4_node, rhs_tbl1%num_sort_smp,               &
-     &    rhs_tbl1%node_sort_list_smp, rhs_tbl1%iele_sort_smp,          &
-     &    rhs_tbl1%iconn_sort_smp)
-!
-!       write(*,*) 'set smp for RHS end'
-!
-      end  subroutine sort_node_index
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine count_nele_4_RHS_assemble(numnod, nmax_ele_4_node,     &
