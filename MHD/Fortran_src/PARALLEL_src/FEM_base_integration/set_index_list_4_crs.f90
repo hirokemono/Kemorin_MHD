@@ -53,16 +53,14 @@
       do k2 = 1, nnod_4_ele
 !
         do iproc = 1, np_smp
-          do inum = 1, inod_ele_max
-!
-            inn = inum + inod_ele_max*(iproc-1)
-            istart = nod_stack_smp(inn-1)+1
-            iend = nod_stack_smp(inn)
+          do inum = 1, rhs_tbl1%inod_ele_max
+            inn = inum + rhs_tbl1%inod_ele_max*(iproc-1)
+            istart = rhs_tbl1%nod_stack_smp(inn-1)+1
+            iend =   rhs_tbl1%nod_stack_smp(inn)
 !
             do in = istart, iend
-!
-              iele = iele_sort_smp(in)
-              iconn = iconn_sort_smp(in)
+              iele =  rhs_tbl1%iele_sort_smp(in)
+              iconn = rhs_tbl1%iconn_sort_smp(in)
               nod1 = ie(iele,iconn)
               nod2 = ie(iele,k2)
 !
@@ -72,7 +70,6 @@
      &            nod1, nod2, mat_num)
 !
               idx_4_mat(in,k2) = mat_num
-!
             end do
           end do
         end do

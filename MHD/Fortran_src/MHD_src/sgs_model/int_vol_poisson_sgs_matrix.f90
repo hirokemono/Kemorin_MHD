@@ -37,7 +37,7 @@
      &          i_filter, ak_diff, nmat_size, aiccg)
 !
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
+     &           :: idx_for_mat(rhs_tbl1%num_sort_smp, ele1%nnod_4_ele)
 !
       integer(kind = kint), intent(in) :: n_int, i_filter
       real(kind=kreal), intent(in) :: ak_diff(ele1%numele)
@@ -66,7 +66,7 @@
      &          i_filter, ak_diff, ak_d, nmat_size, aiccg)
 !
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
+     &           :: idx_for_mat(rhs_tbl1%num_sort_smp, ele1%nnod_4_ele)
       real(kind=kreal), intent(in) :: coef_imp
       real(kind=kreal), intent(in) :: ak_d(ele1%numele)
       real(kind=kreal), intent(in) :: ak_diff(ele1%numele)
@@ -95,7 +95,7 @@
      &          i_filter, ak_diff, ak_d, nmat_size, aiccg33)
 !
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
+     &           :: idx_for_mat(rhs_tbl1%num_sort_smp, ele1%nnod_4_ele)
       real(kind=kreal), intent(in) :: coef_imp
       real(kind=kreal), intent(in) :: ak_d(ele1%numele)
       real(kind=kreal), intent(in) :: ak_diff(ele1%numele)

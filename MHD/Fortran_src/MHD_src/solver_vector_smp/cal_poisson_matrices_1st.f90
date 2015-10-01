@@ -41,7 +41,7 @@
 !
       integer (kind = kint), intent(in) :: k2
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
+     &           :: idx_for_mat(rhs_tbl1%num_sort_smp, ele1%nnod_4_ele)
 !
       real (kind=kreal), intent(in)                                     &
      &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
@@ -51,8 +51,10 @@
 !
 !
       call add_skv1_2_matrix11(np_smp, ele1%numele, ele1%nnod_4_ele,    &
-     &    inod_ele_max, num_sort_smp, nod_stack_smp, iele_sort_smp,     &
-     &    iconn_sort_smp, idx_for_mat, k2, sk_v, nmat_size, aiccg)
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, idx_for_mat, k2,                     &
+     &    sk_v, nmat_size, aiccg)
 !
       end subroutine add_skv1_2_MHD_matrix11
 !
@@ -65,7 +67,7 @@
 !
       integer (kind = kint), intent(in) :: k2
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
+     &           :: idx_for_mat(rhs_tbl1%num_sort_smp, ele1%nnod_4_ele)
 !
       real (kind=kreal), intent(in)                                     &
      &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
@@ -75,8 +77,10 @@
 !
 !
       call add_skv1_2_matrix33(np_smp, ele1%numele, ele1%nnod_4_ele,    &
-     &    inod_ele_max, num_sort_smp, nod_stack_smp, iele_sort_smp,     &
-     &    iconn_sort_smp, idx_for_mat, k2, sk_v, nmat_size, aiccg33)
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, idx_for_mat, k2,                     &
+     &    sk_v, nmat_size, aiccg33)
 !
       end subroutine add_skv1_2_MHD_matrix33
 !
@@ -90,7 +94,7 @@
 !
       integer (kind = kint), intent(in) :: k2
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
+     &           :: idx_for_mat(rhs_tbl1%num_sort_smp, ele1%nnod_4_ele)
       real(kind=kreal), intent(in) :: coef_imp
       real(kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
@@ -103,9 +107,10 @@
 !
       call cal_scalar_diffuse_evo_mat                                   &
      &   (np_smp, ele1%numele, ele1%nnod_4_ele,                         &
-     &    inod_ele_max, num_sort_smp, nod_stack_smp, iele_sort_smp,     &
-     &    iconn_sort_smp, idx_for_mat, coef_imp, dt, ak_d, k2, sk_v,    &
-     &    nmat_size, aiccg)
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, idx_for_mat, coef_imp,               &
+     &    dt, ak_d, k2, sk_v, nmat_size, aiccg)
 !
       end subroutine cal_scalar_diffuse_evo_mat_1st
 !
@@ -118,7 +123,7 @@
 !
       integer (kind = kint), intent(in) :: k2
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
+     &           :: idx_for_mat(rhs_tbl1%num_sort_smp, ele1%nnod_4_ele)
       real(kind=kreal), intent(in) :: coef_imp
       real(kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
@@ -131,9 +136,10 @@
 !
       call cal_vector_diffuse_evo_mat                                   &
      &   (np_smp, ele1%numele, ele1%nnod_4_ele,                         &
-     &    inod_ele_max, num_sort_smp, nod_stack_smp, iele_sort_smp,     &
-     &    iconn_sort_smp, idx_for_mat, coef_imp, dt, ak_d, k2, sk_v,    &
-     &    nmat_size, aiccg33)
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, idx_for_mat, coef_imp,               &
+     &    dt, ak_d, k2, sk_v, nmat_size, aiccg33)
 !
       end subroutine cal_vect_diffuse_evo_mat_1st
 !
@@ -148,7 +154,7 @@
 !
       integer (kind = kint), intent(in) :: k2
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
+     &           :: idx_for_mat(rhs_tbl1%num_sort_smp, ele1%nnod_4_ele)
 !
       real (kind=kreal), intent(in)                                     &
      &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
@@ -159,8 +165,9 @@
 !
       call cal_consist_coriolis_matrix                                  &
      &   (np_smp, ele1%numele, ele1%nnod_4_ele, ele1%nnod_4_ele,        &
-     &     inod_ele_max, num_sort_smp, nod_stack_smp,                   &
-     &     iele_sort_smp, iconn_sort_smp, idx_for_mat, k2,              &
+     &     rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                &
+     &     rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,              &
+     &     rhs_tbl1%iconn_sort_smp, idx_for_mat, k2,                    &
      &     coef_cor, angular, sk_v, nmat_size, aiccg33)
 !
       end subroutine cal_consist_coriolis_mat_1st

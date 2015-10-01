@@ -21,6 +21,7 @@
 !
       subroutine iccg_matrix_init(num_mat, aiccg)
 !
+      use m_constants
       use m_geometry_data
       use m_machine_parameter
       use m_sorted_node
@@ -28,11 +29,11 @@
       integer(kind = kint), intent(in) :: num_mat
       real(kind = kreal), intent(inout) :: aiccg(0:num_mat)
 !
-      integer(kind = kint), parameter :: ione = 1
 !
       call s_crs_matrix_init(np_smp, ele1%nnod_4_ele,                   &
-     &          inod_ele_max, num_sort_smp, nod_stack_smp, idx_4_mat,   &
-     &          num_mat, ione, node1%numnod, aiccg)
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, idx_4_mat,  &
+     &    num_mat, ione, node1%numnod, aiccg)
 !
       end subroutine iccg_matrix_init
 !

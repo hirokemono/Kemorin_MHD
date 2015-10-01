@@ -104,7 +104,7 @@
       type(DJDS_ordering_table), intent(in) :: djds_tbl
 !
       integer(kind = kint), intent(inout)                               &
-     &                     :: idx_4_djds_mat(num_sort_smp,nnod_1ele)
+     &               :: idx_4_djds_mat(rhs_tbl1%num_sort_smp,nnod_1ele)
 !
       integer(kind = kint) :: iproc, iele, inum, iconn
       integer(kind = kint) :: inn, ist, ied, in, mat_num, k2
@@ -115,15 +115,14 @@
 !
 !$omp do
         do iproc = 1, np_smp
-          do inum = 1, inod_ele_max
-!
-            inn = inum + inod_ele_max*(iproc-1)
-            ist = nod_stack_smp(inn-1)+1
-            ied = nod_stack_smp(inn)
+          do inum = 1, rhs_tbl1%inod_ele_max
+            inn = inum + rhs_tbl1%inod_ele_max*(iproc-1)
+            ist = rhs_tbl1%nod_stack_smp(inn-1)+1
+            ied = rhs_tbl1%nod_stack_smp(inn)
 !
             do in = ist, ied
-              iele = iele_sort_smp(in)
-              iconn = iconn_sort_smp(in)
+              iele =  rhs_tbl1%iele_sort_smp(in)
+              iconn = rhs_tbl1%iconn_sort_smp(in)
 !
               call set_off_diag_type(node1%numnod, node1%internal_node, &
      &            djds_tbl, ele1%ie(iele,iconn), ele1%ie(iele,k2),      &
@@ -152,7 +151,7 @@
       type(DJDS_ordering_table), intent(in) :: djds_tbl
 !
       integer(kind = kint), intent(inout)                               &
-     &                     :: idx_4_djds_mat(num_sort_smp,nnod_1ele)
+     &               :: idx_4_djds_mat(rhs_tbl1%num_sort_smp,nnod_1ele)
 !
       integer(kind = kint) :: iproc, iele, inum, iconn
       integer(kind = kint) :: inn, ist, ied, in, k2, mat_num
@@ -163,14 +162,14 @@
 !
 !$omp do
         do iproc = 1, np_smp
-          do inum = 1, inod_ele_max
-            inn = inum + inod_ele_max*(iproc-1)
-            ist = nod_stack_smp(inn-1)+1
-            ied = nod_stack_smp(inn)
+          do inum = 1, rhs_tbl1%inod_ele_max
+            inn = inum + rhs_tbl1%inod_ele_max*(iproc-1)
+            ist = rhs_tbl1%nod_stack_smp(inn-1)+1
+            ied = rhs_tbl1%nod_stack_smp(inn)
 !
             do in = ist, ied
-              iele = iele_sort_smp(in)
-              iconn = iconn_sort_smp(in)
+              iele =  rhs_tbl1%iele_sort_smp(in)
+              iconn = rhs_tbl1%iconn_sort_smp(in)
 !
               if(iele.ge.iele_start .and. iele.le.iele_end) then
                 call set_off_diag_type                                  &

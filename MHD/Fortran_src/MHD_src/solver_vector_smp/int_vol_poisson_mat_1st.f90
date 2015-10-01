@@ -36,7 +36,7 @@
       use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
+     &           :: idx_for_mat(rhs_tbl1%num_sort_smp, ele1%nnod_4_ele)
 !
       integer(kind = kint), intent(in) :: n_int
 !
@@ -66,7 +66,7 @@
       use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
+     &           :: idx_for_mat(rhs_tbl1%num_sort_smp, ele1%nnod_4_ele)
       real(kind=kreal), intent(in) :: coef_imp
       real(kind=kreal), intent(in) :: ak_d(ele1%numele)
 !
@@ -97,7 +97,7 @@
       use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
-     &               :: idx_for_mat(num_sort_smp, ele1%nnod_4_ele)
+     &           :: idx_for_mat(rhs_tbl1%num_sort_smp, ele1%nnod_4_ele)
       real(kind=kreal), intent(in) :: coef_imp
       real(kind=kreal), intent(in) :: ak_d(ele1%numele)
 !

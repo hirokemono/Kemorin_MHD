@@ -28,6 +28,7 @@
       implicit  none
 !
 !
+!>  Structure for FEM construction table
       type tables_4_FEM_assembles
 !>    maximum number of element on a node
         integer (kind=kint) :: inod_ele_max
@@ -37,7 +38,11 @@
 !>    node order by number of elements on each node 4 SMP
         integer(kind=kint), pointer :: node_sort_list_smp(:,:)
 !
-        integer (kind=kint) :: nmin_sort_smp, nmax_sort_smp
+!>    Minimum number of summuation for each node
+        integer (kind=kint) :: nmin_sort_smp
+!>    Maximum number of summuation for each node
+        integer (kind=kint) :: nmax_sort_smp
+!>    Number of summuation for each node
         integer(kind=kint), pointer :: nnod_sort_smp(:)
 !>    stack by number of elements on each node
         integer(kind=kint), pointer :: nod_stack_smp(:)

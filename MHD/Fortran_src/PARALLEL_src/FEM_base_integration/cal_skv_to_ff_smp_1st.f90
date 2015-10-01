@@ -53,10 +53,11 @@
      &            :: ff_v_smp(node1%max_nod_smp,n_vector,np_smp)
 !
 !
-      call add_skv_scalar_2_ff_smp (ele1%numele, ele1%nnod_4_ele,       &
-     &    np_smp, node1%max_nod_smp, inod_ele_max, num_sort_smp,        &
-     &    nod_stack_smp, iele_sort_smp, iconn_sort_smp,                 &
-     &    ff_v_smp, sk_v)
+      call add_skv_scalar_2_ff_smp                                      &
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp, node1%max_nod_smp,      &
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, ff_v_smp, sk_v)
 !
       end subroutine add1_skv_to_ff_v_smp_1st
 !
@@ -74,10 +75,10 @@
 !
 !
       call add_skv_scalar_coef_2_ff_smp                                 &
-     &   (ele1%numele, ele1%nnod_4_ele, np_smp,                         &
-     &    node1%max_nod_smp, inod_ele_max, num_sort_smp,                &
-     &    nod_stack_smp, iele_sort_smp, iconn_sort_smp, coef,           &
-     &    ff_v_smp, sk_v)
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp, node1%max_nod_smp,      &
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, coef, ff_v_smp, sk_v)
 !
       end subroutine add1_skv_coef_to_ff_v_smp_1st
 !
@@ -94,10 +95,11 @@
      &            :: ff_v_smp(node1%max_nod_smp,n_vector,np_smp)
 !
 !
-      call sub_skv_scalar_2_ff_smp (ele1%numele, ele1%nnod_4_ele,       &
-     &    np_smp, node1%max_nod_smp, inod_ele_max, num_sort_smp,        &
-     &    nod_stack_smp, iele_sort_smp, iconn_sort_smp,                 &
-     &    ff_v_smp, sk_v)
+      call sub_skv_scalar_2_ff_smp                                      &
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp, node1%max_nod_smp,      &
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, ff_v_smp, sk_v)
 !
       end subroutine sub1_skv_to_ff_v_smp_1st
 !
@@ -115,10 +117,10 @@
 !
 !
       call sub_skv_scalar_coef_2_ff_smp                                 &
-     &   (ele1%numele, ele1%nnod_4_ele, np_smp,                         &
-     &    node1%max_nod_smp, inod_ele_max, num_sort_smp,                &
-     &    nod_stack_smp, iele_sort_smp, iconn_sort_smp, coef,           &
-     &    ff_v_smp, sk_v)
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp, node1%max_nod_smp,      &
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, coef, ff_v_smp, sk_v)
 !
       end subroutine sub1_skv_coef_to_ff_v_smp_1st
 !
@@ -135,10 +137,11 @@
      &            :: ff_v_smp(node1%max_nod_smp,n_vector,np_smp)
 !
 !
-      call add_skv_vector_2_ff_smp (ele1%numele, ele1%nnod_4_ele,       &
-     &    np_smp, node1%max_nod_smp, inod_ele_max, num_sort_smp,        &
-     &    nod_stack_smp, iele_sort_smp, iconn_sort_smp,                 &
-     &    ff_v_smp, sk_v)
+      call add_skv_vector_2_ff_smp                                      &
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp, node1%max_nod_smp,      &
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, ff_v_smp, sk_v)
 !
       end subroutine add3_skv_to_ff_v_smp_1st
 !
@@ -156,10 +159,10 @@
 !
 !
       call add_skv_vector_coef_2_ff_smp                                 &
-         (ele1%numele, ele1%nnod_4_ele, np_smp,                         &
-     &    node1%max_nod_smp, inod_ele_max, num_sort_smp,                &
-     &    nod_stack_smp, iele_sort_smp, iconn_sort_smp, coef,           &
-     &    ff_v_smp, sk_v)
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp, node1%max_nod_smp,      &
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, coef, ff_v_smp, sk_v)
 !
       end subroutine add3_skv_coef_to_ff_v_smp_1st
 !
@@ -176,10 +179,11 @@
      &            :: ff_v_smp(node1%max_nod_smp,n_vector,np_smp)
 !
 !
-      call sub_skv_vector_2_ff_smp (ele1%numele, ele1%nnod_4_ele,       &
-     &    np_smp, node1%max_nod_smp, inod_ele_max, num_sort_smp,        &
-     &    nod_stack_smp, iele_sort_smp, iconn_sort_smp,                 &
-     &    ff_v_smp, sk_v)
+      call sub_skv_vector_2_ff_smp                                      &
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp, node1%max_nod_smp,      &
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, ff_v_smp, sk_v)
 !
       end subroutine sub3_skv_to_ff_v_smp_1st
 !
@@ -197,10 +201,10 @@
 !
 !
       call sub_skv_vector_coef_2_ff_smp                                 &
-     &   (ele1%numele, ele1%nnod_4_ele, np_smp,                         &
-     &    node1%max_nod_smp, inod_ele_max, num_sort_smp,                &
-     &    nod_stack_smp, iele_sort_smp, iconn_sort_smp, coef,           &
-     &    ff_v_smp, sk_v)
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp, node1%max_nod_smp,      &
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, coef, ff_v_smp, sk_v)
 !
       end subroutine sub3_skv_coef_to_ff_v_smp_1st
 !
@@ -217,10 +221,11 @@
      &            :: ff_t_smp(node1%max_nod_smp,n_sym_tensor,np_smp)
 !
 !
-      call add_skv_tensor_2_ff_smp (ele1%numele, ele1%nnod_4_ele,       &
-     &    np_smp, node1%max_nod_smp, inod_ele_max, num_sort_smp,        &
-     &    nod_stack_smp, iele_sort_smp, iconn_sort_smp,                 &
-     &    ff_t_smp, sk_v)
+      call add_skv_tensor_2_ff_smp                                      &
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp, node1%max_nod_smp,      &
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, ff_t_smp, sk_v)
 !
       end subroutine add6_skv_to_ff_t_smp_1st
 !
@@ -238,10 +243,10 @@
 !
 !
       call add_skv_tensor_coef_2_ff_smp                                 &
-     &   (ele1%numele, ele1%nnod_4_ele, np_smp,                         &
-     &    node1%max_nod_smp, inod_ele_max, num_sort_smp,                &
-     &    nod_stack_smp, iele_sort_smp, iconn_sort_smp, coef,           &
-     &    ff_t_smp, sk_v)
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp, node1%max_nod_smp,      &
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, coef, ff_t_smp, sk_v)
 !
       end subroutine add6_skv_coef_to_ff_t_smp_1st
 !
@@ -258,10 +263,11 @@
      &            :: ff_t_smp(node1%max_nod_smp,n_sym_tensor,np_smp)
 !
 !
-      call sub_skv_tensor_2_ff_smp (ele1%numele, ele1%nnod_4_ele,       &
-     &    np_smp, node1%max_nod_smp, inod_ele_max, num_sort_smp,        &
-     &    nod_stack_smp, iele_sort_smp, iconn_sort_smp,                 &
-     &    ff_t_smp, sk_v)
+      call sub_skv_tensor_2_ff_smp                                      &
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp, node1%max_nod_smp,      &
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, ff_t_smp, sk_v)
 !
       end subroutine sub6_skv_to_ff_t_smp_1st
 !
@@ -279,10 +285,10 @@
 !
 !
       call sub_skv_tensor_coef_2_ff_smp                                 &
-     &   (ele1%numele, ele1%nnod_4_ele, np_smp,                         &
-     &    node1%max_nod_smp, inod_ele_max, num_sort_smp,                &
-     &    nod_stack_smp, iele_sort_smp, iconn_sort_smp, coef,           &
-     &    ff_t_smp, sk_v)
+     &   (ele1%numele, ele1%nnod_4_ele, np_smp, node1%max_nod_smp,      &
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, coef, ff_t_smp, sk_v)
 !
       end subroutine sub6_skv_coef_to_ff_t_smp_1st
 !

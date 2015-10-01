@@ -46,8 +46,8 @@
 !
       integer(kind = kint), intent(in) :: nnod_4_ele
 !
-      allocate (idx_4_fl_mat (num_sort_smp,nnod_4_ele))
-      allocate (idx_4_fll_mat (num_sort_smp,num_t_linear))
+      allocate (idx_4_fl_mat (rhs_tbl1%num_sort_smp,nnod_4_ele))
+      allocate (idx_4_fll_mat (rhs_tbl1%num_sort_smp,num_t_linear))
 !
       idx_4_fl_mat = 0
       idx_4_fll_mat = 0
@@ -64,10 +64,10 @@
       integer(kind = kint), intent(in) :: nnod_4_ele
 !
 !
-      allocate (idx_4_cd_mat (num_sort_smp,nnod_4_ele)) 
-      allocate (idx_4_cd_mat_full (num_sort_smp,nnod_4_ele))
-      allocate (idx_4_cdl_mat (num_sort_smp,num_t_linear)) 
-      allocate (idx_4_cdl_mat_full (num_sort_smp,num_t_linear))
+      allocate (idx_4_cd_mat (rhs_tbl1%num_sort_smp,nnod_4_ele)) 
+      allocate (idx_4_cd_mat_full (rhs_tbl1%num_sort_smp,nnod_4_ele))
+      allocate (idx_4_cdl_mat (rhs_tbl1%num_sort_smp,num_t_linear)) 
+      allocate (idx_4_cdl_mat_full (rhs_tbl1%num_sort_smp,num_t_linear))
 !
       idx_4_cd_mat      = 0
       idx_4_cd_mat_full = 0
@@ -86,8 +86,8 @@
       integer(kind = kint), intent(in) :: nnod_4_ele
 !
 !
-      allocate (idx_4_ins_mat (num_sort_smp,nnod_4_ele))
-      allocate (idx_4_insl_mat (num_sort_smp,num_t_linear))
+      allocate (idx_4_ins_mat (rhs_tbl1%num_sort_smp,nnod_4_ele))
+      allocate (idx_4_insl_mat (rhs_tbl1%num_sort_smp,num_t_linear))
       idx_4_ins_mat = 0
       idx_4_insl_mat = 0
 !

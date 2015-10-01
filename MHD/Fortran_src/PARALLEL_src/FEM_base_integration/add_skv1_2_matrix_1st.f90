@@ -33,8 +33,10 @@
 !
 !
       call add_skv1_2_matrix11(np_smp, ele1%numele, ele1%nnod_4_ele,    &
-     &    inod_ele_max, num_sort_smp, nod_stack_smp, iele_sort_smp,     &
-     &    iconn_sort_smp, idx_4_mat, k2, sk_v, nmat_size, aiccg)
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, idx_4_mat, k2,                       &
+     &    sk_v, nmat_size, aiccg)
 !
       end subroutine add_skv1_2_matrix11_1st
 !
@@ -53,8 +55,10 @@
 !
 !
       call add_skv1_2_matrix33(np_smp, ele1%numele, ele1%nnod_4_ele,    &
-     &    inod_ele_max, num_sort_smp, nod_stack_smp, iele_sort_smp,     &
-     &    iconn_sort_smp, idx_4_mat, k2, sk_v, nmat_size, aiccg33)
+     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
+     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
+     &    rhs_tbl1%iconn_sort_smp, idx_4_mat, k2,                       &
+     &    sk_v, nmat_size, aiccg33)
 !
       end subroutine add_skv1_2_matrix33_1st
 !

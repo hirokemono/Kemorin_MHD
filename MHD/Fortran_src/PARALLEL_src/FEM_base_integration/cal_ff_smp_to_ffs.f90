@@ -44,7 +44,8 @@
 !
       call s_set_ff_nl_smp_2_ff(node1%numnod, np_smp,                   &
      &    node1%max_nod_smp, node1%istack_nod_smp,                      &
-     &    node_sort_list_smp, numdir, ff_smp, ff_nl_smp, ff, ff_nl)
+     &    rhs_tbl1%node_sort_list_smp, numdir,                          &
+     &    ff_smp, ff_nl_smp, ff, ff_nl)
 !
       end subroutine set_ff_nl_smp_2_ff
 !
@@ -62,7 +63,8 @@
 !
 !
       call s_cal_ff_smp_2_ff (node1%numnod, np_smp, node1%max_nod_smp,  &
-     &    node1%istack_nod_smp, node_sort_list_smp, numdir, ff_smp, ff)
+     &    node1%istack_nod_smp, rhs_tbl1%node_sort_list_smp,            &
+     &    numdir, ff_smp, ff)
 !
       end subroutine cal_ff_smp_2_ff
 !
@@ -79,7 +81,8 @@
 !
 !
       call s_cal_ff_smp_2_ml (node1%numnod, np_smp, node1%max_nod_smp,  &
-     &    node1%istack_nod_smp, node_sort_list_smp, ml, ml_o, ff_smp)
+     &    node1%istack_nod_smp, rhs_tbl1%node_sort_list_smp,            &
+     &    ml, ml_o, ff_smp)
 !
       end subroutine cal_ff_smp_2_ml
 !
@@ -101,7 +104,7 @@
 !
       call s_cal_ff_smp_2_scalar(node1%numnod, np_smp,                  &
      &    node1%max_nod_smp, node1%istack_nod_smp,                      &
-     &    node_sort_list_smp, d_nod(1,i_fld), ff_smp, ml)
+     &    rhs_tbl1%node_sort_list_smp, d_nod(1,i_fld), ff_smp, ml)
 !
       end subroutine cal_ff_smp_2_scalar
 !
@@ -123,7 +126,7 @@
 !
       call s_cal_ff_smp_2_vector(node1%numnod, np_smp,                  &
      &    node1%max_nod_smp, node1%istack_nod_smp,                      &
-     &    node_sort_list_smp, d_nod(1,i_fld), ff_smp, ml)
+     &    rhs_tbl1%node_sort_list_smp, d_nod(1,i_fld), ff_smp, ml)
 !
       end subroutine cal_ff_smp_2_vector
 !
@@ -145,7 +148,7 @@
 !
       call s_cal_ff_smp_2_tensor(node1%numnod, np_smp,                  &
      &    node1%max_nod_smp, node1%istack_nod_smp,                      &
-     &    node_sort_list_smp, d_nod(1,i_fld), ff_smp, ml)
+     &    rhs_tbl1%node_sort_list_smp, d_nod(1,i_fld), ff_smp, ml)
 !
       end subroutine cal_ff_smp_2_tensor
 !
