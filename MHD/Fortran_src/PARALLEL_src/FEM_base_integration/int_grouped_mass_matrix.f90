@@ -132,10 +132,10 @@
       call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,             &
      &    nele_grp, iele_grp, n_int, ele1, jac1_3d_q, fem1_wk%sk6)
       call sum_skv_diagonal_4_HRZ_type(iele_fsmp_stack, ele1,           &
-     &    fem1_wk%sk6, ml_ele_diag)
+     &    fem1_wk%sk6, fem1_wk%me_diag)
 !
       call grp_volume_average_skv_HRZ_t(iele_fsmp_stack,                &
-     &    nele_grp, iele_grp, ele1, fem1_wk%sk6, ml_ele_diag)
+     &    nele_grp, iele_grp, ele1, fem1_wk%sk6, fem1_wk%me_diag)
 !
       call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
@@ -158,7 +158,7 @@
       call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,             &
      &    nele_grp, iele_grp, n_int, ele1, jac1_3d_q, fem1_wk%sk6)
       call grp_volume_average_skv_HRZ_t(iele_fsmp_stack,                &
-     &    nele_grp, iele_grp, ele1, fem1_wk%sk6, ml_ele_diag)
+     &    nele_grp, iele_grp, ele1, fem1_wk%sk6, fem1_wk%me_diag)
 !
       call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !

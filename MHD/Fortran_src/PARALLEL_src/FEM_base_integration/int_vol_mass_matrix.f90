@@ -180,10 +180,10 @@
       call fem_skv_mass_mat_diag_HRZ_type                               &
      &   (iele_fsmp_stack, num_int, ele1, jac1_3d_q, fem1_wk%sk6)
       call sum_skv_diagonal_4_HRZ_type(iele_fsmp_stack, ele1,           &
-     &    fem1_wk%sk6, ml_ele_diag)
+     &    fem1_wk%sk6, fem1_wk%me_diag)
 !
       call vol_average_skv_HRZ_type                                     &
-     &   (iele_fsmp_stack, ele1, fem1_wk%sk6, ml_ele_diag)
+     &   (iele_fsmp_stack, ele1, fem1_wk%sk6, fem1_wk%me_diag)
 !
       call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
@@ -206,7 +206,7 @@
       call fem_skv_mass_mat_diag_HRZ_type                               &
      &   (iele_fsmp_stack, num_int, ele1, jac1_3d_q, fem1_wk%sk6)
       call vol_average_skv_HRZ_type                                     &
-     &   (iele_fsmp_stack, ele1, fem1_wk%sk6, ml_ele_diag)
+     &   (iele_fsmp_stack, ele1, fem1_wk%sk6, fem1_wk%me_diag)
 !
       call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !

@@ -171,9 +171,9 @@
         call SGS_m_flux_2_each_element                                  &
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
      &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
-     &      i_vect, i_flux, nod_fld1%d_fld, tensor_e)
+     &      i_vect, i_flux, nod_fld1%d_fld, fem1_wk%tensor_1)
         call fem_skv_commute_err_div_tsr_1(iele_fsmp_stack,             &
-     &      n_int, k2, i_filter, tensor_e, fem1_wk%sk6)
+     &      n_int, k2, i_filter, fem1_wk%tensor_1, fem1_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)

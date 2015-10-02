@@ -28,14 +28,14 @@
 !
 !>      Work area for FEM assemble
       type(work_finite_element_mat), save :: fem1_wk
-!fem1_wk%vector_1
+!fem1_wk%me_diag
 !
       real (kind=kreal), allocatable  ::  ml(:)
       real (kind=kreal), allocatable  ::  ml_fl(:)
       real (kind=kreal), allocatable  ::  ml_cd(:)
       real (kind=kreal), allocatable  ::  ml_ins(:)
 !
-      real (kind=kreal), allocatable  ::  ml_ele_diag(:)
+!      real (kind=kreal), allocatable  ::  ml_ele_diag(:)
 !
       real (kind=kreal), allocatable  ::  ml_o(:)
       real (kind=kreal), allocatable  ::  ml_o_fl(:)
@@ -98,8 +98,9 @@
 !
       allocate(fem1_wk%scalar_1(ele1%numele) )
       allocate(fem1_wk%vector_1(ele1%numele,3) )
+      allocate(fem1_wk%tensor_1(ele1%numele,6) )
 !
-      allocate(ml_ele_diag(ele1%numele))
+      allocate(fem1_wk%me_diag(ele1%numele))
 !
       if(node1%numnod .gt. 0) then
         ml =  0.0d0
@@ -115,8 +116,9 @@
         fem1_wk%sk6 =      0.0d0
         fem1_wk%scalar_1 = 0.0d0
         fem1_wk%vector_1 = 0.0d0
+        fem1_wk%tensor_1 = 0.0d0
 !
-        ml_ele_diag = 0.0d0
+        fem1_wk%me_diag = 0.0d0
       end if
 !
       call reset_ff_smps
@@ -265,9 +267,10 @@
       deallocate(ml, ml_o)
 !
       deallocate(ff_smp, ff_nl_smp, ff_m_smp, ff_t_smp)
-      deallocate(fem1_wk%sk6, fem1_wk%scalar_1, fem1_wk%vector_1)
+      deallocate(fem1_wk%sk6)
+      deallocate(fem1_wk%scalar_1, fem1_wk%vector_1, fem1_wk%tensor_1)
 !
-      deallocate(ml_ele_diag)
+      deallocate(fem1_wk%me_diag)
 !
       call deallocate_node_ff
 !

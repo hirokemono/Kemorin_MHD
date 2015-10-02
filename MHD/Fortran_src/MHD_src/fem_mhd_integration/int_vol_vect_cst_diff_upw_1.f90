@@ -155,9 +155,11 @@
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, ele1%nnod_4_ele
-        call tensor_cst_phys_2_each_ele(k2, i_field, coef, tensor_e)
+        call tensor_cst_phys_2_each_ele                                 &
+     &     (k2, i_field, coef, fem1_wk%tensor_1)
         call fem_skv_div_tsr_upw(iele_fsmp_stack, num_int, k2,          &
-     &      d_ele(1,iv_up), ele1, jac1_3d_q, tensor_e, fem1_wk%sk6)
+     &      d_ele(1,iv_up), ele1, jac1_3d_q,                            &
+     &      fem1_wk%tensor_1, fem1_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
