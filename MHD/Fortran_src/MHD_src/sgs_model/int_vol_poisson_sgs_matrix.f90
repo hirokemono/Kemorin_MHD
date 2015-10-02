@@ -25,6 +25,7 @@
       use m_t_int_parameter
 !
       use fem_skv_diffusion_sgs_type
+      use cal_skv_to_ff_smp_1st
       use cal_poisson_matrices_1st
 !
 !-----------------------------------------------------------------------
@@ -49,7 +50,7 @@
 !
 !
       do  k2 = 1, ele1%nnod_4_ele
-        call reset_sk6(n_scalar)
+        call reset_sk6(n_scalar, fem1_wk%sk6)
         call fem_skv_poisson_linear_sgs_type(ele1%istack_ele_smp,       &
      &      n_int, k2, i_filter, ak_diff, ele1, jac1_3d_l, FEM1_elen,   &
      &      fem1_wk%sk6)
@@ -80,7 +81,7 @@
 !
 !
       do  k2 = 1, ele1%nnod_4_ele
-        call reset_sk6(n_scalar)
+        call reset_sk6(n_scalar, fem1_wk%sk6)
         call fem_skv_poisson_sgs_type(ele1%istack_ele_smp, n_int, k2,   &
      &      i_filter, ak_diff, ele1, jac1_3d_q, FEM1_elen, fem1_wk%sk6)
         call cal_scalar_diffuse_evo_mat_1st(idx_for_mat, k2,            &
@@ -109,7 +110,7 @@
 !
 !
       do  k2 = 1, ele1%nnod_4_ele
-        call reset_sk6(n_scalar)
+        call reset_sk6(n_scalar, fem1_wk%sk6)
         call fem_skv_poisson_sgs_type(ele1%istack_ele_smp, n_int, k2,   &
      &      i_filter, ak_diff, ele1, jac1_3d_q, FEM1_elen, fem1_wk%sk6)
         call cal_vect_diffuse_evo_mat_1st(idx_for_mat, k2,              &

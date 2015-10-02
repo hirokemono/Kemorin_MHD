@@ -37,7 +37,7 @@
 !
 !
       ff_nl_smp = 0.0d0
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do k2=1, ele1%nnod_4_ele
         call vactor_phys_2_each_element(k2, iphys%i_vecp, vect_1)

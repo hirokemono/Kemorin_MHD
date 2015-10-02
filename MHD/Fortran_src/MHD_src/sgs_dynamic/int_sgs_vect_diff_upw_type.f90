@@ -68,8 +68,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
 !
 !$omp parallel
       call copy_nod_vector_smp(np_smp, mesh%ele%numele,                 &
@@ -114,8 +113,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_scalar,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
 !
 !$omp parallel
       call copy_nod_vector_smp(np_smp, mesh%ele%numele,                 &
@@ -160,8 +158,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
 !
 !$omp parallel
       call copy_nod_vector_smp(np_smp, mesh%ele%numele,                 &
@@ -207,8 +204,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
 !
 !$omp parallel
       call copy_nod_vector_smp(np_smp, mesh%ele%numele,                 &
@@ -253,8 +249,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
 !
 !$omp parallel
       call copy_nod_vector_smp(np_smp, mesh%ele%numele,                 &

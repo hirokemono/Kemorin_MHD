@@ -103,7 +103,7 @@
       integer (kind=kint), intent(in) :: ie_dvx
 !
 !
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
       call reset_ff_smp
 !
       call sel_int_vol_sgs_flux(iflag_temp_supg, i_filter, n_vector,    &
@@ -144,7 +144,7 @@
       integer (kind=kint), intent(in) :: ie_dvx
 !
 !
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
       call reset_ff_smp
 !
       call sel_int_vol_sgs_flux(iflag_temp_supg, i_filter, n_vector,    &

@@ -53,7 +53,7 @@
 !  ---------  set number of integral points
 !
       if (ngrp_sf.eq.0) return
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
@@ -102,7 +102,7 @@
 !  ---------  set number of integral points
 !
       if (ngrp_sf.eq.0) return
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)

@@ -50,7 +50,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
        do k2 = 1, ele1%nnod_4_ele
@@ -81,7 +81,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
       do k2 = 1, ele1%nnod_4_ele
 !
 ! --------- set temperature at each node in an element
@@ -109,7 +109,7 @@
        integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_vect, vect_e)
         call fem_skv_commute_err_rot_1(iele_fsmp_stack,                 &
@@ -136,7 +136,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
       do k2 = 1, ele1%nnod_4_ele
         call SGS_v_flux_2_each_element                                  &
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
@@ -166,7 +166,7 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
       do k2 = 1, ele1%nnod_4_ele
         call SGS_m_flux_2_each_element                                  &
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
@@ -195,7 +195,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
       do k2 = 1, ele1%nnod_4_ele
         call SGS_induct_2_each_element                                  &
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &

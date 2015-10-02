@@ -53,7 +53,7 @@
 !
 !
       if (ngrp_sf_fix_hf .le. 0) return
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
       call fem_surf_skv_norm_grad_galerkin                              &
      &   (ele, surf, sf_grp, jac_sf_grp,                                &
@@ -81,7 +81,7 @@
 !
 !
       if ( sum(ngrp_sf_fix_tq) .le. 0) return
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do nd = 1, n_vector
         if (ngrp_sf_fix_tq(nd).gt.0) then
@@ -113,7 +113,7 @@
 !
 !
       if ( sum(ngrp_sf_fix_grad_a) .le. 0) return
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do nd = 1, n_vector
         if (ngrp_sf_fix_grad_a(nd).gt.0) then
@@ -147,7 +147,7 @@
 !
 !
       if ( sum(ngrp_sf_fix_grad_b) .le. 0) return
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do nd = 1, n_vector
         if (ngrp_sf_fix_grad_b(nd).gt.0) then
@@ -181,7 +181,7 @@
 !
       if (ngrp_sf_fix_cmg .le. 0) return
 !
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
       call fem_surf_skv_norm_grad_galerkin                              &
      &   (ele, surf, sf_grp, jac_sf_grp,                                &
@@ -208,7 +208,7 @@
 !
 !
       if (ngrp_sf_fix_pg .eq. 0) return
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
       call fem_surf_skv_norm_poisson_pg(ele, surf, sf_grp, jac_sf_grp,  &
      &    ngrp_sf_fix_pg, nele_sf_fix_pg, ngrp_sf_fix_pg,               &
@@ -233,7 +233,7 @@
 !
 !
       if (ngrp_sf_fix_mpg .eq. 0) return
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
       call fem_surf_skv_norm_poisson_pg(ele, surf, sf_grp, jac_sf_grp,  &
      &    ngrp_sf_fix_mpg, nele_sf_fix_mpg, ngrp_sf_fix_mpg,            &

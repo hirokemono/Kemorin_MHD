@@ -51,7 +51,7 @@
       if (coef_nega_t .eq. 0.0d0 ) return
 !
       num_int = intg_point_t_evo
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
 !
@@ -105,7 +105,7 @@
       if (coef_nega_t .eq. 0.0d0 ) return
 !
       num_int = intg_point_t_evo
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
 !

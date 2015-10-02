@@ -61,7 +61,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
@@ -96,7 +96,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, iphys%i_sgs_simi, vect_e)

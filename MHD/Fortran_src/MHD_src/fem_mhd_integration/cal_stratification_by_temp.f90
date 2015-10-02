@@ -61,7 +61,7 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
       do k2 = 1, ele1%nnod_4_ele
 !
@@ -88,7 +88,7 @@
        integer(kind = kint) :: k2
 !
 !
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
 !

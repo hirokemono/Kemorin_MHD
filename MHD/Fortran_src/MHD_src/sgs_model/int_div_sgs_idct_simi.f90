@@ -42,7 +42,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
       do k2 = 1, ele1%nnod_4_ele
         call SGS_induct_2_each_element                                  &
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
@@ -73,7 +73,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
       do k2 = 1, ele1%nnod_4_ele
         call SGS_induct_2_each_element                                  &
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &

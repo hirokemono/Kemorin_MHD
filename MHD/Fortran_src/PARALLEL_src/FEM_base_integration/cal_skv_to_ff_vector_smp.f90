@@ -7,6 +7,8 @@
 !     Modified by H. Matsui on March, 2009
 !     Modified by H. Matsui on March, 2012
 !
+!      subroutine reset_skv_vector(numele, nnod_4_ele, numdir, sk_v)
+!
 !      subroutine add_skv_vector_2_ff_smp(numele, nnod_4_ele,           &
 !     &          np_smp, maxnod_4_smp, inod_ele_max,                    &
 !     &          num_sort_smp, nod_stack_smp, iele_sort_smp,            &
@@ -35,6 +37,31 @@
 !
        contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine reset_skv_vector(numele, nnod_4_ele, numdir, sk_v)
+!
+      integer(kind = kint), intent(in) :: numele, nnod_4_ele, numdir
+      real (kind=kreal), intent(inout)  :: sk_v(numele,6,nnod_4_ele)
+!
+      integer(kind = kint) :: iele, k1, nd
+!
+!
+!$omp parallel private(iele,nd)
+      do k1 = 1, nnod_4_ele
+        do nd = 1, numdir
+!$omp do
+          do iele = 1, numele
+             sk_v(iele,nd,k1) = 0.0d0
+          end do
+!$omp end do nowait
+        end do
+      end do
+!$omp end parallel
+!
+      end subroutine reset_skv_vector
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine add_skv_vector_2_ff_smp(numele, nnod_4_ele,            &

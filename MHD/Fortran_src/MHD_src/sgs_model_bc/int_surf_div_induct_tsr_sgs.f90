@@ -50,7 +50,7 @@
 !
 !
       if (sum(ngrp_sf_sgs_magne) .eq. 0) return
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do nd = 1, n_vector
         do i = 1, ngrp_sf_sgs_magne(nd)
@@ -97,7 +97,7 @@
 !
 !
       if (sum(ngrp_sf_sgs_magne) .eq. 0) return
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do nd = 1, n_vector
         do i = 1, ngrp_sf_sgs_magne(nd)

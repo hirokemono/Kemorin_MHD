@@ -90,6 +90,7 @@
      &          nmat_size, aiccg)
 !
       use fem_skv_mass_mat_type
+      use cal_skv_to_ff_smp_1st
       use add_skv1_2_matrix_1st
 !
 !
@@ -104,7 +105,7 @@
 ! -------- loop for shape function for the phsical values
 !
       do k2 = 1, ele1%nnod_4_ele
-        call reset_sk6(n_scalar)
+        call reset_sk6(n_scalar, fem1_wk%sk6)
         call fem_skv_mass_matrix_type(iele_fsmp_stack, num_int, k2,     &
      &      ele1, jac1_3d_q, fem1_wk%sk6)
         call add_skv1_2_matrix11_1st(k2, fem1_wk%sk6, nmat_size, aiccg)
@@ -128,7 +129,7 @@
 !  ----------  clear the vector and lumped mass matrix
 !
       call reset_ff_smp
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
 !
@@ -153,7 +154,7 @@
 !
 !
       call reset_ff_smp
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
       call fem_skv_mass_matrix_diag_type                                &
      &   (iele_fsmp_stack, num_int, ele1, jac1_3d_q, fem1_wk%sk6)
@@ -174,7 +175,7 @@
 !
 !
       call reset_ff_smp
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
       call fem_skv_mass_mat_diag_HRZ_type                               &
      &   (iele_fsmp_stack, num_int, ele1, jac1_3d_q, fem1_wk%sk6)
@@ -200,7 +201,7 @@
 !
 !
       call reset_ff_smp
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
       call fem_skv_mass_mat_diag_HRZ_type                               &
      &   (iele_fsmp_stack, num_int, ele1, jac1_3d_q, fem1_wk%sk6)

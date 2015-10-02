@@ -177,8 +177,7 @@
 !
       call reset_ff_smps_type(n_scalar,                                 &
      &    mesh%node%max_nod_smp, np_smp, rhs_l)
-      call reset_sk6_type(n_scalar,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
 !
       call fem_skv_mass_mat_diag_HRZ_type(mesh%ele%istack_ele_smp,      &
      &    intg_point_t_evo, mesh%ele, jac_3d, fem_wk%sk6)

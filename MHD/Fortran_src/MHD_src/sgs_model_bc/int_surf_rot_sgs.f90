@@ -55,7 +55,7 @@
 !  ---------  set number of integral points
 !
       if(nmax_grp_sf .eq. 0) return
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do nd = 1, n_vector
 !
@@ -135,7 +135,7 @@
 !  ---------  set number of integral points
 !
       if(nmax_grp_sf .eq. 0) return
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do nd = 1, n_vector
         nrot1 = mod(nd,     ithree) + ione

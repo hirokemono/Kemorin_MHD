@@ -64,8 +64,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
 !
 ! -------- loop for shape function for the field values
 !
@@ -102,8 +101,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_scalar,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
 !
 ! -------- loop for shape function for the field values
 !
@@ -140,8 +138,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
 !
 ! -------- loop for shape function for the field values
 !
@@ -179,8 +176,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
 !
 ! -------- loop for shape function for the field values
 !
@@ -217,8 +213,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
 !
 ! -------- loop for shape function for the field values
 !

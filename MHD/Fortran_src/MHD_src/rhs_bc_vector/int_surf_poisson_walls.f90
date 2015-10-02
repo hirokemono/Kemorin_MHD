@@ -57,7 +57,7 @@
       integer(kind=kint) :: k2, i, igrp, num
 !
 !
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
 ! --------- set vector at each node in an element
 !
@@ -99,7 +99,7 @@
       integer(kind=kint) :: k2, i, igrp, num
 !
 !
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
@@ -140,7 +140,7 @@
       integer(kind=kint) :: k2, i, igrp, num
 !
 !
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
 ! --------- set vector at each node in an element
 !

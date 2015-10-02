@@ -33,6 +33,7 @@
      &          nmat_size, aiccg)
 !
       use fem_skv_diffusion_type
+      use cal_skv_to_ff_smp_1st
       use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
@@ -47,7 +48,7 @@
 !
 !
       do  k2 = 1, ele1%nnod_4_ele
-        call reset_sk6(n_scalar)
+        call reset_sk6(n_scalar, fem1_wk%sk6)
         call fem_skv_poisson_linear_type(ele1%istack_ele_smp,           &
      &      n_int, k2, ele1, jac1_3d_l, fem1_wk%sk6)
         call add_skv1_2_MHD_matrix11(idx_for_mat, k2, fem1_wk%sk6,      &
@@ -63,6 +64,7 @@
      &          coef_imp, ak_d, nmat_size, aiccg)
 !
       use fem_skv_diffusion_type
+      use cal_skv_to_ff_smp_1st
       use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
@@ -79,7 +81,7 @@
 !
 !
       do  k2 = 1, ele1%nnod_4_ele
-        call reset_sk6(n_scalar)
+        call reset_sk6(n_scalar, fem1_wk%sk6)
         call fem_skv_poisson_type(ele1%istack_ele_smp, n_int, k2,       &
      &      ele1, jac1_3d_q, fem1_wk%sk6)
         call cal_scalar_diffuse_evo_mat_1st(idx_for_mat, k2,            &
@@ -94,6 +96,7 @@
      &          coef_imp, ak_d, nmat_size, aiccg33)
 !
       use fem_skv_diffusion_type
+      use cal_skv_to_ff_smp_1st
       use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
@@ -110,7 +113,7 @@
 !
 !
       do  k2 = 1, ele1%nnod_4_ele
-        call reset_sk6(n_scalar)
+        call reset_sk6(n_scalar, fem1_wk%sk6)
         call fem_skv_poisson_type(ele1%istack_ele_smp, n_int, k2,       &
      &      ele1, jac1_3d_q, fem1_wk%sk6)
         call cal_vect_diffuse_evo_mat_1st(idx_for_mat, k2,              &

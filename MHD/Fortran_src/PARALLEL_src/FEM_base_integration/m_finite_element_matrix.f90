@@ -9,8 +9,6 @@
 !
 !      subroutine allocate_fem_mat_base
 !
-!      subroutine reset_sk6(numdir)
-!
 !      subroutine reset_ff_smp
 !      subroutine reset_ff_smps
 !      subroutine reset_ff(numnod)
@@ -176,32 +174,6 @@
       ff_t =  0.0d0
 !
       end subroutine allocate_node_ff
-!
-!   ---------------------------------------------------------------------
-!   ---------------------------------------------------------------------
-!
-      subroutine reset_sk6(numdir)
-!
-      use m_geometry_data
-      use m_phys_constants
-!
-      integer(kind = kint), intent(in) :: numdir
-      integer(kind = kint) :: k1, iele, nd
-!
-!
-!$omp parallel private(iele,nd)
-      do k1 = 1, ele1%nnod_4_ele
-        do nd = 1, numdir
-!$omp do
-          do iele = 1, ele1%numele
-             fem1_wk%sk6(iele,nd,k1) = 0.0d0
-          end do
-!$omp end do nowait
-        end do
-      end do
-!$omp end parallel
-!
-      end subroutine reset_sk6
 !
 !   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------

@@ -40,7 +40,7 @@
       integer (kind=kint), intent(in) :: i_filter
 !
 !
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       call sel_int_vol_sgs_uxb                                          &
      &   (i_filter, iphys%i_magne, i_dvx, fem1_wk%sk6)
@@ -77,7 +77,7 @@
 !
 !  ----------  clear the vector and lumped mass matrix
 !
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
       call reset_ff_smp
 !
       call sel_int_vol_sgs_uxb(i_filter, i_field, id_dx, fem1_wk%sk6)

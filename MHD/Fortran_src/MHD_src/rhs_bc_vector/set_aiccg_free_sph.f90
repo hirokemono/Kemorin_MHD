@@ -57,6 +57,7 @@
       use t_group_data
 !
       use fem_surf_crank_free_sph
+      use cal_skv_to_ff_smp_1st
       use cal_poisson_matrices_1st
 !
       type(surface_group_data), intent(in) :: sf_grp
@@ -65,7 +66,7 @@
 !
 !
       do k2 = 1, surf1%nnod_4_surf
-        call reset_sk6(n_scalar)
+        call reset_sk6(n_scalar, fem1_wk%sk6)
 !
         do i = 1, ngrp_sf_fr_in
           igrp = id_grp_sf_fr_in(i)
@@ -104,6 +105,7 @@
       use t_group_data
 !
       use fem_surf_crank_free_sph
+      use cal_skv_to_ff_smp_1st
       use cal_poisson_matrices_1st
 !
       type(surface_group_data), intent(in) :: sf_grp
@@ -112,7 +114,7 @@
 !
 !
       do k2 = 1, surf1%nnod_4_surf
-        call reset_sk6(n_scalar)
+        call reset_sk6(n_scalar, fem1_wk%sk6)
 !
         do i = 1, ngrp_sf_fr_out
           igrp = id_grp_sf_fr_out(i)

@@ -24,10 +24,6 @@
 !        integer(kind = kint), intent(in) :: numnod, maxnod_4_smp
 !        type(finite_ele_mat_node), intent(inout) :: rhs
 !
-!      subroutine reset_sk6_type(numdir, numele, nnod_4_ele, fem_wk)
-!        integer(kind = kint), intent(in) :: numele, nnod_4_ele
-!        type(work_finite_element_mat), intent(inout) :: fem_wk
-!
 !      subroutine reset_ff_smps_type(numdir, maxnod_4_smp, np_smp, rhs)
 !      subroutine reset_ff_type(numdir, numnod, rhs)
 !        integer(kind = kint), intent(in) :: numele, nnod_4_ele
@@ -205,33 +201,6 @@
       end if
 !
       end subroutine alloc_type_fem_matrices
-!
-!   ---------------------------------------------------------------------
-!   ---------------------------------------------------------------------
-!
-      subroutine reset_sk6_type(numdir, numele, nnod_4_ele, fem_wk)
-!
-      use m_phys_constants
-!
-      integer(kind = kint), intent(in) :: numdir, numele, nnod_4_ele
-      type(work_finite_element_mat), intent(inout) :: fem_wk
-!
-      integer(kind = kint) :: k1, iele, nd
-!
-!
-!$omp parallel private(iele,nd)
-      do k1 = 1, nnod_4_ele
-        do nd = 1, numdir
-!$omp do
-          do iele = 1, numele
-             fem_wk%sk6(iele,k1,nd) = 0.0d0
-          end do
-!$omp end do nowait
-        end do
-      end do
-!$omp end parallel
-!
-      end subroutine reset_sk6_type
 !
 !   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------

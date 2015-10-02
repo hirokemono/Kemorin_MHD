@@ -86,6 +86,7 @@
      &          fem_wk, mat_v)
 !
       use fem_surf_crank_free_sph
+      use cal_skv_to_ff_smp_type
 !
       integer (kind = kint), intent(in) :: n_int
       type(mesh_geometry), intent(in) :: mesh
@@ -108,8 +109,7 @@
 !
 !
       do k2 = 1, surf%nnod_4_surf
-        call reset_sk6_type(n_scalar, mesh%ele%numele,                  &
-     &      mesh%ele%nnod_4_ele, fem_wk)
+        call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
 !
         do i = 1, free_sph_in%ngrp_sf_dat
          igrp = free_sph_in%id_grp_sf_dat(i)
@@ -143,6 +143,7 @@
      &         fem_wk, mat_v)
 !
       use fem_surf_crank_free_sph
+      use cal_skv_to_ff_smp_type
 !
       integer (kind = kint), intent(in) :: n_int
       type(mesh_geometry), intent(in) :: mesh
@@ -164,8 +165,7 @@
 !
 !
       do k2 = 1, surf%nnod_4_surf
-        call reset_sk6_type(n_scalar, mesh%ele%numele,                  &
-     &      mesh%ele%nnod_4_ele, fem_wk)
+        call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
 !
         do i = 1, free_sph_out%ngrp_sf_dat
           igrp = free_sph_out%id_grp_sf_dat(i)

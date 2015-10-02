@@ -8,6 +8,8 @@
 !> @brief Assemble element integration data to nodal vector
 !
 !
+!      subroutine reset_sk6(numdir, sk_v)
+!
 !  -------- Assemble routines from skv to ff_smp for scalar
 !      subroutine add1_skv_to_ff_v_smp_1st(ff_v_smp, sk_v)
 !      subroutine add1_skv_coef_to_ff_v_smp_1st(coef, ff_v_smp, sk_v)
@@ -40,6 +42,21 @@
 ! ----------------------------------------------------------------------
 !
        contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine reset_sk6(numdir, sk_v)
+!
+      use cal_skv_to_ff_vector_smp
+!
+      integer(kind = kint), intent(in) :: numdir
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
+!
+!
+      call reset_skv_vector(ele1%numele, ele1%nnod_4_ele, numdir, sk_v)
+!
+      end subroutine reset_sk6
 !
 ! ----------------------------------------------------------------------
 !

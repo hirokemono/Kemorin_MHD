@@ -35,13 +35,14 @@
       use m_magne_matrix
 !
       use fem_skv_mass_mat_type
+      use cal_skv_to_ff_smp_1st
       use cal_poisson_matrices_1st
 !
        integer(kind = kint) :: k2
 !
 !
       do  k2 = 1, ele1%nnod_4_ele
-        call reset_sk6(n_scalar)
+        call reset_sk6(n_scalar, fem1_wk%sk6)
 !
         call fem_skv_mass_matrix_type(ele1%istack_ele_smp,              &
      &      intg_point_t_evo, k2, ele1, jac1_3d_q, fem1_wk%sk6)

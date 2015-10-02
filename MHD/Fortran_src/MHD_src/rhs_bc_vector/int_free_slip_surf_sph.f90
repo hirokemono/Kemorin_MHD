@@ -80,7 +80,7 @@
 !
 !
       if(ngrp_surf_outside .le. 0) return
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do i = 1, ngrp_surf_outside
         igrp = id_grp_outside(i)
@@ -121,7 +121,7 @@
 !
 !
       if (ngrp_surf_inside .le. 0) return
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do i = 1, ngrp_surf_inside
         igrp = id_grp_inside(i)

@@ -57,7 +57,7 @@
 !
 !  ---------  set number of integral points
 !
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
 !$omp parallel
       call add_const_to_vector_smp                                      &
@@ -100,7 +100,7 @@
 !
 !  ---------  set number of integral points
 !
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
 !$omp parallel
       call add_const_to_vector_smp                                      &

@@ -153,7 +153,7 @@
 !
 !
       if(nmax_sf_lead_vect_p .eq. 0) return
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do nd = 1, 3
         i_comp = iphys%i_vecp + nd - 1
@@ -206,7 +206,7 @@
 !
 !
       if (ngrp_sf .eq. 0) return
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
@@ -256,7 +256,7 @@
 !
 !
       if (nmax_sf .eq. 0) return
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do nd = 1, n_vector
         i_comp = i_field + nd - 1

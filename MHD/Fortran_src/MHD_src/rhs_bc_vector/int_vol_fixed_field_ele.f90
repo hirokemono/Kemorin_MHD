@@ -60,7 +60,7 @@
 !
 !
       if (num_index_ibc .eq. 0) return
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
       do kk=1, ibc_end
         k2 = ibc_shape(kk)
@@ -107,7 +107,7 @@
 !
 !
       if (num_index_ibc .eq. 0) return
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
       do kk=1, ibc_end
         k2 = ibc_shape(kk)
@@ -156,7 +156,7 @@
 !
 !
       if (nmax_index_ibc .eq. 0) return
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do nd = 1, n_vector
         if ( num_index_ibc(nd) .gt. 0 ) then
@@ -209,7 +209,7 @@
 !
 !
       if (num_index_ibc .eq. 0) return
-      call reset_sk6(n_vector)
+      call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do nd = 1, n_vector
           i_comp = i_field + nd - 1

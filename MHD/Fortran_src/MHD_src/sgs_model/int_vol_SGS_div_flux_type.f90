@@ -74,8 +74,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6_type(n_scalar,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -124,8 +123,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -175,8 +173,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6_type(n_scalar,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -227,8 +224,7 @@
 !
 !
 !      fem_wk%vxe -> d_ele(1:numele,ie_upw:ie_upw+2)
-      call reset_sk6_type(n_vector,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele

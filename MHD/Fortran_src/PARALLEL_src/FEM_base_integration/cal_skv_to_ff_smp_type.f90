@@ -8,6 +8,8 @@
 !> @brief Assemble element integration data to nodal vector
 !
 !
+!      subroutine reset_sk6_type(numdir, ele, fem_wk)
+!
 !  -------- Assemble routines from skv to ff_smp for scalar
 !      subroutine add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_v)
 !      subroutine add1_skv_coef_to_ff_v_smp_type(mesh, rhs_tbl,         &
@@ -59,6 +61,23 @@
 !
        contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine reset_sk6_type(numdir, ele, fem_wk)
+!
+      use cal_skv_to_ff_vector_smp
+!
+      integer(kind = kint), intent(in) :: numdir
+      type(element_data), intent(in) :: ele
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+!
+!
+      call reset_skv_vector                                             &
+     &   (ele%numele, ele%nnod_4_ele, numdir, fem_wk%sk6)
+!
+      end subroutine reset_sk6_type
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_v)

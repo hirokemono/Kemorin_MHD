@@ -76,8 +76,7 @@
 ! -------- loop for shape function for the phsical values
 !
       do k2 = 1, mesh%ele%nnod_4_ele
-        call reset_sk6_type(n_scalar,                                   &
-     &      mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+        call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
         call fem_grp_skv_mass_matrix_t(iele_fsmp_stack,                 &
      &     nele_grp, iele_grp, n_int, k2, mesh%ele, jac_3d, fem_wk%sk6)
         call add_skv1_2_matrix11_type(mesh%ele, rhs_tbl,                &
@@ -114,8 +113,7 @@
 !
       call reset_ff_smps_type(n_scalar,                                 &
      &    mesh%node%max_nod_smp, np_smp, rhs_l)
-      call reset_sk6_type(n_scalar,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
 !
 ! -------- loop for shape function for the phsical values
 !
@@ -154,8 +152,7 @@
 !
       call reset_ff_smps_type(n_scalar,                                 &
      &    mesh%node%max_nod_smp, np_smp, rhs_l)
-      call reset_sk6_type(n_scalar,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
 !
       call fem_grp_skv_mass_matrix_diag_t(iele_fsmp_stack,              &
      &    nele_grp, iele_grp, n_int, mesh%ele, jac_3d, fem_wk%sk6)
@@ -191,8 +188,7 @@
 !
       call reset_ff_smps_type(n_scalar,                                 &
      &    mesh%node%max_nod_smp, np_smp, rhs_l)
-      call reset_sk6_type(n_scalar,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
 !
       call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,             &
      &    nele_grp, iele_grp, n_int, mesh%ele, jac_3d, fem_wk%sk6)
@@ -233,8 +229,7 @@
 !
       call reset_ff_smps_type(n_scalar,                                 &
      &    mesh%node%max_nod_smp, np_smp, rhs_l)
-      call reset_sk6_type(n_scalar,                                     &
-     &    mesh%ele%numele, mesh%ele%nnod_4_ele, fem_wk)
+      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
 !
       call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,             &
      &    nele_grp, iele_grp, n_int, mesh%ele, jac_3d, fem_wk%sk6)

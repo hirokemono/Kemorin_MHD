@@ -40,6 +40,7 @@
      &          djds_const, fem_wk, n_int, mat11)
 !
       use fem_skv_diffusion_type
+      use cal_skv_to_ff_smp_type
       use add_skv1_2_matrix_type
 !
       type(element_data), intent(in) :: ele
@@ -56,7 +57,7 @@
 !
 !
       do  k2 = 1, num_t_linear
-        call reset_sk6_type(n_scalar, ele%numele, num_t_linear, fem_wk)
+        call reset_sk6_type(n_scalar, ele, fem_wk)
         call fem_skv_poisson_linear_type(ele%istack_ele_smp, n_int, k2, &
      &      ele, jac_3d_l, fem_wk%sk6)
         call add_skv1_2_matrix11_type(ele, rhs_tbl,                     &
@@ -72,6 +73,7 @@
      &          djds_const, fem_wk, coef_imp, n_int, ak_d, mat11)
 !
       use fem_skv_diffusion_type
+      use cal_skv_to_ff_smp_type
       use cal_poisson_matrices_type
 !
       type(element_data), intent(in) :: ele
@@ -91,8 +93,7 @@
 !
 !
       do  k2 = 1, ele%nnod_4_ele
-        call reset_sk6_type(n_scalar, ele%numele, ele%nnod_4_ele,       &
-     &      fem_wk)
+        call reset_sk6_type(n_scalar, ele, fem_wk)
         call fem_skv_poisson_type(ele%istack_ele_smp, n_int, k2,        &
      &      ele, jac_3d, fem_wk%sk6)
         call cal_scalar_diffuse_mat_type(ele, rhs_tbl, djds_const,      &
@@ -107,6 +108,7 @@
      &          djds_const, fem_wk, coef_imp, n_int, ak_d, mat33)
 !
       use fem_skv_diffusion_type
+      use cal_skv_to_ff_smp_type
       use cal_poisson_matrices_type
 !
       type(element_data), intent(in) :: ele
@@ -126,8 +128,7 @@
 !
 !
       do  k2 = 1, ele%nnod_4_ele
-        call reset_sk6_type(n_scalar, ele%numele, ele%nnod_4_ele,       &
-     &      fem_wk)
+        call reset_sk6_type(n_scalar, ele, fem_wk)
         call fem_skv_poisson_type(ele%istack_ele_smp, n_int, k2,        &
      &      ele, jac_3d, fem_wk%sk6)
         call cal_vect_diffuse_mat_type(ele, rhs_tbl, djds_const,        &

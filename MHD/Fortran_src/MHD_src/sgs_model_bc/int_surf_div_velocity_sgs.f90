@@ -103,7 +103,7 @@
 !
 !
       if(nmax_grp_sf .eq. 0) return
-      call reset_sk6(n_scalar)
+      call reset_sk6(n_scalar, fem1_wk%sk6)
 !
 ! --------- set vector at each node in an element
 !
