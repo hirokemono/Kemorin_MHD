@@ -54,10 +54,10 @@
         call vector_cst_phys_2_each_ele(k2, iphys%i_velo,               &
      &      coef_cor, velo_1)
         call fem_skv_coriolis_type(iele_fsmp_stack, n_int, k2,          &
-     &      velo_1, angular, ele1, jac1_3d_q, sk6)
+     &      velo_1, angular, ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_coriolis_pg
 !
@@ -88,12 +88,13 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, iphys%i_velo,               &
-     &        coef_cor, velo_1)
+     &      coef_cor, velo_1)
         call fem_skv_coriolis_upwind(iele_fsmp_stack, n_int, k2,        &
-     &         velo_1, angular, d_ele(1,ie_upw), ele1, jac1_3d_q, sk6)
+     &      velo_1, angular, d_ele(1,ie_upw), ele1, jac1_3d_q,          &
+     &      fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_coriolis_upw
 !

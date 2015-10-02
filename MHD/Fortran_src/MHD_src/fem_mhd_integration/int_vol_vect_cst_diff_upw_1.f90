@@ -60,10 +60,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call scalar_cst_phys_2_each_ele(k2, i_field, coef,  phi_e)
         call fem_skv_gradient_upw(iele_fsmp_stack, num_int, k2,         &
-     &      d_ele(1,iv_up), ele1, jac1_3d_q, phi_e, sk6)
+     &      d_ele(1,iv_up), ele1, jac1_3d_q, phi_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_grad_w_const_upw_1
 !
@@ -90,10 +90,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, i_field, coef, vect_e)
         call fem_skv_divergence_upw(iele_fsmp_stack, num_int, k2,       &
-     &      d_ele(1,iv_up), ele1, jac1_3d_q, vect_e, sk6)
+     &      d_ele(1,iv_up), ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_div_w_const_upw_1
 !
@@ -120,10 +120,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, i_field, coef, vect_e)
         call fem_skv_rotation_upw(iele_fsmp_stack, num_int, k2,         &
-     &      d_ele(1,iv_up), ele1, jac1_3d_q, vect_e, sk6)
+     &      d_ele(1,iv_up), ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_rot_w_const_upw_1
 !
@@ -151,10 +151,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call tensor_cst_phys_2_each_ele(k2, i_field, coef, tensor_e)
         call fem_skv_div_tsr_upw(iele_fsmp_stack, num_int, k2,          &
-     &      d_ele(1,iv_up), ele1, jac1_3d_q, tensor_e, sk6)
+     &      d_ele(1,iv_up), ele1, jac1_3d_q, tensor_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_div_tsr_w_const_upw_1
 !
@@ -181,10 +181,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, i_field, coef, vect_e)
         call fem_skv_div_as_tsr_upw(iele_fsmp_stack, num_int, k2,       &
-     &      d_ele(1,iv_up), ele1, jac1_3d_q, vect_e, sk6)
+     &      d_ele(1,iv_up), ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_div_as_tsr_cst_upw_1
 !

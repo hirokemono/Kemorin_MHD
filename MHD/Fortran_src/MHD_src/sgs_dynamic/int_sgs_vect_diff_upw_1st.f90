@@ -63,10 +63,10 @@
         call scalar_phys_2_each_element(k2, i_field, phi_e)
         call fem_skv_grad_sgs_upwind(iele_fsmp_stack, num_int, k2,      &
      &      i_filter, ak_diff(1,iak_diff), ele1, jac1_3d_q, FEM1_elen,  &
-     &      d_ele(1,iv_up), phi_e, sk6)
+     &      d_ele(1,iv_up), phi_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_sgs_grad_upw_1st
 !
@@ -93,10 +93,10 @@
         call vector_phys_2_each_element(k2, i_field, vect_e)
         call fem_skv_div_sgs_upwind(iele_fsmp_stack, num_int, k2,       &
      &      i_filter, ak_diff(1,iak_diff), ele1, jac1_3d_q, FEM1_elen,  &
-     &      d_ele(1,iv_up), vect_e, sk6)
+     &      d_ele(1,iv_up), vect_e, fem1_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_sgs_div_upw_1st
 !
@@ -123,10 +123,10 @@
         call vector_phys_2_each_element(k2, i_field, vect_e)
         call fem_skv_rot_sgs_upwind(iele_fsmp_stack, num_int, k2,       &
      &      i_filter, ak_diff(1,iak_diff), ele1, jac1_3d_q, FEM1_elen,  &
-     &      d_ele(1,iv_up), vect_e, sk6)
+     &      d_ele(1,iv_up), vect_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_sgs_rot_upw_1st
 !
@@ -154,10 +154,10 @@
         call tensor_phys_2_each_element(k2, i_field, tensor_e)
         call fem_skv_div_tsr_sgs_upwind(iele_fsmp_stack, num_int, k2,   &
      &      i_filter, ak_diff(1,iak_diff), ele1, jac1_3d_q, FEM1_elen,  &
-     &      d_ele(1,iv_up), tensor_e, sk6)
+     &      d_ele(1,iv_up), tensor_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_sgs_div_tsr_upw_1st
 !
@@ -185,10 +185,11 @@
         call vector_phys_2_each_element(k2, i_field, vect_e)
         call fem_skv_div_as_tsr_sgs_upwind(iele_fsmp_stack,             &
      &     num_int, k2, i_filter, ak_diff(1,iak_diff),                  &
-     &     ele1, jac1_3d_q, FEM1_elen, d_ele(1,iv_up), vect_e, sk6)
+     &     ele1, jac1_3d_q, FEM1_elen, d_ele(1,iv_up), vect_e,          &
+     &     fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_sgs_div_as_tsr_upw_1st
 !

@@ -17,27 +17,27 @@
 !        type(mesh_geometry), intent(in) :: mesh
 !        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !        type(finite_ele_mat_node), intent(in) :: rhs
-!        type(lumped_mass_mat_node), intent(inout) :: lump
+!        type(lumped_mass_matrices), intent(inout) :: lump
 !      subroutine cal_ff_smp_2_scalar_type(mesh, rhs_tbl, rhs,          &
 !     &           lump, scalar)
 !        type(mesh_geometry), intent(in) :: mesh
 !        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !        type(finite_ele_mat_node), intent(in) :: rhs
-!        type(lumped_mass_mat_node), intent(in) :: lump
+!        type(lumped_mass_matrices), intent(in) :: lump
 !        real(kind=kreal), intent(inout) :: scalar(mesh%node%numnod)
 !      subroutine cal_ff_smp_2_vector_type(mesh, rhs_tbl, rhs,          &
 !     &           lump, vector)
 !        type(mesh_geometry), intent(in) :: mesh
 !        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !        type(finite_ele_mat_node), intent(in) :: rhs
-!        type(lumped_mass_mat_node), intent(in) :: lump
+!        type(lumped_mass_matrices), intent(in) :: lump
 !        real(kind=kreal), intent(inout) :: vector(mesh%node%numnod,3)
 !      subroutine cal_ff_smp_2_tensor_type(mesh, rhs_tbl, rhs_t,        &
 !     &           lump, tensor)
 !        type(mesh_geometry), intent(in) :: mesh
 !        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !        type(finite_ele_mat_node), intent(in) :: rhs_t
-!        type(lumped_mass_mat_node), intent(in) :: lump
+!        type(lumped_mass_matrices), intent(in) :: lump
 !
       module cal_ff_smp_to_ffs_type
 !
@@ -104,7 +104,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(finite_ele_mat_node), intent(in) :: rhs
 !
-      type(lumped_mass_mat_node), intent(inout) :: lump
+      type(lumped_mass_matrices), intent(inout) :: lump
 !
 !
       call s_cal_ff_smp_2_ml (mesh%node%numnod,                         &
@@ -123,7 +123,7 @@
       type(mesh_geometry), intent(in) :: mesh
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(finite_ele_mat_node), intent(in) :: rhs
-      type(lumped_mass_mat_node), intent(in) :: lump
+      type(lumped_mass_matrices), intent(in) :: lump
 !
       real(kind=kreal), intent(inout) :: scalar(mesh%node%numnod)
 !
@@ -144,7 +144,7 @@
       type(mesh_geometry), intent(in) :: mesh
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(finite_ele_mat_node), intent(in) :: rhs
-      type(lumped_mass_mat_node), intent(in) :: lump
+      type(lumped_mass_matrices), intent(in) :: lump
 !
       real(kind=kreal), intent(inout) :: vector(mesh%node%numnod,3)
 !
@@ -166,7 +166,7 @@
       type(mesh_geometry), intent(in) :: mesh
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(finite_ele_mat_node), intent(in) :: rhs_t
-      type(lumped_mass_mat_node), intent(in) :: lump
+      type(lumped_mass_matrices), intent(in) :: lump
 !
       real(kind=kreal), intent(inout)                                  &
      &                 :: tensor(mesh%node%numnod,n_sym_tensor)

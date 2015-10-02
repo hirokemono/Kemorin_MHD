@@ -17,6 +17,7 @@
       use m_precision
 !
       use m_phys_constants
+      use m_finite_element_matrix
 !
       implicit none
 !
@@ -34,7 +35,6 @@
        use m_geometry_data_MHD
        use m_node_phys_address
        use m_physical_property
-       use m_finite_element_matrix
 !
        ff_m_smp = 0.0d0
        if (coef_velo.gt.0.0d0) then
@@ -50,7 +50,6 @@
        use m_geometry_data_MHD
        use m_node_phys_address
        use m_physical_property
-       use m_finite_element_matrix
 !
        ff_m_smp = 0.0d0
        if (coef_magne.gt.0.0d0) then
@@ -66,7 +65,6 @@
        use m_geometry_data_MHD
        use m_node_phys_address
        use m_physical_property
-       use m_finite_element_matrix
 !
        ff_m_smp = 0.0d0
        if (coef_magne.gt.0.0d0) then
@@ -82,7 +80,6 @@
        use m_geometry_data_MHD
        use m_node_phys_address
        use m_physical_property
-       use m_finite_element_matrix
 !
        ff_m_smp = 0.0d0
        if (coef_temp.gt.0.0d0) then
@@ -98,7 +95,6 @@
        use m_geometry_data_MHD
        use m_node_phys_address
        use m_physical_property
-       use m_finite_element_matrix
 !
        ff_m_smp = 0.0d0
        if (coef_temp.gt.0.0d0) then
@@ -115,7 +111,6 @@
        use m_geometry_data_MHD
        use m_node_phys_address
        use m_physical_property
-       use m_finite_element_matrix
 !
        ff_m_smp = 0.0d0
        if (coef_light.gt.0.0d0) then
@@ -131,7 +126,6 @@
 !
       use m_control_parameter
       use m_geometry_data
-      use m_finite_element_matrix
       use m_jacobians
       use m_int_vol_data
 !
@@ -151,10 +145,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call scalar_phys_2_each_element(k2, i_field, phi_e)
         call fem_skv_scalar_type(iele_fsmp_stack, intg_point_t_evo, k2, &
-     &      ele1, jac1_3d_q, phi_e, sk6)
+     &      ele1, jac1_3d_q, phi_e, fem1_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_m_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_m_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_initial_scalar
 !
@@ -164,7 +158,6 @@
 !
       use m_control_parameter
       use m_geometry_data
-      use m_finite_element_matrix
       use m_jacobians
       use m_int_vol_data
 !
@@ -184,10 +177,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_field, vect_e)
         call fem_skv_vector_type(iele_fsmp_stack, intg_point_t_evo, k2, &
-     &      ele1, jac1_3d_q, vect_e, sk6)
+     &      ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_m_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_m_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_initial_vector
 !

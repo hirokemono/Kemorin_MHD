@@ -105,7 +105,7 @@
 !
       type(node_data), intent(in) ::            node
       type(field_geometry_data), intent(in) ::  fld
-      type(lumped_mass_mat_node), intent(in) :: lump
+      type(lumped_mass_matrices), intent(in) :: lump
       type(DJDS_ordering_table), intent(in) ::  djds_tbl
       type(DJDS_MATRIX), intent(inout) ::       mat11
 !
@@ -130,7 +130,7 @@
       type(node_data), intent(in) ::            node
       type(field_geometry_data), intent(in) ::  fld
       type(DJDS_ordering_table), intent(in) ::  djds_tbl
-      type(lumped_mass_mat_node), intent(in) :: lump
+      type(lumped_mass_matrices), intent(in) :: lump
       type(DJDS_MATRIX), intent(inout) ::       mat33
 !
 !
@@ -155,7 +155,7 @@
       type(node_data), intent(in) ::            node
       type(field_geometry_data), intent(in) ::  fld
       type(DJDS_ordering_table), intent(in) ::  djds_tbl
-      type(lumped_mass_mat_node), intent(in) :: lump
+      type(lumped_mass_matrices), intent(in) :: lump
       type(DJDS_MATRIX), intent(inout) ::       mat33
 !
 !

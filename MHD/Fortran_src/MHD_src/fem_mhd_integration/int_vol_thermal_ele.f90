@@ -67,21 +67,21 @@
           call fem_skv_scl_inertia_modsgs_pg(iele_fl_smp_stack,         &
      &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_hf),       &
      &        ele1, jac1_3d_q, FEM1_elen, temp_e, sgs_e, vect_e,        &
-     &        d_ele(1,iele_velo), sk6)
+     &        d_ele(1,iele_velo), fem1_wk%sk6)
         else if(iflag_SGS_heat .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_h_flux,       &
      &        coef_nega_t, sgs_e)
           call fem_skv_scl_inertia_sgs_pg(iele_fl_smp_stack,            &
      &        num_int, k2, ele1, jac1_3d_q,                             &
-     &        temp_e, sgs_e, d_ele(1,iele_velo), sk6)
+     &        temp_e, sgs_e, d_ele(1,iele_velo), fem1_wk%sk6)
         else
           call fem_skv_scalar_inertia_type(iele_fl_smp_stack,           &
      &        num_int, k2, temp_e, d_ele(1,iele_velo),                  &
-     &        ele1, jac1_3d_q, sk6)
+     &        ele1, jac1_3d_q, fem1_wk%sk6)
         end if
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_temp_ele
 !
@@ -121,21 +121,21 @@
           call fem_skv_scl_inertia_msgs_upw(iele_fl_smp_stack,          &
      &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_hf),       &
      &        ele1, jac1_3d_q, FEM1_elen, temp_e, sgs_e, vect_e,        &
-     &        d_ele(1,iele_velo), d_ele(1,iele_velo), sk6)
+     &        d_ele(1,iele_velo), d_ele(1,iele_velo), fem1_wk%sk6)
         else if(iflag_SGS_heat .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_h_flux,       &
      &        coef_nega_t, sgs_e)
           call fem_skv_scl_inertia_sgs_upwind(iele_fl_smp_stack,        &
      &       num_int, k2, ele1, jac1_3d_q, temp_e, sgs_e,               &
-     &       d_ele(1,iele_velo), d_ele(1,iele_velo), sk6)
+     &       d_ele(1,iele_velo), d_ele(1,iele_velo), fem1_wk%sk6)
         else
           call fem_skv_scalar_inertia_upwind(iele_fl_smp_stack,         &
      &       num_int, k2, temp_e, d_ele(1,iele_velo),                   &
-     &       d_ele(1,iele_velo), ele1, jac1_3d_q, sk6)
+     &       d_ele(1,iele_velo), ele1, jac1_3d_q, fem1_wk%sk6)
         end if
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_temp_ele_upw
 !

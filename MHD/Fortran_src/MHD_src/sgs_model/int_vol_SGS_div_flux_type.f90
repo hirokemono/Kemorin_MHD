@@ -47,7 +47,6 @@
      &           iele_fsmp_stack, n_int, i_vector, i_scalar,            &
      &           i_SGS_flux, i_filter, ak_diff, coef, fem_wk, f_nl)
 !
-      use m_finite_element_matrix
       use m_int_vol_data
 !
       use nodal_fld_cst_to_ele_type
@@ -99,7 +98,6 @@
      &           iele_fsmp_stack, n_int, i_vect, i_SGS_flux, i_filter,  &
      &           ak_diff, coef, fem_wk, f_nl)
 !
-      use m_finite_element_matrix
       use m_int_vol_data
 !
       use nodal_fld_cst_to_ele_type
@@ -150,7 +148,6 @@
      &           iele_fsmp_stack, n_int, i_vector, i_scalar,            &
      &           i_SGS_flux, i_filter, ak_diff, coef, fem_wk, f_nl)
 !
-      use m_finite_element_matrix
       use m_int_vol_data
 !
       use nodal_fld_cst_to_ele_type
@@ -202,7 +199,6 @@
      &           iele_fsmp_stack, n_int, i_vect, i_SGS_flux, i_filter,  &
      &           ak_diff, coef, fem_wk, f_nl)
 !
-      use m_finite_element_matrix
       use m_int_vol_data
 !
       use nodal_fld_cst_to_ele_type

@@ -70,13 +70,14 @@
               call fem_sf_grp_skv_sgs_vect_diff_p                       &
      &           (ele1, surf1, sf_grp, jac1_sf_grp_2d_q, FEM1_elen,     &
      &            igrp, k2, ione, n_int, i_filter, nd,                  &
-     &            dxe_sf, scalar_sf, ak_diff(1,iak_diff), one, sk6)
+     &            dxe_sf, scalar_sf, ak_diff(1,iak_diff), one,          &
+     &            fem1_wk%sk6)
             end do
           end if
         end do
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_surf_divergence_sgs
 !
@@ -122,14 +123,14 @@
               call fem_sf_grp_skv_commute_err_p                         &
      &           (ele1, surf1, sf_grp, jac1_sf_grp_2d_q, FEM1_elen,     &
      &            igrp, k2, ione, n_int, i_filter, nd,                  &
-     &            dxe_sf, scalar_sf, sk6)
+     &            dxe_sf, scalar_sf, fem1_wk%sk6)
             end do
 !
           end if
         end do
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_surf_div_commute_sgs
 !

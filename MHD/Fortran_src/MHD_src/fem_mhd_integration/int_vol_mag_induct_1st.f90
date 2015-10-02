@@ -72,10 +72,10 @@
 !
         call fem_skv_induction_galerkin(iele_fsmp_stack, n_int, k2,     &
      &      coef_induct, velo_1, magne_1, d_ele(1,iphys_ele%i_velo),    &
-     &      vect_e, ele1, jac1_3d_q, sk6)
+     &      vect_e, ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_mag_induct_pg
 !
@@ -115,10 +115,11 @@
 !
         call fem_skv_induction_upmagne(iele_fsmp_stack, n_int, k2,      &
      &      coef_induct, velo_1, magne_1, d_ele(1,iphys_ele%i_velo),    &
-     &      vect_e, d_ele(1,iphys_ele%i_magne), ele1, jac1_3d_q, sk6)
+     &      vect_e, d_ele(1,iphys_ele%i_magne), ele1, jac1_3d_q,        &
+     &      fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_mag_induct_upm
 !

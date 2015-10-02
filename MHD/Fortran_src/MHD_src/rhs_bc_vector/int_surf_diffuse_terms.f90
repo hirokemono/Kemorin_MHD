@@ -167,8 +167,8 @@
               call dlt_scl_phys_2_each_surface(sf_grp, igrp, k2,        &
      &            i_comp, scalar_sf)
               call fem_surf_skv_current_by_vecp                         &
-     &           (ele, surf, sf_grp, jac_sf_grp, igrp,                  &
-     &            k2, nd, intg_point_t_evo, dxe_sf, scalar_sf, sk6)
+     &           (ele, surf, sf_grp, jac_sf_grp, igrp, k2, nd,          &
+     &            intg_point_t_evo, dxe_sf, scalar_sf, fem1_wk%sk6)
             end do
 !
           end if
@@ -176,7 +176,7 @@
 !
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_surf_current_diffuse
 !
@@ -218,12 +218,12 @@
      &          i_field, scalar_sf)
             call fem_surf_skv_diffuse_galerkin                          &
      &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2,                &
-     &          ione, n_int, dxe_sf, scalar_sf, ak_d, sk6)
+     &          ione, n_int, dxe_sf, scalar_sf, ak_d, fem1_wk%sk6)
           end do
         end if
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_surf_diffuse_term
 !
@@ -271,14 +271,14 @@
      &            i_comp, scalar_sf)
               call fem_surf_skv_diffuse_galerkin                        &
      &           (ele, surf, sf_grp, jac_sf_grp, igrp, k2,              &
-     &            nd, n_int, dxe_sf, scalar_sf, ak_d, sk6)
+     &            nd, n_int, dxe_sf, scalar_sf, ak_d, fem1_wk%sk6)
             end do
 !
           end if
         end do
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_surf_vect_diffuse_term
 !

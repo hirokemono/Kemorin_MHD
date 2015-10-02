@@ -107,14 +107,14 @@
       call reset_ff_smp
 !
       call sel_int_vol_sgs_flux(iflag_temp_supg, i_filter, n_vector,    &
-     &    i_field, ie_dvx, sk6)
+     &    i_field, ie_dvx, fem1_wk%sk6)
 !
 !     set elemental model coefficients
 !
       call prod_model_coefs_4_vector(itype_SGS_h_flux_coef,             &
-     &    ak_sgs(1,icomp_sgs_hf), sk6)
+     &    ak_sgs(1,icomp_sgs_hf), fem1_wk%sk6)
 !
-      call add3_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
       call cal_ff_smp_2_vector                                          &
      &   (ff_smp, ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
@@ -148,9 +148,9 @@
       call reset_ff_smp
 !
       call sel_int_vol_sgs_flux(iflag_temp_supg, i_filter, n_vector,    &
-     &   i_field, ie_dvx, sk6)
+     &   i_field, ie_dvx, fem1_wk%sk6)
 !
-      call add3_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
       call cal_ff_smp_2_vector                                          &
      &   (ff_smp, ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !

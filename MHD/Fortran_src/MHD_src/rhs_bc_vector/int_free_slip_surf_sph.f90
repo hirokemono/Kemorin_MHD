@@ -92,13 +92,13 @@
      &          vect_sf)
             call fem_surf_skv_trq_sph_out                               &
      &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2, n_int,         &
-     &          ak_d_velo, xe_sf, vect_sf, sk6)
+     &          ak_d_velo, xe_sf, vect_sf, fem1_wk%sk6)
           end do
 !
         end if
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_free_slip_surf_sph_out
 !
@@ -133,12 +133,12 @@
      &          i_field, dminus, vect_sf)
             call fem_surf_skv_trq_sph_out                               &
      &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2, n_int,         &
-     &          ak_d_velo, xe_sf, vect_sf, sk6)
+     &          ak_d_velo, xe_sf, vect_sf, fem1_wk%sk6)
           end do
         end if
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_free_slip_surf_sph_in
 !

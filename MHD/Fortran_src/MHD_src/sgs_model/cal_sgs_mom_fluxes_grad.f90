@@ -180,14 +180,14 @@
       call reset_ff_t_smp
 !
       call sel_int_vol_sgs_flux(iflag_velo_supg, i_filter,              &
-     &    n_sym_tensor, i_field, ie_dvx, sk6)
+     &    n_sym_tensor, i_field, ie_dvx, fem1_wk%sk6)
 !
 !     set elemental model coefficients
 !
       call prod_model_coefs_4_tensor(itype_csim,                        &
-     &    ak_sgs(1,icm_sgs), sk6)
+     &    ak_sgs(1,icm_sgs), fem1_wk%sk6)
 !
-      call add6_skv_to_ff_t_smp_1st(ff_t_smp, sk6)
+      call add6_skv_to_ff_t_smp_1st(ff_t_smp, fem1_wk%sk6)
       call cal_ff_smp_2_tensor                                          &
      &   (ff_t_smp, ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
@@ -221,9 +221,9 @@
       call reset_ff_t_smp
 !
       call sel_int_vol_sgs_flux(iflag_velo_supg, i_filter,              &
-     &    n_sym_tensor, i_field, ie_dvx, sk6)
+     &    n_sym_tensor, i_field, ie_dvx, fem1_wk%sk6)
 !
-      call add6_skv_to_ff_t_smp_1st(ff_t_smp, sk6)
+      call add6_skv_to_ff_t_smp_1st(ff_t_smp, fem1_wk%sk6)
       call cal_ff_smp_2_tensor                                          &
      &   (ff_t_smp, ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !

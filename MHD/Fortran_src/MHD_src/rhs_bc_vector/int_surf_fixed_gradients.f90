@@ -59,9 +59,9 @@
      &   (ele, surf, sf_grp, jac_sf_grp,                                &
      &    ngrp_sf_fix_hf, nele_sf_fix_hf, ngrp_sf_fix_hf,               &
      &    id_grp_sf_fix_hf, ist_ele_sf_fix_hf,                          &
-     &    sf_apt_fix_hf, n_int, ione, ak_d_temp, sk6)
+     &    sf_apt_fix_hf, n_int, ione, ak_d_temp, fem1_wk%sk6)
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_sf_h_flux
 !
@@ -89,11 +89,11 @@
      &       (ele, surf, sf_grp, jac_sf_grp,                            &
      &        nmax_sf_fix_tq, nmax_ele_sf_fix_tq, ngrp_sf_fix_tq(nd),   &
      &        id_grp_sf_fix_tq(1,nd), ist_ele_sf_fix_tq(0,nd),          &
-     &        sf_apt_fix_tq(1,nd), n_int, nd, ak_d_velo, sk6)
+     &        sf_apt_fix_tq(1,nd), n_int, nd, ak_d_velo, fem1_wk%sk6)
         end if
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_sf_torque
 !
@@ -122,10 +122,10 @@
      &        nmax_sf_fix_grad_a, nmax_ele_sf_fix_grad_a,               &
      &        ngrp_sf_fix_grad_a(nd), id_grp_sf_fix_grad_a(1,nd),       &
      &        ist_ele_sf_fix_grad_a(0,nd), sf_apt_fix_grad_a(1,nd),     &
-     &        n_int, nd, ak_d_magne, sk6)
+     &        n_int, nd, ak_d_magne, fem1_wk%sk6)
         end if
       end do
-      call add3_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_sf_grad_vecp
 !
@@ -156,11 +156,11 @@
      &        nmax_sf_fix_grad_b, nmax_ele_sf_fix_grad_b,               &
      &        ngrp_sf_fix_grad_b(nd), id_grp_sf_fix_grad_b(1,nd),       &
      &        ist_ele_sf_fix_grad_b(0,nd), sf_apt_fix_grad_b(1,nd),     &
-     &        n_int, nd, ak_d_magne, sk6)
+     &        n_int, nd, ak_d_magne, fem1_wk%sk6)
         end if
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_sf_grad_magne
 !
@@ -187,9 +187,9 @@
      &   (ele, surf, sf_grp, jac_sf_grp,                                &
      &     ngrp_sf_fix_cmg, nele_sf_fix_cmg, ngrp_sf_fix_cmg,           &
      &     id_grp_sf_fix_cmg, ist_ele_sf_fix_cmg, sf_apt_fix_cmg,       &
-     &     n_int, ione, ak_d_composit, sk6)
+     &     n_int, ione, ak_d_composit, fem1_wk%sk6)
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_sf_grad_composition
 !
@@ -213,9 +213,9 @@
       call fem_surf_skv_norm_poisson_pg(ele, surf, sf_grp, jac_sf_grp,  &
      &    ngrp_sf_fix_pg, nele_sf_fix_pg, ngrp_sf_fix_pg,               &
      &    id_grp_sf_fix_pg, ist_ele_sf_fix_pg, sf_apt_fix_pg,           &
-     &    intg_point_poisson, sk6)
+     &    intg_point_poisson, fem1_wk%sk6)
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_sf_grad_press
 !
@@ -238,9 +238,9 @@
       call fem_surf_skv_norm_poisson_pg(ele, surf, sf_grp, jac_sf_grp,  &
      &    ngrp_sf_fix_mpg, nele_sf_fix_mpg, ngrp_sf_fix_mpg,            &
      &    id_grp_sf_fix_mpg, ist_ele_sf_fix_mpg, sf_apt_fix_mpg,        &
-     &    intg_point_poisson, sk6)
+     &    intg_point_poisson, fem1_wk%sk6)
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_sf_grad_magne_p
 !

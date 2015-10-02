@@ -50,10 +50,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call scalar_phys_2_each_element(k2, i_field, phi_e)
         call fem_skv_gradient(iele_fsmp_stack, num_int, k2,             &
-     &      ele1, jac1_3d_q, phi_e, sk6)
+     &      ele1, jac1_3d_q, phi_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_grad_1st
 !
@@ -74,10 +74,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_field, vect_e)
         call fem_skv_divergence(iele_fsmp_stack, num_int, k2,           &
-     &      ele1, jac1_3d_q, vect_e, sk6)
+     &      ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_div_1st
 !
@@ -98,10 +98,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_field, vect_e)
         call fem_skv_rotation(iele_fsmp_stack, num_int, k2,             &
-     &      ele1, jac1_3d_q, vect_e, sk6)
+     &      ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_rot_1st
 !
@@ -123,10 +123,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call tensor_phys_2_each_element(k2, i_field, tensor_e)
         call fem_skv_div_tensor(iele_fsmp_stack, num_int, k2,           &
-     &      ele1, jac1_3d_q, tensor_e, sk6)
+     &      ele1, jac1_3d_q, tensor_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_div_tsr_1st
 !
@@ -148,10 +148,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_field, vect_e)
         call fem_skv_div_asym_tsr(iele_fsmp_stack, num_int, k2,         &
-     &      ele1, jac1_3d_q, vect_e, sk6)
+     &      ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_div_as_tsr_1st
 !

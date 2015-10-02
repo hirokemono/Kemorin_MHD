@@ -180,7 +180,7 @@
       do k1 = 1, ele1%nnod_4_ele
        do iele = 1, ele1%numele
         write(50+my_rank,'(2i16,1p10e25.14)')                           &
-     &         k1, iele, sk6(iele,1:6,k1)
+     &         k1, iele, fem1_wk%sk6(iele,1:6,k1)
        end do
       end do
 !

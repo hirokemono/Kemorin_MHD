@@ -60,10 +60,10 @@
         call scalar_phys_2_each_element(k2, i_scalar, phi_e)
 !
         call fem_skv_commute_err_grad_1(iele_fsmp_stack,                &
-     &      n_int, k2, i_filter, phi_e, sk6)
+     &      n_int, k2, i_filter, phi_e, fem1_wk%sk6)
        end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_commute_grad
 !
@@ -88,10 +88,10 @@
 !
         call vector_phys_2_each_element(k2, i_vect, vect_e)
         call fem_skv_commute_err_div_1(iele_fsmp_stack,                 &
-     &      n_int, k2, i_filter, vect_e, sk6)
+     &      n_int, k2, i_filter, vect_e, fem1_wk%sk6)
        end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_commute_div
 !
@@ -113,10 +113,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_vect, vect_e)
         call fem_skv_commute_err_rot_1(iele_fsmp_stack,                 &
-     &      n_int, k2, i_filter, vect_e, sk6)
+     &      n_int, k2, i_filter, vect_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_commute_rot
 !
@@ -143,10 +143,10 @@
      &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
      &      i_vect, i_scalar, i_flux, nod_fld1%d_fld, vect_e)
         call fem_skv_commute_err_div_1(iele_fsmp_stack,                 &
-     &      n_int, k2, i_filter, vect_e, sk6)
+     &      n_int, k2, i_filter, vect_e, fem1_wk%sk6)
        end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_commute_div_v_flux
 !
@@ -173,10 +173,10 @@
      &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
      &      i_vect, i_flux, nod_fld1%d_fld, tensor_e)
         call fem_skv_commute_err_div_tsr_1(iele_fsmp_stack,             &
-     &      n_int, k2, i_filter, tensor_e, sk6)
+     &      n_int, k2, i_filter, tensor_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_commute_div_m_flux
 !
@@ -202,10 +202,10 @@
      &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
      &      i_b, i_v, i_flux, nod_fld1%d_fld, vect_e)
         call fem_skv_commute_err_div_ast_1(iele_fsmp_stack,             &
-     &      n_int, k2, i_filter, vect_e, sk6)
+     &      n_int, k2, i_filter, vect_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_commute_induct_t
 !

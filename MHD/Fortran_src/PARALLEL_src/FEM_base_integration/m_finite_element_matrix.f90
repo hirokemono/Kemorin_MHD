@@ -9,7 +9,6 @@
 !
 !      subroutine allocate_fem_mat_base
 !
-!      subroutine reset_sk1
 !      subroutine reset_sk6(numdir)
 !
 !      subroutine reset_ff_smp
@@ -25,8 +24,13 @@
       module m_finite_element_matrix
 !
       use m_precision
+      use t_finite_element_mat
 !
       implicit  none
+!
+!>      Work area for FEM assemble
+      type(work_finite_element_mat), save :: fem1_wk
+!fem1_wk%sk6
 !
       real (kind=kreal), allocatable  ::  ml(:)
       real (kind=kreal), allocatable  ::  ml_fl(:)
@@ -40,8 +44,6 @@
       real (kind=kreal), allocatable  ::  ml_o_cd(:)
       real (kind=kreal), allocatable  ::  ml_o_ins(:)
 !
-      real (kind=kreal), allocatable  ::  ml_o_ele_diag(:)
-!
 !
       real (kind=kreal), allocatable  ::  ff(:,:)
       real (kind=kreal), allocatable  ::  ff_nl(:,:)
@@ -53,21 +55,7 @@
       real (kind=kreal), allocatable  :: ff_m_smp(:,:,:)
       real (kind=kreal), allocatable  :: ff_t_smp(:,:,:)
 !
-!
-      real (kind=kreal), allocatable  ::  sk1(:,:)
-      real (kind=kreal), allocatable  ::  sk6(:,:,:)
-! 
-!
-      real (kind=kreal)  ::  sk_ele
-!  work coefficients for pressure 
-      real (kind=kreal)  ::  sk_ele_t
-!  work coefficients for temperature 
-      real (kind=kreal)  ::  sk_ele_d
-!  work coefficients for dummy scalar 
-      real (kind=kreal)  :: sk_ele_v(3,3)
-!  work coefficients for velocity 
-      real (kind=kreal)  :: sk_ele_b(3,3)
-!  work coefficients for magnetic field 
+!      real (kind=kreal), allocatable  ::  sk6(:,:,:)
 !
       private :: allocate_fem_mat_region
       private :: allocate_fem_mat_fluid, allocate_node_ff
@@ -108,11 +96,9 @@
       allocate(ff_m_smp(node1%max_nod_smp,3,np_smp))
       allocate(ff_t_smp(node1%max_nod_smp,6,np_smp))
 !
-      allocate(sk1(ele1%numele,ele1%nnod_4_ele))
-      allocate(sk6(ele1%numele,n_sym_tensor,ele1%nnod_4_ele))
+      allocate(fem1_wk%sk6(ele1%numele,n_sym_tensor,ele1%nnod_4_ele))
 !
       allocate(ml_ele_diag(ele1%numele))
-      allocate(ml_o_ele_diag(ele1%numele))
 !
       if(node1%numnod .gt. 0) then
         ml =  0.0d0
@@ -125,10 +111,8 @@
       end if
 !
       if(ele1%numele .gt. 0) then
-        sk1 =      0.0d0
-        sk6 =      0.0d0
+        fem1_wk%sk6 =      0.0d0
         ml_ele_diag = 0.0d0
-        ml_o_ele_diag = 0.0d0
       end if
 !
       call reset_ff_smps
@@ -196,27 +180,6 @@
 !   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
 !
-      subroutine reset_sk1
-!
-      use m_geometry_data
-!
-      integer(kind = kint) :: k1, iele
-!
-!
-!$omp parallel private(iele)
-      do k1 = 1, ele1%nnod_4_ele
-!$omp do
-        do iele = 1, ele1%numele
-          sk1(iele,k1) = 0.0d0
-        end do
-!$omp end do nowait
-      end do
-!$omp end parallel
-!
-      end subroutine reset_sk1
-!
-!   ---------------------------------------------------------------------
-!
       subroutine reset_sk6(numdir)
 !
       use m_geometry_data
@@ -231,7 +194,7 @@
         do nd = 1, numdir
 !$omp do
           do iele = 1, ele1%numele
-             sk6(iele,nd,k1) = 0.0d0
+             fem1_wk%sk6(iele,nd,k1) = 0.0d0
           end do
 !$omp end do nowait
         end do
@@ -324,9 +287,9 @@
       deallocate(ml, ml_o)
 !
       deallocate(ff_smp, ff_nl_smp, ff_m_smp, ff_t_smp)
-      deallocate(sk1, sk6)
+      deallocate(fem1_wk%sk6)
 !
-      deallocate(ml_ele_diag, ml_o_ele_diag)
+      deallocate(ml_ele_diag)
 !
       call deallocate_node_ff
 !

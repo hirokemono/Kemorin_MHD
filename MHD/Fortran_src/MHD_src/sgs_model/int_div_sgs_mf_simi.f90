@@ -54,9 +54,10 @@
      &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
      &      i_vect, i_flux, nod_fld1%d_fld, tensor_e)
         call fem_skv_div_tensor(iele_fl_smp_stack,                      &
-     &      intg_point_t_evo, k2, ele1, jac1_3d_q, tensor_e, sk6)
+     &      intg_point_t_evo, k2, ele1, jac1_3d_q, tensor_e,            &
+     &      fem1_wk%sk6)
       end do
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_div_sgs_mf_simi_pg
 !
@@ -122,9 +123,10 @@
      &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
      &      i_vect, i_flux, nod_fld1%d_fld, tensor_e)
         call fem_skv_div_tsr_upw(iele_fl_smp_stack, intg_point_t_evo,   &
-     &      k2, d_ele(1,ie_upw), ele1, jac1_3d_q, tensor_e, sk6)
+     &      k2, d_ele(1,ie_upw), ele1, jac1_3d_q, tensor_e,             &
+     &      fem1_wk%sk6)
       end do
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_div_sgs_mf_simi_upwind
 !

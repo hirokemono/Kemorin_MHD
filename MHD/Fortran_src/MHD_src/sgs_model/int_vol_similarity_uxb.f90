@@ -32,10 +32,7 @@
       subroutine sel_int_simi_vp_induct
 !
       use m_element_phys_data
-      use cal_skv_to_ff_smp_1st
 !
-!
-      call reset_sk6(n_vector)
 !
       if (iflag_mag_supg .eq. id_turn_ON) then
         call int_simi_vp_induct_upm                                     &
@@ -43,8 +40,6 @@
       else
         call int_simi_vp_induct
       end if
-!
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
 !
       end subroutine sel_int_simi_vp_induct
 !
@@ -61,19 +56,23 @@
       use nodal_fld_2_each_ele_1st
       use fem_skv_nodal_field_type
       use cal_product_to_skv_1st
+      use cal_skv_to_ff_smp_1st
 !
       integer(kind = kint) :: k2
 !
 !
-! -------- loop for shape function for the phsical values
+      call reset_sk6(n_vector)
 !
+! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, iphys%i_sgs_simi, vect_e)
         call fem_skv_vector_type(iele_cd_smp_stack,                     &
-     &      intg_point_t_evo, k2, ele1, jac1_3d_q, vect_e, sk6)
+     &      intg_point_t_evo, k2, ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
         call scalar_prod_to_skv_tensor_1st(iele_cd_smp_stack,           &
-     &      ak_sgs(1,icomp_sgs_uxb), sk6)
+     &      ak_sgs(1,icomp_sgs_uxb), fem1_wk%sk6)
       end do
+!
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_simi_vp_induct
 !
@@ -89,6 +88,7 @@
       use nodal_fld_2_each_ele_1st
       use fem_skv_nodal_fld_upw_type
       use cal_product_to_skv_1st
+      use cal_skv_to_ff_smp_1st
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
@@ -96,16 +96,20 @@
       integer(kind = kint) :: k2
 !
 !
+      call reset_sk6(n_vector)
+!
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, iphys%i_sgs_simi, vect_e)
 !
         call fem_skv_vector_field_upwind(iele_cd_smp_stack,             &
      &      intg_point_t_evo, k2, d_ele(1,iele_magne), ele1, jac1_3d_q, &
-     &      vect_e, sk6)
+     &      vect_e, fem1_wk%sk6)
 !
         call scalar_prod_to_skv_tensor_1st(iele_cd_smp_stack,           &
-     &      ak_sgs(1,icomp_sgs_uxb), sk6)
+     &      ak_sgs(1,icomp_sgs_uxb), fem1_wk%sk6)
       end do
+!
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_simi_vp_induct_upm
 !

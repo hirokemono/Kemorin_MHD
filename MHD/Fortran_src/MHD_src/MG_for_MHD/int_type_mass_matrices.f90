@@ -85,7 +85,7 @@
       call int_mass_matrix_diag_type                                    &
      &   (mesh%ele%istack_ele_smp, intg_point_t_evo,                    &
      &    mesh, jac_3d, rhs_tbl, fem_mat%fem_wk, fem_mat%fem_rhs%f_l,   &
-     &    fem_mat%m_lump%node)
+     &    fem_mat%m_lump)
 !
       if (iflag_debug.eq.1)                                             &
      &         write(*,*) 'int_mass_matrix_diag_type fluid'
@@ -130,29 +130,28 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'int_mass_matrix_all_quad'
       call int_mass_matrix_all_quad(mesh, jac_3d, rhs_tbl,              &
-     &    fem_mat%fem_wk, fem_mat%fem_rhs%f_l, fem_mat%m_lump%ele_diag, &
-     &    fem_mat%m_lump%node)
+     &    fem_mat%fem_wk, fem_mat%fem_rhs%f_l, fem_mat%m_lump)
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &    'int_mass_matrix_HRZ_type fluid'
        call int_mass_matrix_HRZ_type                                    &
      &    (MHD_mesh%fluid%istack_ele_fld_smp, intg_point_t_evo,         &
-     &     mesh, jac_3d, rhs_tbl, fem_mat%m_lump%ele_diag,              &
-     &     fem_mat%fem_wk, fem_mat%fem_rhs%f_l, mk_MHD%fluid)
+     &     mesh, jac_3d, rhs_tbl, fem_mat%fem_wk,                       &
+     &     fem_mat%fem_rhs%f_l, mk_MHD%fluid)
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &    'int_mass_matrix_HRZ_type conduct'
        call int_mass_matrix_HRZ_type                                    &
      &    (MHD_mesh%conduct%istack_ele_fld_smp, intg_point_t_evo,       &
-     &     mesh, jac_3d, rhs_tbl, fem_mat%m_lump%ele_diag,              &
-     &     fem_mat%fem_wk, fem_mat%fem_rhs%f_l, mk_MHD%conduct)
+     &     mesh, jac_3d, rhs_tbl, fem_mat%fem_wk,                       &
+     &     fem_mat%fem_rhs%f_l, mk_MHD%conduct)
 !
       if (iflag_debug.eq.1) write(*,*)                                  &
      &    'int_mass_matrix_HRZ_type insulator'
        call int_mass_matrix_HRZ_type                                    &
      &    (MHD_mesh%insulate%istack_ele_fld_smp, intg_point_t_evo,      &
-     &     mesh, jac_3d, rhs_tbl, fem_mat%m_lump%ele_diag,              &
-     &     fem_mat%fem_wk, fem_mat%fem_rhs%f_l, mk_MHD%insulate)
+     &     mesh, jac_3d, rhs_tbl, fem_mat%fem_wk,                       &
+     &     fem_mat%fem_rhs%f_l, mk_MHD%insulate)
 !
       end subroutine int_mass_matrices_quad
 !
@@ -160,7 +159,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_mass_matrix_all_quad(mesh, jac_3d, rhs_tbl,        &
-     &          fem_wk, rhs_l, ele_diag, ml_node)
+     &          fem_wk, rhs_l, m_lump)
 !
       use t_finite_element_mat
       use fem_skv_mass_mat_type
@@ -173,8 +172,7 @@
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) ::     rhs_l
-      type(lumped_mass_mat_node), intent(inout) ::    ele_diag
-      type (lumped_mass_mat_node), intent(inout) ::   ml_node
+      type(lumped_mass_matrices), intent(inout) ::   m_lump
 !
 !
       call reset_ff_smps_type(n_scalar,                                 &
@@ -186,10 +184,10 @@
      &    intg_point_t_evo, mesh%ele, jac_3d, fem_wk%sk6)
 !
       call sum_skv_diagonal_4_HRZ_type(mesh%ele%istack_ele_smp,         &
-     &    mesh%ele, fem_wk%sk6, ele_diag%ml_o, ele_diag%ml)
+     &    mesh%ele, fem_wk%sk6, fem_wk%me_diag)
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, rhs_l)
-      call cal_ff_smp_2_ml_type(mesh, rhs_tbl, rhs_l, ml_node)
+      call cal_ff_smp_2_ml_type(mesh, rhs_tbl, rhs_l, m_lump)
 !
 !      call check_mass_martix
 !

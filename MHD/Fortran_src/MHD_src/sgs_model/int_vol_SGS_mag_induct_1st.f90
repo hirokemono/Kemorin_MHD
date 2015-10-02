@@ -60,10 +60,10 @@
      &       coef_induct, sgs_e, vect_e)
          call fem_skv_div_sgs_asym_tsr(iele_fsmp_stack, n_int, k2,      &
      &       i_filter, ak_diff(1,iak_diff_uxb),                         &
-     &       ele1, jac1_3d_q, FEM1_elen, sgs_e, vect_e, sk6)
+     &       ele1, jac1_3d_q, FEM1_elen, sgs_e, vect_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_div_SGS_idct_mod_pg
 !
@@ -95,10 +95,10 @@
         call fem_skv_div_sgs_asym_t_upwind(iele_fsmp_stack,             &
      &      n_int, k2, i_filter, ak_diff(1,iak_diff_uxb),               &
      &      ele1, jac1_3d_q, FEM1_elen, d_ele(1,i_magne), sgs_e,        &
-     &      vect_e, sk6)
+     &      vect_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_div_SGS_idct_mod_upm
 !

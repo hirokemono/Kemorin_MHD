@@ -293,10 +293,10 @@
         call scalar_2_each_element(k2, ff_nl(1,1), phi_e)
         call fem_skv_scalar_field_upwind(iele_fsmp_stack,               &
      &      intg_point_t_evo, k2, d_ele(1,ie_up), ele1, jac1_3d_q,      &
-     &      phi_e, sk6)
+     &      phi_e, fem1_wk%sk6)
       end do
 !
-      call sub1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call sub1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
       call cal_multi_pass_2_ff_smp                                      &
      &   (node1%max_nod_smp, node1%istack_nod_smp,                      &
      &    n_scalar, ff_nl_smp, ff_m_smp)
@@ -328,10 +328,10 @@
         call vector_2_each_element(k2, ff_nl(1,1), vect_e)
         call fem_skv_vector_field_upwind(iele_fsmp_stack,               &
      &      intg_point_t_evo, k2, d_ele(1,ie_up), ele1, jac1_3d_q,      &
-     &      vect_e, sk6)
+     &      vect_e, fem1_wk%sk6)
       end do
 !
-      call sub3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call sub3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
       call cal_multi_pass_2_ff_smp                                      &
      &   (node1%max_nod_smp, node1%istack_nod_smp,                      &
      &    n_vector, ff_nl_smp, ff_m_smp)

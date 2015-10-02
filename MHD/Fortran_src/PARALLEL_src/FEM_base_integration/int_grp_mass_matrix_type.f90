@@ -14,13 +14,13 @@
 !     &          fem_wk, rhs_l)
 !      subroutine int_grp_mass_matrix_diag_type(iele_fsmp_stack,        &
 !     &          nele_grp, iele_grp, n_int, mesh, jac_3d, rhs_tbl,      &
-!     &          fem_wk, rhs_l, ml_node)
+!     &          fem_wk, rhs_l, m_lump)
 !      subroutine int_grp_mass_mat_HRZ_full_type(iele_fsmp_stack,       &
 !     &          nele_grp, iele_grp, n_int, jac_3d, rhs_tbl,            &
-!     &          ele_diag, fem_wk, rhs_l, ml_node)
+!     &          fem_wk, rhs_l, m_lump)
 !      subroutine int_grp_mass_matrix_HRZ_type(iele_fsmp_stack,         &
 !     &          nele_grp, iele_grp, n_int, jac_3d, rhs_tbl,            &
-!     &          ele_diag, fem_wk, rhs_l, ml_node)
+!     &          fem_wk, rhs_l, m_lump)
 !        integer (kind=kint), intent(in) :: num_int
 !        integer (kind=kint), intent(in) :: nele_grp
 !        integer (kind=kint), intent(in) :: iele_grp(nele_grp)
@@ -28,10 +28,9 @@
 !        type(mesh_geometry), intent(in) :: mesh
 !        type(jacobians_3d), intent(in) :: jac_3d
 !        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!        type(lumped_mass_mat_node), intent(in) :: ele_diag
 !        type(work_finite_element_mat), intent(inout) :: fem_wk
 !        type(finite_ele_mat_node), intent(inout) :: rhs_l
-!        type(lumped_mass_mat_node), intent(inout) :: ml_node
+!        type(lumped_mass_matrices), intent(inout) :: m_lump
 !        type(DJDS_MATRIX),  intent(inout) :: mat11
 !
       module int_grp_mass_matrix_type
@@ -133,7 +132,7 @@
 !
       subroutine int_grp_mass_matrix_diag_type(iele_fsmp_stack,         &
      &          nele_grp, iele_grp, n_int, mesh, jac_3d, rhs_tbl,       &
-     &          fem_wk, rhs_l, ml_node)
+     &          fem_wk, rhs_l, m_lump)
 !
       use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp_type
@@ -150,7 +149,7 @@
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: rhs_l
-      type(lumped_mass_mat_node), intent(inout) :: ml_node
+      type(lumped_mass_matrices), intent(inout) :: m_lump
 !
 !
       call reset_ff_smps_type(n_scalar,                                 &
@@ -162,7 +161,7 @@
      &    nele_grp, iele_grp, n_int, mesh%ele, jac_3d, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, rhs_l)
-      call cal_ff_smp_2_ml_type(mesh, rhs_tbl, rhs_l, ml_node)
+      call cal_ff_smp_2_ml_type(mesh, rhs_tbl, rhs_l, m_lump)
 !
       end subroutine int_grp_mass_matrix_diag_type
 !
@@ -170,7 +169,7 @@
 !
       subroutine int_grp_mass_mat_HRZ_full_type(iele_fsmp_stack,        &
      &          nele_grp, iele_grp, n_int, mesh, jac_3d, rhs_tbl,       &
-     &          ele_diag, fem_wk, rhs_l, ml_node)
+     &          fem_wk, rhs_l, m_lump)
 !
       use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp_type
@@ -186,9 +185,8 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
-      type(lumped_mass_mat_node), intent(inout) :: ele_diag
       type(finite_ele_mat_node), intent(inout) :: rhs_l
-      type(lumped_mass_mat_node), intent(inout) :: ml_node
+      type(lumped_mass_matrices), intent(inout) :: m_lump
 !
 !
       call reset_ff_smps_type(n_scalar,                                 &
@@ -199,13 +197,13 @@
       call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,             &
      &    nele_grp, iele_grp, n_int, mesh%ele, jac_3d, fem_wk%sk6)
       call sum_skv_diagonal_4_HRZ_type(iele_fsmp_stack, mesh%ele,       &
-     &    fem_wk%sk6, ele_diag%ml_o, ele_diag%ml)
+     &    fem_wk%sk6, fem_wk%me_diag)
 !
       call grp_volume_average_skv_HRZ_t(iele_fsmp_stack,                &
-     &    nele_grp, iele_grp, mesh%ele, fem_wk%sk6, ele_diag%ml)
+     &    nele_grp, iele_grp, mesh%ele, fem_wk%sk6, fem_wk%me_diag)
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, rhs_l)
-      call cal_ff_smp_2_ml_type(mesh, rhs_tbl, rhs_l, ml_node)
+      call cal_ff_smp_2_ml_type(mesh, rhs_tbl, rhs_l, m_lump)
 !
       end subroutine int_grp_mass_mat_HRZ_full_type
 !
@@ -213,7 +211,7 @@
 !
       subroutine int_grp_mass_matrix_HRZ_type(iele_fsmp_stack,          &
      &          nele_grp, iele_grp, n_int, mesh, jac_3d, rhs_tbl,       &
-     &          ele_diag, fem_wk, rhs_l, ml_node)
+     &          fem_wk, rhs_l, m_lump)
 !
       use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp_type
@@ -227,11 +225,10 @@
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(lumped_mass_mat_node), intent(in) :: ele_diag
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: rhs_l
-      type(lumped_mass_mat_node), intent(inout) :: ml_node
+      type(lumped_mass_matrices), intent(inout) :: m_lump
 !
 !
       call reset_ff_smps_type(n_scalar,                                 &
@@ -242,10 +239,10 @@
       call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,             &
      &    nele_grp, iele_grp, n_int, mesh%ele, jac_3d, fem_wk%sk6)
       call grp_volume_average_skv_HRZ_t(iele_fsmp_stack,                &
-     &    nele_grp, iele_grp, mesh%ele, fem_wk%sk6, ele_diag%ml)
+     &    nele_grp, iele_grp, mesh%ele, fem_wk%sk6, fem_wk%me_diag)
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, rhs_l)
-      call cal_ff_smp_2_ml_type(mesh, rhs_tbl, rhs_l, ml_node)
+      call cal_ff_smp_2_ml_type(mesh, rhs_tbl, rhs_l, m_lump)
 !
       end subroutine int_grp_mass_matrix_HRZ_type
 !

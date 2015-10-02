@@ -396,7 +396,7 @@
 !
       call fem_skv_vector_on_ele_grp_HRZ(ele%numele, ele%nnod_4_ele,    &
      &    iele_fsmp_stack, ele%volume_ele, nele_grp, iele_grp,          &
-     &     ml_ele_diag, vector_1, sk_v)
+     &    ml_ele_diag, vector_1, sk_v)
 !
       end subroutine fem_skv_vector_on_egrp_HRZ_type
 !

@@ -62,10 +62,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call scalar_cst_phys_2_each_ele(k2, i_scalar, coef, phi_e)
         call fem_skv_scalar_inertia_type(iele_fsmp_stack, n_int, k2,    &
-     &      phi_e, d_ele(1,iele_velo), ele1, jac1_3d_q, sk6)
+     &      phi_e, d_ele(1,iele_velo), ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_scalar_inertia_1st
 !
@@ -94,10 +94,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, i_vector, coef, velo_1)
         call fem_skv_vector_inertia_type(iele_fsmp_stack, n_int, k2,    &
-     &      velo_1, d_ele(1,iele_velo), ele1, jac1_3d_q, sk6)
+     &      velo_1, d_ele(1,iele_velo), ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_vector_inertia_1st
 !
@@ -126,10 +126,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, i_vector, coef, velo_1)
         call fem_skv_rot_inertia_type(iele_fsmp_stack, n_int, k2,       &
-     &      velo_1, d_ele(1,iele_vort), ele1, jac1_3d_q, sk6)
+     &      velo_1, d_ele(1,iele_vort), ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_rot_inertia_1st
 !
@@ -161,10 +161,10 @@
         call scalar_cst_phys_2_each_ele(k2, i_scalar, coef, phi_e)
         call fem_skv_scalar_inertia_upwind(iele_fsmp_stack, n_int, k2,  &
      &      phi_e, d_ele(1,iele_velo), d_ele(1,ie_upw),                 &
-     &      ele1, jac1_3d_q, sk6)
+     &      ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_scalar_inertia_upw_1st
 !
@@ -195,10 +195,10 @@
         call vector_cst_phys_2_each_ele(k2, i_vector, coef, velo_1)
         call fem_skv_vector_inertia_upwind(iele_fsmp_stack, n_int, k2,  &
      &      velo_1, d_ele(1,iele_velo), d_ele(1,ie_upw),                &
-     &      ele1, jac1_3d_q,  sk6)
+     &      ele1, jac1_3d_q,  fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_vector_inertia_upw_1st
 !
@@ -228,10 +228,10 @@
         call vector_cst_phys_2_each_ele(k2, i_vector, coef, velo_1)
         call fem_skv_rot_inertia_upwind(iele_fsmp_stack, n_int, k2,     &
      &      velo_1, d_ele(1,iele_vort), d_ele(1,ie_upw),                &
-     &      ele1, jac1_3d_q, sk6)
+     &      ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_rot_inertia_upw_1st
 !

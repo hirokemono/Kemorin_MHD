@@ -71,10 +71,10 @@
 !
         call fem_skv_stratified_galerkin(iele_fl_smp_stack,             &
      &      intg_point_t_evo, k2, temp_e, d_ele(1,iele_velo), xe,       &
-     &      ele1, jac1_3d_q, sk6)
+     &      ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine cal_stratified_layer
 !
@@ -100,10 +100,10 @@
 !
         call fem_skv_stratified_upwind(iele_fl_smp_stack,               &
      &      intg_point_t_evo, k2, temp_e, d_ele(1,iele_velo), xe,       &
-     &      ele1, jac1_3d_q, sk6)
+     &      ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine cal_stratified_layer_upw
 !

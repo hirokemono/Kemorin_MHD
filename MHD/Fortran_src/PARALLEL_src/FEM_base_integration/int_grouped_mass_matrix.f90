@@ -58,8 +58,9 @@
       do k2 = 1, ele1%nnod_4_ele
         call reset_sk6(n_scalar)
         call fem_grp_skv_mass_matrix_t(iele_fsmp_stack,                 &
-     &      nele_grp, iele_grp, n_int, k2, ele1, jac1_3d_q, sk6)
-        call add_skv1_2_matrix11_1st(k2, sk6, nmat_size, aiccg)
+     &      nele_grp, iele_grp, n_int, k2, ele1, jac1_3d_q,             &
+     &      fem1_wk%sk6)
+        call add_skv1_2_matrix11_1st(k2, fem1_wk%sk6, nmat_size, aiccg)
       end do
 !
       end subroutine int_grp_consist_mass_matrix
@@ -86,10 +87,10 @@
 !
       do k2 = 1, ele1%nnod_4_ele
        call fem_grp_skv_mass_matrix_t(iele_fsmp_stack,                  &
-     &     nele_grp, iele_grp, n_int, k2, ele1, jac1_3d_q, sk6)
+     &     nele_grp, iele_grp, n_int, k2, ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_grp_mass_matrix
 !
@@ -108,9 +109,9 @@
       call reset_sk6(n_scalar)
 !
       call fem_grp_skv_mass_matrix_diag_t(iele_fsmp_stack,              &
-     &    nele_grp, iele_grp, n_int, ele1, jac1_3d_q, sk6)
+     &    nele_grp, iele_grp, n_int, ele1, jac1_3d_q, fem1_wk%sk6)
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_grp_mass_matrix_diag
 !
@@ -129,14 +130,14 @@
       call reset_sk6(n_scalar)
 !
       call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,             &
-     &    nele_grp, iele_grp, n_int, ele1, jac1_3d_q, sk6)
-      call sum_skv_diagonal_4_HRZ_type(iele_fsmp_stack, ele1, sk6,      &
-     &    ml_o_ele_diag, ml_ele_diag)
+     &    nele_grp, iele_grp, n_int, ele1, jac1_3d_q, fem1_wk%sk6)
+      call sum_skv_diagonal_4_HRZ_type(iele_fsmp_stack, ele1,           &
+     &    fem1_wk%sk6, ml_ele_diag)
 !
       call grp_volume_average_skv_HRZ_t(iele_fsmp_stack,                &
-     &    nele_grp, iele_grp, ele1, sk6, ml_ele_diag)
+     &    nele_grp, iele_grp, ele1, fem1_wk%sk6, ml_ele_diag)
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_grp_mass_matrix_HRZ_full
 !
@@ -155,11 +156,11 @@
       call reset_sk6(n_scalar)
 !
       call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,             &
-     &    nele_grp, iele_grp, n_int, ele1, jac1_3d_q, sk6)
+     &    nele_grp, iele_grp, n_int, ele1, jac1_3d_q, fem1_wk%sk6)
       call grp_volume_average_skv_HRZ_t(iele_fsmp_stack,                &
-     &    nele_grp, iele_grp, ele1, sk6, ml_ele_diag)
+     &    nele_grp, iele_grp, ele1, fem1_wk%sk6, ml_ele_diag)
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_grp_mass_matrix_HRZ
 !

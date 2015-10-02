@@ -64,14 +64,14 @@
               call fem_sf_grp_skv_sgs_div_flux_p                        &
      &           (ele1, surf1, sf_grp, jac1_sf_grp_2d_q, FEM1_elen,     &
      &            igrp, k2, nd, n_int, i_filter, dxe_sf, vect_sf,       &
-     &            ak_diff(1,iak_diff_uxb), dminus, sk6)
+     &            ak_diff(1,iak_diff_uxb), dminus, fem1_wk%sk6)
             end do
 !
           end if
         end do
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_surf_div_induct_t_sgs
 !
@@ -110,14 +110,15 @@
      &            nd, i_flux, i_b, i_v, vect_sf)
               call fem_sf_grp_skv_div_f_commute_p                       &
      &           (ele1, surf1, sf_grp, jac1_sf_grp_2d_q, FEM1_elen,     &
-     &            igrp, k2, nd, n_int, i_filter, dxe_sf, vect_sf, sk6)
+     &            igrp, k2, nd, n_int, i_filter, dxe_sf, vect_sf,       &
+     &            fem1_wk%sk6)
             end do
 !
           end if
         end do
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_surf_commute_induct_t
 !

@@ -88,21 +88,21 @@
 !
               call fem_skv_rot_inertia_type(iele_fl_smp_stack,          &
      &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_vort),       &
-     &            ele1, jac1_3d_q, sk6)
+     &            ele1, jac1_3d_q, fem1_wk%sk6)
               call fem_skv_div_sgs_tensor                               &
      &           (iele_fl_smp_stack, num_int, k2, ifilter_final,        &
      &            ak_diff(1,iak_diff_mf), ele1, jac1_3d_q, FEM1_elen,   &
-     &            sgs_t, tensor_e, sk6)
+     &            sgs_t, tensor_e, fem1_wk%sk6)
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
      &            coef_nega_v, sgs_t)
               call fem_skv_inertia_rot_sgs_pg(iele_fl_smp_stack,        &
-     &            num_int, k2, ele1, jac1_3d_q,                         &
-     &            velo_1, sgs_t, d_ele(1,iphys_ele%i_vort), sk6)
+     &            num_int, k2, ele1, jac1_3d_q, velo_1, sgs_t,          &
+     &            d_ele(1,iphys_ele%i_vort), fem1_wk%sk6)
             else
               call fem_skv_rot_inertia_type(iele_fl_smp_stack,          &
      &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_vort),       &
-     &            ele1, jac1_3d_q, sk6)
+     &            ele1, jac1_3d_q, fem1_wk%sk6)
             end if
 !
 !  -----  Inertia including Reynolds stress --------
@@ -115,17 +115,17 @@
               call fem_skv_vec_inertia_modsgs_pg(iele_fl_smp_stack,     &
      &            num_int, k2, ifilter_final, ak_diff(1,iak_diff_mf),   &
      &            ele1, jac1_3d_q, FEM1_elen, velo_1, sgs_t, tensor_e,  &
-     &            d_ele(1,iphys_ele%i_velo), sk6)
+     &            d_ele(1,iphys_ele%i_velo), fem1_wk%sk6)
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
      &              coef_nega_v, sgs_t)
               call fem_skv_vec_inertia_sgs_pg(iele_fl_smp_stack,        &
-     &            num_int, k2, ele1, jac1_3d_q,                         &
-     &            velo_1, sgs_t, d_ele(1,iphys_ele%i_velo), sk6)
+     &            num_int, k2, ele1, jac1_3d_q, velo_1, sgs_t,          &
+     &            d_ele(1,iphys_ele%i_velo), fem1_wk%sk6)
             else
               call fem_skv_vector_inertia_type(iele_fl_smp_stack,       &
      &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_velo),       &
-     &            ele1, jac1_3d_q, sk6)
+     &            ele1, jac1_3d_q, fem1_wk%sk6)
             end if
           end if
         end if
@@ -144,7 +144,8 @@
 !$omp end parallel
 !
             call fem_skv_lorentz_rot_galerkin(iele_fl_smp_stack,        &
-     &          num_int, k2, vect_1, vect_e, ele1, jac1_3d_q, sk6)
+     &          num_int, k2, vect_1, vect_e, ele1, jac1_3d_q,           &
+     &          fem1_wk%sk6)
           else if (iflag_4_rotate .eq. id_turn_OFF) then
             call vector_cst_phys_2_each_ele(k2, iphys%i_magne,          &
      &          coef_lor, magne_1)
@@ -155,7 +156,8 @@
 !$omp end parallel
 !
             call fem_skv_vector_inertia_type(iele_fl_smp_stack,         &
-     &          num_int, k2, magne_1, vect_e, ele1, jac1_3d_q, sk6)
+     &          num_int, k2, magne_1, vect_e, ele1, jac1_3d_q,          &
+     &          fem1_wk%sk6)
           end if
 !
 !    set SGS Lorentz force
@@ -167,12 +169,12 @@
               call fem_skv_div_sgs_tensor                               &
      &            (iele_fl_smp_stack, num_int, k2, ifilter_final,       &
      &             ak_diff(1,iak_diff_lor), ele1, jac1_3d_q, FEM1_elen, &
-     &             sgs_t, tensor_e, sk6)
+     &             sgs_t, tensor_e, fem1_wk%sk6)
             else
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_maxwell,  &
      &             coef_lor, tensor_e)
               call fem_skv_div_tensor(iele_fl_smp_stack, num_int, k2,   &
-     &            ele1, jac1_3d_q, tensor_e, sk6)
+     &            ele1, jac1_3d_q, tensor_e, fem1_wk%sk6)
             end if
           end if
 !
@@ -184,7 +186,7 @@
           call vector_cst_phys_2_each_ele(k2, iphys%i_velo,             &
      &        coef_cor, velo_1)
           call fem_skv_coriolis_type(iele_fl_smp_stack, num_int, k2,    &
-     &        velo_1, angular, ele1, jac1_3d_q, sk6)
+     &        velo_1, angular, ele1, jac1_3d_q, fem1_wk%sk6)
         end if
 !
 ! ---------  set buoyancy
@@ -194,27 +196,27 @@
           call set_double_gvec_each_ele_1st(k2, iphys%i_temp,           &
      &        iphys%i_light, ak_buo, ak_comp_buo, vect_e)
           call fem_skv_vector_type(iele_fl_smp_stack, num_int, k2,      &
-     &        ele1, jac1_3d_q, vect_e, sk6)
+     &        ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
         else if (iflag_4_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_temp, ak_buo,   &
      &        vect_e)
           call fem_skv_vector_type(iele_fl_smp_stack, num_int, k2,      &
-     &        ele1, jac1_3d_q, vect_e, sk6)
+     &        ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
         else if (iflag_4_composit_buo .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_light,          &
      &        ak_comp_buo, vect_e)
           call fem_skv_vector_type(iele_fl_smp_stack, num_int, k2,      &
-     &        ele1, jac1_3d_q, vect_e, sk6)
+     &        ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
         else if (iflag_4_filter_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_filter_temp,    &
      &        ak_buo, vect_e)
           call fem_skv_vector_type(iele_fl_smp_stack, num_int, k2,      &
-     &        ele1, jac1_3d_q, vect_e, sk6)
+     &        ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
         end if
 !
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_velo_pre_ele
 !
@@ -266,21 +268,21 @@
 !
               call fem_skv_rot_inertia_upwind(iele_fl_smp_stack,        &
      &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_vort),       &
-     &            d_ele(1,ie_upw), ele1, jac1_3d_q, sk6)
+     &            d_ele(1,ie_upw), ele1, jac1_3d_q, fem1_wk%sk6)
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (iele_fl_smp_stack, num_int, k2, ifilter_final,        &
      &            ak_diff(1,iak_diff_mf), ele1, jac1_3d_q, FEM1_elen,   &
-     &            d_ele(1,ie_upw), sgs_t, tensor_e, sk6)
+     &            d_ele(1,ie_upw), sgs_t, tensor_e, fem1_wk%sk6)
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
      &              coef_nega_v, sgs_t)
               call fem_skv_inertia_rot_sgs_upwind(iele_fl_smp_stack,    &
      &            num_int, k2, ele1, jac1_3d_q, velo_1, sgs_t,          &
-     &            d_ele(1,ie_upw), d_ele(1,ie_upw), sk6)
+     &            d_ele(1,ie_upw), d_ele(1,ie_upw), fem1_wk%sk6)
             else
               call fem_skv_rot_inertia_upwind(iele_fl_smp_stack,        &
      &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_vort),       &
-     &            d_ele(1,ie_upw), ele1, jac1_3d_q, sk6)
+     &            d_ele(1,ie_upw), ele1, jac1_3d_q, fem1_wk%sk6)
             end if
 !
 !  -----  Inertia including Reynolds stress --------
@@ -293,17 +295,19 @@
               call fem_skv_vec_inertia_msgs_upw(iele_fl_smp_stack,      &
      &            num_int, k2, ifilter_final, ak_diff(1,iak_diff_mf),   &
      &            ele1, jac1_3d_q, FEM1_elen, velo_1, sgs_t, tensor_e,  &
-     &            d_ele(1,iphys_ele%i_velo), d_ele(1,ie_upw), sk6)
+     &            d_ele(1,iphys_ele%i_velo), d_ele(1,ie_upw),           &
+     &            fem1_wk%sk6)
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
      &              coef_nega_v, sgs_t)
               call fem_skv_vcl_inertia_sgs_upwind(iele_fl_smp_stack,    &
      &            num_int, k2, ele1, jac1_3d_q, velo_1, sgs_t,          &
-     &            d_ele(1,iphys_ele%i_velo), d_ele(1,ie_upw), sk6)
+     &            d_ele(1,iphys_ele%i_velo), d_ele(1,ie_upw),           &
+     &            fem1_wk%sk6)
             else
               call fem_skv_vector_inertia_upwind(iele_fl_smp_stack,     &
      &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_velo),       &
-     &            d_ele(1,ie_upw), ele1, jac1_3d_q, sk6)
+     &            d_ele(1,ie_upw), ele1, jac1_3d_q, fem1_wk%sk6)
             end if
           end if
 !
@@ -316,12 +320,13 @@
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (iele_fl_smp_stack, num_int, k2, ifilter_final,        &
      &            ak_diff(1,iak_diff_mf), ele1, jac1_3d_q, FEM1_elen,   &
-     &            d_ele(1,ie_upw), sgs_t, tensor_e, sk6)
+     &            d_ele(1,ie_upw), sgs_t, tensor_e, fem1_wk%sk6)
             else
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
      &             coef_nega_v, tensor_e)
               call fem_skv_div_tsr_upw(iele_fl_smp_stack, num_int, k2,  &
-     &             d_ele(1,ie_upw), ele1, jac1_3d_q, tensor_e, sk6)
+     &            d_ele(1,ie_upw), ele1, jac1_3d_q, tensor_e,           &
+     &            fem1_wk%sk6)
             end if
           end if
         end if
@@ -339,7 +344,8 @@
 !$omp end parallel
 !
             call fem_skv_lorentz_rot_galerkin(iele_fl_smp_stack,        &
-     &          num_int, k2, vect_1, vect_e, ele1, jac1_3d_q, sk6)
+     &          num_int, k2, vect_1, vect_e, ele1, jac1_3d_q,           &
+     &          fem1_wk%sk6)
           else
             call vector_cst_phys_2_each_ele(k2, iphys%i_magne,          &
      &          coef_lor, magne_1)
@@ -351,7 +357,7 @@
 !
             call fem_skv_vector_inertia_upwind(iele_fl_smp_stack,       &
      &          num_int, k2, magne_1, vect_e, d_ele(1,ie_upw),          &
-     &          ele1, jac1_3d_q, sk6)
+     &          ele1, jac1_3d_q, fem1_wk%sk6)
           end if
 !
 !    set SGS Lorentz force
@@ -363,12 +369,13 @@
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (iele_fl_smp_stack, num_int, k2, ifilter_final,        &
      &            ak_diff(1,iak_diff_lor), ele1, jac1_3d_q, FEM1_elen,  &
-     &            d_ele(1,ie_upw), sgs_t, tensor_e, sk6)
+     &            d_ele(1,ie_upw), sgs_t, tensor_e, fem1_wk%sk6)
             else
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_maxwell,  &
      &             coef_lor, tensor_e)
               call fem_skv_div_tsr_upw(iele_fl_smp_stack, num_int, k2,  &
-     &             d_ele(1,ie_upw), ele1, jac1_3d_q, tensor_e, sk6)
+     &            d_ele(1,ie_upw), ele1, jac1_3d_q, tensor_e,           &
+     &            fem1_wk%sk6)
             end if
           end if
         end if
@@ -380,7 +387,7 @@
      &        coef_cor, velo_1)
           call fem_skv_coriolis_upwind(iele_fl_smp_stack,               &
      &        num_int, k2, velo_1, angular, d_ele(1,ie_upw),            &
-     &        ele1, jac1_3d_q, sk6)
+     &        ele1, jac1_3d_q, fem1_wk%sk6)
         end if
 !
 ! ---------  set buoyancy
@@ -391,30 +398,30 @@
      &        iphys%i_light, ak_buo, ak_comp_buo, vect_e)
           call fem_skv_vector_field_upwind(iele_fl_smp_stack,           &
      &        num_int, k2, d_ele(1,ie_upw), ele1, jac1_3d_q,            &
-     &        vect_e, sk6)
+     &        vect_e, fem1_wk%sk6)
         else if (iflag_4_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_temp, ak_buo,   &
      &        vect_e)
           call fem_skv_vector_field_upwind(iele_fl_smp_stack,           &
      &        num_int, k2, d_ele(1,ie_upw), ele1, jac1_3d_q,            &
-     &        vect_e, sk6)
+     &        vect_e, fem1_wk%sk6)
         else if (iflag_4_composit_buo .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_light,          &
      &        ak_comp_buo, vect_e)
           call fem_skv_vector_field_upwind(iele_fl_smp_stack,           &
      &        num_int, k2, d_ele(1,ie_upw), ele1, jac1_3d_q,            &
-     &        vect_e, sk6)
+     &        vect_e, fem1_wk%sk6)
         else if (iflag_4_filter_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_filter_temp,    &
      &        ak_buo, vect_e)
           call fem_skv_vector_field_upwind(iele_fl_smp_stack,           &
      &        num_int, k2, d_ele(1,ie_upw), ele1,jac1_3d_q,             &
-     &        vect_e, sk6)
+     &        vect_e, fem1_wk%sk6)
         end if
 !
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_velo_pre_ele_upwind
 !

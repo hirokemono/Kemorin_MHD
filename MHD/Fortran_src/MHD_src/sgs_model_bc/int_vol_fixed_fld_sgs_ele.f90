@@ -84,10 +84,10 @@
 !
         call fem_skv_poisson_sgs_fix_bc(ele1, jac1_3d_l, FEM1_elen,     &
      &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp), k2,    &
-     &      n_int, i_filter, ak_diff, phi_e, sk6)
+     &      n_int, i_filter, ak_diff, phi_e, fem1_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_fixed_sgs_poisson_surf
 !
@@ -133,10 +133,12 @@
 !
         call fem_skv_diffuse_sgs_fix_bc(ele1, jac1_3d_q, FEM1_elen,     &
      &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp),        &
-     &      k2, ione, n_int, i_filter, ak_diff, ak_d, phi_e, sk6)
+     &      k2, ione, n_int, i_filter, ak_diff, ak_d, phi_e,            &
+     &      fem1_wk%sk6)
       end do
 !
-      call add1_skv_coef_to_ff_v_smp_1st(coef_implicit, ff_smp, sk6)
+      call add1_skv_coef_to_ff_v_smp_1st                                &
+     &   (coef_implicit, ff_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_fixed_sgs_scalar_surf
 !
@@ -187,12 +189,13 @@
             call fem_skv_diffuse_sgs_fix_bc                             &
      &         (ele1, jac1_3d_q, FEM1_elen, nmax_index_ibc,             &
      &          ele_bc_id(1,nd), ibc_stack_smp(istart_smp,nd), k2, nd,  &
-     &          n_int, i_filter, ak_diff, ak_d, phi_e, sk6)
+     &          n_int, i_filter, ak_diff, ak_d, phi_e, fem1_wk%sk6)
           end do
         end if
       end do
 !
-      call add3_skv_coef_to_ff_v_smp_1st(coef_implicit, ff_smp, sk6)
+      call add3_skv_coef_to_ff_v_smp_1st                                &
+     &   (coef_implicit, ff_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_fixed_sgs_vector_surf
 !
@@ -241,11 +244,12 @@
             call fem_skv_diffuse_sgs_fix_bc                             &
      &         (ele1, jac1_3d_q, FEM1_elen, num_index_ibc,              &
      &          ele_bc_id, ibc_stack_smp(istart_smp), k2, nd,           &
-     &          n_int, i_filter, ak_diff,  ak_d, phi_e, sk6)
+     &          n_int, i_filter, ak_diff,  ak_d, phi_e, fem1_wk%sk6)
           end do
       end do
 !
-      call add3_skv_coef_to_ff_v_smp_1st(coef_implicit, ff_smp, sk6)
+      call add3_skv_coef_to_ff_v_smp_1st                                &
+     &   (coef_implicit, ff_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_fixed_rotate_sgs_surf
 !

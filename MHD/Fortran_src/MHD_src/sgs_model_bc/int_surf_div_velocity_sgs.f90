@@ -120,14 +120,14 @@
               call fem_sf_grp_skv_sgs_div_lin_p(ele1, surf1, sf_grp,    &
      &            jac1_sf_grp_2d_q, jac1_sf_grp_2d_l, FEM1_elen,        &
      &            igrp, k2, nd, n_int, i_filter, dxe_sf, scalar_sf,     &
-     &            ak_diff(1,iak_diff), sk6)
+     &            ak_diff(1,iak_diff), fem1_wk%sk6)
             end do
 !
           end if
         end do
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_surf_sgs_div_velo_ele
 !

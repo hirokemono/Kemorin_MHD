@@ -16,6 +16,12 @@
       module int_vol_fractional_1st
 !
       use m_precision
+      use m_geometry_data
+      use m_phys_constants
+      use m_jacobians
+      use m_finite_element_matrix
+      use m_int_vol_data
+!
 !
       implicit none
 !
@@ -27,12 +33,6 @@
 !
       subroutine int_vol_div_vect_linear_1st(iele_fsmp_stack,           &
      &          n_int, i_vector)
-!
-      use m_geometry_data
-      use m_phys_constants
-      use m_finite_element_matrix
-      use m_jacobians
-      use m_int_vol_data
 !
       use cal_skv_to_ff_smp_1st
       use nodal_fld_2_each_ele_1st
@@ -50,10 +50,10 @@
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_vector, velo_1)
         call fem_skv_div_to_linear(iele_fsmp_stack, n_int, k2,          &
-     &      ele1, jac1_3d_q, jac1_3d_l, velo_1, sk6)
+     &      ele1, jac1_3d_q, jac1_3d_l, velo_1, fem1_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, sk6)
+      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_div_vect_linear_1st
 !
@@ -61,11 +61,6 @@
 !
       subroutine int_vol_solenoidal_co_1st(iele_fsmp_stack,             &
      &          n_int, i_scalar)
-!
-      use m_phys_constants
-      use m_finite_element_matrix
-      use m_jacobians
-      use m_int_vol_data
 !
       use cal_skv_to_ff_smp_1st
       use nodal_fld_2_each_ele_1st
@@ -83,10 +78,10 @@
       do k2=1, num_t_linear
         call scalar_phys_2_each_element(k2, i_scalar, phi_e)
         call fem_skv_linear_gradient(iele_fsmp_stack, n_int, k2,        &
-     &      ele1, jac1_3d_q, jac1_3d_l, phi_e, sk6)
+     &      ele1, jac1_3d_q, jac1_3d_l, phi_e, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_solenoidal_co_1st
 !
@@ -95,12 +90,6 @@
 !
       subroutine int_vol_scalar_diffuse_1st(iele_fsmp_stack,            &
      &          n_int, coef_crank, ak_d, i_scalar)
-!
-      use m_geometry_data
-      use m_phys_constants
-      use m_jacobians
-      use m_finite_element_matrix
-      use m_int_vol_data
 !
       use cal_skv_to_ff_smp_1st
       use nodal_fld_2_each_ele_1st
@@ -120,10 +109,11 @@
       do k2 = 1, ele1%nnod_4_ele
         call scalar_phys_2_each_element(k2, i_scalar, phi_e)
         call fem_skv_scalar_diffuse_type(iele_fsmp_stack, n_int, k2,    &
-     &      ak_d, ele1, jac1_3d_q, phi_e, sk6)
+     &      ak_d, ele1, jac1_3d_q, phi_e, fem1_wk%sk6)
       end do
 !
-      call add1_skv_coef_to_ff_v_smp_1st(coef_crank, ff_smp, sk6)
+      call add1_skv_coef_to_ff_v_smp_1st(coef_crank, ff_smp,            &
+     &    fem1_wk%sk6)
 !
       end subroutine int_vol_scalar_diffuse_1st
 !
@@ -131,12 +121,6 @@
 !
       subroutine int_vol_vector_diffuse_1st(iele_fsmp_stack,            &
      &          n_int, coef_crank, ak_d, i_vector)
-!
-      use m_geometry_data
-      use m_phys_constants
-      use m_jacobians
-      use m_finite_element_matrix
-      use m_int_vol_data
 !
       use cal_skv_to_ff_smp_1st
       use nodal_fld_2_each_ele_1st
@@ -156,10 +140,11 @@
        do k2=1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_vector, velo_1)
         call fem_skv_vector_diffuse_type(iele_fsmp_stack, n_int, k2,    &
-     &      ak_d, ele1, jac1_3d_q, velo_1, sk6)
+     &      ak_d, ele1, jac1_3d_q, velo_1, fem1_wk%sk6)
       end do
 !
-      call add3_skv_coef_to_ff_v_smp_1st(coef_crank, ff_smp, sk6)
+      call add3_skv_coef_to_ff_v_smp_1st(coef_crank, ff_smp,            &
+     &    fem1_wk%sk6)
 !
       end subroutine int_vol_vector_diffuse_1st
 !

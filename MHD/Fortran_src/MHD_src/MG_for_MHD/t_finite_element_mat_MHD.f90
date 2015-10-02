@@ -25,9 +25,9 @@
       implicit  none
 !
       type lumped_mass_mat_layerd
-        type (lumped_mass_mat_node) :: fluid
-        type (lumped_mass_mat_node) :: conduct
-        type (lumped_mass_mat_node) :: insulate
+        type (lumped_mass_matrices) :: fluid
+        type (lumped_mass_matrices) :: conduct
+        type (lumped_mass_matrices) :: insulate
       end type lumped_mass_mat_layerd
 !
 !

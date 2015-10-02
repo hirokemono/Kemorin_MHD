@@ -66,13 +66,13 @@
             call fem_sf_grp_skv_sgs_grad_p                              &
      &         (ele1, surf1, sf_grp, jac1_sf_grp_2d_q, FEM1_elen,       &
      &          igrp, k2, n_int, i_filter, dxe_sf, scalar_sf,           &
-     &          ak_diff(1,iak_diff), one, sk6)
+     &          ak_diff(1,iak_diff), one, fem1_wk%sk6)
           end do
 !
         end if
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_surf_gradient_sgs
 !
@@ -114,13 +114,14 @@
      &          i_scalar, scalar_sf )
             call fem_sf_grp_skv_grad_commute_p                          &
      &         (ele1, surf1, sf_grp, jac1_sf_grp_2d_q, FEM1_elen,       &
-     &          igrp, k2, n_int, i_filter, dxe_sf, scalar_sf, sk6)
+     &          igrp, k2, n_int, i_filter, dxe_sf, scalar_sf,           &
+     &          fem1_wk%sk6)
           end do
 !
         end if
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_surf_grad_commute_sgs
 !

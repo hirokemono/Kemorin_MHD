@@ -16,7 +16,7 @@
 !      subroutine fem_skv_mass_mat_diag_HRZ(numele, nnod_4_e1, np_smp,  &
 !     &          iele_fsmp_stack, ntot_int_3d, num_int, an, xjac, sk_v)
 !      subroutine sum_skv_diagonal_4_HRZ(numele, nnod_4_e1, np_smp,     &
-!     &           iele_fsmp_stack, sk_v, sk_e, ml_e)
+!     &           iele_fsmp_stack, sk_v, ml_e)
 !      subroutine volume_average_skv_HRZ(numele, nnod_4_e1, np_smp,     &
 !     &          iele_fsmp_stack, volume_ele, sk_v, ml_e)
 !
@@ -29,6 +29,8 @@
       use m_fem_gauss_int_coefs
 !
       implicit none
+!
+      real (kind=kreal), allocatable, private :: sk_e(:)
 !
 !-----------------------------------------------------------------------
 !
@@ -171,14 +173,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine sum_skv_diagonal_4_HRZ(numele, nnod_4_e1, np_smp,      &
-     &           iele_fsmp_stack, sk_v, sk_e, ml_e)
+     &           iele_fsmp_stack, sk_v, ml_e)
 !
       integer (kind=kint), intent(in) :: numele, nnod_4_e1, np_smp
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real (kind=kreal), intent(in)                                     &
      &                   :: sk_v(numele,n_sym_tensor,nnod_4_e1)
 !
-      real (kind=kreal), intent(inout) :: sk_e(numele)
       real (kind=kreal), intent(inout) :: ml_e(numele)
 !
       integer (kind=kint) :: k1
@@ -186,6 +187,7 @@
       integer (kind=kint) :: istart, iend
 !
 !
+      allocate(sk_e(numele))
       sk_e = 0.0d0
 !
 !$omp parallel do private(k1,iele,istart,iend) 
@@ -209,6 +211,8 @@
 !
       end do
 !$omp end parallel do
+!
+      deallocate(sk_e)
 !
       end subroutine sum_skv_diagonal_4_HRZ
 !

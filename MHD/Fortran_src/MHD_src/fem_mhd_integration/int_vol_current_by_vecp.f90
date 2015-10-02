@@ -42,10 +42,11 @@
       do k2=1, ele1%nnod_4_ele
         call vactor_phys_2_each_element(k2, iphys%i_vecp, vect_1)
         call fem_skv_rot_rot_by_laplace(ele1%istack_ele_smp,            &
-     &      intg_point_poisson, k2, ele1, jac1_3d_q, vect_1, sk6)
+     &      intg_point_poisson, k2, ele1, jac1_3d_q, vect_1,            &
+     &      fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, sk6)
+      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_current_diffuse
 !

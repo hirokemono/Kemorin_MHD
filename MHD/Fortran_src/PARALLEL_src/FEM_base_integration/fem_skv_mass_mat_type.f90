@@ -35,11 +35,10 @@
 !     &               :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !      subroutine sum_skv_diagonal_4_HRZ_type(iele_fsmp_stack, ele,     &
-!     &          sk_v, sk_e, ml_e)
+!     &          sk_v, ml_e)
 !        type(element_data), intent(in) :: ele
 !        type(work_finite_element_mat), intent(in) :: sk_v
 !        integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-!        real (kind=kreal), intent(inout) :: sk_e(ele%numele)
 !        real (kind=kreal), intent(inout) :: ml_e(ele%numele)
 !
 !      subroutine vol_average_skv_HRZ_type(iele_fsmp_stack, ele,        &
@@ -154,7 +153,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine sum_skv_diagonal_4_HRZ_type(iele_fsmp_stack, ele,      &
-     &          sk_v, sk_e, ml_e)
+     &          sk_v, ml_e)
 !
       use fem_skv_mass_mat
 !
@@ -163,12 +162,11 @@
       real (kind=kreal), intent(in)                                     &
      &               :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
-      real (kind=kreal), intent(inout) :: sk_e(ele%numele)
       real (kind=kreal), intent(inout) :: ml_e(ele%numele)
 !
 !
       call sum_skv_diagonal_4_HRZ(ele%numele, ele%nnod_4_ele, np_smp,   &
-     &    iele_fsmp_stack, sk_v, sk_e, ml_e)
+     &    iele_fsmp_stack, sk_v, ml_e)
 !
       end subroutine sum_skv_diagonal_4_HRZ_type
 !

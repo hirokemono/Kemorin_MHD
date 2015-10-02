@@ -52,14 +52,15 @@
       call reset_ff_smp
 !
       call sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,           &
-     &    ifield_v, ifield_b, sk6)
+     &    ifield_v, ifield_b, fem1_wk%sk6)
 !
 !     set elemental model coefficients
 !
       call prod_model_coefs_4_asym_t(itype_SGS_uxb_coef,                &
-     &    ak_sgs(1,icomp_sgs_uxb), sk6)
+     &    ak_sgs(1,icomp_sgs_uxb), fem1_wk%sk6)
 !
-      call add3_skv_coef_to_ff_v_smp_1st(coef_induct, ff_smp, sk6)
+      call add3_skv_coef_to_ff_v_smp_1st                                &
+     &   (coef_induct, ff_smp, fem1_wk%sk6)
       call cal_ff_smp_2_vector                                          &
      &   (ff_smp, ml_cd, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
@@ -95,9 +96,10 @@
       call reset_ff_smp
 !
       call sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,           &
-     &    ifield_v, ifield_b, sk6)
+     &    ifield_v, ifield_b, fem1_wk%sk6)
 !
-      call add3_skv_coef_to_ff_v_smp_1st(coef_induct, ff_smp, sk6)
+      call add3_skv_coef_to_ff_v_smp_1st                                &
+     &   (coef_induct, ff_smp, fem1_wk%sk6)
       call cal_ff_smp_2_vector                                          &
      &   (ff_smp, ml_cd, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !

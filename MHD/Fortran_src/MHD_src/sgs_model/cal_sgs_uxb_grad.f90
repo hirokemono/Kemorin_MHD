@@ -42,14 +42,16 @@
 !
       call reset_sk6(n_vector)
 !
-      call sel_int_vol_sgs_uxb(i_filter, iphys%i_magne, i_dvx, sk6)
+      call sel_int_vol_sgs_uxb                                          &
+     &   (i_filter, iphys%i_magne, i_dvx, fem1_wk%sk6)
 !
 !     set elemental model coefficients
 !
       call prod_model_coefs_4_vector(itype_SGS_uxb_coef,                &
-     &    ak_sgs(1,icomp_sgs_uxb), sk6)
+     &    ak_sgs(1,icomp_sgs_uxb), fem1_wk%sk6)
 !
-      call add3_skv_coef_to_ff_v_smp_1st(coef_induct, ff_nl_smp, sk6)
+      call add3_skv_coef_to_ff_v_smp_1st                                &
+     &   (coef_induct, ff_nl_smp, fem1_wk%sk6)
 !
       end subroutine cal_sgs_uxb_2_ff_grad
 !
@@ -78,9 +80,10 @@
       call reset_sk6(n_vector)
       call reset_ff_smp
 !
-      call sel_int_vol_sgs_uxb(i_filter, i_field, id_dx, sk6)
+      call sel_int_vol_sgs_uxb(i_filter, i_field, id_dx, fem1_wk%sk6)
 !
-      call add3_skv_coef_to_ff_v_smp_1st(coef_induct, ff_smp, sk6)
+      call add3_skv_coef_to_ff_v_smp_1st                                &
+     &   (coef_induct, ff_smp, fem1_wk%sk6)
       call cal_ff_smp_2_vector                                          &
      &   (ff_smp, ml_cd, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
