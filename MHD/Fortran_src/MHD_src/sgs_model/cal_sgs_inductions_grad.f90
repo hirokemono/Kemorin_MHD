@@ -52,7 +52,7 @@
       call reset_ff_smp
 !
       call sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,           &
-     &    ifield_v, ifield_b, fem1_wk%sk6)
+     &    ifield_v, ifield_b, fem1_wk)
 !
 !     set elemental model coefficients
 !
@@ -96,7 +96,7 @@
       call reset_ff_smp
 !
       call sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,           &
-     &    ifield_v, ifield_b, fem1_wk%sk6)
+     &    ifield_v, ifield_b, fem1_wk)
 !
       call add3_skv_coef_to_ff_v_smp_1st                                &
      &   (coef_induct, ff_smp, fem1_wk%sk6)

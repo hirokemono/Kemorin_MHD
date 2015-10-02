@@ -54,7 +54,7 @@
 !$omp parallel
       call add_const_to_vector_smp                                      &
      &   (np_smp, ele1%numele, ele1%istack_ele_smp,                     &
-     &    d_ele(1,iele_magne), ex_magne, vect_e)
+     &    d_ele(1,iele_magne), ex_magne, fem1_wk%vector_1)
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
@@ -63,8 +63,8 @@
      &      coef_induct, velo_1)
 !
         call fem_skv_rot_inertia_type(iele_cd_smp_stack,                &
-     &      intg_point_t_evo, k2, velo_1, vect_e, ele1, jac1_3d_q,      &
-     &      fem1_wk%sk6)
+     &      intg_point_t_evo, k2, velo_1, fem1_wk%vector_1,             &
+     &      ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
       call sub3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
@@ -92,7 +92,7 @@
 !$omp parallel
       call add_const_to_vector_smp                                      &
      &   (np_smp, ele1%numele, ele1%istack_ele_smp, &
-     &    d_ele(1,iele_magne), ex_magne, vect_e)
+     &    d_ele(1,iele_magne), ex_magne, fem1_wk%vector_1)
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
@@ -101,7 +101,7 @@
      &      coef_induct, velo_1)
 !
         call fem_skv_rot_inertia_upwind(iele_cd_smp_stack,              &
-     &      intg_point_t_evo, k2, velo_1, vect_e,                       &
+     &      intg_point_t_evo, k2, velo_1, fem1_wk%vector_1,             &
      &      d_ele(1,iele_magne), ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !

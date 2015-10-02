@@ -86,9 +86,9 @@
 !
 ! --------- set temperature at each node in an element
 !
-        call vector_phys_2_each_element(k2, i_vect, vect_e)
+        call vector_phys_2_each_element(k2, i_vect, fem1_wk%vector_1)
         call fem_skv_commute_err_div_1(iele_fsmp_stack,                 &
-     &      n_int, k2, i_filter, vect_e, fem1_wk%sk6)
+     &      n_int, k2, i_filter, fem1_wk%vector_1, fem1_wk%sk6)
        end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
@@ -111,9 +111,9 @@
 !
       call reset_sk6(n_vector, fem1_wk%sk6)
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, i_vect, vect_e)
+        call vector_phys_2_each_element(k2, i_vect, fem1_wk%vector_1)
         call fem_skv_commute_err_rot_1(iele_fsmp_stack,                 &
-     &      n_int, k2, i_filter, vect_e, fem1_wk%sk6)
+     &      n_int, k2, i_filter, fem1_wk%vector_1, fem1_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
@@ -141,9 +141,9 @@
         call SGS_v_flux_2_each_element                                  &
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
      &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
-     &      i_vect, i_scalar, i_flux, nod_fld1%d_fld, vect_e)
+     &      i_vect, i_scalar, i_flux, nod_fld1%d_fld, fem1_wk%vector_1)
         call fem_skv_commute_err_div_1(iele_fsmp_stack,                 &
-     &      n_int, k2, i_filter, vect_e, fem1_wk%sk6)
+     &      n_int, k2, i_filter, fem1_wk%vector_1, fem1_wk%sk6)
        end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
@@ -200,9 +200,9 @@
         call SGS_induct_2_each_element                                  &
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
      &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
-     &      i_b, i_v, i_flux, nod_fld1%d_fld, vect_e)
+     &      i_b, i_v, i_flux, nod_fld1%d_fld, fem1_wk%vector_1)
         call fem_skv_commute_err_div_ast_1(iele_fsmp_stack,             &
-     &      n_int, k2, i_filter, vect_e, fem1_wk%sk6)
+     &      n_int, k2, i_filter, fem1_wk%vector_1, fem1_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)

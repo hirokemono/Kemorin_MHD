@@ -55,9 +55,9 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
         call set_gravity_vec_each_ele_1st(k2, i_source,                 &
-     &      ak_buo, vect_e)
+     &      ak_buo, fem1_wk%vector_1)
         call fem_skv_vector_type(iele_fsmp_stack, n_int, k2,            &
-     &      ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
+     &      ele1, jac1_3d_q, fem1_wk%vector_1, fem1_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
@@ -89,9 +89,10 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
         call set_gravity_vec_each_ele_1st(k2, i_source,                 &
-     &      ak_buo, vect_e)
+     &      ak_buo, fem1_wk%vector_1)
         call fem_skv_vector_field_upwind(iele_fsmp_stack, n_int, k2,    &
-     &      d_ele(1,ie_upw), ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
+     &      d_ele(1,ie_upw), ele1, jac1_3d_q,                           &
+     &      fem1_wk%vector_1, fem1_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)

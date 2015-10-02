@@ -230,9 +230,9 @@
       do k2=1, ele1%nnod_4_ele
 !
 ! ---------  set vector at each node in an element
-       call vector_phys_2_each_element(k2, i_field, vect_e)
+       call vector_phys_2_each_element(k2, i_field, fem1_wk%vector_1)
        call fem_rms_flux_pg(iele_fsmp_stack, num_int, k2,               &
-     &     vect_e, fem1_wk%scalar_1)
+     &     fem1_wk%vector_1, fem1_wk%scalar_1)
       end do
 !
 ! --------- caliculate total divergence of velocity

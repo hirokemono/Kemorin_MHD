@@ -140,24 +140,24 @@
 !$omp parallel
             call add_const_to_vector_smp(np_smp, ele1%numele,           &
      &          ele1%istack_ele_smp, d_ele(1,iphys_ele%i_magne),        &
-     &          ex_magne, vect_e)
+     &          ex_magne, fem1_wk%vector_1)
 !$omp end parallel
 !
             call fem_skv_lorentz_rot_galerkin(iele_fl_smp_stack,        &
-     &          num_int, k2, vect_1, vect_e, ele1, jac1_3d_q,           &
-     &          fem1_wk%sk6)
+     &          num_int, k2, vect_1, fem1_wk%vector_1,                  &
+     &          ele1, jac1_3d_q, fem1_wk%sk6)
           else if (iflag_4_rotate .eq. id_turn_OFF) then
             call vector_cst_phys_2_each_ele(k2, iphys%i_magne,          &
      &          coef_lor, magne_1)
 !$omp parallel
             call add_const_to_vector_smp(np_smp, ele1%numele,           &
      &          ele1%istack_ele_smp, d_ele(1,iphys_ele%i_magne),        &
-     &          ex_magne, vect_e)
+     &          ex_magne, fem1_wk%vector_1)
 !$omp end parallel
 !
             call fem_skv_vector_inertia_type(iele_fl_smp_stack,         &
-     &          num_int, k2, magne_1, vect_e, ele1, jac1_3d_q,          &
-     &          fem1_wk%sk6)
+     &          num_int, k2, magne_1, fem1_wk%vector_1,                 &
+     &          ele1, jac1_3d_q, fem1_wk%sk6)
           end if
 !
 !    set SGS Lorentz force
@@ -194,24 +194,24 @@
         if(iflag_4_gravity .eq. id_FORCE_ele_int                        &
      &     .and. iflag_4_composit_buo .eq. id_FORCE_ele_int) then
           call set_double_gvec_each_ele_1st(k2, iphys%i_temp,           &
-     &        iphys%i_light, ak_buo, ak_comp_buo, vect_e)
+     &        iphys%i_light, ak_buo, ak_comp_buo, fem1_wk%vector_1)
           call fem_skv_vector_type(iele_fl_smp_stack, num_int, k2,      &
-     &        ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
+     &        ele1, jac1_3d_q, fem1_wk%vector_1, fem1_wk%sk6)
         else if (iflag_4_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_temp, ak_buo,   &
-     &        vect_e)
+     &        fem1_wk%vector_1)
           call fem_skv_vector_type(iele_fl_smp_stack, num_int, k2,      &
-     &        ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
+     &        ele1, jac1_3d_q, fem1_wk%vector_1, fem1_wk%sk6)
         else if (iflag_4_composit_buo .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_light,          &
-     &        ak_comp_buo, vect_e)
+     &        ak_comp_buo, fem1_wk%vector_1)
           call fem_skv_vector_type(iele_fl_smp_stack, num_int, k2,      &
-     &        ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
+     &        ele1, jac1_3d_q, fem1_wk%vector_1, fem1_wk%sk6)
         else if (iflag_4_filter_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_filter_temp,    &
-     &        ak_buo, vect_e)
+     &        ak_buo, fem1_wk%vector_1)
           call fem_skv_vector_type(iele_fl_smp_stack, num_int, k2,      &
-     &        ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
+     &        ele1, jac1_3d_q, fem1_wk%vector_1, fem1_wk%sk6)
         end if
 !
       end do
@@ -340,24 +340,24 @@
 !$omp parallel
             call add_const_to_vector_smp(np_smp, ele1%numele,           &
      &          ele1%istack_ele_smp, d_ele(1,iphys_ele%i_magne),        &
-     &          ex_magne, vect_e)
+     &          ex_magne, fem1_wk%vector_1)
 !$omp end parallel
 !
             call fem_skv_lorentz_rot_galerkin(iele_fl_smp_stack,        &
-     &          num_int, k2, vect_1, vect_e, ele1, jac1_3d_q,           &
-     &          fem1_wk%sk6)
+     &          num_int, k2, vect_1, fem1_wk%vector_1,                  &
+     &          ele1, jac1_3d_q, fem1_wk%sk6)
           else
             call vector_cst_phys_2_each_ele(k2, iphys%i_magne,          &
      &          coef_lor, magne_1)
 !$omp parallel
             call add_const_to_vector_smp(np_smp, ele1%numele,           &
      &          ele1%istack_ele_smp, d_ele(1,iphys_ele%i_magne),        &
-     &          ex_magne, vect_e)
+     &          ex_magne, fem1_wk%vector_1)
 !$omp end parallel
 !
             call fem_skv_vector_inertia_upwind(iele_fl_smp_stack,       &
-     &          num_int, k2, magne_1, vect_e, d_ele(1,ie_upw),          &
-     &          ele1, jac1_3d_q, fem1_wk%sk6)
+     &          num_int, k2, magne_1, fem1_wk%vector_1,                 &
+     &          d_ele(1,ie_upw), ele1, jac1_3d_q, fem1_wk%sk6)
           end if
 !
 !    set SGS Lorentz force
@@ -395,28 +395,28 @@
         if(iflag_4_gravity .eq. id_FORCE_ele_int                        &
      &     .and. iflag_4_composit_buo .eq. id_FORCE_ele_int) then
           call set_double_gvec_each_ele_1st(k2, iphys%i_temp,           &
-     &        iphys%i_light, ak_buo, ak_comp_buo, vect_e)
+     &        iphys%i_light, ak_buo, ak_comp_buo, fem1_wk%vector_1)
           call fem_skv_vector_field_upwind(iele_fl_smp_stack,           &
      &        num_int, k2, d_ele(1,ie_upw), ele1, jac1_3d_q,            &
-     &        vect_e, fem1_wk%sk6)
+     &        fem1_wk%vector_1, fem1_wk%sk6)
         else if (iflag_4_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_temp, ak_buo,   &
-     &        vect_e)
+     &        fem1_wk%vector_1)
           call fem_skv_vector_field_upwind(iele_fl_smp_stack,           &
      &        num_int, k2, d_ele(1,ie_upw), ele1, jac1_3d_q,            &
-     &        vect_e, fem1_wk%sk6)
+     &        fem1_wk%vector_1, fem1_wk%sk6)
         else if (iflag_4_composit_buo .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_light,          &
-     &        ak_comp_buo, vect_e)
+     &        ak_comp_buo, fem1_wk%vector_1)
           call fem_skv_vector_field_upwind(iele_fl_smp_stack,           &
      &        num_int, k2, d_ele(1,ie_upw), ele1, jac1_3d_q,            &
-     &        vect_e, fem1_wk%sk6)
+     &        fem1_wk%vector_1, fem1_wk%sk6)
         else if (iflag_4_filter_gravity .eq. id_FORCE_ele_int) then
           call set_gravity_vec_each_ele_1st(k2, iphys%i_filter_temp,    &
-     &        ak_buo, vect_e)
+     &        ak_buo, fem1_wk%vector_1)
           call fem_skv_vector_field_upwind(iele_fl_smp_stack,           &
      &        num_int, k2, d_ele(1,ie_upw), ele1,jac1_3d_q,             &
-     &        vect_e, fem1_wk%sk6)
+     &        fem1_wk%vector_1, fem1_wk%sk6)
         end if
 !
       end do

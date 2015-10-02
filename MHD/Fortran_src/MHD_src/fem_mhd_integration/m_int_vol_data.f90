@@ -13,7 +13,7 @@
       implicit  none
 !
 !
-      real (kind=kreal), allocatable ::  vect_e(:,:)
+!      real (kind=kreal), allocatable ::  vect_e(:,:)
       real (kind=kreal), allocatable ::  velo_1(:,:)
       real (kind=kreal), allocatable ::  magne_1(:,:)
       real (kind=kreal), allocatable ::  vect_1(:,:)
@@ -57,14 +57,12 @@
 !
       allocate(xe(numele,3))
       allocate(radius_e(numele))
-      allocate(vect_e(numele,3))
       allocate(tensor_e(numele,6))
 !
       if(numele .gt. 0) then
         xe = 0.0d0
         radius_e = 0.0d0
         tensor_e = 0.0d0
-        vect_e = 0.0d0
       end if
 !
 !

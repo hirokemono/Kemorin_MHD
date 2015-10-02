@@ -141,11 +141,13 @@
 !
 !$omp parallel
         call add_const_to_vector_smp(np_smp, ele1%numele,               &
-     &      iele_fsmp_stack, d_ele(1,iele_magne), ex_magne, vect_e)
+     &      iele_fsmp_stack, d_ele(1,iele_magne), ex_magne,             &
+     &      fem1_wk%vector_1)
 !$omp end parallel
 !
         call fem_skv_lorentz_rot_galerkin(iele_fsmp_stack,              &
-     &        n_int, k2, vect_1, vect_e, ele1, jac1_3d_q, fem1_wk%sk6)
+     &      n_int, k2, vect_1, fem1_wk%vector_1, ele1, jac1_3d_q,       &
+     &      fem1_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)

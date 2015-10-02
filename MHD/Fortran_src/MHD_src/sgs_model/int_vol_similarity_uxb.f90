@@ -65,9 +65,11 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, iphys%i_sgs_simi, vect_e)
+        call vector_phys_2_each_element                                 &
+     &     (k2, iphys%i_sgs_simi, fem1_wk%vector_1)
         call fem_skv_vector_type(iele_cd_smp_stack,                     &
-     &      intg_point_t_evo, k2, ele1, jac1_3d_q, vect_e, fem1_wk%sk6)
+     &      intg_point_t_evo, k2, ele1, jac1_3d_q,                      &
+     &      fem1_wk%vector_1, fem1_wk%sk6)
         call scalar_prod_to_skv_tensor_1st(iele_cd_smp_stack,           &
      &      ak_sgs(1,icomp_sgs_uxb), fem1_wk%sk6)
       end do
@@ -99,11 +101,12 @@
       call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, iphys%i_sgs_simi, vect_e)
+        call vector_phys_2_each_element                                 &
+     &     (k2, iphys%i_sgs_simi, fem1_wk%vector_1)
 !
         call fem_skv_vector_field_upwind(iele_cd_smp_stack,             &
      &      intg_point_t_evo, k2, d_ele(1,iele_magne), ele1, jac1_3d_q, &
-     &      vect_e, fem1_wk%sk6)
+     &      fem1_wk%vector_1, fem1_wk%sk6)
 !
         call scalar_prod_to_skv_tensor_1st(iele_cd_smp_stack,           &
      &      ak_sgs(1,icomp_sgs_uxb), fem1_wk%sk6)

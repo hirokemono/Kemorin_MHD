@@ -76,7 +76,7 @@
       use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_jacobians
-      use m_int_vol_data
+      use m_finite_element_matrix
 !
       use nodal_fld_2_each_ele_1st
       use fem_vol_average_tensors
@@ -93,32 +93,33 @@
       integer (kind=kint) :: k2
 !
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, i_vect, vect_e)
+        call vector_phys_2_each_element(k2, i_vect, fem1_wk%vector_1)
 !
         if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_sym_tensor_1(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
      &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,  &
-     &        k2, vect_e, rms_local, ave_local)
+     &        k2, fem1_wk%vector_1, rms_local, ave_local)
         else
           call fem_vol_ave_sym_tensor_1(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
      &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
-     &        k2, vect_e, rms_local, ave_local)
+     &        k2, fem1_wk%vector_1, rms_local, ave_local)
         end if
 !
-        call vector_phys_2_each_element(k2, (i_vect+3), vect_e)
+        call vector_phys_2_each_element                                 &
+     &     (k2, (i_vect+3), fem1_wk%vector_1)
 !
         if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_sym_tensor_2(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
      &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,  &
-     &        k2, vect_e, rms_local, ave_local)
+     &        k2, fem1_wk%vector_1, rms_local, ave_local)
         else
           call fem_vol_ave_sym_tensor_2(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
      &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
-     &        k2, vect_e, rms_local, ave_local)
+     &        k2, fem1_wk%vector_1, rms_local, ave_local)
         end if
       end do
 !
@@ -134,7 +135,7 @@
       use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_jacobians
-      use m_int_vol_data
+      use m_finite_element_matrix
 !
       use nodal_fld_2_each_ele_1st
       use fem_vol_average_tensors
@@ -150,18 +151,18 @@
       integer (kind=kint) :: k2
 !
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, i_vect, vect_e)
+        call vector_phys_2_each_element(k2, i_vect, fem1_wk%vector_1)
 !
         if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_asym_tensor(ele1%numele, ele1%nnod_4_ele,    &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
      &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,  &
-     &        k2, vect_e, rms_local, ave_local)
+     &        k2, fem1_wk%vector_1, rms_local, ave_local)
         else
           call fem_vol_ave_asym_tensor(ele1%numele, ele1%nnod_4_ele,    &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
      &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
-     &        k2, vect_e, rms_local, ave_local)
+     &        k2, fem1_wk%vector_1, rms_local, ave_local)
         end if
       end do
 !
