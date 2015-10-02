@@ -222,7 +222,7 @@
 !
       num_int = 1
 !$omp workshare
-      phi_e(1:ele1%numele) =  0.0d0
+      fem1_wk%scalar_1(1:ele1%numele) =  0.0d0
 !$omp end workshare
 !
 ! -------- loop for shape function for phsical values
@@ -231,13 +231,14 @@
 !
 ! ---------  set vector at each node in an element
        call vector_phys_2_each_element(k2, i_field, vect_e)
-       call fem_rms_flux_pg(iele_fsmp_stack, num_int, k2, vect_e, phi_e)
+       call fem_rms_flux_pg(iele_fsmp_stack, num_int, k2,               &
+     &     vect_e, fem1_wk%scalar_1)
       end do
 !
 ! --------- caliculate total divergence of velocity
 !
       call sum_norm_of_div(ele1%numele, np_smp, iele_fsmp_stack,        &
-     &    ele1%interior_ele, phi_e, rms_local(i_res) )
+     &    ele1%interior_ele, fem1_wk%scalar_1, rms_local(i_res) )
 !
       end subroutine int_rms_divergence
 !

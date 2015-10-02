@@ -57,10 +57,10 @@
 !
 ! --------- set temperature at each node in an element
 !
-        call scalar_phys_2_each_element(k2, i_scalar, phi_e)
+        call scalar_phys_2_each_element(k2, i_scalar, fem1_wk%scalar_1)
 !
         call fem_skv_commute_err_grad_1(iele_fsmp_stack,                &
-     &      n_int, k2, i_filter, phi_e, fem1_wk%sk6)
+     &      n_int, k2, i_filter, fem1_wk%scalar_1, fem1_wk%sk6)
        end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)

@@ -7,7 +7,8 @@
 !        modified by H. Matsui on April, 2012
 !
 !      subroutine sel_int_vol_sgs_flux(iflag_4_supg, i_filter, numdir,  &
-!     &           i_field, id_dx, sk_v)
+!     &           i_field, id_dx, fem_wk)
+!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !
       module int_vol_sgs_flux
 !
@@ -16,6 +17,7 @@
       use m_control_parameter
       use m_phys_constants
       use m_geometry_data
+      use t_finite_element_mat
 !
       implicit none
 !
@@ -28,7 +30,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_int_vol_sgs_flux(iflag_4_supg, i_filter, numdir,   &
-     &           i_field, id_dx, sk_v)
+     &           i_field, id_dx, fem_wk)
 !
       use m_element_phys_data
 !
@@ -36,21 +38,20 @@
       integer (kind = kint), intent(in) :: id_dx, i_filter
       integer (kind = kint), intent(in) :: numdir, i_field
 !
-      real (kind=kreal), intent(inout)                                  &
-     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
+      type(work_finite_element_mat), intent(inout) :: fem_wk
 !
 !
       if ( iflag_4_supg .eq. id_magnetic_SUPG) then
         call int_vol_sgs_flux_upwind(i_filter, numdir, i_field, id_dx,  &
      &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld,      &
-     &      sk_v)
+     &      fem_wk)
       else if ( iflag_4_supg .eq. id_turn_ON) then
         call int_vol_sgs_flux_upwind(i_filter, numdir, i_field, id_dx,  &
      &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,       &
-     &      sk_v)
+     &      fem_wk)
       else
         call int_vol_sgs_flux_pg(i_filter, numdir,                      &
-     &      i_field, id_dx, sk_v)
+     &      i_field, id_dx, fem_wk)
       end if
 !
       end subroutine sel_int_vol_sgs_flux
@@ -59,7 +60,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_sgs_flux_pg(i_filter, numdir, i_field, id_dx,  &
-     &          sk_v)
+     &          fem_wk)
 !
       use m_geometry_data_MHD
       use m_int_vol_data
@@ -73,8 +74,7 @@
       integer (kind = kint), intent(in) :: id_dx, i_filter
       integer (kind = kint), intent(in) :: numdir, i_field
 !
-      real (kind=kreal), intent(inout)                                  &
-     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
+      type(work_finite_element_mat), intent(inout) :: fem_wk
 !
       integer (kind = kint) :: icomp, nd, ndx, nd2, nd_t
       integer (kind = kint) :: k2, id_dvx2
@@ -90,11 +90,12 @@
 !
 ! -------- loop for shape function for the phsical values
           do k2 = 1, ele1%nnod_4_ele
-            call scalar_phys_2_each_element(k2, icomp, phi_e)
+            call scalar_phys_2_each_element                             &
+     &         (k2, icomp, fem_wk%scalar_1)
             call fem_skv_sgs_flux_galerkin(iele_fl_smp_stack,           &
      &          intg_point_t_evo, k2, i_filter, nd_t,                   &
-     &          ele1, jac1_3d_q, FEM1_elen, phi_e, dvx(1,id_dvx2),      &
-     &          sk_v)
+     &          ele1, jac1_3d_q, FEM1_elen, fem_wk%scalar_1,            &
+     &          dvx(1,id_dvx2), fem_wk%sk6)
           end do
 !
         end do
@@ -105,7 +106,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_vol_sgs_flux_upwind(i_filter, numdir,              &
-     &          i_field, id_dx, ncomp_ele, ie_upw, d_ele, sk_v)
+     &          i_field, id_dx, ncomp_ele, ie_upw, d_ele, fem_wk)
 !
       use m_geometry_data_MHD
       use m_int_vol_data
@@ -121,8 +122,7 @@
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
 !
-      real (kind=kreal), intent(inout)                                  &
-     &             :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
+      type(work_finite_element_mat), intent(inout) :: fem_wk
 !
       integer (kind = kint) :: icomp, nd, ndx, nd2, nd_t
       integer (kind = kint) :: k2, id_dvx2
@@ -140,11 +140,12 @@
 ! -------- loop for shape function for the phsical values
 !
           do k2 = 1, ele1%nnod_4_ele
-            call scalar_phys_2_each_element(k2, icomp, phi_e)
+            call scalar_phys_2_each_element                             &
+     &         (k2, icomp, fem_wk%scalar_1)
             call fem_skv_sgs_flux_upwind(iele_fl_smp_stack,             &
      &          intg_point_t_evo, k2, i_filter, nd_t,                   &
-     &          ele1, jac1_3d_q, FEM1_elen, phi_e, d_ele(1,ie_upw),     &
-     &          dvx(1,id_dvx2), sk_v)
+     &          ele1, jac1_3d_q, FEM1_elen, fem_wk%scalar_1,            &
+     &          d_ele(1,ie_upw), dvx(1,id_dvx2), fem_wk%sk6)
           end do
         end do
       end do

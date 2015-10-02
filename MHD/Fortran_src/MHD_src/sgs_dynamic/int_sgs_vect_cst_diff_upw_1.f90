@@ -66,12 +66,14 @@
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, ele1%nnod_4_ele
-        call scalar_cst_phys_2_each_ele(k2, i_field, coef,  phi_e)
+        call scalar_cst_phys_2_each_ele                                 &
+     &     (k2, i_field, coef,  fem1_wk%scalar_1)
         call fem_skv_gradient_upw(iele_fsmp_stack, num_int, k2,         &
-     &      d_ele(1,iv_up), ele1, jac1_3d_q, phi_e, fem1_wk%sk6)
+     &      d_ele(1,iv_up), ele1, jac1_3d_q,                            &
+     &      fem1_wk%scalar_1, fem1_wk%sk6)
         call fem_skv_grad_sgs_upwind(iele_fsmp_stack, num_int, k2,      &
      &      i_filter, ak_diff(1,iak_diff), ele1, jac1_3d_q, FEM1_elen,  &
-     &      d_ele(1,iv_up), phi_e, fem1_wk%sk6)
+     &      d_ele(1,iv_up), fem1_wk%scalar_1, fem1_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)

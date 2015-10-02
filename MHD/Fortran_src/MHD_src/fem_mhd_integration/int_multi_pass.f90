@@ -222,9 +222,9 @@
       call reset_sk6(n_scalar, fem1_wk%sk6)
 !
       do k2 = 1, ele1%nnod_4_ele
-        call scalar_2_each_element(k2, ff_nl(1,1), phi_e)
+        call scalar_2_each_element(k2, ff_nl(1,1), fem1_wk%scalar_1)
         call fem_skv_scalar_type(iele_fsmp_stack, intg_point_t_evo, k2, &
-     &      ele1, jac1_3d_q, phi_e, fem1_wk%sk6)
+     &      ele1, jac1_3d_q, fem1_wk%scalar_1, fem1_wk%sk6)
       end do
 !
       call sub1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)

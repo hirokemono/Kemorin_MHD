@@ -28,7 +28,7 @@
 !
 !>      Work area for FEM assemble
       type(work_finite_element_mat), save :: fem1_wk
-!fem1_wk%sk6
+!fem1_wk%scalar_1
 !
       real (kind=kreal), allocatable  ::  ml(:)
       real (kind=kreal), allocatable  ::  ml_fl(:)
@@ -95,6 +95,7 @@
       allocate(ff_t_smp(node1%max_nod_smp,6,np_smp))
 !
       allocate(fem1_wk%sk6(ele1%numele,n_sym_tensor,ele1%nnod_4_ele))
+      allocate(fem1_wk%scalar_1(ele1%numele) )
 !
       allocate(ml_ele_diag(ele1%numele))
 !
@@ -110,6 +111,8 @@
 !
       if(ele1%numele .gt. 0) then
         fem1_wk%sk6 =      0.0d0
+        fem1_wk%scalar_1 = 0.0d0
+!
         ml_ele_diag = 0.0d0
       end if
 !
@@ -259,7 +262,7 @@
       deallocate(ml, ml_o)
 !
       deallocate(ff_smp, ff_nl_smp, ff_m_smp, ff_t_smp)
-      deallocate(fem1_wk%sk6)
+      deallocate(fem1_wk%sk6, fem1_wk%scalar_1)
 !
       deallocate(ml_ele_diag)
 !

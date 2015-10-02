@@ -76,7 +76,8 @@
         call scalar_2_element_4_boundary(node1%numnod,                  &
      &      ele1%numele, ele1%nnod_4_ele, ele1%ie, num_index_ibc,       &
      &      ele_bc_id, ibc_stack_smp(istart_smp), k2,                   &
-     &      nod_fld1%ntot_phys, i_field, nod_fld1%d_fld, phi_e)
+     &      nod_fld1%ntot_phys, i_field, nod_fld1%d_fld,                &
+     &      fem1_wk%scalar_1)
 !
 !   'sf' = - \tilde{v}_{i,i} N(x)
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
@@ -84,7 +85,7 @@
 !
         call fem_skv_poisson_sgs_fix_bc(ele1, jac1_3d_l, FEM1_elen,     &
      &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp), k2,    &
-     &      n_int, i_filter, ak_diff, phi_e, fem1_wk%sk6)
+     &      n_int, i_filter, ak_diff, fem1_wk%scalar_1, fem1_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
@@ -125,7 +126,8 @@
         call scalar_2_element_4_boundary(node1%numnod,                  &
      &      ele1%numele, ele1%nnod_4_ele, ele1%ie, num_index_ibc,       &
      &      ele_bc_id, ibc_stack_smp(istart_smp), k2,                   &
-     &      nod_fld1%ntot_phys, i_field, nod_fld1%d_fld, phi_e)
+     &      nod_fld1%ntot_phys, i_field, nod_fld1%d_fld,                &
+     &      fem1_wk%scalar_1)
 !
 !   'sf' = - \tilde{v}_{i,i} N(x)
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
@@ -133,7 +135,7 @@
 !
         call fem_skv_diffuse_sgs_fix_bc(ele1, jac1_3d_q, FEM1_elen,     &
      &      num_index_ibc, ele_bc_id, ibc_stack_smp(istart_smp),        &
-     &      k2, ione, n_int, i_filter, ak_diff, ak_d, phi_e,            &
+     &      k2, ione, n_int, i_filter, ak_diff, ak_d, fem1_wk%scalar_1, &
      &      fem1_wk%sk6)
       end do
 !
@@ -181,7 +183,8 @@
             call scalar_2_element_4_boundary(node1%numnod,              &
      &          ele1%numele, ele1%nnod_4_ele, ele1%ie, nmax_index_ibc,  &
      &          ele_bc_id(1,nd), ibc_stack_smp(istart_smp,nd), k2,      &
-     &          nod_fld1%ntot_phys, i_comp, nod_fld1%d_fld, phi_e)
+     &          nod_fld1%ntot_phys, i_comp, nod_fld1%d_fld,             &
+     &          fem1_wk%scalar_1)
 !
 !   'sf' = - \tilde{v}_{i,i} N(x)
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
@@ -189,7 +192,8 @@
             call fem_skv_diffuse_sgs_fix_bc                             &
      &         (ele1, jac1_3d_q, FEM1_elen, nmax_index_ibc,             &
      &          ele_bc_id(1,nd), ibc_stack_smp(istart_smp,nd), k2, nd,  &
-     &          n_int, i_filter, ak_diff, ak_d, phi_e, fem1_wk%sk6)
+     &          n_int, i_filter, ak_diff, ak_d, fem1_wk%scalar_1,       &
+     &          fem1_wk%sk6)
           end do
         end if
       end do
@@ -236,7 +240,8 @@
             call scalar_2_element_4_boundary(node1%numnod,              &
      &          ele1%numele, ele1%nnod_4_ele, ele1%ie, num_index_ibc,   &
      &          ele_bc_id, ibc_stack_smp(istart_smp), k2,               &
-     &          nod_fld1%ntot_phys, i_comp, nod_fld1%d_fld, phi_e)
+     &          nod_fld1%ntot_phys, i_comp, nod_fld1%d_fld,             &
+     &          fem1_wk%scalar_1)
 !
 !   'sf' = - \tilde{v}_{i,i} N(x)
 !    skv = frac{ \partial \tilde{Phi}_{i}^{n-1} }{ \partial x_{i} }
@@ -244,7 +249,8 @@
             call fem_skv_diffuse_sgs_fix_bc                             &
      &         (ele1, jac1_3d_q, FEM1_elen, num_index_ibc,              &
      &          ele_bc_id, ibc_stack_smp(istart_smp), k2, nd,           &
-     &          n_int, i_filter, ak_diff,  ak_d, phi_e, fem1_wk%sk6)
+     &          n_int, i_filter, ak_diff, ak_d,                         &
+     &          fem1_wk%scalar_1, fem1_wk%sk6)
           end do
       end do
 !

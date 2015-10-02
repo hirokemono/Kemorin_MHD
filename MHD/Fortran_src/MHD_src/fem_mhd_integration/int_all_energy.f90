@@ -16,6 +16,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_finite_element_matrix
 !
       implicit none
 !
@@ -159,19 +160,19 @@
       integer (kind=kint) :: k2
 !
       do k2 = 1, ele1%nnod_4_ele
-        call scalar_phys_2_each_element(k2, i_comp, phi_e)
+        call scalar_phys_2_each_element(k2, i_comp, fem1_wk%scalar_1)
 !
 !
         if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_rms_4_scalar(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
      &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,  &
-     &        k2, phi_e, rms_local, ave_local)
+     &        k2, fem1_wk%scalar_1, rms_local, ave_local)
         else
           call fem_vol_ave_rms_4_scalar(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
      &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
-     &        k2, phi_e, rms_local, ave_local)
+     &        k2, fem1_wk%scalar_1, rms_local, ave_local)
         end if
       end do
 !
@@ -247,18 +248,18 @@
 !
 !
       do k2 = 1, ele1%nnod_4_ele
-        call scalar_phys_2_each_element(k2, i_comp, phi_e)
+        call scalar_phys_2_each_element(k2, i_comp, fem1_wk%scalar_1)
 !
         if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_ave_rms_4_scalar(ele1%numele, ele1%nnod_4_ele,       &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
      &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%an, k2,              &
-     &        phi_e, rms_local, ave_local)
+     &        fem1_wk%scalar_1, rms_local, ave_local)
         else
           call fem_ave_rms_4_scalar(ele1%numele, ele1%nnod_4_ele,       &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
      &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%an, k2,              &
-     &        phi_e, rms_local, ave_local)
+     &        fem1_wk%scalar_1, rms_local, ave_local)
         end if
       end do
 !

@@ -60,9 +60,11 @@
 !
 ! -------- loop for shape function for the physical values
       do k2 = 1, ele1%nnod_4_ele
-        call scalar_cst_phys_2_each_ele(k2, i_scalar, coef, phi_e)
+        call scalar_cst_phys_2_each_ele                                 &
+     &     (k2, i_scalar, coef, fem1_wk%scalar_1)
         call fem_skv_scalar_inertia_type(iele_fsmp_stack, n_int, k2,    &
-     &      phi_e, d_ele(1,iele_velo), ele1, jac1_3d_q, fem1_wk%sk6)
+     &      fem1_wk%scalar_1, d_ele(1,iele_velo), ele1, jac1_3d_q,      &
+     &      fem1_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
@@ -158,9 +160,10 @@
 !
 ! -------- loop for shape function for the physical values
       do k2 = 1, ele1%nnod_4_ele
-        call scalar_cst_phys_2_each_ele(k2, i_scalar, coef, phi_e)
+        call scalar_cst_phys_2_each_ele                                 &
+     &     (k2, i_scalar, coef, fem1_wk%scalar_1)
         call fem_skv_scalar_inertia_upwind(iele_fsmp_stack, n_int, k2,  &
-     &      phi_e, d_ele(1,iele_velo), d_ele(1,ie_upw),                 &
+     &      fem1_wk%scalar_1, d_ele(1,iele_velo), d_ele(1,ie_upw),      &
      &      ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
