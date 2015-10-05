@@ -20,6 +20,7 @@
       use m_precision
       use m_constants
 !
+      use calypso_mpi
       use m_machine_parameter
       use m_psf_case_table
 !
@@ -222,8 +223,9 @@
       end do
 !$omp end parallel do
 !
-!      write(40+my_rank,*) 'ie_patch'
-!      do inum = 1, icou
+!      write(*,*) 'ie_patch', my_rank, npatch_tot
+!      write(40+my_rank,*) 'ie_patch', npatch_tot
+!      do inum = 1, npatch_tot
 !        write(40+my_rank,*) inum, ie_patch(inum,1:3)
 !      end do
 !      close(40+my_rank)

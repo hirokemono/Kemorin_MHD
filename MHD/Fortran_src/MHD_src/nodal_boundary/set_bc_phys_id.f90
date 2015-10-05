@@ -17,7 +17,9 @@
 !
       module set_bc_phys_id
 !
+      use calypso_mpi
       use m_precision
+      use m_machine_parameter
       use m_geometry_data
       use m_group_data
 !
@@ -38,19 +40,33 @@
       use set_ele_nod_bc_vectors
 !
 !
+      if(iflag_debug .gt. 0) write(*,*) 'set_bc_fixed_velo_id'
       call set_bc_fixed_velo_id(nod_grp1)
 !
+      if(iflag_debug .gt. 0) write(*,*) 'set_bc_velo_4_sphere_id'
       call set_bc_velo_4_sphere_id(node1%numnod, nod_grp1)
 !
 !   set node id in an element for velocity boundary 
 !
+      if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_velo'
       call set_ele_nodal_bc_4_velo
+      call calypso_mpi_barrier
+      if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_velo_sgs'
       call set_ele_nodal_bc_4_velo_sgs
+      call calypso_mpi_barrier
 !
+      if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_rotate'
       call set_ele_nodal_bc_4_rotate
+      call calypso_mpi_barrier
+      if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_vfree'
       call set_ele_nodal_bc_4_vfree
+      call calypso_mpi_barrier
+      if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_vr0'
       call set_ele_nodal_bc_4_vr0
+      call calypso_mpi_barrier
+      if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_velo_sph'
       call set_ele_nodal_bc_4_velo_sph
+      call calypso_mpi_barrier
 !
       end subroutine set_bc_velo_id
 !

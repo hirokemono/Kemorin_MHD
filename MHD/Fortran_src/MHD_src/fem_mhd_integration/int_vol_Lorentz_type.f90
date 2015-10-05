@@ -180,7 +180,7 @@
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
-!
+
 !$omp parallel
       call add_const_to_vector_smp(np_smp, mesh%ele%numele,             &
      &    iele_fsmp_stack, bxe, ex_magne, fem_wk%vxe)

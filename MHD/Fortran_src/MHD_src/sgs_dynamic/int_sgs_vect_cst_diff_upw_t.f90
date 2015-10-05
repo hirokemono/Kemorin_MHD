@@ -6,20 +6,25 @@
 !
 !      subroutine int_sgs_grad_w_const_upw_t(mesh, jac_3d,              &
 !     &          FEM_elens, rhs_tbl, nod_fld, iele_fsmp_stack, num_int, &
-!     &          i_filter, ak_diff, i_field, coef, vxe_up, fem_wk, f_nl)
+!     &          i_filter, ak_diff, i_field, coef,                      &
+!     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !      subroutine int_sgs_div_w_const_upw_t(mesh, jac_3d,               &
 !     &          FEM_elens, rhs_tbl, nod_fld, iele_fsmp_stack, num_int, &
-!     &          i_filter, ak_diff, i_field, coef, vxe_up, fem_wk, f_nl)
+!     &          i_filter, ak_diff, i_field, coef,                      &
+!     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !      subroutine int_sgs_rot_w_const_upw_t(mesh, jac_3d,               &
 !     &          FEM_elens, rhs_tbl, nod_fld, iele_fsmp_stack, num_int, &
-!     &          i_filter, ak_diff, i_field, coef, vxe_up, fem_wk, f_nl)
+!     &          i_filter, ak_diff, i_field, coef,                      &
+!     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
 !      subroutine int_sgs_div_tsr_w_const_upw_t(mesh, jac_3d,           &
 !     &          FEM_elens, rhs_tbl, nod_fld, iele_fsmp_stack, num_int, &
-!     &          i_filter, ak_diff, i_field, coef, vxe_up, fem_wk, f_nl)
+!     &          i_filter, ak_diff, i_field, coef,                      &
+!     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !      subroutine int_sgs_div_as_tsr_w_cst_upw_t(mesh, jac_3d,          &
 !     &          FEM_elens, rhs_tbl, nod_fld, iele_fsmp_stack, num_int, &
-!     &          i_filter, ak_diff, i_field, coef, vxe_up, fem_wk, f_nl)
+!     &          i_filter, ak_diff, i_field, coef,                      &
+!     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       module int_sgs_vect_cst_diff_upw_t
 !
@@ -45,7 +50,8 @@
 !
       subroutine int_sgs_grad_w_const_upw_t(mesh, jac_3d,               &
      &          FEM_elens, rhs_tbl, nod_fld, iele_fsmp_stack, num_int,  &
-     &          i_filter, ak_diff, i_field, coef, vxe_up, fem_wk, f_nl)
+     &          i_filter, ak_diff, i_field, coef,                       &
+     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d
@@ -57,8 +63,11 @@
       integer(kind=kint), intent(in) :: i_field, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind=kreal), intent(in) :: ak_diff(mesh%ele%numele)
-      real(kind = kreal), intent(in) :: vxe_up(mesh%ele%numele,3)
       real(kind = kreal), intent(in) :: coef
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in)                                    &
+     &          :: d_ele(mesh%ele%numele,ncomp_ele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -68,11 +77,6 @@
 !
       call reset_sk6_type(n_vector, mesh%ele, fem_wk)
 !
-!$omp parallel
-      call copy_nod_vector_smp(np_smp, mesh%ele%numele,                 &
-     &    iele_fsmp_stack, vxe_up, fem_wk%vxe)
-!$omp end parallel
-!
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -80,7 +84,7 @@
      &          k2, i_field, coef, fem_wk%scalar_1)
         call fem_skv_grad_sgs_upwind(iele_fsmp_stack, num_int, k2,      &
      &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,             &
-     &      fem_wk%vxe, fem_wk%scalar_1, fem_wk%sk6)
+     &      d_ele(1,iv_up), fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
@@ -91,7 +95,8 @@
 !
       subroutine int_sgs_div_w_const_upw_t(mesh, jac_3d,                &
      &          FEM_elens, rhs_tbl, nod_fld, iele_fsmp_stack, num_int,  &
-     &          i_filter, ak_diff, i_field, coef, vxe_up, fem_wk, f_nl)
+     &          i_filter, ak_diff, i_field, coef,                       &
+     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d
@@ -103,8 +108,11 @@
       integer(kind=kint), intent(in) :: i_field, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind=kreal), intent(in) :: ak_diff(mesh%ele%numele)
-      real(kind = kreal), intent(in) :: vxe_up(mesh%ele%numele,3)
       real(kind = kreal), intent(in) :: coef
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in)                                    &
+     &          :: d_ele(mesh%ele%numele,ncomp_ele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -114,11 +122,6 @@
 !
       call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
 !
-!$omp parallel
-      call copy_nod_vector_smp(np_smp,  mesh%ele%numele,                &
-     &    iele_fsmp_stack, vxe_up, fem_wk%vxe)
-!$omp end parallel
-!
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -126,7 +129,7 @@
      &          k2, i_field, coef, fem_wk%vector_1)
         call fem_skv_div_sgs_upw_type(iele_fsmp_stack, num_int, k2,     &
      &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,             &
-     &      fem_wk%vxe, fem_wk%vector_1, fem_wk%sk6)
+     &      d_ele(1,iv_up), fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
@@ -137,7 +140,8 @@
 !
       subroutine int_sgs_rot_w_const_upw_t(mesh, jac_3d,                &
      &          FEM_elens, rhs_tbl, nod_fld, iele_fsmp_stack, num_int,  &
-     &          i_filter, ak_diff, i_field, coef, vxe_up, fem_wk, f_nl)
+     &          i_filter, ak_diff, i_field, coef,                       &
+     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d
@@ -149,8 +153,11 @@
       integer(kind=kint), intent(in) :: i_field, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind=kreal), intent(in) :: ak_diff(mesh%ele%numele)
-      real(kind = kreal), intent(in) :: vxe_up(mesh%ele%numele,3)
       real(kind = kreal), intent(in) :: coef
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in)                                    &
+     &          :: d_ele(mesh%ele%numele,ncomp_ele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -160,11 +167,6 @@
 !
       call reset_sk6_type(n_vector, mesh%ele, fem_wk)
 !
-!$omp parallel
-      call copy_nod_vector_smp(np_smp, mesh%ele%numele,                 &
-     &    iele_fsmp_stack, vxe_up, fem_wk%vxe)
-!$omp end parallel
-!
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -172,7 +174,7 @@
      &          k2, i_field, coef, fem_wk%vector_1)
         call fem_skv_rot_sgs_upwind(iele_fsmp_stack, num_int, k2,       &
      &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,             &
-     &      fem_wk%vxe, fem_wk%vector_1, fem_wk%sk6)
+     &      d_ele(1,iv_up), fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
@@ -184,7 +186,8 @@
 !
       subroutine int_sgs_div_tsr_w_const_upw_t(mesh, jac_3d,            &
      &          FEM_elens, rhs_tbl, nod_fld, iele_fsmp_stack, num_int,  &
-     &          i_filter, ak_diff, i_field, coef, vxe_up, fem_wk, f_nl)
+     &          i_filter, ak_diff, i_field, coef,                       &
+     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d
@@ -196,8 +199,11 @@
       integer(kind=kint), intent(in) :: i_field, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind=kreal), intent(in) :: ak_diff(mesh%ele%numele)
-      real(kind = kreal), intent(in) :: vxe_up(mesh%ele%numele,3)
       real(kind = kreal), intent(in) :: coef
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in)                                    &
+     &          :: d_ele(mesh%ele%numele,ncomp_ele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -207,11 +213,6 @@
 !
       call reset_sk6_type(n_vector, mesh%ele, fem_wk)
 !
-!$omp parallel
-      call copy_nod_vector_smp(np_smp,  mesh%ele%numele,                &
-     &    iele_fsmp_stack, vxe_up, fem_wk%vxe)
-!$omp end parallel
-!
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -219,7 +220,7 @@
      &          k2, i_field, coef, fem_wk%tensor_1)
         call fem_skv_div_tsr_sgs_upwind(iele_fsmp_stack, num_int, k2,   &
      &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,             &
-     &      fem_wk%vxe, fem_wk%tensor_1, fem_wk%sk6)
+     &      d_ele(1,iv_up), fem_wk%tensor_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
@@ -230,7 +231,8 @@
 !
       subroutine int_sgs_div_as_tsr_w_cst_upw_t(mesh, jac_3d,           &
      &          FEM_elens, rhs_tbl, nod_fld, iele_fsmp_stack, num_int,  &
-     &          i_filter, ak_diff, i_field, coef, vxe_up, fem_wk, f_nl)
+     &          i_filter, ak_diff, i_field, coef,                       &
+     &          ncomp_ele, iv_up, d_ele, fem_wk, f_nl)
 !
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d
@@ -242,8 +244,11 @@
       integer(kind=kint), intent(in) :: i_field, i_filter
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real(kind=kreal), intent(in) :: ak_diff(mesh%ele%numele)
-      real(kind = kreal), intent(in) :: vxe_up(mesh%ele%numele,3)
       real(kind = kreal), intent(in) :: coef
+!
+      integer(kind = kint), intent(in) :: ncomp_ele, iv_up
+      real(kind = kreal), intent(in)                                    &
+     &          :: d_ele(mesh%ele%numele,ncomp_ele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -253,11 +258,6 @@
 !
       call reset_sk6_type(n_vector, mesh%ele, fem_wk)
 !
-!$omp parallel
-      call copy_nod_vector_smp(np_smp,  mesh%ele%numele,                &
-     &    iele_fsmp_stack, vxe_up, fem_wk%vxe)
-!$omp end parallel
-!
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -265,7 +265,7 @@
      &          k2, i_field, coef, fem_wk%vector_1)
         call fem_skv_div_as_tsr_sgs_upwind(iele_fsmp_stack,             &
      &      num_int, k2, i_filter, ak_diff, mesh%ele, jac_3d,           &
-     &      FEM_elens, fem_wk%vxe, fem_wk%vector_1, fem_wk%sk6)
+     &      FEM_elens, d_ele(1,iv_up), fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)

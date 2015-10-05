@@ -436,7 +436,7 @@
       use m_sph_spectr_data
 !
       integer ( kind = kint) :: inod, k, jj
-      real (kind = kreal) :: temp_CMB
+      real (kind = kreal) :: temp_CMB = 0.0d0
 !
 !
 !   search address for (l = m = 0)

@@ -43,6 +43,7 @@
       type(surface_group_geometry), intent(in) :: sf_grp_v
 !
 !
+      write(*,*) 'torque_surf%ibc_type', torque_surf%ibc_type
       call s_set_surf_vector_id(sf_grp, sf_grp_nod, sf_grp_v,           &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type, torque_surf%bc_magnitude,               &

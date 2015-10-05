@@ -127,7 +127,8 @@
      &    fem%mesh%ele%numele, surf%numsurf,                            &
      &    edge_mesh%edge%numedge, fem%mesh%ele%nnod_4_ele,              &
      &    edge_mesh%edge%nnod_4_edge, fem%mesh%ele%ie,                  &
-     &    edge_mesh%edge%ie_edge, surf%isf_4_ele,                       &
+     &    edge_mesh%edge%ie_edge, edge_mesh%edge%interior_edge,         &
+     &    surf%isf_4_ele,                                               &
      &    edge_mesh%edge%iedge_4_sf, edge_mesh%edge%iedge_4_ele,        &
      &    fem%mesh%nod_comm, edge_mesh%edge_comm,                       &
      &    fem%mesh%ele%interior_ele, fem%mesh%node%xx,                  &
@@ -196,12 +197,11 @@
       type(edge_geometry), intent(in) :: edge_mesh
       type(phys_data), intent(in) :: fld_nod
 !
-      call isosurface_main(istep_iso,                                   &
-     &    fem%mesh%node%numnod, fem%mesh%node%internal_node,            &
+      call isosurface_main(istep_iso, fem%mesh%node%numnod,             &
      &    fem%mesh%ele%numele, edge_mesh%edge%numedge,                  &
      &    fem%mesh%ele%nnod_4_ele, edge_mesh%edge%nnod_4_edge,          &
      &    fem%mesh%ele%ie, edge_mesh%edge%ie_edge,                      &
-     &    edge_mesh%edge%iedge_4_ele,                                   &
+     &    edge_mesh%edge%interior_edge, edge_mesh%edge%iedge_4_ele,     &
      &    fem%mesh%node%xx, fem%mesh%node%rr, fem%mesh%node%a_r,        &
      &    fem%mesh%node%ss, fem%mesh%node%a_s,                          &
      &    fem%mesh%node%istack_nod_smp, edge_mesh%edge_comm,            &

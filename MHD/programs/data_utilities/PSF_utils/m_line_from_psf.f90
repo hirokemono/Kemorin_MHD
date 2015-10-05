@@ -61,11 +61,10 @@
       type(ucd_data), intent(inout) :: line
 !
       real(kind = kreal) :: coef_line(10)
-      integer(kind = kint) :: nline_on_node
       integer(kind = kint), allocatable :: iedge_4_line(:)
       real(kind = kreal), allocatable :: coef_on_edge(:,:)
       real(kind = kreal), allocatable :: ref_tri(:)
-      integer(kind = kint) :: i1, num
+      integer(kind = kint) :: i1
       integer(kind = kint) :: istack_smp(0:1)
 !
 !   Count number of lines
@@ -98,10 +97,10 @@
       end if
 !
 !
-      call allocate_edge_section_flags(numnod_psf, numedge_psf)
+      call allocate_edge_section_flags(numedge_psf)
       call count_section_fld_in_triangle(numnod_psf, numedge_psf,       &
      &    nfield_psf, ncomptot_psf, iedge_psf, ref_tri, xref,           &
-     &    line%num_field, line%ntot_comp, line%nnod, nline_on_node)
+     &    line%num_field, line%ntot_comp, line%nnod)
 !
 !
       call allocate_ucd_nodal_data(line)
@@ -111,20 +110,20 @@
         iedge_4_line = 0
         coef_on_edge = 0.0d0
       end if
-      istack_smp(0) = nline_on_node
+      istack_smp(0) = 0
       istack_smp(1) = int(line%nnod)
 !
-      call set_section_list_in_triangle(numnod_psf, numedge_psf,        &
-     &    istack_smp(1), nline_on_node, iedge_4_line)
+      call set_section_list_in_triangle(numedge_psf,                    &
+     &    istack_smp(1), iedge_4_line)
 !
       call set_node_on_edge_4_quad_psf(numnod_psf, numedge_psf,         &
-     &    num_linear_edge, iedge_psf, xx_psf, coef_line,                &
+     &    num_linear_edge, iedge_psf, xx_psf, coef_line, ref_tri,       &
      &    istack_smp(1), istack_smp, iedge_4_line, coef_on_edge)
 !
       call set_section_fld_in_triangle(numnod_psf, numedge_psf,         &
      &    nfield_psf, ncomptot_psf, xx_psf, iedge_psf,                  &
      &    ncomp_psf, psf_data_name, d_nod_psf, line%nnod,               &
-     &    nline_on_node, iedge_4_line, coef_on_edge, line%inod_global,  &
+     &    iedge_4_line, coef_on_edge, line%inod_global,                 &
      &    line%xx, line%num_comp, line%phys_name, line%d_ucd)
 !
       deallocate(ref_tri, iedge_4_line, coef_on_edge)
