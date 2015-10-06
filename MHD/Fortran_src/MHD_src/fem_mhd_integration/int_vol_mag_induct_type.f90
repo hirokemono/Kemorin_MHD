@@ -10,10 +10,10 @@
 !
 !      subroutine int_vol_mag_induct_pg_t(mesh, jac_3d, rhs_tbl,        &
 !     &          nod_fld, iele_fsmp_stack, n_int, ncomp_ele, d_ele,     &
-!     &          fem_wk, iphys_nod, iphys_ele, f_nl)
+!     &          fem_wk, mhd_fem_wk, iphys_nod, iphys_ele, f_nl)
 !      subroutine int_vol_mag_induct_upm_t(mesh, jac_3d, rhs_tbl,       &
 !     &          nod_fld, iele_fsmp_stack, n_int, ncomp_ele, d_ele,     &
-!     &          fem_wk, iphys_nod, iphys_ele, f_nl)
+!     &          fem_wk, mhd_fem_wk, iphys_nod, iphys_ele, f_nl)
 !
       module int_vol_mag_induct_type
 !
@@ -41,7 +41,7 @@
 !
       subroutine int_vol_mag_induct_pg_t(mesh, jac_3d, rhs_tbl,         &
      &          nod_fld, iele_fsmp_stack, n_int, ncomp_ele, d_ele,      &
-     &          fem_wk, iphys_nod, iphys_ele, f_nl)
+     &          fem_wk, mhd_fem_wk, iphys_nod, iphys_ele, f_nl)
 !
       use cal_add_smp
       use nodal_fld_2_each_ele_type
@@ -62,6 +62,7 @@
      &                    :: d_ele(mesh%ele%numele,ncomp_ele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       integer(kind=kint) :: k2
@@ -78,12 +79,12 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
         call vector_phys_2_each_ele_type(mesh, nod_fld, k2,             &
-     &      iphys_nod%i_velo,  fem_wk%velo_1)
+     &      iphys_nod%i_velo,  mhd_fem_wk%velo_1)
         call vector_phys_2_each_ele_type(mesh, nod_fld, k2,             &
      &      iphys_nod%i_magne, fem_wk%vector_1)
 !
         call fem_skv_induction_galerkin(iele_fsmp_stack, n_int, k2,     &
-     &      coef_induct, fem_wk%velo_1, fem_wk%vector_1,                &
+     &      coef_induct, mhd_fem_wk%velo_1, fem_wk%vector_1,            &
      &      d_ele(1,iphys_ele%i_velo), fem_wk%vxe, mesh%ele, jac_3d,    &
      &      fem_wk%sk6)
       end do
@@ -96,7 +97,7 @@
 !
       subroutine int_vol_mag_induct_upm_t(mesh, jac_3d, rhs_tbl,        &
      &          nod_fld, iele_fsmp_stack, n_int, ncomp_ele, d_ele,      &
-     &          fem_wk, iphys_nod, iphys_ele, f_nl)
+     &          fem_wk, mhd_fem_wk, iphys_nod, iphys_ele, f_nl)
 !
       use cal_add_smp
       use nodal_fld_2_each_ele_type
@@ -117,6 +118,7 @@
      &                    :: d_ele(mesh%ele%numele,ncomp_ele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       integer(kind=kint) :: k2
@@ -133,12 +135,12 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
         call vector_phys_2_each_ele_type(mesh, nod_fld, k2,             &
-     &      iphys_nod%i_velo,  fem_wk%velo_1)
+     &      iphys_nod%i_velo,  mhd_fem_wk%velo_1)
         call vector_phys_2_each_ele_type(mesh, nod_fld, k2,             &
      &      iphys_nod%i_magne, fem_wk%vector_1)
 !
         call fem_skv_induction_upmagne(iele_fsmp_stack, n_int, k2,      &
-     &      coef_induct, fem_wk%velo_1, fem_wk%vector_1,                &
+     &      coef_induct, mhd_fem_wk%velo_1, fem_wk%vector_1,            &
      &      d_ele(1,iphys_ele%i_velo), fem_wk%vxe,                      &
      &      d_ele(1,iphys_ele%i_magne), mesh%ele, jac_3d, fem_wk%sk6)
       end do

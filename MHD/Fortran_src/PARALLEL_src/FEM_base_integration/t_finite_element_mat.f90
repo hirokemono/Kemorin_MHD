@@ -53,7 +53,7 @@
         real (kind=kreal), pointer  :: ff(:,:)
         real (kind=kreal), pointer  :: ff_smp(:,:,:)
       end type finite_ele_mat_node
-! 
+!
 !
       type work_finite_element_mat
         real (kind=kreal), pointer  ::  sk6(:,:,:)
@@ -62,8 +62,6 @@
         real(kind=kreal), pointer  ::  vector_1(:,:)
         real(kind=kreal), pointer  ::  tensor_1(:,:)
 !
-        real(kind=kreal), pointer  ::  velo_1(:,:)
-!
         real(kind=kreal), pointer  ::  sgs_v(:,:)
         real(kind=kreal), pointer  ::  sgs_t(:,:)
 !
@@ -71,6 +69,14 @@
 !
         real(kind=kreal), pointer  ::  me_diag(:)
       end type work_finite_element_mat
+!
+!>      Work array for FEM assemble in MHD model
+      type work_MHD_fe_mat
+!>        assembled velocity in each element
+        real (kind=kreal), allocatable ::  velo_1(:,:)
+!>        assembled magnetic field in each element
+        real (kind=kreal), allocatable ::  magne_1(:,:)
+      end type work_MHD_fe_mat
 !
 !
       type finite_ele_matrices
@@ -137,8 +143,6 @@
       allocate( fem_wk%vector_1(numele,3) )
       allocate( fem_wk%tensor_1(numele,6) )
 !
-      allocate( fem_wk%velo_1(numele,3) )
-!
       allocate( fem_wk%sgs_v(numele,3) )
       allocate( fem_wk%sgs_t(numele,6) )
 !
@@ -152,8 +156,6 @@
         fem_wk%scalar_1 = 0.0d0
         fem_wk%vector_1 = 0.0d0
         fem_wk%tensor_1 = 0.0d0
-!
-        fem_wk%velo_1 = 0.0d0
 !
         fem_wk%sgs_v = 0.0d0
         fem_wk%sgs_t = 0.0d0
@@ -271,7 +273,7 @@
 !
       deallocate(fem_wk%sk6)
       deallocate(fem_wk%scalar_1, fem_wk%vector_1, fem_wk%tensor_1 )
-      deallocate(fem_wk%velo_1, fem_wk%sgs_v, fem_wk%sgs_t)
+      deallocate(fem_wk%sgs_v, fem_wk%sgs_t)
       deallocate(fem_wk%vxe, fem_wk%me_diag)
 !
       end subroutine dealloc_type_fem_mat_work

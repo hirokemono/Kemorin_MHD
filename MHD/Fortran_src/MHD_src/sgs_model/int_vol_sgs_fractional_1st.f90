@@ -51,10 +51,11 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, i_vector, velo_1)
+        call vector_phys_2_each_element(k2, i_vector, fem1_wk%vector_1)
         call fem_skv_div_sgs_linear(iele_fsmp_stack,                    &
      &      n_int, k2, i_filter, ak_diff(1,iak_diff),                   &
-     &      ele1, jac1_3d_q, jac1_3d_l, FEM1_elen, velo_1, fem1_wk%sk6)
+     &      ele1, jac1_3d_q, jac1_3d_l, FEM1_elen,                      &
+     &      fem1_wk%vector_1, fem1_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
@@ -150,10 +151,10 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, i_vector, velo_1)
+        call vector_phys_2_each_element(k2, i_vector, fem1_wk%vector_1)
         call fem_skv_vector_diffuse_sgs_type(iele_fsmp_stack,           &
      &      n_int, k2, i_filter, ak_diff(1,iak_diff), ak_d,             &
-     &      ele1, jac1_3d_q, FEM1_elen, velo_1, fem1_wk%sk6)
+     &      ele1, jac1_3d_q, FEM1_elen, fem1_wk%vector_1, fem1_wk%sk6)
       end do
 !
       call add3_skv_coef_to_ff_v_smp_1st                                &

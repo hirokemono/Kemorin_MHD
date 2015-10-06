@@ -9,12 +9,17 @@
       module m_int_vol_data
 !
       use m_precision
+      use t_finite_element_mat
 !
       implicit  none
 !
 !
+!>      Work array for FEM assemble in MHD model
+      type(work_MHD_fe_mat), save :: mhd_fem1_wk
+!mhd_fem1_wk%magne_1
+!fem1_wk%vector_1
 !      real (kind=kreal), allocatable ::  vect_e(:,:)
-      real (kind=kreal), allocatable ::  velo_1(:,:)
+!      real (kind=kreal), allocatable ::  velo_1(:,:)
       real (kind=kreal), allocatable ::  magne_1(:,:)
       real (kind=kreal), allocatable ::  vect_1(:,:)
 !      real (kind=kreal), allocatable ::  tensor_e(:,:)
@@ -66,8 +71,8 @@
 !
        do i = 1, nod_fld1%num_phys
         if      ( nod_fld1%phys_name(i) .eq. fhd_velo ) then
-          allocate(velo_1(numele,3))
-          if(numele .gt. 0) velo_1 = 0.0d0
+          allocate(mhd_fem1_wk%velo_1(numele,3))
+          if(numele .gt. 0) mhd_fem1_wk%velo_1 = 0.0d0
         else if ( nod_fld1%phys_name(i) .eq. fhd_temp ) then
           allocate(temp_e(numele))
           if(numele .gt. 0) temp_e = 0.0d0

@@ -75,7 +75,7 @@
 !
         if (coef_nega_v .ne. 0.0d0) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_velo,             &
-     &        coef_nega_v, velo_1)
+     &        coef_nega_v, mhd_fem1_wk%velo_1)
 !
 !  -----  Inertia including Reynolds stress by rotation form --------
 !
@@ -87,8 +87,9 @@
      &            iphys%i_SGS_m_flux, coef_nega_v, sgs_t,               &
      &            fem1_wk%tensor_1)
 !
-              call fem_skv_rot_inertia_type(iele_fl_smp_stack,          &
-     &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_vort),       &
+              call fem_skv_rot_inertia_type                             &
+     &           (iele_fl_smp_stack, num_int, k2,                       &
+     &            mhd_fem1_wk%velo_1, d_ele(1,iphys_ele%i_vort),        &
      &            ele1, jac1_3d_q, fem1_wk%sk6)
               call fem_skv_div_sgs_tensor                               &
      &           (iele_fl_smp_stack, num_int, k2, ifilter_final,        &
@@ -98,11 +99,12 @@
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
      &            coef_nega_v, sgs_t)
               call fem_skv_inertia_rot_sgs_pg(iele_fl_smp_stack,        &
-     &            num_int, k2, ele1, jac1_3d_q, velo_1, sgs_t,          &
-     &            d_ele(1,iphys_ele%i_vort), fem1_wk%sk6)
+     &            num_int, k2, ele1, jac1_3d_q, mhd_fem1_wk%velo_1,     &
+     &            sgs_t, d_ele(1,iphys_ele%i_vort), fem1_wk%sk6)
             else
-              call fem_skv_rot_inertia_type(iele_fl_smp_stack,          &
-     &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_vort),       &
+              call fem_skv_rot_inertia_type                             &
+     &           (iele_fl_smp_stack, num_int, k2,                       &
+     &            mhd_fem1_wk%velo_1, d_ele(1,iphys_ele%i_vort),        &
      &            ele1, jac1_3d_q, fem1_wk%sk6)
             end if
 !
@@ -116,18 +118,19 @@
      &            fem1_wk%tensor_1)
               call fem_skv_vec_inertia_modsgs_pg(iele_fl_smp_stack,     &
      &            num_int, k2, ifilter_final, ak_diff(1,iak_diff_mf),   &
-     &            ele1, jac1_3d_q, FEM1_elen, velo_1, sgs_t,            &
-     &            fem1_wk%tensor_1, d_ele(1,iphys_ele%i_velo),          &
+     &            ele1, jac1_3d_q, FEM1_elen, mhd_fem1_wk%velo_1,       &
+     &            sgs_t, fem1_wk%tensor_1, d_ele(1,iphys_ele%i_velo),   &
      &            fem1_wk%sk6)
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
      &              coef_nega_v, sgs_t)
               call fem_skv_vec_inertia_sgs_pg(iele_fl_smp_stack,        &
-     &            num_int, k2, ele1, jac1_3d_q, velo_1, sgs_t,          &
-     &            d_ele(1,iphys_ele%i_velo), fem1_wk%sk6)
+     &            num_int, k2, ele1, jac1_3d_q, mhd_fem1_wk%velo_1,     &
+     &            sgs_t, d_ele(1,iphys_ele%i_velo), fem1_wk%sk6)
             else
-              call fem_skv_vector_inertia_type(iele_fl_smp_stack,       &
-     &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_velo),       &
+              call fem_skv_vector_inertia_type                          &
+     &           (iele_fl_smp_stack, num_int, k2,                       &
+     &            mhd_fem1_wk%velo_1, d_ele(1,iphys_ele%i_velo),        &
      &            ele1, jac1_3d_q, fem1_wk%sk6)
             end if
           end if
@@ -188,9 +191,10 @@
 !
         if ( iflag_4_coriolis .eq. id_FORCE_ele_int ) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_velo,             &
-     &        coef_cor, velo_1)
+     &        coef_cor, mhd_fem1_wk%velo_1)
           call fem_skv_coriolis_type(iele_fl_smp_stack, num_int, k2,    &
-     &        velo_1, angular, ele1, jac1_3d_q, fem1_wk%sk6)
+     &        mhd_fem1_wk%velo_1, angular, ele1, jac1_3d_q,             &
+     &        fem1_wk%sk6)
         end if
 !
 ! ---------  set buoyancy
@@ -260,7 +264,7 @@
 !
         if (coef_nega_v .ne. 0.0d0) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_velo,             &
-     &        coef_nega_v, velo_1)
+     &        coef_nega_v, mhd_fem1_wk%velo_1)
 !
 !  -----  Inertia including Reynolds stress by rotation form --------
 !
@@ -271,8 +275,9 @@
      &            iphys%i_SGS_m_flux, coef_nega_v, sgs_t,               &
      &            fem1_wk%tensor_1)
 !
-              call fem_skv_rot_inertia_upwind(iele_fl_smp_stack,        &
-     &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_vort),       &
+              call fem_skv_rot_inertia_upwind                           &
+     &           (iele_fl_smp_stack, num_int, k2,                       &
+     &            mhd_fem1_wk%velo_1, d_ele(1,iphys_ele%i_vort),        &
      &            d_ele(1,ie_upw), ele1, jac1_3d_q, fem1_wk%sk6)
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (iele_fl_smp_stack, num_int, k2, ifilter_final,        &
@@ -283,11 +288,12 @@
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
      &              coef_nega_v, sgs_t)
               call fem_skv_inertia_rot_sgs_upwind(iele_fl_smp_stack,    &
-     &            num_int, k2, ele1, jac1_3d_q, velo_1, sgs_t,          &
-     &            d_ele(1,ie_upw), d_ele(1,ie_upw), fem1_wk%sk6)
+     &            num_int, k2, ele1, jac1_3d_q, mhd_fem1_wk%velo_1,     &
+     &            sgs_t, d_ele(1,ie_upw), d_ele(1,ie_upw), fem1_wk%sk6)
             else
-              call fem_skv_rot_inertia_upwind(iele_fl_smp_stack,        &
-     &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_vort),       &
+              call fem_skv_rot_inertia_upwind                           &
+     &           (iele_fl_smp_stack, num_int, k2,                       &
+     &            mhd_fem1_wk%velo_1, d_ele(1,iphys_ele%i_vort),       &
      &            d_ele(1,ie_upw), ele1, jac1_3d_q, fem1_wk%sk6)
             end if
 !
@@ -301,19 +307,20 @@
      &            fem1_wk%tensor_1)
               call fem_skv_vec_inertia_msgs_upw(iele_fl_smp_stack,      &
      &            num_int, k2, ifilter_final, ak_diff(1,iak_diff_mf),   &
-     &            ele1, jac1_3d_q, FEM1_elen, velo_1, sgs_t,            &
-     &            fem1_wk%tensor_1, d_ele(1,iphys_ele%i_velo),          &
+     &            ele1, jac1_3d_q, FEM1_elen, mhd_fem1_wk%velo_1,       &
+     &            sgs_t, fem1_wk%tensor_1, d_ele(1,iphys_ele%i_velo),   &
      &            d_ele(1,ie_upw), fem1_wk%sk6)
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
      &              coef_nega_v, sgs_t)
               call fem_skv_vcl_inertia_sgs_upwind(iele_fl_smp_stack,    &
-     &            num_int, k2, ele1, jac1_3d_q, velo_1, sgs_t,          &
-     &            d_ele(1,iphys_ele%i_velo), d_ele(1,ie_upw),           &
+     &            num_int, k2, ele1, jac1_3d_q, mhd_fem1_wk%velo_1,     &
+     &            sgs_t, d_ele(1,iphys_ele%i_velo), d_ele(1,ie_upw),    &
      &            fem1_wk%sk6)
             else
-              call fem_skv_vector_inertia_upwind(iele_fl_smp_stack,     &
-     &            num_int, k2, velo_1, d_ele(1,iphys_ele%i_velo),       &
+              call fem_skv_vector_inertia_upwind                        &
+     &           (iele_fl_smp_stack, num_int, k2,                       &
+     &            mhd_fem1_wk%velo_1, d_ele(1,iphys_ele%i_velo),        &
      &            d_ele(1,ie_upw), ele1, jac1_3d_q, fem1_wk%sk6)
             end if
           end if
@@ -395,10 +402,10 @@
 !
         if ( iflag_4_coriolis .eq. id_FORCE_ele_int ) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_velo,             &
-     &        coef_cor, velo_1)
+     &        coef_cor, mhd_fem1_wk%velo_1)
           call fem_skv_coriolis_upwind(iele_fl_smp_stack,               &
-     &        num_int, k2, velo_1, angular, d_ele(1,ie_upw),            &
-     &        ele1, jac1_3d_q, fem1_wk%sk6)
+     &        num_int, k2, mhd_fem1_wk%velo_1, angular,                 &
+     &        d_ele(1,ie_upw), ele1, jac1_3d_q, fem1_wk%sk6)
         end if
 !
 ! ---------  set buoyancy
