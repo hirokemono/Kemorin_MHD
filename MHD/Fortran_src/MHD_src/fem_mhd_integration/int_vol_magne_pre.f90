@@ -69,7 +69,8 @@
       do k2=1, ele1%nnod_4_ele
         call vector_phys_2_each_element                                 &
      &     (k2, iphys%i_velo, mhd_fem1_wk%velo_1)
-        call vector_phys_2_each_element(k2, iphys%i_magne, magne_1)
+        call vector_phys_2_each_element                                 &
+     &     (k2, iphys%i_magne, mhd_fem1_wk%magne_1)
 !
 !$omp parallel
         call add_const_to_vector_smp                                    &
@@ -78,7 +79,7 @@
 !$omp end parallel
 !
         call fem_skv_induction_galerkin(iele_cd_smp_stack, num_int, k2, &
-     &      coef_induct, mhd_fem1_wk%velo_1, magne_1,                   &
+     &      coef_induct, mhd_fem1_wk%velo_1, mhd_fem1_wk%magne_1,       &
      &      d_ele(1,iphys_ele%i_velo),  fem1_wk%vector_1,               &
      &      ele1, jac1_3d_q, fem1_wk%sk6)
 !
@@ -133,7 +134,8 @@
       do k2=1, ele1%nnod_4_ele
         call vector_phys_2_each_element                                 &
      &     (k2, iphys%i_velo, mhd_fem1_wk%velo_1)
-        call vector_phys_2_each_element(k2, iphys%i_magne, magne_1)
+        call vector_phys_2_each_element                                 &
+     &     (k2, iphys%i_magne, mhd_fem1_wk%magne_1)
 !
 !$omp parallel
         call add_const_to_vector_smp                                    &
@@ -142,7 +144,7 @@
 !$omp end parallel
 !
         call fem_skv_induction_upmagne(iele_cd_smp_stack, num_int, k2,  &
-     &      coef_induct, mhd_fem1_wk%velo_1, magne_1,                   &
+     &      coef_induct, mhd_fem1_wk%velo_1, mhd_fem1_wk%magne_1,       &
      &      d_ele(1,iphys_ele%i_velo), fem1_wk%vector_1,                &
      &      d_ele(1,iphys_ele%i_magne), ele1, jac1_3d_q, fem1_wk%sk6)
 !

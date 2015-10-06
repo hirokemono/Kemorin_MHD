@@ -67,11 +67,12 @@
 !
 ! --------- set position at each node in an element
        call position_2_each_element(k2, xe, radius_e)
-       call scalar_phys_2_each_element(k2, iphys%i_gref_t, temp_e)
+       call scalar_phys_2_each_element                                  &
+     &    (k2, iphys%i_gref_t, fem1_wk%scalar_1)
 !
         call fem_skv_stratified_galerkin(iele_fl_smp_stack,             &
-     &      intg_point_t_evo, k2, temp_e, d_ele(1,iele_velo), xe,       &
-     &      ele1, jac1_3d_q, fem1_wk%sk6)
+     &      intg_point_t_evo, k2, fem1_wk%scalar_1, d_ele(1,iele_velo), &
+     &      xe, ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
@@ -96,11 +97,12 @@
 !
 ! --------- set position at each node in an element
         call position_2_each_element(k2, xe, radius_e)
-        call scalar_phys_2_each_element(k2, iphys%i_gref_t, temp_e)
+        call scalar_phys_2_each_element                                 &
+     &     (k2, iphys%i_gref_t, fem1_wk%scalar_1)
 !
         call fem_skv_stratified_upwind(iele_fl_smp_stack,               &
-     &      intg_point_t_evo, k2, temp_e, d_ele(1,iele_velo), xe,       &
-     &      ele1, jac1_3d_q, fem1_wk%sk6)
+     &      intg_point_t_evo, k2, fem1_wk%scalar_1, d_ele(1,iele_velo), &
+     &      xe, ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)

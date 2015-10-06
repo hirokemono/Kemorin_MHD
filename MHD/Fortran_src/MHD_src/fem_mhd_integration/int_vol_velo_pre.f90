@@ -142,7 +142,7 @@
           if (iflag_4_lorentz .eq. id_turn_ON                           &
      &         .and. iflag_4_rotate .eq. id_turn_ON) then
             call vector_cst_phys_2_each_ele(k2, iphys%i_vecp,           &
-     &          coef_lor, vect_1)
+     &          coef_lor, mhd_fem1_wk%vecp_1)
 !$omp parallel
             call add_const_to_vector_smp(np_smp, ele1%numele,           &
      &          ele1%istack_ele_smp, d_ele(1,iphys_ele%i_magne),        &
@@ -150,11 +150,11 @@
 !$omp end parallel
 !
             call fem_skv_lorentz_rot_galerkin(iele_fl_smp_stack,        &
-     &          num_int, k2, vect_1, fem1_wk%vector_1,                  &
+     &          num_int, k2, mhd_fem1_wk%vecp_1, fem1_wk%vector_1,      &
      &          ele1, jac1_3d_q, fem1_wk%sk6)
           else if (iflag_4_rotate .eq. id_turn_OFF) then
             call vector_cst_phys_2_each_ele(k2, iphys%i_magne,          &
-     &          coef_lor, magne_1)
+     &          coef_lor, mhd_fem1_wk%magne_1)
 !$omp parallel
             call add_const_to_vector_smp(np_smp, ele1%numele,           &
      &          ele1%istack_ele_smp, d_ele(1,iphys_ele%i_magne),        &
@@ -162,7 +162,7 @@
 !$omp end parallel
 !
             call fem_skv_vector_inertia_type(iele_fl_smp_stack,         &
-     &          num_int, k2, magne_1, fem1_wk%vector_1,                 &
+     &          num_int, k2, mhd_fem1_wk%magne_1, fem1_wk%vector_1,     &
      &          ele1, jac1_3d_q, fem1_wk%sk6)
           end if
 !
@@ -352,7 +352,7 @@
         if (iflag_4_lorentz .gt. id_turn_OFF) then
           if (iflag_4_rotate .eq. id_turn_ON) then
             call vector_cst_phys_2_each_ele(k2, iphys%i_vecp,           &
-     &          coef_lor, vect_1)
+     &          coef_lor, mhd_fem1_wk%vecp_1)
 !$omp parallel
             call add_const_to_vector_smp(np_smp, ele1%numele,           &
      &          ele1%istack_ele_smp, d_ele(1,iphys_ele%i_magne),        &
@@ -360,11 +360,11 @@
 !$omp end parallel
 !
             call fem_skv_lorentz_rot_galerkin(iele_fl_smp_stack,        &
-     &          num_int, k2, vect_1, fem1_wk%vector_1,                  &
+     &          num_int, k2, mhd_fem1_wk%vecp_1, fem1_wk%vector_1,      &
      &          ele1, jac1_3d_q, fem1_wk%sk6)
           else
             call vector_cst_phys_2_each_ele(k2, iphys%i_magne,          &
-     &          coef_lor, magne_1)
+     &          coef_lor, mhd_fem1_wk%magne_1)
 !$omp parallel
             call add_const_to_vector_smp(np_smp, ele1%numele,           &
      &          ele1%istack_ele_smp, d_ele(1,iphys_ele%i_magne),        &
@@ -372,7 +372,7 @@
 !$omp end parallel
 !
             call fem_skv_vector_inertia_upwind(iele_fl_smp_stack,       &
-     &          num_int, k2, magne_1, fem1_wk%vector_1,                 &
+     &          num_int, k2, mhd_fem1_wk%magne_1, fem1_wk%vector_1,     &
      &          d_ele(1,ie_upw), ele1, jac1_3d_q, fem1_wk%sk6)
           end if
 !

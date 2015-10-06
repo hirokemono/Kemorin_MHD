@@ -76,6 +76,8 @@
         real (kind=kreal), allocatable ::  velo_1(:,:)
 !>        assembled magnetic field in each element
         real (kind=kreal), allocatable ::  magne_1(:,:)
+!>        assembled vewctor potential in each element
+        real (kind=kreal), allocatable ::  vecp_1(:,:)
       end type work_MHD_fe_mat
 !
 !

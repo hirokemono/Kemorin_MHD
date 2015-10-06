@@ -40,9 +40,10 @@
       call reset_sk6(n_vector, fem1_wk%sk6)
 !
       do k2=1, ele1%nnod_4_ele
-        call vactor_phys_2_each_element(k2, iphys%i_vecp, vect_1)
+        call vactor_phys_2_each_element                                 &
+     &     (k2, iphys%i_vecp, fem1_wk%vector_1)
         call fem_skv_rot_rot_by_laplace(ele1%istack_ele_smp,            &
-     &      intg_point_poisson, k2, ele1, jac1_3d_q, vect_1,            &
+     &      intg_point_poisson, k2, ele1, jac1_3d_q, fem1_wk%vector_1,  &
      &      fem1_wk%sk6)
       end do
 !

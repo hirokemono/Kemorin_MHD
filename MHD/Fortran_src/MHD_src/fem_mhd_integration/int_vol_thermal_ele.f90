@@ -57,7 +57,7 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call scalar_cst_phys_2_each_ele(k2, iphys%i_temp,               &
-     &      coef_nega_t, temp_e)
+     &      coef_nega_t, fem1_wk%scalar_1)
 !
         if(iflag_SGS_heat .ne. id_SGS_none                              &
      &    .and. iflag_commute_heat .eq. id_SGS_commute_ON) then
@@ -66,17 +66,17 @@
      &        sgs_e, fem1_wk%vector_1)
           call fem_skv_scl_inertia_modsgs_pg(iele_fl_smp_stack,         &
      &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_hf),       &
-     &        ele1, jac1_3d_q, FEM1_elen, temp_e, sgs_e,                &
+     &        ele1, jac1_3d_q, FEM1_elen, fem1_wk%scalar_1, sgs_e,      &
      &        fem1_wk%vector_1, d_ele(1,iele_velo), fem1_wk%sk6)
         else if(iflag_SGS_heat .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_h_flux,       &
      &        coef_nega_t, sgs_e)
           call fem_skv_scl_inertia_sgs_pg(iele_fl_smp_stack,            &
      &        num_int, k2, ele1, jac1_3d_q,                             &
-     &        temp_e, sgs_e, d_ele(1,iele_velo), fem1_wk%sk6)
+     &        fem1_wk%scalar_1, sgs_e, d_ele(1,iele_velo), fem1_wk%sk6)
         else
           call fem_skv_scalar_inertia_type(iele_fl_smp_stack,           &
-     &        num_int, k2, temp_e, d_ele(1,iele_velo),                  &
+     &        num_int, k2, fem1_wk%scalar_1, d_ele(1,iele_velo),        &
      &        ele1, jac1_3d_q, fem1_wk%sk6)
         end if
       end do
@@ -111,7 +111,7 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call scalar_cst_phys_2_each_ele(k2, iphys%i_temp,               &
-     &      coef_nega_t, temp_e)
+     &      coef_nega_t, fem1_wk%scalar_1)
 !
         if(iflag_SGS_heat .ne. id_SGS_none                              &
      &    .and. iflag_commute_heat .eq. id_SGS_commute_ON) then
@@ -120,18 +120,18 @@
      &        sgs_e, fem1_wk%vector_1)
           call fem_skv_scl_inertia_msgs_upw(iele_fl_smp_stack,          &
      &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_hf),       &
-     &        ele1, jac1_3d_q, FEM1_elen, temp_e, sgs_e,                &
+     &        ele1, jac1_3d_q, FEM1_elen, fem1_wk%scalar_1, sgs_e,      &
      &        fem1_wk%vector_1, d_ele(1,iele_velo), d_ele(1,iele_velo), &
      &        fem1_wk%sk6)
         else if(iflag_SGS_heat .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_h_flux,       &
      &        coef_nega_t, sgs_e)
           call fem_skv_scl_inertia_sgs_upwind(iele_fl_smp_stack,        &
-     &       num_int, k2, ele1, jac1_3d_q, temp_e, sgs_e,               &
+     &       num_int, k2, ele1, jac1_3d_q, fem1_wk%scalar_1, sgs_e,     &
      &       d_ele(1,iele_velo), d_ele(1,iele_velo), fem1_wk%sk6)
         else
           call fem_skv_scalar_inertia_upwind(iele_fl_smp_stack,         &
-     &       num_int, k2, temp_e, d_ele(1,iele_velo),                   &
+     &       num_int, k2, fem1_wk%scalar_1, d_ele(1,iele_velo),         &
      &       d_ele(1,iele_velo), ele1, jac1_3d_q, fem1_wk%sk6)
         end if
       end do

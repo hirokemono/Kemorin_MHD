@@ -100,9 +100,10 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2=1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, iphys%i_magne, magne_1)
+        call vector_phys_2_each_element                                 &
+     &     (k2, iphys%i_magne, fem1_wk%vector_1)
         call fem_skv_lorentz_full_galerkin(iele_fsmp_stack, n_int, k2,  &
-     &      coef_lor, magne_1, d_ele(1,iele_magne), ex_magne,           &
+     &      coef_lor, fem1_wk%vector_1, d_ele(1,iele_magne), ex_magne,  &
      &      ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
@@ -137,7 +138,7 @@
 ! -------- loop for shape function for the phsical values
       do k2=1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(k2, iphys%i_vecp,               &
-     &      coef_lor, vect_1)
+     &      coef_lor, mhd_fem1_wk%vecp_1)
 !
 !$omp parallel
         call add_const_to_vector_smp(np_smp, ele1%numele,               &
@@ -146,8 +147,8 @@
 !$omp end parallel
 !
         call fem_skv_lorentz_rot_galerkin(iele_fsmp_stack,              &
-     &      n_int, k2, vect_1, fem1_wk%vector_1, ele1, jac1_3d_q,       &
-     &      fem1_wk%sk6)
+     &      n_int, k2, mhd_fem1_wk%vecp_1, fem1_wk%vector_1,            &
+     &      ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
@@ -217,9 +218,10 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, iphys%i_magne, magne_1)
+        call vector_phys_2_each_element                                 &
+     &     (k2, iphys%i_magne, fem1_wk%vector_1)
         call fem_skv_lorentz_full_upwind(iele_fsmp_stack,               &
-     &      n_int, k2, coef_lor, magne_1, d_ele(1,ie_upw),              &
+     &      n_int, k2, coef_lor, fem1_wk%vector_1, d_ele(1,ie_upw),     &
      &      d_ele(1,iele_magne), ex_magne, ele1, jac1_3d_q,             &
      &      fem1_wk%sk6)
       end do
