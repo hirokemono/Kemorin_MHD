@@ -6,21 +6,23 @@
 !      subroutine int_vol_div_SGS_vec_flux_type                         &
 !     &          (mesh, jac_3d, rhs_tbl, FEM_elens, nod_fld,            &
 !     &           iele_fsmp_stack, n_int, i_vector, i_scalar,           &
-!     &           i_SGS_flux, i_filter, ak_diff, coef, fem_wk, f_nl)
+!     &           i_SGS_flux, i_filter, ak_diff, coef, fem_wk,          &
+!     &           mhd_fem_wk, f_nl)
 !      subroutine int_vol_div_SGS_tsr_flux_type                         &
 !     &          (mesh, jac_3d, rhs_tbl, FEM_elens, nod_fld,            &
 !     &           iele_fsmp_stack, n_int, i_vect, i_SGS_flux, i_filter, &
-!     &           ak_diff, coef, fem_wk, f_nl)
+!     &           ak_diff, coef, fem_wk, mhd_fem_wk, f_nl)
 !
 !      subroutine int_vol_div_SGS_vflux_upw_type                        &
 !     &          (mesh, jac_3d, rhs_tbl, FEM_elens, nod_fld,            &
 !     &           iele_fsmp_stack, n_int, i_vector, i_scalar,           &
-!     &           i_SGS_flux, i_filter, ak_diff,                        &
-!     &           ncomp_ele, ie_upw, d_ele, coef, fem_wk, f_nl)
+!     &           i_SGS_flux, i_filter, ak_diff, ncomp_ele, ie_upw,     &
+!     &           d_ele, coef, fem_wk, mhd_fem_wk, f_nl)
 !      subroutine int_vol_div_SGS_tflux_upw_type                        &
 !     &          (mesh, jac_3d, rhs_tbl, FEM_elens, nod_fld,            &
 !     &           iele_fsmp_stack, n_int, i_vect, i_SGS_flux, i_filter, &
-!     &           ak_diff, ncomp_ele, ie_upw, d_ele, coef, fem_wk, f_nl)
+!     &           ak_diff, ncomp_ele, ie_upw, d_ele, coef,              &
+!     &           fem_wk, mhd_fem_wk, f_nl)
 !
       module int_vol_SGS_div_flux_type
 !
@@ -46,7 +48,8 @@
       subroutine int_vol_div_SGS_vec_flux_type                          &
      &          (mesh, jac_3d, rhs_tbl, FEM_elens, nod_fld,             &
      &           iele_fsmp_stack, n_int, i_vector, i_scalar,            &
-     &           i_SGS_flux, i_filter, ak_diff, coef, fem_wk, f_nl)
+     &           i_SGS_flux, i_filter, ak_diff, coef, fem_wk,           &
+     &           mhd_fem_wk, f_nl)
 !
       use m_int_vol_data
 !
@@ -70,6 +73,7 @@
       real(kind = kreal), intent(in) :: coef
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       integer(kind = kint) :: k2
@@ -80,11 +84,11 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
         call SGS_vector_cst_each_ele_type(mesh, nod_fld, k2,            &
-     &        i_vector, i_scalar, i_SGS_flux, coef,                     &
-     &        fem_wk%sgs_v, fem_wk%vector_1)
+     &      i_vector, i_scalar, i_SGS_flux, coef,                       &
+     &      mhd_fem_wk%sgs_v1, fem_wk%vector_1)
         call fem_skv_div_sgs_vector(iele_fsmp_stack,                    &
-     &        n_int, k2, i_filter, ak_diff, mesh%ele, jac_3d,           &
-     &        FEM_elens, fem_wk%sgs_v, fem_wk%vector_1, fem_wk%sk6)
+     &      n_int, k2, i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,  &
+     &      mhd_fem_wk%sgs_v1, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
@@ -96,7 +100,7 @@
       subroutine int_vol_div_SGS_tsr_flux_type                          &
      &          (mesh, jac_3d, rhs_tbl, FEM_elens, nod_fld,             &
      &           iele_fsmp_stack, n_int, i_vect, i_SGS_flux, i_filter,  &
-     &           ak_diff, coef, fem_wk, f_nl)
+     &           ak_diff, coef, fem_wk, mhd_fem_wk, f_nl)
 !
       use m_int_vol_data
 !
@@ -119,6 +123,7 @@
       real(kind = kreal), intent(in) :: coef
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       integer(kind = kint) :: k2
@@ -128,11 +133,11 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
-        call SGS_tensor_cst_each_ele_type(mesh, nod_fld, k2,            &
-     &        i_vect, i_SGS_flux, coef, fem_wk%sgs_t, fem_wk%tensor_1)
+        call SGS_tensor_cst_each_ele_type(mesh, nod_fld, k2, i_vect,    &
+     &      i_SGS_flux, coef, mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
         call fem_skv_div_sgs_tensor(iele_fsmp_stack,                    &
-     &        n_int, k2, i_filter, ak_diff, mesh%ele, jac_3d,           &
-     &        FEM_elens, fem_wk%sgs_t, fem_wk%tensor_1, fem_wk%sk6)
+     &      n_int, k2, i_filter, ak_diff, mesh%ele, jac_3d,             &
+     &      FEM_elens, mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
@@ -145,8 +150,8 @@
       subroutine int_vol_div_SGS_vflux_upw_type                         &
      &          (mesh, jac_3d, rhs_tbl, FEM_elens, nod_fld,             &
      &           iele_fsmp_stack, n_int, i_vector, i_scalar,            &
-     &           i_SGS_flux, i_filter, ak_diff,                         &
-     &           ncomp_ele, ie_upw, d_ele, coef, fem_wk, f_nl)
+     &           i_SGS_flux, i_filter, ak_diff, ncomp_ele, ie_upw,      &
+     &           d_ele, coef, fem_wk, mhd_fem_wk, f_nl)
 !
       use m_int_vol_data
 !
@@ -173,6 +178,7 @@
       real(kind = kreal), intent(in) :: coef
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       integer(kind = kint) :: k2
@@ -183,11 +189,12 @@
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
         call SGS_vector_cst_each_ele_type(mesh, nod_fld, k2,            &
-     &        i_vector, i_scalar, i_SGS_flux, coef,                     &
-     &        fem_wk%sgs_v, fem_wk%vector_1)
+     &      i_vector, i_scalar, i_SGS_flux, coef,                       &
+     &      mhd_fem_wk%sgs_v1, fem_wk%vector_1)
         call fem_skv_div_sgs_vector_upwind(iele_fsmp_stack,             &
      &      n_int, k2, i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,  &
-     &      d_ele(1,ie_upw), fem_wk%sgs_v, fem_wk%vector_1, fem_wk%sk6)
+     &      d_ele(1,ie_upw), mhd_fem_wk%sgs_v1, fem_wk%vector_1,        &
+     &      fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
@@ -199,7 +206,8 @@
       subroutine int_vol_div_SGS_tflux_upw_type                         &
      &          (mesh, jac_3d, rhs_tbl, FEM_elens, nod_fld,             &
      &           iele_fsmp_stack, n_int, i_vect, i_SGS_flux, i_filter,  &
-     &           ak_diff, ncomp_ele, ie_upw, d_ele, coef, fem_wk, f_nl)
+     &           ak_diff, ncomp_ele, ie_upw, d_ele, coef,               &
+     &           fem_wk, mhd_fem_wk, f_nl)
 !
       use m_int_vol_data
 !
@@ -226,6 +234,7 @@
       real(kind = kreal), intent(in) :: coef
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       integer(kind = kint) :: k2
@@ -235,11 +244,12 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
-        call SGS_tensor_cst_each_ele_type(mesh, nod_fld, k2,            &
-     &        i_vect, i_SGS_flux, coef, fem_wk%sgs_t, fem_wk%tensor_1)
+        call SGS_tensor_cst_each_ele_type(mesh, nod_fld, k2, i_vect,    &
+     &      i_SGS_flux, coef, mhd_fem_wk%sgs_t1, fem_wk%tensor_1)
         call fem_skv_div_sgs_tensor_upwind(iele_fsmp_stack,             &
      &      n_int, k2, i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,  &
-     &      d_ele(1,ie_upw), fem_wk%sgs_t, fem_wk%tensor_1, fem_wk%sk6)
+     &      d_ele(1,ie_upw), mhd_fem_wk%sgs_t1, fem_wk%tensor_1,        &
+     &      fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)

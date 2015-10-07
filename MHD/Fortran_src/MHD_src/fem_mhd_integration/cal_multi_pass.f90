@@ -25,6 +25,7 @@
       use m_control_parameter
       use m_geometry_data
       use m_phys_constants
+      use m_sorted_node
       use m_finite_element_matrix
 !
       use cal_ff_smp_to_ffs
@@ -61,7 +62,7 @@
 !
       end if
 !
-      call set_ff_nl_smp_2_ff(n_vector)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
 !
       end subroutine cal_t_evo_4_vector
 !
@@ -88,7 +89,7 @@
 !
       end if
 !
-      call set_ff_nl_smp_2_ff(n_scalar)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_scalar)
 !
       end subroutine cal_t_evo_4_scalar
 !
@@ -116,7 +117,7 @@
 !
       end if
 !
-      call set_ff_nl_smp_2_ff(n_vector)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
 !
       end subroutine cal_t_evo_4_vector_fl
 !
@@ -143,7 +144,7 @@
 !
       end if
 !
-      call set_ff_nl_smp_2_ff(n_scalar)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_scalar)
 !
       end subroutine cal_t_evo_4_scalar_fl
 !
@@ -169,7 +170,7 @@
 !
       end if
 !
-      call set_ff_nl_smp_2_ff(n_vector)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
 !
       end subroutine cal_t_evo_4_vector_cd
 !
@@ -194,7 +195,7 @@
 !
       end if
 !
-      call set_ff_nl_smp_2_ff(n_scalar)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_scalar)
 !
       end subroutine cal_t_evo_4_scalar_cd
 !
@@ -212,7 +213,7 @@
       end if
 !
        ff = 0.0d0
-       call cal_ff_smp_2_ff(n_vector,ff_nl_smp,ff)
+       call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector,ff_nl_smp,ff)
 !
       end subroutine cal_multi_pass_4_vector_ff
 !
@@ -229,7 +230,7 @@
       end if
 !
        ff = 0.0d0
-       call cal_ff_smp_2_ff(n_scalar,ff_nl_smp,ff)
+       call cal_ff_smp_2_ff(node1, rhs_tbl1, n_scalar, ff_nl_smp, ff)
 !
       end subroutine cal_multi_pass_4_scalar_ff
 !
@@ -247,7 +248,7 @@
       end if
 !
       ff = 0.0d0
-      call cal_ff_smp_2_ff(n_vector,ff_nl_smp,ff)
+      call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector, ff_nl_smp, ff)
 !
       end subroutine cal_multi_pass_4_vector_fl
 !
@@ -264,7 +265,7 @@
       end if
 !
       ff = 0.0d0
-      call cal_ff_smp_2_ff(n_scalar,ff_nl_smp,ff)
+      call cal_ff_smp_2_ff(node1, rhs_tbl1, n_scalar, ff_nl_smp, ff)
 !
       end subroutine cal_multi_pass_4_scalar_fl
 !
@@ -282,7 +283,7 @@
       end if
 !
       ff = 0.0d0
-      call cal_ff_smp_2_ff(n_vector,ff_nl_smp,ff)
+      call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector, ff_nl_smp, ff)
 !
       end subroutine cal_multi_pass_4_vector_cd
 !
@@ -299,7 +300,7 @@
       end if
 !
       ff = 0.0d0
-      call cal_ff_smp_2_ff(n_scalar,ff_nl_smp,ff)
+      call cal_ff_smp_2_ff(node1, rhs_tbl1, n_scalar, ff_nl_smp, ff)
 !
       end subroutine cal_multi_pass_4_scalar_cd
 !
@@ -317,7 +318,7 @@
       end if
 !
       ff = 0.0d0
-      call cal_ff_smp_2_ff(n_vector,ff_nl_smp,ff)
+      call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector, ff_nl_smp, ff)
 !
       end subroutine cal_multi_pass_4_vector_ins
 !
@@ -334,7 +335,7 @@
       end if
 !
       ff = 0.0d0
-      call cal_ff_smp_2_ff(n_scalar,ff_nl_smp,ff)
+      call cal_ff_smp_2_ff(node1, rhs_tbl1, n_scalar, ff_nl_smp, ff)
 !
       end subroutine cal_multi_pass_4_scalar_ins
 !

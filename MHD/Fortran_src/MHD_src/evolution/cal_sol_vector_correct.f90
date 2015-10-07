@@ -192,6 +192,8 @@
      &        (inter_smp_stack, coef_field)
 !
       use m_t_int_parameter
+      use m_geometry_data
+      use m_sorted_node
 !
       use cal_ff_smp_to_ffs
 !
@@ -216,7 +218,7 @@
 !$omp end parallel do
 !
       if (coef_field .gt. 0.0d0) then
-        call cal_ff_smp_2_ff(n_vector, ff_m_smp, ff)
+        call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector, ff_m_smp, ff)
       end if
 !
       end subroutine cal_sol_vect_co_crank_consist

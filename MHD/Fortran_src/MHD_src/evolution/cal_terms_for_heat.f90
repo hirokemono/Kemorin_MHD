@@ -84,7 +84,7 @@
 !
       call int_surf_temp_monitor(iphys%i_t_diffuse)
 !
-      call set_ff_nl_smp_2_ff(n_scalar)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_scalar)
 !
       call set_boundary_ene_4_rhs
 !

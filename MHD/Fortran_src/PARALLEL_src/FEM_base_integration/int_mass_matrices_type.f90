@@ -106,7 +106,7 @@
 !
       use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp_type
-      use cal_ff_smp_to_ffs_type
+      use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: num_int
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -144,7 +144,7 @@
 !
       use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp_type
-      use cal_ff_smp_to_ffs_type
+      use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: num_int
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -167,7 +167,8 @@
      &    mesh%ele, jac_3d, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, rhs_l)
-      call cal_ff_smp_2_ml_type(mesh, rhs_tbl, rhs_l, m_lump)
+      call cal_ff_smp_2_ml_type                                         &
+     &   (mesh%node, rhs_tbl, rhs_l%ff_smp, m_lump)
 !
 !      call check_mass_martix
 !
@@ -180,7 +181,7 @@
 !
       use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp_type
-      use cal_ff_smp_to_ffs_type
+      use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: num_int
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -204,7 +205,8 @@
      &    fem_wk%sk6, fem_wk%me_diag)
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, rhs_l)
-      call cal_ff_smp_2_ml_type(mesh, rhs_tbl, rhs_l, m_lump)
+      call cal_ff_smp_2_ml_type                                         &
+     &   (mesh%node, rhs_tbl, rhs_l%ff_smp, m_lump)
 !
 !      call check_mass_martix_part
 !

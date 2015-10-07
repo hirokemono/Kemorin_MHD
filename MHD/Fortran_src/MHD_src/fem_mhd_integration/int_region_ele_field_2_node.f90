@@ -39,8 +39,8 @@
 !
 !
       call int_area_ele_scalar_2_node(iele_fl_smp_stack, scalar_ele)
-      call cal_ff_smp_2_scalar                                          &
-     &   (ff_smp, ml_fl, n_scalar, ione, scalar_nod)
+      call cal_ff_smp_2_scalar(node1, rhs_tbl1,                         &
+     &    ff_smp, ml_fl, n_scalar, ione, scalar_nod)
 !
       end subroutine int_fl_ele_scalar_2_node
 !
@@ -55,8 +55,8 @@
 !
 !
       call int_area_ele_vector_2_node(iele_fl_smp_stack, vector_ele)
-      call cal_ff_smp_2_vector                                          &
-     &   (ff_smp, ml_fl, n_vector, ione, vector_nod)
+      call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
+     &    ff_smp, ml_fl, n_vector, ione, vector_nod)
 !
       end subroutine int_fl_ele_vector_2_node
 !
@@ -70,8 +70,8 @@
 !
 !
       call int_area_ele_scalar_2_node(iele_cd_smp_stack, scalar_ele)
-      call cal_ff_smp_2_scalar                                          &
-     &   (ff_smp, ml_cd, n_scalar, ione, scalar_nod)
+      call cal_ff_smp_2_scalar(node1, rhs_tbl1,                         &
+     &    ff_smp, ml_cd, n_scalar, ione, scalar_nod)
 !
       end subroutine int_cd_ele_scalar_2_node
 !
@@ -86,8 +86,8 @@
 !
 !
       call int_area_ele_vector_2_node(iele_cd_smp_stack, vector_ele)
-      call cal_ff_smp_2_vector                                          &
-     &   (ff_smp, ml_cd, n_vector, ione, vector_nod)
+      call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
+     &    ff_smp, ml_cd, n_vector, ione, vector_nod)
 !
       end subroutine int_cd_ele_vector_2_node
 !
@@ -101,8 +101,8 @@
 !
 !
       call int_area_ele_scalar_2_node(iele_ins_smp_stack, scalar_ele)
-      call cal_ff_smp_2_scalar                                          &
-     &   (ff_smp, ml_ins, n_scalar, ione, scalar_nod)
+      call cal_ff_smp_2_scalar(node1, rhs_tbl1,                         &
+     &    ff_smp, ml_ins, n_scalar, ione, scalar_nod)
 !
       end subroutine int_ins_ele_scalar_2_node
 !
@@ -117,8 +117,8 @@
 !
 !
       call int_area_ele_vector_2_node(iele_ins_smp_stack, vector_ele)
-      call cal_ff_smp_2_vector                                          &
-     &   (ff_smp, ml_ins, n_vector, ione, vector_nod)
+      call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
+     &    ff_smp, ml_ins, n_vector, ione, vector_nod)
 !
       end subroutine int_ins_ele_vector_2_node
 !

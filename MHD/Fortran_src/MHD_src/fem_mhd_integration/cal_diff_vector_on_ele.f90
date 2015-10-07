@@ -44,12 +44,12 @@
         call int_diff_vector_on_ele(node1, ele1, jac1_3d_q,             &
      &      iele_fsmp_stack, intg_point_t_evo,                          &
      &      nod_fld1%ntot_phys, i_fld, nod_fld1%d_fld,                  &
-     &      num_dvxi, i_diff, dvx)
+     &      mhd_fem1_wk%n_dvx, i_diff, mhd_fem1_wk%dvx)
       else
         call int_diff_vector_on_ele(node1, ele1, jac1_3d_l,             &
      &      iele_fsmp_stack, intg_point_t_evo,                          &
      &      nod_fld1%ntot_phys, i_fld, nod_fld1%d_fld,                  &
-     &      num_dvxi, i_diff, dvx)
+     &      mhd_fem1_wk%n_dvx, i_diff, mhd_fem1_wk%dvx)
       end if
 !
       end subroutine sel_int_diff_vector_on_ele
@@ -69,12 +69,12 @@
         call int_diff_scalar_on_ele(node1, ele1, jac1_3d_q,             &
      &      iele_fsmp_stack, intg_point_t_evo,                          &
      &      nod_fld1%ntot_phys, i_fld, nod_fld1%d_fld,                  &
-     &      num_dvxi, i_diff, dvx)
+     &      mhd_fem1_wk%n_dvx, i_diff, mhd_fem1_wk%dvx)
       else
         call int_diff_scalar_on_ele(node1, ele1, jac1_3d_l,             &
      &      iele_fsmp_stack, intg_point_t_evo,                          &
      &      nod_fld1%ntot_phys, i_fld, nod_fld1%d_fld,                  &
-     &      num_dvxi, i_diff, dvx)
+     &      mhd_fem1_wk%n_dvx, i_diff, mhd_fem1_wk%dvx)
       end if
 !
       end subroutine sel_int_diff_scalar_on_ele

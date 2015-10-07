@@ -170,7 +170,7 @@
        end if
 !
        call int_vol_initial_magne
-       call set_ff_nl_smp_2_ff(n_vector)
+       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
 !
        if (iflag_debug.eq.1) write(*,*) 'bc_4_magne_rhs'
        call set_boundary_magne_4_rhs

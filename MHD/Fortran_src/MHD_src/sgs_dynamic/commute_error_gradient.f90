@@ -57,7 +57,7 @@
       call int_surf_grad_commute_sgs(sf_grp1, intg_point_t_evo,         &
      &    ngrp_sf, id_grp_sf, i_filter, i_scalar)
 !
-      call set_ff_nl_smp_2_ff(n_vector)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    ff_nl, ml, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
@@ -85,7 +85,7 @@
       call int_surf_grad_commute_sgs(sf_grp1, intg_point_t_evo,         &
      &    ngrp_sf, id_grp_sf, i_filter, i_scalar)
 !
-      call set_ff_nl_smp_2_ff(n_vector)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    ff_nl, ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
@@ -113,7 +113,7 @@
       call int_surf_grad_commute_sgs(sf_grp1, intg_point_t_evo,         &
      &    ngrp_sf, id_grp_sf, i_filter, i_scalar)
 !
-      call set_ff_nl_smp_2_ff(n_vector)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    ff_nl, ml_cd, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !

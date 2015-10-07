@@ -60,7 +60,7 @@
      &     nele_4_filter, iele_4_filter, num_int_points)
       end if
 !
-      call cal_ff_smp_2_ml(ml, ml_o, ff_smp)
+      call cal_ff_smp_2_ml(node1, rhs_tbl1, ml, ml_o, ff_smp)
 !
       end subroutine int_grped_mass_matrix_filter
 !

@@ -33,6 +33,7 @@
 !
       use m_geometry_data
       use m_node_phys_data
+      use m_sorted_node
 !
       integer(kind = kint), intent(in) :: iflag_4_supg
       integer(kind = kint), intent(in) :: i_scalar, i_res
@@ -44,7 +45,7 @@
       call choose_int_vol_grads(iflag_4_supg,                           &
      &     ele1%istack_ele_smp, i_scalar)
 !
-      call set_ff_nl_smp_2_ff(n_vector)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    ff_nl, ml, nod_fld1%ntot_phys, i_res, nod_fld1%d_fld)
 !
@@ -61,6 +62,7 @@
       use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_data
+      use m_sorted_node
 !
       integer(kind = kint), intent(in) :: iflag_4_supg
       integer(kind = kint), intent(in) :: i_scalar, i_res
@@ -71,7 +73,7 @@
       call choose_int_vol_grads(iflag_4_supg, iele_fl_smp_stack,        &
      &     i_scalar)
 !
-      call set_ff_nl_smp_2_ff(n_vector)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    ff_nl, ml_fl, nod_fld1%ntot_phys, i_res, nod_fld1%d_fld)
 !
@@ -88,6 +90,7 @@
       use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_data
+      use m_sorted_node
 !
       integer(kind = kint), intent(in) :: iflag_4_supg
       integer(kind = kint), intent(in) :: i_scalar, i_res
@@ -98,7 +101,7 @@
       call choose_int_vol_grads(iflag_4_supg, iele_cd_smp_stack,        &
      &     i_scalar)
 !
-      call set_ff_nl_smp_2_ff(n_vector)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    ff_nl, ml_cd, nod_fld1%ntot_phys, i_res, nod_fld1%d_fld)
 !

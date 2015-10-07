@@ -163,7 +163,7 @@
 !
       use t_finite_element_mat
       use fem_skv_mass_mat_type
-      use cal_ff_smp_to_ffs_type
+      use cal_ff_smp_to_ffs
       use cal_skv_to_ff_smp_type
 !
       type(mesh_geometry), intent(in) ::          mesh
@@ -186,7 +186,8 @@
      &    mesh%ele, fem_wk%sk6, fem_wk%me_diag)
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, rhs_l)
-      call cal_ff_smp_2_ml_type(mesh, rhs_tbl, rhs_l, m_lump)
+      call cal_ff_smp_2_ml_type                                         &
+     &   (mesh%node, rhs_tbl, rhs_l%ff_smp, m_lump)
 !
 !      call check_mass_martix
 !

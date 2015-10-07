@@ -145,7 +145,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_initial_vect_p'
       call int_vol_initial_vect_p
-      call set_ff_nl_smp_2_ff(n_vector)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_vect_p_4_rhs'
       call set_boundary_vect_p_4_rhs

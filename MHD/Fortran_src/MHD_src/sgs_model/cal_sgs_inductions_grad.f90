@@ -52,7 +52,7 @@
       call reset_ff_smp
 !
       call sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,           &
-     &    ifield_v, ifield_b, fem1_wk)
+     &    ifield_v, ifield_b, fem1_wk, mhd_fem1_wk)
 !
 !     set elemental model coefficients
 !
@@ -61,8 +61,8 @@
 !
       call add3_skv_coef_to_ff_v_smp_1st                                &
      &   (coef_induct, ff_smp, fem1_wk%sk6)
-      call cal_ff_smp_2_vector                                          &
-     &   (ff_smp, ml_cd, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
+      call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
+     &    ff_smp, ml_cd, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
 !
@@ -96,12 +96,12 @@
       call reset_ff_smp
 !
       call sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,           &
-     &    ifield_v, ifield_b, fem1_wk)
+     &    ifield_v, ifield_b, fem1_wk, mhd_fem1_wk)
 !
       call add3_skv_coef_to_ff_v_smp_1st                                &
      &   (coef_induct, ff_smp, fem1_wk%sk6)
-      call cal_ff_smp_2_vector                                          &
-     &   (ff_smp, ml_cd, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
+      call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
+     &    ff_smp, ml_cd, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
 !

@@ -11,15 +11,11 @@
 !     &          scalar_ele)
 !      subroutine int_area_ele_vector_2_node(iele_fsmp_stack,           &
 !     &          vector_nod, vector_ele)
-!      subroutine int_area_ele_sym_tensor_2_node(iele_fsmp_stack,       &
-!     &          tensor_ele)
 !
 !      subroutine int_grp_ele_scalar_2_node(numele, iele_fsmp_stack,    &
 !     &          nele_grp, iele_grp, scalar_ele)
 !      subroutine int_grp_ele_vector_2_node(numele, iele_fsmp_stack,    &
 !     &          nele_grp, iele_grp, vector_ele)
-!      subroutine int_grp_ele_sym_tensor_2_node(numele, iele_fsmp_stack,&
-!     &          nele_grp, iele_grp, tensor_ele)
 !
       module int_element_field_2_node
 !
@@ -38,6 +34,8 @@
 !
       implicit none
 !
+      private :: int_grp_ele_vector_2_node
+!
 !-----------------------------------------------------------------------
 !
       contains
@@ -53,7 +51,8 @@
 !
 !
       call int_area_ele_scalar_2_node(ele1%istack_ele_smp, scalar_ele)
-      call cal_ff_smp_2_scalar(ff_smp, ml, n_scalar, ione, scalar_nod)
+      call cal_ff_smp_2_scalar(node1, rhs_tbl1, ff_smp, ml,             &
+     &    n_scalar, ione, scalar_nod)
 !
       end subroutine cal_ele_scalar_2_node
 !
@@ -70,7 +69,8 @@
 !
 !
       call int_area_ele_vector_2_node(ele1%istack_ele_smp, vector_ele)
-      call cal_ff_smp_2_vector(ff_smp, ml, n_vector, ione, vector_nod)
+      call cal_ff_smp_2_vector(node1, rhs_tbl1, ff_smp, ml,             &
+     &    n_vector, ione, vector_nod)
 !
       end subroutine cal_ele_vector_2_node
 !
@@ -86,10 +86,8 @@
      &                   :: tensor_nod(node1%numnod,n_sym_tensor)
 !
 !
-      call int_area_ele_sym_tensor_2_node                               &
-     &   (ele1%istack_ele_smp, tensor_ele)
-      call cal_ff_smp_2_tensor                                          &
-     &   (ff_t_smp, ml, n_sym_tensor, ione, tensor_nod)
+      call cal_ele_vector_2_node(tensor_nod(1,1), tensor_ele(1,1))
+      call cal_ele_vector_2_node(tensor_nod(1,4), tensor_ele(1,4))
 !
       end subroutine cal_ele_sym_tensor_2_node
 !
@@ -145,32 +143,6 @@
       call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_area_ele_vector_2_node
-!
-!-----------------------------------------------------------------------
-!
-      subroutine int_area_ele_sym_tensor_2_node(iele_fsmp_stack,        &
-     &          tensor_ele)
-!
-      integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real(kind = kreal), intent(in) :: tensor_ele(ele1%numele,6)
-!
-!
-      ff_t_smp = 0.0d0
-      call reset_sk6(n_sym_tensor, fem1_wk%sk6)
-!
-      if (ele1%nnod_4_ele .eq. num_t_linear) then
-        call fem_skv_tensor_on_ele_type(iele_fsmp_stack,                &
-     &      max_int_point, ele1, jac1_3d_q, tensor_ele, fem1_wk%sk6)
-      else
-        call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack,            &
-     &      max_int_point, ele1, jac1_3d_q, fem1_wk%sk6)
-        call fem_skv_tensor_on_ele_HRZ_type(iele_fsmp_stack,            &
-     &      fem1_wk%me_diag, ele1, tensor_ele, fem1_wk%sk6)
-      end if
-!
-      call add6_skv_to_ff_t_smp_1st(ff_t_smp, fem1_wk%sk6)
-!
-      end subroutine int_area_ele_sym_tensor_2_node
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -234,37 +206,6 @@
       call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
 !
       end subroutine int_grp_ele_vector_2_node
-!
-!-----------------------------------------------------------------------
-!
-      subroutine int_grp_ele_sym_tensor_2_node(numele, iele_fsmp_stack, &
-     &          nele_grp, iele_grp, tensor_ele)
-!
-      integer (kind=kint), intent(in) :: numele, nele_grp
-      integer (kind=kint), intent(in) :: iele_grp(nele_grp)
-      integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real(kind = kreal), intent(in) :: tensor_ele(numele,6)
-!
-!
-      ff_t_smp = 0.0d0
-      call reset_sk6(n_sym_tensor, fem1_wk%sk6)
-!
-      if (ele1%nnod_4_ele .eq. num_t_linear) then
-        call fem_skv_tensor_on_ele_grp_type(iele_fsmp_stack,            &
-     &      nele_grp, iele_grp, max_int_point, ele1, jac1_3d_q,         &
-     &      tensor_ele, fem1_wk%sk6)
-      else
-        call fem_grp_skv_mass_mat_diag_HRZ_t(iele_fsmp_stack,           &
-     &      nele_grp, iele_grp, max_int_point, ele1, jac1_3d_q,         &
-     &      fem1_wk%sk6)
-        call fem_skv_tensor_on_egrp_HRZ_type(iele_fsmp_stack,           &
-     &      nele_grp, iele_grp, fem1_wk%me_diag, ele1, tensor_ele,      &
-     &      fem1_wk%sk6)
-      end if
-!
-      call add6_skv_to_ff_t_smp_1st(ff_t_smp, fem1_wk%sk6)
-!
-      end subroutine int_grp_ele_sym_tensor_2_node
 !
 !-----------------------------------------------------------------------
 !

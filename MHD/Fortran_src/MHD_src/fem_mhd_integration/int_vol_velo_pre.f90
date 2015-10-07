@@ -84,7 +84,7 @@
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
      &        .and. iflag_commute_inertia .eq. id_SGS_commute_ON) then
               call SGS_tensor_cst_each_ele_1st(k2, iphys%i_velo,        &
-     &            iphys%i_SGS_m_flux, coef_nega_v, sgs_t,               &
+     &            iphys%i_SGS_m_flux, coef_nega_v, mhd_fem1_wk%sgs_t1,  &
      &            fem1_wk%tensor_1)
 !
               call fem_skv_rot_inertia_type                             &
@@ -94,13 +94,14 @@
               call fem_skv_div_sgs_tensor                               &
      &           (iele_fl_smp_stack, num_int, k2, ifilter_final,        &
      &            ak_diff(1,iak_diff_mf), ele1, jac1_3d_q, FEM1_elen,   &
-     &            sgs_t, fem1_wk%tensor_1, fem1_wk%sk6)
+     &            mhd_fem1_wk%sgs_t1, fem1_wk%tensor_1, fem1_wk%sk6)
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
-     &            coef_nega_v, sgs_t)
+     &            coef_nega_v, mhd_fem1_wk%sgs_t1)
               call fem_skv_inertia_rot_sgs_pg(iele_fl_smp_stack,        &
      &            num_int, k2, ele1, jac1_3d_q, mhd_fem1_wk%velo_1,     &
-     &            sgs_t, d_ele(1,iphys_ele%i_vort), fem1_wk%sk6)
+     &            mhd_fem1_wk%sgs_t1, d_ele(1,iphys_ele%i_vort),        &
+     &            fem1_wk%sk6)
             else
               call fem_skv_rot_inertia_type                             &
      &           (iele_fl_smp_stack, num_int, k2,                       &
@@ -114,19 +115,20 @@
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
      &        .and. iflag_commute_inertia .eq. id_SGS_commute_ON) then
               call SGS_tensor_cst_each_ele_1st(k2, iphys%i_velo,        &
-     &            iphys%i_SGS_m_flux, coef_nega_v, sgs_t,               &
+     &            iphys%i_SGS_m_flux, coef_nega_v, mhd_fem1_wk%sgs_t1,  &
      &            fem1_wk%tensor_1)
               call fem_skv_vec_inertia_modsgs_pg(iele_fl_smp_stack,     &
      &            num_int, k2, ifilter_final, ak_diff(1,iak_diff_mf),   &
      &            ele1, jac1_3d_q, FEM1_elen, mhd_fem1_wk%velo_1,       &
-     &            sgs_t, fem1_wk%tensor_1, d_ele(1,iphys_ele%i_velo),   &
-     &            fem1_wk%sk6)
+     &            mhd_fem1_wk%sgs_t1, fem1_wk%tensor_1,                 &
+     &            d_ele(1,iphys_ele%i_velo), fem1_wk%sk6)
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
-     &              coef_nega_v, sgs_t)
+     &              coef_nega_v, mhd_fem1_wk%sgs_t1)
               call fem_skv_vec_inertia_sgs_pg(iele_fl_smp_stack,        &
      &            num_int, k2, ele1, jac1_3d_q, mhd_fem1_wk%velo_1,     &
-     &            sgs_t, d_ele(1,iphys_ele%i_velo), fem1_wk%sk6)
+     &            mhd_fem1_wk%sgs_t1, d_ele(1,iphys_ele%i_velo),        &
+     &            fem1_wk%sk6)
             else
               call fem_skv_vector_inertia_type                          &
      &           (iele_fl_smp_stack, num_int, k2,                       &
@@ -171,12 +173,12 @@
           if ( iflag_SGS_lorentz .ne. id_SGS_none) then
             if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
               call SGS_tensor_cst_each_ele_1st(k2, iphys%i_magne,       &
-     &            iphys%i_SGS_maxwell, coef_lor, sgs_t,                 &
+     &            iphys%i_SGS_maxwell, coef_lor, mhd_fem1_wk%sgs_t1,    &
      &            fem1_wk%tensor_1)
               call fem_skv_div_sgs_tensor                               &
      &            (iele_fl_smp_stack, num_int, k2, ifilter_final,       &
      &             ak_diff(1,iak_diff_lor), ele1, jac1_3d_q, FEM1_elen, &
-     &             sgs_t, fem1_wk%tensor_1, fem1_wk%sk6)
+     &             mhd_fem1_wk%sgs_t1, fem1_wk%tensor_1, fem1_wk%sk6)
             else
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_maxwell,  &
      &             coef_lor, fem1_wk%tensor_1)
@@ -272,7 +274,7 @@
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
      &        .and. iflag_commute_inertia .eq. id_SGS_commute_ON) then
               call SGS_tensor_cst_each_ele_1st(k2, iphys%i_velo,        &
-     &            iphys%i_SGS_m_flux, coef_nega_v, sgs_t,               &
+     &            iphys%i_SGS_m_flux, coef_nega_v, mhd_fem1_wk%sgs_t1,  &
      &            fem1_wk%tensor_1)
 !
               call fem_skv_rot_inertia_upwind                           &
@@ -282,14 +284,15 @@
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (iele_fl_smp_stack, num_int, k2, ifilter_final,        &
      &            ak_diff(1,iak_diff_mf), ele1, jac1_3d_q, FEM1_elen,   &
-     &            d_ele(1,ie_upw), sgs_t,                               &
+     &            d_ele(1,ie_upw), mhd_fem1_wk%sgs_t1,                  &
      &            fem1_wk%tensor_1, fem1_wk%sk6)
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
-     &              coef_nega_v, sgs_t)
+     &              coef_nega_v, mhd_fem1_wk%sgs_t1)
               call fem_skv_inertia_rot_sgs_upwind(iele_fl_smp_stack,    &
      &            num_int, k2, ele1, jac1_3d_q, mhd_fem1_wk%velo_1,     &
-     &            sgs_t, d_ele(1,ie_upw), d_ele(1,ie_upw), fem1_wk%sk6)
+     &            mhd_fem1_wk%sgs_t1, d_ele(1,ie_upw), d_ele(1,ie_upw), &
+     &            fem1_wk%sk6)
             else
               call fem_skv_rot_inertia_upwind                           &
      &           (iele_fl_smp_stack, num_int, k2,                       &
@@ -303,20 +306,21 @@
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
      &        .and. iflag_commute_inertia .eq. id_SGS_commute_ON) then
               call SGS_tensor_cst_each_ele_1st(k2, iphys%i_velo,        &
-     &            iphys%i_SGS_m_flux, coef_nega_v, sgs_t,               &
+     &            iphys%i_SGS_m_flux, coef_nega_v, mhd_fem1_wk%sgs_t1,  &
      &            fem1_wk%tensor_1)
               call fem_skv_vec_inertia_msgs_upw(iele_fl_smp_stack,      &
      &            num_int, k2, ifilter_final, ak_diff(1,iak_diff_mf),   &
      &            ele1, jac1_3d_q, FEM1_elen, mhd_fem1_wk%velo_1,       &
-     &            sgs_t, fem1_wk%tensor_1, d_ele(1,iphys_ele%i_velo),   &
-     &            d_ele(1,ie_upw), fem1_wk%sk6)
+     &            mhd_fem1_wk%sgs_t1, fem1_wk%tensor_1,                 &
+     &            d_ele(1,iphys_ele%i_velo), d_ele(1,ie_upw),           &
+     &            fem1_wk%sk6)
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
-     &              coef_nega_v, sgs_t)
+     &              coef_nega_v, mhd_fem1_wk%sgs_t1)
               call fem_skv_vcl_inertia_sgs_upwind(iele_fl_smp_stack,    &
      &            num_int, k2, ele1, jac1_3d_q, mhd_fem1_wk%velo_1,     &
-     &            sgs_t, d_ele(1,iphys_ele%i_velo), d_ele(1,ie_upw),    &
-     &            fem1_wk%sk6)
+     &            mhd_fem1_wk%sgs_t1, d_ele(1,iphys_ele%i_velo),        &
+     &            d_ele(1,ie_upw), fem1_wk%sk6)
             else
               call fem_skv_vector_inertia_upwind                        &
      &           (iele_fl_smp_stack, num_int, k2,                       &
@@ -330,12 +334,12 @@
           if ( iflag_SGS_inertia .ne. id_SGS_none) then
             if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
               call SGS_tensor_cst_each_ele_1st(k2, iphys%i_velo,        &
-     &            iphys%i_SGS_m_flux, coef_nega_v, sgs_t,               &
+     &            iphys%i_SGS_m_flux, coef_nega_v, mhd_fem1_wk%sgs_t1,  &
      &            fem1_wk%tensor_1)
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (iele_fl_smp_stack, num_int, k2, ifilter_final,        &
      &            ak_diff(1,iak_diff_mf), ele1, jac1_3d_q, FEM1_elen,   &
-     &            d_ele(1,ie_upw), sgs_t,                               &
+     &            d_ele(1,ie_upw), mhd_fem1_wk%sgs_t1,                  &
      &            fem1_wk%tensor_1, fem1_wk%sk6)
             else
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_m_flux,   &
@@ -381,12 +385,12 @@
           if ( iflag_SGS_lorentz .ne. id_SGS_none) then
             if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
               call SGS_tensor_cst_each_ele_1st(k2, iphys%i_magne,       &
-     &            iphys%i_SGS_maxwell, coef_lor, sgs_t,                 &
+     &            iphys%i_SGS_maxwell, coef_lor, mhd_fem1_wk%sgs_t1,    &
      &            fem1_wk%tensor_1)
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (iele_fl_smp_stack, num_int, k2, ifilter_final,        &
      &            ak_diff(1,iak_diff_lor), ele1, jac1_3d_q, FEM1_elen,  &
-     &            d_ele(1,ie_upw), sgs_t,                               &
+     &            d_ele(1,ie_upw), mhd_fem1_wk%sgs_t1,                  &
      &            fem1_wk%tensor_1, fem1_wk%sk6)
             else
               call tensor_cst_phys_2_each_ele(k2, iphys%i_SGS_maxwell,  &

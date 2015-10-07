@@ -285,6 +285,8 @@
       subroutine cal_sol_vec_pre_consist(numnod, inter_smp_stack,       &
      &          coef_field, ncomp_nod, numdir, if_pre, d_nod)
 !
+      use m_geometry_data
+      use m_sorted_node
       use cal_ff_smp_to_ffs
 !
       integer(kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
@@ -318,7 +320,7 @@
 !$omp end parallel do
 !
       if (coef_field.gt.0.0d0) then
-        call cal_ff_smp_2_ff(numdir, ff_m_smp, ff)
+        call cal_ff_smp_2_ff(node1, rhs_tbl1, numdir, ff_m_smp, ff)
       end if
 !
       end subroutine cal_sol_vec_pre_consist

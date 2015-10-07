@@ -87,16 +87,16 @@
      &    .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
            call SGS_induct_cst_each_ele_1st(k2, iphys%i_magne,          &
      &         iphys%i_velo, iphys%i_SGS_induct_t, coef_induct,         &
-     &         sgs_e, fem1_wk%vector_1)
+     &         mhd_fem1_wk%sgs_v1, fem1_wk%vector_1)
            call fem_skv_div_sgs_asym_tsr(iele_cd_smp_stack,             &
      &         num_int, k2, ifilter_final, ak_diff(1,iak_diff_uxb),     &
-     &         ele1, jac1_3d_q, FEM1_elen, sgs_e,                       &
+     &         ele1, jac1_3d_q, FEM1_elen, mhd_fem1_wk%sgs_v1,          &
      &         fem1_wk%vector_1, fem1_wk%sk6)
         else if (iflag_SGS_induction .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_induct_t,     &
-     &        coef_induct, sgs_e)
+     &        coef_induct, mhd_fem1_wk%sgs_v1)
           call fem_skv_div_asym_tsr(iele_cd_smp_stack, num_int, k2,     &
-     &        ele1, jac1_3d_q, sgs_e, fem1_wk%sk6)
+     &        ele1, jac1_3d_q, mhd_fem1_wk%sgs_v1, fem1_wk%sk6)
         end if
       end do
 !
@@ -152,17 +152,17 @@
      &    .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
           call SGS_induct_cst_each_ele_1st(k2, iphys%i_magne,           &
      &        iphys%i_velo, iphys%i_SGS_induct_t, coef_induct,          &
-     &        sgs_e, fem1_wk%vector_1)
+     &        mhd_fem1_wk%sgs_v1, fem1_wk%vector_1)
           call fem_skv_div_sgs_asym_t_upwind(iele_cd_smp_stack,         &
      &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_uxb),      &
      &        ele1, jac1_3d_q, FEM1_elen, d_ele(1,iphys_ele%i_magne),   &
-     &        sgs_e, fem1_wk%vector_1, fem1_wk%sk6)
+     &        mhd_fem1_wk%sgs_v1, fem1_wk%vector_1, fem1_wk%sk6)
         else if (iflag_SGS_induction .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_induct_t,     &
-     &        coef_induct, sgs_e)
+     &        coef_induct, mhd_fem1_wk%sgs_v1)
           call fem_skv_div_as_tsr_upw(iele_cd_smp_stack, num_int, k2,   &
-     &        d_ele(1,iphys_ele%i_magne), ele1, jac1_3d_q, sgs_e,       &
-     &        fem1_wk%sk6)
+     &        d_ele(1,iphys_ele%i_magne), ele1, jac1_3d_q,              &
+     &        mhd_fem1_wk%sgs_v1, fem1_wk%sk6)
         end if
 !
       end do

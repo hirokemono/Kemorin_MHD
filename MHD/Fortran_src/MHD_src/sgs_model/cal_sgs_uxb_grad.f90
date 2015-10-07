@@ -43,7 +43,7 @@
       call reset_sk6(n_vector, fem1_wk%sk6)
 !
       call sel_int_vol_sgs_uxb                                          &
-     &   (i_filter, iphys%i_magne, i_dvx, fem1_wk)
+     &   (i_filter, iphys%i_magne, i_dvx, fem1_wk, mhd_fem1_wk)
 !
 !     set elemental model coefficients
 !
@@ -80,12 +80,13 @@
       call reset_sk6(n_vector, fem1_wk%sk6)
       call reset_ff_smp
 !
-      call sel_int_vol_sgs_uxb(i_filter, i_field, id_dx, fem1_wk)
+      call sel_int_vol_sgs_uxb                                          &
+     &   (i_filter, i_field, id_dx, fem1_wk, mhd_fem1_wk)
 !
       call add3_skv_coef_to_ff_v_smp_1st                                &
      &   (coef_induct, ff_smp, fem1_wk%sk6)
-      call cal_ff_smp_2_vector                                          &
-     &   (ff_smp, ml_cd, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
+      call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
+     &    ff_smp, ml_cd, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
 !

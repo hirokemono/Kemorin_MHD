@@ -207,18 +207,19 @@
 !
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_fld, fem1_wk%vector_1)
-        call position_2_each_element(k2, xe, radius_e)
+        call position_2_each_element                                    &
+     &     (k2, mhd_fem1_wk%xx_e, mhd_fem1_wk%rr_e)
 !
         if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_angular_momentum(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
      &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,  &
-     &        k2, xe, fem1_wk%vector_1, amom_local)
+     &        k2, mhd_fem1_wk%xx_e, fem1_wk%vector_1, amom_local)
         else
           call fem_vol_angular_momentum(ele1%numele, ele1%nnod_4_ele,   &
      &        iele_fsmp_stack, ele1%interior_ele,                       &
      &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
-     &        k2, xe, fem1_wk%vector_1, amom_local)
+     &        k2, mhd_fem1_wk%xx_e, fem1_wk%vector_1, amom_local)
         end if
       end do
 !

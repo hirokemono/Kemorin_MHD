@@ -93,7 +93,7 @@
 !
       use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp_type
-      use cal_ff_smp_to_ffs_type
+      use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: n_int
       integer (kind=kint), intent(in) :: nele_grp
@@ -134,7 +134,7 @@
 !
       use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp_type
-      use cal_ff_smp_to_ffs_type
+      use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: n_int
       integer (kind=kint), intent(in) :: nele_grp
@@ -158,7 +158,8 @@
      &    nele_grp, iele_grp, n_int, mesh%ele, jac_3d, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, rhs_l)
-      call cal_ff_smp_2_ml_type(mesh, rhs_tbl, rhs_l, m_lump)
+      call cal_ff_smp_2_ml_type                                         &
+     &   (mesh%node, rhs_tbl, rhs_l%ff_smp, m_lump)
 !
       end subroutine int_grp_mass_matrix_diag_type
 !
@@ -170,7 +171,7 @@
 !
       use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp_type
-      use cal_ff_smp_to_ffs_type
+      use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind=kint), intent(in) :: nele_grp
@@ -199,7 +200,8 @@
      &    nele_grp, iele_grp, mesh%ele, fem_wk%sk6, fem_wk%me_diag)
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, rhs_l)
-      call cal_ff_smp_2_ml_type(mesh, rhs_tbl, rhs_l, m_lump)
+      call cal_ff_smp_2_ml_type                                         &
+     &   (mesh%node, rhs_tbl, rhs_l%ff_smp, m_lump)
 !
       end subroutine int_grp_mass_mat_HRZ_full_type
 !
@@ -211,7 +213,7 @@
 !
       use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp_type
-      use cal_ff_smp_to_ffs_type
+      use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind=kint), intent(in) :: nele_grp
@@ -237,7 +239,8 @@
      &    nele_grp, iele_grp, mesh%ele, fem_wk%sk6, fem_wk%me_diag)
 !
       call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, rhs_l)
-      call cal_ff_smp_2_ml_type(mesh, rhs_tbl, rhs_l, m_lump)
+      call cal_ff_smp_2_ml_type                                         &
+     &   (mesh%node, rhs_tbl, rhs_l%ff_smp, m_lump)
 !
       end subroutine int_grp_mass_matrix_HRZ_type
 !

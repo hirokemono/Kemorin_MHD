@@ -7,8 +7,9 @@
 !        modified by H. Matsui on April, 2012
 !
 !      subroutine sel_int_vol_sgs_flux(iflag_4_supg, i_filter, numdir,  &
-!     &           i_field, id_dx, fem_wk)
+!     &           i_field, id_dx, fem_wk, mhd_fem_wk)
 !        type(work_finite_element_mat), intent(inout) :: fem_wk
+!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
       module int_vol_sgs_flux
 !
@@ -30,7 +31,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine sel_int_vol_sgs_flux(iflag_4_supg, i_filter, numdir,   &
-     &           i_field, id_dx, fem_wk)
+     &           i_field, id_dx, fem_wk, mhd_fem_wk)
 !
       use m_element_phys_data
 !
@@ -39,19 +40,22 @@
       integer (kind = kint), intent(in) :: numdir, i_field
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
       if ( iflag_4_supg .eq. id_magnetic_SUPG) then
-        call int_vol_sgs_flux_upwind(i_filter, numdir, i_field, id_dx,  &
+        call int_vol_sgs_flux_upwind(i_filter, numdir, i_field,         &
+     &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx,                    &
      &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld,      &
      &      fem_wk)
       else if ( iflag_4_supg .eq. id_turn_ON) then
-        call int_vol_sgs_flux_upwind(i_filter, numdir, i_field, id_dx,  &
+        call int_vol_sgs_flux_upwind(i_filter, numdir, i_field,         &
+     &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx,                    &
      &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,       &
      &      fem_wk)
       else
-        call int_vol_sgs_flux_pg(i_filter, numdir,                      &
-     &      i_field, id_dx, fem_wk)
+        call int_vol_sgs_flux_pg(i_filter, numdir, i_field,             &
+     &      mhd_fem_wk%n_dvx, id_dx, mhd_fem_wk%dvx, fem_wk)
       end if
 !
       end subroutine sel_int_vol_sgs_flux
@@ -59,11 +63,10 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_sgs_flux_pg(i_filter, numdir, i_field, id_dx,  &
-     &          fem_wk)
+      subroutine int_vol_sgs_flux_pg(i_filter, numdir, i_field,         &
+     &          ncomp_dvx, id_dx, diff_ele, fem_wk)
 !
       use m_geometry_data_MHD
-      use m_int_vol_data
       use m_jacobians
       use m_filter_elength
       use m_SGS_model_coefs
@@ -71,8 +74,9 @@
       use fem_skv_sgs_flux_type
       use nodal_fld_2_each_ele_1st
 !
-      integer (kind = kint), intent(in) :: id_dx, i_filter
-      integer (kind = kint), intent(in) :: numdir, i_field
+      integer (kind = kint), intent(in) :: i_filter, numdir, i_field
+      integer(kind = kint), intent(in) :: ncomp_dvx, id_dx
+      real(kind = kreal), intent(in) :: diff_ele(ele1%numele,ncomp_dvx)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
 !
@@ -95,7 +99,7 @@
             call fem_skv_sgs_flux_galerkin(iele_fl_smp_stack,           &
      &          intg_point_t_evo, k2, i_filter, nd_t,                   &
      &          ele1, jac1_3d_q, FEM1_elen, fem_wk%scalar_1,            &
-     &          dvx(1,id_dvx2), fem_wk%sk6)
+     &          diff_ele(1,id_dvx2), fem_wk%sk6)
           end do
 !
         end do
@@ -105,11 +109,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_sgs_flux_upwind(i_filter, numdir,              &
-     &          i_field, id_dx, ncomp_ele, ie_upw, d_ele, fem_wk)
+      subroutine int_vol_sgs_flux_upwind(i_filter, numdir, i_field,     &
+     &          ncomp_dvx, id_dx, diff_ele,                             &
+     &          ncomp_ele, ie_upw, d_ele, fem_wk)
 !
       use m_geometry_data_MHD
-      use m_int_vol_data
       use m_jacobians
       use m_filter_elength
       use m_SGS_model_coefs
@@ -117,10 +121,11 @@
       use fem_skv_sgs_flux_type
       use nodal_fld_2_each_ele_1st
 !
-      integer (kind = kint), intent(in) :: i_filter, id_dx
-      integer (kind = kint), intent(in) :: numdir, i_field
+      integer (kind = kint), intent(in) :: i_filter, numdir, i_field
+      integer(kind = kint), intent(in) :: ncomp_dvx, id_dx
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: diff_ele(ele1%numele,ncomp_dvx)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
 !
@@ -145,7 +150,7 @@
             call fem_skv_sgs_flux_upwind(iele_fl_smp_stack,             &
      &          intg_point_t_evo, k2, i_filter, nd_t,                   &
      &          ele1, jac1_3d_q, FEM1_elen, fem_wk%scalar_1,            &
-     &          d_ele(1,ie_upw), dvx(1,id_dvx2), fem_wk%sk6)
+     &          d_ele(1,ie_upw), diff_ele(1,id_dvx2), fem_wk%sk6)
           end do
         end do
       end do

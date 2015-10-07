@@ -75,10 +75,11 @@
 !
 !
       if (itype_mass .eq. 1) then
-        call cal_ff_smp_2_scalar(ff_smp, ml, n_scalar, ione, elen_nod)
+        call cal_ff_smp_2_scalar(node1, rhs_tbl1, ff_smp, ml,           &
+     &      n_scalar, ione, elen_nod)
       else
         ff = 0.0d0
-        call cal_ff_smp_2_ff(n_scalar, ff_smp, ff)
+        call cal_ff_smp_2_ff(node1, rhs_tbl1, n_scalar, ff_smp, ff)
         call cal_sol_dx_by_consist(elen_nod, ione)
       end if
 !

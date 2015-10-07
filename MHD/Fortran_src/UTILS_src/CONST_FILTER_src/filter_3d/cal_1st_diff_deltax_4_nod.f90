@@ -146,6 +146,7 @@
       subroutine take_1st_diffs_nod_by_consist(org_field, diff_field)
 !
       use m_geometry_data
+      use m_sorted_node
       use m_finite_element_matrix
       use int_vol_elesize_on_node
       use cal_ff_smp_to_ffs
@@ -158,7 +159,7 @@
       ff = 0.0d0
       ff_nl_smp = 0.0d0
       call int_vol_diff_dxs(org_field)
-      call cal_ff_smp_2_ff(n_vector, ff_nl_smp, ff)
+      call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector, ff_nl_smp, ff)
       do nd = 1, n_vector
         call cal_sol_dx_by_consist(diff_field(1,nd), nd)
       end do
@@ -170,6 +171,7 @@
       subroutine take_1st_diffs_nod_by_lump(org_field, diff_field)
 !
       use m_geometry_data
+      use m_sorted_node
       use m_finite_element_matrix
       use int_vol_elesize_on_node
       use cal_ff_smp_to_ffs
@@ -180,8 +182,8 @@
 !
       ff_nl_smp = 0.0d0
       call int_vol_diff_dxs(org_field)
-      call cal_ff_smp_2_vector                                          &
-     &   (ff_nl_smp, ml, n_vector, ione, diff_field)
+      call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
+     &    ff_nl_smp, ml, n_vector, ione, diff_field)
 !
       end subroutine take_1st_diffs_nod_by_lump
 !

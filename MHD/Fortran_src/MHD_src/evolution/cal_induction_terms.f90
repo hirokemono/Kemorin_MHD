@@ -82,7 +82,7 @@
       call int_sf_grad_vecp                                             &
      &   (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, intg_point_t_evo)
 !
-      call set_ff_nl_smp_2_ff(n_vector)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
 !
       call set_boundary_vect_p_4_rhs
 !

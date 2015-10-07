@@ -77,7 +77,7 @@
 !
       call int_surf_magne_monitor(iphys%i_b_diffuse)
 !
-      call set_ff_nl_smp_2_ff(n_vector)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
 !
       call set_boundary_magne_4_rhs
 !

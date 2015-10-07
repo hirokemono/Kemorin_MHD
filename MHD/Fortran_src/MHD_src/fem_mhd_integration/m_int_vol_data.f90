@@ -16,28 +16,28 @@
 !
 !>      Work array for FEM assemble in MHD model
       type(work_MHD_fe_mat), save :: mhd_fem1_wk
-!mhd_fem1_wk%vecp_1
-!fem1_wk%scalar_1
+!mhd_fem1_wk%dvx
+!fem1_wk%vector_1
 !      real (kind=kreal), allocatable ::  vect_e(:,:)
 !      real (kind=kreal), allocatable ::  velo_1(:,:)
 !      real (kind=kreal), allocatable ::  magne_1(:,:)
 !      real (kind=kreal), allocatable ::  vect_1(:,:)
 !      real (kind=kreal), allocatable ::  tensor_e(:,:)
 ! 
-      real (kind=kreal), allocatable :: xe(:,:)
-      real (kind=kreal), allocatable :: radius_e(:)
+!      real (kind=kreal), allocatable :: xe(:,:)
+!      real (kind=kreal), allocatable :: radius_e(:)
 !
 !      real (kind=kreal), allocatable  :: phi_e(:)
 !      real (kind=kreal), allocatable  :: temp_e(:)
 !      real (kind=kreal), allocatable  :: d_scalar_e(:)
 !
-      real (kind=kreal), allocatable  :: sgs_e(:,:)
-      real (kind=kreal), allocatable  :: sgs_t(:,:)
+!      real (kind=kreal), allocatable  :: sgs_e(:,:)
+!      real (kind=kreal), allocatable  :: sgs_t(:,:)
 !
 !
-      real (kind=kreal), allocatable :: dvx(:,:)
+!      integer(kind=kint) :: num_dvxi
+!      real (kind=kreal), allocatable :: dvx(:,:)
 ! 
-      integer(kind=kint) :: num_dvxi
       integer(kind=kint) :: i_dvx = 0, i_dfvx = 0
       integer(kind=kint) :: i_dtx = 0, i_dftx = 0
       integer(kind=kint) :: i_dcx = 0, i_dfcx = 0
@@ -60,12 +60,12 @@
       integer(kind = kint) :: i
 !
 !
-      allocate(xe(numele,3))
-      allocate(radius_e(numele))
+      allocate(mhd_fem1_wk%xx_e(numele,3))
+      allocate(mhd_fem1_wk%rr_e(numele))
 !
       if(numele .gt. 0) then
-        xe = 0.0d0
-        radius_e = 0.0d0
+        mhd_fem1_wk%xx_e = 0.0d0
+        mhd_fem1_wk%rr_e = 0.0d0
       end if
 !
 !
@@ -73,12 +73,6 @@
         if      ( nod_fld1%phys_name(i) .eq. fhd_velo ) then
           allocate(mhd_fem1_wk%velo_1(numele,3))
           if(numele .gt. 0) mhd_fem1_wk%velo_1 = 0.0d0
-!        else if ( nod_fld1%phys_name(i) .eq. fhd_temp ) then
-!          allocate(temp_e(numele))
-!          if(numele .gt. 0) temp_e = 0.0d0
-!        else if ( nod_fld1%phys_name(i) .eq. fhd_light ) then
-!          allocate(d_scalar_e(numele))
-!          if(numele .gt. 0) d_scalar_e = 0.0d0
         else if ( nod_fld1%phys_name(i) .eq. fhd_magne ) then
           allocate(mhd_fem1_wk%magne_1(numele,3))
           if(numele .gt. 0) mhd_fem1_wk%magne_1 = 0.0d0
@@ -89,53 +83,45 @@
        end do
 !
        if (iflag_SGS_model .ne. id_SGS_none) then
-          allocate(sgs_e(numele,3))
-          allocate(sgs_t(numele,6))
-          if(numele .gt. 0) sgs_t = 0.0d0
-          if(numele .gt. 0) sgs_e = 0.0d0
+          allocate(mhd_fem1_wk%sgs_v1(numele,3))
+          allocate(mhd_fem1_wk%sgs_t1(numele,6))
+          if(numele .gt. 0) mhd_fem1_wk%sgs_v1 = 0.0d0
+          if(numele .gt. 0) mhd_fem1_wk%sgs_t1 = 0.0d0
        end if
 !
-       num_dvxi = 0
+       mhd_fem1_wk%n_dvx = 0
        if ( iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (  iflag_SGS_heat .ne.      id_SGS_none                      &
      &   .or. iflag_SGS_inertia .ne.   id_SGS_none                      &
      &   .or. iflag_SGS_induction .ne. id_SGS_none) then
-         num_dvxi = num_dvxi + 18
+         mhd_fem1_wk%n_dvx = mhd_fem1_wk%n_dvx + 18
         end if
 !
-!        if (iflag_SGS_heat .ne. id_SGS_none) then
-!         num_dvxi = num_dvxi + 6
-!        end if
-!
         if ( iflag_SGS_lorentz .ne. id_SGS_none) then
-         num_dvxi = num_dvxi + 18
+         mhd_fem1_wk%n_dvx = mhd_fem1_wk%n_dvx + 18
         else if (iflag_SGS_induction .ne. id_SGS_none                   &
      &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
-         num_dvxi = num_dvxi + 18
+         mhd_fem1_wk%n_dvx = mhd_fem1_wk%n_dvx + 18
         end if
 !
        else if (iflag_SGS_model .ne. id_SGS_none) then
         if (  iflag_SGS_heat .ne.      id_SGS_none                      &
      &   .or. iflag_SGS_inertia .ne.   id_SGS_none                      &
      &   .or. iflag_SGS_induction .ne. id_SGS_none ) then
-         num_dvxi = num_dvxi + 9
+         mhd_fem1_wk%n_dvx = mhd_fem1_wk%n_dvx + 9
         end if
 !
-!        if (iflag_SGS_heat .ne. id_SGS_none) then
-!         num_dvxi = num_dvxi + 3
-!        end if
-!
         if ( iflag_SGS_lorentz .ne. id_SGS_none) then
-         num_dvxi = num_dvxi + 9
+         mhd_fem1_wk%n_dvx = mhd_fem1_wk%n_dvx + 9
         else if (iflag_SGS_induction .ne. id_SGS_none                   &
      &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
-         num_dvxi = num_dvxi + 9
+         mhd_fem1_wk%n_dvx = mhd_fem1_wk%n_dvx + 9
         end if
 !
        end if
 !
-       allocate(dvx(numele,num_dvxi))
-       if(numele .gt. 0) dvx = 0.0d0
+       allocate(mhd_fem1_wk%dvx(numele,mhd_fem1_wk%n_dvx))
+       if(numele .gt. 0) mhd_fem1_wk%dvx = 0.0d0
 !
        i = 1
        if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
@@ -146,12 +132,6 @@
          i_dfvx = i + 9
          i = i + 18
         end if
-!
-!        if ( iflag_SGS_heat .ne. id_SGS_none) then
-!         i_dtx = i
-!         i_dftx = i + 3
-!         i = i + 6
-!        end if
 !
         if ( iflag_SGS_lorentz .ne. id_SGS_none) then
          i_dbx = i
@@ -172,11 +152,6 @@
          i_dvx = i
          i = i + 9
         end if
-!
-!        if ( iflag_SGS_heat .ne. id_SGS_none) then
-!         i_dtx = i
-!         i = i + 3
-!        end if
 !
         if ( iflag_SGS_lorentz .ne. id_SGS_none) then
          i_dbx = i
@@ -205,8 +180,8 @@
         write(50+my_rank,*)                                             &
      &      'iele, diff. of elemental field: ', i_field, nd
        do iele = 1, numele
-        write(50+my_rank,'(i16,1p10e25.14)')                            &
-     &         iele, (dvx(iele,i_field+3*(nd-1)+ndiff-1),ndiff=1, 3)
+        write(50+my_rank,'(i16,1p10e25.14)') iele,                      &
+     &    (mhd_fem1_wk%dvx(iele,i_field+3*(nd-1)+ndiff-1),ndiff=1, 3)
        end do
       end do
 !

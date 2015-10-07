@@ -63,7 +63,6 @@
         real(kind=kreal), pointer  ::  tensor_1(:,:)
 !
         real(kind=kreal), pointer  ::  sgs_v(:,:)
-        real(kind=kreal), pointer  ::  sgs_t(:,:)
 !
         real(kind=kreal), pointer  ::  vxe(:,:)
 !
@@ -72,20 +71,33 @@
 !
 !>      Work array for FEM assemble in MHD model
       type work_MHD_fe_mat
+!>        assembled position in each element
+        real (kind=kreal), pointer ::  xx_e(:,:)
+!>        assembled radius in each element
+        real (kind=kreal), pointer ::  rr_e(:)
+!
 !>        assembled velocity in each element
-        real (kind=kreal), allocatable ::  velo_1(:,:)
+        real (kind=kreal), pointer ::  velo_1(:,:)
 !>        assembled magnetic field in each element
-        real (kind=kreal), allocatable ::  magne_1(:,:)
-!>        assembled vewctor potential in each element
-        real (kind=kreal), allocatable ::  vecp_1(:,:)
+        real (kind=kreal), pointer ::  magne_1(:,:)
+!>        assembled vector potential in each element
+        real (kind=kreal), pointer ::  vecp_1(:,:)
+!
+!>        assembled SGS vector in each element
+        real (kind=kreal), pointer  :: sgs_v1(:,:)
+!>        assembled SGS tensor in each element
+        real (kind=kreal), pointer  :: sgs_t1(:,:)
+!
+!>        Number of components for work dvx in each element
+        integer(kind=kint) :: n_dvx
+!>        Work of diffence of field in each element
+        real (kind=kreal), pointer :: dvx(:,:)
       end type work_MHD_fe_mat
 !
 !
       type finite_ele_matrices
-        type (finite_ele_mat_node) :: f_l
-        type (finite_ele_mat_node) :: f_nl
-        type (finite_ele_mat_node) :: f_m
-        type (finite_ele_mat_node) :: f_t
+        type(finite_ele_mat_node) :: f_l
+        type(finite_ele_mat_node) :: f_nl
       end type finite_ele_matrices
 !
       type arrays_finite_element_mat
@@ -121,11 +133,6 @@
      &          np_smp, rhs_mat%fem_rhs%f_l)
       call alloc_type_fem_matrices(n_vector, numnod, maxnod_4_smp,      &
      &          np_smp, rhs_mat%fem_rhs%f_nl)
-      call alloc_type_fem_matrices(n_vector, numnod, maxnod_4_smp,      &
-     &          np_smp, rhs_mat%fem_rhs%f_m)
-!
-      call alloc_type_fem_matrices(n_sym_tensor, numnod, maxnod_4_smp,  &
-     &          np_smp, rhs_mat%fem_rhs%f_t)
 !
       end subroutine alloc_fem_mat_base_type
 !
@@ -146,7 +153,6 @@
       allocate( fem_wk%tensor_1(numele,6) )
 !
       allocate( fem_wk%sgs_v(numele,3) )
-      allocate( fem_wk%sgs_t(numele,6) )
 !
       allocate( fem_wk%vxe(numele,3) )
 !
@@ -160,7 +166,6 @@
         fem_wk%tensor_1 = 0.0d0
 !
         fem_wk%sgs_v = 0.0d0
-        fem_wk%sgs_t = 0.0d0
 !
         fem_wk%vxe = 0.0d0
         fem_wk%me_diag = 0.0d0
@@ -261,7 +266,6 @@
 !
       call dealloc_type_fem_matrices(rhs_mat%fem_rhs%f_l)
       call dealloc_type_fem_matrices(rhs_mat%fem_rhs%f_nl)
-      call dealloc_type_fem_matrices(rhs_mat%fem_rhs%f_m)
 !
       end subroutine dealloc_fem_mat_base_type
 !
@@ -275,7 +279,7 @@
 !
       deallocate(fem_wk%sk6)
       deallocate(fem_wk%scalar_1, fem_wk%vector_1, fem_wk%tensor_1 )
-      deallocate(fem_wk%sgs_v, fem_wk%sgs_t)
+      deallocate(fem_wk%sgs_v)
       deallocate(fem_wk%vxe, fem_wk%me_diag)
 !
       end subroutine dealloc_type_fem_mat_work

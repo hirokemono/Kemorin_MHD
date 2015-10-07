@@ -117,7 +117,7 @@
 !
 !
        call int_mass_matrix_diag(iele_fl_smp_stack, n_int)
-       call cal_ff_smp_2_ml (ml_fl, ml_o_fl, ff_smp)
+       call cal_ff_smp_2_ml(node1, rhs_tbl1, ml_fl, ml_o_fl, ff_smp)
 !
 !      call check_mass_martix_fluid
 !
@@ -134,7 +134,7 @@
 !
 !
        call int_mass_matrix_diag(iele_cd_smp_stack, n_int)
-       call cal_ff_smp_2_ml (ml_cd, ml_o_cd, ff_smp)
+       call cal_ff_smp_2_ml(node1, rhs_tbl1, ml_cd, ml_o_cd, ff_smp)
 !
 !      call check_mass_martix_conduct
 !
@@ -151,7 +151,7 @@
 !
 !
        call int_mass_matrix_diag(iele_ins_smp_stack, n_int)
-       call cal_ff_smp_2_ml (ml_ins, ml_o_ins, ff_smp)
+       call cal_ff_smp_2_ml(node1, rhs_tbl1, ml_ins, ml_o_ins, ff_smp)
 !
       end subroutine int_mass_matrix_insulate
 !
@@ -167,7 +167,7 @@
 !
 !
        call int_mass_matrix_HRZ(iele_fl_smp_stack, n_int)
-       call cal_ff_smp_2_ml (ml_fl, ml_o_fl, ff_smp)
+       call cal_ff_smp_2_ml(node1, rhs_tbl1, ml_fl, ml_o_fl, ff_smp)
 !
 !      call check_mass_martix_fluid
 !
@@ -184,7 +184,7 @@
 !
 !
        call int_mass_matrix_HRZ(iele_cd_smp_stack, n_int)
-       call cal_ff_smp_2_ml (ml_cd, ml_o_cd, ff_smp)
+       call cal_ff_smp_2_ml(node1, rhs_tbl1, ml_cd, ml_o_cd, ff_smp)
 !
 !      call check_mass_martix_conduct
 !
@@ -201,7 +201,7 @@
 !
 !
        call int_mass_matrix_HRZ(iele_ins_smp_stack, n_int)
-       call cal_ff_smp_2_ml (ml_ins, ml_o_ins, ff_smp)
+       call cal_ff_smp_2_ml(node1, rhs_tbl1, ml_ins, ml_o_ins, ff_smp)
 !
       end subroutine int_mass_matrix_ins_quad
 !

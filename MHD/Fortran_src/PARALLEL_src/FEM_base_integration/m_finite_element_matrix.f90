@@ -28,7 +28,10 @@
 !
 !>      Work area for FEM assemble
       type(work_finite_element_mat), save :: fem1_wk
-!fem1_wk%me_diag
+!
+!>      Work area for FEM assemble
+      type(finite_ele_mat_node), save :: f1_tsr
+!f1_tsr%ff_smp
 !
       real (kind=kreal), allocatable  ::  ml(:)
       real (kind=kreal), allocatable  ::  ml_fl(:)
@@ -45,13 +48,12 @@
 !
       real (kind=kreal), allocatable  ::  ff(:,:)
       real (kind=kreal), allocatable  ::  ff_nl(:,:)
-      real (kind=kreal), allocatable  ::  ff_t(:,:)
 ! 
       real (kind=kreal), allocatable  :: ff_smp(:,:,:)
       real (kind=kreal), allocatable  :: ff_nl_smp(:,:,:)
 ! 
       real (kind=kreal), allocatable  :: ff_m_smp(:,:,:)
-      real (kind=kreal), allocatable  :: ff_t_smp(:,:,:)
+!      real (kind=kreal), allocatable  :: ff_t_smp(:,:,:)
 !
 !      real (kind=kreal), allocatable  ::  sk6(:,:,:)
 !
@@ -92,7 +94,7 @@
       allocate(ff_smp(node1%max_nod_smp,3,np_smp))
       allocate(ff_nl_smp(node1%max_nod_smp,3,np_smp))
       allocate(ff_m_smp(node1%max_nod_smp,3,np_smp))
-      allocate(ff_t_smp(node1%max_nod_smp,6,np_smp))
+      allocate(f1_tsr%ff_smp(node1%max_nod_smp,6,np_smp))
 !
       allocate(fem1_wk%sk6(ele1%numele,n_sym_tensor,ele1%nnod_4_ele))
 !
@@ -109,7 +111,7 @@
 !
       if(node1%max_nod_smp .gt. 0) then
         ff_m_smp = 0.0d0
-        ff_t_smp = 0.0d0
+        call reset_ff_t_smp
       end if
 !
       if(ele1%numele .gt. 0) then
@@ -174,12 +176,10 @@
 !
       allocate(ff(numnod,3))
       allocate(ff_nl(numnod,3))
-      allocate(ff_t(numnod,6))
 !
       if(numnod .le. 0) return
       call reset_ff(numnod)
       ff_nl = 0.0d0
-      ff_t =  0.0d0
 !
       end subroutine allocate_node_ff
 !
@@ -253,7 +253,7 @@
 !
 !$omp parallel do
       do ip = 1, np_smp
-        ff_t_smp(1:node1%max_nod_smp,1:6,ip) =   0.0d0
+        f1_tsr%ff_smp(1:node1%max_nod_smp,1:6,ip) =   0.0d0
       end do
 !$omp end parallel do
 !
@@ -266,7 +266,7 @@
 !
       deallocate(ml, ml_o)
 !
-      deallocate(ff_smp, ff_nl_smp, ff_m_smp, ff_t_smp)
+      deallocate(ff_smp, ff_nl_smp, ff_m_smp, f1_tsr%ff_smp)
       deallocate(fem1_wk%sk6)
       deallocate(fem1_wk%scalar_1, fem1_wk%vector_1, fem1_wk%tensor_1)
 !
@@ -299,7 +299,7 @@
 !
       subroutine deallocate_node_ff
 !
-      deallocate(ff, ff_nl, ff_t)
+      deallocate(ff, ff_nl)
 !
       end subroutine deallocate_node_ff
 !

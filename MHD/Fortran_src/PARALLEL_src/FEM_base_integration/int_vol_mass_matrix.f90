@@ -26,6 +26,7 @@
       use m_geometry_data
       use m_jacobians
       use m_phys_constants
+      use m_sorted_node
       use m_finite_element_matrix
 !
       use cal_ff_smp_to_ffs
@@ -63,7 +64,7 @@
 !
 !
       call int_mass_matrix_diag(ele1%istack_ele_smp, num_int)
-      call cal_ff_smp_2_ml (ml, ml_o, ff_smp)
+      call cal_ff_smp_2_ml(node1, rhs_tbl1, ml, ml_o, ff_smp)
 !
 !      call check_mass_martix
 !
@@ -77,7 +78,7 @@
 !
 !
       call int_mass_matrix_HRZ_full(ele1%istack_ele_smp, num_int)
-      call cal_ff_smp_2_ml (ml, ml_o, ff_smp)
+      call cal_ff_smp_2_ml(node1, rhs_tbl1, ml, ml_o, ff_smp)
 !
 !      call check_mass_martix
 !

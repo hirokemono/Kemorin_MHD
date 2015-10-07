@@ -50,6 +50,7 @@
       use m_phys_constants
       use m_finite_element_matrix
       use m_int_vol_data
+      use m_sorted_node
       use m_node_phys_data
       use m_element_phys_data
 !
@@ -71,7 +72,7 @@
         call int_div_sgs_idct_simi_pg(i_flux, i_v, i_b)
       end if
 !
-      call set_ff_nl_smp_2_ff(n_vector)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    ff_nl, ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !

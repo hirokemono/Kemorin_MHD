@@ -21,6 +21,7 @@
 !
       use calypso_mpi
       use m_geometry_data
+      use m_sorted_node
       use m_node_phys_address
       use m_node_phys_data
 !
@@ -37,7 +38,7 @@
       call reset_ff_smps
       call cal_sgs_uxb_2_evo
 !
-      call set_ff_nl_smp_2_ff(n_vector)
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    ff_nl, ml_cd, nod_fld1%ntot_phys, iphys%i_SGS_vp_induct,      &
      &    nod_fld1%d_fld)

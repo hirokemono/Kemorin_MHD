@@ -89,6 +89,7 @@
       use m_phys_constants
       use m_node_phys_data
       use m_finite_element_matrix
+      use m_int_vol_data
       use m_SGS_model_coefs
       use m_SGS_address
 !
@@ -107,7 +108,7 @@
       call reset_ff_smp
 !
       call sel_int_vol_sgs_flux(iflag_temp_supg, i_filter, n_vector,    &
-     &    i_field, ie_dvx, fem1_wk)
+     &    i_field, ie_dvx, fem1_wk, mhd_fem1_wk)
 !
 !     set elemental model coefficients
 !
@@ -115,8 +116,8 @@
      &    ak_sgs(1,icomp_sgs_hf), fem1_wk%sk6)
 !
       call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
-      call cal_ff_smp_2_vector                                          &
-     &   (ff_smp, ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
+      call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
+     &    ff_smp, ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
 !
@@ -132,6 +133,7 @@
       use m_phys_constants
       use m_node_phys_data
       use m_finite_element_matrix
+      use m_int_vol_data
       use m_SGS_model_coefs
 !
       use cal_ff_smp_to_ffs
@@ -148,11 +150,11 @@
       call reset_ff_smp
 !
       call sel_int_vol_sgs_flux(iflag_temp_supg, i_filter, n_vector,    &
-     &   i_field, ie_dvx, fem1_wk)
+     &   i_field, ie_dvx, fem1_wk, mhd_fem1_wk)
 !
       call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
-      call cal_ff_smp_2_vector                                          &
-     &   (ff_smp, ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
+      call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
+     &    ff_smp, ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
 !

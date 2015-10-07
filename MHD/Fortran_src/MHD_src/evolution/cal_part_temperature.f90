@@ -189,7 +189,7 @@
        end if
 !
        call int_vol_initial_part_temp
-       call set_ff_nl_smp_2_ff(n_scalar)
+       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_scalar)
 !
        call set_boundary_ene_4_rhs
 !

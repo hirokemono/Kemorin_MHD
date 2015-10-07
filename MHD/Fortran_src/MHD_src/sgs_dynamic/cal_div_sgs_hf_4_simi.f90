@@ -11,6 +11,7 @@
       use m_precision
 !
       use m_control_parameter
+      use m_geometry_constants
 !
       implicit none
 !
@@ -28,6 +29,7 @@
       use m_finite_element_matrix
       use m_int_vol_data
       use m_node_phys_data
+      use m_sorted_node
       use m_element_phys_data
 !
       use cal_ff_smp_to_ffs
@@ -37,8 +39,6 @@
 !
       integer(kind = kint), intent(in) :: i_flux, i_vect, i_scalar
       integer(kind = kint), intent(in) :: i_sgs
-!
-      integer (kind=kint), parameter :: numdir_d = 1
 !
 !
        call reset_ff_smps
@@ -50,7 +50,7 @@
           call int_div_sgs_hf_simi_pg(i_flux, i_vect, i_scalar)
         end if
 !
-       call set_ff_nl_smp_2_ff(numdir_d)
+       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_scalar)
        call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,         &
      &     ff_nl, ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
