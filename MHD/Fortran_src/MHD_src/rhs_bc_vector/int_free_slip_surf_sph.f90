@@ -39,6 +39,7 @@
       use m_precision
       use m_constants
 !
+      use m_sorted_node
       use m_int_vol_data
       use m_finite_element_matrix
       use m_ele_material_property
@@ -80,7 +81,7 @@
 !
 !
       if(ngrp_surf_outside .le. 0) return
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do i = 1, ngrp_surf_outside
         igrp = id_grp_outside(i)
@@ -98,7 +99,8 @@
         end if
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_free_slip_surf_sph_out
 !
@@ -121,7 +123,7 @@
 !
 !
       if (ngrp_surf_inside .le. 0) return
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do i = 1, ngrp_surf_inside
         igrp = id_grp_inside(i)
@@ -138,7 +140,8 @@
         end if
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_free_slip_surf_sph_in
 !

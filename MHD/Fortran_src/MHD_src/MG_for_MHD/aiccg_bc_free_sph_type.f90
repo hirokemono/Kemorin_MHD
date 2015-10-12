@@ -67,7 +67,7 @@
       if (torque_bc%free_sph_in%ngrp_sf_dat .gt. 0)  then
         call aiccg_bc_type_free_sph_in(n_int, mesh, surf,               &
      &      group%surf_grp, torque_bc%free_sph_in, jac_sf_grp,          &
-     &       group%surf_grp_int, ak_AMG, fluid_tbl, fem_wk, mat_v)
+     &      group%surf_grp_int, ak_AMG, fluid_tbl, fem_wk, mat_v)
       end if
 !
       if (torque_bc%free_sph_out%ngrp_sf_dat .gt. 0) then
@@ -86,7 +86,7 @@
      &          fem_wk, mat_v)
 !
       use fem_surf_crank_free_sph
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
 !
       integer (kind = kint), intent(in) :: n_int
       type(mesh_geometry), intent(in) :: mesh
@@ -109,7 +109,7 @@
 !
 !
       do k2 = 1, surf%nnod_4_surf
-        call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
+        call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
 !
         do i = 1, free_sph_in%ngrp_sf_dat
          igrp = free_sph_in%id_grp_sf_dat(i)
@@ -143,7 +143,7 @@
      &         fem_wk, mat_v)
 !
       use fem_surf_crank_free_sph
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
 !
       integer (kind = kint), intent(in) :: n_int
       type(mesh_geometry), intent(in) :: mesh
@@ -165,7 +165,7 @@
 !
 !
       do k2 = 1, surf%nnod_4_surf
-        call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
+        call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
 !
         do i = 1, free_sph_out%ngrp_sf_dat
           igrp = free_sph_out%id_grp_sf_dat(i)

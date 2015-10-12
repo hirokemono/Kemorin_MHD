@@ -66,7 +66,7 @@
 !
 !
       do k2 = 1, surf1%nnod_4_surf
-        call reset_sk6(n_scalar, fem1_wk%sk6)
+        call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
         do i = 1, ngrp_sf_fr_in
           igrp = id_grp_sf_fr_in(i)
@@ -114,7 +114,7 @@
 !
 !
       do k2 = 1, surf1%nnod_4_surf
-        call reset_sk6(n_scalar, fem1_wk%sk6)
+        call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
         do i = 1, ngrp_sf_fr_out
           igrp = id_grp_sf_fr_out(i)

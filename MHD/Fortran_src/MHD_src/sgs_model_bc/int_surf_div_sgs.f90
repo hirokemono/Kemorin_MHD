@@ -17,6 +17,7 @@
 !
       use m_constants
       use m_geometry_data
+      use m_sorted_node
       use m_finite_element_matrix
       use m_phys_constants
       use t_group_data
@@ -53,7 +54,7 @@
 !
 !
       if(nmax_grp_sf .eq. 0) return
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
 ! --------- set vector at each node in an element
 !
@@ -77,7 +78,8 @@
         end do
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_surf_divergence_sgs
 !
@@ -108,7 +110,7 @@
 ! -------- loop for shape function for the phsical values
 !
       if(nmax_grp_sf .eq. 0) return
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       do nd = 1, n_vector
         i_comp = i_vect + nd - 1
@@ -130,7 +132,8 @@
         end do
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_surf_div_commute_sgs
 !

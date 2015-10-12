@@ -106,7 +106,7 @@
 ! -------- loop for shape function for the phsical values
 !
       do k2 = 1, ele1%nnod_4_ele
-        call reset_sk6(n_scalar, fem1_wk%sk6)
+        call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
         call fem_skv_mass_matrix_type(iele_fsmp_stack, num_int, k2,     &
      &      ele1, jac1_3d_q, fem1_wk%sk6)
         call add_skv1_2_matrix11_1st(k2, fem1_wk%sk6, nmat_size, aiccg)
@@ -130,7 +130,7 @@
 !  ----------  clear the vector and lumped mass matrix
 !
       call reset_ff_smp
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
 !
@@ -139,7 +139,8 @@
      &      ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_mass_matrix
 !
@@ -155,12 +156,13 @@
 !
 !
       call reset_ff_smp
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       call fem_skv_mass_matrix_diag_type                                &
      &   (iele_fsmp_stack, num_int, ele1, jac1_3d_q, fem1_wk%sk6)
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_mass_matrix_diag
 !
@@ -176,7 +178,7 @@
 !
 !
       call reset_ff_smp
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       call fem_skv_mass_mat_diag_HRZ_type                               &
      &   (iele_fsmp_stack, num_int, ele1, jac1_3d_q, fem1_wk%sk6)
@@ -186,7 +188,8 @@
       call vol_average_skv_HRZ_type                                     &
      &   (iele_fsmp_stack, ele1, fem1_wk%sk6, fem1_wk%me_diag)
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_mass_matrix_HRZ_full
 !
@@ -202,14 +205,15 @@
 !
 !
       call reset_ff_smp
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       call fem_skv_mass_mat_diag_HRZ_type                               &
      &   (iele_fsmp_stack, num_int, ele1, jac1_3d_q, fem1_wk%sk6)
       call vol_average_skv_HRZ_type                                     &
      &   (iele_fsmp_stack, ele1, fem1_wk%sk6, fem1_wk%me_diag)
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_mass_matrix_HRZ
 !

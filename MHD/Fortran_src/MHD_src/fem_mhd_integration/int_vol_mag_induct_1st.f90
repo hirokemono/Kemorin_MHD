@@ -23,6 +23,7 @@
       use m_physical_property
       use m_node_phys_address
       use m_fem_gauss_int_coefs
+      use m_sorted_node
       use m_finite_element_matrix
       use m_jacobians
       use m_int_vol_data
@@ -57,7 +58,7 @@
 !
 !  ---------  set number of integral points
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 !$omp parallel
       call add_const_to_vector_smp                                      &
@@ -78,7 +79,8 @@
      &      ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_vol_mag_induct_pg
 !
@@ -103,7 +105,7 @@
 !
 !  ---------  set number of integral points
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 !$omp parallel
       call add_const_to_vector_smp                                      &
@@ -124,7 +126,8 @@
      &      d_ele(1,iphys_ele%i_magne), ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_vol_mag_induct_upm
 !

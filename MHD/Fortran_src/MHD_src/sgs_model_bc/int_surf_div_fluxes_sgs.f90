@@ -158,6 +158,7 @@
      &          ak_diff, coef_field)
 !
       use m_geometry_data
+      use m_sorted_node
       use m_finite_element_matrix
       use m_int_surface_data
       use m_jacobians
@@ -180,7 +181,7 @@
 !
 !
       if (ngrp_sf .eq. 0) return
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
 ! --------- set vector at each node in an element
 !
@@ -201,7 +202,8 @@
         end if
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_sf_skv_sgs_div_v_flux
 !
@@ -212,6 +214,7 @@
      &          i_tensor, i_vect, i_scalar, ak_diff, coef_field)
 !
       use m_geometry_data
+      use m_sorted_node
       use m_finite_element_matrix
       use m_int_surface_data
       use m_jacobians
@@ -235,7 +238,7 @@
 !
 !
       if (nmax_sf .eq. 0) return
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 ! --------- set vector at each node in an element
 !
@@ -258,7 +261,8 @@
         end do
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_sf_skv_sgs_div_t_flux
 !
@@ -267,6 +271,8 @@
       subroutine int_sf_skv_commute_sgs_v_flux(sf_grp, n_int, ngrp_sf,  &
      &          id_grp_sf, i_filter, i_tensor, i_vect, i_scalar)
 !
+      use m_geometry_data
+      use m_sorted_node
       use m_finite_element_matrix
       use m_int_surface_data
       use m_jacobians
@@ -287,7 +293,7 @@
 !
 !
       if (ngrp_sf .eq. 0) return
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
 ! --------- set vector at each node in an element
 !
@@ -308,7 +314,8 @@
         end if
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_sf_skv_commute_sgs_v_flux
 !
@@ -318,6 +325,8 @@
      &         (sf_grp, n_int, nmax_sf, ngrp_sf,                        &
      &          id_grp_sf, i_filter, i_tensor, i_vect, i_scalar)
 !
+      use m_geometry_data
+      use m_sorted_node
       use m_finite_element_matrix
       use m_int_surface_data
       use m_jacobians
@@ -339,7 +348,7 @@
 !
 !
       if (nmax_sf .eq. 0) return
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 ! --------- set vector at each node in an element
 !
@@ -362,7 +371,8 @@
         end do
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_sf_skv_commute_sgs_t_flux
 !

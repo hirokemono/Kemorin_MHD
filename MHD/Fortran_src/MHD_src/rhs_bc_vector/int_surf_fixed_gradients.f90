@@ -20,7 +20,9 @@
 !
       use m_constants
       use m_control_parameter
+      use m_geometry_data
       use m_ele_material_property
+      use m_sorted_node
       use m_finite_element_matrix
       use m_phys_constants
 !
@@ -53,7 +55,7 @@
 !
 !
       if (ngrp_sf_fix_hf .le. 0) return
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       call fem_surf_skv_norm_grad_galerkin                              &
      &   (ele, surf, sf_grp, jac_sf_grp,                                &
@@ -61,7 +63,8 @@
      &    id_grp_sf_fix_hf, ist_ele_sf_fix_hf,                          &
      &    sf_apt_fix_hf, n_int, ione, ak_d_temp, fem1_wk%sk6)
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_sf_h_flux
 !
@@ -81,7 +84,7 @@
 !
 !
       if ( sum(ngrp_sf_fix_tq) .le. 0) return
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do nd = 1, n_vector
         if (ngrp_sf_fix_tq(nd).gt.0) then
@@ -93,7 +96,8 @@
         end if
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    ff_smp, fem1_wk%sk6)
 !
       end subroutine int_sf_torque
 !
@@ -113,7 +117,7 @@
 !
 !
       if ( sum(ngrp_sf_fix_grad_a) .le. 0) return
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do nd = 1, n_vector
         if (ngrp_sf_fix_grad_a(nd).gt.0) then
@@ -125,7 +129,8 @@
      &        n_int, nd, ak_d_magne, fem1_wk%sk6)
         end if
       end do
-      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    ff_smp, fem1_wk%sk6)
 !
       end subroutine int_sf_grad_vecp
 !
@@ -147,7 +152,7 @@
 !
 !
       if ( sum(ngrp_sf_fix_grad_b) .le. 0) return
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do nd = 1, n_vector
         if (ngrp_sf_fix_grad_b(nd).gt.0) then
@@ -160,7 +165,8 @@
         end if
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    ff_smp, fem1_wk%sk6)
 !
       end subroutine int_sf_grad_magne
 !
@@ -181,7 +187,7 @@
 !
       if (ngrp_sf_fix_cmg .le. 0) return
 !
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       call fem_surf_skv_norm_grad_galerkin                              &
      &   (ele, surf, sf_grp, jac_sf_grp,                                &
@@ -189,7 +195,8 @@
      &     id_grp_sf_fix_cmg, ist_ele_sf_fix_cmg, sf_apt_fix_cmg,       &
      &     n_int, ione, ak_d_composit, fem1_wk%sk6)
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_sf_grad_composition
 !
@@ -208,14 +215,15 @@
 !
 !
       if (ngrp_sf_fix_pg .eq. 0) return
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       call fem_surf_skv_norm_poisson_pg(ele, surf, sf_grp, jac_sf_grp,  &
      &    ngrp_sf_fix_pg, nele_sf_fix_pg, ngrp_sf_fix_pg,               &
      &    id_grp_sf_fix_pg, ist_ele_sf_fix_pg, sf_apt_fix_pg,           &
      &    intg_point_poisson, fem1_wk%sk6)
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_sf_grad_press
 !
@@ -233,14 +241,15 @@
 !
 !
       if (ngrp_sf_fix_mpg .eq. 0) return
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       call fem_surf_skv_norm_poisson_pg(ele, surf, sf_grp, jac_sf_grp,  &
      &    ngrp_sf_fix_mpg, nele_sf_fix_mpg, ngrp_sf_fix_mpg,            &
      &    id_grp_sf_fix_mpg, ist_ele_sf_fix_mpg, sf_apt_fix_mpg,        &
      &    intg_point_poisson, fem1_wk%sk6)
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_sf_grad_magne_p
 !

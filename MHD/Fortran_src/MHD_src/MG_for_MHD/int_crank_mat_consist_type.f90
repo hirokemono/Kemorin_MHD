@@ -46,7 +46,7 @@
       use t_geometry_data_MHD
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use add_skv1_2_matrix_type
 !
 !
@@ -66,7 +66,7 @@
 !
 !
       do  k2 = 1, mesh%ele%nnod_4_ele
-        call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
+        call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
         call fem_skv_mass_matrix_type(mesh%ele%istack_ele_smp,          &
      &      intg_point_t_evo, k2, mesh%ele, jac_3d, fem_wk%sk6)
 !

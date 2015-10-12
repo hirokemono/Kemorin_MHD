@@ -32,7 +32,7 @@
       use t_finite_element_mat
 !
       use nodal_fld_cst_to_ele_type
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use fem_skv_vector_diff_type
 !
 !-----------------------------------------------------------------------
@@ -60,7 +60,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
+      call reset_sk6(n_vector, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the field values
 !
@@ -71,7 +71,8 @@
      &      mesh%ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
+      call add3_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_grad_w_const_type
 !
@@ -96,7 +97,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
+      call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the field values
 !
@@ -107,7 +108,8 @@
      &      mesh%ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
+      call add1_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_div_w_const_type
 !
@@ -132,7 +134,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
+      call reset_sk6(n_vector, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the field values
 !
@@ -143,7 +145,8 @@
      &      mesh%ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
+      call add3_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_rot_w_const_type
 !
@@ -169,7 +172,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
+      call reset_sk6(n_vector, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the field values
 !
@@ -180,7 +183,8 @@
      &      mesh%ele, jac_3d, fem_wk%tensor_1, fem_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
+      call add3_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_div_tsr_w_const_type
 !
@@ -205,7 +209,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
+      call reset_sk6(n_vector, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the field values
 !
@@ -216,7 +220,8 @@
      &      mesh%ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
+      call add3_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_div_as_tsr_w_cst_type
 !

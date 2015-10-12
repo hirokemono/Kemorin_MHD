@@ -48,7 +48,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
 !
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use nodal_fld_2_each_ele_type
       use fem_skv_diffs_sgs_type
 !
@@ -70,7 +70,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
+      call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
       do k2=1, num_t_linear
@@ -81,7 +81,8 @@
      &      fem_wk%vector_1, fem_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_l)
+      call add1_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_l%ff_smp)
 !
       end subroutine int_vol_sgs_div_v_linear_type
 !
@@ -98,7 +99,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
 !
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use nodal_fld_2_each_ele_type
       use fem_skv_diffs_sgs_type
 !
@@ -120,7 +121,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
+      call reset_sk6(n_vector, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
       do k2=1, num_t_linear
@@ -131,7 +132,8 @@
      &      fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
+      call add3_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_sgs_solenoidal_co_type
 !
@@ -150,7 +152,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
 !
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use nodal_fld_2_each_ele_type
       use fem_skv_diffusion_sgs_type
 !
@@ -173,7 +175,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
+      call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -184,8 +186,8 @@
      &      fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
-      call add1_skv_coef_to_ff_v_smp_type(mesh, rhs_tbl,                &
-     &    coef_crank, fem_wk, f_l)
+      call add1_skv_coef_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,      &
+     &    coef_crank, fem_wk%sk6, f_l%ff_smp)
 !
       end subroutine int_vol_scalar_sgs_diffuse_type
 !
@@ -203,7 +205,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
 !
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use nodal_fld_2_each_ele_type
       use fem_skv_diffusion_sgs_type
 !
@@ -226,7 +228,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
+      call reset_sk6(n_vector, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -237,8 +239,8 @@
      &      fem_wk%vector_1, fem_wk%sk6)
       end do
 !
-      call add3_skv_coef_to_ff_v_smp_type(mesh, rhs_tbl,                &
-     &   coef_crank, fem_wk, f_l)
+      call add3_skv_coef_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,      &
+     &   coef_crank, fem_wk%sk6, f_l%ff_smp)
 !
       end subroutine int_vol_vector_sgs_diffuse_type
 !

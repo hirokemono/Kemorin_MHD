@@ -31,6 +31,7 @@
       use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_data
+      use m_sorted_node
       use m_finite_element_matrix
       use m_jacobians
       use m_int_vol_data
@@ -44,7 +45,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
 !
@@ -57,7 +58,8 @@
      &      intg_point_t_evo, k2, ele1, jac1_3d_q, fem1_wk%tensor_1,    &
      &      fem1_wk%sk6)
       end do
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_div_sgs_mf_simi_pg
 !
@@ -97,6 +99,7 @@
       use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_data
+      use m_sorted_node
       use m_finite_element_matrix
       use m_jacobians
       use m_int_vol_data
@@ -113,7 +116,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
 !
@@ -126,7 +129,8 @@
      &      k2, d_ele(1,ie_upw), ele1, jac1_3d_q, fem1_wk%tensor_1,     &
      &      fem1_wk%sk6)
       end do
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_div_sgs_mf_simi_upwind
 !

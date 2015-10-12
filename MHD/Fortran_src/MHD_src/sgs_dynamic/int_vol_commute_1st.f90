@@ -24,6 +24,7 @@
       use m_machine_parameter
       use m_geometry_data
       use m_phys_constants
+      use m_sorted_node
       use m_finite_element_matrix
       use m_int_vol_data
 !
@@ -50,7 +51,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
        do k2 = 1, ele1%nnod_4_ele
@@ -63,7 +64,8 @@
      &      n_int, k2, i_filter, fem1_wk%scalar_1, fem1_wk%sk6)
        end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_vol_commute_grad
 !
@@ -81,7 +83,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
       do k2 = 1, ele1%nnod_4_ele
 !
 ! --------- set temperature at each node in an element
@@ -91,7 +93,8 @@
      &      n_int, k2, i_filter, fem1_wk%vector_1, fem1_wk%sk6)
        end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_vol_commute_div
 !
@@ -109,14 +112,15 @@
        integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
       do k2 = 1, ele1%nnod_4_ele
         call vector_phys_2_each_element(k2, i_vect, fem1_wk%vector_1)
         call fem_skv_commute_err_rot_1(iele_fsmp_stack,                 &
      &      n_int, k2, i_filter, fem1_wk%vector_1, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_vol_commute_rot
 !
@@ -136,7 +140,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
       do k2 = 1, ele1%nnod_4_ele
         call SGS_v_flux_2_each_element                                  &
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
@@ -146,7 +150,8 @@
      &      n_int, k2, i_filter, fem1_wk%vector_1, fem1_wk%sk6)
        end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_vol_commute_div_v_flux
 !
@@ -166,7 +171,7 @@
 !
 ! -------- loop for shape function for the phsical values
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
       do k2 = 1, ele1%nnod_4_ele
         call SGS_m_flux_2_each_element                                  &
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
@@ -176,7 +181,8 @@
      &      n_int, k2, i_filter, fem1_wk%tensor_1, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_vol_commute_div_m_flux
 !
@@ -195,7 +201,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
       do k2 = 1, ele1%nnod_4_ele
         call SGS_induct_2_each_element                                  &
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
@@ -205,7 +211,8 @@
      &      n_int, k2, i_filter, fem1_wk%vector_1, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_vol_commute_induct_t
 !

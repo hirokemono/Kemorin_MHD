@@ -135,6 +135,7 @@
       subroutine int_surf_current_diffuse                               &
      &         (ele, surf, sf_grp, jac_sf_grp)
 !
+      use m_sorted_node
       use m_finite_element_matrix
       use m_surf_data_vector_p
       use m_ele_material_property
@@ -153,7 +154,7 @@
 !
 !
       if(nmax_sf_lead_vect_p .eq. 0) return
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do nd = 1, 3
         i_comp = iphys%i_vecp + nd - 1
@@ -176,7 +177,8 @@
 !
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_surf_current_diffuse
 !
@@ -185,6 +187,7 @@
       subroutine int_surf_diffuse_term(ele, surf, sf_grp, jac_sf_grp,   &
      &          n_int, ngrp_sf, id_grp_sf, ak_d, i_field)
 !
+      use m_sorted_node
       use m_finite_element_matrix
       use m_int_surface_data
 !
@@ -206,7 +209,7 @@
 !
 !
       if (ngrp_sf .eq. 0) return
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
@@ -223,7 +226,8 @@
         end if
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_surf_diffuse_term
 !
@@ -233,6 +237,7 @@
      &         (ele, surf, sf_grp, jac_sf_grp,                          &
      &          n_int, nmax_sf, ngrp_sf, id_grp_sf, ak_d,  i_field)
 !
+      use m_sorted_node
       use m_finite_element_matrix
       use m_int_surface_data
 !
@@ -256,7 +261,7 @@
 !
 !
       if (nmax_sf .eq. 0) return
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do nd = 1, n_vector
         i_comp = i_field + nd - 1
@@ -278,7 +283,8 @@
         end do
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_surf_vect_diffuse_term
 !

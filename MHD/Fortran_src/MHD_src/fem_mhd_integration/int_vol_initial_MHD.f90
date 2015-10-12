@@ -127,6 +127,7 @@
       use m_control_parameter
       use m_geometry_data
       use m_jacobians
+      use m_sorted_node
       use m_int_vol_data
 !
       use nodal_fld_2_each_ele_1st
@@ -139,7 +140,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for phsical values
       do k2 = 1, ele1%nnod_4_ele
@@ -148,7 +149,8 @@
      &      ele1, jac1_3d_q, fem1_wk%scalar_1, fem1_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_m_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_m_smp)
 !
       end subroutine int_vol_initial_scalar
 !
@@ -159,6 +161,7 @@
       use m_control_parameter
       use m_geometry_data
       use m_jacobians
+      use m_sorted_node
       use m_int_vol_data
 !
       use nodal_fld_2_each_ele_1st
@@ -171,7 +174,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for phsical values
       do k2 = 1, ele1%nnod_4_ele
@@ -180,7 +183,8 @@
      &      ele1, jac1_3d_q, fem1_wk%vector_1, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_m_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    ff_m_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_initial_vector
 !

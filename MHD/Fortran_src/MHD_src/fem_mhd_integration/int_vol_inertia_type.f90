@@ -47,7 +47,7 @@
      &          nod_fld, rhs_tbl, iele_fsmp_stack, n_int,               &
      &          i_scalar, vxe, coef, fem_wk, f_nl)
 !
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use nodal_fld_cst_to_ele_type
       use fem_skv_nonlinear_type
 !
@@ -68,7 +68,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
+      call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the physical values
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -78,7 +78,8 @@
      &      fem_wk%scalar_1, vxe, mesh%ele, jac_3d, fem_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
+      call add1_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_scalar_inertia_type
 !
@@ -88,7 +89,7 @@
      &          nod_fld, rhs_tbl, iele_fsmp_stack, n_int,               &
      &          i_vector, vxe, coef, fem_wk, f_nl)
 !
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use nodal_fld_cst_to_ele_type
       use fem_skv_nonlinear_type
 !
@@ -109,7 +110,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
+      call reset_sk6(n_vector, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the physical values
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -119,7 +120,8 @@
      &      fem_wk%vector_1, vxe, mesh%ele, jac_3d, fem_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
+      call add3_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_vector_inertia_type
 !
@@ -129,7 +131,7 @@
      &          nod_fld, rhs_tbl, iele_fsmp_stack, n_int,               &
      &          i_vector, wxe, coef, fem_wk, f_nl)
 !
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use nodal_fld_cst_to_ele_type
       use fem_skv_nonlinear_type
 !
@@ -150,7 +152,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
+      call reset_sk6(n_vector, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the physical values
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -160,7 +162,8 @@
      &      fem_wk%vector_1, wxe, mesh%ele, jac_3d, fem_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
+      call add3_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_rot_inertia_type
 !
@@ -171,7 +174,7 @@
      &          nod_fld, rhs_tbl, iele_fsmp_stack, n_int,               &
      &          i_scalar, vxe, vxe_up, coef, fem_wk, f_nl)
 !
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use nodal_fld_cst_to_ele_type
       use fem_skv_nonlinear_upw_type
 !
@@ -193,7 +196,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
+      call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the physical values
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -204,7 +207,8 @@
      &      mesh%ele, jac_3d, fem_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
+      call add1_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_scalar_inertia_upw_type
 !
@@ -214,7 +218,7 @@
      &          nod_fld, rhs_tbl, iele_fsmp_stack, n_int,               &
      &          i_vector, vxe, vxe_up, coef, fem_wk, f_nl)
 !
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use nodal_fld_cst_to_ele_type
       use fem_skv_nonlinear_upw_type
 !
@@ -236,7 +240,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
+      call reset_sk6(n_vector, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the physical values
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -247,7 +251,8 @@
      &      mesh%ele, jac_3d, fem_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
+      call add3_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_vector_inertia_upw_type
 !
@@ -257,7 +262,7 @@
      &          nod_fld, rhs_tbl, iele_fsmp_stack, n_int,               &
      &          i_vector, wxe, vxe_up, coef, fem_wk, f_nl)
 !
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use nodal_fld_cst_to_ele_type
       use fem_skv_nonlinear_upw_type
 !
@@ -279,7 +284,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
+      call reset_sk6(n_vector, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the physical values
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -289,7 +294,8 @@
      &      fem_wk%vector_1, wxe, vxe_up, mesh%ele, jac_3d, fem_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
+      call add3_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_rot_inertia_upw_type
 !

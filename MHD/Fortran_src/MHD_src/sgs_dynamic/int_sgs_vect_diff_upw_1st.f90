@@ -25,6 +25,7 @@
       use m_phys_constants
       use m_node_phys_address
       use m_SGS_model_coefs
+      use m_sorted_node
       use m_finite_element_matrix
       use m_jacobians
       use m_int_vol_data
@@ -55,7 +56,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the field values
 !
@@ -66,7 +67,8 @@
      &      d_ele(1,iv_up), fem1_wk%scalar_1, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_sgs_grad_upw_1st
 !
@@ -85,7 +87,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the field values
 !
@@ -96,7 +98,8 @@
      &      d_ele(1,iv_up), fem1_wk%vector_1, fem1_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_sgs_div_upw_1st
 !
@@ -115,7 +118,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the field values
 !
@@ -126,7 +129,8 @@
      &      d_ele(1,iv_up), fem1_wk%vector_1, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_sgs_rot_upw_1st
 !
@@ -146,7 +150,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the field values
 !
@@ -157,7 +161,8 @@
      &      d_ele(1,iv_up), fem1_wk%tensor_1, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_sgs_div_tsr_upw_1st
 !
@@ -177,7 +182,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the field values
 !
@@ -189,7 +194,8 @@
      &     fem1_wk%vector_1, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_sgs_div_as_tsr_upw_1st
 !

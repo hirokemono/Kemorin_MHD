@@ -21,6 +21,7 @@
 !
       use m_geometry_constants
       use m_phys_constants
+      use m_sorted_node
       use m_finite_element_matrix
       use m_int_surface_data
 !
@@ -57,7 +58,7 @@
       integer(kind=kint) :: k2, i, igrp, num
 !
 !
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
 ! --------- set vector at each node in an element
 !
@@ -77,7 +78,8 @@
         end if
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_surf_poisson_wall
 !
@@ -99,7 +101,7 @@
       integer(kind=kint) :: k2, i, igrp, num
 !
 !
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
@@ -118,7 +120,8 @@
         end if
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_surf_poisson_sph_in
 !
@@ -140,7 +143,7 @@
       integer(kind=kint) :: k2, i, igrp, num
 !
 !
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
 ! --------- set vector at each node in an element
 !
@@ -161,7 +164,8 @@
         end if
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_surf_poisson_sph_out
 !

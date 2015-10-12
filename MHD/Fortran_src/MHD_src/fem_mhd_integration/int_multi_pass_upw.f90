@@ -24,6 +24,7 @@
       use m_control_parameter
       use m_geometry_data
       use m_phys_constants
+      use m_sorted_node
       use m_finite_element_matrix
 !
       use cal_ff_smp_to_ffs
@@ -297,7 +298,7 @@
       integer (kind = kint) :: k2
 !
 !
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       do k2 = 1, ele1%nnod_4_ele
         call scalar_2_each_element(k2, ff_nl(1,1), fem1_wk%scalar_1)
@@ -306,7 +307,8 @@
      &      fem1_wk%scalar_1, fem1_wk%sk6)
       end do
 !
-      call sub1_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call sub1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
       call cal_multi_pass_2_ff_smp                                      &
      &   (node1%max_nod_smp, node1%istack_nod_smp,                      &
      &    n_scalar, ff_nl_smp, ff_m_smp)
@@ -332,7 +334,7 @@
       integer (kind = kint) :: k2
 !
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do k2 = 1, ele1%nnod_4_ele
         call vector_2_each_element(k2, ff_nl(1,1), fem1_wk%vector_1)
@@ -341,7 +343,8 @@
      &      fem1_wk%vector_1, fem1_wk%sk6)
       end do
 !
-      call sub3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call sub3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
       call cal_multi_pass_2_ff_smp                                      &
      &   (node1%max_nod_smp, node1%istack_nod_smp,                      &
      &    n_vector, ff_nl_smp, ff_m_smp)

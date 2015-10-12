@@ -164,7 +164,7 @@
       use t_finite_element_mat
       use fem_skv_mass_mat_type
       use cal_ff_smp_to_ffs
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
 !
       type(mesh_geometry), intent(in) ::          mesh
       type(jacobians_3d), intent(in) ::           jac_3d
@@ -177,7 +177,7 @@
 !
       call reset_ff_smps_type(n_scalar,                                 &
      &    mesh%node%max_nod_smp, np_smp, rhs_l)
-      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
+      call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
 !
       call fem_skv_mass_mat_diag_HRZ_type(mesh%ele%istack_ele_smp,      &
      &    intg_point_t_evo, mesh%ele, jac_3d, fem_wk%sk6)
@@ -185,7 +185,8 @@
       call sum_skv_diagonal_4_HRZ_type(mesh%ele%istack_ele_smp,         &
      &    mesh%ele, fem_wk%sk6, fem_wk%me_diag)
 !
-      call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, rhs_l)
+      call add1_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, rhs_l%ff_smp)
       call cal_ff_smp_2_ml_type                                         &
      &   (mesh%node, rhs_tbl, rhs_l%ff_smp, m_lump)
 !

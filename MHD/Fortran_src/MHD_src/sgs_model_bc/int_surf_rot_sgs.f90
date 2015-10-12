@@ -19,6 +19,7 @@
       use m_geometry_data
       use m_finite_element_matrix
       use m_phys_constants
+      use m_sorted_node
       use t_group_data
 !
       implicit none
@@ -55,7 +56,7 @@
 !  ---------  set number of integral points
 !
       if(nmax_grp_sf .eq. 0) return
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do nd = 1, n_vector
 !
@@ -104,7 +105,8 @@
 !
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_surf_rotation_sgs
 !
@@ -135,7 +137,7 @@
 !  ---------  set number of integral points
 !
       if(nmax_grp_sf .eq. 0) return
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do nd = 1, n_vector
         nrot1 = mod(nd,     ithree) + ione
@@ -179,7 +181,8 @@
 !
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_surf_rot_commute_sgs
 !

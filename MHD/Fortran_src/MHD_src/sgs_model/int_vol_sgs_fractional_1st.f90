@@ -19,6 +19,7 @@
       use m_geometry_data
 !
       use m_phys_constants
+      use m_sorted_node
       use m_finite_element_matrix
       use m_jacobians
       use m_int_vol_data
@@ -47,7 +48,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
@@ -58,7 +59,8 @@
      &      fem1_wk%vector_1, fem1_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_vol_sgs_div_v_linear_1st
 !
@@ -80,7 +82,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, num_t_linear
@@ -91,7 +93,8 @@
      &      fem1_wk%scalar_1, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_vol_sgs_solenoidal_co_1st
 !
@@ -114,7 +117,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
@@ -124,8 +127,8 @@
      &      ele1, jac1_3d_q, FEM1_elen, fem1_wk%scalar_1, fem1_wk%sk6)
       end do
 !
-      call add1_skv_coef_to_ff_v_smp_1st                                &
-     &   (coef_crank, ff_smp, fem1_wk%sk6)
+      call add1_skv_coef_to_ff_v_smp(node1, ele1, rhs_tbl1,             &
+     &    coef_crank, fem1_wk%sk6, ff_smp)
 !
       end subroutine int_vol_scalar_sgs_diffuse_1st
 !
@@ -147,7 +150,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
@@ -157,8 +160,8 @@
      &      ele1, jac1_3d_q, FEM1_elen, fem1_wk%vector_1, fem1_wk%sk6)
       end do
 !
-      call add3_skv_coef_to_ff_v_smp_1st                                &
-     &   (coef_crank, ff_smp, fem1_wk%sk6)
+      call add3_skv_coef_to_ff_v_smp(node1, ele1, rhs_tbl1,             &
+     &    coef_crank, fem1_wk%sk6, ff_smp)
 !
       end subroutine int_vol_vector_sgs_diffuse_1st
 !

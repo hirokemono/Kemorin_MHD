@@ -48,7 +48,7 @@
 !
 !
       do  k2 = 1, ele1%nnod_4_ele
-        call reset_sk6(n_scalar, fem1_wk%sk6)
+        call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
         call fem_skv_poisson_linear_type(ele1%istack_ele_smp,           &
      &      n_int, k2, ele1, jac1_3d_l, fem1_wk%sk6)
         call add_skv1_2_MHD_matrix11(idx_for_mat, k2, fem1_wk%sk6,      &
@@ -81,7 +81,7 @@
 !
 !
       do  k2 = 1, ele1%nnod_4_ele
-        call reset_sk6(n_scalar, fem1_wk%sk6)
+        call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
         call fem_skv_poisson_type(ele1%istack_ele_smp, n_int, k2,       &
      &      ele1, jac1_3d_q, fem1_wk%sk6)
         call cal_scalar_diffuse_evo_mat_1st(idx_for_mat, k2,            &
@@ -113,7 +113,7 @@
 !
 !
       do  k2 = 1, ele1%nnod_4_ele
-        call reset_sk6(n_scalar, fem1_wk%sk6)
+        call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
         call fem_skv_poisson_type(ele1%istack_ele_smp, n_int, k2,       &
      &      ele1, jac1_3d_q, fem1_wk%sk6)
         call cal_vect_diffuse_evo_mat_1st(idx_for_mat, k2,              &

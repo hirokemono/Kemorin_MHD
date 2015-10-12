@@ -55,7 +55,7 @@
 !
       use nodal_fld_cst_to_ele_type
       use sgs_terms_to_each_ele_1st
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use fem_skv_div_sgs_flux_type
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -79,7 +79,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
+      call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -91,7 +91,8 @@
      &      mhd_fem_wk%sgs_v1, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
+      call add1_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_div_SGS_vec_flux_type
 !
@@ -106,7 +107,7 @@
 !
       use nodal_fld_cst_to_ele_type
       use sgs_terms_to_each_ele_1st
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use fem_skv_div_sgs_flux_type
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -129,7 +130,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
+      call reset_sk6(n_vector, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -140,7 +141,8 @@
      &      FEM_elens, mhd_fem_wk%sgs_t1, fem_wk%tensor_1, fem_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
+      call add3_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_div_SGS_tsr_flux_type
 !
@@ -157,7 +159,7 @@
 !
       use nodal_fld_cst_to_ele_type
       use sgs_terms_to_each_ele_1st
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use fem_skv_div_sgs_flux_upw_t
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -184,7 +186,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
+      call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -197,7 +199,8 @@
      &      fem_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
+      call add1_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_div_SGS_vflux_upw_type
 !
@@ -213,7 +216,7 @@
 !
       use nodal_fld_cst_to_ele_type
       use sgs_terms_to_each_ele_1st
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use fem_skv_div_sgs_flux_upw_t
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -240,7 +243,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6_type(n_vector, mesh%ele, fem_wk)
+      call reset_sk6(n_vector, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
@@ -252,7 +255,8 @@
      &      fem_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, f_nl)
+      call add3_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_div_SGS_tflux_upw_type
 !

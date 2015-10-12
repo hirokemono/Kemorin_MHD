@@ -24,6 +24,7 @@
       use m_geometry_constants
       use m_geometry_data
       use m_phys_constants
+      use m_sorted_node
       use m_jacobians
       use m_fem_gauss_int_coefs
       use m_finite_element_matrix
@@ -102,7 +103,7 @@
 !
 !
       ff_smp = 0.0d0
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
         call fem_skv_scalar_on_ele_type(iele_fsmp_stack,                &
@@ -114,7 +115,8 @@
      &      fem1_wk%me_diag, ele1, scalar_ele, fem1_wk%sk6)
       end if
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_area_ele_scalar_2_node
 !
@@ -128,7 +130,7 @@
 !
 !
       ff_smp = 0.0d0
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
         call fem_skv_vector_on_ele_type(iele_fsmp_stack,                &
@@ -140,7 +142,8 @@
      &      fem1_wk%me_diag, ele1, vector_ele, fem1_wk%sk6)
       end if
 !
-      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_area_ele_vector_2_node
 !
@@ -157,7 +160,7 @@
 !
 !
       ff_smp = 0.0d0
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
         call fem_skv_scalar_on_ele_grp_type(iele_fsmp_stack,            &
@@ -172,7 +175,8 @@
      &      fem1_wk%sk6)
       end if
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_grp_ele_scalar_2_node
 !
@@ -188,7 +192,7 @@
 !
 !
       ff_smp = 0.0d0
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
         call fem_skv_vector_on_ele_grp_type(iele_fsmp_stack,            &
@@ -203,7 +207,8 @@
      &      fem1_wk%sk6)
       end if
 !
-      call add3_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_grp_ele_vector_2_node
 !

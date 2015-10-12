@@ -25,6 +25,7 @@
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
+      use m_sorted_node
       use m_finite_element_matrix
       use m_jacobians
       use m_int_vol_data
@@ -37,7 +38,7 @@
 !
 !
       ff_nl_smp = 0.0d0
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do k2=1, ele1%nnod_4_ele
         call vactor_phys_2_each_element                                 &
@@ -47,7 +48,8 @@
      &      fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_vol_current_diffuse
 !

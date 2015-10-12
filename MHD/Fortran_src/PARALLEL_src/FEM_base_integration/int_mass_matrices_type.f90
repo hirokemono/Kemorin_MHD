@@ -70,7 +70,7 @@
 !
       use t_solver_djds
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use add_skv1_2_matrix_type
 !
       integer (kind=kint), intent(in) :: num_int
@@ -89,7 +89,7 @@
 ! -------- loop for shape function for the phsical values
 !
       do k2 = 1, mesh%ele%nnod_4_ele
-        call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
+        call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
         call fem_skv_mass_matrix_type(iele_fsmp_stack, num_int, k2,     &
      &      mesh%ele, jac_3d, fem_wk%sk6)
         call add_skv1_2_matrix11_type(mesh%ele, rhs_tbl,                &
@@ -105,7 +105,7 @@
      &          mesh, jac_3d, rhs_tbl, fem_wk, rhs_l)
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: num_int
@@ -124,7 +124,7 @@
 !
       call reset_ff_smps_type(n_scalar,                                 &
      &    mesh%node%max_nod_smp, np_smp, rhs_l)
-      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
+      call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
 !
@@ -133,7 +133,8 @@
      &      mesh%ele, jac_3d, fem_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, rhs_l)
+      call add1_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, rhs_l%ff_smp)
 !
       end subroutine int_mass_matrix_type
 !
@@ -143,7 +144,7 @@
      &          mesh, jac_3d, rhs_tbl, fem_wk, rhs_l, m_lump)
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: num_int
@@ -161,12 +162,13 @@
 !
       call reset_ff_smps_type(n_scalar,                                 &
      &    mesh%node%max_nod_smp, np_smp, rhs_l)
-      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
+      call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
 !
       call fem_skv_mass_matrix_diag_type(iele_fsmp_stack, num_int,      &
      &    mesh%ele, jac_3d, fem_wk%sk6)
 !
-      call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, rhs_l)
+      call add1_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, rhs_l%ff_smp)
       call cal_ff_smp_2_ml_type                                         &
      &   (mesh%node, rhs_tbl, rhs_l%ff_smp, m_lump)
 !
@@ -180,7 +182,7 @@
      &         mesh, jac_3d, rhs_tbl, fem_wk, rhs_l, m_lump)
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_type
+      use cal_skv_to_ff_smp_1st
       use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: num_int
@@ -197,14 +199,15 @@
 !
       call reset_ff_smps_type(n_scalar,                                 &
      &    mesh%node%max_nod_smp, np_smp, rhs_l)
-      call reset_sk6_type(n_scalar, mesh%ele, fem_wk)
+      call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
 !
       call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack, num_int,     &
      &    mesh%ele, jac_3d, fem_wk%sk6)
       call vol_average_skv_HRZ_type(iele_fsmp_stack, mesh%ele,          &
      &    fem_wk%sk6, fem_wk%me_diag)
 !
-      call add1_skv_to_ff_v_smp_type(mesh, rhs_tbl, fem_wk, rhs_l)
+      call add1_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
+     &    fem_wk%sk6, rhs_l%ff_smp)
       call cal_ff_smp_2_ml_type                                         &
      &   (mesh%node, rhs_tbl, rhs_l%ff_smp, m_lump)
 !

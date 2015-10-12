@@ -30,6 +30,7 @@
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_data
+      use m_sorted_node
       use m_finite_element_matrix
       use m_jacobians
       use m_int_vol_data
@@ -66,7 +67,7 @@
 !
 !
       if (num_index_ibc .eq. 0) return
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       do kk=1, ibc_end
         k2 = ibc_shape(kk)
@@ -88,7 +89,8 @@
      &      n_int, i_filter, ak_diff, fem1_wk%scalar_1, fem1_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp_1st(ff_smp, fem1_wk%sk6)
+      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_smp)
 !
       end subroutine int_vol_fixed_sgs_poisson_surf
 !
@@ -116,7 +118,7 @@
 !
 !
       if (num_index_ibc .eq. 0) return
-      call reset_sk6(n_scalar, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       do kk=1, ibc_end
         k2 = ibc_shape(kk)
@@ -139,8 +141,8 @@
      &      fem1_wk%sk6)
       end do
 !
-      call add1_skv_coef_to_ff_v_smp_1st                                &
-     &   (coef_implicit, ff_smp, fem1_wk%sk6)
+      call add1_skv_coef_to_ff_v_smp(node1, ele1, rhs_tbl1,             &
+     &    coef_implicit, fem1_wk%sk6, ff_smp)
 !
       end subroutine int_vol_fixed_sgs_scalar_surf
 !
@@ -169,7 +171,7 @@
 !
 !
       if (nmax_index_ibc .eq. 0) return
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do nd = 1, n_vector
         if ( num_index_ibc(nd) .gt. 0 ) then
@@ -198,8 +200,8 @@
         end if
       end do
 !
-      call add3_skv_coef_to_ff_v_smp_1st                                &
-     &   (coef_implicit, ff_smp, fem1_wk%sk6)
+      call add3_skv_coef_to_ff_v_smp(node1, ele1, rhs_tbl1,             &
+     &    coef_implicit, fem1_wk%sk6, ff_smp)
 !
       end subroutine int_vol_fixed_sgs_vector_surf
 !
@@ -227,7 +229,7 @@
 !
 !
       if (num_index_ibc .eq. 0) return
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do nd = 1, n_vector
           i_comp = i_field + nd - 1
@@ -254,8 +256,8 @@
           end do
       end do
 !
-      call add3_skv_coef_to_ff_v_smp_1st                                &
-     &   (coef_implicit, ff_smp, fem1_wk%sk6)
+      call add3_skv_coef_to_ff_v_smp(node1, ele1, rhs_tbl1,             &
+     &    coef_implicit, fem1_wk%sk6, ff_smp)
 !
       end subroutine int_vol_fixed_rotate_sgs_surf
 !

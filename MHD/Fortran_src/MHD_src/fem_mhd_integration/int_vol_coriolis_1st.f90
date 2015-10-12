@@ -33,6 +33,7 @@
 !
       subroutine int_vol_coriolis_pg(iele_fsmp_stack, n_int)
 !
+      use m_sorted_node
       use m_finite_element_matrix
       use m_jacobians
       use m_int_vol_data
@@ -47,7 +48,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
@@ -57,7 +58,8 @@
      &      fem1_wk%vector_1, angular, ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_vol_coriolis_pg
 !
@@ -66,6 +68,7 @@
       subroutine int_vol_coriolis_upw(iele_fsmp_stack, n_int,           &
      &          ncomp_ele, ie_upw, d_ele)
 !
+      use m_sorted_node
       use m_finite_element_matrix
       use m_jacobians
       use m_int_vol_data
@@ -83,7 +86,7 @@
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
@@ -94,7 +97,8 @@
      &      ele1, jac1_3d_q, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_vol_coriolis_upw
 !

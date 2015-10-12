@@ -55,6 +55,7 @@
 !
       subroutine int_dx_ele2_node(itype_mass, elen_ele, elen_nod)
 !
+      use m_sorted_node
       use m_element_list_4_filter
       use int_element_field_2_node
       use cal_ff_smp_to_ffs
@@ -91,6 +92,7 @@
       subroutine int_vol_diff_dxs(elen_org_nod)
 !
       use m_jacobians
+      use m_sorted_node
       use nodal_fld_2_each_ele_1st
       use cal_skv_to_ff_smp_1st
       use fem_skv_vector_diff_type
@@ -100,7 +102,7 @@
       integer(kind=kint) :: k2
 !
 !
-      call reset_sk6(n_vector, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do k2 = 1, ele1%nnod_4_ele
         call scalar_2_each_element(k2, elen_org_nod, scalar_ele)
@@ -108,7 +110,8 @@
      &      k2, ele1, jac1_3d_q, scalar_ele, fem1_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp_1st(ff_nl_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+     &    fem1_wk%sk6, ff_nl_smp)
 !
       end subroutine int_vol_diff_dxs
 !
