@@ -37,7 +37,7 @@
       subroutine int_vol_sgs_div_v_linear_1st(iele_fsmp_stack,          &
      &          n_int, i_vector, i_filter, iak_diff)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_2_each_ele_1st
       use fem_skv_diffs_sgs_type
 !
@@ -71,7 +71,7 @@
 !
 !      use m_control_parameter
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_2_each_ele_1st
       use fem_skv_diffs_sgs_type
 !
@@ -104,7 +104,7 @@
       subroutine int_vol_scalar_sgs_diffuse_1st(iele_fsmp_stack,        &
      &          n_int, coef_crank, ak_d, i_scalar, i_filter, iak_diff)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_2_each_ele_1st
       use fem_skv_diffusion_sgs_type
 !
@@ -137,7 +137,7 @@
       subroutine int_vol_vector_sgs_diffuse_1st(iele_fsmp_stack,        &
      &          n_int, coef_crank, ak_d, i_vector, i_filter, iak_diff)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_2_each_ele_1st
       use fem_skv_diffusion_sgs_type
 !

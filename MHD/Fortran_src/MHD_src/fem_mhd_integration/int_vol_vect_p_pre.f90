@@ -40,7 +40,7 @@
 !
       use cal_add_smp
       use nodal_fld_cst_to_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_nonlinear_type
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
@@ -80,7 +80,7 @@
 !
       use cal_add_smp
       use nodal_fld_cst_to_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_nonlinear_upw_type
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_magne

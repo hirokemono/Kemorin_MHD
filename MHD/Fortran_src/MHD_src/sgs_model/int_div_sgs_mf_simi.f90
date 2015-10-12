@@ -38,7 +38,7 @@
 !
       use sgs_terms_2_each_ele
       use fem_skv_vector_diff_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       integer(kind = kint), intent(in) :: i_flux, i_vect
 !
@@ -105,7 +105,7 @@
       use m_int_vol_data
 !
       use sgs_terms_2_each_ele
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_vect_diff_upw_type
 !
       integer(kind = kint), intent(in) :: i_flux, i_vect

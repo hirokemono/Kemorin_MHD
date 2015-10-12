@@ -46,7 +46,7 @@
       use t_geometry_data_MHD
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use add_skv1_2_matrix_type
 !
 !

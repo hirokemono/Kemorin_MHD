@@ -57,7 +57,7 @@
       use t_group_data
 !
       use fem_surf_crank_free_sph
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_poisson_matrices_1st
 !
       type(surface_group_data), intent(in) :: sf_grp
@@ -105,7 +105,7 @@
       use t_group_data
 !
       use fem_surf_crank_free_sph
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_poisson_matrices_1st
 !
       type(surface_group_data), intent(in) :: sf_grp

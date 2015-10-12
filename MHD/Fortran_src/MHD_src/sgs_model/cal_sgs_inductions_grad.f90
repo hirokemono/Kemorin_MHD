@@ -38,7 +38,7 @@
 !
       use int_vol_sgs_induct_t
       use cal_ff_smp_to_ffs
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nod_phys_send_recv
       use product_model_coefs_to_sk
 !
@@ -84,7 +84,7 @@
 !
       use int_vol_sgs_induct_t
       use cal_ff_smp_to_ffs
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nod_phys_send_recv
 !
       integer (kind=kint), intent(in) :: i_filter

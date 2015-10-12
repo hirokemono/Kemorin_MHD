@@ -33,7 +33,7 @@
       use t_finite_element_mat
 !
       use nodal_fld_cst_to_ele_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_diffs_sgs_type
 !
       implicit none

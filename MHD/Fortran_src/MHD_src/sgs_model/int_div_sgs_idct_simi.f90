@@ -36,7 +36,7 @@
       use m_node_phys_data
       use sgs_terms_2_each_ele
       use fem_skv_vector_diff_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       integer(kind = kint), intent(in) :: i_flux, i_v, i_b
 !
@@ -67,7 +67,7 @@
       use m_node_phys_data
       use sgs_terms_2_each_ele
       use fem_skv_vect_diff_upw_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       integer(kind = kint), intent(in) :: i_flux, i_v, i_b
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo

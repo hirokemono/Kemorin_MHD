@@ -28,7 +28,7 @@
       use t_finite_element_mat
 !
       use nodal_fld_2_each_ele_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_vector_diff_type
 !
 !-----------------------------------------------------------------------

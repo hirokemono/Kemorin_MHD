@@ -167,7 +167,7 @@
       use m_SGS_model_coefs
 !
       use cal_ff_smp_to_ffs
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nod_phys_send_recv
       use int_vol_sgs_flux
       use product_model_coefs_to_sk
@@ -213,7 +213,7 @@
       use m_int_vol_data
 !
       use cal_ff_smp_to_ffs
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nod_phys_send_recv
       use int_vol_sgs_flux
 !

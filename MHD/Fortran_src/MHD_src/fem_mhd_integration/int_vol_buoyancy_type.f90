@@ -41,7 +41,7 @@
      &          i_source, ak_buo, fem_wk, f_nl)
 !
       use gravity_vec_each_ele_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_nodal_field_type
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -82,7 +82,7 @@
      &          i_source, ak_buo, vxe_up, fem_wk, f_nl)
 !
       use gravity_vec_each_ele_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_nodal_fld_upw_type
 !
       type(mesh_geometry), intent(in) :: mesh

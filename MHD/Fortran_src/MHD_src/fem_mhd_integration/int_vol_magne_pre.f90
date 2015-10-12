@@ -48,7 +48,7 @@
       use nodal_fld_2_each_ele_1st
       use nodal_fld_cst_to_ele_1st
       use sgs_terms_to_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_vector_diff_type
       use fem_skv_lorentz_full_type
       use fem_skv_div_sgs_flux_type
@@ -115,7 +115,7 @@
       use nodal_fld_2_each_ele_1st
       use nodal_fld_cst_to_ele_1st
       use sgs_terms_to_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_lorentz_full_type
       use fem_skv_div_sgs_flux_upw_t
       use fem_skv_vect_diff_upw_type

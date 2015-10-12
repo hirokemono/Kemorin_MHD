@@ -40,7 +40,7 @@
      &          iele_fsmp_stack, n_int, fem_wk, f_nl)
 !
       use nodal_fld_cst_to_ele_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_nonlinear_type
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -78,7 +78,7 @@
      &          iele_fsmp_stack, n_int, vxe_up, fem_wk, f_nl)
 !
       use nodal_fld_cst_to_ele_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_nonlinear_upw_type
 !
       type(mesh_geometry), intent(in) :: mesh

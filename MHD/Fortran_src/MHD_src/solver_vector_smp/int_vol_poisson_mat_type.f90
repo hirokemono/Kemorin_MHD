@@ -40,7 +40,7 @@
      &          djds_const, fem_wk, n_int, mat11)
 !
       use fem_skv_diffusion_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use add_skv1_2_matrix_type
 !
       type(element_data), intent(in) :: ele
@@ -73,7 +73,7 @@
      &          djds_const, fem_wk, coef_imp, n_int, ak_d, mat11)
 !
       use fem_skv_diffusion_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_poisson_matrices_type
 !
       type(element_data), intent(in) :: ele
@@ -108,7 +108,7 @@
      &          djds_const, fem_wk, coef_imp, n_int, ak_d, mat33)
 !
       use fem_skv_diffusion_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_poisson_matrices_type
 !
       type(element_data), intent(in) :: ele

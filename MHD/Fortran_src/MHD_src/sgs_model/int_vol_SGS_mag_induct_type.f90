@@ -43,7 +43,7 @@
      &          i_filter, ak_diff, fem_wk, f_nl)
 !
       use sgs_terms_to_each_ele_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_div_sgs_flux_type
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -86,7 +86,7 @@
      &          i_filter, ak_diff, vxe_up, fem_wk, f_nl)
 !
       use sgs_terms_to_each_ele_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_div_sgs_flux_upw_t
 !
       type(mesh_geometry), intent(in) :: mesh

@@ -70,7 +70,7 @@
 !
       use t_solver_djds
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use add_skv1_2_matrix_type
 !
       integer (kind=kint), intent(in) :: num_int
@@ -105,7 +105,7 @@
      &          mesh, jac_3d, rhs_tbl, fem_wk, rhs_l)
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: num_int
@@ -144,7 +144,7 @@
      &          mesh, jac_3d, rhs_tbl, fem_wk, rhs_l, m_lump)
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: num_int
@@ -182,7 +182,7 @@
      &         mesh, jac_3d, rhs_tbl, fem_wk, rhs_l, m_lump)
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: num_int

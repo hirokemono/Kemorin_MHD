@@ -47,7 +47,7 @@
      &          nod_fld, rhs_tbl, iele_fsmp_stack, n_int,               &
      &          i_scalar, vxe, coef, fem_wk, f_nl)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_cst_to_ele_type
       use fem_skv_nonlinear_type
 !
@@ -89,7 +89,7 @@
      &          nod_fld, rhs_tbl, iele_fsmp_stack, n_int,               &
      &          i_vector, vxe, coef, fem_wk, f_nl)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_cst_to_ele_type
       use fem_skv_nonlinear_type
 !
@@ -131,7 +131,7 @@
      &          nod_fld, rhs_tbl, iele_fsmp_stack, n_int,               &
      &          i_vector, wxe, coef, fem_wk, f_nl)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_cst_to_ele_type
       use fem_skv_nonlinear_type
 !
@@ -174,7 +174,7 @@
      &          nod_fld, rhs_tbl, iele_fsmp_stack, n_int,               &
      &          i_scalar, vxe, vxe_up, coef, fem_wk, f_nl)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_cst_to_ele_type
       use fem_skv_nonlinear_upw_type
 !
@@ -218,7 +218,7 @@
      &          nod_fld, rhs_tbl, iele_fsmp_stack, n_int,               &
      &          i_vector, vxe, vxe_up, coef, fem_wk, f_nl)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_cst_to_ele_type
       use fem_skv_nonlinear_upw_type
 !
@@ -262,7 +262,7 @@
      &          nod_fld, rhs_tbl, iele_fsmp_stack, n_int,               &
      &          i_vector, wxe, vxe_up, coef, fem_wk, f_nl)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_cst_to_ele_type
       use fem_skv_nonlinear_upw_type
 !

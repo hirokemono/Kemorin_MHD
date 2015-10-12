@@ -35,7 +35,7 @@
       use m_SGS_address
 !
       use int_vol_sgs_uxb
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use product_model_coefs_to_sk
 !
       integer (kind=kint), intent(in) :: i_filter
@@ -68,7 +68,7 @@
       use m_finite_element_matrix
 !
       use cal_ff_smp_to_ffs
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_for_ffs
       use nod_phys_send_recv
       use int_vol_sgs_uxb

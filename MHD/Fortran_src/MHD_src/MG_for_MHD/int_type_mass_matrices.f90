@@ -164,7 +164,7 @@
       use t_finite_element_mat
       use fem_skv_mass_mat_type
       use cal_ff_smp_to_ffs
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       type(mesh_geometry), intent(in) ::          mesh
       type(jacobians_3d), intent(in) ::           jac_3d

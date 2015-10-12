@@ -39,7 +39,7 @@
      &          rhs_tbl, nod_fld, iele_fsmp_stack, n_int, i_vector,     &
      &          fem_wk, f_l)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_2_each_ele_type
       use fem_skv_vector_diff_type
 !
@@ -79,7 +79,7 @@
      &          rhs_tbl, nod_fld, iele_fsmp_stack, n_int, i_scalar,     &
      &          fem_wk, f_nl)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_2_each_ele_type
       use fem_skv_vector_diff_type
 !
@@ -120,7 +120,7 @@
      &          nod_fld, iele_fsmp_stack, n_int, coef_crank, ak_d,      &
      &          i_scalar, fem_wk, f_l)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_2_each_ele_type
       use fem_skv_diffusion_type
 !
@@ -161,7 +161,7 @@
      &          nod_fld, iele_fsmp_stack, n_int, coef_crank, ak_d,      &
      &          i_vector, fem_wk, f_l)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_2_each_ele_type
       use fem_skv_diffusion_type
 !

@@ -92,7 +92,7 @@
      &          fem_wk, rhs_l)
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: n_int
@@ -134,7 +134,7 @@
      &          fem_wk, rhs_l, m_lump)
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: n_int
@@ -172,7 +172,7 @@
      &          fem_wk, rhs_l, m_lump)
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -215,7 +215,7 @@
      &          fem_wk, rhs_l, m_lump)
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_ff_smp_to_ffs
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)

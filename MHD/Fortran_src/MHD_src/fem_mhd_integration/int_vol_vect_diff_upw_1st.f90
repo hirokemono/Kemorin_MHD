@@ -29,7 +29,7 @@
       use m_int_vol_data
 !
       use nodal_fld_2_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_vect_diff_upw_type
 !
       implicit none

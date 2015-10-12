@@ -40,7 +40,7 @@
 !
       use delta_phys_2_each_surface
       use fem_surf_skv_sgs_commute_t
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
 !
       type(surface_group_data), intent(in) :: sf_grp
@@ -90,7 +90,7 @@
 !
       use delta_phys_2_each_surface
       use fem_surf_skv_sgs_commute_t
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
 !
       type(surface_group_data), intent(in) :: sf_grp

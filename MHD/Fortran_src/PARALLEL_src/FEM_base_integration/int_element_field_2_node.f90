@@ -31,7 +31,7 @@
 !
       use fem_skv_mass_mat_type
       use fem_skv_nodal_field_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       implicit none
 !

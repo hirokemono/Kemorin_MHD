@@ -143,7 +143,7 @@
 !
       use delta_phys_2_each_surface
       use fem_surf_skv_poisson_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -193,7 +193,7 @@
 !
       use delta_phys_2_each_surface
       use fem_surf_skv_poisson_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -243,7 +243,7 @@
 !
       use delta_phys_2_each_surface
       use fem_surf_skv_poisson_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf

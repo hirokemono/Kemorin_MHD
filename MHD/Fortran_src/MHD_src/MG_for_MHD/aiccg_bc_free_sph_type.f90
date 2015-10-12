@@ -86,7 +86,7 @@
      &          fem_wk, mat_v)
 !
       use fem_surf_crank_free_sph
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       integer (kind = kint), intent(in) :: n_int
       type(mesh_geometry), intent(in) :: mesh
@@ -143,7 +143,7 @@
      &         fem_wk, mat_v)
 !
       use fem_surf_crank_free_sph
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       integer (kind = kint), intent(in) :: n_int
       type(mesh_geometry), intent(in) :: mesh

@@ -25,7 +25,7 @@
       use m_t_int_parameter
 !
       use fem_skv_diffusion_sgs_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_poisson_matrices_1st
 !
 !-----------------------------------------------------------------------

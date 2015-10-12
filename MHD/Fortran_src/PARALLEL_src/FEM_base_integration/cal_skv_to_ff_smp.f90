@@ -1,5 +1,5 @@
-!cal_skv_to_ff_smp_1st.f90
-!     module cal_skv_to_ff_smp_1st
+!cal_skv_to_ff_smp.f90
+!     module cal_skv_to_ff_smp
 !
 !     Written by H. Matsui on June, 2005
 !     Modified by H. Matsui on March, 2009
@@ -19,6 +19,9 @@
 !     &          sk_v, ff_v_smp)
 !      subroutine sub1_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,         &
 !     &          coef, sk_v, ff_v_smp)
+!        type(node_data), intent(in) ::    node
+!        type(element_data), intent(in) :: ele
+!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
 !  -------- Assemble routines from skv to ff_smp for vector
 !      subroutine add3_skv_to_ff_v_smp(node, ele, rhs_tbl,              &
@@ -29,6 +32,9 @@
 !     &          sk_v, ff_v_smp)
 !      subroutine sub3_skv_coef_to_ff_v_smp(node, ele, rhs_tbl,         &
 !     &          coef, sk_v, ff_v_smp)
+!        type(node_data), intent(in) ::    node
+!        type(element_data), intent(in) :: ele
+!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
 !  -------- Assemble routines from skv to ff_smp for tensor
 !      subroutine add6_skv_to_ff_t_smp(node, ele, rhs_tbl,              &
@@ -39,8 +45,11 @@
 !     &          sk_v, ff_t_smp)
 !      subroutine sub6_skv_coef_to_ff_t_smp(node, ele, rhs_tbl,         &
 !     &          coef, sk_v, ff_t_smp)
+!        type(node_data), intent(in) ::    node
+!        type(element_data), intent(in) :: ele
+!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
-      module cal_skv_to_ff_smp_1st
+      module cal_skv_to_ff_smp
 !
       use m_precision
 !
@@ -373,4 +382,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module cal_skv_to_ff_smp_1st
+      end module cal_skv_to_ff_smp

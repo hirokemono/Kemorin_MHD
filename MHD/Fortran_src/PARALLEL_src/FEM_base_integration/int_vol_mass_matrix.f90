@@ -91,7 +91,7 @@
      &          nmat_size, aiccg)
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use add_skv1_2_matrix_1st
 !
 !
@@ -120,7 +120,7 @@
       subroutine int_mass_matrix(iele_fsmp_stack, num_int)
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       integer (kind=kint), intent(in) :: num_int
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -149,7 +149,7 @@
       subroutine int_mass_matrix_diag(iele_fsmp_stack, num_int)
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       integer (kind=kint), intent(in) :: num_int
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -171,7 +171,7 @@
       subroutine int_mass_matrix_HRZ_full(iele_fsmp_stack, num_int)
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       integer (kind=kint), intent(in) :: num_int
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -198,7 +198,7 @@
       subroutine int_mass_matrix_HRZ(iele_fsmp_stack, num_int)
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       integer (kind=kint), intent(in) :: num_int
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)

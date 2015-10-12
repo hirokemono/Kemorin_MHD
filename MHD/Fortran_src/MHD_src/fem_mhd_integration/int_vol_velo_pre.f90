@@ -50,7 +50,7 @@
       use nodal_fld_cst_to_ele_1st
       use gravity_vec_each_ele_1st
       use sgs_terms_to_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_nodal_field_type
       use fem_skv_vector_diff_type
       use fem_skv_nonlinear_type
@@ -242,7 +242,7 @@
       use nodal_fld_cst_to_ele_1st
       use gravity_vec_each_ele_1st
       use sgs_terms_to_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_nodal_fld_upw_type
       use fem_skv_vect_diff_upw_type
       use fem_skv_nonlinear_upw_type

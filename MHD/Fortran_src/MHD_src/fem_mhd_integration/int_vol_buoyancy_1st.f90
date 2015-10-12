@@ -40,7 +40,7 @@
      &          i_source, ak_buo)
 !
       use gravity_vec_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_nodal_field_type
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -72,7 +72,7 @@
      &          i_source, ak_buo, ncomp_ele, ie_upw, d_ele)
 !
       use gravity_vec_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_nodal_fld_upw_type
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)

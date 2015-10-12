@@ -43,7 +43,7 @@
       subroutine int_vol_scalar_inertia_1st(iele_fsmp_stack,            &
      &          n_int, i_scalar, ncomp_ele, iele_velo, d_ele, coef)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_cst_to_ele_1st
       use fem_skv_nonlinear_type
 !
@@ -78,7 +78,7 @@
       subroutine int_vol_vector_inertia_1st(iele_fsmp_stack,            &
      &          n_int, i_vector, ncomp_ele, iele_velo, d_ele, coef)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_cst_to_ele_1st
       use fem_skv_nonlinear_type
 !
@@ -113,7 +113,7 @@
       subroutine int_vol_rot_inertia_1st(iele_fsmp_stack,               &
      &          n_int, i_vector, ncomp_ele, iele_vort, d_ele, coef)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_cst_to_ele_1st
       use fem_skv_nonlinear_type
 !
@@ -150,7 +150,7 @@
      &          n_int, i_scalar, ncomp_ele, iele_velo, ie_upw, d_ele,   &
      &          coef)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_cst_to_ele_1st
       use fem_skv_nonlinear_upw_type
 !
@@ -186,7 +186,7 @@
      &         (iele_fsmp_stack, n_int, i_vector,                       &
      &          ncomp_ele, iele_velo, ie_upw, d_ele, coef)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_cst_to_ele_1st
       use fem_skv_nonlinear_upw_type
 !
@@ -221,7 +221,7 @@
       subroutine int_vol_rot_inertia_upw_1st(iele_fsmp_stack, n_int,    &
      &          i_vector, ncomp_ele, iele_vort, ie_upw, d_ele, coef)
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_cst_to_ele_1st
       use fem_skv_nonlinear_upw_type
 !

@@ -48,7 +48,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_2_each_ele_type
       use fem_skv_diffs_sgs_type
 !
@@ -99,7 +99,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_2_each_ele_type
       use fem_skv_diffs_sgs_type
 !
@@ -152,7 +152,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_2_each_ele_type
       use fem_skv_diffusion_sgs_type
 !
@@ -205,7 +205,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
 !
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use nodal_fld_2_each_ele_type
       use fem_skv_diffusion_sgs_type
 !

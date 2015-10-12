@@ -32,7 +32,7 @@
       use t_jacobian_2d
 !
       use fem_surf_skv_poisson_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       implicit  none
 !
@@ -206,7 +206,7 @@
       subroutine int_sf_grad_press(ele, surf, sf_grp, jac_sf_grp)
 !
       use m_surf_data_press
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
@@ -232,7 +232,7 @@
       subroutine int_sf_grad_magne_p(ele, surf, sf_grp, jac_sf_grp)
 !
       use m_surf_data_magne_p
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
 !
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf

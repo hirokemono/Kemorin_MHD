@@ -37,7 +37,7 @@
      &          mat11)
 !
       use fem_skv_diffusion_sgs_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use add_skv1_2_matrix_type
 !
       type(element_data), intent(in) :: ele
@@ -74,7 +74,7 @@
      &          n_int, i_filter, ak_diff, ak_d, mat11)
 !
       use fem_skv_diffusion_sgs_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_poisson_matrices_type
 !
       type(element_data), intent(in) :: ele
@@ -112,7 +112,7 @@
      &          n_int, i_filter, ak_diff, ak_d, mat33)
 !
       use fem_skv_diffusion_sgs_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_poisson_matrices_type
 !
       type(element_data), intent(in) :: ele

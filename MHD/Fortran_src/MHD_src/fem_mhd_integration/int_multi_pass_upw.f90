@@ -286,7 +286,7 @@
       use m_jacobians
       use m_int_vol_data
       use nodal_fld_2_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_for_ffs
       use fem_skv_nodal_fld_upw_type
 !
@@ -323,7 +323,7 @@
       use m_jacobians
       use m_int_vol_data
       use nodal_fld_2_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_for_ffs
       use fem_skv_nodal_fld_upw_type
 !

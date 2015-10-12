@@ -39,7 +39,7 @@
       use m_int_vol_data
 !
       use nodal_fld_cst_to_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_nonlinear_type
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -74,7 +74,7 @@
       use m_int_vol_data
 !
       use nodal_fld_cst_to_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_nonlinear_upw_type
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)

@@ -55,7 +55,7 @@
 !
       use nodal_fld_cst_to_ele_type
       use sgs_terms_to_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_div_sgs_flux_type
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -107,7 +107,7 @@
 !
       use nodal_fld_cst_to_ele_type
       use sgs_terms_to_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_div_sgs_flux_type
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -159,7 +159,7 @@
 !
       use nodal_fld_cst_to_ele_type
       use sgs_terms_to_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_div_sgs_flux_upw_t
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -216,7 +216,7 @@
 !
       use nodal_fld_cst_to_ele_type
       use sgs_terms_to_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_div_sgs_flux_upw_t
 !
       type(mesh_geometry), intent(in) :: mesh

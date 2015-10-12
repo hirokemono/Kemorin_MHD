@@ -35,7 +35,7 @@
       use m_magne_matrix
 !
       use fem_skv_mass_mat_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_poisson_matrices_1st
 !
        integer(kind = kint) :: k2

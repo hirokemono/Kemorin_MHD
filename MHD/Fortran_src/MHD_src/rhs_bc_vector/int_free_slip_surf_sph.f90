@@ -53,7 +53,7 @@
       use t_jacobian_2d
 !
       use fem_surf_skv_poisson_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use node_phys_2_each_surface
 !
       implicit none

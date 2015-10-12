@@ -43,7 +43,7 @@
      &          i_SGS_flux, i_filter, iak_diff, coef)
 !
       use sgs_terms_to_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_div_sgs_flux_type
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -80,7 +80,7 @@
 !
       use nodal_fld_cst_to_ele_1st
       use sgs_terms_to_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_div_sgs_flux_type
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -116,7 +116,7 @@
      &         i_filter, iak_diff, ncomp_ele, ie_upw, d_ele, coef)
 !
       use sgs_terms_to_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_div_sgs_flux_upw_t
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -156,7 +156,7 @@
 !
       use nodal_fld_cst_to_ele_1st
       use sgs_terms_to_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_div_sgs_flux_upw_t
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)

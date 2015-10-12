@@ -131,7 +131,7 @@
       use m_int_vol_data
 !
       use nodal_fld_2_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_nodal_field_type
 !
       integer(kind = kint), intent(in) :: i_field
@@ -165,7 +165,7 @@
       use m_int_vol_data
 !
       use nodal_fld_2_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_nodal_field_type
 !
       integer(kind = kint), intent(in) :: i_field

@@ -33,7 +33,7 @@
      &          nmat_size, aiccg)
 !
       use fem_skv_diffusion_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
@@ -64,7 +64,7 @@
      &          coef_imp, ak_d, nmat_size, aiccg)
 !
       use fem_skv_diffusion_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &
@@ -96,7 +96,7 @@
      &          coef_imp, ak_d, nmat_size, aiccg33)
 !
       use fem_skv_diffusion_type
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use cal_poisson_matrices_1st
 !
       integer(kind = kint), intent(in)                                  &

@@ -24,7 +24,7 @@
       use m_jacobians
 !
       use nodal_fld_2_each_ele_1st
-      use cal_skv_to_ff_smp_1st
+      use cal_skv_to_ff_smp
       use fem_skv_vector_diff_type
 !
       implicit none
