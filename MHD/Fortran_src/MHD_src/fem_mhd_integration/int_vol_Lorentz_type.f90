@@ -120,7 +120,7 @@
      &           rhs_tbl, iele_fsmp_stack, n_int, bxe, fem_wk, f_nl)
 !
       use cal_add_smp
-      use nodal_fld_cst_to_ele_type
+      use nodal_fld_cst_to_element
       use cal_skv_to_ff_smp
       use fem_skv_lorentz_full_type
 !
@@ -143,8 +143,8 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
-        call vector_cst_phys_each_ele_type(mesh, nod_fld, k2,           &
-     &      iphys%i_vecp, coef_lor, fem_wk%vector_1)
+        call vector_cst_phys_2_each_ele(mesh%node, mesh%ele, nod_fld,   &
+     &      k2, iphys%i_vecp, coef_lor, fem_wk%vector_1)
 !
 !$omp parallel
         call add_const_to_vector_smp(np_smp, mesh%ele%numele,           &

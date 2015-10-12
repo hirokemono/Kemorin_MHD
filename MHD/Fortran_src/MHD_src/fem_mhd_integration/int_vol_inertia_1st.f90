@@ -26,6 +26,7 @@
       use m_precision
       use m_geometry_data
       use m_phys_constants
+      use m_node_phys_data
 !
       use m_sorted_node
       use m_finite_element_matrix
@@ -44,7 +45,7 @@
      &          n_int, i_scalar, ncomp_ele, iele_velo, d_ele, coef)
 !
       use cal_skv_to_ff_smp
-      use nodal_fld_cst_to_ele_1st
+      use nodal_fld_cst_to_element
       use fem_skv_nonlinear_type
 !
       integer(kind=kint), intent(in) :: n_int, i_scalar
@@ -61,8 +62,8 @@
 !
 ! -------- loop for shape function for the physical values
       do k2 = 1, ele1%nnod_4_ele
-        call scalar_cst_phys_2_each_ele                                 &
-     &     (k2, i_scalar, coef, fem1_wk%scalar_1)
+        call scalar_cst_phys_2_each_ele(node1, ele1, nod_fld1,          &
+     &      k2, i_scalar, coef, fem1_wk%scalar_1)
         call fem_skv_scalar_inertia_type(iele_fsmp_stack, n_int, k2,    &
      &      fem1_wk%scalar_1, d_ele(1,iele_velo), ele1, jac1_3d_q,      &
      &      fem1_wk%sk6)
@@ -79,7 +80,7 @@
      &          n_int, i_vector, ncomp_ele, iele_velo, d_ele, coef)
 !
       use cal_skv_to_ff_smp
-      use nodal_fld_cst_to_ele_1st
+      use nodal_fld_cst_to_element
       use fem_skv_nonlinear_type
 !
       integer(kind = kint), intent(in) :: n_int, i_vector
@@ -96,8 +97,8 @@
 !
 ! -------- loop for shape function for the physical values
       do k2 = 1, ele1%nnod_4_ele
-        call vector_cst_phys_2_each_ele                                 &
-     &     (k2, i_vector, coef, fem1_wk%vector_1)
+        call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1,          &
+     &      k2, i_vector, coef, fem1_wk%vector_1)
         call fem_skv_vector_inertia_type(iele_fsmp_stack, n_int, k2,    &
      &      fem1_wk%vector_1, d_ele(1,iele_velo), ele1, jac1_3d_q,      &
      &      fem1_wk%sk6)
@@ -114,7 +115,7 @@
      &          n_int, i_vector, ncomp_ele, iele_vort, d_ele, coef)
 !
       use cal_skv_to_ff_smp
-      use nodal_fld_cst_to_ele_1st
+      use nodal_fld_cst_to_element
       use fem_skv_nonlinear_type
 !
       integer(kind = kint), intent(in) :: n_int, i_vector
@@ -131,8 +132,8 @@
 !
 ! -------- loop for shape function for the physical values
       do k2 = 1, ele1%nnod_4_ele
-        call vector_cst_phys_2_each_ele                                 &
-     &     (k2, i_vector, coef, fem1_wk%vector_1)
+        call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1,          &
+     &      k2, i_vector, coef, fem1_wk%vector_1)
         call fem_skv_rot_inertia_type(iele_fsmp_stack, n_int, k2,       &
      &      fem1_wk%vector_1, d_ele(1,iele_vort), ele1, jac1_3d_q,      &
      &      fem1_wk%sk6)
@@ -151,7 +152,7 @@
      &          coef)
 !
       use cal_skv_to_ff_smp
-      use nodal_fld_cst_to_ele_1st
+      use nodal_fld_cst_to_element
       use fem_skv_nonlinear_upw_type
 !
       integer(kind=kint), intent(in) :: n_int, i_scalar
@@ -168,8 +169,8 @@
 !
 ! -------- loop for shape function for the physical values
       do k2 = 1, ele1%nnod_4_ele
-        call scalar_cst_phys_2_each_ele                                 &
-     &     (k2, i_scalar, coef, fem1_wk%scalar_1)
+        call scalar_cst_phys_2_each_ele(node1, ele1, nod_fld1,          &
+     &      k2, i_scalar, coef, fem1_wk%scalar_1)
         call fem_skv_scalar_inertia_upwind(iele_fsmp_stack, n_int, k2,  &
      &      fem1_wk%scalar_1, d_ele(1,iele_velo), d_ele(1,ie_upw),      &
      &      ele1, jac1_3d_q, fem1_wk%sk6)
@@ -187,7 +188,7 @@
      &          ncomp_ele, iele_velo, ie_upw, d_ele, coef)
 !
       use cal_skv_to_ff_smp
-      use nodal_fld_cst_to_ele_1st
+      use nodal_fld_cst_to_element
       use fem_skv_nonlinear_upw_type
 !
       integer(kind = kint), intent(in) :: n_int, i_vector
@@ -204,8 +205,8 @@
 !
 ! -------- loop for shape function for the physical values
       do k2 = 1, ele1%nnod_4_ele
-        call vector_cst_phys_2_each_ele                                 &
-     &     (k2, i_vector, coef, fem1_wk%vector_1)
+        call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1,          &
+     &      k2, i_vector, coef, fem1_wk%vector_1)
         call fem_skv_vector_inertia_upwind(iele_fsmp_stack, n_int, k2,  &
      &      fem1_wk%vector_1, d_ele(1,iele_velo), d_ele(1,ie_upw),      &
      &      ele1, jac1_3d_q,  fem1_wk%sk6)
@@ -222,7 +223,7 @@
      &          i_vector, ncomp_ele, iele_vort, ie_upw, d_ele, coef)
 !
       use cal_skv_to_ff_smp
-      use nodal_fld_cst_to_ele_1st
+      use nodal_fld_cst_to_element
       use fem_skv_nonlinear_upw_type
 !
       integer(kind = kint), intent(in) :: n_int, i_vector
@@ -239,8 +240,8 @@
 !
 ! -------- loop for shape function for the physical values
       do k2 = 1, ele1%nnod_4_ele
-        call vector_cst_phys_2_each_ele                                 &
-     &     (k2, i_vector, coef, fem1_wk%vector_1)
+        call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1,          &
+     &      k2, i_vector, coef, fem1_wk%vector_1)
         call fem_skv_rot_inertia_upwind(iele_fsmp_stack, n_int, k2,     &
      &      fem1_wk%vector_1, d_ele(1,iele_vort), d_ele(1,ie_upw),      &
      &      ele1, jac1_3d_q, fem1_wk%sk6)

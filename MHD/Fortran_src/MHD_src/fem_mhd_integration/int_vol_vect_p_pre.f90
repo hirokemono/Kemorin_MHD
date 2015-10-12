@@ -22,6 +22,7 @@
       use m_phys_constants
       use m_geometry_data_MHD
       use m_node_phys_address
+      use m_node_phys_data
       use m_sorted_node
       use m_finite_element_matrix
       use m_jacobians
@@ -39,7 +40,7 @@
       subroutine int_vol_vect_p_pre_ele(ncomp_ele, iele_magne, d_ele)
 !
       use cal_add_smp
-      use nodal_fld_cst_to_ele_1st
+      use nodal_fld_cst_to_element
       use cal_skv_to_ff_smp
       use fem_skv_nonlinear_type
 !
@@ -60,8 +61,8 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
-        call vector_cst_phys_2_each_ele(k2, iphys%i_velo,               &
-     &      coef_induct, mhd_fem1_wk%velo_1)
+        call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_velo, coef_induct, mhd_fem1_wk%velo_1)
 !
         call fem_skv_rot_inertia_type(iele_cd_smp_stack,                &
      &      intg_point_t_evo, k2, mhd_fem1_wk%velo_1, fem1_wk%vector_1, &
@@ -79,7 +80,7 @@
      &         (ncomp_ele, iele_magne, d_ele)
 !
       use cal_add_smp
-      use nodal_fld_cst_to_ele_1st
+      use nodal_fld_cst_to_element
       use cal_skv_to_ff_smp
       use fem_skv_nonlinear_upw_type
 !
@@ -99,8 +100,8 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
-        call vector_cst_phys_2_each_ele(k2, iphys%i_velo,               &
-     &      coef_induct, mhd_fem1_wk%velo_1)
+        call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_velo, coef_induct, mhd_fem1_wk%velo_1)
 !
         call fem_skv_rot_inertia_upwind(iele_cd_smp_stack,              &
      &      intg_point_t_evo, k2, mhd_fem1_wk%velo_1, fem1_wk%vector_1, &

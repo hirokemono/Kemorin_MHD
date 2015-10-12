@@ -37,7 +37,7 @@
 !
       subroutine int_vol_temp_ele(ncomp_ele, iele_velo, d_ele)
 !
-      use nodal_fld_cst_to_ele_1st
+      use nodal_fld_cst_to_element
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp
       use fem_skv_nonlinear_type
@@ -57,8 +57,8 @@
 ! -------- loop for shape function for the phsical values
 !
       do k2 = 1, ele1%nnod_4_ele
-        call scalar_cst_phys_2_each_ele(k2, iphys%i_temp,               &
-     &      coef_nega_t, fem1_wk%scalar_1)
+        call scalar_cst_phys_2_each_ele(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_temp, coef_nega_t, fem1_wk%scalar_1)
 !
         if(iflag_SGS_heat .ne. id_SGS_none                              &
      &    .and. iflag_commute_heat .eq. id_SGS_commute_ON) then
@@ -71,8 +71,8 @@
      &        mhd_fem1_wk%sgs_v1, fem1_wk%vector_1, d_ele(1,iele_velo), &
      &        fem1_wk%sk6)
         else if(iflag_SGS_heat .ne. id_SGS_none) then
-          call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_h_flux,       &
-     &        coef_nega_t, mhd_fem1_wk%sgs_v1)
+          call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1, k2,    &
+     &        iphys%i_SGS_h_flux, coef_nega_t, mhd_fem1_wk%sgs_v1)
           call fem_skv_scl_inertia_sgs_pg(iele_fl_smp_stack,            &
      &        num_int, k2, ele1, jac1_3d_q,                             &
      &        fem1_wk%scalar_1, mhd_fem1_wk%sgs_v1, d_ele(1,iele_velo), &
@@ -94,7 +94,7 @@
 !
       subroutine int_vol_temp_ele_upw(ncomp_ele, iele_velo, d_ele)
 !
-      use nodal_fld_cst_to_ele_1st
+      use nodal_fld_cst_to_element
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp
       use fem_skv_nonlinear_upw_type
@@ -114,8 +114,8 @@
 ! -------- loop for shape function for the phsical values
 !
       do k2 = 1, ele1%nnod_4_ele
-        call scalar_cst_phys_2_each_ele(k2, iphys%i_temp,               &
-     &      coef_nega_t, fem1_wk%scalar_1)
+        call scalar_cst_phys_2_each_ele(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_temp, coef_nega_t, fem1_wk%scalar_1)
 !
         if(iflag_SGS_heat .ne. id_SGS_none                              &
      &    .and. iflag_commute_heat .eq. id_SGS_commute_ON) then
@@ -128,8 +128,8 @@
      &        mhd_fem1_wk%sgs_v1, fem1_wk%vector_1, d_ele(1,iele_velo), &
      &        d_ele(1,iele_velo), fem1_wk%sk6)
         else if(iflag_SGS_heat .ne. id_SGS_none) then
-          call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_h_flux,       &
-     &        coef_nega_t, mhd_fem1_wk%sgs_v1)
+          call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1, k2,    &
+     &        iphys%i_SGS_h_flux, coef_nega_t, mhd_fem1_wk%sgs_v1)
           call fem_skv_scl_inertia_sgs_upwind(iele_fl_smp_stack,        &
      &       num_int, k2, ele1, jac1_3d_q, fem1_wk%scalar_1,            &
      &       mhd_fem1_wk%sgs_v1, d_ele(1,iele_velo),                    &

@@ -123,7 +123,7 @@
       use m_int_vol_data
 !
       use cal_add_smp
-      use nodal_fld_cst_to_ele_1st
+      use nodal_fld_cst_to_element
       use cal_skv_to_ff_smp
       use fem_skv_lorentz_full_type
 !
@@ -139,9 +139,9 @@
       call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
-      do k2=1, ele1%nnod_4_ele
-        call vector_cst_phys_2_each_ele(k2, iphys%i_vecp,               &
-     &      coef_lor, mhd_fem1_wk%vecp_1)
+      do k2 = 1, ele1%nnod_4_ele
+        call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_vecp, coef_lor, mhd_fem1_wk%vecp_1)
 !
 !$omp parallel
         call add_const_to_vector_smp(np_smp, ele1%numele,               &

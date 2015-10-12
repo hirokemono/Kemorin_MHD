@@ -46,7 +46,7 @@
 !
       use cal_add_smp
       use nodal_fld_2_each_element
-      use nodal_fld_cst_to_ele_1st
+      use nodal_fld_cst_to_element
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp
       use fem_skv_vector_diff_type
@@ -94,8 +94,8 @@
      &         ele1, jac1_3d_q, FEM1_elen, mhd_fem1_wk%sgs_v1,          &
      &         fem1_wk%vector_1, fem1_wk%sk6)
         else if (iflag_SGS_induction .ne. id_SGS_none) then
-          call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_induct_t,     &
-     &        coef_induct, mhd_fem1_wk%sgs_v1)
+          call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1, k2,    &
+     &        iphys%i_SGS_induct_t, coef_induct, mhd_fem1_wk%sgs_v1)
           call fem_skv_div_asym_tsr(iele_cd_smp_stack, num_int, k2,     &
      &        ele1, jac1_3d_q, mhd_fem1_wk%sgs_v1, fem1_wk%sk6)
         end if
@@ -113,7 +113,7 @@
 !
       use cal_add_smp
       use nodal_fld_2_each_element
-      use nodal_fld_cst_to_ele_1st
+      use nodal_fld_cst_to_element
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp
       use fem_skv_lorentz_full_type
@@ -160,8 +160,8 @@
      &        ele1, jac1_3d_q, FEM1_elen, d_ele(1,iphys_ele%i_magne),   &
      &        mhd_fem1_wk%sgs_v1, fem1_wk%vector_1, fem1_wk%sk6)
         else if (iflag_SGS_induction .ne. id_SGS_none) then
-          call vector_cst_phys_2_each_ele(k2, iphys%i_SGS_induct_t,     &
-     &        coef_induct, mhd_fem1_wk%sgs_v1)
+          call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1, k2,    &
+     &        iphys%i_SGS_induct_t, coef_induct, mhd_fem1_wk%sgs_v1)
           call fem_skv_div_as_tsr_upw(iele_cd_smp_stack, num_int, k2,   &
      &        d_ele(1,iphys_ele%i_magne), ele1, jac1_3d_q,              &
      &        mhd_fem1_wk%sgs_v1, fem1_wk%sk6)
