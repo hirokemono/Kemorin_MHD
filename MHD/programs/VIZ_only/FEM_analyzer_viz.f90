@@ -93,7 +93,8 @@
         call s_cal_normal_vector
 !
         if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
-        call pick_normal_of_surf_group(sf_grp1, sf_grp_v1)
+        call pick_normal_of_surf_group                                  &
+     &     (surf1, sf_grp1, sf_grp_tbl1, sf_grp_v1)
 !
         if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
         call s_sum_normal_4_surf_group(sf_grp1, sf_grp_v1)

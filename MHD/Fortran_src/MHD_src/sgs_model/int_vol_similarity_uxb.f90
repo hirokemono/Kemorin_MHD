@@ -57,7 +57,7 @@
 !
       use nodal_fld_2_each_element
       use fem_skv_nodal_field_type
-      use cal_product_to_skv_1st
+      use cal_products_within_skv
       use cal_skv_to_ff_smp
 !
       integer(kind = kint) :: k2
@@ -72,7 +72,7 @@
         call fem_skv_vector_type(iele_cd_smp_stack,                     &
      &      intg_point_t_evo, k2, ele1, jac1_3d_q,                      &
      &      fem1_wk%vector_1, fem1_wk%sk6)
-        call scalar_prod_to_skv_tensor_1st(iele_cd_smp_stack,           &
+        call scalar_prod_to_tensor_skv(ele1, iele_cd_smp_stack,         &
      &      ak_sgs(1,icomp_sgs_uxb), fem1_wk%sk6)
       end do
 !
@@ -93,7 +93,7 @@
 !
       use nodal_fld_2_each_element
       use fem_skv_nodal_fld_upw_type
-      use cal_product_to_skv_1st
+      use cal_products_within_skv
       use cal_skv_to_ff_smp
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
@@ -112,7 +112,7 @@
      &      intg_point_t_evo, k2, d_ele(1,iele_magne), ele1, jac1_3d_q, &
      &      fem1_wk%vector_1, fem1_wk%sk6)
 !
-        call scalar_prod_to_skv_tensor_1st(iele_cd_smp_stack,           &
+        call scalar_prod_to_tensor_skv(ele1, iele_cd_smp_stack,         &
      &      ak_sgs(1,icomp_sgs_uxb), fem1_wk%sk6)
       end do
 !

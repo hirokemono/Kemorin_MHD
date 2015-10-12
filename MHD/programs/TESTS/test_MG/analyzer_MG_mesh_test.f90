@@ -69,7 +69,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'pick_surface_group_geometry'
-      call pick_surface_group_geometry(sf_grp1, sf_grp_v1)
+      call pick_surface_group_geometry                                  &
+     &   (surf1, sf_grp1, sf_grp_tbl1, sf_grp_v1)
 !
 !  -------------------------------
 !  -------------------------------
@@ -116,11 +117,12 @@
 !
 !  -------------------------------
 !
-       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
-       call pick_normal_of_surf_group(sf_grp1, sf_grp_v1)
+      if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
+      call pick_normal_of_surf_group                                    &
+     &   (surf1, sf_grp1, sf_grp_tbl1, sf_grp_v1)
 !
-       if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
-       call s_sum_normal_4_surf_group(sf_grp1, sf_grp_v1)
+      if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
+      call s_sum_normal_4_surf_group(sf_grp1, sf_grp_v1)
 !
 !  ---------------------------------------------
 !     output node data

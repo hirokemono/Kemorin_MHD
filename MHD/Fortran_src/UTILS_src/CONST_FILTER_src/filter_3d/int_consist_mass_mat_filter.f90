@@ -28,10 +28,13 @@
       subroutine int_vol_consist_mass_matrix
 !
       use m_machine_parameter
+      use m_geometry_data
+      use m_sorted_node
       use matrix_initialization
 !
 !
-      call iccg_matrix_init(num_mass_mat, aiccg_mass)
+      call iccg_matrix_init(node1, ele1, rhs_tbl1, mat_tbl_q1,          &
+     &    num_mass_mat, aiccg_mass)
 !
 !      if (id_filter_area_grp(1) .eq. -1) then
         if (iflag_debug.eq.1)                                           &

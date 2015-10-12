@@ -3,8 +3,10 @@
 !
 !      Written by H. Matsui on Nov., 2006
 !
-!      subroutine s_set_int_point_position(nele_grp, iele_grp, an,      &
-!     &          xx_int, yy_int, zz_int)
+!      subroutine set_integration_position(node, ele,                   &
+!     &           nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
+!        type(node_data), intent(in) ::    node
+!        type(element_data), intent(in) :: ele
 !
 !      subroutine set_int_point_position_27(nele_grp, iele_grp, an,     &
 !     &          xx_int, yy_int, zz_int)
@@ -16,6 +18,7 @@
       module set_int_point_position
 !
       use m_precision
+      use m_geometry_constants
 !
       implicit none
 !
@@ -25,43 +28,43 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_int_point_position(nele_grp, iele_grp, an,       &
-     &          xx_int, yy_int, zz_int)
+      subroutine set_integration_position(node, ele,                    &
+     &           nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
 !
-      use m_geometry_constants
-      use m_geometry_data
+      use t_geometry_data
+!
+      type(node_data), intent(in) ::    node
+      type(element_data), intent(in) :: ele
 !
       integer(kind = kint), intent(in) :: nele_grp
       integer(kind = kint), intent(in) :: iele_grp(nele_grp)
-      real(kind = kreal), intent(in) :: an(ele1%nnod_4_ele)
+      real(kind = kreal), intent(in) :: an(ele%nnod_4_ele)
 !
       real(kind = kreal), intent(inout) :: xx_int(nele_grp)
       real(kind = kreal), intent(inout) :: yy_int(nele_grp)
       real(kind = kreal), intent(inout) :: zz_int(nele_grp)
 !
 !
-      if      (ele1%nnod_4_ele .eq. num_t_lag) then
+      if      (ele%nnod_4_ele .eq. num_t_lag) then
         call set_int_point_position_27                                  &
-     &     (node1%numnod, ele1%numele, node1%xx, ele1%ie,               &
+     &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
      &      nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
-      else if (ele1%nnod_4_ele .eq. num_t_quad) then
+      else if (ele%nnod_4_ele .eq. num_t_quad) then
         call set_int_point_position_20                                  &
-     &     (node1%numnod, ele1%numele, node1%xx, ele1%ie,               &
+     &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
      &      nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
-      else if (ele1%nnod_4_ele .eq. num_t_linear) then
+      else if (ele%nnod_4_ele .eq. num_t_linear) then
         call set_int_point_position_8                                   &
-     &     (node1%numnod, ele1%numele, node1%xx, ele1%ie,               &
+     &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
      &      nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
       end if
 !
-      end subroutine s_set_int_point_position
+      end subroutine set_integration_position
 !
 ! ----------------------------------------------------------------------
 !
       subroutine set_int_point_position_27(numnod, numele, xx, ie,      &
      &          nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
-!
-      use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: ie(numele,num_t_lag)
@@ -172,8 +175,6 @@
       subroutine set_int_point_position_20(numnod, numele, xx, ie,      &
      &          nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
 !
-      use m_geometry_constants
-!
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: ie(numele,num_t_quad)
       real(kind = kreal), intent(in) :: xx(numnod,3)
@@ -262,8 +263,6 @@
 !
       subroutine set_int_point_position_8(numnod, numele, xx, ie,       &
      &          nele_grp, iele_grp, an, xx_int, yy_int, zz_int)
-!
-      use m_geometry_constants
 !
       integer(kind = kint), intent(in) :: numnod, numele
       integer(kind = kint), intent(in) :: ie(numele,num_t_linear)

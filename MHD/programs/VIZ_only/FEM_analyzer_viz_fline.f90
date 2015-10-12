@@ -69,32 +69,33 @@
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
-        if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
-        call set_ele_id_4_node
+      if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
+      call set_ele_id_4_node
 !
-        call set_max_int_point_by_etype
-        if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_element'
-        call cal_jacobian_element
+      call set_max_int_point_by_etype
+      if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_element'
+      call cal_jacobian_element
 !
-        call dealloc_dxi_dx_type(jac1_3d_q)
-        call dealloc_dxi_dx_type(jac1_3d_l)
+      call dealloc_dxi_dx_type(jac1_3d_q)
+      call dealloc_dxi_dx_type(jac1_3d_l)
 !
 !     --------------------- Surface jacobian for fieldline
 !
-        if (iflag_debug.gt.0) write(*,*) 's_int_whole_volume_only'
-        call s_int_whole_volume_only
+      if (iflag_debug.gt.0) write(*,*) 's_int_whole_volume_only'
+      call s_int_whole_volume_only
 !
-        if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_surface'
-        call cal_jacobian_surface
+      if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_surface'
+      call cal_jacobian_surface
 !
-        if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector'
-        call s_cal_normal_vector
+      if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector'
+      call s_cal_normal_vector
 !
-        if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
-        call pick_normal_of_surf_group(sf_grp1, sf_grp_v1)
+      if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
+      call pick_normal_of_surf_group                                    &
+     &   (surf1, sf_grp1, sf_grp_tbl1, sf_grp_v1)
 !
-        if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
-        call s_sum_normal_4_surf_group(sf_grp1, sf_grp_v1)
+      if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
+      call s_sum_normal_4_surf_group(sf_grp1, sf_grp_v1)
 !
 !     --------------------- 
 !

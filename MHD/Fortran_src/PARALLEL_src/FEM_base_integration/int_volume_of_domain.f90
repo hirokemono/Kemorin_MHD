@@ -55,13 +55,14 @@
 !
       use calypso_mpi
       use m_geometry_data
+      use m_jacobians
       use m_fem_gauss_int_coefs
       use fem_element_volume
       use sum_volume_of_domain
 !
 !
 !      write(*,*) 'fem_element_volume_pg', max_int_point
-       call fem_element_volume_pg(max_int_point)
+       call fem_element_volume_pg(ele1, jac1_3d_q, max_int_point)
 !
 !     ---  lead total volume
 !
