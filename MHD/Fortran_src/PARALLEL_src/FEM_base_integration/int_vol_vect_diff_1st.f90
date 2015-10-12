@@ -19,11 +19,12 @@
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
       use m_sorted_node
       use m_finite_element_matrix
       use m_jacobians
 !
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
       use fem_skv_vector_diff_type
 !
@@ -48,7 +49,8 @@
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, ele1%nnod_4_ele
-        call scalar_phys_2_each_element(k2, i_field, fem1_wk%scalar_1)
+        call scalar_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, i_field, fem1_wk%scalar_1)
         call fem_skv_gradient(iele_fsmp_stack, num_int, k2,             &
      &      ele1, jac1_3d_q, fem1_wk%scalar_1, fem1_wk%sk6)
       end do
@@ -73,7 +75,8 @@
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, i_field, fem1_wk%vector_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, i_field, fem1_wk%vector_1)
         call fem_skv_divergence(iele_fsmp_stack, num_int, k2,           &
      &      ele1, jac1_3d_q, fem1_wk%vector_1, fem1_wk%sk6)
       end do
@@ -98,7 +101,8 @@
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, i_field, fem1_wk%vector_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, i_field, fem1_wk%vector_1)
         call fem_skv_rotation(iele_fsmp_stack, num_int, k2,             &
      &      ele1, jac1_3d_q, fem1_wk%vector_1, fem1_wk%sk6)
       end do
@@ -124,7 +128,8 @@
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, ele1%nnod_4_ele
-        call tensor_phys_2_each_element(k2, i_field, fem1_wk%tensor_1)
+        call tensor_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, i_field, fem1_wk%tensor_1)
         call fem_skv_div_tensor(iele_fsmp_stack, num_int, k2,           &
      &      ele1, jac1_3d_q, fem1_wk%tensor_1, fem1_wk%sk6)
       end do
@@ -150,7 +155,8 @@
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, i_field, fem1_wk%vector_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1 ,         &
+     &      k2, i_field, fem1_wk%vector_1)
         call fem_skv_div_asym_tsr(iele_fsmp_stack, num_int, k2,         &
      &      ele1, jac1_3d_q, fem1_wk%vector_1, fem1_wk%sk6)
       end do

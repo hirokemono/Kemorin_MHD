@@ -29,6 +29,7 @@
       use m_phys_constants
       use m_physical_property
       use m_node_phys_address
+      use m_node_phys_data
       use m_sorted_node
       use m_finite_element_matrix
 !
@@ -84,7 +85,7 @@
       use m_int_vol_data
 !
       use cal_add_smp
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
       use fem_skv_lorentz_full_type
 !
@@ -101,8 +102,8 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2=1, ele1%nnod_4_ele
-        call vector_phys_2_each_element                                 &
-     &     (k2, iphys%i_magne, fem1_wk%vector_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_magne, fem1_wk%vector_1)
         call fem_skv_lorentz_full_galerkin(iele_fsmp_stack, n_int, k2,  &
      &      coef_lor, fem1_wk%vector_1, d_ele(1,iele_magne), ex_magne,  &
      &      ele1, jac1_3d_q, fem1_wk%sk6)
@@ -204,7 +205,7 @@
       use m_int_vol_data
 !
       use cal_add_smp
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
       use fem_skv_lorentz_full_type
 !
@@ -221,8 +222,8 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element                                 &
-     &     (k2, iphys%i_magne, fem1_wk%vector_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_magne, fem1_wk%vector_1)
         call fem_skv_lorentz_full_upwind(iele_fsmp_stack,               &
      &      n_int, k2, coef_lor, fem1_wk%vector_1, d_ele(1,ie_upw),     &
      &      d_ele(1,iele_magne), ex_magne, ele1, jac1_3d_q,             &

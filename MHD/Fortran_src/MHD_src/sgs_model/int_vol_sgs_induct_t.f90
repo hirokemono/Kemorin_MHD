@@ -64,7 +64,8 @@
 !
       use m_jacobians
       use m_filter_elength
-      use nodal_fld_2_each_ele_1st
+      use m_node_phys_data
+      use nodal_fld_2_each_element
       use fem_skv_sgs_flux_type
 !
       integer (kind = kint), intent(in) :: i_filter
@@ -94,10 +95,10 @@
 !
 ! --------- set temperature at each node in an element
 !
-          call scalar_phys_2_each_element                               &
-     &        (k2, icomp_b, fem_wk%vector_1(1:ele1%numele,1) )
-          call scalar_phys_2_each_element                               &
-     &        (k2, icomp_v, fem_wk%vector_1(1:ele1%numele,2) )
+          call scalar_phys_2_each_element(node1, ele1, nod_fld1,        &
+     &        k2, icomp_b, fem_wk%vector_1(1:ele1%numele,1) )
+          call scalar_phys_2_each_element(node1, ele1, nod_fld1,        &
+     &        k2, icomp_v, fem_wk%vector_1(1:ele1%numele,2) )
 !
           call fem_skv_sgs_induct_t_galerkin(iele_cd_smp_stack,         &
      &        intg_point_t_evo, k2, i_filter, nd,                       &
@@ -116,7 +117,8 @@
 !
       use m_jacobians
       use m_filter_elength
-      use nodal_fld_2_each_ele_1st
+      use m_node_phys_data
+      use nodal_fld_2_each_element
       use fem_skv_sgs_flux_type
 !
       integer (kind = kint), intent(in) :: i_filter
@@ -144,10 +146,10 @@
         icomp_b = ifield_b + nd3 - 1
 !
         do k2 = 1, ele1%nnod_4_ele
-          call scalar_phys_2_each_element                               &
-     &       (k2, icomp_v, fem_wk%vector_1(1:ele1%numele,1) )
-          call scalar_phys_2_each_element                               &
-     &       (k2, icomp_b, fem_wk%vector_1(1:ele1%numele,2) )
+          call scalar_phys_2_each_element(node1, ele1, nod_fld1,        &
+     &        k2, icomp_v, fem_wk%vector_1(1:ele1%numele,1) )
+          call scalar_phys_2_each_element(node1, ele1, nod_fld1,        &
+     &        k2, icomp_b, fem_wk%vector_1(1:ele1%numele,2) )
 !
           call fem_skv_sgs_induct_t_upwind                              &
      &       (iele_cd_smp_stack, intg_point_t_evo, k2,                  &

@@ -49,7 +49,7 @@
       use t_finite_element_mat
 !
       use cal_skv_to_ff_smp
-      use nodal_fld_2_each_ele_type
+      use nodal_fld_2_each_element
       use fem_skv_diffs_sgs_type
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -74,8 +74,8 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2=1, num_t_linear
-        call vector_phys_2_each_ele_type(mesh, nod_fld, k2,             &
-     &      i_vector, fem_wk%vector_1)
+        call vector_phys_2_each_element(mesh%node, mesh%ele, nod_fld,   &
+     &      k2, i_vector, fem_wk%vector_1)
         call fem_skv_div_sgs_linear(iele_fsmp_stack, n_int, k2,         &
      &      i_filter, ak_diff, mesh%ele, jac_3d, jac_3d_l, FEM_elens,   &
      &      fem_wk%vector_1, fem_wk%sk6)
@@ -100,7 +100,7 @@
       use t_finite_element_mat
 !
       use cal_skv_to_ff_smp
-      use nodal_fld_2_each_ele_type
+      use nodal_fld_2_each_element
       use fem_skv_diffs_sgs_type
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -125,8 +125,8 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2=1, num_t_linear
-        call scalar_phys_2_each_ele_type(mesh, nod_fld, k2,             &
-     &      i_scalar, fem_wk%scalar_1)
+        call scalar_phys_2_each_element(mesh%node, mesh%ele, nod_fld,   &
+     &      k2, i_scalar, fem_wk%scalar_1)
         call fem_skv_grad_sgs_linear(iele_fsmp_stack, n_int, k2,        &
      &      i_filter, ak_diff, mesh%ele, jac_3d, jac_3d_l, FEM_elens,   &
      &      fem_wk%scalar_1, fem_wk%sk6)
@@ -153,7 +153,7 @@
       use t_finite_element_mat
 !
       use cal_skv_to_ff_smp
-      use nodal_fld_2_each_ele_type
+      use nodal_fld_2_each_element
       use fem_skv_diffusion_sgs_type
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -179,8 +179,8 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
-        call scalar_phys_2_each_ele_type(mesh, nod_fld, k2,             &
-     &      i_scalar, fem_wk%scalar_1)
+        call scalar_phys_2_each_element(mesh%node, mesh%ele, nod_fld,   &
+     &      k2, i_scalar, fem_wk%scalar_1)
         call fem_skv_scalar_diffuse_sgs_type(iele_fsmp_stack, n_int,    &
      &      k2, i_filter, ak_diff, ak_d, mesh%ele, jac_3d, FEM_elens,   &
      &      fem_wk%scalar_1, fem_wk%sk6)
@@ -206,7 +206,7 @@
       use t_finite_element_mat
 !
       use cal_skv_to_ff_smp
-      use nodal_fld_2_each_ele_type
+      use nodal_fld_2_each_element
       use fem_skv_diffusion_sgs_type
 !
       type(mesh_geometry), intent(in) :: mesh
@@ -232,8 +232,8 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
-        call vector_phys_2_each_ele_type(mesh, nod_fld, k2,             &
-     &      i_vector, fem_wk%vector_1)
+        call vector_phys_2_each_element(mesh%node, mesh%ele, nod_fld,   &
+     &      k2, i_vector, fem_wk%vector_1)
         call fem_skv_vector_diffuse_sgs_type(iele_fsmp_stack, n_int,    &
      &      k2, i_filter, ak_diff, ak_d, mesh%ele, jac_3d, FEM_elens,   &
      &      fem_wk%vector_1, fem_wk%sk6)

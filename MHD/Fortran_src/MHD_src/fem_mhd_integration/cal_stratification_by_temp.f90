@@ -34,16 +34,17 @@
       use m_geometry_data_MHD
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
 !
       use m_sorted_node
       use m_finite_element_matrix
       use m_jacobians
       use m_int_vol_data
 !
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
       use fem_skv_lorentz_full_type
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
 !
       implicit none
 !
@@ -67,10 +68,10 @@
       do k2 = 1, ele1%nnod_4_ele
 !
 ! --------- set position at each node in an element
-       call position_2_each_element                                     &
-     &    (k2, mhd_fem1_wk%xx_e, mhd_fem1_wk%rr_e)
-       call scalar_phys_2_each_element                                  &
-     &    (k2, iphys%i_gref_t, fem1_wk%scalar_1)
+       call position_2_each_element(node1, ele1,                        &
+     &     k2, mhd_fem1_wk%xx_e, mhd_fem1_wk%rr_e)
+       call scalar_phys_2_each_element(node1, ele1, nod_fld1,           &
+     &     k2, iphys%i_gref_t, fem1_wk%scalar_1)
 !
         call fem_skv_stratified_galerkin(iele_fl_smp_stack,             &
      &      intg_point_t_evo, k2, fem1_wk%scalar_1, d_ele(1,iele_velo), &
@@ -99,10 +100,10 @@
       do k2 = 1, ele1%nnod_4_ele
 !
 ! --------- set position at each node in an element
-        call position_2_each_element                                    &
-     &     (k2, mhd_fem1_wk%xx_e, mhd_fem1_wk%rr_e)
-        call scalar_phys_2_each_element                                 &
-     &     (k2, iphys%i_gref_t, fem1_wk%scalar_1)
+        call position_2_each_element(node1, ele1,                       &
+     &      k2, mhd_fem1_wk%xx_e, mhd_fem1_wk%rr_e)
+        call scalar_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_gref_t, fem1_wk%scalar_1)
 !
         call fem_skv_stratified_upwind(iele_fl_smp_stack,               &
      &      intg_point_t_evo, k2, fem1_wk%scalar_1, d_ele(1,iele_velo), &

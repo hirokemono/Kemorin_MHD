@@ -38,7 +38,7 @@
       use t_filter_elength
       use t_finite_element_mat
 !
-      use nodal_fld_2_each_ele_type
+      use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
       use fem_skv_diffs_sgs_upw_type
 !
@@ -81,7 +81,7 @@
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, mesh%ele%nnod_4_ele
-        call scalar_phys_2_each_ele_type(mesh, nod_fld,                 &
+        call scalar_phys_2_each_element(mesh%node, mesh%ele, nod_fld,   &
      &          k2, i_field, fem_wk%scalar_1)
         call fem_skv_grad_sgs_upwind(iele_fsmp_stack, num_int, k2,      &
      &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,             &
@@ -126,7 +126,7 @@
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, mesh%ele%nnod_4_ele
-        call vector_phys_2_each_ele_type(mesh, nod_fld,                 &
+        call vector_phys_2_each_element(mesh%node, mesh%ele, nod_fld,   &
      &          k2, i_field, fem_wk%vector_1)
         call fem_skv_div_sgs_upwind(iele_fsmp_stack, num_int, k2,       &
      &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,             &
@@ -171,7 +171,7 @@
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, mesh%ele%nnod_4_ele
-        call vector_phys_2_each_ele_type(mesh, nod_fld,                 &
+        call vector_phys_2_each_element(mesh%node, mesh%ele, nod_fld,   &
      &          k2, i_field, fem_wk%vector_1)
         call fem_skv_rot_sgs_upwind(iele_fsmp_stack, num_int, k2,       &
      &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,             &
@@ -217,8 +217,8 @@
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, mesh%ele%nnod_4_ele
-        call tensor_phys_2_each_ele_type(mesh, nod_fld,                 &
-     &          k2, i_field, fem_wk%tensor_1)
+        call tensor_phys_2_each_element(mesh%node, mesh%ele, nod_fld,   &
+     &      k2, i_field, fem_wk%tensor_1)
         call fem_skv_div_tsr_sgs_upwind(iele_fsmp_stack, num_int, k2,   &
      &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,             &
      &      d_ele(1,iv_up), fem_wk%tensor_1, fem_wk%sk6)
@@ -262,7 +262,7 @@
 ! -------- loop for shape function for the field values
 !
       do k2 = 1, mesh%ele%nnod_4_ele
-        call vector_phys_2_each_ele_type(mesh, nod_fld,                 &
+        call vector_phys_2_each_element(mesh%node, mesh%ele, nod_fld,   &
      &          k2, i_field, fem_wk%vector_1)
         call fem_skv_div_as_tsr_sgs_upwind(iele_fsmp_stack,             &
      &      num_int, k2, i_filter, ak_diff, mesh%ele, jac_3d,           &

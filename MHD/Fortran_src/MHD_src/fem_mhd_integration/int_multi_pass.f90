@@ -217,7 +217,7 @@
 !
       use m_jacobians
       use m_int_vol_data
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
       use cal_for_ffs
       use fem_skv_nodal_field_type
@@ -230,7 +230,8 @@
       call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       do k2 = 1, ele1%nnod_4_ele
-        call scalar_2_each_element(k2, ff_nl(1,1), fem1_wk%scalar_1)
+        call scalar_2_each_element(node1, ele1,                         &
+     &      k2, ff_nl(1,1), fem1_wk%scalar_1)
         call fem_skv_scalar_type(iele_fsmp_stack, intg_point_t_evo, k2, &
      &      ele1, jac1_3d_q, fem1_wk%scalar_1, fem1_wk%sk6)
       end do
@@ -249,7 +250,7 @@
 !
       use m_jacobians
       use m_int_vol_data
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
       use cal_for_ffs
       use fem_skv_nodal_field_type
@@ -262,7 +263,8 @@
       call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do k2 = 1, ele1%nnod_4_ele
-        call vector_2_each_element(k2, ff_nl(1,1), fem1_wk%vector_1)
+        call vector_2_each_element(node1, ele1,                         &
+     &      k2, ff_nl(1,1), fem1_wk%vector_1)
         call fem_skv_vector_type(iele_fsmp_stack, intg_point_t_evo, k2, &
      &      ele1, jac1_3d_q, fem1_wk%vector_1, fem1_wk%sk6)
       end do

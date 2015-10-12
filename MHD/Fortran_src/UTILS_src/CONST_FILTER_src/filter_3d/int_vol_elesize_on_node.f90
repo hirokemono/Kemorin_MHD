@@ -93,7 +93,7 @@
 !
       use m_jacobians
       use m_sorted_node
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
       use fem_skv_vector_diff_type
 !
@@ -105,7 +105,8 @@
       call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do k2 = 1, ele1%nnod_4_ele
-        call scalar_2_each_element(k2, elen_org_nod, scalar_ele)
+        call scalar_2_each_element(node1, ele1,                         &
+     &      k2, elen_org_nod, scalar_ele)
         call fem_skv_gradient(ele1%istack_ele_smp, num_int_points,      &
      &      k2, ele1, jac1_3d_q, scalar_ele, fem1_wk%sk6)
       end do

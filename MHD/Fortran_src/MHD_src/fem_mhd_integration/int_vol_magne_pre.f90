@@ -45,7 +45,7 @@
       subroutine int_vol_magne_pre_ele(ncomp_ele, d_ele, iphys_ele)
 !
       use cal_add_smp
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use nodal_fld_cst_to_ele_1st
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp
@@ -68,10 +68,10 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2=1, ele1%nnod_4_ele
-        call vector_phys_2_each_element                                 &
-     &     (k2, iphys%i_velo, mhd_fem1_wk%velo_1)
-        call vector_phys_2_each_element                                 &
-     &     (k2, iphys%i_magne, mhd_fem1_wk%magne_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_velo, mhd_fem1_wk%velo_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_magne, mhd_fem1_wk%magne_1)
 !
 !$omp parallel
         call add_const_to_vector_smp                                    &
@@ -112,7 +112,7 @@
      &          (ncomp_ele, d_ele, iphys_ele)
 !
       use cal_add_smp
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use nodal_fld_cst_to_ele_1st
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp
@@ -134,10 +134,10 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2=1, ele1%nnod_4_ele
-        call vector_phys_2_each_element                                 &
-     &     (k2, iphys%i_velo, mhd_fem1_wk%velo_1)
-        call vector_phys_2_each_element                                 &
-     &     (k2, iphys%i_magne, mhd_fem1_wk%magne_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_velo, mhd_fem1_wk%velo_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_magne, mhd_fem1_wk%magne_1)
 !
 !$omp parallel
         call add_const_to_vector_smp                                    &

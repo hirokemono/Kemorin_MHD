@@ -62,11 +62,12 @@
 !
       use m_SGS_model_coefs
       use m_geometry_data_MHD
+      use m_node_phys_data
       use m_jacobians
       use m_filter_elength
 !
       use fem_skv_sgs_flux_type
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
 !
       integer(kind = kint), intent(in) :: i_field, i_filter
       integer(kind = kint), intent(in) :: ncomp_dvx, id_dx
@@ -85,7 +86,8 @@
 !
 ! --------- set magnetic field at each node in an element
 !
-          call vector_phys_2_each_element(k2, i_field, fem_wk%vector_1)
+          call vector_phys_2_each_element(node1, ele1, nod_fld1,        &
+     &        k2, i_field, fem_wk%vector_1)
           call fem_skv_sgs_uxb_galerkin(iele_cd_smp_stack,              &
      &        intg_point_t_evo, k2, i_filter, nd,                       &
      &        ele1, jac1_3d_q, FEM1_elen, fem_wk%vector_1,              &
@@ -103,11 +105,12 @@
 !
       use m_SGS_model_coefs
       use m_geometry_data_MHD
+      use m_node_phys_data
       use m_jacobians
       use m_filter_elength
 !
       use fem_skv_sgs_flux_type
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
 !
       integer(kind = kint), intent(in) :: i_field, i_filter
 !
@@ -123,7 +126,8 @@
 !
       do nd = 1, n_vector
         do k2 = 1, ele1%nnod_4_ele
-          call vector_phys_2_each_element(k2, i_field, fem_wk%vector_1)
+          call vector_phys_2_each_element(node1, ele1, nod_fld1,        &
+     &        k2, i_field, fem_wk%vector_1)
           call fem_skv_sgs_uxb_upwind(iele_cd_smp_stack,                &
      &        intg_point_t_evo, k2, i_filter, nd,                       &
      &        ele1, jac1_3d_q, FEM1_elen, fem_wk%vector_1,              &

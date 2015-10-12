@@ -98,11 +98,12 @@
 !
       use m_geometry_constants
       use m_geometry_data
+      use m_node_phys_data
       use m_fem_gauss_int_coefs
       use m_jacobians
       use m_int_vol_data
 !
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use fem_vol_average_energy
 !
 !
@@ -117,7 +118,8 @@
       integer (kind=kint) :: k2
 !
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, i_fld, fem1_wk%vector_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, i_fld, fem1_wk%vector_1)
 !
         if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_all_energy(ele1%numele, ele1%nnod_4_ele,         &
@@ -143,11 +145,12 @@
 !
       use m_geometry_constants
       use m_geometry_data
+      use m_node_phys_data
       use m_fem_gauss_int_coefs
       use m_jacobians
       use m_int_vol_data
 !
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use fem_vol_average_energy
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -160,7 +163,8 @@
       integer (kind=kint) :: k2
 !
       do k2 = 1, ele1%nnod_4_ele
-        call scalar_phys_2_each_element(k2, i_fld, fem1_wk%scalar_1)
+        call scalar_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, i_fld, fem1_wk%scalar_1)
 !
 !
         if (ele1%nnod_4_ele .eq. num_t_quad) then
@@ -187,12 +191,13 @@
       use m_geometry_constants
       use m_machine_parameter
       use m_geometry_data
+      use m_node_phys_data
       use m_fem_gauss_int_coefs
       use m_jacobians
       use m_bulk_values
       use m_int_vol_data
 !
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use fem_vol_average_energy
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -206,9 +211,10 @@
 !
 !
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, i_fld, fem1_wk%vector_1)
-        call position_2_each_element                                    &
-     &     (k2, mhd_fem1_wk%xx_e, mhd_fem1_wk%rr_e)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, i_fld, fem1_wk%vector_1)
+        call position_2_each_element(node1, ele1,                       &
+     &      k2, mhd_fem1_wk%xx_e, mhd_fem1_wk%rr_e)
 !
         if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_angular_momentum(ele1%numele, ele1%nnod_4_ele,   &
@@ -232,11 +238,12 @@
 !
       use m_geometry_constants
       use m_geometry_data
+      use m_node_phys_data
       use m_fem_gauss_int_coefs
       use m_jacobians
       use m_int_vol_data
 !
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use fem_vol_average_energy
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -249,7 +256,8 @@
 !
 !
       do k2 = 1, ele1%nnod_4_ele
-        call scalar_phys_2_each_element(k2, i_fld, fem1_wk%scalar_1)
+        call scalar_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, i_fld, fem1_wk%scalar_1)
 !
         if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_ave_rms_4_scalar(ele1%numele, ele1%nnod_4_ele,       &

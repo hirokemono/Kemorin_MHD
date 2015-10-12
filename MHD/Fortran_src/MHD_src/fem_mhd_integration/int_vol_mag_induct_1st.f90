@@ -22,6 +22,7 @@
       use m_phys_constants
       use m_physical_property
       use m_node_phys_address
+      use m_node_phys_data
       use m_fem_gauss_int_coefs
       use m_sorted_node
       use m_finite_element_matrix
@@ -43,7 +44,7 @@
      &         (iele_fsmp_stack, n_int, ncomp_ele, d_ele, iphys_ele)
 !
       use cal_add_smp
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
       use fem_skv_lorentz_full_type
 !
@@ -68,10 +69,10 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element                                 &
-     &     (k2, iphys%i_velo, mhd_fem1_wk%velo_1)
-        call vector_phys_2_each_element                                 &
-     &     (k2, iphys%i_magne, mhd_fem1_wk%magne_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_velo, mhd_fem1_wk%velo_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_magne, mhd_fem1_wk%magne_1)
 !
         call fem_skv_induction_galerkin(iele_fsmp_stack, n_int, k2,     &
      &      coef_induct, mhd_fem1_wk%velo_1, mhd_fem1_wk%magne_1,       &
@@ -90,7 +91,7 @@
      &         (iele_fsmp_stack, n_int, ncomp_ele, d_ele, iphys_ele)
 !
       use cal_add_smp
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
       use fem_skv_lorentz_full_type
 !
@@ -115,10 +116,10 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element                                 &
-     &     (k2, iphys%i_velo, mhd_fem1_wk%velo_1)
-        call vector_phys_2_each_element                                 &
-     &     (k2, iphys%i_magne, mhd_fem1_wk%magne_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_velo, mhd_fem1_wk%velo_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_magne, mhd_fem1_wk%magne_1)
 !
         call fem_skv_induction_upmagne(iele_fsmp_stack, n_int, k2,      &
      &      coef_induct, mhd_fem1_wk%velo_1, mhd_fem1_wk%magne_1,       &

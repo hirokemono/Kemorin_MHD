@@ -204,12 +204,13 @@
 !
       use m_machine_parameter
       use m_geometry_data
+      use m_node_phys_data
       use m_finite_element_matrix
       use m_int_vol_data
 !
       use fem_div_4_norm
       use sum_normalized_div
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
 !
        integer(kind = kint), intent(in)    :: iele_fsmp_stack(0:np_smp)
        integer(kind = kint), intent(in)    :: i_field
@@ -229,7 +230,8 @@
 !
 ! ---------  set field at each node in an element
 !
-        call vector_phys_2_each_element(k2, i_field, fem1_wk%vector_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, i_field, fem1_wk%vector_1)
         call fem_div_4_norm_pg(iele_fsmp_stack, num_int, k2,            &
      &      fem1_wk%vector_1, fem1_wk%scalar_1)
       end do

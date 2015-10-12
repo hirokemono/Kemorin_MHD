@@ -42,7 +42,8 @@
       subroutine int_vol_commute_grad(iele_fsmp_stack, n_int,           &
      &          i_filter, i_scalar)
 !
-      use nodal_fld_2_each_ele_1st
+      use m_node_phys_data
+      use nodal_fld_2_each_element
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_filter, n_int
@@ -58,7 +59,8 @@
 !
 ! --------- set temperature at each node in an element
 !
-        call scalar_phys_2_each_element(k2, i_scalar, fem1_wk%scalar_1)
+        call scalar_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, i_scalar, fem1_wk%scalar_1)
 !
         call fem_skv_commute_err_grad_1(iele_fsmp_stack,                &
      &      n_int, k2, i_filter, fem1_wk%scalar_1, fem1_wk%sk6)
@@ -74,7 +76,8 @@
       subroutine int_vol_commute_div(iele_fsmp_stack, n_int,            &
      &          i_filter, i_vect)
 !
-      use nodal_fld_2_each_ele_1st
+      use m_node_phys_data
+      use nodal_fld_2_each_element
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: i_filter, n_int
@@ -88,7 +91,8 @@
 !
 ! --------- set temperature at each node in an element
 !
-        call vector_phys_2_each_element(k2, i_vect, fem1_wk%vector_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, i_vect, fem1_wk%vector_1)
         call fem_skv_commute_err_div_1(iele_fsmp_stack,                 &
      &      n_int, k2, i_filter, fem1_wk%vector_1, fem1_wk%sk6)
        end do
@@ -103,18 +107,20 @@
       subroutine int_vol_commute_rot(iele_fsmp_stack, n_int,            &
      &          i_filter, i_vect)
 !
-      use nodal_fld_2_each_ele_1st
+      use m_node_phys_data
+      use nodal_fld_2_each_element
 !
-       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-       integer(kind = kint), intent(in) :: i_filter, n_int
-       integer(kind = kint), intent(in) :: i_vect
+      integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+      integer(kind = kint), intent(in) :: i_filter, n_int
+      integer(kind = kint), intent(in) :: i_vect
 !
-       integer(kind=kint) :: k2
+      integer(kind=kint) :: k2
 !
 !
       call reset_sk6(n_vector, ele1, fem1_wk%sk6)
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, i_vect, fem1_wk%vector_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, i_vect, fem1_wk%vector_1)
         call fem_skv_commute_err_rot_1(iele_fsmp_stack,                 &
      &      n_int, k2, i_filter, fem1_wk%vector_1, fem1_wk%sk6)
       end do

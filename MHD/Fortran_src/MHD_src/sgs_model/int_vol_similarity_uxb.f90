@@ -51,10 +51,11 @@
 !
       use m_jacobians
       use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_model_coefs
       use m_SGS_address
 !
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use fem_skv_nodal_field_type
       use cal_product_to_skv_1st
       use cal_skv_to_ff_smp
@@ -66,8 +67,8 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element                                 &
-     &     (k2, iphys%i_sgs_simi, fem1_wk%vector_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_sgs_simi, fem1_wk%vector_1)
         call fem_skv_vector_type(iele_cd_smp_stack,                     &
      &      intg_point_t_evo, k2, ele1, jac1_3d_q,                      &
      &      fem1_wk%vector_1, fem1_wk%sk6)
@@ -86,10 +87,11 @@
 !
       use m_jacobians
       use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_model_coefs
       use m_SGS_address
 !
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use fem_skv_nodal_fld_upw_type
       use cal_product_to_skv_1st
       use cal_skv_to_ff_smp
@@ -103,8 +105,8 @@
       call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element                                 &
-     &     (k2, iphys%i_sgs_simi, fem1_wk%vector_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, iphys%i_sgs_simi, fem1_wk%vector_1)
 !
         call fem_skv_vector_field_upwind(iele_cd_smp_stack,             &
      &      intg_point_t_evo, k2, d_ele(1,iele_magne), ele1, jac1_3d_q, &

@@ -74,11 +74,12 @@
 !
       use m_geometry_constants
       use m_geometry_data
+      use m_node_phys_data
       use m_fem_gauss_int_coefs
       use m_jacobians
       use m_finite_element_matrix
 !
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use fem_vol_average_tensors
 !
 !
@@ -93,7 +94,8 @@
       integer (kind=kint) :: k2
 !
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, i_vect, fem1_wk%vector_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, i_vect, fem1_wk%vector_1)
 !
         if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_sym_tensor_1(ele1%numele, ele1%nnod_4_ele,   &
@@ -107,8 +109,8 @@
      &        k2, fem1_wk%vector_1, rms_local, ave_local)
         end if
 !
-        call vector_phys_2_each_element                                 &
-     &     (k2, (i_vect+3), fem1_wk%vector_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, (i_vect+3), fem1_wk%vector_1)
 !
         if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_sym_tensor_2(ele1%numele, ele1%nnod_4_ele,   &
@@ -133,11 +135,12 @@
 !
       use m_geometry_constants
       use m_geometry_data
+      use m_node_phys_data
       use m_fem_gauss_int_coefs
       use m_jacobians
       use m_finite_element_matrix
 !
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
       use fem_vol_average_tensors
 !
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -151,7 +154,8 @@
       integer (kind=kint) :: k2
 !
       do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(k2, i_vect, fem1_wk%vector_1)
+        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
+     &      k2, i_vect, fem1_wk%vector_1)
 !
         if (ele1%nnod_4_ele .eq. num_t_quad) then
           call fem_vol_ave_asym_tensor(ele1%numele, ele1%nnod_4_ele,    &

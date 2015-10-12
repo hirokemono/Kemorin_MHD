@@ -67,12 +67,13 @@
      &          ncomp_dvx, id_dx, diff_ele, fem_wk)
 !
       use m_geometry_data_MHD
+      use m_node_phys_data
       use m_jacobians
       use m_filter_elength
       use m_SGS_model_coefs
 !
       use fem_skv_sgs_flux_type
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
 !
       integer (kind = kint), intent(in) :: i_filter, numdir, i_field
       integer(kind = kint), intent(in) :: ncomp_dvx, id_dx
@@ -94,8 +95,8 @@
 !
 ! -------- loop for shape function for the phsical values
           do k2 = 1, ele1%nnod_4_ele
-            call scalar_phys_2_each_element                             &
-     &         (k2, icomp, fem_wk%scalar_1)
+            call scalar_phys_2_each_element(node1, ele1, nod_fld1,      &
+     &          k2, icomp, fem_wk%scalar_1)
             call fem_skv_sgs_flux_galerkin(iele_fl_smp_stack,           &
      &          intg_point_t_evo, k2, i_filter, nd_t,                   &
      &          ele1, jac1_3d_q, FEM1_elen, fem_wk%scalar_1,            &
@@ -114,12 +115,13 @@
      &          ncomp_ele, ie_upw, d_ele, fem_wk)
 !
       use m_geometry_data_MHD
+      use m_node_phys_data
       use m_jacobians
       use m_filter_elength
       use m_SGS_model_coefs
 !
       use fem_skv_sgs_flux_type
-      use nodal_fld_2_each_ele_1st
+      use nodal_fld_2_each_element
 !
       integer (kind = kint), intent(in) :: i_filter, numdir, i_field
       integer(kind = kint), intent(in) :: ncomp_dvx, id_dx
@@ -145,8 +147,8 @@
 ! -------- loop for shape function for the phsical values
 !
           do k2 = 1, ele1%nnod_4_ele
-            call scalar_phys_2_each_element                             &
-     &         (k2, icomp, fem_wk%scalar_1)
+            call scalar_phys_2_each_element(node1, ele1, nod_fld1,      &
+     &          k2, icomp, fem_wk%scalar_1)
             call fem_skv_sgs_flux_upwind(iele_fl_smp_stack,             &
      &          intg_point_t_evo, k2, i_filter, nd_t,                   &
      &          ele1, jac1_3d_q, FEM1_elen, fem_wk%scalar_1,            &
