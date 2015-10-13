@@ -46,8 +46,8 @@
        integer(kind = kint), intent(in) :: numnod
 !
 !
-       call allocate_crs_stack(numnod)
-       call allocate_crs_connect
+       call alloc_crs_stack(numnod, tbl1_crs)
+       call alloc_crs_connect(tbl1_crs)
 !
        call allocate_crs_mat_data(numnod)
 !
@@ -62,8 +62,8 @@
        integer(kind = kint), intent(in) :: numnod
 !
 !
-       allocate(AL_crs(NB_crs,NB_crs,ntot_crs_l) )
-       allocate(AU_crs(NB_crs,NB_crs,ntot_crs_u) )
+       allocate(AL_crs(NB_crs,NB_crs,tbl1_crs%ntot_l) )
+       allocate(AU_crs(NB_crs,NB_crs,tbl1_crs%ntot_u) )
        allocate(D_crs(NB_crs,NB_crs,numnod))
        allocate(B_crs(NB_crs*numnod), X_crs(NB_crs*numnod))
 !
@@ -109,10 +109,10 @@
        end do
 !
        do i = 1, numnod
-         do j = istack_crs_l(i-1)+1, istack_crs_l(i)
+         do j = tbl1_crs%istack_l(i-1)+1, tbl1_crs%istack_l(i)
            do k1 = 1, NB_crs
              write(my_rank+50,*) "Lower component (i1,i2,k1) = ",      &
-     &             i, item_crs_l(j), k1
+     &             i, tbl1_crs%item_l(j), k1
              write(my_rank+50,'(1p5e16.8)')                            &
      &                   (AL_crs(k1,k2,j),k2=1,NB_crs)
            end do
@@ -120,10 +120,10 @@
        end do
 !
        do i = 1, numnod
-         do j = istack_crs_u(i-1)+1, istack_crs_u(i)
+         do j = tbl1_crs%istack_u(i-1)+1, tbl1_crs%istack_u(i)
            do k1 = 1, NB_crs
              write(my_rank+50,*) "Lower component (i1,i2,k1) = ",      &
-     &             i, item_crs_u(j), k1
+     &             i, tbl1_crs%item_u(j), k1
               write(my_rank+50,'(1p5e16.8)')                           &
      &                  (AU_crs(k1,k2,j),k2=1,NB_crs)
            end do

@@ -37,13 +37,15 @@
 !
       subroutine s_int_whole_volume_w_layer
 !
+      use m_geometry_data
+      use m_layering_ele_list
       use sum_volume_of_domain
       use cal_layered_volumes
 !
       call allocate_volume_4_smp
 !
       call s_int_volume_of_domain
-      call s_cal_layered_volumes
+      call s_cal_layered_volumes(ele1, layer_tbl1)
 !
       call deallocate_volume_4_smp
 !

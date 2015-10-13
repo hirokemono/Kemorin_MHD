@@ -32,8 +32,8 @@
 
       integer(kind = kint), intent(in) :: numnod
 !
-       allocate (al_mk_crs(ntot_crs_l) )
-       allocate (au_mk_crs(ntot_crs_l) )
+       allocate (al_mk_crs(tbl1_crs%ntot_l) )
+       allocate (au_mk_crs(tbl1_crs%ntot_l) )
        allocate (d_mk_crs(numnod))
        allocate (rhs_mk_crs(numnod), sol_mk_crs(numnod))
 !

@@ -31,8 +31,8 @@
 !
       call set_num_off_diag_z_commute(node1%internal_node)
 !
-      call allocate_crs_stack(node1%numnod)
-      call allocate_crs_connect
+      call alloc_crs_stack(node1%numnod, tbl1_crs)
+      call alloc_crs_connect(tbl1_crs)
 !
       call set_stack_crs_z_commute(node1%internal_node)
 !
@@ -47,8 +47,8 @@
       integer(kind = kint), intent(in) :: internal_node
 !
 !
-      ntot_crs_l = internal_node - 1
-      ntot_crs_u = internal_node - 1
+      tbl1_crs%ntot_l = internal_node - 1
+      tbl1_crs%ntot_u = internal_node - 1
 !
       end subroutine set_num_off_diag_z_commute
 !
@@ -62,15 +62,15 @@
 !    set lower component
 !
       do i = 1, internal_node
-        istack_crs_l(i)   = i-1
+        tbl1_crs%istack_l(i) = i-1
       end do
 !
 !   set upper component
 !
       do i = 1, internal_node-1
-        istack_crs_u(i) = i
+        tbl1_crs%istack_u(i) = i
       end do
-      istack_crs_u(internal_node) = internal_node-1
+      tbl1_crs%istack_u(internal_node) = internal_node-1
 !
       end subroutine set_stack_crs_z_commute
 !
@@ -84,13 +84,13 @@
 !    set lower component
 !
       do i = 1, internal_node-1
-        item_crs_l(i) = i
+        tbl1_crs%item_l(i) = i
       end do
 !
 !   set upper component
 !
       do i = 1, internal_node-1
-        item_crs_u(i) = i+1
+        tbl1_crs%item_u(i) = i+1
       end do
 !
       end subroutine set_item_crs_z_commute

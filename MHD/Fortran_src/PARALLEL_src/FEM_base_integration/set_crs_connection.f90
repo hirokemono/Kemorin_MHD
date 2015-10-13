@@ -38,23 +38,25 @@
       use cal_minmax_and_stacks
 !
 !
-      call allocate_crs_stack(node1%numnod)
+      call alloc_crs_stack(node1%numnod, tbl1_crs)
 !
       call count_item_crs(node1%numnod, np_smp, node1%istack_nod_smp,   &
      &    neib_nod1%ntot, neib_nod1%istack_next, neib_nod1%inod_next,   &
-     &    num_crs_l, num_crs_u)
+     &    tbl1_crs%nitem_l, tbl1_crs%nitem_u)
 !
-      call s_cal_minmax_and_stacks(node1%numnod, num_crs_l, izero,      &
-     &    istack_crs_l, ntot_crs_l, max_crs_l, min_crs_l)
-      call s_cal_minmax_and_stacks(node1%numnod, num_crs_u, izero,      &
-     &    istack_crs_u, ntot_crs_u, max_crs_u, min_crs_u)
+      call s_cal_minmax_and_stacks                                      &
+     &   (node1%numnod, tbl1_crs%nitem_l, izero, tbl1_crs%istack_l,     &
+     &    tbl1_crs%ntot_l, tbl1_crs%max_l, tbl1_crs%min_l)
+      call s_cal_minmax_and_stacks                                      &
+     &   (node1%numnod, tbl1_crs%nitem_u, izero, tbl1_crs%istack_u,     &
+     &    tbl1_crs%ntot_u, tbl1_crs%max_u, tbl1_crs%min_u)
 !
-      call allocate_crs_connect
+      call alloc_crs_connect(tbl1_crs)
 !
       call set_item_crs(node1%numnod, np_smp, node1%istack_nod_smp,     &
      &    neib_nod1%ntot, neib_nod1%istack_next, neib_nod1%inod_next,   &
-     &    ntot_crs_l, ntot_crs_u, istack_crs_l, istack_crs_u,           &
-     &    item_crs_l, item_crs_u)
+     &    tbl1_crs%ntot_l, tbl1_crs%ntot_u, tbl1_crs%istack_l,          &
+     &    tbl1_crs%istack_u, tbl1_crs%item_l, tbl1_crs%item_u)
 !
       end subroutine s_set_crs_connection
 !

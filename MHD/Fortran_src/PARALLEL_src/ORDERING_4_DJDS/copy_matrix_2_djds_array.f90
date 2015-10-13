@@ -34,6 +34,7 @@
       integer(kind = kint), intent(in) :: N, NP
 !
       integer(kind = kint) :: inod1, inod2, mat_num, im, j1, j2, k
+      integer(kind = kint) :: ist, ied
 !
 !
       do inod1 = 1, NP
@@ -47,8 +48,10 @@
       end do
 !
       do inod1 = 1, NP
-        do k = istack_crs_l(inod1-1)+1, istack_crs_l(inod1)
-          inod2 = item_crs_l(k)
+        ist = tbl1_crs%istack_l(inod1-1)+1
+        ied = tbl1_crs%istack_l(inod1)
+        do k = ist, ied
+          inod2 = tbl1_crs%item_l(k)
           call s_set_DJDS_off_diag(N, NP, inod1, inod2, mat_num)
           do j1 = 1, NB_djds
             do j2 = 1, NB_djds
@@ -60,8 +63,10 @@
       end do
 !
       do inod1 = 1, NP
-        do k = istack_crs_u(inod1-1)+1, istack_crs_u(inod1)
-          inod2 = item_crs_u(k)
+        ist = tbl1_crs%istack_u(inod1-1)+1
+        ied = tbl1_crs%istack_u(inod1)
+        do k = ist, ied
+          inod2 = tbl1_crs%item_u(k)
           call s_set_DJDS_off_diag(N, NP, inod1, inod2, mat_num)
           do j1 = 1, NB_djds
             do j2 = 1, NB_djds

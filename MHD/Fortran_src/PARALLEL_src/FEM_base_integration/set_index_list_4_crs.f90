@@ -63,8 +63,8 @@
               nod2 = ie(iele,k2)
 !
               call s_set_off_diagonal(internal_node, numnod,            &
-     &            ntot_crs_l, ntot_crs_u,                               &
-     &            istack_crs_l, istack_crs_u, item_crs_l, item_crs_u,   &
+     &            tbl1_crs%ntot_l, tbl1_crs%ntot_u, tbl1_crs%istack_l,  &
+     &            tbl1_crs%istack_u, tbl1_crs%item_l, tbl1_crs%item_u,  &
      &            nod1, nod2, mat_num)
 !
               idx_4_mat(in,k2) = mat_num

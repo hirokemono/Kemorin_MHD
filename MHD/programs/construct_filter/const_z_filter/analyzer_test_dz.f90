@@ -71,7 +71,7 @@
 !C===
 !
 !       call deallocate_crs_mat_data
-!       call deallocate_crs_connect
+!       call dealloc_crs_connect(tbl1_crs)
 !
        open (id_delta_z,file='delta_z.0.dat')
 !

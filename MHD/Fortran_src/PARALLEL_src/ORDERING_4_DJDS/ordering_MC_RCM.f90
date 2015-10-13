@@ -55,12 +55,12 @@
       integer(kind = kint) :: i
 !
 !
-      ntot_mc_l = ntot_crs_l
-      ntot_mc_u = ntot_crs_u
-      max_mc_l =  max_crs_l
-      min_mc_l =  min_crs_l
-      max_mc_u =  max_crs_u
-      min_mc_u =  min_crs_u
+      ntot_mc_l = tbl1_crs%ntot_l
+      ntot_mc_u = tbl1_crs%ntot_u
+      max_mc_l =  tbl1_crs%max_l
+      min_mc_l =  tbl1_crs%min_l
+      max_mc_u =  tbl1_crs%max_u
+      min_mc_u =  tbl1_crs%min_u
 !
       call allocate_IVECT_rcm(NP)
       call allocate_mc_stack(NP)
@@ -81,11 +81,12 @@
       if (iflag_ordering .eq. 0 ) then
 !
         if (iflag_debug.eq.1) write(*,*) 'no_MC'
-        call no_MC (NP,  ntot_crs_l, ntot_crs_u,                       &
-     &     istack_crs_l, istack_crs_u, item_crs_l, item_crs_u,         &
-     &     ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,                   &
-     &     istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,             &
-     &     NHYP, IVECT_rcm, NEWtoOLD, OLDtoNEW)
+        call no_MC (NP,  tbl1_crs%ntot_l, tbl1_crs%ntot_u,              &
+     &      tbl1_crs%istack_l, tbl1_crs%istack_u,                       &
+     &      tbl1_crs%item_l, tbl1_crs%item_u,                           &
+     &      ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,                   &
+     &      istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,             &
+     &      NHYP, IVECT_rcm, NEWtoOLD, OLDtoNEW)
 !
         NCOLORtot = 1
 !
@@ -114,8 +115,9 @@
 !  -------  RCM ordering
         if ( iflag_ordering .eq. 1 ) then
           if (iflag_debug.eq.1) write(*,*) 'sRCM'
-          call sRCM (NP, N, ntot_crs_l, ntot_crs_u,                     &
-     &        istack_crs_l, istack_crs_u, item_crs_l, item_crs_u,       &
+          call sRCM (NP, N, tbl1_crs%ntot_l, tbl1_crs%ntot_u,           &
+     &        tbl1_crs%istack_l, tbl1_crs%istack_u,                     &
+     &        tbl1_crs%item_l, tbl1_crs%item_u,                         &
      &        ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,                 &
      &        istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,           &
      &        NHYP, IVECT_rcm, NEWtoOLD, OLDtoNEW, IW)
@@ -123,8 +125,9 @@
 !  -------  MC ordering
         else if ( iflag_ordering .eq. 2 ) then
           if (iflag_debug.eq.1) write(*,*) 'sMC', mc_color
-          call sMC (NP, N, ntot_crs_l, ntot_crs_u,                      &
-     &        istack_crs_l, istack_crs_u, item_crs_l, item_crs_u,       &
+          call sMC (NP, N, tbl1_crs%ntot_l, tbl1_crs%ntot_u,            &
+     &        tbl1_crs%istack_l, tbl1_crs%istack_u,                     &
+     &        tbl1_crs%item_l, tbl1_crs%item_u,                         &
      &        ntot_mc_l, ntot_mc_u, num_mc_l, num_mc_u,                 &
      &        istack_mc_l, istack_mc_u, item_mc_l, item_mc_u,           &
      &        NHYP, IVECT_rcm,NEWtoOLD, OLDtoNEW, IW, mc_color)

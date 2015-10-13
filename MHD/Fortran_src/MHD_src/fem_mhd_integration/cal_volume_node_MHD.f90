@@ -36,6 +36,7 @@
       use m_control_parameter
       use m_geometry_data_MHD
       use m_bulk_values
+      use m_layering_ele_list
 !
       use int_volume_of_domain
       use cal_layered_volumes
@@ -57,7 +58,7 @@
 !
        if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
          if (iflag_debug.eq.1) write(*,*) 's_cal_layered_volumes'
-         call s_cal_layered_volumes
+         call s_cal_layered_volumes(ele1, layer_tbl1)
        end if
 !
 !

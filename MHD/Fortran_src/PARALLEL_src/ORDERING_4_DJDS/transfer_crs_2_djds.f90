@@ -76,7 +76,7 @@
        if (iflag_debug.eq.1) write(*,*) 'copy_RH_vect_2_crs_nn'
       call copy_RH_vect_2_crs_nn(node1%numnod)
 !
-      call deallocate_crs_connect
+      call dealloc_crs_connect(tbl1_crs)
 !
       end subroutine transfer_crs_2_djds_matrix
 !

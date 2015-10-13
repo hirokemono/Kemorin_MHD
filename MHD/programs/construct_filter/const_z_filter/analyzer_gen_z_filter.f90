@@ -106,7 +106,7 @@
        call cal_delta_z_analytical
 !      call cal_delta_z
 !
-!      call check_crs_connect(my_rank, node1%numnod)
+!      call check_crs_connect(my_rank, node1%numnod, tbl1_crs)
 !      call check_communication_data
 !
 !    set information for filtering for node

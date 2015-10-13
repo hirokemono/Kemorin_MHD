@@ -42,16 +42,16 @@
       PRESET_crs= 2
 
       call  solve                                                       &
-     &                  (node1%internal_node, node1%numnod,             &
-     &                   ntot_crs_l, ntot_crs_u, D_crs, AL_crs,         &
-     &                   istack_crs_l, item_crs_l, AU_crs,              &
-     &                   istack_crs_u, item_crs_u,                      &
-     &                   B_crs, X_crs, PRESET_crs,                      &
-     &                   nod_comm%num_neib, nod_comm%id_neib,           &
-     &                   nod_comm%istack_import, nod_comm%item_import,  &
-     &                   nod_comm%istack_export, nod_comm%item_export,  &
-     &                   ITERactual, ierr, METHOD_crs, PRECOND_crs,     &
-     &                   INTARRAY_crs, REALARRAY_crs         )
+     &                (node1%internal_node, node1%numnod,               &
+     &                 tbl1_crs%ntot_l, tbl1_crs%ntot_u, D_crs,         &
+     &                 AL_crs, tbl1_crs%istack_l, tbl1_crs%item_l,      &
+     &                 AU_crs, tbl1_crs%istack_u, tbl1_crs%item_u,      &
+     &                 B_crs, X_crs, PRESET_crs,                        &
+     &                 nod_comm%num_neib, nod_comm%id_neib,             &
+     &                 nod_comm%istack_import, nod_comm%item_import,    &
+     &                 nod_comm%istack_export, nod_comm%item_export,    &
+     &                 ITERactual, ierr, METHOD_crs, PRECOND_crs,       &
+     &                  INTARRAY_crs, REALARRAY_crs         )
 !
       end subroutine solve_by_crs_solver11
 !
@@ -69,16 +69,16 @@
       PRESET_crs= 2
 
       call  solve33                                                     &
-     &                  (node1%internal_node, node1%numnod,             &
-     &                   ntot_crs_l, ntot_crs_u, D_crs, AL_crs,         &
-     &                   istack_crs_l, item_crs_l, AU_crs,              &
-     &                   istack_crs_u, item_crs_u,                      &
-     &                   B_crs, X_crs, PRESET_crs,                      &
-     &                   nod_comm%num_neib, nod_comm%id_neib,           &
-     &                   nod_comm%istack_import, nod_comm%item_import,  &
-     &                   nod_comm%istack_export, nod_comm%item_export,  &
-     &                   ITERactual, ierr, METHOD_crs, PRECOND_crs,     &
-     &                   INTARRAY_crs, REALARRAY_crs         )
+     &                (node1%internal_node, node1%numnod,               &
+     &                 tbl1_crs%ntot_l, tbl1_crs%ntot_u, D_crs,         &
+     &                 AL_crs, tbl1_crs%istack_l, tbl1_crs%item_l,      &
+     &                 AU_crs, tbl1_crs%istack_u, tbl1_crs%item_u,      &
+     &                 B_crs, X_crs, PRESET_crs,                        &
+     &                 nod_comm%num_neib, nod_comm%id_neib,             &
+     &                 nod_comm%istack_import, nod_comm%item_import,    &
+     &                 nod_comm%istack_export, nod_comm%item_export,    &
+     &                 ITERactual, ierr, METHOD_crs, PRECOND_crs,       &
+     &                 INTARRAY_crs, REALARRAY_crs         )
 !
       end subroutine solve_by_crs_solver33
 !
@@ -96,16 +96,16 @@
       PRESET_crs= 2
 
       call  solveNN                                                     &
-     &                  (node1%internal_node, node1%numnod, NB_crs,     &
-     &                   ntot_crs_l, ntot_crs_u, D_crs, AL_crs,         &
-     &                   istack_crs_l, item_crs_l, AU_crs,              &
-     &                   istack_crs_u, item_crs_u,                      &
-     &                   B_crs, X_crs,  PRESET_crs,                     &
-     &                   nod_comm%num_neib, nod_comm%id_neib,           &
-     &                   nod_comm%istack_import, nod_comm%item_import,  &
-     &                   nod_comm%istack_export, nod_comm%item_export,  &
-     &                   ITERactual, ierr, METHOD_crs, PRECOND_crs,     &
-     &                   INTARRAY_crs, REALARRAY_crs         )
+     &                (node1%internal_node, node1%numnod, NB_crs,       &
+     &                 tbl1_crs%ntot_l, tbl1_crs%ntot_u, D_crs,         &
+     &                 AL_crs, tbl1_crs%istack_l, tbl1_crs%item_l,      &
+     &                 AU_crs, tbl1_crs%istack_u, tbl1_crs%item_u,      &
+     &                 B_crs, X_crs,  PRESET_crs,                       &
+     &                 nod_comm%num_neib, nod_comm%id_neib,             &
+     &                 nod_comm%istack_import, nod_comm%item_import,    &
+     &                 nod_comm%istack_export, nod_comm%item_export,    &
+     &                 ITERactual, ierr, METHOD_crs, PRECOND_crs,       &
+     &                 INTARRAY_crs, REALARRAY_crs         )
 !
       end  subroutine solve_by_crs_solverNN
 !

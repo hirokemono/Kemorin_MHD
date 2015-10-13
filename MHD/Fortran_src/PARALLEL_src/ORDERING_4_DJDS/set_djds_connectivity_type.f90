@@ -88,7 +88,7 @@
       call set_new_comm_table_type(mesh%node%numnod, mesh%nod_comm,     &
      &    djds_tbl)
 !
-      call dealloc_type_crs_connect(MHD_crs)
+      call dealloc_crs_connect(MHD_crs)
 !
       end subroutine s_set_djds_connectivity_type
 !
@@ -131,7 +131,7 @@
       call set_new_comm_table_type(mesh%node%numnod,                    &
      &    layer_comm, djds_tbl)
 !
-      call dealloc_type_crs_connect(CRS_table)
+      call dealloc_crs_connect(CRS_table)
       call dealloc_iele_belonged(FEM_next%neib_ele)
       call dealloc_inod_next_node(FEM_next%neib_nod)
 !

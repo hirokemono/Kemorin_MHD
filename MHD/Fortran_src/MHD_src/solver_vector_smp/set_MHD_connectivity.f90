@@ -160,7 +160,7 @@
       call set_new_comm_table_type                                      &
      &   (node1%numnod, DJDS_comm_etr, DJDS_entire)
 !
-      call dealloc_type_crs_connect(MHD_CRS)
+      call dealloc_crs_connect(MHD_CRS)
 !
       end subroutine set_djds_whole_connectivity
 !
@@ -204,7 +204,7 @@
      &    node1%istack_internal_smp, solver_C, MHD_CRS, djds_tbl)
       call set_new_comm_table_type(node1%numnod, layer_comm, djds_tbl)
 !
-      call dealloc_type_crs_connect(MHD_CRS)
+      call dealloc_crs_connect(MHD_CRS)
       call dealloc_iele_belonged(ele_4_nod1)
       call dealloc_inod_next_node(neib_nod1)
 !

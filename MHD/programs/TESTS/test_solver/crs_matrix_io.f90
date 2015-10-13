@@ -81,7 +81,7 @@
       use m_nod_comm_table
 !
        read (id_file,'(10i16)') node1%internal_node, node1%numnod,      &
-     &     ntot_crs_l, ntot_crs_u, NB_crs, nod_comm%num_neib
+     &     tbl1_crs%ntot_l, tbl1_crs%ntot_u, NB_crs, nod_comm%num_neib
 
 !
        end subroutine read_size_of_crs_matrix
@@ -93,25 +93,25 @@
        integer (kind = kint) :: i, k, j1, j2, kk
 !
 
-      read (id_file,'(10i16)') (istack_crs_l(k), k= 1, node1%numnod)
-      read (id_file,'(10i16)') (istack_crs_u(k), k= 1, node1%numnod)
-      read (id_file,'(10i16)') (item_crs_l(k), k= 1, ntot_crs_l)
-      read (id_file,'(10i16)') (item_crs_u(k), k= 1, ntot_crs_u)
+      read (id_file,'(10i16)') tbl1_crs%istack_l(1:node1%numnod)
+      read (id_file,'(10i16)') tbl1_crs%istack_u(1:node1%numnod)
+      read (id_file,'(10i16)') tbl1_crs%item_l(1:tbl1_crs%ntot_l)
+      read (id_file,'(10i16)') tbl1_crs%item_u(1:tbl1_crs%ntot_u)
 
       if (NB_crs .eq. 1) then
-        read (id_file,'(5e27.20)') (AL_crs(1,1,k),k= 1,ntot_crs_l)
-        read (id_file,'(5e27.20)') (AU_crs(1,1,k),k= 1,ntot_crs_u)
+        read (id_file,'(5e27.20)') AL_crs(1,1,1:tbl1_crs%ntot_l)
+        read (id_file,'(5e27.20)') AU_crs(1,1,1:tbl1_crs%ntot_u)
         
         read (15,'(5e27.20)') (D_crs(1,1,i), i= 1,node1%numnod)
         read (15,'(5e27.20)') (B_crs(i), i= 1,node1%numnod)
       else
-        do  k= 1, ntot_crs_l
+        do  k= 1, tbl1_crs%ntot_l
           do j1= 1, NB_crs
             read (id_file,'(5e27.20)') (AL_crs(j1,j2,k),j2= 1,NB_crs)
           enddo
         enddo
 
-        do  k= 1, ntot_crs_u
+        do  k= 1, tbl1_crs%ntot_u
           do j1= 1, NB_crs
             read (id_file,'(5e27.20)') (AU_crs(j1,j2,k),j2= 1,NB_crs)
           enddo
@@ -132,8 +132,10 @@
         enddo
 !
        do i = 1, node1%numnod
-         num_crs_l(i) = istack_crs_l(i) - istack_crs_l(i-1)
-         num_crs_u(i) = istack_crs_u(i) - istack_crs_u(i-1)
+         tbl1_crs%nitem_l(i) = tbl1_crs%istack_l(i)                     &
+     &                        - tbl1_crs%istack_l(i-1)
+         tbl1_crs%nitem_u(i) = tbl1_crs%istack_u(i)                     &
+     &                        - tbl1_crs%istack_u(i-1)
        end do
 !
        end subroutine read_crs_matrix

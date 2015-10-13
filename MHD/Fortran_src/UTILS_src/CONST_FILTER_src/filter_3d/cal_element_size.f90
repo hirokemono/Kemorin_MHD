@@ -204,7 +204,7 @@
       call s_set_consist_mass_connect(node1%numnod)
 !
       if (iflag_debug.eq.1)  write(*,*) 'deallocate_crs_connect'
-      call deallocate_crs_connect
+      call dealloc_crs_connect(tbl1_crs)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_consist_mass_matrix'
       call int_vol_consist_mass_matrix

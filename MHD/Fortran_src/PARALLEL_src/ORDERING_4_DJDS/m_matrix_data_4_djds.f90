@@ -123,9 +123,9 @@
           precond_4_crank =  PRECOND_crs
           SOLVER_TYPE_djds = SOLVER_crs
 !
-      itotal_l =      ntot_crs_l
-      itotal_u =      ntot_crs_u
-      NB_djds =       NB_crs
+      itotal_l = tbl1_crs%ntot_l
+      itotal_u = tbl1_crs%ntot_u
+      NB_djds =  NB_crs
 !
        end subroutine copy_paramters_4_djds
 !

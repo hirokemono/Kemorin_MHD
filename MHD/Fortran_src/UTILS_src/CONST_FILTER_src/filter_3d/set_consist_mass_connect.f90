@@ -25,22 +25,22 @@
       integer(kind = kint), intent(in) :: numnod
 !
 !
-      ntot_mass_l = ntot_crs_l
-      ntot_mass_u = ntot_crs_u
+      ntot_mass_l = tbl1_crs%ntot_l
+      ntot_mass_u = tbl1_crs%ntot_u
 !
       im_mass_d = 1
       im_mass_l = numnod + 1
-      im_mass_u = numnod + ntot_crs_l + 1
-      num_mass_mat = numnod + ntot_crs_l + ntot_crs_u
+      im_mass_u = numnod + tbl1_crs%ntot_l + 1
+      num_mass_mat = numnod + tbl1_crs%ntot_l + tbl1_crs%ntot_u
 !
 !
       call allocate_mass_connect(numnod)
 !
-      istack_mass_l(0:numnod) = istack_crs_l
-      istack_mass_u(0:numnod) = istack_crs_u
+      istack_mass_l(0:numnod) = tbl1_crs%istack_l
+      istack_mass_u(0:numnod) = tbl1_crs%istack_u
 !
-      item_mass_l(1:ntot_mass_l) = item_crs_l
-      item_mass_u(1:ntot_mass_u) = item_crs_u
+      item_mass_l(1:ntot_mass_l) = tbl1_crs%item_l
+      item_mass_u(1:ntot_mass_u) = tbl1_crs%item_u
 !
       call allocate_aiccg_mass
 !

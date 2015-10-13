@@ -45,10 +45,10 @@
         D_crs(1,1,i) = d_mk_crs(i)
         B_crs(i) = rhs_mk_crs(i)
       end do
-      do i = 1, ntot_crs_l
+      do i = 1, tbl1_crs%ntot_l
         AL_crs(1,1,i) = al_mk_crs(i)
       end do
-      do i = 1, ntot_crs_u
+      do i = 1, tbl1_crs%ntot_u
         AU_crs(1,1,i) = au_mk_crs(i)
       end do
 !

@@ -5,7 +5,6 @@
 !
 !  Volume integration: s_cal_layered_volumes
 !      subroutine s_cal_layered_volumes
-!      subroutine deallocate_layering_volumes
 !
       module cal_layered_volumes
 !
@@ -13,7 +12,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use m_geometry_data
 !
       implicit none
 !
@@ -33,63 +31,58 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_cal_layered_volumes
+      subroutine s_cal_layered_volumes(ele, layer_tbl)
 !
-      use m_layering_ele_list
+      use t_geometry_data
+      use t_layering_ele_list
+!
+      type(element_data), intent(in) :: ele
+      type(layering_tbl), intent(inout) :: layer_tbl
 !
       integer (kind = kint) :: inum
 !
 !
-      call alloc_layering_volumes_type(layer_tbl1)
-      call allocate_work_layerd_volume(layer_tbl1%n_layer_d)
+      call alloc_layering_volumes_type(layer_tbl)
+      call allocate_work_layerd_volume(layer_tbl%n_layer_d)
 !
-!      if(layer_tbl1%minlayer_4_smp                                     &
-!     &      .gt. layer_tbl1%min_item_layer_d_smp) then
+!      if(layer_tbl%minlayer_4_smp                                      &
+!     &      .gt. layer_tbl%min_item_layer_d_smp) then
         if (iflag_debug.eq.1) write(*,*) 'int_volume_4_sgs_layer'
         call int_volume_4_sgs_layer                                     &
-     &     (layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
-     &      layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
+     &     (ele%numele, ele%interior_ele, ele%volume_ele,               &
+     &      layer_tbl%n_layer_d, layer_tbl%n_item_layer_d,              &
+     &      layer_tbl%layer_stack_smp, layer_tbl%item_layer)
 !      else
 !        if (iflag_debug.eq.1) write(*,*) 'int_volume_dynamic_grpsmp'
 !        call int_volume_dynamic_grpsmp                                 &
-!     &     (layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,           &
-!     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp,&
-!     &      layer_tbl1%item_layer)
+!     &     (ele%numele, ele%interior_ele, ele%volume_ele,              &
+!     &      layer_tbl%n_layer_d, layer_tbl%n_item_layer_d,             &
+!     &      layer_tbl%layer_stack, layer_tbl%istack_item_layer_d_smp,  &
+!     &      layer_tbl%item_layer)
 !      end if
 !
       if (iflag_debug.eq.1) write(*,*) 'sum_volumes_4_layerd'
-      call sum_volumes_4_layerd(layer_tbl1%n_layer_d,                   &
-     &   layer_tbl1%volumes_layer, layer_tbl1%vol_total_layer)
+      call sum_volumes_4_layerd(layer_tbl%n_layer_d,                    &
+     &   layer_tbl%volumes_layer, layer_tbl%vol_total_layer)
       if (iflag_debug.eq.1) write(*,*) 'cal_a_vol_4_layerd'
       call cal_a_vol_4_layerd                                           &
-     &   (layer_tbl1%n_layer_d, layer_tbl1%volumes_layer,               &
-     &    layer_tbl1%vol_total_layer, layer_tbl1%a_vol_layer,           &
-     &    layer_tbl1%a_vol_total_layer)
+     &   (layer_tbl%n_layer_d, layer_tbl%volumes_layer,                 &
+     &    layer_tbl%vol_total_layer, layer_tbl%a_vol_layer,             &
+     &    layer_tbl%a_vol_total_layer)
 !
       call deallocate_work_layerd_volume
 !
       if (iflag_debug.eq.1) then
-        write(*,*) 'vol_total_layer: ', layer_tbl1%vol_total_layer(1)
+        write(*,*) 'vol_total_layer: ', layer_tbl%vol_total_layer(1)
         write(*,*) 'layer, volumes_layer'
-        do inum = 1, layer_tbl1%n_layer_d
-          write(*,*) inum, layer_tbl1%volumes_layer(inum)
+        do inum = 1, layer_tbl%n_layer_d
+          write(*,*) inum, layer_tbl%volumes_layer(inum)
         end do
       end if
 !
       end subroutine s_cal_layered_volumes
 !
 !  ---------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_layering_volumes
-!
-      use m_layering_ele_list
-!
-      call dealloc_layering_volumes_type(layer_tbl1)
-!
-      end subroutine deallocate_layering_volumes
-!
-! ----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine  allocate_work_layerd_volume(n_layer_d)
@@ -117,8 +110,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine int_volume_4_sgs_layer(n_layer_d, n_item_layer_d,      &
+      subroutine int_volume_4_sgs_layer(numele, interior_ele,           &
+     &          volume_ele, n_layer_d, n_item_layer_d,                  &
      &          layer_stack_smp, item_layer)
+!
+      integer (kind = kint), intent(in) :: numele
+      integer (kind = kint), intent(in) :: interior_ele(numele)
+      real(kind = kreal), intent(in) :: volume_ele(numele)
 !
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in)                                 &
@@ -144,8 +142,8 @@
 !$cdir nodep
           do iele0 = ist, ied
             iele = item_layer(iele0)
-            vol_l_smp(iproc) = vol_l_smp(iproc) + ele1%volume_ele(iele) &
-     &                       * dble(ele1%interior_ele(iele))
+            vol_l_smp(iproc) = vol_l_smp(iproc) + volume_ele(iele)      &
+     &                       * dble(interior_ele(iele))
           end do
         end do
 !$omp end parallel do
@@ -160,8 +158,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_volume_dynamic_grpsmp(n_layer_d, n_item_layer_d,   &
+      subroutine int_volume_dynamic_grpsmp(numele, interior_ele,        &
+     &           volume_ele, n_layer_d, n_item_layer_d,                 &
      &           layer_stack, istack_item_layer_d_smp, item_layer)
+!
+      integer (kind = kint), intent(in) :: numele
+      integer (kind = kint), intent(in) :: interior_ele(numele)
+      real(kind = kreal), intent(in) :: volume_ele(numele)
 !
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in) :: layer_stack(0:n_layer_d)
@@ -191,8 +194,8 @@
 !$cdir nodep
           do iele0 = ist, ied
             iele = item_layer(iele0)
-            vol_l(igrp) = vol_l(igrp) + ele1%volume_ele(iele)           &
-     &                   * dble(ele1%interior_ele(iele))
+            vol_l(igrp) = vol_l(igrp) + volume_ele(iele)                &
+     &                   * dble(interior_ele(iele))
           end do
           vol_l_smp(iproc) = vol_l_smp(iproc) + vol_l(igrp)
         end do

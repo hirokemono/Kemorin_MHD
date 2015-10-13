@@ -23,7 +23,7 @@
       use m_crs_connect
       use m_crs_matrix
 !
-      integer (kind = kint) :: kk, inod, k1, ii, k2
+      integer (kind = kint) :: kk, inod, k1, ii, k2, ist, ied
       real(kind = kreal) :: w
 !
 !
@@ -46,14 +46,20 @@
                   D_crs(k1,kk,inod) = D_crs(k2,kk,inod)
                   D_crs(k2,kk,inod) = w
                 end do
-                do ii = istack_crs_l(inod-1)+1, istack_crs_l(inod)
+!
+                ist = tbl1_crs%istack_l(inod-1)+1
+                ied = tbl1_crs%istack_l(inod)
+                do ii = ist, ied
                   do kk = 1, NB_crs
                     w =                AL_crs(k1,kk,ii)
                     AL_crs(k1,kk,ii) = AL_crs(k2,kk,ii)
                     AL_crs(k2,kk,ii) = w
                   end do
                 end do
-                do ii = istack_crs_u(inod-1)+1, istack_crs_u(inod)
+!
+                ist = tbl1_crs%istack_u(inod-1)+1
+                ied = tbl1_crs%istack_u(inod)
+                do ii = ist, ied
                   do kk = 1, NB_crs
                     w =                AU_crs(k1,kk,ii)
                     AU_crs(k1,kk,ii) = AU_crs(k2,kk,ii)
