@@ -152,7 +152,7 @@
      &    (surf1, sf_grp1, sf_grp_tbl1, sf_grp_v1)
 !
        if (iflag_debug.gt.0)  write(*,*) 's_sum_normal_4_surf_group'
-       call s_sum_normal_4_surf_group(sf_grp1, sf_grp_v1)
+       call s_sum_normal_4_surf_group(ele1, sf_grp1, sf_grp_v1)
 !
 !  ---------------------------------------------
 !     output node data

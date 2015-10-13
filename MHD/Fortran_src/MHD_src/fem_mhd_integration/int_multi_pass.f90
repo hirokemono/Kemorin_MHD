@@ -129,6 +129,7 @@
 !
       use m_geometry_data_MHD
       use m_sorted_node
+      use m_int_vol_data
 !
       integer (kind = kint) :: imulti
 !
@@ -136,7 +137,7 @@
       ff_nl = 0.0d0
       do imulti = 2, num_multi_pass
         call cal_ff_smp_2_vector(node1, rhs_tbl1,                       &
-     &      ff_nl_smp(1,1,1), ml_cd, n_vector, ione, ff_nl)
+     &      ff_nl_smp(1,1,1), mhd_fem1_wk%ml_cd, n_vector, ione, ff_nl)
         call nod_vector_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_vector(iele_cd_smp_stack)
@@ -151,6 +152,7 @@
 !
       use m_geometry_data_MHD
       use m_sorted_node
+      use m_int_vol_data
 !
       integer (kind = kint) :: imulti
 !
@@ -159,7 +161,7 @@
       do imulti = 2, num_multi_pass
 !
         call cal_ff_smp_2_scalar(node1, rhs_tbl1,                       &
-     &      ff_nl_smp(1,1,1), ml_cd, n_vector, ione, ff_nl)
+     &      ff_nl_smp(1,1,1), mhd_fem1_wk%ml_cd, n_vector, ione, ff_nl)
         call nod_scalar_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_scalar(iele_cd_smp_stack)
@@ -174,14 +176,15 @@
 !
       use m_geometry_data_MHD
       use m_sorted_node
+      use m_int_vol_data
 !
       integer (kind = kint) :: imulti
 !
 !
       ff_nl = 0.0d0
       do imulti = 2, num_multi_pass
-        call cal_ff_smp_2_vector(node1, rhs_tbl1,                       &
-     &      ff_nl_smp(1,1,1), ml_ins, n_vector, ione, ff_nl)
+        call cal_ff_smp_2_vector(node1, rhs_tbl1, ff_nl_smp(1,1,1),     &
+     &      mhd_fem1_wk%ml_ins, n_vector, ione, ff_nl)
         call nod_vector_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_vector(iele_ins_smp_stack)
@@ -195,14 +198,15 @@
 !
       use m_geometry_data_MHD
       use m_sorted_node
+      use m_int_vol_data
 !
       integer (kind = kint) :: imulti
 !
 !
       ff_nl = 0.0d0
       do imulti = 2, num_multi_pass
-        call cal_ff_smp_2_scalar(node1, rhs_tbl1,                       &
-     &      ff_nl_smp(1,1,1), ml_ins, n_vector, ione, ff_nl)
+        call cal_ff_smp_2_scalar(node1, rhs_tbl1, ff_nl_smp(1,1,1),     &
+     &      mhd_fem1_wk%ml_ins, n_vector, ione, ff_nl)
         call nod_scalar_send_recv( ff_nl(1,1) )
 !
         call int_vol_multi_pass_scalar(iele_ins_smp_stack)

@@ -34,6 +34,7 @@
       use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
+      use m_int_vol_data
 !
       use int_vol_vect_p_pre
 !
@@ -52,8 +53,8 @@
       call set_boundary_vect_p_4_rhs
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, ml_cd, nod_fld1%ntot_phys, iphys%i_vp_induct,          &
-     &    nod_fld1%d_fld)
+     &    ff_nl, mhd_fem1_wk%ml_cd,                                     &
+     &    nod_fld1%ntot_phys, iphys%i_vp_induct, nod_fld1%d_fld)
       call vector_send_recv                                             &
      &   (nod_fld1%ntot_phys, iphys%i_vp_induct, nod_fld1%d_fld)
 !
@@ -70,6 +71,7 @@
       use m_node_phys_address
       use m_node_phys_data
       use m_jacobian_sf_grp
+      use m_int_vol_data
 !
       use int_vol_diffusion_ele
       use int_surf_fixed_gradients
@@ -87,8 +89,8 @@
       call set_boundary_vect_p_4_rhs
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff, ml_cd, nod_fld1%ntot_phys, iphys%i_vp_diffuse,            &
-     &    nod_fld1%d_fld)
+     &    ff, mhd_fem1_wk%ml_cd,                                        &
+     &    nod_fld1%ntot_phys, iphys%i_vp_diffuse, nod_fld1%d_fld)
 !
       call vector_send_recv                                             &
      &   (nod_fld1%ntot_phys, iphys%i_vp_diffuse, nod_fld1%d_fld)

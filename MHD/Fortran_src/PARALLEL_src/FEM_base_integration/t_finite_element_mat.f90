@@ -69,31 +69,6 @@
         real(kind=kreal), pointer  ::  me_diag(:)
       end type work_finite_element_mat
 !
-!>      Work array for FEM assemble in MHD model
-      type work_MHD_fe_mat
-!>        assembled position in each element
-        real (kind=kreal), pointer ::  xx_e(:,:)
-!>        assembled radius in each element
-        real (kind=kreal), pointer ::  rr_e(:)
-!
-!>        assembled velocity in each element
-        real (kind=kreal), pointer ::  velo_1(:,:)
-!>        assembled magnetic field in each element
-        real (kind=kreal), pointer ::  magne_1(:,:)
-!>        assembled vector potential in each element
-        real (kind=kreal), pointer ::  vecp_1(:,:)
-!
-!>        assembled SGS vector in each element
-        real (kind=kreal), pointer  :: sgs_v1(:,:)
-!>        assembled SGS tensor in each element
-        real (kind=kreal), pointer  :: sgs_t1(:,:)
-!
-!>        Number of components for work dvx in each element
-        integer(kind=kint) :: n_dvx
-!>        Work of diffence of field in each element
-        real (kind=kreal), pointer :: dvx(:,:)
-      end type work_MHD_fe_mat
-!
 !
       type finite_ele_matrices
         type(finite_ele_mat_node) :: f_l

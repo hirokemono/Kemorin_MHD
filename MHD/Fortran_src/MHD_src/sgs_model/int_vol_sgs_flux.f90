@@ -19,6 +19,7 @@
       use m_phys_constants
       use m_geometry_data
       use t_finite_element_mat
+      use t_MHD_finite_element_mat
 !
       implicit none
 !

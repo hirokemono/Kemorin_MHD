@@ -35,15 +35,15 @@
 !
       real (kind=kreal), allocatable  ::  ml(:)
       real (kind=kreal), allocatable  ::  ml_fl(:)
-      real (kind=kreal), allocatable  ::  ml_cd(:)
-      real (kind=kreal), allocatable  ::  ml_ins(:)
+!      real (kind=kreal), allocatable  ::  ml_cd(:)
+!      real (kind=kreal), allocatable  ::  ml_ins(:)
 !
 !      real (kind=kreal), allocatable  ::  ml_ele_diag(:)
 !
       real (kind=kreal), allocatable  ::  ml_o(:)
       real (kind=kreal), allocatable  ::  ml_o_fl(:)
-      real (kind=kreal), allocatable  ::  ml_o_cd(:)
-      real (kind=kreal), allocatable  ::  ml_o_ins(:)
+!      real (kind=kreal), allocatable  ::  ml_o_cd(:)
+!      real (kind=kreal), allocatable  ::  ml_o_ins(:)
 !
 !
       real (kind=kreal), allocatable  ::  ff(:,:)
@@ -57,7 +57,6 @@
 !
 !      real (kind=kreal), allocatable  ::  sk6(:,:,:)
 !
-      private :: allocate_fem_mat_region
       private :: allocate_fem_mat_fluid, allocate_node_ff
 !
 !   ---------------------------------------------------------------------
@@ -72,7 +71,7 @@
 !
 !
       call allocate_fem_mat_base
-      call allocate_fem_mat_region(node1%numnod)
+      call allocate_fem_mat_fluid(node1%numnod)
 !
       end subroutine allocate_finite_elem_mt
 !
@@ -126,30 +125,6 @@
       call reset_ff_smps
 !
       end subroutine allocate_fem_mat_base
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine allocate_fem_mat_region(numnod)
-!
-      integer(kind = kint), intent(in) :: numnod
-!
-!
-      call allocate_fem_mat_fluid(numnod)
-!
-      allocate(ml_cd(numnod))
-      allocate(ml_ins(numnod))
-!
-      allocate(ml_o_cd(numnod))
-      allocate(ml_o_ins(numnod))
-!
-      if(numnod .le. 0) return
-      ml_cd =  0.0d0
-      ml_ins = 0.0d0
-!
-      ml_o_cd =  0.0d0
-      ml_o_ins = 0.0d0
-!
-      end subroutine allocate_fem_mat_region
 !
 !   ---------------------------------------------------------------------
 !
@@ -275,17 +250,6 @@
       call deallocate_node_ff
 !
       end subroutine deallocate_fem_mat_base
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine deallocate_fem_mat_region
-!
-      deallocate(ml_cd,  ml_o_cd)
-      deallocate(ml_ins, ml_o_ins)
-!
-      call deallocate_fem_mat_fluid
-!
-      end subroutine deallocate_fem_mat_region
 !
 !   ---------------------------------------------------------------------
 !

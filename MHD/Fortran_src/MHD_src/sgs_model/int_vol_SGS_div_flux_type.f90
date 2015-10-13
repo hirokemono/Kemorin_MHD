@@ -36,6 +36,7 @@
       use t_finite_element_mat
       use t_filter_elength
       use t_finite_element_mat
+      use t_MHD_finite_element_mat
 !
       implicit none
 !

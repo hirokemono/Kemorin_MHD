@@ -41,6 +41,7 @@
       use m_magne_matrix
       use m_temp_matrix
       use m_light_element_matrix
+      use m_int_vol_data
 !
 !$omp parallel
       if (iflag_t_evo_4_velo .eq. id_Crank_nicolson                     &
@@ -60,14 +61,14 @@
       if (iflag_t_evo_4_magne .eq. id_Crank_nicolson                    &
      &     .and. coef_magne .gt. zero) then
         call init_33_matrix_lump(node1%numnod, numnod_conduct,          &
-     &      inod_conduct, DJDS_entire%OLDtoNEW, ml_o_cd,                &
+     &      inod_conduct, DJDS_entire%OLDtoNEW, mhd_fem1_wk%ml_o_cd,    &
      &      Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
       end if
 !
       if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson                   &
      &     .and. coef_magne .gt. zero) then
         call init_33_matrix_lump(node1%numnod, numnod_conduct,          &
-     &      inod_conduct, DJDS_entire%OLDtoNEW, ml_o_cd,                &
+     &      inod_conduct, DJDS_entire%OLDtoNEW, mhd_fem1_wk%ml_o_cd,    &
      &      Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
       end if
 !

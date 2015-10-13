@@ -33,6 +33,7 @@
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
+      use m_int_vol_data
 !
       use int_vol_magne_monitor
 !
@@ -53,7 +54,8 @@
       call set_boundary_magne_4_rhs
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, ml_cd, nod_fld1%ntot_phys, i_field, nod_fld1%d_fld)
+     &    ff_nl, mhd_fem1_wk%ml_cd, nod_fld1%ntot_phys,                 &
+     &    i_field, nod_fld1%d_fld)
       call vector_send_recv                                             &
      &   (nod_fld1%ntot_phys, i_field, nod_fld1%d_fld)
 !

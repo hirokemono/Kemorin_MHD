@@ -5,8 +5,6 @@
 !
 !      subroutine check_mass_martix
 !      subroutine check_mass_martix_fluid
-!      subroutine check_mass_martix_conduct
-!      subroutine check_mass_martix_insulate
 !      subroutine check_ff(numdir)
 !      subroutine check_ff_nl(numdir)
 !      subroutine check_ff_smp(numdir)
@@ -54,34 +52,6 @@
       end do
 !
       end subroutine check_mass_martix_fluid
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine check_mass_martix_conduct
-!
-      integer(kind = kint) :: inod
-!
-      write(50+my_rank,*) 'inod, ml_cd, ml_o_cd'
-      do inod = 1, node1%numnod
-        write(50+my_rank,'(i16,1p2e25.14)')                             &
-     &       inod, ml_cd(inod), ml_o_cd(inod)
-      end do
-!
-      end subroutine check_mass_martix_conduct
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine check_mass_martix_insulate
-!
-      integer(kind = kint) :: inod
-!
-      write(50+my_rank,*) 'inod, ml_ins, ml_o_ins'
-      do inod = 1, node1%numnod
-        write(50+my_rank,'(i16,1p2e25.14)')                             &
-     &        inod, ml_ins(inod), ml_ins(inod)
-      end do
-!
-      end subroutine check_mass_martix_insulate
 !
 !   ---------------------------------------------------------------------
 !

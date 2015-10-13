@@ -27,6 +27,7 @@
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_MHD_finite_element_mat
 !
       use m_physical_property
       use m_node_phys_address

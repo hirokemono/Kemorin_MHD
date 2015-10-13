@@ -7,7 +7,7 @@
 !!     &         (numnod, inter_smp_stack, ncomp_nod, numdir, i_field,  &
 !!     &          d_nod)
 !!      subroutine cal_sol_vect_pre_conduct_euler                       &
-!!     &         (numnod, inter_smp_stack, nnod_cd, inod_conduct,       &
+!!     &         (numnod, inter_smp_stack, nnod_cd, inod_conduct, ml_cd,&
 !!     &          ncomp_nod, numdir, i_field, d_nod)
 !!
 !!      subroutine cal_sol_vect_pre_fluid_adams                         &
@@ -15,12 +15,12 @@
 !!     &          i_field, if_pre, d_nod)
 !!      subroutine cal_sol_vect_pre_conduct_adams                       &
 !!     &         (numnod, inter_smp_stack, nnod_cd, inod_conduct,       &
-!!     &          ncomp_nod, numdir, i_field, if_pre, d_nod)
+!!     &          ml_cd, ncomp_nod, numdir, i_field, if_pre, d_nod)
 !!
 !!      subroutine cal_sol_vec_fluid_linear(numnod, inod_smp_stack,     &
 !!     &          ncomp_nod, numdir, i_field, if_pre, d_nod)
 !!      subroutine cal_sol_vec_conduct_linear(numnod, inter_smp_stack,  &
-!!     &          inter_cd_smp_stack, nnod_cd, inod_conduct,            &
+!!     &          inter_cd_smp_stack, nnod_cd, inod_conduct, ml_o_cd,  &
 !!     &          ncomp_nod, numdir, i_field, if_pre, d_nod)
 !!
 !!      subroutine cal_sol_vec_pre_consist(numnod, inter_smp_stack,     &
@@ -75,12 +75,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_vect_pre_conduct_euler                         &
-     &         (numnod, inter_smp_stack, nnod_cd, inod_conduct,         &
+     &         (numnod, inter_smp_stack, nnod_cd, inod_conduct, ml_cd,  &
      &          ncomp_nod, numdir, i_field, d_nod)
 !
       integer (kind = kint), intent(in) :: numnod, nnod_cd, ncomp_nod
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: inod_conduct(nnod_cd)
+      real(kind = kreal), intent(in) :: ml_cd(numnod)
 !
       integer (kind = kint), intent(in) :: numdir, i_field
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
@@ -147,11 +148,12 @@
 !
       subroutine cal_sol_vect_pre_conduct_adams                         &
      &         (numnod, inter_smp_stack, nnod_cd, inod_conduct,         &
-     &          ncomp_nod, numdir, i_field, if_pre, d_nod)
+     &          ml_cd, ncomp_nod, numdir, i_field, if_pre, d_nod)
 !
       integer (kind = kint), intent(in) :: numnod, nnod_cd, ncomp_nod
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: inod_conduct(nnod_cd)
+      real(kind = kreal), intent(in) :: ml_cd(numnod)
 !
       integer (kind = kint), intent(in) :: numdir, i_field, if_pre
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
@@ -226,13 +228,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_vec_conduct_linear(numnod, inter_smp_stack,    &
-     &          inter_cd_smp_stack, nnod_cd, inod_conduct,              &
+     &          inter_cd_smp_stack, nnod_cd, inod_conduct, ml_o_cd,     &
      &          ncomp_nod, numdir, i_field, if_pre, d_nod)
 !
       integer (kind = kint), intent(in) :: numnod, nnod_cd, ncomp_nod
       integer (kind = kint), intent(in) :: inod_conduct(nnod_cd)
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: inter_cd_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: ml_o_cd(numnod)
 !
       integer (kind = kint), intent(in) :: numdir, i_field, if_pre
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)

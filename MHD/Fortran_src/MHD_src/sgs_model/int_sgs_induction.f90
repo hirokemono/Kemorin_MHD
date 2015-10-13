@@ -28,6 +28,7 @@
       use m_node_phys_address
       use m_node_phys_data
       use m_finite_element_matrix
+      use m_int_vol_data
 !
       use int_vol_vect_diff_1st
       use cal_ff_smp_to_ffs
@@ -41,9 +42,11 @@
 !
 !      call cal_multi_pass_4_vector_ff
 !      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,         &
-!    &     ff, ml_cd, nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld)
-       call cal_ff_smp_2_vector(node1, rhs_tbl1, ff_nl_smp, ml_cd,      &
-     &    nod_fld1%ntot_phys, iphys%i_SGS_induction, nod_fld1%d_fld)
+!    &     ff, mhd_fem1_wk%ml_cd, nod_fld1%ntot_phys,                   &
+!    &     iphys%i_magne, nod_fld1%d_fld)
+       call cal_ff_smp_2_vector                                         &
+     &    (node1, rhs_tbl1, ff_nl_smp, mhd_fem1_wk%ml_cd,               &
+     &     nod_fld1%ntot_phys, iphys%i_SGS_induction, nod_fld1%d_fld)
 !
        call vector_send_recv                                            &
      &    (nod_fld1%ntot_phys, iphys%i_SGS_induction, nod_fld1%d_fld)

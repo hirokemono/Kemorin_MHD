@@ -69,12 +69,14 @@
       subroutine cal_sol_vect_p_pre_linear
 !
       use m_geometry_data_MHD
+      use m_int_vol_data
 !
 !
       call cal_sol_vec_conduct_linear                                   &
      &   (node1%numnod, node1%istack_internal_smp, inter_cd_smp_stack,  &
-     &    numnod_conduct, inod_conduct, nod_fld1%ntot_phys, n_vector,   &
-     &    iphys%i_vecp, iphys%i_pre_uxb, nod_fld1%d_fld)
+     &    numnod_conduct, inod_conduct, mhd_fem1_wk%ml_o_cd,            &
+     &    nod_fld1%ntot_phys, n_vector, iphys%i_vecp, iphys%i_pre_uxb,  &
+     &    nod_fld1%d_fld)
 !
       end subroutine cal_sol_vect_p_pre_linear
 !
@@ -82,12 +84,14 @@
       subroutine cal_sol_magne_pre_linear
 !
       use m_geometry_data_MHD
+      use m_int_vol_data
 !
 !
       call cal_sol_vec_conduct_linear                                   &
      &   (node1%numnod, node1%istack_internal_smp, inter_cd_smp_stack,  &
-     &    numnod_conduct, inod_conduct, nod_fld1%ntot_phys, n_vector,   &
-     &    iphys%i_magne, iphys%i_pre_uxb, nod_fld1%d_fld)
+     &    numnod_conduct, inod_conduct, mhd_fem1_wk%ml_o_cd,            &
+     &    nod_fld1%ntot_phys, n_vector, iphys%i_magne, iphys%i_pre_uxb, &
+     &    nod_fld1%d_fld)
 !
       end subroutine cal_sol_magne_pre_linear
 !

@@ -40,6 +40,7 @@
 !
       if (iflag_debug.ge.1) write(*,*) 'allocate_finite_elem_mt'
       call allocate_finite_elem_mt
+      call alloc_mass_mat_conduct(node1%numnod, mhd_fem1_wk)
 !
       if (iflag_debug.ge.1) write(*,*) 'allocate_int_vol_data'
       call allocate_int_vol_data(ele1%numele)

@@ -66,6 +66,7 @@
       use m_physical_property
       use m_sorted_node
       use m_finite_element_matrix
+      use m_int_vol_data
 !
       use cal_ff_smp_to_ffs
       use cal_skv_to_ff_smp
@@ -88,7 +89,8 @@
       call add3_skv_coef_to_ff_v_smp(node1, ele1, rhs_tbl1,             &
      &    coef_induct, fem1_wk%sk6, ff_smp)
       call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
-     &    ff_smp, ml_cd, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
+     &    ff_smp, mhd_fem1_wk%ml_cd, nod_fld1%ntot_phys,                &
+     &    i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
 !

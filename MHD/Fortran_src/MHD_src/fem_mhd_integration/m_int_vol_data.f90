@@ -9,7 +9,7 @@
       module m_int_vol_data
 !
       use m_precision
-      use t_finite_element_mat
+      use t_MHD_finite_element_mat
 !
       implicit  none
 !

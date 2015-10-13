@@ -39,7 +39,7 @@
 !
       use m_machine_parameter
 !
-      use int_normal_4_surf_type
+      use sum_normal_4_surf_group
       use position_2_each_surf_type
       use set_connects_4_surf_group
       use set_surf_grp_vectors_type
@@ -59,8 +59,8 @@
       call pick_normal_of_surf_grp_type(surf, group%surf_grp,           &
      &    group%tbls_surf_grp, group%surf_grp_geom)
 !
-      if (iflag_debug.eq.1) write(*,*) 'sum_normal_4_surf_grp_type'
-      call sum_normal_4_surf_grp_type(mesh%ele, group%surf_grp,         &
+      if (iflag_debug.eq.1) write(*,*) 's_sum_normal_4_surf_group'
+      call s_sum_normal_4_surf_group(mesh%ele, group%surf_grp,          &
      &    group%surf_grp_geom)
 !
 !
@@ -89,7 +89,7 @@
 !
       use m_machine_parameter
 !
-      use int_normal_4_surf_type
+      use sum_normal_4_surf_group
       use position_2_each_surf_type
       use set_surf_grp_vectors_type
 !
@@ -104,8 +104,8 @@
       call alloc_vectors_surf_grp_type(group%surf_grp%num_grp,          &
      &    group%surf_grp%num_item, group%surf_grp_geom)
 !
-      if (iflag_debug.eq.1) write(*,*) 'sum_normal_4_surf_grp_type'
-      call sum_normal_4_surf_grp_type(mesh%ele, group%surf_grp,         &
+      if (iflag_debug.eq.1) write(*,*) 's_sum_normal_4_surf_group'
+      call s_sum_normal_4_surf_group(mesh%ele, group%surf_grp,          &
      &     group%surf_grp_geom)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_vect_surf_grp_nod'

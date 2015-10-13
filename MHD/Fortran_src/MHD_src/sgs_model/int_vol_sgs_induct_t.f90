@@ -35,6 +35,7 @@
      &           ifield_v, ifield_b, fem_wk, mhd_fem_wk)
 !
       use m_element_phys_data
+      use t_MHD_finite_element_mat
 !
       integer (kind = kint), intent(in) :: i_filter
       integer (kind = kint), intent(in) :: ifield_v, ifield_b
