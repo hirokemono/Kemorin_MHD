@@ -238,7 +238,7 @@
       call cal_volume_node
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector'
-      call s_cal_normal_vector
+      call s_cal_normal_vector(surf1, jac1_2d_q, jac1_2d_l)
 !
       if (iflag_debug.eq.1) write(*,*)  'int_surface_parameters'
       call int_surface_parameters(sf_grp1%num_grp)

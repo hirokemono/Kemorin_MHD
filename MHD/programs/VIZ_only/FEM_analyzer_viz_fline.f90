@@ -88,7 +88,7 @@
       call cal_jacobian_surface
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector'
-      call s_cal_normal_vector
+      call s_cal_normal_vector(surf1, jac1_2d_q, jac1_2d_l)
 !
       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
       call pick_normal_of_surf_group                                    &

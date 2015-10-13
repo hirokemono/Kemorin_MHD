@@ -19,6 +19,7 @@
       use m_machine_parameter
 !
       use m_control_parameter
+      use m_geometry_data
       use m_int_vol_data
 !
       use cal_fields_on_element
@@ -158,7 +159,6 @@
      &         (iele_fsmp_stack, n_int, ncomp_nod, ifld_nod, d_nod,     &
      &          ncomp_ele, ifld_ele, iflag_update, d_ele)
 !
-      use m_geometry_data
       use m_jacobians
 !
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -184,6 +184,8 @@
      &         (iele_fsmp_stack, n_int, ncomp_nod, ifld_nod, d_nod,     &
      &          ncomp_ele, ifld_ele, iflag_update, d_ele)
 !
+      use m_jacobians
+!
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: n_int
 !
@@ -195,8 +197,8 @@
       real(kind = kreal), intent(inout) :: d_ele(ele1%numele,ncomp_ele)
 !
 !
-      call rotation_on_element(iele_fsmp_stack, n_int,                  &
-     &    d_ele(1,ifld_ele), d_nod(1,ifld_nod) )
+      call rotation_on_element(node1, ele1, jac1_3d_q,                  &
+     &    iele_fsmp_stack, n_int, d_nod(1,ifld_nod), d_ele(1,ifld_ele))
       iflag_update(ifld_ele:ifld_ele+2) = 1
 !
       end subroutine rotation_on_element_1st

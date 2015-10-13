@@ -109,7 +109,6 @@
       area_sf_grp_l = 0.0d0
 !
       do i_grp = 1, num_surf
-!
         area_grp_smp = 0.0d0
 !
 !$omp parallel do private(ist,ied,isurf,iele)

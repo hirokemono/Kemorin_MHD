@@ -1,41 +1,41 @@
-!cal_product_to_skv_1st.f90
-!     module cal_product_to_skv_1st
+!cal_products_within_skv.f90
+!     module cal_products_within_skv
 !
 !        programmed by H.Matsui on May., 2009
 !
 !> @brief subroutines to obatine products of two fields
 !>      need $omp parallel to use these routines
 !
-!      subroutine scalar_prod_to_skv_scalar_1st(iele_fsmp_stack,        &
+!      subroutine scalar_prod_to_scalar_skv(ele, iele_fsmp_stack,       &
 !     &          ak_1, sk_v)
-!      subroutine coef_scalar_to_skv_scalar_1st(iele_fsmp_stack,        &
+!      subroutine coef_scalar_to_scalar_skv(ele, iele_fsmp_stack,       &
 !     &          coef, ak_1, sk_v)
 !
-!      subroutine scalar_prod_to_skv_vector_1st(iele_fsmp_stack,        &
+!      subroutine scalar_prod_to_vector_skv(ele, iele_fsmp_stack,       &
 !     &          ak_1, sk_v)
 !             sk_v(:,:) = sk_v(:,:)  * ak_1(:)
-!      subroutine coef_scalar_to_skv_vect_1st(iele_fsmp_stack,          &
+!      subroutine coef_scalar_to_vector_skv(ele, iele_fsmp_stack,       &
 !     &          coef, ak_1, sk_v)
 !             sk_v(:,:) = coef * sk_v(:,:)  * ak_1(:)
 !
-!      subroutine scalar_prod_to_skv_tensor_1st(iele_fsmp_stack,        &
+!      subroutine scalar_prod_to_tensor_skv(ele, iele_fsmp_stack,       &
 !     &          ak_1, sk_v)
-!      subroutine coef_scalar_to_skv_tensor_1st(iele_fsmp_stack,        &
+!      subroutine coef_scalar_to_tensor_skv(ele, iele_fsmp_stack,       &
 !     &          coef, ak_1, sk_v)
 !
-!      subroutine vector_prod_to_skv_vector_1st(iele_fsmp_stack,        &
+!      subroutine vector_prod_vector_skv(ele, iele_fsmp_stack,          &
 !     &          ak_3, sk_v)
 !             sk_v(:,:) = ak_3(:,nd) * sk_v(:,nd)
-!      subroutine tensor_prod_to_skv_tensor_1st(iele_fsmp_stack,        &
+!      subroutine tensor_prod_tensor_skv(ele, iele_fsmp_stack,          &
 !     &          ak_6, sk_v)
 !             sk_v(:,:) = ak_6(:,nd) * sk_v(:,nd)
 !
-      module cal_product_to_skv_1st
+      module cal_products_within_skv
 !
       use m_precision
 !
-      use m_geometry_data
       use m_phys_constants
+      use t_geometry_data
 !
       implicit none
 !
@@ -45,162 +45,170 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine coef_scalar_to_skv_scalar_1st(iele_fsmp_stack,         &
-     &          coef, ak_1, sk_v)
-!
-      use cal_product_to_skv
-!
-      integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: coef
-      real (kind=kreal), intent(in) :: ak_1(ele1%numele)
-!
-      real (kind=kreal), intent(inout)                                  &
-     &              :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
-!
-!
-      call coef_scalar_prod_to_skv_scalar(ele1%numele, iele_fsmp_stack, &
-     &          ele1%nnod_4_ele, coef, ak_1, sk_v)
-!
-      end subroutine coef_scalar_to_skv_scalar_1st
-!
-! ----------------------------------------------------------------------
-!
-      subroutine scalar_prod_to_skv_scalar_1st(iele_fsmp_stack,         &
+      subroutine scalar_prod_to_scalar_skv(ele, iele_fsmp_stack,        &
      &          ak_1, sk_v)
 !
       use cal_product_to_skv
 !
+      type(element_data), intent(in) :: ele
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: ak_1(ele1%numele)
+      real (kind=kreal), intent(in) :: ak_1(ele%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &              :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
+     &              :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call scalar_prod_to_skv_scalar(ele1%numele, iele_fsmp_stack,      &
-     &          ele1%nnod_4_ele, ak_1, sk_v)
+      call scalar_prod_to_skv_scalar(ele%numele, iele_fsmp_stack,       &
+     &    ele%nnod_4_ele, ak_1, sk_v)
 !
-      end subroutine scalar_prod_to_skv_scalar_1st
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine scalar_prod_to_skv_vector_1st(iele_fsmp_stack,         &
-     &          ak_1, sk_v)
-!
-      use cal_product_to_skv
-!
-      integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: ak_1(ele1%numele)
-!
-      real (kind=kreal), intent(inout)                                  &
-     &              :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
-!
-!
-      call scalar_prod_to_skv_vector(ele1%numele, iele_fsmp_stack,      &
-     &            ele1%nnod_4_ele, ak_1, sk_v)
-!
-      end subroutine scalar_prod_to_skv_vector_1st
+      end subroutine scalar_prod_to_scalar_skv
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine coef_scalar_to_skv_vect_1st(iele_fsmp_stack,           &
+      subroutine coef_scalar_to_scalar_skv(ele, iele_fsmp_stack,        &
      &          coef, ak_1, sk_v)
 !
       use cal_product_to_skv
 !
+      type(element_data), intent(in) :: ele
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real (kind=kreal), intent(in) :: coef
-      real (kind=kreal), intent(in) :: ak_1(ele1%numele)
+      real (kind=kreal), intent(in) :: ak_1(ele%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &              :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
+     &              :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call coef_scalar_prod_to_skv_vector(ele1%numele, iele_fsmp_stack, &
-     &          ele1%nnod_4_ele, coef, ak_1, sk_v)
+      call coef_scalar_prod_to_skv_scalar(ele%numele, iele_fsmp_stack,  &
+     &    ele%nnod_4_ele, coef, ak_1, sk_v)
 !
-      end subroutine coef_scalar_to_skv_vect_1st
+      end subroutine coef_scalar_to_scalar_skv
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine scalar_prod_to_skv_tensor_1st(iele_fsmp_stack,         &
+      subroutine scalar_prod_to_vector_skv(ele, iele_fsmp_stack,        &
      &          ak_1, sk_v)
 !
       use cal_product_to_skv
 !
+      type(element_data), intent(in) :: ele
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: ak_1(ele1%numele)
+      real (kind=kreal), intent(in) :: ak_1(ele%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
+     &              :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call scalar_prod_to_skv_tensor(ele1%numele, iele_fsmp_stack,      &
-     &          ele1%nnod_4_ele, ak_1, sk_v)
+      call scalar_prod_to_skv_vector(ele%numele, iele_fsmp_stack,       &
+     &    ele%nnod_4_ele, ak_1, sk_v)
 !
-      end subroutine scalar_prod_to_skv_tensor_1st
+      end subroutine scalar_prod_to_vector_skv
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine coef_scalar_to_skv_tensor_1st(iele_fsmp_stack,         &
+      subroutine coef_scalar_to_vector_skv(ele, iele_fsmp_stack,        &
      &          coef, ak_1, sk_v)
 !
       use cal_product_to_skv
 !
+      type(element_data), intent(in) :: ele
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       real (kind=kreal), intent(in) :: coef
-      real (kind=kreal), intent(in) :: ak_1(ele1%numele)
+      real (kind=kreal), intent(in) :: ak_1(ele%numele)
 !
       real (kind=kreal), intent(inout)                                  &
-     &            :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
+     &              :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call coef_scalar_prod_to_skv_tensor(ele1%numele, iele_fsmp_stack, &
-     &          ele1%nnod_4_ele, coef, ak_1, sk_v)
+      call coef_scalar_prod_to_skv_vector(ele%numele, iele_fsmp_stack,  &
+     &    ele%nnod_4_ele, coef, ak_1, sk_v)
 !
-      end subroutine coef_scalar_to_skv_tensor_1st
+      end subroutine coef_scalar_to_vector_skv
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine scalar_prod_to_tensor_skv(ele, iele_fsmp_stack,        &
+     &          ak_1, sk_v)
+!
+      use cal_product_to_skv
+!
+      type(element_data), intent(in) :: ele
+      integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+      real (kind=kreal), intent(in) :: ak_1(ele%numele)
+!
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
+!
+!
+      call scalar_prod_to_skv_tensor(ele%numele, iele_fsmp_stack,       &
+     &    ele%nnod_4_ele, ak_1, sk_v)
+!
+      end subroutine scalar_prod_to_tensor_skv
+!
+! ----------------------------------------------------------------------
+!
+      subroutine coef_scalar_to_tensor_skv(ele, iele_fsmp_stack,        &
+     &          coef, ak_1, sk_v)
+!
+      use cal_product_to_skv
+!
+      type(element_data), intent(in) :: ele
+      integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+      real (kind=kreal), intent(in) :: coef
+      real (kind=kreal), intent(in) :: ak_1(ele%numele)
+!
+      real (kind=kreal), intent(inout)                                  &
+     &            :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
+!
+!
+      call coef_scalar_prod_to_skv_tensor(ele%numele, iele_fsmp_stack,  &
+     &    ele%nnod_4_ele, coef, ak_1, sk_v)
+!
+      end subroutine coef_scalar_to_tensor_skv
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine vector_prod_to_skv_vector_1st(iele_fsmp_stack,         &
+      subroutine vector_prod_vector_skv(ele, iele_fsmp_stack,           &
      &          ak_3, sk_v)
 !
       use cal_product_to_skv
 !
+      type(element_data), intent(in) :: ele
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: ak_3(ele1%numele,n_vector)
+      real (kind=kreal), intent(in) :: ak_3(ele%numele,n_vector)
 !
       real (kind=kreal), intent(inout)                                  &
-     &              :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
+     &              :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call vector_prod_to_skv_vector(ele1%numele, iele_fsmp_stack,      &
-     &          ele1%nnod_4_ele, ak_3, sk_v)
+      call vector_prod_to_skv_vector(ele%numele, iele_fsmp_stack,       &
+     &    ele%nnod_4_ele, ak_3, sk_v)
 !
-      end subroutine vector_prod_to_skv_vector_1st
+      end subroutine vector_prod_vector_skv
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine tensor_prod_to_skv_tensor_1st(iele_fsmp_stack,         &
+      subroutine tensor_prod_tensor_skv(ele, iele_fsmp_stack,           &
      &          ak_6, sk_v)
 !
       use cal_product_to_skv
 !
+      type(element_data), intent(in) :: ele
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
-      real (kind=kreal), intent(in) :: ak_6(ele1%numele,n_sym_tensor)
+      real (kind=kreal), intent(in) :: ak_6(ele%numele,n_sym_tensor)
 !
       real (kind=kreal), intent(inout)                                  &
-     &              :: sk_v(ele1%numele,n_sym_tensor,ele1%nnod_4_ele)
+     &              :: sk_v(ele%numele,n_sym_tensor,ele%nnod_4_ele)
 !
 !
-      call tensor_prod_to_skv_tensor(ele1%numele, iele_fsmp_stack,      &
-     &          ele1%nnod_4_ele, ak_6, sk_v)
+      call tensor_prod_to_skv_tensor(ele%numele, iele_fsmp_stack,       &
+     &    ele%nnod_4_ele, ak_6, sk_v)
 !
-      end subroutine tensor_prod_to_skv_tensor_1st
+      end subroutine tensor_prod_tensor_skv
 !
 ! ----------------------------------------------------------------------
 !
-      end module cal_product_to_skv_1st
+      end module cal_products_within_skv

@@ -7,15 +7,16 @@
 !> @brief  Structure of 1D Jacobian and difference of shape functions
 !!
 !!@verbatim
-!!      subroutine s_int_edge_vector
+!!      subroutine int_edge_vect(numedge, iedge_smp_stack,              &
+!!     &          ntot_int_1d, num_int, xj_edge, xeg_edge,              &
+!!     &          edge_vect, edge_length, a_edge_length)
+!
 !!@endverbatim
 !
       module int_edge_vector
 !
       use m_precision
-!
       use m_machine_parameter
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -25,33 +26,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_int_edge_vector
-!
-      use m_geometry_constants
-      use m_geometry_data
-      use m_jacobians_4_edge
-      use m_fem_gauss_int_coefs
-!
-!
-      if(ele1%nnod_4_ele .eq. num_quad_edge) then
-        call int_edge_vect(edge1%numedge, edge1%istack_edge_smp,        &
-     &      jac1_1d_q%ntot_int, max_int_point,                          &
-     &      jac1_1d_q%xj_edge, jac1_1d_q%xeg_edge,                      &
-     &      edge1%edge_vect, edge1%edge_length, edge1%a_edge_length)
-      else
-        call int_edge_vect(edge1%numedge, edge1%istack_edge_smp,        &
-     &      jac1_1d_l%ntot_int, max_int_point,                          &
-     &      jac1_1d_l%xj_edge, jac1_1d_l%xeg_edge,                      &
-     &      edge1%edge_vect, edge1%edge_length, edge1%a_edge_length)
-      end if
-!
-      end subroutine s_int_edge_vector
-!
-! ----------------------------------------------------------------------
-!
       subroutine int_edge_vect(numedge, iedge_smp_stack,                &
      &          ntot_int_1d, num_int, xj_edge, xeg_edge,                &
      &          edge_vect, edge_length, a_edge_length)
+!
+      use m_fem_gauss_int_coefs
 !
       integer(kind = kint), intent(in) :: numedge
       integer(kind = kint), intent(in) :: iedge_smp_stack(0:np_smp)

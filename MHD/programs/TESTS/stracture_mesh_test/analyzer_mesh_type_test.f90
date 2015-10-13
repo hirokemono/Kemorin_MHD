@@ -112,20 +112,20 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector'
-      call s_cal_normal_vector
+      call s_cal_normal_vector(surf1, jac1_2d_q, jac1_2d_l)
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector_spherical'
-      call s_cal_normal_vector_spherical
+      call s_cal_normal_vector_spherical(surf1)
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector_cylindrical'
-      call s_cal_normal_vector_cylindrical
+      call s_cal_normal_vector_cylindrical(surf1)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector'
-      call s_cal_edge_vector
+      call s_cal_edge_vector(edge1, jac1_1d_q, jac1_1d_l)
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_spherical'
-      call s_cal_edge_vector_spherical
+      call s_cal_edge_vector_spherical(edge1)
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_cylindrical'
-      call s_cal_edge_vector_cylindrical
+      call s_cal_edge_vector_cylindrical(edge1)
 !
 !  -------------------------------
 !

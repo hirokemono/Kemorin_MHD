@@ -170,6 +170,7 @@
       subroutine take_1st_diffs_ele(org_nod_field, diff_field)
 !
       use m_geometry_data
+      use m_jacobians
       use m_ctl_params_4_gen_filter
       use cal_differences_on_ele
 !
@@ -178,8 +179,9 @@
       integer(kind=kint) :: nd
 !
       do nd = 1, n_vector
-        call difference_on_element(ele1%istack_ele_smp, num_int_points, &
-     &      nd, diff_field(1,nd), org_nod_field(1) )
+        call difference_on_element                                      &
+     &     (node1, ele1, jac1_3d_q, ele1%istack_ele_smp,                &
+     &      num_int_points, nd, org_nod_field(1), diff_field(1,nd))
       end do
 !
       end subroutine take_1st_diffs_ele
@@ -189,6 +191,7 @@
       subroutine take_2nd_diffs_ele(org_nod_field, diff_field)
 !
       use m_geometry_data
+      use m_jacobians
       use m_ctl_params_4_gen_filter
       use cal_differences_on_ele
 !
@@ -197,8 +200,9 @@
       integer(kind=kint) :: nd
 !
       do nd = 1, n_vector
-        call difference_on_element(ele1%istack_ele_smp, num_int_points, &
-     &      nd, diff_field(1,nd), org_nod_field(1,nd) )
+        call difference_on_element                                      &
+     &     (node1, ele1, jac1_3d_q, ele1%istack_ele_smp,                &
+     &      num_int_points, nd, org_nod_field(1,nd), diff_field(1,nd))
       end do
 !
       end subroutine take_2nd_diffs_ele

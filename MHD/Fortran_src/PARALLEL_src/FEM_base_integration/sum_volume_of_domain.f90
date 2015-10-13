@@ -93,8 +93,6 @@
      &           volume_ele, numele_field, iele_fsmp_stack,             &
      &           iele_field, vol_local)
 !
-!      use m_geometry_data
-!
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: interior_ele(numele)
       real (kind=kreal), intent(in) :: volume_ele(numele)
