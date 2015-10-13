@@ -27,6 +27,7 @@
       use m_phys_constants
       use m_sorted_node
       use m_finite_element_matrix
+      use m_int_vol_data
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -50,7 +51,7 @@
 !
         call cal_ff_smp_2_multi_pass                                    &
      &     (node1%max_nod_smp, node1%istack_nod_smp,                    &
-     &      n_vector, ff_nl_smp, ff_m_smp)
+     &      n_vector, ff_nl_smp, mhd_fem1_wk%ff_m_smp)
 !
         if (iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_vector_upw
@@ -77,7 +78,7 @@
 !
         call cal_ff_smp_2_multi_pass                                    &
      &     (node1%max_nod_smp, node1%istack_nod_smp,                    &
-     &      n_scalar, ff_nl_smp, ff_m_smp)
+     &      n_scalar, ff_nl_smp, mhd_fem1_wk%ff_m_smp)
 !
         if (iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_scalar_upw
@@ -105,7 +106,7 @@
 !
         call cal_ff_smp_2_multi_pass                                    &
      &     (node1%max_nod_smp, node1%istack_nod_smp,                    &
-     &      n_vector, ff_nl_smp, ff_m_smp)
+     &      n_vector, ff_nl_smp, mhd_fem1_wk%ff_m_smp)
 !
         if (iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_vector_fl_upw
@@ -132,7 +133,7 @@
 !
         call cal_ff_smp_2_multi_pass                                    &
      &     (node1%max_nod_smp, node1%istack_nod_smp,                    &
-     &      n_scalar, ff_nl_smp, ff_m_smp)
+     &      n_scalar, ff_nl_smp, mhd_fem1_wk%ff_m_smp)
 !
         if (iflag_4_supg .eq. id_turn_ON) then
           call int_multi_pass_scalar_fl_upw
@@ -160,7 +161,7 @@
 !
         call cal_ff_smp_2_multi_pass                                    &
      &     (node1%max_nod_smp, node1%istack_nod_smp,                    &
-     &      n_vector, ff_nl_smp, ff_m_smp)
+     &      n_vector, ff_nl_smp, mhd_fem1_wk%ff_m_smp)
 !
         if (iflag_4_supg .gt. id_turn_OFF) then
           call int_multi_pass_vector_cd_upm
@@ -185,7 +186,7 @@
 !
         call cal_ff_smp_2_multi_pass                                    &
      &     (node1%max_nod_smp, node1%istack_nod_smp,                    &
-     &      n_scalar, ff_nl_smp, ff_m_smp)
+     &      n_scalar, ff_nl_smp, mhd_fem1_wk%ff_m_smp)
 !
         if (iflag_4_supg .gt. id_turn_OFF) then
           call int_multi_pass_scalar_cd_upm
@@ -208,7 +209,7 @@
       if ( num_multi_pass .gt. 1 ) then
         call cal_ff_smp_2_multi_pass                                    &
      &     (node1%max_nod_smp, node1%istack_nod_smp,                    &
-     &      n_vector, ff_nl_smp, ff_m_smp)
+     &      n_vector, ff_nl_smp, mhd_fem1_wk%ff_m_smp)
         call int_multi_pass_vector
       end if
 !
@@ -225,7 +226,7 @@
       if ( num_multi_pass .gt. 1 ) then
         call cal_ff_smp_2_multi_pass                                    &
      &     (node1%max_nod_smp, node1%istack_nod_smp,                    &
-     &      n_scalar, ff_nl_smp, ff_m_smp)
+     &      n_scalar, ff_nl_smp, mhd_fem1_wk%ff_m_smp)
         call int_multi_pass_scalar
       end if
 !
@@ -243,7 +244,7 @@
       if ( num_multi_pass .gt. 1 ) then
         call cal_ff_smp_2_multi_pass                                    &
      &     (node1%max_nod_smp, node1%istack_nod_smp,                    &
-     &      n_vector, ff_nl_smp, ff_m_smp)
+     &      n_vector, ff_nl_smp, mhd_fem1_wk%ff_m_smp)
         call int_multi_pass_vector_fl
       end if
 !
@@ -260,7 +261,7 @@
       if ( num_multi_pass .gt. 1 ) then
         call cal_ff_smp_2_multi_pass                                    &
      &     (node1%max_nod_smp, node1%istack_nod_smp,                    &
-     &      n_scalar, ff_nl_smp, ff_m_smp)
+     &      n_scalar, ff_nl_smp, mhd_fem1_wk%ff_m_smp)
         call int_multi_pass_scalar_fl
       end if
 !
@@ -278,7 +279,7 @@
       if ( num_multi_pass .gt. 1 ) then
         call cal_ff_smp_2_multi_pass                                    &
      &     (node1%max_nod_smp, node1%istack_nod_smp,                    &
-     &      n_vector, ff_nl_smp, ff_m_smp)
+     &      n_vector, ff_nl_smp, mhd_fem1_wk%ff_m_smp)
         call int_multi_pass_vector_cd
       end if
 !
@@ -295,7 +296,7 @@
       if ( num_multi_pass .gt. 1 ) then
         call cal_ff_smp_2_multi_pass                                    &
      &     (node1%max_nod_smp, node1%istack_nod_smp,                    &
-     &      n_scalar, ff_nl_smp, ff_m_smp)
+     &      n_scalar, ff_nl_smp, mhd_fem1_wk%ff_m_smp)
         call int_multi_pass_scalar_cd
       end if
 !
@@ -313,7 +314,7 @@
       if ( num_multi_pass .gt. 1 ) then
         call cal_ff_smp_2_multi_pass                                    &
      &     (node1%max_nod_smp, node1%istack_nod_smp,                    &
-     &      n_vector, ff_nl_smp, ff_m_smp)
+     &      n_vector, ff_nl_smp, mhd_fem1_wk%ff_m_smp)
         call int_multi_pass_vector_ins
       end if
 !
@@ -330,7 +331,7 @@
       if ( num_multi_pass .gt. 1 ) then
         call cal_ff_smp_2_multi_pass                                    &
      &     (node1%max_nod_smp, node1%istack_nod_smp,                    &
-     &      n_scalar, ff_nl_smp, ff_m_smp)
+     &      n_scalar, ff_nl_smp, mhd_fem1_wk%ff_m_smp)
         call int_multi_pass_scalar_ins
       end if
 !

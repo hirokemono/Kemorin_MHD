@@ -32,14 +32,15 @@
 !
       subroutine int_vol_initial_velo
 !
-       use m_geometry_data_MHD
-       use m_node_phys_address
-       use m_physical_property
+      use m_geometry_data_MHD
+      use m_node_phys_address
+      use m_physical_property
+      use m_int_vol_data
 !
-       ff_m_smp = 0.0d0
-       if (coef_velo.gt.0.0d0) then
-         call int_vol_initial_vector(iele_fl_smp_stack, iphys%i_velo)
-       end if
+      mhd_fem1_wk%ff_m_smp = 0.0d0
+      if (coef_velo.gt.0.0d0) then
+        call int_vol_initial_vector(iele_fl_smp_stack, iphys%i_velo)
+      end if
 !
       end subroutine int_vol_initial_velo
 !
@@ -47,14 +48,15 @@
 !
       subroutine int_vol_initial_vect_p
 !
-       use m_geometry_data_MHD
-       use m_node_phys_address
-       use m_physical_property
+      use m_geometry_data_MHD
+      use m_node_phys_address
+      use m_physical_property
+      use m_int_vol_data
 !
-       ff_m_smp = 0.0d0
-       if (coef_magne.gt.0.0d0) then
-         call int_vol_initial_vector(iele_cd_smp_stack, iphys%i_vecp)
-       end if
+      mhd_fem1_wk%ff_m_smp = 0.0d0
+      if (coef_magne.gt.0.0d0) then
+        call int_vol_initial_vector(iele_cd_smp_stack, iphys%i_vecp)
+      end if
 !
       end subroutine int_vol_initial_vect_p
 !
@@ -62,14 +64,15 @@
 !
       subroutine int_vol_initial_magne
 !
-       use m_geometry_data_MHD
-       use m_node_phys_address
-       use m_physical_property
+      use m_geometry_data_MHD
+      use m_node_phys_address
+      use m_physical_property
+      use m_int_vol_data
 !
-       ff_m_smp = 0.0d0
-       if (coef_magne.gt.0.0d0) then
-         call int_vol_initial_vector(iele_cd_smp_stack, iphys%i_magne)
-       end if
+      mhd_fem1_wk%ff_m_smp = 0.0d0
+      if (coef_magne.gt.0.0d0) then
+        call int_vol_initial_vector(iele_cd_smp_stack, iphys%i_magne)
+      end if
 !
       end subroutine int_vol_initial_magne
 !
@@ -77,14 +80,15 @@
 !
       subroutine int_vol_initial_temp
 !
-       use m_geometry_data_MHD
-       use m_node_phys_address
-       use m_physical_property
+      use m_geometry_data_MHD
+      use m_node_phys_address
+      use m_physical_property
+      use m_int_vol_data
 !
-       ff_m_smp = 0.0d0
-       if (coef_temp.gt.0.0d0) then
-         call int_vol_initial_scalar(iele_fl_smp_stack, iphys%i_temp)
-       end if
+      mhd_fem1_wk%ff_m_smp = 0.0d0
+      if (coef_temp.gt.0.0d0) then
+        call int_vol_initial_scalar(iele_fl_smp_stack, iphys%i_temp)
+      end if
 !
       end subroutine int_vol_initial_temp
 !
@@ -92,15 +96,16 @@
 !
       subroutine int_vol_initial_part_temp
 !
-       use m_geometry_data_MHD
-       use m_node_phys_address
-       use m_physical_property
+      use m_geometry_data_MHD
+      use m_node_phys_address
+      use m_physical_property
+      use m_int_vol_data
 !
-       ff_m_smp = 0.0d0
-       if (coef_temp.gt.0.0d0) then
-         call int_vol_initial_scalar(iele_fl_smp_stack,                 &
+      mhd_fem1_wk%ff_m_smp = 0.0d0
+      if (coef_temp.gt.0.0d0) then
+        call int_vol_initial_scalar(iele_fl_smp_stack,                  &
      &       iphys%i_par_temp)
-       end if
+      end if
 !
       end subroutine int_vol_initial_part_temp
 !
@@ -108,14 +113,15 @@
 !
       subroutine int_vol_initial_d_scalar
 !
-       use m_geometry_data_MHD
-       use m_node_phys_address
-       use m_physical_property
+      use m_geometry_data_MHD
+      use m_node_phys_address
+      use m_physical_property
+      use m_int_vol_data
 !
-       ff_m_smp = 0.0d0
-       if (coef_light.gt.0.0d0) then
-         call int_vol_initial_scalar(iele_fl_smp_stack, iphys%i_light)
-       end if
+      mhd_fem1_wk%ff_m_smp = 0.0d0
+      if (coef_light.gt.0.0d0) then
+        call int_vol_initial_scalar(iele_fl_smp_stack, iphys%i_light)
+      end if
 !
       end subroutine int_vol_initial_d_scalar
 !
@@ -152,7 +158,7 @@
       end do
 !
       call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_m_smp)
+     &    fem1_wk%sk6, mhd_fem1_wk%ff_m_smp)
 !
       end subroutine int_vol_initial_scalar
 !
@@ -188,7 +194,7 @@
       end do
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    ff_m_smp, fem1_wk%sk6)
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk%sk6)
 !
       end subroutine int_vol_initial_vector
 !

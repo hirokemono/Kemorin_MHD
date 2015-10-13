@@ -3,24 +3,22 @@
 !
 !      Written by H. Matsui on March, 2006
 !
-!!      subroutine cal_sol_vect_pre_fluid_euler                         &
-!!     &         (numnod, inter_smp_stack, ncomp_nod, numdir, i_field,  &
-!!     &          d_nod)
+!!      subroutine cal_sol_vect_pre_fluid_euler(numnod, inter_smp_stack,&
+!!     &          ml_fl, ncomp_nod, numdir, i_field, d_nod)
 !!      subroutine cal_sol_vect_pre_conduct_euler                       &
 !!     &         (numnod, inter_smp_stack, nnod_cd, inod_conduct, ml_cd,&
 !!     &          ncomp_nod, numdir, i_field, d_nod)
 !!
-!!      subroutine cal_sol_vect_pre_fluid_adams                         &
-!!     &         (numnod, inter_smp_stack, ncomp_nod, numdir,           &
-!!     &          i_field, if_pre, d_nod)
+!!      subroutine cal_sol_vect_pre_fluid_adams(numnod, inter_smp_stack,&
+!!     &          ml_fl, ncomp_nod, numdir, i_field, if_pre, d_nod)
 !!      subroutine cal_sol_vect_pre_conduct_adams                       &
 !!     &         (numnod, inter_smp_stack, nnod_cd, inod_conduct,       &
 !!     &          ml_cd, ncomp_nod, numdir, i_field, if_pre, d_nod)
 !!
 !!      subroutine cal_sol_vec_fluid_linear(numnod, inod_smp_stack,     &
-!!     &          ncomp_nod, numdir, i_field, if_pre, d_nod)
+!!     &          ml_o_fl, ncomp_nod, numdir, i_field, if_pre, d_nod)
 !!      subroutine cal_sol_vec_conduct_linear(numnod, inter_smp_stack,  &
-!!     &          inter_cd_smp_stack, nnod_cd, inod_conduct, ml_o_cd,  &
+!!     &          inter_cd_smp_stack, nnod_cd, inod_conduct, ml_o_cd,   &
 !!     &          ncomp_nod, numdir, i_field, if_pre, d_nod)
 !!
 !!      subroutine cal_sol_vec_pre_consist(numnod, inter_smp_stack,     &
@@ -42,12 +40,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_vect_pre_fluid_euler                           &
-     &         (numnod, inter_smp_stack, ncomp_nod, numdir, i_field,    &
-     &          d_nod)
+      subroutine cal_sol_vect_pre_fluid_euler(numnod, inter_smp_stack,  &
+     &          ml_fl, ncomp_nod, numdir, i_field, d_nod)
 !
       integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: ml_fl(numnod)
 !
       integer (kind = kint), intent(in) :: numdir, i_field
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
@@ -112,12 +110,13 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_vect_pre_fluid_adams                           &
-     &         (numnod, inter_smp_stack, ncomp_nod, numdir,             &
-     &          i_field, if_pre, d_nod)
+      subroutine cal_sol_vect_pre_fluid_adams(numnod, inter_smp_stack,  &
+     &          ml_fl, ncomp_nod, numdir, i_field, if_pre, d_nod)
 !
       integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: ml_fl(numnod)
+!
       integer (kind = kint), intent(in) :: numdir, i_field, if_pre
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
@@ -189,9 +188,10 @@
 ! -----------------------------------------------------------------------! -----------------------------------------------------------------------
 !
       subroutine cal_sol_vec_fluid_linear(numnod, inod_smp_stack,       &
-     &          ncomp_nod, numdir, i_field, if_pre, d_nod)
+     &          ml_o_fl, ncomp_nod, numdir, i_field, if_pre, d_nod)
 !
       integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: ml_o_fl(numnod)
 !
       integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer (kind = kint), intent(in) :: numdir, i_field, if_pre
@@ -290,6 +290,7 @@
 !
       use m_geometry_data
       use m_sorted_node
+      use m_int_vol_data
       use cal_ff_smp_to_ffs
 !
       integer(kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
@@ -323,7 +324,8 @@
 !$omp end parallel do
 !
       if (coef_field.gt.0.0d0) then
-        call cal_ff_smp_2_ff(node1, rhs_tbl1, numdir, ff_m_smp, ff)
+        call cal_ff_smp_2_ff(node1, rhs_tbl1, numdir,                   &
+     &      mhd_fem1_wk%ff_m_smp, ff)
       end if
 !
       end subroutine cal_sol_vec_pre_consist

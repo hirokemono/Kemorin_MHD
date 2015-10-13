@@ -2,7 +2,7 @@
 !   module m_int_vol_data
 !.......................................................................
 !
-!      subroutine allocate_int_vol_data(numele)
+!      subroutine allocate_int_vol_data(numele, max_nod_smp)
 !      subroutine check_diff_elemental_data                             &
 !     &         (my_rank, numele, numdir, i_field)
 !
@@ -49,16 +49,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_int_vol_data(numele)
+      subroutine allocate_int_vol_data(numele, max_nod_smp)
 !
       use m_control_parameter
       use m_phys_labels
       use m_node_phys_data
       use m_machine_parameter
 !
-      integer(kind = kint), intent(in) :: numele
+      integer(kind = kint), intent(in) :: numele, max_nod_smp
       integer(kind = kint) :: i
 !
+!
+      allocate(mhd_fem1_wk%ff_m_smp(max_nod_smp,3,np_smp))
+      if(max_nod_smp .gt. 0) mhd_fem1_wk%ff_m_smp = 0.0d0
 !
       allocate(mhd_fem1_wk%xx_e(numele,3))
       allocate(mhd_fem1_wk%rr_e(numele))

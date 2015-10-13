@@ -38,10 +38,11 @@
 !
       subroutine cal_sol_velo_pre_euler
 !
+      use m_int_vol_data
 !
       call cal_sol_vect_pre_fluid_euler                                 &
-     &   (node1%numnod, node1%istack_internal_smp, nod_fld1%ntot_phys,  &
-     &    n_vector, iphys%i_velo, nod_fld1%d_fld)
+     &   (node1%numnod, node1%istack_internal_smp, mhd_fem1_wk%ml_fl,   &
+     &    nod_fld1%ntot_phys, n_vector, iphys%i_velo, nod_fld1%d_fld)
 !
       end subroutine cal_sol_velo_pre_euler
 !
@@ -49,20 +50,23 @@
 !
       subroutine cal_sol_temp_euler
 !
+      use m_int_vol_data
 !
       call cal_sol_vect_pre_fluid_euler                                 &
-     &   (node1%numnod, node1%istack_internal_smp, nod_fld1%ntot_phys,  &
-     &    n_scalar, iphys%i_temp, nod_fld1%d_fld)
+     &   (node1%numnod, node1%istack_internal_smp, mhd_fem1_wk%ml_fl,   &
+     &    nod_fld1%ntot_phys, n_scalar, iphys%i_temp, nod_fld1%d_fld)
 !
       end subroutine cal_sol_temp_euler
 !
 ! -----------------------------------------------------------------------!
       subroutine cal_sol_part_temp_euler
 !
+      use m_int_vol_data
 !
       call cal_sol_vect_pre_fluid_euler                                 &
-     &   (node1%numnod, node1%istack_internal_smp, nod_fld1%ntot_phys,  &
-     &    n_scalar, iphys%i_par_temp, nod_fld1%d_fld)
+     &   (node1%numnod, node1%istack_internal_smp, mhd_fem1_wk%ml_fl,   &
+     &    nod_fld1%ntot_phys, n_scalar, iphys%i_par_temp,               &
+     &    nod_fld1%d_fld)
 !
       end subroutine cal_sol_part_temp_euler
 !
@@ -99,10 +103,11 @@
 !
       subroutine cal_sol_d_scalar_euler
 !
+      use m_int_vol_data
 !
       call cal_sol_vect_pre_fluid_euler                                 &
-     &   (node1%numnod, node1%istack_internal_smp, nod_fld1%ntot_phys,  &
-     &    n_scalar, iphys%i_light, nod_fld1%d_fld)
+     &   (node1%numnod, node1%istack_internal_smp, mhd_fem1_wk%ml_fl,   &
+     &    nod_fld1%ntot_phys, n_scalar, iphys%i_light, nod_fld1%d_fld)
 !
       end subroutine cal_sol_d_scalar_euler
 !
@@ -111,9 +116,10 @@
 !
       subroutine cal_sol_velo_pre_adams
 !
+      use m_int_vol_data
 !
       call cal_sol_vect_pre_fluid_adams                                 &
-     &   (node1%numnod, node1%istack_internal_smp,                      &
+     &   (node1%numnod, node1%istack_internal_smp, mhd_fem1_wk%ml_fl,   &
      &    nod_fld1%ntot_phys, n_vector, iphys%i_velo, iphys%i_pre_mom,  &
      &    nod_fld1%d_fld)
 !
@@ -123,9 +129,10 @@
 !
       subroutine cal_sol_temp_adams
 !
+      use m_int_vol_data
 !
       call cal_sol_vect_pre_fluid_adams                                 &
-     &   (node1%numnod, node1%istack_internal_smp,                      &
+     &   (node1%numnod, node1%istack_internal_smp, mhd_fem1_wk%ml_fl,   &
      &    nod_fld1%ntot_phys, n_scalar, iphys%i_temp, iphys%i_pre_heat, &
      &    nod_fld1%d_fld)
 !
@@ -135,9 +142,10 @@
 !
       subroutine cal_sol_part_temp_adams
 !
+      use m_int_vol_data
 !
       call cal_sol_vect_pre_fluid_adams                                 &
-     &   (node1%numnod, node1%istack_internal_smp,                      &
+     &   (node1%numnod, node1%istack_internal_smp, mhd_fem1_wk%ml_fl,   &
      &    nod_fld1%ntot_phys, n_scalar, iphys%i_par_temp,               &
      &    iphys%i_pre_heat, nod_fld1%d_fld)
 !
@@ -177,9 +185,10 @@
 !
       subroutine cal_sol_d_scalar_adams
 !
+      use m_int_vol_data
 !
       call cal_sol_vect_pre_fluid_adams                                 &
-     &   (node1%numnod, node1%istack_internal_smp,                      &
+     &   (node1%numnod, node1%istack_internal_smp, mhd_fem1_wk%ml_fl,   &
      &    nod_fld1%ntot_phys, n_scalar, iphys%i_light,                  &
      &    iphys%i_pre_composit, nod_fld1%d_fld)
 !

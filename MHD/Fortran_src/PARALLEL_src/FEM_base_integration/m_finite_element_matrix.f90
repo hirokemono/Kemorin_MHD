@@ -7,16 +7,12 @@
 !
 !      subroutine allocate_finite_elem_mt
 !
-!      subroutine allocate_fem_mat_base
-!
 !      subroutine reset_ff_smp
 !      subroutine reset_ff_smps
 !      subroutine reset_ff(numnod)
 !      subroutine reset_ff_t_smp
 !
-!      subroutine deallocate_fem_mat_base
-!      subroutine deallocate_fem_mat_region
-!      subroutine deallocate_fem_mat_fluid
+!      subroutine deallocate_finite_elem_mt
 !      subroutine deallocate_node_ff
 !
       module m_finite_element_matrix
@@ -34,17 +30,7 @@
 !f1_tsr%ff_smp
 !
       real (kind=kreal), allocatable  ::  ml(:)
-      real (kind=kreal), allocatable  ::  ml_fl(:)
-!      real (kind=kreal), allocatable  ::  ml_cd(:)
-!      real (kind=kreal), allocatable  ::  ml_ins(:)
-!
-!      real (kind=kreal), allocatable  ::  ml_ele_diag(:)
-!
       real (kind=kreal), allocatable  ::  ml_o(:)
-      real (kind=kreal), allocatable  ::  ml_o_fl(:)
-!      real (kind=kreal), allocatable  ::  ml_o_cd(:)
-!      real (kind=kreal), allocatable  ::  ml_o_ins(:)
-!
 !
       real (kind=kreal), allocatable  ::  ff(:,:)
       real (kind=kreal), allocatable  ::  ff_nl(:,:)
@@ -52,12 +38,9 @@
       real (kind=kreal), allocatable  :: ff_smp(:,:,:)
       real (kind=kreal), allocatable  :: ff_nl_smp(:,:,:)
 ! 
-      real (kind=kreal), allocatable  :: ff_m_smp(:,:,:)
-!      real (kind=kreal), allocatable  :: ff_t_smp(:,:,:)
+!      real (kind=kreal), allocatable  :: ff_m_smp(:,:,:)
 !
-!      real (kind=kreal), allocatable  ::  sk6(:,:,:)
-!
-      private :: allocate_fem_mat_fluid, allocate_node_ff
+      private :: allocate_node_ff
 !
 !   ---------------------------------------------------------------------
 !
@@ -66,19 +49,6 @@
 !   ---------------------------------------------------------------------
 !
       subroutine allocate_finite_elem_mt
-!
-      use m_geometry_data
-!
-!
-      call allocate_fem_mat_base
-      call allocate_fem_mat_fluid(node1%numnod)
-!
-      end subroutine allocate_finite_elem_mt
-!
-!   ---------------------------------------------------------------------
-!   ---------------------------------------------------------------------
-!
-      subroutine allocate_fem_mat_base
 !
       use m_geometry_data
       use m_machine_parameter
@@ -92,7 +62,6 @@
 !
       allocate(ff_smp(node1%max_nod_smp,3,np_smp))
       allocate(ff_nl_smp(node1%max_nod_smp,3,np_smp))
-      allocate(ff_m_smp(node1%max_nod_smp,3,np_smp))
       allocate(f1_tsr%ff_smp(node1%max_nod_smp,6,np_smp))
 !
       allocate(fem1_wk%sk6(ele1%numele,n_sym_tensor,ele1%nnod_4_ele))
@@ -108,10 +77,7 @@
         ml_o =0.0d0
       end if
 !
-      if(node1%max_nod_smp .gt. 0) then
-        ff_m_smp = 0.0d0
-        call reset_ff_t_smp
-      end if
+      if(node1%max_nod_smp .gt. 0) call reset_ff_t_smp
 !
       if(ele1%numele .gt. 0) then
         fem1_wk%sk6 =      0.0d0
@@ -124,23 +90,7 @@
 !
       call reset_ff_smps
 !
-      end subroutine allocate_fem_mat_base
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine allocate_fem_mat_fluid(numnod)
-!
-      integer(kind = kint), intent(in) :: numnod
-!
-!
-      allocate(ml_fl(numnod))
-      allocate(ml_o_fl(numnod))
-!
-      if(numnod .le. 0) return
-      ml_fl =   0.0d0
-      ml_o_fl = 0.0d0
-!
-      end subroutine allocate_fem_mat_fluid
+      end subroutine allocate_finite_elem_mt
 !
 !   ---------------------------------------------------------------------
 !
@@ -237,11 +187,11 @@
 !   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
 !
-      subroutine deallocate_fem_mat_base
+      subroutine deallocate_finite_elem_mt
 !
       deallocate(ml, ml_o)
 !
-      deallocate(ff_smp, ff_nl_smp, ff_m_smp, f1_tsr%ff_smp)
+      deallocate(ff_smp, ff_nl_smp, f1_tsr%ff_smp)
       deallocate(fem1_wk%sk6)
       deallocate(fem1_wk%scalar_1, fem1_wk%vector_1, fem1_wk%tensor_1)
 !
@@ -249,15 +199,7 @@
 !
       call deallocate_node_ff
 !
-      end subroutine deallocate_fem_mat_base
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine deallocate_fem_mat_fluid
-!
-      deallocate(ml_fl, ml_o_fl)
-!
-      end subroutine deallocate_fem_mat_fluid
+      end subroutine deallocate_finite_elem_mt
 !
 !   ---------------------------------------------------------------------
 !

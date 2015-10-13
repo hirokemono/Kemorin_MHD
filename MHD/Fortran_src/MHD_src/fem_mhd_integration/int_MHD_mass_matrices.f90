@@ -112,14 +112,16 @@
 !
       use cal_ff_smp_to_ffs
       use m_geometry_data_MHD
+      use m_int_vol_data
 !
       integer(kind = kint), intent(in) :: n_int
 !
 !
-       call int_mass_matrix_diag(iele_fl_smp_stack, n_int)
-       call cal_ff_smp_2_ml(node1, rhs_tbl1, ml_fl, ml_o_fl, ff_smp)
+      call int_mass_matrix_diag(iele_fl_smp_stack, n_int)
+      call cal_ff_smp_2_ml(node1, rhs_tbl1,                             &
+     &    mhd_fem1_wk%ml_fl, mhd_fem1_wk%ml_o_fl, ff_smp)
 !
-!      call check_mass_martix_fluid
+!      call check_mass_martix_fluid(my_rank, node1%numnod, mhd_fem1_wk)
 !
       end subroutine int_mass_matrix_fluid
 !
@@ -134,11 +136,12 @@
       integer(kind = kint), intent(in) :: n_int
 !
 !
-       call int_mass_matrix_diag(iele_cd_smp_stack, n_int)
-       call cal_ff_smp_2_ml(node1, rhs_tbl1,                            &
-     &     mhd_fem1_wk%ml_cd, mhd_fem1_wk%ml_o_cd, ff_smp)
+      call int_mass_matrix_diag(iele_cd_smp_stack, n_int)
+      call cal_ff_smp_2_ml(node1, rhs_tbl1,                             &
+     &    mhd_fem1_wk%ml_cd, mhd_fem1_wk%ml_o_cd, ff_smp)
 !
-!      call check_mass_martix_conduct(node1%numnod, mhd_fem1_wk)
+!      call check_mass_martix_conduct                                   &
+!     &   (my_rank, node1%numnod, mhd_fem1_wk)
 !
       end subroutine int_mass_matrix_conduct
 !
@@ -166,14 +169,16 @@
 !
       use cal_ff_smp_to_ffs
       use m_geometry_data_MHD
+      use m_int_vol_data
 !
       integer(kind = kint), intent(in) :: n_int
 !
 !
        call int_mass_matrix_HRZ(iele_fl_smp_stack, n_int)
-       call cal_ff_smp_2_ml(node1, rhs_tbl1, ml_fl, ml_o_fl, ff_smp)
+       call cal_ff_smp_2_ml(node1, rhs_tbl1,                            &
+     &     mhd_fem1_wk%ml_fl, mhd_fem1_wk%ml_o_fl, ff_smp)
 !
-!      call check_mass_martix_fluid
+!      call check_mass_martix_fluid(my_rank, node1%numnod, mhd_fem1_wk)
 !
       end subroutine int_mass_matrix_fl_quad
 !
@@ -188,11 +193,12 @@
       integer(kind = kint), intent(in) :: n_int
 !
 !
-       call int_mass_matrix_HRZ(iele_cd_smp_stack, n_int)
-       call cal_ff_smp_2_ml(node1, rhs_tbl1,                            &
-     &     mhd_fem1_wk%ml_cd, mhd_fem1_wk%ml_o_cd, ff_smp)
+      call int_mass_matrix_HRZ(iele_cd_smp_stack, n_int)
+      call cal_ff_smp_2_ml(node1, rhs_tbl1,                             &
+     &    mhd_fem1_wk%ml_cd, mhd_fem1_wk%ml_o_cd, ff_smp)
 !
-!      call check_mass_martix_conduct(node1%numnod, mhd_fem1_wk)
+!      call check_mass_martix_conduct                                   &
+!     &   (my_rank, node1%numnod, mhd_fem1_wk)
 !
       end subroutine int_mass_matrix_cd_quad
 !

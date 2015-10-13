@@ -40,10 +40,11 @@
 !
       if (iflag_debug.ge.1) write(*,*) 'allocate_finite_elem_mt'
       call allocate_finite_elem_mt
+      call alloc_mass_mat_fluid(node1%numnod, mhd_fem1_wk)
       call alloc_mass_mat_conduct(node1%numnod, mhd_fem1_wk)
 !
       if (iflag_debug.ge.1) write(*,*) 'allocate_int_vol_data'
-      call allocate_int_vol_data(ele1%numele)
+      call allocate_int_vol_data(ele1%numele, node1%max_nod_smp)
 !
 !
 !  allocation for field values

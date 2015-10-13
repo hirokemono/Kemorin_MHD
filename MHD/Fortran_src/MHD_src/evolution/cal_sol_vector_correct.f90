@@ -4,25 +4,25 @@
 !      Written by H. Matsui on March, 2006
 !
 !!      subroutine cal_sol_velocity_co(numnod, inter_smp_stack,         &
-!!     &          ncomp_nod, i_velo, i_p_phi, d_nod)
-!!      subroutine cal_sol_vector_co(numnod, inter_smp_stack,           &
+!!     &          ml_fl, ff, ncomp_nod, i_velo, i_p_phi, d_nod)
+!!      subroutine cal_sol_vector_co(numnod, inter_smp_stack, ml, ff,   &
 !!     &          ncomp_nod, i_field, d_nod)
 !!
 !!      subroutine cal_sol_velo_co_crank_lump(numnod, inter_smp_stack,  &
-!!     &          ncomp_nod, i_velo, d_nod)
-!!      subroutine cal_sol_magne_insulate(numnod, inter_smp_stack,      &
-!!     &          nnod_ins, inod_insulate, ncomp_nod, i_magne, d_nod)
-!!      subroutine cal_sol_vect_co_crank(numnod, inter_smp_stack,       &
-!!     &          ncomp_nod, i_field, d_nod)
+!!     &          ml_o_fl, ncomp_nod, i_velo, d_nod, ff_nl, ff)
+!!      subroutine cal_sol_magne_insulate                               &
+!!     &         (numnod, inter_smp_stack, nnod_ins, inod_insulate, ff, &
+!!     &          ncomp_nod, i_magne, d_nod)
+!!      subroutine cal_sol_vect_co_crank(numnod, inter_smp_stack, ml_o, &
+!!     &          ncomp_nod, i_field, d_nod, ff_nl, ff)
 !!      subroutine cal_sol_vect_co_crank_consist                        &
-!!     &        (inter_smp_stack, coef_field)
+!!     &        (inter_smp_stack, coef_field, ff_nl, ff)
 !
       module cal_sol_vector_correct
 !
       use m_precision
       use m_machine_parameter
       use m_phys_constants
-      use m_finite_element_matrix
 !
       implicit none
 !
@@ -32,40 +32,13 @@
 !
 ! -----------------------------------------------------------------------!
       subroutine cal_sol_velocity_co(numnod, inter_smp_stack,           &
-     &          ncomp_nod, i_velo, i_p_phi, d_nod)
+     &          ml_fl, ff, ncomp_nod, i_velo, i_p_phi, d_nod)
 !
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer (kind = kint), intent(in) :: i_velo, i_p_phi
-      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
-!
-      integer (kind = kint) :: iproc, inod, nd, ist, ied
-!
-!
-!$omp parallel do private(nd,inod,ist,ied)
-      do iproc = 1, np_smp
-        do nd = 1, n_vector
-          ist = inter_smp_stack(iproc-1)+1
-          ied = inter_smp_stack(iproc)
-          do inod = ist, ied
-            d_nod(inod,i_velo+nd-1)  = d_nod(inod,i_velo+nd-1)          &
-     &                                + ml_fl(inod)*ff(inod,nd)
-            d_nod(inod,i_p_phi) = 0.0d0
-          end do
-        end do
-      end do
-!$omp end parallel do
-!
-!
-      end subroutine cal_sol_velocity_co
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_sol_vector_co(numnod, inter_smp_stack,             &
-     &          ncomp_nod, i_field, d_nod)
-!
-      integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
-      integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_field
+      real(kind = kreal), intent(in) :: ml_fl(numnod)
+      real(kind = kreal), intent(in) :: ff(numnod,n_vector)
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: iproc, inod, nd, icomp, ist, ied
@@ -73,7 +46,47 @@
 !
 !$omp parallel do private(nd,inod,icomp,ist,ied)
       do iproc = 1, np_smp
-        do nd=1, n_vector
+        do nd = 1, n_vector
+          icomp = i_velo + nd - 1
+          ist = inter_smp_stack(iproc-1)+1
+          ied = inter_smp_stack(iproc)
+          do inod = ist, ied
+            d_nod(inod,icomp)  = d_nod(inod,icomp)                      &
+     &                          + ml_fl(inod)*ff(inod,nd)
+          end do
+        end do
+      end do
+!$omp end parallel do
+!
+!$omp parallel do private(inod,ist,ied)
+      do iproc = 1, np_smp
+        ist = inter_smp_stack(iproc-1)+1
+        ied = inter_smp_stack(iproc)
+        do inod = ist, ied
+          d_nod(inod,i_p_phi) = 0.0d0
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_sol_velocity_co
+!
+! -----------------------------------------------------------------------
+!
+      subroutine cal_sol_vector_co(numnod, inter_smp_stack, ml, ff,     &
+     &          ncomp_nod, i_field, d_nod)
+!
+      integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_field
+      real(kind = kreal), intent(in) :: ml(numnod)
+      real(kind = kreal), intent(in) :: ff(numnod,n_vector)
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+!
+      integer (kind = kint) :: iproc, inod, nd, icomp, ist, ied
+!
+!
+!$omp parallel do private(nd,inod,icomp,ist,ied)
+      do iproc = 1, np_smp
+        do nd = 1, n_vector
           icomp = i_field + nd - 1
           ist = inter_smp_stack(iproc-1)+1
           ied = inter_smp_stack(iproc)
@@ -91,13 +104,17 @@
 ! -----------------------------------------------------------------------
 !
       subroutine cal_sol_velo_co_crank_lump(numnod, inter_smp_stack,    &
-     &          ncomp_nod, i_velo, d_nod)
+     &          ml_o_fl, ncomp_nod, i_velo, d_nod, ff_nl, ff)
 !
       use m_t_int_parameter
 !
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_velo
+      real(kind = kreal), intent(in) :: ml_o_fl(numnod)
       real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
+!
+      real(kind = kreal), intent(in) :: ff_nl(numnod,n_vector)
+      real(kind = kreal), intent(inout) :: ff(numnod,n_vector)
 !
       integer (kind = kint) :: iproc, ist, ied, inod, nd, icomp
 !
@@ -106,7 +123,7 @@
       do iproc = 1, np_smp
         ist = inter_smp_stack(iproc-1) + 1
         ied = inter_smp_stack(iproc)
-        do nd=1, n_vector
+        do nd = 1, n_vector
           icomp = i_velo + nd - 1
 !cdir nodep
           do inod = ist, ied
@@ -121,13 +138,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_magne_insulate(numnod, inter_smp_stack,        &
-     &          nnod_ins, inod_insulate, ncomp_nod, i_magne, d_nod)
+      subroutine cal_sol_magne_insulate                                 &
+     &         (numnod, inter_smp_stack, nnod_ins, inod_insulate, ff,   &
+     &          ncomp_nod, i_magne, d_nod)
 !
       integer (kind = kint), intent(in) :: nnod_ins
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: inod_insulate(nnod_ins)
       integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_magne
+!
+      real(kind = kreal), intent(in) :: ff(numnod,n_vector)
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: nd
@@ -154,24 +174,28 @@
 !
 ! -----------------------------------------------------------------------! -----------------------------------------------------------------------
 !
-      subroutine cal_sol_vect_co_crank(numnod, inter_smp_stack,         &
-     &          ncomp_nod, i_field, d_nod)
+      subroutine cal_sol_vect_co_crank(numnod, inter_smp_stack, ml_o,   &
+     &          ncomp_nod, i_field, d_nod, ff_nl, ff)
 !
       use m_t_int_parameter
 !
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_field
+      real(kind = kreal), intent(in) :: ml_o(numnod)
       real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
+      real(kind = kreal), intent(in) :: ff_nl(numnod,n_vector)
+      real(kind = kreal), intent(inout) :: ff(numnod,n_vector)
+!
 !
       integer (kind = kint) :: iproc, inod, nd, icomp
-       integer (kind=kint) :: ist, ied
+      integer (kind=kint) :: ist, ied
 !
 !
 !$omp parallel do private(ist,ied,nd,inod,icomp)
       do iproc = 1, np_smp
         ist = inter_smp_stack(iproc-1) + 1
         ied = inter_smp_stack(iproc)
-        do nd=1, n_vector
+        do nd = 1, n_vector
           icomp = i_field + nd - 1
 !cdir nodep
           do inod = ist, ied
@@ -189,16 +213,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine cal_sol_vect_co_crank_consist                          &
-     &        (inter_smp_stack, coef_field)
+     &        (numnod, inter_smp_stack, ff_nl, ff)
 !
       use m_t_int_parameter
-      use m_geometry_data
-      use m_sorted_node
 !
-      use cal_ff_smp_to_ffs
-!
+      integer (kind = kint), intent(in) :: numnod
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
-      real(kind = kreal), intent(in) :: coef_field
+      real(kind = kreal), intent(in) :: ff_nl(numnod,n_vector)
+      real(kind = kreal), intent(inout) :: ff(numnod,n_vector)
 !
        integer (kind=kint) :: iproc, inod, nd
        integer (kind=kint) :: ist, ied
@@ -216,10 +238,6 @@
         end do
       end do
 !$omp end parallel do
-!
-      if (coef_field .gt. 0.0d0) then
-        call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector, ff_m_smp, ff)
-      end if
 !
       end subroutine cal_sol_vect_co_crank_consist
 !

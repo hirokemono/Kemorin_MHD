@@ -4,12 +4,10 @@
 !     Written by H. Matsui on Aug., 2005
 !
 !      subroutine check_mass_martix
-!      subroutine check_mass_martix_fluid
 !      subroutine check_ff(numdir)
 !      subroutine check_ff_nl(numdir)
 !      subroutine check_ff_smp(numdir)
 !      subroutine check_ff_nl_smp(numdir)
-!      subroutine check_ff_m_smp(numdir)
 !      subroutine check_sk6
 !
       module check_finite_element_mat
@@ -38,20 +36,6 @@
       end do
 !
       end subroutine check_mass_martix
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine check_mass_martix_fluid
-!
-      integer(kind = kint) :: inod
-!
-      write(50+my_rank,*) 'inod, ml_fl, ml_o'
-      do inod = 1, node1%numnod
-        write(50+my_rank,'(i16,1p2e25.14)')                             &
-     &           inod, ml_fl(inod), ml_o_fl(inod)
-      end do
-!
-      end subroutine check_mass_martix_fluid
 !
 !   ---------------------------------------------------------------------
 !
@@ -120,25 +104,6 @@
       end do
 !
       end subroutine check_ff_nl_smp
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine check_ff_m_smp(numdir)
-!
-      use m_machine_parameter
-!
-      integer(kind = kint), intent(in) :: numdir
-      integer(kind = kint) :: ip, inod, nd
-!
-      write(50+my_rank,*) 'ip, inod, ff_m_smp', numdir
-      do ip = 1, np_smp
-       do inod = 1, node1%max_nod_smp
-        write(50+my_rank,'(2i16,1p10e25.14)')                           &
-     &         ip, inod, (ff_m_smp(inod,nd,ip),nd=1, numdir)
-      end do
-      end do
-!
-      end subroutine check_ff_m_smp
 !
 !   ---------------------------------------------------------------------
 !

@@ -33,6 +33,7 @@
 !
       subroutine int_fl_ele_scalar_2_node(scalar_nod, scalar_ele)
 !
+      use m_int_vol_data
 !
       real(kind = kreal), intent(in) :: scalar_ele(ele1%numele)
       real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
@@ -40,13 +41,15 @@
 !
       call int_area_ele_scalar_2_node(iele_fl_smp_stack, scalar_ele)
       call cal_ff_smp_2_scalar(node1, rhs_tbl1,                         &
-     &    ff_smp, ml_fl, n_scalar, ione, scalar_nod)
+     &    ff_smp, mhd_fem1_wk%ml_fl, n_scalar, ione, scalar_nod)
 !
       end subroutine int_fl_ele_scalar_2_node
 !
 !-----------------------------------------------------------------------
 !
       subroutine int_fl_ele_vector_2_node(vector_nod, vector_ele)
+!
+      use m_int_vol_data
 !
       real(kind = kreal), intent(in)                                    &
      &                   :: vector_ele(ele1%numele,n_vector)
@@ -56,7 +59,7 @@
 !
       call int_area_ele_vector_2_node(iele_fl_smp_stack, vector_ele)
       call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
-     &    ff_smp, ml_fl, n_vector, ione, vector_nod)
+     &    ff_smp, mhd_fem1_wk%ml_fl, n_vector, ione, vector_nod)
 !
       end subroutine int_fl_ele_vector_2_node
 !

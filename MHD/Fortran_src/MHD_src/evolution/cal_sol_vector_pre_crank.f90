@@ -35,10 +35,11 @@
 !
       subroutine cal_sol_velo_pre_linear
 !
+      use m_int_vol_data
 !
       call cal_sol_vec_fluid_linear(node1%numnod, node1%istack_nod_smp, &
-     &    nod_fld1%ntot_phys, n_vector, iphys%i_velo,                   &
-     &    iphys%i_pre_mom, nod_fld1%d_fld)
+     &    mhd_fem1_wk%ml_o_fl, nod_fld1%ntot_phys, n_vector,            &
+     &    iphys%i_velo, iphys%i_pre_mom, nod_fld1%d_fld)
 !
       end subroutine cal_sol_velo_pre_linear
 !
@@ -46,10 +47,11 @@
 !
       subroutine cal_sol_temp_linear
 !
+      use m_int_vol_data
 !
       call cal_sol_vec_fluid_linear(node1%numnod, node1%istack_nod_smp, &
-     &    nod_fld1%ntot_phys, n_scalar, iphys%i_temp,                   &
-     &    iphys%i_pre_heat, nod_fld1%d_fld)
+     &    mhd_fem1_wk%ml_o_fl, nod_fld1%ntot_phys, n_scalar,            &
+     &    iphys%i_temp, iphys%i_pre_heat, nod_fld1%d_fld)
 !
       end subroutine cal_sol_temp_linear
 !
@@ -57,10 +59,11 @@
 !
       subroutine cal_sol_par_temp_linear
 !
+      use m_int_vol_data
 !
       call cal_sol_vec_fluid_linear(node1%numnod, node1%istack_nod_smp, &
-     &    nod_fld1%ntot_phys, n_scalar, iphys%i_par_temp,               &
-     &    iphys%i_pre_heat, nod_fld1%d_fld)
+     &    mhd_fem1_wk%ml_o_fl, nod_fld1%ntot_phys, n_scalar,            &
+     &    iphys%i_par_temp, iphys%i_pre_heat, nod_fld1%d_fld)
 !
       end subroutine cal_sol_par_temp_linear
 !
@@ -99,10 +102,11 @@
 !
       subroutine cal_sol_d_scalar_linear
 !
+      use m_int_vol_data
 !
       call cal_sol_vec_fluid_linear(node1%numnod, node1%istack_nod_smp, &
-     &    nod_fld1%ntot_phys, n_scalar, iphys%i_light,                  &
-     &    iphys%i_pre_composit, nod_fld1%d_fld)
+     &    mhd_fem1_wk%ml_o_fl, nod_fld1%ntot_phys, n_scalar,            &
+     &    iphys%i_light, iphys%i_pre_composit, nod_fld1%d_fld)
 !
       end subroutine cal_sol_d_scalar_linear
 !
