@@ -36,7 +36,7 @@
 !
 !
       call reset_ff(node1%numnod, f1_l)
-      call reset_ff_smps
+      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
 !    take divergence of velocity
 !

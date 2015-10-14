@@ -41,7 +41,7 @@
       integer(kind = kint), intent(in) :: i_sgs
 !
 !
-       call reset_ff_smps
+       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
         if ( iflag_temp_supg .gt. id_turn_OFF) then
           call int_div_sgs_hf_simi_upw(i_flux, i_vect, i_scalar,        &

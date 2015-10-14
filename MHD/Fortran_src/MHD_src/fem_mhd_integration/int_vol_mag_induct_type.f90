@@ -74,7 +74,7 @@
 !$omp parallel
       call add_const_to_vector_smp(np_smp, mesh%ele%numele,             &
      &    mesh%ele%istack_ele_smp, d_ele(1,iphys_ele%i_magne),          &
-     &    ex_magne, fem_wk%vxe)
+     &    ex_magne, mhd_fem_wk%magne_1)
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
@@ -86,8 +86,8 @@
 !
         call fem_skv_induction_galerkin(iele_fsmp_stack, n_int, k2,     &
      &      coef_induct, mhd_fem_wk%velo_1, fem_wk%vector_1,            &
-     &      d_ele(1,iphys_ele%i_velo), fem_wk%vxe, mesh%ele, jac_3d,    &
-     &      fem_wk%sk6)
+     &      d_ele(1,iphys_ele%i_velo), mhd_fem_wk%magne_1,              &
+     &      mesh%ele, jac_3d, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
@@ -131,7 +131,7 @@
 !$omp parallel
       call add_const_to_vector_smp(np_smp, mesh%ele%numele,             &
      &    mesh%ele%istack_ele_smp, d_ele(1,iphys_ele%i_magne),          &
-     &    ex_magne, fem_wk%vxe)
+     &    ex_magne, mhd_fem_wk%magne_1)
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
@@ -143,7 +143,7 @@
 !
         call fem_skv_induction_upmagne(iele_fsmp_stack, n_int, k2,      &
      &      coef_induct, mhd_fem_wk%velo_1, fem_wk%vector_1,            &
-     &      d_ele(1,iphys_ele%i_velo), fem_wk%vxe,                      &
+     &      d_ele(1,iphys_ele%i_velo), mhd_fem_wk%magne_1,              &
      &      d_ele(1,iphys_ele%i_magne), mesh%ele, jac_3d, fem_wk%sk6)
       end do
 !

@@ -86,7 +86,7 @@
       integer(kind = kint), intent(in) :: i_sgs
 !
 !
-      call reset_ff_smps
+      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       if (iflag_velo_supg .eq. id_magnetic_SUPG) then
         call int_div_sgs_mf_simi_upm(i_flux, i_vect)

@@ -9,14 +9,16 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !      subroutine int_vol_Lorentz_pg_t(mesh, jac_3d, nod_fld, rhs_tbl,  &
-!     &          iele_fsmp_stack, n_int, bxe, fem_wk, f_nl)
+!     &          iele_fsmp_stack, n_int, bxe, fem_wk, mhd_fem_wk, f_nl)
 !      subroutine int_vol_full_Lorentz_pg_t(mesh, jac_3d, nod_fld,      &
 !     &          rhs_tbl, iele_fsmp_stack, n_int, bxe, fem_wk, f_nl)
 !      subroutine int_vol_full_rot_Lorentz_pg_t(mesh, jac_3d, nod_fld,  &
-!     &           rhs_tbl, iele_fsmp_stack, n_int, bxe, fem_wk, f_nl)
+!     &           rhs_tbl, iele_fsmp_stack, n_int, bxe,                 &
+!     &           fem_wk, mhd_fem_wk, f_nl)
 !
 !      subroutine int_vol_Lorentz_upw_t(mesh, jac_3d, nod_fld, rhs_tbl, &
-!     &         iele_fsmp_stack, n_int, bxe, vxe_up, fem_wk, f_nl)
+!     &         iele_fsmp_stack, n_int, bxe, vxe_up,                    &
+!     &         fem_wk, mhd_fem_wk, f_nl)
 !      subroutine int_vol_full_Lorentz_upw_t(mesh, jac_3d, nod_fld,     &
 !     &          rhs_tbl, iele_fsmp_stack, n_int, bxe, vxe_up, fem_wk,  &
 !     &          f_nl)
@@ -32,6 +34,7 @@
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_MHD_finite_element_mat
 !
       use m_node_phys_address
       use m_physical_property
@@ -45,7 +48,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_Lorentz_pg_t(mesh, jac_3d, nod_fld, rhs_tbl,   &
-     &          iele_fsmp_stack, n_int, bxe, fem_wk, f_nl)
+     &          iele_fsmp_stack, n_int, bxe, fem_wk, mhd_fem_wk, f_nl)
 !
       use cal_add_smp
       use int_vol_inertia_type
@@ -59,17 +62,18 @@
       integer(kind = kint), intent(in) :: n_int
       real(kind = kreal), intent(in) :: bxe(mesh%ele%numele,3)
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
 !
 !$omp parallel
       call add_const_to_vector_smp(np_smp, mesh%ele%numele,             &
-     &    iele_fsmp_stack, bxe, ex_magne, fem_wk%vxe)
+     &    iele_fsmp_stack, bxe, ex_magne, mhd_fem_wk%magne_1)
 !$omp end parallel
 !
       call int_vol_vector_inertia_type(mesh, jac_3d,                    &
      &    nod_fld, rhs_tbl, iele_fsmp_stack, n_int, iphys%i_magne,      &
-     &    fem_wk%vxe, coef_lor, fem_wk, f_nl)
+     &    mhd_fem_wk%magne_1, coef_lor, fem_wk, f_nl)
 !
       end subroutine int_vol_Lorentz_pg_t
 !
@@ -117,7 +121,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_full_rot_Lorentz_pg_t(mesh, jac_3d, nod_fld,   &
-     &           rhs_tbl, iele_fsmp_stack, n_int, bxe, fem_wk, f_nl)
+     &           rhs_tbl, iele_fsmp_stack, n_int, bxe,                  &
+     &           fem_wk, mhd_fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_cst_to_element
@@ -134,6 +139,7 @@
       real(kind = kreal), intent(in) :: bxe(mesh%ele%numele,3)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       integer(kind = kint) :: k2
@@ -148,11 +154,12 @@
 !
 !$omp parallel
         call add_const_to_vector_smp(np_smp, mesh%ele%numele,           &
-     &      iele_fsmp_stack, bxe, ex_magne, fem_wk%vxe)
+     &      iele_fsmp_stack, bxe, ex_magne, mhd_fem_wk%magne_1)
 !$omp end parallel
 !
         call fem_skv_lorentz_rot_galerkin(iele_fsmp_stack, n_int, k2,   &
-     &      fem_wk%vector_1, fem_wk%vxe, mesh%ele, jac_3d, fem_wk%sk6)
+     &      fem_wk%vector_1, mhd_fem_wk%magne_1, mesh%ele, jac_3d,      &
+     &      fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
@@ -164,7 +171,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_Lorentz_upw_t(mesh, jac_3d, nod_fld, rhs_tbl,  &
-     &         iele_fsmp_stack, n_int, bxe, vxe_up, fem_wk, f_nl)
+     &         iele_fsmp_stack, n_int, bxe, vxe_up,                     &
+     &         fem_wk, mhd_fem_wk, f_nl)
 !
       use cal_add_smp
       use int_vol_inertia_type
@@ -180,17 +188,18 @@
       real(kind = kreal), intent(in) :: vxe_up(mesh%ele%numele,3)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
 
 !$omp parallel
       call add_const_to_vector_smp(np_smp, mesh%ele%numele,             &
-     &    iele_fsmp_stack, bxe, ex_magne, fem_wk%vxe)
+     &    iele_fsmp_stack, bxe, ex_magne, mhd_fem_wk%magne_1)
 !$omp end parallel
 !
       call int_vol_vector_inertia_upw_type(mesh, jac_3d,                &
      &    nod_fld, rhs_tbl, iele_fsmp_stack, n_int, iphys%i_magne,      &
-     &    fem_wk%vxe, vxe_up, coef_lor, fem_wk, f_nl)
+     &    mhd_fem_wk%magne_1, vxe_up, coef_lor, fem_wk, f_nl)
 !
       end subroutine int_vol_Lorentz_upw_t
 !

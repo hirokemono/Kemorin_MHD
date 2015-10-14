@@ -39,7 +39,7 @@
       use int_vol_vect_p_pre
 !
 !
-      call reset_ff_smps
+      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
         call int_vol_vect_p_pre_ele_upm                                 &
@@ -77,7 +77,7 @@
       use int_surf_fixed_gradients
 !
 !
-      call reset_ff_smps
+      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       call int_vol_vp_diffuse_ele_monitor
 !

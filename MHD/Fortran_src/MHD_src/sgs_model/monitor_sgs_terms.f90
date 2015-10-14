@@ -36,7 +36,7 @@
       use nod_phys_send_recv
 !
 !
-      call reset_ff_smps
+      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
       call cal_sgs_uxb_2_evo
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)

@@ -122,8 +122,7 @@
 !
 !  ----------  clear the vector and lumped mass matrix
 !
-      call reset_ff_smps_type(n_scalar,                                 &
-     &    mesh%node%max_nod_smp, np_smp, rhs_l)
+      call reset_ff_smps_type(n_scalar, mesh%node%max_nod_smp, rhs_l)
       call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
@@ -160,8 +159,7 @@
 !
 !  ----------  clear the vector and lumped mass matrix
 !
-      call reset_ff_smps_type(n_scalar,                                 &
-     &    mesh%node%max_nod_smp, np_smp, rhs_l)
+      call reset_ff_smps_type(n_scalar, mesh%node%max_nod_smp, rhs_l)
       call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
 !
       call fem_skv_mass_matrix_diag_type(iele_fsmp_stack, num_int,      &
@@ -197,8 +195,7 @@
       type(lumped_mass_matrices), intent(inout) :: m_lump
 !
 !
-      call reset_ff_smps_type(n_scalar,                                 &
-     &    mesh%node%max_nod_smp, np_smp, rhs_l)
+      call reset_ff_smps_type(n_scalar, mesh%node%max_nod_smp, rhs_l)
       call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
 !
       call fem_skv_mass_mat_diag_HRZ_type(iele_fsmp_stack, num_int,     &

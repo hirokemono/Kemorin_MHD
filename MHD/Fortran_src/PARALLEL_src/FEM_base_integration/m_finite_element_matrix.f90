@@ -38,8 +38,6 @@
 !f1_nl%ff_smp
 !      real (kind=kreal), allocatable  :: ff_m_smp(:,:,:)
 !
-      private :: allocate_node_ff
-!
 !   ---------------------------------------------------------------------
 !
       contains
@@ -53,94 +51,32 @@
       use m_phys_constants
 !
 !
-      call allocate_node_ff(node1%numnod)
+      call alloc_type_fem_matrices(n_vector, node1, f1_l)
+      call alloc_type_fem_matrices(n_vector, node1, f1_nl)
 !
       allocate(ml(node1%numnod))
       allocate(ml_o(node1%numnod))
 !
-      allocate(f1_l%ff_smp(node1%max_nod_smp,3,np_smp))
-      allocate(f1_nl%ff_smp(node1%max_nod_smp,3,np_smp))
-!
-      allocate(fem1_wk%sk6(ele1%numele,n_sym_tensor,ele1%nnod_4_ele))
-!
-      allocate(fem1_wk%scalar_1(ele1%numele) )
-      allocate(fem1_wk%vector_1(ele1%numele,3) )
-      allocate(fem1_wk%tensor_1(ele1%numele,6) )
-!
-      allocate(fem1_wk%me_diag(ele1%numele))
+      call alloc_type_fem_mat_work(ele1, fem1_wk)
 !
       if(node1%numnod .gt. 0) then
         ml =  0.0d0
         ml_o =0.0d0
       end if
 !
-      if(ele1%numele .gt. 0) then
-        fem1_wk%sk6 =      0.0d0
-        fem1_wk%scalar_1 = 0.0d0
-        fem1_wk%vector_1 = 0.0d0
-        fem1_wk%tensor_1 = 0.0d0
-!
-        fem1_wk%me_diag = 0.0d0
-      end if
-!
-      call reset_ff_smps
-!
       end subroutine allocate_finite_elem_mt
 !
-!   ---------------------------------------------------------------------
-!
-      subroutine allocate_node_ff(numnod)
-!
-      integer(kind = kint), intent(in) :: numnod
-!
-!
-      allocate(f1_l%ff(numnod,3))
-      allocate(f1_nl%ff(numnod,3))
-!
-      if(numnod .le. 0) return
-      call reset_ff(numnod, f1_l )
-      call reset_ff(numnod, f1_nl)
-!
-      end subroutine allocate_node_ff
-!
-!   ---------------------------------------------------------------------
-!   ---------------------------------------------------------------------
-!
-      subroutine reset_ff_smps
-!
-      use m_machine_parameter
-      use m_geometry_data
-!
-!
-      call reset_ff_smp(node1%max_nod_smp, f1_l)
-      call reset_ff_smp(node1%max_nod_smp, f1_nl)
-!
-      end subroutine reset_ff_smps
-!
-!   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
 !
       subroutine deallocate_finite_elem_mt
 !
       deallocate(ml, ml_o)
 !
-      deallocate(f1_l%ff_smp, f1_nl%ff_smp)
-      deallocate(fem1_wk%sk6)
-      deallocate(fem1_wk%scalar_1, fem1_wk%vector_1, fem1_wk%tensor_1)
-!
-      deallocate(fem1_wk%me_diag)
-!
-      call deallocate_node_ff
+      call dealloc_type_fem_mat_work(fem1_wk)
+      call dealloc_type_fem_matrices(f1_nl)
+      call dealloc_type_fem_matrices(f1_l)
 !
       end subroutine deallocate_finite_elem_mt
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine deallocate_node_ff
-!
-      deallocate(f1_l%ff, f1_nl%ff)
-!
-      end subroutine deallocate_node_ff
 !
 !   ---------------------------------------------------------------------
 !

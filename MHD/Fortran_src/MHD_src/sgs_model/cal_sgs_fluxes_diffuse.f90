@@ -84,7 +84,7 @@
       use m_finite_element_matrix
       use cal_rotation
 !
-       call reset_ff_smps
+       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
        call choose_int_vol_rotations(iflag_mag_supg,                    &
      &     iele_fl_smp_stack, iphys%i_magne)
 !

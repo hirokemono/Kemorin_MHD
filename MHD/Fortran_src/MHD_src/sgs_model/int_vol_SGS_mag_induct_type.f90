@@ -10,10 +10,10 @@
 !
 !      subroutine int_vol_div_SGS_idct_mod_pg_t(mesh, jac_3d, rhs_tbl,  &
 !     &          nod_fld, FEM_elens, iele_fsmp_stack, n_int,            &
-!     &          i_filter, ak_diff, fem_wk, f_nl)
+!     &          i_filter, ak_diff, fem_wk, mhd_fem_wk, f_nl)
 !      subroutine int_vol_div_SGS_idct_mod_upm_t(mesh, jac_3d, rhs_tbl, &
 !     &          nod_fld, FEM_elens, iele_fsmp_stack, n_int,            &
-!     &          i_filter, ak_diff, vxe_up, fem_wk, f_nl)
+!     &          i_filter, ak_diff, vxe_up, fem_wk, mhd_fem_wk, f_nl)
 !
       module int_vol_SGS_mag_induct_type
 !
@@ -26,6 +26,7 @@
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_MHD_finite_element_mat
 !
       use m_node_phys_address
       use m_physical_property
@@ -40,7 +41,7 @@
 !
       subroutine int_vol_div_SGS_idct_mod_pg_t(mesh, jac_3d, rhs_tbl,   &
      &          nod_fld, FEM_elens, iele_fsmp_stack, n_int,             &
-     &          i_filter, ak_diff, fem_wk, f_nl)
+     &          i_filter, ak_diff, fem_wk, mhd_fem_wk, f_nl)
 !
       use sgs_terms_to_each_ele_type
       use cal_skv_to_ff_smp
@@ -57,6 +58,7 @@
       real(kind=kreal), intent(in) :: ak_diff(mesh%ele%numele)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       integer(kind=kint) :: k2
@@ -68,10 +70,10 @@
       do k2 = 1, mesh%ele%nnod_4_ele
         call SGS_induct_cst_each_ele_type(mesh, nod_fld, k2,            &
      &      iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,          &
-     &      coef_induct, fem_wk%sgs_v, fem_wk%vector_1)
+     &      coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
          call fem_skv_div_sgs_asym_tsr(iele_fsmp_stack, n_int, k2,      &
      &       i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,            &
-     &       fem_wk%sgs_v, fem_wk%vector_1, fem_wk%sk6)
+     &       mhd_fem_wk%sgs_v1, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &
@@ -83,7 +85,7 @@
 !
       subroutine int_vol_div_SGS_idct_mod_upm_t(mesh, jac_3d, rhs_tbl,  &
      &          nod_fld, FEM_elens, iele_fsmp_stack, n_int,             &
-     &          i_filter, ak_diff, vxe_up, fem_wk, f_nl)
+     &          i_filter, ak_diff, vxe_up, fem_wk, mhd_fem_wk, f_nl)
 !
       use sgs_terms_to_each_ele_type
       use cal_skv_to_ff_smp
@@ -101,6 +103,7 @@
       real (kind=kreal), intent(in) :: vxe_up(mesh%ele%numele,3)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       integer(kind=kint) :: k2
@@ -112,10 +115,10 @@
       do k2 = 1, mesh%ele%nnod_4_ele
         call SGS_induct_cst_each_ele_type(mesh, nod_fld, k2,            &
      &      iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,          &
-     &      coef_induct, fem_wk%sgs_v, fem_wk%vector_1)
+     &      coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
         call fem_skv_div_sgs_asym_t_upwind(iele_fsmp_stack, n_int, k2,  &
      &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,             &
-     &      vxe_up, fem_wk%sgs_v, fem_wk%vector_1, fem_wk%sk6)
+     &      vxe_up, mhd_fem_wk%sgs_v1, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
       call add3_skv_to_ff_v_smp(mesh%node, mesh%ele, rhs_tbl,           &

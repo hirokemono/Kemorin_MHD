@@ -40,7 +40,7 @@
 !
 !
       call reset_ff(node1%numnod, f1_l)
-      call reset_ff_smps
+      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       call int_vol_divergence_magne
 !      call int_surf_sgs_div_magne

@@ -42,9 +42,8 @@
       type(lumped_mass_mat_layerd), intent(inout) ::    mk_MHD
 !
 !
-      call alloc_fem_mat_base_type(femmesh%mesh%node%numnod,            &
-     &    femmesh%mesh%ele%numele, femmesh%mesh%ele%nnod_4_ele,         &
-     &    np_smp, femmesh%mesh%node%max_nod_smp, rhs_mat)
+      call alloc_fem_mat_base_type                                      &
+     &   (femmesh%mesh%node, femmesh%mesh%ele, rhs_mat)
       call alloc_fem_mat_fluid_type(femmesh%mesh%node%numnod,           &
      &    mk_MHD)
       call alloc_fem_mat_conduct_type(femmesh%mesh%node%numnod,         &

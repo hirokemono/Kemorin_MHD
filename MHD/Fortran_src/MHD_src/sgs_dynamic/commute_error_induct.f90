@@ -51,7 +51,7 @@
        integer(kind = kint), intent(in) :: i_sgs, i_filter
 !
 !
-      call reset_ff_smps
+      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       call int_vol_commute_induct_t(iele_cd_smp_stack,                  &
      &    intg_point_t_evo, i_filter, i_flux, i_v, i_b)

@@ -50,7 +50,7 @@
 !
 !  cal commute error using rotation
 !
-      call reset_ff_smps
+      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       call int_vol_commute_rot(ele1%istack_ele_smp, intg_point_t_evo,   &
      &    i_filter, i_vect)
@@ -80,7 +80,7 @@
       integer(kind = kint), intent(in) :: i_sgs, i_vect
 !
 !
-      call reset_ff_smps
+      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       call int_vol_commute_rot(iele_fl_smp_stack, intg_point_t_evo,     &
      &    i_filter, i_vect)
@@ -110,7 +110,7 @@
       integer(kind = kint), intent(in) :: i_sgs, i_vect
 !
 !
-      call reset_ff_smps
+      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       call int_vol_commute_rot(iele_cd_smp_stack, intg_point_t_evo,     &
      &    i_filter, i_vect)

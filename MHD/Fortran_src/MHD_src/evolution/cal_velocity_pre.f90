@@ -64,7 +64,7 @@
 !
 !   --- reset work array for time evolution
 !
-      call reset_ff_smps
+      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
 ! --------   loop for direction of velocity ---------------
 !

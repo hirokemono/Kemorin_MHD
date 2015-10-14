@@ -41,7 +41,7 @@
       use int_surf_velo_co_sgs
 !
 !
-      call reset_ff_smps
+      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_velo_co'
       call int_vol_velo_co

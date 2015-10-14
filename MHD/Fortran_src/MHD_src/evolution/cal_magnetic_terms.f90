@@ -40,7 +40,7 @@
       integer (kind=kint), intent(in) :: i_field
 !
 !
-      call reset_ff_smps
+      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
        call int_vol_magne_monitor_upm(i_field)
@@ -73,7 +73,7 @@
       use int_vol_diffusion_ele
 !
 !
-      call reset_ff_smps
+      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       call int_vol_m_diffuse_ele_monitor
 !
