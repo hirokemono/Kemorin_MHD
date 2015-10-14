@@ -103,7 +103,7 @@
      &     iele_cd_smp_stack, i_vector)
 !
        call cal_ff_smp_2_vector(node1, rhs_tbl1,                        &
-     &     ff_nl_smp, mhd_fem1_wk%ml_cd, nod_fld1%ntot_phys,            &
+     &     f1_nl%ff_smp, mhd_fem1_wk%ml_cd, nod_fld1%ntot_phys,         &
      &     i_res, nod_fld1%d_fld)
 !
 ! ----------   communications

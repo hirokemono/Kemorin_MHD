@@ -35,7 +35,7 @@
       use nod_phys_send_recv
 !
 !
-      ff_nl_smp = 0.0d0
+      call reset_ff_smp(node1%max_nod_smp, f1_nl)
 !
       call int_vol_rot_1st(iele_cd_smp_stack, intg_point_t_evo,         &
           iphys%i_SGS_vp_induct)
@@ -45,7 +45,7 @@
 !    &     f1_l%ff, mhd_fem1_wk%ml_cd, nod_fld1%ntot_phys,              &
 !    &     iphys%i_magne, nod_fld1%d_fld)
        call cal_ff_smp_2_vector                                         &
-     &    (node1, rhs_tbl1, ff_nl_smp, mhd_fem1_wk%ml_cd,               &
+     &    (node1, rhs_tbl1, f1_nl%ff_smp, mhd_fem1_wk%ml_cd,            &
      &     nod_fld1%ntot_phys, iphys%i_SGS_induction, nod_fld1%d_fld)
 !
        call vector_send_recv                                            &

@@ -106,7 +106,7 @@
 !
 !
       call reset_sk6(n_vector, ele1, fem1_wk%sk6)
-      call reset_ff_smp
+      call reset_ff_smp(node1%max_nod_smp, f1_l)
 !
       call sel_int_vol_sgs_flux(iflag_temp_supg, i_filter, n_vector,    &
      &    i_field, ie_dvx, fem1_wk, mhd_fem1_wk)
@@ -151,7 +151,7 @@
 !
 !
       call reset_sk6(n_vector, ele1, fem1_wk%sk6)
-      call reset_ff_smp
+      call reset_ff_smp(node1%max_nod_smp, f1_l)
 !
       call sel_int_vol_sgs_flux(iflag_temp_supg, i_filter, n_vector,    &
      &   i_field, ie_dvx, fem1_wk, mhd_fem1_wk)

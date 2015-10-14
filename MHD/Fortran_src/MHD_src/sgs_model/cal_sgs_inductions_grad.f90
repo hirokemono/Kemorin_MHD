@@ -51,7 +51,7 @@
 !  ----------  clear the vector and lumped mass matrix
 !
       call reset_sk6(n_asym_tensor, ele1, fem1_wk%sk6)
-      call reset_ff_smp
+      call reset_ff_smp(node1%max_nod_smp, f1_l)
 !
       call sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,           &
      &    ifield_v, ifield_b, fem1_wk, mhd_fem1_wk)
@@ -98,7 +98,7 @@
 !  ----------  clear the vector and lumped mass matrix
 !
       call reset_sk6(n_asym_tensor, ele1, fem1_wk%sk6)
-      call reset_ff_smp
+      call reset_ff_smp(node1%max_nod_smp, f1_l)
 !
       call sel_int_vol_sgs_induct_t(i_filter, ie_dvx, ie_dbx,           &
      &    ifield_v, ifield_b, fem1_wk, mhd_fem1_wk)

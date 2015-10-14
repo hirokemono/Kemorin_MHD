@@ -67,7 +67,7 @@
        end do
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_nl_smp)
+     &    fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine int_vol_commute_grad
 !
@@ -98,7 +98,7 @@
        end do
 !
       call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_nl_smp)
+     &    fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine int_vol_commute_div
 !
@@ -126,7 +126,7 @@
       end do
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_nl_smp)
+     &    fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine int_vol_commute_rot
 !
@@ -157,7 +157,7 @@
        end do
 !
       call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_nl_smp)
+     &    fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine int_vol_commute_div_v_flux
 !
@@ -188,7 +188,7 @@
       end do
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_nl_smp)
+     &    fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine int_vol_commute_div_m_flux
 !
@@ -218,7 +218,7 @@
       end do
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_nl_smp)
+     &    fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine int_vol_commute_induct_t
 !

@@ -70,7 +70,7 @@
       end do
 !
       call sub3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_nl_smp)
+     &    fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine int_vol_vect_p_pre_ele
 !
@@ -109,7 +109,7 @@
       end do
 !
       call sub3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_nl_smp)
+     &    fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine int_vol_vect_p_pre_ele_upm
 !

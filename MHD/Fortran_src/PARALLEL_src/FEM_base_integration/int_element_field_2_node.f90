@@ -102,7 +102,7 @@
       real(kind = kreal), intent(in) :: scalar_ele(ele1%numele)
 !
 !
-      call reset_ff_smp
+      call reset_ff_smp(node1%max_nod_smp, f1_l)
       call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
@@ -129,7 +129,7 @@
       real(kind = kreal), intent(in) :: vector_ele(ele1%numele,3)
 !
 !
-      call reset_ff_smp
+      call reset_ff_smp(node1%max_nod_smp, f1_l)
       call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
@@ -159,7 +159,7 @@
       real(kind = kreal), intent(in) :: scalar_ele(numele)
 !
 !
-      call reset_ff_smp
+      call reset_ff_smp(node1%max_nod_smp, f1_l)
       call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
@@ -191,7 +191,7 @@
       real(kind = kreal), intent(in) :: vector_ele(numele,3)
 !
 !
-      call reset_ff_smp
+      call reset_ff_smp(node1%max_nod_smp, f1_l)
       call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then

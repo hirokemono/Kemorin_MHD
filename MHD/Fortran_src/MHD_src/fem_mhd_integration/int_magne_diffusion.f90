@@ -33,7 +33,7 @@
 !
 !  ---------  set number of integral points
 !
-       ff_nl_smp = 0.0d0
+       call reset_ff_smp(node1%max_nod_smp, f1_nl)
 !
        call int_vol_rot_1st(ele1%istack_ele_smp, intg_point_poisson,    &
            iphys%i_vp_diffuse)
@@ -43,7 +43,7 @@
 !     &   ff, mhd_fem1_wk%ml_cd, nod_fld1%ntot_phys,                    &
 !     &   iphys%i_magne, nod_fld1%d_fld)
        call cal_ff_smp_2_vector(node1, rhs_tbl1,                        &
-     &     ff_nl_smp, mhd_fem1_wk%ml_cd,                                &
+     &     f1_nl%ff_smp, mhd_fem1_wk%ml_cd,                             &
      &     nod_fld1%ntot_phys, iphys%i_b_diffuse, nod_fld1%d_fld) 
 !
        call vector_send_recv                                            &

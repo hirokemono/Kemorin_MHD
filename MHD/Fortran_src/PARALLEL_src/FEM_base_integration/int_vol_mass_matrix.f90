@@ -129,7 +129,7 @@
 !
 !  ----------  clear the vector and lumped mass matrix
 !
-      call reset_ff_smp
+      call reset_ff_smp(node1%max_nod_smp, f1_l)
       call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
@@ -155,7 +155,7 @@
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
 !
-      call reset_ff_smp
+      call reset_ff_smp(node1%max_nod_smp, f1_l)
       call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       call fem_skv_mass_matrix_diag_type                                &
@@ -177,7 +177,7 @@
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
 !
-      call reset_ff_smp
+      call reset_ff_smp(node1%max_nod_smp, f1_l)
       call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       call fem_skv_mass_mat_diag_HRZ_type                               &
@@ -204,7 +204,7 @@
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
 !
-      call reset_ff_smp
+      call reset_ff_smp(node1%max_nod_smp, f1_l)
       call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       call fem_skv_mass_mat_diag_HRZ_type                               &

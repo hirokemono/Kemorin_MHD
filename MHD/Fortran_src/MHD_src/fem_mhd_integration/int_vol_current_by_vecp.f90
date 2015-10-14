@@ -37,7 +37,7 @@
       integer (kind = kint) :: k2
 !
 !
-      ff_nl_smp = 0.0d0
+      call reset_ff_smp(node1%max_nod_smp, f1_nl)
       call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       do k2=1, ele1%nnod_4_ele
@@ -49,7 +49,7 @@
       end do
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_nl_smp)
+     &    fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine int_vol_current_diffuse
 !

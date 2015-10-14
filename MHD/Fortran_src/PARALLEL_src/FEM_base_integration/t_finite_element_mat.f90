@@ -37,6 +37,7 @@
 !      subroutine dealloc_type_fem_matrices(rhs)
 !
 !      subroutine reset_ff(numnod, ffs)
+!      subroutine reset_ff_smp(max_nod_smp, ffs)
 !        type(finite_ele_mat_node), intent(inout) :: ffs
 !
 !      subroutine check_sk6(my_rank, ele, fem_wk)
@@ -312,6 +313,25 @@
 !$omp end parallel
 !
       end subroutine reset_ff
+!
+!   ---------------------------------------------------------------------
+!
+      subroutine reset_ff_smp(max_nod_smp, ffs)
+!
+      use m_machine_parameter
+!
+      integer(kind = kint), intent(in) :: max_nod_smp
+      type(finite_ele_mat_node), intent(inout) :: ffs
+      integer(kind = kint) :: ip
+!
+!
+!$omp parallel do
+      do ip = 1, np_smp
+        ffs%ff_smp(1:max_nod_smp,1:3,ip) =   0.0d0
+      end do
+!$omp end parallel do
+!
+      end subroutine reset_ff_smp
 !
 !   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------

@@ -70,7 +70,7 @@
       end do
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_nl_smp)
+     &    fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine int_sgs_grad_upw_1st
 !
@@ -102,7 +102,7 @@
       end do
 !
       call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_nl_smp)
+     &    fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine int_sgs_div_upw_1st
 !
@@ -134,7 +134,7 @@
       end do
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_nl_smp)
+     &    fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine int_sgs_rot_upw_1st
 !
@@ -167,7 +167,7 @@
       end do
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_nl_smp)
+     &    fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine int_sgs_div_tsr_upw_1st
 !
@@ -201,7 +201,7 @@
       end do
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_nl_smp)
+     &    fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine int_sgs_div_as_tsr_upw_1st
 !

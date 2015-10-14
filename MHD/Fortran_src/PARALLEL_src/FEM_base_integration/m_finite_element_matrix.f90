@@ -7,7 +7,6 @@
 !
 !      subroutine allocate_finite_elem_mt
 !
-!      subroutine reset_ff_smp
 !      subroutine reset_ff_smps
 !      subroutine reset_ff(numnod)
 !
@@ -33,10 +32,10 @@
 !
 !      real (kind=kreal), allocatable  ::  ff(:,:)
 !      real (kind=kreal), allocatable  ::  ff_nl(:,:)
-!f1_nl%ff
 ! 
 !      real (kind=kreal), allocatable  :: ff_smp(:,:,:)
-      real (kind=kreal), allocatable  :: ff_nl_smp(:,:,:)
+!      real (kind=kreal), allocatable  :: ff_nl_smp(:,:,:)
+!f1_nl%ff_smp
 !      real (kind=kreal), allocatable  :: ff_m_smp(:,:,:)
 !
       private :: allocate_node_ff
@@ -60,7 +59,7 @@
       allocate(ml_o(node1%numnod))
 !
       allocate(f1_l%ff_smp(node1%max_nod_smp,3,np_smp))
-      allocate(ff_nl_smp(node1%max_nod_smp,3,np_smp))
+      allocate(f1_nl%ff_smp(node1%max_nod_smp,3,np_smp))
 !
       allocate(fem1_wk%sk6(ele1%numele,n_sym_tensor,ele1%nnod_4_ele))
 !
@@ -107,38 +106,14 @@
 !   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
 !
-      subroutine reset_ff_smp
-!
-      use m_machine_parameter
-      use m_geometry_data
-!
-      integer(kind = kint) :: ip
-!
-!
-!$omp parallel do
-      do ip = 1, np_smp
-        f1_l%ff_smp(1:node1%max_nod_smp,1:3,ip) =   0.0d0
-      end do
-!$omp end parallel do
-!
-      end subroutine reset_ff_smp
-!
-!   ---------------------------------------------------------------------
-!
       subroutine reset_ff_smps
 !
       use m_machine_parameter
       use m_geometry_data
 !
-      integer(kind = kint) :: ip
 !
-!
-!$omp parallel do
-      do ip = 1, np_smp
-        f1_l%ff_smp(1:node1%max_nod_smp,1:3,ip) =   0.0d0
-        ff_nl_smp(1:node1%max_nod_smp,1:3,ip) = 0.0d0
-      end do
-!$omp end parallel do
+      call reset_ff_smp(node1%max_nod_smp, f1_l)
+      call reset_ff_smp(node1%max_nod_smp, f1_nl)
 !
       end subroutine reset_ff_smps
 !
@@ -149,7 +124,7 @@
 !
       deallocate(ml, ml_o)
 !
-      deallocate(f1_l%ff_smp, ff_nl_smp)
+      deallocate(f1_l%ff_smp, f1_nl%ff_smp)
       deallocate(fem1_wk%sk6)
       deallocate(fem1_wk%scalar_1, fem1_wk%vector_1, fem1_wk%tensor_1)
 !

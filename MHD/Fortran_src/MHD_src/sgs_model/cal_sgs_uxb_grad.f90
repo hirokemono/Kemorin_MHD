@@ -52,7 +52,7 @@
      &    ak_sgs(1,icomp_sgs_uxb), fem1_wk%sk6)
 !
       call add3_skv_coef_to_ff_v_smp(node1, ele1, rhs_tbl1,             &
-     &    coef_induct, fem1_wk%sk6, ff_nl_smp)
+     &    coef_induct, fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine cal_sgs_uxb_2_ff_grad
 !
@@ -81,7 +81,7 @@
 !  ----------  clear the vector and lumped mass matrix
 !
       call reset_sk6(n_vector, ele1, fem1_wk%sk6)
-      call reset_ff_smp
+      call reset_ff_smp(node1%max_nod_smp, f1_l)
 !
       call sel_int_vol_sgs_uxb                                          &
      &   (i_filter, i_field, id_dx, fem1_wk, mhd_fem1_wk)

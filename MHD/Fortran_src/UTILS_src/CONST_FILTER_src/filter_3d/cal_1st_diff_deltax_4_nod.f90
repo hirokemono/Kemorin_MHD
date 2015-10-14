@@ -156,11 +156,13 @@
       real(kind = kreal), intent(inout) :: diff_field(node1%numnod,3)
       integer(kind = kint) :: nd
 !
-      f1_l%ff = 0.0d0
-      ff_nl_smp = 0.0d0
+!
+      call reset_ff(node1%numnod, f1_l)
+      call reset_ff_smp(node1%max_nod_smp, f1_nl)
+!
       call int_vol_diff_dxs(org_field)
       call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector,                   &
-     &    ff_nl_smp, f1_l%ff)
+     &    f1_nl%ff_smp, f1_l%ff)
       do nd = 1, n_vector
         call cal_sol_dx_by_consist(diff_field(1,nd), nd)
       end do
@@ -181,10 +183,11 @@
       real(kind = kreal), intent(inout)                                 &
      &                   :: diff_field(node1%numnod,n_vector)
 !
-      ff_nl_smp = 0.0d0
+      call reset_ff_smp(node1%max_nod_smp, f1_nl)
+!
       call int_vol_diff_dxs(org_field)
       call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
-     &    ff_nl_smp, ml, n_vector, ione, diff_field)
+     &    f1_nl%ff_smp, ml, n_vector, ione, diff_field)
 !
       end subroutine take_1st_diffs_nod_by_lump
 !
