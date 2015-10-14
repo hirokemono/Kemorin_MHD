@@ -59,7 +59,7 @@
 !       call check_ff_nl(n_scalar)
 !
       call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, mhd_fem1_wk%ml_fl,                                     &
+     &    f1_nl%ff, mhd_fem1_wk%ml_fl,                                  &
      &    nod_fld1%ntot_phys, i_field, nod_fld1%d_fld)
 !
 !   communication

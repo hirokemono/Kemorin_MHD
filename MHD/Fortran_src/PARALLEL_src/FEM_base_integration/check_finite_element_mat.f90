@@ -62,7 +62,7 @@
       write(50+my_rank,*) 'inod, ff_nl', numdir
       do inod = 1, node1%numnod
         write(50+my_rank,'(i16,1p10e25.14)')                            &
-     &         inod, (ff_nl(inod,nd),nd=1, numdir)
+     &         inod, (f1_nl%ff(inod,nd),nd=1, numdir)
       end do
 !
       end subroutine check_ff_nl

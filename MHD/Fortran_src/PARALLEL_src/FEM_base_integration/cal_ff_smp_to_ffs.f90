@@ -70,7 +70,7 @@
       call s_set_ff_nl_smp_2_ff(node%numnod, np_smp,                    &
      &    node%max_nod_smp, node%istack_nod_smp,                        &
      &    rhs_tbl%node_sort_list_smp, numdir,                           &
-     &    f1_l%ff_smp, ff_nl_smp, f1_l%ff, ff_nl)
+     &    f1_l%ff_smp, ff_nl_smp, f1_l%ff, f1_nl%ff)
 !
       end subroutine set_ff_nl_smp_2_ff
 !

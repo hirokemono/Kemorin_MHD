@@ -26,14 +26,16 @@
 !
       type(finite_ele_mat_node), save :: f1_l
 !
+      type(finite_ele_mat_node), save :: f1_nl
+!
       real (kind=kreal), allocatable  ::  ml(:)
       real (kind=kreal), allocatable  ::  ml_o(:)
 !
 !      real (kind=kreal), allocatable  ::  ff(:,:)
-      real (kind=kreal), allocatable  ::  ff_nl(:,:)
+!      real (kind=kreal), allocatable  ::  ff_nl(:,:)
+!f1_nl%ff
 ! 
 !      real (kind=kreal), allocatable  :: ff_smp(:,:,:)
-!f1_l%ff_smp
       real (kind=kreal), allocatable  :: ff_nl_smp(:,:,:)
 !      real (kind=kreal), allocatable  :: ff_m_smp(:,:,:)
 !
@@ -94,11 +96,11 @@
 !
 !
       allocate(f1_l%ff(numnod,3))
-      allocate(ff_nl(numnod,3))
+      allocate(f1_nl%ff(numnod,3))
 !
       if(numnod .le. 0) return
-      call reset_ff(numnod)
-      ff_nl = 0.0d0
+      call reset_ff(numnod, f1_l )
+      call reset_ff(numnod, f1_nl)
 !
       end subroutine allocate_node_ff
 !
@@ -141,26 +143,6 @@
       end subroutine reset_ff_smps
 !
 !   ---------------------------------------------------------------------
-!
-      subroutine reset_ff(numnod)
-!
-      integer(kind = kint), intent(in) :: numnod
-      integer(kind = kint) :: inod, nd
-!
-!
-!$omp parallel private(inod)
-      do nd = 1, 3
-!$omp do
-        do inod = 1, numnod
-          f1_l%ff(inod,nd) = 0.0d0
-        end do
-!$omp end do nowait
-      end do
-!$omp end parallel
-!
-      end subroutine reset_ff
-!
-!   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
 !
       subroutine deallocate_finite_elem_mt
@@ -181,7 +163,7 @@
 !
       subroutine deallocate_node_ff
 !
-      deallocate(f1_l%ff, ff_nl)
+      deallocate(f1_l%ff, f1_nl%ff)
 !
       end subroutine deallocate_node_ff
 !

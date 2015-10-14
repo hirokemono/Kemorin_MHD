@@ -41,7 +41,7 @@
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    ff_nl, mhd_fem1_wk%ml_cd, nod_fld1%ntot_phys,                 &
+     &    f1_nl%ff, mhd_fem1_wk%ml_cd, nod_fld1%ntot_phys,              &
      &    iphys%i_SGS_vp_induct, nod_fld1%d_fld)
       call vector_send_recv                                             &
      &   (nod_fld1%ntot_phys, iphys%i_SGS_vp_induct, nod_fld1%d_fld)

@@ -213,7 +213,7 @@
         call int_multi_pass_vector
       end if
 !
-      call reset_ff(node1%numnod)
+      call reset_ff(node1%numnod, f1_l)
       call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector,                   &
      &    ff_nl_smp, f1_l%ff)
 !
@@ -231,7 +231,7 @@
         call int_multi_pass_scalar
       end if
 !
-      call reset_ff(node1%numnod)
+      call reset_ff(node1%numnod, f1_l)
       call cal_ff_smp_2_ff(node1, rhs_tbl1, n_scalar,                   &
      &    ff_nl_smp, f1_l%ff)
 !
@@ -250,7 +250,7 @@
         call int_multi_pass_vector_fl
       end if
 !
-      call reset_ff(node1%numnod)
+      call reset_ff(node1%numnod, f1_l)
       call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector,                   &
      &    ff_nl_smp, f1_l%ff)
 !
@@ -268,7 +268,7 @@
         call int_multi_pass_scalar_fl
       end if
 !
-      call reset_ff(node1%numnod)
+      call reset_ff(node1%numnod, f1_l)
       call cal_ff_smp_2_ff(node1, rhs_tbl1, n_scalar,                   &
      &    ff_nl_smp, f1_l%ff)
 !
@@ -287,7 +287,7 @@
         call int_multi_pass_vector_cd
       end if
 !
-      call reset_ff(node1%numnod)
+      call reset_ff(node1%numnod, f1_l)
       call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector,                   &
      &    ff_nl_smp, f1_l%ff)
 !
@@ -305,7 +305,7 @@
         call int_multi_pass_scalar_cd
       end if
 !
-      call reset_ff(node1%numnod)
+      call reset_ff(node1%numnod, f1_l)
       call cal_ff_smp_2_ff(node1, rhs_tbl1, n_scalar,                   &
      &    ff_nl_smp, f1_l%ff)
 !
@@ -324,7 +324,7 @@
         call int_multi_pass_vector_ins
       end if
 !
-      call reset_ff(node1%numnod)
+      call reset_ff(node1%numnod, f1_l)
       call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector,                   &
      &    ff_nl_smp, f1_l%ff)
 !
@@ -342,7 +342,7 @@
         call int_multi_pass_scalar_ins
       end if
 !
-      call reset_ff(node1%numnod)
+      call reset_ff(node1%numnod, f1_l)
       call cal_ff_smp_2_ff(node1, rhs_tbl1, n_scalar,                   &
      &    ff_nl_smp, f1_l%ff)
 !

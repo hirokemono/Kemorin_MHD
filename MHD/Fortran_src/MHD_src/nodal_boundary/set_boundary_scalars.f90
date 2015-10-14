@@ -73,7 +73,7 @@
 !
       if (num_bc_e_nod .le. 0) return
       call del_2scalar_phys_on_bc(num_bc_e_nod, ibc_e_id,               &
-     &    node1%numnod, n_vector, ione, f1_l%ff, ff_nl)
+     &    node1%numnod, n_vector, ione, f1_l%ff, f1_nl%ff)
 !
       end subroutine set_boundary_ene_4_rhs
 !
@@ -147,7 +147,7 @@
       if (num_bc_composition_nod .le. 0) return
       call del_2scalar_phys_on_bc                                       &
      &   (num_bc_composition_nod, ibc_composit_id,                      &
-     &    node1%numnod, n_vector, ione, f1_l%ff, ff_nl)
+     &    node1%numnod, n_vector, ione, f1_l%ff, f1_nl%ff)
 !
       end subroutine set_boundary_composition_4_rhs
 !

@@ -39,7 +39,7 @@
       use m_int_vol_data
 !
       call cal_sol_vec_fluid_linear(node1%numnod, node1%istack_nod_smp, &
-     &    mhd_fem1_wk%ml_o_fl, ff_nl, nod_fld1%ntot_phys,               &
+     &    mhd_fem1_wk%ml_o_fl, f1_nl%ff, nod_fld1%ntot_phys,            &
      &    n_vector, iphys%i_velo, iphys%i_pre_mom, nod_fld1%d_fld,      &
      &    f1_l%ff)
 !
@@ -52,7 +52,7 @@
       use m_int_vol_data
 !
       call cal_sol_vec_fluid_linear(node1%numnod, node1%istack_nod_smp, &
-     &    mhd_fem1_wk%ml_o_fl, ff_nl, nod_fld1%ntot_phys,               &
+     &    mhd_fem1_wk%ml_o_fl, f1_nl%ff, nod_fld1%ntot_phys,            &
      &    n_scalar, iphys%i_temp, iphys%i_pre_heat, nod_fld1%d_fld,     &
      &    f1_l%ff)
 !
@@ -65,7 +65,7 @@
       use m_int_vol_data
 !
       call cal_sol_vec_fluid_linear(node1%numnod, node1%istack_nod_smp, &
-     &    mhd_fem1_wk%ml_o_fl, ff_nl, nod_fld1%ntot_phys,               &
+     &    mhd_fem1_wk%ml_o_fl, f1_nl%ff, nod_fld1%ntot_phys,            &
      &    n_scalar, iphys%i_par_temp, iphys%i_pre_heat, nod_fld1%d_fld, &
      &    f1_l%ff)
 !
@@ -82,7 +82,7 @@
       call cal_sol_vec_conduct_linear                                   &
      &   (node1%numnod, node1%istack_internal_smp, inter_cd_smp_stack,  &
      &    numnod_conduct, inod_conduct, mhd_fem1_wk%ml_o_cd,            &
-     &    ff_nl, nod_fld1%ntot_phys, n_vector,                          &
+     &    f1_nl%ff, nod_fld1%ntot_phys, n_vector,                       &
      &    iphys%i_vecp, iphys%i_pre_uxb, nod_fld1%d_fld, f1_l%ff)
 !
       end subroutine cal_sol_vect_p_pre_linear
@@ -97,7 +97,7 @@
       call cal_sol_vec_conduct_linear                                   &
      &   (node1%numnod, node1%istack_internal_smp, inter_cd_smp_stack,  &
      &    numnod_conduct, inod_conduct, mhd_fem1_wk%ml_o_cd,            &
-     &    ff_nl, nod_fld1%ntot_phys, n_vector,                          &
+     &    f1_nl%ff, nod_fld1%ntot_phys, n_vector,                       &
      &    iphys%i_magne, iphys%i_pre_uxb, nod_fld1%d_fld, f1_l%ff)
 !
       end subroutine cal_sol_magne_pre_linear
@@ -109,7 +109,7 @@
       use m_int_vol_data
 !
       call cal_sol_vec_fluid_linear(node1%numnod, node1%istack_nod_smp, &
-     &    mhd_fem1_wk%ml_o_fl, ff_nl, nod_fld1%ntot_phys,               &
+     &    mhd_fem1_wk%ml_o_fl, f1_nl%ff, nod_fld1%ntot_phys,            &
      &    n_scalar, iphys%i_light, iphys%i_pre_composit,                &
      &    nod_fld1%d_fld, f1_l%ff)
 !
@@ -125,7 +125,7 @@
 !
       call cal_vector_pre_consist                                       &
      &   (node1%numnod, node1%istack_internal_smp, coef_velo,           &
-     &    ff_nl, nod_fld1%ntot_phys, n_vector,                          &
+     &    f1_nl%ff, nod_fld1%ntot_phys, n_vector,                       &
      &    iphys%i_pre_mom, nod_fld1%d_fld, f1_l%ff)
 !
       end subroutine cal_sol_velo_pre_consist
@@ -139,7 +139,7 @@
 !
       call cal_vector_pre_consist                                       &
      &   (node1%numnod, node1%istack_internal_smp, coef_temp,           &
-     &    ff_nl, nod_fld1%ntot_phys, n_scalar,                          &
+     &    f1_nl%ff, nod_fld1%ntot_phys, n_scalar,                       &
      &    iphys%i_pre_heat, nod_fld1%d_fld, f1_l%ff)
 !
       end subroutine cal_sol_temp_consist
@@ -153,7 +153,7 @@
 !
       call cal_vector_pre_consist                                       &
      &   (node1%numnod, node1%istack_internal_smp, coef_magne,          &
-     &    ff_nl, nod_fld1%ntot_phys, n_vector,                          &
+     &    f1_nl%ff, nod_fld1%ntot_phys, n_vector,                       &
      &    iphys%i_pre_uxb, nod_fld1%d_fld, f1_l%ff)
 !
       end subroutine cal_sol_vect_p_pre_consist
@@ -167,7 +167,7 @@
 !
       call cal_vector_pre_consist                                       &
      &   (node1%numnod, node1%istack_internal_smp, coef_light,          &
-     &    ff_nl, nod_fld1%ntot_phys, n_scalar,                          &
+     &    f1_nl%ff, nod_fld1%ntot_phys, n_scalar,                       &
      &    iphys%i_pre_composit, nod_fld1%d_fld, f1_l%ff)
 !
       end subroutine cal_sol_d_scalar_consist

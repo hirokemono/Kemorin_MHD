@@ -39,7 +39,7 @@
       use cal_solver_MHD
 !
 !
-      call reset_ff(node1%numnod)
+      call reset_ff(node1%numnod, f1_l)
       call reset_ff_smps
 !
       call int_vol_divergence_magne

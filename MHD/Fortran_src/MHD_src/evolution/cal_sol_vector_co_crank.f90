@@ -94,7 +94,7 @@
 !
       call cal_sol_velo_co_crank_lump(node1%numnod, inter_smp_stack,    &
      &    mhd_fem1_wk%ml_o_fl, nod_fld1%ntot_phys,                      &
-     &    iphys%i_velo, nod_fld1%d_fld, ff_nl, f1_l%ff)
+     &    iphys%i_velo, nod_fld1%d_fld, f1_nl%ff, f1_l%ff)
 !
       end subroutine cal_sol_velo_co_crank
 !
@@ -111,7 +111,7 @@
 !
       call cal_sol_vect_co_crank(node1%numnod, inter_smp_stack, ml_o,   &
      &    nod_fld1%ntot_phys, iphys%i_vecp, nod_fld1%d_fld,             &
-     &    ff_nl, f1_l%ff)
+     &    f1_nl%ff, f1_l%ff)
 !
       end subroutine cal_sol_vect_p_co_crank
 !
@@ -128,7 +128,7 @@
 !
       call cal_sol_vect_co_crank(node1%numnod, inter_smp_stack, ml_o,   &
      &    nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld,            &
-     &    ff_nl, f1_l%ff)
+     &    f1_nl%ff, f1_l%ff)
 !
       end subroutine cal_sol_magne_co_crank
 !
@@ -206,7 +206,7 @@
 !
 !
       call cal_sol_vect_co_crank_consist                                &
-     &   (node1%numnod, inter_smp_stack, ff_nl, f1_l%ff)
+     &   (node1%numnod, inter_smp_stack, f1_nl%ff, f1_l%ff)
 !
       if (coef_field .eq. 0.0d0) return
       call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector,                   &

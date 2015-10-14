@@ -36,6 +36,9 @@
 !      subroutine dealloc_type_fem_lumped_mass(lump)
 !      subroutine dealloc_type_fem_matrices(rhs)
 !
+!      subroutine reset_ff(numnod, ffs)
+!        type(finite_ele_mat_node), intent(inout) :: ffs
+!
 !      subroutine check_sk6(my_rank, ele, fem_wk)
 !        type(element_data), intent(in) :: ele
 !        type(work_finite_element_mat), intent(in) :: fem_wk
@@ -286,6 +289,29 @@
       deallocate( rhs%ff_smp )
 !
       end subroutine dealloc_type_fem_matrices
+!
+!   ---------------------------------------------------------------------
+!   ---------------------------------------------------------------------
+!
+      subroutine reset_ff(numnod, ffs)
+!
+      integer(kind = kint), intent(in) :: numnod
+      type(finite_ele_mat_node), intent(inout) :: ffs
+!
+      integer(kind = kint) :: inod, nd
+!
+!
+!$omp parallel private(inod)
+      do nd = 1, 3
+!$omp do
+        do inod = 1, numnod
+          ffs%ff(inod,nd) = 0.0d0
+        end do
+!$omp end do nowait
+      end do
+!$omp end parallel
+!
+      end subroutine reset_ff
 !
 !   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------

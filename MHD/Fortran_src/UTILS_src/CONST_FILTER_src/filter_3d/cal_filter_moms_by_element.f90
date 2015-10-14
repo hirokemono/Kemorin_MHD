@@ -148,7 +148,6 @@
           call int_dx_ele2_node(itype_mass_matrix,                      &
      &        seed_moments_ele(1,n), seed_moments_nod(1,n))
           call nod_scalar_send_recv(seed_moments_nod(1,n))
-!
         end if
 !
       end do
