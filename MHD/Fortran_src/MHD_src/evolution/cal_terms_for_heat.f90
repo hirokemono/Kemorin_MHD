@@ -19,7 +19,6 @@
       use cal_for_ffs
       use nod_phys_send_recv
       use set_boundary_scalars
-      use check_finite_element_mat
       use int_surf_temp
 !
       implicit none
@@ -56,7 +55,7 @@
 !
       call set_boundary_ene_4_rhs
 !
-!       call check_ff_nl(n_scalar)
+!       call check_ff(my_rank, n_scalar, node1%numnod, f1_nl)
 !
       call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,          &
      &    f1_nl%ff, mhd_fem1_wk%ml_fl,                                  &

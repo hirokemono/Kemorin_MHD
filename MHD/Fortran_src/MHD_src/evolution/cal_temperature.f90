@@ -44,8 +44,6 @@
       use cal_stratification_by_temp
       use copy_nodal_fields
 !
-      use check_finite_element_mat
-!
 !
 !      call check_surface_param_smp('cal_velocity_pre start',           &
 !     &    my_rank, sf_grp1, sf_grp_nod1)
@@ -73,16 +71,16 @@
      &     (fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
       end if
 !
-!      call check_ff_smp(n_scalar)
-!      call check_ff_nl_smp(n_scalar)
+!      call check_ff_smp(my_rank, n_scalar, node1%max_nod_smp, f1_l)
+!      call check_ff_smp(my_rank, n_scalar, node1%max_nod_smp, f1_nl)
 !
       call int_surf_temp_ele
 !
 !      call check_nodal_data(my_rank, nod_fld1, n_scalar, iphys%i_temp)
 !      call check_nodal_data(my_rank, fld_ele1,                         &
 !     &    n_vector, iphys_ele%i_velo)
-!      call check_ff_smp(n_scalar)
-!      call check_ff_nl_smp(n_scalar)
+!      call check_ff_smp(my_rank, n_scalar, node1%max_nod_smp, f1_l)
+!      call check_ff_smp(my_rank, n_scalar, node1%max_nod_smp, f1_nl)
 !
       if (iflag_t_strat .gt. id_turn_OFF) then
         if (iflag_temp_supg .gt. id_turn_OFF) then
@@ -131,17 +129,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine cal_temp_pre_adams
+      subroutine cal_temp_pre_adams
 !
-       use cal_multi_pass
-       use cal_sol_vector_explicit
+      use m_finite_element_matrix
+      use cal_multi_pass
+      use cal_sol_vector_explicit
 !
-       call cal_t_evo_4_scalar_fl(iflag_temp_supg)
-!       call check_ff(n_scalar)
-!       call check_ff_nl(n_scalar)
-       call cal_sol_temp_adams
+      call cal_t_evo_4_scalar_fl(iflag_temp_supg)
+!      call check_ff(my_rank, n_scalar, node1%numnod, f1_l)
+!      call check_ff(my_rank, n_scalar, node1%numnod, f1_nl)
+      call cal_sol_temp_adams
 !
-       end subroutine cal_temp_pre_adams
+      end subroutine cal_temp_pre_adams
 !
 ! ----------------------------------------------------------------------
 !

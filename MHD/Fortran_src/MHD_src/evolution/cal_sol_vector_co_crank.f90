@@ -109,7 +109,8 @@
 !
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
 !
-      call cal_sol_vect_co_crank(node1%numnod, inter_smp_stack, ml_o,   &
+      call cal_sol_vect_co_crank                                        &
+     &   (node1%numnod, inter_smp_stack, m1_lump%ml_o,                  &
      &    nod_fld1%ntot_phys, iphys%i_vecp, nod_fld1%d_fld,             &
      &    f1_nl%ff, f1_l%ff)
 !
@@ -126,7 +127,8 @@
 !
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
 !
-      call cal_sol_vect_co_crank(node1%numnod, inter_smp_stack, ml_o,   &
+      call cal_sol_vect_co_crank                                        &
+     &   (node1%numnod, inter_smp_stack, m1_lump%ml_o,                  &
      &    nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld,            &
      &    f1_nl%ff, f1_l%ff)
 !

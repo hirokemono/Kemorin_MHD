@@ -6,6 +6,7 @@
 !      Written by H.Matsui on Oct., 2006
 !
 !      subroutine const_next_nod_id_4_node
+!      subroutine set_belonged_ele_and_next_nod
 !
       module m_next_node_id_4_node
 !
@@ -25,7 +26,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_next_nod_id_4_node
+      subroutine set_belonged_ele_and_next_nod
 !
       use m_machine_parameter
       use m_geometry_data
@@ -33,11 +34,14 @@
 !
       use set_ele_id_4_node_type
 !
+!      Search surrounding node and element
+!
+      call set_ele_id_4_node
 !
       call const_next_nod_id_4_node_type(node1, ele1, ele_4_nod1,       &
      &    neib_nod1)
 !
-      end subroutine const_next_nod_id_4_node
+      end subroutine set_belonged_ele_and_next_nod
 !
 !-----------------------------------------------------------------------
 !

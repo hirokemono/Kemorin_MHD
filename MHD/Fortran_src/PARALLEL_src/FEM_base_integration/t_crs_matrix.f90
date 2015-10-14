@@ -18,13 +18,26 @@
 !
       type CRS_matrix
         integer(kind=kint ) ::  NB_crs = 3
+!>  Total size of non-0 component of matrix
+        integer (kind = kint) :: ntot_A
+!>  CRS matrix
+        real(kind=kreal), pointer ::  A_crs(:)
+!>  Diagonal component
+        real(kind=kreal), pointer ::  D_crs(:)
+!>  lower left component
+        real(kind=kreal), pointer ::  AL_crs(:)
+!>  upper right component
+        real(kind=kreal), pointer ::  AU_crs(:)
 
-        real   (kind=kreal), allocatable ::  AL_crs(:,:,:)
-        real   (kind=kreal), allocatable ::  AU_crs(:,:,:)
-        real   (kind=kreal), allocatable ::  D_crs(:,:,:)
-
-        real   (kind=kreal), allocatable ::  B_crs(:)
-        real   (kind=kreal), allocatable ::  X_crs(:)
+        real(kind=kreal), pointer ::  B_crs(:)
+        real(kind=kreal), pointer ::  X_crs(:)
+!
+!>   pointer for diagonal component
+        integer (kind = kint) :: ist_d
+!>   pointer for upper part of matrix
+        integer (kind = kint) :: ist_u
+!>   pointer for lower part of matrix
+        integer (kind = kint) :: ist_l
 
         character(len=kchara) :: SOLVER_crs
         character(len=kchara) :: PRECOND_crs
@@ -69,17 +82,23 @@
 !
 !
       NB = mat_crs%NB_crs
-      allocate(mat_crs%AL_crs(NB,NB,tbl_crs%ntot_l) )
-      allocate(mat_crs%AU_crs(NB,NB,tbl_crs%ntot_u) )
-      allocate(mat_crs%D_crs(NB,NB,tbl_crs%ntot_d))
+      mat_crs%ntot_A = tbl_crs%ntot_d + tbl_crs%ntot_l + tbl_crs%ntot_u
+      mat_crs%ist_d = 1
+      mat_crs%ist_l = 1 + NB*NB *  tbl_crs%ntot_d
+      mat_crs%ist_u = 1 + NB*NB * (tbl_crs%ntot_d + tbl_crs%ntot_l)
+!
+      allocate(mat_crs%A_crs(1-NB*NB:NB*NB*mat_crs%ntot_A))
+      if(mat_crs%ntot_A .gt. 0) mat_crs%A_crs = 0.0d0
+!
+      mat_crs%D_crs =>  mat_crs%A_crs(1:mat_crs%ist_l-1)
+      mat_crs%AL_crs => mat_crs%A_crs(mat_crs%ist_l:mat_crs%ist_u-1)
+      mat_crs%AU_crs => mat_crs%A_crs(mat_crs%ist_u:mat_crs%ntot_A)
+!
       allocate(mat_crs%B_crs(NB*tbl_crs%ntot_d))
       allocate(mat_crs%X_crs(NB*tbl_crs%ntot_d))
 !
-      mat_crs%AL_crs = 0.0d0
-      mat_crs%AU_crs = 0.0d0
-      mat_crs%D_crs = 0.0d0
-      mat_crs%B_crs = 0.0d0
-      mat_crs%X_crs = 0.0d0
+      if(tbl_crs%ntot_d .gt. 0) mat_crs%B_crs = 0.0d0
+      if(tbl_crs%ntot_d .gt. 0) mat_crs%X_crs = 0.0d0
 !
       end subroutine alloc_crs_mat_data
 !
@@ -89,9 +108,8 @@
 !
       type(CRS_matrix), intent(inout) :: mat_crs
 !
-      deallocate (mat_crs%AL_crs)
-      deallocate (mat_crs%AU_crs)
-      deallocate (mat_crs%D_crs)
+      nullify (mat_crs%D_crs, mat_crs%AL_crs, mat_crs%AU_crs)
+      deallocate (mat_crs%A_crs)
       deallocate (mat_crs%B_crs, mat_crs%X_crs)
 !
       end subroutine dealloc_crs_mat_data
@@ -104,7 +122,7 @@
       type(CRS_matrix_connect), intent(in) :: tbl_crs
       type(CRS_matrix), intent(inout) :: mat_crs
 !
-       integer (kind = kint) :: i, k1, k2, j, NB
+       integer (kind = kint) :: i, k1, k2, j, NB, kst, ked
 !
        NB = mat_crs%NB_crs
        do i = 1, tbl_crs%ntot_d
@@ -115,19 +133,23 @@
 !
        do i = 1, tbl_crs%ntot_d
          do k1 = 1, NB
-          write(my_rank+50,*) "diagonal (inod,k1) = ", i, k1
+           kst = k1 + (i-1) * NB*NB
+           ked = k1 + (NB-1) * NB + (i-1) * NB*NB
+           write(my_rank+50,*) "diagonal (inod,k1) = ", i, k1
            write(my_rank+50,'(1p5e16.8)')                               &
-     &              (mat_crs%D_crs(k1,k2,i),k2=1,NB)
+     &                  mat_crs%D_crs(kst:ked:NB)
          end do
        end do
 !
        do i = 1, tbl_crs%ntot_d
          do j = tbl_crs%istack_l(i-1)+1, tbl_crs%istack_l(i)
            do k1 = 1, NB
+             kst = k1 + (j-1) * NB*NB
+             ked = k1 + (NB-1) * NB + (j-1) * NB*NB
              write(my_rank+50,*) "Lower component (i1,i2,k1) = ",      &
      &             i, tbl_crs%item_l(j), k1
              write(my_rank+50,'(1p5e16.8)')                            &
-     &                   (mat_crs%AL_crs(k1,k2,j),k2=1,NB)
+     &                  mat_crs%AL_crs(kst:ked:NB)
            end do
          end do
        end do
@@ -135,10 +157,12 @@
        do i = 1, tbl_crs%ntot_d
          do j = tbl_crs%istack_u(i-1)+1, tbl_crs%istack_u(i)
            do k1 = 1, NB
+             kst = k1 + (j-1) * NB*NB
+             ked = k1 + (NB-1) * NB + (j-1) * NB*NB
              write(my_rank+50,*) "Lower component (i1,i2,k1) = ",      &
      &             i, tbl_crs%item_u(j), k1
               write(my_rank+50,'(1p5e16.8)')                           &
-     &                  (mat_crs%AU_crs(k1,k2,j),k2=1,NB)
+     &                  mat_crs%AU_crs(kst:ked:NB)
            end do
          end do
        end do

@@ -31,6 +31,7 @@
       use m_ctl_params_4_gen_filter
       use m_geometry_data
       use m_finite_element_matrix
+      use m_crs_matrix
       use m_crs_consist_mass_mat
 !
       use   solver
@@ -68,11 +69,11 @@
       end if
 !
       call solve(node1%internal_node, node1%numnod,                     &
-     &             ntot_mass_l, ntot_mass_u,                            &
-     &             aiccg_mass(im_mass_d), aiccg_mass(im_mass_l),        &
-     &             istack_mass_l, item_mass_l, aiccg_mass(im_mass_u),   &
-     &             istack_mass_u, item_mass_u, b_vec(1), x_vec(1),      &
-     &             nset, nod_comm%num_neib, nod_comm%id_neib,           &
+     &             tbl1_crs%ntot_l, tbl1_crs%ntot_u, mass1%D_crs,       &
+     &             mass1%AL_crs, tbl1_crs%istack_l, tbl1_crs%item_l,    &
+     &             mass1%AU_crs, tbl1_crs%istack_u, tbl1_crs%item_u,    &
+     &             b_vec(1), x_vec(1), nset,                            &
+     &             nod_comm%num_neib, nod_comm%id_neib,                 &
      &             nod_comm%istack_import, nod_comm%item_import,        &
      &             nod_comm%istack_export, nod_comm%item_export,        &
      &             itr_res, imonitor_solve,                             &

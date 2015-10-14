@@ -42,7 +42,7 @@
       subroutine int_grp_consist_mass_matrix(iele_fsmp_stack,           &
      &          nele_grp, iele_grp, n_int, nmat_size, aiccg)
 !
-      use add_skv1_2_matrix_1st
+      use add_skv1_to_crs_matrix
 !
       integer (kind=kint), intent(in) :: n_int
       integer (kind=kint), intent(in) :: nele_grp
@@ -61,7 +61,8 @@
         call fem_grp_skv_mass_matrix_t(iele_fsmp_stack,                 &
      &      nele_grp, iele_grp, n_int, k2, ele1, jac1_3d_q,             &
      &      fem1_wk%sk6)
-        call add_skv1_2_matrix11_1st(k2, fem1_wk%sk6, nmat_size, aiccg)
+        call add_skv1_to_crs_matrix11(ele1, rhs_tbl1, mat_tbl_q1,       &
+     &      k2, fem1_wk%sk6, nmat_size, aiccg)
       end do
 !
       end subroutine int_grp_consist_mass_matrix

@@ -47,7 +47,7 @@
 !
       use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp
-      use add_skv1_2_matrix_type
+      use add_skv1_to_crs_matrix
 !
 !
       type(mesh_geometry), intent(in) ::          mesh
@@ -73,36 +73,41 @@
         if ( iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass            &
      &      .and. coef_velo.gt.0.0d0 ) then
           write(*,*) 'init_consist_mat_velo', k2
-          call add_skv1_2_matrix33_type(mesh%ele, rhs_tbl,              &
-     &        djds_const_fl%idx_4_mat, fem_wk%sk6, k2, mat_velo)
+          call add_skv1_to_crs_matrix33(mesh%ele, rhs_tbl,              &
+     &        djds_const_fl, k2, fem_wk%sk6,                            &
+     &        mat_velo%num_non0, mat_velo%aiccg)
         end if
 !
         if ( iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass            &
      &      .and. coef_temp.gt.0.0d0 ) then
           write(*,*) 'init_consist_mat_temp', k2
-          call add_skv1_2_matrix11_type(mesh%ele, rhs_tbl,              &
-     &        djds_const_fl%idx_4_mat, fem_wk%sk6, k2, mat_temp)
+          call add_skv1_to_crs_matrix11(mesh%ele, rhs_tbl,              &
+     &        djds_const_fl, k2, fem_wk%sk6,                            &
+     &        mat_temp%num_non0, mat_temp%aiccg)
         end if
 !
         if ( iflag_t_evo_4_composit .eq. id_Crank_nicolson_cmass        &
      &      .and. coef_light.gt.0.0d0) then
           write(*,*) 'init_consist_mat_d_scalar_type', k2
-          call add_skv1_2_matrix11_type(mesh%ele, rhs_tbl,              &
-     &        djds_const_fl%idx_4_mat, fem_wk%sk6, k2, mat_d_scalar)
+          call add_skv1_to_crs_matrix11(mesh%ele, rhs_tbl,              &
+     &        djds_const_fl, k2, fem_wk%sk6,                            &
+     &        mat_d_scalar%num_non0, mat_d_scalar%aiccg)
         end if
 !
         if ( iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass           &
      &      .and. coef_magne.gt.0.0d0) then
           write(*,*) 'init_consist_mat_magne_type', k2
-          call add_skv1_2_matrix33_type(mesh%ele, rhs_tbl,              &
-     &        djds_const_cd%idx_4_mat, fem_wk%sk6, k2, mat_magne)
+          call add_skv1_to_crs_matrix33(mesh%ele, rhs_tbl,              &
+     &        djds_const_cd, k2, fem_wk%sk6,                            &
+     &        mat_magne%num_non0, mat_magne%aiccg)
         end if
 !
         if ( iflag_t_evo_4_vect_p .eq. id_Crank_nicolson_cmass          &
      &      .and. coef_magne.gt.0.0d0) then
           write(*,*) 'init_consist_mat_vect_p', k2
-          call add_skv1_2_matrix33_type(mesh%ele, rhs_tbl,              &
-     &        djds_const_cd%idx_4_mat, fem_wk%sk6, k2, mat_magne)
+          call add_skv1_to_crs_matrix33(mesh%ele, rhs_tbl,              &
+     &        djds_const_cd, k2, fem_wk%sk6,                            &
+     &        mat_magne%num_non0, mat_magne%aiccg)
         end if
 !
       end do

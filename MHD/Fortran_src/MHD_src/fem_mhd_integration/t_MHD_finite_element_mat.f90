@@ -147,7 +147,7 @@
 !
       integer(kind = kint) :: inod
 !
-      write(50+my_rank,*) 'inod, ml_fl, ml_o'
+      write(50+my_rank,*) 'inod, ml_fl, ml_o_fl'
       do inod = 1, numnod
         write(50+my_rank,'(i16,1p2e25.14)')                             &
      &           inod, mhd_fem_wk%ml_fl(inod), mhd_fem_wk%ml_o_fl(inod)

@@ -33,15 +33,16 @@
       integer(kind = kint), intent(in) :: N, NP
 !
       integer(kind = kint) :: inod1, inod2, mat_num, im, j1, j2, k
-      integer(kind = kint) :: ist, ied
+      integer(kind = kint) :: ist, ied, j12
 !
 !
       do inod1 = 1, NP
         call s_set_DJDS_off_diag(N, NP, inod1, inod1, mat_num)
         do j1 = 1, NB_djds
           do j2 = 1, NB_djds
+            j12 = j1 + (j2-1)*NB_djds + (inod1-1)*NB_djds*NB_djds
             im = NB_djds*NB_djds*(mat_num-1) + NB_djds*(j1-1) + j2
-            aiccg(im) = mat1_crs%D_crs(j1,j2,inod1)
+            aiccg(im) = mat1_crs%D_crs(j12)
           end do
         end do
       end do
@@ -54,8 +55,9 @@
           call s_set_DJDS_off_diag(N, NP, inod1, inod2, mat_num)
           do j1 = 1, NB_djds
             do j2 = 1, NB_djds
+              j12 = j1 + (j2-1)*NB_djds + (k-1)*NB_djds*NB_djds
               im = NB_djds*NB_djds*(mat_num-1) + NB_djds*(j1-1) + j2
-              aiccg(im) = mat1_crs%AL_crs(j1,j2,k)
+              aiccg(im) = mat1_crs%AL_crs(j12)
             end do
           end do
         end do
@@ -69,8 +71,9 @@
           call s_set_DJDS_off_diag(N, NP, inod1, inod2, mat_num)
           do j1 = 1, NB_djds
             do j2 = 1, NB_djds
+              j12 = j1 + (j2-1)*NB_djds + (k-1)*NB_djds*NB_djds
               im = NB_djds*NB_djds*(mat_num-1) + NB_djds*(j1-1) + j2
-              aiccg(im) = mat1_crs%AU_crs(j1,j2,k)
+              aiccg(im) = mat1_crs%AU_crs(j12)
             end do
           end do
         end do

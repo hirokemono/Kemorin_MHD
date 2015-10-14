@@ -189,7 +189,7 @@
       call cal_ff_smp_2_ml_type                                         &
      &   (mesh%node, rhs_tbl, rhs_l%ff_smp, m_lump)
 !
-!      call check_mass_martix
+!      call check_mass_martix(my_rank, mesh%node%numnod, m_lump)
 !
       end subroutine int_mass_matrix_all_quad
 !

@@ -33,6 +33,7 @@
      &          (numnod, internal_node, numele, nnod_4_ele)
 !
       use m_reference_moments
+      use m_next_node_id_4_node
       use m_matrix_4_filter
       use m_filter_file_names
       use m_field_file_format
@@ -40,7 +41,6 @@
       use fem_const_filter_matrix
       use add_nodes_elems_4_each_nod
       use ordering_by_filtering_size
-      use const_RHS_assemble_list
       use delete_small_weighting
 !
       integer(kind = kint), intent(in) :: numnod, internal_node
@@ -93,9 +93,12 @@
 !
       subroutine init_4_cal_fluid_fileters
 !
+      use m_geometry_data
+      use m_element_id_4_node
+      use m_next_node_id_4_node
       use m_filter_file_names
       use m_field_file_format
-      use m_next_node_id_4_node
+      use set_ele_id_4_node_type
       use set_element_list_4_filter
 !
 !
@@ -105,8 +108,11 @@
         write(filter_coef_code,'(a)') '!'
       end if
 !
-      call set_ele_id_4_filter_grp
-      call const_next_nod_id_4_node
+      call set_grouped_ele_id_4_node(nele_4_filter, iele_4_filter,      &
+     &    node1, ele1, ele_4_nod1)
+!
+      call const_next_nod_id_4_node_type(node1, ele1, ele_4_nod1,       &
+     &    neib_nod1)
 !
       end subroutine init_4_cal_fluid_fileters
 !

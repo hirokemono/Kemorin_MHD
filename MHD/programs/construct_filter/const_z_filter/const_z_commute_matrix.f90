@@ -29,7 +29,7 @@
       use m_int_edge_vart_width
 !
 !
-      integer (kind = kint) :: kk, kfact, inod, i, k1, jj, k2
+      integer (kind = kint) :: kk, kfact, inod, i, k1, jj, k2, k21
 !
 !
 !   components for normalization on node
@@ -63,7 +63,8 @@
         do k1 = 1, ncomp_mat
           do inod = 1, node1%numnod
             jj = ncomp_st(inod) + k1 - 1
-            mat1_crs%D_crs(k2,k1,inod) = d_norm_nod(inod,jj,kfact)
+            k21 = k2 + (k1-1)*ncomp_mat + (inod-1)*ncomp_mat*ncomp_mat
+            mat1_crs%D_crs(k21) = d_norm_nod(inod,jj,kfact)
           end do
         end do
       end do

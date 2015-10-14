@@ -43,7 +43,6 @@
       use int_surf_magne_pre
 !
 !      use check_surface_groups
-      use check_finite_element_mat
 !
 !
 !      call check_surface_param_smp('cal_magnetic_field_pre start',     &

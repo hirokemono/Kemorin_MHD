@@ -90,7 +90,7 @@
 !
        subroutine read_crs_matrix
 !
-       integer (kind = kint) :: i, k, j1, j2, kk, NB
+       integer (kind = kint) :: i, k, j1, j2, kk, jst, jed, NB
 !
 
       read (id_file,*) tbl1_crs%istack_l(1:node1%numnod)
@@ -100,29 +100,35 @@
 
       NB = mat1_crs%NB_crs
       if (NB .eq. 1) then
-        read(id_file,*) mat1_crs%AL_crs(1,1,1:tbl1_crs%ntot_l)
-        read(id_file,*) mat1_crs%AU_crs(1,1,1:tbl1_crs%ntot_u)
+        read(id_file,*) mat1_crs%AL_crs(1:tbl1_crs%ntot_l)
+        read(id_file,*) mat1_crs%AU_crs(1:tbl1_crs%ntot_u)
         
-        read(id_file,*) (mat1_crs%D_crs(1,1,i), i= 1,node1%numnod)
-        read(id_file,*) (mat1_crs%B_crs(i), i= 1,node1%numnod)
+        read(id_file,*) mat1_crs%D_crs(1:node1%numnod)
+        read(id_file,*) mat1_crs%B_crs(1:node1%numnod)
       else
         do  k= 1, tbl1_crs%ntot_l
           do j1= 1, NB
-            read (id_file,*) (mat1_crs%AL_crs(j1,j2,k),j2= 1,NB)
+            jst = j1 + (k-1) * NB*NB
+            jed = j1 + (NB-1) * NB + (k-1) * NB*NB
+            read (id_file,*) mat1_crs%AL_crs(jst:jed:NB)
           enddo
         enddo
 
         do  k= 1, tbl1_crs%ntot_u
           do j1= 1, NB
-            read (id_file,*) (mat1_crs%AU_crs(j1,j2,k),j2= 1,NB)
+            jst = j1 + (k-1) * NB*NB
+            jed = j1 + (NB-1) * NB + (k-1) * NB*NB
+            read (id_file,*) mat1_crs%AU_crs(jst:jed:NB)
           enddo
         enddo
 
         do  k= 1, node1%numnod
           do j1= 1, NB
+            jst = j1 + (k-1) * NB*NB
+            jed = j1 + (NB-1) * NB + (k-1) * NB*NB
             kk = NB*(k-1) + j1
             read (id_file,*)                                            &
-     &        (mat1_crs%D_crs(j1,j2,k),j2= 1, NB), mat1_crs%B_crs(kk)
+     &             mat1_crs%D_crs(jst:jed:NB), mat1_crs%B_crs(kk)
           enddo
         enddo
 !

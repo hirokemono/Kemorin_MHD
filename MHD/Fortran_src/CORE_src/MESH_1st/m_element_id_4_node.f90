@@ -12,8 +12,6 @@
 !!      subroutine set_ele_id_4_node_comm
 !!      subroutine set_surf_id_4_node
 !!      subroutine set_edge_id_4_node
-!!      subroutine set_layerd_ele_id_4_node(nnod, iele_start, iele_end)
-!!      subroutine set_grouped_ele_id_4_node(nele_grp, iele_grp)
 !!
 !!      subroutine check_element_id_4_node(my_rank, numnod)
 !!@endverbatim
@@ -161,71 +159,6 @@
      &    edge_4_nod1%iconn_4_node)
 !
       end subroutine set_edge_id_4_node
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine set_layerd_ele_id_4_node(nnod, iele_start, iele_end)
-!
-      use m_geometry_data
-      use find_element_id_4_node
-      use cal_minmax_and_stacks
-!
-      integer(kind = kint), intent(in) :: nnod, iele_start, iele_end
-!
-!
-      call alloc_numele_belonged(node1%numnod, ele_4_nod1)
-!
-      call count_iele_4_node(node1%numnod, ele1%numele, nnod, ele1%ie,  &
-     &    iele_start, iele_end, ele_4_nod1%nele_4_node)
-      call s_cal_minmax_and_stacks                                      &
-     &   (node1%numnod, ele_4_nod1%nele_4_node, izero,                  &
-     &    ele_4_nod1%istack_4_node, ele_4_nod1%ntot,                    &
-     &    ele_4_nod1%nmax, ele_4_nod1%nmin)
-!
-!
-      call alloc_iele_belonged(ele_4_nod1)
-!
-      call set_iele_4_node(node1%numnod, ele1%numele, nnod, ele1%ie,    &
-     &    iele_start, iele_end,                                         &
-     &    ele_4_nod1%ntot, ele_4_nod1%istack_4_node,                    &
-     &    ele_4_nod1%nele_4_node, ele_4_nod1%iele_4_node,               &
-     &    ele_4_nod1%iconn_4_node)
-!
-      end subroutine set_layerd_ele_id_4_node
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_grouped_ele_id_4_node(nele_grp, iele_grp)
-!
-      use m_geometry_data
-      use find_grp_ele_id_4_node
-      use cal_minmax_and_stacks
-!
-      integer (kind=kint), intent(in) :: nele_grp
-      integer (kind=kint), intent(in) :: iele_grp(nele_grp)
-!
-!
-      call alloc_numele_belonged(node1%numnod, ele_4_nod1)
-!
-      call count_grp_iele_4_node                                        &
-     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,          &
-     &    nele_grp, iele_grp, ele_4_nod1%nele_4_node)
-      call s_cal_minmax_and_stacks                                      &
-     &   (node1%numnod, ele_4_nod1%nele_4_node, izero,                  &
-     &    ele_4_nod1%istack_4_node, ele_4_nod1%ntot,                    &
-     &    ele_4_nod1%nmax, ele_4_nod1%nmin)
-!
-      call alloc_iele_belonged(ele_4_nod1)
-!
-      call set_grp_iele_4_node                                          &
-     &   (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,          &
-     &    nele_grp, iele_grp,                                           &
-     &    ele_4_nod1%ntot, ele_4_nod1%istack_4_node,                    &
-     &    ele_4_nod1%nele_4_node, ele_4_nod1%iele_4_node,               &
-     &    ele_4_nod1%iconn_4_node)
-!
-      end subroutine set_grouped_ele_id_4_node
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

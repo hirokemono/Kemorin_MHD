@@ -3,36 +3,17 @@
 !
 !     Written by H. Matsui on Oct., 2006
 !
-!      subroutine allocate_mass_connect(numnod)
-!      subroutine allocate_aiccg_mass
 !
-!      subroutine deallocate_mass_connect
-!      subroutine deallocate_aiccg_mass
+!      subroutine set_consist_mass_matrix
 !
       module m_crs_consist_mass_mat
 !
       use m_precision
+      use t_crs_matrix
 !
       implicit none
 !
-      integer(kind = kint) :: ntot_mass_l, ntot_mass_u
-!
-      integer(kind = kint), allocatable :: istack_mass_l(:)
-      integer(kind = kint), allocatable :: istack_mass_u(:)
-!
-      integer(kind = kint), allocatable :: item_mass_l(:)
-      integer(kind = kint), allocatable :: item_mass_u(:)
-!
-      real(kind = kreal), allocatable :: aiccg_mass(:)
-!
-      integer (kind = kint) :: num_mass_mat
-!   total number of component
-      integer (kind = kint) :: im_mass_d
-!   pointer for diagonal component
-      integer (kind = kint) :: im_mass_u
-!   pointer for upper part of matrix
-      integer (kind = kint) :: im_mass_l
-!   pointer for lower part of matrix
+      type(CRS_matrix), save :: mass1
 !
 !-----------------------------------------------------------------------
 !
@@ -40,52 +21,37 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_mass_connect(numnod)
+      subroutine set_consist_mass_matrix
 !
-      integer(kind = kint), intent(in) :: numnod
+      use m_machine_parameter
+      use m_geometry_data
+      use m_next_node_id_4_node
+      use m_sorted_node
+      use m_crs_matrix
+      use int_consist_mass_mat_filter
 !
-      allocate(istack_mass_l(0:numnod) )
-      allocate(istack_mass_u(0:numnod) )
 !
-      allocate(item_mass_l(ntot_mass_l) )
-      allocate(item_mass_u(ntot_mass_u) )
+!  ---------------------------------------------------
+!       set CRS matrix connectivity for whole domain
+!  ---------------------------------------------------
 !
-      istack_mass_l = 0
-      istack_mass_u = 0
-      item_mass_l =   0
-      item_mass_u =   0
+      if (iflag_debug.eq.1)  write(*,*) 's_set_crs_connection'
+      call s_set_crs_connection(node1, neib_nod1, tbl1_crs)
 !
-      end subroutine allocate_mass_connect
+      if (iflag_debug.eq.1)  write(*,*) 'set_idx_list_4_whole_crs'
+      call set_idx_list_4_whole_crs
 !
-!-----------------------------------------------------------------------
+!  ---------------------------------------------------
+!        cal consist mass matrix
+!  ---------------------------------------------------
 !
-      subroutine allocate_aiccg_mass
+      mass1%NB_crs =  1
+      call alloc_crs_mat_data(tbl1_crs, mass1)
 !
-      allocate(aiccg_mass(0:num_mass_mat))
-      aiccg_mass = 0.0d0
+      if (iflag_debug.eq.1)  write(*,*) 'int_vol_consist_mass_matrix'
+      call int_vol_consist_mass_matrix(mass1)
 !
-      end subroutine allocate_aiccg_mass
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine deallocate_mass_connect
-!
-       deallocate( istack_mass_l )
-       deallocate( istack_mass_u )
-!
-       deallocate( item_mass_l )
-       deallocate( item_mass_u )
-!
-      end subroutine deallocate_mass_connect
-!
-!-----------------------------------------------------------------------
-!
-      subroutine deallocate_aiccg_mass
-!
-      deallocate( aiccg_mass )
-!
-      end subroutine deallocate_aiccg_mass
+      end subroutine set_consist_mass_matrix
 !
 !-----------------------------------------------------------------------
 !

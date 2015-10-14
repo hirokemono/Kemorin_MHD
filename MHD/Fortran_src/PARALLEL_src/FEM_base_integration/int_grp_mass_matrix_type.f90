@@ -42,6 +42,7 @@
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_solver_djds
 !
       implicit none
 !
@@ -56,7 +57,7 @@
      &          mat_tbl, fem_wk, mat11)
 !
       use fem_skv_mass_mat_type
-      use add_skv1_2_matrix_type
+      use add_skv1_to_crs_matrix
 !
       integer (kind=kint), intent(in) :: n_int
       integer (kind=kint), intent(in) :: nele_grp
@@ -79,8 +80,8 @@
         call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
         call fem_grp_skv_mass_matrix_t(iele_fsmp_stack,                 &
      &     nele_grp, iele_grp, n_int, k2, mesh%ele, jac_3d, fem_wk%sk6)
-        call add_skv1_2_matrix11_type(mesh%ele, rhs_tbl,                &
-     &      mat_tbl%idx_4_mat, fem_wk%sk6, k2, mat11)
+        call add_skv1_to_crs_matrix11(mesh%ele, rhs_tbl, mat_tbl,       &
+     &      k2, fem_wk%sk6, mat11%num_non0, mat11%aiccg)
       end do
 !
       end subroutine int_grp_consist_mass_mat_type

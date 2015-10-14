@@ -122,9 +122,9 @@
           precond_4_crank =  mat1_crs%PRECOND_crs
           SOLVER_TYPE_djds = mat1_crs%SOLVER_crs
 !
-      itotal_l = tbl1_crs%ntot_l
-      itotal_u = tbl1_crs%ntot_u
-      NB_djds =  mat1_crs%NB_crs
+       itotal_l = tbl1_crs%ntot_l
+       itotal_u = tbl1_crs%ntot_u
+       NB_djds =  mat1_crs%NB_crs
 !
        end subroutine copy_paramters_4_djds
 !

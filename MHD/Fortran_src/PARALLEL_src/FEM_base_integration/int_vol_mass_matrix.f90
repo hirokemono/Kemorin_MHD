@@ -65,9 +65,9 @@
 !
       call int_mass_matrix_diag(ele1%istack_ele_smp, num_int)
       call cal_ff_smp_2_ml                                              &
-     &   (node1, rhs_tbl1, m1_lump%ml, ml_o, f1_l%ff_smp)
+     &   (node1, rhs_tbl1, m1_lump%ml, m1_lump%ml_o, f1_l%ff_smp)
 !
-!      call check_mass_martix
+!      call check_mass_martix(my_rank, node1%numnod, m1_lump)
 !
       end subroutine int_lump_mass_matrix_linear
 !
@@ -80,9 +80,9 @@
 !
       call int_mass_matrix_HRZ_full(ele1%istack_ele_smp, num_int)
       call cal_ff_smp_2_ml                                              &
-     &   (node1, rhs_tbl1, m1_lump%ml, ml_o, f1_l%ff_smp)
+     &   (node1, rhs_tbl1, m1_lump%ml, m1_lump%ml_o, f1_l%ff_smp)
 !
-!      call check_mass_martix
+!      call check_mass_martix(my_rank, node1%numnod, m1_lump)
 !
       end subroutine int_lump_mass_matrix_quad
 !
@@ -94,7 +94,7 @@
 !
       use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp
-      use add_skv1_2_matrix_1st
+      use add_skv1_to_crs_matrix
 !
 !
       integer (kind=kint), intent(in) :: num_int
@@ -111,7 +111,8 @@
         call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
         call fem_skv_mass_matrix_type(iele_fsmp_stack, num_int, k2,     &
      &      ele1, jac1_3d_q, fem1_wk%sk6)
-        call add_skv1_2_matrix11_1st(k2, fem1_wk%sk6, nmat_size, aiccg)
+        call add_skv1_to_crs_matrix11(ele1, rhs_tbl1, mat_tbl_q1,       &
+     &      k2, fem1_wk%sk6, nmat_size, aiccg)
       end do
 !
       end subroutine int_consist_mass_matrix

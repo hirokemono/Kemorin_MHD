@@ -26,8 +26,8 @@
       subroutine int_mass_matrix_4_filter
 !
       use m_machine_parameter
+      use m_finite_element_matrix
       use int_vol_mass_matrix
-      use check_finite_element_mat
 !
 !
 !      if (id_filter_area_grp(1) .eq. -1) then
@@ -36,7 +36,7 @@
 !        call int_grped_mass_matrix_filter
 !      end if
 !
-!      call check_mass_martix
+!      call check_mass_martix(my_rank, node1%numnod, m1_lump)
 !
       end subroutine int_mass_matrix_4_filter
 !
@@ -61,7 +61,7 @@
       end if
 !
       call cal_ff_smp_2_ml                                              &
-     &   (node1, rhs_tbl1, m1_lump%ml, ml_o, f1_l%ff_smp)
+     &   (node1, rhs_tbl1, m1_lump%ml, m1_lump%ml_o, f1_l%ff_smp)
 !
       end subroutine int_grped_mass_matrix_filter
 !

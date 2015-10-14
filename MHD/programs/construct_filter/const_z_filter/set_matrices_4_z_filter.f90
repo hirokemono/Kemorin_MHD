@@ -51,7 +51,7 @@
       use m_z_filter_values
 !
       integer (kind = kint), intent(in) :: numnod
-      integer (kind = kint) :: inod, i
+      integer (kind = kint) :: inod, i, ji
 !
 !
 !   components for normalization on node
@@ -64,14 +64,20 @@
       end do
       do inod = 1, numnod
         if (nneib_nod(inod,1) .lt. ((ncomp_mat-1)/2) ) then
-          mat1_crs%D_crs(1,ncomp_mat-1,inod) = one
+          ji = 1 + (ncomp_mat-2) * ncomp_mat                            &
+     &           + (inod-1) * ncomp_mat*ncomp_mat
+          mat1_crs%D_crs(ji) = one
         else
-          mat1_crs%D_crs(1,1,inod) = one
+          ji = 1 + (inod-1) * ncomp_mat*ncomp_mat
+          mat1_crs%D_crs(ji) = one
         end if
         if (nneib_nod(inod,2) .lt. ((ncomp_mat-1)/2) ) then
-          mat1_crs%D_crs(2,2,inod) = one
+          ji = 2 + (2-1) * ncomp_mat + (inod-1) * ncomp_mat*ncomp_mat
+          mat1_crs%D_crs(ji) = one
         else
-          mat1_crs%D_crs(2,ncomp_mat,inod) = one
+          ji = 2 + (ncomp_mat-1) * ncomp_mat                            &
+     &           + (inod-1) * ncomp_mat*ncomp_mat
+          mat1_crs%D_crs(ji) = one
         end if
       end do
 !

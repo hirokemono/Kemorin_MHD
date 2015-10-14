@@ -38,7 +38,7 @@
 !
       use fem_skv_diffusion_sgs_type
       use cal_skv_to_ff_smp
-      use add_skv1_2_matrix_type
+      use add_skv1_to_crs_matrix
 !
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d_l
@@ -60,8 +60,8 @@
         call fem_skv_poisson_linear_sgs_type(ele%istack_ele_smp, n_int, &
      &      k2, i_filter, ak_diff, ele, jac_3d_l, FEM_elens,            &
      &      fem_wk%sk6)
-        call add_skv1_2_matrix11_type(ele, rhs_tbl,                     &
-     &      djds_const%idx_4_mat, fem_wk%sk6, k2, mat11)
+        call add_skv1_to_crs_matrix11(ele, rhs_tbl, djds_const,         &
+     &      k2, fem_wk%sk6, mat11%num_non0, mat11%aiccg)
       end do
 !
       end subroutine int_vol_poisson_sgs_mat_type

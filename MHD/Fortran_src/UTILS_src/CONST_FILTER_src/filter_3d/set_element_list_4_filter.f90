@@ -4,7 +4,6 @@
 !     Written by H. Matsui on Oct., 2006
 !
 !      subroutine s_set_element_list_4_filter(ele_grp)
-!      subroutine set_ele_id_4_filter_grp
 !
       module set_element_list_4_filter
 !
@@ -60,17 +59,6 @@
 
 !
       end subroutine s_set_element_list_4_filter
-!
-! ----------------------------------------------------------------------
-!
-      subroutine set_ele_id_4_filter_grp
-!
-      use m_element_id_4_node
-!
-!
-      call set_grouped_ele_id_4_node(nele_4_filter, iele_4_filter)
-!
-      end subroutine set_ele_id_4_filter_grp
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

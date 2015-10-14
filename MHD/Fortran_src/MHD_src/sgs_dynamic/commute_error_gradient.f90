@@ -28,7 +28,6 @@
       use int_surf_grad_sgs
       use cal_ff_smp_to_ffs
       use cal_for_ffs
-      use check_finite_element_mat
 !
       implicit none
 !

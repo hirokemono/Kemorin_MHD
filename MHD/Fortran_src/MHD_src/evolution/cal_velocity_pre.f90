@@ -16,8 +16,6 @@
       use m_t_int_parameter
       use m_phys_constants
 !
-      use check_finite_element_mat
-!
       implicit none
 !
       private :: cal_velo_pre_euler, cal_velo_pre_adams

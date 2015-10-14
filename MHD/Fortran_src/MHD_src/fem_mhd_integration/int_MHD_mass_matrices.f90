@@ -18,7 +18,6 @@
       use m_finite_element_matrix
 !
       use int_vol_mass_matrix
-      use check_finite_element_mat
 !
       implicit none
 !

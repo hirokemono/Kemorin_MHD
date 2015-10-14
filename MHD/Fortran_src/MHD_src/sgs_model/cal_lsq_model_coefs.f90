@@ -23,7 +23,6 @@
 !
       use set_sgs_diff_model_coefs
       use merge_dynamic_coefs
-      use check_finite_element_mat
       use merge_coefs_whole_dynamic
 !
       implicit none

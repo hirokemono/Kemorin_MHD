@@ -20,7 +20,6 @@
 !
       use m_physical_property
       use t_group_data
-      use check_finite_element_mat
 !
       implicit none
 !

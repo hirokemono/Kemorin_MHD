@@ -37,7 +37,7 @@
 !
       subroutine set_MHD_whole_connectivity
 !
-      use const_RHS_assemble_list
+      use m_sorted_node
 !
 !
 !      set RHS assemble table
@@ -174,6 +174,7 @@
       use m_next_node_id_4_node
       use m_element_id_4_node
 !
+      use set_ele_id_4_node_type
       use reordering_djds_smp_type
       use set_djds_smp_ordering_type
 !
@@ -186,8 +187,10 @@
       type(CRS_matrix_connect) :: MHD_CRS
 !
 !
-      call set_layerd_ele_id_4_node(nnod_1ele, iele_start, iele_end)
-      call const_next_nod_id_4_node
+      call set_layerd_ele_id_4_node(nnod_1ele, iele_start, iele_end,    &
+     &    node1, ele1, ele_4_nod1)
+      call const_next_nod_id_4_node_type(node1, ele1, ele_4_nod1,       &
+     &    neib_nod1)
 !
       call s_set_crs_connection(node1, neib_nod1, MHD_CRS)
 !

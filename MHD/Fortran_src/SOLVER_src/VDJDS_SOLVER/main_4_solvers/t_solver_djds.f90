@@ -100,6 +100,7 @@
       end type DJDS_ordering_table
 !
 !
+!>   Strucure for Matrix for DJDS solver
       type DJDS_MATRIX
 !>   coefficients of matrix
         real(kind=kreal), pointer :: aiccg(:)

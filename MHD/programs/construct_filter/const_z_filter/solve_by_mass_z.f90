@@ -41,14 +41,14 @@
       call alloc_crs_mat_data(tbl1_crs, mat1_crs)
 !
       do i = 1, node1%numnod
-        mat1_crs%D_crs(1,1,i) = d_mk_crs(i)
-        mat1_crs%B_crs(i) =     rhs_mk_crs(i)
+        mat1_crs%D_crs(i) = d_mk_crs(i)
+        mat1_crs%B_crs(i) = rhs_mk_crs(i)
       end do
       do i = 1, tbl1_crs%ntot_l
-        mat1_crs%AL_crs(1,1,i) = al_mk_crs(i)
+        mat1_crs%AL_crs(i) = al_mk_crs(i)
       end do
       do i = 1, tbl1_crs%ntot_u
-        mat1_crs%AU_crs(1,1,i) = au_mk_crs(i)
+        mat1_crs%AU_crs(i) = au_mk_crs(i)
       end do
 !
          write(*,*) 'solve_by_djds_solver11'

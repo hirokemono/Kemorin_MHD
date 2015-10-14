@@ -32,7 +32,7 @@
       use m_commute_filter_z
 !
       integer(kind = kint), intent(in) :: numnod
-      integer(kind = kint) :: inod, i, j
+      integer(kind = kint) :: inod, i, j, ji
 !
        ncomp_lu = ncomp_mat
        call allocate_matrix_4_LU
@@ -41,7 +41,8 @@
 !
          do i = 1, ncomp_mat
            do j = 1, ncomp_mat
-             a_nod(j,i) = mat1_crs%D_crs(j,i,inod)
+             ji = j + (i-1)*ncomp_mat + (inod-1)*ncomp_mat*ncomp_mat
+             a_nod(j,i) = mat1_crs%D_crs(ji)
            end do
            b_nod(i) = mat1_crs%B_crs( ncomp_lu*(inod-1)+i )
          end do

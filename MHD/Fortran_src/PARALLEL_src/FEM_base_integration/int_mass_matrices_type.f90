@@ -71,7 +71,7 @@
       use t_solver_djds
       use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp
-      use add_skv1_2_matrix_type
+      use add_skv1_to_crs_matrix
 !
       integer (kind=kint), intent(in) :: num_int
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
@@ -92,8 +92,8 @@
         call reset_sk6(n_scalar, mesh%ele, fem_wk%sk6)
         call fem_skv_mass_matrix_type(iele_fsmp_stack, num_int, k2,     &
      &      mesh%ele, jac_3d, fem_wk%sk6)
-        call add_skv1_2_matrix11_type(mesh%ele, rhs_tbl,                &
-     &      mat_tbl%idx_4_mat, fem_wk%sk6, k2, mat11)
+        call add_skv1_to_crs_matrix11(mesh%ele, rhs_tbl, mat_tbl,       &
+     &      k2, fem_wk%sk6, mat11%num_non0, mat11%aiccg)
       end do
 !
       end subroutine int_consist_mass_matrix_type
@@ -170,7 +170,7 @@
       call cal_ff_smp_2_ml_type                                         &
      &   (mesh%node, rhs_tbl, rhs_l%ff_smp, m_lump)
 !
-!      call check_mass_martix
+!      call check_mass_martix(my_rank, mesh%node%numnod, m_lump)
 !
       end subroutine int_mass_matrix_diag_type
 !

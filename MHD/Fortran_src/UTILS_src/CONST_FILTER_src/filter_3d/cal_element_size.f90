@@ -32,12 +32,12 @@
       use m_ctl_params_4_gen_filter
       use m_element_id_4_node
       use m_next_node_id_4_node
+      use m_sorted_node
       use m_filter_elength
       use m_reference_moments
       use m_crs_consist_mass_mat
       use t_filter_dxdxi
 !
-      use const_RHS_assemble_list
       use cal_diff_elesize_on_ele
       use cal_filter_moms_ele_by_elen
       use int_mass_matrix_gen_filter
@@ -74,8 +74,8 @@
       call allocate_scalar_ele_4_int(ele1%numele)
 !
       if (itype_mass_matrix .eq. 1) then
-        if (iflag_debug.eq.1) write(*,*) 'set_mass_matrix_for_consist'
-        call set_mass_matrix_for_consist
+        if (iflag_debug.eq.1) write(*,*) 'set_consist_mass_matrix'
+        call set_consist_mass_matrix
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_mass_matrix_4_filter'
@@ -176,54 +176,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_mass_matrix_for_consist
-!
-      use m_geometry_data
-      use m_next_node_id_4_node
-      use m_crs_matrix
-      use m_crs_consist_mass_mat
-      use m_sorted_node
-      use t_crs_connect
-      use set_consist_mass_connect
-      use int_consist_mass_mat_filter
-!
-!  ---------------------------------------------------
-!       set CRS matrix connectivity for whole domain
-!  ---------------------------------------------------
-!
-      if (iflag_debug.eq.1)  write(*,*) 's_set_crs_connection'
-      call s_set_crs_connection(node1, neib_nod1, tbl1_crs)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'set_idx_list_4_whole_crs'
-      call set_idx_list_4_whole_crs
-!
-!  ---------------------------------------------------
-!        cal consist mass matrix
-!  ---------------------------------------------------
-!
-      if (iflag_debug.eq.1)  write(*,*) 's_set_consist_mass_connect'
-      call s_set_consist_mass_connect(node1%numnod)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'deallocate_crs_connect'
-      call dealloc_crs_connect(tbl1_crs)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'int_vol_consist_mass_matrix'
-      call int_vol_consist_mass_matrix
-!
-      end subroutine set_mass_matrix_for_consist
-!
-!-----------------------------------------------------------------------
-!
       subroutine release_mass_mat_for_consist
 !
       use m_finite_element_matrix
+      use m_crs_matrix
       use m_crs_consist_mass_mat
       use int_vol_elesize_on_node
 !
+!
       call deallocate_scalar_ele_4_int
       call deallocate_finite_elem_mt
-      call deallocate_aiccg_mass
-      call deallocate_mass_connect
+      call dealloc_crs_mat_data(mass1)
+      call dealloc_crs_connect(tbl1_crs)
 !
       end subroutine release_mass_mat_for_consist
 !

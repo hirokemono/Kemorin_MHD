@@ -6,12 +6,7 @@
 !     Modified by H. Matsui on Oct., 2006
 !
 !      subroutine allocate_finite_elem_mt
-!
-!      subroutine reset_ff_smps
-!      subroutine reset_ff(numnod)
-!
 !      subroutine deallocate_finite_elem_mt
-!      subroutine deallocate_node_ff
 !
       module m_finite_element_matrix
 !
@@ -29,10 +24,6 @@
 !
       type(lumped_mass_matrices), save :: m1_lump
 !
-!      real (kind=kreal), allocatable  ::  ml(:)
-! m1_lump%ml
-      real (kind=kreal), allocatable  ::  ml_o(:)
-!
 !   ---------------------------------------------------------------------
 !
       contains
@@ -49,15 +40,8 @@
       call alloc_type_fem_matrices(n_vector, node1, f1_l)
       call alloc_type_fem_matrices(n_vector, node1, f1_nl)
 !
-      allocate(m1_lump%ml(node1%numnod))
-      allocate(ml_o(node1%numnod))
-!
+      call alloc_type_fem_lumped_mass(node1%numnod, m1_lump)
       call alloc_type_fem_mat_work(ele1, fem1_wk)
-!
-      if(node1%numnod .gt. 0) then
-        m1_lump%ml =  0.0d0
-        ml_o =0.0d0
-      end if
 !
       end subroutine allocate_finite_elem_mt
 !
@@ -65,9 +49,8 @@
 !
       subroutine deallocate_finite_elem_mt
 !
-      deallocate(m1_lump%ml, ml_o)
-!
       call dealloc_type_fem_mat_work(fem1_wk)
+      call dealloc_type_fem_lumped_mass(m1_lump)
       call dealloc_type_fem_matrices(f1_nl)
       call dealloc_type_fem_matrices(f1_l)
 !

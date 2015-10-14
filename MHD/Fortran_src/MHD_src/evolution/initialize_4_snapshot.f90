@@ -29,6 +29,7 @@
       use m_group_data
       use m_surf_data_infinity
       use m_layering_ele_list
+      use m_sorted_node
       use m_node_phys_address
       use m_node_phys_data
       use m_ele_material_property
@@ -53,7 +54,6 @@
       use set_nodal_bc_id_data
       use set_surface_bc_data
       use allocate_array_MHD
-      use const_RHS_assemble_list
       use ordering_line_filter_smp
       use const_ele_layering_table
       use const_comm_table_fluid

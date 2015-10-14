@@ -31,6 +31,23 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine set_connect_RHS_assemble
+!
+      use m_next_node_id_4_node
+!
+!      Search surrounding node and element
+!
+      call set_belonged_ele_and_next_nod
+!
+!      set RHS assemble table
+!
+      call sort_node_index
+!
+      end subroutine set_connect_RHS_assemble
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
       subroutine sort_node_index
 !
       use m_geometry_data

@@ -45,7 +45,6 @@
       use copy_nodal_fields
 !
 !      use check_surface_groups
-!      use check_finite_element_mat
 !      use check_jacobians
 !
 !
@@ -71,16 +70,16 @@
      &     (fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
       end if
 !
-!      call check_ff_smp(n_scalar)
-!      call check_ff_nl_smp(n_scalar)
+!      call check_ff_smp(my_rank, n_scalar, node1%max_nod_smp, f1_l)
+!      call check_ff_smp(my_rank, n_scalar, node1%max_nod_smp, f1_nl)
 !
       call int_surf_temp_ele
 !
 !      call check_nodal_data(my_rank, nod_fld1, n_scalar, iphys%i_temp)
 !      call check_nodal_data(my_rank, fld_ele1,                         &
 !     &    n_vector, iphys_ele%i_velo)
-!      call check_ff_smp(n_scalar)
-!      call check_ff_nl_smp(n_scalar)
+!      call check_ff_smp(my_rank, n_scalar, node1%max_nod_smp, f1_l)
+!      call check_ff_smp(my_rank, n_scalar, node1%max_nod_smp, f1_nl)
 !
       if (iflag_t_strat .gt. id_turn_OFF) then
         if (iflag_temp_supg .gt. id_turn_OFF) then

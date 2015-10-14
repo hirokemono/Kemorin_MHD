@@ -55,7 +55,6 @@
 !
       use m_finite_element_matrix
       use cal_ff_smp_to_ffs
-!      use check_finite_element_mat
 !
 !
       if (iflag_commute_magne .eq. id_SGS_commute_ON) then
@@ -66,7 +65,7 @@
 !
       call cal_ff_smp_2_ff                                              &
      &   (node1, rhs_tbl1, n_scalar, f1_l%ff_smp, f1_l%ff)
-!      call check_ff(n_scalar)
+!      call check_ff(my_rank, n_scalar, node1%numnod, f1_l)
 !
       end subroutine int_vol_sk_mp_bc
 !

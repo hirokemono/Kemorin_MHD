@@ -109,8 +109,8 @@
       type(CRS_matrix_connect) :: CRS_table
 !
 !
-      call set_layerd_ele_id_4_node_type(nnod_1ele,                     &
-     &    iele_start, iele_end, mesh, FEM_next%neib_ele)
+      call set_layerd_ele_id_4_node(nnod_1ele, iele_start, iele_end,    &
+     &     mesh%node, mesh%ele, FEM_next%neib_ele)
 !
       call const_next_nod_id_4_node_type(mesh%node, mesh%ele,           &
      &    FEM_next%neib_ele, FEM_next%neib_nod)

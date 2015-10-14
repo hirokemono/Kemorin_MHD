@@ -34,8 +34,6 @@
       use set_surf_grp_vectors
       use sum_normal_4_surf_group
 !
-      use check_finite_element_mat
-!
       integer(kind = kint), intent(in) :: num_surf
 !
 !

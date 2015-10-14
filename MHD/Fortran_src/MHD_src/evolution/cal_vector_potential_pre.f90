@@ -42,8 +42,6 @@
       use int_vol_vect_p_pre
       use int_surf_fixed_gradients
 !
-      use check_finite_element_mat
-!
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
@@ -71,8 +69,8 @@
 !      call check_nodal_data(my_rank, nod_fld1, n_vector, iphys%i_velo)
 !      call check_nodal_data(my_rank, fld_ele1,                         &
 !     &    n_vector, iphys_ele%i_magne)
-!      call check_ff_smp(n_vector)
-!      call check_ff_nl_smp(n_vector)
+!      call check_ff_smp(my_rank, n_vector, node1%max_nod_smp, f1_l)
+!      call check_ff_smp(my_rank, n_vector, node1%max_nod_smp, f1_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'coefs_4_time_evolution_end'
 !
