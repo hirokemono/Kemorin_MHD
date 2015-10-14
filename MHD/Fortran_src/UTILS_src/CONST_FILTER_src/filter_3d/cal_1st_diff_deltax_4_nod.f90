@@ -187,7 +187,7 @@
 !
       call int_vol_diff_dxs(org_field)
       call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
-     &    f1_nl%ff_smp, ml, n_vector, ione, diff_field)
+     &    f1_nl%ff_smp, m1_lump%ml, n_vector, ione, diff_field)
 !
       end subroutine take_1st_diffs_nod_by_lump
 !

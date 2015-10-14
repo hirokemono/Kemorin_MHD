@@ -57,7 +57,7 @@
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
 !
       call cal_sol_vector_co                                            &
-     &   (node1%numnod, inter_smp_stack, ml, f1_l%ff,                   &
+     &   (node1%numnod, inter_smp_stack, m1_lump%ml, f1_l%ff,           &
      &    nod_fld1%ntot_phys, iphys%i_vecp, nod_fld1%d_fld)
 !
       end subroutine cal_sol_vect_p_co
@@ -74,7 +74,7 @@
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
 !
       call cal_sol_vector_co                                            &
-     &   (node1%numnod, inter_smp_stack, ml, f1_l%ff,                   &
+     &   (node1%numnod, inter_smp_stack, m1_lump%ml, f1_l%ff,           &
      &    nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld)
 !
       end subroutine cal_sol_magne_co

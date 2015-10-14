@@ -32,7 +32,8 @@
 !
       write(50+my_rank,*) 'inod, ml, ml_o'
       do inod = 1, node1%numnod
-        write(50+my_rank,'(i16,1p2e25.14)') inod, ml(inod), ml_o(inod)
+        write(50+my_rank,'(i16,1p2e25.14)')                             &
+     &        inod, m1_lump%ml(inod), ml_o(inod)
       end do
 !
       end subroutine check_mass_martix

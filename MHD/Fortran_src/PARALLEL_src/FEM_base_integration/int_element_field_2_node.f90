@@ -52,8 +52,8 @@
 !
 !
       call int_area_ele_scalar_2_node(ele1%istack_ele_smp, scalar_ele)
-      call cal_ff_smp_2_scalar(node1, rhs_tbl1, f1_l%ff_smp, ml,        &
-     &    n_scalar, ione, scalar_nod)
+      call cal_ff_smp_2_scalar(node1, rhs_tbl1, f1_l%ff_smp,            &
+     &    m1_lump%ml, n_scalar, ione, scalar_nod)
 !
       end subroutine cal_ele_scalar_2_node
 !
@@ -70,8 +70,8 @@
 !
 !
       call int_area_ele_vector_2_node(ele1%istack_ele_smp, vector_ele)
-      call cal_ff_smp_2_vector(node1, rhs_tbl1, f1_l%ff_smp, ml,        &
-     &    n_vector, ione, vector_nod)
+      call cal_ff_smp_2_vector(node1, rhs_tbl1, f1_l%ff_smp,            &
+     &    m1_lump%ml, n_vector, ione, vector_nod)
 !
       end subroutine cal_ele_vector_2_node
 !

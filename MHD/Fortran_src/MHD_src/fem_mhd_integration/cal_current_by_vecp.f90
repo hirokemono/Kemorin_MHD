@@ -52,8 +52,8 @@
 !
       call cal_multi_pass_4_vector_ff
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    f1_l%ff, ml,                                                  &
-     &    nod_fld1%ntot_phys, iphys%i_current, nod_fld1%d_fld)
+     &    f1_l%ff, m1_lump%ml, nod_fld1%ntot_phys,                      &
+     &    iphys%i_current, nod_fld1%d_fld)
 !
 !    communication
 !

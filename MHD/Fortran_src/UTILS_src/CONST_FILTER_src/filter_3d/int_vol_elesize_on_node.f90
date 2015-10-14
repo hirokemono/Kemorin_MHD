@@ -76,8 +76,8 @@
 !
 !
       if (itype_mass .eq. 1) then
-        call cal_ff_smp_2_scalar(node1, rhs_tbl1, f1_l%ff_smp, ml,      &
-     &      n_scalar, ione, elen_nod)
+        call cal_ff_smp_2_scalar(node1, rhs_tbl1, f1_l%ff_smp,          &
+     &      m1_lump%ml, n_scalar, ione, elen_nod)
       else
         call reset_ff(node1%numnod, f1_l)
         call cal_ff_smp_2_ff                                            &

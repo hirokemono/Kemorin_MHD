@@ -53,7 +53,7 @@
 !
       do imulti = 2, num_multi_pass
         call cal_ff_smp_2_vector(node1, rhs_tbl1,                       &
-     &      f1_nl%ff_smp, ml, n_vector, ione, f1_nl%ff)
+     &      f1_nl%ff_smp, m1_lump%ml, n_vector, ione, f1_nl%ff)
         call nod_vector_send_recv(f1_nl%ff)
 !
         call int_vol_multi_pass_vector_upw(ele1%istack_ele_smp,         &
@@ -76,7 +76,7 @@
 !
       do imulti = 2, num_multi_pass
         call cal_ff_smp_2_scalar(node1, rhs_tbl1,                       &
-     &      f1_nl%ff_smp, ml, n_vector, ione, f1_nl%ff)
+     &      f1_nl%ff_smp, m1_lump%ml, n_vector, ione, f1_nl%ff)
         call nod_scalar_send_recv( f1_nl%ff(1:node1%numnod,1) )
 !
         call int_vol_multi_pass_scalar_upw(ele1%istack_ele_smp,         &
@@ -100,7 +100,7 @@
 !
       do imulti = 2, num_multi_pass
         call cal_ff_smp_2_vector(node1, rhs_tbl1,                       &
-     &      f1_nl%ff_smp, ml, n_vector, ione, f1_nl%ff)
+     &      f1_nl%ff_smp, m1_lump%ml, n_vector, ione, f1_nl%ff)
         call nod_vector_send_recv(f1_nl%ff)
 !
         call int_vol_multi_pass_vector_upw(ele1%istack_ele_smp,         &
@@ -124,7 +124,7 @@
       do imulti = 2, num_multi_pass
 !
         call cal_ff_smp_2_scalar(node1, rhs_tbl1,                       &
-     &      f1_nl%ff_smp, ml, n_vector, ione, f1_nl%ff)
+     &      f1_nl%ff_smp, m1_lump%ml, n_vector, ione, f1_nl%ff)
         call nod_scalar_send_recv( f1_nl%ff(1:node1%numnod,1) )
 !
         call int_vol_multi_pass_scalar_upw(ele1%istack_ele_smp,         &

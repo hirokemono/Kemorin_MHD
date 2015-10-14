@@ -27,16 +27,11 @@
 !
       type(finite_ele_mat_node), save :: f1_nl
 !
-      real (kind=kreal), allocatable  ::  ml(:)
-      real (kind=kreal), allocatable  ::  ml_o(:)
+      type(lumped_mass_matrices), save :: m1_lump
 !
-!      real (kind=kreal), allocatable  ::  ff(:,:)
-!      real (kind=kreal), allocatable  ::  ff_nl(:,:)
-! 
-!      real (kind=kreal), allocatable  :: ff_smp(:,:,:)
-!      real (kind=kreal), allocatable  :: ff_nl_smp(:,:,:)
-!f1_nl%ff_smp
-!      real (kind=kreal), allocatable  :: ff_m_smp(:,:,:)
+!      real (kind=kreal), allocatable  ::  ml(:)
+! m1_lump%ml
+      real (kind=kreal), allocatable  ::  ml_o(:)
 !
 !   ---------------------------------------------------------------------
 !
@@ -54,13 +49,13 @@
       call alloc_type_fem_matrices(n_vector, node1, f1_l)
       call alloc_type_fem_matrices(n_vector, node1, f1_nl)
 !
-      allocate(ml(node1%numnod))
+      allocate(m1_lump%ml(node1%numnod))
       allocate(ml_o(node1%numnod))
 !
       call alloc_type_fem_mat_work(ele1, fem1_wk)
 !
       if(node1%numnod .gt. 0) then
-        ml =  0.0d0
+        m1_lump%ml =  0.0d0
         ml_o =0.0d0
       end if
 !
@@ -70,7 +65,7 @@
 !
       subroutine deallocate_finite_elem_mt
 !
-      deallocate(ml, ml_o)
+      deallocate(m1_lump%ml, ml_o)
 !
       call dealloc_type_fem_mat_work(fem1_wk)
       call dealloc_type_fem_matrices(f1_nl)
