@@ -78,7 +78,7 @@
       end do
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_smp)
+     &    fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_vol_coriolis_crank_ele
 !

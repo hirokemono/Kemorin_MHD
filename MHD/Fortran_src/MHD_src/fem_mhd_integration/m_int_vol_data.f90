@@ -3,6 +3,7 @@
 !.......................................................................
 !
 !      subroutine allocate_int_vol_data(numele, max_nod_smp)
+!      subroutine reset_ff_t_smp(max_nod_smp)
 !      subroutine check_diff_elemental_data                             &
 !     &         (my_rank, numele, numdir, i_field)
 !
@@ -61,7 +62,9 @@
 !
 !
       allocate(mhd_fem1_wk%ff_m_smp(max_nod_smp,3,np_smp))
+      allocate(mhd_fem1_wk%ff_t_smp(max_nod_smp,6,np_smp))
       if(max_nod_smp .gt. 0) mhd_fem1_wk%ff_m_smp = 0.0d0
+      if(max_nod_smp .gt. 0) mhd_fem1_wk%ff_t_smp = 0.0d0
 !
       allocate(mhd_fem1_wk%xx_e(numele,3))
       allocate(mhd_fem1_wk%rr_e(numele))
@@ -170,6 +173,24 @@
        end subroutine allocate_int_vol_data
 !
 !  ------------------------------------------------------------------
+!
+      subroutine reset_ff_t_smp(max_nod_smp)
+!
+      use m_machine_parameter
+!
+      integer(kind = kint), intent(in) :: max_nod_smp
+      integer(kind = kint) :: ip
+!
+!
+!$omp parallel do
+      do ip = 1, np_smp
+        mhd_fem1_wk%ff_t_smp(1:max_nod_smp,1:6,ip) =   0.0d0
+      end do
+!$omp end parallel do
+!
+      end subroutine reset_ff_t_smp
+!
+!   ---------------------------------------------------------------------
 !  ------------------------------------------------------------------
 !
       subroutine check_diff_elemental_data                              &

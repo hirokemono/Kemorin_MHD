@@ -87,9 +87,9 @@
      &   (i_filter, i_field, id_dx, fem1_wk, mhd_fem1_wk)
 !
       call add3_skv_coef_to_ff_v_smp(node1, ele1, rhs_tbl1,             &
-     &    coef_induct, fem1_wk%sk6, ff_smp)
+     &    coef_induct, fem1_wk%sk6, f1_l%ff_smp)
       call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
-     &    ff_smp, mhd_fem1_wk%ml_cd, nod_fld1%ntot_phys,                &
+     &    f1_l%ff_smp, mhd_fem1_wk%ml_cd, nod_fld1%ntot_phys,           &
      &    i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications

@@ -64,7 +64,7 @@
 !
 !
       call int_mass_matrix_diag(ele1%istack_ele_smp, num_int)
-      call cal_ff_smp_2_ml(node1, rhs_tbl1, ml, ml_o, ff_smp)
+      call cal_ff_smp_2_ml(node1, rhs_tbl1, ml, ml_o, f1_l%ff_smp)
 !
 !      call check_mass_martix
 !
@@ -78,7 +78,7 @@
 !
 !
       call int_mass_matrix_HRZ_full(ele1%istack_ele_smp, num_int)
-      call cal_ff_smp_2_ml(node1, rhs_tbl1, ml, ml_o, ff_smp)
+      call cal_ff_smp_2_ml(node1, rhs_tbl1, ml, ml_o, f1_l%ff_smp)
 !
 !      call check_mass_martix
 !
@@ -140,7 +140,7 @@
       end do
 !
       call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_smp)
+     &    fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_mass_matrix
 !
@@ -162,7 +162,7 @@
      &   (iele_fsmp_stack, num_int, ele1, jac1_3d_q, fem1_wk%sk6)
 !
       call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_smp)
+     &    fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_mass_matrix_diag
 !
@@ -189,7 +189,7 @@
      &   (iele_fsmp_stack, ele1, fem1_wk%sk6, fem1_wk%me_diag)
 !
       call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_smp)
+     &    fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_mass_matrix_HRZ_full
 !
@@ -213,7 +213,7 @@
      &   (iele_fsmp_stack, ele1, fem1_wk%sk6, fem1_wk%me_diag)
 !
       call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_smp)
+     &    fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_mass_matrix_HRZ
 !

@@ -179,7 +179,7 @@
 !
 !
       call reset_sk6(n_sym_tensor, ele1, fem1_wk%sk6)
-      call reset_ff_t_smp
+      call reset_ff_t_smp(node1%max_nod_smp)
 !
       call sel_int_vol_sgs_flux(iflag_velo_supg, i_filter,              &
      &    n_sym_tensor, i_field, ie_dvx, fem1_wk, mhd_fem1_wk)
@@ -190,8 +190,8 @@
      &    ak_sgs(1,icm_sgs), fem1_wk%sk6)
 !
       call add6_skv_to_ff_t_smp(node1, ele1, rhs_tbl1,                  &
-    &     fem1_wk%sk6, f1_tsr%ff_smp)
-      call cal_ff_smp_2_tensor(node1, rhs_tbl1, f1_tsr%ff_smp,          &
+    &     fem1_wk%sk6, mhd_fem1_wk%ff_t_smp)
+      call cal_ff_smp_2_tensor(node1, rhs_tbl1, mhd_fem1_wk%ff_t_smp,   &
      &    mhd_fem1_wk%ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
@@ -223,14 +223,14 @@
 !
 !
       call reset_sk6(n_sym_tensor, ele1, fem1_wk%sk6)
-      call reset_ff_t_smp
+      call reset_ff_t_smp(node1%max_nod_smp)
 !
       call sel_int_vol_sgs_flux(iflag_velo_supg, i_filter,              &
      &    n_sym_tensor, i_field, ie_dvx, fem1_wk, mhd_fem1_wk)
 !
       call add6_skv_to_ff_t_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, f1_tsr%ff_smp)
-      call cal_ff_smp_2_tensor(node1, rhs_tbl1, f1_tsr%ff_smp,          &
+     &    fem1_wk%sk6, mhd_fem1_wk%ff_t_smp)
+      call cal_ff_smp_2_tensor(node1, rhs_tbl1, mhd_fem1_wk%ff_t_smp,   &
      &    mhd_fem1_wk%ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications

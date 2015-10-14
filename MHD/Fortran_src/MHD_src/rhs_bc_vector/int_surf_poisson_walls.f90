@@ -79,7 +79,7 @@
       end do
 !
       call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_smp)
+     &    fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_surf_poisson_wall
 !
@@ -121,7 +121,7 @@
       end do
 !
       call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_smp)
+     &    fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_surf_poisson_sph_in
 !
@@ -165,7 +165,7 @@
       end do
 !
       call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_smp)
+     &    fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_surf_poisson_sph_out
 !

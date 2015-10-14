@@ -44,7 +44,8 @@
         call int_vol_sf_press_ele
       end if
 !
-      call cal_ff_smp_2_ff(node1, rhs_tbl1, n_scalar, ff_smp, f1_l%ff)
+      call cal_ff_smp_2_ff                                              &
+     &   (node1, rhs_tbl1, n_scalar, f1_l%ff_smp, f1_l%ff)
 !
       end subroutine int_vol_sk_po_bc
 !
@@ -63,7 +64,8 @@
         call int_vol_sf_mag_p_ele
       end if
 !
-      call cal_ff_smp_2_ff(node1, rhs_tbl1, n_scalar, ff_smp, f1_l%ff)
+      call cal_ff_smp_2_ff                                              &
+     &   (node1, rhs_tbl1, n_scalar, f1_l%ff_smp, f1_l%ff)
 !      call check_ff(n_scalar)
 !
       end subroutine int_vol_sk_mp_bc
@@ -81,7 +83,8 @@
         call int_vol_sf_mag_p_ins_ele
       end if
 !
-      call cal_ff_smp_2_ff(node1, rhs_tbl1, n_scalar, ff_smp, f1_l%ff)
+      call cal_ff_smp_2_ff                                              &
+     &   (node1, rhs_tbl1, n_scalar, f1_l%ff_smp, f1_l%ff)
 !
       end subroutine int_vol_sk_mag_p_ins_bc
 !

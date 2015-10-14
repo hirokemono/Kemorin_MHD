@@ -57,7 +57,7 @@
       end do
 !
       call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_smp)
+     &    fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_vol_div_vect_linear_1st
 !
@@ -120,7 +120,7 @@
       end do
 !
       call add1_skv_coef_to_ff_v_smp(node1, ele1, rhs_tbl1,             &
-     &    coef_crank, fem1_wk%sk6, ff_smp)
+     &    coef_crank, fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_vol_scalar_diffuse_1st
 !
@@ -152,7 +152,7 @@
       end do
 !
       call add3_skv_coef_to_ff_v_smp(node1, ele1, rhs_tbl1,             &
-     &    coef_crank, fem1_wk%sk6, ff_smp)
+     &    coef_crank, fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_vol_vector_diffuse_1st
 !

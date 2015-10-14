@@ -52,7 +52,7 @@
 !
 !
       call int_area_ele_scalar_2_node(ele1%istack_ele_smp, scalar_ele)
-      call cal_ff_smp_2_scalar(node1, rhs_tbl1, ff_smp, ml,             &
+      call cal_ff_smp_2_scalar(node1, rhs_tbl1, f1_l%ff_smp, ml,        &
      &    n_scalar, ione, scalar_nod)
 !
       end subroutine cal_ele_scalar_2_node
@@ -70,7 +70,7 @@
 !
 !
       call int_area_ele_vector_2_node(ele1%istack_ele_smp, vector_ele)
-      call cal_ff_smp_2_vector(node1, rhs_tbl1, ff_smp, ml,             &
+      call cal_ff_smp_2_vector(node1, rhs_tbl1, f1_l%ff_smp, ml,        &
      &    n_vector, ione, vector_nod)
 !
       end subroutine cal_ele_vector_2_node
@@ -102,7 +102,7 @@
       real(kind = kreal), intent(in) :: scalar_ele(ele1%numele)
 !
 !
-      ff_smp = 0.0d0
+      call reset_ff_smp
       call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
@@ -116,7 +116,7 @@
       end if
 !
       call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_smp)
+     &    fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_area_ele_scalar_2_node
 !
@@ -129,7 +129,7 @@
       real(kind = kreal), intent(in) :: vector_ele(ele1%numele,3)
 !
 !
-      ff_smp = 0.0d0
+      call reset_ff_smp
       call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
@@ -143,7 +143,7 @@
       end if
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_smp)
+     &    fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_area_ele_vector_2_node
 !
@@ -159,7 +159,7 @@
       real(kind = kreal), intent(in) :: scalar_ele(numele)
 !
 !
-      ff_smp = 0.0d0
+      call reset_ff_smp
       call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
@@ -176,7 +176,7 @@
       end if
 !
       call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_smp)
+     &    fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_grp_ele_scalar_2_node
 !
@@ -191,7 +191,7 @@
       real(kind = kreal), intent(in) :: vector_ele(numele,3)
 !
 !
-      ff_smp = 0.0d0
+      call reset_ff_smp
       call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
       if (ele1%nnod_4_ele .eq. num_t_linear) then
@@ -208,7 +208,7 @@
       end if
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_smp)
+     &    fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_grp_ele_vector_2_node
 !

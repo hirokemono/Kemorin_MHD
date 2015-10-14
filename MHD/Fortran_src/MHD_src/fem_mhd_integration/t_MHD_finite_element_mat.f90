@@ -43,6 +43,8 @@
 !
 !>        Nodal work area for multi-pass
         real (kind=kreal), pointer  ::  ff_m_smp(:,:,:)
+!>        Nodal work area for multi-pass
+        real (kind=kreal), pointer  ::  ff_t_smp(:,:,:)
 !
 !>        assembled position in each element
         real (kind=kreal), pointer ::  xx_e(:,:)

@@ -80,7 +80,7 @@
       do ip = 1, np_smp
         do inod = 1, node1%max_nod_smp
           write(50+my_rank,'(2i16,1p10e25.14)')                         &
-     &         ip, inod, (ff_smp(inod,nd,ip),nd=1, numdir)
+     &         ip, inod, (f1_l%ff_smp(inod,nd,ip),nd=1, numdir)
         end do
       end do
 !

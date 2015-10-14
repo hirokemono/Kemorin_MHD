@@ -117,9 +117,9 @@
      &    ak_sgs(1,icomp_sgs_hf), fem1_wk%sk6)
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_smp)
+     &    fem1_wk%sk6, f1_l%ff_smp)
       call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
-     &    ff_smp, mhd_fem1_wk%ml_fl,                                    &
+     &    f1_l%ff_smp, mhd_fem1_wk%ml_fl,                               &
      &    nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
@@ -157,9 +157,9 @@
      &   i_field, ie_dvx, fem1_wk, mhd_fem1_wk)
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_smp)
+     &    fem1_wk%sk6, f1_l%ff_smp)
       call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
-     &    ff_smp, mhd_fem1_wk%ml_fl,                                    &
+     &    f1_l%ff_smp, mhd_fem1_wk%ml_fl,                               &
      &    nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications

@@ -90,7 +90,7 @@
       end do
 !
       call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, ff_smp)
+     &    fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_vol_fixed_sgs_poisson_surf
 !
@@ -142,7 +142,7 @@
       end do
 !
       call add1_skv_coef_to_ff_v_smp(node1, ele1, rhs_tbl1,             &
-     &    coef_implicit, fem1_wk%sk6, ff_smp)
+     &    coef_implicit, fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_vol_fixed_sgs_scalar_surf
 !
@@ -201,7 +201,7 @@
       end do
 !
       call add3_skv_coef_to_ff_v_smp(node1, ele1, rhs_tbl1,             &
-     &    coef_implicit, fem1_wk%sk6, ff_smp)
+     &    coef_implicit, fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_vol_fixed_sgs_vector_surf
 !
@@ -257,7 +257,7 @@
       end do
 !
       call add3_skv_coef_to_ff_v_smp(node1, ele1, rhs_tbl1,             &
-     &    coef_implicit, fem1_wk%sk6, ff_smp)
+     &    coef_implicit, fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_vol_fixed_rotate_sgs_surf
 !

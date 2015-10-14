@@ -10,7 +10,6 @@
 !      subroutine reset_ff_smp
 !      subroutine reset_ff_smps
 !      subroutine reset_ff(numnod)
-!      subroutine reset_ff_t_smp
 !
 !      subroutine deallocate_finite_elem_mt
 !      subroutine deallocate_node_ff
@@ -25,20 +24,17 @@
 !>      Work area for FEM assemble
       type(work_finite_element_mat), save :: fem1_wk
 !
-!>      Work area for FEM assemble
-      type(finite_ele_mat_node), save :: f1_tsr
-!
       type(finite_ele_mat_node), save :: f1_l
-!f1_l%ff
+!
       real (kind=kreal), allocatable  ::  ml(:)
       real (kind=kreal), allocatable  ::  ml_o(:)
 !
 !      real (kind=kreal), allocatable  ::  ff(:,:)
       real (kind=kreal), allocatable  ::  ff_nl(:,:)
 ! 
-      real (kind=kreal), allocatable  :: ff_smp(:,:,:)
+!      real (kind=kreal), allocatable  :: ff_smp(:,:,:)
+!f1_l%ff_smp
       real (kind=kreal), allocatable  :: ff_nl_smp(:,:,:)
-! 
 !      real (kind=kreal), allocatable  :: ff_m_smp(:,:,:)
 !
       private :: allocate_node_ff
@@ -61,9 +57,8 @@
       allocate(ml(node1%numnod))
       allocate(ml_o(node1%numnod))
 !
-      allocate(ff_smp(node1%max_nod_smp,3,np_smp))
+      allocate(f1_l%ff_smp(node1%max_nod_smp,3,np_smp))
       allocate(ff_nl_smp(node1%max_nod_smp,3,np_smp))
-      allocate(f1_tsr%ff_smp(node1%max_nod_smp,6,np_smp))
 !
       allocate(fem1_wk%sk6(ele1%numele,n_sym_tensor,ele1%nnod_4_ele))
 !
@@ -77,8 +72,6 @@
         ml =  0.0d0
         ml_o =0.0d0
       end if
-!
-      if(node1%max_nod_smp .gt. 0) call reset_ff_t_smp
 !
       if(ele1%numele .gt. 0) then
         fem1_wk%sk6 =      0.0d0
@@ -122,7 +115,7 @@
 !
 !$omp parallel do
       do ip = 1, np_smp
-        ff_smp(1:node1%max_nod_smp,1:3,ip) =   0.0d0
+        f1_l%ff_smp(1:node1%max_nod_smp,1:3,ip) =   0.0d0
       end do
 !$omp end parallel do
 !
@@ -140,7 +133,7 @@
 !
 !$omp parallel do
       do ip = 1, np_smp
-        ff_smp(1:node1%max_nod_smp,1:3,ip) =   0.0d0
+        f1_l%ff_smp(1:node1%max_nod_smp,1:3,ip) =   0.0d0
         ff_nl_smp(1:node1%max_nod_smp,1:3,ip) = 0.0d0
       end do
 !$omp end parallel do
@@ -168,31 +161,13 @@
       end subroutine reset_ff
 !
 !   ---------------------------------------------------------------------
-!
-      subroutine reset_ff_t_smp
-!
-      use m_machine_parameter
-      use m_geometry_data
-!
-      integer(kind = kint) :: ip
-!
-!
-!$omp parallel do
-      do ip = 1, np_smp
-        f1_tsr%ff_smp(1:node1%max_nod_smp,1:6,ip) =   0.0d0
-      end do
-!$omp end parallel do
-!
-      end subroutine reset_ff_t_smp
-!
-!   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------
 !
       subroutine deallocate_finite_elem_mt
 !
       deallocate(ml, ml_o)
 !
-      deallocate(ff_smp, ff_nl_smp, f1_tsr%ff_smp)
+      deallocate(f1_l%ff_smp, ff_nl_smp)
       deallocate(fem1_wk%sk6)
       deallocate(fem1_wk%scalar_1, fem1_wk%vector_1, fem1_wk%tensor_1)
 !
