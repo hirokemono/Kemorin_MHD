@@ -196,13 +196,16 @@
         if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            's_set_table_type_RHS_assemble', i_level
-          call s_set_table_type_RHS_assemble( MG_mesh(i_level)%mesh,    &
-     &        MG_FEM_tbl(i_level),  MG_next_table(i_level))
+          call s_set_table_type_RHS_assemble                            &
+     &       (MG_mesh(i_level)%mesh%node, MG_mesh(i_level)%mesh%ele,    &
+     &        MG_next_table(i_level)%neib_ele,                          &
+     &        MG_next_table(i_level)%neib_nod, MG_FEM_tbl(i_level))
         else
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'empty_table_type_RHS_assemble', i_level
-          call empty_table_type_RHS_assemble( MG_mesh(i_level)%mesh,    &
-     &        MG_FEM_tbl(i_level),  MG_next_table(i_level))
+          call empty_table_type_RHS_assemble                            &
+     &       (MG_mesh(i_level)%mesh%node, MG_FEM_tbl(i_level),          &
+     &        MG_next_table(i_level))
         end if
       end do
 !

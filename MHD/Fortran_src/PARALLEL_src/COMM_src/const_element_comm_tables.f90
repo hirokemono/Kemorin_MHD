@@ -193,7 +193,7 @@
       character(len=kchara), parameter :: txt = 'element'
 !
 !
-      call s_set_ele_id_4_node_type(mesh, belongs%blng_ele)
+      call set_ele_id_4_node(mesh%node, mesh%ele, belongs%blng_ele)
       call belonged_ele_id_4_node(mesh, belongs%host_ele)
       call const_ele_comm_table_type                                    &
      &   (txt, mesh%ele%numele, mesh%ele%interior_ele, mesh%ele%x_ele,  &
@@ -217,8 +217,8 @@
       character(len=kchara), parameter :: txt = 'surface'
 !
 !
-      call set_surf_id_4_node_type                                      &
-     &   (mesh, surf_mesh%surf, belongs%blng_surf)
+      call set_surf_id_4_node                                           &
+     &   (mesh%node, surf_mesh%surf, belongs%blng_surf)
       call belonged_surf_id_4_node                                      &
      &   (mesh, surf_mesh%surf, belongs%host_surf)
       call const_ele_comm_table_type                                    &
@@ -243,8 +243,8 @@
       character(len=kchara), parameter :: txt = 'edge'
 !
 !
-      call set_edge_id_4_node_type                                      &
-     &   (mesh, edge_mesh%edge, belongs%blng_edge)
+      call set_edge_id_4_node                                           &
+     &   (mesh%node, edge_mesh%edge, belongs%blng_edge)
       call belonged_edge_id_4_node                                      &
      &   (mesh, edge_mesh%edge, belongs%host_edge)
       call const_ele_comm_table_type                                    &

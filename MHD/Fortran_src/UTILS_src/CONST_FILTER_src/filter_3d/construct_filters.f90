@@ -16,7 +16,6 @@
       use m_geometry_data
       use m_reference_moments
       use m_element_id_4_node
-      use m_next_node_id_4_node
       use cal_element_size
 !
       use cal_filter_moms_ele_by_elen
@@ -114,7 +113,6 @@
       subroutine const_simple_filter(dxidxs, FEM_moments)
 !
       use m_element_id_4_node
-      use m_next_node_id_4_node
       use m_finite_element_matrix
       use m_filter_elength
       use t_filter_moments

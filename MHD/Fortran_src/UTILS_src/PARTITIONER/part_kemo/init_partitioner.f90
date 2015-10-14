@@ -32,6 +32,7 @@
       use m_ctl_param_partitioner
       use m_domain_group_4_partition
       use const_mesh_info
+      use set_ele_id_4_node_type
       use set_domain_and_org_id
       use quick_mesh_check_for_part
 !
@@ -45,7 +46,8 @@
       type(surface_group_data), intent(in) :: sf_grp
 !!    check single grid data
 !
-      call quick_mesh_chk_4_part(node_org, ele_org, nod_grp, ele_grp, sf_grp)
+      call quick_mesh_chk_4_part                                        &
+     &   (node_org, ele_org, nod_grp, ele_grp, sf_grp)
 !
 !    construct element and surface data
 !
@@ -53,7 +55,7 @@
       call const_nod_ele_infos
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
-      call set_ele_id_4_node
+      call set_ele_id_4_node(node_org, ele_org, ele_4_nod1)
 !
 !   set numbers of global mesh
 !

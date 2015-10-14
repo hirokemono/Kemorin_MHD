@@ -31,11 +31,12 @@
 !
 !
       use m_geometry_data
-      use m_next_node_id_4_node
+      use m_element_id_4_node
       use m_jacobians
 !
       use input_control_gen_table
       use const_mesh_info
+      use set_table_type_RHS_assemble
       use set_serach_data_4_dest
       use element_posi_2_nodal_array
       use set_2nd_geometry_4_table
@@ -69,7 +70,8 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'set_belonged_ele_and_next_nod'
-      call set_belonged_ele_and_next_nod
+      call set_belonged_ele_and_next_nod                                &
+     &   (node1, ele1, ele_4_nod1, neib_nod1)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_element'
       call set_max_int_point_by_etype

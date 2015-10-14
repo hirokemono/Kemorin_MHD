@@ -102,11 +102,12 @@
       use m_geometry_data
       use m_element_id_4_node
       use m_belonged_element_4_node
+      use set_ele_id_4_node_type
 !
       character(len=kchara), parameter :: txt = 'element'
 !
 !
-      call set_ele_id_4_node_comm
+      call set_ele_id_4_node(node1, ele1, ele_4_nod_comm)
       call belonged_ele_id_4_node_1(blng_tbls%host_ele)
       call const_ele_comm_table_1st                                     &
      &   (txt, node1%numnod, ele1%numele, node1%inod_global,            &
@@ -125,11 +126,12 @@
       use m_geometry_data
       use m_element_id_4_node
       use m_belonged_element_4_node
+      use set_ele_id_4_node_type
 !
       character(len=kchara), parameter :: txt = 'surface'
 !
-!
-      call set_surf_id_4_node
+!set_surf_id_4_node
+      call set_surf_id_4_node(node1, surf1, surf_4_nod1)
       call belonged_surf_id_4_node_1(blng_tbls%host_surf)
       call const_ele_comm_table_1st                                     &
      &   (txt, node1%numnod, surf1%numsurf, node1%inod_global,          &
@@ -148,11 +150,12 @@
       use m_geometry_data
       use m_element_id_4_node
       use m_belonged_element_4_node
+      use set_ele_id_4_node_type
 !
       character(len=kchara), parameter :: txt = 'edge'
 !
 !
-      call set_edge_id_4_node
+      call set_edge_id_4_node(node1, edge1, edge_4_nod1)
       call belonged_edge_id_4_node_1(blng_tbls%host_edge)
       call const_ele_comm_table_1st                                     &
      &   (txt, node1%numnod, edge1%numedge, node1%inod_global,          &

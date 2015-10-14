@@ -4,7 +4,6 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine sort_node_index
 !      subroutine set_idx_list_4_whole_crs
 !
 !       subroutine deallocate_sorted_node
@@ -33,33 +32,18 @@
 !
       subroutine set_connect_RHS_assemble
 !
-      use m_next_node_id_4_node
+      use m_geometry_data
+      use m_element_id_4_node
+      use set_table_type_RHS_assemble
 !
 !      Search surrounding node and element
 !
-      call set_belonged_ele_and_next_nod
-!
-!      set RHS assemble table
-!
-      call sort_node_index
+      call s_set_table_type_RHS_assemble                                &
+     &   (node1, ele1, ele_4_nod1, neib_nod1, rhs_tbl1)
 !
       end subroutine set_connect_RHS_assemble
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine sort_node_index
-!
-      use m_geometry_data
-      use m_element_id_4_node
-!
-      use ordering_rhs_assemble_type
-!
-!
-      call s_sort_node_index_type(node1, ele_4_nod1, rhs_tbl1)
-!
-      end  subroutine sort_node_index
-!
 !-----------------------------------------------------------------------
 !
       subroutine set_idx_list_4_whole_crs

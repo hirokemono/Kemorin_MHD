@@ -30,7 +30,7 @@
 !
       use m_geometry_data
       use m_hanging_mesh_data
-      use m_next_node_id_4_node
+      use m_element_id_4_node
       use expand_next_nod_hang_type
 !
 !
@@ -45,7 +45,7 @@
       subroutine overwrite_next_nod_by_hanged
 !
       use m_geometry_data
-      use m_next_node_id_4_node
+      use m_element_id_4_node
       use expand_next_nod_hang_type
 !
 !

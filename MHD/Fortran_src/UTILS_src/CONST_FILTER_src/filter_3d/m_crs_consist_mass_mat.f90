@@ -25,7 +25,7 @@
 !
       use m_machine_parameter
       use m_geometry_data
-      use m_next_node_id_4_node
+      use m_element_id_4_node
       use m_sorted_node
       use m_crs_matrix
       use int_consist_mass_mat_filter

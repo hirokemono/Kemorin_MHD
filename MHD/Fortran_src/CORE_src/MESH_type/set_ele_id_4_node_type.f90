@@ -7,10 +7,10 @@
 !> @brief Set belonged element list for each node
 !!
 !!@verbatim
-!!      subroutine s_set_ele_id_4_node_type(mesh, neib_ele)
-!!      subroutine set_surf_id_4_node_type(mesh, surf, neib_ele)
-!!      subroutine set_edge_id_4_node_type(mesh, edge, neib_ele)
-!!        type(mesh_geometry), intent(in) :: mesh
+!!      subroutine set_ele_id_4_node(node, ele, neib_ele)
+!!      subroutine set_surf_id_4_node(node, surf, neib_ele)
+!!      subroutine set_edge_id_4_node(node, edge, neib_ele)
+!!        type(node_data),        intent(in) :: node
 !!        type(surface_data), intent(in) :: surf
 !!        type(edge_data), intent(in) :: edge
 !!        type(element_around_node), intent(inout) :: neib_ele
@@ -50,103 +50,103 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_ele_id_4_node_type(mesh, neib_ele)
+      subroutine set_ele_id_4_node(node, ele, neib_ele)
 !
-      use t_mesh_data
+      use t_geometry_data
       use t_next_node_ele_4_node
       use find_element_id_4_node
       use cal_minmax_and_stacks
 !
-      type(mesh_geometry), intent(in) :: mesh
+      type(node_data),           intent(in) :: node
+      type(element_data),        intent(in) :: ele
       type(element_around_node), intent(inout) :: neib_ele
 !
 !
-      call alloc_numele_belonged(mesh%node%numnod, neib_ele)
+      call alloc_numele_belonged(node%numnod, neib_ele)
 !
-      call count_iele_4_node(mesh%node%numnod, mesh%ele%numele,         &
-     &    mesh%ele%nnod_4_ele, mesh%ele%ie, ione, mesh%ele%numele,      &
-     &    neib_ele%nele_4_node)
-      call s_cal_minmax_and_stacks(mesh%node%numnod,                    &
+      call count_iele_4_node(node%numnod, ele%numele, ele%nnod_4_ele,   &
+     &    ele%ie, ione, ele%numele, neib_ele%nele_4_node)
+      call s_cal_minmax_and_stacks(node%numnod,                         &
      &    neib_ele%nele_4_node, izero, neib_ele%istack_4_node,          &
      &    neib_ele%ntot, neib_ele%nmax, neib_ele%nmin)
 !
 !
       call alloc_iele_belonged(neib_ele)
 !
-      call set_iele_4_node(mesh%node%numnod, mesh%ele%numele,           &
-     &    mesh%ele%nnod_4_ele, mesh%ele%ie,  ione, mesh%ele%numele,     &
+      call set_iele_4_node(node%numnod, ele%numele,                     &
+     &    ele%nnod_4_ele, ele%ie,  ione, ele%numele,                    &
      &    neib_ele%ntot, neib_ele%istack_4_node, neib_ele%nele_4_node,  &
      &    neib_ele%iele_4_node, neib_ele%iconn_4_node)
 !
-      end subroutine s_set_ele_id_4_node_type
+      end subroutine set_ele_id_4_node
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_surf_id_4_node_type(mesh, surf, neib_ele)
+      subroutine set_surf_id_4_node(node, surf, neib_ele)
 !
-      use t_mesh_data
+      use t_geometry_data
       use t_surface_data
       use t_next_node_ele_4_node
       use find_element_id_4_node
       use cal_minmax_and_stacks
 !
-      type(mesh_geometry), intent(in) :: mesh
+      type(node_data), intent(in) :: node
       type(surface_data), intent(in) :: surf
       type(element_around_node), intent(inout) :: neib_ele
 !
 !
-      call alloc_numele_belonged(mesh%node%numnod, neib_ele)
+      call alloc_numele_belonged(node%numnod, neib_ele)
 !
-      call count_iele_4_node(mesh%node%numnod, surf%numsurf,            &
+      call count_iele_4_node(node%numnod, surf%numsurf,                 &
      &    surf%nnod_4_surf, surf%ie_surf, ione, surf%numsurf,           &
      &    neib_ele%nele_4_node)
-      call s_cal_minmax_and_stacks(mesh%node%numnod,                    &
+      call s_cal_minmax_and_stacks(node%numnod,                         &
      &    neib_ele%nele_4_node, izero, neib_ele%istack_4_node,          &
      &    neib_ele%ntot, neib_ele%nmax, neib_ele%nmin)
 !
 !
       call alloc_iele_belonged(neib_ele)
 !
-      call set_iele_4_node(mesh%node%numnod, surf%numsurf,              &
+      call set_iele_4_node(node%numnod, surf%numsurf,                   &
      &    surf%nnod_4_surf, surf%ie_surf,  ione, surf%numsurf,          &
      &    neib_ele%ntot, neib_ele%istack_4_node, neib_ele%nele_4_node,  &
      &    neib_ele%iele_4_node, neib_ele%iconn_4_node)
 !
-      end subroutine set_surf_id_4_node_type
+      end subroutine set_surf_id_4_node
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_edge_id_4_node_type(mesh, edge, neib_ele)
+      subroutine set_edge_id_4_node(node, edge, neib_ele)
 !
-      use t_mesh_data
+      use t_geometry_data
       use t_edge_data
       use t_next_node_ele_4_node
       use find_element_id_4_node
       use cal_minmax_and_stacks
 !
-      type(mesh_geometry), intent(in) :: mesh
+      type(node_data), intent(in) :: node
       type(edge_data), intent(in) :: edge
       type(element_around_node), intent(inout) :: neib_ele
 !
 !
-      call alloc_numele_belonged(mesh%node%numnod, neib_ele)
+      call alloc_numele_belonged(node%numnod, neib_ele)
 !
-      call count_iele_4_node(mesh%node%numnod, edge%numedge,            &
+      call count_iele_4_node(node%numnod, edge%numedge,            &
      &    edge%nnod_4_edge, edge%ie_edge, ione, edge%numedge,           &
      &    neib_ele%nele_4_node)
-      call s_cal_minmax_and_stacks(mesh%node%numnod,                    &
+      call s_cal_minmax_and_stacks(node%numnod,                    &
      &    neib_ele%nele_4_node, izero, neib_ele%istack_4_node,          &
      &    neib_ele%ntot, neib_ele%nmax, neib_ele%nmin)
 !
 !
       call alloc_iele_belonged(neib_ele)
 !
-      call set_iele_4_node(mesh%node%numnod, edge%numedge,              &
+      call set_iele_4_node(node%numnod, edge%numedge,                   &
      &    edge%nnod_4_edge, edge%ie_edge,  ione, edge%numedge,          &
      &    neib_ele%ntot, neib_ele%istack_4_node, neib_ele%nele_4_node,  &
      &    neib_ele%iele_4_node, neib_ele%iconn_4_node)
 !
-      end subroutine set_edge_id_4_node_type
+      end subroutine set_edge_id_4_node
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

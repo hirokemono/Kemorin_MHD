@@ -51,8 +51,7 @@
         inod_end_filter = node1%internal_node
       end if
 !
-      call init_4_cal_fileters(node1%numnod, node1%internal_node,       &
-     &    ele1%numele, ele1%nnod_4_ele)
+      call init_4_cal_fileters(node1, ele1)
 !
       write(70+my_rank,*) ' Best condition for filter'
 !

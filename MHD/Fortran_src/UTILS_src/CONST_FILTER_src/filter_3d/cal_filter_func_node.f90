@@ -39,8 +39,7 @@
       integer(kind = kint) :: inod, ierr
 !
 !
-      call init_4_cal_fileters(node1%numnod, node1%internal_node,       &
-     &    ele1%numele, ele1%nnod_4_ele)
+      call init_4_cal_fileters(node1, ele1)
 !
       write(70+my_rank,*) ' Best condition for filter'
 !
@@ -94,8 +93,7 @@
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !
 !
-      call init_4_cal_fileters(node1%numnod, node1%internal_node,       &
-     &    ele1%numele, ele1%nnod_4_ele)
+      call init_4_cal_fileters(node1, ele1)
 !
       i_exp_level_1nod_weight = maximum_neighbour
       do inod = inod_start_filter, inod_end_filter

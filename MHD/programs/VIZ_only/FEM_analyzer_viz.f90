@@ -38,6 +38,7 @@
       use m_ele_sf_eg_comm_tables
 !
       use const_mesh_info
+      use set_ele_id_4_node_type
       use load_mesh_data
       use set_parallel_file_name
 !
@@ -72,7 +73,7 @@
 !
       if( (i_step_output_fline+i_step_output_pvr) .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
-        call set_ele_id_4_node
+        call set_ele_id_4_node(node1, ele1, ele_4_nod1)
 !
         call set_max_int_point_by_etype
         if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_element'

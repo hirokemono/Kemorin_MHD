@@ -18,7 +18,6 @@
       use m_matrix_4_filter
       use m_reference_moments
       use m_element_id_4_node
-      use m_next_node_id_4_node
       use fem_const_filter_matrix
       use int_filter_functions
 !

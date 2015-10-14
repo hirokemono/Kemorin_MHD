@@ -37,11 +37,13 @@
 !
       subroutine FEM_initialize_w_viz
 !
+      use m_geometry_data
       use m_t_step_parameter
       use m_fem_gauss_int_coefs
       use m_jacobians
       use m_element_id_4_node
 !
+      use set_ele_id_4_node_type
       use FEM_analyzer_sph_MHD
       use int_volume_of_domain
 !
@@ -58,7 +60,7 @@
 !
       if( (i_step_output_fline) .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
-        call set_ele_id_4_node
+        call set_ele_id_4_node(node1, ele1, ele_4_nod1)
       end if
 !
       if(i_step_output_pvr .le. 0) Return

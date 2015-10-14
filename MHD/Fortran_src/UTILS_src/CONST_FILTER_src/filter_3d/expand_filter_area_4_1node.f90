@@ -3,8 +3,9 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!      subroutine init_4_cal_fileters                                   &
-!     &          (numnod, internal_node, numele, nnod_4_ele)
+!      subroutine init_4_cal_fileters(node, ele)
+!        type(node_data),           intent(in) :: node
+!        type(element_data),        intent(in) :: ele
 !      subroutine finalize_4_cal_fileters
 !      subroutine resize_matrix_size_gen_filter(nnod_4_ele)
 !      subroutine s_expand_filter_area_4_1node(numnod, inod, ele)
@@ -29,38 +30,39 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_4_cal_fileters                                    &
-     &          (numnod, internal_node, numele, nnod_4_ele)
+      subroutine init_4_cal_fileters(node, ele)
 !
+      use t_geometry_data
       use m_reference_moments
-      use m_next_node_id_4_node
+      use m_element_id_4_node
       use m_matrix_4_filter
       use m_filter_file_names
       use m_field_file_format
       use m_crs_matrix_4_filter
+      use set_table_type_RHS_assemble
       use fem_const_filter_matrix
       use add_nodes_elems_4_each_nod
       use ordering_by_filtering_size
       use delete_small_weighting
 !
-      integer(kind = kint), intent(in) :: numnod, internal_node
-      integer(kind = kint), intent(in) :: numele, nnod_4_ele
+      type(node_data),           intent(in) :: node
+      type(element_data),        intent(in) :: ele
 !
 !
       if (inod_end_filter .eq. -1) then
-        inod_end_filter = internal_node
+        inod_end_filter = node%internal_node
       end if
       nnod_filetering = inod_end_filter - inod_start_filter + 1
 !
-      call allocate_nod_ele_near_1nod(numnod, numele)
-      call allocate_nod_ele_1nod_tmp(numnod, numele)
-      call allocate_wk_exp_ele_nod_each(numnod, numele)
+      call allocate_nod_ele_near_1nod(node%numnod, ele%numele)
+      call allocate_nod_ele_1nod_tmp(node%numnod, ele%numele)
+      call allocate_wk_exp_ele_nod_each(node%numnod, ele%numele)
 !
       max_mat_size =      0
       nmax_num_ele_1nod = 0
-      call allocate_mat_num_weight(numnod)
+      call allocate_mat_num_weight(node%numnod)
       call allocate_matrix_4_filter
-      call allocate_sk_filter(nnod_4_ele)
+      call allocate_sk_filter(ele%nnod_4_ele)
 !
       nmax_crs = max_mat_size
       imax_l = nmax_crs * (nmax_crs - 1) / 2
@@ -69,10 +71,10 @@
       call allocate_array_4_crs_item
 !
       if (iflag_ordering_list .gt. 0) then
-        call allocate_dist_ratio(numnod)
+        call allocate_dist_ratio(node%numnod)
       end if
 !
-      call allocate_tmp_4_filter_sort(numnod)
+      call allocate_tmp_4_filter_sort(node%numnod)
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
         write(filter_coef_code,'(a)') '!'
@@ -85,7 +87,8 @@
 !  ---------------------------------------------------
 !
        if(iflag_debug.eq.1) write(*,*) 'set_belonged_ele_and_next_nod'
-      call set_belonged_ele_and_next_nod
+      call set_belonged_ele_and_next_nod                                &
+     &   (node, ele, ele_4_nod1, neib_nod1)
 !
       end subroutine init_4_cal_fileters
 !
@@ -95,7 +98,6 @@
 !
       use m_geometry_data
       use m_element_id_4_node
-      use m_next_node_id_4_node
       use m_filter_file_names
       use m_field_file_format
       use set_ele_id_4_node_type
@@ -126,7 +128,6 @@
       use m_reference_moments
       use m_crs_matrix_4_filter
       use m_element_id_4_node
-      use m_next_node_id_4_node
       use add_nodes_elems_4_each_nod
       use ordering_by_filtering_size
       use fem_const_filter_matrix
@@ -155,7 +156,7 @@
 !
       subroutine resize_matrix_size_gen_filter(nnod_4_ele)
 !
-      use m_next_node_id_4_node
+      use m_element_id_4_node
       use m_reference_moments
       use m_matrix_4_filter
       use m_crs_matrix_4_filter
@@ -242,7 +243,6 @@
       subroutine copy_next_nod_ele_4_each(inod, numnod)
 !
       use m_element_id_4_node
-      use m_next_node_id_4_node
 !
       integer(kind = kint), intent(in) :: inod, numnod
       integer(kind = kint) :: inum, jnum
