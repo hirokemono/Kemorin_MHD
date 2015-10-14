@@ -41,9 +41,9 @@
 !
          do i = 1, ncomp_mat
            do j = 1, ncomp_mat
-             a_nod(j,i) = D_crs(j,i,inod)
+             a_nod(j,i) = mat1_crs%D_crs(j,i,inod)
            end do
-           b_nod(i) = b_crs( ncomp_lu*(inod-1)+i )
+           b_nod(i) = mat1_crs%B_crs( ncomp_lu*(inod-1)+i )
          end do
 !
 !c decompose A = LU
@@ -52,7 +52,7 @@
          call lubksb(a_nod,ncomp_lu,ncomp_lu,indx,b_nod)
 !
          do i = 1, ncomp_mat
-           X_crs( ncomp_mat*(inod-1)+i ) = b_nod(i)
+           mat1_crs%X_crs( ncomp_mat*(inod-1)+i ) = b_nod(i)
            d_nod = d_nod*a_nod(i,i)
          end do
 !

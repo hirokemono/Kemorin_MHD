@@ -53,7 +53,7 @@
 !
       if (nmax_bc_b_nod .le. 0) return
       call del_2vector_phys_on_bc(nmax_bc_b_nod, num_bc_b_nod,          &
-     &    ibc_b_id, node1%numnod, n_vector, ione, ff, ff_nl)
+     &    ibc_b_id, node1%numnod, n_vector, ione, f1_l%ff, ff_nl)
 !
       end subroutine set_boundary_magne_4_rhs
 !

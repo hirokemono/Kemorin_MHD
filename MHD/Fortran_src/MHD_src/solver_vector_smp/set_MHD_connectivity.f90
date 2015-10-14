@@ -107,7 +107,6 @@
 !
       use m_nod_comm_table
       use m_solver_djds_MHD
-      use set_crs_connect_type
       use reordering_djds_smp_type
       use set_djds_smp_ordering_type
 !
@@ -117,10 +116,7 @@
 !C | set connectivity in CRS array |
 !C +-------------------------------+
 !C===
-      call s_set_crs_connect_type                                       &
-     &         (np_smp, node1%numnod, node1%istack_nod_smp,             &
-     &          neib_nod1%ntot, neib_nod1%istack_next,                  &
-     &          neib_nod1%inod_next, MHD_CRS)
+      call s_set_crs_connection(node1, neib_nod1, MHD_CRS)
 !
 !C +-----------------+
 !C | DJDS reordering |
@@ -180,7 +176,6 @@
 !
       use reordering_djds_smp_type
       use set_djds_smp_ordering_type
-      use set_crs_connect_type
 !
       integer(kind = kint), intent(in) :: nnod_1ele
       integer(kind = kint), intent(in) :: iele_start, iele_end
@@ -194,10 +189,7 @@
       call set_layerd_ele_id_4_node(nnod_1ele, iele_start, iele_end)
       call const_next_nod_id_4_node
 !
-      call s_set_crs_connect_type                                       &
-     &   (np_smp, node1%numnod, node1%istack_nod_smp,                   &
-     &    neib_nod1%ntot, neib_nod1%istack_next,                        &
-     &    neib_nod1%inod_next, MHD_CRS)
+      call s_set_crs_connection(node1, neib_nod1, MHD_CRS)
 !
       call s_reordering_djds_smp_type                                   &
      &   (np_smp, node1%numnod, node1%internal_node,                    &

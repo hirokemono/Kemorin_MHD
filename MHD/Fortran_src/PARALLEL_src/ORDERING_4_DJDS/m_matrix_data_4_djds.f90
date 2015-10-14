@@ -110,22 +110,21 @@
 !
        use m_iccg_parameter
        use m_solver_djds
-       use m_crs_connect
        use m_crs_matrix
 !
 !
-          eps = REALARRAY_crs(1)
-          itr = INTARRAY_crs (1)
-          sigma_diag = REALARRAY_crs(2)
-!          sigma = REALARRAY_crs(3)
-          method_4_solver =  METHOD_crs 
-          precond_4_solver = PRECOND_crs
-          precond_4_crank =  PRECOND_crs
-          SOLVER_TYPE_djds = SOLVER_crs
+          eps = mat1_crs%REALARRAY_crs(1)
+          itr = mat1_crs%INTARRAY_crs (1)
+          sigma_diag = mat1_crs%REALARRAY_crs(2)
+!          sigma = mat1_crs%REALARRAY_crs(3)
+          method_4_solver =  mat1_crs%METHOD_crs 
+          precond_4_solver = mat1_crs%PRECOND_crs
+          precond_4_crank =  mat1_crs%PRECOND_crs
+          SOLVER_TYPE_djds = mat1_crs%SOLVER_crs
 !
       itotal_l = tbl1_crs%ntot_l
       itotal_u = tbl1_crs%ntot_u
-      NB_djds =  NB_crs
+      NB_djds =  mat1_crs%NB_crs
 !
        end subroutine copy_paramters_4_djds
 !

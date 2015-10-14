@@ -65,6 +65,7 @@
       end subroutine dealloc_work_fem_surf_mat_t
 !
 ! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
 !
       subroutine check_vect_sf_t(my_rank, txt, sf_grp, fem_sf_wk)
 !

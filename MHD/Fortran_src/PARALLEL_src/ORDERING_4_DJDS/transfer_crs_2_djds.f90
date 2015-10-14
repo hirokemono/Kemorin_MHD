@@ -31,7 +31,7 @@
 !
       use m_geometry_data
       use m_matrix_data_4_djds
-      use m_crs_connect
+      use m_crs_matrix
       use m_nod_comm_table
       use m_solver_djds
       use set_size_4_smp_types

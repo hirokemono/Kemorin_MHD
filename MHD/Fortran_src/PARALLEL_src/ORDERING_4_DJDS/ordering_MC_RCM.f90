@@ -38,7 +38,7 @@
       use m_iccg_parameter
       use m_matrix_work
 !
-      use m_crs_connect
+      use m_crs_matrix
       use m_colored_connect
 !
       use MC_Cuthill_McKee

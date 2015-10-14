@@ -24,7 +24,6 @@
       use calypso_mpi
       use calypso_mpi
       use m_geometry_data
-      use m_crs_connect
       use m_crs_matrix
 !
       use m_gauss_points
@@ -70,7 +69,7 @@
 !
 !C===
 !
-!       call deallocate_crs_mat_data
+!       call dealloc_crs_mat_data(mat1_crs)
 !       call dealloc_crs_connect(tbl1_crs)
 !
        open (id_delta_z,file='delta_z.0.dat')
@@ -83,7 +82,7 @@
 !
       close(id_delta_z)
 !
-      if (my_rank.eq.0) write (*,*) ITERactual, "  iters"
+      if (my_rank.eq.0) write (*,*) mat1_crs%ITERactual, "  iters"
 
       end subroutine init_analyzer
 !

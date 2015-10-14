@@ -5,8 +5,12 @@
 !
 !> @brief Structures for index table for compressed raw strage matrix
 !
-!>         (module m_crs_connect)
 !>         (module m_2d_rs_connect)
+!
+!      subroutine s_set_crs_connection(node, neib_nod, tbl_crs)
+!        type(node_data), intent(in) :: node
+!        type(next_nod_id_4_nod), intent(in) :: neib_nod
+!        type(CRS_matrix_connect), intent(inout) :: tbl_crs
 !
 !      subroutine alloc_crs_stack(numnod, tbl_crs)
 !        integer(kind = kint), intent(in) :: numnod
@@ -15,8 +19,7 @@
 !        type(CRS_matrix_connect), intent(inout) :: tbl_crs
 !
 !      subroutine alloc_type_2d_rs_stack(numnod, tbl_2drs)
-!      subroutine alloc_type_2d_rs_connect(numnod, tbl_2drs)
-!        integer(kind = kint), intent(in) :: numnod
+!      subroutine alloc_type_2d_rs_connect(tbl_2drs)
 !        type(RS2d_matrix_connect), intent(inout) :: tbl_2drs
 !
 !      subroutine dealloc_crs_connect(tbl_crs)
@@ -59,19 +62,62 @@
 !
 !>  Structures for index table for two demensinal raw strage matrix
       type RS2d_matrix_connect
-        integer(kind = kint) :: max_2d_rs_l, max_2d_rs_u
+        integer(kind = kint) :: ntot_2d
+        integer(kind = kint) :: max_2l
+        integer(kind = kint) :: max_2u
 !
-        integer(kind = kint), pointer :: num_2d_rs_l(:)
-        integer(kind = kint), pointer :: num_2d_rs_u(:)
+        integer(kind = kint), pointer :: nitem_2l(:)
+        integer(kind = kint), pointer :: nitem_2u(:)
 !
-        integer(kind = kint), pointer :: item_2d_rs_l(:,:)
-        integer(kind = kint), pointer :: item_2d_rs_u(:,:)
+        integer(kind = kint), pointer :: item_2l(:,:)
+        integer(kind = kint), pointer :: item_2u(:,:)
       end type RS2d_matrix_connect
 !
 !-----------------------------------------------------------------------
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine s_set_crs_connection(node, neib_nod, tbl_crs)
+!
+      use m_machine_parameter
+      use t_geometry_data
+      use t_next_node_ele_4_node
+!
+      use set_crs_connection
+      use cal_minmax_and_stacks
+!
+      type(node_data), intent(in) :: node
+      type(next_nod_id_4_nod), intent(in) :: neib_nod
+!
+      type(CRS_matrix_connect), intent(inout) :: tbl_crs
+!
+!
+      call alloc_crs_stack(node%numnod, tbl_crs)
+!
+      call count_item_crs(node%numnod, np_smp, node%istack_nod_smp,     &
+     &    neib_nod%ntot, neib_nod%istack_next, neib_nod%inod_next,      &
+     &    tbl_crs%nitem_l, tbl_crs%nitem_u)
+!
+      call s_cal_minmax_and_stacks(node%numnod, tbl_crs%nitem_l,        &
+     &    izero, tbl_crs%istack_l, tbl_crs%ntot_l,                      &
+     &    tbl_crs%max_l, tbl_crs%min_l)
+      call s_cal_minmax_and_stacks(node%numnod, tbl_crs%nitem_u,        &
+     &    izero, tbl_crs%istack_u, tbl_crs%ntot_u,                      &
+     &    tbl_crs%max_u, tbl_crs%min_u)
+!
+      call alloc_crs_connect(tbl_crs)
+!
+      call set_item_crs(node%numnod, np_smp, node%istack_nod_smp,       &
+     &    neib_nod%ntot, neib_nod%istack_next,                          &
+     &    neib_nod%inod_next, tbl_crs%ntot_l, tbl_crs%ntot_u,           &
+     &    tbl_crs%istack_l, tbl_crs%istack_u,                           &
+     &    tbl_crs%item_l, tbl_crs%item_u)
+!
+      end subroutine s_set_crs_connection
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine alloc_crs_stack(numnod, tbl_crs)
@@ -123,32 +169,32 @@
       type(RS2d_matrix_connect), intent(inout) :: tbl_2drs
 !
 !
-      allocate( tbl_2drs%num_2d_rs_l(numnod) )
-      allocate( tbl_2drs%num_2d_rs_u(numnod) )
+      tbl_2drs%ntot_2d = numnod
+      allocate( tbl_2drs%nitem_2l(tbl_2drs%ntot_2d) )
+      allocate( tbl_2drs%nitem_2u(tbl_2drs%ntot_2d) )
 !
-      if (numnod .gt. 0) then
-        tbl_2drs%num_2d_rs_l = 0
-        tbl_2drs%num_2d_rs_u = 0
+      if (tbl_2drs%ntot_2d .gt. 0) then
+        tbl_2drs%nitem_2l = 0
+        tbl_2drs%nitem_2u = 0
       end if
 !
-      tbl_2drs%max_2d_rs_l = 0
-      tbl_2drs%max_2d_rs_u = 0
+      tbl_2drs%max_2l = 0
+      tbl_2drs%max_2u = 0
 !
       end subroutine alloc_type_2d_rs_stack
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_type_2d_rs_connect(numnod, tbl_2drs)
+      subroutine alloc_type_2d_rs_connect(tbl_2drs)
 !
-      integer(kind = kint), intent(in) :: numnod
       type(RS2d_matrix_connect), intent(inout) :: tbl_2drs
 !
 !
-      allocate( tbl_2drs%item_2d_rs_l(tbl_2drs%max_2d_rs_l,numnod) )
-      allocate( tbl_2drs%item_2d_rs_u(tbl_2drs%max_2d_rs_u,numnod) )
+      allocate(tbl_2drs%item_2l(tbl_2drs%max_2l,tbl_2drs%ntot_2d))
+      allocate(tbl_2drs%item_2u(tbl_2drs%max_2u,tbl_2drs%ntot_2d))
 !
-      if(tbl_2drs%max_2d_rs_l .gt. 0) tbl_2drs%item_2d_rs_l = 0
-      if(tbl_2drs%max_2d_rs_u .gt. 0) tbl_2drs%item_2d_rs_u = 0
+      if(tbl_2drs%max_2l .gt. 0) tbl_2drs%item_2l = 0
+      if(tbl_2drs%max_2u .gt. 0) tbl_2drs%item_2u = 0
 !
       end subroutine alloc_type_2d_rs_connect
 !
@@ -174,8 +220,8 @@
       type(RS2d_matrix_connect), intent(inout) :: tbl_2drs
 !
 !
-      deallocate( tbl_2drs%item_2d_rs_l, tbl_2drs%item_2d_rs_u )
-      deallocate( tbl_2drs%num_2d_rs_l,  tbl_2drs%num_2d_rs_u )
+      deallocate( tbl_2drs%item_2l, tbl_2drs%item_2u )
+      deallocate( tbl_2drs%nitem_2l,  tbl_2drs%nitem_2u )
 !
       end subroutine dealloc_type_2d_rs_connect
 !
@@ -216,16 +262,16 @@
 !
 !
         do i = 1, numnod
-          write(50+my_rank,*) 'item_2d_rs_l',                           &
-     &            i, tbl_2drs%num_2d_rs_l(i)
+          write(50+my_rank,*) 'item_2l',                                &
+     &            i, tbl_2drs%nitem_2l(i)
           write(50+my_rank,'(10i16)')                                   &
-     &            tbl_2drs%item_2d_rs_l(1:tbl_2drs%num_2d_rs_l(i),i)
+     &            tbl_2drs%item_2l(1:tbl_2drs%nitem_2l(i),i)
         end do
         do i = 1, numnod
-          write(50+my_rank,*) 'item_2d_rs_u',                           &
-     &            i, tbl_2drs%num_2d_rs_u(i)
+          write(50+my_rank,*) 'item_2u',                                &
+     &            i, tbl_2drs%nitem_2u(i)
           write(50+my_rank,'(10i16)')                                   &
-     &            tbl_2drs%item_2d_rs_u(1:tbl_2drs%num_2d_rs_u(i),i)
+     &            tbl_2drs%item_2u(1:tbl_2drs%nitem_2u(i),i)
         end do
 !
        end subroutine check_2d_rs_connect_type

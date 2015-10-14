@@ -17,53 +17,55 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_switch_crs_matrix
+      subroutine s_switch_crs_matrix(tbl_crs, mat_crs)
 !
-      use m_geometry_data
-      use m_crs_connect
-      use m_crs_matrix
+      use t_crs_connect
+      use t_crs_matrix
 !
-      integer (kind = kint) :: kk, inod, k1, ii, k2, ist, ied
+      type(CRS_matrix_connect), intent(in) :: tbl_crs
+      type(CRS_matrix), intent(inout) :: mat_crs
+!
+      integer (kind = kint) :: kk, inod, k1, ii, k2, ist, ied, NB
       real(kind = kreal) :: w
 !
 !
 !
-      do inod = 1, node1%numnod
-        do k1 = 1, NB_crs
-          if ( abs(D_crs(k1,k1,inod)) .eq. 0.0d0) then
-            do k2 = k1+1, NB_crs
-!                write(*,*) 'switch compornent for ', inod
-!                write(*,*) 'original', k1, k2
-!                write(*,'(1p20e20.12)') (D_crs(k1,kk,inod),kk=1,NB_crs)
-!                 write(*,'(1p20e20.12)') (D_crs(k2,kk,inod),kk=1,NB_crs)
-              if ( abs(D_crs(k2,k1,inod)) .ne. 0.0d0 ) then
-!                write(*,*) 'switched'
-                w = B_crs(NB_crs*(inod-1)+k1)
-                B_crs(NB_crs*(inod-1)+k1) = B_crs(NB_crs*(inod-1)+k2)
-                B_crs(NB_crs*(inod-1)+k2) = w
-                do kk = 1, NB_crs
-                  w =                 D_crs(k1,kk,inod)
-                  D_crs(k1,kk,inod) = D_crs(k2,kk,inod)
-                  D_crs(k2,kk,inod) = w
+      NB = mat_crs%NB_crs
+      do inod = 1, tbl_crs%ntot_d
+        do k1 = 1, NB
+          if ( abs(mat_crs%D_crs(k1,k1,inod)) .eq. 0.0d0) then
+            do k2 = k1+1, NB
+              if ( abs(mat_crs%D_crs(k2,k1,inod)) .ne. 0.0d0 ) then
+                w = mat_crs%B_crs(NB*(inod-1)+k1)
+                mat_crs%B_crs(NB*(inod-1)+k1)                           &
+     &            = mat_crs%B_crs(NB*(inod-1)+k2)
+                mat_crs%B_crs(NB*(inod-1)+k2) = w
+                do kk = 1, NB
+                  w = mat_crs%D_crs(k1,kk,inod)
+                  mat_crs%D_crs(k1,kk,inod)                             &
+     &              = mat_crs%D_crs(k2,kk,inod)
+                  mat_crs%D_crs(k2,kk,inod) = w
                 end do
 !
-                ist = tbl1_crs%istack_l(inod-1)+1
-                ied = tbl1_crs%istack_l(inod)
+                ist = tbl_crs%istack_l(inod-1)+1
+                ied = tbl_crs%istack_l(inod)
                 do ii = ist, ied
-                  do kk = 1, NB_crs
-                    w =                AL_crs(k1,kk,ii)
-                    AL_crs(k1,kk,ii) = AL_crs(k2,kk,ii)
-                    AL_crs(k2,kk,ii) = w
+                  do kk = 1, NB
+                    w = mat_crs%AL_crs(k1,kk,ii)
+                    mat_crs%AL_crs(k1,kk,ii)                            &
+     &                = mat_crs%AL_crs(k2,kk,ii)
+                    mat_crs%AL_crs(k2,kk,ii) = w
                   end do
                 end do
 !
-                ist = tbl1_crs%istack_u(inod-1)+1
-                ied = tbl1_crs%istack_u(inod)
+                ist = tbl_crs%istack_u(inod-1)+1
+                ied = tbl_crs%istack_u(inod)
                 do ii = ist, ied
-                  do kk = 1, NB_crs
-                    w =                AU_crs(k1,kk,ii)
-                    AU_crs(k1,kk,ii) = AU_crs(k2,kk,ii)
-                    AU_crs(k2,kk,ii) = w
+                  do kk = 1, NB
+                    w = mat_crs%AU_crs(k1,kk,ii)
+                    mat_crs%AU_crs(k1,kk,ii)                            &
+     &                = mat_crs%AU_crs(k2,kk,ii)
+                    mat_crs%AU_crs(k2,kk,ii) = w
                   end do
                 end do
                 exit
@@ -72,7 +74,6 @@
           end if
         end do
       end do
-!
 !
       end subroutine s_switch_crs_matrix
 !

@@ -9,7 +9,6 @@
 !
       use m_precision
 !
-      use m_crs_connect
       use m_crs_matrix
       use m_commute_filter_z
 !

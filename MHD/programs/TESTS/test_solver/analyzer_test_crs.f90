@@ -59,19 +59,20 @@
 !C
 !C-- ICCG computation
 
-      if (SOLVER_crs .eq. 'scalar' .or. SOLVER_crs.eq.'SCALAR') then
+      if (mat1_crs%SOLVER_crs .eq. 'scalar'                             &
+     &    .or. mat1_crs%SOLVER_crs.eq.'SCALAR') then
         call solve_by_crs_solver11
-      else if (SOLVER_crs.eq.'block33'                                  &
-     &    .or. SOLVER_crs.eq.'BLOCK33') then
+      else if (mat1_crs%SOLVER_crs.eq.'block33'                         &
+     &    .or. mat1_crs%SOLVER_crs.eq.'BLOCK33') then
         call solve_by_crs_solver33
-      else if (SOLVER_crs.eq.'blockNN'                                  &
-     &    .or. SOLVER_crs.eq.'BLOCKNN') then
+      else if (mat1_crs%SOLVER_crs.eq.'blockNN'                         &
+     &    .or. mat1_crs%SOLVER_crs.eq.'BLOCKNN') then
         call solve_by_crs_solverNN
       end if
 
       call output_solution
 
-      if (my_rank.eq.0) write (*,*) ITERactual, "  iters"
+      if (my_rank.eq.0) write (*,*) mat1_crs%ITERactual, "  iters"
 
       ENDTIME= MPI_WTIME()
 

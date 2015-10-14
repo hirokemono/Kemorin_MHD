@@ -19,7 +19,7 @@
 !
       subroutine s_set_consist_mass_connect(numnod)
 !
-      use m_crs_connect
+      use m_crs_matrix
       use m_crs_consist_mass_mat
 !
       integer(kind = kint), intent(in) :: numnod

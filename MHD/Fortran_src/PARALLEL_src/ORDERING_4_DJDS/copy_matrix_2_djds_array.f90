@@ -14,7 +14,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_crs_connect
       use m_crs_matrix
 !
       implicit none
@@ -42,7 +41,7 @@
         do j1 = 1, NB_djds
           do j2 = 1, NB_djds
             im = NB_djds*NB_djds*(mat_num-1) + NB_djds*(j1-1) + j2
-            aiccg(im) = D_crs(j1,j2,inod1)
+            aiccg(im) = mat1_crs%D_crs(j1,j2,inod1)
           end do
         end do
       end do
@@ -56,7 +55,7 @@
           do j1 = 1, NB_djds
             do j2 = 1, NB_djds
               im = NB_djds*NB_djds*(mat_num-1) + NB_djds*(j1-1) + j2
-              aiccg(im) = AL_crs(j1,j2,k)
+              aiccg(im) = mat1_crs%AL_crs(j1,j2,k)
             end do
           end do
         end do
@@ -71,7 +70,7 @@
           do j1 = 1, NB_djds
             do j2 = 1, NB_djds
               im = NB_djds*NB_djds*(mat_num-1) + NB_djds*(j1-1) + j2
-              aiccg(im) = AU_crs(j1,j2,k)
+              aiccg(im) = mat1_crs%AU_crs(j1,j2,k)
             end do
           end do
         end do
@@ -113,8 +112,8 @@
 !
 !$omp parallel do
       do i = 1, NB_djds*NP
-        b_djds(i) = B_crs(i)
-        x_djds(i) = X_crs(i)
+        b_djds(i) = mat1_crs%B_crs(i)
+        x_djds(i) = mat1_crs%X_crs(i)
       end do
 !$omp end parallel do
 !
@@ -132,7 +131,7 @@
 !
 !$omp parallel do
       do i = 1, NB_djds*NP
-        X_crs(i) = x_djds(i)
+        mat1_crs%X_crs(i) = x_djds(i)
       end do
 !$omp end parallel do
 !

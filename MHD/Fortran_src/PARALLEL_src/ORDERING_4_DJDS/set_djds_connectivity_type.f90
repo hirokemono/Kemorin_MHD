@@ -39,7 +39,6 @@
       use t_solver_djds
       use t_vector_for_solver
 !
-      use set_crs_connect_type
       use set_djds_smp_ordering_type
       use reordering_djds_smp_type
 !
@@ -66,10 +65,7 @@
 !C | set connectivity in CRS array |
 !C +-------------------------------+
 !C===
-      call s_set_crs_connect_type(np_smp,                               &
-     &    mesh%node%numnod, mesh%node%istack_nod_smp,                   &
-     &    next_tbl%neib_nod%ntot, next_tbl%neib_nod%istack_next,        &
-     &    next_tbl%neib_nod%inod_next, MHD_crs)
+      call s_set_crs_connection(mesh%node, next_tbl%neib_nod, MHD_crs)
 !
 !C +-----------------+
 !C | DJDS reordering |
@@ -119,10 +115,7 @@
       call const_next_nod_id_4_node_type(mesh%node, mesh%ele,           &
      &    FEM_next%neib_ele, FEM_next%neib_nod)
 !
-      call s_set_crs_connect_type(np_smp,                               &
-     &    mesh%node%numnod, mesh%node%istack_nod_smp,                   &
-     &    FEM_next%neib_nod%ntot, FEM_next%neib_nod%istack_next,        &
-     &    FEM_next%neib_nod%inod_next, CRS_table)
+      call s_set_crs_connection(mesh%node, FEM_next%neib_nod, CRS_table)
 !
       call s_reordering_djds_smp_type(np_smp,                           &
      &    mesh%node%numnod, mesh%node%internal_node,                    &

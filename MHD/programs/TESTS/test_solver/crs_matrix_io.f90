@@ -12,7 +12,6 @@
 !
       use calypso_mpi
       use m_geometry_data
-      use m_crs_connect
       use m_crs_matrix
 !
       implicit none
@@ -45,9 +44,9 @@
        write (id_file,*) 'domain ID: ', my_rank
        write (id_file,*) 'node_id, solutions'
          do i= 1, node1%internal_node
-           ii = NB_crs*(i-1)
+           ii = mat1_crs%NB_crs*(i-1)
            write (id_file,'(i16,100(1pe23.12))') i,                     &
-     &            (X_crs(ii+k),k=1,NB_crs)
+     &            (mat1_crs%X_crs(ii+k),k=1,mat1_crs%NB_crs)
          end do
 !
        close (id_file)
@@ -64,7 +63,7 @@
 
       call read_size_of_crs_matrix
 
-      call allocate_crs_matrix(node1%numnod)
+      call alloc_crs_matrix(node1%numnod, tbl1_crs, mat1_crs)
 
       call read_crs_matrix
 
@@ -81,7 +80,8 @@
       use m_nod_comm_table
 !
        read (id_file,'(10i16)') node1%internal_node, node1%numnod,      &
-     &     tbl1_crs%ntot_l, tbl1_crs%ntot_u, NB_crs, nod_comm%num_neib
+     &     tbl1_crs%ntot_l, tbl1_crs%ntot_u, mat1_crs%NB_crs,           &
+     &     nod_comm%num_neib
 
 !
        end subroutine read_size_of_crs_matrix
@@ -90,45 +90,46 @@
 !
        subroutine read_crs_matrix
 !
-       integer (kind = kint) :: i, k, j1, j2, kk
+       integer (kind = kint) :: i, k, j1, j2, kk, NB
 !
 
-      read (id_file,'(10i16)') tbl1_crs%istack_l(1:node1%numnod)
-      read (id_file,'(10i16)') tbl1_crs%istack_u(1:node1%numnod)
-      read (id_file,'(10i16)') tbl1_crs%item_l(1:tbl1_crs%ntot_l)
-      read (id_file,'(10i16)') tbl1_crs%item_u(1:tbl1_crs%ntot_u)
+      read (id_file,*) tbl1_crs%istack_l(1:node1%numnod)
+      read (id_file,*) tbl1_crs%istack_u(1:node1%numnod)
+      read (id_file,*) tbl1_crs%item_l(1:tbl1_crs%ntot_l)
+      read (id_file,*) tbl1_crs%item_u(1:tbl1_crs%ntot_u)
 
-      if (NB_crs .eq. 1) then
-        read (id_file,'(5e27.20)') AL_crs(1,1,1:tbl1_crs%ntot_l)
-        read (id_file,'(5e27.20)') AU_crs(1,1,1:tbl1_crs%ntot_u)
+      NB = mat1_crs%NB_crs
+      if (NB .eq. 1) then
+        read(id_file,*) mat1_crs%AL_crs(1,1,1:tbl1_crs%ntot_l)
+        read(id_file,*) mat1_crs%AU_crs(1,1,1:tbl1_crs%ntot_u)
         
-        read (15,'(5e27.20)') (D_crs(1,1,i), i= 1,node1%numnod)
-        read (15,'(5e27.20)') (B_crs(i), i= 1,node1%numnod)
+        read(id_file,*) (mat1_crs%D_crs(1,1,i), i= 1,node1%numnod)
+        read(id_file,*) (mat1_crs%B_crs(i), i= 1,node1%numnod)
       else
         do  k= 1, tbl1_crs%ntot_l
-          do j1= 1, NB_crs
-            read (id_file,'(5e27.20)') (AL_crs(j1,j2,k),j2= 1,NB_crs)
+          do j1= 1, NB
+            read (id_file,*) (mat1_crs%AL_crs(j1,j2,k),j2= 1,NB)
           enddo
         enddo
 
         do  k= 1, tbl1_crs%ntot_u
-          do j1= 1, NB_crs
-            read (id_file,'(5e27.20)') (AU_crs(j1,j2,k),j2= 1,NB_crs)
+          do j1= 1, NB
+            read (id_file,*) (mat1_crs%AU_crs(j1,j2,k),j2= 1,NB)
           enddo
         enddo
 
         do  k= 1, node1%numnod
-          do j1= 1, NB_crs
-            kk = NB_crs*(k-1) + j1
-            read (id_file,'(5e27.20)') (D_crs(j1,j2,k),j2= 1, NB_crs),  &
-     &      B_crs(kk)
+          do j1= 1, NB
+            kk = NB*(k-1) + j1
+            read (id_file,*)                                            &
+     &        (mat1_crs%D_crs(j1,j2,k),j2= 1, NB), mat1_crs%B_crs(kk)
           enddo
         enddo
 !
        end if
 !
-        do i= 1, (NB_crs * node1%numnod)
-          X_crs(i)= 0.d0
+        do i= 1, (NB * node1%numnod)
+          mat1_crs%X_crs(i)= 0.d0
         enddo
 !
        do i = 1, node1%numnod

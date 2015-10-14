@@ -43,7 +43,7 @@
       else if ( iflag_4_coriolis .eq. id_Coriolis_nod_imp) then
         call cal_coriolis_nod(node1%numnod, node1%istack_nod_smp,       &
      &      angular, coef_cor, mhd_fem1_wk%ml_o_fl, nod_fld1%ntot_phys, &
-     &      iphys%i_velo, nod_fld1%d_fld, ff)
+     &      iphys%i_velo, nod_fld1%d_fld, f1_l%ff)
       end if
 !
       end subroutine int_coriolis_nod_exp

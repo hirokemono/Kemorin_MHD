@@ -24,7 +24,6 @@
       subroutine allocate_matrix_4_commutation(numnod)
 !
       use m_commute_filter_z
-      use m_crs_connect
       use m_crs_matrix
 !
       integer(kind = kint), intent(in) :: numnod

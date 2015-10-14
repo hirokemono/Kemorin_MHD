@@ -25,7 +25,6 @@
       use calypso_mpi
       use m_geometry_data
       use m_iccg_parameter
-      use m_crs_connect
       use m_crs_matrix
       use m_matrix_data_4_djds
 !
@@ -92,7 +91,7 @@
 !
 !   construct FEM mesh for x direction
 !
-      NB_crs = nfilter2_3
+      mat1_crs%NB_crs = nfilter2_3
       if (my_rank.eq.0) write(*,*) 'set_crs_connect_commute_z'
       call set_crs_connect_commute_z
 !
@@ -162,17 +161,17 @@
        call int_edge_norm_nod
 !       call check_nod_normalize_matrix(my_rank, node1%numnod)
 !
-       write(*,*) 'allocate_crs_mat_data'
-       NB_crs = ncomp_mat
-       call allocate_crs_mat_data(node1%numnod)
+       write(*,*) 'alloc_crs_mat_data'
+       mat1_crs%NB_crs = ncomp_mat
+       call alloc_crs_mat_data(tbl1_crs, mat1_crs)
 !
        call set_matrix_4_border(node1%numnod)
        write(*,*) 's_const_commute_matrix'
        call s_const_commute_matrix
        write(*,*) 's_switch_crs_matrix'
-       call s_switch_crs_matrix
-       write(*,*) 'check_crs_matrix_components'
-       call check_crs_matrix_components(my_rank, node1%numnod)
+       call s_switch_crs_matrix(tbl1_crs, mat1_crs)
+       write(*,*) 'check_crs_matrix_comps'
+       call check_crs_matrix_comps(my_rank, tbl1_crs, mat1_crs)
 !
 !      goto 999
 !
@@ -180,16 +179,16 @@
 !
 !C
 !C-- solve matrix
-      write(*,*) 'METHOD_crs: ', METHOD_crs
-      if ( METHOD_crs .eq. 'LU' ) then
+      write(*,*) 'METHOD_crs: ', mat1_crs%METHOD_crs
+      if ( mat1_crs%METHOD_crs .eq. 'LU' ) then
         call solve_z_commute_LU(node1%numnod)
       else
-        if   (SOLVER_crs.eq.'block33'                                   &
-     &    .or. SOLVER_crs.eq.'BLOCK33') then
+        if   (mat1_crs%SOLVER_crs.eq.'block33'                           &
+     &    .or. mat1_crs%SOLVER_crs.eq.'BLOCK33') then
           write(*,*) 'solve_by_djds_solver33'
           call solve_by_djds_solver33(ierr)
-        else if (SOLVER_crs.eq.'blockNN'                                &
-     &    .or. SOLVER_crs.eq.'BLOCKNN') then
+        else if (mat1_crs%SOLVER_crs.eq.'blockNN'                         &
+     &    .or. mat1_crs%SOLVER_crs.eq.'BLOCKNN') then
           write(*,*) 'solve_by_djds_solverNN'
           call solve_by_djds_solverNN(ierr)
         end if
@@ -203,8 +202,8 @@
 !
        write(*,*) 's_copy_1darray_2_2darray'
        call s_copy_1darray_2_2darray                                    &
-     &    (ncomp_mat, node1%numnod, c_filter,X_crs)
-       call deallocate_crs_mat_data
+     &    (ncomp_mat, node1%numnod, c_filter, mat1_crs%X_crs)
+       call dealloc_crs_mat_data(mat1_crs)
 !
        write(*,*) 's_set_neib_nod_z'
        call s_set_neib_nod_z(node1%numnod, ncomp_mat, nside,            &

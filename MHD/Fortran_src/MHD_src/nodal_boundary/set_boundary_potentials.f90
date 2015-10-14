@@ -72,7 +72,7 @@
 !
       if (num_bc_p_nod .le. 0) return
       call set_fixed_bc_scalar_phys(num_bc_p_nod, ibc_p_id,             &
-     &    bc_p_id_apt, node1%numnod, n_vector, ione, ff)
+     &    bc_p_id_apt, node1%numnod, n_vector, ione, f1_l%ff)
 !
       end subroutine set_boundary_ff
 !
@@ -88,7 +88,7 @@
 !
       if (num_bc_mag_p_nod .le. 0) return
       call set_fixed_bc_scalar_phys(num_bc_mag_p_nod, ibc_mag_p_id,     &
-     &    bc_mag_p_id_apt, node1%numnod, n_vector, ione, ff)
+     &    bc_mag_p_id_apt, node1%numnod, n_vector, ione, f1_l%ff)
 !
       end subroutine set_boundary_fmag
 !

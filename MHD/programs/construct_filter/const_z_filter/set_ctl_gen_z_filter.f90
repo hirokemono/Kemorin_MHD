@@ -163,7 +163,7 @@
 !
 !     set solver information
 !
-      SOLVER_crs =  f_solver_type_ctl
+      mat1_crs%SOLVER_crs =  f_solver_type_ctl
 !
       if(precond_ctl%iflag .gt. 0) precond = precond_ctl%charavalue
       if(method_ctl%iflag .gt. 0)  method =  method_ctl%charavalue
@@ -174,12 +174,12 @@
         sigma_diag =  sigma_diag_ctl%realvalue
       end if
 !
-      METHOD_crs =       method
-      PRECOND_crs =      precond
-      INTARRAY_crs(1) =  itr
-      REALARRAY_crs(1) = eps
-      REALARRAY_crs(2) = sigma_diag
-      REALARRAY_crs(3) = sigma
+      mat1_crs%METHOD_crs =       method
+      mat1_crs%PRECOND_crs =      precond
+      mat1_crs%INTARRAY_crs(1) =  itr
+      mat1_crs%REALARRAY_crs(1) = eps
+      mat1_crs%REALARRAY_crs(2) = sigma_diag
+      mat1_crs%REALARRAY_crs(3) = sigma
 !
       if (cmp_no_case(order_method_ctl%charavalue,'RCM_DJDS')) then 
         iflag_ordering = 1

@@ -58,20 +58,20 @@
 !
       do inod = 1, numnod
         i = 1 + ncomp_mat*(inod-1)
-        B_crs(i) = zero
+        mat1_crs%B_crs(i) = zero
         i = ncomp_mat*inod
-        B_crs(i) = 2 + ncomp_mat*(inod-1)
+        mat1_crs%B_crs(i) = 2 + ncomp_mat*(inod-1)
       end do
       do inod = 1, numnod
         if (nneib_nod(inod,1) .lt. ((ncomp_mat-1)/2) ) then
-          D_crs(1,ncomp_mat-1,inod) = one
+          mat1_crs%D_crs(1,ncomp_mat-1,inod) = one
         else
-          D_crs(1,1,inod) = one
+          mat1_crs%D_crs(1,1,inod) = one
         end if
         if (nneib_nod(inod,2) .lt. ((ncomp_mat-1)/2) ) then
-          D_crs(2,2,inod) = one
+          mat1_crs%D_crs(2,2,inod) = one
         else
-          D_crs(2,ncomp_mat,inod) = one
+          mat1_crs%D_crs(2,ncomp_mat,inod) = one
         end if
       end do
 !

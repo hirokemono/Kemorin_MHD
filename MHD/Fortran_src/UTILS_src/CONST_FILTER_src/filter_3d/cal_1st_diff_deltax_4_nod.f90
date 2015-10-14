@@ -156,10 +156,11 @@
       real(kind = kreal), intent(inout) :: diff_field(node1%numnod,3)
       integer(kind = kint) :: nd
 !
-      ff = 0.0d0
+      f1_l%ff = 0.0d0
       ff_nl_smp = 0.0d0
       call int_vol_diff_dxs(org_field)
-      call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector, ff_nl_smp, ff)
+      call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector,                   &
+     &    ff_nl_smp, f1_l%ff)
       do nd = 1, n_vector
         call cal_sol_dx_by_consist(diff_field(1,nd), nd)
       end do

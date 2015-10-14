@@ -53,8 +53,8 @@
       imonitor_solve = i_debug
 !
       do inod = 1, node1%numnod
-        x_vec(inod) = ff(inod,nd_dx)
-        b_vec(inod) = ff(inod,nd_dx)
+        x_vec(inod) = f1_l%ff(inod,nd_dx)
+        b_vec(inod) = f1_l%ff(inod,nd_dx)
       end do
 !
 !       write(50+my_rank,*) 'div_b'

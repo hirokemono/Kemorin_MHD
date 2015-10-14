@@ -3,8 +3,6 @@
 !
 !        programmed by H.Matsui on Oct., 2006
 !
-!      subroutine s_set_crs_connection
-!
 !      subroutine count_item_crs(numnod, np_smp, inod_fsmp_stack,       &
 !     &          ntot_next_nod_4_node, inod_next_stack_4_node,          &
 !     &          inod_next_4_node, num_crs_l, num_crs_u)
@@ -26,41 +24,6 @@
 !
       contains
 !
-!-----------------------------------------------------------------------
-!
-      subroutine s_set_crs_connection
-!
-      use m_geometry_data
-      use m_machine_parameter
-      use m_next_node_id_4_node
-      use m_crs_connect
-!
-      use cal_minmax_and_stacks
-!
-!
-      call alloc_crs_stack(node1%numnod, tbl1_crs)
-!
-      call count_item_crs(node1%numnod, np_smp, node1%istack_nod_smp,   &
-     &    neib_nod1%ntot, neib_nod1%istack_next, neib_nod1%inod_next,   &
-     &    tbl1_crs%nitem_l, tbl1_crs%nitem_u)
-!
-      call s_cal_minmax_and_stacks                                      &
-     &   (node1%numnod, tbl1_crs%nitem_l, izero, tbl1_crs%istack_l,     &
-     &    tbl1_crs%ntot_l, tbl1_crs%max_l, tbl1_crs%min_l)
-      call s_cal_minmax_and_stacks                                      &
-     &   (node1%numnod, tbl1_crs%nitem_u, izero, tbl1_crs%istack_u,     &
-     &    tbl1_crs%ntot_u, tbl1_crs%max_u, tbl1_crs%min_u)
-!
-      call alloc_crs_connect(tbl1_crs)
-!
-      call set_item_crs(node1%numnod, np_smp, node1%istack_nod_smp,     &
-     &    neib_nod1%ntot, neib_nod1%istack_next, neib_nod1%inod_next,   &
-     &    tbl1_crs%ntot_l, tbl1_crs%ntot_u, tbl1_crs%istack_l,          &
-     &    tbl1_crs%istack_u, tbl1_crs%item_l, tbl1_crs%item_u)
-!
-      end subroutine s_set_crs_connection
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine count_item_crs(numnod, np_smp, inod_fsmp_stack,        &

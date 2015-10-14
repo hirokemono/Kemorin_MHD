@@ -36,6 +36,10 @@
 !      subroutine dealloc_type_fem_lumped_mass(lump)
 !      subroutine dealloc_type_fem_matrices(rhs)
 !
+!      subroutine check_sk6(my_rank, ele, fem_wk)
+!        type(element_data), intent(in) :: ele
+!        type(work_finite_element_mat), intent(in) :: fem_wk
+!
 !
       module t_finite_element_mat
 !
@@ -282,6 +286,29 @@
       deallocate( rhs%ff_smp )
 !
       end subroutine dealloc_type_fem_matrices
+!
+!   ---------------------------------------------------------------------
+!   ---------------------------------------------------------------------
+!
+      subroutine check_sk6(my_rank, ele, fem_wk)
+!
+      use t_geometry_data
+!
+      integer(kind = kint), intent(in) :: my_rank
+      type(element_data), intent(in) :: ele
+      type(work_finite_element_mat), intent(in) :: fem_wk
+!
+      integer(kind = kint) :: iele, k1
+!
+      write(50+my_rank,*) 'k1, iele, sk6'
+      do k1 = 1, ele%nnod_4_ele
+        do iele = 1, ele%numele
+          write(50+my_rank,'(2i16,1p10e25.14)')                         &
+     &         k1, iele, fem_wk%sk6(iele,1:6,k1)
+        end do
+      end do
+!
+      end subroutine check_sk6
 !
 !   ---------------------------------------------------------------------
 !

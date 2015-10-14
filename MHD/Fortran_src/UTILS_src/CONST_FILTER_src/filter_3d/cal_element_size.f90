@@ -179,10 +179,11 @@
       subroutine set_mass_matrix_for_consist
 !
       use m_geometry_data
-      use m_crs_connect
+      use m_next_node_id_4_node
+      use m_crs_matrix
       use m_crs_consist_mass_mat
       use m_sorted_node
-      use set_crs_connection
+      use t_crs_connect
       use set_consist_mass_connect
       use int_consist_mass_mat_filter
 !
@@ -191,7 +192,7 @@
 !  ---------------------------------------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 's_set_crs_connection'
-      call s_set_crs_connection
+      call s_set_crs_connection(node1, neib_nod1, tbl1_crs)
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_idx_list_4_whole_crs'
       call set_idx_list_4_whole_crs

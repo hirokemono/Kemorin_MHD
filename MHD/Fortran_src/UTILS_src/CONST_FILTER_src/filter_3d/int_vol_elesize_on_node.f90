@@ -79,8 +79,9 @@
         call cal_ff_smp_2_scalar(node1, rhs_tbl1, ff_smp, ml,           &
      &      n_scalar, ione, elen_nod)
       else
-        ff = 0.0d0
-        call cal_ff_smp_2_ff(node1, rhs_tbl1, n_scalar, ff_smp, ff)
+        call reset_ff(node1%numnod)
+        call cal_ff_smp_2_ff                                            &
+     &     (node1, rhs_tbl1, n_scalar, ff_smp, f1_l%ff)
         call cal_sol_dx_by_consist(elen_nod, ione)
       end if
 !

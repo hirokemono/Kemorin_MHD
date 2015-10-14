@@ -83,7 +83,8 @@
 !
       call set_boundary_magne_4_rhs
 !
-      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp, ff, ml,  &
+      call cal_ff_2_vector                                              &
+     &   (node1%numnod, node1%istack_nod_smp, f1_l%ff, ml,              &
      &    nod_fld1%ntot_phys, iphys%i_b_diffuse, nod_fld1%d_fld)
       call vector_send_recv                                             &
      &   (nod_fld1%ntot_phys, iphys%i_b_diffuse, nod_fld1%d_fld)

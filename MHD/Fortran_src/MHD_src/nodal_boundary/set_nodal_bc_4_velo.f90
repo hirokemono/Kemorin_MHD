@@ -87,35 +87,40 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fixed_bc_zero_ff_rot(num_phys_bc, ibc_id)
+      subroutine set_fixed_bc_zero_ff_rot(numnod,                       &
+     &          num_phys_bc, ibc_id, ff, ff_nl)
 !
-      use m_finite_element_matrix
+      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: num_phys_bc
+      integer(kind = kint), intent(in) :: ibc_id(num_phys_bc)
 !
-      integer (kind = kint), intent(in) :: num_phys_bc
-      integer (kind = kint), intent(in) :: ibc_id(num_phys_bc)
-      integer (kind = kint) :: nd
-      integer (kind = kint) :: inum, inod
+      real(kind = kreal), intent(inout) :: ff(numnod,3)
+      real(kind = kreal), intent(inout) :: ff_nl(numnod,3)
+!
+      integer(kind = kint) :: inum, inod
 !
 !
-       do nd = 1, 3
-         do inum=1, num_phys_bc
-           inod = ibc_id(inum)
-           ff(inod,nd)=    0.0d0
-           ff_nl(inod,nd)= 0.0d0
-         end do
+       do inum=1, num_phys_bc
+         inod = ibc_id(inum)
+         ff(inod,1)=    0.0d0
+         ff(inod,2)=    0.0d0
+         ff(inod,3)=    0.0d0
+         ff_nl(inod,1)= 0.0d0
+         ff_nl(inod,2)= 0.0d0
+         ff_nl(inod,3)= 0.0d0
        end do
 !
       end subroutine set_fixed_bc_zero_ff_rot
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_specific_boundary_velo_rhs(num_bc_vsp_nod,         &
-     &    ibc_vsp_id)
+      subroutine set_specific_boundary_velo_rhs(numnod,                 &
+     &          num_bc_vsp_nod, ibc_vsp_id, ff)
 !
-       use m_finite_element_matrix
-!
-      integer(kind=kint), intent(in) :: num_bc_vsp_nod
-      integer(kind=kint), intent(in) :: ibc_vsp_id(num_bc_vsp_nod)
+      integer(kind = kint), intent(in) :: numnod
+      integer(kind = kint), intent(in) :: num_bc_vsp_nod
+      integer(kind = kint), intent(in) :: ibc_vsp_id(num_bc_vsp_nod)
+      real(kind = kreal), intent(inout) :: ff(numnod,3)
 !
       integer (kind = kint) :: inum, inod
 !

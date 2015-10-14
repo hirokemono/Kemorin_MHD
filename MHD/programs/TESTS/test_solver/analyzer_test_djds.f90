@@ -61,16 +61,17 @@
 !
       integer(kind = kint) :: ierr
 !
-!      call check_crs_matrix_components(my_rank, node1%numnod)
+!      call check_crs_matrix_comps(my_rank, tbl1_crs, mat1_crs)
 !C
 !C-- ICCG computation
-      if (SOLVER_crs .eq. 'scalar' .or. SOLVER_crs.eq.'SCALAR') then
+      if (mat1_crs%SOLVER_crs .eq. 'scalar'                             &
+     &   .or. mat1_crs%SOLVER_crs.eq.'SCALAR') then
         call solve_by_djds_solver11(ierr)
-      else if (SOLVER_crs.eq.'block33'                                  &
-     &    .or. SOLVER_crs.eq.'BLOCK33') then
+      else if (mat1_crs%SOLVER_crs.eq.'block33'                         &
+     &    .or. mat1_crs%SOLVER_crs.eq.'BLOCK33') then
         call solve_by_djds_solver33(ierr)
-      else if (SOLVER_crs.eq.'blockNN'                                  &
-     &    .or. SOLVER_crs.eq.'BLOCKNN') then
+      else if (mat1_crs%SOLVER_crs.eq.'blockNN'                         &
+     &    .or. mat1_crs%SOLVER_crs.eq.'BLOCKNN') then
         call solve_by_djds_solverNN(ierr)
       end if
 

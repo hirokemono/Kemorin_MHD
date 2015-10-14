@@ -27,12 +27,13 @@
 !
 !>      Work area for FEM assemble
       type(finite_ele_mat_node), save :: f1_tsr
-!f1_tsr%ff_smp
 !
+      type(finite_ele_mat_node), save :: f1_l
+!f1_l%ff
       real (kind=kreal), allocatable  ::  ml(:)
       real (kind=kreal), allocatable  ::  ml_o(:)
 !
-      real (kind=kreal), allocatable  ::  ff(:,:)
+!      real (kind=kreal), allocatable  ::  ff(:,:)
       real (kind=kreal), allocatable  ::  ff_nl(:,:)
 ! 
       real (kind=kreal), allocatable  :: ff_smp(:,:,:)
@@ -99,7 +100,7 @@
       integer(kind = kint), intent(in) :: numnod
 !
 !
-      allocate(ff(numnod,3))
+      allocate(f1_l%ff(numnod,3))
       allocate(ff_nl(numnod,3))
 !
       if(numnod .le. 0) return
@@ -158,7 +159,7 @@
       do nd = 1, 3
 !$omp do
         do inod = 1, numnod
-          ff(inod,nd) = 0.0d0
+          f1_l%ff(inod,nd) = 0.0d0
         end do
 !$omp end do nowait
       end do
@@ -205,7 +206,7 @@
 !
       subroutine deallocate_node_ff
 !
-      deallocate(ff, ff_nl)
+      deallocate(f1_l%ff, ff_nl)
 !
       end subroutine deallocate_node_ff
 !

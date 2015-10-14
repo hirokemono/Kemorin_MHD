@@ -27,7 +27,6 @@
 !
       subroutine allocate_consist_mass_crs(numnod)
 !
-      use m_crs_connect
       use m_crs_matrix
 
       integer(kind = kint), intent(in) :: numnod

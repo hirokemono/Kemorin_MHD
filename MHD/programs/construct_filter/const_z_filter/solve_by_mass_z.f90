@@ -30,37 +30,36 @@
       subroutine solve_crs_by_mass_z
 !
       use calypso_mpi
-      use m_crs_connect
       use m_crs_matrix
       use DJDS_precond_solve11
 !
       integer(kind = kint) :: i, ierr
 !
 !
-      NB_crs = 1
-         write(*,*) 'allocate_crs_mat_data'
-      call allocate_crs_mat_data(node1%numnod)
+      mat1_crs%NB_crs = 1
+         write(*,*) 'alloc_crs_mat_data'
+      call alloc_crs_mat_data(tbl1_crs, mat1_crs)
 !
       do i = 1, node1%numnod
-        D_crs(1,1,i) = d_mk_crs(i)
-        B_crs(i) = rhs_mk_crs(i)
+        mat1_crs%D_crs(1,1,i) = d_mk_crs(i)
+        mat1_crs%B_crs(i) =     rhs_mk_crs(i)
       end do
       do i = 1, tbl1_crs%ntot_l
-        AL_crs(1,1,i) = al_mk_crs(i)
+        mat1_crs%AL_crs(1,1,i) = al_mk_crs(i)
       end do
       do i = 1, tbl1_crs%ntot_u
-        AU_crs(1,1,i) = au_mk_crs(i)
+        mat1_crs%AU_crs(1,1,i) = au_mk_crs(i)
       end do
 !
          write(*,*) 'solve_by_djds_solver11'
       call solve_by_djds_solver11(ierr)
 !
       do i = 1, node1%numnod
-        sol_mk_crs(i) = X_crs(i)
+        sol_mk_crs(i) = mat1_crs%X_crs(i)
       end do
 !
-         write(*,*) 'deallocate_crs_mat_data'
-      call deallocate_crs_mat_data
+         write(*,*) 'dealloc_crs_mat_data'
+      call dealloc_crs_mat_data(mat1_crs)
 !
       end subroutine solve_crs_by_mass_z
 !
@@ -75,7 +74,6 @@
       use m_iccg_parameter
       use m_solver_djds
       use m_matrix_data_4_djds
-      use m_crs_connect
       use m_crs_matrix
 !
       use copy_matrix_2_djds_array
@@ -84,12 +82,12 @@
       integer(kind = kint) :: i, ierr
 !
 !
-      NB_crs = 1
-         write(*,*) 'allocate_crs_mat_data'
-      call allocate_crs_mat_data(node1%numnod)
+      mat1_crs%NB_crs = 1
+         write(*,*) 'alloc_crs_mat_data'
+      call alloc_crs_mat_data(tbl1_crs, mat1_crs)
 !
       do i = 1, node1%numnod
-        B_crs(i) = rhs_mk_crs(i)
+        mat1_crs%B_crs(i) = rhs_mk_crs(i)
       end do
 !
       call copy_RH_vect_2_crs_nn(node1%numnod)
@@ -111,11 +109,11 @@
       call copy_solution_2_crs_nn(node1%numnod)
 !
       do i = 1, node1%numnod
-        sol_mk_crs(i) = X_crs(i)
+        sol_mk_crs(i) = mat1_crs%X_crs(i)
       end do
 !
-         write(*,*) 'deallocate_crs_mat_data'
-      call deallocate_crs_mat_data
+      write(*,*) 'dealloc_crs_mat_data'
+      call dealloc_crs_mat_data(mat1_crs)
 !
       end subroutine solve_crs_by_mass_z2
 !

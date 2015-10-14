@@ -94,16 +94,17 @@
 !
       if (nmax_bc_v_nod .gt. 0) then
         call del_2vector_phys_on_bc(nmax_bc_v_nod, num_bc_v_nod,        &
-     &      ibc_v_id, node1%numnod, n_vector, ione, ff, ff_nl)
+     &      ibc_v_id, node1%numnod, n_vector, ione, f1_l%ff, ff_nl)
       end if
 !
       if (num_bc_v10_nod .gt. 0) then
-        call set_fixed_bc_zero_ff_rot(num_bc_v10_nod, ibc_v10_id)
+        call set_fixed_bc_zero_ff_rot(node1%numnod,                     &
+     &      num_bc_v10_nod, ibc_v10_id, f1_l%ff, ff_nl)
       end if
 !
       if (num_bc_vsp_nod .gt. 0) then
-        call set_specific_boundary_velo_rhs(num_bc_vsp_nod,             &
-     &    ibc_vsp_id)
+        call set_specific_boundary_velo_rhs(node1%numnod,               &
+     &      num_bc_vsp_nod, ibc_vsp_id, f1_l%ff)
       end if
 !
 !

@@ -48,8 +48,8 @@
        call set_rhs_vart_width
        call set_consist_mass_mat(node1%numnod)
 !
-       write(*,*) METHOD_crs
-       if ( METHOD_crs .eq. 'LU' ) then
+       write(*,*) mat1_crs%METHOD_crs
+       if ( mat1_crs%METHOD_crs .eq. 'LU' ) then
 !
          call solve_delta_z_LU(node1%numnod)
 !
@@ -67,7 +67,7 @@
        write(*,*) 'set_rhs_vart_width'
        call set_rhs_vart_width
 
-       if ( METHOD_crs .eq. 'LU' ) then
+       if ( mat1_crs%METHOD_crs .eq. 'LU' ) then
          call solve_delta_dz_LU(node1%numnod)
        else
          write(*,*) 'solve_crs_by_mass_z2'
@@ -81,7 +81,7 @@
 !       call int_edge_d2_vart_w2(num_int)
        call set_rhs_vart_width
 
-       if ( METHOD_crs .eq. 'LU' ) then
+       if ( mat1_crs%METHOD_crs .eq. 'LU' ) then
           call solve_delta_d2z_LU(node1%numnod)
        else
          write(*,*) 'solve_crs_by_mass_z2'

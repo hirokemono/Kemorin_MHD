@@ -47,7 +47,7 @@
       write(50+my_rank,*) 'inod, ff', numdir
       do inod = 1, node1%numnod
         write(50+my_rank,'(i16,1p10e25.14)')                            &
-     &         inod, (ff(inod,nd),nd=1, numdir)
+     &         inod, (f1_l%ff(inod,nd),nd=1, numdir)
       end do
 !
       end subroutine check_ff
@@ -78,10 +78,10 @@
 !
       write(50+my_rank,*) 'ip, inod, ff_smp', numdir
       do ip = 1, np_smp
-       do inod = 1, node1%max_nod_smp
-        write(50+my_rank,'(2i16,1p10e25.14)')                           &
+        do inod = 1, node1%max_nod_smp
+          write(50+my_rank,'(2i16,1p10e25.14)')                         &
      &         ip, inod, (ff_smp(inod,nd,ip),nd=1, numdir)
-      end do
+        end do
       end do
 !
       end subroutine check_ff_smp
@@ -97,29 +97,13 @@
 !
       write(50+my_rank,*) 'ip, inod, ff_nl_smp', numdir
       do ip = 1, np_smp
-       do inod = 1, node1%max_nod_smp
-        write(50+my_rank,'(2i16,1p10e25.14)')                           &
+        do inod = 1, node1%max_nod_smp
+          write(50+my_rank,'(2i16,1p10e25.14)')                         &
      &         ip, inod, (ff_nl_smp(inod,nd,ip),nd=1, numdir)
-      end do
+        end do
       end do
 !
       end subroutine check_ff_nl_smp
-!
-!   ---------------------------------------------------------------------
-!
-      subroutine check_sk6
-!
-      integer(kind = kint) :: iele, k1
-!
-      write(50+my_rank,*) 'k1, iele, sk6'
-      do k1 = 1, ele1%nnod_4_ele
-       do iele = 1, ele1%numele
-        write(50+my_rank,'(2i16,1p10e25.14)')                           &
-     &         k1, iele, fem1_wk%sk6(iele,1:6,k1)
-       end do
-      end do
-!
-      end subroutine check_sk6
 !
 !   ---------------------------------------------------------------------
 !

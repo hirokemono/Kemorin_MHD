@@ -26,7 +26,7 @@
      &          inod_ele_max, num_sort_smp, nod_stack_smp,              &
      &          iele_sort_smp, iconn_sort_smp, idx_4_mat)
 !
-      use m_crs_connect
+      use m_crs_matrix
       use set_off_diagonal
 !
       integer(kind = kint), intent(in) :: numnod, internal_node

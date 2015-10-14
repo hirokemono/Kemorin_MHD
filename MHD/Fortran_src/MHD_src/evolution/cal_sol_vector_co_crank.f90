@@ -40,7 +40,7 @@
 !
 !
       call cal_sol_velocity_co(node1%numnod, inter_smp_stack,           &
-     &    mhd_fem1_wk%ml_fl, ff, nod_fld1%ntot_phys,                    &
+     &    mhd_fem1_wk%ml_fl, f1_l%ff, nod_fld1%ntot_phys,               &
      &    iphys%i_velo, iphys%i_p_phi, nod_fld1%d_fld)
 !
       end subroutine cal_sol_velo_co
@@ -56,7 +56,8 @@
 !
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
 !
-      call cal_sol_vector_co(node1%numnod, inter_smp_stack, ml, ff,     &
+      call cal_sol_vector_co                                            &
+     &   (node1%numnod, inter_smp_stack, ml, f1_l%ff,                   &
      &    nod_fld1%ntot_phys, iphys%i_vecp, nod_fld1%d_fld)
 !
       end subroutine cal_sol_vect_p_co
@@ -72,7 +73,8 @@
 !
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
 !
-      call cal_sol_vector_co(node1%numnod, inter_smp_stack, ml, ff,     &
+      call cal_sol_vector_co                                            &
+     &   (node1%numnod, inter_smp_stack, ml, f1_l%ff,                   &
      &    nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld)
 !
       end subroutine cal_sol_magne_co
@@ -92,7 +94,7 @@
 !
       call cal_sol_velo_co_crank_lump(node1%numnod, inter_smp_stack,    &
      &    mhd_fem1_wk%ml_o_fl, nod_fld1%ntot_phys,                      &
-     &    iphys%i_velo, nod_fld1%d_fld, ff_nl, ff)
+     &    iphys%i_velo, nod_fld1%d_fld, ff_nl, f1_l%ff)
 !
       end subroutine cal_sol_velo_co_crank
 !
@@ -108,7 +110,8 @@
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
 !
       call cal_sol_vect_co_crank(node1%numnod, inter_smp_stack, ml_o,   &
-     &    nod_fld1%ntot_phys, iphys%i_vecp, nod_fld1%d_fld, ff_nl, ff)
+     &    nod_fld1%ntot_phys, iphys%i_vecp, nod_fld1%d_fld,             &
+     &    ff_nl, f1_l%ff)
 !
       end subroutine cal_sol_vect_p_co_crank
 !
@@ -124,7 +127,8 @@
       integer (kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
 !
       call cal_sol_vect_co_crank(node1%numnod, inter_smp_stack, ml_o,   &
-     &    nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld, ff_nl, ff)
+     &    nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld,            &
+     &    ff_nl, f1_l%ff)
 !
       end subroutine cal_sol_magne_co_crank
 !
@@ -178,7 +182,7 @@
 !
 !
       call cal_sol_magne_insulate(node1%numnod, inter_ins_smp_stack,    &
-     &    numnod_insulate, inod_insulate, ff, nod_fld1%ntot_phys,       &
+     &    numnod_insulate, inod_insulate, f1_l%ff, nod_fld1%ntot_phys,  &
      &    iphys%i_magne, nod_fld1%d_fld)
 !
       end subroutine cal_sol_magne_insulator
@@ -202,11 +206,11 @@
 !
 !
       call cal_sol_vect_co_crank_consist                                &
-     &   (node1%numnod, inter_smp_stack, ff_nl, ff)
+     &   (node1%numnod, inter_smp_stack, ff_nl, f1_l%ff)
 !
       if (coef_field .eq. 0.0d0) return
       call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector,                   &
-     &    mhd_fem1_wk%ff_m_smp, ff)
+     &    mhd_fem1_wk%ff_m_smp, f1_l%ff)
 !
       end subroutine cal_vector_co_crank_consist
 !
