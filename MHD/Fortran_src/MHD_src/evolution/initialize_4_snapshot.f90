@@ -86,8 +86,8 @@
         ncomp_correlate = 9
         if (iflag_debug.eq.1) write(*,*)' const_layers_4_dynamic'
         call const_layers_4_dynamic(ele_grp1, layer_tbl1)
-        call allocate_work_4_dynamic(layer_tbl1%n_layer_d)
-        call allocate_work_layer_correlate(layer_tbl1%n_layer_d)
+        call allocate_work_4_dynamic(layer_tbl1%e_grp%num_grp)
+        call allocate_work_layer_correlate(layer_tbl1%e_grp%num_grp)
       end if
 !
 !

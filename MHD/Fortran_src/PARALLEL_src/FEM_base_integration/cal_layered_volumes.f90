@@ -43,30 +43,30 @@
 !
 !
       call alloc_layering_volumes_type(layer_tbl)
-      call allocate_work_layerd_volume(layer_tbl%n_layer_d)
+      call allocate_work_layerd_volume(layer_tbl%e_grp%num_grp)
 !
 !      if(layer_tbl%minlayer_4_smp                                      &
 !     &      .gt. layer_tbl%min_item_layer_d_smp) then
         if (iflag_debug.eq.1) write(*,*) 'int_volume_4_sgs_layer'
         call int_volume_4_sgs_layer                                     &
      &     (ele%numele, ele%interior_ele, ele%volume_ele,               &
-     &      layer_tbl%n_layer_d, layer_tbl%n_item_layer_d,              &
-     &      layer_tbl%layer_stack_smp, layer_tbl%item_layer)
+     &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
+     &      layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp)
 !      else
 !        if (iflag_debug.eq.1) write(*,*) 'int_volume_dynamic_grpsmp'
 !        call int_volume_dynamic_grpsmp                                 &
 !     &     (ele%numele, ele%interior_ele, ele%volume_ele,              &
-!     &      layer_tbl%n_layer_d, layer_tbl%n_item_layer_d,             &
-!     &      layer_tbl%layer_stack, layer_tbl%istack_item_layer_d_smp,  &
-!     &      layer_tbl%item_layer)
+!     &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,         &
+!     &      layer_tbl%e_grp%istack_grp, layer_tbl%istack_item_layer_d_smp,  &
+!     &      layer_tbl%e_grp%item_grp)
 !      end if
 !
       if (iflag_debug.eq.1) write(*,*) 'sum_volumes_4_layerd'
-      call sum_volumes_4_layerd(layer_tbl%n_layer_d,                    &
+      call sum_volumes_4_layerd(layer_tbl%e_grp%num_grp,                &
      &   layer_tbl%volumes_layer, layer_tbl%vol_total_layer)
       if (iflag_debug.eq.1) write(*,*) 'cal_a_vol_4_layerd'
       call cal_a_vol_4_layerd                                           &
-     &   (layer_tbl%n_layer_d, layer_tbl%volumes_layer,                 &
+     &   (layer_tbl%e_grp%num_grp, layer_tbl%volumes_layer,             &
      &    layer_tbl%vol_total_layer, layer_tbl%a_vol_layer,             &
      &    layer_tbl%a_vol_total_layer)
 !
@@ -75,7 +75,7 @@
       if (iflag_debug.eq.1) then
         write(*,*) 'vol_total_layer: ', layer_tbl%vol_total_layer(1)
         write(*,*) 'layer, volumes_layer'
-        do inum = 1, layer_tbl%n_layer_d
+        do inum = 1, layer_tbl%e_grp%num_grp
           write(*,*) inum, layer_tbl%volumes_layer(inum)
         end do
       end if

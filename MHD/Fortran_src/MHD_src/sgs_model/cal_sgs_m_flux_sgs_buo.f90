@@ -24,8 +24,10 @@
       subroutine cal_sgs_mom_flux_with_sgs_buo
 !
       use m_control_parameter
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_address
+      use m_jacobians
       use m_SGS_address
       use m_layering_ele_list
       use m_node_phys_data
@@ -39,7 +41,7 @@
       use sgs_buoyancy_flux
       use merge_dynamic_coefs
       use set_sgs_diff_model_coefs
-      use int_rms_ave_ele_grps_1st
+      use int_rms_ave_ele_grps
 !
       integer(kind = kint), parameter :: ncomp_sgs_buo= 6
 !      integer(kind = kint) :: i
@@ -48,9 +50,9 @@
 !   lead SGS momentum flux using original model coefficient
 !
       call set_model_coefs_2_ele(itype_SGS_m_flux_coef, n_sym_tensor,   &
-     &    iak_sgs_mf, icomp_sgs_mf, layer_tbl1%n_layer_d,               &
-     &    layer_tbl1%n_item_layer_d, layer_tbl1%layer_stack_smp,        &
-     &    layer_tbl1%item_layer)
+     &    iak_sgs_mf, icomp_sgs_mf, layer_tbl1%e_grp%num_grp,           &
+     &    layer_tbl1%e_grp%num_item, layer_tbl1%e_grp%istack_grp_smp,   &
+     &    layer_tbl1%e_grp%item_grp)
 !
       call cal_sgs_momentum_flux
 !
@@ -77,32 +79,32 @@
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
 !
       if(iflag_4_gravity .gt. id_turn_OFF) then
-        call int_vol_2rms_ave_ele_grps_1st(intg_point_t_evo,            &
-     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
-     &      layer_tbl1%layer_stack, layer_tbl1%item_layer,              &
-     &      nod_fld1%ntot_phys, iphys%i_reynolds_wk, nod_fld1%d_fld,    &
-     &      nod_fld1%ntot_phys, iphys%i_SGS_buo_wk, nod_fld1%d_fld,     &
-     &      sgs_l(1,1), sgs_l(1,4), sgs_l(1,2), sgs_l(1,5) )
+        call int_vol_2rms_ave_ele_grps                                  &
+     &     (node1, ele1, layer_tbl1%e_grp, jac1_3d_q, jac1_3d_l,        &
+     &      intg_point_t_evo, nod_fld1%ntot_phys, iphys%i_reynolds_wk,  &
+     &      nod_fld1%d_fld, nod_fld1%ntot_phys, iphys%i_SGS_buo_wk,     &
+     &      nod_fld1%d_fld, sgs_l(1,1), sgs_l(1,4), sgs_l(1,2),         &
+     &      sgs_l(1,5) )
 !
         if(iflag_4_composit_buo .gt. id_turn_OFF) then
-          call int_vol_rms_ave_ele_grps_1st(intg_point_t_evo,           &
-     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
-     &        layer_tbl1%layer_stack, layer_tbl1%item_layer,            &
-     &        nod_fld1%ntot_phys, iphys%i_SGS_comp_buo_wk,              &
-     &        nod_fld1%d_fld, sgs_l(1,3), sgs_l(1,6))
+          call int_vol_rms_ave_ele_grps                                 &
+     &       (node1, ele1, layer_tbl1%e_grp, jac1_3d_q, jac1_3d_l,      &
+     &        intg_point_t_evo, nod_fld1%ntot_phys,                     &
+     &        iphys%i_SGS_comp_buo_wk, nod_fld1%d_fld,                  &
+     &        sgs_l(1,3), sgs_l(1,6))
         end if
       else if(iflag_4_composit_buo .gt. id_turn_OFF) then
-        call int_vol_2rms_ave_ele_grps_1st(intg_point_t_evo,            &
-     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
-     &      layer_tbl1%layer_stack, layer_tbl1%item_layer,              &
-     &      nod_fld1%ntot_phys, iphys%i_reynolds_wk, nod_fld1%d_fld,    &
-     &      nod_fld1%ntot_phys, iphys%i_SGS_comp_buo_wk,                &
-     &      nod_fld1%d_fld, sgs_l(1,1), sgs_l(1,4), sgs_l(1,3),         &
-     &      sgs_l(1,6) )
+        call int_vol_2rms_ave_ele_grps                                  &
+     &     (node1, ele1, layer_tbl1%e_grp, jac1_3d_q, jac1_3d_l,        &
+     &      intg_point_t_evo, nod_fld1%ntot_phys, iphys%i_reynolds_wk,  &
+     &      nod_fld1%d_fld, nod_fld1%ntot_phys,                         &
+     &      iphys%i_SGS_comp_buo_wk, nod_fld1%d_fld,                    &
+     &      sgs_l(1,1), sgs_l(1,4), sgs_l(1,3), sgs_l(1,6))
       end if
 !
 !
-      call lsq_model_coefs_4_comps(layer_tbl1%n_layer_d, ncomp_sgs_buo)
+      call lsq_model_coefs_4_comps                                      &
+     &   (layer_tbl1%e_grp%num_grp, ncomp_sgs_buo)
 !
 !   Parameterize model coeffisient including SGS Buoyancy
 !

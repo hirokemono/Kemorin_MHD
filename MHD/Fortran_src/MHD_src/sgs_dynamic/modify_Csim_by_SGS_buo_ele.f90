@@ -3,7 +3,7 @@
 !
 !      written by H. Matsui on Aug., 2007
 !
-!      subroutine mod_Csim_by_SGS_buoyancy_ele
+!      subroutine mod_Csim_by_SGS_buoyancy_ele(layer_egrp)
 !
       module modify_Csim_by_SGS_buo_ele
 !
@@ -24,12 +24,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine mod_Csim_by_SGS_buoyancy_ele
+      subroutine mod_Csim_by_SGS_buoyancy_ele(layer_egrp)
 !
-      use m_layering_ele_list
+      use t_group_data
       use m_SGS_address
       use m_control_parameter
       use set_sgs_diff_model_coefs
+!
+      type(group_data), intent(in) :: layer_egrp
 !
 !
       call clear_model_coefs_2_ele(n_sym_tensor, icomp_sgs_mf)
@@ -38,32 +40,32 @@
      &     .and. iflag_4_composit_buo .gt. id_turn_OFF) then
         if(itype_SGS_m_flux_coef .eq. 1) then
           call modify_cmpCsim_by_SGS_dbuo_ele                           &
-     &       (layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
-     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
+     &     (layer_egrp%num_grp, layer_egrp%num_item,                    &
+     &      layer_egrp%istack_grp_smp, layer_egrp%item_grp)
         else
           call modify_fldCsim_by_SGS_dbuo_ele                           &
-     &       (layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
-     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
+     &     (layer_egrp%num_grp, layer_egrp%num_item,                    &
+     &      layer_egrp%istack_grp_smp, layer_egrp%item_grp)
         end if
       else if(iflag_4_gravity .gt. id_turn_OFF) then
         if(itype_SGS_m_flux_coef .eq. 1) then
           call modify_cmpCsim_by_SGS_buo_ele(iak_sgs_tbuo,              &
-     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
-     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
+     &      layer_egrp%num_grp, layer_egrp%num_item,                    &
+     &      layer_egrp%istack_grp_smp, layer_egrp%item_grp)
         else
           call modify_fldCsim_by_SGS_buo_ele(iak_sgs_tbuo,              &
-     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
-     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
+     &      layer_egrp%num_grp, layer_egrp%num_item,                    &
+     &      layer_egrp%istack_grp_smp, layer_egrp%item_grp)
         end if
       else if(iflag_4_composit_buo .gt. id_turn_OFF) then
         if(itype_SGS_m_flux_coef .eq. 1) then
           call modify_cmpCsim_by_SGS_buo_ele(iak_sgs_cbuo,              &
-     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
-     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
+     &      layer_egrp%num_grp, layer_egrp%num_item,                    &
+     &      layer_egrp%istack_grp_smp, layer_egrp%item_grp)
         else
           call modify_fldCsim_by_SGS_buo_ele(iak_sgs_cbuo,              &
-     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
-     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
+     &      layer_egrp%num_grp, layer_egrp%num_item,                    &
+     &      layer_egrp%istack_grp_smp, layer_egrp%item_grp)
         end if
       end if
 !

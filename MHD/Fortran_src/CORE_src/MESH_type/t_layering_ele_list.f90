@@ -20,6 +20,7 @@
       module t_layering_ele_list
 !
       use m_precision
+      use t_group_data
 !
       implicit none
 !
@@ -27,22 +28,11 @@
 !
 !> Structure of grouping of elements
       type layering_tbl
-!>      number of layers
-        integer (kind = kint) :: n_layer_d
-!>      total number of elements layer table
-        integer (kind = kint) :: n_item_layer_d
+!>  element group structure for layering
+        type(group_data) :: e_grp
 !
-!>      starting address for each layer
-        integer (kind = kint), pointer :: layer_stack(:)
-!>      element ID for layer table
-        integer (kind = kint), pointer :: item_layer(:)
-!
-!>      starting address for each layer and SMP
-        integer (kind = kint), pointer :: layer_stack_smp(:)
 !>      minimum number of each layer with SMP
         integer(kind = kint) :: minlayer_4_smp
-!>      maximum number of each layer with SMP
-        integer(kind = kint) :: maxlayer_4_smp
 !
 !>      starting address for each layer for SMP
         integer (kind = kint), pointer :: istack_item_layer_d_smp(:)
@@ -77,13 +67,13 @@
       type(layering_tbl), intent(inout) :: layer_tbl
 !
 !
-      allocate (layer_tbl%layer_stack(0:layer_tbl%n_layer_d))
-      allocate (layer_tbl%layer_stack_smp(0:layer_tbl%n_layer_d*np_smp))
+      layer_tbl%e_grp%num_grp_smp = layer_tbl%e_grp%num_grp * np_smp
+      call allocate_grp_type_num(layer_tbl%e_grp)
+      call allocate_grp_type_smp(layer_tbl%e_grp)
+!
       allocate (layer_tbl%istack_item_layer_d_smp(0:np_smp) )
 !
-      if (layer_tbl%n_layer_d .gt. 0) then
-        layer_tbl%layer_stack      = 0
-        layer_tbl%layer_stack_smp  = 0
+      if (layer_tbl%e_grp%num_grp .gt. 0) then
         layer_tbl%istack_item_layer_d_smp = 0
       end if
 !
@@ -96,8 +86,7 @@
       type(layering_tbl), intent(inout) :: layer_tbl
 !
 !
-      allocate (layer_tbl%item_layer(layer_tbl%n_item_layer_d))
-      if (layer_tbl%n_item_layer_d .gt. 0) layer_tbl%item_layer = 0
+      call allocate_grp_type_item(layer_tbl%e_grp)
 !
       end subroutine alloc_layer_items_type
 !
@@ -108,10 +97,10 @@
       type(layering_tbl), intent(inout) :: layer_tbl
 !
 !
-       allocate( layer_tbl%volumes_layer(layer_tbl%n_layer_d) )
-       allocate( layer_tbl%a_vol_layer(layer_tbl%n_layer_d) )
+       allocate( layer_tbl%volumes_layer(layer_tbl%e_grp%num_grp) )
+       allocate( layer_tbl%a_vol_layer(layer_tbl%e_grp%num_grp) )
 !
-       if(layer_tbl%n_layer_d .gt. 0) then
+       if(layer_tbl%e_grp%num_grp .gt. 0) then
          layer_tbl%volumes_layer = 0.0d0
          layer_tbl%a_vol_layer  =  0.0d0
        end if
@@ -126,8 +115,10 @@
       type(layering_tbl), intent(inout) :: layer_tbl
 !
 !
-      deallocate (layer_tbl%item_layer)
-      deallocate (layer_tbl%layer_stack, layer_tbl%layer_stack_smp)
+      call deallocate_grp_type_smp(layer_tbl%e_grp)
+      call deallocate_grp_type_item(layer_tbl%e_grp)
+      call deallocate_grp_type_num(layer_tbl%e_grp)
+!
       deallocate (layer_tbl%istack_item_layer_d_smp )
 !
       end subroutine dealloc_layering_ele_list_type
@@ -152,12 +143,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
 !
 !
-      integer(kind = kint) :: j
-!
-      write(50+my_rank,*) 'j, layer_tbl%layer_stack(j)'
-      do j = 0, layer_tbl%n_layer_d
-        write(50+my_rank,*) j, layer_tbl%layer_stack(j)
-      end do
+      call check_group_type_data(my_rank, layer_tbl%e_grp)
 !
       end subroutine check_layer_stack_type
 !

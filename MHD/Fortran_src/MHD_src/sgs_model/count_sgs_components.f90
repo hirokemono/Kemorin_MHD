@@ -152,7 +152,7 @@
 !
 !   set index for model coefficients
 !
-      call allocate_sgs_coefs_layer(layer_tbl1%n_layer_d)
+      call allocate_sgs_coefs_layer(layer_tbl1%e_grp%num_grp)
       call allocate_model_coefs(numele)
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &

@@ -38,6 +38,8 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
+      use m_jacobians
+      use m_layering_ele_list
       use m_node_phys_address
       use m_node_phys_data
       use m_ele_sf_eg_comm_tables
@@ -122,7 +124,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)  's_int_whole_volume_w_layer'
-      call s_int_whole_volume_w_layer
+      call s_int_whole_volume_w_layer(ele1, jac1_3d_q, layer_tbl1)
 !
       end subroutine initialize_udt_corre_1comp
 !
@@ -154,10 +156,10 @@
 !
       ntot_correlate =  nod_fld1%ntot_phys
       ncomp_correlate = nod_fld1%ntot_phys
-      nlayer_correlate = layer_tbl1%n_layer_d
+      nlayer_correlate = layer_tbl1%e_grp%num_grp
       call allocate_name_layer_correlate
       call allocate_all_layer_correlate
-      call allocate_work_layer_correlate(layer_tbl1%n_layer_d)
+      call allocate_work_layer_correlate(layer_tbl1%e_grp%num_grp)
 !
       call set_correlate_data_names
 !

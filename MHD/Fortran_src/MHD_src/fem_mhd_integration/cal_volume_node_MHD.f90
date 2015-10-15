@@ -35,6 +35,7 @@
 !
       use m_control_parameter
       use m_geometry_data_MHD
+      use m_jacobians
       use m_bulk_values
       use m_layering_ele_list
 !
@@ -45,7 +46,7 @@
       call allocate_volume_4_smp
 !
       if (iflag_debug.eq.1) write(*,*) 's_int_volume_of_domain'
-      call s_int_volume_of_domain
+      call s_int_volume_of_domain(ele1, jac1_3d_q)
 !
 !     ---  lead total volume of each area
 !

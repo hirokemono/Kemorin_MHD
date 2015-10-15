@@ -44,7 +44,7 @@
 !
 !
       sgs_w(1:18) =   0.0d0
-      sgs_l(1:layer_tbl1%n_layer_d,1:18) =   0.0d0
+      sgs_l(1:layer_tbl1%e_grp%num_grp,1:18) =   0.0d0
 !
       if(layer_tbl1%minlayer_4_smp                                      &
      &     .gt. layer_tbl1%min_item_layer_d_smp) then
@@ -53,16 +53,18 @@
           call int_vol_model_coef_q(node1%numnod,                       &
      &        ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,        &
      &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,  &
-     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
-     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
+     &        layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,      &
+     &        layer_tbl1%e_grp%istack_grp_smp,                          &
+     &        layer_tbl1%e_grp%item_grp,                                &
      &        nod_fld1%ntot_phys, nod_fld1%d_fld,                       &
      &        sgs_l_smp, sgs_l, sgs_w)
         else
           call int_vol_model_coef_l(node1%numnod,                       &
      &        ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,        &
      &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
-     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
-     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
+     &        layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,      &
+     &        layer_tbl1%e_grp%istack_grp_smp,                          &
+     &        layer_tbl1%e_grp%item_grp,                                &
      &        nod_fld1%ntot_phys, nod_fld1%d_fld,                       &
      &        sgs_l_smp, sgs_l, sgs_w)
         end if
@@ -74,17 +76,21 @@
           call int_vol_model_coef_grpsmp_q(node1%numnod,                &
      &      ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,          &
      &      jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,    &
-     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
-     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
-     &      layer_tbl1%item_layer, nod_fld1%ntot_phys, nod_fld1%d_fld,  &
+     &      layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,        &
+     &      layer_tbl1%e_grp%istack_grp,                                &
+     &      layer_tbl1%istack_item_layer_d_smp,                         &
+     &      layer_tbl1%e_grp%item_grp,                                  &
+     &      nod_fld1%ntot_phys, nod_fld1%d_fld,                         &
      &      sgs_l_smp, sgs_l, sgs_w)
         else
           call int_vol_model_coef_grpsmp_l(node1%numnod,                &
      &      ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,          &
      &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,    &
-     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
-     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
-     &      layer_tbl1%item_layer, nod_fld1%ntot_phys, nod_fld1%d_fld,  &
+     &      layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,        &
+     &      layer_tbl1%e_grp%istack_grp,                                &
+     &      layer_tbl1%istack_item_layer_d_smp,                         &
+     &      layer_tbl1%e_grp%item_grp,                                  &
+     &      nod_fld1%ntot_phys, nod_fld1%d_fld,                         &
      &      sgs_l_smp, sgs_l, sgs_w)
         end if
       end if
@@ -140,16 +146,18 @@
           call int_vol_rms_ave_dynamic_q(node1%numnod,                  &
      &        ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,        &
      &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,  &
-     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
-     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
+     &        layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,      &
+     &        layer_tbl1%e_grp%istack_grp_smp,                          &
+     &        layer_tbl1%e_grp%item_grp,                                &
      &        nod_fld1%ntot_phys, nod_fld1%d_fld, ncomp_correlate_2,    &
      &        ave_l_smp, rms_l_smp, ave_l, rms_l, ave_w, rms_w)
         else
           call int_vol_rms_ave_dynamic_l(node1%numnod,                  &
      &        ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,        &
      &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
-     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
-     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
+     &        layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,      &
+     &        layer_tbl1%e_grp%istack_grp_smp,                          &
+     &        layer_tbl1%e_grp%item_grp,                                &
      &        nod_fld1%ntot_phys, nod_fld1%d_fld, ncomp_correlate_2,    &
      &        ave_l_smp, rms_l_smp, ave_l, rms_l, ave_w, rms_w)
         end if
@@ -160,18 +168,22 @@
           call int_vol_rms_dynamic_grpsmp_q(node1%numnod,               &
      &      ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,          &
      &      jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,    &
-     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
-     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
-     &      layer_tbl1%item_layer, nod_fld1%ntot_phys, nod_fld1%d_fld,  &
+     &      layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,        &
+     &      layer_tbl1%e_grp%istack_grp,                                &
+     &      layer_tbl1%istack_item_layer_d_smp,                         &
+     &      layer_tbl1%e_grp%item_grp,                                  &
+     &      nod_fld1%ntot_phys, nod_fld1%d_fld,                         &
      &      ncomp_correlate_2, ave_l_smp, rms_l_smp, ave_l, rms_l,      &
      &      ave_w, rms_w)
         else
           call int_vol_rms_dynamic_grpsmp_l(node1%numnod,               &
      &      ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,          &
      &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,    &
-     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
-     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
-     &      layer_tbl1%item_layer, nod_fld1%ntot_phys, nod_fld1%d_fld,  &
+     &      layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,        &
+     &      layer_tbl1%e_grp%istack_grp,                                &
+     &      layer_tbl1%istack_item_layer_d_smp,                         &
+     &      layer_tbl1%e_grp%item_grp,                                  &
+     &      nod_fld1%ntot_phys, nod_fld1%d_fld,                         &
      &      ncomp_correlate_2, ave_l_smp, rms_l_smp, ave_l, rms_l,      &
      &      ave_w, rms_w)
         end if
@@ -219,9 +231,9 @@
 !
       integer (kind = kint), intent(in) :: n_tensor, n_int
       real(kind = kreal), intent(in)                                    &
-     &                   :: ave_s(layer_tbl1%n_layer_d,n_tensor)
+     &                   :: ave_s(layer_tbl1%e_grp%num_grp,n_tensor)
       real(kind = kreal), intent(in)                                    &
-     &                   :: ave_g(layer_tbl1%n_layer_d,n_tensor)
+     &                   :: ave_g(layer_tbl1%e_grp%num_grp,n_tensor)
 !
 !
       if(layer_tbl1%minlayer_4_smp                                      &
@@ -231,8 +243,9 @@
           call int_vol_layer_cor_q(node1%numnod,                        &
      &        ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,        &
      &        jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,  &
-     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
-     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
+     &        layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,      &
+     &        layer_tbl1%e_grp%istack_grp_smp,                          &
+     &        layer_tbl1%e_grp%item_grp,                                &
      &        ave_s, ave_g, nod_fld1%ntot_phys, nod_fld1%d_fld,         &
      &        ncomp_correlate, ncomp_correlate_2,                       &
      &        sig_l_smp, cor_l_smp, sig_l, cov_l, sig_w, cov_w)
@@ -240,8 +253,9 @@
           call int_vol_layer_cor_l(node1%numnod,                        &
      &        ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,        &
      &        jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,  &
-     &        layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,          &
-     &        layer_tbl1%layer_stack_smp, layer_tbl1%item_layer,        &
+     &        layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,      &
+     &        layer_tbl1%e_grp%istack_grp_smp,                          &
+     &        layer_tbl1%e_grp%item_grp,                                &
      &        ave_s, ave_g, nod_fld1%ntot_phys, nod_fld1%d_fld,         &
      &        ncomp_correlate, ncomp_correlate_2,                       &
      &        sig_l_smp, cor_l_smp, sig_l, cov_l, sig_w, cov_w)
@@ -253,18 +267,22 @@
           call int_vol_layer_cor_grpsmp_q(node1%numnod,                 &
      &      ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,          &
      &      jac1_3d_q%ntot_int, n_int, jac1_3d_q%xjac, jac1_3d_q%an,    &
-     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
-     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
-     &      layer_tbl1%item_layer, ave_s, ave_g, nod_fld1%ntot_phys,    &
+     &      layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,        &
+     &      layer_tbl1%e_grp%istack_grp,                                &
+     &      layer_tbl1%istack_item_layer_d_smp,                         &
+     &      layer_tbl1%e_grp%item_grp,                                  &
+     &      ave_s, ave_g, nod_fld1%ntot_phys,                           &
      &      nod_fld1%d_fld, ncomp_correlate, ncomp_correlate_2,         &
      &      sig_l_smp, cor_l_smp, sig_l, cov_l, sig_w, cov_w)
         else
           call int_vol_layer_cor_grpsmp_l(node1%numnod,                 &
      &      ele1%numele, ele1%ie, ele1%interior_ele, n_tensor,          &
      &      jac1_3d_l%ntot_int, n_int, jac1_3d_l%xjac, jac1_3d_l%an,    &
-     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
-     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
-     &      layer_tbl1%item_layer, ave_s, ave_g, nod_fld1%ntot_phys,    &
+     &      layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,        &
+     &      layer_tbl1%e_grp%istack_grp,                                &
+     &      layer_tbl1%istack_item_layer_d_smp,                         &
+     &      layer_tbl1%e_grp%item_grp,                                  &
+     &      ave_s, ave_g, nod_fld1%ntot_phys,                           &
      &      nod_fld1%d_fld, ncomp_correlate, ncomp_correlate_2,         &
      &      sig_l_smp, cor_l_smp, sig_l, cov_l, sig_w, cov_w)
         end if

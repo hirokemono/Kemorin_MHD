@@ -79,15 +79,15 @@
 !
       call set_layerd_group_id(ele_grp%num_grp, ele_grp%grp_name)
 !
-      layer_tbl%n_layer_d = num_layer_grp
+      layer_tbl%e_grp%num_grp = num_layer_grp
       call alloc_layering_ele_list_type(layer_tbl)
 !
 !
         if (iflag_debug .eq. 1)                                         &
      &    write(*,*) 'count_ele_layer_by_table'
       call count_ele_layer_by_table(ele_grp%num_grp,                    &
-     &    ele_grp%istack_grp, layer_tbl%n_layer_d,                      &
-     &    layer_tbl%n_item_layer_d, layer_tbl%layer_stack)
+     &    ele_grp%istack_grp, layer_tbl%e_grp%num_grp,                  &
+     &    layer_tbl%e_grp%num_item, layer_tbl%e_grp%istack_grp)
 !
 !      call check_layer_stack_type(my_rank, layer_tbl1)
 !
@@ -95,18 +95,18 @@
       call alloc_layer_items_type(layer_tbl)
       if (iflag_debug .eq. 1)  write(*,*) 'set_ele_layer_by_table'
       call set_ele_layer_by_table(ele_grp%num_grp, ele_grp%num_item,    &
-     &    ele_grp%istack_grp, ele_grp%item_grp, layer_tbl%n_layer_d,    &
-     &    layer_tbl%n_item_layer_d, layer_tbl%layer_stack,              &
-     &    layer_tbl%item_layer)
+     &    ele_grp%istack_grp, ele_grp%item_grp,                         &
+     &    layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,            &
+     &    layer_tbl%e_grp%istack_grp, layer_tbl%e_grp%item_grp)
 !
       call deallocate_layering_ele_grp
 !
 !   SMP settings
 !
-      call count_ele_4_dynamic_smp(layer_tbl%n_layer_d,                 &
-     &    layer_tbl%layer_stack, layer_tbl%maxlayer_4_smp,              &
+      call count_ele_4_dynamic_smp(layer_tbl%e_grp%num_grp,             &
+     &    layer_tbl%e_grp%istack_grp, layer_tbl%e_grp%max_grp_smp,      &
      &    layer_tbl%minlayer_4_smp, layer_tbl%min_item_layer_d_smp,     &
-     &    layer_tbl%max_item_layer_d_smp, layer_tbl%layer_stack_smp,    &
+     &    layer_tbl%max_item_layer_d_smp, layer_tbl%e_grp%istack_grp_smp, &
      &    layer_tbl%istack_item_layer_d_smp)
 !
       end subroutine const_layer_list_by_table
@@ -147,31 +147,32 @@
 !
 !
       call set_num_dynamic_layer_by_start(ele_grp%num_grp,              &
-     &    ele_grp%grp_name, ele_grp%istack_grp, layer_tbl%n_layer_d)
+     &    ele_grp%grp_name, ele_grp%istack_grp,                         &
+     &    layer_tbl%e_grp%num_grp)
 !
-      call allocate_layer_ele_start(layer_tbl%n_layer_d)
+      call allocate_layer_ele_start(layer_tbl%e_grp%num_grp)
       call alloc_layering_ele_list_type(layer_tbl)
 !
       call set_start_ele_4_dynamic(ele_grp%num_grp, ele_grp%num_item,   &
      &    ele_grp%grp_name, ele_grp%istack_grp, ele_grp%item_grp,       &
-     &    layer_tbl%n_layer_d)
+     &    layer_tbl%e_grp%num_grp)
 !
-      call count_ele_4_dynamic_by_start(layer_tbl%n_layer_d,            &
-     &    layer_tbl%n_item_layer_d, layer_tbl%layer_stack)
+      call count_ele_4_dynamic_by_start(layer_tbl%e_grp%num_grp,        &
+     &    layer_tbl%e_grp%num_item, layer_tbl%e_grp%istack_grp)
 !
       call alloc_layer_items_type(layer_tbl)
-      call set_ele_4_dynamic_by_start(layer_tbl%n_layer_d,              &
-     &    layer_tbl%n_item_layer_d, layer_tbl%layer_stack,              &
-     &    layer_tbl%item_layer)
+      call set_ele_4_dynamic_by_start(layer_tbl%e_grp%num_grp,          &
+     &    layer_tbl%e_grp%num_item, layer_tbl%e_grp%istack_grp,         &
+     &    layer_tbl%e_grp%item_grp)
 !
       call deallocate_layer_ele_start
 !
 !   SMP settings
 !
-      call count_ele_4_dynamic_smp(layer_tbl%n_layer_d,                 &
-     &    layer_tbl%layer_stack, layer_tbl%maxlayer_4_smp,              &
+      call count_ele_4_dynamic_smp(layer_tbl%e_grp%num_grp,             &
+     &    layer_tbl%e_grp%istack_grp, layer_tbl%e_grp%max_grp_smp,      &
      &    layer_tbl%minlayer_4_smp, layer_tbl%min_item_layer_d_smp,     &
-     &    layer_tbl%max_item_layer_d_smp, layer_tbl%layer_stack_smp,    &
+     &    layer_tbl%max_item_layer_d_smp, layer_tbl%e_grp%istack_grp_smp, &
      &    layer_tbl%istack_item_layer_d_smp)
 !
       end subroutine const_layer_list_by_start_end

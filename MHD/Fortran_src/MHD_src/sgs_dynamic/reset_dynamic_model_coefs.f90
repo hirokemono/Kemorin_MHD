@@ -50,13 +50,14 @@
       if(layer_tbl1%minlayer_4_smp                                      &
      &     .gt. layer_tbl1%min_item_layer_d_smp) then
         call reset_sgs_v_model_coefs_elesmp(icomp_sgs, iele_smp_stack,  &
-     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
-     &      layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
+     &      layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,        &
+     &      layer_tbl1%e_grp%istack_grp_smp, layer_tbl1%e_grp%item_grp)
       else
-        call reset_sgs_v_model_coefs_grpsmp                             &
-     &     (icomp_sgs, layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d, &
-     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
-     &      layer_tbl1%item_layer)
+        call reset_sgs_v_model_coefs_grpsmp(icomp_sgs,                  &
+     &     layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,         &
+     &     layer_tbl1%e_grp%istack_grp,                                 &
+     &     layer_tbl1%istack_item_layer_d_smp,                          &
+     &     layer_tbl1%e_grp%item_grp)
       end if
 !
       end subroutine reset_vector_sgs_model_coefs
@@ -75,13 +76,14 @@
       if(layer_tbl1%minlayer_4_smp                                      &
      &     .gt. layer_tbl1%min_item_layer_d_smp) then
         call reset_sgs_t_model_coefs_elesmp(icomp_sgs, iele_smp_stack,  &
-     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
-     &      layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
+     &      layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,        &
+     &      layer_tbl1%e_grp%istack_grp_smp, layer_tbl1%e_grp%item_grp)
       else
-        call reset_sgs_t_model_coefs_grpsmp                             &
-     &     (icomp_sgs, layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d, &
-     &      layer_tbl1%layer_stack, layer_tbl1%istack_item_layer_d_smp, &
-     &      layer_tbl1%item_layer)
+        call reset_sgs_t_model_coefs_grpsmp(icomp_sgs,                  &
+     &      layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,        &
+     &      layer_tbl1%e_grp%istack_grp,                                &
+     &      layer_tbl1%istack_item_layer_d_smp,                         &
+     &      layer_tbl1%e_grp%item_grp)
       end if
 !
       end subroutine reset_tensor_sgs_model_coefs

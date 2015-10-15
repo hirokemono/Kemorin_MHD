@@ -39,8 +39,8 @@
 !
       call int_vol_rms_ave_dynamic(n_tensor, n_int)
 !
-      call sum_layerd_averages(layer_tbl1%n_layer_d)
-      call divide_layers_ave_by_vol(layer_tbl1%n_layer_d, n_tensor,     &
+      call sum_layerd_averages(layer_tbl1%e_grp%num_grp)
+      call divide_layers_ave_by_vol(layer_tbl1%e_grp%num_grp, n_tensor, &
      &    layer_tbl1%a_vol_layer, ave_sgs_simi(1,icomp_f),              &
      &    ave_sgs_grad(1,icomp_f), rms_sgs_simi(1,icomp_f),             &
      &    rms_sgs_grad(1,icomp_f), ratio_sgs(1,icomp_f) )
@@ -68,8 +68,8 @@
 !
       call int_vol_rms_ave_dynamic(n_tensor, n_int)
 !
-      call sum_layerd_averages(layer_tbl1%n_layer_d)
-      call divide_layers_ave_by_vol(layer_tbl1%n_layer_d, n_tensor,     &
+      call sum_layerd_averages(layer_tbl1%e_grp%num_grp)
+      call divide_layers_ave_by_vol(layer_tbl1%e_grp%num_grp, n_tensor, &
      &    layer_tbl1%a_vol_layer, ave_diff_simi(1,icomp_f),             &
      &    ave_diff_grad(1,icomp_f), rms_diff_simi(1,icomp_f),           &
      &    rms_diff_grad(1,icomp_f), ratio_diff(1,icomp_f) )

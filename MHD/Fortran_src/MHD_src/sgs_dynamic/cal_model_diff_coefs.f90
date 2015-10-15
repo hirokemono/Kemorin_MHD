@@ -33,6 +33,7 @@
       subroutine cal_model_coefs(itype_csim, n_tensor,                  &
      &          ifield_d, icomp_f, n_int)
 !
+      use m_layering_ele_list
       use cal_lsq_model_coefs
       use cal_ave_rms_4_dynamic
       use cal_correlate_4_dynamic
@@ -45,8 +46,8 @@
 !
       call cal_correlate_sgs_dynamic(n_tensor, icomp_f, n_int)
 !
-      call cal_model_coef_4_flux(itype_csim, n_tensor, ifield_d,        &
-     &    icomp_f, n_int)
+      call cal_model_coef_4_flux(layer_tbl1%e_grp, itype_csim,          &
+     &    n_tensor, ifield_d, icomp_f, n_int)
 !
       end subroutine cal_model_coefs
 !
@@ -54,6 +55,7 @@
 !
       subroutine cal_layerd_diff_coef(numdir, ifield_d, icomp_f, n_int)
 !
+      use m_layering_ele_list
       use cal_lsq_model_coefs
       use cal_ave_rms_4_dynamic
       use cal_correlate_4_dynamic
@@ -64,7 +66,8 @@
 !
       call cal_ave_rms_diff_layerd(numdir, icomp_f, n_int)
       call cal_correlate_diff_dynamic(numdir, icomp_f, n_int)
-      call cal_lsq_layerd_diff_coef(numdir, ifield_d, icomp_f, n_int)
+      call cal_lsq_layerd_diff_coef                                     &
+     &   (layer_tbl1%e_grp, numdir, ifield_d, icomp_f, n_int)
 !
       end subroutine cal_layerd_diff_coef
 !

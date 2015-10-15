@@ -85,7 +85,7 @@
 !     --------------------- Surface jacobian for fieldline
 !
         if (iflag_debug.gt.0) write(*,*) 's_int_whole_volume_only'
-        call s_int_whole_volume_only
+        call s_int_whole_volume_only(ele1, jac1_3d_q)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_surface'
         call cal_jacobian_surface

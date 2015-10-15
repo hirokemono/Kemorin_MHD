@@ -33,6 +33,7 @@
       use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
+      use m_layering_ele_list
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -49,7 +50,7 @@
 !
       if (iflag_SGS_gravity .ne. id_SGS_none) then
         call cal_sgs_mom_flux_with_sgs_buo
-        call mod_Csim_by_SGS_buoyancy_ele
+        call mod_Csim_by_SGS_buoyancy_ele(layer_tbl1%e_grp)
       end if
 !
       if ( iflag_SGS_inertia .ne. id_SGS_none) then

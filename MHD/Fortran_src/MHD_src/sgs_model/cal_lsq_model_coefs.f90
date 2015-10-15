@@ -3,13 +3,13 @@
 !
 !     Written by H. Matsui on Oct. 2005
 !
-!      subroutine cal_model_coef_4_flux(numdir, ifield_d, icomp_f,      &
-!     &          n_int)
+!      subroutine cal_model_coef_4_flux(layer_egrp, itype_csim, numdir, &
+!     &          ifield_d, icomp_f, n_int)
 !
 !      subroutine cal_lsq_diff_coef(iele_fsmp_stack, numdir, ifield_d,  &
 !     &          icomp_f, n_int)
-!      subroutine cal_lsq_layerd_diff_coef(numdir, ifield_d, icomp_f,   &
-!     &          n_int)
+!      subroutine cal_lsq_layerd_diff_coef                              &
+!     &         (layer_egrp, numdir, ifield_d, icomp_f, n_int)
 !
       module cal_lsq_model_coefs
 !
@@ -35,12 +35,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_model_coef_4_flux(itype_csim, numdir,              &
+      subroutine cal_model_coef_4_flux(layer_egrp, itype_csim, numdir,  &
      &          ifield_d, icomp_f, n_int)
 !
-      use m_layering_ele_list
+      use t_group_data
       use int_vol_4_model_coef
 !
+      type(group_data), intent(in) :: layer_egrp
       integer (kind = kint), intent(in) :: itype_csim, numdir
       integer (kind = kint), intent(in) :: n_int, ifield_d, icomp_f
 !
@@ -49,9 +50,9 @@
       call int_vol_model_coef(numdir, n_int)
 !
 !    model coefficients for each components: lsq_model_coefs_4_comps
-      call lsq_model_coefs_4_comps(layer_tbl1%n_layer_d, ncomp_sgs)
+      call lsq_model_coefs_4_comps(layer_egrp%num_grp, ncomp_sgs)
 !
-      call merge_coefs_4_dynamic(numdir, layer_tbl1%n_layer_d,          &
+      call merge_coefs_4_dynamic(numdir, layer_egrp%num_grp,            &
      &    sgs_c_coef(1,icomp_f), sgs_f_coef(1,ifield_d),                &
      &    cor_sgs(1,icomp_f))
 !
@@ -63,8 +64,8 @@
       call clippging_sgs_coefs(numdir, ifield_d, icomp_f)
 !
       call set_model_coefs_2_ele(itype_csim, numdir, ifield_d, icomp_f, &
-     &    layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,              &
-     &    layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
+     &    layer_egrp%num_grp, layer_egrp%num_item,                      &
+     &    layer_egrp%istack_grp_smp, layer_egrp%item_grp)
 !
       end subroutine cal_model_coef_4_flux
 !
@@ -97,12 +98,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_lsq_layerd_diff_coef(numdir, ifield_d, icomp_f,    &
-     &          n_int)
+      subroutine cal_lsq_layerd_diff_coef                               &
+     &         (layer_egrp, numdir, ifield_d, icomp_f, n_int)
 !
-      use m_layering_ele_list
+      use t_group_data
       use int_vol_4_model_coef
 !
+      type(group_data), intent(in) :: layer_egrp
       integer (kind = kint), intent(in) :: numdir, n_int
       integer (kind = kint), intent(in) :: ifield_d, icomp_f
 !
@@ -111,9 +113,9 @@
       call int_vol_model_coef(numdir, n_int)
 !
 !    model coefficients for each components: lsq_model_coefs_4_comps
-      call lsq_model_coefs_4_comps(layer_tbl1%n_layer_d, ncomp_sgs)
+      call lsq_model_coefs_4_comps(layer_egrp%num_grp, ncomp_sgs)
 !
-      call merge_coefs_4_dynamic(numdir, layer_tbl1%n_layer_d,          &
+      call merge_coefs_4_dynamic(numdir, layer_egrp%num_grp,            &
      &    diff_c_coef(1,icomp_f), diff_f_coef(1,ifield_d),              &
      &    cor_diff(1,icomp_f) )
 !
@@ -124,9 +126,9 @@
 !
       call clippging_sgs_diff_coefs(numdir, ifield_d, icomp_f)
 !
-      call set_diff_coefs_layer_ele(ifield_d,                           &
-     &    layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,              &
-     &    layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
+      call set_diff_coefs_layer_ele                                     &
+     &   (ifield_d, layer_egrp%num_grp, layer_egrp%num_item,            &
+     &    layer_egrp%istack_grp_smp, layer_egrp%item_grp)
 !
       end subroutine cal_lsq_layerd_diff_coef
 !

@@ -106,7 +106,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 's_int_whole_volume_only'
-      call s_int_whole_volume_only
+      call s_int_whole_volume_only(ele1, jac1_3d_q)
       if (my_rank.eq.0) write(*,*)  'Volume of Domain: ', ele1%volume
 !
 !  -------------------------------

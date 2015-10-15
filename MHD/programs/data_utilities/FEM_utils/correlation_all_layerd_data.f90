@@ -61,10 +61,10 @@
 !
 !
       call int_vol_rms_ave_all_layer(nnod_2, phys_2nd)
-      call sum_layerd_averages(layer_tbl1%n_layer_d)
+      call sum_layerd_averages(layer_tbl1%e_grp%num_grp)
 !
       if(iflag_debug .gt. 0) write(*,*) 'divide_layers_ave_by_vol'
-      call divide_layers_ave_by_vol(layer_tbl1%n_layer_d,               &
+      call divide_layers_ave_by_vol(layer_tbl1%e_grp%num_grp,           &
      &    nod_fld1%ntot_phys, layer_tbl1%a_vol_layer,                   &
      &    ave_ref(1,1), ave_tgt(1,1), rms_ref(1,1), rms_tgt(1,1),       &
      &    rms_ratio(1,1))
@@ -76,11 +76,11 @@
       call int_vol_dev_cor_all_layer(phys_2nd)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_layerd_correlation'
-      call sum_layerd_correlation(layer_tbl1%n_layer_d)
+      call sum_layerd_correlation(layer_tbl1%e_grp%num_grp)
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_layered_correlation'
       call cal_layered_correlation                                      &
-     &   (layer_tbl1%n_layer_d, nod_fld1%ntot_phys,                     &
+     &   (layer_tbl1%e_grp%num_grp, nod_fld1%ntot_phys,                 &
      &    layer_tbl1%a_vol_layer, cor_data(1,1), cov_data(1,1))
 !
       call take_sqrt_rms_data
@@ -92,9 +92,11 @@
 !
       subroutine  int_vol_rms_ave_all_layer(nnod_2, phys_2nd)
 !
+      use m_geometry_data
+      use m_jacobians
       use m_node_phys_data
       use m_fem_gauss_int_coefs
-      use int_rms_ave_ele_grps_1st
+      use int_rms_ave_ele_grps
       use transfer_correlate_field
       use t_phys_data
 !
@@ -108,10 +110,9 @@
         icomp_2 = icomp + nod_fld1%ntot_phys
         d_nod_trans2(1:nnod_2,1) = phys_2nd%d_fld(1:nnod_2,icomp)
 !
-        call int_vol_2rms_ave_ele_grps_1st(max_int_point,               &
-     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
-     &      layer_tbl1%layer_stack, layer_tbl1%item_layer,              &
-     &      nod_fld1%ntot_phys, icomp, nod_fld1%d_fld,                  &
+        call int_vol_2rms_ave_ele_grps                                  &
+     &     (node1, ele1, layer_tbl1%e_grp, jac1_3d_q, jac1_3d_l,        &
+     &      max_int_point, nod_fld1%ntot_phys, icomp, nod_fld1%d_fld,   &
      &      ione, ione, d_nod_trans2(1,1), ave_l(1,icomp),              &
      &      rms_l(1,icomp), ave_l(1,icomp_2), rms_l(1,icomp_2))
       end do
@@ -123,9 +124,10 @@
       subroutine  int_vol_dev_cor_all_layer(phys_2nd)
 !
       use m_geometry_data
+      use m_jacobians
       use m_node_phys_data
       use m_fem_gauss_int_coefs
-      use int_rms_ave_ele_grps_1st
+      use int_rms_ave_ele_grps
       use transfer_correlate_field
       use t_phys_data
 !
@@ -137,10 +139,9 @@
         icomp_2 = icomp + nod_fld1%ntot_phys
         d_nod_trans2(1:node1%numnod,1)                                  &
      &          = phys_2nd%d_fld(1:node1%numnod,icomp)
-        call int_vol_dev_cor_ele_grps_1st(max_int_point,                &
-     &      layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,            &
-     &      layer_tbl1%layer_stack, layer_tbl1%item_layer,              &
-     &      nod_fld1%ntot_phys, icomp, nod_fld1%d_fld,                  &
+        call int_vol_dev_cor_ele_grps                                   &
+     &     (node1, ele1, layer_tbl1%e_grp, jac1_3d_q, jac1_3d_l,        &
+     &      max_int_point, nod_fld1%ntot_phys, icomp, nod_fld1%d_fld,   &
      &      ione, ione, d_nod_trans2(1,1),                              &
      &      ave_ref(1,icomp), ave_tgt(1,icomp),                         &
      &      sig_l(1,icomp), sig_l(1,icomp_2),  cov_l(1,icomp) )

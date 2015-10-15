@@ -36,6 +36,7 @@
       private :: n_layer_d_IO, num_sgs_kinds_IO, num_diff_kinds_IO
       private :: name_ak_sgs_IO, name_ak_diff_IO
       private :: coef_sgs_IO, coef_diff_IO
+      private :: set_initial_model_coefs_ele
 !
 !-----------------------------------------------------------------------
 !
@@ -107,9 +108,12 @@
 !
       subroutine input_ini_model_coefs
 !
+      use m_layering_ele_list
+!
+!
       call read_ini_model_coefs
       call set_ini_model_coefs_from_IO
-      call set_initial_model_coefs_ele
+      call set_initial_model_coefs_ele(layer_tbl1%e_grp)
 !
       end subroutine input_ini_model_coefs
 !
@@ -231,20 +235,22 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_initial_model_coefs_ele
+      subroutine set_initial_model_coefs_ele(layer_egrp)
 !
-      use m_layering_ele_list
+      use t_group_data
       use m_SGS_model_coefs
       use m_geometry_data_MHD
       use set_sgs_diff_model_coefs
+!
+      type(group_data), intent(in) :: layer_egrp
 !
       integer(kind = kint) :: i, ist
 !
       do i = 1, num_sgs_kinds
          ist = istack_sgs_coefs(i-1) + 1
          call set_model_coefs_2_ele(izero, ncomp_sgs_coefs(i), i, ist,  &
-     &       layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,           &
-     &       layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
+     &       layer_egrp%num_grp, layer_egrp%num_item,                   &
+     &       layer_egrp%istack_grp_smp, layer_egrp%item_grp)
       end do
 !
       if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
@@ -255,8 +261,8 @@
         else
           do i = 1, num_diff_kinds
             call set_diff_coefs_layer_ele                               &
-     &         (i, layer_tbl1%n_layer_d, layer_tbl1%n_item_layer_d,     &
-     &          layer_tbl1%layer_stack_smp, layer_tbl1%item_layer)
+     &         (i, layer_egrp%num_grp, layer_egrp%num_item,             &
+     &          layer_egrp%istack_grp_smp, layer_egrp%item_grp)
           end do
         end if
       end if
