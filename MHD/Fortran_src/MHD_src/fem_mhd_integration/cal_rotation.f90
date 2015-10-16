@@ -15,6 +15,8 @@
       use m_precision
 !
       use m_phys_constants
+      use m_jacobians
+      use m_sorted_node
       use m_finite_element_matrix
       use m_int_vol_data
 !
@@ -121,7 +123,7 @@
       use m_control_parameter
       use m_element_phys_data
 !
-      use int_vol_vect_diff_1st
+      use int_vol_vect_differences
       use int_vol_vect_diff_upw_1st
 !
        integer(kind = kint), intent(in) :: iflag_4_supg, i_vector
@@ -136,8 +138,10 @@
      &     (iele_fsmp_stack, intg_point_t_evo, i_vector,                &
      &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
        else
-        call int_vol_rot_1st(iele_fsmp_stack, intg_point_t_evo,         &
-     &      i_vector)
+        call int_vol_rotation                                           &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fsmp_stack, intg_point_t_evo, i_vector,                &
+     &      fem1_wk, f1_nl)
        end if
 !
       end subroutine choose_int_vol_rotations

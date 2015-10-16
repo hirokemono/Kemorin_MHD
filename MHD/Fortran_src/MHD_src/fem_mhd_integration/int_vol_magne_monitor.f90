@@ -36,7 +36,7 @@
 !
       subroutine int_vol_magne_monitor_pg(i_field)
 !
-      use int_vol_vect_diff_1st
+      use int_vol_vect_differences
       use int_vol_vect_cst_diff_1st
       use int_vol_mag_induct_1st
       use int_vol_SGS_mag_induct_1st
@@ -49,8 +49,10 @@
      &      fld_ele1%ntot_phys, fld_ele1%d_fld, iphys_ele)
 !
       else if (i_field .eq. iphys%i_induct_div) then
-        call int_vol_div_as_tsr_1st(iele_cd_smp_stack,                  &
-     &      intg_point_t_evo, iphys%i_induct_t)
+        call int_vol_div_asym_tsr                                       &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_cd_smp_stack, intg_point_t_evo,                        &
+     &      iphys%i_induct_t, fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_SGS_induction) then
         if(iflag_commute_induction .eq. id_SGS_commute_ON) then
