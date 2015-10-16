@@ -12,6 +12,7 @@
       use m_phys_constants
       use m_ctl_params_4_gen_filter
       use m_geometry_data
+      use m_jacobians
       use t_crs_matrix
 !
       implicit none
@@ -54,13 +55,16 @@
 !
       subroutine int_whole_consist_mass_matrix(mass)
 !
+      use m_sorted_node
       use m_finite_element_matrix
       use int_vol_mass_matrix
 !
       type(CRS_matrix), intent(inout) :: mass
 !
 !
-      call int_consist_mass_matrix(ele1%istack_ele_smp, num_int_points, &
+      call int_consist_mass_matrix                                      &
+     &   (ele1, jac1_3d_q, rhs_tbl1, mat_tbl_q1,                        &
+     &    ele1%istack_ele_smp, num_int_points, fem1_wk,                 &
      &    mass%ntot_A, mass%A_crs)
 !
       end subroutine int_whole_consist_mass_matrix

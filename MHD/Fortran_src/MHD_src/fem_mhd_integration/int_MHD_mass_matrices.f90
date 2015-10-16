@@ -15,6 +15,8 @@
 !
       use m_geometry_constants
       use m_geometry_data
+      use m_jacobians
+      use m_sorted_node
       use m_finite_element_matrix
 !
       use int_vol_mass_matrix
@@ -22,9 +24,6 @@
       implicit none
 !
       private :: int_mass_matrix_trilinear, int_mass_matrices_quad
-      private :: int_mass_matrix_fluid, int_mass_matrix_fl_quad
-      private :: int_mass_matrix_conduct, int_mass_matrix_cd_quad
-      private :: int_mass_matrix_insulate, int_mass_matrix_ins_quad
 !
 !-----------------------------------------------------------------------
 !
@@ -55,25 +54,38 @@
       subroutine int_mass_matrix_trilinear(n_int)
 !
       use m_machine_parameter
+      use m_geometry_data_MHD
+      use m_int_vol_data
 !
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      if (iflag_debug.eq.1)                                            &
+      if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_lump_mass_matrix_linear'
-      call int_lump_mass_matrix_linear(n_int)
+      call int_lump_mass_matrix_linear                                  &
+     &   (node1, ele1, jac1_3d_q, rhs_tbl1, n_int,                      &
+     &    fem1_wk, f1_l, m1_lump)
 !
-      if (iflag_debug.eq.1)                                            &
-     &  write(*,*) 'int_mass_matrix_fluid'
-      call int_mass_matrix_fluid(n_int)
+      if (iflag_debug.eq.1)                                             &
+     &  write(*,*) 'int_mass_matrix_diag fluid'
+      call int_mass_matrix_diag                                         &
+     &   (node1, ele1, jac1_3d_q, rhs_tbl1, iele_fl_smp_stack, n_int,   &
+     &    fem1_wk, f1_l, mhd_fem1_wk%mlump_fl)
+!      call check_mass_martix_fluid(my_rank, node1%numnod, mhd_fem1_wk)
 !
-      if (iflag_debug.eq.1)                                            &
-     &  write(*,*) 'int_mass_matrix_conduct'
-      call int_mass_matrix_conduct(n_int)
+      if (iflag_debug.eq.1)                                             &
+     &  write(*,*) 'int_mass_matrix_diag conductor'
+      call int_mass_matrix_diag                                         &
+     &   (node1, ele1, jac1_3d_q, rhs_tbl1, iele_cd_smp_stack, n_int,   &
+     &    fem1_wk, f1_l, mhd_fem1_wk%mlump_cd)
+!      call check_mass_martix_conduct                                   &
+!     &   (my_rank, node1%numnod, mhd_fem1_wk)
 !
-      if (iflag_debug.eq.1)                                            &
-     &  write(*,*) 'int_mass_matrix_insulate'
-      call int_mass_matrix_insulate(n_int)
+      if (iflag_debug.eq.1)                                             &
+     &  write(*,*) 'int_mass_matrix_diag insulator'
+      call int_mass_matrix_diag                                         &
+     &   (node1, ele1, jac1_3d_q, rhs_tbl1, iele_ins_smp_stack, n_int,  &
+     &    fem1_wk, f1_l, mhd_fem1_wk%mlump_ins)
 !
       end subroutine int_mass_matrix_trilinear
 !
@@ -82,142 +94,42 @@
       subroutine int_mass_matrices_quad(n_int)
 !
       use m_machine_parameter
+      use m_geometry_data_MHD
+      use m_int_vol_data
 !
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      if (iflag_debug.eq.1)                                            &
+      if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_lump_mass_matrix_quad'
-      call int_lump_mass_matrix_quad(n_int)
+      call int_lump_mass_matrix_quad(node1, ele1, jac1_3d_q, rhs_tbl1,  &
+     &    n_int, fem1_wk, f1_l, m1_lump)
+!      call check_mass_martix(my_rank, node1%numnod, m1_lump)
 !
-      if (iflag_debug.eq.1)                                            &
-     &  write(*,*) 'int_mass_matrix_fl_quad'
-      call int_mass_matrix_fl_quad(n_int)
+      if (iflag_debug.eq.1)                                             &
+     &  write(*,*) 'int_mass_matrix_HRZ fluid'
+      call int_mass_matrix_HRZ(node1, ele1, jac1_3d_q, rhs_tbl1,        &
+     &    iele_fl_smp_stack, n_int,                                     &
+     &    fem1_wk, f1_l, mhd_fem1_wk%mlump_fl)
+!      call check_mass_martix_fluid(my_rank, node1%numnod, mhd_fem1_wk)
 !
-      if (iflag_debug.eq.1)                                            &
-     &  write(*,*) 'int_mass_matrix_cd_quad'
-      call int_mass_matrix_cd_quad(n_int)
+      if (iflag_debug.eq.1)                                             &
+     &  write(*,*) 'int_mass_matrix_HRZ conduct'
+      call int_mass_matrix_HRZ(node1, ele1, jac1_3d_q, rhs_tbl1,        &
+     &    iele_cd_smp_stack, n_int,                                     &
+     &     fem1_wk, f1_l, mhd_fem1_wk%mlump_cd)
+!      call check_mass_martix_conduct                                   &
+!     &   (my_rank, node1%numnod, mhd_fem1_wk)
 !
-      if (iflag_debug.eq.1)                                            &
-     &  write(*,*) 'int_mass_matrix_ins_quad'
-      call int_mass_matrix_ins_quad(n_int)
+!
+      if (iflag_debug.eq.1)                                             &
+     &  write(*,*) 'int_mass_matrix_HRZ insulator'
+      call int_mass_matrix_HRZ(node1, ele1, jac1_3d_q, rhs_tbl1,        &
+     &    iele_ins_smp_stack, n_int,                                    &
+     &     fem1_wk, f1_l, mhd_fem1_wk%mlump_ins)
 !
       end subroutine int_mass_matrices_quad
 !
 !-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine int_mass_matrix_fluid(n_int)
-!
-      use cal_ff_smp_to_ffs
-      use m_geometry_data_MHD
-      use m_int_vol_data
-!
-      integer(kind = kint), intent(in) :: n_int
-!
-!
-      call int_mass_matrix_diag(iele_fl_smp_stack, n_int)
-      call cal_ff_smp_2_ml(node1, rhs_tbl1, f1_l%ff_smp,                &
-     &    mhd_fem1_wk%mlump_fl%ml, mhd_fem1_wk%mlump_fl%ml_o)
-!
-!      call check_mass_martix_fluid(my_rank, node1%numnod, mhd_fem1_wk)
-!
-      end subroutine int_mass_matrix_fluid
-!
-!-----------------------------------------------------------------------
-!
-      subroutine int_mass_matrix_conduct(n_int)
-!
-      use cal_ff_smp_to_ffs
-      use m_geometry_data_MHD
-      use m_int_vol_data
-!
-      integer(kind = kint), intent(in) :: n_int
-!
-!
-      call int_mass_matrix_diag(iele_cd_smp_stack, n_int)
-      call cal_ff_smp_2_ml(node1, rhs_tbl1, f1_l%ff_smp,                &
-     &    mhd_fem1_wk%mlump_cd%ml, mhd_fem1_wk%mlump_cd%ml_o)
-!
-!      call check_mass_martix_conduct                                   &
-!     &   (my_rank, node1%numnod, mhd_fem1_wk)
-!
-      end subroutine int_mass_matrix_conduct
-!
-!-----------------------------------------------------------------------
-!
-      subroutine int_mass_matrix_insulate(n_int)
-!
-      use cal_ff_smp_to_ffs
-      use m_geometry_data_MHD
-      use m_int_vol_data
-!
-      integer(kind = kint), intent(in) :: n_int
-!
-!
-      call int_mass_matrix_diag(iele_ins_smp_stack, n_int)
-      call cal_ff_smp_2_ml(node1, rhs_tbl1, f1_l%ff_smp,                &
-     &    mhd_fem1_wk%mlump_ins%ml, mhd_fem1_wk%mlump_ins%ml_o)
-!
-      end subroutine int_mass_matrix_insulate
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine int_mass_matrix_fl_quad(n_int)
-!
-      use cal_ff_smp_to_ffs
-      use m_geometry_data_MHD
-      use m_int_vol_data
-!
-      integer(kind = kint), intent(in) :: n_int
-!
-!
-       call int_mass_matrix_HRZ(iele_fl_smp_stack, n_int)
-       call cal_ff_smp_2_ml(node1, rhs_tbl1, f1_l%ff_smp,               &
-     &     mhd_fem1_wk%mlump_fl%ml, mhd_fem1_wk%mlump_fl%ml_o)
-!
-!      call check_mass_martix_fluid(my_rank, node1%numnod, mhd_fem1_wk)
-!
-      end subroutine int_mass_matrix_fl_quad
-!
-!-----------------------------------------------------------------------
-!
-      subroutine int_mass_matrix_cd_quad(n_int)
-!
-      use cal_ff_smp_to_ffs
-      use m_geometry_data_MHD
-      use m_int_vol_data
-!
-      integer(kind = kint), intent(in) :: n_int
-!
-!
-      call int_mass_matrix_HRZ(iele_cd_smp_stack, n_int)
-      call cal_ff_smp_2_ml(node1, rhs_tbl1, f1_l%ff_smp,                &
-     &    mhd_fem1_wk%mlump_cd%ml, mhd_fem1_wk%mlump_cd%ml_o)
-!
-!      call check_mass_martix_conduct                                   &
-!     &   (my_rank, node1%numnod, mhd_fem1_wk)
-!
-      end subroutine int_mass_matrix_cd_quad
-!
-!-----------------------------------------------------------------------
-!
-      subroutine int_mass_matrix_ins_quad(n_int)
-!
-      use cal_ff_smp_to_ffs
-      use m_geometry_data_MHD
-      use m_int_vol_data
-!
-      integer(kind = kint), intent(in) :: n_int
-!
-!
-      call int_mass_matrix_HRZ(iele_ins_smp_stack, n_int)
-      call cal_ff_smp_2_ml(node1, rhs_tbl1, f1_l%ff_smp,                &
-     &    mhd_fem1_wk%mlump_ins%ml, mhd_fem1_wk%mlump_ins%ml_o)
-!
-      end subroutine int_mass_matrix_ins_quad
-!
-!-----------------------------------------------------------------------
-!
+
       end module int_MHD_mass_matrices

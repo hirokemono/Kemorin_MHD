@@ -26,12 +26,15 @@
       subroutine int_mass_matrix_4_filter
 !
       use m_machine_parameter
+      use m_jacobians
+      use m_sorted_node
       use m_finite_element_matrix
       use int_vol_mass_matrix
 !
 !
 !      if (id_filter_area_grp(1) .eq. -1) then
-         call int_lumped_mass_matrix(num_int_points)
+      call int_lumped_mass_matrix(node1, ele1, jac1_3d_q, rhs_tbl1,     &
+     &    num_int_points, fem1_wk, f1_l, m1_lump)
 !      else
 !        call int_grped_mass_matrix_filter
 !      end if
