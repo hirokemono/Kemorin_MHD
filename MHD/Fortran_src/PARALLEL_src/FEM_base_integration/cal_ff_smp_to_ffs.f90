@@ -11,7 +11,7 @@
 !!      subroutine set_ff_nl_smp_2_ff(node, rhs_tbl, numdir)
 !!
 !!      subroutine cal_ff_smp_2_ff(node, rhs_tbl, numdir, ff_smp, ff)
-!!      subroutine cal_ff_smp_2_ml(node, rhs_tbl, ml, ml_o, ff_smp)
+!!      subroutine cal_ff_smp_2_ml(node, rhs_tbl, ff_smp, ml, ml_o)
 !!      subroutine cal_ff_smp_2_scalar                                  &
 !!     &         (node, rhs_tbl, ff_smp, ml, ncomp_nod, i_fld, d_nod)
 !!      subroutine cal_ff_smp_2_vector                                  &
@@ -51,7 +51,7 @@
       type(lumped_mass_matrices), intent(inout) :: lump
 !
 !
-      call cal_ff_smp_2_ml(node, rhs_tbl, lump%ml, lump%ml_o, ff_smp)
+      call cal_ff_smp_2_ml(node, rhs_tbl, ff_smp, lump%ml, lump%ml_o)
 !
       end subroutine cal_ff_smp_2_ml_type
 !
@@ -98,7 +98,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_ff_smp_2_ml(node, rhs_tbl, ml, ml_o, ff_smp)
+      subroutine cal_ff_smp_2_ml(node, rhs_tbl, ff_smp, ml, ml_o)
 !
       use cal_rhs_node_order
 !

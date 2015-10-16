@@ -61,7 +61,7 @@
       end if
 !
       call cal_ff_smp_2_ml                                              &
-     &   (node1, rhs_tbl1, m1_lump%ml, m1_lump%ml_o, f1_l%ff_smp)
+     &   (node1, rhs_tbl1, f1_l%ff_smp, m1_lump%ml, m1_lump%ml_o)
 !
       end subroutine int_grped_mass_matrix_filter
 !

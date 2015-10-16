@@ -65,7 +65,7 @@
 !
       call int_mass_matrix_diag(ele1%istack_ele_smp, num_int)
       call cal_ff_smp_2_ml                                              &
-     &   (node1, rhs_tbl1, m1_lump%ml, m1_lump%ml_o, f1_l%ff_smp)
+     &   (node1, rhs_tbl1, f1_l%ff_smp, m1_lump%ml, m1_lump%ml_o)
 !
 !      call check_mass_martix(my_rank, node1%numnod, m1_lump)
 !
@@ -80,7 +80,7 @@
 !
       call int_mass_matrix_HRZ_full(ele1%istack_ele_smp, num_int)
       call cal_ff_smp_2_ml                                              &
-     &   (node1, rhs_tbl1, m1_lump%ml, m1_lump%ml_o, f1_l%ff_smp)
+     &   (node1, rhs_tbl1, f1_l%ff_smp, m1_lump%ml, m1_lump%ml_o)
 !
 !      call check_mass_martix(my_rank, node1%numnod, m1_lump)
 !
