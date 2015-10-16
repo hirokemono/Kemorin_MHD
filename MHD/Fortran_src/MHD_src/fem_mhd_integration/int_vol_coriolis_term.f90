@@ -38,12 +38,12 @@
 !
       if ( iflag_4_coriolis .eq. id_FORCE_at_node) then
         call cal_coriolis_nod(node1%numnod, node1%istack_nod_smp,       &
-     &      angular, coef_cor, mhd_fem1_wk%ml_o_fl, nod_fld1%ntot_phys, &
-     &      iphys%i_velo, nod_fld1%d_fld, f1_nl%ff)
+     &      angular, coef_cor, mhd_fem1_wk%mlump_fl%ml_o,               &
+     &      nod_fld1%ntot_phys, iphys%i_velo, nod_fld1%d_fld, f1_nl%ff)
       else if ( iflag_4_coriolis .eq. id_Coriolis_nod_imp) then
         call cal_coriolis_nod(node1%numnod, node1%istack_nod_smp,       &
-     &      angular, coef_cor, mhd_fem1_wk%ml_o_fl, nod_fld1%ntot_phys, &
-     &      iphys%i_velo, nod_fld1%d_fld, f1_l%ff)
+     &      angular, coef_cor, mhd_fem1_wk%mlump_fl%ml_o,               &
+     &      nod_fld1%ntot_phys, iphys%i_velo, nod_fld1%d_fld, f1_l%ff)
       end if
 !
       end subroutine int_coriolis_nod_exp
@@ -100,28 +100,28 @@
      &      iphys%i_light, iphys%i_buoyancy, coef_buo, coef_comp_buo)
         call int_vol_buoyancy_nod(node1%numnod, node1%istack_nod_smp,   &
      &      nod_fld1%ntot_phys, iphys%i_buoyancy, nod_fld1%d_fld,       &
-     &      mhd_fem1_wk%ml_o_fl, f1_nl%ff)
+     &      mhd_fem1_wk%mlump_fl%ml_o, f1_nl%ff)
 !
       else if (iflag_4_gravity .eq. id_FORCE_at_node) then
         call set_gravity_2_each_node(iphys%i_temp, iphys%i_buoyancy,    &
      &      coef_buo)
         call int_vol_buoyancy_nod(node1%numnod, node1%istack_nod_smp,   &
      &      nod_fld1%ntot_phys, iphys%i_buoyancy, nod_fld1%d_fld,       &
-     &      mhd_fem1_wk%ml_o_fl, f1_nl%ff)
+     &      mhd_fem1_wk%mlump_fl%ml_o, f1_nl%ff)
 !
       else if (iflag_4_composit_buo .eq. id_FORCE_at_node) then
         call set_gravity_2_each_node(iphys%i_light, iphys%i_comp_buo,   &
      &      coef_comp_buo)
         call int_vol_buoyancy_nod(node1%numnod, node1%istack_nod_smp,   &
      &      nod_fld1%ntot_phys, iphys%i_comp_buo, nod_fld1%d_fld,       &
-     &      mhd_fem1_wk%ml_o_fl, f1_nl%ff)
+     &      mhd_fem1_wk%mlump_fl%ml_o, f1_nl%ff)
 !
       else if (iflag_4_filter_gravity .eq. id_FORCE_at_node) then
         call set_gravity_2_each_node(iphys%i_filter_temp,               &
      &      iphys%i_filter_buo, coef_buo)
         call int_vol_buoyancy_nod(node1%numnod, node1%istack_nod_smp,   &
      &      nod_fld1%ntot_phys, iphys%i_filter_buo, nod_fld1%d_fld,     &
-     &      mhd_fem1_wk%ml_o_fl, f1_nl%ff)
+     &      mhd_fem1_wk%mlump_fl%ml_o, f1_nl%ff)
       end if
 !
       end subroutine int_buoyancy_nod_exp

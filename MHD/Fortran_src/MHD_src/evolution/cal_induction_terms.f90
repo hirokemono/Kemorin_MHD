@@ -53,7 +53,7 @@
       call set_boundary_vect_p_4_rhs
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    f1_nl%ff, mhd_fem1_wk%ml_cd,                                  &
+     &    f1_nl%ff, mhd_fem1_wk%mlump_cd%ml,                            &
      &    nod_fld1%ntot_phys, iphys%i_vp_induct, nod_fld1%d_fld)
       call vector_send_recv                                             &
      &   (nod_fld1%ntot_phys, iphys%i_vp_induct, nod_fld1%d_fld)
@@ -89,7 +89,7 @@
       call set_boundary_vect_p_4_rhs
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    f1_l%ff, mhd_fem1_wk%ml_cd,                                   &
+     &    f1_l%ff, mhd_fem1_wk%mlump_cd%ml,                             &
      &    nod_fld1%ntot_phys, iphys%i_vp_diffuse, nod_fld1%d_fld)
 !
       call vector_send_recv                                             &

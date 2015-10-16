@@ -21,25 +21,18 @@
       module t_MHD_finite_element_mat
 !
       use m_precision
+      use t_finite_element_mat
 !
       implicit  none
 !
 !>      Work array for FEM assemble in MHD model
       type work_MHD_fe_mat
 !>      Lumped mass matrix for fluid
-        real (kind=kreal), pointer  ::  ml_o_fl(:)
-!>      1 / ml_o_fl
-        real (kind=kreal), pointer  ::  ml_fl(:)
-!
-!>      Lumped mass matrix for counductor
-        real (kind=kreal), pointer  ::  ml_o_cd(:)
-!>      1 / ml_o_cd
-        real (kind=kreal), pointer  ::  ml_cd(:)
-!
-!>      Lumped mass matrix for insulator
-        real (kind=kreal), pointer  ::  ml_o_ins(:)
-!>      1 / ml_o_ins
-        real (kind=kreal), pointer  ::  ml_ins(:)
+        type(lumped_mass_matrices) :: mlump_fl
+!>        Lumped mass matrix for counductor
+        type(lumped_mass_matrices) :: mlump_cd
+!>        Lumped mass matrix for insulator
+        type(lumped_mass_matrices) :: mlump_ins
 !
 !>        Nodal work area for multi-pass
         real (kind=kreal), pointer  ::  ff_m_smp(:,:,:)
@@ -81,12 +74,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
-      allocate(mhd_fem_wk%ml_fl(numnod))
-      allocate(mhd_fem_wk%ml_o_fl(numnod))
-!
-      if(numnod .le. 0) return
-      mhd_fem_wk%ml_fl =   0.0d0
-      mhd_fem_wk%ml_o_fl = 0.0d0
+      call alloc_type_fem_lumped_mass(numnod, mhd_fem_wk%mlump_fl)
 !
       end subroutine alloc_mass_mat_fluid
 !
@@ -98,18 +86,8 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
-      allocate(mhd_fem_wk%ml_cd(numnod))
-      allocate(mhd_fem_wk%ml_ins(numnod))
-!
-      allocate(mhd_fem_wk%ml_o_cd(numnod))
-      allocate(mhd_fem_wk%ml_o_ins(numnod))
-!
-      if(numnod .le. 0) return
-      mhd_fem_wk%ml_cd =  0.0d0
-      mhd_fem_wk%ml_ins = 0.0d0
-!
-      mhd_fem_wk%ml_o_cd =  0.0d0
-      mhd_fem_wk%ml_o_ins = 0.0d0
+      call alloc_type_fem_lumped_mass(numnod, mhd_fem_wk%mlump_cd)
+      call alloc_type_fem_lumped_mass(numnod, mhd_fem_wk%mlump_ins)
 !
       end subroutine alloc_mass_mat_conduct
 !
@@ -120,7 +98,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
-      deallocate(mhd_fem_wk%ml_fl, mhd_fem_wk%ml_o_fl)
+      call dealloc_type_fem_lumped_mass(mhd_fem_wk%mlump_fl)
 !
       end subroutine dealloc_mass_mat_fluid
 !
@@ -131,8 +109,8 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
-      deallocate(mhd_fem_wk%ml_cd, mhd_fem_wk%ml_ins)
-      deallocate(mhd_fem_wk%ml_o_cd, mhd_fem_wk%ml_o_ins)
+      call dealloc_type_fem_lumped_mass(mhd_fem_wk%mlump_cd)
+      call dealloc_type_fem_lumped_mass(mhd_fem_wk%mlump_ins)
 !
       end subroutine dealloc_mass_mat_conduct
 !
@@ -145,13 +123,9 @@
       integer(kind = kint), intent(in) :: my_rank, numnod
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
-      integer(kind = kint) :: inod
 !
-      write(50+my_rank,*) 'inod, ml_fl, ml_o_fl'
-      do inod = 1, numnod
-        write(50+my_rank,'(i16,1p2e25.14)')                             &
-     &           inod, mhd_fem_wk%ml_fl(inod), mhd_fem_wk%ml_o_fl(inod)
-      end do
+      write(50+my_rank,*) 'Check ml_fl'
+      call check_mass_martix(my_rank, numnod, mhd_fem_wk%mlump_fl)
 !
       end subroutine check_mass_martix_fluid
 !
@@ -163,13 +137,9 @@
       integer(kind = kint), intent(in) :: my_rank, numnod
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
-      integer(kind = kint) :: inod
 !
-      write(50+my_rank,*) 'inod, ml_cd, ml_o_cd'
-      do inod = 1, numnod
-        write(50+my_rank,'(i16,1p2e25.14)')                             &
-     &       inod, mhd_fem_wk%ml_cd(inod), mhd_fem_wk%ml_o_cd(inod)
-      end do
+      write(50+my_rank,*) 'Check ml_ins'
+      call check_mass_martix(my_rank, numnod, mhd_fem_wk%mlump_cd)
 !
       end subroutine check_mass_martix_conduct
 !
@@ -181,13 +151,9 @@
       integer(kind = kint), intent(in) :: my_rank, numnod
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
-      integer(kind = kint) :: inod
 !
-      write(50+my_rank,*) 'inod, ml_ins, ml_o_ins'
-      do inod = 1, numnod
-        write(50+my_rank,'(i16,1p2e25.14)')                             &
-     &        inod, mhd_fem_wk%ml_ins(inod), mhd_fem_wk%ml_o_ins(inod)
-      end do
+      write(50+my_rank,*) 'Check ml_ins'
+      call check_mass_martix(my_rank, numnod, mhd_fem_wk%mlump_ins)
 !
       end subroutine check_mass_martix_insulate
 !

@@ -40,7 +40,7 @@
 !
 !
       call cal_sol_velocity_co(node1%numnod, inter_smp_stack,           &
-     &    mhd_fem1_wk%ml_fl, f1_l%ff, nod_fld1%ntot_phys,               &
+     &    mhd_fem1_wk%mlump_fl%ml, f1_l%ff, nod_fld1%ntot_phys,         &
      &    iphys%i_velo, iphys%i_p_phi, nod_fld1%d_fld)
 !
       end subroutine cal_sol_velo_co
@@ -93,7 +93,7 @@
 !
 !
       call cal_sol_velo_co_crank_lump(node1%numnod, inter_smp_stack,    &
-     &    mhd_fem1_wk%ml_o_fl, nod_fld1%ntot_phys,                      &
+     &    mhd_fem1_wk%mlump_fl%ml_o, nod_fld1%ntot_phys,                &
      &    iphys%i_velo, nod_fld1%d_fld, f1_nl%ff, f1_l%ff)
 !
       end subroutine cal_sol_velo_co_crank

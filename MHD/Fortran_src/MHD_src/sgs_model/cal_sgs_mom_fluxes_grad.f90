@@ -190,9 +190,10 @@
      &    ak_sgs(1,icm_sgs), fem1_wk%sk6)
 !
       call add6_skv_to_ff_t_smp(node1, ele1, rhs_tbl1,                  &
-    &     fem1_wk%sk6, mhd_fem1_wk%ff_t_smp)
+     &     fem1_wk%sk6, mhd_fem1_wk%ff_t_smp)
       call cal_ff_smp_2_tensor(node1, rhs_tbl1, mhd_fem1_wk%ff_t_smp,   &
-     &    mhd_fem1_wk%ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
+     &    mhd_fem1_wk%mlump_fl%ml, nod_fld1%ntot_phys,                  &
+     &    i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
 !
@@ -231,7 +232,8 @@
       call add6_skv_to_ff_t_smp(node1, ele1, rhs_tbl1,                  &
      &    fem1_wk%sk6, mhd_fem1_wk%ff_t_smp)
       call cal_ff_smp_2_tensor(node1, rhs_tbl1, mhd_fem1_wk%ff_t_smp,   &
-     &    mhd_fem1_wk%ml_fl, nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
+     &    mhd_fem1_wk%mlump_fl%ml, nod_fld1%ntot_phys,                  &
+     &    i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
 !

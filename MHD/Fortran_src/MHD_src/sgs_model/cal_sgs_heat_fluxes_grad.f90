@@ -119,7 +119,7 @@
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
      &    fem1_wk%sk6, f1_l%ff_smp)
       call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
-     &    f1_l%ff_smp, mhd_fem1_wk%ml_fl,                               &
+     &    f1_l%ff_smp, mhd_fem1_wk%mlump_fl%ml,                         &
      &    nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications
@@ -159,7 +159,7 @@
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
      &    fem1_wk%sk6, f1_l%ff_smp)
       call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
-     &    f1_l%ff_smp, mhd_fem1_wk%ml_fl,                               &
+     &    f1_l%ff_smp, mhd_fem1_wk%mlump_fl%ml,                         &
      &    nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
 !
 ! ----------   communications

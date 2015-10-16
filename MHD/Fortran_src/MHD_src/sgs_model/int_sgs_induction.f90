@@ -42,10 +42,10 @@
 !
 !      call cal_multi_pass_4_vector_ff
 !      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,         &
-!    &     f1_l%ff, mhd_fem1_wk%ml_cd, nod_fld1%ntot_phys,              &
+!    &     f1_l%ff, mhd_fem1_wk%mlump_cd%ml, nod_fld1%ntot_phys,        &
 !    &     iphys%i_magne, nod_fld1%d_fld)
        call cal_ff_smp_2_vector                                         &
-     &    (node1, rhs_tbl1, f1_nl%ff_smp, mhd_fem1_wk%ml_cd,            &
+     &    (node1, rhs_tbl1, f1_nl%ff_smp, mhd_fem1_wk%mlump_cd%ml,      &
      &     nod_fld1%ntot_phys, iphys%i_SGS_induction, nod_fld1%d_fld)
 !
        call vector_send_recv                                            &

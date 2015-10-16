@@ -91,7 +91,7 @@
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    f1_nl%ff, mhd_fem1_wk%ml_fl, nod_fld1%ntot_phys,              &
+     &    f1_nl%ff, mhd_fem1_wk%mlump_fl%ml, nod_fld1%ntot_phys,        &
      &    i_res, nod_fld1%d_fld)
 !
 ! ----------   communications
@@ -126,7 +126,7 @@
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    f1_nl%ff, mhd_fem1_wk%ml_cd, nod_fld1%ntot_phys,              &
+     &    f1_nl%ff, mhd_fem1_wk%mlump_cd%ml, nod_fld1%ntot_phys,        &
      &    i_res, nod_fld1%d_fld)
 !
 ! ----------   communications

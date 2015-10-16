@@ -118,7 +118,8 @@
 !
       call int_mass_matrix_diag(iele_fl_smp_stack, n_int)
       call cal_ff_smp_2_ml(node1, rhs_tbl1,                             &
-     &    mhd_fem1_wk%ml_fl, mhd_fem1_wk%ml_o_fl, f1_l%ff_smp)
+     &    mhd_fem1_wk%mlump_fl%ml, mhd_fem1_wk%mlump_fl%ml_o,           &
+     &    f1_l%ff_smp)
 !
 !      call check_mass_martix_fluid(my_rank, node1%numnod, mhd_fem1_wk)
 !
@@ -137,7 +138,8 @@
 !
       call int_mass_matrix_diag(iele_cd_smp_stack, n_int)
       call cal_ff_smp_2_ml(node1, rhs_tbl1,                             &
-     &    mhd_fem1_wk%ml_cd, mhd_fem1_wk%ml_o_cd, f1_l%ff_smp)
+     &    mhd_fem1_wk%mlump_cd%ml, mhd_fem1_wk%mlump_cd%ml_o,           &
+     &    f1_l%ff_smp)
 !
 !      call check_mass_martix_conduct                                   &
 !     &   (my_rank, node1%numnod, mhd_fem1_wk)
@@ -157,7 +159,8 @@
 !
       call int_mass_matrix_diag(iele_ins_smp_stack, n_int)
       call cal_ff_smp_2_ml(node1, rhs_tbl1,                             &
-     &    mhd_fem1_wk%ml_ins, mhd_fem1_wk%ml_o_ins, f1_l%ff_smp)
+     &    mhd_fem1_wk%mlump_ins%ml, mhd_fem1_wk%mlump_ins%ml_o,         &
+     &    f1_l%ff_smp)
 !
       end subroutine int_mass_matrix_insulate
 !
@@ -175,7 +178,8 @@
 !
        call int_mass_matrix_HRZ(iele_fl_smp_stack, n_int)
        call cal_ff_smp_2_ml(node1, rhs_tbl1,                            &
-     &     mhd_fem1_wk%ml_fl, mhd_fem1_wk%ml_o_fl, f1_l%ff_smp)
+     &     mhd_fem1_wk%mlump_fl%ml, mhd_fem1_wk%mlump_fl%ml_o,          &
+     &     f1_l%ff_smp)
 !
 !      call check_mass_martix_fluid(my_rank, node1%numnod, mhd_fem1_wk)
 !
@@ -194,7 +198,8 @@
 !
       call int_mass_matrix_HRZ(iele_cd_smp_stack, n_int)
       call cal_ff_smp_2_ml(node1, rhs_tbl1,                             &
-     &    mhd_fem1_wk%ml_cd, mhd_fem1_wk%ml_o_cd, f1_l%ff_smp)
+     &    mhd_fem1_wk%mlump_cd%ml, mhd_fem1_wk%mlump_cd%ml_o,           &
+     &    f1_l%ff_smp)
 !
 !      call check_mass_martix_conduct                                   &
 !     &   (my_rank, node1%numnod, mhd_fem1_wk)
@@ -214,7 +219,8 @@
 !
       call int_mass_matrix_HRZ(iele_ins_smp_stack, n_int)
       call cal_ff_smp_2_ml(node1, rhs_tbl1,                             &
-     &    mhd_fem1_wk%ml_ins, mhd_fem1_wk%ml_o_ins, f1_l%ff_smp)
+     &    mhd_fem1_wk%mlump_ins%ml, mhd_fem1_wk%mlump_ins%ml_o,         &
+     &    f1_l%ff_smp)
 !
       end subroutine int_mass_matrix_ins_quad
 !
