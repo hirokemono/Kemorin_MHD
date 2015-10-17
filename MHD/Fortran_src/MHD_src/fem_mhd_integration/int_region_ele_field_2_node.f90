@@ -19,6 +19,9 @@
       use m_geometry_data
       use m_geometry_data_MHD
       use m_phys_constants
+      use m_jacobians
+      use m_sorted_node
+      use m_finite_element_matrix
 !
       use int_element_field_2_node
       use cal_ff_smp_to_ffs
@@ -39,7 +42,9 @@
       real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
 !
 !
-      call int_area_ele_scalar_2_node(iele_fl_smp_stack, scalar_ele)
+      call int_area_ele_scalar_2_node                                   &
+     &   (node1, ele1, jac1_3d_q, rhs_tbl1, iele_fl_smp_stack,          &
+     &    scalar_ele, fem1_wk, f1_l)
       call cal_ff_smp_2_scalar(node1, rhs_tbl1,                         &
      &    f1_l%ff_smp, mhd_fem1_wk%mlump_fl%ml,                         &
      &    n_scalar, ione, scalar_nod)
@@ -58,7 +63,8 @@
      &                   :: vector_nod(node1%numnod,n_vector)
 !
 !
-      call int_area_ele_vector_2_node(iele_fl_smp_stack, vector_ele)
+      call int_area_ele_vector_2_node(node1, ele1, jac1_3d_q, rhs_tbl1, &
+     &    iele_fl_smp_stack, vector_ele, fem1_wk, f1_l)
       call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
      &    f1_l%ff_smp, mhd_fem1_wk%mlump_fl%ml,                         &
      &    n_vector, ione, vector_nod)
@@ -76,7 +82,9 @@
       real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
 !
 !
-      call int_area_ele_scalar_2_node(iele_cd_smp_stack, scalar_ele)
+      call int_area_ele_scalar_2_node                                   &
+     &   (node1, ele1, jac1_3d_q, rhs_tbl1, iele_cd_smp_stack,          &
+     &    scalar_ele, fem1_wk, f1_l)
       call cal_ff_smp_2_scalar(node1, rhs_tbl1,                         &
      &    f1_l%ff_smp, mhd_fem1_wk%mlump_cd%ml,                         &
      &    n_scalar, ione, scalar_nod)
@@ -95,7 +103,8 @@
      &                   :: vector_nod(node1%numnod,n_vector)
 !
 !
-      call int_area_ele_vector_2_node(iele_cd_smp_stack, vector_ele)
+      call int_area_ele_vector_2_node(node1, ele1, jac1_3d_q, rhs_tbl1, &
+     &    iele_cd_smp_stack, vector_ele, fem1_wk, f1_l)
       call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
      &    f1_l%ff_smp, mhd_fem1_wk%mlump_cd%ml,                         &
      &    n_vector, ione, vector_nod)
@@ -113,7 +122,9 @@
       real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
 !
 !
-      call int_area_ele_scalar_2_node(iele_ins_smp_stack, scalar_ele)
+      call int_area_ele_scalar_2_node                                   &
+     &   (node1, ele1, jac1_3d_q, rhs_tbl1, iele_ins_smp_stack,         &
+     &    scalar_ele, fem1_wk, f1_l)
       call cal_ff_smp_2_scalar(node1, rhs_tbl1,                         &
      &    f1_l%ff_smp, mhd_fem1_wk%mlump_ins%ml,                        &
      &    n_scalar, ione, scalar_nod)
@@ -132,7 +143,8 @@
      &                   :: vector_nod(node1%numnod,n_vector)
 !
 !
-      call int_area_ele_vector_2_node(iele_ins_smp_stack, vector_ele)
+      call int_area_ele_vector_2_node(node1, ele1, jac1_3d_q, rhs_tbl1, &
+     &    iele_ins_smp_stack, vector_ele, fem1_wk, f1_l)
       call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
      &    f1_l%ff_smp, mhd_fem1_wk%mlump_ins%ml,                        &
      &    n_vector, ione, vector_nod)

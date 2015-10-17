@@ -13,7 +13,13 @@
 !
       use m_machine_parameter
       use m_control_parameter
+      use m_geometry_data
       use m_phys_constants
+      use m_node_phys_address
+      use m_node_phys_data
+      use m_jacobians
+      use m_sorted_node
+      use m_finite_element_matrix
 !
       implicit none
 !
@@ -25,9 +31,6 @@
 !
       subroutine s_cal_sgs_m_flux_dynamic_simi
 !
-      use m_geometry_data
-      use m_node_phys_data
-      use m_node_phys_address
       use m_SGS_model_coefs
       use m_SGS_address
       use reset_dynamic_model_coefs
@@ -90,8 +93,10 @@
       call cal_model_coefs(itype_SGS_m_flux_coef, n_sym_tensor,         &
      &    iak_sgs_mf, icomp_sgs_mf, intg_point_t_evo)
 !
-      call cal_ele_sym_tensor_2_node(ak_sgs_nod(1,icomp_sgs_mf),        &
-     &    ak_sgs(1,icomp_sgs_mf) )
+      call cal_ele_sym_tensor_2_node                                    &
+     &   (node1, ele1, jac1_3d_q, rhs_tbl1, m1_lump,                    &
+     &    ak_sgs(1,icomp_sgs_mf), ak_sgs_nod(1,icomp_sgs_mf),           &
+     &    fem1_wk, f1_l)
 !
       end subroutine s_cal_sgs_m_flux_dynamic_simi
 !
@@ -99,9 +104,6 @@
 !
       subroutine cal_sgs_maxwell_dynamic_simi
 !
-      use m_geometry_data
-      use m_node_phys_data
-      use m_node_phys_address
       use m_SGS_model_coefs
       use m_SGS_address
       use reset_dynamic_model_coefs
@@ -162,8 +164,10 @@
       call cal_model_coefs(itype_SGS_maxwell_coef, n_sym_tensor,        &
      &    iak_sgs_lor, icomp_sgs_lor, intg_point_t_evo)
 !
-      call cal_ele_sym_tensor_2_node(ak_sgs_nod(1,icomp_sgs_lor),       &
-     &    ak_sgs(1,icomp_sgs_lor) )
+      call cal_ele_sym_tensor_2_node                                    &
+     &   (node1, ele1, jac1_3d_q, rhs_tbl1, m1_lump,                    &
+     &    ak_sgs(1,icomp_sgs_lor), ak_sgs_nod(1,icomp_sgs_lor),         &
+     &    fem1_wk, f1_l)
 !
       end subroutine cal_sgs_maxwell_dynamic_simi
 !

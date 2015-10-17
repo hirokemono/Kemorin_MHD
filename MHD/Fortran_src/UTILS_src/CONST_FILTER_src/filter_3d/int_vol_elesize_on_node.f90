@@ -55,7 +55,9 @@
 !
       subroutine int_dx_ele2_node(itype_mass, elen_ele, elen_nod)
 !
+      use m_jacobians
       use m_sorted_node
+      use m_finite_element_matrix
       use m_element_list_4_filter
       use int_element_field_2_node
       use cal_ff_smp_to_ffs
@@ -67,11 +69,13 @@
 !
 !
       if (id_filter_area_grp(1) .eq. -1) then
-        call int_area_ele_scalar_2_node(ele1%istack_ele_smp, elen_ele)
+        call int_area_ele_scalar_2_node                                 &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1,  ele1%istack_ele_smp,     &
+     &      elen_ele, fem1_wk, f1_l)
       else
         call int_grp_ele_scalar_2_node                                  &
-     &     (ele1%numele, iele_filter_smp_stack,                         &
-     &      nele_4_filter, iele_4_filter, elen_ele)
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, iele_filter_smp_stack,    &
+     &      nele_4_filter, iele_4_filter, elen_ele, fem1_wk, f1_l)
       end if
 !
 !

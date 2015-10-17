@@ -124,7 +124,7 @@
      &   (FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele)
 !
       call s_int_element_length(FEM1_elen%nele_filter_mom,              &
-     &    filter_dxi1%dxi_ele, FEM1_elen%elen_ele%moms)
+     &    node1, ele1, filter_dxi1%dxi_ele, FEM1_elen%elen_ele%moms)
 !
        end subroutine init_analyzer
 !

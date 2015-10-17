@@ -16,7 +16,10 @@
       use m_precision
 !
       use m_control_parameter
+      use m_geometry_data
       use m_geometry_data_MHD
+      use m_jacobians
+      use m_sorted_node
       use m_physical_property
       use m_SGS_model_coefs
       use m_SGS_address
@@ -36,7 +39,7 @@
       use m_SGS_address
 !
       use int_vol_inertia_1st
-      use int_vol_vect_cst_diff_1st
+      use int_vol_vect_cst_difference
       use int_vol_SGS_div_flux_1st
 !
       integer (kind=kint), intent(in) :: i_field
@@ -53,12 +56,16 @@
      &      iphys_ele%i_velo, fld_ele1%d_fld, coef_nega_t)
 !
       else if (i_field .eq. iphys%i_h_flux_div) then
-        call int_vol_div_w_const_1st(iele_fl_smp_stack,                 &
-     &      intg_point_t_evo, iphys%i_h_flux, coef_nega_t)
+        call int_vol_div_w_const                                        &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_h_flux,        &
+     &      coef_nega_t, fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_ph_flux_div) then
-        call int_vol_div_w_const_1st(iele_fl_smp_stack,                 &
-     &      intg_point_t_evo, iphys%i_ph_flux, coef_nega_t)
+        call int_vol_div_w_const                                        &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_ph_flux,       &
+     &      coef_nega_t, fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_SGS_div_h_flux) then
         if(iflag_commute_heat .eq. id_SGS_commute_ON) then
@@ -67,8 +74,10 @@
      &        iphys%i_SGS_h_flux, ifilter_final, iak_diff_hf,           &
      &        coef_nega_t)
         else
-          call int_vol_div_w_const_1st(iele_fl_smp_stack,               &
-     &        intg_point_t_evo, iphys%i_SGS_h_flux, coef_nega_t)
+          call int_vol_div_w_const                                      &
+     &       (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,               &
+     &        iele_fl_smp_stack, intg_point_t_evo, iphys%i_SGS_h_flux,  &
+     &        coef_nega_t, fem1_wk, f1_nl)
         end if
       end if
 !

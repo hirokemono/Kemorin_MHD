@@ -26,6 +26,9 @@
       use m_control_parameter
       use m_node_phys_address
       use m_node_phys_data
+      use m_jacobians
+      use m_sorted_node
+      use m_finite_element_matrix
       use m_SGS_model_coefs
       use m_SGS_address
 !
@@ -82,8 +85,10 @@
       call cal_model_coefs(itype_SGS_h_flux_coef, n_vector,             &
      &    iak_sgs_hf, icomp_sgs_hf, intg_point_t_evo)
 !
-      call cal_ele_vector_2_node(ak_sgs_nod(1,icomp_sgs_hf),            &
-     &    ak_sgs(1,icomp_sgs_hf) )
+      call cal_ele_vector_2_node                                        &
+     &   (node1, ele1, jac1_3d_q, rhs_tbl1, m1_lump,                    &
+     &    ak_sgs(1,icomp_sgs_hf), ak_sgs_nod(1,icomp_sgs_hf),           &
+     &    fem1_wk, f1_l)
 !
       end subroutine s_cal_sgs_h_flux_dynamic_simi
 !

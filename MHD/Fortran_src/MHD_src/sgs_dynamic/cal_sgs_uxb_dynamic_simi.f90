@@ -11,9 +11,13 @@
 !
       use m_precision
 !
-      use m_machine_parameter
-      use m_phys_constants
       use m_control_parameter
+      use m_machine_parameter
+      use m_geometry_data
+      use m_node_phys_address
+      use m_phys_constants
+      use m_jacobians
+      use m_sorted_node
       use m_finite_element_matrix
       use m_SGS_model_coefs
       use m_SGS_address
@@ -27,10 +31,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_cal_sgs_uxb_dynamic_simi
-!
-      use m_geometry_data
-      use m_node_phys_address
-      use m_finite_element_matrix
 !
       use reset_dynamic_model_coefs
       use cal_filtering_vectors
@@ -83,9 +83,7 @@
 !
       subroutine cal_sgs_induct_t_dynamic_simi
 !
-      use m_geometry_data
       use m_node_phys_data
-      use m_node_phys_address
 !
       use reset_dynamic_model_coefs
       use cal_filtering_vectors
@@ -143,8 +141,10 @@
       call cal_model_coefs(itype_SGS_uxb_coef, n_asym_tensor,           &
      &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo)
 !
-      call cal_ele_vector_2_node(ak_sgs_nod(1,icomp_sgs_uxb),           &
-     &    ak_sgs(1,icomp_sgs_uxb) )
+      call cal_ele_vector_2_node                                        &
+     &   (node1, ele1, jac1_3d_q, rhs_tbl1, m1_lump,                    &
+     &    ak_sgs(1,icomp_sgs_uxb), ak_sgs_nod(1,icomp_sgs_uxb),         &
+     &    fem1_wk, f1_l)
 !
       end subroutine cal_sgs_induct_t_dynamic_simi
 !

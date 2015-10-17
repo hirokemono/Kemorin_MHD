@@ -5,13 +5,17 @@
 !                                    on July 2000 (ver 1.1)
 !        Modified by H. Matsui on Aug., 2006
 !
-!      subroutine s_int_element_length(nele_filter, dxi_ele, elen_ele)
+!!      subroutine s_int_element_length                                 &
+!!     &         (nele_filter, node, ele, dxi_ele, elen_ele)
 !
       module int_element_length
 !
       use m_precision
       use m_constants
       use m_machine_parameter
+!
+      use m_geometry_constants
+      use m_fem_gauss_int_coefs
 !
       implicit none
 !
@@ -26,44 +30,47 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_int_element_length(nele_filter, dxi_ele, elen_ele)
+      subroutine s_int_element_length                                   &
+     &         (nele_filter, node, ele, dxi_ele, elen_ele)
 !
-      use m_geometry_constants
-      use m_geometry_data
-      use m_fem_gauss_int_coefs
+      use t_geometry_data
       use t_filter_dxdxi
       use t_filter_elength
 !
 !
       integer(kind = kint), intent(in) :: nele_filter
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
       type(dxdxi_direction_type), intent(inout) :: dxi_ele
       type(elen_on_ele_type), intent(inout) :: elen_ele
 !
 !
-      if      (ele1%nnod_4_ele .eq. num_t_linear) then
+      if      (ele%nnod_4_ele .eq. num_t_linear) then
         call fem_element_length_linear                                  &
-     &     (node1%numnod, ele1%numele, node1%xx, ele1%ie,               &
-     &      ele1%istack_ele_smp, max_int_point, nele_filter,            &
+     &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
+     &      ele%istack_ele_smp, max_int_point, nele_filter,             &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
-      else if (ele1%nnod_4_ele .eq. num_t_quad) then
+      else if (ele%nnod_4_ele .eq. num_t_quad) then
         call fem_element_length_quad                                    &
-     &     (node1%numnod, ele1%numele, node1%xx, ele1%ie,               &
-     &      ele1%istack_ele_smp, max_int_point, nele_filter,            &
+     &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
+     &      ele%istack_ele_smp, max_int_point, nele_filter,             &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
-      else if (ele1%nnod_4_ele .eq. num_t_lag) then
+      else if (ele%nnod_4_ele .eq. num_t_lag) then
         call fem_element_length_lag                                     &
-     &     (node1%numnod, ele1%numele, node1%xx, ele1%ie,               &
-     &      ele1%istack_ele_smp, max_int_point, nele_filter,            &
+     &     (node%numnod, ele%numele, node%xx, ele%ie,                   &
+     &      ele%istack_ele_smp, max_int_point, nele_filter,             &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi)
       end if
 !
-      call cal_element_length_by_jacobi(nele_filter,                    &
+      call cal_element_length_by_jacobi                                 &
+     &     (ele%istack_ele_smp, nele_filter,                            &
      &      dxi_ele%dx%df_dxi, dxi_ele%dx%df_dei, dxi_ele%dx%df_dzi,    &
      &      dxi_ele%dy%df_dxi, dxi_ele%dy%df_dei, dxi_ele%dy%df_dzi,    &
      &      dxi_ele%dz%df_dxi, dxi_ele%dz%df_dei, dxi_ele%dz%df_dzi,    &
@@ -74,16 +81,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_element_length_by_jacobi(nele_filter,              &
+      subroutine cal_element_length_by_jacobi                           &
+     &         (iele_smp_stack, nele_filter,                            &
      &          dxdxi_ele, dxdei_ele, dxdzi_ele,                        &
      &          dydxi_ele, dydei_ele, dydzi_ele,                        &
      &          dzdxi_ele, dzdei_ele, dzdzi_ele,                        &
      &          elen_dx2_ele,  elen_dy2_ele,  elen_dz2_ele,             &
      &          elen_dxdy_ele, elen_dydz_ele, elen_dzdx_ele)
 !
-      use m_geometry_data
       use m_shape_functions
 !
+      integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: nele_filter
 !
       real(kind=kreal), intent(inout) :: dxdxi_ele(nele_filter)
@@ -109,8 +117,8 @@
 !
 !$omp parallel do private(iele,ist,ied)
       do iproc = 1, np_smp
-        ist = ele1%istack_ele_smp(iproc-1)+1
-        ied = ele1%istack_ele_smp(iproc)
+        ist = iele_smp_stack(iproc-1)+1
+        ied = iele_smp_stack(iproc)
         do iele = ist, ied
 !
           dxdxi_ele(iele) = dxdxi_ele(iele) * r125
@@ -159,9 +167,6 @@
      &          dydxi_ele, dydei_ele, dydzi_ele,                        &
      &          dzdxi_ele, dzdei_ele, dzdzi_ele)
 !
-      use m_machine_parameter
-      use m_geometry_constants
-      use m_fem_gauss_int_coefs
       use m_shape_functions
 !
       integer(kind = kint), intent(in) :: numnod, numele
@@ -333,9 +338,6 @@
      &          dydxi_ele, dydei_ele, dydzi_ele,                        &
      &          dzdxi_ele, dzdei_ele, dzdzi_ele)
 !
-      use m_machine_parameter
-      use m_geometry_constants
-      use m_fem_gauss_int_coefs
       use m_shape_functions
 !
       integer(kind = kint), intent(in) :: numnod, numele
@@ -631,9 +633,6 @@
      &          dydxi_ele, dydei_ele, dydzi_ele,                        &
      &          dzdxi_ele, dzdei_ele, dzdzi_ele)
 !
-      use m_machine_parameter
-      use m_geometry_constants
-      use m_fem_gauss_int_coefs
       use m_shape_functions
 !
       integer(kind = kint), intent(in) :: numnod, numele

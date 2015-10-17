@@ -37,7 +37,7 @@
       subroutine int_vol_magne_monitor_pg(i_field)
 !
       use int_vol_vect_differences
-      use int_vol_vect_cst_diff_1st
+      use int_vol_vect_cst_difference
       use int_vol_mag_induct_1st
       use int_vol_SGS_mag_induct_1st
 !
@@ -59,8 +59,10 @@
           call int_vol_div_SGS_idct_mod_pg(iele_cd_smp_stack,           &
      &        intg_point_t_evo, ifilter_final)
         else
-          call int_vol_div_as_tsr_w_const_1st(iele_cd_smp_stack,        &
-     &        intg_point_t_evo, iphys%i_SGS_induct_t, coef_induct)
+          call int_vol_div_as_tsr_w_const                               &
+     &       (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,               &
+     &        iele_cd_smp_stack, intg_point_t_evo,                      &
+     &        iphys%i_SGS_induct_t, coef_induct, fem1_wk, f1_nl)
         end if
       end if
 !
