@@ -41,7 +41,7 @@
       use m_precision
 !
       use m_phys_constants
-      use t_mesh_data
+      use t_geometry_data
       use t_jacobians
       use t_table_FEM_const
       use t_finite_element_mat

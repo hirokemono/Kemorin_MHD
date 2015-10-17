@@ -48,6 +48,8 @@
 !
       subroutine int_grped_mass_matrix_filter
 !
+      use m_sorted_node
+      use m_jacobians
       use m_finite_element_matrix
       use m_element_list_4_filter
       use int_grouped_mass_matrix
@@ -56,15 +58,15 @@
 !
       if     (ele1%nnod_4_ele.eq.num_t_quad                             &
      &   .or. ele1%nnod_4_ele.eq.num_t_lag) then
-        call int_grp_mass_matrix_HRZ_full(iele_filter_smp_stack,        &
-     &    nele_4_filter, iele_4_filter, num_int_points)
+        call int_grp_mass_matrix_HRZ_full                               &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, iele_filter_smp_stack,    &
+     &      nele_4_filter, iele_4_filter, num_int_points,               &
+     &      fem1_wk, f1_l, m1_lump)
       else
-        call int_grp_mass_matrix_diag(iele_filter_smp_stack,            &
-     &     nele_4_filter, iele_4_filter, num_int_points)
+        call int_grp_mass_matrix_diag(node1, ele1, jac1_3d_q, rhs_tbl1, &
+     &     iele_filter_smp_stack, nele_4_filter, iele_4_filter,         &
+     &     num_int_points, fem1_wk, f1_l, m1_lump)
       end if
-!
-      call cal_ff_smp_2_ml                                              &
-     &   (node1, rhs_tbl1, f1_l%ff_smp, m1_lump%ml, m1_lump%ml_o)
 !
       end subroutine int_grped_mass_matrix_filter
 !

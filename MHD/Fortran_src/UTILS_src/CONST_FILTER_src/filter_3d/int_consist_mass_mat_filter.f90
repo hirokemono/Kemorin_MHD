@@ -73,6 +73,7 @@
 !
       subroutine int_group_consist_mass_matrix(mass)
 !
+      use m_sorted_node
       use m_finite_element_matrix
       use m_element_list_4_filter
       use int_grouped_mass_matrix
@@ -80,9 +81,10 @@
       type(CRS_matrix), intent(inout) :: mass
 !
 !
-      call int_grp_consist_mass_matrix(iele_filter_smp_stack,           &
+      call int_grp_consist_mass_matrix                                  &
+     &   (ele1, jac1_3d_q, rhs_tbl1, mat_tbl_q1, iele_filter_smp_stack, &
      &    nele_4_filter, iele_4_filter, num_int_points,                 &
-     &    mass%ntot_A, mass%A_crs)
+     &    fem1_wk, mass%ntot_A, mass%A_crs)
 !
       end subroutine int_group_consist_mass_matrix
 !
