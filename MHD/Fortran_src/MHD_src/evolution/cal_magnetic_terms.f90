@@ -30,6 +30,7 @@
 !
       subroutine cal_terms_4_magnetic(i_field)
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
@@ -56,8 +57,7 @@
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    f1_nl%ff, mhd_fem1_wk%mlump_cd%ml, nod_fld1%ntot_phys,        &
      &    i_field, nod_fld1%d_fld)
-      call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, i_field, nod_fld1%d_fld)
+      call vector_send_recv(i_field, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_terms_4_magnetic
 !
@@ -65,6 +65,7 @@
 !
       subroutine cal_magnetic_diffusion
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_address
       use m_phys_constants
@@ -87,7 +88,7 @@
      &   (node1%numnod, node1%istack_nod_smp, f1_l%ff, m1_lump%ml,      &
      &    nod_fld1%ntot_phys, iphys%i_b_diffuse, nod_fld1%d_fld)
       call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_b_diffuse, nod_fld1%d_fld)
+     &   (iphys%i_b_diffuse, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_magnetic_diffusion
 !

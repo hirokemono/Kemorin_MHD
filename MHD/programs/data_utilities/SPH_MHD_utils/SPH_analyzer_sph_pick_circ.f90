@@ -39,6 +39,7 @@
       use m_machine_parameter
       use m_control_parameter
 !
+      use m_nod_comm_table
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_sph_phys_address
@@ -57,7 +58,7 @@
       use r_interpolate_sph_data
       use sph_mhd_rst_IO_control
       use sph_MHD_circle_transform
-      use nodal_vector_send_recv
+      use nod_phys_send_recv
 !
 !
 !   Allocate spectr field data
@@ -69,7 +70,7 @@
       call allocate_vector_for_solver(isix, nnod_rtp)
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
-      call init_send_recv
+      call init_send_recv(nod_comm)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
       call init_rms_4_sph_spectr

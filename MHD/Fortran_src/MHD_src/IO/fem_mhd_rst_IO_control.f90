@@ -144,6 +144,7 @@
 !
       subroutine output_restart_files(index_rst)
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
       use m_node_phys_address
@@ -157,19 +158,19 @@
 !
       if(iphys%i_pre_mom .gt. 0) then
         call vector_send_recv                                           &
-     &     (nod_fld1%ntot_phys, iphys%i_pre_mom, nod_fld1%d_fld)
+     &     (iphys%i_pre_mom, node1, nod_comm, nod_fld1)
       end if
       if(iphys%i_pre_uxb .gt. 0) then
         call vector_send_recv                                           &
-     &     (nod_fld1%ntot_phys, iphys%i_pre_uxb, nod_fld1%d_fld)
+     &     (iphys%i_pre_uxb, node1, nod_comm, nod_fld1)
       end if
       if(iphys%i_pre_heat .gt. 0) then
         call scalar_send_recv                                           &
-     &     (nod_fld1%ntot_phys, iphys%i_pre_heat, nod_fld1%d_fld)
+     &     (iphys%i_pre_heat, node1, nod_comm, nod_fld1)
       end if
       if(iphys%i_pre_composit .gt. 0) then
         call scalar_send_recv                                           &
-     &     (nod_fld1%ntot_phys, iphys%i_pre_composit, nod_fld1%d_fld)
+     &     (iphys%i_pre_composit, node1, nod_comm, nod_fld1)
       end if
 !
       call copy_time_steps_to_restart

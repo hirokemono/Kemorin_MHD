@@ -159,6 +159,8 @@
       subroutine cal_sgs_m_flux_grad_w_coef(itype_csim, i_filter,       &
      &          icm_sgs, i_sgs, i_field, ie_dvx)
 !
+      use m_nod_comm_table
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_data
       use m_sorted_node
@@ -197,8 +199,7 @@
 !
 ! ----------   communications
 !
-      call sym_tensor_send_recv                                         &
-     &   (nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
+      call sym_tensor_send_recv(i_sgs, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_sgs_m_flux_grad_w_coef
 !
@@ -207,6 +208,8 @@
       subroutine cal_sgs_m_flux_grad_no_coef(i_filter, i_sgs,           &
      &          i_field, ie_dvx)
 !
+      use m_nod_comm_table
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_data
       use m_sorted_node
@@ -237,8 +240,7 @@
 !
 ! ----------   communications
 !
-      call sym_tensor_send_recv                                         &
-     &   (nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
+      call sym_tensor_send_recv(i_sgs, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_sgs_m_flux_grad_no_coef
 !

@@ -22,9 +22,9 @@
       subroutine solve_by_djds_solverNN(ierr)
 !
       use calypso_mpi
+      use m_machine_parameter
       use m_nod_comm_table
       use m_geometry_data
-      use m_machine_parameter
       use m_iccg_parameter
       use m_solver_djds
       use m_matrix_data_4_djds

@@ -30,6 +30,7 @@
 !
       subroutine cal_vecp_induction
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
@@ -56,7 +57,7 @@
      &    f1_nl%ff, mhd_fem1_wk%mlump_cd%ml,                            &
      &    nod_fld1%ntot_phys, iphys%i_vp_induct, nod_fld1%d_fld)
       call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_vp_induct, nod_fld1%d_fld)
+     &   (iphys%i_vp_induct, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_vecp_induction
 !
@@ -64,10 +65,10 @@
 !
       subroutine cal_vecp_diffusion
 !
-      use m_geometry_data
-      use m_phys_constants
+      use m_nod_comm_table
       use m_geometry_data
       use m_group_data
+      use m_phys_constants
       use m_node_phys_address
       use m_node_phys_data
       use m_jacobian_sf_grp
@@ -93,7 +94,7 @@
      &    nod_fld1%ntot_phys, iphys%i_vp_diffuse, nod_fld1%d_fld)
 !
       call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_vp_diffuse, nod_fld1%d_fld)
+     &   (iphys%i_vp_diffuse, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_vecp_diffusion
 !

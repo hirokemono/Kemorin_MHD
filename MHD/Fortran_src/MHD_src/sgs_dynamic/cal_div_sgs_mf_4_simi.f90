@@ -70,6 +70,7 @@
       subroutine cal_div_sgs_mf_simi(i_sgs, i_flux, i_vect)
 !
       use m_control_parameter
+      use m_nod_comm_table
       use m_geometry_data
       use m_finite_element_matrix
       use m_int_vol_data
@@ -103,7 +104,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
+      call vector_send_recv(i_sgs, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_div_sgs_mf_simi
 !

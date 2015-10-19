@@ -29,6 +29,7 @@
 !
       subroutine cal_temperature_field
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
@@ -105,8 +106,7 @@
 !
       call set_boundary_ene
 !
-      call scalar_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_temp, nod_fld1%d_fld)
+      call scalar_send_recv(iphys%i_temp, node1, nod_comm, nod_fld1)
 !
       if (iphys%i_par_temp .gt. 0) then
         call subtract_2_nod_scalars(node1, nod_fld1,                    &

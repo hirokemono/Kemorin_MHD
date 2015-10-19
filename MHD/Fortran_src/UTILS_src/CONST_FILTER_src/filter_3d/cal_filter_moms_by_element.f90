@@ -87,7 +87,7 @@
       use m_ctl_params_4_gen_filter
       use filter_moments_send_recv
       use int_vol_elesize_on_node
-      use nodal_vector_send_recv
+      use nod_phys_send_recv
 !
       integer(kind = kint), intent(in) :: nnod_filter_mom
       real(kind=kreal), intent(in) :: elen_dx2_nod(nnod_filter_mom)
@@ -147,7 +147,8 @@
 !
           call int_dx_ele2_node(itype_mass_matrix,                      &
      &        seed_moments_ele(1,n), seed_moments_nod(1,n))
-          call nod_scalar_send_recv(seed_moments_nod(1,n))
+          call scalar_fld_send_recv                                     &
+     &       (node1, nod_comm, num_order_3d, n, seed_moments_nod)
         end if
 !
       end do

@@ -11,7 +11,13 @@
       use m_precision
 !
       use m_control_parameter
+      use m_nod_comm_table
+      use m_geometry_data
       use m_phys_constants
+      use m_node_phys_address
+      use m_node_phys_data
+      use m_int_vol_data
+!
       use m_finite_element_matrix
 !
       use cal_multi_pass
@@ -30,11 +36,6 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_terms_4_heat(i_field)
-!
-      use m_geometry_data
-      use m_node_phys_address
-      use m_node_phys_data
-      use m_int_vol_data
 !
       use int_vol_temp_monitor
 !
@@ -63,19 +64,13 @@
 !
 !   communication
 !
-      call scalar_send_recv                                             &
-     &   (nod_fld1%ntot_phys, i_field, nod_fld1%d_fld)
+      call scalar_send_recv(i_field, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_terms_4_heat
 !
 !-----------------------------------------------------------------------
 !
       subroutine cal_thermal_diffusion
-!
-      use m_geometry_data
-      use m_node_phys_address
-      use m_node_phys_data
-      use m_int_vol_data
 !
       use int_vol_diffusion_ele
 !
@@ -97,7 +92,7 @@
 !   communication
 !
       call scalar_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_t_diffuse, nod_fld1%d_fld)
+     &   (iphys%i_t_diffuse, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_thermal_diffusion
 !

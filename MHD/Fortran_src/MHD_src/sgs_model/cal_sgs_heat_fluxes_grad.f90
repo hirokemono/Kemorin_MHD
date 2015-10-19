@@ -86,6 +86,8 @@
      &          i_field, ie_dvx)
 !
       use m_control_parameter
+      use m_nod_comm_table
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_data
       use m_sorted_node
@@ -124,7 +126,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
+      call vector_send_recv(i_sgs, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_sgs_h_flux_grad_w_coef
 !
@@ -134,6 +136,8 @@
      &          i_field, ie_dvx)
 !
       use m_phys_constants
+      use m_geometry_data
+      use m_nod_comm_table
       use m_node_phys_data
       use m_sorted_node
       use m_finite_element_matrix
@@ -164,7 +168,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
+      call vector_send_recv(i_sgs, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_sgs_h_flux_grad_no_coef
 !

@@ -31,7 +31,8 @@
       use m_ctl_params_4_prod_udt
       use m_array_for_send_recv
       use m_ctl_data_product_udt
-      use nodal_vector_send_recv
+      use m_nod_comm_table
+      use nod_phys_send_recv
       use load_mesh_data
       use const_mesh_info
       use product_udt_fields
@@ -63,7 +64,7 @@
       if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(isix, node1%numnod)
 !
-      call init_send_recv
+      call init_send_recv(nod_comm)
 !
 !     --------------------- 
 !

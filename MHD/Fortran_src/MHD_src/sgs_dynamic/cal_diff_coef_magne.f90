@@ -21,6 +21,7 @@
 !
       use m_machine_parameter
       use m_control_parameter
+      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
@@ -104,7 +105,7 @@
       call cal_commute_error_f_magne_p(ifilter_4delta, i_sgs_grad_fp)
 !
       call sym_tensor_send_recv                                         &
-     &   (nod_fld1%ntot_phys, iphys%i_sgs_grad_f, nod_fld1%d_fld)
+     &   (iphys%i_sgs_grad_f, node1, nod_comm, nod_fld1)
 !
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_grad_f)
@@ -115,7 +116,7 @@
       call cal_commute_error_magne_p(ifilter_2delta, i_sgs_grad_p)
 !
       call sym_tensor_send_recv                                         &
-     &   (nod_fld1%ntot_phys, iphys%i_sgs_grad, nod_fld1%d_fld)
+     &   (iphys%i_sgs_grad, node1, nod_comm, nod_fld1)
 !
 !    filtering (to iphys%i_sgs_grad)
 !

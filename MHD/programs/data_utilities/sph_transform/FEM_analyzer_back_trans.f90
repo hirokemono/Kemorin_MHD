@@ -15,6 +15,9 @@
       use m_constants
       use calypso_mpi
 !
+      use m_nod_comm_table
+      use m_geometry_data
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -25,7 +28,6 @@
 !
       subroutine FEM_initialize_back_trans
 !
-      use m_geometry_data
       use m_group_data
       use m_array_for_send_recv
       use m_node_phys_data
@@ -35,7 +37,7 @@
       use m_t_step_parameter
       use m_ele_sf_eg_comm_tables
 !
-      use nodal_vector_send_recv
+      use nod_phys_send_recv
       use const_mesh_info
       use set_ele_id_4_node_type
       use int_volume_of_domain
@@ -50,7 +52,7 @@
       call allocate_vector_for_solver(isix, node1%numnod)
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
-      call init_send_recv
+      call init_send_recv(nod_comm)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)
@@ -113,6 +115,7 @@
       subroutine FEM_analyze_back_trans(i_step,                         &
      &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
+      use m_node_phys_data
       use m_t_step_parameter
       use m_ucd_data
       use field_IO_select
@@ -132,7 +135,9 @@
       call set_flag_to_visualization(i_step,                          &
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
-      if(visval .eq. 0) call phys_send_recv_all
+      if(visval .eq. 0) then
+        call nod_fields_send_recv(node1, nod_comm, nod_fld1)
+      end if
 !
 !*  -----------  Output volume data --------------
 !*

@@ -27,12 +27,12 @@
       subroutine initialize_ave_udt
 !
       use m_array_for_send_recv
-      use calypso_mpi
+      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_address
       use input_control_udt_diff
       use const_mesh_info
-      use nodal_vector_send_recv
+      use nod_phys_send_recv
 !
 !
       if (my_rank.eq.0) then
@@ -52,7 +52,7 @@
       if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(isix, node1%numnod)
 !
-      call init_send_recv
+      call init_send_recv(nod_comm)
 !
 !     --------------------- 
 !
@@ -75,6 +75,9 @@
 !
       subroutine analyze_ave_udt
 !
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_node_phys_data
       use m_t_step_parameter
       use m_ctl_params_4_diff_udt
       use m_ucd_input_data
@@ -107,7 +110,7 @@
       end do
 !
       call s_divide_phys_by_num_udt(icou)
-      call phys_send_recv_all
+      call nod_fields_send_recv(node1, nod_comm, nod_fld1)
 !
 !    output udt data
 !

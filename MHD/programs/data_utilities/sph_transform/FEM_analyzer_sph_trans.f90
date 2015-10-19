@@ -22,6 +22,7 @@
 !
       subroutine FEM_initialize_sph_trans
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_control_params_2nd_files
       use m_array_for_send_recv
@@ -31,7 +32,7 @@
       use m_node_phys_data
       use m_ele_sf_eg_comm_tables
 !
-      use nodal_vector_send_recv
+      use nod_phys_send_recv
       use const_mesh_info
       use int_volume_of_domain
       use set_normal_vectors
@@ -48,7 +49,7 @@
       call allocate_vector_for_solver(isix, node1%numnod)
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
-      call init_send_recv
+      call init_send_recv(nod_comm)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)

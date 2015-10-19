@@ -28,9 +28,11 @@
 !
       subroutine FEM_initialize_MHD
 !
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_node_phys_data
       use m_control_parameter
       use m_cal_max_indices
-      use m_node_phys_data
 !
       use input_control
       use initialization_4_MHD
@@ -49,7 +51,7 @@
 !
       call init_analyzer_fl
 !
-      call phys_send_recv_all
+      call nod_fields_send_recv(node1, nod_comm, nod_fld1)
 !
 !   obtain elemental averages
 !

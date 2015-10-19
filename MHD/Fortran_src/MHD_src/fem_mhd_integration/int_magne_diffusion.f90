@@ -22,6 +22,7 @@
       subroutine s_int_magne_diffusion
 !
       use m_control_parameter
+      use m_nod_comm_table
       use m_geometry_data
       use m_jacobians
       use m_sorted_node
@@ -51,7 +52,7 @@
      &     nod_fld1%ntot_phys, iphys%i_b_diffuse, nod_fld1%d_fld) 
 !
        call vector_send_recv                                            &
-     &    (nod_fld1%ntot_phys, iphys%i_b_diffuse, nod_fld1%d_fld)
+     &    (iphys%i_b_diffuse, node1, nod_comm, nod_fld1)
 !
       end subroutine s_int_magne_diffusion
 !

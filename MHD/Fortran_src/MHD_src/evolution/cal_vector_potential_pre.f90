@@ -27,6 +27,7 @@
       subroutine cal_vector_p_pre
 !
       use calypso_mpi
+      use m_nod_comm_table
       use m_geometry_data
       use m_group_data
       use m_finite_element_matrix
@@ -94,8 +95,7 @@
 !
       call set_boundary_vect_p
 !
-      call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_vecp, nod_fld1%d_fld)
+      call vector_send_recv(iphys%i_vecp, node1, nod_comm, nod_fld1)
 !
 !      call check_nodal_data(my_rank, nod_fld1, n_vector, iphys%i_vecp)
 !

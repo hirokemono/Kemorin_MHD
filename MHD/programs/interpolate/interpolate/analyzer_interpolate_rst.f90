@@ -41,6 +41,7 @@
       subroutine initialize_itp_rst
 !
       use m_ctl_params_4_gen_table
+      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
@@ -48,7 +49,7 @@
       use input_control_interpolate
       use const_mesh_info
       use set_size_4_smp_types
-      use nodal_vector_send_recv
+      use nod_phys_send_recv
       use set_field_to_restart
       use field_IO_select
 !
@@ -67,7 +68,7 @@
 !
 !     --------------------- 
 !
-      call init_send_recv
+      call init_send_recv(nod_comm)
 !
 !     --------------------- 
 !
@@ -120,6 +121,7 @@
       subroutine analyze_itp_rst
 !
       use calypso_mpi
+      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
       use m_ctl_params_4_gen_table
@@ -155,7 +157,7 @@
           time =       time_IO
           i_step_MHD = i_time_step_IO
 !
-          call phys_send_recv_all
+          call nod_fields_send_recv(node1, nod_comm, nod_fld1)
         end if
 !
         call MPI_Bcast(time, ione, CALYPSO_REAL, izero,                 &

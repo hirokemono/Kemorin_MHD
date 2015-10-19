@@ -40,6 +40,9 @@
       use m_node_phys_data
       use coordinate_convert_4_sph
 !
+!      type(node_data), intent(inout) :: node
+!      type(phys_data),intent(inout) :: nod_fld
+!
 !
       call cal_sph_zonal_ave_data                                       &
      &   (node1%numnod, nod_fld1%ntot_phys, ione, nod_fld1%d_fld)
@@ -54,6 +57,9 @@
       use m_geometry_data
       use m_node_phys_data
       use coordinate_convert_4_sph
+!
+!      type(node_data), intent(inout) :: node
+!      type(phys_data),intent(inout) :: nod_fld
 !
 !
       call cal_sph_zonal_rms_data                                       &
@@ -70,6 +76,9 @@
       use m_geometry_data
       use m_node_phys_data
       use coordinate_convert_4_sph
+!
+!      type(node_data), intent(inout) :: node
+!      type(phys_data),intent(inout) :: nod_fld
 !
 !
       call overwrite_nodal_sph_2_cyl(node1, nod_fld1)

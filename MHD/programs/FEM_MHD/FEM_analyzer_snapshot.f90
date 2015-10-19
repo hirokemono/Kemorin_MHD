@@ -52,6 +52,9 @@
      &          istep_pvr, istep_fline, visval)
 !
       use m_control_parameter
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_node_phys_data
 !
       use read_udt_4_snapshot
 !
@@ -105,7 +108,7 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'phys_send_recv_all'
-      call phys_send_recv_all
+      call nod_fields_send_recv(node1, nod_comm, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
       call update_fields

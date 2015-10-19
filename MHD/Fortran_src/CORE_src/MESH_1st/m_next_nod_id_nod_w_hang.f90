@@ -68,7 +68,6 @@
       subroutine check_next_node_id_nod_hang(my_rank, numnod)
 !
       integer(kind = kint), intent(in) :: my_rank, numnod
-      integer(kind = kint) :: inod, ist, ied
 !
       call check_next_node_id_4_node(my_rank, numnod, neib_hang1)
 !

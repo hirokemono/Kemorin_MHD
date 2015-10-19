@@ -33,6 +33,7 @@
 !
       subroutine cal_vector_p_co
 !
+      use m_nod_comm_table
       use m_node_phys_address
       use m_node_phys_data
 !
@@ -63,11 +64,9 @@
       call set_boundary_vect_p
 !
       if (iflag_debug.eq.1) write(*,*) 'vector_send_recv for vector_p'
-      call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_vecp, nod_fld1%d_fld)
+      call vector_send_recv(iphys%i_vecp, node1, nod_comm, nod_fld1)
       if (iflag_debug.eq.1) write(*,*) 'scalar_send_recv for potential'
-      call scalar_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_mag_p, nod_fld1%d_fld)
+      call scalar_send_recv(iphys%i_mag_p, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_vector_p_co
 !

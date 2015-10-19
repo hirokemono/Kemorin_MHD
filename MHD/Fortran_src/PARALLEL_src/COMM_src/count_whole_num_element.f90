@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on June, 2007
 !
-!      subroutine check_whole_num_of_elements
+!      subroutine check_whole_num_of_elements(ele)
 !
       module count_whole_num_element
 !
@@ -17,11 +17,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine check_whole_num_of_elements
+      subroutine check_whole_num_of_elements(ele)
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_geometry_data
+      use t_geometry_data
+!
+      type(element_data), intent(inout) :: ele
 !
       integer (kind = kint) :: iproc, iele, ist, ied
       integer (kind = kint) :: nele_l, nele_g
@@ -34,10 +36,10 @@
 !
 !$omp parallel do private(iele,ist,ied)
       do iproc = 1, np_smp
-        ist = ele1%istack_ele_smp(iproc-1)+1
-        ied = ele1%istack_ele_smp(iproc)
+        ist = ele%istack_ele_smp(iproc-1)+1
+        ied = ele%istack_ele_smp(iproc)
         do iele = ist, ied
-          nele_smp(iproc) = nele_smp(iproc) + ele1%interior_ele(iele)
+          nele_smp(iproc) = nele_smp(iproc) + ele%interior_ele(iele)
         end do
       end do
 !$omp end parallel do

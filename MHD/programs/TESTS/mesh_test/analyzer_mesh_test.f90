@@ -28,6 +28,7 @@
 !
       use const_mesh_info
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_group_data
       use m_jacobians
@@ -52,7 +53,7 @@
       use m_read_mesh_data
       use m_comm_data_IO
       use mesh_data_IO
-      use nodal_vector_send_recv
+      use nod_phys_send_recv
       use sum_normal_4_surf_group
       use set_parallel_file_name
       use set_comm_table_4_IO
@@ -86,7 +87,7 @@
       call allocate_vector_for_solver(isix, node1%numnod)
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
-      call init_send_recv
+      call init_send_recv(nod_comm)
 !
 !  -----    construct geometry informations
 !

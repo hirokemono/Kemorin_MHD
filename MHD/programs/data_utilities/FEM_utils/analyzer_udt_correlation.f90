@@ -47,7 +47,7 @@
       use copy_mesh_structures
       use input_control_udt_diff
       use const_mesh_info
-      use nodal_vector_send_recv
+      use nod_phys_send_recv
 !
       use m_2nd_pallalel_vector
       use const_ele_layering_table
@@ -106,7 +106,7 @@
       call allocate_vector_for_solver(isix, node1%numnod)
       call allocate_2nd_iccg_matrix(isix, mesh_ref%node%numnod)
 !
-      call init_send_recv
+      call init_send_recv(nod_comm)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
       call const_element_comm_tables_1st
@@ -131,6 +131,9 @@
 !
       subroutine analyze_udt_correlate
 !
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_node_phys_data
       use m_geometry_constants
       use m_layering_ele_list
       use m_node_phys_data
@@ -180,7 +183,7 @@
      &        mesh_ref%node%numnod, fem_ucd, phys_ref)
           fem_ucd%nnod = mesh_ref%node%numnod
 !
-          call phys_send_recv_all
+          call nod_fields_send_recv(node1, nod_comm, nod_fld1)
           call phys_type_send_recv_all(mesh_ref, phys_ref)
 !
 !    output udt data

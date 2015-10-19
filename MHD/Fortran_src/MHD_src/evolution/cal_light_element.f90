@@ -30,11 +30,12 @@
       subroutine cal_light_element_variation
 !
       use m_finite_element_matrix
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
       use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
-      use m_geometry_data
-      use m_group_data
       use m_jacobian_sf_grp
 !
       use nod_phys_send_recv
@@ -77,8 +78,7 @@
 !
       call set_boundary_composition
 !
-      call scalar_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_light, nod_fld1%d_fld)
+      call scalar_send_recv(iphys%i_light, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_light_element_variation
 !

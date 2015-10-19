@@ -18,6 +18,9 @@
       use m_precision
 !
       use m_phys_constants
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_node_phys_data
       use m_finite_element_matrix
       use m_int_vol_data
 !
@@ -37,8 +40,6 @@
      &          nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff,              &
      &          i_res, i_vector)
 !
-      use m_geometry_data
-      use m_node_phys_data
       use m_sorted_node
 !
       integer(kind = kint), intent(in) :: iflag_4_supg
@@ -61,7 +62,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_res, nod_fld1%d_fld)
+      call vector_send_recv(i_res, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_rotation_sgs_all
 !
@@ -71,9 +72,7 @@
      &          nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff,              &
      &          i_res, i_vector)
 !
-      use m_geometry_data
       use m_geometry_data_MHD
-      use m_node_phys_data
       use m_sorted_node
 !
       integer(kind = kint), intent(in) :: iflag_4_supg
@@ -96,7 +95,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_res, nod_fld1%d_fld)
+      call vector_send_recv(i_res, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_rotation_sgs_fluid
 !
@@ -106,9 +105,7 @@
      &          nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff,              &
      &          i_res, i_vector)
 !
-      use m_geometry_data
       use m_geometry_data_MHD
-      use m_node_phys_data
       use m_sorted_node
 !
       integer(kind = kint), intent(in) :: iflag_4_supg
@@ -131,7 +128,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_res, nod_fld1%d_fld)
+      call vector_send_recv(i_res, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_rotation_sgs_conduct
 !

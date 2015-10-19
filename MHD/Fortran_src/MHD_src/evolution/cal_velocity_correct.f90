@@ -33,6 +33,7 @@
 !
       subroutine cal_velocity_co
 !
+      use m_nod_comm_table
       use m_node_phys_address
       use m_node_phys_data
 !
@@ -62,10 +63,8 @@
       call set_boundary_velo
 !
       if (iflag_debug.eq.1) write(*,*) 'vector_send_recv(iphys%i_velo)'
-      call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_velo, nod_fld1%d_fld)
-      call scalar_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_press, nod_fld1%d_fld)
+      call vector_send_recv(iphys%i_velo, node1, nod_comm, nod_fld1)
+      call scalar_send_recv(iphys%i_press, node1, nod_comm, nod_fld1)
 !
 !
       end subroutine cal_velocity_co

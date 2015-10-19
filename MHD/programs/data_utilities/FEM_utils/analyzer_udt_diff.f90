@@ -28,11 +28,12 @@
 !
       use m_array_for_send_recv
       use m_geometry_data
+      use m_nod_comm_table
       use m_phys_constants
       use m_node_phys_address
       use input_control_udt_diff
       use const_mesh_info
-      use nodal_vector_send_recv
+      use nod_phys_send_recv
 !
 !
       if (my_rank.eq.0) then
@@ -52,7 +53,7 @@
       if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(n_sym_tensor, node1%numnod)
 !
-      call init_send_recv
+      call init_send_recv(nod_comm)
 !
 !     --------------------- 
 !
@@ -75,6 +76,9 @@
 !
       subroutine analyze_udt_diff
 !
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_node_phys_data
       use m_t_step_parameter
       use m_ctl_params_4_diff_udt
       use m_control_params_2nd_files
@@ -104,7 +108,7 @@
 !
           call s_divide_phys_by_delta_t
 !
-          call phys_send_recv_all
+          call nod_fields_send_recv(node1, nod_comm, nod_fld1)
 !
 !    output udt data
           call link_output_ucd_file_once(my_rank, istep_ucd,            &

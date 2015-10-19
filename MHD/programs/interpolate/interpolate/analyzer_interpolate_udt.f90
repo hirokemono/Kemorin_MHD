@@ -36,13 +36,14 @@
 !
       use m_ctl_params_4_gen_table
       use m_t_step_parameter
+      use m_nod_comm_table
       use m_node_phys_address
       use m_node_phys_data
 !
       use input_control_interpolate
       use const_mesh_info
       use set_size_4_smp_types
-      use nodal_vector_send_recv
+      use nod_phys_send_recv
 !
       integer(kind = kint) :: ierr
 !
@@ -59,7 +60,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'init_send_recv'
-      call init_send_recv
+      call init_send_recv(nod_comm)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
       call set_local_element_info
@@ -99,6 +100,9 @@
       subroutine analyze_itp_udt
 !
       use m_t_step_parameter
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_node_phys_data
       use m_ucd_data
       use m_ucd_input_data
       use m_ctl_params_4_gen_table
@@ -114,7 +118,7 @@
           call set_data_by_read_ucd_once(my_rank, istep,                &
    &          itype_org_udt_file, org_udt_file_head)
 !
-          call phys_send_recv_all
+          call nod_fields_send_recv(node1, nod_comm, nod_fld1)
         end if
 !
 !    interpolation

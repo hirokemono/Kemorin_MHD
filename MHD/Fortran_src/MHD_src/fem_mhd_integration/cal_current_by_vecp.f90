@@ -23,6 +23,7 @@
       subroutine int_current_diffuse
 !
       use m_machine_parameter
+      use m_nod_comm_table
       use m_geometry_data
       use m_group_data
       use m_geometry_data_MHD
@@ -58,7 +59,7 @@
 !    communication
 !
       call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_current, nod_fld1%d_fld)
+     &   (iphys%i_current, node1, nod_comm, nod_fld1)
 !
       end subroutine int_current_diffuse
 !

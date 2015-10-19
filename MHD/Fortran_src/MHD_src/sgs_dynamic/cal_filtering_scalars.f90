@@ -12,6 +12,10 @@
 !
       use m_precision
 !
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_node_phys_data
+!
       implicit none
 !
       private :: cal_filtered_scalar_in_fluid
@@ -24,17 +28,15 @@
 !
       subroutine cal_filtered_scalar(i_filter, i_scalar)
 !
-       use m_geometry_data
-       use m_control_parameter
-       use m_node_phys_data
+      use m_control_parameter
 !
-       use cal_3d_filter_phys
-       use cal_3d_filter_phys_smp
-       use cal_line_filtering_scalar
-       use copy_nodal_fields
-       use nod_phys_send_recv
+      use cal_3d_filter_phys
+      use cal_3d_filter_phys_smp
+      use cal_line_filtering_scalar
+      use copy_nodal_fields
+      use nod_phys_send_recv
 !
-       integer (kind=kint), intent(in) :: i_filter, i_scalar
+      integer (kind=kint), intent(in) :: i_filter, i_scalar
 !
 !
       if (iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING) then
@@ -69,8 +71,7 @@
         end if
         call cal_l_filtering_scalar(node1%numnod, node1%istack_nod_smp, &
      &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
-        call scalar_send_recv                                           &
-     &     (nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
+        call scalar_send_recv(i_filter, node1, nod_comm, nod_fld1)
       end if
 !
       end subroutine cal_filtered_scalar
@@ -80,8 +81,6 @@
       subroutine cal_filtered_scalar_in_fluid(i_filter, i_scalar)
 !
        use m_control_parameter
-       use m_geometry_data
-       use m_node_phys_data
 !
        use cal_3d_filter_phys
        use cal_3d_filter_phys_smp
@@ -124,8 +123,7 @@
         end if
         call cal_l_filtering_scalar(node1%numnod, node1%istack_nod_smp, &
      &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
-        call scalar_send_recv                                           &
-     &     (nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
+        call scalar_send_recv(i_filter, node1, nod_comm, nod_fld1)
       end if
 !
       end subroutine cal_filtered_scalar_in_fluid

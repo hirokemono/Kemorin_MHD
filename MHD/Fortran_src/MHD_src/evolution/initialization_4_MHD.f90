@@ -25,6 +25,7 @@
       use m_iccg_parameter
       use m_t_step_parameter
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_geometry_data_MHD
       use m_group_data
@@ -81,7 +82,7 @@
       use reordering_MG_ele_by_layers
       use initialize_4_MHD_AMG
 !
-      use nodal_vector_send_recv
+      use nod_phys_send_recv
       use solver_MGCG_MHD
 !
 !     --------------------------------
@@ -108,7 +109,7 @@
       if (iflag_debug.ge.1 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(n_sym_tensor, node1%numnod)
 !
-      call init_send_recv
+      call init_send_recv(nod_comm)
 !
 !  -----    construct geometry informations
 !
@@ -117,7 +118,9 @@
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
       call const_element_comm_tables_1st
 !
-      if(i_debug .eq. iflag_full_msg) call check_whole_num_of_elements
+      if(i_debug .eq. iflag_full_msg) then
+        call check_whole_num_of_elements(ele1)
+      end if
 !
       call deallocate_surface_geom_type(surf1)
       call deallocate_edge_geom_type(edge1)

@@ -34,6 +34,7 @@
 !
       subroutine cal_magnetic_co
 !
+      use m_nod_comm_table
       use m_node_phys_address
       use m_node_phys_data
 !
@@ -62,10 +63,8 @@
       if (iflag_debug.eq.1)   write(*,*) 'set_boundary_magne'
       call set_boundary_magne
 !
-      call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld)
-      call scalar_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_mag_p, nod_fld1%d_fld)
+      call vector_send_recv(iphys%i_magne, node1, nod_comm, nod_fld1)
+      call scalar_send_recv(iphys%i_mag_p, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_magnetic_co
 !
@@ -156,6 +155,7 @@
 !
       subroutine cal_magnetic_co_outside
 !
+      use m_nod_comm_table
       use m_node_phys_address
       use m_node_phys_data
       use nod_phys_send_recv
@@ -175,8 +175,7 @@
 !
       call set_boundary_magne
 !
-      call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld)
+      call vector_send_recv(iphys%i_magne, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_magnetic_co_outside
 !

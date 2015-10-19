@@ -29,6 +29,7 @@
 !
       subroutine cal_parturbation_temp
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_address
       use m_node_phys_data
@@ -105,7 +106,7 @@
       call set_boundary_part_temp
 !
       call scalar_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_par_temp, nod_fld1%d_fld)
+     &   (iphys%i_par_temp, node1, nod_comm, nod_fld1)
 !
       call add_2_nod_scalars(node1, nod_fld1,                           &
      &    iphys%i_ref_t, iphys%i_par_temp, iphys%i_temp)

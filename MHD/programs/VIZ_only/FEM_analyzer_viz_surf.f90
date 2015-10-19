@@ -15,6 +15,8 @@
       use m_machine_parameter
       use calypso_mpi
       use m_t_step_parameter
+      use m_nod_comm_table
+      use m_geometry_data
 !
       implicit none
 !
@@ -27,7 +29,6 @@
       subroutine FEM_initialize_surface
 !
       use m_read_mesh_data
-      use m_geometry_data
       use m_control_params_2nd_files
       use m_ucd_input_data
       use m_array_for_send_recv
@@ -37,7 +38,7 @@
       use const_mesh_info
       use load_mesh_data
       use set_parallel_file_name
-      use nodal_vector_send_recv
+      use nod_phys_send_recv
 !
 !   --------------------------------
 !       setup mesh information
@@ -49,7 +50,7 @@
       call allocate_vector_for_solver(isix, node1%numnod)
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
-      call init_send_recv
+      call init_send_recv(nod_comm)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)
@@ -73,6 +74,7 @@
 !
       subroutine FEM_analyze_surface(i_step, istep_psf, istep_iso)
 !
+      use m_node_phys_data
       use m_control_params_2nd_files
       use m_ucd_input_data
       use set_exit_flag_4_visualizer
@@ -91,7 +93,7 @@
 !
       if(istep_psf.ge.0 .or. istep_iso.ge.0) then
         call set_data_by_read_ucd(my_rank, i_step)
-        call phys_send_recv_all
+        call nod_fields_send_recv(node1, nod_comm, nod_fld1)
       end if
 !
       end subroutine FEM_analyze_surface

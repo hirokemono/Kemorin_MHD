@@ -19,6 +19,7 @@
 !
       subroutine s_cal_diff_coef_sgs_mxwl
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_machine_parameter
       use m_control_parameter
@@ -78,7 +79,7 @@
       call cal_commute_error_4_filter_mxwl(ifilter_4delta)
 !
       call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_sgs_grad_f, nod_fld1%d_fld)
+     &   (iphys%i_sgs_grad_f, node1, nod_comm, nod_fld1)
       call delete_field_by_fixed_v_bc(iphys%i_sgs_grad_f)
 !
 !      call check_nodal_data                                            &
@@ -89,7 +90,7 @@
       call cal_commute_error_4_maxwell(ifilter_2delta)
 !
       call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_sgs_grad, nod_fld1%d_fld)
+     &   (iphys%i_sgs_grad, node1, nod_comm, nod_fld1)
 !
 !    filtering (to iphys%i_sgs_grad)
 !

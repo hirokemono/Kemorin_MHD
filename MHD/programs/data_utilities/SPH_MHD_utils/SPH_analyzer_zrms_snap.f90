@@ -79,6 +79,9 @@
 !
       subroutine SPH_to_FEM_bridge_zRMS_snap
 !
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_node_phys_data
       use output_viz_file_control
       use lead_pole_data_4_sph_mhd
       use nod_phys_send_recv
@@ -110,7 +113,7 @@
 !*
       call lead_pole_fields_4_sph_mhd
 !
-      call phys_send_recv_all
+      call nod_fields_send_recv(node1, nod_comm, nod_fld1)
 !
       end subroutine SPH_to_FEM_bridge_zRMS_snap
 !

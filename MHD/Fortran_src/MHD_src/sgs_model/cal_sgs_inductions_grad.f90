@@ -29,6 +29,8 @@
      &          ifield_v, ifield_b, ie_dvx, ie_dbx)
 !
       use m_control_parameter
+      use m_nod_comm_table
+      use m_geometry_data
       use m_node_phys_data
       use m_physical_property
       use m_sorted_node
@@ -69,7 +71,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
+      call vector_send_recv(i_sgs, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_sgs_induct_t_grad_w_coef
 !
@@ -79,6 +81,8 @@
      &          ifield_v, ifield_b, ie_dvx, ie_dbx)
 !
       use m_control_parameter
+      use m_nod_comm_table
+      use m_geometry_data
       use m_node_phys_data
       use m_physical_property
       use m_sorted_node
@@ -111,7 +115,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
+      call vector_send_recv(i_sgs, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_sgs_induct_t_grad_no_coef
 !

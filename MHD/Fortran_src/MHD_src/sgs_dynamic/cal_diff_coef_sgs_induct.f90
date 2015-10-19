@@ -19,6 +19,7 @@
 !
       subroutine s_cal_diff_coef_sgs_induct
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_machine_parameter
       use m_control_parameter
@@ -78,7 +79,7 @@
       call cal_commute_error_4_filter_idct(ifilter_4delta)
 !
       call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_sgs_grad_f, nod_fld1%d_fld)
+     &   (iphys%i_sgs_grad_f, node1, nod_comm, nod_fld1)
 !
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_vector, iphys%i_sgs_grad_f)
@@ -88,7 +89,7 @@
       call cal_commute_error_4_induct(ifilter_2delta)
 !
       call vector_send_recv                                             &
-     &   (nod_fld1%ntot_phys, iphys%i_sgs_grad, nod_fld1%d_fld)
+     &   (iphys%i_sgs_grad, node1, nod_comm, nod_fld1)
 !
 !    filtering (to iphys%i_sgs_grad)
 !

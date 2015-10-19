@@ -200,6 +200,7 @@
       subroutine cal_products_of_fields(ncomp_nod, d_nod)
 !
       use m_geometry_data
+      use m_nod_comm_table
       use m_ctl_params_4_prod_udt
       use cal_products_smp
       use nod_phys_send_recv
@@ -326,11 +327,11 @@
 !
 !
       if(ncomp_4_result .eq. ione) then
-        call scalar_send_recv(ione, ione, d_nod)
+        call nod_scalar_send_recv(node1, nod_comm, d_nod)
       else if(ncomp_4_result .eq. ithree) then
-        call vector_send_recv(ithree, ione, d_nod)
+        call nod_vector_send_recv(node1, nod_comm, d_nod)
       else if(ncomp_4_result .eq. isix) then
-        call sym_tensor_send_recv(isix, ione, d_nod)
+        call nod_tensor_send_recv(node1, nod_comm, d_nod)
       end if
 !
 !      write(50+my_rank,*) 'd_nod'

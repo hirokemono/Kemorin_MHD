@@ -12,6 +12,8 @@
       use m_precision
 !
       use m_phys_constants
+      use m_nod_comm_table
+      use m_geometry_Data
       use m_finite_element_matrix
       use m_int_vol_data
 !
@@ -31,7 +33,6 @@
 !
       subroutine cal_gradent_whole(iflag_4_supg, i_res, i_scalar)
 !
-      use m_geometry_data
       use m_node_phys_data
       use m_sorted_node
 !
@@ -52,7 +53,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_res, nod_fld1%d_fld)
+      call vector_send_recv(i_res, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_gradent_whole
 !
@@ -60,7 +61,6 @@
 !
       subroutine cal_gradent_in_fluid(iflag_4_supg, i_res, i_scalar)
 !
-      use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_data
       use m_sorted_node
@@ -81,7 +81,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_res, nod_fld1%d_fld)
+      call vector_send_recv(i_res, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_gradent_in_fluid
 !
@@ -89,7 +89,6 @@
 !
       subroutine cal_gradent_in_conduct(iflag_4_supg, i_res, i_scalar)
 !
-      use m_geometry_data
       use m_geometry_data_MHD
       use m_node_phys_data
       use m_sorted_node
@@ -110,7 +109,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_res, nod_fld1%d_fld)
+      call vector_send_recv(i_res, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_gradent_in_conduct
 !
@@ -120,7 +119,6 @@
       subroutine choose_int_vol_grads(iflag_4_supg,                     &
      &          iele_fsmp_stack, i_scalar)
 !
-      use m_geometry_data
       use m_node_phys_data
       use m_jacobians
       use m_sorted_node

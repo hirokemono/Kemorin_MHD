@@ -62,6 +62,8 @@
      &          i_sgs, i_field, id_dx)
 !
       use m_phys_constants
+      use m_nod_comm_table
+      use m_geometry_data
       use m_node_phys_data
       use m_physical_property
       use m_sorted_node
@@ -94,7 +96,7 @@
 !
 ! ----------   communications
 !
-      call vector_send_recv(nod_fld1%ntot_phys, i_sgs, nod_fld1%d_fld)
+      call vector_send_recv(i_sgs, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_sgs_vp_induct_grad_no_coef
 !

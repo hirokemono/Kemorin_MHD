@@ -43,6 +43,7 @@
 !
       use calypso_mpi
       use m_geometry_data
+      use m_nod_comm_table
       use m_array_for_send_recv
       use m_array_for_send_recv
       use m_geometry_4_comm_test
@@ -52,7 +53,7 @@
       use set_diff_geom_comm_test
       use collect_diff_4_comm_test
       use write_diff_4_comm_test
-      use nodal_vector_send_recv
+      use nod_phys_send_recv
       use const_mesh_info
 !
 !
@@ -60,7 +61,7 @@
       call allocate_cflag_collect_diff
       call allocate_vector_for_solver(ithree, node1%numnod)
 !
-      call init_send_recv
+      call init_send_recv(nod_comm)
 !
 !  -----    construct geometry informations
 !
