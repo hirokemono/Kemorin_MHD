@@ -43,8 +43,7 @@
       use const_delta_z_analytical
 
       use const_crs_connect_commute_z
-      use DJDS_precond_solve33
-      use DJDS_precond_solveNN
+      use solve_precond_DJDS
 
       use set_diff_position_z_filter
       use set_vert_diff_z_filter
@@ -186,11 +185,11 @@
         if   (mat1_crs%SOLVER_crs.eq.'block33'                           &
      &    .or. mat1_crs%SOLVER_crs.eq.'BLOCK33') then
           write(*,*) 'solve_by_djds_solver33'
-          call solve_by_djds_solver33(ierr)
+          call solve_by_djds_solver33(node1, tbl1_crs, ierr)
         else if (mat1_crs%SOLVER_crs.eq.'blockNN'                         &
      &    .or. mat1_crs%SOLVER_crs.eq.'BLOCKNN') then
           write(*,*) 'solve_by_djds_solverNN'
-          call solve_by_djds_solverNN(ierr)
+          call solve_by_djds_solverNN(node1, tbl1_crs, ierr)
         end if
       end if
 !

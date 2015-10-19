@@ -4,9 +4,12 @@
 !      Written by H. Matsui on July, 2005
 !      Modified by H. Matsui on July, 2008
 !
-!      subroutine prepare_scalar_2_filter(ntot_comp, id_phys, d_nod)
-!      subroutine prepare_vector_2_filter(ntot_comp, id_phys, d_nod)
-!      subroutine prepare_sym_tensor_2_filter(ntot_comp, id_phys, d_nod)
+!!      subroutine prepare_scalar_2_filter                              &
+!!     &         (numnod, internal_node, ntot_comp, id_phys, d_nod)
+!!      subroutine prepare_vector_2_filter                              &
+!!     &         (numnod, internal_node, ntot_comp, id_phys, d_nod)
+!!      subroutine prepare_sym_tensor_2_filter                          &
+!!     &         (numnod, internal_node, ntot_comp, id_phys, d_nod)
 !         id_phys:  field ID of nodal fields
 !
       module prepare_field_2_filter
@@ -15,7 +18,6 @@
 !
       use calypso_mpi
       use m_work_time
-      use m_geometry_data
       use m_nod_filter_comm_table
 !
       implicit none
@@ -26,24 +28,26 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine prepare_scalar_2_filter(ntot_comp, id_phys, d_nod)
+      subroutine prepare_scalar_2_filter                                &
+     &         (numnod, internal_node, ntot_comp, id_phys, d_nod)
 !
       use solver_SR_type
 !
+      integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: ntot_comp, id_phys
-      real(kind = kreal), intent(in) :: d_nod(node1%numnod,ntot_comp)
+      real(kind = kreal), intent(in) :: d_nod(numnod,ntot_comp)
 !
       integer (kind = kint) :: inod
 !
 !
 !$omp parallel do
-      do inod = 1, node1%internal_node
+      do inod = 1, internal_node
         x_vec_filtering(inod) = d_nod(inod,id_phys)
       end do
 !$omp end parallel do
 !
 !$omp parallel do
-      do inod = node1%internal_node+1, nnod_filtering
+      do inod = internal_node+1, nnod_filtering
         x_vec_filtering(inod) = 0.0d0
       end do
 !$omp end parallel do
@@ -57,18 +61,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine prepare_vector_2_filter(ntot_comp, id_phys, d_nod)
+      subroutine prepare_vector_2_filter                                &
+     &         (numnod, internal_node, ntot_comp, id_phys, d_nod)
 !
       use solver_SR_type
 !
+      integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: ntot_comp, id_phys
-      real(kind = kreal), intent(in) :: d_nod(node1%numnod,ntot_comp)
+      real(kind = kreal), intent(in) :: d_nod(numnod,ntot_comp)
 !
       integer (kind = kint) :: inod
 !
 !
 !$omp parallel do
-      do inod=1, node1%internal_node
+      do inod=1, internal_node
         x_vec_filtering(3*inod-2) = d_nod(inod,id_phys  )
         x_vec_filtering(3*inod-1) = d_nod(inod,id_phys+1)
         x_vec_filtering(3*inod  ) = d_nod(inod,id_phys+2)
@@ -76,7 +82,7 @@
 !$omp end parallel do
 !
 !$omp parallel do
-      do inod = node1%internal_node+1, nnod_filtering
+      do inod = internal_node+1, nnod_filtering
         x_vec_filtering(3*inod-2) = 0.0d0
         x_vec_filtering(3*inod-1) = 0.0d0
         x_vec_filtering(3*inod  ) = 0.0d0
@@ -99,18 +105,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine prepare_sym_tensor_2_filter(ntot_comp, id_phys, d_nod)
+      subroutine prepare_sym_tensor_2_filter                            &
+     &         (numnod, internal_node, ntot_comp, id_phys, d_nod)
 !
       use solver_SR_type
 !
+      integer(kind = kint), intent(in) :: numnod, internal_node
       integer(kind = kint), intent(in) :: ntot_comp, id_phys
-      real(kind = kreal), intent(in) :: d_nod(node1%numnod,ntot_comp)
+      real(kind = kreal), intent(in) :: d_nod(numnod,ntot_comp)
 !
       integer (kind = kint) :: inod
 !
 !
 !$omp parallel do
-      do inod=1, node1%internal_node
+      do inod=1, internal_node
         x_vec_filtering(6*inod-5) = d_nod(inod,id_phys  )
         x_vec_filtering(6*inod-4) = d_nod(inod,id_phys+1)
         x_vec_filtering(6*inod-3) = d_nod(inod,id_phys+2)
@@ -121,7 +129,7 @@
 !$omp end parallel do
 !
 !$omp parallel do
-      do inod = node1%internal_node+1, nnod_filtering
+      do inod = internal_node+1, nnod_filtering
         x_vec_filtering(6*inod-5) = 0.0d0
         x_vec_filtering(6*inod-4) = 0.0d0
         x_vec_filtering(6*inod-3) = 0.0d0

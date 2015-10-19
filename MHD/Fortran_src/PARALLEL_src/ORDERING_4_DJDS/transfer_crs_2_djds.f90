@@ -19,6 +19,9 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_comm_table
+      use t_geometry_data
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -27,22 +30,24 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine transfer_crs_2_djds_matrix
+      subroutine transfer_crs_2_djds_matrix(node, nod_comm, tbl_crs)
 !
-      use m_geometry_data
+      use t_crs_matrix
       use m_matrix_data_4_djds
-      use m_crs_matrix
-      use m_nod_comm_table
       use m_solver_djds
       use set_size_4_smp_types
       use copy_matrix_2_djds_array
       use DJDS_const_solver_list
       use DJDS_new_comm_table
 !
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(inout) :: node
+      type(CRS_matrix_connect), intent(inout) :: tbl_crs
+!
 !
       call copy_paramters_4_djds
 !
-      call count_node_4_smp_mesh_type(node1)
+      call count_node_4_smp_mesh_type(node)
 !
 !C +-----------------+
 !C | DJDS reordering |
@@ -50,7 +55,7 @@
 !C===
 !C
        if (iflag_debug.eq.1) write(*,*) 'reordering_djds_smp'
-      call reordering_djds_smp
+      call reordering_djds_smp(node)
 !C
 !C +--------------------------------------+
 !C | set new communication table 4 solver |
@@ -60,42 +65,44 @@
       call allocate_new_comm_table                                      &
      &   (nod_comm%istack_export(nod_comm%num_neib))
       call set_new_comm_table                                           &
-     &   (node1%numnod, OLDtoNEW, nod_comm%num_neib,                    &
+     &   (node%numnod, OLDtoNEW, nod_comm%num_neib,                     &
      &    nod_comm%istack_export, nod_comm%item_export, NOD_EXPORT_NEW)
 !
 !C +-------------+
 !C | copy matrix |
 !C +-------------+
 !
-      call allocate_vector_data_4_djds(node1%numnod)
+      call allocate_vector_data_4_djds(node%numnod)
       call allocate_matrix_data_4_djds                                  &
-     &   (node1%internal_node, node1%numnod)
+     &   (node%internal_node, node%numnod)
 !
        if (iflag_debug.eq.1) write(*,*) 'copy_matrix_2_djds_NN'
-      call copy_matrix_2_djds_NN(node1%internal_node, node1%numnod)
+      call copy_matrix_2_djds_NN(node%internal_node, node%numnod)
        if (iflag_debug.eq.1) write(*,*) 'copy_RH_vect_2_crs_nn'
-      call copy_RH_vect_2_crs_nn(node1%numnod)
+      call copy_RH_vect_2_crs_nn(node%numnod)
 !
-      call dealloc_crs_connect(tbl1_crs)
+      call dealloc_crs_connect(tbl_crs)
 !
       end subroutine transfer_crs_2_djds_matrix
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_new_comm_table_entire
+      subroutine set_new_comm_table_entire(node, nod_comm)
 !
-      use m_geometry_data
-      use m_nod_comm_table
       use m_solver_djds
       use DJDS_new_comm_table
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(inout) :: node
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'allocate_new_comm_table'
       call allocate_new_comm_table(nod_comm%ntot_export)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_new_comm_table'
       call set_new_comm_table                                           &
-     &   (node1%numnod, OLDtoNEW, nod_comm%num_neib,                    &
+     &   (node%numnod, OLDtoNEW, nod_comm%num_neib,                     &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    NOD_EXPORT_NEW)
 !

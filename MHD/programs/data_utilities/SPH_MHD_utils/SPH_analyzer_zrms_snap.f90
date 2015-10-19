@@ -106,8 +106,8 @@
 ! ----  Take zonal mean
 !
       if (iflag_debug.eq.1) write(*,*) 'zonal_cyl_rms_all_rtp_field'
-!      call zonal_rms_all_rtp_field
-      call zonal_cyl_rms_all_rtp_field
+!      call zonal_rms_all_rtp_field(node1, nod_fld1)
+      call zonal_cyl_rms_all_rtp_field(node1, nod_fld1)
 !
 !*  ----------- transform field at pole and center --------------
 !*

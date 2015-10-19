@@ -181,9 +181,9 @@
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
      &      .or. iflag_SGS_model.eq.id_SGS_similarity) then
         if (ifmt_line_filter .eq. iflag_bin) then
-          call read_line_filter_data_b(filter_file_code)
+          call read_line_filter_data_b(filter_file_code, node1%numnod)
         else
-          call read_line_filter_data_a(filter_file_code)
+          call read_line_filter_data_a(filter_file_code, node1%numnod)
         end if
       end if
 !

@@ -52,11 +52,10 @@
 !
       use calypso_mpi
       use m_iccg_parameter
+      use m_geometry_data
       use m_crs_matrix
       use crs_matrix_io
-      use DJDS_precond_solve11
-      use DJDS_precond_solve33
-      use DJDS_precond_solveNN
+      use solve_precond_DJDS
 !      use m_geometry_data
 !
       integer(kind = kint) :: ierr
@@ -66,13 +65,13 @@
 !C-- ICCG computation
       if (mat1_crs%SOLVER_crs .eq. 'scalar'                             &
      &   .or. mat1_crs%SOLVER_crs.eq.'SCALAR') then
-        call solve_by_djds_solver11(ierr)
+        call solve_by_djds_solver11(node1, tbl1_crs, ierr)
       else if (mat1_crs%SOLVER_crs.eq.'block33'                         &
      &    .or. mat1_crs%SOLVER_crs.eq.'BLOCK33') then
-        call solve_by_djds_solver33(ierr)
+        call solve_by_djds_solver33(node1, tbl1_crs, ierr)
       else if (mat1_crs%SOLVER_crs.eq.'blockNN'                         &
      &    .or. mat1_crs%SOLVER_crs.eq.'BLOCKNN') then
-        call solve_by_djds_solverNN(ierr)
+        call solve_by_djds_solverNN(node1, tbl1_crs, ierr)
       end if
 
       call output_solution

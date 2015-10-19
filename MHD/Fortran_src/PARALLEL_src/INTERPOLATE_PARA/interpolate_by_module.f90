@@ -16,8 +16,10 @@
 !!     &          X_org, X_dest)
 !!      subroutine interpolate_mod_N(comm_dest, NP_org, NP_dest, NB,    &
 !!     &          X_org, X_dest)
-!!      subroutine s_interpolate_integer(comm_dest, NP_org, NP_dest,    &
-!!     &          i_vector_dest, i_vector_org)
+!!      subroutine s_interpolate_integer(ele_org, comm_dest,            &
+!!    &           NP_org, NP_dest, i_vector_dest, i_vector_org)
+!!        type(element_data), intent(in) :: ele_org
+!!        type(communication_table), intent(in) :: comm_dest
 !!@endverbatim
 !
       module interpolate_by_module
@@ -27,7 +29,6 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_geometry_data
       use m_interpolate_table_orgin
       use m_interpolate_table_dest
 !
@@ -66,7 +67,7 @@
 !
 !  interpolation
       if (num_dest_domain .gt. 0) then
-        call itp_matvec_scalar(np_smp, node1%numnod, X_org(1),          &
+        call itp_matvec_scalar(np_smp, NP_org, X_org(1),                &
      &      NC_itp, NCM_itp, INM_itp, IAM_itp, AM_itp,                  &
      &      NUM_SUM_itp(4), IEND_SUM_itp_smp, x_inter_org(1))
       end if
@@ -113,7 +114,7 @@
 !    interpolation
 !
       if (num_dest_domain.gt.0) then
-        call itp_matvec_vector(np_smp, node1%numnod, X_org(1),          &
+        call itp_matvec_vector(np_smp, NP_org, X_org(1),                &
      &      NC_itp, NCM_itp, INM_itp, IAM_itp, AM_itp,                  &
      &      NUM_SUM_itp(4), IEND_SUM_itp_smp, x_inter_org(1))
       end if
@@ -161,7 +162,7 @@
 !
 !
       if (num_dest_domain.gt.0) then
-        call itp_matvec_tensor(np_smp, node1%numnod, X_org(1),          &
+        call itp_matvec_tensor(np_smp, NP_org, X_org(1),                &
      &      NC_itp, NCM_itp, INM_itp, IAM_itp, AM_itp,                  &
      &      NUM_SUM_itp(4), IEND_SUM_itp_smp, x_inter_org(1))
       end if
@@ -205,7 +206,7 @@
       call verifty_work_4_itp_field(NB, ntot_table_org)
 !
       if (num_dest_domain.gt.0) then
-        call itp_matvec_fields(np_smp, node1%numnod, NB,                &
+        call itp_matvec_fields(np_smp, NP_org, NB,                      &
      &      X_org(1), NC_itp, NCM_itp, INM_itp, IAM_itp, AM_itp,        &
      &      NUM_SUM_itp(4), IEND_SUM_itp_smp, x_inter_org(1))
       end if
@@ -233,9 +234,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_interpolate_integer(comm_dest, NP_org, NP_dest,      &
-     &          i_vector_dest, i_vector_org)
+      subroutine s_interpolate_integer(ele_org, comm_dest,              &
+     &          NP_org, NP_dest, i_vector_dest, i_vector_org)
 !
+      use t_geometry_data
       use m_solver_SR
       use m_2nd_pallalel_vector
       use m_array_for_send_recv
@@ -244,6 +246,7 @@
       use calypso_SR_int
       use solver_SR_int
 !
+      type(element_data), intent(in) :: ele_org
       type(communication_table), intent(in) :: comm_dest
       integer(kind = kint), intent(in) :: NP_org, NP_dest
       integer(kind = kint), intent(in) :: i_vector_org(NP_org)
@@ -261,8 +264,8 @@
 !    interpolation
 !
       if (num_dest_domain.gt.0) then
-        call s_interporate_imark_para(np_smp, node1%numnod,             &
-     &      ele1%numele, ele1%nnod_4_ele, ele1%ie,                      &
+        call s_interporate_imark_para(np_smp, NP_org,                   &
+     &      ele_org%numele, ele_org%nnod_4_ele, ele_org%ie,             &
      &      ix_vec(1), istack_tbl_type_org_smp,                         &
      &      ntot_table_org, iele_org_4_org,                             &
      &      itype_inter_org, i_inter_org(1) )

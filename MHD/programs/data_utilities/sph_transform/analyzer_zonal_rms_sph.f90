@@ -102,7 +102,7 @@
 !   Take zonal RMS
         if (iflag_debug.gt.0) write(*,*) 'zonal_rms_all_rtp_field'
         call overwrite_nodal_xyz_2_sph(node1, nod_fld1)
-        call zonal_rms_all_rtp_field
+        call zonal_rms_all_rtp_field(node1, nod_fld1)
 !
         call set_ucd_file_prefix(zonal_udt_head)
         call FEM_analyze_back_trans(i_step, istep_psf, istep_iso,       &

@@ -128,7 +128,8 @@
 !
         else if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
           if (iflag_debug.gt.0) write(*,*)' ordering_l_filter_smp'
-          call ordering_l_filter_smp
+          call ordering_l_filter_smp                                    &
+     &       (node1%numnod, node1%istack_nod_smp)
         end if
       end if
 !

@@ -31,7 +31,7 @@
 !
       use calypso_mpi
       use m_crs_matrix
-      use DJDS_precond_solve11
+      use solve_precond_DJDS
 !
       integer(kind = kint) :: i, ierr
 !
@@ -52,7 +52,7 @@
       end do
 !
          write(*,*) 'solve_by_djds_solver11'
-      call solve_by_djds_solver11(ierr)
+      call solve_by_djds_solver11(node1, tbl1_crs, ierr)
 !
       do i = 1, node1%numnod
         sol_mk_crs(i) = mat1_crs%X_crs(i)

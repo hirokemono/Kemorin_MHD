@@ -166,8 +166,8 @@
      &      CALYPSO_COMM, ierr_MPI)
 !
         if (iflag_debug.gt.0)  write(*,*) 's_interpolate_nodal_data'
-        call interpolate_nodal_data(new_femmesh%mesh%nod_comm,          &
-     &      new_femmesh%mesh%node, new_phys)
+        call interpolate_nodal_data(node1, nod_fld1,                    &
+     &      new_femmesh%mesh%nod_comm, new_femmesh%mesh%node, new_phys)
 !
         if (my_rank .lt. ndomain_dest) then
           call copy_time_steps_to_restart

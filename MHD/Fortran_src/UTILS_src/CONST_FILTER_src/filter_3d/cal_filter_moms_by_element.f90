@@ -84,6 +84,8 @@
      &           elen_dx2_nod,  elen_dy2_nod,  elen_dz2_nod,            &
      &           elen_dxdy_nod, elen_dydz_nod, elen_dzdx_nod)
 !
+      use m_nod_comm_table
+      use m_geometry_data
       use m_ctl_params_4_gen_filter
       use filter_moments_send_recv
       use int_vol_elesize_on_node

@@ -4,6 +4,8 @@
 !     Written by H. Matsui on Apr., 2008
 !
 !
+!!      subroutine copy_node_data_to_filter(node)
+!
 !      subroutine allocate_globalnod_filter
 !      subroutine deallocate_globalnod_filter
 !
@@ -36,6 +38,30 @@
 !
       contains
 !
+!------------------------------------------------------------------
+!
+      subroutine copy_node_data_to_filter(node)
+!
+      use t_geometry_data
+!
+      type(node_data), intent(in) :: node
+!
+!
+      nnod_filtering =     node%numnod
+      inter_nod_3dfilter = node%internal_node
+      call allocate_globalnod_filter
+!
+!$omp parallel workshare
+      id_globalnod_filtering(1:nnod_filtering)                          &
+     &                      = node%inod_global(1:nnod_filtering)
+      xx_filtering(1:nnod_filtering,1) = node%xx(1:nnod_filtering,1)
+      xx_filtering(1:nnod_filtering,2) = node%xx(1:nnod_filtering,2)
+      xx_filtering(1:nnod_filtering,3) = node%xx(1:nnod_filtering,3)
+!$omp end parallel workshare
+!
+      end subroutine copy_node_data_to_filter
+!
+!------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine allocate_globalnod_filter

@@ -102,7 +102,6 @@
 !
       subroutine const_global_numnod_list(node)
 !
-      use t_geometry_data
       use const_global_element_ids
 !
       type(node_data), intent(inout) :: node
@@ -137,7 +136,6 @@
 !
       subroutine const_global_element_id(ele, ele_comm)
 !
-      use m_geometry_data
       use const_global_element_ids
 !
       type(element_data), intent(inout) :: ele
@@ -156,7 +154,6 @@
 !
       subroutine const_global_surface_id(surf, sf_comm)
 !
-      use t_surface_data
       use const_global_element_ids
 !
       type(surface_data), intent(inout) :: surf
@@ -181,7 +178,6 @@
 !
       subroutine const_global_edge_id(edge, ed_comm)
 !
-      use t_edge_data
       use const_global_element_ids
 !
       type(edge_data), intent(inout) :: edge

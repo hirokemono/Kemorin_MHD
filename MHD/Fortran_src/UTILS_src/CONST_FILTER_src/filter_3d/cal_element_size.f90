@@ -27,6 +27,7 @@
 !
       subroutine s_cal_element_size(filter_dxi, dxidxs)
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_finite_element_matrix
       use m_ctl_params_4_gen_filter
@@ -90,8 +91,8 @@
       call cal_dx2_on_node(itype_mass_matrix)
       call cal_dxi_dxes_node(itype_mass_matrix, dxidxs)
 !
-      call elength_nod_send_recv(FEM1_elen%elen_nod)
-      call dxidx_nod_send_recv(dxidxs%dx_nod)
+      call elength_nod_send_recv(node1, nod_comm, FEM1_elen%elen_nod)
+      call dxidx_nod_send_recv(node1, nod_comm, dxidxs%dx_nod)
 !
 !  ---------------------------------------------------
 !        cal products of element size for each node
@@ -106,7 +107,7 @@
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'diff_elen_nod_send_recv'
-      call diff_elen_nod_send_recv(FEM1_elen%elen_nod)
+      call diff_elen_nod_send_recv(node1, nod_comm, FEM1_elen%elen_nod)
 !
 !  ---------------------------------------------------
 !        filter moments on each node
@@ -148,6 +149,8 @@
       subroutine s_const_filter_mom_ele(mom_nod, mom_ele)
 !
       use t_filter_moments
+      use m_nod_comm_table
+      use m_geometry_data
       use m_ctl_params_4_gen_filter
       use cal_diff_elesize_on_ele
       use cal_1st_diff_deltax_4_nod
@@ -157,7 +160,7 @@
       type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !
 !
-      call filter_mom_nod_send_recv(mom_nod)
+      call filter_mom_nod_send_recv(node1, nod_comm, mom_nod)
 !
       if (itype_mass_matrix .eq. 1) then
         call cal_diffs_filter_nod_consist(mom_nod)
@@ -165,7 +168,7 @@
         call cal_diffs_filter_nod_lump(mom_nod)
       end if
 !
-      call diff_filter_mom_nod_send_recv(mom_nod)
+      call diff_filter_mom_nod_send_recv(node1, nod_comm, mom_nod)
 !
       call cal_filter_moms_ele_by_nod(mom_nod, mom_ele)
       call cal_1st_diffs_filter_ele(mom_nod, mom_ele)

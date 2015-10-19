@@ -115,7 +115,8 @@
 !    output udt data
 !
       call set_ucd_file_prefix(ave_udt_file_head)
-      call output_udt_one_snapshot(i_step_number)
+      call output_udt_one_snapshot                                      &
+     &   (i_step_number, node1, ele1, nod_comm)
 !
       end subroutine analyze_ave_udt
 !

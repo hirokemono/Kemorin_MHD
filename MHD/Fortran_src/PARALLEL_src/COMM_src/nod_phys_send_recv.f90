@@ -8,11 +8,17 @@
 !!      subroutine init_send_recv(node, nod_comm, nod_comm)
 !!
 !!      subroutine nod_fields_send_recv(node, nod_comm, nod_fld)
+!!        type(node_data), intent(in) :: node
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(phys_data),intent(inout) :: nod_fld
 !!
 !!      subroutine scalar_send_recv(id_phys, node, nod_comm, nod_fld)
 !!      subroutine vector_send_recv(id_phys, node, nod_comm, nod_fld)
 !!      subroutine sym_tensor_send_recv                                 &
 !!     &         (node, nod_comm, ntot_comp, id_phys, d_nod)
+!!        type(node_data), intent(in) :: node
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(phys_data),intent(inout) :: nod_fld
 !!         id_phys:  field ID of nodal fields
 !!
 !!      subroutine scalar_fld_send_recv                                 &

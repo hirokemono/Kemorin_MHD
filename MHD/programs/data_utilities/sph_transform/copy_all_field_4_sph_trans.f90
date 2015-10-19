@@ -26,6 +26,10 @@
       use m_spheric_parameter
       use m_sph_spectr_data
       use m_work_pole_sph_trans
+!
+      use m_geometry_data
+      use m_node_phys_data
+!
       use set_phys_name_4_sph_trans
 !
       implicit  none
@@ -55,7 +59,8 @@
         do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. nod_fld1%phys_name(i)) then
             i_field = nod_fld1%istack_component(i- 1) + 1
-            call copy_1st_scl_to_sph_trans(i_field, v_rtp(1,itrans))
+            call copy_nod_scl_to_sph_trans                              &
+     &         (node1, nod_fld1, i_field, v_rtp(1,itrans))
             exit
           end if
         end do
@@ -85,8 +90,8 @@
         do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. nod_fld1%phys_name(i)) then
             i_field = nod_fld1%istack_component(i- 1) + 1
-            call copy_1st_scl_from_trans_wpole(ncomp_trans, itrans,     &
-     &          v_rtp(1,1), v_pole(1,1), i_field)
+            call copy_nod_scl_from_trans_wpole(ncomp_trans, itrans,     &
+     &          v_rtp(1,1), v_pole(1,1), i_field, node1, nod_fld1)
             exit
           end if
         end do
@@ -116,7 +121,8 @@
         do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. nod_fld1%phys_name(i)) then
             i_field = nod_fld1%istack_component(i- 1) + 1
-            call copy_1st_vec_to_sph_trans(i_field, v_rtp(1,itrans))
+            call copy_nod_vec_to_sph_trans                              &
+     &         (node1, nod_fld1, i_field, v_rtp(1,itrans))
             exit
           end if
         end do
@@ -146,8 +152,8 @@
         do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. nod_fld1%phys_name(i)) then
             i_field = nod_fld1%istack_component(i- 1) + 1
-            call copy_1st_vec_from_trans_wpole(ncomp_trans,             &
-     &          itrans, v_rtp(1,1), v_pole(1,1), i_field)
+            call copy_nod_vec_from_trans_wpole(ncomp_trans, itrans,     &
+     &          v_rtp(1,1), v_pole(1,1), i_field, node1, nod_fld1)
             exit
           end if
         end do
@@ -177,7 +183,8 @@
         do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. nod_fld1%phys_name(i)) then
             i_field = nod_fld1%istack_component(i- 1) + 1
-            call copy_1st_tsr_to_sph_trans(i_field, v_rtp(1,itrans))
+            call copy_nod_tsr_to_sph_trans                              &
+     &         (node1, nod_fld1, i_field, v_rtp(1,itrans))
             exit
           end if
         end do
@@ -207,8 +214,8 @@
         do i = 1, nod_fld1%num_phys
           if (phys_name_rtp(j0) .eq. nod_fld1%phys_name(i)) then
             i_field = nod_fld1%istack_component(i- 1) + 1
-            call copy_1st_tsr_from_trans_wpole(ncomp_trans, itrans,     &
-     &          v_rtp(1,1), v_pole(1,1), i_field)
+            call copy_nod_tsr_from_trans_wpole(ncomp_trans, itrans,     &
+     &          v_rtp(1,1), v_pole(1,1), i_field, node1, nod_fld1)
             exit
           end if
         end do

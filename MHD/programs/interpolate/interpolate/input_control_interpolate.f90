@@ -27,6 +27,7 @@
 !
       use t_mesh_data
 !
+      use m_geometry_data
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
       use m_ctl_data_gen_table
@@ -92,7 +93,8 @@
       call copy_itp_table_org_from_IO(my_rank)
 !
       if (iflag_debug.eq.1) write(*,*) 'init_interpolate_nodal_data'
-      call init_interpolate_nodal_data(new_femmesh%mesh%node)
+      call init_interpolate_nodal_data                                  &
+     &   (node1, ele1, new_femmesh%mesh%node)
 !
       end subroutine s_input_control_interpolate
 !

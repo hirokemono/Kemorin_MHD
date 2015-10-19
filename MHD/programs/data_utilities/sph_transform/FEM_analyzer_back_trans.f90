@@ -28,6 +28,7 @@
 !
       subroutine FEM_initialize_back_trans
 !
+      use m_nod_comm_table
       use m_group_data
       use m_array_for_send_recv
       use m_node_phys_data
@@ -104,7 +105,7 @@
 !  connect grid data to volume output
 !
       if(i_step_output_ucd .gt. 0) then
-        call output_grd_file
+        call output_grd_file(node1, ele1, nod_comm)
       end if
 !
       end subroutine FEM_initialize_back_trans

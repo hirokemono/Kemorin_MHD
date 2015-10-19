@@ -140,6 +140,7 @@
       use m_filter_elength
       use m_filter_coefs
       use m_filter_coef_combained
+      use m_nod_filter_comm_table
       use m_comm_data_IO
       use m_filter_file_names
       use m_file_format_switch
@@ -149,7 +150,7 @@
       use filter_moment_IO_select
       use filter_coef_IO
       use construct_filters
-      use copy_nod_comm_tbl_4_filter
+      use copy_mesh_structures
       use set_filter_geometry_4_IO
       use set_filter_comm_tbl_4_IO
       use filter_geometry_IO
@@ -186,8 +187,8 @@
 !  ---------------------------------------------------
 !
       if (iflag_tgt_filter_type .gt. -10)  then
-        call copy_node_data_to_filter
-        call copy_comm_table_to_filter
+        call copy_node_data_to_filter(node1)
+        call copy_comm_tbl_types(nod_comm, flt_comm)
         call copy_filtering_geometry_to_IO
         call copy_filter_comm_tbl_to_IO(my_rank)
 !

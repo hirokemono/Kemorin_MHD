@@ -9,6 +9,8 @@
       module DJDS_const_solver_list
 !
       use m_precision
+      use m_machine_parameter
+      use calypso_mpi
 !
       implicit none
 !
@@ -18,15 +20,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine reordering_djds_smp
+      subroutine reordering_djds_smp(node)
 !
-      use m_iccg_parameter
-      use calypso_mpi
-      use m_geometry_data
-      use m_machine_parameter
-      use m_matrix_work
+      use t_geometry_data
+!
       use m_colored_connect
       use m_solver_djds
+      use m_iccg_parameter
+      use m_matrix_work
 !
       use ordering_MC_RCM
       use DJDS_hyperplane
@@ -34,20 +35,19 @@
       use DJDS_total_nondiag
       use DJDS_nodiag_item
 !
-      implicit none
-!
+      type(node_data), intent(inout) :: node
 !
 !C +----------------+
 !C | reordering RCM |
 !C +----------------+
 !C===
 !
-      call allocate_4_RCM(node1%numnod)
+      call allocate_4_RCM(node%numnod)
 !
 !      count_rcm
 !       (output:: NHYP, OLDtoNEW, NEWtoOLD, NLmax, NUmax)
 !
-      call count_rcm(node1%internal_node, node1%numnod,                 &
+      call count_rcm(node%internal_node, node%numnod,                   &
      &    NHYP, OLDtoNEW, NEWtoOLD, NLmax, NUmax)
 !
 !C +-----------------+
@@ -59,13 +59,13 @@
 !
       call allocate_number_4_djds
 !
-      call allocate_work_num_4_djds(node1%numnod)
+      call allocate_work_num_4_djds(node%numnod)
 !
 !   count_hyperplane
 !    ( output :: itotal_l, itotal_u, NLmax, NUmax, npLX1, npUX1
 !                IVECT, NLmaxHYP, NUmaxHYP)
 !
-      call count_hyperplane(np_smp, node1%numnod, node1%internal_node,  &
+      call count_hyperplane(np_smp, node%numnod, node%internal_node,    &
      &      NHYP, IVECT, npLX1, npUX1, NLmax, NUmax,                    &
      &      NLmaxHYP, NUmaxHYP, itotal_l, itotal_u)
 !
@@ -75,17 +75,17 @@
 !C | DJDS reordering |
 !C +-----------------+
 !C===
-      call allocate_lists_4_DJDS(np_smp, node1%numnod)
+      call allocate_lists_4_DJDS(np_smp, node%numnod)
 !
-      call allocate_work_4_djds(node1%numnod, NHYP, npLX1, npUX1)
+      call allocate_work_4_djds(node%numnod, NHYP, npLX1, npUX1)
 !
 !  set_djds_ordering
 !    ( output:: STACKmc, PEon, indexDJDS_L, indexDJDS_U,
 !               NEWtoOLD_DJDS_L, NEWtoOLD_DJDS_U,
 !               OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U)
 !
-      call set_djds_ordering(np_smp, node1%numnod, node1%internal_node, &
-     &      node1%istack_internal_smp, NHYP, IVECT, STACKmcG, STACKmc,  &
+      call set_djds_ordering(np_smp, node%numnod, node%internal_node,   &
+     &      node%istack_internal_smp, NHYP, IVECT, STACKmcG, STACKmc,   &
      &      PEon, npLX1, npUX1, NLmax, NUmax, NLmaxHYP, NUmaxHYP,       &
      &      indexDJDS_L, indexDJDS_U, NEWtoOLD_DJDS_L, NEWtoOLD_DJDS_U, &
      &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U)
@@ -94,12 +94,12 @@
 !
       call deallocate_iW_ordering
 !
-      call allocate_conn_work_4_djds(node1%internal_node, NLmax, NUmax)
+      call allocate_conn_work_4_djds(node%internal_node, NLmax, NUmax)
 !
 !  set_itotal_djds
 !    ( output:: itotal_l, itotal_u) 
 !
-      call set_itotal_djds(np_smp, node1%internal_node,                 &
+      call set_itotal_djds(np_smp, node%internal_node,                  &
      &    NHYP, npLX1, npUX1, NLmax, NUmax, NLmaxHYP, NUmaxHYP,         &
      &    itotal_l, itotal_u, indexDJDS_L, indexDJDS_U)
 !
@@ -113,18 +113,17 @@
 !  set_item_djds
 !  (output:: COLORon, itemDJDS_L, itemDJDS_U, OLDtoNEW, NEWtoOLD, LtoU)
 !
-      call set_item_djds(np_smp, node1%numnod, node1%internal_node,     &
+      call set_item_djds(np_smp, node%numnod, node%internal_node,       &
      &      NHYP, IVECT, COLORon, STACKmc,                              &
      &      NLmax, NUmax, npLX1, npUX1, NLmaxHYP, NUmaxHYP,             &
      &      itotal_l, itotal_u, indexDJDS_L, indexDJDS_U,               &
      &      itemDJDS_L, itemDJDS_U, OLDtoNEW, NEWtoOLD,                 &
      &      NEWtoOLD_DJDS_L, NEWtoOLD_DJDS_U,                           &
      &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, LtoU)
-
-
+!
       call deallocate_work_4_djds
 !
-!      call check_DJDS_ordering_info(my_rank, node1%numnod)
+!      call check_DJDS_ordering_info(my_rank, node%numnod)
 !
       end subroutine reordering_djds_smp
 !

@@ -25,6 +25,7 @@
 !
       use m_ucd_data
       use m_geometry_data
+      use m_nod_comm_table
       use m_field_file_format
       use m_t_step_parameter
       use set_ucd_data
@@ -40,7 +41,8 @@
       call link_fem_field_data_2_ucd_out
 !
       if (fem_ucd%ifmt_file/icent .eq. iflag_single/icent) then
-        call init_merged_ucd(fem_ucd, merged_ucd)
+        call init_merged_ucd                                            &
+     &     (node1, ele1, nod_comm, fem_ucd, merged_ucd)
       end if
 !
       call sel_write_parallel_ucd_mesh(fem_ucd, merged_ucd)

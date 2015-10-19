@@ -273,7 +273,7 @@
 ! ----  Take zonal mean
 !
       if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_rtp_field'
-      call zonal_mean_all_rtp_field
+      call zonal_mean_all_rtp_field(node1, nod_fld1)
 !
 !*  ----------- transform field at pole and center --------------
 !*
