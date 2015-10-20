@@ -2,7 +2,7 @@
 #
 #
 
-MESH_1_DIR = $$(CORE_SRCDIR)/MESH_1st
+MESH_1_DIR = $$(PARA_SRCDIR)/MESH_1st
 SRC_MESH1 = $(shell ls *.f90 *.F90)
 MOD_MESH1 = $(addsuffix .o,$(basename $(SRC_MESH1)) )
 

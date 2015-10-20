@@ -15,6 +15,7 @@ INTERPOLATE_PARA     \
 filtering            \
 SPH_SHELL_src        \
 CONST_SPH_GRID       \
+MESH_1st             \
 \
 MULTIGRID_src
 
@@ -60,6 +61,7 @@ lib_archve:
 mod_list:
 	@echo  MOD_PARALLEL= \\ >> $(MAKENAME)
 	@echo  \
+	'$$(MOD_MESH1)'      \
 	'$$(MOD_COMM)       $$(MOD_FEM_INT) '         \
 	'$$(MOD_MULTIGRID)  $$(MOD_FILTERING)'        \
 	'$$(MOD_COMM_SPH)   $$(MOD_SOLVER_SET_ORDER)' \

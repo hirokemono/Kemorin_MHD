@@ -4,8 +4,8 @@
 !
 !       Written by H. Matsui
 !
-!      subroutine FEM_initialize_surface
-!      subroutine FEM_analyze_surface(i_step, istep_pvr, iflag_viz)
+!!      subroutine FEM_initialize_surface(ucd)
+!!      subroutine FEM_analyze_surface(i_step, istep_pvr, iflag_viz, ucd)
 !
       module FEM_analyzer_viz_surf
 !
@@ -26,11 +26,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_surface
+      subroutine FEM_initialize_surface(ucd)
 !
+      use t_ucd_data
+      use m_node_phys_data
       use m_read_mesh_data
       use m_control_params_2nd_files
-      use m_ucd_input_data
       use m_array_for_send_recv
       use m_ele_sf_eg_comm_tables
 !
@@ -39,6 +40,10 @@
       use load_mesh_data
       use set_parallel_file_name
       use nod_phys_send_recv
+      use set_ucd_data_to_type
+      use ucd_IO_select
+!
+      type(ucd_data), intent(inout) :: ucd
 !
 !   --------------------------------
 !       setup mesh information
@@ -65,23 +70,27 @@
 !
 !     ---------------------
 !
-      call allocate_phys_data_by_output(my_rank, i_step_init)
+      ucd%nnod =      node1%numnod
+      call sel_read_udt_param(my_rank, i_step_init, ucd)
+      call alloc_phys_data_type_by_output(ucd, node1, nod_fld1)
 !
       end subroutine FEM_initialize_surface
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_surface(i_step, istep_psf, istep_iso)
+      subroutine FEM_analyze_surface(i_step, istep_psf, istep_iso, ucd)
 !
+      use t_ucd_data
       use m_node_phys_data
       use m_control_params_2nd_files
-      use m_ucd_input_data
+      use set_ucd_data_to_type
       use set_exit_flag_4_visualizer
       use nod_phys_send_recv
 !
       integer (kind =kint), intent(in) :: i_step
       integer (kind =kint), intent(inout) :: istep_psf, istep_iso
+      type(ucd_data), intent(inout) :: ucd
 !
       integer (kind =kint) :: visval
 !
@@ -92,7 +101,7 @@
      &    visval, istep_iso)
 !
       if(istep_psf.ge.0 .or. istep_iso.ge.0) then
-        call set_data_by_read_ucd(my_rank, i_step)
+        call set_data_by_read_ucd(my_rank, i_step, ucd, nod_fld1)
         call nod_fields_send_recv(node1, nod_comm, nod_fld1)
       end if
 !

@@ -11,11 +11,15 @@
       use m_precision
       use m_machine_parameter
 !
+      use t_ucd_data
+!
       use FEM_analyzer_viz
       use visualizer_all
 !
       implicit none
 !
+!>      Instance for FEM field data IO
+      type(ucd_data), save :: input_ucd
 !
 !  ---------------------------------------------------------------------
 !
@@ -35,13 +39,13 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
       call read_control_data_vizs
-      call set_control_params_4_viz(my_rank, ierr)
+      call set_control_params_4_viz(my_rank, ierr, input_ucd)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_vizs'
-      call FEM_initialize_vizs
+      call FEM_initialize_vizs(input_ucd)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
@@ -62,7 +66,8 @@
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_vizs', i_step
         call FEM_analyze_vizs(i_step,                                   &
-     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval,       &
+     &      input_ucd)
 !
 !  Rendering
         if(visval .eq. 0) then

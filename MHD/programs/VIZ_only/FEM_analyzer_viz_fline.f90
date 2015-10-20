@@ -4,8 +4,8 @@
 !
 !       Written by H. Matsui
 !
-!      subroutine FEM_initialize_fline
-!      subroutine FEM_analyze_fline(i_step, istep_fline)
+!      subroutine FEM_initialize_fline(ucd)
+!      subroutine FEM_analyze_fline(i_step, istep_fline, ucd)
 !
       module FEM_analyzer_viz_fline
 !
@@ -25,8 +25,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_fline
+      subroutine FEM_initialize_fline(ucd)
 !
+      use t_ucd_data
+      use m_node_phys_data
       use m_array_for_send_recv
       use m_read_mesh_data
       use m_group_data
@@ -34,7 +36,6 @@
       use m_element_id_4_node
       use m_jacobians
       use m_jacobians_4_surface
-      use m_ucd_input_data
       use m_ele_sf_eg_comm_tables
 !
       use const_mesh_info
@@ -47,6 +48,10 @@
       use set_surf_grp_vectors
       use sum_normal_4_surf_group
       use nod_phys_send_recv
+      use set_ucd_data_to_type
+      use ucd_IO_select
+!
+      type(ucd_data), intent(inout) :: ucd
 !
 !   --------------------------------
 !       setup mesh information
@@ -105,23 +110,27 @@
 !
 !     ---------------------
 !
-      call allocate_phys_data_by_output(my_rank, i_step_init)
+      ucd%nnod =      node1%numnod
+      call sel_read_udt_param(my_rank, i_step_init, ucd)
+      call alloc_phys_data_type_by_output(ucd, node1, nod_fld1)
 !
       end subroutine FEM_initialize_fline
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_analyze_fline(i_step, istep_fline)
+      subroutine FEM_analyze_fline(i_step, istep_fline, ucd)
 !
+      use t_ucd_data
       use m_node_phys_data
       use m_control_params_2nd_files
-      use m_ucd_input_data
+      use set_ucd_data_to_type
       use set_exit_flag_4_visualizer
       use nod_phys_send_recv
 !
       integer (kind =kint), intent(in) :: i_step
       integer (kind =kint), intent(inout) :: istep_fline
+      type(ucd_data), intent(inout) :: ucd
 !
       integer (kind =kint) :: visval
 !
@@ -132,7 +141,7 @@
       if(istep_fline .ge. 0) then
 !*  ----------   Count steps for visualization
 !*
-        call set_data_by_read_ucd(my_rank, i_step)
+        call set_data_by_read_ucd(my_rank, i_step, ucd, nod_fld1)
 !
         if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
         call nod_fields_send_recv(node1, nod_comm, nod_fld1)

@@ -1,7 +1,7 @@
 !FEM_analyzer_sph_trans.f90
 !
 !      subroutine FEM_initialize_sph_trans
-!      subroutine FEM_analyze_sph_trans(i_step, visval)
+!      subroutine FEM_analyze_sph_trans(i_step, visval, ucd)
 !
 !      subroutine SPH_to_FEM_bridge_sph_trans
 !
@@ -12,7 +12,12 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use t_ucd_data
+!
       implicit none
+!
+!>        Instance for FEM field data IO
+      type(ucd_data), save :: input_ucd
 !
 !-----------------------------------------------------------------------
 !
@@ -28,7 +33,6 @@
       use m_array_for_send_recv
       use m_jacobians
       use m_t_step_parameter
-      use m_ucd_input_data
       use m_node_phys_data
       use m_ele_sf_eg_comm_tables
 !
@@ -38,8 +42,8 @@
       use set_normal_vectors
       use set_surf_grp_vectors
       use sum_normal_4_surf_group
-      use m_ucd_input_data
       use output_parallel_ucd_file
+      use ucd_IO_select
 !
       use copy_all_field_4_sph_trans
 !
@@ -66,11 +70,12 @@
 !
 !  -------------------------------
 !
-      input_ucd%ifmt_file = ifmt_org_ucd
-      input_ucd%file_prefix = org_ucd_header
-      write(*,*) 'fem_ucd%file_prefix', trim(org_ucd_header)
       call calypso_MPI_barrier
-      call init_read_ucd_data(my_rank, i_step_init)
+      call set_ucd_file_format(ifmt_org_ucd, input_ucd)
+      call set_ucd_file_prefix(org_ucd_header, input_ucd)
+!
+      input_ucd%nnod = ione
+      call sel_read_udt_param(my_rank, i_step_init, input_ucd)
 !
       end subroutine FEM_initialize_sph_trans
 !
@@ -79,8 +84,10 @@
 !
       subroutine FEM_analyze_sph_trans(i_step, visval)
 !
+      use m_control_params_2nd_files
       use m_t_step_parameter
-      use m_ucd_input_data
+      use m_node_phys_data
+      use set_ucd_data_to_type
 !
       integer (kind =kint), intent(in) :: i_step
       integer (kind =kint), intent(inout) :: visval
@@ -93,7 +100,8 @@
 !*  -----------  Output volume data --------------
 !*
       if(visval .eq. 0) then
-        call set_data_by_read_ucd(my_rank, i_step)
+        call set_ucd_file_prefix(org_ucd_header, input_ucd)
+        call set_data_by_read_ucd(my_rank, i_step, input_ucd, nod_fld1)
       end if
 !
       end subroutine FEM_analyze_sph_trans

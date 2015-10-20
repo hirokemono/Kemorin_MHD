@@ -54,6 +54,7 @@
       module t_solver_djds
 !
       use m_precision
+      use m_constants
 !
       use t_comm_table
 !
@@ -134,8 +135,6 @@
         type(DJDS_MATRIX) ::         djds_mat
         type(communication_table) :: djds_comm
       end type DJDS_SOLVER_ARRAYS
-!
-      integer(kind = kint), parameter, private :: izero = 0
 !
 ! ------------------------------------------
 !

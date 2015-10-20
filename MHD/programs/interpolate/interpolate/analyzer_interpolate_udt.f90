@@ -104,9 +104,9 @@
       use m_geometry_data
       use m_node_phys_data
       use m_ucd_data
-      use m_ucd_input_data
       use m_ctl_params_4_gen_table
       use ucd_IO_select
+      use set_ucd_data_to_type
       use nod_phys_send_recv
       use interpolate_nod_field_2_type
 !
@@ -116,7 +116,7 @@
       do istep = i_step_init, i_step_number, i_step_output_ucd
         if (my_rank .lt. ndomain_org) then
           call set_data_by_read_ucd_once(my_rank, istep,                &
-   &          itype_org_udt_file, org_udt_file_head)
+   &          itype_org_udt_file, org_udt_file_head, nod_fld1)
 !
           call nod_fields_send_recv(node1, nod_comm, nod_fld1)
         end if
@@ -133,8 +133,8 @@
           call link_field_data_type_2_IO(new_femmesh%mesh%node,         &
      &        new_phys, fem_ucd)
 !
-          call set_ucd_file_format(itype_itp_udt_file)
-          call set_ucd_file_prefix(itp_udt_file_head)
+          call set_ucd_file_format(itype_itp_udt_file, fem_ucd)
+          call set_ucd_file_prefix(itp_udt_file_head, fem_ucd)
           call sel_write_udt_file(my_rank, istep, fem_ucd)
           call disconnect_ucd_data(fem_ucd)
           call disconnect_ucd_node(fem_ucd)

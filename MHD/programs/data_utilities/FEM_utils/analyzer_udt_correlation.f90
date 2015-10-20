@@ -141,7 +141,6 @@
       use m_control_params_2nd_files
       use m_ctl_params_4_diff_udt
       use m_ucd_data
-      use m_ucd_input_data
       use set_ucd_data_to_type
       use set_ucd_data
       use m_work_layer_correlate
@@ -175,13 +174,12 @@
           istep_ucd = istep / i_step_output_ucd
 !
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
-     &        ifmt_org_ucd, ref_udt_file_head)
+     &        ifmt_org_ucd, ref_udt_file_head, nod_fld1)
 !
           fem_ucd%ifmt_file = ifmt_org_ucd
           fem_ucd%file_prefix = tgt_udt_file_head
-          call set_ucd_data_type_from_IO_once(my_rank, istep_ucd,       &
-     &        mesh_ref%node%numnod, fem_ucd, phys_ref)
-          fem_ucd%nnod = mesh_ref%node%numnod
+          call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
+     &        ifmt_org_ucd, tgt_udt_file_head, phys_ref)
 !
           call nod_fields_send_recv(node1, nod_comm, nod_fld1)
           call phys_type_send_recv_all(mesh_ref, phys_ref)

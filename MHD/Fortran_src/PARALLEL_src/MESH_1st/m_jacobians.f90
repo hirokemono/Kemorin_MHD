@@ -148,7 +148,6 @@
       use m_group_data
 !
       use m_fem_gauss_int_coefs
-      use m_surf_data_infinity
 !
       use set_gauss_int_parameters
       use set_integration_indices

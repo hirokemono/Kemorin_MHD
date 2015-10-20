@@ -83,7 +83,7 @@
       use m_ctl_params_4_diff_udt
       use m_control_params_2nd_files
       use m_ucd_data
-      use m_ucd_input_data
+      use set_ucd_data_to_type
       use output_parallel_ucd_file
       use divide_phys_by_delta_t
       use nod_phys_send_recv
@@ -101,10 +101,10 @@
           istep_ucd = istep / i_step_output_ucd
 !
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
-     &        ifmt_org_ucd, ref_udt_file_head)
+     &        ifmt_org_ucd, ref_udt_file_head, nod_fld1)
 !
           call subtract_by_ucd_data(my_rank, istep_ucd,                 &
-     &        ifmt_org_ucd, tgt_udt_file_head)
+     &        ifmt_org_ucd, tgt_udt_file_head, nod_fld1)
 !
           call s_divide_phys_by_delta_t
 !

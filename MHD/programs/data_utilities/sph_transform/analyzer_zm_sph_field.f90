@@ -80,7 +80,6 @@
       use m_node_phys_data
 !
       use m_ucd_data
-      use m_ucd_input_data
       use m_control_params_2nd_files
       use m_t_step_parameter
       use m_ctl_params_sph_trans
@@ -95,7 +94,6 @@
       do i_step = i_step_init, i_step_number
 !
 !   Input field data
-        call set_input_ucd_file_prefix(org_ucd_header)
         call FEM_analyze_sph_trans(i_step, visval)
 !
 !   Take zonal RMS
@@ -103,7 +101,7 @@
         call overwrite_nodal_xyz_2_sph(node1, nod_fld1)
         call zonal_mean_all_rtp_field(node1, nod_fld1)
 !
-        call set_ucd_file_prefix(zonal_udt_head)
+        call set_ucd_file_prefix(zonal_udt_head, fem_ucd)
         call FEM_analyze_back_trans(i_step, istep_psf, istep_iso,       &
      &          istep_pvr, istep_fline, visval)
 !

@@ -62,8 +62,8 @@
 !
 !
       fem_ucd%nnod = ione
-      call set_ucd_file_format(itype_org_ucd_file)
-      call set_ucd_file_prefix(udt_original_header)
+      call set_ucd_file_format(itype_org_ucd_file, fem_ucd)
+      call set_ucd_file_prefix(udt_original_header, fem_ucd)
       call sel_read_udt_param(izero, istep, fem_ucd)
       call deallocate_ucd_phys_data(fem_ucd)
 !
@@ -104,8 +104,8 @@
       fem_ucd%ntot_comp = org_fld%istack_component(org_fld%num_phys)
       call allocate_ucd_phys_name(fem_ucd)
 !
-      call set_ucd_file_format(itype_org_ucd_file)
-      call set_ucd_file_prefix(udt_original_header)
+      call set_ucd_file_format(itype_org_ucd_file, fem_ucd)
+      call set_ucd_file_prefix(udt_original_header, fem_ucd)
 !
       do ip =1, num_pe
         my_rank = ip - 1

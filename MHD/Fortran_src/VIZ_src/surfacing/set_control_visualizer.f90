@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on May., 2006
 !
-!      subroutine set_control_params_4_viz(my_rank, ierr)
+!      subroutine set_control_params_4_viz(my_rank, ierr, ucd)
 !
       module set_control_visualizer
 !
@@ -18,10 +18,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_control_params_4_viz(my_rank, ierr)
+      subroutine set_control_params_4_viz(my_rank, ierr, ucd)
 !
+      use t_ucd_data
       use m_read_mesh_data
-      use m_ucd_input_data
       use m_control_params_2nd_files
       use m_ctl_data_4_platforms
       use m_ctl_data_4_time_steps
@@ -29,15 +29,17 @@
       use m_t_step_parameter
       use set_control_platform_data
       use set_fixed_time_step_params
+      use ucd_IO_select
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(inout) :: ierr
+      type(ucd_data), intent(inout) :: ucd
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
-      call set_control_input_ucd_file_def
+      call set_ucd_file_define(ucd)
       call set_control_org_fld_file_def
 !
       call s_set_fixed_time_step_params(ierr, e_message)

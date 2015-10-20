@@ -28,7 +28,6 @@
       use m_geometry_data
       use m_geometry_data_MHD
       use m_group_data
-      use m_surf_data_infinity
       use m_layering_ele_list
       use m_sorted_node
       use m_node_phys_address

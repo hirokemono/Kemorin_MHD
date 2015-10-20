@@ -116,7 +116,7 @@
      &     (node1%numnod, ione, icou, d_mag(1), fem_ucd)
       end if
 !
-      call set_ucd_file_prefix(result_udt_file_head)
+      call set_ucd_file_prefix(result_udt_file_head, fem_ucd)
       call sel_write_udt_file(my_rank, istep_ucd, fem_ucd)
       call deallocate_ucd_data(fem_ucd)
 !

@@ -201,13 +201,14 @@
       end if
 !
       if (new_field_file_prefix%iflag .gt. 0) then
-        call set_ucd_file_format(iflag_udt)
-        call set_ucd_file_prefix(new_field_file_prefix%charavalue)
+        call set_ucd_file_format(iflag_udt, fem_ucd)
+        call set_ucd_file_prefix                                        &
+     &     (new_field_file_prefix%charavalue, fem_ucd)
       else if (new_vtk_prefix%iflag .gt. 0) then
-        call set_ucd_file_format(iflag_vtk)
-        call set_ucd_file_prefix(new_vtk_prefix%charavalue)
+        call set_ucd_file_format(iflag_vtk, fem_ucd)
+        call set_ucd_file_prefix(new_vtk_prefix%charavalue, fem_ucd)
       else
-        call set_ucd_file_format(iflag_fld)
+        call set_ucd_file_format(iflag_fld, fem_ucd)
       end if
 !
 !

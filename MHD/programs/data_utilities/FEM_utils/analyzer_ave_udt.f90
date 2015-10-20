@@ -80,10 +80,10 @@
       use m_node_phys_data
       use m_t_step_parameter
       use m_ctl_params_4_diff_udt
-      use m_ucd_input_data
       use m_control_params_2nd_files
       use ucd_IO_select
       use set_ucd_data
+      use set_ucd_data_to_type
       use divide_phys_by_delta_t
       use nod_phys_send_recv
       use output_parallel_ucd_file
@@ -95,7 +95,7 @@
 !
       istep_ucd = i_step_init / i_step_output_ucd
       call set_data_by_read_ucd_once(my_rank, istep_ucd,                &
-     &    ifmt_org_ucd, org_ucd_header)
+     &    ifmt_org_ucd, org_ucd_header, nod_fld1)
 !
       icou = 1
       do istep = i_step_init+1, i_step_number
@@ -105,7 +105,7 @@
           icou = icou + 1
 !
           call add_ucd_to_data(my_rank, istep_ucd,                      &
-     &        ifmt_org_ucd, org_ucd_header)
+     &        ifmt_org_ucd, org_ucd_header, nod_fld1)
         end if
       end do
 !
@@ -114,7 +114,7 @@
 !
 !    output udt data
 !
-      call set_ucd_file_prefix(ave_udt_file_head)
+      call set_ucd_file_prefix(ave_udt_file_head, fem_ucd)
       call output_udt_one_snapshot                                      &
      &   (i_step_number, node1, ele1, nod_comm)
 !

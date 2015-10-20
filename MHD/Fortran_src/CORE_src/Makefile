@@ -10,7 +10,6 @@ LIB_MESH_FILE = libkemo_core.a
 SUBDIRS = \
 BASE                 \
 MESH                 \
-MESH_1st             \
 MESH_type            \
 IO                   \
 IO_BINARY            \
@@ -74,8 +73,6 @@ mod_list:
 	'$$(MOD_ZLIB_IO)'    \
 	'$$(MOD_MPI_IO)'     \
 	'$$(MOD_MESH)'       \
-	'$$(MOD_MESH1)'      \
-	'$$(MOD_MESH2)'      \
 	'$$(MOD_MESH_T)'     \
 	'$$(MOD_GAUSS)'      \
 	'$$(MOD_JACOBI)'     \

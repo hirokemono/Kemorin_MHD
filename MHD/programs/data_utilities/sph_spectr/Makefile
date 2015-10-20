@@ -25,6 +25,9 @@ TARGET_T_AVE_NUSSELT =       t_ave_nusselt
 TARGET_MAX_SPH_ENE =         sph_pwr_max_mode
 TARGET_SPH_ULI_LSCALE =      sph_uli_lengscale
 
+TARGET_SPH_ENE_CHECK =      sph_ene_check
+
+
 LIBS_SPH_UTIL = \
 '$$(LIB_VIZ)'    \
 '$$(LIB_PARA)'   \
@@ -146,6 +149,9 @@ MOD_T_AVE_NUSSELT = \
 m_sph_ene_spectra.o \
 t_average_nusselt.o
 
+MOD_SPH_ENE_CHECK = \
+compare_sph_mean_square.o
+
 #
 #  ------------------------------------------------------------------
 #
@@ -186,6 +192,8 @@ target_list:
 	>> $(MAKENAME)
 	@echo 'TARGET_SPH_ULI_LSCALE = $$(BUILDDIR)/$(TARGET_SPH_ULI_LSCALE)' \
 	>> $(MAKENAME)
+	@echo 'TARGET_SPH_ENE_CHECK = $$(BUILDDIR)/$(TARGET_SPH_ENE_CHECK)' \
+	>> $(MAKENAME)
 	@echo >> $(MAKENAME)
 
 target_task:
@@ -198,7 +206,7 @@ target_task:
 	'$$(TARGET_PICK_GAUSS_COEF)    $$(TARGET_T_AVE_PICK_SPH_SPEC)' \
 	'$$(TARGET_T_AVE_GAUSS_COEFS)  $$(TARGET_T_AVE_PICK_SPH_ENE)' \
 	'$$(TARGET_MAX_SPH_ENE)        $$(TARGET_SPH_ULI_LSCALE)'     \
-	'$$(TARGET_T_AVE_NUSSELT)  '   >> $(MAKENAME)
+	'$$(TARGET_T_AVE_NUSSELT)      $$(TARGET_SPH_ENE_CHECK)'   >> $(MAKENAME)
 	@echo >> $(MAKENAME)
 	@echo '$$(TARGET_SPH_ENE_SPEC)': '$$(MOD_SPH_ENE_SPEC)' \
 	'$$(LIB_FILES_SPH_UTIL)' \
@@ -327,6 +335,12 @@ target_task:
 	'-L. $$(LIBS_SPH_UTIL)' \
 	'$$(F90LIBS)' >> $(MAKENAME)
 	@echo '' >> $(MAKENAME)
+	@echo '$$(TARGET_SPH_ENE_CHECK)': '$$(MOD_SPH_ENE_CHECK)' \
+	>> $(MAKENAME)
+	@echo '	''$$(F90)' '$$(F90FLAGS)' -o '$$(TARGET_SPH_ENE_CHECK)' \
+	'$$(MOD_SPH_ENE_CHECK)' \
+	'$$(F90LIBS)' >> $(MAKENAME)
+	@echo '' >> $(MAKENAME)
 
 
 lib_name:
@@ -369,6 +383,8 @@ mod_list:
 	@echo  $(MOD_SPH_ULI_LSCALE)       >> $(MAKENAME)
 	@echo  MOD_T_AVE_NUSSELT=  \\      >> $(MAKENAME)
 	@echo  $(MOD_T_AVE_NUSSELT)        >> $(MAKENAME)
+	@echo  MOD_SPH_ENE_CHECK=  \\      >> $(MAKENAME)
+	@echo  $(MOD_SPH_ENE_CHECK)        >> $(MAKENAME)
 	@echo   >> $(MAKENAME)
 
 module:

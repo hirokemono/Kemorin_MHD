@@ -4,9 +4,10 @@
 !
 !       Written by H. Matsui
 !
-!      subroutine FEM_initialize_vizs
+!      subroutine FEM_initialize_vizs(ucd)
 !      subroutine FEM_analyze_vizs(i_step,                              &
-!     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+!     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval,  &
+!     &          ucd)
 !
       module FEM_analyzer_viz
 !
@@ -26,16 +27,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_vizs
+      subroutine FEM_initialize_vizs(ucd)
 !
+      use t_ucd_data
       use m_array_for_send_recv
       use m_read_mesh_data
       use m_group_data
+      use m_node_phys_data
       use m_control_params_2nd_files
       use m_element_id_4_node
       use m_jacobians
       use m_jacobians_4_surface
-      use m_ucd_input_data
       use m_ele_sf_eg_comm_tables
 !
       use const_mesh_info
@@ -48,6 +50,10 @@
       use set_surf_grp_vectors
       use sum_normal_4_surf_group
       use nod_phys_send_recv
+      use set_ucd_data_to_type
+      use ucd_IO_select
+!
+      type(ucd_data), intent(inout) :: ucd
 !
 !   --------------------------------
 !       setup mesh information
@@ -108,7 +114,10 @@
 !
 !     ---------------------
 !
-      call allocate_phys_data_by_output(my_rank, i_step_init)
+      ucd%nnod =      node1%numnod
+      call sel_read_udt_param(my_rank, i_step_init, ucd)
+      call alloc_phys_data_type_by_output(ucd, node1, nod_fld1)
+!
       call calypso_mpi_barrier
 !
       end subroutine FEM_initialize_vizs
@@ -117,11 +126,13 @@
 !-----------------------------------------------------------------------
 !
       subroutine FEM_analyze_vizs(i_step,                               &
-     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
+     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval,   &
+     &          ucd)
 !
+      use t_ucd_data
       use m_node_phys_data
       use m_control_params_2nd_files
-      use m_ucd_input_data
+      use set_ucd_data_to_type
       use set_exit_flag_4_visualizer
       use nod_phys_send_recv
 !
@@ -129,13 +140,14 @@
       integer(kind=kint ), intent(inout) :: visval
       integer(kind=kint ), intent(inout) :: istep_psf, istep_iso
       integer(kind=kint ), intent(inout) :: istep_pvr, istep_fline
+      type(ucd_data), intent(inout) :: ucd
 !
 !
       call set_flag_to_visualization(i_step,                            &
      &        istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
       if(visval .eq. 0) then
-        call set_data_by_read_ucd(my_rank, i_step)
+        call set_data_by_read_ucd(my_rank, i_step, ucd, nod_fld1)
 !
         if (iflag_debug.gt.0)  write(*,*) 'phys_send_recv_all'
         call nod_fields_send_recv(node1, nod_comm, nod_fld1)
