@@ -92,7 +92,7 @@
       use m_SGS_address
 !
       use int_vol_inertia_1st
-      use int_vol_vect_cst_diff_upw_1
+      use int_vol_vect_cst_diff_upw
       use int_vol_SGS_div_flux_1st
 !
       integer (kind = kint), intent(in) :: i_field
@@ -111,14 +111,18 @@
      &      coef_nega_t)
 !
       else if (i_field .eq. iphys%i_h_flux_div) then
-        call int_vol_div_w_const_upw_1(iele_fl_smp_stack,               &
-     &      intg_point_t_evo, iphys%i_h_flux, fld_ele1%ntot_phys,       &
-     &      iphys_ele%i_velo, fld_ele1%d_fld, coef_nega_t)
+        call int_vol_div_w_const_upw                                    &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_h_flux,        &
+     &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,       &
+     &      coef_nega_t, fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_ph_flux_div) then
-        call int_vol_div_w_const_upw_1(iele_fl_smp_stack,               &
-     &      intg_point_t_evo, iphys%i_ph_flux, fld_ele1%ntot_phys,      &
-     &      iphys_ele%i_velo, fld_ele1%d_fld, coef_nega_t)
+        call int_vol_div_w_const_upw                                    &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_ph_flux,       &
+     &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,       &
+     &      coef_nega_t, fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_SGS_div_h_flux) then
         if(iflag_commute_heat .eq. id_SGS_commute_ON) then
@@ -128,9 +132,11 @@
      &        fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,     &
      &        coef_nega_t)
         else
-          call int_vol_div_w_const_upw_1(iele_fl_smp_stack,             &
-              intg_point_t_evo, iphys%i_SGS_h_flux, fld_ele1%ntot_phys, &
-     &        iphys_ele%i_velo, fld_ele1%d_fld, coef_nega_t)
+          call int_vol_div_w_const_upw                                  &
+     &       (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,               &
+              iele_fl_smp_stack, intg_point_t_evo, iphys%i_SGS_h_flux,  &
+     &        fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,     &
+     &        coef_nega_t, fem1_wk, f1_nl)
         end if
       end if
 !

@@ -1,5 +1,5 @@
-!fem_skv_commute_err_diffs_t.f90
-!     module fem_skv_commute_err_diffs_t
+!fem_skv_commute_err_diffs.f90
+!     module fem_skv_commute_err_diffs
 !
 !        programmed by H.Matsui on July, 2005
 !        modified by H. Matsui on Aug., 2007
@@ -15,7 +15,7 @@
 !      subroutine fem_skv_commute_err_div_ast_t(iele_fsmp_stack,        &
 !     &          n_int, k2, i_filter, ele, jac_3d, FEM_elens, fem_wk)
 !
-      module fem_skv_commute_err_diffs_t
+      module fem_skv_commute_err_diffs
 !
       use m_precision
 !
@@ -192,4 +192,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module fem_skv_commute_err_diffs_t
+      end module fem_skv_commute_err_diffs

@@ -21,8 +21,12 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
+      use m_jacobians
+      use m_sorted_node
       use m_finite_element_matrix
       use m_int_vol_data
+      use m_filter_elength
+      use m_SGS_model_coefs
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -39,8 +43,6 @@
       subroutine cal_rotation_sgs_all(iflag_4_supg,                     &
      &          nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff,              &
      &          i_res, i_vector)
-!
-      use m_sorted_node
 !
       integer(kind = kint), intent(in) :: iflag_4_supg
       integer(kind = kint), intent(in) :: i_vector, i_res
@@ -73,7 +75,6 @@
      &          i_res, i_vector)
 !
       use m_geometry_data_MHD
-      use m_sorted_node
 !
       integer(kind = kint), intent(in) :: iflag_4_supg
       integer(kind = kint), intent(in) :: i_vector, i_res
@@ -106,7 +107,6 @@
      &          i_res, i_vector)
 !
       use m_geometry_data_MHD
-      use m_sorted_node
 !
       integer(kind = kint), intent(in) :: iflag_4_supg
       integer(kind = kint), intent(in) :: i_vector, i_res
@@ -140,8 +140,8 @@
       use m_group_data
       use m_control_parameter
       use m_element_phys_data
-      use int_sgs_vect_diff_1st
-      use int_sgs_vect_diff_upw_1st
+      use int_sgs_vect_differences
+      use int_sgs_vect_diff_upw
       use int_surf_rot_sgs
 !
       integer(kind = kint), intent(in) :: iflag_4_supg
@@ -153,16 +153,22 @@
 !
 !
        if ( iflag_4_supg .eq. id_magnetic_SUPG) then
-        call int_sgs_rot_upw_1st(iele_fsmp_stack, intg_point_t_evo,     &
-     &      ifilter_final, iak_diff, i_vector,                          &
-     &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
+        call int_sgs_rotation_upw                                       &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1, FEM1_elen,      &
+     &      iele_fsmp_stack, intg_point_t_evo, ifilter_final,           &
+     &      ak_diff(1,iak_diff), i_vector, fld_ele1%ntot_phys,          &
+     &      iphys_ele%i_magne, fld_ele1%d_fld, fem1_wk, f1_nl)
        else if ( iflag_4_supg .eq. id_turn_ON) then
-        call int_sgs_rot_upw_1st(iele_fsmp_stack, intg_point_t_evo,     &
-     &      ifilter_final, iak_diff, i_vector,                          &
-     &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
+        call int_sgs_rotation_upw                                       &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1, FEM1_elen,      &
+     &      iele_fsmp_stack, intg_point_t_evo, ifilter_final,           &
+     &      ak_diff(1,iak_diff), i_vector, fld_ele1%ntot_phys,          &
+     &      iphys_ele%i_velo, fld_ele1%d_fld, fem1_wk, f1_nl)
        else
-        call int_sgs_rot_1st(iele_fsmp_stack, intg_point_t_evo,         &
-     &      ifilter_final, iak_diff, i_vector)
+        call int_sgs_rotation                                           &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1, FEM1_elen,      &
+     &      iele_fsmp_stack, intg_point_t_evo, ifilter_final,           &
+     &      ak_diff(1,iak_diff), i_vector, fem1_wk, f1_nl)
        end if
 !
        call int_surf_rotation_sgs(sf_grp1, intg_point_t_evo,            &

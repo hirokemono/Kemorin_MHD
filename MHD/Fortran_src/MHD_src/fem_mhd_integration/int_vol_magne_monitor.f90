@@ -25,6 +25,10 @@
       use m_node_phys_address
       use m_element_phys_data
       use m_fem_gauss_int_coefs
+      use m_sorted_node
+      use m_jacobians
+      use m_finite_element_matrix
+      use m_int_vol_data
 !
       implicit none
 !
@@ -73,8 +77,8 @@
       subroutine int_vol_magne_monitor_upm(i_field)
 !
       use m_element_phys_data
-      use int_vol_vect_diff_upw_1st
-      use int_vol_vect_cst_diff_upw_1
+      use int_vol_vect_diff_upw
+      use int_vol_vect_cst_diff_upw
       use int_vol_mag_induct_1st
       use int_vol_SGS_mag_induct_1st
 !
@@ -87,9 +91,11 @@
      &      fld_ele1%ntot_phys, fld_ele1%d_fld, iphys_ele)
 !
       else if (i_field .eq. iphys%i_induct_div) then
-        call int_vol_div_as_tsr_upw_1st(iele_cd_smp_stack,              &
-     &      intg_point_t_evo, iphys%i_induct_t,                         &
-     &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
+        call int_vol_div_as_tsr_upw                                     &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_cd_smp_stack, intg_point_t_evo, iphys%i_induct_t,      &
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld,      &
+     &      fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_SGS_induction) then
         if(iflag_commute_induction .eq. id_SGS_commute_ON) then
@@ -97,10 +103,12 @@
      &       (iele_cd_smp_stack, intg_point_t_evo, ifilter_final,       &
      &        fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
         else
-          call int_vol_div_as_tsr_cst_upw_1(iele_cd_smp_stack,          &
-     &        intg_point_t_evo, iphys%i_SGS_induct_t,                   &
-     &        fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld,    &
-     &        coef_induct)
+          call int_vol_div_as_tsr_cst_upw                               &
+     &       (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,               &
+     &        iele_cd_smp_stack, intg_point_t_evo,                      &
+     &        iphys%i_SGS_induct_t, fld_ele1%ntot_phys,                 &
+     &        iphys_ele%i_magne, fld_ele1%d_fld, coef_induct,           &
+     &        fem1_wk, f1_nl)
         end if
       end if
 !

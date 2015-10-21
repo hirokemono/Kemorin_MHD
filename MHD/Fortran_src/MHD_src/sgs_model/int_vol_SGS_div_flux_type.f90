@@ -161,7 +161,7 @@
       use nodal_fld_cst_to_element
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp
-      use fem_skv_div_sgs_flux_upw_t
+      use fem_skv_div_sgs_flux_upw
 !
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d
@@ -218,7 +218,7 @@
       use nodal_fld_cst_to_element
       use sgs_terms_to_each_ele_1st
       use cal_skv_to_ff_smp
-      use fem_skv_div_sgs_flux_upw_t
+      use fem_skv_div_sgs_flux_upw
 !
       type(mesh_geometry), intent(in) :: mesh
       type(jacobians_3d), intent(in) :: jac_3d

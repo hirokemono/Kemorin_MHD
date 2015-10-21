@@ -248,7 +248,7 @@
       use fem_skv_nodal_fld_upw_type
       use fem_skv_vect_diff_upw_type
       use fem_skv_nonlinear_upw_type
-      use fem_skv_div_sgs_flux_upw_t
+      use fem_skv_div_sgs_flux_upw
       use fem_skv_lorentz_full_type
 !
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw

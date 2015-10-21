@@ -126,20 +126,24 @@
       use m_sorted_node
 !
       use int_vol_vect_differences
-      use int_vol_vect_diff_upw_1st
+      use int_vol_vect_diff_upw
 !
       integer(kind = kint), intent(in) :: iflag_4_supg, i_vector
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
 !
       if ( iflag_4_supg .eq. id_magnetic_SUPG) then
-        call int_vol_div_upw_1st                                        &
-     &     (iele_fsmp_stack, intg_point_t_evo, i_vector,                &
-     &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
+        call int_vol_divergence_upw                                     &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fsmp_stack, intg_point_t_evo, i_vector,                &
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld,      &
+     &      fem1_wk, f1_nl)
       else if ( iflag_4_supg .eq. id_turn_ON) then
-        call int_vol_div_upw_1st                                        &
-     &     (iele_fsmp_stack, intg_point_t_evo, i_vector,                &
-     &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
+        call int_vol_divergence_upw                                     &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fsmp_stack, intg_point_t_evo, i_vector,                &
+     &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,       &
+     &      fem1_wk, f1_nl)
       else
         call int_vol_divergence                                         &
      &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &

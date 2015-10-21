@@ -1,5 +1,5 @@
-!fem_skv_div_sgs_flux_upw_t.f90
-!      module fem_skv_div_sgs_flux_upw_t
+!fem_skv_div_sgs_flux_upw.f90
+!      module fem_skv_div_sgs_flux_upw
 !
 !        programmed by H.Matsui on July, 2005
 !        modified by H.Matsui on Aug., 2006
@@ -31,7 +31,7 @@
 !     &          n_int, k2, i_filter, ak_diff, ele, jac_3d, FEM_elens,  &
 !     &          vector_e, sgs_e, flux_e, vxe, vxe_up, sk_v)
 !
-      module fem_skv_div_sgs_flux_upw_t
+      module fem_skv_div_sgs_flux_upw
 !
       use m_precision
 !
@@ -339,4 +339,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module fem_skv_div_sgs_flux_upw_t
+      end module fem_skv_div_sgs_flux_upw
