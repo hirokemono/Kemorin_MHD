@@ -6,12 +6,13 @@
 !        modified by H. Matsui on June. 2006
 !        modified by H. Matsui on Jan. 2009
 !
-!      subroutine set_item_djds(np_smp, NP, N, NHYP, IVECT, COLORon,    &
-!     &      STACKmc, NLmax, NUmax, npLX1, npUX1, NLmaxHYP, NUmaxHYP,   &
-!     &      itotal_l, itotal_u, indexDJDS_L, indexDJDS_U,              &
-!     &      itemDJDS_L, itemDJDS_U, OLDtoNEW, NEWtoOLD,                &
-!     &      NEWtoOLD_DJDS_L, NEWtoOLD_DJDS_U,                          &
-!     &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, LtoU)
+!!      subroutine set_item_djds_type(np_smp, NP, N, djds_tbl)
+!!      subroutine set_item_djds(np_smp, NP, N, NHYP, IVECT, COLORon,   &
+!!     &      STACKmc, NLmax, NUmax, npLX1, npUX1, NLmaxHYP, NUmaxHYP,  &
+!!     &      itotal_l, itotal_u, indexDJDS_L, indexDJDS_U,             &
+!!     &      itemDJDS_L, itemDJDS_U, OLDtoNEW, NEWtoOLD,               &
+!!     &      NEWtoOLD_DJDS_L, NEWtoOLD_DJDS_U,                         &
+!!     &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, LtoU)
 !
       module DJDS_nodiag_item
 !
@@ -23,6 +24,33 @@
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine set_item_djds_type(np_smp, NP, N, djds_tbl)
+!
+      use t_solver_djds
+!
+      integer(kind = kint), intent(in) :: NP, N
+      integer(kind = kint), intent(in) :: np_smp
+      type(DJDS_ordering_table), intent(inout) :: djds_tbl
+!
+!
+      call set_item_djds(np_smp, NP, N,                                 &
+     &      djds_tbl%NHYP, djds_tbl%IVECT, djds_tbl%COLORon,            &
+     &      djds_tbl%STACKmc, djds_tbl%NLmax, djds_tbl%NUmax,           &
+     &      djds_tbl%npLX1, djds_tbl%npUX1,                             &
+     &      djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP,                       &
+     &      djds_tbl%itotal_l, djds_tbl%itotal_u,                       &
+     &      djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                 &
+     &      djds_tbl%itemDJDS_L, djds_tbl%itemDJDS_U,                   &
+     &      djds_tbl%OLDtoNEW, djds_tbl%NEWtoOLD,                       &
+     &      djds_tbl%NEWtoOLD_DJDS_L, djds_tbl%NEWtoOLD_DJDS_U,         &
+     &      djds_tbl%OLDtoNEW_DJDS_L, djds_tbl%OLDtoNEW_DJDS_U,         &
+     &      djds_tbl%LtoU)
+!
+      end subroutine set_item_djds_type
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine set_item_djds(np_smp, NP, N, NHYP, IVECT, COLORon,     &

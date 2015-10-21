@@ -3,22 +3,27 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine copy_matrix_2_djds_NN(N, NP)
-!      subroutine s_set_DJDS_off_diag (N, NP, nod1, nod2, mat_num)
+!!      subroutine copy_paramters_4_djds
+!!      subroutine transfer_crs_2_djds_matrix(node, nod_comm, tbl_crs,  &
+!!     &          mat_crs, djds_tbl, djds_mat)
+!      subroutine copy_matrix_2_djds_NN(tbl_crs, mat_crs, djds_tbl,     &
+!     &          NP, N, NB, num_mat_comp, aiccg)
 !
-!      subroutine copy_RH_vect_2_crs_nn(NP)
-!      subroutine copy_solution_2_crs_nn(NP)
+!      subroutine copy_RH_vect_2_crs_nn((mat1_crs, NP, NB, B, X)
+!      subroutine copy_solution_2_crs_nn(NP, NB, X, mat_crs)
 !
       module copy_matrix_2_djds_array
 !
       use m_precision
 !
       use m_machine_parameter
-      use m_crs_matrix
+      use t_crs_matrix
 !
       implicit none
 !
-      private :: s_set_DJDS_off_diag
+      character(len=kchara) :: SOLVER_TYPE_djds
+!
+      private :: copy_paramters_4_djds, copy_matrix_2_djds_NN
 !
 !  ---------------------------------------------------------------------
 !
@@ -26,54 +31,157 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_matrix_2_djds_NN(N, NP)
+      subroutine copy_paramters_4_djds(tbl_crs, mat_crs, djds_tbl)
 !
-      use m_matrix_data_4_djds
+       use m_iccg_parameter
+       use t_solver_djds
+       use t_crs_matrix
 !
-      integer(kind = kint), intent(in) :: N, NP
+      type(CRS_matrix_connect), intent(in) :: tbl_crs
+      type(CRS_matrix), intent(in) :: mat_crs
+      type(DJDS_ordering_table), intent(inout) :: djds_tbl
+!
+!
+      eps = mat_crs%REALARRAY_crs(1)
+      itr = mat_crs%INTARRAY_crs (1)
+      sigma_diag = mat_crs%REALARRAY_crs(2)
+!      sigma = mat_crs%REALARRAY_crs(3)
+      method_4_solver =  mat_crs%METHOD_crs 
+      precond_4_solver = mat_crs%PRECOND_crs
+      precond_4_crank =  mat_crs%PRECOND_crs
+      SOLVER_TYPE_djds = mat_crs%SOLVER_crs
+!
+      djds_tbl%itotal_l = tbl_crs%ntot_l
+      djds_tbl%itotal_u = tbl_crs%ntot_u
+!
+      end subroutine copy_paramters_4_djds
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine transfer_crs_2_djds_matrix(node, nod_comm, tbl_crs,    &
+     &          mat_crs, djds_tbl, djds_mat)
+!
+      use calypso_mpi
+      use t_geometry_data
+      use t_solver_djds
+      use t_vector_for_solver
+      use set_size_4_smp_types
+      use reordering_djds_smp_type
+      use DJDS_new_comm_table
+!
+      type(node_data), intent(inout) :: node
+      type(communication_table), intent(in) :: nod_comm
+      type(CRS_matrix), intent(in) :: mat_crs
+      type(CRS_matrix_connect), intent(inout) :: tbl_crs
+!
+      type(DJDS_ordering_table), intent(inout) :: djds_tbl
+      type(DJDS_MATRIX), intent(inout) :: djds_mat
+!
+      type(mpi_4_solver) :: solver_C
+!
+!
+      call copy_communicator_4_solver(solver_C)
+      call copy_paramters_4_djds(tbl_crs, mat_crs, djds_tbl)
+!
+      call count_node_4_smp_mesh_type(node)
+!
+!C +-----------------+
+!C | DJDS reordering |
+!C +-----------------+
+!C===
+!C
+       if (iflag_debug.eq.1) write(*,*) 's_reordering_djds_smp_type'
+      call s_reordering_djds_smp_type(np_smp, node%numnod,              &
+     &    node%internal_node, node%istack_internal_smp,                 &
+     &    solver_C, tbl_crs, djds_tbl)
+!C
+!C +--------------------------------------+
+!C | set new communication table 4 solver |
+!C +--------------------------------------+
+!C===
+!C
+      call set_new_comm_table_type(node%numnod, nod_comm, djds_tbl)
+!
+!C +-------------+
+!C | copy matrix |
+!C +-------------+
+!
+      djds_mat%NB = mat_crs%NB_crs
+      call alloc_type_djdsNN_mat(node%numnod, node%internal_node,       &
+     &   djds_mat%NB, djds_tbl, djds_mat)
+!
+       if (iflag_debug.eq.1) write(*,*) 'copy_matrix_2_djds_NN'
+      call copy_matrix_2_djds_NN(tbl_crs, mat_crs, djds_tbl,            &
+     &    node%numnod, node%internal_node, djds_mat%NB,                 &
+     &    djds_mat%num_non0, djds_mat%aiccg)
+!
+      call dealloc_crs_connect(tbl_crs)
+!
+      end subroutine transfer_crs_2_djds_matrix
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine copy_matrix_2_djds_NN(tbl_crs, mat_crs, djds_tbl,      &
+     &          NP, N, NB, num_mat_comp, aiccg)
+!
+      use t_solver_djds
+      use set_idx_4_mat_type
+!
+      integer(kind = kint), intent(in) :: N, NP, NB
+      type(CRS_matrix_connect), intent(in) :: tbl_crs
+      type(CRS_matrix), intent(in) :: mat_crs
+      type(DJDS_ordering_table), intent(in) :: djds_tbl
+!
+      integer(kind = kint), intent(in) :: num_mat_comp
+      real(kind=kreal), intent(inout) :: aiccg(1-NB*NB:num_mat_comp)
 !
       integer(kind = kint) :: inod1, inod2, mat_num, im, j1, j2, k
       integer(kind = kint) :: ist, ied, j12
 !
 !
       do inod1 = 1, NP
-        call s_set_DJDS_off_diag(N, NP, inod1, inod1, mat_num)
-        do j1 = 1, NB_djds
-          do j2 = 1, NB_djds
-            j12 = j1 + (j2-1)*NB_djds + (inod1-1)*NB_djds*NB_djds
-            im = NB_djds*NB_djds*(mat_num-1) + NB_djds*(j1-1) + j2
-            aiccg(im) = mat1_crs%D_crs(j12)
+        call set_DJDS_off_diag_type                                     &
+     &     (NP, N, djds_tbl, inod1, inod1, mat_num)
+        do j1 = 1, NB
+          do j2 = 1, NB
+            j12 = j1 + (j2-1)*NB + (inod1-1)*NB*NB
+            im = NB*NB*(mat_num-1) + NB*(j1-1) + j2
+            aiccg(im) = mat_crs%D_crs(j12)
           end do
         end do
       end do
 !
       do inod1 = 1, NP
-        ist = tbl1_crs%istack_l(inod1-1)+1
-        ied = tbl1_crs%istack_l(inod1)
+        ist = tbl_crs%istack_l(inod1-1)+1
+        ied = tbl_crs%istack_l(inod1)
         do k = ist, ied
-          inod2 = tbl1_crs%item_l(k)
-          call s_set_DJDS_off_diag(N, NP, inod1, inod2, mat_num)
-          do j1 = 1, NB_djds
-            do j2 = 1, NB_djds
-              j12 = j1 + (j2-1)*NB_djds + (k-1)*NB_djds*NB_djds
-              im = NB_djds*NB_djds*(mat_num-1) + NB_djds*(j1-1) + j2
-              aiccg(im) = mat1_crs%AL_crs(j12)
+          inod2 = tbl_crs%item_l(k)
+          call set_DJDS_off_diag_type                                   &
+     &       (NP, N, djds_tbl, inod1, inod2, mat_num)
+          do j1 = 1, NB
+            do j2 = 1, NB
+              j12 = j1 + (j2-1)*NB + (k-1)*NB*NB
+              im = NB*NB*(mat_num-1) + NB*(j1-1) + j2
+              aiccg(im) = mat_crs%AL_crs(j12)
             end do
           end do
         end do
       end do
 !
       do inod1 = 1, NP
-        ist = tbl1_crs%istack_u(inod1-1)+1
-        ied = tbl1_crs%istack_u(inod1)
+        ist = tbl_crs%istack_u(inod1-1)+1
+        ied = tbl_crs%istack_u(inod1)
         do k = ist, ied
-          inod2 = tbl1_crs%item_u(k)
-          call s_set_DJDS_off_diag(N, NP, inod1, inod2, mat_num)
-          do j1 = 1, NB_djds
-            do j2 = 1, NB_djds
-              j12 = j1 + (j2-1)*NB_djds + (k-1)*NB_djds*NB_djds
-              im = NB_djds*NB_djds*(mat_num-1) + NB_djds*(j1-1) + j2
-              aiccg(im) = mat1_crs%AU_crs(j12)
+          inod2 = tbl_crs%item_u(k)
+          call set_DJDS_off_diag_type                                   &
+     &       (NP, N, djds_tbl, inod1, inod2, mat_num)
+          do j1 = 1, NB
+            do j2 = 1, NB
+              j12 = j1 + (j2-1)*NB + (k-1)*NB*NB
+              im = NB*NB*(mat_num-1) + NB*(j1-1) + j2
+              aiccg(im) = mat_crs%AU_crs(j12)
             end do
           end do
         end do
@@ -82,61 +190,34 @@
       end subroutine copy_matrix_2_djds_NN
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine s_set_DJDS_off_diag(N, NP, nod1, nod2, mat_num)
-!
-      use m_solver_djds
-      use set_DJDS_off_diagonal
-!
-      integer(kind = kint), intent(in) :: N, NP
-      integer (kind = kint), intent(in) :: nod1, nod2
-      integer (kind = kint), intent(inout) :: mat_num
-!
-!
-      call s_set_DJDS_off_diagonal (N, NP, np_smp,                      &
-     &    NLmax, NUmax, itotal_l, itotal_u,                             &
-     &    npLX1, npUX1, NHYP, STACKmc, NLmaxHYP, NUmaxHYP,              &
-     &    OLDtoNEW, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,                   &
-     &    indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,             &
-     &    PEon, COLORon, nod1, nod2, mat_num)
-!
-      end subroutine s_set_DJDS_off_diag
-!
 !-----------------------------------------------------------------------
 !
-      subroutine copy_RH_vect_2_crs_nn(NP)
+      subroutine copy_RH_vect_2_crs_nn(mat_crs, NP, NB, B, X)
 !
-      use m_matrix_data_4_djds
+      type(CRS_matrix), intent(in) :: mat_crs
+      integer(kind = kint), intent(in) :: NB, NP
+      real(kind=kreal), intent(inout) :: X(NB*NP), B(NB*NP)
 !
-      integer(kind = kint), intent(in) :: NP
 !
-      integer(kind = kint) :: i
-!
-!$omp parallel do
-      do i = 1, NB_djds*NP
-        b_djds(i) = mat1_crs%B_crs(i)
-        x_djds(i) = mat1_crs%X_crs(i)
-      end do
-!$omp end parallel do
+!$omp parallel workshare
+      B(1:NB*NP) = mat_crs%B_crs(1:NB*NP)
+      X(1:NB*NP) = mat_crs%X_crs(1:NB*NP)
+!$omp end parallel workshare
 !
       end subroutine copy_RH_vect_2_crs_nn
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine copy_solution_2_crs_nn(NP)
+      subroutine copy_solution_2_crs_nn(NP, NB, X, mat_crs)
 !
-      use m_matrix_data_4_djds
+      integer(kind = kint), intent(in) :: NB, NP
+      real(kind=kreal), intent(in) :: X(NB*NP)
+      type(CRS_matrix), intent(inout) :: mat_crs
 !
-      integer(kind = kint), intent(in) :: NP
 !
-      integer(kind = kint) :: i
-!
-!$omp parallel do
-      do i = 1, NB_djds*NP
-        mat1_crs%X_crs(i) = x_djds(i)
-      end do
-!$omp end parallel do
+!$omp parallel workshare
+      mat_crs%X_crs(1:NB*NP) = X(1:NB*NP)
+!$omp end parallel workshare
 !
       end subroutine copy_solution_2_crs_nn
 !

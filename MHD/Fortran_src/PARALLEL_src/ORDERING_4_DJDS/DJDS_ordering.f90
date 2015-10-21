@@ -6,11 +6,13 @@
 !        modified by H. Matsui on June. 2006
 !        modified by H. Matsui on Jan., 2008
 !
-!      subroutine set_djds_ordering(np_smp, NP, N, inter_smp_stack,     &
-!     &      NHYP, IVECT, STACKmcG, STACKmc, PEon, npLX1, npUX1,        &
-!     &      NLmax, NUmax, NLmaxHYP, NUmaxHYP, indexDJDS_L, indexDJDS_U,&
-!     &      NEWtoOLD_DJDS_L, NEWtoOLD_DJDS_U,                          &
-!     &      OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U)
+!!      subroutine set_djds_ordering_type                               &
+!!     &         (np_smp, NP, N, inter_smp_stack,  djds_tbl)
+!!      subroutine set_djds_ordering(np_smp, NP, N, inter_smp_stack,    &
+!!     &     NHYP, IVECT, STACKmcG, STACKmc, PEon, npLX1, npUX1,        &
+!!     &     NLmax, NUmax, NLmaxHYP, NUmaxHYP, indexDJDS_L, indexDJDS_U,&
+!!     &     NEWtoOLD_DJDS_L, NEWtoOLD_DJDS_U,                          &
+!!     &     OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U)
 !
       module DJDS_ordering
 !
@@ -22,6 +24,31 @@
 !
       contains
 !
+! ----------------------------------------------------------------------
+!
+      subroutine set_djds_ordering_type                                 &
+     &         (np_smp, NP, N, inter_smp_stack,  djds_tbl)
+!
+      use t_solver_djds
+!
+      integer(kind = kint), intent(in) :: np_smp
+      integer(kind = kint), intent(in) :: NP, N
+      integer(kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
+      type(DJDS_ordering_table), intent(inout) :: djds_tbl
+!
+!
+      call set_djds_ordering(np_smp, NP, N, inter_smp_stack,            &
+     &    djds_tbl%NHYP, djds_tbl%IVECT,                                &
+     &    djds_tbl%STACKmcG, djds_tbl%STACKmc, djds_tbl%PEon,           &
+     &    djds_tbl%npLX1, djds_tbl%npUX1, djds_tbl%NLmax,               &
+     &    djds_tbl%NUmax, djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP,         &
+     &    djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U,                   &
+     &    djds_tbl%NEWtoOLD_DJDS_L, djds_tbl%NEWtoOLD_DJDS_U,           &
+     &    djds_tbl%OLDtoNEW_DJDS_L, djds_tbl%OLDtoNEW_DJDS_U)
+!
+      end subroutine set_djds_ordering_type
+!
+! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
       subroutine set_djds_ordering(np_smp, NP, N, inter_smp_stack,      &

@@ -11,15 +11,22 @@
 !
       module solve_by_mass_z
 !
+      use m_precision
       use m_geometry_data
+      use m_nod_comm_table
       use m_int_edge_vart_width
       use m_consist_mass_crs
 !
-      use m_precision
+      use t_solver_djds
 !
       implicit none
 !
+      type(DJDS_ordering_table), save :: djds_tbl1
+      type(DJDS_MATRIX), save :: djds_mat1
+!
       real(kind = kreal) :: rtime, starttime, endtime
+!
+      private :: djds_tbl1, djds_mat1
 !
 !  ---------------------------------------------------------------------
 !
@@ -32,6 +39,7 @@
       use calypso_mpi
       use m_crs_matrix
       use solve_precond_DJDS
+      use copy_matrix_2_djds_array
 !
       integer(kind = kint) :: i, ierr
 !
@@ -51,8 +59,11 @@
         mat1_crs%AU_crs(i) = au_mk_crs(i)
       end do
 !
-         write(*,*) 'solve_by_djds_solver11'
-      call solve_by_djds_solver11(node1, tbl1_crs, ierr)
+      write(*,*) 'solve_by_djds_solver11'
+      call transfer_crs_2_djds_matrix(node1, nod_comm,                  &
+     &    tbl1_crs, mat1_crs, djds_tbl1, djds_mat1)
+      call solve_by_djds_solver11                                       &
+     &   (node1, nod_comm, mat1_crs, djds_tbl1, djds_mat1, ierr)
 !
       do i = 1, node1%numnod
         sol_mk_crs(i) = mat1_crs%X_crs(i)
@@ -72,12 +83,11 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_iccg_parameter
-      use m_solver_djds
-      use m_matrix_data_4_djds
       use m_crs_matrix
 !
       use copy_matrix_2_djds_array
-      use solver_DJDS
+      use solver_DJDS11_struct
+      use solve_precond_DJDS
 !
       integer(kind = kint) :: i, ierr
 !
@@ -90,23 +100,12 @@
         mat1_crs%B_crs(i) = rhs_mk_crs(i)
       end do
 !
-      call copy_RH_vect_2_crs_nn(node1%numnod)
+      djds_mat1%NB = mat1_crs%NB_crs
+      call transfer_crs_2_djds_matrix(node1, nod_comm,                  &
+     &    tbl1_crs, mat1_crs, djds_tbl1, djds_mat1)
 !
-        write(*,*) 'init_solve_DJDS_kemo'
-      call init_solve_DJDS_kemo(node1%internal_node, node1%numnod,      &
-     &     NLmax, NUmax, itotal_l, itotal_u, NHYP, np_smp,              &
-     &     node1%istack_internal_smp, STACKmc, NLmaxHYP, NUmaxHYP,      &
-     &     IVECT, NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,           &
-     &     NEWtoOLD_DJDS_U, LtoU, aiccg(im_d), b_djds, x_djds,          &
-     &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
-     &     aiccg(im_l), aiccg(im_u),                                    &
-     &     ALUG_L, ALUG_U, eps, itr, ierr,                              &
-     &     nod_comm%num_neib, nod_comm%id_neib,                         &
-     &     nod_comm%istack_import, nod_comm%item_import,                &
-     &     nod_comm%istack_export, NOD_EXPORT_NEW,                      &
-     &     method_4_solver, precond_4_solver, itr_res)
-
-      call copy_solution_2_crs_nn(node1%numnod)
+      call solve_by_djds_solverNN                                       &
+     &   (node1, nod_comm, mat1_crs, djds_tbl1, djds_mat1, ierr)
 !
       do i = 1, node1%numnod
         sol_mk_crs(i) = mat1_crs%X_crs(i)

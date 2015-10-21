@@ -6,6 +6,7 @@
 !        modified by H. Matsui on June. 2006
 !        modified by H. Matsui on Jan., 2009
 !
+!      subroutine count_hyperplane_type(np_smp, N, NP, djds_tbl)
 !      subroutine count_hyperplane(np_smp, NP, N, NHYP, IVECT,          &
 !     &          npLX1, npUX1, NLmax, NUmax, NLmaxHYP, NUmaxHYP,        &
 !     &          itotal_l, itotal_u)
@@ -19,6 +20,26 @@
 ! ----------------------------------------------------------------------
 !
       contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine count_hyperplane_type(np_smp, N, NP, djds_tbl)
+!
+      use t_solver_djds
+!
+      integer(kind = kint), intent(in) :: np_smp
+      integer(kind = kint), intent(in) :: NP, N
+      type(DJDS_ordering_table), intent(inout) :: djds_tbl
+!
+!
+      call count_hyperplane(np_smp, N, NP,                              &
+     &                  djds_tbl%NHYP, djds_tbl%IVECT,                  &
+     &                  djds_tbl%npLX1, djds_tbl%npUX1,                 &
+     &                  djds_tbl%NLmax, djds_tbl%NUmax,                 &
+     &                  djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP,           &
+     &                  djds_tbl%itotal_l, djds_tbl%itotal_u)
+!
+      end subroutine count_hyperplane_type
 !
 ! ----------------------------------------------------------------------
 !

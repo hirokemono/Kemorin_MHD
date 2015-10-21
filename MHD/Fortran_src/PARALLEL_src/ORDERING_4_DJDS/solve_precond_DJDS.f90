@@ -4,9 +4,12 @@
 !     Written by H. Matsui
 !     Modified by H. Matsui on Apr., 2008
 !
-!!      subroutine solve_by_djds_solver11(node, tbl_crs, ierr)
-!!      subroutine solve_by_djds_solver33(node, tbl_crs, ierr)
-!!      subroutine solve_by_djds_solverNN(node, tbl_crs, ierr)
+!!      subroutine solve_by_djds_solver11                               &
+!!     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
+!!      subroutine solve_by_djds_solver33                               &
+!!     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
+!!      subroutine solve_by_djds_solverNN                               &
+!!     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
 !!        type(node_data), intent(inout) :: node
 !!        type(CRS_matrix_connect), intent(inout) :: tbl_crs
 !!
@@ -17,11 +20,22 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
+      use calypso_mpi
 !
       use t_geometry_data
+      use t_comm_table
       use t_crs_matrix
 !
       implicit none
+!
+!>    RHS and solution vector
+      real(kind=kreal), allocatable :: b_djds(:), x_djds(:)
+!
+      real(kind = kreal) :: starttime
+!
+      private :: allocate_vector_data_4_djds
+      private :: deallocate_vector_data_4_djds
 !
 !  ---------------------------------------------------------------------
 !
@@ -29,28 +43,74 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_by_djds_solver11(node, tbl_crs, ierr)
+       subroutine allocate_vector_data_4_djds(NP, NB)
 !
-      use calypso_mpi
-      use m_nod_comm_table
-      use m_machine_parameter
+       integer(kind = kint), intent(in) :: NP, NB
+!
+       allocate (b_djds(NB*NP))
+       allocate (x_djds(NB*NP))
+!
+       b_djds = 0.0d0
+       x_djds = 0.0d0
+!
+      end subroutine allocate_vector_data_4_djds
+!
+!  ---------------------------------------------------------------------
+!
+       subroutine deallocate_vector_data_4_djds
+!
+       deallocate (b_djds, x_djds)
+!
+      end subroutine deallocate_vector_data_4_djds
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine check_djds_RHS_vector(my_rank, djds_mat)
+!
+      use t_solver_djds
+!
+      integer (kind = kint), intent(in) :: my_rank
+      type(DJDS_MATRIX), intent(in) :: djds_mat
+!
+      integer(kind = kint) :: i, NB_djds, k2
+!
+!
+       NB_djds = djds_mat%NB
+       do i = 1, djds_mat%num_diag
+           write(my_rank+50,*) "vector (inod) = ", i
+           write(my_rank+50,'(1p5e16.8)')                               &
+     &           (b_djds(NB_djds*(i-1)+k2),k2=1,NB_djds)
+       end do
+!
+       end subroutine check_djds_RHS_vector
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine solve_by_djds_solver11                                 &
+     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
+!
       use m_iccg_parameter
-      use m_solver_djds
-      use m_matrix_data_4_djds
-!
       use m_solver_SR
-      use solver_DJDS
-      use preconditioning_DJDS11
+      use t_solver_djds
 !
-      use transfer_crs_2_djds
+      use solver_DJDS11_struct
+!
       use copy_matrix_2_djds_array
 !
       type(node_data), intent(inout) :: node
-      type(CRS_matrix_connect), intent(inout) :: tbl_crs
+      type(communication_table), intent(in) :: nod_comm
+      type(CRS_matrix), intent(inout) :: mat_crs
+      type(DJDS_ordering_table), intent(inout) :: djds_tbl
+      type(DJDS_MATRIX), intent(inout) :: djds_mat
+!
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call transfer_crs_2_djds_matrix(node, nod_comm, tbl_crs)
+      call allocate_vector_data_4_djds(node%numnod, djds_mat%NB)
+      call copy_RH_vect_2_crs_nn                                        &
+     &   (mat_crs, node%numnod, djds_mat%NB, b_djds, x_djds)
 !C
 !C== PRECONDITIONING
 !
@@ -64,58 +124,47 @@
      &        nod_comm%istack_import(nod_comm%num_neib) )
         end if
 
-        call precond_DJDS11(node%internal_node, node%numnod,            &
-     &           NLmax, itotal_l, NHYP, np_smp,                         &
-     &           node%istack_internal_smp, STACKmc, NLmaxHYP, IVECT,    &
-     &           OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U, LtoU,                &
-     &           aiccg(im_d), indexDJDS_L, itemDJDS_L, aiccg(im_l),     &
-     &           ALUG_L, ALUG_U, precond_4_solver, sigma_diag)
-!
+      call precond_DJDS11_struct(np_smp, djds_tbl, djds_mat,            &
+     &    precond_4_solver, sigma_diag)
 !C
 !C-- ICCG computation
 
         write(*,*) 'init_solve_DJDS_kemo', my_rank
-      call init_solve_DJDS_kemo(node%internal_node, node%numnod,        &
-     &     NLmax, NUmax, itotal_l, itotal_u, NHYP, np_smp,              &
-     &     node%istack_internal_smp, STACKmc, NLmaxHYP, NUmaxHYP,       &
-     &     IVECT, NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,           &
-     &     NEWtoOLD_DJDS_U, LtoU, aiccg(im_d), b_djds, x_djds,          &
-     &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
-     &     aiccg(im_l), aiccg(im_u), ALUG_L, ALUG_U, eps, itr, ierr,    &
-     &     nod_comm%num_neib, nod_comm%id_neib,                         &
-     &     nod_comm%istack_import, nod_comm%item_import,                &
-     &     nod_comm%istack_export, NOD_EXPORT_NEW,                      &
-     &     method_4_solver, precond_4_solver, itr_res)
+      call init_solve_DJDS11_struct(np_smp, nod_comm,                   &
+     &    djds_tbl, djds_mat, node%numnod, b_djds, x_djds,              &
+     &    method_4_solver, precond_4_solver, ierr, eps, itr, itr_res)
 
-      call copy_solution_2_crs_nn(node%numnod)
-
+      call copy_solution_2_crs_nn                                       &
+     &   (node%numnod, djds_mat%NB, x_djds, mat_crs)
+      call deallocate_vector_data_4_djds
 !
       end  subroutine solve_by_djds_solver11
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_by_djds_solver33(node, tbl_crs, ierr)
+      subroutine solve_by_djds_solver33                                 &
+     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
 !
-      use calypso_mpi
-      use m_nod_comm_table
-      use m_machine_parameter
       use m_iccg_parameter
-      use m_solver_djds
-      use m_matrix_data_4_djds
-!
       use m_solver_SR
-      use solver33_DJDS
-      use preconditioning_DJDS33
+      use t_solver_djds
+!
+      use solver_DJDS33_struct
 
-      use transfer_crs_2_djds
       use copy_matrix_2_djds_array
 !
       type(node_data), intent(inout) :: node
-      type(CRS_matrix_connect), intent(inout) :: tbl_crs
+      type(communication_table), intent(in) :: nod_comm
+      type(CRS_matrix), intent(inout) :: mat_crs
+      type(DJDS_ordering_table), intent(inout) :: djds_tbl
+      type(DJDS_MATRIX), intent(inout) :: djds_mat
+!
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call transfer_crs_2_djds_matrix(node, nod_comm, tbl_crs)
+      call allocate_vector_data_4_djds(node%numnod, djds_mat%NB)
+      call copy_RH_vect_2_crs_nn                                        &
+     &   (mat_crs, node%numnod, djds_mat%NB, b_djds, x_djds)
 !C
 !C== PRECONDITIONING
 !
@@ -128,62 +177,49 @@
      &        nod_comm%istack_import(nod_comm%num_neib) )
         end if
 
-        call precond_DJDS33(node%internal_node, node%numnod,            &
-     &           np_smp, node%istack_internal_smp,                      &
-     &           OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,                      &
-     &           aiccg(im_d), ALUG_L, ALUG_U, precond_4_solver,         &
-     &           sigma_diag)
-!
+        call precond_DJDS33_struct(np_smp, djds_tbl, djds_mat,          &
+     &      precond_4_solver, sigma_diag)
 !C
 !C-- ICCG computation
 
         ierr = 1
  
-        write(*,*) 'init_solve33_DJDS_kemo', method_4_solver
-      call init_solve33_DJDS_kemo(node%internal_node, node%numnod,      &
-     &     NLmax, NUmax, itotal_l, itotal_u, NHYP, np_smp,              &
-     &     node%istack_internal_smp, STACKmc, NLmaxHYP, NUmaxHYP,       &
-     &     IVECT, NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,           &
-     &     NEWtoOLD_DJDS_U, LtoU, aiccg(im_d), b_djds, x_djds,          &
-     &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
-     &     aiccg(im_l), aiccg(im_u),  ALUG_L, ALUG_U, eps, itr, ierr,   &
-     &     nod_comm%num_neib, nod_comm%id_neib,                         &
-     &     nod_comm%istack_import, nod_comm%item_import,                &
-     &     nod_comm%istack_export, NOD_EXPORT_NEW,                      &
-     &     method_4_solver, precond_4_solver, itr_res)
+        write(*,*) 'init_solve33_DJDS_struct', method_4_solver
+      call init_solve33_DJDS_struct(np_smp, nod_comm,                   &
+     &    djds_tbl, djds_mat, node%numnod, b_djds, x_djds,              &
+     &    method_4_solver, precond_4_solver, ierr, eps, itr, itr_res)
 
-      call copy_solution_2_crs_nn(node%numnod)
-
+      call copy_solution_2_crs_nn                                       &
+     &   (node%numnod, djds_mat%NB, x_djds, mat_crs)
+      call deallocate_vector_data_4_djds
 !
       end  subroutine solve_by_djds_solver33
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_by_djds_solverNN(node, tbl_crs, ierr)
+      subroutine solve_by_djds_solverNN                                 &
+     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
 !
-      use calypso_mpi
-      use m_machine_parameter
-      use m_nod_comm_table
       use m_iccg_parameter
-      use m_solver_djds
-      use m_matrix_data_4_djds
-!
-      use t_geometry_data
-      use t_crs_matrix
-!
       use m_solver_SR
-      use solverNN_DJDS
-      use preconditioning_DJDSNN
+      use t_solver_djds
+!
+      use solver_DJDSnn_struct
 
-      use transfer_crs_2_djds
       use copy_matrix_2_djds_array
 !
       type(node_data), intent(inout) :: node
-      type(CRS_matrix_connect), intent(inout) :: tbl_crs
+      type(communication_table), intent(in) :: nod_comm
+      type(CRS_matrix), intent(inout) :: mat_crs
+      type(DJDS_ordering_table), intent(inout) :: djds_tbl
+      type(DJDS_MATRIX), intent(inout) :: djds_mat
+!
       integer(kind = kint), intent(inout) :: ierr
 !
 !
-      call transfer_crs_2_djds_matrix(node, nod_comm, tbl_crs)
+      call allocate_vector_data_4_djds(node%numnod, djds_mat%NB)
+      call copy_RH_vect_2_crs_nn                                        &
+     &   (mat_crs, node%numnod, djds_mat%NB, b_djds, x_djds)
 !C
 !C== PRECONDITIONING
 !
@@ -192,38 +228,26 @@
 
         write(*,*) 'resize_work_4_SR'
         if (nod_comm%num_neib .gt. 0) then
-          call resize_work_4_SR(NB_djds, nod_comm%num_neib,             &
+          call resize_work_4_SR(djds_mat%NB, nod_comm%num_neib,         &
      &        nod_comm%istack_export(nod_comm%num_neib),                &
      &        nod_comm%istack_import(nod_comm%num_neib) )
         end if
 
-        write(*,*) 'precond_DJDSNN'
-        call precond_DJDSNN                                             &
-     &    (node%internal_node, node%numnod, NB_djds, np_smp,            &
-     &     node%istack_internal_smp, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,  &
-     &     aiccg(im_d), ALUG_L, ALUG_U, precond_4_solver, sigma_diag)
-!
+      write(*,*) 'precond_DJDSNN'
+      call precond_DJDSnn_struct(djds_mat%NB, np_smp, djds_tbl,         &
+     &   djds_mat, precond_4_solver, sigma_diag)
 !C
 !C-- ICCG computation
 
         ierr = 1
-        write(*,*) 'init_solveNN_DJDS_kemo', my_rank
-!       if (my_rank.eq.0) write(*,*) 'init_solveNN_DJDS_kemo'
-      call init_solveNN_DJDS_kemo                                       &
-     &   ( node%internal_node, node%numnod, NB_djds, NLmax, NUmax,      &
-     &     itotal_l, itotal_u, NHYP, np_smp, node%istack_internal_smp,  &
-     &     STACKmc, NLmaxHYP, NUmaxHYP, IVECT,                          &
-     &     NEWtoOLD, OLDtoNEW_DJDS_L, OLDtoNEW_DJDS_U,                  &
-     &     NEWtoOLD_DJDS_U, LtoU, aiccg(im_d), b_djds, x_djds,          &
-     &     indexDJDS_L, indexDJDS_U, itemDJDS_L, itemDJDS_U,            &
-     &     aiccg(im_l), aiccg(im_u), ALUG_L, ALUG_U, eps, itr, ierr,    &
-     &     nod_comm%num_neib, nod_comm%id_neib,                         &
-     &     nod_comm%istack_import, nod_comm%item_import,                &
-     &     nod_comm%istack_export, NOD_EXPORT_NEW,                      &
-     &     method_4_solver, precond_4_solver, itr_res)
+!       if (my_rank.eq.0) write(*,*) 'init_solveNN_DJDS_struct'
+      call init_solveNN_DJDS_struct(djds_mat%NB, np_smp, nod_comm,      &
+     &    djds_tbl, djds_mat, node%numnod, b_djds, x_djds,              &
+     &    method_4_solver, precond_4_solver, ierr, eps, itr, itr_res)
 
-      call copy_solution_2_crs_nn(node%numnod)
-
+      call copy_solution_2_crs_nn                                       &
+     &   (node%numnod, djds_mat%NB, x_djds, mat_crs)
+      call deallocate_vector_data_4_djds
 !
       end  subroutine solve_by_djds_solverNN
 !

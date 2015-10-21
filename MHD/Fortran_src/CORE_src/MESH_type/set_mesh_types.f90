@@ -15,18 +15,6 @@
 !!        type(node_data), intent(inout) ::           node
 !!        type(element_data), intent(inout) ::        ele
 !!
-!!      subroutine set_ele_comm_tbl_type_data(ele_mesh)
-!!        type(element_comms) :: ele_mesh
-!!      subroutine set_surf_connect_type_data(surf_mesh, mesh)
-!!      subroutine set_surf_mesh_type_to_IO(my_rank, numele, surf_mesh)
-!!        type(mesh_geometry), intent(in) ::    mesh
-!!        type(surface_geometry), intent(inout) :: surf_mesh
-!!      subroutine set_edge_connect_type_data(edge_mesh, surf_mesh, mesh)
-!!      subroutine set_edge_mesh_type_to_IO                             &
-!!     &         (my_rank, numele, numsurf, edge_mesh)
-!!        type(mesh_geometry),    intent(in) :: mesh
-!!        type(edge_geometry), intent(inout) ::  edge_mesh
-!!
 !!      subroutine set_nnod_surf_edge_for_type(surf_mesh, edge_mesh,    &
 !!     &          mesh)
 !!        type(mesh_geometry),    intent(in) :: mesh
@@ -146,96 +134,7 @@
 !
       end subroutine set_mesh_data_to_IO
 !
-!   --------------------------------------------------------------------
 !  ---------------------------------------------------------------------
-!
-      subroutine set_ele_comm_tbl_type_data(ele_mesh)
-!
-      use set_comm_table_4_IO
-!
-      type(element_comms) :: ele_mesh
-!
-      call copy_comm_tbl_type_from_IO(ele_mesh%ele_comm)
-!
-      end subroutine set_ele_comm_tbl_type_data
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_surf_connect_type_data(surf_mesh, mesh)
-!
-      use t_surface_data
-      use set_comm_table_4_IO
-      use set_surface_data_4_IO
-!
-!
-      type(mesh_geometry), intent(in) ::    mesh
-      type(surface_geometry), intent(inout) :: surf_mesh
-!
-!
-      call copy_comm_tbl_type_from_IO(surf_mesh%surf_comm)
-      call copy_surf_connect_from_IO(surf_mesh%surf, mesh%ele%numele)
-!
-      end subroutine set_surf_connect_type_data
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_edge_connect_type_data(edge_mesh, surf_mesh, mesh)
-!
-      use t_surface_data
-      use t_edge_data
-      use set_comm_table_4_IO
-      use set_edge_data_4_IO
-!
-      type(mesh_geometry),    intent(in) :: mesh
-      type(surface_geometry), intent(in) ::  surf_mesh
-      type(edge_geometry), intent(inout) ::  edge_mesh
-!
-!
-      call copy_comm_tbl_type_from_IO(edge_mesh%edge_comm)
-      call copy_edge_connect_from_IO(edge_mesh%edge, mesh%ele%numele,   &
-      &   surf_mesh%surf%numsurf)
-!
-      end subroutine set_edge_connect_type_data
-!
-!  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine set_surf_mesh_type_to_IO(my_rank, numele, surf_mesh)
-!
-      use t_mesh_data
-      use set_comm_table_4_IO
-      use set_surface_data_4_IO
-!
-      integer(kind = kint), intent(in) :: my_rank, numele
-      type(surface_geometry), intent(in) :: surf_mesh
-!
-!
-      call copy_comm_tbl_type_to_IO(my_rank, surf_mesh%surf_comm)
-      call copy_surf_connect_to_IO(surf_mesh%surf, numele)
-!
-      end subroutine set_surf_mesh_type_to_IO
-!
-!   --------------------------------------------------------------------
-!
-      subroutine set_edge_mesh_type_to_IO                               &
-     &         (my_rank, numele, numsurf, edge_mesh)
-!
-      use t_mesh_data
-      use set_comm_table_4_IO
-      use set_edge_data_4_IO
-      use edge_IO_select
-!
-      integer(kind = kint), intent(in) :: my_rank, numele, numsurf
-      type(edge_geometry), intent(in) :: edge_mesh
-!
-!
-!
-      call copy_comm_tbl_type_to_IO(my_rank, edge_mesh%edge_comm)
-      call copy_edge_connect_to_IO(edge_mesh%edge, numele, numsurf)
-!
-      end subroutine set_edge_mesh_type_to_IO
-!
-!   --------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine set_nnod_surf_edge_for_type(surf_mesh, edge_mesh,      &

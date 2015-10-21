@@ -18,7 +18,7 @@
       implicit none
 !
 !
-      integer(kind = kint) :: ierr, i, icomp, itmp, istep
+      integer(kind = kint) :: ierr, i, icomp, itmp, istep, istep_ref
       integer(kind = kint) :: nfld, ltr_sph
       character(len=255) :: tmpchara
 !
@@ -76,16 +76,16 @@
 !
 !    Evaluate time average
 !
-      istep = 0
+      istep_ref = 0
       read(id_file_rms,*) tmpchara, tmpchara,                           &
      &                    ene_sph_spec_name(1:ncomp_sph_spec)
       write(*,'(26a1,a6,i12,a8)',advance="NO") (char(8),i=1,26),        &
-     &       'step= ', istep,   ' is read'
+     &       'step= ', istep_ref,   ' is read'
       do
-        read(id_file_rms,*,err=98,end=98) istep, time_ref,              &
+        read(id_file_rms,*,err=98,end=98) istep_ref, time_ref,          &
      &         spectr_ref(1:ncomp_sph_spec)
         write(*,'(26a1,a6,i12,a8)',advance="NO") (char(8),i=1,26),      &
-     &       'step= ', istep,   ' is read'
+     &       'step= ', istep_ref,   ' is read'
       end do
       write(*,*) char(10)
 !
@@ -99,16 +99,29 @@
       end do
 !
       ierr = 0
+      if(istep .ne. istep_ref) then
+          write(*,*) 'time step error'
+      end if
+      diff(1) = abs(time-time_ref)/time_ref
+      if(diff(1) .gt. 1.d-9) then
+          write(*,*) 'Large error in time: ',                           &
+     &                time, time_ref, diff(1)
+      end if
       do icomp = 1, ncomp_sph_spec
         if(diff(icomp) .gt. 1.d-9) then
           write(*,*) 'Large error in ', trim(ene_sph_spec_name(icomp)), &
-     &               ': ', diff(icomp)
+     &           ': ', spectr_t(icomp), spectr_ref(icomp), diff(icomp)
           ierr = 1
           exit
         end if
       end do
 
-      if(ierr .gt. 0) stop '!!!!!!  Chack Failed!!'
-      stop 'Mean square data are successfully checked'
+      if(ierr .gt. 0) then
+        write(*,*) '!!!!!!  Chack Failed!!'
+        stop 1
+      end if
+!
+      write(*,*) 'Mean square data are successfully checked'
+      stop 0
 !
       end program compare_sph_mean_square

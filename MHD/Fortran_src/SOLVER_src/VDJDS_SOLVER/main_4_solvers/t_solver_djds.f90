@@ -6,7 +6,6 @@
 !!@date Modified in Nov., 2013
 !
 !>@brief  Structer for DJDS matrix solver
-!!@n        (module m_solver_djds)
 !!
 !!@verbatim
 !!      subroutine link_alloc_type_djds11_mat(numnod, internal_node,    &
@@ -44,6 +43,8 @@
 !!
 !!       subroutine check_type_DJDS_ordering_info(my_rank, numnod,      &
 !!     &           djds_tbl)
+!!      subroutine check_djds_matrix_components                         &
+!!     &         (my_rank, djds_tbl, djds_mat)
 !!
 !!      subroutine link_djds_connect_structs(djds_org, djds_tbl)
 !!      subroutine link_djds_matrix_structs(mat_org, mat)
@@ -103,6 +104,9 @@
 !
 !>   Strucure for Matrix for DJDS solver
       type DJDS_MATRIX
+!>   Band width of matrix
+        integer(kind=kint ) ::  NB
+!
 !>   coefficients of matrix
         real(kind=kreal), pointer :: aiccg(:)
 !>   diagonal component of matrix
@@ -350,6 +354,7 @@
        type(DJDS_MATRIX), intent(inout) :: mat11
 !
 !
+       mat11%NB = ione
        mat11%num_diag =      numnod
        mat11%internal_diag = internal_node
 !
@@ -382,6 +387,7 @@
        type(DJDS_MATRIX), intent(inout) :: mat33
 !
 !
+       mat33%NB = ithree
        mat33%num_diag =      numnod
        mat33%internal_diag = internal_node
 !
@@ -416,6 +422,7 @@
        integer(kind = kint) :: NB2
 !
 !
+       matNN%NB = NB
        matNN%num_diag =      numnod
        matNN%internal_diag = internal_node
 !
@@ -699,5 +706,53 @@
       end subroutine check_type_DJDS_ordering_info
 !
 ! ------------------------------------------
+!
+      subroutine check_djds_matrix_components                           &
+     &         (my_rank, djds_tbl, djds_mat)
+!
+      integer (kind = kint), intent(in) :: my_rank
+      type(DJDS_ordering_table), intent(in) :: djds_tbl
+      type(DJDS_MATRIX), intent(in) :: djds_mat
+!
+      integer(kind = kint) :: i, k1, k2, ist, ied, kst, ked, NB_djds
+!
+!
+       NB_djds = djds_mat%NB
+       do i = 1, djds_mat%num_diag
+         do k1 = 1, NB_djds
+           kst = NB_djds*NB_djds*(i-1) + NB_djds*(k1-1) + 1
+           ked = NB_djds*NB_djds*(i-1) + NB_djds*k1
+           write(my_rank+50,*) "diagonal (inod,k1) = ", i, k1
+           write(my_rank+50,'(1p5e16.8)') djds_mat%aiccg(kst:ked)
+         end do
+       end do
+!
+       ist = djds_mat%num_diag+1
+       ied = djds_mat%num_diag+djds_tbl%itotal_l
+       do i = ist, ied
+           do k1 = 1, NB_djds
+             kst = NB_djds*NB_djds*(i-1) + NB_djds*(k1-1) + 1
+             ked = NB_djds*NB_djds*(i-1) + NB_djds*k1
+             write(my_rank+50,*) "Lower component (i,k1) = ",          &
+     &             (i-djds_mat%num_diag), k1
+             write(my_rank+50,'(1p5e16.8)') djds_mat%aiccg(kst:ked)
+           end do
+       end do
+!
+       ist = djds_mat%num_diag+djds_tbl%itotal_l+1
+       ied = djds_mat%num_diag+djds_tbl%itotal_l+djds_tbl%itotal_u
+       do i = ist, ied
+           do k1 = 1, NB_djds
+             kst = NB_djds*NB_djds*(i-1) + NB_djds*(k1-1) + 1
+             ked = NB_djds*NB_djds*(i-1) + NB_djds*k1
+             write(my_rank+50,*) "Upper component (i,k1) = ",          &
+     &             (i-djds_mat%num_diag-djds_tbl%itotal_l), k1
+             write(my_rank+50,'(1p5e16.8)') djds_mat%aiccg(kst:ked)
+           end do
+       end do
+!
+       end subroutine check_djds_matrix_components
+!
+!  ---------------------------------------------------------------------
 !
       end module t_solver_djds

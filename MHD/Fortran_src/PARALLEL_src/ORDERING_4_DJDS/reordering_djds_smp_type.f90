@@ -38,7 +38,10 @@
       use m_colored_connect
 !
       use ordering_MC_RCM_type
-      use set_djds_smp_ordering_type
+      use DJDS_hyperplane
+      use DJDS_ordering
+      use DJDS_total_nondiag
+      use DJDS_nodiag_item
 !
       integer(kind = kint), intent(in) :: np_smp
       integer(kind = kint), intent(in) :: NP, N

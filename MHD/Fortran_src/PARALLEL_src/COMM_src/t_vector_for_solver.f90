@@ -5,14 +5,16 @@
 !
 ! --------------------------------------------------------
 !
-!       subroutine verify_iccgN_vec_type(NB, nnod, vect)
+!      subroutine copy_communicator_4_solver(S_COMM)
+!        type(mpi_4_solver), intent(inout) :: S_COMM
+!      subroutine verify_iccgN_vec_type(NB, nnod, vect)
 !         integer(kind = kint), intent(in) :: NB, nnod
 !         type(vectors_4_solver), intent(inout) :: vect
-!       subroutine alloc_iccgN_vec_type(NB, nnod, vect)
-!       subroutine dealloc_iccgN_vec_type(vect)
+!      subroutine alloc_iccgN_vec_type(NB, nnod, vect)
+!      subroutine dealloc_iccgN_vec_type(vect)
 !
-!       subroutine alloc_iccg_int_vec_type(nnod, vect)
-!       subroutine dealloc_iccg_int_vec_type(vect)
+!      subroutine alloc_iccg_int_vec_type(nnod, vect)
+!      subroutine dealloc_iccg_int_vec_type(vect)
 !
 ! --------------------------------------------------------
 !
@@ -50,6 +52,25 @@
       contains
 !
 ! ----------------------------------------------------------------------
+!
+      subroutine copy_communicator_4_solver(S_COMM)
+!
+      use calypso_mpi
+!
+      type(mpi_4_solver), intent(inout) :: S_COMM
+      integer(kind = kint) :: my_rank_mg4
+!
+!
+      S_COMM%icolor_MG = 0
+!
+      call MPI_COMM_DUP(CALYPSO_COMM, S_COMM%SOLVER_COMM, ierr_MPI)
+      call MPI_COMM_RANK(S_COMM%SOLVER_COMM, my_rank_mg4, ierr_MPI)
+      S_COMM%MG_rank = my_rank_mg4
+      S_COMM%nprocs =  nprocs
+!
+      end subroutine copy_communicator_4_solver
+!
+!  ---------------------------------------------------------------------
 !
        subroutine verify_iccgN_vec_type(NB, nnod, vect)
 !

@@ -6,9 +6,10 @@
 !        modified by H. Matsui on June, 2006
 !        modified by H. Matsui on Jan., 2009
 !
-!      subroutine set_itotal_djds(np_smp, N, NHYP, npLX1, npUX1,        &
-!     &          NLmax, NUmax, NLmaxHYP, NUmaxHYP, itotal_l, itotal_u,  &
-!     &         indexDJDS_L, indexDJDS_U)
+!!      subroutine t_solver_djds(np_smp, N, djds_tbl)
+!!      subroutine set_itotal_djds(np_smp, N, NHYP, npLX1, npUX1,       &
+!!     &          NLmax, NUmax, NLmaxHYP, NUmaxHYP, itotal_l, itotal_u, &
+!!     &         indexDJDS_L, indexDJDS_U)
 !
       module DJDS_total_nondiag
 !
@@ -19,6 +20,26 @@
 ! ----------------------------------------------------------------------
 !
       contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine set_itotal_djds_type(np_smp, N, djds_tbl)
+!
+      use t_solver_djds
+!
+      integer(kind = kint), intent(in) :: np_smp
+      integer(kind = kint), intent(in) :: N
+      type(DJDS_ordering_table), intent(inout) :: djds_tbl
+!
+!
+      call set_itotal_djds(np_smp, N, djds_tbl%NHYP,                    &
+     &    djds_tbl%npLX1, djds_tbl%npUX1,                               &
+     &    djds_tbl%NLmax, djds_tbl%NUmax,                               &
+     &    djds_tbl%NLmaxHYP, djds_tbl%NUmaxHYP,                         &
+     &    djds_tbl%itotal_l, djds_tbl%itotal_u,                         &
+     &    djds_tbl%indexDJDS_L, djds_tbl%indexDJDS_U)
+!
+      end subroutine set_itotal_djds_type
 !
 ! ----------------------------------------------------------------------
 !

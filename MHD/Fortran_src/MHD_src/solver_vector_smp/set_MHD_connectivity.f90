@@ -107,7 +107,7 @@
       use m_nod_comm_table
       use m_solver_djds_MHD
       use reordering_djds_smp_type
-      use set_djds_smp_ordering_type
+      use DJDS_new_comm_table
 !
       type(CRS_matrix_connect) :: MHD_CRS
 !
@@ -173,7 +173,7 @@
 !
       use set_ele_id_4_node_type
       use reordering_djds_smp_type
-      use set_djds_smp_ordering_type
+      use DJDS_new_comm_table
 !
       integer(kind = kint), intent(in) :: nnod_1ele
       integer(kind = kint), intent(in) :: iele_start, iele_end

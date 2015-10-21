@@ -24,9 +24,9 @@
 !
       use calypso_mpi
       use m_geometry_data
+      use m_nod_comm_table
       use m_iccg_parameter
       use m_crs_matrix
-      use m_matrix_data_4_djds
 !
       use m_gauss_points
       use m_fem_gauss_int_coefs
@@ -67,7 +67,13 @@
       use set_neib_ele_z
       use set_neib_connect_z
       use set_matrices_4_z_filter
+      use copy_matrix_2_djds_array
       use write_z_filter_4_nod
+!
+      use t_solver_djds
+!
+      type(DJDS_ordering_table) :: djds_tbl1
+      type(DJDS_MATRIX) :: djds_mat1
 !
       integer(kind=kint) :: n_int, ierr
       integer (kind = kint), parameter :: n_int_points = 200
@@ -182,14 +188,19 @@
       if ( mat1_crs%METHOD_crs .eq. 'LU' ) then
         call solve_z_commute_LU(node1%numnod)
       else
-        if   (mat1_crs%SOLVER_crs.eq.'block33'                           &
+        call transfer_crs_2_djds_matrix(node1, nod_comm,                &
+     &      tbl1_crs, mat1_crs, djds_tbl1, djds_mat1)
+!
+        if   (mat1_crs%SOLVER_crs.eq.'block33'                          &
      &    .or. mat1_crs%SOLVER_crs.eq.'BLOCK33') then
           write(*,*) 'solve_by_djds_solver33'
-          call solve_by_djds_solver33(node1, tbl1_crs, ierr)
-        else if (mat1_crs%SOLVER_crs.eq.'blockNN'                         &
+          call solve_by_djds_solver33                                   &
+     &       (node1, nod_comm, mat1_crs, djds_tbl1, djds_mat1, ierr)
+        else if (mat1_crs%SOLVER_crs.eq.'blockNN'                       &
      &    .or. mat1_crs%SOLVER_crs.eq.'BLOCKNN') then
           write(*,*) 'solve_by_djds_solverNN'
-          call solve_by_djds_solverNN(node1, tbl1_crs, ierr)
+          call solve_by_djds_solverNN                                   &
+     &       (node1, nod_comm, mat1_crs, djds_tbl1, djds_mat1, ierr)
         end if
       end if
 !

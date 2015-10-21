@@ -7,9 +7,6 @@
 !
 !>     DJDS ordering table for MHD dynamo model
 !!
-!!@verbatim
-!!      subroutine copy_communicator_4_MHD
-!!@endverbatim
 !
       module m_solver_djds_MHD
 !
@@ -51,29 +48,5 @@
       type(DJDS_ordering_table), save :: DJDS_ins_l
 !>      Communication table structure for insulator
       type(communication_table), save :: DJDS_comm_ins
-!
-!  ---------------------------------------------------------------------
-!
-      contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine copy_communicator_4_MHD
-!
-      use calypso_mpi
-!
-      integer(kind = kint) :: my_rank_mg4
-!
-!
-      solver_C%icolor_MG = 0
-!
-      call MPI_COMM_DUP(CALYPSO_COMM, solver_C%SOLVER_COMM, ierr_MPI)
-      call MPI_COMM_RANK(solver_C%SOLVER_COMM, my_rank_mg4, ierr_MPI)
-      solver_C%MG_rank = my_rank_mg4
-      solver_C%nprocs =  nprocs
-!
-      end subroutine copy_communicator_4_MHD
-!
-!  ---------------------------------------------------------------------
 !
       end module m_solver_djds_MHD

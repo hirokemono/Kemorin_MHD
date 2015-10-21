@@ -51,27 +51,38 @@
       subroutine analyze
 !
       use calypso_mpi
-      use m_iccg_parameter
       use m_geometry_data
+      use m_nod_comm_table
+      use m_iccg_parameter
       use m_crs_matrix
       use crs_matrix_io
       use solve_precond_DJDS
-!      use m_geometry_data
+      use copy_matrix_2_djds_array
 !
+      use t_solver_djds
+!
+      type(DJDS_ordering_table) :: djds_tbl1
+      type(DJDS_MATRIX) :: djds_mat1
       integer(kind = kint) :: ierr
 !
 !      call check_crs_matrix_comps(my_rank, tbl1_crs, mat1_crs)
 !C
 !C-- ICCG computation
+      call transfer_crs_2_djds_matrix(node1, nod_comm,                  &
+     &    tbl1_crs, mat1_crs, djds_tbl1, djds_mat1)
+!
       if (mat1_crs%SOLVER_crs .eq. 'scalar'                             &
      &   .or. mat1_crs%SOLVER_crs.eq.'SCALAR') then
-        call solve_by_djds_solver11(node1, tbl1_crs, ierr)
+        call solve_by_djds_solver11                                     &
+     &     (node1, nod_comm, mat1_crs, djds_tbl1, djds_mat1, ierr)
       else if (mat1_crs%SOLVER_crs.eq.'block33'                         &
      &    .or. mat1_crs%SOLVER_crs.eq.'BLOCK33') then
-        call solve_by_djds_solver33(node1, tbl1_crs, ierr)
+        call solve_by_djds_solver33                                     &
+     &     (node1, nod_comm, mat1_crs, djds_tbl1, djds_mat1, ierr)
       else if (mat1_crs%SOLVER_crs.eq.'blockNN'                         &
      &    .or. mat1_crs%SOLVER_crs.eq.'BLOCKNN') then
-        call solve_by_djds_solverNN(node1, tbl1_crs, ierr)
+        call solve_by_djds_solverNN                                     &
+     &     (node1, nod_comm, mat1_crs, djds_tbl1, djds_mat1, ierr)
       end if
 
       call output_solution

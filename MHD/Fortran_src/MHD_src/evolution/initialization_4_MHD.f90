@@ -185,7 +185,7 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_communicator_4_MHD'
-      call copy_communicator_4_MHD
+      call copy_communicator_4_solver(solver_C)
 !
       if (iflag_debug.eq.1) write(*,*) 'make comm. table for fluid'
       call s_const_comm_table_fluid

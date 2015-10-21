@@ -39,7 +39,7 @@
       use t_solver_djds
       use t_vector_for_solver
 !
-      use set_djds_smp_ordering_type
+      use DJDS_new_comm_table
       use reordering_djds_smp_type
 !
       implicit  none
