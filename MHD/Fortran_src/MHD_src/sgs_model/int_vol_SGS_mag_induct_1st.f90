@@ -23,6 +23,7 @@
       use m_SGS_model_coefs
       use m_SGS_address
       use m_node_phys_address
+      use m_node_phys_data
       use m_fem_gauss_int_coefs
 !
       use m_sorted_node
@@ -42,7 +43,7 @@
       subroutine int_vol_div_SGS_idct_mod_pg(iele_fsmp_stack, n_int,    &
      &          i_filter)
 !
-      use sgs_terms_to_each_ele_1st
+      use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
       use fem_skv_div_sgs_flux_type
 !
@@ -56,8 +57,8 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
-         call SGS_induct_cst_each_ele_1st(k2,                           &
-     &       iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,         &
+         call SGS_const_induct_each_ele(node1, ele1, nod_fld1,          &
+     &       k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,     &
      &       coef_induct, mhd_fem1_wk%sgs_v1, fem1_wk%vector_1)
          call fem_skv_div_sgs_asym_tsr(iele_fsmp_stack, n_int, k2,      &
      &       i_filter, ak_diff(1,iak_diff_uxb),                         &
@@ -75,7 +76,7 @@
       subroutine int_vol_div_SGS_idct_mod_upm(iele_fsmp_stack, n_int,   &
      &          i_filter, ncomp_ele, i_magne, d_ele)
 !
-      use sgs_terms_to_each_ele_1st
+      use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
       use fem_skv_div_sgs_flux_upw
 !
@@ -92,8 +93,8 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
-        call SGS_induct_cst_each_ele_1st(k2,                            &
-     &      iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,          &
+        call SGS_const_induct_each_ele(node1, ele1, nod_fld1,           &
+     &      k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,      &
      &      coef_induct, mhd_fem1_wk%sgs_v1, fem1_wk%vector_1)
         call fem_skv_div_sgs_asym_t_upwind(iele_fsmp_stack,             &
      &      n_int, k2, i_filter, ak_diff(1,iak_diff_uxb),               &

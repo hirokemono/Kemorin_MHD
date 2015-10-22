@@ -49,7 +49,7 @@
       use cal_add_smp
       use nodal_fld_cst_to_element
       use gravity_vec_each_ele_1st
-      use sgs_terms_to_each_ele_1st
+      use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
       use fem_skv_nodal_field_type
       use fem_skv_vector_diff_type
@@ -84,9 +84,9 @@
 !
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
      &        .and. iflag_commute_inertia .eq. id_SGS_commute_ON) then
-              call SGS_tensor_cst_each_ele_1st(k2, iphys%i_velo,        &
-     &            iphys%i_SGS_m_flux, coef_nega_v, mhd_fem1_wk%sgs_t1,  &
-     &            fem1_wk%tensor_1)
+              call SGS_const_tensor_each_ele(node1, ele1, nod_fld1,     &
+     &            k2, iphys%i_velo, iphys%i_SGS_m_flux, coef_nega_v,    &
+     &            mhd_fem1_wk%sgs_t1, fem1_wk%tensor_1)
 !
               call fem_skv_rot_inertia_type                             &
      &           (iele_fl_smp_stack, num_int, k2,                       &
@@ -116,9 +116,9 @@
           else
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
      &        .and. iflag_commute_inertia .eq. id_SGS_commute_ON) then
-              call SGS_tensor_cst_each_ele_1st(k2, iphys%i_velo,        &
-     &            iphys%i_SGS_m_flux, coef_nega_v, mhd_fem1_wk%sgs_t1,  &
-     &            fem1_wk%tensor_1)
+              call SGS_const_tensor_each_ele(node1, ele1, nod_fld1,     &
+     &            k2, iphys%i_velo, iphys%i_SGS_m_flux, coef_nega_v,    &
+     &            mhd_fem1_wk%sgs_t1, fem1_wk%tensor_1)
               call fem_skv_vec_inertia_modsgs_pg(iele_fl_smp_stack,     &
      &            num_int, k2, ifilter_final, ak_diff(1,iak_diff_mf),   &
      &            ele1, jac1_3d_q, FEM1_elen, mhd_fem1_wk%velo_1,       &
@@ -175,9 +175,9 @@
 !
           if ( iflag_SGS_lorentz .ne. id_SGS_none) then
             if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
-              call SGS_tensor_cst_each_ele_1st(k2, iphys%i_magne,       &
-     &            iphys%i_SGS_maxwell, coef_lor, mhd_fem1_wk%sgs_t1,    &
-     &            fem1_wk%tensor_1)
+              call SGS_const_tensor_each_ele(node1, ele1, nod_fld1,     &
+     &            k2, iphys%i_magne, iphys%i_SGS_maxwell, coef_lor,     &
+     &            mhd_fem1_wk%sgs_t1, fem1_wk%tensor_1)
               call fem_skv_div_sgs_tensor                               &
      &           (iele_fl_smp_stack, num_int, k2, ifilter_final,        &
      &            ak_diff(1,iak_diff_lor), ele1, jac1_3d_q, FEM1_elen,  &
@@ -243,7 +243,7 @@
       use cal_add_smp
       use nodal_fld_cst_to_element
       use gravity_vec_each_ele_1st
-      use sgs_terms_to_each_ele_1st
+      use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
       use fem_skv_nodal_fld_upw_type
       use fem_skv_vect_diff_upw_type
@@ -277,9 +277,9 @@
           if (iflag_4_rotate .eq. id_turn_ON) then
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
      &        .and. iflag_commute_inertia .eq. id_SGS_commute_ON) then
-              call SGS_tensor_cst_each_ele_1st(k2, iphys%i_velo,        &
-     &            iphys%i_SGS_m_flux, coef_nega_v, mhd_fem1_wk%sgs_t1,  &
-     &            fem1_wk%tensor_1)
+              call SGS_const_tensor_each_ele(node1, ele1, nod_fld1,     &
+     &            k2, iphys%i_velo, iphys%i_SGS_m_flux, coef_nega_v,    &
+     &            mhd_fem1_wk%sgs_t1, fem1_wk%tensor_1)
 !
               call fem_skv_rot_inertia_upwind                           &
      &           (iele_fl_smp_stack, num_int, k2,                       &
@@ -310,9 +310,9 @@
           else
             if(iflag_SGS_inertia .ne. id_SGS_none                       &
      &        .and. iflag_commute_inertia .eq. id_SGS_commute_ON) then
-              call SGS_tensor_cst_each_ele_1st(k2, iphys%i_velo,        &
-     &            iphys%i_SGS_m_flux, coef_nega_v, mhd_fem1_wk%sgs_t1,  &
-     &            fem1_wk%tensor_1)
+              call SGS_const_tensor_each_ele(node1, ele1, nod_fld1,     &
+     &            k2, iphys%i_velo, iphys%i_SGS_m_flux, coef_nega_v,    &
+     &            mhd_fem1_wk%sgs_t1, fem1_wk%tensor_1)
               call fem_skv_vec_inertia_msgs_upw(iele_fl_smp_stack,      &
      &            num_int, k2, ifilter_final, ak_diff(1,iak_diff_mf),   &
      &            ele1, jac1_3d_q, FEM1_elen, mhd_fem1_wk%velo_1,       &
@@ -339,9 +339,9 @@
 !
           if ( iflag_SGS_inertia .ne. id_SGS_none) then
             if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
-              call SGS_tensor_cst_each_ele_1st(k2, iphys%i_velo,        &
-     &            iphys%i_SGS_m_flux, coef_nega_v, mhd_fem1_wk%sgs_t1,  &
-     &            fem1_wk%tensor_1)
+              call SGS_const_tensor_each_ele(node1, ele1, nod_fld1,     &
+     &            k2, iphys%i_velo, iphys%i_SGS_m_flux, coef_nega_v,    &
+     &            mhd_fem1_wk%sgs_t1, fem1_wk%tensor_1)
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (iele_fl_smp_stack, num_int, k2, ifilter_final,        &
      &            ak_diff(1,iak_diff_mf), ele1, jac1_3d_q, FEM1_elen,   &
@@ -391,9 +391,9 @@
 !
           if ( iflag_SGS_lorentz .ne. id_SGS_none) then
             if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
-              call SGS_tensor_cst_each_ele_1st(k2, iphys%i_magne,       &
-     &            iphys%i_SGS_maxwell, coef_lor, mhd_fem1_wk%sgs_t1,    &
-     &            fem1_wk%tensor_1)
+              call SGS_const_tensor_each_ele(node1, ele1, nod_fld1,     &
+     &            k2, iphys%i_magne, iphys%i_SGS_maxwell, coef_lor,     &
+     &            mhd_fem1_wk%sgs_t1, fem1_wk%tensor_1)
               call fem_skv_div_sgs_tensor_upwind                        &
      &           (iele_fl_smp_stack, num_int, k2, ifilter_final,        &
      &            ak_diff(1,iak_diff_lor), ele1, jac1_3d_q, FEM1_elen,  &

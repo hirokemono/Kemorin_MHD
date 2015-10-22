@@ -16,6 +16,7 @@
       use m_geometry_data_MHD
       use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
       use m_fem_gauss_int_coefs
       use m_sorted_node
       use m_finite_element_matrix
@@ -38,7 +39,7 @@
       subroutine int_vol_temp_ele(ncomp_ele, iele_velo, d_ele)
 !
       use nodal_fld_cst_to_element
-      use sgs_terms_to_each_ele_1st
+      use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
       use fem_skv_nonlinear_type
       use fem_skv_div_sgs_flux_type
@@ -62,9 +63,9 @@
 !
         if(iflag_SGS_heat .ne. id_SGS_none                              &
      &    .and. iflag_commute_heat .eq. id_SGS_commute_ON) then
-          call SGS_vector_cst_each_ele_1st(k2, iphys%i_velo,            &
-     &        iphys%i_temp, iphys%i_SGS_h_flux, coef_nega_t,            &
-     &        mhd_fem1_wk%sgs_v1, fem1_wk%vector_1)
+          call SGS_const_vector_each_ele(node1, ele1, nod_fld1,         &
+     &        k2, iphys%i_velo, iphys%i_temp, iphys%i_SGS_h_flux,       &
+     &        coef_nega_t, mhd_fem1_wk%sgs_v1, fem1_wk%vector_1)
           call fem_skv_scl_inertia_modsgs_pg(iele_fl_smp_stack,         &
      &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_hf),       &
      &        ele1, jac1_3d_q, FEM1_elen, fem1_wk%scalar_1,             &
@@ -95,7 +96,7 @@
       subroutine int_vol_temp_ele_upw(ncomp_ele, iele_velo, d_ele)
 !
       use nodal_fld_cst_to_element
-      use sgs_terms_to_each_ele_1st
+      use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
       use fem_skv_nonlinear_upw_type
       use fem_skv_div_sgs_flux_upw
@@ -119,9 +120,9 @@
 !
         if(iflag_SGS_heat .ne. id_SGS_none                              &
      &    .and. iflag_commute_heat .eq. id_SGS_commute_ON) then
-          call SGS_vector_cst_each_ele_1st(k2, iphys%i_velo,            &
-     &        iphys%i_temp, iphys%i_SGS_h_flux, coef_nega_t,            &
-     &        mhd_fem1_wk%sgs_v1, fem1_wk%vector_1)
+          call SGS_const_vector_each_ele(node1, ele1, nod_fld1,         &
+     &        k2, iphys%i_velo, iphys%i_temp, iphys%i_SGS_h_flux,       &
+     &        coef_nega_t, mhd_fem1_wk%sgs_v1, fem1_wk%vector_1)
           call fem_skv_scl_inertia_msgs_upw(iele_fl_smp_stack,          &
      &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_hf),       &
      &        ele1, jac1_3d_q, FEM1_elen, fem1_wk%scalar_1,             &

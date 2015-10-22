@@ -43,7 +43,7 @@
      &          nod_fld, FEM_elens, iele_fsmp_stack, n_int,             &
      &          i_filter, ak_diff, fem_wk, mhd_fem_wk, f_nl)
 !
-      use sgs_terms_to_each_ele_type
+      use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
       use fem_skv_div_sgs_flux_type
 !
@@ -68,8 +68,8 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
-        call SGS_induct_cst_each_ele_type(mesh, nod_fld, k2,            &
-     &      iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,          &
+        call SGS_const_induct_each_ele(mesh%node, mesh%ele, nod_fld,    &
+     &      k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,      &
      &      coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
          call fem_skv_div_sgs_asym_tsr(iele_fsmp_stack, n_int, k2,      &
      &       i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,            &
@@ -87,7 +87,7 @@
      &          nod_fld, FEM_elens, iele_fsmp_stack, n_int,             &
      &          i_filter, ak_diff, vxe_up, fem_wk, mhd_fem_wk, f_nl)
 !
-      use sgs_terms_to_each_ele_type
+      use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
       use fem_skv_div_sgs_flux_upw
 !
@@ -113,8 +113,8 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2 = 1, mesh%ele%nnod_4_ele
-        call SGS_induct_cst_each_ele_type(mesh, nod_fld, k2,            &
-     &      iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,          &
+        call SGS_const_induct_each_ele(mesh%node, mesh%ele, nod_fld,    &
+     &      k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,      &
      &      coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
         call fem_skv_div_sgs_asym_t_upwind(iele_fsmp_stack, n_int, k2,  &
      &      i_filter, ak_diff, mesh%ele, jac_3d, FEM_elens,             &
