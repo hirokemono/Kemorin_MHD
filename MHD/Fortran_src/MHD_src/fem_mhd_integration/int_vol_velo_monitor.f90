@@ -93,17 +93,18 @@
       end if
 !
       if(i_field .eq. iphys%i_m_tension) then
-        call int_vol_Lorentz_pg(iele_fl_smp_stack, intg_point_t_evo,    &
+        call int_vol_Lorentz_pg                                         &
+     &     (iele_fl_smp_stack, intg_point_t_evo, iphys%i_magne,         &
      &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
       else if(i_field .eq. iphys%i_lorentz) then
         if (iflag_4_rotate .eq. id_turn_ON) then
-          call int_vol_full_rot_Lorentz_pg(iele_fl_smp_stack,           &
-     &        intg_point_t_evo, fld_ele1%ntot_phys, iphys_ele%i_magne,  &
-     &        fld_ele1%d_fld)
+          call int_vol_full_rot_Lorentz_pg                              &
+     &       (iele_fl_smp_stack, intg_point_t_evo, iphys%i_vecp,        &
+     &        fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
         else
-          call int_vol_full_Lorentz_pg(iele_fl_smp_stack,               &
-     &        intg_point_t_evo, fld_ele1%ntot_phys, iphys_ele%i_magne,  &
-     &        fld_ele1%d_fld)
+          call int_vol_full_Lorentz_pg                                  &
+     &       (iele_fl_smp_stack, intg_point_t_evo, iphys%i_magne,       &
+     &        fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
         end if
       end if
 !
@@ -230,17 +231,18 @@
 !
       if(i_field .eq. iphys%i_m_tension) then
         call int_vol_Lorentz_upw(iele_fl_smp_stack, intg_point_t_evo,   &
-     &      fld_ele1%ntot_phys, iphys_ele%i_magne, iv_upw,              &
-     &      fld_ele1%d_fld)
+     &      iphys%i_magne, fld_ele1%ntot_phys, iphys_ele%i_magne,       &
+     &      iv_upw, fld_ele1%d_fld)
       else if(i_field .eq. iphys%i_lorentz) then
         if (iflag_4_rotate .eq. id_turn_ON) then
-          call int_vol_full_rot_Lorentz_pg(iele_fl_smp_stack,           &
-     &        intg_point_t_evo, fld_ele1%ntot_phys, iphys_ele%i_magne,  &
-     &        fld_ele1%d_fld)
+          call int_vol_full_rot_Lorentz_pg                              &
+     &       (iele_fl_smp_stack, intg_point_t_evo, iphys%i_vecp,        &
+     &        fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
         else
           call int_vol_full_Lorentz_upw                                 &
-     &       (iele_fl_smp_stack, intg_point_t_evo, fld_ele1%ntot_phys,  &
-     &        iphys_ele%i_magne, iv_upw, fld_ele1%d_fld)
+     &       (iele_fl_smp_stack, intg_point_t_evo, iphys%i_magne,       &
+     &        fld_ele1%ntot_phys,iphys_ele%i_magne, iv_upw,             &
+     &        fld_ele1%d_fld)
         end if
       end if
 !
