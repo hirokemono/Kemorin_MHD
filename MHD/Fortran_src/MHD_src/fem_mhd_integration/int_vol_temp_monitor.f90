@@ -24,6 +24,12 @@
       use m_SGS_model_coefs
       use m_SGS_address
       use m_filter_elength
+      use m_finite_element_matrix
+      use m_int_vol_data
+      use m_node_phys_address
+      use m_node_phys_data
+      use m_element_phys_data
+!
 !
       implicit none
 !
@@ -35,11 +41,7 @@
 !
       subroutine int_vol_ene_monitor(i_field)
 !
-      use m_node_phys_address
-      use m_element_phys_data
-      use m_SGS_address
-!
-      use int_vol_inertia_1st
+      use int_vol_inertia
       use int_vol_vect_cst_difference
       use int_vol_SGS_div_flux
 !
@@ -47,14 +49,18 @@
 !
 !
       if (i_field .eq. iphys%i_h_advect) then
-        call int_vol_scalar_inertia_1st(iele_fl_smp_stack,              &
-     &      intg_point_t_evo, iphys%i_temp, fld_ele1%ntot_phys,         &
-     &      iphys_ele%i_velo, fld_ele1%d_fld, coef_nega_t)
+        call int_vol_scalar_inertia                                     &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_temp,          &
+     &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,       &
+     &      coef_nega_t, fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_ph_advect) then
-        call int_vol_scalar_inertia_1st(iele_fl_smp_stack,              &
-     &      intg_point_t_evo, iphys%i_par_temp, fld_ele1%ntot_phys,     &
-     &      iphys_ele%i_velo, fld_ele1%d_fld, coef_nega_t)
+        call int_vol_scalar_inertia                                     &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_par_temp,      &
+     &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,       &
+     &      coef_nega_t, fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_h_flux_div) then
         call int_vol_div_w_const                                        &
@@ -90,11 +96,7 @@
 !
       subroutine int_vol_ene_monitor_upw(i_field)
 !
-      use m_node_phys_address
-      use m_element_phys_data
-      use m_SGS_address
-!
-      use int_vol_inertia_1st
+      use int_vol_inertia
       use int_vol_vect_cst_diff_upw
       use int_vol_SGS_div_flux
 !
@@ -102,16 +104,18 @@
 !
 !
       if (i_field .eq. iphys%i_h_advect)  then
-        call int_vol_scalar_inertia_upw_1st(iele_fl_smp_stack,          &
-     &      intg_point_t_evo, iphys%i_temp, fld_ele1%ntot_phys,         &
-     &      iphys_ele%i_velo, iphys_ele%i_velo, fld_ele1%d_fld,         &
-     &      coef_nega_t)
+        call int_vol_scalar_inertia_upw                                 &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_temp,          &
+     &      fld_ele1%ntot_phys, iphys_ele%i_velo, iphys_ele%i_velo,     &
+     &      fld_ele1%d_fld, coef_nega_t, fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_ph_advect) then
-        call int_vol_scalar_inertia_upw_1st(iele_fl_smp_stack,          &
-     &      intg_point_t_evo, iphys%i_par_temp, fld_ele1%ntot_phys,     &
-     &      iphys_ele%i_velo, iphys_ele%i_velo, fld_ele1%d_fld,         &
-     &      coef_nega_t)
+        call int_vol_scalar_inertia_upw                                 &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_par_temp,      &
+     &      fld_ele1%ntot_phys, iphys_ele%i_velo, iphys_ele%i_velo,     &
+     &      fld_ele1%d_fld, coef_nega_t, fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_h_flux_div) then
         call int_vol_div_w_const_upw                                    &

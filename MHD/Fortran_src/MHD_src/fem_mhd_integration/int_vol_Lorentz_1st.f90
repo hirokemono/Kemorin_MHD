@@ -57,6 +57,8 @@
       integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
       real(kind = kreal), intent(inout) :: d_ele(ele1%numele,ncomp_ele)
 !
+      integer(kind = kint) :: k2
+!
 !
 !$omp parallel
       call add_const_to_vector_smp_ow                                   &
@@ -138,16 +140,16 @@
 !
       call reset_sk6(n_vector, ele1, fem1_wk%sk6)
 !
+!$omp parallel
+      call add_const_to_vector_smp(np_smp, ele1%numele,                 &
+     &    iele_fsmp_stack, d_ele(1,iele_magne), ex_magne,               &
+     &    fem1_wk%vector_1)
+!$omp end parallel
+!
 ! -------- loop for shape function for the phsical values
       do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1,          &
      &      k2, iphys%i_vecp, coef_lor, mhd_fem1_wk%vecp_1)
-!
-!$omp parallel
-        call add_const_to_vector_smp(np_smp, ele1%numele,               &
-     &      iele_fsmp_stack, d_ele(1,iele_magne), ex_magne,             &
-     &      fem1_wk%vector_1)
-!$omp end parallel
 !
         call fem_skv_lorentz_rot_galerkin(iele_fsmp_stack,              &
      &      n_int, k2, mhd_fem1_wk%vecp_1, fem1_wk%vector_1,            &

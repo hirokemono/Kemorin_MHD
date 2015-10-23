@@ -44,7 +44,7 @@
 !
       subroutine int_vol_velo_monitor_pg(i_field)
 !
-      use int_vol_inertia_1st
+      use int_vol_inertia
       use int_vol_vect_cst_difference
       use int_vol_SGS_div_flux
       use int_vol_buoyancy_1st
@@ -56,13 +56,17 @@
 !
       if(i_field .eq. iphys%i_m_advect) then
         if (iflag_4_rotate .eq. id_turn_ON) then
-          call int_vol_rot_inertia_1st(iele_fl_smp_stack,               &
-     &        intg_point_t_evo, iphys%i_velo, fld_ele1%ntot_phys,       &
-     &        iphys_ele%i_vort, fld_ele1%d_fld, coef_nega_v)
+          call int_vol_rot_inertia                                      &
+     &       (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,               &
+     &        iele_fl_smp_stack, intg_point_t_evo, iphys%i_velo,        &
+     &        fld_ele1%ntot_phys, iphys_ele%i_vort, fld_ele1%d_fld,     &
+     &        coef_nega_v, fem1_wk, f1_nl)
         else
-          call int_vol_vector_inertia_1st(iele_fl_smp_stack,            &
-     &        intg_point_t_evo, iphys%i_velo, fld_ele1%ntot_phys,       &
-     &        iphys_ele%i_velo, fld_ele1%d_fld, coef_nega_v)
+          call int_vol_vector_inertia                                   &
+     &       (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,               &
+     &        iele_fl_smp_stack, intg_point_t_evo, iphys%i_velo,        &
+     &        fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,     &
+     &        coef_nega_v, fem1_wk, f1_nl)
         end if
 !
       else if(i_field .eq. iphys%i_m_flux_div) then
@@ -171,7 +175,7 @@
       subroutine int_vol_velo_monitor_upwind(i_field, iv_upw)
 !
       use m_element_phys_data
-      use int_vol_inertia_1st
+      use int_vol_inertia
       use int_vol_vect_cst_diff_upw
       use int_vol_SGS_div_flux
       use int_vol_buoyancy_1st
@@ -183,13 +187,17 @@
 !
       if(i_field .eq. iphys%i_m_advect) then
         if (iflag_4_rotate .eq. id_turn_ON) then
-          call int_vol_rot_inertia_upw_1st(iele_fl_smp_stack,           &
-     &        intg_point_t_evo, iphys%i_velo, fld_ele1%ntot_phys,       &
-     &        iphys_ele%i_vort, iv_upw, fld_ele1%d_fld, coef_nega_v)
+          call int_vol_rot_inertia_upw                                  &
+     &       (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,               &
+     &        iele_fl_smp_stack, intg_point_t_evo, iphys%i_velo,        &
+     &        fld_ele1%ntot_phys, iphys_ele%i_vort, iv_upw,             &
+     &        fld_ele1%d_fld, coef_nega_v, fem1_wk, f1_nl)
         else
-          call int_vol_vector_inertia_upw_1st(iele_fl_smp_stack,        &
-     &        intg_point_t_evo, iphys%i_velo, fld_ele1%ntot_phys,       &
-     &        iphys_ele%i_velo, iv_upw, fld_ele1%d_fld, coef_nega_v)
+          call int_vol_vector_inertia_upw                               &
+     &       (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,               &
+     &        iele_fl_smp_stack, intg_point_t_evo, iphys%i_velo,        &
+     &        fld_ele1%ntot_phys, iphys_ele%i_velo, iv_upw,             &
+     &        fld_ele1%d_fld, coef_nega_v, fem1_wk, f1_nl)
         end if
 !
       else if(i_field .eq. iphys%i_m_flux_div) then
