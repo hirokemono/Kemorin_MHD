@@ -26,11 +26,18 @@
       use m_precision
 !
       use m_constants
+      use m_geometry_data
       use m_phys_constants
+      use m_node_phys_data
       use m_physical_property
       use m_ele_material_property
       use m_control_parameter
       use m_t_int_parameter
+      use m_jacobians
+      use m_sorted_node
+      use m_finite_element_matrix
+      use m_filter_elength
+      use m_SGS_model_coefs
 !
       implicit none
 !
@@ -256,8 +263,8 @@
 !
       use m_machine_parameter
       use m_geometry_data
-      use int_vol_fractional_1st
-      use int_vol_sgs_fractional_1st
+      use int_vol_fractional
+      use int_vol_sgs_fractional
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: i_scalar, iak_diff
@@ -266,12 +273,16 @@
 !
 !
       if (iak_diff .gt. 0) then
-        call int_vol_scalar_sgs_diffuse_1st(iele_fsmp_stack,            &
-     &      intg_point_t_evo, coef_crank, ak_d, i_scalar,               &
-     &      ifilter_final, iak_diff)
+        call int_vol_scalar_sgs_diffuse                                 &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, nod_fld1,      &
+     &      iele_fsmp_stack, intg_point_t_evo, coef_crank, ak_d,        &
+     &      i_scalar, ifilter_final, ak_diff(1,iak_diff),               &
+     &      fem1_wk, f1_l)
       else
-        call int_vol_scalar_diffuse_1st(iele_fsmp_stack,                &
-     &      intg_point_t_evo, coef_crank, ak_d, i_scalar)
+        call int_vol_scalar_diffuse                                     &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fsmp_stack, intg_point_t_evo, coef_crank,              &
+     &      ak_d, i_scalar, fem1_wk, f1_l)
       end if
 !
       end subroutine int_vol_scalar_diffuse_ele
@@ -283,8 +294,8 @@
 !
       use m_machine_parameter
       use m_geometry_data
-      use int_vol_fractional_1st
-      use int_vol_sgs_fractional_1st
+      use int_vol_fractional
+      use int_vol_sgs_fractional
 !
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind=kint), intent(in) :: i_vector, iak_diff
@@ -293,12 +304,16 @@
 !
 !
       if (iak_diff .gt. 0) then
-        call int_vol_vector_sgs_diffuse_1st(iele_fsmp_stack,            &
-     &      intg_point_t_evo, coef_crank, ak_d, i_vector,               &
-     &      ifilter_final, iak_diff)
+        call int_vol_vector_sgs_diffuse                                 &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, nod_fld1,      &
+     &      iele_fsmp_stack, intg_point_t_evo, coef_crank, ak_d,        &
+     &      i_vector, ifilter_final, ak_diff(1,iak_diff),               &
+     &      fem1_wk, f1_l)
       else
-        call int_vol_vector_diffuse_1st(iele_fsmp_stack,                &
-     &      intg_point_t_evo, coef_crank, ak_d, i_vector)
+        call int_vol_vector_diffuse                                     &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fsmp_stack, intg_point_t_evo, coef_crank,              &
+     &      ak_d, i_vector, fem1_wk, f1_l)
       end if
 !
       end subroutine int_vol_vector_diffuse_ele
