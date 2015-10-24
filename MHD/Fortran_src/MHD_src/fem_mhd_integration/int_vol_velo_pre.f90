@@ -27,6 +27,7 @@
       use m_SGS_address
 !
       use m_node_phys_address
+      use m_node_phys_data
       use m_sorted_node
       use m_finite_element_matrix
       use m_fem_gauss_int_coefs
@@ -48,7 +49,7 @@
 !
       use cal_add_smp
       use nodal_fld_cst_to_element
-      use gravity_vec_each_ele_1st
+      use gravity_vec_each_ele
       use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
       use fem_skv_nodal_field_type
@@ -206,31 +207,32 @@
 !
         if(iflag_4_gravity .eq. id_FORCE_ele_int                        &
      &     .and. iflag_4_composit_buo .eq. id_FORCE_ele_int) then
-          call set_double_gvec_each_ele_1st(k2, iphys%i_temp,           &
-     &        iphys%i_light, ak_buo, ak_comp_buo, fem1_wk%vector_1)
-          call fem_skv_vector_type(iele_fl_smp_stack, num_int, k2,      &
-     &        ele1, jac1_3d_q, fem1_wk%vector_1, fem1_wk%sk6)
-        else if (iflag_4_gravity .eq. id_FORCE_ele_int) then
-          call set_gravity_vec_each_ele_1st(k2, iphys%i_temp, ak_buo,   &
+          call set_double_gvec_each_ele(node1, ele1, nod_fld1,          &
+     &        k2, iphys%i_temp, iphys%i_light, ak_buo, ak_comp_buo,     &
      &        fem1_wk%vector_1)
           call fem_skv_vector_type(iele_fl_smp_stack, num_int, k2,      &
      &        ele1, jac1_3d_q, fem1_wk%vector_1, fem1_wk%sk6)
+        else if (iflag_4_gravity .eq. id_FORCE_ele_int) then
+          call set_gravity_vec_each_ele(node1, ele1, nod_fld1,          &
+     &        k2, iphys%i_temp, ak_buo, fem1_wk%vector_1)
+          call fem_skv_vector_type(iele_fl_smp_stack, num_int, k2,      &
+     &        ele1, jac1_3d_q, fem1_wk%vector_1, fem1_wk%sk6)
         else if (iflag_4_composit_buo .eq. id_FORCE_ele_int) then
-          call set_gravity_vec_each_ele_1st(k2, iphys%i_light,          &
-     &        ak_comp_buo, fem1_wk%vector_1)
+          call set_gravity_vec_each_ele(node1, ele1, nod_fld1,          &
+     &        k2, iphys%i_light, ak_comp_buo, fem1_wk%vector_1)
           call fem_skv_vector_type(iele_fl_smp_stack, num_int, k2,      &
      &        ele1, jac1_3d_q, fem1_wk%vector_1, fem1_wk%sk6)
         else if (iflag_4_filter_gravity .eq. id_FORCE_ele_int) then
-          call set_gravity_vec_each_ele_1st(k2, iphys%i_filter_temp,    &
-     &        ak_buo, fem1_wk%vector_1)
+          call set_gravity_vec_each_ele(node1, ele1, nod_fld1,          &
+     &        k2, iphys%i_filter_temp, ak_buo, fem1_wk%vector_1)
           call fem_skv_vector_type(iele_fl_smp_stack, num_int, k2,      &
      &        ele1, jac1_3d_q, fem1_wk%vector_1, fem1_wk%sk6)
         end if
 !
       end do
 !
-      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, f1_nl%ff_smp)
+      call add3_skv_to_ff_v_smp                                         &
+     &   (node1, ele1, rhs_tbl1, fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine int_vol_velo_pre_ele
 !
@@ -242,7 +244,7 @@
 !
       use cal_add_smp
       use nodal_fld_cst_to_element
-      use gravity_vec_each_ele_1st
+      use gravity_vec_each_ele
       use sgs_terms_to_each_ele
       use cal_skv_to_ff_smp
       use fem_skv_nodal_fld_upw_type
@@ -423,26 +425,27 @@
 !
         if(iflag_4_gravity .eq. id_FORCE_ele_int                        &
      &     .and. iflag_4_composit_buo .eq. id_FORCE_ele_int) then
-          call set_double_gvec_each_ele_1st(k2, iphys%i_temp,           &
-     &        iphys%i_light, ak_buo, ak_comp_buo, fem1_wk%vector_1)
-          call fem_skv_vector_field_upwind(iele_fl_smp_stack,           &
-     &        num_int, k2, d_ele(1,ie_upw), ele1, jac1_3d_q,            &
-     &        fem1_wk%vector_1, fem1_wk%sk6)
-        else if (iflag_4_gravity .eq. id_FORCE_ele_int) then
-          call set_gravity_vec_each_ele_1st(k2, iphys%i_temp, ak_buo,   &
+          call set_double_gvec_each_ele(node1, ele1, nod_fld1,          &
+     &        k2, iphys%i_temp, iphys%i_light, ak_buo, ak_comp_buo,     &
      &        fem1_wk%vector_1)
           call fem_skv_vector_field_upwind(iele_fl_smp_stack,           &
      &        num_int, k2, d_ele(1,ie_upw), ele1, jac1_3d_q,            &
      &        fem1_wk%vector_1, fem1_wk%sk6)
+        else if (iflag_4_gravity .eq. id_FORCE_ele_int) then
+          call set_gravity_vec_each_ele(node1, ele1, nod_fld1,          &
+     &        k2, iphys%i_temp, ak_buo, fem1_wk%vector_1)
+          call fem_skv_vector_field_upwind(iele_fl_smp_stack,           &
+     &        num_int, k2, d_ele(1,ie_upw), ele1, jac1_3d_q,            &
+     &        fem1_wk%vector_1, fem1_wk%sk6)
         else if (iflag_4_composit_buo .eq. id_FORCE_ele_int) then
-          call set_gravity_vec_each_ele_1st(k2, iphys%i_light,          &
-     &        ak_comp_buo, fem1_wk%vector_1)
+          call set_gravity_vec_each_ele(node1, ele1, nod_fld1,          &
+     &        k2, iphys%i_light, ak_comp_buo, fem1_wk%vector_1)
           call fem_skv_vector_field_upwind(iele_fl_smp_stack,           &
      &        num_int, k2, d_ele(1,ie_upw), ele1, jac1_3d_q,            &
      &        fem1_wk%vector_1, fem1_wk%sk6)
         else if (iflag_4_filter_gravity .eq. id_FORCE_ele_int) then
-          call set_gravity_vec_each_ele_1st(k2, iphys%i_filter_temp,    &
-     &        ak_buo, fem1_wk%vector_1)
+          call set_gravity_vec_each_ele(node1, ele1, nod_fld1,          &
+     &        k2, iphys%i_filter_temp, ak_buo, fem1_wk%vector_1)
           call fem_skv_vector_field_upwind(iele_fl_smp_stack,           &
      &        num_int, k2, d_ele(1,ie_upw), ele1,jac1_3d_q,             &
      &        fem1_wk%vector_1, fem1_wk%sk6)
@@ -450,8 +453,8 @@
 !
       end do
 !
-      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, f1_nl%ff_smp)
+      call add3_skv_to_ff_v_smp                                         &
+     &   (node1, ele1, rhs_tbl1, fem1_wk%sk6, f1_nl%ff_smp)
 !
       end subroutine int_vol_velo_pre_ele_upwind
 !

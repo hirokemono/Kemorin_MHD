@@ -24,10 +24,12 @@
       use m_physical_property
       use m_ele_material_property
       use m_node_phys_address
+      use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
       use m_sorted_node
       use m_finite_element_matrix
+      use m_int_vol_data
       use m_SGS_model_coefs
       use m_SGS_address
       use m_filter_elength
@@ -47,8 +49,8 @@
       use int_vol_inertia
       use int_vol_vect_cst_difference
       use int_vol_SGS_div_flux
-      use int_vol_buoyancy_1st
-      use int_vol_coriolis_1st
+      use int_vol_buoyancy
+      use int_vol_coriolis
       use int_vol_Lorentz
 !
       integer(kind=kint), intent(in) :: i_field
@@ -78,18 +80,27 @@
       end if
 !
       if(i_field .eq. iphys%i_coriolis) then
-        call int_vol_coriolis_pg(iele_fl_smp_stack, intg_point_t_evo)
+        call int_vol_coriolis_pg                                        &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_velo,          &
+     &      fem1_wk, f1_nl)
       end if
 !
       if(i_field .eq. iphys%i_buoyancy) then
-        call int_vol_buoyancy_pg(iele_fl_smp_stack,                     &
-     &      intg_point_t_evo, iphys%i_temp, ak_buo)
+        call int_vol_buoyancy_pg                                        &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_temp,          &
+     &      ak_buo, fem1_wk, f1_nl)
       else if(i_field .eq. iphys%i_comp_buo) then
-        call int_vol_buoyancy_pg(iele_fl_smp_stack,                     &
-     &      intg_point_t_evo, iphys%i_light, ak_comp_buo)
+        call int_vol_buoyancy_pg                                        &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_light,         &
+     &      ak_comp_buo, fem1_wk, f1_nl)
       else if(i_field .eq. iphys%i_filter_buo) then
-        call int_vol_buoyancy_pg(iele_fl_smp_stack,                     &
-     &      intg_point_t_evo, iphys%i_filter_temp, ak_buo)
+        call int_vol_buoyancy_pg                                        &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_filter_temp,   &
+     &      ak_buo, fem1_wk, f1_nl)
       end if
 !
       if(i_field .eq. iphys%i_m_tension) then
@@ -185,8 +196,8 @@
       use int_vol_inertia
       use int_vol_vect_cst_diff_upw
       use int_vol_SGS_div_flux
-      use int_vol_buoyancy_1st
-      use int_vol_coriolis_1st
+      use int_vol_buoyancy
+      use int_vol_coriolis
       use int_vol_Lorentz
 !
       integer(kind = kint), intent(in) :: i_field, iv_upw
@@ -216,22 +227,30 @@
       end if
 !
       if(i_field .eq. iphys%i_coriolis) then
-        call int_vol_coriolis_upw(iele_fl_smp_stack, intg_point_t_evo,  &
-     &      fld_ele1%ntot_phys, iv_upw, fld_ele1%d_fld)
+        call int_vol_coriolis_upw                                       &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_velo,          &
+     &      fld_ele1%ntot_phys, iv_upw, fld_ele1%d_fld, fem1_wk, f1_nl)
       end if
 !
       if(i_field .eq. iphys%i_buoyancy) then
-        call int_vol_buoyancy_upw(iele_fl_smp_stack,                    &
-     &      intg_point_t_evo, iphys%i_temp, ak_buo,                     &
-     &      fld_ele1%ntot_phys, iv_upw, fld_ele1%d_fld)
+        call int_vol_buoyancy_upw                                       &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_temp,          &
+     &      ak_buo, fld_ele1%ntot_phys, iv_upw, fld_ele1%d_fld,         &
+     &      fem1_wk, f1_nl)
       else if(i_field .eq. iphys%i_comp_buo) then
-        call int_vol_buoyancy_upw(iele_fl_smp_stack,                    &
-     &      intg_point_t_evo, iphys%i_light, ak_comp_buo,               &
-     &      fld_ele1%ntot_phys, iv_upw, fld_ele1%d_fld)
+        call int_vol_buoyancy_upw                                       &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_light,         &
+     &      ak_comp_buo, fld_ele1%ntot_phys, iv_upw, fld_ele1%d_fld,    &
+     &      fem1_wk, f1_nl)
       else if(i_field .eq. iphys%i_filter_buo) then
-        call int_vol_buoyancy_upw(iele_fl_smp_stack,                    &
-     &      intg_point_t_evo, iphys%i_filter_temp, ak_buo,              &
-     &      fld_ele1%ntot_phys, iv_upw, fld_ele1%d_fld)
+        call int_vol_buoyancy_upw                                       &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_filter_temp,   &
+     &      ak_buo, fld_ele1%ntot_phys, iv_upw, fld_ele1%d_fld,         &
+     &      fem1_wk, f1_nl)
       end if
 !
 !
