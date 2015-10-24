@@ -49,7 +49,7 @@
       use int_vol_SGS_div_flux
       use int_vol_buoyancy_1st
       use int_vol_coriolis_1st
-      use int_vol_Lorentz_1st
+      use int_vol_Lorentz
 !
       integer(kind=kint), intent(in) :: i_field
 !
@@ -94,17 +94,23 @@
 !
       if(i_field .eq. iphys%i_m_tension) then
         call int_vol_Lorentz_pg                                         &
-     &     (iele_fl_smp_stack, intg_point_t_evo, iphys%i_magne,         &
-     &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_magne,         &
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld,      &
+     &      fem1_wk, mhd_fem1_wk, f1_nl)
       else if(i_field .eq. iphys%i_lorentz) then
         if (iflag_4_rotate .eq. id_turn_ON) then
           call int_vol_full_rot_Lorentz_pg                              &
-     &       (iele_fl_smp_stack, intg_point_t_evo, iphys%i_vecp,        &
-     &        fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
+     &       (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,               &
+     &        iele_fl_smp_stack, intg_point_t_evo, iphys%i_vecp,        &
+     &        fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld,    &
+     &        fem1_wk, mhd_fem1_wk, f1_nl)
         else
           call int_vol_full_Lorentz_pg                                  &
-     &       (iele_fl_smp_stack, intg_point_t_evo, iphys%i_magne,       &
-     &        fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
+     &       (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,               &
+     &        iele_fl_smp_stack, intg_point_t_evo, iphys%i_magne,       &
+     &        fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld,    &
+     &        fem1_wk, f1_nl)
         end if
       end if
 !
@@ -181,7 +187,7 @@
       use int_vol_SGS_div_flux
       use int_vol_buoyancy_1st
       use int_vol_coriolis_1st
-      use int_vol_Lorentz_1st
+      use int_vol_Lorentz
 !
       integer(kind = kint), intent(in) :: i_field, iv_upw
 !
@@ -230,19 +236,24 @@
 !
 !
       if(i_field .eq. iphys%i_m_tension) then
-        call int_vol_Lorentz_upw(iele_fl_smp_stack, intg_point_t_evo,   &
-     &      iphys%i_magne, fld_ele1%ntot_phys, iphys_ele%i_magne,       &
-     &      iv_upw, fld_ele1%d_fld)
+        call int_vol_Lorentz_upw                                        &
+     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_magne,         &
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, iv_upw,              &
+     &      fld_ele1%d_fld, fem1_wk, mhd_fem1_wk, f1_nl)
       else if(i_field .eq. iphys%i_lorentz) then
         if (iflag_4_rotate .eq. id_turn_ON) then
           call int_vol_full_rot_Lorentz_pg                              &
-     &       (iele_fl_smp_stack, intg_point_t_evo, iphys%i_vecp,        &
-     &        fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
+     &       (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,               &
+     &        iele_fl_smp_stack, intg_point_t_evo, iphys%i_vecp,        &
+     &        fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld,    &
+     &        fem1_wk, mhd_fem1_wk, f1_nl)
         else
           call int_vol_full_Lorentz_upw                                 &
-     &       (iele_fl_smp_stack, intg_point_t_evo, iphys%i_magne,       &
+     &       (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,               &
+     &        iele_fl_smp_stack, intg_point_t_evo, iphys%i_magne,       &
      &        fld_ele1%ntot_phys,iphys_ele%i_magne, iv_upw,             &
-     &        fld_ele1%d_fld)
+     &        fld_ele1%d_fld, fem1_wk, f1_nl)
         end if
       end if
 !

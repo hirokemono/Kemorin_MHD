@@ -187,8 +187,8 @@
 !
 !$omp parallel
       call add_const_to_vector_smp(np_smp, ele%numele,                  &
-     &      iele_fsmp_stack, d_ele(1,iele_magne), ex_magne,             &
-     &      fem_wk%vector_1)
+     &    iele_fsmp_stack, d_ele(1,iele_magne), ex_magne,               &
+     &    fem_wk%vector_1)
 !$omp end parallel
 !
 ! -------- loop for shape function for the phsical values
