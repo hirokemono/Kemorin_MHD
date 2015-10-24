@@ -41,9 +41,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_mag_induct_pg                                  &
-     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iphys_nod,         &
-     &          iele_fsmp_stack, n_int, ncomp_ele, d_ele, iphys_ele,    &
+      subroutine int_vol_mag_induct_pg(node, ele, jac_3d,               &
+     &          rhs_tbl, nod_fld, iphys_nod, iphys_ele,                 &
+     &          iele_fsmp_stack, n_int, ncomp_ele, d_ele,               &
      &          fem_wk, mhd_fem_wk, f_nl)
 !
       use cal_add_smp
