@@ -30,12 +30,16 @@
 !
       use m_control_parameter
       use m_geometry_data
-      use m_geometry_data_MHD
       use m_group_data
       use m_phys_constants
       use m_node_phys_data
+      use m_geometry_data_MHD
+      use m_surf_data_torque
+      use m_jacobian_sf_grp
+      use m_sorted_node
       use m_finite_element_matrix
       use m_int_vol_data
+      use m_filter_elength
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -51,8 +55,11 @@
       call int_vol_commute_div_m_flux(iele_fl_smp_stack,                &
      &    intg_point_t_evo, i_filter, i_flux, i_vect)
 !
-      call int_surf_commute_sgs_m_flux(sf_grp1, intg_point_t_evo,       &
-     &    i_filter, i_flux, i_vect)
+      call int_sf_skv_commute_sgs_t_flux(node1, ele1, surf1, sf_grp1,   &
+     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,              &
+     &    intg_point_t_evo, nmax_sf_sgs_velo, ngrp_sf_sgs_velo,         &
+     &    id_grp_sf_sgs_velo, i_filter, i_flux, i_vect, i_vect,         &
+     &    fem1_wk, f1_nl)
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &

@@ -15,6 +15,7 @@
       use m_constants
       use m_geometry_data
       use m_phys_constants
+      use m_node_phys_data
       use m_sorted_node
       use m_finite_element_matrix
       use m_surf_data_magne
@@ -60,7 +61,8 @@
           if (num .gt.0) then
 !
             do k2 = 1, surf1%nnod_4_surf
-              call d_SGS_induct_t_2_each_surface(sf_grp, igrp, k2, nd,  &
+              call d_SGS_induct_t_2_each_surface                        &
+     &           (node1, ele1, surf1, sf_grp, nod_fld1, igrp, k2, nd,   &
      &            i_flux, i_b, i_v, vect_sf)
               call fem_sf_grp_skv_sgs_div_flux_p                        &
      &           (ele1, surf1, sf_grp, jac1_sf_grp_2d_q, FEM1_elen,     &
@@ -108,8 +110,9 @@
           if(num .gt. 0) then
 !
             do k2 = 1, surf1%nnod_4_surf
-              call d_SGS_induct_t_2_each_surface(sf_grp, igrp, k2,      &
-     &            nd, i_flux, i_b, i_v, vect_sf)
+              call d_SGS_induct_t_2_each_surface                        &
+     &           (node1, ele1, surf1, sf_grp, nod_fld1, igrp, k2, nd,   &
+     &            i_flux, i_b, i_v, vect_sf)
               call fem_sf_grp_skv_div_f_commute_p                       &
      &           (ele1, surf1, sf_grp, jac1_sf_grp_2d_q, FEM1_elen,     &
      &            igrp, k2, nd, n_int, i_filter, dxe_sf, vect_sf,       &
