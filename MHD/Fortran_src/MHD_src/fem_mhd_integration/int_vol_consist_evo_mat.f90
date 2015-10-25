@@ -36,7 +36,7 @@
 !
       use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp
-      use cal_poisson_matrices_1st
+      use add_skv1_to_crs_matrix
 !
        integer(kind = kint) :: k2
 !
@@ -49,31 +49,33 @@
 !
         if ( iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass            &
      &      .and. coef_velo.gt.0.0d0 ) then
-          call add_skv1_2_MHD_matrix33(mat_tbl_fl_q%idx_4_mat, k2,      &
-     &        fem1_wk%sk6, Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
+          call add_skv1_to_crs_matrix33(ele1, rhs_tbl1, mat_tbl_fl_q,   &
+     &        k2, fem1_wk%sk6, Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
         end if
 !
         if ( iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass            &
      &      .and. coef_temp.gt.0.0d0 ) then
-          call add_skv1_2_MHD_matrix11(mat_tbl_fl_q%idx_4_mat, k2,      &
-     &        fem1_wk%sk6, Tmat_DJDS%num_non0, Tmat_DJDS%aiccg)
+          call add_skv1_to_crs_matrix11(ele1, rhs_tbl1, mat_tbl_fl_q,   &
+     &        k2, fem1_wk%sk6, Tmat_DJDS%num_non0, Tmat_DJDS%aiccg)
         end if
 !
         if ( iflag_t_evo_4_composit .eq. id_Crank_nicolson_cmass        &
      &      .and. coef_light .gt. 0.0d0) then
-          call add_skv1_2_MHD_matrix11(mat_tbl_fl_q%idx_4_mat, k2,      &
-     &        fem1_wk%sk6, Cmat_DJDS%num_non0, Cmat_DJDS%aiccg)
+          call add_skv1_to_crs_matrix11(ele1, rhs_tbl1, mat_tbl_fl_q,   &
+     &        k2, fem1_wk%sk6, Cmat_DJDS%num_non0, Cmat_DJDS%aiccg)
         end if
 !
         if ( iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass           &
      &      .and. coef_magne.gt.0.0d0) then
-          call add_skv1_2_MHD_matrix33(mat_tbl_full_cd_q%idx_4_mat,     &
+          call add_skv1_to_crs_matrix33                                 &
+     &       (ele1, rhs_tbl1, mat_tbl_full_cd_q,                        &
      &        k2, fem1_wk%sk6, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
         end if
 !
         if ( iflag_t_evo_4_vect_p .eq. id_Crank_nicolson_cmass          &
      &      .and. coef_magne.gt.0.0d0) then
-          call add_skv1_2_MHD_matrix33(mat_tbl_full_cd_q%idx_4_mat,     &
+          call add_skv1_to_crs_matrix33                                 &
+     &       (ele1, rhs_tbl1, mat_tbl_full_cd_q,                        &
      &        k2, fem1_wk%sk6, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
         end if
       end do

@@ -37,7 +37,6 @@
       use t_phys_address
       use t_phys_data
       use t_table_FEM_const
-      use t_finite_element_mat
       use t_filter_elength
       use t_finite_element_mat
       use t_MHD_finite_element_mat

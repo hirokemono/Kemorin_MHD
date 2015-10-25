@@ -23,6 +23,8 @@
       use m_precision
 !
       use m_geometry_data
+      use m_jacobians
+      use m_finite_element_matrix
 !
       implicit none
 !
@@ -36,13 +38,14 @@
 !
       use m_sorted_node_MHD
       use m_velo_matrix
-      use int_vol_poisson_mat_1st
+      use int_vol_poisson_mat
 !
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_poisson_mat11(n_int, mat_tbl_fl_l%idx_4_mat,         &
-     &    Pmat_DJDS%num_non0, Pmat_DJDS%aiccg)
+      call int_vol_poisson_mat11                                        &
+     &   (ele1, jac1_3d_l, rhs_tbl1, mat_tbl_fl_l,                      &
+     &    n_int, fem1_wk, Pmat_DJDS)
 !
       end subroutine int_vol_velo_poisson_mat
 !
@@ -52,13 +55,14 @@
 !
       use m_sorted_node_MHD
       use m_magne_matrix
-      use int_vol_poisson_mat_1st
+      use int_vol_poisson_mat
 !
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_poisson_mat11(n_int, mat_tbl_l1%idx_4_mat,           &
-     &    Fmat_DJDS%num_non0, Fmat_DJDS%aiccg)
+      call int_vol_poisson_mat11                                        &
+     &   (ele1, jac1_3d_l, rhs_tbl1, mat_tbl_l1,                        &
+     &    n_int, fem1_wk, Fmat_DJDS)
 !
       end subroutine int_vol_magne_poisson_mat
 !
@@ -71,13 +75,14 @@
       use m_sorted_node_MHD
       use m_ele_material_property
       use m_velo_matrix
-      use int_vol_poisson_mat_1st
+      use int_vol_poisson_mat
 !
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_crank_mat33(n_int, mat_tbl_fl_q%idx_4_mat,           &
-     &    coef_imp_v, ak_d_velo, Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
+      call int_vol_diffuse_mat33                                        &
+     &   (ele1, jac1_3d_q, rhs_tbl1, mat_tbl_fl_q,                      &
+     &    n_int, coef_imp_v, ak_d_velo, fem1_wk, Vmat_DJDS)
 !
       end subroutine int_vol_velo_crank_mat
 !
@@ -89,12 +94,13 @@
       use m_sorted_node_MHD
       use m_ele_material_property
       use m_magne_matrix
-      use int_vol_poisson_mat_1st
+      use int_vol_poisson_mat
 !
       integer(kind = kint), intent(in) :: n_int
 !
-      call int_vol_crank_mat33(n_int, mat_tbl_full_cd_q%idx_4_mat,      &
-     &    coef_imp_b, ak_d_magne, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
+      call int_vol_diffuse_mat33                                        &
+     &   (ele1, jac1_3d_q, rhs_tbl1, mat_tbl_full_cd_q,                 &
+     &    n_int, coef_imp_b, ak_d_magne, fem1_wk, Bmat_DJDS)
 !
       end subroutine int_vol_magne_crank_mat
 !
@@ -106,13 +112,14 @@
       use m_sorted_node
       use m_ele_material_property
       use m_magne_matrix
-      use int_vol_poisson_mat_1st
+      use int_vol_poisson_mat
 !
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_crank_mat33(n_int, mat_tbl_q1%idx_4_mat, coef_imp_b, &
-     &      ak_d_magne, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
+      call int_vol_diffuse_mat33                                        &
+     &   (ele1, jac1_3d_q, rhs_tbl1, mat_tbl_q1, n_int,                 &
+     &    coef_imp_b, ak_d_magne, fem1_wk, Bmat_DJDS)
 !
       end subroutine int_vol_vecp_crank_mat
 !
@@ -125,13 +132,14 @@
       use m_sorted_node_MHD
       use m_ele_material_property
       use m_temp_matrix
-      use int_vol_poisson_mat_1st
+      use int_vol_poisson_mat
 !
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_crank_mat11(n_int, mat_tbl_fl_q%idx_4_mat,           &
-     &    coef_imp_t, ak_d_temp, Tmat_DJDS%num_non0, Tmat_DJDS%aiccg)
+      call int_vol_diffuse_mat11                                        &
+     &   (ele1, jac1_3d_q, rhs_tbl1, mat_tbl_fl_q,                      &
+     &    n_int, coef_imp_t, ak_d_temp, fem1_wk, Tmat_DJDS)
 !
       end subroutine int_vol_temp_crank_mat
 !
@@ -144,14 +152,14 @@
       use m_ele_material_property
       use m_light_element_matrix
 !
-      use int_vol_poisson_mat_1st
+      use int_vol_poisson_mat
 !
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_crank_mat11(n_int, mat_tbl_fl_q%idx_4_mat,           &
-     &    coef_imp_c, ak_d_composit, Cmat_DJDS%num_non0,                &
-     &    Cmat_DJDS%aiccg)
+      call int_vol_diffuse_mat11                                        &
+     &   (ele1, jac1_3d_q, rhs_tbl1, mat_tbl_fl_q,                      &
+     &    n_int, coef_imp_c, ak_d_composit, fem1_wk, Cmat_DJDS)
 !
       end subroutine int_vol_composit_crank_mat
 !

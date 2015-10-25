@@ -38,8 +38,8 @@
      &          rhs_tbl, djds_const, fem_wk, n_int, iflag_commute,      &
      &          i_filter, ak_diff, mat11)
 !
-      use int_vol_poisson_mat_type
-      use int_vol_poisson_sgs_mat_t
+      use int_vol_poisson_mat
+      use int_vol_poisson_sgs_matrix
 !
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d_l
@@ -55,12 +55,12 @@
 !
 !
       if(iflag_commute .eq. id_SGS_commute_ON) then
-        call int_vol_poisson_sgs_mat_type(ele, jac_3d_l, FEM_elens,     &
-     &          rhs_tbl, djds_const, fem_wk, n_int,    &
-     &          i_filter, ak_diff, mat11)
+        call int_vol_poisson_sgs_mat11                                  &
+     &     (ele, jac_3d_l, rhs_tbl, djds_const, FEM_elens,              &
+     &      n_int, i_filter, ak_diff, fem_wk, mat11)
       else
-        call int_vol_poisson_mat11_type(ele, jac_3d_l, rhs_tbl,         &
-     &          djds_const, fem_wk, n_int, mat11)
+        call int_vol_poisson_mat11(ele, jac_3d_l, rhs_tbl, djds_const,  &
+     &      n_int, fem_wk, mat11)
       end if
 !
       end subroutine sel_int_poisson_sgs_mat_type
@@ -72,8 +72,8 @@
      &          FEM_elens, rhs_tbl, djds_const, fem_wk, coef_imp,       &
      &          n_int, iflag_commute, i_filter, ak_diff, ak_d, mat11)
 !
-      use int_vol_poisson_mat_type
-      use int_vol_poisson_sgs_mat_t
+      use int_vol_poisson_mat
+      use int_vol_poisson_sgs_matrix
 !
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d
@@ -92,12 +92,12 @@
 !
 !
       if(iflag_commute .eq. id_SGS_commute_ON) then
-        call int_vol_diffuse_sgs_mat11_type(ele, jac_3d,                &
-     &          FEM_elens, rhs_tbl, djds_const, fem_wk, coef_imp,       &
-     &          n_int, i_filter, ak_diff, ak_d, mat11)
+        call int_vol_diffuse_sgs_mat11                                  &
+     &     (ele, jac_3d, rhs_tbl, djds_const, FEM_elens,                &
+     &      n_int, coef_imp, i_filter, ak_diff, ak_d, fem_wk, mat11)
       else
-        call int_vol_diffuse_mat11_type(ele, jac_3d, rhs_tbl,           &
-     &          djds_const, fem_wk, coef_imp, n_int, ak_d, mat11)
+        call int_vol_diffuse_mat11(ele, jac_3d, rhs_tbl, djds_const,    &
+     &      n_int, coef_imp, ak_d, fem_wk, mat11)
       end if
 !
       end subroutine sel_int_diffuse_sgs_mat11_type
@@ -108,8 +108,8 @@
      &          FEM_elens, rhs_tbl, djds_const, fem_wk, coef_imp,       &
      &          n_int, iflag_commute, i_filter, ak_diff, ak_d, mat33)
 !
-      use int_vol_poisson_mat_type
-      use int_vol_poisson_sgs_mat_t
+      use int_vol_poisson_mat
+      use int_vol_poisson_sgs_matrix
 !
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d
@@ -128,12 +128,12 @@
 !
 !
       if(iflag_commute .eq. id_SGS_commute_ON) then
-        call int_vol_diffuse_sgs_mat33_type(ele, jac_3d,                &
-     &          FEM_elens, rhs_tbl, djds_const, fem_wk, coef_imp,       &
-     &          n_int, i_filter, ak_diff, ak_d, mat33)
+        call int_vol_diffuse_sgs_mat33                                  &
+     &     (ele, jac_3d, rhs_tbl, djds_const, FEM_elens,                &
+     &      n_int, coef_imp, i_filter, ak_diff, ak_d, fem_wk, mat33)
       else
-        call int_vol_diffuse_mat33_type(ele, jac_3d, rhs_tbl,           &
-     &          djds_const, fem_wk, coef_imp, n_int, ak_d, mat33)
+        call int_vol_diffuse_mat33(ele, jac_3d, rhs_tbl, djds_const,    &
+     &      n_int, coef_imp, ak_d, fem_wk, mat33)
       end if
 !
       end subroutine sel_int_diffuse_sgs_mat33_type

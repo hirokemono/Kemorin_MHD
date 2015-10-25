@@ -58,7 +58,7 @@
 !
       use fem_surf_crank_free_sph
       use cal_skv_to_ff_smp
-      use cal_poisson_matrices_1st
+      use add_skv1_to_crs_matrix
 !
       type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: num_int
@@ -81,7 +81,7 @@
      &          jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%an_sf,      &
      &          jac1_sf_grp_2d_q%xj_sf, xe_sf, ak_d_velo, fem1_wk%sk6)
 !
-            call add_skv1_2_MHD_matrix33(mat_tbl_fl_q%idx_4_mat,        &
+            call add_skv1_to_crs_matrix33(ele1, rhs_tbl1, mat_tbl_fl_q, &
      &          k2, fem1_wk%sk6, Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
           end if
         end do
@@ -106,7 +106,7 @@
 !
       use fem_surf_crank_free_sph
       use cal_skv_to_ff_smp
-      use cal_poisson_matrices_1st
+      use add_skv1_to_crs_matrix
 !
       type(surface_group_data), intent(in) :: sf_grp
       integer (kind = kint), intent(in) :: num_int
@@ -129,7 +129,7 @@
      &          jac1_sf_grp_2d_q%ntot_int, jac1_sf_grp_2d_q%an_sf,      &
      &          jac1_sf_grp_2d_q%xj_sf, xe_sf, ak_d_velo, fem1_wk%sk6)
 !
-            call add_skv1_2_MHD_matrix33(mat_tbl_fl_q%idx_4_mat,        &
+            call add_skv1_to_crs_matrix33(ele1, rhs_tbl1, mat_tbl_fl_q, &
      &          k2, fem1_wk%sk6, Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
           end if
         end do

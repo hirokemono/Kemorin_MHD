@@ -23,6 +23,12 @@
       use m_precision
 !
       use m_control_parameter
+      use m_geometry_data
+      use m_phys_constants
+      use m_jacobians
+      use m_sorted_node
+      use m_finite_element_matrix
+      use m_filter_elength
 !
       implicit none
 !
@@ -43,9 +49,9 @@
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_poisson_sgs_mat11(n_int, mat_tbl_fl_l%idx_4_mat,     &
-     &    ifilter_final, ak_diff(1,iak_diff_v),                         &
-     &    Pmat_DJDS%num_non0, Pmat_DJDS%aiccg)
+      call int_vol_poisson_sgs_mat11                                    &
+     &   (ele1, jac1_3d_l, rhs_tbl1, mat_tbl_fl_l, FEM1_elen, n_int,    &
+     &    ifilter_final, ak_diff(1,iak_diff_v), fem1_wk, Pmat_DJDS)
 !
       end subroutine int_vol_velo_sgs_poisson_mat
 !
@@ -62,9 +68,9 @@
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_poisson_sgs_mat11(n_int, mat_tbl_l1%idx_4_mat,       &
-     &    ifilter_final, ak_diff(1,iak_diff_b),                         &
-     &    Fmat_DJDS%num_non0, Fmat_DJDS%aiccg)
+      call int_vol_poisson_sgs_mat11                                    &
+     &   (ele1, jac1_3d_l, rhs_tbl1, mat_tbl_l1, FEM1_elen, n_int,      &
+     &    ifilter_final, ak_diff(1,iak_diff_b), fem1_wk, Fmat_DJDS)
 !
       end subroutine int_vol_magne_sgs_poisson_mat
 !
@@ -84,9 +90,10 @@
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_crank_sgs_mat33(n_int, mat_tbl_fl_q%idx_4_mat,       &
-     &    coef_imp_v, ifilter_final, ak_diff(1,iak_diff_v),             &
-     &    ak_d_velo, Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
+      call int_vol_diffuse_sgs_mat33                                    &
+     &   (ele1, jac1_3d_q, rhs_tbl1, mat_tbl_fl_q, FEM1_elen,           &
+     &    n_int, coef_imp_v, ifilter_final, ak_diff(1,iak_diff_v),      &
+     &    ak_d_velo, fem1_wk, Vmat_DJDS)
 !
       end subroutine int_vol_velo_sgs_crank_mat
 !
@@ -104,9 +111,10 @@
 !
       integer(kind = kint), intent(in) :: n_int
 !
-      call int_vol_crank_sgs_mat33(n_int, mat_tbl_full_cd_q%idx_4_mat,  &
-     &    coef_imp_b, ifilter_final, ak_diff(1,iak_diff_b),             &
-     &    ak_d_magne, Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
+      call int_vol_diffuse_sgs_mat33                                    &
+     &   (ele1, jac1_3d_q, rhs_tbl1, mat_tbl_full_cd_q, FEM1_elen,           &
+     &    n_int, coef_imp_b, ifilter_final, ak_diff(1,iak_diff_b),      &
+     &    ak_d_magne, fem1_wk, Bmat_DJDS)
 !
       end subroutine int_vol_magne_sgs_crank_mat
 !
@@ -120,15 +128,16 @@
       use m_SGS_model_coefs
       use m_SGS_address
       use m_magne_matrix
+      use m_sorted_node_MHD
       use int_vol_poisson_sgs_matrix
 !
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_crank_sgs_mat33                                      &
-     &   (n_int, mat_tbl_q1%idx_4_mat, coef_imp_b,                      &
-     &    ifilter_final, ak_diff(1,iak_diff_b), ak_d_magne,             &
-     &    Bmat_DJDS%num_non0, Bmat_DJDS%aiccg)
+      call int_vol_diffuse_sgs_mat33                                    &
+     &   (ele1, jac1_3d_q, rhs_tbl1, mat_tbl_q1, FEM1_elen,           &
+     &    n_int, coef_imp_b, ifilter_final, ak_diff(1,iak_diff_b),      &
+     &    ak_d_magne, fem1_wk, Bmat_DJDS)
 !
       end subroutine int_vol_vecp_sgs_crank_mat
 !
@@ -148,9 +157,10 @@
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_crank_sgs_mat11(n_int, mat_tbl_fl_q%idx_4_mat,       &
-     &    coef_imp_t, ifilter_final, ak_diff(1,iak_diff_t),             &
-     &    ak_d_temp, Tmat_DJDS%num_non0, Tmat_DJDS%aiccg)
+      call int_vol_diffuse_sgs_mat11                                    &
+     &   (ele1, jac1_3d_q, rhs_tbl1, mat_tbl_fl_q, FEM1_elen,           &
+     &    n_int, coef_imp_t, ifilter_final, ak_diff(1,iak_diff_t),      &
+     &    ak_d_temp, fem1_wk, Tmat_DJDS)
 !
       end subroutine int_vol_temp_sgs_crank_mat
 !
@@ -170,9 +180,10 @@
       integer(kind = kint), intent(in) :: n_int
 !
 !
-      call int_vol_crank_sgs_mat11(n_int, mat_tbl_fl_q%idx_4_mat,       &
-     &    coef_imp_c, ifilter_final, ak_diff(1,iak_diff_c),             &
-     &    ak_d_composit, Cmat_DJDS%num_non0, Cmat_DJDS%aiccg)
+      call int_vol_diffuse_sgs_mat11                                    &
+     &   (ele1, jac1_3d_q, rhs_tbl1, mat_tbl_fl_q, FEM1_elen,           &
+     &    n_int, coef_imp_c, ifilter_final, ak_diff(1,iak_diff_c),      &
+     &    ak_d_composit, fem1_wk, Cmat_DJDS)
 !
       end subroutine int_vol_composit_sgs_crank_mat
 !
