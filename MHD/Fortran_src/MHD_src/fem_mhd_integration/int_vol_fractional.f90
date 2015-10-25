@@ -113,7 +113,7 @@
 !
 ! -------- loop for shape function for the phsical values
       do k2=1, num_t_linear
-        call scalar_phys_2_each_element(node, ele, nod_fld,   &
+        call scalar_phys_2_each_element(node, ele, nod_fld,             &
      &      k2, i_scalar, fem_wk%scalar_1)
         call fem_skv_linear_gradient(iele_fsmp_stack, n_int, k2,        &
      &      ele, jac_3d, jac_3d_l, fem_wk%scalar_1, fem_wk%sk6)
