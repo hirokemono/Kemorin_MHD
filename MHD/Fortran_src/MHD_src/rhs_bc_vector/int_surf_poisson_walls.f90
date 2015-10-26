@@ -4,13 +4,13 @@
 !      Written by H. Matsui on Sep. 2005
 !
 !!      subroutine int_surf_poisson_wall                                &
-!!     &         (ele, surf, sf_grp, jac_sf_grp_l, n_int,               &
+!!     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, n_int,&
 !!     &          ngrp_sf, id_grp_sf, i_vect)
 !!      subroutine int_surf_poisson_sph_in                              &
-!!     &         (ele, surf, sf_grp, jac_sf_grp_l, n_int,               &
+!!     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, n_int,&
 !!     &          ngrp_sf, id_grp_sf, i_vect)
 !!      subroutine int_surf_poisson_sph_out                             &
-!!     &         (ele, surf, sf_grp, jac_sf_grp_l, n_int,               &
+!!     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, n_int,&
 !!     &          ngrp_sf, id_grp_sf, i_vect)
 !!        type(surface_group_data), intent(in) :: sf_grp
 !
@@ -43,12 +43,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_poisson_wall                                  &
-     &         (ele, surf, sf_grp, jac_sf_grp_l, n_int,                 &
+     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, n_int,  &
      &          ngrp_sf, id_grp_sf, i_vect)
 !
+      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(phys_data),    intent(in) :: nod_fld
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
 !
       integer(kind = kint), intent(in) :: n_int, ngrp_sf
@@ -58,7 +60,7 @@
       integer(kind=kint) :: k2, i, igrp, num
 !
 !
-      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele, fem1_wk%sk6)
 !
 ! --------- set vector at each node in an element
 !
@@ -67,8 +69,9 @@
         num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if (num .gt.0 ) then
 !
-          do k2=1, num_linear_sf
-            call vector_phys_2_each_surface(sf_grp, igrp, k2,           &
+          do k2 = 1, num_linear_sf
+            call vector_phys_2_each_surface                             &
+     &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
      &          i_vect, vect_sf)
             call fem_surf_skv_poisson_wall                              &
      &         (ele, surf, sf_grp, jac_sf_grp_l, igrp, k2, n_int,       &
@@ -78,20 +81,22 @@
         end if
       end do
 !
-      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, f1_l%ff_smp)
+      call add1_skv_to_ff_v_smp                                         &
+     &   (node, ele, rhs_tbl1, fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_surf_poisson_wall
 !
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_poisson_sph_in                                &
-     &         (ele, surf, sf_grp, jac_sf_grp_l, n_int,                 &
+     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, n_int,  &
      &          ngrp_sf, id_grp_sf, i_vect)
 !
+      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(phys_data),    intent(in) :: nod_fld
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
 !
       integer(kind = kint), intent(in) :: n_int, ngrp_sf
@@ -101,7 +106,7 @@
       integer(kind=kint) :: k2, i, igrp, num
 !
 !
-      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele, fem1_wk%sk6)
 !
       do i = 1, ngrp_sf
         igrp = id_grp_sf(i)
@@ -109,8 +114,9 @@
         if (num .gt.0 ) then
 !
 ! -------- loop for shape function for the phsical values
-          do k2=1, num_linear_sf
-            call vector_phys_2_each_surf_cst(sf_grp, igrp, k2,          &
+          do k2 = 1, num_linear_sf
+            call vector_phys_2_each_surf_cst                            &
+     &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
      &          i_vect, dminus, vect_sf)
             call fem_surf_skv_poisson_sph_out                           &
      &         (ele, surf, sf_grp, jac_sf_grp_l, igrp, k2,              &
@@ -120,20 +126,22 @@
         end if
       end do
 !
-      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, f1_l%ff_smp)
+      call add1_skv_to_ff_v_smp                                         &
+     &   (node, ele, rhs_tbl1, fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_surf_poisson_sph_in
 !
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_poisson_sph_out                               &
-     &         (ele, surf, sf_grp, jac_sf_grp_l, n_int,                 &
+     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, n_int,  &
      &          ngrp_sf, id_grp_sf, i_vect)
 !
+      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(phys_data),    intent(in) :: nod_fld
       type(jacobians_2d), intent(in) :: jac_sf_grp_l
 !
       integer(kind = kint), intent(in) :: n_int, ngrp_sf
@@ -143,7 +151,7 @@
       integer(kind=kint) :: k2, i, igrp, num
 !
 !
-      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
+      call reset_sk6(n_scalar, ele, fem1_wk%sk6)
 !
 ! --------- set vector at each node in an element
 !
@@ -153,8 +161,9 @@
         if (num .gt. 0) then
 !
 ! -------- loop for shape function for the phsical values
-          do k2=1, num_linear_sf
-            call vector_phys_2_each_surface(sf_grp, igrp, k2,           &
+          do k2 = 1, num_linear_sf
+            call vector_phys_2_each_surface                             &
+     &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
      &          i_vect, vect_sf)
             call fem_surf_skv_poisson_sph_out                           &
      &         (ele, surf, sf_grp, jac_sf_grp_l, igrp, k2, n_int,       &
@@ -164,7 +173,7 @@
         end if
       end do
 !
-      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
+      call add1_skv_to_ff_v_smp(node, ele, rhs_tbl1,                    &
      &    fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_surf_poisson_sph_out

@@ -11,10 +11,10 @@
 !!
 !!@verbatim
 !!      subroutine int_free_slip_surf_sph_out                           &
-!!     &         (ele, surf, sf_grp, jac_sf_grp, n_int,                 &
+!!     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, n_int,  &
 !!     &          ngrp_surf_outside, id_grp_outside, i_field)
 !!      subroutine int_free_slip_surf_sph_in                            &
-!!     &         (ele, surf, sf_grp, jac_sf_grp, n_int,                 &
+!!     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, n_int,  &
 !!     &          ngrp_surf_inside, id_grp_inside, i_field)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -65,13 +65,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_free_slip_surf_sph_out                             &
-     &         (ele, surf, sf_grp, jac_sf_grp, n_int,                   &
+     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, n_int,    &
      &          ngrp_surf_outside, id_grp_outside, i_field)
 !
+      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(phys_data),    intent(in) :: nod_fld
       type(jacobians_2d), intent(in) :: jac_sf_grp
+!
       integer (kind = kint), intent(in) :: n_int, i_field
       integer (kind = kint), intent(in) ::ngrp_surf_outside
       integer (kind = kint), intent(in)                                 &
@@ -81,7 +84,7 @@
 !
 !
       if(ngrp_surf_outside .le. 0) return
-      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele, fem1_wk%sk6)
 !
       do i = 1, ngrp_surf_outside
         igrp = id_grp_outside(i)
@@ -89,7 +92,8 @@
         if (num .gt.0 ) then
 !
           do k2 = 1, surf%nnod_4_surf
-            call vector_phys_2_each_surface(sf_grp, igrp, k2, i_field,  &
+            call vector_phys_2_each_surface                             &
+     &         (node, ele, surf, sf_grp, nod_fld, igrp, k2, i_field,    &
      &          vect_sf)
             call fem_surf_skv_trq_sph_out                               &
      &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2, n_int,         &
@@ -99,21 +103,24 @@
         end if
       end do
 !
-      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, f1_l%ff_smp)
+      call add3_skv_to_ff_v_smp                                         &
+     &   (node, ele, rhs_tbl1, fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_free_slip_surf_sph_out
 !
 ! ----------------------------------------------------------------------
 !
       subroutine int_free_slip_surf_sph_in                              &
-     &         (ele, surf, sf_grp, jac_sf_grp, n_int,                   &
+     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, n_int,    &
      &          ngrp_surf_inside, id_grp_inside, i_field)
 !
+      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(phys_data),    intent(in) :: nod_fld
       type(jacobians_2d), intent(in) :: jac_sf_grp
+!
       integer (kind = kint), intent(in) :: n_int, i_field
       integer (kind = kint), intent(in) ::ngrp_surf_inside
       integer (kind = kint), intent(in)                                 &
@@ -123,7 +130,7 @@
 !
 !
       if (ngrp_surf_inside .le. 0) return
-      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele, fem1_wk%sk6)
 !
       do i = 1, ngrp_surf_inside
         igrp = id_grp_inside(i)
@@ -131,7 +138,8 @@
         if (num .gt.0 ) then
 !
            do k2 = 1, surf%nnod_4_surf
-            call vector_phys_2_each_surf_cst(sf_grp, igrp, k2,          &
+            call vector_phys_2_each_surf_cst                            &
+     &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
      &          i_field, dminus, vect_sf)
             call fem_surf_skv_trq_sph_out                               &
      &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2, n_int,         &
@@ -140,8 +148,8 @@
         end if
       end do
 !
-      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, f1_l%ff_smp)
+      call add3_skv_to_ff_v_smp                                         &
+     &   (node, ele, rhs_tbl1, fem1_wk%sk6, f1_l%ff_smp)
 !
       end subroutine int_free_slip_surf_sph_in
 !

@@ -44,7 +44,7 @@
 !      call int_surf_sgs_div_vect_p
 !
       call int_surf_normal_vector_p                                     &
-     &   (ele1, surf1, sf_grp1, jac1_sf_grp_2d_l)
+     &   (node1, ele1, surf1, sf_grp1, nod_fld1, jac1_sf_grp_2d_l)
 !
       call int_vol_sk_mp_bc
 !
