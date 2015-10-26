@@ -17,6 +17,7 @@
 !
       use m_constants
       use m_geometry_data
+      use m_node_phys_data
       use m_sorted_node
       use m_finite_element_matrix
       use m_phys_constants
@@ -66,7 +67,8 @@
           if (num .gt. 0) then
 !
             do k2 = 1, surf1%nnod_4_surf
-              call dlt_scl_phys_2_each_surface(sf_grp, igrp, k2,        &
+              call dlt_scl_phys_2_each_surface                          &
+     &           (node1, ele1, surf1, sf_grp, nod_fld1, igrp, k2,       &
      &            i_comp, scalar_sf)
               call fem_sf_grp_skv_sgs_vect_diff_p                       &
      &           (ele1, surf1, sf_grp, jac1_sf_grp_2d_q, FEM1_elen,     &
@@ -120,7 +122,8 @@
           if (num .gt. 0) then
 !
             do k2 = 1, surf1%nnod_4_surf
-              call dlt_scl_phys_2_each_surface(sf_grp, igrp, k2,        &
+              call dlt_scl_phys_2_each_surface                          &
+     &           (node1, ele1, surf1, sf_grp, nod_fld1, igrp, k2,       &
      &            i_comp, scalar_sf)
               call fem_sf_grp_skv_commute_err_p                         &
      &           (ele1, surf1, sf_grp, jac1_sf_grp_2d_q, FEM1_elen,     &

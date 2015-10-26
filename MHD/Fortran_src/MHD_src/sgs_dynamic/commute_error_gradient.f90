@@ -41,6 +41,7 @@
      &          i_sgs, i_scalar)
 !
       use m_geometry_data
+      use m_jacobian_sf_grp
 !
       integer(kind = kint), intent(in) :: ngrp_sf
       integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
@@ -53,8 +54,10 @@
       call int_vol_commute_grad(ele1%istack_ele_smp, intg_point_t_evo,  &
      &    i_filter, i_scalar)
 !
-      call int_surf_grad_commute_sgs(sf_grp1, intg_point_t_evo,         &
-     &    ngrp_sf, id_grp_sf, i_filter, i_scalar)
+      call int_surf_grad_commute_sgs(node1, ele1, surf1, sf_grp1,       &
+     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,              &
+     &    intg_point_t_evo, ngrp_sf, id_grp_sf, i_filter, i_scalar,     &
+     &    fem1_wk, f1_nl)
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
@@ -69,6 +72,7 @@
      &          i_filter, i_sgs, i_scalar)
 !
       use m_geometry_data
+      use m_jacobian_sf_grp
       use m_geometry_data_MHD
 !
       integer(kind = kint), intent(in) :: ngrp_sf
@@ -82,8 +86,10 @@
       call int_vol_commute_grad(iele_fl_smp_stack, intg_point_t_evo,    &
      &    i_filter, i_scalar)
 !
-      call int_surf_grad_commute_sgs(sf_grp1, intg_point_t_evo,         &
-     &    ngrp_sf, id_grp_sf, i_filter, i_scalar)
+      call int_surf_grad_commute_sgs(node1, ele1, surf1, sf_grp1,       &
+     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,              &
+     &    intg_point_t_evo, ngrp_sf, id_grp_sf, i_filter, i_scalar,     &
+     &    fem1_wk, f1_nl)
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
@@ -98,6 +104,7 @@
      &          i_filter, i_sgs, i_scalar)
 !
       use m_geometry_data
+      use m_jacobian_sf_grp
       use m_geometry_data_MHD
 !
       integer(kind = kint), intent(in) :: ngrp_sf
@@ -111,8 +118,10 @@
       call int_vol_commute_grad(iele_cd_smp_stack, intg_point_t_evo,    &
      &    i_filter, i_scalar)
 !
-      call int_surf_grad_commute_sgs(sf_grp1, intg_point_t_evo,         &
-     &    ngrp_sf, id_grp_sf, i_filter, i_scalar)
+      call int_surf_grad_commute_sgs(node1, ele1, surf1, sf_grp1,       &
+     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,              &
+     &    intg_point_t_evo, ngrp_sf, id_grp_sf, i_filter, i_scalar,     &
+     &    fem1_wk, f1_nl)
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &

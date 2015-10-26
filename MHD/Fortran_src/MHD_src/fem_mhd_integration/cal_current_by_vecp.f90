@@ -6,11 +6,34 @@
 !      Modified by H. Matsui on Aug, 2007
 !
 !
-!      subroutine int_current_diffuse
+!!      subroutine int_current_diffuse
+!!
+!!      subroutine int_surf_temp_diffuse(node, ele, surf, sf_grp,       &
+!!     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, fem_wk, f_l)
+!!
+!!      subroutine int_surf_velo_diffuse(node, ele, surf, sf_grp,       &
+!!     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, fem_wk, f_l)
+!!      subroutine int_surf_vector_p_diffuse(node, ele, surf, sf_grp,   &
+!!     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, fem_wk, f_l)
+!!      subroutine int_surf_magne_diffuse(node, ele, surf, sf_grp,      &
+!!     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, fem_wk, f_l)
+!!      subroutine int_surf_composit_diffuse(node, ele, surf, sf_grp,   &
+!!     &         iphys, nod_fld, jac_sf_grp, rhs_tbl, fem_wk, f_l)
 !
       module cal_current_by_vecp
 !
       use m_precision
+!
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
+      use t_phys_address
+      use t_phys_data
+      use t_jacobian_2d
+      use t_table_FEM_const
+      use t_finite_element_mat
+!
+      use m_control_parameter
 !
       implicit none
 !
@@ -48,8 +71,9 @@
 !
 !  for boundary conditions
 !
-      call int_surf_current_diffuse                                     &
-     &   (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q)
+      call int_surf_current_diffuse(node1, ele1, surf1, sf_grp1,        &
+     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,                         &
+     &    intg_point_t_evo, iphys%i_vecp, fem1_wk, f1_l)
 !
       call cal_multi_pass_4_vector_ff
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
@@ -64,5 +88,147 @@
       end subroutine int_current_diffuse
 !
 ! ----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine int_surf_temp_diffuse(node, ele, surf, sf_grp,         &
+     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, fem_wk, f_l)
+!
+      use m_ele_material_property
+      use m_surf_data_temp
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: sf_grp
+      type(phys_address), intent(in) :: iphys
+      type(phys_data),    intent(in) :: nod_fld
+      type(jacobians_2d), intent(in) :: jac_sf_grp
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l
+!
+!
+      call int_surf_diffuse_term                                        &
+     &   (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,        &
+     &    intg_point_t_evo, ngrp_sf_lead_hf, id_grp_sf_lead_hf,         &
+     &    ak_d_temp, iphys%i_temp, fem_wk, f_l)
+!
+      end subroutine int_surf_temp_diffuse
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_surf_velo_diffuse(node, ele, surf, sf_grp,         &
+     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, fem_wk, f_l)
+!
+      use m_ele_material_property
+      use m_surf_data_torque
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: sf_grp
+      type(phys_address), intent(in) :: iphys
+      type(phys_data),    intent(in) :: nod_fld
+      type(jacobians_2d), intent(in) :: jac_sf_grp
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l
+!
+!
+      call int_surf_vect_diffuse_term                                   &
+     &   (node, ele, surf, sf_grp, jac_sf_grp, nod_fld, rhs_tbl,        &
+     &    intg_point_t_evo, nmax_sf_lead_tq, ngrp_sf_lead_tq,           &
+     &    id_grp_sf_lead_tq, ak_d_velo, iphys%i_velo, fem_wk, f_l)
+!
+      end subroutine int_surf_velo_diffuse
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_surf_vector_p_diffuse(node, ele, surf, sf_grp,     &
+     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, fem_wk, f_l)
+!
+      use m_ele_material_property
+      use m_surf_data_vector_p
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: sf_grp
+      type(phys_address), intent(in) :: iphys
+      type(phys_data),    intent(in) :: nod_fld
+      type(jacobians_2d), intent(in) :: jac_sf_grp
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l
+!
+!
+      call int_surf_vect_diffuse_term                                   &
+     &   (node, ele, surf, sf_grp, jac_sf_grp, nod_fld, rhs_tbl,        &
+     &    intg_point_t_evo, nmax_sf_lead_vect_p, ngrp_sf_lead_vect_p,   &
+     &    id_grp_sf_lead_vect_p, ak_d_magne, iphys%i_vecp,              &
+     &    fem_wk, f_l)
+!
+      end subroutine int_surf_vector_p_diffuse
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_surf_magne_diffuse(node, ele, surf, sf_grp,        &
+     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, fem_wk, f_l)
+!
+      use m_ele_material_property
+      use m_surf_data_magne
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: sf_grp
+      type(phys_address), intent(in) :: iphys
+      type(phys_data),    intent(in) :: nod_fld
+      type(jacobians_2d), intent(in) :: jac_sf_grp
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l
+!
+!
+      call int_surf_vect_diffuse_term                                   &
+     &   (node, ele, surf, sf_grp, jac_sf_grp, nod_fld, rhs_tbl,        &
+     &    intg_point_t_evo,  nmax_sf_lead_b, ngrp_sf_lead_b,            &
+     &    id_grp_sf_lead_b, ak_d_magne, iphys%i_magne, fem_wk, f_l)
+!
+      end subroutine int_surf_magne_diffuse
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_surf_composit_diffuse(node, ele, surf, sf_grp,     &
+     &         iphys, nod_fld, jac_sf_grp, rhs_tbl, fem_wk, f_l)
+!
+      use m_ele_material_property
+      use m_surf_data_composition
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: sf_grp
+      type(phys_address), intent(in) :: iphys
+      type(phys_data),    intent(in) :: nod_fld
+      type(jacobians_2d), intent(in) :: jac_sf_grp
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l
+!
+!
+      call int_surf_diffuse_term                                        &
+     &   (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,        &
+     &    intg_point_t_evo, ngrp_sf_lead_cmg, id_grp_sf_lead_cmg,       &
+     &    ak_d_composit, iphys%i_light, fem_wk, f_l)
+!
+      end subroutine int_surf_composit_diffuse
+!
+!-----------------------------------------------------------------------
 !
       end module cal_current_by_vecp

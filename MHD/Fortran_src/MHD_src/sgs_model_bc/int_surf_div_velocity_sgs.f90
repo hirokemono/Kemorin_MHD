@@ -79,6 +79,7 @@
 !
       use m_phys_constants
       use m_geometry_data
+      use m_node_phys_data
       use m_SGS_model_coefs
       use m_SGS_address
       use m_sorted_node
@@ -116,7 +117,8 @@
           if(num .gt. 0) then
 !
             do k2 = 1, surf1%nnod_4_surf
-              call dlt_scl_phys_2_each_surface(sf_grp, igrp, k2,        &
+              call dlt_scl_phys_2_each_surface                          &
+     &           (node1, ele1, surf1, sf_grp, nod_fld1, igrp, k2,       &
      &            i_comp, scalar_sf)
               call fem_sf_grp_skv_sgs_div_lin_p(ele1, surf1, sf_grp,    &
      &            jac1_sf_grp_2d_q, jac1_sf_grp_2d_l, FEM1_elen,        &

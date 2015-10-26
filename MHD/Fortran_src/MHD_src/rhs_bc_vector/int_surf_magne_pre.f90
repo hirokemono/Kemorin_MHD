@@ -13,8 +13,14 @@
       use m_control_parameter
       use m_geometry_data
       use m_group_data
+      use m_phys_constants
       use m_node_phys_address
+      use m_node_phys_data
+      use m_sorted_node
       use m_jacobian_sf_grp
+      use m_filter_elength
+      use m_finite_element_matrix
+      use m_surf_data_magne
 !
       use int_surf_div_induct_tsr_sgs
       use int_surf_fixed_gradients
@@ -39,9 +45,10 @@
 !
        if (iflag_SGS_induction .ne. id_SGS_none                         &
      &     .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
-         call int_surf_div_induct_t_sgs                                 &
-     &      (sf_grp1, num_int, ifilter_final,                           &
-     &       iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne)
+         call int_surf_div_induct_t_sgs(node1, ele1, surf1, sf_grp1,    &
+     &       nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,           &
+     &       num_int, ifilter_final, iphys%i_SGS_induct_t,              &
+     &       iphys%i_velo, iphys%i_magne, fem1_wk, f1_nl)
       end if
 !
       end subroutine int_surf_magne_pre_ele
@@ -66,9 +73,10 @@
       if (i_field .eq. iphys%i_SGS_induction) then
         if (iflag_SGS_induction .ne. id_SGS_none                        &
      &     .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
-          call int_surf_div_induct_t_sgs                                &
-     &       (sf_grp1, num_int, ifilter_final,                          &
-     &        iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne)
+          call int_surf_div_induct_t_sgs(node1, ele1, surf1, sf_grp1,   &
+     &        nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,          &
+     &        num_int, ifilter_final, iphys%i_SGS_induct_t,             &
+     &        iphys%i_velo, iphys%i_magne, fem1_wk, f1_nl)
         end if
       end if
 !
