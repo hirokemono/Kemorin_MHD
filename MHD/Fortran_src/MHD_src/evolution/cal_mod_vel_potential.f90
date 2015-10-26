@@ -49,7 +49,9 @@
 !
 !   set boundary condition for wall
 !
-      call int_sf_grad_press(ele1, surf1, sf_grp1, jac1_sf_grp_2d_q)
+      call int_sf_grad_press                                            &
+     &   (node1, ele1, surf1, sf_grp1, jac1_sf_grp_2d_l, rhs_tbl1,      &
+     &    intg_point_poisson, fem1_wk, f1_l)
 !
 !   add boundary term for fixed velocity
 !

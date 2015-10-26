@@ -60,7 +60,8 @@
 !
 !
       call int_sf_grad_composition                                      &
-     &   (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, intg_point_t_evo)
+     &   (node1, ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, rhs_tbl1,      &
+     &    intg_point_t_evo, fem1_wk, f1_l)
 !
 !
       if     (iflag_t_evo_4_composit .eq. id_explicit_euler) then

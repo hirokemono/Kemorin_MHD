@@ -41,7 +41,8 @@
       num_int = intg_point_t_evo
 !
       call int_sf_grad_magne                                            &
-     &   (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, num_int)
+     &   (node1, ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, rhs_tbl1,      &
+     &    num_int, fem1_wk, f1_l)
 !
        if (iflag_SGS_induction .ne. id_SGS_none                         &
      &     .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
@@ -50,6 +51,15 @@
      &       num_int, ifilter_final, iphys%i_SGS_induct_t,              &
      &       iphys%i_velo, iphys%i_magne, fem1_wk, f1_nl)
       end if
+!
+!      call int_free_slip_surf_sph_out(node1, ele1, surf1, sf_grp1,     &
+!     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,                        &
+!     &    n_int, ngrp_sf_qvc_out, id_grp_sf_qvc_out, iphys%i_vecp,     &
+!     &    fem_wk, f_l)
+!      call int_free_slip_surf_sph_in(node1, ele1, surf1, sf_grp1,      &
+!     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,                        &
+!     &    n_int, ngrp_sf_qvc_in, id_grp_sf_qvc_in, iphys%i_vecp,       &
+!     &    fem_wk, f_l)
 !
       end subroutine int_surf_magne_pre_ele
 !
@@ -66,7 +76,8 @@
       if (i_field .eq. iphys%i_b_diffuse) then
         if (nmax_sf_fix_grad_b.gt.0) then
           call int_sf_grad_magne                                        &
-     &       (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, num_int)
+     &       (node1, ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, rhs_tbl1,  &
+     &        num_int, fem1_wk, f1_l)
         end if
       end if
 !
@@ -79,6 +90,15 @@
      &        iphys%i_velo, iphys%i_magne, fem1_wk, f1_nl)
         end if
       end if
+!
+!      call int_free_slip_surf_sph_out(node1, ele1, surf1, sf_grp1,     &
+!     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,                        &
+!     &    n_int, ngrp_sf_qvc_out, id_grp_sf_qvc_out, iphys%i_vecp,     &
+!     &    fem_wk, f_l)
+!      call int_free_slip_surf_sph_in(node1, ele1, surf1, sf_grp1,      &
+!     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,                        &
+!     &    n_int, ngrp_sf_qvc_in, id_grp_sf_qvc_in, iphys%i_vecp,       &
+!     &    fem_wk, f_l)
 !
       end subroutine int_surf_magne_monitor
 !

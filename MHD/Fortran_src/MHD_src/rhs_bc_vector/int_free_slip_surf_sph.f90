@@ -39,18 +39,14 @@
       use m_precision
       use m_constants
 !
-      use m_sorted_node
-      use m_int_vol_data
-      use m_finite_element_matrix
       use m_ele_material_property
-!
-      use m_node_phys_address
-      use m_int_surface_data
 !
       use t_geometry_data
       use t_surface_data
       use t_group_data
       use t_jacobian_2d
+      use t_table_FEM_const
+      use t_finite_element_mat
 !
       use fem_surf_skv_poisson_type
       use cal_skv_to_ff_smp
@@ -65,8 +61,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_free_slip_surf_sph_out                             &
-     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, n_int,    &
-     &          ngrp_surf_outside, id_grp_outside, i_field)
+     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,  &
+     &          n_int, ngrp_surf_outside, id_grp_outside, i_field,      &
+     &          fem_wk, f_l)
+!
+      use m_int_surface_data
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -74,45 +73,50 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data),    intent(in) :: nod_fld
       type(jacobians_2d), intent(in) :: jac_sf_grp
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer (kind = kint), intent(in) :: n_int, i_field
       integer (kind = kint), intent(in) ::ngrp_surf_outside
       integer (kind = kint), intent(in)                                 &
      &       :: id_grp_outside(ngrp_surf_outside)
 !
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l
+!
       integer (kind = kint) :: k2, i, igrp, num
 !
 !
       if(ngrp_surf_outside .le. 0) return
-      call reset_sk6(n_vector, ele, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       do i = 1, ngrp_surf_outside
         igrp = id_grp_outside(i)
         num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
-        if (num .gt.0 ) then
+        if (num .le.0 ) return
 !
-          do k2 = 1, surf%nnod_4_surf
-            call vector_phys_2_each_surface                             &
+        do k2 = 1, surf%nnod_4_surf
+          call vector_phys_2_each_surface                               &
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2, i_field,    &
      &          vect_sf)
-            call fem_surf_skv_trq_sph_out                               &
+          call fem_surf_skv_trq_sph_out                                 &
      &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2, n_int,         &
-     &          ak_d_velo, xe_sf, vect_sf, fem1_wk%sk6)
-          end do
-!
-        end if
+     &          ak_d_velo, xe_sf, vect_sf, fem_wk%sk6)
+        end do
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
-     &   (node, ele, rhs_tbl1, fem1_wk%sk6, f1_l%ff_smp)
+     &   (node, ele, rhs_tbl, fem_wk%sk6, f_l%ff_smp)
 !
       end subroutine int_free_slip_surf_sph_out
 !
 ! ----------------------------------------------------------------------
 !
       subroutine int_free_slip_surf_sph_in                              &
-     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, n_int,    &
-     &          ngrp_surf_inside, id_grp_inside, i_field)
+     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,  &
+     &          n_int, ngrp_surf_inside, id_grp_inside, i_field,        &
+     &          fem_wk, f_l)
+!
+      use m_int_surface_data
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -120,36 +124,39 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data),    intent(in) :: nod_fld
       type(jacobians_2d), intent(in) :: jac_sf_grp
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer (kind = kint), intent(in) :: n_int, i_field
       integer (kind = kint), intent(in) ::ngrp_surf_inside
       integer (kind = kint), intent(in)                                 &
      &       :: id_grp_inside(ngrp_surf_inside)
 !
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l
+!
       integer (kind = kint) :: k2, i, igrp, num
 !
 !
       if (ngrp_surf_inside .le. 0) return
-      call reset_sk6(n_vector, ele, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       do i = 1, ngrp_surf_inside
         igrp = id_grp_inside(i)
         num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
-        if (num .gt.0 ) then
+        if (num .le.0 ) exit
 !
-           do k2 = 1, surf%nnod_4_surf
-            call vector_phys_2_each_surf_cst                            &
+        do k2 = 1, surf%nnod_4_surf
+          call vector_phys_2_each_surf_cst                              &
      &         (node, ele, surf, sf_grp, nod_fld, igrp, k2,             &
      &          i_field, dminus, vect_sf)
-            call fem_surf_skv_trq_sph_out                               &
+          call fem_surf_skv_trq_sph_out                                 &
      &         (ele, surf, sf_grp, jac_sf_grp, igrp, k2, n_int,         &
-     &          ak_d_velo, xe_sf, vect_sf, fem1_wk%sk6)
-          end do
-        end if
+     &          ak_d_velo, xe_sf, vect_sf, fem_wk%sk6)
+        end do
       end do
 !
       call add3_skv_to_ff_v_smp                                         &
-     &   (node, ele, rhs_tbl1, fem1_wk%sk6, f1_l%ff_smp)
+     &   (node, ele, rhs_tbl, fem_wk%sk6, f_l%ff_smp)
 !
       end subroutine int_free_slip_surf_sph_in
 !

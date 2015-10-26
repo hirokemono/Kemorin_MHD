@@ -17,10 +17,12 @@
       use m_surf_data_torque
       use m_node_phys_address
       use m_node_phys_data
+      use m_sorted_node
+      use m_finite_element_matrix
 !
       use int_surf_div_fluxes_sgs
       use int_surf_fixed_gradients
-      use int_free_surf_sph
+      use int_free_slip_surf_sph
 !
       implicit none
 !
@@ -32,8 +34,6 @@
 !
       subroutine int_surf_velo_pre_ele
 !
-      use m_sorted_node
-      use m_finite_element_matrix
       use m_filter_elength
       use m_SGS_model_coefs
       use m_SGS_address
@@ -69,13 +69,16 @@
 !
 !
         call int_sf_torque                                              &
-     &     (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, num_int)
-        call int_free_surf_sph_in                                       &
-     &     (node1, ele1, surf1, sf_grp1, nod_fld1, jac1_sf_grp_2d_q,    &
-     &      num_int)
-        call int_free_surf_sph_out                                      &
-     &     (node1, ele1, surf1, sf_grp1, nod_fld1, jac1_sf_grp_2d_q,    &
-     &      num_int)
+     &     (node1, ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, rhs_tbl1,    &
+     &      num_int, fem1_wk, f1_l)
+        call int_free_slip_surf_sph_in(node1, ele1, surf1, sf_grp1,     &
+     &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,                       &
+     &      num_int, ngrp_sf_fr_in, id_grp_sf_fr_in, iphys%i_velo,      &
+     &      fem1_wk, f1_l)
+        call int_free_slip_surf_sph_out(node1, ele1, surf1, sf_grp1,    &
+     &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,                       &
+     &      num_int, ngrp_sf_fr_out, id_grp_sf_fr_out, iphys%i_velo,    &
+     &      fem1_wk, f1_l)
 !
       end subroutine int_surf_velo_pre_ele
 !
@@ -83,8 +86,6 @@
 !
       subroutine int_surf_velo_monitor(i_field)
 !
-      use m_sorted_node
-      use m_finite_element_matrix
       use m_filter_elength
       use m_SGS_model_coefs
       use m_SGS_address
@@ -123,13 +124,16 @@
 !
       if (i_field .eq. iphys%i_v_diffuse) then
         call int_sf_torque                                              &
-     &     (ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, num_int)
-        call int_free_surf_sph_in                                       &
-     &     (node1, ele1, surf1, sf_grp1, nod_fld1, jac1_sf_grp_2d_q,    &
-     &      num_int)
-        call int_free_surf_sph_out                                      &
-     &     (node1, ele1, surf1, sf_grp1, nod_fld1, jac1_sf_grp_2d_q,    &
-     &      num_int)
+     &     (node1, ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, rhs_tbl1,    &
+     &      num_int, fem1_wk, f1_l)
+        call int_free_slip_surf_sph_in(node1, ele1, surf1, sf_grp1,     &
+     &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,                       &
+     &      num_int, ngrp_sf_fr_in, id_grp_sf_fr_in, iphys%i_velo,      &
+     &      fem1_wk, f1_l)
+        call int_free_slip_surf_sph_out(node1, ele1, surf1, sf_grp1,    &
+     &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,                       &
+     &      num_int, ngrp_sf_fr_out, id_grp_sf_fr_out, iphys%i_velo,    &
+     &      fem1_wk, f1_l)
       end if
 !
       end subroutine int_surf_velo_monitor
