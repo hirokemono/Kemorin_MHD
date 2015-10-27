@@ -46,7 +46,8 @@
 !      call int_surf_sgs_div_magne
 !
       call int_surf_normal_magne                                        &
-     &   (node1, ele1, surf1, sf_grp1, nod_fld1, jac1_sf_grp_2d_l)
+     &   (node1, ele1, surf1, sf_grp1, nod_fld1, jac1_sf_grp_2d_l,      &
+     &    rhs_tbl1, fem1_wk, f1_l)
       call int_sf_grad_magne_p                                          &
      &   (node1, ele1, surf1, sf_grp1, jac1_sf_grp_2d_l, rhs_tbl1,      &
      &    intg_point_poisson, fem1_wk, f1_l)

@@ -71,15 +71,31 @@
 !
       subroutine set_aiccg_bc_velo
 !
+      use m_control_parameter
+      use m_geometry_data
       use m_group_data
+      use m_jacobian_sf_grp
+      use m_sorted_node
+      use m_sorted_node_MHD
+      use m_finite_element_matrix
       use m_bc_data_rotate
+      use m_velo_matrix
 !
       use set_aiccg_free_sph
       use set_aiccg_bc_fixed
 !
 !
 !      matrix setting for free slip on sphere
-      call set_aiccg_bc_free_sphere(sf_grp1)
+      if(ngrp_sf_fr_in .gt. 0)  then
+        call set_aiccg_bc_free_sph_in(ele1, surf1, sf_grp1,             &
+     &      jac1_sf_grp_2d_q, rhs_tbl1, mat_tbl_fl_q,                   &
+     &      intg_point_poisson, fem1_wk, Vmat_DJDS)
+      end if
+      if(ngrp_sf_fr_out .gt. 0) then
+        call set_aiccg_bc_free_sph_out(ele1, surf1, sf_grp1,            &
+     &      jac1_sf_grp_2d_q, rhs_tbl1, mat_tbl_fl_q,                   &
+     &      intg_point_poisson, fem1_wk, Vmat_DJDS)
+      end if
 !
 !      matrix setting for fixed boundaries
       call set_aiccg_bc_velo_nod

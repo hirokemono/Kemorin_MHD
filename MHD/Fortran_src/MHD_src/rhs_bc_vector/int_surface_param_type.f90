@@ -36,11 +36,12 @@
       subroutine s_int_surface_param_type(mesh, surf, group)
 !
       use t_mesh_data
+      use t_surface_group_geometry
 !
       use m_machine_parameter
 !
       use sum_normal_4_surf_group
-      use position_2_each_surf_type
+      use position_of_each_surface
       use set_connects_4_surf_group
       use set_surf_grp_vectors_type
 !
@@ -70,13 +71,13 @@
      &     group%surf_grp_geom, group%surf_nod_grp)
 !
 !
-       if (iflag_debug.eq.1) write(*,*) 's_position_2_each_surf_type'
-       call s_position_2_each_surf_type(mesh, surf, group%surf_grp,     &
-     &     group%surf_grp_int)
+       if (iflag_debug.eq.1) write(*,*) 'position_2_each_surface'
+       call position_2_each_surface(mesh%node, mesh%ele, surf,          &
+     &     group%surf_grp, group%surf_grp_int%xe_sf)
 !
-       if (iflag_debug.eq.1) write(*,*) 'delta_x_2_each_surf_type'
-       call delta_x_2_each_surf_type(mesh, surf, group%surf_grp,        &
-     &     group%surf_grp_int)
+       if (iflag_debug.eq.1) write(*,*) 'delta_x_2_each_surface'
+       call delta_x_2_each_surface(mesh%node, mesh%ele, surf,           &
+     &     group%surf_grp, group%surf_grp_int%dxe_sf)
       end if
 !
       end subroutine s_int_surface_param_type
@@ -90,7 +91,7 @@
       use m_machine_parameter
 !
       use sum_normal_4_surf_group
-      use position_2_each_surf_type
+      use position_of_each_surface
       use set_surf_grp_vectors_type
 !
       type(mesh_geometry),      intent(in) :: mesh

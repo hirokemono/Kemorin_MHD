@@ -27,7 +27,6 @@
       use m_control_parameter
       use m_geometry_data
       use m_group_data
-      use m_finite_element_matrix
       use m_int_surface_data
 !
       use position_of_each_surface
@@ -49,14 +48,15 @@
       call s_sum_normal_4_surf_group(ele1, sf_grp1, sf_grp_v1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_surf_norm_node'
-      call cal_surf_norm_node(sf_grp1, sf_grp_v1, sf_grp_nod1)
+      call cal_surf_norm_node                                           &
+     &   (node1, ele1, surf1, sf_grp1, sf_grp_v1, sf_grp_nod1)
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'position_2_each_surface'
-      call position_2_each_surface(sf_grp1)
+      call position_2_each_surface(node1, ele1, surf1, sf_grp1, xe_sf)
 !
       if (iflag_debug.eq.1)  write(*,*) 'delta_x_2_each_surface'
-      call delta_x_2_each_surface(sf_grp1)
+      call delta_x_2_each_surface(node1, ele1, surf1, sf_grp1, dxe_sf)
 !
 !      call check_surface_param_smp('int_surface_parameters end',       &
 !     &    my_rank, sf_grp1, sf_grp_nod1)
@@ -66,24 +66,29 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_surf_norm_node(sf_grp, sf_grp_v, sf_grp_nod)
+      subroutine cal_surf_norm_node                                     &
+     &         (node, ele, surf, sf_grp, sf_grp_v, sf_grp_nod)
 !
-      use m_geometry_data
+      use t_geometry_data
+      use t_surface_data
       use t_group_data
       use t_surface_group_connect
       use t_surface_group_geometry
       use set_norm_nod_4_surf_grp
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_group_geometry), intent(in) :: sf_grp_v
       type(surface_node_grp_data), intent(inout) :: sf_grp_nod
 !
 !
-      call allocate_work_norm_nod(node1%numnod)
+      call allocate_work_norm_nod(node%numnod)
       call alloc_vect_surf_grp_nod(sf_grp_nod)
 !
-      call cal_surf_grp_norm_node(ele1%numele, ele1%nnod_4_ele,         &
-     &    surf1%nnod_4_surf, surf1%node_on_sf, ele1%ie,                 &
+      call cal_surf_grp_norm_node(ele%numele, ele%nnod_4_ele,           &
+     &    surf%nnod_4_surf, surf%node_on_sf, ele%ie,                    &
      &    sf_grp%num_grp, sf_grp%num_item,                              &
      &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &
      &    sf_grp_v%vnorm_sf_grp, sf_grp_v%a_area_sf_grp,                &

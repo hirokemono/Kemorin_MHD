@@ -4,10 +4,13 @@
 !      Written by H. Matsui on Sep., 2005
 !      Modified by H. Matsui on Jan., 2009
 !
-!!      subroutine position_2_each_surface(sf_grp)
-!!        Input:  xx, Output:  xe_sf
-!!      subroutine delta_x_2_each_surface(sf_grp)
-!!        Output:  dxe_sf
+!!      subroutine position_2_each_surface                              &
+!!     &         (node, ele, surf, sf_grp, xe_sf)
+!!      subroutine delta_x_2_each_surface                               &
+!!     &         (node, ele, surf, sf_grp, dxe_sf)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data),       intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!
 !!      subroutine position_2_each_surf_grp(np_smp, numnod, numele,     &
@@ -27,25 +30,34 @@
 !
       implicit none
 !
+      private :: position_2_each_surf_grp, delta_x_2_each_surf_grp
+!
 ! ----------------------------------------------------------------------
 !
       contains
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine position_2_each_surface(sf_grp)
+      subroutine position_2_each_surface                                &
+     &         (node, ele, surf, sf_grp, xe_sf)
 !
       use m_machine_parameter
-      use m_geometry_data
-      use m_int_surface_data
+      use t_geometry_data
+      use t_surface_data
       use t_group_data
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data),       intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
 !
+      real(kind=kreal), intent(inout)                                   &
+     &      :: xe_sf(sf_grp%num_item,4,surf%nnod_4_surf)
 !
-      call position_2_each_surf_grp(np_smp, node1%numnod, ele1%numele,  &
-     &    ele1%nnod_4_ele, surf1%nnod_4_surf, surf1%node_on_sf,         &
-     &    ele1%ie, node1%xx, node1%a_r,                                 &
+!
+      call position_2_each_surf_grp(np_smp, node%numnod,                &
+     &    ele%numele, ele%nnod_4_ele, surf%nnod_4_surf,                 &
+     &    surf%node_on_sf, ele%ie, node%xx, node%a_r,                   &
      &    sf_grp%num_grp, sf_grp%num_item, sf_grp%istack_grp,           &
      &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &
      &    sf_grp%istack_grp_smp, xe_sf)
@@ -54,19 +66,25 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine delta_x_2_each_surface(sf_grp)
+      subroutine delta_x_2_each_surface                                 &
+     &         (node, ele, surf, sf_grp, dxe_sf)
 !
       use m_machine_parameter
-      use m_geometry_data
-      use m_int_surface_data
+      use t_geometry_data
+      use t_surface_data
       use t_group_data
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      real(kind=kreal), intent(inout)                                   &
+     &      :: dxe_sf(sf_grp%num_item,4,surf%nnod_4_surf)
 !
 !
-      call delta_x_2_each_surf_grp(np_smp, node1%numnod,                &
-     &    ele1%numele, ele1%nnod_4_ele, surf1%nnod_4_surf,              &
-     &    surf1%node_on_sf, surf1%node_on_sf_n, ele1%ie, node1%xx,      &
+      call delta_x_2_each_surf_grp(np_smp, node%numnod,                 &
+     &    ele%numele, ele%nnod_4_ele, surf%nnod_4_surf,                 &
+     &    surf%node_on_sf, surf%node_on_sf_n, ele%ie, node%xx,          &
      &    sf_grp%num_grp, sf_grp%num_item, sf_grp%istack_grp,           &
      &    sf_grp%item_sf_grp, sf_grp%num_grp_smp,                       &
      &    sf_grp%istack_grp_smp, dxe_sf)
