@@ -52,13 +52,11 @@
 !
 !
       do nd = 1, n_vector
-        if(num_idx_ibc2_v(nd) .ne. 0) then
-          do k0 = 1, num_idx_ibc2_v(nd)
-            call set_aiccg_bc_vector_nod(ele1%nnod_4_ele,               &
-     &          ele_bc2_v_id(k0,nd), nod_bc2_v_id(k0,nd), nd, nd,       &
-     &          DJDS_fluid, Vmat_DJDS)
-          end do
-        end if
+        do k0 = 1, nod_bc1_v%num_idx_ibc2(nd)
+          call set_aiccg_bc_vector_nod(ele1%nnod_4_ele,                 &
+     &        nod_bc1_v%ele_bc2_id(k0,nd), nod_bc1_v%nod_bc2_id(k0,nd), &
+     &        nd, nd, DJDS_fluid, Vmat_DJDS)
+        end do
       end do
 !
       end subroutine set_aiccg_bc_velo_nod

@@ -12,9 +12,12 @@
       module m_bc_data_velo
 !
       use m_precision
+      use t_nodal_bc_data
 !
       implicit  none
 !
+      type(vect_fixed_nod_bc_type) :: nod_bc1_v
+!nod_bc1_v%nmax_idx_ibc2
 !
       integer (kind=kint), allocatable :: ibc_velo(:,:)
       integer (kind=kint), allocatable :: ibc2_velo(:,:)
@@ -31,16 +34,16 @@
       integer (kind=kint), allocatable :: ele_bc_v_id(:,:)
       integer (kind=kint), allocatable :: nod_bc_v_id(:,:)
 !
-      integer (kind=kint) :: nmax_idx_ibc2_v
-      integer (kind=kint) :: num_idx_ibc2_v(3)
-      integer (kind=kint), allocatable :: ele_bc2_v_id(:,:)
-      integer (kind=kint), allocatable :: nod_bc2_v_id(:,:)
+!      integer (kind=kint) :: nmax_idx_ibc2_v
+!      integer (kind=kint) :: num_idx_ibc2_v(3)
+!      integer (kind=kint), allocatable :: ele_bc2_v_id(:,:)
+!      integer (kind=kint), allocatable :: nod_bc2_v_id(:,:)
 !
 !
-      integer (kind=kint) :: ibc_v_end(3)
-      integer (kind=kint), allocatable :: ibc_v_shape(:,:)
-      integer (kind=kint), allocatable :: ibc_v_stack(:,:)
-      integer (kind=kint), allocatable :: ibc_v_stack_smp(:,:)
+!      integer (kind=kint) :: ibc_v_end(3)
+!      integer (kind=kint), allocatable :: ibc_v_shape(:,:)
+!      integer (kind=kint), allocatable :: ibc_v_stack(:,:)
+!      integer (kind=kint), allocatable :: ibc_v_stack_smp(:,:)
 !
 ! -----------------------------------------------------------------------
 !
@@ -81,25 +84,25 @@
         allocate ( ele_bc_v_id(nmax_idx_ibc_v,3) )
         allocate ( nod_bc_v_id(nmax_idx_ibc_v,3) )
 !
-        allocate ( ele_bc2_v_id(nmax_idx_ibc2_v,3) )
-        allocate ( nod_bc2_v_id(nmax_idx_ibc2_v,3) )
+        allocate ( nod_bc1_v%ele_bc2_id(nod_bc1_v%nmax_idx_ibc2,3) )
+        allocate ( nod_bc1_v%nod_bc2_id(nod_bc1_v%nmax_idx_ibc2,3) )
 !
 !
-        allocate ( ibc_v_shape(nnod_4_ele,3) )
-        allocate ( ibc_v_stack(0:nnod_4_ele,3) )
-        allocate ( ibc_v_stack_smp(0:nnod_4_ele*np_smp,3) )
+        allocate ( nod_bc1_v%ibc_shape(nnod_4_ele,3) )
+        allocate ( nod_bc1_v%ibc_stack(0:nnod_4_ele,3) )
+        allocate ( nod_bc1_v%ibc_stack_smp(0:nnod_4_ele*np_smp,3) )
 !
         if ( nmax_idx_ibc_v.gt.0) then
          ele_bc_v_id = 0
          nod_bc_v_id = 0
-         ibc_v_stack = 0
-         ibc_v_shape = 0
-         ibc_v_stack_smp = 0
+         nod_bc1_v%ibc_stack = 0
+         nod_bc1_v%ibc_shape = 0
+         nod_bc1_v%ibc_stack_smp = 0
         end if
 !
-        if ( nmax_idx_ibc2_v.gt.0) then
-         ele_bc2_v_id = 0
-         nod_bc2_v_id = 0
+        if ( nod_bc1_v%nmax_idx_ibc2.gt.0) then
+         nod_bc1_v%ele_bc2_id = 0
+         nod_bc1_v%nod_bc2_id = 0
         end if
 !
        end subroutine allocate_bc_velo_4_element
@@ -117,8 +120,8 @@
 !
        subroutine deallocate_bc2_velo
 !
-        deallocate ( ele_bc2_v_id )
-        deallocate ( nod_bc2_v_id )
+        deallocate ( nod_bc1_v%ele_bc2_id )
+        deallocate ( nod_bc1_v%nod_bc2_id )
 !
        end subroutine deallocate_bc2_velo
 !

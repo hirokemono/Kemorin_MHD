@@ -198,9 +198,9 @@
       if (iflag_commute_velo .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_vector_surf                              &
      &     (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
-     &      intg_point_t_evo, nmax_idx_ibc_v, ibc_v_end,                &
+     &      intg_point_t_evo, nmax_idx_ibc_v, nod_bc1_v%ibc_end,                &
      &      num_idx_ibc_v, ele_bc_v_id,                                 &
-     &      ibc_v_stack_smp, ibc_v_shape, ifilter_final,                &
+     &      nod_bc1_v%ibc_stack_smp, nod_bc1_v%ibc_shape, ifilter_final,                &
      &      iphys%i_velo, ak_diff(1,iak_diff_v), ak_d_velo, coef_imp_v, &
      &      fem1_wk, f1_l)
 !
@@ -213,8 +213,8 @@
       else
         call int_vol_fixed_vector_surf                                  &
      &     (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1,                 &
-     &      intg_point_t_evo, nmax_idx_ibc_v, ibc_v_end, num_idx_ibc_v, &
-     &      ele_bc_v_id, ibc_v_stack_smp, ibc_v_shape,                  &
+     &      intg_point_t_evo, nmax_idx_ibc_v, nod_bc1_v%ibc_end, num_idx_ibc_v, &
+     &      ele_bc_v_id, nod_bc1_v%ibc_stack_smp, nod_bc1_v%ibc_shape,                  &
      &      iphys%i_velo, ak_d_velo, coef_imp_v, fem1_wk, f1_l)
 !
         call int_vol_fixed_rotate_surf                                  &

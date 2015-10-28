@@ -36,18 +36,21 @@
 !
 !
       call count_bc_element_4_vect_fl(num_idx_ibc_v, ibc_velo)
-      call count_bc_element_4_vect_fl(num_idx_ibc2_v, ibc2_velo)
+      call count_bc_element_4_vect_fl(nod_bc1_v%num_idx_ibc2, ibc2_velo)
 !
       call cal_max_int_4_vector(nmax_idx_ibc_v,  num_idx_ibc_v)
-      call cal_max_int_4_vector(nmax_idx_ibc2_v, num_idx_ibc2_v)
+      call cal_max_int_4_vector  &
+     &   (nod_bc1_v%nmax_idx_ibc2, nod_bc1_v%num_idx_ibc2)
 !
       call allocate_bc_velo_4_element(ele1%nnod_4_ele)
 !
       call set_ele_4_vector_nodal_bc_fl                                 &
      &   (node1%numnod, ele1%nnod_4_ele, ibc_velo, ibc2_velo,           &
      &    nmax_idx_ibc_v, num_idx_ibc_v, ele_bc_v_id, nod_bc_v_id,      &
-     &    nmax_idx_ibc2_v, ele_bc2_v_id, nod_bc2_v_id, ibc_v_end,       &
-     &    ibc_v_shape, ibc_v_stack, ibc_v_stack_smp)
+     &    nod_bc1_v%nmax_idx_ibc2, nod_bc1_v%ele_bc2_id, &
+     &    nod_bc1_v%nod_bc2_id, nod_bc1_v%ibc_end,       &
+     &    nod_bc1_v%ibc_shape, nod_bc1_v%ibc_stack,    &
+     &    nod_bc1_v%ibc_stack_smp)
 !
       call deallocate_ibc_4_velo
 !
