@@ -137,9 +137,16 @@
       subroutine choose_int_vol_rot_sgs(iflag_4_supg, iele_fsmp_stack,  &
      &          nmax_grp_sf, ngrp_sf, id_grp_sf, iak_diff, i_vector)
 !
+      use m_geometry_data
       use m_group_data
+      use m_node_phys_data
       use m_control_parameter
       use m_element_phys_data
+      use m_sorted_node
+      use m_jacobian_sf_grp
+      use m_finite_element_matrix
+      use m_filter_elength
+!
       use int_sgs_vect_differences
       use int_sgs_vect_diff_upw
       use int_surf_rot_sgs
@@ -171,9 +178,10 @@
      &      ak_diff(1,iak_diff), i_vector, fem1_wk, f1_nl)
        end if
 !
-       call int_surf_rotation_sgs(sf_grp1, intg_point_t_evo,            &
-     &     nmax_grp_sf, ngrp_sf, id_grp_sf, ifilter_final, iak_diff,    &
-     &     i_vector)
+       call int_surf_rotation_sgs(node1, ele1, surf1, sf_grp1,          &
+     &     nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &     intg_point_t_evo, nmax_grp_sf, ngrp_sf, id_grp_sf,           &
+     &     ifilter_final, iak_diff, i_vector, fem1_wk, f1_nl)
 !
       end subroutine choose_int_vol_rot_sgs
 !

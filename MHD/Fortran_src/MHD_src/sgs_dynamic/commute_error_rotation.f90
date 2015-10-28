@@ -17,12 +17,17 @@
       use m_precision
 !
       use m_control_parameter
+      use m_geometry_data
+      use m_group_data
       use m_phys_constants
       use m_node_phys_data
+      use m_jacobian_sf_grp
+      use m_sorted_node
       use m_finite_element_matrix
       use m_int_vol_data
+      use m_filter_elength
 !
-      use int_vol_commute_1st
+      use int_vol_commute_error
       use cal_ff_smp_to_ffs
       use cal_for_ffs
       use int_surf_rot_sgs
@@ -55,8 +60,10 @@
       call int_vol_commute_rot(ele1%istack_ele_smp, intg_point_t_evo,   &
      &    i_filter, i_vect)
 !
-      call int_surf_rot_commute_sgs(sf_grp1, intg_point_t_evo,          &
-     &    nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter, i_vect)
+      call int_surf_rot_commute_sgs(node1, ele1, surf1, sf_grp1,        &
+     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,              &
+     &    intg_point_t_evo, nmax_grp_sf, ngrp_sf, id_grp_sf,            &
+     &    i_filter, i_vect, fem1_wk, f1_nl)
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
@@ -85,8 +92,10 @@
 !
       call int_vol_commute_rot(iele_fl_smp_stack, intg_point_t_evo,     &
      &    i_filter, i_vect)
-      call int_surf_rot_commute_sgs(sf_grp1, intg_point_t_evo,          &
-     &    nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter, i_vect)
+      call int_surf_rot_commute_sgs(node1, ele1, surf1, sf_grp1,        &
+     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,              &
+     &    intg_point_t_evo, nmax_grp_sf, ngrp_sf, id_grp_sf,            &
+     &    i_filter, i_vect, fem1_wk, f1_nl)
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
@@ -115,8 +124,10 @@
 !
       call int_vol_commute_rot(iele_cd_smp_stack, intg_point_t_evo,     &
      &    i_filter, i_vect)
-      call int_surf_rot_commute_sgs(sf_grp1, intg_point_t_evo,          &
-     &    nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter, i_vect)
+      call int_surf_rot_commute_sgs(node1, ele1, surf1, sf_grp1,        &
+     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,              &
+     &    intg_point_t_evo, nmax_grp_sf, ngrp_sf, id_grp_sf,            &
+     &    i_filter, i_vect, fem1_wk, f1_nl)
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &

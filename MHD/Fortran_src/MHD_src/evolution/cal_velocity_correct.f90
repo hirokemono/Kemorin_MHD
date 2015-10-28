@@ -34,12 +34,22 @@
       subroutine cal_velocity_co
 !
       use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
+      use m_phys_constants
       use m_node_phys_address
       use m_node_phys_data
+      use m_jacobian_sf_grp
+      use m_sorted_node
+      use m_finite_element_matrix
+      use m_SGS_address
+      use m_SGS_model_coefs
+      use m_filter_elength
+      use m_surf_data_press
 !
       use nod_phys_send_recv
       use int_vol_solenoid_correct
-      use int_surf_velo_co_sgs
+      use int_surf_grad_sgs
 !
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
@@ -47,8 +57,17 @@
       if (iflag_debug.eq.1) write(*,*) 'int_vol_velo_co'
       call int_vol_velo_co
 !
-      if (iflag_debug.eq.1) write(*,*) 'int_surf_sgs_velo_co'
-      call int_surf_sgs_velo_co
+      if (iflag_commute_velo .eq. id_SGS_commute_ON                     &
+     &     .and. ngrp_sf_sgs_p.gt.0) then
+        if (iflag_debug.eq.1) write(*,*)                                &
+                             'int_surf_sgs_velo_co_ele', iphys%i_p_phi
+        call int_surf_sgs_velo_co_ele                                   &
+     &     (node1, ele1, surf1, sf_grp1, nod_fld1,                      &
+     &      jac1_sf_grp_2d_q, jac1_sf_grp_2d_l, rhs_tbl1, FEM1_elen,    &
+     &      intg_point_poisson, ngrp_sf_sgs_p, id_grp_sf_sgs_p,         &
+     &      ifilter_final, ak_diff(1,iak_diff_v), iphys%i_p_phi,        &
+     &      fem1_wk, f1_nl)
+      end if
 !
 !
       if (   iflag_implicit_correct.eq.3                                &

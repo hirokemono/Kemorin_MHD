@@ -1,5 +1,5 @@
 !
-!     module int_vol_commute_1st
+!     module int_vol_commute_error
 !
 !     Written by H. Matsui
 !
@@ -17,7 +17,7 @@
 !      subroutine int_vol_commute_induct_t(iele_fsmp_stack, n_int,      &
 !     &          i_filter, i_flux, i_v, i_b)
 !
-      module int_vol_commute_1st
+      module int_vol_commute_error
 !
       use m_precision
 !
@@ -226,4 +226,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module int_vol_commute_1st
+      end module int_vol_commute_error

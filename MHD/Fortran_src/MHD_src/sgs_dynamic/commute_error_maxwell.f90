@@ -44,7 +44,7 @@
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
-      use int_vol_commute_1st
+      use int_vol_commute_error
       use int_surf_div_fluxes_sgs
 !
       integer(kind = kint), intent(in) :: i_flux, i_vect

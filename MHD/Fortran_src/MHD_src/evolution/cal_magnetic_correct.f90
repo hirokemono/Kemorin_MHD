@@ -15,6 +15,7 @@
       use m_machine_parameter
       use m_control_parameter
       use m_geometry_data
+      use m_group_data
 !
       use cal_multi_pass
       use set_magne_boundary
@@ -37,10 +38,18 @@
       use m_nod_comm_table
       use m_node_phys_address
       use m_node_phys_data
+      use m_phys_constants
+      use m_jacobian_sf_grp
+      use m_sorted_node
+      use m_finite_element_matrix
+      use m_filter_elength
+      use m_SGS_address
+      use m_SGS_model_coefs
+      use m_surf_data_magne_p
 !
       use nod_phys_send_recv
       use int_vol_solenoid_correct
-      use int_surf_velo_co_sgs
+      use int_surf_grad_sgs
 !
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
@@ -48,8 +57,18 @@
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_magne_co'
       call int_vol_magne_co
 !
-      if (iflag_debug.eq.1)   write(*,*) 'int_surf_sgs_magne_co'
-      call int_surf_sgs_magne_co
+      if (iflag_commute_magne .eq. id_SGS_commute_ON                    &
+     &     .and. ngrp_sf_sgs_magp.gt.0) then
+        if (iflag_debug.eq.1) write(*,*)                                &
+                             'int_surf_sgs_velo_co_ele', iphys%i_m_phi
+         call int_surf_sgs_velo_co_ele                                  &
+     &      (node1, ele1, surf1, sf_grp1, nod_fld1,                     &
+     &       jac1_sf_grp_2d_q, jac1_sf_grp_2d_l, rhs_tbl1, FEM1_elen,   &
+     &       intg_point_poisson, ngrp_sf_sgs_magp, id_grp_sf_sgs_magp,  &
+     &       ifilter_final, ak_diff(1,iak_diff_b), iphys%i_m_phi,       &
+     &       fem1_wk, f1_nl)
+      end if
+!
 !
 !
       if (   iflag_implicit_correct.eq.3                                &
@@ -158,16 +177,36 @@
       use m_nod_comm_table
       use m_node_phys_address
       use m_node_phys_data
+      use m_phys_constants
+      use m_jacobian_sf_grp
+      use m_sorted_node
+      use m_finite_element_matrix
+      use m_filter_elength
+      use m_SGS_address
+      use m_SGS_model_coefs
+      use m_surf_data_magne_p
+!
       use nod_phys_send_recv
       use int_vol_solenoid_correct
-      use int_surf_velo_co_sgs
+      use int_surf_grad_sgs
 !
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       call int_vol_magne_ins_co
 !
-      call int_surf_sgs_magne_co
+      if (iflag_commute_magne .eq. id_SGS_commute_ON                    &
+     &     .and. ngrp_sf_sgs_magp.gt.0) then
+        if (iflag_debug.eq.1) write(*,*)                                &
+                             'int_surf_sgs_velo_co_ele', iphys%i_m_phi
+         call int_surf_sgs_velo_co_ele                                  &
+     &      (node1, ele1, surf1, sf_grp1, nod_fld1,                     &
+     &       jac1_sf_grp_2d_q, jac1_sf_grp_2d_l, rhs_tbl1, FEM1_elen,   &
+     &       intg_point_poisson, ngrp_sf_sgs_magp, id_grp_sf_sgs_magp,  &
+     &       ifilter_final, ak_diff(1,iak_diff_b), iphys%i_m_phi,       &
+     &       fem1_wk, f1_nl)
+      end if
+!
 !
       call cal_multi_pass_4_vector_ins
 !
