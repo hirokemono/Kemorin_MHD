@@ -238,7 +238,7 @@
 !
       open(id_vtk_file, file=file_name,                                 &
      &    form='formatted', status ='old')
-      call read_ucd_mesh_by_vtk(ucd)
+      call read_ucd_field_by_vtk(ucd)
       close(id_vtk_file)
 !
       end subroutine read_udt_data_2_vtk_phys
@@ -258,7 +258,7 @@
 !
       open(id_vtk_file, file=file_name,                                 &
      &    form='formatted', status ='old')
-      call read_ucd_field_by_vtk(ucd)
+      call read_ucd_mesh_by_vtk(ucd)
       close(id_vtk_file)
 !
       end subroutine read_udt_data_2_vtk_grid

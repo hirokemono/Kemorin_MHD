@@ -123,19 +123,10 @@
 !
 !
       call cross_section_init                                           &
-     &   (fem%mesh%node%numnod, fem%mesh%node%internal_node,            &
-     &    fem%mesh%ele%numele, surf%numsurf,                            &
-     &    edge_mesh%edge%numedge, fem%mesh%ele%nnod_4_ele,              &
-     &    edge_mesh%edge%nnod_4_edge, fem%mesh%ele%ie,                  &
-     &    edge_mesh%edge%ie_edge, edge_mesh%edge%interior_edge,         &
-     &    surf%isf_4_ele,                                               &
-     &    edge_mesh%edge%iedge_4_sf, edge_mesh%edge%iedge_4_ele,        &
+     &   (fem%mesh%node, fem%mesh%ele, surf, edge_mesh%edge,            &
      &    fem%mesh%nod_comm, edge_mesh%edge_comm,                       &
-     &    fem%mesh%ele%interior_ele, fem%mesh%node%xx,                  &
-     &    fem%mesh%node%istack_nod_smp, fem%mesh%ele%istack_ele_smp,    &
-     &    surf%istack_surf_smp, edge_mesh%edge%istack_edge_smp,         &
      &    fem%group%ele_grp, fem%group%surf_grp,                        &
-     &    fem%group%surf_nod_grp, fld_nod%num_phys, fld_nod%phys_name)
+     &    fem%group%surf_nod_grp, fld_nod)
 !
       end subroutine cross_section_init_type
 !

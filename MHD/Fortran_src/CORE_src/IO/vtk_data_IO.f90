@@ -272,7 +272,7 @@
       read(id_vtk,*) tmpchara
       read(id_vtk,*) tmpchara
 !
-      read(id_vtk,'(a,i16,a)')  tmpchara, nnod
+      read(id_vtk,*)  tmpchara, nnod
 !
       end subroutine read_vtk_node_head
 !

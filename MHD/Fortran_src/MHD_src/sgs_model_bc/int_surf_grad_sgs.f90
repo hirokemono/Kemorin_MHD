@@ -36,12 +36,6 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_filter_elength
-!      use m_phys_constants
-!      use m_geometry_data
-!      use m_sorted_node
-!      use m_finite_element_matrix
-!      use m_jacobian_sf_grp
-!      use m_filter_elength
 !
       implicit none
 !

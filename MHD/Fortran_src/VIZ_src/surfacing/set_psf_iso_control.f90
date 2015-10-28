@@ -28,7 +28,6 @@
       integer(kind = kint), parameter :: iso_ctl_file_code = 11
 !
       private :: psf_ctl_file_code, iso_ctl_file_code
-      private :: read_control_4_psf, read_control_4_iso
 !
 !  ---------------------------------------------------------------------
 !
@@ -81,13 +80,6 @@
 !
       integer(kind = kint) :: i_psf, ierr
 !
-!
-      call allocate_control_params_4_psf(num_psf)
-!
-      ctl_file_code = psf_ctl_file_code
-      do i_psf = 1, num_psf
-        call read_control_4_psf(i_psf)
-      end do
 !
       do i_psf = 1, num_psf
         call count_control_4_psf(i_psf, psf_ctl_struct(i_psf),          &
@@ -193,9 +185,10 @@
 !
       if(fname_psf_ctl(i_psf) .eq. 'NO_FILE') return
 !
-      open(psf_ctl_file_code, file=fname_psf_ctl(i_psf), status='old')
+      ctl_file_code = psf_ctl_file_code
+      open(ctl_file_code, file=fname_psf_ctl(i_psf), status='old')
       call read_control_data_4_psf(psf_ctl_struct(i_psf))
-      close(psf_ctl_file_code)
+      close(ctl_file_code)
 !
       end subroutine read_control_4_psf
 !

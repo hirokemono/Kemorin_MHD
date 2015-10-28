@@ -9,18 +9,21 @@
 !!
 !!@verbatim
 !!      subroutine cross_section_init                                   &
-!!     &         (numnod, internal_node, numele, numsurf, numedge,      &
-!!     &          nnod_4_ele, nnod_4_edge, ie, ie_edge, interior_edge,  &
-!!     &          isf_4_ele, iedge_4_sf, iedge_4_ele, nod_comm,         &
-!!     &          edge_comm, interior_ele, xx, inod_smp_stack,          &
-!!     &          iele_smp_stack, isurf_smp_stack, iedge_smp_stack,     &
-!!     &          ele_grp, sf_grp, sf_grp_nod,                          &
-!!     &          num_nod_phys, phys_nod_name)
+!!     &         (node, ele, surf, edge, nod_comm, edge_comm,           &
+!!     &          ele_grp, sf_grp, sf_grp_nod, nod_fld)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(edge_data), intent(in) :: edge
+!
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(in) :: edge_comm
+!
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
+!
+!!        type(phys_data), intent(in) :: nod_fld
 !!
 !!
 !!      subroutine cross_section_main(istep_psf, numnod, numedge,       &
@@ -77,22 +80,21 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cross_section_init                                     &
-     &         (numnod, internal_node, numele, numsurf, numedge,        &
-     &          nnod_4_ele, nnod_4_edge, ie, ie_edge, interior_edge,    &
-     &          isf_4_ele, iedge_4_sf, iedge_4_ele, nod_comm,           &
-     &          edge_comm, interior_ele, xx, inod_smp_stack,            &
-     &          iele_smp_stack, isurf_smp_stack, iedge_smp_stack,       &
-     &          ele_grp, sf_grp, sf_grp_nod,                            &
-     &          num_nod_phys, phys_nod_name)
-!
+     &         (node, ele, surf, edge, nod_comm, edge_comm,             &
+     &          ele_grp, sf_grp, sf_grp_nod, nod_fld)
+!nod_fld%phys_name
 !
       use m_geometry_constants
       use m_control_params_4_psf
 !
       use calypso_mpi
       use t_comm_table
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
       use t_group_data
       use t_surface_group_connect
+      use t_phys_data
       use set_psf_iso_control
       use search_ele_list_for_psf
       use set_const_4_sections
@@ -100,66 +102,67 @@
       use set_fields_for_psf
       use output_4_psf
 !
-      integer(kind=kint), intent(in) :: numnod, internal_node, numele
-      integer(kind=kint), intent(in) :: numsurf, numedge
-      integer(kind=kint), intent(in) :: nnod_4_ele, nnod_4_edge
-      integer(kind=kint), intent(in) :: ie(numele,nnod_4_ele)
-      integer(kind=kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
-      integer(kind=kint), intent(in) :: interior_edge(numedge)
-      integer(kind=kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      integer(kind = kint), intent(in)                                  &
-     &              :: iedge_4_sf(numsurf,nedge_4_surf)
-      integer(kind=kint), intent(in) :: iedge_4_ele(numele,nedge_4_ele)
-      integer(kind=kint), intent(in) :: interior_ele(numele)
-      real(kind = kreal), intent(in) :: xx(numnod,3)
-!
-      integer(kind=kint), intent(in) :: inod_smp_stack(0:np_smp)
-      integer(kind=kint), intent(in) :: iele_smp_stack(0:np_smp)
-      integer(kind=kint), intent(in) :: isurf_smp_stack(0:np_smp)
-      integer(kind=kint), intent(in) :: iedge_smp_stack(0:np_smp)
-!
-      integer(kind = kint), intent(in) :: num_nod_phys
-      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
 !
       type(communication_table), intent(in) :: nod_comm
       type(communication_table), intent(in) :: edge_comm
+!
       type(group_data), intent(in) :: ele_grp
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
+      type(phys_data), intent(in) :: nod_fld
+!
       integer(kind = kint) :: i_psf
 !
 !
+      if (iflag_debug.eq.1) write(*,*) 'allocate_control_params_4_psf'
+      call allocate_control_params_4_psf(num_psf)
+      do i_psf = 1, num_psf
+        if (iflag_debug.eq.1) write(*,*) 'read_control_4_psf', i_psf
+        call read_control_4_psf(i_psf)
+      end do
+!
+      if (iflag_debug.eq.1) write(*,*) 'alloc_psf_field_type'
       call alloc_psf_field_type
 !
+      call calypso_mpi_barrier
+      if (iflag_debug.eq.1) write(*,*) 'set_psf_control'
       call set_psf_control(num_psf, ele_grp%num_grp, ele_grp%grp_name,  &
      &    sf_grp%num_grp, sf_grp%grp_name,                              &
-     &    num_nod_phys, phys_nod_name, psf_param, psf_mesh)
+     &    nod_fld%num_phys, nod_fld%phys_name, psf_param, psf_mesh)
 !
+      call calypso_mpi_barrier
       if (iflag_debug.eq.1) write(*,*) 'set_search_mesh_list_4_psf'
-      call set_search_mesh_list_4_psf(num_psf,                          &
-     &        numnod, numele, numsurf, numedge, nnod_4_edge, ie_edge,   &
-     &        isf_4_ele, iedge_4_sf, interior_ele, inod_smp_stack,      &
-     &        iele_smp_stack, isurf_smp_stack, iedge_smp_stack,         &
-     &        ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,    &
-     &        ele_grp%item_grp, psf_param, psf_search)
+      call set_search_mesh_list_4_psf(num_psf, node%numnod, ele%numele, &
+     &    surf%numsurf, edge%numedge, edge%nnod_4_edge, edge%ie_edge,   &
+     &    surf%isf_4_ele, edge%iedge_4_sf, ele%interior_ele,            &
+     &    node%istack_nod_smp, ele%istack_ele_smp,                      &
+     &    surf%istack_surf_smp, edge%istack_edge_smp,                   &
+     &    ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,        &
+     &    ele_grp%item_grp, psf_param, psf_search)
 !
 !
       do i_psf = 1, num_psf
         call allocate_node_param_smp_type(psf_mesh(i_psf)%node)
         call allocate_ele_param_smp_type(psf_mesh(i_psf)%patch)
 !
-        call alloc_ref_field_4_psf(numnod, psf_list(i_psf))
+        call alloc_ref_field_4_psf(node%numnod, psf_list(i_psf))
       end do
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_crossections'
       call set_const_4_crossections                                     &
-     &   (num_psf, numnod, inod_smp_stack, xx, psf_list)
+     &   (num_psf, node%numnod, node%istack_nod_smp, node%xx, psf_list)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_node_and_patch_psf'
       call set_node_and_patch_psf                                       &
-     &   (num_psf, numnod, internal_node, numele, numedge, nnod_4_ele,  &
-     &    nnod_4_edge, xx, ie, ie_edge, interior_edge, iedge_4_ele,     &
+     &   (num_psf, node%numnod, node%internal_node,                     &
+     &    ele%numele, edge%numedge, ele%nnod_4_ele,                     &
+     &    edge%nnod_4_edge, node%xx, ele%ie, edge%ie_edge,              &
+     &    edge%interior_edge, edge%iedge_4_ele,                         &
      &    nod_comm, edge_comm, sf_grp%num_grp, sf_grp%num_item,         &
      &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &
      &    sf_grp_nod%ntot_node_sf_grp, sf_grp_nod%inod_stack_sf_grp,    &

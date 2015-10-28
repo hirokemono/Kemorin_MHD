@@ -81,15 +81,9 @@
       use m_cross_section
 !
 !
-      call cross_section_init(node1%numnod, node1%internal_node,        &
-     &    ele1%numele, surf1%numsurf, edge1%numedge,                    &
-     &    ele1%nnod_4_ele, edge1%nnod_4_edge, ele1%ie, edge1%ie_edge,   &
-     &    edge1%interior_edge, surf1%isf_4_ele, edge1%iedge_4_sf,       &
-     &    edge1%iedge_4_ele, nod_comm, edge_comm, ele1%interior_ele,    &
-     &    node1%xx, node1%istack_nod_smp, ele1%istack_ele_smp,          &
-     &    surf1%istack_surf_smp, edge1%istack_edge_smp,                 &
-     &    ele_grp1, sf_grp1, sf_grp_nod1,                               &
-     &    nod_fld1%num_phys, nod_fld1%phys_name)
+      call cross_section_init                                           &
+     &   (node1, ele1, surf1, edge1, nod_comm, edge_comm,               &
+     &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
 !
       end subroutine cross_section_init_1st
 !
