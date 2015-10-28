@@ -67,7 +67,7 @@
       call count_num_bc_vector                                          &
      &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
      &    velo_nod%num_bc, velo_nod%bc_name, velo_nod%ibc_type,         &
-     &    num_bc_v_nod, iflag_bc_fixed)
+     &    nod_bc1_v%num_bc_nod, iflag_bc_fixed)
 !
       call count_num_bc_vector                                          &
      &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
@@ -92,8 +92,10 @@
      &    num_bc_vsp_nod, iflag_bc_special)
 !
 !
-      call cal_max_int_4_vector(nmax_bc_v_nod, num_bc_v_nod)
-      call cal_max_int_4_vector(nmax_bc_v_sgs_nod, num_bc_v_sgs_nod)
+      call cal_max_int_4_vector                                         &
+     &   (nod_bc1_v%nmax_bc, nod_bc1_v%num_bc_nod)
+      call cal_max_int_4_vector                                         &
+     &   (nmax_bc_v_sgs_nod, num_bc_v_sgs_nod)
 !
       end subroutine count_num_bc_velo
 !

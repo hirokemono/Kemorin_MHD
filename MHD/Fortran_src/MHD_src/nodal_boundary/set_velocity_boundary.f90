@@ -52,10 +52,11 @@
 !
 !     set fixed velocity
 !
-      if (nmax_bc_v_nod .gt. 0) then
-        call set_fixed_bc_vect_phys(nmax_bc_v_nod, num_bc_v_nod,        &
-     &      ibc_v_id, bc_v_id_apt, node1%numnod, nod_fld1%ntot_phys,    &
-     &      iphys%i_velo, nod_fld1%d_fld)
+      if (nod_bc1_v%nmax_bc .gt. 0) then
+        call set_fixed_bc_vect_phys                                     &
+     &     (nod_bc1_v%nmax_bc, nod_bc1_v%num_bc_nod,                    &
+     &      nod_bc1_v%ibc_id, bc_v_id_apt, node1%numnod,                &
+     &      nod_fld1%ntot_phys,iphys%i_velo, nod_fld1%d_fld)
       end if
 !
 !   set rotation boundary
@@ -92,9 +93,11 @@
       use m_finite_element_matrix
 !
 !
-      if (nmax_bc_v_nod .gt. 0) then
-        call del_2vector_phys_on_bc(nmax_bc_v_nod, num_bc_v_nod,        &
-     &      ibc_v_id, node1%numnod, n_vector, ione, f1_l%ff, f1_nl%ff)
+      if (nod_bc1_v%nmax_bc .gt. 0) then
+        call del_2vector_phys_on_bc                                     &
+     &     (nod_bc1_v%nmax_bc, nod_bc1_v%num_bc_nod,                    &
+     &      nod_bc1_v%ibc_id, node1%numnod, n_vector, ione,             &
+     &      f1_l%ff, f1_nl%ff)
       end if
 !
       if (num_bc_v10_nod .gt. 0) then
@@ -119,9 +122,10 @@
       integer(kind = kint), intent(in) :: i_field
 !
 !
-      if (nmax_bc_v_nod/=0) then
-       call del_vector_phys_on_bc(nmax_bc_v_nod, num_bc_v_nod,          &
-     &     ibc_v_id, node1%numnod, nod_fld1%ntot_phys, i_field,         &
+      if (nod_bc1_v%nmax_bc/=0) then
+       call del_vector_phys_on_bc                                       &
+     &    (nod_bc1_v%nmax_bc, nod_bc1_v%num_bc_nod,                     &
+     &     nod_bc1_v%ibc_id, node1%numnod, nod_fld1%ntot_phys, i_field, &
      &     nod_fld1%d_fld)
       end if
 !

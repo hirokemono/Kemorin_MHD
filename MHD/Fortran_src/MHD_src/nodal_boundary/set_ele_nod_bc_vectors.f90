@@ -35,24 +35,29 @@
       use m_bc_data_velo
 !
 !
-      call count_bc_element_4_vect_fl(num_idx_ibc_v, ibc_velo)
-      call count_bc_element_4_vect_fl(nod_bc1_v%num_idx_ibc2, ibc2_velo)
+      call count_bc_element_4_vect_fl   &
+     &   (nod_bc1_v%num_idx_ibc, nod_bc1_v%ibc)
+      call count_bc_element_4_vect_fl                                   &
+     &   (nod_bc1_v%num_idx_ibc2, nod_bc1_v%ibc2)
 !
-      call cal_max_int_4_vector(nmax_idx_ibc_v,  num_idx_ibc_v)
+      call cal_max_int_4_vector  &
+     &   (nod_bc1_v%nmax_idx_ibc, nod_bc1_v%num_idx_ibc)
       call cal_max_int_4_vector  &
      &   (nod_bc1_v%nmax_idx_ibc2, nod_bc1_v%num_idx_ibc2)
 !
-      call allocate_bc_velo_4_element(ele1%nnod_4_ele)
+      call alloc_nod_bc_vector_ele_type                                 &
+     &   (np_smp, ele1%nnod_4_ele, nod_bc1_v)
 !
       call set_ele_4_vector_nodal_bc_fl                                 &
-     &   (node1%numnod, ele1%nnod_4_ele, ibc_velo, ibc2_velo,           &
-     &    nmax_idx_ibc_v, num_idx_ibc_v, ele_bc_v_id, nod_bc_v_id,      &
+     &   (node1%numnod, ele1%nnod_4_ele, nod_bc1_v%ibc, nod_bc1_v%ibc2, &
+     &    nod_bc1_v%nmax_idx_ibc, nod_bc1_v%num_idx_ibc,  &
+     &    nod_bc1_v%ele_bc_id, nod_bc1_v%nod_bc_id,      &
      &    nod_bc1_v%nmax_idx_ibc2, nod_bc1_v%ele_bc2_id, &
      &    nod_bc1_v%nod_bc2_id, nod_bc1_v%ibc_end,       &
      &    nod_bc1_v%ibc_shape, nod_bc1_v%ibc_stack,    &
      &    nod_bc1_v%ibc_stack_smp)
 !
-      call deallocate_ibc_4_velo
+      call dealloc_vector_ibc_type(nod_bc1_v)
 !
       end subroutine set_ele_nodal_bc_4_velo
 !

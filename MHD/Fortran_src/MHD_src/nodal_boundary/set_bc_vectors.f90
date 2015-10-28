@@ -51,8 +51,8 @@
       call set_fixed_vector_id                                          &
      &   (node1%numnod, nod_grp, velo_nod%num_bc, velo_nod%bc_name,     &
      &    velo_nod%ibc_type, velo_nod%bc_magnitude,                     &
-     &    ibc_velo, ibc2_velo, nmax_bc_v_nod,                           &
-     &    ibc_v_id, bc_v_id_apt, field_name, l_f)
+     &    nod_bc1_v%ibc, nod_bc1_v%ibc2, nod_bc1_v%nmax_bc,             &
+     &    nod_bc1_v%ibc_id, bc_v_id_apt, field_name, l_f)
 !
       l_s(1:3) = 0
       call set_bc_vector_id                                             &

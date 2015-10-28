@@ -75,7 +75,8 @@
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
 !
         if ( iflag_debug .eq.1)  write(*,*) 'allocate boundary 4 v'
-        call allocate_bc_velo(node1%numnod)
+        call alloc_vector_nod_bc_type(node1%numnod, nod_bc1_v)
+        call allocate_bc_velo
         call allocate_bc_v_sgs(node1%numnod)
         call allocate_bc_vr0(node1%numnod)
         call allocate_bc_vfr(node1%numnod)

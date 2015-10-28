@@ -10,6 +10,7 @@
       module m_bc_velo_sgs
 !
       use m_precision
+      use m_bc_data_velo
 !
       implicit  none
 !
