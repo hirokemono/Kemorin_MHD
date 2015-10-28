@@ -109,7 +109,6 @@
 !
       use m_bc_data_list
       use m_bc_data_magne
-      use m_bc_magne_sgs
 !
       type(group_data), intent(in) :: nod_grp
 !
@@ -132,8 +131,8 @@
       call set_bc_vector_id                                             &
      &   (node1%numnod, nod_grp, magne_nod%num_bc, magne_nod%bc_name,   &
      &    magne_nod%ibc_type, magne_nod%bc_magnitude,                   &
-     &    ibc_b_sgs, ibc2_b_sgs, nmax_bc_b_sgs_nod,                     &
-     &    ibc_b_sgs_id, bc_b_sgs_id_apt, iflag_bc_sgs, l_s)
+     &    sgs_bc1_b%ibc, sgs_bc1_b%ibc2, sgs_bc1_b%nmax_bc,             &
+     &    sgs_bc1_b%ibc_id, bc_b_sgs_id_apt, iflag_bc_sgs, l_s)
 !
       end subroutine set_bc_fixed_magne_id
 !

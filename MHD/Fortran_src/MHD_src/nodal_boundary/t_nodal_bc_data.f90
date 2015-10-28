@@ -16,7 +16,6 @@
 !>        (module m_bc_temp_sgs)
 !>        (module m_bc_press_sgs)
 !>        (module m_bc_vecp_sgs)
-!>        (module m_bc_magne_sgs)
 !>        (module m_bc_mag_p_sgs)
 !>        (module m_bc_data_rotate)
 !>        (module m_bc_data_vfree)

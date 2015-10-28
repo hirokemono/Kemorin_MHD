@@ -175,7 +175,6 @@
 !
       use m_bc_data_list
       use m_bc_data_magne
-      use m_bc_magne_sgs
 !
       type(group_data), intent(in) :: nod_grp
 !
@@ -188,7 +187,7 @@
       call count_num_bc_vector                                          &
      &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
      &    magne_nod%num_bc, magne_nod%bc_name, magne_nod%ibc_type,      &
-     &    num_bc_b_sgs_nod, iflag_bc_sgs)
+     &    sgs_bc1_b%num_bc_nod, iflag_bc_sgs)
 !
       call add_num_bc_magne                                             &
      &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
@@ -198,7 +197,8 @@
 !
       call cal_max_int_4_vector  &
      &   (nod_bc1_b%nmax_bc, nod_bc1_b%num_bc_nod)
-      call cal_max_int_4_vector(nmax_bc_b_sgs_nod, num_bc_b_sgs_nod)
+      call cal_max_int_4_vector  &
+     &   (sgs_bc1_b%nmax_bc, sgs_bc1_b%num_bc_nod)
 !
       end subroutine count_num_bc_magne
 !
