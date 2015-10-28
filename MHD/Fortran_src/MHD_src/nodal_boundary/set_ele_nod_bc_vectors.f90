@@ -15,6 +15,7 @@
       module set_ele_nod_bc_vectors
 !
       use m_precision
+      use m_machine_parameter
 !
       use m_geometry_data
       use count_bc_element
@@ -152,21 +153,29 @@
       use m_bc_data_magne
 !
 !
-      call count_bc_element_4_vect(num_idx_ibc_b, ibc_magne)
-      call count_bc_element_4_vect(num_idx_ibc2_b, ibc2_magne)
+      call count_bc_element_4_vect    &
+     &   (nod_bc1_b%num_idx_ibc, nod_bc1_b%ibc)
+      call count_bc_element_4_vect    &
+     &   (nod_bc1_b%num_idx_ibc2, nod_bc1_b%ibc2)
 !
-      call cal_max_int_4_vector(nmax_idx_ibc_b,  num_idx_ibc_b)
-      call cal_max_int_4_vector(nmax_idx_ibc2_b, num_idx_ibc2_b)
+      call cal_max_int_4_vector  &
+     &   (nod_bc1_b%nmax_idx_ibc2,  nod_bc1_b%num_idx_ibc)
+      call cal_max_int_4_vector    &
+     &   (nod_bc1_b%nmax_idx_ibc2, nod_bc1_b%num_idx_ibc2)
 !
-      call allocate_bc_magne_4_element(ele1%nnod_4_ele)
+      call alloc_nod_bc_vector_ele_type                                 &
+     &   (np_smp, ele1%nnod_4_ele, nod_bc1_b)
 !
       call set_ele_4_vector_nodal_bc                                    &
-     &   (node1%numnod, ele1%nnod_4_ele, ibc_magne, ibc2_magne,         &
-     &    nmax_idx_ibc_b, num_idx_ibc_b, ele_bc_b_id, nod_bc_b_id,      &
-     &    nmax_idx_ibc2_b, ele_bc2_b_id, nod_bc2_b_id, ibc_b_end,       &
-     &    ibc_b_shape, ibc_b_stack, ibc_b_stack_smp)
+     &   (node1%numnod, ele1%nnod_4_ele, nod_bc1_b%ibc, nod_bc1_b%ibc2, &
+     &    nod_bc1_b%nmax_idx_ibc2, nod_bc1_b%num_idx_ibc,   &
+     &    nod_bc1_b%ele_bc_id, nod_bc1_b%nod_bc_id,      &
+     &    nod_bc1_b%nmax_idx_ibc2, nod_bc1_b%ele_bc2_id,   &
+     &    nod_bc1_b%nod_bc2_id, nod_bc1_b%ibc_end,       &
+     &    nod_bc1_b%ibc_shape, nod_bc1_b%ibc_stack,      &
+     &    nod_bc1_b%ibc_stack_smp)
 !
-      call deallocate_ibc_4_magne
+      call dealloc_vector_ibc_type(nod_bc1_b)
 !
       end subroutine set_ele_nodal_bc_4_magne
 !

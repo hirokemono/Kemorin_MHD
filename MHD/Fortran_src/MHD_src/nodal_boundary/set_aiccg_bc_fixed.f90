@@ -115,13 +115,11 @@
 !
 !
       do nd = 1, n_vector
-        if ( num_idx_ibc2_b(nd) .ne. 0 ) then
-          do k0 = 1, num_idx_ibc2_b(nd)
-            call set_aiccg_bc_vector_nod(ele1%nnod_4_ele,               &
-     &          ele_bc2_b_id(k0,nd), nod_bc2_b_id(k0,nd), nd, nd,       &
-     &          DJDS_entire, Bmat_DJDS)
-          end do
-        end if
+        do k0 = 1, nod_bc1_b%num_idx_ibc2(nd)
+          call set_aiccg_bc_vector_nod(ele1%nnod_4_ele,                 &
+     &        nod_bc1_b%ele_bc2_id(k0,nd), nod_bc1_b%nod_bc2_id(k0,nd), &
+     &        nd, nd, DJDS_entire, Bmat_DJDS)
+        end do
       end do
 !
       end subroutine set_aiccg_bc_magne_nod

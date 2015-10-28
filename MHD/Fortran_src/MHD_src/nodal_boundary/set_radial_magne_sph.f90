@@ -56,7 +56,7 @@
 !
         do nd = 1, 3
           l_f(nd) = l_f(nd) + 1
-          ibc_b_id(l_f(nd),nd) = inod
+          nod_bc1_b%ibc_id(l_f(nd),nd) = inod
         end do
 !
         call dschmidt(node%theta(inod))
@@ -69,8 +69,8 @@
 !
         do nd = 1, 3
           i_comp = i_magne + nd - 1
-          ibc_magne(inod,nd) = 1
-          ibc2_magne(inod,nd) = 1
+          nod_bc1_b%ibc(inod,nd) = 1
+          nod_bc1_b%ibc2(inod,nd) = 1
           bc_b_id_apt(l_f(nd),nd) = bmag * node%xx(inod,1)              &
      &                                   * node%a_r(inod)
           d_nod(inod,i_comp) = bc_b_id_apt(l_f(nd),nd)

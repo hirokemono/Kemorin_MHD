@@ -16,7 +16,7 @@
       type(vect_fixed_nod_bc_type) :: nod_bc1_v
 !
       type(vect_fixed_nod_bc_type) :: sgs_bc1_v
-!sgs_bc1_v%ibc
+!
 !
       real (kind=kreal),   allocatable :: bc_v_id_apt(:,:)
 !

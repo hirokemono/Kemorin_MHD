@@ -102,7 +102,9 @@
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call allocate_bc_magne(node1%numnod)
+        call alloc_vector_nod_bc_type(node1%numnod, nod_bc1_b)
+!
+        call allocate_bc_magne
         call allocate_bc_b_sgs(node1%numnod)
         call allocate_bc_magne_p(node1%numnod)
         call allocate_bc_magp_sgs(node1%numnod)
@@ -124,7 +126,9 @@
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call allocate_bc_magne(node1%numnod)
+        call alloc_vector_nod_bc_type(node1%numnod, nod_bc1_b)
+!
+        call allocate_bc_magne
         call allocate_bc_b_sgs(node1%numnod)
         call allocate_bc_vect_p(node1%numnod)
         call allocate_bc_vecp_sgs(node1%numnod)

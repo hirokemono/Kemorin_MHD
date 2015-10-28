@@ -122,8 +122,8 @@
       call set_fixed_vector_id                                          &
      &   (node1%numnod, nod_grp, magne_nod%num_bc, magne_nod%bc_name,   &
      &    magne_nod%ibc_type, magne_nod%bc_magnitude,                   &
-     &    ibc_magne, ibc2_magne, nmax_bc_b_nod,                         &
-     &    ibc_b_id, bc_b_id_apt, field_name, l_f)
+     &    nod_bc1_b%ibc, nod_bc1_b%ibc2, nod_bc1_b%nmax_bc,             &
+     &    nod_bc1_b%ibc_id, bc_b_id_apt, field_name, l_f)
 !
       call set_sph_magne_id(node1, nod_grp, magne_nod%num_bc,           &
      &    magne_nod%bc_name, magne_nod%ibc_type, l_f)

@@ -267,16 +267,19 @@
       if (iflag_commute_magne .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_vector_surf                              &
      &     (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
-     &      intg_point_t_evo, nmax_idx_ibc_b, ibc_b_end,                &
-     &      num_idx_ibc_b, ele_bc_b_id,                                 &
-     &      ibc_b_stack_smp, ibc_b_shape, ifilter_final, iphys%i_magne, &
-     &      ak_diff(1,iak_diff_b), ak_d_magne, coef_imp_b,              &
-     &      fem1_wk, f1_l)
+     &      intg_point_t_evo, nod_bc1_b%nmax_idx_ibc2,                  &
+     &      nod_bc1_b%ibc_end, nod_bc1_b%num_idx_ibc,                   &
+     &      nod_bc1_b%ele_bc_id, nod_bc1_b%ibc_stack_smp,               &
+     &      nod_bc1_b%ibc_shape,                                        &
+     &      ifilter_final, iphys%i_magne, ak_diff(1,iak_diff_b),        &
+     &      ak_d_magne, coef_imp_b, fem1_wk, f1_l)
       else
         call int_vol_fixed_vector_surf                                  &
      &     (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1,                 &
-     &      intg_point_t_evo, nmax_idx_ibc_b, ibc_b_end, num_idx_ibc_b, &
-     &      ele_bc_b_id, ibc_b_stack_smp, ibc_b_shape,                  &
+     &      intg_point_t_evo, nod_bc1_b%nmax_idx_ibc2,                  &
+     &      nod_bc1_b%ibc_end, nod_bc1_b%num_idx_ibc,                   &
+     &      nod_bc1_b%ele_bc_id, nod_bc1_b%ibc_stack_smp,               &
+     &      nod_bc1_b%ibc_shape,                                        &
      &      iphys%i_magne, ak_d_magne, coef_imp_b, fem1_wk, f1_l)
        end if
 !

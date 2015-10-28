@@ -35,10 +35,11 @@
       use m_node_phys_address
 !
 !
-      if (nmax_bc_b_nod .gt. 0) then
-          call set_fixed_bc_vect_phys(nmax_bc_b_nod, num_bc_b_nod,      &
-     &        ibc_b_id, bc_b_id_apt, node1%numnod, nod_fld1%ntot_phys,  &
-     &        iphys%i_magne, nod_fld1%d_fld)
+      if (nod_bc1_b%nmax_bc .gt. 0) then
+          call set_fixed_bc_vect_phys                                   &
+     &       (nod_bc1_b%nmax_bc, nod_bc1_b%num_bc_nod,                  &
+     &        nod_bc1_b%ibc_id, bc_b_id_apt, node1%numnod,              &
+     &        nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld)
       end if
 !
       end subroutine set_boundary_magne
@@ -51,9 +52,11 @@
       use m_finite_element_matrix
 !
 !
-      if (nmax_bc_b_nod .le. 0) return
-      call del_2vector_phys_on_bc(nmax_bc_b_nod, num_bc_b_nod,          &
-     &    ibc_b_id, node1%numnod, n_vector, ione, f1_l%ff, f1_nl%ff)
+      if (nod_bc1_b%nmax_bc .le. 0) return
+      call del_2vector_phys_on_bc                                       &
+     &   (nod_bc1_b%nmax_bc, nod_bc1_b%num_bc_nod,                      &
+     &    nod_bc1_b%ibc_id, node1%numnod, n_vector, ione,               &
+     &    f1_l%ff, f1_nl%ff)
 !
       end subroutine set_boundary_magne_4_rhs
 !
@@ -66,10 +69,11 @@
       integer(kind = kint), intent(in) :: i_field
 !
 !
-      if (nmax_bc_b_nod/=0) then
-        call del_vector_phys_on_bc(nmax_bc_b_nod, num_bc_b_nod,         &
-     &      ibc_b_id, node1%numnod, nod_fld1%ntot_phys, i_field,        &
-     &      nod_fld1%d_fld)
+      if (nod_bc1_b%nmax_bc/=0) then
+        call del_vector_phys_on_bc                                      &
+     &     (nod_bc1_b%nmax_bc, nod_bc1_b%num_bc_nod,                    &
+     &      nod_bc1_b%ibc_id, node1%numnod,                             &
+     &      nod_fld1%ntot_phys, i_field, nod_fld1%d_fld)
       end if
 !
       end subroutine delete_field_by_fixed_b_bc
