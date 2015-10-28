@@ -31,7 +31,6 @@
       use m_bc_temp_sgs
 !
       use m_bc_data_velo
-      use m_bc_velo_sgs
       use m_bc_data_vr0
       use m_bc_data_rotate
       use m_bc_data_vfree
@@ -76,8 +75,9 @@
 !
         if ( iflag_debug .eq.1)  write(*,*) 'allocate boundary 4 v'
         call alloc_vector_nod_bc_type(node1%numnod, nod_bc1_v)
+        call alloc_vector_nod_bc_type(node1%numnod, sgs_bc1_v)
         call allocate_bc_velo
-        call allocate_bc_v_sgs(node1%numnod)
+        call allocate_bc_v_sgs
         call allocate_bc_vr0(node1%numnod)
         call allocate_bc_vfr(node1%numnod)
         call allocate_bc_rot(node1%numnod)

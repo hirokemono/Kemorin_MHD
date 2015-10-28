@@ -27,9 +27,9 @@
       use t_geometry_data
       use t_jacobians
 !
-      type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d
       integer (kind=kint), intent(in) :: n_int
+      type(element_data), intent(inout) :: ele
 !
 !
       call s_fem_element_volume(ele%numele, ele%istack_ele_smp, n_int,  &

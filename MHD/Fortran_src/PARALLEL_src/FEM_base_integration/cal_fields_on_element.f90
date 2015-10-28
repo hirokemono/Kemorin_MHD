@@ -4,7 +4,7 @@
 !     Written by H. Matsui on Oct., 2005
 !
 !      subroutine scalar_on_element(node, ele, jac_3d,                  &
-!     &          iele_fsmp_stack, n_int, d_ele, d_nod)
+!     &          iele_fsmp_stack, n_int, d_nod, d_ele)
 !      subroutine vector_on_element(node, ele, jac_3d,                  &
 !     &          iele_fsmp_stack, n_int, d_nod, d_ele)
 !      subroutine sym_tensor_on_element(node, ele, jac_3d,              &
@@ -39,7 +39,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine scalar_on_element(node, ele, jac_3d,                   &
-     &          iele_fsmp_stack, n_int, d_ele, d_nod)
+     &          iele_fsmp_stack, n_int, d_nod, d_ele)
 !
       use fem_fields_on_element
 !

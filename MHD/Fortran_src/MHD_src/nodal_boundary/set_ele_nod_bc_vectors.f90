@@ -65,25 +65,31 @@
 !
       subroutine set_ele_nodal_bc_4_velo_sgs
 !
-      use m_bc_velo_sgs
+      use m_bc_data_velo
 !
 !
-      call count_bc_element_4_vect_fl(num_idx_ibc_v_sgs, ibc_v_sgs)
-      call count_bc_element_4_vect_fl(num_idx_ibc2_v_sgs, ibc2_v_sgs)
+      call count_bc_element_4_vect_fl  &
+     &   (sgs_bc1_v%num_idx_ibc, sgs_bc1_v%ibc)
+      call count_bc_element_4_vect_fl   &
+     &   (sgs_bc1_v%num_idx_ibc2, sgs_bc1_v%ibc2)
 !
-      call cal_max_int_4_vector(nmax_idx_ibc_v_sgs,  num_idx_ibc_v_sgs)
-      call cal_max_int_4_vector(nmax_idx_ibc2_v_sgs, num_idx_ibc2_v_sgs)
+      call cal_max_int_4_vector   &
+     &   (sgs_bc1_v%nmax_idx_ibc, sgs_bc1_v%num_idx_ibc)
+      call cal_max_int_4_vector      &
+     &   (sgs_bc1_v%nmax_idx_ibc2, sgs_bc1_v%num_idx_ibc2)
 !
-      call allocate_bc_vsgs_4_ele(ele1%nnod_4_ele)
+      call alloc_nod_bc_vector_ele_type                        &
+     &   (np_smp, ele1%nnod_4_ele, sgs_bc1_v)
 !
       call set_ele_4_vector_nodal_bc_fl                                 &
-     &   (node1%numnod, ele1%nnod_4_ele, ibc_v_sgs, ibc2_v_sgs,         &
-     &    nmax_idx_ibc_v_sgs, num_idx_ibc_v_sgs, ele_bc_v_sgs_id,       &
-     &    nod_bc_v_sgs_id, nmax_idx_ibc2_v_sgs, ele_bc2_v_sgs_id,       &
-     &    nod_bc2_v_sgs_id, ibc_v_sgs_end, ibc_v_sgs_shape,             &
-     &    ibc_v_sgs_stack, ibc_v_sgs_stack_smp)
+     &   (node1%numnod, ele1%nnod_4_ele, sgs_bc1_v%ibc, sgs_bc1_v%ibc2, &
+     &    sgs_bc1_v%nmax_idx_ibc, sgs_bc1_v%num_idx_ibc,   &
+     &    sgs_bc1_v%ele_bc_id, sgs_bc1_v%nod_bc_id, &
+     &    sgs_bc1_v%nmax_idx_ibc2, sgs_bc1_v%ele_bc2_id,   &
+     &    sgs_bc1_v%nod_bc2_id, sgs_bc1_v%ibc_end, sgs_bc1_v%ibc_shape, &
+     &    sgs_bc1_v%ibc_stack, sgs_bc1_v%ibc_stack_smp)
 !
-      call deallocate_ibc_4_vsgs
+      call dealloc_vector_ibc_type(sgs_bc1_v)
 !
       end subroutine set_ele_nodal_bc_4_velo_sgs
 !

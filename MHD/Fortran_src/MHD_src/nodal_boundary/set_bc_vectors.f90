@@ -37,7 +37,6 @@
 !
       use m_bc_data_list
       use m_bc_data_velo
-      use m_bc_velo_sgs
       use m_bc_data_rotate
 !
       type(group_data), intent(in) :: nod_grp
@@ -58,8 +57,8 @@
       call set_bc_vector_id                                             &
      &   (node1%numnod, nod_grp, velo_nod%num_bc, velo_nod%bc_name,     &
      &    velo_nod%ibc_type, velo_nod%bc_magnitude,                     &
-     &    ibc_v_sgs, ibc2_v_sgs, nmax_bc_v_sgs_nod,                     &
-     &    ibc_v_sgs_id, bc_v_sgs_apt, iflag_bc_sgs, l_s)
+     &    sgs_bc1_v%ibc, sgs_bc1_v%ibc2, sgs_bc1_v%nmax_bc,             &
+     &    sgs_bc1_v%ibc_id, bc_v_sgs_apt, iflag_bc_sgs, l_s)
 !
       l_r(1:3) = 0
       call set_bc_rotate_id                                             &
