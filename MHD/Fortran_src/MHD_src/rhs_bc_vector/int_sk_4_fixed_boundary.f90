@@ -231,7 +231,7 @@
 !
       subroutine int_sk_4_fixed_vector_p
 !
-      use m_bc_data_vect_p
+      use m_bc_data_magne
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
 !
@@ -239,17 +239,20 @@
       if (iflag_commute_magne .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_vector_surf                              &
      &     (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
-     &      intg_point_t_evo, nmax_idx_ibc_vp, ibc_vp_end,              &
-     &      num_idx_ibc_vp, ele_bc_vp_id,                               &
-     &      ibc_vp_stack_smp, ibc_vp_shape, ifilter_final,              &
-     &      iphys%i_vecp, ak_diff(1,iak_diff_b), ak_d_magne,            &
-     &      coef_imp_b, fem1_wk, f1_l)
+     &      intg_point_t_evo, nod_bc1_a%nmax_idx_ibc,                   &
+     &      nod_bc1_a%ibc_end,       &
+     &      nod_bc1_a%num_idx_ibc, nod_bc1_a%ele_bc_id,                 &
+     &      nod_bc1_a%ibc_stack_smp, nod_bc1_a%ibc_shape,               &
+     &      ifilter_final, iphys%i_vecp, ak_diff(1,iak_diff_b),         &
+     &      ak_d_magne, coef_imp_b, fem1_wk, f1_l)
       else
         call int_vol_fixed_vector_surf                                  &
      &     (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1,                 &
-     &      intg_point_t_evo, nmax_idx_ibc_vp, ibc_vp_end,              &
-     &      num_idx_ibc_vp, ele_bc_vp_id, ibc_vp_stack_smp,             &
-     &      ibc_vp_shape, iphys%i_vecp, ak_d_magne, coef_imp_b,         &
+     &      intg_point_t_evo, nod_bc1_a%nmax_idx_ibc,                   &
+     &      nod_bc1_a%ibc_end,       &
+     &      nod_bc1_a%num_idx_ibc, nod_bc1_a%ele_bc_id,                 &
+     &      nod_bc1_a%ibc_stack_smp, nod_bc1_a%ibc_shape,               &
+     &      iphys%i_vecp, ak_d_magne, coef_imp_b,                       &
      &      fem1_wk, f1_l)
        end if
 !

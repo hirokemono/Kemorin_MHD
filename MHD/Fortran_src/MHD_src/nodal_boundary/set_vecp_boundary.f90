@@ -32,15 +32,16 @@
       use m_control_parameter
       use m_node_phys_data
       use m_node_phys_address
-      use m_bc_data_vect_p
+      use m_bc_data_magne
       use m_surf_data_vector_p
 !
 !
-      if (nmax_bc_vp_nod/=0) then
-          call set_fixed_bc_vect_phys                                   &
-     &       (nmax_bc_vp_nod, num_bc_vp_nod, ibc_vp_id, bc_vp_id_apt,   &
-     &        node1%numnod, nod_fld1%ntot_phys, iphys%i_vecp,           &
-     &        nod_fld1%d_fld)
+      if (nod_bc1_a%nmax_bc /= 0) then
+        call set_fixed_bc_vect_phys                                     &
+     &     (nod_bc1_a%nmax_bc, nod_bc1_a%num_bc_nod,                    &
+     &      nod_bc1_a%ibc_id, bc_vp_id_apt,   &
+     &      node1%numnod, nod_fld1%ntot_phys, iphys%i_vecp,             &
+     &      nod_fld1%d_fld)
       end if
 !
       end subroutine set_boundary_vect_p
@@ -49,15 +50,17 @@
 !
       subroutine set_boundary_vect_p_4_rhs
 !
-      use m_bc_data_vect_p
+      use m_bc_data_magne
       use m_surf_data_vector_p
       use m_phys_constants
       use m_finite_element_matrix
 !
 !
-      if (nmax_bc_vp_nod .le. 0) return
-      call del_2vector_phys_on_bc(nmax_bc_vp_nod, num_bc_vp_nod,        &
-     &    ibc_vp_id, node1%numnod, n_vector, ione, f1_l%ff, f1_nl%ff)
+      if (nod_bc1_a%nmax_bc .le. 0) return
+      call del_2vector_phys_on_bc                                       &
+     &   (nod_bc1_a%nmax_bc, nod_bc1_a%num_bc_nod,                      &
+     &    nod_bc1_a%ibc_id, node1%numnod, n_vector, ione,               &
+     &     f1_l%ff, f1_nl%ff)
 !
       end subroutine set_boundary_vect_p_4_rhs
 !
@@ -66,17 +69,18 @@
       subroutine delete_field_by_fixed_a_bc(i_field)
 !
       use m_node_phys_data
-      use m_bc_data_vect_p
+      use m_bc_data_magne
       use m_surf_data_vector_p
 !
 !
       integer(kind = kint), intent(in) :: i_field
 !
 !
-      if (nmax_bc_vp_nod/=0) then
-        call del_vector_phys_on_bc(nmax_bc_vp_nod, num_bc_vp_nod,       &
-     &      ibc_vp_id, node1%numnod, nod_fld1%ntot_phys, i_field,       &
-     &      nod_fld1%d_fld)
+      if (nod_bc1_a%nmax_bc/=0) then
+        call del_vector_phys_on_bc                                      &
+     &     (nod_bc1_a%nmax_bc, nod_bc1_a%num_bc_nod,                    &
+     &      nod_bc1_a%ibc_id, node1%numnod, nod_fld1%ntot_phys,         &
+     &      i_field, nod_fld1%d_fld)
       end if
 !
       end subroutine delete_field_by_fixed_a_bc

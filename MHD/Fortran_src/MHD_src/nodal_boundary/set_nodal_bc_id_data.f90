@@ -42,7 +42,6 @@
       use m_bc_data_mag_p_ins
       use m_bc_data_mag_p_cd
 !
-      use m_bc_data_vect_p
       use m_bc_vecp_sgs
 !
       use m_bc_data_current
@@ -126,12 +125,13 @@
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        call alloc_vector_nod_bc_type(node1%numnod, nod_bc1_a)
         call alloc_vector_nod_bc_type(node1%numnod, nod_bc1_b)
         call alloc_vector_nod_bc_type(node1%numnod, sgs_bc1_b)
 !
         call allocate_bc_magne
         call allocate_bc_b_sgs
-        call allocate_bc_vect_p(node1%numnod)
+        call allocate_bc_vect_p
         call allocate_bc_vecp_sgs(node1%numnod)
         call allocate_bc_magne_p(node1%numnod)
         call allocate_bc_magp_sgs(node1%numnod)

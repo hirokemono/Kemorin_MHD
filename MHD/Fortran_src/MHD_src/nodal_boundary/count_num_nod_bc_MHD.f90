@@ -147,7 +147,7 @@
       subroutine count_num_bc_vecp(nod_grp)
 !
       use m_bc_data_list
-      use m_bc_data_vect_p
+      use m_bc_data_magne
       use m_bc_vecp_sgs
 !
       type(group_data), intent(in) :: nod_grp
@@ -156,7 +156,8 @@
       call count_num_bc_vector                                          &
      &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
      &    a_potential_nod%num_bc, a_potential_nod%bc_name,              &
-     &    a_potential_nod%ibc_type, num_bc_vp_nod, iflag_bc_fixed)
+     &    a_potential_nod%ibc_type, nod_bc1_a%num_bc_nod,               &
+     &    iflag_bc_fixed)
 !
       call count_num_bc_vector                                          &
      &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
@@ -164,7 +165,7 @@
      &    a_potential_nod%ibc_type, num_bc_a_sgs_nod, iflag_bc_sgs)
 !
 !
-      call cal_max_int_4_vector(nmax_bc_vp_nod, num_bc_vp_nod)
+      call cal_max_int_4_vector(nod_bc1_a%nmax_bc, nod_bc1_a%num_bc_nod)
       call cal_max_int_4_vector(nmax_bc_a_sgs_nod, num_bc_a_sgs_nod)
 !
       end subroutine count_num_bc_vecp

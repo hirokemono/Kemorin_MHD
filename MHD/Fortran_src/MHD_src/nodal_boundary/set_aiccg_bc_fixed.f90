@@ -84,7 +84,7 @@
 !
       subroutine set_aiccg_bc_vecp_nod
 !
-      use m_bc_data_vect_p
+      use m_bc_data_magne
       use m_solver_djds_MHD
       use m_magne_matrix
 !
@@ -92,13 +92,11 @@
 !
 !
       do nd = 1, n_vector
-        if ( num_idx_ibc2_vp(nd) .ne. 0 ) then
-          do k0 = 1, num_idx_ibc2_vp(nd)
-            call set_aiccg_bc_vector_nod(ele1%nnod_4_ele,               &
-     &          ele_bc2_vp_id(k0,nd), nod_bc2_vp_id(k0,nd), nd, nd,     &
-     &          DJDS_entire, Bmat_DJDS)
-          end do
-        end if
+        do k0 = 1, nod_bc1_a%num_idx_ibc2(nd)
+          call set_aiccg_bc_vector_nod(ele1%nnod_4_ele,                 &
+     &        nod_bc1_a%ele_bc2_id(k0,nd), nod_bc1_a%nod_bc2_id(k0,nd), &
+     &        nd, nd, DJDS_entire, Bmat_DJDS)
+        end do
       end do
 !
       end subroutine set_aiccg_bc_vecp_nod

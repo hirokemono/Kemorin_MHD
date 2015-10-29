@@ -79,7 +79,7 @@
       call cal_max_int_4_vector      &
      &   (sgs_bc1_v%nmax_idx_ibc2, sgs_bc1_v%num_idx_ibc2)
 !
-      call alloc_nod_bc_vector_ele_type                        &
+      call alloc_nod_bc_vector_ele_type                                 &
      &   (np_smp, ele1%nnod_4_ele, sgs_bc1_v)
 !
       call set_ele_4_vector_nodal_bc_fl                                 &
@@ -99,24 +99,31 @@
 !
       subroutine set_ele_nodal_bc_4_vect_p
 !
-      use m_bc_data_vect_p
+      use m_bc_data_magne
 !
 !
-      call count_bc_element_4_vect(num_idx_ibc_vp, ibc_vp)
-      call count_bc_element_4_vect(num_idx_ibc2_vp, ibc2_vp)
+      call count_bc_element_4_vect   &
+     &   (nod_bc1_a%num_idx_ibc, nod_bc1_a%ibc)
+      call count_bc_element_4_vect   &
+     &   (nod_bc1_a%num_idx_ibc2, nod_bc1_a%ibc2)
 !
-      call cal_max_int_4_vector(nmax_idx_ibc_vp,  num_idx_ibc_vp)
-      call cal_max_int_4_vector(nmax_idx_ibc2_vp, num_idx_ibc2_vp)
+      call cal_max_int_4_vector    &
+     &   (nod_bc1_a%nmax_idx_ibc, nod_bc1_a%num_idx_ibc)
+      call cal_max_int_4_vector    &
+     &   (nod_bc1_a%nmax_idx_ibc2, nod_bc1_a%num_idx_ibc2)
 !
-      call allocate_bc_vect_p_4_element(ele1%nnod_4_ele)
+      call alloc_nod_bc_vector_ele_type                                 &
+     &   (np_smp, ele1%nnod_4_ele, nod_bc1_a)
 !
       call set_ele_4_vector_nodal_bc(node1%numnod, ele1%nnod_4_ele,     &
-     &    ibc_vp, ibc2_vp, nmax_idx_ibc_vp,                             &
-     &    num_idx_ibc_vp, ele_bc_vp_id, nod_bc_vp_id, nmax_idx_ibc2_vp, &
-     &    ele_bc2_vp_id, nod_bc2_vp_id, ibc_vp_end, ibc_vp_shape,       &
-     &    ibc_vp_stack, ibc_vp_stack_smp)
+     &    nod_bc1_a%ibc, nod_bc1_a%ibc2, nod_bc1_a%nmax_idx_ibc,        &
+     &    nod_bc1_a%num_idx_ibc, nod_bc1_a%ele_bc_id,                   &
+     &    nod_bc1_a%nod_bc_id, nod_bc1_a%nmax_idx_ibc2,                 &
+     &    nod_bc1_a%ele_bc2_id, nod_bc1_a%nod_bc2_id,                   &
+     &    nod_bc1_a%ibc_end, nod_bc1_a%ibc_shape,                       &
+     &    nod_bc1_a%ibc_stack, nod_bc1_a%ibc_stack_smp)
 !
-      call deallocate_ibc_4_vect_p
+      call dealloc_vector_ibc_type(nod_bc1_a)
 !
       end subroutine set_ele_nodal_bc_4_vect_p
 !

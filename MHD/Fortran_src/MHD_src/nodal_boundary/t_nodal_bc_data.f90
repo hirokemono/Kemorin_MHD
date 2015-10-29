@@ -12,7 +12,6 @@
 !>        (module m_bc_data_press)
 !>        (module m_bc_data_magne)
 !>        (module m_bc_data_magne_p)
-!>        (module m_bc_data_vect_p)
 !>        (module m_bc_temp_sgs)
 !>        (module m_bc_press_sgs)
 !>        (module m_bc_vecp_sgs)
