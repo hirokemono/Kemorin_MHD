@@ -22,7 +22,7 @@
 !
       use m_geometry_data
       use m_bc_data_list
-      use m_bc_data_magne_p
+      use m_bc_data_magne
       use m_schmidt_polynomial
       use t_group_data
       use spherical_harmonics
@@ -46,7 +46,7 @@
         ii=ii+1
 !
         inod = nod_grp%item_grp(k+nod_grp%istack_grp(i-1))
-        ibc_mag_p_id(ii)=inod
+        nod_bc1_f%ibc_id(ii) = inod
 !
         call dschmidt(node1%theta(inod))
 !
@@ -56,8 +56,8 @@
           bc_mag_p_id_apt(ii) = p(mm,ll) * sin(node1%phi(inod)*dble(mm))
         end if
 !
-        ibc_mag_p(    inod ) = 1
-        ibc2_mag_p(   inod ) = 1
+        nod_bc1_f%ibc(    inod ) = 1
+        nod_bc1_f%ibc2(   inod ) = 1
       end do
 !
       call deallocate_schmidt_polynomial

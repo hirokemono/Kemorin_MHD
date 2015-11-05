@@ -7,6 +7,7 @@
 !>@brief  Routines to copy time step information from IO data
 !!
 !!@verbatim
+!!      subroutine copy_time_from_restart
 !!      subroutine copy_init_time_from_restart
 !!      subroutine copy_time_steps_from_restart
 !!      subroutine copy_time_steps_to_restart
@@ -26,6 +27,15 @@
 !  ---------------------------------------------------------------------
 !
       contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine copy_time_from_restart
+!
+!
+      time_init =   time_IO
+!
+      end subroutine copy_time_from_restart
 !
 !  ---------------------------------------------------------------------
 !

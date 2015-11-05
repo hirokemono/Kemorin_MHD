@@ -33,6 +33,7 @@
 !
       subroutine set_bc_velo_id
 !
+      use m_bc_data_velo
       use set_bc_vectors
       use set_bc_scalars
 !
@@ -48,25 +49,18 @@
 !
 !   set node id in an element for velocity boundary 
 !
-      if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_velo'
-      call set_ele_nodal_bc_4_velo
-      call calypso_mpi_barrier
-      if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_velo_sgs'
-      call set_ele_nodal_bc_4_velo_sgs
-      call calypso_mpi_barrier
+      if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_vect_fl'
+      call set_ele_nodal_bc_4_vect_fl(node1, ele1, nod_bc1_v)
+      call set_ele_nodal_bc_4_vect_fl(node1, ele1, sgs_bc1_v)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_rotate'
       call set_ele_nodal_bc_4_rotate
-      call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_vfree'
       call set_ele_nodal_bc_4_vfree
-      call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_vr0'
       call set_ele_nodal_bc_4_vr0
-      call calypso_mpi_barrier
       if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_velo_sph'
       call set_ele_nodal_bc_4_velo_sph
-      call calypso_mpi_barrier
 !
       end subroutine set_bc_velo_id
 !
@@ -74,6 +68,7 @@
 !
       subroutine set_bc_vect_p_id
 !
+      use m_bc_data_magne
       use set_bc_vectors
       use set_ele_nod_bc_vectors
 !
@@ -82,8 +77,8 @@
 !
 !   set node id in an element for magnetic boundary 
 !
-      call set_ele_nodal_bc_4_vect_p
-      call set_ele_nodal_bc_4_vecp_sgs
+      call set_ele_nodal_bc_4_vect(node1, ele1, nod_bc1_a)
+      call set_ele_nodal_bc_4_vect(node1, ele1, sgs_bc1_a)
 !
       end subroutine set_bc_vect_p_id
 !
@@ -91,6 +86,7 @@
 !
       subroutine set_bc_magne_id
 !
+      use m_bc_data_magne
       use set_bc_vectors
       use set_ele_nod_bc_vectors
 !
@@ -99,8 +95,8 @@
 !
 !   set node id in an element for magnetic boundary 
 !
-      call set_ele_nodal_bc_4_magne
-      call set_ele_nodal_bc_4_mag_sgs
+      call set_ele_nodal_bc_4_vect(node1, ele1, nod_bc1_b)
+      call set_ele_nodal_bc_4_vect(node1, ele1, sgs_bc1_b)
 !
       end subroutine set_bc_magne_id
 !
@@ -108,13 +104,14 @@
 !
       subroutine set_bc_current_id
 !
+      use m_bc_data_magne
       use set_bc_vectors
       use set_ele_nod_bc_vectors
 !
 !
       call set_bc_fixed_current_id(nod_grp1)
 !
-      call set_ele_nodal_bc_4_current
+      call set_ele_nodal_bc_4_vect(node1, ele1, nod_bc1_j)
 !
       end subroutine set_bc_current_id
 !
@@ -176,6 +173,7 @@
 !
       subroutine set_bc_composition_id
 !
+      use m_bc_data_magne
       use set_bc_scalars
       use set_ele_nod_bc_scalars
 !

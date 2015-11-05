@@ -19,6 +19,9 @@
       character(len = kchara) :: ene_spec_head =     'ene_spectr'
       character(len = kchara) :: vol_ene_spec_head = 'ene_spectr_vol'
 !
+      character(len = kchara) :: tave_sph_file_head = 'tave_spectral'
+      character(len = kchara) :: sdev_sph_file_head = 'sdev_spectral'
+!
       real(kind = kreal) :: buo_ratio
       real(kind = kreal) :: thermal_buo
 !
@@ -99,6 +102,11 @@
         call choose_file_format                                         &
      &     (org_sph_file_fmt_ctl, iflag_org_sph_file_fmt)
       end if
+!
+      write(tave_sph_file_head,'(a,a5)')                                &
+     &                     trim(org_sph_file_head), '_tave'
+      write(sdev_sph_file_head,'(a,a5)')                                &
+     &                     trim(org_sph_file_head), '_sdev'
 !
 !     file header for reduced data
 !

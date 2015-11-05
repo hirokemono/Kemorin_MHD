@@ -27,27 +27,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_boundary_vect_p
-!
-      use m_control_parameter
-      use m_node_phys_data
-      use m_node_phys_address
-      use m_bc_data_magne
-      use m_surf_data_vector_p
-!
-!
-      if (nod_bc1_a%nmax_bc /= 0) then
-        call set_fixed_bc_vect_phys                                     &
-     &     (nod_bc1_a%nmax_bc, nod_bc1_a%num_bc_nod,                    &
-     &      nod_bc1_a%ibc_id, bc_vp_id_apt,   &
-     &      node1%numnod, nod_fld1%ntot_phys, iphys%i_vecp,             &
-     &      nod_fld1%d_fld)
-      end if
-!
-      end subroutine set_boundary_vect_p
-!
-!  ---------------------------------------------------------------------
-!
       subroutine set_boundary_vect_p_4_rhs
 !
       use m_bc_data_magne
@@ -84,25 +63,6 @@
       end if
 !
       end subroutine delete_field_by_fixed_a_bc
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_boundary_current
-!
-      use m_node_phys_data
-      use m_node_phys_address
-      use m_bc_data_current
-      use m_surf_data_current
-!
-!
-        if (nmax_bc_j_nod/=0) then
-          call set_fixed_bc_vect_phys(nmax_bc_j_nod, num_bc_j_nod,      &
-     &        ibc_j_id, bc_j_id_apt, node1%numnod, nod_fld1%ntot_phys,  &
-     &        iphys%i_current, nod_fld1%d_fld)
-        end if
-!
-!
-      end subroutine set_boundary_current
 !
 !  ---------------------------------------------------------------------
 !

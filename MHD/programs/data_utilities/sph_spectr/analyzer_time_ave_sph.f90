@@ -4,8 +4,8 @@
 !
 !      modified by H. Matsui on Jan., 2008
 !
-!      subroutine initialization
-!      subroutine evolution
+!      subroutine initialize_ave_sph
+!      subroutine evolution_ave_sph
 !
 !
       module analyzer_time_ave_sph
@@ -20,7 +20,7 @@
 !
       implicit none
 !
-      type(field_IO), save, private :: sph_fld_IO
+      type(field_IO), save, private :: sph_fld_IN, sph_fld_OUT
 !
 ! ----------------------------------------------------------------------
 !
@@ -28,7 +28,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine initialization
+      subroutine initialize_ave_sph
 !
       use m_t_step_parameter
       use m_ctl_data_4_sph_utils
@@ -36,6 +36,7 @@
       use m_sph_spectr_data
       use m_sph_phys_address
       use parallel_load_data_4_sph
+      use copy_time_steps_4_restart
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
 !
@@ -57,28 +58,33 @@
 !  ------  initialize spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_read_alloc_step_SPH_file'
+      call set_field_file_fmt_prefix                                    &
+     &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IN)
       call sel_read_alloc_step_SPH_file                                 &
-     &   (nprocs, my_rank, i_step_init, sph_fld_IO)
+     &   (nprocs, my_rank, i_step_init, sph_fld_IN)
 !
 !  -------------------------------
 !
-      call allocate_phys_rj_data
+      call copy_time_from_restart
+      call copy_rj_phys_name_from_IO(sph_fld_IN)
+!
       call set_sph_sprctr_data_address
 !
 !  -------------------------------
 !
       call calypso_MPI_barrier
 !
-      end subroutine initialization
+      end subroutine initialize_ave_sph
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine evolution
+      subroutine evolution_ave_sph
 !
       use m_t_step_parameter
       use m_spheric_parameter
       use m_ctl_params_sph_utils
       use m_sph_spectr_data
+      use copy_time_steps_4_restart
       use copy_rj_phys_data_4_IO
       use set_parallel_file_name
       use cal_t_ave_sph_spectr_data
@@ -89,48 +95,93 @@
 !
       call allocate_d_rj_tmp
 !
+!   Averaging
       do i_step = i_step_init, i_step_number, i_step_output_ucd
-!
-!   Input spectr data
-!
-      call set_field_file_fmt_prefix                                    &
-     &   (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IO)
+        call set_field_file_fmt_prefix                                  &
+     &   (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IN)
         if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
-      call sel_read_step_SPH_field_file                                 &
-     &     (nprocs, my_rank, i_step, sph_fld_IO)
+        call sel_read_step_SPH_field_file                               &
+     &     (nprocs, my_rank, i_step, sph_fld_IN)
+!
+        call copy_time_from_restart
 !
         if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
-        call set_rj_phys_data_from_IO(sph_fld_IO)
-!
-!  evaluate energies
+        call set_rj_phys_data_from_IO(sph_fld_IN)
 !
         call sum_sph_spectr_data
       end do
 
-      call dealloc_phys_data_IO(sph_fld_IO)
-      call dealloc_phys_name_IO(sph_fld_IO)
-!
-!
+      call calypso_mpi_barrier
       call t_ave_sph_spectr_data(i_step_init, i_step_number)
-      call copy_rj_all_phys_name_to_IO(sph_fld_IO)
-      call alloc_phys_data_IO(sph_fld_IO)
-      call copy_rj_all_phys_data_to_IO(sph_fld_IO)
 !
-      call alloc_merged_field_stack(nprocs, sph_fld_IO)
+      call copy_rj_all_phys_name_to_IO(sph_fld_OUT)
+      call alloc_phys_data_IO(sph_fld_OUT)
+      call copy_rj_all_phys_data_to_IO(sph_fld_OUT)
+!
+      call alloc_merged_field_stack(nprocs, sph_fld_OUT)
       call count_number_of_node_stack                                 &
-     &     (sph_fld_IO%nnod_IO, sph_fld_IO%istack_numnod_IO)
+     &   (sph_fld_OUT%nnod_IO, sph_fld_OUT%istack_numnod_IO)
 !
 !
+      call set_field_file_fmt_prefix                                    &
+     &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_OUT)
       call add_int_suffix(i_step_init,                                  &
-     &    org_sph_file_head, sph_fld_IO%file_prefix)
-!
-      if (iflag_debug.gt.0) write(*,*) 'sel_write_step_SPH_field_file'
+     &    tave_sph_file_head, sph_fld_OUT%file_prefix)
       call sel_write_step_SPH_field_file                                &
-     &   (nprocs, my_rank, i_step_number, sph_fld_IO)
+     &   (nprocs, my_rank, i_step_number, sph_fld_OUT)
 !
-      if (iflag_debug.eq.1) write(*,*) 'exit evolution'
+      call dealloc_phys_data_IO(sph_fld_OUT)
+      call dealloc_phys_name_IO(sph_fld_OUT)
+      call calypso_mpi_barrier
 !
-      end subroutine evolution
+!   Standard deviation
+!
+      do i_step = i_step_init, i_step_number, i_step_output_ucd
+        call set_field_file_fmt_prefix                                  &
+     &   (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_IN)
+        if (iflag_debug.gt.0) write(*,*) 'sel_read_step_SPH_field_file'
+        call sel_read_step_SPH_field_file                               &
+     &     (nprocs, my_rank, i_step, sph_fld_IN)
+!
+        call copy_time_from_restart
+!
+        if (iflag_debug.gt.0) write(*,*) 'set_rj_phys_data_from_IO'
+        call set_rj_phys_data_from_IO(sph_fld_IN)
+!
+        call sum_deviation_sph_spectr
+      end do
+!
+      call calypso_mpi_barrier
+      call dealloc_phys_data_IO(sph_fld_IN)
+      call dealloc_phys_name_IO(sph_fld_IN)
+!
+      call sdev_sph_spectr_data(i_step_init, i_step_number)
+!
+      call copy_rj_all_phys_name_to_IO(sph_fld_OUT)
+      call alloc_phys_data_IO(sph_fld_OUT)
+      call copy_rj_all_phys_data_to_IO(sph_fld_OUT)
+!
+      call alloc_merged_field_stack(nprocs, sph_fld_OUT)
+      call count_number_of_node_stack                                 &
+     &   (sph_fld_OUT%nnod_IO, sph_fld_OUT%istack_numnod_IO)
+!
+!
+      call set_field_file_fmt_prefix                                    &
+     &    (iflag_org_sph_file_fmt, org_sph_file_head, sph_fld_OUT)
+      call add_int_suffix(i_step_init,                                  &
+     &    sdev_sph_file_head, sph_fld_OUT%file_prefix)
+      call sel_write_step_SPH_field_file                                &
+     &   (nprocs, my_rank, i_step_number, sph_fld_OUT)
+!
+      call dealloc_phys_data_IO(sph_fld_OUT)
+      call dealloc_phys_name_IO(sph_fld_OUT)
+      call calypso_mpi_barrier
+!
+      call deallocate_d_rj_tmp
+!
+      if (iflag_debug.eq.1) write(*,*) 'exit evolution_ave_sph'
+!
+      end subroutine evolution_ave_sph
 !
 ! ----------------------------------------------------------------------
 !

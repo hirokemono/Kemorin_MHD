@@ -35,6 +35,7 @@
       use m_element_phys_data
       use m_finite_element_matrix
 !
+      use set_velocity_boundary
       use nod_phys_send_recv
       use cal_sgs_fluxes
       use set_magne_boundary
@@ -84,7 +85,9 @@
        call cal_magne_pre_consist_crank
       end if
 !
-      call set_boundary_magne
+      call set_boundary_vect                                            &
+     &   (nod_bc1_b, bc_b_id_apt, iphys%i_magne, nod_fld1)
+!
       call vector_send_recv(iphys%i_magne, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_magnetic_field_pre

@@ -135,19 +135,29 @@
 !
       type(field_IO), intent(in) :: fld_IO
 !
+      integer(kind = kint) :: i_fld
+!
 !
       num_phys_rj =  fld_IO%num_field_IO
-      ntot_phys_rj = fld_IO%ntot_comp_IO
-!
       call allocate_phys_rj_name
-      call allocate_phys_rj_data
 !
+      phys_name_rj(1:num_phys_rj) = fld_IO%fld_name(1:num_phys_rj)
       num_phys_comp_rj(1:num_phys_rj)                                   &
      &      = fld_IO%num_comp_IO(1:num_phys_rj)
-      istack_phys_comp_rj(0:num_phys_rj)                                &
-     &      = fld_IO%istack_comp_IO(0:num_phys_rj)
-      phys_name_rj(1:num_phys_rj) = fld_IO%fld_name(1:num_phys_rj)
       iflag_monitor_rj(1:num_phys_rj) = 1
+!
+      do i_fld = 1, num_phys_rj
+        if(num_phys_comp_rj(i_fld) .eq. 2) num_phys_comp_rj(i_fld) = 3
+      end do
+!
+      istack_phys_comp_rj(0)  = 0
+      do i_fld = 1, num_phys_rj
+        istack_phys_comp_rj(i_fld) = istack_phys_comp_rj(i_fld-1)       &
+     &                              + num_phys_comp_rj(i_fld)
+      end do
+!
+      ntot_phys_rj = istack_phys_comp_rj(num_phys_rj)
+      call allocate_phys_rj_data
 !
       end subroutine copy_rj_phys_name_from_IO
 !

@@ -76,7 +76,6 @@
 !
       use m_bc_data_list
       use m_bc_data_magne
-      use m_bc_vecp_sgs
 !
       type(group_data), intent(in) :: nod_grp
 !
@@ -90,15 +89,15 @@
      &   (node1%numnod, nod_grp, a_potential_nod%num_bc,                &
      &    a_potential_nod%bc_name, a_potential_nod%ibc_type,            &
      &    a_potential_nod%bc_magnitude, nod_bc1_a%ibc, nod_bc1_a%ibc2,  &
-     &    nod_bc1_a%nmax_bc, nod_bc1_a%ibc_id, bc_vp_id_apt,                   &
+     &    nod_bc1_a%nmax_bc, nod_bc1_a%ibc_id, bc_vp_id_apt,            &
      &    field_name, l_f)
 !
       l_s(1:3) = 0
       call set_bc_vector_id                                             &
      &   (node1%numnod, nod_grp, a_potential_nod%num_bc,                &
      &    a_potential_nod%bc_name, a_potential_nod%ibc_type,            &
-     &    a_potential_nod%bc_magnitude, ibc_a_sgs, ibc2_a_sgs,          &
-     &    nmax_bc_a_sgs_nod, ibc_a_sgs_id, bc_a_sgs_id_apt,             &
+     &    a_potential_nod%bc_magnitude, sgs_bc1_a%ibc, sgs_bc1_a%ibc2,  &
+     &    sgs_bc1_a%nmax_bc, sgs_bc1_a%ibc_id, bc_a_sgs_id_apt,         &
      &    iflag_bc_sgs, l_s)
 !
       end subroutine set_bc_fixed_vect_p_id
@@ -143,7 +142,7 @@
       subroutine set_bc_fixed_current_id(nod_grp)
 !
       use m_bc_data_list
-      use m_bc_data_current
+      use m_bc_data_magne
 !
       type(group_data), intent(in) :: nod_grp
 !
@@ -156,8 +155,8 @@
       call set_fixed_vector_id(node1%numnod,                            &
      &    nod_grp, current_nod%num_bc, current_nod%bc_name,             &
      &    current_nod%ibc_type, current_nod%bc_magnitude,               &
-     &    ibc_j, ibc2_j, nmax_bc_j_nod, ibc_j_id, bc_j_id_apt,          &
-     &    field_name, l_f)
+     &    nod_bc1_j%ibc, nod_bc1_j%ibc2, nod_bc1_j%nmax_bc,             &
+     &    nod_bc1_j%ibc_id, bc_j_id_apt, field_name, l_f)
 !
       end subroutine set_bc_fixed_current_id
 !

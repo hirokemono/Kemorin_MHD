@@ -90,9 +90,7 @@ correlation_all_layerd_data.o
 
 MOD_MED_PATCH = \
 main_med_grp_patch.o \
-analyzer_med_grp_patch.o \
-\
-set_med_patch_4_element_grp.o
+analyzer_med_grp_patch.o
 
 MOD_MED_GRP_UDT = \
 element_grouping_udt.o \

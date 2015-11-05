@@ -35,7 +35,10 @@
       use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
+      use m_control_parameter
+      use m_bc_data_magne
 !
+      use set_velocity_boundary
       use nod_phys_send_recv
       use cal_sgs_fluxes
       use set_vecp_boundary
@@ -94,7 +97,8 @@
         call cal_vect_p_pre_consist_crank
       end if
 !
-      call set_boundary_vect_p
+      call set_boundary_vect                                            &
+     &   (nod_bc1_a, bc_vp_id_apt, iphys%i_vecp, nod_fld1)
 !
       call vector_send_recv(iphys%i_vecp, node1, nod_comm, nod_fld1)
 !

@@ -119,8 +119,8 @@
       integer(kind = kint) :: ip
 !
 !
-      call copy_rst_prefix_and_fmt                                      &
-     &   (org_sph_fst_head, ifmt_org_sph_fst, org_fst_IO)
+      call set_field_file_fmt_prefix                                    &
+     &   (ifmt_org_sph_fst, org_sph_fst_head, org_fst_IO)
       call sel_read_alloc_step_SPH_file                                 &
      &   (np_sph_org, izero, istep_start, org_fst_IO)
 !
@@ -169,8 +169,8 @@
       integer(kind = kint) :: irank_org
 !
       irank_org = ip - 1
-      call copy_rst_prefix_and_fmt                                      &
-     &   (org_sph_fst_head, ifmt_org_sph_fst, org_fst_IO)
+      call set_field_file_fmt_prefix                                    &
+     &   (ifmt_org_sph_fst, org_sph_fst_head, org_fst_IO)
       call sel_read_alloc_step_SPH_file                                 &
      &   (np_sph_org, irank_org, istep, org_fst_IO)
 !

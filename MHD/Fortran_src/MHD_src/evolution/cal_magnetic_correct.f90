@@ -47,6 +47,7 @@
       use m_SGS_model_coefs
       use m_surf_data_magne_p
 !
+      use set_velocity_boundary
       use nod_phys_send_recv
       use int_vol_solenoid_correct
       use int_surf_grad_sgs
@@ -79,8 +80,9 @@
       end if
 !
 !
-      if (iflag_debug.eq.1)   write(*,*) 'set_boundary_magne'
-      call set_boundary_magne
+      if (iflag_debug.eq.1)   write(*,*) 'set_boundary_vect magne'
+      call set_boundary_vect                                            &
+     &   (nod_bc1_b, bc_b_id_apt, iphys%i_magne, nod_fld1)
 !
       call vector_send_recv(iphys%i_magne, node1, nod_comm, nod_fld1)
       call scalar_send_recv(iphys%i_mag_p, node1, nod_comm, nod_fld1)
@@ -186,6 +188,7 @@
       use m_SGS_model_coefs
       use m_surf_data_magne_p
 !
+      use set_velocity_boundary
       use nod_phys_send_recv
       use int_vol_solenoid_correct
       use int_surf_grad_sgs
@@ -212,7 +215,8 @@
 !
       call cal_sol_magne_insulator
 !
-      call set_boundary_magne
+      call set_boundary_vect                                            &
+     &   (nod_bc1_b, bc_b_id_apt, iphys%i_magne, nod_fld1)
 !
       call vector_send_recv(iphys%i_magne, node1, nod_comm, nod_fld1)
 !

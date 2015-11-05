@@ -195,8 +195,8 @@
           call dealloc_phys_data_type(org_sph_phys(ip))
         end do
 !
-        call copy_rst_prefix_and_fmt                                    &
-     &     (new_sph_fst_head, ifmt_new_sph_fst, new_fst_IO)
+        call set_field_file_fmt_prefix                                  &
+     &     (ifmt_new_sph_fst, new_sph_fst_head, new_fst_IO)
         do jp = 1, np_sph_new
           irank_new = jp - 1
           call const_assembled_sph_data                                 &
@@ -249,8 +249,8 @@
       integer(kind = kint) :: irank_org
 !
       irank_org = ip - 1
-      call copy_rst_prefix_and_fmt                                      &
-     &   (org_sph_fst_head, ifmt_org_sph_fst, org_fst_IO)
+      call set_field_file_fmt_prefix                                    &
+     &   (ifmt_org_sph_fst, org_sph_fst_head, org_fst_IO)
       call sel_read_alloc_field_file(irank_org, istep, org_fst_IO)
 !
       call alloc_phys_data_type(org_sph%sph_rj%nnod_rj, org_phys)

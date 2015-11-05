@@ -29,23 +29,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_boundary_magne
-!
-      use m_node_phys_data
-      use m_node_phys_address
-!
-!
-      if (nod_bc1_b%nmax_bc .gt. 0) then
-          call set_fixed_bc_vect_phys                                   &
-     &       (nod_bc1_b%nmax_bc, nod_bc1_b%num_bc_nod,                  &
-     &        nod_bc1_b%ibc_id, bc_b_id_apt, node1%numnod,              &
-     &        nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld)
-      end if
-!
-      end subroutine set_boundary_magne
-!
-!  ---------------------------------------------------------------------
-!
       subroutine set_boundary_magne_4_rhs
 !
       use m_phys_constants

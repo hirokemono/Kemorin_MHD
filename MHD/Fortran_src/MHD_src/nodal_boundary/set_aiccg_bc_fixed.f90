@@ -127,17 +127,18 @@
 !
       subroutine set_aiccg_bc_press_nod
 !
-      use m_bc_data_press
+      use m_bc_data_velo
       use m_solver_djds_MHD
       use m_velo_matrix
 !
       integer (kind = kint) :: k0
 !
 !
-      if(num_index_ibc2_press .le. 0) return
-      do k0 = 1, num_index_ibc2_press
+      if(nod_bc1_p%num_idx_ibc2 .le. 0) return
+      do k0 = 1, nod_bc1_p%num_idx_ibc2
         call set_aiccg_bc_scalar_nod(num_t_linear,                     &
-     &      ele_bc2_p_id(k0), nod_bc2_p_id(k0), DJDS_fl_l, Pmat_DJDS)
+     &      nod_bc1_p%ele_bc2_id(k0), nod_bc1_p%nod_bc2_id(k0),        &
+     &      DJDS_fl_l, Pmat_DJDS)
       end do
 !
       end subroutine set_aiccg_bc_press_nod
@@ -186,17 +187,17 @@
 !
       subroutine set_aiccg_bc_mag_p_nod
 !
-      use m_bc_data_magne_p
+      use m_bc_data_magne
       use m_solver_djds_MHD
       use m_magne_matrix
 !
       integer (kind = kint) :: k0
 !
 !
-      if(num_index_ibc2_mag_p .le. 0) return
-      do k0 = 1, num_index_ibc2_mag_p
+      if(nod_bc1_f%num_idx_ibc2 .le. 0) return
+      do k0 = 1, nod_bc1_f%num_idx_ibc2
         call set_aiccg_bc_scalar_nod(num_t_linear,                      &
-     &      ele_bc2_mag_p_id(k0), nod_bc2_mag_p_id(k0),                 &
+     &      nod_bc1_f%ele_bc2_id(k0), nod_bc1_f%nod_bc2_id(k0),         &
      &      DJDS_linear, Fmat_DJDS)
       end do
 !

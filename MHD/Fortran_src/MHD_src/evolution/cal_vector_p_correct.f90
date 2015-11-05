@@ -35,8 +35,8 @@
 !
       use m_nod_comm_table
       use m_geometry_data
-      use m_group_data
       use m_node_phys_address
+      use m_group_data
       use m_node_phys_data
       use m_phys_constants
       use m_jacobian_sf_grp
@@ -45,8 +45,10 @@
       use m_filter_elength
       use m_SGS_address
       use m_SGS_model_coefs
+      use m_bc_data_magne
       use m_surf_data_magne_p
 !
+      use set_velocity_boundary
       use nod_phys_send_recv
       use int_vol_solenoid_correct
       use int_surf_grad_sgs
@@ -79,8 +81,9 @@
 !
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_boundary_vect_p'
-      call set_boundary_vect_p
+      if (iflag_debug.eq.1) write(*,*) 'set_boundary_vect vect_p'
+      call set_boundary_vect                                            &
+     &   (nod_bc1_a, bc_vp_id_apt, iphys%i_vecp, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*) 'vector_send_recv for vector_p'
       call vector_send_recv(iphys%i_vecp, node1, nod_comm, nod_fld1)

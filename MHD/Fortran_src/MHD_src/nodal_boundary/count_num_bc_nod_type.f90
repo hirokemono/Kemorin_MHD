@@ -28,10 +28,6 @@
 !        type(group_data), intent(in) :: nod_grp
 !        type(vect_fixed_nod_bc_type), intent(inout) :: vector_p
 !        type(vect_fixed_nod_bc_type), intent(inout) :: sgs_vect_p
-!      subroutine count_num_bc_magne(nod_grp, magne, sgs_magne)
-!        type(group_data), intent(in) :: nod_grp
-!        type(vect_fixed_nod_bc_type), intent(inout) :: magne
-!        type(vect_fixed_nod_bc_type), intent(inout) :: sgs_magne
 !      subroutine count_num_bc_magp(nod_grp, magne_p, sgs_mag_p)
 !        type(group_data), intent(in) :: nod_grp
 !        type(scaler_fixed_nod_bc_type), intent(inout) :: magne_p
@@ -66,6 +62,8 @@
       subroutine count_num_bc_velo(nod_grp, velocity, sgs_velo,         &
      &          rotation, free_plane, free_sphere, no_radial_v)
 !
+      use count_num_nod_bc_MHD
+!
       type(group_data), intent(in) :: nod_grp
       type(vect_fixed_nod_bc_type),     intent(inout) :: velocity
       type(vect_fixed_nod_bc_type),     intent(inout) :: sgs_velo
@@ -75,13 +73,10 @@
       type(scaler_fixed_nod_bc_type),   intent(inout) :: no_radial_v
 !
 !
-      call count_num_bc_vector(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, velo_nod%num_bc, velo_nod%bc_name,          &
-     &    velo_nod%ibc_type, velocity%num_bc_nod, iflag_bc_fixed)
-!
-      call count_num_bc_vector(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, velo_nod%num_bc, velo_nod%bc_name,          &
-     &    velo_nod%ibc_type, sgs_velo%num_bc_nod, iflag_bc_sgs)
+      call count_num_bc_vect                                            &
+     &   (iflag_bc_fixed, nod_grp, velo_nod, velocity)
+      call count_num_bc_vect                                            &
+     &   (iflag_bc_sgs, nod_grp, velo_nod, sgs_velo)
 !
       call count_num_bc_scalar(nod_grp%num_grp, nod_grp%istack_grp,     &
      &    nod_grp%grp_name, velo_nod%num_bc, velo_nod%bc_name,          &
@@ -97,8 +92,6 @@
      &    velo_nod%ibc_type, free_sphere%num_bc_nod, iflag_bc_special)
 !
 !
-      call cal_max_int_4_vector(velocity%nmax_bc, velocity%num_bc_nod)
-      call cal_max_int_4_vector(sgs_velo%nmax_bc, sgs_velo%num_bc_nod)
 !
       end subroutine count_num_bc_velo
 !
@@ -144,63 +137,6 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_num_bc_vecp(nod_grp, vector_p, sgs_vect_p)
-!
-      type(group_data), intent(in) :: nod_grp
-      type(vect_fixed_nod_bc_type), intent(inout) :: vector_p
-      type(vect_fixed_nod_bc_type), intent(inout) :: sgs_vect_p
-!
-!
-      call count_num_bc_vector(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, a_potential_nod%num_bc,                     &
-     &    a_potential_nod%bc_name, a_potential_nod%ibc_type,            &
-     &    vector_p%num_bc_nod, iflag_bc_fixed)
-!
-      call count_num_bc_vector(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, a_potential_nod%num_bc,                     &
-     &    a_potential_nod%bc_name, a_potential_nod%ibc_type,            &
-     &    sgs_vect_p%num_bc_nod, iflag_bc_sgs)
-!
-!
-      call cal_max_int_4_vector(vector_p%nmax_bc, vector_p%num_bc_nod)
-      call cal_max_int_4_vector(sgs_vect_p%nmax_bc,                     &
-     &    sgs_vect_p%num_bc_nod)
-!
-      end subroutine count_num_bc_vecp
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine count_num_bc_magne(nod_grp, magne, sgs_magne)
-!
-      type(group_data), intent(in) :: nod_grp
-      type(vect_fixed_nod_bc_type), intent(inout) :: magne
-      type(vect_fixed_nod_bc_type), intent(inout) :: sgs_magne
-!
-!
-      call count_num_bc_vector                                          &
-     &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
-     &    magne_nod%num_bc, magne_nod%bc_name, magne_nod%ibc_type,      &
-     &    magne%num_bc_nod, iflag_bc_fixed)
-!
-      call count_num_bc_vector                                          &
-     &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
-     &    magne_nod%num_bc, magne_nod%bc_name, magne_nod%ibc_type,      &
-     &    sgs_magne%num_bc_nod, iflag_bc_sgs)
-!
-      call add_num_bc_magne                                             &
-     &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
-     &    magne_nod%num_bc, magne_nod%bc_name, magne_nod%ibc_type,      &
-     &    magne%num_bc_nod)
-!
-!
-      call cal_max_int_4_vector(magne%nmax_bc, magne%num_bc_nod)
-      call cal_max_int_4_vector(sgs_magne%nmax_bc,                      &
-     &    sgs_magne%num_bc_nod)
-!
-      end subroutine count_num_bc_magne
-!
-!  ---------------------------------------------------------------------
-!
       subroutine count_num_bc_magp(nod_grp, magne_p, sgs_mag_p)
 !
       type(group_data), intent(in) :: nod_grp
@@ -223,22 +159,6 @@
      &    sgs_mag_p%num_bc_nod)
 !
       end subroutine count_num_bc_magp
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine count_num_bc_current(nod_grp, current)
-!
-      type(group_data), intent(in) :: nod_grp
-      type(vect_fixed_nod_bc_type), intent(inout) :: current
-!
-!
-      call count_num_bc_vector(nod_grp%num_grp, nod_grp%istack_grp,     &
-     &    nod_grp%grp_name, current_nod%num_bc, current_nod%bc_name,    &
-     &    current_nod%ibc_type, current%num_bc_nod, izero)
-!
-      call cal_max_int_4_vector(current%nmax_bc, current%num_bc_nod)
-!
-      end subroutine count_num_bc_current
 !
 !  ---------------------------------------------------------------------
 !

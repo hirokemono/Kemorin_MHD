@@ -44,7 +44,7 @@
       subroutine int_vol_sk_po_bc
 !
       use m_finite_element_matrix
-      use m_bc_data_press
+      use m_bc_data_velo
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
       use cal_ff_smp_to_ffs
@@ -52,16 +52,17 @@
 !
       if (iflag_commute_velo .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_poisson_surf                             &
-     &     (node1, ele1, nod_fld1, jac1_3d_l, rhs_tbl1, FEM1_elen,      &
-     &      intg_point_poisson, ibc_p_end, num_index_ibc_press,         &
-     &      ele_bc_p_id, ibc_p_stack_smp, ibc_p_shape, ifilter_final,   &
-     &      iphys%i_p_phi, ak_diff(1,iak_diff_v), fem1_wk, f1_l )
+     &    (node1, ele1, nod_fld1, jac1_3d_l, rhs_tbl1, FEM1_elen,       &
+     &     intg_point_poisson, nod_bc1_p%ibc_end, nod_bc1_p%num_idx_ibc,&
+     &     nod_bc1_p%ele_bc_id, nod_bc1_p%ibc_stack_smp,  &
+     &     nod_bc1_p%ibc_shape, ifilter_final,   &
+     &     iphys%i_p_phi, ak_diff(1,iak_diff_v), fem1_wk, f1_l )
       else
         call int_vol_fixed_poisson_surf                                 &
-     &     (node1, ele1, nod_fld1, jac1_3d_l, rhs_tbl1,                 &
-     &      intg_point_poisson, ibc_p_end, num_index_ibc_press,         &
-     &      ele_bc_p_id, ibc_p_stack_smp, ibc_p_shape,                  &
-     &      iphys%i_p_phi, fem1_wk, f1_l)
+     &    (node1, ele1, nod_fld1, jac1_3d_l, rhs_tbl1,                  &
+     &     intg_point_poisson, nod_bc1_p%ibc_end, nod_bc1_p%num_idx_ibc,&
+     &     nod_bc1_p%ele_bc_id, nod_bc1_p%ibc_stack_smp,                &
+     &      nod_bc1_p%ibc_shape, iphys%i_p_phi, fem1_wk, f1_l)
       end if
 !
       call cal_ff_smp_2_ff                                              &
@@ -74,7 +75,7 @@
       subroutine int_vol_sk_mp_bc
 !
       use m_finite_element_matrix
-      use m_bc_data_magne_p
+      use m_bc_data_magne
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
       use cal_ff_smp_to_ffs
@@ -83,15 +84,17 @@
       if (iflag_commute_magne .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_poisson_surf                             &
      &     (node1, ele1, nod_fld1, jac1_3d_l, rhs_tbl1, FEM1_elen,      &
-     &      intg_point_poisson, ibc_mag_p_end, num_index_ibc_mag_p,     &
-     &      ele_bc_mag_p_id,  ibc_mag_p_stack_smp, ibc_mag_p_shape,     &
+     &      intg_point_poisson,  nod_bc1_f%ibc_end,                     &
+     &      nod_bc1_f%num_idx_ibc, nod_bc1_f%ele_bc_id,                 &
+     &      nod_bc1_f%ibc_stack_smp, nod_bc1_f%ibc_shape,               &
      &      ifilter_final, iphys%i_m_phi, ak_diff(1,iak_diff_b),        &
      &      fem1_wk, f1_l)
       else
         call int_vol_fixed_poisson_surf                                 &
      &     (node1, ele1, nod_fld1, jac1_3d_l, rhs_tbl1,                 &
-     &      intg_point_poisson, ibc_mag_p_end, num_index_ibc_mag_p,     &
-     &      ele_bc_mag_p_id,  ibc_mag_p_stack_smp, ibc_mag_p_shape,     &
+     &      intg_point_poisson, nod_bc1_f%ibc_end,                      &
+     &      nod_bc1_f%num_idx_ibc, nod_bc1_f%ele_bc_id,                 &
+     &      nod_bc1_f%ibc_stack_smp, nod_bc1_f%ibc_shape,               &
      &      iphys%i_m_phi, fem1_wk, f1_l)
       end if
 !
@@ -198,9 +201,9 @@
       if (iflag_commute_velo .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_vector_surf                              &
      &     (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
-     &      intg_point_t_evo, nod_bc1_v%nmax_idx_ibc, nod_bc1_v%ibc_end, &
+     &      intg_point_t_evo, nod_bc1_v%nmax_idx_ibc, nod_bc1_v%ibc_end,&
      &      nod_bc1_v%num_idx_ibc, nod_bc1_v%ele_bc_id,                 &
-     &      nod_bc1_v%ibc_stack_smp, nod_bc1_v%ibc_shape, ifilter_final, &
+     &      nod_bc1_v%ibc_stack_smp, nod_bc1_v%ibc_shape, ifilter_final,&
      &      iphys%i_velo, ak_diff(1,iak_diff_v), ak_d_velo, coef_imp_v, &
      &      fem1_wk, f1_l)
 !
@@ -213,9 +216,9 @@
       else
         call int_vol_fixed_vector_surf                                  &
      &     (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1,                 &
-     &      intg_point_t_evo, nod_bc1_v%nmax_idx_ibc, nod_bc1_v%ibc_end, &
-     &       nod_bc1_v%num_idx_ibc, &
-     &      nod_bc1_v%ele_bc_id, nod_bc1_v%ibc_stack_smp, nod_bc1_v%ibc_shape,                  &
+     &      intg_point_t_evo, nod_bc1_v%nmax_idx_ibc, nod_bc1_v%ibc_end,&
+     &      nod_bc1_v%num_idx_ibc, nod_bc1_v%ele_bc_id,                 &
+     &      nod_bc1_v%ibc_stack_smp, nod_bc1_v%ibc_shape,               &
      &      iphys%i_velo, ak_d_velo, coef_imp_v, fem1_wk, f1_l)
 !
         call int_vol_fixed_rotate_surf                                  &

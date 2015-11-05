@@ -24,14 +24,15 @@
 !
       type(ucd_data), save :: psf_ucd
 !
-      integer(kind = kint) :: istep_read, nd, ierr
+      integer(kind = kint) :: istep_read, nd, ierr, istart_grp
       real(kind = kreal)  :: time
 !
 !
       call read_control_ele_grp_udt
       call set_control_ele_grp_udt
 !
-      call read_med_grouping_patch(layerd_mesh_head, ele_grp1)
+      call read_med_grouping_patch(layerd_mesh_head, ele_grp1,          &
+     &    start_ele_grp_name, istart_grp)
 !
       write(*,*) 'fname_input: ', trim(group_data_file_name)
       call count_num_comp_layer_evo_file(id_org_file,                   &
@@ -62,10 +63,6 @@
 !    output udt data
 !
       call sqrt_of_rms_coefs(num_layer, num_comp, coef)
-      call set_field_to_med_patch(ele_grp1, num_layer, num_comp,        &
-     &    comp_name, coef)
-!
-      call set_psf_mesh_to_ucd_field(psf_ucd)
 !
       psf_ucd%ifmt_file = iflag_udt
       psf_ucd%file_prefix = tave_grp_udt_head
@@ -80,8 +77,6 @@
         if(mod((istep_read-istep_start),istep_inc) .eq. izero           &
      &     .and. istep_read.ge.istep_start) then
           call sqrt_of_rms_coefs(num_layer, num_comp, coef)
-          call set_field_to_med_patch(ele_grp1, num_layer, num_comp,    &
-     &        comp_name, coef)
           call sel_write_udt_file(iminus, istep_start, psf_ucd)
         end if
 !

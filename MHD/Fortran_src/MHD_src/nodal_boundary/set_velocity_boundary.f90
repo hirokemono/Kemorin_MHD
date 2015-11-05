@@ -52,12 +52,8 @@
 !
 !     set fixed velocity
 !
-      if (nod_bc1_v%nmax_bc .gt. 0) then
-        call set_fixed_bc_vect_phys                                     &
-     &     (nod_bc1_v%nmax_bc, nod_bc1_v%num_bc_nod,                    &
-     &      nod_bc1_v%ibc_id, bc_v_id_apt, node1%numnod,                &
-     &      nod_fld1%ntot_phys,iphys%i_velo, nod_fld1%d_fld)
-      end if
+      call set_boundary_vect                                            &
+     &   (nod_bc1_v, bc_v_id_apt, iphys%i_velo, nod_fld1)
 !
 !   set rotation boundary
 !
@@ -141,6 +137,32 @@
 !
 !
       end subroutine delete_field_by_fixed_v_bc
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
+      subroutine set_boundary_vect(nod_bc_vect, bc_id_apt,              &
+     &          i_field, nod_fld)
+!
+      use t_phys_data
+!
+      type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_vect
+!
+      integer(kind = kint), intent(in) :: i_field
+      real(kind = kreal), intent(in)                                    &
+     &                   :: bc_id_apt(nod_bc_vect%nmax_bc,3)
+!
+      type(phys_data), intent(inout) :: nod_fld
+!
+!
+      if (nod_bc_vect%nmax_bc .gt. 0) then
+          call set_fixed_bc_vect_phys                                   &
+     &       (nod_bc_vect%nmax_bc, nod_bc_vect%num_bc_nod,              &
+     &        nod_bc_vect%ibc_id, bc_id_apt, nod_fld%n_point,           &
+     &        nod_fld%ntot_phys, i_field, nod_fld%d_fld)
+      end if
+!
+      end subroutine set_boundary_vect
 !
 !  ---------------------------------------------------------------------
 !

@@ -54,20 +54,15 @@
 !
       num_bc_nod  = 0
 !
+      if (num_bc_field .le. 0) return
       do i=1, num_bc
 !
-       if (num_bc_field /= 0) then
         do j=1, num_bc_field
-         if (bc_name(i)==bc_field_name(j)) then
-!
-            if ( abs(ibc_field_type(j)) .eq. iref ) then
+          if(bc_name(i) .eq. bc_field_name(j)                           &
+     &      .and.  abs(ibc_field_type(j)) .eq. iref ) then
               call count_nod_bc(i, num_bc, bc_istack, num_bc_nod )
-            end if
-!
-         end if
+          end if
         end do
-       end if
-!
       end do
 !
       end subroutine count_num_bc_scalar
@@ -92,12 +87,11 @@
 !
 !
       num_bc_nod(1:3)  = 0
+      if (num_bc_field .le. 0) return
 !
       do i=1, num_bc
-!
-       if (num_bc_field /= 0) then
         do j=1, num_bc_field
-         if (bc_name(i)==bc_field_name(j)) then
+         if (bc_name(i) .eq. bc_field_name(j)) then
 !
           do nd = 1, 3
             if ( abs(ibc_field_type(j)) == (nd+iref) ) then
@@ -107,8 +101,6 @@
 !
          end if
         end do
-       end if
-!
       end do
 !
       end subroutine count_num_bc_vector
@@ -131,22 +123,16 @@
       integer (kind = kint) :: i, j, nd
 !
 !
-      do i=1, num_bc
-!
-       if (num_bc_field /= 0) then
-        do j=1, num_bc_field
-         if (bc_name(i)==bc_field_name(j)) then
-!
-          if ( abs(ibc_field_type(j)) == 999 ) then
+      if (num_bc_field .le. 0) return
+      do i = 1, num_bc
+        do j = 1, num_bc_field
+          if(bc_name(i) .eq. bc_field_name(j)                           &
+     &        .and. abs(ibc_field_type(j)) == 999 ) then
             do nd = 1, 3
               call count_nod_bc(i, num_bc, bc_istack, num_bc_nod(nd) )
             end do
-          end if
-!
          end if
         end do
-       end if
-!
       end do
 !
       end subroutine add_num_bc_magne
@@ -169,20 +155,15 @@
       integer (kind = kint) :: i, j
 !
 !
+     if (num_bc_field .le. 0) return
       do i=1, num_bc
-!
-       if (num_bc_field /= 0) then
         do j=1, num_bc_field
-         if (bc_name(i)==bc_field_name(j)) then
+          if (bc_name(i)==bc_field_name(j)                              &
 !
-          if ( abs(ibc_field_type(j)) == 999 ) then
-            call count_nod_bc(i, num_bc, bc_istack, num_bc_nod )
+     &      .and. abs(ibc_field_type(j)) == 999) then
+              call count_nod_bc(i, num_bc, bc_istack, num_bc_nod)
           end if
-!
-         end if
         end do
-       end if
-!
       end do
 !
       end subroutine add_num_bc_mag_p

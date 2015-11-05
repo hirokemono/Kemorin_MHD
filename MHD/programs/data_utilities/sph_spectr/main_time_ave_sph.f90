@@ -17,9 +17,9 @@
       call calypso_MPI_init
 !
 !
-      call initialization
+      call initialize_ave_sph
 
-      call evolution
+      call evolution_ave_sph
 
       call calypso_MPI_finalize
 !

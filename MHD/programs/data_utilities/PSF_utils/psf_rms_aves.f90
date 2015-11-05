@@ -87,10 +87,14 @@
 !
 !   Evaluate size of patches
 !
+      write(*,*) 'allocate_norms_4_psf'
       call allocate_norms_4_psf
+      write(*,*) 'cal_center_ele_4_psf'
       call cal_center_ele_4_psf
+      write(*,*) 'cal_norm_area_4_psf'
       call cal_norm_area_4_psf
 !
+      write(*,*) 'set_averaging_range'
       call set_averaging_range(rmin, rmax)
 !
       call open_psf_ave_rms_data(psf_file_header)

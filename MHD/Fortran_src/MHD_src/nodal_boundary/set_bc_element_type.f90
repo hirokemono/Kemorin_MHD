@@ -283,9 +283,9 @@
       type(scaler_rotaion_nod_bc_type), intent(inout) :: rotate
 !
 !
-      call reordering_ele_4_fix_bd(np_smp, rotate%num_idx_ibc,       &
-     &    rotate%num_idx_ibc, rotate%ele_bc_id,                      &
-     &    rotate%nod_bc_id, rotate%ibc_end, rotate%ibc_shape,        &
+      call reordering_ele_4_fix_bd(np_smp, rotate%num_idx_ibc,          &
+     &    rotate%num_idx_ibc, rotate%ele_bc_id,                         &
+     &    rotate%nod_bc_id, rotate%ibc_end, rotate%ibc_shape,           &
      &    rotate%ibc_stack, rotate%ibc_stack_smp, num_t)
 !
       end subroutine set_ele_4_rotate_nodal_bc_type

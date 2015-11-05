@@ -113,8 +113,7 @@
       use m_node_phys_address
       use m_node_phys_data
       use m_bc_data_list
-      use m_bc_data_press
-      use m_bc_press_sgs
+      use m_bc_data_velo
       use set_nodal_boundary
 !
       integer (kind=kint), intent(in) :: numnod
@@ -127,15 +126,15 @@
       call set_fixed_bc_scalar_id                                       &
      &   (nod_grp, numnod, press_nod%num_bc, press_nod%bc_name,         &
      &    press_nod%ibc_type, press_nod%bc_magnitude,                   &
-     &    ibc_press, ibc2_press, num_bc_p_nod,                          &
-     &    ibc_p_id, bc_p_id_apt, fhd_press, ii)
+     &    nod_bc1_p%ibc, nod_bc1_p%ibc2, nod_bc1_p%num_bc_nod,          &
+     &    nod_bc1_p%ibc_id, bc_p_id_apt, fhd_press, ii)
 !
       i0 = 0
       call set_bc_scalar_id                                             &
      &   (nod_grp, numnod, press_nod%num_bc, press_nod%bc_name,         &
      &    press_nod%ibc_type, press_nod%bc_magnitude,                   &
-     &    ibc_press_sgs, ibc2_press_sgs, num_bc_ps_nod,                 &
-     &    ibc_ps_id, bc_ps_id_apt, iflag_bc_sgs_s, i0)
+     &    sgs_bc1_p%ibc, sgs_bc1_p%ibc2, sgs_bc1_p%num_bc_nod,          &
+     &    sgs_bc1_p%ibc_id, bc_ps_id_apt, iflag_bc_sgs_s, i0)
 !
       call set_potential_4_fixed_press(numnod, nod_fld1%ntot_phys,      &
      &    iphys%i_press, iphys%i_p_phi, nod_fld1%d_fld)
@@ -151,32 +150,31 @@
       subroutine set_bc_fixed_m_potential_id(numnod, nod_grp)
 !
       use m_bc_data_list
-      use m_bc_data_magne_p
-      use m_bc_mag_p_sgs
+      use m_bc_data_magne
 !
       integer (kind=kint), intent(in) :: numnod
       type(group_data), intent(in) :: nod_grp
 !
-      integer (kind = kint) :: ii, i0
+      integer (kind = kint) :: ii
 !
 !
       ii = 0
       call set_fixed_bc_scalar_id                                       &
      &   (nod_grp, numnod, e_potential_nod%num_bc,                      &
      &    e_potential_nod%bc_name, e_potential_nod%ibc_type,            &
-     &    e_potential_nod%bc_magnitude, ibc_mag_p, ibc2_mag_p,          &
-     &    num_bc_mag_p_nod, ibc_mag_p_id, bc_mag_p_id_apt,              &
+     &    e_potential_nod%bc_magnitude, nod_bc1_f%ibc, nod_bc1_f%ibc2,  &
+     &    nod_bc1_f%num_bc_nod, nod_bc1_f%ibc_id, bc_mag_p_id_apt,      &
      &    fhd_mag_potential, ii)
 !
       call set_bc_sph_magne_p_id(nod_grp, e_potential_nod%num_bc,       &
      &    e_potential_nod%bc_name, e_potential_nod%ibc_type, ii)
 !
-      i0 = 0
+      ii = 0
       call set_bc_scalar_id(nod_grp, numnod, e_potential_nod%num_bc,    &
      &    e_potential_nod%bc_name, e_potential_nod%ibc_type,            &
-     &    e_potential_nod%bc_magnitude, ibc_mp_sgs, ibc2_mp_sgs,        &
-     &    num_bc_mp_sgs_nod, ibc_mp_sgs_id, bc_mp_sgs_id_apt,           &
-     &    iflag_bc_sgs_s, i0)
+     &    e_potential_nod%bc_magnitude, sgs_bc1_f%ibc, sgs_bc1_f%ibc2,  &
+     &    sgs_bc1_f%num_bc_nod, sgs_bc1_f%ibc_id, bc_mp_sgs_id_apt,     &
+     &    iflag_bc_sgs_s, ii)
 !
       end subroutine set_bc_fixed_m_potential_id
 !

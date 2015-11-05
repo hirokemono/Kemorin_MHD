@@ -7,8 +7,6 @@
 !> @brief Structure for field data IO
 !!
 !!@verbatim
-!!      subroutine copy_rst_prefix_and_fmt(file_head, i_format, fld_IO)
-!!
 !!      subroutine alloc_phys_name_IO(fld_IO)
 !!      subroutine alloc_phys_data_IO(fld_IO)
 !!      subroutine alloc_merged_field_stack(nprocs, fld_IO)
@@ -65,19 +63,6 @@
 ! -------------------------------------------------------------------
 !
       contains
-!
-! -------------------------------------------------------------------
-!
-      subroutine copy_rst_prefix_and_fmt(file_head, i_format, fld_IO)
-!
-      character(len=kchara), intent(in) :: file_head
-      integer(kind=kint), intent(in)  :: i_format
-      type(field_IO), intent(inout) :: fld_IO
-!
-      fld_IO%file_prefix    = file_head
-      fld_IO%iflag_file_fmt = i_format
-!
-      end subroutine copy_rst_prefix_and_fmt
 !
 ! -------------------------------------------------------------------
 !

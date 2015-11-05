@@ -22,27 +22,30 @@
       implicit none
 !
 !
-      type(ucd_data), save :: psf_ucd
+      type(group_data), save :: egrp
+      type(ucd_data), save  :: ucd_med
 !
-      integer(kind = kint) :: istep_read, nd, ierr, icou, i
+      integer(kind = kint) :: istep_read, nd, ierr, icou, i, istart_grp
+      integer(kind = kint), allocatable :: ncomp(:)
       real(kind = kreal)  :: time
 !
 !
       call read_control_ele_grp_udt
       call set_control_ele_grp_udt
 !
-      call read_med_grouping_patch(layerd_mesh_head, ele_grp1)
+      call read_med_grouping_patch(layerd_mesh_head, egrp,              &
+     &   start_ele_grp_name, istart_grp)
 !
       write(*,*) 'fname_input: ', trim(group_data_file_name)
       call count_num_comp_layer_evo_file(id_org_file,                   &
-     &      group_data_file_name, ithree, num_comp, num_layer)
+     &    group_data_file_name, ithree, num_comp, num_layer)
 !
 !
       call allocate_model_coef_name
       call allocate_model_coef_array
 !
       call read_field_name_evo_file(id_org_file,                        &
-     &      group_data_file_name, ithree, num_comp, comp_name)
+     &    group_data_file_name, ithree, num_comp, comp_name)
 !
       write(*,*) 'num. of component and layer: ', num_comp, num_layer
       do nd = 1, num_comp
@@ -51,20 +54,17 @@
 !
 !    output grid data
 !
-      call set_ele_grp_patch_2_psf_grd(ele_grp1)
-      call set_psf_mesh_to_ucd_mesh(psf_ucd)
+!      psf_ucd%ifmt_file = iflag_udt
+!      psf_ucd%file_prefix = tave_grp_udt_head
+!      call sel_write_grd_file(iminus, psf_ucd)
+!      psf_ucd%file_prefix = tsig_grp_udt_head
+!      call sel_write_grd_file(iminus, psf_ucd)
 !
-      psf_ucd%ifmt_file = iflag_udt
-      psf_ucd%file_prefix = tave_grp_udt_head
-      call sel_write_grd_file(iminus, psf_ucd)
-      psf_ucd%file_prefix = tsig_grp_udt_head
-      call sel_write_grd_file(iminus, psf_ucd)
-!
-      call deallocate_med_grouping_patch
+!      call deallocate_med_grouping_patch
 !
 !
 !
-      write(*,'(a,29X)', advance='NO') 'read data for average:'
+      write(*,'(a,39X)', advance='NO') 'read data for average:'
       icou = 0
       do
         call read_evolution_data(id_org_file, num_comp, num_layer,      &
@@ -80,8 +80,9 @@
           end do
           icou = icou + 1
         end if
-        write(*,'(28a1,i15,a8,i15)', advance='NO')                      &
-     &           (char(8),i=1,28), istep_read, ' count: ', icou
+!        write(*,'(i15,a8,i15)') istep_read, ' count: ', icou
+        write(*,'(38a1,i15,a8,i15)', advance='NO')                      &
+     &           (char(8),i=1,38), istep_read, ' count: ', icou
         if(istep_read .ge. istep_end) exit
       end do
       close(id_org_file)
@@ -96,7 +97,7 @@
       call read_field_name_evo_file(id_org_file, group_data_file_name,  &
      &    ithree, num_comp, comp_name)
 !
-      write(*,'(a,29X)', advance='NO') 'read data for deviation:'
+      write(*,'(a,39X)', advance='NO') 'read data for deviation:'
       icou = 0
       do
         call read_evolution_data(id_org_file, num_comp, num_layer,      &
@@ -111,8 +112,8 @@
           end do
           icou = icou + 1
         end if
-        write(*,'(28a1,i15,a8,i15)', advance='NO')                      &
-     &           (char(8),i=1,28), istep_read, ' count: ', icou
+        write(*,'(38a1,i15,a8,i15)', advance='NO')                      &
+     &           (char(8),i=1,38), istep_read, ' count: ', icou
 !
         if(istep_read .ge. istep_end) exit
       end do
@@ -130,17 +131,15 @@
       call write_t_ave_m_coef_file(istep_read, time)
       call write_sigma_m_coef_file(istep_read, time)
 !
-      call set_field_to_med_patch(ele_grp1, num_layer, num_comp,        &
-     &    comp_name, ave_coef)
+      allocate(ncomp(num_comp))
+      ncomp = 1
+      call set_elemental_field_2_ucd(layerd_mesh_head, istart_grp,      &
+     &    num_layer, num_comp, num_comp, ncomp, comp_name, ave_coef,    &
+     &    ucd_med)
 !
-      call set_psf_mesh_to_ucd_field(psf_ucd)
-!
-      psf_ucd%ifmt_file = iflag_udt
-      psf_ucd%file_prefix = tave_grp_udt_head
-      call sel_write_udt_file(iminus, istep_read, psf_ucd)
-!
-      call set_field_to_med_patch(ele_grp1, num_layer, num_comp,        &
-     &    comp_name, sigma_coef)
-      call sel_write_udt_file(iminus, istep_read, psf_ucd)
+      ucd_med%ifmt_file = iflag_vtk
+      ucd_med%file_prefix = tave_grp_udt_head
+      call sel_write_udt_file(iminus, istep_read, ucd_med)
+      stop
 !
       end program element_grouping_udt

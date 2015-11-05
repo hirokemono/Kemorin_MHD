@@ -237,8 +237,8 @@
      &           r_itp, new_sph_phys(jp), new_fst_IO(jloop))
           end if
 !
-            call copy_rst_prefix_and_fmt                                &
-     &         (new_sph_fst_head, ifmt_new_sph_fst, new_fst_IO(jloop))
+            call set_field_file_fmt_prefix                              &
+     &         (ifmt_new_sph_fst, new_sph_fst_head, new_fst_IO(jloop))
         end do
 !
 !

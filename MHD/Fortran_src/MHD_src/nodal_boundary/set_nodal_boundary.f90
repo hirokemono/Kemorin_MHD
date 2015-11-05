@@ -137,7 +137,7 @@
       subroutine set_potential_4_fixed_press                            &
      &         (numnod, ncomp_nod, i_press, i_p_phi, d_nod)
 !
-      use m_bc_data_press
+      use m_bc_data_velo
       use m_t_int_parameter
       use m_physical_property
 !
@@ -147,8 +147,8 @@
 !
       integer (kind = kint) :: inum, inod
 !
-      do inum = 1, num_bc_p_nod
-        inod = ibc_p_id(inum)
+      do inum = 1, nod_bc1_p%num_bc_nod
+        inod = nod_bc1_p%ibc_id(inum)
         bc_p_id_apt(inum) =   -dt * bc_p_id_apt(inum) * coef_press
         d_nod(inod,i_p_phi) = -dt * coef_press * d_nod(inod,i_press)
       end do
@@ -160,7 +160,7 @@
       subroutine set_potential_4_sgs_press                              &
      &         (numnod, ncomp_nod, i_press, i_p_phi, d_nod)
 !
-      use m_bc_press_sgs
+      use m_bc_data_velo
       use m_t_int_parameter
       use m_physical_property
 !
@@ -170,8 +170,8 @@
 !
        integer (kind = kint) :: inum, inod
 !
-      do inum = 1, num_bc_ps_nod
-        inod = ibc_ps_id(inum)
+      do inum = 1, sgs_bc1_p%num_bc_nod
+        inod = sgs_bc1_p%ibc_id(inum)
         bc_ps_id_apt(inum) =   -dt * bc_ps_id_apt(inum) * coef_press
         d_nod(inod,i_p_phi) =  -dt * coef_press * d_nod(inod,i_press)
       end do

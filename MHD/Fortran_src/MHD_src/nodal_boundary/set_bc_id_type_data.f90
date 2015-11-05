@@ -53,6 +53,7 @@
       use t_mesh_data
       use t_nodal_bc_data
       use count_num_bc_nod_type
+      use count_num_nod_bc_MHD
 !
       type(mesh_groups), intent(in) :: group
       type(nodal_boundarty_conditions), intent(inout) :: nodal_bc
@@ -67,11 +68,20 @@
       call count_num_bc_press(group%nod_grp, nodal_bc%press,            &
      &    nodal_bc%sgs_press)
 !
-      call count_num_bc_vecp(group%nod_grp, nodal_bc%vector_p,          &
-     &    nodal_bc%sgs_vect_p)
-      call count_num_bc_magne(group%nod_grp, nodal_bc%magne,            &
-     &    nodal_bc%sgs_magne)
-      call count_num_bc_current(group%nod_grp, nodal_bc%current)
+      call count_num_bc_vect(iflag_bc_fixed, group%nod_grp,             &
+     &    a_potential_nod, nodal_bc%vector_p)
+      call count_num_bc_vect(iflag_bc_sgs, group%nod_grp,               &
+     &    a_potential_nod, nodal_bc%sgs_vect_p)
+!
+!
+      call count_num_bc_magne(iflag_bc_fixed, group%nod_grp,            &
+     &    magne_nod, nodal_bc%magne)
+      call count_num_bc_vect(iflag_bc_sgs, group%nod_grp,               &
+     &    magne_nod, nodal_bc%sgs_magne)
+!
+      call count_num_bc_vect(iflag_bc_fixed, group%nod_grp,             &
+     &    current_nod, nodal_bc%current)
+!
       call count_num_bc_magp(group%nod_grp, nodal_bc%magne_p,           &
      &    nodal_bc%sgs_mag_p)
 !

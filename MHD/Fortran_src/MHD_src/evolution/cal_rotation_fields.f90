@@ -54,14 +54,18 @@
       subroutine cal_current_density
 !
       use m_control_parameter
-      use m_node_phys_data
       use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
+      use m_bc_data_magne
       use m_surf_data_magne
+      use m_surf_data_current
 !
       use cal_rotation
       use cal_rotation_sgs
       use set_vecp_boundary
+      use set_velocity_boundary
+      use set_velocity_boundary
       use nod_phys_send_recv
 !
       if ( iflag_SGS_model .ne. id_SGS_none                             &
@@ -78,7 +82,9 @@
 !        call cal_rotation_in_conduct(iphys%i_current, iphys%i_magne)
       end if
 !
-      call set_boundary_current
+      call set_boundary_vect                                            &
+     &   (nod_bc1_j, bc_j_id_apt, iphys%i_current, nod_fld1)
+!
       call vector_send_recv(iphys%i_current, node1, nod_comm, nod_fld1)
       nod_fld1%iflag_update(iphys%i_current:iphys%i_current+2) = 1
 !
@@ -97,6 +103,7 @@
       use cal_rotation
       use cal_rotation_sgs
       use set_magne_boundary
+      use set_velocity_boundary
       use nod_phys_send_recv
 !
       if ( iflag_SGS_model.ne.id_SGS_none                               &
@@ -109,7 +116,9 @@
      &      iphys%i_magne, iphys%i_vecp)
       end if
 !
-      call set_boundary_magne
+      call set_boundary_vect                                            &
+     &   (nod_bc1_b, bc_b_id_apt, iphys%i_magne, nod_fld1)
+!
       call vector_send_recv(iphys%i_magne, node1, nod_comm, nod_fld1)
       nod_fld1%iflag_update(iphys%i_magne:iphys%i_magne+2) = 1
 !
