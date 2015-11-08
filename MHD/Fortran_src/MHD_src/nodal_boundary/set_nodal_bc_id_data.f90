@@ -31,8 +31,6 @@
       use m_node_phys_address
 !
       use m_bc_data_ene
-      use m_bc_temp_sgs
-!
       use m_bc_data_velo
       use m_bc_data_vr0
       use m_bc_data_rotate
@@ -58,8 +56,11 @@
       call count_num_bc_nod(nod_grp1)
 !
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
-        call allocate_bc_ene(node1%numnod)
-        call allocate_bc_t_sgs(node1%numnod)
+        call alloc_scalar_nod_bc_type(node1%numnod, nod_bc1_t)
+        call alloc_scalar_nod_bc_type(node1%numnod, sgs_bc1_t)
+!
+        call allocate_bc_ene
+        call allocate_bc_t_sgs
         call set_bc_temp_id
         call set_boundary_ene
       end if

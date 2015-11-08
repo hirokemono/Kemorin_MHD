@@ -35,8 +35,9 @@
       use m_surf_data_temp
 !
 !
-      if (num_bc_e_nod .gt. 0) then
-       call set_fixed_bc_scalar_phys(num_bc_e_nod, ibc_e_id,            &
+      if (nod_bc1_t%num_bc_nod .gt. 0) then
+       call set_fixed_bc_scalar_phys                      &
+     &    (nod_bc1_t%num_bc_nod, nod_bc1_t%ibc_id,                      &
      &     bc_e_id_apt, node1%numnod, nod_fld1%ntot_phys, iphys%i_temp, &
      &     nod_fld1%d_fld)
       end if
@@ -53,8 +54,9 @@
       use m_surf_data_temp
 !
 !
-      if (num_bc_e_nod .gt. 0) then
-       call set_fixed_bc_scalar_phys(num_bc_e_nod, ibc_e_id,            &
+      if (nod_bc1_t%num_bc_nod .gt. 0) then
+       call set_fixed_bc_scalar_phys                                    &
+     &    (nod_bc1_t%num_bc_nod, nod_bc1_t%ibc_id,                      &
      &     bc_e_id_apt, node1%numnod, nod_fld1%ntot_phys,               &
      &     iphys%i_par_temp, nod_fld1%d_fld)
       end if
@@ -71,8 +73,9 @@
       use m_surf_data_temp
 !
 !
-      if (num_bc_e_nod .le. 0) return
-      call del_2scalar_phys_on_bc(num_bc_e_nod, ibc_e_id,               &
+      if (nod_bc1_t%num_bc_nod .le. 0) return
+      call del_2scalar_phys_on_bc                                       &
+     &   (nod_bc1_t%num_bc_nod, nod_bc1_t%ibc_id,                       &
      &    node1%numnod, n_vector, ione, f1_l%ff, f1_nl%ff)
 !
       end subroutine set_boundary_ene_4_rhs
@@ -89,8 +92,9 @@
       integer(kind = kint), intent(in) :: i_field
 !
 !
-      if (num_bc_e_nod .gt. 0) then
-       call del_scalar_phys_on_bc(num_bc_e_nod, ibc_e_id,               &
+      if (nod_bc1_t%num_bc_nod .gt. 0) then
+       call del_scalar_phys_on_bc                                       &
+     &    (nod_bc1_t%num_bc_nod, nod_bc1_t%ibc_id,                      &
      &     node1%numnod, nod_fld1%ntot_phys, i_field, nod_fld1%d_fld)
       end if
 !
@@ -108,8 +112,9 @@
       integer(kind = kint), intent(in) :: i_field
 !
 !
-      if (num_bc_e_nod .gt. 0) then
-       call del_vector_phys_on_1bc(num_bc_e_nod, ibc_e_id,              &
+      if (nod_bc1_t%num_bc_nod .gt. 0) then
+       call del_vector_phys_on_1bc                                      &
+     &    (nod_bc1_t%num_bc_nod, nod_bc1_t%ibc_id,                      &
      &     node1%numnod, nod_fld1%ntot_phys, i_field, nod_fld1%d_fld)
       end if
 !

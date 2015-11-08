@@ -74,7 +74,6 @@
       use m_control_parameter
       use m_bc_data_list
       use m_bc_data_ene
-      use m_bc_temp_sgs
       use set_nodal_boundary
 !
       integer (kind=kint), intent(in) :: numnod
@@ -87,15 +86,15 @@
       call set_fixed_bc_scalar_id                                       &
      &   (nod_grp, numnod, temp_nod%num_bc, temp_nod%bc_name,           &
      &    temp_nod%ibc_type, temp_nod%bc_magnitude,                     &
-     &    ibc_temp, ibc2_temp, num_bc_e_nod,                            &
-     &    ibc_e_id, bc_e_id_apt, fhd_temp, ii)
+     &    nod_bc1_t%ibc, nod_bc1_t%ibc2, nod_bc1_t%num_bc_nod,          &
+     &    nod_bc1_t%ibc_id, bc_e_id_apt, fhd_temp, ii)
 !
       i0 = 0
       call set_bc_scalar_id                                             &
      &   (nod_grp, numnod, temp_nod%num_bc, temp_nod%bc_name,           &
      &    temp_nod%ibc_type, temp_nod%bc_magnitude,                     &
-     &    ibc_t_sgs, ibc2_t_sgs, num_bc_t_sgs_nod,                      &
-     &    ibc_t_sgs_id, bc_t_sgs_id_apt, iflag_bc_sgs_s, i0)
+     &    sgs_bc1_t%ibc, sgs_bc1_t%ibc2, sgs_bc1_t%num_bc_nod,          &
+     &    sgs_bc1_t%ibc_id, bc_t_sgs_id_apt, iflag_bc_sgs_s, i0)
 !
 !
       if (iflag_4_ref_temp .ne. id_no_ref_temp) then

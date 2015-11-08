@@ -154,10 +154,10 @@
       integer (kind = kint) :: k0
 !
 !
-      if(num_index_ibc2_temp .le. 0) return
-      do k0 = 1, num_index_ibc2_temp
+      if(nod_bc1_t%num_idx_ibc2 .le. 0) return
+      do k0 = 1, nod_bc1_t%num_idx_ibc2
         call set_aiccg_bc_scalar_nod(ele1%nnod_4_ele,                   &
-     &      ele_bc2_temp_id(k0), nod_bc2_temp_id(k0),                   &
+     &      nod_bc1_t%ele_bc2_id(k0), nod_bc1_t%nod_bc2_id(k0),         &
      &      DJDS_fluid, Tmat_DJDS)
       end do
 !

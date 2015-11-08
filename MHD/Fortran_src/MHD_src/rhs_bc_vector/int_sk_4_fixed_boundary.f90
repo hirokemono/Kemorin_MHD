@@ -147,15 +147,15 @@
       if (iflag_commute_temp .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_scalar_surf                              &
      &     (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
-     &      intg_point_t_evo, ibc_temp_end, num_index_ibc_temp,         &
-     &      ele_bc_temp_id, ibc_temp_stack_smp, ibc_temp_shape,         &
+     &      intg_point_t_evo, nod_bc1_t%ibc_end, nod_bc1_t%num_idx_ibc, &
+     &      nod_bc1_t%ele_bc_id, nod_bc1_t%ibc_stack_smp, nod_bc1_t%ibc_shape, &
      &      ifilter_final, iphys%i_temp, ak_diff(1,iak_diff_t),         &
      &      ak_d_temp, coef_imp_t, fem1_wk, f1_l)
       else
         call int_vol_fixed_scalar_surf                                  &
      &     (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1,                 &
-     &      intg_point_t_evo, ibc_temp_end, num_index_ibc_temp,         &
-     &      ele_bc_temp_id, ibc_temp_stack_smp, ibc_temp_shape,         &
+     &      intg_point_t_evo, nod_bc1_t%ibc_end, nod_bc1_t%num_idx_ibc, &
+     &      nod_bc1_t%ele_bc_id, nod_bc1_t%ibc_stack_smp, nod_bc1_t%ibc_shape, &
      &      iphys%i_temp, ak_d_temp, coef_imp_t, fem1_wk, f1_l)
       end if
 !
@@ -173,15 +173,15 @@
       if (iflag_commute_temp .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_scalar_surf                              &
      &     (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
-     &      intg_point_t_evo, ibc_temp_end, num_index_ibc_temp,         &
-     &      ele_bc_temp_id, ibc_temp_stack_smp, ibc_temp_shape,         &
+     &      intg_point_t_evo, nod_bc1_t%ibc_end, nod_bc1_t%num_idx_ibc, &
+     &      nod_bc1_t%ele_bc_id, nod_bc1_t%ibc_stack_smp, nod_bc1_t%ibc_shape, &
      &      ifilter_final, iphys%i_par_temp, ak_diff(1,iak_diff_t),     &
      &      ak_d_temp, coef_imp_t, fem1_wk, f1_l)
       else
         call int_vol_fixed_scalar_surf                                  &
      &     (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1,                 &
-     &      intg_point_t_evo, ibc_temp_end, num_index_ibc_temp,         &
-     &      ele_bc_temp_id, ibc_temp_stack_smp, ibc_temp_shape,         &
+     &      intg_point_t_evo, nod_bc1_t%ibc_end, nod_bc1_t%num_idx_ibc, &
+     &      nod_bc1_t%ele_bc_id, nod_bc1_t%ibc_stack_smp, nod_bc1_t%ibc_shape, &
      &      iphys%i_par_temp, ak_d_temp, coef_imp_t, fem1_wk, f1_l)
       end if
 !

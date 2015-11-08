@@ -126,19 +126,21 @@
       use m_bc_data_ene
 !
 !
-      call count_bc_element_fl(num_index_ibc_temp, ibc_temp)
-      call count_bc_element_fl(num_index_ibc2_temp, ibc2_temp)
+      call count_bc_element_fl(nod_bc1_t%num_idx_ibc, nod_bc1_t%ibc)
+      call count_bc_element_fl(nod_bc1_t%num_idx_ibc2, nod_bc1_t%ibc2)
 !
-      call allocate_bc_temp_4_element(ele1%nnod_4_ele)
+      call alloc_nod_bc_scalar_ele_type                                 &
+      &  (np_smp, ele1%nnod_4_ele, nod_bc1_t)
 !
       call set_ele_4_scalar_nodal_bc_fl                                 &
-     &   (node1%numnod, ele1%nnod_4_ele, ibc_temp, ibc2_temp,           &
-     &    num_index_ibc_temp, ele_bc_temp_id, nod_bc_temp_id,           &
-     &    num_index_ibc2_temp, ele_bc2_temp_id, nod_bc2_temp_id,        &
-     &    ibc_temp_end, ibc_temp_shape, ibc_temp_stack,                 &
-     &    ibc_temp_stack_smp)
+     &   (node1%numnod, ele1%nnod_4_ele, nod_bc1_t%ibc, nod_bc1_t%ibc2, &
+     &    nod_bc1_t%num_idx_ibc, nod_bc1_t%ele_bc_id,                   &
+     &    nod_bc1_t%nod_bc_id, nod_bc1_t%num_idx_ibc2,                  &
+     &    nod_bc1_t%ele_bc2_id, nod_bc1_t%nod_bc2_id,                   &
+     &    nod_bc1_t%ibc_end, nod_bc1_t%ibc_shape, nod_bc1_t%ibc_stack,  &
+     &    nod_bc1_t%ibc_stack_smp)
 !
-      call deallocate_ibc_4_temp
+      call dealloc_scalar_ibc_type(nod_bc1_t)
 !
       end subroutine set_ele_nodal_bc_4_temp
 !
@@ -146,22 +148,26 @@
 !
       subroutine set_ele_nodal_bc_4_temp_sgs
 !
-      use m_bc_temp_sgs
+      use m_bc_data_ene
 !
 !
-      call count_bc_element_fl(num_index_ibc_t_sgs, ibc_t_sgs)
-      call count_bc_element_fl(num_index_ibc2_t_sgs, ibc2_t_sgs)
+      call count_bc_element_fl        &
+     &   (sgs_bc1_t%num_idx_ibc, sgs_bc1_t%ibc)
+      call count_bc_element_fl        &
+     &   (sgs_bc1_t%num_idx_ibc2, sgs_bc1_t%ibc2)
 !
-      call allocate_bc_t_sgs_4_ele(ele1%nnod_4_ele)
+      call alloc_nod_bc_scalar_ele_type                                 &
+      &  (np_smp, ele1%nnod_4_ele, sgs_bc1_t)
 !
       call set_ele_4_scalar_nodal_bc_fl                                 &
-     &   (node1%numnod, ele1%nnod_4_ele, ibc_t_sgs, ibc2_t_sgs,         &
-     &    num_index_ibc_t_sgs, ele_bc_t_sgs_id, nod_bc_t_sgs_id,        &
-     &    num_index_ibc2_t_sgs, ele_bc2_t_sgs_id, nod_bc2_t_sgs_id,     &
-     &    ibc_t_sgs_end, ibc_t_sgs_shape, ibc_t_sgs_stack,              &
-     &    ibc_t_sgs_stack_smp)
+     &   (node1%numnod, ele1%nnod_4_ele, sgs_bc1_t%ibc, sgs_bc1_t%ibc2, &
+     &    sgs_bc1_t%num_idx_ibc, sgs_bc1_t%ele_bc_id,         &
+     &    sgs_bc1_t%nod_bc_id, sgs_bc1_t%num_idx_ibc2,  &
+     &    sgs_bc1_t%ele_bc2_id, sgs_bc1_t%nod_bc2_id,   &
+     &    sgs_bc1_t%ibc_end, sgs_bc1_t%ibc_shape, sgs_bc1_t%ibc_stack,  &
+     &    sgs_bc1_t%ibc_stack_smp)
 !
-      call deallocate_ibc_4_t_sgs
+      call dealloc_scalar_ibc_type(sgs_bc1_t)
 !
       end subroutine set_ele_nodal_bc_4_temp_sgs
 !

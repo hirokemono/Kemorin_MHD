@@ -125,8 +125,8 @@
 !
       integer (kind = kint) :: inum, inod
 !
-      do inum=1, num_bc_e_nod
-        inod = ibc_e_id(inum)
+      do inum = 1, nod_bc1_t%num_bc_nod
+        inod = nod_bc1_t%ibc_id(inum)
         bc_e_id_apt(inum) = bc_e_id_apt(inum) - d_nod(inod,i_ref_t)
       end do
 !

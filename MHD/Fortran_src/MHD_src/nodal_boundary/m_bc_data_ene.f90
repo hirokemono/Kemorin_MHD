@@ -13,109 +13,43 @@
       module m_bc_data_ene
 !
       use m_precision
+      use t_nodal_bc_data
 !
       implicit  none
 !
-      integer (kind=kint), allocatable :: ibc_temp(:)
-      integer (kind=kint), allocatable :: ibc2_temp(:)
-! 
 !
-      integer (kind=kint) :: num_bc_e_nod
-      integer (kind=kint), allocatable :: ibc_e_id(:)
-      real (kind=kreal),   allocatable :: bc_e_id_apt(:)
-! 
+      type(scaler_fixed_nod_bc_type) :: nod_bc1_t
 !
-      integer (kind=kint) :: num_index_ibc_temp
-      integer (kind=kint) :: num_index_ibc2_temp
-      integer (kind=kint), allocatable :: ele_bc_temp_id(:)
-      integer (kind=kint), allocatable :: nod_bc_temp_id(:)
-      integer (kind=kint), allocatable :: ele_bc2_temp_id(:)
-      integer (kind=kint), allocatable :: nod_bc2_temp_id(:)
-! 
+      type(scaler_fixed_nod_bc_type) :: sgs_bc1_t
+!sgs_bc1_t%ibc_stack_smp
 !
-      integer (kind=kint) :: ibc_temp_end
-      integer (kind=kint), allocatable :: ibc_temp_shape(:)
-      integer (kind=kint), allocatable :: ibc_temp_stack(:)
-      integer (kind=kint), allocatable :: ibc_temp_stack_smp(:)
+      real(kind=kreal), allocatable :: bc_e_id_apt(:)
 ! 
-!  ---------------------------------------------------------------------
-!
-      contains 
+      real(kind=kreal), allocatable :: bc_t_sgs_id_apt(:)
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine allocate_bc_ene(numnod)
+      contains
 !
-      integer(kind = kint), intent(in) :: numnod
+!  ---------------------------------------------------------------------
 !
-      allocate(ibc_temp(numnod))
-      allocate(ibc2_temp(numnod))
+      subroutine allocate_bc_ene
 !
-      if (numnod .gt. 0) then
-        ibc_temp=0
-        ibc2_temp=0
-      end if
-! 
-      allocate(ibc_e_id(num_bc_e_nod))
-      allocate(bc_e_id_apt(num_bc_e_nod))
-      if (num_bc_e_nod .gt. 0) then
-        ibc_e_id=0 
-        bc_e_id_apt=0.0d00 
-      end if
+!
+      allocate(bc_e_id_apt(nod_bc1_t%num_bc_nod))
+      if (nod_bc1_t%num_bc_nod .gt. 0) bc_e_id_apt = 0.0d00
 !
       end subroutine allocate_bc_ene
 !
 !  ---------------------------------------------------------------------
 !
-       subroutine allocate_bc_temp_4_element(nnod_4_ele)
-!
-        use m_machine_parameter
-!
-       integer(kind = kint), intent(in) :: nnod_4_ele
+      subroutine allocate_bc_t_sgs
 !
 !
-        allocate ( ele_bc_temp_id(num_index_ibc_temp) )
-        allocate ( nod_bc_temp_id(num_index_ibc_temp) )
+      allocate(bc_t_sgs_id_apt(sgs_bc1_t%num_bc_nod))
+      if (sgs_bc1_t%num_bc_nod .gt. 0)  bc_t_sgs_id_apt=0.0d00 
 !
-        allocate ( ele_bc2_temp_id(num_index_ibc2_temp) )
-        allocate ( nod_bc2_temp_id(num_index_ibc2_temp) )
-!
-        allocate ( ibc_temp_stack(nnod_4_ele) )
-        allocate ( ibc_temp_stack_smp(0:nnod_4_ele*np_smp) )
-        allocate ( ibc_temp_shape(nnod_4_ele) )
-!
-        if ( num_index_ibc_temp.gt.0) then
-         ele_bc_temp_id = 0
-         nod_bc_temp_id = 0
-         ibc_temp_stack = 0
-         ibc_temp_shape = 0
-         ibc_temp_stack_smp = 0
-        end if
-!
-        if ( num_index_ibc2_temp.gt.0) then
-         ele_bc2_temp_id = 0
-         nod_bc2_temp_id = 0
-        end if
-!
-       end subroutine allocate_bc_temp_4_element
-!
-!  ---------------------------------------------------------------------
-!
-       subroutine deallocate_ibc_4_temp
-!
-        deallocate( ibc_temp )
-        deallocate( ibc2_temp )
-!
-       end subroutine deallocate_ibc_4_temp
-!
-!  ---------------------------------------------------------------------
-!
-       subroutine deallocate_bc2_temp
-!
-        deallocate ( ele_bc2_temp_id )
-        deallocate ( nod_bc2_temp_id )
-!
-       end subroutine deallocate_bc2_temp
+      end subroutine allocate_bc_t_sgs
 !
 !  ---------------------------------------------------------------------
 !

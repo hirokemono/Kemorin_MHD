@@ -94,7 +94,6 @@
       use m_bc_data_vfree
       use m_bc_data_vr0
       use m_bc_data_vsp
-      use m_bc_temp_sgs
 !
       type(group_data), intent(in) :: nod_grp
 !
@@ -150,7 +149,6 @@
       subroutine count_num_bc_temp(nod_grp)
 !
       use m_bc_data_ene
-      use m_bc_temp_sgs
 !
       type(group_data), intent(in) :: nod_grp
 !
@@ -158,11 +156,11 @@
       call count_num_bc_scalar                                          &
      &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
      &    temp_nod%num_bc, temp_nod%bc_name, temp_nod%ibc_type,         &
-     &    num_bc_e_nod, iflag_bc_fix_s)
+     &    nod_bc1_t%num_bc_nod, iflag_bc_fix_s)
       call count_num_bc_scalar                                          &
      &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
      &    temp_nod%num_bc, temp_nod%bc_name, temp_nod%ibc_type,         &
-     &    num_bc_t_sgs_nod, iflag_bc_sgs_s)
+     &    sgs_bc1_t%num_bc_nod, iflag_bc_sgs_s)
 !
       end subroutine count_num_bc_temp
 !
