@@ -123,7 +123,11 @@
 !
       textbuf = hd_fem_nodgrp() // char(0)
       call gz_write_textbuf_no_lf
-      call write_viewer_group_data_gz(num_pe_sf, ngrp_nod_sf,           &
+!
+      write(textbuf,'(i16,a1)') ngrp_nod_sf, char(0)
+      call gz_write_textbuf_w_lf
+!
+     call write_viewer_group_data_gz(num_pe_sf, ngrp_nod_sf,           &
      &    nnod_nod_sf, nod_stack_sf, nod_gp_name_sf, nod_item_sf)
 !
       end subroutine write_nod_group_viewer_gz
