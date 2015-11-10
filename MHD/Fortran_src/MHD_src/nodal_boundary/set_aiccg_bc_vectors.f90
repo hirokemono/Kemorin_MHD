@@ -78,7 +78,7 @@
       use m_sorted_node
       use m_sorted_node_MHD
       use m_finite_element_matrix
-      use m_bc_data_rotate
+      use m_bc_data_velo
       use m_velo_matrix
 !
       use set_aiccg_free_sph
@@ -102,7 +102,7 @@
 !
 !
 !        write(*,*) '  velo_bc_rotation'
-      if ( num_index_ibc_vrot .ne. 0 ) then
+      if ( nod_bc1_rot%num_idx_ibc .ne. 0 ) then
        call set_aiccg_bc_velo_rot
       end if
 !

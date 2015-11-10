@@ -16,7 +16,6 @@
       use m_geometry_data
 !
       use cal_multi_pass
-      use set_vecp_boundary
       use cal_sol_vector_co_crank
 !
       implicit none
@@ -142,12 +141,17 @@
 !
       subroutine cal_vector_p_co_crank
 !
+      use m_phys_constants
+      use m_finite_element_matrix
+      use m_bc_data_magne
+      use set_velocity_boundary
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_t_evo_4_vector'
       call cal_t_evo_4_vector(iflag_mag_supg)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_vect_p_4_rhs'
-      call set_boundary_vect_p_4_rhs
+      call delete_vector_ffs_on_bc(node1, nod_bc1_a, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_vect_p_co_crank'
       call cal_sol_vect_p_co_crank(node1%istack_internal_smp)
@@ -159,9 +163,12 @@
       subroutine cal_vector_p_co_consist_crank
 !
       use m_phys_constants
+      use m_finite_element_matrix
+      use m_bc_data_magne
 !
       use int_vol_initial_MHD
       use cal_ff_smp_to_ffs
+      use set_velocity_boundary
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_initial_vect_p'
@@ -169,7 +176,7 @@
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_vect_p_4_rhs'
-      call set_boundary_vect_p_4_rhs
+      call delete_vector_ffs_on_bc(node1, nod_bc1_a, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_vect_p_co_crank_consist'
       call cal_sol_vect_p_co_crank_consist(node1%istack_internal_smp)

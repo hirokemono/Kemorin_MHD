@@ -32,25 +32,14 @@
 !
       use m_bc_data_ene
       use m_bc_data_velo
-      use m_bc_data_vr0
-      use m_bc_data_rotate
-      use m_bc_data_vfree
-      use m_bc_data_vsp
-!
       use m_bc_data_magne
-      use m_bc_data_mag_p_ins
-      use m_bc_data_mag_p_cd
-!
-      use m_bc_data_composition
 !
       use count_num_nod_bc_MHD
       use set_bc_phys_id
       use set_boundary_potentials
       use set_boundary_scalars
       use set_velocity_boundary
-      use set_vecp_boundary
       use set_magne_boundary
-!
 !
 !
       call count_num_bc_nod(nod_grp1)
@@ -62,7 +51,8 @@
         call allocate_bc_ene
         call allocate_bc_t_sgs
         call set_bc_temp_id
-        call set_boundary_ene
+        call set_boundary_scalar                                        &
+     &     (nod_bc1_t, bc_e_id_apt, iphys%i_temp, nod_fld1)
       end if
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
@@ -70,13 +60,16 @@
         if ( iflag_debug .eq.1)  write(*,*) 'allocate boundary 4 v'
         call alloc_vector_nod_bc_type(node1%numnod, nod_bc1_v)
         call alloc_vector_nod_bc_type(node1%numnod, sgs_bc1_v)
+        call alloc_scalar_nod_bc_type(node1%numnod, nod_bc1_vr0)
+        call alloc_scalar_nod_bc_type(node1%numnod, nod_bc1_vfree)
+        call alloc_scalar_nod_bc_type(node1%numnod, nod_bc1_vsp)
+        call alloc_rotate_nod_bc_type(node1%numnod, nod_bc1_rot)
 !
         call allocate_bc_velo
         call allocate_bc_v_sgs
-        call allocate_bc_vr0(node1%numnod)
-        call allocate_bc_vfr(node1%numnod)
-        call allocate_bc_rot(node1%numnod)
-        call allocate_bc_vsp(node1%numnod)
+        call allocate_bc_vr0
+        call allocate_bc_vfr
+        call allocate_bc_vsp
 !
         if (iflag_debug .eq.1)  write(*,*) 'allocate boundary 4 P'
         call alloc_scalar_nod_bc_type(node1%numnod, nod_bc1_p)
@@ -94,9 +87,11 @@
       end if
 !
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call allocate_bc_composition(node1%numnod)
-        call set_bc_composition_id
-        call set_boundary_composition
+        call alloc_scalar_nod_bc_type(node1%numnod, nod_bc1_c)
+!
+        call allocate_bc_composition
+        call set_boundary_scalar                                        &
+     &     (nod_bc1_c, bc_composit_id_apt, iphys%i_light, nod_fld1)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution) then

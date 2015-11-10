@@ -33,22 +33,27 @@
 !
       subroutine set_ele_nodal_bc_4_rotate
 !
-      use m_bc_data_rotate
+      use m_bc_data_velo
 !
 !
-      call count_bc_element_fl(num_index_ibc_vrot, ibc_velo_rot)
-      call count_bc_element_fl(num_index_ibc2_vrot, ibc2_velo_rot)
+      call count_bc_element_fl &
+     &   (nod_bc1_rot%num_idx_ibc, nod_bc1_rot%ibc)
+      call count_bc_element_fl &
+     &   (nod_bc1_rot%num_idx_ibc2, nod_bc1_rot%ibc2)
 !
-      call allocate_bc_rot_4_ele(ele1%nnod_4_ele)
+      call alloc_nod_bc_rotate_ele_type                                 &
+      &  (np_smp, ele1%nnod_4_ele, nod_bc1_rot)
 !
       call set_ele_4_scalar_nodal_bc_fl                                 &
-     &   (node1%numnod, ele1%nnod_4_ele, ibc_velo_rot, ibc2_velo_rot,   &
-     &    num_index_ibc_vrot, ele_bc_vrot_id, nod_bc_vrot_id,           &
-     &    num_index_ibc2_vrot, ele_bc2_vrot_id, nod_bc2_vrot_id,        &
-     &    ibc_vrot_end, ibc_vrot_shape, ibc_vrot_stack,                 &
-     &    ibc_vrot_stack_smp)
+     &   (node1%numnod, ele1%nnod_4_ele,    &
+     &    nod_bc1_rot%ibc, nod_bc1_rot%ibc2,   &
+     &    nod_bc1_rot%num_idx_ibc, nod_bc1_rot%ele_bc_id,  &
+     &    nod_bc1_rot%nod_bc_id, nod_bc1_rot%num_idx_ibc2,      &
+     &    nod_bc1_rot%ele_bc2_id, nod_bc1_rot%nod_bc2_id,        &
+     &    nod_bc1_rot%ibc_end, nod_bc1_rot%ibc_shape,   &
+     &    nod_bc1_rot%ibc_stack, nod_bc1_rot%ibc_stack_smp)
 !
-      call deallocate_ibc_4_rot
+      call dealloc_rotate_ibc_type(nod_bc1_rot)
 !
       end subroutine set_ele_nodal_bc_4_rotate
 !
@@ -56,21 +61,27 @@
 !
       subroutine set_ele_nodal_bc_4_vfree
 !
-      use m_bc_data_vfree
+      use m_bc_data_velo
 !
 !
-      call count_bc_element_fl(num_index_ibc_vfr, ibc_velo_fr)
-      call count_bc_element_fl(num_index_ibc2_vfr, ibc2_velo_fr)
+      call count_bc_element_fl           &
+     &   (nod_bc1_vfree%num_idx_ibc, nod_bc1_vfree%ibc)
+      call count_bc_element_fl           &
+     &   (nod_bc1_vfree%num_idx_ibc2, nod_bc1_vfree%ibc2)
 !
-      call allocate_bc_vfr_4_ele(ele1%nnod_4_ele)
+      call alloc_nod_bc_scalar_ele_type                    &
+      &  (np_smp, ele1%nnod_4_ele, nod_bc1_vfree)
 !
       call set_ele_4_scalar_nodal_bc_fl                                 &
-     &   (node1%numnod, ele1%nnod_4_ele, ibc_velo_fr, ibc2_velo_fr,     &
-     &    num_index_ibc_vfr, ele_bc_vfr_id, nod_bc_vfr_id,              &
-     &    num_index_ibc2_vfr, ele_bc2_vfr_id, nod_bc2_vfr_id,           &
-     &    ibc_vfr_end, ibc_vfr_shape, ibc_vfr_stack, ibc_vfr_stack_smp)
+     &   (node1%numnod, ele1%nnod_4_ele,     &
+     &    nod_bc1_vfree%ibc, nod_bc1_vfree%ibc2,     &
+     &    nod_bc1_vfree%num_idx_ibc, nod_bc1_vfree%ele_bc_id,     &
+     &    nod_bc1_vfree%nod_bc_id, nod_bc1_vfree%num_idx_ibc2,      &
+     &    nod_bc1_vfree%ele_bc2_id, nod_bc1_vfree%nod_bc2_id,           &
+     &    nod_bc1_vfree%ibc_end, nod_bc1_vfree%ibc_shape,       &
+     &    nod_bc1_vfree%ibc_stack, nod_bc1_vfree%ibc_stack_smp)
 !
-      call deallocate_ibc_4_vfr
+      call dealloc_scalar_ibc_type(nod_bc1_vfree)
 !
       end subroutine set_ele_nodal_bc_4_vfree
 !
@@ -78,21 +89,27 @@
 !
       subroutine set_ele_nodal_bc_4_vr0
 !
-      use m_bc_data_vr0
+      use m_bc_data_velo
 !
 !
-      call count_bc_element_fl(num_index_ibc_vr0, ibc_velo_r0)
-      call count_bc_element_fl(num_index_ibc2_vr0, ibc2_velo_r0)
+      call count_bc_element_fl      &
+     &   (nod_bc1_vr0%num_idx_ibc, nod_bc1_vr0%ibc)
+      call count_bc_element_fl      &
+     &   (nod_bc1_vr0%num_idx_ibc2, nod_bc1_vr0%ibc2)
 !
-      call allocate_bc_vr0_4_ele(ele1%nnod_4_ele)
+      call alloc_nod_bc_scalar_ele_type                                 &
+      &  (np_smp, ele1%nnod_4_ele, nod_bc1_vr0)
 !
       call set_ele_4_scalar_nodal_bc_fl                                 &
-     &   (node1%numnod, ele1%nnod_4_ele, ibc_velo_r0, ibc2_velo_r0,     &
-     &    num_index_ibc_vr0, ele_bc_vr0_id, nod_bc_vr0_id,              &
-     &    num_index_ibc2_vr0, ele_bc2_vr0_id, nod_bc2_vr0_id,           &
-     &    ibc_vr0_end, ibc_vr0_shape, ibc_vr0_stack, ibc_vr0_stack_smp)
+     &   (node1%numnod, ele1%nnod_4_ele,                                &
+     &    nod_bc1_vr0%ibc, nod_bc1_vr0%ibc2,                            &
+     &    nod_bc1_vr0%num_idx_ibc, nod_bc1_vr0%ele_bc_id,       &
+     &    nod_bc1_vr0%nod_bc_id, nod_bc1_vr0%num_idx_ibc2,        &
+     &    nod_bc1_vr0%ele_bc2_id, nod_bc1_vr0%nod_bc2_id,           &
+     &    nod_bc1_vr0%ibc_end, nod_bc1_vr0%ibc_shape,            &
+     &    nod_bc1_vr0%ibc_stack, nod_bc1_vr0%ibc_stack_smp)
 !
-      call deallocate_ibc_4_vr0
+      call dealloc_scalar_ibc_type(nod_bc1_vr0)
 !
       end subroutine set_ele_nodal_bc_4_vr0
 !
@@ -100,21 +117,27 @@
 !
       subroutine set_ele_nodal_bc_4_velo_sph
 !
-      use m_bc_data_vsp
+      use m_bc_data_velo
 !
 !
-      call count_bc_element_fl(num_index_ibc_vsp, ibc_velo_vsp)
-      call count_bc_element_fl(num_index_ibc2_vsp, ibc2_velo_vsp)
+      call count_bc_element_fl           &
+     &   (nod_bc1_vsp%num_idx_ibc, nod_bc1_vsp%ibc)
+      call count_bc_element_fl           &
+     &   (nod_bc1_vsp%num_idx_ibc2, nod_bc1_vsp%ibc2)
 !
-      call allocate_bc_vsp_4_ele(ele1%nnod_4_ele)
+      call alloc_nod_bc_scalar_ele_type                                 &
+      &  (np_smp, ele1%nnod_4_ele, nod_bc1_vsp)
 !
       call set_ele_4_scalar_nodal_bc_fl                                 &
-     &   (node1%numnod, ele1%nnod_4_ele, ibc_velo_vsp, ibc2_velo_vsp,   &
-     &    num_index_ibc_vsp, ele_bc_vsp_id, nod_bc_vsp_id,              &
-     &    num_index_ibc2_vsp, ele_bc2_vsp_id, nod_bc2_vsp_id,           &
-     &    ibc_vsp_end, ibc_vsp_shape, ibc_vsp_stack, ibc_vsp_stack_smp)
+     &   (node1%numnod, ele1%nnod_4_ele,            &
+     &    nod_bc1_vsp%ibc, nod_bc1_vsp%ibc2,   &
+     &    nod_bc1_vsp%num_idx_ibc, nod_bc1_vsp%ele_bc_id,    &
+     &    nod_bc1_vsp%nod_bc_id, nod_bc1_vsp%num_idx_ibc2,        &
+     &    nod_bc1_vsp%ele_bc2_id, nod_bc1_vsp%nod_bc2_id,           &
+     &    nod_bc1_vsp%ibc_end, nod_bc1_vsp%ibc_shape,          &
+     &    nod_bc1_vsp%ibc_stack, nod_bc1_vsp%ibc_stack_smp)
 !
-      call deallocate_ibc_4_vsp
+      call dealloc_scalar_ibc_type(nod_bc1_vsp)
 !
       end subroutine set_ele_nodal_bc_4_velo_sph
 !
@@ -176,23 +199,23 @@
 !
       subroutine set_ele_nodal_bc_4_composition
 !
-      use m_bc_data_composition
+      use m_bc_data_ene
 !
-      call count_bc_element_fl(num_index_ibc_compsition, ibc_composit)
-      call count_bc_element_fl(num_index_ibc2_compsition,               &
-     &                         ibc2_composit)
+      call count_bc_element_fl(nod_bc1_c%num_idx_ibc, nod_bc1_c%ibc)
+      call count_bc_element_fl(nod_bc1_c%num_idx_ibc2, nod_bc1_c%ibc2)
 !
-      call allocate_bc_composit_4_element(ele1%nnod_4_ele)
+      call alloc_nod_bc_scalar_ele_type                                 &
+     &   (np_smp, ele1%nnod_4_ele, nod_bc1_c)
 !
       call set_ele_4_scalar_nodal_bc_fl                                 &
-     &   (node1%numnod, ele1%nnod_4_ele, ibc_composit, ibc2_composit,   &
-     &    num_index_ibc_compsition, ele_bc_composit_id,                 &
-     &    nod_bc_composit_id, num_index_ibc2_compsition,                &
-     &    ele_bc2_composit_id, nod_bc2_composit_id,                     &
-     &    ibc_composition_end, ibc_composit_shape,                      &
-     &    ibc_composit_stack, ibc_composit_stack_smp)
+     &   (node1%numnod, ele1%nnod_4_ele, nod_bc1_c%ibc, nod_bc1_c%ibc2, &
+     &    nod_bc1_c%num_idx_ibc, nod_bc1_c%ele_bc_id,                   &
+     &    nod_bc1_c%nod_bc_id, nod_bc1_c%num_idx_ibc2,                &
+     &    nod_bc1_c%ele_bc2_id, nod_bc1_c%nod_bc2_id,                   &
+     &    nod_bc1_c%ibc_end, nod_bc1_c%ibc_shape,                      &
+     &    nod_bc1_c%ibc_stack, nod_bc1_c%ibc_stack_smp)
 !
-      call deallocate_ibc_4_composit
+      call dealloc_scalar_ibc_type(nod_bc1_c)
 !
       end subroutine set_ele_nodal_bc_4_composition
 !

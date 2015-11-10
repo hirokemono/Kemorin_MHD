@@ -17,7 +17,6 @@
       use cal_for_ffs
       use cal_multi_pass
       use nod_phys_send_recv
-      use set_vecp_boundary
       use int_surf_magne_pre
 !
       implicit none
@@ -36,8 +35,10 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_int_vol_data
+      use m_bc_data_magne
 !
       use int_vol_vect_p_pre
+      use set_velocity_boundary
 !
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
@@ -51,7 +52,7 @@
       end if
 !
       call cal_t_evo_4_vector_cd(iflag_mag_supg)
-      call set_boundary_vect_p_4_rhs
+      call delete_vector_ffs_on_bc(node1, nod_bc1_a, f1_l, f1_nl)
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    f1_nl%ff, mhd_fem1_wk%mlump_cd%ml,                            &
@@ -73,9 +74,11 @@
       use m_node_phys_data
       use m_jacobian_sf_grp
       use m_int_vol_data
+      use m_bc_data_magne
 !
       use int_vol_diffusion_ele
       use int_surf_fixed_gradients
+      use set_velocity_boundary
 !
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
@@ -88,7 +91,7 @@
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
 !
-      call set_boundary_vect_p_4_rhs
+      call delete_vector_ffs_on_bc(node1, nod_bc1_a, f1_l, f1_nl)
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    f1_l%ff, mhd_fem1_wk%mlump_cd%ml,                             &

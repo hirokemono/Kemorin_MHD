@@ -41,7 +41,6 @@
       use set_velocity_boundary
       use nod_phys_send_recv
       use cal_sgs_fluxes
-      use set_vecp_boundary
       use int_vol_diffusion_ele
       use int_vol_vect_p_pre
       use int_surf_fixed_gradients
@@ -132,14 +131,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine cal_vect_p_pre_crank
+      subroutine cal_vect_p_pre_crank
 !
-       use m_t_step_parameter
-       use cal_multi_pass
-       use cal_sol_vector_pre_crank
-       use set_vecp_boundary
-       use int_sk_4_fixed_boundary
-       use cal_solver_MHD
+      use m_phys_constants
+      use m_t_step_parameter
+      use m_finite_element_matrix
+      use m_bc_data_magne
+      use cal_multi_pass
+      use cal_sol_vector_pre_crank
+      use int_sk_4_fixed_boundary
+      use cal_solver_MHD
+      use set_velocity_boundary
 !
 !
        if (coef_imp_b.gt.0.0d0) then
@@ -149,26 +151,28 @@
 !
        call cal_t_evo_4_vector_cd(iflag_mag_supg)
 !
-       call set_boundary_vect_p_4_rhs
+      call delete_vector_ffs_on_bc(node1, nod_bc1_a, f1_l, f1_nl)
 !
        call cal_sol_vect_p_pre_linear
 !
        call cal_sol_vect_p_pre_crank
 !
-       end subroutine cal_vect_p_pre_crank
+      end subroutine cal_vect_p_pre_crank
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine cal_vect_p_pre_consist_crank
+      subroutine cal_vect_p_pre_consist_crank
 !
-       use m_phys_constants
-       use m_t_step_parameter
-       use set_vecp_boundary
-       use cal_sol_vector_pre_crank
-       use int_sk_4_fixed_boundary
-       use cal_ff_smp_to_ffs
-       use int_vol_initial_MHD
-       use cal_solver_MHD
+      use m_phys_constants
+      use m_t_step_parameter
+      use m_finite_element_matrix
+      use m_bc_data_magne
+      use cal_sol_vector_pre_crank
+      use int_sk_4_fixed_boundary
+      use cal_ff_smp_to_ffs
+      use int_vol_initial_MHD
+      use cal_solver_MHD
+      use set_velocity_boundary
 !
 !
        if (coef_imp_b.gt.0.0d0) then
@@ -179,7 +183,7 @@
        call int_vol_initial_vect_p
        call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
 !
-       call set_boundary_vect_p_4_rhs
+      call delete_vector_ffs_on_bc(node1, nod_bc1_a, f1_l, f1_nl)
 !
        call cal_sol_vect_p_pre_consist
 !

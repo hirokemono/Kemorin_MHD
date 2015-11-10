@@ -4,10 +4,10 @@
 !
 !      Written by Kemorin on Feb., 2004
 !
-!       subroutine allocate_bc_ene(numnod)
-!       subroutine allocate_bc_temp_4_element(nnod_4_ele)
-!       subroutine deallocate_ibc_4_temp
-!       subroutine deallocate_bc2_temp
+!!      subroutine allocate_bc_ene
+!!      subroutine allocate_bc_composition
+!!
+!!      subroutine allocate_bc_t_sgs
 !
 !
       module m_bc_data_ene
@@ -20,11 +20,18 @@
 !
       type(scaler_fixed_nod_bc_type) :: nod_bc1_t
 !
+      type(scaler_fixed_nod_bc_type) :: nod_bc1_c
+!nod_bc1_c%ibc_stack_smp
+!
+!
       type(scaler_fixed_nod_bc_type) :: sgs_bc1_t
-!sgs_bc1_t%ibc_stack_smp
+!
 !
       real(kind=kreal), allocatable :: bc_e_id_apt(:)
 ! 
+      real(kind=kreal), allocatable ::  bc_composit_id_apt(:)
+!
+!
       real(kind=kreal), allocatable :: bc_t_sgs_id_apt(:)
 !
 !  ---------------------------------------------------------------------
@@ -41,6 +48,17 @@
 !
       end subroutine allocate_bc_ene
 !
+!  ---------------------------------------------------------------------
+!
+       subroutine allocate_bc_composition
+!
+!
+      allocate(bc_composit_id_apt(nod_bc1_c%num_bc_nod))
+      if (nod_bc1_c%num_bc_nod .gt. 0) bc_composit_id_apt=0.0d00 
+!
+       end subroutine allocate_bc_composition
+!
+!  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine allocate_bc_t_sgs

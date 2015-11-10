@@ -35,16 +35,17 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_finite_element_matrix
+      use m_bc_data_ene
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
       use set_boundary_scalars
+      use set_velocity_boundary
       use int_vol_diffusion_ele
       use int_surf_temp
       use int_vol_thermal_ele
       use cal_stratification_by_temp
       use copy_nodal_fields
-!
 !
 !      call check_surface_param_smp('cal_velocity_pre start',           &
 !     &    my_rank, sf_grp1, sf_grp_nod1)
@@ -104,7 +105,8 @@
         call cal_temp_pre_consist_crank
       end if
 !
-      call set_boundary_ene
+      call set_boundary_scalar                                          &
+     &   (nod_bc1_t, bc_e_id_apt, iphys%i_temp, nod_fld1)
 !
       call scalar_send_recv(iphys%i_temp, node1, nod_comm, nod_fld1)
 !

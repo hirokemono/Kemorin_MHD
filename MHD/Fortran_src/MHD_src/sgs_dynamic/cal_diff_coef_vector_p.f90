@@ -40,7 +40,6 @@
       use commute_error_vector
       use commute_error_scalar
       use cal_model_diff_coefs
-      use set_vecp_boundary
       use clear_work_4_dynamic_model
 !
       integer (kind=kint) :: i_sgs_grad_p, i_sgs_grad_fp, i_sgs_simi_p

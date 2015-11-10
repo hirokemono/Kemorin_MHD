@@ -90,10 +90,6 @@
       subroutine count_num_bc_velo(nod_grp)
 !
       use m_bc_data_velo
-      use m_bc_data_rotate
-      use m_bc_data_vfree
-      use m_bc_data_vr0
-      use m_bc_data_vsp
 !
       type(group_data), intent(in) :: nod_grp
 !
@@ -106,19 +102,19 @@
       call count_num_bc_scalar                                          &
      &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
      &    velo_nod%num_bc, velo_nod%bc_name, velo_nod%ibc_type,         &
-     &    num_bc_v10_nod, iflag_bc_rot_x)
+     &    nod_bc1_rot%num_bc_nod, iflag_bc_rot_x)
       call count_num_bc_scalar                                          &
      &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
      &    velo_nod%num_bc, velo_nod%bc_name, velo_nod%ibc_type,         &
-     &    num_bc_fr_nod, iflag_free_sph)
+     &    nod_bc1_vfree%num_bc_nod, iflag_free_sph)
       call count_num_bc_scalar                                          &
      &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
      &    velo_nod%num_bc, velo_nod%bc_name, velo_nod%ibc_type,         &
-     &    num_bc_vr0_nod, iflag_no_vr)
+     &    nod_bc1_vr0%num_bc_nod, iflag_no_vr)
       call count_num_bc_scalar                                          &
      &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
      &    velo_nod%num_bc, velo_nod%bc_name, velo_nod%ibc_type,         &
-     &    num_bc_vsp_nod, iflag_bc_special)
+     &    nod_bc1_vsp%num_bc_nod, iflag_bc_special)
 !
 !
 !
@@ -225,7 +221,7 @@
 !
       subroutine count_num_bc_composit(nod_grp)
 !
-      use m_bc_data_composition
+      use m_bc_data_ene
 !
       type(group_data), intent(in) :: nod_grp
 !
@@ -233,7 +229,7 @@
       call count_num_bc_scalar                                          &
      &   (nod_grp%num_grp, nod_grp%istack_grp, nod_grp%grp_name,        &
      &    light_nod%num_bc, light_nod%bc_name, light_nod%ibc_type,      &
-     &    num_bc_composition_nod, iflag_bc_fix_s)
+     &    nod_bc1_c%num_bc_nod, iflag_bc_fix_s)
 !
       end subroutine count_num_bc_composit
 !

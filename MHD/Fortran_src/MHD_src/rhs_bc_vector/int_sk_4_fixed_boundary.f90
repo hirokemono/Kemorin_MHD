@@ -108,7 +108,7 @@
 !
       subroutine int_vol_sk_mag_p_ins_bc
 !
-      use m_bc_data_mag_p_ins
+      use m_bc_data_magne
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
       use cal_ff_smp_to_ffs
@@ -117,15 +117,15 @@
       if (iflag_commute_magne .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_poisson_surf                             &
      &     (node1, ele1, nod_fld1, jac1_3d_l, rhs_tbl1, FEM1_elen,      &
-     &      intg_point_poisson, ibc_mag_pi_end, num_index_ibc_mag_pi,   &
-     &      ele_bc_mag_pi_id, ibc_mag_pi_stack_smp, ibc_mag_pi_shape,   &
+     &      intg_point_poisson, nod_bc1_fins%ibc_end, nod_bc1_fins%num_idx_ibc,   &
+     &      nod_bc1_fins%ele_bc_id, nod_bc1_fins%ibc_stack_smp, nod_bc1_fins%ibc_shape,   &
      &      ifilter_final, iphys%i_m_phi, ak_diff(1,iak_diff_b),        &
      &      fem1_wk, f1_l)
       else
         call int_vol_fixed_poisson_surf                                 &
      &     (node1, ele1, nod_fld1, jac1_3d_l, rhs_tbl1,                 &
-     &      intg_point_poisson, ibc_mag_pi_end, num_index_ibc_mag_pi,   &
-     &      ele_bc_mag_pi_id, ibc_mag_pi_stack_smp, ibc_mag_pi_shape,   &
+     &      intg_point_poisson, nod_bc1_fins%ibc_end, nod_bc1_fins%num_idx_ibc,   &
+     &      nod_bc1_fins%ele_bc_id, nod_bc1_fins%ibc_stack_smp, nod_bc1_fins%ibc_shape,   &
      &      iphys%i_m_phi, fem1_wk, f1_l)
       end if
 !
@@ -193,7 +193,6 @@
        subroutine int_sk_4_fixed_velo
 !
       use m_bc_data_velo
-      use m_bc_data_rotate
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
 !
@@ -209,8 +208,10 @@
 !
         call int_vol_fixed_rotate_sgs_surf                              &
      &     (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
-     &      intg_point_t_evo, ibc_vrot_end, num_index_ibc_vrot,         &
-     &      ele_bc_vrot_id, ibc_vrot_stack_smp, ibc_vrot_shape,         &
+     &      intg_point_t_evo,         &
+     &      nod_bc1_rot%ibc_end, nod_bc1_rot%num_idx_ibc,               &
+     &      nod_bc1_rot%ele_bc_id, nod_bc1_rot%ibc_stack_smp,      &
+     &      nod_bc1_rot%ibc_shape,  &
      &      ifilter_final, iphys%i_velo, ak_diff(1,iak_diff_v),         &
      &      ak_d_velo, coef_imp_v, fem1_wk, f1_l)
       else
@@ -223,8 +224,10 @@
 !
         call int_vol_fixed_rotate_surf                                  &
      &     (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1,                 &
-     &      intg_point_t_evo, ibc_vrot_end, num_index_ibc_vrot,         &
-     &      ele_bc_vrot_id, ibc_vrot_stack_smp, ibc_vrot_shape,         &
+     &      intg_point_t_evo,        &
+     &      nod_bc1_rot%ibc_end, nod_bc1_rot%num_idx_ibc,               &
+     &      nod_bc1_rot%ele_bc_id, nod_bc1_rot%ibc_stack_smp,      &
+     &      nod_bc1_rot%ibc_shape,  &
      &      iphys%i_velo, ak_d_velo, coef_imp_v, fem1_wk, f1_l)
       end if
 !
@@ -295,7 +298,7 @@
 !
        subroutine int_sk_4_fixed_composition
 !
-      use m_bc_data_composition
+      use m_bc_data_ene
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
 !
@@ -303,17 +306,17 @@
       if (iflag_commute_composit .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_scalar_surf                              &
        &   (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
-       &    intg_point_t_evo, ibc_composition_end,                      &
-       &    num_index_ibc_compsition, ele_bc_composit_id,               &
-       &    ibc_composit_stack_smp,  ibc_composit_shape, ifilter_final, &
+       &    intg_point_t_evo, nod_bc1_c%ibc_end,                      &
+       &    nod_bc1_c%num_idx_ibc, nod_bc1_c%ele_bc_id,               &
+       &    nod_bc1_c%ibc_stack_smp, nod_bc1_c%ibc_shape, ifilter_final,&
        &    iphys%i_light, ak_diff(1,iak_diff_c), ak_d_composit,        &
        &    coef_imp_c, fem1_wk, f1_l)
       else
         call int_vol_fixed_scalar_surf                                  &
      &     (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1,                 &
-     &      intg_point_t_evo, ibc_composition_end,                      &
-     &      num_index_ibc_compsition, ele_bc_composit_id,               &
-     &      ibc_composit_stack_smp, ibc_composit_shape,                 &
+     &      intg_point_t_evo, nod_bc1_c%ibc_end,                      &
+     &      nod_bc1_c%num_idx_ibc, nod_bc1_c%ele_bc_id,               &
+     &      nod_bc1_c%ibc_stack_smp, nod_bc1_c%ibc_shape,               &
      &      iphys%i_light, ak_d_composit, coef_imp_c, fem1_wk, f1_l)
       end if
 !

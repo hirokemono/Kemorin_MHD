@@ -35,10 +35,12 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_finite_element_matrix
+      use m_bc_data_ene
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
       use set_boundary_scalars
+      use set_velocity_boundary
       use int_vol_diffusion_ele
       use int_surf_temp
       use int_vol_thermal_ele
@@ -103,7 +105,8 @@
         call cal_per_temp_consist_crank
       end if
 !
-      call set_boundary_part_temp
+      call set_boundary_scalar                                          &
+     &   (nod_bc1_t, bc_e_id_apt, iphys%i_par_temp, nod_fld1)
 !
       call scalar_send_recv                                             &
      &   (iphys%i_par_temp, node1, nod_comm, nod_fld1)

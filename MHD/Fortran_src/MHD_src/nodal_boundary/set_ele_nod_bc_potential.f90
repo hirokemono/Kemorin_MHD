@@ -146,23 +146,23 @@
       subroutine set_ele_nodal_bc_4_mag_p_ins
 !
       use m_bc_data_magne
-      use m_bc_data_mag_p_ins
 !
 !
-      call count_bc_element_ins(num_index_ibc_mag_pi, nod_bc1_f%ibc)
-      call count_bc_element_ins(num_index_ibc2_mag_pi, nod_bc1_f%ibc2)
+      call count_bc_element_ins(nod_bc1_fins%num_idx_ibc, nod_bc1_f%ibc)
+      call count_bc_element_ins(nod_bc1_fins%num_idx_ibc2, nod_bc1_f%ibc2)
 !
-      call allocate_bc_mag_p_ins_4_ele
+      call alloc_nod_bc_scalar_ele_type                                 &
+      &   (np_smp, num_t_linear, nod_bc1_fins)
 !
-      call set_bc_element_ins(num_index_ibc_mag_pi, nod_bc1_f%ibc,      &
-     &    ele_bc_mag_pi_id, nod_bc_mag_pi_id, num_t_linear)
-      call set_bc_element_ins(num_index_ibc2_mag_pi, nod_bc1_f%ibc2,    &
-     &    ele_bc2_mag_pi_id, nod_bc2_mag_pi_id, num_t_linear)
+      call set_bc_element_ins(nod_bc1_fins%num_idx_ibc, nod_bc1_f%ibc,      &
+     &    nod_bc1_fins%ele_bc_id, nod_bc1_fins%nod_bc_id, num_t_linear)
+      call set_bc_element_ins(nod_bc1_fins%num_idx_ibc2, nod_bc1_f%ibc2,    &
+     &    nod_bc1_fins%ele_bc2_id, nod_bc1_fins%nod_bc2_id, num_t_linear)
 !
-      call reordering_ele_4_fix_bd(np_smp, num_index_ibc_mag_pi,        &
-     &      num_index_ibc_mag_pi, ele_bc_mag_pi_id, nod_bc_mag_pi_id,   &
-     &      ibc_mag_pi_end, ibc_mag_pi_shape, ibc_mag_pi_stack,         &
-     &      ibc_mag_pi_stack_smp, num_t_linear)
+      call reordering_ele_4_fix_bd(np_smp, nod_bc1_fins%num_idx_ibc,        &
+     &      nod_bc1_fins%num_idx_ibc, nod_bc1_fins%ele_bc_id, nod_bc1_fins%nod_bc_id,   &
+     &      nod_bc1_fins%ibc_end, nod_bc1_fins%ibc_shape, nod_bc1_fins%ibc_stack,         &
+     &      nod_bc1_fins%ibc_stack_smp, num_t_linear)
 !
       end subroutine set_ele_nodal_bc_4_mag_p_ins
 !
@@ -171,23 +171,26 @@
       subroutine set_ele_nodal_bc_4_mag_p_cd
 !
       use m_bc_data_magne
-      use m_bc_data_mag_p_cd
 !
 !
-      call count_bc_element_cd(num_index_ibc_mag_pc, nod_bc1_f%ibc)
-      call count_bc_element_cd(num_index_ibc2_mag_pc, nod_bc1_f%ibc2)
+      call count_bc_element_cd       &
+     &   (nod_bc1_fcd%num_idx_ibc, nod_bc1_f%ibc)
+      call count_bc_element_cd       &
+     &   (nod_bc1_fcd%num_idx_ibc2, nod_bc1_f%ibc2)
 !
-      call allocate_bc_mag_p_cd_4_ele
+      call alloc_nod_bc_scalar_ele_type                                 &
+      &  (np_smp, num_t_linear, nod_bc1_fcd)
 !
-      call set_bc_element_cd(num_index_ibc_mag_pc, nod_bc1_f%ibc,       &
-     &    ele_bc_mag_pc_id, nod_bc_mag_pc_id, num_t_linear)
-      call set_bc_element_cd(num_index_ibc2_mag_pc, nod_bc1_f%ibc2,     &
-     &    ele_bc2_mag_pc_id, nod_bc2_mag_pc_id, num_t_linear)
+      call set_bc_element_cd(nod_bc1_fcd%num_idx_ibc, nod_bc1_f%ibc,    &
+     &    nod_bc1_fcd%ele_bc_id, nod_bc1_fcd%nod_bc_id, num_t_linear)
+      call set_bc_element_cd(nod_bc1_fcd%num_idx_ibc2, nod_bc1_f%ibc2,  &
+     &    nod_bc1_fcd%ele_bc2_id, nod_bc1_fcd%nod_bc2_id, num_t_linear)
 !
-      call reordering_ele_4_fix_bd(np_smp, num_index_ibc_mag_pc,        &
-     &      num_index_ibc_mag_pc, ele_bc_mag_pc_id, nod_bc_mag_pc_id,   &
-     &      ibc_mag_pc_end, ibc_mag_pc_shape, ibc_mag_pc_stack,         &
-     &      ibc_mag_pc_stack_smp, num_t_linear)
+      call reordering_ele_4_fix_bd(np_smp, nod_bc1_fcd%num_idx_ibc,     &
+     &    nod_bc1_fcd%num_idx_ibc, nod_bc1_fcd%ele_bc_id,    &
+     &    nod_bc1_fcd%nod_bc_id, nod_bc1_fcd%ibc_end,  &
+     &    nod_bc1_fcd%ibc_shape, nod_bc1_fcd%ibc_stack,           &
+     &    nod_bc1_fcd%ibc_stack_smp, num_t_linear)
 !
       call dealloc_scalar_ibc_type(nod_bc1_f)
 !

@@ -65,17 +65,17 @@
 !
       subroutine set_aiccg_bc_velo_rot
 !
-      use m_bc_data_rotate
+      use m_bc_data_velo
       use m_solver_djds_MHD
       use m_velo_matrix
 !
       integer (kind = kint) :: k0
 !
 !
-      do k0 = 1, num_index_ibc_vrot
+      do k0 = 1, nod_bc1_rot%num_idx_ibc
         call set_aiccg_bc_vector_nod(ele1%nnod_4_ele,                   &
-     &      ele_bc_vrot_id(k0), nod_bc_vrot_id(k0), ione, n_vector,     &
-     &      DJDS_fluid, Vmat_DJDS)
+     &      nod_bc1_rot%ele_bc_id(k0), nod_bc1_rot%nod_bc_id(k0),       &
+     &      ione, n_vector, DJDS_fluid, Vmat_DJDS)
       end do
 !
       end subroutine set_aiccg_bc_velo_rot
@@ -167,17 +167,17 @@
 !
       subroutine set_aiccg_bc_composition_nod
 !
-      use m_bc_data_composition
+      use m_bc_data_ene
       use m_solver_djds_MHD
       use m_light_element_matrix
 !
       integer (kind = kint) :: k0
 !
 !
-      if(num_index_ibc2_compsition .le. 0)  return
-      do k0 = 1, num_index_ibc2_compsition
+      if(nod_bc1_c%num_idx_ibc2 .le. 0)  return
+      do k0 = 1, nod_bc1_c%num_idx_ibc2
         call set_aiccg_bc_scalar_nod(ele1%nnod_4_ele,                   &
-     &      ele_bc2_composit_id(k0), nod_bc2_composit_id(k0),           &
+     &      nod_bc1_c%ele_bc2_id(k0), nod_bc1_c%nod_bc2_id(k0),         &
      &      DJDS_fluid, Cmat_DJDS)
       end do
 !

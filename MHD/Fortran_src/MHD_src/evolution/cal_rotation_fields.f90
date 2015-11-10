@@ -63,8 +63,6 @@
 !
       use cal_rotation
       use cal_rotation_sgs
-      use set_vecp_boundary
-      use set_velocity_boundary
       use set_velocity_boundary
       use nod_phys_send_recv
 !

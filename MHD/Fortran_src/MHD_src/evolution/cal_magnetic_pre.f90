@@ -125,12 +125,15 @@
 !
        subroutine cal_magne_pre_crank
 !
-       use m_t_step_parameter
-       use cal_multi_pass
-       use cal_sol_vector_pre_crank
-       use set_magne_boundary
-       use int_sk_4_fixed_boundary
-       use cal_solver_MHD
+      use m_phys_constants
+      use m_t_step_parameter
+      use m_finite_element_matrix
+      use cal_multi_pass
+      use cal_sol_vector_pre_crank
+      use set_magne_boundary
+      use int_sk_4_fixed_boundary
+      use cal_solver_MHD
+      use set_velocity_boundary
 !
 !
        if (coef_imp_b.gt.0.0d0) then
@@ -140,14 +143,13 @@
 !
        call cal_t_evo_4_vector_cd(iflag_mag_supg)
 !
-       if (iflag_debug .eq. 0 ) write(*,*) 'bc_4_magne_rhs'
-       call set_boundary_magne_4_rhs
+      if (iflag_debug .eq. 0 ) write(*,*) 'bc_4_magne_rhs'
+      call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
 !
-       call cal_sol_magne_pre_linear
+      call cal_sol_magne_pre_linear
 !
-       if (iflag_debug .eq. 0 ) write(*,*) 'time_evolution'
-       call cal_sol_magne_pre_crank
-!
+      if (iflag_debug .eq. 0 ) write(*,*) 'time_evolution'
+      call cal_sol_magne_pre_crank
 !
        end subroutine cal_magne_pre_crank
 !
@@ -155,32 +157,34 @@
 !
        subroutine cal_magne_pre_consist_crank
 !
-       use m_t_step_parameter
-       use m_phys_constants
-       use cal_sol_vector_pre_crank
-       use set_magne_boundary
-       use int_sk_4_fixed_boundary
-       use cal_ff_smp_to_ffs
-       use int_vol_initial_MHD
-       use cal_solver_MHD
+      use m_t_step_parameter
+      use m_phys_constants
+      use m_finite_element_matrix
+      use cal_sol_vector_pre_crank
+      use set_magne_boundary
+      use int_sk_4_fixed_boundary
+      use cal_ff_smp_to_ffs
+      use int_vol_initial_MHD
+      use cal_solver_MHD
+      use set_velocity_boundary
 !
 !
-       if (coef_imp_b.gt.0.0d0) then
-         call int_sk_4_fixed_magne
+      if (coef_imp_b.gt.0.0d0) then
+        call int_sk_4_fixed_magne
 !         if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
-       end if
+      end if
 !
-       call int_vol_initial_magne
-       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
+      call int_vol_initial_magne
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
 !
-       if (iflag_debug.eq.1) write(*,*) 'bc_4_magne_rhs'
-       call set_boundary_magne_4_rhs
+      if (iflag_debug.eq.1) write(*,*) 'bc_4_magne_rhs'
+      call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
 !
-       call cal_sol_vect_p_pre_consist
+      call cal_sol_vect_p_pre_consist
 !
-       if (iflag_debug.eq.1)                                            &
+      if (iflag_debug.eq.1)                                             &
      &        write(*,*) 'time_evolution for magnetic field'
-       call cal_sol_magne_pre_crank
+      call cal_sol_magne_pre_crank
 !
        end subroutine cal_magne_pre_consist_crank
 !

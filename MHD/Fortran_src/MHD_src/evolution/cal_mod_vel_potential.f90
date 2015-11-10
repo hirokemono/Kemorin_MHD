@@ -33,6 +33,7 @@
       use m_jacobian_sf_grp
       use m_filter_elength
       use m_surf_data_torque
+      use m_bc_data_velo
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -40,6 +41,7 @@
       use int_surf_fixed_gradients
       use int_surf_normal_fields
       use set_boundary_potentials
+      use set_velocity_boundary
       use cal_solver_MHD
 !
 !
@@ -81,7 +83,8 @@
 !
       call cal_sol_mod_po
 !
-      call set_boundary_phi
+      call set_boundary_scalar                                          &
+     &   (nod_bc1_p, bc_p_id_apt, iphys%i_p_phi, nod_fld1)
 !
       end subroutine cal_mod_potential
 !

@@ -7,7 +7,6 @@
 !        modified by H.Matsui on July 2005
 !
 !      subroutine set_boundary_magne
-!      subroutine set_boundary_magne_4_rhs
 !      subroutine delete_field_by_fixed_b_bc(i_field)
 !
       module set_magne_boundary
@@ -29,35 +28,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_boundary_magne_4_rhs
-!
-      use m_phys_constants
-      use m_finite_element_matrix
-!
-!
-      if (nod_bc1_b%nmax_bc .le. 0) return
-      call del_2vector_phys_on_bc                                       &
-     &   (nod_bc1_b%nmax_bc, nod_bc1_b%num_bc_nod,                      &
-     &    nod_bc1_b%ibc_id, node1%numnod, n_vector, ione,               &
-     &    f1_l%ff, f1_nl%ff)
-!
-      end subroutine set_boundary_magne_4_rhs
-!
-!  ---------------------------------------------------------------------
-!
       subroutine delete_field_by_fixed_b_bc(i_field)
 !
       use m_node_phys_data
+      use set_velocity_boundary
 !
       integer(kind = kint), intent(in) :: i_field
 !
 !
-      if (nod_bc1_b%nmax_bc/=0) then
-        call del_vector_phys_on_bc                                      &
-     &     (nod_bc1_b%nmax_bc, nod_bc1_b%num_bc_nod,                    &
-     &      nod_bc1_b%ibc_id, node1%numnod,                             &
-     &      nod_fld1%ntot_phys, i_field, nod_fld1%d_fld)
-      end if
+      call delete_vector_on_bc(nod_bc1_b, i_field, nod_fld1)
 !
       end subroutine delete_field_by_fixed_b_bc
 !

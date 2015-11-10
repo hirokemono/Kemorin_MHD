@@ -7,13 +7,8 @@
 !
 !>
 !>        (module m_bc_data_ene)
-!>        (module m_bc_data_composition)
 !>        (module m_bc_data_velo)
 !>        (module m_bc_data_magne)
-!>        (module m_bc_data_rotate)
-!>        (module m_bc_data_vfree)
-!>        (module m_bc_data_vsp)
-!>        (module m_bc_data_vr0)
 !>
 !
 !      subroutine alloc_scalar_nod_bc_type(numnod, scalar_bc)

@@ -37,7 +37,6 @@
 !
       use m_bc_data_list
       use m_bc_data_velo
-      use m_bc_data_rotate
 !
       type(group_data), intent(in) :: nod_grp
 !
@@ -64,8 +63,9 @@
       call set_bc_rotate_id                                             &
      &   (node1%numnod, nod_grp, velo_nod%num_bc, velo_nod%bc_name,     &
      &    velo_nod%ibc_type, velo_nod%bc_magnitude,                     &
-     &    ibc_velo_rot, ibc2_velo_rot, num_bc_v10_nod,                  &
-     &    ibc_v10_id, bc_v10_id_apt, iflag_bc_rot, l_r)
+     &    nod_bc1_rot%ibc, nod_bc1_rot%ibc2, nod_bc1_rot%num_bc_nod,    &
+     &    nod_bc1_rot%ibc_id, nod_bc1_rot%bc_rot_apt,                   &
+     &    iflag_bc_rot, l_r)
 !
       end subroutine set_bc_fixed_velo_id
 !

@@ -138,12 +138,16 @@
 !
       subroutine cal_magnetic_co_crank
 !
+      use m_phys_constants
+      use m_finite_element_matrix
+      use set_velocity_boundary
+!
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_t_evo_4_vector'
       call cal_t_evo_4_vector(iflag_mag_supg)
 !
       if (iflag_debug.eq.1)   write(*,*) 'set_boundary_magne_4_rhs'
-      call set_boundary_magne_4_rhs
+      call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1)   write(*,*) 'cal_sol_magne_co_crank'
       call cal_sol_magne_co_crank(node1%istack_internal_smp)
@@ -155,8 +159,10 @@
       subroutine cal_magne_co_consist_crank
 !
       use m_phys_constants
+      use m_finite_element_matrix
       use int_vol_initial_MHD
       use cal_ff_smp_to_ffs
+      use set_velocity_boundary
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_initial_magne'
@@ -164,7 +170,7 @@
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
 !
       if (iflag_debug.eq.1)  write(*,*) 'set_boundary_magne_4_rhs'
-      call set_boundary_magne_4_rhs
+      call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_sol_magne_co_crank_consist'
       call cal_sol_magne_co_crank_consist(node1%istack_internal_smp)

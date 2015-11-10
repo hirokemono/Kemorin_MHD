@@ -268,12 +268,17 @@
       character(len=kchara), parameter :: txt = 'edge'
 !
 !
+      write(*,*) 'set_edge_id_4_node', my_rank
       call set_edge_id_4_node(node, edge, belongs%blng_edge)
+      write(*,*) 'belonged_edge_id_4_node', my_rank
       call belonged_edge_id_4_node(node, edge, belongs%host_edge)
+      write(*,*) 'const_comm_table_by_connenct', my_rank
       call const_comm_table_by_connenct(txt, edge%numedge,              &
      &    edge%interior_edge, edge%x_edge, node, nod_comm,              &
      &    belongs%blng_edge, belongs%host_edge, edge_comm)
+      write(*,*) 'dealloc_iele_belonged', my_rank
       call dealloc_iele_belonged(belongs%host_edge)
+      write(*,*) 'dealloc_iele_belonged', my_rank
       call dealloc_iele_belonged(belongs%blng_edge)
 !
       end subroutine const_edge_comm_table
@@ -305,6 +310,7 @@
       call allocate_type_neib_id(e_comm)
       call allocate_type_import_num(e_comm)
 !
+      write(*,*) 'count_element_import_num', my_rank
       call count_element_import_num(node%numnod, host%istack_4_node,    &
      &    nod_comm%num_neib, nod_comm%id_neib,                          &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
@@ -315,6 +321,7 @@
       call allocate_type_import_item(e_comm)
 !
 !
+      write(*,*) 'set_element_import_item', my_rank
       call set_element_import_item(node%numnod, numele,                 &
      &    node%inod_global, x_ele, host%istack_4_node,                  &
      &    host%iele_4_node, nod_comm%num_neib, nod_comm%istack_import,  &
@@ -323,6 +330,7 @@
 !
       call allocate_type_export_num(e_comm)
 !
+      write(*,*) 'element_num_reverse_SR', my_rank
       call element_num_reverse_SR(e_comm%num_neib, e_comm%id_neib,      &
      &    e_comm%num_import, e_comm%num_export, e_comm%istack_export,   &
      &    e_comm%ntot_export)
@@ -330,9 +338,11 @@
       call allocate_element_rev_exports(e_comm%ntot_export)
       call allocate_type_export_item(e_comm)
 !
+      write(*,*) 'element_position_reverse_SR', my_rank
       call element_position_reverse_SR(e_comm%num_neib, e_comm%id_neib, &
      &    e_comm%istack_import, e_comm%istack_export)
 !
+      write(*,*) 'set_element_export_item', my_rank
       call set_element_export_item(txt, node%numnod, numele,            &
      &    node%inod_global, internal_flag, x_ele, neib_e%istack_4_node, &
      &    neib_e%iele_4_node, nod_comm%num_neib,                        &
@@ -341,6 +351,7 @@
 !
       call deallocate_element_rev_list
 !
+      write(*,*) 'check_element_position', my_rank
       call check_element_position(txt, numele, x_ele, e_comm)
 !
       end subroutine const_comm_table_by_connenct

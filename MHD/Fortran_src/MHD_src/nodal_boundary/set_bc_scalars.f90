@@ -31,9 +31,7 @@
       subroutine set_bc_velo_4_sphere_id(numnod, nod_grp)
 !
       use m_bc_data_list
-      use m_bc_data_vfree
-      use m_bc_data_vr0
-      use m_bc_data_vsp
+      use m_bc_data_velo
 !
       integer (kind=kint), intent(in) :: numnod
       type(group_data), intent(in) :: nod_grp
@@ -45,22 +43,23 @@
       call set_bc_scalar_id                                             &
      &   (nod_grp, numnod, velo_nod%num_bc, velo_nod%bc_name,           &
      &    velo_nod%ibc_type, velo_nod%bc_magnitude,                     &
-     &    ibc_velo_fr, ibc2_velo_fr, num_bc_fr_nod,                     &
-     &    ibc_fr_id, bc_fr_id_apt, iflag_free_sph, l_fr)
+     &    nod_bc1_vfree%ibc, nod_bc1_vfree%ibc2,        &
+     &    nod_bc1_vfree%num_bc_nod,       &
+     &    nod_bc1_vfree%ibc_id, bc_fr_id_apt, iflag_free_sph, l_fr)
 !
       l_r0 = 0
       call set_bc_scalar_id                                             &
      &   (nod_grp, numnod, velo_nod%num_bc, velo_nod%bc_name,           &
      &    velo_nod%ibc_type, velo_nod%bc_magnitude,                     &
-     &    ibc_velo_r0, ibc2_velo_r0, num_bc_vr0_nod,                    &
-     &    ibc_vr0_id, bc_vr0_id_apt, iflag_no_vr, l_r0)
+     &    nod_bc1_vr0%ibc, nod_bc1_vr0%ibc2, nod_bc1_vr0%num_bc_nod,    &
+     &    nod_bc1_vr0%ibc_id, bc_vr0_id_apt, iflag_no_vr, l_r0)
 !
       l_vsp = 0
       call set_bc_scalar_id                                             &
      &   (nod_grp, numnod, velo_nod%num_bc, velo_nod%bc_name,           &
      &    velo_nod%ibc_type, velo_nod%bc_magnitude,                     &
-     &    ibc_velo_vsp, ibc2_velo_vsp, num_bc_vsp_nod,                  &
-     &    ibc_vsp_id, bc_vsp_id_apt, iflag_bc_special, l_vsp)
+     &    nod_bc1_vsp%ibc, nod_bc1_vsp%ibc2, nod_bc1_vsp%num_bc_nod,    &
+     &    nod_bc1_vsp%ibc_id, bc_vsp_id_apt, iflag_bc_special, l_vsp)
 !
       end subroutine set_bc_velo_4_sphere_id
 !
@@ -183,7 +182,7 @@
       subroutine set_bc_fixed_composition_id(numnod, nod_grp)
 !
       use m_bc_data_list
-      use m_bc_data_composition
+      use m_bc_data_ene
 !
       integer (kind=kint), intent(in) :: numnod
       type(group_data), intent(in) :: nod_grp
@@ -193,8 +192,8 @@
       ii = 0
       call set_fixed_bc_scalar_id                                       &
      &   (nod_grp, numnod, light_nod%num_bc, light_nod%bc_name,         &
-     &    light_nod%ibc_type,  light_nod%bc_magnitude, ibc_composit,    &
-     &    ibc2_composit, num_bc_composition_nod, ibc_composit_id,       &
+     &    light_nod%ibc_type,  light_nod%bc_magnitude, nod_bc1_c%ibc,   &
+     &    nod_bc1_c%ibc2, nod_bc1_c%num_bc_nod, nod_bc1_c%ibc_id,       &
      &    bc_composit_id_apt, fhd_light, ii)
 !
       end subroutine set_bc_fixed_composition_id

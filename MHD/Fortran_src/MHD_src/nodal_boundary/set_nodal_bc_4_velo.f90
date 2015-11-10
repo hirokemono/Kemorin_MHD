@@ -9,6 +9,9 @@
 !!      subroutine set_specific_boundary_velo(numnod, xx,               &
 !!     &          num_bc_vsp_nod, ibc_vsp_id, bc_vsp_id_apt,            &
 !!     &          ncomp_nod, i_velo, d_nod)
+!!      subroutine del_radial_velocity(numnod, xx, a_radius,            &
+!!     &          num_bc_vr0_nod, ibc_vr0_id, ncomp_nod, i_field, d_nod)
+!!
 !!      subroutine set_fixed_bc_zero_ff_rot(num_phys_bc, ibc_id)
 !!      subroutine set_specific_boundary_velo_rhs(num_bc_vsp_nod,       &
 !!     &    ibc_vsp_id)
@@ -85,6 +88,54 @@
 !
       end subroutine set_specific_boundary_velo
 !
+!  ---------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine del_radial_velocity(numnod, xx, a_radius,              &
+     &          num_bc_vr0_nod, ibc_vr0_id, ncomp_nod, i_field, d_nod)
+!
+      integer(kind = kint), intent(in) :: numnod, ncomp_nod
+      real(kind = kreal), intent(in) :: xx(numnod,3)
+      real(kind = kreal), intent(in) :: a_radius(numnod)
+!
+      integer(kind = kint), intent(in) :: num_bc_vr0_nod
+      integer(kind = kint), intent(in) :: ibc_vr0_id(num_bc_vr0_nod)
+!
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+!
+      integer (kind = kint) :: i_field
+!
+      real (kind = kreal), dimension(3) :: resv
+      integer (kind = kint) :: i, inod
+!
+!
+!$omp parallel do private(i,inod, resv)
+      do i=1, num_bc_vr0_nod
+        inod = ibc_vr0_id(i)
+!
+        resv(1) =  xx(inod,1) * a_radius(inod)**2                       &
+     &               * ( d_nod(inod,i_field  )*xx(inod,1)               &
+     &                 + d_nod(inod,i_field+1)*xx(inod,2)               &
+     &                 + d_nod(inod,i_field+2)*xx(inod,3) )
+        resv(2) =  xx(inod,2) * a_radius(inod)**2                       &
+     &               * ( d_nod(inod,i_field  )*xx(inod,1)               &
+     &                 + d_nod(inod,i_field+1)*xx(inod,2)               &
+     &                 + d_nod(inod,i_field+2)*xx(inod,3) )
+        resv(3) =  xx(inod,3) * a_radius(inod)**2                       &
+     &               * ( d_nod(inod,i_field  )*xx(inod,1)               &
+     &                + d_nod(inod,i_field+1)*xx(inod,2)                &
+     &                + d_nod(inod,i_field+2)*xx(inod,3) )
+!
+!
+        d_nod(inod,i_field  ) = d_nod(inod,i_field  ) - resv(1)
+        d_nod(inod,i_field+1) = d_nod(inod,i_field+1) - resv(2)
+        d_nod(inod,i_field+2) = d_nod(inod,i_field+2) - resv(3)
+      end do
+!$omp end parallel do
+!
+      end subroutine del_radial_velocity
+!
+!-----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
       subroutine set_fixed_bc_zero_ff_rot(numnod,                       &

@@ -35,8 +35,10 @@
       use m_node_phys_address
       use m_node_phys_data
       use m_int_vol_data
+      use m_finite_element_matrix
 !
       use int_vol_magne_monitor
+      use set_velocity_boundary
 !
       integer (kind=kint), intent(in) :: i_field
 !
@@ -52,7 +54,7 @@
       call int_surf_magne_monitor(i_field)
 !
       call cal_t_evo_4_vector_cd(iflag_mag_supg)
-      call set_boundary_magne_4_rhs
+      call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    f1_nl%ff, mhd_fem1_wk%mlump_cd%ml, nod_fld1%ntot_phys,        &
@@ -70,8 +72,10 @@
       use m_node_phys_address
       use m_phys_constants
       use m_node_phys_data
+      use m_finite_element_matrix
 !
       use int_vol_diffusion_ele
+      use set_velocity_boundary
 !
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
@@ -82,7 +86,7 @@
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
 !
-      call set_boundary_magne_4_rhs
+      call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
 !
       call cal_ff_2_vector                                              &
      &   (node1%numnod, node1%istack_nod_smp, f1_l%ff, m1_lump%ml,      &

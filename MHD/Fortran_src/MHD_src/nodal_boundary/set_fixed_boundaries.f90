@@ -21,6 +21,7 @@
       module set_fixed_boundaries
 !
       use m_precision
+      use m_phys_constants
 !
       implicit none
 !
@@ -137,7 +138,7 @@
 !
 !
 !$omp parallel private(nd,i_comp)
-      do nd = 1, 3
+      do nd = 1, n_vector
         if ( num_phys_bc(nd) .gt. 0 ) then
           i_comp = i_vect + nd - 1
 !$omp do private(inum,inod)
@@ -168,7 +169,7 @@
 !
 !
 !$omp parallel do private(inum,inod)
-      do inum=1, num_phys_bc
+      do inum = 1, num_phys_bc
         inod = ibc_id(inum)
         d_nod(inod, i_vect  ) = 0.0d0
         d_nod(inod, i_vect+1) = 0.0d0

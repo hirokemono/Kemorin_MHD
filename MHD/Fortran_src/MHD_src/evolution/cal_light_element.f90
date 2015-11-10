@@ -37,8 +37,10 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobian_sf_grp
+      use m_bc_data_ene
 !
       use nod_phys_send_recv
+      use set_velocity_boundary
       use set_boundary_scalars
       use int_surf_fixed_gradients
       use int_vol_diffusion_ele
@@ -77,7 +79,8 @@
        call cal_composit_pre_consist_crank
       end if
 !
-      call set_boundary_composition
+      call set_boundary_scalar                                          &
+     &   (nod_bc1_c, bc_composit_id_apt, iphys%i_light, nod_fld1)
 !
       call scalar_send_recv(iphys%i_light, node1, nod_comm, nod_fld1)
 !

@@ -24,12 +24,18 @@
 !
       type(scaler_fixed_nod_bc_type) :: nod_bc1_f
 !
+      type(scaler_fixed_nod_bc_type) :: nod_bc1_fcd
+!
+      type(scaler_fixed_nod_bc_type) :: nod_bc1_fins
+!nod_bc1_fins%ibc_stack_smp
+!
 !
       type(vect_fixed_nod_bc_type) :: sgs_bc1_a
 !
       type(vect_fixed_nod_bc_type) :: sgs_bc1_b
 !
       type(scaler_fixed_nod_bc_type) :: sgs_bc1_f
+!
 !
       real(kind=kreal), allocatable :: bc_vp_id_apt(:,:)
 !

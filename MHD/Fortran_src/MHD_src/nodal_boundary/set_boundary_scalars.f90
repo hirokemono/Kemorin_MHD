@@ -3,7 +3,6 @@
 !
 !      Written by H. Matsui on July, 2005
 !
-!      subroutine set_boundary_ene
 !      subroutine set_boundary_part_temp
 !      subroutine set_boundary_ene_4_rhs
 !      subroutine delete_field_by_fixed_t_bc(i_field)
@@ -24,44 +23,6 @@
 !  ---------------------------------------------------------------------
 !
       contains
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_boundary_ene
-!
-      use m_node_phys_data
-      use m_node_phys_address
-      use m_bc_data_ene
-      use m_surf_data_temp
-!
-!
-      if (nod_bc1_t%num_bc_nod .gt. 0) then
-       call set_fixed_bc_scalar_phys                      &
-     &    (nod_bc1_t%num_bc_nod, nod_bc1_t%ibc_id,                      &
-     &     bc_e_id_apt, node1%numnod, nod_fld1%ntot_phys, iphys%i_temp, &
-     &     nod_fld1%d_fld)
-      end if
-!
-      end subroutine set_boundary_ene
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_boundary_part_temp
-!
-      use m_node_phys_data
-      use m_node_phys_address
-      use m_bc_data_ene
-      use m_surf_data_temp
-!
-!
-      if (nod_bc1_t%num_bc_nod .gt. 0) then
-       call set_fixed_bc_scalar_phys                                    &
-     &    (nod_bc1_t%num_bc_nod, nod_bc1_t%ibc_id,                      &
-     &     bc_e_id_apt, node1%numnod, nod_fld1%ntot_phys,               &
-     &     iphys%i_par_temp, nod_fld1%d_fld)
-      end if
-!
-      end subroutine set_boundary_part_temp
 !
 !  ---------------------------------------------------------------------
 !
@@ -122,36 +83,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_boundary_composition
-!
-      use m_geometry_data
-      use m_node_phys_data
-      use m_node_phys_address
-      use m_bc_data_composition
-      use m_surf_data_composition
-!
-!
-      if (num_bc_composition_nod .gt. 0) then
-        call set_fixed_bc_scalar_phys(num_bc_composition_nod,           &
-     &     ibc_composit_id, bc_composit_id_apt, node1%numnod,           &
-     &     nod_fld1%ntot_phys, iphys%i_light, nod_fld1%d_fld)
-      end if
-!
-      end subroutine set_boundary_composition
-!
-!  ---------------------------------------------------------------------
-!
       subroutine set_boundary_composition_4_rhs
 !
       use m_phys_constants
       use m_finite_element_matrix
-      use m_bc_data_composition
+      use m_bc_data_ene
       use m_surf_data_composition
 !
 !
-      if (num_bc_composition_nod .le. 0) return
+      if (nod_bc1_c%num_bc_nod .le. 0) return
       call del_2scalar_phys_on_bc                                       &
-     &   (num_bc_composition_nod, ibc_composit_id,                      &
+     &   (nod_bc1_c%num_bc_nod, nod_bc1_c%ibc_id,                       &
      &    node1%numnod, n_vector, ione, f1_l%ff, f1_nl%ff)
 !
       end subroutine set_boundary_composition_4_rhs
