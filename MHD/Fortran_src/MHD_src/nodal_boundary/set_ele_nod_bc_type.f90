@@ -36,7 +36,6 @@
       use m_machine_parameter
       use t_mesh_data
       use t_nodal_bc_data
-      use count_bc_type_ele
       use set_bc_element_type
 !
       implicit none
@@ -51,13 +50,20 @@
 !
       use t_geometry_data_MHD
       use count_num_nodal_fields
+      use count_bc_element
 !
       type(mesh_geometry),       intent(in) :: mesh
       type(field_geometry_data), intent(in) :: layer
       type(vect_fixed_nod_bc_type), intent(inout) :: vector_bc
 !
 !
-      call count_bc_type_ele_vect_layer(mesh, layer, vector_bc)
+      call count_bc_element_4_vect_layer(mesh%node, mesh%ele,           &
+     &   layer%iele_start_fld, layer%iele_end_fld,                      &
+     &   vector_bc%num_idx_ibc, vector_bc%ibc)
+      call count_bc_element_4_vect_layer(mesh%node, mesh%ele,           &
+     &   layer%iele_start_fld, layer%iele_end_fld,                      &
+     &   vector_bc%num_idx_ibc2, vector_bc%ibc2)
+!
 !
       call cal_max_int_4_vector(vector_bc%nmax_idx_ibc,                 &
      &    vector_bc%num_idx_ibc)
@@ -81,12 +87,17 @@
       subroutine set_ele_nod_bc_type_vect(mesh, vector_bc)
 !
       use count_num_nodal_fields
+      use count_bc_element
 !
       type(mesh_geometry),       intent(in) :: mesh
       type(vect_fixed_nod_bc_type), intent(inout) :: vector_bc
 !
 !
-      call count_bc_type_ele_vect(mesh, vector_bc)
+      call count_bc_element_4_vect                                      &
+     &   (mesh%node, mesh%ele, vector_bc%num_idx_ibc, vector_bc%ibc)
+      call count_bc_element_4_vect                                      &
+     &   (mesh%node, mesh%ele, vector_bc%num_idx_ibc2, vector_bc%ibc2)
+!
 !
       call cal_max_int_4_vector(vector_bc%nmax_idx_ibc,                 &
      &    vector_bc%num_idx_ibc)
@@ -111,13 +122,19 @@
       subroutine set_ele_nodal_bc_type_rotate(mesh, fluid, rotate)
 !
       use t_geometry_data_MHD
+      use count_bc_element
 !
       type(mesh_geometry),    intent(in) :: mesh
       type(field_geometry_data), intent(in) :: fluid
       type(scaler_rotaion_nod_bc_type), intent(inout) :: rotate
 !
 !
-      call count_rot_bc_type_ele(mesh, fluid, rotate)
+      call count_bc_element_layer(mesh%node, mesh%ele,                  &
+     &    fluid%iele_start_fld, fluid%iele_end_fld,                     &
+     &    rotate%num_idx_ibc, rotate%ibc)
+      call count_bc_element_layer(mesh%node, mesh%ele,                  &
+     &    fluid%iele_start_fld, fluid%iele_end_fld,                     &
+     &    rotate%num_idx_ibc2, rotate%ibc2)
 !
       call alloc_nod_bc_rotate_ele_type(np_smp, mesh%ele%nnod_4_ele,    &
      &    rotate)
@@ -137,12 +154,19 @@
       subroutine set_ele_nod_bc_type_layer(mesh, layer, scaler_bc)
 !
       use t_geometry_data_MHD
+      use count_bc_element
 !
       type(mesh_geometry),    intent(in) :: mesh
       type(field_geometry_data), intent(in) :: layer
       type(scaler_fixed_nod_bc_type), intent(inout) :: scaler_bc
 !
-      call count_bc_type_ele_layer(mesh, layer, scaler_bc)
+!
+      call count_bc_element_layer(mesh%node, mesh%ele,                  &
+     &    layer%iele_start_fld, layer%iele_end_fld,                     &
+     &    scaler_bc%num_idx_ibc, scaler_bc%ibc)
+      call count_bc_element_layer(mesh%node, mesh%ele,                  &
+     &    layer%iele_start_fld, layer%iele_end_fld,                     &
+     &    scaler_bc%num_idx_ibc2, scaler_bc%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type(np_smp, mesh%ele%nnod_4_ele,    &
      &    scaler_bc)
@@ -163,12 +187,17 @@
       subroutine set_ele_nodal_bc_type_potential(mesh, scaler_bc)
 !
       use m_geometry_constants
+      use count_bc_element
 !
       type(mesh_geometry),    intent(in) :: mesh
       type(scaler_fixed_nod_bc_type), intent(inout) :: scaler_bc
 !
 !
-      call count_bc_type_ele_scalar(mesh, scaler_bc)
+!   conunt node in elements for boundary
+      call count_bc_element_whole                                       &
+     &   (mesh%node, mesh%ele, scaler_bc%num_idx_ibc, scaler_bc%ibc)
+      call count_bc_element_whole                                       &
+     &   (mesh%node, mesh%ele, scaler_bc%num_idx_ibc2, scaler_bc%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type(np_smp, mesh%ele%nnod_4_ele,    &
      &    scaler_bc)
@@ -188,12 +217,19 @@
 !
       use m_geometry_constants
       use t_geometry_data_MHD
+      use count_bc_element
 !
       type(mesh_geometry),       intent(in) :: mesh
       type(field_geometry_data), intent(in) :: layer
       type(scaler_fixed_nod_bc_type), intent(inout) :: scaler_bc
 !
-      call count_bc_type_ele_layer(mesh, layer, scaler_bc)
+!
+      call count_bc_element_layer(mesh%node, mesh%ele,                  &
+     &    layer%iele_start_fld, layer%iele_end_fld,                     &
+     &    scaler_bc%num_idx_ibc, scaler_bc%ibc)
+      call count_bc_element_layer(mesh%node, mesh%ele,                  &
+     &    layer%iele_start_fld, layer%iele_end_fld,                     &
+     &    scaler_bc%num_idx_ibc2, scaler_bc%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type(np_smp, mesh%ele%nnod_4_ele,    &
      &    scaler_bc)

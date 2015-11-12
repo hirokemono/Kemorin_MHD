@@ -37,9 +37,9 @@
 !
 !
       call count_bc_element_fl &
-     &   (nod_bc1_rot%num_idx_ibc, nod_bc1_rot%ibc)
+     &   (node1, ele1, nod_bc1_rot%num_idx_ibc, nod_bc1_rot%ibc)
       call count_bc_element_fl &
-     &   (nod_bc1_rot%num_idx_ibc2, nod_bc1_rot%ibc2)
+     &   (node1, ele1, nod_bc1_rot%num_idx_ibc2, nod_bc1_rot%ibc2)
 !
       call alloc_nod_bc_rotate_ele_type                                 &
       &  (np_smp, ele1%nnod_4_ele, nod_bc1_rot)
@@ -65,9 +65,9 @@
 !
 !
       call count_bc_element_fl           &
-     &   (nod_bc1_vfree%num_idx_ibc, nod_bc1_vfree%ibc)
+     &   (node1, ele1, nod_bc1_vfree%num_idx_ibc, nod_bc1_vfree%ibc)
       call count_bc_element_fl           &
-     &   (nod_bc1_vfree%num_idx_ibc2, nod_bc1_vfree%ibc2)
+     &   (node1, ele1, nod_bc1_vfree%num_idx_ibc2, nod_bc1_vfree%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                    &
       &  (np_smp, ele1%nnod_4_ele, nod_bc1_vfree)
@@ -93,9 +93,9 @@
 !
 !
       call count_bc_element_fl      &
-     &   (nod_bc1_vr0%num_idx_ibc, nod_bc1_vr0%ibc)
+     &   (node1, ele1, nod_bc1_vr0%num_idx_ibc, nod_bc1_vr0%ibc)
       call count_bc_element_fl      &
-     &   (nod_bc1_vr0%num_idx_ibc2, nod_bc1_vr0%ibc2)
+     &   (node1, ele1, nod_bc1_vr0%num_idx_ibc2, nod_bc1_vr0%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                                 &
       &  (np_smp, ele1%nnod_4_ele, nod_bc1_vr0)
@@ -121,9 +121,9 @@
 !
 !
       call count_bc_element_fl           &
-     &   (nod_bc1_vsp%num_idx_ibc, nod_bc1_vsp%ibc)
+     &   (node1, ele1, nod_bc1_vsp%num_idx_ibc, nod_bc1_vsp%ibc)
       call count_bc_element_fl           &
-     &   (nod_bc1_vsp%num_idx_ibc2, nod_bc1_vsp%ibc2)
+     &   (node1, ele1, nod_bc1_vsp%num_idx_ibc2, nod_bc1_vsp%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                                 &
       &  (np_smp, ele1%nnod_4_ele, nod_bc1_vsp)
@@ -149,8 +149,10 @@
       use m_bc_data_ene
 !
 !
-      call count_bc_element_fl(nod_bc1_t%num_idx_ibc, nod_bc1_t%ibc)
-      call count_bc_element_fl(nod_bc1_t%num_idx_ibc2, nod_bc1_t%ibc2)
+      call count_bc_element_fl  &
+     &   (node1, ele1, nod_bc1_t%num_idx_ibc, nod_bc1_t%ibc)
+      call count_bc_element_fl  &
+     &   (node1, ele1, nod_bc1_t%num_idx_ibc2, nod_bc1_t%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                                 &
       &  (np_smp, ele1%nnod_4_ele, nod_bc1_t)
@@ -175,9 +177,9 @@
 !
 !
       call count_bc_element_fl        &
-     &   (sgs_bc1_t%num_idx_ibc, sgs_bc1_t%ibc)
+     &   (node1, ele1, sgs_bc1_t%num_idx_ibc, sgs_bc1_t%ibc)
       call count_bc_element_fl        &
-     &   (sgs_bc1_t%num_idx_ibc2, sgs_bc1_t%ibc2)
+     &   (node1, ele1, sgs_bc1_t%num_idx_ibc2, sgs_bc1_t%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                                 &
       &  (np_smp, ele1%nnod_4_ele, sgs_bc1_t)
@@ -201,8 +203,10 @@
 !
       use m_bc_data_ene
 !
-      call count_bc_element_fl(nod_bc1_c%num_idx_ibc, nod_bc1_c%ibc)
-      call count_bc_element_fl(nod_bc1_c%num_idx_ibc2, nod_bc1_c%ibc2)
+      call count_bc_element_fl   &
+     &   (node1, ele1, nod_bc1_c%num_idx_ibc, nod_bc1_c%ibc)
+      call count_bc_element_fl   &
+     &   (node1, ele1, nod_bc1_c%num_idx_ibc2, nod_bc1_c%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                                 &
      &   (np_smp, ele1%nnod_4_ele, nod_bc1_c)

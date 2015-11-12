@@ -18,6 +18,7 @@
 !
       use m_machine_parameter
       use m_geometry_constants
+      use m_geometry_data
       use set_bc_element
       use count_bc_element
       use ordering_ele_4_fix_bd
@@ -35,8 +36,10 @@
       use m_bc_data_velo
 !
 !
-      call count_bc_element_fl(nod_bc1_p%num_idx_ibc, nod_bc1_p%ibc)
-      call count_bc_element_fl(nod_bc1_p%num_idx_ibc2, nod_bc1_p%ibc2)
+      call count_bc_element_fl   &
+     &   (node1, ele1, nod_bc1_p%num_idx_ibc, nod_bc1_p%ibc)
+      call count_bc_element_fl   &
+     &   (node1, ele1, nod_bc1_p%num_idx_ibc2, nod_bc1_p%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                                 &
      &   (np_smp, num_t_linear, nod_bc1_p)
@@ -62,8 +65,10 @@
       use m_bc_data_velo
 !
 !
-      call count_bc_element_fl(sgs_bc1_p%num_idx_ibc, sgs_bc1_p%ibc)
-      call count_bc_element_fl(sgs_bc1_p%num_idx_ibc2, sgs_bc1_p%ibc2)
+      call count_bc_element_fl   &
+     &   (node1, ele1, sgs_bc1_p%num_idx_ibc, sgs_bc1_p%ibc)
+      call count_bc_element_fl   &
+     &   (node1, ele1, sgs_bc1_p%num_idx_ibc2, sgs_bc1_p%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                                 &
      &   (np_smp, num_t_linear, sgs_bc1_p)
@@ -91,9 +96,9 @@
 !
 !
       call count_bc_element_whole     &
-     &   (nod_bc1_f%num_idx_ibc, nod_bc1_f%ibc)
+     &   (node1, ele1, nod_bc1_f%num_idx_ibc, nod_bc1_f%ibc)
       call count_bc_element_whole     &
-     &   (nod_bc1_f%num_idx_ibc2, nod_bc1_f%ibc2)
+     &   (node1, ele1, nod_bc1_f%num_idx_ibc2, nod_bc1_f%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                                 &
      &   (np_smp, num_t_linear, nod_bc1_f)
@@ -118,9 +123,10 @@
       use m_bc_data_magne
 !
 !
-      call count_bc_element_whole(sgs_bc1_f%num_idx_ibc, sgs_bc1_f%ibc)
       call count_bc_element_whole       &
-     &   (sgs_bc1_f%num_idx_ibc2, sgs_bc1_f%ibc2)
+     &   (node1, ele1, sgs_bc1_f%num_idx_ibc, sgs_bc1_f%ibc)
+      call count_bc_element_whole       &
+     &   (node1, ele1, sgs_bc1_f%num_idx_ibc2, sgs_bc1_f%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                                 &
      &   (np_smp, num_t_linear, sgs_bc1_f)
@@ -148,13 +154,15 @@
       use m_bc_data_magne
 !
 !
-      call count_bc_element_ins(nod_bc1_fins%num_idx_ibc, nod_bc1_f%ibc)
-      call count_bc_element_ins(nod_bc1_fins%num_idx_ibc2, nod_bc1_f%ibc2)
+      call count_bc_element_ins       &
+     &    (node1, ele1, nod_bc1_fins%num_idx_ibc, nod_bc1_f%ibc)
+      call count_bc_element_ins       &
+     &    (node1, ele1, nod_bc1_fins%num_idx_ibc2, nod_bc1_f%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                                 &
       &   (np_smp, num_t_linear, nod_bc1_fins)
 !
-      call set_bc_element_ins(nod_bc1_fins%num_idx_ibc, nod_bc1_f%ibc,      &
+      call set_bc_element_ins(nod_bc1_fins%num_idx_ibc, nod_bc1_f%ibc,  &
      &    nod_bc1_fins%ele_bc_id, nod_bc1_fins%nod_bc_id, num_t_linear)
       call set_bc_element_ins(nod_bc1_fins%num_idx_ibc2, nod_bc1_f%ibc2,    &
      &    nod_bc1_fins%ele_bc2_id, nod_bc1_fins%nod_bc2_id, num_t_linear)
@@ -174,9 +182,9 @@
 !
 !
       call count_bc_element_cd       &
-     &   (nod_bc1_fcd%num_idx_ibc, nod_bc1_f%ibc)
+     &   (node1, ele1, nod_bc1_fcd%num_idx_ibc, nod_bc1_f%ibc)
       call count_bc_element_cd       &
-     &   (nod_bc1_fcd%num_idx_ibc2, nod_bc1_f%ibc2)
+     &   (node1, ele1, nod_bc1_fcd%num_idx_ibc2, nod_bc1_f%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                                 &
       &  (np_smp, num_t_linear, nod_bc1_fcd)

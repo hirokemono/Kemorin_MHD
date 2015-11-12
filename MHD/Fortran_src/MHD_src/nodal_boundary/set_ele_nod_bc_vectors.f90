@@ -40,9 +40,9 @@
 !
 !
       call count_bc_element_4_vect_fl   &
-     &   (nod_bc_vect%num_idx_ibc, nod_bc_vect%ibc)
+     &   (node, ele, nod_bc_vect%num_idx_ibc, nod_bc_vect%ibc)
       call count_bc_element_4_vect_fl                                   &
-     &   (nod_bc_vect%num_idx_ibc2, nod_bc_vect%ibc2)
+     &   (node, ele, nod_bc_vect%num_idx_ibc2, nod_bc_vect%ibc2)
 !
       call cal_max_int_4_vector  &
      &   (nod_bc_vect%nmax_idx_ibc, nod_bc_vect%num_idx_ibc)
@@ -75,9 +75,9 @@
 !
 !
       call count_bc_element_4_vect                                      &
-     &   (nod_bc_vect%num_idx_ibc, nod_bc_vect%ibc)
+     &   (node, ele, nod_bc_vect%num_idx_ibc, nod_bc_vect%ibc)
       call count_bc_element_4_vect                                      &
-     &   (nod_bc_vect%num_idx_ibc2, nod_bc_vect%ibc2)
+     &   (node, ele, nod_bc_vect%num_idx_ibc2, nod_bc_vect%ibc2)
 !
       call cal_max_int_4_vector                                         &
      &   (nod_bc_vect%nmax_idx_ibc, nod_bc_vect%num_idx_ibc)
