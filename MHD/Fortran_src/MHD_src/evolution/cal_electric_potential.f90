@@ -35,6 +35,7 @@
       use m_jacobian_sf_grp
       use m_filter_elength
       use m_surf_data_vector_p
+      use m_bc_data_magne
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -42,6 +43,7 @@
       use set_boundary_potentials
       use int_surf_normal_fields
       use cal_solver_MHD
+      use set_velocity_boundary
 !
 !
       call reset_ff(node1%numnod, f1_l)
@@ -71,7 +73,7 @@
       call cal_sol_mag_po
 !
       if (iflag_debug .gt. 0)  write(*,*) 'set_boundary_m_phi'
-      call set_boundary_m_phi
+      call set_boundary_scalar(nod_bc1_f, iphys%i_m_phi, nod_fld1)
 !
       end subroutine cal_scalar_potential
 !

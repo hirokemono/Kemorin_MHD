@@ -80,8 +80,7 @@
 !        call cal_rotation_in_conduct(iphys%i_current, iphys%i_magne)
       end if
 !
-      call set_boundary_vect                                            &
-     &   (nod_bc1_j, bc_j_id_apt, iphys%i_current, nod_fld1)
+      call set_boundary_vect(nod_bc1_j, iphys%i_current, nod_fld1)
 !
       call vector_send_recv(iphys%i_current, node1, nod_comm, nod_fld1)
       nod_fld1%iflag_update(iphys%i_current:iphys%i_current+2) = 1
@@ -114,8 +113,7 @@
      &      iphys%i_magne, iphys%i_vecp)
       end if
 !
-      call set_boundary_vect                                            &
-     &   (nod_bc1_b, bc_b_id_apt, iphys%i_magne, nod_fld1)
+      call set_boundary_vect(nod_bc1_b, iphys%i_magne, nod_fld1)
 !
       call vector_send_recv(iphys%i_magne, node1, nod_comm, nod_fld1)
       nod_fld1%iflag_update(iphys%i_magne:iphys%i_magne+2) = 1

@@ -81,8 +81,7 @@
 !
 !
       if (iflag_debug.eq.1)   write(*,*) 'set_boundary_vect magne'
-      call set_boundary_vect                                            &
-     &   (nod_bc1_b, bc_b_id_apt, iphys%i_magne, nod_fld1)
+      call set_boundary_vect(nod_bc1_b, iphys%i_magne, nod_fld1)
 !
       call vector_send_recv(iphys%i_magne, node1, nod_comm, nod_fld1)
       call scalar_send_recv(iphys%i_mag_p, node1, nod_comm, nod_fld1)
@@ -221,8 +220,7 @@
 !
       call cal_sol_magne_insulator
 !
-      call set_boundary_vect                                            &
-     &   (nod_bc1_b, bc_b_id_apt, iphys%i_magne, nod_fld1)
+      call set_boundary_vect(nod_bc1_b, iphys%i_magne, nod_fld1)
 !
       call vector_send_recv(iphys%i_magne, node1, nod_comm, nod_fld1)
 !

@@ -105,8 +105,7 @@
         call cal_per_temp_consist_crank
       end if
 !
-      call set_boundary_scalar                                          &
-     &   (nod_bc1_t, bc_e_id_apt, iphys%i_par_temp, nod_fld1)
+      call set_boundary_scalar(nod_bc1_t, iphys%i_par_temp, nod_fld1)
 !
       call scalar_send_recv                                             &
      &   (iphys%i_par_temp, node1, nod_comm, nod_fld1)

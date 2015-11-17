@@ -85,8 +85,7 @@
        call cal_magne_pre_consist_crank
       end if
 !
-      call set_boundary_vect                                            &
-     &   (nod_bc1_b, bc_b_id_apt, iphys%i_magne, nod_fld1)
+      call set_boundary_vect(nod_bc1_b, iphys%i_magne, nod_fld1)
 !
       call vector_send_recv(iphys%i_magne, node1, nod_comm, nod_fld1)
 !

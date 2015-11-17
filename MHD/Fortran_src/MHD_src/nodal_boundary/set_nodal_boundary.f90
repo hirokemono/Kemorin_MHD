@@ -127,7 +127,8 @@
 !
       do inum = 1, nod_bc1_t%num_bc_nod
         inod = nod_bc1_t%ibc_id(inum)
-        bc_e_id_apt(inum) = bc_e_id_apt(inum) - d_nod(inod,i_ref_t)
+        nod_bc1_t%bc_apt(inum) = nod_bc1_t%bc_apt(inum)                 &
+     &                          - d_nod(inod,i_ref_t)
       end do
 !
       end subroutine set_fixed_bc_4_par_temp
@@ -149,7 +150,8 @@
 !
       do inum = 1, nod_bc1_p%num_bc_nod
         inod = nod_bc1_p%ibc_id(inum)
-        bc_p_id_apt(inum) =   -dt * bc_p_id_apt(inum) * coef_press
+        nod_bc1_p%bc_apt(inum)                                          &
+     &        =   -dt * nod_bc1_p%bc_apt(inum) * coef_press
         d_nod(inod,i_p_phi) = -dt * coef_press * d_nod(inod,i_press)
       end do
 !
@@ -172,7 +174,8 @@
 !
       do inum = 1, sgs_bc1_p%num_bc_nod
         inod = sgs_bc1_p%ibc_id(inum)
-        bc_ps_id_apt(inum) =   -dt * bc_ps_id_apt(inum) * coef_press
+        sgs_bc1_p%bc_apt(inum)                                          &
+     &       = -dt * sgs_bc1_p%bc_apt(inum) * coef_press
         d_nod(inod,i_p_phi) =  -dt * coef_press * d_nod(inod,i_press)
       end do
 !

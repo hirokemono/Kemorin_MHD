@@ -50,19 +50,23 @@
 !
       use t_geometry_data_MHD
       use count_num_nodal_fields
-      use count_bc_element
+      use set_bc_element
 !
       type(mesh_geometry),       intent(in) :: mesh
       type(field_geometry_data), intent(in) :: layer
       type(vect_fixed_nod_bc_type), intent(inout) :: vector_bc
 !
+      integer (kind= kint) :: nd
 !
-      call count_bc_element_4_vect_layer(mesh%node, mesh%ele,           &
+!
+      do nd = 1, 3
+        call count_bc_element_layer(mesh%node, mesh%ele,                &
      &   layer%iele_start_fld, layer%iele_end_fld,                      &
-     &   vector_bc%num_idx_ibc, vector_bc%ibc)
-      call count_bc_element_4_vect_layer(mesh%node, mesh%ele,           &
+     &   vector_bc%num_idx_ibc(nd), vector_bc%ibc(1:mesh%node%numnod,nd))
+        call count_bc_element_layer(mesh%node, mesh%ele,                &
      &   layer%iele_start_fld, layer%iele_end_fld,                      &
-     &   vector_bc%num_idx_ibc2, vector_bc%ibc2)
+     &   vector_bc%num_idx_ibc2(nd), vector_bc%ibc2(1:mesh%node%numnod,nd))
+      end do
 !
 !
       call cal_max_int_4_vector(vector_bc%nmax_idx_ibc,                 &
@@ -87,16 +91,22 @@
       subroutine set_ele_nod_bc_type_vect(mesh, vector_bc)
 !
       use count_num_nodal_fields
-      use count_bc_element
+      use set_bc_element
 !
       type(mesh_geometry),       intent(in) :: mesh
       type(vect_fixed_nod_bc_type), intent(inout) :: vector_bc
 !
+      integer (kind= kint) :: nd
 !
-      call count_bc_element_4_vect                                      &
-     &   (mesh%node, mesh%ele, vector_bc%num_idx_ibc, vector_bc%ibc)
-      call count_bc_element_4_vect                                      &
-     &   (mesh%node, mesh%ele, vector_bc%num_idx_ibc2, vector_bc%ibc2)
+!
+      do nd = 1, 3
+        call count_bc_element_whole(mesh%node, mesh%ele,                &
+     &      vector_bc%num_idx_ibc(nd),       &
+     &      vector_bc%ibc(1:mesh%node%numnod,nd))
+        call count_bc_element_whole(mesh%node, mesh%ele,                &
+     &      vector_bc%num_idx_ibc2(nd),       &
+     &      vector_bc%ibc2(1:mesh%node%numnod,nd))
+      end do
 !
 !
       call cal_max_int_4_vector(vector_bc%nmax_idx_ibc,                 &
@@ -122,7 +132,7 @@
       subroutine set_ele_nodal_bc_type_rotate(mesh, fluid, rotate)
 !
       use t_geometry_data_MHD
-      use count_bc_element
+      use set_bc_element
 !
       type(mesh_geometry),    intent(in) :: mesh
       type(field_geometry_data), intent(in) :: fluid
@@ -154,7 +164,7 @@
       subroutine set_ele_nod_bc_type_layer(mesh, layer, scaler_bc)
 !
       use t_geometry_data_MHD
-      use count_bc_element
+      use set_bc_element
 !
       type(mesh_geometry),    intent(in) :: mesh
       type(field_geometry_data), intent(in) :: layer
@@ -187,7 +197,7 @@
       subroutine set_ele_nodal_bc_type_potential(mesh, scaler_bc)
 !
       use m_geometry_constants
-      use count_bc_element
+      use set_bc_element
 !
       type(mesh_geometry),    intent(in) :: mesh
       type(scaler_fixed_nod_bc_type), intent(inout) :: scaler_bc
@@ -217,7 +227,7 @@
 !
       use m_geometry_constants
       use t_geometry_data_MHD
-      use count_bc_element
+      use set_bc_element
 !
       type(mesh_geometry),       intent(in) :: mesh
       type(field_geometry_data), intent(in) :: layer

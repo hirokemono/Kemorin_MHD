@@ -71,9 +71,9 @@
           i_comp = i_magne + nd - 1
           nod_bc1_b%ibc(inod,nd) = 1
           nod_bc1_b%ibc2(inod,nd) = 1
-          bc_b_id_apt(l_f(nd),nd) = bmag * node%xx(inod,1)              &
+          nod_bc1_b%bc_apt(l_f(nd),nd) = bmag * node%xx(inod,1)         &
      &                                   * node%a_r(inod)
-          d_nod(inod,i_comp) = bc_b_id_apt(l_f(nd),nd)
+          d_nod(inod,i_comp) = nod_bc1_b%bc_apt(l_f(nd),nd)
         end do
       end do
 !

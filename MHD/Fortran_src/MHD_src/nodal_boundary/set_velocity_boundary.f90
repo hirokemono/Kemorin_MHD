@@ -11,10 +11,8 @@
 !      subroutine set_boundary_velo_4_rhs
 !      subroutine delete_field_by_fixed_v_bc(i_field)
 !
-!      subroutine set_boundary_scalar(scalar_bc, bc_id_apt,             &
-!     &          i_field, nod_fld)
-!      subroutine set_boundary_vect(vector_bc, bc_id_apt,               &
-!     &          i_field, nod_fld)
+!      subroutine set_boundary_scalar(scalar_bc, i_field, nod_fld)
+!      subroutine set_boundary_vect(vector_bc, i_field, nod_fld)
 !      subroutine delete_vector_on_bc(vector_bc, i_field, nod_fld)
 !      subroutine delete_vector_ffs_on_bc(node, vector_bc, f_l, f_nl)
 !
@@ -54,8 +52,7 @@
 !
 !     set fixed velocity
 !
-      call set_boundary_vect                                            &
-     &   (nod_bc1_v, bc_v_id_apt, iphys%i_velo, nod_fld1)
+      call set_boundary_vect(nod_bc1_v, iphys%i_velo, nod_fld1)
 !
 !   set rotation boundary
 !
@@ -70,8 +67,9 @@
 !     ( please write every time!!)
 !
       if (nod_bc1_vsp%num_bc_nod .gt. 0) then
-        call set_specific_boundary_velo(node1%numnod, node1%xx,         &
-     &      nod_bc1_vsp%num_bc_nod, nod_bc1_vsp%ibc_id, bc_vsp_id_apt,  &
+        call set_specific_boundary_velo                                 &
+     &     (node1%numnod, node1%xx, nod_bc1_vsp%num_bc_nod,             &
+     &      nod_bc1_vsp%ibc_id, nod_bc1_vsp%bc_apt,                     &
      &      nod_fld1%ntot_phys, iphys%i_velo, nod_fld1%d_fld)
       end if
 !
@@ -138,37 +136,33 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_boundary_scalar(scalar_bc, bc_id_apt,              &
-     &          i_field, nod_fld)
+      subroutine set_boundary_scalar(scalar_bc, i_field, nod_fld)
 !
       use t_phys_data
 !
       type(scaler_fixed_nod_bc_type), intent(in) :: scalar_bc
 !
       integer(kind = kint), intent(in) :: i_field
-      real(kind = kreal), intent(in) :: bc_id_apt(scalar_bc%num_bc_nod)
 !
       type(phys_data), intent(inout) :: nod_fld
 !
 !
       if (scalar_bc%num_bc_nod .le. 0) return
       call set_fixed_bc_scalar_phys                                     &
-     &    (scalar_bc%num_bc_nod, scalar_bc%ibc_id, bc_id_apt,           &
+     &    (scalar_bc%num_bc_nod, scalar_bc%ibc_id, scalar_bc%bc_apt,    &
      &     nod_fld%n_point, nod_fld%ntot_phys, i_field, nod_fld%d_fld)
 !
       end subroutine set_boundary_scalar
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_boundary_vect(vector_bc, bc_id_apt,                &
-     &          i_field, nod_fld)
+      subroutine set_boundary_vect(vector_bc, i_field, nod_fld)
 !
       use t_phys_data
 !
       type(vect_fixed_nod_bc_type), intent(in) :: vector_bc
 !
       integer(kind = kint), intent(in) :: i_field
-      real(kind = kreal), intent(in) :: bc_id_apt(vector_bc%nmax_bc,3)
 !
       type(phys_data), intent(inout) :: nod_fld
 !
@@ -176,7 +170,7 @@
       if (vector_bc%nmax_bc .le. 0) return
       call set_fixed_bc_vect_phys                                       &
      &   (vector_bc%nmax_bc, vector_bc%num_bc_nod,                      &
-     &    vector_bc%ibc_id, bc_id_apt,                                  &
+     &    vector_bc%ibc_id, vector_bc%bc_apt,                           &
      &    nod_fld%n_point, nod_fld%ntot_phys, i_field, nod_fld%d_fld)
 !
       end subroutine set_boundary_vect

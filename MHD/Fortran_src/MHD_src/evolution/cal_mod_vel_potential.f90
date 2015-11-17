@@ -83,8 +83,7 @@
 !
       call cal_sol_mod_po
 !
-      call set_boundary_scalar                                          &
-     &   (nod_bc1_p, bc_p_id_apt, iphys%i_p_phi, nod_fld1)
+      call set_boundary_scalar(nod_bc1_p, iphys%i_p_phi, nod_fld1)
 !
       end subroutine cal_mod_potential
 !

@@ -51,9 +51,11 @@
         call dschmidt(node1%theta(inod))
 !
         if (mm.ge.0) then
-          bc_mag_p_id_apt(ii) = p(mm,ll) * cos(node1%phi(inod)*dble(mm))
+          nod_bc1_f%bc_apt(ii)                                          &
+     &          = p(mm,ll) * cos(node1%phi(inod)*dble(mm))
         else
-          bc_mag_p_id_apt(ii) = p(mm,ll) * sin(node1%phi(inod)*dble(mm))
+          nod_bc1_f%bc_apt(ii)                                          &
+     &          = p(mm,ll) * sin(node1%phi(inod)*dble(mm))
         end if
 !
         nod_bc1_f%ibc(    inod ) = 1

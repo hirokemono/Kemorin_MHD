@@ -19,7 +19,7 @@
       use m_precision
 !
       use m_geometry_data
-      use count_bc_element
+      use m_geometry_data_MHD
       use set_bc_element
       use set_ele_4_nodal_bc
 !
@@ -36,16 +36,17 @@
       use m_bc_data_velo
 !
 !
-      call count_bc_element_fl &
-     &   (node1, ele1, nod_bc1_rot%num_idx_ibc, nod_bc1_rot%ibc)
-      call count_bc_element_fl &
-     &   (node1, ele1, nod_bc1_rot%num_idx_ibc2, nod_bc1_rot%ibc2)
+      call count_bc_element_layer                                       &
+     &   (node1, ele1, iele_fl_start, iele_fl_end,                      &
+     &    nod_bc1_rot%num_idx_ibc, nod_bc1_rot%ibc)
+      call count_bc_element_layer                                       &
+     &   (node1, ele1, iele_fl_start, iele_fl_end,                      &
+     &    nod_bc1_rot%num_idx_ibc2, nod_bc1_rot%ibc2)
 !
       call alloc_nod_bc_rotate_ele_type                                 &
       &  (np_smp, ele1%nnod_4_ele, nod_bc1_rot)
 !
-      call set_ele_4_scalar_nodal_bc_fl                                 &
-     &   (node1%numnod, ele1%nnod_4_ele,    &
+      call set_ele_4_scalar_nodal_bc_fl(node1, ele1,                    &
      &    nod_bc1_rot%ibc, nod_bc1_rot%ibc2,   &
      &    nod_bc1_rot%num_idx_ibc, nod_bc1_rot%ele_bc_id,  &
      &    nod_bc1_rot%nod_bc_id, nod_bc1_rot%num_idx_ibc2,      &
@@ -64,16 +65,17 @@
       use m_bc_data_velo
 !
 !
-      call count_bc_element_fl           &
-     &   (node1, ele1, nod_bc1_vfree%num_idx_ibc, nod_bc1_vfree%ibc)
-      call count_bc_element_fl           &
-     &   (node1, ele1, nod_bc1_vfree%num_idx_ibc2, nod_bc1_vfree%ibc2)
+      call count_bc_element_layer                                       &
+     &   (node1, ele1, iele_fl_start, iele_fl_end,                      &
+     &    nod_bc1_vfree%num_idx_ibc, nod_bc1_vfree%ibc)
+      call count_bc_element_layer                                       &
+     &   (node1, ele1, iele_fl_start, iele_fl_end,                      &
+     &    nod_bc1_vfree%num_idx_ibc2, nod_bc1_vfree%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                    &
       &  (np_smp, ele1%nnod_4_ele, nod_bc1_vfree)
 !
-      call set_ele_4_scalar_nodal_bc_fl                                 &
-     &   (node1%numnod, ele1%nnod_4_ele,     &
+      call set_ele_4_scalar_nodal_bc_fl(node1, ele1,     &
      &    nod_bc1_vfree%ibc, nod_bc1_vfree%ibc2,     &
      &    nod_bc1_vfree%num_idx_ibc, nod_bc1_vfree%ele_bc_id,     &
      &    nod_bc1_vfree%nod_bc_id, nod_bc1_vfree%num_idx_ibc2,      &
@@ -92,16 +94,17 @@
       use m_bc_data_velo
 !
 !
-      call count_bc_element_fl      &
-     &   (node1, ele1, nod_bc1_vr0%num_idx_ibc, nod_bc1_vr0%ibc)
-      call count_bc_element_fl      &
-     &   (node1, ele1, nod_bc1_vr0%num_idx_ibc2, nod_bc1_vr0%ibc2)
+      call count_bc_element_layer                                       &
+     &   (node1, ele1, iele_fl_start, iele_fl_end,                      &
+     &   nod_bc1_vr0%num_idx_ibc, nod_bc1_vr0%ibc)
+      call count_bc_element_layer                                       &
+     &   (node1, ele1, iele_fl_start, iele_fl_end,                      &
+     &    nod_bc1_vr0%num_idx_ibc2, nod_bc1_vr0%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                                 &
       &  (np_smp, ele1%nnod_4_ele, nod_bc1_vr0)
 !
-      call set_ele_4_scalar_nodal_bc_fl                                 &
-     &   (node1%numnod, ele1%nnod_4_ele,                                &
+      call set_ele_4_scalar_nodal_bc_fl(node1, ele1,                    &
      &    nod_bc1_vr0%ibc, nod_bc1_vr0%ibc2,                            &
      &    nod_bc1_vr0%num_idx_ibc, nod_bc1_vr0%ele_bc_id,       &
      &    nod_bc1_vr0%nod_bc_id, nod_bc1_vr0%num_idx_ibc2,        &
@@ -120,16 +123,17 @@
       use m_bc_data_velo
 !
 !
-      call count_bc_element_fl           &
-     &   (node1, ele1, nod_bc1_vsp%num_idx_ibc, nod_bc1_vsp%ibc)
-      call count_bc_element_fl           &
-     &   (node1, ele1, nod_bc1_vsp%num_idx_ibc2, nod_bc1_vsp%ibc2)
+      call count_bc_element_layer                                       &
+     &   (node1, ele1, iele_fl_start, iele_fl_end,                      &
+     &    nod_bc1_vsp%num_idx_ibc, nod_bc1_vsp%ibc)
+      call count_bc_element_layer                                       &
+     &   (node1, ele1, iele_fl_start, iele_fl_end,                      &
+     &    nod_bc1_vsp%num_idx_ibc2, nod_bc1_vsp%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                                 &
       &  (np_smp, ele1%nnod_4_ele, nod_bc1_vsp)
 !
-      call set_ele_4_scalar_nodal_bc_fl                                 &
-     &   (node1%numnod, ele1%nnod_4_ele,            &
+      call set_ele_4_scalar_nodal_bc_fl(node1, ele1,            &
      &    nod_bc1_vsp%ibc, nod_bc1_vsp%ibc2,   &
      &    nod_bc1_vsp%num_idx_ibc, nod_bc1_vsp%ele_bc_id,    &
      &    nod_bc1_vsp%nod_bc_id, nod_bc1_vsp%num_idx_ibc2,        &
@@ -149,16 +153,18 @@
       use m_bc_data_ene
 !
 !
-      call count_bc_element_fl  &
-     &   (node1, ele1, nod_bc1_t%num_idx_ibc, nod_bc1_t%ibc)
-      call count_bc_element_fl  &
-     &   (node1, ele1, nod_bc1_t%num_idx_ibc2, nod_bc1_t%ibc2)
+      call count_bc_element_layer                                       &
+     &   (node1, ele1, iele_fl_start, iele_fl_end,                      &
+     &    nod_bc1_t%num_idx_ibc, nod_bc1_t%ibc)
+      call count_bc_element_layer                                       &
+     &   (node1, ele1, iele_fl_start, iele_fl_end,                      &
+     &    nod_bc1_t%num_idx_ibc2, nod_bc1_t%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                                 &
       &  (np_smp, ele1%nnod_4_ele, nod_bc1_t)
 !
-      call set_ele_4_scalar_nodal_bc_fl                                 &
-     &   (node1%numnod, ele1%nnod_4_ele, nod_bc1_t%ibc, nod_bc1_t%ibc2, &
+      call set_ele_4_scalar_nodal_bc_fl(node1, ele1,                    &
+     &    nod_bc1_t%ibc, nod_bc1_t%ibc2,                                &
      &    nod_bc1_t%num_idx_ibc, nod_bc1_t%ele_bc_id,                   &
      &    nod_bc1_t%nod_bc_id, nod_bc1_t%num_idx_ibc2,                  &
      &    nod_bc1_t%ele_bc2_id, nod_bc1_t%nod_bc2_id,                   &
@@ -176,16 +182,18 @@
       use m_bc_data_ene
 !
 !
-      call count_bc_element_fl        &
-     &   (node1, ele1, sgs_bc1_t%num_idx_ibc, sgs_bc1_t%ibc)
-      call count_bc_element_fl        &
-     &   (node1, ele1, sgs_bc1_t%num_idx_ibc2, sgs_bc1_t%ibc2)
+      call count_bc_element_layer                                       &
+     &   (node1, ele1, iele_fl_start, iele_fl_end,                      &
+     &    sgs_bc1_t%num_idx_ibc, sgs_bc1_t%ibc)
+      call count_bc_element_layer                                       &
+     &   (node1, ele1, iele_fl_start, iele_fl_end,                      &
+     &    sgs_bc1_t%num_idx_ibc2, sgs_bc1_t%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                                 &
       &  (np_smp, ele1%nnod_4_ele, sgs_bc1_t)
 !
-      call set_ele_4_scalar_nodal_bc_fl                                 &
-     &   (node1%numnod, ele1%nnod_4_ele, sgs_bc1_t%ibc, sgs_bc1_t%ibc2, &
+      call set_ele_4_scalar_nodal_bc_fl(node1, ele1,                    &
+     &    sgs_bc1_t%ibc, sgs_bc1_t%ibc2, &
      &    sgs_bc1_t%num_idx_ibc, sgs_bc1_t%ele_bc_id,         &
      &    sgs_bc1_t%nod_bc_id, sgs_bc1_t%num_idx_ibc2,  &
      &    sgs_bc1_t%ele_bc2_id, sgs_bc1_t%nod_bc2_id,   &
@@ -203,16 +211,18 @@
 !
       use m_bc_data_ene
 !
-      call count_bc_element_fl   &
-     &   (node1, ele1, nod_bc1_c%num_idx_ibc, nod_bc1_c%ibc)
-      call count_bc_element_fl   &
-     &   (node1, ele1, nod_bc1_c%num_idx_ibc2, nod_bc1_c%ibc2)
+      call count_bc_element_layer                                       &
+     &   (node1, ele1, iele_fl_start, iele_fl_end,                      &
+     &    nod_bc1_c%num_idx_ibc, nod_bc1_c%ibc)
+      call count_bc_element_layer                                       &
+     &   (node1, ele1, iele_fl_start, iele_fl_end,                      &
+     &    nod_bc1_c%num_idx_ibc2, nod_bc1_c%ibc2)
 !
       call alloc_nod_bc_scalar_ele_type                                 &
      &   (np_smp, ele1%nnod_4_ele, nod_bc1_c)
 !
-      call set_ele_4_scalar_nodal_bc_fl                                 &
-     &   (node1%numnod, ele1%nnod_4_ele, nod_bc1_c%ibc, nod_bc1_c%ibc2, &
+      call set_ele_4_scalar_nodal_bc_fl(node1, ele1,                    &
+     &    nod_bc1_c%ibc, nod_bc1_c%ibc2,                                &
      &    nod_bc1_c%num_idx_ibc, nod_bc1_c%ele_bc_id,                   &
      &    nod_bc1_c%nod_bc_id, nod_bc1_c%num_idx_ibc2,                &
      &    nod_bc1_c%ele_bc2_id, nod_bc1_c%nod_bc2_id,                   &

@@ -46,7 +46,7 @@
 !
         integer (kind=kint) :: num_bc_nod
         integer (kind=kint), pointer :: ibc_id(:)
-!        real (kind=kreal),   pointer :: bc_apt(:)
+        real (kind=kreal),   pointer :: bc_apt(:)
 !
         integer (kind=kint) :: num_idx_ibc
         integer (kind=kint), pointer :: ele_bc_id(:)
@@ -71,7 +71,7 @@
         integer (kind=kint) :: nmax_bc
         integer (kind=kint) :: num_bc_nod(3)
         integer (kind=kint), pointer :: ibc_id(:,:)
-!        real (kind=kreal),   pointer :: bc_apt(:,:)
+        real (kind=kreal),   pointer :: bc_apt(:,:)
 !
         integer (kind=kint) :: nmax_idx_ibc
         integer (kind=kint) :: num_idx_ibc(3)
@@ -169,10 +169,10 @@
       end if
 ! 
       allocate(scalar_bc%ibc_id(scalar_bc%num_bc_nod))
-!      allocate(scalar_bc%bc_apt(scalar_bc%num_bc_nod))
+      allocate(scalar_bc%bc_apt(scalar_bc%num_bc_nod))
       if (scalar_bc%num_bc_nod .gt. 0) then
         scalar_bc%ibc_id = 0 
-!        scalar_bc%bc_apt = 0.0d00
+        scalar_bc%bc_apt = 0.0d00
       end if
 !
       end subroutine alloc_scalar_nod_bc_type
@@ -227,10 +227,10 @@
       end if
 ! 
       allocate(vector_bc%ibc_id(vector_bc%nmax_bc,3))
-!      allocate(vector_bc%bc_apt(vector_bc%nmax_bc,3))
+      allocate(vector_bc%bc_apt(vector_bc%nmax_bc,3))
       if (vector_bc%nmax_bc .gt. 0) then
         vector_bc%ibc_id = 0 
-!        vector_bc%bc_apt = 0.0d00
+        vector_bc%bc_apt = 0.0d00
       end if
 !
       end subroutine alloc_vector_nod_bc_type
