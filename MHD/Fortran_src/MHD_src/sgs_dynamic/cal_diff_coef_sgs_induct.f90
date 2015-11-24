@@ -37,7 +37,6 @@
       use cal_div_sgs_induct_4_simi
       use cal_sgs_inductions_grad
       use cal_model_diff_coefs
-      use set_magne_boundary
       use nod_phys_send_recv
       use clear_work_4_dynamic_model
 !

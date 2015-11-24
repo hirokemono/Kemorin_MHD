@@ -17,7 +17,6 @@
       use cal_for_ffs
       use cal_multi_pass
       use nod_phys_send_recv
-      use set_magne_boundary
       use int_surf_magne_pre
 !
       implicit none
@@ -36,9 +35,10 @@
       use m_node_phys_data
       use m_int_vol_data
       use m_finite_element_matrix
+      use m_bc_data_magne
 !
       use int_vol_magne_monitor
-      use set_velocity_boundary
+      use set_boundary_scalars
 !
       integer (kind=kint), intent(in) :: i_field
 !
@@ -73,9 +73,10 @@
       use m_phys_constants
       use m_node_phys_data
       use m_finite_element_matrix
+      use m_bc_data_magne
 !
       use int_vol_diffusion_ele
-      use set_velocity_boundary
+      use set_boundary_scalars
 !
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)

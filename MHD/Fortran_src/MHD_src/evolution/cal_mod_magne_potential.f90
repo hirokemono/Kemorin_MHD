@@ -42,11 +42,9 @@
       use int_sk_4_fixed_boundary
       use int_surf_div_sgs
       use int_surf_fixed_gradients
-      use set_boundary_potentials
-      use set_magne_boundary
+      use set_boundary_scalars
       use int_surf_normal_fields
       use cal_solver_MHD
-      use set_velocity_boundary
 !
 !
       call reset_ff(node1%numnod, f1_l)
@@ -72,7 +70,7 @@
 !
       call int_vol_sk_mp_bc
 !
-      call set_boundary_fmag
+      call set_boundary_ff(node1, nod_bc1_f, f1_l)
 !
       call cal_sol_mag_po
 !

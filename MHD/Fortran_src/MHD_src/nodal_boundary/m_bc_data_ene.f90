@@ -25,4 +25,17 @@
 !
       type(scaler_fixed_nod_bc_type) :: sgs_bc1_t
 !
+      type(scaler_fixed_nod_bc_type) :: sgs_bc1_c
+!
+!  ---------------------------------------------------------------------
+!
+      contains
+!
+!  ---------------------------------------------------------------------
+!
+      subroutine set_bc_id_temp
+      end subroutine set_bc_id_temp
+!
+!  ---------------------------------------------------------------------
+!
       end module m_bc_data_ene

@@ -4,14 +4,11 @@
 !      Written by H. Matsui and H.Okuda  on July 2001
 !      Modified by H. Matsui on June, 2005
 !
-!!      subroutine count_bc_element_whole(node, ele, num_index_ibc, ibc)
 !!      subroutine count_bc_element_layer(node, ele, iele_st, iele_ed,  &
 !!     &          num_index_ibc, ibc)
 !!
 !!      subroutine set_bc_element_layer(node, ele, iele_st, iele_ed,    &
 !!     &           num_idx_ibc, ibc, ele_bc_id, nod_bc_id, num_t)
-!!      subroutine set_bc_element_whole(node, ele,                      &
-!!     &          num_idx_ibc, ibc, ele_bc_id, nod_bc_id, num_t)
 !!        type(node_data), intent(in) :: node
 !!        type(node_data), intent(in) :: ele
 !
@@ -27,23 +24,6 @@
 !-----------------------------------------------------------------------
 !
       contains
-!
-!-----------------------------------------------------------------------
-!
-      subroutine count_bc_element_whole(node, ele, num_index_ibc, ibc)
-!
-      use t_geometry_data
-!
-      type(node_data),    intent(in) :: node
-      type(element_data), intent(in) :: ele
-      integer (kind= kint), intent(inout) :: num_index_ibc
-      integer (kind= kint), intent(in)    :: ibc(node%numnod)
-!
-!   conunt node in elements for boundary
-      call count_bc_element_layer                                       &
-     &   (node, ele, ione, ele%numele, num_index_ibc, ibc)
-!
-      end subroutine count_bc_element_whole
 !
 !-----------------------------------------------------------------------
 !
@@ -89,27 +69,6 @@
      &    num_t)
 !
       end subroutine set_bc_element_layer
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_bc_element_whole(node, ele,                        &
-     &          num_idx_ibc, ibc, ele_bc_id, nod_bc_id, num_t)
-!
-      use t_geometry_data
-!
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
-      integer (kind= kint), intent(in)    :: num_idx_ibc
-      integer (kind= kint), intent(in)    :: num_t
-      integer (kind= kint), intent(in)    :: ibc(node%numnod)
-      integer (kind= kint), intent(inout) :: ele_bc_id(num_idx_ibc)
-      integer (kind= kint), intent(inout) :: nod_bc_id(num_idx_ibc)
-!
-!
-      call set_bc_element_layer(node, ele, ione, ele%numele,            &
-     &    num_idx_ibc, ibc, ele_bc_id, nod_bc_id, num_t)
-!
-      end subroutine set_bc_element_whole
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

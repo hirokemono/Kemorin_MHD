@@ -40,7 +40,6 @@
       use nod_phys_send_recv
       use cal_sgs_fluxes
       use set_boundary_scalars
-      use set_velocity_boundary
       use int_vol_diffusion_ele
       use int_surf_temp
       use int_vol_thermal_ele
@@ -147,8 +146,12 @@
 !
       subroutine cal_temp_pre_crank
 !
+      use m_geometry_data
       use m_t_step_parameter
       use m_node_phys_address
+      use m_finite_element_matrix
+      use m_bc_data_ene
+!
       use cal_sol_vector_pre_crank
       use cal_multi_pass
       use set_boundary_scalars
@@ -164,7 +167,7 @@
        if (iflag_debug.eq.1) write(*,*) 'multi_pass temp'
        call cal_t_evo_4_scalar_fl(iflag_temp_supg)
 !
-       call set_boundary_ene_4_rhs
+      call set_boundary_rhs_scalar(node1, nod_bc1_t, f1_l, f1_nl)
 !
        call cal_sol_temp_linear
 !
@@ -176,8 +179,12 @@
 !
       subroutine cal_temp_pre_consist_crank
 !
+      use m_geometry_data
       use m_t_step_parameter
       use m_node_phys_address
+      use m_finite_element_matrix
+      use m_bc_data_ene
+!
       use cal_sol_vector_pre_crank
       use set_boundary_scalars
       use int_sk_4_fixed_boundary
@@ -194,7 +201,7 @@
        call int_vol_initial_temp
        call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_scalar)
 !
-       call set_boundary_ene_4_rhs
+      call set_boundary_rhs_scalar(node1, nod_bc1_t, f1_l, f1_nl)
 !
        call cal_sol_temp_consist
 !

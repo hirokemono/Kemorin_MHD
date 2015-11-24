@@ -27,6 +27,7 @@
       use m_node_phys_address
       use m_node_phys_data
       use m_SGS_address
+      use m_bc_data_ene
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -68,7 +69,8 @@
 !
       call subtract_2_nod_scalars(node1, nod_fld1,                      &
      &    iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
-      call delete_field_by_fixed_t_bc(iphys%i_sgs_simi)
+      call delete_field_by_fixed_t_bc                                   &
+     &   (nod_bc1_t, iphys%i_sgs_simi, nod_fld1)
 !
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_scalar, iphys%i_sgs_simi)
@@ -76,7 +78,8 @@
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
       call cal_commute_error_4_filter_hf(ifilter_4delta)
-      call delete_field_by_fixed_t_bc(iphys%i_sgs_grad_f)
+      call delete_field_by_fixed_t_bc                                   &
+     &   (nod_bc1_t, iphys%i_sgs_grad_f, nod_fld1)
 !
       call scalar_send_recv                                             &
      &   (iphys%i_sgs_grad_f, node1, nod_comm, nod_fld1)
@@ -94,7 +97,8 @@
 !    filtering (to iphys%i_sgs_grad)
 !
       call cal_filtered_scalar(iphys%i_sgs_grad, iphys%i_sgs_grad)
-      call delete_field_by_fixed_t_bc(iphys%i_sgs_grad)
+      call delete_field_by_fixed_t_bc                                   &
+     &   (nod_bc1_t, iphys%i_sgs_grad, nod_fld1)
 !
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_scalar, iphys%i_sgs_grad)

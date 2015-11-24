@@ -79,6 +79,7 @@
       subroutine set_bc_vect_p_id_type(mesh, nod_grp, nodal_bc)
 !
       use set_bc_type_vectors
+      use set_ele_nod_bc_vectors
 !
       type(mesh_geometry),       intent(in) :: mesh
       type(group_data),          intent(in) :: nod_grp
@@ -89,8 +90,10 @@
 !
 !   set node id in an element for magnetic boundary 
 !
-      call set_ele_nod_bc_type_vect(mesh, nodal_bc%vector_p)
-      call set_ele_nod_bc_type_vect(mesh, nodal_bc%sgs_vect_p)
+      call set_ele_nodal_bc_vector                                      &
+     &   (mesh%node, mesh%ele, nodal_bc%vector_p)
+      call set_ele_nodal_bc_vector                                      &
+     &   (mesh%node, mesh%ele, nodal_bc%sgs_vect_p)
 !
       end subroutine set_bc_vect_p_id_type
 !
@@ -99,6 +102,7 @@
       subroutine set_bc_magne_id_type(mesh, nod_grp, nodal_bc)
 !
       use set_bc_type_vectors
+      use set_ele_nod_bc_vectors
 !
       type(mesh_geometry),       intent(in) :: mesh
       type(group_data),          intent(in) :: nod_grp
@@ -109,8 +113,9 @@
 !
 !   set node id in an element for magnetic boundary 
 !
-      call set_ele_nod_bc_type_vect(mesh, nodal_bc%magne)
-      call set_ele_nod_bc_type_vect(mesh, nodal_bc%sgs_magne)
+      call set_ele_nodal_bc_vector(mesh%node, mesh%ele, nodal_bc%magne)
+      call set_ele_nodal_bc_vector                                      &
+     &   (mesh%node, mesh%ele, nodal_bc%sgs_magne)
 !
       end subroutine set_bc_magne_id_type
 !

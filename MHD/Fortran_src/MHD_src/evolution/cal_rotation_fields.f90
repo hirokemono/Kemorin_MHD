@@ -63,7 +63,7 @@
 !
       use cal_rotation
       use cal_rotation_sgs
-      use set_velocity_boundary
+      use set_boundary_scalars
       use nod_phys_send_recv
 !
       if ( iflag_SGS_model .ne. id_SGS_none                             &
@@ -96,11 +96,11 @@
       use m_node_phys_address
       use m_SGS_address
       use m_surf_data_vector_p
+      use m_bc_data_magne
 !
       use cal_rotation
       use cal_rotation_sgs
-      use set_magne_boundary
-      use set_velocity_boundary
+      use set_boundary_scalars
       use nod_phys_send_recv
 !
       if ( iflag_SGS_model.ne.id_SGS_none                               &

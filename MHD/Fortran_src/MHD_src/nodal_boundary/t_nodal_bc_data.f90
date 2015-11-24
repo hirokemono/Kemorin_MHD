@@ -127,6 +127,7 @@
         type(scaler_fixed_nod_bc_type) :: press
         type(scaler_fixed_nod_bc_type) :: magne_p
         type(scaler_fixed_nod_bc_type) :: composition
+        type(scaler_fixed_nod_bc_type) :: sgs_comp
         type(scaler_fixed_nod_bc_type) :: sgs_temp
         type(scaler_fixed_nod_bc_type) :: sgs_press
         type(scaler_fixed_nod_bc_type) :: sgs_mag_p

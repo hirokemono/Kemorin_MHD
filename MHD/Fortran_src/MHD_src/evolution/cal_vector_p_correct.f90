@@ -47,7 +47,7 @@
       use m_bc_data_magne
       use m_surf_data_magne_p
 !
-      use set_velocity_boundary
+      use set_boundary_scalars
       use nod_phys_send_recv
       use int_vol_solenoid_correct
       use int_surf_grad_sgs
@@ -143,7 +143,7 @@
       use m_phys_constants
       use m_finite_element_matrix
       use m_bc_data_magne
-      use set_velocity_boundary
+      use set_boundary_scalars
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_t_evo_4_vector'
@@ -167,7 +167,7 @@
 !
       use int_vol_initial_MHD
       use cal_ff_smp_to_ffs
-      use set_velocity_boundary
+      use set_boundary_scalars
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_initial_vect_p'

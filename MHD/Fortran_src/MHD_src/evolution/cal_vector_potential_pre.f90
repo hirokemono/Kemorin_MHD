@@ -38,7 +38,7 @@
       use m_control_parameter
       use m_bc_data_magne
 !
-      use set_velocity_boundary
+      use set_boundary_scalars
       use nod_phys_send_recv
       use cal_sgs_fluxes
       use int_vol_diffusion_ele
@@ -140,7 +140,7 @@
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
       use cal_solver_MHD
-      use set_velocity_boundary
+      use set_boundary_scalars
 !
 !
        if (coef_imp_b.gt.0.0d0) then
@@ -171,7 +171,7 @@
       use cal_ff_smp_to_ffs
       use int_vol_initial_MHD
       use cal_solver_MHD
-      use set_velocity_boundary
+      use set_boundary_scalars
 !
 !
        if (coef_imp_b.gt.0.0d0) then

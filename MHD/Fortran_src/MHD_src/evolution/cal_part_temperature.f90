@@ -146,8 +146,12 @@
 !
       subroutine cal_per_temp_crank
 !
+      use m_geometry_data
       use m_t_step_parameter
       use m_node_phys_address
+      use m_finite_element_matrix
+      use m_bc_data_ene
+!
       use cal_sol_vector_pre_crank
       use cal_multi_pass
       use set_boundary_scalars
@@ -155,28 +159,32 @@
       use cal_solver_MHD
 !
 !
-       if (coef_imp_t .gt. 0.0d0) then
-         call int_sk_4_fixed_part_temp
-         if (iflag_initial_step.eq.1) coef_imp_t = 1.0d0 / coef_imp_t
-       end if
+      if (coef_imp_t .gt. 0.0d0) then
+        call int_sk_4_fixed_part_temp
+        if (iflag_initial_step.eq.1) coef_imp_t = 1.0d0 / coef_imp_t
+      end if
 !
-       if (iflag_debug.eq.1) write(*,*) 'multi_pass temp'
-       call cal_t_evo_4_scalar_fl(iflag_temp_supg)
+      if (iflag_debug.eq.1) write(*,*) 'multi_pass temp'
+      call cal_t_evo_4_scalar_fl(iflag_temp_supg)
 !
-       call set_boundary_ene_4_rhs
+      call set_boundary_rhs_scalar(node1, nod_bc1_t, f1_l, f1_nl)
 !
-       call cal_sol_par_temp_linear
+      call cal_sol_par_temp_linear
 !
-       call cal_sol_energy_crank(iphys%i_par_temp)
+      call cal_sol_energy_crank(iphys%i_par_temp)
 !
-       end subroutine cal_per_temp_crank
+      end subroutine cal_per_temp_crank
 !
 ! ----------------------------------------------------------------------
 !
       subroutine cal_per_temp_consist_crank
 !
+      use m_geometry_data
       use m_t_step_parameter
       use m_node_phys_address
+      use m_finite_element_matrix
+      use m_bc_data_ene
+!
       use cal_sol_vector_pre_crank
       use set_boundary_scalars
       use int_sk_4_fixed_boundary
@@ -185,21 +193,21 @@
       use cal_solver_MHD
 !
 !
-       if (coef_imp_t .gt. 0.0d0) then
-         call int_sk_4_fixed_part_temp
-         if (iflag_initial_step.eq.1) coef_imp_t = 1.0d0 / coef_imp_t
-       end if
+      if (coef_imp_t .gt. 0.0d0) then
+        call int_sk_4_fixed_part_temp
+        if (iflag_initial_step.eq.1) coef_imp_t = 1.0d0 / coef_imp_t
+      end if
 !
-       call int_vol_initial_part_temp
-       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_scalar)
+      call int_vol_initial_part_temp
+      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_scalar)
 !
-       call set_boundary_ene_4_rhs
+      call set_boundary_rhs_scalar(node1, nod_bc1_t, f1_l, f1_nl)
 !
-       call cal_sol_temp_consist
+      call cal_sol_temp_consist
 !
-       call cal_sol_energy_crank(iphys%i_par_temp)
+      call cal_sol_energy_crank(iphys%i_par_temp)
 !
-       end subroutine cal_per_temp_consist_crank
+      end subroutine cal_per_temp_consist_crank
 !
 ! ----------------------------------------------------------------------
 !

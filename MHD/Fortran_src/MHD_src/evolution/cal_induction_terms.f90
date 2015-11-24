@@ -38,7 +38,7 @@
       use m_bc_data_magne
 !
       use int_vol_vect_p_pre
-      use set_velocity_boundary
+      use set_boundary_scalars
 !
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
@@ -78,7 +78,7 @@
 !
       use int_vol_diffusion_ele
       use int_surf_fixed_gradients
-      use set_velocity_boundary
+      use set_boundary_scalars
 !
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)

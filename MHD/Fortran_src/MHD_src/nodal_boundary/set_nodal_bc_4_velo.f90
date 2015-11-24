@@ -12,9 +12,10 @@
 !!      subroutine del_radial_velocity(numnod, xx, a_radius,            &
 !!     &          num_bc_vr0_nod, ibc_vr0_id, ncomp_nod, i_field, d_nod)
 !!
-!!      subroutine set_fixed_bc_zero_ff_rot(num_phys_bc, ibc_id)
-!!      subroutine set_specific_boundary_velo_rhs(num_bc_vsp_nod,       &
-!!     &    ibc_vsp_id)
+!!      subroutine set_fixed_bc_zero_ff_rot                             &
+!!     &         (num_phys_bc, ibc_id, numnod, ff, ff_nl)
+!!      subroutine set_specific_boundary_velo_rhs                       &
+!!     &         (num_bc_vsp_nod, ibc_vsp_id, numnod, ff)
 !
       module set_nodal_bc_4_velo
 !
@@ -138,8 +139,8 @@
 !-----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_fixed_bc_zero_ff_rot(numnod,                       &
-     &          num_phys_bc, ibc_id, ff, ff_nl)
+      subroutine set_fixed_bc_zero_ff_rot                               &
+     &         (num_phys_bc, ibc_id, numnod, ff, ff_nl)
 !
       integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: num_phys_bc
@@ -165,8 +166,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_specific_boundary_velo_rhs(numnod,                 &
-     &          num_bc_vsp_nod, ibc_vsp_id, ff)
+      subroutine set_specific_boundary_velo_rhs                         &
+     &         (num_bc_vsp_nod, ibc_vsp_id, numnod, ff)
 !
       integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: num_bc_vsp_nod

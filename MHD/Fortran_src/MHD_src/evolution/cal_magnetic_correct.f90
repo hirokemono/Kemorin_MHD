@@ -18,7 +18,6 @@
       use m_group_data
 !
       use cal_multi_pass
-      use set_magne_boundary
       use cal_sol_vector_co_crank
 !
       implicit none
@@ -46,8 +45,9 @@
       use m_SGS_address
       use m_SGS_model_coefs
       use m_surf_data_magne_p
+      use m_bc_data_magne
 !
-      use set_velocity_boundary
+      use set_boundary_scalars
       use nod_phys_send_recv
       use int_vol_solenoid_correct
       use int_surf_grad_sgs
@@ -139,7 +139,8 @@
 !
       use m_phys_constants
       use m_finite_element_matrix
-      use set_velocity_boundary
+      use m_bc_data_magne
+      use set_boundary_scalars
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_t_evo_4_vector'
@@ -159,9 +160,10 @@
 !
       use m_phys_constants
       use m_finite_element_matrix
+      use m_bc_data_magne
       use int_vol_initial_MHD
       use cal_ff_smp_to_ffs
-      use set_velocity_boundary
+      use set_boundary_scalars
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_initial_magne'
@@ -192,8 +194,9 @@
       use m_SGS_address
       use m_SGS_model_coefs
       use m_surf_data_magne_p
+      use m_bc_data_magne
 !
-      use set_velocity_boundary
+      use set_boundary_scalars
       use nod_phys_send_recv
       use int_vol_solenoid_correct
       use int_surf_grad_sgs

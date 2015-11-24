@@ -40,7 +40,6 @@
       use m_bc_data_ene
 !
       use nod_phys_send_recv
-      use set_velocity_boundary
       use set_boundary_scalars
       use int_surf_fixed_gradients
       use int_vol_diffusion_ele
@@ -113,41 +112,49 @@
 !
        subroutine cal_composit_pre_crank
 !
-       use m_t_step_parameter
-       use m_node_phys_address
-       use cal_multi_pass
-       use set_boundary_scalars
-       use cal_sol_vector_pre_crank
-       use int_sk_4_fixed_boundary
-       use cal_solver_MHD
+      use m_geometry_data
+      use m_t_step_parameter
+      use m_node_phys_address
+      use m_finite_element_matrix
+      use m_bc_data_ene
+!
+      use cal_multi_pass
+      use set_boundary_scalars
+      use cal_sol_vector_pre_crank
+      use int_sk_4_fixed_boundary
+      use cal_solver_MHD
 !
 !
-       if (coef_imp_c.gt.0.0d0) then
-         call int_sk_4_fixed_composition
+      if (coef_imp_c.gt.0.0d0) then
+        call int_sk_4_fixed_composition
 !         if (iflag_initial_step.eq.1) coef_imp_c = 1.0d0 / coef_imp_c
-       end if
+      end if
 !
-       call cal_t_evo_4_scalar_fl(iflag_comp_supg)
+      call cal_t_evo_4_scalar_fl(iflag_comp_supg)
 !
-       call set_boundary_composition_4_rhs
-       call cal_sol_d_scalar_linear
+      call set_boundary_rhs_scalar(node1, nod_bc1_c, f1_l, f1_nl)
+      call cal_sol_d_scalar_linear
 !
-       call cal_sol_d_scalar_crank(iphys%i_light)
+      call cal_sol_d_scalar_crank(iphys%i_light)
 !
-       end subroutine cal_composit_pre_crank
+      end subroutine cal_composit_pre_crank
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine cal_composit_pre_consist_crank
+      subroutine cal_composit_pre_consist_crank
 !
-       use m_t_step_parameter
-       use m_node_phys_address
-       use cal_sol_vector_pre_crank
-       use set_boundary_scalars
-       use int_sk_4_fixed_boundary
-       use cal_ff_smp_to_ffs
-       use int_vol_initial_MHD
-       use cal_solver_MHD
+      use m_geometry_data
+      use m_t_step_parameter
+      use m_node_phys_address
+      use m_finite_element_matrix
+      use m_bc_data_ene
+!
+      use cal_sol_vector_pre_crank
+      use set_boundary_scalars
+      use int_sk_4_fixed_boundary
+      use cal_ff_smp_to_ffs
+      use int_vol_initial_MHD
+      use cal_solver_MHD
 !
 !
        if (coef_imp_c.gt.0.0d0) then
@@ -158,7 +165,7 @@
        call int_vol_initial_d_scalar
        call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_scalar)
 !
-       call set_boundary_composition_4_rhs
+      call set_boundary_rhs_scalar(node1, nod_bc1_c, f1_l, f1_nl)
 !
        call cal_sol_d_scalar_consist
 !

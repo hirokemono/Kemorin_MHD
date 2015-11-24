@@ -19,6 +19,7 @@
       use m_int_vol_data
 !
       use m_finite_element_matrix
+      use m_bc_data_ene
 !
       use cal_multi_pass
       use cal_ff_smp_to_ffs
@@ -54,7 +55,7 @@
 !
       call cal_t_evo_4_scalar_fl(iflag_temp_supg)
 !
-      call set_boundary_ene_4_rhs
+      call set_boundary_rhs_scalar(node1, nod_bc1_t, f1_l, f1_nl)
 !
 !       call check_ff(my_rank, n_scalar, node1%numnod, f1_nl)
 !
@@ -83,7 +84,7 @@
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_scalar)
 !
-      call set_boundary_ene_4_rhs
+      call set_boundary_rhs_scalar(node1, nod_bc1_t, f1_l, f1_nl)
 !
       call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,          &
      &    f1_l%ff, mhd_fem1_wk%mlump_fl%ml,                             &

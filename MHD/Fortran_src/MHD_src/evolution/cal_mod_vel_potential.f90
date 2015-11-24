@@ -40,7 +40,7 @@
       use int_surf_div_sgs
       use int_surf_fixed_gradients
       use int_surf_normal_fields
-      use set_boundary_potentials
+      use set_boundary_scalars
       use set_velocity_boundary
       use cal_solver_MHD
 !
@@ -77,7 +77,7 @@
 !
 !   add boundary term for fixed pressure
 !
-      call set_boundary_ff
+      call set_boundary_ff(node1, nod_bc1_p, f1_l)
 !
 !   solve Poission equation
 !

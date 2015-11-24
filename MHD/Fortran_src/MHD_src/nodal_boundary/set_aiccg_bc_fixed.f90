@@ -13,14 +13,12 @@
 !!
 !!@verbatim
 !!      subroutine set_aiccg_bc_velo_nod
-!!      subroutine set_aiccg_bc_velo_rot
-!!      subroutine set_aiccg_bc_vecp_nod
-!!      subroutine set_aiccg_bc_magne_nod
-!!
-!!      subroutine set_aiccg_bc_press_nod
-!!      subroutine set_aiccg_bc_temp_nod
-!!      subroutine set_aiccg_bc_composition_nod
-!!      subroutine set_aiccg_bc_mag_p_nod
+!!      subroutine set_aiccg_bc_scalar_nod                              &
+!!     &         (nnod_1ele, ele, scalar_bc, djds_tbl, mat11)
+!!      subroutine set_aiccg_bc_vector_nod                              &
+!!     &         (ele, vector_bc, djds_tbl, mat33)
+!!      subroutine set_aiccg_bc_velo_rot                                &
+!!     &         (ele, nod_bc_rot, djds_tbl, mat33)
 !!@endverbatim
 !
       module set_aiccg_bc_fixed
@@ -29,12 +27,15 @@
 !
       use m_constants
       use m_geometry_constants
-      use m_geometry_data
       use m_phys_constants
+!
+      use t_geometry_data
+      use t_nodal_bc_data
+      use t_solver_djds
 !
       implicit none
 !
-      private :: set_aiccg_bc_scalar_nod, set_aiccg_bc_vector_nod
+      private :: aiccg_bc_scalar_nod, aiccg_bc_vector_nod
 !
 ! -----------------------------------------------------------------------
 !
@@ -42,180 +43,88 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_velo_nod
+      subroutine set_aiccg_bc_scalar_nod                                &
+     &         (nnod_1ele, ele, scalar_bc, djds_tbl, mat11)
 !
-      use m_bc_data_velo
-      use m_solver_djds_MHD
-      use m_velo_matrix
+      type(element_data), intent(in) :: ele
+      type(scaler_fixed_nod_bc_type), intent(in) :: scalar_bc
+      type(DJDS_ordering_table), intent(in) :: djds_tbl
+!
+      integer(kind = kint), intent(in) :: nnod_1ele
+!
+      type(DJDS_MATRIX), intent(inout) :: mat11
+!
+      integer (kind = kint) :: k0
+!
+!
+      if(scalar_bc%num_idx_ibc2 .le. 0) return
+      do k0 = 1, scalar_bc%num_idx_ibc2
+        call aiccg_bc_scalar_nod(ele, nnod_1ele,                        &
+     &      scalar_bc%ele_bc2_id(k0), scalar_bc%nod_bc2_id(k0),         &
+     &      djds_tbl, mat11)
+      end do
+!
+      end subroutine set_aiccg_bc_scalar_nod
+!
+! -----------------------------------------------------------------------
+!
+      subroutine set_aiccg_bc_vector_nod                                &
+     &         (ele, vector_bc, djds_tbl, mat33)
+!
+      type(element_data), intent(in) :: ele
+      type(vect_fixed_nod_bc_type), intent(inout) :: vector_bc
+      type(DJDS_ordering_table), intent(in) :: djds_tbl
+!
+      type(DJDS_MATRIX), intent(inout) :: mat33
 !
       integer(kind = kint) :: nd, k0
 !
 !
       do nd = 1, n_vector
-        do k0 = 1, nod_bc1_v%num_idx_ibc2(nd)
-          call set_aiccg_bc_vector_nod(ele1%nnod_4_ele,                 &
-     &        nod_bc1_v%ele_bc2_id(k0,nd), nod_bc1_v%nod_bc2_id(k0,nd), &
-     &        nd, nd, DJDS_fluid, Vmat_DJDS)
+        do k0 = 1, vector_bc%num_idx_ibc2(nd)
+          call aiccg_bc_vector_nod(ele, ele%nnod_4_ele,                 &
+     &        vector_bc%ele_bc2_id(k0,nd), vector_bc%nod_bc2_id(k0,nd), &
+     &        nd, nd, djds_tbl, mat33)
         end do
       end do
 !
-      end subroutine set_aiccg_bc_velo_nod
+      end subroutine set_aiccg_bc_vector_nod
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_velo_rot
+      subroutine set_aiccg_bc_velo_rot                                  &
+     &         (ele, nod_bc_rot, djds_tbl, mat33)
 !
-      use m_bc_data_velo
-      use m_solver_djds_MHD
-      use m_velo_matrix
+      type(element_data), intent(in) :: ele
+      type(scaler_rotaion_nod_bc_type), intent(in) :: nod_bc_rot
+      type(DJDS_ordering_table), intent(in) :: djds_tbl
+!
+      type(DJDS_MATRIX), intent(inout) :: mat33
 !
       integer (kind = kint) :: k0
 !
 !
-      do k0 = 1, nod_bc1_rot%num_idx_ibc
-        call set_aiccg_bc_vector_nod(ele1%nnod_4_ele,                   &
-     &      nod_bc1_rot%ele_bc_id(k0), nod_bc1_rot%nod_bc_id(k0),       &
-     &      ione, n_vector, DJDS_fluid, Vmat_DJDS)
+      do k0 = 1, nod_bc_rot%num_idx_ibc
+        call aiccg_bc_vector_nod(ele, ele%nnod_4_ele,                   &
+     &      nod_bc_rot%ele_bc_id(k0), nod_bc_rot%nod_bc_id(k0),         &
+     &      ione, n_vector, djds_tbl, mat33)
       end do
 !
       end subroutine set_aiccg_bc_velo_rot
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine set_aiccg_bc_vecp_nod
-!
-      use m_bc_data_magne
-      use m_solver_djds_MHD
-      use m_magne_matrix
-!
-      integer(kind = kint) :: nd, k0
-!
-!
-      do nd = 1, n_vector
-        do k0 = 1, nod_bc1_a%num_idx_ibc2(nd)
-          call set_aiccg_bc_vector_nod(ele1%nnod_4_ele,                 &
-     &        nod_bc1_a%ele_bc2_id(k0,nd), nod_bc1_a%nod_bc2_id(k0,nd), &
-     &        nd, nd, DJDS_entire, Bmat_DJDS)
-        end do
-      end do
-!
-      end subroutine set_aiccg_bc_vecp_nod
-!
 ! -----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_magne_nod
-!
-      use m_bc_data_magne
-      use m_solver_djds_MHD
-      use m_magne_matrix
-!
-      integer(kind = kint) :: nd, k0
-!
-!
-      do nd = 1, n_vector
-        do k0 = 1, nod_bc1_b%num_idx_ibc2(nd)
-          call set_aiccg_bc_vector_nod(ele1%nnod_4_ele,                 &
-     &        nod_bc1_b%ele_bc2_id(k0,nd), nod_bc1_b%nod_bc2_id(k0,nd), &
-     &        nd, nd, DJDS_entire, Bmat_DJDS)
-        end do
-      end do
-!
-      end subroutine set_aiccg_bc_magne_nod
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine set_aiccg_bc_press_nod
-!
-      use m_bc_data_velo
-      use m_solver_djds_MHD
-      use m_velo_matrix
-!
-      integer (kind = kint) :: k0
-!
-!
-      if(nod_bc1_p%num_idx_ibc2 .le. 0) return
-      do k0 = 1, nod_bc1_p%num_idx_ibc2
-        call set_aiccg_bc_scalar_nod(num_t_linear,                     &
-     &      nod_bc1_p%ele_bc2_id(k0), nod_bc1_p%nod_bc2_id(k0),        &
-     &      DJDS_fl_l, Pmat_DJDS)
-      end do
-!
-      end subroutine set_aiccg_bc_press_nod
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_aiccg_bc_temp_nod
-!
-      use m_bc_data_ene
-      use m_solver_djds_MHD
-      use m_temp_matrix
-!
-      integer (kind = kint) :: k0
-!
-!
-      if(nod_bc1_t%num_idx_ibc2 .le. 0) return
-      do k0 = 1, nod_bc1_t%num_idx_ibc2
-        call set_aiccg_bc_scalar_nod(ele1%nnod_4_ele,                   &
-     &      nod_bc1_t%ele_bc2_id(k0), nod_bc1_t%nod_bc2_id(k0),         &
-     &      DJDS_fluid, Tmat_DJDS)
-      end do
-!
-      end subroutine set_aiccg_bc_temp_nod
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_aiccg_bc_composition_nod
-!
-      use m_bc_data_ene
-      use m_solver_djds_MHD
-      use m_light_element_matrix
-!
-      integer (kind = kint) :: k0
-!
-!
-      if(nod_bc1_c%num_idx_ibc2 .le. 0)  return
-      do k0 = 1, nod_bc1_c%num_idx_ibc2
-        call set_aiccg_bc_scalar_nod(ele1%nnod_4_ele,                   &
-     &      nod_bc1_c%ele_bc2_id(k0), nod_bc1_c%nod_bc2_id(k0),         &
-     &      DJDS_fluid, Cmat_DJDS)
-      end do
-!
-      end subroutine set_aiccg_bc_composition_nod
-!
-! -----------------------------------------------------------------------
-!
-      subroutine set_aiccg_bc_mag_p_nod
-!
-      use m_bc_data_magne
-      use m_solver_djds_MHD
-      use m_magne_matrix
-!
-      integer (kind = kint) :: k0
-!
-!
-      if(nod_bc1_f%num_idx_ibc2 .le. 0) return
-      do k0 = 1, nod_bc1_f%num_idx_ibc2
-        call set_aiccg_bc_scalar_nod(num_t_linear,                      &
-     &      nod_bc1_f%ele_bc2_id(k0), nod_bc1_f%nod_bc2_id(k0),         &
-     &      DJDS_linear, Fmat_DJDS)
-      end do
-!
-      end subroutine set_aiccg_bc_mag_p_nod
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine set_aiccg_bc_scalar_nod(nnod_1ele,                     &
+      subroutine aiccg_bc_scalar_nod(ele, nnod_1ele,                &
      &          iele, nod_bc2_id, djds_tbl, mat11)
 !
-      use t_solver_djds
-      use m_geometry_data
       use set_aiccg_bc_node_type
+!
+      type(element_data), intent(in) :: ele
+      type(DJDS_ordering_table), intent(in) :: djds_tbl
 !
       integer(kind = kint), intent(in) :: nnod_1ele
       integer(kind = kint), intent(in) :: iele, nod_bc2_id
-      type(DJDS_ordering_table), intent(in) :: djds_tbl
 !
       type(DJDS_MATRIX), intent(inout) :: mat11
 !
@@ -225,29 +134,29 @@
       k1 = nod_bc2_id
       do k2 = 1, nnod_1ele
         call set_bc_4_scalar_mat_type                                   &
-     &     (ele1%ie(iele,k1), ele1%ie(iele,k2), djds_tbl, mat11)
+     &     (ele%ie(iele,k1), ele%ie(iele,k2), djds_tbl, mat11)
       end do
 !
       k2 = nod_bc2_id
       do k1 = 1, nnod_1ele
         call set_bc_4_scalar_mat_type                                   &
-     &     (ele1%ie(iele,k1), ele1%ie(iele,k2), djds_tbl, mat11)
+     &     (ele%ie(iele,k1), ele%ie(iele,k2), djds_tbl, mat11)
       end do
 !
-      end subroutine set_aiccg_bc_scalar_nod
+      end subroutine aiccg_bc_scalar_nod
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_vector_nod(nnod_1ele, iele, nod_bc2_id,   &
-     &          nst, ned, djds_tbl, mat33)
+      subroutine aiccg_bc_vector_nod(ele, nnod_1ele,                    &
+     &          iele, nod_bc2_id, nst, ned, djds_tbl, mat33)
 !
-      use t_solver_djds
-      use m_geometry_data
       use set_aiccg_bc_node_type
+!
+      type(element_data), intent(in) :: ele
+      type(DJDS_ordering_table), intent(in) :: djds_tbl
 !
       integer(kind = kint), intent(in) :: nnod_1ele, nst, ned
       integer(kind = kint), intent(in) :: iele, nod_bc2_id
-      type(DJDS_ordering_table), intent(in) :: djds_tbl
 !
       type(DJDS_MATRIX), intent(inout) :: mat33
 !
@@ -257,16 +166,16 @@
       k1 = nod_bc2_id
       do k2 = 1, nnod_1ele
         call set_bc_4_vector_mat_type(nst, ned,                         &
-     &      ele1%ie(iele,k1), ele1%ie(iele,k2), djds_tbl, mat33)
+     &      ele%ie(iele,k1), ele%ie(iele,k2), djds_tbl, mat33)
       end do
 !
       k2 = nod_bc2_id
       do k1 = 1, nnod_1ele
         call set_bc_4_vector_mat_type(nst, ned,                         &
-     &      ele1%ie(iele,k1), ele1%ie(iele,k2), djds_tbl, mat33)
+     &      ele%ie(iele,k1), ele%ie(iele,k2), djds_tbl, mat33)
       end do
 !
-      end subroutine set_aiccg_bc_vector_nod
+      end subroutine aiccg_bc_vector_nod
 !
 ! -----------------------------------------------------------------------
 !

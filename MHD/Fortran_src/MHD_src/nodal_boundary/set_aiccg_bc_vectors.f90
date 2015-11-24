@@ -27,40 +27,65 @@
 !
       use calypso_mpi
       use m_control_parameter
+      use m_geometry_data
+      use m_group_data
+      use m_jacobian_sf_grp
+      use m_sorted_node
+      use m_sorted_node_MHD
+      use m_finite_element_matrix
+      use m_bc_data_velo
+      use m_bc_data_magne
+      use m_bc_data_ene
+      use m_solver_djds_MHD
+      use m_velo_matrix
+      use m_magne_matrix
+      use m_temp_matrix
+      use m_light_element_matrix
 !
       use set_aiccg_bc_fixed
 !
 !   set boundary conditions for matrix
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call set_aiccg_bc_press_nod
+        call set_aiccg_bc_scalar_nod                                    &
+     &   (num_t_linear, ele1, nod_bc1_p, DJDS_fl_l, Pmat_DJDS)
 !
         if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-          call set_aiccg_bc_velo
+          call set_aiccg_bc_velo                                        &
+     &       (intg_point_t_evo, ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, &
+     &        nod_bc1_v, nod_bc1_rot, rhs_tbl1, mat_tbl_fl_q,           &
+     &        DJDS_fluid, fem1_wk, Vmat_DJDS)
         end if
       end if
 !
 
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
-        call set_aiccg_bc_temp_nod
+        call set_aiccg_bc_scalar_nod                                    &
+     &     (ele1%nnod_4_ele, ele1, nod_bc1_t, DJDS_fluid, Tmat_DJDS)
       end if
 !
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        call set_aiccg_bc_composition_nod
+        call set_aiccg_bc_scalar_nod                                    &
+     &     (ele1%nnod_4_ele, ele1, nod_bc1_c, DJDS_fluid, Cmat_DJDS)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call set_aiccg_bc_mag_p_nod
+        call set_aiccg_bc_scalar_nod                                    &
+     &     (num_t_linear, ele1, nod_bc1_f, DJDS_linear, Fmat_DJDS)
 !
         if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
-          call set_aiccg_bc_magne_nod
+          call set_aiccg_bc_vector_nod                                  &
+     &       (ele1, nod_bc1_b, DJDS_entire, Bmat_DJDS)
         end if
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call set_aiccg_bc_mag_p_nod
+        call set_aiccg_bc_scalar_nod                                    &
+     &     (num_t_linear, ele1, nod_bc1_f, DJDS_linear, Fmat_DJDS)
+!
         if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-          call set_aiccg_bc_vecp_nod
+          call set_aiccg_bc_vector_nod                                  &
+     &       (ele1, nod_bc1_a, DJDS_entire, Bmat_DJDS)
         end if
       end if
 !
@@ -69,41 +94,56 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_velo
+      subroutine set_aiccg_bc_velo(num_int, ele, surf, sf_grp,          &
+     &          jac_sf_grp, nod_bc_v, nod_bc_rot,                       &
+     &          rhs_tbl, mat_tbl, DJDS_tbl, fem_wk, Vmat_DJDS)
 !
-      use m_control_parameter
-      use m_geometry_data
-      use m_group_data
-      use m_jacobian_sf_grp
-      use m_sorted_node
-      use m_sorted_node_MHD
-      use m_finite_element_matrix
-      use m_bc_data_velo
-      use m_velo_matrix
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
+      use t_jacobian_2d
+      use t_nodal_bc_data
+      use t_finite_element_mat
+      use t_table_FEM_const
+      use t_solver_djds
 !
       use set_aiccg_free_sph
       use set_aiccg_bc_fixed
 !
+      integer(kind = kint), intent(in) :: num_int
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: sf_grp
+      type(jacobians_2d), intent(in) :: jac_sf_grp
+!
+      type(vect_fixed_nod_bc_type) :: nod_bc_v
+      type(scaler_rotaion_nod_bc_type) :: nod_bc_rot
+!
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(table_mat_const), intent(in) :: mat_tbl
+      type(DJDS_ordering_table), intent(in) :: DJDS_tbl
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(DJDS_MATRIX), intent(inout) :: Vmat_DJDS
+!
 !
 !      matrix setting for free slip on sphere
       if(ngrp_sf_fr_in .gt. 0)  then
-        call set_aiccg_bc_free_sph_in(ele1, surf1, sf_grp1,             &
-     &      jac1_sf_grp_2d_q, rhs_tbl1, mat_tbl_fl_q,                   &
-     &      intg_point_poisson, fem1_wk, Vmat_DJDS)
+        call set_aiccg_bc_free_sph_in(ele, surf, sf_grp,                &
+     &      jac_sf_grp, rhs_tbl, mat_tbl, num_int, fem_wk, Vmat_DJDS)
       end if
       if(ngrp_sf_fr_out .gt. 0) then
-        call set_aiccg_bc_free_sph_out(ele1, surf1, sf_grp1,            &
-     &      jac1_sf_grp_2d_q, rhs_tbl1, mat_tbl_fl_q,                   &
-     &      intg_point_poisson, fem1_wk, Vmat_DJDS)
+        call set_aiccg_bc_free_sph_out(ele, surf, sf_grp,               &
+     &      jac_sf_grp, rhs_tbl, mat_tbl, num_int, fem_wk, Vmat_DJDS)
       end if
 !
 !      matrix setting for fixed boundaries
-      call set_aiccg_bc_velo_nod
-!
+      call set_aiccg_bc_vector_nod(ele, nod_bc_v, DJDS_tbl, Vmat_DJDS)
 !
 !        write(*,*) '  velo_bc_rotation'
-      if ( nod_bc1_rot%num_idx_ibc .ne. 0 ) then
-       call set_aiccg_bc_velo_rot
+      if ( nod_bc_rot%num_idx_ibc .ne. 0 ) then
+        call set_aiccg_bc_velo_rot                                      &
+     &     (ele, nod_bc_rot, DJDS_tbl, Vmat_DJDS)
       end if
 !
       end subroutine set_aiccg_bc_velo

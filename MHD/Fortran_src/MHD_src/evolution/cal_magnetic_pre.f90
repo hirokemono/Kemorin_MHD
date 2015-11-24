@@ -34,11 +34,11 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_finite_element_matrix
+      use m_bc_data_magne
 !
-      use set_velocity_boundary
+      use set_boundary_scalars
       use nod_phys_send_recv
       use cal_sgs_fluxes
-      use set_magne_boundary
       use int_vol_diffusion_ele
       use int_vol_magne_pre
       use int_surf_magne_pre
@@ -127,12 +127,12 @@
       use m_phys_constants
       use m_t_step_parameter
       use m_finite_element_matrix
+      use m_bc_data_magne
       use cal_multi_pass
       use cal_sol_vector_pre_crank
-      use set_magne_boundary
       use int_sk_4_fixed_boundary
       use cal_solver_MHD
-      use set_velocity_boundary
+      use set_boundary_scalars
 !
 !
        if (coef_imp_b.gt.0.0d0) then
@@ -159,13 +159,13 @@
       use m_t_step_parameter
       use m_phys_constants
       use m_finite_element_matrix
+      use m_bc_data_magne
       use cal_sol_vector_pre_crank
-      use set_magne_boundary
       use int_sk_4_fixed_boundary
       use cal_ff_smp_to_ffs
       use int_vol_initial_MHD
       use cal_solver_MHD
-      use set_velocity_boundary
+      use set_boundary_scalars
 !
 !
       if (coef_imp_b.gt.0.0d0) then
