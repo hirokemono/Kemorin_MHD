@@ -21,7 +21,7 @@
       use cal_ff_smp_to_ffs
       use cal_for_ffs
       use nod_phys_send_recv
-      use set_velocity_boundary
+      use set_nodal_bc_id_data
       use int_surf_velo_pre
 !
       implicit none

@@ -16,7 +16,7 @@
       use m_geometry_data
 !
       use cal_multi_pass
-      use set_velocity_boundary
+      use set_nodal_bc_id_data
       use cal_sol_vector_co_crank
 !
       implicit none

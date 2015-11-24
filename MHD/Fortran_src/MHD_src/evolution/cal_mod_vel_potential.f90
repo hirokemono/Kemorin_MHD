@@ -41,7 +41,7 @@
       use int_surf_fixed_gradients
       use int_surf_normal_fields
       use set_boundary_scalars
-      use set_velocity_boundary
+      use set_nodal_bc_id_data
       use cal_solver_MHD
 !
 !

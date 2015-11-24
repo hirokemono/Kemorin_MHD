@@ -39,7 +39,7 @@
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
-      use set_velocity_boundary
+      use set_nodal_bc_id_data
       use int_vol_diffusion_ele
       use int_vol_velo_pre
       use int_surf_velo_pre
@@ -161,7 +161,7 @@
        use m_t_step_parameter
        use cal_multi_pass
        use cal_sol_vector_pre_crank
-       use set_velocity_boundary
+       use set_nodal_bc_id_data
        use int_sk_4_fixed_boundary
        use cal_solver_MHD
        use int_vol_coriolis_term
@@ -195,7 +195,7 @@
 !
        use m_t_step_parameter
        use cal_sol_vector_pre_crank
-       use set_velocity_boundary
+       use set_nodal_bc_id_data
        use int_sk_4_fixed_boundary
        use cal_ff_smp_to_ffs
        use int_vol_initial_MHD

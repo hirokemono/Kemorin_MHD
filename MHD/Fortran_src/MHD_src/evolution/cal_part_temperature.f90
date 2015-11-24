@@ -40,7 +40,6 @@
       use nod_phys_send_recv
       use cal_sgs_fluxes
       use set_boundary_scalars
-      use set_velocity_boundary
       use int_vol_diffusion_ele
       use int_surf_temp
       use int_vol_thermal_ele

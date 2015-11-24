@@ -37,7 +37,7 @@
       use cal_sgs_mom_fluxes_grad
       use cal_div_sgs_mf_4_simi
       use cal_model_diff_coefs
-      use set_velocity_boundary
+      use set_nodal_bc_id_data
       use nod_phys_send_recv
       use clear_work_4_dynamic_model
 !
