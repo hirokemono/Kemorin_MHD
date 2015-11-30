@@ -47,15 +47,16 @@
       call s_count_num_surf_vector(sf_grp, sf_grp_nod,                  &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type, name_svn,                               &
-     &    nmax_sf_sgs_velo, ngrp_sf_sgs_velo,                           &
-     &    ngrp_sf_fix_vn, nnod_sf_fix_vn)
+     &    sf_sgs1_grad_v%nmax_sf_dat, sf_sgs1_grad_v%ngrp_sf_dat,       &
+     &    sf_bc1_norm_v%ngrp_sf_fix_fx, sf_bc1_norm_v%nitem_sf_fix_fx)
 !
       call count_num_stress_free_surf                                   &
      &   (sf_grp%num_grp, sf_grp%grp_name,                              &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type,                                         &
      &    iflag_surf_free_sph_in, iflag_surf_free_sph_out,              &
-     &    ngrp_sf_fr_in, ngrp_sf_fr_out)
+     &    sf_bc1_free_sph_in%ngrp_sf_dat,                               &
+     &    sf_bc1_free_sph_out%ngrp_sf_dat)
 !
       end subroutine count_num_surf_velo
 !
@@ -141,8 +142,10 @@
      &   (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,           &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type, name_vxg, name_vyg, name_vzg,           &
-     &    nmax_sf_fix_tq, nmax_ele_sf_fix_tq, nmax_sf_lead_tq,          &
-     &    ngrp_sf_fix_tq, nele_sf_fix_tq, ngrp_sf_lead_tq)
+     &    sf_bc1_grad_v%nmax_sf_fix_fx,                                 &
+     &    sf_bc1_grad_v%nmax_ele_sf_fix_fx, sf_bc1_lead_tq%nmax_sf_dat, &
+     &    sf_bc1_grad_v%ngrp_sf_fix_fx, sf_bc1_grad_v%nitem_sf_fix_fx,  &
+     &    sf_bc1_lead_tq%ngrp_sf_dat)
 !
       end subroutine count_num_surf_torque
 !

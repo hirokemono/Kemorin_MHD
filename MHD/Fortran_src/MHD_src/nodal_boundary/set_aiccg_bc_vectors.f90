@@ -128,11 +128,11 @@
 !
 !
 !      matrix setting for free slip on sphere
-      if(ngrp_sf_fr_in .gt. 0)  then
+      if(sf_bc1_free_sph_in%ngrp_sf_dat .gt. 0)  then
         call set_aiccg_bc_free_sph_in(ele, surf, sf_grp,                &
      &      jac_sf_grp, rhs_tbl, mat_tbl, num_int, fem_wk, Vmat_DJDS)
       end if
-      if(ngrp_sf_fr_out .gt. 0) then
+      if(sf_bc1_free_sph_out%ngrp_sf_dat .gt. 0) then
         call set_aiccg_bc_free_sph_out(ele, surf, sf_grp,               &
      &      jac_sf_grp, rhs_tbl, mat_tbl, num_int, fem_wk, Vmat_DJDS)
       end if

@@ -13,8 +13,13 @@
       module m_surf_data_press
 !
       use m_precision
+      use t_surface_bc_data
 !
       implicit  none
+!
+!
+      type(scaler_surf_flux_bc_type), save :: sf_bc1_grad_p
+!sf_bc1_grad_p%ngrp_sf_fix_fx
 !
 !
       integer (kind=kint) :: ngrp_sf_sgs_p

@@ -16,14 +16,14 @@
       implicit  none
 !
 !
-      type(scaler_fixed_nod_bc_type) :: nod_bc1_t
+      type(scaler_fixed_nod_bc_type), save :: nod_bc1_t
 !
-      type(scaler_fixed_nod_bc_type) :: nod_bc1_c
+      type(scaler_fixed_nod_bc_type), save :: nod_bc1_c
 !
 !
-      type(scaler_fixed_nod_bc_type) :: sgs_bc1_t
+      type(scaler_fixed_nod_bc_type), save :: sgs_bc1_t
 !
-      type(scaler_fixed_nod_bc_type) :: sgs_bc1_c
+      type(scaler_fixed_nod_bc_type), save :: sgs_bc1_c
 !
 !  ---------------------------------------------------------------------
 !
@@ -65,7 +65,7 @@
 !
       if (iflag_4_ref_temp .ne. id_no_ref_temp) then
         call set_fixed_bc_4_par_temp(node%numnod, nod_fld%ntot_phys,    &
-     &      iphys%i_ref_t, nod_fld%d_fld)
+     &      iphys%i_ref_t, nod_fld%d_fld, nod_bc1_t)
       end if
 !
 !   set node id in an element for the temperature boundary 

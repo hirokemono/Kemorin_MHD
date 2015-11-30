@@ -33,9 +33,9 @@
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs
 !
-       call cal_rotation_commute_fluid(nmax_sf_sgs_velo,                &
-     &     ngrp_sf_sgs_velo, id_grp_sf_sgs_velo, i_filter,              &
-     &     i_sgs, iphys%i_velo)
+       call cal_rotation_commute_fluid(sf_sgs1_grad_v%nmax_sf_dat,      &
+     &     sf_sgs1_grad_v%ngrp_sf_dat, sf_sgs1_grad_v%id_grp_sf_dat,    &
+     &     i_filter, i_sgs, iphys%i_velo)
 !
       end subroutine cal_commute_error_velo
 !
@@ -47,9 +47,9 @@
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs
 !
-       call cal_rotation_commute_fluid(nmax_sf_sgs_velo,                &
-     &     ngrp_sf_sgs_velo, id_grp_sf_sgs_velo, i_filter,              &
-     &     i_sgs, i_sgs)
+       call cal_rotation_commute_fluid(sf_sgs1_grad_v%nmax_sf_dat,      &
+     &     sf_sgs1_grad_v%ngrp_sf_dat, sf_sgs1_grad_v%id_grp_sf_dat,    &
+     &     i_filter, i_sgs, i_sgs)
 !
       end subroutine cal_commute_error_f_velo
 !

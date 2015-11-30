@@ -9,11 +9,9 @@
 !!      subroutine set_nod_bc_from_data(nod_grp, numnod, num_phys_bc,   &
 !!     &          ii, i, ibc_id, ibc, ibc2, bc_id_apt, field_name)
 !!      subroutine set_fixed_bc_4_par_temp                              &
-!!     &         (numnod, ncomp_nod, i_ref_t, d_nod)
+!!     &         (numnod, ncomp_nod, i_ref_t, d_nod, nod_bc_t)
 !!      subroutine set_potential_4_fixed_press                          &
-!!     &         (numnod, ncomp_nod, i_press, i_p_phi, d_nod)
-!!      subroutine set_potential_4_sgs_press                            &
-!!     &         (numnod, ncomp_nod, i_press, i_p_phi, d_nod)
+!!     &         (numnod, ncomp_nod, i_press, i_p_phi, d_nod, nod_bc_p)
 !
       module set_nodal_boundary
 !
@@ -116,18 +114,19 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_fixed_bc_4_par_temp                                &
-     &         (numnod, ncomp_nod, i_ref_t, d_nod)
+     &         (numnod, ncomp_nod, i_ref_t, d_nod, nod_bc_t)
 !
-      use m_bc_data_ene
+      use t_nodal_bc_data
 !
       integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_ref_t
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+      type(scaler_fixed_nod_bc_type), intent(inout) :: nod_bc_t
 !
       integer (kind = kint) :: inum, inod
 !
-      do inum = 1, nod_bc1_t%num_bc_nod
-        inod = nod_bc1_t%ibc_id(inum)
-        nod_bc1_t%bc_apt(inum) = nod_bc1_t%bc_apt(inum)                 &
+      do inum = 1, nod_bc_t%num_bc_nod
+        inod = nod_bc_t%ibc_id(inum)
+        nod_bc_t%bc_apt(inum) = nod_bc_t%bc_apt(inum)                   &
      &                          - d_nod(inod,i_ref_t)
       end do
 !
@@ -136,50 +135,28 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_potential_4_fixed_press                            &
-     &         (numnod, ncomp_nod, i_press, i_p_phi, d_nod)
+     &         (numnod, ncomp_nod, i_press, i_p_phi, d_nod, nod_bc_p)
 !
-      use m_bc_data_velo
+      use t_nodal_bc_data
       use m_t_int_parameter
       use m_physical_property
 !
       integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer (kind = kint), intent(in) :: i_press, i_p_phi
+!
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
-!
-      integer (kind = kint) :: inum, inod
-!
-      do inum = 1, nod_bc1_p%num_bc_nod
-        inod = nod_bc1_p%ibc_id(inum)
-        nod_bc1_p%bc_apt(inum)                                          &
-     &        =   -dt * nod_bc1_p%bc_apt(inum) * coef_press
-        d_nod(inod,i_p_phi) = -dt * coef_press * d_nod(inod,i_press)
-      end do
-!
-      end subroutine set_potential_4_fixed_press
-!
-!  ---------------------------------------------------------------------
-!
-      subroutine set_potential_4_sgs_press                              &
-     &         (numnod, ncomp_nod, i_press, i_p_phi, d_nod)
-!
-      use m_bc_data_velo
-      use m_t_int_parameter
-      use m_physical_property
-!
-      integer (kind = kint), intent(in) :: numnod, ncomp_nod
-      integer (kind = kint), intent(in) :: i_press, i_p_phi
-      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+      type(scaler_fixed_nod_bc_type), intent(inout) :: nod_bc_p
 !
        integer (kind = kint) :: inum, inod
 !
-      do inum = 1, sgs_bc1_p%num_bc_nod
-        inod = sgs_bc1_p%ibc_id(inum)
-        sgs_bc1_p%bc_apt(inum)                                          &
-     &       = -dt * sgs_bc1_p%bc_apt(inum) * coef_press
+      do inum = 1, nod_bc_p%num_bc_nod
+        inod = nod_bc_p%ibc_id(inum)
+        nod_bc_p%bc_apt(inum)                                           &
+     &       = -dt * nod_bc_p%bc_apt(inum) * coef_press
         d_nod(inod,i_p_phi) =  -dt * coef_press * d_nod(inod,i_press)
       end do
 !
-      end subroutine set_potential_4_sgs_press
+      end subroutine set_potential_4_fixed_press
 !
 !  ---------------------------------------------------------------------
 !

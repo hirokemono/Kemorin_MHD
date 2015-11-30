@@ -46,17 +46,20 @@
       write(*,*) 'torque_surf%ibc_type', torque_surf%ibc_type
       call s_set_surf_vector_id(sf_grp, sf_grp_nod, sf_grp_v,           &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
-     &    torque_surf%ibc_type, torque_surf%bc_magnitude,               &
-     &    name_svn, nmax_sf_sgs_velo, id_grp_sf_sgs_velo,               &
-     &    ngrp_sf_fix_vn, id_grp_sf_fix_vn,                             &
-     &    nnod_sf_fix_vn, ist_nod_sf_fix_vn, sf_fix_vn_apt)
+     &    torque_surf%ibc_type, torque_surf%bc_magnitude, name_svn,     &
+     &    sf_sgs1_grad_v%nmax_sf_dat, sf_sgs1_grad_v%id_grp_sf_dat,     &
+     &    sf_bc1_norm_v%ngrp_sf_fix_fx, sf_bc1_norm_v%id_grp_sf_fix_fx, &
+     &    sf_bc1_norm_v%nitem_sf_fix_fx,                                &
+     &    sf_bc1_norm_v%ist_ele_sf_fix_fx, sf_fix_vn_apt)
 !
       call s_stress_free_surf_id(sf_grp%num_grp, sf_grp%grp_name,       &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type,                                         &
      &    iflag_surf_free_sph_in, iflag_surf_free_sph_out,              &
-     &    ngrp_sf_fr_in, ngrp_sf_fr_out,                                &
-     &    id_grp_sf_fr_in, id_grp_sf_fr_out)
+     &    sf_bc1_free_sph_in%ngrp_sf_dat,                               &
+     &    sf_bc1_free_sph_out%ngrp_sf_dat,                              &
+     &    sf_bc1_free_sph_in%id_grp_sf_dat,                             &
+     &    sf_bc1_free_sph_out%id_grp_sf_dat)
 !
       end subroutine set_surf_velo_id
 !
@@ -144,12 +147,13 @@
 !
 !
       call s_set_sf_grad_vector_id(sf_grp,                              &
-     &     torque_surf%num_bc, torque_surf%bc_name,                     &
-     &     torque_surf%ibc_type, torque_surf%bc_magnitude,              &
-     &     name_vxg, name_vyg, name_vzg,                                &
-     &     nmax_sf_fix_tq, id_grp_sf_fix_tq,                            &
-     &     nmax_ele_sf_fix_tq, ist_ele_sf_fix_tq, sf_apt_fix_tq,        &
-     &     nmax_sf_lead_tq, id_grp_sf_lead_tq)
+     &    torque_surf%num_bc, torque_surf%bc_name,                      &
+     &    torque_surf%ibc_type, torque_surf%bc_magnitude,               &
+     &    name_vxg, name_vyg, name_vzg,                                 &
+     &    sf_bc1_grad_v%nmax_sf_fix_fx, sf_bc1_grad_v%id_grp_sf_fix_fx, &
+     &    sf_bc1_grad_v%nmax_ele_sf_fix_fx,                             &
+     &    sf_bc1_grad_v%ist_ele_sf_fix_fx, sf_apt_fix_tq,               &
+     &    sf_bc1_lead_tq%nmax_sf_dat, sf_bc1_lead_tq%id_grp_sf_dat)
 !
       end subroutine set_surf_torque_id
 !

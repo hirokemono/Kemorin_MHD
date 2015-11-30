@@ -139,8 +139,9 @@
 !
       call int_surf_vect_diffuse_term                                   &
      &   (node, ele, surf, sf_grp, jac_sf_grp, nod_fld, rhs_tbl,        &
-     &    intg_point_t_evo, nmax_sf_lead_tq, ngrp_sf_lead_tq,           &
-     &    id_grp_sf_lead_tq, ak_d_velo, iphys%i_velo, fem_wk, f_l)
+     &    intg_point_t_evo, sf_bc1_lead_tq%nmax_sf_dat,                 &
+     &    sf_bc1_lead_tq%ngrp_sf_dat, sf_bc1_lead_tq%id_grp_sf_dat,     &
+     &    ak_d_velo, iphys%i_velo, fem_wk, f_l)
 !
       end subroutine int_surf_velo_diffuse
 !

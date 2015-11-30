@@ -40,12 +40,15 @@
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
 !
-      if (ngrp_sf_fix_vn .gt. 0) then
+      if (sf_bc1_norm_v%ngrp_sf_fix_fx .gt. 0) then
         call set_normal_comp(sf_grp%num_grp, sf_grp%num_grp_smp,        &
      &      sf_grp_nod%ntot_node_sf_grp, sf_grp_nod%inod_stack_sf_grp,  &
      &      sf_grp_nod%istack_surf_nod_smp, sf_grp_nod%inod_surf_grp,   &
-     &      sf_grp_nod%surf_norm_nod, ngrp_sf_fix_vn, nnod_sf_fix_vn,   &
-     &      id_grp_sf_fix_vn, ist_nod_sf_fix_vn, sf_fix_vn_apt,         &
+     &      sf_grp_nod%surf_norm_nod,                                   &
+     &      sf_bc1_norm_v%ngrp_sf_fix_fx,                               &
+     &      sf_bc1_norm_v%nitem_sf_fix_fx,                              &
+     &      sf_bc1_norm_v%id_grp_sf_fix_fx,                             &
+     &      sf_bc1_norm_v%ist_ele_sf_fix_fx, sf_fix_vn_apt,             &
      &      nod_fld1%n_point, nod_fld1%ntot_phys, iphys%i_velo,         &
      &      nod_fld1%d_fld)
       end if

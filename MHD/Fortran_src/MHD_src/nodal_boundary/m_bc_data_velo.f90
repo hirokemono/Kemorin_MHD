@@ -15,24 +15,24 @@
       implicit  none
 !
 !>      Structure for nodal boudnary for fixed velocity
-      type(vect_fixed_nod_bc_type) :: nod_bc1_v
+      type(vect_fixed_nod_bc_type), save :: nod_bc1_v
 !>      Structure for nodal boudnary for SGS fixed velocity
-      type(vect_fixed_nod_bc_type) :: sgs_bc1_v
+      type(vect_fixed_nod_bc_type), save :: sgs_bc1_v
 !>      Structure for nodal boudnary for fixed pressure
-      type(scaler_fixed_nod_bc_type) :: nod_bc1_p
+      type(scaler_fixed_nod_bc_type), save :: nod_bc1_p
 !>      Structure for nodal boudnary for SGS fixed presure
-      type(scaler_fixed_nod_bc_type) :: sgs_bc1_p
+      type(scaler_fixed_nod_bc_type), save :: sgs_bc1_p
 !
 !
 !>      Structure for nodal boudnary for non-radial velocity
-      type(scaler_fixed_nod_bc_type) :: nod_bc1_vr0
+      type(scaler_fixed_nod_bc_type), save :: nod_bc1_vr0
 !>      Structure for nodal boudnary for free-slip velocity on plane
-      type(scaler_fixed_nod_bc_type) :: nod_bc1_vfree
+      type(scaler_fixed_nod_bc_type), save :: nod_bc1_vfree
 !>      Structure for nodal boudnary for special velocity on plane
-      type(scaler_fixed_nod_bc_type) :: nod_bc1_vsp
+      type(scaler_fixed_nod_bc_type), save :: nod_bc1_vsp
 !
 !>      Structure for nodal boudnary for rotation
-      type(scaler_rotaion_nod_bc_type) :: nod_bc1_rot
+      type(scaler_rotaion_nod_bc_type), save :: nod_bc1_rot
 !
 !  ---------------------------------------------------------------------
 !
@@ -149,12 +149,12 @@
      &    nod_bc1_p, sgs_bc1_p)
 !
       call set_potential_4_fixed_press(node%numnod, nod_fld%ntot_phys,  &
-     &    iphys%i_press, iphys%i_p_phi, nod_fld%d_fld)
+     &    iphys%i_press, iphys%i_p_phi, nod_fld%d_fld, nod_bc1_p)
 
-      call set_potential_4_sgs_press(node%numnod, nod_fld%ntot_phys,    &
-     &    iphys%i_press, iphys%i_p_phi, nod_fld%d_fld)
+      call set_potential_4_fixed_press(node%numnod, nod_fld%ntot_phys,  &
+     &    iphys%i_press, iphys%i_p_phi, nod_fld%d_fld, sgs_bc1_p)
 !
-!   set node id in an element for the pressure boundary 
+!   set node id in an element for the pressure boundary
 !
       call ele_nodal_bc_potential_layer                                 &
      &   (node, ele, iele_fl_start, iele_fl_end, nod_bc1_p)

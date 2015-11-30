@@ -49,10 +49,11 @@
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node1, ele1, surf1, sf_grp1,   &
      &        nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,          &
-     &        num_int, nmax_sf_sgs_velo, ngrp_sf_sgs_velo,              &
-     &        id_grp_sf_sgs_velo, ifilter_final,                        &
-     &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
-     &        ak_diff(1,iak_diff_mf), coef_velo, fem1_wk, f1_nl)
+     &        num_int, sf_sgs1_grad_v%nmax_sf_dat,                      &
+     &        sf_sgs1_grad_v%ngrp_sf_dat, sf_sgs1_grad_v%id_grp_sf_dat, &
+     &        ifilter_final, iphys%i_SGS_m_flux, iphys%i_velo,          &
+     &        iphys%i_velo,  ak_diff(1,iak_diff_mf), coef_velo,         &
+     &        fem1_wk, f1_nl)
         end if
       end if
 !
@@ -72,13 +73,15 @@
      &     (node1, ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, rhs_tbl1,    &
      &      num_int, fem1_wk, f1_l)
         call int_free_slip_surf_sph_in(node1, ele1, surf1, sf_grp1,     &
-     &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,                       &
-     &      num_int, ngrp_sf_fr_in, id_grp_sf_fr_in, iphys%i_velo,      &
-     &      fem1_wk, f1_l)
+     &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, num_int,              &
+     &      sf_bc1_free_sph_in%ngrp_sf_dat,                             &
+     &      sf_bc1_free_sph_in%id_grp_sf_dat,                           &
+     &      iphys%i_velo, fem1_wk, f1_l)
         call int_free_slip_surf_sph_out(node1, ele1, surf1, sf_grp1,    &
-     &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,                       &
-     &      num_int, ngrp_sf_fr_out, id_grp_sf_fr_out, iphys%i_velo,    &
-     &      fem1_wk, f1_l)
+     &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, num_int,              &
+     &      sf_bc1_free_sph_out%ngrp_sf_dat,                            &
+     &      sf_bc1_free_sph_out%id_grp_sf_dat,                          &
+     &      iphys%i_velo, fem1_wk, f1_l)
 !
       end subroutine int_surf_velo_pre_ele
 !
@@ -103,10 +106,11 @@
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node1, ele1, surf1, sf_grp1,   &
      &        nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,          &
-     &        num_int, nmax_sf_sgs_velo, ngrp_sf_sgs_velo,              &
-     &        id_grp_sf_sgs_velo, ifilter_final,                        &
-     &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
-     &        ak_diff(1,iak_diff_mf), coef_velo, fem1_wk, f1_nl)
+     &        num_int, sf_sgs1_grad_v%nmax_sf_dat,                      &
+     &        sf_sgs1_grad_v%ngrp_sf_dat, sf_sgs1_grad_v%id_grp_sf_dat, &
+     &        ifilter_final, iphys%i_SGS_m_flux, iphys%i_velo,          &
+     &        iphys%i_velo, ak_diff(1,iak_diff_mf), coef_velo,          &
+     &        fem1_wk, f1_nl)
         end if
       end if
 !
@@ -127,13 +131,15 @@
      &     (node1, ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, rhs_tbl1,    &
      &      num_int, fem1_wk, f1_l)
         call int_free_slip_surf_sph_in(node1, ele1, surf1, sf_grp1,     &
-     &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,                       &
-     &      num_int, ngrp_sf_fr_in, id_grp_sf_fr_in, iphys%i_velo,      &
-     &      fem1_wk, f1_l)
+     &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, num_int,              &
+     &      sf_bc1_free_sph_in%ngrp_sf_dat,                             &
+     &      sf_bc1_free_sph_in%id_grp_sf_dat,                           &
+     &      iphys%i_velo, fem1_wk, f1_l)
         call int_free_slip_surf_sph_out(node1, ele1, surf1, sf_grp1,    &
-     &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,                       &
-     &      num_int, ngrp_sf_fr_out, id_grp_sf_fr_out, iphys%i_velo,    &
-     &      fem1_wk, f1_l)
+     &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, num_int,              &
+     &      sf_bc1_free_sph_out%ngrp_sf_dat,                            &
+     &      sf_bc1_free_sph_out%id_grp_sf_dat,                          &
+     &      iphys%i_velo, fem1_wk, f1_l)
       end if
 !
       end subroutine int_surf_velo_monitor

@@ -13,40 +13,27 @@
       module m_surf_data_torque
 !
       use m_precision
+      use t_surface_bc_data
 !
       implicit  none
 !
-      integer (kind=kint) :: nmax_sf_sgs_velo
-      integer (kind=kint) :: ngrp_sf_sgs_velo(3)
-      integer (kind=kint), allocatable :: id_grp_sf_sgs_velo(:,:)
+!
+      type(vector_surf_flux_bc_type), save :: sf_bc1_grad_v
+!
+      type(scaler_surf_flux_bc_type), save :: sf_bc1_norm_v
+!
+      type(vector_surf_bc_data_type), save :: sf_sgs1_grad_v
+!
+      type(vector_surf_bc_data_type), save :: sf_bc1_lead_tq
+!
+      type(scaler_surf_bc_data_type), save :: sf_bc1_free_sph_in
+!
+      type(scaler_surf_bc_data_type), save :: sf_bc1_free_sph_out
 !
 !
-      integer (kind=kint) :: ngrp_sf_fix_vn
-      integer (kind=kint), allocatable :: id_grp_sf_fix_vn(:)
-      integer (kind=kint) :: nnod_sf_fix_vn
-      integer (kind=kint), allocatable :: ist_nod_sf_fix_vn(:)
       real (kind=kreal), allocatable :: sf_fix_vn_apt(:)
 !
-!
-      integer (kind=kint) :: nmax_sf_fix_tq
-      integer (kind=kint) :: ngrp_sf_fix_tq(3)
-      integer (kind=kint), allocatable :: id_grp_sf_fix_tq(:,:)
-      integer (kind=kint) :: nmax_ele_sf_fix_tq
-      integer (kind=kint) :: nele_sf_fix_tq(3)
-      integer (kind=kint), allocatable :: ist_ele_sf_fix_tq(:,:)
       real (kind=kreal), allocatable :: sf_apt_fix_tq(:,:)
-!
-!
-      integer (kind=kint) :: nmax_sf_lead_tq
-      integer (kind=kint) :: ngrp_sf_lead_tq(3)
-      integer (kind=kint), allocatable :: id_grp_sf_lead_tq(:,:)
-!
-!
-      integer (kind=kint) :: ngrp_sf_fr_in
-      integer (kind=kint), allocatable :: id_grp_sf_fr_in(:)
-!
-      integer (kind=kint) :: ngrp_sf_fr_out
-      integer (kind=kint), allocatable :: id_grp_sf_fr_out(:)
 !
 !-----------------------------------------------------------------------
 !
@@ -57,16 +44,11 @@
       subroutine allocate_surf_data_velo
 !
 !
-      allocate( id_grp_sf_sgs_velo(nmax_sf_sgs_velo,3) )
-      if (nmax_sf_sgs_velo.gt.0) id_grp_sf_sgs_velo = 0
+      call alloc_surf_vector_dat_type(sf_sgs1_grad_v)
+      call alloc_surf_scaler_type(sf_bc1_norm_v)
 !
-      allocate( id_grp_sf_fix_vn(ngrp_sf_fix_vn) )
-      allocate( ist_nod_sf_fix_vn(0:ngrp_sf_fix_vn) )
-      allocate( sf_fix_vn_apt(nnod_sf_fix_vn) )
-!
-      ist_nod_sf_fix_vn = 0
-      if (ngrp_sf_fix_vn.gt.0) id_grp_sf_fix_vn = 0
-      if (nnod_sf_fix_vn.gt.0) sf_fix_vn_apt = 0.0d0
+      allocate( sf_fix_vn_apt(sf_bc1_norm_v%nitem_sf_fix_fx) )
+      if (sf_bc1_norm_v%nitem_sf_fix_fx.gt.0) sf_fix_vn_apt = 0.0d0
 !
       end subroutine allocate_surf_data_velo
 !
@@ -74,23 +56,15 @@
 !
       subroutine allocate_surf_data_torque
 !
-      allocate( id_grp_sf_fix_tq(nmax_sf_fix_tq,3) )
-      allocate( ist_ele_sf_fix_tq(0:nmax_sf_fix_tq,3) )
-      allocate( sf_apt_fix_tq(nmax_ele_sf_fix_tq,3) )
 !
-      ist_ele_sf_fix_tq = 0
-      if (nmax_sf_fix_tq.gt.0) id_grp_sf_fix_tq = 0
-      if (nmax_ele_sf_fix_tq.gt.0) sf_apt_fix_tq = 0.0d0
+      call alloc_surf_vector_type(sf_bc1_grad_v)
+      call alloc_surf_vector_dat_type(sf_bc1_lead_tq)
+      call alloc_surf_scaler_dat_type(sf_bc1_free_sph_in)
+      call alloc_surf_scaler_dat_type(sf_bc1_free_sph_out)
 !
 !
-      allocate( id_grp_sf_lead_tq(nmax_sf_lead_tq,3) )
-      if (nmax_sf_lead_tq.gt.0) id_grp_sf_lead_tq = 0
-!
-      allocate( id_grp_sf_fr_in(ngrp_sf_fr_in) )
-      if (ngrp_sf_fr_in.gt.0) id_grp_sf_fr_in = 0
-!
-      allocate( id_grp_sf_fr_out(ngrp_sf_fr_out) )
-      if (ngrp_sf_fr_out.gt.0) id_grp_sf_fr_out = 0
+      allocate( sf_apt_fix_tq(sf_bc1_grad_v%nmax_ele_sf_fix_fx,3) )
+      if (sf_bc1_grad_v%nmax_ele_sf_fix_fx.gt.0) sf_apt_fix_tq = 0.0d0
 !
       end subroutine allocate_surf_data_torque
 !
@@ -100,10 +74,9 @@
       subroutine deallocate_surf_data_velo
 !
 !
-      deallocate( id_grp_sf_sgs_velo )
+      call dealloc_surf_vector_dat_type(sf_sgs1_grad_v)
+      call dealloc_surf_scaler_type(sf_bc1_norm_v)
 !
-      deallocate( id_grp_sf_fix_vn )
-      deallocate( ist_nod_sf_fix_vn )
       deallocate( sf_fix_vn_apt )
 !
       end subroutine deallocate_surf_data_velo
@@ -112,13 +85,12 @@
 !
       subroutine deallocate_surf_data_torque
 !
-      deallocate( id_grp_sf_fix_tq )
-      deallocate( ist_ele_sf_fix_tq )
-      deallocate( sf_apt_fix_tq )
+      call dealloc_surf_vector_type(sf_bc1_grad_v)
+      call dealloc_surf_vector_dat_type(sf_bc1_lead_tq)
+      call dealloc_surf_scaler_dat_type(sf_bc1_free_sph_in)
+      call dealloc_surf_scaler_dat_type(sf_bc1_free_sph_out)
 !
-      deallocate( id_grp_sf_lead_tq )
-      deallocate( id_grp_sf_fr_in )
-      deallocate( id_grp_sf_fr_out )
+      deallocate( sf_apt_fix_tq )
 !
       end subroutine deallocate_surf_data_torque
 !

@@ -19,24 +19,23 @@
 !
       implicit  none
 !
-      type(vect_fixed_nod_bc_type) :: nod_bc1_a
+      type(vect_fixed_nod_bc_type), save :: nod_bc1_a
 !
-      type(vect_fixed_nod_bc_type) :: nod_bc1_b
+      type(vect_fixed_nod_bc_type), save :: nod_bc1_b
 !
-      type(vect_fixed_nod_bc_type) :: nod_bc1_j
+      type(vect_fixed_nod_bc_type), save :: nod_bc1_j
 !
-      type(scaler_fixed_nod_bc_type) :: nod_bc1_f
+      type(scaler_fixed_nod_bc_type), save :: nod_bc1_f
 !
-      type(scaler_fixed_nod_bc_type) :: nod_bc1_fcd
+      type(scaler_fixed_nod_bc_type), save :: nod_bc1_fcd
 !
-      type(scaler_fixed_nod_bc_type) :: nod_bc1_fins
-!nod_bc1_fins%ibc_stack_smp
+      type(scaler_fixed_nod_bc_type), save :: nod_bc1_fins
 !
-      type(vect_fixed_nod_bc_type) :: sgs_bc1_a
+      type(vect_fixed_nod_bc_type), save :: sgs_bc1_a
 !
-      type(vect_fixed_nod_bc_type) :: sgs_bc1_b
+      type(vect_fixed_nod_bc_type), save :: sgs_bc1_b
 !
-      type(scaler_fixed_nod_bc_type) :: sgs_bc1_f
+      type(scaler_fixed_nod_bc_type), save :: sgs_bc1_f
 !
 !  ---------------------------------------------------------------------
 !

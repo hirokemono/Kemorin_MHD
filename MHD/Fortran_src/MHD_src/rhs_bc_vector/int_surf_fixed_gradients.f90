@@ -116,16 +116,19 @@
       integer(kind = kint) :: nd
 !
 !
-      if ( sum(ngrp_sf_fix_tq) .le. 0) return
+      if ( sum(sf_bc1_grad_v%ngrp_sf_fix_fx) .le. 0) return
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       do nd = 1, n_vector
-        if (ngrp_sf_fix_tq(nd).gt.0) then
-          call fem_surf_skv_norm_grad_galerkin                          &
+        if (sf_bc1_grad_v%ngrp_sf_fix_fx(nd).gt.0) then
+          call fem_surf_skv_vec_grad_galerkin                           &
      &       (ele, surf, sf_grp, jac_sf_grp,                            &
-     &        nmax_sf_fix_tq, nmax_ele_sf_fix_tq, ngrp_sf_fix_tq(nd),   &
-     &        id_grp_sf_fix_tq(1,nd), ist_ele_sf_fix_tq(0,nd),          &
-     &        sf_apt_fix_tq(1,nd), n_int, nd, ak_d_velo, fem_wk%sk6)
+     &        sf_bc1_grad_v%nmax_sf_fix_fx,                             &
+     &        sf_bc1_grad_v%nmax_ele_sf_fix_fx,                         &
+     &        sf_bc1_grad_v%ngrp_sf_fix_fx,                             &
+     &        sf_bc1_grad_v%id_grp_sf_fix_fx,                           &
+     &        sf_bc1_grad_v%ist_ele_sf_fix_fx,                          &
+     &        sf_apt_fix_tq, n_int, nd, ak_d_velo, fem_wk%sk6)
         end if
       end do
 !
@@ -162,11 +165,11 @@
 !
       do nd = 1, n_vector
         if (ngrp_sf_fix_grad_a(nd).gt.0) then
-          call fem_surf_skv_norm_grad_galerkin                          &
+          call fem_surf_skv_vec_grad_galerkin                           &
      &       (ele, surf, sf_grp, jac_sf_grp,                            &
      &        nmax_sf_fix_grad_a, nmax_ele_sf_fix_grad_a,               &
-     &        ngrp_sf_fix_grad_a(nd), id_grp_sf_fix_grad_a(1,nd),       &
-     &        ist_ele_sf_fix_grad_a(0,nd), sf_apt_fix_grad_a(1,nd),     &
+     &        ngrp_sf_fix_grad_a, id_grp_sf_fix_grad_a,                 &
+     &        ist_ele_sf_fix_grad_a, sf_apt_fix_grad_a,                 &
      &        n_int, nd, ak_d_magne, fem_wk%sk6)
         end if
       end do
@@ -203,11 +206,11 @@
 !
       do nd = 1, n_vector
         if (ngrp_sf_fix_grad_b(nd).gt.0) then
-          call fem_surf_skv_norm_grad_galerkin                          &
+          call fem_surf_skv_vec_grad_galerkin                           &
      &       (ele, surf, sf_grp, jac_sf_grp,                            &
      &        nmax_sf_fix_grad_b, nmax_ele_sf_fix_grad_b,               &
-     &        ngrp_sf_fix_grad_b(nd), id_grp_sf_fix_grad_b(1,nd),       &
-     &        ist_ele_sf_fix_grad_b(0,nd), sf_apt_fix_grad_b(1,nd),     &
+     &        ngrp_sf_fix_grad_b, id_grp_sf_fix_grad_b,                 &
+     &        ist_ele_sf_fix_grad_b, sf_apt_fix_grad_b,                 &
      &        n_int, nd, ak_d_magne, fem_wk%sk6)
         end if
       end do
