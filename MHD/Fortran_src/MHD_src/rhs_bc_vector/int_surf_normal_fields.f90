@@ -50,24 +50,24 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      if ( ngrp_sf_wall_p .gt. 0) then
-        call int_surf_poisson_wall                                      &
-     &     (node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,    &
-     &      intg_point_poisson, ngrp_sf_wall_p, id_grp_sf_wall_p,       &
+      if (sf_bc1_wall_p%ngrp_sf_dat .gt. 0) then
+        call int_surf_poisson_wall(node, ele, surf, sf_grp,             &
+     &      nod_fld, jac_sf_grp_l, rhs_tbl, intg_point_poisson,         &
+     &      sf_bc1_wall_p%ngrp_sf_dat, sf_bc1_wall_p%id_grp_sf_dat,     &
      &      iphys%i_velo, fem_wk, f_l)
       end if
 !
-      if ( ngrp_sf_spin_p .gt. 0) then
-        call int_surf_poisson_sph_in                                    &
-     &     (node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,    &
-     &      intg_point_poisson, ngrp_sf_spin_p, id_grp_sf_spin_p,       &
+      if (sf_bc1_spin_p%ngrp_sf_dat .gt. 0) then
+        call int_surf_poisson_sph_in(node, ele, surf, sf_grp,           &
+     &      nod_fld, jac_sf_grp_l, rhs_tbl, intg_point_poisson,         &
+     &      sf_bc1_spin_p%ngrp_sf_dat, sf_bc1_spin_p%id_grp_sf_dat,     &
      &      iphys%i_velo, fem_wk, f_l)
       end if
 !
-      if ( ngrp_sf_spout_p .gt. 0) then
-        call int_surf_poisson_sph_out                                   &
-     &     (node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,    &
-     &      intg_point_poisson, ngrp_sf_spout_p, id_grp_sf_spout_p,     &
+      if (sf_bc1_spout_p%ngrp_sf_dat .gt. 0) then
+        call int_surf_poisson_sph_out(node, ele, surf, sf_grp,          &
+     &      nod_fld, jac_sf_grp_l, rhs_tbl, intg_point_poisson,         &
+     &      sf_bc1_spout_p%ngrp_sf_dat, sf_bc1_spout_p%id_grp_sf_dat,   &
      &      iphys%i_velo, fem_wk, f_l)
       end if
 !
@@ -93,24 +93,27 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      if ( ngrp_sf_wall_mp .gt. 0) then
+      if ( sf_bc1_wall_f%ngrp_sf_dat .gt. 0) then
         call int_surf_poisson_wall                                      &
      &     (node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,    &
-     &      intg_point_poisson, ngrp_sf_wall_mp, id_grp_sf_wall_mp,     &
+     &      intg_point_poisson,                                         &
+     &      sf_bc1_wall_f%ngrp_sf_dat, sf_bc1_wall_f%id_grp_sf_dat,     &
      &      iphys%i_vecp, fem_wk, f_l)
       end if
 !
-      if ( ngrp_sf_spin_mp .gt. 0) then
+      if ( sf_bc1_spin_f%ngrp_sf_dat .gt. 0) then
         call int_surf_poisson_sph_in                                    &
      &     (node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,    &
-     &      intg_point_poisson, ngrp_sf_spin_mp, id_grp_sf_spin_mp,     &
+     &      intg_point_poisson,                                         &
+     &      sf_bc1_spin_f%ngrp_sf_dat, sf_bc1_spin_f%id_grp_sf_dat,     &
      &      iphys%i_vecp, fem_wk, f_l)
       end if
 !
-      if ( ngrp_sf_spout_mp .gt. 0) then
+      if ( sf_bc1_spout_f%ngrp_sf_dat .gt. 0) then
         call int_surf_poisson_sph_out                                   &
      &     (node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,    &
-     &      intg_point_poisson, ngrp_sf_spout_mp, id_grp_sf_spout_mp,   &
+     &      intg_point_poisson,                                         &
+     &      sf_bc1_spout_f%ngrp_sf_dat, sf_bc1_spout_f%id_grp_sf_dat,   &
      &      iphys%i_vecp, fem_wk, f_l)
       end if
 !
@@ -136,24 +139,27 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      if ( ngrp_sf_wall_mp .gt. 0) then
+      if ( sf_bc1_wall_f%ngrp_sf_dat .gt. 0) then
         call int_surf_poisson_wall                                      &
      &     (node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,    &
-     &      intg_point_poisson, ngrp_sf_wall_mp, id_grp_sf_wall_mp,     &
+     &      intg_point_poisson,                                         &
+     &      sf_bc1_wall_f%ngrp_sf_dat, sf_bc1_wall_f%id_grp_sf_dat,     &
      &      iphys%i_magne, fem_wk, f_l)
       end if
 !
-      if ( ngrp_sf_spin_mp .gt. 0) then
+      if ( sf_bc1_spin_f%ngrp_sf_dat .gt. 0) then
         call int_surf_poisson_sph_in                                    &
      &     (node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,    &
-     &      intg_point_poisson, ngrp_sf_spin_mp, id_grp_sf_spin_mp,     &
+     &      intg_point_poisson,                                         &
+     &      sf_bc1_spin_f%ngrp_sf_dat, sf_bc1_spin_f%id_grp_sf_dat,     &
      &      iphys%i_magne, fem_wk, f_l)
       end if
 !
-      if ( ngrp_sf_spout_mp .gt. 0) then
+      if ( sf_bc1_spout_f%ngrp_sf_dat .gt. 0) then
         call int_surf_poisson_sph_out                                   &
      &     (node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,    &
-     &      intg_point_poisson, ngrp_sf_spout_mp, id_grp_sf_spout_mp,   &
+     &      intg_point_poisson,                                         &
+     &      sf_bc1_spout_f%ngrp_sf_dat, sf_bc1_spout_f%id_grp_sf_dat,   &
      &      iphys%i_magne, fem_wk, f_l)
       end if
 !

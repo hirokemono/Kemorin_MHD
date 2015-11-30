@@ -56,9 +56,10 @@
 !        call int_surf_sgs_div_velo_ele                                 &
 !     &     (node1, ele1, surf1, sf_grp1, nod_fld1,                     &
 !     &      jac1_sf_grp_2d_q, jac1_sf_grp_2d_l, rhs_tbl1, FEM1_elen,   &
-!     &      intg_point_poisson,  nmax_sf_sgs_magne, ngrp_sf_sgs_magne, &
-!     &      id_grp_sf_sgs_magne, ifilter_final, ak_diff(1,iak_diff_b), &
-!     &      iphys%i_magne, fem1_wk, f1_l)
+!     &      intg_point_poisson,                                        &
+!     &      sf_sgs1_grad_b%nmax_sf_dat, sf_sgs1_grad_b%ngrp_sf_dat,    &
+!     &      sf_sgs1_grad_b%id_grp_sf_dat, ifilter_final,               &
+!     &      ak_diff(1,iak_diff_b), iphys%i_magne, fem1_wk, f1_l)
 !      end if
 !
       call int_surf_normal_magne                                        &

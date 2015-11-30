@@ -65,12 +65,12 @@
       integer(kind=kint) :: k2, nd, i, igrp, num
 !
 !
-      if (sum(ngrp_sf_sgs_magne) .eq. 0) return
+      if (sum(sf_sgs1_grad_b%ngrp_sf_dat) .eq. 0) return
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       do nd = 1, n_vector
-        do i = 1, ngrp_sf_sgs_magne(nd)
-          igrp = id_grp_sf_sgs_magne(i,nd)
+        do i = 1, sf_sgs1_grad_b%ngrp_sf_dat(nd)
+          igrp = sf_sgs1_grad_b%id_grp_sf_dat(i,nd)
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if (num .gt.0) then
 !
@@ -123,12 +123,12 @@
       integer(kind=kint) :: k2, nd, i, igrp, num
 !
 !
-      if (sum(ngrp_sf_sgs_magne) .eq. 0) return
+      if (sum(sf_sgs1_grad_b%ngrp_sf_dat) .eq. 0) return
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       do nd = 1, n_vector
-        do i = 1, ngrp_sf_sgs_magne(nd)
-          igrp = id_grp_sf_sgs_magne(i,nd)
+        do i = 1, sf_sgs1_grad_b%ngrp_sf_dat(nd)
+          igrp = sf_sgs1_grad_b%id_grp_sf_dat(i,nd)
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if(num .gt. 0) then
 !

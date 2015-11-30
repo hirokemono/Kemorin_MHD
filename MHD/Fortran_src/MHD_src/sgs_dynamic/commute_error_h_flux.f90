@@ -59,9 +59,10 @@
       call int_vol_commute_div_v_flux(iele_fl_smp_stack,                &
      &    intg_point_t_evo, i_filter, i_flux, i_vect, i_scalar)
       call int_sf_skv_commute_sgs_v_flux(node1, ele1, surf1, sf_grp1,   &
-     &     nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
-     &     intg_point_t_evo, ngrp_sf_sgs_temp, id_grp_sf_sgs_temp,      &
-     &     i_filter, i_flux, i_vect, i_scalar, fem1_wk, f1_nl)
+     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,              &
+     &    intg_point_t_evo,                                             &
+     &    sf_sgs1_grad_t%ngrp_sf_dat, sf_sgs1_grad_t%id_grp_sf_dat,     &
+     &    i_filter, i_flux, i_vect, i_scalar, fem1_wk, f1_nl)
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_scalar)
       call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,          &

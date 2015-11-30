@@ -62,8 +62,9 @@
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs
 !
-       call cal_rotation_commute(nmax_sf_sgs_magne, ngrp_sf_sgs_magne,  &
-     &     id_grp_sf_sgs_magne, i_filter, i_sgs, iphys%i_magne)
+       call cal_rotation_commute(sf_sgs1_grad_b%nmax_sf_dat,            &
+     &     sf_sgs1_grad_b%ngrp_sf_dat, sf_sgs1_grad_b%id_grp_sf_dat,    &
+     &     i_filter, i_sgs, iphys%i_magne)
 !
       end subroutine cal_commute_error_magne
 !
@@ -76,8 +77,9 @@
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs
 !
-       call cal_rotation_commute(nmax_sf_sgs_magne, ngrp_sf_sgs_magne,  &
-     &     id_grp_sf_sgs_magne, i_filter, i_sgs, i_sgs)
+       call cal_rotation_commute(sf_sgs1_grad_b%nmax_sf_dat,            &
+     &     sf_sgs1_grad_b%ngrp_sf_dat, sf_sgs1_grad_b%id_grp_sf_dat,    &
+     &     i_filter, i_sgs, i_sgs)
 !
       end subroutine cal_commute_error_f_magne
 !
@@ -90,8 +92,8 @@
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs
 !
-       call cal_rotation_commute(nmax_sf_sgs_vect_p,                    &
-     &     ngrp_sf_sgs_vect_p, id_grp_sf_sgs_vect_p,                    &
+       call cal_rotation_commute(sf_sgs1_grad_a%nmax_sf_dat,            &
+     &     sf_sgs1_grad_a%ngrp_sf_dat, sf_sgs1_grad_a%id_grp_sf_dat,    &
      &     i_filter, i_sgs, iphys%i_vecp)
 !
       end subroutine cal_commute_error_vector_p
@@ -105,8 +107,8 @@
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs
 !
-       call cal_rotation_commute(nmax_sf_sgs_vect_p,                    &
-     &     ngrp_sf_sgs_vect_p, id_grp_sf_sgs_vect_p,                    &
+       call cal_rotation_commute(sf_sgs1_grad_a%nmax_sf_dat,            &
+     &     sf_sgs1_grad_a%ngrp_sf_dat, sf_sgs1_grad_a%id_grp_sf_dat,    &
      &     i_filter, i_sgs, i_sgs)
 !
        end subroutine cal_commute_error_f_vector_p

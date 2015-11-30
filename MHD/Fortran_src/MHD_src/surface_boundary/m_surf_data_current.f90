@@ -10,31 +10,20 @@
       module m_surf_data_current
 !
       use m_precision
+      use t_surface_bc_data
 !
       implicit  none
 !
-      integer (kind=kint) :: nmax_sf_sgs_current
-      integer (kind=kint) :: ngrp_sf_sgs_current(3)
-      integer (kind=kint), allocatable :: id_grp_sf_sgs_current(:,:)
+      type(vector_surf_flux_bc_type), save :: sf_bc1_grad_j
 !
-      integer (kind=kint) :: ngrp_sf_fix_jn
-      integer (kind=kint), allocatable :: id_grp_sf_fix_jn(:)
-      integer (kind=kint) :: nnod_sf_fix_jn
-      integer (kind=kint), allocatable :: ist_nod_sf_fix_jn(:)
+      type(scaler_surf_flux_bc_type), save :: sf_bc1_norm_j
+!
+      type(vector_surf_bc_data_type), save :: sf_sgs1_grad_j
+!
+      type(vector_surf_bc_data_type), save :: sf_bc1_lead_j
+!
       real (kind=kreal), allocatable :: sf_apt_fix_jn(:)
 !
-!
-      integer (kind=kint) :: nmax_sf_lead_j
-      integer (kind=kint) :: ngrp_sf_lead_j(3)
-      integer (kind=kint), allocatable :: id_grp_sf_lead_j(:,:)
-!
-!
-      integer (kind=kint) :: nmax_sf_fix_grad_j
-      integer (kind=kint) :: ngrp_sf_fix_grad_j(3)
-      integer (kind=kint), allocatable :: id_grp_sf_fix_grad_j(:,:)
-      integer (kind=kint) :: nmax_ele_sf_fix_grad_j
-      integer (kind=kint) :: nele_sf_fix_grad_j(3)
-      integer (kind=kint), allocatable :: ist_ele_sf_fix_grad_j(:,:)
       real (kind=kreal), allocatable :: sf_apt_fix_grad_j(:,:)
 !
 !-----------------------------------------------------------------------
@@ -46,30 +35,18 @@
       subroutine allocate_surf_data_current
 !
 !
-      allocate( id_grp_sf_sgs_current(nmax_sf_sgs_current,3) )
-      if (nmax_sf_sgs_current.gt.0) id_grp_sf_sgs_current = 0
+      call alloc_surf_vector_type(sf_bc1_grad_j)
+      call alloc_surf_scaler_type(sf_bc1_norm_j)
+      call alloc_surf_vector_dat_type(sf_sgs1_grad_j)
+      call alloc_surf_vector_dat_type(sf_bc1_lead_j)
 !
+      allocate( sf_apt_fix_jn(sf_bc1_norm_j%nitem_sf_fix_fx) )
+      if (sf_bc1_norm_j%nitem_sf_fix_fx.gt.0) sf_apt_fix_jn = 0.0d0
 !
-      allocate( id_grp_sf_fix_jn(ngrp_sf_fix_jn) )
-      allocate( ist_nod_sf_fix_jn(0:ngrp_sf_fix_jn) )
-      allocate( sf_apt_fix_jn(nnod_sf_fix_jn) )
-!
-      ist_nod_sf_fix_jn = 0
-      if (ngrp_sf_fix_jn.gt.0) id_grp_sf_fix_jn = 0
-      if (nnod_sf_fix_jn.gt.0) sf_apt_fix_jn = 0.0d0
-!
-!
-      allocate( id_grp_sf_lead_j(nmax_sf_lead_j,3) )
-      if (nmax_sf_lead_j.gt.0) id_grp_sf_lead_j = 0
-!
-!
-      allocate( id_grp_sf_fix_grad_j(nmax_sf_fix_grad_j,3) )
-      allocate( ist_ele_sf_fix_grad_j(0:nmax_sf_fix_grad_j,3) )
-      allocate( sf_apt_fix_grad_j(nmax_ele_sf_fix_grad_j,3) )
-!
-      ist_ele_sf_fix_grad_j = 0
-      if (nmax_sf_fix_grad_j.gt.0) id_grp_sf_fix_grad_j = 0
-      if (nmax_ele_sf_fix_grad_j.gt.0) sf_apt_fix_grad_j = 0.0d0
+      allocate( sf_apt_fix_grad_j(sf_bc1_grad_j%nmax_ele_sf_fix_fx,3) )
+      if (sf_bc1_grad_j%nmax_ele_sf_fix_fx.gt.0) then
+        sf_apt_fix_grad_j = 0.0d0
+      end if
 !
       end subroutine allocate_surf_data_current
 !
@@ -78,19 +55,12 @@
       subroutine deallocate_surf_data_current
 !
 !
-      deallocate( id_grp_sf_sgs_current )
+      call dealloc_surf_vector_type(sf_bc1_grad_j)
+      call dealloc_surf_scaler_type(sf_bc1_norm_j)
+      call dealloc_surf_vector_dat_type(sf_sgs1_grad_j)
+      call dealloc_surf_vector_dat_type(sf_bc1_lead_j)
 !
-!
-      deallocate( id_grp_sf_fix_jn )
-      deallocate( ist_nod_sf_fix_jn )
       deallocate( sf_apt_fix_jn )
-!
-!
-      deallocate( id_grp_sf_lead_j )
-!
-!
-      deallocate( id_grp_sf_fix_grad_j )
-      deallocate( ist_ele_sf_fix_grad_j )
       deallocate( sf_apt_fix_grad_j )
 !
       end subroutine deallocate_surf_data_current

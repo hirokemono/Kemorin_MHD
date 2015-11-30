@@ -11,39 +11,27 @@
       module m_surf_data_vector_p
 !
       use m_precision
+      use t_surface_bc_data
 !
       implicit  none
 !
-      integer (kind=kint) :: nmax_sf_sgs_vect_p
-      integer (kind=kint) :: ngrp_sf_sgs_vect_p(3)
-      integer (kind=kint), allocatable :: id_grp_sf_sgs_vect_p(:,:)
+!
+      type(vector_surf_flux_bc_type), save :: sf_bc1_grad_a
+!
+      type(scaler_surf_flux_bc_type), save :: sf_bc1_norm_a
+!
+      type(vector_surf_bc_data_type), save :: sf_sgs1_grad_a
+!
+      type(vector_surf_bc_data_type), save :: sf_bc1_lead_a
+!
+      type(scaler_surf_bc_data_type), save :: sf_bc1_pvc_in_a
+!
+      type(scaler_surf_bc_data_type), save :: sf_bc1_pvc_out_a
 !
 !
-      integer (kind=kint) :: ngrp_sf_fix_vpn
-      integer (kind=kint), allocatable :: id_grp_sf_fix_vpn(:)
-      integer (kind=kint) :: nnod_sf_fix_vpn
-      integer (kind=kint), allocatable :: ist_nod_sf_fix_vpn(:)
       real (kind=kreal), allocatable :: sf_apt_fix_vpn(:)
 !
-!
-      integer (kind=kint) :: nmax_sf_lead_vect_p
-      integer (kind=kint) :: ngrp_sf_lead_vect_p(3)
-      integer (kind=kint), allocatable :: id_grp_sf_lead_vect_p(:,:)
-!
-!
-      integer (kind=kint) :: nmax_sf_fix_grad_a
-      integer (kind=kint) :: ngrp_sf_fix_grad_a(3)
-      integer (kind=kint), allocatable :: id_grp_sf_fix_grad_a(:,:)
-      integer (kind=kint) :: nmax_ele_sf_fix_grad_a
-      integer (kind=kint) :: nele_sf_fix_grad_a(3)
-      integer (kind=kint), allocatable :: ist_ele_sf_fix_grad_a(:,:)
       real (kind=kreal), allocatable :: sf_apt_fix_grad_a(:,:)
-!
-      integer (kind=kint) :: ngrp_sf_qvc_in
-      integer (kind=kint), allocatable :: id_grp_sf_qvc_in(:)
-!
-      integer (kind=kint) :: ngrp_sf_qvc_out
-      integer (kind=kint), allocatable :: id_grp_sf_qvc_out(:)
 !
 !-----------------------------------------------------------------------
 !
@@ -54,34 +42,20 @@
       subroutine allocate_surf_data_vect_p
 !
 !
-      allocate( id_grp_sf_sgs_vect_p(nmax_sf_sgs_vect_p,3) )
-      if (nmax_sf_sgs_vect_p.gt.0) id_grp_sf_sgs_vect_p = 0
+      call alloc_surf_vector_type(sf_bc1_grad_a)
+      call alloc_surf_scaler_type(sf_bc1_norm_a)
+      call alloc_surf_vector_dat_type(sf_sgs1_grad_a)
+      call alloc_surf_vector_dat_type(sf_bc1_lead_a)
+      call alloc_surf_scaler_dat_type(sf_bc1_pvc_in_a)
+      call alloc_surf_scaler_dat_type(sf_bc1_pvc_out_a)
 !
+      allocate( sf_apt_fix_vpn(sf_bc1_norm_a%nitem_sf_fix_fx) )
+      if (sf_bc1_norm_a%nitem_sf_fix_fx.gt.0) sf_apt_fix_vpn = 0.0d0
 !
-      allocate( id_grp_sf_fix_vpn(ngrp_sf_fix_vpn) )
-      allocate( ist_nod_sf_fix_vpn(0:ngrp_sf_fix_vpn) )
-      allocate( sf_apt_fix_vpn(nnod_sf_fix_vpn) )
-!
-      ist_nod_sf_fix_vpn = 0
-      if (ngrp_sf_fix_vpn.gt.0) id_grp_sf_fix_vpn = 0
-      if (nnod_sf_fix_vpn.gt.0) sf_apt_fix_vpn = 0.0d0
-!
-!
-      allocate( id_grp_sf_fix_grad_a(nmax_sf_fix_grad_a,3) )
-      allocate( ist_ele_sf_fix_grad_a(0:nmax_sf_fix_grad_a,3) )
-      allocate( sf_apt_fix_grad_a(nmax_ele_sf_fix_grad_a,3) )
-      ist_ele_sf_fix_grad_a = 0
-      if (nmax_sf_fix_grad_a.gt.0) id_grp_sf_fix_grad_a = 0
-      if (nmax_ele_sf_fix_grad_a.gt.0) sf_apt_fix_grad_a = 0.0d0
-!
-      allocate( id_grp_sf_lead_vect_p(nmax_sf_lead_vect_p,3) )
-      if (nmax_sf_lead_vect_p.gt.0) id_grp_sf_lead_vect_p = 0
-!
-      allocate( id_grp_sf_qvc_in(ngrp_sf_qvc_in) )
-      if (ngrp_sf_qvc_in.gt.0) id_grp_sf_qvc_in = 0
-!
-      allocate( id_grp_sf_qvc_out(ngrp_sf_qvc_out) )
-      if (ngrp_sf_qvc_out.gt.0) id_grp_sf_qvc_out = 0
+      allocate( sf_apt_fix_grad_a(sf_bc1_grad_a%nmax_ele_sf_fix_fx,3) )
+      if (sf_bc1_grad_a%nmax_ele_sf_fix_fx.gt.0) then
+        sf_apt_fix_grad_a = 0.0d0
+      end if
 !
       end subroutine allocate_surf_data_vect_p
 !
@@ -90,19 +64,15 @@
       subroutine deallocate_surf_data_vect_p
 !
 !
-      deallocate( id_grp_sf_sgs_vect_p )
+      call dealloc_surf_vector_type(sf_bc1_grad_a)
+      call dealloc_surf_scaler_type(sf_bc1_norm_a)
+      call dealloc_surf_vector_dat_type(sf_sgs1_grad_a)
+      call dealloc_surf_vector_dat_type(sf_bc1_lead_a)
+      call dealloc_surf_scaler_dat_type(sf_bc1_pvc_in_a)
+      call dealloc_surf_scaler_dat_type(sf_bc1_pvc_out_a)
 !
-      deallocate( id_grp_sf_fix_vpn )
-      deallocate( ist_nod_sf_fix_vpn )
       deallocate( sf_apt_fix_vpn )
-!
-      deallocate( id_grp_sf_fix_grad_a )
-      deallocate( ist_ele_sf_fix_grad_a )
       deallocate( sf_apt_fix_grad_a )
-!
-      deallocate( id_grp_sf_lead_vect_p )
-!
-      deallocate( id_grp_sf_qvc_in, id_grp_sf_qvc_out )
 !
       end subroutine deallocate_surf_data_vect_p
 !

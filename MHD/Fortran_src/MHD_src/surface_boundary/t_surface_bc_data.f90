@@ -206,7 +206,7 @@
       type(scaler_surf_bc_data_type),  intent(inout) :: scaler_sf
 !
 !
-       deallocate( scaler_sf%id_grp_sf_dat )
+      deallocate( scaler_sf%id_grp_sf_dat )
 !
       end subroutine dealloc_surf_scaler_dat_type
 !

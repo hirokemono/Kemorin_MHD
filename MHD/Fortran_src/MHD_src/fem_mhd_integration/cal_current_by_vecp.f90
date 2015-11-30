@@ -111,7 +111,8 @@
 !
       call int_surf_diffuse_term                                        &
      &   (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,        &
-     &    intg_point_t_evo, ngrp_sf_lead_hf, id_grp_sf_lead_hf,         &
+     &    intg_point_t_evo,                                             &
+     &    sf_bc1_lead_gd_t%ngrp_sf_dat, sf_bc1_lead_gd_t%id_grp_sf_dat, &
      &    ak_d_temp, iphys%i_temp, fem_wk, f_l)
 !
       end subroutine int_surf_temp_diffuse
@@ -168,9 +169,9 @@
 !
       call int_surf_vect_diffuse_term                                   &
      &   (node, ele, surf, sf_grp, jac_sf_grp, nod_fld, rhs_tbl,        &
-     &    intg_point_t_evo, nmax_sf_lead_vect_p, ngrp_sf_lead_vect_p,   &
-     &    id_grp_sf_lead_vect_p, ak_d_magne, iphys%i_vecp,              &
-     &    fem_wk, f_l)
+     &    intg_point_t_evo, sf_bc1_lead_a%nmax_sf_dat,                  &
+     &    sf_bc1_lead_a%ngrp_sf_dat, sf_bc1_lead_a%id_grp_sf_dat,       &
+     &    ak_d_magne, iphys%i_vecp, fem_wk, f_l)
 !
       end subroutine int_surf_vector_p_diffuse
 !
@@ -197,8 +198,9 @@
 !
       call int_surf_vect_diffuse_term                                   &
      &   (node, ele, surf, sf_grp, jac_sf_grp, nod_fld, rhs_tbl,        &
-     &    intg_point_t_evo,  nmax_sf_lead_b, ngrp_sf_lead_b,            &
-     &    id_grp_sf_lead_b, ak_d_magne, iphys%i_magne, fem_wk, f_l)
+     &    intg_point_t_evo, sf_bc1_lead_b%nmax_sf_dat,                  &
+     &    sf_bc1_lead_b%ngrp_sf_dat, sf_bc1_lead_b%id_grp_sf_dat,       &
+     &    ak_d_magne, iphys%i_magne, fem_wk, f_l)
 !
       end subroutine int_surf_magne_diffuse
 !
@@ -225,7 +227,8 @@
 !
       call int_surf_diffuse_term                                        &
      &   (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,        &
-     &    intg_point_t_evo, ngrp_sf_lead_cmg, id_grp_sf_lead_cmg,       &
+     &    intg_point_t_evo,                                             &
+     &    sf_bc1_lead_gd_c%ngrp_sf_dat, sf_bc1_lead_gd_c%id_grp_sf_dat, &
      &    ak_d_composit, iphys%i_light, fem_wk, f_l)
 !
       end subroutine int_surf_composit_diffuse

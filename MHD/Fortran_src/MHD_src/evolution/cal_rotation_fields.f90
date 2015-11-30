@@ -69,11 +69,13 @@
 !
       if ( iflag_SGS_model .ne. id_SGS_none                             &
      &     .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
-        call cal_rotation_sgs_all(iflag_mag_supg, nmax_sf_sgs_magne,    &
-     &      ngrp_sf_sgs_magne, id_grp_sf_sgs_magne, iak_diff_b,         &
-     &      iphys%i_current, iphys%i_magne)
-!        call cal_rotation_sgs_conduct(iflag_mag_supg,                  &
-!     &      nmax_sf_sgs_magne, ngrp_sf_sgs_magne, id_grp_sf_sgs_magne, &
+        call cal_rotation_sgs_all                                       &
+     &     (iflag_mag_supg, sf_sgs1_grad_b%nmax_sf_dat,                 &
+     &      sf_sgs1_grad_b%ngrp_sf_dat, sf_sgs1_grad_b%id_grp_sf_dat,   &
+     &      iak_diff_b, iphys%i_current, iphys%i_magne)
+!        call cal_rotation_sgs_conduct                                  &
+!     &     (iflag_mag_supg, sf_sgs1_grad_b%nmax_sf_dat,                &
+!     &      sf_sgs1_grad_b%ngrp_sf_dat, sf_sgs1_grad_b%id_grp_sf_dat,  &
 !     &      iak_diff_b, iphys%i_current, iphys%i_magne)
       else
         call cal_rotation_whole(iflag_mag_supg,                         &
@@ -106,8 +108,9 @@
 !
       if ( iflag_SGS_model.ne.id_SGS_none                               &
      &      .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
-        call cal_rotation_sgs_all(iflag_mag_supg, nmax_sf_sgs_vect_p,   &
-     &      ngrp_sf_sgs_vect_p, id_grp_sf_sgs_vect_p, iak_diff_b,       &
+        call cal_rotation_sgs_all(iflag_mag_supg,                       &
+     &      sf_sgs1_grad_a%nmax_sf_dat, sf_sgs1_grad_a%ngrp_sf_dat,     &
+     &      sf_sgs1_grad_a%id_grp_sf_dat, iak_diff_b,                   &
      &      iphys%i_magne, iphys%i_vecp)
       else
         call cal_rotation_whole(iflag_mag_supg,                         &

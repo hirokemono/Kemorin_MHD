@@ -77,15 +77,16 @@
       call s_count_num_surf_vector(sf_grp, sf_grp_nod,                  &
      &     a_potential_surf%num_bc,                                     &
      &     a_potential_surf%bc_name, a_potential_surf%ibc_type,         &
-     &     name_san, nmax_sf_sgs_vect_p, ngrp_sf_sgs_vect_p,            &
-     &     ngrp_sf_fix_vpn, nnod_sf_fix_vpn)
+     &     name_san, sf_sgs1_grad_a%nmax_sf_dat,                        &
+     &     sf_sgs1_grad_a%ngrp_sf_dat,                                  &
+     &     sf_bc1_norm_a%ngrp_sf_fix_fx, sf_bc1_norm_a%nitem_sf_fix_fx)
 !
       call count_num_stress_free_surf                                   &
      &   (sf_grp%num_grp, sf_grp%grp_name,                              &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type,                                         &
      &    iflag_surf_qvc_sph_in, iflag_surf_qvc_sph_out,                &
-     &    ngrp_sf_qvc_in, ngrp_sf_qvc_out)
+     &    sf_bc1_pvc_in_a%ngrp_sf_dat, sf_bc1_pvc_out_a%ngrp_sf_dat)
 !
       end subroutine count_num_surf_vect_p
 !
@@ -103,8 +104,9 @@
 !
       call s_count_num_surf_vector(sf_grp, sf_grp_nod,                  &
      &    magne_surf%num_bc, magne_surf%bc_name,                        &
-     &    magne_surf%ibc_type, name_sbn, nmax_sf_sgs_magne,             &
-     &    ngrp_sf_sgs_magne, ngrp_sf_fix_bn, nnod_sf_fix_bn)
+     &    magne_surf%ibc_type, name_sbn, sf_sgs1_grad_b%nmax_sf_dat,    &
+     &    sf_sgs1_grad_b%ngrp_sf_dat, sf_bc1_norm_b%ngrp_sf_fix_fx,     &
+     &    sf_bc1_norm_b%nitem_sf_fix_fx)
 !
       end subroutine count_num_surf_magne
 !
@@ -122,8 +124,9 @@
 !
       call s_count_num_surf_vector(sf_grp, sf_grp_nod,                  &
      &    current_surf%num_bc, current_surf%bc_name,                    &
-     &    current_surf%ibc_type, name_sjn, nmax_sf_sgs_current,         &
-     &    ngrp_sf_sgs_current, ngrp_sf_fix_jn, nnod_sf_fix_jn)
+     &    current_surf%ibc_type, name_sjn, sf_sgs1_grad_j%nmax_sf_dat,  &
+     &    sf_sgs1_grad_j%ngrp_sf_dat, sf_bc1_norm_j%ngrp_sf_fix_fx,     &
+     &    sf_bc1_norm_j%nitem_sf_fix_fx)
 !
       end subroutine count_num_surf_current
 !
@@ -163,9 +166,10 @@
      &   (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,           &
      &    a_potential_surf%num_bc, a_potential_surf%bc_name,            &
      &    a_potential_surf%ibc_type, name_axg, name_ayg, name_azg,      &
-     &    nmax_sf_fix_grad_a, nmax_ele_sf_fix_grad_a,                   &
-     &    nmax_sf_lead_vect_p, ngrp_sf_fix_grad_a,                      &
-     &    nele_sf_fix_grad_a, ngrp_sf_lead_vect_p)
+     &    sf_bc1_grad_a%nmax_sf_fix_fx,                                 &
+     &    sf_bc1_grad_a%nmax_ele_sf_fix_fx,                             &
+     &    sf_bc1_lead_a%nmax_sf_dat, sf_bc1_grad_a%ngrp_sf_fix_fx,      &
+     &    sf_bc1_grad_a%nitem_sf_fix_fx, sf_bc1_lead_a%ngrp_sf_dat)
 !
       end subroutine count_num_surf_grad_vecp
 !
@@ -182,9 +186,10 @@
       call count_num_sf_grad_vector                                     &
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
      &     magne_surf%num_bc, magne_surf%bc_name, magne_surf%ibc_type,  &
-     &     name_bxg, name_byg, name_bzg, nmax_sf_fix_grad_b,            &
-     &     nmax_ele_sf_fix_grad_b, nmax_sf_lead_b, ngrp_sf_fix_grad_b,  &
-     &     nele_sf_fix_grad_b, ngrp_sf_lead_b)
+     &     name_bxg, name_byg, name_bzg, sf_bc1_grad_b%nmax_sf_fix_fx,  &
+     &     sf_bc1_grad_b%nmax_ele_sf_fix_fx, sf_bc1_lead_b%nmax_sf_dat, &
+     &     sf_bc1_grad_b%ngrp_sf_fix_fx, sf_bc1_grad_b%nitem_sf_fix_fx, &
+     &     sf_bc1_lead_b%ngrp_sf_dat)
 !
       end subroutine count_num_surf_grad_b
 !
@@ -202,9 +207,10 @@
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
      &     current_surf%num_bc, current_surf%bc_name,                   &
      &     current_surf%ibc_type,                                       &
-     &     name_jxg, name_jyg, name_jzg, nmax_sf_fix_grad_j,            &
-     &     nmax_ele_sf_fix_grad_j, nmax_sf_lead_j, ngrp_sf_fix_grad_j,  &
-     &     nele_sf_fix_grad_j, ngrp_sf_lead_j)
+     &     name_jxg, name_jyg, name_jzg, sf_bc1_grad_j%nmax_sf_fix_fx,  &
+     &     sf_bc1_grad_j%nmax_ele_sf_fix_fx, sf_bc1_lead_j%nmax_sf_dat, &
+     &     sf_bc1_grad_j%ngrp_sf_fix_fx, sf_bc1_grad_j%nitem_sf_fix_fx, &
+     &     sf_bc1_lead_j%ngrp_sf_dat)
 !
       end subroutine count_num_surf_grad_j
 !

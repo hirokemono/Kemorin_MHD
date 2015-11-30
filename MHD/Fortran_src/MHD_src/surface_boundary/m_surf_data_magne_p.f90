@@ -14,33 +14,25 @@
       module m_surf_data_magne_p
 !
       use m_precision
+      use t_surface_bc_data
 !
       implicit  none
 !
 ! 
-      integer (kind=kint) :: ngrp_sf_sgs_magp
-      integer (kind=kint), allocatable :: id_grp_sf_sgs_magp(:)
+      type(scaler_surf_flux_bc_type), save :: sf_bc1_grad_f
+!
+      type(scaler_surf_bc_data_type), save :: sf_sgs1_grad_f
+!
+      type(scaler_surf_bc_data_type), save :: sf_bc1_lead_gd_f
+!
+      type(scaler_surf_bc_data_type), save :: sf_bc1_wall_f
+!
+      type(scaler_surf_bc_data_type), save :: sf_bc1_spin_f
+!
+      type(scaler_surf_bc_data_type), save :: sf_bc1_spout_f
 !
 !
-      integer (kind=kint) :: ngrp_sf_fix_mpg
-      integer (kind=kint), allocatable :: id_grp_sf_fix_mpg(:)
-      integer (kind=kint) :: nele_sf_fix_mpg
-      integer (kind=kint), allocatable :: ist_ele_sf_fix_mpg(:)
       real (kind=kreal), allocatable :: sf_apt_fix_mpg(:)
-!
-!
-      integer (kind=kint) :: ngrp_sf_lead_mp
-      integer (kind=kint), allocatable :: id_grp_sf_lead_mp(:)
-!
-!
-      integer (kind=kint) :: ngrp_sf_wall_mp
-      integer (kind=kint), allocatable :: id_grp_sf_wall_mp(:)
-!
-      integer (kind=kint) :: ngrp_sf_spin_mp
-      integer (kind=kint), allocatable :: id_grp_sf_spin_mp(:)
-!
-      integer (kind=kint) :: ngrp_sf_spout_mp
-      integer (kind=kint), allocatable :: id_grp_sf_spout_mp(:)
 !
 !-----------------------------------------------------------------------
 !
@@ -51,36 +43,23 @@
       subroutine allocate_surf_data_magne_p
 !
 !
-      allocate( id_grp_sf_sgs_magp(ngrp_sf_sgs_magp) )
-      if (ngrp_sf_sgs_magp.gt.0) id_grp_sf_sgs_magp = 0
-!
-!
-      allocate( id_grp_sf_lead_mp(ngrp_sf_lead_mp) )
-      if (ngrp_sf_lead_mp.gt.0) id_grp_sf_lead_mp = 0
+      call alloc_surf_scaler_dat_type(sf_sgs1_grad_f)
+      call alloc_surf_scaler_dat_type(sf_bc1_lead_gd_f)
 !
       end subroutine allocate_surf_data_magne_p
 !
 !-----------------------------------------------------------------------
 !
-       subroutine allocate_surf_magp_grad
+      subroutine allocate_surf_magp_grad
 !
 !
-       allocate( id_grp_sf_fix_mpg(ngrp_sf_fix_mpg) )
-       allocate( ist_ele_sf_fix_mpg(0:ngrp_sf_fix_mpg) )
-       allocate( sf_apt_fix_mpg(nele_sf_fix_mpg) )
+      call alloc_surf_scaler_type(sf_bc1_grad_f)
+      call alloc_surf_scaler_dat_type(sf_bc1_wall_f)
+      call alloc_surf_scaler_dat_type(sf_bc1_spin_f)
+      call alloc_surf_scaler_dat_type(sf_bc1_spout_f)
 !
-       ist_ele_sf_fix_mpg = 0
-       if (ngrp_sf_fix_mpg .gt. 0) id_grp_sf_fix_mpg = 0
-       if (nele_sf_fix_mpg .gt. 0) sf_apt_fix_mpg = 0.0d0
-!
-       allocate( id_grp_sf_wall_mp(ngrp_sf_wall_mp) )
-       if (ngrp_sf_wall_mp .gt. 0) id_grp_sf_wall_mp = 0
-!
-       allocate( id_grp_sf_spin_mp(ngrp_sf_spin_mp) )
-       if (ngrp_sf_spin_mp .gt. 0) id_grp_sf_spin_mp = 0
-!
-       allocate( id_grp_sf_spout_mp(ngrp_sf_spout_mp) )
-       if (ngrp_sf_spout_mp .gt. 0) id_grp_sf_spout_mp = 0
+      allocate( sf_apt_fix_mpg(sf_bc1_grad_f%nitem_sf_fix_fx) )
+      if (sf_bc1_grad_f%nitem_sf_fix_fx .gt. 0) sf_apt_fix_mpg = 0.0d0
 !
        end subroutine allocate_surf_magp_grad
 !
@@ -90,25 +69,24 @@
       subroutine deallocate_surf_data_magne_p
 !
 !
-      deallocate( id_grp_sf_sgs_magp )
-      deallocate( id_grp_sf_lead_mp )
+      call dealloc_surf_scaler_dat_type(sf_sgs1_grad_f)
+      call dealloc_surf_scaler_dat_type(sf_bc1_lead_gd_f)
 !
       end subroutine deallocate_surf_data_magne_p
 !
 !-----------------------------------------------------------------------
 !
-       subroutine deallocate_surf_magp_grad
+      subroutine deallocate_surf_magp_grad
 !
 !
-       deallocate( id_grp_sf_fix_mpg )
-       deallocate( ist_ele_sf_fix_mpg )
-       deallocate( sf_apt_fix_mpg )
+      call dealloc_surf_scaler_type(sf_bc1_grad_f)
+      call dealloc_surf_scaler_dat_type(sf_bc1_wall_f)
+      call dealloc_surf_scaler_dat_type(sf_bc1_spin_f)
+      call dealloc_surf_scaler_dat_type(sf_bc1_spout_f)
 !
-       deallocate( id_grp_sf_wall_mp )
-       deallocate( id_grp_sf_spin_mp )
-       deallocate( id_grp_sf_spout_mp )
+      deallocate( sf_apt_fix_mpg )
 !
-       end subroutine deallocate_surf_magp_grad
+      end subroutine deallocate_surf_magp_grad
 !
 !-----------------------------------------------------------------------
 !

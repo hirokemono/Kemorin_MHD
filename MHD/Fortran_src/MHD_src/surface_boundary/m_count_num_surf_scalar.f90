@@ -44,7 +44,7 @@
 !
       call s_count_num_surf_scalar(sf_grp%num_grp, sf_grp%grp_name,     &
      &    h_flux_surf%num_bc, h_flux_surf%bc_name,                      &
-     &    h_flux_surf%ibc_type, ngrp_sf_sgs_temp)
+     &    h_flux_surf%ibc_type, sf_sgs1_grad_t%ngrp_sf_dat)
 !
       end subroutine count_num_surf_temp
 !
@@ -60,7 +60,7 @@
 !
       call s_count_num_surf_scalar(sf_grp%num_grp, sf_grp%grp_name,     &
      &    wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,      &
-     &    ngrp_sf_sgs_p)
+     &    sf_sgs1_grad_p%ngrp_sf_dat)
 !
       end subroutine count_num_surf_press
 !
@@ -76,7 +76,7 @@
 !
       call s_count_num_surf_scalar(sf_grp%num_grp, sf_grp%grp_name,     &
      &    e_potential_surf%num_bc, e_potential_surf%bc_name,            &
-     &    e_potential_surf%ibc_type, ngrp_sf_sgs_magp)
+     &    e_potential_surf%ibc_type, sf_sgs1_grad_f%ngrp_sf_dat)
 !
       end subroutine count_num_surf_magne_p
 !
@@ -92,7 +92,7 @@
 !
       call s_count_num_surf_scalar(sf_grp%num_grp, sf_grp%grp_name,     &
      &    light_surf%num_bc, light_surf%bc_name,                        &
-     &    light_surf%ibc_type, ngrp_sf_sgs_cmg)
+     &    light_surf%ibc_type, sf_sgs1_grad_c%ngrp_sf_dat)
 !
       end subroutine count_num_surf_composition
 !
@@ -111,7 +111,8 @@
      &   (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,           &
      &    h_flux_surf%num_bc, h_flux_surf%bc_name,                      &
      &    h_flux_surf%ibc_type, name_hf,                                &
-     &    ngrp_sf_fix_hf, nele_sf_fix_hf, ngrp_sf_lead_hf)
+     &    sf_bc1_grad_t%ngrp_sf_fix_fx, sf_bc1_grad_t%nitem_sf_fix_fx,  &
+     &    sf_bc1_lead_gd_t%ngrp_sf_dat)
 !
       end subroutine count_num_surf_h_flux
 !
@@ -127,8 +128,10 @@
 !
       call count_num_surf_grad_scalar                                   &
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
-     &     wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,     &
-     &     name_pg, ngrp_sf_fix_pg, nele_sf_fix_pg, ngrp_sf_lead_p)
+     &     wall_surf%num_bc, wall_surf%bc_name,                         &
+     &     wall_surf%ibc_type, name_pg,                                 &
+     &     sf_bc1_grad_p%ngrp_sf_fix_fx, sf_bc1_grad_p%nitem_sf_fix_fx, &
+     &     sf_bc1_lead_gd_p%ngrp_sf_dat)
 !
       end subroutine count_num_surf_press_grad
 !
@@ -145,8 +148,9 @@
       call count_num_surf_grad_scalar                                   &
      &   (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,           &
      &    e_potential_surf%num_bc, e_potential_surf%bc_name,            &
-     &    e_potential_surf%ibc_type, name_mpg, ngrp_sf_fix_mpg,         &
-     &    nele_sf_fix_mpg, ngrp_sf_lead_mp)
+     &    e_potential_surf%ibc_type, name_mpg,                          &
+     &    sf_bc1_grad_f%ngrp_sf_fix_fx, sf_bc1_grad_f%nitem_sf_fix_fx,  &
+     &    sf_bc1_lead_gd_f%ngrp_sf_dat)
 !
       end subroutine count_num_surf_magp_grad
 !
@@ -164,7 +168,8 @@
      &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
      &     light_surf%num_bc, light_surf%bc_name,                       &
      &     light_surf%ibc_type, name_dsg,                               &
-     &     ngrp_sf_fix_cmg, nele_sf_fix_cmg, ngrp_sf_lead_cmg)
+     &     sf_bc1_grad_c%ngrp_sf_fix_fx, sf_bc1_grad_c%nitem_sf_fix_fx, &
+     &     sf_bc1_lead_gd_c%ngrp_sf_dat)
 !
       end subroutine count_num_surf_composition_grad
 !
@@ -181,7 +186,8 @@
 !
       call count_num_wall_surf(sf_grp%num_grp, sf_grp%grp_name,         &
      &    wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,      &
-     &    ngrp_sf_wall_p, ngrp_sf_spin_p, ngrp_sf_spout_p)
+     &    sf_bc1_wall_p%ngrp_sf_dat, sf_bc1_spin_p%ngrp_sf_dat,         &
+     &    sf_bc1_spout_p%ngrp_sf_dat)
 !
       end subroutine count_num_wall_press
 !
@@ -197,8 +203,8 @@
 !
       call count_num_wall_surf(sf_grp%num_grp, sf_grp%grp_name,         &
      &   e_potential_surf%num_bc, e_potential_surf%bc_name,             &
-     &   e_potential_surf%ibc_type, ngrp_sf_wall_mp,                    &
-     &   ngrp_sf_spin_mp, ngrp_sf_spout_mp)
+     &   e_potential_surf%ibc_type, sf_bc1_wall_f%ngrp_sf_dat,          &
+     &   sf_bc1_spin_f%ngrp_sf_dat, sf_bc1_spout_f%ngrp_sf_dat)
 !
       end subroutine count_num_wall_magne_p
 !

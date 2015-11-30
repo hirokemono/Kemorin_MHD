@@ -10,22 +10,17 @@
       module m_surf_data_composition
 !
       use m_precision
+      use t_surface_bc_data
 !
       implicit  none
 !
-      integer (kind=kint) :: ngrp_sf_sgs_cmg
-      integer (kind=kint), allocatable :: id_grp_sf_sgs_cmg(:)
+      type(scaler_surf_flux_bc_type), save :: sf_bc1_grad_c
 !
-! 
-      integer (kind=kint) :: ngrp_sf_fix_cmg
-      integer (kind=kint), allocatable :: id_grp_sf_fix_cmg(:)
-      integer (kind=kint) :: nele_sf_fix_cmg
-      integer (kind=kint), allocatable :: ist_ele_sf_fix_cmg(:)
+      type(scaler_surf_bc_data_type), save :: sf_sgs1_grad_c
+!
+      type(scaler_surf_bc_data_type), save :: sf_bc1_lead_gd_c
+!
       real (kind=kreal), allocatable :: sf_apt_fix_cmg(:)
-!
-!
-      integer (kind=kint) :: ngrp_sf_lead_cmg
-      integer (kind=kint), allocatable :: id_grp_sf_lead_cmg(:)
 !
 !-----------------------------------------------------------------------
 !
@@ -36,20 +31,12 @@
       subroutine allocate_surf_data_composit
 !
 !
-      allocate( id_grp_sf_sgs_cmg(ngrp_sf_sgs_cmg) )
-      if (ngrp_sf_sgs_cmg.gt.0) id_grp_sf_sgs_cmg = 0
+      call alloc_surf_scaler_type(sf_bc1_grad_c)
+      call alloc_surf_scaler_dat_type(sf_sgs1_grad_c)
+      call alloc_surf_scaler_dat_type(sf_bc1_lead_gd_c)
 !
-      allocate( id_grp_sf_fix_cmg(ngrp_sf_fix_cmg) )
-      allocate( ist_ele_sf_fix_cmg(0:ngrp_sf_fix_cmg) )
-      allocate( sf_apt_fix_cmg(nele_sf_fix_cmg) )
-!
-      ist_ele_sf_fix_cmg = 0
-      if (ngrp_sf_fix_cmg.gt.0) id_grp_sf_fix_cmg = 0
-      if (nele_sf_fix_cmg.gt.0) sf_apt_fix_cmg = 0.0d0
-!
-!
-      allocate( id_grp_sf_lead_cmg(ngrp_sf_lead_cmg) )
-      if (ngrp_sf_lead_cmg.gt.0) id_grp_sf_lead_cmg = 0
+      allocate( sf_apt_fix_cmg(sf_bc1_grad_c%nitem_sf_fix_fx) )
+      if (sf_bc1_grad_c%nitem_sf_fix_fx.gt.0) sf_apt_fix_cmg = 0.0d0
 !
       end subroutine allocate_surf_data_composit
 !
@@ -58,13 +45,11 @@
       subroutine deallocate_surf_data_composit
 !
 !
-      deallocate( id_grp_sf_sgs_cmg )
+      call dealloc_surf_scaler_type(sf_bc1_grad_c)
+      call dealloc_surf_scaler_dat_type(sf_sgs1_grad_c)
+      call dealloc_surf_scaler_dat_type(sf_bc1_lead_gd_c)
 !
-      deallocate( id_grp_sf_fix_cmg )
-      deallocate( ist_ele_sf_fix_cmg )
       deallocate( sf_apt_fix_cmg )
-!
-      deallocate( id_grp_sf_lead_cmg )
 !
       end subroutine deallocate_surf_data_composit
 !

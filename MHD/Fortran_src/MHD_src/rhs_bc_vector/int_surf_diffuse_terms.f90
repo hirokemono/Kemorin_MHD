@@ -63,14 +63,14 @@
       integer(kind=kint) :: k2, nd, i_comp, i, igrp, num
 !
 !
-      if(nmax_sf_lead_vect_p .eq. 0) return
+      if(sf_bc1_lead_a%nmax_sf_dat .eq. 0) return
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       do nd = 1, 3
         i_comp = i_vecp + nd - 1
 !
-        do i = 1, ngrp_sf_lead_vect_p(nd)
-          igrp = id_grp_sf_lead_vect_p(i,nd)
+        do i = 1, sf_bc1_lead_a%ngrp_sf_dat(nd)
+          igrp = sf_bc1_lead_a%id_grp_sf_dat(i,nd)
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if (num .gt. 0) then
 !

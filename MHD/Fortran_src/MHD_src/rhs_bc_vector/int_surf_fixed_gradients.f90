@@ -79,13 +79,14 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      if (ngrp_sf_fix_hf .le. 0) return
+      if (sf_bc1_grad_t%ngrp_sf_fix_fx .le. 0) return
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_surf_skv_norm_grad_galerkin                              &
      &   (ele, surf, sf_grp, jac_sf_grp,                                &
-     &    ngrp_sf_fix_hf, nele_sf_fix_hf, ngrp_sf_fix_hf,               &
-     &    id_grp_sf_fix_hf, ist_ele_sf_fix_hf,                          &
+     &    sf_bc1_grad_t%ngrp_sf_fix_fx, sf_bc1_grad_t%nitem_sf_fix_fx,  &
+     &    sf_bc1_grad_t%ngrp_sf_fix_fx, sf_bc1_grad_t%id_grp_sf_fix_fx, &
+     &    sf_bc1_grad_t%ist_ele_sf_fix_fx,                              &
      &    sf_apt_fix_hf, n_int, ione, ak_d_temp, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -160,16 +161,18 @@
       integer(kind = kint) :: nd
 !
 !
-      if ( sum(ngrp_sf_fix_grad_a) .le. 0) return
+      if ( sum(sf_bc1_grad_a%ngrp_sf_fix_fx) .le. 0) return
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       do nd = 1, n_vector
-        if (ngrp_sf_fix_grad_a(nd).gt.0) then
+        if (sf_bc1_grad_a%ngrp_sf_fix_fx(nd) .gt. 0) then
           call fem_surf_skv_vec_grad_galerkin                           &
      &       (ele, surf, sf_grp, jac_sf_grp,                            &
-     &        nmax_sf_fix_grad_a, nmax_ele_sf_fix_grad_a,               &
-     &        ngrp_sf_fix_grad_a, id_grp_sf_fix_grad_a,                 &
-     &        ist_ele_sf_fix_grad_a, sf_apt_fix_grad_a,                 &
+     &        sf_bc1_grad_a%nmax_sf_fix_fx,                             &
+     &        sf_bc1_grad_a%nmax_ele_sf_fix_fx,                         &
+     &        sf_bc1_grad_a%ngrp_sf_fix_fx,                             &
+     &        sf_bc1_grad_a%id_grp_sf_fix_fx,                           &
+     &        sf_bc1_grad_a%ist_ele_sf_fix_fx, sf_apt_fix_grad_a,       &
      &        n_int, nd, ak_d_magne, fem_wk%sk6)
         end if
       end do
@@ -201,16 +204,18 @@
       integer(kind = kint) :: nd
 !
 !
-      if ( sum(ngrp_sf_fix_grad_b) .le. 0) return
+      if ( sum(sf_bc1_grad_b%ngrp_sf_fix_fx) .le. 0) return
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       do nd = 1, n_vector
-        if (ngrp_sf_fix_grad_b(nd).gt.0) then
+        if (sf_bc1_grad_b%ngrp_sf_fix_fx(nd) .gt. 0) then
           call fem_surf_skv_vec_grad_galerkin                           &
      &       (ele, surf, sf_grp, jac_sf_grp,                            &
-     &        nmax_sf_fix_grad_b, nmax_ele_sf_fix_grad_b,               &
-     &        ngrp_sf_fix_grad_b, id_grp_sf_fix_grad_b,                 &
-     &        ist_ele_sf_fix_grad_b, sf_apt_fix_grad_b,                 &
+     &        sf_bc1_grad_b%nmax_sf_fix_fx,                             &
+     &        sf_bc1_grad_b%nmax_ele_sf_fix_fx,                         &
+     &        sf_bc1_grad_b%ngrp_sf_fix_fx,                             &
+     &        sf_bc1_grad_b%id_grp_sf_fix_fx,                           &
+     &        sf_bc1_grad_b%ist_ele_sf_fix_fx, sf_apt_fix_grad_b,       &
      &        n_int, nd, ak_d_magne, fem_wk%sk6)
         end if
       end do
@@ -241,15 +246,16 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      if (ngrp_sf_fix_cmg .le. 0) return
+      if (sf_bc1_grad_c%ngrp_sf_fix_fx .le. 0) return
 !
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_surf_skv_norm_grad_galerkin                              &
      &   (ele, surf, sf_grp, jac_sf_grp,                                &
-     &     ngrp_sf_fix_cmg, nele_sf_fix_cmg, ngrp_sf_fix_cmg,           &
-     &     id_grp_sf_fix_cmg, ist_ele_sf_fix_cmg, sf_apt_fix_cmg,       &
-     &     n_int, ione, ak_d_composit, fem_wk%sk6)
+     &    sf_bc1_grad_c%ngrp_sf_fix_fx, sf_bc1_grad_c%nitem_sf_fix_fx,  &
+     &    sf_bc1_grad_c%ngrp_sf_fix_fx, sf_bc1_grad_c%id_grp_sf_fix_fx, &
+     &    sf_bc1_grad_c%ist_ele_sf_fix_fx, sf_apt_fix_cmg,              &
+     &    n_int, ione, ak_d_composit, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &
      &   (node, ele, rhs_tbl, fem_wk%sk6, f_l%ff_smp)
@@ -279,13 +285,14 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      if (ngrp_sf_fix_pg .eq. 0) return
+      if (sf_bc1_grad_p%ngrp_sf_fix_fx .eq. 0) return
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_surf_skv_norm_poisson_pg                                 &
      &   (ele, surf, sf_grp, jac_sf_grp_l,                              &
-     &    ngrp_sf_fix_pg, nele_sf_fix_pg, ngrp_sf_fix_pg,               &
-     &    id_grp_sf_fix_pg, ist_ele_sf_fix_pg, sf_apt_fix_pg,           &
+     &    sf_bc1_grad_p%ngrp_sf_fix_fx, sf_bc1_grad_p%nitem_sf_fix_fx,  &
+     &    sf_bc1_grad_p%ngrp_sf_fix_fx, sf_bc1_grad_p%id_grp_sf_fix_fx, &
+     &    sf_bc1_grad_p%ist_ele_sf_fix_fx, sf_apt_fix_pg,               &
      &    n_int, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -315,13 +322,14 @@
       type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      if (ngrp_sf_fix_mpg .eq. 0) return
+      if (sf_bc1_grad_f%ngrp_sf_fix_fx .eq. 0) return
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
       call fem_surf_skv_norm_poisson_pg                                 &
      &   (ele, surf, sf_grp, jac_sf_grp_l,                              &
-     &    ngrp_sf_fix_mpg, nele_sf_fix_mpg, ngrp_sf_fix_mpg,            &
-     &    id_grp_sf_fix_mpg, ist_ele_sf_fix_mpg, sf_apt_fix_mpg,        &
+     &    sf_bc1_grad_f%ngrp_sf_fix_fx, sf_bc1_grad_f%nitem_sf_fix_fx,  &
+     &    sf_bc1_grad_f%ngrp_sf_fix_fx, sf_bc1_grad_f%id_grp_sf_fix_fx, &
+     &    sf_bc1_grad_f%ist_ele_sf_fix_fx, sf_apt_fix_mpg,              &
      &    n_int, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &

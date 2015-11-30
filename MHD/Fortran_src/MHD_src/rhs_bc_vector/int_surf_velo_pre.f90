@@ -61,10 +61,10 @@
         if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node1, ele1, surf1, sf_grp1,   &
      &        nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, num_int, &
-     &        nmax_sf_sgs_magne, ngrp_sf_sgs_magne,                     &
-     &        id_grp_sf_sgs_magne, ifilter_final, iphys%i_SGS_maxwell,  &
-     &        iphys%i_magne, iphys%i_magne, ak_diff(1,iak_diff_lor),    &
-     &        (-coef_lor), fem1_wk, f1_nl)
+     &        sf_sgs1_grad_b%nmax_sf_dat, sf_sgs1_grad_b%ngrp_sf_dat,   &
+     &        sf_sgs1_grad_b%id_grp_sf_dat, ifilter_final,              &
+     &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
+     &        ak_diff(1,iak_diff_lor), (-coef_lor), fem1_wk, f1_nl)
         end if
       end if
 !
@@ -118,10 +118,10 @@
         if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
           call int_sf_skv_sgs_div_t_flux(node1, ele1, surf1, sf_grp1,   &
      &        nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, num_int, &
-     &        nmax_sf_sgs_magne, ngrp_sf_sgs_magne,                     &
-     &        id_grp_sf_sgs_magne, ifilter_final, iphys%i_SGS_maxwell,  &
-     &        iphys%i_magne, iphys%i_magne, ak_diff(1,iak_diff_lor),    &
-     &        (-coef_lor), fem1_wk, f1_nl)
+     &        sf_sgs1_grad_b%nmax_sf_dat, sf_sgs1_grad_b%ngrp_sf_dat,   &
+     &        sf_sgs1_grad_b%id_grp_sf_dat, ifilter_final,              &
+     &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
+     &        ak_diff(1,iak_diff_lor), (-coef_lor), fem1_wk, f1_nl)
         end if
       end if
 !

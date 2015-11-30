@@ -58,13 +58,14 @@
       call int_vol_velo_co
 !
       if (iflag_commute_velo .eq. id_SGS_commute_ON                     &
-     &     .and. ngrp_sf_sgs_p.gt.0) then
+     &     .and. sf_sgs1_grad_p%ngrp_sf_dat.gt.0) then
         if (iflag_debug.eq.1) write(*,*)                                &
                              'int_surf_sgs_velo_co_ele', iphys%i_p_phi
         call int_surf_sgs_velo_co_ele                                   &
      &     (node1, ele1, surf1, sf_grp1, nod_fld1,                      &
      &      jac1_sf_grp_2d_q, jac1_sf_grp_2d_l, rhs_tbl1, FEM1_elen,    &
-     &      intg_point_poisson, ngrp_sf_sgs_p, id_grp_sf_sgs_p,         &
+     &      intg_point_poisson,                                         &
+     &      sf_sgs1_grad_p%ngrp_sf_dat, sf_sgs1_grad_p%id_grp_sf_dat,   &
      &      ifilter_final, ak_diff(1,iak_diff_v), iphys%i_p_phi,        &
      &      fem1_wk, f1_nl)
       end if

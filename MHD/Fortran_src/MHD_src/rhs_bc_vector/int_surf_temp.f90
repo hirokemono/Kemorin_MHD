@@ -50,9 +50,10 @@
      &     .and. iflag_commute_temp .eq. id_SGS_commute_ON) then
         call int_sf_skv_sgs_div_v_flux(node1, ele1, surf1, sf_grp1,     &
      &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, num_int,   &
-     &      ngrp_sf_sgs_temp, id_grp_sf_sgs_temp, ifilter_final,        &
-     &      iphys%i_SGS_h_flux, iphys%i_velo, iphys%i_temp,             &
-     &      ak_diff(1,iak_diff_hf), coef_temp, fem1_wk, f1_nl)
+     &      sf_sgs1_grad_t%ngrp_sf_dat, sf_sgs1_grad_t%id_grp_sf_dat,   &
+     &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
+     &      iphys%i_temp, ak_diff(1,iak_diff_hf), coef_temp,            &
+     &      fem1_wk, f1_nl)
       end if
 !
       end subroutine int_surf_temp_ele
@@ -86,9 +87,10 @@
         .and. i_field .eq. iphys%i_SGS_div_h_flux) then
         call int_sf_skv_sgs_div_v_flux(node1, ele1, surf1, sf_grp1,     &
      &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, num_int,   &
-     &      ngrp_sf_sgs_temp, id_grp_sf_sgs_temp, ifilter_final,        &
-     &      iphys%i_SGS_h_flux, iphys%i_velo, iphys%i_temp,             &
-     &      ak_diff(1,iak_diff_hf), coef_temp, fem1_wk, f1_nl)
+     &      sf_sgs1_grad_t%ngrp_sf_dat, sf_sgs1_grad_t%id_grp_sf_dat,   &
+     &      ifilter_final, iphys%i_SGS_h_flux, iphys%i_velo,            &
+     &      iphys%i_temp, ak_diff(1,iak_diff_hf), coef_temp,            &
+     &      fem1_wk, f1_nl)
       end if
 !
       end subroutine int_surf_temp_monitor
