@@ -30,11 +30,6 @@
 !
       type(scaler_surf_bc_data_type), save :: sf_bc1_free_sph_out
 !
-!
-      real (kind=kreal), allocatable :: sf_fix_vn_apt(:)
-!
-      real (kind=kreal), allocatable :: sf_apt_fix_tq(:,:)
-!
 !-----------------------------------------------------------------------
 !
       contains 
@@ -45,10 +40,9 @@
 !
 !
       call alloc_surf_vector_dat_type(sf_sgs1_grad_v)
-      call alloc_surf_scaler_type(sf_bc1_norm_v)
+      call alloc_surf_scaler_num(sf_bc1_norm_v)
 !
-      allocate( sf_fix_vn_apt(sf_bc1_norm_v%nitem_sf_fix_fx) )
-      if (sf_bc1_norm_v%nitem_sf_fix_fx.gt.0) sf_fix_vn_apt = 0.0d0
+      call alloc_surf_scaler_apt(sf_bc1_norm_v)
 !
       end subroutine allocate_surf_data_velo
 !
@@ -57,14 +51,12 @@
       subroutine allocate_surf_data_torque
 !
 !
-      call alloc_surf_vector_type(sf_bc1_grad_v)
+      call alloc_surf_vector_num(sf_bc1_grad_v)
       call alloc_surf_vector_dat_type(sf_bc1_lead_tq)
       call alloc_surf_scaler_dat_type(sf_bc1_free_sph_in)
       call alloc_surf_scaler_dat_type(sf_bc1_free_sph_out)
 !
-!
-      allocate( sf_apt_fix_tq(sf_bc1_grad_v%nmax_ele_sf_fix_fx,3) )
-      if (sf_bc1_grad_v%nmax_ele_sf_fix_fx.gt.0) sf_apt_fix_tq = 0.0d0
+      call alloc_surf_vector_apt(sf_bc1_grad_v)
 !
       end subroutine allocate_surf_data_torque
 !
@@ -77,8 +69,6 @@
       call dealloc_surf_vector_dat_type(sf_sgs1_grad_v)
       call dealloc_surf_scaler_type(sf_bc1_norm_v)
 !
-      deallocate( sf_fix_vn_apt )
-!
       end subroutine deallocate_surf_data_velo
 !
 !-----------------------------------------------------------------------
@@ -89,8 +79,6 @@
       call dealloc_surf_vector_dat_type(sf_bc1_lead_tq)
       call dealloc_surf_scaler_dat_type(sf_bc1_free_sph_in)
       call dealloc_surf_scaler_dat_type(sf_bc1_free_sph_out)
-!
-      deallocate( sf_apt_fix_tq )
 !
       end subroutine deallocate_surf_data_torque
 !

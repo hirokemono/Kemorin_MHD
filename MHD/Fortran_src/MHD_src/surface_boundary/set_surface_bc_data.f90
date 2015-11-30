@@ -117,7 +117,6 @@
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if(a_potential_surf%num_bc.gt.0) call deallocate_vecp_surf_ctl
-
       end if
 ! 
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then

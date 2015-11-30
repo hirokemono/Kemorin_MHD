@@ -58,19 +58,19 @@
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
         call alloc_surf_scaler_dat_type(sf_dat%temp%sgs)
         call alloc_surf_scaler_dat_type(sf_dat%temp%flux_lead)
-        call alloc_surf_scaler_type(sf_dat%temp%flux)
+        call alloc_surf_scaler_num(sf_dat%temp%flux)
       end if
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         call alloc_surf_vector_dat_type(sf_dat%velo%sgs)
-        call alloc_surf_scaler_type(sf_dat%velo%normal)
-        call alloc_surf_vector_type(sf_dat%velo%grad)
+        call alloc_surf_scaler_num(sf_dat%velo%normal)
+        call alloc_surf_vector_num(sf_dat%velo%grad)
         call alloc_surf_vector_dat_type(sf_dat%velo%torque_lead)
         call alloc_surf_scaler_dat_type(sf_dat%velo%free_sph_in)
         call alloc_surf_scaler_dat_type(sf_dat%velo%free_sph_out)
 !
         call alloc_surf_scaler_dat_type(sf_dat%press%sgs)
-        call alloc_surf_scaler_type(sf_dat%press%grad)
+        call alloc_surf_scaler_num(sf_dat%press%grad)
         call alloc_surf_scaler_dat_type(sf_dat%press%grad_lead)
         call alloc_surf_scaler_dat_type(sf_dat%press%wall)
         call alloc_surf_scaler_dat_type(sf_dat%press%sph_in)
@@ -80,17 +80,17 @@
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
      &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call alloc_surf_vector_dat_type(sf_dat%magne%sgs)
-        call alloc_surf_scaler_type(sf_dat%magne%normal)
-        call alloc_surf_vector_type(sf_dat%magne%grad)
+        call alloc_surf_scaler_num(sf_dat%magne%normal)
+        call alloc_surf_vector_num(sf_dat%magne%grad)
         call alloc_surf_vector_dat_type(sf_dat%magne%torque_lead)
 !
         call alloc_surf_vector_dat_type(sf_dat%current%sgs)
-        call alloc_surf_scaler_type(sf_dat%current%normal)
-        call alloc_surf_vector_type(sf_dat%current%grad)
+        call alloc_surf_scaler_num(sf_dat%current%normal)
+        call alloc_surf_vector_num(sf_dat%current%grad)
         call alloc_surf_vector_dat_type(sf_dat%current%torque_lead)
 !
         call alloc_surf_scaler_dat_type(sf_dat%magne_p%sgs)
-        call alloc_surf_scaler_type(sf_dat%magne_p%grad)
+        call alloc_surf_scaler_num(sf_dat%magne_p%grad)
         call alloc_surf_scaler_dat_type(sf_dat%magne_p%grad_lead)
         call alloc_surf_scaler_dat_type(sf_dat%magne_p%wall)
         call alloc_surf_scaler_dat_type(sf_dat%magne_p%sph_in)
@@ -99,15 +99,15 @@
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         call alloc_surf_vector_dat_type(sf_dat%vector_p%sgs)
-        call alloc_surf_scaler_type(sf_dat%vector_p%normal)
-        call alloc_surf_vector_type(sf_dat%vector_p%grad)
+        call alloc_surf_scaler_num(sf_dat%vector_p%normal)
+        call alloc_surf_vector_num(sf_dat%vector_p%grad)
         call alloc_surf_vector_dat_type(sf_dat%vector_p%torque_lead)
       end if
 ! 
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
         call alloc_surf_scaler_dat_type(sf_dat%comp_sf%sgs)
         call alloc_surf_scaler_dat_type(sf_dat%comp_sf%flux_lead)
-        call alloc_surf_scaler_type(sf_dat%comp_sf%flux)
+        call alloc_surf_scaler_num(sf_dat%comp_sf%flux)
       end if
 ! 
       end subroutine s_alloc_surf_bc_data_type

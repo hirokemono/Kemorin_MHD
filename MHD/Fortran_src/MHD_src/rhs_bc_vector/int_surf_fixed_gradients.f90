@@ -86,8 +86,8 @@
      &   (ele, surf, sf_grp, jac_sf_grp,                                &
      &    sf_bc1_grad_t%ngrp_sf_fix_fx, sf_bc1_grad_t%nitem_sf_fix_fx,  &
      &    sf_bc1_grad_t%ngrp_sf_fix_fx, sf_bc1_grad_t%id_grp_sf_fix_fx, &
-     &    sf_bc1_grad_t%ist_ele_sf_fix_fx,                              &
-     &    sf_apt_fix_hf, n_int, ione, ak_d_temp, fem_wk%sk6)
+     &    sf_bc1_grad_t%ist_ele_sf_fix_fx, sf_bc1_grad_t%sf_apt_fix_fx, &
+     &    n_int, ione, ak_d_temp, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &
      &   (node, ele, rhs_tbl, fem_wk%sk6, f_l%ff_smp)
@@ -129,7 +129,8 @@
      &        sf_bc1_grad_v%ngrp_sf_fix_fx,                             &
      &        sf_bc1_grad_v%id_grp_sf_fix_fx,                           &
      &        sf_bc1_grad_v%ist_ele_sf_fix_fx,                          &
-     &        sf_apt_fix_tq, n_int, nd, ak_d_velo, fem_wk%sk6)
+     &        sf_bc1_grad_v%sf_apt_fix_fx,                              &
+     &        n_int, nd, ak_d_velo, fem_wk%sk6)
         end if
       end do
 !
@@ -172,7 +173,8 @@
      &        sf_bc1_grad_a%nmax_ele_sf_fix_fx,                         &
      &        sf_bc1_grad_a%ngrp_sf_fix_fx,                             &
      &        sf_bc1_grad_a%id_grp_sf_fix_fx,                           &
-     &        sf_bc1_grad_a%ist_ele_sf_fix_fx, sf_apt_fix_grad_a,       &
+     &        sf_bc1_grad_a%ist_ele_sf_fix_fx,                          &
+     &        sf_bc1_grad_a%sf_apt_fix_fx,                              &
      &        n_int, nd, ak_d_magne, fem_wk%sk6)
         end if
       end do
@@ -215,7 +217,8 @@
      &        sf_bc1_grad_b%nmax_ele_sf_fix_fx,                         &
      &        sf_bc1_grad_b%ngrp_sf_fix_fx,                             &
      &        sf_bc1_grad_b%id_grp_sf_fix_fx,                           &
-     &        sf_bc1_grad_b%ist_ele_sf_fix_fx, sf_apt_fix_grad_b,       &
+     &        sf_bc1_grad_b%ist_ele_sf_fix_fx,                          &
+     &        sf_bc1_grad_b%sf_apt_fix_fx,                              &
      &        n_int, nd, ak_d_magne, fem_wk%sk6)
         end if
       end do
@@ -254,7 +257,7 @@
      &   (ele, surf, sf_grp, jac_sf_grp,                                &
      &    sf_bc1_grad_c%ngrp_sf_fix_fx, sf_bc1_grad_c%nitem_sf_fix_fx,  &
      &    sf_bc1_grad_c%ngrp_sf_fix_fx, sf_bc1_grad_c%id_grp_sf_fix_fx, &
-     &    sf_bc1_grad_c%ist_ele_sf_fix_fx, sf_apt_fix_cmg,              &
+     &    sf_bc1_grad_c%ist_ele_sf_fix_fx, sf_bc1_grad_c%sf_apt_fix_fx, &
      &    n_int, ione, ak_d_composit, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -292,7 +295,7 @@
      &   (ele, surf, sf_grp, jac_sf_grp_l,                              &
      &    sf_bc1_grad_p%ngrp_sf_fix_fx, sf_bc1_grad_p%nitem_sf_fix_fx,  &
      &    sf_bc1_grad_p%ngrp_sf_fix_fx, sf_bc1_grad_p%id_grp_sf_fix_fx, &
-     &    sf_bc1_grad_p%ist_ele_sf_fix_fx, sf_apt_fix_pg,               &
+     &    sf_bc1_grad_p%ist_ele_sf_fix_fx, sf_bc1_grad_p%sf_apt_fix_fx, &
      &    n_int, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &
@@ -329,7 +332,7 @@
      &   (ele, surf, sf_grp, jac_sf_grp_l,                              &
      &    sf_bc1_grad_f%ngrp_sf_fix_fx, sf_bc1_grad_f%nitem_sf_fix_fx,  &
      &    sf_bc1_grad_f%ngrp_sf_fix_fx, sf_bc1_grad_f%id_grp_sf_fix_fx, &
-     &    sf_bc1_grad_f%ist_ele_sf_fix_fx, sf_apt_fix_mpg,              &
+     &    sf_bc1_grad_f%ist_ele_sf_fix_fx, sf_bc1_grad_f%sf_apt_fix_fx, &
      &    n_int, fem_wk%sk6)
 !
       call add1_skv_to_ff_v_smp                                         &

@@ -48,7 +48,8 @@
      &      sf_bc1_norm_v%ngrp_sf_fix_fx,                               &
      &      sf_bc1_norm_v%nitem_sf_fix_fx,                              &
      &      sf_bc1_norm_v%id_grp_sf_fix_fx,                             &
-     &      sf_bc1_norm_v%ist_ele_sf_fix_fx, sf_fix_vn_apt,             &
+     &      sf_bc1_norm_v%ist_ele_sf_fix_fx,                            &
+     &      sf_bc1_norm_v%sf_apt_fix_fx,                                &
      &      nod_fld1%n_point, nod_fld1%ntot_phys, iphys%i_velo,         &
      &      nod_fld1%d_fld)
       end if

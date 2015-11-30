@@ -30,9 +30,6 @@
 !
       type(scaler_surf_bc_data_type), save :: sf_bc1_spout_p
 !
-!
-      real (kind=kreal), allocatable :: sf_apt_fix_pg(:)
-!
 !-----------------------------------------------------------------------
 !
       contains 
@@ -52,13 +49,12 @@
       subroutine allocate_surf_press_grad
 !
 !
-      call alloc_surf_scaler_type(sf_bc1_grad_p)
+      call alloc_surf_scaler_num(sf_bc1_grad_p)
       call alloc_surf_scaler_dat_type(sf_bc1_wall_p)
       call alloc_surf_scaler_dat_type(sf_bc1_spin_p)
       call alloc_surf_scaler_dat_type(sf_bc1_spout_p)
 !
-      allocate( sf_apt_fix_pg(sf_bc1_grad_p%nitem_sf_fix_fx) )
-      if (sf_bc1_grad_p%nitem_sf_fix_fx .gt. 0) sf_apt_fix_pg = 0.0d0
+      call alloc_surf_scaler_apt(sf_bc1_grad_p)
 !
       end subroutine allocate_surf_press_grad
 !
@@ -82,8 +78,6 @@
       call dealloc_surf_scaler_dat_type(sf_bc1_wall_p)
       call dealloc_surf_scaler_dat_type(sf_bc1_spin_p)
       call dealloc_surf_scaler_dat_type(sf_bc1_spout_p)
-!
-      deallocate( sf_apt_fix_pg )
 !
       end subroutine deallocate_surf_press_grad
 !

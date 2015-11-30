@@ -50,7 +50,7 @@
      &    sf_sgs1_grad_v%nmax_sf_dat, sf_sgs1_grad_v%id_grp_sf_dat,     &
      &    sf_bc1_norm_v%ngrp_sf_fix_fx, sf_bc1_norm_v%id_grp_sf_fix_fx, &
      &    sf_bc1_norm_v%nitem_sf_fix_fx,                                &
-     &    sf_bc1_norm_v%ist_ele_sf_fix_fx, sf_fix_vn_apt)
+     &    sf_bc1_norm_v%ist_ele_sf_fix_fx, sf_bc1_norm_v%sf_apt_fix_fx)
 !
       call s_stress_free_surf_id(sf_grp%num_grp, sf_grp%grp_name,       &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
@@ -84,8 +84,7 @@
      &    sf_sgs1_grad_a%nmax_sf_dat, sf_sgs1_grad_a%id_grp_sf_dat,     &
      &    sf_bc1_norm_a%ngrp_sf_fix_fx, sf_bc1_norm_a%id_grp_sf_fix_fx, &
      &    sf_bc1_norm_a%nitem_sf_fix_fx,                                &
-     &    sf_bc1_norm_a%ist_ele_sf_fix_fx,                              &
-     &    sf_apt_fix_vpn)
+     &    sf_bc1_norm_a%ist_ele_sf_fix_fx, sf_bc1_norm_a%sf_apt_fix_fx)
 !
       call s_stress_free_surf_id(sf_grp%num_grp, sf_grp%grp_name,       &
      &    a_potential_surf%num_bc, a_potential_surf%bc_name,            &
@@ -115,7 +114,7 @@
      &    sf_sgs1_grad_b%nmax_sf_dat, sf_sgs1_grad_b%id_grp_sf_dat,     &
      &    sf_bc1_norm_b%ngrp_sf_fix_fx, sf_bc1_norm_b%id_grp_sf_fix_fx, &
      &    sf_bc1_norm_b%nitem_sf_fix_fx,                                &
-     &    sf_bc1_norm_b%ist_ele_sf_fix_fx, sf_apt_fix_bn)
+     &    sf_bc1_norm_b%ist_ele_sf_fix_fx, sf_bc1_norm_b%sf_apt_fix_fx)
 !
       end subroutine set_surf_magne_id
 !
@@ -137,7 +136,7 @@
      &    sf_sgs1_grad_j%nmax_sf_dat, sf_sgs1_grad_j%id_grp_sf_dat,     &
      &    sf_bc1_norm_j%ngrp_sf_fix_fx, sf_bc1_norm_j%id_grp_sf_fix_fx, &
      &    sf_bc1_norm_j%nitem_sf_fix_fx,                                &
-     &    sf_bc1_norm_j%ist_ele_sf_fix_fx, sf_apt_fix_jn)
+     &    sf_bc1_norm_j%ist_ele_sf_fix_fx, sf_bc1_norm_j%sf_apt_fix_fx)
 !
       end subroutine set_surf_current_id
 !
@@ -158,7 +157,7 @@
      &    name_vxg, name_vyg, name_vzg,                                 &
      &    sf_bc1_grad_v%nmax_sf_fix_fx, sf_bc1_grad_v%id_grp_sf_fix_fx, &
      &    sf_bc1_grad_v%nmax_ele_sf_fix_fx,                             &
-     &    sf_bc1_grad_v%ist_ele_sf_fix_fx, sf_apt_fix_tq,               &
+     &    sf_bc1_grad_v%ist_ele_sf_fix_fx, sf_bc1_grad_v%sf_apt_fix_fx, &
      &    sf_bc1_lead_tq%nmax_sf_dat, sf_bc1_lead_tq%id_grp_sf_dat)
 !
       end subroutine set_surf_torque_id
@@ -180,7 +179,7 @@
      &    sf_bc1_grad_a%nmax_sf_fix_fx, sf_bc1_grad_a%id_grp_sf_fix_fx, &
      &    sf_bc1_grad_a%nmax_ele_sf_fix_fx,                             &
      &    sf_bc1_grad_a%ist_ele_sf_fix_fx,                              &
-     &    sf_apt_fix_grad_a, sf_bc1_lead_a%nmax_sf_dat,                 &
+     &    sf_bc1_grad_a%sf_apt_fix_fx, sf_bc1_lead_a%nmax_sf_dat,       &
      &    sf_bc1_lead_a%id_grp_sf_dat)
 !
       end subroutine set_surf_grad_vecp_id
@@ -201,7 +200,7 @@
      &    name_bxg, name_byg, name_bzg,                                 &
      &    sf_bc1_grad_b%nmax_sf_fix_fx, sf_bc1_grad_b%id_grp_sf_fix_fx, &
      &    sf_bc1_grad_b%nmax_ele_sf_fix_fx,                             &
-     &    sf_bc1_grad_b%ist_ele_sf_fix_fx, sf_apt_fix_grad_b,           &
+     &    sf_bc1_grad_b%ist_ele_sf_fix_fx, sf_bc1_grad_b%sf_apt_fix_fx, &
      &    sf_bc1_lead_b%nmax_sf_dat, sf_bc1_lead_b%id_grp_sf_dat)
 !
       end subroutine set_surf_grad_b_id
@@ -222,8 +221,7 @@
      &    name_sjx, name_sjy, name_sjz,                                 &
      &    sf_bc1_grad_j%nmax_sf_fix_fx, sf_bc1_grad_j%id_grp_sf_fix_fx, &
      &    sf_bc1_grad_j%nmax_ele_sf_fix_fx,                             &
-     &    sf_bc1_grad_j%ist_ele_sf_fix_fx,                              &
-     &    sf_apt_fix_grad_j,                                            &
+     &    sf_bc1_grad_j%ist_ele_sf_fix_fx, sf_bc1_grad_j%sf_apt_fix_fx, &
      &    sf_bc1_lead_j%nmax_sf_dat, sf_bc1_lead_j%id_grp_sf_dat)
 !
       end subroutine set_surf_grad_j_id

@@ -18,9 +18,11 @@
 !!
 !!
 !!@verbatim
-!!      subroutine alloc_surf_scaler_type(flux_sf)
+!!      subroutine alloc_surf_scaler_num(flux_sf)
+!!      subroutine alloc_surf_scaler_apt(flux_sf)
 !!        type(scaler_surf_flux_bc_type), intent(inout) :: flux_sf
-!!      subroutine alloc_surf_vector_type(flux_sf)
+!!      subroutine alloc_surf_vector_num(flux_sf)
+!!      subroutine alloc_surf_vector_apt(flux_sf)
 !!        type(vector_surf_flux_bc_type), intent(inout) :: flux_sf
 !!      subroutine alloc_surf_scaler_dat_type(scaler_sf)
 !!        type(scaler_surf_bc_data_type),  intent(inout) :: scaler_sf
@@ -53,6 +55,7 @@
         integer (kind=kint), pointer :: id_grp_sf_fix_fx(:)
         integer (kind=kint) :: nitem_sf_fix_fx
         integer (kind=kint), pointer :: ist_ele_sf_fix_fx(:)
+        real(kind = kreal), pointer :: sf_apt_fix_fx(:)
       end type scaler_surf_flux_bc_type
 !
 !
@@ -69,6 +72,7 @@
         integer (kind=kint) :: nmax_ele_sf_fix_fx
         integer (kind=kint) :: nitem_sf_fix_fx(3)
         integer (kind=kint), pointer :: ist_ele_sf_fix_fx(:,:)
+        real(kind = kreal), pointer :: sf_apt_fix_fx(:,:)
       end type vector_surf_flux_bc_type
 !
       type velocity_surf_bc_type
@@ -122,7 +126,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_surf_scaler_type(flux_sf)
+      subroutine alloc_surf_scaler_num(flux_sf)
 !
       type(scaler_surf_flux_bc_type), intent(inout) :: flux_sf
 !
@@ -133,11 +137,23 @@
       flux_sf%ist_ele_sf_fix_fx = 0
       if (flux_sf%ngrp_sf_fix_fx.gt.0) flux_sf%id_grp_sf_fix_fx = 0
 !
-      end subroutine alloc_surf_scaler_type
+      end subroutine alloc_surf_scaler_num
 !
 !-----------------------------------------------------------------------
 !
-      subroutine alloc_surf_vector_type(flux_sf)
+      subroutine alloc_surf_scaler_apt(flux_sf)
+!
+      type(scaler_surf_flux_bc_type), intent(inout) :: flux_sf
+!
+!
+      allocate( flux_sf%sf_apt_fix_fx(flux_sf%nitem_sf_fix_fx) )
+      if(flux_sf%nitem_sf_fix_fx.gt.0) flux_sf%sf_apt_fix_fx = 0.0d0
+!
+      end subroutine alloc_surf_scaler_apt
+!
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_surf_vector_num(flux_sf)
 !
       type(vector_surf_flux_bc_type), intent(inout) :: flux_sf
 !
@@ -148,7 +164,19 @@
       flux_sf%ist_ele_sf_fix_fx = 0
       if (flux_sf%nmax_sf_fix_fx.gt.0) flux_sf%id_grp_sf_fix_fx = 0
 !
-      end subroutine alloc_surf_vector_type
+      end subroutine alloc_surf_vector_num
+!
+!-----------------------------------------------------------------------
+!
+      subroutine alloc_surf_vector_apt(flux_sf)
+!
+      type(vector_surf_flux_bc_type), intent(inout) :: flux_sf
+!
+!
+      allocate( flux_sf%sf_apt_fix_fx(flux_sf%nmax_ele_sf_fix_fx,3) )
+      if(flux_sf%nmax_ele_sf_fix_fx.gt.0) flux_sf%sf_apt_fix_fx = 0.0d0
+!
+      end subroutine alloc_surf_vector_apt
 !
 !-----------------------------------------------------------------------
 !
@@ -182,8 +210,9 @@
       type(scaler_surf_flux_bc_type), intent(inout) :: flux_sf
 !
 !
-      deallocate( flux_sf%id_grp_sf_fix_fx )
-      deallocate( flux_sf%ist_ele_sf_fix_fx )
+      deallocate(flux_sf%id_grp_sf_fix_fx)
+      deallocate(flux_sf%ist_ele_sf_fix_fx)
+      deallocate(flux_sf%sf_apt_fix_fx)
 !
       end subroutine dealloc_surf_scaler_type
 !
@@ -194,8 +223,9 @@
       type(vector_surf_flux_bc_type), intent(inout) :: flux_sf
 !
 !
-      deallocate( flux_sf%id_grp_sf_fix_fx )
-      deallocate( flux_sf%ist_ele_sf_fix_fx )
+      deallocate(flux_sf%id_grp_sf_fix_fx)
+      deallocate(flux_sf%ist_ele_sf_fix_fx)
+      deallocate(flux_sf%sf_apt_fix_fx)
 !
       end subroutine dealloc_surf_vector_type
 !

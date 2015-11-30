@@ -175,7 +175,7 @@
      &          iele_st, iele_ed, magp_bc, layer_bc)
 !
       use m_geometry_data_MHD
-      use m_bc_data_magne
+      use t_nodal_bc_data
 !
       integer (kind= kint), intent(in) :: iele_st, iele_ed
       type(node_data), intent(in) ::    node
