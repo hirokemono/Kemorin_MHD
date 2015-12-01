@@ -72,7 +72,7 @@
      &         (ele, vector_bc, djds_tbl, mat33)
 !
       type(element_data), intent(in) :: ele
-      type(vect_fixed_nod_bc_type), intent(inout) :: vector_bc
+      type(vect_fixed_nod_bc_type), intent(in) :: vector_bc
       type(DJDS_ordering_table), intent(in) :: djds_tbl
 !
       type(DJDS_MATRIX), intent(inout) :: mat33

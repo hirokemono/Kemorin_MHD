@@ -112,8 +112,7 @@
 !
       call int_surf_diffuse_term                                        &
      &   (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,        &
-     &    intg_point_t_evo,                                             &
-     &    sf_bc1_lead_gd_t%ngrp_sf_dat, sf_bc1_lead_gd_t%id_grp_sf_dat, &
+     &    sf_bc1_lead_gd_t, intg_point_t_evo,                           &
      &    ak_d_temp, iphys%i_temp, fem_wk, f_l)
 !
       end subroutine int_surf_temp_diffuse
@@ -225,8 +224,7 @@
 !
       call int_surf_diffuse_term                                        &
      &   (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,        &
-     &    intg_point_t_evo,                                             &
-     &    sf_bc1_lead_gd_c%ngrp_sf_dat, sf_bc1_lead_gd_c%id_grp_sf_dat, &
+     &    sf_bc1_lead_gd_c, intg_point_t_evo,                           &
      &    ak_d_composit, iphys%i_light, fem_wk, f_l)
 !
       end subroutine int_surf_composit_diffuse

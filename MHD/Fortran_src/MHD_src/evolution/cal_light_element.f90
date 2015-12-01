@@ -38,6 +38,7 @@
       use m_element_phys_data
       use m_jacobian_sf_grp
       use m_bc_data_ene
+      use m_surf_data_composition
 !
       use nod_phys_send_recv
       use set_boundary_scalars
@@ -60,9 +61,9 @@
       end if
 !
 !
-      call int_sf_grad_composition                                      &
-     &   (node1, ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, rhs_tbl1,      &
-     &    intg_point_t_evo, fem1_wk, f1_l)
+      call int_sf_h_flux(node1, ele1, surf1, sf_grp1,                   &
+     &    jac1_sf_grp_2d_q, rhs_tbl1, sf_bc1_grad_c,                    &
+     &    intg_point_t_evo, ak_d_composit, fem1_wk, f1_l)
 !
 !
       if     (iflag_t_evo_4_composit .eq. id_explicit_euler) then

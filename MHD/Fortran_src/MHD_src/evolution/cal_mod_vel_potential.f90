@@ -33,6 +33,7 @@
       use m_jacobian_sf_grp
       use m_filter_elength
       use m_surf_data_torque
+      use m_surf_data_press
       use m_bc_data_velo
 !
       use int_vol_fractional_div
@@ -68,8 +69,8 @@
 !
 !   set boundary condition for wall
 !
-      call int_sf_grad_press                                            &
-     &   (node1, ele1, surf1, sf_grp1, jac1_sf_grp_2d_l, rhs_tbl1,      &
+      call int_sf_grad_press(node1, ele1, surf1, sf_grp1,               &
+     &    jac1_sf_grp_2d_l, rhs_tbl1, sf_bc1_grad_p,                    &
      &    intg_point_poisson, fem1_wk, f1_l)
 !
 !   add boundary term for fixed velocity

@@ -6,12 +6,22 @@
 !!      subroutine int_surf_current_diffuse(node, ele, surf, sf_grp,    &
 !!     &          nod_fld, jac_sf_grp, rhs_tbl, lead_sf,                &
 !!     &          n_int, i_vecp, fem_wk, f_l)
-!!      subroutine int_surf_diffuse_term                                &
-!!     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,&
-!!     &          n_int, ngrp_sf, id_grp_sf, ak_d, i_field, fem_wk, f_l)
+!!      subroutine int_surf_diffuse_term(node, ele, surf, sf_grp,       &
+!!     &          nod_fld, jac_sf_grp, rhs_tbl, lead_sf,                &
+!!     &          n_int, ak_d, i_field, fem_wk, f_l)
 !!      subroutine int_surf_vect_diffuse_term(node, ele, surf, sf_grp,  &
 !!     &          jac_sf_grp, nod_fld, rhs_tbl, lead_sf                 &
 !!     &          n_int, ak_d, i_field, fem_wk, f_l)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(phys_data),    intent(in) :: nod_fld
+!!        type(jacobians_2d), intent(in) :: jac_sf_grp
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(scaler_surf_bc_data_type),  intent(in) :: lead_sf
+!!        type(scaler_surf_bc_data_type),  intent(in) :: lead_sf(3)
+!
 !
       module int_surf_diffuse_terms
 !
@@ -98,9 +108,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_diffuse_term                                  &
-     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,  &
-     &          n_int, ngrp_sf, id_grp_sf, ak_d, i_field, fem_wk, f_l)
+      subroutine int_surf_diffuse_term(node, ele, surf, sf_grp,         &
+     &          nod_fld, jac_sf_grp, rhs_tbl, lead_sf,                  &
+     &          n_int, ak_d, i_field, fem_wk, f_l)
 !
       use m_int_surface_data
 !
@@ -115,9 +125,8 @@
       type(phys_data),    intent(in) :: nod_fld
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(scaler_surf_bc_data_type),  intent(in) :: lead_sf
 !
-      integer(kind = kint), intent(in) :: ngrp_sf
-      integer(kind = kint), intent(in) :: id_grp_sf(ngrp_sf)
       integer(kind = kint), intent(in) :: n_int, i_field
       real (kind = kreal), intent(in) :: ak_d(ele%numele)
 !
@@ -127,11 +136,11 @@
       integer(kind=kint) :: k2, i, igrp, num
 !
 !
-      if (ngrp_sf .eq. 0) return
+      if (lead_sf%ngrp_sf_dat .eq. 0) return
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
-      do i = 1, ngrp_sf
-        igrp = id_grp_sf(i)
+      do i = 1, lead_sf%ngrp_sf_dat
+        igrp = lead_sf%id_grp_sf_dat(i)
         num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
         if (num .gt. 0) then
 !

@@ -62,9 +62,9 @@
       end if
 !
 !
-        call int_sf_torque                                              &
-     &     (node1, ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, rhs_tbl1,    &
-     &      intg_point_t_evo, fem1_wk, f1_l)
+        call int_sf_grad_velocity(node1, ele1, surf1, sf_grp1,          &
+     &      jac1_sf_grp_2d_q, rhs_tbl1, sf_bc1_grad_v,                  &
+     &      intg_point_t_evo, ak_d_velo, fem1_wk, f1_l)
         call int_free_slip_surf_sph_in(node1, ele1, surf1, sf_grp1,     &
      &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, intg_point_t_evo,     &
      &      sf_bc1_free_sph_in%ngrp_sf_dat,                             &
@@ -113,9 +113,9 @@
 !
 !
       if (i_field .eq. iphys%i_v_diffuse) then
-        call int_sf_torque                                              &
-     &     (node1, ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, rhs_tbl1,    &
-     &      intg_point_t_evo, fem1_wk, f1_l)
+        call int_sf_grad_velocity(node1, ele1, surf1, sf_grp1,          &
+     &      jac1_sf_grp_2d_q, rhs_tbl1, sf_bc1_grad_v,                  &
+     &      intg_point_t_evo, ak_d_velo, fem1_wk, f1_l)
         call int_free_slip_surf_sph_in(node1, ele1, surf1, sf_grp1,     &
      &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, intg_point_t_evo,     &
      &      sf_bc1_free_sph_in%ngrp_sf_dat,                             &

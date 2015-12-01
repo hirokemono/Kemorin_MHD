@@ -4,6 +4,7 @@
 !      Written by H. Matsui on Sep. 2005
 !
 !      subroutine set_surface_id(sf_grp, sf_grp_nod, sf_grp_v)
+!      subroutine set_normal_velo
 !
       module set_surface_id_MHD
 !
@@ -20,6 +21,9 @@
       subroutine set_surface_id(sf_grp, sf_grp_nod, sf_grp_v)
 !
       use m_control_parameter
+!
+      use m_node_phys_address
+      use m_node_phys_data
 !
       use m_scalar_surf_id
       use m_vector_surf_id
@@ -44,6 +48,9 @@
         call set_surf_press_id(sf_grp)
         call set_surf_grad_press_id(sf_grp)
         call set_wall_press_id(sf_grp)
+!
+!     set normal velocity
+        call set_normal_velo
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
@@ -70,6 +77,23 @@
       end if
 ! 
       end subroutine set_surface_id
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine set_normal_velo
+!
+      use m_node_phys_address
+      use m_node_phys_data
+      use m_group_data
+      use m_surf_data_torque
+      use set_normal_field
+!
+!
+      call set_normal_velocity                                          &
+     &   (sf_grp1, sf_grp_nod1, sf_bc1_norm_v, iphys%i_velo, nod_fld1)
+!
+      end subroutine set_normal_velo
 !
 !-----------------------------------------------------------------------
 !

@@ -42,9 +42,9 @@
 !
       num_int = intg_point_t_evo
 !
-      call int_sf_h_flux                                                &
-     &   (node1, ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, rhs_tbl1,      &
-     &    num_int, fem1_wk, f1_l)
+      call int_sf_h_flux(node1, ele1, surf1, sf_grp1,                   &
+     &    jac1_sf_grp_2d_q, rhs_tbl1, sf_bc1_grad_t,                    &
+     &    num_int, ak_d_temp, fem1_wk, f1_l)
 !
       if (iflag_SGS_heat .ne. id_SGS_none                               &
      &     .and. iflag_commute_temp .eq. id_SGS_commute_ON) then
@@ -78,9 +78,9 @@
       num_int = intg_point_t_evo
 !
       if (i_field .eq. iphys%i_t_diffuse) then
-        call int_sf_h_flux                                              &
-     &     (node1, ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, rhs_tbl1,    &
-     &      num_int, fem1_wk, f1_l)
+        call int_sf_h_flux(node1, ele1, surf1, sf_grp1,                 &
+     &      jac1_sf_grp_2d_q, rhs_tbl1, sf_bc1_grad_t,                  &
+     &      num_int, ak_d_temp, fem1_wk, f1_l)
       end if
 !
       if (iflag_commute_heat .eq. id_SGS_commute_ON                     &

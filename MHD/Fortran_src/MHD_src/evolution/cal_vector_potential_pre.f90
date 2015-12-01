@@ -37,6 +37,7 @@
       use m_element_phys_data
       use m_control_parameter
       use m_bc_data_magne
+      use m_surf_data_vector_p
 !
       use set_boundary_scalars
       use nod_phys_send_recv
@@ -66,9 +67,9 @@
      &     (fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
       end if
 !
-      call int_sf_grad_vecp                                             &
-     &   (node1, ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, rhs_tbl1,      &
-     &    intg_point_t_evo, fem1_wk, f1_l)
+      call int_sf_grad_velocity(node1, ele1, surf1, sf_grp1,            &
+     &    jac1_sf_grp_2d_q, rhs_tbl1, sf_bc1_grad_a,                    &
+     &    intg_point_t_evo, ak_d_magne, fem1_wk, f1_l)
 !
 !      call check_nodal_data(my_rank, nod_fld1, n_vector, iphys%i_velo)
 !      call check_nodal_data(my_rank, fld_ele1,                         &

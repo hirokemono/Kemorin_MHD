@@ -40,6 +40,7 @@
       use nod_phys_send_recv
       use cal_sgs_fluxes
       use set_nodal_bc_id_data
+      use set_surface_id_MHD
       use int_vol_diffusion_ele
       use int_vol_velo_pre
       use int_surf_velo_pre
@@ -108,6 +109,7 @@
       end if
 !
       call set_boundary_velo
+      call set_normal_velo
 !
       call vector_send_recv(iphys%i_velo, node1, nod_comm, nod_fld1)
 !

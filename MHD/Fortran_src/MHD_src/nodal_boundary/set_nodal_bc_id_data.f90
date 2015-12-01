@@ -44,7 +44,6 @@
 !
       use count_num_nod_bc_MHD
       use set_boundary_scalars
-      use set_velocity_boundary
 !
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
@@ -111,14 +110,9 @@
 !
       use m_bc_data_velo
 !
-      use set_normal_field
       use set_nodal_bc_4_velo
       use set_boundary_scalars
       use set_fixed_boundaries
-!
-!     set normal velocity
-!
-      call set_normal_velocity(sf_grp1, sf_grp_nod1)
 !
 !     set fixed velocity
 !
@@ -130,8 +124,8 @@
 !
 !   boundary condition for special case
 !     ( please write every time!!)
-      call set_boundary_specific_vect                             &
-     &         (node1, nod_bc1_vsp, iphys%i_velo, nod_fld1)
+      call set_boundary_specific_vect                                   &
+     &   (node1, nod_bc1_vsp, iphys%i_velo, nod_fld1)
 !
 !
       call delete_radial_vector_on_bc                                   &

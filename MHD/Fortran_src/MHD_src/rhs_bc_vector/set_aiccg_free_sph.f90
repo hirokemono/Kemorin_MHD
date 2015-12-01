@@ -4,11 +4,11 @@
 !      stress free boundary in a spherical shell
 !     Written by H. Matsui on Sep. 2005
 !
-!!      subroutine set_aiccg_bc_free_sph_in                             &
-!!     &         (ele, surf, sf_grp, jac_sf_grp, rhs_tbl, mat_tbl,      &
+!!      subroutine set_aiccg_bc_free_sph_in(ele, surf, sf_grp,          &
+!!     &          free_in_sf, jac_sf_grp, rhs_tbl, mat_tbl,             &
 !!     &          num_int, fem_wk, mat33)
-!!      subroutine set_aiccg_bc_free_sph_out                            &
-!!     &         (ele, surf, sf_grp, jac_sf_grp, rhs_tbl, mat_tbl,      &
+!!      subroutine set_aiccg_bc_free_sph_out(ele, surf, sf_grp,         &
+!!     &          free_out_sf, jac_sf_grp, rhs_tbl, mat_tbl,            &
 !!     &          num_int, fem_wk, mat33)
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -16,6 +16,8 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(table_mat_const), intent(in) :: mat_tbl
+!!        type(scaler_surf_bc_data_type), intent(in) :: free_in_sf
+!!        type(scaler_surf_bc_data_type), intent(in) :: free_out_sf
 !!  
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(DJDS_MATRIX), intent(inout) :: mat33
@@ -31,8 +33,8 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_solver_djds
+      use t_surface_bc_data
       use m_ele_material_property
-      use m_surf_data_torque
 !
       implicit none
 !
@@ -42,8 +44,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_free_sph_in                               &
-     &         (ele, surf, sf_grp, jac_sf_grp, rhs_tbl, mat_tbl,        &
+      subroutine set_aiccg_bc_free_sph_in(ele, surf, sf_grp,            &
+     &          free_in_sf, jac_sf_grp, rhs_tbl, mat_tbl,               &
      &          num_int, fem_wk, mat33)
 !
       use m_int_surface_data
@@ -58,6 +60,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: mat_tbl
+      type(scaler_surf_bc_data_type), intent(in) :: free_in_sf
 !
       integer (kind = kint), intent(in) :: num_int
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -66,11 +69,12 @@
       integer (kind = kint) :: i, igrp, k2, num
 !
 !
+      if(free_in_sf%ngrp_sf_dat .le. 0)  return
       do k2 = 1, surf%nnod_4_surf
         call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
-        do i = 1, sf_bc1_free_sph_in%ngrp_sf_dat
-          igrp = sf_bc1_free_sph_in%id_grp_sf_dat(i)
+        do i = 1, free_in_sf%ngrp_sf_dat
+          igrp = free_in_sf%id_grp_sf_dat(i)
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
 !
           if (num .gt. 0) then
@@ -92,8 +96,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_aiccg_bc_free_sph_out                              &
-     &         (ele, surf, sf_grp, jac_sf_grp, rhs_tbl, mat_tbl,        &
+      subroutine set_aiccg_bc_free_sph_out(ele, surf, sf_grp,           &
+     &          free_out_sf, jac_sf_grp, rhs_tbl, mat_tbl,              &
      &          num_int, fem_wk, mat33)
 !
       use m_int_surface_data
@@ -108,6 +112,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: mat_tbl
+      type(scaler_surf_bc_data_type), intent(in) :: free_out_sf
 !
       integer (kind = kint), intent(in) :: num_int
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -116,11 +121,12 @@
       integer (kind = kint) :: i, igrp, k2, num
 !
 !
+      if(free_out_sf%ngrp_sf_dat .le. 0) return
       do k2 = 1, surf%nnod_4_surf
         call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
-        do i = 1, sf_bc1_free_sph_out%ngrp_sf_dat
-          igrp = sf_bc1_free_sph_out%id_grp_sf_dat(i)
+        do i = 1, free_out_sf%ngrp_sf_dat
+          igrp = free_out_sf%id_grp_sf_dat(i)
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
 !
           if (num .gt. 0) then

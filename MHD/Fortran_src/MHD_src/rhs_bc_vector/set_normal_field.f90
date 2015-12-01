@@ -8,14 +8,16 @@
 !        modified by H.Matsui on Nov. 2003
 !        modified by H.Matsui on Sep. 2005
 !
-!!      subroutine set_normal_velocity(sf_grp, sf_grp_nod)
+!!      subroutine set_normal_velocity(sf_grp, sf_grp_nod, norm_sf,     &
+!!     &          i_velo, nod_fld)
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
+!!        type(scaler_surf_flux_bc_type), intent(in) :: norm_sf
+!!        type(phys_data), intent(inout) :: nod_fld
 !
       module set_normal_field
 !
       use m_precision
-!
       use m_machine_parameter
 !
       implicit none
@@ -28,30 +30,30 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_normal_velocity(sf_grp, sf_grp_nod)
+      subroutine set_normal_velocity(sf_grp, sf_grp_nod, norm_sf,       &
+     &          i_velo, nod_fld)
 !
-      use m_node_phys_address
-      use m_node_phys_data
-      use m_surf_data_torque
+      use t_phys_data
       use t_group_data
       use t_surface_group_connect
+      use t_surface_bc_data
 !
+      integer(kind = kint), intent(in) :: i_velo
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
+      type(scaler_surf_flux_bc_type), intent(in) :: norm_sf
+!
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
-      if (sf_bc1_norm_v%ngrp_sf_fix_fx .gt. 0) then
+      if (norm_sf%ngrp_sf_fix_fx .gt. 0) then
         call set_normal_comp(sf_grp%num_grp, sf_grp%num_grp_smp,        &
      &      sf_grp_nod%ntot_node_sf_grp, sf_grp_nod%inod_stack_sf_grp,  &
      &      sf_grp_nod%istack_surf_nod_smp, sf_grp_nod%inod_surf_grp,   &
-     &      sf_grp_nod%surf_norm_nod,                                   &
-     &      sf_bc1_norm_v%ngrp_sf_fix_fx,                               &
-     &      sf_bc1_norm_v%nitem_sf_fix_fx,                              &
-     &      sf_bc1_norm_v%id_grp_sf_fix_fx,                             &
-     &      sf_bc1_norm_v%ist_ele_sf_fix_fx,                            &
-     &      sf_bc1_norm_v%sf_apt_fix_fx,                                &
-     &      nod_fld1%n_point, nod_fld1%ntot_phys, iphys%i_velo,         &
-     &      nod_fld1%d_fld)
+     &      sf_grp_nod%surf_norm_nod, norm_sf%ngrp_sf_fix_fx,           &
+     &      norm_sf%nitem_sf_fix_fx, norm_sf%id_grp_sf_fix_fx,          &
+     &      norm_sf%ist_ele_sf_fix_fx, norm_sf%sf_apt_fix_fx,           &
+     &      nod_fld%n_point, nod_fld%ntot_phys, i_velo, nod_fld%d_fld)
       end if
 !
       end subroutine set_normal_velocity

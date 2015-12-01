@@ -50,6 +50,8 @@
       use nod_phys_send_recv
       use int_vol_solenoid_correct
       use int_surf_grad_sgs
+      use set_nodal_bc_id_data
+      use set_surface_id_MHD
 !
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
@@ -81,6 +83,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_velo'
       call set_boundary_velo
+      if (iflag_debug.eq.1) write(*,*) 'set_normal_velo'
+      call set_normal_velo
 !
       if (iflag_debug.eq.1) write(*,*) 'vector_send_recv(iphys%i_velo)'
       call vector_send_recv(iphys%i_velo, node1, nod_comm, nod_fld1)

@@ -36,6 +36,7 @@
       use m_bc_data_velo
       use m_bc_data_magne
       use m_bc_data_ene
+      use m_surf_data_torque
       use m_solver_djds_MHD
       use m_velo_matrix
       use m_magne_matrix
@@ -51,10 +52,10 @@
      &   (num_t_linear, ele1, nod_bc1_p, DJDS_fl_l, Pmat_DJDS)
 !
         if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-          call set_aiccg_bc_velo                                        &
-     &       (intg_point_t_evo, ele1, surf1, sf_grp1, jac1_sf_grp_2d_q, &
-     &        nod_bc1_v, nod_bc1_rot, rhs_tbl1, mat_tbl_fl_q,           &
-     &        DJDS_fluid, fem1_wk, Vmat_DJDS)
+          call set_aiccg_bc_velo(intg_point_t_evo, ele1, surf1,         &
+     &        sf_grp1, nod_bc1_v, nod_bc1_rot, sf_bc1_free_sph_in,      &
+     &        sf_bc1_free_sph_out, jac1_sf_grp_2d_q,                    &
+     &        rhs_tbl1, mat_tbl_fl_q, DJDS_fluid, fem1_wk, Vmat_DJDS)
         end if
       end if
 !
@@ -95,8 +96,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_aiccg_bc_velo(num_int, ele, surf, sf_grp,          &
-     &          jac_sf_grp, nod_bc_v, nod_bc_rot,                       &
-     &          rhs_tbl, mat_tbl, DJDS_tbl, fem_wk, Vmat_DJDS)
+     &          nod_bc_v, nod_bc_rot, free_in_sf, free_out_sf,          &
+     &          jac_sf_grp, rhs_tbl, mat_tbl, DJDS_tbl, fem_wk,         &
+     &          Vmat_DJDS)
 !
       use t_geometry_data
       use t_surface_data
@@ -106,6 +108,7 @@
       use t_finite_element_mat
       use t_table_FEM_const
       use t_solver_djds
+      use t_surface_bc_data
 !
       use set_aiccg_free_sph
       use set_aiccg_bc_fixed
@@ -116,8 +119,10 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(jacobians_2d), intent(in) :: jac_sf_grp
 !
-      type(vect_fixed_nod_bc_type) :: nod_bc_v
-      type(scaler_rotaion_nod_bc_type) :: nod_bc_rot
+      type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_v
+      type(scaler_rotaion_nod_bc_type), intent(in) :: nod_bc_rot
+      type(scaler_surf_bc_data_type), intent(in) :: free_in_sf
+      type(scaler_surf_bc_data_type), intent(in) :: free_out_sf
 !
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(table_mat_const), intent(in) :: mat_tbl
@@ -128,14 +133,12 @@
 !
 !
 !      matrix setting for free slip on sphere
-      if(sf_bc1_free_sph_in%ngrp_sf_dat .gt. 0)  then
-        call set_aiccg_bc_free_sph_in(ele, surf, sf_grp,                &
-     &      jac_sf_grp, rhs_tbl, mat_tbl, num_int, fem_wk, Vmat_DJDS)
-      end if
-      if(sf_bc1_free_sph_out%ngrp_sf_dat .gt. 0) then
-        call set_aiccg_bc_free_sph_out(ele, surf, sf_grp,               &
-     &      jac_sf_grp, rhs_tbl, mat_tbl, num_int, fem_wk, Vmat_DJDS)
-      end if
+      call set_aiccg_bc_free_sph_in(ele, surf, sf_grp,                  &
+     &    free_in_sf, jac_sf_grp, rhs_tbl, mat_tbl,                     &
+     &    num_int, fem_wk, Vmat_DJDS)
+      call set_aiccg_bc_free_sph_out(ele, surf, sf_grp,                 &
+     &    free_out_sf, jac_sf_grp, rhs_tbl, mat_tbl,                    &
+     &    num_int, fem_wk, Vmat_DJDS)
 !
 !      matrix setting for fixed boundaries
       call set_aiccg_bc_vector_nod(ele, nod_bc_v, DJDS_tbl, Vmat_DJDS)
