@@ -51,7 +51,7 @@
 !
 !>      field data to evaluate nonliear terms in grid space
       real(kind = kreal), allocatable :: fld_rtp(:,:)
-!>      Nonoliear terms data in grid space
+!>      Nonliear terms data in grid space
       real(kind = kreal), allocatable :: frc_rtp(:,:)
 !
 !-----------------------------------------------------------------------

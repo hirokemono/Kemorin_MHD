@@ -5,19 +5,21 @@
 !
 !!      subroutine s_count_num_surf_vector(sf_grp, sf_grp_nod,          &
 !!     &           num_bc_sf, bc_sf_name, ibc_sf_type,                  &
-!!     &           field_name, nmax_sf_sgs, ngrp_sf_sgs, ngrp_sf_dat_n, &
-!!     &           nnod_sf_dat_n)
+!!     &           field_name, sgs_sf, norm_sf)
 !!      subroutine s_set_surf_vector_id(sf_grp, sf_grp_nod, sf_grp_v,   &
 !!     &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,       &
-!!     &           field_name, nmax_sf_sgs, id_grp_sf_sgs,              &
-!!     &           ngrp_sf_fix_n, id_grp_sf_fix_n,                      &
-!!     &           nnod_sf_fix_n, ist_nod_sf_fix_n, sf_apt_fix_n)
+!!     &           field_name, sgs_sf, norm_sf)
+!!        type(scaler_surf_bc_data_type),  intent(inout) :: sgs_sf(3)
+!!        type(scaler_surf_flux_bc_type),  intent(inout) :: norm_sf
 !
       module set_surf_vector_id
 !
       use m_precision
       use m_boundary_condition_IDs
 !
+      use t_group_data
+      use t_surface_group_connect
+      use t_surface_bc_data
       use set_surface_bc
 !
       implicit  none
@@ -30,11 +32,7 @@
 !
       subroutine s_count_num_surf_vector(sf_grp, sf_grp_nod,            &
      &           num_bc_sf, bc_sf_name, ibc_sf_type,                    &
-     &           field_name, nmax_sf_sgs, ngrp_sf_sgs, ngrp_sf_dat_n,   &
-     &           nnod_sf_dat_n)
-!
-      use t_group_data
-      use t_surface_group_connect
+     &           field_name, sgs_sf, norm_sf)
 !
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
@@ -44,19 +42,16 @@
       character (len=kchara), intent(in) :: bc_sf_name(num_bc_sf)
       character (len=kchara), intent(in) :: field_name
 ! 
-! 
-      integer(kind=kint), intent(inout) :: nmax_sf_sgs
-      integer(kind=kint), intent(inout) :: ngrp_sf_sgs(3)
+      type(scaler_surf_bc_data_type),  intent(inout) :: sgs_sf(3)
+      type(scaler_surf_flux_bc_type),  intent(inout) :: norm_sf
 !
-      integer(kind=kint), intent(inout) :: ngrp_sf_dat_n, nnod_sf_dat_n
-!
+      integer(kind = kint) :: ngrp_sf_sgs(3)
+      integer(kind = kint) :: ngrp_sf_dat_n, nnod_sf_dat_n
       integer(kind = kint) :: isig_s(3)
       integer(kind = kint) :: i, j, nd
 !
 !
-      nmax_sf_sgs = 0
       ngrp_sf_sgs(1:3) = 0
-!
       ngrp_sf_dat_n = 0
       nnod_sf_dat_n = 0
 !
@@ -101,8 +96,10 @@
         end if
       end do
 !
+      norm_sf%ngrp_sf_fix_fx =  ngrp_sf_dat_n
+      norm_sf%nitem_sf_fix_fx = nnod_sf_dat_n
       do j = 1, 3
-        nmax_sf_sgs = max(nmax_sf_sgs,ngrp_sf_sgs(j))
+        sgs_sf(j)%ngrp_sf_dat = ngrp_sf_sgs(j)
       end do
 !
       end subroutine s_count_num_surf_vector
@@ -111,12 +108,8 @@
 !
       subroutine s_set_surf_vector_id(sf_grp, sf_grp_nod, sf_grp_v,     &
      &           num_bc_sf, bc_sf_name, ibc_sf_type, bc_sf_mag,         &
-     &           field_name, nmax_sf_sgs, id_grp_sf_sgs,                &
-     &           ngrp_sf_fix_n, id_grp_sf_fix_n,                        &
-     &           nnod_sf_fix_n, ist_nod_sf_fix_n, sf_apt_fix_n)
+     &           field_name, sgs_sf, norm_sf)
 !
-      use t_group_data
-      use t_surface_group_connect
       use t_surface_group_geometry
 !
       type(surface_group_data), intent(in) :: sf_grp
@@ -129,18 +122,8 @@
       character (len=kchara), intent(in) :: bc_sf_name(num_bc_sf)
       character (len=kchara), intent(in) :: field_name
 !
-      integer(kind=kint), intent(in) :: nmax_sf_sgs
-      integer(kind=kint), intent(inout) :: id_grp_sf_sgs(nmax_sf_sgs,3)
-!
-!
-      integer(kind=kint), intent(in) :: ngrp_sf_fix_n
-      integer(kind=kint), intent(in) :: nnod_sf_fix_n
-      integer(kind=kint), intent(inout)                                 &
-     &      :: id_grp_sf_fix_n(ngrp_sf_fix_n)
-      integer(kind=kint), intent(inout)                                 &
-     &      :: ist_nod_sf_fix_n(0:ngrp_sf_fix_n)
-      real (kind=kreal), intent(inout) :: sf_apt_fix_n(nnod_sf_fix_n,3)
-!
+      type(scaler_surf_bc_data_type),  intent(inout) :: sgs_sf(3)
+      type(scaler_surf_flux_bc_type),  intent(inout) :: norm_sf
 !
       integer(kind = kint) :: i, j, nd
       integer(kind = kint) :: l_f1(3), l_s1(3), isig_s(3)
@@ -173,25 +156,25 @@
 ! -----------set boundary from control file
 !
             if (ibc_sf_type(j) .eq. iflag_fixed_norm) then
-              call set_sf_nod_grp_from_ctl                              &
-     &           (sf_grp%num_grp, sf_grp_nod%inod_stack_sf_grp,         &
-     &            ngrp_sf_fix_n, nnod_sf_fix_n, l_10, i,                &
-     &            id_grp_sf_fix_n, ist_nod_sf_fix_n, sf_apt_fix_n,      &
-     &            bc_sf_mag(j))
+              call set_sf_nod_grp_from_ctl(l_10, i,                     &
+     &           sf_grp%num_grp, sf_grp_nod%inod_stack_sf_grp,          &
+     &            norm_sf%ngrp_sf_fix_fx, norm_sf%nitem_sf_fix_fx,      &
+     &            norm_sf%id_grp_sf_fix_fx, norm_sf%ist_ele_sf_fix_fx,  &
+     &            norm_sf%sf_apt_fix_fx, bc_sf_mag(j))
               isig_s(1:3) = 1
             else if (ibc_sf_type(j) .eq. -iflag_fixed_norm) then
-              call set_sf_nod_grp_from_data                             &
-     &           (sf_grp, sf_grp_nod, sf_grp_v,                         &
-     &            ngrp_sf_fix_n, nnod_sf_fix_n, l_10, i,                &
-     &            id_grp_sf_fix_n, ist_nod_sf_fix_n, sf_apt_fix_n,      &
-     &            field_name )
+              call set_sf_nod_grp_from_data(l_10, i,                    &
+     &            sf_grp, sf_grp_nod, sf_grp_v,                         &
+     &            norm_sf%ngrp_sf_fix_fx, norm_sf%nitem_sf_fix_fx,      &
+     &            norm_sf%id_grp_sf_fix_fx, norm_sf%ist_ele_sf_fix_fx,  &
+     &            norm_sf%sf_apt_fix_fx, field_name )
               isig_s(1:3) = 1
             end if
 !
             do nd = 1, 3
               if ( isig_s(nd).eq.1 ) then
                 l_s1(nd) = l_s1(nd) + 1
-                id_grp_sf_sgs(l_s1(nd),nd) = i
+                sgs_sf(nd)%id_grp_sf_dat(l_s1(nd)) = i
               end if
             end do
 !

@@ -3,11 +3,11 @@
 !
 !      Written by H. Matsui on Sep., 2005
 !
-!!      subroutine int_surf_div_induct_t_sgs(node, ele, surf,          &
-!!     &          sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,     &
+!!      subroutine int_surf_div_induct_t_sgs(node, ele, surf,           &
+!!     &          sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,      &
 !!     &          n_int, i_flux, i_filter, i_v, i_b, fem_wk, f_nl)
-!!      subroutine int_surf_commute_induct_t(node, ele, surf,          &
-!!     &          sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,     &
+!!      subroutine int_surf_commute_induct_t(node, ele, surf, sf_grp,   &
+!!     &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,      &
 !!     &          n_int, i_flux, i_filter, i_v, i_b, fem_wk, f_nl)
 !
       module int_surf_div_induct_tsr_sgs
@@ -23,8 +23,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_filter_elength
-!
-      use m_surf_data_magne
+      use t_surface_bc_data
 !
       implicit none
 !
@@ -34,8 +33,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_div_induct_t_sgs(node, ele, surf,             &
-     &          sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,        &
+      subroutine int_surf_div_induct_t_sgs(node, ele, surf, sf_grp,     &
+     &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,        &
      &          n_int, i_flux, i_filter, i_v, i_b, fem_wk, f_nl)
 !
       use m_SGS_model_coefs
@@ -55,6 +54,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
 !
       integer(kind=kint), intent(in) :: n_int, i_filter
       integer (kind = kint), intent(in) :: i_b, i_v, i_flux
@@ -65,12 +65,15 @@
       integer(kind=kint) :: k2, nd, i, igrp, num
 !
 !
-      if (sum(sf_sgs1_grad_b%ngrp_sf_dat) .eq. 0) return
+      num =  sgs_sf(1)%ngrp_sf_dat                                      &
+     &     + sgs_sf(2)%ngrp_sf_dat                                      &
+     &     + sgs_sf(3)%ngrp_sf_dat
+      if(num .le. 0) return
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       do nd = 1, n_vector
-        do i = 1, sf_sgs1_grad_b%ngrp_sf_dat(nd)
-          igrp = sf_sgs1_grad_b%id_grp_sf_dat(i,nd)
+        do i = 1, sgs_sf(nd)%ngrp_sf_dat
+          igrp = sgs_sf(nd)%id_grp_sf_dat(i)
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if (num .gt.0) then
 !
@@ -88,15 +91,15 @@
         end do
       end do
 !
-      call add3_skv_to_ff_v_smp                                        &
+      call add3_skv_to_ff_v_smp                                         &
      &   (node, ele, rhs_tbl, fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_surf_div_induct_t_sgs
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_commute_induct_t(node, ele, surf,            &
-     &          sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,       &
+      subroutine int_surf_commute_induct_t(node, ele, surf, sf_grp,     &
+     &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,        &
      &          n_int, i_flux, i_filter, i_v, i_b, fem_wk, f_nl)
 !
       use m_int_surface_data
@@ -113,6 +116,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
 !
       integer(kind=kint), intent(in) :: n_int, i_filter
       integer (kind = kint), intent(in) :: i_b, i_v, i_flux
@@ -123,12 +127,15 @@
       integer(kind=kint) :: k2, nd, i, igrp, num
 !
 !
-      if (sum(sf_sgs1_grad_b%ngrp_sf_dat) .eq. 0) return
+      num =  sgs_sf(1)%ngrp_sf_dat                                      &
+     &     + sgs_sf(2)%ngrp_sf_dat                                      &
+     &     + sgs_sf(3)%ngrp_sf_dat
+      if(num .le. 0) return
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       do nd = 1, n_vector
-        do i = 1, sf_sgs1_grad_b%ngrp_sf_dat(nd)
-          igrp = sf_sgs1_grad_b%id_grp_sf_dat(i,nd)
+        do i = 1, sgs_sf(nd)%ngrp_sf_dat
+          igrp = sgs_sf(nd)%id_grp_sf_dat(i)
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if(num .gt. 0) then
 !

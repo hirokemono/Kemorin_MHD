@@ -3,12 +3,11 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine cal_rotation_commute(nmax_grp_sf, ngrp_sf,            &
-!     &          id_grp_sf, i_filter, i_sgs, i_vect)
-!      subroutine cal_rotation_commute_fluid(nmax_grp_sf, ngrp_sf,      &
-!     &          id_grp_sf, i_filter, i_sgs, i_vect)
-!      subroutine cal_rotation_commute_conduct(nmax_grp_sf, ngrp_sf,    &
-!     &          id_grp_sf, i_filter, i_sgs, i_vect)
+!      subroutine cal_rotation_commute(sgs_sf, i_filter, i_sgs, i_vect)
+!      subroutine cal_rotation_commute_fluid(sgs_sf,                    &
+!     &          i_filter, i_sgs, i_vect)
+!      subroutine cal_rotation_commute_conduct(sgs_sf,                  &
+!     &          i_filter, i_sgs, i_vect)
 !
 !         i_filter: ID for filter function
 !
@@ -27,6 +26,8 @@
       use m_int_vol_data
       use m_filter_elength
 !
+      use t_surface_bc_data
+!
       use int_vol_commute_error
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -40,15 +41,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rotation_commute(nmax_grp_sf, ngrp_sf,             &
-     &          id_grp_sf, i_filter, i_sgs, i_vect)
+      subroutine cal_rotation_commute(sgs_sf,                           &
+     &          i_filter, i_sgs, i_vect)
 !
-      use m_geometry_data
-      use m_group_data
+      type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
 !
-      integer(kind = kint), intent(in) :: nmax_grp_sf
-      integer(kind = kint), intent(in) :: ngrp_sf(3)
-      integer(kind = kint), intent(in) :: id_grp_sf(nmax_grp_sf,3)
       integer(kind = kint), intent(in) :: i_filter
       integer(kind = kint), intent(in) :: i_sgs, i_vect
 !
@@ -61,9 +58,8 @@
      &    i_filter, i_vect)
 !
       call int_surf_rot_commute_sgs(node1, ele1, surf1, sf_grp1,        &
-     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,              &
-     &    intg_point_t_evo, nmax_grp_sf, ngrp_sf, id_grp_sf,            &
-     &    i_filter, i_vect, fem1_wk, f1_nl)
+     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, sgs_sf,      &
+     &    intg_point_t_evo, i_filter, i_vect, fem1_wk, f1_nl)
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
@@ -74,16 +70,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rotation_commute_fluid(nmax_grp_sf, ngrp_sf,       &
-     &          id_grp_sf, i_filter, i_sgs, i_vect)
+      subroutine cal_rotation_commute_fluid(sgs_sf,                     &
+     &          i_filter, i_sgs, i_vect)
 !
-      use m_geometry_data
       use m_geometry_data_MHD
-      use m_group_data
 !
-      integer(kind = kint), intent(in) :: nmax_grp_sf
-      integer(kind = kint), intent(in) :: ngrp_sf(3)
-      integer(kind = kint), intent(in) :: id_grp_sf(nmax_grp_sf,3)
+      type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
+!
       integer(kind = kint), intent(in) :: i_filter
       integer(kind = kint), intent(in) :: i_sgs, i_vect
 !
@@ -93,9 +86,8 @@
       call int_vol_commute_rot(iele_fl_smp_stack, intg_point_t_evo,     &
      &    i_filter, i_vect)
       call int_surf_rot_commute_sgs(node1, ele1, surf1, sf_grp1,        &
-     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,              &
-     &    intg_point_t_evo, nmax_grp_sf, ngrp_sf, id_grp_sf,            &
-     &    i_filter, i_vect, fem1_wk, f1_nl)
+     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, sgs_sf,      &
+     &    intg_point_t_evo, i_filter, i_vect, fem1_wk, f1_nl)
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
@@ -106,16 +98,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rotation_commute_conduct(nmax_grp_sf, ngrp_sf,     &
-     &          id_grp_sf, i_filter, i_sgs, i_vect)
+      subroutine cal_rotation_commute_conduct(sgs_sf,                   &
+     &          i_filter, i_sgs, i_vect)
 !
-      use m_geometry_data
       use m_geometry_data_MHD
-      use m_group_data
 !
-      integer(kind = kint), intent(in) :: nmax_grp_sf
-      integer(kind = kint), intent(in) :: ngrp_sf(3)
-      integer(kind = kint), intent(in) :: id_grp_sf(nmax_grp_sf,3)
+      type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
+!
       integer(kind = kint), intent(in) :: i_filter
       integer(kind = kint), intent(in) :: i_sgs, i_vect
 !
@@ -125,9 +114,8 @@
       call int_vol_commute_rot(iele_cd_smp_stack, intg_point_t_evo,     &
      &    i_filter, i_vect)
       call int_surf_rot_commute_sgs(node1, ele1, surf1, sf_grp1,        &
-     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,              &
-     &    intg_point_t_evo, nmax_grp_sf, ngrp_sf, id_grp_sf,            &
-     &    i_filter, i_vect, fem1_wk, f1_nl)
+     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, sgs_sf,      &
+     &    intg_point_t_evo, i_filter, i_vect, fem1_wk, f1_nl)
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &

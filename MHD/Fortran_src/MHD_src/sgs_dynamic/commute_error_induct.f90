@@ -42,6 +42,7 @@
       use m_jacobian_sf_grp
       use m_finite_element_matrix
       use m_int_vol_data
+      use m_surf_data_magne
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -59,8 +60,8 @@
 !
       call int_surf_commute_induct_t(node1, ele1, surf1, sf_grp1,       &
      &     nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
-     &     intg_point_t_evo, i_flux, i_filter, i_v, i_b,                &
-     &     fem1_wk, f1_nl)
+     &     sf_sgs1_grad_b, intg_point_t_evo,                            &
+     &     i_flux, i_filter, i_v, i_b,  fem1_wk, f1_nl)
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &

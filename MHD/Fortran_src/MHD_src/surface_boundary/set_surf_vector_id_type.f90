@@ -5,20 +5,14 @@
 !
 !      Written by H. Matsui on Feb., 2009
 !
-!      subroutine s_set_surf_vector_id_type                             &
-!     &          (num_surf, surf_name, inod_stack_sf_grp,               &
-!     &           num_bc_sf, bc_sf_name, ibc_sf_type,                   &
-!     &           nmax_sf_sgs, id_grp_sf_sgs, ngrp_sf_fix_n,            &
-!     &           id_grp_sf_fix_n, ist_nod_sf_fix_n)
+!      subroutine s_set_surf_vector_id_type(sf_grp, inod_stack_sf_grp,  &
+!     &          num_bc_sf, bc_sf_name, ibc_sf_type, sgs_sf, norm_sf)
 !      subroutine set_sf_grad_vector_id_type                            &
-!     &          (num_surf, surf_istack, surf_name,                     &
-!     &           num_bc_sf, bc_sf_name, ibc_sf_type,                   &
-!     &           nmax_sf_fix, id_grp_sf_fix,                           &
-!     &           ist_ele_sf_fix, nmax_sf_lead, id_grp_sf_lead)
+!     &          (sf_grp,  num_bc_sf, bc_sf_name, ibc_sf_type,          &
+!     &           sf_bc_grad, sf_bc_lead)
 !
 !      subroutine set_sf_grad_scalar_id_type                            &
-!     &          (num_surf, surf_istack, surf_name,                     &
-!     &           num_bc_sf, bc_sf_name, ibc_sf_type,                   &
+!     &          (sf_grp, num_bc_sf, bc_sf_name, ibc_sf_type,           &
 !     &           ngrp_sf_fix, id_grp_sf_fix, ist_sf_fix,               &
 !     &           ngrp_sf_lead, id_grp_sf_lead)
 !
@@ -26,6 +20,9 @@
 !
       use m_precision
       use m_boundary_condition_IDs
+!
+      use t_group_data
+      use t_surface_bc_data
 !
       implicit  none
 !
@@ -35,30 +32,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_set_surf_vector_id_type                              &
-     &          (num_surf, surf_name, inod_stack_sf_grp,                &
-     &           num_bc_sf, bc_sf_name, ibc_sf_type,                    &
-     &           nmax_sf_sgs, id_grp_sf_sgs, ngrp_sf_fix_n,             &
-     &           id_grp_sf_fix_n, ist_nod_sf_fix_n)
+      subroutine s_set_surf_vector_id_type(sf_grp, inod_stack_sf_grp,   &
+     &          num_bc_sf, bc_sf_name, ibc_sf_type, sgs_sf, norm_sf)
 !
-      integer(kind = kint), intent(in) :: num_surf
-      integer(kind = kint), intent(in) :: inod_stack_sf_grp(0:num_surf)
-      character (len=kchara), intent(in) :: surf_name(num_surf)
+      type(surface_group_data), intent(in) :: sf_grp
+!
+      integer(kind = kint), intent(in)                                  &
+     &                     :: inod_stack_sf_grp(0:sf_grp%num_grp)
 !
       integer (kind=kint) :: num_bc_sf
       integer (kind=kint), intent(in) :: ibc_sf_type(num_bc_sf)
       character (len=kchara), intent(in) :: bc_sf_name(num_bc_sf)
 !
-      integer(kind=kint), intent(in) :: nmax_sf_sgs
-      integer(kind=kint), intent(inout) :: id_grp_sf_sgs(nmax_sf_sgs,3)
-!
-!
-      integer(kind=kint), intent(in) :: ngrp_sf_fix_n
-      integer(kind=kint), intent(inout)                                 &
-     &      :: id_grp_sf_fix_n(ngrp_sf_fix_n)
-      integer(kind=kint), intent(inout)                                 &
-     &      :: ist_nod_sf_fix_n(0:ngrp_sf_fix_n)
-!
+      type(scaler_surf_bc_data_type),  intent(inout) :: sgs_sf(3)
+      type(scaler_surf_flux_bc_type),  intent(inout) :: norm_sf
 !
       integer(kind = kint) :: i, j, nd
       integer(kind = kint) :: l_s1(3), isig_s(3)
@@ -68,13 +55,13 @@
       l_s1(1:3) = 0
       l_10 = 0
 !
-      do i=1, num_surf
+      do i=1, sf_grp%num_grp
 !
 ! ----------- loop for boundary conditions
         do j=1, num_bc_sf
 !
 ! ----------- check surface group
-         if (surf_name(i)==bc_sf_name(j)) then
+         if (sf_grp%grp_name(i) .eq. bc_sf_name(j)) then
            isig_s(1:3) = 0
 !
 ! -----------set boundary from control file
@@ -91,9 +78,10 @@
 !
             if ( abs(ibc_sf_type(j)) .eq. iflag_fixed_norm) then
               l_10 = l_10 + 1
-              id_grp_sf_fix_n(l_10) = i
+              norm_sf%id_grp_sf_fix_fx(l_10) = i
 !
-              ist_nod_sf_fix_n(l_10) = ist_nod_sf_fix_n(l_10-1)         &
+              norm_sf%ist_ele_sf_fix_fx(l_10)                           &
+     &             = norm_sf%ist_ele_sf_fix_fx(l_10-1)                  &
      &                 + inod_stack_sf_grp(i) - inod_stack_sf_grp(i-1)
               isig_s(1:3) = 1
             end if
@@ -101,7 +89,7 @@
             do nd = 1, 3
               if ( isig_s(nd).eq.1 ) then
                 l_s1(nd) = l_s1(nd) + 1
-                id_grp_sf_sgs(l_s1(nd),nd) = i
+                sgs_sf(nd)%id_grp_sf_dat(l_s1(nd)) = i
               end if
             end do
 !
@@ -115,27 +103,17 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_sf_grad_vector_id_type                             &
-     &          (num_surf, surf_istack, surf_name,                      &
-     &           num_bc_sf, bc_sf_name, ibc_sf_type,                    &
-     &           nmax_sf_fix, id_grp_sf_fix,                            &
-     &           ist_ele_sf_fix, nmax_sf_lead, id_grp_sf_lead)
+     &          (sf_grp,  num_bc_sf, bc_sf_name, ibc_sf_type,           &
+     &           sf_bc_grad, sf_bc_lead)
 !
-      integer(kind = kint), intent(in) :: num_surf
-      integer(kind = kint), intent(in) :: surf_istack(0:num_surf)
-      character (len=kchara), intent(in) :: surf_name(num_surf)
+      type(surface_group_data), intent(in) :: sf_grp
 !
       integer (kind=kint) :: num_bc_sf
       integer (kind=kint), intent(in) :: ibc_sf_type(num_bc_sf)
       character (len=kchara), intent(in) :: bc_sf_name(num_bc_sf)
 ! 
-      integer(kind=kint), intent(in) :: nmax_sf_fix
-      integer(kind=kint), intent(inout) :: id_grp_sf_fix(nmax_sf_fix,3)
-      integer(kind=kint), intent(inout)                                 &
-     &      :: ist_ele_sf_fix(0:nmax_sf_fix,3)
-!
-      integer(kind=kint), intent(in) :: nmax_sf_lead
-      integer(kind=kint), intent(inout) :: id_grp_sf_lead(nmax_sf_lead,3)
-!
+      type(scaler_surf_flux_bc_type), intent(inout) :: sf_bc_grad(3)
+      type(scaler_surf_bc_data_type),  intent(inout) :: sf_bc_lead(3)
 !
       integer(kind = kint) :: i, j, nd, i_dest
       integer(kind = kint) :: l_f1(3), l_l1(3)
@@ -144,13 +122,13 @@
       l_f1(1:3) = 0
       l_l1(1:3) = 0
 !
-      do i=1, num_surf
+      do i=1, sf_grp%num_grp
 !
 ! ----------- loop for boundary conditions
         do j=1, num_bc_sf
 !
 ! ----------- check surface group
-          if (surf_name(i)==bc_sf_name(j)) then
+          if (sf_grp%grp_name(i) .eq. bc_sf_name(j)) then
 !
 ! -----------set fixed boundary
 !
@@ -159,15 +137,16 @@
      &           then
                 l_f1(nd) = l_f1(nd) + 1
                 i_dest = l_f1(nd)
-                id_grp_sf_fix(i_dest,nd) = i
+                sf_bc_grad(nd)%id_grp_sf_fix_fx(i_dest) = i
 !
-                ist_ele_sf_fix(i_dest,nd) = ist_ele_sf_fix(i_dest-1,nd) &
-     &                    + surf_istack(i) - surf_istack(i-1)
+                sf_bc_grad(nd)%ist_ele_sf_fix_fx(i_dest)                &
+     &              = sf_bc_grad(nd)%ist_ele_sf_fix_fx(i_dest-1)        &
+     &               + sf_grp%istack_grp(i) - sf_grp%istack_grp(i-1)
 !
 ! -----------lead boundary values
               else if ( ibc_sf_type(j)==(nd+iflag_lead_grad) ) then
                 l_l1(nd) = l_l1(nd) + 1
-                id_grp_sf_lead(l_l1(nd),nd) = i
+                sf_bc_lead(nd)%id_grp_sf_dat(l_l1(nd)) = i
               end if
             end do
 !
@@ -181,14 +160,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_sf_grad_scalar_id_type                             &
-     &          (num_surf, surf_istack, surf_name,                      &
-     &           num_bc_sf, bc_sf_name, ibc_sf_type,                    &
+     &          (sf_grp, num_bc_sf, bc_sf_name, ibc_sf_type,            &
      &           ngrp_sf_fix, id_grp_sf_fix, ist_sf_fix,                &
      &           ngrp_sf_lead, id_grp_sf_lead)
 !
-      integer (kind=kint), intent(in) :: num_surf
-      integer (kind=kint), intent(in) :: surf_istack(0:num_surf)
-      character (len=kchara), intent(in) :: surf_name(num_surf)
+      type(surface_group_data), intent(in) :: sf_grp
 !
       integer (kind=kint), intent(in) :: num_bc_sf
       integer (kind=kint), intent(in) :: ibc_sf_type(num_bc_sf)
@@ -210,9 +186,9 @@
 !
 ! ---------  boundary condition for temperature
 !
-      do i=1, num_surf
+      do i=1, sf_grp%num_grp
         do j=1, num_bc_sf
-          if (surf_name(i)==bc_sf_name(j)) then
+          if (sf_grp%grp_name(i) .eq. bc_sf_name(j)) then
 !
 ! -----------set boundary using SGS case
 !
@@ -220,7 +196,8 @@
               l_f1 = l_f1 + 1
               id_grp_sf_fix(l_f1) = i
               ist_sf_fix(l_f1) = ist_sf_fix(l_f1-1)                     &
-     &                          + surf_istack(i) - surf_istack(i-1)
+     &                          + sf_grp%istack_grp(i)                  &
+     &                          - sf_grp%istack_grp(i-1)
 !
             else if (ibc_sf_type(j) .eq. iflag_lead_grad_s) then
               l_l1 = l_l1 + 1

@@ -67,8 +67,7 @@
       call s_count_num_surf_vector(sf_grp, sf_nod,                      &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type, name_svn,                               &
-     &    velo%sgs%nmax_sf_dat, velo%sgs%ngrp_sf_dat,                   &
-     &    velo%normal%ngrp_sf_fix_fx, velo%normal%nitem_sf_fix_fx)
+     &    velo%sgs, velo%normal)
 !
       call count_num_stress_free_surf(sf_grp%num_grp, sf_grp%grp_name,  &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
@@ -96,9 +95,7 @@
       call s_count_num_surf_vector(sf_grp, sf_nod,                      &
      &    a_potential_surf%num_bc, a_potential_surf%bc_name,            &
      &    a_potential_surf%ibc_type, name_san,                          &
-     &    vector_p%sgs%nmax_sf_dat, vector_p%sgs%ngrp_sf_dat,           &
-     &    vector_p%normal%ngrp_sf_fix_fx,                               &
-     &    vector_p%normal%nitem_sf_fix_fx)
+     &    vector_p%sgs, vector_p%normal)
 !
       call count_num_stress_free_surf(sf_grp%num_grp, sf_grp%grp_name,  &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
@@ -124,8 +121,7 @@
 !
       call s_count_num_surf_vector(sf_grp, sf_nod,                      &
      &     magne_surf%num_bc, magne_surf%bc_name, magne_surf%ibc_type,  &
-     &     name_sbn, magne%sgs%nmax_sf_dat, magne%sgs%ngrp_sf_dat,      &
-     &     magne%normal%ngrp_sf_fix_fx, magne%normal%nitem_sf_fix_fx)
+     &     name_sbn, magne%sgs, magne%normal)
 !
       end subroutine count_num_surf_magne_type
 !
@@ -144,9 +140,7 @@
       call s_count_num_surf_vector(sf_grp, sf_nod,                      &
      &     current_surf%num_bc, current_surf%bc_name,                   &
      &     current_surf%ibc_type, name_sjn,                             &
-     &     current%sgs%nmax_sf_dat, current%sgs%ngrp_sf_dat,            &
-     &     current%normal%ngrp_sf_fix_fx,                               &
-     &     current%normal%nitem_sf_fix_fx)
+     &     current%sgs, current%normal)
 !
       end subroutine count_num_surf_current_type
 !
@@ -162,12 +156,9 @@
 !
 !
       call count_num_sf_grad_vector                                     &
-     &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
-     &     torque_surf%num_bc, torque_surf%bc_name,                     &
+     &    (sf_grp, torque_surf%num_bc, torque_surf%bc_name,             &
      &     torque_surf%ibc_type, name_vxg, name_vyg, name_vzg,          &
-     &     velo%grad%nmax_sf_fix_fx, velo%grad%nmax_ele_sf_fix_fx,      &
-     &     velo%torque_lead%nmax_sf_dat, velo%grad%ngrp_sf_fix_fx,      &
-     &     velo%grad%nitem_sf_fix_fx, velo%torque_lead%ngrp_sf_dat)
+     &     velo%grad, velo%torque_lead)
 !
       end subroutine count_num_surf_torque_type
 !
@@ -183,12 +174,9 @@
 !
 !
       call count_num_sf_grad_vector                                     &
-     &   (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,           &
-     &    a_potential_surf%num_bc, a_potential_surf%bc_name,            &
+     &   (sf_grp, a_potential_surf%num_bc, a_potential_surf%bc_name,    &
      &    a_potential_surf%ibc_type, name_axg, name_ayg, name_azg,      &
-     &    vect_p%grad%nmax_sf_fix_fx, vect_p%grad%nmax_ele_sf_fix_fx,   &
-     &    vect_p%torque_lead%nmax_sf_dat, vect_p%grad%ngrp_sf_fix_fx,   &
-     &    vect_p%grad%nitem_sf_fix_fx, vect_p%torque_lead%ngrp_sf_dat)
+     &    vect_p%grad, vect_p%torque_lead)
 !
       end subroutine count_num_surf_grad_vecp_type
 !
@@ -203,12 +191,9 @@
 !
 !
       call count_num_sf_grad_vector                                     &
-     &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
-     &     magne_surf%num_bc, magne_surf%bc_name, magne_surf%ibc_type,  &
-     &     name_bxg, name_byg, name_bzg, magne%grad%nmax_sf_fix_fx,     &
-     &     magne%grad%nmax_ele_sf_fix_fx,                               &
-     &     magne%torque_lead%nmax_sf_dat, magne%grad%ngrp_sf_fix_fx,    &
-     &     magne%grad%nitem_sf_fix_fx, magne%torque_lead%ngrp_sf_dat)
+     &    (sf_grp, magne_surf%num_bc, magne_surf%bc_name,               &
+     &     magne_surf%ibc_type, name_bxg, name_byg, name_bzg,           &
+     &     magne%grad, magne%torque_lead)
 !
       end subroutine count_num_surf_grad_b_type
 !
@@ -223,13 +208,9 @@
 !
 !
       call count_num_sf_grad_vector                                     &
-     &   (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,           &
-     &    current_surf%num_bc, current_surf%bc_name,                    &
+     &   (sf_grp, current_surf%num_bc, current_surf%bc_name,            &
      &    current_surf%ibc_type, name_jxg, name_jyg, name_jzg,          &
-     &    current%grad%nmax_sf_fix_fx, current%grad%nmax_ele_sf_fix_fx, &
-     &    current%torque_lead%nmax_sf_dat,                              &
-     &    current%grad%ngrp_sf_fix_fx, current%grad%nitem_sf_fix_fx,    &
-     &    current%torque_lead%ngrp_sf_dat)
+     &    current%grad, current%torque_lead)
 !
       end subroutine count_num_surf_grad_j_type
 !

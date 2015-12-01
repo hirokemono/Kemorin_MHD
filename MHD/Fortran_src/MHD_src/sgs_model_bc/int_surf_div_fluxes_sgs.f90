@@ -9,19 +9,18 @@
 !!     &          i_tensor, i_vect, i_scalar, ak_diff, coef_field,      &
 !!     &          fem_wk, f_nl)
 !!      subroutine int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,   &
-!!     &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,              &
-!!     &          n_int, nmax_sf, ngrp_sf, id_grp_sf, i_filter,         &
-!!     &          i_tensor, i_vect, i_scalar, ak_diff, coef_field,      &
-!!     &          fem_wk, f_nl)
+!!     &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,      &
+!!     &          n_int, i_filter, i_tensor, i_vect, i_scalar,          &
+!!     &          ak_diff, coef_field, fem_wk, f_nl)
 !!
 !!      subroutine int_sf_skv_commute_sgs_v_flux(node, ele, surf,       &
 !!     &          sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,      &
 !!     &          n_int, ngrp_sf, id_grp_sf, i_filter,                  &
 !!     &          i_tensor, i_vect, i_scalar, fem_wk, f_nl)
 !!      subroutine int_sf_skv_commute_sgs_t_flux(node, ele, surf,       &
-!!     &          sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,      &
-!!     &          n_int, nmax_sf, ngrp_sf, id_grp_sf, i_filter,         &
-!!     &          i_tensor, i_vect, i_scalar, fem_wk, f_nl)
+!!     &        sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,&
+!!     &        n_int, i_filter, i_tensor, i_vect, i_scalar,            &
+!!     &        fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -30,6 +29,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
 !!
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -47,6 +47,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_filter_elength
+      use t_surface_bc_data
       use m_int_surface_data
 !
       implicit none
@@ -121,10 +122,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,     &
-     &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                &
-     &          n_int, nmax_sf, ngrp_sf, id_grp_sf, i_filter,           &
-     &          i_tensor, i_vect, i_scalar, ak_diff, coef_field,        &
-     &          fem_wk, f_nl)
+     &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,        &
+     &          n_int, i_filter, i_tensor, i_vect, i_scalar,            &
+     &          ak_diff, coef_field, fem_wk, f_nl)
 !
       use delta_SGS_2_each_surface
       use fem_surf_skv_sgs_commute_t
@@ -138,10 +138,8 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
 !
-      integer(kind=kint), intent(in) :: nmax_sf
-      integer(kind=kint), intent(in) :: ngrp_sf(3)
-      integer(kind=kint), intent(in) :: id_grp_sf(nmax_sf,3)
       integer(kind=kint), intent(in) :: n_int, i_filter
       integer(kind=kint), intent(in) :: i_vect, i_scalar, i_tensor
       real (kind = kreal), intent(in) :: ak_diff(ele%numele)
@@ -154,14 +152,17 @@
       integer(kind=kint) :: k2, i, igrp, nd, num
 !
 !
-      if (nmax_sf .eq. 0) return
+      num =  sgs_sf(1)%ngrp_sf_dat                                      &
+     &     + sgs_sf(2)%ngrp_sf_dat                                      &
+     &     + sgs_sf(3)%ngrp_sf_dat
+      if(num .le. 0) return
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
 ! --------- set vector at each node in an element
 !
       do nd = 1, n_vector
-        do i = 1, ngrp_sf(nd)
-          igrp = id_grp_sf(i,nd)
+        do i = 1, sgs_sf(nd)%ngrp_sf_dat
+          igrp = sgs_sf(nd)%id_grp_sf_dat(i)
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
 !
           if (num .gt. 0) then
@@ -247,9 +248,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_sf_skv_commute_sgs_t_flux(node, ele, surf,         &
-     &          sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,        &
-     &          n_int, nmax_sf, ngrp_sf, id_grp_sf, i_filter,           &
-     &          i_tensor, i_vect, i_scalar, fem_wk, f_nl)
+     &        sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,  &
+     &        n_int, i_filter, i_tensor, i_vect, i_scalar,              &
+     &        fem_wk, f_nl)
 !
       use delta_SGS_2_each_surface
       use fem_surf_skv_sgs_commute_t
@@ -263,10 +264,8 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
 !
-      integer(kind=kint), intent(in) :: nmax_sf
-      integer(kind=kint), intent(in) :: ngrp_sf(3)
-      integer(kind=kint), intent(in) :: id_grp_sf(nmax_sf,3)
       integer(kind=kint), intent(in) :: n_int, i_filter
       integer(kind=kint), intent(in) :: i_vect, i_scalar, i_tensor
 !
@@ -276,14 +275,17 @@
       integer(kind=kint) :: k2, i, igrp, nd, num
 !
 !
-      if (nmax_sf .eq. 0) return
+      num =  sgs_sf(1)%ngrp_sf_dat                                      &
+     &     + sgs_sf(2)%ngrp_sf_dat                                      &
+     &     + sgs_sf(3)%ngrp_sf_dat
+      if(num .le. 0) return
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
 ! --------- set vector at each node in an element
 !
       do nd = 1, n_vector
-        do i = 1, ngrp_sf(nd)
-          igrp = id_grp_sf(i,nd)
+        do i = 1, sgs_sf(nd)%ngrp_sf_dat
+          igrp = sgs_sf(nd)%id_grp_sf_dat(i)
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
 !
           if (num .gt. 0) then

@@ -47,10 +47,7 @@
       call s_set_surf_vector_id(sf_grp, sf_grp_nod, sf_grp_v,           &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type, torque_surf%bc_magnitude, name_svn,     &
-     &    sf_sgs1_grad_v%nmax_sf_dat, sf_sgs1_grad_v%id_grp_sf_dat,     &
-     &    sf_bc1_norm_v%ngrp_sf_fix_fx, sf_bc1_norm_v%id_grp_sf_fix_fx, &
-     &    sf_bc1_norm_v%nitem_sf_fix_fx,                                &
-     &    sf_bc1_norm_v%ist_ele_sf_fix_fx, sf_bc1_norm_v%sf_apt_fix_fx)
+     &    sf_sgs1_grad_v, sf_bc1_norm_v)
 !
       call s_stress_free_surf_id(sf_grp%num_grp, sf_grp%grp_name,       &
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
@@ -80,11 +77,7 @@
       call s_set_surf_vector_id(sf_grp, sf_grp_nod, sf_grp_v,           &
      &    a_potential_surf%num_bc, a_potential_surf%bc_name,            &
      &    a_potential_surf%ibc_type, a_potential_surf%bc_magnitude,     &
-     &    name_san,                                                     &
-     &    sf_sgs1_grad_a%nmax_sf_dat, sf_sgs1_grad_a%id_grp_sf_dat,     &
-     &    sf_bc1_norm_a%ngrp_sf_fix_fx, sf_bc1_norm_a%id_grp_sf_fix_fx, &
-     &    sf_bc1_norm_a%nitem_sf_fix_fx,                                &
-     &    sf_bc1_norm_a%ist_ele_sf_fix_fx, sf_bc1_norm_a%sf_apt_fix_fx)
+     &    name_san, sf_sgs1_grad_a, sf_bc1_norm_a)
 !
       call s_stress_free_surf_id(sf_grp%num_grp, sf_grp%grp_name,       &
      &    a_potential_surf%num_bc, a_potential_surf%bc_name,            &
@@ -111,10 +104,7 @@
       call s_set_surf_vector_id(sf_grp, sf_grp_nod, sf_grp_v,           &
      &    magne_surf%num_bc, magne_surf%bc_name,                        &
      &    magne_surf%ibc_type, magne_surf%bc_magnitude, name_sbn,       &
-     &    sf_sgs1_grad_b%nmax_sf_dat, sf_sgs1_grad_b%id_grp_sf_dat,     &
-     &    sf_bc1_norm_b%ngrp_sf_fix_fx, sf_bc1_norm_b%id_grp_sf_fix_fx, &
-     &    sf_bc1_norm_b%nitem_sf_fix_fx,                                &
-     &    sf_bc1_norm_b%ist_ele_sf_fix_fx, sf_bc1_norm_b%sf_apt_fix_fx)
+     &    sf_sgs1_grad_b, sf_bc1_norm_b)
 !
       end subroutine set_surf_magne_id
 !
@@ -133,10 +123,7 @@
       call s_set_surf_vector_id(sf_grp, sf_grp_nod, sf_grp_v,           &
      &    current_surf%num_bc, current_surf%bc_name,                    &
      &    current_surf%ibc_type, current_surf%bc_magnitude, name_sjn,   &
-     &    sf_sgs1_grad_j%nmax_sf_dat, sf_sgs1_grad_j%id_grp_sf_dat,     &
-     &    sf_bc1_norm_j%ngrp_sf_fix_fx, sf_bc1_norm_j%id_grp_sf_fix_fx, &
-     &    sf_bc1_norm_j%nitem_sf_fix_fx,                                &
-     &    sf_bc1_norm_j%ist_ele_sf_fix_fx, sf_bc1_norm_j%sf_apt_fix_fx)
+     &    sf_sgs1_grad_j, sf_bc1_norm_j)
 !
       end subroutine set_surf_current_id
 !
@@ -155,10 +142,7 @@
      &    torque_surf%num_bc, torque_surf%bc_name,                      &
      &    torque_surf%ibc_type, torque_surf%bc_magnitude,               &
      &    name_vxg, name_vyg, name_vzg,                                 &
-     &    sf_bc1_grad_v%nmax_sf_fix_fx, sf_bc1_grad_v%id_grp_sf_fix_fx, &
-     &    sf_bc1_grad_v%nmax_ele_sf_fix_fx,                             &
-     &    sf_bc1_grad_v%ist_ele_sf_fix_fx, sf_bc1_grad_v%sf_apt_fix_fx, &
-     &    sf_bc1_lead_tq%nmax_sf_dat, sf_bc1_lead_tq%id_grp_sf_dat)
+     &    sf_bc1_grad_v, sf_bc1_lead_tq)
 !
       end subroutine set_surf_torque_id
 !
@@ -176,11 +160,7 @@
      &    a_potential_surf%num_bc, a_potential_surf%bc_name,            &
      &    a_potential_surf%ibc_type, a_potential_surf%bc_magnitude,     &
      &    name_axg, name_ayg, name_azg,                                 &
-     &    sf_bc1_grad_a%nmax_sf_fix_fx, sf_bc1_grad_a%id_grp_sf_fix_fx, &
-     &    sf_bc1_grad_a%nmax_ele_sf_fix_fx,                             &
-     &    sf_bc1_grad_a%ist_ele_sf_fix_fx,                              &
-     &    sf_bc1_grad_a%sf_apt_fix_fx, sf_bc1_lead_a%nmax_sf_dat,       &
-     &    sf_bc1_lead_a%id_grp_sf_dat)
+     &    sf_bc1_grad_a, sf_bc1_lead_a)
 !
       end subroutine set_surf_grad_vecp_id
 !
@@ -198,10 +178,7 @@
      &    magne_surf%num_bc, magne_surf%bc_name,                        &
      &    magne_surf%ibc_type, magne_surf%bc_magnitude,                 &
      &    name_bxg, name_byg, name_bzg,                                 &
-     &    sf_bc1_grad_b%nmax_sf_fix_fx, sf_bc1_grad_b%id_grp_sf_fix_fx, &
-     &    sf_bc1_grad_b%nmax_ele_sf_fix_fx,                             &
-     &    sf_bc1_grad_b%ist_ele_sf_fix_fx, sf_bc1_grad_b%sf_apt_fix_fx, &
-     &    sf_bc1_lead_b%nmax_sf_dat, sf_bc1_lead_b%id_grp_sf_dat)
+     &    sf_bc1_grad_b, sf_bc1_lead_b)
 !
       end subroutine set_surf_grad_b_id
 !
@@ -219,10 +196,7 @@
      &    current_surf%num_bc, current_surf%bc_name,                    &
      &    current_surf%ibc_type, current_surf%bc_magnitude,             &
      &    name_sjx, name_sjy, name_sjz,                                 &
-     &    sf_bc1_grad_j%nmax_sf_fix_fx, sf_bc1_grad_j%id_grp_sf_fix_fx, &
-     &    sf_bc1_grad_j%nmax_ele_sf_fix_fx,                             &
-     &    sf_bc1_grad_j%ist_ele_sf_fix_fx, sf_bc1_grad_j%sf_apt_fix_fx, &
-     &    sf_bc1_lead_j%nmax_sf_dat, sf_bc1_lead_j%id_grp_sf_dat)
+     &    sf_bc1_grad_j, sf_bc1_lead_j)
 !
       end subroutine set_surf_grad_j_id
 !

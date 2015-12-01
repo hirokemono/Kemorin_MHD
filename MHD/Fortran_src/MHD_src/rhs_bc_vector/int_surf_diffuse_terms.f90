@@ -3,16 +3,15 @@
 !
 !      Written by H. Matsui on Sep., 2005
 !
-!!      subroutine int_surf_current_diffuse                             &
-!!     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,&
+!!      subroutine int_surf_current_diffuse(node, ele, surf, sf_grp,    &
+!!     &          nod_fld, jac_sf_grp, rhs_tbl, lead_sf,                &
 !!     &          n_int, i_vecp, fem_wk, f_l)
 !!      subroutine int_surf_diffuse_term                                &
 !!     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,&
 !!     &          n_int, ngrp_sf, id_grp_sf, ak_d, i_field, fem_wk, f_l)
-!!      subroutine int_surf_vect_diffuse_term                           &
-!!     &         (node, ele, surf, sf_grp, jac_sf_grp, nod_fld, rhs_tbl,&
-!!     &          n_int, nmax_sf, ngrp_sf, id_grp_sf, ak_d,  i_field,   &
-!!     &          fem_wk, f_l)
+!!      subroutine int_surf_vect_diffuse_term(node, ele, surf, sf_grp,  &
+!!     &          jac_sf_grp, nod_fld, rhs_tbl, lead_sf                 &
+!!     &          n_int, ak_d, i_field, fem_wk, f_l)
 !
       module int_surf_diffuse_terms
 !
@@ -26,6 +25,7 @@
       use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
+      use t_surface_bc_data
 !
       implicit none
 !
@@ -35,11 +35,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_current_diffuse                               &
-     &         (node, ele, surf, sf_grp, nod_fld, jac_sf_grp, rhs_tbl,  &
+      subroutine int_surf_current_diffuse(node, ele, surf, sf_grp,      &
+     &          nod_fld, jac_sf_grp, rhs_tbl, lead_sf,                  &
      &          n_int, i_vecp, fem_wk, f_l)
 !
-      use m_surf_data_vector_p
       use m_ele_material_property
       use m_int_surface_data
 !
@@ -54,6 +53,7 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(phys_data),    intent(in) :: nod_fld
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(scaler_surf_bc_data_type),  intent(in) :: lead_sf(3)
 !
       integer(kind=kint), intent(in) :: n_int, i_vecp
 !
@@ -63,14 +63,17 @@
       integer(kind=kint) :: k2, nd, i_comp, i, igrp, num
 !
 !
-      if(sf_bc1_lead_a%nmax_sf_dat .eq. 0) return
+      num =  lead_sf(1)%ngrp_sf_dat                                     &
+     &     + lead_sf(2)%ngrp_sf_dat                                     &
+     &     + lead_sf(3)%ngrp_sf_dat
+      if(num .le. 0) return
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       do nd = 1, 3
         i_comp = i_vecp + nd - 1
 !
-        do i = 1, sf_bc1_lead_a%ngrp_sf_dat(nd)
-          igrp = sf_bc1_lead_a%id_grp_sf_dat(i,nd)
+        do i = 1, lead_sf(nd)%ngrp_sf_dat
+          igrp = lead_sf(nd)%id_grp_sf_dat(i)
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if (num .gt. 0) then
 !
@@ -150,10 +153,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_surf_vect_diffuse_term                             &
-     &         (node, ele, surf, sf_grp, jac_sf_grp, nod_fld, rhs_tbl,  &
-     &          n_int, nmax_sf, ngrp_sf, id_grp_sf, ak_d,  i_field,     &
-     &          fem_wk, f_l)
+      subroutine int_surf_vect_diffuse_term(node, ele, surf, sf_grp,    &
+     &          jac_sf_grp, nod_fld, rhs_tbl, lead_sf,                  &
+     &          n_int, ak_d, i_field, fem_wk, f_l)
 !
       use m_int_surface_data
 !
@@ -168,10 +170,7 @@
       type(phys_data),    intent(in) :: nod_fld
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!
-      integer(kind=kint), intent(in) :: nmax_sf
-      integer(kind=kint), intent(in) :: ngrp_sf(3)
-      integer(kind=kint), intent(in) :: id_grp_sf(nmax_sf,3)
+      type(scaler_surf_bc_data_type),  intent(in) :: lead_sf(3)
 !
       integer(kind = kint), intent(in) :: n_int, i_field
       real (kind = kreal), intent(in) :: ak_d(ele%numele)
@@ -182,14 +181,17 @@
       integer(kind=kint) :: k2, i, igrp, nd, i_comp, num
 !
 !
-      if (nmax_sf .eq. 0) return
+      num =  lead_sf(1)%ngrp_sf_dat                                     &
+     &     + lead_sf(2)%ngrp_sf_dat                                     &
+     &     + lead_sf(3)%ngrp_sf_dat
+      if(num .le. 0) return
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       do nd = 1, n_vector
         i_comp = i_field + nd - 1
 !
-        do i = 1, ngrp_sf(nd)
-          igrp = id_grp_sf(i,nd)
+        do i = 1, lead_sf(nd)%ngrp_sf_dat
+          igrp = lead_sf(nd)%id_grp_sf_dat(i)
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if (num .gt. 0) then
 !

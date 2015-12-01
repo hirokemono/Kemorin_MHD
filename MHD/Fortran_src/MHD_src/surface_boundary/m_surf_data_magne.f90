@@ -15,13 +15,13 @@
       implicit  none
 !
 !
-      type(vector_surf_flux_bc_type), save :: sf_bc1_grad_b
+      type(scaler_surf_flux_bc_type), save :: sf_bc1_grad_b(3)
 !
       type(scaler_surf_flux_bc_type), save :: sf_bc1_norm_b
 !
-      type(vector_surf_bc_data_type), save :: sf_sgs1_grad_b
+      type(scaler_surf_bc_data_type), save :: sf_sgs1_grad_b(3)
 !
-      type(vector_surf_bc_data_type), save :: sf_bc1_lead_b
+      type(scaler_surf_bc_data_type), save :: sf_bc1_lead_b(3)
 !
 !-----------------------------------------------------------------------
 !

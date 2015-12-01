@@ -37,8 +37,7 @@
       if ( iflag_SGS_model.ne.id_SGS_none                               &
      &      .and. iflag_commute_velo .eq. id_SGS_commute_ON) then
         call cal_rotation_sgs_fluid                                     &
-     &     (iflag_velo_supg, sf_sgs1_grad_v%nmax_sf_dat,                &
-     &      sf_sgs1_grad_v%ngrp_sf_dat, sf_sgs1_grad_v%id_grp_sf_dat,   &
+     &     (iflag_velo_supg, sf_sgs1_grad_v,                            &
      &      iak_diff_v, iphys%i_vort, iphys%i_velo)
       else
         call cal_rotation_in_fluid(iflag_velo_supg,                     &
@@ -70,12 +69,10 @@
       if ( iflag_SGS_model .ne. id_SGS_none                             &
      &     .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
         call cal_rotation_sgs_all                                       &
-     &     (iflag_mag_supg, sf_sgs1_grad_b%nmax_sf_dat,                 &
-     &      sf_sgs1_grad_b%ngrp_sf_dat, sf_sgs1_grad_b%id_grp_sf_dat,   &
+     &     (iflag_mag_supg, sf_sgs1_grad_b,                             &
      &      iak_diff_b, iphys%i_current, iphys%i_magne)
 !        call cal_rotation_sgs_conduct                                  &
-!     &     (iflag_mag_supg, sf_sgs1_grad_b%nmax_sf_dat,                &
-!     &      sf_sgs1_grad_b%ngrp_sf_dat, sf_sgs1_grad_b%id_grp_sf_dat,  &
+!     &     (iflag_mag_supg, sf_sgs1_grad_b,                            &
 !     &      iak_diff_b, iphys%i_current, iphys%i_magne)
       else
         call cal_rotation_whole(iflag_mag_supg,                         &
@@ -109,9 +106,7 @@
       if ( iflag_SGS_model.ne.id_SGS_none                               &
      &      .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
         call cal_rotation_sgs_all(iflag_mag_supg,                       &
-     &      sf_sgs1_grad_a%nmax_sf_dat, sf_sgs1_grad_a%ngrp_sf_dat,     &
-     &      sf_sgs1_grad_a%id_grp_sf_dat, iak_diff_b,                   &
-     &      iphys%i_magne, iphys%i_vecp)
+     &      sf_sgs1_grad_a, iak_diff_b, iphys%i_magne, iphys%i_vecp)
       else
         call cal_rotation_whole(iflag_mag_supg,                         &
      &      iphys%i_magne, iphys%i_vecp)

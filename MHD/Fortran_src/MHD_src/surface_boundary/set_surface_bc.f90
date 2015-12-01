@@ -17,13 +17,12 @@
 !     &           ngrp_sf, nele_sf, i_dest, igrp, id_grp, ist_sf,       &
 !     &           sf_dat, field_name)
 !
-!      subroutine  set_sf_nod_grp_from_ctl(num_surf, inod_stack_sf_grp, &
-!     &           ngrp_sf, nnod_sf, i_dest, igrp, id_grp, ist_nod,      &
-!     &           sf_dat, surf_magnitude)
-!      subroutine  set_sf_nod_grp_from_data                             &
-!     &          (sf_grp, sf_grp_nod, sf_grp_v,                         &
-!     &           ngrp_sf, nnod_sf, i_dest, igrp, id_grp,               &
-!     &           ist_nod, sf_dat, field_name)
+!!      subroutine  set_sf_nod_grp_from_ctl(i_dest, igrp,               &
+!!     &           num_surf, inod_stack_sf_grp, ngrp_sf, nnod_sf,       &
+!!     &           id_grp, ist_nod, sf_dat, surf_magnitude)
+!!      subroutine  set_sf_nod_grp_from_data(i_dest, igrp,              &
+!!     &           sf_grp, sf_grp_nod, sf_grp_v, ngrp_sf, nnod_sf,      &
+!!     &           id_grp, ist_nod, sf_dat, field_name)
 !
       module set_surface_bc
 !
@@ -168,9 +167,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine  set_sf_nod_grp_from_ctl(num_surf, inod_stack_sf_grp,  &
-     &           ngrp_sf, nnod_sf, i_dest, igrp, id_grp, ist_nod,       &
-     &           sf_dat, surf_magnitude)
+      subroutine  set_sf_nod_grp_from_ctl(i_dest, igrp,                 &
+     &           num_surf, inod_stack_sf_grp, ngrp_sf, nnod_sf,         &
+     &           id_grp, ist_nod, sf_dat, surf_magnitude)
 !
       integer(kind = kint), intent(in) :: num_surf
       integer(kind = kint), intent(in) :: inod_stack_sf_grp(0:num_surf)
@@ -200,10 +199,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine  set_sf_nod_grp_from_data                              &
-     &          (sf_grp, sf_grp_nod, sf_grp_v,                          &
-     &           ngrp_sf, nnod_sf, i_dest, igrp, id_grp,                &
-     &           ist_nod, sf_dat, field_name)
+      subroutine  set_sf_nod_grp_from_data(i_dest, igrp,                &
+     &           sf_grp, sf_grp_nod, sf_grp_v, ngrp_sf, nnod_sf,        &
+     &           id_grp, ist_nod, sf_dat, field_name)
 !
       use m_boundary_field_IO
       use set_surface_values

@@ -4,11 +4,10 @@
 !      Written by H. Matsui on Sep., 2005
 !
 !!      subroutine int_surf_rotation_sgs(node, ele, surf, sf_grp,       &
-!!     &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens,            &
-!!     &          n_int, nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter,     &
-!!     &          iak_diff, i_vect, fem_wk, f_nl)
+!!     &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens, sgs_sf,    &
+!!     &          n_int, i_filter, iak_diff, i_vect, fem_wk, f_nl)
 !!      subroutine int_surf_rot_commute_sgs(node, ele, surf, sf_grp,    &
-!!     &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens,            &
+!!     &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens, sgs_sf,    &
 !!     &          n_int, nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter,     &
 !!     &          i_vect, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
@@ -19,6 +18,7 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
 !!
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -36,6 +36,7 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_filter_elength
+      use t_surface_bc_data
 !
       implicit none
 !
@@ -46,9 +47,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_rotation_sgs(node, ele, surf, sf_grp,         &
-     &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens,              &
-     &          n_int, nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter,       &
-     &          iak_diff, i_vect, fem_wk, f_nl)
+     &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens, sgs_sf,      &
+     &          n_int, i_filter, iak_diff, i_vect, fem_wk, f_nl)
 !
       use m_int_surface_data
       use m_SGS_model_coefs
@@ -65,10 +65,9 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
 !
-      integer(kind = kint), intent(in) :: n_int, nmax_grp_sf
-      integer(kind = kint), intent(in) :: ngrp_sf(3)
-      integer(kind = kint), intent(in) :: id_grp_sf(nmax_grp_sf,3)
+      integer(kind = kint), intent(in) :: n_int
       integer(kind = kint), intent(in) :: i_vect, iak_diff, i_filter
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -79,7 +78,10 @@
 !
 !  ---------  set number of integral points
 !
-      if(nmax_grp_sf .eq. 0) return
+      num =  sgs_sf(1)%ngrp_sf_dat                                      &
+     &     + sgs_sf(2)%ngrp_sf_dat                                      &
+     &     + sgs_sf(3)%ngrp_sf_dat
+      if(num .le. 0) return
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       do nd = 1, n_vector
@@ -90,8 +92,8 @@
 ! --------- set vector at each node in an element
 !
         i_comp = i_vect + nrot2 - 1
-        do i = 1, ngrp_sf(nrot2)
-          igrp = id_grp_sf(i,nrot2)
+        do i = 1, sgs_sf(nrot2)%ngrp_sf_dat
+          igrp = sgs_sf(nrot2)%id_grp_sf_dat(i)
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if(num .gt. 0) then
 !
@@ -110,8 +112,8 @@
         end do
 !
         i_comp = i_vect + nrot1 - 1
-        do i = 1, ngrp_sf(nrot1)
-          igrp = id_grp_sf(i,nrot1)
+        do i = 1, sgs_sf(nrot1)%ngrp_sf_dat
+          igrp = sgs_sf(nrot1)%id_grp_sf_dat(i)
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if(num .gt. 0) then
 !
@@ -139,9 +141,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_surf_rot_commute_sgs(node, ele, surf, sf_grp,      &
-     &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens,              &
-     &          n_int, nmax_grp_sf, ngrp_sf, id_grp_sf, i_filter,       &
-     &          i_vect, fem_wk, f_nl)
+     &          nod_fld, jac_sf_grp_q, rhs_tbl, FEM_elens, sgs_sf,      &
+     &          n_int, i_filter, i_vect, fem_wk, f_nl)
 !
       use m_int_surface_data
 !
@@ -157,10 +158,9 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
 !
-      integer(kind = kint), intent(in) :: n_int, nmax_grp_sf
-      integer(kind = kint), intent(in) :: ngrp_sf(3)
-      integer(kind = kint), intent(in) :: id_grp_sf(nmax_grp_sf,3)
+      integer(kind = kint), intent(in) :: n_int
       integer(kind = kint), intent(in) :: i_vect, i_filter
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -171,7 +171,10 @@
 !
 !  ---------  set number of integral points
 !
-      if(nmax_grp_sf .eq. 0) return
+      num =  sgs_sf(1)%ngrp_sf_dat                                      &
+     &     + sgs_sf(2)%ngrp_sf_dat                                      &
+     &     + sgs_sf(3)%ngrp_sf_dat
+      if(num .le. 0) return
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
       do nd = 1, n_vector
@@ -179,8 +182,8 @@
         nrot2 = mod(nd+ione,ithree) + ione
 !
         i_comp = i_vect + nrot2 - 1
-        do i = 1, ngrp_sf(nrot2)
-          igrp = id_grp_sf(i,nrot2)
+        do i = 1, sgs_sf(nrot2)%ngrp_sf_dat
+          igrp = sgs_sf(nrot2)%id_grp_sf_dat(i)
           num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
           if(num .gt. 0) then
 !
@@ -198,8 +201,8 @@
        end do
 !
        i_comp = i_vect + nrot1 - 1
-       do i = 1, ngrp_sf(nrot1)
-         igrp = id_grp_sf(i,nrot1)
+       do i = 1, sgs_sf(nrot1)%ngrp_sf_dat
+         igrp = sgs_sf(nrot1)%id_grp_sf_dat(i)
          num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
          if(num .gt. 0) then
 !

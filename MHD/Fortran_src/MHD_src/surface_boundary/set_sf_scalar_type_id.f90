@@ -129,8 +129,7 @@
       type(scaler_surf_bc_type),  intent(inout) :: temp
 !
 !
-      call set_sf_grad_scalar_id_type                                   &
-     &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
+      call set_sf_grad_scalar_id_type(sf_grp,                           &
      &   h_flux_surf%num_bc, h_flux_surf%bc_name, h_flux_surf%ibc_type, &
      &   temp%flux%ngrp_sf_fix_fx, temp%flux%id_grp_sf_fix_fx,          &
      &   temp%flux%ist_ele_sf_fix_fx, temp%flux_lead%ngrp_sf_dat,       &
@@ -148,8 +147,7 @@
       type(scaler_surf_bc_type),  intent(inout) :: comp_sf
 !
 !
-      call set_sf_grad_scalar_id_type                                   &
-     &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
+      call set_sf_grad_scalar_id_type(sf_grp,                           &
      &   light_surf%num_bc, light_surf%bc_name, light_surf%ibc_type,    &
      &   comp_sf%flux%ngrp_sf_fix_fx, comp_sf%flux%id_grp_sf_fix_fx,    &
      &   comp_sf%flux%ist_ele_sf_fix_fx, comp_sf%flux_lead%ngrp_sf_dat, &
@@ -167,8 +165,7 @@
       type(potential_surf_bc_type),  intent(inout) :: press
 !
 !
-      call set_sf_grad_scalar_id_type                                   &
-     &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
+      call set_sf_grad_scalar_id_type(sf_grp,                           &
      &   wall_surf%num_bc, wall_surf%bc_name, wall_surf%ibc_type,       &
      &   press%grad%ngrp_sf_fix_fx, press%grad%id_grp_sf_fix_fx,        &
      &   press%grad%ist_ele_sf_fix_fx, press%grad_lead%ngrp_sf_dat,     &
@@ -186,8 +183,7 @@
       type(potential_surf_bc_type),  intent(inout) :: magne_p
 !
 !
-      call set_sf_grad_scalar_id_type                                   &
-     &    (sf_grp%num_grp, sf_grp%istack_grp, sf_grp%grp_name,          &
+      call set_sf_grad_scalar_id_type(sf_grp,                           &
      &   e_potential_surf%num_bc, e_potential_surf%bc_name,             &
      &   e_potential_surf%ibc_type, magne_p%grad%ngrp_sf_fix_fx,        &
      &   magne_p%grad%id_grp_sf_fix_fx, magne_p%grad%ist_ele_sf_fix_fx, &

@@ -25,8 +25,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_commute_error_4_mxwl(i_filter, i_sgs, i_flux,      &
-     &          i_vect)
+      subroutine cal_commute_error_4_mxwl                               &
+     &         (i_filter, i_sgs, i_flux, i_vect)
 !
       use m_control_parameter
       use m_geometry_data
@@ -58,8 +58,7 @@
 !
       call int_sf_skv_commute_sgs_t_flux(node1, ele1, surf1, sf_grp1,   &
      &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,              &
-     &    intg_point_t_evo, sf_sgs1_grad_b%nmax_sf_dat,                 &
-     &    sf_sgs1_grad_b%ngrp_sf_dat, sf_sgs1_grad_b%id_grp_sf_dat,     &
+     &    sf_sgs1_grad_b, intg_point_t_evo,                             &
      &    i_filter, i_flux, i_vect, i_vect, fem1_wk, f1_nl)
 !
       call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)

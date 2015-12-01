@@ -53,6 +53,7 @@
       use m_finite_element_matrix
       use m_jacobian_sf_grp
       use m_int_vol_data
+      use m_surf_data_vector_p
 !
       use m_node_phys_data
       use m_node_phys_address
@@ -72,7 +73,7 @@
 !  for boundary conditions
 !
       call int_surf_current_diffuse(node1, ele1, surf1, sf_grp1,        &
-     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,                         &
+     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, sf_bc1_lead_a,          &
      &    intg_point_t_evo, iphys%i_vecp, fem1_wk, f1_l)
 !
       call cal_multi_pass_4_vector_ff
@@ -140,8 +141,7 @@
 !
       call int_surf_vect_diffuse_term                                   &
      &   (node, ele, surf, sf_grp, jac_sf_grp, nod_fld, rhs_tbl,        &
-     &    intg_point_t_evo, sf_bc1_lead_tq%nmax_sf_dat,                 &
-     &    sf_bc1_lead_tq%ngrp_sf_dat, sf_bc1_lead_tq%id_grp_sf_dat,     &
+     &    sf_bc1_lead_tq, intg_point_t_evo,                             &
      &    ak_d_velo, iphys%i_velo, fem_wk, f_l)
 !
       end subroutine int_surf_velo_diffuse
@@ -169,8 +169,7 @@
 !
       call int_surf_vect_diffuse_term                                   &
      &   (node, ele, surf, sf_grp, jac_sf_grp, nod_fld, rhs_tbl,        &
-     &    intg_point_t_evo, sf_bc1_lead_a%nmax_sf_dat,                  &
-     &    sf_bc1_lead_a%ngrp_sf_dat, sf_bc1_lead_a%id_grp_sf_dat,       &
+     &    sf_bc1_lead_a, intg_point_t_evo,                              &
      &    ak_d_magne, iphys%i_vecp, fem_wk, f_l)
 !
       end subroutine int_surf_vector_p_diffuse
@@ -198,8 +197,7 @@
 !
       call int_surf_vect_diffuse_term                                   &
      &   (node, ele, surf, sf_grp, jac_sf_grp, nod_fld, rhs_tbl,        &
-     &    intg_point_t_evo, sf_bc1_lead_b%nmax_sf_dat,                  &
-     &    sf_bc1_lead_b%ngrp_sf_dat, sf_bc1_lead_b%id_grp_sf_dat,       &
+     &    sf_bc1_lead_b, intg_point_t_evo,                              &
      &    ak_d_magne, iphys%i_magne, fem_wk, f_l)
 !
       end subroutine int_surf_magne_diffuse
