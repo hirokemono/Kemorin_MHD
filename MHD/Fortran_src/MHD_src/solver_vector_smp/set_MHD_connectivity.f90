@@ -186,8 +186,7 @@
 !
       call set_layerd_ele_id_4_node(nnod_1ele, iele_start, iele_end,    &
      &    node1, ele1, ele_4_nod1)
-      call const_next_nod_id_4_node_type(node1, ele1, ele_4_nod1,       &
-     &    neib_nod1)
+      call const_next_nod_id_4_node(node1, ele1, ele_4_nod1, neib_nod1)
 !
       call s_set_crs_connection(node1, neib_nod1, MHD_CRS)
 !

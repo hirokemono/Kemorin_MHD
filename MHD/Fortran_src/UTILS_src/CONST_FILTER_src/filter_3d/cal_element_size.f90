@@ -29,6 +29,7 @@
 !
       use m_nod_comm_table
       use m_geometry_data
+      use m_jacobians
       use m_finite_element_matrix
       use m_ctl_params_4_gen_filter
       use m_element_id_4_node
@@ -36,10 +37,13 @@
       use m_filter_elength
       use m_reference_moments
       use m_crs_consist_mass_mat
+      use m_crs_matrix
       use t_filter_dxdxi
 !
+      use set_table_type_RHS_assemble
       use cal_diff_elesize_on_ele
       use cal_filter_moms_ele_by_elen
+      use int_consist_mass_mat_filter
       use int_mass_matrix_gen_filter
       use int_vol_elesize_on_node
       use cal_filter_moms_by_element
@@ -55,8 +59,9 @@
 !      set RHS assemble table
 !  ---------------------------------------------------
 !
-      if (iflag_debug.eq.1)  write(*,*) 'set_connect_RHS_assemble'
-      call set_connect_RHS_assemble
+      if (iflag_debug.eq.1)  write(*,*) 's_set_table_type_RHS_assemble'
+      call s_set_table_type_RHS_assemble                                &
+     &   (node1, ele1, ele_4_nod1, neib_nod1, rhs_tbl1)
 !
 !  ---------------------------------------------------
 !        cal element size for each node
@@ -75,7 +80,8 @@
 !
       if (itype_mass_matrix .eq. 1) then
         if (iflag_debug.eq.1) write(*,*) 'set_consist_mass_matrix'
-        call set_consist_mass_matrix
+        call set_consist_mass_matrix(node1, ele1, jac1_3d_q,            &
+     &      neib_nod1, rhs_tbl1, tbl1_crs, mat_tbl_q1, fem1_wk, mass1)
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_mass_matrix_4_filter'
@@ -134,7 +140,7 @@
       call cal_2nd_diffs_delta_on_element
 !
       if (iflag_momentum_type .eq. 1) then
-        call delete_x_products_of_elen_1st
+        call delete_x_products_of_elen(FEM1_elen)
       end if
 !
       call deallocate_seed_moms_ele

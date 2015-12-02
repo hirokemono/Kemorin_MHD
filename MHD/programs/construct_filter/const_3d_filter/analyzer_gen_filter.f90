@@ -205,7 +205,7 @@
         num_failed_whole = 0
         num_failed_fluid = 0
 !
-        call select_const_filter(dxidxs1, FEM_momenet1)
+        call select_const_filter(FEM1_elen, dxidxs1, FEM_momenet1)
         call dealloc_jacobians_node(filter_dxi1)
 !
         close(filter_coef_code)

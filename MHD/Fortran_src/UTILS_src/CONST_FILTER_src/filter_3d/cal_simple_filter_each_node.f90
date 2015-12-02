@@ -3,14 +3,26 @@
 !
 !     Written by H. Matsui on Nov., 2008
 !
-!!      subroutine set_simple_filter_nod_by_nod(inod, dx_nod)
-!!      subroutine set_simple_fl_filter_nod_by_nod                      &
-!!     &         (node, inod, dx_nod, mom_nod)
+!!      subroutine set_simple_filter_nod_by_nod                         &
+!!     &         (node, ele, jac_3d, inod, dx_nod, ele_4_nod, neib_nod)
+!!      subroutine set_simple_fl_filter_nod_by_nod(node, ele, jac_3d,   &
+!!     &         inod, dx_nod, ele_4_nod, neib_nod, mom_nod)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(dxidx_direction_type), intent(in) :: dx_nod
+!!        type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
+!
 !
       module cal_simple_filter_each_node
 !
       use m_precision
       use m_constants
+!
+      use t_geometry_data
+      use t_jacobians
+      use t_filter_dxdxi
+      use t_next_node_ele_4_node
 !
       implicit none
 !
@@ -23,14 +35,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_simple_filter_nod_by_nod(node, inod, dx_nod)
+      subroutine set_simple_filter_nod_by_nod                           &
+     &         (node, ele, jac_3d, inod, dx_nod, ele_4_nod, neib_nod)
 !
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
       use m_matrix_4_filter
-      use m_geometry_data
-      use t_geometry_data
-      use t_filter_dxdxi
 !
       use expand_filter_area_4_1node
       use set_simple_filters
@@ -42,34 +52,44 @@
 !
       integer(kind = kint), intent(in) :: inod
       type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d
       type(dxidx_direction_type), intent(in) :: dx_nod
+!
+      type(element_around_node), intent(inout) :: ele_4_nod
+      type(next_nod_id_4_nod), intent(inout) :: neib_nod
+!
       integer(kind = kint) :: i
 !
 !
-      call copy_next_nod_ele_4_each(inod, node%numnod)
-      call resize_matrix_size_gen_filter(ele1%nnod_4_ele)
+      call copy_next_nod_ele_4_each                                     &
+     &     (inod, node%numnod, ele_4_nod, neib_nod)
+      call resize_matrix_size_gen_filter(ele%nnod_4_ele)
 !
 !   set filter area for tophat filter
       if ( abs(iflag_tgt_filter_type) .eq. 2) then
         do i = 2, maximum_neighbour
-          call s_expand_filter_area_4_1node(node1%numnod, inod, ele1)
+          call s_expand_filter_area_4_1node                             &
+     &       (inod, node, ele, ele_4_nod)
           nnod_near_1nod_filter = nnod_near_1nod_weight
           nele_near_1nod_filter = nele_near_1nod_weight
-          call resize_matrix_size_gen_filter(ele1%nnod_4_ele)
+          call resize_matrix_size_gen_filter(ele%nnod_4_ele)
         end do
 !
 !   set filter area for other filters
       else
         do i = 1, maximum_neighbour
-          call s_expand_filter_area_4_1node(node1%numnod, inod, ele1)
-          call resize_matrix_size_gen_filter(ele1%nnod_4_ele)
+          call s_expand_filter_area_4_1node                             &
+     &       (inod, node, ele, ele_4_nod)
+          call resize_matrix_size_gen_filter(ele%nnod_4_ele)
         end do
       end if
       mat_size = nnod_near_1nod_weight
 !
 !    set nxn matrix
 !
-      call int_node_filter_matrix(inod, num_int_points,                 &
+      call int_node_filter_matrix                                       &
+     &   (node, ele, jac_3d, inod, num_int_points,                      &
      &    nele_near_1nod_weight, iele_near_1nod_weight(1),              &
      &    nnod_near_1nod_weight, inod_near_1nod_weight(1),              &
      &    nnod_near_1nod_filter)
@@ -79,9 +99,11 @@
 !      set filter function without normalization
 !
       if      ( abs(iflag_tgt_filter_type) .eq. 2) then
-        call set_tophat_filter_4_each_nod
+        call set_tophat_filter_4_each_nod(nnod_near_1nod_filter)
       else if ( abs(iflag_tgt_filter_type) .eq. 3) then
-        call set_linear_filter_4_each_nod
+        call set_linear_filter_4_each_nod                               &
+     &     (nnod_near_1nod_filter, idist_from_center_1nod,              &
+     &      maximum_neighbour)
       else if ( abs(iflag_tgt_filter_type) .eq. 4) then
         call set_gaussian_filter_each_nod                               &
      &     (node%numnod, node%xx, inod, node%numnod,                    &
@@ -100,15 +122,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_simple_fl_filter_nod_by_nod                        &
-     &         (node, inod, dx_nod, mom_nod)
+      subroutine set_simple_fl_filter_nod_by_nod(node, ele, jac_3d,     &
+     &         inod, dx_nod, ele_4_nod, neib_nod, mom_nod)
 !
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
       use m_matrix_4_filter
-      use m_geometry_data
-      use t_geometry_data
-      use t_filter_dxdxi
       use t_filter_moments
 !
       use expand_filter_area_4_1node
@@ -120,14 +139,21 @@
       use write_filters_4_each_node
 !
       integer(kind = kint), intent(in) :: inod
+!
       type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d
       type(dxidx_direction_type), intent(in) :: dx_nod
+!
+      type(element_around_node), intent(inout) :: ele_4_nod
+      type(next_nod_id_4_nod), intent(inout) :: neib_nod
       type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
 !
       integer(kind = kint) :: i
 !
 !
-      call copy_next_nod_ele_4_each(inod, node%numnod)
+      call copy_next_nod_ele_4_each                                     &
+     &     (inod, node%numnod, ele_4_nod, neib_nod)
 !
 !    no filtering
 !
@@ -138,7 +164,8 @@
 !   set filter area for tophat filter
         if ( abs(iflag_tgt_filter_type) .eq. 2) then
           do i = 2, maximum_neighbour
-            call s_expand_filter_area_4_1node(node1%numnod, inod, ele1)
+            call s_expand_filter_area_4_1node                           &
+     &         (inod, node, ele, ele_4_nod)
             nnod_near_1nod_filter = nnod_near_1nod_weight
             nele_near_1nod_filter = nele_near_1nod_weight
           end do
@@ -146,7 +173,8 @@
 !   set filter area for other filters
         else
           do i = 1, maximum_neighbour
-            call s_expand_filter_area_4_1node(node1%numnod, inod, ele1)
+            call s_expand_filter_area_4_1node                           &
+     &         (inod, node, ele, ele_4_nod)
           end do
         end if
         mat_size = nnod_near_1nod_weight
@@ -162,7 +190,8 @@
 !    construct filter for fluid area
 !
         else
-          call int_node_filter_matrix(inod, num_int_points,             &
+          call int_node_filter_matrix                                   &
+     &       (node, ele, jac_3d, inod, num_int_points,                  &
      &        nele_near_1nod_weight, iele_near_1nod_weight(1),          &
      &        nnod_near_1nod_weight, inod_near_1nod_weight(1),          &
      &        nnod_near_1nod_filter)
@@ -172,9 +201,11 @@
 !      set filter function without normalization
 !
           if      ( abs(iflag_tgt_filter_type) .eq. 2) then
-            call set_tophat_filter_4_each_nod
+            call set_tophat_filter_4_each_nod(nnod_near_1nod_filter)
           else if ( abs(iflag_tgt_filter_type) .eq. 3) then
-            call set_linear_filter_4_each_nod
+            call set_linear_filter_4_each_nod                           &
+     &         (nnod_near_1nod_filter, idist_from_center_1nod,          &
+     &          maximum_neighbour)
           else if ( abs(iflag_tgt_filter_type) .eq. 4) then
             call set_gaussian_filter_each_nod                           &
      &         (node%numnod, node%xx, inod, node%numnod,                &

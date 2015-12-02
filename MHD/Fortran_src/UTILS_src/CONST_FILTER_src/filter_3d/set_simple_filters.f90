@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!!      subroutine set_tophat_filter_4_each_nod
-!!      subroutine set_linear_filter_4_each_nod
+!!      subroutine set_tophat_filter_4_each_nod(nnod)
+!!      subroutine set_linear_filter_4_each_nod(nnod, idist, max_neib)
 !!      subroutine set_gaussian_filter_each_nod(numnod, xx, inod, nnod, &
 !!     &          dxidx_nod, dxidy_nod, dxidz_nod,                      &
 !!     &          deidx_nod, deidy_nod, deidz_nod,                      &
@@ -29,29 +29,35 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_tophat_filter_4_each_nod
+      subroutine set_tophat_filter_4_each_nod(nnod)
 !
-      use m_filter_coefs
       use m_matrix_4_filter
 !
-        x_sol(1:nnod_near_1nod_filter) = 1.0d0
+      integer(kind = kint), intent(in) :: nnod
+!
+!$omp parallel workshare
+      x_sol(1:nnod) = one
+!$omp end parallel workshare
 !
       end subroutine set_tophat_filter_4_each_nod
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_linear_filter_4_each_nod
+      subroutine set_linear_filter_4_each_nod(nnod, idist, max_neib)
 !
-      use m_ctl_params_4_gen_filter
-      use m_filter_coefs
       use m_matrix_4_filter
+!
+      integer(kind = kint), intent(in) :: nnod, max_neib
+      integer(kind = kint), intent(in) :: idist(nnod)
 !
       integer(kind = kint) :: i
 !
-      do i = 1, nnod_near_1nod_filter
-              x_sol(i) = 1.0d0 - dble(idist_from_center_1nod(i))        &
-     &                          / dble(maximum_neighbour+1)
+!$omp parallel do
+      do i = 1, nnod
+              x_sol(i) = 1.0d0 - dble(idist(i))                     &
+     &                          / dble(max_neib+1)
       end do
+!$omp end parallel do
 !
       end subroutine set_linear_filter_4_each_nod
 !

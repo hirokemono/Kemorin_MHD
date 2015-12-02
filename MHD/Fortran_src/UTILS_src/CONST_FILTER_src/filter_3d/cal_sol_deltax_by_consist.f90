@@ -1,10 +1,12 @@
 !
 !     module cal_sol_deltax_by_consist
 !
-      module cal_sol_deltax_by_consist
-!
 !     Written by H. Matsui on Nov., 2006
 !     Modified by H. Matsui on Apr., 2008
+!
+!      subroutine cal_sol_dx_by_consist(mass, dx_nod, nd_dx)
+!
+      module cal_sol_deltax_by_consist
 !
       use m_precision
 !
@@ -14,15 +16,13 @@
       integer(kind=kint) :: itr_res, imonitor_solve
       private :: itr_res, nset, imonitor_solve
 !
-!      subroutine cal_sol_dx_by_consist(dx_nod)
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sol_dx_by_consist(dx_nod, nd_dx)
+      subroutine cal_sol_dx_by_consist(mass, dx_nod, nd_dx)
 !
       use calypso_mpi
       use m_array_for_send_recv
@@ -34,12 +34,15 @@
       use m_crs_matrix
       use m_crs_consist_mass_mat
 !
+      use t_crs_matrix
+!
       use   solver
 !
+      type(CRS_matrix), intent(in) :: mass
       integer (kind = kint), intent(in) :: nd_dx
       real(kind= kreal), intent(inout) :: dx_nod(node1%numnod)
 !
-      integer (kind = kint) :: inod
+!      integer (kind = kint) :: inod
       integer(kind = kint) :: ierr
 !
 !
@@ -53,10 +56,10 @@
 !
       imonitor_solve = i_debug
 !
-      do inod = 1, node1%numnod
-        x_vec(inod) = f1_l%ff(inod,nd_dx)
-        b_vec(inod) = f1_l%ff(inod,nd_dx)
-      end do
+!$omp parallel workshare
+      x_vec(1:node1%numnod) = f1_l%ff(1:node1%numnod,nd_dx)
+      b_vec(1:node1%numnod) = f1_l%ff(1:node1%numnod,nd_dx)
+!$omp end parallel workshare
 !
 !       write(50+my_rank,*) 'div_b'
 !       do inod=1, node1%numnod
@@ -69,9 +72,9 @@
       end if
 !
       call solve(node1%internal_node, node1%numnod,                     &
-     &             tbl1_crs%ntot_l, tbl1_crs%ntot_u, mass1%D_crs,       &
-     &             mass1%AL_crs, tbl1_crs%istack_l, tbl1_crs%item_l,    &
-     &             mass1%AU_crs, tbl1_crs%istack_u, tbl1_crs%item_u,    &
+     &             tbl1_crs%ntot_l, tbl1_crs%ntot_u, mass%D_crs,        &
+     &             mass%AL_crs, tbl1_crs%istack_l, tbl1_crs%item_l,     &
+     &             mass%AU_crs, tbl1_crs%istack_u, tbl1_crs%item_u,     &
      &             b_vec(1), x_vec(1), nset,                            &
      &             nod_comm%num_neib, nod_comm%id_neib,                 &
      &             nod_comm%istack_import, nod_comm%item_import,        &
@@ -84,9 +87,9 @@
         write(*,*) ' iteration finish:', itr_res
       end if
 !
-      do inod = 1, node1%numnod
-        dx_nod(inod) = x_vec(inod)
-      end do
+!$omp parallel workshare
+      dx_nod(1:node1%numnod) = x_vec(1:node1%numnod)
+!$omp end parallel workshare
 !
       end subroutine cal_sol_dx_by_consist
 !

@@ -4,9 +4,9 @@
 !     Written by H. Matsui on Nov., 2008
 !
 !!      subroutine s_correct_wrong_filters                              &
-!!     &          (id_filter_coef, dxidxs, mom_nod)
+!!     &          (node, ele, jac_3d, id_filter_coef, dxidxs, mom_nod)
 !!      subroutine correct_wrong_fluid_filters                          &
-!!     &         (id_filter_coef, dxidxs, mom_nod)
+!!     &         (node, ele, jac_3d, id_filter_coef, dxidxs, mom_nod)
 !
       module correct_wrong_filters
 !
@@ -14,8 +14,13 @@
 !
       use m_constants
       use m_ctl_params_4_gen_filter
-      use m_geometry_data
       use m_filter_coefs
+!
+      use t_geometry_data
+      use t_jacobians
+      use t_next_node_ele_4_node
+      use t_filter_dxdxi
+      use t_filter_moments
 !
       use expand_filter_area_4_1node
       use copy_moments_2_matrix
@@ -27,6 +32,11 @@
 !
       implicit none
 !
+      type(element_around_node), save :: ele_4_nod_f
+      type(next_nod_id_4_nod), save :: neib_nod_f
+!
+      private :: ele_4_nod_f, neib_nod_f
+!
 ! -----------------------------------------------------------------------
 !
       contains
@@ -34,13 +44,16 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_correct_wrong_filters                                &
-     &          (id_filter_coef, dxidxs, mom_nod)
+     &          (node, ele, jac_3d, id_filter_coef, dxidxs, mom_nod)
 !
-      use t_filter_dxdxi
-      use t_filter_moments
       use set_simple_filters
 !
       integer(kind = kint), intent(in) :: id_filter_coef
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d
+!
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !
@@ -48,10 +61,10 @@
 !
 !
       if (inod_end_filter .eq. -1) then
-        inod_end_filter = node1%internal_node
+        inod_end_filter = node%internal_node
       end if
 !
-      call init_4_cal_fileters(node1, ele1)
+      call init_4_cal_fileters(node, ele, ele_4_nod_f, neib_nod_f)
 !
       write(70+my_rank,*) ' Best condition for filter'
 !
@@ -75,17 +88,19 @@
 !
           if(iflag_tgt_filter_type .ge. -4                              &
      &      .and. iflag_tgt_filter_type.le. -2) then
-            call s_cal_filter_moments_again(inod, mom_nod)
+            call s_cal_filter_moments_again(node, ele, jac_3d,          &
+     &          inod, ele_4_nod_f, neib_nod_f, mom_nod)
           end if
         else
 !
           if (iflag_tgt_filter_type .eq. -1) then
             call copy_filter_coefs_to_tmp
-            call const_filter_func_nod_by_nod(inod, ierr)
+            call const_filter_func_nod_by_nod(inod, node, ele,          &
+     &          ele_4_nod_f, neib_nod_f, jac_3d, ierr)
           else if(iflag_tgt_filter_type .ge. -4                         &
      &      .and. iflag_tgt_filter_type.le. -2) then
-            call set_simple_filter_nod_by_nod                           &
-     &         (node1, inod, dxidxs%dx_nod)
+            call set_simple_filter_nod_by_nod(node, ele, jac_3d,        &
+     &          inod, dxidxs%dx_nod, ele_4_nod_f, neib_nod_f)
           end if
 !
           nnod_near_nod_weight(inod) = nnod_near_1nod_weight
@@ -94,17 +109,22 @@
 !
       end do
 !
+      call dealloc_iele_belonged(ele_4_nod_f)
+      call dealloc_inod_next_node(neib_nod_f)
+!
       end subroutine s_correct_wrong_filters
 !
 ! -----------------------------------------------------------------------
 !
       subroutine correct_wrong_fluid_filters                            &
-     &         (id_filter_coef, dxidxs, mom_nod)
-!
-      use t_filter_dxdxi
-      use t_filter_moments
+     &         (node, ele, jac_3d, id_filter_coef, dxidxs, mom_nod)
 !
       integer(kind = kint), intent(in) :: id_filter_coef
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d
+!
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
 !
@@ -112,7 +132,7 @@
 !
 !
 !
-      call init_4_cal_fluid_fileters
+      call init_4_cal_fluid_fileters(ele_4_nod_f, neib_nod_f)
 !
       write(70+my_rank,*) ' Best condition for fluid filter'
 !
@@ -148,16 +168,19 @@
 !
           if (iflag_tgt_filter_type .eq. -1) then
             call copy_filter_coefs_to_tmp
-            call const_fluid_filter_nod_by_nod(inod, ierr)
+            call const_fluid_filter_nod_by_nod(inod, node, ele,         &
+     &          ele_4_nod_f, neib_nod_f, jac_3d, ierr)
           else if(iflag_tgt_filter_type .ge. -4                         &
      &      .and. iflag_tgt_filter_type.le. -2) then
-            call set_simple_fl_filter_nod_by_nod(node1, inod,           &
-     &          dxidxs%dx_nod, mom_nod)
+            call set_simple_fl_filter_nod_by_nod(node, ele, jac_3d,     &
+     &          inod, dxidxs%dx_nod, ele_4_nod_f, neib_nod_f, mom_nod)
           end if
 !
         end if
-!
       end do
+!
+      call dealloc_iele_belonged(ele_4_nod_f)
+      call dealloc_inod_next_node(neib_nod_f)
 !
       end subroutine correct_wrong_fluid_filters
 !

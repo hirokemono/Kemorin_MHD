@@ -58,6 +58,8 @@
 !
       subroutine cal_filter_and_coefficients
 !
+      use m_geometry_data
+      use m_jacobians
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
       use copy_moments_2_matrix
@@ -67,7 +69,7 @@
       weight_1nod = 0.0d0
       call copy_filter_coefs(nnod_near_1nod_weight)
 !
-      call int_node_filter_weights(num_int_points,                      &
+      call int_node_filter_weights(ele1, jac1_3d_q, num_int_points,                      &
      &    nele_near_1nod_weight, iele_near_1nod_weight(1) )
 !
       end subroutine cal_filter_and_coefficients

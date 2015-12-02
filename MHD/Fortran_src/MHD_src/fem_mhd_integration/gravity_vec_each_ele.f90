@@ -46,17 +46,17 @@
 !
       if (i_grav .eq. iflag_const_g) then
         call const_gvec_each_element(node%numnod, ele%numele,         &
-     &      ele%nnod_4_ele, ele%ie, np_smp, ele%istack_ele_smp,      &
+     &      ele%nnod_4_ele, ele%ie, np_smp, ele%istack_ele_smp,       &
      &      k2, i_field, nod_fld%ntot_phys, nod_fld%d_fld,            &
      &      grav, ak_buo, vect_e)
       else if (i_grav .eq. iflag_radial_g) then
         call radial_gvec_each_element(node%numnod, ele%numele,        &
-     &      ele%nnod_4_ele, ele%ie, np_smp, ele%istack_ele_smp,      &
-     &      node%xx, node%a_r, k2, i_field, nod_fld%ntot_phys,       &
+     &      ele%nnod_4_ele, ele%ie, np_smp, ele%istack_ele_smp,       &
+     &      node%xx, node%a_r, k2, i_field, nod_fld%ntot_phys,        &
      &      nod_fld%d_fld, ak_buo, vect_e)
       else if (i_grav .eq. iflag_self_r_g) then
         call self_gvec_each_element(node%numnod, ele%numele,          &
-     &      ele%nnod_4_ele, ele%ie, np_smp, ele%istack_ele_smp,      &
+     &      ele%nnod_4_ele, ele%ie, np_smp, ele%istack_ele_smp,       &
      &      node%xx, k2, i_field, nod_fld%ntot_phys,                  &
      &      nod_fld%d_fld, ak_buo, vect_e)
       end if

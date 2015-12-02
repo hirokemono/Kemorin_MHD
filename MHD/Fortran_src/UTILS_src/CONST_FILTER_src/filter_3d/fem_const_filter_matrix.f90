@@ -3,18 +3,21 @@
 !
 !     Written by H. Matsui on Nov., 2006
 !
-!      subroutine allocate_sk_filter(nnod_4_ele)
-!      subroutine allocate_mat_num_weight(numnod)
-!      subroutine deallocate_sk_filter
-!      subroutine deallocate_mat_num_weight
-!
-!      subroutine set_idx_list_4_filter_mat(nele_grp, iele_grp,         &
-!     &          nnod_mat_tbl, inod_mat_tbl)
-!      subroutine fem_sk_filter_moments(numnod, nnod_4_ele, xx,         &
-!     &          nele_grp, iele_grp, inod, ix, k_order)
-!      subroutine fem_sk_filter_weights(numele, nnod_4_ele,             &
-!     &          ntot_int_3d, n_int, xjac, aw, nele_grp, iele_grp)
-!      subroutine sum_sk_2_filter_mat(nele_grp, k_order)
+!!      subroutine allocate_sk_filter(nnod_4_ele)
+!!      subroutine allocate_mat_num_weight(numnod)
+!!      subroutine deallocate_sk_filter
+!!      subroutine deallocate_mat_num_weight
+!!
+!!      subroutine set_idx_list_4_filter_mat(numele, nnod_4_ele, ie,    &
+!!     &          nele_grp, iele_grp, nnod_mat_tbl, inod_mat_tbl,       &
+!!     &          nnod_filter_mat)
+!!      subroutine fem_sk_filter_moments(numnod, numele, nnod_4_ele, xx,&
+!!     &          ntot_int_3d, xjac, aw, nele_grp, iele_grp,            &
+!!     &          inod, ix, k_order)
+!!      subroutine fem_sk_filter_weights(numele, nnod_4_ele,            &
+!!     &          ntot_int_3d, n_int, xjac, aw, nele_grp, iele_grp)
+!!      subroutine sum_sk_2_filter_mat(nnod_4_ele, nele_grp, k_order)
+!!      subroutine sum_sk_2_filter_weight(nnod_4_ele, nele_grp)
 !
       module fem_const_filter_matrix
 !
@@ -94,10 +97,12 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_idx_list_4_filter_mat(nele_grp, iele_grp,          &
-     &          nnod_mat_tbl, inod_mat_tbl, nnod_filter_mat)
+      subroutine set_idx_list_4_filter_mat(numele, nnod_4_ele, ie,      &
+     &          nele_grp, iele_grp, nnod_mat_tbl, inod_mat_tbl,         &
+     &          nnod_filter_mat)
 !
-      use m_geometry_data
+      integer(kind = kint), intent(in) :: numele, nnod_4_ele
+      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
 !
       integer(kind = kint), intent(in) :: nele_grp
       integer(kind = kint), intent(in) :: iele_grp(nele_grp)
@@ -115,11 +120,11 @@
 !     &           size(mat_num_filter,1), size(mat_num_filter,2), &
 !     &           size(mat_num_weight,1), size(mat_num_weight,2)
 !      write(*,*) 'nele_grp, nnod_4_ele',            &
-!     &           my_rank, nele_grp, ele1%nnod_4_ele
+!     &           my_rank, nele_grp, nnod_4_ele
       do inum = 1, nele_grp
         iele = iele_grp(inum)
-        do k1 = 1, ele1%nnod_4_ele
-          inod1 = ele1%ie(iele,k1)
+        do k1 = 1, nnod_4_ele
+          inod1 = ie(iele,k1)
 !
           do jnum = 1, nnod_filter_mat
             jnod = inod_mat_tbl(jnum)
@@ -229,19 +234,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sum_sk_2_filter_mat(nele_grp, k_order)
+      subroutine sum_sk_2_filter_mat(nnod_4_ele, nele_grp, k_order)
 !
-      use m_geometry_data
       use m_matrix_4_filter
 !
-      integer(kind = kint), intent(in) :: nele_grp
+      integer(kind = kint), intent(in) :: nnod_4_ele, nele_grp
       integer(kind = kint), intent(in) :: k_order
 !
       integer(kind = kint) :: inum, k1, jnum
 !
 !
       do inum = 1, nele_grp
-        do k1 = 1, ele1%nnod_4_ele
+        do k1 = 1, nnod_4_ele
           jnum = k_order + mat_num_filter(inum,k1)*max_mat_size
           mat_work(jnum) = mat_work(jnum) + sk_filter(inum,k1)
         end do
@@ -291,19 +295,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sum_sk_2_filter_weight(nele_grp)
+      subroutine sum_sk_2_filter_weight(nnod_4_ele, nele_grp)
 !
-      use m_geometry_data
       use m_filter_coefs
 !
-      integer(kind = kint), intent(in) :: nele_grp
+      integer(kind = kint), intent(in) :: nnod_4_ele, nele_grp
 !
       integer(kind = kint) :: inum, k2, jnum
 !
 !
       weight_1nod = 0.0d0
       do inum = 1, nele_grp
-        do k2 = 1, ele1%nnod_4_ele
+        do k2 = 1, nnod_4_ele
           jnum = mat_num_weight(inum,k2)
           weight_1nod(jnum) = weight_1nod(jnum) + sk_filter(inum,k2)
         end do

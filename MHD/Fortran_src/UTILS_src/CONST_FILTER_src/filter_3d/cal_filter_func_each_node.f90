@@ -3,21 +3,31 @@
 !
 !     Written by H. Matsui on Apr., 2008
 !
-!      subroutine const_filter_func_nod_by_nod(inod, ierr)
-!      subroutine const_fluid_filter_nod_by_nod(inod, ierr)
+!!      subroutine const_filter_func_nod_by_nod                         &
+!!     &         (inod, node, ele, ele_4_nod, neib_nod, jac_3d, ierr)
+!!      subroutine const_fluid_filter_nod_by_nod                        &
+!!     &         (inod, node, ele, ele_4_nod, neib_nod, jac_3d, ierr)
+!!        type(node_data),           intent(in) :: node
+!!        type(element_data),        intent(in) :: ele
+!!        type(element_around_node), intent(inout) :: ele_4_nod
+!!        type(next_nod_id_4_nod), intent(inout) :: neib_nod
+!!        type(jacobians_3d), intent(in) :: jac_3d
 !
       module cal_filter_func_each_node
 !
       use m_precision
 !
-      use m_constants
       use calypso_mpi
+      use m_constants
       use m_ctl_params_4_gen_filter
-      use m_geometry_data
       use m_filter_coefs
       use m_matrix_4_filter
       use m_reference_moments
-      use m_element_id_4_node
+!
+      use t_geometry_data
+      use t_next_node_ele_4_node
+      use t_jacobians
+!
       use fem_const_filter_matrix
       use int_filter_functions
 !
@@ -36,12 +46,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_filter_func_nod_by_nod(inod, ierr)
+      subroutine const_filter_func_nod_by_nod                           &
+     &         (inod, node, ele, ele_4_nod, neib_nod, jac_3d, ierr)
 !
       use cal_1d_moments_4_fliter
 !
+      type(node_data),    intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d
+!
       integer(kind = kint), intent(in) :: inod
       integer(kind = kint), intent(inout) :: ierr
+      type(element_around_node), intent(inout) :: ele_4_nod
+      type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !
       integer(kind = kint) :: i, ist, ied, iint, ntmp, num_free
       integer(kind = kint) :: ibest_fixed_point, ibest_mat_size
@@ -49,7 +66,8 @@
       real(kind= kreal) :: det_mat_solution
 !
 !
-        call copy_next_nod_ele_4_each(inod, node1%numnod)
+      call copy_next_nod_ele_4_each                                     &
+     &     (inod, node%numnod, ele_4_nod, neib_nod)
 !
         ibest_mat_size =   -1
         ibest_fixed_point = 0
@@ -62,8 +80,9 @@
             num_previous_comp = nnod_near_1nod_filter
           end if
 !
-          call s_expand_filter_area_4_1node(node1%numnod, inod, ele1)
-          call resize_matrix_size_gen_filter(ele1%nnod_4_ele)
+          call s_expand_filter_area_4_1node                             &
+     &       (inod, node, ele, ele_4_nod)
+          call resize_matrix_size_gen_filter(ele%nnod_4_ele)
 !
         end do
 !
@@ -72,7 +91,8 @@
 !
 !    set nxn matrix
 !
-        call int_node_filter_matrix(inod, num_int_points,               &
+        call int_node_filter_matrix                                     &
+     &      (node, ele, jac_3d, inod, num_int_points,                   &
      &       nele_near_1nod_weight, iele_near_1nod_weight(1),           &
      &       nnod_near_1nod_weight, inod_near_1nod_weight(1),           &
      &       nnod_near_1nod_filter)
@@ -102,7 +122,7 @@
         do num_free = ist, ied, iint
 !
           if (iflag_use_fixed_points .eq. 1) then
-            ntmp = min(nnod_near_1nod_filter,num_order_3d)
+            ntmp = min(nnod_near_1nod_filter, num_order_3d)
           else
             ntmp = num_free
           end if
@@ -155,7 +175,7 @@
 !
         if (ibest_mat_size .gt. 0) then
           call copy_filter_coefs_from_tmp
-          call s_delete_small_weighting(node1%numnod)
+          call s_delete_small_weighting(node%numnod)
         else
           if (iflag_tgt_filter_type .gt. 0) then
             i_exp_level_1nod_weight = -maximum_neighbour
@@ -174,10 +194,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine const_fluid_filter_nod_by_nod(inod, ierr)
+      subroutine const_fluid_filter_nod_by_nod                          &
+     &         (inod, node, ele, ele_4_nod, neib_nod, jac_3d, ierr)
+!
+      type(node_data),    intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d
 !
       integer(kind = kint), intent(in) :: inod
+!
       integer(kind = kint), intent(inout) :: ierr
+      type(element_around_node), intent(inout) :: ele_4_nod
+      type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !
       integer(kind = kint) :: i, ist, ied, iint, ntmp, num_free
       integer(kind = kint) :: ibest_fixed_point, ibest_mat_size
@@ -185,7 +213,8 @@
       real(kind= kreal) :: det_mat_solution
 !
 !
-        call copy_next_nod_ele_4_each(inod, node1%numnod)
+      call copy_next_nod_ele_4_each                                     &
+     &     (inod, node%numnod, ele_4_nod, neib_nod)
 !
 !    no filtering
 !
@@ -194,8 +223,9 @@
         else
 !
           do i = 1, maximum_neighbour
-            call s_expand_filter_area_4_1node(node1%numnod, inod, ele1)
-            call resize_matrix_size_gen_filter(ele1%nnod_4_ele)
+            call s_expand_filter_area_4_1node                           &
+     &         (inod, node, ele, ele_4_nod)
+            call resize_matrix_size_gen_filter(ele%nnod_4_ele)
           end do
 !
 !    use same filter for fluid area
@@ -216,10 +246,11 @@
             a_mat = 0.0d0
             vec_mat = 0.0d0
 !
-            call int_node_filter_matrix(inod, num_int_points,           &
-     &            nele_near_1nod_weight, iele_near_1nod_weight(1),      &
-     &            nnod_near_1nod_weight, inod_near_1nod_weight(1),      &
-     &            nnod_near_1nod_filter)
+            call int_node_filter_matrix                                 &
+     &         (node, ele, jac_3d, inod, num_int_points,                &
+     &          nele_near_1nod_weight, iele_near_1nod_weight(1),        &
+     &          nnod_near_1nod_weight, inod_near_1nod_weight(1),        &
+     &          nnod_near_1nod_filter)
 !
             if (ist_num_free .eq. -1) then
               if (iflag_tgt_filter_type .eq. -1) then
@@ -295,7 +326,7 @@
 !
             if (ibest_mat_size .gt. 0) then
               call copy_filter_coefs_from_tmp
-              call s_delete_small_weighting(node1%numnod)
+              call s_delete_small_weighting(node%numnod)
             else
               if (iflag_tgt_filter_type .gt. 0) then
                 i_exp_level_1nod_weight = -maximum_neighbour

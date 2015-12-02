@@ -148,6 +148,7 @@
       use m_geometry_data
       use m_sorted_node
       use m_finite_element_matrix
+      use m_crs_consist_mass_mat
       use int_vol_elesize_on_node
       use cal_ff_smp_to_ffs
       use cal_sol_deltax_by_consist
@@ -164,7 +165,7 @@
       call cal_ff_smp_2_ff(node1, rhs_tbl1, n_vector,                   &
      &    f1_nl%ff_smp, f1_l%ff)
       do nd = 1, n_vector
-        call cal_sol_dx_by_consist(diff_field(1,nd), nd)
+        call cal_sol_dx_by_consist(mass1, diff_field(1,nd), nd)
       end do
 !
       end subroutine take_1st_diffs_nod_by_consist

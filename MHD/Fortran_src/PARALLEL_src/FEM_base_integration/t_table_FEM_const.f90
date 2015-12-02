@@ -5,6 +5,14 @@
 !
 !> @brief Stricture for index table for FEM assemble
 !
+!      subroutine set_idx_list_whole_crs_mat                            &
+!     &         (node, ele, tbl_crs, rhs_tbl, mat_tbl)
+!        type(node_data), intent(in) :: node
+!        type(element_data), intent(in) :: ele
+!        type(CRS_matrix_connect), intent(in) :: tbl_crs
+!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!        type(table_mat_const), intent(inout) :: mat_tbl
+!!
 !      subroutine alloc_type_sorted_node(np_smp, numnod, rhs_tbl)
 !        integer(kind = kint), intent(in) :: np_smp, numnod
 !        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
@@ -63,6 +71,36 @@
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine set_idx_list_whole_crs_mat                             &
+     &         (node, ele, tbl_crs, rhs_tbl, mat_tbl)
+!
+      use m_machine_parameter
+      use t_geometry_data
+      use t_crs_matrix
+      use set_index_list_4_crs
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(CRS_matrix_connect), intent(in) :: tbl_crs
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+      type(table_mat_const), intent(inout) :: mat_tbl
+!
+!
+      call alloc_type_marix_list(ele%nnod_4_ele, rhs_tbl, mat_tbl)
+!
+      call s_set_index_list_4_crs                                       &
+     &   (tbl_crs, node%numnod, node%internal_node,                     &
+     &    ele%numele, ele%nnod_4_ele, ele%ie,                           &
+     &    rhs_tbl%inod_ele_max, rhs_tbl%num_sort_smp,                   &
+     &    rhs_tbl%nod_stack_smp, rhs_tbl%iele_sort_smp,                 &
+     &    rhs_tbl%iconn_sort_smp, mat_tbl%idx_4_mat)
+!
+      end subroutine set_idx_list_whole_crs_mat
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine alloc_type_sorted_node(np_smp, numnod, rhs_tbl)

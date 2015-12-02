@@ -3,22 +3,25 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!!      subroutine cal_fmoms_ele_by_elen_1st(ifil)
-!!      subroutine correct_fmoms_ele_by_elen_1st(ifil)
+!!      subroutine cal_fmoms_ele_by_elen(FEM_elen, mom_ele)
+!!      subroutine correct_fmoms_ele_by_elen(ele, FEM_elen, mom_ele)
+!!        type(element_data), intent(in) :: ele
+!!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(ele_mom_diffs_type), intent(inout) :: mom_ele
-!!      subroutine delete_x_products_of_elen_1st
+!!      subroutine delete_x_products_of_elen(FEM_elen)
+!!        type(gradient_model_data_type), intent(inout) :: FEM_elen
 !!
-!!      subroutine s_cal_filter_moms_ele_by_elen(ifil)
-!!      subroutine correct_filter_moms_ele_by_elen(ifil)
-!!      subroutine delete_cross_products_of_elen
 !
       module cal_filter_moms_ele_by_elen
 !
       use m_precision
-!
       use m_constants
 !
       implicit none
+!
+      private :: s_cal_filter_moms_ele_by_elen
+      private :: correct_filter_moms_ele_by_elen
+      private :: delete_cross_products_of_elen
 !
 !  ---------------------------------------------------------------------
 !
@@ -26,27 +29,27 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_fmoms_ele_by_elen_1st(mom_ele)
+      subroutine cal_fmoms_ele_by_elen(FEM_elen, mom_ele)
 !
-      use m_geometry_data
-      use m_filter_elength
+      use t_filter_elength
       use t_filter_moments
 !
+      type(gradient_model_data_type), intent(in) :: FEM_elen
       type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !
 !
-      call s_cal_filter_moms_ele_by_elen(ele1%numele,                   &
-     &  FEM1_elen%filter_conf%nf_type,                                  &
-     &  FEM1_elen%filter_conf%xmom_1d_org,                              &
-     &  FEM1_elen%elen_ele%moms%f_x2,   FEM1_elen%elen_ele%moms%f_y2,   &
-     &  FEM1_elen%elen_ele%moms%f_z2,   FEM1_elen%elen_ele%moms%f_xy,   &
-     &  FEM1_elen%elen_ele%moms%f_yz,   FEM1_elen%elen_ele%moms%f_zx,   &
-     &  FEM1_elen%elen_ele%diff%df_x2,  FEM1_elen%elen_ele%diff%df_y2,  &
-     &  FEM1_elen%elen_ele%diff%df_z2,  FEM1_elen%elen_ele%diff%df_xy,  &
-     &  FEM1_elen%elen_ele%diff%df_yz,  FEM1_elen%elen_ele%diff%df_zx,  &
-     &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &
-     &  FEM1_elen%elen_ele%diff2%df_z2, FEM1_elen%elen_ele%diff2%df_xy, &
-     &  FEM1_elen%elen_ele%diff2%df_yz, FEM1_elen%elen_ele%diff2%df_zx, &
+      call s_cal_filter_moms_ele_by_elen(FEM_elen%nele_filter_mom,      &
+     &  FEM_elen%filter_conf%nf_type,                                   &
+     &  FEM_elen%filter_conf%xmom_1d_org,                               &
+     &  FEM_elen%elen_ele%moms%f_x2,   FEM_elen%elen_ele%moms%f_y2,     &
+     &  FEM_elen%elen_ele%moms%f_z2,   FEM_elen%elen_ele%moms%f_xy,     &
+     &  FEM_elen%elen_ele%moms%f_yz,   FEM_elen%elen_ele%moms%f_zx,     &
+     &  FEM_elen%elen_ele%diff%df_x2,  FEM_elen%elen_ele%diff%df_y2,    &
+     &  FEM_elen%elen_ele%diff%df_z2,  FEM_elen%elen_ele%diff%df_xy,    &
+     &  FEM_elen%elen_ele%diff%df_yz,  FEM_elen%elen_ele%diff%df_zx,    &
+     &  FEM_elen%elen_ele%diff2%df_x2, FEM_elen%elen_ele%diff2%df_y2,   &
+     &  FEM_elen%elen_ele%diff2%df_z2, FEM_elen%elen_ele%diff2%df_xy,   &
+     &  FEM_elen%elen_ele%diff2%df_yz, FEM_elen%elen_ele%diff2%df_zx,   &
      &  mom_ele%moms%f_x,    mom_ele%moms%f_y,    mom_ele%moms%f_z,     &
      &  mom_ele%moms%f_x2,   mom_ele%moms%f_y2,   mom_ele%moms%f_z2,    &
      &  mom_ele%moms%f_xy,   mom_ele%moms%f_yz,   mom_ele%moms%f_zx,    &
@@ -57,32 +60,34 @@
      &  mom_ele%diff2%df_x2, mom_ele%diff2%df_y2, mom_ele%diff2%df_z2,  &
      &  mom_ele%diff2%df_xy, mom_ele%diff2%df_yz, mom_ele%diff2%df_zx)
 !
-      end subroutine cal_fmoms_ele_by_elen_1st
+      end subroutine cal_fmoms_ele_by_elen
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine correct_fmoms_ele_by_elen_1st(mom_ele)
+      subroutine correct_fmoms_ele_by_elen(ele, FEM_elen, mom_ele)
 !
-      use m_geometry_data
-      use m_filter_elength
+      use t_geometry_data
+      use t_filter_elength
       use t_filter_moments
 !
+      type(element_data), intent(in) :: ele
+      type(gradient_model_data_type), intent(in) :: FEM_elen
       type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !
 !
       call correct_filter_moms_ele_by_elen                              &
-     & (ele1%numele, ele1%nnod_4_ele, ele1%ie,                          &
-     &  FEM1_elen%filter_conf%nf_type,                                  &
-     &  FEM1_elen%filter_conf%xmom_1d_org,                              &
-     &  FEM1_elen%elen_ele%moms%f_x2,   FEM1_elen%elen_ele%moms%f_y2,   &
-     &  FEM1_elen%elen_ele%moms%f_z2,   FEM1_elen%elen_ele%moms%f_xy,   &
-     &  FEM1_elen%elen_ele%moms%f_yz,   FEM1_elen%elen_ele%moms%f_zx,   &
-     &  FEM1_elen%elen_ele%diff%df_x2,  FEM1_elen%elen_ele%diff%df_y2,  &
-     &  FEM1_elen%elen_ele%diff%df_z2,  FEM1_elen%elen_ele%diff%df_xy,  &
-     &  FEM1_elen%elen_ele%diff%df_yz,  FEM1_elen%elen_ele%diff%df_zx,  &
-     &  FEM1_elen%elen_ele%diff2%df_x2, FEM1_elen%elen_ele%diff2%df_y2, &
-     &  FEM1_elen%elen_ele%diff2%df_z2, FEM1_elen%elen_ele%diff2%df_xy, &
-     &  FEM1_elen%elen_ele%diff2%df_yz, FEM1_elen%elen_ele%diff2%df_zx, &
+     & (ele%numele, ele%nnod_4_ele, ele%ie,                             &
+     &  FEM_elen%filter_conf%nf_type,                                   &
+     &  FEM_elen%filter_conf%xmom_1d_org,                               &
+     &  FEM_elen%elen_ele%moms%f_x2,   FEM_elen%elen_ele%moms%f_y2,     &
+     &  FEM_elen%elen_ele%moms%f_z2,   FEM_elen%elen_ele%moms%f_xy,     &
+     &  FEM_elen%elen_ele%moms%f_yz,   FEM_elen%elen_ele%moms%f_zx,     &
+     &  FEM_elen%elen_ele%diff%df_x2,  FEM_elen%elen_ele%diff%df_y2,    &
+     &  FEM_elen%elen_ele%diff%df_z2,  FEM_elen%elen_ele%diff%df_xy,    &
+     &  FEM_elen%elen_ele%diff%df_yz,  FEM_elen%elen_ele%diff%df_zx,    &
+     &  FEM_elen%elen_ele%diff2%df_x2, FEM_elen%elen_ele%diff2%df_y2,   &
+     &  FEM_elen%elen_ele%diff2%df_z2, FEM_elen%elen_ele%diff2%df_xy,   &
+     &  FEM_elen%elen_ele%diff2%df_yz, FEM_elen%elen_ele%diff2%df_zx,   &
      &  mom_ele%moms%f_x,    mom_ele%moms%f_y,    mom_ele%moms%f_z,     &
      &  mom_ele%moms%f_x2,   mom_ele%moms%f_y2,   mom_ele%moms%f_z2,    &
      &  mom_ele%moms%f_xy,   mom_ele%moms%f_yz,   mom_ele%moms%f_zx,    &
@@ -93,23 +98,25 @@
      &  mom_ele%diff2%df_x2, mom_ele%diff2%df_y2, mom_ele%diff2%df_z2,  &
      &  mom_ele%diff2%df_xy, mom_ele%diff2%df_yz, mom_ele%diff2%df_zx)
 !
-      end subroutine correct_fmoms_ele_by_elen_1st
+      end subroutine correct_fmoms_ele_by_elen
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine delete_x_products_of_elen_1st
+      subroutine delete_x_products_of_elen(FEM_elen)
 !
-      use m_geometry_data
-      use m_filter_elength
+      use t_filter_elength
 !
-      call delete_cross_products_of_elen(ele1%numele,                   &
-     &  FEM1_elen%elen_ele%moms%f_xy,   FEM1_elen%elen_ele%moms%f_yz,   &
-     &  FEM1_elen%elen_ele%moms%f_zx,   FEM1_elen%elen_ele%diff%df_xy,  &
-     &  FEM1_elen%elen_ele%diff%df_yz,  FEM1_elen%elen_ele%diff%df_zx,  &
-     &  FEM1_elen%elen_ele%diff2%df_xy, FEM1_elen%elen_ele%diff2%df_yz, &
-     &  FEM1_elen%elen_ele%diff2%df_zx)
+      type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
-      end subroutine delete_x_products_of_elen_1st
+!
+      call delete_cross_products_of_elen(FEM_elen%nele_filter_mom,      &
+     &  FEM_elen%elen_ele%moms%f_xy,   FEM_elen%elen_ele%moms%f_yz,     &
+     &  FEM_elen%elen_ele%moms%f_zx,   FEM_elen%elen_ele%diff%df_xy,    &
+     &  FEM_elen%elen_ele%diff%df_yz,  FEM_elen%elen_ele%diff%df_zx,    &
+     &  FEM_elen%elen_ele%diff2%df_xy, FEM_elen%elen_ele%diff2%df_yz,   &
+     &  FEM_elen%elen_ele%diff2%df_zx)
+!
+      end subroutine delete_x_products_of_elen
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

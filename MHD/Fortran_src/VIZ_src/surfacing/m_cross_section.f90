@@ -11,6 +11,7 @@
 !!      subroutine cross_section_init                                   &
 !!     &         (node, ele, surf, edge, nod_comm, edge_comm,           &
 !!     &          ele_grp, sf_grp, sf_grp_nod, nod_fld)
+!!      subroutine cross_section_main(istep_psf, edge, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -24,11 +25,6 @@
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
 !!        type(phys_data), intent(in) :: nod_fld
-!!
-!!
-!!      subroutine cross_section_main(istep_psf, numnod, numedge,       &
-!!     &          nnod_4_edge, ie_edge, num_nod_phys, num_tot_nod_phys, &
-!!     &          istack_nod_component, d_nod)
 !!
 !!      subroutine dealloc_psf_field_type
 !!@endverbatim
@@ -82,7 +78,6 @@
       subroutine cross_section_init                                     &
      &         (node, ele, surf, edge, nod_comm, edge_comm,             &
      &          ele_grp, sf_grp, sf_grp_nod, nod_fld)
-!nod_fld%phys_name
 !
       use m_geometry_constants
       use m_control_params_4_psf
@@ -181,31 +176,26 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cross_section_main(istep_psf, numnod, numedge,         &
-     &          nnod_4_edge, ie_edge, num_nod_phys, num_tot_nod_phys,   &
-     &          istack_nod_component, d_nod)
+      subroutine cross_section_main(istep_psf, edge, nod_fld)
 !
       use m_control_params_4_psf
+      use t_phys_data
+      use t_edge_data
       use set_fields_for_psf
       use set_ucd_data_to_type
       use output_4_psf
 !
       integer(kind = kint), intent(in) :: istep_psf
 !
-      integer(kind = kint), intent(in) :: numnod, numedge, nnod_4_edge
-      integer(kind=kint), intent(in) :: ie_edge(numedge,nnod_4_edge)
-!
-      integer(kind = kint), intent(in) :: num_nod_phys
-      integer(kind = kint), intent(in) :: num_tot_nod_phys
-      integer(kind = kint), intent(in)                                  &
-     &                     :: istack_nod_component(0:num_nod_phys)
-      real(kind = kreal), intent(in)  :: d_nod(numnod,num_tot_nod_phys)
+      type(edge_data), intent(in) :: edge
+      type(phys_data), intent(in) :: nod_fld
 !
 !
 !      call start_eleps_time(20)
-      call set_field_4_psf(num_psf, numnod, numedge, nnod_4_edge,       &
-     &    ie_edge, num_nod_phys, num_tot_nod_phys,                      &
-     &    istack_nod_component, d_nod, psf_param,                       &
+      call set_field_4_psf                                              &
+     &   (num_psf, nod_fld%n_point, edge%numedge, edge%nnod_4_edge,     &
+     &    edge%ie_edge, nod_fld%num_phys, nod_fld%ntot_phys,            &
+     &    nod_fld%istack_component, nod_fld%d_fld, psf_param,           &
      &    psf_list, psf_grp_list, psf_mesh)
 !      call end_eleps_time(20)
 !

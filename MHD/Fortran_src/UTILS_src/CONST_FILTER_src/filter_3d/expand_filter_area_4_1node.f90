@@ -3,13 +3,18 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!      subroutine init_4_cal_fileters(node, ele)
+!      subroutine init_4_cal_fileters(node, ele, ele_4_nod, neib_nod)
 !        type(node_data),           intent(in) :: node
 !        type(element_data),        intent(in) :: ele
+!      subroutine init_4_cal_fluid_fileters(ele_4_nod, neib_nod)
 !      subroutine finalize_4_cal_fileters
 !      subroutine resize_matrix_size_gen_filter(nnod_4_ele)
-!      subroutine s_expand_filter_area_4_1node(numnod, inod, ele)
-!      subroutine copy_next_nod_ele_4_each(inod, numnod)
+!      subroutine s_expand_filter_area_4_1node                          &
+!     &         (inod, node, ele, ele_4_nod)
+!      subroutine copy_next_nod_ele_4_each                              &
+!     &         (inod, numnod, ele_4_nod, neib_nod)
+!        type(next_nod_id_4_nod), intent(in) :: neib_nod
+!        type(element_around_node), intent(in) :: ele_4_nod
 !
       module expand_filter_area_4_1node
 !
@@ -30,11 +35,11 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_4_cal_fileters(node, ele)
+      subroutine init_4_cal_fileters(node, ele, ele_4_nod, neib_nod)
 !
       use t_geometry_data
+      use t_next_node_ele_4_node
       use m_reference_moments
-      use m_element_id_4_node
       use m_matrix_4_filter
       use m_filter_file_names
       use m_field_file_format
@@ -47,6 +52,8 @@
 !
       type(node_data),           intent(in) :: node
       type(element_data),        intent(in) :: ele
+      type(element_around_node), intent(inout) :: ele_4_nod
+      type(next_nod_id_4_nod), intent(inout) :: neib_nod
 !
 !
       if (inod_end_filter .eq. -1) then
@@ -88,20 +95,23 @@
 !
        if(iflag_debug.eq.1) write(*,*) 'set_belonged_ele_and_next_nod'
       call set_belonged_ele_and_next_nod                                &
-     &   (node, ele, ele_4_nod1, neib_nod1)
+     &   (node, ele, ele_4_nod, neib_nod)
 !
       end subroutine init_4_cal_fileters
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_4_cal_fluid_fileters
+      subroutine init_4_cal_fluid_fileters(ele_4_nod, neib_nod)
 !
       use m_geometry_data
-      use m_element_id_4_node
       use m_filter_file_names
       use m_field_file_format
+      use t_next_node_ele_4_node
       use set_ele_id_4_node_type
       use set_element_list_4_filter
+!
+      type(next_nod_id_4_nod), intent(inout) :: neib_nod
+      type(element_around_node), intent(inout) :: ele_4_nod
 !
 !
       if (ifmt_3d_filter .eq. iflag_ascii) then
@@ -111,10 +121,9 @@
       end if
 !
       call set_grouped_ele_id_4_node(nele_4_filter, iele_4_filter,      &
-     &    node1, ele1, ele_4_nod1)
+     &    node1, ele1, ele_4_nod)
 !
-      call const_next_nod_id_4_node_type(node1, ele1, ele_4_nod1,       &
-     &    neib_nod1)
+      call const_next_nod_id_4_node(node1, ele1, ele_4_nod, neib_nod)
 !
       end subroutine init_4_cal_fluid_fileters
 !
@@ -127,7 +136,6 @@
       use m_matrix_4_filter
       use m_reference_moments
       use m_crs_matrix_4_filter
-      use m_element_id_4_node
       use add_nodes_elems_4_each_nod
       use ordering_by_filtering_size
       use fem_const_filter_matrix
@@ -156,7 +164,6 @@
 !
       subroutine resize_matrix_size_gen_filter(nnod_4_ele)
 !
-      use m_element_id_4_node
       use m_reference_moments
       use m_matrix_4_filter
       use m_crs_matrix_4_filter
@@ -197,70 +204,76 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_expand_filter_area_4_1node(numnod, inod, ele)
+      subroutine s_expand_filter_area_4_1node                           &
+     &         (inod, node, ele, ele_4_nod)
 !
       use t_geometry_data
-      use m_geometry_data
-      use m_element_id_4_node
+      use t_next_node_ele_4_node
       use add_nodes_elems_4_each_nod
       use ordering_by_filtering_size
 !
+      type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      integer(kind = kint), intent(in) :: numnod, inod
+      type(element_around_node), intent(in) :: ele_4_nod
+!
+      integer(kind = kint), intent(in) :: inod
 !
 !
       nnod_near_1nod_filter = nnod_near_1nod_weight
       nele_near_1nod_filter = nele_near_1nod_weight
 !
       call expand_near_ele_4_each_nod                                   &
-     &   (numnod, ele%numele, ele_4_nod1%ntot,                          &
-     &    ele_4_nod1%istack_4_node, ele_4_nod1%iele_4_node,             &
+     &   (node%numnod, ele%numele, ele_4_nod%ntot,                      &
+     &    ele_4_nod%istack_4_node, ele_4_nod%iele_4_node,               &
      &    nnod_near_1nod_filter, inod_near_1nod_weight,                 &
      &    nele_near_1nod_filter, nele_near_1nod_weight,                 &
      &    iele_near_1nod_weight)
 !
       call add_nod_4_grp_each_nod                                       &
-     &   (numnod, ele%numele, ele%nnod_4_ele, ele%ie,                   &
+     &   (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,              &
      &    nele_near_1nod_weight, iele_near_1nod_weight,                 &
      &    nnod_near_1nod_filter, nnod_near_1nod_weight,                 &
      &    inod_near_1nod_weight, iweight_1nod_weight,                   &
      &    idist_from_center_1nod)
 !
       if     (iflag_ordering_list .eq. 0) then
-        call sort_added_nod_4_each_nod(numnod,                          &
+        call sort_added_nod_4_each_nod(node%numnod,                     &
      &      nnod_near_1nod_filter, nnod_near_1nod_weight,               &
      &      inod_near_1nod_weight, iweight_1nod_weight)
       else if(iflag_ordering_list .eq. 1) then
-        call filter_ordering_by_distance(node1, inod)
+        call filter_ordering_by_distance(node, inod)
       else if(iflag_ordering_list .eq. 2) then
-        call filter_ordering_by_dist_ratio(node1, inod)
+        call filter_ordering_by_dist_ratio(node, inod)
       end if
 !
       end subroutine s_expand_filter_area_4_1node
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine copy_next_nod_ele_4_each(inod, numnod)
+      subroutine copy_next_nod_ele_4_each                               &
+     &         (inod, numnod, ele_4_nod, neib_nod)
 !
-      use m_element_id_4_node
+      use t_next_node_ele_4_node
 !
+      type(element_around_node), intent(in) :: ele_4_nod
+      type(next_nod_id_4_nod), intent(in) :: neib_nod
       integer(kind = kint), intent(in) :: inod, numnod
       integer(kind = kint) :: inum, jnum
 !
-      nele_near_1nod_filter = ele_4_nod1%nele_4_node(inod)
-      nele_near_1nod_weight = ele_4_nod1%nele_4_node(inod)
+      nele_near_1nod_filter = ele_4_nod%nele_4_node(inod)
+      nele_near_1nod_weight = ele_4_nod%nele_4_node(inod)
       do inum = 1, nele_near_1nod_weight
-        jnum = ele_4_nod1%istack_4_node(inod-1) + inum
-        iele_near_1nod_weight(inum) = ele_4_nod1%iele_4_node(jnum)
+        jnum = ele_4_nod%istack_4_node(inod-1) + inum
+        iele_near_1nod_weight(inum) = ele_4_nod%iele_4_node(jnum)
       end do
 !
-      nnod_near_1nod_filter = neib_nod1%nnod_next(inod)
-      nnod_near_1nod_weight = neib_nod1%nnod_next(inod)
+      nnod_near_1nod_filter = neib_nod%nnod_next(inod)
+      nnod_near_1nod_weight = neib_nod%nnod_next(inod)
       idist_from_center_1nod(inum) = 1
       do inum = 1, nnod_near_1nod_weight
-        jnum = neib_nod1%istack_next(inod-1) + inum
-        inod_near_1nod_weight(inum) = neib_nod1%inod_next(jnum)
-        iweight_1nod_weight(inum) =   neib_nod1%iweight_next(inum)
+        jnum = neib_nod%istack_next(inod-1) + inum
+        inod_near_1nod_weight(inum) = neib_nod%inod_next(jnum)
+        iweight_1nod_weight(inum) =   neib_nod%iweight_next(inum)
         idist_from_center_1nod(inum) = 1
       end do
       do inum = (nnod_near_1nod_weight+1), numnod

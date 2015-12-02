@@ -53,14 +53,8 @@
       use set_index_list_4_crs
 !
 !
-      call alloc_type_marix_list(ele1%nnod_4_ele, rhs_tbl1, mat_tbl_q1)
-!
-      call s_set_index_list_4_crs                                       &
-     &   (tbl1_crs, node1%numnod, node1%internal_node,                  &
-     &    ele1%numele, ele1%nnod_4_ele, ele1%ie,                        &
-     &    rhs_tbl1%inod_ele_max, rhs_tbl1%num_sort_smp,                 &
-     &    rhs_tbl1%nod_stack_smp, rhs_tbl1%iele_sort_smp,               &
-     &    rhs_tbl1%iconn_sort_smp, mat_tbl_q1%idx_4_mat)
+      call set_idx_list_whole_crs_mat                                   &
+     &   (node1, ele1, tbl1_crs, rhs_tbl1, mat_tbl_q1)
 !
       end subroutine set_idx_list_4_whole_crs
 !

@@ -76,8 +76,7 @@
 !
       call set_ele_id_4_node(node, ele, neib_ele)
 !
-      call const_next_nod_id_4_node_type(node, ele,                     &
-     &    neib_ele, neib_nod)
+      call const_next_nod_id_4_node(node, ele, neib_ele, neib_nod)
 !
       end subroutine set_belonged_ele_and_next_nod
 !

@@ -19,8 +19,6 @@
 !        type(edge_data), intent(in) :: edge
 !        type(phys_data), intent(in) :: fld_nod
 !
-!      subroutine cross_section_main_type(istep_psf, fem, edge,         &
-!     &          fld_nod)
 !!      subroutine isosurface_main_type                                 &
 !!     &         (istep_iso, fem, edge_mesh, fld_nod)
 !        integer(kind = kint), intent(in) :: istep_psf
@@ -98,8 +96,7 @@
 !
 !
       if (num_psf.gt.0 .and. istep_psf.gt.0) then
-        call cross_section_main_type(istep_psf, fem,                    &
-     &      eg_mesh_psf%edge, fld_nod)
+        call cross_section_main(istep_psf, eg_mesh_psf%edge, fld_nod)
       end if
       if (num_iso.gt.0 .and. istep_iso.gt.0) then
         call isosurface_main_type(istep_psf, fem,                       &
@@ -145,37 +142,12 @@
 !
 !
       call isosurface_init                                              &
-     &   (fem%mesh%node%numnod, fem%mesh%ele%numele, surf%numsurf,      &
-     &    edge%numedge, edge%nnod_4_edge, edge%ie_edge, surf%isf_4_ele, &
-     &    edge%iedge_4_sf, fem%mesh%ele%interior_ele,                   &
-     &    fem%mesh%node%istack_nod_smp, fem%mesh%ele%istack_ele_smp,    &
-     &    surf%istack_surf_smp, edge%istack_edge_smp,                   &
-     &    fem%group%ele_grp, fld_nod%num_phys, fld_nod%phys_name)
+     &   (fem%mesh%node, fem%mesh%ele,                                  &
+     &    surf, edge, fem%group%ele_grp, fld_nod)
 !
       end subroutine isosurface_init_type
 !
 !  ---------------------------------------------------------------------
-!  ---------------------------------------------------------------------
-!
-      subroutine cross_section_main_type(istep_psf, fem, edge,          &
-     &          fld_nod)
-!
-      use t_edge_data
-      use m_cross_section
-!
-      integer(kind = kint), intent(in) :: istep_psf
-      type(mesh_data), intent(in) :: fem
-      type(edge_data), intent(in) :: edge
-      type(phys_data), intent(in) :: fld_nod
-!
-!
-      call cross_section_main(istep_psf, fem%mesh%node%numnod,          &
-     &    edge%numedge, edge%nnod_4_edge, edge%ie_edge,                 &
-     &    fld_nod%num_phys, fld_nod%ntot_phys,                          &
-     &    fld_nod%istack_component, fld_nod%d_fld)
-!
-      end subroutine cross_section_main_type
-!
 !  ---------------------------------------------------------------------
 !
       subroutine isosurface_main_type                                   &
@@ -188,16 +160,8 @@
       type(edge_geometry), intent(in) :: edge_mesh
       type(phys_data), intent(in) :: fld_nod
 !
-      call isosurface_main(istep_iso, fem%mesh%node%numnod,             &
-     &    fem%mesh%ele%numele, edge_mesh%edge%numedge,                  &
-     &    fem%mesh%ele%nnod_4_ele, edge_mesh%edge%nnod_4_edge,          &
-     &    fem%mesh%ele%ie, edge_mesh%edge%ie_edge,                      &
-     &    edge_mesh%edge%interior_edge, edge_mesh%edge%iedge_4_ele,     &
-     &    fem%mesh%node%xx, fem%mesh%node%rr, fem%mesh%node%a_r,        &
-     &    fem%mesh%node%ss, fem%mesh%node%a_s,                          &
-     &    fem%mesh%node%istack_nod_smp, edge_mesh%edge_comm,            &
-     &    fld_nod%num_phys, fld_nod%ntot_phys,                          &
-     &    fld_nod%istack_component, fld_nod%d_fld)
+      call isosurface_main(istep_iso, fem%mesh%node, fem%mesh%ele,      &
+     &    edge_mesh%edge, edge_mesh%edge_comm, fld_nod)
 !
       end subroutine isosurface_main_type
 !
