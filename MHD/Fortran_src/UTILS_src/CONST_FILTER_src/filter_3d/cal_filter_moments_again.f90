@@ -20,13 +20,14 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_cal_filter_moments_again                             &
-     &         (node, ele, jac_3d, inod, ele_4_nod, neib_nod, mom_nod)
+     &         (node, ele, jac_3d, FEM_elen, inod,                      &
+     &          ele_4_nod, neib_nod, mom_nod)
 !
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
       use m_matrix_4_filter
-      use m_filter_elength
 !
+      use t_filter_elength
       use t_geometry_data
       use t_jacobians
       use t_next_node_ele_4_node
@@ -41,6 +42,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d
+      type(gradient_model_data_type), intent(in) :: FEM_elen
 !
       integer(kind = kint), intent(in) :: inod
 !
@@ -57,7 +59,8 @@
       call resize_matrix_size_gen_filter(ele%nnod_4_ele)
 !
       do i = 1, maximum_neighbour
-        call s_expand_filter_area_4_1node(inod, node, ele, ele_4_nod)
+        call s_expand_filter_area_4_1node                               &
+     &     (inod, node, ele, ele_4_nod, FEM_elen)
 
         call resize_matrix_size_gen_filter(ele%nnod_4_ele)
       end do

@@ -12,10 +12,10 @@
 !
       use m_constants
       use m_internal_4_partitioner
-      use set_filters_4_new_domains
-!
       use t_mesh_data
       use t_geometry_data
+!
+      use set_filters_4_new_domains
 !
       implicit none
 !
@@ -27,26 +27,33 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine filters_4_newdomains_para(newmesh)
+      subroutine filters_4_newdomains_para                              &
+     &         (org_node, org_ele, newmesh)
 !
       use calypso_mpi
       use m_domain_group_4_partition
 !
+      type(node_data), intent(inout) :: org_node
+      type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
 !
 !
-      call filters_4_each_newdomain(my_rank, newmesh%node, newmesh%ele)
+      call filters_4_each_newdomain(my_rank,                            &
+     &    org_node, org_ele, newmesh%node, newmesh%ele)
       call deallocate_local_nese_id_tbl
 !
       end subroutine filters_4_newdomains_para
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine filters_4_newdomains_single(newmesh)
+      subroutine filters_4_newdomains_single                            &
+     &         (org_node, org_ele, newmesh)
 !
       use m_2nd_pallalel_vector
       use m_domain_group_4_partition
 !
+      type(node_data), intent(inout) :: org_node
+      type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
 !
       integer(kind = kint) :: ip2, my_rank_2nd
@@ -55,7 +62,7 @@
       do ip2 = 1, nprocs_2nd
         my_rank_2nd = ip2 - 1
         call filters_4_each_newdomain(my_rank_2nd,                      &
-     &      newmesh%node, newmesh%ele)
+     &      org_node, org_ele, newmesh%node, newmesh%ele)
       end do
 !
       call deallocate_local_nese_id_tbl
@@ -65,9 +72,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine filters_4_each_newdomain(my_rank2, new_node, new_ele)
+      subroutine filters_4_each_newdomain                               &
+     &         (my_rank2, org_node, org_ele, new_node, new_ele)
 !
-      use m_geometry_data
       use m_ctl_param_newdom_filter
       use m_2nd_pallalel_vector
       use m_nod_filter_comm_table
@@ -90,6 +97,9 @@
       use t_geometry_data
 !
       integer(kind = kint), intent(in) :: my_rank2
+!
+      type(node_data), intent(inout) :: org_node
+      type(element_data), intent(inout) :: org_ele
 !
       type(node_data), intent(inout) :: new_node
       type(element_data), intent(inout) :: new_ele
@@ -144,7 +154,7 @@
 !
 !        write(*,*) 'trans_filter_4_new_domains'
         call trans_filter_4_new_domains                                 &
-     &     (ip2, ifmt_3d_filter, node1, ele1%numele)
+     &     (ip2, ifmt_3d_filter, org_node, org_ele%numele)
 !        write(*,*) 'reorder_filter_new_domain'
         call reorder_filter_new_domain
 !

@@ -13,6 +13,7 @@
       use m_machine_parameter
       use calypso_mpi
       use m_2nd_pallalel_vector
+      use m_geometry_data
       use t_mesh_data
 !
       implicit none
@@ -71,8 +72,8 @@
       if (iflag_debug.eq.1) write(*,*) 'trans_filter_moms_newmesh_para'
       if (iflag_set_filter_elen .gt. 0                                  &
      &  .or. iflag_set_filter_moms.gt.0) then
-        call trans_filter_moms_newmesh_para(newmesh,                    &
-     &      new_surf_mesh, new_edge_mesh)
+        call trans_filter_moms_newmesh_para(node1, ele1, surf1, edge1,  &
+     &      newmesh, new_surf_mesh, new_edge_mesh)
       end if
 !
       end subroutine analyze

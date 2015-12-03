@@ -15,6 +15,7 @@
       use calypso_mpi
 !
       use m_ctl_params_4_gen_filter
+      use m_filter_elength
       use t_filter_dxdxi
       use t_filter_moments
 !
@@ -67,12 +68,12 @@
 !     --------------------- 
 !
       if (iflag_debug.gt.0) write(*,*) 'input_control_3d_commute'
-      call input_control_3d_commute
+      call input_control_3d_commute(FEM1_elen)
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_1d_moments'
-      call s_cal_1d_moments
+      call s_cal_1d_moments(FEM1_elen)
 !
-      call s_set_element_list_4_filter(ele_grp1)
+      call s_set_element_list_4_filter(ele1, ele_grp1)
 !
 !     --------------------- 
 !
@@ -137,7 +138,6 @@
       use m_nod_comm_table
       use m_matrix_4_filter
       use m_crs_matrix_4_filter
-      use m_filter_elength
       use m_filter_coefs
       use m_filter_coef_combained
       use m_nod_filter_comm_table
@@ -171,7 +171,7 @@
       call init_send_recv(nod_comm)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
-      call s_cal_element_size(filter_dxi1, dxidxs1)
+      call s_cal_element_size(FEM1_elen, filter_dxi1, dxidxs1)
       call dealloc_jacobians_ele(filter_dxi1)
 !
 !  ---------------------------------------------------

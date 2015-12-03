@@ -17,7 +17,15 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use m_nod_comm_table
+      use m_crs_matrix
+      use m_sorted_node
+      use m_finite_element_matrix
+      use t_crs_matrix
+!
       implicit none
+!
+      type(CRS_matrix), save, private :: mass1
 !
 !-----------------------------------------------------------------------
 !
@@ -25,19 +33,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_element_size(filter_dxi, dxidxs)
+      subroutine s_cal_element_size(FEM_elen, filter_dxi, dxidxs)
 !
-      use m_nod_comm_table
       use m_geometry_data
       use m_jacobians
-      use m_finite_element_matrix
       use m_ctl_params_4_gen_filter
       use m_element_id_4_node
-      use m_sorted_node
-      use m_filter_elength
       use m_reference_moments
-      use m_crs_consist_mass_mat
-      use m_crs_matrix
+!
+      use t_filter_elength
       use t_filter_dxdxi
 !
       use set_table_type_RHS_assemble
@@ -52,6 +56,7 @@
       use cal_deltax_and_prods_4_nod
       use cal_1st_diff_deltax_4_nod
 !
+      type(gradient_model_data_type), intent(inout) :: FEM_elen
       type(dxdxi_data_type), intent(inout) :: filter_dxi
       type(dxidx_data_type), intent(inout) :: dxidxs
 !
@@ -70,8 +75,8 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'alloc_nodal_elen_type'
       call alloc_nodal_elen_type                                        &
-     &   (FEM1_elen%nnod_filter_mom, FEM1_elen%elen_nod)
-      call alloc_jacobians_node(FEM1_elen%nnod_filter_mom, filter_dxi)
+     &   (FEM_elen%nnod_filter_mom, FEM_elen%elen_nod)
+      call alloc_jacobians_node(FEM_elen%nnod_filter_mom, filter_dxi)
       call alloc_dxidxs_ele(ele1%numele, dxidxs)
       call alloc_dxidxs_node(node1%numnod, dxidxs)
 !
@@ -85,19 +90,24 @@
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_mass_matrix_4_filter'
-      call int_mass_matrix_4_filter
+      call int_mass_matrix_4_filter                                     &
+     &   (node1, ele1, jac1_3d_q, rhs_tbl1, fem1_wk, f1_l, m1_lump)
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_dxidx_ele_type'
-      call cal_dxidx_ele_type(dxidxs%dx_ele)
+      call cal_dxidx_ele_type(ele1, jac1_3d_q, dxidxs%dx_ele)
 !
 !  ---------------------------------------------------
 !        cal element size for each node
 !  ---------------------------------------------------
 !
-      call cal_dx2_on_node(itype_mass_matrix)
-      call cal_dxi_dxes_node(itype_mass_matrix, dxidxs)
+      call cal_dx2_on_node(nod_comm, node1, ele1, jac1_3d_q,            &
+     &    rhs_tbl1, tbl1_crs, mass1, m1_lump, itype_mass_matrix,        &
+     &    FEM_elen, fem1_wk, f1_l)
+      call cal_dxi_dxes_node(nod_comm, node1, ele1, jac1_3d_q,          &
+     &    rhs_tbl1, tbl1_crs, mass1, m1_lump, itype_mass_matrix,        &
+     &    dxidxs, fem1_wk, f1_l)
 !
-      call elength_nod_send_recv(node1, nod_comm, FEM1_elen%elen_nod)
+      call elength_nod_send_recv(node1, nod_comm, FEM_elen%elen_nod)
       call dxidx_nod_send_recv(node1, nod_comm, dxidxs%dx_nod)
 !
 !  ---------------------------------------------------
@@ -106,41 +116,48 @@
 !
       if (itype_mass_matrix .eq. 1) then
         if (iflag_debug.eq.1) write(*,*) 'cal_1st_diffs_dx_by_consist'
-        call cal_1st_diffs_dx_by_consist
+        call cal_1st_diffs_dx_by_consist(nod_comm, node1, ele1,         &
+     &     jac1_3d_q, rhs_tbl1, tbl1_crs, mass1,                        &
+     &     FEM_elen, fem1_wk, f1_nl)
       else
         if (iflag_debug.eq.1) write(*,*) 'cal_1st_diffs_dx_by_lump'
-        call cal_1st_diffs_dx_by_lump
+        call cal_1st_diffs_dx_by_lump(node1, ele1, jac1_3d_q,           &
+     &     rhs_tbl1, m1_lump, FEM_elen, fem1_wk, f1_nl)
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'diff_elen_nod_send_recv'
-      call diff_elen_nod_send_recv(node1, nod_comm, FEM1_elen%elen_nod)
+      call diff_elen_nod_send_recv(node1, nod_comm, FEM_elen%elen_nod)
 !
 !  ---------------------------------------------------
 !        filter moments on each node
 !  ---------------------------------------------------
 !
       call allocate_reference_moments
-      call allocate_seed_moms_ele(FEM1_elen%nele_filter_mom)
-      call allocate_seed_moms_nod(FEM1_elen%nnod_filter_mom)
+      call allocate_seed_moms_ele(FEM_elen%nele_filter_mom)
+      call allocate_seed_moms_nod(FEM_elen%nnod_filter_mom)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_filter_moments_on_ele'
-      call cal_filter_moments_on_ele(filter_dxi%dxi_ele)
+      call cal_filter_moments_on_ele(filter_dxi%dxi_ele, FEM_elen)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_filter_moments_on_node_1st'
-      call cal_filter_moments_on_node_1st
+      call cal_filter_moments_on_node_1st                               &
+     &   (nod_comm, node1, ele1, jac1_3d_q,                             &
+     &    rhs_tbl1, tbl1_crs, mass1, m1_lump, FEM_elen, fem1_wk, f1_l)
 !
 !  ---------------------------------------------------
 !        differences of element size for each element
 !  ---------------------------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_diffs_delta_on_element'
-      call cal_diffs_delta_on_element
+      call cal_diffs_delta_on_element                                   &
+     &   (node1, ele1, jac1_3d_q, FEM_elen)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_2nd_diffs_delta_on_element'
-      call cal_2nd_diffs_delta_on_element
+      call cal_2nd_diffs_delta_on_element                               &
+     &   (node1, ele1, jac1_3d_q, FEM_elen)
 !
       if (iflag_momentum_type .eq. 1) then
-        call delete_x_products_of_elen(FEM1_elen)
+        call delete_x_products_of_elen(FEM_elen)
       end if
 !
       call deallocate_seed_moms_ele
@@ -155,8 +172,8 @@
       subroutine s_const_filter_mom_ele(mom_nod, mom_ele)
 !
       use t_filter_moments
-      use m_nod_comm_table
       use m_geometry_data
+      use m_jacobians
       use m_ctl_params_4_gen_filter
       use cal_diff_elesize_on_ele
       use cal_1st_diff_deltax_4_nod
@@ -169,16 +186,22 @@
       call filter_mom_nod_send_recv(node1, nod_comm, mom_nod)
 !
       if (itype_mass_matrix .eq. 1) then
-        call cal_diffs_filter_nod_consist(mom_nod)
+        call cal_diffs_filter_nod_consist(nod_comm, node1, ele1,        &
+     &      jac1_3d_q, rhs_tbl1, tbl1_crs, mass1,                       &
+     &      fem1_wk, f1_nl, mom_nod)
       else
-        call cal_diffs_filter_nod_lump(mom_nod)
+        call cal_diffs_filter_nod_lump(node1, ele1, jac1_3d_q,          &
+     &     rhs_tbl1, m1_lump, fem1_wk, f1_nl, mom_nod)
       end if
 !
       call diff_filter_mom_nod_send_recv(node1, nod_comm, mom_nod)
 !
-      call cal_filter_moms_ele_by_nod(mom_nod, mom_ele)
-      call cal_1st_diffs_filter_ele(mom_nod, mom_ele)
-      call cal_2nd_diffs_filter_ele(mom_nod, mom_ele)
+      call cal_filter_moms_ele_by_nod                                   &
+     &   (node1, ele1, jac1_3d_q, mom_nod, mom_ele)
+      call cal_1st_diffs_filter_ele                                     &
+     &   (node1, ele1, jac1_3d_q, mom_nod, mom_ele)
+      call cal_2nd_diffs_filter_ele                                     &
+     &   (node1, ele1, jac1_3d_q, mom_nod, mom_ele)
 !
       end subroutine s_const_filter_mom_ele
 !
@@ -186,9 +209,6 @@
 !
       subroutine release_mass_mat_for_consist
 !
-      use m_finite_element_matrix
-      use m_crs_matrix
-      use m_crs_consist_mass_mat
       use int_vol_elesize_on_node
 !
 !

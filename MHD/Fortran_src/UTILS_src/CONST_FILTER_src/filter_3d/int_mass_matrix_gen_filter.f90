@@ -3,15 +3,22 @@
 !
 !      Written by H. Matsui on an., 2006
 !
-!      subroutine int_mass_matrix_4_filter
+!      subroutine int_mass_matrix_4_filter                              &
+!     &         (jac_3d, rhs_tbl, fem_wk, f_l, m_lump)
 !
       module int_mass_matrix_gen_filter
 !
-      use m_ctl_params_4_gen_filter
 !
       use m_precision
+      use m_machine_parameter
+!
+      use m_ctl_params_4_gen_filter
       use m_geometry_constants
-      use m_geometry_data
+!
+      use t_geometry_data
+      use t_jacobians
+      use t_table_FEM_const
+      use t_finite_element_mat
 !
       implicit none
 !
@@ -23,49 +30,63 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_mass_matrix_4_filter
+      subroutine int_mass_matrix_4_filter                               &
+     &         (node, ele, jac_3d, rhs_tbl, fem_wk, f_l, m_lump)
 !
-      use m_machine_parameter
-      use m_jacobians
-      use m_sorted_node
-      use m_finite_element_matrix
       use int_vol_mass_matrix
+!
+      type(node_data),    intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l
+      type(lumped_mass_matrices), intent(inout) :: m_lump
 !
 !
 !      if (id_filter_area_grp(1) .eq. -1) then
-      call int_lumped_mass_matrix(node1, ele1, jac1_3d_q, rhs_tbl1,     &
-     &    num_int_points, fem1_wk, f1_l, m1_lump)
+      call int_lumped_mass_matrix(node, ele, jac_3d, rhs_tbl,           &
+     &    num_int_points, fem_wk, f_l, m_lump)
 !      else
-!        call int_grped_mass_matrix_filter
+!        call int_grped_mass_matrix_filter                              &
+!     &     (node, ele, jac_3d, rhs_tbl, fem_wk, f_l, m_lump)
 !      end if
 !
-!      call check_mass_martix(my_rank, node1%numnod, m1_lump)
+!      call check_mass_martix(my_rank, node%numnod, m_lump)
 !
       end subroutine int_mass_matrix_4_filter
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_grped_mass_matrix_filter
+      subroutine int_grped_mass_matrix_filter                           &
+     &         (node, ele, jac_3d, rhs_tbl, fem_wk, f_l, m_lump)
 !
-      use m_sorted_node
-      use m_jacobians
-      use m_finite_element_matrix
       use m_element_list_4_filter
       use int_grouped_mass_matrix
       use cal_ff_smp_to_ffs
 !
+      type(node_data),    intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
-      if     (ele1%nnod_4_ele.eq.num_t_quad                             &
-     &   .or. ele1%nnod_4_ele.eq.num_t_lag) then
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l
+      type(lumped_mass_matrices), intent(inout) :: m_lump
+!
+!
+      if     (ele%nnod_4_ele.eq.num_t_quad                              &
+     &   .or. ele%nnod_4_ele.eq.num_t_lag) then
         call int_grp_mass_matrix_HRZ_full                               &
-     &     (node1, ele1, jac1_3d_q, rhs_tbl1, iele_filter_smp_stack,    &
+     &     (node, ele, jac_3d, rhs_tbl, iele_filter_smp_stack,          &
      &      nele_4_filter, iele_4_filter, num_int_points,               &
-     &      fem1_wk, f1_l, m1_lump)
+     &      fem_wk, f_l, m_lump)
       else
-        call int_grp_mass_matrix_diag(node1, ele1, jac1_3d_q, rhs_tbl1, &
+        call int_grp_mass_matrix_diag(node, ele, jac_3d, rhs_tbl,       &
      &     iele_filter_smp_stack, nele_4_filter, iele_4_filter,         &
-     &     num_int_points, fem1_wk, f1_l, m1_lump)
+     &     num_int_points, fem_wk, f_l, m_lump)
       end if
 !
       end subroutine int_grped_mass_matrix_filter

@@ -6,15 +6,17 @@
 !      subroutine init_4_cal_fileters(node, ele, ele_4_nod, neib_nod)
 !        type(node_data),           intent(in) :: node
 !        type(element_data),        intent(in) :: ele
-!      subroutine init_4_cal_fluid_fileters(ele_4_nod, neib_nod)
+!      subroutine init_4_cal_fluid_fileters                             &
+!     &         (node, ele, ele_4_nod, neib_nod)
 !      subroutine finalize_4_cal_fileters
 !      subroutine resize_matrix_size_gen_filter(nnod_4_ele)
 !      subroutine s_expand_filter_area_4_1node                          &
-!     &         (inod, node, ele, ele_4_nod)
+!     &         (inod, node, ele, ele_4_nod, FEM_elen)
 !      subroutine copy_next_nod_ele_4_each                              &
 !     &         (inod, numnod, ele_4_nod, neib_nod)
 !        type(next_nod_id_4_nod), intent(in) :: neib_nod
 !        type(element_around_node), intent(in) :: ele_4_nod
+!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !
       module expand_filter_area_4_1node
 !
@@ -101,15 +103,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_4_cal_fluid_fileters(ele_4_nod, neib_nod)
+      subroutine init_4_cal_fluid_fileters                              &
+     &          (node, ele, ele_4_nod, neib_nod)
 !
-      use m_geometry_data
+      use t_geometry_data
+      use t_next_node_ele_4_node
+!
       use m_filter_file_names
       use m_field_file_format
-      use t_next_node_ele_4_node
       use set_ele_id_4_node_type
       use set_element_list_4_filter
 !
+      type(node_data),    intent(in) :: node
+      type(element_data), intent(in) :: ele
       type(next_nod_id_4_nod), intent(inout) :: neib_nod
       type(element_around_node), intent(inout) :: ele_4_nod
 !
@@ -121,9 +127,9 @@
       end if
 !
       call set_grouped_ele_id_4_node(nele_4_filter, iele_4_filter,      &
-     &    node1, ele1, ele_4_nod)
+     &    node, ele, ele_4_nod)
 !
-      call const_next_nod_id_4_node(node1, ele1, ele_4_nod, neib_nod)
+      call const_next_nod_id_4_node(node, ele, ele_4_nod, neib_nod)
 !
       end subroutine init_4_cal_fluid_fileters
 !
@@ -132,7 +138,6 @@
       subroutine finalize_4_cal_fileters
 !
       use m_filter_file_names
-      use m_filter_elength
       use m_matrix_4_filter
       use m_reference_moments
       use m_crs_matrix_4_filter
@@ -205,8 +210,9 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_expand_filter_area_4_1node                           &
-     &         (inod, node, ele, ele_4_nod)
+     &         (inod, node, ele, ele_4_nod, FEM_elen)
 !
+      use t_filter_elength
       use t_geometry_data
       use t_next_node_ele_4_node
       use add_nodes_elems_4_each_nod
@@ -215,6 +221,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(element_around_node), intent(in) :: ele_4_nod
+      type(gradient_model_data_type), intent(in) :: FEM_elen
 !
       integer(kind = kint), intent(in) :: inod
 !
@@ -243,7 +250,7 @@
       else if(iflag_ordering_list .eq. 1) then
         call filter_ordering_by_distance(node, inod)
       else if(iflag_ordering_list .eq. 2) then
-        call filter_ordering_by_dist_ratio(node, inod)
+        call filter_ordering_by_dist_ratio(node, FEM_elen, inod)
       end if
 !
       end subroutine s_expand_filter_area_4_1node

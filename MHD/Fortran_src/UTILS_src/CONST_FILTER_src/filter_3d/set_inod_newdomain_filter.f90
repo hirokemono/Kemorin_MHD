@@ -3,7 +3,8 @@
 !
 !     Written by H. Matsui on May., 2008
 !
-!      subroutine set_inod_4_newdomain_filter(new_node)
+!      subroutine set_inod_4_newdomain_filter                           &
+!     &         (org_node, org_ele, new_node)
 !
       module set_inod_newdomain_filter
 !
@@ -25,16 +26,18 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_inod_4_newdomain_filter(new_node)
+      subroutine set_inod_4_newdomain_filter                            &
+     &         (org_node, org_ele, new_node)
 !
       use t_geometry_data
 !
-      use m_geometry_data
       use m_internal_4_partitioner
       use m_filter_file_names
       use m_field_file_format
       use set_node_data_4_IO
 !
+      type(node_data),    intent(inout) :: org_node
+      type(element_data), intent(inout) :: org_ele
       type(node_data), intent(inout) :: new_node
 !
       integer(kind = kint) :: ip2, my_rank2
@@ -49,7 +52,7 @@
         call deallocate_neib_domain_IO
 !
         call marking_used_node_4_filtering                              &
-     &     (ip2, ifmt_3d_filter, node1, ele1%numele)
+     &     (ip2, ifmt_3d_filter, org_node, org_ele%numele)
 !
         call set_num_globalnod_4_newdomain(ip2, new_node)
 !

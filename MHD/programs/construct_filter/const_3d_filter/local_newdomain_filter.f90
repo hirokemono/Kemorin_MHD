@@ -4,7 +4,8 @@
 !      Written by H. Matsui on May, 2008
 !
 !      subroutine  local_newdomain_filter_para(newmesh)
-!      subroutine  local_newdomain_filter_sngl(newmesh)
+!      subroutine local_newdomain_filter_sngl                           &
+!     &          (org_node, org_ele, newmesh)
 !
       module local_newdomain_filter
 !
@@ -16,6 +17,9 @@
       use set_filters_4_new_domains
       use const_new_mesh_filter
 !
+      use t_mesh_data
+      use t_geometry_data
+!
       implicit none
 !
       character(len=kchara), parameter :: work_file_header = 'work'
@@ -26,16 +30,18 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine  local_newdomain_filter_para(newmesh)
+      subroutine local_newdomain_filter_para                            &
+     &         (org_node, org_ele, newmesh)
 !
-      use t_mesh_data
-!
+      use m_geometry_data
       use m_2nd_pallalel_vector
 !
       use set_inod_newdomain_filter
       use generate_comm_tables
       use bcast_nodes_for_trans
 !
+      type(node_data),    intent(inout) :: org_node
+      type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
 !
 !
@@ -49,7 +55,8 @@
         call allocate_inod_4_subdomain
 !
         write(*,*) 'set_inod_4_newdomain_filter'
-        call set_inod_4_newdomain_filter(newmesh%node)
+        call set_inod_4_newdomain_filter                                &
+     &     (org_node, org_ele, newmesh%node)
 !
 !    construct communication table
 !
@@ -80,13 +87,14 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine  local_newdomain_filter_sngl(newmesh)
-!
-      use t_mesh_data
+      subroutine local_newdomain_filter_sngl                            &
+     &          (org_node, org_ele, newmesh)
 !
       use set_inod_newdomain_filter
       use generate_comm_tables
 !
+      type(node_data),    intent(inout) :: org_node
+      type(element_data), intent(inout) :: org_ele
       type(mesh_geometry), intent(inout) :: newmesh
 !
 !
@@ -97,7 +105,7 @@
       call allocate_inod_4_subdomain
 !
 !      write(*,*) 'set_inod_4_newdomain_filter'
-      call set_inod_4_newdomain_filter(newmesh%node)
+      call set_inod_4_newdomain_filter(org_node, org_ele, newmesh%node)
 !
 !     construct communication table
 !

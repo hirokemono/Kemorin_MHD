@@ -5,7 +5,7 @@
 !      Modified by H. Matsui on Mar., 2008
 !
 !      subroutine filter_ordering_by_distance(node, inod)
-!      subroutine filter_ordering_by_dist_ratio(node, inod)
+!      subroutine filter_ordering_by_dist_ratio(node, FEM_elen, inod)
 !
 !      subroutine s_ordering_by_filtering_size
 !      subroutine cal_distance_from_filter
@@ -49,21 +49,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine filter_ordering_by_dist_ratio(node, inod)
+      subroutine filter_ordering_by_dist_ratio(node, FEM_elen, inod)
 !
       use t_geometry_data
+      use t_filter_elength
       use m_filter_coefs
-      use m_filter_elength
       use add_nodes_elems_4_each_nod
 !
       type(node_data), intent(in) :: node
+      type(gradient_model_data_type), intent(in) :: FEM_elen
       integer(kind = kint), intent(in) :: inod
 !
 !
       call cal_distance_ratio_2_filter(node%numnod, node%xx, inod,      &
-     &   FEM1_elen%elen_nod%moms%f_x2(inod),                            &
-     &   FEM1_elen%elen_nod%moms%f_y2(inod),                            &
-     &   FEM1_elen%elen_nod%moms%f_z2(inod))
+     &   FEM_elen%elen_nod%moms%f_x2(inod),                             &
+     &   FEM_elen%elen_nod%moms%f_y2(inod),                             &
+     &   FEM_elen%elen_nod%moms%f_z2(inod))
 !
       call sort_added_nod_4_each_by_real(node%numnod,                   &
      &    nnod_near_1nod_filter, nnod_near_1nod_weight,                 &
@@ -124,7 +125,6 @@
       subroutine cal_distance_from_filter(numnod, xx, inod)
 !
       use m_filter_coefs
-      use m_filter_elength
 !
       integer(kind = kint), intent(in) :: numnod
       real(kind = kreal), intent(in) :: xx(numnod,3)

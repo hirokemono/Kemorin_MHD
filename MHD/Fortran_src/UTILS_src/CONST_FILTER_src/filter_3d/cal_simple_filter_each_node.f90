@@ -4,9 +4,11 @@
 !     Written by H. Matsui on Nov., 2008
 !
 !!      subroutine set_simple_filter_nod_by_nod                         &
-!!     &         (node, ele, jac_3d, inod, dx_nod, ele_4_nod, neib_nod)
-!!      subroutine set_simple_fl_filter_nod_by_nod(node, ele, jac_3d,   &
-!!     &         inod, dx_nod, ele_4_nod, neib_nod, mom_nod)
+!!     &         (node, ele, jac_3d, FEM_elen, dx_nod,                  &
+!!     &          inod, ele_4_nod, neib_nod)
+!!      subroutine set_simple_fl_filter_nod_by_nod                      &
+!!     &         (node, ele, jac_3d, FEM_elen, dx_nod,                  &
+!!     &          inod, ele_4_nod, neib_nod, mom_nod)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(jacobians_3d), intent(in) :: jac_3d
@@ -21,6 +23,7 @@
 !
       use t_geometry_data
       use t_jacobians
+      use t_filter_elength
       use t_filter_dxdxi
       use t_next_node_ele_4_node
 !
@@ -36,7 +39,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_simple_filter_nod_by_nod                           &
-     &         (node, ele, jac_3d, inod, dx_nod, ele_4_nod, neib_nod)
+     &         (node, ele, jac_3d, FEM_elen, dx_nod,                    &
+     &          inod, ele_4_nod, neib_nod)
 !
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
@@ -54,6 +58,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d
+      type(gradient_model_data_type), intent(in) :: FEM_elen
       type(dxidx_direction_type), intent(in) :: dx_nod
 !
       type(element_around_node), intent(inout) :: ele_4_nod
@@ -70,7 +75,7 @@
       if ( abs(iflag_tgt_filter_type) .eq. 2) then
         do i = 2, maximum_neighbour
           call s_expand_filter_area_4_1node                             &
-     &       (inod, node, ele, ele_4_nod)
+     &       (inod, node, ele, ele_4_nod, FEM_elen)
           nnod_near_1nod_filter = nnod_near_1nod_weight
           nele_near_1nod_filter = nele_near_1nod_weight
           call resize_matrix_size_gen_filter(ele%nnod_4_ele)
@@ -80,7 +85,7 @@
       else
         do i = 1, maximum_neighbour
           call s_expand_filter_area_4_1node                             &
-     &       (inod, node, ele, ele_4_nod)
+     &       (inod, node, ele, ele_4_nod, FEM_elen)
           call resize_matrix_size_gen_filter(ele%nnod_4_ele)
         end do
       end if
@@ -112,7 +117,7 @@
      &      dx_nod%dzi%df_dx, dx_nod%dzi%df_dy, dx_nod%dzi%df_dz)
       end if
 !
-      call cal_filter_and_coefficients
+      call cal_filter_and_coefficients(ele, jac_3d)
       call normalize_each_filter_weight
 !
       call s_delete_small_weighting(node%numnod)
@@ -122,8 +127,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_simple_fl_filter_nod_by_nod(node, ele, jac_3d,     &
-     &         inod, dx_nod, ele_4_nod, neib_nod, mom_nod)
+      subroutine set_simple_fl_filter_nod_by_nod                        &
+     &         (node, ele, jac_3d, FEM_elen, dx_nod,                    &
+     &          inod, ele_4_nod, neib_nod, mom_nod)
 !
       use m_ctl_params_4_gen_filter
       use m_filter_coefs
@@ -143,6 +149,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d
+      type(gradient_model_data_type), intent(in) :: FEM_elen
       type(dxidx_direction_type), intent(in) :: dx_nod
 !
       type(element_around_node), intent(inout) :: ele_4_nod
@@ -165,7 +172,7 @@
         if ( abs(iflag_tgt_filter_type) .eq. 2) then
           do i = 2, maximum_neighbour
             call s_expand_filter_area_4_1node                           &
-     &         (inod, node, ele, ele_4_nod)
+     &         (inod, node, ele, ele_4_nod, FEM_elen)
             nnod_near_1nod_filter = nnod_near_1nod_weight
             nele_near_1nod_filter = nele_near_1nod_weight
           end do
@@ -174,7 +181,7 @@
         else
           do i = 1, maximum_neighbour
             call s_expand_filter_area_4_1node                           &
-     &         (inod, node, ele, ele_4_nod)
+     &         (inod, node, ele, ele_4_nod, FEM_elen)
           end do
         end if
         mat_size = nnod_near_1nod_weight
@@ -214,7 +221,7 @@
      &          dx_nod%dzi%df_dx, dx_nod%dzi%df_dy, dx_nod%dzi%df_dz)
           end if
 !
-          call cal_filter_and_coefficients
+          call cal_filter_and_coefficients(ele, jac_3d)
           call normalize_each_filter_weight
 !
           call s_delete_small_weighting(node%numnod)

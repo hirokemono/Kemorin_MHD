@@ -4,9 +4,11 @@
 !     Written by H. Matsui on Nov., 2008
 !
 !!      subroutine s_correct_wrong_filters                              &
-!!     &          (node, ele, jac_3d, id_filter_coef, dxidxs, mom_nod)
+!!     &          (node, ele, jac_3d, FEM_elen, id_filter_coef,         &
+!!     &           dxidxs, mom_nod)
 !!      subroutine correct_wrong_fluid_filters                          &
-!!     &         (node, ele, jac_3d, id_filter_coef, dxidxs, mom_nod)
+!!     &         (node, ele, jac_3d, FEM_elen, id_filter_coef,          &
+!!     &          dxidxs, mom_nod)
 !
       module correct_wrong_filters
 !
@@ -19,6 +21,7 @@
       use t_geometry_data
       use t_jacobians
       use t_next_node_ele_4_node
+      use t_filter_elength
       use t_filter_dxdxi
       use t_filter_moments
 !
@@ -44,7 +47,8 @@
 ! -----------------------------------------------------------------------
 !
       subroutine s_correct_wrong_filters                                &
-     &          (node, ele, jac_3d, id_filter_coef, dxidxs, mom_nod)
+     &          (node, ele, jac_3d, FEM_elen, id_filter_coef,           &
+     &           dxidxs, mom_nod)
 !
       use set_simple_filters
 !
@@ -53,6 +57,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d
+      type(gradient_model_data_type), intent(in) :: FEM_elen
 !
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
@@ -88,7 +93,8 @@
 !
           if(iflag_tgt_filter_type .ge. -4                              &
      &      .and. iflag_tgt_filter_type.le. -2) then
-            call s_cal_filter_moments_again(node, ele, jac_3d,          &
+            call s_cal_filter_moments_again                             &
+     &         (node, ele, jac_3d, FEM_elen,                            &
      &          inod, ele_4_nod_f, neib_nod_f, mom_nod)
           end if
         else
@@ -96,11 +102,12 @@
           if (iflag_tgt_filter_type .eq. -1) then
             call copy_filter_coefs_to_tmp
             call const_filter_func_nod_by_nod(inod, node, ele,          &
-     &          ele_4_nod_f, neib_nod_f, jac_3d, ierr)
+     &          ele_4_nod_f, neib_nod_f, jac_3d, FEM_elen, ierr)
           else if(iflag_tgt_filter_type .ge. -4                         &
      &      .and. iflag_tgt_filter_type.le. -2) then
-            call set_simple_filter_nod_by_nod(node, ele, jac_3d,        &
-     &          inod, dxidxs%dx_nod, ele_4_nod_f, neib_nod_f)
+            call set_simple_filter_nod_by_nod                           &
+     &         (node, ele, jac_3d, FEM_elen, dxidxs%dx_nod,             &
+     &          inod, ele_4_nod_f, neib_nod_f)
           end if
 !
           nnod_near_nod_weight(inod) = nnod_near_1nod_weight
@@ -117,13 +124,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine correct_wrong_fluid_filters                            &
-     &         (node, ele, jac_3d, id_filter_coef, dxidxs, mom_nod)
+     &         (node, ele, jac_3d, FEM_elen, id_filter_coef,            &
+     &          dxidxs, mom_nod)
 !
       integer(kind = kint), intent(in) :: id_filter_coef
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d
+      type(gradient_model_data_type), intent(in) :: FEM_elen
 !
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(nod_mom_diffs_type), intent(inout) :: mom_nod(2)
@@ -132,7 +141,8 @@
 !
 !
 !
-      call init_4_cal_fluid_fileters(ele_4_nod_f, neib_nod_f)
+      call init_4_cal_fluid_fileters                                    &
+     &   (node, ele, ele_4_nod_f, neib_nod_f)
 !
       write(70+my_rank,*) ' Best condition for fluid filter'
 !
@@ -169,11 +179,12 @@
           if (iflag_tgt_filter_type .eq. -1) then
             call copy_filter_coefs_to_tmp
             call const_fluid_filter_nod_by_nod(inod, node, ele,         &
-     &          ele_4_nod_f, neib_nod_f, jac_3d, ierr)
+     &          ele_4_nod_f, neib_nod_f, jac_3d, FEM_elen, ierr)
           else if(iflag_tgt_filter_type .ge. -4                         &
      &      .and. iflag_tgt_filter_type.le. -2) then
-            call set_simple_fl_filter_nod_by_nod(node, ele, jac_3d,     &
-     &          inod, dxidxs%dx_nod, ele_4_nod_f, neib_nod_f, mom_nod)
+            call set_simple_fl_filter_nod_by_nod                        &
+     &         (node, ele, jac_3d, FEM_elen, dxidxs%dx_nod,             &
+     &          inod, ele_4_nod_f, neib_nod_f, mom_nod)
           end if
 !
         end if

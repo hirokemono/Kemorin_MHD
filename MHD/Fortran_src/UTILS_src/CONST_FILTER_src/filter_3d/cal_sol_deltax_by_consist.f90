@@ -4,11 +4,24 @@
 !     Written by H. Matsui on Nov., 2006
 !     Modified by H. Matsui on Apr., 2008
 !
-!      subroutine cal_sol_dx_by_consist(mass, dx_nod, nd_dx)
+!!      subroutine cal_sol_dx_by_consist                                &
+!!     &         (node, nod_comm, tbl_crs, mass, f_l, dx_nod, nd_dx)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(CRS_matrix_connect), intent(in) :: tbl_crs
+!!        type(CRS_matrix), intent(in) :: mass
+!!        type(finite_ele_mat_node), intent(in) :: f_l
+!
 !
       module cal_sol_deltax_by_consist
 !
       use m_precision
+      use m_machine_parameter
+!
+      use t_comm_table
+      use t_geometry_data
+      use t_finite_element_mat
+      use t_crs_matrix
 !
       implicit none
 !
@@ -22,25 +35,24 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sol_dx_by_consist(mass, dx_nod, nd_dx)
+      subroutine cal_sol_dx_by_consist                                  &
+     &         (node, nod_comm, tbl_crs, mass, f_l, dx_nod, nd_dx)
 !
       use calypso_mpi
-      use m_array_for_send_recv
-      use m_machine_parameter
-      use m_nod_comm_table
       use m_ctl_params_4_gen_filter
-      use m_geometry_data
-      use m_finite_element_matrix
-      use m_crs_matrix
-      use m_crs_consist_mass_mat
-!
-      use t_crs_matrix
+      use m_array_for_send_recv
 !
       use   solver
 !
-      type(CRS_matrix), intent(in) :: mass
       integer (kind = kint), intent(in) :: nd_dx
-      real(kind= kreal), intent(inout) :: dx_nod(node1%numnod)
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(CRS_matrix_connect), intent(in) :: tbl_crs
+      type(CRS_matrix), intent(in) :: mass
+      type(finite_ele_mat_node), intent(in) :: f_l
+!
+      real(kind= kreal), intent(inout) :: dx_nod(node%numnod)
 !
 !      integer (kind = kint) :: inod
       integer(kind = kint) :: ierr
@@ -57,12 +69,12 @@
       imonitor_solve = i_debug
 !
 !$omp parallel workshare
-      x_vec(1:node1%numnod) = f1_l%ff(1:node1%numnod,nd_dx)
-      b_vec(1:node1%numnod) = f1_l%ff(1:node1%numnod,nd_dx)
+      x_vec(1:node%numnod) = f_l%ff(1:node%numnod,nd_dx)
+      b_vec(1:node%numnod) = f_l%ff(1:node%numnod,nd_dx)
 !$omp end parallel workshare
 !
 !       write(50+my_rank,*) 'div_b'
-!       do inod=1, node1%numnod
+!       do inod=1, node%numnod
 !         write(50+my_rank,*) b_vec(inod)
 !       end do
 !
@@ -71,10 +83,10 @@
      &              method_elesize, precond_elesize
       end if
 !
-      call solve(node1%internal_node, node1%numnod,                     &
-     &             tbl1_crs%ntot_l, tbl1_crs%ntot_u, mass%D_crs,        &
-     &             mass%AL_crs, tbl1_crs%istack_l, tbl1_crs%item_l,     &
-     &             mass%AU_crs, tbl1_crs%istack_u, tbl1_crs%item_u,     &
+      call solve(node%internal_node, node%numnod,                       &
+     &             tbl_crs%ntot_l, tbl_crs%ntot_u, mass%D_crs,          &
+     &             mass%AL_crs, tbl_crs%istack_l, tbl_crs%item_l,       &
+     &             mass%AU_crs, tbl_crs%istack_u, tbl_crs%item_u,       &
      &             b_vec(1), x_vec(1), nset,                            &
      &             nod_comm%num_neib, nod_comm%id_neib,                 &
      &             nod_comm%istack_import, nod_comm%item_import,        &
@@ -88,7 +100,7 @@
       end if
 !
 !$omp parallel workshare
-      dx_nod(1:node1%numnod) = x_vec(1:node1%numnod)
+      dx_nod(1:node%numnod) = x_vec(1:node%numnod)
 !$omp end parallel workshare
 !
       end subroutine cal_sol_dx_by_consist

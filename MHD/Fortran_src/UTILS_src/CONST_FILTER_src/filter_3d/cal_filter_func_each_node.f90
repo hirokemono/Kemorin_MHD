@@ -4,14 +4,17 @@
 !     Written by H. Matsui on Apr., 2008
 !
 !!      subroutine const_filter_func_nod_by_nod                         &
-!!     &         (inod, node, ele, ele_4_nod, neib_nod, jac_3d, ierr)
+!!     &        (inod, node, ele, ele_4_nod, neib_nod, jac_3d, FEM_elen,&
+!!     &         ierr)
 !!      subroutine const_fluid_filter_nod_by_nod                        &
-!!     &         (inod, node, ele, ele_4_nod, neib_nod, jac_3d, ierr)
+!!     &        (inod, node, ele, ele_4_nod, neib_nod, jac_3d, FEM_elen,&
+!!     &         ierr)
 !!        type(node_data),           intent(in) :: node
 !!        type(element_data),        intent(in) :: ele
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(element_around_node), intent(inout) :: ele_4_nod
 !!        type(next_nod_id_4_nod), intent(inout) :: neib_nod
-!!        type(jacobians_3d), intent(in) :: jac_3d
 !
       module cal_filter_func_each_node
 !
@@ -27,6 +30,7 @@
       use t_geometry_data
       use t_next_node_ele_4_node
       use t_jacobians
+      use t_filter_elength
 !
       use fem_const_filter_matrix
       use int_filter_functions
@@ -47,13 +51,15 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_filter_func_nod_by_nod                           &
-     &         (inod, node, ele, ele_4_nod, neib_nod, jac_3d, ierr)
+     &         (inod, node, ele, ele_4_nod, neib_nod, jac_3d, FEM_elen, &
+     &          ierr)
 !
       use cal_1d_moments_4_fliter
 !
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d
+      type(gradient_model_data_type), intent(in) :: FEM_elen
 !
       integer(kind = kint), intent(in) :: inod
       integer(kind = kint), intent(inout) :: ierr
@@ -81,7 +87,7 @@
           end if
 !
           call s_expand_filter_area_4_1node                             &
-     &       (inod, node, ele, ele_4_nod)
+     &       (inod, node, ele, ele_4_nod, FEM_elen)
           call resize_matrix_size_gen_filter(ele%nnod_4_ele)
 !
         end do
@@ -130,14 +136,15 @@
           do mat_size = num_free, ntmp
             num_fixed_point = mat_size - num_free
 !
-            call const_filter_mat_each_nod(inod, num_fixed_point, ierr)
+            call const_filter_mat_each_nod                              &
+     &         (node, FEM_elen, inod, num_fixed_point, ierr)
 !
             if (ierr .eq. 1) goto 20
 !
             call s_cal_sol_filter_func_nod(inod, ierr)
             if (ierr .gt. 0) goto 20
 
-            call cal_filter_and_coefficients
+            call cal_filter_and_coefficients(ele, jac_3d)
             call cal_rms_filter_coefs(rms_weight, ierr)
 !
 !              write(70+my_rank,*) 'det_mat', mat_size, num_fixed_point,&
@@ -195,11 +202,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine const_fluid_filter_nod_by_nod                          &
-     &         (inod, node, ele, ele_4_nod, neib_nod, jac_3d, ierr)
+     &         (inod, node, ele, ele_4_nod, neib_nod, jac_3d, FEM_elen, &
+     &          ierr)
 !
       type(node_data),    intent(in) :: node
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d
+      type(gradient_model_data_type), intent(in) :: FEM_elen
 !
       integer(kind = kint), intent(in) :: inod
 !
@@ -224,7 +233,7 @@
 !
           do i = 1, maximum_neighbour
             call s_expand_filter_area_4_1node                           &
-     &         (inod, node, ele, ele_4_nod)
+     &         (inod, node, ele, ele_4_nod, FEM_elen)
             call resize_matrix_size_gen_filter(ele%nnod_4_ele)
           end do
 !
@@ -285,14 +294,14 @@
               do mat_size = num_free, ntmp
                 num_fixed_point = mat_size - num_free
 !
-                call const_filter_mat_each_nod(inod, num_fixed_point,   &
-     &              ierr)
+                call const_filter_mat_each_nod                          &
+     &             (node, FEM_elen, inod, num_fixed_point, ierr)
                 if (ierr .eq. 1) goto 21
 !
                 call s_cal_sol_filter_func_nod(inod, ierr)
                 if (ierr .gt. 0) goto 21
 !
-                call cal_filter_and_coefficients
+                call cal_filter_and_coefficients(ele, jac_3d)
                 call cal_rms_filter_coefs(rms_weight, ierr)
 !
                 if ( rms_weight .lt. min_rms_weight                     &

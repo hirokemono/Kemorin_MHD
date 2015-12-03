@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine s_cal_1d_moments
-!      subroutine s_cal_1d_moments_4_filter
+!      subroutine s_cal_1d_moments(FEM_elen)
+!      subroutine s_cal_1d_moments_4_filter(FEM_elen)
 !
       module cal_1d_moments_4_fliter
 !
@@ -12,8 +12,9 @@
 !
       use m_constants
       use m_ctl_params_4_gen_filter
-      use m_filter_elength
       use m_reference_moments
+!
+      use t_filter_elength
 !
       use int_tophat_moments
       use int_linear_moments
@@ -30,7 +31,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_1d_moments
+      subroutine s_cal_1d_moments(FEM_elen)
+!
+      type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: i
 !
@@ -41,16 +44,16 @@
 !
         if      (iref_filter_type(i) .eq. iflag_tophat_filter) then
           call int_tophat_moment_infty                                  &
-     &       (itwo, f_mom, FEM1_elen%filter_conf%f_width(i) )
+     &       (itwo, f_mom, FEM_elen%filter_conf%f_width(i) )
         else if (iref_filter_type(i) .eq. iflag_linear_filter) then
           call int_linear_moment_infty                                  &
-     &       (itwo, f_mom, FEM1_elen%filter_conf%f_width(i) )
+     &       (itwo, f_mom, FEM_elen%filter_conf%f_width(i) )
         else if (iref_filter_type(i) .eq. iflag_gaussian_filter) then
           call int_gaussian_moment_infty                                &
-     &       (itwo, f_mom, FEM1_elen%filter_conf%f_width(i) )
+     &       (itwo, f_mom, FEM_elen%filter_conf%f_width(i) )
         end if
 !
-        FEM1_elen%filter_conf%xmom_1d_org(i,0:itwo) = f_mom(0:itwo)
+        FEM_elen%filter_conf%xmom_1d_org(i,0:itwo) = f_mom(0:itwo)
 !
       end do
 !
@@ -60,7 +63,9 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_1d_moments_4_filter
+      subroutine s_cal_1d_moments_4_filter(FEM_elen)
+!
+      type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: num_moment3
 !
@@ -69,13 +74,13 @@
 !
       if      (iref_filter_type(1) .eq. iflag_tophat_filter) then
         call int_tophat_moment_infty(num_moment3, ref_moments_1d(0),    &
-     &      FEM1_elen%filter_conf%f_width(1) )
+     &      FEM_elen%filter_conf%f_width(1) )
       else if (iref_filter_type(1) .eq. iflag_linear_filter) then
         call int_linear_moment_infty(num_moment3, ref_moments_1d(0),    &
-     &      FEM1_elen%filter_conf%f_width(1) )
+     &      FEM_elen%filter_conf%f_width(1) )
       else if (iref_filter_type(1) .eq. iflag_gaussian_filter) then
         call int_gaussian_moment_infty(num_moment3, ref_moments_1d(0),  &
-     &      FEM1_elen%filter_conf%f_width(1) )
+     &      FEM_elen%filter_conf%f_width(1) )
       end if
 !
       end subroutine s_cal_1d_moments_4_filter

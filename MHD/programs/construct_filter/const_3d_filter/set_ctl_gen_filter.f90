@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine set_ctl_params_gen_filter
+!      subroutine set_ctl_params_gen_filter(FEM_elen)
 !      subroutine set_file_heads_3d_comm_filter
 !
       module set_ctl_gen_filter
@@ -24,15 +24,19 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_gen_filter
+      subroutine set_ctl_params_gen_filter(FEM_elen)
 !
       use calypso_mpi
       use m_error_IDs
       use m_ctl_data_4_solvers
       use m_ctl_data_org_filter_name
-      use m_filter_elength
       use m_reference_moments
+!
+      use t_filter_elength
+!
       use skip_comment_f
+!
+      type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: i
 !
@@ -74,13 +78,13 @@
 !
 !
       num_ref_filter = reference_filter_ctl%num
-      FEM1_elen%filter_conf%nf_type = num_ref_filter
+      FEM_elen%filter_conf%nf_type = num_ref_filter
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'num_ref_filter', num_ref_filter
 !
       if ( num_ref_filter .gt. 0) then
         call allocate_ref_filter_type
-        call alloc_ref_1d_mom_type(FEM1_elen%filter_conf)
+        call alloc_ref_1d_mom_type(FEM_elen%filter_conf)
         
         do i = 1, num_ref_filter
           iref_filter_type(i) = iflag_tophat_filter
@@ -91,11 +95,11 @@
           if(cmp_no_case(reference_filter_ctl%c_tbl(i), 'Tophat')       &
      &          ) iref_filter_type(i) = iflag_tophat_filter
 !
-          FEM1_elen%filter_conf%filter_type(i)                          &
+          FEM_elen%filter_conf%filter_type(i)                           &
      &          = reference_filter_ctl%c_tbl(i)
 !
           ref_filter_width(i) = reference_filter_ctl%vect(i)
-          FEM1_elen%filter_conf%f_width(i) = ref_filter_width(i)
+          FEM_elen%filter_conf%f_width(i) = ref_filter_width(i)
         end do
 !
         call deallocate_ref_filter_ctl

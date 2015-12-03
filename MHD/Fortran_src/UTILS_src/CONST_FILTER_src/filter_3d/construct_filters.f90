@@ -96,11 +96,12 @@
 !  ---------------------------------------------------
 !
       if(iflag_debug.eq.1)  write(*,*) 'const_commute_filter_coefs'
-      call const_commute_filter_coefs(node1, ele1, jac1_3d_q,           &
+      call const_commute_filter_coefs                                   &
+     &   (node1, ele1, jac1_3d_q, FEM_elen,                             &
      &    FEM_moments%mom_nod(1))
 !
       if(iflag_debug.eq.1)  write(*,*)'const_fluid_filter_coefs'
-      call const_fluid_filter_coefs(node1, ele1, jac1_3d_q)
+      call const_fluid_filter_coefs(node1, ele1, jac1_3d_q, FEM_elen)
 !
       call finalize_4_cal_fileters
 !
@@ -135,7 +136,7 @@
 !  ---------------------------------------------------
 !
         if(iflag_debug.eq.1) write(*,*) 'set_simple_filter'
-        call set_simple_filter(node1, ele1, jac1_3d_q,                  &
+        call set_simple_filter(node1, ele1, jac1_3d_q, FEM_elen,        &
      &      dxidxs, FEM_moments%mom_nod(1))
 !
           if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
@@ -146,7 +147,7 @@
         call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(1))
 !
           if(iflag_debug.eq.1)  write(*,*) 'set_simple_fluid_filter'
-        call set_simple_fluid_filter(node1, ele1, jac1_3d_q,            &
+        call set_simple_fluid_filter(node1, ele1, jac1_3d_q, FEM_elen,  &
      &      dxidxs, FEM_moments%mom_nod)
 !
         call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(2))
@@ -204,11 +205,12 @@
       call allocate_correct_filter_flag(node1%numnod, ele1%numele)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
-      call s_correct_wrong_filters(node1, ele1, jac1_3d_q,              &
+      call s_correct_wrong_filters(node1, ele1, jac1_3d_q, FEM_elen,    &
      &    org_filter_coef_code, dxidxs, FEM_moments%mom_nod(1))
 !
       if(iflag_debug.eq.1)  write(*,*)'correct_wrong_fluid_filters'
-      call correct_wrong_fluid_filters(node1, ele1, jac1_3d_q,          &
+      call correct_wrong_fluid_filters                                  &
+     &   (node1, ele1, jac1_3d_q, FEM_elen,                             &
      &    org_filter_coef_code, dxidxs, FEM_moments%mom_nod)
 !
       call deallocate_correct_filter_flag
@@ -269,7 +271,7 @@
       call allocate_correct_filter_flag(node1%numnod, ele1%numele)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
-      call s_correct_wrong_filters(node1, ele1, jac1_3d_q,              &
+      call s_correct_wrong_filters(node1, ele1, jac1_3d_q, FEM_elen,    &
      &    org_filter_coef_code, dxidxs, FEM_moments%mom_nod(1))
 !
         if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
@@ -284,7 +286,8 @@
       call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(2))
 !
       if(iflag_debug.eq.1)  write(*,*)'correct_wrong_fluid_filters'
-      call correct_wrong_fluid_filters(node1, ele1, jac1_3d_q,          &
+      call correct_wrong_fluid_filters                                  &
+     &   (node1, ele1, jac1_3d_q, FEM_elen,                             &
      &    org_filter_coef_code, dxidxs, FEM_moments%mom_nod)
 !
       call deallocate_correct_filter_flag

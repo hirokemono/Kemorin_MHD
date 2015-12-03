@@ -3,12 +3,14 @@
 !
 !        programmed by H.Matsui on Nov., 2008
 !
-!      subroutine cal_dxidx_ele_type(dx_ele)
+!!      subroutine cal_dxidx_ele_type(ele, jac_3d, dx_ele)
 !!
       module cal_dxidx_ele
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
+!
 !
       implicit none
 !
@@ -20,17 +22,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_dxidx_ele_type(dx_ele)
+      subroutine cal_dxidx_ele_type(ele, jac_3d, dx_ele)
 !
-      use m_geometry_data
-      use m_jacobians
+      use t_geometry_data
+      use t_jacobians
       use t_filter_dxdxi
+!
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d
 !
       type(dxidx_direction_type), intent(inout) :: dx_ele
 !
 !
-      call s_cal_dxidx_ele                                              &
-     &     (ele1%numele, jac1_3d_l%ntot_int, jac1_3d_l%dxidx_3d,        &
+      call s_cal_dxidx_ele(ele%numele, ele%istack_ele_smp,              &
+     &      jac_3d%ntot_int, jac_3d%dxidx_3d,                           &
      &      dx_ele%dxi%df_dx, dx_ele%dxi%df_dy, dx_ele%dxi%df_dz,       &
      &      dx_ele%dei%df_dx, dx_ele%dei%df_dy, dx_ele%dei%df_dz,       &
      &      dx_ele%dzi%df_dx, dx_ele%dzi%df_dy, dx_ele%dzi%df_dz)
@@ -39,16 +44,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_dxidx_ele(nele, ntot_int, dxidx,                 &
+      subroutine s_cal_dxidx_ele(nele, iele_smp_stack, ntot_int, dxidx, &
      &          dxidx_ele, dxidy_ele, dxidz_ele,                        &
      &          deidx_ele, deidy_ele, deidz_ele,                        &
      &          dzidx_ele, dzidy_ele, dzidz_ele)
 !
-      use m_geometry_data
-      use m_machine_parameter
       use m_fem_gauss_int_coefs
 !
       integer(kind = kint), intent(in) :: nele, ntot_int
+      integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
 !
       real(kind=kreal), intent(in) :: dxidx(nele,ntot_int,3,3)
 !
@@ -68,8 +72,8 @@
 !
 !$omp parallel do private(ist,ied,iele)
       do ip = 1, np_smp
-        ist = ele1%istack_ele_smp(ip-1) + 1
-        ied = ele1%istack_ele_smp(ip)
+        ist = iele_smp_stack(ip-1) + 1
+        ied = iele_smp_stack(ip)
 !cdir nodep noloopchg
         do iele = ist, ied
           dxidx_ele(iele) = zero
@@ -92,8 +96,8 @@
           ix = int_start3(i0) + ii
 !$omp parallel do private(ist,ied,iele)
           do ip = 1, np_smp
-            ist = ele1%istack_ele_smp(ip-1) + 1
-            ied = ele1%istack_ele_smp(ip)
+            ist = iele_smp_stack(ip-1) + 1
+            ied = iele_smp_stack(ip)
 !
 !cdir nodep noloopchg
             do iele = ist, ied
