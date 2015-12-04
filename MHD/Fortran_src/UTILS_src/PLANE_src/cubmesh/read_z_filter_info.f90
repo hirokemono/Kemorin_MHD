@@ -4,7 +4,7 @@
 !     Written by H. Matsui
 !     modified by H. Matsui on Aug., 2007
 !
-!       subroutine read_filter_info
+!       subroutine read_filter_info(nf_type)
 !
       module read_z_filter_info
 !
@@ -18,7 +18,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine read_filter_info
+       subroutine read_filter_info(nf_type)
 !
        use m_size_4_plane
        use m_size_of_cube
@@ -27,9 +27,10 @@
        use m_filtering_nod_4_cubmesh
        use m_cube_files_data
 !
-       use m_filter_elength
        use set_parallel_file_name
        use skip_comment_f
+!
+      integer (kind = kint), intent(in) :: nf_type
 !
       integer (kind = kint) :: kf, ifil, ifil0, i, j, itmp
 !
@@ -39,8 +40,7 @@
       integer (kind = kint) :: i_grid
 !
 !
-       do ifil = 1, FEM1_elen%filter_conf%nf_type
-!
+       do ifil = 1, nf_type
          ifil0 = ifil-1
 !
          call add_int_suffix(ifil0, z_filter_header, nb_name)

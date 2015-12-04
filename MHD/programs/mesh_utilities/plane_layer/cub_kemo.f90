@@ -93,6 +93,8 @@
 !
       use m_precision
 !
+      use t_filter_elength
+!
       use m_size_4_plane
       use m_size_of_cube
       use m_cube_position
@@ -108,7 +110,6 @@
       use m_filtering_ele_4_cubmesh
 !
       use m_filter_data_4_plane
-      use m_filter_elength
       use m_ctl_data_4_cub_kemo
 !
       use set_vertical_position_cube
@@ -140,6 +141,8 @@
 ! ----------------------------------------------------------------------
 !  * variables
 
+      type(gradient_model_data_type), save :: FEM_elen_c
+!
       integer(kind=kint)  ::  ipe    , jpe    , kpe    , pe_id, pe1
 
       character(len= 8 )   ::  date
@@ -191,9 +194,9 @@
 !     set one-dimensional moments
 !
 !      if (iflag_filter .ge.0) then
-         FEM1_elen%filter_conf%nf_type = iflag_filter
-         call allocate_filter_4_plane(FEM1_elen%filter_conf%nf_type)
-         call read_filter_info
+         FEM_elen_c%filter_conf%nf_type = iflag_filter
+         call allocate_filter_4_plane(FEM_elen_c%filter_conf%nf_type)
+         call read_filter_info(FEM_elen_c%filter_conf%nf_type)
 !      end if
 !
 ! **********   domain loop for each pe   **********
@@ -312,7 +315,7 @@
               call allocate_work_4_filter_ele
 !
               write(*,*) 'neighboring_node'
-              call neighboring_node(pe_id, kpe)
+              call neighboring_node(pe_id, kpe, FEM_elen_c)
 !
               write(*,*) 'deallocate_work_4_filter_ele'
               call deallocate_work_4_filter_ele

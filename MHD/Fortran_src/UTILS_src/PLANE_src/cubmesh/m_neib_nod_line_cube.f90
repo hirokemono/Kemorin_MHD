@@ -20,8 +20,9 @@
 !
 !      subroutine allocate_neighboring_nod_line
 !      subroutine deallocate_neighboring_nod_line
-!      subroutine write_neighboring_nod_line(nf_type)
-!      subroutine write_neighboring_nod_line_b(nf_type)
+!      subroutine write_neighboring_nod_line(nf_type, FEM_elen))
+!      subroutine write_neighboring_nod_line_b(nf_type, FEM_elen))
+!        type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       use m_precision
 !
@@ -100,13 +101,14 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine write_neighboring_nod_line(nf_type)
+      subroutine write_neighboring_nod_line(nf_type, FEM_elen)
 !
-      use m_filter_elength
+      use t_filter_elength
       use filter_mom_type_data_IO
       use write_line_filter_data
 !
-       integer(kind = kint), intent(in) :: nf_type
+      integer(kind = kint), intent(in) :: nf_type
+      type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
       integer(kind = kint) :: i
 !
@@ -125,7 +127,7 @@
        call allocate_l_filtering_data(nodtot)
        call order_fiilter_nod_line
 !
-       call write_filter_elen_data_type(nb_out, FEM1_elen)
+       call write_filter_elen_data_type(nb_out, FEM_elen)
 !
        ndepth_l = ndepth
        num_filter_l = ndep_1
@@ -159,13 +161,14 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine write_neighboring_nod_line_b(nf_type)
+      subroutine write_neighboring_nod_line_b(nf_type, FEM_elen)
 !
-      use m_filter_elength
+      use t_filter_elength
       use filter_mom_type_data_IO_b
       use write_line_filter_data
 !
        integer(kind = kint), intent(in) :: nf_type
+      type(gradient_model_data_type), intent(inout) :: FEM_elen
 !
 !
        i_st2 =  max(i_st-ndepth,1)
@@ -182,7 +185,7 @@
        call allocate_l_filtering_data(nodtot)
        call order_fiilter_nod_line
 !
-       call write_filter_elen_data_type_b(nb_out, FEM1_elen)
+       call write_filter_elen_data_type_b(nb_out, FEM_elen)
 !
        ndepth_l = ndepth
        num_filter_l = ndep_1

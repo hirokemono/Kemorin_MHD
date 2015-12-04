@@ -95,6 +95,8 @@
 !
       use m_precision
 !
+      use t_filter_elength
+!
       use m_size_4_plane
       use m_size_of_cube
       use m_cube_position
@@ -110,7 +112,6 @@
       use m_neib_edge_cube
       use m_filtering_nod_4_cubmesh
       use m_filtering_ele_4_cubmesh
-      use m_filter_elength
       use m_ctl_data_4_cub_kemo
 !
       use set_vertical_position_cube
@@ -142,6 +143,8 @@
       integer(kind=kint), parameter  ::   elm_type = 332
 ! ----------------------------------------------------------------------
 !  * variables
+
+      type(gradient_model_data_type), save :: FEM_elen_c
 
       integer(kind=kint)  ::  ipe    , jpe    , kpe    , pe_id, pe1
 
@@ -184,7 +187,7 @@
 !      if (iflag_filter .ge.0) then
 !         nf_type = iflag_filter
 !         call allocate_filter_4_plane
-!         call read_filter_info
+!         call read_filter_info(FEM_elen_c%filter_conf%nf_type)
 !      end if
 !
 ! **********   domain loop for each pe   **********
@@ -311,7 +314,7 @@
             call allocate_work_4_filter_edge
 !
             write(*,*) 'filtering information', intnodtot
-            call neighboring_node(pe_id, kpe)
+            call neighboring_node(pe_id, kpe, FEM_elen_c)
 !
             call neighboring_edge(pe1, kpe)
 !

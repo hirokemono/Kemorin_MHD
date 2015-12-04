@@ -15,11 +15,13 @@
       use calypso_mpi
 !
       use m_ctl_params_4_gen_filter
-      use m_filter_elength
+      use t_filter_elength
       use t_filter_dxdxi
       use t_filter_moments
 !
       implicit none
+!
+      type(gradient_model_data_type), save :: FEM_elen_f
 !
       type(dxdxi_data_type), save :: filter_dxi1
       type(dxidx_data_type), save :: dxidxs1
@@ -68,10 +70,10 @@
 !     --------------------- 
 !
       if (iflag_debug.gt.0) write(*,*) 'input_control_3d_commute'
-      call input_control_3d_commute(FEM1_elen)
+      call input_control_3d_commute(FEM_elen_f)
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_1d_moments'
-      call s_cal_1d_moments(FEM1_elen)
+      call s_cal_1d_moments(FEM_elen_f)
 !
       call s_set_element_list_4_filter(ele1, ele_grp1)
 !
@@ -117,15 +119,15 @@
       if (my_rank.eq.0) write(*,*)  'Volume of Domain: ', ele1%volume
 !
       if (iflag_debug.eq.1)  write(*,*)  'int_element_length_1st'
-      FEM1_elen%nnod_filter_mom = node1%numnod
-      FEM1_elen%nele_filter_mom = ele1%numele
+      FEM_elen_f%nnod_filter_mom = node1%numnod
+      FEM_elen_f%nele_filter_mom = ele1%numele
       FEM_momenet1%num_filter_moms = 2
-      call alloc_jacobians_ele(FEM1_elen%nele_filter_mom, filter_dxi1)
+      call alloc_jacobians_ele(FEM_elen_f%nele_filter_mom, filter_dxi1)
       call alloc_elen_ele_type                                          &
-     &   (FEM1_elen%nele_filter_mom, FEM1_elen%elen_ele)
+     &   (FEM_elen_f%nele_filter_mom, FEM_elen_f%elen_ele)
 !
-      call s_int_element_length(FEM1_elen%nele_filter_mom,              &
-     &    node1, ele1, filter_dxi1%dxi_ele, FEM1_elen%elen_ele%moms)
+      call s_int_element_length(FEM_elen_f%nele_filter_mom,             &
+     &    node1, ele1, filter_dxi1%dxi_ele, FEM_elen_f%elen_ele%moms)
 !
        end subroutine init_analyzer
 !
@@ -171,7 +173,7 @@
       call init_send_recv(nod_comm)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
-      call s_cal_element_size(FEM1_elen, filter_dxi1, dxidxs1)
+      call s_cal_element_size(FEM_elen_f, filter_dxi1, dxidxs1)
       call dealloc_jacobians_ele(filter_dxi1)
 !
 !  ---------------------------------------------------
@@ -180,7 +182,7 @@
 !
       ifmt_filter_file = ifmt_filter_elen
       filter_file_head = filter_elen_head
-      call sel_write_filter_elen_file(my_rank, FEM1_elen)
+      call sel_write_filter_elen_file(my_rank, FEM_elen_f)
 !
 !  ---------------------------------------------------
 !       copy node and communication table
@@ -205,7 +207,7 @@
         num_failed_whole = 0
         num_failed_fluid = 0
 !
-        call select_const_filter(FEM1_elen, dxidxs1, FEM_momenet1)
+        call select_const_filter(FEM_elen_f, dxidxs1, FEM_momenet1)
         call dealloc_jacobians_node(filter_dxi1)
 !
         close(filter_coef_code)
@@ -219,7 +221,7 @@
         ifmt_filter_file = ifmt_filter_moms
         filter_file_head = filter_moms_head
         call sel_write_filter_moms_file                                 &
-     &     (my_rank, FEM1_elen, FEM_momenet1)
+     &     (my_rank, FEM_elen_f, FEM_momenet1)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'
