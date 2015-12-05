@@ -3,13 +3,16 @@
 !
 !     Written by H. Matsui on May, 2009
 !
-!      subroutine s_cal_sgs_h_flux_dynamic_simi
+!      subroutine s_cal_sgs_h_flux_dynamic_simi(layer_tbl)
+!        type(layering_tbl), intent(in) :: layer_tbl
 !
       module cal_sgs_h_flux_dynamic_simi
 !
       use m_precision
 !
       use m_phys_constants
+!
+      use t_layering_ele_list
 !
       implicit none
 !
@@ -19,7 +22,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_cal_sgs_h_flux_dynamic_simi
+      subroutine s_cal_sgs_h_flux_dynamic_simi(layer_tbl)
 !
       use m_geometry_data
       use m_machine_parameter
@@ -42,10 +45,12 @@
       use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
 !
+      type(layering_tbl), intent(in) :: layer_tbl
+!
 !    reset model coefficients
 !
       call reset_vector_sgs_model_coefs                                 &
-     &   (icomp_sgs_hf, ele1%istack_ele_smp)
+     &   (layer_tbl, icomp_sgs_hf, ele1%istack_ele_smp)
       call reset_vector_sgs_nod_m_coefs                                 &
      &   (icomp_sgs_hf, node1%istack_nod_smp)
       call s_clear_work_4_dynamic_model
@@ -67,7 +72,7 @@
 !
 !    copy to work array
 !
-       call copy_vector_component(node1, nod_fld1,                       &
+       call copy_vector_component(node1, nod_fld1,                      &
      &     iphys%i_SGS_h_flux, iphys%i_sgs_simi)
 !
 !      filtering
@@ -82,7 +87,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*)' cal_model_coefs',              &
      &   n_vector, iak_sgs_hf, icomp_sgs_hf
-      call cal_model_coefs(itype_SGS_h_flux_coef, n_vector,             &
+      call cal_model_coefs(layer_tbl, itype_SGS_h_flux_coef, n_vector,  &
      &    iak_sgs_hf, icomp_sgs_hf, intg_point_t_evo)
 !
       call cal_ele_vector_2_node                                        &

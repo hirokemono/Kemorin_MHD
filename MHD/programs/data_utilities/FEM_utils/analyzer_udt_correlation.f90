@@ -17,6 +17,7 @@
 !
       use t_mesh_data
       use t_phys_data
+      use t_layering_ele_list
 !
       use transfer_correlate_field
 !
@@ -25,6 +26,8 @@
       type(mesh_geometry), save :: mesh_ref
       type(mesh_groups), save :: group_ref
       type(phys_data), save :: phys_ref
+!
+      type(layering_tbl), save :: layer_tbl_corr
 !
 ! ----------------------------------------------------------------------
 !
@@ -39,7 +42,6 @@
       use m_geometry_data
       use m_group_data
       use m_jacobians
-      use m_layering_ele_list
       use m_node_phys_address
       use m_node_phys_data
       use m_ele_sf_eg_comm_tables
@@ -72,7 +74,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'const_layers_4_dynamic'
-      call const_layers_4_dynamic(ele_grp1, layer_tbl1)
+      call const_layers_4_dynamic(ele_grp1, layer_tbl_corr)
 !
 !     --------------------- 
 !
@@ -123,7 +125,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)  's_int_whole_volume_w_layer'
-      call s_int_whole_volume_w_layer(ele1, jac1_3d_q, layer_tbl1)
+      call s_int_whole_volume_w_layer(ele1, jac1_3d_q, layer_tbl_corr)
 !
       end subroutine initialize_udt_correlate
 !
@@ -135,7 +137,6 @@
       use m_geometry_data
       use m_node_phys_data
       use m_geometry_constants
-      use m_layering_ele_list
       use m_node_phys_data
       use m_t_step_parameter
       use m_control_params_2nd_files
@@ -159,10 +160,10 @@
 !
       ntot_correlate =  nod_fld1%ntot_phys
       ncomp_correlate = nod_fld1%ntot_phys
-      nlayer_correlate = layer_tbl1%e_grp%num_grp
+      nlayer_correlate = layer_tbl_corr%e_grp%num_grp
       call allocate_name_layer_correlate
       call allocate_all_layer_correlate
-      call allocate_work_layer_correlate(layer_tbl1%e_grp%num_grp)
+      call allocate_work_layer_correlate(layer_tbl_corr%e_grp%num_grp)
 !
       call set_correlate_data_names
 !
@@ -193,8 +194,7 @@
 !
           if (iflag_debug .gt. 0) write(*,*)                            &
      &          's_correlation_all_layerd_data'
-          call s_correlation_all_layerd_data(mesh_ref%node%numnod,      &
-     &        phys_ref)
+          call s_correlation_all_layerd_data(layer_tbl_corr, phys_ref)
 !
           if (iflag_debug .gt. 0) write(*,*)                            &
      &          ' write_layerd_correlate_data', istep_ucd

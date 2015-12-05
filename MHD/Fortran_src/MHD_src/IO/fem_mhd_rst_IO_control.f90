@@ -131,11 +131,15 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine input_MHD_restart_file_ctl
+      subroutine input_MHD_restart_file_ctl(layer_tbl)
+!
+      use t_layering_ele_list
+!
+      type(layering_tbl), intent(in) :: layer_tbl
 !
 !
       call input_restart_files
-      call input_model_coef_file
+      call input_model_coef_file(layer_tbl)
 !
       end subroutine input_MHD_restart_file_ctl
 !
@@ -272,12 +276,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_model_coef_file
+      subroutine input_model_coef_file(layer_tbl)
 !
       use m_control_parameter
+      use t_layering_ele_list
 !
       use set_parallel_file_name
       use sgs_ini_model_coefs_IO
+!
+      type(layering_tbl), intent(in) :: layer_tbl
 !
       character(len=kchara) :: fn_tmp
 !
@@ -292,7 +299,7 @@
       end if
 !
       call add_dat_extension(fn_tmp, rst_sgs_coef_name)
-      call input_ini_model_coefs
+      call input_ini_model_coefs(layer_tbl)
 !
       end subroutine input_model_coef_file
 !

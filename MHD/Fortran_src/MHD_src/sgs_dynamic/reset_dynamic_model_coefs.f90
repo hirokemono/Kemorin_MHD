@@ -5,9 +5,9 @@
 !     Modified by H. Matsui on July, 2007
 !
 !!      subroutine reset_vector_sgs_model_coefs                         &
-!!     &         (icomp_sgs, iele_smp_stack)
+!!     &         (layer_tbl, icomp_sgs, iele_smp_stack)
 !!      subroutine reset_tensor_sgs_model_coefs                         &
-!!     &         (icomp_sgs, iele_smp_stack)
+!!     &         (layer_tbl, icomp_sgs, iele_smp_stack)
 !!
 !!      subroutine reset_diff_model_coefs(iak_diff, iele_smp_stack)
 !!
@@ -39,25 +39,26 @@
 !-----------------------------------------------------------------------
 !
       subroutine reset_vector_sgs_model_coefs                           &
-     &         (icomp_sgs, iele_smp_stack)
+     &         (layer_tbl, icomp_sgs, iele_smp_stack)
 !
-      use m_layering_ele_list
+      use t_layering_ele_list
 !
+      type(layering_tbl), intent(in) :: layer_tbl
       integer (kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: icomp_sgs
 !
 !
-      if(layer_tbl1%minlayer_4_smp                                      &
-     &     .gt. layer_tbl1%min_item_layer_d_smp) then
+      if(layer_tbl%minlayer_4_smp                                       &
+     &     .gt. layer_tbl%min_item_layer_d_smp) then
         call reset_sgs_v_model_coefs_elesmp(icomp_sgs, iele_smp_stack,  &
-     &      layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,        &
-     &      layer_tbl1%e_grp%istack_grp_smp, layer_tbl1%e_grp%item_grp)
+     &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
+     &      layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp)
       else
         call reset_sgs_v_model_coefs_grpsmp(icomp_sgs,                  &
-     &     layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,         &
-     &     layer_tbl1%e_grp%istack_grp,                                 &
-     &     layer_tbl1%istack_item_layer_d_smp,                          &
-     &     layer_tbl1%e_grp%item_grp)
+     &     layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,           &
+     &     layer_tbl%e_grp%istack_grp,                                  &
+     &     layer_tbl%istack_item_layer_d_smp,                           &
+     &     layer_tbl%e_grp%item_grp)
       end if
 !
       end subroutine reset_vector_sgs_model_coefs
@@ -65,25 +66,26 @@
 !-----------------------------------------------------------------------
 !
       subroutine reset_tensor_sgs_model_coefs                           &
-     &         (icomp_sgs, iele_smp_stack)
+     &         (layer_tbl, icomp_sgs, iele_smp_stack)
 !
-      use m_layering_ele_list
+      use t_layering_ele_list
 !
+      type(layering_tbl), intent(in) :: layer_tbl
       integer (kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: icomp_sgs
 !
 !
-      if(layer_tbl1%minlayer_4_smp                                      &
-     &     .gt. layer_tbl1%min_item_layer_d_smp) then
+      if(layer_tbl%minlayer_4_smp                                       &
+     &     .gt. layer_tbl%min_item_layer_d_smp) then
         call reset_sgs_t_model_coefs_elesmp(icomp_sgs, iele_smp_stack,  &
-     &      layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,        &
-     &      layer_tbl1%e_grp%istack_grp_smp, layer_tbl1%e_grp%item_grp)
+     &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
+     &      layer_tbl%e_grp%istack_grp_smp, layer_tbl%e_grp%item_grp)
       else
         call reset_sgs_t_model_coefs_grpsmp(icomp_sgs,                  &
-     &      layer_tbl1%e_grp%num_grp, layer_tbl1%e_grp%num_item,        &
-     &      layer_tbl1%e_grp%istack_grp,                                &
-     &      layer_tbl1%istack_item_layer_d_smp,                         &
-     &      layer_tbl1%e_grp%item_grp)
+     &      layer_tbl%e_grp%num_grp, layer_tbl%e_grp%num_item,          &
+     &      layer_tbl%e_grp%istack_grp,                                 &
+     &      layer_tbl%istack_item_layer_d_smp,                          &
+     &      layer_tbl%e_grp%item_grp)
       end if
 !
       end subroutine reset_tensor_sgs_model_coefs

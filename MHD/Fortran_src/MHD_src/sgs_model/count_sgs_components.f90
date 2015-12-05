@@ -4,7 +4,8 @@
 !      Written by H. Matsui on 2004
 !      Modified by H. Matsui on July, 2007
 !
-!     subroutine s_count_sgs_components(numnod, numele)
+!     subroutine s_count_sgs_components(numnod, numele, layer_tbl)
+!        type(layering_tbl), intent(in) :: layer_tbl
 !
       module count_sgs_components
 !
@@ -18,19 +19,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_count_sgs_components(numnod, numele)
+      subroutine s_count_sgs_components(numnod, numele, layer_tbl)
 !
       use m_machine_parameter
       use calypso_mpi
       use m_phys_labels
       use m_control_parameter
       use m_node_phys_address
-      use m_layering_ele_list
       use m_ele_info_4_dynamical
       use m_SGS_model_coefs
       use m_SGS_address
 !
+      use t_layering_ele_list
+!
       integer(kind = kint), intent(in) :: numnod, numele
+      type(layering_tbl), intent(in) :: layer_tbl
+!
       integer(kind = kint) :: i, j, id, jd
 !
 !
@@ -152,7 +156,7 @@
 !
 !   set index for model coefficients
 !
-      call allocate_sgs_coefs_layer(layer_tbl1%e_grp%num_grp)
+      call allocate_sgs_coefs_layer(layer_tbl%e_grp%num_grp)
       call allocate_model_coefs(numele)
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &

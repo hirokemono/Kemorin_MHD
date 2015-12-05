@@ -3,7 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!------- subroutine init_analyzer_snap ---------------------
+!      subroutine init_analyzer_snap(layer_tbl)
+!        type(layering_tbl), intent(in) :: layer_tbl
 !
       module initialize_4_snapshot
 !
@@ -17,7 +18,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_snap
+      subroutine init_analyzer_snap(layer_tbl)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -28,7 +29,6 @@
       use m_geometry_data
       use m_geometry_data_MHD
       use m_group_data
-      use m_layering_ele_list
       use m_sorted_node
       use m_node_phys_address
       use m_node_phys_data
@@ -44,6 +44,8 @@
       use m_ele_sf_eg_comm_tables
 !
       use m_check_subroutines
+!
+      use t_layering_ele_list
 !
       use const_mesh_info
       use count_whole_num_element
@@ -72,6 +74,8 @@
 !
       use nod_phys_send_recv
 !
+      type(layering_tbl), intent(inout) :: layer_tbl
+!
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' s_reordering_by_layers_snap'
@@ -85,9 +89,9 @@
       if (iflag_dynamic_SGS  .ne. id_SGS_DYNAMIC_OFF) then
         ncomp_correlate = 9
         if (iflag_debug.eq.1) write(*,*)' const_layers_4_dynamic'
-        call const_layers_4_dynamic(ele_grp1, layer_tbl1)
-        call allocate_work_4_dynamic(layer_tbl1%e_grp%num_grp)
-        call allocate_work_layer_correlate(layer_tbl1%e_grp%num_grp)
+        call const_layers_4_dynamic(ele_grp1, layer_tbl)
+        call allocate_work_4_dynamic(layer_tbl%e_grp%num_grp)
+        call allocate_work_layer_correlate(layer_tbl%e_grp%num_grp)
       end if
 !
 !
@@ -161,7 +165,7 @@
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property
       call init_ele_material_property(ele1%numele)
-      call s_count_sgs_components(node1%numnod, ele1%numele)
+      call s_count_sgs_components(node1%numnod, ele1%numele, layer_tbl)
 !
       if (iflag_debug.gt.0)  write(*,*)' make comm. table for fluid'
       call s_const_comm_table_fluid
@@ -200,7 +204,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' cal_volume_node'
-      call cal_volume_node
+      call cal_volume_node(layer_tbl)
 !
 !     --------------------- 
 !

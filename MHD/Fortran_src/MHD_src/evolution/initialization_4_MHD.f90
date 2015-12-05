@@ -3,7 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!------- subroutine init_analyzer_fl
+!      subroutine init_analyzer_fl(layer_tbl)
+!        type(layering_tbl), intent(in) :: layer_tbl
 !
       module initialization_4_MHD
 !
@@ -17,7 +18,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_fl
+      subroutine init_analyzer_fl(layer_tbl)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -29,7 +30,6 @@
       use m_geometry_data
       use m_geometry_data_MHD
       use m_group_data
-      use m_layering_ele_list
       use m_node_phys_address
       use m_node_phys_data
       use m_ele_material_property
@@ -47,7 +47,8 @@
 !
       use m_check_subroutines
       use m_cal_max_indices
-      use m_ele_sf_eg_comm_tables
+!
+      use t_layering_ele_list
 !
       use const_mesh_info
       use count_whole_num_element
@@ -84,6 +85,8 @@
       use nod_phys_send_recv
       use solver_MGCG_MHD
 !
+      type(layering_tbl), intent(inout) :: layer_tbl
+!
 !     --------------------------------
 !       set up for mesh information
 !     --------------------------------
@@ -98,9 +101,9 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         ncomp_correlate = 9
-        call const_layers_4_dynamic(ele_grp1, layer_tbl1)
-        call allocate_work_4_dynamic(layer_tbl1%e_grp%num_grp)
-        call allocate_work_layer_correlate(layer_tbl1%e_grp%num_grp)
+        call const_layers_4_dynamic(ele_grp1, layer_tbl)
+        call allocate_work_4_dynamic(layer_tbl%e_grp%num_grp)
+        call allocate_work_layer_correlate(layer_tbl%e_grp%num_grp)
       end if
 !
 !     ---------------------
@@ -180,7 +183,7 @@
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property
       call init_ele_material_property(ele1%numele)
-      call s_count_sgs_components(node1%numnod, ele1%numele)
+      call s_count_sgs_components(node1%numnod, ele1%numele, layer_tbl)
 !
 !  -------------------------------
 !
@@ -198,7 +201,7 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*)' initial_data_control'
-      call initial_data_control
+      call initial_data_control(layer_tbl)
 !
 !  -------------------------------
 !
@@ -238,7 +241,7 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_volume_node'
-      call cal_volume_node
+      call cal_volume_node(layer_tbl)
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector'
       call s_cal_normal_vector(surf1, jac1_2d_q, jac1_2d_l)

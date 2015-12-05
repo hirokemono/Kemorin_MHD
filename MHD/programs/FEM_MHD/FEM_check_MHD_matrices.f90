@@ -26,6 +26,7 @@
       subroutine FEM_check_MHD_mat
 !
       use m_control_parameter
+      use m_layering_ele_list
 !
       use initialization_4_MHD
 !
@@ -36,7 +37,7 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1) write(*,*) 'init_analyzer_fl'
-      call init_analyzer_fl
+      call init_analyzer_fl(layer_tbl1)
 !
 !   construct matrix for Poisson and diffusion terms
 !

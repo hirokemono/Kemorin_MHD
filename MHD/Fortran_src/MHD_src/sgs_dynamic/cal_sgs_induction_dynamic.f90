@@ -4,8 +4,9 @@
 !     Written by H. Matsui on Oct. 2005
 !     Modified by H. Matsui on Aug., 2007
 !
-!      subroutine cal_sgs_induct_t_dynamic
-!      subroutine cal_sgs_uxb_dynamic
+!      subroutine cal_sgs_induct_t_dynamic(layer_tbl)
+!      subroutine cal_sgs_uxb_dynamic(layer_tbl)
+!        type(layering_tbl), intent(in) :: layer_tbl
 !
       module cal_sgs_induction_dynamic
 !
@@ -16,6 +17,8 @@
       use m_machine_parameter
       use m_control_parameter
 !
+      use t_layering_ele_list
+!
       implicit none
 !
 !  ---------------------------------------------------------------------
@@ -24,7 +27,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_uxb_dynamic
+      subroutine cal_sgs_uxb_dynamic(layer_tbl)
 !
       use m_geometry_data
       use m_finite_element_matrix
@@ -40,10 +43,12 @@
       use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
 !
+      type(layering_tbl), intent(in) :: layer_tbl
+!
 !    reset model coefficients
 !
       call reset_vector_sgs_model_coefs                                 &
-     &   (icomp_sgs_uxb, ele1%istack_ele_smp)
+     &   (layer_tbl, icomp_sgs_uxb, ele1%istack_ele_smp)
       call s_clear_work_4_dynamic_model
 !
 !    SGS term by similarity model (to iphys%i_sgs_simi)
@@ -74,14 +79,14 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &        'cal_model_coefs', n_vector, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs(itype_SGS_uxb_coef, n_vector,                &
+      call cal_model_coefs(layer_tbl, itype_SGS_uxb_coef, n_vector,     &
      &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo)
 !
       end subroutine cal_sgs_uxb_dynamic
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_induct_t_dynamic
+      subroutine cal_sgs_induct_t_dynamic(layer_tbl)
 !
       use m_geometry_data
       use m_node_phys_address
@@ -98,10 +103,12 @@
       use cvt_dynamic_scheme_coord
       use reduce_model_coefs
 !
+      type(layering_tbl), intent(in) :: layer_tbl
+!
 !    reset model coefficients
 !
       call reset_vector_sgs_model_coefs                                 &
-     &   (icomp_sgs_uxb, ele1%istack_ele_smp)
+     &   (layer_tbl, icomp_sgs_uxb, ele1%istack_ele_smp)
       call s_clear_work_4_dynamic_model
 !
 !    SGS term by similarity model
@@ -138,7 +145,8 @@
 !
       if (iflag_debug.gt.0 )  write(*,*)                                &
      &     'cal_model_coefs', n_asym_tensor, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs(itype_SGS_uxb_coef, n_asym_tensor,           &
+      call cal_model_coefs                                              &
+     &   (layer_tbl, itype_SGS_uxb_coef, n_asym_tensor,                 &
      &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo)
 !
       call reduce_model_coefs_layer(SGS_uxb_factor, nlayer_SGS,         &

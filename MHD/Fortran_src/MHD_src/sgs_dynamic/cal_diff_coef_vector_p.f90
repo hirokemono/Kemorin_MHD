@@ -3,11 +3,14 @@
 !
 !     Written by H. Matsui
 !
-!     subroutine s_cal_diff_coef_vector_p
+!     subroutine s_cal_diff_coef_vector_p(layer_tbl)
+!       type(layering_tbl), intent(in) :: layer_tbl
 !
       module cal_diff_coef_vector_p
 !
       use m_precision
+!
+      use t_layering_ele_list
 !
       implicit none
 !
@@ -17,8 +20,7 @@
 !
 !-----------------------------------------------------------------------
 !
-!
-      subroutine s_cal_diff_coef_vector_p
+      subroutine s_cal_diff_coef_vector_p(layer_tbl)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -41,6 +43,8 @@
       use commute_error_scalar
       use cal_model_diff_coefs
       use clear_work_4_dynamic_model
+!
+      type(layering_tbl), intent(in) :: layer_tbl
 !
       integer (kind=kint) :: i_sgs_grad_p, i_sgs_grad_fp, i_sgs_simi_p
 !
@@ -132,8 +136,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_sym_tensor, iak_diff_b, icomp_diff_b
-      call cal_diff_coef_fluid(n_sym_tensor, iak_diff_b, icomp_diff_b,  &
-     &    intg_point_t_evo)
+      call cal_diff_coef_fluid(layer_tbl,                               &
+     &    n_sym_tensor, iak_diff_b, icomp_diff_b, intg_point_t_evo)
 !
       iflag_diff_coefs(iak_diff_b) = 1
 !

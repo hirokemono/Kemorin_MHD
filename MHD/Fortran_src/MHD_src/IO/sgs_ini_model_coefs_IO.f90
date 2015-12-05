@@ -5,7 +5,8 @@
 !     modified by H. Matsui on Aug., 2007
 !
 !      subroutine output_ini_model_coefs
-!      subroutine input_ini_model_coefs
+!      subroutine input_ini_model_coefs(layer_tbl)
+!        type(layering_tbl), intent(in) :: layer_tbl
 !
       module sgs_ini_model_coefs_IO
 !
@@ -106,14 +107,16 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine input_ini_model_coefs
+      subroutine input_ini_model_coefs(layer_tbl)
 !
-      use m_layering_ele_list
+      use t_layering_ele_list
+!
+      type(layering_tbl), intent(in) :: layer_tbl
 !
 !
       call read_ini_model_coefs
       call set_ini_model_coefs_from_IO
-      call set_initial_model_coefs_ele(layer_tbl1%e_grp)
+      call set_initial_model_coefs_ele(layer_tbl%e_grp)
 !
       end subroutine input_ini_model_coefs
 !

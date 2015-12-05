@@ -4,8 +4,9 @@
 !     Written by H. Matsui on Oct. 2005
 !     Modified by H. Matsui on Aug., 2007
 !
-!      subroutine s_cal_sgs_uxb_dynamic_simi
-!      subroutine cal_sgs_induct_t_dynamic_simi
+!      subroutine s_cal_sgs_uxb_dynamic_simi(layer_tbl)
+!      subroutine cal_sgs_induct_t_dynamic_simi(layer_tbl)
+!        type(layering_tbl), intent(in) :: layer_tbl
 !
       module cal_sgs_uxb_dynamic_simi
 !
@@ -22,6 +23,8 @@
       use m_SGS_model_coefs
       use m_SGS_address
 !
+      use t_layering_ele_list
+!
       implicit none
 !
 !  ---------------------------------------------------------------------
@@ -30,7 +33,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_cal_sgs_uxb_dynamic_simi
+      subroutine s_cal_sgs_uxb_dynamic_simi(layer_tbl)
 !
       use reset_dynamic_model_coefs
       use cal_filtering_vectors
@@ -39,10 +42,12 @@
       use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
 !
+      type(layering_tbl), intent(in) :: layer_tbl
+!
 !    reset model coefficients
 !
       call reset_vector_sgs_model_coefs                                 &
-     &   (icomp_sgs_uxb, ele1%istack_ele_smp)
+     &   (layer_tbl, icomp_sgs_uxb, ele1%istack_ele_smp)
       call s_clear_work_4_dynamic_model
 !
 !   similarity model with wider filter
@@ -74,14 +79,14 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      & 'cal_model_coefs', n_vector, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs(itype_SGS_uxb_coef, n_vector,                &
+      call cal_model_coefs(layer_tbl, itype_SGS_uxb_coef, n_vector,     &
      &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo)
 !
       end subroutine s_cal_sgs_uxb_dynamic_simi
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_induct_t_dynamic_simi
+      subroutine cal_sgs_induct_t_dynamic_simi(layer_tbl)
 !
       use m_node_phys_data
 !
@@ -95,10 +100,12 @@
       use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
 !
+      type(layering_tbl), intent(in) :: layer_tbl
+!
 !    reset model coefficients
 !
       call reset_vector_sgs_model_coefs                                 &
-     &   (icomp_sgs_uxb, ele1%istack_ele_smp)
+     &   (layer_tbl, icomp_sgs_uxb, ele1%istack_ele_smp)
       call reset_vector_sgs_nod_m_coefs                                 &
      &   (icomp_sgs_uxb, node1%istack_nod_smp)
       call s_clear_work_4_dynamic_model
@@ -138,7 +145,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      & 'cal_model_coefs', n_asym_tensor, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs(itype_SGS_uxb_coef, n_asym_tensor,           &
+      call cal_model_coefs                                              &
+     &   (layer_tbl, itype_SGS_uxb_coef, n_asym_tensor,                 &
      &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo)
 !
       call cal_ele_vector_2_node                                        &

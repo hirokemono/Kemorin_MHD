@@ -8,6 +8,7 @@
 !!
 !!@verbatim
 !!      subroutine lead_fields_by_FEM
+!!        type(layering_tbl), intent(in) :: layer_tbl
 !!@endverbatim
 !
       module lead_physical_values
@@ -24,10 +25,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine lead_fields_by_FEM
+      subroutine lead_fields_by_FEM(layer_tbl)
 !
       use m_machine_parameter
       use m_t_step_parameter
+!
+      use t_layering_ele_list
 !
       use update_after_evolution
       use itp_potential_on_edge
@@ -35,6 +38,7 @@
       use cal_helicities
       use output_viz_file_control
 !
+      type(layering_tbl), intent(in) :: layer_tbl
       integer (kind =kint) :: iflag
 !
 !
@@ -45,7 +49,7 @@
         call cal_potential_on_edge
 !
         if (iflag_debug.gt.0) write(*,*) 'update_fields'
-        call update_fields
+        call update_fields(layer_tbl)
 !
         call cal_field_by_rotation
 !

@@ -3,8 +3,12 @@
 !
 !     Written by H. Matsui on Aug., 2007
 !
-!      subroutine cal_ave_rms_sgs_dynamic(n_tensor, icomp_f, n_int)
-!      subroutine cal_ave_rms_diff_layerd(n_tensor, icomp_f, n_int)
+!      subroutine cal_ave_rms_sgs_dynamic                               &
+!     &         (layer_tbl, n_tensor, icomp_f, n_int)
+!      subroutine cal_ave_rms_diff_layerd                               &
+!     &         (layer_tbl, n_tensor, icomp_f, n_int)
+!        type(layering_tbl), intent(in) :: layer_tbl
+!
 !      subroutine cal_ave_rms_diff_area(iele_fsmp_stack, n_tensor,      &
 !     &          icomp_f, n_int, volume_d)
 !
@@ -17,6 +21,8 @@
       use m_ele_info_4_dynamical
       use m_work_layer_correlate
 !
+      use t_layering_ele_list
+!
       use cal_layerd_ave_correlate
 !
 !
@@ -28,26 +34,27 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_ave_rms_sgs_dynamic(n_tensor, icomp_f, n_int)
+      subroutine cal_ave_rms_sgs_dynamic                                &
+     &         (layer_tbl, n_tensor, icomp_f, n_int)
 !
-      use m_layering_ele_list
       use int_vol_4_model_coef
 !
+      type(layering_tbl), intent(in) :: layer_tbl
       integer (kind = kint), intent(in) :: n_tensor
       integer (kind = kint), intent(in) :: n_int, icomp_f
 !
 !
-      call int_vol_rms_ave_dynamic(n_tensor, n_int)
+      call int_vol_rms_ave_dynamic(layer_tbl, n_tensor, n_int)
 !
-      call sum_layerd_averages(layer_tbl1%e_grp%num_grp)
-      call divide_layers_ave_by_vol(layer_tbl1%e_grp%num_grp, n_tensor, &
-     &    layer_tbl1%a_vol_layer, ave_sgs_simi(1,icomp_f),              &
+      call sum_layerd_averages(layer_tbl%e_grp%num_grp)
+      call divide_layers_ave_by_vol(layer_tbl%e_grp%num_grp, n_tensor,  &
+     &    layer_tbl%a_vol_layer, ave_sgs_simi(1,icomp_f),               &
      &    ave_sgs_grad(1,icomp_f), rms_sgs_simi(1,icomp_f),             &
      &    rms_sgs_grad(1,icomp_f), ratio_sgs(1,icomp_f) )
 !
       call sum_whole_averages
       call divide_all_layer_ave_by_vol                                  &
-     &     (n_tensor, layer_tbl1%vol_total_layer(1),                    &
+     &     (n_tensor, layer_tbl%vol_total_layer(1),                     &
      &      ave_sgs_simi_w(icomp_f), ave_sgs_grad_w(icomp_f),           &
      &      rms_sgs_simi_w(icomp_f), rms_sgs_grad_w(icomp_f),           &
      &      ratio_sgs_w(icomp_f) )
@@ -57,26 +64,27 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_ave_rms_diff_layerd(n_tensor, icomp_f, n_int)
+      subroutine cal_ave_rms_diff_layerd                                &
+     &         (layer_tbl, n_tensor, icomp_f, n_int)
 !
-      use m_layering_ele_list
       use int_vol_4_model_coef
 !
+      type(layering_tbl), intent(in) :: layer_tbl
       integer (kind = kint), intent(in) :: n_tensor
       integer (kind = kint), intent(in) :: n_int, icomp_f
 !
 !
-      call int_vol_rms_ave_dynamic(n_tensor, n_int)
+      call int_vol_rms_ave_dynamic(layer_tbl, n_tensor, n_int)
 !
-      call sum_layerd_averages(layer_tbl1%e_grp%num_grp)
-      call divide_layers_ave_by_vol(layer_tbl1%e_grp%num_grp, n_tensor, &
-     &    layer_tbl1%a_vol_layer, ave_diff_simi(1,icomp_f),             &
+      call sum_layerd_averages(layer_tbl%e_grp%num_grp)
+      call divide_layers_ave_by_vol(layer_tbl%e_grp%num_grp, n_tensor,  &
+     &    layer_tbl%a_vol_layer, ave_diff_simi(1,icomp_f),              &
      &    ave_diff_grad(1,icomp_f), rms_diff_simi(1,icomp_f),           &
      &    rms_diff_grad(1,icomp_f), ratio_diff(1,icomp_f) )
 !
       call sum_whole_averages
       call divide_all_layer_ave_by_vol                                  &
-     &     (n_tensor, layer_tbl1%vol_total_layer(1),                    &
+     &     (n_tensor, layer_tbl%vol_total_layer(1),                     &
      &      ave_diff_simi_w(icomp_f), ave_diff_grad_w(icomp_f),         &
      &      rms_diff_simi_w(icomp_f), rms_diff_grad_w(icomp_f),         &
      &      ratio_diff_w(icomp_f) )

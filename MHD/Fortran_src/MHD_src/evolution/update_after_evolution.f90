@@ -7,14 +7,14 @@
 !> @brief Evaluate field data for time integration for FEM dynamo model
 !!
 !!@verbatim
-!!      subroutine update_fields
+!!      subroutine update_fields(layer_tbl)
 !!      subroutine reset_update_flag
 !!
-!!      subroutine update_with_velocity
-!!      subroutine update_with_temperature
-!!      subroutine update_with_vector_potential
-!!      subroutine update_with_magnetic_field
-!!      subroutine update_with_dummy_scalar
+!!      subroutine update_with_velocity(layer_tbl)
+!!      subroutine update_with_temperature(layer_tbl)
+!!      subroutine update_with_vector_potential(layer_tbl)
+!!      subroutine update_with_magnetic_field(layer_tbl)
+!!      subroutine update_with_dummy_scalar(layer_tbl)
 !!@endverbatim
 !
       module update_after_evolution
@@ -25,6 +25,8 @@
       use m_control_parameter
       use m_int_vol_data
 !
+      use t_layering_ele_list
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -33,22 +35,26 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_fields
+      subroutine update_fields(layer_tbl)
 !
       use m_node_phys_address
       use average_on_elements
 !
+      type(layering_tbl), intent(in) :: layer_tbl
 !
-      if (iphys%i_velo .ne. 0) call update_with_velocity
 !
-      if (iphys%i_temp .ne. 0) call update_with_temperature
+      if (iphys%i_velo .ne. 0) call update_with_velocity(layer_tbl)
 !
-      if (iphys%i_light .ne. 0) call update_with_dummy_scalar
+      if (iphys%i_temp .ne. 0) call update_with_temperature(layer_tbl)
+!
+      if (iphys%i_light .ne. 0) then
+        call update_with_dummy_scalar(layer_tbl)
+      end if
 !
       if (iphys%i_vecp .ne. 0) then
-        call update_with_vector_potential
+        call update_with_vector_potential(layer_tbl)
       else if (iphys%i_magne.ne.0) then
-        call update_with_magnetic_field
+        call update_with_magnetic_field(layer_tbl)
       end if
 !
       end subroutine update_fields
@@ -72,7 +78,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_velocity
+      subroutine update_with_velocity(layer_tbl)
 !
       use m_t_step_parameter
       use m_node_phys_address
@@ -87,6 +93,8 @@
       use cal_diff_vector_on_ele
       use cal_diff_coef_velo
       use cal_w_filtering_vectors
+!
+      type(layering_tbl), intent(in) :: layer_tbl
 !
       integer (kind = kint) :: iflag_dynamic, iflag2
 !
@@ -162,7 +170,7 @@
      &         .and. iflag_diff_coefs(iak_diff_v) .eq. 0) then
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 's_cal_diff_coef_velo'
-           call s_cal_diff_coef_velo
+           call s_cal_diff_coef_velo(layer_tbl)
          end if
 !
        end if
@@ -182,7 +190,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_temperature
+      subroutine update_with_temperature(layer_tbl)
 !
       use m_t_step_parameter
       use m_geometry_data
@@ -198,6 +206,8 @@
       use cal_diff_coef_temp
       use cal_w_filtering_scalars
       use copy_nodal_fields
+!
+      type(layering_tbl), intent(in) :: layer_tbl
 !
       integer (kind = kint) :: iflag_dynamic, iflag2
 !
@@ -285,7 +295,7 @@
 !
              if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
                if (iflag_debug.gt.0)  write(*,*) 's_cal_diff_coef_temp'
-               call s_cal_diff_coef_temp
+               call s_cal_diff_coef_temp(layer_tbl)
              end if
            end if
 !
@@ -296,7 +306,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_vector_potential
+      subroutine update_with_vector_potential(layer_tbl)
 !
       use m_t_step_parameter
       use m_node_phys_address
@@ -311,6 +321,8 @@
       use cal_diff_vector_on_ele
       use cal_diff_coef_vector_p
       use cal_w_filtering_vectors
+!
+      type(layering_tbl), intent(in) :: layer_tbl
 !
       integer (kind = kint) :: iflag_dynamic, iflag2
 !
@@ -352,12 +364,12 @@
             if (iflag_SGS_model .eq. id_SGS_NL_grad) then
               if(iflag_debug.gt.0)                                      &
      &                   write(*,*) 's_cal_diff_coef_vector_p'
-              call s_cal_diff_coef_vector_p
+              call s_cal_diff_coef_vector_p(layer_tbl)
 !
             else if (iflag_SGS_model .eq. id_SGS_similarity) then
               if(iflag_debug.gt.0)                                      &
      &                   write(*,*) 's_cal_diff_coef_vector_p'
-              call s_cal_diff_coef_vector_p
+              call s_cal_diff_coef_vector_p(layer_tbl)
             end if
 !
           end if
@@ -458,7 +470,7 @@
 !
 !-----------------------------------------------------------------------
 !
-       subroutine update_with_magnetic_field
+       subroutine update_with_magnetic_field(layer_tbl)
 !
       use m_t_step_parameter
       use m_node_phys_address
@@ -466,12 +478,14 @@
       use m_element_phys_data
       use m_SGS_model_coefs
       use m_SGS_address
-      use average_on_elements
 !
+      use average_on_elements
       use cal_filtering_vectors
       use cal_diff_vector_on_ele
       use cal_diff_coef_magne
       use cal_w_filtering_vectors
+!
+      type(layering_tbl), intent(in) :: layer_tbl
 !
       integer (kind = kint) :: iflag_dynamic, iflag2
 !
@@ -542,11 +556,11 @@
      &     .and. iflag_diff_coefs(iak_diff_b) .eq. 0) then
          if (iflag2.eq.2) then
            if (iflag_debug.gt.0) write(*,*) 's_cal_diff_coef_magne'
-           call s_cal_diff_coef_magne
+           call s_cal_diff_coef_magne(layer_tbl)
 !
          else if (iflag2.eq.3) then
            if (iflag_debug.gt.0) write(*,*) 's_cal_diff_coef_magne'
-           call s_cal_diff_coef_magne
+           call s_cal_diff_coef_magne(layer_tbl)
          end if
        end if
  !
@@ -570,7 +584,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_dummy_scalar
+      subroutine update_with_dummy_scalar(layer_tbl)
 !
       use m_t_step_parameter
       use m_node_phys_address
@@ -584,6 +598,8 @@
       use cal_diff_coef_temp
       use cal_w_filtering_scalars
       use copy_nodal_fields
+!
+      type(layering_tbl), intent(in) :: layer_tbl
 !
       integer (kind = kint) :: iflag_dynamic, iflag2
 !
@@ -627,7 +643,7 @@
 !
 !             if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
 !               if (iflag_debug.gt.0)  write(*,*) 's_cal_diff_coef_temp'
-!               call s_cal_diff_coef_temp
+!               call s_cal_diff_coef_temp(layer_tbl)
 !             end if
 !
 !           end if

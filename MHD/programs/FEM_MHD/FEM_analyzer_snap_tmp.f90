@@ -31,6 +31,7 @@
       use m_control_parameter
       use m_cal_max_indices
       use m_node_phys_data
+      use m_layering_ele_list
 !
       use initialize_4_snapshot
 !
@@ -42,7 +43,7 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
-      call init_analyzer_snap
+      call init_analyzer_snap(layer_tbl1)
 !
       call output_grd_file_w_org_connect
 !
@@ -59,6 +60,7 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
+      use m_layering_ele_list
 !
       use read_udt_4_snapshot
 !
@@ -115,18 +117,18 @@
       call nod_fields_send_recv(node1, nod_comm, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
-      call update_fields
+      call update_fields(layer_tbl1)
 !
 !     ----- Evaluate model coefficients
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients
+        call s_cal_model_coefficients(layer_tbl1)
       end if
 !
 !     ========  Data output
 !
-      call lead_fields_by_FEM
+      call lead_fields_by_FEM(layer_tbl1)
       if (iflag_debug.eq.1)  write(*,*) 'lead_specital_SGS'
       call lead_specital_SGS
 !

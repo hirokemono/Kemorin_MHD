@@ -30,6 +30,7 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
+      use m_layering_ele_list
 !
       use read_udt_4_snapshot
 !
@@ -88,18 +89,18 @@
       call nod_fields_send_recv(node1, nod_comm, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
-      call update_fields
+      call update_fields(layer_tbl1)
 !
 !     ----- Evaluate model coefficients
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients
+        call s_cal_model_coefficients(layer_tbl1)
       end if
 !
 !     ========  Data output
 !
-      call lead_fields_by_FEM
+      call lead_fields_by_FEM(layer_tbl1)
 !
 !     ----Filtering
       if (iflag_debug.eq.1) write(*,*) 'filtering_all_fields'

@@ -4,7 +4,9 @@
 !     Written by H. Matsui on Nov., 2009
 !
 !      subroutine allocate_vec_transfer(numnod)
-!      subroutine s_correlation_all_layerd_data(nnod_2, phys_2nd)
+!      subroutine s_correlation_all_layerd_data(layer_tbl, phys_2nd)
+!        type(phys_data), intent(in) :: phys_2nd
+!        type(layering_tbl), intent(in) :: layer_tbl
 !
       module correlation_all_layerd_data
 !
@@ -12,7 +14,6 @@
       use m_machine_parameter
       use calypso_mpi
       use m_all_layerd_correlate
-      use m_layering_ele_list
       use m_work_layer_correlate
 !
       implicit none
@@ -50,22 +51,23 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine s_correlation_all_layerd_data(nnod_2, phys_2nd)
+      subroutine s_correlation_all_layerd_data(layer_tbl, phys_2nd)
 !
       use m_node_phys_data
       use cal_layerd_ave_correlate
       use t_phys_data
+      use t_layering_ele_list
 !
-      integer(kind = kint), intent(in) :: nnod_2
       type(phys_data), intent(in) :: phys_2nd
+      type(layering_tbl), intent(in) :: layer_tbl
 !
 !
-      call int_vol_rms_ave_all_layer(nnod_2, phys_2nd)
-      call sum_layerd_averages(layer_tbl1%e_grp%num_grp)
+      call int_vol_rms_ave_all_layer(layer_tbl, phys_2nd)
+      call sum_layerd_averages(layer_tbl%e_grp%num_grp)
 !
       if(iflag_debug .gt. 0) write(*,*) 'divide_layers_ave_by_vol'
-      call divide_layers_ave_by_vol(layer_tbl1%e_grp%num_grp,           &
-     &    nod_fld1%ntot_phys, layer_tbl1%a_vol_layer,                   &
+      call divide_layers_ave_by_vol(layer_tbl%e_grp%num_grp,            &
+     &    nod_fld1%ntot_phys, layer_tbl%a_vol_layer,                    &
      &    ave_ref(1,1), ave_tgt(1,1), rms_ref(1,1), rms_tgt(1,1),       &
      &    rms_ratio(1,1))
 !
@@ -73,15 +75,15 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'int_vol_dev_cor_all_layer'
-      call int_vol_dev_cor_all_layer(phys_2nd)
+      call int_vol_dev_cor_all_layer(layer_tbl, phys_2nd)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_layerd_correlation'
-      call sum_layerd_correlation(layer_tbl1%e_grp%num_grp)
+      call sum_layerd_correlation(layer_tbl%e_grp%num_grp)
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_layered_correlation'
       call cal_layered_correlation                                      &
-     &   (layer_tbl1%e_grp%num_grp, nod_fld1%ntot_phys,                 &
-     &    layer_tbl1%a_vol_layer, cor_data(1,1), cov_data(1,1))
+     &   (layer_tbl%e_grp%num_grp, nod_fld1%ntot_phys,                  &
+     &    layer_tbl%a_vol_layer, cor_data(1,1), cov_data(1,1))
 !
       call take_sqrt_rms_data
 !
@@ -90,7 +92,7 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine  int_vol_rms_ave_all_layer(nnod_2, phys_2nd)
+      subroutine  int_vol_rms_ave_all_layer(layer_tbl, phys_2nd)
 !
       use m_geometry_data
       use m_jacobians
@@ -99,19 +101,21 @@
       use int_rms_ave_ele_grps
       use transfer_correlate_field
       use t_phys_data
+      use t_layering_ele_list
 !
-      integer(kind = kint), intent(in) :: nnod_2
       type(phys_data), intent(in) :: phys_2nd
+      type(layering_tbl), intent(in) :: layer_tbl
 !
       integer(kind = kint) :: icomp, icomp_2
 !
 !
       do icomp = 1, nod_fld1%ntot_phys
         icomp_2 = icomp + nod_fld1%ntot_phys
-        d_nod_trans2(1:nnod_2,1) = phys_2nd%d_fld(1:nnod_2,icomp)
+        d_nod_trans2(1:phys_2nd%n_point,1)                              &
+     &          = phys_2nd%d_fld(1:phys_2nd%n_point,icomp)
 !
         call int_vol_2rms_ave_ele_grps                                  &
-     &     (node1, ele1, layer_tbl1%e_grp, jac1_3d_q, jac1_3d_l,        &
+     &     (node1, ele1, layer_tbl%e_grp, jac1_3d_q, jac1_3d_l,         &
      &      max_int_point, nod_fld1%ntot_phys, icomp, nod_fld1%d_fld,   &
      &      ione, ione, d_nod_trans2(1,1), ave_l(1,icomp),              &
      &      rms_l(1,icomp), ave_l(1,icomp_2), rms_l(1,icomp_2))
@@ -121,7 +125,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine  int_vol_dev_cor_all_layer(phys_2nd)
+      subroutine  int_vol_dev_cor_all_layer(layer_tbl, phys_2nd)
 !
       use m_geometry_data
       use m_jacobians
@@ -130,8 +134,10 @@
       use int_rms_ave_ele_grps
       use transfer_correlate_field
       use t_phys_data
+      use t_layering_ele_list
 !
       type(phys_data), intent(in) :: phys_2nd
+      type(layering_tbl), intent(in) :: layer_tbl
       integer(kind = kint) :: icomp, icomp_2
 !
 !
@@ -140,7 +146,7 @@
         d_nod_trans2(1:node1%numnod,1)                                  &
      &          = phys_2nd%d_fld(1:node1%numnod,icomp)
         call int_vol_dev_cor_ele_grps                                   &
-     &     (node1, ele1, layer_tbl1%e_grp, jac1_3d_q, jac1_3d_l,        &
+     &     (node1, ele1, layer_tbl%e_grp, jac1_3d_q, jac1_3d_l,         &
      &      max_int_point, nod_fld1%ntot_phys, icomp, nod_fld1%d_fld,   &
      &      ione, ione, d_nod_trans2(1,1),                              &
      &      ave_ref(1,icomp), ave_tgt(1,icomp),                         &

@@ -6,7 +6,8 @@
 !        Modified by H. Matsui on Aug., 2006
 !        Modified by H. Matsui on Aug., 2007
 !
-!      subroutine cal_volume_node
+!      subroutine cal_volume_node(layer_tbl)
+!        type(layering_tbl), intent(in) :: layer_tbl
 !
       module cal_volume_node_MHD
 !
@@ -17,7 +18,7 @@
       use m_geometry_data
       use sum_volume_of_domain
 !
-       implicit none
+      implicit none
 !
       real(kind=kreal) :: vol_fl_local
       private :: vol_fl_local
@@ -31,16 +32,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_volume_node
+      subroutine cal_volume_node(layer_tbl)
 !
       use m_control_parameter
       use m_geometry_data_MHD
       use m_jacobians
       use m_bulk_values
-      use m_layering_ele_list
+      use t_layering_ele_list
 !
       use int_volume_of_domain
       use cal_layered_volumes
+!
+      type(layering_tbl), intent(inout) :: layer_tbl
 !
 !
       call allocate_volume_4_smp
@@ -59,7 +62,7 @@
 !
        if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
          if (iflag_debug.eq.1) write(*,*) 's_cal_layered_volumes'
-         call s_cal_layered_volumes(ele1, layer_tbl1)
+         call s_cal_layered_volumes(ele1, layer_tbl)
        end if
 !
 !

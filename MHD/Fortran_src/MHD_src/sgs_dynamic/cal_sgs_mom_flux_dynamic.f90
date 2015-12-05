@@ -4,11 +4,14 @@
 !     Written by H. Matsui on Oct. 2005
 !     Modified by H. Matsui on Aug., 2007
 !
-!      subroutine cal_sgs_m_flux_dynamic
+!      subroutine cal_sgs_m_flux_dynamic(layer_tbl)
+!        type(layering_tbl), intent(in) :: layer_tbl
 !
       module cal_sgs_mom_flux_dynamic
 !
       use m_precision
+!
+      use t_layering_ele_list
 !
       implicit none
 !
@@ -18,7 +21,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_m_flux_dynamic
+      subroutine cal_sgs_m_flux_dynamic(layer_tbl)
 !
       use m_machine_parameter
       use m_geometry_data
@@ -39,10 +42,12 @@
       use cvt_dynamic_scheme_coord
       use reduce_model_coefs
 !
+      type(layering_tbl), intent(in) :: layer_tbl
+!
 !    reset model coefficients
 !
       call reset_tensor_sgs_model_coefs                                 &
-     &   (icomp_sgs_mf, ele1%istack_ele_smp)
+     &   (layer_tbl, icomp_sgs_mf, ele1%istack_ele_smp)
       call s_clear_work_4_dynamic_model
 !
 !    SGS term by similarity model
@@ -86,7 +91,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_model_coefs', n_sym_tensor, iak_sgs_mf, icomp_sgs_mf
-      call cal_model_coefs(itype_SGS_m_flux_coef, n_sym_tensor,         &
+      call cal_model_coefs                                              &
+     &   (layer_tbl, itype_SGS_m_flux_coef, n_sym_tensor,               &
      &    iak_sgs_mf, icomp_sgs_mf, intg_point_t_evo)
 !
       call reduce_model_coefs_layer(SGS_mf_factor, nlayer_SGS,          &

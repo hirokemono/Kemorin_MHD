@@ -102,7 +102,6 @@
       subroutine clippging_sgs_diff_coefs(numdir, ifield_d, icomp_f)
 !
       use m_control_parameter
-!      use m_layering_ele_list
       use m_t_step_parameter
       use m_ele_info_4_dynamical
 !

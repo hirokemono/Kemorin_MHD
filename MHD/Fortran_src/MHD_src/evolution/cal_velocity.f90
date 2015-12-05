@@ -5,11 +5,14 @@
 !                                    on July 2000 (ver 1.1)
 !        modified by H.Matsui on July, 2006
 !
-!      subroutine cal_velocity
+!      subroutine velocity_evolution(layer_tbl)
+!        type(layering_tbl), intent(in) :: layer_tbl
 !
       module cal_velocity
 !
       use m_precision
+!
+      use t_layering_ele_list
 !
       implicit none
 !
@@ -19,7 +22,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine velocity_evolution
+      subroutine velocity_evolution(layer_tbl)
 !
       use m_control_parameter
       use m_machine_parameter
@@ -36,6 +39,8 @@
       use int_rms_div_MHD
       use int_norm_div_MHD
       use cal_rms_potentials
+!
+      type(layering_tbl), intent(in) :: layer_tbl
 !
       integer(kind=kint) :: iloop
       real(kind = kreal) :: rel_correct
@@ -67,7 +72,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1)  write(*,*) 's_cal_velocity_pre'
-      call s_cal_velocity_pre
+      call s_cal_velocity_pre(layer_tbl)
 !
 !     --------------------- 
 !

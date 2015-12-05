@@ -33,6 +33,7 @@
       use m_node_phys_data
       use m_control_parameter
       use m_cal_max_indices
+      use m_layering_ele_list
 !
       use input_control
       use initialization_4_MHD
@@ -49,7 +50,7 @@
 !
 !   matrix assembling
 !
-      call init_analyzer_fl
+      call init_analyzer_fl(layer_tbl1)
 !
       call nod_fields_send_recv(node1, nod_comm, nod_fld1)
 !
@@ -57,7 +58,7 @@
 !
       call reset_update_flag
       if (iflag_debug.eq.1) write(*,*) 'update_fields'
-      call update_fields
+      call update_fields(layer_tbl1)
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'copy_model_coef_2_previous'
@@ -75,11 +76,11 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients
+        call s_cal_model_coefficients(layer_tbl1)
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
-      call lead_fields_by_FEM
+      call lead_fields_by_FEM(layer_tbl1)
 !
 !     ---------------------
 !
@@ -109,6 +110,8 @@
      &          istep_pvr, istep_fline, visval, retval)
 !
       use m_control_parameter
+!
+      use m_layering_ele_list
 !
       use cal_temperature
       use cal_part_temperature
@@ -158,13 +161,13 @@
 !      if ( iflag_t_evo_4_vect_p .gt. id_no_evolution) then
 !        if (iflag_debug.eq.1) write(*,*) 'cal_magne_vector_potential'
 !        call cal_magne_vector_potential
-!        call update_with_vector_potential
+!        call update_with_vector_potential(layer_tbl1)
 !
 !      else if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
 !
 !        if (iflag_debug.eq.1) write(*,*) 's_cal_magnetic_field'
 !        call s_cal_magnetic_field
-!        call update_with_magnetic_field
+!        call update_with_magnetic_field(layer_tbl1)
 !      end if
 !
 !     ---- temperature update
@@ -178,7 +181,7 @@
           call cal_temperature_field
         end if
 !
-        call update_with_temperature
+        call update_with_temperature(layer_tbl1)
       end if
 !
 !     ----- composition update
@@ -187,22 +190,22 @@
         if (iflag_debug.eq.1) write(*,*) 'cal_light_element_variation'
         call cal_light_element_variation
 !
-        call update_with_dummy_scalar
+        call update_with_dummy_scalar(layer_tbl1)
       end if
 !
 !     ---- velocity update
 !
       if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
-        call velocity_evolution
-        call update_with_velocity
+        call velocity_evolution(layer_tbl1)
+        call update_with_velocity(layer_tbl1)
       end if
 !
 !     ----- Evaluate model coefficients
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients
+        call s_cal_model_coefficients(layer_tbl1)
       end if
 !
 !     ---------------------
@@ -215,7 +218,7 @@
 !     ========  Data output
 !
       if(istep_flex_to_max .eq. 0) then
-        call lead_fields_by_FEM
+        call lead_fields_by_FEM(layer_tbl1)
 !
 !     -----Output monitor date
 !

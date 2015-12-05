@@ -121,7 +121,6 @@
 !
       subroutine s_output_sgs_model_coefs
 !
-      use m_layering_ele_list
       use set_exit_flag_4_visualizer
 !
       integer (kind = kint) :: i_coef

@@ -4,8 +4,9 @@
 !     Written by H. Matsui on Oct. 2005
 !     Modified by H. Matsui on Aug., 2007
 !
-!      subroutine s_cal_sgs_m_flux_dynamic_simi
-!      subroutine cal_sgs_maxwell_dynamic_simi
+!      subroutine s_cal_sgs_m_flux_dynamic_simi(layer_tbl)
+!      subroutine cal_sgs_maxwell_dynamic_simi(layer_tbl)
+!        type(layering_tbl), intent(in) :: layer_tbl
 !
       module cal_sgs_m_flux_dynamic_simi
 !
@@ -21,6 +22,8 @@
       use m_sorted_node
       use m_finite_element_matrix
 !
+      use t_layering_ele_list
+!
       implicit none
 !
 !  ---------------------------------------------------------------------
@@ -29,7 +32,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_cal_sgs_m_flux_dynamic_simi
+      subroutine s_cal_sgs_m_flux_dynamic_simi(layer_tbl)
 !
       use m_SGS_model_coefs
       use m_SGS_address
@@ -44,11 +47,13 @@
       use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
 !
+      type(layering_tbl), intent(in) :: layer_tbl
+!
 !
 !    reset model coefficients
 !
       call reset_tensor_sgs_model_coefs                                 &
-     &   (icomp_sgs_mf, ele1%istack_ele_smp)
+     &   (layer_tbl, icomp_sgs_mf, ele1%istack_ele_smp)
       call reset_tensor_sgs_nod_m_coefs                                 &
      &   (icomp_sgs_mf, node1%istack_nod_smp)
       call s_clear_work_4_dynamic_model
@@ -90,7 +95,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &    'cal_model_coefs', n_sym_tensor, iak_sgs_mf, icomp_sgs_mf
-      call cal_model_coefs(itype_SGS_m_flux_coef, n_sym_tensor,         &
+      call cal_model_coefs                                              &
+     &   (layer_tbl, itype_SGS_m_flux_coef, n_sym_tensor,               &
      &    iak_sgs_mf, icomp_sgs_mf, intg_point_t_evo)
 !
       call cal_ele_sym_tensor_2_node                                    &
@@ -102,7 +108,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_maxwell_dynamic_simi
+      subroutine cal_sgs_maxwell_dynamic_simi(layer_tbl)
 !
       use m_SGS_model_coefs
       use m_SGS_address
@@ -117,11 +123,13 @@
       use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
 !
+      type(layering_tbl), intent(in) :: layer_tbl
+!
 !
 !    reset model coefficients
 !
       call reset_tensor_sgs_model_coefs                                 &
-     &   (icomp_sgs_lor, ele1%istack_ele_smp)
+     &   (layer_tbl, icomp_sgs_lor, ele1%istack_ele_smp)
       call reset_tensor_sgs_nod_m_coefs                                 &
      &   (icomp_sgs_lor, node1%istack_nod_smp)
       call s_clear_work_4_dynamic_model
@@ -161,7 +169,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_model_coefs', n_sym_tensor, iak_sgs_lor, icomp_sgs_lor
-      call cal_model_coefs(itype_SGS_maxwell_coef, n_sym_tensor,        &
+      call cal_model_coefs                                              &
+     &   (layer_tbl, itype_SGS_maxwell_coef, n_sym_tensor,              &
      &    iak_sgs_lor, icomp_sgs_lor, intg_point_t_evo)
 !
       call cal_ele_sym_tensor_2_node                                    &

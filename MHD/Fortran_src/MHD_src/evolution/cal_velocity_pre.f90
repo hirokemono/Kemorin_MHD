@@ -5,7 +5,7 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!      subroutine s_cal_velocity_pre
+!      subroutine s_cal_velocity_pre(layer_tbl)
 !
       module cal_velocity_pre
 !
@@ -15,6 +15,8 @@
       use m_control_parameter
       use m_t_int_parameter
       use m_phys_constants
+!
+      use t_layering_ele_list
 !
       implicit none
 !
@@ -27,7 +29,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_velocity_pre
+      subroutine s_cal_velocity_pre(layer_tbl)
 !
       use m_geometry_data
       use m_nod_comm_table
@@ -35,7 +37,6 @@
       use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
-      use m_layering_ele_list
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -48,12 +49,14 @@
       use cal_sgs_m_flux_sgs_buo
       use modify_Csim_by_SGS_buo_ele
 !
+      type(layering_tbl), intent(in) :: layer_tbl
+!
 !   ----  set SGS fluxes
 !
 !
       if (iflag_SGS_gravity .ne. id_SGS_none) then
-        call cal_sgs_mom_flux_with_sgs_buo
-        call mod_Csim_by_SGS_buoyancy_ele(layer_tbl1%e_grp)
+        call cal_sgs_mom_flux_with_sgs_buo(layer_tbl)
+        call mod_Csim_by_SGS_buoyancy_ele(layer_tbl%e_grp)
       end if
 !
       if ( iflag_SGS_inertia .ne. id_SGS_none) then

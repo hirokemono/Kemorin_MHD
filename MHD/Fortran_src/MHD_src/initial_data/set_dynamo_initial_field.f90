@@ -5,7 +5,8 @@
 !      modified by H. Matsui on July, 2006
 !      modified by H. Matsui on Dec., 2007
 !
-!      subroutine initial_data_control
+!      subroutine initial_data_control(layer_tbl)
+!        type(layering_tbl), intent(in) :: layer_tbl
 !
 !      subroutine set_time_init
 !      subroutine set_initial_data
@@ -25,19 +26,24 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine initial_data_control
+      subroutine initial_data_control(layer_tbl)
 !
       use m_machine_parameter
       use m_initial_field_control
       use m_t_int_parameter
       use m_t_step_parameter
       use m_node_phys_data
+!
+      use t_layering_ele_list
+!
       use fem_mhd_rst_IO_control
       use set_restart_data
 !
+      type(layering_tbl), intent(in) :: layer_tbl
+!
 !
       if(iflag_restart .eq. i_rst_by_file) then
-        call input_MHD_restart_file_ctl
+        call input_MHD_restart_file_ctl(layer_tbl)
       else
         call set_initial_data
       end if

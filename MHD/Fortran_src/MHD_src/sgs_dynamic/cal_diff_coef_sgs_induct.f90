@@ -3,11 +3,14 @@
 !
 !     Written by H. Matsui
 !
-!     subroutine s_cal_diff_coef_sgs_induct
+!     subroutine s_cal_diff_coef_sgs_induct(layer_tbl)
+!        type(layering_tbl), intent(in) :: layer_tbl
 !
       module cal_diff_coef_sgs_induct
 !
       use m_precision
+!
+      use t_layering_ele_list
 !
       implicit none
 !
@@ -17,7 +20,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_sgs_induct
+      subroutine s_cal_diff_coef_sgs_induct(layer_tbl)
 !
       use m_nod_comm_table
       use m_geometry_data
@@ -39,6 +42,8 @@
       use cal_model_diff_coefs
       use nod_phys_send_recv
       use clear_work_4_dynamic_model
+!
+      type(layering_tbl), intent(in) :: layer_tbl
 !
 !
 !    reset model coefficients
@@ -101,8 +106,8 @@
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_vector, iak_diff_uxb, icomp_diff_uxb
-      call cal_diff_coef_fluid(n_vector, iak_diff_uxb, icomp_diff_uxb,  &
-     &    intg_point_t_evo)
+      call cal_diff_coef_fluid(layer_tbl,                               &
+     &    n_vector, iak_diff_uxb, icomp_diff_uxb, intg_point_t_evo)
 !
 !
       end subroutine s_cal_diff_coef_sgs_induct
