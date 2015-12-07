@@ -3,8 +3,11 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!!      subroutine select_const_filter(FEM_elen, dxidxs, FEM_moments)
+!!      subroutine select_const_filter                                  &
+!!     &         (rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(dxidx_data_type), intent(inout) :: dxidxs
 !!        type(gradient_filter_mom_type), intent(inout) :: FEM_moments
 !
@@ -21,6 +24,8 @@
       use m_reference_moments
       use cal_element_size
 !
+      use t_table_FEM_const
+      use t_finite_element_mat
       use t_filter_elength
       use t_filter_moments
       use t_filter_dxdxi
@@ -41,31 +46,37 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine select_const_filter(FEM_elen, dxidxs, FEM_moments)
+      subroutine select_const_filter                                    &
+     &         (rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
+!
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(gradient_filter_mom_type), intent(inout) :: FEM_moments
 !
 !
       if (iflag_tgt_filter_type .eq. 1)  then
         if (iflag_debug.eq.1) write(*,*) 'const_commutative_filter'
-        call  const_commutative_filter(FEM_elen, FEM_moments)
+        call const_commutative_filter(rhs_mat, FEM_elen, FEM_moments)
 !
       else if (iflag_tgt_filter_type .eq. -1) then
         if (iflag_debug.eq.1) write(*,*) 'correct_commutative_filter'
-        call  correct_commutative_filter                                &
-     &      (FEM_elen, dxidxs, FEM_moments)
+        call correct_commutative_filter                                 &
+     &      (rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       else if (iflag_tgt_filter_type .ge. -4                            &
      &     .and. iflag_tgt_filter_type .le. -2) then
         if (iflag_debug.eq.1) write(*,*) 'correct_by_simple_filter'
-        call  correct_by_simple_filter(FEM_elen, dxidxs, FEM_moments)
+        call correct_by_simple_filter                                   &
+     &     (rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       else if (iflag_tgt_filter_type.ge.2                               &
      &     .and. iflag_tgt_filter_type.le.4) then
         if (iflag_debug.eq.1) write(*,*) 'const_simple_filter'
-        call const_simple_filter(FEM_elen, dxidxs, FEM_moments)
+        call const_simple_filter                                        &
+     &     (rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
       end if
 !
       end subroutine select_const_filter
@@ -73,9 +84,12 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine const_commutative_filter(FEM_elen, FEM_moments)
+      subroutine const_commutative_filter                               &
+     &         (rhs_mat, FEM_elen, FEM_moments)
 !
       use cal_filter_func_node
+!
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(gradient_filter_mom_type), intent(inout) :: FEM_moments
@@ -89,7 +103,9 @@
       call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(1))
       call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(2))
 !
-      if (itype_mass_matrix .eq. 1) call release_mass_mat_for_consist
+      if (itype_mass_matrix .eq. 1) then
+        call release_mass_mat_for_consist(rhs_mat)
+      end if
 !
 !  ---------------------------------------------------
 !     construct filter function
@@ -111,13 +127,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_simple_filter(FEM_elen, dxidxs, FEM_moments)
+      subroutine const_simple_filter                                    &
+     &         (rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
-      use m_finite_element_matrix
       use cal_1st_diff_deltax_4_nod
       use cal_filter_func_node
       use cal_diff_elesize_on_ele
       use filter_geometry_IO
+!
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(dxidx_data_type), intent(inout) :: dxidxs
@@ -135,23 +154,25 @@
 !     construct filter function
 !  ---------------------------------------------------
 !
-        if(iflag_debug.eq.1) write(*,*) 'set_simple_filter'
-        call set_simple_filter(node1, ele1, jac1_3d_q, FEM_elen,        &
+      if(iflag_debug.eq.1) write(*,*) 'set_simple_filter'
+      call set_simple_filter(node1, ele1, jac1_3d_q, FEM_elen,          &
      &      dxidxs, FEM_moments%mom_nod(1))
 !
-          if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
-        call s_const_filter_mom_ele                                     &
-     &     (FEM_moments%mom_nod(1), FEM_moments%mom_ele(1))
-          if(iflag_debug.eq.1)                                          &
+      if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
+      call s_const_filter_mom_ele(rhs_tbl, rhs_mat,                     &
+     &    FEM_moments%mom_nod(1), FEM_moments%mom_ele(1))
+      if(iflag_debug.eq.1)                                              &
      &       write(*,*) 'cal_fmoms_ele_by_elen 2'
-        call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(1))
+      call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(1))
 !
-          if(iflag_debug.eq.1)  write(*,*) 'set_simple_fluid_filter'
-        call set_simple_fluid_filter(node1, ele1, jac1_3d_q, FEM_elen,  &
+      if(iflag_debug.eq.1)  write(*,*) 'set_simple_fluid_filter'
+      call set_simple_fluid_filter(node1, ele1, jac1_3d_q, FEM_elen,    &
      &      dxidxs, FEM_moments%mom_nod)
 !
-        call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(2))
-        if (itype_mass_matrix .eq. 1) call release_mass_mat_for_consist
+      call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(2))
+      if (itype_mass_matrix .eq. 1) then
+        call release_mass_mat_for_consist(rhs_mat)
+      end if
 !
       end subroutine const_simple_filter
 !
@@ -159,12 +180,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine correct_commutative_filter                             &
-     &         (FEM_elen, dxidxs, FEM_moments)
+     &         (rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       use m_filter_file_names
       use set_parallel_file_name
       use correct_wrong_filters
       use filter_geometry_IO
+!
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(dxidx_data_type), intent(inout) :: dxidxs
@@ -179,7 +202,9 @@
      &   (FEM_elen%nele_filter_mom, FEM_moments)
       call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(1))
       call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(2))
-      if (itype_mass_matrix .eq. 1) call release_mass_mat_for_consist
+      if (itype_mass_matrix .eq. 1) then
+        call release_mass_mat_for_consist(rhs_mat)
+      end if
 !
 !  ---------------------------------------------------
 !     check filter function
@@ -225,7 +250,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine correct_by_simple_filter                               &
-     &         (FEM_elen, dxidxs, FEM_moments)
+     &         (rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       use m_filter_file_names
       use m_filter_coefs
@@ -233,6 +258,9 @@
       use set_parallel_file_name
       use correct_wrong_filters
       use filter_geometry_IO
+!
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(dxidx_data_type), intent(inout) :: dxidxs
@@ -274,10 +302,10 @@
       call s_correct_wrong_filters(node1, ele1, jac1_3d_q, FEM_elen,    &
      &    org_filter_coef_code, dxidxs, FEM_moments%mom_nod(1))
 !
-        if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
-      call s_const_filter_mom_ele                                       &
-     &   (FEM_moments%mom_nod(1), FEM_moments%mom_ele(1))
-        if(iflag_debug.eq.1)                                            &
+      if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
+      call s_const_filter_mom_ele(rhs_tbl, rhs_mat,                     &
+     &    FEM_moments%mom_nod(1), FEM_moments%mom_ele(1))
+      if(iflag_debug.eq.1)                                              &
      &       write(*,*) 'correct_fmoms_ele_by_elen 1'
       call correct_fmoms_ele_by_elen                                    &
      &   (ele1, FEM_elen, FEM_moments%mom_ele(1))

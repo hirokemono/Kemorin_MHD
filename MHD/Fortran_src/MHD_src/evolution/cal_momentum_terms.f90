@@ -78,7 +78,7 @@
 !
       call int_surf_velo_monitor(iphys%i_v_diffuse)
 !
-      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
+      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !
       call set_boundary_velo_4_rhs
 !

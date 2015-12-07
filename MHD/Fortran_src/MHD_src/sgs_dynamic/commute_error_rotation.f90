@@ -61,7 +61,7 @@
      &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, sgs_sf,      &
      &    intg_point_t_evo, i_filter, i_vect, fem1_wk, f1_nl)
 !
-      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
+      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    f1_nl%ff, m1_lump%ml, nod_fld1%ntot_phys,                     &
      &    i_sgs, nod_fld1%d_fld)
@@ -89,7 +89,7 @@
      &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, sgs_sf,      &
      &    intg_point_t_evo, i_filter, i_vect, fem1_wk, f1_nl)
 !
-      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
+      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    f1_nl%ff, mhd_fem1_wk%mlump_fl%ml, nod_fld1%ntot_phys,        &
      &    i_sgs, nod_fld1%d_fld)
@@ -117,7 +117,7 @@
      &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, sgs_sf,      &
      &    intg_point_t_evo, i_filter, i_vect, fem1_wk, f1_nl)
 !
-      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
+      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    f1_nl%ff, mhd_fem1_wk%mlump_cd%ml, nod_fld1%ntot_phys,        &
      &    i_sgs, nod_fld1%d_fld)

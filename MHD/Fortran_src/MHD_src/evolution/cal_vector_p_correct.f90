@@ -173,7 +173,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_initial_vect_p'
       call int_vol_initial_vect_p
-      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
+      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_vect_p_4_rhs'
       call delete_vector_ffs_on_bc(node1, nod_bc1_a, f1_l, f1_nl)

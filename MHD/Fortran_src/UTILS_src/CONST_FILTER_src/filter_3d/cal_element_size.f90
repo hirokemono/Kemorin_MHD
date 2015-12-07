@@ -4,11 +4,14 @@
 !      Written by H.Matsui on Nov., 2006
 !      Modified by H. Matsui on Mar., 2008
 !
-!!      subroutine s_cal_element_size(filter_dxi, dxidxs)
+!!      subroutine s_cal_element_size                                   &
+!!     &         (rhs_mat, FEM_elen, filter_dxi, dxidxs)
+!!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !!        type(dxdxi_data_type), intent(inout) :: filter_dxi
 !!        type(dxidx_data_type), intent(inout) :: dxidxs
 !!
-!!      subroutine s_const_filter_mom_ele(ifil)
+!!      subroutine s_const_filter_mom_ele(rhs_mat, mom_nod, mom_ele)
+!!      subroutine release_mass_mat_for_consist(rhs_mat)
 !
       module cal_element_size
 !
@@ -19,8 +22,8 @@
 !
       use m_nod_comm_table
       use m_crs_matrix
-      use m_sorted_node
-      use m_finite_element_matrix
+      use t_table_FEM_const
+      use t_finite_element_mat
       use t_crs_matrix
 !
       implicit none
@@ -33,7 +36,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_element_size(FEM_elen, filter_dxi, dxidxs)
+      subroutine s_cal_element_size                                     &
+     &         (rhs_tbl, mat_tbl, rhs_mat, FEM_elen,                    &
+     &          filter_dxi, dxidxs)
 !
       use m_geometry_data
       use m_jacobians
@@ -56,6 +61,9 @@
       use cal_deltax_and_prods_4_nod
       use cal_1st_diff_deltax_4_nod
 !
+      type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
+      type(table_mat_const), intent(inout) :: mat_tbl
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
       type(gradient_model_data_type), intent(inout) :: FEM_elen
       type(dxdxi_data_type), intent(inout) :: filter_dxi
       type(dxidx_data_type), intent(inout) :: dxidxs
@@ -66,7 +74,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 's_set_table_type_RHS_assemble'
       call s_set_table_type_RHS_assemble                                &
-     &   (node1, ele1, ele_4_nod1, neib_nod1, rhs_tbl1)
+     &   (node1, ele1, ele_4_nod1, neib_nod1, rhs_tbl)
 !
 !  ---------------------------------------------------
 !        cal element size for each node
@@ -80,18 +88,19 @@
       call alloc_dxidxs_ele(ele1%numele, dxidxs)
       call alloc_dxidxs_node(node1%numnod, dxidxs)
 !
-      call allocate_finite_elem_mt
+      call alloc_fem_mat_base_type(node1, ele1, rhs_mat)
       call allocate_scalar_ele_4_int(ele1%numele)
 !
       if (itype_mass_matrix .eq. 1) then
         if (iflag_debug.eq.1) write(*,*) 'set_consist_mass_matrix'
         call set_consist_mass_matrix(node1, ele1, jac1_3d_q,            &
-     &      neib_nod1, rhs_tbl1, tbl1_crs, mat_tbl_q1, fem1_wk, mass1)
+     &      neib_nod1, rhs_tbl, tbl1_crs, mat_tbl,                      &
+     &      rhs_mat%fem_wk, mass1)
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_mass_matrix_4_filter'
-      call int_mass_matrix_4_filter                                     &
-     &   (node1, ele1, jac1_3d_q, rhs_tbl1, fem1_wk, f1_l, m1_lump)
+      call int_mass_matrix_4_filter(node1, ele1, jac1_3d_q,             &
+     &   rhs_tbl, rhs_mat%fem_wk, rhs_mat%fem_rhs%f_l, rhs_mat%m_lump)
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_dxidx_ele_type'
       call cal_dxidx_ele_type(ele1, jac1_3d_q, dxidxs%dx_ele)
@@ -101,11 +110,11 @@
 !  ---------------------------------------------------
 !
       call cal_dx2_on_node(nod_comm, node1, ele1, jac1_3d_q,            &
-     &    rhs_tbl1, tbl1_crs, m1_lump, itype_mass_matrix,               &
-     &    mass1, FEM_elen, fem1_wk, f1_l)
+     &    rhs_tbl, tbl1_crs, rhs_mat%m_lump, itype_mass_matrix,         &
+     &    mass1, FEM_elen, rhs_mat%fem_wk, rhs_mat%fem_rhs%f_l)
       call cal_dxi_dxes_node(nod_comm, node1, ele1, jac1_3d_q,          &
-     &    rhs_tbl1, tbl1_crs, m1_lump, itype_mass_matrix,               &
-     &    mass1, dxidxs, fem1_wk, f1_l)
+     &    rhs_tbl, tbl1_crs, rhs_mat%m_lump, itype_mass_matrix,         &
+     &    mass1, dxidxs, rhs_mat%fem_wk, rhs_mat%fem_rhs%f_l)
 !
       call elength_nod_send_recv(node1, nod_comm, FEM_elen%elen_nod)
       call dxidx_nod_send_recv(node1, nod_comm, dxidxs%dx_nod)
@@ -117,12 +126,13 @@
       if (itype_mass_matrix .eq. 1) then
         if (iflag_debug.eq.1) write(*,*) 'cal_1st_diffs_dx_by_consist'
         call cal_1st_diffs_dx_by_consist(nod_comm, node1, ele1,         &
-     &     jac1_3d_q, rhs_tbl1, tbl1_crs, mass1,                        &
-     &     FEM_elen, fem1_wk, f1_nl)
+     &     jac1_3d_q, rhs_tbl, tbl1_crs, mass1,                         &
+     &     FEM_elen, rhs_mat%fem_wk, rhs_mat%fem_rhs%f_nl)
       else
         if (iflag_debug.eq.1) write(*,*) 'cal_1st_diffs_dx_by_lump'
         call cal_1st_diffs_dx_by_lump(node1, ele1, jac1_3d_q,           &
-     &     rhs_tbl1, m1_lump, FEM_elen, fem1_wk, f1_nl)
+     &      rhs_tbl, rhs_mat%m_lump, FEM_elen,                          &
+     &      rhs_mat%fem_wk, rhs_mat%fem_rhs%f_nl)
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'diff_elen_nod_send_recv'
@@ -142,7 +152,8 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_filter_moments_on_node_1st'
       call cal_filter_moments_on_node_1st                               &
      &   (nod_comm, node1, ele1, jac1_3d_q,                             &
-     &    rhs_tbl1, tbl1_crs, m1_lump, FEM_elen, mass1, fem1_wk, f1_l)
+     &    rhs_tbl, tbl1_crs, rhs_mat%m_lump, FEM_elen, mass1,           &
+     &    rhs_mat%fem_wk, rhs_mat%fem_rhs%f_l)
 !
 !  ---------------------------------------------------
 !        differences of element size for each element
@@ -169,7 +180,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_const_filter_mom_ele(mom_nod, mom_ele)
+      subroutine s_const_filter_mom_ele                                 &
+     &         (rhs_tbl, rhs_mat, mom_nod, mom_ele)
 !
       use t_filter_moments
       use m_geometry_data
@@ -179,6 +191,9 @@
       use cal_1st_diff_deltax_4_nod
       use filter_moments_send_recv
 !
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
+!
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
       type(ele_mom_diffs_type), intent(inout) :: mom_ele
 !
@@ -187,11 +202,12 @@
 !
       if (itype_mass_matrix .eq. 1) then
         call cal_diffs_filter_nod_consist(nod_comm, node1, ele1,        &
-     &      jac1_3d_q, rhs_tbl1, tbl1_crs, mass1,                       &
-     &      fem1_wk, f1_nl, mom_nod)
+     &      jac1_3d_q, rhs_tbl, tbl1_crs, mass1,                        &
+     &      rhs_mat%fem_wk, rhs_mat%fem_rhs%f_nl, mom_nod)
       else
         call cal_diffs_filter_nod_lump(node1, ele1, jac1_3d_q,          &
-     &     rhs_tbl1, m1_lump, fem1_wk, f1_nl, mom_nod)
+     &     rhs_tbl, rhs_mat%m_lump, rhs_mat%fem_wk,                     &
+     &     rhs_mat%fem_rhs%f_nl, mom_nod)
       end if
 !
       call diff_filter_mom_nod_send_recv(node1, nod_comm, mom_nod)
@@ -207,13 +223,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine release_mass_mat_for_consist
+      subroutine release_mass_mat_for_consist(rhs_mat)
 !
       use int_vol_elesize_on_node
 !
+      type(arrays_finite_element_mat), intent(inout) :: rhs_mat
+!
 !
       call deallocate_scalar_ele_4_int
-      call deallocate_finite_elem_mt
+      call dealloc_fem_mat_base_type(rhs_mat)
       call dealloc_crs_mat_data(mass1)
       call dealloc_crs_connect(tbl1_crs)
 !

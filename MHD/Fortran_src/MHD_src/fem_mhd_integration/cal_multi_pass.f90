@@ -63,7 +63,7 @@
 !
       end if
 !
-      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
+      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !
       end subroutine cal_t_evo_4_vector
 !
@@ -90,7 +90,7 @@
 !
       end if
 !
-      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_scalar)
+      call set_ff_nl_smp_2_ff(n_scalar, node1, rhs_tbl1, f1_l, f1_nl)
 !
       end subroutine cal_t_evo_4_scalar
 !
@@ -118,7 +118,7 @@
 !
       end if
 !
-      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
+      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !
       end subroutine cal_t_evo_4_vector_fl
 !
@@ -145,7 +145,7 @@
 !
       end if
 !
-      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_scalar)
+      call set_ff_nl_smp_2_ff(n_scalar, node1, rhs_tbl1, f1_l, f1_nl)
 !
       end subroutine cal_t_evo_4_scalar_fl
 !
@@ -171,7 +171,7 @@
 !
       end if
 !
-      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
+      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !
       end subroutine cal_t_evo_4_vector_cd
 !
@@ -196,7 +196,7 @@
 !
       end if
 !
-      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_scalar)
+      call set_ff_nl_smp_2_ff(n_scalar, node1, rhs_tbl1, f1_l, f1_nl)
 !
       end subroutine cal_t_evo_4_scalar_cd
 !

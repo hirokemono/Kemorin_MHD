@@ -90,7 +90,7 @@
      &    jac1_sf_grp_2d_q, rhs_tbl1, sf_bc1_grad_a,                    &
      &    intg_point_t_evo, ak_d_magne, fem1_wk, f1_l)
 !
-      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
+      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !
       call delete_vector_ffs_on_bc(node1, nod_bc1_a, f1_l, f1_nl)
 !

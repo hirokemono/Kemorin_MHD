@@ -8,7 +8,12 @@
 !> @brief Assemble element integration data to nodal vector
 !
 !!      subroutine cal_ff_smp_2_ml_type(node, rhs_tbl, ff_smp, lump)
-!!      subroutine set_ff_nl_smp_2_ff(node, rhs_tbl, numdir)
+!!        type(node_data), intent(in) :: node
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(lumped_mass_matrices), intent(inout) :: lump
+!!      subroutine set_ff_nl_smp_2_ff(numdir, node, rhs_tbl, f_l, f_nl)
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!
 !!      subroutine cal_ff_smp_2_ff(node, rhs_tbl, numdir, ff_smp, ff)
 !!      subroutine cal_ff_smp_2_ml(node, rhs_tbl, ff_smp, ml, ml_o)
@@ -57,20 +62,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ff_nl_smp_2_ff(node, rhs_tbl, numdir)
+      subroutine set_ff_nl_smp_2_ff(numdir, node, rhs_tbl, f_l, f_nl)
 !
-      use m_finite_element_matrix
+      use t_finite_element_mat
       use cal_rhs_node_order
 !
       type(node_data), intent(in) :: node
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+!
       integer(kind = kint), intent(in) :: numdir
 !
 !
       call s_set_ff_nl_smp_2_ff(node%numnod, np_smp,                    &
      &    node%max_nod_smp, node%istack_nod_smp,                        &
      &    rhs_tbl%node_sort_list_smp, numdir,                           &
-     &    f1_l%ff_smp, f1_nl%ff_smp, f1_l%ff, f1_nl%ff)
+     &    f_l%ff_smp, f_nl%ff_smp, f_l%ff, f_nl%ff)
 !
       end subroutine set_ff_nl_smp_2_ff
 !

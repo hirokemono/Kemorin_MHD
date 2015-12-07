@@ -85,7 +85,7 @@
 !
       call int_surf_magne_monitor(iphys%i_b_diffuse)
 !
-      call set_ff_nl_smp_2_ff(node1, rhs_tbl1, n_vector)
+      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !
       call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
 !

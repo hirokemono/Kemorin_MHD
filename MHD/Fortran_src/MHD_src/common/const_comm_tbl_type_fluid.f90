@@ -15,8 +15,6 @@
 !
       implicit  none
 !
-      private :: set_empty_comm_tbl_type_fluid
-!
 !------------------------------------------------------------------
 !
       contains
@@ -38,7 +36,7 @@
 !
 !
       if (mesh%node%numnod .eq. 0) then
-        call set_empty_comm_tbl_type_fluid(MHD_mesh%nod_fl_comm)
+        call set_empty_comm_table_fluid(MHD_mesh%nod_fl_comm)
       else
         call s_const_comm_table_fluid                                   &
      &   (solver_C%nprocs, MHD_mesh%fluid%istack_ele_fld_smp,           &

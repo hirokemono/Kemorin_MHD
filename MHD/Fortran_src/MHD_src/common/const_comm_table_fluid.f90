@@ -13,7 +13,7 @@
 !!@verbatim
 !!      subroutine s_const_comm_table_fluid(num_pe, iele_fl_smp_stack,  &
 !!     &          node, ele, nod_comm, fluid_comm)
-!!      subroutine set_empty_comm_tablefluid(fluid_comm)
+!!      subroutine set_empty_comm_table_fluid(fluid_comm)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: nod_comm
@@ -128,7 +128,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_empty_comm_tablefluid(fluid_comm)
+      subroutine set_empty_comm_table_fluid(fluid_comm)
 !
       use t_comm_table
 !
@@ -142,7 +142,7 @@
       fluid_comm%ntot_export = 0
       call allocate_type_comm_tbl_item(fluid_comm)
 !
-      end subroutine set_empty_comm_tablefluid
+      end subroutine set_empty_comm_table_fluid
 !
 !------------------------------------------------------------------
 !

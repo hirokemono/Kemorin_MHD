@@ -38,8 +38,9 @@
 !
       label_sim = 'GeoFEM_MHD'
 !
-      if (iflag_debug.ge.1) write(*,*) 'allocate_finite_elem_mt'
-      call allocate_finite_elem_mt
+      if (iflag_debug.ge.1) write(*,*) 'alloc_finite_elem_mat'
+      call alloc_finite_elem_mat                                        &
+     &   (node1, ele1, m1_lump, fem1_wk, f1_l, f1_nl)
       call alloc_mass_mat_fluid(node1%numnod, mhd_fem1_wk)
       call alloc_mass_mat_conduct(node1%numnod, mhd_fem1_wk)
 !
