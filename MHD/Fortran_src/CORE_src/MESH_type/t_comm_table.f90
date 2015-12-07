@@ -30,6 +30,11 @@
 !!
 !!      subroutine unlink_dest_comm_tbl_type(comm_tbls)
 !!        type(interpolate_table), intent(inout) :: comm_tbls
+!!
+!!      subroutine compare_comm_table_stacks                            &
+!!     &         (my_rank, org_comm, new_comm)
+!!      type(communication_table), intent(in) :: org_comm
+!!      type(communication_table), intent(in) :: new_comm
 !!@endverbatim
 !
       module t_comm_table
@@ -293,6 +298,34 @@
       nullify( comm_tbls%item_export   )
 !
       end subroutine unlink_dest_comm_tbl_type
+!
+!------------------------------------------------------------------
+!------------------------------------------------------------------
+!
+      subroutine compare_comm_table_stacks                              &
+     &         (my_rank, org_comm, new_comm)
+!
+      integer(kind = kint), intent(in) :: my_rank
+      type(communication_table), intent(in) :: org_comm
+      type(communication_table), intent(in) :: new_comm
+!
+!
+        write(*,*)'new_comm%num_neib',                                  &
+     &       my_rank, org_comm%num_neib, new_comm%num_neib 
+        write(*,*)'new_comm%id_neib', my_rank, new_comm%id_neib
+        write(*,*)'new_comm%ntot_import',                               &
+     &       my_rank, org_comm%ntot_import, new_comm%ntot_import
+        write(*,*)'new_comm%ntot_export',                               &
+     &       my_rank, org_comm%ntot_export, new_comm%ntot_export
+        write(*,*)'id_neib',  my_rank, org_comm%id_neib
+        write(*,*)'istack_import',  my_rank, org_comm%istack_import
+        write(*,*)'new_comm%istack_import',                             &
+     &       my_rank, new_comm%istack_import
+        write(*,*)'istack_export',  my_rank, org_comm%istack_export
+        write(*,*)'new_comm%istack_export',                             &
+     &       my_rank, new_comm%istack_export
+!
+      end subroutine compare_comm_table_stacks
 !
 !------------------------------------------------------------------
 !

@@ -11,6 +11,17 @@
 !     &         rhs_tbl, m_lump, fem_wk, f_nl, mom_nod)
 !      subroutine cal_1st_diffs_dx_by_lump                              &
 !     &         (rhs_tbl, m_lump, FEM_elen, fem_wk, f_nl)
+!        type(communication_table), intent(in) :: nod_comm
+!        type(node_data),    intent(in) :: node
+!        type(element_data), intent(in) :: ele
+!        type(jacobians_3d), intent(in) :: jac_3d
+!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!        type(CRS_matrix_connect), intent(in) :: tbl_crs
+!        type(CRS_matrix), intent(inout) :: mass
+!        type(gradient_model_data_type), intent(inout) :: FEM_elen
+!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!        type(finite_ele_mat_node), intent(inout) :: f_nl
+!        type(nod_mom_diffs_type), intent(inout) :: mom_nod
 !
       module cal_1st_diff_deltax_4_nod
 !
@@ -46,8 +57,8 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(CRS_matrix_connect), intent(in) :: tbl_crs
-      type(CRS_matrix), intent(in) :: mass
 !
+      type(CRS_matrix), intent(inout) :: mass
       type(gradient_model_data_type), intent(inout) :: FEM_elen
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -91,8 +102,8 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(CRS_matrix_connect), intent(in) :: tbl_crs
-      type(CRS_matrix), intent(in) :: mass
 !
+      type(CRS_matrix), intent(inout) :: mass
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
       type(nod_mom_diffs_type), intent(inout) :: mom_nod
@@ -244,8 +255,8 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(CRS_matrix_connect), intent(in) :: tbl_crs
-      type(CRS_matrix), intent(in) :: mass
 !
+      type(CRS_matrix), intent(inout) :: mass
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
 !
@@ -263,7 +274,7 @@
      &    f_nl%ff_smp, f_nl%ff)
       do nd = 1, n_vector
         call cal_sol_dx_by_consist                                      &
-     &     (node, nod_comm, tbl_crs, mass, f_nl, diff_field(1,nd), nd)
+     &     (nd, node, nod_comm, tbl_crs, f_nl, mass, diff_field(1,nd))
       end do
 !
       end subroutine take_1st_diffs_nod_by_consist

@@ -5,12 +5,12 @@
 !     Modified by H. Matsui on Apr., 2008
 !
 !!      subroutine cal_sol_dx_by_consist                                &
-!!     &         (node, nod_comm, tbl_crs, mass, f_l, dx_nod, nd_dx)
+!!     &         (nd_dx, node, nod_comm, tbl_crs, f_l, mass, dx_nod)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(CRS_matrix_connect), intent(in) :: tbl_crs
-!!        type(CRS_matrix), intent(in) :: mass
 !!        type(finite_ele_mat_node), intent(in) :: f_l
+!!        type(CRS_matrix), intent(inout) :: mass
 !
 !
       module cal_sol_deltax_by_consist
@@ -36,7 +36,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sol_dx_by_consist                                  &
-     &         (node, nod_comm, tbl_crs, mass, f_l, dx_nod, nd_dx)
+     &         (nd_dx, node, nod_comm, tbl_crs, f_l, mass, dx_nod)
 !
       use calypso_mpi
       use m_ctl_params_4_gen_filter
@@ -49,9 +49,9 @@
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(CRS_matrix_connect), intent(in) :: tbl_crs
-      type(CRS_matrix), intent(in) :: mass
       type(finite_ele_mat_node), intent(in) :: f_l
 !
+      type(CRS_matrix), intent(inout) :: mass
       real(kind= kreal), intent(inout) :: dx_nod(node%numnod)
 !
 !      integer (kind = kint) :: inod

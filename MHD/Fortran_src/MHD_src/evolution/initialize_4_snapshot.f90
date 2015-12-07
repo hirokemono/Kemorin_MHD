@@ -42,6 +42,7 @@
       use m_boundary_condition_IDs
       use m_array_for_send_recv
       use m_ele_sf_eg_comm_tables
+      use m_solver_djds_MHD
 !
       use m_check_subroutines
 !
@@ -168,7 +169,8 @@
       call s_count_sgs_components(node1%numnod, ele1%numele, layer_tbl)
 !
       if (iflag_debug.gt.0)  write(*,*)' make comm. table for fluid'
-      call s_const_comm_table_fluid
+      call s_const_comm_table_fluid(nprocs, iele_fl_smp_stack,          &
+     &    node1, ele1, nod_comm, DJDS_comm_fl)
 !
       call deallocate_surface_geom_type(surf1)
       call deallocate_edge_geom_type(edge1)

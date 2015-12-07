@@ -101,11 +101,11 @@
 !  ---------------------------------------------------
 !
       call cal_dx2_on_node(nod_comm, node1, ele1, jac1_3d_q,            &
-     &    rhs_tbl1, tbl1_crs, mass1, m1_lump, itype_mass_matrix,        &
-     &    FEM_elen, fem1_wk, f1_l)
+     &    rhs_tbl1, tbl1_crs, m1_lump, itype_mass_matrix,               &
+     &    mass1, FEM_elen, fem1_wk, f1_l)
       call cal_dxi_dxes_node(nod_comm, node1, ele1, jac1_3d_q,          &
-     &    rhs_tbl1, tbl1_crs, mass1, m1_lump, itype_mass_matrix,        &
-     &    dxidxs, fem1_wk, f1_l)
+     &    rhs_tbl1, tbl1_crs, m1_lump, itype_mass_matrix,               &
+     &    mass1, dxidxs, fem1_wk, f1_l)
 !
       call elength_nod_send_recv(node1, nod_comm, FEM_elen%elen_nod)
       call dxidx_nod_send_recv(node1, nod_comm, dxidxs%dx_nod)
@@ -142,7 +142,7 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_filter_moments_on_node_1st'
       call cal_filter_moments_on_node_1st                               &
      &   (nod_comm, node1, ele1, jac1_3d_q,                             &
-     &    rhs_tbl1, tbl1_crs, mass1, m1_lump, FEM_elen, fem1_wk, f1_l)
+     &    rhs_tbl1, tbl1_crs, m1_lump, FEM_elen, mass1, fem1_wk, f1_l)
 !
 !  ---------------------------------------------------
 !        differences of element size for each element

@@ -44,6 +44,7 @@
       use m_solver_djds_MHD
       use m_array_for_send_recv
       use m_ele_sf_eg_comm_tables
+      use m_solver_djds_MHD
 !
       use m_check_subroutines
       use m_cal_max_indices
@@ -191,7 +192,8 @@
       call copy_communicator_4_solver(solver_C)
 !
       if (iflag_debug.eq.1) write(*,*) 'make comm. table for fluid'
-      call s_const_comm_table_fluid
+      call s_const_comm_table_fluid(nprocs, iele_fl_smp_stack,          &
+     &    node1, ele1, nod_comm, DJDS_comm_fl)
 !
 !  -------------------------------
 !

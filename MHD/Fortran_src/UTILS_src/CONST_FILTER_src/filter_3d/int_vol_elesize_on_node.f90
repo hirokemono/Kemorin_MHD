@@ -8,8 +8,8 @@
 !      subroutine deallocate_scalar_ele_4_int
 !
 !      subroutine int_dx_ele2_node(nod_comm, node, ele,                 &
-!     &          jac_3d, rhs_tbl, tbl_crs, mass, m_lump,                &
-!     &          itype_mass, elen_ele, elen_nod, fem_wk, f_l)
+!     &          jac_3d, rhs_tbl, tbl_crs, m_lump, itype_mass,          &
+!     &          mass, elen_ele, elen_nod, fem_wk, f_l)
 !      subroutine int_vol_diff_dxs(node, ele, jac_3d,                   &
 !     &          rhs_tbl, fem_wk, f_nl, elen_org_nod)
 !
@@ -54,8 +54,8 @@
 !---------------------------------------------------------------------
 !
       subroutine int_dx_ele2_node(nod_comm, node, ele,                  &
-     &          jac_3d, rhs_tbl, tbl_crs, mass, m_lump,                 &
-     &          itype_mass, elen_ele, elen_nod, fem_wk, f_l)
+     &          jac_3d, rhs_tbl, tbl_crs, m_lump, itype_mass,           &
+     &          mass, elen_ele, elen_nod, fem_wk, f_l)
 !
       use m_element_list_4_filter
 !
@@ -76,12 +76,12 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(CRS_matrix_connect), intent(in) :: tbl_crs
-      type(CRS_matrix), intent(in) :: mass
       type(lumped_mass_matrices), intent(in) :: m_lump
 !
       integer(kind = kint), intent(in) :: itype_mass
       real(kind = kreal), intent(in) :: elen_ele(ele%numele)
 !
+      type(CRS_matrix), intent(inout) :: mass
       real(kind = kreal), intent(inout) :: elen_nod(node%numnod)
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -106,7 +106,7 @@
         call cal_ff_smp_2_ff                                            &
      &     (node, rhs_tbl, n_scalar, f_l%ff_smp, f_l%ff)
         call cal_sol_dx_by_consist                                      &
-     &     (node, nod_comm, tbl_crs, mass, f_l, elen_nod, ione)
+     &     (ione, node, nod_comm, tbl_crs, f_l, mass, elen_nod)
       end if
 !
       end subroutine int_dx_ele2_node

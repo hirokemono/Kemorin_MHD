@@ -11,13 +11,19 @@
 !>     Construct communication table for fluid region
 !!
 !!@verbatim
-!!      subroutine s_const_comm_table_fluid
-!!      subroutine deallocate_comm_table_fluid
+!!      subroutine s_const_comm_table_fluid(num_pe, iele_fl_smp_stack,  &
+!!     &          node, ele, nod_comm, fluid_comm)
+!!      subroutine set_empty_comm_tablefluid(fluid_comm)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(communication_table), intent(inout) :: fluid_comm
 !!@endverbatim
 !
       module const_comm_table_fluid
 !
       use m_precision
+      use m_machine_parameter
 !
       implicit  none
 !
@@ -27,28 +33,33 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine s_const_comm_table_fluid
+      subroutine s_const_comm_table_fluid(num_pe, iele_fl_smp_stack,    &
+     &          node, ele, nod_comm, fluid_comm)
 !
       use calypso_mpi
       use t_comm_table
-      use m_machine_parameter
-      use m_control_parameter
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_geometry_data_MHD
-      use m_solver_djds_MHD
+      use t_geometry_data
+!
       use set_comm_table_fluid
       use solver_SR_int
 !
+      integer(kind = kint), intent(in) :: num_pe
+      integer(kind = kint), intent(in) :: iele_fl_smp_stack(0:np_smp)
 !
-      call allocate_flags_reduced_comm(nprocs, node1%numnod)
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(communication_table), intent(in) :: nod_comm
 !
-      call mark_4_fluid_nod_by_ele                                      &
-     &   (ele1%numele, ele1%nnod_4_ele, ele1%ie,                        &
+      type(communication_table), intent(inout) :: fluid_comm
+!
+!
+      call allocate_flags_reduced_comm(num_pe, node%numnod)
+!
+      call mark_4_fluid_nod_by_ele(ele%numele, ele%nnod_4_ele, ele%ie,  &
      &    iele_fl_smp_stack(0), iele_fl_smp_stack(np_smp) )
 !
       call solver_send_recv_i                                           &
-     &   (node1%numnod, nod_comm%num_neib, nod_comm%id_neib,            &
+     &   (node%numnod, nod_comm%num_neib, nod_comm%id_neib,             &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
      &    iflag_nod)
@@ -61,67 +72,54 @@
 !
 !
       call count_reduced_neib_domain                                    &
-     &   (nod_comm%num_neib, nod_comm%id_neib, DJDS_comm_fl%num_neib)
+     &   (nod_comm%num_neib, nod_comm%id_neib, fluid_comm%num_neib)
 !
-      call allocate_type_comm_tbl_num(DJDS_comm_fl)
+      call allocate_type_comm_tbl_num(fluid_comm)
 !
       call set_reduced_neib_domain(nod_comm%num_neib, nod_comm%id_neib, &
-     &    DJDS_comm_fl%num_neib, DJDS_comm_fl%id_neib)
+     &    fluid_comm%num_neib, fluid_comm%id_neib)
 !
       call count_reduced_comm_stack                                     &
      &   (nod_comm%num_neib, nod_comm%ntot_import, nod_comm%id_neib,    &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
-     &    DJDS_comm_fl%num_neib, DJDS_comm_fl%ntot_import,              &
-     &    DJDS_comm_fl%num_import, DJDS_comm_fl%istack_import)
+     &    fluid_comm%num_neib, fluid_comm%ntot_import,                  &
+     &    fluid_comm%num_import, fluid_comm%istack_import)
       call count_reduced_comm_stack                                     &
      &   (nod_comm%num_neib, nod_comm%ntot_export, nod_comm%id_neib,    &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
-     &    DJDS_comm_fl%num_neib, DJDS_comm_fl%ntot_export,              &
-     &    DJDS_comm_fl%num_export, DJDS_comm_fl%istack_export)
+     &    fluid_comm%num_neib, fluid_comm%ntot_export,                  &
+     &    fluid_comm%num_export, fluid_comm%istack_export)
 !
-      call allocate_type_comm_tbl_item(DJDS_comm_fl)
+      call allocate_type_comm_tbl_item(fluid_comm)
 !
       call set_reduced_comm_item                                        &
      &   (nod_comm%num_neib, nod_comm%ntot_import, nod_comm%id_neib,    &
      &    nod_comm%istack_import, nod_comm%item_import,                 &
-     &    DJDS_comm_fl%num_neib, DJDS_comm_fl%ntot_import,              &
-     &    DJDS_comm_fl%istack_import, DJDS_comm_fl%item_import)
+     &    fluid_comm%num_neib, fluid_comm%ntot_import,                  &
+     &    fluid_comm%istack_import, fluid_comm%item_import)
       call set_reduced_comm_item                                        &
      &   (nod_comm%num_neib, nod_comm%ntot_export, nod_comm%id_neib,    &
      &    nod_comm%istack_export, nod_comm%item_export,                 &
-     &    DJDS_comm_fl%num_neib, DJDS_comm_fl%ntot_export,              &
-     &    DJDS_comm_fl%istack_export, DJDS_comm_fl%item_export)
+     &    fluid_comm%num_neib, fluid_comm%ntot_export,                  &
+     &    fluid_comm%istack_export, fluid_comm%item_export)
 !
       if (iflag_debug.ge.2) then
-        write(*,*)'DJDS_comm_fl%num_neib',                              &
-     &       my_rank, nod_comm%num_neib, DJDS_comm_fl%num_neib 
-        write(*,*)'DJDS_comm_fl%ntot_import',                           &
-     &       my_rank, nod_comm%ntot_import, DJDS_comm_fl%ntot_import
-        write(*,*)'DJDS_comm_fl%ntot_export',                           &
-     &       my_rank, nod_comm%ntot_export, DJDS_comm_fl%ntot_export
-        write(*,*)'id_neib',  my_rank, nod_comm%id_neib
-        write(*,*)'DJDS_comm_fl%id_neib', my_rank, DJDS_comm_fl%id_neib
-        write(*,*)'istack_import',  my_rank, nod_comm%istack_import
-        write(*,*)'DJDS_comm_fl%istack_import',                         &
-     &       my_rank, DJDS_comm_fl%istack_import
-        write(*,*)'istack_export',  my_rank, nod_comm%istack_export
-        write(*,*)'DJDS_comm_fl%istack_export',                         &
-     &       my_rank, DJDS_comm_fl%istack_export
+        call compare_comm_table_stacks(my_rank, nod_comm, fluid_comm)
       end if
 !
 !       write(50+my_rank,*) 'i, inod_global(i), iflag_nod(i)'
-!       do i = 1, node1%numnod
-!         write(50+my_rank,*) i, node1%inod_global(i), iflag_nod(i)
+!       do i = 1, node%numnod
+!         write(50+my_rank,*) i, node%inod_global(i), iflag_nod(i)
 !       end do
 !       write(50+my_rank,*) 'i, item_import(i)'
 !       do i = 1, nod_comm%ntot_import
 !         write(50+my_rank,*) i, nod_comm%item_import(i),               &
-!     &                  node1%inod_global(nod_comm%item_import(i))
+!     &                  node%inod_global(nod_comm%item_import(i))
 !       end do
 !       write(50+my_rank,*) 'i, nod_comm%item_export(i)'
 !       do i = 1, nod_comm%ntot_export
 !         write(50+my_rank,*) i, nod_comm%item_export(i),               &
-!     &                  node1%inod_global(nod_comm%item_export(i))
+!     &                  node%inod_global(nod_comm%item_export(i))
 !       end do
 !
       call deallocate_flags_reduced_comm
@@ -130,16 +128,22 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine deallocate_comm_table_fluid
+      subroutine set_empty_comm_tablefluid(fluid_comm)
 !
       use t_comm_table
-      use m_solver_djds_MHD
+!
+      type(communication_table), intent(inout) :: fluid_comm
 !
 !
-      call deallocate_type_comm_tbl(DJDS_comm_fl)
+      fluid_comm%num_neib = 0
+      call allocate_type_comm_tbl_num(fluid_comm)
 !
-      end subroutine deallocate_comm_table_fluid
+      fluid_comm%ntot_import = 0
+      fluid_comm%ntot_export = 0
+      call allocate_type_comm_tbl_item(fluid_comm)
 !
-!  ---------------------------------------------------------------------
+      end subroutine set_empty_comm_tablefluid
+!
+!------------------------------------------------------------------
 !
       end module const_comm_table_fluid

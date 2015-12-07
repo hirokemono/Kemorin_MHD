@@ -7,6 +7,7 @@
 !
 !>     DJDS ordering table for MHD dynamo model
 !!
+!!      subroutine deallocate_comm_table_fluid
 !
       module m_solver_djds_MHD
 !
@@ -48,5 +49,20 @@
       type(DJDS_ordering_table), save :: DJDS_ins_l
 !>      Communication table structure for insulator
       type(communication_table), save :: DJDS_comm_ins
+!
+!------------------------------------------------------------------
+!
+      contains
+!
+!------------------------------------------------------------------
+!
+      subroutine deallocate_comm_table_fluid
+!
+!
+      call deallocate_type_comm_tbl(DJDS_comm_fl)
+!
+      end subroutine deallocate_comm_table_fluid
+!
+!  ---------------------------------------------------------------------
 !
       end module m_solver_djds_MHD
