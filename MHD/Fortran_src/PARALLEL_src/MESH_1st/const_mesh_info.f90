@@ -21,8 +21,6 @@
 !
       implicit none
 !
-      private :: count_num_groups_4_smp
-!
 ! ----------------------------------------------------------------------
 !
       contains

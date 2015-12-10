@@ -108,18 +108,6 @@
         irev_import(k) = ii
       end do
 !
-      num_elapsed = 8
-      call allocate_elapsed_times
-!
-      write(elapse_labels( 1),'(a)') 'Original         component_out'
-      write(elapse_labels( 2),'(a)') 'Original reverse comopnent_out'
-      write(elapse_labels( 3),'(a)') 'Original          component_in'
-      write(elapse_labels( 4),'(a)') 'Original reverse  component_in'
-      write(elapse_labels( 5),'(a)') 'item_inner          component_out'
-      write(elapse_labels( 6),'(a)') 'item_inner reverse component_out'
-      write(elapse_labels( 7),'(a)') 'item_inner_mod         comp_out'
-      write(elapse_labels( 8),'(a)') 'item_inner_mod reverse comp_out'
-!
       call start_eleps_time(1)
       call start_eleps_time(2)
 !$omp parallel private(nd,neib,ist,ied)
@@ -284,7 +272,6 @@
 !$omp end parallel
       call end_eleps_time(6)
 !
-!
       call start_eleps_time(7)
       call start_eleps_time(8)
 !$omp parallel private(neib,ist,num)
@@ -324,17 +311,17 @@
       call end_eleps_time(7)
 !
       call start_eleps_time(8)
-!$omp parallel private(nd,neib,ist,num,inum)
+!$omp parallel private(neib,ist,num,inum)
       do neib= 1, nod_comm%num_neib
         ist = nod_comm%istack_import(neib-1)
         num = nod_comm%istack_import(neib  )                            &
      &       - nod_comm%istack_import(neib-1)
-!$omp do private(k,ii,ix)
+!$omp do private(nd,k,ii,ix)
         do inum = 1, NB*num
           nd = mod(inum-ione,NB) + ione
           k = (inum-nd) / NB + ione
             ii   = NB * (node1%internal_node+k+ist-1) + nd
-            ix   = irev_import(k) + (nd-1) * num + NB*ist
+            ix   = (irev_import(k)-ist) + (nd-1) * num + NB*ist
             xx4(ii)= WR(ix)
         end do
 !$omp end do nowait
@@ -342,8 +329,6 @@
 !$omp end parallel
       call end_eleps_time(8)
       
-      call output_elapsed_times
-!
       deallocate(xx4)
 !
       end subroutine node_send_recv4_test

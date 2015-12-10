@@ -17,6 +17,7 @@
       use t_comm_table
 !
       use calypso_mpi
+      use m_machine_parameter
 !
       implicit none
 !
@@ -27,6 +28,20 @@
 !-----------------------------------------------------------------------
 !
       contains
+!
+!-----------------------------------------------------------------------
+!
+      subroutine const_element_comm_tables_1st
+!
+      use m_nod_comm_table
+      use m_geometry_data
+      use const_element_comm_tables
+!
+!
+      call const_element_comm_tbls(node1, ele1, surf1, edge1,           &
+     &    nod_comm, ele_comm, surf_comm, edge_comm)
+!
+      end subroutine const_element_comm_tables_1st
 !
 !-----------------------------------------------------------------------
 !
@@ -45,34 +60,6 @@
       call deallocate_type_comm_tbl(edge_comm)
 !
       end subroutine dealloc_ele_sf_eg_comm_tables
-!
-!-----------------------------------------------------------------------
-!
-      subroutine const_element_comm_tables_1st
-!
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_element_id_4_node
-      use m_belonged_element_4_node
-      use set_ele_id_4_node_type
-      use const_element_comm_tables
-!
-!
-      call const_global_numnod_list(node1)
-!
-      call const_ele_comm_tbl                                           &
-     &   (node1, ele1, nod_comm, blng_tbls, ele_comm)
-      call const_global_element_id(ele1, ele_comm)
-!
-      call const_surf_comm_table                                       &
-     &   (node1, nod_comm, surf1, blng_tbls, surf_comm)
-      call const_global_surface_id(surf1, surf_comm)
-!
-      call const_edge_comm_table                                        &
-     &   (node1, nod_comm, edge1, blng_tbls, edge_comm)
-      call const_global_edge_id(edge1, edge_comm)
-!
-      end subroutine const_element_comm_tables_1st
 !
 !-----------------------------------------------------------------------
 !
