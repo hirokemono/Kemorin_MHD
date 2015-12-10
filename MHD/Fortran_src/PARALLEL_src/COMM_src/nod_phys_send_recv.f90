@@ -57,12 +57,13 @@
       type(communication_table), intent(in) :: nod_comm
 !
 !
-      call resize_work_4_SR(n_sym_tensor, nod_comm%num_neib,            &
+      call resize_work_4_SR                                             &
+     &   (n_sym_tensor, nod_comm%num_neib, nod_comm%num_neib,           &
      &    nod_comm%ntot_export, nod_comm%ntot_import)
-      call resize_iwork_4_SR(nod_comm%num_neib, nod_comm%ntot_export,   &
-     &    nod_comm%ntot_import)
-      call resize_i8work_4_SR(nod_comm%num_neib, nod_comm%ntot_export,  &
-     &    nod_comm%ntot_import)
+      call resize_iwork_4_SR(nod_comm%num_neib, nod_comm%num_neib,      &
+     &    nod_comm%ntot_export, nod_comm%ntot_import)
+      call resize_i8work_4_SR(nod_comm%num_neib, nod_comm%num_neib,     &
+     &    nod_comm%ntot_export, nod_comm%ntot_import)
 !
       end subroutine init_send_recv
 !
