@@ -106,10 +106,10 @@
         inum3 = 4*(inum-1) + 3
         inum4 = 4*(inum-1) + 4
 !
-        surf_item_l(1,inum1) = 8*(iele-1) + node_on_sf_n_8(1,isf)
-        surf_item_l(1,inum2) = 8*(iele-1) + node_on_sf_n_8(2,isf)
-        surf_item_l(1,inum3) = 8*(iele-1) + node_on_sf_n_8(3,isf)
-        surf_item_l(1,inum4) = 8*(iele-1) + node_on_sf_n_8(4,isf)
+        surf_item_l(1,inum1) = 8*(iele-1) + node_on_sf_8(1,isf)
+        surf_item_l(1,inum2) = 8*(iele-1) + node_on_sf_8(2,isf)
+        surf_item_l(1,inum3) = 8*(iele-1) + node_on_sf_8(3,isf)
+        surf_item_l(1,inum4) = 8*(iele-1) + node_on_sf_8(4,isf)
 !
         surf_item_l(2,inum1) = isf
         surf_item_l(2,inum2) = isf

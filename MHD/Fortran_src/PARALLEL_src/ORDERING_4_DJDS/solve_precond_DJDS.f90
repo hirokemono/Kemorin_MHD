@@ -119,7 +119,8 @@
  
         ierr = 1
         if (nod_comm%num_neib .gt. 0) then
-          call resize_work_4_SR(ione, nod_comm%num_neib,                &
+          call resize_work_4_SR                                         &
+     &       (ione, nod_comm%num_neib, nod_comm%num_neib,               &
      &        nod_comm%istack_export(nod_comm%num_neib),                &
      &        nod_comm%istack_import(nod_comm%num_neib) )
         end if
@@ -172,7 +173,8 @@
         STARTTIME= MPI_WTIME()
 !
         if (nod_comm%num_neib .gt. 0) then
-          call resize_work_4_SR(ithree, nod_comm%num_neib,              &
+          call resize_work_4_SR                                         &
+     &       (ithree, nod_comm%num_neib, nod_comm%num_neib,             &
      &        nod_comm%istack_export(nod_comm%num_neib),                &
      &        nod_comm%istack_import(nod_comm%num_neib) )
         end if
@@ -228,7 +230,8 @@
 
         write(*,*) 'resize_work_4_SR'
         if (nod_comm%num_neib .gt. 0) then
-          call resize_work_4_SR(djds_mat%NB, nod_comm%num_neib,         &
+          call resize_work_4_SR                                         &
+     &       (djds_mat%NB, nod_comm%num_neib, nod_comm%num_neib,        &
      &        nod_comm%istack_export(nod_comm%num_neib),                &
      &        nod_comm%istack_import(nod_comm%num_neib) )
         end if

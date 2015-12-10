@@ -108,7 +108,7 @@
       real (kind=kreal), intent(inout):: X_new(NB*nnod_new)
 !
 !
-      call resize_work_sph_SR(NB, npe_send, npe_recv,                   &
+      call resize_work_4_SR(NB, npe_send, npe_recv,                     &
      &    istack_send(npe_send), istack_recv(npe_recv))
 !
       if(iflag_SR .eq. iflag_import_rev) then
@@ -164,7 +164,7 @@
 !
 !
       nitem = npe_send*nitem_SR
-      call resize_work_sph_SR(NB, npe_send, npe_recv, nitem, nitem)
+      call resize_work_4_SR(NB, npe_send, npe_recv, nitem, nitem)
 !
       if(iflag_SR .eq. iflag_import_rev) then
         call calypso_AllToAll_rev_N(NB, nnod_org, nnod_new, nitem_SR,   &

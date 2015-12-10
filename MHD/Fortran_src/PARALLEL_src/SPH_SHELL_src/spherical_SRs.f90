@@ -84,7 +84,7 @@
       nnod_max_send =  max(nnod_max_send,ntot_item_sr_rlm)
       nnod_max_recv =  max(nnod_max_recv,ntot_item_sr_rj)
 !
-      call resize_work_sph_SR(NB, nneib_max_send, nneib_max_recv,       &
+      call resize_work_4_SR(NB, nneib_max_send, nneib_max_recv,         &
      &    ntot_item_sr_rtp, ntot_item_sr_rtm)
 !
 !

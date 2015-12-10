@@ -178,9 +178,9 @@
 !
 !      if     (iflag_sph_commN .eq. iflag_alltoall) then
 !        nitem = npe_send*nmax_sr
-!        call resize_work_sph_SR(NB, npe_send, npe_recv, nitem, nitem)
+!        call resize_work_4_SR(NB, npe_send, npe_recv, nitem, nitem)
 !      else
-        call resize_work_sph_SR(NB, npe_send, npe_recv,                 &
+        call resize_work_4_SR(NB, npe_send, npe_recv,                   &
      &      istack_send(npe_send), istack_recv(npe_recv))
 !      end if
 !
