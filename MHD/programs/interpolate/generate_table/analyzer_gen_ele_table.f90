@@ -92,6 +92,7 @@
       use calypso_mpi
       use m_ctl_params_4_gen_table
       use m_interpolate_coefs_dest
+      use m_element_id_4_node
       use construct_interpolate_table
       use const_interpolate_4_org
       use const_rev_ele_itp_table
@@ -105,7 +106,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 's_construct_interpolate_table'
-      call s_construct_interpolate_table(newmesh, newgroup, ierr_missing)
+      call s_construct_interpolate_table                                &
+     &   (neib_nod1, newmesh, newgroup, ierr_missing)
 !
 !   ordering destination table by domain
 !

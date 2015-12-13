@@ -35,7 +35,6 @@
       use element_IO_select
       use surface_IO_select
       use edge_IO_select
-      use set_mesh_types
 !
       integer(kind = kint) :: i_level
 !
@@ -129,7 +128,6 @@
       subroutine alloc_zero_mesh_data(mesh_info, surf_mesh, edge_mesh)
 !
       use t_mesh_data
-      use set_mesh_types
       use set_nnod_4_ele_by_type
 !
       type(mesh_data), intent(inout) ::        mesh_info

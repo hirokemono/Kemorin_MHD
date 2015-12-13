@@ -55,7 +55,7 @@
       use expand_next_nod_hang_type
 !
 !
-      call overwrt_next_nod_by_hang_type(node1, neib_hang1,         &
+      call overwrt_next_nod_by_hang_type(node1, neib_hang1,             &
      &    neib_nod1)
 !
       end subroutine overwrite_next_nod_by_hanged

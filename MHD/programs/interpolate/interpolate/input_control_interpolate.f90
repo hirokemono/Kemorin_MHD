@@ -37,7 +37,6 @@
 !
       use load_mesh_data
       use load_mesh_type_data
-      use set_mesh_types
 !
       use itp_table_IO_select_4_zlib
       use copy_interpolate_dest_IO

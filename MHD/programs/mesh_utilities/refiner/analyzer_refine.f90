@@ -101,7 +101,6 @@
       use find_hanging_surface
       use load_mesh_data
       use load_mesh_type_data
-      use set_mesh_types
 !
       character(len=kchara), parameter :: tmp_mesh_head = 'work'
 !

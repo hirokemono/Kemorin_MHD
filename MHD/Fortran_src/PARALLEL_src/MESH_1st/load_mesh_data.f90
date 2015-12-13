@@ -1,9 +1,3 @@
-!
-!      module load_mesh_data
-!
-!     Written by H. Matsui on July, 2007
-!
-!
 !>@file   load_mesh_data.f90
 !!@brief  module load_mesh_data
 !!
@@ -18,7 +12,6 @@
 !!
 !!      subroutine set_mesh_from_type(mesh, group)
 !!      subroutine compare_mesh_type_vs_1st(my_rank, mesh, group)
-!!      subroutine compare_geometry_type_vs_1st(my_rank, mesh)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) :: group
 !!@endverbatim
@@ -27,7 +20,9 @@
       use m_precision
       use m_machine_parameter
 !
-      use mesh_IO_select
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
 !
       implicit none
 !
@@ -38,10 +33,6 @@
 ! -----------------------------------------------------------------------
 !
       subroutine input_mesh_1st(my_rank)
-!
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
 !
       use load_mesh_type_data
 !
@@ -56,10 +47,6 @@
 ! -----------------------------------------------------------------------
 !
       subroutine output_mesh_1st(my_rank)
-!
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
 !
       use load_mesh_type_data
 !
@@ -76,9 +63,6 @@
 !
       subroutine set_mesh_from_type(mesh, group)
 !
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
       use t_mesh_data
       use copy_mesh_structures
       use set_nnod_4_ele_by_type
@@ -106,9 +90,6 @@
       subroutine compare_mesh_type_vs_1st(my_rank, mesh, group)
 !
       use t_mesh_data
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
       use compare_mesh_structures
 !
       integer(kind = kint), intent(in)  :: my_rank

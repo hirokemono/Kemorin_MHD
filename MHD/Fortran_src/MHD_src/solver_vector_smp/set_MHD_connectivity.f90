@@ -19,14 +19,14 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_geometry_data
 !
-      use m_element_id_4_node
+      use t_next_node_ele_4_node
+      use t_crs_connect
 !
       implicit none
 !
       private :: set_djds_whole_connectivity
-      private ::  set_djds_layer_connectivity
+      private :: set_djds_layer_connectivity
 !
 !-----------------------------------------------------------------------
 !
@@ -36,17 +36,25 @@
 !
       subroutine set_MHD_whole_connectivity
 !
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_element_id_4_node
       use m_sorted_node
+      use m_solver_djds_MHD
 !
+      use set_table_type_RHS_assemble
 !
-!      set RHS assemble table
-      call set_connect_RHS_assemble
+!C +-------------------------------+
+!  +   set RHS assemble table      +
+!C +-------------------------------+
+      call s_set_table_type_RHS_assemble                                &
+     &   (node1, ele1, ele_4_nod1, neib_nod1, rhs_tbl1)
 !
-!      set Matrix assemble table
-      call set_djds_whole_connectivity
-!
-      call dealloc_iele_belonged(ele_4_nod1)
-      call dealloc_inod_next_node(neib_nod1)
+!C +-------------------------------+
+!  +   set Matrix assemble table   +
+!C +-------------------------------+
+      call set_djds_whole_connectivity(nod_comm, node1, solver_C,       &
+     &    neib_nod1, DJDS_comm_etr, DJDS_entire)
 !
       end subroutine set_MHD_whole_connectivity
 !
@@ -54,19 +62,20 @@
 !
       subroutine set_MHD_layerd_connectivity
 !
+      use m_geometry_data
       use m_geometry_data_MHD
       use m_solver_djds_MHD
 !
 !
       call set_djds_layer_connectivity                                  &
-     &    (ele1%nnod_4_ele, iele_fl_start, iele_fl_end,                 &
+     &    (node1, ele1, ele1%nnod_4_ele, iele_fl_start, iele_fl_end,    &
      &     DJDS_comm_fl, solver_C, DJDS_fluid)
 !
       if (ele1%nnod_4_ele .ne. num_t_linear) then
-        call set_djds_layer_connectivity(num_t_linear,                  &
+        call set_djds_layer_connectivity(node1, ele1, num_t_linear,     &
      &     ione, ele1%numele, DJDS_comm_etr, solver_C, DJDS_linear)
         call set_djds_layer_connectivity                                &
-     &     (num_t_linear, iele_fl_start, iele_fl_end,                   &
+     &     (node1, ele1, num_t_linear, iele_fl_start, iele_fl_end,      &
      &      DJDS_comm_fl, solver_C, DJDS_fl_l)
       else
         call link_djds_connect_structs(DJDS_entire, DJDS_linear)
@@ -75,18 +84,18 @@
 !
 !
 !      call set_djds_layer_connectivity                                 &
-!     &   (ele1%nnod_4_ele, iele_cd_start, iele_cd_end,                 &
+!     &   (node1, ele1, ele1%nnod_4_ele, iele_cd_start, iele_cd_end,    &
 !     &    DJDS_comm_etr, solver_C, DJDS_conduct)
 !      call set_djds_layer_connectivity                                 &
-!     &   (ele1%nnod_4_ele, iele_ins_start, iele_ins_end,               &
+!     &   (node1, ele1, ele1%nnod_4_ele, iele_ins_start, iele_ins_end,  &
 !     &    DJDS_comm_etr, solver_C, DJDS_insulator)
 !
 !      if ( ele1%nnod_4_ele .ne. num_t_linear) then
 !        call set_djds_layer_connectivity                               &
-!     &     (num_t_linear, iele_cd_start, iele_cd_end,                  &
+!     &     (node1, ele1, num_t_linear, iele_cd_start, iele_cd_end,     &
 !     &      DJDS_comm_etr, solver_C, DJDS_cd_l)
 !        call set_djds_layer_connectivity                               &
-!     &     (num_t_linear, iele_ins_start, iele_ins_end,                &
+!     &     (node1, ele1, num_t_linear, iele_ins_start, iele_ins_end,   &
 !     &      DJDS_comm_etr, solver_C, DJDS_ins_l)
 !      else
 !        call link_djds_connect_structs(DJDS_conduct, DJDS_cd_l)
@@ -98,24 +107,35 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_djds_whole_connectivity
+      subroutine set_djds_whole_connectivity(nod_comm, node,            &
+     &          solver_C, neib_nod, nod_comm_etr, DJDS_tbl)
 !
+      use t_geometry_data
       use t_comm_table
-      use t_crs_connect
       use t_solver_djds
+      use t_table_FEM_const
+      use t_solver_djds
+      use t_vector_for_solver
 !
-      use m_nod_comm_table
-      use m_solver_djds_MHD
       use reordering_djds_smp_type
       use DJDS_new_comm_table
 !
-      type(CRS_matrix_connect) :: MHD_CRS
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(next_nod_id_4_nod), intent(in) :: neib_nod
+      type(mpi_4_solver), intent(in) :: solver_C
+!
+      type(communication_table), intent(inout) :: nod_comm_etr
+      type(DJDS_ordering_table), intent(inout) :: DJDS_tbl
+!
+      type(CRS_matrix_connect), save :: MHD_CRS
+!
 !
 !C +-------------------------------+
 !C | set connectivity in CRS array |
 !C +-------------------------------+
 !C===
-      call s_set_crs_connection(node1, neib_nod1, MHD_CRS)
+      call s_set_crs_connection(node, neib_nod, MHD_CRS)
 !
 !C +-----------------+
 !C | DJDS reordering |
@@ -123,37 +143,37 @@
 !C===
 !C
       call s_reordering_djds_smp_type                                   &
-     &   (np_smp, node1%numnod, node1%internal_node,                    &
-     &    node1%istack_internal_smp, solver_C, MHD_CRS, DJDS_entire)
+     &   (np_smp, node%numnod, node%internal_node,                      &
+     &    node%istack_internal_smp, solver_C, MHD_CRS, DJDS_tbl)
 !C
-!      write(*,*) 'STACKmc', size(DJDS_entire%STACKmc)
-!      write(*,*) 'NLmaxHYP', size(DJDS_entire%NLmaxHYP),               &
-!     &          DJDS_entire%NHYP
-!      write(*,*) 'NUmaxHYP', size(DJDS_entire%NUmaxHYP),               &
-!     &          DJDS_entire%NHYP
-!      write(*,*) 'OLDtoNEW', size(DJDS_entire%OLDtoNEW),               &
-!     &          DJDS_entire%NP
-!      write(*,*) 'OLDtoNEW_DJDS_L', size(DJDS_entire%OLDtoNEW_DJDS_L)
-!      write(*,*) 'OLDtoNEW_DJDS_U', size(DJDS_entire%OLDtoNEW_DJDS_U)
-!      write(*,*) 'indexDJDS_L', size(DJDS_entire%indexDJDS_L),         &
-!     &          DJDS_entire%PEsmpTOT, DJDS_entire%NLmax,NHYP
-!      write(*,*) 'indexDJDS_U', size(DJDS_entire%indexDJDS_U),         &
-!     &          DJDS_entire%PEsmpTOT, DJDS_entire%NUmax,NHYP
-!      write(*,*) 'itemDJDS_L', size(DJDS_entire%itemDJDS_L),           &
-!     &          DJDS_entire%itotal_l
-!      write(*,*) 'itemDJDS_U', size(DJDS_entire%itemDJDS_U),           &
-!     &          DJDS_entire%itotal_u
-!      write(*,*) 'PEon', size(DJDS_entire%PEon)
-!      write(*,*) 'COLORon', size(DJDS_entire%COLORon)
+!      write(*,*) 'STACKmc', size(DJDS_tbl%STACKmc)
+!      write(*,*) 'NLmaxHYP', size(DJDS_tbl%NLmaxHYP),                  &
+!     &          DJDS_tbl%NHYPDJDS_tbl
+!      write(*,*) 'NUmaxHYP', size(DJDS_tbl%NUmaxHYP),                  &
+!     &          DJDS_tbl%NHYP
+!      write(*,*) 'OLDtoNEW', size(DJDS_tbl%OLDtoNEW),                  &
+!     &          DJDS_tbl%NP
+!      write(*,*) 'OLDtoNEW_DJDS_L', size(DJDS_tbl%OLDtoNEW_DJDS_L)
+!      write(*,*) 'OLDtoNEW_DJDS_U', size(DJDS_tbl%OLDtoNEW_DJDS_U)
+!      write(*,*) 'indexDJDS_L', size(DJDS_tbl%indexDJDS_L),            &
+!     &          DJDS_tbl%PEsmpTOT, DJDS_tbl%NLmax,NHYP
+!      write(*,*) 'indexDJDS_U', size(DJDS_tbl%indexDJDS_U),            &
+!     &          DJDS_tbl%PEsmpTOT, DJDS_tbl%NUmax,NHYP
+!      write(*,*) 'itemDJDS_L', size(DJDS_tbl%itemDJDS_L),              &
+!     &          DJDS_tbl%itotal_l
+!      write(*,*) 'itemDJDS_U', size(DJDS_tbl%itemDJDS_U),              &
+!     &          DJDS_tbl%itotal_u
+!      write(*,*) 'PEon', size(DJDS_tbl%PEon)
+!      write(*,*) 'COLORon', size(DJDS_tbl%COLORon)
 !
 !C +--------------------------------------+
 !C | set new communication table 4 solver |
 !C +--------------------------------------+
 !C===
 !C
-      call link_comm_tbl_types(nod_comm, DJDS_comm_etr)
+      call link_comm_tbl_types(nod_comm, nod_comm_etr)
       call set_new_comm_table_type                                      &
-     &   (node1%numnod, DJDS_comm_etr, DJDS_entire)
+     &   (node%numnod, nod_comm_etr, DJDS_tbl)
 !
       call dealloc_crs_connect(MHD_CRS)
 !
@@ -162,14 +182,14 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine set_djds_layer_connectivity(nnod_1ele,                 &
-     &    iele_start, iele_end, layer_comm, solver_C, djds_tbl)
+      subroutine set_djds_layer_connectivity(node, ele, nnod_1ele,      &
+     &          iele_start, iele_end, layer_comm, solver_C, DJDS_tbl)
 !
+      use t_geometry_data
       use t_comm_table
       use t_crs_connect
       use t_solver_djds
       use t_vector_for_solver
-      use m_geometry_data
 !
       use set_ele_id_4_node_type
       use reordering_djds_smp_type
@@ -177,27 +197,33 @@
 !
       integer(kind = kint), intent(in) :: nnod_1ele
       integer(kind = kint), intent(in) :: iele_start, iele_end
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: layer_comm
       type(mpi_4_solver), intent(in) ::       solver_C
-      type(DJDS_ordering_table), intent(inout) :: djds_tbl
 !
+      type(DJDS_ordering_table), intent(inout) :: DJDS_tbl
+!
+      type(element_around_node), save :: ele_4_nod
+      type(next_nod_id_4_nod), save :: neib_nod
       type(CRS_matrix_connect) :: MHD_CRS
 !
 !
       call set_layerd_ele_id_4_node(nnod_1ele, iele_start, iele_end,    &
-     &    node1, ele1, ele_4_nod1)
-      call const_next_nod_id_4_node(node1, ele1, ele_4_nod1, neib_nod1)
+     &    node, ele, ele_4_nod)
+      call const_next_nod_id_4_node(node, ele, ele_4_nod, neib_nod)
 !
-      call s_set_crs_connection(node1, neib_nod1, MHD_CRS)
+      call s_set_crs_connection(node, neib_nod, MHD_CRS)
 !
       call s_reordering_djds_smp_type                                   &
-     &   (np_smp, node1%numnod, node1%internal_node,                    &
-     &    node1%istack_internal_smp, solver_C, MHD_CRS, djds_tbl)
-      call set_new_comm_table_type(node1%numnod, layer_comm, djds_tbl)
+     &   (np_smp, node%numnod, node%internal_node,                      &
+     &    node%istack_internal_smp, solver_C, MHD_CRS, DJDS_tbl)
+      call set_new_comm_table_type(node%numnod, layer_comm, DJDS_tbl)
 !
       call dealloc_crs_connect(MHD_CRS)
-      call dealloc_iele_belonged(ele_4_nod1)
-      call dealloc_inod_next_node(neib_nod1)
+      call dealloc_iele_belonged(ele_4_nod)
+      call dealloc_inod_next_node(neib_nod)
 !
       end subroutine set_djds_layer_connectivity
 !

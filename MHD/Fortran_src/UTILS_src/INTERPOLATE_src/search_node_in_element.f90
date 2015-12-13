@@ -196,8 +196,6 @@
       subroutine giveup_to_search_element(my_rank_2nd, error_level,     &
      &          inod_next_stack_4_node, org_node, org_ele, dest_node)
 !
-      use m_element_id_4_node
-!
       type(node_data), intent(in) :: org_node
       type(element_data), intent(in) :: org_ele
 !

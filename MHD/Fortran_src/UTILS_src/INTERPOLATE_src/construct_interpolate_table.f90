@@ -3,8 +3,11 @@
 !
 !     Written by H. Matsui on Aug., 2006
 !
-!      subroutine s_construct_interpolate_table(org_mesh, org_grp,      &
-!     &          ierr_missing)
+!!      subroutine s_construct_interpolate_table                        &
+!!     &         (neib_nod, org_mesh, org_grp, ierr_missing)
+!!        type(next_nod_id_4_nod), intent(in)  :: neib_nod
+!!        type(mesh_geometry), intent(inout) :: org_mesh
+!!        type(mesh_groups), intent(inout) ::   org_grp
 !
       module construct_interpolate_table
 !
@@ -18,24 +21,26 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_construct_interpolate_table(org_mesh, org_grp,       &
-     &          ierr_missing)
+      subroutine s_construct_interpolate_table                          &
+     &         (neib_nod, org_mesh, org_grp, ierr_missing)
 !
       use calypso_mpi
       use m_machine_parameter
       use m_geometry_data
       use m_ctl_params_4_gen_table
-      use m_element_id_4_node
       use m_2nd_pallalel_vector
       use m_read_mesh_data
       use m_work_const_itp_table
       use m_search_bolck_4_itp
 !
       use t_mesh_data
+      use t_next_node_ele_4_node
 !
       use set_2nd_geometry_4_table
       use search_node_in_element
       use subroutines_4_search_table
+!
+      type(next_nod_id_4_nod), intent(in)  :: neib_nod
 !
       integer(kind = kint), intent(inout) :: ierr_missing
       type(mesh_geometry), intent(inout) :: org_mesh
@@ -79,7 +84,7 @@
      &        write(*,*) 'giveup_to_search_element', ilevel, my_rank
             error_level_final = search_error_level(num_search_times)*2
             call giveup_to_search_element(my_rank_2nd,                  &
-     &          error_level_final, neib_nod1%istack_next,               &
+     &          error_level_final, neib_nod%istack_next,                &
      &          org_mesh%node, org_mesh%ele, node1)
           else
             if (i_debug.ge.iflag_routine_msg .and. jp.eq.1)             &
