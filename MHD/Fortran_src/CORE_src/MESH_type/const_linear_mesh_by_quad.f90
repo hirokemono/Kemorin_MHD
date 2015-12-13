@@ -86,7 +86,7 @@
 !
       use t_surface_data
 !
-      use const_group_type_info
+      use const_mesh_types_info
       use cvt_quad_2_linear_mesh
       use set_size_4_smp_types
 !
@@ -106,8 +106,7 @@
       type(phys_data), intent(inout) :: nod_fld_l
 !
 !
-      call set_local_element_type_info(surf_mesh_l%surf,                &
-     &      edge_mesh_l%edge)
+      call set_local_element_info(surf_mesh_l%surf, edge_mesh_l%edge)
 !
       call generate_linear_nod_by_quad                                  &
      &   (node_q, ele_q, surf_q, femmesh_l%mesh)
@@ -127,9 +126,12 @@
       call construct_edge_data(femmesh_l%mesh%node,                     &
      &    femmesh_l%mesh%ele, surf_mesh_l%surf, edge_mesh_l%edge)
 !
-      if (iflag_debug.eq.1) write(*,*) 's_const_group_type_info'
-      call s_const_group_type_info(femmesh_l%mesh, surf_mesh_l,         &
-     &    edge_mesh_l, femmesh_l%group)
+      if (iflag_debug.eq.1) write(*,*) 'const_group_type_info'
+      call const_group_type_info                                        &
+     &   (femmesh_l%mesh%node, femmesh_l%mesh%ele,                      &
+     &    surf_mesh_l%surf, edge_mesh_l%edge,                           &
+     &    femmesh_l%group%ele_grp, femmesh_l%group%surf_grp,            &
+     &    femmesh_l%group%tbls_ele_grp, femmesh_l%group%tbls_surf_grp)
 !
       call count_ele_4_smp_mesh_type(femmesh_l%mesh%ele)
       call count_surf_size_smp_type(surf_mesh_l%surf)
@@ -150,7 +152,7 @@
 !
       use const_surface_data
       use const_edge_data
-      use const_group_type_info
+      use const_mesh_types_info
       use set_size_4_smp_types
 !
       type(node_data), intent(in) ::    node_q
@@ -168,8 +170,7 @@
       type(phys_data), intent(inout) :: nod_fld_l
 !
 !
-      call set_local_element_type_info(surf_mesh_l%surf,                &
-     &      edge_mesh_l%edge)
+      call set_local_element_info(surf_mesh_l%surf, edge_mesh_l%edge)
 !
       call link_new_nod_geometry_type(node_q, femmesh_l%mesh%node)
 !
@@ -186,9 +187,12 @@
       call construct_edge_data(femmesh_l%mesh%node,                     &
      &    femmesh_l%mesh%ele, surf_mesh_l%surf, edge_mesh_l%edge)
 !
-      if (iflag_debug.eq.1) write(*,*) 's_const_group_type_info'
-      call s_const_group_type_info(femmesh_l%mesh, surf_mesh_l,         &
-     &    edge_mesh_l, femmesh_l%group)
+      if (iflag_debug.eq.1) write(*,*) 'const_group_type_info'
+      call const_group_type_info                                        &
+     &   (femmesh_l%mesh%node, femmesh_l%mesh%ele,                      &
+     &    surf_mesh_l%surf, edge_mesh_l%edge,                           &
+     &    femmesh_l%group%ele_grp, femmesh_l%group%surf_grp,            &
+     &    femmesh_l%group%tbls_ele_grp, femmesh_l%group%tbls_surf_grp)
 !
       call count_size_4_smp_mesh_type(femmesh_l%mesh%node,              &
      &    femmesh_l%mesh%ele)

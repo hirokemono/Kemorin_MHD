@@ -41,8 +41,8 @@
       mesh_file_head = dest_mesh_head
       iflag_mesh_file_fmt = ifmt_itp_mesh_file
 !
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
+      call input_mesh_1st(my_rank)
 !
       end subroutine s_input_control_generate_table
 !

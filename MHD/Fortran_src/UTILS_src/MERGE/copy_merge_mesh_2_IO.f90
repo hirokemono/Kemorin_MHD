@@ -48,7 +48,8 @@
         call s_set_nnod_4_ele_by_type(i_ele_dummy(i), nodelm_dummy(i))
       end do
 !
-      call set_grp_data_type_to_IO(merged_grp)
+      call set_grp_data_to_IO                                           &
+     &   (merged_grp%nod_grp, merged_grp%ele_grp, merged_grp%surf_grp)
 !
       call dealloc_groups_data(merged_grp)
       call deallocate_ele_connect_type(merged%ele)

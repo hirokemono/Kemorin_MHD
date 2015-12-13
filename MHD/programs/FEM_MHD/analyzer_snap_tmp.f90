@@ -44,7 +44,6 @@
 !
       call input_control_4_snapshot
 !
-!
 !     --------------------- 
 !
       call FEM_initialize_snap_tmp

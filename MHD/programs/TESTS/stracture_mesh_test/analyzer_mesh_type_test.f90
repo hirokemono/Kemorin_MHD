@@ -50,6 +50,7 @@
       use mesh_data_IO
       use sum_normal_4_surf_group
       use set_parallel_file_name
+      use load_mesh_data
 !
 !
       if (my_rank.eq.0) then
@@ -67,13 +68,8 @@
 !
 !  --  read geometry
 !
-      if (iflag_debug.gt.0) write(*,*) 'sel_read_mesh'
-      call sel_read_mesh(my_rank)
-!
-      if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_types'
-      call set_mesh_data_types(femmesh)
-!
-!     ---------------------
+      if (iflag_debug.gt.0) write(*,*) 'input_mesh_1st'
+      call input_mesh_1st(my_rank)
 !
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)

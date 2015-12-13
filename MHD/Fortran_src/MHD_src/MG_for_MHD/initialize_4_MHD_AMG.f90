@@ -80,7 +80,7 @@
      &      MG_mesh(i_level)%group,  MG_MHD_mesh(i_level) )
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            's_const_mesh_types_info', i_level
-          call s_const_mesh_types_info(MG_mesh(i_level),                &
+          call s_const_mesh_types_info(my_rank, MG_mesh(i_level),       &
      &        MG_surf_mesh(i_level), MG_edge_mesh(i_level) )
         else
           call set_empty_layers_type_4_MHD(MG_MHD_mesh(i_level) )

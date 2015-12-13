@@ -62,8 +62,7 @@
         iflag_mesh_file_fmt = ifmt_org_mesh_file
         if (iflag_debug.gt.0) write(*,*)                                &
      &     'read mesh for original mesh ', trim(mesh_file_head)
-        call input_mesh(my_rank)
-!
+        call input_mesh_1st(my_rank)
       end if
 !
 !  --  read 2nd mesh for target (if exist)
@@ -74,9 +73,10 @@
          iflag_mesh_file_fmt = ifmt_itp_mesh_file
          if (iflag_debug.gt.0) write(*,*)                               &
      &      'read mesh for interpolated mesh ', trim(mesh_file_head)
-         call input_mesh_data_type(my_rank, new_femmesh)
-         call set_nnod_surf_edge_for_type(new_surf_mesh, new_edge_mesh, &
-     &      new_femmesh%mesh)
+         call input_mesh_data_type(my_rank, new_femmesh,                &
+     &                             new_surf_mesh%surf%nnod_4_surf,      &
+     &                             new_edge_mesh%edge%nnod_4_edge)
+         call allocate_overlaped_ele_type(new_femmesh%mesh%ele)
        end if
 !
 !  --  read interpolate table

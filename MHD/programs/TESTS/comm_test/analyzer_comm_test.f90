@@ -74,7 +74,6 @@
       if (iflag_debug.gt.0) write(*,*) 's_input_control_comm_test'
       call s_input_control_comm_test
 !
-!
        end subroutine initialize_communication_test
 !
 ! ----------------------------------------------------------------------
@@ -98,6 +97,7 @@
 !
       use set_ele_id_4_node_type
       use const_element_comm_tables
+!
 !
       call allocate_iccg_int8_matrix(node1%numnod)
       call allocate_cflag_collect_diff

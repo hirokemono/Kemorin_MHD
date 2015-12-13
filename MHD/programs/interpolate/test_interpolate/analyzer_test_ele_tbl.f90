@@ -31,10 +31,11 @@
 !
       subroutine init_analyzer
 !
+      use m_geometry_data
       use m_ctl_params_4_gen_table
 !
       use input_control_itp_mesh
-      use const_mesh_info
+      use const_mesh_types_info
       use set_size_4_smp_types
       use element_posi_2_nodal_array
 !
@@ -55,14 +56,9 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
-      call set_local_element_info
-!
-!     --------------------- 
-!
       if (my_rank .lt. ndomain_org) then
         if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
-        call set_nod_and_ele_infos
+        call set_nod_and_ele_infos(node1, ele1)
       end if
 !
       call s_2nd_ele_posi_2_nodal_array(new_femmesh%mesh)

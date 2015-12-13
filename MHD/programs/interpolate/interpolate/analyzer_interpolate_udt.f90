@@ -34,6 +34,7 @@
 !
       subroutine initialize_itp_udt
 !
+      use m_geometry_data
       use m_ctl_params_4_gen_table
       use m_t_step_parameter
       use m_nod_comm_table
@@ -41,7 +42,7 @@
       use m_node_phys_data
 !
       use input_control_interpolate
-      use const_mesh_info
+      use const_mesh_types_info
       use set_size_4_smp_types
       use nod_phys_send_recv
 !
@@ -62,14 +63,11 @@
       if (iflag_debug.eq.1) write(*,*) 'init_send_recv'
       call init_send_recv(nod_comm)
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
-      call set_local_element_info
-!
 !     --------------------- 
 !
       if (my_rank .lt. ndomain_org) then
         if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
-        call set_nod_and_ele_infos
+        call set_nod_and_ele_infos(node1, ele1)
       end if
 !
 !     --------------------- 

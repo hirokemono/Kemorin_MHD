@@ -78,8 +78,8 @@
 !
 !  --  read geometry
 !
-      if (iflag_debug.gt.0) write(*,*) 'input_mesh'
-      call input_mesh(my_rank)
+      if (iflag_debug.gt.0) write(*,*) 'input_mesh_1st'
+      call input_mesh_1st(my_rank)
 !
 !  -------------------------------
 !

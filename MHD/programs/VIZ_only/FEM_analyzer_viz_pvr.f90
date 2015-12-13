@@ -58,8 +58,8 @@
 !
 !       set mesh informations
 !
-      if (iflag_debug.gt.0) write(*,*) 'load_mesh_data', mesh_file_head
-      call load_mesh_data
+      if (iflag_debug.gt.0) write(*,*) 'input_mesh_1st', mesh_file_head
+      call input_mesh_1st(my_rank)
 !
       call allocate_vector_for_solver(isix, node1%numnod)
 !

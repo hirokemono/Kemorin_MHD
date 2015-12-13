@@ -35,7 +35,7 @@
       use m_jacobians
 !
       use input_control_gen_table
-      use const_mesh_info
+      use const_mesh_types_info
       use set_table_type_RHS_assemble
       use set_serach_data_4_dest
       use element_posi_2_nodal_array
@@ -54,11 +54,8 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
-      call set_local_element_info
-!
       if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
-      call set_nod_and_ele_infos
+      call set_nod_and_ele_infos(node1, ele1)
 !
 !     ----- construct mesh informations for original mesh
 !

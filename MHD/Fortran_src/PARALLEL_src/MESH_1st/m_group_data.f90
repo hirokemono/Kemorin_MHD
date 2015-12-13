@@ -11,7 +11,6 @@
 !!      subroutine compare_group_type_vs_1st(my_rank, group)
 !!        type(mesh_groups), intent(inout) :: group
 !!
-!!      subroutine const_group_connectivity_1st
 !!      subroutine dealloc_grp_connectivity_1st
 !!      subroutine deallocate_surf_grp_geometry
 !!
@@ -97,36 +96,6 @@
       end subroutine compare_group_type_vs_1st
 !
 !-----------------------------------------------------------------------
-!
-      subroutine const_group_connectivity_1st
-!
-      use m_machine_parameter
-      use m_geometry_data
-!
-      use set_connects_4_ele_group
-      use set_connects_4_surf_group
-!
-!
-       if (iflag_debug.eq.1) write(*,*) 'set_surf_4_ele_group'
-      call set_surf_4_ele_group(ele1, surf1, ele_grp1, ele_grp_tbl1)
-!
-       if (iflag_debug.eq.1) write(*,*) 'set_edge_4_ele_group'
-      call set_edge_4_ele_group(ele1, edge1, ele_grp1, ele_grp_tbl1)
-!
-       if (iflag_debug.eq.1) write(*,*) 'set_node_4_ele_group'
-      call set_node_4_ele_group(ele1, node1, ele_grp1, ele_grp_tbl1)
-!
-!
-!
-       if (iflag_debug.eq.1) write(*,*) 'set_surf_id_4_surf_group'
-      call set_surf_id_4_surf_group(ele1, surf1, sf_grp1, sf_grp_tbl1)
-!
-       if (iflag_debug.eq.1) write(*,*) 'set_edge_4_surf_group'
-      call set_edge_4_surf_group(surf1, edge1, sf_grp1, sf_grp_tbl1)
-!
-      end subroutine const_group_connectivity_1st
-!
-! ----------------------------------------------------------------------
 !
       subroutine dealloc_grp_connectivity_1st
 !

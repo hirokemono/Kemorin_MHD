@@ -53,7 +53,7 @@
 !
       iflag_mesh_file_fmt = ifile_type
       mesh_file_head = original_mesh_head
-      call input_mesh(izero)
+      call input_mesh_1st(izero)
 !
       if(iflag_read_old_refine_file .gt. 0) then
         call read_refinement_table
@@ -86,6 +86,7 @@
       use m_refined_element_data
       use m_work_merge_refine_itp
       use const_mesh_info
+      use set_nnod_4_ele_by_type
       use set_element_refine_flag
       use set_all_refine_flags
       use count_nnod_for_refine
@@ -97,8 +98,8 @@
       use const_refined_group
       use set_refine_flags_4_tri
       use const_refine_interpolate
-      use copy_mesh_from_type
       use find_hanging_surface
+      use load_mesh_data
       use load_mesh_type_data
       use set_mesh_types
 !
@@ -170,8 +171,10 @@
         call s_const_refined_connectivity
 !
         call s_refined_ele_2_mesh_data(refined_fem%mesh%ele)
-        call set_nnod_surf_edge_for_type(finer_surfmesh,                &
-     &      finer_edgemesh, refined_fem%mesh)
+        call set_3D_nnod_4_sfed_by_ele                                  &
+     &     (refined_fem%mesh%ele%nnod_4_ele,                            &
+     &      finer_surfmesh%surf%nnod_4_surf,                            &
+     &      finer_edgemesh%edge%nnod_4_edge)
 !
         call set_hanging_nodes(surf1%numsurf, surf1%nnod_4_surf,        &
      &      edge1%numedge, edge1%nnod_4_edge,                           &

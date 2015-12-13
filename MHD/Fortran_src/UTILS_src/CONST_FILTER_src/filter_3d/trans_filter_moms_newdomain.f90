@@ -164,7 +164,7 @@
       use set_filter_moms_2_new_mesh
       use set_element_data_4_IO
       use set_filter_moms_2_new_mesh
-      use set_mesh_types
+      use set_nnod_4_ele_by_type
 !
       use t_filter_elength
       use t_filter_moments
@@ -199,8 +199,9 @@
       newmesh%node%numnod = numnod_dummy
       newmesh%node%internal_node = internal_node_dummy
       call copy_ele_connect_from_IO(newmesh%ele)
-      call set_nnod_surf_edge_for_type(new_surf_mesh, new_edge_mesh,    &
-     &    newmesh)
+      call set_3D_nnod_4_sfed_by_ele(newmesh%ele%nnod_4_ele,            &
+     &                               new_surf_mesh%surf%nnod_4_surf,    &
+     &                               new_edge_mesh%edge%nnod_4_edge)
 !
 !    construct new filter table
 !

@@ -70,7 +70,7 @@
       use m_machine_parameter
       use cal_minmax_and_stacks
       use set_size_4_smp_types
-      use cal_mesh_position
+      use const_mesh_types_info
 !
       use t_mesh_data
 !
@@ -79,13 +79,7 @@
       integer(kind = kint) :: inod
 !
 !
-      call count_size_4_smp_mesh_type(newmesh%node, newmesh%ele)
-      call set_spherical_position(newmesh%node)
-!
-      call allocate_ele_geometry_type(newmesh%ele)
-      call set_center_of_element(newmesh%node, newmesh%ele)
-!
-!
+      call set_nod_and_ele_infos(newmesh%node, newmesh%ele)
       call deallocate_node_geometry_type(newmesh%node)
 !
 !

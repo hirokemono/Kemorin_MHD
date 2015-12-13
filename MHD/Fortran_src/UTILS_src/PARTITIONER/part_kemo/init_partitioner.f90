@@ -52,7 +52,7 @@
 !    construct element and surface data
 !
       if (iflag_debug.gt.0) write(*,*) 'const_nod_ele_infos'
-      call const_nod_ele_infos
+      call const_nod_ele_infos_1st(my_rank)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
       call set_ele_id_4_node(node_org, ele_org, ele_4_nod1)

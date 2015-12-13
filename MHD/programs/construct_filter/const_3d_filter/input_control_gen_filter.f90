@@ -38,8 +38,8 @@
 !
 !  --  read geometry
 !
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
+      call input_mesh_1st(my_rank)
 !
       end subroutine input_control_3d_commute
 !

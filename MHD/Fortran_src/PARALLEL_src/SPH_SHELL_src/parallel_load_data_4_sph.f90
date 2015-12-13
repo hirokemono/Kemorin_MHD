@@ -48,7 +48,6 @@
       use m_spheric_parameter
       use load_mesh_data
       use const_FEM_mesh_sph_mhd
-      use copy_mesh_from_type
       use mesh_IO_select
 !
       type(mesh_geometry) :: mesh
@@ -57,8 +56,9 @@
 !
 !  --  load FEM mesh data
       if(check_exist_mesh(my_rank) .eq. 0) then
-        if (iflag_debug.gt.0) write(*,*) 'input_mesh'
-        call input_mesh(my_rank)
+        if (iflag_debug.gt.0) write(*,*) 'input_mesh_1st'
+        call input_mesh_1st(my_rank)
+        call allocate_ele_geometry_type(ele1)
         call set_fem_center_mode_4_SPH(node1%internal_node)
         return
       end if

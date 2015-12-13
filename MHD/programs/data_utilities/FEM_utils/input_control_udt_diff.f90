@@ -8,8 +8,6 @@
 !      subroutine s_input_control_corr_udt
 !      subroutine s_input_control_grp_patch
 !
-!      subroutine s_input_mesh_udt_diff
-!
       module input_control_udt_diff
 !
       use m_precision
@@ -123,23 +121,6 @@
       call set_ctl_params_diff_udt
 !
       end subroutine s_input_control_grp_patch
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine s_input_mesh_udt_diff
-!
-      use calypso_mpi
-      use m_ctl_params_4_diff_udt
-      use load_mesh_data
-!
-!
-!  --  read mesh for target
-!
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh(my_rank)
-!
-      end subroutine s_input_mesh_udt_diff
 !
 ! ----------------------------------------------------------------------
 !

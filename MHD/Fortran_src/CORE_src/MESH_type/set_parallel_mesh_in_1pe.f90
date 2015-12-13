@@ -23,21 +23,22 @@
       use t_mesh_data
       use t_geometry_data
       use mesh_IO_select
-      use set_mesh_types
+      use load_mesh_type_data
       use const_mesh_types_info
 !
       integer(kind = kint), intent(in) :: nprocs
       type(mesh_data), intent(inout) :: para_mesh(nprocs)
 !
       integer(kind = kint) :: ip, my_rank
+      integer(kind = kint) :: nnod_4_surf, nnod_4_edge
 !
 !
       do ip = 1, nprocs
         my_rank = ip - 1
-        call sel_read_mesh(my_rank)
-        call set_mesh_data_types( para_mesh(ip) )
-        call allocate_ele_geometry_type( para_mesh(ip)%mesh%ele)
-        call set_nod_and_ele_type_infos( para_mesh(ip)%mesh )
+        call input_mesh_data_type(my_rank, para_mesh(ip),               &
+     &      nnod_4_surf, nnod_4_edge)
+        call set_nod_and_ele_infos                                      &
+     &     (para_mesh(ip)%mesh%node, para_mesh(ip)%mesh%ele)
       end do
 !
       end subroutine s_set_parallel_mesh_in_1pe

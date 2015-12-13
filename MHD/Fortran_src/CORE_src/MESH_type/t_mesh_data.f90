@@ -10,6 +10,14 @@
 !      subroutine link_mesh_data_type(org_mesh, new_mesh)
 !      subroutine link_groups_type(org_group, new_group)
 !
+!!      subroutine dealloc_mesh_infomations(nod_comm,                   &
+!!     &          node, ele, surf, edge, nod_grp, ele_grp, surf_grp,    &
+!!     &          tbls_ele_grp, tbls_sf_grp, surf_nod_grp)
+!!      subroutine dealloc_nod_ele_infos(node, ele, surf, edge,         &
+!!     &          nod_grp, ele_grp, surf_grp, nod_comm)
+!!      subroutine dealloc_mesh_infos                                   &
+!!     &         (nod_comm, node, ele, nod_grp, ele_grp, surf_grp)
+!!
 !      subroutine dealloc_base_mesh_type_info(femmesh)
 !      type(mesh_data), intent(inout) :: femmesh
 !
@@ -142,7 +150,114 @@
 !
       end subroutine link_groups_type
 !
-!------------------------------------------------------------------
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_mesh_infomations(nod_comm,                     &
+     &          node, ele, surf, edge, nod_grp, ele_grp, surf_grp,      &
+     &          tbls_ele_grp, tbls_sf_grp, surf_nod_grp)
+!
+      type(communication_table), intent(inout) :: nod_comm
+      type(node_data), intent(inout) :: node
+      type(element_data), intent(inout) :: ele
+      type(surface_data), intent(inout) :: surf
+      type(edge_data),    intent(inout) :: edge
+!
+      type(group_data), intent(inout) :: nod_grp
+      type(group_data), intent(inout) :: ele_grp
+      type(surface_group_data), intent(inout) :: surf_grp
+!
+      type(element_group_table), intent(inout) :: tbls_ele_grp
+      type(surface_group_table), intent(inout) :: tbls_sf_grp
+      type(surface_node_grp_data), intent(inout) :: surf_nod_grp
+!
+!
+      call dealloc_grp_connect(tbls_sf_grp%edge)
+      call dealloc_surf_item_sf_grp_type(tbls_sf_grp)
+      call dealloc_num_surf_grp_nod_smp(surf_nod_grp)
+      call dealloc_surf_grp_nod(surf_nod_grp)
+!
+      call dealloc_grp_connect(tbls_ele_grp%surf)
+      call dealloc_grp_connect(tbls_ele_grp%edge)
+      call dealloc_grp_connect(tbls_ele_grp%node)
+!
+!
+      call deallocate_surface_geom_type(surf)
+      call deallocate_edge_geom_type(edge)
+!
+!      call deallocate_iso_surface_type(surf)
+!      call deallocate_ext_surface_type(surf)
+!
+      call deallocate_edge_param_smp_type(edge)
+      call deallocate_surf_param_smp_type(surf)
+!
+      call deallocate_edge_4_ele_type(edge)
+      call deallocate_edge_connect_type(edge)
+      call deallocate_surface_connect_type(surf)
+      call dealloc_ele_4_surf_type(surf)
+!
+      call dealloc_nod_ele_infos(nod_comm, node, ele, surf, edge,       &
+     &    nod_grp, ele_grp, surf_grp)
+!
+      end subroutine dealloc_mesh_infomations
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_nod_ele_infos(nod_comm,                        &
+     &          node, ele, surf, edge, nod_grp, ele_grp, surf_grp)
+!
+      type(communication_table), intent(inout) :: nod_comm
+      type(node_data), intent(inout) :: node
+      type(element_data), intent(inout) :: ele
+      type(surface_data), intent(inout) :: surf
+      type(edge_data),    intent(inout) :: edge
+!
+      type(group_data), intent(inout) :: nod_grp
+      type(group_data), intent(inout) :: ele_grp
+      type(surface_group_data), intent(inout) :: surf_grp
+!
+!
+      call deallocate_sf_grp_type_smp(surf_grp)
+      call deallocate_grp_type_smp(ele_grp)
+      call deallocate_grp_type_smp(nod_grp)
+!
+      call deallocate_inod_in_edge_type(edge)
+      call deallocate_inod_in_surf_type(surf)
+      call deallocate_ele_param_smp_type(ele)
+      call deallocate_node_param_smp_type(node)
+!
+      call deallocate_ele_geometry_type(ele)
+!
+      call dealloc_mesh_infos                                           &
+     &   (nod_comm, node, ele, nod_grp, ele_grp, surf_grp)
+!
+      end subroutine dealloc_nod_ele_infos
+!
+! ----------------------------------------------------------------------
+!
+      subroutine dealloc_mesh_infos                                     &
+     &         (nod_comm, node, ele, nod_grp, ele_grp, surf_grp)
+!
+      type(communication_table), intent(inout) :: nod_comm
+      type(node_data), intent(inout) :: node
+      type(element_data), intent(inout) :: ele
+!
+      type(group_data), intent(inout) :: nod_grp
+      type(group_data), intent(inout) :: ele_grp
+      type(surface_group_data), intent(inout) :: surf_grp
+!
+!
+      call deallocate_ele_connect_type(ele)
+      call deallocate_node_geometry_type(node)
+      call deallocate_type_comm_tbl(nod_comm)
+!
+      call deallocate_grp_type(nod_grp)
+      call deallocate_grp_type(ele_grp)
+      call deallocate_sf_grp_type(surf_grp)
+!
+      end subroutine dealloc_mesh_infos
+!
+! ----------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine dealloc_base_mesh_type_info(femmesh)

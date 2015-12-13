@@ -79,13 +79,12 @@
 !
 !  --  read geometry
 !
-        if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-        call input_mesh(my_rank)
+        if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
+        call input_mesh_1st(my_rank)
 !
         call deallocate_sf_grp_type(sf_grp1)
         call deallocate_grp_type(ele_grp1)
         call deallocate_grp_type(nod_grp1)
-        call deallocate_ele_geometry_type(ele1)
         call deallocate_node_geometry_type(node1)
         call deallocate_type_comm_tbl(nod_comm)
 !

@@ -35,6 +35,7 @@
       use const_mesh_info
       use nod_phys_send_recv
       use count_whole_num_element
+      use load_mesh_data
 !
 !
       if (my_rank.eq.0) then
@@ -46,8 +47,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_grp_patch'
       call s_input_control_grp_patch
-      if (iflag_debug.eq.1) write(*,*) 's_input_mesh_udt_diff'
-      call s_input_mesh_udt_diff
+      if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
+      call input_mesh_1st(my_rank)
 !
 !     --------------------- 
 !

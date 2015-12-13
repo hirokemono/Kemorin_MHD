@@ -30,6 +30,7 @@
       use m_geometry_data
       use m_addresses_trans_hbd_MHD
       use const_element_comm_tables
+      use load_mesh_type_data
 !
       iphys_sph%i_magne =      1
       iphys_sph%i_current =    4
@@ -54,13 +55,12 @@
 !
 !     ---------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'sel_read_mesh'
-      call sel_read_mesh(my_rank)
-!
-      if (iflag_debug.gt.0) write(*,*) 'set_mesh_data_types'
-      call set_mesh_data_types(mesh_sph)
+      if (iflag_debug.gt.0) write(*,*) 'input_mesh_data_type'
+      call input_mesh_data_type(my_rank, mesh_sph,                      &
+     &                          surf_mesh_sph%surf%nnod_4_surf,         &
+     &                          edge_mesh_sph%edge%nnod_4_edge)
       call s_const_mesh_types_info                                      &
-     &   (mesh_sph, surf_mesh_sph, edge_mesh_sph)
+     &   (my_rank, mesh_sph, surf_mesh_sph, edge_mesh_sph)
 !
       call alloc_phys_name_type(sph_fld)
       call alloc_phys_data_type(mesh_sph%node%numnod, sph_fld)

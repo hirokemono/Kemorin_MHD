@@ -58,8 +58,8 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.gt.0) write(*,*) 's_input_control_test_mesh'
-      call s_input_control_test_mesh
+      if (iflag_debug.gt.0) write(*,*) 's_input_control_test_MG'
+      call s_input_control_test_MG
 !
 !     --------------------- 
 !

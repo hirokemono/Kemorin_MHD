@@ -45,8 +45,8 @@
 !  read global mesh
 !
       mesh_file_head = original_mesh_head
-      call input_mesh(my_rank)
-      call const_nod_ele_infos
+      call input_mesh_1st(my_rank)
+      call const_nod_ele_infos_1st(my_rank)
 !
       call alloc_r_ele_cubed_sph(ele1%numele)
       call set_rele_cubed_sph(node1%numnod, ele1%numele, ele1%ie,       &
@@ -60,9 +60,9 @@
 !
       call deallocate_work_4_add_egrp_sph
 !
-       if (iflag_debug.eq.1) write(*,*) 'output_mesh'
+       if (iflag_debug.eq.1) write(*,*) 'output_mesh_1st'
       mesh_file_head = modified_mesh_head
-      call output_mesh(my_rank)
+      call output_mesh_1st(my_rank)
 !
       call dealloc_r_ele_cubed_sph
 !

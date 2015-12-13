@@ -38,7 +38,7 @@
 !
       iflag_mesh_file_fmt = ifmt_single_mesh_fmt
       mesh_file_head = global_mesh_head
-      call input_mesh(my_rank)
+      call input_mesh_1st(my_rank)
 !
 !  ========= Routines for partitioner ==============
 !

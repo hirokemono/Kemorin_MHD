@@ -32,7 +32,8 @@
       use m_phys_constants
       use m_node_phys_address
       use input_control_udt_diff
-      use const_mesh_info
+      use load_mesh_data
+      use const_mesh_types_info
       use nod_phys_send_recv
 !
 !
@@ -45,8 +46,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_udt_diff'
       call s_input_control_udt_diff
-      if (iflag_debug.eq.1) write(*,*) 's_input_mesh_udt_diff'
-      call s_input_mesh_udt_diff
+      if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
+      call input_mesh_1st(my_rank)
 !
 !     --------------------- 
 !
@@ -57,13 +58,8 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
-      call set_local_element_info
-!
-!     --------------------- 
-!
       if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
-      call set_nod_and_ele_infos
+      call set_nod_and_ele_infos(node1, ele1)
 !
 !     --------------------- 
 !

@@ -31,7 +31,7 @@
       use m_control_parameter
       use m_ctl_parameter_Multigrid
       use m_read_mesh_data
-      use mesh_IO_select
+      use load_mesh_type_data
       use element_IO_select
       use surface_IO_select
       use edge_IO_select
@@ -39,17 +39,15 @@
 !
       integer(kind = kint) :: i_level
 !
+!
       do i_level = 1, num_MG_level
         iflag_mesh_file_fmt = ifmt_MG_mesh_file(i_level)
         if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
 !
           mesh_file_head = MG_mesh_file_head(i_level)
-          call sel_read_mesh(my_rank)
-          call set_mesh_data_types( MG_mesh(i_level) )
-!
-          call set_nnod_surf_edge_for_type                              &
-     &       (MG_surf_mesh(i_level), MG_edge_mesh(i_level),             &
-     &        MG_mesh(i_level)%mesh)
+          call input_mesh_data_type(my_rank, MG_mesh(i_level),          &
+     &        MG_surf_mesh(i_level)%surf%nnod_4_surf,                   &
+     &        MG_edge_mesh(i_level)%edge%nnod_4_edge)
         else
           call alloc_zero_mesh_data( MG_mesh(i_level),                  &
      &        MG_surf_mesh(i_level), MG_edge_mesh(i_level))
@@ -132,6 +130,7 @@
 !
       use t_mesh_data
       use set_mesh_types
+      use set_nnod_4_ele_by_type
 !
       type(mesh_data), intent(inout) ::        mesh_info
       type(surface_geometry), intent(inout) :: surf_mesh
@@ -152,8 +151,8 @@
       mesh_info%mesh%ele%first_ele_type = izero
       call allocate_ele_connect_type(mesh_info%mesh%ele)
 !
-      call set_nnod_surf_edge_for_type(surf_mesh, edge_mesh,            &
-     &    mesh_info%mesh)
+      call set_3D_nnod_4_sfed_by_ele(mesh_info%mesh%ele%nnod_4_ele,     &
+     &    surf_mesh%surf%nnod_4_surf, edge_mesh%edge%nnod_4_edge)
 !
       end subroutine alloc_zero_mesh_data
 !

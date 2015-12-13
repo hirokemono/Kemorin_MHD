@@ -3,9 +3,25 @@
 !
 !     Written by H. Matsui on July, 2007
 !
-!      subroutine input_mesh(my_rank)
-!      subroutine output_mesh(my_rank)
 !
+!>@file   load_mesh_data.f90
+!!@brief  module load_mesh_data
+!!
+!!@author H. Matsui
+!!@date Programmed in Apr., 2010
+!
+!>@brief Copy FEM mesh data from structure to 1st mesh module
+!!
+!!@verbatim
+!!      subroutine input_mesh_1st(my_rank)
+!!      subroutine output_mesh_1st(my_rank)
+!!
+!!      subroutine set_mesh_from_type(mesh, group)
+!!      subroutine compare_mesh_type_vs_1st(my_rank, mesh, group)
+!!      subroutine compare_geometry_type_vs_1st(my_rank, mesh)
+!!        type(mesh_geometry), intent(inout) :: mesh
+!!        type(mesh_groups), intent(inout) :: group
+!!@endverbatim
       module load_mesh_data
 !
       use m_precision
@@ -21,60 +37,90 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_mesh(my_rank)
+      subroutine input_mesh_1st(my_rank)
 !
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
 !
-      use set_nnod_4_ele_by_type
-      use set_mesh_types
-      use set_group_types_4_IO
+      use load_mesh_type_data
 !
       integer(kind = kint), intent(in) :: my_rank
 !
-!       set mesh informations
-      call sel_read_mesh(my_rank)
+      call input_mesh                                                   &
+     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
-      call set_mesh_geometry_data(nod_comm, node1, ele1)
-      call set_grp_data_from_IO(nod_grp1, ele_grp1, sf_grp1)
+      end subroutine input_mesh_1st
 !
+! -----------------------------------------------------------------------
+!
+      subroutine output_mesh_1st(my_rank)
+!
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
+!
+      use load_mesh_type_data
+!
+      integer(kind = kint), intent(in) :: my_rank
+!
+!
+      call output_mesh(my_rank, nod_comm, node1, ele1,                  &
+     &                 nod_grp1, ele_grp1, sf_grp1)
+!
+      end subroutine output_mesh_1st
+!
+! -----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine set_mesh_from_type(mesh, group)
+!
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
+      use t_mesh_data
+      use copy_mesh_structures
+      use set_nnod_4_ele_by_type
+!
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) :: group
+!
+!
+      call copy_mesh_geometry_from_type(mesh, nod_comm, node1, ele1)
+      call group_data_from_type(group)
+!
+      call allocate_sph_node_geometry(mesh%node)
+      call allocate_ele_geometry_type(ele1)
       call set_3D_nnod_4_sfed_by_ele                                   &
      &   (ele1%nnod_4_ele, surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
-      call allocate_ele_geometry_type(ele1)
+      call deallocate_ele_connect_type(mesh%ele)
+      call deallocate_node_geometry_type(mesh%node)
 !
-      end subroutine input_mesh
+      end subroutine set_mesh_from_type
 !
-! -----------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
-      subroutine output_mesh(my_rank)
+      subroutine compare_mesh_type_vs_1st(my_rank, mesh, group)
 !
+      use t_mesh_data
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
+      use compare_mesh_structures
 !
-      use set_mesh_types
-      use set_group_types_4_IO
+      integer(kind = kint), intent(in)  :: my_rank
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) :: group
 !
-      integer(kind = kint), intent(in) :: my_rank
 !
+      call compare_mesh_type(my_rank, nod_comm, node1, ele1, mesh)
+      call compare_group_type_vs_1st(my_rank, group)
 !
-      call set_mesh_data_to_IO(my_rank, nod_comm, node1, ele1)
-      call set_grp_data_to_IO(nod_grp1, ele_grp1, sf_grp1)
+      end subroutine compare_mesh_type_vs_1st
 !
-!       save mesh information
-      call sel_write_mesh_file(my_rank)
-!
-      call deallocate_ele_connect_type(ele1)
-      call deallocate_node_geometry_type(node1)
-!
-      call deallocate_grp_type(nod_grp1)
-      call deallocate_grp_type(ele_grp1)
-      call deallocate_sf_grp_type(sf_grp1)
-!
-      end subroutine output_mesh
-!
-! -----------------------------------------------------------------------
+!  ---------------------------------------------------------------------
 !
       end module load_mesh_data

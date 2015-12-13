@@ -48,6 +48,7 @@
 !
       use copy_mesh_structures
       use input_control_udt_diff
+      use load_mesh_data
       use const_mesh_info
       use nod_phys_send_recv
 !
@@ -67,8 +68,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_corr_udt'
       call s_input_control_corr_udt
-      if (iflag_debug.eq.1) write(*,*) 's_input_mesh_udt_diff'
-      call s_input_mesh_udt_diff
+      if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
+      call input_mesh_1st(my_rank)
 !
 !     --------------------- 
 !

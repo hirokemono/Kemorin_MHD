@@ -61,11 +61,9 @@
 !  --  read geometry for origin (if exist)
 !
       if (my_rank .lt. ndomain_org) then
-!
         mesh_file_head = org_mesh_head
         iflag_mesh_file_fmt = ifmt_org_mesh_file
-        call input_mesh(my_rank)
-!
+        call input_mesh_1st(my_rank)
       end if
 !
 !  --  read 2nd mesh for target (if exist)
@@ -74,9 +72,10 @@
       if (my_rank .lt. ndomain_dest) then
         mesh_file_head = dest_mesh_head
         iflag_mesh_file_fmt = ifmt_itp_mesh_file
-        call input_mesh_data_type(my_rank, new_femmesh)
-        call set_nnod_surf_edge_for_type(new_surf_mesh, new_edge_mesh,  &
-     &      new_femmesh%mesh)
+        call input_mesh_data_type(my_rank, new_femmesh,                 &
+     &      new_surf_mesh%surf%nnod_4_surf,                             &
+     &      new_edge_mesh%edge%nnod_4_edge)
+        call allocate_overlaped_ele_type(new_femmesh%mesh%ele)
       end if
 !
 !  --  read interpolate table

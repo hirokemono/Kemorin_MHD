@@ -36,6 +36,7 @@
       use set_control_FEM_MHD
       use load_mesh_data
       use input_MG_data
+      use skip_comment_f
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_MHD'
@@ -44,18 +45,10 @@
       call set_control_4_FEM_MHD
 !
 !  --  load FEM mesh data
-      call input_mesh(my_rank)
-!
+      call input_mesh_1st(my_rank)
       call input_meshes_4_MHD
 !
-      if (     ((method_4_solver(1:1).eq.'M')                           &
-     &      .or.(method_4_solver(1:1).eq.'m'))                          &
-     &   .and. ((method_4_solver(2:2).eq.'G')                           &
-     &      .or.(method_4_solver(2:2).eq.'g'))                          &
-     &   .and. ((method_4_solver(3:3).eq.'C')                           &
-     &      .or.(method_4_solver(3:3).eq.'c'))                          &
-     &   .and. ((method_4_solver(4:4).eq.'G')                           &
-     &      .or.(method_4_solver(4:4).eq.'g')) ) then
+      if(cmp_no_case(method_4_solver, 'MGCG')) then
         call input_MG_mesh
         call input_MG_itp_tables
       end if
@@ -77,7 +70,7 @@
       call set_control_4_FEM_MHD
 !
 !  --  load FEM mesh data
-      call input_mesh(my_rank)
+      call input_mesh_1st(my_rank)
       call input_meshes_4_MHD
 !
       end subroutine input_control_4_snapshot

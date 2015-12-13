@@ -131,7 +131,8 @@
       call copy_comm_tbl_type_to_IO(ip_rank, mesh%nod_comm)
       call copy_node_geometry_to_IO(mesh%node)
       call copy_ele_connect_to_IO(mesh%ele)
-      call set_grp_data_type_to_IO(group)
+      call set_grp_data_to_IO                                           &
+     &   (group%nod_grp, group%ele_grp, group%surf_grp)
 !
       call dealloc_groups_data(group)
       call deallocate_ele_connect_type(mesh%ele)

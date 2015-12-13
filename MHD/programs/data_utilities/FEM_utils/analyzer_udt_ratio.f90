@@ -34,7 +34,7 @@
       use m_nod_comm_table
       use nod_phys_send_recv
       use load_mesh_data
-      use const_mesh_info
+      use const_mesh_types_info
       use product_udt_fields
       use set_fixed_time_step_params
       use m_geometry_data
@@ -56,8 +56,8 @@
       call set_ctl_params_prod_udt
       call s_set_fixed_time_step_params(ierr, e_message)
 !
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
+      call input_mesh_1st(my_rank)
 !
 !     ---------------------
 !
@@ -68,13 +68,8 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
-      call set_local_element_info
-!
-!     --------------------- 
-!
       if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
-      call set_nod_and_ele_infos
+      call set_nod_and_ele_infos(node1, ele1)
 !
 !     --------------------- 
 !

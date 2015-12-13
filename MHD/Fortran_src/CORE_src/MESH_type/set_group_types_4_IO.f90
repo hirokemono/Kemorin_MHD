@@ -3,11 +3,11 @@
 !
 !      written by H. Matsui on Dec., 2008
 !
-!!      subroutine set_grp_data_type_from_IO(group)
-!!      subroutine set_grp_data_type_to_IO(group)
 !!      subroutine set_grp_data_from_IO(nod_grp, ele_grp, surf_grp)
 !!      subroutine set_grp_data_to_IO(nod_grp, ele_grp, surf_grp)
 !!        type(mesh_groups), intent(inout) :: group
+!!        type(group_data), intent(inout) :: nod_grp, ele_grp
+!!        type(surface_group_data), intent(inout) :: surf_grp
 !
       module set_group_types_4_IO
 !
@@ -23,35 +23,6 @@
 !
       contains
 !
-!-----------------------------------------------------------------------
-!
-      subroutine set_grp_data_type_from_IO(group)
-!
-      use  t_mesh_data
-!
-      type(mesh_groups), intent(inout) :: group
-!
-!
-      call set_grp_data_from_IO                                         &
-     &   (group%nod_grp, group%ele_grp, group%surf_grp)
-!
-      end subroutine set_grp_data_type_from_IO
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_grp_data_type_to_IO(group)
-!
-      use  t_mesh_data
-!
-      type(mesh_groups), intent(inout) :: group
-!
-!
-      call set_grp_data_to_IO                                           &
-     &   (group%nod_grp, group%ele_grp, group%surf_grp)
-!
-      end subroutine set_grp_data_type_to_IO
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine set_grp_data_from_IO(nod_grp, ele_grp, surf_grp)

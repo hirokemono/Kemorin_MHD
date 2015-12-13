@@ -44,13 +44,12 @@
 !  --  read geometry
 !
       iflag_mesh_file_fmt = ifile_type
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
+      call input_mesh_1st(my_rank)
 !
 !  --  read geometry data for MG
 !
       call set_MG_mesh(my_rank, ifile_type,  MG_mesh_head)
-      end do
 !
       end subroutine s_input_control_test_MG
 !

@@ -43,13 +43,10 @@
 !  read global mesh
 !
       mesh_file_head = original_mesh_head
-      call input_mesh(my_rank)
-!
-      call deallocate_ele_geometry_type(ele1)
+      call input_mesh_1st(my_rank)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
-      call set_local_element_info
       call set_spherical_position(node1)
 !
       end subroutine  initialize_cutshell
