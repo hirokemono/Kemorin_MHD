@@ -12,6 +12,7 @@
       use m_read_mesh_data
       use m_geometry_data
       use m_group_data
+      use m_element_id_4_node
 !
       use init_partitioner
       use grouping_for_partition
@@ -42,7 +43,7 @@
 !
 !  ========= Routines for partitioner ==============
 !
-      call initialize_partitioner(node1, ele1,                          &
+      call initialize_partitioner(node1, ele1, ele_4_nod1,              &
      &    nod_grp1, ele_grp1, sf_grp1)
       call grouping_for_partitioner(node1, ele1, edge1,                 &
      &   nod_grp1, ele_grp1, ele_grp_tbl1)

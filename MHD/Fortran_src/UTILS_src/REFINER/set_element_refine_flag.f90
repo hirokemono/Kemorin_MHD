@@ -3,7 +3,7 @@
 !
 !      Written by Kemorin on Oct., 2007
 !
-!      subroutine set_element_refine_flag(numele, ele_grp)
+!      subroutine s_set_element_refine_flag(ele, surf, ele_grp)
 !
       module set_element_refine_flag
 !
@@ -27,25 +27,27 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_element_refine_flag(numele, ele_grp)
+      subroutine s_set_element_refine_flag(ele, surf, ele_grp)
 !
-      use m_geometry_data
+      use t_geometry_data
+      use t_surface_data
       use t_group_data
       use find_boundary_4_tri_refine
 !
-      integer(kind = kint), intent(in) :: numele
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(group_data), intent(in) :: ele_grp
 !
 !
-      call set_refine_flag_by_ele_grp(numele, ele_grp)
+      call set_refine_flag_by_ele_grp(ele%numele, ele_grp)
       if (id_refined_ele_grp(1) .eq. -1) return
 !
 !
-      call const_triple_refine_table
+      call const_triple_refine_table(ele%numele)
 !
       write(*,*) 's_find_boundary_4_tri_refine'
-      call s_find_boundary_4_tri_refine(ele1%numele, surf1%numsurf,     &
-     &    surf1%isf_4_ele, nele_tri, iele_tri)
+      call s_find_boundary_4_tri_refine(ele%numele, surf%numsurf,       &
+     &    surf%isf_4_ele, nele_tri, iele_tri)
 !
       deallocate(iele_tri)
 !
@@ -90,32 +92,34 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine const_triple_refine_table
+      subroutine const_triple_refine_table(numele)
+!
+      integer(kind = kint), intent(in) :: numele
 !
 !
-      call count_triple_refine_table
+      call count_triple_refine_table(numele)
 !
       allocate(iele_tri(nele_tri))
       iele_tri = 0
 !
-      call set_triple_refine_table
+      call set_triple_refine_table(numele)
 !
       end subroutine const_triple_refine_table
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine count_triple_refine_table
+      subroutine count_triple_refine_table(numele)
 !
-      use m_geometry_data
       use m_refined_element_data
       use m_refine_flag_parameters
 !
+      integer(kind = kint), intent(in) :: numele
       integer(kind = kint) :: iele
 !
 !
       nele_tri = 0
-      do iele = 1, ele1%numele
+      do iele = 1, numele
         if(iflag_refine_ele(iele) .eq. iflag_tri_full) then
           nele_tri = nele_tri + 1
         end if
@@ -125,17 +129,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_triple_refine_table
+      subroutine set_triple_refine_table(numele)
 !
-      use m_geometry_data
       use m_refined_element_data
       use m_refine_flag_parameters
 !
+      integer(kind = kint), intent(in) :: numele
       integer(kind = kint) :: iele, icou
 !
 !
       icou = 0
-      do iele = 1, ele1%numele
+      do iele = 1, numele
         if(iflag_refine_ele(iele) .eq. iflag_tri_full) then
           icou = icou + 1
           iele_tri(icou) = iele

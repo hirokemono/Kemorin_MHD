@@ -9,11 +9,12 @@
 !      subroutine write_node_data_viewer_gz
 !      subroutine read_node_data_viewer_gz
 !
-!      subroutine write_surf_connect_viewer_gz
-!      subroutine read_surf_connect_viewer_gz
+!      subroutine write_surf_connect_viewer_gz(nnod_4_surf)
+!      subroutine read_surf_connect_viewer_gz                           &
+!     &         (nnod_4_ele, nnod_4_surf, nnod_4_edge)
 !
-!      subroutine write_edge_connect_viewer_gz
-!      subroutine read_edge_connect_viewer_gz
+!      subroutine write_edge_connect_viewer_gz(nnod_4_edge)
+!      subroutine read_edge_connect_viewer_gz(nnod_4_edge)
 !
 !      subroutine write_domain_center_viewer_gz
 !      subroutine read_domain_center_viewer_gz
@@ -131,9 +132,9 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_surf_connect_viewer_gz
+      subroutine write_surf_connect_viewer_gz(nnod_4_surf)
 !
-      use m_geometry_data
+      integer(kind = kint), intent(in) :: nnod_4_surf
 !
       integer(kind = kint) :: i
       character(len=kchara) :: fmt_txt
@@ -155,9 +156,9 @@
       call write_gz_multi_int_10i8(surfpetot_viewer, surftyp_viewer)
 !
       write(fmt_txt,'(a5,i2,a9)')                                       &
-     &                '(i15,', surf1%nnod_4_surf, '(i15),a1)'
+     &                '(i15,', nnod_4_surf, '(i15),a1)'
       do i = 1, surfpetot_viewer
-        write(textbuf,fmt_txt) i, ie_sf_viewer(i,1:surf1%nnod_4_surf),  &
+        write(textbuf,fmt_txt) i, ie_sf_viewer(i,1:nnod_4_surf),        &
      &                        char(0)
         call gz_write_textbuf_w_lf
       end do
@@ -166,13 +167,16 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_surf_connect_viewer_gz
+      subroutine read_surf_connect_viewer_gz                            &
+     &         (nnod_4_ele, nnod_4_surf, nnod_4_edge)
 !
       use m_geometry_constants
-      use m_geometry_data
       use m_node_quad_2_linear_sf
       use set_nnod_4_ele_by_type
 !
+      integer(kind = kint), intent(in) :: nnod_4_ele
+      integer(kind = kint), intent(inout) :: nnod_4_surf
+      integer(kind = kint), intent(inout) :: nnod_4_edge
       integer(kind = kint) :: i, itmp
 !
 !
@@ -183,14 +187,14 @@
       call read_gz_multi_int(surfpetot_viewer, surftyp_viewer)
 !
       call set_3D_nnod_4_sfed_by_ele                                    &
-     &   (ele1%nnod_4_ele, surf1%nnod_4_surf, edge1%nnod_4_edge)
-      call allocate_quad4_2_linear(ele1%nnod_4_ele)
+     &   (nnod_4_ele, nnod_4_surf, nnod_4_edge)
+      call allocate_quad4_2_linear(nnod_4_ele)
 !
-      call allocate_surf_connect_viewer(surf1%nnod_4_surf)
+      call allocate_surf_connect_viewer(nnod_4_surf)
 !
       do i = 1, surfpetot_viewer
         call get_one_line_from_gz_f
-        read(textbuf,*) itmp, ie_sf_viewer(i,1:surf1%nnod_4_surf)
+        read(textbuf,*) itmp, ie_sf_viewer(i,1:nnod_4_surf)
       end do
 !
       end subroutine read_surf_connect_viewer_gz
@@ -198,10 +202,11 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine write_edge_connect_viewer_gz
+      subroutine write_edge_connect_viewer_gz(nnod_4_edge)
 !
       use m_geometry_constants
-      use m_geometry_data
+!
+      integer(kind = kint), intent(in) :: nnod_4_edge
 !
       integer(kind = kint) :: i
       character(len=kchara) :: fmt_txt
@@ -222,11 +227,10 @@
       call gz_write_textbuf_w_lf
 !
 !
-      write(fmt_txt,'(a5,i2,a9)')                                       &
-     &                '(i15,', edge1%nnod_4_edge, '(i15),a1)'
+      write(fmt_txt,'(a5,i2,a9)') '(i15,', nnod_4_edge, '(i15),a1)'
       do i = 1, edgepetot_viewer
         write(textbuf,fmt_txt)                                          &
-     &                i, ie_edge_viewer(i,1:edge1%nnod_4_edge), char(0)
+     &                i, ie_edge_viewer(i,1:nnod_4_edge), char(0)
         call gz_write_textbuf_w_lf
       end do
 !
@@ -251,12 +255,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_edge_connect_viewer_gz
+      subroutine read_edge_connect_viewer_gz(nnod_4_edge)
 !
       use m_geometry_constants
-      use m_geometry_data
       use m_node_quad_2_linear_sf
 !
+      integer(kind = kint), intent(in) :: nnod_4_edge
       integer(kind = kint) :: i, itmp
 !
 !
@@ -266,7 +270,7 @@
 !
       do i = 1, edgepetot_viewer
         call get_one_line_from_gz_f
-        read(textbuf,*) itmp, ie_edge_viewer(i,1:edge1%nnod_4_edge)
+        read(textbuf,*) itmp, ie_edge_viewer(i,1:nnod_4_edge)
       end do
 !
       call skip_gz_comment_int(itmp)

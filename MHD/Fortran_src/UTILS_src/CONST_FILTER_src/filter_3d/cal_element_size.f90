@@ -22,12 +22,15 @@
 !
       use m_nod_comm_table
       use m_crs_matrix
+      use t_next_node_ele_4_node
       use t_table_FEM_const
       use t_finite_element_mat
       use t_crs_matrix
 !
       implicit none
 !
+      type(element_around_node), save, private:: ele_4_nod_f
+      type(next_nod_id_4_nod), save, private :: neib_nod_f
       type(CRS_matrix), save, private :: mass1
 !
 !-----------------------------------------------------------------------
@@ -43,7 +46,6 @@
       use m_geometry_data
       use m_jacobians
       use m_ctl_params_4_gen_filter
-      use m_element_id_4_node
       use m_reference_moments
 !
       use t_filter_elength
@@ -74,7 +76,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 's_set_table_type_RHS_assemble'
       call s_set_table_type_RHS_assemble                                &
-     &   (node1, ele1, ele_4_nod1, neib_nod1, rhs_tbl)
+     &   (node1, ele1, ele_4_nod_f, neib_nod_f, rhs_tbl)
 !
 !  ---------------------------------------------------
 !        cal element size for each node
@@ -94,7 +96,7 @@
       if (itype_mass_matrix .eq. 1) then
         if (iflag_debug.eq.1) write(*,*) 'set_consist_mass_matrix'
         call set_consist_mass_matrix(node1, ele1, jac1_3d_q,            &
-     &      neib_nod1, rhs_tbl, tbl1_crs, mat_tbl,                      &
+     &      neib_nod_f, rhs_tbl, tbl1_crs, mat_tbl,                     &
      &      rhs_mat%fem_wk, mass1)
       end if
 !
@@ -173,8 +175,8 @@
 !
       call deallocate_seed_moms_ele
 !
-      call dealloc_iele_belonged(ele_4_nod1)
-      call dealloc_inod_next_node(neib_nod1)
+      call dealloc_iele_belonged(ele_4_nod_f)
+      call dealloc_inod_next_node(neib_nod_f)
 !
       end subroutine s_cal_element_size
 !

@@ -119,6 +119,7 @@
 !
       subroutine const_surf_mesh_4_viewer
 !
+      use m_geometry_data
       use set_merged_geometry
       use const_merged_surf_data
       use const_merged_surf_4_group
@@ -165,11 +166,13 @@
        call deallocate_array_4_merge
 !
        write(*,*)  'construct_edge_4_viewer'
-       call construct_edge_4_viewer
+       call construct_edge_4_viewer(surf1, edge1)
        write(*,*)  's_set_nodes_4_groups_viewer'
-       call s_set_nodes_4_groups_viewer
+       call s_set_nodes_4_groups_viewer                                 &
+     &    (surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
-       call sel_output_surface_grid(iflag_mesh_file_fmt)
+      call sel_output_surface_grid(iflag_mesh_file_fmt,                 &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
       end subroutine const_surf_mesh_4_viewer
 !

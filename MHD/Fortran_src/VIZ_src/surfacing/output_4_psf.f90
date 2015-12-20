@@ -81,8 +81,7 @@
           call link_ele_data_type_2_output                              &
      &         (psf_mesh(i_psf)%patch, psf_out(i_psf))
           call link_field_data_type_2_output                            &
-     &       (psf_mesh(i_psf)%node%numnod, psf_mesh(i_psf)%field,       &
-     &        psf_out(i_psf))
+     &         (psf_mesh(i_psf)%field, psf_out(i_psf))
         end if
       end do
 !
@@ -186,8 +185,7 @@
           call link_ele_data_type_2_output                              &
      &       (iso_mesh(i_iso)%patch, iso_out(i_iso))
           call link_field_data_type_2_output                            &
-     &       (iso_mesh(i_iso)%node%numnod,                              &
-     &        iso_mesh(i_iso)%field, iso_out(i_iso))
+     &       (iso_mesh(i_iso)%field, iso_out(i_iso))
 !
         end if
       end do

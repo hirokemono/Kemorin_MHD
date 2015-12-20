@@ -7,7 +7,7 @@
 !> @brief Link field structure data to IO structure for data IO
 !!
 !!@verbatim
-!!      subroutine link_num_field_type_2_output(node, ele, ucd)
+!!      subroutine link_num_field_type_2_output(ele, ucd)
 !!      subroutine link_node_data_type_2_output(node, ucd)
 !!      subroutine link_ele_data_type_2_output(ele, ucd)
 !!      subroutine link_field_data_type_2_output(node, phys_nod, ucd)
@@ -75,37 +75,35 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine link_num_field_type_2_output(node, phys_nod, ucd)
+      subroutine link_num_field_type_2_output(phys_nod, ucd)
 !
-      use t_geometry_data
       use t_phys_data
       use t_ucd_data
       use set_ucd_data
 !
-      type(node_data), intent(in) :: node
       type(phys_data), intent(in) :: phys_nod
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      call link_num_field_2_output(node%numnod, phys_nod%num_phys_viz,  &
-     &    ucd)
+      call link_num_field_2_output                                      &
+     &   (phys_nod%n_point, phys_nod%num_phys_viz, ucd)
 !
       end subroutine link_num_field_type_2_output
 !
 !-----------------------------------------------------------------------
 !
-      subroutine link_field_data_type_2_output(numnod, phys_nod, ucd)
+      subroutine link_field_data_type_2_output(phys_nod, ucd)
 !
       use t_phys_data
       use t_ucd_data
       use set_ucd_data
 !
-      integer(kind = kint),  intent(in) :: numnod
       type(phys_data), intent(in) :: phys_nod
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      call link_field_data_2_output(numnod, phys_nod%num_phys,          &
+      call link_field_data_2_output                                     &
+     &   (phys_nod%n_point, phys_nod%num_phys,                          &
      &    phys_nod%ntot_phys, phys_nod%num_phys_viz,                    &
      &    phys_nod%ntot_phys_viz, phys_nod%num_component,               &
      &    phys_nod%phys_name, phys_nod%d_fld, ucd)

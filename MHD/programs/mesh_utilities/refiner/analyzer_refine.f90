@@ -118,7 +118,7 @@
 !
         if(iflag_tmp_tri_refine .eq. 0) then
           write(*,*) 's_set_element_refine_flag'
-          call s_set_element_refine_flag(ele1%numele, ele_grp1)
+          call s_set_element_refine_flag(ele1, surf1, ele_grp1)
         end if
 !
         write(*,*) 's_set_refine_flags_4_tri'

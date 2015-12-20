@@ -3,8 +3,9 @@
 !
 !      Written by Kemorin on Jan., 2007
 !
-!      subroutine output_surface_grid
-!      subroutine read_surface_grid
+!      subroutine output_surface_grid(nnod_4_surf, nnod_4_edge)
+!!      subroutine read_surface_grid                                    &
+!!     &         (nnod_4_ele, nnod_4_surf, nnod_4_edge)
 !
       module viewer_file_IO
 !
@@ -23,7 +24,10 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine output_surface_grid
+      subroutine output_surface_grid(nnod_4_surf, nnod_4_edge)
+!
+      integer(kind = kint), intent(in) :: nnod_4_surf
+      integer(kind = kint), intent(in) :: nnod_4_edge
 !
 !
       call add_ksm_extension(surface_file_head, surface_file_name)
@@ -37,10 +41,10 @@
       call write_node_data_viewer
 !
 !      write(*,*) 'write_surf_connect_viewer'
-      call write_surf_connect_viewer
+      call write_surf_connect_viewer(nnod_4_surf)
 !
 !      write(*,*) 'write_edge_connect_viewer'
-      call write_edge_connect_viewer
+      call write_edge_connect_viewer(nnod_4_edge)
 !
 !      write(*,*) 'write_domain_group_viewer'
       call write_domain_group_viewer
@@ -60,11 +64,17 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine read_surface_grid
+      subroutine read_surface_grid                                      &
+     &         (nnod_4_ele, nnod_4_surf, nnod_4_edge)
 !
 !      use const_edges_normals_viewer
 !      use cal_range_of_domain
 !      use cal_normal_of_node_viewer
+!
+      integer(kind = kint), intent(in) :: nnod_4_ele
+      integer(kind = kint), intent(inout) :: nnod_4_surf
+      integer(kind = kint), intent(inout) :: nnod_4_edge
+!
 !
       call add_ksm_extension(surface_file_head, surface_file_name)
       write(*,*) 'surface mesh file name: ', trim(surface_file_name)
@@ -77,10 +87,10 @@
       call read_node_data_viewer
 !
 !      write(*,*) 'read_surf_connect_viewer'
-      call read_surf_connect_viewer
+      call read_surf_connect_viewer(nnod_4_ele, nnod_4_surf, nnod_4_edge)
 !
 !      write(*,*) 'read_edge_connect_viewer'
-      call read_edge_connect_viewer
+      call read_edge_connect_viewer(nnod_4_edge)
 !
       call allocate_domain_stack_4_surf
 !

@@ -305,6 +305,7 @@
       subroutine FEM_finalize_MHD
 !
       use m_cal_max_indices
+      use m_ucd_data
       use output_parallel_ucd_file
 !
 !

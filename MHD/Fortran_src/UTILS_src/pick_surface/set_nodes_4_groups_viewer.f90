@@ -1,9 +1,11 @@
 !
 !      module set_nodes_4_groups_viewer
 !
-      module set_nodes_4_groups_viewer
-!
 !      Written by Kemorin on Jan., 2007
+!
+!!      subroutine s_set_nodes_4_groups_viewer(nnod_4_surf, nnod_4_edge)
+!
+      module set_nodes_4_groups_viewer
 !
       use m_precision
 !
@@ -17,31 +19,31 @@
       private :: set_nod_4_ele_group_viewer
       private :: set_nod_4_surf_group_viewer
 !
-!      subroutine s_set_nodes_4_groups_viewer
-!
 !------------------------------------------------------------------
 !
       contains
 !
 !------------------------------------------------------------------
 !
-      subroutine s_set_nodes_4_groups_viewer
+      subroutine s_set_nodes_4_groups_viewer(nnod_4_surf, nnod_4_edge)
 !
       use m_surface_mesh_4_merge
+!
+      integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'allocate_imark_node'
       call allocate_imark_node(nodpetot_viewer)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_domain_viewer'
-      call set_nod_4_domain_viewer
+      call set_nod_4_domain_viewer(nnod_4_surf, nnod_4_edge)
 !
       call allocate_ele_gp_nod_item_sf
       call allocate_sf_gp_nod_item_sf
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_ele_group_viewer'
-      call set_nod_4_ele_group_viewer
+      call set_nod_4_ele_group_viewer(nnod_4_surf, nnod_4_edge)
       if(iflag_debug .gt. 0) write(*,*) 'set_nod_4_surf_group_viewer'
-      call set_nod_4_surf_group_viewer
+      call set_nod_4_surf_group_viewer(nnod_4_surf, nnod_4_edge)
 !
       call deallocate_imark_node
 !
@@ -50,10 +52,12 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine set_nod_4_domain_viewer
+      subroutine set_nod_4_domain_viewer(nnod_4_surf, nnod_4_edge)
+!
+      integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
 !
 !
-      call mark_node_4_domain_viewer
+      call mark_node_4_domain_viewer(nnod_4_surf, nnod_4_edge)
       call count_nod_stack_4_domain_viewer
       call allocate_domain_nod_item_sf
       call const_nod_4_domain_viewer
@@ -62,13 +66,15 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_nod_4_ele_group_viewer
+      subroutine set_nod_4_ele_group_viewer(nnod_4_surf, nnod_4_edge)
+!
+      integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
 !
       integer(kind = kint) :: igrp, ied
 !
 !
       do igrp = 1, ngrp_ele_sf
-        call mark_node_4_ele_grp_viewer(igrp)
+        call mark_node_4_ele_grp_viewer(igrp, nnod_4_surf, nnod_4_edge)
 !
         call allocate_ele_gp_nod_item_tmp
         ied = nnod_ele_sf
@@ -88,13 +94,16 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_nod_4_surf_group_viewer
+      subroutine set_nod_4_surf_group_viewer(nnod_4_surf, nnod_4_edge)
+!
+      integer(kind = kint), intent(in) :: nnod_4_surf, nnod_4_edge
 !
       integer(kind = kint) :: igrp, ied
 !
 !
       do igrp = 1, ngrp_surf_sf
-        call mark_node_4_surf_grp_viewer(igrp)
+        call mark_node_4_surf_grp_viewer                                &
+     &     (igrp, nnod_4_surf, nnod_4_edge)
 !
         call allocate_sf_gp_nod_item_tmp
         ied = nnod_surf_sf

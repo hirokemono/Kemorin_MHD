@@ -2,7 +2,14 @@
 !      module  init_partitioner
 !
 !!      subroutine initialize_partitioner(node_org, ele_org,            &
-!!     &          nod_grp, ele_grp, sf_grp)
+!!     &          ele_4_nod_org, nod_grp, ele_grp, sf_grp)
+!!        type(node_data), intent(in) :: node_org
+!!        type(element_data), intent(inout) :: ele_org
+!!        type(element_around_node), intent(inout) :: ele_4_nod_org
+!!
+!!        type(group_data), intent(in) :: nod_grp
+!!        type(group_data), intent(in) :: ele_grp
+!!        type(surface_group_data), intent(in) :: sf_grp
 !
 !     modified by H. Matsui
 !
@@ -23,12 +30,13 @@
 !   --------------------------------------------------------------------
 !
       subroutine initialize_partitioner(node_org, ele_org,              &
-     &          nod_grp, ele_grp, sf_grp)
+     &          ele_4_nod_org, nod_grp, ele_grp, sf_grp)
 !
       use t_geometry_data
       use t_group_data
+      use t_next_node_ele_4_node
+!
       use m_error_IDs
-      use m_element_id_4_node
       use m_ctl_param_partitioner
       use m_domain_group_4_partition
       use const_mesh_info
@@ -40,6 +48,7 @@
 !
       type(node_data), intent(in) :: node_org
       type(element_data), intent(inout) :: ele_org
+      type(element_around_node), intent(inout) :: ele_4_nod_org
 !
       type(group_data), intent(in) :: nod_grp
       type(group_data), intent(in) :: ele_grp
@@ -55,7 +64,7 @@
       call const_nod_ele_infos_1st(my_rank)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
-      call set_ele_id_4_node(node_org, ele_org, ele_4_nod1)
+      call set_ele_id_4_node(node_org, ele_org, ele_4_nod_org)
 !
 !   set numbers of global mesh
 !
