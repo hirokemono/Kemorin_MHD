@@ -1,8 +1,12 @@
+!>@file   load_mesh_type_data.f90
+!!@brief  module load_mesh_type_data
+!!
+!!@author H. Matsui
+!!@date Programmed in July, 2007
 !
-!      module load_mesh_type_data
-!
-!     Written by H. Matsui on July, 2007
-!
+!>@brief Copy FEM mesh data from IO structure
+!!
+!!@verbatim
 !!      subroutine input_mesh_data_type                                 &
 !!     &         (my_rank, femmesh, nnod_4_surf, nnod_4_edge)
 !!        type(mesh_data), intent(inout) :: femmesh
@@ -18,6 +22,7 @@
 !!        type(communication_table), intent(inout) :: nod_comm
 !!        type(node_data), intent(inout) ::           node
 !!        type(element_data), intent(inout) ::        ele
+!!@endverbatim
 !
       module load_mesh_type_data
 !

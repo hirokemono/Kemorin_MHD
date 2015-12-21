@@ -99,9 +99,9 @@ FFTW3_LIBS=   -L/Users/matsui/local/lib -lfftw3 -lm
 #
 # setenv PKG_CONFIG_PATH /Users/matsui/local/lib/pkgconfig:/usr/lib/pkgconfig:/opt/local/lib/pkgconfig
 #
-#./configure --prefix='/Users/matsui/local' FC=gfortran-mp-4.7 \
-#  MPICC=openmpicc MPIFC=openmpif90 \
-#  CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' --enable-fftw3
+#./configure --prefix='/Users/matsui/local' FC=gfortran-mp-4.8 \
+#  MPICC=mpicc MPIFC=mpif90 \
+#  CFLAGS='-O -Wall -g'  FCFLAGS='-O -Wall -g' --enable-fftw3  --with-blas
 #
 #
 #  Makefile for geoynamo platform Calypso

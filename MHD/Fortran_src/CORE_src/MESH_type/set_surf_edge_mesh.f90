@@ -1,5 +1,5 @@
-!set_surf_edge_mesh_types.f90
-!      module set_surf_edge_mesh_types
+!set_surf_edge_mesh.f90
+!      module set_surf_edge_mesh
 !
 !     Written by H. Matsui on Dec., 2008
 !
@@ -26,7 +26,7 @@
 !!        type(surface_data), intent(inout) :: surf
 !!        type(edge_data), intent(inout) :: edge
 !
-      module set_surf_edge_mesh_types
+      module set_surf_edge_mesh
 !
       use m_precision
       use m_machine_parameter
@@ -187,4 +187,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module set_surf_edge_mesh_types
+      end module set_surf_edge_mesh

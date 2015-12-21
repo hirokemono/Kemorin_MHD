@@ -1,20 +1,23 @@
+!>@file   const_mesh_types_info.f90
+!!@brief  module const_mesh_types_info
+!!
+!!@author H. Matsui
+!!@date Programmed in Dec., 2008
 !
-!      module const_mesh_types_info
-!
-!      Written by H. Matsui on Dec., 2008
-!
-!
-!      subroutine s_const_mesh_types_info                               &
-!     &         (femmesh, surf_mesh, edge_mesh)
-!        type(mesh_data), intent(in) :: femmesh
-!        type(surface_geometry), intent(inout) :: surf_mesh
-!        type(edge_geometry),    intent(inout) :: edge_mesh
-!
-!      subroutine empty_mesh_types_info(femmesh, surf_mesh, edge_mesh)
-!        type(mesh_data),      intent(inout) :: femmesh
-!        type(surface_geometry), intent(inout) :: surf_mesh
-!        type(edge_geometry),    intent(inout) :: edge_mesh
-!
+!> @brief Construct mesh strucuture informations
+!!
+!!@verbatim
+!!      subroutine s_const_mesh_types_info                              &
+!!     &         (femmesh, surf_mesh, edge_mesh)
+!!        type(mesh_data), intent(in) :: femmesh
+!!        type(surface_geometry), intent(inout) :: surf_mesh
+!!        type(edge_geometry),    intent(inout) :: edge_mesh
+!!
+!!      subroutine empty_mesh_types_info(femmesh, surf_mesh, edge_mesh)
+!!        type(mesh_data),      intent(inout) :: femmesh
+!!        type(surface_geometry), intent(inout) :: surf_mesh
+!!        type(edge_geometry),    intent(inout) :: edge_mesh
+!!
 !!      subroutine const_mesh_infos(my_rank, node, ele, surf, edge,     &
 !!     &          nod_grp, ele_grp, surf_grp, tbls_ele_grp, tbls_sf_grp)
 !!      subroutine const_nod_ele_infos                                  &
@@ -36,6 +39,7 @@
 !!
 !!      subroutine const_group_type_info(node, ele, surf, edge          &
 !!     &          ele_grp, surf_grp, tbls_ele_grp, tbls_sf_grp)
+!!@endverbatim
 !
       module const_mesh_types_info
 !
@@ -84,7 +88,7 @@
       use set_smp_4_group_types
       use set_connects_4_ele_group
       use set_connects_4_surf_group
-      use set_surf_edge_mesh_types
+      use set_surf_edge_mesh
 !
       type(mesh_data),      intent(inout) :: femmesh
       type(surface_geometry), intent(inout) :: surf_mesh
@@ -127,7 +131,7 @@
      &          tbls_ele_grp, tbls_sf_grp, surf_nod_grp)
 !
       use const_surface_data
-      use set_surf_edge_mesh_types
+      use set_surf_edge_mesh
       use set_connects_4_surf_group
 !      use check_surface_groups
 !
