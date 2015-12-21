@@ -28,7 +28,7 @@
       use calypso_mpi
       use m_control_parameter
       use m_ctl_data_surf_boundary
-      use m_node_phys_address
+      use m_node_phys_data
       use const_bc_infinity_surf
       use set_surface_group_types
 !

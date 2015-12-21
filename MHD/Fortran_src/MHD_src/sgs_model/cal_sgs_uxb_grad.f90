@@ -27,7 +27,7 @@
       subroutine cal_sgs_uxb_2_ff_grad(i_filter)
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
       use m_physical_property
       use m_sorted_node
       use m_finite_element_matrix
@@ -106,7 +106,7 @@
       subroutine cal_sgs_uxb_grad_4_dyn
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
 !
 !
       call cal_sgs_vp_induct_grad_no_coef(ifilter_2delta,               &
@@ -119,7 +119,7 @@
       subroutine cal_sgs_filter_uxb_grad_4_dyn
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
 !
 !
       call cal_sgs_vp_induct_grad_no_coef(ifilter_4delta,               &

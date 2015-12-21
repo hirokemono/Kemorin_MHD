@@ -50,7 +50,6 @@
       subroutine int_simi_vp_induct
 !
       use m_jacobians
-      use m_node_phys_address
       use m_node_phys_data
       use m_SGS_model_coefs
       use m_SGS_address
@@ -86,7 +85,6 @@
       subroutine int_simi_vp_induct_upm(ncomp_ele, iele_magne, d_ele)
 !
       use m_jacobians
-      use m_node_phys_address
       use m_node_phys_data
       use m_SGS_model_coefs
       use m_SGS_address

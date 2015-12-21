@@ -28,7 +28,7 @@
 !
       subroutine cal_commute_error_velo(i_filter, i_sgs)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_surf_data_torque
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs
@@ -55,7 +55,7 @@
 !
       subroutine cal_commute_error_magne(i_filter, i_sgs)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_surf_data_magne
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs
@@ -69,7 +69,7 @@
 !
       subroutine cal_commute_error_f_magne(i_filter, i_sgs)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_surf_data_magne
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs
@@ -83,7 +83,7 @@
 !
       subroutine cal_commute_error_vector_p(i_filter, i_sgs)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_surf_data_vector_p
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs
@@ -97,7 +97,7 @@
 !
       subroutine cal_commute_error_f_vector_p(i_filter, i_sgs)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_surf_data_vector_p
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs

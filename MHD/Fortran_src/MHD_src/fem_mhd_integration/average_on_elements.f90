@@ -36,7 +36,6 @@
       subroutine velocity_on_element
 !
       use m_geometry_data_MHD
-      use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
 !
@@ -53,7 +52,6 @@
       subroutine magnetic_on_element
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
 !
@@ -70,7 +68,6 @@
       subroutine filtered_magne_on_ele
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
 !
@@ -87,7 +84,6 @@
       subroutine vorticity_on_element
 !
       use m_geometry_data_MHD
-      use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
 !
@@ -104,7 +100,6 @@
       subroutine rot_magne_on_element
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
 !
@@ -122,7 +117,6 @@
       subroutine current_on_element
 !
       use m_geometry_data_MHD
-      use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
 !
@@ -139,7 +133,6 @@
       subroutine rot_filter_magne_on_element
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
 !

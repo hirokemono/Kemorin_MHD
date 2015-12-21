@@ -107,7 +107,6 @@
 !
       use m_geometry_data
       use m_node_phys_data
-      use m_node_phys_address
       use cal_terms_for_heat
 !
 !
@@ -126,7 +125,6 @@
 !
       use m_geometry_data
       use m_node_phys_data
-      use m_node_phys_address
       use cal_momentum_terms
 !
 !
@@ -145,7 +143,6 @@
 !
       use m_geometry_data
       use m_node_phys_data
-      use m_node_phys_address
       use m_physical_property
       use cal_momentum_terms
 !
@@ -164,7 +161,6 @@
 !
       use m_geometry_data
       use m_node_phys_data
-      use m_node_phys_address
       use cal_magnetic_terms
 !
 !
@@ -184,7 +180,6 @@
 !
       use m_geometry_data
       use m_node_phys_data
-      use m_node_phys_address
 !
 !
       call copy_scalar_component(node1, nod_fld1,                       &
@@ -203,7 +198,6 @@
 !
       use m_geometry_data
       use m_node_phys_data
-      use m_node_phys_address
 !
 !
       call copy_vector_component(node1, nod_fld1,                       &
@@ -222,7 +216,6 @@
 !
       use m_geometry_data
       use m_node_phys_data
-      use m_node_phys_address
 !
 !
       call copy_vector_component(node1, nod_fld1,                       &
@@ -241,7 +234,6 @@
 !
       use m_geometry_data
       use m_node_phys_data
-      use m_node_phys_address
 !
 !
       call copy_vector_component(node1, nod_fld1,                       &

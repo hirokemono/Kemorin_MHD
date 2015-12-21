@@ -118,7 +118,7 @@
       subroutine set_addresses_snapshot_trans
 !
       use m_work_4_sph_trans
-      use m_node_phys_address
+      use m_node_phys_data
       use m_sph_phys_address
       use m_addresses_trans_sph_MHD
 !
@@ -284,7 +284,7 @@
       subroutine check_addresses_snapshot_trans
 !
       use m_work_4_sph_trans
-      use m_node_phys_address
+      use m_node_phys_data
       use m_sph_phys_address
       use m_addresses_trans_sph_MHD
 !

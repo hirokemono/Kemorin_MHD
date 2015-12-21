@@ -37,7 +37,6 @@
       use m_geometry_data_MHD
       use m_group_data
       use m_phys_constants
-      use m_node_phys_address
       use m_node_phys_data
       use m_jacobian_sf_grp
       use m_finite_element_matrix
@@ -74,7 +73,7 @@
 !
       subroutine cal_commute_error_4_induct(i_filter)
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
       integer(kind = kint), intent(in) :: i_filter
 !
@@ -87,7 +86,7 @@
 !
       subroutine cal_commute_error_4_filter_idct(i_filter)
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
       integer(kind = kint), intent(in) :: i_filter
 !

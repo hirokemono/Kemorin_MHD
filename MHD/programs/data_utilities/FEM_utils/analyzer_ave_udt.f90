@@ -29,7 +29,7 @@
       use m_array_for_send_recv
       use m_nod_comm_table
       use m_geometry_data
-      use m_node_phys_address
+      use m_node_phys_data
       use input_control_udt_diff
       use const_mesh_types_info
       use nod_phys_send_recv

@@ -27,8 +27,7 @@
 !
       subroutine cal_commute_error_temp(i_filter, i_sgs)
 !
-      use m_node_phys_address
-      use m_node_phys_address
+      use m_node_phys_data
       use m_surf_data_temp
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs
@@ -43,8 +42,7 @@
 !
       subroutine cal_commute_error_f_temp(i_filter, i_sgs)
 !
-      use m_node_phys_address
-      use m_node_phys_address
+      use m_node_phys_data
       use m_surf_data_temp
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs
@@ -60,7 +58,7 @@
 !
       subroutine cal_commute_error_press(i_filter, i_sgs)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_surf_data_press
 !
        integer(kind = kint), intent(in) :: i_filter, i_sgs
@@ -75,7 +73,7 @@
 !
       subroutine cal_commute_error_f_press(i_filter, i_sgs)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_surf_data_press
 !
        integer(kind = kint), intent(in) :: i_filter, i_sgs
@@ -90,7 +88,7 @@
 !
       subroutine cal_commute_error_magne_p(i_filter, i_sgs)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_surf_data_magne_p
 !
        integer(kind = kint), intent(in) :: i_filter, i_sgs
@@ -105,7 +103,7 @@
 !
       subroutine cal_commute_error_f_magne_p(i_filter, i_sgs)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_surf_data_magne_p
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs

@@ -40,7 +40,7 @@
 !
       use m_geometry_data
       use m_geometry_data_MHD
-      use m_node_phys_address
+      use m_node_phys_data
 !
       integer(kind = kint), intent(in) :: iloop
       real(kind = kreal), intent(inout) :: rsig
@@ -67,7 +67,7 @@
 !
       subroutine int_norm_div_b_monitor(iloop, rsig)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_geometry_data
 !
       integer(kind = kint), intent(in) :: iloop
@@ -94,7 +94,7 @@
 !
       subroutine int_norm_div_a_monitor(iloop, rsig)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_geometry_data
 !
       integer(kind = kint), intent(in) :: iloop
@@ -124,7 +124,7 @@
 !
       use m_geometry_data
       use m_geometry_data_MHD
-      use m_node_phys_address
+      use m_node_phys_data
 !
       call int_norm_divergence(iele_fl_smp_stack, ja_divv,              &
      &    iphys%i_velo)
@@ -136,7 +136,7 @@
       subroutine int_norm_div_b
 !
       use m_geometry_data
-      use m_node_phys_address
+      use m_node_phys_data
 !
 !
       call int_norm_divergence                                          &
@@ -149,7 +149,7 @@
       subroutine int_norm_div_a
 !
       use m_geometry_data
-      use m_node_phys_address
+      use m_node_phys_data
 !
 !
       call int_norm_divergence                                          &
@@ -164,7 +164,7 @@
 !
       use m_geometry_data
       use m_geometry_data_MHD
-      use m_node_phys_address
+      use m_node_phys_data
 !
       call int_norm_divergence(iele_fl_smp_stack, ja_divv_f,            &
      &    iphys%i_filter_velo)
@@ -176,7 +176,7 @@
       subroutine int_norm_div_filter_b
 !
       use m_geometry_data
-      use m_node_phys_address
+      use m_node_phys_data
 !
 !
       call int_norm_divergence(ele1%istack_ele_smp, ja_divb_f,          &
@@ -189,7 +189,7 @@
       subroutine int_norm_div_filter_a
 !
       use m_geometry_data
-      use m_node_phys_address
+      use m_node_phys_data
 !
 !
       call int_norm_divergence(ele1%istack_ele_smp, ja_diva_f,          &

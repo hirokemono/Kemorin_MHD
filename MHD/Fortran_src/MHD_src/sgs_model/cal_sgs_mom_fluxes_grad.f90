@@ -32,7 +32,7 @@
       subroutine cal_sgs_m_flux_grad(i_filter)
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
       use m_int_vol_data
 !
@@ -48,7 +48,7 @@
       subroutine cal_sgs_maxwell_grad(i_filter)
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
       use m_int_vol_data
 !
@@ -65,7 +65,7 @@
       subroutine cal_sgs_m_flux_grad_4_dyn
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
       use m_int_vol_data
 !
@@ -80,7 +80,7 @@
       subroutine cal_sgs_maxwell_grad_4_dyn
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
       use m_int_vol_data
 !
@@ -96,7 +96,7 @@
       subroutine cal_sgs_filter_m_flux_grad
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
       use m_int_vol_data
 !
@@ -112,7 +112,7 @@
       subroutine cal_sgs_filter_maxwell_grad
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
       use m_int_vol_data
 !
@@ -128,7 +128,7 @@
       subroutine cal_sgs_filter_mf_grad_4_dyn
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
       use m_int_vol_data
 !
@@ -143,7 +143,7 @@
       subroutine cal_sgs_filter_mxwl_grad_4_dyn
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
       use m_int_vol_data
 !

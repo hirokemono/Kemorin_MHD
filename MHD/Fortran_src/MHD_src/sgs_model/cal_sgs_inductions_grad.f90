@@ -124,7 +124,7 @@
 !
       subroutine cal_sgs_induct_t_grad(i_filter)
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
       integer (kind = kint), intent(in):: i_filter
 !
@@ -138,7 +138,7 @@
       subroutine cal_sgs_induct_t_grad_4_dyn
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
 !
 !
       call cal_sgs_induct_t_grad_no_coef(ifilter_2delta,                &
@@ -153,7 +153,7 @@
       subroutine cal_sgs_filter_induct_grad
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
 !
       call cal_sgs_induct_t_grad_w_coef(ifilter_4delta,                 &
      &    iphys%i_sgs_grad_f, iphys%i_filter_velo,                      &
@@ -166,7 +166,7 @@
       subroutine cal_sgs_filter_idt_grad_4_dyn
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
 !
       call cal_sgs_induct_t_grad_no_coef(ifilter_4delta,                &
      &    iphys%i_sgs_grad_f, iphys%i_filter_velo,                      &

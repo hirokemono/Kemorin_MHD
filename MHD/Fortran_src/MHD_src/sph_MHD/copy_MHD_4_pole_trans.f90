@@ -30,7 +30,6 @@
       use m_spheric_parameter
       use m_geometry_data
       use m_node_phys_data
-      use m_node_phys_address
       use m_addresses_trans_sph_snap
 !
       use copy_pole_field_sph_trans

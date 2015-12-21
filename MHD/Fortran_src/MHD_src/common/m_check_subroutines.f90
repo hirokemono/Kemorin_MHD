@@ -19,7 +19,6 @@
 !
        subroutine check_reference_temp(my_rank)
 !
-       use m_node_phys_address
        use m_node_phys_data
        use m_geometry_data_MHD
 !

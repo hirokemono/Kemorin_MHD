@@ -33,7 +33,6 @@
       use m_geometry_data
       use m_geometry_data_MHD
       use m_phys_constants
-      use m_node_phys_address
       use m_node_phys_data
 !
       use m_sorted_node

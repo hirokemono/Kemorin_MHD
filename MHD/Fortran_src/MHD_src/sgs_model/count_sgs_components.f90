@@ -25,7 +25,7 @@
       use calypso_mpi
       use m_phys_labels
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
       use m_ele_info_4_dynamical
       use m_SGS_model_coefs
       use m_SGS_address

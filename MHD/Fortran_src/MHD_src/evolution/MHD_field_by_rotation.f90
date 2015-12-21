@@ -27,7 +27,6 @@
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_node_phys_address
       use m_node_phys_data
 !
       use cal_rotation_fields

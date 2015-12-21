@@ -31,7 +31,6 @@
 !
       use m_geometry_data
       use m_phys_constants
-      use m_node_phys_address
       use m_node_phys_data
       use m_int_vol_data
       use m_finite_element_matrix
@@ -50,7 +49,6 @@
       subroutine cal_sol_vect_p_co(inter_smp_stack)
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_finite_element_matrix
 !
@@ -67,7 +65,6 @@
       subroutine cal_sol_magne_co(inter_smp_stack)
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_finite_element_matrix
 !
@@ -84,7 +81,6 @@
       subroutine cal_sol_velo_co_crank(inter_smp_stack)
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_int_vol_data
       use m_finite_element_matrix
@@ -103,7 +99,6 @@
       subroutine cal_sol_vect_p_co_crank(inter_smp_stack)
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_finite_element_matrix
 !
@@ -121,7 +116,6 @@
       subroutine cal_sol_magne_co_crank(inter_smp_stack)
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_finite_element_matrix
 !
@@ -177,7 +171,6 @@
       subroutine cal_sol_magne_insulator
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_geometry_data_MHD
       use m_finite_element_matrix

@@ -32,7 +32,7 @@
       use m_sorted_node
       use m_finite_element_matrix
       use m_filter_elength
-      use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_model_coefs
       use m_SGS_address
       use m_surf_data_temp
@@ -66,7 +66,7 @@
       use m_sorted_node
       use m_finite_element_matrix
       use m_filter_elength
-      use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_model_coefs
       use m_SGS_address
       use m_surf_data_temp

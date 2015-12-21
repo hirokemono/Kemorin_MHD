@@ -30,7 +30,6 @@
       subroutine cal_sol_velo_pre_crank
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_finite_element_matrix
       use solver_MGCG_MHD
@@ -51,7 +50,6 @@
       subroutine cal_sol_mod_po
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_finite_element_matrix
       use solver_MGCG_MHD
@@ -74,7 +72,6 @@
 !
       use m_geometry_data
       use m_phys_constants
-      use m_node_phys_address
       use m_node_phys_data
       use m_finite_element_matrix
       use solver_MGCG_MHD
@@ -99,7 +96,6 @@
 !
       use calypso_mpi
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_finite_element_matrix
       use solver_MGCG_MHD
@@ -120,7 +116,6 @@
       subroutine cal_sol_mag_po
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_finite_element_matrix
       use solver_MGCG_MHD

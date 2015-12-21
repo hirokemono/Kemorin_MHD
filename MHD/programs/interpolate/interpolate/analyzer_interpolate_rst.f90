@@ -44,7 +44,6 @@
       use m_ctl_params_4_gen_table
       use m_nod_comm_table
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
 !
       use input_control_interpolate

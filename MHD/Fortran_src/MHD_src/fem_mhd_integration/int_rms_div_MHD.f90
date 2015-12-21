@@ -38,7 +38,7 @@
 !
       subroutine int_rms_div_v_monitor(iloop, rsig)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_geometry_data_MHD
 !
       integer(kind = kint), intent(in) :: iloop
@@ -66,7 +66,7 @@
 !
       subroutine int_rms_div_b_monitor(iloop, rsig)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_geometry_data
 !
       integer(kind = kint), intent(in) :: iloop
@@ -96,7 +96,7 @@
 !
       subroutine int_rms_div_a_monitor(iloop, rsig)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_geometry_data
 !
       integer(kind = kint), intent(in) :: iloop
@@ -128,7 +128,7 @@
       subroutine int_rms_div_v
 !
       use m_geometry_data_MHD
-      use m_node_phys_address
+      use m_node_phys_data
 !
       call int_rms_divergence(iele_fl_smp_stack, ir_divv, iphys%i_velo)
 !
@@ -139,7 +139,7 @@
       subroutine int_rms_div_b
 !
       use m_geometry_data
-      use m_node_phys_address
+      use m_node_phys_data
 !
 !
       call int_rms_divergence                                           &
@@ -152,7 +152,7 @@
       subroutine int_rms_div_a
 !
       use m_geometry_data
-      use m_node_phys_address
+      use m_node_phys_data
 !
 !
       call int_rms_divergence                                           &
@@ -166,7 +166,7 @@
       subroutine int_rms_div_filter_v
 !
       use m_geometry_data_MHD
-      use m_node_phys_address
+      use m_node_phys_data
 !
       call int_rms_divergence(iele_fl_smp_stack, ir_divv_f,             &
      &    iphys%i_filter_velo)
@@ -178,7 +178,7 @@
       subroutine int_rms_div_filter_b
 !
       use m_geometry_data
-      use m_node_phys_address
+      use m_node_phys_data
 !
 !
       call int_rms_divergence(ele1%istack_ele_smp, ir_divb_f,           &
@@ -191,7 +191,7 @@
       subroutine int_rms_div_filter_a
 !
       use m_geometry_data
-      use m_node_phys_address
+      use m_node_phys_data
 !
 !
       call int_rms_divergence(ele1%istack_ele_smp, ir_diva_f,           &

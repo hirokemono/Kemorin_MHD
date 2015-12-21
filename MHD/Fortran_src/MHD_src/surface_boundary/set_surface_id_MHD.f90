@@ -22,7 +22,6 @@
 !
       use m_control_parameter
 !
-      use m_node_phys_address
       use m_node_phys_data
 !
       use m_scalar_surf_id
@@ -83,7 +82,6 @@
 !
       subroutine set_normal_velo
 !
-      use m_node_phys_address
       use m_node_phys_data
       use m_group_data
       use m_surf_data_torque

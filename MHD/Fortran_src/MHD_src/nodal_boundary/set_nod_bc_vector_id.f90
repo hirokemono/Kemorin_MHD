@@ -192,7 +192,6 @@
 !
       use t_geometry_data
       use t_nodal_bc_data
-      use m_node_phys_address
       use m_node_phys_data
       use set_radial_magne_sph
 !

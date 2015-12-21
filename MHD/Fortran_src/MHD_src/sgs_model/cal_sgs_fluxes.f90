@@ -32,7 +32,7 @@
 !
       subroutine cal_sgs_heat_flux
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
       use cal_sgs_heat_fluxes_grad
 !
@@ -59,7 +59,6 @@
       subroutine cal_sgs_momentum_flux
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_SGS_address
 !
@@ -92,7 +91,6 @@
       subroutine cal_sgs_maxwell
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_SGS_address
       use cal_sgs_mom_fluxes_grad
@@ -123,7 +121,7 @@
 !
       subroutine cal_sgs_magne_induction
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
       use cal_sgs_inductions_grad
 !

@@ -54,9 +54,7 @@
       use m_jacobian_sf_grp
       use m_int_vol_data
       use m_surf_data_vector_p
-!
       use m_node_phys_data
-      use m_node_phys_address
 !
       use cal_multi_pass
       use cal_for_ffs

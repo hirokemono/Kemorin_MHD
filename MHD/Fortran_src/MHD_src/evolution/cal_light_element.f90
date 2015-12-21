@@ -33,7 +33,6 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobian_sf_grp
@@ -115,7 +114,7 @@
 !
       use m_geometry_data
       use m_t_step_parameter
-      use m_node_phys_address
+      use m_node_phys_data
       use m_finite_element_matrix
       use m_bc_data_ene
 !
@@ -146,7 +145,7 @@
 !
       use m_geometry_data
       use m_t_step_parameter
-      use m_node_phys_address
+      use m_node_phys_data
       use m_finite_element_matrix
       use m_bc_data_ene
 !

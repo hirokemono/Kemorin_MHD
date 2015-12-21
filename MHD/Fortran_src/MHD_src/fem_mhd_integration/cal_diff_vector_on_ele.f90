@@ -85,7 +85,6 @@
       subroutine diff_composition_on_ele
 !
       use m_control_parameter
-      use m_node_phys_address
 !
 !
       call sel_int_diff_scalar_on_ele                                   &
@@ -98,7 +97,6 @@
       subroutine diff_filter_c_on_ele
 !
       use m_control_parameter
-      use m_node_phys_address
 !
 !
       call sel_int_diff_scalar_on_ele                                   &

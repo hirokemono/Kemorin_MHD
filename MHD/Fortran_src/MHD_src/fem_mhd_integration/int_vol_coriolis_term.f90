@@ -31,7 +31,6 @@
       subroutine int_coriolis_nod_exp
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_int_vol_data
 !
@@ -56,7 +55,6 @@
       use m_control_parameter
       use m_geometry_data
       use m_geometry_data_MHD
-      use m_node_phys_address
       use m_node_phys_data
       use m_sorted_node
       use m_int_vol_data
@@ -87,7 +85,6 @@
       subroutine int_buoyancy_nod_exp
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_int_vol_data
       use set_buoyancy_at_node
@@ -132,7 +129,6 @@
       subroutine set_boussinesq_density_at_node
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use set_buoyancy_at_node
 !

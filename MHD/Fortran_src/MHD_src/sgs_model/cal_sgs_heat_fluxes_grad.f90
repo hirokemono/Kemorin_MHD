@@ -26,7 +26,7 @@
 !
       subroutine cal_sgs_h_flux_grad(i_filter)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_int_vol_data
 !
       integer (kind=kint), intent(in) :: i_filter
@@ -42,7 +42,7 @@
       subroutine cal_sgs_h_flux_grad_4_dyn
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
       use m_int_vol_data
 !
 !
@@ -56,7 +56,7 @@
       subroutine cal_sgs_filter_hf_grad
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
       use m_int_vol_data
 !
 !
@@ -70,7 +70,7 @@
       subroutine cal_sgs_filter_hf_grad_4_dyn
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
       use m_int_vol_data
 !
 !

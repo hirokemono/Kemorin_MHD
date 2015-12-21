@@ -27,7 +27,7 @@
       subroutine cal_sgs_h_flux_diffuse
 !
       use m_control_parameter
-      use m_node_phys_address
+      use m_node_phys_data
 !
 !
       call cal_gradent_in_fluid_w_const(iflag_temp_supg,               &
@@ -80,7 +80,7 @@
 !
       use m_control_parameter
       use m_geometry_data_MHD
-      use m_node_phys_address
+      use m_node_phys_data
       use m_finite_element_matrix
       use cal_rotation
 !

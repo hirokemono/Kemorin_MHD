@@ -59,7 +59,6 @@
 !
       subroutine cal_sgs_hf_simi(i_sgs, ifield, ifield_f, icm_sgs)
 !
-      use m_node_phys_address
       use m_node_phys_data
 !
       use cal_fluxes
@@ -136,7 +135,7 @@
 !
       subroutine cal_sgs_uxb_2_ff_simi
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use int_vol_similarity_uxb
 !
 !
@@ -178,7 +177,6 @@
 !
       subroutine cal_sgs_hf_simi_wide(i_sgs, ifield, ifield_f, icm_sgs)
 !
-      use m_node_phys_address
       use m_node_phys_data
 !
       use cal_fluxes

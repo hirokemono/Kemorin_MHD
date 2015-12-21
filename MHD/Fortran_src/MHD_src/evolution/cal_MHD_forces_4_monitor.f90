@@ -27,7 +27,6 @@
       subroutine cal_fluxes_4_monitor
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_physical_property
 !
@@ -72,7 +71,6 @@
       subroutine cal_forces_4_monitor
 !
       use m_node_phys_data
-      use m_node_phys_address
 !
       use cal_terms_for_heat
       use cal_momentum_terms
@@ -242,7 +240,6 @@
       subroutine cal_work_4_forces
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_physical_property
 !

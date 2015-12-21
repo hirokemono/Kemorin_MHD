@@ -35,7 +35,7 @@
       subroutine int_surf_normal_velocity(node, ele, surf, sf_grp,      &
      &          nod_fld, jac_sf_grp_l, rhs_tbl, fem_wk, f_l)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_surf_data_press
 !
       type(node_data), intent(in) :: node
@@ -78,7 +78,7 @@
       subroutine int_surf_normal_vector_p (node, ele, surf, sf_grp,     &
      &        nod_fld, jac_sf_grp_l, rhs_tbl, fem_wk, f_l)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_surf_data_magne_p
 !
       type(node_data), intent(in) :: node
@@ -124,7 +124,7 @@
       subroutine int_surf_normal_magne(node, ele, surf, sf_grp,         &
      &          nod_fld, jac_sf_grp_l, rhs_tbl, fem_wk, f_l)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_surf_data_magne_p
 !
       type(node_data), intent(in) :: node

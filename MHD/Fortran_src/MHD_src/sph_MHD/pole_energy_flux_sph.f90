@@ -34,7 +34,6 @@
       use m_physical_property
       use m_geometry_data
       use m_node_phys_data
-      use m_node_phys_address
       use products_at_poles
 !
 !
@@ -91,7 +90,6 @@
       use m_physical_property
       use m_geometry_data
       use m_node_phys_data
-      use m_node_phys_address
       use products_at_poles
       use pole_poynting_flux_smp
 !

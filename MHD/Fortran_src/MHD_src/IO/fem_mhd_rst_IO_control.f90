@@ -151,7 +151,6 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
-      use m_node_phys_address
       use field_IO_select
       use copy_time_steps_4_restart
       use set_field_to_restart

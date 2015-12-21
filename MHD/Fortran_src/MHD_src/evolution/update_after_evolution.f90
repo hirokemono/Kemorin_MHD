@@ -37,7 +37,7 @@
 !
       subroutine update_fields(layer_tbl)
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use average_on_elements
 !
       type(layering_tbl), intent(in) :: layer_tbl
@@ -81,7 +81,6 @@
       subroutine update_with_velocity(layer_tbl)
 !
       use m_t_step_parameter
-      use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
       use m_geometry_data_MHD
@@ -194,7 +193,6 @@
 !
       use m_t_step_parameter
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
       use m_SGS_model_coefs
@@ -309,7 +307,6 @@
       subroutine update_with_vector_potential(layer_tbl)
 !
       use m_t_step_parameter
-      use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
       use m_SGS_model_coefs
@@ -473,7 +470,6 @@
        subroutine update_with_magnetic_field(layer_tbl)
 !
       use m_t_step_parameter
-      use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
       use m_SGS_model_coefs
@@ -587,7 +583,6 @@
       subroutine update_with_dummy_scalar(layer_tbl)
 !
       use m_t_step_parameter
-      use m_node_phys_address
       use m_node_phys_data
       use m_SGS_model_coefs
       use m_SGS_address

@@ -35,7 +35,6 @@
       subroutine cal_magnetic_co
 !
       use m_nod_comm_table
-      use m_node_phys_address
       use m_node_phys_data
       use m_phys_constants
       use m_jacobian_sf_grp
@@ -185,7 +184,6 @@
       subroutine cal_magnetic_co_outside
 !
       use m_nod_comm_table
-      use m_node_phys_address
       use m_node_phys_data
       use m_phys_constants
       use m_jacobian_sf_grp

@@ -72,7 +72,7 @@
 !
       subroutine cal_commute_error_4_maxwell(i_filter)
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
       integer(kind = kint), intent(in) :: i_filter
 !
@@ -85,7 +85,7 @@
 !
       subroutine cal_commute_error_4_filter_mxwl(i_filter)
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
       integer(kind = kint), intent(in) :: i_filter
 !

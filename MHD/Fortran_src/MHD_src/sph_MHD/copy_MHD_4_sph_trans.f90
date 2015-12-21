@@ -31,7 +31,7 @@
 !
       subroutine select_mhd_field_from_trans
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_addresses_trans_sph_MHD
 !
 !
@@ -56,7 +56,7 @@
 !
       subroutine copy_forces_to_snapshot_rtp
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_addresses_trans_sph_MHD
 !
 !

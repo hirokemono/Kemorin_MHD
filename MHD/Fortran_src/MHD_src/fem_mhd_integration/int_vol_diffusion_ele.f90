@@ -51,7 +51,6 @@
 !
       subroutine int_vol_viscosity_ele
 !
-      use m_node_phys_address
       use m_geometry_data_MHD
       use m_SGS_address
 !
@@ -67,7 +66,6 @@
 !
       subroutine int_vol_vecp_diffuse_ele
 !
-      use m_node_phys_address
       use m_geometry_data
       use m_SGS_address
 !
@@ -83,7 +81,6 @@
 !
       subroutine int_vol_magne_diffuse_ele
 !
-      use m_node_phys_address
       use m_geometry_data_MHD
       use m_SGS_address
 !
@@ -100,7 +97,6 @@
 !
       subroutine int_vol_termal_diffuse_ele
 !
-      use m_node_phys_address
       use m_geometry_data_MHD
       use m_SGS_address
 !
@@ -115,7 +111,6 @@
 !
       subroutine int_vol_p_termal_diffuse_ele
 !
-      use m_node_phys_address
       use m_geometry_data_MHD
       use m_SGS_address
 !
@@ -130,7 +125,6 @@
 !
       subroutine int_vol_composition_diffuse_ele
 !
-      use m_node_phys_address
       use m_geometry_data_MHD
       use m_SGS_address
 !
@@ -146,7 +140,6 @@
 !
       subroutine int_vol_viscous_ele_monitor
 !
-      use m_node_phys_address
       use m_geometry_data_MHD
       use m_SGS_address
 !
@@ -159,7 +152,6 @@
 !
       subroutine int_vol_vp_diffuse_ele_monitor
 !
-      use m_node_phys_address
       use m_geometry_data
       use m_SGS_address
 !
@@ -173,7 +165,6 @@
 !
       subroutine int_vol_m_diffuse_ele_monitor
 !
-      use m_node_phys_address
       use m_geometry_data_MHD
       use m_SGS_address
 !
@@ -187,7 +178,6 @@
 !
       subroutine int_vol_t_diffuse_ele_monitor
 !
-      use m_node_phys_address
       use m_geometry_data_MHD
       use m_SGS_address
 !
@@ -200,7 +190,6 @@
 !
       subroutine int_vol_ds_diffuse_ele_monitor
 !
-      use m_node_phys_address
       use m_geometry_data_MHD
       use m_SGS_address
 !
@@ -214,7 +203,6 @@
 !
       subroutine int_vol_viscosity_co
 !
-      use m_node_phys_address
       use m_geometry_data_MHD
       use m_SGS_address
 !
@@ -229,7 +217,6 @@
 !
       subroutine int_vol_vecp_diffuse_co
 !
-      use m_node_phys_address
       use m_geometry_data
       use m_SGS_address
 !
@@ -244,7 +231,6 @@
 !
       subroutine int_vol_magne_diffuse_co
 !
-      use m_node_phys_address
       use m_geometry_data_MHD
       use m_SGS_address
 !

@@ -132,7 +132,6 @@
       use m_phys_constants
       use m_jacobians
       use m_sorted_node
-      use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
       use int_vol_vect_cst_difference

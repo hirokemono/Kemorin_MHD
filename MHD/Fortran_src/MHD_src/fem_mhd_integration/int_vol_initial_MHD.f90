@@ -33,7 +33,7 @@
       subroutine int_vol_initial_velo
 !
       use m_geometry_data_MHD
-      use m_node_phys_address
+      use m_node_phys_data
       use m_physical_property
       use m_int_vol_data
 !
@@ -49,7 +49,7 @@
       subroutine int_vol_initial_vect_p
 !
       use m_geometry_data_MHD
-      use m_node_phys_address
+      use m_node_phys_data
       use m_physical_property
       use m_int_vol_data
 !
@@ -65,7 +65,7 @@
       subroutine int_vol_initial_magne
 !
       use m_geometry_data_MHD
-      use m_node_phys_address
+      use m_node_phys_data
       use m_physical_property
       use m_int_vol_data
 !
@@ -81,7 +81,7 @@
       subroutine int_vol_initial_temp
 !
       use m_geometry_data_MHD
-      use m_node_phys_address
+      use m_node_phys_data
       use m_physical_property
       use m_int_vol_data
 !
@@ -97,7 +97,7 @@
       subroutine int_vol_initial_part_temp
 !
       use m_geometry_data_MHD
-      use m_node_phys_address
+      use m_node_phys_data
       use m_physical_property
       use m_int_vol_data
 !
@@ -114,7 +114,7 @@
       subroutine int_vol_initial_d_scalar
 !
       use m_geometry_data_MHD
-      use m_node_phys_address
+      use m_node_phys_data
       use m_physical_property
       use m_int_vol_data
 !

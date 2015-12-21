@@ -15,7 +15,6 @@
       use m_group_data
       use m_jacobian_sf_grp
       use m_surf_data_torque
-      use m_node_phys_address
       use m_node_phys_data
       use m_sorted_node
       use m_finite_element_matrix

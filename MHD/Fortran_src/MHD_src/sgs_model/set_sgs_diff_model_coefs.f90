@@ -296,7 +296,7 @@
       use m_machine_parameter
       use m_control_parameter
       use m_ele_info_4_dynamical
-      use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_model_coefs
 !
       integer (kind = kint), intent(in) :: itype_csim
@@ -364,7 +364,7 @@
 !
       use m_machine_parameter
       use m_ele_info_4_dynamical
-      use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_model_coefs
 !
       integer (kind = kint), intent(in) :: ifield_d
@@ -411,7 +411,7 @@
 !
       use m_machine_parameter
       use m_ele_info_4_dynamical
-      use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_model_coefs
 !
       integer (kind = kint), intent(in) :: ifield_d

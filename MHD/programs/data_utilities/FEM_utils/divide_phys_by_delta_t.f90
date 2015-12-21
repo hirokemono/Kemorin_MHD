@@ -24,7 +24,6 @@
       use m_t_int_parameter
       use m_ctl_params_4_diff_udt
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use products_nodal_fields_smp
 !
@@ -57,7 +56,6 @@
       use m_constants
       use m_phys_constants
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use products_nodal_fields_smp
 !

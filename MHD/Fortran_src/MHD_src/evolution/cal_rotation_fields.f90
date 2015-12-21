@@ -26,7 +26,6 @@
 !
       use m_control_parameter
       use m_node_phys_data
-      use m_node_phys_address
       use m_SGS_address
       use m_surf_data_torque
 !
@@ -54,7 +53,6 @@
       subroutine cal_current_density
 !
       use m_control_parameter
-      use m_node_phys_address
       use m_node_phys_data
       use m_SGS_address
       use m_bc_data_magne
@@ -93,7 +91,6 @@
 !
       use m_control_parameter
       use m_node_phys_data
-      use m_node_phys_address
       use m_SGS_address
       use m_surf_data_vector_p
       use m_bc_data_magne

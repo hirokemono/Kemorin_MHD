@@ -34,7 +34,7 @@
       use m_t_step_parameter
       use m_ctl_data_4_sph_utils
       use m_ctl_params_sph_utils
-      use m_node_phys_address
+      use m_node_phys_data
       use m_sph_spectr_data
       use m_sph_phys_address
       use load_mesh_data

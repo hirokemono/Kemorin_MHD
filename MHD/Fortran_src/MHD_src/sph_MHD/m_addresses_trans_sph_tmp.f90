@@ -86,7 +86,7 @@
       subroutine set_addresses_temporal_trans
 !
       use m_work_4_sph_trans
-      use m_node_phys_address
+      use m_node_phys_data
       use m_sph_phys_address
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
@@ -138,7 +138,7 @@
       subroutine check_addresses_temporal_trans
 !
       use m_work_4_sph_trans
-      use m_node_phys_address
+      use m_node_phys_data
       use m_sph_phys_address
       use m_addresses_trans_sph_MHD
 !

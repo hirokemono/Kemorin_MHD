@@ -30,7 +30,7 @@
       use calypso_mpi
       use m_control_parameter
       use m_normalize_parameter
-      use m_node_phys_address
+      use m_node_phys_data
       use m_physical_property
       use m_t_int_parameter
       use construct_MHD_coefficient

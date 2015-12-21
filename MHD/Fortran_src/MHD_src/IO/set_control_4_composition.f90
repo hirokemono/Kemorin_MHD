@@ -30,7 +30,7 @@
       use m_control_parameter
       use m_ctl_data_node_boundary
       use m_ctl_data_surf_boundary
-      use m_node_phys_address
+      use m_node_phys_data
       use m_bc_data_list
       use m_surf_data_list
       use set_node_group_types

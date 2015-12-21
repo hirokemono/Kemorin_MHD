@@ -30,7 +30,6 @@
       subroutine cal_magnetic_field_pre
 !
       use m_nod_comm_table
-      use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
       use m_finite_element_matrix

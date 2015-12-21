@@ -24,7 +24,7 @@
 !
        subroutine cal_div_sgs_m_flux_simi
 !
-       use m_node_phys_address
+       use m_node_phys_data
 !
        call cal_div_sgs_mf_simi(iphys%i_sgs_grad, iphys%i_SGS_m_flux,   &
      &     iphys%i_velo)
@@ -35,7 +35,7 @@
 !
        subroutine cal_div_sgs_maxwell_simi
 !
-       use m_node_phys_address
+       use m_node_phys_data
 !
        call cal_div_sgs_mf_simi(iphys%i_sgs_grad, iphys%i_SGS_maxwell,  &
       &    iphys%i_magne)
@@ -46,7 +46,7 @@
 !
        subroutine cal_div_sgs_filter_mf_simi
 !
-       use m_node_phys_address
+       use m_node_phys_data
 !
        call cal_div_sgs_mf_simi(iphys%i_sgs_simi, iphys%i_sgs_grad_f,   &
      &     iphys%i_filter_velo)
@@ -57,7 +57,7 @@
 !
        subroutine cal_div_sgs_filter_mxwl_simi
 !
-       use m_node_phys_address
+       use m_node_phys_data
 !
        call cal_div_sgs_mf_simi(iphys%i_sgs_simi, iphys%i_sgs_grad_f,   &
      &     iphys%i_filter_magne)

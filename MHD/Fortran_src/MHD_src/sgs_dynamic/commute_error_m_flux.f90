@@ -71,7 +71,7 @@
 !
       subroutine cal_commute_error_4_m_flux(i_filter)
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
       integer(kind = kint), intent(in) :: i_filter
 !
@@ -84,7 +84,7 @@
 !
       subroutine cal_commute_error_4_filter_mf(i_filter)
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
       integer(kind = kint), intent(in) :: i_filter
 !

@@ -33,7 +33,6 @@
       use m_group_data
 !
       use m_node_phys_data
-      use m_node_phys_address
 !
       use m_bc_data_ene
       use m_bc_data_velo
@@ -105,7 +104,6 @@
       use m_group_data
 !
       use m_control_parameter
-      use m_node_phys_address
       use m_node_phys_data
 !
       use m_bc_data_velo

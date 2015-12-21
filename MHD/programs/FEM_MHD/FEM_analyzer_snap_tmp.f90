@@ -189,7 +189,6 @@
       use m_geometry_data
       use m_phys_constants
       use m_phys_labels
-      use m_node_phys_address
       use m_node_phys_data
 !
       use copy_nodal_fields

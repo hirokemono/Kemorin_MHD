@@ -67,7 +67,7 @@
 !
       subroutine cal_div_sgs_h_flux_simi
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
       call cal_div_sgs_hf_simi(iphys%i_sgs_grad, iphys%i_SGS_h_flux,    &
      &    iphys%i_velo, iphys%i_sgs_temp)
@@ -78,7 +78,7 @@
 !
        subroutine cal_div_sgs_filter_hf_simi
 !
-       use m_node_phys_address
+       use m_node_phys_data
 !
        call cal_div_sgs_hf_simi(iphys%i_sgs_simi, iphys%i_sgs_grad_f,   &
      &     iphys%i_filter_velo, iphys%i_filter_temp)

@@ -22,7 +22,7 @@
 !
       subroutine cal_div_sgs_induct_simi
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
        call cal_div_sgs_idct_simi(iphys%i_sgs_grad,                     &
      &     iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne)
@@ -33,7 +33,7 @@
 !
       subroutine cal_div_sgs_filter_idct_simi
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
        call cal_div_sgs_idct_simi(iphys%i_sgs_simi, iphys%i_sgs_grad_f, &
      &     iphys%i_filter_velo, iphys%i_filter_magne)

@@ -31,7 +31,7 @@
 !
       subroutine s_check_deltat_by_prev_rms
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
       integer(kind = kint) :: i, imax
       real(kind = kreal) :: delta1, delta2
@@ -146,7 +146,7 @@
 !
       subroutine set_ele_rms_4_previous_step
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
       if(i_drmax_v .gt. izero) then
         call int_ave_rms_4_scalar(iele_fl_smp_stack, ione,              &

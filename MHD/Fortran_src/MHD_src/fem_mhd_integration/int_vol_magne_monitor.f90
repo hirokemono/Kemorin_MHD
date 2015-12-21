@@ -23,7 +23,6 @@
       use m_physical_property
       use m_SGS_model_coefs
       use m_SGS_address
-      use m_node_phys_address
       use m_node_phys_data
       use m_element_phys_data
       use m_fem_gauss_int_coefs

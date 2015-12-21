@@ -31,7 +31,7 @@
       use t_MHD_finite_element_mat
 !
       use m_physical_property
-      use m_node_phys_address
+      use m_node_phys_data
 !
       implicit none
 !

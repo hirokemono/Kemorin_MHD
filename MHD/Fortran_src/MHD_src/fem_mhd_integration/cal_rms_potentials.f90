@@ -35,7 +35,7 @@
 !
       subroutine cal_rms_pressure_4_loop(iloop, rsig)
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
       integer(kind = kint), intent(in) :: iloop
       real(kind = kreal), intent(inout) :: rsig
@@ -71,7 +71,7 @@
 !
       subroutine cal_rms_scalar_potential(iloop, rsig)
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
       integer(kind = kint), intent(in) :: iloop
       real(kind = kreal), intent(inout) :: rsig

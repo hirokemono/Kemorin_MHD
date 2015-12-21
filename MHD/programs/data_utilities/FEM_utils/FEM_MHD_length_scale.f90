@@ -64,7 +64,6 @@
       use calypso_mpi
       use m_geometry_data
       use m_phys_labels
-      use m_node_phys_address
       use m_node_phys_data
       use m_ucd_data
       use m_ctl_params_4_prod_udt
@@ -128,7 +127,6 @@
       subroutine find_field_address_4_lscale
 !
       use m_phys_labels
-      use m_node_phys_address
       use m_node_phys_data
 !
       integer(kind = kint) :: i_fld

@@ -30,7 +30,7 @@
       use m_fem_gauss_int_coefs
       use m_int_vol_data
       use m_phys_labels
-      use m_node_phys_address
+      use m_node_phys_data
       use m_bulk_values
       use int_all_energy
       use int_all_ave_tensors

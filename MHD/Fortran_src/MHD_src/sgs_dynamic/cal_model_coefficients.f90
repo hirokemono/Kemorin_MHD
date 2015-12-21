@@ -92,7 +92,7 @@
 !
       subroutine cal_model_coef_sgs_mom_flux(layer_tbl)
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
       use cal_sgs_mom_flux_dynamic
       use cal_sgs_m_flux_dynamic_simi
@@ -122,7 +122,7 @@
 !
       subroutine cal_model_coef_sgs_maxwell(layer_tbl)
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
       use cal_sgs_maxwell_dynamic
       use cal_diff_coef_sgs_mxwl
@@ -154,7 +154,7 @@
 !
       subroutine cal_model_coef_sgs_mag_induct(layer_tbl)
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
       use cal_sgs_induction_dynamic
       use cal_diff_coef_sgs_induct

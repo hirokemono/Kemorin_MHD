@@ -26,7 +26,7 @@
 !
       subroutine copy_snap_vec_fld_from_trans
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_addresses_trans_sph_snap
 !
 !
@@ -98,7 +98,7 @@
 !
       subroutine copy_snap_vec_fld_to_trans
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_addresses_trans_sph_snap
 !
 !

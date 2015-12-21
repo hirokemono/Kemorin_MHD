@@ -31,7 +31,7 @@
 !
       use m_geometry_data
       use m_finite_element_matrix
-      use m_node_phys_address
+      use m_node_phys_data
       use m_SGS_address
 !
       use reset_dynamic_model_coefs
@@ -89,7 +89,6 @@
       subroutine cal_sgs_induct_t_dynamic(layer_tbl)
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_SGS_address
 !

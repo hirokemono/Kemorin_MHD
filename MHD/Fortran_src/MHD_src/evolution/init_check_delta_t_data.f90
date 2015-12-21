@@ -38,7 +38,7 @@
 !
       subroutine count_check_delta_t_data
 !
-      use m_node_phys_address
+      use m_node_phys_data
 !
 !
       nfld_dratio = 0
@@ -90,7 +90,7 @@
 !
       subroutine set_check_delta_t_data
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use m_phys_labels
 !
       integer(kind = kint) :: icou

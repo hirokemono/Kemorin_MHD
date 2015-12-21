@@ -85,7 +85,6 @@
       use m_geometry_data_MHD
       use m_initial_field_control
       use m_t_step_parameter
-      use m_node_phys_address
       use m_node_phys_data
       use m_physical_property
 !

@@ -25,7 +25,7 @@
 !
       subroutine cal_sgs_terms_4_monitor
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use cal_sgs_fluxes
       use monitor_sgs_terms
 !
@@ -63,7 +63,7 @@
 !
       subroutine cal_diff_of_sgs_terms
 !
-      use m_node_phys_address
+      use m_node_phys_data
       use cal_terms_for_heat
       use cal_momentum_terms
       use cal_magnetic_terms
@@ -114,7 +114,6 @@
       subroutine cal_work_4_sgs_terms
 !
       use m_geometry_data
-      use m_node_phys_address
       use m_node_phys_data
       use m_physical_property
 !
