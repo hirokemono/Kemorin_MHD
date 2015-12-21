@@ -3,15 +3,17 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine cal_center_ele_4_psf
-!!      subroutine cal_norm_area_4_psf
-!!      subroutine cal_nod_normal_4_psf
+!!      subroutine cal_center_ele_4_psf                                 &
+!!     &         (numnod_psf, numele_psf, xx_psf, ie_psf)
+!!      subroutine cal_norm_area_4_psf                                  &
+!!     &         (numnod_psf, numele_psf, xx_psf, ie_psf)
+!!      subroutine cal_nod_normal_4_psf                                 &
+!!     &         (numnod_psf, numele_psf, xx_psf, ie_psf)
 !
       module take_normals_4_psf
 !
       use m_precision
       use m_constants
-      use m_psf_results
       use m_norms_4_psf
 !
       implicit none
@@ -22,10 +24,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_center_ele_4_psf
+      subroutine cal_center_ele_4_psf                                   &
+     &         (numnod_psf, numele_psf, xx_psf, ie_psf)
+!
+      integer(kind = kint), intent(in) :: numnod_psf, numele_psf
+      integer(kind = kint), intent(in) :: ie_psf(numele_psf,3)
+      real(kind = kreal), intent(in) :: xx_psf(numnod_psf,3)
 !
       integer(kind = kint) :: iele, i1, i2, i3
-      real(kind = kreal) ::ax(3), bx(3)
 !
 !
 !$omp parallel do private(i1,i2,i3)
@@ -51,10 +57,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_norm_area_4_psf
+      subroutine cal_norm_area_4_psf                                    &
+     &         (numnod_psf, numele_psf, xx_psf, ie_psf)
+!
+      integer(kind = kint), intent(in) :: numnod_psf, numele_psf
+      integer(kind = kint), intent(in) :: ie_psf(numele_psf,3)
+      real(kind = kreal), intent(in) :: xx_psf(numnod_psf,3)
 !
       integer(kind = kint) :: iele, i1, i2, i3
-      real(kind = kreal) ::ax(3), bx(3)
+      real(kind = kreal) :: ax(3), bx(3)
 !
 !
 !$omp parallel do private(i1,i2,i3,ax,bx)
@@ -100,7 +111,12 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_nod_normal_4_psf
+      subroutine cal_nod_normal_4_psf                                   &
+     &         (numnod_psf, numele_psf, xx_psf, ie_psf)
+!
+      integer(kind = kint), intent(in) :: numnod_psf, numele_psf
+      integer(kind = kint), intent(in) :: ie_psf(numele_psf,3)
+      real(kind = kreal), intent(in) :: xx_psf(numnod_psf,3)
 !
       real(kind = kreal) :: d, xele_psf(3), d2h_psf(3)
 !

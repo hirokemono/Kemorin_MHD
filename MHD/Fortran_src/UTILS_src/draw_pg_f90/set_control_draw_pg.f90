@@ -262,8 +262,8 @@
 !
 !
       do iw = 1, ntot_plot_pg
-        do id = 1, nfield_psf
-          if (field_name_4_plot(iw) .eq. psf_data_name(id)) then
+        do id = 1, psf_phys%num_phys
+          if (field_name_4_plot(iw) .eq. psf_phys%phys_name(id)) then
             id_field_4_plot(iw) = id
             exit
           end if

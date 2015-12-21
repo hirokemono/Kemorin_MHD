@@ -3,9 +3,8 @@
 !
 !      written by Kemorin
 !
-!      subroutine set_ele_grp_patch_2_psf_grd(ele_grp)
-!      subroutine set_field_to_med_patch(ele_grp)
-!      subroutine cal_ave_rms_csim
+!!      subroutine set_ele_grp_patch_2_psf_grd(ele_grp, psf_nod, psf_ele)
+!      subroutine cal_ave_rms_csim(numnod_psf)
 !
       module set_model_coef_to_med_patch
 !
@@ -20,44 +19,54 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_ele_grp_patch_2_psf_grd(ele_grp)
+      subroutine set_ele_grp_patch_2_psf_grd                            &
+     &         (ele_grp, psf_nod, psf_ele, psf_phys)
 !
+      use t_geometry_data
       use t_group_data
-      use m_psf_results
+      use t_phys_data
+      use m_geometry_constants
       use m_ctl_params_ele_grp_udt
       use m_tave_SGS_model_coefs
       use m_merdional_grouping_patch
-      use coordinate_converter
+      use cal_mesh_position
 !
       type(group_data), intent(in) :: ele_grp
+!
+      type(node_data), intent(inout) :: psf_nod
+      type(element_data), intent(inout) :: psf_ele
+      type(phys_data), intent(inout) :: psf_phys
+!
       integer(kind = kint) :: igrp, i, ist, ied, ist_nod
       integer(kind = kint) :: icou, inod, inum
 !
 !
       call find_start_element_group(ele_grp%num_grp, ele_grp%grp_name)
 !
-      numele_psf = ele_grp%istack_grp(iend_ele_grp_drmd)                &
+      psf_ele%nnod_4_ele = num_triangle
+      psf_ele%numele = ele_grp%istack_grp(iend_ele_grp_drmd)            &
      &            - ele_grp%istack_grp(istart_ele_grp_drmd-1)
-      numnod_psf = 3 * numele_psf
+      psf_nod%numnod = 3 * psf_ele%numele
 !
-      nfield_psf =   num_comp
-      ncomptot_psf = num_comp
+      psf_phys%num_phys =  num_comp
+      psf_phys%ntot_phys = num_comp
 !
-      call allocate_psf_results
-      call allocate_psf_num_field
-      call allocate_psf_field_data
+      call allocate_node_geometry_type(psf_nod)
+      call allocate_ele_connect_type(psf_ele)
+      call alloc_phys_name_type(psf_phys)
+      call alloc_phys_data_type(psf_nod%numnod, psf_phys)
 !
-      do i = 1, nfield_psf
-        ncomp_psf(i) = 1
-        istack_comp_psf(i) = i
-        write(psf_data_name(i),'(a)') comp_name(i)
+      do i = 1, psf_phys%num_phys
+        psf_phys%num_component(i) = 1
+        psf_phys%istack_component(i) = i
+        write(psf_phys%phys_name(i),'(a)') comp_name(i)
       end do
 !
       ist = ele_grp%istack_grp(istart_ele_grp_drmd-1)
-      do i = 1, numele_psf
-        inod_psf(i) = i
-        iele_psf(i) = i
-        ie_psf(i,1:3) = ie_egrp(i+ist,1:3)                              &
+      do i = 1, psf_ele%numele
+        psf_nod%inod_global(i) = i
+        psf_ele%iele_global(i) = i
+        psf_ele%ie(i,1:3) = ie_egrp(i+ist,1:3)                          &
      &                 - 3*ele_grp%istack_grp(istart_ele_grp_drmd-1)
       end do
 !
@@ -69,49 +78,56 @@
         ied = 3*ele_grp%istack_grp(igrp)
         do inod = ist, ied
           icou = icou + 1
-          inod_psf(icou) = icou
-          xx_psf(icou,1:3) = xx_egrp(inod,1:3)
+          psf_nod%inod_global(icou) = icou
+          psf_nod%xx(icou,1:3) = xx_egrp(inod,1:3)
         end do
       end do
 !
-      call position_2_sph (numnod_psf, xx_psf,                          &
-     &    rtp_psf(1,1), rtp_psf(1,2), rtp_psf(1,3),                     &
-     &    ar_psf, ss_psf, ar_psf)
+      call set_spherical_position(psf_nod)
 !
       end subroutine set_ele_grp_patch_2_psf_grd
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_ave_rms_csim
+      subroutine cal_ave_rms_csim(psf_phys, numnod_psf,                 &
+     &          xmin_psf, xmax_psf, ave_psf, rms_psf)
 !
       use m_ctl_params_ele_grp_udt
       use m_tave_SGS_model_coefs
-      use m_psf_results
+      use t_phys_data
+!
+      integer(kind = kint), intent(in) :: numnod_psf
+!
+      type(phys_data), intent(inout) :: psf_phys
+      real(kind = kreal), intent(inout) :: xmin_psf(psf_phys%ntot_phys)
+      real(kind = kreal), intent(inout) :: xmax_psf(psf_phys%ntot_phys)
+      real(kind = kreal), intent(inout) :: ave_psf(psf_phys%ntot_phys)
+      real(kind = kreal), intent(inout) :: rms_psf(psf_phys%ntot_phys)
 !
       integer(kind = kint) :: inod, nd, inum
 !
 !
-      xmin_psf(1:ncomptot_psf) = coef(1,1:ncomptot_psf)
-      xmax_psf(1:ncomptot_psf) = coef(1,1:ncomptot_psf)
-      do nd = 1, ncomptot_psf
+      xmin_psf(1:psf_phys%ntot_phys) = coef(1,1:psf_phys%ntot_phys)
+      xmax_psf(1:psf_phys%ntot_phys) = coef(1,1:psf_phys%ntot_phys)
+      do nd = 1, psf_phys%ntot_phys
         do inum = 2, num_ele_grp_drmd
           xmin_psf(nd) = min(xmin_psf(nd), coef(inum,nd))
           xmax_psf(nd) = max(xmax_psf(nd), coef(inum,nd))
         end do
       end do
 !
-      ave_psf(1:ncomptot_psf) = zero
-      rms_psf(1:ncomptot_psf) = zero
+      ave_psf(1:psf_phys%ntot_phys) = zero
+      rms_psf(1:psf_phys%ntot_phys) = zero
       do inod = 1, numnod_psf
-        ave_psf(1:ncomptot_psf) = ave_psf(1:ncomptot_psf)               &
-      &                          + d_nod_psf(inod,1:ncomptot_psf)
-        rms_psf(1:ncomptot_psf) = rms_psf(1:ncomptot_psf)               &
-      &                          + d_nod_psf(inod,1:ncomptot_psf)**2
+        ave_psf(1:psf_phys%ntot_phys) = ave_psf(1:psf_phys%ntot_phys)   &
+      &                + psf_phys%d_fld(inod,1:psf_phys%ntot_phys)
+        rms_psf(1:psf_phys%ntot_phys) = rms_psf(1:psf_phys%ntot_phys)   &
+      &                + psf_phys%d_fld(inod,1:psf_phys%ntot_phys)**2
       end do
-      ave_psf(1:ncomptot_psf) = ave_psf(1:ncomptot_psf)                 &
-     &                         / dble(numnod_psf)
-      rms_psf(1:ncomptot_psf) = sqrt(rms_psf(1:ncomptot_psf))           &
-     &                         / dble(numnod_psf)
+      ave_psf(1:psf_phys%ntot_phys) = ave_psf(1:psf_phys%ntot_phys)     &
+     &                 / dble(numnod_psf)
+      rms_psf(1:psf_phys%ntot_phys)                                     &
+     &        = sqrt(rms_psf(1:psf_phys%ntot_phys)) / dble(numnod_psf)
 !
       end subroutine cal_ave_rms_csim
 !

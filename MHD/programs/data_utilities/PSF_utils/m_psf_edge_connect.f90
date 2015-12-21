@@ -49,7 +49,7 @@
 !
       call set_psf_edge_hash
 !
-      nedge_psf_w_overlap = 3*numele_psf
+      nedge_psf_w_overlap = 3*psf_ele%numele
       call allocate_psf_edge_w_overlap
       call allocate_psf_edge_ele
       call copy_psf_edge_w_overlap
@@ -74,7 +74,7 @@
       end do
 !
       do k1 = 1, 3
-        do isurf = 1, numele_psf
+        do isurf = 1, psf_ele%numele
           inum = ie_edge_psf(isurf,k1)
           ie_edge_psf(isurf,k1) = irev_ovlp(inum)
         end do
@@ -108,8 +108,8 @@
       subroutine allocate_psf_edge_ele
 !
 !
-      allocate(ie_edge_psf(numele_psf,3))
-      if(numele_psf .gt. 0) ie_edge_psf = 0
+      allocate(ie_edge_psf(psf_ele%numele,3))
+      if(psf_ele%numele .gt. 0) ie_edge_psf = 0
 !
       end subroutine allocate_psf_edge_ele
 !
@@ -164,10 +164,10 @@
 !
 !
       nmax_hash = 0
-      do isurf = 1, numele_psf
-        i1 = ie_psf(isurf,1) + ie_psf(isurf,2)
-        i2 = ie_psf(isurf,2) + ie_psf(isurf,3)
-        i3 = ie_psf(isurf,3) + ie_psf(isurf,1)
+      do isurf = 1, psf_ele%numele
+        i1 = psf_ele%ie(isurf,1) + psf_ele%ie(isurf,2)
+        i2 = psf_ele%ie(isurf,2) + psf_ele%ie(isurf,3)
+        i3 = psf_ele%ie(isurf,3) + psf_ele%ie(isurf,1)
         nmax_hash = max(nmax_hash,i1)
         nmax_hash = max(nmax_hash,i2)
         nmax_hash = max(nmax_hash,i3)
@@ -183,10 +183,10 @@
 !
 !
       nele_hash = 0
-      do isurf = 1, numele_psf
-        i1 = ie_psf(isurf,1) + ie_psf(isurf,2)
-        i2 = ie_psf(isurf,2) + ie_psf(isurf,3)
-        i3 = ie_psf(isurf,3) + ie_psf(isurf,1)
+      do isurf = 1, psf_ele%numele
+        i1 = psf_ele%ie(isurf,1) + psf_ele%ie(isurf,2)
+        i2 = psf_ele%ie(isurf,2) + psf_ele%ie(isurf,3)
+        i3 = psf_ele%ie(isurf,3) + psf_ele%ie(isurf,1)
         nele_hash(i1) = nele_hash(i1) + 1
         nele_hash(i2) = nele_hash(i2) + 1
         nele_hash(i3) = nele_hash(i3) + 1
@@ -206,26 +206,26 @@
 !
 !
       nele_hash = 0
-      do isurf = 1, numele_psf
-        i1 = ie_psf(isurf,1) + ie_psf(isurf,2)
+      do isurf = 1, psf_ele%numele
+        i1 = psf_ele%ie(isurf,1) + psf_ele%ie(isurf,2)
         nele_hash(i1) = nele_hash(i1) + 1
         icou = istack_hash(i1-1) + nele_hash(i1)
-        ie_edge_ovlp(icou,1) = ie_psf(isurf,1)
-        ie_edge_ovlp(icou,2) = ie_psf(isurf,2)
+        ie_edge_ovlp(icou,1) = psf_ele%ie(isurf,1)
+        ie_edge_ovlp(icou,2) = psf_ele%ie(isurf,2)
         ie_edge_psf(isurf,3) = icou
 !
-        i2 = ie_psf(isurf,2) + ie_psf(isurf,3)
+        i2 = psf_ele%ie(isurf,2) + psf_ele%ie(isurf,3)
         nele_hash(i2) = nele_hash(i2) + 1
         icou = istack_hash(i2-1) + nele_hash(i2)
-        ie_edge_ovlp(icou,1) = ie_psf(isurf,2)
-        ie_edge_ovlp(icou,2) = ie_psf(isurf,3)
+        ie_edge_ovlp(icou,1) = psf_ele%ie(isurf,2)
+        ie_edge_ovlp(icou,2) = psf_ele%ie(isurf,3)
         ie_edge_psf(isurf,1) = icou
 !
-        i3 = ie_psf(isurf,3) + ie_psf(isurf,1)
+        i3 = psf_ele%ie(isurf,3) + psf_ele%ie(isurf,1)
         nele_hash(i3) = nele_hash(i3) + 1
         icou = istack_hash(i3-1) + nele_hash(i3)
-        ie_edge_ovlp(icou,1) = ie_psf(isurf,3)
-        ie_edge_ovlp(icou,2) = ie_psf(isurf,1)
+        ie_edge_ovlp(icou,1) = psf_ele%ie(isurf,3)
+        ie_edge_ovlp(icou,2) = psf_ele%ie(isurf,1)
         ie_edge_psf(isurf,2) = icou
       end do
 !
@@ -264,7 +264,7 @@
       end do
 !
       do k1 = 1, 3
-        do isurf = 1, numele_psf
+        do isurf = 1, psf_ele%numele
           icou = ie_edge_psf(isurf,k1)
           ie_edge_psf(isurf,k1) = iedge_true(icou)
         end do

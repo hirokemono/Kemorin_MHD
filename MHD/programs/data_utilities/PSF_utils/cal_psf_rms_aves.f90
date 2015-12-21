@@ -135,11 +135,11 @@
 !
 !
       write(id_ave_psf,'(i15,1p255E25.15e3)') istep,                    &
-               ave_psf(1:ncomptot_psf), area
+               ave_psf(1:psf_phys%ntot_phys), area
       write(id_rms_psf,'(i15,1p255E25.15e3)') istep,                    &
-                rms_psf(1:ncomptot_psf), area
+               rms_psf(1:psf_phys%ntot_phys), area
       write(id_sdev_psf,'(i15,1p255E25.15e3)') istep,                   &
-                sdev_psf(1:ncomptot_psf), area
+               sdev_psf(1:psf_phys%ntot_phys), area
 !
       end subroutine write_psf_ave_rms_data
 !
@@ -153,9 +153,9 @@
 !
 !
       write(id_min_psf,'(i15,1p255E25.15e3)') istep,                    &
-     &           xmin_psf(1:ncomptot_psf)
+     &           xmin_psf(1:psf_phys%ntot_phys)
       write(id_max_psf,'(i15,1p255E25.15e3)') istep,                    &
-     &           xmax_psf(1:ncomptot_psf)
+     &           xmax_psf(1:psf_phys%ntot_phys)
 !
       end subroutine write_psf_range_data
 !
@@ -172,14 +172,14 @@
 !
 !
       write(id_file,'(a)',advance='no') ' step_no, '
-      do j = 1, nfield_psf
-        if ( ncomp_psf(j) .eq. 1) then
+      do j = 1, psf_phys%num_phys
+        if (psf_phys%num_component(j) .eq. 1) then
           write(id_file,'(a,a2)',advance='no')                          &
-     &                 trim( psf_data_name(j) ), ', '
+     &                 trim( psf_phys%phys_name(j) ), ', '
         else
-          do k = 1, ncomp_psf(j)
+          do k = 1, psf_phys%num_component(j)
             write(id_file,1000,advance='no')                            &
-     &                 trim( psf_data_name(j) ), k
+     &                 trim( psf_phys%phys_name(j) ), k
           end do
         end if
       end do

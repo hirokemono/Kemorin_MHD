@@ -3,16 +3,19 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine set_averaging_range(rmin, rmax)
-!!      subroutine cal_rms_ave_4_psf
-!!      subroutine cal_minmax_psf
-!!      subroutine cal_range_rms_ave_4_psf                              &
-!!     &         (icomp_ref, iflag_ref, ref_value, area)
+!!      subroutine set_averaging_range(rmin, rmax, numele_psf)
+!!      subroutine cal_rms_ave_4_psf(numnod_psf, numele_psf, ie_psf,    &
+!!     &          ncomptot_psf, d_nod_psf, ave_psf, rms_psf, sdev_psf)
+!!      subroutine cal_minmax_psf(numnod_psf, ncomptot_psf, d_nod_psf,  &
+!!     &          xmin_psf, xmax_psf)
+!!      subroutine cal_range_rms_ave_4_psf(numnod_psf, numele_psf,      &
+!!     &          ie_psf, ncomptot_psf, d_nod_psf,                      &
+!!     &          icomp_ref, iflag_ref, ref_value, area,                &
+!!     &          ave_psf, rms_psf, sdev_psf)
 !
       module take_avarages_4_psf
 !
       use m_precision
-      use m_psf_results
       use m_norms_4_psf
 !
       implicit none
@@ -23,9 +26,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_averaging_range(rmin, rmax)
+      subroutine set_averaging_range(rmin, rmax, numele_psf)
 !
+      integer(kind = kint), intent(in) :: numele_psf
       real(kind = kreal), intent(in) :: rmin, rmax
+!
       integer(kind = kint) :: iele
 !
 !
@@ -42,10 +47,23 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rms_ave_4_psf
+      subroutine cal_rms_ave_4_psf(numnod_psf, numele_psf, ie_psf,      &
+     &          ncomptot_psf, d_nod_psf, ave_psf, rms_psf, sdev_psf)
+!
+      integer(kind = kint), intent(in) :: numnod_psf, numele_psf
+      integer(kind = kint), intent(in) :: ie_psf(numele_psf,3)
+!
+      integer(kind = kint), intent(in) :: ncomptot_psf
+      real(kind = kreal), intent(in)                                    &
+     &                   :: d_nod_psf(numnod_psf,ncomptot_psf)
+!
+      real(kind = kreal), intent(inout) :: ave_psf(ncomptot_psf)
+      real(kind = kreal), intent(inout) :: rms_psf(ncomptot_psf)
+      real(kind = kreal), intent(inout) :: sdev_psf(ncomptot_psf)
 !
       integer(kind = kint) :: iele, icomp, i1, i2, i3
       real(kind = kreal) :: d_ele, coef
+!
 !
       ave_psf =  0.0d0
       rms_psf =  0.0d0
@@ -91,9 +109,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_minmax_psf
+      subroutine cal_minmax_psf(numnod_psf, ncomptot_psf, d_nod_psf,    &
+     &          xmin_psf, xmax_psf)
+!
+      integer(kind = kint), intent(in) :: numnod_psf, ncomptot_psf
+      real(kind = kreal), intent(in)                                    &
+     &                   :: d_nod_psf(numnod_psf,ncomptot_psf)
+!
+      real(kind = kreal), intent(inout) :: xmin_psf(ncomptot_psf)
+      real(kind = kreal), intent(inout) :: xmax_psf(ncomptot_psf)
 !
       integer(kind = kint) :: inod, icomp
+!
 !
       do icomp = 1, ncomptot_psf
         xmin_psf(icomp) = 1.0d30
@@ -110,12 +137,24 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_range_rms_ave_4_psf                                &
-     &         (icomp_ref, iflag_ref, ref_value, area)
+      subroutine cal_range_rms_ave_4_psf(numnod_psf, numele_psf,        &
+     &          ie_psf, ncomptot_psf, d_nod_psf,                        &
+     &          icomp_ref, iflag_ref, ref_value, area,                  &
+     &          ave_psf, rms_psf, sdev_psf)
+!
+      integer(kind = kint), intent(in) :: numnod_psf, numele_psf
+      integer(kind = kint), intent(in) :: ie_psf(numele_psf,3)
+      integer(kind = kint), intent(in) :: ncomptot_psf
+      real(kind = kreal), intent(in)                                    &
+     &                   :: d_nod_psf(numnod_psf,ncomptot_psf)
 !
       integer(kind = kint), intent(in) :: icomp_ref, iflag_ref
       real(kind = kreal), intent(in) :: ref_value
       real(kind = kreal), intent(inout) :: area
+!
+      real(kind = kreal), intent(inout) :: ave_psf(ncomptot_psf)
+      real(kind = kreal), intent(inout) :: rms_psf(ncomptot_psf)
+      real(kind = kreal), intent(inout) :: sdev_psf(ncomptot_psf)
 !
       integer(kind = kint) :: iele, icomp, i1, i2, i3
       real(kind = kreal) :: d_ele, ref_ele

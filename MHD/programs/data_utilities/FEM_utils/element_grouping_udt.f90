@@ -52,7 +52,9 @@
 !
 !    output grid data
 !
-      call set_ele_grp_patch_2_psf_grd(ele_grp1)
+      call set_ele_grp_patch_2_psf_grd                                  &
+     &   (ele_grp1, psf_nod, psf_ele, psf_phys)
+      call allocate_psf_field_data
       call set_psf_mesh_to_ucd_mesh(psf_ucd)
 !
       psf_ucd%ifmt_file = iflag_udt

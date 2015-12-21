@@ -15,8 +15,6 @@
 !      subroutine set_yplane_vector(iflag_vec, nnod_pg, xx_psf, vector, &
 !     &          vect_pg, vert_pg)
 !
-!      subroutine set_zplane_scalar(nnod_pg, scalar, scalar_pg)
-!
 !      subroutine zcframe
 !      subroutine mdframe
 !
@@ -121,8 +119,8 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_zplane_vector(iflag_vec, nnod_pg, xx_psf, vector,  &
-     &          vect_pg, vert_pg)
+      subroutine set_zplane_vector(iflag_vec, nnod_pg, xx_psf,          &
+     &          ncomp_pg, ifld_pg, vector, vect_pg, vert_pg)
 !
       use set_components_flags
       use set_zplane_xyz_vect_pg
@@ -130,29 +128,31 @@
       use set_zplane_sph_vect_pg
 !
       integer(kind = kint), intent(in) :: iflag_vec, nnod_pg
+      integer(kind = kint), intent(in) :: ncomp_pg, ifld_pg
       real(kind = kreal), intent(in) :: xx_psf(nnod_pg,3)
-      real(kind = kreal), intent(in) :: vector(nnod_pg,3)
+      real(kind = kreal), intent(in) :: vector(nnod_pg,ncomp_pg)
 !
       real(kind = kreal), intent(inout) :: vect_pg(2,nnod_pg)
       real(kind = kreal), intent(inout) :: vert_pg(nnod_pg)
 !
 !
       if(iflag_vec .eq. icomp_SPH_VECTOR) then
-        call set_zplane_sph_vector(nnod_pg, xx_psf, vector,             &
+        call set_zplane_sph_vector(nnod_pg, xx_psf, vector(1,ifld_pg),  &
      &      vect_pg, vert_pg)
       else if(iflag_vec .eq. icomp_CYL_VECTOR) then
-        call set_zplane_cyl_vector(nnod_pg, xx_psf, vector,             &
+        call set_zplane_cyl_vector(nnod_pg, xx_psf, vector(1,ifld_pg),  &
      &      vect_pg, vert_pg)
       else
-        call set_zplane_xyz_vector(nnod_pg, vector, vect_pg, vert_pg)
+        call set_zplane_xyz_vector(nnod_pg, vector(1,ifld_pg),          &
+     &      vect_pg, vert_pg)
       end if
 !
       end subroutine set_zplane_vector
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_xplane_vector(iflag_vec, nnod_pg, xx_psf, vector,  &
-     &          vect_pg, vert_pg)
+      subroutine set_xplane_vector(iflag_vec, nnod_pg, xx_psf,          &
+     &          ncomp_pg, ifld_pg, vector, vect_pg, vert_pg)
 !
       use set_components_flags
       use set_zplane_xyz_vect_pg
@@ -160,29 +160,31 @@
       use set_zplane_sph_vect_pg
 !
       integer(kind = kint), intent(in) :: iflag_vec, nnod_pg
+      integer(kind = kint), intent(in) :: ncomp_pg, ifld_pg
       real(kind = kreal), intent(in) :: xx_psf(nnod_pg,3)
-      real(kind = kreal), intent(in) :: vector(nnod_pg,3)
+      real(kind = kreal), intent(in) :: vector(nnod_pg,ncomp_pg)
 !
       real(kind = kreal), intent(inout) :: vect_pg(2,nnod_pg)
       real(kind = kreal), intent(inout) :: vert_pg(nnod_pg)
 !
 !
       if(iflag_vec .eq. icomp_SPH_VECTOR) then
-        call set_xplane_sph_vector(nnod_pg, xx_psf, vector,             &
+        call set_xplane_sph_vector(nnod_pg, xx_psf, vector(1,ifld_pg),  &
      &      vect_pg, vert_pg)
       else if(iflag_vec .eq. icomp_CYL_VECTOR) then
-        call set_xplane_cyl_vector(nnod_pg, xx_psf, vector,             &
+        call set_xplane_cyl_vector(nnod_pg, xx_psf, vector(1,ifld_pg),  &
      &      vect_pg, vert_pg)
       else
-        call set_xplane_xyz_vector(nnod_pg, vector, vect_pg, vert_pg)
+        call set_xplane_xyz_vector(nnod_pg, vector(1,ifld_pg),          &
+     &      vect_pg, vert_pg)
       end if
 !
       end subroutine set_xplane_vector
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_yplane_vector(iflag_vec, nnod_pg, xx_psf, vector,  &
-     &          vect_pg, vert_pg)
+      subroutine set_yplane_vector(iflag_vec, nnod_pg, xx_psf,          &
+     &          ncomp_pg, ifld_pg, vector, vect_pg, vert_pg)
 !
       use set_components_flags
       use set_zplane_xyz_vect_pg
@@ -190,39 +192,26 @@
       use set_zplane_sph_vect_pg
 !
       integer(kind = kint), intent(in) :: iflag_vec, nnod_pg
+      integer(kind = kint), intent(in) :: ncomp_pg, ifld_pg
       real(kind = kreal), intent(in) :: xx_psf(nnod_pg,3)
-      real(kind = kreal), intent(in) :: vector(nnod_pg,3)
+      real(kind = kreal), intent(in) :: vector(nnod_pg,ncomp_pg)
 !
       real(kind = kreal), intent(inout) :: vect_pg(2,nnod_pg)
       real(kind = kreal), intent(inout) :: vert_pg(nnod_pg)
 !
 !
       if(iflag_vec .eq. icomp_SPH_VECTOR) then
-        call set_yplane_sph_vector(nnod_pg, xx_psf, vector,             &
+        call set_yplane_sph_vector(nnod_pg, xx_psf, vector(1,ifld_pg),  &
      &      vect_pg, vert_pg)
       else if(iflag_vec .eq. icomp_CYL_VECTOR) then
-        call set_yplane_cyl_vector(nnod_pg, xx_psf, vector,             &
+        call set_yplane_cyl_vector(nnod_pg, xx_psf, vector(1,ifld_pg),  &
      &      vect_pg, vert_pg)
       else
-        call set_yplane_xyz_vector(nnod_pg, vector, vect_pg, vert_pg)
+        call set_yplane_xyz_vector(nnod_pg, vector(1,ifld_pg),          &
+     &      vect_pg, vert_pg)
       end if
 !
       end subroutine set_yplane_vector
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine set_zplane_scalar(nnod_pg, scalar, scalar_pg)
-!
-      integer(kind = kint), intent(in) :: nnod_pg
-      real(kind = kreal), intent(in) :: scalar(nnod_pg)
-!
-      real(kind = kreal), intent(inout) :: scalar_pg(nnod_pg)
-!
-!
-      scalar_pg(1:nnod_pg) = scalar(1:nnod_pg)
-!
-      end subroutine set_zplane_scalar
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------

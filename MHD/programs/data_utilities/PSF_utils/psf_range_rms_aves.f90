@@ -20,7 +20,6 @@
       use cal_psf_rms_aves
       use take_avarages_4_psf
       use take_normals_4_psf
-      use load_psf_data
 !
       implicit    none
 !
@@ -64,12 +63,13 @@
       read(*,*) rmin, rmax
 !
 !
-      call s_load_psf_data(istep_start)
+      call load_psf_data(istep_start)
       call set_psf_mesh_to_ucd_data(psf_ucd)
 !
-      do i_fld = 1, nfield_psf
-        write(*,*) i_fld, ncomp_psf(i_fld), istack_comp_psf(i_fld),     &
-     &             trim(psf_data_name(i_fld))
+      do i_fld = 1, psf_phys%num_phys
+        write(*,*) i_fld, psf_phys%num_component(i_fld),                &
+     &             psf_phys%istack_component(i_fld),                    &
+     &             trim(psf_phys%phys_name(i_fld))
       end do
 !
       write(*,*) 'input field ID for reference'
@@ -83,16 +83,18 @@
       write(*,*) ' 2:  Less than reference'
       read(*,*)  iflag_ref
 !
-      icomp_ref_field = istack_comp_psf(ifield_ref_field-1)             &
+      icomp_ref_field = psf_phys%istack_component(ifield_ref_field-1)   &
      &                 + icomp_ref_field
 !
 !   Evaluate size of patches
 !
       call allocate_norms_4_psf
-      call cal_center_ele_4_psf
-      call cal_norm_area_4_psf
+      call cal_center_ele_4_psf                                         &
+     &   (psf_nod%numnod, psf_ele%numele, psf_nod%xx, psf_ele%ie)
+      call cal_norm_area_4_psf                                          &
+     &   (psf_nod%numnod, psf_ele%numele, psf_nod%xx, psf_ele%ie)
 !
-      call set_averaging_range(rmin, rmax)
+      call set_averaging_range(rmin, rmax, psf_ele%numele)
 !
       call open_psf_ave_rms_data(psf_file_header)
 !
@@ -108,9 +110,12 @@
         write(*,'(i15)', advance='NO') istep
 !
         call sel_read_udt_file(iminus, istep, psf_ucd)
-        call cal_range_rms_ave_4_psf                                    &
-     &     (icomp_ref_field, iflag_ref, ref_value, area_res)
-        call cal_minmax_psf
+        call cal_range_rms_ave_4_psf(psf_nod%numnod, psf_ele%numele,    &
+     &      psf_ele%ie, psf_phys%ntot_phys, psf_phys%d_fld,             &
+     &      icomp_ref_field, iflag_ref, ref_value, area_res,            &
+     &      ave_psf, rms_psf, sdev_psf)
+        call cal_minmax_psf(psf_nod%numnod, psf_phys%ntot_phys,         &
+     &      psf_phys%d_fld, xmin_psf, xmax_psf)
 !
 !
         call write_psf_ave_rms_data(istep, area_res)

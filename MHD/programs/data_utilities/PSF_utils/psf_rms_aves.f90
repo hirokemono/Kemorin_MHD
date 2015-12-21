@@ -20,7 +20,6 @@
       use cal_psf_rms_aves
       use take_avarages_4_psf
       use take_normals_4_psf
-      use load_psf_data
 !
       implicit    none
 !
@@ -74,7 +73,7 @@
       write(psf_sdev_header,'(a9,a)') 'time_dev_', trim(fname_tmp)
 !
 !
-      call s_load_psf_data(istep_start)
+      call load_psf_data(istep_start)
       call set_psf_mesh_to_ucd_data(psf_ucd)
 !
       psf_ucd%ifmt_file = iflag_udt
@@ -90,18 +89,20 @@
       write(*,*) 'allocate_norms_4_psf'
       call allocate_norms_4_psf
       write(*,*) 'cal_center_ele_4_psf'
-      call cal_center_ele_4_psf
+      call cal_center_ele_4_psf                                         &
+     &   (psf_nod%numnod, psf_ele%numele, psf_nod%xx, psf_ele%ie)
       write(*,*) 'cal_norm_area_4_psf'
-      call cal_norm_area_4_psf
+      call cal_norm_area_4_psf                                          &
+     &   (psf_nod%numnod, psf_ele%numele, psf_nod%xx, psf_ele%ie)
 !
       write(*,*) 'set_averaging_range'
-      call set_averaging_range(rmin, rmax)
+      call set_averaging_range(rmin, rmax, psf_ele%numele)
 !
       call open_psf_ave_rms_data(psf_file_header)
 !
-      allocate( tave_psf(numnod_psf,ncomptot_psf) )
-      allocate( trms_psf(numnod_psf,ncomptot_psf) )
-      allocate( tsdev_psf(numnod_psf,ncomptot_psf) )
+      allocate( tave_psf(psf_nod%numnod, psf_phys%ntot_phys) )
+      allocate( trms_psf(psf_nod%numnod, psf_phys%ntot_phys) )
+      allocate( tsdev_psf(psf_nod%numnod, psf_phys%ntot_phys) )
       tave_psf =  zero
       trms_psf =  zero
       tsdev_psf = zero
@@ -118,17 +119,25 @@
         write(*,'(i15)', advance='NO') istep
 !
         call sel_read_udt_file(iminus, istep, psf_ucd)
-        call cal_rms_ave_4_psf
-        call cal_minmax_psf
+        call cal_rms_ave_4_psf(psf_nod%numnod, psf_ele%numele,          &
+     &      psf_ele%ie, psf_phys%ntot_phys, psf_phys%d_fld,             &
+     &      ave_psf, rms_psf, sdev_psf)
+        call cal_minmax_psf(psf_nod%numnod, psf_phys%ntot_phys,         &
+     &      psf_phys%d_fld, xmin_psf, xmax_psf)
 !
 !
-        do nd = 1, ncomptot_psf
-          do inod = 1, numnod_psf
-            tave_psf(inod,nd) = tave_psf(inod,nd) + d_nod_psf(inod,nd)
+!$omp parallel
+        do nd = 1, psf_phys%ntot_phys
+!$omp do
+          do inod = 1, psf_nod%numnod
+            tave_psf(inod,nd) = tave_psf(inod,nd)                       &
+     &                         + psf_phys%d_fld(inod,nd)
             trms_psf(inod,nd) = trms_psf(inod,nd)                       &
-     &                          + d_nod_psf(inod,nd)**2
+     &                         + psf_phys%d_fld(inod,nd)**2
           end do
+!$omp end do
         end do
+!$omp end parallel
 !
         call write_psf_ave_rms_data(istep, area_total_psf)
       end do
@@ -136,12 +145,16 @@
       call close_psf_ave_rms_data
 !
       acou = one / dble(icou)
-      do nd = 1, ncomptot_psf
-        do inod = 1, numnod_psf
+!$omp parallel
+      do nd = 1, psf_phys%ntot_phys
+!$omp do
+        do inod = 1, psf_nod%numnod
           tave_psf(inod,nd) = tave_psf(inod,nd) * acou
           trms_psf(inod,nd) = sqrt(trms_psf(inod,nd) * acou)
         end do
+!$omp end do
       end do
+!$omp end parallel
 !
 !
       icou = 0
@@ -154,37 +167,67 @@
 !
         call sel_read_udt_file(iminus, istep, psf_ucd)
 !
-        do nd = 1, ncomptot_psf
-          tsdev_psf(1:numnod_psf,nd) = tsdev_psf(1:numnod_psf,nd)       &
-     &                                + (d_nod_psf(1:numnod_psf,nd)     &
-     &                                 - tave_psf(1:numnod_psf,nd))**2
+!$omp parallel
+        do nd = 1, psf_phys%ntot_phys
+!$omp do
+          do inod = 1, psf_nod%numnod
+          tsdev_psf(inod,nd) = tsdev_psf(inod,nd)                       &
+     &                        + (psf_phys%d_fld(inod,nd)                &
+     &                         - tave_psf(inod,nd))**2
+          end do
+!$omp end do
         end do
+!$omp end parallel
       end do
       write(*,*)
 !
-      do nd = 1, ncomptot_psf
-        tsdev_psf(1:numnod_psf,nd)                                      &
-     &         = sqrt(tsdev_psf(1:numnod_psf,nd) * acou)
+!$omp parallel
+      do nd = 1, psf_phys%ntot_phys
+!$omp do
+        do inod = 1, psf_nod%numnod
+          tsdev_psf(inod,nd) = sqrt(tsdev_psf(inod,nd) * acou)
+        end do
+!$omp end do
       end do
+!$omp end parallel
 !
 !
-      do nd = 1, ncomptot_psf
-        d_nod_psf(1:numnod_psf,nd) = tave_psf(1:numnod_psf,nd)
+!$omp parallel
+      do nd = 1, psf_phys%ntot_phys
+!$omp do
+        do inod = 1, psf_nod%numnod
+          psf_phys%d_fld(inod,nd) = tave_psf(inod,nd)
+        end do
+!$omp end do
       end do
+!$omp end parallel
 
       psf_ucd%file_prefix = psf_ave_header
       call sel_write_udt_file(iminus, istep_end, psf_ucd)
 !
-      do nd = 1, ncomptot_psf
-        d_nod_psf(1:numnod_psf,nd) = trms_psf(1:numnod_psf,nd)
+!$omp parallel
+      do nd = 1, psf_phys%ntot_phys
+!$omp do
+        do inod = 1, psf_nod%numnod
+          psf_phys%d_fld(inod,nd) = trms_psf(inod,nd)
+        end do
+!$omp end do
       end do
+!$omp end parallel
 !
       psf_ucd%file_prefix = psf_rms_header
       call sel_write_udt_file(iminus, istep_end, psf_ucd)
 !
-      do nd = 1, ncomptot_psf
-        d_nod_psf(1:numnod_psf,nd) = tsdev_psf(1:numnod_psf,nd)
+!$omp parallel
+      do nd = 1, psf_phys%ntot_phys
+!$omp do
+        do inod = 1, psf_nod%numnod
+          psf_phys%d_fld(inod,nd) = tsdev_psf(inod,nd)
+        end do
+!$omp end do
       end do
+!$omp end parallel
+!
       psf_ucd%file_prefix = psf_sdev_header
       call sel_write_udt_file(iminus, istep_end, psf_ucd)
 !

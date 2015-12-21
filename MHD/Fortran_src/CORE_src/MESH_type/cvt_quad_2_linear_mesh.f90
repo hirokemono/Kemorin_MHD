@@ -45,7 +45,7 @@
       use t_surface_data
 !
       use set_geometry_4_quad27
-      use coordinate_converter
+      use cal_mesh_position
 !
       type(node_data), intent(in) ::    node_q
       type(element_data), intent(in) :: ele_q
@@ -64,9 +64,7 @@
      &    node_q%xx, ele_q%x_ele, surf_q%x_surf,                        &
      &    mesh_l%node%numnod,  mesh_l%node%xx)
 !
-      call position_2_sph(mesh_l%node%numnod, mesh_l%node%xx,           &
-     &    mesh_l%node%rr, mesh_l%node%theta, mesh_l%node%phi,           &
-     &    mesh_l%node%a_r, mesh_l%node%ss, mesh_l%node%a_s)
+      call set_spherical_position(mesh_l%node)
 !
       end subroutine generate_linear_nod_by_quad
 !

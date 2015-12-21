@@ -34,15 +34,15 @@
 !
       use m_psf_results
 !
-      allocate ( center_ele_psf(numele_psf,3) )
-      allocate ( radius_ele_psf(numele_psf) )
-      allocate ( rflag_averaging(numele_psf) )
+      allocate ( center_ele_psf(psf_ele%numele,3) )
+      allocate ( radius_ele_psf(psf_ele%numele) )
+      allocate ( rflag_averaging(psf_ele%numele) )
 !
-      allocate ( norm_ele_psf(numele_psf,3) )
-      allocate ( area_psf(numele_psf) )
+      allocate ( norm_ele_psf(psf_ele%numele,3) )
+      allocate ( area_psf(psf_ele%numele) )
 !
-      allocate ( w_4_norm_nod(numnod_psf) )
-      allocate ( norm_nod_psf(numnod_psf,3) )
+      allocate ( w_4_norm_nod(psf_nod%numnod) )
+      allocate ( norm_nod_psf(psf_nod%numnod,3) )
 !
       center_ele_psf = 0.0d0
       radius_ele_psf = 0.0d0
@@ -76,7 +76,7 @@
 !
       write(50,*)                                                       &
      &     'iele, radius_ele_psf(iele), center_ele_psf(iele,1:3)'
-      do iele = 1, numele_psf
+      do iele = 1, psf_ele%numele
         write(50,*) iele, radius_ele_psf(iele),                         &
      &               center_ele_psf(iele,1:3)
       end do
@@ -92,7 +92,7 @@
       integer(kind = kint) :: iele
 !
       write(50,*) 'iele, area_psf(iele), norm_ele_psf(iele,1:3)'
-      do iele = 1, numele_psf
+      do iele = 1, psf_ele%numele
         write(50,*) iele, area_psf(iele), norm_ele_psf(iele,1:3)
       end do
 !
@@ -107,7 +107,7 @@
       integer(kind = kint) :: inod
 !
       write(50,*) 'inod, norm_nod_psf(inod,1:3)'
-      do inod = 1, numnod_psf
+      do inod = 1, psf_nod%numnod
         write(50,*) inod, norm_nod_psf(inod,1:3)
       end do
 !

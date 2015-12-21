@@ -6,7 +6,8 @@
 !*  subroutine for draw vector map
 !*
 !*************************************************
-!      subroutine set_map_vector(nnod_pg, vector, vect_pg, vert_pg)
+!      subroutine set_map_vector(nnod_pg, ncomp_pg, ifld_pg, vector,    &
+!     &          vect_pg, vert_pg)
 !
 !      subroutine draw_vc_map(nnod_pg, inod_st, inod_ed, inod_int,      &
 !     &          xx_psf, vect_pg, norm_size)
@@ -31,18 +32,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_map_vector(nnod_pg, vector, vect_pg, vert_pg)
+      subroutine set_map_vector(nnod_pg, ncomp_pg, ifld_pg, vector,     &
+     &          vect_pg, vert_pg)
 !
       integer(kind = kint), intent(in) :: nnod_pg
-      real(kind = kreal), intent(in) :: vector(nnod_pg,3)
+      integer(kind = kint), intent(in) :: ncomp_pg, ifld_pg
+      real(kind = kreal), intent(in) :: vector(nnod_pg,ncomp_pg)
 !
       real(kind = kreal), intent(inout) :: vect_pg(2,nnod_pg)
       real(kind = kreal), intent(inout) :: vert_pg(nnod_pg)
 !
 !
-      vect_pg(1,1:nnod_pg) =  vector(1:nnod_pg,3)
-      vect_pg(2,1:nnod_pg) = -vector(1:nnod_pg,2)
-      vert_pg(1:nnod_pg) =    vector(1:nnod_pg,1)
+      vect_pg(1,1:nnod_pg) =  vector(1:nnod_pg,ifld_pg+2)
+      vect_pg(2,1:nnod_pg) = -vector(1:nnod_pg,ifld_pg+1)
+      vert_pg(1:nnod_pg) =    vector(1:nnod_pg,ifld_pg  )
 !
       end subroutine set_map_vector
 !

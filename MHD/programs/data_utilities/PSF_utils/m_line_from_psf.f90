@@ -69,28 +69,28 @@
 !
 !   Count number of lines
 !
-      allocate(ref_tri(numnod_psf))
+      allocate(ref_tri(psf_nod%numnod))
 !
       coef_line(1:10) = zero
       if(nd.eq.1 .or. nd.eq.2 .or. nd.eq.3) then
-        do i1 = 1, numnod_psf
-          ref_tri(i1) = xx_psf(i1,nd)
+        do i1 = 1, psf_nod%numnod
+          ref_tri(i1) = psf_nod%xx(i1,nd)
         end do
         coef_line(nd+6) = one
         coef_line(10)   = -xref
       else if(nd .eq. 11) then
-        do i1 = 1, numnod_psf
-          ref_tri(i1) = rtp_psf(i1,1)
+        do i1 = 1, psf_nod%numnod
+          ref_tri(i1) = psf_nod%rr(i1)
         end do
         coef_line(1:3) = one
         coef_line(10)  = -xref*xref
       else if(nd .eq. 21) then
-        do i1 = 1, numnod_psf
-          ref_tri(i1) = ss_psf(i1)
+        do i1 = 1, psf_nod%numnod
+          ref_tri(i1) = psf_nod%ss(i1)
         end do
       else
-        do i1 = 1, numnod_psf
-          ref_tri(i1) = rtp_psf(i1,1)
+        do i1 = 1, psf_nod%numnod
+          ref_tri(i1) = psf_nod%rr(i1)
         end do
         coef_line(1:2) = one
         coef_line(10)  = -xref*xref
@@ -98,9 +98,9 @@
 !
 !
       call allocate_edge_section_flags(numedge_psf)
-      call count_section_fld_in_triangle(numnod_psf, numedge_psf,       &
-     &    nfield_psf, ncomptot_psf, iedge_psf, ref_tri, xref,           &
-     &    line%num_field, line%ntot_comp, line%nnod)
+      call count_section_fld_in_triangle(psf_nod%numnod, numedge_psf,   &
+     &    psf_phys%num_phys, psf_phys%ntot_phys, iedge_psf,             &
+     &    ref_tri, xref, line%num_field, line%ntot_comp, line%nnod)
 !
 !
       call allocate_ucd_nodal_data(line)
@@ -116,24 +116,25 @@
       call set_section_list_in_triangle(numedge_psf,                    &
      &    istack_smp(1), iedge_4_line)
 !
-      call set_node_on_edge_4_quad_psf(numnod_psf, numedge_psf,         &
-     &    num_linear_edge, iedge_psf, xx_psf, coef_line, ref_tri,       &
+      call set_node_on_edge_4_quad_psf(psf_nod%numnod, numedge_psf,     &
+     &    num_linear_edge, iedge_psf, psf_nod%xx, coef_line, ref_tri,   &
      &    istack_smp(1), istack_smp, iedge_4_line, coef_on_edge)
 !
-      call set_section_fld_in_triangle(numnod_psf, numedge_psf,         &
-     &    nfield_psf, ncomptot_psf, xx_psf, iedge_psf,                  &
-     &    ncomp_psf, psf_data_name, d_nod_psf, line%nnod,               &
-     &    iedge_4_line, coef_on_edge, line%inod_global,                 &
+      call set_section_fld_in_triangle(psf_nod%numnod, numedge_psf,     &
+     &    psf_phys%num_phys, psf_phys%ntot_phys, psf_nod%xx, iedge_psf, &
+     &    psf_phys%num_component, psf_phys%phys_name, psf_phys%d_fld,   &
+     &    line%nnod, iedge_4_line, coef_on_edge, line%inod_global,      &
      &    line%xx, line%num_comp, line%phys_name, line%d_ucd)
 !
       deallocate(ref_tri, iedge_4_line, coef_on_edge)
 !
       call count_sections_in_triangle                                   &
-     &   (numele_psf, ie_psf, ie_edge_psf, line%nele, line%nnod_4_ele)
+     &   (psf_ele%numele, psf_ele%ie, ie_edge_psf,                      &
+     &    line%nele, line%nnod_4_ele)
       call allocate_ucd_ele(line)
 !
-      call set_sections_in_triangle(numele_psf, ie_psf, ie_edge_psf,    &
-     &    line%nele, line%iele_global, line%ie)
+      call set_sections_in_triangle(psf_ele%numele, psf_ele%ie,         &
+     &    ie_edge_psf, line%nele, line%iele_global, line%ie)
 !
       call deallocate_edge_section_flags
 !
