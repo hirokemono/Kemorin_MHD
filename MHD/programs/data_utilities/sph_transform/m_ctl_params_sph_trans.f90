@@ -43,6 +43,7 @@
       use set_control_platform_data
       use set_fixed_time_step_params
       use legendre_transform_select
+      use ucd_IO_select
 !
       use m_ctl_data_4_sph_trans
       use set_control_4_pickup_sph
@@ -53,7 +54,7 @@
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
       call set_control_sph_mesh
-      call set_control_ucd_file_def
+      call set_ucd_file_define(fem_ucd)
 !
 !   setting for spherical transform
 !
@@ -119,6 +120,7 @@
       use set_control_platform_data
       use set_fixed_time_step_params
       use legendre_transform_select
+      use ucd_IO_select
 !
       use m_ctl_data_4_sph_trans
       use set_control_4_pickup_sph
@@ -130,7 +132,7 @@
       call set_control_smp_def(my_rank)
       call set_control_sph_mesh
       call set_control_org_sph_mesh
-      call set_control_ucd_file_def
+      call set_ucd_file_define(fem_ucd)
 !
 !   setting for spherical transform
 !
@@ -196,6 +198,7 @@
       use m_node_id_spherical_IO
       use m_control_params_2nd_files
       use m_FFT_selector
+      use m_ucd_data
 !
       use set_control_nodal_data
       use set_control_sph_data
@@ -221,7 +224,7 @@
       call set_control_mesh_def
       call set_control_sph_mesh
       call set_control_org_sph_mesh
-      call set_control_parallel_field_def
+      call set_control_parallel_field_def(fem_ucd)
       call set_control_org_fld_file_def
 !
 !    file header for field data

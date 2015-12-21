@@ -63,8 +63,7 @@
       read(*,*) rmin, rmax
 !
 !
-      call load_psf_data(istep_start)
-      call set_psf_mesh_to_ucd_data(psf_ucd)
+      call load_psf_data_to_link_IO(istep_start, psf_ucd)
 !
       do i_fld = 1, psf_phys%num_phys
         write(*,*) i_fld, psf_phys%num_component(i_fld),                &

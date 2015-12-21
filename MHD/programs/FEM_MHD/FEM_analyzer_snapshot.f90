@@ -30,8 +30,11 @@
 !
       use m_control_parameter
       use m_cal_max_indices
+      use m_nod_comm_table
+      use m_geometry_data
       use m_node_phys_data
       use m_layering_ele_list
+      use m_ucd_data
 !
       use initialize_4_snapshot
       use output_ucd_mesh_w_original
@@ -41,7 +44,8 @@
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap(layer_tbl1)
 !
-      call output_grd_file_w_org_connect
+      call output_grd_file_w_org_connect                                &
+     &   (node1, ele1, nod_comm, nod_fld1, fem_ucd, merged_ucd)
 !
       call allocate_phys_range(nod_fld1%ntot_phys_viz)
 !
@@ -164,10 +168,11 @@
 !
       use m_t_step_parameter
       use m_cal_max_indices
+      use m_ucd_data
       use output_parallel_ucd_file
 !
 !
-      call finalize_ucd_file_output
+      call finalize_ucd_file_output(fem_ucd, merged_ucd)
 !
       call deallocate_phys_range
 !        call close_boundary_monitor(my_rank)

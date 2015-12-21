@@ -158,8 +158,8 @@
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      call link_node_data_type_2_output(node, ucd)
-      call link_field_data_type_2_output(nod_fld, ucd)
+      call link_node_data_2_ucd(node, ucd)
+      call link_field_data_to_ucd(nod_fld, ucd)
 !
       end subroutine link_field_data_type_2_IO
 !

@@ -92,6 +92,7 @@
       use set_ucd_data
       use product_udt_fields
       use ucd_IO_select
+      use output_parallel_ucd_file
 !
       integer(kind=kint ) :: istep, istep_ucd
 !
@@ -106,7 +107,8 @@
 !
 !    output udt data
           call link_output_ucd_file_once(my_rank, istep_ucd,            &
-     &        ifmt_result_udt_file, result_udt_file_head)
+     &        ifmt_result_udt_file, result_udt_file_head,               &
+     &        nod_fld1, fem_ucd)
         end if
       end do
 !

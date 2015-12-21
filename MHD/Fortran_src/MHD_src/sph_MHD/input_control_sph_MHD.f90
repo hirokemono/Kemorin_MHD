@@ -41,8 +41,8 @@
       use parallel_load_data_4_sph
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_control_4_sph_mhd'
-      call set_control_4_sph_mhd
+      if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
+      call set_control_4_SPH_MHD
       call set_control_4_SPH_to_FEM
 !
 !
@@ -67,8 +67,8 @@
       use parallel_load_data_4_sph
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_control_4_sph_mhd'
-      call set_control_4_sph_mhd
+      if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
+      call set_control_4_SPH_MHD
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh
@@ -91,8 +91,8 @@
       use parallel_load_data_4_sph
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_control_4_sph_mhd'
-      call set_control_4_sph_mhd
+      if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
+      call set_control_4_SPH_MHD
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_sph_mesh'
       call load_para_sph_mesh
@@ -110,8 +110,8 @@
       use parallel_load_data_4_sph
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_control_4_sph_mhd'
-      call set_control_4_sph_mhd
+      if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
+      call set_control_4_SPH_MHD
       call set_control_4_SPH_to_FEM
       call set_ctl_params_dynamobench
 !

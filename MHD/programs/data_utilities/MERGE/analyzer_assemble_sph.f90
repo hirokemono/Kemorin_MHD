@@ -58,6 +58,7 @@
 !
       use m_error_IDs
       use m_control_data_4_merge
+      use m_ucd_data
 !
       use m_node_id_spherical_IO
       use field_IO_select
@@ -69,7 +70,7 @@
       write(*,*) 'Simulation start: PE. ', my_rank
 !
       call read_control_assemble_sph
-      call set_control_4_newsph
+      call set_control_4_newsph(fem_ucd)
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &          'istep_start, istep_end, increment_step',               &

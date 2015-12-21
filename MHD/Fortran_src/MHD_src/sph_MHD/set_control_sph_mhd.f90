@@ -7,7 +7,7 @@
 !>@brief Set control data for spherical transform MHD dynamo simulation
 !!
 !!@verbatim
-!!      subroutine set_control_4_sph_mhd
+!!      subroutine set_control_4_SPH_MHD
 !!@endverbatim
 !
       module set_control_sph_mhd
@@ -25,9 +25,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_control_4_sph_mhd
+      subroutine set_control_4_SPH_MHD
 !
       use m_control_params_2nd_files
+      use m_ucd_data
 !
       use set_control_platform_data
       use set_ctl_parallel_platform
@@ -57,7 +58,7 @@
       call set_control_mesh_def
       call set_control_sph_mesh
       call set_ctl_restart_4_sph_mhd
-      call set_control_parallel_field_def
+      call set_control_parallel_field_def(fem_ucd)
       call set_control_org_sph_mesh
       call set_control_org_fld_file_def
 !
@@ -124,7 +125,7 @@
       call set_ctl_params_pick_gauss
       call set_ctl_params_no_heat_Nu
 !
-      end subroutine set_control_4_sph_mhd
+      end subroutine set_control_4_SPH_MHD
 !
 ! ----------------------------------------------------------------------
 !

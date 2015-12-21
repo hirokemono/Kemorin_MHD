@@ -18,6 +18,7 @@
       use m_control_param_merge
       use set_merged_geometry
       use write_merged_mesh
+      use m_ucd_data
 !
       implicit    none
 !
@@ -26,7 +27,7 @@
 ! ==============================================
 !
       call read_control_4_merge
-      call set_control_4_merge
+      call set_control_4_merge(fem_ucd)
       call set_control_4_merged_mesh
 !
 !  read mesh information

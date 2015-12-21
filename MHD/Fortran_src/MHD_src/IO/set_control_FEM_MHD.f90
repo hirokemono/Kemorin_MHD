@@ -26,6 +26,7 @@
 !
       use calypso_mpi
       use m_control_params_2nd_files
+      use m_ucd_data
 !
       use set_control_platform_data
       use set_control_nodal_data_MHD
@@ -62,7 +63,7 @@
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
       call set_ctl_restart_4_fem_mhd
-      call set_control_parallel_field_def
+      call set_control_parallel_field_def(fem_ucd)
       call set_control_org_fld_file_def
 !
 !   set parameters for general information

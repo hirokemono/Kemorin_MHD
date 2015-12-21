@@ -73,8 +73,7 @@
       write(psf_sdev_header,'(a9,a)') 'time_dev_', trim(fname_tmp)
 !
 !
-      call load_psf_data(istep_start)
-      call set_psf_mesh_to_ucd_data(psf_ucd)
+      call load_psf_data_to_link_IO(istep_start, psf_ucd)
 !
       psf_ucd%ifmt_file = iflag_udt
       psf_ucd%file_prefix = psf_ave_header

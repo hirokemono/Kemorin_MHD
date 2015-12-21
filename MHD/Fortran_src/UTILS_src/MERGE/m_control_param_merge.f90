@@ -4,7 +4,8 @@
 !
 !      subroutine deallocate_control_4_merge
 !
-!      subroutine set_control_4_merge
+!      subroutine set_control_4_merge(ucd)
+!        type(ucd_data), intent(inout) :: ucd
 !      subroutine set_control_4_merged_mesh
 !      subroutine set_control_4_newrst
 !
@@ -103,7 +104,9 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-       subroutine set_control_4_merge
+       subroutine set_control_4_merge(ucd)
+!
+      use t_ucd_data
 !
       use m_geometry_data_4_merge
       use m_read_mesh_data
@@ -116,10 +119,11 @@
       use m_ctl_data_4_fields
       use m_ctl_data_4_time_steps
       use m_node_id_spherical_IO
-      use m_ucd_data
       use set_parallel_file_name
       use set_control_platform_data
       use ucd_IO_select
+!
+      type(ucd_data), intent(inout) :: ucd
 !
       integer(kind=kint ) :: i, icou
 !
@@ -134,7 +138,7 @@
       call set_control_mesh_def
       iorg_mesh_file_fmt = iflag_mesh_file_fmt
 !
-      call set_control_ucd_file_def
+      call set_ucd_file_define(ucd)
 !
       if(udt_file_head_ctl%iflag .gt. 0)                                &
      &      udt_original_header = udt_file_head_ctl%charavalue

@@ -19,8 +19,8 @@
       use m_geometry_data_4_merge
       use m_control_data_4_merge
       use m_control_param_merge
-      use m_ucd_data
       use m_original_ucd_4_merge
+      use m_ucd_data
 !
       use set_merged_geometry
       use set_merged_udt_2_IO
@@ -46,7 +46,7 @@
 !   read control data for merge
 !
       call read_control_4_merge
-      call set_control_4_merge
+      call set_control_4_merge(fem_ucd)
 !
 !  read mesh information
 !
@@ -55,7 +55,7 @@
 !
 !   read field name and number of components
 !
-      call init_ucd_data_4_merge(istep_start)
+      call init_ucd_data_4_merge(istep_start, fem_ucd)
 !
 !    set list array for merged field
 !
@@ -64,8 +64,8 @@
 !
 !   output grid data
 !
-      call link_merged_node_2_ucd_IO
-      call link_merged_ele_2_ucd_IO
+      call link_merged_node_2_ucd_IO(fem_ucd)
+      call link_merged_ele_2_ucd_IO(fem_ucd)
 !
       fem_ucd%ifmt_file = itype_assembled_data
       fem_ucd%file_prefix = merged_data_head
@@ -79,8 +79,8 @@
 !   loop for snap shots
 !
       do istep = istep_start, istep_end, increment_step
-        call read_ucd_data_4_merge(istep)
-        call link_merged_field_2_udt_IO
+        call read_ucd_data_4_merge(istep, fem_ucd)
+        call link_merged_field_2_udt_IO(fem_ucd)
 !
         fem_ucd%ifmt_file = itype_assembled_data
         fem_ucd%file_prefix = merged_data_head

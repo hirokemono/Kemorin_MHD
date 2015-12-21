@@ -34,6 +34,7 @@
       use m_control_parameter
       use m_cal_max_indices
       use m_layering_ele_list
+      use m_ucd_data
 !
       use input_control
       use initialization_4_MHD
@@ -96,7 +97,8 @@
       call end_eleps_time(2)
       call start_eleps_time(4)
 !
-      call output_grd_file_w_org_connect
+      call output_grd_file_w_org_connect                                &
+     &   (node1, ele1, nod_comm, nod_fld1, fem_ucd, merged_ucd)
 !
       call allocate_phys_range(nod_fld1%ntot_phys_viz)
 !       call s_open_boundary_monitor(my_rank, sf_grp1)
@@ -309,7 +311,7 @@
       use m_ucd_data
 !
 !
-      call finalize_ucd_file_output
+      call finalize_ucd_file_output(fem_ucd, merged_ucd)
 !
       call deallocate_phys_range
 !        call close_boundary_monitor(my_rank)

@@ -37,6 +37,7 @@
       use m_jacobians_4_surface
       use m_t_step_parameter
       use m_ele_sf_eg_comm_tables
+      use m_ucd_data
 !
       use nod_phys_send_recv
       use const_mesh_info
@@ -105,7 +106,8 @@
 !  connect grid data to volume output
 !
       if(i_step_output_ucd .gt. 0) then
-        call output_grd_file(node1, ele1, nod_comm)
+        call output_grd_file(node1, ele1, nod_comm, nod_fld1,           &
+     &      fem_ucd, merged_ucd)
       end if
 !
       end subroutine FEM_initialize_back_trans
@@ -171,11 +173,12 @@
       subroutine FEM_finalize_back_trans
 !
       use m_t_step_parameter
+      use m_ucd_data
       use output_parallel_ucd_file
 !
 !
       if(i_step_output_ucd .gt. 0) then
-        call finalize_ucd_file_output
+        call finalize_ucd_file_output(fem_ucd, merged_ucd)
       end if
 !
       end subroutine FEM_finalize_back_trans

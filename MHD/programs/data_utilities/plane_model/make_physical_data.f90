@@ -297,8 +297,8 @@
 !
 !    output data
 !
-        call link_merged_node_2_ucd_IO
-        call link_merged_field_2_udt_IO
+        call link_merged_node_2_ucd_IO(fem_ucd)
+        call link_merged_field_2_udt_IO(fem_ucd)
 !
         fem_ucd%ifmt_file = iflag_udt
         call sel_write_ucd_file(izero, istep, fem_ucd)

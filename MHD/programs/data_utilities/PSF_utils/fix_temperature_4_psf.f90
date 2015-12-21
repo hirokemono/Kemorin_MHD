@@ -65,8 +65,7 @@
 !
       psf_file_header = psf_org_header
       psf_ucd%file_prefix = psf_org_header
-      call load_psf_data(istep_start)
-      call set_psf_mesh_to_ucd_data(psf_ucd)
+      call load_psf_data_to_link_IO(istep_start, psf_ucd)
 !
       psf_ucd%file_prefix = psf_fixed_header
       call sel_write_grd_file(iminus, psf_ucd)

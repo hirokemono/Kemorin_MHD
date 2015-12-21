@@ -7,15 +7,11 @@
 !>@brief set edge information for PSF results
 !!
 !!@verbatim
+!!      subroutine load_psf_data_to_link_IO(istep, psf_ucd)
 !!      subroutine load_psf_data(istep)
+!!
 !!      subroutine allocate_psf_field_data
-!!
 !!      subroutine deallocate_psf_results
-!!
-!!      subroutine set_psf_mesh_to_ucd_data(psf_ucd)
-!!      subroutine set_psf_mesh_to_ucd_mesh(psf_ucd)
-!!      subroutine set_psf_mesh_to_ucd_field(psf_ucd)
-!!        type(ucd_data), intent(inout) :: psf_ucd
 !!@endverbatim
 !
       module m_psf_results
@@ -53,6 +49,25 @@
 !-----------------------------------------------------------------------
 !
       contains
+!
+!-----------------------------------------------------------------------
+!
+      subroutine load_psf_data_to_link_IO(istep, psf_ucd)
+!
+      use set_ucd_data_to_type
+!
+      integer(kind = kint), intent(in) :: istep
+      type(ucd_data), intent(inout) :: psf_ucd
+!
+!
+      call load_psf_data(istep)
+!
+      call link_node_data_2_ucd(psf_nod, psf_ucd)
+      call link_ele_data_2_ucd(psf_ele, psf_ucd)
+      call link_field_data_to_ucd(psf_phys, psf_ucd)
+      psf_ucd%ifmt_file = iflag_psf_fmt
+!
+      end subroutine load_psf_data_to_link_IO
 !
 !-----------------------------------------------------------------------
 !
@@ -166,37 +181,6 @@
       call deallocate_ucd_data(ucd)
 !
       end subroutine set_psf_udt_data
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine set_psf_mesh_to_ucd_data(psf_ucd)
-!
-      use set_ucd_data_to_type
-!
-      type(ucd_data), intent(inout) :: psf_ucd
-!
-!
-      call set_psf_mesh_to_ucd_mesh(psf_ucd)
-      call link_field_data_type_2_output(psf_phys, psf_ucd)
-      psf_ucd%ifmt_file = iflag_psf_fmt
-!
-      end subroutine set_psf_mesh_to_ucd_data
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_psf_mesh_to_ucd_mesh(psf_ucd)
-!
-      use m_geometry_constants
-      use set_ucd_data_to_type
-!
-      type(ucd_data), intent(inout) :: psf_ucd
-!
-!
-      call link_node_data_type_2_output(psf_nod, psf_ucd)
-      call link_ele_data_type_2_output(psf_ele, psf_ucd)
-!
-      end subroutine set_psf_mesh_to_ucd_mesh
 !
 !-----------------------------------------------------------------------
 !

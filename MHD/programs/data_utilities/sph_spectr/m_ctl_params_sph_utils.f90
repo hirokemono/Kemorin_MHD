@@ -45,6 +45,7 @@
       use m_global_gauss_coefs
       use m_node_id_spherical_IO
       use m_control_params_2nd_files
+      use m_ucd_data
 !
       use set_control_nodal_data
       use set_control_sph_data
@@ -67,7 +68,7 @@
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
       call set_control_sph_mesh
-      call set_control_parallel_field_def
+      call set_control_parallel_field_def(fem_ucd)
       call set_control_org_sph_mesh
       call set_control_org_fld_file_def
 !

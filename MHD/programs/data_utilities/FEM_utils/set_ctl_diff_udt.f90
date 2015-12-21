@@ -69,6 +69,7 @@
       use m_ucd_data
       use set_ctl_parallel_platform
       use set_control_platform_data
+      use ucd_IO_select
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank)
@@ -78,7 +79,7 @@
       call set_control_org_fld_file_def
 !
 !
-      call set_control_ucd_file_def
+      call set_ucd_file_define(fem_ucd)
 !
 !   set field data name
 !

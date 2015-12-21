@@ -3,7 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine set_control_4_newsph
+!      subroutine set_control_4_newsph(ucd)
+!        type(ucd_data), intent(inout) :: ucd
 !
       module m_control_param_newsph
 !
@@ -42,7 +43,9 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_control_4_newsph
+      subroutine set_control_4_newsph(ucd)
+!
+      use t_ucd_data
 !
       use m_control_data_4_merge
       use m_ctl_data_4_platforms
@@ -50,11 +53,12 @@
       use m_ctl_data_4_time_steps
       use m_node_id_spherical_IO
       use m_file_format_switch
-      use m_ucd_data
       use set_control_platform_data
       use new_SPH_restart
       use ucd_IO_select
       use skip_comment_f
+!
+      type(ucd_data), intent(inout) :: ucd
 !
 !
       if (ndomain_ctl%iflag .gt. 0) then
@@ -71,7 +75,7 @@
         stop
       end if
 !
-      call set_control_ucd_file_def
+      call set_ucd_file_define(ucd)
 !
       if(sph_file_prefix%iflag .gt. 0) then
         org_sph_head = sph_file_prefix%charavalue

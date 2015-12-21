@@ -4,8 +4,9 @@
 !      subroutine allocate_subdomain_parameters
 !      subroutine deallocate_subdomain_parameters
 !
-!      subroutine init_ucd_data_4_merge(istep)
-!      subroutine read_ucd_data_4_merge(istep)
+!      subroutine init_ucd_data_4_merge(istep, ucd)
+!      subroutine read_ucd_data_4_merge(istep, ucd)
+!        type(ucd_data), intent(inout) :: ucd
 !
 !      subroutine set_field_list_4_merge
 !
@@ -50,49 +51,52 @@
 ! -----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine init_ucd_data_4_merge(istep)
+      subroutine init_ucd_data_4_merge(istep, ucd)
 !
-      use m_ucd_data
+      use t_ucd_data
       use m_constants
       use m_control_param_merge
       use ucd_IO_select
 !
-       integer (kind = kint), intent(in) :: istep
-       integer (kind = kint) :: i
+      integer (kind = kint), intent(in) :: istep
+      type(ucd_data), intent(inout) :: ucd
+!
+      integer (kind = kint) :: i
 !
 !
-      fem_ucd%nnod = ione
-      call set_ucd_file_format(itype_org_ucd_file, fem_ucd)
-      call set_ucd_file_prefix(udt_original_header, fem_ucd)
-      call sel_read_udt_param(izero, istep, fem_ucd)
-      call deallocate_ucd_phys_data(fem_ucd)
+      ucd%nnod = ione
+      call set_ucd_file_format(itype_org_ucd_file, ucd)
+      call set_ucd_file_prefix(udt_original_header, ucd)
+      call sel_read_udt_param(izero, istep, ucd)
+      call deallocate_ucd_phys_data(ucd)
 !
-      org_fld%num_phys =    fem_ucd%num_field
+      org_fld%num_phys =    ucd%num_field
       call allocate_subdomain_parameters
 !
       org_fld%istack_component(0) = 0
       do i = 1, org_fld%num_phys
-        org_fld%num_component(i) =     fem_ucd%num_comp(i)
-        org_fld%phys_name(i) =         fem_ucd%phys_name(i)
+        org_fld%num_component(i) =     ucd%num_comp(i)
+        org_fld%phys_name(i) =         ucd%phys_name(i)
         org_fld%istack_component(i) = org_fld%istack_component(i-1)     &
      &                              + org_fld%num_component(i)
       end do
 !
-      call deallocate_ucd_phys_name(fem_ucd)
+      call deallocate_ucd_phys_name(ucd)
 !
       end subroutine init_ucd_data_4_merge
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine read_ucd_data_4_merge(istep)
+      subroutine read_ucd_data_4_merge(istep, ucd)
 !
-      use m_ucd_data
+      use t_ucd_data
       use m_control_param_merge
       use m_geometry_data_4_merge
       use set_read_geometry_2_merge
       use ucd_IO_select
 !
        integer (kind = kint), intent(in) :: istep
+      type(ucd_data), intent(inout) :: ucd
 !
        integer (kind = kint) :: ip, my_rank
 !
@@ -100,26 +104,25 @@
 ! * PES loops 
 ! ========================
 !
-      fem_ucd%num_field = org_fld%num_phys
-      fem_ucd%ntot_comp = org_fld%istack_component(org_fld%num_phys)
-      call allocate_ucd_phys_name(fem_ucd)
+      ucd%num_field = org_fld%num_phys
+      ucd%ntot_comp = org_fld%istack_component(org_fld%num_phys)
+      call allocate_ucd_phys_name(ucd)
 !
-      call set_ucd_file_format(itype_org_ucd_file, fem_ucd)
-      call set_ucd_file_prefix(udt_original_header, fem_ucd)
+      call set_ucd_file_format(itype_org_ucd_file, ucd)
+      call set_ucd_file_prefix(udt_original_header, ucd)
 !
       do ip =1, num_pe
         my_rank = ip - 1
-        fem_ucd%nnod = subdomain(ip)%node%numnod
-        call allocate_ucd_phys_data(fem_ucd)
+        ucd%nnod = subdomain(ip)%node%numnod
+        call allocate_ucd_phys_data(ucd)
 !
-        call sel_read_udt_file(my_rank, istep, fem_ucd)
+        call sel_read_udt_file(my_rank, istep, ucd)
 !
-        call copy_udt_field_data_merge(ip, ifield_2_copy,               &
-     &      org_fld, fem_ucd)
+        call copy_udt_field_data_merge(ip, ifield_2_copy, org_fld, ucd)
 !
-        call deallocate_ucd_phys_data(fem_ucd)
+        call deallocate_ucd_phys_data(ucd)
       end do
-      call deallocate_ucd_phys_name(fem_ucd)
+      call deallocate_ucd_phys_name(ucd)
 !
       end subroutine read_ucd_data_4_merge
 !

@@ -84,12 +84,13 @@
       use divide_phys_by_delta_t
       use nod_phys_send_recv
       use ucd_IO_select
+      use output_parallel_ucd_file
 !
       integer(kind = kint) :: istep, istep_ucd
 !
 !
 !
-      call link_global_mesh_4_ucd_out
+      call link_global_mesh_2_ucd(node1, ele1, fem_ucd)
 !
       do istep = i_step_init, i_step_number
         if ( mod(istep,i_step_output_ucd) .eq. izero) then
@@ -108,7 +109,8 @@
 !
 !    output udt data
           call link_output_ucd_file_once(my_rank, istep_ucd,            &
-     &        ifmt_diff_udt_file, diff_udt_file_head)
+     &        ifmt_diff_udt_file, diff_udt_file_head,                   &
+     &        nod_fld1, fem_ucd)
         end if
       end do
 !

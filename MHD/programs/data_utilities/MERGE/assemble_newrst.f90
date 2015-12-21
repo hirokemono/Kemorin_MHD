@@ -15,6 +15,7 @@
       use m_control_data_4_merge
       use m_control_param_merge
       use m_read_mesh_data
+      use m_ucd_data
 !
       use set_merged_geometry
       use set_2nd_geometry_4_serial
@@ -42,7 +43,7 @@
 !
       call read_control_4_merge
 !
-      call set_control_4_merge
+      call set_control_4_merge(fem_ucd)
       call set_control_4_newrst
 !
 !     read outline of mesh

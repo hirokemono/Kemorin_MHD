@@ -72,15 +72,14 @@
      &       (irank_tgt, psf_mesh(i_psf), psf_out(i_psf))
           call calypso_mpi_barrier
         else
-          call link_nnod_stacks_type_2_output(nprocs,                   &
-     &          psf_mesh(i_psf)%node, psf_mesh(i_psf)%patch,            &
-     &          psf_out_m(i_psf))
+          call link_nnod_stacks_2_ucd(nprocs, psf_mesh(i_psf)%node,     &
+     &        psf_mesh(i_psf)%patch, psf_out_m(i_psf))
 !
-          call link_node_data_type_2_output                             &
+          call link_node_data_2_ucd                                     &
      &         (psf_mesh(i_psf)%node, psf_out(i_psf))
-          call link_ele_data_type_2_output                              &
+          call link_ele_data_2_ucd                                      &
      &         (psf_mesh(i_psf)%patch, psf_out(i_psf))
-          call link_field_data_type_2_output                            &
+          call link_field_data_to_ucd                                   &
      &         (psf_mesh(i_psf)%field, psf_out(i_psf))
         end if
       end do
@@ -176,15 +175,14 @@
           call merge_ucd_psf_data                                       &
      &       (irank_tgt, iso_mesh(i_iso), iso_out(i_iso))
         else
-          call link_nnod_stacks_type_2_output(nprocs,                   &
-     &        iso_mesh(i_iso)%node, iso_mesh(i_iso)%patch,              &
-     &        iso_out_m(i_iso))
+          call link_nnod_stacks_2_ucd(nprocs, iso_mesh(i_iso)%node,     &
+     &        iso_mesh(i_iso)%patch, iso_out_m(i_iso))
 !
-          call link_node_data_type_2_output                             &
+          call link_node_data_2_ucd                                     &
      &       (iso_mesh(i_iso)%node, iso_out(i_iso))
-          call link_ele_data_type_2_output                              &
+          call link_ele_data_2_ucd                                      &
      &       (iso_mesh(i_iso)%patch, iso_out(i_iso))
-          call link_field_data_type_2_output                            &
+          call link_field_data_to_ucd                                   &
      &       (iso_mesh(i_iso)%field, iso_out(i_iso))
 !
         end if

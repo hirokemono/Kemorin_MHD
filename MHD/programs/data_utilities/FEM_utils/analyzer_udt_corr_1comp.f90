@@ -154,7 +154,7 @@
       integer(kind=kint) :: istep, istep_ucd
 !
 !
-      call link_fem_num_field_2_ucd_out
+      call link_num_field_2_ucd(nod_fld1, fem_ucd)
 !
 !     ---------------------
 !

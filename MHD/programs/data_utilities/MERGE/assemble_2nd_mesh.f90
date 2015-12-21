@@ -17,6 +17,7 @@
       use m_control_data_4_merge
       use m_control_param_merge
       use m_original_ucd_4_merge
+      use m_ucd_data
 !
       use set_merged_geometry
       use set_2nd_geometry_4_serial
@@ -49,7 +50,7 @@
 !
       call read_control_4_merge
 !
-      call set_control_4_merge
+      call set_control_4_merge(fem_ucd)
       call set_control_4_newudt
 !
 !  read mesh information
@@ -63,7 +64,7 @@
 !
 !   read field name and number of components
 !
-      call init_ucd_data_4_merge(istep_start)
+      call init_ucd_data_4_merge(istep_start, fem_ucd)
 !
 !    set list array for merged field
 !
@@ -79,7 +80,7 @@
 !
       do istep = istep_start, istep_end, increment_step
 !        write(*,*) 'read_ucd_data_4_merge', istep
-        call read_ucd_data_4_merge(istep)
+        call read_ucd_data_4_merge(istep, fem_ucd)
         call assemble_2nd_udt_phys(istep)
         write(*,*) 'step', istep, 'finish '
       end do

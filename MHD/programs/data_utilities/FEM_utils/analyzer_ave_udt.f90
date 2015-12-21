@@ -77,6 +77,7 @@
       use m_t_step_parameter
       use m_ctl_params_4_diff_udt
       use m_control_params_2nd_files
+      use m_ucd_data
       use ucd_IO_select
       use set_ucd_data
       use set_ucd_data_to_type
@@ -87,7 +88,7 @@
       integer(kind = kint) :: istep, istep_ucd, icou
 !
 !
-      call link_fem_num_field_2_ucd_out
+      call link_num_field_2_ucd(nod_fld1, fem_ucd)
 !
       istep_ucd = i_step_init / i_step_output_ucd
       call set_data_by_read_ucd_once(my_rank, istep_ucd,                &
@@ -112,7 +113,8 @@
 !
       call set_ucd_file_prefix(ave_udt_file_head, fem_ucd)
       call output_udt_one_snapshot                                      &
-     &   (i_step_number, node1, ele1, nod_comm)
+     &   (i_step_number, node1, ele1, nod_comm, nod_fld1,               &
+     &    fem_ucd, merged_ucd)
 !
       end subroutine analyze_ave_udt
 !

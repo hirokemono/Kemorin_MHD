@@ -53,7 +53,7 @@
       use t_comm_table
       use m_merged_ucd_data
       use hdf5_file_IO
-      use set_ucd_data
+      use set_ucd_data_to_type
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -62,8 +62,7 @@
       type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
-      call link_numnod_stacks_2_output(nprocs, node%istack_numnod,      &
-     &    node%istack_internod, ele%istack_interele, m_ucd)
+      call link_nnod_stacks_2_ucd(nprocs, node, ele, m_ucd)
 !
       call allocate_merged_ucd_data(node%numnod)
       call set_node_double_address                                      &

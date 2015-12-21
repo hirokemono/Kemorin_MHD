@@ -33,6 +33,7 @@
       use m_sph_spectr_data
       use m_t_step_parameter
       use m_t_int_parameter
+      use m_ucd_data
       use field_IO_select
       use r_interpolate_marged_sph
       use copy_time_steps_4_restart
@@ -66,7 +67,7 @@
       write(*,*) 'Simulation start: PE. '
 !
       call read_control_assemble_sph
-      call set_control_4_newsph
+      call set_control_4_newsph(fem_ucd)
 !
       allocate( org_sph_mesh(np_sph_org) )
       allocate( org_sph_phys(np_sph_org) )

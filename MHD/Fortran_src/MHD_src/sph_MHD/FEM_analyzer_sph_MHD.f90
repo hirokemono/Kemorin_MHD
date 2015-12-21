@@ -192,12 +192,13 @@
 !
       use m_t_step_parameter
       use m_cal_max_indices
+      use m_ucd_data
       use output_parallel_ucd_file
 !
 !
      if(i_step_output_ucd.gt.0) then
        call deallocate_phys_range
-       call finalize_ucd_file_output
+       call finalize_ucd_file_output(fem_ucd, merged_ucd)
      end if
 !
       end subroutine FEM_finalize
