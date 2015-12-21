@@ -121,7 +121,7 @@
       use calypso_mpi
 !
       integer(kind = kint) :: inum, knum, j, k, nd, i_fld, j_fld
-      integer(kind = kint) :: inod, ipick, num, icou, jcou
+      integer(kind = kint) :: inod, ipick, num, icou, jcou, kst
 !
 !
       if(num_pick_sph_mode*num_pick_layer .eq. 0) return
@@ -133,8 +133,10 @@
 !$omp end parallel do
 !
 !   Set field at center
+      kst = 1
       if(idx_pick_sph_gl(1,1).eq.0 .and. iflag_rj_center.gt.0           &
      &   .and. iflag_rj_center.gt.0) then
+        kst = kst + 1
         inod = inod_rj_center
 !
         do j_fld = 1, num_fld_pick_sph
@@ -159,7 +161,7 @@
         j = idx_pick_sph_lc(inum)
         if(j .gt. izero) then
 !!$omp do private(knum,k,inod,ipick,j_fld,i_fld,icou,jcou,nd)
-          do knum = 1+iflag_rj_center, num_pick_layer
+          do knum = kst, num_pick_layer
             k = id_pick_layer(knum)
             inod =  j +    (k-1) * nidx_rj(2)
             ipick = knum + (inum-1) * num_pick_layer
