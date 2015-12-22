@@ -31,12 +31,12 @@
       use m_bulk_values
 !
 !
-      if ( numele_in_core .eq. 0 ) return
+      if ( inner_core%numele_fld .eq. 0 ) return
 !
         call fem_icore_mag_potential_icore(node1%numnod,                &
      &      ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%interior_ele,   &
-     &      numele_in_core, inner_core%istack_ele_fld_smp,              &
-     &      iele_in_core, jac1_3d_l%ntot_int, intg_point_t_evo,         &
+     &      inner_core%numele_fld, inner_core%istack_ele_fld_smp,       &
+     &      inner_core%iele_fld, jac1_3d_l%ntot_int, intg_point_t_evo,  &
      &      jac1_3d_l%xjac, jac1_3d_l%an,                               &
      &      nod_fld1%ntot_phys, nod_fld1%d_fld, iphys%i_mag_p,          &
      &      ave_mp_core_local)

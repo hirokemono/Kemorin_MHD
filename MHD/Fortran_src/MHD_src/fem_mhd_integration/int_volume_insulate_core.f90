@@ -31,11 +31,11 @@
       real(kind=kreal) :: vol_i_core_local
 !
 !
-      if ( numele_in_core .gt. 0 ) then
+      if ( inner_core%numele_fld .gt. 0 ) then
 !
         call sum_of_volume_by_ele_table(ele1%numele, ele1%interior_ele, &
-     &      ele1%volume_ele, numele_in_core,                            &
-     &      inner_core%istack_ele_fld_smp, iele_in_core,                &
+     &      ele1%volume_ele, inner_core%numele_fld,                     &
+     &      inner_core%istack_ele_fld_smp, inner_core%iele_fld,         &
      &      vol_i_core_local)
 !
         call MPI_allREDUCE(vol_i_core_local, inner_core%volume, ione,   &

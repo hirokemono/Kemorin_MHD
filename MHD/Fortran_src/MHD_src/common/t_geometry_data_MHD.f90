@@ -5,6 +5,9 @@
 !
 !> @brief structur for node and element list for MHD dynamo
 !
+!!      subroutine count_smp_size_4_area(area)
+!!      subroutine count_empty_smp_area(area)
+!
 !       subroutine allocate_field_nod_list(fld)
 !       subroutine allocate_field_ele_list(fld)
 !       subroutine allocate_geometry_field_smp(fld)
@@ -20,6 +23,7 @@
       module t_geometry_data_MHD
 !
       use m_precision
+      use m_constants
 !
       use t_comm_table
 !
@@ -49,13 +53,6 @@
         integer( kind=kint ), pointer :: istack_nod_fld_smp(:)
 !     stack internal node for smp
         integer( kind=kint ), pointer :: istack_inter_fld_smp(:)
-!
-!>     max number of element for smp
-        integer( kind=kint )  ::  maxnod_fld_smp
-!>     max number of node for smp
-        integer( kind=kint )  ::  max_in_nod_fld_smp
-!>     max number of internal node for smp
-        integer( kind=kint )  ::  maxele_fld_smp
 !
         real(kind=kreal) :: volume
 !>     Area Volume
@@ -96,11 +93,55 @@
         integer(kind=kint), pointer :: ie_org(:,:)
       end type mesh_data_MHD
 !
+      private :: allocate_geometry_field_smp
 !
 ! ----------------------------------------------------------------------
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine count_smp_size_4_area(area)
+!
+      use m_machine_parameter
+      use cal_minmax_and_stacks
+!
+      type(field_geometry_data), intent(inout) :: area
+!
+      integer( kind=kint )  ::  maxnod_fld_smp, max_in_nod_fld_smp
+      integer( kind=kint )  ::  maxele_fld_smp
+!
+!
+      call allocate_geometry_field_smp(area)
+!
+      call count_number_4_smp(np_smp, ione, area%numnod_fld,            &
+     &     area%istack_nod_fld_smp, maxnod_fld_smp)
+!
+      call count_number_4_smp(np_smp, ione, area%internal_node_fld,     &
+     &     area%istack_inter_fld_smp, max_in_nod_fld_smp)
+!
+      call count_number_4_smp                                           &
+     &    (np_smp, area%iele_start_fld, area%iele_end_fld,              &
+     &     area%istack_ele_fld_smp, maxele_fld_smp)
+!
+      end subroutine count_smp_size_4_area
+!
+!-----------------------------------------------------------------------
+!
+      subroutine count_empty_smp_area(area)
+!
+      type(field_geometry_data), intent(inout) :: area
+!
+!
+      call allocate_geometry_field_smp(area)
+!
+      area%istack_nod_fld_smp = 0
+      area%istack_inter_fld_smp = 0
+      area%istack_ele_fld_smp = 0
+!
+      end subroutine count_empty_smp_area
+!
+!-----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
        subroutine allocate_field_nod_list(fld)

@@ -176,7 +176,8 @@
       use m_finite_element_matrix
 !
 !
-      call cal_sol_magne_insulate(node1%numnod, inter_ins_smp_stack,    &
+      call cal_sol_magne_insulate                                       &
+     &   (node1%numnod, insulate1%istack_inter_fld_smp,                 &
      &    insulate1%numnod_fld, insulate1%inod_fld, f1_l%ff,            &
      &    nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld)
 !

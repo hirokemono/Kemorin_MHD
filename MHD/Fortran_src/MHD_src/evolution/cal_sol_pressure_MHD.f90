@@ -251,8 +251,8 @@
 !$omp end parallel do
 !
 !       do iproc = 1, np_smp
-!         ist = inter_cd_smp_stack(iproc-1)+1
-!         ied = inter_cd_smp_stack(iproc)
+!         ist = conduct1%istack_inter_fld_smp(iproc-1)+1
+!         ied = conduct1%istack_inter_fld_smp(iproc)
 !!$omp parallel do private(inod)
 !         do inod = ist, ied
 !          inod = conduct1%inod_fld(inum)

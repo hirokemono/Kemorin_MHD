@@ -46,8 +46,6 @@
       use m_geometry_data
       use m_geometry_data_MHD
       use m_set_layers
-      use count_smp_size_4_MHD
-!
 !
 !    set node list for fluid
 !
@@ -67,7 +65,7 @@
 !
       call dealloc_mat_node_flag
 !
-      call count_smp_size_4_fluid
+      call count_smp_size_4_area(fluid1)
 !
       end subroutine set_layer_fluid
 !
@@ -80,13 +78,12 @@
       use m_geometry_data_MHD
       use m_set_layers
       use t_group_data
-      use count_smp_size_4_MHD
 !
       type(group_data), intent(inout) :: ele_grp
 !
 !    count number of element for insulated core
 !
-      call count_ele_4_layer(ele1%numele, numele_in_core,               &
+      call count_ele_4_layer(ele1%numele, inner_core%numele_fld,        &
      &    num_in_core_ele_grp, in_core_ele_grp_name,                    &
      &    ele_grp%num_grp, ele_grp%istack_grp, ele_grp%grp_name)
 !
@@ -134,9 +131,9 @@
 !
       call dealloc_mat_node_flag
 !
-      call count_smp_size_4_conduct
-      call count_smp_size_4_insulator
-!      call count_smp_size_4_inner_core
+      call count_smp_size_4_area(conduct1)
+      call count_smp_size_4_area(insulate1)
+!      call count_smp_size_4_area(inner_core)
 !
       end subroutine set_layers_4_induction
 !

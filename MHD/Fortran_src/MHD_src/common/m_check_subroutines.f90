@@ -47,7 +47,7 @@
         write(12,*) 'numnod_conduct',  conduct1%numnod_fld
         write(12,*) 'numnod_insulate', insulate1%numnod_fld
         write(12,*) 'numnod_in_core',  inner_core%numnod_fld
-        write(12,*) 'numele_in_core', numele_in_core
+        write(12,*) 'numele_in_core', inner_core%numele_fld
        end if
 !
        end subroutine check_numbers_of_nodes

@@ -23,8 +23,7 @@
       implicit none
 !
       private :: set_layers_4_field
-      private :: count_size_4_smp_layers_type
-      private :: set_empty_layers_4_field, count_empty_smp_layers_type
+      private :: set_empty_layers_4_field
 !
 ! ---------------------------------------------------------------------
 !
@@ -64,10 +63,10 @@
 !
       call dealloc_mat_node_flag
 !
-      call count_size_4_smp_layers_type(MHD_mesh%fluid)
-      call count_size_4_smp_layers_type(MHD_mesh%conduct)
-      call count_size_4_smp_layers_type(MHD_mesh%insulate)
-!      call count_size_4_smp_layers_type(MHD_mesh%inner_core)
+      call count_smp_size_4_area(MHD_mesh%fluid)
+      call count_smp_size_4_area(MHD_mesh%conduct)
+      call count_smp_size_4_area(MHD_mesh%insulate)
+!      call count_smp_size_4_area(MHD_mesh%inner_core)
 !
       end subroutine set_layers_type_4_MHD
 !
@@ -92,10 +91,10 @@
       call set_empty_layers_4_field(MHD_mesh%insulate)
 !      call set_empty_layers_4_field(MHD_mesh%inner_core)
 !
-      call count_empty_smp_layers_type(MHD_mesh%fluid)
-      call count_empty_smp_layers_type(MHD_mesh%conduct)
-      call count_empty_smp_layers_type(MHD_mesh%insulate)
-!      call count_empty_smp_layers_type(MHD_mesh%inner_core)
+      call count_empty_smp_area(MHD_mesh%fluid)
+      call count_empty_smp_area(MHD_mesh%conduct)
+      call count_empty_smp_area(MHD_mesh%insulate)
+!      call count_empty_smp_area(MHD_mesh%inner_core)
 !
       end subroutine set_empty_layers_type_4_MHD
 !
@@ -138,31 +137,6 @@
 ! ---------------------------------------------------------------------
 ! ---------------------------------------------------------------------
 !
-      subroutine count_size_4_smp_layers_type(fld)
-!
-      use m_machine_parameter
-      use t_geometry_data_MHD
-      use cal_minmax_and_stacks
-!
-      type(field_geometry_data), intent(inout) :: fld
-!
-!
-      call allocate_geometry_field_smp(fld)
-!
-      call count_number_4_smp( np_smp, ione, fld%numnod_fld,            &
-     &    fld%istack_nod_fld_smp, fld%maxnod_fld_smp )
-!
-      call count_number_4_smp( np_smp, ione, fld%internal_node_fld,     &
-     &    fld%istack_inter_fld_smp, fld%max_in_nod_fld_smp )
-!
-      call count_number_4_smp( np_smp, fld%iele_start_fld,              &
-     &    fld%iele_end_fld, fld%istack_ele_fld_smp, fld%maxele_fld_smp)
-!
-      end subroutine count_size_4_smp_layers_type
-!
-!-----------------------------------------------------------------------
-! ---------------------------------------------------------------------
-!
       subroutine set_empty_layers_4_field(fld)
 !
       use t_geometry_data_MHD
@@ -180,26 +154,5 @@
       end subroutine set_empty_layers_4_field
 !
 ! ---------------------------------------------------------------------
-!
-      subroutine count_empty_smp_layers_type(fld)
-!
-      use t_geometry_data_MHD
-!
-      type(field_geometry_data), intent(inout) :: fld
-!
-!
-      call allocate_geometry_field_smp(fld)
-!
-      fld%maxnod_fld_smp =     0
-      fld%max_in_nod_fld_smp = 0
-      fld%maxele_fld_smp =     0
-!
-      fld%istack_nod_fld_smp = 0
-      fld%istack_inter_fld_smp = 0
-      fld%istack_ele_fld_smp = 0
-!
-      end subroutine count_empty_smp_layers_type
-!
-!-----------------------------------------------------------------------
 !
       end module set_layers_4_MHD_AMG
