@@ -99,7 +99,8 @@
 !
       if (iflag_restart .eq. i_rst_dbench0) then
         isig = 400
-        call set_initial_temp(isig, node1, numnod_fluid, inod_fluid,    &
+        call set_initial_temp                                           &
+     &     (isig, node1, fluid1%numnod_fld, fluid1%inod_fld,            &
      &      nod_fld1%ntot_phys, iphys%i_velo, iphys%i_press,            &
      &      iphys%i_temp, nod_fld1%d_fld)
 !
@@ -108,7 +109,8 @@
       else if (iflag_restart .eq. i_rst_dbench1                         &
      &    .or. iflag_restart .eq. i_rst_dbench2) then
         isig = 400
-        call set_initial_temp(isig, node1, numnod_fluid, inod_fluid,    &
+        call set_initial_temp                                           &
+     &     (isig, node1, fluid1%numnod_fld, fluid1%inod_fld,            &
      &      nod_fld1%ntot_phys, iphys%i_velo, iphys%i_press,            &
      &      iphys%i_temp, nod_fld1%d_fld)
         isig = 0
@@ -123,7 +125,7 @@
 !
       else if (iflag_restart .le. -100) then
         call set_initial_temp                                           &
-     &     (iflag_restart, node1, numnod_fluid, inod_fluid,             &
+     &     (iflag_restart, node1, fluid1%numnod_fld, fluid1%inod_fld,   &
      &      nod_fld1%ntot_phys, iphys%i_velo, iphys%i_press,            &
      &      iphys%i_temp, nod_fld1%d_fld)
 !
@@ -145,8 +147,8 @@
 !   for kinematic dynamo
 !
       else if (iflag_restart .eq. i_rst_kinematic) then
-        call set_initial_kinematic                                      &
-     &     (node1, numnod_fluid, inod_fluid, nod_fld1%ntot_phys,        &
+        call set_initial_kinematic(node1, fluid1%numnod_fld,            &
+     &      fluid1%inod_fld, nod_fld1%ntot_phys,                        &
      &      iphys%i_velo, iphys%i_press, iphys%i_magne, nod_fld1%d_fld)
         isig = 2000
         if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
@@ -160,7 +162,7 @@
 !
       else if ( iflag_restart .ge. 1000  ) then
         call set_initial_temp                                           &
-     &     (iflag_restart, node1, numnod_fluid, inod_fluid,             &
+     &     (iflag_restart, node1, fluid1%numnod_fld, fluid1%inod_fld,   &
      &      nod_fld1%ntot_phys, iphys%i_velo, iphys%i_press,            &
      &      iphys%i_temp, nod_fld1%d_fld)
         if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then

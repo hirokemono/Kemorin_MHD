@@ -80,9 +80,10 @@
 !
       call cal_sol_vec_conduct_linear                                   &
      &   (node1%numnod, node1%istack_internal_smp, inter_cd_smp_stack,  &
-     &    numnod_conduct, inod_conduct, mhd_fem1_wk%mlump_cd%ml_o,      &
-     &    f1_nl%ff, nod_fld1%ntot_phys, n_vector,                       &
-     &    iphys%i_vecp, iphys%i_pre_uxb, nod_fld1%d_fld, f1_l%ff)
+     &    conduct1%numnod_fld, conduct1%inod_fld,                       &
+     &    mhd_fem1_wk%mlump_cd%ml_o, f1_nl%ff,                          &
+     &    nod_fld1%ntot_phys, n_vector, iphys%i_vecp, iphys%i_pre_uxb,  &
+     &    nod_fld1%d_fld, f1_l%ff)
 !
       end subroutine cal_sol_vect_p_pre_linear
 !
@@ -95,9 +96,10 @@
 !
       call cal_sol_vec_conduct_linear                                   &
      &   (node1%numnod, node1%istack_internal_smp, inter_cd_smp_stack,  &
-     &    numnod_conduct, inod_conduct, mhd_fem1_wk%mlump_cd%ml_o,      &
-     &    f1_nl%ff, nod_fld1%ntot_phys, n_vector,                       &
-     &    iphys%i_magne, iphys%i_pre_uxb, nod_fld1%d_fld, f1_l%ff)
+     &    conduct1%numnod_fld, conduct1%inod_fld,                       &
+     &    mhd_fem1_wk%mlump_cd%ml_o, f1_nl%ff,                          &
+     &    nod_fld1%ntot_phys, n_vector, iphys%i_magne, iphys%i_pre_uxb, &
+     &    nod_fld1%d_fld, f1_l%ff)
 !
       end subroutine cal_sol_magne_pre_linear
 !

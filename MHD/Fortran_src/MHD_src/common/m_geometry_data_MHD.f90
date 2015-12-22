@@ -3,8 +3,6 @@
 !
 !     written by H. Matsui on May, 2009
 !
-!      subroutine allocate_fluid_node_list
-!      subroutine allocate_conduct_node_list
 !      subroutine allocate_inner_core_ele_list
 !      subroutine allocate_element_connect_org(numele, nnod_4_ele)
 !
@@ -29,13 +27,7 @@
 !
 !       Mesh information for fluid segments
       type(field_geometry_data), save :: fluid1
-!fluid1%iele_end_fld
-!
-      integer( kind=kint )  ::  numnod_fluid
-!     number of node on local PE (include external node)
-      integer( kind=kint )  ::  internal_node_fluid
-!     start and end element ID for fluid
-      integer(kind=kint),  allocatable :: inod_fluid(:)
+!fluid1%a_volume
 !
       integer( kind=kint ), allocatable :: iele_fl_smp_stack(:)
 !     smp stack of element on local PE
@@ -51,24 +43,12 @@
       integer( kind=kint )  ::  maxele_fl_smp
 !     smp stack of node on local PE
 !
-      real(kind=kreal) :: vol_fluid
-!     Fluid Volume
-      real(kind=kreal) :: a_vol_fl
-!     1 / (Fluid Volume)
-!
-!
 !   for conductive layer
 !
 !       Mesh information for conductor segments
       type(field_geometry_data), save :: conduct1
-!conduct1%iele_end_fld
+!conduct1%a_volume
 !
-      integer( kind=kint )  ::  numnod_conduct
-!     number of node on local PE (include external node)
-      integer( kind=kint )  ::  internal_node_conduct
-!     start and end element ID for conductor
-      integer(kind=kint), allocatable :: inod_conduct(:)
-!  
       integer( kind=kint ), allocatable :: iele_cd_smp_stack(:)
 !     smp stack of element on local PE
       integer( kind=kint ), allocatable :: inod_cd_smp_stack(:)
@@ -83,16 +63,11 @@
       integer( kind=kint )  ::  maxele_cd_smp
 !     smp stack of node on local PE
 !
-      real(kind=kreal) :: vol_conduct
-!     Conductor Volume
-      real(kind=kreal) :: a_vol_cd
-!     1 / (Conductor Volume)
-!
 !   for insulate layer
 !
 !       Mesh information for insulator segments
       type(field_geometry_data), save :: insulate1
-!insulate1%iele_end_fld
+!insulate1%a_volume
 !
       integer( kind=kint ), allocatable :: iele_ins_smp_stack(:)
 !     smp stack of element on local PE
@@ -108,23 +83,12 @@
       integer( kind=kint )  ::  maxele_ins_smp
 !     smp stack of node on local PE
 !
-      integer( kind=kint )  ::  numnod_insulate
-!     number of node on local PE (include external node)
-      integer( kind=kint )  ::  internal_node_insulate
-!     start and end element ID for insulator
-      integer(kind=kint), allocatable :: inod_insulate(:)
-!  
-        real(kind=kreal) :: vol_insulate
-!     Insulator Volume
-        real(kind=kreal) :: a_vol_ins
-!     1 / (Insulator Volume)
-!
 !
 !   for insulated core
 !
 !       Mesh information for inner core segments
-!      type(field_geometry_data), save :: inner_core
-!inner_core%iele_start_fld
+      type(field_geometry_data), save :: inner_core
+!inner_core%volume
 !
       integer( kind=kint ), allocatable :: iele_in_core_smp_stack(:)
 !     smp stack of element on local PE
@@ -140,16 +104,10 @@
       integer( kind=kint )  ::  maxele_in_core_smp
 !     smp stack of node on local PE
 !
-      integer( kind=kint )  ::  numnod_in_core
-!     number of node on local PE (include external node)
-      integer( kind=kint )  ::  internal_node_in_core
-!     number of node on local PE
       integer( kind=kint )  ::  numele_in_core
 !     number of element on local PE
 !
-      integer(kind=kint), allocatable :: inod_in_core(:)
       integer(kind=kint), allocatable :: iele_in_core(:)
-      real(kind=kreal) :: vol_i_core
 !
 !   original connectivity table
 !
@@ -163,31 +121,6 @@
       contains
 !
 !------------------------------------------------------------------
-!
-       subroutine allocate_fluid_node_list
-!
-!
-       allocate(inod_fluid(numnod_fluid))
-       if (numnod_fluid.gt.0) inod_fluid = 0
-!
-       end subroutine allocate_fluid_node_list
-!
-! ----------------------------------------------------------------------
-!
-       subroutine allocate_conduct_node_list
-!
-!
-       allocate(inod_conduct(numnod_conduct))
-       allocate(inod_insulate(numnod_insulate))
-       allocate(inod_in_core(numnod_in_core))
-!
-       if(numnod_conduct.gt.0) inod_conduct =   0
-       if(numnod_insulate.gt.0) inod_insulate = 0
-       if(numnod_in_core.gt.0) inod_in_core =   0
-!
-       end subroutine allocate_conduct_node_list
-!
-! ----------------------------------------------------------------------
 !
        subroutine allocate_inner_core_ele_list
 !
@@ -286,7 +219,7 @@
 !
        subroutine deallocate_fluid_node_list
 !
-        deallocate(inod_fluid)
+       call deallocate_field_nod_list(fluid1)
 !
        end subroutine deallocate_fluid_node_list
 !
@@ -295,8 +228,9 @@
        subroutine deallocate_conduct_node_list
 !
 !
-       deallocate(inod_conduct, inod_insulate)
-       deallocate(inod_in_core)
+       call deallocate_field_nod_list(conduct1)
+       call deallocate_field_nod_list(insulate1)
+       call deallocate_field_nod_list(inner_core)
 !
        end subroutine deallocate_conduct_node_list
 !
@@ -366,7 +300,7 @@
        write(*,*) 'PE: ', my_rank,                                      &
      &           'inod_fl_smp_stack ', inod_fl_smp_stack
        write(*,*) 'PE: ', my_rank,                                      &
-     &           'internal_node_fluid ', internal_node_fluid
+     &           'internal_node_fluid ', fluid1%internal_node_fld
        write(*,*) 'PE: ', my_rank,                                      &
      &           'inter_fl_smp_stack ', inter_fl_smp_stack
        write(*,*) 'PE: ', my_rank,                                      &
@@ -380,11 +314,12 @@
 !
       integer(kind = kint), intent(in) :: my_rank
 !
-       write(*,*) 'PE: ', my_rank, 'numnod_conduct ', numnod_conduct
+       write(*,*) 'PE: ', my_rank,                                      &
+     &            'numnod_conduct ', conduct1%numnod_fld
        write(*,*) 'PE: ', my_rank,                                      &
      &           'inod_cd_smp_stack ', inod_cd_smp_stack
        write(*,*) 'PE: ', my_rank,                                      &
-     &           'internal_node_conduct ', internal_node_conduct
+     &           'internal_node_conduct ', conduct1%internal_node_fld
        write(*,*) 'PE: ', my_rank,                                      &
      &           'inter_cd_smp_stack ', inter_cd_smp_stack
        write(*,*) 'PE: ', my_rank,                                      &

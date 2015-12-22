@@ -50,7 +50,7 @@
       call MPI_allREDUCE (rms_local(ir_divv) , rms_div_v_sig, 1,        &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
-      rms_div_v_sig = sqrt(rms_div_v_sig / vol_fluid)
+      rms_div_v_sig = sqrt(rms_div_v_sig / fluid1%volume)
 !
       if (rms_div_v_sig .ne. 0.0d0 .and. iloop .ge.0) then
         rsig = ( rms_div_v_sig0-rms_div_v_sig ) / rms_div_v_sig

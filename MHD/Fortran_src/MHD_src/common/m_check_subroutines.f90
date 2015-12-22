@@ -26,8 +26,8 @@
        integer(kind = kint) :: inod, inum
 !
        write(50+my_rank,*) 'inum, inod, ref_temp'
-       do inum = 1, numnod_fluid
-         inod = inod_fluid(inum)
+       do inum = 1, fluid1%numnod_fld
+         inod = fluid1%inod_fld(inum)
          write(50+my_rank,*)                                            &
      &          inum, inod, nod_fld1%d_fld(inod,iphys%i_ref_t)
        end do
@@ -43,10 +43,10 @@
        integer(kind = kint) :: my_rank
 !
        if (my_rank .eq. 0 ) then
-        write(12,*) 'numnod_fluid', numnod_fluid
-        write(12,*) 'numnod_conduct', numnod_conduct
-        write(12,*) 'numnod_insulate', numnod_insulate
-        write(12,*) 'numnod_in_core', numnod_in_core
+        write(12,*) 'numnod_fluid',    fluid1%numnod_fld
+        write(12,*) 'numnod_conduct',  conduct1%numnod_fld
+        write(12,*) 'numnod_insulate', insulate1%numnod_fld
+        write(12,*) 'numnod_in_core',  inner_core%numnod_fld
         write(12,*) 'numele_in_core', numele_in_core
        end if
 !
@@ -61,13 +61,13 @@
        integer(kind = kint) :: my_rank
 !
         write(my_rank+50,*) 'inod_fluid'
-        write(my_rank+50,'(10i16)') inod_fluid
+        write(my_rank+50,'(10i16)') fluid1%inod_fld
         write(my_rank+50,*) 'inod_conduct'
-        write(my_rank+50,'(10i16)') inod_conduct
+        write(my_rank+50,'(10i16)') conduct1%inod_fld
         write(my_rank+50,*) 'inod_insulate'
-        write(my_rank+50,'(10i16)') inod_insulate
+        write(my_rank+50,'(10i16)') insulate1%inod_fld
         write(my_rank+50,*) 'inod_in_core'
-        write(my_rank+50,'(10i16)') inod_in_core
+        write(my_rank+50,'(10i16)') inner_core%inod_fld
 !
        end subroutine check_nodes_4_layers
 !

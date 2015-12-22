@@ -83,7 +83,7 @@
 !
 !
       call cal_sol_vect_pre_conduct_euler(node1%numnod,                 &
-     &    inter_cd_smp_stack, numnod_conduct, inod_conduct,             &
+     &    inter_cd_smp_stack, conduct1%numnod_fld, conduct1%inod_fld,   &
      &    mhd_fem1_wk%mlump_cd%ml, f1_l%ff, f1_nl%ff,                   &
      &    nod_fld1%ntot_phys, n_vector, iphys%i_vecp, nod_fld1%d_fld)
 !
@@ -98,7 +98,7 @@
 !
 !
       call cal_sol_vect_pre_conduct_euler(node1%numnod,                 &
-     &   inter_cd_smp_stack, numnod_conduct, inod_conduct,              &
+     &   inter_cd_smp_stack, conduct1%numnod_fld, conduct1%inod_fld,    &
      &   mhd_fem1_wk%mlump_cd%ml, f1_l%ff, f1_nl%ff,                    &
      &   nod_fld1%ntot_phys, n_vector, iphys%i_magne, nod_fld1%d_fld)
 !
@@ -169,7 +169,7 @@
 !
 !
       call cal_sol_vect_pre_conduct_adams(node1%numnod,                 &
-     &   inter_cd_smp_stack, numnod_conduct, inod_conduct,              &
+     &   inter_cd_smp_stack, conduct1%numnod_fld, conduct1%inod_fld,    &
      &   mhd_fem1_wk%mlump_cd%ml, f1_l%ff, f1_nl%ff,                    &
      &   nod_fld1%ntot_phys, n_vector, iphys%i_vecp, iphys%i_pre_uxb,   &
      &   nod_fld1%d_fld)
@@ -185,7 +185,7 @@
 !
 !
       call cal_sol_vect_pre_conduct_adams(node1%numnod,                 &
-     &    inter_cd_smp_stack, numnod_conduct, inod_conduct,             &
+     &    inter_cd_smp_stack, conduct1%numnod_fld, conduct1%inod_fld,   &
      &    mhd_fem1_wk%mlump_cd%ml, f1_l%ff, f1_nl%ff,                   &
      &    nod_fld1%ntot_phys, n_vector, iphys%i_magne, iphys%i_pre_uxb, &
      &    nod_fld1%d_fld)

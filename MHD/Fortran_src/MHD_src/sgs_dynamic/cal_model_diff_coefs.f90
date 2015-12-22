@@ -96,7 +96,7 @@
      &      numdir, ifield_d, icomp_f, n_int)
       else
         call cal_whole_diff_coef(layer_tbl, iele_fl_smp_stack,          &
-     &      numdir, ifield_d, icomp_f, n_int, vol_fluid)
+     &      numdir, ifield_d, icomp_f, n_int, fluid1%volume)
       end if
 !
       end subroutine cal_diff_coef_fluid
@@ -120,7 +120,7 @@
      &      numdir, ifield_d, icomp_f, n_int)
       else
         call cal_whole_diff_coef(layer_tbl, iele_cd_smp_stack,          &
-     &      numdir, ifield_d, icomp_f, n_int, vol_conduct)
+     &      numdir, ifield_d, icomp_f, n_int, conduct1%volume)
       end if
 !
       end subroutine cal_diff_coef_conduct

@@ -32,10 +32,10 @@
 !
        call allocate_geometry_fluid_smp
 !
-       call count_number_4_smp(np_smp, ione, numnod_fluid,              &
+       call count_number_4_smp(np_smp, ione, fluid1%numnod_fld,         &
      &     inod_fl_smp_stack, maxnod_fl_smp )
 !
-       call count_number_4_smp(np_smp, ione, internal_node_fluid,       &
+       call count_number_4_smp(np_smp, ione, fluid1%internal_node_fld,  &
      &     inter_fl_smp_stack, max_in_nod_fl_smp )
 !
        call count_number_4_smp                                          &
@@ -51,10 +51,11 @@
 !
       call allocate_geometry_conduct_smp
 !
-       call count_number_4_smp(np_smp, ione, numnod_conduct,            &
+       call count_number_4_smp(np_smp, ione, conduct1%numnod_fld,       &
      &     inod_cd_smp_stack, maxnod_cd_smp )
 !
-       call count_number_4_smp(np_smp, ione, internal_node_conduct,     &
+       call count_number_4_smp                                          &
+     &    (np_smp, ione, conduct1%internal_node_fld,                    &
      &     inter_cd_smp_stack, max_in_nod_cd_smp )
 !
        call count_number_4_smp                                          &
@@ -70,10 +71,11 @@
 !
       call allocate_geometry_ins_smp
 !
-       call count_number_4_smp(np_smp, ione, numnod_insulate,           &
+       call count_number_4_smp(np_smp, ione, insulate1%numnod_fld,      &
      &     inod_ins_smp_stack, maxnod_ins_smp )
 !
-       call count_number_4_smp(np_smp, ione, internal_node_insulate,    &
+       call count_number_4_smp                                          &
+     &    (np_smp, ione, insulate1%internal_node_fld,                   &
      &     inter_ins_smp_stack, max_in_nod_ins_smp )
 !
        call count_number_4_smp                                          &
@@ -89,14 +91,15 @@
 !
       call allocate_geometry_incore_smp
 !
-       call count_number_4_smp(np_smp, ione, numnod_in_core,            &
-     &   inod_in_core_smp_stack, maxnod_in_core_smp )
+       call count_number_4_smp(np_smp, ione, inner_core%numnod_fld,     &
+     &     inod_in_core_smp_stack, maxnod_in_core_smp )
 !
-       call count_number_4_smp(np_smp, ione, internal_node_in_core,     &
-     &   inter_in_core_smp_stack, max_in_nod_in_core_smp )
+       call count_number_4_smp                                          &
+     &    (np_smp, ione, inner_core%internal_node_fld,                  &
+     &     inter_in_core_smp_stack, max_in_nod_in_core_smp )
 !
        call count_number_4_smp(np_smp, ione, numele_in_core,            &
-     &   iele_in_core_smp_stack, maxele_in_core_smp )
+     &     iele_in_core_smp_stack, maxele_in_core_smp )
 !
       end subroutine count_smp_size_4_inner_core
 !

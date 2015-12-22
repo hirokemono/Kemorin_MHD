@@ -44,7 +44,7 @@
         call MPI_allREDUCE (ave_mp_core_local, ave_mp_core, 1,          &
      &       CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
-        ave_mp_core = ave_mp_core * vol_i_core
+        ave_mp_core = ave_mp_core * inner_core%volume
         if (my_rank.eq.0) write(84,*) ' ave_mp: ', ave_mp_core
 !
       end subroutine s_cal_average_mag_potential

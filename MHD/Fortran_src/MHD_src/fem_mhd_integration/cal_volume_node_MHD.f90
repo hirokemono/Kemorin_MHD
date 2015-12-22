@@ -12,6 +12,7 @@
       module cal_volume_node_MHD
 !
       use m_precision
+      use m_constants
 !
       use calypso_mpi
       use m_machine_parameter
@@ -79,9 +80,9 @@
 !
        if (iflag_debug.eq.1) then
          write(*,*) 'volume:       ', ele1%volume
-         write(*,*) 'vol_fluid:    ', vol_fluid
-         write(*,*) 'vol_conduct:  ', vol_conduct
-         write(*,*) 'vol_insulate: ', vol_insulate
+         write(*,*) 'vol_fluid:    ', fluid1%volume
+         write(*,*) 'vol_conduct:  ', conduct1%volume
+         write(*,*) 'vol_insulate: ', insulate1%volume
        end if
 !
        end subroutine cal_volume_node
@@ -96,13 +97,13 @@
       call sum_4_volume(ele1%numele, ele1%interior_ele,                 &
      &    iele_fl_smp_stack, ele1%volume_ele, vol_fl_local)
 !
-      call MPI_allREDUCE (vol_fl_local, vol_fluid, 1,                   &
+      call MPI_allREDUCE (vol_fl_local, fluid1%volume, ione,            &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
-      if (vol_fluid .eq. 0.0d0) then
-        a_vol_fl = 1.0d30
+      if (fluid1%volume .eq. 0.0d0) then
+        fluid1%a_volume = 1.0d30
       else
-        a_vol_fl = 1.0d0 / vol_fluid
+        fluid1%a_volume = 1.0d0 / fluid1%volume
       end if
 !
       end subroutine cal_volume_4_fluid
@@ -119,13 +120,13 @@
       call sum_4_volume(ele1%numele, ele1%interior_ele,                 &
      &    iele_cd_smp_stack, ele1%volume_ele, vol_cd_local)
 !
-      call MPI_allREDUCE (vol_cd_local, vol_conduct, 1,                 &
+      call MPI_allREDUCE (vol_cd_local, conduct1%volume, ione,          &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
-      if (vol_conduct .eq. 0.0d0) then
-        a_vol_cd = 1.0d30
+      if (conduct1%volume .eq. 0.0d0) then
+        conduct1%a_volume = 1.0d30
       else
-        a_vol_cd = 1.0d0 / vol_conduct
+        conduct1%a_volume = 1.0d0 / conduct1%volume
       end if
 !
       end subroutine cal_volume_4_conduct
@@ -142,13 +143,13 @@
       call sum_4_volume(ele1%numele, ele1%interior_ele,                 &
      &    iele_ins_smp_stack, ele1%volume_ele, vol_ins_local)
 !
-      call MPI_allREDUCE (vol_ins_local, vol_insulate, 1,               &
+      call MPI_allREDUCE (vol_ins_local, insulate1%volume, ione,        &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
-      if (vol_insulate .eq. 0.0d0) then
-        a_vol_ins = 1.0d30
+      if (insulate1%volume .eq. 0.0d0) then
+        insulate1%a_volume = 1.0d30
       else
-        a_vol_ins = 1.0d0 / vol_insulate
+        insulate1%a_volume = 1.0d0 / insulate1%volume
       end if
 !
       end subroutine cal_volume_4_insulate

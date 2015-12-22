@@ -54,15 +54,16 @@
       call alloc_mat_node_flag(node1%numnod)
 !
       call count_node_4_layer(node1%numnod, node1%internal_node,        &
-     &     numnod_fluid, internal_node_fluid,                           &
+     &     fluid1%numnod_fld, fluid1%internal_node_fld,                 &
      &     fluid1%iele_start_fld, fluid1%iele_end_fld,                  &
      &     ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
-      call allocate_fluid_node_list
+      call allocate_field_nod_list(fluid1)
 !
-        call set_node_4_layer(node1%numnod, numnod_fluid, inod_fluid,   &
-     &      fluid1%iele_start_fld, fluid1%iele_end_fld,                 &
-     &      ele1%numele, ele1%nnod_4_ele, ele1%ie)
+      call set_node_4_layer                                             &
+     &   (node1%numnod, fluid1%numnod_fld, fluid1%inod_fld,             &
+     &    fluid1%iele_start_fld, fluid1%iele_end_fld,                   &
+     &    ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
       call dealloc_mat_node_flag
 !
@@ -94,38 +95,40 @@
       call alloc_mat_node_flag(node1%numnod)
 !
       call count_node_4_layer(node1%numnod, node1%internal_node,        &
-     &    numnod_conduct, internal_node_conduct,                        &
+     &    conduct1%numnod_fld, conduct1%internal_node_fld,              &
      &    conduct1%iele_start_fld, conduct1%iele_end_fld,               &
      &    ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
       call count_node_4_layer(node1%numnod, node1%internal_node,        &
-     &    numnod_insulate, internal_node_insulate,                      &
+     &    insulate1%numnod_fld, insulate1%internal_node_fld,            &
      &    insulate1%iele_start_fld, insulate1%iele_end_fld,             &
      &    ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
 !      call count_node_4_layer(node1%numnod, node1%internal_node,       &
-!     &    numnod_in_core, internal_node_in_core,                       &
+!     &    inner_core%numnod_fld, inner_core%internal_node_fld,         &
 !     &    iele_ic_start, iele_ic_end,                                  &
 !     &    ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
 !  allocate list vector for fluid and conductive layer
 !
-      call allocate_conduct_node_list
+      call allocate_field_nod_list(conduct1)
+      call allocate_field_nod_list(insulate1)
+      call allocate_field_nod_list(inner_core)
 !
 !  set node list
 !
-        call set_node_4_layer                                           &
-     &     (node1%numnod, numnod_conduct, inod_conduct,                 &
+      call set_node_4_layer                                             &
+     &     (node1%numnod, conduct1%numnod_fld, conduct1%inod_fld,       &
      &      conduct1%iele_start_fld, conduct1%iele_end_fld,             &
      &      ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
-        call set_node_4_layer                                           &
-     &     (node1%numnod, numnod_insulate, inod_insulate,               &
+      call set_node_4_layer                                             &
+     &     (node1%numnod, insulate1%numnod_fld, insulate1%inod_fld,     &
      &      insulate1%iele_start_fld, insulate1%iele_end_fld,           &
      &      ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
-!        call set_node_4_layer                                          &
-!     &     (node1%numnod, numnod_in_core, inod_in_core,                &
+!      call set_node_4_layer                                            &
+!     &     (node1%numnod, inner_core%numnod_fld, inner_core%inod_fld,  &
 !     &      iele_ic_start, iele_ic_end,                                &
 !     &      ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !

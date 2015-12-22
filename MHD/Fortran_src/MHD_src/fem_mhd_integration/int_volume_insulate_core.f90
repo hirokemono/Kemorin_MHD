@@ -10,6 +10,7 @@
       module int_volume_insulate_core
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -36,10 +37,10 @@
      &      ele1%volume_ele, numele_in_core, iele_in_core_smp_stack,    &
      &      iele_in_core, vol_i_core_local)
 !
-        call MPI_allREDUCE (vol_i_core_local, vol_i_core, 1,            &
-     &       CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
+        call MPI_allREDUCE(vol_i_core_local, inner_core%volume, ione,   &
+     &      CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
-        if (my_rank.eq.0) write(*,*) vol_i_core
+        if (my_rank.eq.0) write(*,*) inner_core%volume
 !
       end if
 !

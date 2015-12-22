@@ -176,7 +176,8 @@
       call s_init_check_delta_t_data
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
-      call set_reference_temp(node1%numnod, numnod_fluid, inod_fluid,   &
+      call set_reference_temp                                           &
+     &   (node1%numnod, fluid1%numnod_fld, fluid1%inod_fld,             &
      &    node1%xx, node1%rr, node1%a_r, nod_fld1%ntot_phys,            &
      &    iphys%i_ref_t, iphys%i_gref_t, nod_fld1%d_fld)
 !

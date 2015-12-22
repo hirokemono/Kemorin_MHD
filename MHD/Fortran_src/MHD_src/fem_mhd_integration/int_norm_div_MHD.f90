@@ -52,7 +52,7 @@
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
 !
-      div_v_sig = abs(div_v_sig) / vol_fluid
+      div_v_sig = abs(div_v_sig) / fluid1%volume
 !
       if (div_v_sig .ne. 0.0d0 .and. iloop .ge.0) then
         rsig = ( div_v_sig0-div_v_sig ) / div_v_sig

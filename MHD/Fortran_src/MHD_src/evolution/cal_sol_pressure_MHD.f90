@@ -255,7 +255,7 @@
 !         ied = inter_cd_smp_stack(iproc)
 !!$omp parallel do private(inod)
 !         do inod = ist, ied
-!          inod = inod_conduct(inum)
+!          inod = conduct1%inod_fld(inum)
 !          d_nod(inod,i_mag_p)=  + d_nod(inod,i_mag_p)                  &
 !     &               - 0.5d0 * ak_d_magne(1) * ff(inod,1)*ml(inod)
 !         end do
