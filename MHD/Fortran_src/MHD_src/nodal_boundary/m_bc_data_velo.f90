@@ -86,31 +86,19 @@
 !
 !   set node id in an element for velocity boundary 
 !
-      if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_vector_layer'
-      call set_ele_nodal_bc_vector_layer                                &
-     &   (node, ele, iele_fl_start, iele_fl_end, nod_bc1_v)
-      call set_ele_nodal_bc_vector_layer                                &
-     &   (node, ele, iele_fl_start, iele_fl_end, sgs_bc1_v)
+      if(iflag_debug .gt. 0) write(*,*) 'ele_nodal_bc_vector_layer'
+      call ele_nodal_bc_vector_layer(node, ele, fluid1, nod_bc1_v)
+      call ele_nodal_bc_vector_layer(node, ele, fluid1, sgs_bc1_v)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_rotate'
-      call set_ele_nodal_bc_4_rotate                                    &
-     &   (node, ele, iele_fl_start, iele_fl_end, nod_bc1_rot)
+      call set_ele_nodal_bc_4_rotate(node, ele, fluid1, nod_bc1_rot)
       if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_vfree'
-      call set_ele_nodal_bc_scalar_layer                                &
-     &   (node, ele, iele_fl_start, iele_fl_end, nod_bc1_vfree)
+      call ele_nodal_bc_scalar_layer(node, ele, fluid1, nod_bc1_vfree)
       if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_vr0'
-      call set_ele_nodal_bc_scalar_layer                                &
-     &   (node, ele, iele_fl_start, iele_fl_end, nod_bc1_vr0)
+      call ele_nodal_bc_scalar_layer(node, ele, fluid1, nod_bc1_vr0)
       if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_velo_sph'
-      call set_ele_nodal_bc_scalar_layer                                &
-     &   (node, ele, iele_fl_start, iele_fl_end, nod_bc1_vsp)
+      call ele_nodal_bc_scalar_layer(node, ele, fluid1, nod_bc1_vsp)
 !
-      call dealloc_vector_ibc_type(nod_bc1_v)
-      call dealloc_vector_ibc_type(sgs_bc1_v)
-      call dealloc_rotate_ibc_type(nod_bc1_rot)
-      call dealloc_scalar_ibc_type(nod_bc1_vfree)
-      call dealloc_scalar_ibc_type(nod_bc1_vr0)
-      call dealloc_scalar_ibc_type(nod_bc1_vsp)
 !
       end subroutine set_bc_velo_id
 !
@@ -156,13 +144,8 @@
 !
 !   set node id in an element for the pressure boundary
 !
-      call ele_nodal_bc_potential_layer                                 &
-     &   (node, ele, iele_fl_start, iele_fl_end, nod_bc1_p)
-      call dealloc_scalar_ibc_type(nod_bc1_p)
-!
-      call ele_nodal_bc_potential_layer                                 &
-     &   (node, ele, iele_fl_start, iele_fl_end, sgs_bc1_p)
-      call dealloc_scalar_ibc_type(sgs_bc1_p)
+      call ele_nodal_bc_potential_layer(node, ele, fluid1, nod_bc1_p)
+      call ele_nodal_bc_potential_layer(node, ele, fluid1, sgs_bc1_p)
 !
       end subroutine set_bc_press_id
 !

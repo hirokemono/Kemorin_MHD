@@ -74,11 +74,8 @@
      &    nod_bc1_a, sgs_bc1_a)
 !
 !   set node id in an element
-      call set_ele_nodal_bc_vector(node, ele, nod_bc1_a)
-      call set_ele_nodal_bc_vector(node, ele, sgs_bc1_a)
-!
-      call dealloc_vector_ibc_type(nod_bc1_a)
-      call dealloc_vector_ibc_type(sgs_bc1_a)
+      call ele_nodal_bc_vector_whole(node, ele, nod_bc1_a)
+      call ele_nodal_bc_vector_whole(node, ele, sgs_bc1_a)
 !
       end subroutine set_bc_vect_p_id
 !
@@ -116,11 +113,8 @@
 !
 !   set node id in an element for magnetic boundary 
 !
-      call set_ele_nodal_bc_vector(node, ele, nod_bc1_b)
-      call set_ele_nodal_bc_vector(node, ele, sgs_bc1_b)
-!
-      call dealloc_vector_ibc_type(nod_bc1_b)
-      call dealloc_vector_ibc_type(sgs_bc1_b)
+      call ele_nodal_bc_vector_whole(node, ele, nod_bc1_b)
+      call ele_nodal_bc_vector_whole(node, ele, sgs_bc1_b)
 !
       end subroutine set_bc_magne_id
 !
@@ -153,8 +147,7 @@
       call set_bc_fixed_current_id(node, nod_grp, current_nod,          &
      &    nod_bc1_j)
 !
-      call set_ele_nodal_bc_vector(node, ele, nod_bc1_j)
-      call dealloc_vector_ibc_type(nod_bc1_j)
+      call ele_nodal_bc_vector_whole(node, ele, nod_bc1_j)
 !
       end subroutine set_bc_current_id
 !
@@ -187,17 +180,16 @@
 !
 !   set node id in an element for the pressure boundary 
 !
-      call set_ele_nodal_bc_potential(node, ele, nod_bc1_f)
+      call ele_nodal_bc_potential_whole(node, ele, nod_bc1_f)
 !
-      call set_ele_nodal_bc_mag_p_layrer(node, ele,                     &
-     &    iele_ins_start, iele_ins_end, nod_bc1_f, nod_bc1_fins)
-      call set_ele_nodal_bc_mag_p_layrer(node, ele,                     &
-     &    iele_cd_start, iele_cd_end, nod_bc1_f, nod_bc1_fcd)
-!
+      call set_ele_nodal_bc_mag_p_layer                                 &
+     &   (node, ele, insulate1, nod_bc1_f, nod_bc1_fins)
+      call set_ele_nodal_bc_mag_p_layer                                 &
+     &   (node, ele, conduct1,  nod_bc1_f, nod_bc1_fcd)
       call dealloc_scalar_ibc_type(nod_bc1_f)
 !
 !
-      call set_ele_nodal_bc_potential(node, ele, sgs_bc1_f)
+      call ele_nodal_bc_potential_whole(node, ele, sgs_bc1_f)
       call dealloc_scalar_ibc_type(sgs_bc1_f)
 !
       end subroutine set_bc_m_potential_id

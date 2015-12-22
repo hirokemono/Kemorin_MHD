@@ -90,7 +90,7 @@
 !
       cfl_advect0 = 1.0d10
 !
-      do iele = iele_fl_start, iele_fl_end
+      do iele = fluid1%iele_start_fld, fluid1%iele_end_fld
 !
         cfl_tmp = ele1%volume_ele(iele)**(1/3)*2.0d0                    &
      &            / (sqrt(d_ele(iele,ivelo_ele  )**2                    &

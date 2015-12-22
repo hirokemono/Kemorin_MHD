@@ -33,13 +33,14 @@
        call allocate_geometry_fluid_smp
 !
        call count_number_4_smp(np_smp, ione, numnod_fluid,              &
-     &       inod_fl_smp_stack, maxnod_fl_smp )
+     &     inod_fl_smp_stack, maxnod_fl_smp )
 !
        call count_number_4_smp(np_smp, ione, internal_node_fluid,       &
-     &       inter_fl_smp_stack, max_in_nod_fl_smp )
+     &     inter_fl_smp_stack, max_in_nod_fl_smp )
 !
-       call count_number_4_smp(np_smp, iele_fl_start, iele_fl_end,      &
-     &       iele_fl_smp_stack, maxele_fl_smp )
+       call count_number_4_smp                                          &
+     &    (np_smp, fluid1%iele_start_fld, fluid1%iele_end_fld,          &
+     &     iele_fl_smp_stack, maxele_fl_smp )
 !
       end subroutine count_smp_size_4_fluid
 !
@@ -51,13 +52,14 @@
       call allocate_geometry_conduct_smp
 !
        call count_number_4_smp(np_smp, ione, numnod_conduct,            &
-     &   inod_cd_smp_stack, maxnod_cd_smp )
+     &     inod_cd_smp_stack, maxnod_cd_smp )
 !
        call count_number_4_smp(np_smp, ione, internal_node_conduct,     &
-     &   inter_cd_smp_stack, max_in_nod_cd_smp )
+     &     inter_cd_smp_stack, max_in_nod_cd_smp )
 !
-       call count_number_4_smp(np_smp, iele_cd_start, iele_cd_end,      &
-     &   iele_cd_smp_stack, maxele_cd_smp )
+       call count_number_4_smp                                          &
+     &    (np_smp, conduct1%iele_start_fld, conduct1%iele_end_fld,      &
+     &     iele_cd_smp_stack, maxele_cd_smp )
 !
       end subroutine count_smp_size_4_conduct
 !
@@ -69,13 +71,14 @@
       call allocate_geometry_ins_smp
 !
        call count_number_4_smp(np_smp, ione, numnod_insulate,           &
-     &   inod_ins_smp_stack, maxnod_ins_smp )
+     &     inod_ins_smp_stack, maxnod_ins_smp )
 !
        call count_number_4_smp(np_smp, ione, internal_node_insulate,    &
-     &   inter_ins_smp_stack, max_in_nod_ins_smp )
+     &     inter_ins_smp_stack, max_in_nod_ins_smp )
 !
-       call count_number_4_smp(np_smp, iele_ins_start, iele_ins_end,    &
-     &   iele_ins_smp_stack, maxele_ins_smp )
+       call count_number_4_smp                                          &
+     &    (np_smp, insulate1%iele_start_fld, insulate1%iele_end_fld,    &
+     &     iele_ins_smp_stack, maxele_ins_smp )
 !
       end subroutine count_smp_size_4_insulator
 !

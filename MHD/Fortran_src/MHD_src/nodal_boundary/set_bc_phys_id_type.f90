@@ -30,7 +30,6 @@
       use t_mesh_data
       use t_group_data
       use t_nodal_bc_data
-      use set_ele_nod_bc_type
 !
       implicit none
 !
@@ -45,6 +44,7 @@
       use t_geometry_data_MHD
       use set_bc_type_vectors
       use set_bc_type_scalars
+      use set_ele_nod_bc_vectors
 !
       type(mesh_geometry),       intent(in) :: mesh
       type(mesh_data_MHD),       intent(in) :: MHD_mesh
@@ -58,19 +58,19 @@
 !
 !   set node id in an element for velocity boundary 
 !
-      call set_ele_nod_bc_type_vect_layer(mesh, MHD_mesh%fluid,         &
-     &    nodal_bc%velocity)
-      call set_ele_nod_bc_type_vect_layer(mesh, MHD_mesh%fluid,         &
-     &    nodal_bc%sgs_velo)
+      call ele_nodal_bc_vector_layer(mesh%node, mesh%ele,               &
+     &    MHD_mesh%fluid, nodal_bc%velocity)
+      call ele_nodal_bc_vector_layer(mesh%node, mesh%ele,               &
+     &    MHD_mesh%fluid, nodal_bc%sgs_velo)
 !
-      call set_ele_nodal_bc_type_rotate(mesh, MHD_mesh%fluid,           &
-     &    nodal_bc%rotation)
-      call set_ele_nod_bc_type_layer(mesh, MHD_mesh%fluid,              &
-     &    nodal_bc%free_plane)
-      call set_ele_nod_bc_type_layer(mesh, MHD_mesh%fluid,              &
-     &    nodal_bc%no_radial_v)
-      call set_ele_nod_bc_type_layer(mesh, MHD_mesh%fluid,              &
-     &    nodal_bc%free_sphere)
+      call set_ele_nodal_bc_4_rotate(mesh%node, mesh%ele,               &
+     &    MHD_mesh%fluid, nodal_bc%rotation)
+      call ele_nodal_bc_scalar_layer(mesh%node, mesh%ele,               &
+     &    MHD_mesh%fluid, nodal_bc%free_plane)
+      call ele_nodal_bc_scalar_layer(mesh%node, mesh%ele,               &
+     &    MHD_mesh%fluid, nodal_bc%no_radial_v)
+      call ele_nodal_bc_scalar_layer(mesh%node, mesh%ele,               &
+     &    MHD_mesh%fluid, nodal_bc%free_sphere)
 !
       end subroutine set_bc_velo_id_type
 !
@@ -90,9 +90,9 @@
 !
 !   set node id in an element for magnetic boundary 
 !
-      call set_ele_nodal_bc_vector                                      &
+      call ele_nodal_bc_vector_whole                                    &
      &   (mesh%node, mesh%ele, nodal_bc%vector_p)
-      call set_ele_nodal_bc_vector                                      &
+      call ele_nodal_bc_vector_whole                                    &
      &   (mesh%node, mesh%ele, nodal_bc%sgs_vect_p)
 !
       end subroutine set_bc_vect_p_id_type
@@ -113,8 +113,9 @@
 !
 !   set node id in an element for magnetic boundary 
 !
-      call set_ele_nodal_bc_vector(mesh%node, mesh%ele, nodal_bc%magne)
-      call set_ele_nodal_bc_vector                                      &
+      call ele_nodal_bc_vector_whole                                    &
+     &   (mesh%node, mesh%ele, nodal_bc%magne)
+      call ele_nodal_bc_vector_whole                                    &
      &   (mesh%node, mesh%ele, nodal_bc%sgs_magne)
 !
       end subroutine set_bc_magne_id_type
@@ -140,6 +141,7 @@
 !
       use t_geometry_data_MHD
       use set_bc_type_scalars
+      use set_ele_nod_bc_vectors
 !
       type(mesh_geometry),       intent(in) :: mesh
       type(mesh_data_MHD),       intent(in) :: MHD_mesh
@@ -150,11 +152,10 @@
 !
 !   set node id in an element for the temperature boundary 
 !
-      call set_ele_nod_bc_type_layer(mesh, MHD_mesh%fluid,              &
-     &    nodal_bc%temp)
-      call set_ele_nod_bc_type_layer(mesh, MHD_mesh%fluid,              &
-     &    nodal_bc%sgs_temp)
-!
+      call ele_nodal_bc_scalar_layer(mesh%node, mesh%ele,               &
+     &    MHD_mesh%fluid, nodal_bc%temp)
+      call ele_nodal_bc_scalar_layer(mesh%node, mesh%ele,               &
+     &    MHD_mesh%fluid, nodal_bc%sgs_temp)
 !
       end subroutine set_bc_temp_id_type
 !
@@ -165,6 +166,7 @@
 !
       use t_geometry_data_MHD
       use set_bc_type_scalars
+      use set_ele_nod_bc_vectors
 !
       type(mesh_geometry),       intent(in) :: mesh
       type(mesh_data_MHD),       intent(in) :: MHD_mesh
@@ -176,10 +178,10 @@
 !
 !   set node id in an element for the pressure boundary 
 !
-      call set_ele_nodal_bc_type_part_pot(mesh, MHD_mesh%fluid,         &
-     &    nodal_bc%press)
-      call set_ele_nodal_bc_type_part_pot(mesh, MHD_mesh%fluid,         &
-     &    nodal_bc%sgs_press)
+      call ele_nodal_bc_potential_layer(mesh%node, mesh%ele,            &
+     &    MHD_mesh%fluid, nodal_bc%press)
+      call ele_nodal_bc_potential_layer(mesh%node, mesh%ele,            &
+     &    MHD_mesh%fluid, nodal_bc%sgs_press)
 !
       end subroutine set_bc_press_id_type
 !
@@ -188,8 +190,9 @@
       subroutine set_bc_m_potential_id_type(mesh, MHD_mesh, nod_grp,    &
      &          nodal_bc)
 !
-      use set_bc_type_scalars
       use t_geometry_data_MHD
+      use set_bc_type_scalars
+      use set_ele_nod_bc_vectors
 !
       type(mesh_geometry),       intent(in) :: mesh
       type(mesh_data_MHD),       intent(in) :: MHD_mesh
@@ -211,12 +214,18 @@
 !
 !   set node id in an element for the pressure boundary 
 !
-      call set_ele_nodal_bc_type_potential(mesh, nodal_bc%magne_p)
-      call set_ele_nodal_bc_type_potential(mesh, nodal_bc%sgs_mag_p)
-      call set_ele_nodal_bc_type_part_pot(mesh, MHD_mesh%insulate,      &
-     &    nodal_bc%mag_p_ins)
-      call set_ele_nodal_bc_type_part_pot(mesh, MHD_mesh%conduct,       &
-     &    nodal_bc%mag_p_cd)
+      call ele_nodal_bc_potential_whole                                 &
+     &   (mesh%node, mesh%ele, nodal_bc%magne_p)
+      call dealloc_scalar_ibc_type(nodal_bc%magne_p)
+!
+      call ele_nodal_bc_potential_whole                                 &
+     &   (mesh%node, mesh%ele, nodal_bc%sgs_mag_p)
+      call dealloc_scalar_ibc_type(nodal_bc%sgs_mag_p)
+!
+      call ele_nodal_bc_potential_layer(mesh%node, mesh%ele,            &
+     &    MHD_mesh%insulate, nodal_bc%mag_p_ins)
+      call ele_nodal_bc_potential_layer(mesh%node, mesh%ele,            &
+     &    MHD_mesh%conduct, nodal_bc%mag_p_cd)
 !
       end subroutine set_bc_m_potential_id_type
 !
@@ -227,6 +236,7 @@
 !
       use t_geometry_data_MHD
       use set_bc_type_scalars
+      use set_ele_nod_bc_vectors
 !
       type(mesh_geometry),       intent(in) :: mesh
       type(mesh_data_MHD),       intent(in) :: MHD_mesh
@@ -238,8 +248,8 @@
 !
 !   set node id in an element for composition boundary 
 !
-      call set_ele_nod_bc_type_layer(mesh, MHD_mesh%fluid,              &
-     &    nodal_bc%composition)
+      call ele_nodal_bc_scalar_layer(mesh%node, mesh%ele,               &
+     &    MHD_mesh%fluid, nodal_bc%composition)
 !
       end subroutine set_bc_d_scalar_id_type
 !

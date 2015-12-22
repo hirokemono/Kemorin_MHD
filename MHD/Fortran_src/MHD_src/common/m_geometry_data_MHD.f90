@@ -21,16 +21,19 @@
       module m_geometry_data_MHD
 !
       use m_precision
+      use t_geometry_data_MHD
 !
       implicit  none
 !
 !   for fluid layer
 !
+!       Mesh information for fluid segments
+      type(field_geometry_data), save :: fluid1
+!fluid1%iele_end_fld
+!
       integer( kind=kint )  ::  numnod_fluid
 !     number of node on local PE (include external node)
       integer( kind=kint )  ::  internal_node_fluid
-!     number of node on local PE
-      integer( kind=kint )  ::  iele_fl_start, iele_fl_end
 !     start and end element ID for fluid
       integer(kind=kint),  allocatable :: inod_fluid(:)
 !
@@ -56,11 +59,13 @@
 !
 !   for conductive layer
 !
+!       Mesh information for conductor segments
+      type(field_geometry_data), save :: conduct1
+!conduct1%iele_end_fld
+!
       integer( kind=kint )  ::  numnod_conduct
 !     number of node on local PE (include external node)
       integer( kind=kint )  ::  internal_node_conduct
-!     number of node on local PE
-      integer( kind=kint )  ::  iele_cd_start, iele_cd_end
 !     start and end element ID for conductor
       integer(kind=kint), allocatable :: inod_conduct(:)
 !  
@@ -85,6 +90,10 @@
 !
 !   for insulate layer
 !
+!       Mesh information for insulator segments
+      type(field_geometry_data), save :: insulate1
+!insulate1%iele_end_fld
+!
       integer( kind=kint ), allocatable :: iele_ins_smp_stack(:)
 !     smp stack of element on local PE
       integer( kind=kint ), allocatable :: inod_ins_smp_stack(:)
@@ -102,8 +111,6 @@
       integer( kind=kint )  ::  numnod_insulate
 !     number of node on local PE (include external node)
       integer( kind=kint )  ::  internal_node_insulate
-!     number of node on local PE
-      integer( kind=kint )  ::  iele_ins_start, iele_ins_end
 !     start and end element ID for insulator
       integer(kind=kint), allocatable :: inod_insulate(:)
 !  
@@ -114,6 +121,10 @@
 !
 !
 !   for insulated core
+!
+!       Mesh information for inner core segments
+!      type(field_geometry_data), save :: inner_core
+!inner_core%iele_start_fld
 !
       integer( kind=kint ), allocatable :: iele_in_core_smp_stack(:)
 !     smp stack of element on local PE

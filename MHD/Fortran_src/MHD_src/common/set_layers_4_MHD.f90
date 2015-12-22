@@ -55,13 +55,13 @@
 !
       call count_node_4_layer(node1%numnod, node1%internal_node,        &
      &     numnod_fluid, internal_node_fluid,                           &
-     &     iele_fl_start, iele_fl_end,                                  &
+     &     fluid1%iele_start_fld, fluid1%iele_end_fld,                  &
      &     ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
       call allocate_fluid_node_list
 !
         call set_node_4_layer(node1%numnod, numnod_fluid, inod_fluid,   &
-     &      iele_fl_start, iele_fl_end,                                 &
+     &      fluid1%iele_start_fld, fluid1%iele_end_fld,                 &
      &      ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
       call dealloc_mat_node_flag
@@ -95,12 +95,12 @@
 !
       call count_node_4_layer(node1%numnod, node1%internal_node,        &
      &    numnod_conduct, internal_node_conduct,                        &
-     &    iele_cd_start, iele_cd_end,                                   &
+     &    conduct1%iele_start_fld, conduct1%iele_end_fld,               &
      &    ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
       call count_node_4_layer(node1%numnod, node1%internal_node,        &
      &    numnod_insulate, internal_node_insulate,                      &
-     &    iele_ins_start, iele_ins_end,                                 &
+     &    insulate1%iele_start_fld, insulate1%iele_end_fld,             &
      &    ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
 !      call count_node_4_layer(node1%numnod, node1%internal_node,       &
@@ -116,12 +116,12 @@
 !
         call set_node_4_layer                                           &
      &     (node1%numnod, numnod_conduct, inod_conduct,                 &
-     &      iele_cd_start, iele_cd_end,                                 &
+     &      conduct1%iele_start_fld, conduct1%iele_end_fld,             &
      &      ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
         call set_node_4_layer                                           &
      &     (node1%numnod, numnod_insulate, inod_insulate,               &
-     &      iele_ins_start, iele_ins_end,                               &
+     &      insulate1%iele_start_fld, insulate1%iele_end_fld,           &
      &      ele1%numele, ele1%nnod_4_ele, ele1%ie)
 !
 !        call set_node_4_layer                                          &

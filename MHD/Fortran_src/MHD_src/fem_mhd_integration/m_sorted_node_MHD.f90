@@ -89,7 +89,8 @@
 !
       call alloc_type_marix_list                                        &
      &   (ele1%nnod_4_ele, rhs_tbl1, mat_tbl_fl_q)
-      call set_index_list_4_DJDS_mat(iele_fl_start, iele_fl_end,        &
+      call set_index_list_4_DJDS_mat                                    &
+     &   (fluid1%iele_start_fld, fluid1%iele_end_fld,                   &
      &    node1, ele1, rhs_tbl1, DJDS_fluid, mat_tbl_fl_q)
 !
       end subroutine set_index_list_4_mat_fl
@@ -104,7 +105,8 @@
       call alloc_type_marix_list(num_t_linear, rhs_tbl1, mat_tbl_fl_l)
 !
       if (ele1%nnod_4_ele .ne. num_t_linear) then
-        call set_index_list_4_DJDS_mat(iele_cd_start, iele_cd_end,      &
+        call set_index_list_4_DJDS_mat                                  &
+     &     (conduct1%iele_start_fld, conduct1%iele_end_fld,             &
      &      node1, ele1, rhs_tbl1, DJDS_fl_l, mat_tbl_fl_l)
       else
         mat_tbl_fl_l%idx_4_mat = mat_tbl_fl_q%idx_4_mat
@@ -121,12 +123,14 @@
 !
 !      call alloc_type_marix_list                                       &
 !     &   (ele1%nnod_4_ele, rhs_tbl1, mat_tbl_cd_q)
-!      call set_index_list_4_DJDS_mat(iele_cd_start, iele_cd_end,       &
+!      call set_index_list_4_DJDS_mat                                   &
+!     &   (conduct1%iele_start_fld, conduct1%iele_end_fld,              &
 !     &    node1, ele1, rhs_tbl1, DJDS_conduct, mat_tbl_cd_q)
 !
       call alloc_type_marix_list                                        &
      &   (ele1%nnod_4_ele, rhs_tbl1, mat_tbl_full_cd_q)
-      call set_index_list_4_DJDS_mat(iele_cd_start, iele_cd_end,        &
+      call set_index_list_4_DJDS_mat                                    &
+     &   (conduct1%iele_start_fld, conduct1%iele_end_fld,               &
      &    node1, ele1, rhs_tbl1, DJDS_entire, mat_tbl_full_cd_q)
 !
       end subroutine set_index_list_4_mat_cd
@@ -143,9 +147,11 @@
      &   (num_t_linear, rhs_tbl1, mat_tbl_full_cd_l)
 !
       if (ele1%nnod_4_ele .ne. num_t_linear) then
-        call set_index_list_4_DJDS_mat(iele_cd_start, iele_cd_end,      &
+        call set_index_list_4_DJDS_mat                                  &
+     &     (conduct1%iele_start_fld, conduct1%iele_end_fld,             &
      &      node1, ele1, rhs_tbl1, DJDS_cd_l, mat_tbl_cd_l)
-        call set_index_list_4_DJDS_mat(iele_cd_start, iele_cd_end,      &
+        call set_index_list_4_DJDS_mat                                  &
+     &     (conduct1%iele_start_fld, conduct1%iele_end_fld,             &
      &      node1, ele1, rhs_tbl1, DJDS_linear, mat_tbl_full_cd_l)
       else
         mat_tbl_cd_l%idx_4_mat =      mat_tbl_cd_q%idx_4_mat
@@ -164,7 +170,8 @@
 !
       call alloc_type_marix_list                                        &
      &   (ele1%nnod_4_ele, rhs_tbl1, mat_tbl_ins_q)
-      call set_index_list_4_DJDS_mat(iele_ins_start, iele_ins_end,      &
+      call set_index_list_4_DJDS_mat                                    &
+     &   (insulate1%iele_start_fld, insulate1%iele_end_fld,             &
      &    node1, ele1, rhs_tbl1, DJDS_insulator, mat_tbl_ins_q)
 !
       end subroutine set_index_list_4_mat_ins
@@ -180,7 +187,8 @@
      &   (num_t_linear, rhs_tbl1, mat_tbl_ins_l)
 !
       if (ele1%nnod_4_ele .ne. num_t_linear) then
-        call set_index_list_4_DJDS_mat( iele_ins_start, iele_ins_end,   &
+        call set_index_list_4_DJDS_mat                                  &
+     &     (insulate1%iele_start_fld, insulate1%iele_end_fld,           &
      &      node1, ele1, rhs_tbl1, DJDS_ins_l,  mat_tbl_ins_l)
       else
         mat_tbl_ins_l%idx_4_mat = mat_tbl_ins_q%idx_4_mat

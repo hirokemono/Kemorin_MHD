@@ -70,10 +70,8 @@
 !
 !   set node id in an element for the temperature boundary 
 !
-      call set_ele_nodal_bc_scalar_layer                                &
-     &   (node, ele, iele_fl_start, iele_fl_end, nod_bc1_t)
-      call set_ele_nodal_bc_scalar_layer                                &
-     &   (node, ele, iele_fl_start, iele_fl_end, sgs_bc1_t)
+      call ele_nodal_bc_scalar_layer(node, ele, fluid1, nod_bc1_t)
+      call ele_nodal_bc_scalar_layer(node, ele, fluid1, sgs_bc1_t)
 !
       end subroutine set_bc_temp_id
 !
@@ -106,10 +104,8 @@
 !
 !   set node id in an element for composition boundary
 !
-      call set_ele_nodal_bc_scalar_layer                                &
-     &   (node, ele, iele_fl_start, iele_fl_end, nod_bc1_c)
-      call set_ele_nodal_bc_scalar_layer                                &
-     &   (node, ele, iele_fl_start, iele_fl_end, sgs_bc1_c)
+      call ele_nodal_bc_scalar_layer(node, ele, fluid1, nod_bc1_c)
+      call ele_nodal_bc_scalar_layer(node, ele, fluid1, sgs_bc1_c)
 !
       end subroutine set_bc_composition_id
 !

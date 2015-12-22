@@ -91,17 +91,18 @@
 !  set list vector for ordering
 !
       call const_table_by_layers(ele1%numele, mat_flag_mhd(1),          &
-     &          iele_fl_start, iele_cd_start, iele_ins_start,           &
-     &          iele_fl_end,   iele_cd_end,   iele_ins_end,             &
+     &    fluid1%iele_start_fld,    conduct1%iele_start_fld,            &
+     &    insulate1%iele_start_fld, fluid1%iele_end_fld,                &
+     &    conduct1%iele_end_fld,    insulate1%iele_end_fld,             &
      &          new2oldele_layer(1), old2newele_layer(1) )
 !
       if (iflag_debug .gt. iflag_minimum_msg) then
        write(*,*) 'iele_fl_start, iele_fl_end',                         &
-     &           iele_fl_start, iele_fl_end
+     &           fluid1%iele_start_fld, fluid1%iele_end_fld
        write(*,*) 'iele_cd_start, iele_cd_end',                         &
-     &           iele_cd_start, iele_cd_end
+     &           conduct1%iele_start_fld, conduct1%iele_end_fld
        write(*,*) 'iele_ins_start, iele_ins_end',                       &
-     &           iele_ins_start, iele_ins_end
+     &           insulate1%iele_start_fld, insulate1%iele_end_fld
       end if
 !
 !   ordereing of connectivity, element group, and surface group

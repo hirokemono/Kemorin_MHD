@@ -67,15 +67,15 @@
       use m_solver_djds_MHD
 !
 !
-      call set_djds_layer_connectivity                                  &
-     &    (node1, ele1, ele1%nnod_4_ele, iele_fl_start, iele_fl_end,    &
-     &     DJDS_comm_fl, solver_C, DJDS_fluid)
+      call set_djds_layer_connectivity(node1, ele1, ele1%nnod_4_ele,    &
+     &    fluid1%iele_start_fld, fluid1%iele_end_fld,                   &
+     &    DJDS_comm_fl, solver_C, DJDS_fluid)
 !
       if (ele1%nnod_4_ele .ne. num_t_linear) then
         call set_djds_layer_connectivity(node1, ele1, num_t_linear,     &
-     &     ione, ele1%numele, DJDS_comm_etr, solver_C, DJDS_linear)
-        call set_djds_layer_connectivity                                &
-     &     (node1, ele1, num_t_linear, iele_fl_start, iele_fl_end,      &
+     &      ione, ele1%numele, DJDS_comm_etr, solver_C, DJDS_linear)
+        call set_djds_layer_connectivity(node1, ele1, num_t_linear,     &
+     &      fluid1%iele_start_fld, fluid1%iele_end_fld,                 &
      &      DJDS_comm_fl, solver_C, DJDS_fl_l)
       else
         call link_djds_connect_structs(DJDS_entire, DJDS_linear)
@@ -83,19 +83,19 @@
       end if
 !
 !
-!      call set_djds_layer_connectivity                                 &
-!     &   (node1, ele1, ele1%nnod_4_ele, iele_cd_start, iele_cd_end,    &
+!      call set_djds_layer_connectivity(node1, ele1, ele1%nnod_4_ele,   &
+!     &    conduct1%iele_start_fld, conduct1%iele_end_fld,              &
 !     &    DJDS_comm_etr, solver_C, DJDS_conduct)
-!      call set_djds_layer_connectivity                                 &
-!     &   (node1, ele1, ele1%nnod_4_ele, iele_ins_start, iele_ins_end,  &
+!      call set_djds_layer_connectivity(node1, ele1, ele1%nnod_4_ele,   &
+!     &    insulate1%iele_start_fld, insulate1%iele_end_fld,            &
 !     &    DJDS_comm_etr, solver_C, DJDS_insulator)
 !
 !      if ( ele1%nnod_4_ele .ne. num_t_linear) then
-!        call set_djds_layer_connectivity                               &
-!     &     (node1, ele1, num_t_linear, iele_cd_start, iele_cd_end,     &
+!        call set_djds_layer_connectivity(node1, ele1, num_t_linear,    &
+!     &      conduct1%iele_start_fld, conduct1%iele_end_fld,            &
 !     &      DJDS_comm_etr, solver_C, DJDS_cd_l)
-!        call set_djds_layer_connectivity                               &
-!     &     (node1, ele1, num_t_linear, iele_ins_start, iele_ins_end,   &
+!        call set_djds_layer_connectivity(node1, ele1, num_t_linear,    &
+!     &      insulate1%iele_start_fld, insulate1%iele_end_fld,          &
 !     &      DJDS_comm_etr, solver_C, DJDS_ins_l)
 !      else
 !        call link_djds_connect_structs(DJDS_conduct, DJDS_cd_l)

@@ -102,7 +102,7 @@
         end do
 !
         do k1 = 1, ele1%nnod_4_ele
-          do iele = iele_cd_start, iele_cd_end
+          do iele = conduct1%iele_start_fld, conduct1%iele_end_fld
             inod = ele1%ie(iele,k1)
             in = DJDS_entire%OLDtoNEW(inod)
             Bmat_DJDS%aiccg(9*in-8) = 0.0d0

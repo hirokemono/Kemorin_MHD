@@ -172,8 +172,7 @@
       type(ucd_data), intent(inout) :: ucd
 !
 !
-      call alloc_phys_name_type_by_output(ucd, psf_phys)
-      call alloc_phys_data_type(psf_nod%numnod, psf_phys)
+      call alloc_phys_data_type_by_output(ucd, psf_nod, psf_phys)
 !
       psf_phys%d_fld(1:psf_nod%numnod,1:psf_phys%ntot_phys)             &
      &   = ucd%d_ucd(1:psf_nod%numnod,1:psf_phys%ntot_phys)
