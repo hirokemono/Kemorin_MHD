@@ -36,7 +36,7 @@
       subroutine int_vol_divergence_velo
 !
 !
-      call int_vol_fractional_div_ele(iele_fl_smp_stack,                &
+      call int_vol_fractional_div_ele(fluid1%istack_ele_fld_smp,        &
      &    iphys%i_velo, iak_diff_v)
 !
       end subroutine int_vol_divergence_velo

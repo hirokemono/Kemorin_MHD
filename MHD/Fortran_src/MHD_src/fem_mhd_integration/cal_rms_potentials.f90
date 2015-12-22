@@ -47,7 +47,7 @@
 !
       rms_local(i_rms%i_press) = zero
       bulk_local(j_ave%i_press) = zero
-      call int_all_4_scalar (iele_fl_smp_stack, num_int,                &
+      call int_all_4_scalar (fluid1%istack_ele_fld_smp, num_int,        &
      &         i_rms%i_press, j_ave%i_press, iphys%i_press)
 !
       call MPI_allREDUCE ( bulk_local(j_ave%i_press) , ave_pr, ione,    &

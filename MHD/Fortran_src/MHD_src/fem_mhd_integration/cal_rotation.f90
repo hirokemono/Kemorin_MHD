@@ -73,7 +73,7 @@
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       call choose_int_vol_rotations(iflag_4_supg,                       &
-     &    iele_fl_smp_stack, i_vector)
+     &    fluid1%istack_ele_fld_smp, i_vector)
 !
       call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &

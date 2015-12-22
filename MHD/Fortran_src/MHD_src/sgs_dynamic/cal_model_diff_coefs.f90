@@ -95,7 +95,7 @@
         call cal_layerd_diff_coef(layer_tbl,                            &
      &      numdir, ifield_d, icomp_f, n_int)
       else
-        call cal_whole_diff_coef(layer_tbl, iele_fl_smp_stack,          &
+        call cal_whole_diff_coef(layer_tbl, fluid1%istack_ele_fld_smp,  &
      &      numdir, ifield_d, icomp_f, n_int, fluid1%volume)
       end if
 !

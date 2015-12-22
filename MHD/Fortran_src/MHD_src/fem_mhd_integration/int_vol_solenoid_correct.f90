@@ -33,8 +33,8 @@
       subroutine int_vol_velo_co
 !
 !
-      call int_vol_solenoid_co(iele_fl_smp_stack, iphys%i_p_phi,        &
-     &    iak_diff_v)
+      call int_vol_solenoid_co(fluid1%istack_ele_fld_smp,               &
+     &    iphys%i_p_phi, iak_diff_v)
 !
       end subroutine int_vol_velo_co
 !

@@ -259,7 +259,7 @@
       if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
         if (iset_DIFF_model_coefs .eq. 0) then
           do i = 1, num_diff_kinds
-            call set_diff_coefs_whole_ele(iele_fl_smp_stack, i)
+            call set_diff_coefs_whole_ele(fluid1%istack_ele_fld_smp, i)
           end do
         else
           do i = 1, num_diff_kinds

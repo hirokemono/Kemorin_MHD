@@ -50,42 +50,42 @@
       if (i_field .eq. iphys%i_h_advect) then
         call int_vol_scalar_inertia                                     &
      &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
-     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_temp,          &
+     &      fluid1%istack_ele_fld_smp, intg_point_t_evo, iphys%i_temp,  &
      &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,       &
      &      coef_nega_t, fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_ph_advect) then
         call int_vol_scalar_inertia                                     &
      &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
-     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_par_temp,      &
-     &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,       &
-     &      coef_nega_t, fem1_wk, f1_nl)
+     &      fluid1%istack_ele_fld_smp, intg_point_t_evo,                &
+     &      iphys%i_par_temp, fld_ele1%ntot_phys, iphys_ele%i_velo,     &
+     &      fld_ele1%d_fld, coef_nega_t, fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_h_flux_div) then
         call int_vol_div_w_const                                        &
      &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
-     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_h_flux,        &
-     &      coef_nega_t, fem1_wk, f1_nl)
+     &      fluid1%istack_ele_fld_smp, intg_point_t_evo,                &
+     &      iphys%i_h_flux, coef_nega_t, fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_ph_flux_div) then
         call int_vol_div_w_const                                        &
      &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
-     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_ph_flux,       &
-     &      coef_nega_t, fem1_wk, f1_nl)
+     &      fluid1%istack_ele_fld_smp, intg_point_t_evo,                &
+     &      iphys%i_ph_flux, coef_nega_t, fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_SGS_div_h_flux) then
         if(iflag_commute_heat .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_vec_flux                                 &
      &       (node1, ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, nod_fld1,    &
-     &        iele_fl_smp_stack, intg_point_t_evo,                      &
+     &        fluid1%istack_ele_fld_smp, intg_point_t_evo,              &
      &        iphys%i_velo, iphys%i_temp, iphys%i_SGS_h_flux,           &
      &        ifilter_final, ak_diff(1,iak_diff_hf), coef_nega_t,       &
      &        fem1_wk, mhd_fem1_wk, f1_nl)
         else
           call int_vol_div_w_const                                      &
      &       (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,               &
-     &        iele_fl_smp_stack, intg_point_t_evo, iphys%i_SGS_h_flux,  &
-     &        coef_nega_t, fem1_wk, f1_nl)
+     &        fluid1%istack_ele_fld_smp, intg_point_t_evo,              &
+     &        iphys%i_SGS_h_flux, coef_nega_t, fem1_wk, f1_nl)
         end if
       end if
 !
@@ -105,36 +105,37 @@
       if (i_field .eq. iphys%i_h_advect)  then
         call int_vol_scalar_inertia_upw                                 &
      &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
-     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_temp,          &
+     &      fluid1%istack_ele_fld_smp, intg_point_t_evo, iphys%i_temp,  &
      &      fld_ele1%ntot_phys, iphys_ele%i_velo, iphys_ele%i_velo,     &
      &      fld_ele1%d_fld, coef_nega_t, fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_ph_advect) then
         call int_vol_scalar_inertia_upw                                 &
      &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
-     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_par_temp,      &
-     &      fld_ele1%ntot_phys, iphys_ele%i_velo, iphys_ele%i_velo,     &
-     &      fld_ele1%d_fld, coef_nega_t, fem1_wk, f1_nl)
+     &      fluid1%istack_ele_fld_smp, intg_point_t_evo,                &
+     &      iphys%i_par_temp, fld_ele1%ntot_phys, iphys_ele%i_velo,     &
+     &      iphys_ele%i_velo, fld_ele1%d_fld, coef_nega_t,              &
+     &      fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_h_flux_div) then
         call int_vol_div_w_const_upw                                    &
      &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
-     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_h_flux,        &
-     &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,       &
-     &      coef_nega_t, fem1_wk, f1_nl)
+     &      fluid1%istack_ele_fld_smp, intg_point_t_evo,                &
+     &      iphys%i_h_flux, fld_ele1%ntot_phys, iphys_ele%i_velo,       &
+     &      fld_ele1%d_fld, coef_nega_t, fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_ph_flux_div) then
         call int_vol_div_w_const_upw                                    &
      &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
-     &      iele_fl_smp_stack, intg_point_t_evo, iphys%i_ph_flux,       &
-     &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,       &
-     &      coef_nega_t, fem1_wk, f1_nl)
+     &      fluid1%istack_ele_fld_smp, intg_point_t_evo,                &
+     &      iphys%i_ph_flux, fld_ele1%ntot_phys, iphys_ele%i_velo,      &
+     &      fld_ele1%d_fld, coef_nega_t, fem1_wk, f1_nl)
 !
       else if (i_field .eq. iphys%i_SGS_div_h_flux) then
         if(iflag_commute_heat .eq. id_SGS_commute_ON) then
           call int_vol_div_SGS_vec_flux_upw                             &
      &       (node1, ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, nod_fld1,    &
-     &        iele_fl_smp_stack, intg_point_t_evo,                      &
+     &        fluid1%istack_ele_fld_smp, intg_point_t_evo,              &
      &        iphys%i_velo, iphys%i_temp, iphys%i_SGS_h_flux,           &
      &        ifilter_final, ak_diff(1,iak_diff_hf),                    &
      &        fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,     &
@@ -142,9 +143,9 @@
         else
           call int_vol_div_w_const_upw                                  &
      &       (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,               &
-              iele_fl_smp_stack, intg_point_t_evo, iphys%i_SGS_h_flux,  &
-     &        fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,     &
-     &        coef_nega_t, fem1_wk, f1_nl)
+              fluid1%istack_ele_fld_smp, intg_point_t_evo,              &
+     &        iphys%i_SGS_h_flux, fld_ele1%ntot_phys, iphys_ele%i_velo, &
+     &        fld_ele1%d_fld, coef_nega_t, fem1_wk, f1_nl)
         end if
       end if
 !

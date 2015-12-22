@@ -39,7 +39,8 @@
 !
       mhd_fem1_wk%ff_m_smp = 0.0d0
       if (coef_velo.gt.0.0d0) then
-        call int_vol_initial_vector(iele_fl_smp_stack, iphys%i_velo)
+        call int_vol_initial_vector                                     &
+     &      (fluid1%istack_ele_fld_smp, iphys%i_velo)
       end if
 !
       end subroutine int_vol_initial_velo
@@ -87,7 +88,8 @@
 !
       mhd_fem1_wk%ff_m_smp = 0.0d0
       if (coef_temp.gt.0.0d0) then
-        call int_vol_initial_scalar(iele_fl_smp_stack, iphys%i_temp)
+        call int_vol_initial_scalar                                     &
+     &     (fluid1%istack_ele_fld_smp, iphys%i_temp)
       end if
 !
       end subroutine int_vol_initial_temp
@@ -103,8 +105,8 @@
 !
       mhd_fem1_wk%ff_m_smp = 0.0d0
       if (coef_temp.gt.0.0d0) then
-        call int_vol_initial_scalar(iele_fl_smp_stack,                  &
-     &       iphys%i_par_temp)
+        call int_vol_initial_scalar                                     &
+     &     (fluid1%istack_ele_fld_smp, iphys%i_par_temp)
       end if
 !
       end subroutine int_vol_initial_part_temp
@@ -120,7 +122,8 @@
 !
       mhd_fem1_wk%ff_m_smp = 0.0d0
       if (coef_light.gt.0.0d0) then
-        call int_vol_initial_scalar(iele_fl_smp_stack, iphys%i_light)
+        call int_vol_initial_scalar                                     &
+     &     (fluid1%istack_ele_fld_smp, iphys%i_light)
       end if
 !
       end subroutine int_vol_initial_d_scalar

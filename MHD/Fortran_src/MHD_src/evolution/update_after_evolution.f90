@@ -162,7 +162,7 @@
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_filter_v_on_ele'
            call sel_int_diff_vector_on_ele                              &
-     &        (iele_fl_smp_stack, iphys%i_filter_velo, i_dfvx)
+     &        (fluid1%istack_ele_fld_smp, iphys%i_filter_velo, i_dfvx)
          end if
 !
          if (iflag_commute_velo .eq. id_SGS_commute_ON                  &
@@ -181,7 +181,7 @@
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_velocity_on_ele'
            call sel_int_diff_vector_on_ele                              &
-     &        (iele_fl_smp_stack, iphys%i_velo, i_dvx)
+     &        (fluid1%istack_ele_fld_smp, iphys%i_velo, i_dvx)
          end if
        end if
 !

@@ -51,7 +51,7 @@
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
      &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
      &      i_vect, i_scalar, i_flux, nod_fld1%d_fld, fem1_wk%vector_1)
-        call fem_skv_divergence(iele_fl_smp_stack,                      &
+        call fem_skv_divergence(fluid1%istack_ele_fld_smp,              &
      &      intg_point_t_evo, k2, ele1, jac1_3d_q,                      &
      &      fem1_wk%vector_1, fem1_wk%sk6)
       end do
@@ -87,7 +87,7 @@
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
      &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
      &      i_vect, i_scalar, i_flux, nod_fld1%d_fld, fem1_wk%vector_1)
-        call fem_skv_divergence_upw(iele_fl_smp_stack,                  &
+        call fem_skv_divergence_upw(fluid1%istack_ele_fld_smp,          &
      &      intg_point_t_evo, k2, d_ele(1,iele_velo), ele1, jac1_3d_q,  &
      &      fem1_wk%vector_1, fem1_wk%sk6)
       end do

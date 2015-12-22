@@ -169,7 +169,7 @@
       call s_count_sgs_components(node1%numnod, ele1%numele, layer_tbl)
 !
       if (iflag_debug.gt.0)  write(*,*)' make comm. table for fluid'
-      call s_const_comm_table_fluid(nprocs, iele_fl_smp_stack,          &
+      call s_const_comm_table_fluid(nprocs, fluid1%istack_ele_fld_smp,  &
      &    node1, ele1, nod_comm, DJDS_comm_fl)
 !
       call deallocate_surface_geom_type(surf1)

@@ -72,7 +72,7 @@
        call scalar_phys_2_each_element(node1, ele1, nod_fld1,           &
      &     k2, iphys%i_gref_t, fem1_wk%scalar_1)
 !
-        call fem_skv_stratified_galerkin(iele_fl_smp_stack,             &
+        call fem_skv_stratified_galerkin(fluid1%istack_ele_fld_smp,     &
      &      intg_point_t_evo, k2, fem1_wk%scalar_1, d_ele(1,iele_velo), &
      &      mhd_fem1_wk%xx_e, ele1, jac1_3d_q, fem1_wk%sk6)
       end do
@@ -104,7 +104,7 @@
         call scalar_phys_2_each_element(node1, ele1, nod_fld1,          &
      &      k2, iphys%i_gref_t, fem1_wk%scalar_1)
 !
-        call fem_skv_stratified_upwind(iele_fl_smp_stack,               &
+        call fem_skv_stratified_upwind(fluid1%istack_ele_fld_smp,       &
      &      intg_point_t_evo, k2, fem1_wk%scalar_1, d_ele(1,iele_velo), &
      &      mhd_fem1_wk%xx_e, ele1, jac1_3d_q, fem1_wk%sk6)
       end do

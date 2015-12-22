@@ -45,7 +45,8 @@
       real(kind = kreal), intent(inout) :: rsig
 !
 !
-      call int_rms_divergence(iele_fl_smp_stack, ir_divv, iphys%i_velo)
+      call int_rms_divergence                                           &
+     &   (fluid1%istack_ele_fld_smp, ir_divv, iphys%i_velo)
 !
       call MPI_allREDUCE (rms_local(ir_divv) , rms_div_v_sig, 1,        &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
@@ -130,7 +131,8 @@
       use m_geometry_data_MHD
       use m_node_phys_data
 !
-      call int_rms_divergence(iele_fl_smp_stack, ir_divv, iphys%i_velo)
+      call int_rms_divergence                                           &
+     &   (fluid1%istack_ele_fld_smp, ir_divv, iphys%i_velo)
 !
       end subroutine int_rms_div_v
 !
@@ -168,7 +170,7 @@
       use m_geometry_data_MHD
       use m_node_phys_data
 !
-      call int_rms_divergence(iele_fl_smp_stack, ir_divv_f,             &
+      call int_rms_divergence(fluid1%istack_ele_fld_smp, ir_divv_f,     &
      &    iphys%i_filter_velo)
 !
       end subroutine int_rms_div_filter_v

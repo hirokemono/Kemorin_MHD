@@ -40,7 +40,8 @@
       use m_element_phys_data
 !
 !
-      call vector_on_element_1st(iele_fl_smp_stack, intg_point_t_evo,   &
+      call vector_on_element_1st                                        &
+     &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    nod_fld1%ntot_phys, iphys%i_velo, nod_fld1%d_fld,             &
      &    fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%iflag_update,  &
      &    fld_ele1%d_fld)
@@ -88,7 +89,8 @@
       use m_element_phys_data
 !
 !
-      call rotation_on_element_1st(iele_fl_smp_stack, intg_point_t_evo, &
+      call rotation_on_element_1st                                      &
+     &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    nod_fld1%ntot_phys, iphys%i_velo, nod_fld1%d_fld,             &
      &    fld_ele1%ntot_phys, iphys_ele%i_vort,                         &
      &    fld_ele1%iflag_update, fld_ele1%d_fld)

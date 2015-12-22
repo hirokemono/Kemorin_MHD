@@ -67,7 +67,7 @@
 !          call  SGS_const_vector_each_ele(node1, ele1, nod_fld1,       &
 !     &         k2, iphys%i_velo, iphys%i_light, iphys%i_SGS_c_flux,    &
 !     &         coef_nega_c, mhd_fem1_wk%sgs_v1, fem1_wk%vector_1)
-!          call fem_skv_scl_inertia_modsgs_pg(iele_fl_smp_stack,        &
+!          call fem_skv_scl_inertia_modsgs_pg(fluid1%istack_ele_fld_smp,&
 !     &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_cf),      &
 !     &        ele1, jac1_3d_q, FEM1_elen, fem1_wk%scalar_1,            &
 !     &        mhd_fem1_wk%sgs_v1, fem1_wk%vector_1,                    &
@@ -75,12 +75,12 @@
 !        else if(iflag_SGS_comp_flux .ne. id_SGS_none) then
 !          call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1, k2,   &
 !     &        iphys%i_SGS_c_flux, coef_nega_c, mhd_fem1_wk%sgs_v1)
-!          call fem_skv_scl_inertia_sgs_pg(iele_fl_smp_stack,           &
+!          call fem_skv_scl_inertia_sgs_pg(fluid1%istack_ele_fld_smp,   &
 !     &        num_int, k2, ele1, jac1_3d_q,                            &
 !     &        fem1_wk%scalar_1, mhd_fem1_wk%sgs_v1,                    &
 !     &        d_ele(1,iele_velo), fem1_wk%sk6)
 !        else
-          call fem_skv_scalar_inertia_type(iele_fl_smp_stack,           &
+          call fem_skv_scalar_inertia_type(fluid1%istack_ele_fld_smp,   &
      &        num_int, k2, fem1_wk%scalar_1, d_ele(1,iele_velo),        &
      &        ele1, jac1_3d_q, fem1_wk%sk6)
 !        end if
@@ -124,7 +124,7 @@
 !          call SGS_const_vector_each_ele(node1, ele1, nod_fld1,        &
 !     &        k2, iphys%i_velo, iphys%i_light, iphys%i_SGS_c_flux,     &
 !     &        coef_nega_c, mhd_fem1_wk%sgs_v1, fem1_wk%vector_1)
-!          call fem_skv_scl_inertia_msgs_upw(iele_fl_smp_stack,         &
+!          call fem_skv_scl_inertia_msgs_upw(fluid1%istack_ele_fld_smp, &
 !     &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_cf),      &
 !     &        ele1, jac1_3d_q, FEM1_elen, fem1_wk%scalar_1,            &
 !     &        mhd_fem1_wk%sgs_v1, fem1_wk%vector_1,                    &
@@ -132,12 +132,12 @@
 !        else if(iflag_SGS_comp_flux .ne. id_SGS_none) then
 !          call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1, k2,   &
 !     &        iphys%i_SGS_c_flux, coef_nega_c, mhd_fem1_wk%sgs_v1)
-!          call fem_skv_scl_inertia_sgs_upwind(iele_fl_smp_stack,       &
-!     &       num_int, k2, ele1, jac1_3d_q, fem1_wk%scalar_1,           &
-!     &       mhd_fem1_wk%sgs_v1, d_ele(1,iele_velo),                   &
-!     &       d_ele(1,iele_velo), fem1_wk%sk6)
+!          call fem_skv_scl_inertia_sgs_upwind                          &
+!     &       (fluid1%istack_ele_fld_smp, num_int, k2,                  &
+!     &       ele1, jac1_3d_q, fem1_wk%scalar_1, mhd_fem1_wk%sgs_v1,    &
+!     &       d_ele(1,iele_velo), d_ele(1,iele_velo), fem1_wk%sk6)
 !        else
-          call fem_skv_scalar_inertia_upwind(iele_fl_smp_stack,         &
+          call fem_skv_scalar_inertia_upwind(fluid1%istack_ele_fld_smp, &
      &       num_int, k2, fem1_wk%scalar_1, d_ele(1,iele_velo),         &
      &       d_ele(1,iele_velo), ele1, jac1_3d_q, fem1_wk%sk6)
 !        end if

@@ -99,7 +99,7 @@
      &      n_vector, ione, f1_nl%ff)
         call nod_vector_send_recv(node1, nod_comm, f1_nl%ff)
 !
-        call int_vol_multi_pass_vector(iele_fl_smp_stack)
+        call int_vol_multi_pass_vector(fluid1%istack_ele_fld_smp)
       end do
 !
       end subroutine int_multi_pass_vector_fl
@@ -124,7 +124,7 @@
         call scalar_fld_send_recv                                       &
      &     (node1, nod_comm, n_vector, ione, f1_nl%ff)
 !
-        call int_vol_multi_pass_scalar(iele_fl_smp_stack)
+        call int_vol_multi_pass_scalar(fluid1%istack_ele_fld_smp)
       end do
 !
       end subroutine int_multi_pass_scalar_fl

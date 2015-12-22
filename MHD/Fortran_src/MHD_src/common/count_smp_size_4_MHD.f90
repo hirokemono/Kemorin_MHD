@@ -40,7 +40,7 @@
 !
        call count_number_4_smp                                          &
      &    (np_smp, fluid1%iele_start_fld, fluid1%iele_end_fld,          &
-     &     iele_fl_smp_stack, maxele_fl_smp )
+     &     fluid1%istack_ele_fld_smp, maxele_fl_smp )
 !
       end subroutine count_smp_size_4_fluid
 !

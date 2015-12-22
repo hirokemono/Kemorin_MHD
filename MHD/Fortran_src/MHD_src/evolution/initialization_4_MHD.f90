@@ -192,7 +192,7 @@
       call copy_communicator_4_solver(solver_C)
 !
       if (iflag_debug.eq.1) write(*,*) 'make comm. table for fluid'
-      call s_const_comm_table_fluid(nprocs, iele_fl_smp_stack,          &
+      call s_const_comm_table_fluid(nprocs, fluid1%istack_ele_fld_smp,  &
      &    node1, ele1, nod_comm, DJDS_comm_fl)
 !
 !  -------------------------------

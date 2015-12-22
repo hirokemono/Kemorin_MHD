@@ -56,7 +56,7 @@
 !
 !
       if (coef_velo.gt.zero .and. coef_exp_v.gt.zero) then
-        call int_vol_vector_diffuse_ele(iele_fl_smp_stack,              &
+        call int_vol_vector_diffuse_ele(fluid1%istack_ele_fld_smp,      &
      &      iak_diff_v, coef_exp_v, ak_d_velo, iphys%i_velo)
       end if
 !
@@ -101,7 +101,7 @@
       use m_SGS_address
 !
       if (coef_temp.gt.zero .and. coef_exp_t.gt.zero) then
-        call int_vol_scalar_diffuse_ele(iele_fl_smp_stack,              &
+        call int_vol_scalar_diffuse_ele(fluid1%istack_ele_fld_smp,      &
      &      iak_diff_t, coef_exp_t, ak_d_temp, iphys%i_temp)
       end if
 !
@@ -115,7 +115,7 @@
       use m_SGS_address
 !
       if (coef_temp.gt.zero .and. coef_exp_t.gt.zero) then
-        call int_vol_scalar_diffuse_ele(iele_fl_smp_stack,              &
+        call int_vol_scalar_diffuse_ele(fluid1%istack_ele_fld_smp,      &
      &      iak_diff_t, coef_exp_t, ak_d_temp, iphys%i_par_temp)
       end if
 !
@@ -129,7 +129,7 @@
       use m_SGS_address
 !
       if (coef_light.gt.zero .and. coef_exp_c.gt.zero) then
-        call int_vol_scalar_diffuse_ele(iele_fl_smp_stack,              &
+        call int_vol_scalar_diffuse_ele(fluid1%istack_ele_fld_smp,      &
      &      iak_diff_c, coef_exp_c, ak_d_composit, iphys%i_light)
       end if
 !
@@ -143,7 +143,7 @@
       use m_geometry_data_MHD
       use m_SGS_address
 !
-      call int_vol_vector_diffuse_ele(iele_fl_smp_stack,                &
+      call int_vol_vector_diffuse_ele(fluid1%istack_ele_fld_smp,        &
      &    iak_diff_v, one, ak_d_velo, iphys%i_velo)
 !
       end subroutine int_vol_viscous_ele_monitor
@@ -181,7 +181,7 @@
       use m_geometry_data_MHD
       use m_SGS_address
 !
-      call int_vol_scalar_diffuse_ele(iele_fl_smp_stack,                &
+      call int_vol_scalar_diffuse_ele(fluid1%istack_ele_fld_smp,        &
      &      iak_diff_t, one, ak_d_temp, iphys%i_temp)
 !
       end subroutine int_vol_t_diffuse_ele_monitor
@@ -193,7 +193,7 @@
       use m_geometry_data_MHD
       use m_SGS_address
 !
-      call int_vol_scalar_diffuse_ele(iele_fl_smp_stack,                &
+      call int_vol_scalar_diffuse_ele(fluid1%istack_ele_fld_smp,        &
      &      iak_diff_c, one, ak_d_composit, iphys%i_light)
 !
       end subroutine int_vol_ds_diffuse_ele_monitor
@@ -207,7 +207,7 @@
       use m_SGS_address
 !
       if (coef_imp_v.gt.zero) then
-        call int_vol_vector_diffuse_ele(iele_fl_smp_stack,              &
+        call int_vol_vector_diffuse_ele(fluid1%istack_ele_fld_smp,      &
      &      iak_diff_v, coef_imp_v, ak_d_velo, iphys%i_velo)
       end if
 !

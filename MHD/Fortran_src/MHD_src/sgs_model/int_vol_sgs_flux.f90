@@ -98,7 +98,7 @@
           do k2 = 1, ele1%nnod_4_ele
             call scalar_phys_2_each_element(node1, ele1, nod_fld1,      &
      &          k2, icomp, fem_wk%scalar_1)
-            call fem_skv_sgs_flux_galerkin(iele_fl_smp_stack,           &
+            call fem_skv_sgs_flux_galerkin(fluid1%istack_ele_fld_smp,   &
      &          intg_point_t_evo, k2, i_filter, nd_t,                   &
      &          ele1, jac1_3d_q, FEM1_elen, fem_wk%scalar_1,            &
      &          diff_ele(1,id_dvx2), fem_wk%sk6)
@@ -150,7 +150,7 @@
           do k2 = 1, ele1%nnod_4_ele
             call scalar_phys_2_each_element(node1, ele1, nod_fld1,      &
      &          k2, icomp, fem_wk%scalar_1)
-            call fem_skv_sgs_flux_upwind(iele_fl_smp_stack,             &
+            call fem_skv_sgs_flux_upwind(fluid1%istack_ele_fld_smp,     &
      &          intg_point_t_evo, k2, i_filter, nd_t,                   &
      &          ele1, jac1_3d_q, FEM1_elen, fem_wk%scalar_1,            &
      &          d_ele(1,ie_upw), diff_ele(1,id_dvx2), fem_wk%sk6)

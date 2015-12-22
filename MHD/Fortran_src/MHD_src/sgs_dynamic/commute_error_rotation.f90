@@ -83,8 +83,8 @@
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
-      call int_vol_commute_rot(iele_fl_smp_stack, intg_point_t_evo,     &
-     &    i_filter, i_vect)
+      call int_vol_commute_rot(fluid1%istack_ele_fld_smp,               &
+     &    intg_point_t_evo, i_filter, i_vect)
       call int_surf_rot_commute_sgs(node1, ele1, surf1, sf_grp1,        &
      &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, sgs_sf,      &
      &    intg_point_t_evo, i_filter, i_vect, fem1_wk, f1_nl)

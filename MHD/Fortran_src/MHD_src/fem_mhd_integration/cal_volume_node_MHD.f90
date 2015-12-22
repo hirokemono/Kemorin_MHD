@@ -67,7 +67,8 @@
        end if
 !
 !
-       if (iele_fl_smp_stack(np_smp) .eq. iele_fl_smp_stack(0)) then
+       if (fluid1%istack_ele_fld_smp(np_smp)                            &
+     &   .eq. fluid1%istack_ele_fld_smp(0)) then
          rms_local(ivol) = vol_local
        else
          rms_local(ivol) = vol_fl_local
@@ -95,7 +96,7 @@
       use m_geometry_data_MHD
 !
       call sum_4_volume(ele1%numele, ele1%interior_ele,                 &
-     &    iele_fl_smp_stack, ele1%volume_ele, vol_fl_local)
+     &    fluid1%istack_ele_fld_smp, ele1%volume_ele, vol_fl_local)
 !
       call MPI_allREDUCE (vol_fl_local, fluid1%volume, ione,            &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)

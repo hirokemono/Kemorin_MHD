@@ -68,9 +68,9 @@
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_mass_matrix_diag fluid'
-      call int_mass_matrix_diag                                         &
-     &   (node1, ele1, jac1_3d_q, rhs_tbl1, iele_fl_smp_stack, n_int,   &
-     &    fem1_wk, f1_l, mhd_fem1_wk%mlump_fl)
+      call int_mass_matrix_diag(node1, ele1, jac1_3d_q, rhs_tbl1,       &
+     &    fluid1%istack_ele_fld_smp, n_int, fem1_wk, f1_l,              &
+     &    mhd_fem1_wk%mlump_fl)
 !      call check_mass_martix_fluid(my_rank, node1%numnod, mhd_fem1_wk)
 !
       if (iflag_debug.eq.1)                                             &
@@ -109,7 +109,7 @@
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_mass_matrix_HRZ fluid'
       call int_mass_matrix_HRZ(node1, ele1, jac1_3d_q, rhs_tbl1,        &
-     &    iele_fl_smp_stack, n_int,                                     &
+     &    fluid1%istack_ele_fld_smp, n_int,                             &
      &    fem1_wk, f1_l, mhd_fem1_wk%mlump_fl)
 !      call check_mass_martix_fluid(my_rank, node1%numnod, mhd_fem1_wk)
 !

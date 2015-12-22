@@ -56,7 +56,7 @@
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
-      call int_vol_commute_div_v_flux(iele_fl_smp_stack,                &
+      call int_vol_commute_div_v_flux(fluid1%istack_ele_fld_smp,        &
      &    intg_point_t_evo, i_filter, i_flux, i_vect, i_scalar)
       call int_sf_skv_commute_sgs_v_flux(node1, ele1, surf1, sf_grp1,   &
      &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,              &

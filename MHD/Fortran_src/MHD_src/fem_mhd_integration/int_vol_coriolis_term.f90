@@ -70,7 +70,8 @@
       do k2 = 1, ele1%nnod_4_ele
         call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1,          &
      &      k2, iphys%i_velo, coef_cor, fem1_wk%vector_1)
-        call fem_skv_coriolis_type(iele_fl_smp_stack, intg_point_t_evo, &
+        call fem_skv_coriolis_type                                      &
+     &     (fluid1%istack_ele_fld_smp, intg_point_t_evo,                &
      &      k2, fem1_wk%vector_1, angular, ele1, jac1_3d_q,             &
      &      fem1_wk%sk6)
       end do

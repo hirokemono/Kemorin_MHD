@@ -27,9 +27,9 @@
 !
 !       Mesh information for fluid segments
       type(field_geometry_data), save :: fluid1
-!fluid1%a_volume
+!fluid1%istack_ele_fld_smp
 !
-      integer( kind=kint ), allocatable :: iele_fl_smp_stack(:)
+!      integer( kind=kint ), allocatable :: iele_fl_smp_stack(:)
 !     smp stack of element on local PE
       integer( kind=kint ), allocatable :: inod_fl_smp_stack(:)
 !     smp stack of node on local PE
@@ -47,7 +47,7 @@
 !
 !       Mesh information for conductor segments
       type(field_geometry_data), save :: conduct1
-!conduct1%a_volume
+!conduct1%istack_ele_fld_smp
 !
       integer( kind=kint ), allocatable :: iele_cd_smp_stack(:)
 !     smp stack of element on local PE
@@ -67,7 +67,7 @@
 !
 !       Mesh information for insulator segments
       type(field_geometry_data), save :: insulate1
-!insulate1%a_volume
+!insulate1%istack_ele_fld_smp
 !
       integer( kind=kint ), allocatable :: iele_ins_smp_stack(:)
 !     smp stack of element on local PE
@@ -88,7 +88,7 @@
 !
 !       Mesh information for inner core segments
       type(field_geometry_data), save :: inner_core
-!inner_core%volume
+!inner_core%istack_ele_fld_smp
 !
       integer( kind=kint ), allocatable :: iele_in_core_smp_stack(:)
 !     smp stack of element on local PE
@@ -150,11 +150,11 @@
 !
        use m_machine_parameter
 !
-       allocate( iele_fl_smp_stack(0:np_smp))
+       allocate( fluid1%istack_ele_fld_smp(0:np_smp))
        allocate( inod_fl_smp_stack(0:np_smp))
        allocate( inter_fl_smp_stack(0:np_smp))
 !
-       iele_fl_smp_stack = 0
+       fluid1%istack_ele_fld_smp = 0
        inod_fl_smp_stack = 0
        inter_fl_smp_stack = 0
 !
@@ -255,7 +255,7 @@
 !
        subroutine deallocate_geometry_fluid_smp
 !
-       deallocate( iele_fl_smp_stack )
+       deallocate( fluid1%istack_ele_fld_smp )
        deallocate( inod_fl_smp_stack )
        deallocate( inter_fl_smp_stack )
 !
@@ -304,7 +304,7 @@
        write(*,*) 'PE: ', my_rank,                                      &
      &           'inter_fl_smp_stack ', inter_fl_smp_stack
        write(*,*) 'PE: ', my_rank,                                      &
-     &           'iele_fl_smp_stack ', iele_fl_smp_stack
+     &           'iele_fl_smp_stack ', fluid1%istack_ele_fld_smp
 !
       end subroutine check_geometry_fluid_smp
 !
