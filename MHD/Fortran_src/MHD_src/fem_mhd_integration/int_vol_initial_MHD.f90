@@ -56,7 +56,8 @@
 !
       mhd_fem1_wk%ff_m_smp = 0.0d0
       if (coef_magne.gt.0.0d0) then
-        call int_vol_initial_vector(iele_cd_smp_stack, iphys%i_vecp)
+        call int_vol_initial_vector                                     &
+     &     (conduct1%istack_ele_fld_smp, iphys%i_vecp)
       end if
 !
       end subroutine int_vol_initial_vect_p
@@ -72,7 +73,8 @@
 !
       mhd_fem1_wk%ff_m_smp = 0.0d0
       if (coef_magne.gt.0.0d0) then
-        call int_vol_initial_vector(iele_cd_smp_stack, iphys%i_magne)
+        call int_vol_initial_vector                                     &
+     &     (conduct1%istack_ele_fld_smp, iphys%i_magne)
       end if
 !
       end subroutine int_vol_initial_magne

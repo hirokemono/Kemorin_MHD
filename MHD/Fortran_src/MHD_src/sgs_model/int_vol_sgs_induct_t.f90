@@ -101,10 +101,11 @@
           call scalar_phys_2_each_element(node1, ele1, nod_fld1,        &
      &        k2, icomp_v, fem_wk%vector_1(1:ele1%numele,2) )
 !
-          call fem_skv_sgs_induct_t_galerkin(iele_cd_smp_stack,         &
-     &        intg_point_t_evo, k2, i_filter, nd,                       &
-     &        ele1, jac1_3d_q, FEM1_elen, fem_wk%vector_1,              &
-     &        diff_ele(1,id_dvx2), diff_ele(1,id_dbx2), fem_wk%sk6)
+          call fem_skv_sgs_induct_t_galerkin                            &
+     &       (conduct1%istack_ele_fld_smp, intg_point_t_evo, k2,        &
+     &        i_filter, nd, ele1, jac1_3d_q, FEM1_elen,                 &
+     &        fem_wk%vector_1, diff_ele(1,id_dvx2),                     &
+     &        diff_ele(1,id_dbx2), fem_wk%sk6)
         end do
       end do
 !
@@ -153,7 +154,7 @@
      &        k2, icomp_b, fem_wk%vector_1(1:ele1%numele,2) )
 !
           call fem_skv_sgs_induct_t_upwind                              &
-     &       (iele_cd_smp_stack, intg_point_t_evo, k2,                  &
+     &       (conduct1%istack_ele_fld_smp, intg_point_t_evo, k2,        &
      &        i_filter, nd, ele1, jac1_3d_q, FEM1_elen,                 &
      &        fem_wk%vector_1, d_ele(1,i_magne),                        &
      &        diff_ele(1,id_dvx2), diff_ele(1,id_dbx2), fem_wk%sk6)

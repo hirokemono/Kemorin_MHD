@@ -53,8 +53,8 @@
       subroutine int_vol_magne_ins_co
 !
 !
-      call int_vol_solenoid_co(iele_ins_smp_stack, iphys%i_mag_p,       &
-     &    iak_diff_b)
+      call int_vol_solenoid_co(insulate1%istack_ele_fld_smp,            &
+     &    iphys%i_mag_p, iak_diff_b)
 !
       end subroutine int_vol_magne_ins_co
 !

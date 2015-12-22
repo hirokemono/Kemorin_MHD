@@ -265,7 +265,7 @@
      &      n_vector, ione, f1_nl%ff)
         call nod_vector_send_recv(node1, nod_comm, f1_nl%ff)
 !
-        call int_vol_multi_pass_vector_upw(iele_cd_smp_stack,           &
+        call int_vol_multi_pass_vector_upw(conduct1%istack_ele_fld_smp, &
      &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
       end do
 !
@@ -292,7 +292,7 @@
         call scalar_fld_send_recv                                       &
      &     (node1, nod_comm, n_vector, ione, f1_nl%ff)
 !
-        call int_vol_multi_pass_scalar_upw(iele_cd_smp_stack,           &
+        call int_vol_multi_pass_scalar_upw(conduct1%istack_ele_fld_smp, &
      &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
       end do
 !

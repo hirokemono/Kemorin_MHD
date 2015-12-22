@@ -29,8 +29,6 @@
       type(field_geometry_data), save :: fluid1
 !fluid1%istack_ele_fld_smp
 !
-!      integer( kind=kint ), allocatable :: iele_fl_smp_stack(:)
-!     smp stack of element on local PE
       integer( kind=kint ), allocatable :: inod_fl_smp_stack(:)
 !     smp stack of node on local PE
       integer( kind=kint ), allocatable :: inter_fl_smp_stack(:)
@@ -49,7 +47,7 @@
       type(field_geometry_data), save :: conduct1
 !conduct1%istack_ele_fld_smp
 !
-      integer( kind=kint ), allocatable :: iele_cd_smp_stack(:)
+!      integer( kind=kint ), allocatable :: iele_cd_smp_stack(:)
 !     smp stack of element on local PE
       integer( kind=kint ), allocatable :: inod_cd_smp_stack(:)
 !     smp stack of node on local PE
@@ -69,8 +67,6 @@
       type(field_geometry_data), save :: insulate1
 !insulate1%istack_ele_fld_smp
 !
-      integer( kind=kint ), allocatable :: iele_ins_smp_stack(:)
-!     smp stack of element on local PE
       integer( kind=kint ), allocatable :: inod_ins_smp_stack(:)
 !     number of node on local PE
       integer( kind=kint ), allocatable :: inter_ins_smp_stack(:)
@@ -90,8 +86,6 @@
       type(field_geometry_data), save :: inner_core
 !inner_core%istack_ele_fld_smp
 !
-      integer( kind=kint ), allocatable :: iele_in_core_smp_stack(:)
-!     smp stack of element on local PE
       integer( kind=kint ), allocatable :: inod_in_core_smp_stack(:)
 !     smp stack of node on local PE
       integer( kind=kint ), allocatable :: inter_in_core_smp_stack(:)
@@ -168,11 +162,11 @@
 !
 !   for conductive layer
 !
-       allocate( iele_cd_smp_stack(0:np_smp))
+       allocate( conduct1%istack_ele_fld_smp(0:np_smp))
        allocate( inod_cd_smp_stack(0:np_smp))
        allocate( inter_cd_smp_stack(0:np_smp))
 !
-       iele_cd_smp_stack = 0
+       conduct1%istack_ele_fld_smp = 0
        inod_cd_smp_stack = 0
        inter_cd_smp_stack = 0
 !
@@ -186,11 +180,11 @@
 !
 !   for insulate layer
 !
-       allocate( iele_ins_smp_stack(0:np_smp))
+       allocate( insulate1%istack_ele_fld_smp(0:np_smp))
        allocate( inod_ins_smp_stack(0:np_smp))
        allocate( inter_ins_smp_stack(0:np_smp))
 !
-       iele_ins_smp_stack = 0
+       insulate1%istack_ele_fld_smp = 0
        inod_ins_smp_stack = 0
        inter_ins_smp_stack = 0
 !
@@ -204,11 +198,11 @@
 !
 !   for insulated core
 !
-       allocate( iele_in_core_smp_stack(0:np_smp))
+       allocate( inner_core%istack_ele_fld_smp(0:np_smp))
        allocate( inod_in_core_smp_stack(0:np_smp))
        allocate( inter_in_core_smp_stack(0:np_smp))
 !
-       iele_in_core_smp_stack = 0
+       inner_core%istack_ele_fld_smp = 0
        inod_in_core_smp_stack = 0
        inter_in_core_smp_stack = 0
 !
@@ -265,7 +259,7 @@
 !
        subroutine deallocate_geometry_conduct_smp
 !
-       deallocate( iele_cd_smp_stack  )
+       deallocate( conduct1%istack_ele_fld_smp  )
        deallocate( inod_cd_smp_stack  )
        deallocate( inter_cd_smp_stack )
 !
@@ -275,7 +269,7 @@
 !
        subroutine deallocate_geometry_ins_smp
 !
-       deallocate( iele_ins_smp_stack  )
+       deallocate( insulate1%istack_ele_fld_smp  )
        deallocate( inod_ins_smp_stack  )
        deallocate( inter_ins_smp_stack )
 !
@@ -285,7 +279,7 @@
 !
        subroutine deallocate_geometry_incore_smp
 !
-       deallocate( iele_in_core_smp_stack  )
+       deallocate( inner_core%istack_ele_fld_smp  )
        deallocate( inod_in_core_smp_stack  )
        deallocate( inter_in_core_smp_stack )
 !
@@ -323,7 +317,7 @@
        write(*,*) 'PE: ', my_rank,                                      &
      &           'inter_cd_smp_stack ', inter_cd_smp_stack
        write(*,*) 'PE: ', my_rank,                                      &
-     &           'iele_cd_smp_stack ', iele_cd_smp_stack
+     &           'iele_cd_smp_stack ', conduct1%istack_ele_fld_smp
 !
       end subroutine check_geometry_conduct_smp
 !

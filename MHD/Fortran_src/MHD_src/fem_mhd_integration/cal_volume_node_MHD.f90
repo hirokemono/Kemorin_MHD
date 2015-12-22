@@ -119,7 +119,7 @@
 !
 !
       call sum_4_volume(ele1%numele, ele1%interior_ele,                 &
-     &    iele_cd_smp_stack, ele1%volume_ele, vol_cd_local)
+     &    conduct1%istack_ele_fld_smp, ele1%volume_ele, vol_cd_local)
 !
       call MPI_allREDUCE (vol_cd_local, conduct1%volume, ione,          &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
@@ -142,7 +142,7 @@
 !
 !
       call sum_4_volume(ele1%numele, ele1%interior_ele,                 &
-     &    iele_ins_smp_stack, ele1%volume_ele, vol_ins_local)
+     &    insulate1%istack_ele_fld_smp, ele1%volume_ele, vol_ins_local)
 !
       call MPI_allREDUCE (vol_ins_local, insulate1%volume, ione,        &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)

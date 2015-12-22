@@ -115,7 +115,8 @@
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
-      call int_vol_commute_grad(iele_cd_smp_stack, intg_point_t_evo,    &
+      call int_vol_commute_grad                                         &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    i_filter, i_scalar)
 !
       call int_surf_grad_commute_sgs(node1, ele1, surf1, sf_grp1,       &

@@ -89,7 +89,7 @@
 !
           call vector_phys_2_each_element(node1, ele1, nod_fld1,        &
      &        k2, i_field, fem_wk%vector_1)
-          call fem_skv_sgs_uxb_galerkin(iele_cd_smp_stack,              &
+          call fem_skv_sgs_uxb_galerkin(conduct1%istack_ele_fld_smp,    &
      &        intg_point_t_evo, k2, i_filter, nd,                       &
      &        ele1, jac1_3d_q, FEM1_elen, fem_wk%vector_1,              &
      &        diff_ele(1,id_dx), fem_wk%sk6)
@@ -129,7 +129,7 @@
         do k2 = 1, ele1%nnod_4_ele
           call vector_phys_2_each_element(node1, ele1, nod_fld1,        &
      &        k2, i_field, fem_wk%vector_1)
-          call fem_skv_sgs_uxb_upwind(iele_cd_smp_stack,                &
+          call fem_skv_sgs_uxb_upwind(conduct1%istack_ele_fld_smp,      &
      &        intg_point_t_evo, k2, i_filter, nd,                       &
      &        ele1, jac1_3d_q, FEM1_elen, fem_wk%vector_1,              &
      &        d_ele(1,i_magne), diff_ele(1,id_dx), fem_wk%sk6)

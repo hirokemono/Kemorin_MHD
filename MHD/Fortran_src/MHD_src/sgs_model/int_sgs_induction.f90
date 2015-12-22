@@ -40,8 +40,8 @@
       call reset_ff_smp(node1%max_nod_smp, f1_nl)
 !
       call int_vol_rotation(node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1, &
-     &    iele_cd_smp_stack, intg_point_t_evo, iphys%i_SGS_vp_induct,   &
-     &    fem1_wk, f1_nl)
+     &    conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
+     &    iphys%i_SGS_vp_induct, fem1_wk, f1_nl)
 !
 !      call cal_multi_pass_4_vector_ff
 !      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,         &

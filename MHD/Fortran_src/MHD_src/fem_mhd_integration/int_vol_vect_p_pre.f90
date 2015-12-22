@@ -63,7 +63,7 @@
         call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1,          &
      &      k2, iphys%i_velo, coef_induct, mhd_fem1_wk%velo_1)
 !
-        call fem_skv_rot_inertia_type(iele_cd_smp_stack,                &
+        call fem_skv_rot_inertia_type(conduct1%istack_ele_fld_smp,      &
      &      intg_point_t_evo, k2, mhd_fem1_wk%velo_1, fem1_wk%vector_1, &
      &      ele1, jac1_3d_q, fem1_wk%sk6)
       end do
@@ -102,7 +102,7 @@
         call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1,          &
      &      k2, iphys%i_velo, coef_induct, mhd_fem1_wk%velo_1)
 !
-        call fem_skv_rot_inertia_upwind(iele_cd_smp_stack,              &
+        call fem_skv_rot_inertia_upwind(conduct1%istack_ele_fld_smp,    &
      &      intg_point_t_evo, k2, mhd_fem1_wk%velo_1, fem1_wk%vector_1, &
      &      d_ele(1,iele_magne), ele1, jac1_3d_q, fem1_wk%sk6)
       end do

@@ -101,7 +101,7 @@
        call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
        call choose_int_vol_rotations(iflag_4_supg,                      &
-     &     iele_cd_smp_stack, i_vector)
+     &     conduct1%istack_ele_fld_smp, i_vector)
 !
        call cal_ff_smp_2_vector(node1, rhs_tbl1,                        &
      &     f1_nl%ff_smp, mhd_fem1_wk%mlump_cd%ml, nod_fld1%ntot_phys,   &

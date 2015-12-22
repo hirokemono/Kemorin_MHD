@@ -82,9 +82,8 @@
       real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
 !
 !
-      call int_area_ele_scalar_2_node                                   &
-     &   (node1, ele1, jac1_3d_q, rhs_tbl1, iele_cd_smp_stack,          &
-     &    scalar_ele, fem1_wk, f1_l)
+      call int_area_ele_scalar_2_node(node1, ele1, jac1_3d_q, rhs_tbl1, &
+     &    conduct1%istack_ele_fld_smp, scalar_ele, fem1_wk, f1_l)
       call cal_ff_smp_2_scalar(node1, rhs_tbl1,                         &
      &    f1_l%ff_smp, mhd_fem1_wk%mlump_cd%ml,                         &
      &    n_scalar, ione, scalar_nod)
@@ -104,7 +103,7 @@
 !
 !
       call int_area_ele_vector_2_node(node1, ele1, jac1_3d_q, rhs_tbl1, &
-     &    iele_cd_smp_stack, vector_ele, fem1_wk, f1_l)
+     &    conduct1%istack_ele_fld_smp, vector_ele, fem1_wk, f1_l)
       call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
      &    f1_l%ff_smp, mhd_fem1_wk%mlump_cd%ml,                         &
      &    n_vector, ione, vector_nod)
@@ -122,9 +121,8 @@
       real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
 !
 !
-      call int_area_ele_scalar_2_node                                   &
-     &   (node1, ele1, jac1_3d_q, rhs_tbl1, iele_ins_smp_stack,         &
-     &    scalar_ele, fem1_wk, f1_l)
+      call int_area_ele_scalar_2_node(node1, ele1, jac1_3d_q, rhs_tbl1, &
+     &    insulate1%istack_ele_fld_smp, scalar_ele, fem1_wk, f1_l)
       call cal_ff_smp_2_scalar(node1, rhs_tbl1,                         &
      &    f1_l%ff_smp, mhd_fem1_wk%mlump_ins%ml,                        &
      &    n_scalar, ione, scalar_nod)
@@ -144,7 +142,7 @@
 !
 !
       call int_area_ele_vector_2_node(node1, ele1, jac1_3d_q, rhs_tbl1, &
-     &    iele_ins_smp_stack, vector_ele, fem1_wk, f1_l)
+     &    insulate1%istack_ele_fld_smp, vector_ele, fem1_wk, f1_l)
       call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
      &    f1_l%ff_smp, mhd_fem1_wk%mlump_ins%ml,                        &
      &    n_vector, ione, vector_nod)

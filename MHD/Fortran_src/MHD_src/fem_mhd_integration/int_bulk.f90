@@ -126,7 +126,7 @@
      &    i_rms%i_vis_e_diffuse, j_ave%i_vis_e_diffuse,                 &
      &    iphys%i_vis_e_diffuse)
       call int_all_4_scalar                                             &
-     &   (iele_cd_smp_stack, intg_point_t_evo,                          &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    i_rms%i_mag_e_diffuse, j_ave%i_mag_e_diffuse,                 &
      &    iphys%i_mag_e_diffuse)
       call int_all_4_scalar                                             &
@@ -221,7 +221,8 @@
       call int_all_4_vector                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_magne, j_ave%i_magne, iphys%i_magne)
-      call int_all_4_vector( iele_cd_smp_stack, intg_point_t_evo,       &
+      call int_all_4_vector                                             &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    ir_me_ic, ja_mag_ic, iphys%i_magne) 
 !
       call int_all_4_vector                                             &
@@ -230,14 +231,15 @@
       call int_all_4_vector                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_current, j_ave%i_current, iphys%i_current)
-      call int_all_4_vector( iele_cd_smp_stack, intg_point_t_evo,       &
-     &    ir_sqj_ic, ja_j_ic, iphys%i_current) 
+      call int_all_4_vector                                             &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
+     &    ir_sqj_ic, ja_j_ic, iphys%i_current)
       call int_all_4_vector                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_filter_magne, j_ave%i_filter_magne,                   &
      &    iphys%i_filter_magne)
       call int_all_4_vector                                             &
-     &   (iele_cd_smp_stack, intg_point_t_evo,                          &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    ir_me_f_ic, ja_mag_f_ic, iphys%i_filter_magne) 
 !
       if(i_rms%i_velo .gt. 0) then
@@ -272,9 +274,11 @@
         rms_local(ir_rms_j_ic) =  rms_local(ir_sqj_ic)
       end if
 !
-      call int_all_4_vector( iele_cd_smp_stack, intg_point_t_evo,       &
+      call int_all_4_vector                                             &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    i_rms%i_electric, j_ave%i_electric, iphys%i_electric)
-      call int_all_4_vector( iele_cd_smp_stack, intg_point_t_evo,       &
+      call int_all_4_vector                                             &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    i_rms%i_poynting, j_ave%i_poynting, iphys%i_poynting)
 !
       call int_all_4_vector                                             &
@@ -299,11 +303,14 @@
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_maxwell_div, j_ave%i_maxwell_div,                     &
      &    iphys%i_maxwell_div)
-      call int_all_4_vector( iele_cd_smp_stack, intg_point_t_evo,       &
+      call int_all_4_vector                                             &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    i_rms%i_induct_div, j_ave%i_induct_div, iphys%i_induct_div)
-      call int_all_4_vector( iele_cd_smp_stack, intg_point_t_evo,       &
+      call int_all_4_vector                                             &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    i_rms%i_induction, j_ave%i_induction, iphys%i_induction)
-      call int_all_4_vector( iele_cd_smp_stack, intg_point_t_evo,       &
+      call int_all_4_vector                                             &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    i_rms%i_vp_induct, j_ave%i_vp_induct, iphys%i_vp_induct)
       call int_all_4_vector                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
@@ -329,9 +336,11 @@
       call int_all_4_vector                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_v_diffuse, j_ave%i_v_diffuse, iphys%i_v_diffuse)
-      call int_all_4_vector( iele_cd_smp_stack, intg_point_t_evo,       &
+      call int_all_4_vector                                             &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    i_rms%i_vp_diffuse, j_ave%i_vp_diffuse, iphys%i_vp_diffuse)
-      call int_all_4_vector( iele_cd_smp_stack, intg_point_t_evo,       &
+      call int_all_4_vector                                             &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    i_rms%i_b_diffuse, j_ave%i_b_diffuse, iphys%i_b_diffuse)
 !
       call int_all_4_vector                                             &
@@ -358,10 +367,12 @@
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_SGS_Lorentz, j_ave%i_SGS_Lorentz,                     &
      &    iphys%i_SGS_Lorentz)
-      call int_all_4_vector( iele_cd_smp_stack, intg_point_t_evo,       &
+      call int_all_4_vector                                             &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    i_rms%i_SGS_induction, j_ave%i_SGS_induction,                 &
      &    iphys%i_SGS_induction)
-      call int_all_4_vector( iele_cd_smp_stack, intg_point_t_evo,       &
+      call int_all_4_vector                                             &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    i_rms%i_SGS_vp_induct, j_ave%i_SGS_vp_induct,                 &
      &    iphys%i_SGS_vp_induct)
       call int_all_4_vector                                             &
@@ -381,7 +392,8 @@
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_SGS_Lor_true, j_ave%i_SGS_Lor_true,                   &
      &    iphys%i_SGS_Lor_true)
-      call int_all_4_vector( iele_cd_smp_stack, intg_point_t_evo,       &
+      call int_all_4_vector                                             &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    i_rms%i_SGS_idct_true, j_ave%i_SGS_idct_true,                 &
      &    iphys%i_SGS_idct_true)
 !
@@ -402,9 +414,11 @@
      &    i_rms%i_SGS_maxwell, j_ave%i_SGS_maxwell,                     &
      &    iphys%i_SGS_maxwell)
 !
-      call int_all_4_asym_tensor( iele_cd_smp_stack, intg_point_t_evo,  &
+      call int_all_4_asym_tensor                                        &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    i_rms%i_induct_t, j_ave%i_induct_t, iphys%i_induct_t)
-      call int_all_4_asym_tensor( iele_cd_smp_stack, intg_point_t_evo,  &
+      call int_all_4_asym_tensor                                        &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    i_rms%i_SGS_induct_t, j_ave%i_SGS_induct_t,                   &
      &    iphys%i_SGS_induct_t)
 !

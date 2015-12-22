@@ -119,7 +119,8 @@
         call cal_layerd_diff_coef(layer_tbl,                            &
      &      numdir, ifield_d, icomp_f, n_int)
       else
-        call cal_whole_diff_coef(layer_tbl, iele_cd_smp_stack,          &
+        call cal_whole_diff_coef                                        &
+     &     (layer_tbl, conduct1%istack_ele_fld_smp,                     &
      &      numdir, ifield_d, icomp_f, n_int, conduct1%volume)
       end if
 !

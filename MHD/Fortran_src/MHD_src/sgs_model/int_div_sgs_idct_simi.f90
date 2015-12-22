@@ -49,7 +49,7 @@
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
      &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
      &      i_b, i_v, i_flux, nod_fld1%d_fld, fem1_wk%vector_1)
-        call fem_skv_div_asym_tsr(iele_cd_smp_stack,                    &
+        call fem_skv_div_asym_tsr(conduct1%istack_ele_fld_smp,          &
      &      intg_point_t_evo, k2, ele1, jac1_3d_q,                      &
      &      fem1_wk%vector_1, fem1_wk%sk6)
       end do
@@ -82,7 +82,7 @@
      &     (node1%numnod, ele1%numele, ele1%nnod_4_ele, ele1%ie,        &
      &      ele1%istack_ele_smp, k2, nod_fld1%ntot_phys,                &
      &      i_b, i_v, i_flux, nod_fld1%d_fld, fem1_wk%vector_1)
-        call fem_skv_div_as_tsr_upw(iele_cd_smp_stack,                  &
+        call fem_skv_div_as_tsr_upw(conduct1%istack_ele_fld_smp,        &
      &      intg_point_t_evo, k2, d_ele(1,iele_velo), ele1, jac1_3d_q,  &
      &      fem1_wk%vector_1, fem1_wk%sk6)
       end do

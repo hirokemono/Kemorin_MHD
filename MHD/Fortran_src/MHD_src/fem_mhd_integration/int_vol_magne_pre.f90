@@ -79,7 +79,8 @@
      &      d_ele(1,iphys_ele%i_magne), ex_magne, fem1_wk%vector_1)
 !$omp end parallel
 !
-        call fem_skv_induction_galerkin(iele_cd_smp_stack, num_int, k2, &
+        call fem_skv_induction_galerkin                                 &
+     &     (conduct1%istack_ele_fld_smp, num_int, k2,                   &
      &      coef_induct, mhd_fem1_wk%velo_1, mhd_fem1_wk%magne_1,       &
      &      d_ele(1,iphys_ele%i_velo),  fem1_wk%vector_1,               &
      &      ele1, jac1_3d_q, fem1_wk%sk6)
@@ -89,14 +90,15 @@
            call SGS_const_induct_each_ele(node1, ele1, nod_fld1,        &
      &         k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,   &
      &         coef_induct, mhd_fem1_wk%sgs_v1, fem1_wk%vector_1)
-           call fem_skv_div_sgs_asym_tsr(iele_cd_smp_stack,             &
+           call fem_skv_div_sgs_asym_tsr(conduct1%istack_ele_fld_smp,   &
      &         num_int, k2, ifilter_final, ak_diff(1,iak_diff_uxb),     &
      &         ele1, jac1_3d_q, FEM1_elen, mhd_fem1_wk%sgs_v1,          &
      &         fem1_wk%vector_1, fem1_wk%sk6)
         else if (iflag_SGS_induction .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1, k2,    &
      &        iphys%i_SGS_induct_t, coef_induct, mhd_fem1_wk%sgs_v1)
-          call fem_skv_div_asym_tsr(iele_cd_smp_stack, num_int, k2,     &
+          call fem_skv_div_asym_tsr                                     &
+     &       (conduct1%istack_ele_fld_smp, num_int, k2,                 &
      &        ele1, jac1_3d_q, mhd_fem1_wk%sgs_v1, fem1_wk%sk6)
         end if
       end do
@@ -145,7 +147,8 @@
      &      d_ele(1,iphys_ele%i_magne), ex_magne, fem1_wk%vector_1)
 !$omp end parallel
 !
-        call fem_skv_induction_upmagne(iele_cd_smp_stack, num_int, k2,  &
+        call fem_skv_induction_upmagne                                  &
+     &     (conduct1%istack_ele_fld_smp, num_int, k2,                   &
      &      coef_induct, mhd_fem1_wk%velo_1, mhd_fem1_wk%magne_1,       &
      &      d_ele(1,iphys_ele%i_velo), fem1_wk%vector_1,                &
      &      d_ele(1,iphys_ele%i_magne), ele1, jac1_3d_q, fem1_wk%sk6)
@@ -155,14 +158,16 @@
           call SGS_const_induct_each_ele(node1, ele1, nod_fld1,         &
      &        k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,    &
      &        coef_induct, mhd_fem1_wk%sgs_v1, fem1_wk%vector_1)
-          call fem_skv_div_sgs_asym_t_upwind(iele_cd_smp_stack,         &
-     &        num_int, k2, ifilter_final, ak_diff(1,iak_diff_uxb),      &
-     &        ele1, jac1_3d_q, FEM1_elen, d_ele(1,iphys_ele%i_magne),   &
-     &        mhd_fem1_wk%sgs_v1, fem1_wk%vector_1, fem1_wk%sk6)
+          call fem_skv_div_sgs_asym_t_upwind                            &
+     &       (conduct1%istack_ele_fld_smp, num_int, k2, ifilter_final,  &
+     &        ak_diff(1,iak_diff_uxb), ele1, jac1_3d_q, FEM1_elen,      &
+     &        d_ele(1,iphys_ele%i_magne), mhd_fem1_wk%sgs_v1,           &
+     &        fem1_wk%vector_1, fem1_wk%sk6)
         else if (iflag_SGS_induction .ne. id_SGS_none) then
           call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1, k2,    &
      &        iphys%i_SGS_induct_t, coef_induct, mhd_fem1_wk%sgs_v1)
-          call fem_skv_div_as_tsr_upw(iele_cd_smp_stack, num_int, k2,   &
+          call fem_skv_div_as_tsr_upw                                   &
+     &       (conduct1%istack_ele_fld_smp, num_int, k2,                 &
      &        d_ele(1,iphys_ele%i_magne), ele1, jac1_3d_q,              &
      &        mhd_fem1_wk%sgs_v1, fem1_wk%sk6)
         end if

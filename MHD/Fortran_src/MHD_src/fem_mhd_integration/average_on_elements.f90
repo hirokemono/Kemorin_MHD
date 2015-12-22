@@ -123,7 +123,8 @@
       use m_element_phys_data
 !
 !
-      call rotation_on_element_1st(iele_cd_smp_stack, intg_point_t_evo, &
+      call rotation_on_element_1st                                      &
+     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld,            &
      &    fld_ele1%ntot_phys, iphys_ele%i_current,                      &
      &    fld_ele1%iflag_update, fld_ele1%d_fld)

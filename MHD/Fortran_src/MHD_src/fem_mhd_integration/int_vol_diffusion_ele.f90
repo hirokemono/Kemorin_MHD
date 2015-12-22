@@ -86,7 +86,7 @@
 !
 !
       if (coef_magne.gt.zero .and. coef_exp_b.gt.zero) then
-        call int_vol_vector_diffuse_ele(iele_cd_smp_stack,              &
+        call int_vol_vector_diffuse_ele(conduct1%istack_ele_fld_smp,    &
      &      iak_diff_b, coef_exp_b, ak_d_magne, iphys%i_magne)
       end if
 !
@@ -169,7 +169,7 @@
       use m_SGS_address
 !
 !
-      call int_vol_vector_diffuse_ele(iele_cd_smp_stack,                &
+      call int_vol_vector_diffuse_ele(conduct1%istack_ele_fld_smp,      &
      &    iak_diff_b, one, ak_d_magne, iphys%i_magne)
 !
       end subroutine int_vol_m_diffuse_ele_monitor
@@ -235,7 +235,7 @@
       use m_SGS_address
 !
       if (coef_imp_b.gt.zero) then
-        call int_vol_vector_diffuse_ele(iele_cd_smp_stack,              &
+        call int_vol_vector_diffuse_ele(conduct1%istack_ele_fld_smp,    &
      &      iak_diff_b, coef_imp_b, ak_d_magne, iphys%i_magne)
       end if
 !

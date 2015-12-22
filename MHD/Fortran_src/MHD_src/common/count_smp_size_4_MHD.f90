@@ -60,7 +60,7 @@
 !
        call count_number_4_smp                                          &
      &    (np_smp, conduct1%iele_start_fld, conduct1%iele_end_fld,      &
-     &     iele_cd_smp_stack, maxele_cd_smp )
+     &     conduct1%istack_ele_fld_smp, maxele_cd_smp )
 !
       end subroutine count_smp_size_4_conduct
 !
@@ -80,7 +80,7 @@
 !
        call count_number_4_smp                                          &
      &    (np_smp, insulate1%iele_start_fld, insulate1%iele_end_fld,    &
-     &     iele_ins_smp_stack, maxele_ins_smp )
+     &     insulate1%istack_ele_fld_smp, maxele_ins_smp)
 !
       end subroutine count_smp_size_4_insulator
 !
@@ -99,7 +99,7 @@
      &     inter_in_core_smp_stack, max_in_nod_in_core_smp )
 !
        call count_number_4_smp(np_smp, ione, numele_in_core,            &
-     &     iele_in_core_smp_stack, maxele_in_core_smp )
+     &     inner_core%istack_ele_fld_smp, maxele_in_core_smp )
 !
       end subroutine count_smp_size_4_inner_core
 !

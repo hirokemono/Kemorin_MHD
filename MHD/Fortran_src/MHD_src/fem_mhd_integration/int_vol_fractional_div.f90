@@ -66,7 +66,7 @@
       subroutine int_vol_divergence_magne_ins
 !
 !
-      call int_vol_fractional_div_ele(iele_ins_smp_stack,               &
+      call int_vol_fractional_div_ele(insulate1%istack_ele_fld_smp,     &
      &    iphys%i_magne, iak_diff_b)
 !
       end subroutine int_vol_divergence_magne_ins

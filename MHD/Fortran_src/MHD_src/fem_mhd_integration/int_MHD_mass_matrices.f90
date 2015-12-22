@@ -75,17 +75,17 @@
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_mass_matrix_diag conductor'
-      call int_mass_matrix_diag                                         &
-     &   (node1, ele1, jac1_3d_q, rhs_tbl1, iele_cd_smp_stack, n_int,   &
-     &    fem1_wk, f1_l, mhd_fem1_wk%mlump_cd)
+      call int_mass_matrix_diag(node1, ele1, jac1_3d_q, rhs_tbl1,       &
+     &    conduct1%istack_ele_fld_smp, n_int, fem1_wk, f1_l,            &
+     &    mhd_fem1_wk%mlump_cd)
 !      call check_mass_martix_conduct                                   &
 !     &   (my_rank, node1%numnod, mhd_fem1_wk)
 !
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_mass_matrix_diag insulator'
-      call int_mass_matrix_diag                                         &
-     &   (node1, ele1, jac1_3d_q, rhs_tbl1, iele_ins_smp_stack, n_int,  &
-     &    fem1_wk, f1_l, mhd_fem1_wk%mlump_ins)
+      call int_mass_matrix_diag(node1, ele1, jac1_3d_q, rhs_tbl1,       &
+     &    insulate1%istack_ele_fld_smp, n_int, fem1_wk, f1_l,           &
+     &    mhd_fem1_wk%mlump_ins)
 !
       end subroutine int_mass_matrix_trilinear
 !
@@ -116,8 +116,8 @@
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_mass_matrix_HRZ conduct'
       call int_mass_matrix_HRZ(node1, ele1, jac1_3d_q, rhs_tbl1,        &
-     &    iele_cd_smp_stack, n_int,                                     &
-     &     fem1_wk, f1_l, mhd_fem1_wk%mlump_cd)
+     &    conduct1%istack_ele_fld_smp, n_int, fem1_wk, f1_l,            &
+     &    mhd_fem1_wk%mlump_cd)
 !      call check_mass_martix_conduct                                   &
 !     &   (my_rank, node1%numnod, mhd_fem1_wk)
 !
@@ -125,7 +125,7 @@
       if (iflag_debug.eq.1)                                             &
      &  write(*,*) 'int_mass_matrix_HRZ insulator'
       call int_mass_matrix_HRZ(node1, ele1, jac1_3d_q, rhs_tbl1,        &
-     &    iele_ins_smp_stack, n_int,                                    &
+     &    insulate1%istack_ele_fld_smp, n_int,                          &
      &     fem1_wk, f1_l, mhd_fem1_wk%mlump_ins)
 !
       end subroutine int_mass_matrices_quad
