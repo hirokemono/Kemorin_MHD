@@ -11,7 +11,7 @@
 !!      subroutine sync_field_header_mpi(nprocs_in, id_rank,            &
 !!     &           nnod, num_field, istack_merged)
 !!      subroutine sync_field_comp_mpi(num_field, ncomp_field)
-!!      subroutine sync_field_name_mpi(field_name)
+!!      subroutine sync_field_name_mpi(ilength, field_name)
 !!      subroutine sync_field_names_mpi(num_field, field_name)
 !!
 !!      subroutine write_fld_vecotr_mpi(id_fld, nprocs_in, id_rank,     &
@@ -25,7 +25,7 @@
 !!
 !!      subroutine write_field_vecotr_mpi(id_fld, ioff_gl,              &
 !!     &          nnod, ncomp, vect, istack_merged_intnod)
-!
+!!
 !!      subroutine read_field_name_mpi(id_fld, ioff_gl, field_name)
 !!      subroutine read_fld_vecotr_mpi(id_fld, nprocs_in, id_rank,      &
 !!     &          ioff_gl, nnod, ncomp, vect, istack_merged)
@@ -116,11 +116,14 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sync_field_name_mpi(field_name)
+      subroutine sync_field_name_mpi(ilength, field_name)
 !
+      integer(kind=kint), intent(inout) :: ilength
       character(len=kchara), intent(inout) :: field_name
 !
 !
+      call MPI_BCAST(ilength, ione, CALYPSO_INTEGER, izero,             &
+     &    CALYPSO_COMM, ierr_MPI)
       call MPI_BCAST(field_name, kchara, CALYPSO_CHARACTER, izero,      &
      &    CALYPSO_COMM, ierr_MPI)
 !
@@ -325,7 +328,7 @@
         ilength = read_each_field_name_buffer(textbuf_c, field_name)
       end if
 !
-      call sync_field_name_mpi(field_name)
+      call sync_field_name_mpi(ilength, field_name)
       ioff_gl = ioff_gl + ilength + 1
 !
       end subroutine read_field_name_mpi
@@ -353,7 +356,6 @@
       integer(kind = kint_gl) :: i, num
 !
 !
-      write(*,*) 'write_field_vecotr_mpi'
       ilength = ncomp*25 + 1
       num = istack_merged_intnod(my_rank+1)                             &
      &     - istack_merged_intnod(my_rank)
@@ -416,7 +418,7 @@
       end do
       ioff_gl = ioff_gl + ilength * istack_merged(nprocs_in)
 !
-      end subroutine read_fld_vecotr_mpi
+      end subroutine read_fld_vecotr_mpi 
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
