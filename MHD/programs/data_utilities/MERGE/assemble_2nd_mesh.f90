@@ -17,7 +17,7 @@
       use m_control_data_4_merge
       use m_control_param_merge
       use m_original_ucd_4_merge
-      use m_ucd_data
+      use t_ucd_data
 !
       use set_merged_geometry
       use set_2nd_geometry_4_serial
@@ -31,6 +31,9 @@
 !  ===========
 ! . for local 
 !  ===========
+!>        Instance for FEM field data IO
+      type(ucd_data), save :: fem_ucd
+!
       integer(kind=kint ) :: istep
 !
 ! ==============================================                                                                                                            

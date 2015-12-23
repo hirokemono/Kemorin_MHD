@@ -1,7 +1,5 @@
 ! \beginFILE
 !     program  assemble_merge
-
-      program    assemble_merge
 ! \beginSUBROUTINE
 ! * program 'assemble' assemble UCD of parts files to one UCD file
 !    \begin{flushright}
@@ -12,6 +10,8 @@
 !         modified  by  H.Matsui (UC Berkeley)  on Oct., 2008 (ver 1.4)
 !    \end{flushright}
 !
+      program assemble_merge
+!
       use m_precision
 !
       use m_constants
@@ -20,7 +20,7 @@
       use m_control_data_4_merge
       use m_control_param_merge
       use m_original_ucd_4_merge
-      use m_ucd_data
+      use t_ucd_data
 !
       use set_merged_geometry
       use set_merged_udt_2_IO
@@ -32,6 +32,9 @@
 !  ===========
 ! . for local 
 !  ===========
+!>        Instance for FEM field data IO
+      type(ucd_data), save :: fem_ucd
+!
       integer(kind=kint ) :: istep
 !
 ! ==============================================                                                                                                            

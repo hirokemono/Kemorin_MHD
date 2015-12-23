@@ -45,7 +45,6 @@
       use set_control_4_composition
       use set_control_4_pickup_sph
       use sph_mhd_rst_IO_control
-      use output_parallel_ucd_file
       use check_read_bc_file
 !
       use check_dependency_for_MHD
@@ -58,7 +57,7 @@
       call set_control_mesh_def
       call set_control_sph_mesh
       call set_ctl_restart_4_sph_mhd
-      call set_control_parallel_field_def(fem_ucd)
+      call set_control_MHD_field_file
       call set_control_org_sph_mesh
       call set_control_org_fld_file_def
 !

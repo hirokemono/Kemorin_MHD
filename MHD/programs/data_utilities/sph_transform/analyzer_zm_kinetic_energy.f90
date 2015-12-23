@@ -48,7 +48,7 @@
       call set_ctl_data_4_zm_energies
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
-      call s_set_ctl_data_4_sph_trans
+      call s_set_ctl_data_4_sph_trans(ucd_SPH_TRNS)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'

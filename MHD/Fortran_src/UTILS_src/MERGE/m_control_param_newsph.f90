@@ -3,8 +3,7 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine set_control_4_newsph(ucd)
-!        type(ucd_data), intent(inout) :: ucd
+!      subroutine set_control_4_newsph
 !
       module m_control_param_newsph
 !
@@ -43,9 +42,7 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_control_4_newsph(ucd)
-!
-      use t_ucd_data
+      subroutine set_control_4_newsph
 !
       use m_control_data_4_merge
       use m_ctl_data_4_platforms
@@ -55,10 +52,7 @@
       use m_file_format_switch
       use set_control_platform_data
       use new_SPH_restart
-      use ucd_IO_select
       use skip_comment_f
-!
-      type(ucd_data), intent(inout) :: ucd
 !
 !
       if (ndomain_ctl%iflag .gt. 0) then
@@ -74,8 +68,6 @@
         write(*,*) 'Set number of subdomains for new grid'
         stop
       end if
-!
-      call set_ucd_file_define(ucd)
 !
       if(sph_file_prefix%iflag .gt. 0) then
         org_sph_head = sph_file_prefix%charavalue

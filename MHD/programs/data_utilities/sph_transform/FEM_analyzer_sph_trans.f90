@@ -4,6 +4,9 @@
 !      subroutine FEM_analyze_sph_trans(i_step, visval, ucd)
 !
 !      subroutine SPH_to_FEM_bridge_sph_trans
+!      subroutine FEM_finalize_sph_trans(ucd, m_ucd)
+!        type(ucd_data), intent(inout) :: ucd
+!        type(merged_ucd_data), intent(inout) :: m_ucd
 !
       module FEM_analyzer_sph_trans
 !
@@ -127,15 +130,18 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_finalize_sph_trans
+      subroutine FEM_finalize_sph_trans(ucd, m_ucd)
 !
       use m_t_step_parameter
-      use m_ucd_data
+      use t_ucd_data
       use output_parallel_ucd_file
+!
+      type(ucd_data), intent(inout) :: ucd
+      type(merged_ucd_data), intent(inout) :: m_ucd
 !
 !
       if(i_step_output_ucd .gt. 0) then
-        call finalize_ucd_file_output(fem_ucd, merged_ucd)
+        call finalize_ucd_file_output(ucd, m_ucd)
       end if
 !
       end subroutine FEM_finalize_sph_trans

@@ -33,6 +33,8 @@
       use calypso_mpi
       use m_work_time
 !
+      use m_ucd_data
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -54,7 +56,6 @@
 !
       use const_mesh_info
       use nod_phys_send_recv
-      use output_ucd_file_control
       use range_data_IO
       use node_monitor_IO
 !
@@ -93,7 +94,7 @@
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
-      call output_grd_file_4_snapshot
+      call output_grd_file_4_snapshot(nod_comm, node1, ele1, nod_fld1)
 !
       end subroutine FEM_initialize_sph_MHD
 !
@@ -105,7 +106,6 @@
 !
       use set_exit_flag_4_visualizer
       use output_viz_file_control
-      use output_ucd_file_control
 !
       integer (kind =kint), intent(in) :: i_step
 !
@@ -191,13 +191,11 @@
 !
       use m_t_step_parameter
       use m_cal_max_indices
-      use m_ucd_data
-      use output_parallel_ucd_file
 !
 !
      if(i_step_output_ucd.gt.0) then
        call deallocate_phys_range
-       call finalize_ucd_file_output(fem_ucd, merged_ucd)
+       call finalize_output_ucd
      end if
 !
       end subroutine FEM_finalize

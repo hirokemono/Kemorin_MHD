@@ -15,6 +15,7 @@
       use m_machine_parameter
       use m_t_step_parameter
       use m_t_int_parameter
+      use m_ucd_data
 !
       use calypso_mpi
 !
@@ -34,7 +35,6 @@
       use m_control_parameter
       use m_cal_max_indices
       use m_layering_ele_list
-      use m_ucd_data
 !
       use input_control
       use initialization_4_MHD
@@ -42,7 +42,6 @@
       use update_after_evolution
 !
       use nod_phys_send_recv
-      use output_ucd_mesh_w_original
       use cal_model_coefficients
       use check_deltat_by_prev_rms
       use construct_matrices
@@ -98,7 +97,7 @@
       call start_eleps_time(4)
 !
       call output_grd_file_w_org_connect                                &
-     &   (node1, ele1, nod_comm, nod_fld1, fem_ucd, merged_ucd)
+     &   (node1, ele1, nod_comm, nod_fld1)
 !
       call allocate_phys_range(nod_fld1%ntot_phys_viz)
 !       call s_open_boundary_monitor(my_rank, sf_grp1)
@@ -134,7 +133,6 @@
       use node_monitor_IO
       use sgs_model_coefs_IO
       use fem_mhd_rst_IO_control
-      use output_ucd_file_control
       use output_viz_file_control
       use set_exit_flag_4_visualizer
 !
@@ -308,11 +306,9 @@
       subroutine FEM_finalize_MHD
 !
       use m_cal_max_indices
-      use m_ucd_data
 !
 !
-      call finalize_ucd_file_output(fem_ucd, merged_ucd)
-!
+      call finalize_output_ucd
       call deallocate_phys_range
 !        call close_boundary_monitor(my_rank)
 !

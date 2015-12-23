@@ -3,15 +3,18 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine s_input_control_udt_diff
-!      subroutine s_input_control_ave_udt
-!      subroutine s_input_control_corr_udt
-!      subroutine s_input_control_grp_patch
+!      subroutine s_input_control_udt_diff(ucd)
+!      subroutine s_input_control_ave_udt(ucd)
+!      subroutine s_input_control_corr_udt(ucd)
+!      subroutine s_input_control_grp_patch(ucd)
 !
       module input_control_udt_diff
 !
       use m_precision
       use m_machine_parameter
+!
+      use calypso_mpi
+      use t_ucd_data
 !
       implicit none
 !
@@ -21,10 +24,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_control_udt_diff
-!
-      use calypso_mpi
-      use calypso_mpi
+      subroutine s_input_control_udt_diff(ucd)
 !
       use m_node_phys_data
       use m_ctl_params_4_diff_udt
@@ -33,6 +33,7 @@
       use set_ctl_diff_udt
       use set_control_nodal_data
 !
+      type(ucd_data), intent(inout) :: ucd
       integer(kind = kint) :: ierr
 !
 !
@@ -40,7 +41,7 @@
       call read_control_4_diff_udt
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_diff_udt'
-      call set_ctl_params_diff_udt
+      call set_ctl_params_diff_udt(ucd)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
       call s_set_control_nodal_data(nod_fld1, ierr)
@@ -53,9 +54,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_control_ave_udt
-!
-      use calypso_mpi
+      subroutine s_input_control_ave_udt(ucd)
 !
       use m_node_phys_data
       use m_ctl_params_4_diff_udt
@@ -64,6 +63,7 @@
       use set_ctl_diff_udt
       use set_control_nodal_data
 !
+      type(ucd_data), intent(inout) :: ucd
       integer(kind = kint) :: ierr
 !
 !
@@ -71,7 +71,7 @@
       call read_control_4_ave_udt
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_diff_udt'
-      call set_ctl_params_diff_udt
+      call set_ctl_params_diff_udt(ucd)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
       call s_set_control_nodal_data(nod_fld1, ierr)
@@ -84,41 +84,41 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_control_corr_udt
+      subroutine s_input_control_corr_udt(ucd)
 !
       use m_ctl_params_4_diff_udt
       use m_ctl_data_diff_udt
 !
       use set_ctl_diff_udt
 !
-      use calypso_mpi
+      type(ucd_data), intent(inout) :: ucd
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_corr_udt'
       call read_control_4_corr_udt
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_correlate_udt'
-      call set_ctl_params_correlate_udt
+      call set_ctl_params_correlate_udt(ucd)
 !
       end subroutine s_input_control_corr_udt
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_control_grp_patch
+      subroutine s_input_control_grp_patch(ucd)
 !
       use m_ctl_params_4_diff_udt
       use m_ctl_data_diff_udt
 !
       use set_ctl_diff_udt
 !
-      use calypso_mpi
+      type(ucd_data), intent(inout) :: ucd
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_med_grp_patch'
       call read_control_med_grp_patch
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_diff_udt'
-      call set_ctl_params_diff_udt
+      call set_ctl_params_diff_udt(ucd)
 !
       end subroutine s_input_control_grp_patch
 !

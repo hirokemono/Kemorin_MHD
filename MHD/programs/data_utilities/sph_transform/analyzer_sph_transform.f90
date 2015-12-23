@@ -21,6 +21,7 @@
       use m_work_time
       use t_field_data_IO
 !
+      use m_SPH_transforms
       use FEM_analyzer_sph_trans
       use SPH_analyzer_sph_trans
 !
@@ -52,7 +53,7 @@
       call read_control_data_sph_trans
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_4_sph_transform'
-      call set_control_4_sph_transform
+      call set_control_4_sph_transform(ucd_SPH_TRNS)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
@@ -90,7 +91,7 @@
         call SPH_analyze_sph_trans(i_step, sph_trns_IO)
       end do
 !
-      call FEM_finalize_sph_trans
+      call FEM_finalize_sph_trans(ucd_SPH_TRNS, m_ucd_SPH_TRNS)
 !
         end subroutine analyze_sph_transform
 !

@@ -10,7 +10,7 @@
 !!      subroutine allocate_work_4_lscale
 !!      subroutine deallocate_work_4_lscale
 !!
-!!      subroutine const_MHD_length_scales(istep_ucd)
+!!      subroutine const_MHD_length_scales(istep_ucd, ucd)
 !!      subroutine find_field_address_4_lscale
 !!@endverbatim
 !!
@@ -59,65 +59,66 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine const_MHD_length_scales(istep_ucd)
+      subroutine const_MHD_length_scales(istep_ucd, ucd)
 !
       use calypso_mpi
+      use t_ucd_data
       use m_geometry_data
       use m_phys_labels
       use m_node_phys_data
-      use m_ucd_data
       use m_ctl_params_4_prod_udt
       use set_and_cal_udt_data
 !
       use ucd_IO_select
 !
+      type(ucd_data), intent(inout) :: ucd
       integer(kind = kint), intent(in) :: istep_ucd
       integer(kind = kint) :: icou
 !
 !
-      fem_ucd%num_field = 0
-      if(iphys%i_temp  .gt. 0) fem_ucd%num_field = fem_ucd%num_field+1
-      if(iphys%i_velo  .gt. 0) fem_ucd%num_field = fem_ucd%num_field+1
-      if(iphys%i_magne .gt. 0) fem_ucd%num_field = fem_ucd%num_field+1
+      ucd%num_field = 0
+      if(iphys%i_temp  .gt. 0) ucd%num_field = ucd%num_field+1
+      if(iphys%i_velo  .gt. 0) ucd%num_field = ucd%num_field+1
+      if(iphys%i_magne .gt. 0) ucd%num_field = ucd%num_field+1
 !
-      call allocate_ucd_phys_name(fem_ucd)
+      call allocate_ucd_phys_name(ucd)
 !
-      fem_ucd%num_comp(1:fem_ucd%num_field) = ione
-      call cal_istack_ucd_component(fem_ucd)
+      ucd%num_comp(1:ucd%num_field) = ione
+      call cal_istack_ucd_component(ucd)
 !
-      fem_ucd%nnod =      node1%numnod
-      call allocate_ucd_phys_data(fem_ucd)
+      ucd%nnod =      node1%numnod
+      call allocate_ucd_phys_data(ucd)
 !
       icou = 0
       if(iphys%i_temp  .gt. 0) then
         icou = icou + 1
-        fem_ucd%phys_name(icou) = fhd_temp_scale
+        ucd%phys_name(icou) = fhd_temp_scale
         call cal_length_scale_by_diffuse1(iphys%i_temp,                 &
      &      iphys%i_t_diffuse)
         call set_one_field_to_udt_data                                  &
-     &     (node1%numnod, ione, icou, d_mag(1), fem_ucd)
+     &     (node1%numnod, ione, icou, d_mag(1), ucd)
       end if
 !
       if(iphys%i_velo  .gt. 0) then
         icou = icou + 1
-        fem_ucd%phys_name(icou) = fhd_velocity_scale
+        ucd%phys_name(icou) = fhd_velocity_scale
         call cal_vect_length_scale_by_rot(iphys%i_velo, iphys%i_vort)
         call set_one_field_to_udt_data                                  &
-     &     (node1%numnod, ione, icou, d_mag(1), fem_ucd)
+     &     (node1%numnod, ione, icou, d_mag(1), ucd)
       end if
 !
       if(iphys%i_magne .gt. 0) then
         icou = icou + 1
-        fem_ucd%phys_name(3) =    fhd_magnetic_scale
+        ucd%phys_name(3) =    fhd_magnetic_scale
         call cal_vect_length_scale_by_rot(iphys%i_magne,                &
      &      iphys%i_current)
         call set_one_field_to_udt_data                                  &
-     &     (node1%numnod, ione, icou, d_mag(1), fem_ucd)
+     &     (node1%numnod, ione, icou, d_mag(1), ucd)
       end if
 !
-      call set_ucd_file_prefix(result_udt_file_head, fem_ucd)
-      call sel_write_udt_file(my_rank, istep_ucd, fem_ucd)
-      call deallocate_ucd_data(fem_ucd)
+      call set_ucd_file_prefix(result_udt_file_head, ucd)
+      call sel_write_udt_file(my_rank, istep_ucd, ucd)
+      call deallocate_ucd_data(ucd)
 !
       end subroutine const_MHD_length_scales
 !

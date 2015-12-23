@@ -1,11 +1,11 @@
 !update_restart
 ! ----- program  update_restart
 !
-      program    update_restart
-!
 !    change restart data for different number of domains
 !     By H. Matsui
 !
+!
+      program update_restart
 !
       use m_precision
 !
@@ -14,14 +14,18 @@
       use m_control_data_4_merge
       use m_control_param_merge
       use m_read_mesh_data
-      use m_ucd_data
+!
+      use t_ucd_data
 !
       use set_merged_geometry
       use set_2nd_geometry_4_serial
       use new_FEM_restart
       use input_old_file_sel_4_zlib
 !
-      implicit    none
+      implicit none
+!
+!>        Instance for FEM field data IO
+      type(ucd_data), save :: fem_ucd
 !
       integer (kind = kint) :: istep
 !

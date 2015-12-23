@@ -15,6 +15,7 @@
       use m_work_time
       use m_t_step_parameter
       use m_t_int_parameter
+      use m_ucd_data
 !
       use calypso_mpi
 !
@@ -34,11 +35,9 @@
       use m_geometry_data
       use m_node_phys_data
       use m_layering_ele_list
-      use m_ucd_data
 !
       use initialize_4_snapshot
 !
-      use output_ucd_mesh_w_original
       use node_monitor_IO
       use open_sgs_model_coefs
       use range_data_IO
@@ -49,7 +48,7 @@
       call init_analyzer_snap(layer_tbl1)
 !
       call output_grd_file_w_org_connect                                &
-     &   (node1, ele1, nod_comm, nod_fld1, fem_ucd, merged_ucd)
+     &   (node1, ele1, nod_comm, nod_fld1)
 !
       call allocate_phys_range(nod_fld1%ntot_phys_viz)
 !
@@ -80,7 +79,6 @@
       use node_monitor_IO
       use sgs_model_coefs_IO
       use fem_mhd_rst_IO_control
-      use output_ucd_file_control
       use output_viz_file_control
       use set_exit_flag_4_visualizer
 !
@@ -170,11 +168,9 @@
 !
       use m_t_step_parameter
       use m_cal_max_indices
-      use m_ucd_data
-      use output_parallel_ucd_file
 !
 !
-      call finalize_ucd_file_output(fem_ucd, merged_ucd)
+      call finalize_output_ucd
       call deallocate_phys_range
 !        call close_boundary_monitor(my_rank)
 !

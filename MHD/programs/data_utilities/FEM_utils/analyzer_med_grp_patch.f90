@@ -31,6 +31,7 @@
       use m_node_phys_data
       use m_ele_sf_eg_comm_tables
       use m_array_for_send_recv
+      use m_FEM_utils
       use input_control_udt_diff
       use const_mesh_info
       use nod_phys_send_recv
@@ -46,7 +47,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_grp_patch'
-      call s_input_control_grp_patch
+      call s_input_control_grp_patch(ucd_FUTIL)
       if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
       call input_mesh_1st(my_rank)
 !

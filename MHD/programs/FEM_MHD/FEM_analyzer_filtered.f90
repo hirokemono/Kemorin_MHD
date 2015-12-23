@@ -31,6 +31,7 @@
       use m_geometry_data
       use m_node_phys_data
       use m_layering_ele_list
+      use m_ucd_data
 !
       use read_udt_4_snapshot
 !
@@ -46,7 +47,6 @@
       use node_monitor_IO
       use sgs_model_coefs_IO
       use fem_mhd_rst_IO_control
-      use output_ucd_file_control
       use output_viz_file_control
       use set_exit_flag_4_visualizer
       use filter_all_fields

@@ -1,9 +1,11 @@
 !
 !      module m_ctl_params_4_prod_udt
 !
-      module m_ctl_params_4_prod_udt
-!
 !     Written by H. Matsui on Nov., 2006
+!
+!      subroutine set_ctl_params_prod_udt(ucd)
+
+      module m_ctl_params_4_prod_udt
 !
       use m_precision
 !
@@ -34,7 +36,6 @@
       integer(kind = kint) :: i_diff_steps = 0
       real(kind = kreal) :: dt =  1.0d0
 !
-!      subroutine set_ctl_params_prod_udt
 !
 !  ---------------------------------------------------------------------
 !
@@ -42,19 +43,21 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_prod_udt
+      subroutine set_ctl_params_prod_udt(ucd)
 !
       use calypso_mpi
+      use t_ucd_data
       use m_error_IDs
       use m_read_mesh_data
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
       use m_ctl_data_product_udt
       use m_file_format_switch
-      use m_ucd_data
       use m_control_params_2nd_files
       use set_control_platform_data
       use ucd_IO_select
+!
+      type(ucd_data), intent(inout) :: ucd
 !
 !
       if (nprocs .ne. ndomain_ctl%intvalue) then
@@ -65,7 +68,7 @@
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
       call set_control_org_fld_file_def
-      call set_ucd_file_define(fem_ucd)
+      call set_ucd_file_define(ucd)
 !
 !   set fiale name
 !

@@ -18,9 +18,12 @@
       use m_control_param_merge
       use set_merged_geometry
       use write_merged_mesh
-      use m_ucd_data
+      use t_ucd_data
 !
       implicit    none
+!
+!>        Instance for FEM field data IO
+      type(ucd_data), save :: fem_ucd
 !
 ! ==============================================                                                                                                            
 ! * get number of  nodes,elements for whole PES

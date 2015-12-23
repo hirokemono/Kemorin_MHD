@@ -16,14 +16,19 @@ TARGET_ZMEAN_KENE =        sph_zm_kinetic_energies
 
 SOURCES = $(shell ls *.f90)
 
-MOD_SPH_TRANS = \
+MOD_SPH_TRANSFORM = \
+m_SPH_transforms.o \
 m_ctl_data_4_sph_trans.o \
 m_ctl_params_sph_trans.o \
 \
 set_phys_name_4_sph_trans.o \
 copy_all_spec_4_sph_trans.o \
 copy_all_field_4_sph_trans.o \
-sph_transfer_all_field.o \
+sph_transfer_all_field.o
+
+
+MOD_SPH_TRANS = \
+'$$(MOD_SPH_TRANSFORM)' \
 \
 analyzer_sph_transform.o \
 FEM_analyzer_sph_trans.o \
@@ -31,13 +36,7 @@ SPH_analyzer_sph_trans.o \
 main_sph_transform.o
 
 MOD_SPH_B_TRANS = \
-m_ctl_data_4_sph_trans.o \
-m_ctl_params_sph_trans.o \
-\
-set_phys_name_4_sph_trans.o \
-copy_all_spec_4_sph_trans.o \
-copy_all_field_4_sph_trans.o \
-sph_transfer_all_field.o \
+'$$(MOD_SPH_TRANSFORM)' \
 \
 analyzer_sph_back_trans.o \
 SPH_analyzer_back_trans.o \
@@ -47,13 +46,7 @@ m_control_data_vizs.o  \
 main_sph_back_trans.o
 
 MOD_GAUSS_B_TRANS = \
-m_ctl_data_4_sph_trans.o \
-m_ctl_params_sph_trans.o \
-\
-set_phys_name_4_sph_trans.o \
-copy_all_spec_4_sph_trans.o \
-copy_all_field_4_sph_trans.o \
-sph_transfer_all_field.o \
+'$$(MOD_SPH_TRANSFORM)' \
 \
 analyzer_gauss_back_trans.o \
 FEM_analyzer_back_trans.o \
@@ -63,13 +56,7 @@ m_control_data_vizs.o  \
 main_gauss_back_trans.o
 
 MOD_ZM_F_TRANS = \
-m_ctl_data_4_sph_trans.o \
-m_ctl_params_sph_trans.o \
-\
-set_phys_name_4_sph_trans.o \
-copy_all_spec_4_sph_trans.o \
-copy_all_field_4_sph_trans.o \
-sph_transfer_all_field.o \
+'$$(MOD_SPH_TRANSFORM)' \
 \
 analyzer_zm_transform.o \
 SPH_analyzer_sph_trans.o \
@@ -77,13 +64,7 @@ FEM_analyzer_sph_trans.o \
 main_zm_transform.o
 
 MOD_ZMEAN_STREAM = \
-m_ctl_data_4_sph_trans.o \
-m_ctl_params_sph_trans.o \
-\
-set_phys_name_4_sph_trans.o \
-copy_all_spec_4_sph_trans.o \
-copy_all_field_4_sph_trans.o \
-sph_transfer_all_field.o \
+'$$(MOD_SPH_TRANSFORM)' \
 \
 main_zm_streamfunc.o \
 analyzer_zm_streamfunc.o \
@@ -93,13 +74,7 @@ SPH_analyzer_back_trans.o \
 SPH_analyzer_zm_streamfunc.o
 
 MOD_PICK_ZM_FLD_SPH = \
-m_ctl_data_4_sph_trans.o \
-m_ctl_params_sph_trans.o \
-\
-set_phys_name_4_sph_trans.o \
-copy_all_spec_4_sph_trans.o \
-copy_all_field_4_sph_trans.o \
-sph_transfer_all_field.o \
+'$$(MOD_SPH_TRANSFORM)' \
 \
 FEM_analyzer_sph_trans.o \
 FEM_analyzer_back_trans.o \
@@ -113,13 +88,7 @@ main_zm_sph_field.o
 
 
 MOD_ZRMS_SPH_SPEC = \
-m_ctl_data_4_sph_trans.o \
-m_ctl_params_sph_trans.o \
-\
-set_phys_name_4_sph_trans.o \
-copy_all_spec_4_sph_trans.o \
-copy_all_field_4_sph_trans.o \
-sph_transfer_all_field.o \
+'$$(MOD_SPH_TRANSFORM)' \
 \
 FEM_analyzer_sph_trans.o \
 FEM_analyzer_back_trans.o \
@@ -132,13 +101,7 @@ analyzer_zonal_rms_sph.o \
 main_zonal_rms_sph.o
 
 MOD_ZMEAN_KENE = \
-m_ctl_data_4_sph_trans.o \
-m_ctl_params_sph_trans.o \
-\
-set_phys_name_4_sph_trans.o \
-copy_all_spec_4_sph_trans.o \
-copy_all_field_4_sph_trans.o \
-sph_transfer_all_field.o \
+'$$(MOD_SPH_TRANSFORM)' \
 \
 main_zm_kinetic_energy.o \
 analyzer_zm_kinetic_energy.o \
@@ -249,6 +212,8 @@ target_task:
 lib_name:
 
 mod_list:
+	@echo  MOD_SPH_TRANSFORM=  \\   >> $(MAKENAME)
+	@echo  $(MOD_SPH_TRANSFORM)     >> $(MAKENAME)
 	@echo  MOD_SPH_TRANS=  \\       >> $(MAKENAME)
 	@echo  $(MOD_SPH_TRANS)         >> $(MAKENAME)
 	@echo  MOD_SPH_B_TRANS=  \\     >> $(MAKENAME)

@@ -3,7 +3,10 @@
 !
 !        programmed by H.Matsui on Oct., 2007
 !
-!      subroutine s_set_ctl_data_4_sph_trans
+!      subroutine set_control_4_sph_transform(ucd)
+!      subroutine set_control_4_sph_back_trans(ucd)
+!      subroutine s_set_ctl_data_4_sph_trans(ucd)
+!        type(ucd_data), intent(inout) :: ucd
 !      subroutine set_ctl_data_4_zm_trans
 !      subroutine set_ctl_data_4_pick_zm
 !      subroutine set_ctl_data_4_zm_streamline
@@ -30,12 +33,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_sph_transform
+      subroutine set_control_4_sph_transform(ucd)
 !
+      use t_ucd_data
       use calypso_mpi
       use m_node_phys_data
       use m_global_gauss_coefs
-      use m_ucd_data
       use m_FFT_selector
 !
       use set_control_nodal_data
@@ -48,13 +51,14 @@
       use m_ctl_data_4_sph_trans
       use set_control_4_pickup_sph
 !
+      type(ucd_data), intent(inout) :: ucd
       integer(kind = kint) :: ierr
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank)
       call set_control_smp_def(my_rank)
       call set_control_sph_mesh
-      call set_ucd_file_define(fem_ucd)
+      call set_ucd_file_define(ucd)
 !
 !   setting for spherical transform
 !
@@ -106,12 +110,12 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_sph_back_trans
+      subroutine set_control_4_sph_back_trans(ucd)
 !
       use calypso_mpi
+      use t_ucd_data
       use m_node_phys_data
       use m_global_gauss_coefs
-      use m_ucd_data
 !
       use m_control_params_2nd_files
       use m_FFT_selector
@@ -125,6 +129,7 @@
       use m_ctl_data_4_sph_trans
       use set_control_4_pickup_sph
 !
+      type(ucd_data), intent(inout) :: ucd
       integer(kind = kint) :: ierr
 !
 !
@@ -132,7 +137,7 @@
       call set_control_smp_def(my_rank)
       call set_control_sph_mesh
       call set_control_org_sph_mesh
-      call set_ucd_file_define(fem_ucd)
+      call set_ucd_file_define(ucd)
 !
 !   setting for spherical transform
 !
@@ -184,9 +189,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_ctl_data_4_sph_trans
+      subroutine s_set_ctl_data_4_sph_trans(ucd)
 !
       use calypso_mpi
+      use t_ucd_data
       use m_machine_parameter
       use m_t_step_parameter
       use m_read_mesh_data
@@ -198,7 +204,6 @@
       use m_node_id_spherical_IO
       use m_control_params_2nd_files
       use m_FFT_selector
-      use m_ucd_data
 !
       use set_control_nodal_data
       use set_control_sph_data
@@ -214,8 +219,9 @@
       use m_control_params_2nd_files
       use skip_comment_f
       use set_control_4_pickup_sph
-      use output_parallel_ucd_file
+      use parallel_ucd_IO_select
 !
+      type(ucd_data), intent(inout) :: ucd
       integer(kind = kint) :: ierr
 !
 !
@@ -224,7 +230,7 @@
       call set_control_mesh_def
       call set_control_sph_mesh
       call set_control_org_sph_mesh
-      call set_control_parallel_field_def(fem_ucd)
+      call set_merged_ucd_file_define(ucd)
       call set_control_org_fld_file_def
 !
 !    file header for field data

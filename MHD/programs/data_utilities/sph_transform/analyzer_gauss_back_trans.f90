@@ -41,7 +41,7 @@
       if (iflag_debug.gt.0) write(*,*) 'read_control_data_sph_trans'
       call read_control_data_sph_trans
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
-      call s_set_ctl_data_4_sph_trans
+      call s_set_ctl_data_4_sph_trans(ucd_SPH_TRNS)
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'

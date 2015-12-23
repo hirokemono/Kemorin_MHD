@@ -5,6 +5,9 @@
 !
 !      subroutine set_parameters_4_FFT(num_pe, ist, ied, iint)
 !      subroutine set_fields_4_FFT
+!      subroutine set_parameters_data_by_spec(num_pe,                   &
+!     &          kx_org, ky_org, iz_org, ucd)
+!        type(ucd_data), intent(inout) :: ucd
 !
       module set_list_4_FFT
 !
@@ -41,7 +44,6 @@
       use m_ctl_data_4_time_steps
       use m_size_4_plane
       use m_spectr_4_ispack
-      use m_ucd_data
 !
       integer(kind=kint ), intent(inout) :: num_pe, ist, ied, iint
 !
@@ -169,7 +171,7 @@
 ! -----------------------------------------------------------------------
 !
       subroutine set_parameters_data_by_spec(num_pe,                    &
-     &          kx_org, ky_org, iz_org)
+     &          kx_org, ky_org, iz_org, ucd)
 !
       use m_control_plane_fft
       use m_ctl_data_4_plane_model
@@ -180,12 +182,13 @@
       use m_size_4_plane
       use m_spectr_4_ispack
       use m_set_new_spectr
-      use m_ucd_data
       use m_field_file_format
+      use t_ucd_data
       use set_parallel_file_name
 !
       integer(kind=kint ), intent(inout) :: num_pe
       integer(kind=kint ), intent(inout) :: kx_org, ky_org, iz_org
+      type(ucd_data), intent(inout) :: ucd
 !
 !
       write(*,*) 'nnod_plane_ctl       ', nnod_plane_ctl%intvalue
@@ -201,14 +204,14 @@
       end if
 !
       if (new_field_file_prefix%iflag .gt. 0) then
-        call set_ucd_file_format(iflag_udt, fem_ucd)
+        call set_ucd_file_format(iflag_udt, ucd)
         call set_ucd_file_prefix                                        &
-     &     (new_field_file_prefix%charavalue, fem_ucd)
+     &     (new_field_file_prefix%charavalue, ucd)
       else if (new_vtk_prefix%iflag .gt. 0) then
-        call set_ucd_file_format(iflag_vtk, fem_ucd)
-        call set_ucd_file_prefix(new_vtk_prefix%charavalue, fem_ucd)
+        call set_ucd_file_format(iflag_vtk, ucd)
+        call set_ucd_file_prefix(new_vtk_prefix%charavalue, ucd)
       else
-        call set_ucd_file_format(iflag_fld, fem_ucd)
+        call set_ucd_file_format(iflag_fld, ucd)
       end if
 !
 !

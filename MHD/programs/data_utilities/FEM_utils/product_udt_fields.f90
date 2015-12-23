@@ -89,7 +89,6 @@
       use m_error_IDs
       use m_ctl_params_4_prod_udt
       use m_geometry_data
-      use m_ucd_data
       use m_t_step_parameter
       use ucd_IO_select
 !
@@ -159,7 +158,6 @@
 !
       use calypso_mpi
       use m_ctl_params_4_prod_udt
-      use m_ucd_data
 !
       integer(kind = kint), intent(in) :: numnod
       integer(kind = kint), intent(in) :: istep_ucd

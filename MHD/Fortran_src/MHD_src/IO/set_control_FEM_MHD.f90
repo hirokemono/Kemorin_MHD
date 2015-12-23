@@ -52,7 +52,6 @@
       use set_control_4_composition
       use set_control_4_infty
       use fem_mhd_rst_IO_control
-      use output_parallel_ucd_file
       use check_read_bc_file
 !
 !
@@ -63,7 +62,7 @@
       call set_control_smp_def(my_rank)
       call set_control_mesh_def
       call set_ctl_restart_4_fem_mhd
-      call set_control_parallel_field_def(fem_ucd)
+      call set_control_MHD_field_file
       call set_control_org_fld_file_def
 !
 !   set parameters for general information

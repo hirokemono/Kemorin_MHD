@@ -58,7 +58,6 @@
 !
       use m_error_IDs
       use m_control_data_4_merge
-      use m_ucd_data
 !
       use m_node_id_spherical_IO
       use field_IO_select
@@ -70,7 +69,7 @@
       write(*,*) 'Simulation start: PE. ', my_rank
 !
       call read_control_assemble_sph
-      call set_control_4_newsph(fem_ucd)
+      call set_control_4_newsph
 !
       if(my_rank .eq. 0) write(*,*)                                     &
      &          'istep_start, istep_end, increment_step',               &
@@ -156,10 +155,12 @@
 !
 !      Construct field list from spectr file
 !
+!      write(*,*) 'load_field_name_assemble_sph'
       call load_field_name_assemble_sph(org_sph_fst_head,               &
      &      ifmt_org_sph_fst, istep_start, np_sph_org,                  &
      &      new_sph_mesh(1)%sph_mesh, org_sph_phys(1), new_sph_phys(1))
 !
+!      write(*,*) 'share_spectr_field_names'
       call share_spectr_field_names(np_sph_org, np_sph_new,             &
      &    new_sph_mesh, org_sph_phys, new_sph_phys)
 !

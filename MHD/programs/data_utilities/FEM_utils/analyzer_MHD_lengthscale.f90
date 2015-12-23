@@ -19,6 +19,7 @@
       use calypso_mpi
       use m_t_step_parameter
 !
+      use m_FEM_utils
       use ucd_IO_select
       use FEM_MHD_length_scale
 !
@@ -59,7 +60,7 @@
       call read_control_4_prod_udt
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
-      call set_ctl_params_prod_udt
+      call set_ctl_params_prod_udt(ucd_FUTIL)
       call s_set_fixed_time_step_params(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
@@ -106,7 +107,7 @@
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
      &        ifmt_org_ucd, ref_udt_file_head, nod_fld1)
 !
-          call const_MHD_length_scales(istep_ucd)
+          call const_MHD_length_scales(istep_ucd, ucd_FUTIL)
         end if
       end do
 !

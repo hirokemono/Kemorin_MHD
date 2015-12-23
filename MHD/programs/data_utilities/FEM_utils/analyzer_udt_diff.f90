@@ -16,6 +16,8 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use m_FEM_utils
+!
       implicit none
 !
 ! ----------------------------------------------------------------------
@@ -45,7 +47,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_udt_diff'
-      call s_input_control_udt_diff
+      call s_input_control_udt_diff(ucd_FUTIL)
       if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
       call input_mesh_1st(my_rank)
 !
@@ -78,7 +80,6 @@
       use m_t_step_parameter
       use m_ctl_params_4_diff_udt
       use m_control_params_2nd_files
-      use m_ucd_data
       use set_ucd_data_to_type
       use output_parallel_ucd_file
       use divide_phys_by_delta_t
@@ -90,7 +91,7 @@
 !
 !
 !
-      call link_global_mesh_2_ucd(node1, ele1, fem_ucd)
+      call link_global_mesh_2_ucd(node1, ele1, ucd_FUTIL)
 !
       do istep = i_step_init, i_step_number
         if ( mod(istep,i_step_output_ucd) .eq. izero) then
@@ -110,7 +111,7 @@
 !    output udt data
           call link_output_ucd_file_once(my_rank, istep_ucd,            &
      &        ifmt_diff_udt_file, diff_udt_file_head,                   &
-     &        nod_fld1, fem_ucd)
+     &        nod_fld1, ucd_FUTIL)
         end if
       end do
 !

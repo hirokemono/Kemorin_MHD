@@ -18,6 +18,7 @@
       use t_mesh_data
       use t_phys_data
       use t_layering_ele_list
+      use m_FEM_utils
 !
       use transfer_correlate_field
 !
@@ -67,7 +68,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_corr_udt'
-      call s_input_control_corr_udt
+      call s_input_control_corr_udt(ucd_FUTIL)
       if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
       call input_mesh_1st(my_rank)
 !
@@ -141,7 +142,6 @@
       use m_t_step_parameter
       use m_control_params_2nd_files
       use m_ctl_params_4_diff_udt
-      use m_ucd_data
       use set_ucd_data_to_type
       use set_ucd_data
       use m_work_layer_correlate
@@ -154,7 +154,7 @@
       integer(kind=kint) :: istep, istep_ucd
 !
 !
-      call link_num_field_2_ucd(nod_fld1, fem_ucd)
+      call link_num_field_2_ucd(nod_fld1, ucd_FUTIL)
 !
 !     ---------------------
 !
@@ -177,8 +177,8 @@
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
      &        ifmt_org_ucd, ref_udt_file_head, nod_fld1)
 !
-          fem_ucd%ifmt_file = ifmt_org_ucd
-          fem_ucd%file_prefix = tgt_udt_file_head
+          ucd_FUTIL%ifmt_file = ifmt_org_ucd
+          ucd_FUTIL%file_prefix = tgt_udt_file_head
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
      &        ifmt_org_ucd, tgt_udt_file_head, phys_ref)
 !

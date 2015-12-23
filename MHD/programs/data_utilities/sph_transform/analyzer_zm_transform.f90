@@ -11,8 +11,9 @@
       use m_machine_parameter
       use calypso_mpi
       use m_work_time
-      use t_field_data_IO
 !
+      use m_SPH_transforms
+      use t_field_data_IO
       use FEM_analyzer_sph_trans
       use SPH_analyzer_sph_trans
 !
@@ -43,7 +44,7 @@
       call read_control_data_sph_trans
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
-      call s_set_ctl_data_4_sph_trans
+      call s_set_ctl_data_4_sph_trans(ucd_SPH_TRNS)
       call set_ctl_data_4_zm_trans
 !
 !  ------    set spectr grids
@@ -82,7 +83,7 @@
         call SPH_analyze_sph_zm_trans(i_step, sph_trns_IO)
       end do
 !
-      call FEM_finalize_sph_trans
+      call FEM_finalize_sph_trans(ucd_SPH_TRNS, m_ucd_SPH_TRNS)
 !
         end subroutine analyze_zm_trans
 !

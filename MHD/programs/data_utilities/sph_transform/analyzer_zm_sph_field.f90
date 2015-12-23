@@ -14,6 +14,7 @@
       use m_work_time
 !
       use t_field_data_IO
+      use m_SPH_transforms
       use SPH_analyzer_sph_trans
       use SPH_analyzer_back_trans
       use FEM_analyzer_sph_trans
@@ -47,7 +48,7 @@
       call read_control_data_sph_trans
 !
       if (iflag_debug.gt.0) write(*,*) 's_set_ctl_data_4_sph_trans'
-      call s_set_ctl_data_4_sph_trans
+      call s_set_ctl_data_4_sph_trans(ucd_SPH_TRNS)
       call set_ctl_data_4_pick_zm
 !
 !  ------    set spectr grids
@@ -79,7 +80,6 @@
       use m_geometry_data
       use m_node_phys_data
 !
-      use m_ucd_data
       use m_control_params_2nd_files
       use m_t_step_parameter
       use m_ctl_params_sph_trans
@@ -101,7 +101,7 @@
         call overwrite_nodal_xyz_2_sph(node1, nod_fld1)
         call zonal_mean_all_rtp_field(node1, nod_fld1)
 !
-        call set_ucd_file_prefix(zonal_udt_head, fem_ucd)
+        call set_ucd_file_prefix(zonal_udt_head, ucd_SPH_TRNS)
         call FEM_analyze_back_trans(i_step, istep_psf, istep_iso,       &
      &          istep_pvr, istep_fline, visval)
 !
@@ -111,9 +111,9 @@
         end if
       end do
 !
-      call FEM_finalize_sph_trans
+      call FEM_finalize_sph_trans(ucd_SPH_TRNS, m_ucd_SPH_TRNS)
 !
-        end subroutine analyze_zm_sph_field
+      end subroutine analyze_zm_sph_field
 !
 ! ----------------------------------------------------------------------
 !

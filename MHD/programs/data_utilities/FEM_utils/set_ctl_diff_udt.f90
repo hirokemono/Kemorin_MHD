@@ -4,8 +4,8 @@
 !     Written by H. Matsui on July, 2006
 !     Modified by H. Matsui on JUne, 2007
 !
-!      subroutine set_ctl_params_correlate_udt
-!      subroutine set_ctl_params_diff_udt
+!      subroutine set_ctl_params_correlate_udt(ucd)
+!      subroutine set_ctl_params_diff_udt(ucd)
 !      subroutine s_set_ctl_4_diff_udt_steps
 !
       module set_ctl_diff_udt
@@ -24,19 +24,21 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_correlate_udt
+      subroutine set_ctl_params_correlate_udt(ucd)
 !
+      use t_ucd_data
       use m_node_phys_data
       use m_ctl_data_4_fem_int_pts
       use m_fem_gauss_int_coefs
       use set_control_nodal_data
       use set_control_ele_layering
 !
+      type(ucd_data), intent(inout) :: ucd
       integer(kind = kint) :: ierr
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_diff_udt'
-      call set_ctl_params_diff_udt
+      call set_ctl_params_diff_udt(ucd)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_ele_layering'
       call s_set_control_ele_layering
@@ -57,8 +59,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_diff_udt
+      subroutine set_ctl_params_diff_udt(ucd)
 !
+      use t_ucd_data
       use m_read_mesh_data
       use m_ctl_data_4_platforms
       use m_ctl_data_4_org_data
@@ -66,10 +69,11 @@
       use m_geometry_constants
       use m_control_params_2nd_files
       use m_file_format_switch
-      use m_ucd_data
       use set_ctl_parallel_platform
       use set_control_platform_data
       use ucd_IO_select
+!
+      type(ucd_data), intent(inout) :: ucd
 !
 !
       call turn_off_debug_flag_by_ctl(my_rank)
@@ -79,7 +83,7 @@
       call set_control_org_fld_file_def
 !
 !
-      call set_ucd_file_define(fem_ucd)
+      call set_ucd_file_define(ucd)
 !
 !   set field data name
 !

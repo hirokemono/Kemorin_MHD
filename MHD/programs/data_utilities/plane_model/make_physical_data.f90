@@ -20,7 +20,9 @@
       use m_control_plane_fft
       use m_ctl_data_4_plane_model
       use m_ctl_data_2nd_plane
-      use m_ucd_data
+!
+      use t_ucd_data
+!
       use count_number_with_overlap
       use set_merged_geometry
       use set_plane_spectr_file_head
@@ -36,6 +38,7 @@
 !
        implicit none
 !
+      type(ucd_data) :: fft_ucd
       integer(kind=kint ) :: ist, ied, iint
       integer(kind=kint ) ::  istep, isig, ip
 !
@@ -70,7 +73,8 @@
 !
       call s_set_plane_spectr_file_head
       call set_parameters_4_FFT(num_pe, ist, ied, iint)
-      call set_parameters_data_by_spec(num_pe, kx_org, ky_org, iz_org)
+      call set_parameters_data_by_spec(num_pe, kx_org, ky_org, iz_org,  &
+     &                                 fft_ucd)
       call s_set_numnod_4_plane
 !
       call allocate_z_compliment_info(nz_all)
@@ -297,12 +301,12 @@
 !
 !    output data
 !
-        call link_merged_node_2_ucd_IO(fem_ucd)
-        call link_merged_field_2_udt_IO(fem_ucd)
+        call link_merged_node_2_ucd_IO(fft_ucd)
+        call link_merged_field_2_udt_IO(fft_ucd)
 !
-        fem_ucd%ifmt_file = iflag_udt
-        call sel_write_ucd_file(izero, istep, fem_ucd)
-        call disconnect_ucd_data(fem_ucd)
+        fft_ucd%ifmt_file = iflag_udt
+        call sel_write_ucd_file(izero, istep, fft_ucd)
+        call disconnect_ucd_data(fft_ucd)
       end do
 !
       end program make_physical_data

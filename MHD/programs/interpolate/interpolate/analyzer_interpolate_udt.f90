@@ -14,7 +14,9 @@
       use m_machine_parameter
 !
       use t_mesh_data
+      use t_geometry_data
       use t_phys_data
+      use t_ucd_data
 !
       implicit none
 !
@@ -23,6 +25,8 @@
       type(edge_geometry), save ::  new_edge_mesh
 !
       type(phys_data), save :: new_phys
+!
+      type(ucd_data), save :: fem_ucd
 !
       private :: link_field_data_type_2_IO
 !
@@ -100,7 +104,6 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
-      use m_ucd_data
       use m_ctl_params_4_gen_table
       use ucd_IO_select
       use set_ucd_data_to_type
@@ -144,10 +147,6 @@
 ! ----------------------------------------------------------------------
 !
       subroutine link_field_data_type_2_IO(node, nod_fld, ucd)
-!
-      use t_geometry_data
-      use t_phys_data
-      use t_ucd_data
 !
       use set_ucd_data_to_type
 !

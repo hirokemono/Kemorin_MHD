@@ -16,6 +16,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use m_FEM_utils
       use m_geometry_data
 !
       implicit none
@@ -53,7 +54,7 @@
       call read_control_4_prod_udt
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_prod_udt'
-      call set_ctl_params_prod_udt
+      call set_ctl_params_prod_udt(ucd_FUTIL)
       call s_set_fixed_time_step_params(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
@@ -87,7 +88,6 @@
 !
       use m_t_step_parameter
       use m_ctl_params_4_prod_udt
-      use m_ucd_data
       use m_node_phys_data
       use set_ucd_data
       use product_udt_fields
@@ -108,7 +108,7 @@
 !    output udt data
           call link_output_ucd_file_once(my_rank, istep_ucd,            &
      &        ifmt_result_udt_file, result_udt_file_head,               &
-     &        nod_fld1, fem_ucd)
+     &        nod_fld1, ucd_FUTIL)
         end if
       end do
 !

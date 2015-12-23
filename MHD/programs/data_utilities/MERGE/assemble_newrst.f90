@@ -1,11 +1,11 @@
 !
 ! ----- program  newrst
 !
-      program    newrst 
-!
 !    change restart data for different number of domains
 !     By H. Matsui
 !
+!
+      program newrst
 !
       use m_precision
       use calypso_mpi
@@ -15,7 +15,7 @@
       use m_control_data_4_merge
       use m_control_param_merge
       use m_read_mesh_data
-      use m_ucd_data
+      use t_ucd_data
 !
       use set_merged_geometry
       use set_2nd_geometry_4_serial
@@ -23,6 +23,9 @@
       use field_IO_select
 !
       implicit    none
+!
+!>        Instance for FEM field data IO
+      type(ucd_data), save :: fem_ucd
 !
       integer (kind = kint) :: istep
 !

@@ -33,7 +33,6 @@
       use m_sph_spectr_data
       use m_t_step_parameter
       use m_t_int_parameter
-      use m_ucd_data
       use field_IO_select
       use r_interpolate_marged_sph
       use copy_time_steps_4_restart
@@ -67,7 +66,7 @@
       write(*,*) 'Simulation start: PE. '
 !
       call read_control_assemble_sph
-      call set_control_4_newsph(fem_ucd)
+      call set_control_4_newsph
 !
       allocate( org_sph_mesh(np_sph_org) )
       allocate( org_sph_phys(np_sph_org) )
@@ -128,10 +127,10 @@
 !
 !      Construct field list from spectr file
 !
-        call load_field_name_assemble_sph                               &
-     &     (org_sph_fst_head, ifmt_org_sph_fst, istep_start,            &
-     &      np_sph_org, new_sph_mesh(1)%sph_mesh,                       &
-     &      org_sph_phys(1), new_sph_phys(1))
+      call load_field_name_assemble_sph                                 &
+     &   (org_sph_fst_head, ifmt_org_sph_fst, istep_start,              &
+     &    np_sph_org, new_sph_mesh(1)%sph_mesh,                         &
+     &    org_sph_phys(1), new_sph_phys(1))
 !
       do jp = 2, np_sph_new
         new_sph_phys(jp)%num_phys =  new_sph_phys(1)%num_phys
