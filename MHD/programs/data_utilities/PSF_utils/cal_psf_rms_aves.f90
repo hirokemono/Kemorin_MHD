@@ -4,13 +4,17 @@
 !      Written by H. Matsui on Apr., 2005
 !      Modified by H. Matsui on Feb., 2009
 !
-!      subroutine open_psf_ave_rms_data
-!      subroutine s_cal_psf_rms_aves
+!      subroutine open_psf_ave_rms_data(file_prefix, psf_phys)
+!      subroutine open_psf_range_data(file_prefix, psf_phys)
+!      subroutine write_psf_ave_rms_data(istep, area)
+!      subroutine write_psf_range_data(istep)
+!      subroutine copy_filed_to_phys_data(vector, psf_phys)
 !
       module cal_psf_rms_aves
 !
       use m_precision
       use m_constants
+      use t_phys_data
 !
       implicit none
 !
@@ -32,63 +36,74 @@
       private :: id_min_psf,  fname_min_psf
       private :: id_max_psf,  fname_max_psf
 !
+      private :: open_psf_int_data, write_headers_psf_int_data
+!
 !-----------------------------------------------------------------------
 !
       contains
 !
 !-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
-      subroutine open_psf_ave_rms_data(file_prefix)
+      subroutine open_psf_ave_rms_data(file_prefix, psf_phys)
 !
-      use m_norms_4_psf
       use set_parallel_file_name
 !
       character(len=kchara), intent(in) :: file_prefix
+      type(phys_data), intent(in) :: psf_phys
       character(len=kchara) :: fname_tmp
 !
       write(fname_tmp,'(a9,a)') 'area_ave_', trim(file_prefix)
       call add_dat_extension(fname_tmp, fname_ave_psf)
-      call open_psf_int_data(id_ave_psf, fname_ave_psf, ione)
+      call open_psf_int_data                                            &
+     &   (id_ave_psf, fname_ave_psf, ione, psf_phys)
 !
       write(fname_tmp,'(a9,a)') 'area_rms_', trim(file_prefix)
       call add_dat_extension(fname_tmp, fname_rms_psf)
-      call open_psf_int_data(id_rms_psf, fname_rms_psf, ione)
+      call open_psf_int_data                                            &
+     &   (id_rms_psf, fname_rms_psf, ione, psf_phys)
 !
       write(fname_tmp,'(a10,a)') 'area_sdev_', trim(file_prefix)
       call add_dat_extension(fname_tmp, fname_sdev_psf)
-      call open_psf_int_data(id_sdev_psf, fname_sdev_psf, ione)
+      call open_psf_int_data                                            &
+     &   (id_sdev_psf, fname_sdev_psf, ione, psf_phys)
 !
       end subroutine open_psf_ave_rms_data
 !
 !-----------------------------------------------------------------------
 !
-      subroutine open_psf_range_data(file_prefix)
+      subroutine open_psf_range_data(file_prefix, psf_phys)
 !
-      use m_norms_4_psf
       use set_parallel_file_name
 !
       character(len=kchara), intent(in) :: file_prefix
+      type(phys_data), intent(in) :: psf_phys
       character(len=kchara) :: fname_tmp
 !
 !
       write(fname_tmp,'(a9,a)') 'area_min_', trim(file_prefix)
       call add_dat_extension(fname_tmp, fname_min_psf)
-      call open_psf_int_data(id_min_psf, fname_min_psf, izero)
+      call open_psf_int_data                                            &
+     &   (id_min_psf, fname_min_psf, izero, psf_phys)
 !
       write(fname_tmp,'(a9,a)') 'area_max_', trim(file_prefix)
       call add_dat_extension(fname_tmp, fname_max_psf)
-      call open_psf_int_data(id_max_psf, fname_max_psf, izero)
+      call open_psf_int_data                                            &
+     &   (id_max_psf, fname_max_psf, izero, psf_phys)
 !
       end subroutine open_psf_range_data
 !
 !-----------------------------------------------------------------------
 !
-      subroutine open_psf_int_data(id_file, file_name, iflag_area)
+      subroutine open_psf_int_data                                      &
+     &         (id_file, file_name, iflag_area, psf_phys)
 !
       use set_parallel_file_name
 !
       integer(kind=kint), intent(in) :: id_file, iflag_area
       character(len=kchara), intent(in) :: file_name
+      type(phys_data), intent(in) :: psf_phys
 !
 !
       open(id_file, file=file_name, form='formatted',                   &
@@ -98,7 +113,7 @@
   100 continue
 !
       open(id_file, file=file_name, form='formatted')
-      call write_headers_psf_int_data(id_file, iflag_area)
+      call write_headers_psf_int_data(id_file, iflag_area, psf_phys)
 !
       end subroutine open_psf_int_data
 !
@@ -125,48 +140,49 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_psf_ave_rms_data(istep, area)
+      subroutine write_psf_ave_rms_data(istep, area, psf_aves)
 !
-      use m_psf_results
-      use m_norms_4_psf
+      use t_norms_4_psf
 !
       integer(kind = kint), intent(in) :: istep
       real(kind = kreal), intent(in) :: area
+      type(psf_averages), intent(in) :: psf_aves
 !
 !
       write(id_ave_psf,'(i15,1p255E25.15e3)') istep,                    &
-               ave_psf(1:psf_phys%ntot_phys), area
+               psf_aves%ave(1:psf_aves%ntot_comp), area
       write(id_rms_psf,'(i15,1p255E25.15e3)') istep,                    &
-               rms_psf(1:psf_phys%ntot_phys), area
+               psf_aves%rms(1:psf_aves%ntot_comp), area
       write(id_sdev_psf,'(i15,1p255E25.15e3)') istep,                   &
-               sdev_psf(1:psf_phys%ntot_phys), area
+               psf_aves%sdev(1:psf_aves%ntot_comp), area
 !
       end subroutine write_psf_ave_rms_data
 !
 !-----------------------------------------------------------------------
 !
-      subroutine write_psf_range_data(istep)
+      subroutine write_psf_range_data(istep, psf_aves)
 !
-      use m_psf_results
+      use t_norms_4_psf
 !
       integer(kind = kint), intent(in) :: istep
+      type(psf_averages), intent(in) :: psf_aves
 !
 !
       write(id_min_psf,'(i15,1p255E25.15e3)') istep,                    &
-     &           xmin_psf(1:psf_phys%ntot_phys)
+     &           psf_aves%dmin(1:psf_aves%ntot_comp)
       write(id_max_psf,'(i15,1p255E25.15e3)') istep,                    &
-     &           xmax_psf(1:psf_phys%ntot_phys)
+     &           psf_aves%dmax(1:psf_aves%ntot_comp)
 !
       end subroutine write_psf_range_data
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine write_headers_psf_int_data(id_file, iflag_area)
-!
-      use m_psf_results
+      subroutine write_headers_psf_int_data                             &
+     &          (id_file, iflag_area, psf_phys)
 !
       integer(kind = kint), intent(in) :: id_file, iflag_area
+      type(phys_data), intent(in) :: psf_phys
 !
       integer(kind = kint) :: j, k
 !
@@ -193,6 +209,24 @@
  1000 format(a,'_',i1,', ')
 !
       end subroutine write_headers_psf_int_data
+!
+!-----------------------------------------------------------------------
+!
+      subroutine copy_filed_to_phys_data(vector, psf_phys)
+!
+      use copy_field_smp
+!
+      type(phys_data), intent(in) :: psf_phys
+      real(kind = kreal), intent(in) ::                                 &
+     &           vector(psf_phys%n_point, psf_phys%ntot_phys)
+!
+!
+!$omp parallel
+      call copy_all_field_smp(psf_phys%n_point, psf_phys%ntot_phys,     &
+     &    vector, psf_phys%d_fld)
+!$omp end parallel
+!
+      end subroutine copy_filed_to_phys_data
 !
 !-----------------------------------------------------------------------
 !

@@ -3,12 +3,12 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine find_psf_edges
+!      subroutine find_psf_edges(psf_ele)
 !      subroutine deallocate_psf_edge
 !
       module m_psf_edge_connect
 !
-      use m_psf_results
+      use t_geometry_data
 !
       implicit none
 !
@@ -27,7 +27,7 @@
 ! 
       private :: nmax_hash, nele_hash, istack_hash
       private :: nedge_psf_w_overlap, ie_edge_ovlp, iedge_true
-      private :: allocate_psf_edge
+      private :: allocate_psf_edge, allocate_psf_edge_ele
       private :: allocate_psf_edge_hash, allocate_psf_edge_w_overlap
       private :: deallocate_psf_edge_hash
       private :: count_max_psf_edge_hash, set_psf_edge_hash
@@ -39,21 +39,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine find_psf_edges
+      subroutine find_psf_edges(psf_ele)
 !
+      type(element_data), intent(in) :: psf_ele
       integer(kind = kint) :: inum, icou, isurf, k1
 !
 !
-      call count_max_psf_edge_hash
+      call count_max_psf_edge_hash(psf_ele)
       call allocate_psf_edge_hash
 !
-      call set_psf_edge_hash
+      call set_psf_edge_hash(psf_ele)
 !
       nedge_psf_w_overlap = 3*psf_ele%numele
       call allocate_psf_edge_w_overlap
-      call allocate_psf_edge_ele
-      call copy_psf_edge_w_overlap
-      call mark_referred_edge
+      call allocate_psf_edge_ele(psf_ele)
+      call copy_psf_edge_w_overlap(psf_ele)
+      call mark_referred_edge(psf_ele)
 !
       numedge_psf = 0
       do inum = 1, nedge_psf_w_overlap
@@ -105,7 +106,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_psf_edge_ele
+      subroutine allocate_psf_edge_ele(psf_ele)
+!
+      type(element_data), intent(in) :: psf_ele
 !
 !
       allocate(ie_edge_psf(psf_ele%numele,3))
@@ -158,8 +161,9 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine count_max_psf_edge_hash
+      subroutine count_max_psf_edge_hash(psf_ele)
 !
+      type(element_data), intent(in) :: psf_ele
       integer(kind = kint) :: isurf, i1, i2, i3
 !
 !
@@ -177,8 +181,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_psf_edge_hash
+      subroutine set_psf_edge_hash(psf_ele)
 !
+      type(element_data), intent(in) :: psf_ele
       integer(kind = kint) :: isurf, inum, i1, i2, i3
 !
 !
@@ -200,8 +205,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_psf_edge_w_overlap
+      subroutine copy_psf_edge_w_overlap(psf_ele)
 !
+      type(element_data), intent(in) :: psf_ele
       integer(kind = kint) :: isurf, icou, i1, i2, i3
 !
 !
@@ -233,8 +239,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine mark_referred_edge
+      subroutine mark_referred_edge(psf_ele)
 !
+      type(element_data), intent(in) :: psf_ele
       integer(kind = kint) :: inum, icou, ist, ied, jcou, isurf, k1
 !
 !

@@ -63,14 +63,16 @@
 !
 !*  ----------  main loop for graphic  ---------------
 !*
+      psf_file_header = pg_psf_file_prefix
+      iflag_psf_fmt = iflag_pg_psf_fmt
       do istep = ist_pg, ied_pg, inc_pg
         time = dble(istep)*delta_time_pg
 !*
-        call load_psf_data(istep)
-        call set_psffield_id_4_plot_pg
+        call load_psf_data(istep, psf1)
+        call set_psffield_id_4_plot_pg(psf1%psf_phys)
 !
-        nnod_pg =     psf_nod%numnod
-        nele_pg =     psf_ele%numele
+        nnod_pg =     psf1%psf_nod%numnod
+        nele_pg =     psf1%psf_ele%numele
         nnod_ele_pg = ithree
         call allocate_pg_nodes
         call allocate_pg_connect
@@ -78,34 +80,36 @@
 !
 !  convert to view cordinate
 !
-        call set_zplane_graph_position(psf_nod%numnod, psf_ele%numele,  &
-     &      shell_size, flame, psf_nod%xx, psf_ele%ie, xg, ie_pg)
+        call set_zplane_graph_position                                  &
+     &     (psf1%psf_nod%numnod, psf1%psf_ele%numele, shell_size,       &
+     &      flame, psf1%psf_nod%xx, psf1%psf_ele%ie, xg, ie_pg)
         r_flame = real(flame)
 !
 !   set plotting data
 !
           do iw = 1, ntot_plot_pg
             i_field = id_field_4_plot(iw)
-            ist_comp = psf_phys%istack_component(i_field-1)             &
+            ist_comp = psf1%psf_phys%istack_component(i_field-1)        &
      &                + mod(id_comp_4_plot(iw),10)
             if (   id_comp_4_plot(iw) .eq. icomp_VECTOR                 &
               .or. id_comp_4_plot(iw) .eq. icomp_SPH_VECTOR             &
               .or. id_comp_4_plot(iw) .eq. icomp_CYL_VECTOR) then
-              ist_comp = psf_phys%istack_component(i_field-1) + 1
+              ist_comp = psf1%psf_phys%istack_component(i_field-1) + 1
               call set_zplane_vector(id_comp_4_plot(iw),                &
-     &            psf_nod%numnod, psf_nod%xx, psf_phys%ntot_phys,       &
-     &            ist_comp, psf_phys%d_fld, vect_pg, cont_pg)
+     &            psf1%psf_nod%numnod, psf1%psf_nod%xx,                 &
+     &            psf1%psf_phys%ntot_phys, ist_comp,                    &
+     &            psf1%psf_phys%d_fld, vect_pg, cont_pg)
 !
               if ( scale_pg(iw).eq.0.0d0 ) then
                 call cal_drawvec_maxlength                              &
-     &             (psf_nod%numnod, vect_pg, maxlen)
+     &             (psf1%psf_nod%numnod, vect_pg, maxlen)
               else
                 maxlen = scale_pg(iw)
               end if
 !
             else
-               cont_pg(1:psf_nod%numnod)                                &
-     &            = psf_phys%d_fld(1:psf_nod%numnod,ist_comp)
+               cont_pg(1:psf1%psf_nod%numnod)                           &
+     &            = psf1%psf_phys%d_fld(1:psf1%psf_nod%numnod,ist_comp)
 !
               if ( range_pg(1,iw).eq.0.0d0                              &
      &        .and. range_pg(2,iw).eq.0.0d0 ) then
@@ -144,7 +148,7 @@
      &               field_label_4_plot(iw))
             end if
 !
-            call drcap_zplane(npanel_window, iw, psf_nod%xx(1,3) )
+            call drcap_zplane(npanel_window, iw, psf1%psf_nod%xx(1,3) )
 !
             if (   id_comp_4_plot(iw) .eq. icomp_VECTOR                 &
               .or. id_comp_4_plot(iw) .eq. icomp_SPH_VECTOR             &
@@ -194,7 +198,7 @@
             end if
           end do
 !
-          call deallocate_psf_results
+          call dealloc_psf_results(psf1)
 !
           call deallocate_pg_data
           call deallocate_pg_grid

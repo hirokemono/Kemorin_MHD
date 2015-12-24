@@ -11,7 +11,6 @@
       use m_ctl_params_ele_grp_udt
       use m_tave_SGS_model_coefs
       use m_field_file_format
-      use m_psf_results
 !
       use t_ucd_data
 !

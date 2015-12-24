@@ -1,5 +1,5 @@
-!>@file   m_psf_results.f90
-!!@brief  module m_psf_results
+!>@file   t_psf_results.f90
+!!@brief  module t_psf_results
 !!
 !!@author H. Matsui
 !!@date Programmed in ????
@@ -10,11 +10,10 @@
 !!      subroutine load_psf_data_to_link_IO(istep, psf_ucd)
 !!      subroutine load_psf_data(istep)
 !!
-!!      subroutine allocate_psf_field_data
-!!      subroutine deallocate_psf_results
+!!      subroutine dealloc_psf_results(psf_nod, psf_ele, psf_phys)
 !!@endverbatim
 !
-      module m_psf_results
+      module t_psf_results
 !
       use m_precision
       use m_field_file_format
@@ -26,23 +25,18 @@
       implicit none
 !
 !
-!>      structure for section data
-      type(node_data), save :: psf_nod
-!>      structure for section data
-      type(element_data), save :: psf_ele
+!>       structure for section data
+      type psf_results
+!>       structure for sectioned nodes
+        type(node_data) :: psf_nod
+!>       structure for sectioned element
+        type(element_data) :: psf_ele
+!>       structure for sectioned field
+        type(phys_data) :: psf_phys
 !
-!>      structure for section data
-      type(phys_data), save :: psf_phys
-!
-      character(len=kchara) :: psf_file_header
-      integer(kind = kint) :: iflag_psf_fmt = iflag_udt
-!
-      real(kind = kreal), allocatable :: ave_psf(:), rms_psf(:)
-      real(kind = kreal), allocatable :: xmin_psf(:), xmax_psf(:)
-      real(kind = kreal), allocatable :: sdev_psf(:)
-!
-      character(len=kchara) :: flag_psf
-      integer(kind = kint) :: iflag_psf
+        character(len=kchara) :: psf_file_header
+        integer(kind = kint) :: iflag_psf_fmt = iflag_udt
+      end type psf_results
 !
       private :: set_psf_udt_mesh, set_psf_udt_data
 !
@@ -52,92 +46,75 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine load_psf_data_to_link_IO(istep, psf_ucd)
+      subroutine load_psf_data_to_link_IO(istep, psf, psf_ucd)
 !
       use set_ucd_data_to_type
 !
       integer(kind = kint), intent(in) :: istep
+      type(psf_results), intent(inout) :: psf
       type(ucd_data), intent(inout) :: psf_ucd
 !
 !
-      call load_psf_data(istep)
+      call load_psf_data(istep, psf)
 !
-      call link_node_data_2_ucd(psf_nod, psf_ucd)
-      call link_ele_data_2_ucd(psf_ele, psf_ucd)
-      call link_field_data_to_ucd(psf_phys, psf_ucd)
-      psf_ucd%ifmt_file = iflag_psf_fmt
+      call link_node_data_2_ucd(psf%psf_nod, psf_ucd)
+      call link_ele_data_2_ucd(psf%psf_ele, psf_ucd)
+      call link_field_data_to_ucd(psf%psf_phys, psf_ucd)
+      psf_ucd%ifmt_file = psf%iflag_psf_fmt
 !
       end subroutine load_psf_data_to_link_IO
 !
 !-----------------------------------------------------------------------
 !
-      subroutine load_psf_data(istep)
+      subroutine load_psf_data(istep, psf)
 !
       use ucd_IO_select
 !
       integer(kind = kint), intent(in) :: istep
+      type(psf_results), intent(inout) :: psf
 !
       type(ucd_data) :: read_psf
 !
 !
-      read_psf%file_prefix = psf_file_header
-      read_psf%ifmt_file =   iflag_psf_fmt
+      read_psf%file_prefix = psf%psf_file_header
+      read_psf%ifmt_file =   psf%iflag_psf_fmt
 !
       call sel_read_ucd_file(iminus, istep, ithree, read_psf)
 !
-      call set_psf_udt_mesh(read_psf)
-      call set_psf_udt_data(read_psf)
-      call allocate_psf_field_data
+      call set_psf_udt_mesh                                             &
+     &   (read_psf, psf%psf_nod, psf%psf_ele, psf%psf_phys)
+      call set_psf_udt_data(read_psf, psf%psf_nod, psf%psf_phys)
 !
       end subroutine load_psf_data
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_psf_field_data
+      subroutine dealloc_psf_results(psf)
+!
+      type(psf_results), intent(inout) :: psf
 !
 !
-      allocate ( xmin_psf(psf_phys%ntot_phys) )
-      allocate ( xmax_psf(psf_phys%ntot_phys) )
-      allocate ( ave_psf(psf_phys%ntot_phys) )
-      allocate ( rms_psf(psf_phys%ntot_phys) )
-      allocate ( sdev_psf(psf_phys%ntot_phys) )
+      call dealloc_phys_data_type(psf%psf_phys)
+      call dealloc_phys_name_type(psf%psf_phys)
+      call deallocate_ele_connect_type(psf%psf_ele)
+      call deallocate_node_geometry_type(psf%psf_nod)
 !
-      xmin_psf = 1.0d30
-      xmax_psf = 0.0d0
-      ave_psf =  0.0d0
-      rms_psf =  0.0d0
-      sdev_psf = 0.0d0
-!
-      end subroutine allocate_psf_field_data
+      end subroutine dealloc_psf_results
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine deallocate_psf_results
-!
-!
-      call dealloc_phys_data_type(psf_phys)
-      call dealloc_phys_name_type(psf_phys)
-      call deallocate_ele_connect_type(psf_ele)
-      call deallocate_node_geometry_type(psf_nod)
-!
-      deallocate ( xmin_psf )
-      deallocate ( xmax_psf )
-      deallocate ( ave_psf, rms_psf, sdev_psf )
-!
-      end subroutine deallocate_psf_results
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine set_psf_udt_mesh(ucd)
+      subroutine set_psf_udt_mesh(ucd, psf_nod, psf_ele, psf_phys)
 !
       use m_geometry_constants
       use m_phys_constants
       use cal_mesh_position
 !
       type(ucd_data), intent(inout) :: ucd
+      type(node_data), intent(inout) :: psf_nod
+      type(element_data), intent(inout) :: psf_ele
+      type(phys_data), intent(inout) :: psf_phys
 !
 !
       psf_nod%numnod =     int(ucd%nnod)
@@ -165,11 +142,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_psf_udt_data(ucd)
+      subroutine set_psf_udt_data(ucd, psf_nod, psf_phys)
 !
       use set_ucd_data_to_type
 !
       type(ucd_data), intent(inout) :: ucd
+      type(node_data), intent(in) :: psf_nod
+      type(phys_data), intent(inout) :: psf_phys
 !
 !
       call alloc_phys_data_type_by_output(ucd, psf_nod, psf_phys)
@@ -183,4 +162,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module  m_psf_results
+      end module  t_psf_results

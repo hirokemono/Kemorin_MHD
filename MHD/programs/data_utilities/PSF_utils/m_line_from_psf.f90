@@ -7,7 +7,8 @@
 !>@brief Pick data on line defined by two surfaces
 !!
 !!@verbatim
-!!      subroutine pick_psf_by_sections(nd, xref)
+!!      subroutine pick_psf_by_sections                                 &
+!!     &         (nd, xref, psf_nod, psf_ele, psf_phys, line)
 !!      subroutine write_psf_line_data(iflag_format, file_header, istep)
 !!@endverbatim
 !
@@ -49,8 +50,12 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine pick_psf_by_sections(nd, xref, line)
+      subroutine pick_psf_by_sections                                   &
+     &         (nd, xref, psf_nod, psf_ele, psf_phys, line)
 !
+      use t_geometry_data
+      use t_phys_data
+      use t_ucd_data
       use m_geometry_constants
       use m_psf_edge_connect
       use const_section_from_triangle
@@ -58,6 +63,10 @@
 !
       integer(kind = kint), intent(in) :: nd
       real(kind = kreal), intent(in) :: xref
+      type(node_data), intent(in) :: psf_nod
+      type(element_data), intent(in) :: psf_ele
+      type(phys_data), intent(in) :: psf_phys
+!
       type(ucd_data), intent(inout) :: line
 !
       real(kind = kreal) :: coef_line(10)

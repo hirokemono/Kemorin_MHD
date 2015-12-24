@@ -1,9 +1,14 @@
 !
 !      module set_control_draw_pg
 !
-      module set_control_draw_pg
-!
 !      Written by H. Matsui
+!
+!      subroutine s_set_control_draw_pg
+!      subroutine set_control_draw_zplane
+!      subroutine set_control_draw_map
+!      subroutine set_psffield_id_4_plot_pg(psf_phys)
+!
+      module set_control_draw_pg
 !
       use m_precision
 !
@@ -11,11 +16,6 @@
       use m_ctl_param_plot_pg
 !
       implicit none
-!
-!      subroutine s_set_control_draw_pg
-!      subroutine set_control_draw_zplane
-!      subroutine set_control_draw_map
-!      subroutine set_psffield_id_4_plot_pg
 !
 !-----------------------------------------------------------------------
 !
@@ -30,7 +30,6 @@
       use m_isoline_dat_pg
       use m_file_format_switch
       use m_field_file_format
-      use m_psf_results
       use set_components_flags
       use skip_comment_f
 !
@@ -94,13 +93,13 @@
 !
 !
       if(i_psf_data_ctl .gt. 0) then
-        psf_file_header = psf_file_head_ctl
+        pg_psf_file_prefix = psf_file_head_ctl
       else
         write(*,*) 'set file header for psf data'
         stop
       end if
       call choose_ucd_file_format(psf_data_fmt_ctl,                     &
-     &    i_psf_data_fmt_ctl, iflag_psf_fmt)
+     &    i_psf_data_fmt_ctl, iflag_pg_psf_fmt)
 !
       if(i_map_grid_file .gt. 0) then
         fhead_map_grid =  map_grid_file_ctl
@@ -165,9 +164,9 @@
         write(*,*) 'inc_pg',        inc_pg
 !
         write(*,*) 'nmax_line',            nmax_line
-        write(*,*) 'iflag_psf_fmt',   iflag_psf_fmt
+        write(*,*) 'iflag_pg_psf_fmt',   iflag_pg_psf_fmt
         write(*,*) 'fhead_map_grid',  trim(fhead_map_grid)
-        write(*,*) 'psf_file_header', trim(psf_file_header)
+        write(*,*) 'pg_psf_file_prefix', trim(pg_psf_file_prefix)
         do i = 1, ntot_plot_pg
           write(*,*) 'field_name', i, trim(field_name_4_plot(i))
           write(*,*) 'comp_name', trim(comp_name_4_plot(i))
@@ -254,10 +253,11 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_psffield_id_4_plot_pg
+      subroutine set_psffield_id_4_plot_pg(psf_phys)
 !
-      use m_psf_results
+      use t_phys_data
 !
+      type(phys_data), intent(in) :: psf_phys
       integer(kind = kint) :: iw, id
 !
 !

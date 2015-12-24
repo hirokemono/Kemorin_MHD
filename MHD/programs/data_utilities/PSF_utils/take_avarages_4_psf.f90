@@ -3,20 +3,22 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine set_averaging_range(rmin, rmax, numele_psf)
+!!      subroutine set_averaging_range(rmin, rmax, psf_norm)
 !!      subroutine cal_rms_ave_4_psf(numnod_psf, numele_psf, ie_psf,    &
-!!     &          ncomptot_psf, d_nod_psf, ave_psf, rms_psf, sdev_psf)
+!!     &          ncomptot_psf, d_nod_psf, psf_aves)
 !!      subroutine cal_minmax_psf(numnod_psf, ncomptot_psf, d_nod_psf,  &
-!!     &          xmin_psf, xmax_psf)
+!!     &          psf_aves)
 !!      subroutine cal_range_rms_ave_4_psf(numnod_psf, numele_psf,      &
 !!     &          ie_psf, ncomptot_psf, d_nod_psf,                      &
-!!     &          icomp_ref, iflag_ref, ref_value, area,                &
-!!     &          ave_psf, rms_psf, sdev_psf)
+!!     &          icomp_ref, iflag_ref, ref_value, area, psf_aves)
 !
       module take_avarages_4_psf
 !
       use m_precision
-      use m_norms_4_psf
+!
+      use t_geometry_data
+      use t_phys_data
+      use t_norms_4_psf
 !
       implicit none
 !
@@ -26,20 +28,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_averaging_range(rmin, rmax, numele_psf)
+      subroutine set_averaging_range(rmin, rmax, psf_norm)
 !
-      integer(kind = kint), intent(in) :: numele_psf
       real(kind = kreal), intent(in) :: rmin, rmax
+!
+      type(psf_normals), intent(inout) :: psf_norm
 !
       integer(kind = kint) :: iele
 !
 !
-      rflag_averaging(1:numele_psf) = 1.0d0
+      psf_norm%rflag_ave(1:psf_norm%nele) = 1.0d0
       if(rmax .le. rmin .or. rmax .eq. 0.0d0) return
-      do iele = 1, numele_psf
-        if(radius_ele_psf(iele) .lt. rmin                               &
-     &     .or. radius_ele_psf(iele) .gt. rmax) then
-          rflag_averaging(iele)  = 0.0d0
+      do iele = 1, psf_norm%nele
+        if(psf_norm%r_ele(iele) .lt. rmin                               &
+     &     .or. psf_norm%r_ele(iele) .gt. rmax) then
+          psf_norm%rflag_ave(iele)  = 0.0d0
         end if
       end do
 !
@@ -47,62 +50,63 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_rms_ave_4_psf(numnod_psf, numele_psf, ie_psf,      &
-     &          ncomptot_psf, d_nod_psf, ave_psf, rms_psf, sdev_psf)
+      subroutine cal_rms_ave_4_psf(psf_ele,  psf_phys, psf_norm,        &
+     &          psf_aves)
 !
-      integer(kind = kint), intent(in) :: numnod_psf, numele_psf
-      integer(kind = kint), intent(in) :: ie_psf(numele_psf,3)
+      type(element_data), intent(in) :: psf_ele
+      type(phys_data), intent(in) :: psf_phys
 !
-      integer(kind = kint), intent(in) :: ncomptot_psf
-      real(kind = kreal), intent(in)                                    &
-     &                   :: d_nod_psf(numnod_psf,ncomptot_psf)
+      type(psf_normals), intent(in) :: psf_norm
 !
-      real(kind = kreal), intent(inout) :: ave_psf(ncomptot_psf)
-      real(kind = kreal), intent(inout) :: rms_psf(ncomptot_psf)
-      real(kind = kreal), intent(inout) :: sdev_psf(ncomptot_psf)
+      type(psf_averages), intent(inout) :: psf_aves
 !
       integer(kind = kint) :: iele, icomp, i1, i2, i3
       real(kind = kreal) :: d_ele, coef
 !
 !
-      ave_psf =  0.0d0
-      rms_psf =  0.0d0
-      sdev_psf = 0.0d0
+      psf_aves%ave =  0.0d0
+      psf_aves%rms =  0.0d0
+      psf_aves%sdev = 0.0d0
 !
 !   Evaluate average and RMS
-      do icomp = 1, ncomptot_psf
-        do iele = 1, numele_psf
-          coef = area_psf(iele) * rflag_averaging(iele)
+      do icomp = 1, psf_phys%ntot_phys
+        do iele = 1, psf_ele%numele
+          coef = psf_norm%area_ele(iele) * psf_norm%rflag_ave(iele)
 !
-          i1 = ie_psf(iele,1)
-          i2 = ie_psf(iele,2)
-          i3 = ie_psf(iele,3)
+          i1 = psf_ele%ie(iele,1)
+          i2 = psf_ele%ie(iele,2)
+          i3 = psf_ele%ie(iele,3)
 !
-          d_ele = (d_nod_psf(i1,icomp) + d_nod_psf(i2,icomp)            &
-     &           + d_nod_psf(i3,icomp) ) / 3.0d0
+          d_ele = (psf_phys%d_fld(i1,icomp) + psf_phys%d_fld(i2,icomp)  &
+     &           + psf_phys%d_fld(i3,icomp) ) / 3.0d0
 !
-          rms_psf(icomp) = rms_psf(icomp)  + d_ele * d_ele * coef
-          ave_psf(icomp) = ave_psf(icomp) + d_ele * coef
+          psf_aves%rms(icomp) = psf_aves%rms(icomp)                     &
+     &                         + d_ele * d_ele * coef
+          psf_aves%ave(icomp) = psf_aves%ave(icomp) + d_ele * coef
         end do
-        rms_psf(icomp) = sqrt( rms_psf(icomp)/area_total_psf )
-        ave_psf(icomp) = ave_psf(icomp)/area_total_psf
+        psf_aves%rms(icomp)                                             &
+     &        =  sqrt( psf_aves%rms(icomp) / psf_norm%area )
+        psf_aves%ave(icomp) = psf_aves%ave(icomp) / psf_norm%area
       end do
 !
 !   Evaluate standard deviation
-      do icomp = 1, ncomptot_psf
-        do iele = 1, numele_psf
-          coef = area_psf(iele) * rflag_averaging(iele)
+      do icomp = 1, psf_phys%ntot_phys
+        do iele = 1, psf_ele%numele
+          coef = psf_norm%area_ele(iele) * psf_norm%rflag_ave(iele)
 !
-          i1 = ie_psf(iele,1)
-          i2 = ie_psf(iele,2)
-          i3 = ie_psf(iele,3)
+          i1 = psf_ele%ie(iele,1)
+          i2 = psf_ele%ie(iele,2)
+          i3 = psf_ele%ie(iele,3)
 !
-          d_ele = (d_nod_psf(i1,icomp) + d_nod_psf(i2,icomp)            &
-     &           + d_nod_psf(i3,icomp) ) / 3.0d0 - ave_psf(icomp)
+          d_ele = (psf_phys%d_fld(i1,icomp) + psf_phys%d_fld(i2,icomp)  &
+     &           + psf_phys%d_fld(i3,icomp) ) / 3.0d0                   &
+     &           - psf_aves%ave(icomp)
 !
-          sdev_psf(icomp) = sdev_psf(icomp)  + d_ele * d_ele * coef
+          psf_aves%sdev(icomp) = psf_aves%sdev(icomp)                   &
+     &                          + d_ele * d_ele * coef
         end do
-        sdev_psf(icomp) = sqrt( sdev_psf(icomp)/area_total_psf )
+        psf_aves%sdev(icomp)                                            &
+     &           = sqrt( psf_aves%sdev(icomp) / psf_norm%area)
       end do
 !
       end subroutine cal_rms_ave_4_psf
@@ -110,26 +114,27 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_minmax_psf(numnod_psf, ncomptot_psf, d_nod_psf,    &
-     &          xmin_psf, xmax_psf)
+     &          psf_aves)
 !
       integer(kind = kint), intent(in) :: numnod_psf, ncomptot_psf
       real(kind = kreal), intent(in)                                    &
      &                   :: d_nod_psf(numnod_psf,ncomptot_psf)
 !
-      real(kind = kreal), intent(inout) :: xmin_psf(ncomptot_psf)
-      real(kind = kreal), intent(inout) :: xmax_psf(ncomptot_psf)
+      type(psf_averages), intent(inout) :: psf_aves
 !
       integer(kind = kint) :: inod, icomp
 !
 !
       do icomp = 1, ncomptot_psf
-        xmin_psf(icomp) = 1.0d30
+        psf_aves%dmin(icomp) = 1.0d30
         do inod = 1, numnod_psf
-          xmin_psf(icomp) = min(xmin_psf(icomp), d_nod_psf(inod,icomp))
+          psf_aves%dmin(icomp)                                          &
+     &          = min(psf_aves%dmin(icomp), d_nod_psf(inod,icomp))
         end do
-        xmax_psf(icomp) = xmin_psf(icomp)
+        psf_aves%dmax(icomp) = psf_aves%dmin(icomp)
         do inod = 1, numnod_psf
-          xmax_psf(icomp) = max(xmax_psf(icomp), d_nod_psf(inod,icomp))
+          psf_aves%dmax(icomp)                                          &
+     &          = max(psf_aves%dmax(icomp), d_nod_psf(inod,icomp))
         end do
       end do
 !
@@ -137,24 +142,19 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_range_rms_ave_4_psf(numnod_psf, numele_psf,        &
-     &          ie_psf, ncomptot_psf, d_nod_psf,                        &
-     &          icomp_ref, iflag_ref, ref_value, area,                  &
-     &          ave_psf, rms_psf, sdev_psf)
+      subroutine cal_range_rms_ave_4_psf(psf_ele, psf_phys, psf_norm,   &
+     &          icomp_ref, iflag_ref, ref_value, area, psf_aves)
 !
-      integer(kind = kint), intent(in) :: numnod_psf, numele_psf
-      integer(kind = kint), intent(in) :: ie_psf(numele_psf,3)
-      integer(kind = kint), intent(in) :: ncomptot_psf
-      real(kind = kreal), intent(in)                                    &
-     &                   :: d_nod_psf(numnod_psf,ncomptot_psf)
+      type(element_data), intent(in) :: psf_ele
+      type(phys_data), intent(in) :: psf_phys
+!
+      type(psf_normals), intent(in) :: psf_norm
 !
       integer(kind = kint), intent(in) :: icomp_ref, iflag_ref
       real(kind = kreal), intent(in) :: ref_value
       real(kind = kreal), intent(inout) :: area
 !
-      real(kind = kreal), intent(inout) :: ave_psf(ncomptot_psf)
-      real(kind = kreal), intent(inout) :: rms_psf(ncomptot_psf)
-      real(kind = kreal), intent(inout) :: sdev_psf(ncomptot_psf)
+      type(psf_averages), intent(inout) :: psf_aves
 !
       integer(kind = kint) :: iele, icomp, i1, i2, i3
       real(kind = kreal) :: d_ele, ref_ele
@@ -162,18 +162,19 @@
 !
 !   Evaluate average and RMS
       area =    0.0d0
-      ave_psf = 0.0d0
-      rms_psf = 0.0d0
-      sdev_psf = 0.0d0
-      do iele = 1, numele_psf
-        if(rflag_averaging(iele).eq.0.0d0) cycle
+      psf_aves%ave = 0.0d0
+      psf_aves%rms = 0.0d0
+      psf_aves%sdev = 0.0d0
+      do iele = 1, psf_ele%numele
+        if(psf_norm%rflag_ave(iele).eq.0.0d0) cycle
 !
-        i1 = ie_psf(iele,1)
-        i2 = ie_psf(iele,2)
-        i3 = ie_psf(iele,3)
+        i1 = psf_ele%ie(iele,1)
+        i2 = psf_ele%ie(iele,2)
+        i3 = psf_ele%ie(iele,3)
 !
-        ref_ele =  (d_nod_psf(i1,icomp_ref) + d_nod_psf(i2,icomp_ref)   &
-     &              + d_nod_psf(i3,icomp_ref) ) / 3.0d0
+        ref_ele =  (psf_phys%d_fld(i1,icomp_ref)                        &
+     &            + psf_phys%d_fld(i2,icomp_ref)                        &
+     &            + psf_phys%d_fld(i3,icomp_ref) ) / 3.0d0
 !
         if(iflag_ref.eq.1 .and. ref_ele.lt.ref_value) cycle
         if(iflag_ref.eq.2 .and. ref_ele.gt.ref_value) cycle
@@ -181,46 +182,51 @@
 !        x_ctr(1:3) = (xx_psf(i1,1:3) + xx_psf(i2,1:3) + xx_psf(i3,1:3))&
 !     &              /3.0d0
 !
-        area = area + area_psf(iele)
-        do icomp = 1, ncomptot_psf
-          d_ele = (d_nod_psf(i1,icomp) + d_nod_psf(i2,icomp)            &
-     &           + d_nod_psf(i3,icomp) ) / 3.0d0
+        area = area + psf_norm%area_ele(iele)
+        do icomp = 1, psf_phys%ntot_phys
+          d_ele = (psf_phys%d_fld(i1,icomp) + psf_phys%d_fld(i2,icomp)  &
+     &           + psf_phys%d_fld(i3,icomp) ) / 3.0d0
 !
-          rms_psf(icomp) = rms_psf(icomp) + d_ele**2 * area_psf(iele)
-          ave_psf(icomp) = ave_psf(icomp) + d_ele * area_psf(iele)
+          psf_aves%rms(icomp) = psf_aves%rms(icomp)                     &
+     &                    + d_ele**2 * psf_norm%area_ele(iele)
+          psf_aves%ave(icomp) = psf_aves%ave(icomp)                     &
+     &                    + d_ele * psf_norm%area_ele(iele)
         end do
       end do
 !
-      do icomp = 1, ncomptot_psf
-        rms_psf(icomp) = sqrt( rms_psf(icomp)/area )
-        ave_psf(icomp) = ave_psf(icomp)/area
+      do icomp = 1, psf_phys%ntot_phys
+        psf_aves%rms(icomp) = sqrt( psf_aves%rms(icomp)/area )
+        psf_aves%ave(icomp) = psf_aves%ave(icomp)/area
       end do
 !
 !   Evaluate standard deviation
-      do iele = 1, numele_psf
-        if(rflag_averaging(iele).eq.0.0d0) cycle
+      do iele = 1, psf_ele%numele
+        if(psf_norm%rflag_ave(iele).eq.0.0d0) cycle
 !
-        i1 = ie_psf(iele,1)
-        i2 = ie_psf(iele,2)
-        i3 = ie_psf(iele,3)
+        i1 = psf_ele%ie(iele,1)
+        i2 = psf_ele%ie(iele,2)
+        i3 = psf_ele%ie(iele,3)
 !
-        ref_ele =  (d_nod_psf(i1,icomp_ref) + d_nod_psf(i2,icomp_ref)   &
-     &              + d_nod_psf(i3,icomp_ref) ) / 3.0d0
+        ref_ele =  (psf_phys%d_fld(i1,icomp_ref)                        &
+     &            + psf_phys%d_fld(i2,icomp_ref)                        &
+     &            + psf_phys%d_fld(i3,icomp_ref) ) / 3.0d0
 !
         if(iflag_ref.eq.1 .and. ref_ele.lt.ref_value) cycle
         if(iflag_ref.eq.2 .and. ref_ele.gt.ref_value) cycle
 !
-        area = area + area_psf(iele)
-        do icomp = 1, ncomptot_psf
-          d_ele = (d_nod_psf(i1,icomp) + d_nod_psf(i2,icomp)            &
-     &           + d_nod_psf(i3,icomp) ) / 3.0d0 - ave_psf(icomp)
+        area = area + psf_norm%area_ele(iele)
+        do icomp = 1, psf_phys%ntot_phys
+          d_ele = (psf_phys%d_fld(i1,icomp) + psf_phys%d_fld(i2,icomp)  &
+     &           + psf_phys%d_fld(i3,icomp) ) / 3.0d0                   &
+     &           - psf_aves%ave(icomp)
 !
-          sdev_psf(icomp) = sdev_psf(icomp) + d_ele**2 * area_psf(iele)
+          psf_aves%sdev(icomp) = psf_aves%sdev(icomp)                   &
+     &                     + d_ele**2 * psf_norm%area_ele(iele)
         end do
       end do
 !
-      do icomp = 1, ncomptot_psf
-        sdev_psf(icomp) = sqrt( sdev_psf(icomp)/area )
+      do icomp = 1, psf_phys%ntot_phys
+        psf_aves%sdev(icomp) = sqrt( psf_aves%sdev(icomp)/area )
       end do
 !
       end subroutine cal_range_rms_ave_4_psf

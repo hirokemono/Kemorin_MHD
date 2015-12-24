@@ -65,25 +65,26 @@
 !
       psf_file_header = psf_org_header
       psf_ucd%file_prefix = psf_org_header
-      call load_psf_data_to_link_IO(istep_start, psf_ucd)
+      call load_psf_data_to_link_IO(istep_start, psf1, psf_ucd)
 !
       psf_ucd%file_prefix = psf_fixed_header
       call sel_write_grd_file(iminus, psf_ucd)
 !
       ipsf_temp = 0
-      do ifld = 1, psf_phys%num_phys
-        if(psf_phys%phys_name(ifld) .eq. fhd_temp) then
-          ipsf_temp = psf_phys%istack_component(ifld-1) + 1
+      do ifld = 1, psf1%psf_phys%num_phys
+        if(psf1%psf_phys%phys_name(ifld) .eq. fhd_temp) then
+          ipsf_temp = psf1%psf_phys%istack_component(ifld-1) + 1
           exit
         end if
       end do
 !
-      allocate( reftemp_psf(psf_nod%numnod) )
+      allocate( reftemp_psf(psf1%psf_nod%numnod) )
       reftemp_psf =  zero
 !
-      do inod = 1, psf_nod%numnod
-        r = sqrt(psf_nod%xx(inod,1)**2 + psf_nod%xx(inod,2)**2         &
-     &         + psf_nod%xx(inod,3)**2)
+      do inod = 1, psf1%psf_nod%numnod
+        r = sqrt(psf1%psf_nod%xx(inod,1)**2                             &
+     &         + psf1%psf_nod%xx(inod,2)**2                             &
+     &         + psf1%psf_nod%xx(inod,3)**2)
         reftemp_psf(inod) = ( (high_temp - low_temp)                    &
      &                        * depth_high_t*depth_low_t / r            &
      &                        - depth_high_t*high_temp                  &
@@ -103,9 +104,10 @@
         psf_ucd%file_prefix = psf_org_header
         call sel_read_udt_file(iminus, istep, psf_ucd)
 !
-        do inod = 1, psf_nod%numnod
-          psf_phys%d_fld(inod,ipsf_temp)                                &
-      &         = psf_phys%d_fld(inod,ipsf_temp) + reftemp_psf(inod)
+        do inod = 1, psf1%psf_nod%numnod
+          psf1%psf_phys%d_fld(inod,ipsf_temp)                           &
+      &         = psf1%psf_phys%d_fld(inod,ipsf_temp)                   &
+      &          + reftemp_psf(inod)
         end do
 !
         psf_ucd%file_prefix = psf_fixed_header

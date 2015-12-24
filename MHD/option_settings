@@ -220,7 +220,19 @@ PKG_CONFIG_PATH="$PKG_CONFIG_PATH":/home/matsui/local/lib/pkgconfig
 
 #
 # -------------------------------------------------------------------------------
-# Intel mac with gfortran-openmpi (MacBook Pro with macport)
+# Intel mac with gfortran5.0-openmpi (MacBook Pro with macport)
+# -------------------------------------------------------------------------------
+#
+./configure --prefix='/Users/matsui/local' CFLAGS='-O4 -Wall -g'  FCFLAGS='-O4 -Wall -g' \
+F77=gfortran-mp-5 FC=gfortran-mp-5 CC=gcc-mp-5 CXX=g++-mp-5 RANLIB='ranlib -c' \
+--enable-cocoa --with-blas=yes --enable-fftw3 --enable-gl --enable-glui --enable-gtk \
+--enable-libpng  --with-zlib=/opt/local --with-hdf5=/opt/local/bin/h5pcc \
+--with-pgplot=/Users/matsui/local/pgplot --with-aquaterm=/usr/local  \
+PKG_CONFIG_PATH='/usr/lib/pkgconfig:/opt/local/lib/pkgconfig'
+
+#
+# -------------------------------------------------------------------------------
+# Intel mac with gfortran4.8-openmpi (MacBook Pro with macport)
 # -------------------------------------------------------------------------------
 #
 ./configure --prefix='/Users/matsui/local' CFLAGS='-O4 -Wall -g'  FCFLAGS='-O4 -Wall -g' \

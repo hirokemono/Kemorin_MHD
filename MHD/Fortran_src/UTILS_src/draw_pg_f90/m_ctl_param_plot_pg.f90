@@ -6,6 +6,7 @@
 !      Written by H. Matsui
 !
       use m_precision
+      use m_field_file_format
 !
       implicit none
 !
@@ -23,6 +24,11 @@
       integer(kind = kint) :: npanel_window = 1
       real(kind = kreal) ::  flame
       real(kind = kreal) :: time
+!
+!    parameter for PSF file
+!
+      character(len=kchara) :: pg_psf_file_prefix
+      integer(kind = kint) :: iflag_pg_psf_fmt = iflag_udt
 !
 !    parameter for z_plane
 !

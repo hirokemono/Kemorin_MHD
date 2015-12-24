@@ -11,19 +11,21 @@
       use m_ctl_params_ele_grp_udt
       use m_tave_SGS_model_coefs
       use m_field_file_format
-      use m_psf_results
 !
       use t_ucd_data
+      use t_psf_results
 !
       use read_layer_evo_file_header
       use set_model_coef_to_med_patch
       use set_ucd_data_to_type
       use ucd_IO_select
+      use cal_psf_rms_aves
 !
       implicit none
 !
 !
       type(ucd_data), save :: psf_ucd
+      type(psf_results), save :: psf_data
 !
       integer(kind = kint) :: istep_read, nd, ierr, istart_grp
       real(kind = kreal)  :: time
@@ -53,11 +55,10 @@
 !
 !    output grid data
 !
-      call set_ele_grp_patch_2_psf_grd                                  &
-     &   (ele_grp1, psf_nod, psf_ele, psf_phys)
-      call allocate_psf_field_data
-      call link_node_data_2_ucd(psf_nod, psf_ucd)
-      call link_ele_data_2_ucd(psf_ele, psf_ucd)
+      call set_ele_grp_patch_2_psf_grd(ele_grp1,                        &
+     &    psf_data%psf_nod, psf_data%psf_ele, psf_data%psf_phys)
+      call link_node_data_2_ucd(psf_data%psf_nod, psf_ucd)
+      call link_ele_data_2_ucd(psf_data%psf_ele, psf_ucd)
 !
       psf_ucd%ifmt_file = iflag_udt
       psf_ucd%file_prefix = grp_ucd_data_head

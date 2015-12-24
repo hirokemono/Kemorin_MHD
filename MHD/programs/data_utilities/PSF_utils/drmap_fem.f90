@@ -64,21 +64,23 @@
 !
 !*  ----------  main loop for graphic  ---------------
 !*
+      psf_file_header = pg_psf_file_prefix
+      iflag_psf_fmt = iflag_pg_psf_fmt
       do istep = ist_pg, ied_pg, inc_pg
         time = dble(istep)*delta_time_pg
 !*
-        call load_psf_data(istep)
-        call set_psffield_id_4_plot_pg
+        call load_psf_data(istep, psf1)
+        call set_psffield_id_4_plot_pg(psf1%psf_phys)
 !
 !     convert to map data
 !
-!          do iele = 1, psf_ele%numele
+!          do iele = 1, psf1%psf_ele%numele
 !            write(*,*) 'set_map_patch_from_1patch', iele
 !            call set_map_patch_from_1patch(iele, icomp)
 !          end do
 !
-          nnod_pg =     psf_nod%numnod
-          nele_pg =     psf_ele%numele
+          nnod_pg =     psf1%psf_nod%numnod
+          nele_pg =     psf1%psf_ele%numele
           nnod_ele_pg = ithree
           call allocate_pg_nodes
           call allocate_pg_connect
@@ -88,24 +90,24 @@
 !
           do iw = 1, ntot_plot_pg
             i_field = id_field_4_plot(iw)
-            ist_comp = psf_phys%istack_component(i_field-1)             &
+            ist_comp = psf1%psf_phys%istack_component(i_field-1)        &
      &                + mod(id_comp_4_plot(iw),10)
             if (id_comp_4_plot(iw) .eq. icomp_VECTOR                    &
      &           .and. num_comp_4_plot(iw) .eq. ncomp_VECTOR) then
               call set_map_vector                                       &
-     &           (psf_nod%numnod, psf_phys%ntot_phys, ist_comp,         &
-     &            psf_phys%d_fld, vect_pg, cont_pg)
+     &           (psf1%psf_nod%numnod, psf1%psf_phys%ntot_phys,         &
+     &            ist_comp, psf1%psf_phys%d_fld, vect_pg, cont_pg)
 !
               if ( scale_pg(iw).eq.0.0d0 ) then
                 call cal_drawvec_maxlength                              &
-     &             (psf_nod%numnod, vect_pg, maxlen)
+     &             (psf1%psf_nod%numnod, vect_pg, maxlen)
               else
                 maxlen = scale_pg(iw)
               end if
 !
             else
-              cont_pg(1:psf_nod%numnod)                                 &
-     &            = psf_phys%d_fld(1:psf_nod%numnod,ist_comp)
+              cont_pg(1:psf1%psf_nod%numnod)                            &
+     &            = psf1%psf_phys%d_fld(1:psf1%psf_nod%numnod,ist_comp)
 !
               if ( range_pg(1,iw).eq.0.0d0                              &
      &        .and. range_pg(2,iw).eq.0.0d0 ) then
@@ -151,7 +153,7 @@
 !
               call vecmap_frame
               call draw_vc_map(nnod_pg, ione, nnod_pg,                  &
-     &            nskip_vect_pg(iw), psf_nod%xx, vect_pg, maxlen)
+     &            nskip_vect_pg(iw), psf1%psf_nod%xx, vect_pg, maxlen)
 !*
 !   ---  fill patch ----------------------------------------
             else
@@ -163,8 +165,8 @@
 !   ------- draw patch  ---------------------------------
 !
               call fill_tri_map(idisp_mode, icolor_mode, num_color_pg,  &
-     &            nnod_pg, nele_pg, psf_nod%xx, psf_ele%ie, cont_pg,    &
-     &            xmax_pg, xmin_pg)
+     &            nnod_pg, nele_pg, psf1%psf_nod%xx, psf1%psf_ele%ie,   &
+     &            cont_pg, xmax_pg, xmin_pg)
 !
 !   ------- draw flame  ---------------------------------
 !
@@ -173,8 +175,8 @@
 !    -------  draw line -----------------------------------
 !
               call drawline_map_fem(idisp_mode, icolor_mode,            &
-     &            num_color_pg, nnod_pg, nele_pg, psf_nod%xx,           &
-     &            psf_ele%ie, cont_pg, num_line_pg(iw), xc,             &
+     &            num_color_pg, nnod_pg, nele_pg, psf1%psf_nod%xx,      &
+     &            psf1%psf_ele%ie, cont_pg, num_line_pg(iw), xc,        &
      &            xmax_pg, xmin_pg)
 !
 !  ----------  draw colorbar
@@ -185,7 +187,7 @@
             end if
           end do
 !
-          call deallocate_psf_results
+          call dealloc_psf_results(psf1)
 !
           call deallocate_pg_data
           call deallocate_pg_grid

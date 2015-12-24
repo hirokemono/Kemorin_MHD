@@ -59,12 +59,13 @@
       read(*,*) line_udt_head
 !
       do istep = istep_start, istep_end, istep_int
-        call load_psf_data(istep)
-        call find_psf_edges
-        call pick_psf_by_sections(nd, xref, line)
+        call load_psf_data(istep, psf1)
+        call find_psf_edges(psf1%psf_ele)
+        call pick_psf_by_sections                                       &
+     &     (nd, xref, psf1%psf_nod, psf1%psf_ele, psf1%psf_phys, line)
 !
         call deallocate_psf_edge
-        call deallocate_psf_results
+        call dealloc_psf_results(psf1)
 !
         call write_psf_line_data(iflag_ucd, line_udt_head, istep, line)
       end do

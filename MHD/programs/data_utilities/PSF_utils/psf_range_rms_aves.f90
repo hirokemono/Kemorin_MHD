@@ -63,12 +63,13 @@
       read(*,*) rmin, rmax
 !
 !
-      call load_psf_data_to_link_IO(istep_start, psf_ucd)
+      call load_psf_data_to_link_IO(istep_start, psf1, psf_ucd)
+      call alloc_psf_averages(psf1%psf_phys, psf_ave1)
 !
-      do i_fld = 1, psf_phys%num_phys
-        write(*,*) i_fld, psf_phys%num_component(i_fld),                &
-     &             psf_phys%istack_component(i_fld),                    &
-     &             trim(psf_phys%phys_name(i_fld))
+      do i_fld = 1, psf1%psf_phys%num_phys
+        write(*,*) i_fld, psf1%psf_phys%num_component(i_fld),           &
+     &             psf1%psf_phys%istack_component(i_fld),               &
+     &             trim(psf1%psf_phys%phys_name(i_fld))
       end do
 !
       write(*,*) 'input field ID for reference'
@@ -82,20 +83,19 @@
       write(*,*) ' 2:  Less than reference'
       read(*,*)  iflag_ref
 !
-      icomp_ref_field = psf_phys%istack_component(ifield_ref_field-1)   &
-     &                 + icomp_ref_field
+      icomp_ref_field                                                   &
+     &    = psf1%psf_phys%istack_component(ifield_ref_field-1)          &
+     &     + icomp_ref_field
 !
 !   Evaluate size of patches
 !
-      call allocate_norms_4_psf
-      call cal_center_ele_4_psf                                         &
-     &   (psf_nod%numnod, psf_ele%numele, psf_nod%xx, psf_ele%ie)
-      call cal_norm_area_4_psf                                          &
-     &   (psf_nod%numnod, psf_ele%numele, psf_nod%xx, psf_ele%ie)
+      call allocate_norms_4_psf(psf1%psf_nod, psf1%psf_ele, psf_norm1)
+      call cal_center_ele_4_psf(psf1%psf_nod,  psf1%psf_ele, psf_norm1)
+      call cal_norm_area_4_psf(psf1%psf_nod, psf1%psf_ele, psf_norm1)
 !
-      call set_averaging_range(rmin, rmax, psf_ele%numele)
+      call set_averaging_range(rmin, rmax, psf_norm1)
 !
-      call open_psf_ave_rms_data(psf_file_header)
+      call open_psf_ave_rms_data(psf_file_header, psf1%psf_phys)
 !
       psf_ucd%ifmt_file = iflag_psf_fmt
       psf_ucd%file_prefix = psf_file_header
@@ -109,15 +109,15 @@
         write(*,'(i15)', advance='NO') istep
 !
         call sel_read_udt_file(iminus, istep, psf_ucd)
-        call cal_range_rms_ave_4_psf(psf_nod%numnod, psf_ele%numele,    &
-     &      psf_ele%ie, psf_phys%ntot_phys, psf_phys%d_fld,             &
-     &      icomp_ref_field, iflag_ref, ref_value, area_res,            &
-     &      ave_psf, rms_psf, sdev_psf)
-        call cal_minmax_psf(psf_nod%numnod, psf_phys%ntot_phys,         &
-     &      psf_phys%d_fld, xmin_psf, xmax_psf)
+        call cal_range_rms_ave_4_psf                                    &
+     &     (psf1%psf_ele, psf1%psf_phys, psf_norm1,                     &
+     &      icomp_ref_field, iflag_ref, ref_value, area_res, psf_ave1)
+        call cal_minmax_psf                                             &
+     &     (psf1%psf_nod%numnod, psf1%psf_phys%ntot_phys,               &
+     &      psf1%psf_phys%d_fld, psf_ave1)
 !
 !
-        call write_psf_ave_rms_data(istep, area_res)
+        call write_psf_ave_rms_data(istep, area_res, psf_ave1)
       end do
       write(*,*)
       call close_psf_ave_rms_data

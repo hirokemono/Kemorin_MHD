@@ -13,6 +13,7 @@
 !!     &          vector, copied)
 !!      subroutine copy_nod_sym_tensor_smp(np_smp, numnod,              &
 !!     &          inod_smp_stack, tensor, copied)
+!!      subroutine copy_all_field_smp(numnod, ntot_comp, vector, copied)
 !!
 !!      subroutine copy_nod_integer_smp(np_smp, numnod, inod_smp_stack, &
 !!     &          int_scalar, int_copied)
@@ -113,6 +114,21 @@
 !$omp end do nowait
 !
       end subroutine copy_nod_sym_tensor_smp
+!
+! -----------------------------------------------------------------------
+!
+      subroutine copy_all_field_smp(numnod, ntot_comp, vector, copied)
+!
+       integer (kind = kint) :: numnod, ntot_comp
+       real(kind=kreal), intent(in)    :: vector(numnod,ntot_comp)
+       real(kind=kreal), intent(inout) :: copied(numnod,ntot_comp)
+!
+!
+!$omp workshare
+       copied(1:numnod,1:ntot_comp) = vector(1:numnod,1:ntot_comp)
+!$omp end workshare nowait
+!
+      end subroutine copy_all_field_smp
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
