@@ -61,7 +61,7 @@
 !
       if( (i_step_output_fline) .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
-        call set_ele_id_4_node(node1, ele1, ele_4_nod1)
+        call set_ele_id_4_node(node1, ele1, next_tbl1%neib_ele)
       end if
 !
       if(i_step_output_pvr .le. 0) Return

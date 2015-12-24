@@ -109,7 +109,7 @@
       subroutine int_vol_vecp_crank_mat(n_int)
 !
       use m_t_int_parameter
-      use m_sorted_node
+      use m_element_id_4_node
       use m_ele_material_property
       use m_magne_matrix
       use int_vol_poisson_mat

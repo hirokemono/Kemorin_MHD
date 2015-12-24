@@ -39,7 +39,6 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_element_id_4_node
-      use m_sorted_node
       use m_solver_djds_MHD
 !
       use set_table_type_RHS_assemble
@@ -48,13 +47,13 @@
 !  +   set RHS assemble table      +
 !C +-------------------------------+
       call s_set_table_type_RHS_assemble                                &
-     &   (node1, ele1, ele_4_nod1, neib_nod1, rhs_tbl1)
+     &   (node1, ele1, next_tbl1, rhs_tbl1)
 !
 !C +-------------------------------+
 !  +   set Matrix assemble table   +
 !C +-------------------------------+
       call set_djds_whole_connectivity(nod_comm, node1, solver_C,       &
-     &    neib_nod1, DJDS_comm_etr, DJDS_entire)
+     &    next_tbl1%neib_nod, DJDS_comm_etr, DJDS_entire)
 !
       end subroutine set_MHD_whole_connectivity
 !

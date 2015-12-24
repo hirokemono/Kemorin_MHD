@@ -28,7 +28,7 @@
       use m_node_phys_data
       use m_SGS_model_coefs
       use m_SGS_address
-      use m_sorted_node
+      use m_element_id_4_node
       use m_finite_element_matrix
       use m_int_surface_data
       use m_jacobian_sf_grp

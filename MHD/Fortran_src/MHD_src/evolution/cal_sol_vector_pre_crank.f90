@@ -180,7 +180,7 @@
      &          (numnod, inter_smp_stack, coef_field, ff_nl,            &
      &           ncomp_nod, numdir, if_pre, d_nod, ff)
 !
-      use m_sorted_node
+      use m_element_id_4_node
       use m_int_vol_data
       use cal_ff_smp_to_ffs
 !

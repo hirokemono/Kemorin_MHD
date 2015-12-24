@@ -4,7 +4,7 @@
 !
 !       Written by H. Matsui
 !
-!      subroutine FEM_initialize_vizs(ucd)
+!      subroutine FEM_initialize_vizs(ele_4_nod, ucd)
 !      subroutine FEM_analyze_vizs(i_step,                              &
 !     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval,  &
 !     &          ucd)
@@ -27,15 +27,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_vizs(ucd)
+      subroutine FEM_initialize_vizs(ele_4_nod, ucd)
 !
       use t_ucd_data
+      use t_next_node_ele_4_node
       use m_array_for_send_recv
       use m_read_mesh_data
       use m_group_data
       use m_node_phys_data
       use m_control_params_2nd_files
-      use m_element_id_4_node
       use m_jacobians
       use m_jacobians_4_surface
       use m_ele_sf_eg_comm_tables
@@ -53,6 +53,7 @@
       use set_ucd_data_to_type
       use ucd_IO_select
 !
+      type(element_around_node), intent(inout) :: ele_4_nod
       type(ucd_data), intent(inout) :: ucd
 !
 !   --------------------------------
@@ -80,7 +81,7 @@
 !
       if( (i_step_output_fline+i_step_output_pvr) .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
-        call set_ele_id_4_node(node1, ele1, ele_4_nod1)
+        call set_ele_id_4_node(node1, ele1, ele_4_nod)
 !
         call set_max_int_point_by_etype
         if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_element'

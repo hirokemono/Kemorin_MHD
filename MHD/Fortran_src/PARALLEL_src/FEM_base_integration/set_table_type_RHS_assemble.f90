@@ -9,8 +9,7 @@
 !     &         (node, ele, neib_ele, neib_nod)
 !        type(node_data),           intent(in) :: node
 !        type(element_data),        intent(in) :: ele
-!        type(element_around_node), intent(inout) ::    neib_ele
-!        type(next_nod_id_4_nod), intent(inout) ::      neib_nod
+!        type(next_nod_ele_table), intent(inout) ::    neib_tbl
 !        type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
 !
 !      subroutine empty_table_type_RHS_assemble(node, rhs_tbl, next_tbl)
@@ -31,7 +30,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_set_table_type_RHS_assemble                          &
-     &         (node, ele, neib_ele, neib_nod, rhs_tbl)
+     &         (node, ele, neib_tbl, rhs_tbl)
 !
       use t_geometry_data
       use t_next_node_ele_4_node
@@ -41,18 +40,17 @@
 !
       type(node_data),           intent(in) :: node
       type(element_data),        intent(in) :: ele
-      type(element_around_node), intent(inout) ::    neib_ele
-      type(next_nod_id_4_nod), intent(inout) ::      neib_nod
+      type(next_nod_ele_table), intent(inout) ::    neib_tbl
       type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
 !
 !
 !  found surrounding node and element
 !
-      call set_belonged_ele_and_next_nod(node, ele, neib_ele, neib_nod)
+      call set_belonged_ele_and_next_nod(node, ele, neib_tbl%neib_ele, neib_tbl%neib_nod)
 !
 !      set RHS assemble table
 !
-      call s_sort_node_index_type(node, neib_ele, rhs_tbl)
+      call s_sort_node_index_type(node, neib_tbl%neib_ele, rhs_tbl)
 !
       end subroutine s_set_table_type_RHS_assemble
 !

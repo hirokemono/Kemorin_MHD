@@ -26,7 +26,7 @@
       use m_geometry_data
       use m_phys_constants
       use m_jacobians
-      use m_sorted_node
+      use m_element_id_4_node
       use m_finite_element_matrix
       use m_filter_elength
 !
@@ -123,7 +123,6 @@
       subroutine int_vol_vecp_sgs_crank_mat(n_int)
 !
       use m_t_int_parameter
-      use m_sorted_node
       use m_ele_material_property
       use m_SGS_model_coefs
       use m_SGS_address

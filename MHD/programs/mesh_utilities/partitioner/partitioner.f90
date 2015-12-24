@@ -12,7 +12,6 @@
       use m_read_mesh_data
       use m_geometry_data
       use m_group_data
-      use m_element_id_4_node
 !
       use init_partitioner
       use grouping_for_partition
@@ -22,6 +21,7 @@
       use load_mesh_data
 !
       use const_surface_mesh
+      use const_mesh_info
 !
       implicit none
 !
@@ -41,10 +41,13 @@
       mesh_file_head = global_mesh_head
       call input_mesh_1st(my_rank)
 !
+      write(*,*) 'const_mesh_informations'
+      call const_mesh_informations(my_rank)
+!
 !  ========= Routines for partitioner ==============
 !
-      call initialize_partitioner(node1, ele1, ele_4_nod1,              &
-     &    nod_grp1, ele_grp1, sf_grp1)
+      call initialize_partitioner                                       &
+     &   (node1, ele1, nod_grp1, ele_grp1, sf_grp1)
       call grouping_for_partitioner(node1, ele1, edge1,                 &
      &   nod_grp1, ele_grp1, ele_grp_tbl1)
 !
@@ -52,9 +55,14 @@
 !C-- create subdomain mesh
       call PROC_LOCAL_MESH(node1, ele1, edge1, ele_grp1,                &
      &    partitioned_fem, included_ele)
+!C
+!C-- Finalize
+      write(*,*) 'deallocate_nod_ele_infos'
+      call deallocate_nod_ele_infos
 !
 !  ========= Construct subdomain information for viewer ==============
 !
+      write(*,*) 'choose_surface_mesh'
       call choose_surface_mesh(local_file_header)
 !
       stop ' * Partitioning finished'

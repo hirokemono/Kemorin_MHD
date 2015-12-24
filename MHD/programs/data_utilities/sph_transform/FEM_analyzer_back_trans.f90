@@ -32,11 +32,12 @@
       use m_group_data
       use m_array_for_send_recv
       use m_node_phys_data
-      use m_element_id_4_node
       use m_jacobians
       use m_jacobians_4_surface
       use m_t_step_parameter
       use m_ele_sf_eg_comm_tables
+!
+      use t_next_node_ele_4_node
 !
       use nod_phys_send_recv
       use const_mesh_info
@@ -66,7 +67,7 @@
 !
       if( (i_step_output_fline+i_step_output_pvr) .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
-        call set_ele_id_4_node(node1, ele1, ele_4_nod1)
+        call set_ele_id_4_node(node1, ele1, ele_4_nod_SPH_TRANS)
 !
         call set_max_int_point_by_etype
         if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_element'

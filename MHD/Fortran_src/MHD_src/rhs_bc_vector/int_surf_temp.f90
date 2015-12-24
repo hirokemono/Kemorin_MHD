@@ -29,7 +29,7 @@
       subroutine int_surf_temp_ele
 !
       use m_node_phys_data
-      use m_sorted_node
+      use m_element_id_4_node
       use m_finite_element_matrix
       use m_filter_elength
       use m_node_phys_data
@@ -63,7 +63,7 @@
       subroutine int_surf_temp_monitor(i_field)
 !
       use m_node_phys_data
-      use m_sorted_node
+      use m_element_id_4_node
       use m_finite_element_matrix
       use m_filter_elength
       use m_node_phys_data

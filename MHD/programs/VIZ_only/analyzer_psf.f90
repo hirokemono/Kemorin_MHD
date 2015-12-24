@@ -10,15 +10,12 @@
 !
       use m_precision
 !
-      use t_ucd_data
+      use m_visualization
 !
       use FEM_analyzer_viz_surf
       use sections_for_1st
  !
       implicit none
-!
-!>      Instance for FEM field data IO
-      type(ucd_data), save :: input_ucd
 !
 !  ---------------------------------------------------------------------
 !
@@ -38,11 +35,11 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
       call read_control_data_section_only
-      call set_control_params_4_viz(my_rank, ierr, input_ucd)
+      call set_control_params_4_viz(my_rank, ierr, ucd_VIZ)
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_surface(input_ucd)
+      call FEM_initialize_surface(ucd_VIZ)
 !
 !  VIZ Initialization
       call init_visualize_surface
@@ -62,7 +59,7 @@
 !
 !  Load field data
         call FEM_analyze_surface                                        &
-     &     (i_step, istep_psf, istep_iso, input_ucd)
+     &     (i_step, istep_psf, istep_iso, ucd_VIZ)
 !
 !  Generate field lines
         if(istep_psf.ge.0 .or. istep_iso.ge.0) then

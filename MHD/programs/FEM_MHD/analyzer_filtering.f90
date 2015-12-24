@@ -58,6 +58,7 @@
       subroutine analyze
 !
       use m_t_step_parameter
+      use m_element_id_4_node
       use FEM_analyzer_snapshot
 !
       integer(kind=kint ) :: i_step, visval
@@ -74,7 +75,7 @@
 !  Visualization
         if (visval.eq.0) then
           call visualize_all(istep_psf, istep_iso, istep_pvr,           &
-     &        istep_fline)
+     &        istep_fline, next_tbl1%neib_ele)
         end if
       end do
 !

@@ -17,6 +17,7 @@
       use m_geometry_data
       use m_finite_element_matrix
       use m_int_vol_data
+      use m_element_id_4_node
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -35,7 +36,6 @@
       subroutine cal_divergence_whole(iflag_4_supg, i_res, i_vector)
 !
       use m_node_phys_data
-      use m_sorted_node
 !
       integer(kind = kint), intent(in) :: iflag_4_supg
       integer(kind = kint), intent(in) :: i_vector, i_res
@@ -62,7 +62,6 @@
       subroutine cal_divergence_in_fluid(iflag_4_supg, i_res, i_vector)
 !
       use m_geometry_data_MHD
-      use m_sorted_node
       use m_node_phys_data
 !
       integer(kind = kint), intent(in) :: iflag_4_supg
@@ -91,7 +90,6 @@
      &          i_res, i_vector)
 !
       use m_geometry_data_MHD
-      use m_sorted_node
       use m_node_phys_data
 !
       integer(kind = kint), intent(in) :: iflag_4_supg
@@ -123,7 +121,6 @@
       use m_element_phys_data
       use m_node_phys_data
       use m_jacobians
-      use m_sorted_node
 !
       use int_vol_vect_differences
       use int_vol_vect_diff_upw

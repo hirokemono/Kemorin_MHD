@@ -198,8 +198,7 @@
      &            's_set_table_type_RHS_assemble', i_level
           call s_set_table_type_RHS_assemble                            &
      &       (MG_mesh(i_level)%mesh%node, MG_mesh(i_level)%mesh%ele,    &
-     &        MG_next_table(i_level)%neib_ele,                          &
-     &        MG_next_table(i_level)%neib_nod, MG_FEM_tbl(i_level))
+     &        MG_next_table(i_level), MG_FEM_tbl(i_level))
         else
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'empty_table_type_RHS_assemble', i_level

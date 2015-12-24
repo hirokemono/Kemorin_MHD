@@ -5,7 +5,7 @@
 !
 !      subroutine init_visualize
 !      subroutine visualize_all(istep_psf, istep_iso, istep_pvr,        &
-!     &          istep_fline)
+!     &          istep_fline, ele_4_nod)
 !
       module visualizer_all
 !
@@ -62,13 +62,15 @@
 !  ---------------------------------------------------------------------
 !
       subroutine visualize_all(istep_psf, istep_iso, istep_pvr,         &
-     &          istep_fline)
+     &          istep_fline, ele_4_nod)
 !
       use m_cross_section
       use m_isosurface
+      use t_next_node_ele_4_node
 !
       integer(kind = kint), intent(in) :: istep_psf, istep_iso
       integer(kind = kint), intent(in) :: istep_pvr, istep_fline
+      type(element_around_node), intent(in) :: ele_4_nod
 !
 !
       if (num_psf.gt.0 .and. istep_psf.gt.0) then
@@ -81,7 +83,7 @@
         call pvr_main_1st(istep_pvr)
       end if
       if (num_fline.gt.0 .and. istep_fline.gt.0) then
-        call field_line_main_1st(istep_fline)
+        call field_line_main_1st(istep_fline, ele_4_nod)
       end if
 !
       end subroutine visualize_all

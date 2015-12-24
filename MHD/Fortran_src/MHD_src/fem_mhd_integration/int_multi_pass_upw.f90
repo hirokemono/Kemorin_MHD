@@ -25,7 +25,7 @@
       use m_geometry_data
       use m_nod_comm_table
       use m_phys_constants
-      use m_sorted_node
+      use m_element_id_4_node
       use m_finite_element_matrix
 !
       use cal_ff_smp_to_ffs
@@ -45,7 +45,6 @@
       subroutine int_multi_pass_vector_upw
 !
       use m_element_phys_data
-      use m_sorted_node
 !
       integer (kind = kint) :: imulti
 !
@@ -68,7 +67,6 @@
       subroutine int_multi_pass_scalar_upw
 !
       use m_element_phys_data
-      use m_sorted_node
 !
       integer (kind = kint) :: imulti
 !
@@ -93,7 +91,6 @@
       subroutine int_multi_pass_vector_upm
 !
       use m_element_phys_data
-      use m_sorted_node
 !
       integer (kind = kint) :: imulti
 !
@@ -116,7 +113,6 @@
       subroutine int_multi_pass_scalar_upm
 !
       use m_element_phys_data
-      use m_sorted_node
 !
       integer (kind = kint) :: imulti
 !
@@ -143,7 +139,6 @@
 !
       use m_geometry_data_MHD
       use m_element_phys_data
-      use m_sorted_node
       use m_int_vol_data
 !
       integer (kind = kint) :: imulti
@@ -169,7 +164,6 @@
 !
       use m_geometry_data_MHD
       use m_element_phys_data
-      use m_sorted_node
       use m_int_vol_data
 !
       integer (kind = kint) :: imulti
@@ -197,7 +191,6 @@
 !
       use m_geometry_data_MHD
       use m_element_phys_data
-      use m_sorted_node
       use m_int_vol_data
 !
       integer (kind = kint) :: imulti
@@ -223,7 +216,6 @@
 !
       use m_geometry_data_MHD
       use m_element_phys_data
-      use m_sorted_node
       use m_int_vol_data
 !
       integer (kind = kint) :: imulti
@@ -251,7 +243,6 @@
 !
       use m_geometry_data_MHD
       use m_element_phys_data
-      use m_sorted_node
       use m_int_vol_data
 !
       integer (kind = kint) :: imulti
@@ -277,7 +268,6 @@
 !
       use m_geometry_data_MHD
       use m_element_phys_data
-      use m_sorted_node
       use m_int_vol_data
 !
       integer (kind = kint) :: imulti

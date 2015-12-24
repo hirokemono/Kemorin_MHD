@@ -107,7 +107,7 @@
 !
         if(visval .eq. 0) then
           call visualize_all(istep_psf, istep_iso,                      &
-     &        istep_pvr, istep_fline)
+     &        istep_pvr, istep_fline, ele_4_nod_SPH_TRANS)
         end if
       end do
 !

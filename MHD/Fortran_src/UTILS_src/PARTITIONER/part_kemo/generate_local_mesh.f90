@@ -89,10 +89,6 @@
 !C-- distributed Local DATA
       call local_fem_mesh                                               &
      &    (izero, ione, work_file_header, node_org, ele_org, new_fem)
-!C
-!C-- Finalize
-!
-      call deallocate_nod_ele_infos
 !
       end subroutine PROC_LOCAL_MESH
 !

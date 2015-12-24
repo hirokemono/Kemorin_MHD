@@ -57,6 +57,7 @@
       subroutine analyze
 !
       use m_t_step_parameter
+      use m_element_id_4_node
 !
       integer(kind=kint ) :: i_step, visval
       integer(kind=kint ) :: istep_psf, istep_iso
@@ -73,7 +74,7 @@
         if (visval.eq.0) then
           call start_eleps_time(4)
           call visualize_all(istep_psf, istep_iso, istep_pvr,           &
-     &        istep_fline)
+     &        istep_fline, next_tbl1%neib_ele)
           call end_eleps_time(4)
         end if
       end do

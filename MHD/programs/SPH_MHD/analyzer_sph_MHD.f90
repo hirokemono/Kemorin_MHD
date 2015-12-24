@@ -87,6 +87,7 @@
 !
       subroutine evolution_sph_mhd
 !
+      use m_element_id_4_node
       use FEM_analyzer_sph_MHD
 !
       integer(kind = kint) :: visval, iflag_finish
@@ -133,7 +134,7 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_all', my_rank
           call start_eleps_time(12)
           call visualize_all(istep_psf, istep_iso, istep_pvr,           &
-     &        istep_fline)
+     &        istep_fline, next_tbl1%neib_ele)
           call end_eleps_time(12)
         end if
 !

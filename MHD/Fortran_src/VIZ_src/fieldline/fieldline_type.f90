@@ -38,10 +38,8 @@
       type(phys_data), intent(in) :: fld_nod
 !
 !
-      call field_line_init(fem%mesh%node%numnod,                        &
-     &    fem%mesh%ele%numele, fem%mesh%ele%interior_ele,               &
-     &    fem%group%ele_grp, fem%group%surf_grp,                        &
-     &    fld_nod%num_phys, fld_nod%phys_name)
+      call field_line_init(fem%mesh%node, fem%mesh%ele,                 &
+     &    fem%group%ele_grp, fem%group%surf_grp, fld_nod)
 !
       end subroutine field_line_init_type
 !
@@ -65,17 +63,8 @@
 !
 !
       call field_line_main(istep_psf,                                   &
-     &    fem%mesh%node%numnod, fem%mesh%ele%numele, surf%numsurf,      &
-     &    surf%nnod_4_surf, fem%mesh%node%istack_nod_smp,               &
-     &    fem%mesh%node%inod_global, fem%mesh%node%xx,                  &
-     &    fem%mesh%node%rr, fem%mesh%node%a_r,                          &
-     &    fem%mesh%node%ss, fem%mesh%node%a_s,                          &
-     &    fem%mesh%ele%iele_global, fem%mesh%ele%interior_ele,          &
-     &    surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf, surf%x_surf,  &
-     &    surf%vnorm_surf, surf%area_surf, surf%interior_surf,          &
-     &    fem%group%ele_grp, next_tbl%neib_ele,                         &
-     &    fld_nod%num_phys, fld_nod%ntot_phys,                          &
-     &    fld_nod%istack_component, fld_nod%d_fld, fem%mesh%nod_comm)
+     &    fem%mesh%node, fem%mesh%ele, surf, fem%group%ele_grp,         &
+     &    next_tbl%neib_ele, fld_nod, fem%mesh%nod_comm)
 !
       end subroutine field_line_main_type
 !

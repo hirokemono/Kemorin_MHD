@@ -7,16 +7,12 @@
 !
       use m_precision
 !
-      use t_ucd_data
+      use m_visualization
 !
       use FEM_analyzer_viz_fline
       use fieldline_1st
 !
-!
       implicit none
-!
-!>      Instance for FEM field data IO
-      type(ucd_data), save :: input_ucd
 !
 !  ---------------------------------------------------------------------
 !
@@ -37,12 +33,12 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'set_control_params_4_viz'
       call read_control_data_vizs
-      call set_control_params_4_viz(my_rank, ierr, input_ucd)
+      call set_control_params_4_viz(my_rank, ierr, ucd_VIZ)
 !
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_fline(input_ucd)
+      call FEM_initialize_fline(ele_4_nod_VIZ, ucd_VIZ)
 !
 !  VIZ Initialization
       call init_visualize_fline
@@ -61,10 +57,12 @@
       do i_step = i_step_init, i_step_number
 !
 !  Load field data
-        call FEM_analyze_fline(i_step, istep_fline, input_ucd)
+        call FEM_analyze_fline(i_step, istep_fline, ucd_VIZ)
 !
 !  Generate field lines
-        if(istep_fline .ge. 0) call visualize_fline(istep_fline)
+        if(istep_fline .ge. 0) then
+          call visualize_fline(istep_fline, ele_4_nod_VIZ)
+        end if
       end do
 !
       end subroutine analyze

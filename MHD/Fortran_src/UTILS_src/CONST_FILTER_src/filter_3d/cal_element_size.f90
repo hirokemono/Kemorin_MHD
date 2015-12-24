@@ -29,8 +29,7 @@
 !
       implicit none
 !
-      type(element_around_node), save, private:: ele_4_nod_f
-      type(next_nod_id_4_nod), save, private :: neib_nod_f
+      type(next_nod_ele_table), save, private :: next_tbl_f
       type(CRS_matrix), save, private :: mass1
 !
 !-----------------------------------------------------------------------
@@ -76,7 +75,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 's_set_table_type_RHS_assemble'
       call s_set_table_type_RHS_assemble                                &
-     &   (node1, ele1, ele_4_nod_f, neib_nod_f, rhs_tbl)
+     &   (node1, ele1, next_tbl_f, rhs_tbl)
 !
 !  ---------------------------------------------------
 !        cal element size for each node
@@ -96,7 +95,7 @@
       if (itype_mass_matrix .eq. 1) then
         if (iflag_debug.eq.1) write(*,*) 'set_consist_mass_matrix'
         call set_consist_mass_matrix(node1, ele1, jac1_3d_q,            &
-     &      neib_nod_f, rhs_tbl, tbl1_crs, mat_tbl,                     &
+     &      next_tbl_f%neib_nod, rhs_tbl, tbl1_crs, mat_tbl,            &
      &      rhs_mat%fem_wk, mass1)
       end if
 !
@@ -175,8 +174,8 @@
 !
       call deallocate_seed_moms_ele
 !
-      call dealloc_iele_belonged(ele_4_nod_f)
-      call dealloc_inod_next_node(neib_nod_f)
+      call dealloc_iele_belonged(next_tbl_f%neib_ele)
+      call dealloc_inod_next_node(next_tbl_f%neib_nod)
 !
       end subroutine s_cal_element_size
 !

@@ -15,11 +15,14 @@
       use m_machine_parameter
 !
       use t_mesh_data
+      use t_next_node_ele_4_node
 !
       implicit none
 !
       type(mesh_geometry), save :: newmesh
       type(mesh_groups), save ::   newgroup
+!
+      type(next_nod_ele_table), save :: next_tbl_i
 !
 ! ----------------------------------------------------------------------
 !
@@ -31,7 +34,6 @@
 !
 !
       use m_geometry_data
-      use m_element_id_4_node
       use m_jacobians
 !
       use input_control_gen_table
@@ -68,7 +70,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_belonged_ele_and_next_nod'
       call set_belonged_ele_and_next_nod                                &
-     &   (node1, ele1, ele_4_nod1, neib_nod1)
+     &   (node1, ele1, next_tbl_i%neib_ele, next_tbl_i%neib_nod)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_element'
       call set_max_int_point_by_etype
@@ -92,7 +94,6 @@
       use calypso_mpi
       use m_ctl_params_4_gen_table
       use m_interpolate_coefs_dest
-      use m_element_id_4_node
       use construct_interpolate_table
       use const_interpolate_4_org
       use const_rev_ele_itp_table
@@ -107,7 +108,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_construct_interpolate_table'
       call s_construct_interpolate_table                                &
-     &   (neib_nod1, newmesh, newgroup, ierr_missing)
+     &   (next_tbl_i%neib_nod, newmesh, newgroup, ierr_missing)
 !
 !   ordering destination table by domain
 !

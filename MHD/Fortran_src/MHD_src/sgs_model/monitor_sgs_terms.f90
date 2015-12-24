@@ -22,7 +22,7 @@
       use calypso_mpi
       use m_nod_comm_table
       use m_geometry_data
-      use m_sorted_node
+      use m_element_id_4_node
       use m_node_phys_data
 !
       use m_control_parameter

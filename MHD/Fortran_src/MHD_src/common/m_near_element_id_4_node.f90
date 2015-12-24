@@ -40,8 +40,8 @@
       use expand_next_nod_hang_type
 !
 !
-      call const_next_nod_hang_type(node1, hang1%nod_hang, neib_nod1,   &
-     &    neib_hang1)
+      call const_next_nod_hang_type(node1, hang1%nod_hang,              &
+     &    next_tbl1%neib_nod, neib_hang1)
 !
 !
       end subroutine const_next_nod_id_w_hang
@@ -56,7 +56,7 @@
 !
 !
       call overwrt_next_nod_by_hang_type(node1, neib_hang1,             &
-     &    neib_nod1)
+     &    next_tbl1%neib_nod)
 !
       end subroutine overwrite_next_nod_by_hanged
 !
