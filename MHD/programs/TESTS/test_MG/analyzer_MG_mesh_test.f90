@@ -32,7 +32,6 @@
       use m_jacobians
       use m_jacobians_4_surface
       use m_jacobians_4_edge
-      use m_jacobian_sf_grp
       use set_node_data_4_IO
       use set_element_data_4_IO
       use set_surface_data_4_IO
@@ -84,12 +83,6 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_edge'
       call cal_jacobian_edge
-!
-!      call check_jacobians_trilinear(my_rank, ele1, jac_3d_l)
-!
-      if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_surf_grp'
-      call cal_jacobian_surf_grp(sf_grp1)
-!
 !
 !  -------------------------------
 !

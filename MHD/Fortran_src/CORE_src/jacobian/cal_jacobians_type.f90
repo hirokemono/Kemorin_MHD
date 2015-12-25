@@ -188,7 +188,7 @@
       subroutine cal_jacobian_surf_grp_type(mesh, surf_mesh,            &
      &          group, jac_sf_grp)
 !
-      use const_jacobians_2d
+      use const_jacobians_sf_grp
 !
       type(mesh_geometry),    intent(in) :: mesh
       type(surface_geometry), intent(in) :: surf_mesh
@@ -201,13 +201,13 @@
 !
       if (group%surf_grp%num_grp .gt. 0) then
         if      (surf_mesh%surf%nnod_4_surf .eq. num_linear_sf) then
-          call cal_jacobian_sf_grp_linear(mesh%node, mesh%ele,          &
+          call const_jacobian_sf_grp_linear(mesh%node, mesh%ele,        &
      &        group%surf_grp, jac_sf_grp)
         else if (surf_mesh%surf%nnod_4_surf .eq. num_quad_sf)   then
-          call cal_jacobian_sf_grp_quad(mesh%node, mesh%ele,            &
+          call const_jacobian_sf_grp_quad(mesh%node, mesh%ele,          &
      &        group%surf_grp, jac_sf_grp)
         else if (surf_mesh%surf%nnod_4_surf .eq. num_lag_sf)   then
-          call cal_jacobian_sf_grp_lag(mesh%node, mesh%ele,             &
+          call const_jacobian_sf_grp_lag(mesh%node, mesh%ele,           &
      &        group%surf_grp, jac_sf_grp)
         end if
       end if
@@ -300,7 +300,7 @@
       subroutine cal_linear_jac_surf_grp_type(mesh, surf_mesh, group,   &
      &          jac_sf_grp_l)
 !
-      use const_jacobians_2d
+      use const_jacobians_sf_grp
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::  group
@@ -309,7 +309,7 @@
 !
 !
       if(surf_mesh%surf%nnod_4_surf .ne. num_linear_sf) then
-        call cal_jacobian_sf_grp_linear(mesh%node, mesh%ele,            &
+        call const_jacobian_sf_grp_linear(mesh%node, mesh%ele,          &
      &      group%surf_grp, jac_sf_grp_l)
       end if
 !

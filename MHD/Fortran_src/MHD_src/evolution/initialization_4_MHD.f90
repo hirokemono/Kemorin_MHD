@@ -228,8 +228,6 @@
       call dealloc_dxi_dx_type(jac1_3d_q)
       call dealloc_dxi_dx_type(jac1_3d_l)
 !
-!     --------------------- 
-!
       if (iflag_debug.eq.1) write(*,*)  'cal_jacobian_surf_grp'
       call cal_jacobian_surf_grp(sf_grp1)
 !

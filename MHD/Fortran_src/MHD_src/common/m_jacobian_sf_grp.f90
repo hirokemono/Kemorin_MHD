@@ -46,35 +46,13 @@
       use m_geometry_data
       use t_group_data
 !
-      use const_jacobians_2d
+      use const_jacobians_sf_grp
 !
       type(surface_group_data), intent(in) :: sf_grp
 !
 !
-      if (sf_grp%num_grp .le. 0) return
-      call alloc_2d_jac_type(sf_grp%num_item, num_linear_sf,            &
-     &                       maxtot_int_2d, jac1_sf_grp_2d_l)
-      if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_sf_grp_linear'
-      call cal_jacobian_sf_grp_linear(node1, ele1, sf_grp,              &
-     &    jac1_sf_grp_2d_l)
-!
-      if (ele1%first_ele_type .eq. 332) then
-        if (iflag_debug.eq.1)  write(*,*) 'cal_jacobian_sf_grp_quad'
-        call alloc_2d_jac_type(sf_grp%num_item, surf1%nnod_4_surf,      &
-     &      maxtot_int_2d, jac1_sf_grp_2d_q)
-        call cal_jacobian_sf_grp_quad(node1, ele1, sf_grp,              &
-     &      jac1_sf_grp_2d_q)
-      else if (ele1%first_ele_type .eq. 333) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_sf_grp_lag'
-        call alloc_2d_jac_type(sf_grp%num_item, surf1%nnod_4_surf,      &
-     &        maxtot_int_2d, jac1_sf_grp_2d_q)
-        call cal_jacobian_sf_grp_lag(node1, ele1, sf_grp,               &
-     &      jac1_sf_grp_2d_q)
-      else
-        if (iflag_debug.eq.1) write(*,*) 'copy_jacobians_2d_quad'
-        call copy_jacobians_2d(sf_grp%num_item, surf1%nnod_4_surf,      &
-     &        jac1_sf_grp_2d_l, jac1_sf_grp_2d_q)
-      end if
+      call const_jacobian_sf_grp(node1, ele1, surf1, sf_grp,            &
+     &                           jac1_sf_grp_2d_l, jac1_sf_grp_2d_q)
 !
       end subroutine cal_jacobian_surf_grp
 !
