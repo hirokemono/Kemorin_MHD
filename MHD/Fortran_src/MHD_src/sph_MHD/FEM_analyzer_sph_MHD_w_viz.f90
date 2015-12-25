@@ -41,7 +41,6 @@
       use m_t_step_parameter
       use m_fem_gauss_int_coefs
       use m_jacobians
-      use m_jacobians_4_surface
       use m_element_id_4_node
 !
       use set_ele_id_4_node_type
@@ -78,11 +77,6 @@
 !     --------------------- volume
 !
       call s_int_whole_volume_only(ele1, jac1_3d_q)
-!
-!     --------------------- Surface jacobian for fieldline
-!
-      if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_surface'
-      call cal_jacobian_surface
 !
       end subroutine FEM_initialize_w_viz
 !

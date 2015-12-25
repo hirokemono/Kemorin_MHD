@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on Aug., 2006
 !
-!      subroutine s_cal_normal_vector(surf, jac_2d_q, jac_2d_l)
+!      subroutine s_cal_normal_vector(surf, jac_2d_l, jac_2d_q)
 !      subroutine s_cal_normal_vector_spherical(surf)
 !      subroutine s_cal_normal_vector_cylindrical(surf)
 !
@@ -22,7 +22,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_normal_vector(surf, jac_2d_q, jac_2d_l)
+      subroutine s_cal_normal_vector(surf, jac_2d_l, jac_2d_q)
 !
       use t_jacobian_2d
       use m_fem_gauss_int_coefs

@@ -81,6 +81,7 @@
       use set_layer_list_by_table
       use reordering_MG_ele_by_layers
       use initialize_4_MHD_AMG
+      use const_jacobians_2d
 !
       use nod_phys_send_recv
       use solver_MGCG_MHD
@@ -223,7 +224,6 @@
       if (iflag_debug.eq.1) write(*,*)  'cal_jacobian_element'
       call set_max_int_point_by_etype
       call cal_jacobian_element
-      call cal_jacobian_surface
 !
       call dealloc_dxi_dx_type(jac1_3d_q)
       call dealloc_dxi_dx_type(jac1_3d_l)
@@ -243,8 +243,15 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_volume_node'
       call cal_volume_node(layer_tbl)
 !
+!     ---------------------
+!
+      call cal_jacobian_surface                                         &
+     &   (node1, ele1, surf1, jac1_2d_l, jac1_2d_q)
+!
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector'
-      call s_cal_normal_vector(surf1, jac1_2d_q, jac1_2d_l)
+      call s_cal_normal_vector(surf1, jac1_2d_l, jac1_2d_q)
+      call dealloc_2d_jac_type(jac1_2d_l)
+      call dealloc_2d_jac_type(jac1_2d_q)
 !
       if (iflag_debug.eq.1) write(*,*)  'int_surface_parameters'
       call int_surface_parameters(sf_grp1%num_grp)

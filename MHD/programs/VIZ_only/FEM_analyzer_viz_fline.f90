@@ -17,7 +17,16 @@
       use m_nod_comm_table
       use m_geometry_data
 !
+      use t_jacobian_2d
+!
       implicit none
+!
+!>     Stracture of linear Jacobians for surafces
+      type(jacobians_2d), save :: jac_VIZ_2d_l
+!>     Stracture of quadrature Jacobians for surafces
+      type(jacobians_2d), save :: jac_VIZ_2d_q
+!
+      private :: jac_VIZ_2d_l, jac_VIZ_2d_q
 !
 !-----------------------------------------------------------------------
 !
@@ -29,13 +38,13 @@
 !
       use t_ucd_data
       use t_next_node_ele_4_node
+!
       use m_node_phys_data
       use m_array_for_send_recv
       use m_read_mesh_data
       use m_group_data
       use m_control_params_2nd_files
       use m_jacobians
-      use m_jacobians_4_surface
       use m_ele_sf_eg_comm_tables
 !
       use const_mesh_info
@@ -50,6 +59,7 @@
       use nod_phys_send_recv
       use set_ucd_data_to_type
       use ucd_IO_select
+      use const_jacobians_2d
 !
       type(element_around_node), intent(inout) :: ele_4_nod
       type(ucd_data), intent(inout) :: ucd
@@ -93,10 +103,13 @@
       call s_int_whole_volume_only(ele1, jac1_3d_q)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_surface'
-      call cal_jacobian_surface
+      call cal_jacobian_surface                                         &
+     &   (node1, ele1, surf1, jac_VIZ_2d_l, jac_VIZ_2d_q)
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector'
-      call s_cal_normal_vector(surf1, jac1_2d_q, jac1_2d_l)
+      call s_cal_normal_vector(surf1, jac_VIZ_2d_l, jac_VIZ_2d_q)
+      call dealloc_2d_jac_type(jac_VIZ_2d_l)
+      call dealloc_2d_jac_type(jac_VIZ_2d_q)
 !
       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
       call pick_normal_of_surf_group                                    &
