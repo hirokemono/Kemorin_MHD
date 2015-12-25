@@ -33,6 +33,7 @@
       use m_array_for_send_recv
       use m_ctl_data_product_udt
       use m_nod_comm_table
+      use m_node_phys_data
       use nod_phys_send_recv
       use load_mesh_data
       use const_mesh_types_info
@@ -77,7 +78,7 @@
       if (iflag_debug.eq.1) write(*,*) 'set_field_id_4_product'
       call set_field_id_4_product
       call allocate_product_data(node1%numnod)
-      call allocate_product_result
+      call allocate_product_result(nod_fld1)
 !
       end subroutine initialize_udt_ratio
 !

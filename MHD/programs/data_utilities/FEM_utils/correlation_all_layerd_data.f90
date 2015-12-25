@@ -5,7 +5,8 @@
 !
 !      subroutine allocate_vec_transfer(numnod)
 !      subroutine s_correlation_all_layerd_data                         &
-!     &         (jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
+!     &         (nod_fld, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
+!        type(phys_data), intent(in) :: nod_fld
 !        type(jacobians_3d), intent(in) :: jac_3d_l, jac_3d_q
 !        type(phys_data), intent(in) :: phys_2nd
 !        type(layering_tbl), intent(in) :: layer_tbl
@@ -54,26 +55,26 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_correlation_all_layerd_data                          &
-     &         (jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
+     &         (nod_fld, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
 !
-      use m_node_phys_data
       use cal_layerd_ave_correlate
       use t_phys_data
       use t_jacobian_3d
       use t_layering_ele_list
 !
+      type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d_l, jac_3d_q
       type(phys_data), intent(in) :: phys_2nd
       type(layering_tbl), intent(in) :: layer_tbl
 !
 !
       call int_vol_rms_ave_all_layer                                    &
-     &   (jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
+     &   (nod_fld, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
       call sum_layerd_averages(layer_tbl%e_grp%num_grp)
 !
       if(iflag_debug .gt. 0) write(*,*) 'divide_layers_ave_by_vol'
       call divide_layers_ave_by_vol(layer_tbl%e_grp%num_grp,            &
-     &    nod_fld1%ntot_phys, layer_tbl%a_vol_layer,                    &
+     &    nod_fld%ntot_phys, layer_tbl%a_vol_layer,                     &
      &    ave_ref(1,1), ave_tgt(1,1), rms_ref(1,1), rms_tgt(1,1),       &
      &    rms_ratio(1,1))
 !
@@ -82,14 +83,14 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'int_vol_dev_cor_all_layer'
       call int_vol_dev_cor_all_layer                                    &
-     &   (jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
+     &   (nod_fld, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_layerd_correlation'
       call sum_layerd_correlation(layer_tbl%e_grp%num_grp)
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_layered_correlation'
       call cal_layered_correlation                                      &
-     &   (layer_tbl%e_grp%num_grp, nod_fld1%ntot_phys,                  &
+     &   (layer_tbl%e_grp%num_grp, nod_fld%ntot_phys,                   &
      &    layer_tbl%a_vol_layer, cor_data(1,1), cov_data(1,1))
 !
       call take_sqrt_rms_data
@@ -100,10 +101,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine  int_vol_rms_ave_all_layer                             &
-     &         (jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
+     &         (nod_fld, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
 !
       use m_geometry_data
-      use m_node_phys_data
       use m_fem_gauss_int_coefs
       use int_rms_ave_ele_grps
       use transfer_correlate_field
@@ -111,6 +111,7 @@
       use t_jacobian_3d
       use t_layering_ele_list
 !
+      type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d_l, jac_3d_q
       type(layering_tbl), intent(in) :: layer_tbl
       type(phys_data), intent(in) :: phys_2nd
@@ -118,14 +119,14 @@
       integer(kind = kint) :: icomp, icomp_2
 !
 !
-      do icomp = 1, nod_fld1%ntot_phys
-        icomp_2 = icomp + nod_fld1%ntot_phys
+      do icomp = 1, nod_fld%ntot_phys
+        icomp_2 = icomp + nod_fld%ntot_phys
         d_nod_trans2(1:phys_2nd%n_point,1)                              &
      &          = phys_2nd%d_fld(1:phys_2nd%n_point,icomp)
 !
         call int_vol_2rms_ave_ele_grps                                  &
      &     (node1, ele1, layer_tbl%e_grp, jac_3d_q, jac_3d_l,           &
-     &      max_int_point, nod_fld1%ntot_phys, icomp, nod_fld1%d_fld,   &
+     &      max_int_point, nod_fld%ntot_phys, icomp, nod_fld%d_fld,     &
      &      ione, ione, d_nod_trans2(1,1), ave_l(1,icomp),              &
      &      rms_l(1,icomp), ave_l(1,icomp_2), rms_l(1,icomp_2))
       end do
@@ -135,10 +136,9 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_dev_cor_all_layer                              &
-     &         (jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
+     &         (nod_fld, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
 !
       use m_geometry_data
-      use m_node_phys_data
       use m_fem_gauss_int_coefs
       use int_rms_ave_ele_grps
       use transfer_correlate_field
@@ -146,19 +146,20 @@
       use t_jacobian_3d
       use t_layering_ele_list
 !
+      type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d_l, jac_3d_q
       type(phys_data), intent(in) :: phys_2nd
       type(layering_tbl), intent(in) :: layer_tbl
       integer(kind = kint) :: icomp, icomp_2
 !
 !
-      do icomp = 1, nod_fld1%ntot_phys
-        icomp_2 = icomp + nod_fld1%ntot_phys
+      do icomp = 1, nod_fld%ntot_phys
+        icomp_2 = icomp + nod_fld%ntot_phys
         d_nod_trans2(1:node1%numnod,1)                                  &
      &          = phys_2nd%d_fld(1:node1%numnod,icomp)
         call int_vol_dev_cor_ele_grps                                   &
      &     (node1, ele1, layer_tbl%e_grp, jac_3d_q, jac_3d_l,           &
-     &      max_int_point, nod_fld1%ntot_phys, icomp, nod_fld1%d_fld,   &
+     &      max_int_point, nod_fld%ntot_phys, icomp, nod_fld%d_fld,     &
      &      ione, ione, d_nod_trans2(1,1),                              &
      &      ave_ref(1,icomp), ave_tgt(1,icomp),                         &
      &      sig_l(1,icomp), sig_l(1,icomp_2),  cov_l(1,icomp) )
@@ -169,25 +170,26 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_correlate_data_names
+      subroutine set_correlate_data_names(nod_fld)
 !
       use m_phys_constants
-      use m_node_phys_data
+      use t_phys_data
       use m_volume_average_labels
 !
+      type(phys_data), intent(in) :: nod_fld
       integer(kind = kint) :: i_fld, ist
 !
 !
-      do i_fld = 1, nod_fld1%num_phys
-        ist = nod_fld1%istack_component(i_fld-1) + 1
-        if     (nod_fld1%num_component(i_fld) .eq. n_vector) then
+      do i_fld = 1, nod_fld%num_phys
+        ist = nod_fld%istack_component(i_fld-1) + 1
+        if     (nod_fld%num_component(i_fld) .eq. n_vector) then
           call set_vector_label                                         &
-     &       (nod_fld1%phys_name(i_fld), cor_name(ist))
-        else if(nod_fld1%num_component(i_fld) .eq. n_sym_tensor) then
+     &       (nod_fld%phys_name(i_fld), cor_name(ist))
+        else if(nod_fld%num_component(i_fld) .eq. n_sym_tensor) then
           call set_sym_tensor_label                                     &
-     &       (nod_fld1%phys_name(i_fld), cor_name(ist))
+     &       (nod_fld%phys_name(i_fld), cor_name(ist))
         else
-          cor_name(ist) = nod_fld1%phys_name(i_fld)
+          cor_name(ist) = nod_fld%phys_name(i_fld)
         end if
       end do
 !

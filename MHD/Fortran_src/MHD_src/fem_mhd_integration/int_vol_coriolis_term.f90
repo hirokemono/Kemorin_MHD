@@ -8,6 +8,9 @@
 !
 !      subroutine int_buoyancy_nod_exp
 !      subroutine set_boussinesq_density_at_node
+!        type(node_data), intent(in) :: node
+!        type(phys_address), intent(in) :: iphys
+!        type(phys_data), intent(inout) :: nod_fld
 !
       module int_vol_coriolis_term
 !
@@ -127,17 +130,21 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_boussinesq_density_at_node
+      subroutine set_boussinesq_density_at_node(node, iphys, nod_fld)
 !
-      use m_geometry_data
-      use m_node_phys_data
+      use t_geometry_data
+      use t_phys_data
       use set_buoyancy_at_node
+!
+      type(node_data), intent(in) :: node
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
       call set_boussinesq_density_2_node                                &
-     &   (node1%numnod, node1%istack_nod_smp, coef_buo, coef_comp_buo,  &
-     &    nod_fld1%ntot_phys, iphys%i_temp, iphys%i_light,              &
-     &    iphys%i_density, nod_fld1%d_fld)
+     &   (node%numnod, node%istack_nod_smp, coef_buo, coef_comp_buo,    &
+     &    nod_fld%ntot_phys, iphys%i_temp, iphys%i_light,               &
+     &    iphys%i_density, nod_fld%d_fld)
 !
       end subroutine set_boussinesq_density_at_node
 !

@@ -61,7 +61,7 @@
      &      nod_fld1%d_fld)
       else if (iphys%i_density .gt. izero) then
         if(iflag_debug.gt.0) write(*,*) 'lead  ', trim(fhd_density)
-        call set_boussinesq_density_at_node
+        call set_boussinesq_density_at_node(node1, iphys, nod_fld1)
       end if
 !
       end subroutine cal_fluxes_4_monitor
@@ -297,22 +297,22 @@
       if (iphys%i_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_buoyancy_flux)
-        call cal_gravity_flux(coef_buo, iphys%i_temp,                   &
-     &        iphys%i_buo_gen)
+        call cal_gravity_flux(node1, coef_buo, iphys%i_velo,            &
+     &      iphys%i_temp, iphys%i_buo_gen, nod_fld1)
       end if
 !
       if (iphys%i_c_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_comp_buo_flux)
-        call cal_gravity_flux(coef_comp_buo, iphys%i_light,             &
-     &      iphys%i_c_buo_gen)
+        call cal_gravity_flux(node1, coef_comp_buo, iphys%i_velo,       &
+     &      iphys%i_light,  iphys%i_c_buo_gen, nod_fld1)
       end if
 !
       if (iphys%i_f_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_filter_buo_flux)
-        call cal_gravity_flux(coef_buo, iphys%i_filter_temp,            &
-     &      iphys%i_f_buo_gen)
+        call cal_gravity_flux(node1, coef_buo, iphys%i_velo,            &
+     &      iphys%i_filter_temp, iphys%i_f_buo_gen, nod_fld1)
       end if
 !
 !

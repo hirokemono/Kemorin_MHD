@@ -171,6 +171,7 @@
       subroutine cal_velo_co_consist_crank
 !
       use m_phys_constants
+      use m_physical_property
       use int_vol_initial_MHD
       use cal_ff_smp_to_ffs
 !
@@ -183,7 +184,8 @@
       call set_boundary_velo_4_rhs
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_co_crank_consist'
-      call cal_sol_velo_co_crank_consist(node1%istack_internal_smp)
+      call cal_vector_co_crank_consist                                  &
+     &   (node1, node1%istack_internal_smp, coef_velo)
 !
       end subroutine cal_velo_co_consist_crank
 !

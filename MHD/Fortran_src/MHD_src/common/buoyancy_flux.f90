@@ -7,7 +7,9 @@
 !> @brief Evaluate buoyancy flux
 !!
 !!@verbatim
-!!      subroutine cal_gravity_flux(coef, i_scalar, i_flux)
+!!      subroutine cal_gravity_flux(node, coef, i_scalar, i_flux)
+!!        type(node_data), intent(in) :: node
+!!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
 !
       module buoyancy_flux
@@ -26,32 +28,35 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine cal_gravity_flux(coef, i_scalar, i_flux)
+      subroutine cal_gravity_flux(node, coef,                           &
+     &          i_velo, i_scalar, i_flux, nod_fld)
 !
-      use m_geometry_data
+      use t_geometry_data
+      use t_phys_data
       use m_physical_property
-      use m_node_phys_data
 !
-!
-      integer (kind = kint), intent(in) :: i_scalar, i_flux
+      type(node_data), intent(in) :: node
+      integer (kind = kint), intent(in) :: i_scalar, i_flux, i_velo
       real (kind = kreal), intent(in) :: coef
+!
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
       if      (i_grav .eq. iflag_const_g) then
         call cal_gravity_flux_const                                     &
-     &     (node1%numnod, node1%istack_nod_smp, grav,                   &
-     &      coef, nod_fld1%ntot_phys, i_scalar, iphys%i_velo, i_flux,   &
-     &      nod_fld1%d_fld)
+     &     (node%numnod, node%istack_nod_smp, grav,                     &
+     &      coef, nod_fld%ntot_phys, i_scalar, i_velo, i_flux,          &
+     &      nod_fld%d_fld)
       else if (i_grav .eq. iflag_radial_g) then
         call cal_gravity_flux_radial                                    &
-     &     (node1%numnod, node1%istack_nod_smp, node1%xx, node1%a_r,    &
-     &      coef, nod_fld1%ntot_phys, i_scalar, iphys%i_velo, i_flux,   &
-     &      nod_fld1%d_fld)
+     &     (node%numnod, node%istack_nod_smp, node%xx, node%a_r,        &
+     &      coef, nod_fld%ntot_phys, i_scalar, i_velo, i_flux,          &
+     &      nod_fld%d_fld)
       else if (i_grav .eq. iflag_self_r_g) then
         call cal_gravity_flux_self                                      &
-     &     (node1%numnod, node1%istack_nod_smp, node1%xx,               &
-     &      coef, nod_fld1%ntot_phys, i_scalar, iphys%i_velo, i_flux,   &
-     &      nod_fld1%d_fld)
+     &     (node%numnod, node%istack_nod_smp, node%xx,                  &
+     &      coef, nod_fld%ntot_phys, i_scalar, i_velo, i_flux,          &
+     &      nod_fld%d_fld)
       end if
 !
       end subroutine cal_gravity_flux

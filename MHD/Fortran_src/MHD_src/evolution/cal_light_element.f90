@@ -133,7 +133,7 @@
       call cal_t_evo_4_scalar_fl(iflag_comp_supg)
 !
       call set_boundary_rhs_scalar(node1, nod_bc1_c, f1_l, f1_nl)
-      call cal_sol_d_scalar_linear
+      call cal_sol_d_scalar_linear(node1, iphys, nod_fld1)
 !
       call cal_sol_d_scalar_crank(iphys%i_light)
 !
@@ -148,6 +148,7 @@
       use m_node_phys_data
       use m_finite_element_matrix
       use m_bc_data_ene
+      use m_physical_property
 !
       use cal_sol_vector_pre_crank
       use set_boundary_scalars
@@ -167,7 +168,8 @@
 !
       call set_boundary_rhs_scalar(node1, nod_bc1_c, f1_l, f1_nl)
 !
-       call cal_sol_d_scalar_consist
+      call cal_vector_pre_consist(node1, coef_light,                    &
+     &    f1_nl%ff, n_scalar, iphys%i_pre_composit, nod_fld1, f1_l%ff)
 !
        call cal_sol_d_scalar_crank(iphys%i_light)
 !

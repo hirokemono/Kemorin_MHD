@@ -168,7 +168,7 @@
 !
       call set_boundary_rhs_scalar(node1, nod_bc1_t, f1_l, f1_nl)
 !
-       call cal_sol_temp_linear
+       call cal_sol_temp_linear(node1, iphys, nod_fld1)
 !
        call cal_sol_energy_crank(iphys%i_temp)
 !
@@ -183,6 +183,7 @@
       use m_node_phys_data
       use m_finite_element_matrix
       use m_bc_data_ene
+      use m_physical_property
 !
       use cal_sol_vector_pre_crank
       use set_boundary_scalars
@@ -192,21 +193,22 @@
       use cal_solver_MHD
 !
 !
-       if (coef_imp_t .gt. 0.0d0) then
-         call int_sk_4_fixed_temp
-!         if (iflag_initial_step.eq.1) coef_imp_t = 1.0d0 / coef_imp_t
-       end if
+      if (coef_imp_t .gt. 0.0d0) then
+        call int_sk_4_fixed_temp
+!        if (iflag_initial_step.eq.1) coef_imp_t = 1.0d0 / coef_imp_t
+      end if
 !
-       call int_vol_initial_temp
-       call set_ff_nl_smp_2_ff(n_scalar, node1, rhs_tbl1, f1_l, f1_nl)
+      call int_vol_initial_temp
+      call set_ff_nl_smp_2_ff(n_scalar, node1, rhs_tbl1, f1_l, f1_nl)
 !
       call set_boundary_rhs_scalar(node1, nod_bc1_t, f1_l, f1_nl)
 !
-       call cal_sol_temp_consist
+      call cal_vector_pre_consist(node1, coef_temp,                     &
+     &    f1_nl%ff, n_scalar, iphys%i_pre_heat, nod_fld1, f1_l%ff)
 !
-       call cal_sol_energy_crank(iphys%i_temp)
+      call cal_sol_energy_crank(iphys%i_temp)
 !
-       end subroutine cal_temp_pre_consist_crank
+      end subroutine cal_temp_pre_consist_crank
 !
 ! ----------------------------------------------------------------------
 !

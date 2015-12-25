@@ -33,6 +33,7 @@
 !
       subroutine init_zm_sph_field
 !
+      use m_node_phys_data
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
       use parallel_load_data_4_sph
@@ -70,7 +71,7 @@
 !
 !  -------------------------------
 !
-      call init_visualize
+      call init_visualize(nod_fld1)
 !
       end subroutine init_zm_sph_field
 !
@@ -107,8 +108,8 @@
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
         if(visval .eq. 0) then
-          call visualize_all(istep_psf, istep_iso,                      &
-     &        istep_pvr, istep_fline, ele_4_nod_SPH_TRANS, jac_STR_q)
+          call visualize_all(istep_psf, istep_iso, istep_pvr,           &
+     &        istep_fline, nod_fld1, ele_4_nod_SPH_TRANS, jac_STR_q)
         end if
       end do
 !

@@ -3,9 +3,10 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine init_visualize
+!      subroutine init_visualize(nod_fld)
 !      subroutine visualize_all(istep_psf, istep_iso, istep_pvr,        &
-!     &          istep_fline, ele_4_nod, jac_3d)
+!     &          istep_fline, nod_fld, ele_4_nod, jac_3d)
+!        type(phys_data), intent(in) :: nod_fld
 !        type(element_around_node), intent(in) :: ele_4_nod
 !        type(jacobians_3d), intent(in) :: jac_3d
 !
@@ -17,6 +18,7 @@
       use calypso_mpi
 !
       use m_control_params_4_fline
+      use t_phys_data
 !
       use volume_rendering
       use sections_for_1st
@@ -31,7 +33,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize
+      subroutine init_visualize(nod_fld)
 !
       use m_quad_2_triangle
       use m_control_data_sections
@@ -41,6 +43,8 @@
       use m_isosurface
       use set_psf_case_table
 !
+      type(phys_data), intent(in) :: nod_fld
+!
 !
       if ( (num_psf_ctl+num_iso_ctl+num_pvr_ctl) .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'set_sectioning_case_table'
@@ -48,23 +52,23 @@
       end if
 !
       num_psf = num_psf_ctl
-      if (num_psf .gt. 0)  call cross_section_init_1st
+      if (num_psf .gt. 0)  call cross_section_init_1st(nod_fld)
 !
       num_iso = num_iso_ctl
-      if (num_iso .gt. 0) call isosurface_init_1st
+      if (num_iso .gt. 0) call isosurface_init_1st(nod_fld)
 !
       num_pvr = num_pvr_ctl
-      if (num_pvr .gt. 0) call pvr_init_1st
+      if (num_pvr .gt. 0) call pvr_init_1st(nod_fld)
 !
       num_fline = num_fline_ctl
-      if (num_fline .gt. 0) call field_line_init_1st
+      if (num_fline .gt. 0) call field_line_init_1st(nod_fld)
 !
       end subroutine init_visualize
 !
 !  ---------------------------------------------------------------------
 !
       subroutine visualize_all(istep_psf, istep_iso, istep_pvr,         &
-     &          istep_fline, ele_4_nod, jac_3d)
+     &          istep_fline, nod_fld, ele_4_nod, jac_3d)
 !
       use m_cross_section
       use m_isosurface
@@ -73,21 +77,22 @@
 !
       integer(kind = kint), intent(in) :: istep_psf, istep_iso
       integer(kind = kint), intent(in) :: istep_pvr, istep_fline
+      type(phys_data), intent(in) :: nod_fld
       type(element_around_node), intent(in) :: ele_4_nod
       type(jacobians_3d), intent(in) :: jac_3d
 !
 !
       if (num_psf.gt.0 .and. istep_psf.gt.0) then
-        call cross_section_main_1st(istep_psf)
+        call cross_section_main_1st(istep_psf, nod_fld)
       end if
       if (num_iso.gt.0 .and. istep_iso.gt.0) then
-        call isosurface_main_1st(istep_iso)
+        call isosurface_main_1st(istep_iso, nod_fld)
       end if
       if (num_pvr.gt.0 .and. istep_pvr.gt.0) then
-        call pvr_main_1st(istep_pvr, jac_3d)
+        call pvr_main_1st(istep_pvr, nod_fld, jac_3d)
       end if
       if (num_fline.gt.0 .and. istep_fline.gt.0) then
-        call field_line_main_1st(istep_fline, ele_4_nod)
+        call field_line_main_1st(istep_fline, nod_fld, ele_4_nod)
       end if
 !
       end subroutine visualize_all

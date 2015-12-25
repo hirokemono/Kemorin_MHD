@@ -151,7 +151,7 @@
 !
       call set_sectioning_case_table
       if (num_psf .gt. 0)  then
-        call cross_section_init_1st
+        call cross_section_init_1st(nod_fld1)
       end if
 !
       end subroutine analyze_med_grp_patch

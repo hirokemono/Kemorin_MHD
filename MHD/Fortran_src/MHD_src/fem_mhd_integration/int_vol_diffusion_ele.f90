@@ -25,6 +25,7 @@
 !
       use m_precision
 !
+      use m_machine_parameter
       use m_constants
       use m_geometry_data
       use m_phys_constants
@@ -247,7 +248,6 @@
       subroutine int_vol_scalar_diffuse_ele(iele_fsmp_stack,            &
      &          iak_diff, coef_crank, ak_d, i_scalar)
 !
-      use m_machine_parameter
       use m_geometry_data
       use int_vol_fractional
       use int_vol_sgs_fractional
@@ -278,8 +278,6 @@
       subroutine int_vol_vector_diffuse_ele(iele_fsmp_stack,            &
      &          iak_diff, coef_crank, ak_d, i_vector)
 !
-      use m_machine_parameter
-      use m_geometry_data
       use int_vol_fractional
       use int_vol_sgs_fractional
 !

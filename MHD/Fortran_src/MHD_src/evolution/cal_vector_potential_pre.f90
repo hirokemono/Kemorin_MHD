@@ -152,7 +152,7 @@
 !
       call delete_vector_ffs_on_bc(node1, nod_bc1_a, f1_l, f1_nl)
 !
-       call cal_sol_vect_p_pre_linear
+       call cal_sol_vect_p_pre_linear(node1, iphys, nod_fld1)
 !
        call cal_sol_vect_p_pre_crank
 !
@@ -166,6 +166,7 @@
       use m_t_step_parameter
       use m_finite_element_matrix
       use m_bc_data_magne
+      use m_physical_property
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
       use cal_ff_smp_to_ffs
@@ -174,22 +175,23 @@
       use set_boundary_scalars
 !
 !
-       if (coef_imp_b.gt.0.0d0) then
-         call int_sk_4_fixed_vector_p
-!         if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
-       end if
+      if (coef_imp_b.gt.0.0d0) then
+        call int_sk_4_fixed_vector_p
+!        if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
+      end if
 !
-       call int_vol_initial_vect_p
-       call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
+      call int_vol_initial_vect_p
+      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !
       call delete_vector_ffs_on_bc(node1, nod_bc1_a, f1_l, f1_nl)
 !
-       call cal_sol_vect_p_pre_consist
+      call cal_vector_pre_consist(node1, coef_magne,                    &
+     &    f1_nl%ff, n_vector, iphys%i_pre_uxb, nod_fld1, f1_l%ff)
 !
-       if (iflag_debug.eq.1) write(*,*) 'time_evolution'
-       call cal_sol_vect_p_pre_crank
+      if (iflag_debug.eq.1) write(*,*) 'time_evolution'
+      call cal_sol_vect_p_pre_crank
 !
-       end subroutine cal_vect_p_pre_consist_crank
+      end subroutine cal_vect_p_pre_consist_crank
 !
 ! ----------------------------------------------------------------------
 !

@@ -107,7 +107,7 @@
         end if
       end do
 !
-      call s_divide_phys_by_num_udt(icou)
+      call s_divide_phys_by_num_udt(icou, nod_fld1)
       call nod_fields_send_recv(node1, nod_comm, nod_fld1)
 !
 !    output udt data

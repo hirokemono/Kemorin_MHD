@@ -13,6 +13,8 @@
       use calypso_mpi
       use m_work_time
 !
+      use m_node_phys_data
+!
       use FEM_analyzer_MHD
       use sections_for_1st
 !
@@ -55,7 +57,7 @@
       call start_eleps_time(2)
       call FEM_initialize_MHD
 !
-      call init_visualize_surface
+      call init_visualize_surface(nod_fld1)
       call end_eleps_time(2)
 !
       end subroutine initialization_MHD
@@ -83,7 +85,7 @@
 !  Visualization
         if (visval.eq.0) then
           call start_eleps_time(4)
-          call visualize_surface(istep_psf, istep_iso)
+          call visualize_surface(istep_psf, istep_iso, nod_fld1)
           call end_eleps_time(4)
         end if
 !

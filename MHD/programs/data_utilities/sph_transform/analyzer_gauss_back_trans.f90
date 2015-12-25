@@ -12,6 +12,7 @@
       use calypso_mpi
       use m_SPH_transforms
       use m_work_time
+      use m_node_phys_data
 !
       use FEM_analyzer_back_trans
       use SPH_analyzer_gauss_b_trans
@@ -59,7 +60,7 @@
       if (iflag_debug.gt.0) write(*,*) 'SPH_init_gauss_back_trans'
       call SPH_init_gauss_back_trans(node1%numnod)
 !
-      call  init_visualize
+      call  init_visualize(nod_fld1)
 !
       end subroutine init_analyzer
 !
@@ -83,8 +84,8 @@
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
         if (visval .eq. 0) then
-          call visualize_all(istep_psf, istep_iso,                      &
-     &        istep_pvr, istep_fline, ele_4_nod_SPH_TRANS, jac_STR_q)
+          call visualize_all(istep_psf, istep_iso, istep_pvr,           &
+     &        istep_fline, nod_fld1, ele_4_nod_SPH_TRANS, jac_STR_q)
         end if
       end do
 !

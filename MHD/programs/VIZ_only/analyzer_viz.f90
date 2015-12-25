@@ -12,6 +12,7 @@
       use m_machine_parameter
 !
       use m_visualization
+      use m_node_phys_data
 !
       use FEM_analyzer_viz
       use visualizer_all
@@ -47,7 +48,7 @@
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
-      call init_visualize
+      call init_visualize(nod_fld1)
 !
       end subroutine init_analyzer
 !
@@ -71,7 +72,7 @@
         if(visval .eq. 0) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
           call visualize_all(istep_psf, istep_iso, istep_pvr,           &
-     &        istep_fline, ele_4_nod_VIZ, jac_VIZ_q)
+     &        istep_fline, nod_fld1, ele_4_nod_VIZ, jac_VIZ_q)
         end if
       end do
 !

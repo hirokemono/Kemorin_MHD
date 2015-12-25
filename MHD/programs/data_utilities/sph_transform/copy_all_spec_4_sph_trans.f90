@@ -19,7 +19,6 @@
 !
       use m_spheric_parameter
       use m_sph_spectr_data
-      use m_node_phys_data
       use m_work_4_sph_trans
       use m_work_pole_sph_trans
       use set_phys_name_4_sph_trans

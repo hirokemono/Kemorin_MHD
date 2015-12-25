@@ -11,6 +11,7 @@
       use m_precision
       use calypso_mpi
 !
+      use m_node_phys_data
       use FEM_analyzer_snap_tmp
       use visualizer_all
 !
@@ -48,7 +49,7 @@
 !
       call FEM_initialize_snap_tmp
 !
-      call init_visualize
+      call init_visualize(nod_fld1)
 !
       end subroutine init_analyzer
 !
@@ -75,7 +76,7 @@
         if (visval.eq.0) then
           call start_eleps_time(4)
           call visualize_all(istep_psf, istep_iso, istep_pvr,           &
-     &        istep_fline, next_tbl1%neib_ele, jac1_3d_q)
+     &        istep_fline, nod_fld1, next_tbl1%neib_ele, jac1_3d_q)
 !
           call end_eleps_time(4)
         end if

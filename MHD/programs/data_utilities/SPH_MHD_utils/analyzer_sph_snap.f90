@@ -21,6 +21,7 @@
       use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
+      use m_node_phys_data
 !
       use SPH_analyzer_snap
       use visualizer_all
@@ -67,7 +68,7 @@
       call SPH_init_sph_snap
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize
+      call init_visualize(nod_fld1)
 !
       call calypso_MPI_barrier
       call end_eleps_time(2)
@@ -124,10 +125,10 @@
 !*  ----------- Visualization --------------
 !*
         if(visval .eq. 0) then
-          if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
+          if (iflag_debug.eq.1) write(*,*) 'visualize_all'
           call start_eleps_time(12)
           call visualize_all(istep_psf, istep_iso, istep_pvr,           &
-     &        istep_fline, next_tbl1%neib_ele, jac1_3d_q)
+     &        istep_fline, nod_fld1, next_tbl1%neib_ele, jac1_3d_q)
           call end_eleps_time(12)
         end if
         call end_eleps_time(1)

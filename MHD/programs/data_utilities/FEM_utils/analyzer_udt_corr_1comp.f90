@@ -155,7 +155,7 @@
       call allocate_all_layer_correlate
       call allocate_work_layer_correlate(layer_tbl_corr%e_grp%num_grp)
 !
-      call set_correlate_data_names
+      call set_correlate_data_names(nod_fld1)
 !
 !     ---------------------
 !
@@ -177,7 +177,8 @@
           if (iflag_debug .gt. 0) write(*,*)                            &
      &          's_correlation_all_layerd_data'
           call s_correlation_all_layerd_data                            &
-     &       (jac_FUTIL_l, jac_FUTIL_q, layer_tbl_corr, phys_ref)
+     &       (nod_fld1, jac_FUTIL_l, jac_FUTIL_q,                       &
+     &        layer_tbl_corr, phys_ref)
 !
           if (iflag_debug .gt. 0) write(*,*)                            &
      &          ' write_layerd_correlate_data', istep_ucd

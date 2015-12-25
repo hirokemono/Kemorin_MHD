@@ -8,6 +8,7 @@
       use m_precision
 !
       use m_visualization
+      use m_node_phys_data
 !
       use FEM_analyzer_viz_pvr
       use volume_rendering_1st
@@ -39,7 +40,7 @@
       call FEM_initialize_pvr(jac_VIZ_l, jac_VIZ_q, ucd_VIZ)
 !
 !  VIZ Initialization
-      call init_visualize_pvr
+      call init_visualize_pvr(nod_fld1)
 !
       end subroutine initialization
 !
@@ -56,7 +57,7 @@
         call FEM_analyze_pvr(i_step, istep_pvr, ucd_VIZ, jac_VIZ_q)
 !
 !  Rendering
-        if(istep_pvr .ge. 0) call visualize_pvr(istep_pvr)
+        call visualize_pvr(istep_pvr, nod_fld1, jac_VIZ_q)
       end do
 !
       end subroutine analyze

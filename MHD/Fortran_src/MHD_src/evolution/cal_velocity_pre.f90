@@ -186,7 +186,7 @@
 !
        call set_boundary_velo_4_rhs
 !
-       call cal_sol_velo_pre_linear
+       call cal_sol_velo_pre_linear(node1, iphys, nod_fld1)
 !
        call cal_sol_velo_pre_crank
 !
@@ -195,32 +195,34 @@
 ! ----------------------------------------------------------------------
 !  --------  subroutine cal_velo_pre_consist_crank  -------
 !
-       subroutine cal_velo_pre_consist_crank
+      subroutine cal_velo_pre_consist_crank
 !
-       use m_t_step_parameter
-       use cal_sol_vector_pre_crank
-       use set_nodal_bc_id_data
-       use int_sk_4_fixed_boundary
-       use cal_ff_smp_to_ffs
-       use int_vol_initial_MHD
-       use cal_solver_MHD
+      use m_t_step_parameter
+      use m_physical_property
+      use cal_sol_vector_pre_crank
+      use set_nodal_bc_id_data
+      use int_sk_4_fixed_boundary
+      use cal_ff_smp_to_ffs
+      use int_vol_initial_MHD
+      use cal_solver_MHD
 !
 !
-       if (coef_imp_v.gt.0.0d0) then
-         call int_sk_4_fixed_velo
-!         if (iflag_initial_step.eq.1) coef_imp_v = 1.0d0 / coef_imp_v
-       end if
+      if (coef_imp_v.gt.0.0d0) then
+        call int_sk_4_fixed_velo
+!        if (iflag_initial_step.eq.1) coef_imp_v = 1.0d0 / coef_imp_v
+      end if
 !
-       call int_vol_initial_velo
-       call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
+      call int_vol_initial_velo
+      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !
-       call set_boundary_velo_4_rhs
+      call set_boundary_velo_4_rhs
 !
-       call cal_sol_velo_pre_consist
+      call cal_vector_pre_consist(node1, coef_velo,                     &
+     &    f1_nl%ff, n_vector, iphys%i_pre_mom, nod_fld1, f1_l%ff)
 !
-       call cal_sol_velo_pre_crank
+      call cal_sol_velo_pre_crank
 !
-       end subroutine cal_velo_pre_consist_crank
+      end subroutine cal_velo_pre_consist_crank
 !
 ! ----------------------------------------------------------------------
 !

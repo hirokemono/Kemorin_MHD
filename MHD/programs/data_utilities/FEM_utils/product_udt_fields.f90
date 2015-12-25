@@ -4,7 +4,8 @@
 !      Written by H. Matsui on Dec., 2007
 !
 !      subroutine allocate_product_data(numnod)
-!      subroutine allocate_product_result
+!      subroutine allocate_product_result(nod_fld)
+!        type(phys_data), intent(inout) :: nod_fld
 !      subroutine deallocate_product_data
 !
 !      subroutine set_field_id_4_product
@@ -58,26 +59,28 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_product_result
+      subroutine allocate_product_result(nod_fld)
 !
       use m_ctl_params_4_prod_udt
       use m_geometry_data
-      use m_node_phys_data
+      use t_phys_data
+!
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
-      nod_fld1%num_phys =     ione
-      nod_fld1%num_phys_viz = ione
-      call alloc_phys_name_type(nod_fld1)
+      nod_fld%num_phys =     ione
+      nod_fld%num_phys_viz = ione
+      call alloc_phys_name_type(nod_fld)
 !
-      nod_fld1%num_component(1) =    ncomp_4_result
-      nod_fld1%istack_component(1) = ncomp_4_result
-      nod_fld1%iflag_monitor(1) =    1
-      nod_fld1%phys_name(1) =        result_field_name
+      nod_fld%num_component(1) =    ncomp_4_result
+      nod_fld%istack_component(1) = ncomp_4_result
+      nod_fld%iflag_monitor(1) =    1
+      nod_fld%phys_name(1) =        result_field_name
 !
-      nod_fld1%ntot_phys =     ncomp_4_result
-      nod_fld1%ntot_phys_viz = ncomp_4_result
+      nod_fld%ntot_phys =     ncomp_4_result
+      nod_fld%ntot_phys_viz = ncomp_4_result
 !
-      call alloc_phys_data_type(node1%numnod, nod_fld1)
+      call alloc_phys_data_type(node1%numnod, nod_fld)
 !
       end subroutine allocate_product_result
 !
@@ -334,14 +337,6 @@
       else if(ncomp_4_result .eq. isix) then
         call nod_tensor_send_recv(node1, nod_comm, d_nod)
       end if
-!
-!      write(50+my_rank,*) 'd_nod'
-!      do i = 1, node1%numnod
-!        write(50+my_rank,*) i, inod_global(i),                         &
-!     &          d_prod1(i,1:ncomp_4_product1),                         &
-!     &          d_prod2(i,1:ncomp_4_product2),                         &
-!     &         d_nod(i,1:nod_fld1%ntot_phys_viz)
-!      end do
 !
       end subroutine cal_products_of_fields
 !

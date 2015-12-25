@@ -104,7 +104,7 @@
           call subtract_by_ucd_data(my_rank, istep_ucd,                 &
      &        ifmt_org_ucd, tgt_udt_file_head, nod_fld1)
 !
-          call s_divide_phys_by_delta_t
+          call s_divide_phys_by_delta_t(nod_fld1)
 !
           call nod_fields_send_recv(node1, nod_comm, nod_fld1)
 !

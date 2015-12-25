@@ -11,6 +11,7 @@
       use m_precision
 !
       use m_visualization
+      use m_node_phys_data
 !
       use FEM_analyzer_viz_surf
       use sections_for_1st
@@ -42,7 +43,7 @@
       call FEM_initialize_surface(ucd_VIZ)
 !
 !  VIZ Initialization
-      call init_visualize_surface
+      call init_visualize_surface(nod_fld1)
 !
       end subroutine init_analyzer
 !
@@ -63,7 +64,7 @@
 !
 !  Generate field lines
         if(istep_psf.ge.0 .or. istep_iso.ge.0) then
-           call visualize_surface(istep_psf, istep_iso)
+           call visualize_surface(istep_psf, istep_iso, nod_fld1)
         end if
       end do
 !

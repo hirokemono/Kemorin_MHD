@@ -144,7 +144,7 @@
       if (iflag_debug .eq. 0 ) write(*,*) 'bc_4_magne_rhs'
       call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
 !
-      call cal_sol_magne_pre_linear
+      call cal_sol_magne_pre_linear(node1, iphys, nod_fld1)
 !
       if (iflag_debug .eq. 0 ) write(*,*) 'time_evolution'
       call cal_sol_magne_pre_crank
@@ -159,6 +159,7 @@
       use m_phys_constants
       use m_finite_element_matrix
       use m_bc_data_magne
+      use m_physical_property
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
       use cal_ff_smp_to_ffs
@@ -178,7 +179,8 @@
       if (iflag_debug.eq.1) write(*,*) 'bc_4_magne_rhs'
       call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
 !
-      call cal_sol_vect_p_pre_consist
+      call cal_vector_pre_consist(node1, coef_magne,                    &
+     &    f1_nl%ff, n_vector, iphys%i_pre_uxb, nod_fld1, f1_l%ff)
 !
       if (iflag_debug.eq.1)                                             &
      &        write(*,*) 'time_evolution for magnetic field'

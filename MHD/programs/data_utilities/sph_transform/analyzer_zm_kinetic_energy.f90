@@ -15,6 +15,7 @@
       use m_work_time
 !
       use t_field_data_IO
+      use m_node_phys_data
       use SPH_analyzer_back_trans
       use FEM_analyzer_back_trans
       use SPH_analyzer_zm_energies
@@ -69,7 +70,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_visualize'
-      call init_visualize
+      call init_visualize(nod_fld1)
 !
       end subroutine init_zm_kinetic_energy
 !
@@ -93,8 +94,8 @@
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
         if(visval .eq. 0) then
-          call visualize_all(istep_psf, istep_iso,                      &
-     &        istep_pvr, istep_fline, ele_4_nod_SPH_TRANS, jac_STR_q)
+          call visualize_all(istep_psf, istep_iso, istep_pvr,           &
+     &        istep_fline, nod_fld1, ele_4_nod_SPH_TRANS, jac_STR_q)
         end if
       end do
 !
