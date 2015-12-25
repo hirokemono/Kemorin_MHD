@@ -12,20 +12,8 @@
       use m_precision
 !
       use m_machine_parameter
-      use t_jacobian_1d
-      use t_jacobian_2d
 !
       implicit none
-!
-!>     Stracture for Jacobians for edge (linear)
-      type(jacobians_1d), save :: jac_1d_l
-!>     Stracture for Jacobians for edge (quad)
-      type(jacobians_1d), save :: jac_1d_q
-!
-!>     Stracture of linear Jacobians for surafces
-      type(jacobians_2d), save :: jac_2d_l
-!>     Stracture of quadrature Jacobians for surafces
-      type(jacobians_2d), save :: jac_2d_q
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,8 +48,6 @@
       use sum_normal_4_surf_group
       use set_parallel_file_name
       use load_mesh_data
-      use const_jacobians_1d
-      use const_jacobians_2d
 !
 !
       if (my_rank.eq.0) then
@@ -108,14 +94,9 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_surface'
-      call cal_jacobian_surface                                         &
-     &   (node1, ele1, surf1, jac_2d_l, jac_2d_q)
+      if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
+      call const_normal_vector(node1, surf1)
 !
-      if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector'
-      call s_cal_normal_vector(surf1, jac_2d_l, jac_2d_q)
-      call dealloc_2d_jac_type(jac_2d_l)
-      call dealloc_2d_jac_type(jac_2d_q)
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector_spherical'
       call s_cal_normal_vector_spherical(surf1)
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector_cylindrical'
@@ -123,13 +104,9 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_edge'
-      call cal_jacobian_edge(node1, ele1, edge1, jac_1d_l, jac_1d_q)
+      if (iflag_debug.gt.0) write(*,*) 'const_edge_vector'
+      call const_edge_vector(node1, edge1)
 !
-      if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector'
-      call s_cal_edge_vector(edge1, jac_1d_q, jac_1d_l)
-      call dealloc_1d_jac_type(jac_1d_q)
-      call dealloc_1d_jac_type(jac_1d_l)
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_spherical'
       call s_cal_edge_vector_spherical(edge1)
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_cylindrical'

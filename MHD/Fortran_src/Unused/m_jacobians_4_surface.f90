@@ -40,8 +40,7 @@
       use const_jacobians_2d
 !
 !
-      call cal_jacobian_surface                                         &
-     &   (node1, ele1, surf1, jac1_2d_l, jac1_2d_q)
+      call cal_jacobian_surface(node1, surf1, jac1_2d_l, jac1_2d_q)
 !
       end subroutine const_jacobian_surface
 !

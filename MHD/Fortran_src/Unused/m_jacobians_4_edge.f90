@@ -43,7 +43,7 @@
       use const_jacobians_1d
 !
 !
-      call cal_jacobian_edge(node1, ele1, edge1, jac1_1d_l, jac1_1d_q)
+      call cal_jacobian_edge(node1, edge1, jac1_1d_l, jac1_1d_q)
 !
       end subroutine const_jacobian_edge
 !

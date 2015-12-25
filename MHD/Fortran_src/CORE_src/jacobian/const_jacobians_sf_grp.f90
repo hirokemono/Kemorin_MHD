@@ -68,13 +68,13 @@
       call const_jacobian_sf_grp_linear                                 &
      &   (node, ele, sf_grp, jac_sf_grp_l)
 !
-      if (ele%first_ele_type .eq. 332) then
+      if(surf%nnod_4_surf .eq. num_quad_sf) then
         if (iflag_debug.eq.1)  write(*,*) 'const_jacobian_sf_grp_quad'
         call alloc_2d_jac_type(sf_grp%num_item, surf%nnod_4_surf,       &
      &      maxtot_int_2d, jac_sf_grp_q)
         call const_jacobian_sf_grp_quad                                 &
      &    (node, ele, sf_grp, jac_sf_grp_q)
-      else if (ele%first_ele_type .eq. 333) then
+      else if (surf%nnod_4_surf .eq. num_lag_sf) then
         if (iflag_debug.eq.1) write(*,*) 'const_jacobian_sf_grp_lag'
         call alloc_2d_jac_type(sf_grp%num_item, surf%nnod_4_surf,       &
      &      maxtot_int_2d, jac_sf_grp_q)

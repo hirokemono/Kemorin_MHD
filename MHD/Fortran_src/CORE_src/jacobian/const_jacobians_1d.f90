@@ -9,7 +9,6 @@
 !!@verbatim
 !!      subroutine cal_jacobian_edge(node, edge, jac_1d_l, jac_1d_q)
 !!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
 !!        type(edge_data), intent(in)  :: edge
 !!        type(jacobians_1d), intent(inout) :: jac_1d_l
 !!        type(jacobians_1d), intent(inout) :: jac_1d_q
@@ -43,11 +42,9 @@
 !> Construct shape function, difference of shape function, and Jacobian
 !> for edge element
 !
-      subroutine cal_jacobian_edge                                      &
-     &         (node, ele, edge, jac_1d_l, jac_1d_q)
+      subroutine cal_jacobian_edge(node, edge, jac_1d_l, jac_1d_q)
 !
       type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
       type(edge_data), intent(in)  :: edge
 !
       type(jacobians_1d), intent(inout) :: jac_1d_l
@@ -60,8 +57,7 @@
       if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_edge_linear'
       call cal_jacobian_edge_linear(node, edge, jac_1d_l)
 !
-      if    (ele%first_ele_type .eq. 332                                &
-     &  .or. ele%first_ele_type .eq. 333) then
+      if(edge%nnod_4_edge .eq. num_quad_edge) then
         if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_edge_quad'
         call alloc_1d_jac_type                                          &
      &     (edge%numedge, edge%nnod_4_edge, maxtot_int_1d, jac_1d_q)

@@ -18,16 +18,7 @@
       use m_geometry_data
       use m_SPH_transforms
 !
-      use t_jacobian_2d
-!
       implicit none
-!
-!>     Stracture of linear Jacobians for surafces
-      type(jacobians_2d), save :: jac_SPH_2d_l
-!>     Stracture of quadrature Jacobians for surafces
-      type(jacobians_2d), save :: jac_SPH_2d_q
-!
-      private :: jac_SPH_2d_l, jac_SPH_2d_q
 !
 !-----------------------------------------------------------------------
 !
@@ -53,7 +44,6 @@
       use set_surf_grp_vectors
       use sum_normal_4_surf_group
       use output_parallel_ucd_file
-      use const_jacobians_2d
 !
 !  -----    construct geometry informations
 !
@@ -80,10 +70,6 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_element'
         call cal_jacobian_element
 !
-        if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_surface'
-        call cal_jacobian_surface                                       &
-     &     (node1, ele1, surf1, jac_SPH_2d_l, jac_SPH_2d_q)
-!
         call dealloc_dxi_dx_type(jac1_3d_q)
         call dealloc_dxi_dx_type(jac1_3d_l)
 !
@@ -92,10 +78,8 @@
         if (iflag_debug.gt.0) write(*,*) 's_int_whole_volume_only'
         call s_int_whole_volume_only(ele1, jac1_3d_q)
 !
-        if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector'
-        call s_cal_normal_vector(surf1, jac_SPH_2d_l, jac_SPH_2d_q)
-        call dealloc_2d_jac_type(jac_SPH_2d_l)
-        call dealloc_2d_jac_type(jac_SPH_2d_q)
+        if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
+        call const_normal_vector(node1, surf1)
 !
         if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
         call pick_normal_of_surf_group                                  &

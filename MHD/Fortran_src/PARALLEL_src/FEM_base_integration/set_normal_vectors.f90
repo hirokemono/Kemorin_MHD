@@ -3,7 +3,10 @@
 !
 !     Written by H. Matsui on Aug., 2006
 !
-!      subroutine s_cal_normal_vector(surf, jac_2d_l, jac_2d_q)
+!      subroutine const_normal_vector(node, surf)
+!      subroutine int_normal_4_all_surface(surf, jac_2d)
+!        type(jacobians_2d), intent(in) :: jac_2d
+!        type(surface_data), intent(inout) :: surf
 !      subroutine s_cal_normal_vector_spherical(surf)
 !      subroutine s_cal_normal_vector_cylindrical(surf)
 !
@@ -12,9 +15,14 @@
       use m_precision
 !
       use m_machine_parameter
+      use t_geometry_data
       use t_surface_data
+      use t_jacobian_2d
 !
       implicit none
+!
+      type(jacobians_2d), save, private :: jac_2d_l
+      type(jacobians_2d), save, private :: jac_2d_q
 !
 ! -----------------------------------------------------------------------
 !
@@ -22,33 +30,45 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_cal_normal_vector(surf, jac_2d_l, jac_2d_q)
+      subroutine const_normal_vector(node, surf)
 !
-      use t_jacobian_2d
+      use m_fem_gauss_int_coefs
+      use const_jacobians_2d
+!
+      type(node_data), intent(in) :: node
+      type(surface_data), intent(inout) :: surf
+!
+!
+      call cal_jacobian_surface(node, surf, jac_2d_q, jac_2d_l)
+      call int_normal_4_all_surface(surf, jac_2d_q)
+!
+      call dealloc_2d_jac_type(jac_2d_l)
+      call dealloc_2d_jac_type(jac_2d_q)
+!
+      end subroutine const_normal_vector
+!
+!-----------------------------------------------------------------------
+!
+      subroutine int_normal_4_all_surface(surf, jac_2d)
+!
       use m_fem_gauss_int_coefs
       use int_area_normal_4_surface
 !
+      type(jacobians_2d), intent(in) :: jac_2d
       type(surface_data), intent(inout) :: surf
-      type(jacobians_2d), intent(in) :: jac_2d_q, jac_2d_l
 !
 !
       call allocate_normal_vect_type(surf)
 !
-      if (surf%nnod_4_surf .eq. num_quad_sf) then
-        call int_normal_all_surf(surf%numsurf, surf%istack_surf_smp,    &
-     &     jac_2d_q%ntot_int, max_int_point,                            &
-     &     jac_2d_q%xj_sf, jac_2d_q%xsf_sf,                             &
-     &     surf%area_surf, surf%a_area_surf, surf%vnorm_surf)
-      else
-        call int_normal_all_surf(surf%numsurf, surf%istack_surf_smp,    &
-     &     jac_2d_l%ntot_int, max_int_point,                            &
-     &     jac_2d_l%xj_sf, jac_2d_l%xsf_sf,                             &
-     &     surf%area_surf, surf%a_area_surf, surf%vnorm_surf)
-      end if
+      call int_normal_all_surf(surf%numsurf, surf%istack_surf_smp,      &
+     &    jac_2d%ntot_int, max_int_point, jac_2d%xj_sf,                 &
+     &    jac_2d%xsf_sf, surf%area_surf, surf%a_area_surf,              &
+     &    surf%vnorm_surf)
 !
-      end subroutine s_cal_normal_vector
+      end subroutine int_normal_4_all_surface
 !
-! -----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
       subroutine s_cal_normal_vector_spherical(surf)
 !

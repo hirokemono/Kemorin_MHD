@@ -62,7 +62,7 @@
 !
       call set_gauss_coefs_4_1d
 !
-      call cal_jacobian_edge(node, ele, edge, jac_1d_l, jac_1d_q)
+      call cal_jacobian_edge(node, edge, jac_1d_l, jac_1d_q)
 !
       end subroutine s_cal_jacobian_linear_1d
 !

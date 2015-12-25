@@ -11,7 +11,6 @@
 !!      subroutine cal_jacobian_surface                                 &
 !!     &         (node, ele, surf, jac_2d_l, jac_2d_q)
 !!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in)  :: surf
 !!        type(jacobians_2d), intent(inout) :: jac_2d_l
 !!        type(jacobians_2d), intent(inout) :: jac_2d_q
@@ -48,10 +47,9 @@
 !> for surface element
 !
       subroutine cal_jacobian_surface                                   &
-     &         (node, ele, surf, jac_2d_l, jac_2d_q)
+     &         (node, surf, jac_2d_l, jac_2d_q)
 !
       type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
       type(surface_data), intent(in)  :: surf
 !
       type(jacobians_2d), intent(inout) :: jac_2d_l
@@ -63,12 +61,12 @@
      &   (surf%numsurf, num_linear_sf, maxtot_int_2d, jac_2d_l)
       call cal_jacobian_surface_linear(node, surf, jac_2d_l)
 !
-      if (ele%first_ele_type .eq. 332) then
+      if(surf%nnod_4_surf .eq. num_quad_sf) then
         if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_surface_quad'
         call alloc_2d_jac_type                                          &
      &     (surf%numsurf, surf%nnod_4_surf, maxtot_int_2d, jac_2d_q)
         call cal_jacobian_surface_quad(node, surf, jac_2d_q)
-      else if (ele%first_ele_type .eq. 333) then
+      else if (surf%nnod_4_surf .eq. num_lag_sf) then
         if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_surface_lag'
         call alloc_2d_jac_type                                          &
      &     (surf%numsurf, surf%nnod_4_surf, maxtot_int_2d, jac_2d_q)

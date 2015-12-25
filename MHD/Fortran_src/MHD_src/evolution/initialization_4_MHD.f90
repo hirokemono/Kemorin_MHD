@@ -34,7 +34,6 @@
       use m_ele_material_property
       use m_bulk_values
       use m_jacobians
-      use m_jacobians_4_surface
       use m_jacobian_sf_grp
       use m_work_4_dynamic_model
       use m_work_layer_correlate
@@ -81,7 +80,6 @@
       use set_layer_list_by_table
       use reordering_MG_ele_by_layers
       use initialize_4_MHD_AMG
-      use const_jacobians_2d
 !
       use nod_phys_send_recv
       use solver_MGCG_MHD
@@ -245,13 +243,8 @@
 !
 !     ---------------------
 !
-      call cal_jacobian_surface                                         &
-     &   (node1, ele1, surf1, jac1_2d_l, jac1_2d_q)
-!
-      if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector'
-      call s_cal_normal_vector(surf1, jac1_2d_l, jac1_2d_q)
-      call dealloc_2d_jac_type(jac1_2d_l)
-      call dealloc_2d_jac_type(jac1_2d_q)
+      if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
+      call const_normal_vector(node1, surf1)
 !
       if (iflag_debug.eq.1) write(*,*)  'int_surface_parameters'
       call int_surface_parameters(sf_grp1%num_grp)

@@ -41,7 +41,7 @@
       use set_table_type_RHS_assemble
       use set_djds_connectivity_type
       use set_djds_connect_type_MHD
-      use int_normal_4_surf_type
+      use set_normal_vectors
       use int_surface_param_type
       use set_bc_id_type_data
       use set_bc_surface_data_type
@@ -243,12 +243,9 @@
 !
       do i_level = 1, num_MG_level
         if(iflag_debug .gt. 0) write(*,*)                               &
-     &         's_int_normal_4_all_surf_type', i_level
-        call s_int_normal_4_all_surf_type(MG_surf_mesh(i_level)%surf,   &
+     &         'int_normal_4_all_surface', i_level
+        call int_normal_4_all_surface(MG_surf_mesh(i_level)%surf,       &
      &      MG_jacobians(i_level)%jac_2d)
-      end do
-!
-      do i_level = 1, num_MG_level
         call s_int_surface_param_type(MG_mesh(i_level)%mesh,            &
      &      MG_surf_mesh(i_level)%surf, MG_mesh(i_level)%group)
       end do
