@@ -73,6 +73,9 @@
         if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_element'
         call cal_jacobian_element
 !
+        if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_surface'
+        call cal_jacobian_surface
+!
         call dealloc_dxi_dx_type(jac1_3d_q)
         call dealloc_dxi_dx_type(jac1_3d_l)
 !
@@ -80,9 +83,6 @@
 !
         if (iflag_debug.gt.0) write(*,*) 's_int_whole_volume_only'
         call s_int_whole_volume_only(ele1, jac1_3d_q)
-!
-        if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_surface'
-        call cal_jacobian_surface
 !
         if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector'
         call s_cal_normal_vector(surf1, jac1_2d_q, jac1_2d_l)

@@ -49,8 +49,6 @@
       use m_geometry_data
       use m_group_data
       use m_jacobians
-      use m_jacobians_4_surface
-      use m_jacobians_4_edge
       use set_element_data_4_IO
       use set_surface_data_4_IO
       use set_edge_data_4_IO
@@ -104,12 +102,6 @@
       if (iflag_debug.eq.1)  write(*,*)  'cal_jacobian_element'
       call maximum_integration_points(num_int_points)
       call cal_jacobian_element
-!
-      if (iflag_debug.eq.1)  write(*,*)  'cal_jacobian_surface'
-      call cal_jacobian_surface
-!
-      if (iflag_debug.eq.1)  write(*,*)  'cal_jacobian_edge'
-      call cal_jacobian_edge
 !
 !      call check_jacobians_trilinear(my_rank, ele1, jac_3d_l)
 !

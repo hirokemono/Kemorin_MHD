@@ -1,10 +1,10 @@
 !
 !     module m_int_edge_vart_width
 !
-!      subroutine int_edge_vart_width(n_int)
-!      subroutine int_edge_diff_vart_w(n_int)
-!      subroutine int_edge_d2_vart_w(n_int)
-!      subroutine int_edge_d2_vart_w2(n_int)
+!      subroutine int_edge_vart_width(n_int, jac_1d)
+!      subroutine int_edge_diff_vart_w(n_int, jac_1d)
+!      subroutine int_edge_d2_vart_w(n_int, jac_1d)
+!      subroutine int_edge_d2_vart_w2(n_int, jac_1d)
 !
       module m_int_edge_vart_width
 !
@@ -58,15 +58,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-     subroutine int_edge_vart_width(n_int)
+     subroutine int_edge_vart_width(n_int, jac_1d)
 !
+      use t_jacobian_1d
       use m_geometry_data
       use m_fem_gauss_int_coefs
-      use m_jacobians_4_edge
       use m_commute_filter_z
       use m_int_edge_data
 !
       integer (kind = kint), intent(in) :: n_int
+      type(jacobians_1d), intent(in) :: jac_1d
       integer (kind = kint) ::  inod2, iele, k2, i, ix
 !
 !
@@ -78,9 +79,9 @@
           do k2 = 1, 2
            inod2 = edge1%ie_edge(iele,k2)
            rhs_dz(inod2) = rhs_dz(inod2)                                &
-     &                    + abs(jac1_1d_l%xeg_edge(iele,ix,3))          &
-     &                     * jac1_1d_l%an_edge(k2,ix)                   &
-     &                     * jac1_1d_l%xeg_edge(iele,ix,3) * owe(ix)
+     &                    + abs(jac_1d%xeg_edge(iele,ix,3))             &
+     &                     * jac_1d%an_edge(k2,ix)                      &
+     &                     * jac_1d%xeg_edge(iele,ix,3) * owe(ix)
          end do
        end do
       end do
@@ -187,16 +188,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_edge_diff_vart_w(n_int)
+      subroutine int_edge_diff_vart_w(n_int, jac_1d)
 !
+      use t_jacobian_1d
       use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_shape_functions
-      use m_jacobians_4_edge
       use m_commute_filter_z
       use m_int_edge_data
 !
       integer (kind = kint), intent(in) :: n_int
+      type(jacobians_1d), intent(in) :: jac_1d
+!
       integer (kind = kint) :: inod1, inod2, iele, k1, k2, i, ix
 !
 !
@@ -209,9 +212,9 @@
             do k2 = 1, 2
               inod1 = edge1%ie_edge(iele,k1)
               inod2 = edge1%ie_edge(iele,k2)
-              rhs_dz(inod2) = rhs_dz(inod2) + delta_z(inod1)            &
-     &                                     * dnxi_ed1(k1,ix)            &
-     &                       * jac1_1d_l%an_edge(k2,ix) * owe(ix)
+              rhs_dz(inod2) = rhs_dz(inod2)                             &
+     &                       + delta_z(inod1) * dnxi_ed1(k1,ix)         &
+     &                        * jac_1d%an_edge(k2,ix) * owe(ix)
             end do
           end do
         end do
@@ -222,17 +225,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_edge_d2_vart_w(n_int)
+      subroutine int_edge_d2_vart_w(n_int, jac_1d)
 !
       use calypso_mpi
+      use t_jacobian_1d
       use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_shape_functions
-      use m_jacobians_4_edge
       use m_commute_filter_z
       use m_int_edge_data
 !
       integer (kind = kint), intent(in) :: n_int
+      type(jacobians_1d), intent(in) :: jac_1d
       integer (kind = kint) :: inod1, inod2, iele, k1, k2, i, ix
 !
 !
@@ -247,7 +251,7 @@
               inod2 = edge1%ie_edge(iele,k2)
               rhs_dz(inod2) = rhs_dz(inod2) - delta_z(inod1)            &
      &                     * dnxi_ed1(k1,ix)* dnxi_ed1(k2,ix) * owe(ix) &
-     &                      / jac1_1d_l%xeg_edge(iele,ix,3)
+     &                      / jac_1d%xeg_edge(iele,ix,3)
             end do
           end do
         end do
@@ -261,17 +265,18 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_edge_d2_vart_w2(n_int)
+      subroutine int_edge_d2_vart_w2(n_int, jac_1d)
 !
       use calypso_mpi
+      use t_jacobian_1d
       use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_shape_functions
-      use m_jacobians_4_edge
       use m_commute_filter_z
       use m_int_edge_data
 !
       integer (kind = kint), intent(in) :: n_int
+      type(jacobians_1d), intent(in) :: jac_1d
       integer (kind = kint) :: inod1, inod2, iele, k1, k2, i, ix
 !
 !
@@ -285,7 +290,7 @@
               inod1 = edge1%ie_edge(iele,k1)
               inod2 = edge1%ie_edge(iele,k2)
               rhs_dz(inod2) = rhs_dz(inod2) + delta_dz(inod1)           &
-     &                    * dnxi_ed1(k1,ix) * jac1_1d_l%an_edge(k2,ix)  &
+     &                    * dnxi_ed1(k1,ix) * jac_1d%an_edge(k2,ix)     &
      &                    * owe(ix)
             end do
           end do

@@ -6,7 +6,7 @@
 !
 !      subroutine allocate_jacobians_edge_linear(n_int)
 !
-!!      subroutine cal_jacobian_edge
+!!      subroutine const_jacobian_edge
 !!      subroutine allocate_jacobians_edge_l_quad(n_int)
 !!      subroutine deallocate_jac_edge_linear
 !!      subroutine deallocate_jac_edge_quad
@@ -34,7 +34,7 @@
 !> Construct shape function, difference of shape function, and Jacobian
 !> for edge element
 !
-      subroutine cal_jacobian_edge
+      subroutine const_jacobian_edge
 !
       use m_machine_parameter
       use m_geometry_constants
@@ -43,25 +43,9 @@
       use const_jacobians_1d
 !
 !
-      call alloc_1d_jac_type                                            &
-     &   (edge1%numedge, num_linear_edge, maxtot_int_1d, jac1_1d_l)
+      call cal_jacobian_edge(node1, ele1, edge1, jac1_1d_l, jac1_1d_q)
 !
-      if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_edge_linear'
-      call cal_jacobian_edge_linear(node1, edge1, jac1_1d_l)
-!
-      if    (ele1%first_ele_type .eq. 332                               &
-     &  .or. ele1%first_ele_type .eq. 333) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_edge_quad'
-        call alloc_1d_jac_type                                          &
-     &     (edge1%numedge, edge1%nnod_4_edge, maxtot_int_1d, jac1_1d_q)
-        call cal_jacobian_edge_quad(node1, edge1, jac1_1d_q)
-      else
-        if (iflag_debug.eq.1) write(*,*) 'copy_1d_jacobians'
-        call copy_1d_jacobians                                          &
-     &     (edge1%numedge, num_linear_edge, jac1_1d_l, jac1_1d_q)
-      end if
-!
-      end subroutine cal_jacobian_edge
+      end subroutine const_jacobian_edge
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -35,8 +35,8 @@
       integer(kind = kint), intent(in) :: ie_edge(numele,2)
       real(kind = kreal), intent(in) :: zz(numnod)
 !
-      integer (kind = kint) :: inod, jnod, ie1, ie2, is, iee, kf
-      integer (kind = kint) :: i, j, k, je, jele, inod0, inod1, inod2
+      integer (kind = kint) :: inod, jnod, kf
+      integer (kind = kint) :: i, j, je, jele
       integer (kind = kint) :: jnod1, jnod2, j0
 !
       real(kind = kreal) :: zz0, zz1, zz2, zs, ze

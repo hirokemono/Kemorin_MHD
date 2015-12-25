@@ -54,18 +54,19 @@
       n_int = i_int_z_filter
       n_point = n_int
       if (my_rank.eq.0) write(*,*) 's_cal_jacobian_linear_1d'
-      call s_cal_jacobian_linear_1d(n_int)
+      call s_cal_jacobian_linear_1d(n_int, node1, ele1, surf1, edge1,   &
+     &                              jac_z_l, jac_z_q)
 !
       if (my_rank.eq.0) write(*,*) 'set_crs_connect_commute_z'
       call set_crs_connect_commute_z
 !
       if (my_rank.eq.0) write(*,*) 'allocate_int_edge_data'
       call allocate_int_edge_data(node1%numnod, ele1%numele)
-      call set_spatial_difference(n_int)
+      call set_spatial_difference(n_int, jac_z_l)
 !
 !
 !
-       call cal_delta_z
+       call cal_delta_z(jac_z_l)
 !
 !C===
 !

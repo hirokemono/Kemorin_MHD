@@ -12,8 +12,14 @@
       use m_precision
 !
       use m_machine_parameter
+      use t_jacobian_1d
 !
       implicit none
+!
+!>     Stracture for Jacobians for edge (linear)
+      type(jacobians_1d), save :: jac_1d_l
+!>     Stracture for Jacobians for edge (quad)
+      type(jacobians_1d), save :: jac_1d_q
 !
 ! ----------------------------------------------------------------------
 !
@@ -30,7 +36,6 @@
       use m_group_data
       use m_jacobians
       use m_jacobians_4_surface
-      use m_jacobians_4_edge
       use set_node_data_4_IO
       use set_element_data_4_IO
       use set_surface_data_4_IO
@@ -50,6 +55,7 @@
       use sum_normal_4_surf_group
       use set_parallel_file_name
       use load_mesh_data
+      use const_jacobians_1d
 !
 !
       if (my_rank.eq.0) then
@@ -90,7 +96,7 @@
       call cal_jacobian_surface
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_edge'
-      call cal_jacobian_edge
+      call cal_jacobian_edge(node1, ele1, edge1, jac_1d_l, jac_1d_q)
 !
 !      call check_jacobians_trilinear(my_rank, ele1, jac_3d_l)
 !
@@ -112,7 +118,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector'
-      call s_cal_edge_vector(edge1, jac1_1d_q, jac1_1d_l)
+      call s_cal_edge_vector(edge1, jac_1d_q, jac_1d_l)
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_spherical'
       call s_cal_edge_vector_spherical(edge1)
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_cylindrical'

@@ -3,11 +3,12 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine int_edge_mass_matrix(n_int)
+!      subroutine int_edge_mass_matrix(n_int, jac_1d)
 !
       module int_edge_mass_mat_z_filter
 !
       use m_precision
+      use m_constants
 !
       implicit none
 !
@@ -17,16 +18,18 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine int_edge_mass_matrix(n_int)
+      subroutine int_edge_mass_matrix(n_int, jac_1d)
 !
-      use m_constants
+      use t_jacobian_1d
+!
       use m_geometry_data
       use m_fem_gauss_int_coefs
-      use m_jacobians_4_edge
       use m_int_edge_data
       use m_commute_filter_z
 !
       integer (kind = kint), intent(in) :: n_int
+      type(jacobians_1d), intent(in) :: jac_1d
+!
       real(kind = kreal) :: wk
       integer (kind = kint) :: inod1, inod2, iele, k1, k2
       integer (kind = kint) :: i, ix
@@ -42,8 +45,8 @@
           do k2 = 1, 2
            inod1 = edge1%ie_edge(iele,k1)
            inod2 = edge1%ie_edge(iele,k2)
-           wk = jac1_1d_l%an_edge(k1,ix) * jac1_1d_l%an_edge(k2,ix)     &
-     &         * jac1_1d_l%xeg_edge(iele,ix,3) * owe(ix)
+           wk = jac_1d%an_edge(k1,ix) * jac_1d%an_edge(k2,ix)           &
+     &         * jac_1d%xeg_edge(iele,ix,3) * owe(ix)
            mk_c(inod1,inod2) = mk_c(inod1,inod2) + wk
            mk(inod2) = mk(inod2) + wk
          end do

@@ -3,7 +3,8 @@
 !
 !        programmed by H. Matsui on June, 2007
 !
-!      subroutine s_cal_jacobian_linear_1d(num_int)
+!      subroutine s_cal_jacobian_linear_1d(num_int,                     &
+!     &          node, ele, surf, edge, jac_1d_l, jac_1d_q)
 !
       module cal_jacobian_linear_1d
 !
@@ -17,22 +18,32 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_jacobian_linear_1d(num_int)
+      subroutine s_cal_jacobian_linear_1d(num_int,                      &
+     &          node, ele, surf, edge, jac_1d_l, jac_1d_q)
 !
-      use m_geometry_data
+      use t_jacobian_1d
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
       use m_fem_gauss_int_coefs
       use m_gauss_int_parameters
-      use m_jacobians_4_edge
       use set_size_4_smp_types
       use set_integration_indices
       use set_gauss_int_parameters
+      use const_jacobians_1d
 !
       integer(kind = kint), intent(in) :: num_int
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+!
+      type(surface_data), intent(inout)  :: surf
+      type(edge_data), intent(inout)  :: edge
+      type(jacobians_1d), intent(inout) :: jac_1d_l, jac_1d_q
 !
 !  data allocation
 !
-      call count_surf_size_smp_type(surf1)
-      call count_edge_size_smp_type(edge1)
+      call count_surf_size_smp_type(surf)
+      call count_edge_size_smp_type(edge)
 !
       call maximum_integration_points(num_int)
       call allocate_integrate_parameters
@@ -51,7 +62,7 @@
 !
       call set_gauss_coefs_4_1d
 !
-      call cal_jacobian_edge
+      call cal_jacobian_edge(node, ele, edge, jac_1d_l, jac_1d_q)
 !
       end subroutine s_cal_jacobian_linear_1d
 !

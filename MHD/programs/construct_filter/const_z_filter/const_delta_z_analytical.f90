@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine cal_delta_z_analytical
+!      subroutine cal_delta_z_analytical(jac_1d)
 !
       module  const_delta_z_analytical
 !
@@ -27,13 +27,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_delta_z_analytical
+      subroutine cal_delta_z_analytical(jac_1d)
 !
       use int_edge_mass_mat_z_filter
       use m_spheric_constants
+      use t_jacobian_1d
+!
+      type(jacobians_1d), intent(in) :: jac_1d
 !
 !
-      call int_edge_mass_matrix(i_int_z_filter)
+      call int_edge_mass_matrix(i_int_z_filter, jac_1d)
       call allocate_delta_z
 !
       if (iflag_grid .eq. igrid_Chebyshev) then

@@ -38,7 +38,6 @@
       use m_int_commtative_filter
       use m_gauss_integration
       use m_int_edge_data
-      use m_jacobians_4_edge
       use m_matrix_4_LU
       use const_delta_z_analytical
 
@@ -92,7 +91,8 @@
       n_int = i_int_z_filter
       n_point = i_int_z_filter
       if (my_rank.eq.0) write(*,*) 's_cal_jacobian_linear_1d'
-      call s_cal_jacobian_linear_1d(i_int_z_filter)
+      call s_cal_jacobian_linear_1d(i_int_z_filter,                     &
+     &    node1, ele1, surf1, edge1, jac_z_l, jac_z_q)
 !
 !   construct FEM mesh for x direction
 !
@@ -104,11 +104,11 @@
 !
       if (my_rank.eq.0) write(*,*) 'allocate_int_edge_data'
       call allocate_int_edge_data(node1%numnod, ele1%numele)
-      call set_spatial_difference(n_int)
+      call set_spatial_difference(n_int, jac_z_l)
 !
       if (my_rank.eq.0) write(*,*) 'cal_delta_z_analytical'
-       call cal_delta_z_analytical
-!      call cal_delta_z
+       call cal_delta_z_analytical(jac_z_l)
+!      call cal_delta_z(jac_z_l)
 !
 !      call check_crs_connect(my_rank, node1%numnod, tbl1_crs)
 !      call check_communication_data
@@ -236,7 +236,7 @@
 !       call check_int_commutative_filter(my_rank, node1%numnod)
 !
        if(my_rank.eq.0) write(*,*) 'int_edge_moment'
-       call int_edge_moment(n_int)
+       call int_edge_moment(n_int, jac_z_l)
 !
 !    output results
 !
