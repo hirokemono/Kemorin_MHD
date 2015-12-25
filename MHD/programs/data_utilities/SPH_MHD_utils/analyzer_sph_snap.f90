@@ -80,6 +80,7 @@
       subroutine evolution_sph_snap
 !
       use m_element_id_4_node
+      use m_jacobians
       use FEM_analyzer_sph_MHD
 !
       integer(kind = kint) :: visval
@@ -126,7 +127,7 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
           call start_eleps_time(12)
           call visualize_all(istep_psf, istep_iso, istep_pvr,           &
-     &        istep_fline, next_tbl1%neib_ele)
+     &        istep_fline, next_tbl1%neib_ele, jac1_3d_q)
           call end_eleps_time(12)
         end if
         call end_eleps_time(1)

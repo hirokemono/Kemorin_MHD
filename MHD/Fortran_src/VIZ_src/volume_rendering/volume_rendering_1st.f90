@@ -7,7 +7,7 @@
 !      subroutine visualize_pvr(istep_psf)
 !
 !      subroutine pvr_init_1st
-!      subroutine pvr_main_1st(istep_pvr)
+!      subroutine pvr_main_1st(istep_pvr, jac_3d)
 !
       module volume_rendering_1st
 !
@@ -38,15 +38,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine visualize_pvr(istep_pvr)
+      subroutine visualize_pvr(istep_pvr, jac_3d)
 !
       use volume_rendering
+      use t_jacobian_3d
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      type(jacobians_3d), intent(in) :: jac_3d
 !
 !
       if (num_pvr.gt.0 .and. istep_pvr.gt.0) then
-        call pvr_main_1st(istep_pvr)
+        call pvr_main_1st(istep_pvr, jac_3d)
       end if
 !
       end subroutine visualize_pvr
@@ -63,36 +65,25 @@
       use volume_rendering
 !
 !
-      call pvr_init(node1%numnod, ele1%numele, surf1%numsurf,           &
-     &    surf1%nnod_4_surf, node1%xx, ele1%interior_ele,               &
-     &    surf1%ie_surf, surf1%isf_4_ele, surf1%iele_4_surf,            &
-     &    ele_grp1, nod_fld1%num_phys, nod_fld1%phys_name)
+      call pvr_init(node1, ele1, surf1, ele_grp1, nod_fld1)
 !
       end subroutine pvr_init_1st
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine pvr_main_1st(istep_pvr)
+      subroutine pvr_main_1st(istep_pvr, jac_3d)
 !
       use m_geometry_data
       use m_node_phys_data
-      use m_jacobians
+      use t_jacobian_3d
 !
       use volume_rendering
 !
       integer(kind = kint), intent(in) :: istep_pvr
+      type(jacobians_3d), intent(in) :: jac_3d
 !
 !
-      call pvr_main                                                     &
-     &   (istep_pvr, node1%numnod, ele1%numele, surf1%numsurf,          &
-     &    ele1%nnod_4_ele, surf1%nnod_4_surf, node1%istack_nod_smp,     &
-     &    ele1%istack_ele_smp, node1%xx, node1%rr, node1%a_r, node1%ss, &
-     &    node1%a_s, ele1%ie, ele1%a_vol_ele, ele1%interior_ele,        &
-     &    surf1%ie_surf, surf1%isf_4_ele, surf1%iele_4_surf,            &
-     &    jac1_3d_q%ntot_int, jac1_3d_q%dnx, jac1_3d_q%xjac,            &
-     &    nod_fld1%num_phys, nod_fld1%ntot_phys,                        &
-     &    nod_fld1%istack_component, nod_fld1%d_fld)
-!
+      call pvr_main(istep_pvr, node1, ele1, surf1, jac_3d, nod_fld1)
 !
       end subroutine pvr_main_1st
 !

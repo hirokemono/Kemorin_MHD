@@ -1,5 +1,5 @@
-!const_jacobians_infty_type.f90
-!      module const_jacobians_infty_type
+!const_jacobians_infinity.f90
+!      module const_jacobians_infinity
 !
 !        programmed by H.Matsui and H.Okuda
 !                                    on July 2000 (ver 1.1)
@@ -17,7 +17,7 @@
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(jacobians_3d), intent(inout) :: jac_3d
 !
-      module const_jacobians_infty_type
+      module const_jacobians_infinity
 !
       use m_precision
       use m_machine_parameter
@@ -179,4 +179,4 @@
 !
 !-----------------------------------------------------------------------
 !
-      end module const_jacobians_infty_type
+      end module const_jacobians_infinity

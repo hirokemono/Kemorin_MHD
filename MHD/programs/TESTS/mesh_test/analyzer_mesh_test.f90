@@ -31,7 +31,6 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
-      use m_jacobians
       use m_ele_sf_eg_comm_tables
       use m_array_for_send_recv
       use set_node_data_4_IO
@@ -58,7 +57,16 @@
       use m_ctl_data_test_mesh
       use set_control_test_mesh
       use load_mesh_data
+      use const_jacobians_3d
 !
+      use t_jacobian_3d
+!
+!>     Stracture for Jacobians for linear element
+      type(jacobians_3d), save :: jac_3d_l
+!>     Stracture for Jacobians for quad element
+      type(jacobians_3d), save :: jac_3d_q
+!
+!     --------------------- 
 !
       if (my_rank.eq.0) then
         write(*,*) 'Construct commutation filter'
@@ -103,17 +111,12 @@
 !  -------------------------------
 !  -------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_element'
-      call set_max_int_point_by_etype
-      call cal_jacobian_element
+      if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
+      call max_int_point_by_etype(ele1%nnod_4_ele)
+      call const_jacobian_and_volume                                    &
+     &   (node1, sf_grp1, infty_list, ele1, jac_3d_l, jac_3d_q)
 !
 !      call check_jacobians_trilinear(my_rank, ele1, jac_3d_l)
-!
-!  -------------------------------
-!
-      if (iflag_debug.gt.0) write(*,*) 's_int_whole_volume_only'
-      call s_int_whole_volume_only(ele1, jac1_3d_q)
-      if (my_rank.eq.0) write(*,*)  'Volume of Domain: ', ele1%volume
 !
 !  -------------------------------
 !

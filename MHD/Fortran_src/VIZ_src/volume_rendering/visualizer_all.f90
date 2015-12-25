@@ -5,7 +5,9 @@
 !
 !      subroutine init_visualize
 !      subroutine visualize_all(istep_psf, istep_iso, istep_pvr,        &
-!     &          istep_fline, ele_4_nod)
+!     &          istep_fline, ele_4_nod, jac_3d)
+!        type(element_around_node), intent(in) :: ele_4_nod
+!        type(jacobians_3d), intent(in) :: jac_3d
 !
       module visualizer_all
 !
@@ -62,15 +64,17 @@
 !  ---------------------------------------------------------------------
 !
       subroutine visualize_all(istep_psf, istep_iso, istep_pvr,         &
-     &          istep_fline, ele_4_nod)
+     &          istep_fline, ele_4_nod, jac_3d)
 !
       use m_cross_section
       use m_isosurface
       use t_next_node_ele_4_node
+      use t_jacobian_3d
 !
       integer(kind = kint), intent(in) :: istep_psf, istep_iso
       integer(kind = kint), intent(in) :: istep_pvr, istep_fline
       type(element_around_node), intent(in) :: ele_4_nod
+      type(jacobians_3d), intent(in) :: jac_3d
 !
 !
       if (num_psf.gt.0 .and. istep_psf.gt.0) then
@@ -80,7 +84,7 @@
         call isosurface_main_1st(istep_iso)
       end if
       if (num_pvr.gt.0 .and. istep_pvr.gt.0) then
-        call pvr_main_1st(istep_pvr)
+        call pvr_main_1st(istep_pvr, jac_3d)
       end if
       if (num_fline.gt.0 .and. istep_fline.gt.0) then
         call field_line_main_1st(istep_fline, ele_4_nod)

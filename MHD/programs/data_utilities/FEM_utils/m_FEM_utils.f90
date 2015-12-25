@@ -13,6 +13,7 @@
 !
       use m_precision
       use t_ucd_data
+      use t_jacobian_3d
 !
       implicit none
 !
@@ -20,5 +21,10 @@
       type(ucd_data), save :: ucd_FUTIL
 !>        Instance for numbers of FEM mesh for merged IO
       type(merged_ucd_data), save :: m_ucd_FUTIL
+!
+!>     Stracture for Jacobians for linear element
+      type(jacobians_3d), save :: jac_FUTIL_l
+!>     Stracture for Jacobians for quad element
+      type(jacobians_3d), save :: jac_FUTIL_q
 !
       end module m_FEM_utils

@@ -42,7 +42,6 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
-      use m_jacobians
       use m_node_phys_data
       use m_ele_sf_eg_comm_tables
 !
@@ -56,8 +55,7 @@
       use const_ele_layering_table
       use int_volume_of_domain
       use correlation_all_layerd_data
-!
-      use m_jacobians
+      use const_jacobians_3d
 !
 !
       if (my_rank.eq.0) then
@@ -116,17 +114,10 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*)  'cal_jacobian_element'
-      call set_max_int_point_by_etype
-      call cal_jacobian_element
-!
-      call dealloc_dxi_dx_type(jac1_3d_q)
-      call dealloc_dxi_dx_type(jac1_3d_l)
-!
-!     --------------------- 
-!
-      if (iflag_debug.eq.1) write(*,*)  's_int_whole_volume_w_layer'
-      call s_int_whole_volume_w_layer(ele1, jac1_3d_q, layer_tbl_corr)
+      if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_vol_layer'
+      call max_int_point_by_etype(ele1%nnod_4_ele)
+      call const_jacobian_and_vol_layer(node1, sf_grp1, infty_list,     &
+     &    ele1, jac_FUTIL_l, jac_FUTIL_q, layer_tbl_corr)
 !
       end subroutine initialize_udt_correlate
 !
@@ -194,7 +185,8 @@
 !
           if (iflag_debug .gt. 0) write(*,*)                            &
      &          's_correlation_all_layerd_data'
-          call s_correlation_all_layerd_data(layer_tbl_corr, phys_ref)
+          call s_correlation_all_layerd_data                            &
+     &       (jac_FUTIL_l, jac_FUTIL_q, layer_tbl_corr, phys_ref)
 !
           if (iflag_debug .gt. 0) write(*,*)                            &
      &          ' write_layerd_correlate_data', istep_ucd

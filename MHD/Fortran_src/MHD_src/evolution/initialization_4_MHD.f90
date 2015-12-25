@@ -219,12 +219,8 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.eq.1) write(*,*)  'cal_jacobian_element'
-      call set_max_int_point_by_etype
-      call cal_jacobian_element
-!
-      call dealloc_dxi_dx_type(jac1_3d_q)
-      call dealloc_dxi_dx_type(jac1_3d_l)
+      if (iflag_debug.eq.1) write(*,*) 'const_MHD_jacobian_and_volumes'
+      call const_MHD_jacobian_and_volumes(layer_tbl)
 !
       if (iflag_debug.eq.1) write(*,*)  'cal_jacobian_surf_grp'
       call cal_jacobian_surf_grp(sf_grp1)
@@ -235,11 +231,6 @@
       call set_MHD_whole_connectivity
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_layerd_connectivity'
       call set_MHD_layerd_connectivity
-!
-!     ---------------------
-!
-      if (iflag_debug.eq.1) write(*,*) 'cal_volume_node'
-      call cal_volume_node(layer_tbl)
 !
 !     ---------------------
 !

@@ -6,8 +6,16 @@
 !        Modified by H. Matsui on Aug., 2006
 !        Modified by H. Matsui on June, 2007
 !
-!      subroutine s_int_whole_volume_only(ele, jac_3d)
-!      subroutine s_int_whole_volume_w_layer(ele, jac_3d, layer_tbl)
+!      subroutine const_jacobian_and_volume(node, sf_grp,               &
+!     &         infinity_list, ele, jac_3d_l, jac_3d_q)
+!      subroutine const_jacobian_and_vol_layer(node, sf_grp,            &
+!     &          infinity_list, ele, jac_3d_l, jac_3d_q, layer_tbl)
+!        type(node_data), intent(in) :: node
+!        type(surface_group_data), intent(in) :: sf_grp
+!        type(scalar_surf_BC_list), intent(in) :: infinity_list
+!        type(element_data), intent(inout) :: ele
+!        type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
+!        type(layering_tbl), intent(inout) :: layer_tbl
 !      subroutine s_int_volume_of_domain(ele, jac_3d)
 !
       module int_volume_of_domain
@@ -16,6 +24,8 @@
       use m_constants
 !
       use t_geometry_data
+      use t_group_data
+      use t_surface_boundary
       use t_jacobians
 !
       implicit none
@@ -26,40 +36,64 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_int_whole_volume_only(ele, jac_3d)
+      subroutine const_jacobian_and_volume(node, sf_grp,                &
+     &         infinity_list, ele, jac_3d_l, jac_3d_q)
 !
       use sum_volume_of_domain
+      use const_jacobians_3d
 !
-      type(jacobians_3d), intent(in) :: jac_3d
+      type(node_data), intent(in) :: node
+      type(surface_group_data), intent(in) :: sf_grp
+      type(scalar_surf_BC_list), intent(in) :: infinity_list
+!
       type(element_data), intent(inout) :: ele
+      type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
+!
+!
+      call cal_jacobian_element                                         &
+     &   (node, ele, sf_grp, infinity_list, jac_3d_l, jac_3d_q)
 !
       call allocate_volume_4_smp
-      call s_int_volume_of_domain(ele, jac_3d)
+      call s_int_volume_of_domain(ele, jac_3d_q)
       call deallocate_volume_4_smp
 !
-      end subroutine s_int_whole_volume_only
+      call dealloc_dxi_dx_type(jac_3d_q)
+      call dealloc_dxi_dx_type(jac_3d_l)
+!
+      end subroutine const_jacobian_and_volume
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_int_whole_volume_w_layer(ele, jac_3d, layer_tbl)
+      subroutine const_jacobian_and_vol_layer(node, sf_grp,             &
+     &          infinity_list, ele, jac_3d_l, jac_3d_q, layer_tbl)
 !
       use t_layering_ele_list
+      use const_jacobians_3d
       use sum_volume_of_domain
       use cal_layered_volumes
 !
-      type(jacobians_3d), intent(in) :: jac_3d
+      type(node_data), intent(in) :: node
+      type(surface_group_data), intent(in) :: sf_grp
+      type(scalar_surf_BC_list), intent(in) :: infinity_list
+!
       type(element_data), intent(inout) :: ele
+      type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
       type(layering_tbl), intent(inout) :: layer_tbl
 !
+      call cal_jacobian_element                                         &
+     &   (node, ele, sf_grp, infinity_list, jac_3d_l, jac_3d_q)
+!
       call allocate_volume_4_smp
-!
-      call s_int_volume_of_domain(ele, jac_3d)
+      call s_int_volume_of_domain(ele, jac_3d_q)
       call s_cal_layered_volumes(ele, layer_tbl)
-!
       call deallocate_volume_4_smp
 !
-      end subroutine s_int_whole_volume_w_layer
+      call dealloc_dxi_dx_type(jac_3d_q)
+      call dealloc_dxi_dx_type(jac_3d_l)
 !
+      end subroutine const_jacobian_and_vol_layer
+!
+!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine s_int_volume_of_domain(ele, jac_3d)

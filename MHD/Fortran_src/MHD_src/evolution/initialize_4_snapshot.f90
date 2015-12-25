@@ -188,11 +188,8 @@
 !
 !     --------------------- 
 !
-      call set_max_int_point_by_etype
-      call cal_jacobian_element
-!
-      call dealloc_dxi_dx_type(jac1_3d_q)
-      call dealloc_dxi_dx_type(jac1_3d_l)
+      if (iflag_debug.eq.1) write(*,*)' const_MHD_jacobian_and_volumes'
+      call const_MHD_jacobian_and_volumes(layer_tbl)
 !
       call cal_jacobian_surf_grp(sf_grp1)
 !
@@ -200,11 +197,6 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_connect_RHS_assemble'
       call set_connect_RHS_assemble
-!
-!     --------------------- 
-!
-      if (iflag_debug.eq.1) write(*,*)' cal_volume_node'
-      call cal_volume_node(layer_tbl)
 !
 !     ---------------------
 !

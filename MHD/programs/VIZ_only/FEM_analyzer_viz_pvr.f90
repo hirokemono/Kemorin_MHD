@@ -4,8 +4,10 @@
 !
 !       Written by H. Matsui
 !
-!      subroutine FEM_initialize_pvr(ucd)
+!      subroutine FEM_initialize_pvr(jac_3d_l, jac_3d_q, ucd)
 !      subroutine FEM_analyze_pvr(i_step, istep_pvr, ucd)
+!        type(ucd_data), intent(inout) :: ucd
+!        type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
 !
       module FEM_analyzer_viz_pvr
 !
@@ -25,15 +27,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_pvr(ucd)
+      subroutine FEM_initialize_pvr(jac_3d_l, jac_3d_q, ucd)
 !
       use t_ucd_data
+      use t_jacobian_3d
+!
       use m_node_phys_data
       use m_array_for_send_recv
       use m_read_mesh_data
       use m_group_data
       use m_control_params_2nd_files
-      use m_jacobians
       use m_ele_sf_eg_comm_tables
 !
       use const_mesh_info
@@ -47,8 +50,10 @@
       use nod_phys_send_recv
       use set_ucd_data_to_type
       use ucd_IO_select
+      use const_jacobians_3d
 !
       type(ucd_data), intent(inout) :: ucd
+      type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
 !
 !   --------------------------------
 !       setup mesh information
@@ -72,12 +77,13 @@
 !
 !     --------------------- init for PVR
 !
-      call set_max_int_point_by_etype
       if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_element'
-      call cal_jacobian_element
+      call max_int_point_by_etype(ele1%nnod_4_ele)
+      call cal_jacobian_element                                         &
+     &   (node1, ele1, sf_grp1, infty_list, jac_3d_l, jac_3d_q)
 !
-      call dealloc_dxi_dx_type(jac1_3d_q)
-      call dealloc_dxi_dx_type(jac1_3d_l)
+      call dealloc_dxi_dx_type(jac_3d_q)
+      call dealloc_dxi_dx_type(jac_3d_l)
 !
 !     --------------------- 
 !

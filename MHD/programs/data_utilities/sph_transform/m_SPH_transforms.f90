@@ -14,6 +14,7 @@
       use m_precision
       use t_ucd_data
       use t_next_node_ele_4_node
+      use t_jacobian_3d
 !
       implicit none
 !
@@ -24,5 +25,10 @@
 !
 !>   Structure of included element list for each node
       type(element_around_node), save :: ele_4_nod_SPH_TRANS
+!
+!>     Stracture for Jacobians for linear element
+      type(jacobians_3d), save :: jac_STR_l
+!>     Stracture for Jacobians for quad element
+      type(jacobians_3d), save :: jac_STR_q
 !
       end module m_SPH_transforms

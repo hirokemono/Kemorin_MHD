@@ -34,7 +34,6 @@
       use m_geometry_data
       use m_control_params_2nd_files
       use m_array_for_send_recv
-      use m_jacobians
       use m_t_step_parameter
       use m_node_phys_data
       use m_ele_sf_eg_comm_tables

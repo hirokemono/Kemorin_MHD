@@ -86,7 +86,7 @@
       subroutine const_jacobian_type(mesh, group, jac_3d)
 !
       use const_jacobians_3d
-      use const_jacobians_infty_type
+      use const_jacobians_infinity
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) :: group
@@ -220,7 +220,7 @@
       subroutine const_linear_jac_3d_type(mesh, group, jacobians)
 !
       use const_jacobians_3d
-      use const_jacobians_infty_type
+      use const_jacobians_infinity
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::  group

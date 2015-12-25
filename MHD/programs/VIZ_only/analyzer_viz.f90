@@ -42,7 +42,8 @@
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_vizs'
-      call FEM_initialize_vizs(ele_4_nod_VIZ, ucd_VIZ)
+      call FEM_initialize_vizs                                          &
+     &   (ele_4_nod_VIZ, jac_VIZ_l, jac_VIZ_q, ucd_VIZ)
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
@@ -70,7 +71,7 @@
         if(visval .eq. 0) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
           call visualize_all(istep_psf, istep_iso, istep_pvr,           &
-     &        istep_fline, ele_4_nod_VIZ)
+     &        istep_fline, ele_4_nod_VIZ, jac_VIZ_q)
         end if
       end do
 !

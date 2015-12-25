@@ -97,11 +97,8 @@
       type(phys_data), intent(in) :: fld_nod
 !
 !
-      call pvr_init(fem%mesh%node%numnod, fem%mesh%ele%numele,          &
-     &    surf%numsurf, surf%nnod_4_surf, fem%mesh%node%xx,             &
-     &    fem%mesh%ele%interior_ele, surf%ie_surf,                      &
-     &    surf%isf_4_ele, surf%iele_4_surf, fem%group%ele_grp,          &
-     &    fld_nod%num_phys, fld_nod%phys_name)
+      call pvr_init(fem%mesh%node, fem%mesh%ele,                        &
+     &    surf, fem%group%ele_grp, fld_nod)
 !
       end subroutine pvr_init_type
 !
@@ -120,17 +117,8 @@
       type(jacobians_3d), intent(in) :: jac_3d
 !
 !
-      call pvr_main                                                     &
-     &   (istep_pvr, fem%mesh%node%numnod, fem%mesh%ele%numele,         &
-     &    surf%numsurf, fem%mesh%ele%nnod_4_ele, surf%nnod_4_surf,      &
-     &    fem%mesh%node%istack_nod_smp, fem%mesh%ele%istack_ele_smp,    &
-     &    fem%mesh%node%xx, fem%mesh%node%rr, fem%mesh%node%a_r,        &
-     &    fem%mesh%node%ss, fem%mesh%node%a_s, fem%mesh%ele%ie,         &
-     &    fem%mesh%ele%a_vol_ele, fem%mesh%ele%interior_ele,            &
-     &    surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,               &
-     &    jac_3d%ntot_int, jac_3d%dnx, jac_3d%xjac,                     &
-     &    fld_nod%num_phys, fld_nod%ntot_phys,                          &
-     &    fld_nod%istack_component, fld_nod%d_fld)
+      call pvr_main(istep_pvr, fem%mesh%node, fem%mesh%ele,             &
+     &    surf, jac_3d, fld_nod)
 !
       end subroutine pvr_main_type
 !

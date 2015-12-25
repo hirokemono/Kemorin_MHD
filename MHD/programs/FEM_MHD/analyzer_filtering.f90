@@ -58,6 +58,7 @@
       subroutine analyze
 !
       use m_t_step_parameter
+      use m_jacobians
       use m_element_id_4_node
       use FEM_analyzer_snapshot
 !
@@ -75,7 +76,7 @@
 !  Visualization
         if (visval.eq.0) then
           call visualize_all(istep_psf, istep_iso, istep_pvr,           &
-     &        istep_fline, next_tbl1%neib_ele)
+     &        istep_fline, next_tbl1%neib_ele, jac1_3d_q)
         end if
       end do
 !

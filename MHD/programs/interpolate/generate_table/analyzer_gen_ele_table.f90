@@ -16,6 +16,7 @@
 !
       use t_mesh_data
       use t_next_node_ele_4_node
+      use t_jacobian_3d
 !
       implicit none
 !
@@ -23,6 +24,9 @@
       type(mesh_groups), save ::   newgroup
 !
       type(next_nod_ele_table), save :: next_tbl_i
+!
+      type(jacobians_3d), save :: jac_3d_l
+      type(jacobians_3d), save :: jac_3d_q
 !
 ! ----------------------------------------------------------------------
 !
@@ -34,7 +38,7 @@
 !
 !
       use m_geometry_data
-      use m_jacobians
+      use m_group_data
 !
       use input_control_gen_table
       use const_mesh_types_info
@@ -42,6 +46,7 @@
       use set_serach_data_4_dest
       use element_posi_2_nodal_array
       use set_2nd_geometry_4_table
+      use const_jacobians_3d
 !
 !
       if (my_rank.eq.0) then
@@ -72,9 +77,10 @@
       call set_belonged_ele_and_next_nod                                &
      &   (node1, ele1, next_tbl_i%neib_ele, next_tbl_i%neib_nod)
 !
-      if (iflag_debug.eq.1) write(*,*) 'cal_jacobian_element'
-      call set_max_int_point_by_etype
-      call cal_jacobian_element
+      if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_element'
+      call max_int_point_by_etype(ele1%nnod_4_ele)
+      call cal_jacobian_element                                         &
+     &   (node1, ele1, sf_grp1, infty_list, jac_3d_l, jac_3d_q)
 !
 !  -------------------------------
 !

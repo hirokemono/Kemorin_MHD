@@ -3,8 +3,9 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!!      subroutine select_const_filter                                  &
-!!     &         (rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
+!!      subroutine select_const_filter(jac_3d_q, rhs_tbl, rhs_mat,      &
+!!     &          FEM_elen, dxidxs, FEM_moments)
+!!        type(jacobians_3d), intent(in) :: jac_3d_q
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elen
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -20,10 +21,10 @@
       use m_machine_parameter
       use m_ctl_params_4_gen_filter
       use m_geometry_data
-      use m_jacobians
       use m_reference_moments
       use cal_element_size
 !
+      use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
       use t_filter_elength
@@ -46,10 +47,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine select_const_filter                                    &
-     &         (rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
+      subroutine select_const_filter(jac_3d_q, rhs_tbl, rhs_mat,        &
+     &          FEM_elen, dxidxs, FEM_moments)
 !
 !
+      type(jacobians_3d), intent(in) :: jac_3d_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -59,24 +61,25 @@
 !
       if (iflag_tgt_filter_type .eq. 1)  then
         if (iflag_debug.eq.1) write(*,*) 'const_commutative_filter'
-        call const_commutative_filter(rhs_mat, FEM_elen, FEM_moments)
+        call const_commutative_filter                                   &
+     &     (jac_3d_q, rhs_mat, FEM_elen, FEM_moments)
 !
       else if (iflag_tgt_filter_type .eq. -1) then
         if (iflag_debug.eq.1) write(*,*) 'correct_commutative_filter'
         call correct_commutative_filter                                 &
-     &      (rhs_mat, FEM_elen, dxidxs, FEM_moments)
+     &      (jac_3d_q, rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       else if (iflag_tgt_filter_type .ge. -4                            &
      &     .and. iflag_tgt_filter_type .le. -2) then
         if (iflag_debug.eq.1) write(*,*) 'correct_by_simple_filter'
         call correct_by_simple_filter                                   &
-     &     (rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
+     &     (jac_3d_q, rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       else if (iflag_tgt_filter_type.ge.2                               &
      &     .and. iflag_tgt_filter_type.le.4) then
         if (iflag_debug.eq.1) write(*,*) 'const_simple_filter'
         call const_simple_filter                                        &
-     &     (rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
+     &     (jac_3d_q, rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
       end if
 !
       end subroutine select_const_filter
@@ -85,12 +88,13 @@
 ! ----------------------------------------------------------------------
 !
       subroutine const_commutative_filter                               &
-     &         (rhs_mat, FEM_elen, FEM_moments)
+     &         (jac_3d_q, rhs_mat, FEM_elen, FEM_moments)
 !
       use cal_filter_func_node
 !
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !
+      type(jacobians_3d), intent(in) :: jac_3d_q
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(gradient_filter_mom_type), intent(inout) :: FEM_moments
 !
@@ -113,11 +117,10 @@
 !
       if(iflag_debug.eq.1)  write(*,*) 'const_commute_filter_coefs'
       call const_commute_filter_coefs                                   &
-     &   (node1, ele1, jac1_3d_q, FEM_elen,                             &
-     &    FEM_moments%mom_nod(1))
+     &   (node1, ele1, jac_3d_q, FEM_elen, FEM_moments%mom_nod(1))
 !
       if(iflag_debug.eq.1)  write(*,*)'const_fluid_filter_coefs'
-      call const_fluid_filter_coefs(node1, ele1, jac1_3d_q, FEM_elen)
+      call const_fluid_filter_coefs(node1, ele1, jac_3d_q, FEM_elen)
 !
       call finalize_4_cal_fileters
 !
@@ -127,14 +130,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_simple_filter                                    &
-     &         (rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
+      subroutine const_simple_filter(jac_3d_q, rhs_tbl, rhs_mat,        &
+     &          FEM_elen, dxidxs, FEM_moments)
 !
       use cal_1st_diff_deltax_4_nod
       use cal_filter_func_node
       use cal_diff_elesize_on_ele
       use filter_geometry_IO
 !
+      type(jacobians_3d), intent(in) :: jac_3d_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !
@@ -155,18 +159,18 @@
 !  ---------------------------------------------------
 !
       if(iflag_debug.eq.1) write(*,*) 'set_simple_filter'
-      call set_simple_filter(node1, ele1, jac1_3d_q, FEM_elen,          &
+      call set_simple_filter(node1, ele1, jac_3d_q, FEM_elen,           &
      &      dxidxs, FEM_moments%mom_nod(1))
 !
       if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
-      call s_const_filter_mom_ele(rhs_tbl, rhs_mat,                     &
+      call s_const_filter_mom_ele(jac_3d_q, rhs_tbl, rhs_mat,           &
      &    FEM_moments%mom_nod(1), FEM_moments%mom_ele(1))
       if(iflag_debug.eq.1)                                              &
      &       write(*,*) 'cal_fmoms_ele_by_elen 2'
       call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(1))
 !
       if(iflag_debug.eq.1)  write(*,*) 'set_simple_fluid_filter'
-      call set_simple_fluid_filter(node1, ele1, jac1_3d_q, FEM_elen,    &
+      call set_simple_fluid_filter(node1, ele1, jac_3d_q, FEM_elen,     &
      &      dxidxs, FEM_moments%mom_nod)
 !
       call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(2))
@@ -180,7 +184,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine correct_commutative_filter                             &
-     &         (rhs_mat, FEM_elen, dxidxs, FEM_moments)
+     &         (jac_3d_q, rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       use m_filter_file_names
       use set_parallel_file_name
@@ -189,6 +193,7 @@
 !
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !
+      type(jacobians_3d), intent(in) :: jac_3d_q
       type(gradient_model_data_type), intent(in) :: FEM_elen
       type(dxidx_data_type), intent(inout) :: dxidxs
       type(gradient_filter_mom_type), intent(inout) :: FEM_moments
@@ -230,12 +235,12 @@
       call allocate_correct_filter_flag(node1%numnod, ele1%numele)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
-      call s_correct_wrong_filters(node1, ele1, jac1_3d_q, FEM_elen,    &
+      call s_correct_wrong_filters(node1, ele1, jac_3d_q, FEM_elen,     &
      &    org_filter_coef_code, dxidxs, FEM_moments%mom_nod(1))
 !
       if(iflag_debug.eq.1)  write(*,*)'correct_wrong_fluid_filters'
       call correct_wrong_fluid_filters                                  &
-     &   (node1, ele1, jac1_3d_q, FEM_elen,                             &
+     &   (node1, ele1, jac_3d_q, FEM_elen,                              &
      &    org_filter_coef_code, dxidxs, FEM_moments%mom_nod)
 !
       call deallocate_correct_filter_flag
@@ -249,8 +254,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine correct_by_simple_filter                               &
-     &         (rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
+      subroutine correct_by_simple_filter(jac_3d_q, rhs_tbl, rhs_mat,   &
+     &         FEM_elen, dxidxs, FEM_moments)
 !
       use m_filter_file_names
       use m_filter_coefs
@@ -259,6 +264,7 @@
       use correct_wrong_filters
       use filter_geometry_IO
 !
+      type(jacobians_3d), intent(in) :: jac_3d_q
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(arrays_finite_element_mat), intent(inout) :: rhs_mat
 !
@@ -299,11 +305,11 @@
       call allocate_correct_filter_flag(node1%numnod, ele1%numele)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_correct_wrong_filters'
-      call s_correct_wrong_filters(node1, ele1, jac1_3d_q, FEM_elen,    &
+      call s_correct_wrong_filters(node1, ele1, jac_3d_q, FEM_elen,     &
      &    org_filter_coef_code, dxidxs, FEM_moments%mom_nod(1))
 !
       if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
-      call s_const_filter_mom_ele(rhs_tbl, rhs_mat,                     &
+      call s_const_filter_mom_ele(jac_3d_q, rhs_tbl, rhs_mat,           &
      &    FEM_moments%mom_nod(1), FEM_moments%mom_ele(1))
       if(iflag_debug.eq.1)                                              &
      &       write(*,*) 'correct_fmoms_ele_by_elen 1'
@@ -315,7 +321,7 @@
 !
       if(iflag_debug.eq.1)  write(*,*)'correct_wrong_fluid_filters'
       call correct_wrong_fluid_filters                                  &
-     &   (node1, ele1, jac1_3d_q, FEM_elen,                             &
+     &   (node1, ele1, jac_3d_q, FEM_elen,                              &
      &    org_filter_coef_code, dxidxs, FEM_moments%mom_nod)
 !
       call deallocate_correct_filter_flag

@@ -12,6 +12,7 @@
       use m_precision
       use calypso_mpi
       use m_work_time
+      use m_SPH_transforms
       use t_field_data_IO
 !
       use SPH_analyzer_back_trans
@@ -55,7 +56,8 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_back_trans'
-      call FEM_initialize_back_trans
+      call FEM_initialize_back_trans(ele_4_nod_SPH_TRANS,               &
+     &    jac_STR_l, jac_STR_q, ucd_SPH_TRNS, m_ucd_SPH_TRNS)
 !
 !  -------------------------------
 !
@@ -84,12 +86,12 @@
 !
         call SPH_analyze_back_trans(i_step, visval, sph_trns_IO)
 !
-        call FEM_analyze_back_trans(i_step, istep_psf, istep_iso,       &
-     &          istep_pvr, istep_fline, visval)
+        call FEM_analyze_back_trans(ucd_SPH_TRNS, i_step,               &
+     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
         if(visval .eq. 0) then
           call visualize_all(istep_psf, istep_iso,                      &
-     &        istep_pvr, istep_fline, ele_4_nod_SPH_TRANS)
+     &        istep_pvr, istep_fline, ele_4_nod_SPH_TRANS, jac_STR_q)
         end if
       end do
 !

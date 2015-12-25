@@ -15,6 +15,7 @@
       use calypso_mpi
 !
       use m_ctl_params_4_gen_filter
+      use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
       use t_filter_elength
@@ -22,6 +23,10 @@
       use t_filter_moments
 !
       implicit none
+!
+!
+      type(jacobians_3d), save :: jac_3d_l
+      type(jacobians_3d), save :: jac_3d_q
 !
       type(tables_4_FEM_assembles), save :: rhs_tbl_f
       type(table_mat_const), save :: mat_tbl_f
@@ -48,7 +53,6 @@
 !
       use m_geometry_data
       use m_group_data
-      use m_jacobians
       use set_element_data_4_IO
       use set_surface_data_4_IO
       use set_edge_data_4_IO
@@ -62,6 +66,7 @@
       use m_read_mesh_data
       use set_element_list_4_filter
       use sum_normal_4_surf_group
+      use const_jacobians_3d
 !
 !
       if (my_rank.eq.0) then
@@ -101,15 +106,12 @@
 !
       if (iflag_debug.eq.1)  write(*,*)  'cal_jacobian_element'
       call maximum_integration_points(num_int_points)
-      call cal_jacobian_element
+      call const_jacobian_and_volume                                    &
+     &   (node1, sf_grp1, infty_list, ele1, jac_3d_l, jac_3d_q)
 !
 !      call check_jacobians_trilinear(my_rank, ele1, jac_3d_l)
 !
 !  -------------------------------
-!
-      if (iflag_debug.eq.1)  write(*,*)  's_int_whole_volume_only'
-      call s_int_whole_volume_only(ele1, jac1_3d_q)
-      if (my_rank.eq.0) write(*,*)  'Volume of Domain: ', ele1%volume
 !
       if (iflag_debug.eq.1)  write(*,*)  'int_element_length_1st'
       FEM_elen_f%nnod_filter_mom = node1%numnod
@@ -167,7 +169,7 @@
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
       call s_cal_element_size                                           &
-     &   (rhs_tbl_f, mat_tbl_f, rhs_mat_f, FEM_elen_f,                  &
+     &   (jac_3d_q, rhs_tbl_f, mat_tbl_f, rhs_mat_f, FEM_elen_f,        &
      &    filter_dxi1, dxidxs1)
       call dealloc_jacobians_ele(filter_dxi1)
 !
@@ -202,8 +204,8 @@
         num_failed_whole = 0
         num_failed_fluid = 0
 !
-        call select_const_filter                                        &
-    &      (rhs_tbl_f, rhs_mat_f, FEM_elen_f, dxidxs1, FEM_momenet1)
+        call select_const_filter(jac_3d_q, rhs_tbl_f, rhs_mat_f,        &
+    &       FEM_elen_f, dxidxs1, FEM_momenet1)
         call dealloc_jacobians_node(filter_dxi1)
 !
         close(filter_coef_code)

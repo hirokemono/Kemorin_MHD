@@ -6,7 +6,7 @@
 !        Modified by H. Matsui on Aug., 2006
 !        Modified by H. Matsui on Aug., 2007
 !
-!      subroutine cal_volume_node(layer_tbl)
+!      subroutine const_MHD_jacobian_and_volumes(layer_tbl)
 !        type(layering_tbl), intent(in) :: layer_tbl
 !
       module cal_volume_node_MHD
@@ -17,6 +17,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_geometry_data
+      use m_group_data
       use sum_volume_of_domain
 !
       implicit none
@@ -33,7 +34,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_volume_node(layer_tbl)
+      subroutine const_MHD_jacobian_and_volumes(layer_tbl)
 !
       use m_control_parameter
       use m_geometry_data_MHD
@@ -41,11 +42,19 @@
       use m_bulk_values
       use t_layering_ele_list
 !
+      use const_jacobians_3d
       use int_volume_of_domain
       use cal_layered_volumes
 !
       type(layering_tbl), intent(inout) :: layer_tbl
 !
+!    Construct Jacobians
+!
+      call max_int_point_by_etype(ele1%nnod_4_ele)
+      call cal_jacobian_element                                         &
+     &   (node1, ele1, sf_grp1, infty_list, jac1_3d_l, jac1_3d_q)
+!
+!    Construct volumes
 !
       call allocate_volume_4_smp
 !
@@ -67,26 +76,28 @@
        end if
 !
 !
-       if (fluid1%istack_ele_fld_smp(np_smp)                            &
+      if (fluid1%istack_ele_fld_smp(np_smp)                             &
      &   .eq. fluid1%istack_ele_fld_smp(0)) then
-         rms_local(ivol) = vol_local
-       else
-         rms_local(ivol) = vol_fl_local
-       end if
+        rms_local(ivol) = vol_local
+      else
+        rms_local(ivol) = vol_fl_local
+      end if
 !
 !       call s_int_volume_insulate_core
 !
-       call deallocate_volume_4_smp
+      call deallocate_volume_4_smp
+      call dealloc_dxi_dx_type(jac1_3d_q)
+      call dealloc_dxi_dx_type(jac1_3d_l)
 !
 !
-       if (iflag_debug.eq.1) then
-         write(*,*) 'volume:       ', ele1%volume
-         write(*,*) 'vol_fluid:    ', fluid1%volume
-         write(*,*) 'vol_conduct:  ', conduct1%volume
-         write(*,*) 'vol_insulate: ', insulate1%volume
-       end if
+      if (iflag_debug.eq.1) then
+        write(*,*) 'volume:       ', ele1%volume
+        write(*,*) 'vol_fluid:    ', fluid1%volume
+        write(*,*) 'vol_conduct:  ', conduct1%volume
+        write(*,*) 'vol_insulate: ', insulate1%volume
+      end if
 !
-       end subroutine cal_volume_node
+      end subroutine const_MHD_jacobian_and_volumes
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

@@ -4,10 +4,14 @@
 !
 !       Written by H. Matsui
 !
-!      subroutine FEM_initialize_vizs(ele_4_nod, ucd)
+!      subroutine FEM_initialize_vizs                                   &
+!     &         (ele_4_nod, jac_3d_l, jac_3d_q, ucd)
 !      subroutine FEM_analyze_vizs(i_step,                              &
 !     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval,  &
 !     &          ucd)
+!        type(element_around_node), intent(inout) :: ele_4_nod
+!        type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
+!        type(ucd_data), intent(inout) :: ucd
 !
       module FEM_analyzer_viz
 !
@@ -27,17 +31,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_vizs(ele_4_nod, ucd)
+      subroutine FEM_initialize_vizs                                    &
+     &         (ele_4_nod, jac_3d_l, jac_3d_q, ucd)
 !
       use t_ucd_data
       use t_next_node_ele_4_node
+      use t_jacobian_3d
 !
       use m_array_for_send_recv
       use m_read_mesh_data
       use m_group_data
       use m_node_phys_data
       use m_control_params_2nd_files
-      use m_jacobians
       use m_ele_sf_eg_comm_tables
 !
       use const_mesh_info
@@ -52,8 +57,10 @@
       use nod_phys_send_recv
       use set_ucd_data_to_type
       use ucd_IO_select
+      use const_jacobians_3d
 !
       type(element_around_node), intent(inout) :: ele_4_nod
+      type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
       type(ucd_data), intent(inout) :: ucd
 !
 !   --------------------------------
@@ -83,17 +90,12 @@
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
         call set_ele_id_4_node(node1, ele1, ele_4_nod)
 !
-        call set_max_int_point_by_etype
-        if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_element'
-        call cal_jacobian_element
-!
-        call dealloc_dxi_dx_type(jac1_3d_q)
-        call dealloc_dxi_dx_type(jac1_3d_l)
+        if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
+        call max_int_point_by_etype(ele1%nnod_4_ele)
+        call const_jacobian_and_volume                                  &
+     &     (node1, sf_grp1, infty_list, ele1, jac_3d_l, jac_3d_q)
 !
 !     --------------------- Surface jacobian for fieldline
-!
-        if (iflag_debug.gt.0) write(*,*) 's_int_whole_volume_only'
-        call s_int_whole_volume_only(ele1, jac1_3d_q)
 !
         if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
         call const_normal_vector(node1, surf1)

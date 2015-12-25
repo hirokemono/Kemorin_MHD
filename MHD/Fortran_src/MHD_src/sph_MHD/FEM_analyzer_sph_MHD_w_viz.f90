@@ -38,6 +38,7 @@
       subroutine FEM_initialize_w_viz
 !
       use m_geometry_data
+      use m_group_data
       use m_t_step_parameter
       use m_fem_gauss_int_coefs
       use m_jacobians
@@ -69,14 +70,8 @@
 !
       if (iflag_debug.eq.1) write(*,*)  'maximum_integration_points'
       call maximum_integration_points(ione)
-      call cal_jacobian_element 
-!
-      call dealloc_dxi_dx_type(jac1_3d_q)
-      call dealloc_dxi_dx_type(jac1_3d_l)
-!
-!     --------------------- volume
-!
-      call s_int_whole_volume_only(ele1, jac1_3d_q)
+      call const_jacobian_and_volume                                    &
+     &   (node1, sf_grp1, infty_list, ele1, jac1_3d_l, jac1_3d_q)
 !
       end subroutine FEM_initialize_w_viz
 !

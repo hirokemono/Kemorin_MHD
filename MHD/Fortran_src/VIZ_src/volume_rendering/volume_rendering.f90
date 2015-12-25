@@ -3,17 +3,14 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!!      subroutine pvr_init(numnod, numele, numsurf, nnod_4_surf, xx,   &
-!!     &          interior_ele, ie_surf, isf_4_ele, iele_4_surf,        &
-!!     &          ele_grp, num_nod_phys, phys_nod_name)
+!!      subroutine pvr_init(node, ele, surf, ele_grp, nod_fld)
 !!
-!!      subroutine pvr_main(istep_pvr,                                  &
-!!     &         numnod, numele, numsurf, nnod_4_ele, nnod_4_surf,      &
-!!     &         inod_smp_stack, iele_smp_stack, xx, radius, a_radius,  &
-!!     &         s_cylinder, a_s_cylinder, ie, a_vol_ele,               &
-!!     &         interior_ele, ie_surf, isf_4_ele, iele_4_surf,         &
-!!     &         ntot_int_3d, dnx, xjac, num_nod_phys, num_tot_nod_phys,&
-!!     &         istack_nod_component, d_nod)
+!!      subroutine pvr_main(istep_pvr, node, ele, surf, jac_3d, nod_fld)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(jacobians_3d), intent(in) :: jac_3d
 !
 !      subroutine deallocate_pvr_data
 !
@@ -26,6 +23,12 @@
       use m_constants
       use m_machine_parameter
       use m_geometry_constants
+!
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
+      use t_phys_data
+      use t_jacobian_3d
 !
       use t_control_params_4_pvr
       use t_surf_grp_4_pvr_domain
@@ -84,28 +87,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine pvr_init(numnod, numele, numsurf, nnod_4_surf, xx,     &
-     &          interior_ele, ie_surf, isf_4_ele, iele_4_surf,          &
-     &          ele_grp, num_nod_phys, phys_nod_name)
+      subroutine pvr_init(node, ele, surf, ele_grp, nod_fld)
 !
-      use t_group_data
       use set_pvr_control
       use cal_pvr_modelview_mat
       use cal_pvr_projection_mat
 !
-      integer(kind = kint), intent(in) :: numnod, numele, numsurf
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in) :: interior_ele(numele)
-      real(kind = kreal), intent(in) :: xx(numnod,3)
-!
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
-!
-      integer(kind = kint), intent(in) :: num_nod_phys
-      character(len=kchara), intent(in) :: phys_nod_name(num_nod_phys)
-!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(group_data), intent(in) :: ele_grp
+      type(phys_data), intent(in) :: nod_fld
 !
       integer(kind = kint) :: i_pvr
 !
@@ -116,18 +108,20 @@
 !
       call s_set_pvr_control                                            &
      &   (num_pvr, ele_grp%num_grp, ele_grp%grp_name,                   &
-     &    num_nod_phys, phys_nod_name, file_params, fld_params,         &
+     &    nod_fld%num_phys, nod_fld%phys_name, file_params, fld_params, &
      &    view_params, color_params, cbar_params)
 !
-      call allocate_nod_data_4_pvr(num_pvr, numnod, numele, field_pvr)
+      call allocate_nod_data_4_pvr                                      &
+     &   (num_pvr, node%numnod, ele%numele, field_pvr)
       call s_find_pvr_surf_domain                                       &
-     &   (num_pvr, numele, numsurf, interior_ele,                       &
-     &    isf_4_ele, iele_4_surf, ele_grp%num_grp, ele_grp%num_item,    &
-     &    ele_grp%istack_grp, ele_grp%item_grp,                         &
-     &    fld_params, pvr_bound, field_pvr)
+     &   (num_pvr, ele%numele, surf%numsurf, ele%interior_ele,          &
+     &    surf%isf_4_ele, surf%iele_4_surf,                             &
+     &    ele_grp%num_grp, ele_grp%num_item, ele_grp%istack_grp,        &
+     &    ele_grp%item_grp, fld_params, pvr_bound, field_pvr)
 !
       do i_pvr = 1, num_pvr
-        call cal_mesh_outline_pvr(numnod, xx, outlines(i_pvr))
+        call cal_mesh_outline_pvr                                       &
+     &     (node%numnod, node%xx, outlines(i_pvr))
         call check_pvr_parameters(outlines(i_pvr), view_params(i_pvr),  &
      &      color_params(i_pvr))
 !
@@ -143,10 +137,11 @@
           if(iflag_debug .gt. 0) write(*,*) 'cal_pvr_modelview_matrix'
           call cal_pvr_modelview_matrix(izero, outlines(i_pvr),         &
      &        view_params(i_pvr), color_params(i_pvr))
-          call transfer_to_screen(numnod, numele, numsurf,              &
-     &        nnod_4_surf, xx, ie_surf, isf_4_ele, field_pvr(i_pvr),    &
-     &        view_params(i_pvr), pvr_bound(i_pvr), pixel_xy(i_pvr),    &
-     &        pvr_start(i_pvr))
+          call transfer_to_screen                                       &
+     &       (node%numnod, ele%numele, surf%numsurf, surf%nnod_4_surf,  &
+     &        node%xx, surf%ie_surf, surf%isf_4_ele,                    &
+     &        field_pvr(i_pvr), view_params(i_pvr), pvr_bound(i_pvr),   &
+     &        pixel_xy(i_pvr), pvr_start(i_pvr))
         end if
 !
         call alloc_pvr_image_array_type                                 &
@@ -160,47 +155,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine pvr_main(istep_pvr,                                    &
-     &         numnod, numele, numsurf, nnod_4_ele, nnod_4_surf,        &
-     &         inod_smp_stack, iele_smp_stack, xx, radius, a_radius,    &
-     &         s_cylinder, a_s_cylinder, ie, a_vol_ele,                 &
-     &         interior_ele, ie_surf, isf_4_ele, iele_4_surf,           &
-     &         ntot_int_3d, dnx, xjac, num_nod_phys, num_tot_nod_phys,  &
-     &         istack_nod_component, d_nod)
+      subroutine pvr_main(istep_pvr, node, ele, surf, jac_3d, nod_fld)
 !
       use cal_pvr_modelview_mat
 !
       integer(kind = kint), intent(in) :: istep_pvr
 !
-      integer(kind = kint), intent(in) :: numnod, numele, numsurf
-      integer(kind = kint), intent(in) :: nnod_4_ele, nnod_4_surf
-      integer(kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
-      integer(kind = kint), intent(in) :: iele_smp_stack(0:np_smp)
-      real(kind = kreal), intent(in) :: xx(numnod,3)
-      real(kind = kreal), intent(in) :: radius(numnod)
-      real(kind = kreal), intent(in) :: a_radius(numnod)
-      real(kind = kreal), intent(in) :: s_cylinder(numnod)
-      real(kind = kreal), intent(in) :: a_s_cylinder(numnod)
-!
-      integer(kind = kint), intent(in) :: ie(numele,nnod_4_ele)
-      integer(kind = kint), intent(in) :: interior_ele(numele)
-      real(kind = kreal), intent(in) :: a_vol_ele(numele)
-!
-      integer(kind = kint), intent(in) :: ie_surf(numsurf,nnod_4_surf)
-      integer(kind = kint), intent(in) :: isf_4_ele(numele,nsurf_4_ele)
-      integer(kind = kint), intent(in) :: iele_4_surf(numsurf,2,2)
-!
-      integer (kind = kint), intent(in) :: ntot_int_3d
-      real(kind=kreal),   intent(in)                                    &
-     &                  :: dnx(numele,nnod_4_ele,ntot_int_3d,3)
-      real(kind=kreal),   intent(in) :: xjac(numele,ntot_int_3d)
-!
-      integer(kind = kint), intent(in) :: num_nod_phys
-      integer(kind = kint), intent(in) :: num_tot_nod_phys
-      integer(kind = kint), intent(in)                                  &
-     &                     :: istack_nod_component(0:num_nod_phys)
-      real(kind = kreal), intent(in)  :: d_nod(numnod,num_tot_nod_phys)
-!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(phys_data), intent(in) :: nod_fld
+      type(jacobians_3d), intent(in) :: jac_3d
 !
       integer(kind = kint) :: i_pvr
       integer(kind = kint) :: i_rot, ist_rot, ied_rot
@@ -208,11 +173,13 @@
 !
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
-      call cal_field_4_pvr(num_pvr, numnod, numele, nnod_4_ele,         &
-     &          inod_smp_stack, iele_smp_stack, xx, radius,             &
-     &          a_radius, s_cylinder, a_s_cylinder, ie, a_vol_ele,      &
-     &          ntot_int_3d, dnx, xjac, num_nod_phys, num_tot_nod_phys, &
-     &          istack_nod_component, d_nod, fld_params, field_pvr)
+      call cal_field_4_pvr                                              &
+     &  (num_pvr, node%numnod, ele%numele, ele%nnod_4_ele,              &
+     &   node%istack_nod_smp, ele%istack_ele_smp, node%xx, node%rr,     &
+     &   node%a_r, node%ss, node%a_s, ele%ie, ele%a_vol_ele,            &
+     &   jac_3d%ntot_int, jac_3d%dnx, jac_3d%xjac,                      &
+     &   nod_fld%num_phys, nod_fld%ntot_phys, nod_fld%istack_component, &
+     &   nod_fld%d_fld, fld_params, field_pvr)
 !
       do i_pvr = 1, num_pvr
         if(iflag_debug .gt. 0) write(*,*) 'set_default_pvr_data_params'
@@ -225,15 +192,17 @@
           if(view_params(i_pvr)%iflag_rotate_snap .gt. 0) then
             call cal_pvr_modelview_matrix(i_rot, outlines(i_pvr),       &
      &          view_params(i_pvr), color_params(i_pvr))
-            call transfer_to_screen(numnod, numele, numsurf,            &
-     &          nnod_4_surf, xx, ie_surf, isf_4_ele, field_pvr(i_pvr),  &
-     &          view_params(i_pvr), pvr_bound(i_pvr),  pixel_xy(i_pvr), &
-     &          pvr_start(i_pvr))
+            call transfer_to_screen(node%numnod, ele%numele,            &
+     &          surf%numsurf, surf%nnod_4_surf,                         &
+     &          node%xx, surf%ie_surf, surf%isf_4_ele,                  &
+     &          field_pvr(i_pvr), view_params(i_pvr), pvr_bound(i_pvr), &
+     &          pixel_xy(i_pvr), pvr_start(i_pvr))
           end if
 !
           call rendering_image                                          &
-     &      (i_rot, istep_pvr, numnod, numele, numsurf, nnod_4_surf,    &
-     &       interior_ele, xx, ie_surf, isf_4_ele, iele_4_surf,         &
+     &      (i_rot, istep_pvr, node%numnod, ele%numele,                 &
+     &       surf%numsurf, surf%nnod_4_surf, ele%interior_ele, node%xx, &
+     &       surf%ie_surf, surf%isf_4_ele, surf%iele_4_surf,            &
      &       file_params(i_pvr), color_params(i_pvr),                   &
      &       cbar_params(i_pvr), view_params(i_pvr), field_pvr(i_pvr),  &
      &       pixel_xy(i_pvr), pvr_bound(i_pvr), pvr_start(i_pvr),       &
