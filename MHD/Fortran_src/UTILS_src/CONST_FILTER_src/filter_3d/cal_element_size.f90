@@ -4,8 +4,10 @@
 !      Written by H.Matsui on Nov., 2006
 !      Modified by H. Matsui on Mar., 2008
 !
-!!      subroutine s_cal_element_size(node, ele, jac_3d_q, rhs_tbl,     &
-!!     &          mat_tbl, rhs_mat, FEM_elen, filter_dxi, dxidxs)
+!!      subroutine s_cal_element_size                                   &
+!!     &         (nod_comm, node, ele, jac_3d_q, rhs_tbl, mat_tbl,      &
+!!     &          rhs_mat, FEM_elen, filter_dxi, dxidxs)
+!!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(arrays_finite_element_mat), intent(inout) :: rhs_mat
@@ -14,6 +16,7 @@
 !!
 !!      subroutine s_const_filter_mom_ele(node, ele, jac_3d_q, rhs_tbl, &
 !!     &         rhs_mat, mom_nod, mom_ele)
+!!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(jacobians_3d), intent(in) :: jac_3d_q
@@ -31,8 +34,8 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use m_nod_comm_table
       use m_crs_matrix
+      use t_comm_table
       use t_geometry_data
       use t_next_node_ele_4_node
       use t_table_FEM_const
@@ -51,8 +54,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_element_size(node, ele, jac_3d_q, rhs_tbl,       &
-     &          mat_tbl, rhs_mat, FEM_elen, filter_dxi, dxidxs)
+      subroutine s_cal_element_size                                     &
+     &         (nod_comm, node, ele, jac_3d_q, rhs_tbl, mat_tbl,        &
+     &          rhs_mat, FEM_elen, filter_dxi, dxidxs)
 !
       use m_ctl_params_4_gen_filter
       use m_reference_moments
@@ -72,6 +76,7 @@
       use cal_deltax_and_prods_4_nod
       use cal_1st_diff_deltax_4_nod
 !
+      type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d_q
@@ -194,8 +199,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_const_filter_mom_ele(node, ele, jac_3d_q, rhs_tbl,   &
-     &         rhs_mat, mom_nod, mom_ele)
+      subroutine s_const_filter_mom_ele(nod_comm, node, ele,            &
+     &          jac_3d_q, rhs_tbl, rhs_mat, mom_nod, mom_ele)
 !
       use t_filter_moments
       use m_ctl_params_4_gen_filter
@@ -203,6 +208,7 @@
       use cal_1st_diff_deltax_4_nod
       use filter_moments_send_recv
 !
+      type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d_q

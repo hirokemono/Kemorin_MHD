@@ -3,8 +3,9 @@
 !
 !     Written by H. Matsui on Mar., 2008
 !
-!!      subroutine select_const_filter(node, ele, jac_3d_q, rhs_tbl,    &
-!!     &          rhs_mat, FEM_elen, dxidxs, FEM_moments)
+!!      subroutine select_const_filter(nod_comm, node, ele, jac_3d_q,   &
+!!     &          rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
+!!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(jacobians_3d), intent(in) :: jac_3d_q
@@ -24,6 +25,7 @@
       use m_ctl_params_4_gen_filter
       use m_reference_moments
 !
+      use t_comm_table
       use t_geometry_data
       use t_jacobian_3d
       use t_table_FEM_const
@@ -49,10 +51,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine select_const_filter(node, ele, jac_3d_q, rhs_tbl,      &
-     &          rhs_mat, FEM_elen, dxidxs, FEM_moments)
+      subroutine select_const_filter(nod_comm, node, ele, jac_3d_q,     &
+     &          rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
 !
+      type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d_q
@@ -76,14 +79,15 @@
       else if (iflag_tgt_filter_type .ge. -4                            &
      &     .and. iflag_tgt_filter_type .le. -2) then
         if (iflag_debug.eq.1) write(*,*) 'correct_by_simple_filter'
-        call correct_by_simple_filter(node, ele, jac_3d_q, rhs_tbl,     &
+        call correct_by_simple_filter                                   &
+     &     (nod_comm, node, ele, jac_3d_q, rhs_tbl,                     &
      &      rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       else if (iflag_tgt_filter_type.ge.2                               &
      &     .and. iflag_tgt_filter_type.le.4) then
         if (iflag_debug.eq.1) write(*,*) 'const_simple_filter'
-        call const_simple_filter(node, ele, jac_3d_q, rhs_tbl,          &
-     &     rhs_mat, FEM_elen, dxidxs, FEM_moments)
+        call const_simple_filter(nod_comm, node, ele, jac_3d_q,         &
+     &      rhs_tbl, rhs_mat, FEM_elen, dxidxs, FEM_moments)
       end if
 !
       end subroutine select_const_filter
@@ -136,7 +140,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine const_simple_filter(node, ele, jac_3d_q, rhs_tbl,      &
+      subroutine const_simple_filter                                    &
+     &         (nod_comm, node, ele, jac_3d_q, rhs_tbl,                 &
      &          rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       use cal_1st_diff_deltax_4_nod
@@ -144,6 +149,7 @@
       use cal_diff_elesize_on_ele
       use filter_geometry_IO
 !
+      type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d_q
@@ -171,8 +177,9 @@
      &      dxidxs, FEM_moments%mom_nod(1))
 !
       if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
-      call s_const_filter_mom_ele(node, ele, jac_3d_q, rhs_tbl,         &
-     &    rhs_mat, FEM_moments%mom_nod(1), FEM_moments%mom_ele(1))
+      call s_const_filter_mom_ele                                       &
+     &   (nod_comm, node, ele, jac_3d_q, rhs_tbl, rhs_mat,              &
+     &    FEM_moments%mom_nod(1), FEM_moments%mom_ele(1))
       if(iflag_debug.eq.1)                                              &
      &       write(*,*) 'cal_fmoms_ele_by_elen 2'
       call cal_fmoms_ele_by_elen(FEM_elen, FEM_moments%mom_ele(1))
@@ -263,7 +270,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine correct_by_simple_filter(node, ele, jac_3d_q, rhs_tbl, &
+      subroutine correct_by_simple_filter                               &
+     &         (nod_comm, node, ele, jac_3d_q, rhs_tbl,                 &
      &          rhs_mat, FEM_elen, dxidxs, FEM_moments)
 !
       use m_filter_file_names
@@ -273,6 +281,7 @@
       use correct_wrong_filters
       use filter_geometry_IO
 !
+      type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(jacobians_3d), intent(in) :: jac_3d_q
@@ -320,7 +329,8 @@
      &    org_filter_coef_code, dxidxs, FEM_moments%mom_nod(1))
 !
       if(iflag_debug.eq.1)  write(*,*) 's_const_filter_mom_ele 1'
-      call s_const_filter_mom_ele(node, ele, jac_3d_q, rhs_tbl,         &
+      call s_const_filter_mom_ele                                       &
+     &   (nod_comm, node, ele, jac_3d_q, rhs_tbl,                       &
      &    rhs_mat, FEM_moments%mom_nod(1), FEM_moments%mom_ele(1))
       if(iflag_debug.eq.1)                                              &
      &       write(*,*) 'correct_fmoms_ele_by_elen 1'

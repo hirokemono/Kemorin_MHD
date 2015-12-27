@@ -10,6 +10,7 @@
       use m_control_data_4_part
       use m_ctl_param_partitioner
       use m_read_mesh_data
+      use m_nod_comm_table
       use m_geometry_data
       use m_group_data
 !
@@ -47,7 +48,7 @@
 !  ========= Routines for partitioner ==============
 !
       call initialize_partitioner                                       &
-     &   (node1, ele1, nod_grp1, ele_grp1, sf_grp1)
+     &   (nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1)
       call grouping_for_partitioner(node1, ele1, edge1,                 &
      &   nod_grp1, ele_grp1, ele_grp_tbl1)
 !

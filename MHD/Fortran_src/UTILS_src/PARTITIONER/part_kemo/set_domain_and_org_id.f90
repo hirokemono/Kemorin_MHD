@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui on Aug., 2007
 !
-!      subroutine set_ele_domain_groups
-!      subroutine set_origin_global_node
+!      subroutine set_ele_domain_groups(ele)
+!      subroutine set_origin_global_node(nod_comm)
 !
       module set_domain_and_org_id
 !
@@ -36,10 +36,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_origin_global_node
+      subroutine set_origin_global_node(nod_comm)
 !
-      use m_nod_comm_table
+      use t_comm_table
       use m_domain_group_4_partition
+!
+      type(communication_table), intent(in) :: nod_comm
 !
 !
       call copy_node_id_4_peri_sleeve                                   &

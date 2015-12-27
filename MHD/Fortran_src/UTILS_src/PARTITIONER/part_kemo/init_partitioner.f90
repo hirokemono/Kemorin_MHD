@@ -1,7 +1,7 @@
 !init_partitioner.f90
 !      module  init_partitioner
 !
-!!      subroutine initialize_partitioner(node_org, ele_org,            &
+!!      subroutine initialize_partitioner(comm_org, node_org, ele_org,  &
 !!     &          nod_grp, ele_grp, sf_grp)
 !!        type(node_data), intent(in) :: node_org
 !!        type(element_data), intent(inout) :: ele_org
@@ -28,9 +28,10 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine initialize_partitioner(node_org, ele_org,              &
+      subroutine initialize_partitioner(comm_org, node_org, ele_org,    &
      &          nod_grp, ele_grp, sf_grp)
 !
+      use t_comm_table
       use t_geometry_data
       use t_group_data
       use t_next_node_ele_4_node
@@ -44,6 +45,7 @@
 !
       use error_exit_4_part
 !
+      type(communication_table), intent(in) :: comm_org
       type(node_data), intent(in) :: node_org
       type(element_data), intent(inout) :: ele_org
 !
@@ -73,7 +75,7 @@
 !      const periodic table
 !
       if (iflag_debug.gt.0) write(*,*) 'set_origin_global_node'
-      call set_origin_global_node
+      call set_origin_global_node(comm_org)
 !
       write (*,'(//,"*** ",i5," SUBDOMAINS",//)') num_domain
       if (num_domain .gt. node_org%numnod) then
