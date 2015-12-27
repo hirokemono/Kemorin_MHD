@@ -4,7 +4,7 @@
 !      Written by Kemorin
 !      Modified by Kemorin on Dec., 2006
 !
-!      subroutine choose_surface_mesh
+!      subroutine choose_surface_mesh(file_head, ele, surf, edge)
 !
       module const_surface_mesh
 !
@@ -17,9 +17,13 @@
       use m_geometry_data_4_merge
       use m_surface_mesh_4_merge
 !
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
+!
       implicit none
 !
-      private :: set_source_mesh_parameter
+      private :: const_surf_mesh_4_viewer, set_source_mesh_parameter
 !
 !------------------------------------------------------------------
 !
@@ -27,7 +31,11 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine choose_surface_mesh(file_head)
+      subroutine choose_surface_mesh(file_head, ele, surf, edge)
+!
+      type(element_data), intent(inout) :: ele
+      type(surface_data), intent(inout) :: surf
+      type(edge_data), intent(inout) :: edge
 !
       character(len=kchara), intent(in) :: file_head
 !
@@ -35,7 +43,7 @@
       mesh_file_head =    file_head
       surface_file_head = file_head
       call find_mesh_format_4_viewer
-      call const_surf_mesh_4_viewer
+      call const_surf_mesh_4_viewer(ele, surf, edge)
 !
       end subroutine choose_surface_mesh
 !
@@ -117,9 +125,8 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine const_surf_mesh_4_viewer
+      subroutine const_surf_mesh_4_viewer(ele, surf, edge)
 !
-      use m_geometry_data
       use set_merged_geometry
       use const_merged_surf_data
       use const_merged_surf_4_group
@@ -129,17 +136,22 @@
       use set_nodes_4_groups_viewer
       use viewer_IO_select_4_zlib
 !
+      type(element_data), intent(inout) :: ele
+      type(surface_data), intent(inout) :: surf
+      type(edge_data), intent(inout) :: edge
+!
+!
 !  set mesh_information
 !
        write(*,*) 'set_overlapped_mesh_and_group'
-       call set_overlapped_mesh_and_group
+       call set_overlapped_mesh_and_group(ele%nnod_4_ele)
 !
        call dealloc_subdomain_groups
 !
 !   output grid data
 !
        write(*,*) 'set_source_mesh_parameter'
-       call set_source_mesh_parameter
+       call set_source_mesh_parameter(ele, surf, edge)
 !
 !  choose surface
 !
@@ -154,9 +166,9 @@
 !  pickup surface and nodes
 !
 !       write(*,*) 's_set_surf_connect_4_viewer'
-       call s_set_surf_connect_4_viewer
+       call s_set_surf_connect_4_viewer(surf%nnod_4_surf)
 !       write(*,*) 's_set_nodes_4_viewer'
-       call s_set_nodes_4_viewer
+       call s_set_nodes_4_viewer(surf%nnod_4_surf)
 !
        write(*,*) 'set_surf_domain_id_viewer'
        call set_surf_domain_id_viewer
@@ -166,28 +178,31 @@
        call deallocate_array_4_merge
 !
        write(*,*)  'construct_edge_4_viewer'
-       call construct_edge_4_viewer(surf1, edge1)
+       call construct_edge_4_viewer(surf, edge)
        write(*,*)  's_set_nodes_4_groups_viewer'
        call s_set_nodes_4_groups_viewer                                 &
-     &    (surf1%nnod_4_surf, edge1%nnod_4_edge)
+     &    (surf%nnod_4_surf, edge%nnod_4_edge)
 !
       call sel_output_surface_grid(iflag_mesh_file_fmt,                 &
-     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
+     &    surf%nnod_4_surf, edge%nnod_4_edge)
 !
       end subroutine const_surf_mesh_4_viewer
 !
 !------------------------------------------------------------------
 !
-      subroutine set_source_mesh_parameter
+      subroutine set_source_mesh_parameter(ele, surf, edge)
 !
       use m_geometry_constants
-      use m_geometry_data
       use m_surf_geometry_4_merge
       use m_node_quad_2_linear_sf
 !
       use m_geometry_data_4_merge
       use set_local_id_table_4_1ele
       use set_nnod_4_ele_by_type
+!
+      type(element_data), intent(inout) :: ele
+      type(surface_data), intent(inout) :: surf
+      type(edge_data), intent(inout) :: edge
 !
 !  set array for number of surface
 !
@@ -199,18 +214,18 @@
 !   set number of node in surface
 !
       call set_3D_nnod_4_sfed_by_ele                                    &
-     &   (ele1%nnod_4_ele, surf1%nnod_4_surf, edge1%nnod_4_edge)
-      call allocate_quad4_2_linear(ele1%nnod_4_ele)
+     &   (ele%nnod_4_ele, surf%nnod_4_surf, edge%nnod_4_edge)
+      call allocate_quad4_2_linear(ele%nnod_4_ele)
 !
-      call allocate_inod_in_surf(surf1)
+      call allocate_inod_in_surf(surf)
       call set_inod_in_surf                                             &
-     &   (surf1%nnod_4_surf, surf1%node_on_sf, surf1%node_on_sf_n)
+     &   (surf%nnod_4_surf, surf%node_on_sf, surf%node_on_sf_n)
 !
-      call allocate_inod_in_edge(edge1)
-      call copy_inod_in_edge(edge1%nnod_4_edge,                         &
-     &    edge1%node_on_edge, edge1%node_on_edge_sf)
+      call allocate_inod_in_edge(edge)
+      call copy_inod_in_edge(edge%nnod_4_edge,                          &
+     &    edge%node_on_edge, edge%node_on_edge_sf)
 !
-      merged_surf%nnod_4_surf = surf1%nnod_4_surf
+      merged_surf%nnod_4_surf = surf%nnod_4_surf
       call allocate_inod_in_surf(merged_surf)
       call set_inod_in_surf(merged_surf%nnod_4_surf,                    &
      &    merged_surf%node_on_sf, merged_surf%node_on_sf_n)

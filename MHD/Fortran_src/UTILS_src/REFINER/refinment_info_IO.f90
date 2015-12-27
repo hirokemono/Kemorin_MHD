@@ -1,10 +1,10 @@
 !
 !      module refinment_info_IO
 !
-!      subroutine write_refinement_table
-!      subroutine write_merged_refinement_tbl
+!      subroutine write_refinement_table(numele, iref)
+!      subroutine write_merged_refinement_tbl(numele)
 !
-!      subroutine read_refinement_table
+!      subroutine read_refinement_table(numele)
 !
 !
       module refinment_info_IO
@@ -12,7 +12,6 @@
       use m_precision
 !
       use m_constants
-      use m_geometry_data
       use m_refined_element_data
       use m_element_refinement_IO
 !
@@ -31,15 +30,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_refinement_table(iref)
+      subroutine write_refinement_table(numele, iref)
 !
       use m_control_param_4_refiner
       use element_refine_file_IO
 !
+      integer(kind = kint), intent(in) :: numele
       integer(kind = kint), intent(in) :: iref
 !
 !
-      call set_element_refine_flags_2_IO
+      call set_element_refine_flags_2_IO(numele)
       call set_elem_refine_itp_tbl_2_IO
 !
 !
@@ -55,13 +55,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine write_merged_refinement_tbl
+      subroutine write_merged_refinement_tbl(numele)
 !
       use m_control_param_4_refiner
       use element_refine_file_IO
 !
+      integer(kind = kint), intent(in) :: numele
 !
-      call set_merged_refine_flags_2_IO
+!
+      call set_merged_refine_flags_2_IO(numele)
       call set_elem_refine_itp_tbl_2_IO
 !
       refine_info_fhead = refine_info_head
@@ -72,10 +74,12 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine read_refinement_table
+      subroutine read_refinement_table(numele)
 !
       use m_control_param_4_refiner
       use element_refine_file_IO
+!
+      integer(kind = kint), intent(in) :: numele
 !
 !
       refine_info_fhead = refine_info_head
@@ -87,25 +91,27 @@
       call deallocate_itp_num_dst_IO
       call deallocate_itp_nod_dst_IO
 !
-      call set_ele_refine_flags_from_IO
+      call set_ele_refine_flags_from_IO(numele)
 !
       end subroutine read_refinement_table
 !
 ! ----------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine set_element_refine_flags_2_IO
+      subroutine set_element_refine_flags_2_IO(numele)
+!
+      integer(kind = kint), intent(in) :: numele
 !
       integer(kind = kint) :: iele_org, ist, iele_neo, icou
 !
 !
       max_refine_level_IO = max_refine_level
-      nele_org_IO =         ele1%numele
-      nele_ref_IO =         istack_ele_refined(ele1%numele)
+      nele_org_IO =         numele
+      nele_ref_IO =         istack_ele_refined(numele)
 !
       call allocate_element_refine_IO
 !
-      do iele_org = 1, ele1%numele
+      do iele_org = 1, numele
         ist = istack_ele_refined(iele_org-1)
         do icou = 1, num_ele_refined(iele_org)
           iele_neo = icou + istack_ele_refined(iele_org-1)
@@ -122,10 +128,12 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_merged_refine_flags_2_IO
+      subroutine set_merged_refine_flags_2_IO(numele)
 !
       use m_refine_flag_parameters
       use m_work_merge_refine_itp
+!
+      integer(kind = kint), intent(in) :: numele
 !
       integer(kind = kint) :: iele_org, ist, icou
       integer(kind = kint) :: iele_1st, iflag_1st, icou_1st
@@ -133,12 +141,12 @@
 !
 !
       max_refine_level_IO = max_refine_level
-      nele_org_IO =         ele1%numele
-      nele_ref_IO =         istack_ele_refined(ele1%numele)
+      nele_org_IO =         numele
+      nele_ref_IO =         istack_ele_refined(numele)
 !
       call allocate_element_refine_IO
 !
-      do iele_1st = 1, ele1%numele
+      do iele_1st = 1, numele
         iflag_1st = iflag_refine_ele_1st(iele_1st)
         iele_org =  iele_org_1st(iele_1st,1)
         icou_1st =  iele_org_1st(iele_1st,2)
@@ -218,12 +226,14 @@
 !
 !------------------------------------------------------------------
 !
-      subroutine set_ele_refine_flags_from_IO
+      subroutine set_ele_refine_flags_from_IO(numele)
+!
+      integer(kind = kint), intent(in) :: numele
 !
       integer(kind = kint) :: iele
 !
 !
-      call allocate_old_refine_level(ele1%numele)
+      call allocate_old_refine_level(numele)
 !
       max_refine_level = max_refine_level_IO
       do iele = 1, nele_ref_IO

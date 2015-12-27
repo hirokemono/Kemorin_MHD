@@ -13,11 +13,16 @@
       module   m_geometry_data
 !
       use m_precision
+      use t_mesh_data
       use t_geometry_data
       use t_surface_data
       use t_edge_data
 !
       implicit  none
+!
+!
+      type(mesh_geometry), save :: mesh1
+!
 !
 !>  structure for node data (position)
       type(node_data), save :: node1

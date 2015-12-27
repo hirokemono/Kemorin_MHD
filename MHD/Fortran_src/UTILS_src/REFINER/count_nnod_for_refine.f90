@@ -1,6 +1,12 @@
 !count_nnod_for_refine.f90
 !      module count_nnod_for_refine
 !
+!      subroutine s_count_nnod_for_refine(node, ele, surf, edge)
+!        type(node_data), intent(in) :: node
+!        type(element_data), intent(in) :: ele
+!        type(surface_data), intent(in) :: surf
+!        type(edge_data), intent(in) :: edge
+!
       module count_nnod_for_refine
 !
       use m_precision
@@ -12,54 +18,59 @@
       private :: count_num_nod_refine_surf
       private :: count_num_nod_refine_edge
 !
-!      subroutine s_count_nnod_for_refine
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_count_nnod_for_refine
+      subroutine s_count_nnod_for_refine(node, ele, surf, edge)
 !
-      use m_geometry_data
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
       use m_refined_node_id
       use m_refined_element_data
       use cal_minmax_and_stacks
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
+!
       integer(kind = kint) :: iedge, isurf, iele
 !
 !
-      num_nod_refine_nod(1:node1%numnod) = 1
+      num_nod_refine_nod(1:node%numnod) = 1
 !
-      do iedge = 1, edge1%numedge
+      do iedge = 1, edge%numedge
         call count_num_nod_refine_edge(iflag_refine_edge(iedge),        &
      &      num_nod_refine_edge(iedge) )
       end do
 !
-      do isurf = 1, surf1%numsurf
+      do isurf = 1, surf%numsurf
         call count_num_nod_refine_surf(iflag_refine_surf(isurf),        &
      &      num_nod_refine_surf(isurf) )
       end do
 !
-      do iele = 1, ele1%numele
+      do iele = 1, ele%numele
         call count_num_nod_refine_ele(iflag_refine_ele(iele),           &
      &      num_nod_refine_ele(iele) )
       end do
 !
-      call s_cal_minmax_and_stacks(node1%numnod, num_nod_refine_nod,    &
+      call s_cal_minmax_and_stacks(node%numnod, num_nod_refine_nod,     &
      &    izero, istack_nod_refine_nod, ntot_nod_refine_nod,            &
      &    nmax_nod_refine_nod, nmin_nod_refine_nod)
 !
-      call s_cal_minmax_and_stacks(edge1%numedge, num_nod_refine_edge,  &
+      call s_cal_minmax_and_stacks(edge%numedge, num_nod_refine_edge,   &
      &    izero, istack_nod_refine_edge, ntot_nod_refine_edge,          &
      &    nmax_nod_refine_edge, nmin_nod_refine_edge)
 !
-      call s_cal_minmax_and_stacks(surf1%numsurf, num_nod_refine_surf,  &
+      call s_cal_minmax_and_stacks(surf%numsurf, num_nod_refine_surf,   &
      &    izero, istack_nod_refine_surf, ntot_nod_refine_surf,          &
      &    nmax_nod_refine_surf, nmin_nod_refine_surf)
 !
-      call s_cal_minmax_and_stacks(ele1%numele, num_nod_refine_ele,     &
+      call s_cal_minmax_and_stacks(ele%numele, num_nod_refine_ele,      &
      &     izero, istack_nod_refine_ele, ntot_nod_refine_ele,           &
      &    nmax_nod_refine_ele, nmin_nod_refine_ele)
 !

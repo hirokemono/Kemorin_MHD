@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine count_number_w_overlap
+!      subroutine count_number_w_overlap(nnod_4_ele)
 !
       module count_number_with_overlap
 !
@@ -22,10 +22,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_number_w_overlap
+      subroutine count_number_w_overlap(nnod_4_ele)
+!
+       integer (kind = kint), intent(inout) :: nnod_4_ele
 !
 !
-      call count_numbers_4_mesh_merge
+      call count_numbers_4_mesh_merge(nnod_4_ele)
       call count_num_geometry_w_overlap
 !
       end subroutine count_number_w_overlap
@@ -33,9 +35,8 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_numbers_4_mesh_merge
+      subroutine count_numbers_4_mesh_merge(nnod_4_ele)
 !
-       use m_geometry_data
        use m_comm_data_IO
        use m_read_boundary_data
        use mesh_IO_select
@@ -46,6 +47,7 @@
        use set_node_data_4_IO
        use set_group_types_4_IO
 !
+       integer (kind = kint), intent(inout) :: nnod_4_ele
        integer (kind = kint) :: ip, my_rank
 !
 !
@@ -65,7 +67,7 @@
      &     (sub_nod_grp(ip), sub_ele_grp(ip), sub_surf_grp(ip))
       end do
 !
-      ele1%nnod_4_ele = nnod_4_ele_dummy
+      nnod_4_ele = nnod_4_ele_dummy
 !
       end subroutine count_numbers_4_mesh_merge
 !

@@ -9,6 +9,7 @@
 !
       use m_precision
 !
+      use m_geometry_data
       use const_surface_mesh
       use getarg_kemo
 !
@@ -30,7 +31,7 @@
         call getarg_k(1, file_head)
       end if
 !
-      call choose_surface_mesh(file_head)
+      call choose_surface_mesh(file_head, ele1, surf1, edge1)
 !
       write(*,*) 'will you draw mesh? (y/n)'
       read(*,*) chara_flag

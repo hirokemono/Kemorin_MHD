@@ -1,9 +1,11 @@
 !
 !      module set_nodes_4_viewer
 !
-      module set_nodes_4_viewer
-!
 !      Written by Kemorin in Jan., 2007
+!
+!      subroutine s_set_nodes_4_viewer(nnod_4_surf)
+!
+      module set_nodes_4_viewer
 !
       use m_precision
 !
@@ -15,23 +17,23 @@
 !
       private :: s_set_nod_grp_4_viewer_surface
 !
-!      subroutine s_set_nodes_4_viewer
-!
 !------------------------------------------------------------------
 !
       contains
 !
 !------------------------------------------------------------------
 !
-      subroutine s_set_nodes_4_viewer
+      subroutine s_set_nodes_4_viewer(nnod_4_surf)
 !
       use m_pickup_table_4_viewer
       use pickup_node_4_viewer
 !
+      integer(kind = kint), intent(in) :: nnod_4_surf
+!
 !
       if(iflag_debug .gt. 0) write(*,*) 'allocate_imark_node'
       call allocate_imark_node(merged%node%numnod)
-      call mark_used_node_4_viewer
+      call mark_used_node_4_viewer(nnod_4_surf)
 !
       call count_used_node_4_viewer
 !
@@ -48,7 +50,7 @@
       call allocate_nod_position_viewer
       call set_node_position_4_viewer
 !
-      call renumber_surf_connect_4_viewer
+      call renumber_surf_connect_4_viewer(nnod_4_surf)
 !
       call s_set_nod_grp_4_viewer_surface
 !

@@ -7,14 +7,19 @@
 !      subroutine deallocate_mark_refine_sf_grp
 !
 !      subroutine count_refined_surf_group                              &
-!     &         (nnod_4_surf, node_on_sf, sf_grp, new_sf_grp)
+!     &         (surf, edge, sf_grp, new_sf_grp)
 !      subroutine s_set_refined_surf_group                              &
-!     &         (nnod_4_surf, node_on_sf, sf_grp, new_sf_grp)
+!     &         (surf, edge, sf_grp, new_sf_grp)
 !
       module set_refined_surf_group
 !
       use m_precision
       use m_constants
+      use m_geometry_constants
+!
+      use t_surface_data
+      use t_edge_data
+      use t_group_data
 !
       implicit none
 !
@@ -48,15 +53,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine count_refined_surf_group                               &
-     &         (nnod_4_surf, node_on_sf, sf_grp, new_sf_grp)
+     &         (surf, edge, sf_grp, new_sf_grp)
 !
-      use m_geometry_constants
       use m_refined_element_data
-      use t_group_data
 !
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in)                                  &
-     &                     :: node_on_sf(nnod_4_surf,nsurf_4_ele)
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_group_data), intent(inout) :: new_sf_grp
 !
@@ -81,7 +83,8 @@
 !
           iele = sf_grp%item_sf_grp(1,inum)
           isf =  sf_grp%item_sf_grp(2,inum)
-          call mark_refined_node_4_surf_grp(iele, isf, ione)
+          call mark_refined_node_4_surf_grp                             &
+     &       (surf, edge, iele, isf, ione)
 !
           jst = istack_ele_refined(iele-1) + 1
           jed = istack_ele_refined(iele)
@@ -89,8 +92,8 @@
             do k1 = 1, nsurf_4_ele
 !
               iflag = 1
-              do k2 = 1, nnod_4_surf
-                k = node_on_sf(k2,k1)
+              do k2 = 1, surf%nnod_4_surf
+                k = surf%node_on_sf(k2,k1)
                 jnod = ie_refined(jele,k)
                 iflag = iflag * inod_mark_2(jnod)
               end do
@@ -102,7 +105,8 @@
             end do
           end do
 !
-          call mark_refined_node_4_surf_grp(iele, isf, izero)
+          call mark_refined_node_4_surf_grp                             &
+     &       (surf, edge, iele, isf, izero)
 !
         end do
       end do
@@ -113,15 +117,12 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_set_refined_surf_group                               &
-     &         (nnod_4_surf, node_on_sf, sf_grp, new_sf_grp)
+     &         (surf, edge, sf_grp, new_sf_grp)
 !
-      use m_geometry_constants
       use m_refined_element_data
-      use t_group_data
 !
-      integer(kind = kint), intent(in) :: nnod_4_surf
-      integer(kind = kint), intent(in)                                  &
-     &                     :: node_on_sf(nnod_4_surf,nsurf_4_ele)
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_group_data), intent(inout) :: new_sf_grp
 !
@@ -141,7 +142,8 @@
 !
           iele = sf_grp%item_sf_grp(1,inum)
           isf =  sf_grp%item_sf_grp(2,inum)
-          call mark_refined_node_4_surf_grp(iele, isf, ione)
+          call mark_refined_node_4_surf_grp                             &
+     &       (surf, edge, iele, isf, ione)
 !
           jst = istack_ele_refined(iele-1) + 1
           jed = istack_ele_refined(iele)
@@ -149,8 +151,8 @@
             do k1 = 1, nsurf_4_ele
 !
               iflag = 1
-              do k2 = 1, nnod_4_surf
-                k = node_on_sf(k2,k1)
+              do k2 = 1, surf%nnod_4_surf
+                k = surf%node_on_sf(k2,k1)
                 jnod = ie_refined(jele,k)
                 iflag = iflag * inod_mark_2(jnod)
               end do
@@ -164,7 +166,8 @@
             end do
           end do
 !
-          call mark_refined_node_4_surf_grp(iele, isf, izero)
+          call mark_refined_node_4_surf_grp                             &
+     &       (surf, edge, iele, isf, izero)
 !
         end do
       end do
@@ -174,12 +177,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine mark_refined_node_4_surf_grp(iele, isf, mark_no)
+      subroutine mark_refined_node_4_surf_grp                           &
+     &         (surf, edge, iele, isf, mark_no)
 !
-      use m_geometry_constants
-      use m_geometry_data
       use m_refined_node_id
 !
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
       integer(kind = kint), intent(in) :: iele, isf
       integer(kind = kint), intent(in) :: mark_no
 !
@@ -187,14 +191,14 @@
       integer(kind = kint) :: jst, jed, jnum, jnod
 !
 !
-      isurf = abs(surf1%isf_4_ele(iele,isf))
-      do k1 = 1, surf1%nnod_4_surf
-        inod = surf1%ie_surf(isurf,k1)
+      isurf = abs(surf%isf_4_ele(iele,isf))
+      do k1 = 1, surf%nnod_4_surf
+        inod = surf%ie_surf(isurf,k1)
         inod_mark_2(inod) = mark_no
       end do
 !
       do k2 = 1, nedge_4_surf
-        iedge = abs( edge1%iedge_4_sf(isurf,k2) )
+        iedge = abs( edge%iedge_4_sf(isurf,k2) )
         jst = istack_nod_refine_edge(iedge-1) + 1
         jed = istack_nod_refine_edge(iedge)
         do jnum = jst, jed

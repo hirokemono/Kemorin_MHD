@@ -7,6 +7,7 @@
 !
       use t_sph_trans_comm_tbl
 !
+      use m_geometry_data
       use m_read_ctl_gen_sph_shell
       use m_spheric_global_ranks
       use m_spheric_parameter
@@ -70,7 +71,7 @@
 !  ========= Construct subdomain information for viewer ==============
 !
       if(iflag_excluding_FEM_mesh .eq. 0) then
-        call choose_surface_mesh(sph_file_head)
+        call choose_surface_mesh(sph_file_head, ele1, surf1, edge1)
       end if
 !
       stop 'program is normally finished'

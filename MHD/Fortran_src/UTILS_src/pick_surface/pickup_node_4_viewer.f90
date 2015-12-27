@@ -1,9 +1,16 @@
 !
 !      module pickup_node_4_viewer
 !
-      module pickup_node_4_viewer
-!
 !      Written by Kemorin in Jan., 2007
+!
+!      subroutine mark_used_node_4_viewer(nnod_4_surf)
+!      subroutine count_used_node_4_viewer
+!      subroutine set_node_cvt_table_viewer
+!
+!      subroutine renumber_surf_connect_4_viewer(nnod_4_surf)
+!      subroutine set_node_position_4_viewer
+!
+      module pickup_node_4_viewer
 !
       use m_precision
 !
@@ -11,30 +18,23 @@
 !
       implicit none
 !
-!      subroutine mark_used_node_4_viewer
-!      subroutine count_used_node_4_viewer
-!      subroutine set_node_cvt_table_viewer
-!
-!      subroutine renumber_surf_connect_4_viewer
-!      subroutine set_node_position_4_viewer
-!
 !------------------------------------------------------------------
 !
       contains
 !
 !------------------------------------------------------------------
 !
-      subroutine mark_used_node_4_viewer
+      subroutine mark_used_node_4_viewer(nnod_4_surf)
 !
-      use m_geometry_data
       use m_geometry_data_4_merge
       use m_surface_mesh_4_merge
 !
+      integer(kind = kint), intent(in) :: nnod_4_surf
       integer(kind = kint) :: inum, isurf, inod, k1
 !
 !
       do isurf = 1, surfpetot_viewer
-        do k1 = 1, surf1%nnod_4_surf
+        do k1 = 1, nnod_4_surf
           inod = ie_sf_viewer(isurf,k1)
           imark_node(inod) = 1
         end do
@@ -92,16 +92,16 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine renumber_surf_connect_4_viewer
+      subroutine renumber_surf_connect_4_viewer(nnod_4_surf)
 !
-      use m_geometry_data
       use m_surface_mesh_4_merge
 !
+      integer(kind = kint), intent(in) :: nnod_4_surf
       integer(kind = kint) :: isurf, k1, inod
 !
 !
       do isurf = 1, surfpetot_viewer
-        do k1 = 1, surf1%nnod_4_surf
+        do k1 = 1, nnod_4_surf
           inod = ie_sf_viewer(isurf,k1)
           ie_sf_viewer(isurf,k1) = inod_merge2viewer(inod)
         end do

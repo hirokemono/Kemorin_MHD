@@ -106,27 +106,31 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine cal_vect_p_pre_euler
+      subroutine cal_vect_p_pre_euler
 !
-       use cal_multi_pass
-       use cal_sol_vector_explicit
+      use m_geometry_data
+      use m_node_phys_data
+      use cal_multi_pass
+      use cal_sol_vector_explicit
 !
-       call cal_t_evo_4_vector_cd(iflag_mag_supg)
-       call cal_sol_vect_p_pre_euler
+      call cal_t_evo_4_vector_cd(iflag_mag_supg)
+      call cal_sol_vect_p_pre_euler(node1, iphys, nod_fld1)
 !
-       end subroutine cal_vect_p_pre_euler
+      end subroutine cal_vect_p_pre_euler
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine cal_vect_p_pre_adams
+      subroutine cal_vect_p_pre_adams
 !
-       use cal_multi_pass
-       use cal_sol_vector_explicit
+      use m_geometry_data
+      use m_node_phys_data
+      use cal_multi_pass
+      use cal_sol_vector_explicit
 !
-       call cal_t_evo_4_vector_cd(iflag_mag_supg)
-       call cal_sol_vect_p_pre_adams
+      call cal_t_evo_4_vector_cd(iflag_mag_supg)
+      call cal_sol_vect_p_pre_adams(node1, iphys, nod_fld1)
 !
-       end subroutine cal_vect_p_pre_adams
+      end subroutine cal_vect_p_pre_adams
 !
 ! ----------------------------------------------------------------------
 !

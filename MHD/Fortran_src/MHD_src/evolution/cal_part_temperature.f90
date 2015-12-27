@@ -116,29 +116,33 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-       subroutine cal_per_temp_euler
+      subroutine cal_per_temp_euler
 !
-       use cal_multi_pass
-       use cal_sol_vector_explicit
+      use m_geometry_data
+      use m_node_phys_data
+      use cal_multi_pass
+      use cal_sol_vector_explicit
 !
 !
-       call cal_t_evo_4_scalar_fl(iflag_temp_supg)
-       call cal_sol_part_temp_euler
+      call cal_t_evo_4_scalar_fl(iflag_temp_supg)
+      call cal_sol_part_temp_euler(node1, iphys, nod_fld1)
 !
-       end subroutine cal_per_temp_euler
+      end subroutine cal_per_temp_euler
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine cal_per_temp_adams
+      subroutine cal_per_temp_adams
 !
-       use cal_multi_pass
-       use cal_sol_vector_explicit
+      use m_geometry_data
+      use m_node_phys_data
+      use cal_multi_pass
+      use cal_sol_vector_explicit
 !
 !
-       call cal_t_evo_4_scalar_fl(iflag_temp_supg)
-       call cal_sol_part_temp_adams
+      call cal_t_evo_4_scalar_fl(iflag_temp_supg)
+      call cal_sol_part_temp_adams(node1, iphys, nod_fld1)
 !
-       end subroutine cal_per_temp_adams
+      end subroutine cal_per_temp_adams
 !
 ! ----------------------------------------------------------------------
 !

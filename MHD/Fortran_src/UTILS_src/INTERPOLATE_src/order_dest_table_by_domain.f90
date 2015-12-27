@@ -3,7 +3,8 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!      subroutine s_order_dest_table_by_domain(ierr_missing)
+!      subroutine s_order_dest_table_by_domain                          &
+!     &         (internal_node, ierr_missing)
 !
       module order_dest_table_by_domain
 !
@@ -17,21 +18,22 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_order_dest_table_by_domain(ierr_missing)
+      subroutine s_order_dest_table_by_domain                           &
+     &         (internal_node, ierr_missing)
 !
       use calypso_mpi
-      use m_geometry_data
       use m_2nd_pallalel_vector
       use m_interpolate_table_dest
       use m_work_const_itp_table
 !
+      integer(kind = kint), intent(in) :: internal_node
       integer(kind = kint), intent(in) :: ierr_missing
 !
       integer(kind = kint) :: j, jp, inod, icou
       integer(kind = kint) :: my_rank_2nd
 !
 !
-      do inod = 1, node1%internal_node
+      do inod = 1, internal_node
         jp = iflag_org_domain(inod)
         inod_dest_4_dest(inod) = inod
         numnod_dest(jp) = numnod_dest(jp) + 1
@@ -56,7 +58,7 @@
         jp = id_org_domain(j) + 1
         icou = istack_nod_tbl_dest(j-1)
 !
-        do inod = 1, node1%internal_node
+        do inod = 1, internal_node
           if (iflag_org_domain(inod) .eq. jp) then
             icou = icou + 1
             call swap_interpolation_table(icou, inod)
@@ -68,7 +70,7 @@
 !   set missing nodes at the end
 !
       if (ierr_missing .gt. 0) then
-        do inod = 1, node1%internal_node
+        do inod = 1, internal_node
           if (iflag_org_domain(inod) .eq. 0) then
             icou = icou + 1
             call swap_interpolation_table(icou, inod)

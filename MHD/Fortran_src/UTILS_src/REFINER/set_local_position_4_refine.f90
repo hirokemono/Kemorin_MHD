@@ -1,9 +1,12 @@
 !set_local_position_4_refine.f90
 !      module set_local_position_4_refine
 !
-      module set_local_position_4_refine
-!
 !      Written by H. Matsui on Oct., 2007
+!
+!      subroutine s_set_local_position_4_refine                         &
+!     &         (numele, numsurf, numedge)
+!
+      module set_local_position_4_refine
 !
       use m_precision
 !
@@ -18,32 +21,30 @@
       private :: istack_nod_refine_surf
       private :: set_local_posi_refine_ele
 !
-!      subroutine s_set_local_position_4_refine
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_local_position_4_refine
+      subroutine s_set_local_position_4_refine                          &
+     &         (numele, numsurf, numedge)
 !
-      use m_geometry_data
-!
+      integer(kind = kint), intent(in) :: numele, numsurf, numedge
       integer(kind = kint) :: iele, isurf, iedge, ist
 !
 !
-      do iedge = 1, edge1%numedge
+      do iedge = 1, numedge
         ist = istack_nod_refine_edge(iedge-1)
         call set_local_posi_refine_edge(iedge, ist)
       end do
 !
-      do isurf = 1, surf1%numsurf
+      do isurf = 1, numsurf
         ist = istack_nod_refine_surf(isurf-1)
         call set_local_posi_refine_surf(isurf, ist)
       end do
 !
-      do iele = 1, ele1%numele
+      do iele = 1, numele
         ist = istack_nod_refine_ele(iele-1)
         call set_local_posi_refine_ele(iele, ist)
       end do

@@ -266,7 +266,7 @@
 !
       call skip_gz_comment_int(itmp)
 !
-      call allocate_edge_data_4_sf
+      call allocate_edge_data_4_sf(nnod_4_edge)
 !
       do i = 1, edgepetot_viewer
         call get_one_line_from_gz_f

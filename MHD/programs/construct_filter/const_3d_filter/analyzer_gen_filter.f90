@@ -168,8 +168,8 @@
       call init_send_recv(nod_comm)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
-      call s_cal_element_size                                           &
-     &   (jac_3d_q, rhs_tbl_f, mat_tbl_f, rhs_mat_f, FEM_elen_f,        &
+      call s_cal_element_size(node1, ele1, jac_3d_q,                    &
+     &    rhs_tbl_f, mat_tbl_f, rhs_mat_f, FEM_elen_f,                  &
      &    filter_dxi1, dxidxs1)
       call dealloc_jacobians_ele(filter_dxi1)
 !
@@ -204,8 +204,8 @@
         num_failed_whole = 0
         num_failed_fluid = 0
 !
-        call select_const_filter(jac_3d_q, rhs_tbl_f, rhs_mat_f,        &
-    &       FEM_elen_f, dxidxs1, FEM_momenet1)
+        call select_const_filter(node1, ele1, jac_3d_q,                 &
+    &       rhs_tbl_f, rhs_mat_f, FEM_elen_f, dxidxs1, FEM_momenet1)
         call dealloc_jacobians_node(filter_dxi1)
 !
         close(filter_coef_code)

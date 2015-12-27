@@ -56,7 +56,7 @@
       call input_mesh_1st(izero)
 !
       if(iflag_read_old_refine_file .gt. 0) then
-        call read_refinement_table
+        call read_refinement_table(ele1%numele)
       else
         call allocate_old_refine_level(ele1%numele)
       end if
@@ -122,11 +122,11 @@
         end if
 !
         write(*,*) 's_set_refine_flags_4_tri'
-        call s_set_refine_flags_4_tri
+        call s_set_refine_flags_4_tri(node1, ele1)
 !
 !
         write(*,*) 's_set_all_refine_flags'
-        call s_set_all_refine_flags
+        call s_set_all_refine_flags(ele1, surf1, edge1)
 !
         write(*,*) 'check_hanging_surface'
         call check_hanging_surface                                      &
@@ -142,14 +142,16 @@
         call allocate_num_refine_node(node1%numnod, ele1%numele,        &
      &                                surf1%numsurf, edge1%numedge)
         write(*,*) 's_count_nnod_for_refine'
-        call s_count_nnod_for_refine
+        call s_count_nnod_for_refine(node1, ele1, surf1, edge1)
 !
         call allocate_item_refine_node
         write(*,*) 's_set_refined_node_id'
-        call s_set_refined_node_id
+        call s_set_refined_node_id(node1%numnod, ele1%numele,           &
+      &                                surf1%numsurf, edge1%numedge)
 !
         write(*,*) 's_set_local_position_4_refine'
-        call s_set_local_position_4_refine
+        call s_set_local_position_4_refine                              &
+      &    (ele1%numele, surf1%numsurf, edge1%numedge)
 !
 !      call check_refine_items(node1%numnod, ele1%numele,               &
 !     &                        surf1%numsurf, edge1%numedge)
@@ -167,7 +169,7 @@
         call s_refined_nod_2_mesh_data(node1, refined_fem%mesh%node)
 !
 !
-        call s_const_refined_connectivity
+        call s_const_refined_connectivity(ele1, surf1, edge1)
 !
         call s_refined_ele_2_mesh_data(refined_fem%mesh%ele)
         call set_3D_nnod_4_sfed_by_ele                                  &
@@ -179,10 +181,13 @@
      &      edge1%numedge, edge1%nnod_4_edge,                           &
      &      surf1%ie_surf, edge1%ie_edge)
 !
-        call s_const_refined_group(refined_fem%mesh, refined_fem%group)
+        call s_const_refined_group                                      &
+     &     (node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,     &
+     &      refined_fem%mesh, refined_fem%group)
 !
         write(*,*) 's_const_refine_interpolate_tbl'
-        call s_const_refine_interpolate_tbl(refined_fem%mesh)
+        call s_const_refine_interpolate_tbl                             &
+     &     (node1, ele1, surf1, edge1, refined_fem%mesh)
 !
         call deallocate_refine_flags
         call deallocate_refined_local_posi

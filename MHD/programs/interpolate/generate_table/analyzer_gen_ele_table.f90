@@ -14,6 +14,9 @@
       use calypso_mpi
       use m_machine_parameter
 !
+      use m_geometry_data
+      use m_group_data
+!
       use t_mesh_data
       use t_next_node_ele_4_node
       use t_jacobian_3d
@@ -36,9 +39,6 @@
 !
       subroutine init_analyzer
 !
-!
-      use m_geometry_data
-      use m_group_data
 !
       use input_control_gen_table
       use const_mesh_types_info
@@ -114,19 +114,20 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_construct_interpolate_table'
       call s_construct_interpolate_table                                &
-     &   (next_tbl_i%neib_nod, newmesh, newgroup, ierr_missing)
+     &   (node1, next_tbl_i%neib_nod, newmesh, newgroup, ierr_missing)
 !
 !   ordering destination table by domain
 !
       if (iflag_debug.eq.1) write(*,*) 's_order_dest_table_by_domain'
-      call s_order_dest_table_by_domain(ierr_missing)
+      call s_order_dest_table_by_domain                                 &
+     &   (node1%internal_node, ierr_missing)
 !
 !      call check_table_in_org_2(13)
 !
 !   ordering destination table by interpolation type
 !
       if (iflag_debug.eq.1) write(*,*) 's_order_dest_table_by_type'
-      call s_order_dest_table_by_type
+      call s_order_dest_table_by_type(node1, ele1)
 !
       call copy_itp_table_dest_to_IO
 !

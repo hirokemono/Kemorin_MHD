@@ -3,10 +3,10 @@
 !
 !     Written by H. Matsui on Apr., 2010
 !
-!      subroutine set_itp_course_to_fine_origin
+!      subroutine set_itp_course_to_fine_origin(ele, surf, edge)
 !      subroutine set_itp_course_to_fine_dest(nnod_2)
 !
-!      subroutine set_itp_fine_to_course_origin
+!      subroutine set_itp_fine_to_course_origin(nnod_4_ele)
 !      subroutine set_itp_fine_to_course_dest
 !
       module set_refine_interpolate_tbl
@@ -16,7 +16,6 @@
 !
       use m_constants
       use m_geometry_constants
-      use m_geometry_data
       use m_refined_node_id
 !
       use m_interpolate_table_orgin
@@ -32,7 +31,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_itp_course_to_fine_origin
+      subroutine set_itp_course_to_fine_origin(ele, surf, edge)
+!
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
+!
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
 !
       integer(kind = kint) :: iele, isurf, iedge, inod, isig
       integer(kind = kint) :: isf_ele, ied_ele, ist, ied, inum, k1
@@ -61,10 +68,10 @@
       call allocate_itp_table_org
       itype_inter_org(1:ntot_table_org) = -1
 !
-      do iele = 1, ele1%numele
+      do iele = 1, ele%numele
 !
-        do k1 = 1, ele1%nnod_4_ele
-          inod = ele1%ie(iele,k1)
+        do k1 = 1, ele%nnod_4_ele
+          inod = ele%ie(iele,k1)
 !
           if(itype_inter_org(inod) .eq. -1) then
             call copy_node_local_posi_2_element(k1, xi_ele)
@@ -77,8 +84,8 @@
         end do
 !
         do ied_ele = 1, nedge_4_ele
-          iedge = abs(edge1%iedge_4_ele(iele,ied_ele))
-          isig = edge1%iedge_4_ele(iele,ied_ele) / iedge
+          iedge = abs(edge%iedge_4_ele(iele,ied_ele))
+          isig = edge%iedge_4_ele(iele,ied_ele) / iedge
 !
             ist = istack_nod_refine_edge(iedge-1) + 1
             ied = istack_nod_refine_edge(iedge)
@@ -98,8 +105,8 @@
         end do
 !
         do isf_ele = 1, nsurf_4_ele
-          isurf = abs(surf1%isf_4_ele(iele,isf_ele))
-          if(surf1%isf_4_ele(iele,isf_ele) .gt. 0) then
+          isurf = abs(surf%isf_4_ele(iele,isf_ele))
+          if(surf%isf_4_ele(iele,isf_ele) .gt. 0) then
             ist = istack_nod_refine_surf(isurf-1) + 1
             ied = istack_nod_refine_surf(isurf)
             do inum = ist, ied
@@ -109,7 +116,7 @@
                 xi_surf(1) = xi_refine_surf(inum,1)
                 xi_surf(2) = xi_refine_surf(inum,2)
                 call copy_surf_local_posi_2_element(isf_ele,            &
-     &              surf1%isf_rot_ele(iele,isf_ele), xi_surf, xi_ele)
+     &              surf%isf_rot_ele(iele,isf_ele), xi_surf, xi_ele)
 !
                 inod_gl_dest_4_org(inod) = inod
                 iele_org_4_org(inod) =     iele
@@ -165,10 +172,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_itp_fine_to_course_origin
+      subroutine set_itp_fine_to_course_origin(nnod_4_ele)
 !
       use m_refined_element_data
 !
+      integer(kind = kint), intent(in) :: nnod_4_ele
       integer(kind = kint) :: iele, k1, inod
       real(kind = kreal) :: xi_ele(3)
 !
@@ -193,7 +201,7 @@
 !
       do iele = 1, ntot_ele_refined
 !
-        do k1 = 1, ele1%nnod_4_ele
+        do k1 = 1, nnod_4_ele
           inod = ie_refined(iele,k1)
 !
           if(inod.le.ntot_nod_refine_nod) then

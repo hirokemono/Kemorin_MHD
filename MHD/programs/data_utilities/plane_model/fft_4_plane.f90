@@ -10,6 +10,7 @@
 
       use m_precision
 !
+      use m_geometry_data
       use m_read_mesh_data
       use m_size_4_plane
       use m_spectr_4_ispack
@@ -70,7 +71,7 @@
 !     count number of node for each domain
 !
       write(*,*) 'count_number_w_overlap'
-      call count_number_w_overlap
+      call count_number_w_overlap(ele1%nnod_4_ele)
 !
 !   read field name and number of components
 !

@@ -3,7 +3,7 @@
 !
 !      Writen by H. Matsui on Oct., 2007
 !
-!      subroutine s_set_refine_flags_4_tri
+!      subroutine s_set_refine_flags_4_tri(node, ele)
 !
       module set_refine_flags_4_tri
 !
@@ -21,6 +21,7 @@
       private :: set_refine_id_for_stri_n4, set_refine_id_for_stri_n2
 !
       private :: mark_refine_node_flag, redefine_refine_node_flag
+      private :: remark_refine_data
 !
 !  ---------------------------------------------------------------------
 !
@@ -28,31 +29,34 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_refine_flags_4_tri
+      subroutine s_set_refine_flags_4_tri(node, ele)
 !
+      use t_geometry_data
       use m_machine_parameter
-      use m_geometry_data
       use m_refine_flag_parameters
       use m_refined_element_data
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
 !
       integer(kind = kint) :: inum, iele, icou, iflag
 !
 !
-      allocate(imark_ele(ele1%numele))
+      allocate(imark_ele(ele%numele))
       imark_ele = 0
 !
       if(iflag_tmp_tri_refine .eq. 0) then
         write(*,*) 'mark_refine_node_flag '
-        call mark_refine_node_flag(node1%numnod, ele1%numele, ele1%ie)
+        call mark_refine_node_flag(node%numnod, ele%numele, ele%ie)
       else
         write(*,*) 'redefine_refine_node_flag '
-        call redefine_refine_node_flag(node1%numnod)
+        call redefine_refine_node_flag(node%numnod)
       end if
 !
       icou = 0
       iflag = 1
       do while (iflag .gt. 0)
-        call remark_refine_data(iflag)
+        call remark_refine_data(ele, iflag)
         icou = icou + 1
         write(*,*) 'remark_refine_data end ', icou, iflag
       end do
@@ -62,12 +66,12 @@
       if(iflag_debug .gt. 0) then
 !
         write(50,'(a)') 'error nummber of marks:  0'
-        do iele = 1, ele1%numele
+        do iele = 1, ele%numele
           if(imark_ele(iele) .eq. 0) then
             icou = icou + 1
             if( iflag_refine_ele(iele) .ne. 0) then
               write(50,'(i16,8i3,i6)')                                  &
-     &                            iele, imark_nod(ele1%ie(iele,1:8)),   &
+     &                            iele, imark_nod(ele%ie(iele,1:8)),    &
      &                            iflag_refine_ele(iele)
             end if
           end if
@@ -75,20 +79,20 @@
 !
         inum = 3
         write(50,'(a,i2)') 'nummber of marks:  ', inum
-        do iele = 1, ele1%numele
+        do iele = 1, ele%numele
           if(imark_ele(iele) .eq. inum) then
             write(50,'(i16,8i3,i6)')                                    &
-     &                          iele, imark_nod(ele1%ie(iele,1:8)),     &
+     &                          iele, imark_nod(ele%ie(iele,1:8)),      &
      &                          iflag_refine_ele(iele)
           end if
         end do
 !
         do inum = 5, 7
           write(50,'(a,i2)') 'nummber of marks:  ', inum
-          do iele = 1, ele1%numele
+          do iele = 1, ele%numele
             if(imark_ele(iele) .eq. inum) then
                write(50,'(i16,8i3,i6)')                                 &
-     &                            iele, imark_nod(ele1%ie(iele,1:8)),   &
+     &                            iele, imark_nod(ele%ie(iele,1:8)),    &
      &                            iflag_refine_ele(iele)
             end if
           end do
@@ -96,17 +100,17 @@
 !
         icou = 0
         write(50,'(a)') 'error nummber of marks:  8'
-        do iele = 1, ele1%numele
+        do iele = 1, ele%numele
           if(imark_ele(iele) .eq. 8) then
             icou = icou + 1
             if( iflag_refine_ele(iele) .ne. 300) then
               write(50,'(i16,8i3,i6)')                                  &
-     &                            iele, imark_nod(ele1%ie(iele,1:8)),   &
+     &                            iele, imark_nod(ele%ie(iele,1:8)),    &
      &                            iflag_refine_ele(iele)
             end if
           end if
         end do
-        write(50,'(a,2i16)') 'total refine ele: ', icou, ele1%numele
+        write(50,'(a,2i16)') 'total refine ele: ', icou, ele%numele
       end if
 !
       write(*,*) 'deallocate imark_ele'
@@ -117,21 +121,22 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine remark_refine_data(iflag_retry)
+      subroutine remark_refine_data(ele, iflag_retry)
 !
+      use t_geometry_data
       use m_control_param_4_refiner
-      use m_geometry_data
       use m_refine_flag_parameters
       use m_refined_element_data
 !
+      type(element_data), intent(in) :: ele
       integer(kind = kint), intent(inout) :: iflag_retry
       integer(kind = kint) :: iele, k1, inod
 !
 !
       imark_ele = 0
-      do iele = 1, ele1%numele
+      do iele = 1, ele%numele
         do k1 = 1, 8
-          inod = ele1%ie(iele,k1)
+          inod = ele%ie(iele,k1)
           imark_ele(iele) = imark_ele(iele) + imark_nod(inod)
         end do
       end do
@@ -139,31 +144,31 @@
       write(*,*) 'marking finish'
 !
       iflag_retry = 0
-      do iele = 1, ele1%numele
+      do iele = 1, ele%numele
         if(imark_ele(iele) .eq. 5) then
-          call change_refine_id_for_n5(ele1%numele, ele1%ie,            &
+          call change_refine_id_for_n5(ele%numele, ele%ie,              &
      &        iele, iflag_retry)
         end if
       end do
       write(*,*) 'n=5 fixed'
 !
-      do iele = 1, ele1%numele
+      do iele = 1, ele%numele
         if(imark_ele(iele) .eq. 7) then
-          call change_refine_id_for_n7(ele1%numele, ele1%ie,            &
+          call change_refine_id_for_n7(ele%numele, ele%ie,              &
      &        iele, iflag_retry)
         end if
       end do
       write(*,*) 'n=7 fixed'
 !
-      do iele = 1, ele1%numele
+      do iele = 1, ele%numele
         if(imark_ele(iele) .eq. 2) then
-          call set_refine_id_for_n2(ele1%numele, ele1%ie,               &
+          call set_refine_id_for_n2(ele%numele, ele%ie,                 &
      &        iele, iflag_refine_ele(iele), iflag_retry)
         else if(imark_ele(iele) .eq. 3) then
-          call set_refine_id_for_n3(ele1%numele, ele1%ie,               &
+          call set_refine_id_for_n3(ele%numele, ele%ie,                 &
      &        iele, iflag_refine_ele(iele))
         else if(imark_ele(iele) .eq. 6) then
-          call set_refine_id_for_n6(ele1%numele, ele1%ie,               &
+          call set_refine_id_for_n6(ele%numele, ele%ie,                 &
      &        iele, iflag_refine_ele(iele), iflag_retry)
         end if
       end do
@@ -172,7 +177,7 @@
       if (iflag_retry .gt. 0) return
 !
       iflag_tmp_tri_refine = 0
-      do iele = 1, ele1%numele
+      do iele = 1, ele%numele
         if( iflag_refine_ele(iele) .ge. iflag_five_x                    &
      &   .and. iflag_refine_ele(iele) .le. iflag_five_s6) then
           iflag_tmp_tri_refine = 1
@@ -182,14 +187,14 @@
 !
       if(iflag_tmp_tri_refine .eq. 0) then
         if (iflag_small_tri_refine .eq.1)  then
-          do iele = 1, ele1%numele
+          do iele = 1, ele%numele
             if(imark_ele(iele) .eq. 1) then
               iflag_refine_ele(iele) = iflag_nothing
             else if(imark_ele(iele) .eq. 2) then
-              call set_refine_id_for_stri_n2(ele1%numele, ele1%ie,      &
+              call set_refine_id_for_stri_n2(ele%numele, ele%ie,        &
      &            iele, iflag_refine_ele(iele), iflag_retry)
             else if(imark_ele(iele) .eq. 4) then
-              call set_refine_id_for_stri_n4(ele1%numele, ele1%ie,      &
+              call set_refine_id_for_stri_n4(ele%numele, ele%ie,        &
      &            iele, iflag_refine_ele(iele) )
             else if(imark_ele(iele) .eq. 8) then
               iflag_refine_ele(iele) = iflag_tri_full_eq
@@ -198,15 +203,15 @@
 !
         else
 !
-          do iele = 1, ele1%numele
+          do iele = 1, ele%numele
             if(imark_ele(iele) .eq. 1) then
-              call set_refine_id_for_n1(ele1%numele, ele1%ie,           &
+              call set_refine_id_for_n1(ele%numele, ele%ie,             &
      &            iele, iflag_refine_ele(iele))
             else if(imark_ele(iele) .eq. 2) then
-              call set_refine_id_for_n2(ele1%numele, ele1%ie, iele,     &
+              call set_refine_id_for_n2(ele%numele, ele%ie, iele,       &
      &            iflag_refine_ele(iele), iflag_retry)
             else if(imark_ele(iele) .eq. 4) then
-              call set_refine_id_for_n4(ele1%numele, ele1%ie,           &
+              call set_refine_id_for_n4(ele%numele, ele%ie,             &
      &            iele, iflag_refine_ele(iele))
             else if(imark_ele(iele) .eq. 8) then
               iflag_refine_ele(iele) = iflag_tri_full
@@ -216,7 +221,7 @@
 !
       else
 !
-        do iele = 1, ele1%numele
+        do iele = 1, ele%numele
           if(    imark_ele(iele) .eq. 1 .or. imark_ele(iele) .eq. 2     &
      &      .or. imark_ele(iele) .eq. 4 .or. imark_ele(iele) .eq. 8     &
      &      ) then

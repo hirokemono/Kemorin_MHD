@@ -3,9 +3,10 @@
 !
 !      Written by H. Matsui on July, 2010
 !
-!!      subroutine set_gravity_2_each_node(i_field, i_res, coef)
+!!      subroutine set_gravity_2_each_node                              &
+!!     &          (i_field, i_res, coef, node, nod_fld)
 !!      subroutine set_double_gravity_2_each_node(i_f1, i_f2, i_r1,     &
-!!     &          c1, c2)
+!!     &          c1, c2, node, nod_fld)
 !!      subroutine set_boussinesq_density_2_node(numnod, inod_smp_stack,&
 !!     &          c_t, c_d, ncomp_nod, i_t, i_d, i_rho, d_nod)
 !!
@@ -32,27 +33,30 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_gravity_2_each_node(i_field, i_res, coef)
+      subroutine set_gravity_2_each_node                                &
+     &          (i_field, i_res, coef, node, nod_fld)
 !
-      use m_geometry_data
-      use m_node_phys_data
+      use t_geometry_data
+      use t_phys_data
 !
-       integer(kind = kint), intent(in) :: i_field, i_res
-       real(kind = kreal), intent(in) :: coef
+      integer(kind = kint), intent(in) :: i_field, i_res
+      real(kind = kreal), intent(in) :: coef
+      type(node_data), intent(in) :: node
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
        if      (i_grav .eq. iflag_const_g) then
          call const_g_2_each_node                                       &
-     &      (node1%numnod, node1%istack_nod_smp, coef,                  &
-     &       nod_fld1%ntot_phys, i_field, i_res, nod_fld1%d_fld)
+     &      (node%numnod, node%istack_nod_smp, coef,                    &
+     &       nod_fld%ntot_phys, i_field, i_res, nod_fld%d_fld)
        else if (i_grav .eq. iflag_radial_g) then
          call radial_g_2_each_node                                      &
-     &      (node1%numnod, node1%istack_nod_smp, node1%xx, node1%a_r,   &
-     &       coef, nod_fld1%ntot_phys, i_field, i_res, nod_fld1%d_fld)
+     &      (node%numnod, node%istack_nod_smp, node%xx, node%a_r,       &
+     &       coef, nod_fld%ntot_phys, i_field, i_res, nod_fld%d_fld)
        else if (i_grav .eq. iflag_self_r_g) then
          call self_g_2_each_node                                        &
-     &      (node1%numnod, node1%istack_nod_smp, node1%xx, coef,        &
-     &       nod_fld1%ntot_phys, i_field, i_res, nod_fld1%d_fld)
+     &      (node%numnod, node%istack_nod_smp, node%xx, coef,           &
+     &       nod_fld%ntot_phys, i_field, i_res, nod_fld%d_fld)
        end if
 !
       end subroutine set_gravity_2_each_node
@@ -60,28 +64,31 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_double_gravity_2_each_node(i_f1, i_f2, i_res,      &
-     &          c1, c2)
+     &          c1, c2, node, nod_fld)
 !
-      use m_geometry_data
-      use m_node_phys_data
+      use t_geometry_data
+      use t_phys_data
 !
-       integer(kind = kint), intent(in) :: i_f1, i_f2, i_res
-       real(kind = kreal), intent(in) :: c1, c2
+      integer(kind = kint), intent(in) :: i_f1, i_f2, i_res
+      real(kind = kreal), intent(in) :: c1, c2
+      type(node_data), intent(in) :: node
+      type(phys_data), intent(inout) :: nod_fld
+!
 !
 !
        if     (i_grav .eq. iflag_const_g) then
          call const_double_g_2_each_node                                &
-     &      (node1%numnod, node1%istack_nod_smp, c1, c2,                &
-     &       nod_fld1%ntot_phys, i_f1, i_f2, i_res, nod_fld1%d_fld)
+     &      (node%numnod, node%istack_nod_smp, c1, c2,                  &
+     &       nod_fld%ntot_phys, i_f1, i_f2, i_res, nod_fld%d_fld)
        else if(i_grav .eq. iflag_radial_g) then
          call radial_double_g_2_each_node                               &
-     &      (node1%numnod, node1%istack_nod_smp, node1%xx, node1%a_r,   &
-     &       c1, c2, nod_fld1%ntot_phys, i_f1, i_f2, i_res,             &
-     &       nod_fld1%d_fld)
+     &      (node%numnod, node%istack_nod_smp, node%xx, node%a_r,       &
+     &       c1, c2, nod_fld%ntot_phys, i_f1, i_f2, i_res,             &
+     &       nod_fld%d_fld)
        else if(i_grav .eq. iflag_self_r_g) then
          call self_double_g_2_each_node                                 &
-     &      (node1%numnod, node1%istack_nod_smp, node1%xx, c1, c2,      &
-     &       nod_fld1%ntot_phys, i_f1, i_f2, i_res, nod_fld1%d_fld)
+     &      (node%numnod, node%istack_nod_smp, node%xx, c1, c2,         &
+     &       nod_fld%ntot_phys, i_f1, i_f2, i_res, nod_fld%d_fld)
        end if
 !
       end subroutine set_double_gravity_2_each_node

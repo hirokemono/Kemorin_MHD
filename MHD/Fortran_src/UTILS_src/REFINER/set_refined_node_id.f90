@@ -1,6 +1,9 @@
 !set_refined_node_id.f90
 !      module set_refined_node_id
 !
+!      subroutine s_set_refined_node_id                                 &
+!     &         (numnod, numele, numsurf, numedge)
+!
       module set_refined_node_id
 !
       use m_precision
@@ -11,28 +14,29 @@
       private :: set_inod_refine_surf
       private :: set_inod_refine_ele
 !
-!      subroutine s_set_refined_node_id
-!
 !  ---------------------------------------------------------------------
 !
       contains
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_set_refined_node_id
+      subroutine s_set_refined_node_id                                  &
+     &         (numnod, numele, numsurf, numedge)
 !
-      use m_geometry_data
       use m_refined_element_data
       use m_refined_node_id
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+      integer(kind = kint), intent(in) :: numsurf, numedge
 !
       integer(kind = kint) :: inod, iedge, isurf, iele
       integer(kind = kint) :: ist, jst, jed
 !
-      do inod = 1, node1%numnod
+      do inod = 1, numnod
         inod_refine_nod(inod) = inod
       end do
 !
-      do iedge = 1, edge1%numedge
+      do iedge = 1, numedge
         ist = ntot_nod_refine_nod + istack_nod_refine_edge(iedge-1)
         jst = istack_nod_refine_edge(iedge-1) + 1
         jed = istack_nod_refine_edge(iedge)
@@ -42,7 +46,7 @@
 !
       end do
 !
-      do isurf = 1, surf1%numsurf
+      do isurf = 1, numsurf
         ist = ntot_nod_refine_nod + ntot_nod_refine_edge                &
      &       + istack_nod_refine_surf(isurf-1)
         jst = istack_nod_refine_surf(isurf-1) + 1
@@ -53,7 +57,7 @@
 !
       end do
 !
-      do iele = 1, ele1%numele
+      do iele = 1, numele
         ist = ntot_nod_refine_nod + ntot_nod_refine_edge                &
      &       + ntot_nod_refine_surf + istack_nod_refine_ele(iele-1)
         jst = istack_nod_refine_ele(iele-1) + 1

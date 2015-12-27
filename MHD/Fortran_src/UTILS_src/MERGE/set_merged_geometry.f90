@@ -5,7 +5,7 @@
 !
 !      subroutine set_merged_mesh_and_group
 !      subroutine set_merged_node_and_element
-!      subroutine set_overlapped_mesh_and_group
+!      subroutine set_overlapped_mesh_and_group(nnod_4_ele)
 !
       module set_merged_geometry
 !
@@ -27,6 +27,8 @@
 !
       use const_merged_groups
 !
+      integer (kind = kint) :: nnod_4_ele
+!
 !
 !      write(*,*) 'allocate_number_of_mesh'
       call allocate_number_of_mesh
@@ -35,7 +37,7 @@
 !     count number of node for each domain
 !
 !       write(*,*) 'count_number_w_overlap'
-       call count_number_w_overlap
+       call count_number_w_overlap(nnod_4_ele)
 !
 !     array allocation
 !
@@ -59,6 +61,8 @@
 !
       subroutine set_merged_node_and_element
 !
+      integer (kind = kint) :: nnod_4_ele
+!
 !
 !      write(*,*) 'allocate_number_of_mesh'
       call allocate_number_of_mesh
@@ -67,7 +71,7 @@
 !     count number of node for each domain
 !
 !       write(*,*) 'count_number_w_overlap'
-       call count_number_w_overlap
+       call count_number_w_overlap(nnod_4_ele)
 !
 !     array allocation
 !
@@ -85,9 +89,11 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_overlapped_mesh_and_group
+      subroutine set_overlapped_mesh_and_group(nnod_4_ele)
 !
       use const_overlap_groups
+!
+      integer (kind = kint), intent(inout) :: nnod_4_ele
 !
 !
 !       write(*,*) 'allocate_number_of_mesh'
@@ -97,7 +103,7 @@
 !     count number of node for each domain
 !
        write(*,*) 'count_number_w_overlap'
-       call count_number_w_overlap
+       call count_number_w_overlap(nnod_4_ele)
 !
 !     array allocation
 !

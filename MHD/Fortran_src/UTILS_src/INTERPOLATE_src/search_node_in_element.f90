@@ -75,7 +75,7 @@
      &              ) then
 !
                  call s_cal_interpolate_coefs                           &
-     &              (org_node, org_ele, my_rank, inod, jele,            &
+     &              (dest_node, org_node, org_ele, my_rank, inod, jele, &
      &               zero, iflag_nomessage, iflag_org_tmp)
                  if ( iflag_org_domain(inod) .gt. 0) go to 10
                end if
@@ -132,7 +132,7 @@
               jele = org_blk%ele_list_by_rng%item_grp(jnum)
 !
                 call s_cal_interpolate_coefs                            &
-     &              (org_node, org_ele, my_rank, inod, jele,            &
+     &              (dest_node, org_node, org_ele, my_rank, inod, jele, &
      &               zero, iflag_nomessage, iflag_org_tmp)
                 if ( iflag_org_domain(inod) .gt. 0) go to 10
 !
@@ -178,8 +178,9 @@
             do jele = 1, org_ele%numele
 !
               call s_cal_interpolate_coefs                              &
-     &           (org_node, org_ele, my_rank_2nd, inod, jele,           &
-     &            error_level, iflag_message, iflag_org_tmp)
+     &           (dest_node, org_node, org_ele, my_rank_2nd,            &
+     &            inod, jele,  error_level, iflag_message,              &
+     &            iflag_org_tmp)
               if ( iflag_org_domain(inod) .gt. 0) go to  10
             end do
 !
@@ -229,7 +230,7 @@
             do jele = 1, org_ele%numele
 !
               call s_cal_interpolate_coefs                              &
-      &          (org_node, org_ele, my_rank_2nd, inod, jele,           &
+     &          (dest_node, org_node, org_ele, my_rank_2nd, inod, jele, &
      &            error_level, iflag_message, iflag_org_tmp)
               if ( iflag_org_domain(inod) .gt. 0) go to  10
             end do

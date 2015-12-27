@@ -86,31 +86,35 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine cal_composit_pre_euler
+      subroutine cal_composit_pre_euler
 !
-       use cal_multi_pass
-       use cal_sol_vector_explicit
+      use m_geometry_data
+      use m_node_phys_data
+      use cal_multi_pass
+      use cal_sol_vector_explicit
 !
-       call cal_t_evo_4_scalar_fl(iflag_comp_supg)
-       call cal_sol_d_scalar_euler
+      call cal_t_evo_4_scalar_fl(iflag_comp_supg)
+      call cal_sol_d_scalar_euler(node1, iphys, nod_fld1)
 !
-       end subroutine cal_composit_pre_euler
-!
-! ----------------------------------------------------------------------
-!
-       subroutine cal_composit_pre_adams
-!
-       use cal_multi_pass
-       use cal_sol_vector_explicit
-!
-       call cal_t_evo_4_scalar_fl(iflag_comp_supg)
-       call cal_sol_d_scalar_adams
-!
-       end subroutine cal_composit_pre_adams
+      end subroutine cal_composit_pre_euler
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine cal_composit_pre_crank
+      subroutine cal_composit_pre_adams
+!
+      use m_geometry_data
+      use m_node_phys_data
+      use cal_multi_pass
+      use cal_sol_vector_explicit
+!
+      call cal_t_evo_4_scalar_fl(iflag_comp_supg)
+      call cal_sol_d_scalar_adams(node1, iphys, nod_fld1)
+!
+      end subroutine cal_composit_pre_adams
+!
+! ----------------------------------------------------------------------
+!
+      subroutine cal_composit_pre_crank
 !
       use m_geometry_data
       use m_t_step_parameter

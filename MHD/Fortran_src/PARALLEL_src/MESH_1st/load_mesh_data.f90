@@ -38,6 +38,7 @@
 !
       integer(kind = kint), intent(in) :: my_rank
 !
+!
       call input_mesh                                                   &
      &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
      &    surf1%nnod_4_surf, edge1%nnod_4_edge)

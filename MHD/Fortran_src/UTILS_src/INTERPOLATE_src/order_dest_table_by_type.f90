@@ -7,7 +7,9 @@
 !>@brief Sort interpolation table by interpolation type
 !!
 !!@verbatim
-!!      subroutine s_order_dest_table_by_type
+!!      subroutine s_order_dest_table_by_type(node, ele)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
 !!@endverbatim
 !
       module order_dest_table_by_type
@@ -22,11 +24,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_order_dest_table_by_type
+      subroutine s_order_dest_table_by_type(node, ele)
 !
       use calypso_mpi
+!
+      use t_geometry_data
+!
       use m_geometry_constants
-      use m_geometry_data
       use m_interpolate_table_dest
       use m_interpolate_coefs_dest
       use m_work_const_itp_table
@@ -39,6 +43,9 @@
       use set_interpolate_type_20
       use set_interpolate_type_27
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+!
       integer(kind = kint) :: i, j, k, ist, ied, ist_type
 !
 !
@@ -48,13 +55,13 @@
         ist_type = 4*(i-1)
 !
 !        write(*,*) 'count', i, ist, ied
-        if (ele1%nnod_4_ele .eq. num_t_linear) then
+        if (ele%nnod_4_ele .eq. num_t_linear) then
           call s_count_interpolate_type_8(ist, ied,                     &
      &        nnod_table_wtype_dest(ist_type+1) )
-        else if (ele1%nnod_4_ele .eq. num_t_quad) then
+        else if (ele%nnod_4_ele .eq. num_t_quad) then
           call s_count_interpolate_type_20(ist, ied,                    &
      &        nnod_table_wtype_dest(ist_type+1) )
-        else if (ele1%nnod_4_ele .eq. num_t_lag) then
+        else if (ele%nnod_4_ele .eq. num_t_lag) then
           call s_count_interpolate_type_27(ist, ied,                    &
      &        nnod_table_wtype_dest(ist_type+1) )
         end if
@@ -77,15 +84,15 @@
         ied = istack_nod_tbl_dest(i)
         ist_type = 4*(i-1)
 !
-        if (ele1%nnod_4_ele .eq. num_t_linear) then
+        if (ele%nnod_4_ele .eq. num_t_linear) then
           call s_order_interpolate_type_8(my_rank, ist, ied,            &
      &        istack_nod_tbl_wtype_dest(ist_type),                      &
      &        nnod_table_wtype_dest(ist_type+1) )
-        else if (ele1%nnod_4_ele .eq. num_t_quad) then
+        else if (ele%nnod_4_ele .eq. num_t_quad) then
           call s_order_interpolate_type_20(my_rank, ist, ied,           &
      &        istack_nod_tbl_wtype_dest(ist_type),                      &
      &        nnod_table_wtype_dest(ist_type+1) )
-        else if (ele1%nnod_4_ele .eq. num_t_lag) then
+        else if (ele%nnod_4_ele .eq. num_t_lag) then
           call s_order_interpolate_type_27(my_rank, ist, ied,           &
      &        istack_nod_tbl_wtype_dest(ist_type),                      &
      &        nnod_table_wtype_dest(ist_type+1) )
@@ -96,8 +103,8 @@
 !
       ntot_table_dest = istack_nod_tbl_dest(num_org_domain)
 !
-      do i = 1, node1%internal_node
-        inod_gl_dest(i) = node1%inod_global(inod_dest_4_dest(i))
+      do i = 1, node%internal_node
+        inod_gl_dest(i) = int(node%inod_global(inod_dest_4_dest(i)))
       end do
 !
       end subroutine s_order_dest_table_by_type

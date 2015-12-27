@@ -1,9 +1,11 @@
 !
 !      module set_surf_connect_4_viewer
 !
-      module set_surf_connect_4_viewer
-!
 !      Written by Kemorin in Jan., 2007
+!
+!      subroutine s_set_surf_connect_4_viewer(nnod_4_surf)
+!
+      module set_surf_connect_4_viewer
 !
       use m_precision
 !
@@ -14,20 +16,19 @@
 !
       private :: s_set_groups_4_viewer_surface
 !
-!      subroutine s_set_surf_connect_4_viewer
-!
 !------------------------------------------------------------------
 !
       contains
 !
 !------------------------------------------------------------------
 !
-      subroutine s_set_surf_connect_4_viewer
+      subroutine s_set_surf_connect_4_viewer(nnod_4_surf)
 !
-      use m_geometry_data
       use m_surf_geometry_4_merge
       use m_pickup_table_4_viewer
       use pickup_surface_4_viewer
+!
+      integer(kind = kint), intent(in) :: nnod_4_surf
 !
 !
        write(*,*) 'allocate_imark_surf'
@@ -45,7 +46,7 @@
       call deallocate_imark_surf
 !
        write(*,*) 'allocate_surf_connect_viewer'
-      call allocate_surf_connect_viewer(surf1%nnod_4_surf)
+      call allocate_surf_connect_viewer(nnod_4_surf)
       call set_surf_connect_viewer
 !
       call s_set_groups_4_viewer_surface

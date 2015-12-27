@@ -120,42 +120,47 @@
 ! ----------------------------------------------------------------------
 !  --------  subroutine cal_velo_pre_euler  -------
 !
-       subroutine cal_velo_pre_euler
+      subroutine cal_velo_pre_euler
 !
-       use cal_multi_pass
-       use cal_sol_vector_explicit
-       use int_vol_coriolis_term
+      use m_geometry_data
+      use m_node_phys_data
+      use cal_multi_pass
+      use cal_sol_vector_explicit
+      use int_vol_coriolis_term
 !
-       call cal_t_evo_4_vector_fl(iflag_velo_supg)
+      call cal_t_evo_4_vector_fl(iflag_velo_supg)
 !
-       if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
-       call int_coriolis_nod_exp
-       if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
-       call int_buoyancy_nod_exp
+      if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
+      call int_coriolis_nod_exp
+      if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
+      call int_buoyancy_nod_exp
 !
-       call cal_sol_velo_pre_euler
+      call cal_sol_velo_pre_euler(node1, iphys, nod_fld1)
 !
-       end subroutine cal_velo_pre_euler
+      end subroutine cal_velo_pre_euler
 !
 ! ----------------------------------------------------------------------
 !  --------  subroutine cal_velo_pre_adams  -------
 !
-       subroutine cal_velo_pre_adams
+      subroutine cal_velo_pre_adams
 !
-       use cal_multi_pass
-       use cal_sol_vector_explicit
-       use int_vol_coriolis_term
+      use m_geometry_data
+      use m_node_phys_data
+      use cal_multi_pass
+      use cal_sol_vector_explicit
+      use int_vol_coriolis_term
 !
-       call cal_t_evo_4_vector_fl(iflag_velo_supg)
 !
-       if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
-       call int_coriolis_nod_exp
-       if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
-       call int_buoyancy_nod_exp
+      call cal_t_evo_4_vector_fl(iflag_velo_supg)
 !
-       call cal_sol_velo_pre_adams
+      if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
+      call int_coriolis_nod_exp
+      if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
+      call int_buoyancy_nod_exp
 !
-       end subroutine cal_velo_pre_adams
+      call cal_sol_velo_pre_adams(node1, iphys, nod_fld1)
+!
+      end subroutine cal_velo_pre_adams
 !
 ! ----------------------------------------------------------------------
 !  --------  subroutine cal_velo_pre_crank  -------

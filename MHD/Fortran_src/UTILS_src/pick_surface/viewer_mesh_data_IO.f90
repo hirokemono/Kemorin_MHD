@@ -220,7 +220,7 @@
       call skip_comment(tmp_character, surface_id)
       read(tmp_character,*) itmp
 !
-      call allocate_edge_data_4_sf
+      call allocate_edge_data_4_sf(nnod_4_edge)
 !
       do i = 1, edgepetot_viewer
        read(surface_id,*) itmp, ie_edge_viewer(i,1:nnod_4_edge)

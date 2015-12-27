@@ -32,7 +32,7 @@
 !      subroutine deallocate_sf_gp_nod_item_sf
 !      subroutine deallocate_sf_grp_edge_item_sf
 !
-!      subroutine check_edge_connent_viewer
+!      subroutine check_edge_connent_viewer(nnod_4_edge)
 !
       module m_surface_mesh_4_merge
 !
@@ -172,12 +172,14 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine allocate_edge_data_4_sf
+      subroutine allocate_edge_data_4_sf(nnod_4_edge)
 !
       use m_geometry_constants
-      use m_geometry_data
 !
-      allocate (ie_edge_viewer(edgepetot_viewer,edge1%nnod_4_edge))
+      integer(kind = kint), intent(in) :: nnod_4_edge
+!
+!
+      allocate (ie_edge_viewer(edgepetot_viewer,nnod_4_edge))
       allocate (iedge_sf_viewer(surfpetot_viewer,nedge_4_surf) )
       ie_edge_viewer = 0
       iedge_sf_viewer = 0
@@ -381,10 +383,9 @@
 !------------------------------------------------------------------
 !------------------------------------------------------------------
 !
-      subroutine check_edge_connent_viewer
+      subroutine check_edge_connent_viewer(nnod_4_edge)
 !
-      use m_geometry_data
-!
+      integer(kind = kint), intent(in) :: nnod_4_edge
       integer(kind = kint) :: iedge
 !
 !
@@ -392,7 +393,7 @@
       write(50,*) 'iedge_sf_stack', iedge_sf_stack
       write(50,*) 'ie_edge_viewer'
       do iedge = 1, edgepetot_viewer
-        write(50,*) iedge, ie_edge_viewer(iedge,1:edge1%nnod_4_edge)
+        write(50,*) iedge, ie_edge_viewer(iedge,1:nnod_4_edge)
       end do
 !
       end subroutine check_edge_connent_viewer
