@@ -30,7 +30,7 @@
       use m_geometry_data
       use m_addresses_trans_hbd_MHD
       use const_element_comm_tables
-      use load_mesh_type_data
+      use load_mesh_data
 !
       iphys_sph%i_magne =      1
       iphys_sph%i_current =    4

@@ -25,6 +25,7 @@
       use m_control_parameter
       use m_t_step_parameter
 !
+      use m_mesh_data
       use m_nod_comm_table
       use m_geometry_data
       use m_geometry_data_MHD
@@ -45,7 +46,6 @@
 !
       use t_layering_ele_list
 !
-      use const_mesh_info
       use count_whole_num_element
 !
       use cal_volume_node_MHD

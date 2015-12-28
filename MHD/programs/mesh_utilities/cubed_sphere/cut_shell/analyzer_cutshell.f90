@@ -28,11 +28,12 @@
       subroutine  initialize_cutshell
 !
       use m_control_data_4_cutshell
+      use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
       use m_read_mesh_data
       use load_mesh_data
       use set_control_cut_shell
-      use const_mesh_info
       use cal_mesh_position
       use const_cutshell_mesh
 !
@@ -43,7 +44,9 @@
 !  read global mesh
 !
       mesh_file_head = original_mesh_head
-      call input_mesh_1st(my_rank)
+      call input_mesh                                                   &
+     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
@@ -57,7 +60,7 @@
 !
       use m_read_mesh_data
       use const_cutshell_mesh
-      use load_mesh_type_data
+      use load_mesh_data
 !
 !
       call s_const_reduced_geometry(cutted_fem%mesh, cutted_fem%group)

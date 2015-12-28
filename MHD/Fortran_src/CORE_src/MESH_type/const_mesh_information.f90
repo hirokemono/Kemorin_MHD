@@ -1,5 +1,5 @@
-!>@file   const_mesh_types_info.f90
-!!@brief  module const_mesh_types_info
+!>@file   const_mesh_information.f90
+!!@brief  module const_mesh_information
 !!
 !!@author H. Matsui
 !!@date Programmed in Dec., 2008
@@ -41,7 +41,7 @@
 !!     &          ele_grp, surf_grp, tbls_ele_grp, tbls_sf_grp)
 !!@endverbatim
 !
-      module const_mesh_types_info
+      module const_mesh_information
 !
       use m_precision
       use m_machine_parameter
@@ -319,4 +319,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module const_mesh_types_info
+      end module const_mesh_information

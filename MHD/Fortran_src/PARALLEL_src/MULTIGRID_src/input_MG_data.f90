@@ -31,7 +31,7 @@
       use m_control_parameter
       use m_ctl_parameter_Multigrid
       use m_read_mesh_data
-      use load_mesh_type_data
+      use load_mesh_data
       use element_IO_select
       use surface_IO_select
       use edge_IO_select

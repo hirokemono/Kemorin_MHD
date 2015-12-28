@@ -24,10 +24,10 @@
       subroutine initialize_mesh_test
 !
       use calypso_mpi
-      use const_mesh_info
 !
       use m_geometry_data
       use m_group_data
+      use const_mesh_information
       use set_node_data_4_IO
       use set_element_data_4_IO
       use set_surface_data_4_IO
@@ -73,11 +73,15 @@
 !
 !  --  read geometry
 !
-      if (iflag_debug.gt.0) write(*,*) 'input_mesh_1st'
-      call input_mesh_1st(my_rank)
+      if (iflag_debug.gt.0) write(*,*) 'input_mesh'
+      call input_mesh                                                   &
+     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
-      call const_mesh_informations(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos(my_rank,                                    &
+     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
+     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
 !
 !  -------------------------------
 !

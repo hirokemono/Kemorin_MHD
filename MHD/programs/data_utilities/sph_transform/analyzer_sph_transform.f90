@@ -37,10 +37,12 @@
 !
       subroutine initialize_sph_transform
 !
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
       use parallel_load_data_4_sph
-      use load_mesh_data
 !
 !
       num_elapsed = 30

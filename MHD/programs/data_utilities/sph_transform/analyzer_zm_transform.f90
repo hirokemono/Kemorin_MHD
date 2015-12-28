@@ -12,6 +12,9 @@
       use calypso_mpi
       use m_work_time
 !
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
       use m_SPH_transforms
       use t_field_data_IO
       use FEM_analyzer_sph_trans
@@ -32,7 +35,6 @@
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
       use parallel_load_data_4_sph
-      use load_mesh_data
 !
 !     --------------------- 
 !

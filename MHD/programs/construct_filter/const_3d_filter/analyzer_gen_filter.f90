@@ -47,8 +47,9 @@
 !
       use m_fem_gauss_int_coefs
       use m_filter_file_names
-      use const_mesh_info
+!
       use input_control_gen_filter
+      use const_mesh_information
       use cal_1d_moments_4_fliter
 !
       use m_geometry_data
@@ -86,8 +87,10 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
-      call const_mesh_informations(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos(my_rank,                                    &
+     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
+     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
 !
 !  -------------------------------
 !

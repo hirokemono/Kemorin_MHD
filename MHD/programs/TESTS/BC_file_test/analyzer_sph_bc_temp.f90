@@ -26,10 +26,13 @@
 !
       subroutine initilize_bc_temp
 !
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
       use m_ctl_data_test_bc_temp
       use m_ctl_params_test_bc_temp
       use load_mesh_data
-      use const_mesh_info
+      use const_mesh_information
 !
 !
 !     ----- read control data
@@ -42,13 +45,17 @@
 !
 !  --  read geometry
 !
-      if (iflag_debug.gt.0) write(*,*) 'input_mesh_1st'
-      call input_mesh_1st(my_rank)
+      if (iflag_debug.gt.0) write(*,*) 'input_mesh'
+      call input_mesh                                                   &
+     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
 !     ---------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
-      call const_mesh_informations(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos(my_rank,                                    &
+     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
+     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
 !
        end subroutine initilize_bc_temp
 !

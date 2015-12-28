@@ -39,10 +39,11 @@
       use m_ctl_data_product_udt
       use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
       use m_control_params_2nd_files
       use nod_phys_send_recv
       use load_mesh_data
-      use const_mesh_types_info
+      use const_mesh_information
       use product_udt_fields
       use set_fixed_time_step_params
 !
@@ -63,8 +64,10 @@
       call set_ctl_params_prod_udt(ucd_FUTIL)
       call s_set_fixed_time_step_params(ierr, e_message)
 !
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
-      call input_mesh_1st(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
+      call input_mesh                                                   &
+     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
 !     ---------------------
 !

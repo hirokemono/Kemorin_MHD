@@ -1,1 +1,0 @@
-/Users/matsui/Dropbox/git/Kemorin_MHD/MHD/Fortran_src/PARALLEL_src/MESH_1st/const_mesh_info.f90

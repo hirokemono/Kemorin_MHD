@@ -22,10 +22,13 @@
       subroutine s_input_control_comm_test
 !
       use calypso_mpi
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
       use m_machine_parameter
       use m_read_mesh_data
-!
       use m_ctl_data_comm_test
+!
       use load_mesh_data
       use element_IO_select
       use surface_IO_select
@@ -42,8 +45,10 @@
 !
 !  --  read geometry
 !
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
-      call input_mesh_1st(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
+      call input_mesh                                                   &
+     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
       end subroutine s_input_control_comm_test
 !

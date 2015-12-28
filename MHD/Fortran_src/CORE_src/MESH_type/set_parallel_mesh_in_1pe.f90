@@ -23,8 +23,8 @@
       use t_mesh_data
       use t_geometry_data
       use mesh_IO_select
-      use load_mesh_type_data
-      use const_mesh_types_info
+      use load_mesh_data
+      use const_mesh_information
 !
       integer(kind = kint), intent(in) :: nprocs
       type(mesh_data), intent(inout) :: para_mesh(nprocs)

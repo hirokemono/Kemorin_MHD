@@ -36,7 +36,7 @@
       use m_ctl_params_4_gen_table
 !
       use input_control_itp_mesh
-      use const_mesh_types_info
+      use const_mesh_information
       use set_size_4_smp_types
 !
       integer(kind = kint) :: ierr

@@ -37,7 +37,6 @@
       use check_domain_prop_4_part
       use generate_comm_tables
       use local_mesh_by_part
-      use const_mesh_info
 !
       type(node_data), intent(in) :: node_org
       type(element_data), intent(in) :: ele_org

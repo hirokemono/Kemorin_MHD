@@ -41,7 +41,7 @@
 !
 !
       use input_control_gen_table
-      use const_mesh_types_info
+      use const_mesh_information
       use set_table_type_RHS_assemble
       use set_serach_data_4_dest
       use element_posi_2_nodal_array

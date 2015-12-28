@@ -1,5 +1,5 @@
-!>@file   load_mesh_type_data.f90
-!!@brief  module load_mesh_type_data
+!>@file   load_mesh_data.f90
+!!@brief  module load_mesh_data
 !!
 !!@author H. Matsui
 !!@date Programmed in July, 2007
@@ -24,7 +24,7 @@
 !!        type(element_data), intent(inout) ::        ele
 !!@endverbatim
 !
-      module load_mesh_type_data
+      module load_mesh_data
 !
       use m_precision
       use m_machine_parameter
@@ -220,4 +220,4 @@
 !
 !  ---------------------------------------------------------------------
 !
-      end module load_mesh_type_data
+      end module load_mesh_data

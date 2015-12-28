@@ -45,6 +45,7 @@
 !
       subroutine FEM_initialize_sph_MHD
 !
+      use m_mesh_data
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
@@ -53,7 +54,6 @@
       use m_node_phys_data
       use m_cal_max_indices
 !
-      use const_mesh_info
       use nod_phys_send_recv
       use range_data_IO
       use node_monitor_IO

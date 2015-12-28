@@ -36,7 +36,7 @@
       use const_local_groups
       use sel_part_nod_comm_input
       use delete_data_files
-      use load_mesh_type_data
+      use load_mesh_data
 !
       implicit none
 !

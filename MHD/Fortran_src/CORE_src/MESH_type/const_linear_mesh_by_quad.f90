@@ -86,7 +86,7 @@
 !
       use t_surface_data
 !
-      use const_mesh_types_info
+      use const_mesh_information
       use cvt_quad_2_linear_mesh
       use set_size_4_smp_types
 !
@@ -152,7 +152,7 @@
 !
       use const_surface_data
       use const_edge_data
-      use const_mesh_types_info
+      use const_mesh_information
       use set_size_4_smp_types
 !
       type(node_data), intent(in) ::    node_q

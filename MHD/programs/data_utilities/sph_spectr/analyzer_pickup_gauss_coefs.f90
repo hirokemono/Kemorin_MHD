@@ -32,10 +32,13 @@
       use m_t_step_parameter
       use m_ctl_data_4_sph_utils
       use m_ctl_params_sph_utils
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
       use m_node_phys_data
       use m_sph_spectr_data
       use load_mesh_data
-      use const_mesh_info
+      use const_mesh_information
       use parallel_load_data_4_sph
       use copy_rj_phys_data_4_IO
       use count_num_sph_smp
@@ -56,11 +59,15 @@
 !
 !       set mesh informations
 !
-      if (iflag_debug.gt.0) write(*,*) 'input_mesh_1st'
-      call input_mesh_1st(my_rank)
+      if (iflag_debug.gt.0) write(*,*) 'input_mesh'
+      call input_mesh                                                   &
+     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
-      call const_mesh_informations(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos(my_rank,                                    &
+     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
+     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
 !
 !       set spectr grids
 !

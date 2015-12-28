@@ -1,5 +1,5 @@
-!const_mesh_info.f90
-!      module const_mesh_info
+!m_mesh_data.f90
+!      module m_mesh_data
 !
 !      Written by H. Matsui on July, 2006
 !      Modified by H. Matsui on June, 2007
@@ -10,7 +10,7 @@
 !      subroutine deallocate_mesh_infomations
 !      subroutine deallocate_nod_ele_infos
 !
-      module const_mesh_info
+      module m_mesh_data
 !
       use m_precision
       use m_machine_parameter
@@ -27,12 +27,12 @@
 !
       use m_geometry_data
       use m_group_data
-      use const_mesh_types_info
+      use const_mesh_information
 !
       integer(kind = kint), intent(in) :: my_rank
 !
 !
-       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos(my_rank,                                    &
      &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
      &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
@@ -45,7 +45,7 @@
 !
       use m_geometry_data
       use m_group_data
-      use const_mesh_types_info
+      use const_mesh_information
 !
       integer(kind = kint), intent(in) :: my_rank
 !
@@ -92,4 +92,4 @@
 !
 ! ----------------------------------------------------------------------
 !
-      end module const_mesh_info
+      end module m_mesh_data

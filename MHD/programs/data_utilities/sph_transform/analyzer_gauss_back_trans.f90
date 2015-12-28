@@ -34,7 +34,6 @@
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
       use parallel_load_data_4_sph
-      use load_mesh_data
 !
 !
       num_elapsed = 30

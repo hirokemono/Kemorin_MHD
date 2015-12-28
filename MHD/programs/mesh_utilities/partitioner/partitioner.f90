@@ -20,9 +20,9 @@
       use set_control_data_4_part
 !
       use load_mesh_data
+      use const_mesh_information
 !
       use const_surface_mesh
-      use const_mesh_info
 !
       implicit none
 !
@@ -40,17 +40,21 @@
 !
       iflag_mesh_file_fmt = ifmt_single_mesh_fmt
       mesh_file_head = global_mesh_head
-      call input_mesh_1st(my_rank)
+      call input_mesh                                                   &
+     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
-      write(*,*) 'const_mesh_informations'
-      call const_mesh_informations(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos(my_rank,                                    &
+     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
+     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
 !
 !  ========= Routines for partitioner ==============
 !
-      call initialize_partitioner                                       &
-     &   (nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1)
+      call initialize_partitioner(nod_comm, node1, ele1,                &
+     &                            nod_grp1, ele_grp1, sf_grp1)
       call grouping_for_partitioner(node1, ele1, edge1,                 &
-     &   nod_grp1, ele_grp1, ele_grp_tbl1)
+     &                              nod_grp1, ele_grp1, ele_grp_tbl1)
 !
 !C===
 !C-- create subdomain mesh
@@ -58,8 +62,9 @@
      &    partitioned_fem, included_ele)
 !C
 !C-- Finalize
-      write(*,*) 'deallocate_nod_ele_infos'
-      call deallocate_nod_ele_infos
+      write(*,*) 'dealloc_nod_ele_infos'
+      call dealloc_nod_ele_infos(nod_comm, node1, ele1, surf1, edge1,   &
+     &    nod_grp1, ele_grp1, sf_grp1)
 !
 !  ========= Construct subdomain information for viewer ==============
 !

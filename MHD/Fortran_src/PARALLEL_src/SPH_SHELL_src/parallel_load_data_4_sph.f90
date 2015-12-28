@@ -72,7 +72,7 @@
 !
       use m_spheric_constants
       use m_spheric_parameter
-      use load_mesh_type_data
+      use load_mesh_data
       use copy_mesh_structures
       use const_FEM_mesh_sph_mhd
       use mesh_IO_select

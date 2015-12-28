@@ -33,6 +33,7 @@
 
       subroutine  initialize_refine
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_group_data
       use m_control_data_4_refine
@@ -53,7 +54,9 @@
 !
       iflag_mesh_file_fmt = ifile_type
       mesh_file_head = original_mesh_head
-      call input_mesh_1st(izero)
+      call input_mesh                                                   &
+     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
       if(iflag_read_old_refine_file .gt. 0) then
         call read_refinement_table(ele1%numele)
@@ -85,7 +88,6 @@
       use m_refined_node_id
       use m_refined_element_data
       use m_work_merge_refine_itp
-      use const_mesh_info
       use set_nnod_4_ele_by_type
       use set_element_refine_flag
       use set_all_refine_flags
@@ -100,7 +102,8 @@
       use const_refine_interpolate
       use find_hanging_surface
       use copy_mesh_structures
-      use load_mesh_type_data
+      use load_mesh_data
+      use const_mesh_information
 !
       character(len=kchara), parameter :: tmp_mesh_head = 'work'
 !
@@ -108,8 +111,10 @@
 !    construct element and surface data
 !
       do
-        write(*,*) 'const_mesh_informations'
-        call const_mesh_informations(my_rank)
+        if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+        call const_mesh_infos(my_rank,                                  &
+     &      node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,     &
+     &      ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
 !
         write(*,*) 'allocate_refine_flags'
         call allocate_refine_flags                                      &
@@ -197,8 +202,10 @@
 !
         if (iflag_tmp_tri_refine .eq. 0) exit
 !
-        write(*,*) 'deallocate_mesh_infomations'
-        call deallocate_mesh_infomations
+        write(*,*) 'dealloc_mesh_infomations'
+        call dealloc_mesh_infomations(nod_comm,                         &
+     &      node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,     &
+     &      ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
 !
         write(*,*) 'set_mesh_data_from_type'
         call set_mesh_data_from_type                                    &

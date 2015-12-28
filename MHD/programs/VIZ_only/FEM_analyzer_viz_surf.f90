@@ -29,14 +29,17 @@
       subroutine FEM_initialize_surface(ucd)
 !
       use t_ucd_data
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
       use m_node_phys_data
       use m_read_mesh_data
       use m_control_params_2nd_files
       use m_array_for_send_recv
 !
       use set_control_visualizer
-      use const_mesh_info
       use load_mesh_data
+      use const_mesh_information
       use set_parallel_file_name
       use nod_phys_send_recv
       use set_ucd_data_to_type
@@ -49,16 +52,20 @@
 !       setup mesh information
 !   --------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'input_mesh_1st'
-      call input_mesh_1st(my_rank)
+      if (iflag_debug.gt.0) write(*,*) 'input_mesh'
+      call input_mesh                                                   &
+     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
+      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos(my_rank,                                    &
+     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
+     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
+!
 !
       call allocate_vector_for_solver(isix, node1%numnod)
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
       call init_send_recv(nod_comm)
-!
-      if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
-      call const_mesh_informations(my_rank)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
       call const_element_comm_tbls(node1, ele1, surf1, edge1,           &

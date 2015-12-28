@@ -42,7 +42,7 @@
       use m_2nd_pallalel_vector
 !
       use input_control_gen_table
-      use const_mesh_info
+      use const_mesh_information
       use set_table_type_RHS_assemble
       use set_serach_data_4_dest
       use set_2nd_geometry_4_table
@@ -61,8 +61,10 @@
 !
 !     ----- construct mesh informations for target mesh
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_informations'
-      call const_mesh_informations(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos(my_rank,                                    &
+     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
+     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
 !
 !     ----- construct mesh informations for original mesh
 !

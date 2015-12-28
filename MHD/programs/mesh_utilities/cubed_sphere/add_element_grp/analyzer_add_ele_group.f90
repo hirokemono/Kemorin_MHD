@@ -24,6 +24,7 @@
       subroutine  initialize_add_egrp
 !
       use calypso_mpi
+      use m_nod_comm_table
       use m_geometry_data
       use m_group_data
       use m_control_data_add_ele_grp
@@ -31,8 +32,7 @@
       use m_read_mesh_data
       use m_work_4_add_egrp_sph
       use load_mesh_data
-      use load_mesh_type_data
-      use const_mesh_info
+      use const_mesh_information
 !
       use set_control_add_2d_egrp
       use set_ele_grp2_by_2d
@@ -46,8 +46,11 @@
 !  read global mesh
 !
       mesh_file_head = original_mesh_head
-      call input_mesh_1st(my_rank)
-      call const_nod_ele_infos_1st(my_rank)
+      call input_mesh                                                   &
+     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
+      call const_nod_ele_infos(my_rank,                                 &
+     &    node1, ele1, nod_grp1, ele_grp1, sf_grp1)
 !
       call alloc_r_ele_cubed_sph(ele1%numele)
       call set_rele_cubed_sph(node1%numnod, ele1%numele, ele1%ie,       &

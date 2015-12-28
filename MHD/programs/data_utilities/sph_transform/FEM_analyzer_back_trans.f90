@@ -40,7 +40,6 @@
       use m_t_step_parameter
 !
       use nod_phys_send_recv
-      use const_mesh_info
       use set_ele_id_4_node_type
       use int_volume_of_domain
       use set_normal_vectors
@@ -48,6 +47,7 @@
       use sum_normal_4_surf_group
       use output_parallel_ucd_file
       use const_jacobians_3d
+      use const_mesh_information
       use const_element_comm_tables
 !
       type(element_around_node), intent(inout) :: ele_4_nod
@@ -63,8 +63,10 @@
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
       call init_send_recv(nod_comm)
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
-      call const_mesh_informations(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos(my_rank,                                    &
+     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
+     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
       call const_element_comm_tbls(node1, ele1, surf1, edge1,           &

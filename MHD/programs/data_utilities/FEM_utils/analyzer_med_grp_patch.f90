@@ -26,16 +26,17 @@
       subroutine initialize_med_grp_patch
 !
       use m_phys_constants
-      use m_geometry_data
       use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
       use m_node_phys_data
       use m_array_for_send_recv
       use m_FEM_utils
       use input_control_udt_diff
-      use const_mesh_info
       use nod_phys_send_recv
       use count_whole_num_element
       use load_mesh_data
+      use const_mesh_information
       use const_element_comm_tables
 !
 !
@@ -48,8 +49,10 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_grp_patch'
       call s_input_control_grp_patch(ucd_FUTIL)
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
-      call input_mesh_1st(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
+      call input_mesh                                                   &
+     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
 !     --------------------- 
 !
@@ -63,8 +66,10 @@
       call allocate_vector_for_solver(n_sym_tensor, node1%numnod)
       call init_send_recv(nod_comm)
 !
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_informations'
-      call const_mesh_informations(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos(my_rank,                                    &
+     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
+     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
       call const_element_comm_tbls(node1, ele1, surf1, edge1,           &
      &    nod_comm, ele_comm, surf_comm, edge_comm)
 !

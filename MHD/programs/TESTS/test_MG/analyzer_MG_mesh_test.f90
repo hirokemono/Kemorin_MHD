@@ -25,7 +25,6 @@
       subroutine init_analyzer
 !
       use calypso_mpi
-      use const_mesh_info
 !
       use m_geometry_data
       use m_group_data
@@ -41,6 +40,7 @@
       use set_edge_vectors
       use m_read_mesh_data
       use m_comm_data_IO
+      use const_mesh_information
       use mesh_data_IO
       use sum_normal_4_surf_group
       use set_parallel_file_name
@@ -68,8 +68,10 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
-      call const_mesh_informations(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos(my_rank,                                    &
+     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
+     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
 !
 !  -------------------------------
 !

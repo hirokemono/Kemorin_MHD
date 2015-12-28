@@ -47,7 +47,7 @@
       use m_node_phys_data
 !
       use input_control_interpolate
-      use const_mesh_types_info
+      use const_mesh_information
       use set_size_4_smp_types
       use nod_phys_send_recv
       use set_field_to_restart

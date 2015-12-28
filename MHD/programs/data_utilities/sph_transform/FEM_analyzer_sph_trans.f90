@@ -32,19 +32,20 @@
 !
       use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
       use m_control_params_2nd_files
       use m_array_for_send_recv
       use m_t_step_parameter
       use m_node_phys_data
 !
       use nod_phys_send_recv
-      use const_mesh_info
       use int_volume_of_domain
       use set_normal_vectors
       use set_surf_grp_vectors
       use sum_normal_4_surf_group
       use output_parallel_ucd_file
       use ucd_IO_select
+      use const_mesh_information
       use const_element_comm_tables
 !
       use copy_all_field_4_sph_trans
@@ -57,8 +58,10 @@
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
       call init_send_recv(nod_comm)
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
-      call const_mesh_informations(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos(my_rank,                                    &
+     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
+     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
       call const_element_comm_tbls(node1, ele1, surf1, edge1,           &

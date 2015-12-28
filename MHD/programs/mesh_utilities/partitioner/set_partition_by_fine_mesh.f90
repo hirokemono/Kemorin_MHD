@@ -34,7 +34,7 @@
       use m_interpolate_table_dest
       use m_domain_group_4_partition
 !
-      use load_mesh_type_data
+      use load_mesh_data
       use copy_domain_list_4_IO
 !
 !

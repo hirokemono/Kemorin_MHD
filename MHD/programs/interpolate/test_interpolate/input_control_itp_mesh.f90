@@ -25,7 +25,9 @@
 !
       use calypso_mpi
       use m_machine_parameter
+      use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
       use m_ctl_data_gen_table
@@ -33,7 +35,6 @@
 !
       use set_ctl_interpolation
       use load_mesh_data
-      use load_mesh_type_data
 !
       use itp_table_IO_select_4_zlib
       use copy_interpolate_dest_IO
@@ -61,7 +62,9 @@
         iflag_mesh_file_fmt = ifmt_org_mesh_file
         if (iflag_debug.gt.0) write(*,*)                                &
      &     'read mesh for original mesh ', trim(mesh_file_head)
-        call input_mesh_1st(my_rank)
+        call input_mesh                                                 &
+     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
       end if
 !
 !  --  read 2nd mesh for target (if exist)

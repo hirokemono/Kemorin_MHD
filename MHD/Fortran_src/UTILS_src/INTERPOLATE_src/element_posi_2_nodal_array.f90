@@ -70,7 +70,7 @@
       use m_machine_parameter
       use cal_minmax_and_stacks
       use set_size_4_smp_types
-      use const_mesh_types_info
+      use const_mesh_information
 !
       use t_mesh_data
 !

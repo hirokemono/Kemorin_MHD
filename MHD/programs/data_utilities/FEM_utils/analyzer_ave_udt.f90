@@ -31,9 +31,10 @@
       use m_array_for_send_recv
       use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
       use m_node_phys_data
       use input_control_udt_diff
-      use const_mesh_types_info
+      use const_mesh_information
       use nod_phys_send_recv
       use load_mesh_data
 !
@@ -47,8 +48,10 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_ave_udt'
       call s_input_control_ave_udt(ucd_FUTIL)
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh_1st'
-      call input_mesh_1st(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
+      call input_mesh                                                   &
+     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
+     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
 !     --------------------- 
 !

@@ -32,7 +32,7 @@
       use m_geometry_data
       use m_boundary_condition_IDs
       use set_layers_4_MHD_AMG
-      use const_mesh_types_info
+      use const_mesh_information
       use allocate_MHD_AMG_array
       use set_diffusivities_MHD_AMG
       use const_comm_tbl_type_fluid

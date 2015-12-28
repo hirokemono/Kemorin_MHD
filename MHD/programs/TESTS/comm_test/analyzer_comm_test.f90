@@ -82,6 +82,7 @@
 !
       use calypso_mpi
       use m_geometry_data
+      use m_group_data
       use m_nod_comm_table
       use m_array_for_send_recv
       use m_array_for_send_recv
@@ -92,7 +93,7 @@
       use collect_diff_4_comm_test
       use write_diff_4_comm_test
       use nod_phys_send_recv
-      use const_mesh_info
+      use const_mesh_information
       use const_element_comm_tables
 !
       use set_ele_id_4_node_type
@@ -107,9 +108,11 @@
 !
 !  -----    construct geometry informations
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call start_eleps_time(1)
-      call const_mesh_informations(my_rank)
+      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos(my_rank,                                    &
+     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
+     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
       call end_eleps_time(1)
       call calypso_mpi_barrier
 !
