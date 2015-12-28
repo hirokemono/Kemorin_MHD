@@ -7,8 +7,8 @@
 !> @brief Main routine for field line module
 !!
 !!@verbatim
-!!      subroutine field_line_init(node, ele, ele_grp, sf_grp, nod_fld)
-!!      subroutine field_line_main(istep_psf, node, ele, surf,          &
+!!      subroutine FLINE_initialize(node, ele, ele_grp, sf_grp, nod_fld)
+!!      subroutine FLINE_visualize(istep_fline, node, ele, surf,        &
 !!     &          ele_grp, ele_4_nod, nod_fld, nod_comm)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -42,9 +42,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine field_line_init(node, ele, ele_grp, sf_grp, nod_fld)
+      subroutine FLINE_initialize(node, ele, ele_grp, sf_grp, nod_fld)
 !
       use calypso_mpi
+      use m_control_data_flines
       use m_source_4_filed_line
       use m_local_fline
       use set_fline_control
@@ -55,6 +56,9 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_data), intent(in) :: nod_fld
 !
+!
+      num_fline = num_fline_ctl
+      if (num_fline .le. 0) return
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_fline_control'
       call s_set_fline_control(ele%numele, ele%interior_ele,            &
@@ -71,18 +75,18 @@
       call allocate_local_fline
       call allocate_global_fline_num
 !
-      end subroutine field_line_init
+      end subroutine FLINE_initialize
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine field_line_main(istep_psf, node, ele, surf,            &
+      subroutine FLINE_visualize(istep_fline, node, ele, surf,          &
      &          ele_grp, ele_4_nod, nod_fld, nod_comm)
 !
       use set_fields_for_fieldline
       use const_field_lines
       use collect_fline_data
 !
-      integer(kind = kint), intent(in) :: istep_psf
+      integer(kind = kint), intent(in) :: istep_fline
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -94,6 +98,8 @@
 !
       integer(kind = kint) :: i_fln
 !
+!
+      if (num_fline.le.0 .or. istep_fline .le. 0) return
 !
       if (iflag_debug.eq.1) write(*,*) 'set_local_field_4_fline'
       call set_local_field_4_fline(node%numnod, node%istack_nod_smp,    &
@@ -123,10 +129,10 @@
      &      ele_4_nod%iele_4_node, nod_comm)
 !
         if (iflag_debug.eq.1) write(*,*) 's_collect_fline_data', i_fln
-       call s_collect_fline_data(istep_psf, i_fln)
+       call s_collect_fline_data(istep_fline, i_fln)
       end do
 !
-      end subroutine field_line_main
+      end subroutine FLINE_visualize
 !
 !  ---------------------------------------------------------------------
 !

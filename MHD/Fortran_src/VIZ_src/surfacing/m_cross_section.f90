@@ -8,22 +8,22 @@
 !>@brief Structure for cross sectioning
 !!
 !!@verbatim
-!!      subroutine cross_section_init                                   &
+!!      subroutine SECTIONING_initialize                                &
 !!     &         (node, ele, surf, edge, nod_comm, edge_comm,           &
 !!     &          ele_grp, sf_grp, sf_grp_nod, nod_fld)
-!!      subroutine cross_section_main(istep_psf, edge, nod_fld)
+!!      subroutine SECTIONING_visualize(istep_psf, edge, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(edge_data), intent(in) :: edge
-!
+!!
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(communication_table), intent(in) :: edge_comm
-!
+!!
 !!        type(group_data), intent(in) :: ele_grp
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
-!
+!!
 !!        type(phys_data), intent(in) :: nod_fld
 !!
 !!      subroutine dealloc_psf_field_type
@@ -44,6 +44,13 @@
       use t_psf_geometry_list
       use t_psf_patch_data
       use t_ucd_data
+!
+      use t_comm_table
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
+      use t_group_data
+      use t_surface_group_connect
 !
       implicit  none
 !
@@ -75,21 +82,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cross_section_init                                     &
+      subroutine SECTIONING_initialize                                  &
      &         (node, ele, surf, edge, nod_comm, edge_comm,             &
      &          ele_grp, sf_grp, sf_grp_nod, nod_fld)
 !
       use m_geometry_constants
+      use m_control_data_sections
       use m_control_params_4_psf
 !
       use calypso_mpi
-      use t_comm_table
-      use t_geometry_data
-      use t_surface_data
-      use t_edge_data
-      use t_group_data
-      use t_surface_group_connect
-      use t_phys_data
       use set_psf_iso_control
       use search_ele_list_for_psf
       use set_const_4_sections
@@ -113,6 +114,9 @@
 !
       integer(kind = kint) :: i_psf
 !
+!
+      num_psf = num_psf_ctl
+      if(num_psf .le. 0) return
 !
       if (iflag_debug.eq.1) write(*,*) 'allocate_control_params_4_psf'
       call allocate_control_params_4_psf(num_psf)
@@ -172,15 +176,13 @@
 !
 !      call calypso_mpi_barrier
 !
-      end subroutine cross_section_init
+      end subroutine SECTIONING_initialize
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cross_section_main(istep_psf, edge, nod_fld)
+      subroutine SECTIONING_visualize(istep_psf, edge, nod_fld)
 !
       use m_control_params_4_psf
-      use t_phys_data
-      use t_edge_data
       use set_fields_for_psf
       use set_ucd_data_to_type
       use output_4_psf
@@ -190,6 +192,8 @@
       type(edge_data), intent(in) :: edge
       type(phys_data), intent(in) :: nod_fld
 !
+!
+      if (num_psf.le.0 .or. istep_psf.le.0) return
 !
 !      call start_eleps_time(20)
       call set_field_4_psf                                              &
@@ -204,7 +208,7 @@
       call output_section_data                                          &
      &   (num_psf, istep_psf, psf_mesh, psf_out, psf_out_m)
 !
-      end subroutine cross_section_main
+      end subroutine SECTIONING_visualize
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

@@ -8,9 +8,9 @@
 !>@brief Structure for isosurfacing
 !!
 !!@verbatim
-!!      subroutine isosurface_init                                      &
+!!      subroutine ISOSURF_initialize                                   &
 !!     &         (node, ele, surf, edge, ele_grp, nod_fld)
-!!      subroutine isosurface_main                                      &
+!!      subroutine ISOSURF_visualize                                    &
 !!     &         (istep_iso, node, ele, edge, edge_comm, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -65,10 +65,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine isosurface_init                                        &
+      subroutine ISOSURF_initialize                                     &
      &         (node, ele, surf, edge, ele_grp, nod_fld)
 !
       use m_geometry_constants
+      use m_control_data_sections
       use m_control_params_4_iso
 !
       use t_geometry_data
@@ -90,6 +91,9 @@
 !
       integer(kind = kint) :: i_iso
 !
+!
+      num_iso = num_iso_ctl
+      if (num_iso .le. 0) return
 !
       call alloc_iso_field_type
 !
@@ -114,12 +118,12 @@
         call alloc_ref_field_4_psf(node%numnod, iso_list(i_iso))
       end do
 !
-      end subroutine isosurface_init
+      end subroutine ISOSURF_initialize
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine isosurface_main                                        &
+      subroutine ISOSURF_visualize                                      &
      &         (istep_iso, node, ele, edge, edge_comm, nod_fld)
 !
 !
@@ -144,6 +148,8 @@
 !
       integer(kind = kint) :: i_iso
 !
+!
+      if (num_iso.le.0 .or. istep_iso.le.0) return
 !
       if (iflag_debug.eq.1) write(*,*) 'set_const_4_isosurfaces'
       call set_const_4_isosurfaces                                      &
@@ -177,7 +183,7 @@
         call dealloc_inod_psf(iso_list(i_iso))
       end do
 !
-      end subroutine isosurface_main
+      end subroutine ISOSURF_visualize
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

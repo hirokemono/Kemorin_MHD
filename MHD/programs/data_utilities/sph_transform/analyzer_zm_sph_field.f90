@@ -14,6 +14,11 @@
       use m_work_time
 !
       use t_field_data_IO
+      use m_nod_comm_table
+      use m_ele_sf_eg_comm_tables
+      use m_geometry_data
+      use m_group_data
+      use m_node_phys_data
       use m_SPH_transforms
       use SPH_analyzer_sph_trans
       use SPH_analyzer_back_trans
@@ -33,7 +38,6 @@
 !
       subroutine init_zm_sph_field
 !
-      use m_node_phys_data
       use m_ctl_data_4_sph_trans
       use m_ctl_params_sph_trans
       use parallel_load_data_4_sph
@@ -71,7 +75,9 @@
 !
 !  -------------------------------
 !
-      call init_visualize(nod_fld1)
+      call init_visualize                                               &
+     &   (node1, ele1, surf1, edge1, nod_comm, edge_comm,               &
+     &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
 !
       end subroutine init_zm_sph_field
 !
@@ -108,8 +114,10 @@
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
         if(visval .eq. 0) then
-          call visualize_all(istep_psf, istep_iso, istep_pvr,           &
-     &        istep_fline, nod_fld1, ele_4_nod_SPH_TRANS, jac_STR_q)
+          call visualize_all                                            &
+     &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
+     &        node1, ele1, surf1, edge1, nod_comm, edge_comm, ele_grp1, &
+     &        nod_fld1, ele_4_nod_SPH_TRANS, jac_STR_q)
         end if
       end do
 !

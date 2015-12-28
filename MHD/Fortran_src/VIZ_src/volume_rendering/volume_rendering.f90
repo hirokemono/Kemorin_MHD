@@ -3,9 +3,10 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!!      subroutine pvr_init(node, ele, surf, ele_grp, nod_fld)
+!!      subroutine PVR_initialize(node, ele, surf, ele_grp, nod_fld)
 !!
-!!      subroutine pvr_main(istep_pvr, node, ele, surf, jac_3d, nod_fld)
+!!      subroutine PVR_visualize                                        &
+!!     &         (istep_pvr, node, ele, surf, jac_3d, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -87,8 +88,9 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine pvr_init(node, ele, surf, ele_grp, nod_fld)
+      subroutine PVR_initialize(node, ele, surf, ele_grp, nod_fld)
 !
+      use m_control_data_pvrs
       use set_pvr_control
       use cal_pvr_modelview_mat
       use cal_pvr_projection_mat
@@ -101,6 +103,9 @@
 !
       integer(kind = kint) :: i_pvr
 !
+!
+      num_pvr = num_pvr_ctl
+      if (num_pvr .le. 0) return
 !
       if(iflag_debug .gt. 0) write(*,*) 'allocate_components_4_pvr',    &
      &         num_pvr
@@ -151,11 +156,12 @@
 !      call check_surf_rng_pvr_domain(my_rank)
 !      call check_surf_norm_pvr_domain(my_rank)
 !
-      end subroutine pvr_init
+      end subroutine PVR_initialize
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine pvr_main(istep_pvr, node, ele, surf, jac_3d, nod_fld)
+      subroutine PVR_visualize                                          &
+     &         (istep_pvr, node, ele, surf, jac_3d, nod_fld)
 !
       use cal_pvr_modelview_mat
 !
@@ -171,6 +177,7 @@
       integer(kind = kint) :: i_rot, ist_rot, ied_rot
 !
 !
+      if(num_pvr.le.0 .or. istep_pvr.le.0) return
 !
       if(iflag_debug .gt. 0) write(*,*) 'cal_field_4_pvr'
       call cal_field_4_pvr                                              &
@@ -214,7 +221,7 @@
         end do
       end do
 !
-      end subroutine pvr_main
+      end subroutine PVR_visualize
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------

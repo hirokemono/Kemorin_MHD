@@ -27,5 +27,5 @@
 !
       call calypso_MPI_finalize
 !
-      stop
+      stop 'Program finished'
       end program sph_MHD_noviz

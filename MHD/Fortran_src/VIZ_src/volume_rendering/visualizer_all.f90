@@ -3,12 +3,26 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!      subroutine init_visualize(nod_fld)
-!      subroutine visualize_all(istep_psf, istep_iso, istep_pvr,        &
-!     &          istep_fline, nod_fld, ele_4_nod, jac_3d)
-!        type(phys_data), intent(in) :: nod_fld
-!        type(element_around_node), intent(in) :: ele_4_nod
-!        type(jacobians_3d), intent(in) :: jac_3d
+!!      subroutine init_visualize                                       &
+!!     &         (node, ele, surf, edge, nod_comm, edge_comm,           &
+!!     &          ele_grp, sf_grp, sf_grp_nod, nod_fld)
+!!      subroutine visualize_all                                        &
+!!     &         (istep_psf, istep_iso, istep_pvr, istep_fline,         &
+!!     &          node, ele, surf, edge, nod_comm, edge_comm,           &
+!!     &          ele_grp, sf_grp, sf_grp_nod, nod_fld,                 &
+!!     &          ele_4_nod, jac_3d)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(edge_data), intent(in) :: edge
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(communication_table), intent(in) :: edge_comm
+!!        type(group_data), intent(in) :: ele_grp
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(element_around_node), intent(in) :: ele_4_nod
+!!        type(jacobians_3d), intent(in) :: jac_3d
 !
       module visualizer_all
 !
@@ -17,13 +31,15 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use m_control_params_4_fline
+      use t_comm_table
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
+      use t_group_data
+      use t_surface_group_connect
       use t_phys_data
-!
-      use volume_rendering
-      use sections_for_1st
-      use fieldline_1st
-      use volume_rendering_1st
+      use t_next_node_ele_4_node
+      use t_jacobian_3d
 !
       implicit  none
 !
@@ -33,67 +49,87 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize(nod_fld)
+      subroutine init_visualize                                         &
+     &         (node, ele, surf, edge, nod_comm, edge_comm,             &
+     &          ele_grp, sf_grp, sf_grp_nod, nod_fld)
 !
-      use m_quad_2_triangle
-      use m_control_data_sections
-      use m_control_data_pvrs
-      use m_control_data_flines
       use m_cross_section
       use m_isosurface
       use set_psf_case_table
+      use volume_rendering
+      use fieldline
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(communication_table), intent(in) :: edge_comm
+!
+      type(group_data), intent(in) :: ele_grp
+      type(surface_group_data), intent(in) :: sf_grp
+      type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
       type(phys_data), intent(in) :: nod_fld
 !
 !
-      if ( (num_psf_ctl+num_iso_ctl+num_pvr_ctl) .gt. 0) then
-        if (iflag_debug.eq.1)  write(*,*) 'set_sectioning_case_table'
-        call set_sectioning_case_table
-      end if
+      if (iflag_debug.eq.1)  write(*,*) 'set_sectioning_case_table'
+      call set_sectioning_case_table
 !
-      num_psf = num_psf_ctl
-      if (num_psf .gt. 0)  call cross_section_init_1st(nod_fld)
+      call SECTIONING_initialize                                        &
+     &   (node, ele, surf, edge, nod_comm, edge_comm,               &
+     &    ele_grp, sf_grp, sf_grp_nod, nod_fld)
 !
-      num_iso = num_iso_ctl
-      if (num_iso .gt. 0) call isosurface_init_1st(nod_fld)
+      call ISOSURF_initialize                                           &
+     &   (node, ele, surf, edge, ele_grp, nod_fld)
 !
-      num_pvr = num_pvr_ctl
-      if (num_pvr .gt. 0) call pvr_init_1st(nod_fld)
+      call PVR_initialize(node, ele, surf, ele_grp, nod_fld)
+      call calypso_MPI_barrier
 !
-      num_fline = num_fline_ctl
-      if (num_fline .gt. 0) call field_line_init_1st(nod_fld)
+      call FLINE_initialize(node, ele, ele_grp, sf_grp, nod_fld)
 !
       end subroutine init_visualize
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine visualize_all(istep_psf, istep_iso, istep_pvr,         &
-     &          istep_fline, nod_fld, ele_4_nod, jac_3d)
+      subroutine visualize_all                                          &
+     &         (istep_psf, istep_iso, istep_pvr, istep_fline,           &
+     &          node, ele, surf, edge, nod_comm, edge_comm,             &
+     &          ele_grp, nod_fld, ele_4_nod, jac_3d)
 !
       use m_cross_section
       use m_isosurface
-      use t_next_node_ele_4_node
-      use t_jacobian_3d
+      use volume_rendering
+      use fieldline
 !
       integer(kind = kint), intent(in) :: istep_psf, istep_iso
       integer(kind = kint), intent(in) :: istep_pvr, istep_fline
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(communication_table), intent(in) :: edge_comm
+!
+      type(group_data), intent(in) :: ele_grp
+!
       type(phys_data), intent(in) :: nod_fld
       type(element_around_node), intent(in) :: ele_4_nod
       type(jacobians_3d), intent(in) :: jac_3d
 !
 !
-      if (num_psf.gt.0 .and. istep_psf.gt.0) then
-        call cross_section_main_1st(istep_psf, nod_fld)
-      end if
-      if (num_iso.gt.0 .and. istep_iso.gt.0) then
-        call isosurface_main_1st(istep_iso, nod_fld)
-      end if
-      if (num_pvr.gt.0 .and. istep_pvr.gt.0) then
-        call pvr_main_1st(istep_pvr, nod_fld, jac_3d)
-      end if
-      if (num_fline.gt.0 .and. istep_fline.gt.0) then
-        call field_line_main_1st(istep_fline, nod_fld, ele_4_nod)
-      end if
+      call SECTIONING_visualize(istep_psf, edge, nod_fld)
+!
+      call ISOSURF_visualize(istep_iso, node, ele, edge,                &
+      &                      edge_comm, nod_fld)
+!
+      call PVR_visualize(istep_pvr, node, ele, surf, jac_3d, nod_fld)
+!
+      call FLINE_visualize(istep_fline, node, ele, surf, ele_grp,       &
+     &                     ele_4_nod, nod_fld, nod_comm)
 !
       end subroutine visualize_all
 !

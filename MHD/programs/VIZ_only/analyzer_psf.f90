@@ -11,6 +11,10 @@
       use m_precision
 !
       use m_visualization
+      use m_nod_comm_table
+      use m_ele_sf_eg_comm_tables
+      use m_geometry_data
+      use m_group_data
       use m_node_phys_data
 !
       use FEM_analyzer_viz_surf
@@ -43,7 +47,9 @@
       call FEM_initialize_surface(ucd_VIZ)
 !
 !  VIZ Initialization
-      call init_visualize_surface(nod_fld1)
+      call init_visualize_surface                                       &
+     &   (node1, ele1, surf1, edge1, nod_comm, edge_comm,               &
+     &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
 !
       end subroutine init_analyzer
 !
@@ -63,9 +69,8 @@
      &     (i_step, istep_psf, istep_iso, ucd_VIZ)
 !
 !  Generate field lines
-        if(istep_psf.ge.0 .or. istep_iso.ge.0) then
-           call visualize_surface(istep_psf, istep_iso, nod_fld1)
-        end if
+        call visualize_surface(istep_psf, istep_iso,                    &
+     &                         node1, ele1, edge1, edge_comm, nod_fld1)
       end do
 !
       end subroutine analyze

@@ -86,6 +86,9 @@
       subroutine analyze_med_grp_patch
 !
       use m_ctl_params_4_diff_udt
+      use m_ele_sf_eg_comm_tables
+      use m_nod_comm_table
+      use m_geometry_data
       use m_group_data
       use m_node_phys_data
       use m_cross_section
@@ -94,7 +97,6 @@
       use set_parallel_file_name
       use t_read_control_arrays
       use set_psf_case_table
-      use sections_for_1st
 !
       integer(kind = kint) :: igrp
       integer(kind = kint),  parameter :: id_gname = 11
@@ -104,7 +106,6 @@
       if (iflag_debug.eq.1) write(*,*) 'set_med_patch_ele_grp',         &
      &             trim(grouping_mesh_head)
       num_psf_ctl = ele_grp1%num_grp
-      num_psf = num_psf_ctl
       call allocate_psf_ctl_stract
 !
       if(my_rank .eq. 0) then
@@ -150,9 +151,9 @@
       end do
 !
       call set_sectioning_case_table
-      if (num_psf .gt. 0)  then
-        call cross_section_init_1st(nod_fld1)
-      end if
+      call SECTIONING_initialize                                        &
+     &   (node1, ele1, surf1, edge1, nod_comm, edge_comm,               &
+     &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
 !
       end subroutine analyze_med_grp_patch
 !

@@ -38,7 +38,7 @@
       type(phys_data), intent(in) :: fld_nod
 !
 !
-      call field_line_init(fem%mesh%node, fem%mesh%ele,                 &
+      call FLINE_initialize(fem%mesh%node, fem%mesh%ele,                &
      &    fem%group%ele_grp, fem%group%surf_grp, fld_nod)
 !
       end subroutine field_line_init_type
@@ -62,7 +62,7 @@
       type(phys_data), intent(in) :: fld_nod
 !
 !
-      call field_line_main(istep_psf,                                   &
+      call FLINE_visualize(istep_psf,                                   &
      &    fem%mesh%node, fem%mesh%ele, surf, fem%group%ele_grp,         &
      &    next_tbl%neib_ele, fld_nod, fem%mesh%nod_comm)
 !

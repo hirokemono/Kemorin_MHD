@@ -10,8 +10,10 @@
       use m_visualization
 !
       use m_node_phys_data
+      use m_geometry_data
+      use m_group_data
       use FEM_analyzer_viz_fline
-      use fieldline_1st
+      use fieldline
 !
       implicit none
 !
@@ -43,7 +45,7 @@
      &   (ele_4_nod_VIZ, jac_VIZ_l, jac_VIZ_q, ucd_VIZ)
 !
 !  VIZ Initialization
-      call init_visualize_fline(nod_fld1)
+      call FLINE_initialize(node1, ele1, ele_grp1, sf_grp1, nod_fld1)
 !
       end subroutine initialize_fline
 !
@@ -62,9 +64,8 @@
         call FEM_analyze_fline(i_step, istep_fline, ucd_VIZ)
 !
 !  Generate field lines
-        if(istep_fline .ge. 0) then
-          call visualize_fline(istep_fline, ele_4_nod_VIZ, nod_fld1)
-        end if
+        call FLINE_visualize(istep_fline, node1, ele1, surf1, ele_grp1, &
+     &                       ele_4_nod_VIZ, nod_fld1, nod_comm)
       end do
 !
       end subroutine analyze

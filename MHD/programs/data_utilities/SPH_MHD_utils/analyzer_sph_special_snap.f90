@@ -35,6 +35,8 @@
       use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
+      use m_ele_sf_eg_comm_tables
+      use m_geometry_data
       use m_node_phys_data
 !
       use FEM_analyzer_sph_MHD
@@ -85,7 +87,8 @@
         if(visval .eq. 0) then
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
           call start_eleps_time(12)
-          call visualize_surface(istep_psf, istep_iso, nod_fld1)
+          call visualize_surface(istep_psf, istep_iso, node1, ele1,     &
+     &                           edge1, edge_comm, nod_fld1)
           call end_eleps_time(12)
         end if
         call end_eleps_time(1)
