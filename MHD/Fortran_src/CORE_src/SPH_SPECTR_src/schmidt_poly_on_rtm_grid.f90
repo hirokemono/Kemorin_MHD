@@ -209,8 +209,13 @@
         jst = lstack_rlm(m-1) + 1
         jed = lstack_rlm(m)
 !
-        call schmidt_legendres_m(l_truncation, mm, zero,                &
+        if(mm .le. 1) then
+          call schmidt_legendres_m(l_truncation, mm, zero,              &
      &          p_m, dp_m, pmn1, pmp1, df_m)
+        else
+          p_m(0:l_truncation) = 0.0d0
+          dp_m(0:l_truncation) = 0.0d0
+        end if
 !
         do j = jst, jed
           jj = idx_gl_1d_rlm_j(j,1)
@@ -226,8 +231,13 @@
         jst = lstack_rlm(m-1) + 1
         jed = lstack_rlm(m)
 !
-        call schmidt_legendres_m(l_truncation, mm, pi,                  &
+        if(mm .le. 1) then
+          call schmidt_legendres_m(l_truncation, mm, pi,               &
      &          p_m, dp_m, pmn1, pmp1, df_m)
+        else
+          p_m(0:l_truncation) = 0.0d0
+          dp_m(0:l_truncation) = 0.0d0
+        end if
 !
         do j = jst, jed
           jj = idx_gl_1d_rlm_j(j,1)
