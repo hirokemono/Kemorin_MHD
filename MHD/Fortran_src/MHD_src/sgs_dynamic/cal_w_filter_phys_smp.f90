@@ -26,6 +26,7 @@
       use m_precision
 !
       use m_array_for_send_recv
+      use m_nod_comm_table
       use m_geometry_data
       use m_3d_w_filter_coef_smp
       use m_nod_w_filter_comm_table
@@ -65,7 +66,7 @@
      &    ied_nsum_3d_w_fil_smp, nnod_w_filtering, x_vec_w_fil(1),      &
      &    node1%numnod, x_vec(1))
 !
-      call scalar_send_recv_3d_filter(node1%numnod, x_vec(1),           &
+      call scalar_send_recv_3d_filter(nod_comm, node1%numnod, x_vec(1), &
      &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_w_filter_scalar_phys_smp
@@ -97,7 +98,7 @@
      &    ied_nsum_3d_w_fil_smp, nnod_w_filtering, x_vec_w_fil(1),      &
      &    node1%numnod, x_vec(1))
 !
-      call vector_send_recv_3d_filter(node1%numnod, x_vec(1),           &
+      call vector_send_recv_3d_filter(nod_comm, node1%numnod, x_vec(1), &
      &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_w_filter_vector_phys_smp
@@ -129,7 +130,7 @@
      &    ied_nsum_3d_w_fil_smp, nnod_w_filtering, x_vec_w_fil(1),      &
      &    node1%numnod, x_vec(1))
 !
-      call tensor_send_recv_3d_filter(node1%numnod, x_vec(1),           &
+      call tensor_send_recv_3d_filter(nod_comm, node1%numnod, x_vec(1), &
      &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_w_filter_tensor_phys_smp
@@ -159,7 +160,7 @@
      &    inod_near_nod_3d_w_smp, filter_weight_3d_w_smp,               &
      &    nnod_w_filtering, x_vec_w_fil(1), node1%numnod, x_vec(1))
 !
-      call scalar_send_recv_3d_filter(node1%numnod, x_vec(1),           &
+      call scalar_send_recv_3d_filter(nod_comm, node1%numnod, x_vec(1), &
      &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_w_ez_filter_scalar_smp
@@ -188,7 +189,7 @@
      &    inod_near_nod_3d_w_smp, filter_weight_3d_w_smp,               &
      &    nnod_w_filtering, x_vec_w_fil(1), node1%numnod, x_vec(1))
 !
-      call vector_send_recv_3d_filter(node1%numnod, x_vec(1),           &
+      call vector_send_recv_3d_filter(nod_comm, node1%numnod, x_vec(1), &
      &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_w_ez_filter_vector_smp
@@ -217,7 +218,7 @@
      &    inod_near_nod_3d_w_smp, filter_weight_3d_w_smp,               &
      &    nnod_w_filtering, x_vec_w_fil(1), node1%numnod, x_vec(1))
 !
-      call tensor_send_recv_3d_filter(node1%numnod, x_vec(1),           &
+      call tensor_send_recv_3d_filter(nod_comm, node1%numnod, x_vec(1), &
      &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_w_ez_filter_tensor_smp

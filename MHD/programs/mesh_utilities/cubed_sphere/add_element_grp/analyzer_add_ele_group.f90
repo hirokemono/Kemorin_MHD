@@ -31,6 +31,7 @@
       use m_read_mesh_data
       use m_work_4_add_egrp_sph
       use load_mesh_data
+      use load_mesh_type_data
       use const_mesh_info
 !
       use set_control_add_2d_egrp
@@ -62,7 +63,8 @@
 !
        if (iflag_debug.eq.1) write(*,*) 'output_mesh_1st'
       mesh_file_head = modified_mesh_head
-      call output_mesh_1st(my_rank)
+      call output_mesh(my_rank, nod_comm, node1, ele1,                  &
+     &                 nod_grp1, ele_grp1, sf_grp1)
 !
       call dealloc_r_ele_cubed_sph
 !

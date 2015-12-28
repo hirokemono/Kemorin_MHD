@@ -7,6 +7,9 @@
 !>@brief Copy FEM mesh structures
 !!
 !!@verbatim
+!!      subroutine set_mesh_data_from_type(mesh, group, tgt_comm,       &
+!!     &          tgt_node, tgt_ele, tgt_surf, tgt_edge,                &
+!!     &          tgt_nod_grp, tgt_ele_grp, tgt_surf_grp)
 !!      subroutine copy_mesh_geometry_from_type                         &
 !!     &         (org_mesh, tgt_comm, tgt_node, tgt_ele)
 !!
@@ -41,12 +44,60 @@
 !
 !  ---------------------------------------------------------------------
 !
+      subroutine set_mesh_data_from_type(mesh, group, tgt_comm,         &
+     &          tgt_node, tgt_ele, tgt_surf, tgt_edge,                  &
+     &          tgt_nod_grp, tgt_ele_grp, tgt_surf_grp)
+!
+      use t_mesh_data
+      use t_comm_table
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
+      use t_group_data
+      use set_nnod_4_ele_by_type
+!
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) :: group
+!
+      type(communication_table), intent(inout) :: tgt_comm
+      type(node_data), intent(inout) :: tgt_node
+      type(element_data), intent(inout) :: tgt_ele
+      type(surface_data), intent(inout) :: tgt_surf
+      type(edge_data), intent(inout) :: tgt_edge
+!
+      type(group_data), intent(inout) :: tgt_nod_grp
+      type(group_data), intent(inout) :: tgt_ele_grp
+      type(surface_group_data), intent(inout) :: tgt_surf_grp
+!
+!
+      call copy_mesh_geometry_from_type                                 &
+     &   (mesh, tgt_comm, tgt_node, tgt_ele)
+!
+      call copy_group_data(group%nod_grp, tgt_nod_grp)
+      call copy_group_data(group%ele_grp, tgt_ele_grp)
+      call copy_surface_group(group%surf_grp, tgt_surf_grp)
+!
+      call allocate_sph_node_geometry(mesh%node)
+      call allocate_ele_geometry_type(tgt_ele)
+      call set_3D_nnod_4_sfed_by_ele(tgt_ele%nnod_4_ele,                &
+     &    tgt_surf%nnod_4_surf, tgt_edge%nnod_4_edge)
+!
+      call dealloc_groups_data(group)
+      call deallocate_ele_connect_type(mesh%ele)
+      call deallocate_node_geometry_type(mesh%node)
+!
+      end subroutine set_mesh_data_from_type
+!
+!  ---------------------------------------------------------------------
+!  ---------------------------------------------------------------------
+!
       subroutine copy_mesh_geometry_from_type                           &
      &         (org_mesh, tgt_comm, tgt_node, tgt_ele)
 !
+      use t_mesh_data
       use t_comm_table
       use t_geometry_data
-      use t_mesh_data
 !
       type(mesh_geometry),    intent(inout) :: org_mesh
 !

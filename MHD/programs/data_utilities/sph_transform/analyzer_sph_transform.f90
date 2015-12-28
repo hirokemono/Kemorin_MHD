@@ -57,7 +57,8 @@
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
-      call load_para_SPH_and_FEM_mesh
+      call load_para_SPH_and_FEM_mesh(nod_comm, node1, ele1,            &
+     &    surf1, edge1, nod_grp1, ele_grp1, sf_grp1)
 !
 !    Initialize FEM grid
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_sph_trans'

@@ -4,7 +4,7 @@
 !        programmed by H.Matsui on Feb. 2003
 !        modified by H. Matsui on June. 2006
 !
-!      subroutine init_RMA_SendRecv
+!      subroutine init_RMA_SendRecv(nod_comm)
 !
       module init_RMA_SR
 !
@@ -18,12 +18,13 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine init_RMA_SendRecv
+      subroutine init_RMA_SendRecv(nod_comm)
 !
       use calypso_mpi
-      use m_nod_comm_table
+      use t_comm_table
       use m_RMA_SR
 !
+      type(communication_table), intent(in) :: nod_comm
       integer(kind = kint), parameter :: isix = 6
 !
 !

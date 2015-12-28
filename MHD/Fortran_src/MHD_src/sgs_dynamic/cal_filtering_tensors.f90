@@ -41,30 +41,30 @@
 !
       if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING ) then
 !
-        call cal_3d_ez_filter_tensor_phys(num_whole_filter_grp,         &
-     &      id_whole_filter_grp, i_vect,                                &
-     &      node1%numnod, node1%internal_node,                          &
+        call cal_3d_ez_filter_tensor_phys                               &
+     &     (nod_comm, num_whole_filter_grp, id_whole_filter_grp,        &
+     &      i_vect, node1%numnod, node1%internal_node,                  &
      &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING ) then
 !
-        call cal_3d_filter_tensor_phys_smp(num_whole_filter_grp,        &
-     &      id_whole_filter_grp, i_vect,                                &
-     &      node1%numnod, node1%internal_node,                          &
+        call cal_3d_filter_tensor_phys_smp                              &
+     &     (nod_comm, num_whole_filter_grp, id_whole_filter_grp,        &
+     &      i_vect, node1%numnod, node1%internal_node,                  &
      &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING) then
 !
         call cal_3d_ez_filter_tensor_smp                                &
-     &     (num_whole_filter_grp, id_whole_filter_grp, i_vect,          &
-     &      node1%numnod, node1%internal_node,                          &
+     &     (nod_comm, num_whole_filter_grp, id_whole_filter_grp,        &
+     &      i_vect, node1%numnod, node1%internal_node,                  &
      &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_FILTERING) then
 !
-        call cal_3d_filter_tensor_phys(num_whole_filter_grp,            &
-     &      id_whole_filter_grp, i_vect,                                &
-     &      node1%numnod, node1%internal_node,                          &
+        call cal_3d_filter_tensor_phys                                  &
+     &     (nod_comm, num_whole_filter_grp, id_whole_filter_grp,        &
+     &      i_vect, node1%numnod, node1%internal_node,                  &
      &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
@@ -95,30 +95,30 @@
 !
       if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING ) then
 !
-        call cal_3d_ez_filter_tensor_phys(num_fluid_filter_grp,         &
-     &      id_fluid_filter_grp, i_vect,                                &
-     &      node1%numnod, node1%internal_node,                          &
+        call cal_3d_ez_filter_tensor_phys                               &
+     &     (nod_comm, num_fluid_filter_grp, id_fluid_filter_grp,        &
+     &      i_vect, node1%numnod, node1%internal_node,                  &
      &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING ) then
 !
-        call cal_3d_filter_tensor_phys_smp(num_fluid_filter_grp,        &
-     &      id_fluid_filter_grp, i_vect,                                &
-     &      node1%numnod, node1%internal_node,                          &
+        call cal_3d_filter_tensor_phys_smp                              &
+     &     (nod_comm, num_fluid_filter_grp, id_fluid_filter_grp,        &
+     &      i_vect, node1%numnod, node1%internal_node,                  &
      &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_EZ_SMP_FILTERING) then
 !
         call cal_3d_ez_filter_tensor_smp                                &
-     &     (num_fluid_filter_grp, id_fluid_filter_grp, i_vect,          &
+     &     (nod_comm, num_fluid_filter_grp, id_fluid_filter_grp,        &
      &      node1%numnod, node1%internal_node,                          &
-     &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
+     &      i_vect, nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_3D_FILTERING) then
 !
-        call cal_3d_filter_tensor_phys(num_fluid_filter_grp,            &
-     &      id_fluid_filter_grp, i_vect,                                &
-     &      node1%numnod, node1%internal_node,                          &
+        call cal_3d_filter_tensor_phys                                  &
+     &     (nod_comm, num_fluid_filter_grp, id_fluid_filter_grp,        &
+     &      i_vect, node1%numnod, node1%internal_node,                  &
      &      nod_fld1%ntot_phys, i_filter, nod_fld1%d_fld)
 !
       else if ( iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then

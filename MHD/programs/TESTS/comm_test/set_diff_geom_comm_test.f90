@@ -33,7 +33,7 @@
 !
       subroutine s_count_diff_geom_comm_test
 !
-      use m_ele_sf_eg_comm_tables
+      use m_nod_comm_table
 !
 !
       call count_ele_comm_test                                          &
@@ -52,7 +52,7 @@
 !
       subroutine s_set_diff_geom_comm_test
 !
-      use m_ele_sf_eg_comm_tables
+      use m_nod_comm_table
 !
 !
       call compare_ele_comm_test(ele1%numele, ele1%x_ele,               &

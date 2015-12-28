@@ -8,7 +8,6 @@
 !!
 !!@verbatim
 !!      subroutine group_data_from_type(group)
-!!      subroutine compare_group_type_vs_1st(my_rank, group)
 !!        type(mesh_groups), intent(inout) :: group
 !!
 !!      subroutine dealloc_grp_connectivity_1st
@@ -74,26 +73,6 @@
       call dealloc_groups_data(group)
 !
       end subroutine group_data_from_type
-!
-!-----------------------------------------------------------------------
-!
-      subroutine compare_group_type_vs_1st(my_rank, group_ref)
-!
-      use t_mesh_data
-      use t_group_data
-!
-      integer(kind = kint), intent(in) :: my_rank
-      type(mesh_groups), intent(in) :: group_ref
-!
-!
-      call compare_nod_grp_type_vs_1st                                  &
-     &   (my_rank, group_ref%nod_grp, nod_grp1)
-      call compare_nod_grp_type_vs_1st                                  &
-     &   (my_rank, group_ref%ele_grp, ele_grp1)
-      call compare_surf_grp_type_vs_1st                                 &
-     &   (my_rank, group_ref%surf_grp, sf_grp1)
-!
-      end subroutine compare_group_type_vs_1st
 !
 !-----------------------------------------------------------------------
 !

@@ -41,7 +41,6 @@
       use m_flags_4_solvers
       use m_solver_djds_MHD
       use m_array_for_send_recv
-      use m_ele_sf_eg_comm_tables
       use m_solver_djds_MHD
 !
       use m_check_subroutines

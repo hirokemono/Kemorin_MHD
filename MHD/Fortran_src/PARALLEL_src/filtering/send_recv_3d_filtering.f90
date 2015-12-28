@@ -5,17 +5,20 @@
 !      Written by H. Matsui on Apr., 2008
 !
 !!      subroutine scalar_send_recv_3d_filter                           &
-!!     &         (nnod, x_vec, ncomp_nod, i_fld, d_nod)
+!!     &         (nod_comm, nnod, x_vec, ncomp_nod, i_fld, d_nod)
 !!      subroutine vector_send_recv_3d_filter                           &
-!!     &         (nnod, x_vec, ncomp_nod, i_fld, d_nod)
+!!     &         (nod_comm, nnod, x_vec, ncomp_nod, i_fld, d_nod)
 !!      subroutine tensor_send_recv_3d_filter                           &
-!!     &         (nnod, x_vec, ncomp_nod, i_fld, d_nod)
+!!     &         (nod_comm, nnod, x_vec, ncomp_nod, i_fld, d_nod)
+!!        type(communication_table), intent(in) :: nod_comm
 !
       module send_recv_3d_filtering
 !
       use m_precision
       use m_work_time
       use calypso_mpi
+!
+      use t_comm_table
 !
       implicit none
 !
@@ -26,11 +29,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine scalar_send_recv_3d_filter                             &
-     &         (nnod, x_vec, ncomp_nod, i_fld, d_nod)
+     &         (nod_comm, nnod, x_vec, ncomp_nod, i_fld, d_nod)
 !
-      use m_nod_comm_table
       use solver_SR_type
 !
+      type(communication_table), intent(in) :: nod_comm
       integer(kind = kint), intent(in) :: nnod, ncomp_nod, i_fld
       real(kind = kreal), intent(inout) :: x_vec(nnod)
       real(kind = kreal), intent(inout) :: d_nod(nnod, ncomp_nod)
@@ -53,11 +56,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine vector_send_recv_3d_filter                             &
-     &         (nnod, x_vec, ncomp_nod, i_fld, d_nod)
+     &         (nod_comm, nnod, x_vec, ncomp_nod, i_fld, d_nod)
 !
-      use m_nod_comm_table
       use solver_SR_type
 !
+      type(communication_table), intent(in) :: nod_comm
       integer(kind = kint), intent(in) :: nnod, ncomp_nod, i_fld
       real(kind = kreal), intent(inout) :: x_vec(3*nnod)
       real(kind = kreal), intent(inout) :: d_nod(nnod,ncomp_nod)
@@ -82,11 +85,11 @@
 ! ----------------------------------------------------------------------
 !
       subroutine tensor_send_recv_3d_filter                             &
-     &         (nnod, x_vec, ncomp_nod, i_fld, d_nod)
+     &         (nod_comm, nnod, x_vec, ncomp_nod, i_fld, d_nod)
 !
-      use m_nod_comm_table
       use solver_SR_type
 !
+      type(communication_table), intent(in) :: nod_comm
       integer(kind = kint), intent(in) :: nnod, ncomp_nod, i_fld
       real(kind = kreal), intent(inout) :: x_vec(6*nnod)
       real(kind = kreal), intent(inout) :: d_nod(nnod,ncomp_nod)

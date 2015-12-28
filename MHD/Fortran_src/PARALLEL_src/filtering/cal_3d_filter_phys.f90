@@ -4,13 +4,13 @@
 !      Written by H. Matsui on Sep., 2007
 !     Modified by H. Matsui on Nov., 2008
 !
-!!      subroutine cal_3d_filter_scalar_phys(num_filter_grp,            &
+!!      subroutine cal_3d_filter_scalar_phys(nod_comm, num_filter_grp,  &
 !!     &          id_filter_grp, i_field, numnod, internal_node,        &
 !!     &          ntot_comp, i_filter, d_nod)
-!!      subroutine cal_3d_filter_vector_phys(num_filter_grp,            &
+!!      subroutine cal_3d_filter_vector_phys(nod_comm, num_filter_grp,  &
 !!     &          id_filter_grp, i_field, numnod, internal_node,        &
 !!     &          ntot_comp, i_filter, d_nod)
-!!      subroutine cal_3d_filter_tensor_phys(num_filter_grp,            &
+!!      subroutine cal_3d_filter_tensor_phys(nod_comm, num_filter_grp,  &
 !!     &          id_filter_grp, i_field, numnod, internal_node,        &
 !!     &          ntot_comp, i_filter, d_nod)
 !!         i_filter: field ID for filtered field
@@ -18,20 +18,22 @@
 !!         num_filter_grp:  num. of filtereing area
 !!         id_filter_grp:   table id for filtering
 !!
-!!      subroutine cal_3d_ez_filter_scalar_phys(num_filter_grp,         &
-!!     &          id_filter_grp, i_field, numnod, internal_node,        &
-!!     &          ntot_comp, i_filter, d_nod)
-!!      subroutine cal_3d_ez_filter_vector_phys(num_filter_grp,         &
-!!     &          id_filter_grp, i_field, numnod, internal_node,        &
-!!     &          ntot_comp, i_filter, d_nod)
-!!      subroutine cal_3d_ez_filter_tensor_phys(num_filter_grp,         &
-!!     &          id_filter_grp, i_field, numnod, internal_node,        &
-!!     &          ntot_comp, i_filter, d_nod)
+!!      subroutine cal_3d_ez_filter_scalar_phys                         &
+!!     &         (nod_comm, num_filter_grp, id_filter_grp, i_field,     &
+!!     &          numnod, internal_node, ntot_comp, i_filter, d_nod)
+!!      subroutine cal_3d_ez_filter_vector_phys                         &
+!!     &         (nod_comm, num_filter_grp, id_filter_grp, i_field,     &
+!!     &          numnod, internal_node, ntot_comp, i_filter, d_nod)
+!!      subroutine cal_3d_ez_filter_tensor_phys                         &
+!!     &         (nod_comm, num_filter_grp, id_filter_grp, i_field,     &
+!!     &          numnod, internal_node, ntot_comp, i_filter, d_nod)
+!!        type(communication_table), intent(in) :: nod_comm
 !
       module cal_3d_filter_phys
 !
       use m_precision
 !
+      use t_comm_table
       use m_array_for_send_recv
       use m_filter_coef_combained
       use m_nod_filter_comm_table
@@ -46,12 +48,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_3d_filter_scalar_phys(num_filter_grp,              &
+      subroutine cal_3d_filter_scalar_phys(nod_comm, num_filter_grp,    &
      &          id_filter_grp, i_field, numnod, internal_node,          &
      &          ntot_comp, i_filter, d_nod)
 !
       use sum_3d_filter_phys
 !
+      type(communication_table), intent(in) :: nod_comm
       integer(kind = kint), intent(in) :: num_filter_grp
       integer(kind = kint), intent(in) :: id_filter_grp(num_filter_grp)
 !
@@ -71,19 +74,20 @@
      &    ntot_nsum_3d_filter, ist_nsum_3d_filter, ied_nsum_3d_filter,  &
      &    nnod_filtering, x_vec_filtering(1), numnod, x_vec(1))
 !
-      call scalar_send_recv_3d_filter(numnod, x_vec(1),                 &
+      call scalar_send_recv_3d_filter(nod_comm, numnod, x_vec(1),       &
      &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_3d_filter_scalar_phys
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_3d_filter_vector_phys(num_filter_grp,              &
+      subroutine cal_3d_filter_vector_phys(nod_comm, num_filter_grp,    &
      &          id_filter_grp, i_field, numnod, internal_node,          &
      &          ntot_comp, i_filter, d_nod)
 !
       use sum_3d_filter_phys
 !
+      type(communication_table), intent(in) :: nod_comm
       integer(kind = kint), intent(in) :: num_filter_grp
       integer(kind = kint), intent(in) :: id_filter_grp(num_filter_grp)
 !
@@ -103,19 +107,20 @@
      &    ntot_nsum_3d_filter, ist_nsum_3d_filter, ied_nsum_3d_filter,  &
      &    nnod_filtering, x_vec_filtering(1), numnod, x_vec(1))
 !
-      call vector_send_recv_3d_filter(numnod, x_vec(1),                 &
+      call vector_send_recv_3d_filter(nod_comm, numnod, x_vec(1),       &
      &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_3d_filter_vector_phys
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_3d_filter_tensor_phys(num_filter_grp,              &
+      subroutine cal_3d_filter_tensor_phys(nod_comm, num_filter_grp,    &
      &          id_filter_grp, i_field, numnod, internal_node,          &
      &          ntot_comp, i_filter, d_nod)
 !
       use sum_3d_filter_phys
 !
+      type(communication_table), intent(in) :: nod_comm
       integer(kind = kint), intent(in) :: num_filter_grp
       integer(kind = kint), intent(in) :: id_filter_grp(num_filter_grp)
 !
@@ -135,7 +140,7 @@
      &    ntot_nsum_3d_filter, ist_nsum_3d_filter, ied_nsum_3d_filter,  &
      &    nnod_filtering, x_vec_filtering(1), numnod, x_vec(1))
 !
-      call tensor_send_recv_3d_filter(numnod, x_vec(1),                 &
+      call tensor_send_recv_3d_filter(nod_comm, numnod, x_vec(1),       &
      &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_3d_filter_tensor_phys
@@ -143,12 +148,13 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_3d_ez_filter_scalar_phys(num_filter_grp,           &
-     &          id_filter_grp, i_field, numnod, internal_node,          &
-     &          ntot_comp, i_filter, d_nod)
+      subroutine cal_3d_ez_filter_scalar_phys                           &
+     &         (nod_comm, num_filter_grp, id_filter_grp, i_field,       &
+     &          numnod, internal_node, ntot_comp, i_filter, d_nod)
 !
       use sum_3d_ez_filter_phys
 !
+      type(communication_table), intent(in) :: nod_comm
       integer(kind = kint), intent(in) :: num_filter_grp
       integer(kind = kint), intent(in) :: id_filter_grp(num_filter_grp)
 !
@@ -166,19 +172,20 @@
      &    ntot_near_nod_3d_filter, inod_near_nod_3d, filter_weight_3d,  &
      &    nnod_filtering, x_vec_filtering(1), numnod, x_vec(1) )
 !
-      call scalar_send_recv_3d_filter(numnod, x_vec(1),                 &
+      call scalar_send_recv_3d_filter(nod_comm, numnod, x_vec(1),       &
      &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_3d_ez_filter_scalar_phys
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_3d_ez_filter_vector_phys(num_filter_grp,           &
-     &          id_filter_grp, i_field, numnod, internal_node,          &
-     &          ntot_comp, i_filter, d_nod)
+      subroutine cal_3d_ez_filter_vector_phys                           &
+     &         (nod_comm, num_filter_grp, id_filter_grp, i_field,       &
+     &          numnod, internal_node, ntot_comp, i_filter, d_nod)
 !
       use sum_3d_ez_filter_phys
 !
+      type(communication_table), intent(in) :: nod_comm
       integer(kind = kint), intent(in) :: num_filter_grp
       integer(kind = kint), intent(in) :: id_filter_grp(num_filter_grp)
 !
@@ -196,19 +203,20 @@
      &    ntot_near_nod_3d_filter, inod_near_nod_3d, filter_weight_3d,  &
      &    nnod_filtering, x_vec_filtering(1), numnod, x_vec(1))
 !
-      call vector_send_recv_3d_filter(numnod, x_vec(1),                 &
+      call vector_send_recv_3d_filter(nod_comm, numnod, x_vec(1),       &
      &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_3d_ez_filter_vector_phys
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_3d_ez_filter_tensor_phys(num_filter_grp,           &
-     &          id_filter_grp, i_field, numnod, internal_node,          &
-     &          ntot_comp, i_filter, d_nod)
+      subroutine cal_3d_ez_filter_tensor_phys                           &
+     &         (nod_comm, num_filter_grp, id_filter_grp, i_field,       &
+     &          numnod, internal_node, ntot_comp, i_filter, d_nod)
 !
       use sum_3d_ez_filter_phys
 !
+      type(communication_table), intent(in) :: nod_comm
       integer(kind = kint), intent(in) :: num_filter_grp
       integer(kind = kint), intent(in) :: id_filter_grp(num_filter_grp)
 !
@@ -226,7 +234,7 @@
      &    ntot_near_nod_3d_filter, inod_near_nod_3d, filter_weight_3d,  &
      &    nnod_filtering, x_vec_filtering(1), numnod, x_vec(1))
 !
-      call tensor_send_recv_3d_filter(numnod, x_vec(1),                 &
+      call tensor_send_recv_3d_filter(nod_comm, numnod, x_vec(1),       &
      &    ntot_comp, i_filter, d_nod)
 !
       end subroutine cal_3d_ez_filter_tensor_phys

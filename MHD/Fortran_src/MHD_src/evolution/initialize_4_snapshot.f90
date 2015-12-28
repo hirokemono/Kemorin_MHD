@@ -39,7 +39,6 @@
       use m_work_layer_correlate
       use m_boundary_condition_IDs
       use m_array_for_send_recv
-      use m_ele_sf_eg_comm_tables
       use m_solver_djds_MHD
 !
       use m_check_subroutines

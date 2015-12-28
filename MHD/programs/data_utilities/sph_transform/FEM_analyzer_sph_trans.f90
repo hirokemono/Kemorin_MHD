@@ -36,7 +36,6 @@
       use m_array_for_send_recv
       use m_t_step_parameter
       use m_node_phys_data
-      use m_ele_sf_eg_comm_tables
 !
       use nod_phys_send_recv
       use const_mesh_info
@@ -46,6 +45,7 @@
       use sum_normal_4_surf_group
       use output_parallel_ucd_file
       use ucd_IO_select
+      use const_element_comm_tables
 !
       use copy_all_field_4_sph_trans
 !
@@ -60,8 +60,9 @@
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)
 !
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
-      call const_element_comm_tables_1st
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
+      call const_element_comm_tbls(node1, ele1, surf1, edge1,           &
+     &    nod_comm, ele_comm, surf_comm, edge_comm)
 !
       call deallocate_edge_geom_type(edge1)
 !

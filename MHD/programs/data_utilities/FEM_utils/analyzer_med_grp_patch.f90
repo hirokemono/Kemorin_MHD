@@ -29,7 +29,6 @@
       use m_geometry_data
       use m_nod_comm_table
       use m_node_phys_data
-      use m_ele_sf_eg_comm_tables
       use m_array_for_send_recv
       use m_FEM_utils
       use input_control_udt_diff
@@ -37,6 +36,7 @@
       use nod_phys_send_recv
       use count_whole_num_element
       use load_mesh_data
+      use const_element_comm_tables
 !
 !
       if (my_rank.eq.0) then
@@ -65,7 +65,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)
-      call const_element_comm_tables_1st
+      call const_element_comm_tbls(node1, ele1, surf1, edge1,           &
+     &    nod_comm, ele_comm, surf_comm, edge_comm)
 !
       if(i_debug .eq. iflag_full_msg) then
         call check_whole_num_of_elements(ele1)
@@ -86,7 +87,6 @@
       subroutine analyze_med_grp_patch
 !
       use m_ctl_params_4_diff_udt
-      use m_ele_sf_eg_comm_tables
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data

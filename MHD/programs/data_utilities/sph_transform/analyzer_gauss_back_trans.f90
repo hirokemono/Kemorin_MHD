@@ -13,7 +13,6 @@
       use m_SPH_transforms
       use m_work_time
       use m_nod_comm_table
-      use m_ele_sf_eg_comm_tables
       use m_geometry_data
       use m_group_data
       use m_node_phys_data
@@ -50,7 +49,8 @@
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
-      call load_para_SPH_and_FEM_mesh
+      call load_para_SPH_and_FEM_mesh(nod_comm, node1, ele1,            &
+     &    surf1, edge1, nod_grp1, ele_grp1, sf_grp1)
 !
 !  ------  initialize FEM data
 !

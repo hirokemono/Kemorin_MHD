@@ -52,7 +52,6 @@
       use m_t_step_parameter
       use m_node_phys_data
       use m_cal_max_indices
-      use m_ele_sf_eg_comm_tables
 !
       use const_mesh_info
       use nod_phys_send_recv

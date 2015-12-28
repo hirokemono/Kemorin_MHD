@@ -38,7 +38,6 @@
       use m_array_for_send_recv
       use m_node_phys_data
       use m_t_step_parameter
-      use m_ele_sf_eg_comm_tables
 !
       use nod_phys_send_recv
       use const_mesh_info
@@ -49,6 +48,7 @@
       use sum_normal_4_surf_group
       use output_parallel_ucd_file
       use const_jacobians_3d
+      use const_element_comm_tables
 !
       type(element_around_node), intent(inout) :: ele_4_nod
       type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
@@ -66,8 +66,9 @@
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)
 !
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
-      call const_element_comm_tables_1st
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
+      call const_element_comm_tbls(node1, ele1, surf1, edge1,           &
+     &    nod_comm, ele_comm, surf_comm, edge_comm)
 !
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR

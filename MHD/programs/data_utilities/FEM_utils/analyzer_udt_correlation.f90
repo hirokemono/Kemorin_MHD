@@ -43,7 +43,6 @@
       use m_geometry_data
       use m_group_data
       use m_node_phys_data
-      use m_ele_sf_eg_comm_tables
 !
       use copy_mesh_structures
       use input_control_udt_diff
@@ -56,6 +55,7 @@
       use int_volume_of_domain
       use correlation_all_layerd_data
       use const_jacobians_3d
+      use const_element_comm_tables
 !
 !
       if (my_rank.eq.0) then
@@ -110,7 +110,8 @@
       call init_send_recv(nod_comm)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
-      call const_element_comm_tables_1st
+      call const_element_comm_tbls(node1, ele1, surf1, edge1,           &
+     &    nod_comm, ele_comm, surf_comm, edge_comm)
 !
 !     --------------------- 
 !

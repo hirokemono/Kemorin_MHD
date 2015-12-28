@@ -34,6 +34,9 @@
 !
       subroutine input_control_SPH_mesh
 !
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
       use m_control_parameter
       use m_spheric_parameter
       use m_sph_boundary_input_data
@@ -47,7 +50,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
-      call load_para_SPH_and_FEM_mesh
+      call load_para_SPH_and_FEM_mesh(nod_comm, node1, ele1,            &
+     &    surf1, edge1, nod_grp1, ele_grp1, sf_grp1)
 !
       if (iflag_boundary_file .eq. id_read_boundary_file) then
         if (iflag_debug.eq.1) write(*,*) 'read_boundary_spectr_file'

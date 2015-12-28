@@ -99,7 +99,7 @@
       use set_refine_flags_4_tri
       use const_refine_interpolate
       use find_hanging_surface
-      use load_mesh_data
+      use copy_mesh_structures
       use load_mesh_type_data
 !
       character(len=kchara), parameter :: tmp_mesh_head = 'work'
@@ -200,8 +200,10 @@
         write(*,*) 'deallocate_mesh_infomations'
         call deallocate_mesh_infomations
 !
-        write(*,*) 'set_mesh_from_type'
-        call set_mesh_from_type(refined_fem%mesh, refined_fem%group)
+        write(*,*) 'set_mesh_data_from_type'
+        call set_mesh_data_from_type                                    &
+     &     (refined_fem%mesh, refined_fem%group, nod_comm,              &
+     &      node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1)
 !
         surf1%nnod_4_surf = finer_surfmesh%surf%nnod_4_surf
         edge1%nnod_4_edge = finer_edgemesh%edge%nnod_4_edge

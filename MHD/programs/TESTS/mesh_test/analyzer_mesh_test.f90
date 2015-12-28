@@ -31,7 +31,6 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
-      use m_ele_sf_eg_comm_tables
       use m_array_for_send_recv
       use set_node_data_4_IO
       use set_element_data_4_IO
@@ -58,6 +57,7 @@
       use set_control_test_mesh
       use load_mesh_data
       use const_jacobians_3d
+      use const_element_comm_tables
 !
       use t_jacobian_3d
 !
@@ -99,8 +99,9 @@
       if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
       call const_mesh_informations(my_rank)
 !
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
-      call const_element_comm_tables_1st
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
+      call const_element_comm_tbls(node1, ele1, surf1, edge1,           &
+     &    nod_comm, ele_comm, surf_comm, edge_comm)
 !
 !  -------------------------------
 !

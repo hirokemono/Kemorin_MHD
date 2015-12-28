@@ -35,9 +35,8 @@
 !!      subroutine check_surf_grp_type_data(my_rank, sf_grp)
 !!      subroutine check_grp_4_sheard_para(my_rank, grp)
 !!      subroutine check_surf_grp_4_sheard_para(my_rank, sf_grp)
-!!      subroutine compare_nod_grp_type_vs_1st(my_rank, grp_ref, grp)
-!!      subroutine compare_surf_grp_type_vs_1st                         &
-!!     &         (my_rank, sf_grp_ref, sf_grp)
+!!      subroutine compare_group_types(my_rank, grp_ref, grp)
+!!      subroutine compare_surface_grp_types(my_rank, sf_grp_ref, sf_grp)
 !!        integer(kind = kint), intent(in) :: my_rank
 !!        type(group_data), intent(in) :: grp
 !!        type(surface_group_data), intent(in) :: sf_grp
@@ -402,7 +401,7 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine compare_nod_grp_type_vs_1st(my_rank, grp_ref, grp)
+      subroutine compare_group_types(my_rank, grp_ref, grp)
 !
       integer(kind = kint), intent(in) :: my_rank
       type(group_data), intent(in) :: grp_ref
@@ -429,12 +428,11 @@
      &       grp_ref%item_grp(i), grp%item_grp(i)
       end do
 !
-      end subroutine compare_nod_grp_type_vs_1st
+      end subroutine compare_group_types
 !
 !-----------------------------------------------------------------------
 !
-      subroutine compare_surf_grp_type_vs_1st                           &
-     &         (my_rank, sf_grp_ref, sf_grp)
+      subroutine compare_surface_grp_types(my_rank, sf_grp_ref, sf_grp)
 !
       integer(kind = kint), intent(in) :: my_rank
       type(surface_group_data), intent(in) :: sf_grp_ref
@@ -463,7 +461,7 @@
      &       sf_grp_ref%item_sf_grp(2,i), sf_grp%item_sf_grp(2,i)
       end do
 !
-      end subroutine compare_surf_grp_type_vs_1st
+      end subroutine compare_surface_grp_types
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------

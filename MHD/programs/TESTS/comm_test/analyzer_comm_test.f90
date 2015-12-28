@@ -87,13 +87,13 @@
       use m_array_for_send_recv
       use m_geometry_4_comm_test
       use m_read_mesh_data
-      use m_ele_sf_eg_comm_tables
       use mesh_send_recv_test
       use set_diff_geom_comm_test
       use collect_diff_4_comm_test
       use write_diff_4_comm_test
       use nod_phys_send_recv
       use const_mesh_info
+      use const_element_comm_tables
 !
       use set_ele_id_4_node_type
       use const_element_comm_tables
@@ -113,9 +113,10 @@
       call end_eleps_time(1)
       call calypso_mpi_barrier
 !
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
       call start_eleps_time(2)
-      call const_element_comm_tables_1st
+      call const_element_comm_tbls(node1, ele1, surf1, edge1,           &
+     &    nod_comm, ele_comm, surf_comm, edge_comm)
       call end_eleps_time(2)
 !
       if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'

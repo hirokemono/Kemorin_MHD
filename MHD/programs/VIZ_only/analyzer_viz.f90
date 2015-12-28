@@ -13,7 +13,6 @@
 !
       use m_visualization
       use m_nod_comm_table
-      use m_ele_sf_eg_comm_tables
       use m_geometry_data
       use m_group_data
       use m_node_phys_data

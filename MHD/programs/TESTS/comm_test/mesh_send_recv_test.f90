@@ -337,7 +337,7 @@
 !
       subroutine ele_send_recv_test
 !
-      use m_ele_sf_eg_comm_tables
+      use m_nod_comm_table
       use solver_SR_type
 !
       integer(kind = kint) :: iele, inum
@@ -364,7 +364,7 @@
       subroutine surf_send_recv_test
 !
       use m_geometry_data
-      use m_ele_sf_eg_comm_tables
+      use m_nod_comm_table
       use solver_SR_type
 !
       integer(kind = kint) :: isurf, inum
@@ -392,7 +392,7 @@
       subroutine edge_send_recv_test
 !
       use m_geometry_data
-      use m_ele_sf_eg_comm_tables
+      use m_nod_comm_table
       use solver_SR_type
 !
       integer(kind = kint) :: iedge, inum
