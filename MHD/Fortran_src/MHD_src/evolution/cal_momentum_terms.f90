@@ -33,6 +33,7 @@
 !
       subroutine cal_terms_4_momentum(i_field)
 !
+      use m_finite_element_matrix
       use m_int_vol_data
 !
       use int_vol_velo_monitor
@@ -53,7 +54,7 @@
       call int_surf_velo_monitor(i_field)
 !
       call cal_t_evo_4_vector_fl(iflag_velo_supg)
-!       call set_boundary_velo_4_rhs
+!       call set_boundary_velo_4_rhs(node1, f1_l, f1_nl)
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    f1_nl%ff, mhd_fem1_wk%mlump_fl%ml,                            &
@@ -68,6 +69,7 @@
 !
       use m_phys_constants
       use m_int_vol_data
+      use m_finite_element_matrix
 !
       use int_vol_diffusion_ele
 !
@@ -79,7 +81,7 @@
 !
       call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !
-      call set_boundary_velo_4_rhs
+      call set_boundary_velo_4_rhs(node1, f1_l, f1_nl)
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    f1_l%ff, mhd_fem1_wk%mlump_fl%ml,                             &

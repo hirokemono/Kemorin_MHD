@@ -110,7 +110,7 @@
        call cal_velo_pre_consist_crank
       end if
 !
-      call set_boundary_velo
+      call set_boundary_velo(node1, iphys%i_velo, nod_fld1)
       call set_normal_velo
 !
       call vector_send_recv(iphys%i_velo, node1, nod_comm, nod_fld1)
@@ -165,15 +165,16 @@
 ! ----------------------------------------------------------------------
 !  --------  subroutine cal_velo_pre_crank  -------
 !
-       subroutine cal_velo_pre_crank
+      subroutine cal_velo_pre_crank
 !
-       use m_t_step_parameter
-       use cal_multi_pass
-       use cal_sol_vector_pre_crank
-       use set_nodal_bc_id_data
-       use int_sk_4_fixed_boundary
-       use cal_solver_MHD
-       use int_vol_coriolis_term
+      use m_t_step_parameter
+      use m_finite_element_matrix
+      use cal_multi_pass
+      use cal_sol_vector_pre_crank
+      use set_nodal_bc_id_data
+      use int_sk_4_fixed_boundary
+      use cal_solver_MHD
+      use int_vol_coriolis_term
 !
 !
        if (coef_imp_v.gt.0.0d0) then
@@ -189,7 +190,7 @@
        if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
        call int_buoyancy_nod_exp
 !
-       call set_boundary_velo_4_rhs
+       call set_boundary_velo_4_rhs(node1, f1_l, f1_nl)
 !
        call cal_sol_velo_pre_linear(node1, iphys, nod_fld1)
 !
@@ -204,6 +205,7 @@
 !
       use m_t_step_parameter
       use m_physical_property
+      use m_finite_element_matrix
       use cal_sol_vector_pre_crank
       use set_nodal_bc_id_data
       use int_sk_4_fixed_boundary
@@ -220,7 +222,7 @@
       call int_vol_initial_velo
       call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !
-      call set_boundary_velo_4_rhs
+      call set_boundary_velo_4_rhs(node1, f1_l, f1_nl)
 !
       call cal_vector_pre_consist(node1, coef_velo,                     &
      &    f1_nl%ff, n_vector, iphys%i_pre_mom, nod_fld1, f1_l%ff)

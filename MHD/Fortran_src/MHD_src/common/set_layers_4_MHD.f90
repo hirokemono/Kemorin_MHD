@@ -5,7 +5,7 @@
 !     programmed H.Matsui in 2005
 !     Modified by H. Matsui on Dec., 2008
 !
-!      subroutine set_layers
+!      subroutine set_layers(node, ele, ele_grp)
 !       subroutine for start and end element number of each layer
 !       and set node lists for each layer
 !
@@ -13,6 +13,9 @@
       module set_layers_4_MHD
 !
       use m_precision
+!
+      use t_geometry_data
+      use t_group_data
 !
       implicit none
 !
@@ -24,44 +27,48 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine set_layers
+      subroutine set_layers(node, ele, ele_grp)
 !
-      use m_group_data
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(group_data), intent(inout) :: ele_grp
 !
 !    set node list for fluid
 !
-      call set_layer_fluid
+      call set_layer_fluid(node, ele)
 !
 !    set node and element list for conductor
 !
-      call set_layers_4_induction(ele_grp1)
+      call set_layers_4_induction(node, ele, ele_grp)
 !
       end subroutine set_layers
 !
 ! ---------------------------------------------------------------------
 ! ---------------------------------------------------------------------
 !
-      subroutine set_layer_fluid
+      subroutine set_layer_fluid(node, ele)
 !
-      use m_geometry_data
       use m_geometry_data_MHD
       use m_set_layers
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+!
 !    set node list for fluid
 !
-      call alloc_mat_node_flag(node1%numnod)
+      call alloc_mat_node_flag(node%numnod)
 !
-      call count_node_4_layer(node1%numnod, node1%internal_node,        &
+      call count_node_4_layer(node%numnod, node%internal_node,          &
      &     fluid1%numnod_fld, fluid1%internal_node_fld,                 &
      &     fluid1%iele_start_fld, fluid1%iele_end_fld,                  &
-     &     ele1%numele, ele1%nnod_4_ele, ele1%ie)
+     &     ele%numele, ele%nnod_4_ele, ele%ie)
 !
       call allocate_field_nod_list(fluid1)
 !
       call set_node_4_layer                                             &
-     &   (node1%numnod, fluid1%numnod_fld, fluid1%inod_fld,             &
+     &   (node%numnod, fluid1%numnod_fld, fluid1%inod_fld,              &
      &    fluid1%iele_start_fld, fluid1%iele_end_fld,                   &
-     &    ele1%numele, ele1%nnod_4_ele, ele1%ie)
+     &    ele%numele, ele%nnod_4_ele, ele%ie)
 !
       call dealloc_mat_node_flag
 !
@@ -71,40 +78,40 @@
 !
 ! ---------------------------------------------------------------------
 !
-      subroutine set_layers_4_induction(ele_grp)
+      subroutine set_layers_4_induction(node, ele, ele_grp)
 !
       use m_control_parameter
-      use m_geometry_data
       use m_geometry_data_MHD
       use m_set_layers
-      use t_group_data
 !
-      type(group_data), intent(inout) :: ele_grp
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(group_data), intent(in) :: ele_grp
 !
 !    count number of element for insulated core
 !
-      call count_ele_4_layer(ele1%numele, inner_core%numele_fld,        &
+      call count_ele_4_layer(ele%numele, inner_core%numele_fld,         &
      &    num_in_core_ele_grp, in_core_ele_grp_name,                    &
      &    ele_grp%num_grp, ele_grp%istack_grp, ele_grp%grp_name)
 !
 !    set node list for conductor
 !
-      call alloc_mat_node_flag(node1%numnod)
+      call alloc_mat_node_flag(node%numnod)
 !
-      call count_node_4_layer(node1%numnod, node1%internal_node,        &
+      call count_node_4_layer(node%numnod, node%internal_node,          &
      &    conduct1%numnod_fld, conduct1%internal_node_fld,              &
      &    conduct1%iele_start_fld, conduct1%iele_end_fld,               &
-     &    ele1%numele, ele1%nnod_4_ele, ele1%ie)
+     &    ele%numele, ele%nnod_4_ele, ele%ie)
 !
-      call count_node_4_layer(node1%numnod, node1%internal_node,        &
+      call count_node_4_layer(node%numnod, node%internal_node,          &
      &    insulate1%numnod_fld, insulate1%internal_node_fld,            &
      &    insulate1%iele_start_fld, insulate1%iele_end_fld,             &
-     &    ele1%numele, ele1%nnod_4_ele, ele1%ie)
+     &    ele%numele, ele%nnod_4_ele, ele%ie)
 !
-!      call count_node_4_layer(node1%numnod, node1%internal_node,       &
+!      call count_node_4_layer(node%numnod, node%internal_node,         &
 !     &    inner_core%numnod_fld, inner_core%internal_node_fld,         &
 !     &    iele_ic_start, iele_ic_end,                                  &
-!     &    ele1%numele, ele1%nnod_4_ele, ele1%ie)
+!     &    ele%numele, ele%nnod_4_ele, ele%ie)
 !
 !  allocate list vector for fluid and conductive layer
 !
@@ -115,19 +122,19 @@
 !  set node list
 !
       call set_node_4_layer                                             &
-     &     (node1%numnod, conduct1%numnod_fld, conduct1%inod_fld,       &
+     &     (node%numnod, conduct1%numnod_fld, conduct1%inod_fld,        &
      &      conduct1%iele_start_fld, conduct1%iele_end_fld,             &
-     &      ele1%numele, ele1%nnod_4_ele, ele1%ie)
+     &      ele%numele, ele%nnod_4_ele, ele%ie)
 !
       call set_node_4_layer                                             &
-     &     (node1%numnod, insulate1%numnod_fld, insulate1%inod_fld,     &
+     &     (node%numnod, insulate1%numnod_fld, insulate1%inod_fld,      &
      &      insulate1%iele_start_fld, insulate1%iele_end_fld,           &
-     &      ele1%numele, ele1%nnod_4_ele, ele1%ie)
+     &      ele%numele, ele%nnod_4_ele, ele%ie)
 !
 !      call set_node_4_layer                                            &
-!     &     (node1%numnod, inner_core%numnod_fld, inner_core%inod_fld,  &
+!     &     (node%numnod, inner_core%numnod_fld, inner_core%inod_fld,   &
 !     &      iele_ic_start, iele_ic_end,                                &
-!     &      ele1%numele, ele1%nnod_4_ele, ele1%ie)
+!     &      ele%numele, ele%nnod_4_ele, ele%ie)
 !
       call dealloc_mat_node_flag
 !

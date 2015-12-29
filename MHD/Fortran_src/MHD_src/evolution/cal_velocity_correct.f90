@@ -81,7 +81,7 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_velo'
-      call set_boundary_velo
+      call set_boundary_velo(node1, iphys%i_velo, nod_fld1)
       if (iflag_debug.eq.1) write(*,*) 'set_normal_velo'
       call set_normal_velo
 !
@@ -149,6 +149,7 @@
 !
       subroutine cal_velocity_co_crank
 !
+      use m_finite_element_matrix
       use int_vol_coriolis_term
 !
 !
@@ -159,7 +160,7 @@
       call int_coriolis_nod_exp
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_velo_4_rhs'
-      call set_boundary_velo_4_rhs
+      call set_boundary_velo_4_rhs(node1, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_co_crank'
       call cal_sol_velo_co_crank(node1%istack_internal_smp)
@@ -172,6 +173,7 @@
 !
       use m_phys_constants
       use m_physical_property
+      use m_finite_element_matrix
       use int_vol_initial_MHD
       use cal_ff_smp_to_ffs
 !
@@ -181,7 +183,7 @@
       call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_velo_4_rhs'
-      call set_boundary_velo_4_rhs
+      call set_boundary_velo_4_rhs(node1, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_co_crank_consist'
       call cal_vector_co_crank_consist                                  &

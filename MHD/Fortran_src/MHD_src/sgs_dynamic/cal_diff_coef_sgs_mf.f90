@@ -73,7 +73,7 @@
 !
       call subtract_2_nod_vectors(node1, nod_fld1,                      &
      &    iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
-      call delete_field_by_fixed_v_bc(iphys%i_sgs_simi)
+      call delete_field_by_fixed_v_bc(iphys%i_sgs_simi, nod_fld1)
 !
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_vector, iphys%i_sgs_simi)
@@ -85,7 +85,7 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'delete_field_by_fixed_v_bc',    &
      &                     iphys%i_sgs_grad_f
-      call delete_field_by_fixed_v_bc(iphys%i_sgs_grad_f)
+      call delete_field_by_fixed_v_bc(iphys%i_sgs_grad_f, nod_fld1)
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &      'vector_send_recv', iphys%i_sgs_grad_f
@@ -106,7 +106,7 @@
 !    filtering (to iphys%i_sgs_grad)
 !
       call cal_filtered_vector(iphys%i_sgs_grad, iphys%i_sgs_grad)
-      call delete_field_by_fixed_v_bc(iphys%i_sgs_grad)
+      call delete_field_by_fixed_v_bc(iphys%i_sgs_grad, nod_fld1)
 !
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_vector, iphys%i_sgs_grad)

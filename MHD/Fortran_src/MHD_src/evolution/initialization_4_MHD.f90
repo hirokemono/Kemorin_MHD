@@ -93,7 +93,7 @@
 !
       call s_reordering_by_layers_MHD
 !
-      call set_layers
+      call set_layers(node1, ele1, ele_grp1)
 !      call check_numbers_of_nodes(my_rank)
 !      call check_nodes_4_layers(my_rank)
 !
@@ -242,7 +242,7 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1)write(*,*) 'set_bc_id_data'
-      call set_bc_id_data
+      call set_bc_id_data(node1, ele1, nod_grp1, iphys, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_surf_bc_data'
       call set_surf_bc_data

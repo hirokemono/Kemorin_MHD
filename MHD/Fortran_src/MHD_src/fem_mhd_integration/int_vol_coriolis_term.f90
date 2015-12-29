@@ -18,10 +18,14 @@
 !
       use m_phys_constants
       use m_physical_property
-      use cal_coriolis
 !
       use m_control_parameter
       use m_finite_element_matrix
+!
+      use t_geometry_data
+      use t_phys_data
+!
+      use cal_coriolis
 !
       implicit none
 !
@@ -133,8 +137,6 @@
 !
       subroutine set_boussinesq_density_at_node(node, iphys, nod_fld)
 !
-      use t_geometry_data
-      use t_phys_data
       use set_buoyancy_at_node
 !
       type(node_data), intent(in) :: node
