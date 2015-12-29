@@ -33,9 +33,12 @@
 !
       use m_geometry_data
       use m_nod_comm_table
+      use m_geometry_data_MHD
       use m_finite_element_matrix
       use m_node_phys_data
       use m_element_phys_data
+      use m_jacobians
+      use m_element_id_4_node
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -76,7 +79,9 @@
 !
       if ( iflag_4_coriolis .eq. id_Coriolis_ele_imp) then
          if (iflag_debug.eq.1) write(*,*) 'int_vol_coriolis_crank_ele'
-        call int_vol_coriolis_crank_ele
+        call int_vol_coriolis_crank_ele                                 &
+     &     (node1, ele1, fluid1, jac1_3d_q, rhs_tbl1,                   &
+     &      iphys%i_velo, nod_fld1, fem1_wk, f1_l)
       end if
 !
 ! -------     advection and forces
@@ -124,6 +129,8 @@
 !
       use m_geometry_data
       use m_node_phys_data
+      use m_finite_element_matrix
+      use m_int_vol_data
       use cal_multi_pass
       use cal_sol_vector_explicit
       use int_vol_coriolis_term
@@ -131,9 +138,11 @@
       call cal_t_evo_4_vector_fl(iflag_velo_supg)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
-      call int_coriolis_nod_exp
+      call int_coriolis_nod_exp(node1, mhd_fem1_wk,                     &
+     &    iphys%i_velo, nod_fld1, f1_l, f1_nl)
       if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
-      call int_buoyancy_nod_exp
+      call int_buoyancy_nod_exp                                         &
+     &    (node1, mhd_fem1_wk, iphys, nod_fld1, f1_nl)
 !
       call cal_sol_velo_pre_euler(node1, iphys, nod_fld1)
 !
@@ -146,6 +155,8 @@
 !
       use m_geometry_data
       use m_node_phys_data
+      use m_finite_element_matrix
+      use m_int_vol_data
       use cal_multi_pass
       use cal_sol_vector_explicit
       use int_vol_coriolis_term
@@ -154,9 +165,11 @@
       call cal_t_evo_4_vector_fl(iflag_velo_supg)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
-      call int_coriolis_nod_exp
+      call int_coriolis_nod_exp(node1, mhd_fem1_wk,                     &
+     &    iphys%i_velo, nod_fld1, f1_l, f1_nl)
       if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
-      call int_buoyancy_nod_exp
+      call int_buoyancy_nod_exp                                         &
+     &   (node1, mhd_fem1_wk, iphys, nod_fld1, f1_nl)
 !
       call cal_sol_velo_pre_adams(node1, iphys, nod_fld1)
 !
@@ -169,6 +182,8 @@
 !
       use m_t_step_parameter
       use m_finite_element_matrix
+      use m_int_vol_data
+      use m_node_phys_data
       use cal_multi_pass
       use cal_sol_vector_pre_crank
       use set_nodal_bc_id_data
@@ -177,26 +192,28 @@
       use int_vol_coriolis_term
 !
 !
-       if (coef_imp_v.gt.0.0d0) then
-         call int_sk_4_fixed_velo
-!         if (iflag_initial_step.eq.1) coef_imp_v = 1.0d0 / coef_imp_v
-       end if
+      if (coef_imp_v.gt.0.0d0) then
+        call int_sk_4_fixed_velo
+!        if (iflag_initial_step.eq.1) coef_imp_v = 1.0d0 / coef_imp_v
+      end if
 !
-       call cal_t_evo_4_vector_fl(iflag_velo_supg)
+      call cal_t_evo_4_vector_fl(iflag_velo_supg)
 !
-       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
-       call int_coriolis_nod_exp
+      if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
+      call int_coriolis_nod_exp(node1, mhd_fem1_wk,                     &
+     &    iphys%i_velo, nod_fld1, f1_l, f1_nl)
 !
-       if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
-       call int_buoyancy_nod_exp
+      if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
+      call int_buoyancy_nod_exp                                        &
+     &   (node1, mhd_fem1_wk, iphys, nod_fld1, f1_nl)
 !
-       call set_boundary_velo_4_rhs(node1, f1_l, f1_nl)
+      call set_boundary_velo_4_rhs(node1, f1_l, f1_nl)
 !
-       call cal_sol_velo_pre_linear(node1, iphys, nod_fld1)
+      call cal_sol_velo_pre_linear(node1, iphys, nod_fld1)
 !
-       call cal_sol_velo_pre_crank
+      call cal_sol_velo_pre_crank
 !
-       end subroutine cal_velo_pre_crank
+      end subroutine cal_velo_pre_crank
 !
 ! ----------------------------------------------------------------------
 !  --------  subroutine cal_velo_pre_consist_crank  -------

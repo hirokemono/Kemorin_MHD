@@ -34,7 +34,6 @@
       subroutine cal_velocity_co
 !
       use m_nod_comm_table
-      use m_geometry_data
       use m_group_data
       use m_phys_constants
       use m_node_phys_data
@@ -110,7 +109,11 @@
 !
       subroutine cal_velocity_co_imp
 !
+      use m_geometry_data_MHD
+      use m_node_phys_data
       use m_t_step_parameter
+      use m_jacobians
+      use m_element_id_4_node
       use int_vol_diffusion_ele
       use int_sk_4_fixed_boundary
       use cal_solver_MHD
@@ -128,7 +131,9 @@
 !
       if ( iflag_4_coriolis .eq. id_Coriolis_ele_imp) then
         if (iflag_debug.eq.1) write(*,*) 'int_vol_coriolis_crank_ele'
-        call int_vol_coriolis_crank_ele
+        call int_vol_coriolis_crank_ele                                 &
+     &     (node1, ele1, fluid1, jac1_3d_q, rhs_tbl1,                   &
+     &      iphys%i_velo, nod_fld1, fem1_wk, f1_l)
       end if
 !
 !
@@ -149,7 +154,9 @@
 !
       subroutine cal_velocity_co_crank
 !
+      use m_node_phys_data
       use m_finite_element_matrix
+      use m_int_vol_data
       use int_vol_coriolis_term
 !
 !
@@ -157,7 +164,8 @@
       call cal_t_evo_4_vector_fl(iflag_velo_supg)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
-      call int_coriolis_nod_exp
+      call int_coriolis_nod_exp(node1, mhd_fem1_wk,                     &
+     &    iphys%i_velo, nod_fld1, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_velo_4_rhs'
       call set_boundary_velo_4_rhs(node1, f1_l, f1_nl)
