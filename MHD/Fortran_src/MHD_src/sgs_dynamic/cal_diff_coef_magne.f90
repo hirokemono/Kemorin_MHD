@@ -70,7 +70,7 @@
      &   'cal_rotation_whole', iphys%i_sgs_simi, iphys%i_sgs_grad_f
       call choose_cal_rotation                                          &
      &   (iflag_mag_supg, ele1%istack_ele_smp, m1_lump, node1, ele1,    &
-     &    iphys%i_sgs_grad_f, iphys%i_sgs_simi)
+     &    iphys%i_sgs_grad_f, iphys%i_sgs_simi, nod_fld1)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_whole', i_sgs_simi_p, i_sgs_grad_fp
       call cal_gradent_whole(iflag_mag_supg,                            &
@@ -84,7 +84,7 @@
      &                     iphys%i_sgs_grad, iphys%i_magne
       call choose_cal_rotation                                          &
      &   (iflag_mag_supg, ele1%istack_ele_smp, m1_lump, node1, ele1,    &
-     &    iphys%i_magne, iphys%i_sgs_grad)
+     &    iphys%i_magne, iphys%i_sgs_grad, nod_fld1)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_grad_p, iphys%i_mag_p
       call cal_gradent_in_fluid(iflag_mag_supg,                         &

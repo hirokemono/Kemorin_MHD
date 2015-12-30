@@ -31,6 +31,7 @@
 !
       use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
       use m_node_phys_data
       use m_element_phys_data
       use m_finite_element_matrix
@@ -74,7 +75,7 @@
 !      call check_ff_smp(my_rank, n_scalar, node1%max_nod_smp, f1_l)
 !      call check_ff_smp(my_rank, n_scalar, node1%max_nod_smp, f1_nl)
 !
-      call int_surf_temp_ele
+      call int_surf_temp_ele(node1, ele1, surf1, sf_grp1)
 !
 !      call check_nodal_data(my_rank, nod_fld1, n_scalar, iphys%i_temp)
 !      call check_nodal_data(my_rank, fld_ele1,                         &

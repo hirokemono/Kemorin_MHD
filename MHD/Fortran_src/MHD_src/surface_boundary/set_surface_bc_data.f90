@@ -4,8 +4,12 @@
 !        programmed by H.Matsui
 !        modified by H. Matsui on Sep., 2007
 !
-!      subroutine set_surf_bc_data
-!      subroutine deallocate_surf_bc_lists
+!!      subroutine set_surf_bc_data                                     &
+!!     &         (numnod, sf_grp, sf_grp_nod, sf_grp_v)
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
+!!        type(surface_group_geometry), intent(in) :: sf_grp_v
+!!      subroutine deallocate_surf_bc_lists
 !
       module set_surface_bc_data
 !
@@ -21,27 +25,34 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_surf_bc_data
+      subroutine set_surf_bc_data                                       &
+     &         (numnod, sf_grp, sf_grp_nod, sf_grp_v)
 !
       use m_machine_parameter
-      use m_geometry_data
-      use m_group_data
+      use t_group_data
+      use t_surface_group_connect
+      use t_surface_group_geometry
 !
       use count_num_surface_bc
       use set_surface_id_MHD
       use set_surface_values
 !
+      integer(kind= kint), intent(in) :: numnod
+      type(surface_group_data), intent(in) :: sf_grp
+      type(surface_node_grp_data), intent(in) :: sf_grp_nod
+      type(surface_group_geometry), intent(in) :: sf_grp_v
 !
-      call allocate_work_4_surf_bc_dat(node1%numnod)
+!
+      call allocate_work_4_surf_bc_dat(numnod)
 !
 ! ---  set boundary conditions
 !
       if (iflag_debug.eq.1) write(*,*) 'count_num_surf_bc'
-      call count_num_surf_bc(sf_grp1, sf_grp_nod1)
+      call count_num_surf_bc(sf_grp, sf_grp_nod)
 !
       call allocate_surf_bc_data
 !
-      call set_surface_id(sf_grp1, sf_grp_nod1, sf_grp_v1)
+      call set_surface_id(sf_grp, sf_grp_nod, sf_grp_v)
 ! 
       call deallocate_work_4_surf_bc_dat
 ! 

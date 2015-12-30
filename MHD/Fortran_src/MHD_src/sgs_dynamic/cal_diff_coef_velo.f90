@@ -71,7 +71,7 @@
      &                      iphys%i_sgs_simi, iphys%i_sgs_grad_f
       call choose_cal_rotation(iflag_velo_supg,                         &
      &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, node1, ele1, &
-     &    iphys%i_filter_velo, iphys%i_sgs_simi)
+     &    iphys%i_filter_velo, iphys%i_sgs_simi, nod_fld1)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_simi_p, i_sgs_grad_fp
       call cal_gradent_in_fluid(iflag_velo_supg,                        &
@@ -88,7 +88,7 @@
      &                     iphys%i_sgs_grad, iphys%i_velo
       call choose_cal_rotation(iflag_velo_supg,                         &
      &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, node1, ele1, &
-     &    iphys%i_velo, iphys%i_sgs_grad)
+     &    iphys%i_velo, iphys%i_sgs_grad, nod_fld1)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_grad_p, iphys%i_press
       call cal_gradent_in_fluid(iflag_velo_supg,                        &

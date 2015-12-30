@@ -203,7 +203,8 @@
       call const_normal_vector(node1, surf1)
 !
       if (iflag_debug.eq.1) write(*,*)' int_surface_parameters'
-      call int_surface_parameters(sf_grp1%num_grp)
+      call int_surface_parameters(sf_grp1%num_grp, node1, ele1, surf1,  &
+     &    sf_grp1, sf_grp_tbl1, sf_grp_v1, sf_grp_nod1)
 !
 !     --------------------- 
 !
@@ -211,7 +212,8 @@
       call set_bc_id_data(node1, ele1, nod_grp1, iphys, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*)' set_surf_bc_data'
-      call set_surf_bc_data 
+      call set_surf_bc_data                                             &
+     &   (node1%numnod, sf_grp1, sf_grp_nod1, sf_grp_v1)
       call deallocate_surf_bc_lists
 !
 !     --------------------- 

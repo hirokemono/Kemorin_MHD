@@ -32,6 +32,7 @@
       subroutine s_cal_velocity_pre(layer_tbl)
 !
       use m_geometry_data
+      use m_group_data
       use m_nod_comm_table
       use m_geometry_data_MHD
       use m_finite_element_matrix
@@ -39,6 +40,7 @@
       use m_element_phys_data
       use m_jacobians
       use m_element_id_4_node
+      use m_surf_data_torque
 !
       use nod_phys_send_recv
       use cal_sgs_fluxes
@@ -50,6 +52,7 @@
       use int_vol_coriolis_term
       use cal_sgs_m_flux_sgs_buo
       use modify_Csim_by_SGS_buo_ele
+      use set_normal_field
 !
       type(layering_tbl), intent(in) :: layer_tbl
 !
@@ -99,7 +102,7 @@
 !
 !    ---  lead surface boundaries
 !
-      call int_surf_velo_pre_ele
+      call int_surf_velo_pre_ele(node1, ele1, surf1, sf_grp1)
 !
 !
       if (iflag_t_evo_4_velo .eq. id_explicit_euler) then
@@ -116,7 +119,8 @@
       end if
 !
       call set_boundary_velo(node1, iphys%i_velo, nod_fld1)
-      call set_normal_velo
+      call set_normal_velocity                                          &
+     &   (sf_grp1, sf_grp_nod1, sf_bc1_norm_v, iphys%i_velo, nod_fld1)
 !
       call vector_send_recv(iphys%i_velo, node1, nod_comm, nod_fld1)
 !

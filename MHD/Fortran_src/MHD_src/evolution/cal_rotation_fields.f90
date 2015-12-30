@@ -38,7 +38,7 @@
       call choose_cal_rotation_sgs(iflag_commute_velo, iflag_velo_supg, &
      &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
      &    node1, ele1, surf1, sf_grp1, nod_bc1_w, sf_sgs1_grad_v,       &
-     &    iak_diff_v, iphys%i_velo, iphys%i_vort)
+     &    iak_diff_v, iphys%i_velo, iphys%i_vort, nod_fld1)
 !
       end subroutine cal_vorticity
 !
@@ -56,11 +56,11 @@
       call choose_cal_rotation_sgs(iflag_commute_magne, iflag_mag_supg, &
      &    ele1%istack_ele_smp, m1_lump, node1, ele1, surf1, sf_grp1,    &
      &    nod_bc1_j, sf_sgs1_grad_b, iak_diff_b,                        &
-     &    iphys%i_magne, iphys%i_current)
+     &    iphys%i_magne, iphys%i_current, nod_fld1)
 !      call choose_cal_rotation_sgs(iflag_commute_magne, iflag_mag_supg,&
 !     &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,           &
 !     &    node1, ele1, surf1, sf_grp1, nod_bc1_j, sf_sgs1_grad_b,      &
-!     &     iak_diff_b, iphys%i_magne, iphys%i_current)
+!     &     iak_diff_b, iphys%i_magne, iphys%i_current, nod_fld1)
 !
       end subroutine cal_current_density
 !
@@ -76,7 +76,7 @@
       call choose_cal_rotation_sgs(iflag_commute_magne, iflag_mag_supg, &
      &    ele1%istack_ele_smp, m1_lump, node1, ele1, surf1, sf_grp1,    &
      &    nod_bc1_b, sf_sgs1_grad_a, iak_diff_b,                        &
-     &    iphys%i_vecp, iphys%i_magne)
+     &    iphys%i_vecp, iphys%i_magne, nod_fld1)
 !
       end subroutine cal_magnetic_f_by_vect_p
 !

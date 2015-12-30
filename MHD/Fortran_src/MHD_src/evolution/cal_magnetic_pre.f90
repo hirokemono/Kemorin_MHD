@@ -30,6 +30,8 @@
       subroutine cal_magnetic_field_pre
 !
       use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
       use m_node_phys_data
       use m_element_phys_data
       use m_finite_element_matrix
@@ -69,7 +71,7 @@
       end if
 !
 !
-      call int_surf_magne_pre_ele
+      call int_surf_magne_pre_ele(node1, ele1, surf1, sf_grp1)
 !
       if (iflag_t_evo_4_magne .eq. id_explicit_euler) then
        call cal_magne_pre_euler

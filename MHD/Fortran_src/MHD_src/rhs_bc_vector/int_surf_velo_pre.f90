@@ -3,16 +3,23 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!      subroutine int_surf_velo_pre_ele
-!      subroutine int_surf_velo_monitor(i_field)
+!!      subroutine int_surf_velo_pre_ele(node, ele, surf, sf_grp)
+!!      subroutine int_surf_velo_monitor                                &
+!!     &         (node, ele, surf, sf_grp, i_field)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(surface_group_data), intent(in) :: sf_grp
 !
       module int_surf_velo_pre
 !
       use m_precision
 !
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
+!
       use m_control_parameter
-      use m_geometry_data
-      use m_group_data
       use m_jacobian_sf_grp
       use m_surf_data_torque
       use m_node_phys_data
@@ -31,7 +38,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_surf_velo_pre_ele
+      subroutine int_surf_velo_pre_ele(node, ele, surf, sf_grp)
 !
       use m_filter_elength
       use m_SGS_model_coefs
@@ -39,10 +46,15 @@
       use m_surf_data_torque
       use m_surf_data_magne
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: sf_grp
+!
 !
       if (iflag_SGS_inertia  .ne. id_SGS_none) then
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
-          call int_sf_skv_sgs_div_t_flux(node1, ele1, surf1, sf_grp1,   &
+          call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,          &
      &        sf_sgs1_grad_v, intg_point_t_evo, ifilter_final,          &
      &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
@@ -52,7 +64,7 @@
 !
       if (iflag_SGS_lorentz .ne. id_SGS_none) then
         if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
-          call int_sf_skv_sgs_div_t_flux(node1, ele1, surf1, sf_grp1,   &
+          call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,          &
      &        sf_sgs1_grad_b, intg_point_t_evo, ifilter_final,          &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
@@ -61,15 +73,15 @@
       end if
 !
 !
-        call int_sf_grad_velocity(node1, ele1, surf1, sf_grp1,          &
+        call int_sf_grad_velocity(node, ele, surf, sf_grp,              &
      &      jac1_sf_grp_2d_q, rhs_tbl1, sf_bc1_grad_v,                  &
      &      intg_point_t_evo, ak_d_velo, fem1_wk, f1_l)
-        call int_free_slip_surf_sph_in(node1, ele1, surf1, sf_grp1,     &
+        call int_free_slip_surf_sph_in(node, ele, surf, sf_grp,         &
      &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, intg_point_t_evo,     &
      &      sf_bc1_free_sph_in%ngrp_sf_dat,                             &
      &      sf_bc1_free_sph_in%id_grp_sf_dat,                           &
      &      iphys%i_velo, fem1_wk, f1_l)
-        call int_free_slip_surf_sph_out(node1, ele1, surf1, sf_grp1,    &
+        call int_free_slip_surf_sph_out(node, ele, surf, sf_grp,        &
      &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, intg_point_t_evo,     &
      &      sf_bc1_free_sph_out%ngrp_sf_dat,                            &
      &      sf_bc1_free_sph_out%id_grp_sf_dat,                          &
@@ -79,7 +91,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_surf_velo_monitor(i_field)
+      subroutine int_surf_velo_monitor                                  &
+     &         (node, ele, surf, sf_grp, i_field)
 !
       use m_filter_elength
       use m_SGS_model_coefs
@@ -87,12 +100,17 @@
       use m_surf_data_torque
       use m_surf_data_magne
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: sf_grp
+!
       integer(kind= kint), intent(in) :: i_field
 !
 !
       if (i_field .eq. iphys%i_SGS_div_m_flux) then
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
-          call int_sf_skv_sgs_div_t_flux(node1, ele1, surf1, sf_grp1,   &
+          call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,          &
      &        sf_sgs1_grad_v, intg_point_t_evo, ifilter_final,          &
      &        iphys%i_SGS_m_flux, iphys%i_velo, iphys%i_velo,           &
@@ -102,7 +120,7 @@
 !
       if (i_field .eq. iphys%i_SGS_Lorentz) then
         if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
-          call int_sf_skv_sgs_div_t_flux(node1, ele1, surf1, sf_grp1,   &
+          call int_sf_skv_sgs_div_t_flux(node, ele, surf, sf_grp,       &
      &        nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,          &
      &        sf_sgs1_grad_b, intg_point_t_evo, ifilter_final,          &
      &        iphys%i_SGS_maxwell, iphys%i_magne, iphys%i_magne,        &
@@ -112,15 +130,15 @@
 !
 !
       if (i_field .eq. iphys%i_v_diffuse) then
-        call int_sf_grad_velocity(node1, ele1, surf1, sf_grp1,          &
+        call int_sf_grad_velocity(node, ele, surf, sf_grp,              &
      &      jac1_sf_grp_2d_q, rhs_tbl1, sf_bc1_grad_v,                  &
      &      intg_point_t_evo, ak_d_velo, fem1_wk, f1_l)
-        call int_free_slip_surf_sph_in(node1, ele1, surf1, sf_grp1,     &
+        call int_free_slip_surf_sph_in(node, ele, surf, sf_grp,         &
      &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, intg_point_t_evo,     &
      &      sf_bc1_free_sph_in%ngrp_sf_dat,                             &
      &      sf_bc1_free_sph_in%id_grp_sf_dat,                           &
      &      iphys%i_velo, fem1_wk, f1_l)
-        call int_free_slip_surf_sph_out(node1, ele1, surf1, sf_grp1,    &
+        call int_free_slip_surf_sph_out(node, ele, surf, sf_grp,        &
      &      nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, intg_point_t_evo,     &
      &      sf_bc1_free_sph_out%ngrp_sf_dat,                            &
      &      sf_bc1_free_sph_out%id_grp_sf_dat,                          &

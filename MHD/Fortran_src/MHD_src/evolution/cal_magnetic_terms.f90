@@ -31,6 +31,7 @@
 !
       use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
       use m_node_phys_data
       use m_int_vol_data
       use m_finite_element_matrix
@@ -50,7 +51,7 @@
        call int_vol_magne_monitor_pg(i_field)
       end if
 !
-      call int_surf_magne_monitor(i_field)
+      call int_surf_magne_monitor(node1, ele1, surf1, sf_grp1, i_field)
 !
       call cal_t_evo_4_vector_cd(iflag_mag_supg)
       call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
@@ -68,6 +69,7 @@
 !
       use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
       use m_phys_constants
       use m_node_phys_data
       use m_finite_element_matrix
@@ -81,7 +83,8 @@
 !
       call int_vol_m_diffuse_ele_monitor
 !
-      call int_surf_magne_monitor(iphys%i_b_diffuse)
+      call int_surf_magne_monitor(node1, ele1, surf1, sf_grp1,          &
+     &                            iphys%i_b_diffuse)
 !
       call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !

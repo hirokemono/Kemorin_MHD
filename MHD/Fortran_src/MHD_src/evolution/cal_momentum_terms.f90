@@ -13,6 +13,7 @@
       use m_control_parameter
       use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
       use m_node_phys_data
       use m_finite_element_matrix
 !
@@ -51,7 +52,7 @@
        call int_vol_velo_monitor_pg(i_field)
       end if
 !
-      call int_surf_velo_monitor(i_field)
+      call int_surf_velo_monitor(node1, ele1, surf1, sf_grp1, i_field)
 !
       call cal_t_evo_4_vector_fl(iflag_velo_supg)
 !       call set_boundary_velo_4_rhs(node1, f1_l, f1_nl)
@@ -77,7 +78,8 @@
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
       call int_vol_viscous_ele_monitor
 !
-      call int_surf_velo_monitor(iphys%i_v_diffuse)
+      call int_surf_velo_monitor(node1, ele1, surf1, sf_grp1,           &
+     &                           iphys%i_v_diffuse)
 !
       call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !

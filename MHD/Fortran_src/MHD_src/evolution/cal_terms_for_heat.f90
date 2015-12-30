@@ -13,6 +13,7 @@
       use m_control_parameter
       use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
       use m_phys_constants
       use m_node_phys_data
       use m_int_vol_data
@@ -50,7 +51,7 @@
        call int_vol_ene_monitor(i_field)
       end if
 !
-      call int_surf_temp_monitor(i_field)
+      call int_surf_temp_monitor(node1, ele1, surf1, sf_grp1, i_field)
 !
       call cal_t_evo_4_scalar_fl(iflag_temp_supg)
 !
@@ -79,7 +80,8 @@
 !
       call int_vol_t_diffuse_ele_monitor
 !
-      call int_surf_temp_monitor(iphys%i_t_diffuse)
+      call int_surf_temp_monitor(node1, ele1, surf1, sf_grp1,           &
+     &                           iphys%i_t_diffuse)
 !
       call set_ff_nl_smp_2_ff(n_scalar, node1, rhs_tbl1, f1_l, f1_nl)
 !

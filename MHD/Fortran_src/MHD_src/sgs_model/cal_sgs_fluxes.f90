@@ -168,7 +168,8 @@
          if (iflag_debug.eq.1)                                          &
      &      write(*,*) 'choose_int_vol_rotations'
          call choose_int_vol_rotations(iflag_mag_supg,                  &
-     &       fluid1%istack_ele_fld_smp, node1, ele1, iphys%i_magne)
+     &       fluid1%istack_ele_fld_smp, node1, ele1, nod_fld1,          &
+     &       iphys%i_magne)
       end if
 !
       end subroutine cal_sgs_uxb_2_evo
