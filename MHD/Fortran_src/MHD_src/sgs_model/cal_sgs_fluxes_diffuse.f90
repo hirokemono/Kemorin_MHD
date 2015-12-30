@@ -6,7 +6,6 @@
 !!      subroutine cal_sgs_h_flux_diffuse
 !!      subroutine cal_sgs_m_flux_diffuse(numnod,                       &
 !!     &          ncomp_nod, i_vect, i_sgs_diffuse, i_sgs, d_nod)
-!!      subroutine cal_sgs_uxb_2_ff_diffuse
 !
       module cal_sgs_fluxes_diffuse
 !
@@ -72,23 +71,6 @@
 !$omp end parallel do
 !
       end subroutine cal_sgs_m_flux_diffuse
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine cal_sgs_uxb_2_ff_diffuse
-!
-      use m_control_parameter
-      use m_geometry_data_MHD
-      use m_node_phys_data
-      use m_finite_element_matrix
-      use cal_rotation
-!
-       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
-       call choose_int_vol_rotations(iflag_mag_supg,                    &
-     &     fluid1%istack_ele_fld_smp, iphys%i_magne)
-!
-      end subroutine
 !
 !-----------------------------------------------------------------------
 !

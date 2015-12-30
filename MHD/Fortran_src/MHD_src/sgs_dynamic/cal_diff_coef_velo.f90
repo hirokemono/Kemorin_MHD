@@ -27,6 +27,7 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
+      use m_geometry_data_MHD
       use m_SGS_address
       use m_phys_constants
 !
@@ -68,8 +69,9 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_rotation_in_fluid',        &
      &                      iphys%i_sgs_simi, iphys%i_sgs_grad_f
-      call cal_rotation_in_fluid(iflag_velo_supg, iphys%i_sgs_simi,     &
-     &    iphys%i_filter_velo)
+      call choose_cal_rotation(iflag_velo_supg,                         &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, node1, ele1, &
+     &    iphys%i_filter_velo, iphys%i_sgs_simi)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_simi_p, i_sgs_grad_fp
       call cal_gradent_in_fluid(iflag_velo_supg,                        &
@@ -84,8 +86,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_rotation_in_fluid',         &
      &                     iphys%i_sgs_grad, iphys%i_velo
-      call cal_rotation_in_fluid(iflag_velo_supg, iphys%i_sgs_grad,     &
-     &    iphys%i_velo)
+      call choose_cal_rotation(iflag_velo_supg,                         &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, node1, ele1, &
+     &    iphys%i_velo, iphys%i_sgs_grad)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_grad_p, iphys%i_press
       call cal_gradent_in_fluid(iflag_velo_supg,                        &

@@ -714,7 +714,7 @@
       type(DJDS_ordering_table), intent(in) :: djds_tbl
       type(DJDS_MATRIX), intent(in) :: djds_mat
 !
-      integer(kind = kint) :: i, k1, k2, ist, ied, kst, ked, NB_djds
+      integer(kind = kint) :: i, k1, ist, ied, kst, ked, NB_djds
 !
 !
        NB_djds = djds_mat%NB

@@ -145,6 +145,11 @@
 !
       subroutine cal_sgs_uxb_2_evo
 !
+      use m_geometry_data
+      use m_geometry_data_MHD
+      use m_node_phys_data
+      use m_finite_element_matrix
+      use cal_rotation
       use cal_sgs_uxb_grad
       use cal_sgs_uxb_dynamic_simi
 !
@@ -160,9 +165,10 @@
         call cal_sgs_uxb_2_ff_simi
 !
       else if(iflag_SGS_induction .eq. id_SGS_diffusion) then
-          if (iflag_debug.eq.1)                                         &
-     &      write(*,*) 'cal_sgs_uxb_2_ff_simi'
-          call cal_sgs_uxb_2_ff_diffuse
+         if (iflag_debug.eq.1)                                          &
+     &      write(*,*) 'choose_int_vol_rotations'
+         call choose_int_vol_rotations(iflag_mag_supg,                  &
+     &       fluid1%istack_ele_fld_smp, node1, ele1, iphys%i_magne)
       end if
 !
       end subroutine cal_sgs_uxb_2_evo

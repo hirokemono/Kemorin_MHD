@@ -147,7 +147,7 @@
      &                     + tau * dnx2(iele,k2,ix,2)                   &
      &                     * scalar_1(iele) * xjac(iele,ix) * owe3d(ix)
               sk_v(iele,3,k1) = sk_v(iele,3,k1)                         &
-     &                     + tau * dnx2(iele,k2,ix,3)                  &
+     &                     + tau * dnx2(iele,k2,ix,3)                   &
      &                     * scalar_1(iele) * xjac(iele,ix) * owe3d(ix)
             end do
           end do

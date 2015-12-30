@@ -11,8 +11,13 @@
 !
       use m_precision
 !
-      use m_geometry_data
+      use m_control_parameter
       use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
+      use m_geometry_data_MHD
+      use m_node_phys_data
+      use m_SGS_address
 !
       implicit none
 !
@@ -24,27 +29,16 @@
 !
       subroutine cal_vorticity
 !
-      use m_control_parameter
-      use m_node_phys_data
-      use m_SGS_address
+      use m_bc_data_velo
       use m_surf_data_torque
 !
-      use cal_rotation
       use cal_rotation_sgs
-      use nod_phys_send_recv
 !
-      if ( iflag_SGS_model.ne.id_SGS_none                               &
-     &      .and. iflag_commute_velo .eq. id_SGS_commute_ON) then
-        call cal_rotation_sgs_fluid                                     &
-     &     (iflag_velo_supg, sf_sgs1_grad_v,                            &
-     &      iak_diff_v, iphys%i_vort, iphys%i_velo)
-      else
-        call cal_rotation_in_fluid(iflag_velo_supg,                     &
-     &      iphys%i_vort, iphys%i_velo)
-      end if
 !
-      call vector_send_recv(iphys%i_vort, node1, nod_comm, nod_fld1)
-      nod_fld1%iflag_update(iphys%i_vort:iphys%i_vort+2) = 1
+      call choose_cal_rotation_sgs(iflag_commute_velo, iflag_velo_supg, &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    node1, ele1, surf1, sf_grp1, nod_bc1_w, sf_sgs1_grad_v,       &
+     &    iak_diff_v, iphys%i_velo, iphys%i_vort)
 !
       end subroutine cal_vorticity
 !
@@ -52,36 +46,21 @@
 !
       subroutine cal_current_density
 !
-      use m_control_parameter
-      use m_node_phys_data
-      use m_SGS_address
       use m_bc_data_magne
       use m_surf_data_magne
       use m_surf_data_current
 !
-      use cal_rotation
       use cal_rotation_sgs
-      use set_boundary_scalars
-      use nod_phys_send_recv
 !
-      if ( iflag_SGS_model .ne. id_SGS_none                             &
-     &     .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
-        call cal_rotation_sgs_all                                       &
-     &     (iflag_mag_supg, sf_sgs1_grad_b,                             &
-     &      iak_diff_b, iphys%i_current, iphys%i_magne)
-!        call cal_rotation_sgs_conduct                                  &
-!     &     (iflag_mag_supg, sf_sgs1_grad_b,                            &
-!     &      iak_diff_b, iphys%i_current, iphys%i_magne)
-      else
-        call cal_rotation_whole(iflag_mag_supg,                         &
-     &      iphys%i_current, iphys%i_magne)
-!        call cal_rotation_in_conduct(iphys%i_current, iphys%i_magne)
-      end if
 !
-      call set_boundary_vect(nod_bc1_j, iphys%i_current, nod_fld1)
-!
-      call vector_send_recv(iphys%i_current, node1, nod_comm, nod_fld1)
-      nod_fld1%iflag_update(iphys%i_current:iphys%i_current+2) = 1
+      call choose_cal_rotation_sgs(iflag_commute_magne, iflag_mag_supg, &
+     &    ele1%istack_ele_smp, m1_lump, node1, ele1, surf1, sf_grp1,    &
+     &    nod_bc1_j, sf_sgs1_grad_b, iak_diff_b,                        &
+     &    iphys%i_magne, iphys%i_current)
+!      call choose_cal_rotation_sgs(iflag_commute_magne, iflag_mag_supg,&
+!     &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,           &
+!     &    node1, ele1, surf1, sf_grp1, nod_bc1_j, sf_sgs1_grad_b,      &
+!     &     iak_diff_b, iphys%i_magne, iphys%i_current)
 !
       end subroutine cal_current_density
 !
@@ -89,30 +68,15 @@
 !
       subroutine cal_magnetic_f_by_vect_p
 !
-      use m_control_parameter
-      use m_node_phys_data
-      use m_SGS_address
       use m_surf_data_vector_p
       use m_bc_data_magne
 !
-      use cal_rotation
       use cal_rotation_sgs
-      use set_boundary_scalars
-      use nod_phys_send_recv
 !
-      if ( iflag_SGS_model.ne.id_SGS_none                               &
-     &      .and. iflag_commute_magne .eq. id_SGS_commute_ON) then
-        call cal_rotation_sgs_all(iflag_mag_supg,                       &
-     &      sf_sgs1_grad_a, iak_diff_b, iphys%i_magne, iphys%i_vecp)
-      else
-        call cal_rotation_whole(iflag_mag_supg,                         &
-     &      iphys%i_magne, iphys%i_vecp)
-      end if
-!
-      call set_boundary_vect(nod_bc1_b, iphys%i_magne, nod_fld1)
-!
-      call vector_send_recv(iphys%i_magne, node1, nod_comm, nod_fld1)
-      nod_fld1%iflag_update(iphys%i_magne:iphys%i_magne+2) = 1
+      call choose_cal_rotation_sgs(iflag_commute_magne, iflag_mag_supg, &
+     &    ele1%istack_ele_smp, m1_lump, node1, ele1, surf1, sf_grp1,    &
+     &    nod_bc1_b, sf_sgs1_grad_a, iak_diff_b,                        &
+     &    iphys%i_vecp, iphys%i_magne)
 !
       end subroutine cal_magnetic_f_by_vect_p
 !

@@ -34,6 +34,9 @@
 !>      Structure for nodal boudnary for rotation
       type(scaler_rotaion_nod_bc_type), save :: nod_bc1_rot
 !
+!>      Structure for nodal boudnary for fixed vorticity
+      type(vect_fixed_nod_bc_type), save :: nod_bc1_w
+!
 !  ---------------------------------------------------------------------
 !
       contains
@@ -59,6 +62,9 @@
 !
       call count_num_bc_velo(nod_grp, nod_bc1_v, sgs_bc1_v,             &
      &    nod_bc1_rot, nod_bc1_vfree, nod_bc1_vsp, nod_bc1_vr0)
+!
+      nod_bc1_w%num_bc_nod(1:3) = 0
+      nod_bc1_w%nmax_bc = 0
 !
       if ( iflag_debug .eq.1)  write(*,*) 'allocate boundary 4 v'
       call alloc_vector_nod_bc_type(node%numnod, nod_bc1_v)
