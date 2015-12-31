@@ -13,7 +13,13 @@
 !
       use m_machine_parameter
       use m_control_parameter
+      use m_nod_comm_table
       use m_geometry_data
+      use m_element_phys_data
+      use m_jacobians
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_int_vol_data
 !
       use cal_multi_pass
       use cal_sol_vector_co_crank
@@ -32,14 +38,10 @@
 !
       subroutine cal_vector_p_co
 !
-      use m_nod_comm_table
-      use m_geometry_data
       use m_group_data
       use m_node_phys_data
       use m_phys_constants
       use m_jacobian_sf_grp
-      use m_element_id_4_node
-      use m_finite_element_matrix
       use m_filter_elength
       use m_SGS_address
       use m_SGS_model_coefs
@@ -97,7 +99,9 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_multi_pass_4_vector_ff'
-      call cal_multi_pass_4_vector_ff
+      call cal_multi_pass_4_vector_ff(ele1%istack_ele_smp, m1_lump,     &
+     &    nod_comm, node1, ele1, jac1_3d_q, rhs_tbl1,                   &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_vect_p_co'
       call cal_sol_vect_p_co(node1%istack_internal_smp)
@@ -141,13 +145,15 @@
       subroutine cal_vector_p_co_crank
 !
       use m_phys_constants
-      use m_finite_element_matrix
       use m_bc_data_magne
       use set_boundary_scalars
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_t_evo_4_vector'
-      call cal_t_evo_4_vector(iflag_mag_supg)
+      call cal_t_evo_4_vector                                           &
+     &   (iflag_mag_supg, ele1%istack_ele_smp, m1_lump, nod_comm,       &
+     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_vect_p_4_rhs'
       call delete_vector_ffs_on_bc(node1, nod_bc1_a, f1_l, f1_nl)
@@ -162,7 +168,6 @@
       subroutine cal_vector_p_co_consist_crank
 !
       use m_phys_constants
-      use m_finite_element_matrix
       use m_bc_data_magne
       use m_physical_property
 !

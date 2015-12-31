@@ -11,6 +11,9 @@
       use m_precision
 !
       use m_control_parameter
+      use m_nod_comm_table
+      use m_jacobians
+      use m_element_id_4_node
       use m_finite_element_matrix
 !
       use cal_ff_smp_to_ffs
@@ -29,12 +32,10 @@
 !
       subroutine cal_terms_4_magnetic(i_field)
 !
-      use m_nod_comm_table
       use m_geometry_data
       use m_group_data
       use m_node_phys_data
       use m_int_vol_data
-      use m_finite_element_matrix
       use m_bc_data_magne
 !
       use int_vol_magne_monitor
@@ -53,7 +54,10 @@
 !
       call int_surf_magne_monitor(node1, ele1, surf1, sf_grp1, i_field)
 !
-      call cal_t_evo_4_vector_cd(iflag_mag_supg)
+      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
+     &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
       call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
@@ -67,12 +71,10 @@
 !
       subroutine cal_magnetic_diffusion
 !
-      use m_nod_comm_table
       use m_geometry_data
       use m_group_data
       use m_phys_constants
       use m_node_phys_data
-      use m_finite_element_matrix
       use m_bc_data_magne
 !
       use int_vol_diffusion_ele

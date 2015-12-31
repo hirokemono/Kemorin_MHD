@@ -15,6 +15,14 @@
       use m_control_parameter
       use m_t_int_parameter
       use m_phys_constants
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_geometry_data_MHD
+      use m_element_phys_data
+      use m_jacobians
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_int_vol_data
 !
       use t_layering_ele_list
 !
@@ -31,15 +39,9 @@
 !
       subroutine s_cal_velocity_pre(layer_tbl)
 !
-      use m_geometry_data
       use m_group_data
-      use m_nod_comm_table
       use m_geometry_data_MHD
-      use m_finite_element_matrix
       use m_node_phys_data
-      use m_element_phys_data
-      use m_jacobians
-      use m_element_id_4_node
       use m_surf_data_torque
 !
       use nod_phys_send_recv
@@ -131,15 +133,15 @@
 !
       subroutine cal_velo_pre_euler
 !
-      use m_geometry_data
       use m_node_phys_data
-      use m_finite_element_matrix
-      use m_int_vol_data
       use cal_multi_pass
       use cal_sol_vector_explicit
       use int_vol_coriolis_term
 !
-      call cal_t_evo_4_vector_fl(iflag_velo_supg)
+      call cal_t_evo_4_vector(iflag_velo_supg,                          &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
+     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
       call int_coriolis_nod_exp(node1, mhd_fem1_wk,                     &
@@ -157,16 +159,16 @@
 !
       subroutine cal_velo_pre_adams
 !
-      use m_geometry_data
       use m_node_phys_data
-      use m_finite_element_matrix
-      use m_int_vol_data
       use cal_multi_pass
       use cal_sol_vector_explicit
       use int_vol_coriolis_term
 !
 !
-      call cal_t_evo_4_vector_fl(iflag_velo_supg)
+      call cal_t_evo_4_vector(iflag_velo_supg,                          &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
+     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
       call int_coriolis_nod_exp(node1, mhd_fem1_wk,                     &
@@ -185,8 +187,6 @@
       subroutine cal_velo_pre_crank
 !
       use m_t_step_parameter
-      use m_finite_element_matrix
-      use m_int_vol_data
       use m_node_phys_data
       use cal_multi_pass
       use cal_sol_vector_pre_crank
@@ -201,14 +201,17 @@
 !        if (iflag_initial_step.eq.1) coef_imp_v = 1.0d0 / coef_imp_v
       end if
 !
-      call cal_t_evo_4_vector_fl(iflag_velo_supg)
+      call cal_t_evo_4_vector(iflag_velo_supg,                          &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
+     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
       call int_coriolis_nod_exp(node1, mhd_fem1_wk,                     &
      &    iphys%i_velo, nod_fld1, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
-      call int_buoyancy_nod_exp                                        &
+      call int_buoyancy_nod_exp                                         &
      &   (node1, mhd_fem1_wk, iphys, nod_fld1, f1_nl)
 !
       call set_boundary_velo_4_rhs(node1, f1_l, f1_nl)
@@ -226,7 +229,6 @@
 !
       use m_t_step_parameter
       use m_physical_property
-      use m_finite_element_matrix
       use cal_sol_vector_pre_crank
       use set_nodal_bc_id_data
       use int_sk_4_fixed_boundary

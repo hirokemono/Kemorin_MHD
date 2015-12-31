@@ -15,6 +15,14 @@
       use m_phys_constants
       use m_control_parameter
       use m_t_int_parameter
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_geometry_data_MHD
+      use m_element_phys_data
+      use m_jacobians
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_int_vol_data
 !
       implicit none
 !
@@ -29,12 +37,8 @@
 !
       subroutine cal_parturbation_temp
 !
-      use m_nod_comm_table
-      use m_geometry_data
       use m_group_data
       use m_node_phys_data
-      use m_element_phys_data
-      use m_finite_element_matrix
       use m_bc_data_ene
 !
       use nod_phys_send_recv
@@ -119,13 +123,15 @@
 !
       subroutine cal_per_temp_euler
 !
-      use m_geometry_data
       use m_node_phys_data
       use cal_multi_pass
       use cal_sol_vector_explicit
 !
 !
-      call cal_t_evo_4_scalar_fl(iflag_temp_supg)
+      call cal_t_evo_4_scalar(iflag_temp_supg,                          &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
+     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
       call cal_sol_part_temp_euler(node1, iphys, nod_fld1)
 !
       end subroutine cal_per_temp_euler
@@ -134,13 +140,15 @@
 !
       subroutine cal_per_temp_adams
 !
-      use m_geometry_data
       use m_node_phys_data
       use cal_multi_pass
       use cal_sol_vector_explicit
 !
 !
-      call cal_t_evo_4_scalar_fl(iflag_temp_supg)
+      call cal_t_evo_4_scalar(iflag_temp_supg,                          &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
+     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
       call cal_sol_part_temp_adams(node1, iphys, nod_fld1)
 !
       end subroutine cal_per_temp_adams
@@ -149,10 +157,8 @@
 !
       subroutine cal_per_temp_crank
 !
-      use m_geometry_data
       use m_t_step_parameter
       use m_node_phys_data
-      use m_finite_element_matrix
       use m_bc_data_ene
 !
       use cal_sol_vector_pre_crank
@@ -168,7 +174,10 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'multi_pass temp'
-      call cal_t_evo_4_scalar_fl(iflag_temp_supg)
+      call cal_t_evo_4_scalar(iflag_temp_supg,                          &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
+     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
 !
       call set_boundary_rhs_scalar(node1, nod_bc1_t, f1_l, f1_nl)
 !
@@ -182,10 +191,8 @@
 !
       subroutine cal_per_temp_consist_crank
 !
-      use m_geometry_data
       use m_t_step_parameter
       use m_node_phys_data
-      use m_finite_element_matrix
       use m_bc_data_ene
       use m_physical_property
 !

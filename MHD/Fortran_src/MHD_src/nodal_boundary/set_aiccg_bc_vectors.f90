@@ -13,6 +13,16 @@
 !
       use m_precision
 !
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
+      use t_jacobian_2d
+      use t_nodal_bc_data
+      use t_finite_element_mat
+      use t_table_FEM_const
+      use t_solver_djds
+      use t_surface_bc_data
+!
       implicit none
 !
       private :: set_aiccg_bc_velo
@@ -99,16 +109,6 @@
      &          nod_bc_v, nod_bc_rot, free_in_sf, free_out_sf,          &
      &          jac_sf_grp, rhs_tbl, mat_tbl, DJDS_tbl, fem_wk,         &
      &          Vmat_DJDS)
-!
-      use t_geometry_data
-      use t_surface_data
-      use t_group_data
-      use t_jacobian_2d
-      use t_nodal_bc_data
-      use t_finite_element_mat
-      use t_table_FEM_const
-      use t_solver_djds
-      use t_surface_bc_data
 !
       use set_aiccg_free_sph
       use set_aiccg_bc_fixed

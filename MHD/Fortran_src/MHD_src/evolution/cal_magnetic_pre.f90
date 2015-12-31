@@ -15,6 +15,14 @@
       use calypso_mpi
       use m_control_parameter
       use m_t_int_parameter
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_geometry_data_MHD
+      use m_element_phys_data
+      use m_jacobians
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_int_vol_data
 !
       implicit none
 !
@@ -29,12 +37,8 @@
 !
       subroutine cal_magnetic_field_pre
 !
-      use m_nod_comm_table
-      use m_geometry_data
       use m_group_data
       use m_node_phys_data
-      use m_element_phys_data
-      use m_finite_element_matrix
       use m_bc_data_magne
 !
       use set_boundary_scalars
@@ -97,13 +101,15 @@
 !
       subroutine cal_magne_pre_euler
 !
-      use m_geometry_data
       use m_node_phys_data
       use cal_sol_vector_explicit
       use cal_multi_pass
 !
 !
-      call cal_t_evo_4_vector_cd(iflag_mag_supg)
+      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
+     &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
       call cal_sol_magne_pre_euler(node1, iphys, nod_fld1)
 !
       end subroutine cal_magne_pre_euler
@@ -112,13 +118,15 @@
 !
       subroutine cal_magne_pre_adams
 !
-      use m_geometry_data
       use m_node_phys_data
       use cal_sol_vector_explicit
       use cal_multi_pass
 !
 !
-      call cal_t_evo_4_vector_cd(iflag_mag_supg)
+      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
+     &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
       call cal_sol_magne_pre_adams(node1, iphys, nod_fld1)
 !
       end subroutine cal_magne_pre_adams
@@ -129,7 +137,6 @@
 !
       use m_phys_constants
       use m_t_step_parameter
-      use m_finite_element_matrix
       use m_bc_data_magne
       use cal_multi_pass
       use cal_sol_vector_pre_crank
@@ -143,7 +150,10 @@
 !         if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
        end if
 !
-       call cal_t_evo_4_vector_cd(iflag_mag_supg)
+      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
+     &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
 !
       if (iflag_debug .eq. 0 ) write(*,*) 'bc_4_magne_rhs'
       call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
@@ -161,7 +171,6 @@
 !
       use m_t_step_parameter
       use m_phys_constants
-      use m_finite_element_matrix
       use m_bc_data_magne
       use m_physical_property
       use cal_sol_vector_pre_crank

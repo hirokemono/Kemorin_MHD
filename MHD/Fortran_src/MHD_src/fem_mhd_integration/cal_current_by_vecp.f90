@@ -54,6 +54,8 @@
       use m_geometry_data_MHD
       use m_finite_element_matrix
       use m_jacobian_sf_grp
+      use m_jacobians
+      use m_element_id_4_node
       use m_int_vol_data
       use m_surf_data_vector_p
       use m_node_phys_data
@@ -75,7 +77,9 @@
      &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, sf_bc1_lead_a,          &
      &    intg_point_t_evo, iphys%i_vecp, fem1_wk, f1_l)
 !
-      call cal_multi_pass_4_vector_ff
+      call cal_multi_pass_4_vector_ff(ele1%istack_ele_smp, m1_lump,     &
+     &    nod_comm, node1, ele1, jac1_3d_q, rhs_tbl1,                   &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
      &    f1_l%ff, m1_lump%ml, nod_fld1%ntot_phys,                      &
      &    iphys%i_current, nod_fld1%d_fld)
@@ -93,9 +97,9 @@
       subroutine int_vol_current_diffuse(node, ele, nod_fld, i_vecp)
 !
       use m_phys_constants
+      use m_jacobians
       use m_element_id_4_node
       use m_finite_element_matrix
-      use m_jacobians
       use m_int_vol_data
 !
       use nodal_fld_2_each_element

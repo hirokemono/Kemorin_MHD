@@ -11,6 +11,11 @@
       use m_precision
 !
       use m_control_parameter
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_element_phys_data
+      use m_jacobians
+      use m_element_id_4_node
       use m_finite_element_matrix
 !
       use cal_ff_smp_to_ffs
@@ -29,10 +34,7 @@
 !
       subroutine cal_vecp_induction
 !
-      use m_nod_comm_table
-      use m_geometry_data
       use m_node_phys_data
-      use m_element_phys_data
       use m_int_vol_data
       use m_bc_data_magne
 !
@@ -50,7 +52,10 @@
      &     (fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
       end if
 !
-      call cal_t_evo_4_vector_cd(iflag_mag_supg)
+      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
+     &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
       call delete_vector_ffs_on_bc(node1, nod_bc1_a, f1_l, f1_nl)
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
@@ -65,8 +70,6 @@
 !
       subroutine cal_vecp_diffusion
 !
-      use m_nod_comm_table
-      use m_geometry_data
       use m_group_data
       use m_phys_constants
       use m_node_phys_data

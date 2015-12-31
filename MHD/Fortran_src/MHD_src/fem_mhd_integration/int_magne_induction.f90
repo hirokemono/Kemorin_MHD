@@ -42,7 +42,9 @@
      &    ele1%istack_ele_smp, intg_point_poisson, iphys%i_vp_induct,   &
      &    fem1_wk, f1_nl)
 !
-!      call cal_multi_pass_4_vector_ff
+!      call cal_multi_pass_4_vector_ff(ele1%istack_ele_smp, m1_lump,    &
+!     &    nod_comm, node1, ele1, jac1_3d_q, rhs_tbl1,                  &
+!     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
 !      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,         &
 !     &   f1_l%ff, mhd_fem1_wk%mlump_cd%ml, nod_fld1%ntot_phys,         &
 !     &   iphys%i_magne, nod_fld1%d_fld)

@@ -15,7 +15,9 @@
       use m_geometry_data
       use m_group_data
       use m_node_phys_data
+      use m_element_phys_data
       use m_finite_element_matrix
+      use m_int_vol_data
 !
       use cal_multi_pass
       use cal_ff_smp_to_ffs
@@ -35,7 +37,6 @@
       subroutine cal_terms_4_momentum(i_field)
 !
       use m_finite_element_matrix
-      use m_int_vol_data
 !
       use int_vol_velo_monitor
 !
@@ -54,7 +55,10 @@
 !
       call int_surf_velo_monitor(node1, ele1, surf1, sf_grp1, i_field)
 !
-      call cal_t_evo_4_vector_fl(iflag_velo_supg)
+      call cal_t_evo_4_vector(iflag_velo_supg,                          &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
+     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
 !       call set_boundary_velo_4_rhs(node1, f1_l, f1_nl)
 !
       call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
@@ -69,7 +73,6 @@
       subroutine cal_viscous_diffusion
 !
       use m_phys_constants
-      use m_int_vol_data
       use m_finite_element_matrix
 !
       use int_vol_diffusion_ele

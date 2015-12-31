@@ -14,8 +14,15 @@
 !
       use m_machine_parameter
       use m_control_parameter
+      use m_nod_comm_table
       use m_geometry_data
+      use m_geometry_data_MHD
       use m_group_data
+      use m_element_phys_data
+      use m_jacobians
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_int_vol_data
 !
       use cal_multi_pass
       use cal_sol_vector_co_crank
@@ -34,12 +41,9 @@
 !
       subroutine cal_magnetic_co
 !
-      use m_nod_comm_table
       use m_node_phys_data
       use m_phys_constants
       use m_jacobian_sf_grp
-      use m_element_id_4_node
-      use m_finite_element_matrix
       use m_filter_elength
       use m_SGS_address
       use m_SGS_model_coefs
@@ -94,7 +98,9 @@
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_multi_pass_4_vector_ff'
-      call cal_multi_pass_4_vector_ff
+      call cal_multi_pass_4_vector_ff(ele1%istack_ele_smp, m1_lump,     &
+     &    nod_comm, node1, ele1, jac1_3d_q, rhs_tbl1,                   &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_sol_magne_co'
       call cal_sol_magne_co(node1%istack_internal_smp)
@@ -138,13 +144,15 @@
       subroutine cal_magnetic_co_crank
 !
       use m_phys_constants
-      use m_finite_element_matrix
       use m_bc_data_magne
       use set_boundary_scalars
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_t_evo_4_vector'
-      call cal_t_evo_4_vector(iflag_mag_supg)
+      call cal_t_evo_4_vector                                           &
+     &   (iflag_mag_supg, ele1%istack_ele_smp, m1_lump, nod_comm,       &
+     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1)   write(*,*) 'set_boundary_magne_4_rhs'
       call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
@@ -159,7 +167,6 @@
       subroutine cal_magne_co_consist_crank
 !
       use m_phys_constants
-      use m_finite_element_matrix
       use m_bc_data_magne
       use m_physical_property
       use int_vol_initial_MHD
@@ -185,13 +192,11 @@
 !
       subroutine cal_magnetic_co_outside
 !
-      use m_nod_comm_table
       use m_node_phys_data
       use m_phys_constants
       use m_jacobian_sf_grp
-      use m_element_id_4_node
-      use m_finite_element_matrix
       use m_filter_elength
+      use m_geometry_data_MHD
       use m_SGS_address
       use m_SGS_model_coefs
       use m_surf_data_magne_p
@@ -221,7 +226,10 @@
       end if
 !
 !
-      call cal_multi_pass_4_vector_ins
+      call cal_multi_pass_4_vector_ff                                   &
+     &   (insulate1%istack_ele_fld_smp, mhd_fem1_wk%mlump_ins,          &
+     &    nod_comm, node1, ele1, jac1_3d_q, rhs_tbl1,                   &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
 !
       call cal_sol_magne_insulator
 !
