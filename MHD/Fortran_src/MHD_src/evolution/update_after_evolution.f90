@@ -306,15 +306,22 @@
 !
       subroutine update_with_vector_potential(layer_tbl)
 !
+      use m_control_parameter
       use m_t_step_parameter
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
+      use m_geometry_data_MHD
       use m_node_phys_data
+      use m_SGS_address
+      use m_surf_data_vector_p
+      use m_bc_data_magne
       use m_element_phys_data
       use m_SGS_model_coefs
-      use m_SGS_address
 !
       use average_on_elements
+      use cal_rotation_sgs
       use cal_filtering_vectors
-      use cal_rotation_fields
       use cal_diff_vector_on_ele
       use cal_diff_coef_vector_p
       use cal_w_filtering_vectors
@@ -377,7 +384,11 @@
 !
        if (iphys%i_magne .ne. 0) then
          if (iflag_debug.gt.0) write(*,*) 'cal_magnetic_f_by_vect_p'
-         call cal_magnetic_f_by_vect_p
+         call choose_cal_rotation_sgs                                   &
+     &       (iflag_commute_magne, iflag_mag_supg,                      &
+     &        ele1%istack_ele_smp, m1_lump, node1, ele1, surf1,         &
+     &        sf_grp1, nod_bc1_b, sf_sgs1_grad_a, iak_diff_b,           &
+     &        iphys%i_vecp, iphys%i_magne, nod_fld1)
        end if
        if (iphys_ele%i_magne .ne. 0) then
          if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'

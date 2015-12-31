@@ -219,7 +219,9 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'const_MHD_jacobian_and_volumes'
-      call const_MHD_jacobian_and_volumes(layer_tbl)
+      call const_MHD_jacobian_and_volumes                               &
+     &   (node1, ele1, sf_grp1, layer_tbl, infty_list,                  &
+     &    jac1_3d_l, jac1_3d_q)
 !
       if (iflag_debug.eq.1) write(*,*)  'cal_jacobian_surf_grp'
       call cal_jacobian_surf_grp(sf_grp1)

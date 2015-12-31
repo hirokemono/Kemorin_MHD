@@ -35,7 +35,7 @@
       use cal_filtering_vectors
       use cal_sgs_fluxes_simi
       use cal_div_sgs_mf_4_simi
-      use commute_error_m_flux
+      use commute_error_h_flux
       use cal_sgs_mom_fluxes_grad
       use cal_filtering_vectors
       use cal_model_diff_coefs

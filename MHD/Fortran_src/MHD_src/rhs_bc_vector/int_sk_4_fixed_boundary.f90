@@ -114,18 +114,18 @@
 !
 !
       if (iflag_commute_magne .eq. id_SGS_commute_ON) then
-        call int_vol_fixed_sgs_poisson_surf                             &
-     &     (node1, ele1, nod_fld1, jac1_3d_l, rhs_tbl1, FEM1_elen,      &
-     &      intg_point_poisson, nod_bc1_fins%ibc_end, nod_bc1_fins%num_idx_ibc,   &
-     &      nod_bc1_fins%ele_bc_id, nod_bc1_fins%ibc_stack_smp, nod_bc1_fins%ibc_shape,   &
-     &      ifilter_final, iphys%i_m_phi, ak_diff(1,iak_diff_b),        &
-     &      fem1_wk, f1_l)
+        call int_vol_fixed_sgs_poisson_surf(node1, ele1, nod_fld1,      &
+     &      jac1_3d_l, rhs_tbl1, FEM1_elen, intg_point_poisson,         &
+     &      nod_bc1_fins%ibc_end, nod_bc1_fins%num_idx_ibc,             &
+     &      nod_bc1_fins%ele_bc_id, nod_bc1_fins%ibc_stack_smp,         &
+     &      nod_bc1_fins%ibc_shape,  ifilter_final, iphys%i_m_phi,      &
+     &      ak_diff(1,iak_diff_b), fem1_wk, f1_l)
       else
-        call int_vol_fixed_poisson_surf                                 &
-     &     (node1, ele1, nod_fld1, jac1_3d_l, rhs_tbl1,                 &
-     &      intg_point_poisson, nod_bc1_fins%ibc_end, nod_bc1_fins%num_idx_ibc,   &
-     &      nod_bc1_fins%ele_bc_id, nod_bc1_fins%ibc_stack_smp, nod_bc1_fins%ibc_shape,   &
-     &      iphys%i_m_phi, fem1_wk, f1_l)
+        call int_vol_fixed_poisson_surf(node1, ele1, nod_fld1,          &
+     &      jac1_3d_l, rhs_tbl1,  intg_point_poisson,                   &
+     &      nod_bc1_fins%ibc_end, nod_bc1_fins%num_idx_ibc,             &
+     &      nod_bc1_fins%ele_bc_id, nod_bc1_fins%ibc_stack_smp,         &
+     &      nod_bc1_fins%ibc_shape, iphys%i_m_phi, fem1_wk, f1_l)
       end if
 !
       call cal_ff_smp_2_ff                                              &
@@ -305,16 +305,16 @@
       if (iflag_commute_composit .eq. id_SGS_commute_ON) then
         call int_vol_fixed_sgs_scalar_surf                              &
        &   (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
-       &    intg_point_t_evo, nod_bc1_c%ibc_end,                      &
-       &    nod_bc1_c%num_idx_ibc, nod_bc1_c%ele_bc_id,               &
+       &    intg_point_t_evo, nod_bc1_c%ibc_end,                        &
+       &    nod_bc1_c%num_idx_ibc, nod_bc1_c%ele_bc_id,                 &
        &    nod_bc1_c%ibc_stack_smp, nod_bc1_c%ibc_shape, ifilter_final,&
        &    iphys%i_light, ak_diff(1,iak_diff_c), ak_d_composit,        &
        &    coef_imp_c, fem1_wk, f1_l)
       else
         call int_vol_fixed_scalar_surf                                  &
      &     (node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1,                 &
-     &      intg_point_t_evo, nod_bc1_c%ibc_end,                      &
-     &      nod_bc1_c%num_idx_ibc, nod_bc1_c%ele_bc_id,               &
+     &      intg_point_t_evo, nod_bc1_c%ibc_end,                        &
+     &      nod_bc1_c%num_idx_ibc, nod_bc1_c%ele_bc_id,                 &
      &      nod_bc1_c%ibc_stack_smp, nod_bc1_c%ibc_shape,               &
      &      iphys%i_light, ak_d_composit, coef_imp_c, fem1_wk, f1_l)
       end if

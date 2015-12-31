@@ -16,6 +16,7 @@
       use m_precision
 !
       use commute_error_gradient
+      use m_geometry_data_MHD
 !
       implicit none
 !
@@ -32,9 +33,10 @@
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs
 !
-      call cal_grad_commute_fluid                                       &
-     &   (sf_sgs1_grad_t%ngrp_sf_dat, sf_sgs1_grad_t%id_grp_sf_dat,     &
-     &    i_filter, i_sgs, iphys%i_sgs_temp)
+!
+      call cal_grad_commute                                             &
+     &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    sf_sgs1_grad_t, i_filter, i_sgs, iphys%i_sgs_temp)
 !
       end subroutine cal_commute_error_temp
 !
@@ -47,9 +49,9 @@
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs
 !
-      call cal_grad_commute_fluid                                       &
-     &   (sf_sgs1_grad_t%ngrp_sf_dat, sf_sgs1_grad_t%id_grp_sf_dat,     &
-     &    i_filter, i_sgs, iphys%i_filter_temp)
+      call cal_grad_commute                                             &
+     &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    sf_sgs1_grad_t, i_filter, i_sgs, iphys%i_filter_temp)
 !
       end subroutine cal_commute_error_f_temp
 !
@@ -63,9 +65,9 @@
 !
        integer(kind = kint), intent(in) :: i_filter, i_sgs
 !
-       call cal_grad_commute_fluid                                      &
-     &    (sf_sgs1_grad_p%ngrp_sf_dat, sf_sgs1_grad_p%id_grp_sf_dat,    &
-     &     i_filter, i_sgs, iphys%i_press)
+      call cal_grad_commute                                             &
+     &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    sf_sgs1_grad_p, i_filter, i_sgs, iphys%i_press)
 !
       end subroutine cal_commute_error_press
 !
@@ -78,9 +80,9 @@
 !
        integer(kind = kint), intent(in) :: i_filter, i_sgs
 !
-       call cal_grad_commute_fluid                                      &
-     &    (sf_sgs1_grad_p%ngrp_sf_dat, sf_sgs1_grad_p%id_grp_sf_dat,    &
-     &     i_filter, i_sgs, i_sgs)
+      call cal_grad_commute                                             &
+     &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    sf_sgs1_grad_p, i_filter, i_sgs, i_sgs)
 !
       end subroutine cal_commute_error_f_press
 !
@@ -93,9 +95,8 @@
 !
        integer(kind = kint), intent(in) :: i_filter, i_sgs
 !
-      call cal_grad_commute                                             &
-     &   (sf_sgs1_grad_f%ngrp_sf_dat, sf_sgs1_grad_f%id_grp_sf_dat,     &
-     &    i_filter, i_sgs, iphys%i_mag_p)
+      call cal_grad_commute(ele1%istack_ele_smp, m1_lump,               &
+     &    sf_sgs1_grad_f, i_filter, i_sgs, iphys%i_mag_p)
 !
       end subroutine cal_commute_error_magne_p
 !
@@ -108,9 +109,8 @@
 !
       integer(kind = kint), intent(in) :: i_filter, i_sgs
 !
-      call cal_grad_commute                                             &
-     &   (sf_sgs1_grad_f%ngrp_sf_dat, sf_sgs1_grad_f%id_grp_sf_dat,     &
-     &    i_filter, i_sgs, i_sgs)
+      call cal_grad_commute(ele1%istack_ele_smp, m1_lump,               &
+     &    sf_sgs1_grad_f, i_filter, i_sgs, i_sgs)
 !
       end subroutine cal_commute_error_f_magne_p
 !

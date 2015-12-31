@@ -13,6 +13,8 @@
 !
 !       subroutine cal_commute_error_4_h_flux(i_filter)
 !       subroutine cal_commute_error_4_filter_hf(i_filter)
+!       subroutine cal_commute_error_4_m_flux(i_filter)
+!       subroutine cal_commute_error_4_filter_mf(i_filter)
 !
       module commute_error_h_flux
 !
@@ -23,6 +25,8 @@
       implicit none
 !
       private :: cal_commute_error_4_hf
+      private :: cal_commute_error_4_mf
+      private :: cal_commute_error_4_idct
 !
 !-----------------------------------------------------------------------
 !
@@ -73,9 +77,99 @@
 !
 !-----------------------------------------------------------------------
 !
+      subroutine cal_commute_error_4_mf                                 &
+     &         (sgs_sf, i_filter, i_sgs, i_flux, i_vect)
+!
+      use m_control_parameter
+      use m_geometry_data
+      use m_group_data
+      use m_phys_constants
+      use m_node_phys_data
+      use m_geometry_data_MHD
+      use m_jacobian_sf_grp
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_int_vol_data
+      use m_filter_elength
+!
+      use t_surface_bc_data
+!
+      use cal_ff_smp_to_ffs
+      use cal_for_ffs
+      use int_vol_commute_error
+      use int_surf_div_fluxes_sgs
+!
+      type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
+      integer(kind = kint), intent(in) :: i_flux, i_vect
+      integer(kind = kint), intent(in) :: i_sgs, i_filter
+!
+!
+      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
+!
+      call int_vol_commute_div_m_flux(fluid1%istack_ele_fld_smp,        &
+     &    intg_point_t_evo, i_filter, i_flux, i_vect)
+!
+      call int_sf_skv_commute_sgs_t_flux(node1, ele1, surf1, sf_grp1,   &
+     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, sgs_sf,      &
+     &    intg_point_t_evo, i_filter, i_flux, i_vect, i_vect,           &
+     &    fem1_wk, f1_nl)
+!
+      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
+     &    f1_nl%ff, mhd_fem1_wk%mlump_fl%ml, nod_fld1%ntot_phys,        &
+     &    i_sgs, nod_fld1%d_fld)
+!
+      end subroutine cal_commute_error_4_mf
+!
+!-----------------------------------------------------------------------
+!
+      subroutine cal_commute_error_4_idct(i_filter, i_sgs,              &
+     &          i_flux, i_v, i_b)
+!
+      use m_control_parameter
+      use m_geometry_data
+      use m_geometry_data_MHD
+      use m_group_data
+      use m_phys_constants
+      use m_node_phys_data
+      use m_jacobian_sf_grp
+      use m_finite_element_matrix
+      use m_int_vol_data
+      use m_surf_data_magne
+!
+      use cal_ff_smp_to_ffs
+      use cal_for_ffs
+      use int_vol_commute_error
+      use int_surf_div_induct_tsr_sgs
+!
+       integer(kind = kint), intent(in) :: i_flux, i_v, i_b
+       integer(kind = kint), intent(in) :: i_sgs, i_filter
+!
+!
+      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
+!
+      call int_vol_commute_induct_t(conduct1%istack_ele_fld_smp,        &
+     &    intg_point_t_evo, i_filter, i_flux, i_v, i_b)
+!
+      call int_surf_commute_induct_t(node1, ele1, surf1, sf_grp1,       &
+     &     nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &     sf_sgs1_grad_b, intg_point_t_evo,                            &
+     &     i_flux, i_filter, i_v, i_b,  fem1_wk, f1_nl)
+!
+      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
+      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
+     &    f1_nl%ff, mhd_fem1_wk%mlump_fl%ml, nod_fld1%ntot_phys,        &
+     &    i_sgs, nod_fld1%d_fld)
+!
+      end subroutine cal_commute_error_4_idct
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
       subroutine cal_commute_error_4_h_flux(i_filter)
 !
       use m_node_phys_data
+      use m_surf_data_torque
 !
       integer(kind = kint), intent(in) :: i_filter
 !
@@ -89,6 +183,7 @@
       subroutine cal_commute_error_4_filter_hf(i_filter)
 !
       use m_node_phys_data
+      use m_surf_data_torque
 !
       integer(kind = kint), intent(in) :: i_filter
 !
@@ -97,6 +192,92 @@
      &     iphys%i_filter_temp)
 !
        end subroutine cal_commute_error_4_filter_hf
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine cal_commute_error_4_m_flux(i_filter)
+!
+      use m_node_phys_data
+      use m_surf_data_torque
+!
+      integer(kind = kint), intent(in) :: i_filter
+!
+       call cal_commute_error_4_mf(sf_sgs1_grad_v, i_filter,            &
+     &     iphys%i_sgs_grad, iphys%i_SGS_m_flux, iphys%i_velo)
+!
+      end subroutine cal_commute_error_4_m_flux
+!
+!-----------------------------------------------------------------------
+!
+      subroutine cal_commute_error_4_filter_mf(i_filter)
+!
+      use m_node_phys_data
+      use m_surf_data_torque
+!
+      integer(kind = kint), intent(in) :: i_filter
+!
+       call cal_commute_error_4_mf(sf_sgs1_grad_v, i_filter,            &
+     &     iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_velo)
+!
+       end subroutine cal_commute_error_4_filter_mf
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine cal_commute_error_4_maxwell(i_filter)
+!
+      use m_node_phys_data
+      use m_surf_data_magne
+!
+      integer(kind = kint), intent(in) :: i_filter
+!
+      call cal_commute_error_4_mf(sf_sgs1_grad_b, i_filter,            &
+     &    iphys%i_sgs_grad,  iphys%i_SGS_maxwell, iphys%i_magne)
+!
+      end subroutine cal_commute_error_4_maxwell
+!
+!-----------------------------------------------------------------------
+!
+      subroutine cal_commute_error_4_filter_mxwl(i_filter)
+!
+      use m_node_phys_data
+      use m_surf_data_magne
+!
+      integer(kind = kint), intent(in) :: i_filter
+!
+      call cal_commute_error_4_mf(sf_sgs1_grad_b, i_filter,            &
+     &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_magne)
+!
+       end subroutine cal_commute_error_4_filter_mxwl
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine cal_commute_error_4_induct(i_filter)
+!
+      use m_node_phys_data
+!
+      integer(kind = kint), intent(in) :: i_filter
+!
+       call cal_commute_error_4_idct(i_filter, iphys%i_sgs_grad,        &
+     &     iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne)
+!
+      end subroutine cal_commute_error_4_induct
+!
+!-----------------------------------------------------------------------
+!
+      subroutine cal_commute_error_4_filter_idct(i_filter)
+!
+      use m_node_phys_data
+!
+      integer(kind = kint), intent(in) :: i_filter
+!
+       call cal_commute_error_4_idct(i_filter, iphys%i_sgs_grad_f,      &
+     &     iphys%i_sgs_grad_f, iphys%i_filter_velo,                     &
+     &     iphys%i_filter_magne)
+!
+      end subroutine cal_commute_error_4_filter_idct
 !
 !-----------------------------------------------------------------------
 !
