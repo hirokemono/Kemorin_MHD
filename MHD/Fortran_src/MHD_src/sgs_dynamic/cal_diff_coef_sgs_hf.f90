@@ -22,14 +22,23 @@
 !
       subroutine s_cal_diff_coef_sgs_hf(layer_tbl)
 !
-      use m_nod_comm_table
-      use m_geometry_data
       use m_machine_parameter
       use m_control_parameter
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
       use m_phys_constants
       use m_node_phys_data
+      use m_jacobians
+      use m_jacobian_sf_grp
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_filter_elength
       use m_SGS_address
       use m_bc_data_ene
+      use m_surf_data_temp
+      use m_geometry_data_MHD
+      use m_int_vol_data
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -81,7 +90,13 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
-      call cal_commute_error_4_filter_hf(ifilter_4delta)
+      call cal_commute_error_4_hf                                       &
+     &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    node1, ele1, surf1, sf_grp1, nod_fld1,                        &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    sf_sgs1_grad_t, ifilter_4delta, iphys%i_sgs_grad_f,           &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_velo,                      &
+     &    iphys%i_filter_temp, fem1_wk, f1_l, f1_nl)
       call delete_field_by_fixed_t_bc                                   &
      &   (nod_bc1_t, iphys%i_sgs_grad_f, nod_fld1)
 !
@@ -93,7 +108,13 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
-      call cal_commute_error_4_h_flux(ifilter_2delta)
+      call cal_commute_error_4_hf                                       &
+     &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    node1, ele1, surf1, sf_grp1, nod_fld1,                        &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    sf_sgs1_grad_t, ifilter_2delta, iphys%i_sgs_grad,             &
+     &    iphys%i_SGS_h_flux, iphys%i_velo, iphys%i_sgs_temp,           &
+     &    fem1_wk, f1_l, f1_nl)
 !
       call scalar_send_recv                                             &
      &   (iphys%i_sgs_grad, node1, nod_comm, nod_fld1)

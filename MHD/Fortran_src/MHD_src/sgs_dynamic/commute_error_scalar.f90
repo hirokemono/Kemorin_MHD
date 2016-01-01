@@ -18,6 +18,15 @@
       use commute_error_gradient
       use m_geometry_data_MHD
 !
+      use m_geometry_data
+      use m_group_data
+      use m_node_phys_data
+      use m_jacobians
+      use m_jacobian_sf_grp
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_filter_elength
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -36,7 +45,10 @@
 !
       call cal_grad_commute                                             &
      &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
-     &    sf_sgs1_grad_t, i_filter, i_sgs, iphys%i_sgs_temp)
+     &    node1, ele1, surf1, sf_grp1, nod_fld1,                        &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    sf_sgs1_grad_t, i_filter, i_sgs, iphys%i_sgs_temp,            &
+     &    fem1_wk, f1_l, f1_nl)
 !
       end subroutine cal_commute_error_temp
 !
@@ -51,7 +63,10 @@
 !
       call cal_grad_commute                                             &
      &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
-     &    sf_sgs1_grad_t, i_filter, i_sgs, iphys%i_filter_temp)
+     &    node1, ele1, surf1, sf_grp1, nod_fld1,                        &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    sf_sgs1_grad_t, i_filter, i_sgs, iphys%i_filter_temp,         &
+     &    fem1_wk, f1_l, f1_nl)
 !
       end subroutine cal_commute_error_f_temp
 !
@@ -67,7 +82,10 @@
 !
       call cal_grad_commute                                             &
      &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
-     &    sf_sgs1_grad_p, i_filter, i_sgs, iphys%i_press)
+     &    node1, ele1, surf1, sf_grp1, nod_fld1,                        &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    sf_sgs1_grad_p, i_filter, i_sgs, iphys%i_press,               &
+     &    fem1_wk, f1_l, f1_nl)
 !
       end subroutine cal_commute_error_press
 !
@@ -82,7 +100,9 @@
 !
       call cal_grad_commute                                             &
      &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
-     &    sf_sgs1_grad_p, i_filter, i_sgs, i_sgs)
+     &    node1, ele1, surf1, sf_grp1, nod_fld1,                        &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    sf_sgs1_grad_p, i_filter, i_sgs, i_sgs, fem1_wk, f1_l, f1_nl)
 !
       end subroutine cal_commute_error_f_press
 !
@@ -96,7 +116,10 @@
        integer(kind = kint), intent(in) :: i_filter, i_sgs
 !
       call cal_grad_commute(ele1%istack_ele_smp, m1_lump,               &
-     &    sf_sgs1_grad_f, i_filter, i_sgs, iphys%i_mag_p)
+     &    node1, ele1, surf1, sf_grp1, nod_fld1,                        &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    sf_sgs1_grad_f, i_filter, i_sgs, iphys%i_mag_p,               &
+     &    fem1_wk, f1_l, f1_nl)
 !
       end subroutine cal_commute_error_magne_p
 !
@@ -110,7 +133,9 @@
       integer(kind = kint), intent(in) :: i_filter, i_sgs
 !
       call cal_grad_commute(ele1%istack_ele_smp, m1_lump,               &
-     &    sf_sgs1_grad_f, i_filter, i_sgs, i_sgs)
+     &    node1, ele1, surf1, sf_grp1, nod_fld1,                        &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    sf_sgs1_grad_f, i_filter, i_sgs, i_sgs, fem1_wk, f1_l, f1_nl)
 !
       end subroutine cal_commute_error_f_magne_p
 !

@@ -15,11 +15,13 @@
       use m_control_parameter
       use m_nod_comm_table
       use m_geometry_data
+      use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_int_vol_data
+      use m_filter_elength
 !
       use cal_multi_pass
       use cal_sol_vector_co_crank
@@ -39,7 +41,6 @@
       subroutine cal_vector_p_co
 !
       use m_group_data
-      use m_node_phys_data
       use m_phys_constants
       use m_jacobian_sf_grp
       use m_filter_elength
@@ -124,7 +125,8 @@
 !
       if (coef_imp_b.gt.0.0d0) then
         if (iflag_debug.eq.1) write(*,*) 'int_sk_4_fixed_vector_p'
-         call int_sk_4_fixed_vector_p
+        call int_sk_4_fixed_vector_p(iphys%i_vecp, node1, ele1,         &
+     &      nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
       end if
 !
 !

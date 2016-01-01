@@ -15,8 +15,8 @@
 !!
 !!      subroutine int_sf_skv_commute_sgs_v_flux(node, ele, surf,       &
 !!     &          sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,      &
-!!     &          n_int, ngrp_sf, id_grp_sf, i_filter,                  &
-!!     &          i_tensor, i_vect, i_scalar, fem_wk, f_nl)
+!!     &          n_int, sgs_sf, i_filter, i_tensor, i_vect, i_scalar,  &
+!!     &          fem_wk, f_nl)
 !!      subroutine int_sf_skv_commute_sgs_t_flux(node, ele, surf,       &
 !!     &        sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,&
 !!     &        n_int, i_filter, i_tensor, i_vect, i_scalar,            &
@@ -189,8 +189,8 @@
 !
       subroutine int_sf_skv_commute_sgs_v_flux(node, ele, surf,         &
      &          sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,        &
-     &          n_int, ngrp_sf, id_grp_sf, i_filter,                    &
-     &          i_tensor, i_vect, i_scalar, fem_wk, f_nl)
+     &          n_int, sgs_sf, i_filter, i_tensor, i_vect, i_scalar,    &
+     &          fem_wk, f_nl)
 !
       use delta_SGS_2_each_surface
       use fem_surf_skv_sgs_commute_t
@@ -204,9 +204,8 @@
       type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf
 !
-      integer(kind=kint), intent(in) :: ngrp_sf
-      integer(kind=kint), intent(in) :: id_grp_sf(ngrp_sf)
       integer(kind=kint), intent(in) :: n_int, i_filter
       integer(kind=kint), intent(in) :: i_vect, i_scalar, i_tensor
 !
@@ -217,13 +216,13 @@
       integer(kind=kint) :: k2, i, igrp, num
 !
 !
-      if (ngrp_sf .eq. 0) return
+      if (sgs_sf%ngrp_sf_dat .eq. 0) return
       call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
 ! --------- set vector at each node in an element
 !
-      do i = 1, ngrp_sf
-        igrp = id_grp_sf(i)
+      do i = 1, sgs_sf%ngrp_sf_dat
+        igrp = sgs_sf%id_grp_sf_dat(i)
         num = sf_grp%istack_grp(igrp) - sf_grp%istack_grp(igrp-1)
 !
         if (num .gt. 0) then

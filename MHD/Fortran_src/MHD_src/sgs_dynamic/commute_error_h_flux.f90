@@ -3,30 +3,57 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine cal_commute_error_4_hf(i_filter, i_sgs, i_flux,       &
-!     &          i_vect)
-!         i_filter: ID for filter function
-!         i_sgs: field ID for obtained difference term
-!         i_flux: field ID for SGS term
-!         i_vect: field ID for origianl vector field
-!         i_scalar: field ID for origianl scalar field
-!
-!       subroutine cal_commute_error_4_h_flux(i_filter)
-!       subroutine cal_commute_error_4_filter_hf(i_filter)
-!       subroutine cal_commute_error_4_m_flux(i_filter)
-!       subroutine cal_commute_error_4_filter_mf(i_filter)
+!!      subroutine cal_commute_error_4_hf(iele_fsmp_stack, m_lump,      &
+!!     &          node, ele, surf, sf_grp, nod_fld, jac_3d, jac_sf_grp, &
+!!     &          rhs_tbl, FEM_elens, sgs_sf, i_filter, i_sgs, i_flux,  &
+!!     &          i_vect, i_scalar, fem_wk, f_l, f_nl)
+!!      subroutine cal_commute_error_4_mf(iele_fsmp_stack, m_lump,      &
+!!     &          node, ele, surf, sf_grp, nod_fld, jac_3d, jac_sf_grp, &
+!!     &          rhs_tbl, FEM_elens, sgs_sf, i_filter, i_sgs, i_flux,  &
+!!     &          i_vect, fem_wk, f_l, f_nl)
+!!      subroutine cal_commute_error_4_idct(iele_fsmp_stack, m_lump,    &
+!!     &          node, ele, surf, sf_grp, nod_fld, jac_3d, jac_sf_grp, &
+!!     &          rhs_tbl, FEM_elens, i_filter, i_sgs, i_flux, i_v, i_b,&
+!!     &          fem_wk, f_l, f_nl)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(phys_data),    intent(in) :: nod_fld
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(jacobians_2d), intent(in) :: jac_sf_grp
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+!!         i_filter: ID for filter function
+!!         i_sgs: field ID for obtained difference term
+!!         i_flux: field ID for SGS term
+!!         i_vect: field ID for origianl vector field
+!!         i_scalar: field ID for origianl scalar field
 !
       module commute_error_h_flux
 !
       use m_precision
+      use m_machine_parameter
 !
       use m_control_parameter
+      use m_phys_constants
+!
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
+      use t_phys_data
+      use t_jacobian_2d
+      use t_jacobian_3d
+      use t_table_FEM_const
+      use t_finite_element_mat
+      use t_MHD_finite_element_mat
+      use t_filter_elength
+      use t_surface_bc_data
 !
       implicit none
-!
-      private :: cal_commute_error_4_hf
-      private :: cal_commute_error_4_mf
-      private :: cal_commute_error_4_idct
 !
 !-----------------------------------------------------------------------
 !
@@ -34,63 +61,59 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_commute_error_4_hf(i_filter, i_sgs,                &
-     &          i_flux, i_vect, i_scalar)
-!
-      use m_geometry_data
-      use m_group_data
-      use m_phys_constants
-      use m_node_phys_data
-      use m_jacobian_sf_grp
-      use m_element_id_4_node
-      use m_finite_element_matrix
-      use m_int_vol_data
-      use m_filter_elength
-      use m_surf_data_temp
-      use m_geometry_data_MHD
+      subroutine cal_commute_error_4_hf(iele_fsmp_stack, m_lump,        &
+     &          node, ele, surf, sf_grp, nod_fld, jac_3d, jac_sf_grp,   &
+     &          rhs_tbl, FEM_elens, sgs_sf, i_filter, i_sgs, i_flux,    &
+     &          i_vect, i_scalar, fem_wk, f_l, f_nl)
 !
       use int_vol_commute_error
       use int_surf_div_fluxes_sgs
       use cal_ff_smp_to_ffs
       use cal_for_ffs
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: sf_grp
+      type(phys_data),    intent(in) :: nod_fld
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(jacobians_2d), intent(in) :: jac_sf_grp
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf
+      type(lumped_mass_matrices), intent(in) :: m_lump
+      integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
       integer(kind = kint), intent(in) :: i_flux, i_vect, i_scalar
       integer(kind = kint), intent(in) :: i_sgs, i_filter
 !
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !
-      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
-      call int_vol_commute_div_v_flux(fluid1%istack_ele_fld_smp,        &
-     &    intg_point_t_evo, i_filter, i_flux, i_vect, i_scalar)
-      call int_sf_skv_commute_sgs_v_flux(node1, ele1, surf1, sf_grp1,   &
-     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,              &
-     &    intg_point_t_evo,                                             &
-     &    sf_sgs1_grad_t%ngrp_sf_dat, sf_sgs1_grad_t%id_grp_sf_dat,     &
-     &    i_filter, i_flux, i_vect, i_scalar, fem1_wk, f1_nl)
+      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      call set_ff_nl_smp_2_ff(n_scalar, node1, rhs_tbl1, f1_l, f1_nl)
-      call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,          &
-     &    f1_nl%ff, mhd_fem1_wk%mlump_fl%ml, nod_fld1%ntot_phys,        &
-     &    i_sgs, nod_fld1%d_fld)
+      call int_vol_commute_div_v_flux                                   &
+     &   (iele_fsmp_stack, intg_point_t_evo,                            &
+     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
+     &    i_filter, i_flux, i_vect, i_scalar, fem_wk, f_nl)
+      call int_sf_skv_commute_sgs_v_flux(node, ele, surf, sf_grp,       &
+     &    nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,                      &
+     &    intg_point_t_evo, sgs_sf, i_filter, i_flux, i_vect, i_scalar, &
+     &    fem_wk, f_nl)
+!
+      call set_ff_nl_smp_2_ff(n_scalar, node, rhs_tbl, f_l, f_nl)
+      call cal_ff_2_scalar(node%numnod, node%istack_nod_smp,            &
+     &    f_nl%ff, m_lump%ml, nod_fld%ntot_phys, i_sgs, nod_fld%d_fld)
 !
       end subroutine cal_commute_error_4_hf
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_commute_error_4_mf                                 &
-     &         (sgs_sf, i_filter, i_sgs, i_flux, i_vect)
-!
-      use m_control_parameter
-      use m_geometry_data
-      use m_group_data
-      use m_phys_constants
-      use m_node_phys_data
-      use m_geometry_data_MHD
-      use m_jacobian_sf_grp
-      use m_element_id_4_node
-      use m_finite_element_matrix
-      use m_int_vol_data
-      use m_filter_elength
+      subroutine cal_commute_error_4_mf(iele_fsmp_stack, m_lump,        &
+     &          node, ele, surf, sf_grp, nod_fld, jac_3d, jac_sf_grp,   &
+     &          rhs_tbl, FEM_elens, sgs_sf, i_filter, i_sgs, i_flux,    &
+     &          i_vect, fem_wk, f_l, f_nl)
 !
       use t_surface_bc_data
 !
@@ -99,42 +122,51 @@
       use int_vol_commute_error
       use int_surf_div_fluxes_sgs
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: sf_grp
+      type(phys_data),    intent(in) :: nod_fld
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(jacobians_2d), intent(in) :: jac_sf_grp
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(gradient_model_data_type), intent(in) :: FEM_elens
       type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
+      type(lumped_mass_matrices), intent(in) :: m_lump
+      integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
       integer(kind = kint), intent(in) :: i_flux, i_vect
       integer(kind = kint), intent(in) :: i_sgs, i_filter
 !
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !
-      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
-      call int_vol_commute_div_m_flux(fluid1%istack_ele_fld_smp,        &
-     &    intg_point_t_evo, i_filter, i_flux, i_vect)
+      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      call int_sf_skv_commute_sgs_t_flux(node1, ele1, surf1, sf_grp1,   &
-     &    nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, sgs_sf,      &
+      call int_vol_commute_div_m_flux                                   &
+     &   (iele_fsmp_stack, intg_point_t_evo,                            &
+     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
+     &    i_filter, i_flux, i_vect, fem_wk, f_nl)
+!
+      call int_sf_skv_commute_sgs_t_flux(node, ele, surf, sf_grp,       &
+     &    nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,              &
      &    intg_point_t_evo, i_filter, i_flux, i_vect, i_vect,           &
-     &    fem1_wk, f1_nl)
+     &    fem_wk, f_nl)
 !
-      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
-      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    f1_nl%ff, mhd_fem1_wk%mlump_fl%ml, nod_fld1%ntot_phys,        &
-     &    i_sgs, nod_fld1%d_fld)
+      call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
+      call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
+     &    f_nl%ff, m_lump%ml, nod_fld%ntot_phys, i_sgs, nod_fld%d_fld)
 !
       end subroutine cal_commute_error_4_mf
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_commute_error_4_idct(i_filter, i_sgs,              &
-     &          i_flux, i_v, i_b)
+      subroutine cal_commute_error_4_idct(iele_fsmp_stack, m_lump,      &
+     &          node, ele, surf, sf_grp, nod_fld, jac_3d, jac_sf_grp,   &
+     &          rhs_tbl, FEM_elens, i_filter, i_sgs, i_flux, i_v, i_b,  &
+     &          fem_wk, f_l, f_nl)
 !
-      use m_control_parameter
-      use m_geometry_data
-      use m_geometry_data_MHD
-      use m_group_data
-      use m_phys_constants
-      use m_node_phys_data
-      use m_jacobian_sf_grp
-      use m_finite_element_matrix
-      use m_int_vol_data
       use m_surf_data_magne
 !
       use cal_ff_smp_to_ffs
@@ -142,142 +174,40 @@
       use int_vol_commute_error
       use int_surf_div_induct_tsr_sgs
 !
-       integer(kind = kint), intent(in) :: i_flux, i_v, i_b
-       integer(kind = kint), intent(in) :: i_sgs, i_filter
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: sf_grp
+      type(phys_data),    intent(in) :: nod_fld
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(jacobians_2d), intent(in) :: jac_sf_grp
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(gradient_model_data_type), intent(in) :: FEM_elens
+      type(lumped_mass_matrices), intent(in) :: m_lump
+      integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      integer(kind = kint), intent(in) :: i_flux, i_v, i_b
+      integer(kind = kint), intent(in) :: i_sgs, i_filter
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !
 !
-      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
+      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      call int_vol_commute_induct_t(conduct1%istack_ele_fld_smp,        &
-     &    intg_point_t_evo, i_filter, i_flux, i_v, i_b)
+      call int_vol_commute_induct_t(iele_fsmp_stack, intg_point_t_evo,  &
+     &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
+     &    i_filter, i_flux, i_v, i_b, fem_wk, f_nl)
 !
-      call int_surf_commute_induct_t(node1, ele1, surf1, sf_grp1,       &
-     &     nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
-     &     sf_sgs1_grad_b, intg_point_t_evo,                            &
-     &     i_flux, i_filter, i_v, i_b,  fem1_wk, f1_nl)
+      call int_surf_commute_induct_t(node, ele, surf, sf_grp,           &
+     &     nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sf_sgs1_grad_b,     &
+     &     intg_point_t_evo, i_flux, i_filter, i_v, i_b,  fem_wk, f_nl)
 !
-      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
-      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    f1_nl%ff, mhd_fem1_wk%mlump_fl%ml, nod_fld1%ntot_phys,        &
-     &    i_sgs, nod_fld1%d_fld)
+      call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
+      call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &
+     &    f_nl%ff, m_lump%ml, nod_fld%ntot_phys, i_sgs, nod_fld%d_fld)
 !
       end subroutine cal_commute_error_4_idct
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine cal_commute_error_4_h_flux(i_filter)
-!
-      use m_node_phys_data
-      use m_surf_data_torque
-!
-      integer(kind = kint), intent(in) :: i_filter
-!
-       call cal_commute_error_4_hf(i_filter, iphys%i_sgs_grad,          &
-     &     iphys%i_SGS_h_flux, iphys%i_velo, iphys%i_sgs_temp)
-!
-      end subroutine cal_commute_error_4_h_flux
-!
-!-----------------------------------------------------------------------
-!
-      subroutine cal_commute_error_4_filter_hf(i_filter)
-!
-      use m_node_phys_data
-      use m_surf_data_torque
-!
-      integer(kind = kint), intent(in) :: i_filter
-!
-       call cal_commute_error_4_hf(i_filter, iphys%i_sgs_grad_f,        &
-     &     iphys%i_sgs_grad_f, iphys%i_filter_velo,                     &
-     &     iphys%i_filter_temp)
-!
-       end subroutine cal_commute_error_4_filter_hf
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine cal_commute_error_4_m_flux(i_filter)
-!
-      use m_node_phys_data
-      use m_surf_data_torque
-!
-      integer(kind = kint), intent(in) :: i_filter
-!
-       call cal_commute_error_4_mf(sf_sgs1_grad_v, i_filter,            &
-     &     iphys%i_sgs_grad, iphys%i_SGS_m_flux, iphys%i_velo)
-!
-      end subroutine cal_commute_error_4_m_flux
-!
-!-----------------------------------------------------------------------
-!
-      subroutine cal_commute_error_4_filter_mf(i_filter)
-!
-      use m_node_phys_data
-      use m_surf_data_torque
-!
-      integer(kind = kint), intent(in) :: i_filter
-!
-       call cal_commute_error_4_mf(sf_sgs1_grad_v, i_filter,            &
-     &     iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_velo)
-!
-       end subroutine cal_commute_error_4_filter_mf
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine cal_commute_error_4_maxwell(i_filter)
-!
-      use m_node_phys_data
-      use m_surf_data_magne
-!
-      integer(kind = kint), intent(in) :: i_filter
-!
-      call cal_commute_error_4_mf(sf_sgs1_grad_b, i_filter,            &
-     &    iphys%i_sgs_grad,  iphys%i_SGS_maxwell, iphys%i_magne)
-!
-      end subroutine cal_commute_error_4_maxwell
-!
-!-----------------------------------------------------------------------
-!
-      subroutine cal_commute_error_4_filter_mxwl(i_filter)
-!
-      use m_node_phys_data
-      use m_surf_data_magne
-!
-      integer(kind = kint), intent(in) :: i_filter
-!
-      call cal_commute_error_4_mf(sf_sgs1_grad_b, i_filter,            &
-     &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_magne)
-!
-       end subroutine cal_commute_error_4_filter_mxwl
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine cal_commute_error_4_induct(i_filter)
-!
-      use m_node_phys_data
-!
-      integer(kind = kint), intent(in) :: i_filter
-!
-       call cal_commute_error_4_idct(i_filter, iphys%i_sgs_grad,        &
-     &     iphys%i_SGS_induct_t, iphys%i_velo, iphys%i_magne)
-!
-      end subroutine cal_commute_error_4_induct
-!
-!-----------------------------------------------------------------------
-!
-      subroutine cal_commute_error_4_filter_idct(i_filter)
-!
-      use m_node_phys_data
-!
-      integer(kind = kint), intent(in) :: i_filter
-!
-       call cal_commute_error_4_idct(i_filter, iphys%i_sgs_grad_f,      &
-     &     iphys%i_sgs_grad_f, iphys%i_filter_velo,                     &
-     &     iphys%i_filter_magne)
-!
-      end subroutine cal_commute_error_4_filter_idct
 !
 !-----------------------------------------------------------------------
 !

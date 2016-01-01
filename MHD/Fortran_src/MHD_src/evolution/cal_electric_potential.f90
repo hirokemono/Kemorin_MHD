@@ -11,6 +11,13 @@
 !
       use m_precision
 !
+      use m_geometry_data
+      use m_node_phys_data
+      use m_jacobians
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_filter_elength
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -22,17 +29,12 @@
       subroutine cal_scalar_potential
 !
       use m_machine_parameter
-      use m_geometry_data
       use m_group_data
       use m_phys_constants
-      use m_node_phys_data
       use m_SGS_model_coefs
       use m_SGS_address
-      use m_element_id_4_node
-      use m_finite_element_matrix
       use m_int_surface_data
       use m_jacobian_sf_grp
-      use m_filter_elength
       use m_surf_data_vector_p
       use m_bc_data_magne
 !
@@ -64,7 +66,8 @@
      &   (node1, ele1, surf1, sf_grp1, nod_fld1, jac1_sf_grp_2d_l,      &
      &    rhs_tbl1, fem1_wk, f1_l)
 !
-      call int_vol_sk_mp_bc
+      call int_vol_sk_mp_bc(iphys%i_m_phi, node1, ele1, nod_fld1,       &
+     &    jac1_3d_l, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
 !
       call set_boundary_ff(node1, nod_bc1_f, f1_l)
 !

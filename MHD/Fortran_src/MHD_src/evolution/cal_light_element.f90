@@ -18,11 +18,13 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_geometry_data_MHD
+      use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_int_vol_data
+      use m_filter_elength
 !
       implicit none
 !
@@ -38,7 +40,6 @@
       subroutine cal_light_element_variation
 !
       use m_group_data
-      use m_node_phys_data
       use m_jacobian_sf_grp
       use m_bc_data_ene
       use m_surf_data_composition
@@ -92,7 +93,6 @@
 !
       subroutine cal_composit_pre_euler
 !
-      use m_node_phys_data
       use cal_multi_pass
       use cal_sol_vector_explicit
 !
@@ -108,7 +108,6 @@
 !
       subroutine cal_composit_pre_adams
 !
-      use m_node_phys_data
       use cal_multi_pass
       use cal_sol_vector_explicit
 !
@@ -126,7 +125,6 @@
       subroutine cal_composit_pre_crank
 !
       use m_t_step_parameter
-      use m_node_phys_data
       use m_bc_data_ene
 !
       use cal_multi_pass
@@ -137,7 +135,8 @@
 !
 !
       if (coef_imp_c.gt.0.0d0) then
-        call int_sk_4_fixed_composition
+        call int_sk_4_fixed_composition(iphys%i_light, node1, ele1,     &
+     &      nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
 !         if (iflag_initial_step.eq.1) coef_imp_c = 1.0d0 / coef_imp_c
       end if
 !
@@ -158,7 +157,6 @@
       subroutine cal_composit_pre_consist_crank
 !
       use m_t_step_parameter
-      use m_node_phys_data
       use m_bc_data_ene
       use m_physical_property
 !
@@ -171,7 +169,8 @@
 !
 !
        if (coef_imp_c.gt.0.0d0) then
-         call int_sk_4_fixed_composition
+         call int_sk_4_fixed_composition(iphys%i_light, node1, ele1,    &
+     &       nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
 !         if (iflag_initial_step.eq.1) coef_imp_c = 1.0d0 / coef_imp_c
        end if
 !
