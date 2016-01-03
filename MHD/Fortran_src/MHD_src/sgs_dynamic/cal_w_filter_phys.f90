@@ -55,7 +55,7 @@
      &                   :: d_nod(node1%numnod,ntot_comp)
 !
 !
-      call prepare_scalar_2_w_fil(ntot_comp, i_field, d_nod)
+      call prepare_scalar_2_w_fil(node1, ntot_comp, i_field, d_nod)
 !
       call sum_3d_filter_scalar_phys(num_filter_grp, id_filter_grp,     &
      &    ngrp_nod_3d_w_fil, istack_nod_3d_w_fil, ntot_nod_3d_w_fil,    &
@@ -85,7 +85,7 @@
      &                   :: d_nod(node1%numnod,ntot_comp)
 !
 !
-      call prepare_vector_2_w_fil(ntot_comp, i_field, d_nod)
+      call prepare_vector_2_w_fil(node1, ntot_comp, i_field, d_nod)
 !
       call sum_3d_filter_vector_phys(num_filter_grp, id_filter_grp,     &
      &    ngrp_nod_3d_w_fil, istack_nod_3d_w_fil, ntot_nod_3d_w_fil,    &
@@ -115,7 +115,7 @@
      &                   :: d_nod(node1%numnod,ntot_comp)
 !
 !
-      call prepare_sym_tensor_2_w_fil(ntot_comp, i_field, d_nod)
+      call prepare_sym_tensor_2_w_fil(node1, ntot_comp, i_field, d_nod)
 !
       call sum_3d_filter_tensor_phys(num_filter_grp, id_filter_grp,     &
      &    ngrp_nod_3d_w_fil, istack_nod_3d_w_fil, ntot_nod_3d_w_fil,    &
@@ -146,7 +146,7 @@
      &                   :: d_nod(node1%numnod,ntot_comp)
 !
 !
-      call prepare_scalar_2_w_fil(ntot_comp, i_field, d_nod)
+      call prepare_scalar_2_w_fil(node1, ntot_comp, i_field, d_nod)
 !
       call sum_3d_ez_filter_scalar_phys(num_filter_grp, id_filter_grp,  &
      &    ngrp_nod_3d_w_fil, istack_nod_3d_w_fil, ntot_nod_3d_w_fil,    &
@@ -175,7 +175,7 @@
      &                   :: d_nod(node1%numnod,ntot_comp)
 !
 !
-      call prepare_vector_2_w_fil(ntot_comp, i_field, d_nod)
+      call prepare_vector_2_w_fil(node1, ntot_comp, i_field, d_nod)
 !
       call sum_3d_ez_filter_vector_phys(num_filter_grp, id_filter_grp,  &
      &    ngrp_nod_3d_w_fil, istack_nod_3d_w_fil, ntot_nod_3d_w_fil,    &
@@ -204,7 +204,7 @@
      &                   :: d_nod(node1%numnod,ntot_comp)
 !
 !
-      call prepare_sym_tensor_2_w_fil(ntot_comp, i_field, d_nod)
+      call prepare_sym_tensor_2_w_fil(node1, ntot_comp, i_field, d_nod)
 !
       call sum_3d_ez_filter_tensor_phys(num_filter_grp, id_filter_grp,  &
      &    ngrp_nod_3d_w_fil, istack_nod_3d_w_fil, ntot_nod_3d_w_fil,    &

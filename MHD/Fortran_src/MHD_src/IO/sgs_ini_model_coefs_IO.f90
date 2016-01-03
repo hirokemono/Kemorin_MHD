@@ -16,6 +16,7 @@
       use calypso_mpi
       use m_control_parameter
       use m_t_step_parameter
+      use m_geometry_data
 !
       implicit none
 !
@@ -253,19 +254,20 @@
          ist = istack_sgs_coefs(i-1) + 1
          call set_model_coefs_2_ele(izero, ncomp_sgs_coefs(i), i, ist,  &
      &       layer_egrp%num_grp, layer_egrp%num_item,                   &
-     &       layer_egrp%istack_grp_smp, layer_egrp%item_grp)
+     &       layer_egrp%istack_grp_smp, layer_egrp%item_grp, ele1)
       end do
 !
       if (iflag_commute_correction .gt. id_SGS_commute_OFF) then
         if (iset_DIFF_model_coefs .eq. 0) then
           do i = 1, num_diff_kinds
-            call set_diff_coefs_whole_ele(fluid1%istack_ele_fld_smp, i)
+            call set_diff_coefs_whole_ele                               &
+     &         (fluid1%istack_ele_fld_smp, i, ele1)
           end do
         else
           do i = 1, num_diff_kinds
             call set_diff_coefs_layer_ele                               &
      &         (i, layer_egrp%num_grp, layer_egrp%num_item,             &
-     &          layer_egrp%istack_grp_smp, layer_egrp%item_grp)
+     &          layer_egrp%istack_grp_smp, layer_egrp%item_grp, ele1)
           end do
         end if
       end if

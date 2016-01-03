@@ -23,19 +23,27 @@
       subroutine s_cal_diff_coef_temp(layer_tbl)
 !
       use m_nod_comm_table
-      use m_geometry_data
       use m_machine_parameter
       use m_control_parameter
+      use m_geometry_data
+      use m_group_data
       use m_node_phys_data
+      use m_jacobians
+      use m_jacobian_sf_grp
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_filter_elength
       use m_SGS_address
       use m_phys_constants
+      use m_surf_data_temp
+      use m_geometry_data_MHD
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
       use cal_filtering_scalars
       use cal_filtering_vectors
       use cal_gradient
-      use commute_error_scalar
+      use commute_error_gradient
       use cal_model_diff_coefs
       use set_boundary_scalars
       use nod_phys_send_recv
@@ -65,7 +73,8 @@
 !
 !    filtering (to iphys%i_sgs_grad)
 !
-      call cal_filtered_vector(iphys%i_sgs_grad, iphys%i_sgs_grad)
+      call cal_filtered_vector(nod_comm, node1,                         &
+     &    iphys%i_sgs_grad, iphys%i_sgs_grad, nod_fld1)
 !
 !    take difference (to iphys%i_sgs_simi)
 !
@@ -79,7 +88,12 @@
 !
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_commute_error_f_temp', iphys%i_sgs_grad_f
-      call cal_commute_error_f_temp(ifilter_4delta, iphys%i_sgs_grad_f)
+      call cal_grad_commute                                             &
+     &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    node1, ele1, surf1, sf_grp1, nod_fld1,                        &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    sf_sgs1_grad_t, ifilter_4delta, iphys%i_sgs_grad_f,           &
+     &    iphys%i_filter_temp, fem1_wk, f1_l, f1_nl)
 !
       call vector_send_recv                                             &
      &   (iphys%i_sgs_grad_f, node1, nod_comm, nod_fld1)
@@ -91,14 +105,20 @@
 !
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_commute_error_temp', iphys%i_sgs_grad
-      call cal_commute_error_temp(ifilter_2delta, iphys%i_sgs_grad)
+      call cal_grad_commute                                             &
+     &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    node1, ele1, surf1, sf_grp1, nod_fld1,                        &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    sf_sgs1_grad_t, ifilter_2delta, iphys%i_sgs_grad,             &
+     &    iphys%i_sgs_temp, fem1_wk, f1_l, f1_nl)
 !
       call vector_send_recv                                             &
      &   (iphys%i_sgs_grad, node1, nod_comm, nod_fld1)
 !
 !    filtering (to iphys%i_sgs_grad)
 !
-      call cal_filtered_vector(iphys%i_sgs_grad, iphys%i_sgs_grad)
+      call cal_filtered_vector(nod_comm, node1,                         &
+     &    iphys%i_sgs_grad, iphys%i_sgs_grad, nod_fld1)
 !
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_vector, iphys%i_sgs_grad)
@@ -108,6 +128,7 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_vector, iak_diff_t, icomp_diff_t
       call cal_diff_coef_fluid(layer_tbl,                               &
+     &    node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l,           &
      &    n_vector, iak_diff_t, icomp_diff_t, intg_point_t_evo)
 !
       iflag_diff_coefs(iak_diff_t) = 1

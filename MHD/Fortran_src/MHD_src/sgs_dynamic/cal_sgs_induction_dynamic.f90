@@ -17,6 +17,12 @@
       use m_machine_parameter
       use m_control_parameter
 !
+      use m_geometry_data
+      use m_finite_element_matrix
+      use m_node_phys_data
+      use m_jacobians
+      use m_SGS_address
+!
       use t_layering_ele_list
 !
       implicit none
@@ -28,11 +34,6 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_uxb_dynamic(layer_tbl)
-!
-      use m_geometry_data
-      use m_finite_element_matrix
-      use m_node_phys_data
-      use m_SGS_address
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -69,28 +70,27 @@
 !
 !      filtering
 !
-      call cal_filtered_vector(iphys%i_sgs_grad, iphys%i_SGS_vp_induct)
+      call cal_filtered_vector(nod_comm, node1,                         &
+     &    iphys%i_sgs_grad, iphys%i_SGS_vp_induct, nod_fld1)
 !
 !   Change coordinate
 !
-      call cvt_vector_dynamic_scheme_coord
+      call cvt_vector_dynamic_scheme_coord(node1, iphys, nod_fld1)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &        'cal_model_coefs', n_vector, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs(layer_tbl, itype_SGS_uxb_coef, n_vector,     &
-     &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo)
+      call cal_model_coefs(layer_tbl,                                   &
+     &    node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l,           &
+     &    itype_SGS_uxb_coef, n_vector, iak_sgs_uxb, icomp_sgs_uxb,     &
+     &    intg_point_t_evo)
 !
       end subroutine cal_sgs_uxb_dynamic
 !
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_induct_t_dynamic(layer_tbl)
-!
-      use m_geometry_data
-      use m_node_phys_data
-      use m_SGS_address
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -134,19 +134,21 @@
 !
 !      filtering
 !
-      call cal_filtered_vector(iphys%i_sgs_grad, iphys%i_SGS_induct_t)
+      call cal_filtered_vector(nod_comm, node1,                         &
+     &    iphys%i_sgs_grad, iphys%i_SGS_induct_t, nod_fld1)
 !
 !   Change coordinate
 !
-      call cvt_vector_dynamic_scheme_coord
+      call cvt_vector_dynamic_scheme_coord(node1, iphys, nod_fld1)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0 )  write(*,*)                                &
      &     'cal_model_coefs', n_asym_tensor, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs                                              &
-     &   (layer_tbl, itype_SGS_uxb_coef, n_asym_tensor,                 &
-     &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo)
+      call cal_model_coefs(layer_tbl,                                   &
+     &    node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l,           &
+     &    itype_SGS_uxb_coef, n_asym_tensor, iak_sgs_uxb,               &
+     &    icomp_sgs_uxb, intg_point_t_evo)
 !
       call reduce_model_coefs_layer(SGS_uxb_factor, nlayer_SGS,         &
      &    sgs_f_clip(1,iak_sgs_uxb), sgs_f_whole_clip(iak_sgs_uxb) )

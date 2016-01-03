@@ -71,23 +71,26 @@
 !
 !    copy to work array
 !
-       call copy_vector_component(node1, nod_fld1,                      &
-     &     iphys%i_SGS_h_flux, iphys%i_sgs_simi)
+      call copy_vector_component(node1, nod_fld1,                       &
+     &    iphys%i_SGS_h_flux, iphys%i_sgs_simi)
 !
 !      filtering
 !
-      call cal_filtered_vector(iphys%i_sgs_grad, iphys%i_SGS_h_flux)
+      call cal_filtered_vector(nod_comm, node1,                         &
+     &    iphys%i_sgs_grad, iphys%i_SGS_h_flux, nod_fld1)
 !
 !   Change coordinate
 !
-      call cvt_vector_dynamic_scheme_coord
+      call cvt_vector_dynamic_scheme_coord(node1, iphys, nod_fld1)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.eq.1)  write(*,*)' cal_model_coefs',              &
      &   n_vector, iak_sgs_hf, icomp_sgs_hf
-      call cal_model_coefs(layer_tbl, itype_SGS_h_flux_coef, n_vector,  &
-     &    iak_sgs_hf, icomp_sgs_hf, intg_point_t_evo)
+      call cal_model_coefs(layer_tbl,                                   &
+     &    node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l,           &
+     &    itype_SGS_h_flux_coef, n_vector, iak_sgs_hf, icomp_sgs_hf,    &
+     &    intg_point_t_evo)
 !
       call cal_ele_vector_2_node                                        &
      &   (node1, ele1, jac1_3d_q, rhs_tbl1, m1_lump,                    &

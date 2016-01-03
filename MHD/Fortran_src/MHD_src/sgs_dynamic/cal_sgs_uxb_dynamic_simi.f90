@@ -69,18 +69,21 @@
 !
 !      filtering
 !
-      call cal_filtered_vector(iphys%i_sgs_grad, iphys%i_sgs_simi)
+      call cal_filtered_vector(nod_comm, node1,                         &
+     &    iphys%i_sgs_grad, iphys%i_sgs_simi, nod_fld1)
 !
 !   Change coordinate
 !
-      call cvt_vector_dynamic_scheme_coord
+      call cvt_vector_dynamic_scheme_coord(node1, iphys, nod_fld1)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      & 'cal_model_coefs', n_vector, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs(layer_tbl, itype_SGS_uxb_coef, n_vector,     &
-     &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo)
+      call cal_model_coefs(layer_tbl,                                   &
+     &    node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l,           &
+     &    itype_SGS_uxb_coef, n_vector, iak_sgs_uxb,                    &
+     &    icomp_sgs_uxb, intg_point_t_evo)
 !
       end subroutine s_cal_sgs_uxb_dynamic_simi
 !
@@ -135,18 +138,20 @@
 !
 !      filtering
 !
-      call cal_filtered_vector(iphys%i_sgs_grad, iphys%i_SGS_induct_t)
+      call cal_filtered_vector(nod_comm, node1,                         &
+     &    iphys%i_sgs_grad, iphys%i_SGS_induct_t, nod_fld1)
 !
 !   Change coordinate
 !
-      call cvt_vector_dynamic_scheme_coord
+      call cvt_vector_dynamic_scheme_coord(node1, iphys, nod_fld1)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      & 'cal_model_coefs', n_asym_tensor, iak_sgs_uxb, icomp_sgs_uxb
-      call cal_model_coefs                                              &
-     &   (layer_tbl, itype_SGS_uxb_coef, n_asym_tensor,                 &
+      call cal_model_coefs(layer_tbl,                                   &
+     &    node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l,           &
+     &    itype_SGS_uxb_coef, n_asym_tensor,                            &
      &    iak_sgs_uxb, icomp_sgs_uxb, intg_point_t_evo)
 !
       call cal_ele_vector_2_node                                        &

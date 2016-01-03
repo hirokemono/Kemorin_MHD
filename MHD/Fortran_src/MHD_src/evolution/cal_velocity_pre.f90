@@ -64,7 +64,7 @@
 !
       if (iflag_SGS_gravity .ne. id_SGS_none) then
         call cal_sgs_mom_flux_with_sgs_buo(layer_tbl)
-        call mod_Csim_by_SGS_buoyancy_ele(layer_tbl%e_grp)
+        call mod_Csim_by_SGS_buoyancy_ele(layer_tbl%e_grp, ele1)
       end if
 !
       if ( iflag_SGS_inertia .ne. id_SGS_none) then

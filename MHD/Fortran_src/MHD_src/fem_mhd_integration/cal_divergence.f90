@@ -33,37 +33,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_divergence_whole(iflag_4_supg, i_res, i_vector)
-!
-      use m_node_phys_data
-!
-      integer(kind = kint), intent(in) :: iflag_4_supg
-      integer(kind = kint), intent(in) :: i_vector, i_res
-!
-!
-       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
-!
-       call choose_int_vol_divs(iflag_4_supg,                           &
-     &          ele1%istack_ele_smp, i_vector)
-!
-       call set_ff_nl_smp_2_ff(n_scalar, node1, rhs_tbl1, f1_l, f1_nl)
-       call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,         &
-     &     f1_nl%ff, m1_lump%ml, nod_fld1%ntot_phys,                    &
-     &     i_res, nod_fld1%d_fld)
-!
-! ----------   communications
-!
-      call vector_send_recv(i_res, node1, nod_comm, nod_fld1)
-!
-      end subroutine cal_divergence_whole
-!
-!-----------------------------------------------------------------------
-!
-      subroutine cal_divergence_in_fluid(iflag_4_supg, i_res, i_vector)
+      subroutine choose_cal_divergence(iele_fsmp_stack, m_lump,         &
+     &          iflag_4_supg, i_vector, i_res)
 !
       use m_geometry_data_MHD
       use m_node_phys_data
 !
+      type(lumped_mass_matrices), intent(in) :: m_lump
+      integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: iflag_4_supg
       integer(kind = kint), intent(in) :: i_vector, i_res
 !
@@ -71,47 +48,20 @@
        call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
        call choose_int_vol_divs                                         &
-     &    (iflag_4_supg, fluid1%istack_ele_fld_smp, i_vector)
+     &    (iflag_4_supg, iele_fsmp_stack, i_vector)
 !
        call set_ff_nl_smp_2_ff(n_scalar, node1, rhs_tbl1, f1_l, f1_nl)
        call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,         &
-     &     f1_nl%ff, mhd_fem1_wk%mlump_fl%ml, nod_fld1%ntot_phys,       &
+     &     f1_nl%ff, m_lump%ml, nod_fld1%ntot_phys,                     &
      &     i_res, nod_fld1%d_fld)
 !
 ! ----------   communications
 !
       call vector_send_recv(i_res, node1, nod_comm, nod_fld1)
 !
-      end subroutine cal_divergence_in_fluid
+      end subroutine choose_cal_divergence
 !
 !-----------------------------------------------------------------------
-!
-      subroutine cal_divergence_in_conduct(iflag_4_supg,                &
-     &          i_res, i_vector)
-!
-      use m_geometry_data_MHD
-      use m_node_phys_data
-!
-      integer(kind = kint), intent(in) :: iflag_4_supg
-      integer(kind = kint), intent(in) :: i_vector, i_res
-!
-!
-       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
-!
-       call choose_int_vol_divs                                         &
-     &    (iflag_4_supg, conduct1%istack_ele_fld_smp, i_vector)
-!
-       call set_ff_nl_smp_2_ff(n_scalar, node1, rhs_tbl1, f1_l, f1_nl)
-       call cal_ff_2_scalar(node1%numnod, node1%istack_nod_smp,         &
-     &     f1_nl%ff, mhd_fem1_wk%mlump_cd%ml, nod_fld1%ntot_phys,       &
-     &     i_res, nod_fld1%d_fld)
-!
-! ----------   communications
-!
-      call vector_send_recv(i_res, node1, nod_comm, nod_fld1)
-!
-      end subroutine cal_divergence_in_conduct
-!
 !-----------------------------------------------------------------------
 !
       subroutine choose_int_vol_divs(iflag_4_supg,                      &

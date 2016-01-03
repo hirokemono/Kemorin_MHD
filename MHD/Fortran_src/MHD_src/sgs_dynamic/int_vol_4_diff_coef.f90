@@ -4,11 +4,12 @@
 !     Written by H. Matsui
 !
 !!      subroutine int_vol_diff_coef_l(numnod, numele, ie, interior_ele,&
-!!     &          iele_fsmp_stack, numdir, ntot_int_3d, n_int, xjac, an,&
-!!     &          ntot_phys, d_nod, sgs_l_smp, sgs_w)
+!!     &         ntot_phys, d_nod, i_sgs_simi, i_sgs_grad, i_sgs_grad_f,&
+!!     &         sgs_l_smp, sgs_w)
 !!      subroutine int_vol_diff_coef_q(numnod, numele, ie, interior_ele,&
 !!     &          iele_fsmp_stack, numdir, ntot_int_3d, n_int, xjac, aw,&
-!!     &          ntot_phys, d_nod, sgs_l_smp, sgs_w)
+!!     &         ntot_phys, d_nod, i_sgs_simi, i_sgs_grad, i_sgs_grad_f,&
+!!     &         sgs_l_smp, sgs_w)
 !
       module int_vol_4_diff_coef
 !
@@ -16,7 +17,6 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_node_phys_data
       use m_fem_gauss_int_coefs
 !
       implicit none
@@ -28,8 +28,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_diff_coef_l(numnod, numele, ie, interior_ele,  &
-     &          iele_fsmp_stack, numdir, ntot_int_3d, n_int, xjac, an,  &
-     &          ntot_phys, d_nod, sgs_l_smp, sgs_w)
+     &         iele_fsmp_stack, numdir, ntot_int_3d, n_int, xjac, an,   &
+     &         ntot_phys, d_nod, i_sgs_simi, i_sgs_grad, i_sgs_grad_f,  &
+     &         sgs_l_smp, sgs_w)
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_linear)
@@ -44,6 +45,8 @@
 !
       integer (kind = kint), intent(in) :: numnod, ntot_phys
       real(kind=kreal), intent(in) :: d_nod(numnod,ntot_phys)
+      integer (kind = kint), intent(in) :: i_sgs_simi
+      integer (kind = kint), intent(in) :: i_sgs_grad, i_sgs_grad_f
 !
       real(kind=kreal), intent(inout) :: sgs_l_smp(np_smp,18)
       real(kind=kreal), intent(inout) :: sgs_w(18)
@@ -62,9 +65,9 @@
 !
           do nd = 1, numdir
 !
-            i_s = iphys%i_sgs_simi +   nd-1
-            i_g = iphys%i_sgs_grad +   nd-1
-            i_f = iphys%i_sgs_grad_f + nd-1
+            i_s = i_sgs_simi +   nd-1
+            i_g = i_sgs_grad +   nd-1
+            i_f = i_sgs_grad_f + nd-1
 !
             do ii= 1, n_int * n_int * n_int 
               ix = int_start3(n_int) + ii
@@ -140,8 +143,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_diff_coef_q(numnod, numele, ie, interior_ele,  &
-     &          iele_fsmp_stack, numdir, ntot_int_3d, n_int, xjac, aw,  &
-     &          ntot_phys, d_nod, sgs_l_smp, sgs_w)
+     &         iele_fsmp_stack, numdir, ntot_int_3d, n_int, xjac, aw,   &
+     &         ntot_phys, d_nod, i_sgs_simi, i_sgs_grad, i_sgs_grad_f,  &
+     &         sgs_l_smp, sgs_w)
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_quad)
@@ -156,6 +160,8 @@
 !
       integer (kind = kint), intent(in) :: numnod, ntot_phys
       real(kind=kreal), intent(in) :: d_nod(numnod,ntot_phys)
+      integer (kind = kint), intent(in) :: i_sgs_simi
+      integer (kind = kint), intent(in) :: i_sgs_grad, i_sgs_grad_f
 !
       real(kind=kreal), intent(inout) :: sgs_l_smp(np_smp,18)
       real(kind=kreal), intent(inout) :: sgs_w(18)
@@ -177,9 +183,9 @@
 !
           do nd = 1, numdir
 !
-            i_s = iphys%i_sgs_simi +   nd-1
-            i_g = iphys%i_sgs_grad +   nd-1
-            i_f = iphys%i_sgs_grad_f + nd-1
+            i_s = i_sgs_simi +   nd-1
+            i_g = i_sgs_grad +   nd-1
+            i_f = i_sgs_grad_f + nd-1
 !
             do ii= 1, n_int * n_int * n_int 
               ix = int_start3(n_int) + ii

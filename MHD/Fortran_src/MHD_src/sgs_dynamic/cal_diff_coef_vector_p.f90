@@ -26,10 +26,18 @@
       use m_control_parameter
       use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
       use m_node_phys_data
       use m_phys_constants
       use m_geometry_data_MHD
+      use m_jacobians
+      use m_jacobian_sf_grp
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_filter_elength
       use m_SGS_address
+      use m_surf_data_magne_p
+      use m_surf_data_vector_p
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -39,8 +47,7 @@
       use cal_rotation
       use cal_gradient
       use cal_divergence
-      use commute_error_vector
-      use commute_error_scalar
+      use commute_error_gradient
       use cal_model_diff_coefs
       use clear_work_4_dynamic_model
 !
@@ -62,7 +69,8 @@
 !
       call copy_vector_component(node1, nod_fld1,                       &
      &    iphys%i_filter_vecp, iphys%i_sgs_grad_f)
-      call cal_filtered_scalar(i_sgs_grad_fp, iphys%i_mag_p)
+      call cal_filtered_scalar(nod_comm, node1,                         &
+     &    i_sgs_grad_fp, iphys%i_mag_p, nod_fld1)
 !
 !   take rotation and gradient of filtered A (to iphys%i_sgs_simi)
 !
@@ -75,8 +83,8 @@
      &   write(*,*) 'cal_gradent_whole', i_sgs_simi_p, i_sgs_grad_fp
       call cal_gradent_whole(iflag_mag_supg,                            &
      &    i_sgs_simi_p, i_sgs_grad_fp)
-!      call cal_divergence_whole(iflag_mag_supg,                        &
-!     &    iphys%i_sgs_simi+6, iphys%i_sgs_grad_f)
+!      call choose_cal_divergence(node1%istack_nod_smp, m1_lump,         &
+!     &    iflag_mag_supg, iphys%i_sgs_grad_f, iphys%i_sgs_simi+6)
 !
 !   take rotation and gradient of vector potential (to iphys%i_sgs_grad)
 !
@@ -89,13 +97,15 @@
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_grad_p, iphys%i_mag_p
       call cal_gradent_in_fluid(iflag_mag_supg,                         &
      &    i_sgs_grad_p, iphys%i_mag_p)
-!      call cal_divergence_whole(iflag_mag_supg,                        &
-!     &    iphys%i_sgs_grad+6, iphys%i_vecp)
+!      call choose_cal_divergence(node1%istack_nod_smp, m1_lump,         &
+!     &    iflag_mag_supg, iphys%i_vecp, iphys%i_sgs_grad+6)
 !
 !    filtering (to iphys%i_sgs_grad)
 !
-      call cal_filtered_sym_tensor(iphys%i_sgs_grad, iphys%i_sgs_grad)
-!      call cal_filtered_scalar(iphys%i_sgs_grad+6, iphys%i_sgs_grad+6)
+      call cal_filtered_sym_tensor(nod_comm, node1,                     &
+     &    iphys%i_sgs_grad, iphys%i_sgs_grad, nod_fld1)
+!      call cal_filtered_scalar(nod_comm, node1,                        &
+!     &   iphys%i_sgs_grad+6, iphys%i_sgs_grad+6, nod_fld1)
 !
 !    take difference (to iphys%i_sgs_simi)
 !
@@ -109,9 +119,16 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
-      call cal_commute_error_f_vector_p(ifilter_4delta,                 &
-     &    iphys%i_sgs_grad_f)
-      call cal_commute_error_f_magne_p(ifilter_4delta, i_sgs_grad_fp)
+      call cal_rotation_commute(ele1%istack_ele_smp, m1_lump,           &
+     &    node1, ele1, surf1, sf_grp1, nod_fld1,                        &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    sf_sgs1_grad_a, ifilter_4delta, iphys%i_sgs_grad_f,           &
+     &    iphys%i_sgs_grad_f, fem1_wk, f1_l, f1_nl)
+      call cal_grad_commute(ele1%istack_ele_smp, m1_lump,               &
+     &    node1, ele1, surf1, sf_grp1, nod_fld1,                        &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    sf_sgs1_grad_f, ifilter_4delta, i_sgs_grad_fp, i_sgs_grad_fp, &
+     &    fem1_wk, f1_l, f1_nl)
 !
       call sym_tensor_send_recv                                         &
      &   (iphys%i_sgs_grad_f, node1, nod_comm, nod_fld1)
@@ -121,15 +138,24 @@
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
-      call cal_commute_error_vector_p(ifilter_2delta, iphys%i_sgs_grad)
-      call cal_commute_error_magne_p(ifilter_2delta, i_sgs_grad_p)
+      call cal_rotation_commute(ele1%istack_ele_smp, m1_lump,           &
+     &    node1, ele1, surf1, sf_grp1, nod_fld1,                        &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    sf_sgs1_grad_a, ifilter_2delta, iphys%i_sgs_grad,             &
+     &    iphys%i_vecp, fem1_wk, f1_l, f1_nl)
+      call cal_grad_commute(ele1%istack_ele_smp, m1_lump,               &
+     &    node1, ele1, surf1, sf_grp1, nod_fld1,                        &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    sf_sgs1_grad_f, ifilter_2delta, i_sgs_grad_p,                 &
+     &    iphys%i_mag_p, fem1_wk, f1_l, f1_nl)
 !
       call sym_tensor_send_recv                                         &
      &   (iphys%i_sgs_grad, node1, nod_comm, nod_fld1)
 !
 !    filtering (to iphys%i_sgs_grad)
 !
-      call cal_filtered_sym_tensor(iphys%i_sgs_grad, iphys%i_sgs_grad)
+      call cal_filtered_sym_tensor(nod_comm, node1,                     &
+     &    iphys%i_sgs_grad, iphys%i_sgs_grad, nod_fld1)
 !
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_grad)
@@ -139,6 +165,7 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_sym_tensor, iak_diff_b, icomp_diff_b
       call cal_diff_coef_fluid(layer_tbl,                               &
+     &    node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l,           &
      &    n_sym_tensor, iak_diff_b, icomp_diff_b, intg_point_t_evo)
 !
       iflag_diff_coefs(iak_diff_b) = 1

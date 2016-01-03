@@ -24,17 +24,19 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine mod_Csim_by_SGS_buoyancy_ele(layer_egrp)
+      subroutine mod_Csim_by_SGS_buoyancy_ele(layer_egrp, ele)
 !
+      use t_geometry_data
       use t_group_data
       use m_SGS_address
       use m_control_parameter
       use set_sgs_diff_model_coefs
 !
+      type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: layer_egrp
 !
 !
-      call clear_model_coefs_2_ele(n_sym_tensor, icomp_sgs_mf)
+      call clear_model_coefs_2_ele(n_sym_tensor, icomp_sgs_mf, ele)
 !
       if(iflag_4_gravity .gt. id_turn_OFF                               &
      &     .and. iflag_4_composit_buo .gt. id_turn_OFF) then

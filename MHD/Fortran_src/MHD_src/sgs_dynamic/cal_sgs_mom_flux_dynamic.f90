@@ -28,6 +28,7 @@
       use m_node_phys_data
       use m_control_parameter
       use m_phys_constants
+      use m_jacobians
       use m_SGS_address
 !
       use reset_dynamic_model_coefs
@@ -77,21 +78,22 @@
 !
 !      filtering
 !
-      call cal_filtered_sym_tensor(iphys%i_sgs_grad,                    &
-     &    iphys%i_SGS_m_flux)
+      call cal_filtered_sym_tensor(nod_comm, node1,                     &
+     &    iphys%i_sgs_grad, iphys%i_SGS_m_flux, nod_fld1)
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_grad)
 !
 !   Change coordinate
 !
-      call cvt_tensor_dynamic_scheme_coord
+      call cvt_tensor_dynamic_scheme_coord(node1, iphys, nod_fld1)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_model_coefs', n_sym_tensor, iak_sgs_mf, icomp_sgs_mf
-      call cal_model_coefs                                              &
-     &   (layer_tbl, itype_SGS_m_flux_coef, n_sym_tensor,               &
+      call cal_model_coefs(layer_tbl,                                   &
+     &    node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l,           &
+     &    itype_SGS_m_flux_coef, n_sym_tensor,                          &
      &    iak_sgs_mf, icomp_sgs_mf, intg_point_t_evo)
 !
       call reduce_model_coefs_layer(SGS_mf_factor, nlayer_SGS,          &

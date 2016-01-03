@@ -10,18 +10,19 @@
 !!
 !!      subroutine set_model_coefs_2_ele(itype_csim, numdir,            &
 !!     &          ifield_d, icomp_f, n_layer_d, n_item_layer_d,         &
-!!     &          layer_stack_smp, item_layer)
-!!      subroutine clear_model_coefs_2_ele(numdir, icomp_f)
+!!     &          layer_stack_smp, item_layer, ele)
+!!      subroutine clear_model_coefs_2_ele(numdir, icomp_f, ele)
 !!      subroutine set_diff_coefs_layer_ele(ifield_d,                   &
 !!     &         n_layer_d, n_item_layer_d, layer_stack_smp, item_layer)
-!      subroutine set_diff_coefs_whole_ele(iele_fsmp_stack, ifield_d)
+!!      subroutine set_diff_coefs_whole_ele(iele_fsmp_stack, ifield_d,  &
+!!     &          ele)
 !
       module set_sgs_diff_model_coefs
 !
       use m_precision
 !
       use m_constants
-      use m_geometry_data
+      use t_geometry_data
 !
       implicit none
 !
@@ -257,12 +258,13 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine clear_model_coefs_2_ele(numdir, icomp_f)
+      subroutine clear_model_coefs_2_ele(numdir, icomp_f, ele)
 !
       use m_machine_parameter
       use m_ele_info_4_dynamical
       use m_SGS_model_coefs
 !
+      type(element_data), intent(in) :: ele
       integer (kind = kint), intent(in) :: numdir, icomp_f
       integer (kind = kint) :: ip, ist, ied, nst, ned
       integer (kind = kint) :: iele, nd
@@ -273,8 +275,8 @@
 !
 !$omp parallel do private(ist,ied,iele)
       do ip = 1, np_smp
-        ist = ele1%istack_ele_smp(ip-1) + 1
-        ied = ele1%istack_ele_smp(ip  )
+        ist = ele%istack_ele_smp(ip-1) + 1
+        ied = ele%istack_ele_smp(ip  )
         do nd = nst, ned
 !cdir nodep
           do iele = ist, ied
@@ -291,7 +293,7 @@
 !
       subroutine set_model_coefs_2_ele(itype_csim, numdir,              &
      &          ifield_d, icomp_f, n_layer_d, n_item_layer_d,           &
-     &          layer_stack_smp, item_layer)
+     &          layer_stack_smp, item_layer, ele)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -299,6 +301,7 @@
       use m_node_phys_data
       use m_SGS_model_coefs
 !
+      type(element_data), intent(in) :: ele
       integer (kind = kint), intent(in) :: itype_csim
       integer (kind = kint), intent(in) :: numdir, ifield_d, icomp_f
 !
@@ -311,7 +314,7 @@
       integer (kind = kint) :: inum, iele0, iele, nd
 !
 !
-      call clear_model_coefs_2_ele(numdir, icomp_f)
+      call clear_model_coefs_2_ele(numdir, icomp_f, ele)
 !
       nst = icomp_f
       ned = icomp_f + numdir - 1
@@ -360,13 +363,14 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_diff_coefs_layer_ele(ifield_d,                     &
-     &         n_layer_d, n_item_layer_d, layer_stack_smp, item_layer)
+     &         n_layer_d, n_item_layer_d, layer_stack_smp, item_layer,  &
+     &         ele)
 !
       use m_machine_parameter
       use m_ele_info_4_dynamical
-      use m_node_phys_data
       use m_SGS_model_coefs
 !
+      type(element_data), intent(in) :: ele
       integer (kind = kint), intent(in) :: ifield_d
       integer (kind = kint), intent(in) :: n_layer_d, n_item_layer_d
       integer (kind = kint), intent(in)                                 &
@@ -378,8 +382,8 @@
 !
 !$omp parallel do private(is,ist,ied,inum,iele0,iele)
       do ip = 1, np_smp
-          ist = ele1%istack_ele_smp(ip-1) + 1
-          ied = ele1%istack_ele_smp(ip  )
+          ist = ele%istack_ele_smp(ip-1) + 1
+          ied = ele%istack_ele_smp(ip  )
 !cdir nodep
           do iele = ist, ied
             ak_diff(iele,ifield_d) = zero
@@ -407,13 +411,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_diff_coefs_whole_ele(iele_fsmp_stack, ifield_d)
+      subroutine set_diff_coefs_whole_ele(iele_fsmp_stack, ifield_d,    &
+     &          ele)
 !
       use m_machine_parameter
       use m_ele_info_4_dynamical
-      use m_node_phys_data
       use m_SGS_model_coefs
 !
+      type(element_data), intent(in) :: ele
       integer (kind = kint), intent(in) :: ifield_d
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer (kind = kint) :: ip, ist, ied, iele
@@ -421,8 +426,8 @@
 !
 !$omp parallel do private(ist,ied,iele)
       do ip = 1, np_smp
-        ist = ele1%istack_ele_smp(ip-1) + 1
-        ied = ele1%istack_ele_smp(ip  )
+        ist = ele%istack_ele_smp(ip-1) + 1
+        ied = ele%istack_ele_smp(ip  )
 !cdir nodep
         do iele = ist, ied
           ak_diff(iele,ifield_d) = zero

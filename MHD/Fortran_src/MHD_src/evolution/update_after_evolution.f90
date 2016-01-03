@@ -134,7 +134,8 @@
         if (iflag2 .eq. 1) then
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &      write(*,*) 'cal_filtered_vector', iphys%i_filter_velo
-          call cal_filtered_vector(iphys%i_filter_velo, iphys%i_velo)
+          call cal_filtered_vector(nod_comm, node1,                     &
+     &        iphys%i_filter_velo, iphys%i_velo, nod_fld1)
           nod_fld1%iflag_update(iphys%i_filter_velo  ) = 1
           nod_fld1%iflag_update(iphys%i_filter_velo+1) = 1
           nod_fld1%iflag_update(iphys%i_filter_velo+2) = 1
@@ -248,8 +249,8 @@
 !
           if (iflag2 .eq. 1) then
             if (iflag_debug.gt.0) write(*,*) 'cal_filtered_temperature'
-            call cal_filtered_scalar(iphys%i_filter_temp,               &
-     &          iphys%i_sgs_temp)
+            call cal_filtered_scalar(nod_comm, node1,                   &
+     &          iphys%i_filter_temp, iphys%i_sgs_temp, nod_fld1)
             nod_fld1%iflag_update(iphys%i_filter_temp) = 1
           end if
 !
@@ -264,7 +265,8 @@
 !
         if( (iphys%i_filter_buo+iphys%i_f_buo_gen) .gt. 0) then
           if (iflag_debug.gt.0) write(*,*) 'filter temp for buoyancy'
-          call cal_filtered_scalar(iphys%i_filter_temp, iphys%i_temp)
+          call cal_filtered_scalar(nod_comm, node1,                     &
+     &        iphys%i_filter_temp, iphys%i_temp, nod_fld1)
           nod_fld1%iflag_update(iphys%i_filter_temp) = 1
         end if
       end if
@@ -344,7 +346,8 @@
 !
         if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           if (iflag_debug.gt.0) write(*,*) 'cal_filtered_vector_p'
-          call cal_filtered_vector(iphys%i_filter_vecp, iphys%i_vecp)
+          call cal_filtered_vector(nod_comm, node1,                     &
+     &        iphys%i_filter_vecp, iphys%i_vecp, nod_fld1)
           nod_fld1%iflag_update(iphys%i_filter_vecp  ) = 1
           nod_fld1%iflag_update(iphys%i_filter_vecp+1) = 1
           nod_fld1%iflag_update(iphys%i_filter_vecp+2) = 1
@@ -430,8 +433,8 @@
          if (iphys%i_filter_magne .ne. 0) then
            if (iflag_debug.gt.0)                                        &
      &        write(*,*) 'cal_filtered_vector', iphys%i_filter_magne
-           call cal_filtered_vector(iphys%i_filter_magne,               &
-     &         iphys%i_magne)
+           call cal_filtered_vector(nod_comm, node1,                    &
+     &         iphys%i_filter_magne, iphys%i_magne, nod_fld1)
            nod_fld1%iflag_update(iphys%i_filter_magne  ) = 1
            nod_fld1%iflag_update(iphys%i_filter_magne+1) = 1
            nod_fld1%iflag_update(iphys%i_filter_magne+2) = 1
@@ -531,8 +534,8 @@
          if (iphys%i_filter_magne .ne. 0) then
            if (iflag_debug.gt.0)                                        &
      &         write(*,*) 'cal_filtered_vector', iphys%i_filter_magne
-           call cal_filtered_vector(iphys%i_filter_magne,               &
-     &         iphys%i_magne)
+           call cal_filtered_vector(nod_comm, node1,                    &
+     &         iphys%i_filter_magne, iphys%i_magne, nod_fld1)
            nod_fld1%iflag_update(iphys%i_filter_magne  ) = 1
            nod_fld1%iflag_update(iphys%i_filter_magne+1) = 1
            nod_fld1%iflag_update(iphys%i_filter_magne+2) = 1
@@ -627,8 +630,8 @@
      &       .and. iflag_SGS_heat.ne.id_SGS_none) then
         if (iflag2.eq.1) then
           if (iflag_debug.gt.0)   write(*,*) 'cal_filtered_composition'
-          call cal_filtered_scalar(iphys%i_filter_comp,                 &
-     &        iphys%i_sgs_composit)
+          call cal_filtered_scalar(nod_comm, node1,                     &
+     &        iphys%i_filter_comp, iphys%i_sgs_composit, nod_fld1)
           nod_fld1%iflag_update(iphys%i_filter_comp) = 1
         end if
 !

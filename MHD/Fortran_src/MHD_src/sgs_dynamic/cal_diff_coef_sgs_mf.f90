@@ -76,7 +76,8 @@
 !
 !    filtering (to iphys%i_sgs_grad)
 !
-      call cal_filtered_vector(iphys%i_sgs_grad, iphys%i_sgs_grad)
+      call cal_filtered_vector(nod_comm, node1,                         &
+     &    iphys%i_sgs_grad, iphys%i_sgs_grad, nod_fld1)
 !
 !    take difference (to iphys%i_sgs_simi)
 !
@@ -125,7 +126,8 @@
 !
 !    filtering (to iphys%i_sgs_grad)
 !
-      call cal_filtered_vector(iphys%i_sgs_grad, iphys%i_sgs_grad)
+      call cal_filtered_vector(nod_comm, node1,                         &
+     &    iphys%i_sgs_grad, iphys%i_sgs_grad, nod_fld1)
       call delete_field_by_fixed_v_bc(iphys%i_sgs_grad, nod_fld1)
 !
 !      call check_nodal_data                                            &
@@ -136,6 +138,7 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_vector, iak_diff_mf, icomp_diff_mf
       call cal_diff_coef_fluid(layer_tbl,                               &
+     &    node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l,           &
      &    n_vector, iak_diff_mf, icomp_diff_mf, intg_point_t_evo)
 !
 !

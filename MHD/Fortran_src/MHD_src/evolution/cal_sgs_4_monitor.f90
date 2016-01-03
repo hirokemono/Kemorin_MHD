@@ -156,15 +156,15 @@
       if (iphys%i_SGS_buo_wk .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_buo_flux)
-        call cal_SGS_gravity_flux(coef_buo, iphys%i_SGS_h_flux,         &
-     &      iphys%i_SGS_buo_wk)
+        call cal_SGS_gravity_flux(node1, coef_buo,                      &
+     &      iphys%i_SGS_h_flux, iphys%i_SGS_buo_wk, nod_fld1)
       end if
 !
       if (iphys%i_SGS_comp_buo_wk .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_comp_buo_flux)
-        call cal_SGS_gravity_flux(coef_comp_buo,                        &
-     &      iphys%i_SGS_h_flux, iphys%i_SGS_comp_buo_wk)
+        call cal_SGS_gravity_flux(node1, coef_comp_buo,                 &
+     &      iphys%i_SGS_h_flux, iphys%i_SGS_comp_buo_wk, nod_fld1)
       end if
 !
 !

@@ -55,7 +55,7 @@
       call set_model_coefs_2_ele(itype_SGS_m_flux_coef, n_sym_tensor,   &
      &    iak_sgs_mf, icomp_sgs_mf, layer_tbl%e_grp%num_grp,            &
      &    layer_tbl%e_grp%num_item, layer_tbl%e_grp%istack_grp_smp,     &
-     &    layer_tbl%e_grp%item_grp)
+     &    layer_tbl%e_grp%item_grp, ele1)
 !
       call cal_sgs_momentum_flux
 !
@@ -71,12 +71,12 @@
 !   lead SGS buoyancy flux
 !
       if(iflag_4_gravity .gt. id_turn_OFF) then
-        call cal_SGS_gravity_flux(coef_buo, iphys%i_SGS_h_flux,         &
-     &      iphys%i_SGS_buo_wk)
+        call cal_SGS_gravity_flux(node1, coef_buo,                      &
+     &      iphys%i_SGS_h_flux, iphys%i_SGS_buo_wk, nod_fld1)
       end if
       if(iflag_4_composit_buo .gt. id_turn_OFF) then
-        call cal_SGS_gravity_flux(coef_comp_buo, iphys%i_SGS_c_flux,    &
-     &      iphys%i_SGS_comp_buo_wk)
+        call cal_SGS_gravity_flux(node1, coef_comp_buo,                 &
+     &      iphys%i_SGS_c_flux, iphys%i_SGS_comp_buo_wk, nod_fld1)
        end if
 !
 !   take RMS of SGS buoyancy flux and work of Reynolds stress

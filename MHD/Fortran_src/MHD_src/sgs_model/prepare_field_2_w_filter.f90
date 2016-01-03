@@ -3,19 +3,23 @@
 !
 !      Written by H. Matsui on Nov., 2008
 !
-!      subroutine prepare_scalar_2_w_fil(ntot_comp, id_phys, d_nod)
-!      subroutine prepare_vector_2_w_fil(ntot_comp, id_phys, d_nod)
-!      subroutine prepare_sym_tensor_2_w_fil(ntot_comp, id_phys, d_nod)
-!         id_phys:  field ID of nodal fields
-!
+!!      subroutine prepare_scalar_2_w_fil                               &
+!!     &         (node, ntot_comp, id_phys, d_nod)
+!!      subroutine prepare_vector_2_w_fil                               &
+!!     &         (node, ntot_comp, id_phys, d_nod)
+!!      subroutine prepare_sym_tensor_2_w_fil                           &
+!!     &         (node, ntot_comp, id_phys, d_nod)
+!!         id_phys:  field ID of nodal fields
+!!
       module prepare_field_2_w_filter
 !
       use m_precision
 !
       use calypso_mpi
       use m_work_time
-      use m_geometry_data
       use m_nod_w_filter_comm_table
+!
+      use t_geometry_data
 !
       implicit none
 !
@@ -25,24 +29,26 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine prepare_scalar_2_w_fil(ntot_comp, id_phys, d_nod)
+      subroutine prepare_scalar_2_w_fil                                 &
+     &         (node, ntot_comp, id_phys, d_nod)
 !
       use solver_SR
 !
+      type(node_data), intent(in) :: node
       integer(kind = kint), intent(in) :: ntot_comp, id_phys
-      real(kind = kreal), intent(in) :: d_nod(node1%numnod,ntot_comp)
+      real(kind = kreal), intent(in) :: d_nod(node%numnod,ntot_comp)
 !
       integer (kind = kint) :: inod
 !
 !
 !$omp parallel do
-      do inod=1, node1%internal_node
+      do inod=1, node%internal_node
         x_vec_w_fil(inod) = d_nod(inod,id_phys)
       end do
 !$omp end parallel do
 !
 !$omp parallel do
-      do inod = node1%internal_node+1, nnod_w_filtering
+      do inod = node%internal_node+1, nnod_w_filtering
         x_vec_w_fil(inod) = 0.0d0
       end do
 !$omp end parallel do
@@ -58,18 +64,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine prepare_vector_2_w_fil(ntot_comp, id_phys, d_nod)
+      subroutine prepare_vector_2_w_fil                                 &
+     &         (node, ntot_comp, id_phys, d_nod)
 !
       use solver_SR_3
 !
+      type(node_data), intent(in) :: node
       integer(kind = kint), intent(in) :: ntot_comp, id_phys
-      real(kind = kreal), intent(in) :: d_nod(node1%numnod,ntot_comp)
+      real(kind = kreal), intent(in) :: d_nod(node%numnod,ntot_comp)
 !
       integer (kind = kint) :: inod
 !
 !
 !$omp parallel do
-      do inod=1, node1%internal_node
+      do inod=1, node%internal_node
         x_vec_w_fil(3*inod-2) = d_nod(inod,id_phys  )
         x_vec_w_fil(3*inod-1) = d_nod(inod,id_phys+1)
         x_vec_w_fil(3*inod  ) = d_nod(inod,id_phys+2)
@@ -77,7 +85,7 @@
 !$omp end parallel do
 !
 !$omp parallel do
-      do inod = node1%internal_node+1, nnod_w_filtering
+      do inod = node%internal_node+1, nnod_w_filtering
         x_vec_w_fil(3*inod-2) = 0.0d0
         x_vec_w_fil(3*inod-1) = 0.0d0
         x_vec_w_fil(3*inod  ) = 0.0d0
@@ -95,18 +103,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine prepare_sym_tensor_2_w_fil(ntot_comp, id_phys, d_nod)
+      subroutine prepare_sym_tensor_2_w_fil                             &
+     &         (node, ntot_comp, id_phys, d_nod)
 !
       use solver_SR_6
 !
+      type(node_data), intent(in) :: node
       integer(kind = kint), intent(in) :: ntot_comp, id_phys
-      real(kind = kreal), intent(in) :: d_nod(node1%numnod,ntot_comp)
+      real(kind = kreal), intent(in) :: d_nod(node%numnod,ntot_comp)
 !
       integer (kind = kint) :: inod
 !
 !
 !$omp parallel do
-      do inod=1, node1%internal_node
+      do inod=1, node%internal_node
         x_vec_w_fil(6*inod-5) = d_nod(inod,id_phys  )
         x_vec_w_fil(6*inod-4) = d_nod(inod,id_phys+1)
         x_vec_w_fil(6*inod-3) = d_nod(inod,id_phys+2)
@@ -117,7 +127,7 @@
 !$omp end parallel do
 !
 !$omp parallel do
-      do inod = node1%internal_node+1, nnod_w_filtering
+      do inod = node%internal_node+1, nnod_w_filtering
         x_vec_w_fil(6*inod-5) = 0.0d0
         x_vec_w_fil(6*inod-4) = 0.0d0
         x_vec_w_fil(6*inod-3) = 0.0d0

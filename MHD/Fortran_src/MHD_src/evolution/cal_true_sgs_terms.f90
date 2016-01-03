@@ -178,14 +178,15 @@
 !
       subroutine cal_div_sgs_h_flux_true_post
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
 !
 !
       call copy_scalar_component(node1, nod_fld1,                       &
      &    iphys%i_SGS_div_hf_true, iphys%i_sgs_simi)
-      call cal_filtered_scalar(iphys%i_SGS_div_hf_true,                 &
-     &    iphys%i_h_flux_div)
+      call cal_filtered_scalar(nod_comm, node1,                         &
+     &    iphys%i_SGS_div_hf_true, iphys%i_h_flux_div, nod_fld1)
       call subtract_2_nod_scalars(node1, nod_fld1,                      &
      &    iphys%i_SGS_div_hf_true, iphys%i_sgs_simi,                    &
      &    iphys%i_SGS_div_hf_true)
@@ -196,14 +197,15 @@
 !
       subroutine cal_div_sgs_m_flux_true_post
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
 !
 !
       call copy_vector_component(node1, nod_fld1,                       &
      &    iphys%i_SGS_div_mf_true, iphys%i_sgs_simi)
-      call cal_filtered_vector(iphys%i_SGS_div_mf_true,                 &
-     &    iphys%i_m_flux_div)
+      call cal_filtered_vector(nod_comm, node1,                         &
+     &    iphys%i_SGS_div_mf_true, iphys%i_m_flux_div, nod_fld1)
       call subtract_2_nod_vectors(node1, nod_fld1,                      &
      &    iphys%i_SGS_div_mf_true, iphys%i_sgs_simi,                    &
      &    iphys%i_SGS_div_mf_true)
@@ -214,14 +216,15 @@
 !
       subroutine cal_div_sgs_maxwell_true_post
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
 !
 !
       call copy_vector_component(node1, nod_fld1,                       &
      &    iphys%i_SGS_Lor_true, iphys%i_sgs_simi)
-      call cal_filtered_vector(iphys%i_SGS_Lor_true,                    &
-     &    iphys%i_maxwell_div)
+      call cal_filtered_vector(nod_comm, node1,                         &
+     &    iphys%i_SGS_Lor_true, iphys%i_maxwell_div, nod_fld1)
       call subtract_2_nod_vectors(node1, nod_fld1,                      &
      &    iphys%i_SGS_Lor_true, iphys%i_sgs_simi,                       &
      &    iphys%i_SGS_Lor_true)
@@ -232,14 +235,15 @@
 !
       subroutine cal_div_sgs_induct_true_post
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
 !
 !
       call copy_vector_component(node1, nod_fld1,                       &
      &    iphys%i_SGS_idct_true, iphys%i_sgs_simi)
-      call cal_filtered_vector(iphys%i_SGS_idct_true,                   &
-     &    iphys%i_induct_div)
+      call cal_filtered_vector(nod_comm, node1,                         &
+     &    iphys%i_SGS_idct_true, iphys%i_induct_div, nod_fld1)
       call subtract_2_nod_vectors(node1, nod_fld1,                      &
      &    iphys%i_SGS_idct_true, iphys%i_sgs_simi,                      &
      &    iphys%i_SGS_idct_true)

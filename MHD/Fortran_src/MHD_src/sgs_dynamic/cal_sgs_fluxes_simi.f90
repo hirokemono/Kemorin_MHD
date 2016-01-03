@@ -21,7 +21,9 @@
       module cal_sgs_fluxes_simi
 !
       use m_precision
+      use m_nod_comm_table
       use m_geometry_data
+      use m_node_phys_data
 !
       implicit none
 !
@@ -33,7 +35,6 @@
 !
       subroutine cal_sgs_mf_simi(i_sgs, i_vect, i_vect_f, icm_sgs)
 !
-      use m_node_phys_data
       use cal_fluxes
       use cal_similarity_terms
       use cal_filtering_tensors
@@ -43,23 +44,22 @@
 !
 !  ----------   set filtered flux into array
 !
-       call cal_flux_tensor(node1, nod_fld1%ntot_phys,                  &
-     &     i_vect, i_vect, i_sgs, nod_fld1%d_fld)
-       call cal_filtered_sym_tensor(i_sgs, i_sgs)
+      call cal_flux_tensor(node1, nod_fld1%ntot_phys,                   &
+     &    i_vect, i_vect, i_sgs, nod_fld1%d_fld)
+      call cal_filtered_sym_tensor                                      &
+     &   (nod_comm, node1, i_sgs, i_sgs, nod_fld1)
 !
 !  ----------   substruct flux obtained by filterd values
 !
-       call cal_sgs_flux_tensor(node1%numnod, node1%istack_nod_smp,     &
-     &     nod_fld1%ntot_phys, i_sgs, i_vect_f, i_vect_f, icm_sgs,      &
-     &     nod_fld1%d_fld)
+      call cal_sgs_flux_tensor(node1%numnod, node1%istack_nod_smp,      &
+     &    nod_fld1%ntot_phys, i_sgs, i_vect_f, i_vect_f, icm_sgs,       &
+     &    nod_fld1%d_fld)
 !
       end subroutine cal_sgs_mf_simi
 !
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_hf_simi(i_sgs, ifield, ifield_f, icm_sgs)
-!
-      use m_node_phys_data
 !
       use cal_fluxes
       use cal_similarity_terms
@@ -71,7 +71,7 @@
 !
       call cal_flux_vector(node1, nod_fld1%ntot_phys,                   &
      &    iphys%i_velo, ifield, i_sgs, nod_fld1%d_fld)
-      call cal_filtered_vector(i_sgs, i_sgs)
+      call cal_filtered_vector(nod_comm, node1, i_sgs, i_sgs, nod_fld1)
 !
       call cal_sgs_flux_vector(node1%numnod, node1%istack_nod_smp,      &
      &    nod_fld1%ntot_phys, i_sgs, iphys%i_filter_velo, ifield_f,     &
@@ -84,7 +84,6 @@
       subroutine cal_sgs_induct_t_simi(i_sgs, i_v, i_b,                 &
      &          i_fil_v, i_fil_b, icm_sgs)
 !
-      use m_node_phys_data
       use cal_fluxes
       use cal_similarity_terms
       use cal_filtering_vectors
@@ -94,13 +93,13 @@
 !
 !  ----------   set filtered flux into array
 !
-       call cal_induction_tensor(node1, nod_fld1%ntot_phys,             &
+      call cal_induction_tensor(node1, nod_fld1%ntot_phys,              &
      &     i_b, i_v, i_sgs, nod_fld1%d_fld)
-       call cal_filtered_vector(i_sgs, i_sgs)
+      call cal_filtered_vector(nod_comm, node1, i_sgs, i_sgs, nod_fld1)
 !
 !  ----------   substruct flux obtained by filterd values
 !
-       call subctract_induction_tensor                                  &
+      call subctract_induction_tensor                                   &
      &    (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,      &
      &     i_sgs, i_fil_b, i_fil_v, icm_sgs, nod_fld1%d_fld)
 !
@@ -110,7 +109,6 @@
 !
       subroutine cal_sgs_uxb_simi(i_sgs, i_v, i_b, i_fil_v, i_fil_b)
 !
-      use m_node_phys_data
       use cal_filtering_vectors
       use products_nodal_fields_smp
       use cal_similarity_terms
@@ -123,7 +121,7 @@
       call cal_phys_cross_product(node1, nod_fld1, i_v, i_b, i_sgs)
 !$omp end parallel
 !
-      call cal_filtered_vector(i_sgs, i_sgs)
+      call cal_filtered_vector(nod_comm, node1, i_sgs, i_sgs, nod_fld1)
 !
       call subctract_uxb_vector(node1%numnod, node1%istack_nod_smp,     &
      &    nod_fld1%ntot_phys, i_sgs, i_fil_v, i_fil_b, nod_fld1%d_fld)
@@ -135,7 +133,6 @@
 !
       subroutine cal_sgs_uxb_2_ff_simi
 !
-      use m_node_phys_data
       use int_vol_similarity_uxb
 !
 !
@@ -151,7 +148,6 @@
 !
       subroutine cal_sgs_mf_simi_wide(i_sgs, i_vect, i_vect_f, icm_sgs)
 !
-      use m_node_phys_data
       use cal_fluxes
       use cal_similarity_terms
       use cal_w_filtering_tensors
@@ -177,8 +173,6 @@
 !
       subroutine cal_sgs_hf_simi_wide(i_sgs, ifield, ifield_f, icm_sgs)
 !
-      use m_node_phys_data
-!
       use cal_fluxes
       use cal_similarity_terms
       use cal_w_filtering_vectors
@@ -202,7 +196,6 @@
       subroutine cal_sgs_induct_t_simi_wide(i_sgs, i_v, i_b,            &
      &          i_fil_v, i_fil_b, icm_sgs)
 !
-      use m_node_phys_data
       use cal_fluxes
       use cal_similarity_terms
       use cal_w_filtering_vectors
@@ -229,7 +222,6 @@
       subroutine cal_sgs_uxb_simi_wide(i_sgs, i_v, i_b,                 &
      &          i_fil_v, i_fil_b)
 !
-      use m_node_phys_data
       use products_nodal_fields_smp
       use cal_similarity_terms
       use cal_w_filtering_vectors

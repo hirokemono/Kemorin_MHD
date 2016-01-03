@@ -154,28 +154,29 @@
      &   (node1, ele1, rhs_tbl1, DJDS_entire, mat_tbl_q1)
 !
 !      write(*,*) 'set_index_list_4_mat_etr_l'
-      call set_index_list_4_mat_etr_l
+      call set_index_list_4_mat_etr_l                                   &
+     &   (node1, ele1, rhs_tbl1, mat_tbl_q1)
 !
       if (iflag_t_evo_4_velo .ne. id_no_evolution                       &
      &  .or. iflag_t_evo_4_temp .ne. id_no_evolution                    &
      &  .or. iflag_t_evo_4_composit .ne. id_no_evolution) then
 !        write(*,*) 'set_index_list_4_mat_fl'
-        call set_index_list_4_mat_fl
+        call set_index_list_4_mat_fl(node1, ele1, rhs_tbl1)
 !        write(*,*) 'set_index_list_4_mat_fl_l'
-        call set_index_list_4_mat_fl_l
+        call set_index_list_4_mat_fl_l(node1, ele1, rhs_tbl1)
       end if
 !
       if (iflag_t_evo_4_magne .ne. id_no_evolution                      &
      &     .or. iflag_t_evo_4_vect_p .eq. id_Crank_nicolson_cmass) then
         write(*,*) 'set_index_list_4_mat_cd'
-        call set_index_list_4_mat_cd
+        call set_index_list_4_mat_cd(node1, ele1, rhs_tbl1)
 !        write(*,*) 'set_index_list_4_mat_ins'
-!        call set_index_list_4_mat_ins
+!        call set_index_list_4_mat_ins(node1, ele1, rhs_tbl1)
 !
 !        write(*,*) 'set_index_list_4_mat_cd_l'
-!        call set_index_list_4_mat_cd_l
+!        call set_index_list_4_mat_cd_l(node1, ele1, rhs_tbl1)
 !        write(*,*) 'set_index_list_4_mat_ins_l'
-!        call set_index_list_4_mat_ins_l
+!        call set_index_list_4_mat_ins_l(node1, ele1, rhs_tbl1)
       end if
 !
 !

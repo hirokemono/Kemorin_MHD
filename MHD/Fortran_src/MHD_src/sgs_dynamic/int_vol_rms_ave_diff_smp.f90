@@ -5,16 +5,16 @@
 !     Modified by H. Matsui on Nov., 2008
 !
 !!      subroutine int_vol_rms_ave_d_l                                  &
-!!     &         (numnod, numele, ie, interior_ele, iele_fsmp_stack,    &
-!!     &          n_tensor, ntot_int_3d, n_int, xjac, an,               &
-!!     &          ntot_phys, d_nod, ncomp_cor2, ave_l_smp, rms_l_smp,   &
-!!     &          ave_w, rms_w)
+!!     &        (numnod, numele, ie, interior_ele, iele_fsmp_stack,     &
+!!     &         n_tensor, ntot_int_3d, n_int, xjac, an,                &
+!!     &         ntot_phys, d_nod, i_sgs_simi, i_sgs_grad, i_sgs_grad_f,&
+!!     &         ncomp_cor2, ave_l_smp, rms_l_smp, ave_w, rms_w)
 !!
 !!      subroutine int_vol_rms_ave_d_q                                  &
-!!     &         (numnod, numele, ie, interior_ele, iele_fsmp_stack,    &
-!!     &          n_tensor, ntot_int_3d, n_int, xjac, aw,               &
-!!     &          ntot_phys, d_nod, ncomp_cor2, ave_l_smp, rms_l_smp,   &
-!!     &          ave_w, rms_w)
+!!     &        (numnod, numele, ie, interior_ele, iele_fsmp_stack,     &
+!!     &         n_tensor, ntot_int_3d, n_int, xjac, aw,                &
+!!     &         ntot_phys, d_nod, i_sgs_simi, i_sgs_grad, i_sgs_grad_f,&
+!!     &         ncomp_cor2, ave_l_smp, rms_l_smp, ave_w, rms_w)
 !
       module int_vol_rms_ave_diff_smp
 !
@@ -22,7 +22,6 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_node_phys_data
       use m_fem_gauss_int_coefs
 !
       implicit none
@@ -34,10 +33,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_rms_ave_d_l                                    &
-     &         (numnod, numele, ie, interior_ele, iele_fsmp_stack,      &
-     &          n_tensor, ntot_int_3d, n_int, xjac, an,                 &
-     &          ntot_phys, d_nod, ncomp_cor2, ave_l_smp, rms_l_smp,     &
-     &          ave_w, rms_w)
+     &        (numnod, numele, ie, interior_ele, iele_fsmp_stack,       &
+     &         n_tensor, ntot_int_3d, n_int, xjac, an,                  &
+     &         ntot_phys, d_nod, i_sgs_simi, i_sgs_grad, i_sgs_grad_f,  &
+     &         ncomp_cor2, ave_l_smp, rms_l_smp, ave_w, rms_w)
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_linear)
@@ -52,6 +51,8 @@
 !
       integer (kind = kint), intent(in) :: numnod, ntot_phys
       real(kind=kreal), intent(in) :: d_nod(numnod,ntot_phys)
+      integer (kind = kint), intent(in) :: i_sgs_simi
+      integer (kind = kint), intent(in) :: i_sgs_grad, i_sgs_grad_f
 !
       integer (kind = kint), intent(in) :: ncomp_cor2
       real(kind=kreal), intent(inout) :: ave_l_smp(np_smp,ncomp_cor2)
@@ -77,9 +78,9 @@
 !
         do nd = 1, n_tensor
 !
-          i_s = iphys%i_sgs_simi +   nd-1
-          i_g = iphys%i_sgs_grad +   nd-1
-          i_f = iphys%i_sgs_grad_f + nd-1
+          i_s = i_sgs_simi +   nd-1
+          i_g = i_sgs_grad +   nd-1
+          i_f = i_sgs_grad_f + nd-1
 !
           do ii= 1, n_int * n_int * n_int 
             ix = int_start3(n_int) + ii
@@ -173,10 +174,10 @@
 !  ---------------------------------------------------------------------
 !
       subroutine int_vol_rms_ave_d_q                                    &
-     &         (numnod, numele, ie, interior_ele, iele_fsmp_stack,      &
-     &          n_tensor, ntot_int_3d, n_int, xjac, aw,                 &
-     &          ntot_phys, d_nod, ncomp_cor2, ave_l_smp, rms_l_smp,     &
-     &          ave_w, rms_w)
+     &        (numnod, numele, ie, interior_ele, iele_fsmp_stack,       &
+     &         n_tensor, ntot_int_3d, n_int, xjac, aw,                  &
+     &         ntot_phys, d_nod, i_sgs_simi, i_sgs_grad, i_sgs_grad_f,  &
+     &         ncomp_cor2, ave_l_smp, rms_l_smp, ave_w, rms_w)
 !
       integer (kind = kint), intent(in) :: numele
       integer (kind = kint), intent(in) :: ie(numele,num_t_quad)
@@ -191,6 +192,8 @@
 !
       integer (kind = kint), intent(in) :: numnod, ntot_phys
       real(kind=kreal), intent(in) :: d_nod(numnod,ntot_phys)
+      integer (kind = kint), intent(in) :: i_sgs_simi
+      integer (kind = kint), intent(in) :: i_sgs_grad, i_sgs_grad_f
 !
       integer (kind = kint), intent(in) :: ncomp_cor2
       real(kind=kreal), intent(inout) :: ave_l_smp(np_smp,ncomp_cor2)
@@ -219,9 +222,9 @@
 !
         do nd = 1, n_tensor
 !
-          i_s = iphys%i_sgs_simi +   nd-1
-          i_g = iphys%i_sgs_grad +   nd-1
-          i_f = iphys%i_sgs_grad_f + nd-1
+          i_s = i_sgs_simi +   nd-1
+          i_g = i_sgs_grad +   nd-1
+          i_f = i_sgs_grad_f + nd-1
 !
           do ii= 1, n_int * n_int * n_int 
             ix = int_start3(n_int) + ii

@@ -29,6 +29,7 @@
       use m_phys_constants
       use m_node_phys_data
       use m_SGS_address
+      use m_jacobians
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -72,18 +73,21 @@
 !
 !      filtering
 !
-      call cal_filtered_vector(iphys%i_sgs_grad, iphys%i_SGS_h_flux)
+      call cal_filtered_vector(nod_comm, node1,                         &
+     &    iphys%i_sgs_grad, iphys%i_SGS_h_flux, nod_fld1)
 !
 !   Change coordinate
 !
-      call cvt_vector_dynamic_scheme_coord
+      call cvt_vector_dynamic_scheme_coord(node1, iphys, nod_fld1)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_model_coefs', n_vector, iak_sgs_hf, icomp_sgs_hf
-      call cal_model_coefs(layer_tbl, itype_SGS_h_flux_coef, n_vector,  &
-     &    iak_sgs_hf, icomp_sgs_hf, intg_point_t_evo)
+      call cal_model_coefs(layer_tbl,                                   &
+     &    node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l,           &
+     &    itype_SGS_h_flux_coef, n_vector, iak_sgs_hf, icomp_sgs_hf,    &
+     &    intg_point_t_evo)
 !
       call reduce_model_coefs_layer(SGS_hf_factor, nlayer_SGS,          &
      &    sgs_f_clip(1,iak_sgs_hf), sgs_f_whole_clip(iak_sgs_hf) )

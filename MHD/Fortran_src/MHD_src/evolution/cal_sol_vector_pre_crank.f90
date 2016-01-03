@@ -25,6 +25,7 @@
       use cal_sol_field_explicit
 !
       use t_geometry_data
+      use t_phys_address
       use t_phys_data
 !
       implicit none

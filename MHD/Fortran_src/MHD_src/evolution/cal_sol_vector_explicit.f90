@@ -3,28 +3,29 @@
 !
 !      Written by H. Matsui on March, 2006
 !
-!      subroutine cal_sol_velo_pre_euler(node, iphys, nod_fld)
-!      subroutine cal_sol_temp_euler(node, iphys, nod_fld)
-!      subroutine cal_sol_part_temp_euler(node, iphys, nod_fld)
-!      subroutine cal_sol_vect_p_pre_euler(node, iphys, nod_fld)
-!      subroutine cal_sol_magne_pre_euler(node, iphys, nod_fld)
-!      subroutine cal_sol_d_scalar_euler(node, iphys, nod_fld)
-!
-!      subroutine cal_sol_velo_pre_adams(node, iphys, nod_fld)
-!      subroutine cal_sol_temp_adams(node, iphys, nod_fld)
-!      subroutine cal_sol_part_temp_adams(node, iphys, nod_fld)
-!      subroutine cal_sol_vect_p_pre_adams(node, iphys, nod_fld)
-!      subroutine cal_sol_magne_pre_adams(node, iphys, nod_fld)
-!      subroutine cal_sol_d_scalar_adams(node, iphys, nod_fld)
-!        type(node_data), intent(in) :: node
-!        type(phys_address), intent(in) :: iphys
-!        type(phys_data), intent(inout) :: nod_fld
+!!      subroutine cal_sol_velo_pre_euler(node, iphys, nod_fld)
+!!      subroutine cal_sol_temp_euler(node, iphys, nod_fld)
+!!      subroutine cal_sol_part_temp_euler(node, iphys, nod_fld)
+!!      subroutine cal_sol_vect_p_pre_euler(node, iphys, nod_fld)
+!!      subroutine cal_sol_magne_pre_euler(node, iphys, nod_fld)
+!!      subroutine cal_sol_d_scalar_euler(node, iphys, nod_fld)
+!!
+!!      subroutine cal_sol_velo_pre_adams(node, iphys, nod_fld)
+!!      subroutine cal_sol_temp_adams(node, iphys, nod_fld)
+!!      subroutine cal_sol_part_temp_adams(node, iphys, nod_fld)
+!!      subroutine cal_sol_vect_p_pre_adams(node, iphys, nod_fld)
+!!      subroutine cal_sol_magne_pre_adams(node, iphys, nod_fld)
+!!      subroutine cal_sol_d_scalar_adams(node, iphys, nod_fld)
+!!        type(node_data), intent(in) :: node
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_data), intent(inout) :: nod_fld
 !
       module cal_sol_vector_explicit
 !
       use m_precision
 !
       use t_geometry_data
+      use t_phys_address
       use t_phys_data
       use m_phys_constants
       use m_finite_element_matrix

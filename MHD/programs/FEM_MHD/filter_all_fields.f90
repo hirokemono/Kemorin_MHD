@@ -20,6 +20,8 @@
       subroutine filtering_all_fields
 !
       use calypso_mpi
+      use m_nod_comm_table
+      use m_geometry_data
       use m_phys_constants
       use m_node_phys_data
 !
@@ -35,15 +37,15 @@
         if ( nod_fld1%num_component(i) .eq. n_scalar) then
           if (my_rank.eq.0) write(*,*)'filtering scalar field: ',       &
      &      trim(nod_fld1%phys_name(i))
-         call cal_filtered_scalar(j, j)
+         call cal_filtered_scalar(nod_comm, node1, j, j, nod_fld1)
         else if ( nod_fld1%num_component(i) .eq. n_vector) then
           if (my_rank.eq.0) write(*,*)'filtering vector field: ',       &
      &      trim(nod_fld1%phys_name(i))
-         call cal_filtered_vector(j, j)
+         call cal_filtered_vector(nod_comm, node1, j, j, nod_fld1)
         else if ( nod_fld1%num_component(i) .eq. n_sym_tensor) then
           if (my_rank.eq.0) write(*,*)'filtering tensor field: ',       &
      &      trim(nod_fld1%phys_name(i))
-         call cal_filtered_sym_tensor(j, j)
+         call cal_filtered_sym_tensor(nod_comm, node1, j, j, nod_fld1)
         end if
         j = j + nod_fld1%num_component(i)
       end do
