@@ -9,9 +9,6 @@
 !
       use m_visualization
 !
-      use m_node_phys_data
-      use m_geometry_data
-      use m_group_data
       use FEM_analyzer_viz_fline
       use fieldline
 !
@@ -41,11 +38,13 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_fline                                         &
-     &   (ele_4_nod_VIZ, jac_VIZ_l, jac_VIZ_q, ucd_VIZ)
+      call FEM_initialize_fline
 !
 !  VIZ Initialization
-      call FLINE_initialize(node1, ele1, ele_grp1, sf_grp1, nod_fld1)
+      call FLINE_initialize                                             &
+     &   (femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,                  &
+     &    femmesh_VIZ%group%ele_grp, femmesh_VIZ%group%surf_grp,        &
+     &    field_VIZ)
 !
       end subroutine initialize_fline
 !
@@ -61,11 +60,13 @@
       do i_step = i_step_init, i_step_number
 !
 !  Load field data
-        call FEM_analyze_fline(i_step, istep_fline, ucd_VIZ)
+        call FEM_analyze_fline(i_step, istep_fline)
 !
 !  Generate field lines
-        call FLINE_visualize(istep_fline, node1, ele1, surf1, ele_grp1, &
-     &                       ele_4_nod_VIZ, nod_fld1, nod_comm)
+        call FLINE_visualize                                            &
+     &     (istep_fline, femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,   &
+     &      surfmesh_VIZ%surf, femmesh_VIZ%group%ele_grp,               &
+     &      ele_4_nod_VIZ, field_VIZ, femmesh_VIZ%mesh%nod_comm)
       end do
 !
       end subroutine analyze

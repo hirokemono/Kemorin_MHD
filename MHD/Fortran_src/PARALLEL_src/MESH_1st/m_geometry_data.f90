@@ -21,23 +21,16 @@
       implicit  none
 !
 !
-      type(mesh_geometry), save :: mesh1
-!
-!
 !>  structure for node data (position)
       type(node_data), save :: node1
-!    node1%istack_internod
 !
 !>  structure for element data (position and connectivity)
       type(element_data), save :: ele1
-!    ele1%istack_interele
 !
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
-!  surf1%x_surf
 !
 !>     Structure for edge data
       type(edge_data), save :: edge1
-!  edge1%istack_numedge
 !
       end module m_geometry_data

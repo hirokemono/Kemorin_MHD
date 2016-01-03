@@ -11,10 +11,6 @@
       use m_precision
 !
       use m_visualization
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
-      use m_node_phys_data
 !
       use FEM_analyzer_viz_surf
       use sections_for_1st
@@ -43,12 +39,15 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_surface(ucd_VIZ)
+      call FEM_initialize_surface
 !
 !  VIZ Initialization
       call init_visualize_surface                                       &
-     &   (node1, ele1, surf1, edge1, nod_comm, edge_comm,               &
-     &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
+     &   (femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,                  &
+     &    surfmesh_VIZ%surf, edgemesh_VIZ%edge,                         &
+     &    femmesh_VIZ%mesh%nod_comm, edgemesh_VIZ%edge_comm,            &
+     &    femmesh_VIZ%group%ele_grp, femmesh_VIZ%group%surf_grp,        &
+     &    femmesh_VIZ%group%surf_nod_grp, field_VIZ)
 !
       end subroutine init_analyzer
 !
@@ -64,12 +63,12 @@
       do i_step = i_step_init, i_step_number
 !
 !  Load field data
-        call FEM_analyze_surface                                        &
-     &     (i_step, istep_psf, istep_iso, ucd_VIZ)
+        call FEM_analyze_surface(i_step, istep_psf, istep_iso)
 !
 !  Generate field lines
         call visualize_surface(istep_psf, istep_iso,                    &
-     &                         node1, ele1, edge1, edge_comm, nod_fld1)
+     &      femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,                &
+     &      edgemesh_VIZ%edge, edgemesh_VIZ%edge_comm, field_VIZ)
       end do
 !
       end subroutine analyze

@@ -12,11 +12,6 @@
       use m_machine_parameter
 !
       use m_visualization
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
-      use m_node_phys_data
-      use m_node_phys_data
 !
       use FEM_analyzer_viz
       use visualizer_all
@@ -47,14 +42,16 @@
 !
 !  FEM Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'FEM_initialize_vizs'
-      call FEM_initialize_vizs                                          &
-     &   (ele_4_nod_VIZ, jac_VIZ_l, jac_VIZ_q, ucd_VIZ)
+      call FEM_initialize_vizs
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
       call init_visualize                                               &
-     &   (node1, ele1, surf1, edge1, nod_comm, edge_comm,               &
-     &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
+     &   (femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,                  &
+     &    surfmesh_VIZ%surf, edgemesh_VIZ%edge,                         &
+     &    femmesh_VIZ%mesh%nod_comm, edgemesh_VIZ%edge_comm,            &
+     &    femmesh_VIZ%group%ele_grp, femmesh_VIZ%group%surf_grp,        &
+     &    femmesh_VIZ%group%surf_nod_grp, field_VIZ)
 !
       end subroutine init_analyzer
 !
@@ -71,16 +68,18 @@
 !  Load field data
         if(iflag_debug .gt. 0)  write(*,*) 'FEM_analyze_vizs', i_step
         call FEM_analyze_vizs(i_step,                                   &
-     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval,       &
-     &      ucd_VIZ)
+     &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
 !  Rendering
         if(visval .eq. 0) then
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
           call visualize_all                                            &
      &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
-     &        node1, ele1, surf1, edge1, nod_comm, edge_comm, ele_grp1, &
-     &        nod_fld1, ele_4_nod_VIZ, jac_VIZ_q)
+     &        femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,              &
+     &        surfmesh_VIZ%surf, edgemesh_VIZ%edge,                     &
+     &        femmesh_VIZ%mesh%nod_comm, edgemesh_VIZ%edge_comm,        &
+     &        femmesh_VIZ%group%ele_grp, &
+     &        field_VIZ, ele_4_nod_VIZ, jac_VIZ_q)
         end if
       end do
 !

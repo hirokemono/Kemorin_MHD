@@ -91,9 +91,12 @@
       subroutine FEM_analyze_sph_trans(i_step, visval)
 !
       use m_control_params_2nd_files
+      use m_nod_comm_table
+      use m_geometry_data
       use m_t_step_parameter
       use m_node_phys_data
       use set_ucd_data_to_type
+      use nod_phys_send_recv
 !
       integer (kind =kint), intent(in) :: i_step
       integer (kind =kint), intent(inout) :: visval
@@ -108,6 +111,7 @@
       if(visval .eq. 0) then
         call set_ucd_file_prefix(org_ucd_header, input_ucd)
         call set_data_by_read_ucd(my_rank, i_step, input_ucd, nod_fld1)
+        call nod_fields_send_recv(node1, nod_comm, nod_fld1)
       end if
 !
       end subroutine FEM_analyze_sph_trans

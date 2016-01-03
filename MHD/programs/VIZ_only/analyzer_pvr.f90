@@ -8,8 +8,6 @@
       use m_precision
 !
       use m_visualization
-      use m_geometry_data
-      use m_node_phys_data
 !
       use FEM_analyzer_viz_pvr
       use volume_rendering
@@ -38,10 +36,11 @@
       if(ierr .gt. 0) call calypso_MPI_abort(ierr, e_message)
 !
 !  FEM Initialization
-      call FEM_initialize_pvr(jac_VIZ_l, jac_VIZ_q, ucd_VIZ)
+      call FEM_initialize_pvr
 !
 !  VIZ Initialization
-      call PVR_initialize(node1, ele1, surf1, ele_grp1, nod_fld1)
+      call PVR_initialize(femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,  &
+     &    surfmesh_VIZ%surf, femmesh_VIZ%group%ele_grp, field_VIZ)
       call calypso_MPI_barrier
 !
       end subroutine initialization
@@ -56,11 +55,12 @@
       do i_step = i_step_init, i_step_number
 !
 !  Load field data
-        call FEM_analyze_pvr(i_step, istep_pvr, ucd_VIZ, jac_VIZ_q)
+        call FEM_analyze_pvr(i_step, istep_pvr)
 !
 !  Rendering
         call PVR_visualize                                              &
-     &     (istep_pvr, node1, ele1, surf1, jac_VIZ_q, nod_fld1)
+     &     (istep_pvr, femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,     &
+     &      surfmesh_VIZ%surf, jac_VIZ_q, field_VIZ)
       end do
 !
       end subroutine analyze

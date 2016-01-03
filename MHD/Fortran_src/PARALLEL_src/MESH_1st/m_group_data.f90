@@ -35,17 +35,15 @@
       type(surface_group_data), save :: sf_grp1
 !
 !
-!>   Structure of connectivities for element group
-      type(element_group_table), save :: ele_grp_tbl1
-!
-!>   Structure of connectivities for surface group
-      type(surface_group_table), save :: sf_grp_tbl1
-!> Structure of connectivity data for surface group items
+!>   Structure of connectivity data for surface group items
       type(surface_node_grp_data), save :: sf_grp_nod1
-!
-!
 !>   Structure of geometry data for surface group
       type(surface_group_geometry), save :: sf_grp_v1
+!
+!>   Structure of connectivities for element group
+      type(element_group_table), save :: ele_grp_tbl1
+!>   Structure of connectivities for surface group
+      type(surface_group_table), save :: sf_grp_tbl1
 !
 !
 !>      Structure for scalar's boundary condition on surface
