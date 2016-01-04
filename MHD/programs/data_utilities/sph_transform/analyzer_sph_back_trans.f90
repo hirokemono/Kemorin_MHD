@@ -13,10 +13,6 @@
       use calypso_mpi
       use m_work_time
       use m_SPH_transforms
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
-      use m_node_phys_data
       use t_field_data_IO
 !
       use SPH_analyzer_back_trans
@@ -53,8 +49,11 @@
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
-      call load_para_SPH_and_FEM_mesh(nod_comm, node1, ele1,            &
-     &    surf1, edge1, nod_grp1, ele_grp1, sf_grp1)
+      call load_para_SPH_and_FEM_mesh(femmesh_STR%mesh%nod_comm,        &
+     &    femmesh_STR%mesh%node, femmesh_STR%mesh%ele,                  &
+     &    surfmesh_STR%surf, edgemesh_STR%edge,                         &
+     &    femmesh_STR%group%nod_grp, femmesh_STR%group%ele_grp,         &
+     &    femmesh_STR%group%surf_grp)
 !
 !  -------------------------------
 !
@@ -65,14 +64,18 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_back_trans'
-      call SPH_initialize_back_trans(node1%numnod, sph_trns_IO)
+      call SPH_initialize_back_trans                                    &
+     &   (femmesh_STR%mesh%node%numnod, sph_trns_IO)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'init_visualize'
       call init_visualize                                               &
-     &   (node1, ele1, surf1, edge1, nod_comm, edge_comm,               &
-     &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
+     &   (femmesh_STR%mesh%node, femmesh_STR%mesh%ele,                  &
+     &    surfmesh_STR%surf, edgemesh_STR%edge,                         &
+     &    femmesh_STR%mesh%nod_comm, edgemesh_STR%edge_comm,            &
+     &    femmesh_STR%group%ele_grp, femmesh_STR%group%surf_grp,        &
+     &    femmesh_STR%group%surf_nod_grp, field_STR)
 !
       end subroutine initialize_sph_back_trans
 !
@@ -98,8 +101,11 @@
         if(visval .eq. 0) then
           call visualize_all                                            &
      &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
-     &        node1, ele1, surf1, edge1, nod_comm, edge_comm,           &
-     &        ele_grp1, nod_fld1, ele_4_nod_SPH_TRANS, jac_STR_q)
+     &        femmesh_STR%mesh%node, femmesh_STR%mesh%ele,              &
+     &        surfmesh_STR%surf, edgemesh_STR%edge,                     &
+     &        femmesh_STR%mesh%nod_comm, edgemesh_STR%edge_comm,        &
+     &        femmesh_STR%group%ele_grp,                                &
+     &        field_STR, ele_4_nod_SPH_TRANS, jac_STR_q)
         end if
       end do
 !

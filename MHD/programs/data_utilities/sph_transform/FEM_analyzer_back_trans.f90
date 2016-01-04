@@ -15,8 +15,7 @@
       use m_constants
       use calypso_mpi
 !
-      use m_nod_comm_table
-      use m_geometry_data
+      use m_SPH_transforms
 !
       implicit none
 !
@@ -33,10 +32,7 @@
       use t_next_node_ele_4_node
       use t_jacobian_3d
 !
-      use m_nod_comm_table
-      use m_group_data
       use m_array_for_send_recv
-      use m_node_phys_data
       use m_t_step_parameter
 !
       use nod_phys_send_recv
@@ -57,60 +53,49 @@
 !
 !  -----    construct geometry informations
 !
-      if (iflag_debug.gt.0) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, node1%numnod)
-!
-      if(iflag_debug.gt.0) write(*,*)' init_send_recv'
-      call init_send_recv(nod_comm)
-!
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank,                                    &
-     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
-     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
-      call const_element_comm_tbls(node1, ele1, surf1, edge1,           &
-     &    nod_comm, ele_comm, surf_comm, edge_comm)
+      call mesh_setup_4_SPH_TRANS
 !
 !     --------------------- Connection information for PVR and fieldline
 !     --------------------- init for fieldline and PVR
 !
       if( (i_step_output_fline+i_step_output_pvr) .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
-        call set_ele_id_4_node(node1, ele1, ele_4_nod)
+        call set_ele_id_4_node                                          &
+     &   (femmesh_STR%mesh%node, femmesh_STR%mesh%ele, ele_4_nod)
 !
         if (iflag_debug.gt.0) write(*,*) 'const_jacobian_and_volume'
-        call max_int_point_by_etype(ele1%nnod_4_ele)
-        call const_jacobian_and_volume                                  &
-     &     (node1, sf_grp1, infty_list, ele1, jac_3d_l, jac_3d_q)
+        call max_int_point_by_etype(femmesh_STR%mesh%ele%nnod_4_ele)
+        call const_jacobian_and_volume(femmesh_STR%mesh%node,           &
+     &      femmesh_STR%group%surf_grp, femmesh_STR%group%infty_grp,    &
+     &      femmesh_STR%mesh%ele, jac_STR_l, jac_STR_q)
 !
 !     --------------------- Surface jacobian for fieldline
 !
         if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-        call const_normal_vector(node1, surf1)
+        call const_normal_vector                                        &
+     &     (femmesh_STR%mesh%node, surfmesh_STR%surf)
 !
         if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
         call pick_normal_of_surf_group                                  &
-     &     (surf1, sf_grp1, sf_grp_tbl1, sf_grp_v1)
+     &     (surfmesh_STR%surf, femmesh_STR%group%surf_grp,              &
+     &      femmesh_STR%group%tbls_surf_grp,                            &
+     &      femmesh_STR%group%surf_grp_geom)
 !
         if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
-        call s_sum_normal_4_surf_group(ele1, sf_grp1, sf_grp_v1)
+        call s_sum_normal_4_surf_group(femmesh_STR%mesh%ele,            &
+     &    femmesh_STR%group%surf_grp, femmesh_STR%group%surf_grp_geom)
       end if
 !
 !  -------------------------------
 !  -------------------------------
 !
-      call deallocate_edge_geom_type(edge1)
-!
-      if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data_type'
-      call alloc_phys_data_type(node1%numnod, nod_fld1)
+      call deallocate_edge_geom_type(edgemesh_STR%edge)
 !
 !  connect grid data to volume output
 !
-      if(i_step_output_ucd .gt. 0) then
-        call output_grd_file(node1, ele1, nod_comm, nod_fld1,           &
-     &      ucd, m_ucd)
-      end if
+      if(i_step_output_ucd .eq. 0) return
+      call output_grd_file(femmesh_STR%mesh%node, femmesh_STR%mesh%ele, &
+     &    femmesh_STR%mesh%nod_comm, field_STR, ucd, m_ucd)
 !
       end subroutine FEM_initialize_back_trans
 !
@@ -120,7 +105,6 @@
       subroutine FEM_analyze_back_trans(ucd, i_step,                    &
      &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
-      use m_node_phys_data
       use m_t_step_parameter
       use field_IO_select
       use set_exit_flag_4_visualizer
@@ -137,11 +121,12 @@
 !
 !*  ----------   Count steps for visualization
 !*
-      call set_flag_to_visualization(i_step,                          &
+      call set_flag_to_visualization(i_step,                            &
      &      istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !
       if(visval .eq. 0) then
-        call nod_fields_send_recv(node1, nod_comm, nod_fld1)
+        call nod_fields_send_recv                                       &
+     &    (femmesh_STR%mesh%node, femmesh_STR%mesh%nod_comm, field_STR)
       end if
 !
 !*  -----------  Output volume data --------------

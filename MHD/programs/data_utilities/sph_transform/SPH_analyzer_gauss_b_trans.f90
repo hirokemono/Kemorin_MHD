@@ -109,7 +109,7 @@
 !
 !        call check_rj_spectr_data(my_rank)
 !  spherical transform for vector
-        call sph_b_trans_all_field
+        call sph_b_trans_all_field(femmesh_STR%mesh, field_STR)
       end if
 !
       end subroutine SPH_analyze_gauss_back_trans

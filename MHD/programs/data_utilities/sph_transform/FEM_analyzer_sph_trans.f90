@@ -15,6 +15,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use m_SPH_transforms
       use t_ucd_data
 !
       implicit none
@@ -30,13 +31,9 @@
 !
       subroutine FEM_initialize_sph_trans
 !
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
       use m_control_params_2nd_files
       use m_array_for_send_recv
       use m_t_step_parameter
-      use m_node_phys_data
 !
       use nod_phys_send_recv
       use int_volume_of_domain
@@ -52,27 +49,9 @@
 !
 !  -----    construct geometry informations
 !
-      if (iflag_debug.gt.0) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, node1%numnod)
+      call mesh_setup_4_SPH_TRANS
 !
-      if(iflag_debug.gt.0) write(*,*)' init_send_recv'
-      call init_send_recv(nod_comm)
-!
-      if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank,                                    &
-     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
-     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
-      call const_element_comm_tbls(node1, ele1, surf1, edge1,           &
-     &    nod_comm, ele_comm, surf_comm, edge_comm)
-!
-      call deallocate_edge_geom_type(edge1)
-!
-!  -------------------------------
-!
-      if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data_type'
-      call alloc_phys_data_type(node1%numnod, nod_fld1)
+      call deallocate_edge_geom_type(edgemesh_STR%edge)
 !
 !  -------------------------------
 !
@@ -91,10 +70,7 @@
       subroutine FEM_analyze_sph_trans(i_step, visval)
 !
       use m_control_params_2nd_files
-      use m_nod_comm_table
-      use m_geometry_data
       use m_t_step_parameter
-      use m_node_phys_data
       use set_ucd_data_to_type
       use nod_phys_send_recv
 !
@@ -110,8 +86,10 @@
 !*
       if(visval .eq. 0) then
         call set_ucd_file_prefix(org_ucd_header, input_ucd)
-        call set_data_by_read_ucd(my_rank, i_step, input_ucd, nod_fld1)
-        call nod_fields_send_recv(node1, nod_comm, nod_fld1)
+        call set_data_by_read_ucd                                       &
+     &    (my_rank, i_step, input_ucd, field_STR)
+        call nod_fields_send_recv                                       &
+     &    (femmesh_STR%mesh%node, femmesh_STR%mesh%nod_comm, field_STR)
       end if
 !
       end subroutine FEM_analyze_sph_trans

@@ -78,7 +78,7 @@
      &        femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,              &
      &        surfmesh_VIZ%surf, edgemesh_VIZ%edge,                     &
      &        femmesh_VIZ%mesh%nod_comm, edgemesh_VIZ%edge_comm,        &
-     &        femmesh_VIZ%group%ele_grp, &
+     &        femmesh_VIZ%group%ele_grp,                                &
      &        field_VIZ, ele_4_nod_VIZ, jac_VIZ_q)
         end if
       end do

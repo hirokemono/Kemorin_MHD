@@ -10,6 +10,7 @@
 !
       use m_precision
       use m_machine_parameter
+      use m_SPH_transforms
       use calypso_mpi
 !
       implicit none
@@ -139,7 +140,7 @@
 !
 !          call check_rj_spectr_data(my_rank)
 !  spherical transform for vector
-        call sph_b_trans_all_field
+        call sph_b_trans_all_field(femmesh_STR%mesh, field_STR)
       end if
 !
       end subroutine SPH_analyze_back_trans

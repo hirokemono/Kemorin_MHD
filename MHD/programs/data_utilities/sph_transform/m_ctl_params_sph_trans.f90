@@ -15,6 +15,8 @@
 !
       use m_precision
 !
+      use m_SPH_transforms
+!
       implicit  none
 !
 !
@@ -37,7 +39,6 @@
 !
       use t_ucd_data
       use calypso_mpi
-      use m_node_phys_data
       use m_global_gauss_coefs
       use m_FFT_selector
 !
@@ -93,7 +94,7 @@
 !   set physical values
 !
       call s_set_control_sph_data(ierr)
-      call s_set_control_nodal_data(nod_fld1, ierr)
+      call s_set_control_nodal_data(field_STR, ierr)
 !
 !
       if(i_cmb_grp .gt. 0) then
@@ -114,7 +115,6 @@
 !
       use calypso_mpi
       use t_ucd_data
-      use m_node_phys_data
       use m_global_gauss_coefs
 !
       use m_control_params_2nd_files
@@ -172,7 +172,7 @@
 !   set physical values
 !
       call s_set_control_sph_data(ierr)
-      call s_set_control_nodal_data(nod_fld1, ierr)
+      call s_set_control_nodal_data(field_STR, ierr)
 !
 !
       if(i_cmb_grp .gt. 0) then
@@ -196,7 +196,6 @@
       use m_machine_parameter
       use m_t_step_parameter
       use m_read_mesh_data
-      use m_node_phys_data
       use m_sph_spectr_data
       use m_rms_4_sph_spectr
       use m_work_4_sph_trans
@@ -284,7 +283,7 @@
 !   set physical values
 !
       call s_set_control_sph_data(ierr)
-      call s_set_control_nodal_data(nod_fld1, ierr)
+      call s_set_control_nodal_data(field_STR, ierr)
 !
 !
       if(i_cmb_grp .gt. 0) then

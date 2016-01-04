@@ -10,6 +10,7 @@
       use m_precision
       use m_constants
       use m_machine_parameter
+      use m_SPH_transforms
       use calypso_mpi
 !
       implicit none
@@ -72,7 +73,7 @@
         call zonal_mean_all_sph_spectr
 !
 !  spherical transform for vector
-        call sph_b_trans_streamline
+        call sph_b_trans_streamline(femmesh_STR%mesh, field_STR)
 !
       end if
 !
@@ -121,7 +122,10 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sph_b_trans_streamline
+      subroutine sph_b_trans_streamline(mesh, nod_fld)
+!
+      use t_mesh_data
+      use t_phys_data
 !
       use m_solver_SR
       use copy_all_spec_4_sph_trans
@@ -129,6 +133,9 @@
       use sph_transforms
       use spherical_SRs_N
       use sph_transfer_all_field
+!
+      type(mesh_geometry), intent(in) :: mesh
+      type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: nscalar_trans
 !
@@ -153,8 +160,9 @@
      &        write(*,*) 'set_xyz_vect_from_sph_trans'
         call adjust_phi_comp_for_streamfunc(ncomp_sph_trans,            &
      &      dall_rtp(1,1))
-        call set_xyz_vect_from_sph_trans(nnod_rtp, ncomp_sph_trans,     &
-     &      dall_rtp(1,1), dall_pole(1,1))
+        call set_xyz_vect_from_sph_trans                                &
+     &     (mesh%node, nnod_rtp, ncomp_sph_trans,                       &
+     &      dall_rtp(1,1), dall_pole(1,1), nod_fld)
       end if
 !
       end subroutine sph_b_trans_streamline

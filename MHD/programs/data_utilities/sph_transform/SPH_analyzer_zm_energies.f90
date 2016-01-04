@@ -12,6 +12,8 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use m_SPH_transforms
+!
       implicit none
 !
       private :: cal_zm_energy_to_pressure
@@ -26,7 +28,6 @@
 !
       use m_sph_spectr_data
       use m_t_step_parameter
-      use m_node_phys_data
       use m_control_params_2nd_files
       use m_node_id_spherical_IO
       use t_field_data_IO
@@ -73,10 +74,10 @@
         call set_rj_phys_for_convective_kene
 !
 !  spherical transform for vector
-        call sph_b_trans_all_field
-        call cal_zm_energy_to_pressure(nod_fld1%n_point,                &
-     &      nod_fld1%num_phys, nod_fld1%ntot_phys,                      &
-     &      nod_fld1%istack_component, nod_fld1%d_fld)
+        call sph_b_trans_all_field(femmesh_STR%mesh, field_STR)
+        call cal_zm_energy_to_pressure(field_STR%n_point,               &
+     &      field_STR%num_phys, field_STR%ntot_phys,                    &
+     &      field_STR%istack_component, field_STR%d_fld)
 !
       end if
 !

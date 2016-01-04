@@ -7,8 +7,8 @@
 !!      subroutine allocate_d_pole_4_all_trans
 !!      subroutine deallocate_d_rtp_4_all_trans
 !!      subroutine deallocate_d_pole_4_all_trans
-!!      subroutine sph_f_trans_all_field
-!!      subroutine sph_b_trans_all_field
+!!      subroutine sph_f_trans_all_field(mesh, nod_fld)
+!!      subroutine sph_b_trans_all_field(mesh, nod_fld)
 !
       module sph_transfer_all_field
 !
@@ -73,8 +73,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_f_trans_all_field
+      subroutine sph_f_trans_all_field(mesh, nod_fld)
 !
+      use t_mesh_data
+      use t_phys_data
       use m_solver_SR
       use m_spheric_parameter
       use m_work_4_sph_trans
@@ -83,6 +85,9 @@
       use copy_all_field_4_sph_trans
       use spherical_SRs_N
 !
+      type(mesh_geometry), intent(in) :: mesh
+      type(phys_data), intent(in) :: nod_fld
+!
       integer(kind = kint) :: nscalar_trans
 !
 !
@@ -90,16 +95,16 @@
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_sph_vect_to_sph_trans'
-      call set_sph_vect_to_sph_trans(nnod_rtp, ncomp_sph_trans,         &
-     &    dall_rtp(1,1))
+      call set_sph_vect_to_sph_trans(mesh%node, nod_fld,                &
+     &    nnod_rtp, ncomp_sph_trans, dall_rtp(1,1))
       if (iflag_debug.gt.0)                                             &
      &    write(*,*) 'set_sph_scalar_to_sph_trans'
-      call set_sph_scalar_to_sph_trans(nnod_rtp, ncomp_sph_trans,       &
-     &    dall_rtp(1,1))
+      call set_sph_scalar_to_sph_trans(mesh%node, nod_fld,              &
+     &    nnod_rtp, ncomp_sph_trans, dall_rtp(1,1))
       if (iflag_debug.gt.0)                                             &
      &    write(*,*) 'set_sph_tensor_to_sph_trans'
-      call set_sph_tensor_to_sph_trans(nnod_rtp, ncomp_sph_trans,       &
-     &    dall_rtp(1,1))
+      call set_sph_tensor_to_sph_trans(mesh%node, nod_fld,              &
+     &    nnod_rtp, ncomp_sph_trans, dall_rtp(1,1))
 !
       nscalar_trans = num_scalar_rtp + 6*num_tensor_rtp
       call check_calypso_rtp_2_rtm_buf_N(ncomp_sph_trans)
@@ -127,7 +132,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine sph_b_trans_all_field
+      subroutine sph_b_trans_all_field(mesh, nod_fld)
+!
+      use t_mesh_data
+      use t_phys_data
 !
       use m_solver_SR
       use m_spheric_parameter
@@ -136,6 +144,9 @@
       use copy_all_field_4_sph_trans
       use sph_transforms
       use spherical_SRs_N
+!
+      type(mesh_geometry), intent(in) :: mesh
+      type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: nscalar_trans
 !
@@ -166,17 +177,20 @@
 !
       if (iflag_debug.gt.0)                                             &
      &        write(*,*) 'set_xyz_vect_from_sph_trans'
-      call set_xyz_vect_from_sph_trans(nnod_rtp, ncomp_sph_trans,       &
-     &    dall_rtp(1,1), dall_pole(1,1))
+      call set_xyz_vect_from_sph_trans                                  &
+     &   (mesh%node, nnod_rtp, ncomp_sph_trans,                         &
+     &    dall_rtp(1,1), dall_pole(1,1), nod_fld)
 !
       if (iflag_debug.gt.0) write(*,*) 'set_sph_scalar_from_sph_trans'
-      call set_sph_scalar_from_sph_trans(nnod_rtp, ncomp_sph_trans,     &
-     &    dall_rtp(1,1), dall_pole(1,1))
+      call set_sph_scalar_from_sph_trans                                &
+     &   (mesh%node, nnod_rtp, ncomp_sph_trans,                         &
+     &    dall_rtp(1,1), dall_pole(1,1), nod_fld)
 !
       if (iflag_debug.gt.0)                                             &
      &      write(*,*) 'set_sph_tensor_from_sph_trans'
-      call set_sph_tensor_from_sph_trans(nnod_rtp, ncomp_sph_trans,     &
-     &    dall_rtp(1,1), dall_pole(1,1))
+      call set_sph_tensor_from_sph_trans                                &
+     &   (mesh%node, nnod_rtp, ncomp_sph_trans,                         &
+     &    dall_rtp(1,1), dall_pole(1,1), nod_fld)
 !
       end subroutine sph_b_trans_all_field
 !

@@ -145,8 +145,8 @@
 !     --------------------- Surface jacobian for fieldline
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-        call const_normal_vector                                        &
-     &     (femmesh_VIZ%mesh%node, surfmesh_VIZ%surf)
+      call const_normal_vector                                          &
+     &   (femmesh_VIZ%mesh%node, surfmesh_VIZ%surf)
 !
       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
       call pick_normal_of_surf_group                                    &
