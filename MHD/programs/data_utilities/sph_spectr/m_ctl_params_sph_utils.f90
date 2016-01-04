@@ -9,8 +9,12 @@
 !
       use m_precision
 !
+      use t_phys_data
+!
       implicit  none
 !
+!
+      type(phys_data), save :: nod_fld
 !
       integer(kind = kint) :: iflag_org_sph_file_fmt = 0
       character(len = kchara) :: org_sph_file_head = 'spectral'
@@ -37,7 +41,6 @@
       use m_machine_parameter
       use m_t_step_parameter
       use m_read_mesh_data
-      use m_node_phys_data
       use m_sph_spectr_data
       use m_file_format_switch
       use m_rms_4_sph_spectr
@@ -123,7 +126,7 @@
 !   set physical values
 !
       call s_set_control_sph_data(ierr)
-      call s_set_control_nodal_data(nod_fld1, ierr)
+      call s_set_control_nodal_data(nod_fld, ierr)
 !
       if(i_buo_ratio .gt. 0) then
         buo_ratio = buoyancy_ratio_ctl
