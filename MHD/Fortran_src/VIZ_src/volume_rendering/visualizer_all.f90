@@ -78,7 +78,7 @@
       call set_sectioning_case_table
 !
       call SECTIONING_initialize                                        &
-     &   (node, ele, surf, edge, nod_comm, edge_comm,               &
+     &   (node, ele, surf, edge, nod_comm, edge_comm,                   &
      &    ele_grp, sf_grp, sf_grp_nod, nod_fld)
 !
       call ISOSURF_initialize                                           &

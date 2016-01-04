@@ -16,7 +16,6 @@
 !
       use m_constants
       use m_machine_parameter
-      use calypso_mpi
       use m_t_step_parameter
 !
       use m_FEM_utils
@@ -37,13 +36,7 @@
       use m_array_for_send_recv
       use m_ctl_params_4_prod_udt
       use m_ctl_data_product_udt
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
       use m_control_params_2nd_files
-      use nod_phys_send_recv
-      use load_mesh_data
-      use const_mesh_information
       use product_udt_fields
       use set_fixed_time_step_params
 !
@@ -64,28 +57,15 @@
       call set_ctl_params_prod_udt(ucd_FUTIL)
       call s_set_fixed_time_step_params(ierr, e_message)
 !
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh                                                   &
-     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
-     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
-!
 !     ---------------------
 !
-      if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, node1%numnod)
-!
-      call init_send_recv(nod_comm)
+      call mesh_setup_4_FEM_UTIL
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
-      call set_nod_and_ele_infos(node1, ele1)
-!
-!     --------------------- 
-!
-      call allocate_work_4_lscale
+      call allocate_work_4_lscale(femmesh_FUTIL%mesh%node%numnod)
       write(*,*) 'find_field_address_4_lscale'
-      call find_field_address_4_lscale
+      call find_field_address_4_lscale(field_FUTIL, iphys_FUTIL)
 !
       end subroutine initialize_MHD_lscale
 !
@@ -96,7 +76,6 @@
       use m_t_step_parameter
       use m_ctl_params_4_diff_udt
       use m_control_params_2nd_files
-      use m_node_phys_data
       use set_ucd_data_to_type
       use FEM_MHD_length_scale
 !
@@ -108,9 +87,11 @@
           istep_ucd = istep / i_step_output_ucd
 !
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
-     &        ifmt_org_ucd, ref_udt_file_head, nod_fld1)
+     &        ifmt_org_ucd, ref_udt_file_head, field_FUTIL)
 !
-          call const_MHD_length_scales(istep_ucd, ucd_FUTIL)
+          call const_MHD_length_scales                                  &
+     &       (femmesh_FUTIL%mesh%node, iphys_FUTIL, field_FUTIL,        &
+     &        istep_ucd, ucd_FUTIL)
         end if
       end do
 !

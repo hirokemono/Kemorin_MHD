@@ -3,14 +3,16 @@
 !
 !      Written by H. Matsui on Nov., 2006
 !
-!      subroutine s_divide_phys_by_delta_t(nod_fld)
-!      subroutine s_divide_phys_by_num_udt(icou, nod_fld)
+!      subroutine s_divide_phys_by_delta_t(node, nod_fld)
+!      subroutine s_divide_phys_by_num_udt(icou, node, nod_fld)
+!        type(node_data), intent(in) :: node
 !        type(phys_data), intent(inout) :: nod_fld
 !
       module divide_phys_by_delta_t
 !
       use m_precision
 !
+      use t_geometry_data
       use t_phys_data
 !
       implicit none
@@ -21,15 +23,16 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_divide_phys_by_delta_t(nod_fld)
+      subroutine s_divide_phys_by_delta_t(node, nod_fld)
 !
       use m_phys_constants
       use m_t_int_parameter
       use m_ctl_params_4_diff_udt
-      use m_geometry_data
       use products_nodal_fields_smp
 !
+      type(node_data), intent(in) :: node
       type(phys_data), intent(inout) :: nod_fld
+!
       integer(kind = kint) :: i, ist
 !
 !
@@ -39,13 +42,13 @@
 !
         if      ( nod_fld%num_component(i) .eq. n_scalar) then
           call multi_by_const_nod_scalar                                &
-     &       (node1, nod_fld, ddt, ist, ist)
+     &       (node, nod_fld, ddt, ist, ist)
         else if ( nod_fld%num_component(i) .eq. n_vector) then
           call multi_by_const_nod_vector                                &
-     &       (node1, nod_fld, ddt, ist, ist)
+     &       (node, nod_fld, ddt, ist, ist)
         else if ( nod_fld%num_component(i) .eq. n_sym_tensor) then
           call multi_by_const_nod_tensor                                &
-     &       (node1, nod_fld, ddt, ist, ist)
+     &       (node, nod_fld, ddt, ist, ist)
         end if
       end do
 !$omp end parallel
@@ -54,14 +57,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_divide_phys_by_num_udt(icou, nod_fld)
+      subroutine s_divide_phys_by_num_udt(icou, node, nod_fld)
 !
       use m_constants
       use m_phys_constants
-      use m_geometry_data
       use products_nodal_fields_smp
 !
       integer(kind = kint), intent(in) :: icou
+      type(node_data), intent(in) :: node
       type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: i, ist
@@ -75,13 +78,13 @@
 !
         if      ( nod_fld%num_component(i) .eq. n_scalar) then
           call multi_by_const_nod_scalar                                &
-     &       (node1, nod_fld, dnum, ist, ist)
+     &       (node, nod_fld, dnum, ist, ist)
         else if ( nod_fld%num_component(i) .eq. n_vector) then
           call multi_by_const_nod_vector                                &
-     &       (node1, nod_fld, dnum, ist, ist)
+     &       (node, nod_fld, dnum, ist, ist)
         else if ( nod_fld%num_component(i) .eq. n_sym_tensor) then
           call multi_by_const_nod_tensor                                &
-     &       (node1, nod_fld, dnum, ist, ist)
+     &       (node, nod_fld, dnum, ist, ist)
         end if
       end do
 !$omp end parallel

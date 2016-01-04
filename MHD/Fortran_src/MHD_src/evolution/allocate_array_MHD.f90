@@ -34,6 +34,7 @@
       use m_finite_element_matrix
       use m_int_vol_data
       use m_bulk_values
+      use t_FEM_phys_data
 !
 !
       label_sim = 'GeoFEM_MHD'
@@ -49,8 +50,8 @@
 !
 !
 !  allocation for field values
-     if (iflag_debug.ge.1)  write(*,*) 'initialize_nod_field_data'
-      call initialize_nod_field_data
+     if (iflag_debug.ge.1)  write(*,*) 'set_field_address_type'
+      call set_field_address_type(node1%numnod, nod_fld1, iphys)
      if (iflag_debug.ge.1)  write(*,*) 'initialize_ele_field_data'
       call initialize_ele_field_data
 !

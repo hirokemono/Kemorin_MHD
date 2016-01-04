@@ -43,6 +43,7 @@
       use m_t_step_parameter
       use m_nod_comm_table
       use m_node_phys_data
+      use t_FEM_phys_data
 !
       use input_control_interpolate
       use const_mesh_information
@@ -85,8 +86,8 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'initialize_nod_field_data'
-      call initialize_nod_field_data
+      if (iflag_debug.eq.1) write(*,*) 'set_field_address_type'
+      call set_field_address_type(node1%numnod, nod_fld1, iphys)
 !
       if (iflag_debug.eq.1) write(*,*) 'link_field_name_type'
       call link_field_name_type(nod_fld1, new_phys)

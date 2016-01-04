@@ -53,6 +53,7 @@
       use m_t_step_parameter
       use m_node_phys_data
       use m_cal_max_indices
+      use t_FEM_phys_data
 !
       use nod_phys_send_recv
       use range_data_IO
@@ -83,8 +84,8 @@
 !
 !  -------------------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'initialize_nod_field_data'
-      call initialize_nod_field_data
+      if (iflag_debug.gt.0) write(*,*) 'set_field_address_type'
+      call set_field_address_type(node1%numnod, nod_fld1, iphys)
 !
 !  connect grid data to volume output
 !

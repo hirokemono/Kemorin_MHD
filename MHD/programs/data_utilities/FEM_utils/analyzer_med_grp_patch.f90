@@ -4,7 +4,8 @@
 !      subroutine initialize_med_grp_patch
 !      subroutine analyze_med_grp_patch
 !
-!..................................................
+!      modified by H. Matsui on Nov., 2006 
+!
 !
       module analyzer_med_grp_patch
 !
@@ -12,8 +13,7 @@
       use m_constants
       use m_machine_parameter
       use calypso_mpi
-!
-!      modified by H. Matsui on Nov., 2006 
+      use m_FEM_utils
 !
       implicit none
 !
@@ -26,10 +26,6 @@
       subroutine initialize_med_grp_patch
 !
       use m_phys_constants
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
-      use m_node_phys_data
       use m_array_for_send_recv
       use m_FEM_utils
       use input_control_udt_diff
@@ -49,39 +45,40 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_grp_patch'
       call s_input_control_grp_patch(ucd_FUTIL)
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh                                                   &
-     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
-     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
+      if (iflag_debug.eq.1) write(*,*) 'input_mesh_data_type'
+      call input_mesh_data_type                                         &
+     &   (my_rank, femmesh_FUTIL, surfmesh_FUTIL%surf%nnod_4_surf,      &
+     &    edgemesh_FUTIL%edge%nnod_4_edge)
 !
 !     --------------------- 
 !
 !      if (iflag_debug.eq.1) write(*,*) 'const_layers_4_dynamic'
-!      call const_layers_4_dynamic(ele_grp1, layer_tbl1)
+!      call const_layers_4_dynamic                                      &
+!     &   (femmesh_FUTIL%group%ele_grp, layer_tbl_corr)
 !
 !     --------------------- 
 !
 !
       if (iflag_debug.ge.1 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(n_sym_tensor, node1%numnod)
-      call init_send_recv(nod_comm)
+      call allocate_vector_for_solver                                   &
+     &   (isix, femmesh_FUTIL%mesh%node%numnod)
+      call init_send_recv(femmesh_FUTIL%mesh%nod_comm)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank,                                    &
-     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
-     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
-      call const_element_comm_tbls(node1, ele1, surf1, edge1,           &
-     &    nod_comm, ele_comm, surf_comm, edge_comm)
+      call s_const_mesh_types_info(my_rank, femmesh_FUTIL,              &
+     &    surfmesh_FUTIL, edgemesh_FUTIL)
+      call const_ele_comm_tbl_global_id(femmesh_FUTIL%mesh,             &
+     &    elemesh_FUTIL, surfmesh_FUTIL, edgemesh_FUTIL)
 !
       if(i_debug .eq. iflag_full_msg) then
-        call check_whole_num_of_elements(ele1)
+        call check_whole_num_of_elements(femmesh_FUTIL%mesh%ele)
       end if
 !
-      nod_fld1%num_phys = 1
-      call alloc_phys_name_type(nod_fld1)
-      nod_fld1%num_component(1) = 1
-      nod_fld1%istack_component(1) = 1
-      nod_fld1%phys_name(1) = 'temperature'
+      field_FUTIL%num_phys = 1
+      call alloc_phys_name_type(field_FUTIL)
+      field_FUTIL%num_component(1) = 1
+      field_FUTIL%istack_component(1) = 1
+      field_FUTIL%phys_name(1) = 'temperature'
 !
       call calypso_mpi_barrier
 !
@@ -92,10 +89,6 @@
       subroutine analyze_med_grp_patch
 !
       use m_ctl_params_4_diff_udt
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
-      use m_node_phys_data
       use m_cross_section
       use m_control_data_sections
       use m_control_params_4_psf
@@ -110,21 +103,21 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_med_patch_ele_grp',         &
      &             trim(grouping_mesh_head)
-      num_psf_ctl = ele_grp1%num_grp
+      num_psf_ctl = femmesh_FUTIL%group%ele_grp%num_grp
       call allocate_psf_ctl_stract
 !
       if(my_rank .eq. 0) then
         call add_dat_extension(grouping_mesh_head,grouping_mesh_list)
         open(id_gname,file=grouping_mesh_list)
-        write(id_gname,'(i16)') ele_grp1%num_grp
-        do igrp = 1, ele_grp1%num_grp
+        write(id_gname,'(i16)') femmesh_FUTIL%group%ele_grp%num_grp
+        do igrp = 1, femmesh_FUTIL%group%ele_grp%num_grp
           write(id_gname,'(i16,a3,a)') igrp, '   ',                     &
-     &              trim(ele_grp1%grp_name(igrp))
+     &              trim(femmesh_FUTIL%group%ele_grp%grp_name(igrp))
         end do
         close(id_gname)
       end if
 !
-      do igrp = 1, ele_grp1%num_grp
+      do igrp = 1, femmesh_FUTIL%group%ele_grp%num_grp
         fname_psf_ctl(igrp) = 'NO_FILE'
         psf_ctl_struct(igrp)%i_psf_file_head = 1
         call add_int_suffix(igrp, grouping_mesh_head,                   &
@@ -144,21 +137,24 @@
         call alloc_control_array_chara                                  &
      &     (psf_ctl_struct(igrp)%psf_area_ctl)
         psf_ctl_struct(igrp)%psf_area_ctl%c_tbl(1)                      &
-     &      = ele_grp1%grp_name(igrp)
+     &      = femmesh_FUTIL%group%ele_grp%grp_name(igrp)
 !
         psf_ctl_struct(igrp)%psf_out_field_ctl%num = 1
         call alloc_control_array_c2                                     &
      &     (psf_ctl_struct(igrp)%psf_out_field_ctl)
         psf_ctl_struct(igrp)%psf_out_field_ctl%c1_tbl(1)                &
-     &      = nod_fld1%phys_name(1)
+     &      = field_FUTIL%phys_name(1)
         psf_ctl_struct(igrp)%psf_out_field_ctl%c2_tbl(1)                &
      &      = 'scalar'
       end do
 !
       call set_sectioning_case_table
       call SECTIONING_initialize                                        &
-     &   (node1, ele1, surf1, edge1, nod_comm, edge_comm,               &
-     &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
+     &   (femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%ele,              &
+     &    surfmesh_FUTIL%surf, edgemesh_FUTIL%edge,                     &
+     &    femmesh_FUTIL%mesh%nod_comm, edgemesh_FUTIL%edge_comm,        &
+     &    femmesh_FUTIL%group%ele_grp, femmesh_FUTIL%group%surf_grp,    &
+     &    femmesh_FUTIL%group%surf_nod_grp, field_FUTIL)
 !
       end subroutine analyze_med_grp_patch
 !

@@ -4,8 +4,10 @@
 !     Written by H. Matsui on Nov., 2009
 !
 !      subroutine allocate_vec_transfer(numnod)
-!      subroutine s_correlation_all_layerd_data                         &
-!     &         (nod_fld, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
+!      subroutine s_correlation_all_layerd_data(node, ele, nod_fld,     &
+!     &          jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
+!        type(node_data), intent(in) :: node
+!        type(element_data), intent(in) :: ele
 !        type(phys_data), intent(in) :: nod_fld
 !        type(jacobians_3d), intent(in) :: jac_3d_l, jac_3d_q
 !        type(phys_data), intent(in) :: phys_2nd
@@ -18,6 +20,11 @@
       use calypso_mpi
       use m_all_layerd_correlate
       use m_work_layer_correlate
+!
+      use t_geometry_data
+      use t_phys_data
+      use t_jacobian_3d
+      use t_layering_ele_list
 !
       implicit none
 !
@@ -54,14 +61,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine s_correlation_all_layerd_data                          &
-     &         (nod_fld, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
+      subroutine s_correlation_all_layerd_data(node, ele, nod_fld,      &
+     &          jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
 !
       use cal_layerd_ave_correlate
-      use t_phys_data
-      use t_jacobian_3d
-      use t_layering_ele_list
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d_l, jac_3d_q
       type(phys_data), intent(in) :: phys_2nd
@@ -69,7 +75,7 @@
 !
 !
       call int_vol_rms_ave_all_layer                                    &
-     &   (nod_fld, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
+     &   (node, ele, nod_fld, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
       call sum_layerd_averages(layer_tbl%e_grp%num_grp)
 !
       if(iflag_debug .gt. 0) write(*,*) 'divide_layers_ave_by_vol'
@@ -83,7 +89,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'int_vol_dev_cor_all_layer'
       call int_vol_dev_cor_all_layer                                    &
-     &   (nod_fld, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
+     &   (node, ele, nod_fld, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
 !
       if(iflag_debug .gt. 0) write(*,*) 'sum_layerd_correlation'
       call sum_layerd_correlation(layer_tbl%e_grp%num_grp)
@@ -100,17 +106,15 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine  int_vol_rms_ave_all_layer                             &
-     &         (nod_fld, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
+      subroutine int_vol_rms_ave_all_layer(node, ele, nod_fld,          &
+     &          jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
 !
-      use m_geometry_data
       use m_fem_gauss_int_coefs
       use int_rms_ave_ele_grps
       use transfer_correlate_field
-      use t_phys_data
-      use t_jacobian_3d
-      use t_layering_ele_list
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d_l, jac_3d_q
       type(layering_tbl), intent(in) :: layer_tbl
@@ -125,7 +129,7 @@
      &          = phys_2nd%d_fld(1:phys_2nd%n_point,icomp)
 !
         call int_vol_2rms_ave_ele_grps                                  &
-     &     (node1, ele1, layer_tbl%e_grp, jac_3d_q, jac_3d_l,           &
+     &     (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,             &
      &      max_int_point, nod_fld%ntot_phys, icomp, nod_fld%d_fld,     &
      &      ione, ione, d_nod_trans2(1,1), ave_l(1,icomp),              &
      &      rms_l(1,icomp), ave_l(1,icomp_2), rms_l(1,icomp_2))
@@ -135,17 +139,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_dev_cor_all_layer                              &
-     &         (nod_fld, jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
+      subroutine int_vol_dev_cor_all_layer(node, ele, nod_fld,          &
+     &          jac_3d_l, jac_3d_q, layer_tbl, phys_2nd)
 !
-      use m_geometry_data
       use m_fem_gauss_int_coefs
       use int_rms_ave_ele_grps
       use transfer_correlate_field
-      use t_phys_data
-      use t_jacobian_3d
-      use t_layering_ele_list
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d_l, jac_3d_q
       type(phys_data), intent(in) :: phys_2nd
@@ -155,10 +157,10 @@
 !
       do icomp = 1, nod_fld%ntot_phys
         icomp_2 = icomp + nod_fld%ntot_phys
-        d_nod_trans2(1:node1%numnod,1)                                  &
-     &          = phys_2nd%d_fld(1:node1%numnod,icomp)
+        d_nod_trans2(1:node%numnod,1)                                   &
+     &          = phys_2nd%d_fld(1:node%numnod,icomp)
         call int_vol_dev_cor_ele_grps                                   &
-     &     (node1, ele1, layer_tbl%e_grp, jac_3d_q, jac_3d_l,           &
+     &     (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,             &
      &      max_int_point, nod_fld%ntot_phys, icomp, nod_fld%d_fld,     &
      &      ione, ione, d_nod_trans2(1,1),                              &
      &      ave_ref(1,icomp), ave_tgt(1,icomp),                         &

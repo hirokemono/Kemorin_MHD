@@ -5,13 +5,13 @@
       use m_precision
 !
       use m_constants
-      use m_group_data
       use m_merdional_grouping_patch
       use m_ctl_data_ele_grp_udt
       use m_ctl_params_ele_grp_udt
       use m_tave_SGS_model_coefs
       use m_field_file_format
 !
+      use t_group_data
       use t_ucd_data
       use t_psf_results
 !
@@ -24,6 +24,7 @@
       implicit none
 !
 !
+      type(group_data), save :: e_grp
       type(ucd_data), save :: psf_ucd
       type(psf_results), save :: psf_data
 !
@@ -34,7 +35,7 @@
       call read_control_ele_grp_udt
       call set_control_ele_grp_udt
 !
-      call read_med_grouping_patch(layerd_mesh_head, ele_grp1,          &
+      call read_med_grouping_patch(layerd_mesh_head, e_grp,             &
      &    start_ele_grp_name, istart_grp)
 !
       write(*,*) 'fname_input: ', trim(group_data_file_name)
@@ -55,7 +56,7 @@
 !
 !    output grid data
 !
-      call set_ele_grp_patch_2_psf_grd(ele_grp1,                        &
+      call set_ele_grp_patch_2_psf_grd(e_grp,                           &
      &    psf_data%psf_nod, psf_data%psf_ele, psf_data%psf_phys)
       call link_node_data_2_ucd(psf_data%psf_nod, psf_ucd)
       call link_ele_data_2_ucd(psf_data%psf_ele, psf_ucd)

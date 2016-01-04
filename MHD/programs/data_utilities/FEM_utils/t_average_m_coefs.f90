@@ -5,13 +5,13 @@
       use m_precision
 !
       use m_constants
-      use m_group_data
       use m_merdional_grouping_patch
       use m_ctl_data_ele_grp_udt
       use m_ctl_params_ele_grp_udt
       use m_tave_SGS_model_coefs
       use m_field_file_format
 !
+      use t_group_data
       use t_ucd_data
 !
       use ucd_IO_select
@@ -21,7 +21,7 @@
       implicit none
 !
 !
-      type(group_data), save :: egrp
+      type(group_data), save :: e_grp
       type(ucd_data), save  :: ucd_med
 !
       integer(kind = kint) :: istep_read, nd, ierr, icou, i, istart_grp
@@ -32,7 +32,7 @@
       call read_control_ele_grp_udt
       call set_control_ele_grp_udt
 !
-      call read_med_grouping_patch(layerd_mesh_head, egrp,              &
+      call read_med_grouping_patch(layerd_mesh_head, e_grp,             &
      &   start_ele_grp_name, istart_grp)
 !
       write(*,*) 'fname_input: ', trim(group_data_file_name)

@@ -4,7 +4,7 @@
 !     Written by H. Matsui on July, 2006
 !     Modified by H. Matsui on JUne, 2007
 !
-!      subroutine set_ctl_params_correlate_udt(ucd)
+!      subroutine set_ctl_params_correlate_udt(nod_fld, ucd)
 !      subroutine set_ctl_params_diff_udt(ucd)
 !      subroutine s_set_ctl_4_diff_udt_steps
 !
@@ -15,6 +15,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_ctl_params_4_diff_udt
+      use t_phys_data
 !
       implicit none
 !
@@ -24,15 +25,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_correlate_udt(ucd)
+      subroutine set_ctl_params_correlate_udt(nod_fld, ucd)
 !
       use t_ucd_data
-      use m_node_phys_data
       use m_ctl_data_4_fem_int_pts
       use m_fem_gauss_int_coefs
       use set_control_nodal_data
       use set_control_ele_layering
 !
+      type(phys_data), intent(inout) :: nod_fld
       type(ucd_data), intent(inout) :: ucd
       integer(kind = kint) :: ierr
 !
@@ -44,7 +45,7 @@
       call s_set_control_ele_layering
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_control_nodal_data'
-      call s_set_control_nodal_data(nod_fld1, ierr)
+      call s_set_control_nodal_data(nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_ctl_4_diff_udt_steps'

@@ -5,8 +5,6 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine initialize_nod_field_data
-!
 !       subroutine deallocate_phys_name
 !       subroutine deallocate_data_arrays
 !
@@ -32,26 +30,6 @@
 !
       contains
 !
-!   ---------------------------------------------------------------------
-!
-      subroutine initialize_nod_field_data
-!
-      use m_geometry_data
-      use set_field_address
-!
-!
-!  allocation for physical values
-!
-      call alloc_phys_data_type(node1%numnod, nod_fld1)
-!
-!   set address of nodal values
-!
-      call set_field_addresses(ione, nod_fld1%num_phys,                 &
-     &    nod_fld1%phys_name, nod_fld1%num_component, iphys)
-!
-       end subroutine initialize_nod_field_data
-!
-!  --------------------------------------------------------------------
 !   ---------------------------------------------------------------------
 !
        subroutine deallocate_phys_name

@@ -29,15 +29,9 @@
       subroutine initialize_udt_diff
 !
       use m_array_for_send_recv
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
       use m_phys_constants
-      use m_node_phys_data
+      use t_FEM_phys_data
       use input_control_udt_diff
-      use load_mesh_data
-      use const_mesh_information
-      use nod_phys_send_recv
 !
 !
       if (my_rank.eq.0) then
@@ -48,28 +42,17 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_udt_diff'
-      call s_input_control_udt_diff(ucd_FUTIL)
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh                                                   &
-     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
-     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
+      call s_input_control_udt_diff(field_FUTIL, ucd_FUTIL)
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(n_sym_tensor, node1%numnod)
-!
-      call init_send_recv(nod_comm)
+      call mesh_setup_4_FEM_UTIL
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
-      call set_nod_and_ele_infos(node1, ele1)
-!
-!     --------------------- 
-!
-      if (iflag_debug.eq.1) write(*,*) 'initialize_nod_field_data'
-      call initialize_nod_field_data
+      if (iflag_debug.eq.1) write(*,*) 'set_field_address_type'
+      call set_field_address_type                                       &
+     &   (femmesh_FUTIL%mesh%node%numnod, field_FUTIL, iphys_FUTIL)
 !
       end subroutine initialize_udt_diff
 !
@@ -77,9 +60,6 @@
 !
       subroutine analyze_udt_diff
 !
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_node_phys_data
       use m_t_step_parameter
       use m_ctl_params_4_diff_udt
       use m_control_params_2nd_files
@@ -94,7 +74,8 @@
 !
 !
 !
-      call link_global_mesh_2_ucd(node1, ele1, ucd_FUTIL)
+      call link_global_mesh_2_ucd                                       &
+     &   (femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%ele, ucd_FUTIL)
 !
       do istep = i_step_init, i_step_number
         if ( mod(istep,i_step_output_ucd) .eq. izero) then
@@ -102,19 +83,22 @@
           istep_ucd = istep / i_step_output_ucd
 !
           call set_data_by_read_ucd_once(my_rank, istep_ucd,            &
-     &        ifmt_org_ucd, ref_udt_file_head, nod_fld1)
+     &        ifmt_org_ucd, ref_udt_file_head, field_FUTIL)
 !
           call subtract_by_ucd_data(my_rank, istep_ucd,                 &
-     &        ifmt_org_ucd, tgt_udt_file_head, nod_fld1)
+     &        ifmt_org_ucd, tgt_udt_file_head, field_FUTIL)
 !
-          call s_divide_phys_by_delta_t(nod_fld1)
+          call s_divide_phys_by_delta_t                                 &
+     &       (femmesh_FUTIL%mesh%node, field_FUTIL)
 !
-          call nod_fields_send_recv(node1, nod_comm, nod_fld1)
+          call nod_fields_send_recv                                     &
+     &       (femmesh_FUTIL%mesh%node, femmesh_FUTIL%mesh%nod_comm,     &
+     &        field_FUTIL)
 !
 !    output udt data
           call link_output_ucd_file_once(my_rank, istep_ucd,            &
      &        ifmt_diff_udt_file, diff_udt_file_head,                   &
-     &        nod_fld1, ucd_FUTIL)
+     &        field_FUTIL, ucd_FUTIL)
         end if
       end do
 !
