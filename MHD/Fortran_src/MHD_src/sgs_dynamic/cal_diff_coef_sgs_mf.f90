@@ -93,11 +93,10 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_commute_error_4_filter_mf'
       call cal_commute_error_4_mf                                       &
      &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
-     &    node1, ele1, surf1, sf_grp1, nod_fld1,                        &
-     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
-     &    sf_sgs1_grad_v, ifilter_4delta,  iphys%i_sgs_grad_f,          &
-     &    iphys%i_sgs_grad_f, iphys%i_filter_velo,                      &
-     &    fem1_wk, f1_l, f1_nl)
+     &    node1, ele1, surf1, sf_grp1, jac1_3d_q, jac1_sf_grp_2d_q,     &
+     &    rhs_tbl1, FEM1_elen, sf_sgs1_grad_v, ifilter_4delta,          &
+     &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_velo,  &
+     &    fem1_wk, f1_l, f1_nl, nod_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'delete_field_by_fixed_v_bc',    &
      &                     iphys%i_sgs_grad_f
@@ -116,10 +115,10 @@
       if (iflag_debug.gt.0)   write(*,*) 'cal_commute_error_4_m_flux'
       call cal_commute_error_4_mf                                       &
      &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
-     &    node1, ele1, surf1, sf_grp1, nod_fld1,                        &
-     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
-     &    sf_sgs1_grad_v, ifilter_2delta, iphys%i_sgs_grad,             &
-     &    iphys%i_SGS_m_flux, iphys%i_velo, fem1_wk, f1_l, f1_nl)
+     &    node1, ele1, surf1, sf_grp1, jac1_3d_q, jac1_sf_grp_2d_q,     &
+     &    rhs_tbl1, FEM1_elen, sf_sgs1_grad_v, ifilter_2delta,          &
+     &    iphys%i_sgs_grad, iphys%i_SGS_m_flux, iphys%i_velo,           &
+     &    fem1_wk, f1_l, f1_nl, nod_fld1)
 !
       call vector_send_recv                                             &
      &   (iphys%i_sgs_grad, node1, nod_comm, nod_fld1)

@@ -10,7 +10,7 @@
 !!     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
 !!      subroutine solve_by_djds_solverNN                               &
 !!     &         (node, nod_comm, mat_crs, djds_tbl, djds_mat, ierr)
-!!        type(node_data), intent(inout) :: node
+!!        type(node_data), intent(in) :: node
 !!        type(CRS_matrix_connect), intent(inout) :: tbl_crs
 !!
 !!     solve by DJDS solver using CRS matrix
@@ -99,7 +99,7 @@
 !
       use copy_matrix_2_djds_array
 !
-      type(node_data), intent(inout) :: node
+      type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(CRS_matrix), intent(inout) :: mat_crs
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
@@ -154,7 +154,7 @@
 
       use copy_matrix_2_djds_array
 !
-      type(node_data), intent(inout) :: node
+      type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(CRS_matrix), intent(inout) :: mat_crs
       type(DJDS_ordering_table), intent(inout) :: djds_tbl
@@ -210,7 +210,7 @@
 
       use copy_matrix_2_djds_array
 !
-      type(node_data), intent(inout) :: node
+      type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(CRS_matrix), intent(inout) :: mat_crs
       type(DJDS_ordering_table), intent(inout) :: djds_tbl

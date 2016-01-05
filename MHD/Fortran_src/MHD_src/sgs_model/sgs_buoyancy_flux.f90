@@ -6,7 +6,7 @@
 !!      subroutine cal_SGS_gravity_flux                                 &
 !!     &         (node, coef, i_sgs, i_flux, nod_fld)
 !!        type(node_data), intent(in) :: node
-!!        type(phys_data), intent(in) :: nod_fld
+!!        type(phys_data), intent(inout) :: nod_fld
 !
       module sgs_buoyancy_flux
 !
@@ -37,7 +37,7 @@
       real (kind = kreal), intent(in) :: coef
       type(node_data), intent(in) :: node
 !
-      type(phys_data), intent(in) :: nod_fld
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
       if      (i_grav .eq. iflag_const_g) then

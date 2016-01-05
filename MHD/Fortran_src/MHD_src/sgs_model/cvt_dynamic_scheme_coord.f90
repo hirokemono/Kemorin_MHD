@@ -41,7 +41,7 @@
 !
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
-      type(phys_data), intent(in) :: nod_fld
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
       if(icoord_SGS_model_coef .eq. iflag_spherical) then
@@ -73,7 +73,7 @@
 !
       type(node_data), intent(in) :: node
       type(phys_address), intent(in) :: iphys
-      type(phys_data), intent(in) :: nod_fld
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
       if(icoord_SGS_model_coef .eq. iflag_spherical) then
