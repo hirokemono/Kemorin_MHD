@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine int_edge_moment(n_int, jac_1d)
+!      subroutine int_edge_moment(numnod, numele, edge, n_int, jac_1d)
 !
       module int_edge_moment_z_filter
 !
@@ -18,29 +18,31 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine int_edge_moment(n_int, jac_1d)
+      subroutine int_edge_moment(numnod, numele, edge, n_int, jac_1d)
 !
+      use t_edge_data
       use t_jacobian_1d
 !
-      use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_shape_functions
       use m_int_edge_data
       use m_int_commtative_filter
       use m_commute_filter_z
 !
-      integer (kind= kint), intent(in) :: n_int
+      type(edge_data), intent(in) :: edge
       type(jacobians_1d), intent(in) :: jac_1d
+      integer (kind= kint), intent(in) :: n_int
+      integer (kind= kint), intent(in) :: numnod, numele
 !
       integer (kind= kint) :: inod, inod1, inod2, iele, j1, j2
       integer (kind= kint) :: i, kf, ix
 !
 !
-      do iele = 1, ele1%numele
+      do iele = 1, numele
        do j1 = 1, 2
         do j2 = 1, 2
-         inod1 = edge1%ie_edge(iele,j1)
-         inod2 = edge1%ie_edge(iele,j2)
+         inod1 = edge%ie_edge(iele,j1)
+         inod2 = edge%ie_edge(iele,j2)
 !
          do kf = 0, 2
           do i = 1, n_int
@@ -59,7 +61,7 @@
        end do
       end do
 !
-      do inod = 1, node1%numnod
+      do inod = 1, numnod
        do kf = 0, 2
            xmom_dt(inod,kf)  = xmom_dt(inod,kf)  * mk(inod)
            xmom_dot(inod,kf) = xmom_dot(inod,kf) * mk(inod)

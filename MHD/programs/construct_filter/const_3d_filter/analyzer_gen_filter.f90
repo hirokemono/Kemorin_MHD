@@ -4,8 +4,8 @@
 !
 !      modified by H. Matsui on Mar., 2008 
 !
-!      subroutine init_analyzer
-!      subroutine analyze
+!      subroutine generate_filter_init
+!      subroutine generate_filter_analyze
 !
       module analyzer_gen_filter
 !
@@ -15,6 +15,8 @@
       use calypso_mpi
 !
       use m_ctl_params_4_gen_filter
+!
+      use t_mesh_data
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
@@ -24,6 +26,11 @@
 !
       implicit none
 !
+!
+      type(mesh_geometry), save :: mesh_filter
+      type(mesh_groups), save :: group_filter
+      type(surface_geometry), save :: surf_filter
+      type(edge_geometry), save ::    edge_filter
 !
       type(jacobians_3d), save :: jac_3d_l
       type(jacobians_3d), save :: jac_3d_q
@@ -43,17 +50,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine generate_filter_init
 !
       use m_fem_gauss_int_coefs
       use m_filter_file_names
+      use m_ctl_data_gen_3d_filter
 !
-      use input_control_gen_filter
       use const_mesh_information
       use cal_1d_moments_4_fliter
 !
-      use m_geometry_data
-      use m_group_data
       use set_element_data_4_IO
       use set_surface_data_4_IO
       use set_edge_data_4_IO
@@ -68,7 +73,11 @@
       use set_element_list_4_filter
       use sum_normal_4_surf_group
       use const_jacobians_3d
+      use set_ctl_gen_filter
+      use load_mesh_data
 !
+!
+      use calypso_mpi
 !
       if (my_rank.eq.0) then
         write(*,*) 'Construct commutation filter'
@@ -77,65 +86,85 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.gt.0) write(*,*) 'input_control_3d_commute'
-      call input_control_3d_commute(FEM_elen_f)
+      if (iflag_debug.eq.1) write(*,*) 'read_control_4_gen_filter'
+      call read_control_4_gen_filter
+!
+      if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_gen_filter'
+      call set_ctl_params_gen_filter(FEM_elen_f)
+!
+!  --  read geometry
+!
+      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
+      call input_mesh                                                   &
+     &   (my_rank, mesh_filter%nod_comm, mesh_filter%node,              &
+     &    mesh_filter%ele, group_filter%nod_grp,                        &
+     &    group_filter%ele_grp, group_filter%surf_grp,                  &
+     &    surf_filter%surf%nnod_4_surf, edge_filter%edge%nnod_4_edge)
+!
+!     --------------------- 
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_1d_moments'
       call s_cal_1d_moments(FEM_elen_f)
 !
-      call s_set_element_list_4_filter(ele1, ele_grp1)
+      call s_set_element_list_4_filter                                  &
+     &   (mesh_filter%ele, group_filter%ele_grp)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank,                                    &
-     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
-     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
+      call const_mesh_infos(my_rank, mesh_filter%node, mesh_filter%ele, &
+     &    surf_filter%surf, edge_filter%edge, group_filter%nod_grp,     &
+     &    group_filter%ele_grp, group_filter%surf_grp,                  &
+     &    group_filter%tbls_ele_grp, group_filter%tbls_surf_grp,        &
+     &    group_filter%surf_nod_grp)
 !
 !  -------------------------------
 !
       if (iflag_debug.eq.1 .and. my_rank.eq.0 )                         &
      &   write(*,*) 'alloc_vectors_surf_grp_type'
       call alloc_vectors_surf_grp_type                                  &
-     &   (sf_grp1%num_grp, sf_grp1%num_item, sf_grp_v1)
+     &  (group_filter%surf_grp%num_grp, group_filter%surf_grp%num_item, &
+     &   group_filter%surf_grp_geom)
 !
       if (iflag_debug.eq.1 .and. my_rank.eq.0 )                         &
      &   write(*,*) 'pick_surface_group_geometry'
       call pick_surface_group_geometry                                  &
-     &   (surf1, sf_grp1, sf_grp_tbl1, sf_grp_v1)
+     &   (surf_filter%surf, group_filter%surf_grp,                      &
+     &    group_filter%tbls_surf_grp, group_filter%surf_grp_geom)
 !
 !  -------------------------------
 !  -------------------------------
 !
       if (iflag_debug.eq.1)  write(*,*)  'cal_jacobian_element'
       call maximum_integration_points(num_int_points)
-      call const_jacobian_and_volume                                    &
-     &   (node1, sf_grp1, infty_list, ele1, jac_3d_l, jac_3d_q)
+      call const_jacobian_and_volume(mesh_filter%node,                  &
+     &    group_filter%surf_grp, group_filter%infty_grp,                &
+     &    mesh_filter%ele, jac_3d_l, jac_3d_q)
 !
-!      call check_jacobians_trilinear(my_rank, ele1, jac_3d_l)
+!      call check_jacobians_trilinear                                   &
+!     &   (my_rank, mesh_filter%ele, jac_3d_l)
 !
 !  -------------------------------
 !
       if (iflag_debug.eq.1)  write(*,*)  'int_element_length_1st'
-      FEM_elen_f%nnod_filter_mom = node1%numnod
-      FEM_elen_f%nele_filter_mom = ele1%numele
+      FEM_elen_f%nnod_filter_mom = mesh_filter%node%numnod
+      FEM_elen_f%nele_filter_mom = mesh_filter%ele%numele
       FEM_momenet1%num_filter_moms = 2
       call alloc_jacobians_ele(FEM_elen_f%nele_filter_mom, filter_dxi1)
       call alloc_elen_ele_type                                          &
      &   (FEM_elen_f%nele_filter_mom, FEM_elen_f%elen_ele)
 !
       call s_int_element_length(FEM_elen_f%nele_filter_mom,             &
-     &    node1, ele1, filter_dxi1%dxi_ele, FEM_elen_f%elen_ele%moms)
+     &    mesh_filter%node, mesh_filter%ele,                            &
+     &    filter_dxi1%dxi_ele, FEM_elen_f%elen_ele%moms)
 !
-       end subroutine init_analyzer
+       end subroutine generate_filter_init
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine generate_filter_analyze
 !
       use m_array_for_send_recv
-      use m_geometry_data
-      use m_nod_comm_table
       use m_matrix_4_filter
       use m_crs_matrix_4_filter
       use m_filter_coefs
@@ -166,13 +195,14 @@
 !  ---------------------------------------------------
 !
       if(iflag_debug.eq.1)  write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(ithree, node1%numnod)
+      call allocate_vector_for_solver(ithree, mesh_filter%node%numnod)
 !
-      call init_send_recv(nod_comm)
+      call init_send_recv(mesh_filter%nod_comm)
 !
       if(iflag_debug.eq.1)  write(*,*) 's_cal_element_size'
-      call s_cal_element_size(nod_comm, node1, ele1, jac_3d_q,          &
-     &    rhs_tbl_f, mat_tbl_f, rhs_mat_f, FEM_elen_f,                  &
+      call s_cal_element_size                                           &
+     &   (mesh_filter%nod_comm, mesh_filter%node, mesh_filter%ele,      &
+     &    jac_3d_q, rhs_tbl_f, mat_tbl_f, rhs_mat_f, FEM_elen_f,        &
      &    filter_dxi1, dxidxs1)
       call dealloc_jacobians_ele(filter_dxi1)
 !
@@ -189,8 +219,8 @@
 !  ---------------------------------------------------
 !
       if (iflag_tgt_filter_type .gt. -10)  then
-        call copy_node_data_to_filter(node1)
-        call copy_comm_tbl_types(nod_comm, flt_comm)
+        call copy_node_data_to_filter(mesh_filter%node)
+        call copy_comm_tbl_types(mesh_filter%nod_comm, flt_comm)
         call copy_filtering_geometry_to_IO
         call copy_filter_comm_tbl_to_IO(my_rank)
 !
@@ -207,8 +237,10 @@
         num_failed_whole = 0
         num_failed_fluid = 0
 !
-        call select_const_filter(nod_comm, node1, ele1, jac_3d_q,       &
-    &       rhs_tbl_f, rhs_mat_f, FEM_elen_f, dxidxs1, FEM_momenet1)
+        call select_const_filter                                        &
+    &      (mesh_filter%nod_comm, mesh_filter%node, mesh_filter%ele,    &
+    &       jac_3d_q, rhs_tbl_f, rhs_mat_f, FEM_elen_f,                 &
+    &       dxidxs1, FEM_momenet1)
         call dealloc_jacobians_node(filter_dxi1)
 !
         close(filter_coef_code)
@@ -227,7 +259,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'exit analyze'
 !
-      end subroutine analyze
+      end subroutine generate_filter_analyze
 !
 ! ----------------------------------------------------------------------
 !

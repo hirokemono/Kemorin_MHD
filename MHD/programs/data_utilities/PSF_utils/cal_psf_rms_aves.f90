@@ -216,7 +216,7 @@
 !
       use copy_field_smp
 !
-      type(phys_data), intent(in) :: psf_phys
+      type(phys_data), intent(inout) :: psf_phys
       real(kind = kreal), intent(in) ::                                 &
      &           vector(psf_phys%n_point, psf_phys%ntot_phys)
 !

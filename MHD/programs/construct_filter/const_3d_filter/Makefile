@@ -26,8 +26,6 @@ main_gen_filter.o \
 analyzer_gen_filter.o \
 m_ctl_data_gen_3d_filter.o \
 \
-input_control_gen_filter.o \
-\
 set_ctl_gen_filter.o
 
 

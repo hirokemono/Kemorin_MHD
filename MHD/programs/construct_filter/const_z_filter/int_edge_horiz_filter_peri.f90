@@ -35,8 +35,7 @@
       real(kind = kreal), dimension(ndep_filter,0:2) :: xmom_h
       real(kind = kreal), dimension(0:3) :: xmom_ht
 !
-      integer (kind = kint) :: jnod, ie1, ie2, is, iee, kf
-      integer (kind = kint) :: i, j, k, je, j0
+      integer (kind = kint) :: jnod, kf, i, j, je, j0
 !
       real(kind = kreal) :: zz1, zz2, zs, ze
       real(kind = kreal), dimension(n_point) :: filter_0

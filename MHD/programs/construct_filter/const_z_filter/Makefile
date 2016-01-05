@@ -10,6 +10,7 @@ TARGET_TEST_DZ =  test_dz
 SOURCES = $(shell ls *.f90)
 
 MOD_Z_FILTER_CTL = \
+m_vertical_filter_utils.o \
 m_ctl_data_gen_z_filter.o \
 set_ctl_gen_z_filter.o \
 \
@@ -36,10 +37,8 @@ m_z_filter_values.o \
 const_crs_connect_commute_z.o \
 const_delta_z_analytical.o \
 const_z_commute_matrix.o \
-const_connect_2_n_filter.o \
 \
 set_diff_position_z_filter.o \
-set_vert_diff_z_filter.o \
 int_edge_norm_nod_z_filter.o \
 int_edge_moment_z_filter.o \
 int_edge_horiz_filter_peri.o \
@@ -62,7 +61,6 @@ analyzer_test_dz.o \
 \
 const_crs_connect_commute_z.o \
 \
-set_vert_diff_z_filter.o \
 int_edge_norm_nod_z_filter.o \
 int_edge_mass_mat_z_filter.o \
 \

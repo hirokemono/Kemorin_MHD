@@ -1,15 +1,14 @@
 !
 !     program  kemoviewer_f
 !
-      program   kemoviewer_f
-!
 !      program for pick up surface connectivities form subdomain mesh
 !         programmed  by  H.Matsui (U. Chicago)  on Oct. 2003 (ver 1.0)
 !         Modified  by  H.Matsui (U. Chicago)  on Jan. 2007 (ver 2.0)
 !
+      program   kemoviewer_f
+!
       use m_precision
 !
-      use m_geometry_data
       use const_surface_mesh
       use getarg_kemo
 !

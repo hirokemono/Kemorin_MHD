@@ -1,15 +1,18 @@
 !int_edge_norm_nod_z_filter.f90
 !      module int_edge_norm_nod_z_filter
 !
-      module int_edge_norm_nod_z_filter
-!
 !      Written by H. Matsui
+!
+!      subroutine int_edge_norm_nod(node, edge)
+!
+      module int_edge_norm_nod_z_filter
 !
       use m_precision
 !
-      implicit none
+      use t_geometry_data
+      use t_edge_data
 !
-!      subroutine int_edge_norm_nod
+      implicit none
 !
 !   --------------------------------------------------------------------
 !
@@ -17,10 +20,9 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine int_edge_norm_nod
+      subroutine int_edge_norm_nod(node, edge)
 !
       use m_constants
-      use m_geometry_data
       use m_commute_filter_z
       use m_work_4_integration
       use m_z_filter_values
@@ -31,6 +33,9 @@
       use m_int_edge_data
       use set_filter_moments
 !
+      type(node_data), intent(inout) :: node
+      type(edge_data), intent(inout) :: edge
+!
       integer(kind = kint_gl) :: inod0, jele
       integer(kind = kint) :: inod
       integer(kind = kint) :: kf, jnod1, jnod2
@@ -38,18 +43,18 @@
       real(kind = kreal) :: zz0, zz1, zz2, zs, ze
 !
 !
-      do inod = 1, node1%numnod
-        inod0 = node1%inod_global(inod)
-        zz0 =   node1%xx(inod0,3) 
+      do inod = 1, node%numnod
+        inod0 = node%inod_global(inod)
+        zz0 =   node%xx(inod0,3) 
         do je = 1, nfilter2_3 - 1
           j0 = je - nneib_nod(inod0,1) - 1
           jele = inod0 + j0
           zs = dble(2*(j0)  )
           ze = dble(2*(j0+1))
-          jnod1 = edge1%ie_edge(jele,1)
-          jnod2 = edge1%ie_edge(jele,2)
-          zz1 = node1%xx(jnod1,3)
-          zz2 = node1%xx(jnod2,3)
+          jnod1 = edge%ie_edge(jele,1)
+          jnod2 = edge%ie_edge(jele,2)
+          zz1 = node%xx(jnod1,3)
+          zz2 = node%xx(jnod2,3)
 !
 !
           call set_points_4_integration(zs, ze)

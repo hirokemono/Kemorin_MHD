@@ -1,17 +1,13 @@
 !
 ! ----- program  fft_4_plane
 !
-      program    fft_4_plane 
-!
 !    constract spectr data from simulation results 
 !     By H. Matsui
 !
+      program    fft_4_plane 
 !
-
       use m_precision
 !
-      use m_geometry_data
-      use m_read_mesh_data
       use m_size_4_plane
       use m_spectr_4_ispack
       use m_control_plane_fft
@@ -20,7 +16,6 @@
 !
       use t_ucd_data
 !
-      use count_number_with_overlap
       use set_geometry_to_merge
       use set_numnod_4_plane
       use read_udt_data_4_FFT
@@ -67,11 +62,6 @@
 !
       call allocate_number_of_mesh
       call allocate_subdomain_grp_stack
-!
-!     count number of node for each domain
-!
-      write(*,*) 'count_number_w_overlap'
-      call count_number_w_overlap(ele1%nnod_4_ele)
 !
 !   read field name and number of components
 !

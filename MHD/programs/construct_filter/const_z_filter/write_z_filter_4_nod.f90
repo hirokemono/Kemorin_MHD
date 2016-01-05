@@ -3,11 +3,13 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine write_filter_4_nod
+!      subroutine write_filter_4_nod(node, ele, edge)
 !
       module write_z_filter_4_nod
 !
       use m_precision
+      use t_geometry_data
+      use t_edge_data
 !
       implicit none
 !
@@ -17,13 +19,16 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine write_filter_4_nod
+      subroutine write_filter_4_nod(node, ele, edge)
 !
-      use m_geometry_data
       use m_int_commtative_filter
       use m_commute_filter_z
       use m_z_filter_values
       use m_int_edge_vart_width
+!
+      type(node_data), intent(inout) :: node
+      type(element_data), intent(inout) :: ele
+      type(edge_data), intent(inout) :: edge
 !
       integer (kind= kint), parameter :: id_filter_z = 15
       integer (kind= kint) :: i, inod, iele, j, k, kf
@@ -33,7 +38,7 @@
 !
         write(id_filter_z,*) '! number of node'
         write(id_filter_z,*) totalnod_x, totalnod_y,                    &
-     &                      node1%internal_node
+     &                      node%internal_node
         write(id_filter_z,*) '! size of domain'
         write(id_filter_z,'(1p3E25.15e3)') xsize, ysize, zsize
         write(id_filter_z,*) '!grid type'
@@ -95,19 +100,19 @@
 !
         write(id_filter_z,*) '! node_id, z, dz/dzeta, diff of delta_z'
 !
-        do inod = 1, node1%internal_node
+        do inod = 1, node%internal_node
           write(id_filter_z,'(i16,1p4E25.15e3)')                        &
-     &      node1%inod_global(inod), node1%xx(inod,3),                  &
+     &      node%inod_global(inod), node%xx(inod,3),                    &
      &      delta_z(inod), delta_dz(inod), d2_dz(inod)
         end do
 !
         write(id_filter_z,*)                                            &
      &       '! element_id, connectivity, dz/dzeta, diff of delta_z'
 !
-        do iele = 1, ele1%numele
+        do iele = 1, ele%numele
           write(id_filter_z,'(3i16,1p3E25.15e3)')                       &
-     &          edge1%iedge_global(iele),                               &
-     &          edge1%ie_edge(iele,1), edge1%ie_edge(iele,2),           &
+     &          edge%iedge_global(iele),                                &
+     &          edge%ie_edge(iele,1), edge%ie_edge(iele,2),             &
      &          delta_z_e(iele), delta_dz_e(iele), d2_dz_e(iele)
         end do
 !
@@ -115,35 +120,35 @@
 !
         write(id_filter_z,*) '! node_id, neighboring_nodes'
 !
-        do inod = 1, node1%internal_node
+        do inod = 1, node%internal_node
           write(id_filter_z,'(20i16)')                                  &
-     &      node1%inod_global(inod), nneib_nod2(inod,1:2),              &
-     &     (node1%inod_global(inod+i-nneib_nod2(inod,1)-1),             &
+     &      node%inod_global(inod), nneib_nod2(inod,1:2),               &
+     &     (node%inod_global(inod+i-nneib_nod2(inod,1)-1),              &
      &        i=1,ncomp_mat)
         end do
 !
 !
         write(id_filter_z,*) '! node_id, coefs of filter'
 !
-        do inod = 1, node1%internal_node
+        do inod = 1, node%internal_node
           write(id_filter_z,'(i16,1p20E25.15e3)')                      &
-     &          node1%inod_global(inod), c_filter(1:ncomp_mat,inod)
+     &          node%inod_global(inod), c_filter(1:ncomp_mat,inod)
         end do
 !
 !
          write(id_filter_z,*) '! node_id, 1d_momentum on node (modified)'
 !
-        do inod = 1, node1%internal_node
+        do inod = 1, node%internal_node
           write(id_filter_z,'(i16,1p6E25.15e3)')                        &
-     &          node1%inod_global(inod), xmom_int_t(inod,0:2)
+     &          node%inod_global(inod), xmom_int_t(inod,0:2)
         end do
 !
          write(id_filter_z,*)                                           &
      &         '! node_id, diff. of 1d_momentum on node (modified)'
 !
-        do inod = 1, node1%internal_node
+        do inod = 1, node%internal_node
           write(id_filter_z,'(i16,1p6E25.15e3)')                        &
-     &          node1%inod_global(inod), xmom_dt(inod,0:2)
+     &          node%inod_global(inod), xmom_dt(inod,0:2)
         end do
 !
 !
@@ -151,35 +156,35 @@
          write(id_filter_z,*) '! node_id, coefs_4_filtering (modified)'
 !
 !
-        do inod = 1, node1%internal_node
+        do inod = 1, node%internal_node
           write(id_filter_z,'(2i16,1p20E25.15e3)') k,                   &
-     &         node1%inod_global(inod), xmom_int(inod,1:ncomp_mat,k)
+     &         node%inod_global(inod), xmom_int(inod,1:ncomp_mat,k)
         end do
       end do
 !
          write(id_filter_z,*) '! node_id, 1d_momentum on node (original)'
 !
-        do inod = 1, node1%internal_node
+        do inod = 1, node%internal_node
           write(id_filter_z,'(i16,1p6E25.15e3)')                        &
-     &          node1%inod_global(inod), xmom_int_to(inod,0:2)
+     &          node%inod_global(inod), xmom_int_to(inod,0:2)
         end do
 !
          write(id_filter_z,*)                                           &
      &         '! node_id, diff. of 1d_momentum on node (original)'
 !
 
-        do inod = 1, node1%internal_node
+        do inod = 1, node%internal_node
           write(id_filter_z,'(i16,1p6E25.15e3)')                        &
-     &          node1%inod_global(inod), xmom_dot(inod,0:2)
+     &          node%inod_global(inod), xmom_dot(inod,0:2)
         end do
 !
       do k = 0, 2
          write(id_filter_z,*) '! node_id, coefs_4_filtering (original)'
 !
 !
-        do inod = 1, node1%internal_node
+        do inod = 1, node%internal_node
           write(id_filter_z,'(2i16,1p20E25.15e3)') k,                   &
-     &        node1%inod_global(inod), xmom_int_org(inod,1:ncomp_mat,k)
+     &        node%inod_global(inod), xmom_int_org(inod,1:ncomp_mat,k)
         end do
       end do
 !

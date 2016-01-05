@@ -30,19 +30,19 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine allocate_delta_z
+      subroutine allocate_delta_z(numnod, numele)
 !
-      use m_geometry_data
+      integer(kind = kint), intent(in) :: numnod, numele
 !
-      allocate ( delta_z(node1%numnod) )
-      allocate ( delta_dz(node1%numnod) )
-      allocate ( d2_dz(node1%numnod) )
+      allocate ( delta_z(numnod) )
+      allocate ( delta_dz(numnod) )
+      allocate ( d2_dz(numnod) )
 !
-      allocate ( delta_z_e(ele1%numele) )
-      allocate ( delta_dz_e(ele1%numele) )
-      allocate ( d2_dz_e(ele1%numele) )
+      allocate ( delta_z_e(numele) )
+      allocate ( delta_dz_e(numele) )
+      allocate ( d2_dz_e(numele) )
 !
-      allocate( rhs_dz(node1%numnod) )
+      allocate( rhs_dz(numnod) )
 !
       rhs_dz = 0.0d0
 
@@ -58,26 +58,30 @@
 !
 ! ----------------------------------------------------------------------
 !
-     subroutine int_edge_vart_width(n_int, jac_1d)
+     subroutine int_edge_vart_width(numele, edge, n_int, jac_1d)
 !
+      use t_edge_data
       use t_jacobian_1d
-      use m_geometry_data
+!
       use m_fem_gauss_int_coefs
       use m_commute_filter_z
       use m_int_edge_data
 !
-      integer (kind = kint), intent(in) :: n_int
+      integer(kind = kint), intent(in) :: numele
+      type(edge_data), intent(in) :: edge
       type(jacobians_1d), intent(in) :: jac_1d
+      integer (kind = kint), intent(in) :: n_int
+!
       integer (kind = kint) ::  inod2, iele, k2, i, ix
 !
 !
       rhs_dz = 0.0d0
 !
-      do iele = 1, ele1%numele
+      do iele = 1, numele
         do i = 1, n_int
           ix = i + int_start1(n_int)
           do k2 = 1, 2
-           inod2 = edge1%ie_edge(iele,k2)
+           inod2 = edge%ie_edge(iele,k2)
            rhs_dz(inod2) = rhs_dz(inod2)                                &
      &                    + abs(jac_1d%xeg_edge(iele,ix,3))             &
      &                     * jac_1d%an_edge(k2,ix)                      &
@@ -90,17 +94,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-!     subroutine set_rhs_vart_width
+     subroutine set_rhs_vart_width(numnod)
 !
-     subroutine set_rhs_vart_width
-!
-      use m_geometry_data
       use m_consist_mass_crs
+!
+      integer(kind = kint), intent(in) :: numnod
 !
       integer (kind = kint) :: inod
 !
 !
-      do inod = 1, node1%numnod
+      do inod = 1, numnod
         rhs_mk_crs(inod) = rhs_dz(inod)
       end do
 !
@@ -108,16 +111,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-     subroutine cal_sol_vart_width
+     subroutine cal_sol_vart_width(numnod)
 !
-      use m_geometry_data
       use m_commute_filter_z
       use m_int_edge_data
+!
+      integer(kind = kint), intent(in) :: numnod
 !
       integer (kind = kint) :: inod
 !
 !
-      do inod = 1, node1%numnod
+      do inod = 1, numnod
         delta_z(inod) = rhs_dz(inod) * mk(inod)
       end do
 !
@@ -125,16 +129,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-     subroutine cal_sol_diff_vart_width
+     subroutine cal_sol_diff_vart_width(numnod)
 !
-      use m_geometry_data
       use m_commute_filter_z
       use m_int_edge_data
+!
+      integer(kind = kint), intent(in) :: numnod
 !
       integer (kind = kint) :: inod
 !
 !
-      do inod = 1, node1%numnod
+      do inod = 1, numnod
         delta_dz(inod) = rhs_dz(inod) * mk(inod)
       end do
 !
@@ -142,16 +147,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-     subroutine cal_sol_d2_vart_width
+     subroutine cal_sol_d2_vart_width(numnod)
 !
-      use m_geometry_data
       use m_commute_filter_z
       use m_int_edge_data
 !
+      integer(kind = kint), intent(in) :: numnod
       integer (kind = kint) :: inod
 !
 !
-      do inod = 1, node1%numnod
+      do inod = 1, numnod
         d2_dz(inod) = rhs_dz(inod) * mk(inod)
       end do
 !
@@ -159,23 +164,26 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vart_width_by_ele
+      subroutine cal_vart_width_by_ele(numnod, numele, edge)
 !
-      use m_geometry_data
+      use t_edge_data
       use m_commute_filter_z
       use m_int_edge_data
+!
+      integer(kind = kint), intent(in) :: numnod, numele
+      type(edge_data), intent(in) :: edge
 !
       integer (kind = kint) :: inod2, iele, k2
 !
 !
       delta_z = 0.0d0
 !
-      do iele = 1, ele1%numele
+      do iele = 1, numele
         do k2 = 1, 2
-          inod2 = edge1%ie_edge(iele,k2)
+          inod2 = edge%ie_edge(iele,k2)
           if (inod2 .eq. 1) then
             delta_z(inod2) = delta_z(inod2) + dz(iele)
-          else if (inod2 .eq. node1%numnod) then
+          else if (inod2 .eq. numnod) then
             delta_z(inod2) = delta_z(inod2) + dz(iele)
           else
             delta_z(inod2) = delta_z(inod2) + dz(iele)                  &
@@ -188,30 +196,33 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_edge_diff_vart_w(n_int, jac_1d)
+      subroutine int_edge_diff_vart_w(ele, edge, n_int, jac_1d)
 !
+      use t_geometry_data
+      use t_edge_data
       use t_jacobian_1d
-      use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_shape_functions
       use m_commute_filter_z
       use m_int_edge_data
 !
-      integer (kind = kint), intent(in) :: n_int
+      type(element_data), intent(in) :: ele
+      type(edge_data), intent(in) :: edge
       type(jacobians_1d), intent(in) :: jac_1d
+      integer (kind = kint), intent(in) :: n_int
 !
       integer (kind = kint) :: inod1, inod2, iele, k1, k2, i, ix
 !
 !
       rhs_dz = 0.0d0
 !
-      do iele = 1, ele1%numele
+      do iele = 1, ele%numele
         do i = 1, n_int
           ix = i + int_start1(n_int)
           do k1 = 1, 2
             do k2 = 1, 2
-              inod1 = edge1%ie_edge(iele,k1)
-              inod2 = edge1%ie_edge(iele,k2)
+              inod1 = edge%ie_edge(iele,k1)
+              inod2 = edge%ie_edge(iele,k2)
               rhs_dz(inod2) = rhs_dz(inod2)                             &
      &                       + delta_z(inod1) * dnxi_ed1(k1,ix)         &
      &                        * jac_1d%an_edge(k2,ix) * owe(ix)
@@ -225,30 +236,34 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_edge_d2_vart_w(n_int, jac_1d)
+      subroutine int_edge_d2_vart_w(node, ele, edge, n_int, jac_1d)
 !
       use calypso_mpi
+      use t_geometry_data
+      use t_edge_data
       use t_jacobian_1d
-      use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_shape_functions
       use m_commute_filter_z
       use m_int_edge_data
 !
-      integer (kind = kint), intent(in) :: n_int
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(edge_data), intent(in) :: edge
       type(jacobians_1d), intent(in) :: jac_1d
+      integer (kind = kint), intent(in) :: n_int
       integer (kind = kint) :: inod1, inod2, iele, k1, k2, i, ix
 !
 !
       rhs_dz = 0.0d0
 !
-      do iele = 1, ele1%numele
+      do iele = 1, ele%numele
         do i = 1, n_int
           ix = i + int_start1(n_int)
           do k1 = 1, 2
             do k2 = 1, 2
-              inod1 = edge1%ie_edge(iele,k1)
-              inod2 = edge1%ie_edge(iele,k2)
+              inod1 = edge%ie_edge(iele,k1)
+              inod2 = edge%ie_edge(iele,k2)
               rhs_dz(inod2) = rhs_dz(inod2) - delta_z(inod1)            &
      &                     * dnxi_ed1(k1,ix)* dnxi_ed1(k2,ix) * owe(ix) &
      &                      / jac_1d%xeg_edge(iele,ix,3)
@@ -258,37 +273,41 @@
       end do
 !
       rhs_dz(1) = rhs_dz(1) - delta_dz(1)
-      rhs_dz(node1%internal_node) = rhs_dz(node1%internal_node)         &
-     &                             + delta_dz(node1%internal_node)
+      rhs_dz(node%internal_node) = rhs_dz(node%internal_node)           &
+     &                             + delta_dz(node%internal_node)
 !
       end subroutine int_edge_d2_vart_w
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_edge_d2_vart_w2(n_int, jac_1d)
+      subroutine int_edge_d2_vart_w2(ele, edge, n_int, jac_1d)
 !
       use calypso_mpi
+      use t_geometry_data
+      use t_edge_data
       use t_jacobian_1d
-      use m_geometry_data
       use m_fem_gauss_int_coefs
       use m_shape_functions
       use m_commute_filter_z
       use m_int_edge_data
 !
-      integer (kind = kint), intent(in) :: n_int
+!      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(edge_data), intent(in) :: edge
       type(jacobians_1d), intent(in) :: jac_1d
+      integer (kind = kint), intent(in) :: n_int
       integer (kind = kint) :: inod1, inod2, iele, k1, k2, i, ix
 !
 !
       rhs_dz = 0.0d0
 !
-      do iele = 1, ele1%numele
+      do iele = 1, ele%numele
         do i = 1, n_int
           ix = i + int_start1(n_int)
           do k1 = 1, 2
             do k2 = 1, 2
-              inod1 = edge1%ie_edge(iele,k1)
-              inod2 = edge1%ie_edge(iele,k2)
+              inod1 = edge%ie_edge(iele,k1)
+              inod2 = edge%ie_edge(iele,k2)
               rhs_dz(inod2) = rhs_dz(inod2) + delta_dz(inod1)           &
      &                    * dnxi_ed1(k1,ix) * jac_1d%an_edge(k2,ix)     &
      &                    * owe(ix)
@@ -297,7 +316,7 @@
         end do
       end do
 !
-!      do inod1 = 1, node1%numnod
+!      do inod1 = 1, node%numnod
 !        write(*,*) inod1, rhs_dz(inod1)
 !      end do
 !

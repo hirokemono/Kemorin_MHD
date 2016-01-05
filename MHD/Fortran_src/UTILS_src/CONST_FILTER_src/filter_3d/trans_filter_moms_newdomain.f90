@@ -4,9 +4,11 @@
 !      modified by H. Matsui on Apr., 2008
 !
 !      subroutine trans_filter_moms_newmesh_para(newmesh,               &
-!     &          new_surf_mesh, new_edge_mesh)
-!      subroutine trans_filter_moms_newmesh_sgl(newmesh,                &
-!     &          new_surf_mesh, new_edge_mesh)
+!     &         (orgmesh, org_surf_mesh, org_edge_mesh,                 &
+!     &          newmesh, new_surf_mesh, new_edge_mesh)
+!      subroutine trans_filter_moms_newmesh_sgl                         &
+!     &         (orgmesh, org_surf_mesh, org_edge_mesh,                 &
+!     &          newmesh, new_surf_mesh, new_edge_mesh)
 !
       module trans_filter_moms_newdomain
 !
@@ -40,17 +42,16 @@
 !   --------------------------------------------------------------------
 !
       subroutine trans_filter_moms_newmesh_para                         &
-     &         (org_node, org_ele, org_surf, org_edge,                  &
+     &         (orgmesh, org_surf_mesh, org_edge_mesh,                  &
      &          newmesh, new_surf_mesh, new_edge_mesh)
 !
       use calypso_mpi
 !
       use set_filter_moms_2_new_mesh
 !
-      type(node_data),    intent(inout) :: org_node
-      type(element_data), intent(inout) :: org_ele
-      type(surface_data), intent(inout) :: org_surf
-      type(edge_data), intent(inout) :: org_edge
+      type(mesh_geometry), intent(inout) :: orgmesh
+      type(surface_geometry), intent(inout) :: org_surf_mesh
+      type(edge_geometry), intent(inout) :: org_edge_mesh
       type(mesh_geometry), intent(inout) :: newmesh
       type(surface_geometry), intent(inout) :: new_surf_mesh
       type(edge_geometry), intent(inout) ::  new_edge_mesh
@@ -59,8 +60,9 @@
       call count_nele_newdomain_para(my_rank)
       call allocate_iele_local_newfilter
 !
-      call trans_filter_moms_each_domain(my_rank, org_node, org_ele,    &
-     &    org_surf, org_edge, newmesh, new_surf_mesh, new_edge_mesh)
+      call trans_filter_moms_each_domain                                &
+     &   (my_rank, orgmesh, org_surf_mesh, org_edge_mesh,               &
+     &    newmesh, new_surf_mesh, new_edge_mesh)
 !
       call deallocate_iele_local_newfilter
 !
@@ -69,17 +71,17 @@
 !   --------------------------------------------------------------------
 !
       subroutine trans_filter_moms_newmesh_sgl                          &
-     &         (org_node, org_ele, org_surf, org_edge,                  &
-     &         newmesh, new_surf_mesh, new_edge_mesh)
+     &         (orgmesh, org_surf_mesh, org_edge_mesh,                  &
+     &          newmesh, new_surf_mesh, new_edge_mesh)
 !
+      use calypso_mpi
       use m_2nd_pallalel_vector
       use set_filter_moms_2_new_mesh
 !
       integer(kind = kint) :: ip2, my_rank_2nd
-      type(node_data),    intent(inout) :: org_node
-      type(element_data), intent(inout) :: org_ele
-      type(surface_data), intent(inout) :: org_surf
-      type(edge_data), intent(inout) :: org_edge
+      type(mesh_geometry), intent(inout) :: orgmesh
+      type(surface_geometry), intent(inout) :: org_surf_mesh
+      type(edge_geometry), intent(inout) :: org_edge_mesh
       type(mesh_geometry), intent(inout) :: newmesh
       type(surface_geometry), intent(inout) :: new_surf_mesh
       type(edge_geometry), intent(inout) ::  new_edge_mesh
@@ -92,7 +94,7 @@
       do ip2 = 1, nprocs_2nd
         my_rank_2nd = ip2 - 1
         call trans_filter_moms_each_domain                              &
-     &     (my_rank_2nd, org_node, org_ele, org_surf, org_edge,         &
+     &     (my_rank, orgmesh, org_surf_mesh, org_edge_mesh,             &
      &      newmesh, new_surf_mesh, new_edge_mesh)
       end do
 !
@@ -155,8 +157,8 @@
 !   --------------------------------------------------------------------
 !
       subroutine trans_filter_moms_each_domain                          &
-     &         (my_rank_2nd, org_node, org_ele, org_surf, org_edge,     &
-     &          newmesh, new_surf_mesh, new_edge_mesh)
+     &         (my_rank_2nd, orgmesh, org_surf_mesh, org_edge_mesh,     &
+     &                       newmesh, new_surf_mesh, new_edge_mesh)
 !
       use calypso_mpi
       use m_filter_file_names
@@ -171,10 +173,9 @@
 !
       integer(kind = kint), intent(in) :: my_rank_2nd
 !
-      type(node_data),    intent(inout) :: org_node
-      type(element_data), intent(inout) :: org_ele
-      type(surface_data), intent(inout) :: org_surf
-      type(edge_data), intent(inout) :: org_edge
+      type(mesh_geometry), intent(inout) :: orgmesh
+      type(surface_geometry), intent(inout) :: org_surf_mesh
+      type(edge_geometry), intent(inout) :: org_edge_mesh
       type(mesh_geometry), intent(inout) :: newmesh
       type(surface_geometry), intent(inout) :: new_surf_mesh
       type(edge_geometry), intent(inout) ::  new_edge_mesh
@@ -224,9 +225,10 @@
       call set_iele_table_4_newfilter(newmesh%ele)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_filter_moms_newdomain'
-      call const_filter_moms_newdomain(nprocs, newmesh%node,            &
-     &    org_node, org_ele, org_surf, org_edge, FEM_elen_t,            &
-     &    FEM_momenet1, elen2_ele, moment2_ele)
+      call const_filter_moms_newdomain                                  &
+     &   (nprocs, newmesh%node, orgmesh%node, orgmesh%ele,              &
+     &    org_surf_mesh%surf, org_edge_mesh%edge,                       &
+     &    FEM_elen_t, FEM_momenet1, elen2_ele, moment2_ele)
 !
 !
 !      write new filter moments file

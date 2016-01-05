@@ -10,15 +10,8 @@
 !
       use m_precision
 !
-      use t_jacobian_1d
-!
       implicit none
 !
-!
-!>     Stracture for Jacobians for edge (linear)
-      type(jacobians_1d), save :: jac_z_l
-!>     Stracture for Jacobians for edge (quad)
-      type(jacobians_1d), save :: jac_z_q
 !
       real(kind=kreal), dimension(:), allocatable :: dz
       real(kind=kreal), dimension(:), allocatable :: mk

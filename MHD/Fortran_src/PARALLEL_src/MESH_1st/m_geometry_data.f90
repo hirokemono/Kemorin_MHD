@@ -10,7 +10,7 @@
 !!   including node and element position, all connectivities
 !!
 !
-      module   m_geometry_data
+      module m_geometry_data
 !
       use m_precision
       use t_mesh_data

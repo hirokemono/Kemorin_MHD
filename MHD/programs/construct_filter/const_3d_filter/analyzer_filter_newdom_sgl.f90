@@ -4,17 +4,20 @@
 !
 !      modified by H. Matsui on Apr., 2008
 !
-!      subroutine init_analyzer
-!      subroutine analyze
+!      subroutine newdomain_filter_init
+!      subroutine newdomain_filter_analyze
 !
       module analyzer_filter_newdom_sgl
 !
       use m_precision
       use m_machine_parameter
       use t_mesh_data
-      use m_geometry_data
 !
       implicit none
+!
+      type(mesh_geometry), save ::    orgmesh
+      type(surface_geometry), save :: org_surf_mesh
+      type(edge_geometry), save ::   org_edge_mesh
 !
       type(mesh_geometry), save ::    newmesh
       type(surface_geometry), save :: new_surf_mesh
@@ -26,7 +29,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine newdomain_filter_init
 !
       use calypso_mpi
       use m_read_mesh_data
@@ -59,11 +62,11 @@
       if (iflag_debug.eq.1) write(*,*) 's_const_domain_tbl_by_file'
       call s_const_domain_tbl_by_file(target_mesh_head)
 !
-      end subroutine init_analyzer
+      end subroutine newdomain_filter_init
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze
+      subroutine newdomain_filter_analyze
 !
       use m_ctl_data_newdomain_filter
       use local_newdomain_filter
@@ -72,22 +75,25 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'local_newdomain_filter_sngl'
-      call local_newdomain_filter_sngl(node1, ele1, newmesh)
+      call local_newdomain_filter_sngl                                  &
+     &   (orgmesh%node, orgmesh%ele, newmesh)
 !
       if (iflag_debug.eq.1) write(*,*) 'trans_filter_moms_newmesh_sgl'
       if (iflag_set_filter_elen .gt. 0                                  &
      &  .or. iflag_set_filter_moms.gt.0) then
-        call trans_filter_moms_newmesh_sgl(node1, ele1, surf1, edge1,   &
+        call trans_filter_moms_newmesh_sgl                              &
+     &     (orgmesh, org_surf_mesh, org_edge_mesh,                      &
      &      newmesh, new_surf_mesh, new_edge_mesh)
       end if
 !
       if (iflag_set_filter_coef .gt. 0) then
         if (iflag_debug.eq.1) write(*,*) 'filters_4_newdomains_single'
-        call filters_4_newdomains_single(node1, ele1, newmesh)
+        call filters_4_newdomains_single                                &
+     &     (orgmesh%node, orgmesh%ele, newmesh)
       end if
 !
 !
-      end subroutine analyze
+      end subroutine newdomain_filter_analyze
 !
 ! ----------------------------------------------------------------------
 !

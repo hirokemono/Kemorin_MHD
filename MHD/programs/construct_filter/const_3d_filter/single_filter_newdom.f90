@@ -14,9 +14,9 @@
       implicit none
 !
 !
-      call init_analyzer
+      call newdomain_filter_init
 !
-      call analyze
+      call newdomain_filter_analyze
 
       write(*,*) '***** single node program finished *****'
       stop

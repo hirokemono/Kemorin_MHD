@@ -33,7 +33,6 @@
       subroutine local_newdomain_filter_para                            &
      &         (org_node, org_ele, newmesh)
 !
-      use m_geometry_data
       use m_2nd_pallalel_vector
 !
       use set_inod_newdomain_filter

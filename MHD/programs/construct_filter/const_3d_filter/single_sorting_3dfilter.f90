@@ -14,8 +14,8 @@
       implicit none
 !
 !
-      call init_analyzer
-      call analyze
+      call sort_3dfilter_init
+      call sort_3dfilter_analyze
 
       write(*,*) '***** single node program finished *****'
       stop

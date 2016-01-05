@@ -17,9 +17,9 @@
 !
       call calypso_MPI_init
 !
-      call init_analyzer
+      call moments_to_newdomain_init
 
-      call analyze
+      call moments_to_newdomain_analyze
 
       call calypso_MPI_finalize
 !

@@ -12,6 +12,8 @@
       use m_precision
       use m_machine_parameter
 !
+      use m_vertical_filter_utils
+!
         implicit none
 !
 ! ----------------------------------------------------------------------
@@ -23,8 +25,6 @@
       subroutine init_analyzer
 !
       use calypso_mpi
-      use m_geometry_data
-      use m_nod_comm_table
       use m_iccg_parameter
       use m_crs_matrix
 !
@@ -45,7 +45,6 @@
       use solve_precond_DJDS
 
       use set_diff_position_z_filter
-      use set_vert_diff_z_filter
       use int_edge_norm_nod_z_filter
       use int_edge_moment_z_filter
       use int_edge_horiz_filter_peri
@@ -57,7 +56,6 @@
 
       use input_control_gen_z_filter
       use calcs_by_LUsolver
-      use const_connect_2_n_filter
       use const_z_commute_matrix
       use copy_1darray_2_2darray
       use switch_crs_matrix
@@ -79,8 +77,9 @@
 !
 !C
 !C-- read CNTL DATA
-
-      call s_input_control_4_z_commute
+      call s_input_control_4_z_commute                                  &
+     &  (z_filter_mesh%nod_comm, z_filter_mesh%node, z_filter_mesh%ele, &
+     &   surf_z_filter, edge_z_filter)
 !
 !C
 !C     set gauss points
@@ -92,36 +91,46 @@
       n_point = i_int_z_filter
       if (my_rank.eq.0) write(*,*) 's_cal_jacobian_linear_1d'
       call s_cal_jacobian_linear_1d(i_int_z_filter,                     &
-     &    node1, ele1, surf1, edge1, jac_z_l, jac_z_q)
+     &    z_filter_mesh%node, z_filter_mesh%ele,                        &
+     &    surf_z_filter, edge_z_filter, jac_z_l, jac_z_q)
 !
 !   construct FEM mesh for x direction
 !
       mat1_crs%NB_crs = nfilter2_3
       if (my_rank.eq.0) write(*,*) 'set_crs_connect_commute_z'
-      call set_crs_connect_commute_z
+      call set_crs_connect_commute_z(z_filter_mesh%node)
 !
 !
 !
       if (my_rank.eq.0) write(*,*) 'allocate_int_edge_data'
-      call allocate_int_edge_data(node1%numnod, ele1%numele)
-      call set_spatial_difference(n_int, jac_z_l)
+      call allocate_int_edge_data                                       &
+     &   (z_filter_mesh%node%numnod, z_filter_mesh%ele%numele)
+      call set_spatial_difference(z_filter_mesh%ele%numele,             &
+     &                            n_int, jac_z_l)
 !
       if (my_rank.eq.0) write(*,*) 'cal_delta_z_analytical'
-       call cal_delta_z_analytical(jac_z_l)
-!      call cal_delta_z(jac_z_l)
+       call cal_delta_z_analytical                                      &
+     &    (z_filter_mesh%node, z_filter_mesh%ele,                       &
+     &     edge_z_filter, jac_z_l)
+!      call cal_delta_z(z_filter_mesh%nod_comm,                         &
+!     &    z_filter_mesh%node, z_filter_mesh%ele,                       &
+!     &    edge_z_filter, jac_z_l)
 !
-!      call check_crs_connect(my_rank, node1%numnod, tbl1_crs)
+!      call check_crs_connect                                           &
+!     &   (my_rank, z_filter_mesh%node%numnod, tbl1_crs)
 !      call check_communication_data
 !
 !    set information for filtering for node
 !
-      call allocate_neib_nod(node1%numnod, node1%internal_node)
+      call allocate_neib_nod(z_filter_mesh%node%numnod,                 &
+     &                       z_filter_mesh%node%internal_node)
       if (my_rank.eq.0) write(*,*) 's_set_neib_nod_z'
-      call s_set_neib_nod_z(node1%internal_node,                        &
+      call s_set_neib_nod_z(z_filter_mesh%node%internal_node,           &
      &    nfilter2_2, numfilter+1,   nneib_nod, ineib_nod)
       if (my_rank.eq.0) write(*,*) 'set_connect_2_n_filter'
-      call set_connect_2_n_filter
-!      call check_neib_nod(my_rank, node1%numnod, node1%internal_node)
+      call set_connect_2_n_filter(z_filter_mesh%node)
+!      call check_neib_nod(my_rank, z_filter_mesh%node%numnod,          &
+!     &                             z_filter_mesh%node%internal_node)
 !
 !    set information for filtering for element
 !
@@ -136,7 +145,8 @@
 !     det dz / dxi
 !
       if (my_rank.eq.0) write(*,*) 'set_difference_of_position'
-      call set_difference_of_position
+      call set_difference_of_position                                   &
+     &   (z_filter_mesh%node, edge_z_filter)
 !      call check_difference_of_position(my_rank)
 !
 !   set moments of filter
@@ -160,19 +170,20 @@
        call allocate_work_4_integration
        call allocate_work_4_commute
 !
-       call allocate_matrix_4_commutation(node1%numnod)
+       call allocate_matrix_4_commutation(z_filter_mesh%node%numnod)
 !
       if (my_rank.eq.0) write(*,*) 'int_edge_norm_nod'
-       call int_edge_norm_nod
-!       call check_nod_normalize_matrix(my_rank, node1%numnod)
+       call int_edge_norm_nod(z_filter_mesh%node, edge_z_filter)
+!       call check_nod_normalize_matrix                                 &
+!     &     (my_rank, z_filter_mesh%node%numnod)
 !
        write(*,*) 'alloc_crs_mat_data'
        mat1_crs%NB_crs = ncomp_mat
        call alloc_crs_mat_data(tbl1_crs, mat1_crs)
 !
-       call set_matrix_4_border(node1%numnod)
+       call set_matrix_4_border(z_filter_mesh%node%numnod)
        write(*,*) 's_const_commute_matrix'
-       call s_const_commute_matrix
+       call s_const_commute_matrix(z_filter_mesh%node%numnod)
        write(*,*) 's_switch_crs_matrix'
        call s_switch_crs_matrix(tbl1_crs, mat1_crs)
        write(*,*) 'check_crs_matrix_comps'
@@ -186,21 +197,24 @@
 !C-- solve matrix
       write(*,*) 'METHOD_crs: ', mat1_crs%METHOD_crs
       if ( mat1_crs%METHOD_crs .eq. 'LU' ) then
-        call solve_z_commute_LU(node1%numnod)
+        call solve_z_commute_LU(z_filter_mesh%node%numnod)
       else
-        call transfer_crs_2_djds_matrix(node1, nod_comm,                &
+        call transfer_crs_2_djds_matrix                                 &
+     &     (z_filter_mesh%node, z_filter_mesh%nod_comm,                 &
      &      tbl1_crs, mat1_crs, djds_tbl1, djds_mat1)
 !
         if   (mat1_crs%SOLVER_crs.eq.'block33'                          &
      &    .or. mat1_crs%SOLVER_crs.eq.'BLOCK33') then
           write(*,*) 'solve_by_djds_solver33'
           call solve_by_djds_solver33                                   &
-     &       (node1, nod_comm, mat1_crs, djds_tbl1, djds_mat1, ierr)
+     &       (z_filter_mesh%node, z_filter_mesh%nod_comm,               &
+     &        mat1_crs, djds_tbl1, djds_mat1, ierr)
         else if (mat1_crs%SOLVER_crs.eq.'blockNN'                       &
      &    .or. mat1_crs%SOLVER_crs.eq.'BLOCKNN') then
           write(*,*) 'solve_by_djds_solverNN'
           call solve_by_djds_solverNN                                   &
-     &       (node1, nod_comm, mat1_crs, djds_tbl1, djds_mat1, ierr)
+     &       (z_filter_mesh%node, z_filter_mesh%nod_comm,               &
+     &        mat1_crs, djds_tbl1, djds_mat1, ierr)
         end if
       end if
 !
@@ -208,21 +222,23 @@
 !
 !
        ndep_filter = ncomp_mat
-       call allocate_int_commute_filter(node1%numnod, ele1%numele)
+       call allocate_int_commute_filter                                 &
+      &   (z_filter_mesh%node%numnod, z_filter_mesh%ele%numele)
 !
        write(*,*) 's_copy_1darray_2_2darray'
        call s_copy_1darray_2_2darray                                    &
-     &    (ncomp_mat, node1%numnod, c_filter, mat1_crs%X_crs)
+     &    (ncomp_mat, z_filter_mesh%node%numnod,                        &
+     &     c_filter, mat1_crs%X_crs)
        call dealloc_crs_mat_data(mat1_crs)
 !
        write(*,*) 's_set_neib_nod_z'
-       call s_set_neib_nod_z(node1%numnod, ncomp_mat, nside,            &
-     &     nneib_nod2, ineib_nod2)
+       call s_set_neib_nod_z(z_filter_mesh%node%numnod,                 &
+     &     ncomp_mat, nside, nneib_nod2, ineib_nod2)
 !       call check_neib_nod_2nd(my_rank)
        write(*,*) 's_set_neib_ele_z'
-       call s_set_neib_ele_z(ele1%numele, ncomp_mat, nside, nneib_ele2, &
-     &    ineib_ele2)
-!       call check_neib_ele_2nd(my_rank, ele1%numele)
+       call s_set_neib_ele_z(z_filter_mesh%ele%numele,                  &
+     &     ncomp_mat, nside, nneib_ele2, ineib_ele2)
+!       call check_neib_ele_2nd(my_rank, z_filter_mesh%ele%numele)
 !
        call int_edge_filter_peri(ndep_filter, totalnod_x, xsize,        &
      &      xmom_h_x, xmom_ht_x)
@@ -231,16 +247,22 @@
        write(*,*) 'xmom_ht_x', xmom_ht_x
        write(*,*) 'xmom_ht_x', xmom_ht_y
        if(my_rank.eq.0) write(*,*) 'int_edge_commutative_filter'
-       call int_edge_commutative_filter(node1%numnod, ele1%numele,      &
-     &     node1%xx(1:node1%numnod,3), edge1%ie_edge)
-!       call check_int_commutative_filter(my_rank, node1%numnod)
+       call int_edge_commutative_filter                                 &
+     &    (z_filter_mesh%node%numnod, z_filter_mesh%ele%numele,         &
+     &     z_filter_mesh%node%xx(1:z_filter_mesh%node%numnod,3),        &
+     &     edge_z_filter%ie_edge)
+!       call check_int_commutative_filter                               &
+!     &    (my_rank, z_filter_mesh%node%numnod)
 !
        if(my_rank.eq.0) write(*,*) 'int_edge_moment'
-       call int_edge_moment(n_int, jac_z_l)
+       call int_edge_moment                                             &
+     &    (z_filter_mesh%node%numnod, z_filter_mesh%ele%numele,         &
+     &     edge_z_filter, n_int, jac_z_l)
 !
 !    output results
 !
-       call write_filter_4_nod
+       call write_filter_4_nod(z_filter_mesh%node, z_filter_mesh%ele,   &
+     &     edge_z_filter)
 !
        call deallocate_filter_values
        call deallocate_gauss_points

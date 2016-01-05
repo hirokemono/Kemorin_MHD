@@ -9,9 +9,11 @@
       use m_precision
       use calypso_mpi
       use m_machine_parameter
-      use calypso_mpi
+      use t_mesh_data
 !
       implicit none
+!
+      type(mesh_geometry), save :: mesh_filter
 !
 ! ----------------------------------------------------------------------
 !
@@ -19,7 +21,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer
+      subroutine sort_3dfilter_init
 !
       use m_ctl_params_4_gen_filter
 !
@@ -42,15 +44,11 @@
       call set_numdomain_3d_comm_filter(nprocs)
 !
 !
-      end subroutine init_analyzer
+      end subroutine sort_3dfilter_init
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine analyze
-!
-      use m_geometry_data
-      use m_group_data
-      use m_nod_comm_table
+      subroutine sort_3dfilter_analyze
 !
       use m_ctl_params_4_gen_filter
       use m_filter_file_names
@@ -79,16 +77,12 @@
 !
 !  --  read geometry
 !
-        if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-        call input_mesh                                                 &
-     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
-     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
+        if (iflag_debug.eq.1) write(*,*) 'input_mesh_geometry'
+        call input_mesh_geometry(my_rank, mesh_filter%nod_comm,        &
+     &      mesh_filter%node, mesh_filter%ele)
 !
-        call deallocate_sf_grp_type(sf_grp1)
-        call deallocate_grp_type(ele_grp1)
-        call deallocate_grp_type(nod_grp1)
-        call deallocate_node_geometry_type(node1)
-        call deallocate_type_comm_tbl(nod_comm)
+        call deallocate_node_geometry_type(mesh_filter%node)
+        call deallocate_type_comm_tbl(mesh_filter%nod_comm)
 !
 !     read filtering information
 !
@@ -106,7 +100,7 @@
         call s_sorting_by_filtering_area
 !
         call deallocate_num_near_all_w
-        call deallocate_ele_connect_type(ele1)
+        call deallocate_ele_connect_type(mesh_filter%ele)
 !
 !  ---------------------------------------------------
 !       output filter moment
@@ -132,9 +126,9 @@
         call deallocate_filter_num_sort_IO
       end do
 !
-!      if (iflag_debug.eq.1) write(*,*) 'exit analyze'
+!      if (iflag_debug.eq.1) write(*,*) 'exit sort_3dfilter_analyze'
 !
-        end subroutine analyze
+        end subroutine sort_3dfilter_analyze
 !
 ! ----------------------------------------------------------------------
 !

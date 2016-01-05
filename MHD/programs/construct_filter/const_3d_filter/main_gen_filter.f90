@@ -16,9 +16,9 @@
 !
       call calypso_MPI_init
 !
-      call init_analyzer
+      call generate_filter_init
 !
-      call analyze
+      call generate_filter_analyze
 !
       call calypso_MPI_finalize
 !
