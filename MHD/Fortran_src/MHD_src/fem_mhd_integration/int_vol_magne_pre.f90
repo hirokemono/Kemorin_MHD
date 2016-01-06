@@ -8,9 +8,25 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!!      subroutine int_vol_magne_pre_ele(ncomp_ele, d_ele, iphys_ele)
+!!      subroutine int_vol_magne_pre_ele                                &
+!!     &         (node, ele, conduct, iphys, nod_fld,                   &
+!!     &          ncomp_ele, d_ele, iphys_ele,                          &
+!!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_magne_pre_ele_upm                            &
-!!     &         (ncomp_ele, d_ele, iphys_ele)
+!!     &         (node, ele, conduct, iphys, nod_fld,                   &
+!!     &          ncomp_ele, d_ele, iphys_ele,                          &
+!!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(field_geometry_data), intent(in) :: conduct
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_nl
+!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
       module int_vol_magne_pre
 !
@@ -18,21 +34,22 @@
 !
       use m_control_parameter
       use m_machine_parameter
-      use m_geometry_data
-      use m_geometry_data_MHD
       use m_phys_constants
-      use m_node_phys_data
       use m_fem_gauss_int_coefs
-      use m_element_id_4_node
-      use m_finite_element_matrix
-      use m_jacobians
-      use m_int_vol_data
       use m_physical_property
       use m_SGS_model_coefs
       use m_SGS_address
-      use m_filter_elength
 !
+      use t_geometry_data_MHD
+      use t_geometry_data
+      use t_phys_data
       use t_phys_address
+      use t_jacobian_3d
+      use t_table_FEM_const
+      use t_finite_element_mat
+      use t_phys_address
+      use t_MHD_finite_element_mat
+      use t_filter_elength
 !
       implicit none
 !
@@ -42,7 +59,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_magne_pre_ele(ncomp_ele, d_ele, iphys_ele)
+      subroutine int_vol_magne_pre_ele                                  &
+     &         (node, ele, conduct, iphys, nod_fld,                     &
+     &          ncomp_ele, d_ele, iphys_ele,                            &
+     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_2_each_element
@@ -53,9 +73,22 @@
       use fem_skv_lorentz_full_type
       use fem_skv_div_sgs_flux_type
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld
+      type(field_geometry_data), intent(in) :: conduct
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(gradient_model_data_type), intent(in) :: FEM_elens
+!
       integer(kind = kint), intent(in) :: ncomp_ele
-      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
       type(phys_address), intent(in) :: iphys_ele
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_nl
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
       integer(kind=kint) :: k2, num_int
 !
@@ -63,55 +96,57 @@
 !  ---------  set number of integral points
 !
       num_int = intg_point_t_evo
-      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
 !
 ! -------- loop for shape function for the phsical values
-      do k2=1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
-     &      k2, iphys%i_velo, mhd_fem1_wk%velo_1)
-        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
-     &      k2, iphys%i_magne, mhd_fem1_wk%magne_1)
+      do k2=1, ele%nnod_4_ele
+        call vector_phys_2_each_element(node, ele, nod_fld,             &
+     &      k2, iphys%i_velo, mhd_fem_wk%velo_1)
+        call vector_phys_2_each_element(node, ele, nod_fld,             &
+     &      k2, iphys%i_magne, mhd_fem_wk%magne_1)
 !
 !$omp parallel
         call add_const_to_vector_smp                                    &
-     &     (np_smp, ele1%numele, ele1%istack_ele_smp,                   &
-     &      d_ele(1,iphys_ele%i_magne), ex_magne, fem1_wk%vector_1)
+     &     (np_smp, ele%numele, ele%istack_ele_smp,                     &
+     &      d_ele(1,iphys_ele%i_magne), ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
         call fem_skv_induction_galerkin                                 &
-     &     (conduct1%istack_ele_fld_smp, num_int, k2,                   &
-     &      coef_induct, mhd_fem1_wk%velo_1, mhd_fem1_wk%magne_1,       &
-     &      d_ele(1,iphys_ele%i_velo),  fem1_wk%vector_1,               &
-     &      ele1, jac1_3d_q, fem1_wk%sk6)
+     &     (conduct%istack_ele_fld_smp, num_int, k2,                    &
+     &      coef_induct, mhd_fem_wk%velo_1, mhd_fem_wk%magne_1,         &
+     &      d_ele(1,iphys_ele%i_velo),  fem_wk%vector_1,                &
+     &      ele, jac_3d, fem_wk%sk6)
 !
         if (iflag_SGS_induction .ne. id_SGS_none                        &
      &    .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
-           call SGS_const_induct_each_ele(node1, ele1, nod_fld1,        &
+           call SGS_const_induct_each_ele(node, ele, nod_fld,           &
      &         k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,   &
-     &         coef_induct, mhd_fem1_wk%sgs_v1, fem1_wk%vector_1)
-           call fem_skv_div_sgs_asym_tsr(conduct1%istack_ele_fld_smp,   &
+     &         coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
+           call fem_skv_div_sgs_asym_tsr(conduct%istack_ele_fld_smp,    &
      &         num_int, k2, ifilter_final, ak_diff(1,iak_diff_uxb),     &
-     &         ele1, jac1_3d_q, FEM1_elen, mhd_fem1_wk%sgs_v1,          &
-     &         fem1_wk%vector_1, fem1_wk%sk6)
+     &         ele, jac_3d, FEM_elens, mhd_fem_wk%sgs_v1,               &
+     &         fem_wk%vector_1, fem_wk%sk6)
         else if (iflag_SGS_induction .ne. id_SGS_none) then
-          call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1, k2,    &
-     &        iphys%i_SGS_induct_t, coef_induct, mhd_fem1_wk%sgs_v1)
+          call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
+     &        iphys%i_SGS_induct_t, coef_induct, mhd_fem_wk%sgs_v1)
           call fem_skv_div_asym_tsr                                     &
-     &       (conduct1%istack_ele_fld_smp, num_int, k2,                 &
-     &        ele1, jac1_3d_q, mhd_fem1_wk%sgs_v1, fem1_wk%sk6)
+     &       (conduct%istack_ele_fld_smp, num_int, k2,                  &
+     &        ele, jac_3d, mhd_fem_wk%sgs_v1, fem_wk%sk6)
         end if
       end do
 !
-      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, f1_nl%ff_smp)
+      call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_magne_pre_ele
 !
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_magne_pre_ele_upm                              &
-     &          (ncomp_ele, d_ele, iphys_ele)
+     &         (node, ele, conduct, iphys, nod_fld,                     &
+     &          ncomp_ele, d_ele, iphys_ele,                            &
+     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_2_each_element
@@ -122,60 +157,73 @@
       use fem_skv_div_sgs_flux_upw
       use fem_skv_vect_diff_upw_type
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld
+      type(field_geometry_data), intent(in) :: conduct
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(gradient_model_data_type), intent(in) :: FEM_elens
+!
       integer(kind = kint), intent(in) :: ncomp_ele
-      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
       type(phys_address), intent(in) :: iphys_ele
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_nl
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
       integer(kind=kint) :: k2, num_int
 !
 !  ---------  set number of integral points
 !
       num_int = intg_point_t_evo
-      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
 !
 ! -------- loop for shape function for the phsical values
-      do k2=1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
-     &      k2, iphys%i_velo, mhd_fem1_wk%velo_1)
-        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
-     &      k2, iphys%i_magne, mhd_fem1_wk%magne_1)
+      do k2=1, ele%nnod_4_ele
+        call vector_phys_2_each_element(node, ele, nod_fld,             &
+     &      k2, iphys%i_velo, mhd_fem_wk%velo_1)
+        call vector_phys_2_each_element(node, ele, nod_fld,             &
+     &      k2, iphys%i_magne, mhd_fem_wk%magne_1)
 !
 !$omp parallel
         call add_const_to_vector_smp                                    &
-     &     (np_smp, ele1%numele, ele1%istack_ele_smp,                   &
-     &      d_ele(1,iphys_ele%i_magne), ex_magne, fem1_wk%vector_1)
+     &     (np_smp, ele%numele, ele%istack_ele_smp,                     &
+     &      d_ele(1,iphys_ele%i_magne), ex_magne, fem_wk%vector_1)
 !$omp end parallel
 !
         call fem_skv_induction_upmagne                                  &
-     &     (conduct1%istack_ele_fld_smp, num_int, k2,                   &
-     &      coef_induct, mhd_fem1_wk%velo_1, mhd_fem1_wk%magne_1,       &
-     &      d_ele(1,iphys_ele%i_velo), fem1_wk%vector_1,                &
-     &      d_ele(1,iphys_ele%i_magne), ele1, jac1_3d_q, fem1_wk%sk6)
+     &     (conduct%istack_ele_fld_smp, num_int, k2,                    &
+     &      coef_induct, mhd_fem_wk%velo_1, mhd_fem_wk%magne_1,         &
+     &      d_ele(1,iphys_ele%i_velo), fem_wk%vector_1,                 &
+     &      d_ele(1,iphys_ele%i_magne), ele, jac_3d, fem_wk%sk6)
 !
         if (iflag_SGS_induction .ne. id_SGS_none                        &
      &    .and. iflag_commute_induction .eq. id_SGS_commute_ON) then
-          call SGS_const_induct_each_ele(node1, ele1, nod_fld1,         &
+          call SGS_const_induct_each_ele(node, ele, nod_fld,            &
      &        k2, iphys%i_magne, iphys%i_velo, iphys%i_SGS_induct_t,    &
-     &        coef_induct, mhd_fem1_wk%sgs_v1, fem1_wk%vector_1)
+     &        coef_induct, mhd_fem_wk%sgs_v1, fem_wk%vector_1)
           call fem_skv_div_sgs_asym_t_upwind                            &
-     &       (conduct1%istack_ele_fld_smp, num_int, k2, ifilter_final,  &
-     &        ak_diff(1,iak_diff_uxb), ele1, jac1_3d_q, FEM1_elen,      &
-     &        d_ele(1,iphys_ele%i_magne), mhd_fem1_wk%sgs_v1,           &
-     &        fem1_wk%vector_1, fem1_wk%sk6)
+     &       (conduct%istack_ele_fld_smp, num_int, k2, ifilter_final,   &
+     &        ak_diff(1,iak_diff_uxb), ele, jac_3d, FEM_elens,          &
+     &        d_ele(1,iphys_ele%i_magne), mhd_fem_wk%sgs_v1,            &
+     &        fem_wk%vector_1, fem_wk%sk6)
         else if (iflag_SGS_induction .ne. id_SGS_none) then
-          call vector_cst_phys_2_each_ele(node1, ele1, nod_fld1, k2,    &
-     &        iphys%i_SGS_induct_t, coef_induct, mhd_fem1_wk%sgs_v1)
+          call vector_cst_phys_2_each_ele(node, ele, nod_fld, k2,       &
+     &        iphys%i_SGS_induct_t, coef_induct, mhd_fem_wk%sgs_v1)
           call fem_skv_div_as_tsr_upw                                   &
-     &       (conduct1%istack_ele_fld_smp, num_int, k2,                 &
-     &        d_ele(1,iphys_ele%i_magne), ele1, jac1_3d_q,              &
-     &        mhd_fem1_wk%sgs_v1, fem1_wk%sk6)
+     &       (conduct%istack_ele_fld_smp, num_int, k2,                  &
+     &        d_ele(1,iphys_ele%i_magne), ele, jac_3d,                  &
+     &        mhd_fem_wk%sgs_v1, fem_wk%sk6)
         end if
 !
       end do
 !
-      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, f1_nl%ff_smp)
+      call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_vol_magne_pre_ele_upm
 !

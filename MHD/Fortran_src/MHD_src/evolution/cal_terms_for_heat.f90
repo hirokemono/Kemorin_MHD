@@ -15,13 +15,15 @@
       use m_geometry_data
       use m_group_data
       use m_phys_constants
+      use m_geometry_data_MHD
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
       use m_element_id_4_node
       use m_int_vol_data
-!
       use m_finite_element_matrix
+      use m_filter_elength
+!
       use m_bc_data_ene
 !
       use cal_multi_pass
@@ -49,9 +51,13 @@
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       if (iflag_temp_supg .gt. id_turn_OFF) then
-       call int_vol_ene_monitor_upw(i_field)
+       call int_vol_ene_monitor_upw(i_field, node1, ele1, fluid1,       &
+     &     iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,   &
+     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_nl)
       else
-       call int_vol_ene_monitor(i_field)
+       call int_vol_ene_monitor(i_field, node1, ele1, fluid1,           &
+     &     iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,   &
+     &     FEM1_elen, mhd_fem1_wk, fem1_wk, f1_nl)
       end if
 !
       call int_surf_temp_monitor(node1, ele1, surf1, sf_grp1, i_field)

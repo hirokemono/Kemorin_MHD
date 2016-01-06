@@ -16,6 +16,15 @@
       use m_control_parameter
       use m_phys_labels
 !
+      use t_comm_table
+      use t_geometry_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_3d
+      use t_table_FEM_const
+      use t_finite_element_mat
+      use t_MHD_finite_element_mat
+!
       implicit none
 !
 !-----------------------------------------------------------------------
@@ -237,10 +246,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_work_4_forces
+      subroutine cal_work_4_forces                                      &
+     &         (nod_comm, node, ele, iphys, jac_3d, rhs_tbl,            &
+     &          mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
-      use m_geometry_data
-      use m_node_phys_data
       use m_physical_property
 !
       use buoyancy_flux
@@ -250,19 +259,35 @@
       use int_magne_induction
       use nodal_poynting_flux_smp
 !
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_nl
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+      type(phys_data), intent(inout) :: nod_fld
+!
 !
       if (iphys%i_induction .gt. izero                                  &
      &      .and. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_induct)
-          call s_int_magne_induction
+          call s_int_magne_induction                                    &
+     &       (nod_comm, node, ele, iphys, jac_3d, rhs_tbl,              &
+     &        mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !
       if (iphys%i_b_diffuse .gt. izero                                  &
      &      .and. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
-        call s_int_magne_diffusion
+        call s_int_magne_diffusion                                      &
+     &     (nod_comm, node, ele, iphys, jac_3d, rhs_tbl,                &
+     &      mhd_fem_wk, fem_wk, f_nl, nod_fld)
       end if
 !
 !$omp parallel
@@ -270,23 +295,23 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_e_field)
         call cal_nod_electric_field_smp                                 &
-     &     (node1, coef_d_magne, nod_fld1%ntot_phys, iphys%i_current,   &
-     &      iphys%i_vp_induct, iphys%i_electric, nod_fld1%d_fld)
+     &     (node, coef_d_magne, nod_fld%ntot_phys, iphys%i_current,     &
+     &      iphys%i_vp_induct, iphys%i_electric, nod_fld%d_fld)
       end if
 !
       if (iphys%i_ujb .gt. izero) then
-        call cal_tri_product_4_scalar(node1, nod_fld1, coef_lor,        &
+        call cal_tri_product_4_scalar(node, nod_fld, coef_lor,          &
      &      iphys%i_velo, iphys%i_current, iphys%i_magne, iphys%i_ujb)
       end if
 !
       if (iphys%i_nega_ujb .gt. izero) then
-        call cal_tri_product_4_scalar(node1, nod_fld1, coef_lor,        &
+        call cal_tri_product_4_scalar(node, nod_fld, coef_lor,          &
      &      iphys%i_velo, iphys%i_magne, iphys%i_current,               &
      &      iphys%i_nega_ujb)
       end if
 !
       if (iphys%i_me_gen .gt. izero) then
-        call cal_phys_dot_product(node1, nod_fld1,                      &
+        call cal_phys_dot_product(node, nod_fld,                       &
      &      iphys%i_induction, iphys%i_magne, iphys%i_me_gen)
       end if
 !$omp end parallel
@@ -297,66 +322,66 @@
       if (iphys%i_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_buoyancy_flux)
-        call cal_gravity_flux(node1, coef_buo, iphys%i_velo,            &
-     &      iphys%i_temp, iphys%i_buo_gen, nod_fld1)
+        call cal_gravity_flux(node, coef_buo, iphys%i_velo,             &
+     &      iphys%i_temp, iphys%i_buo_gen, nod_fld)
       end if
 !
       if (iphys%i_c_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_comp_buo_flux)
-        call cal_gravity_flux(node1, coef_comp_buo, iphys%i_velo,       &
-     &      iphys%i_light,  iphys%i_c_buo_gen, nod_fld1)
+        call cal_gravity_flux(node, coef_comp_buo, iphys%i_velo,        &
+     &      iphys%i_light,  iphys%i_c_buo_gen, nod_fld)
       end if
 !
       if (iphys%i_f_buo_gen .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_filter_buo_flux)
-        call cal_gravity_flux(node1, coef_buo, iphys%i_velo,            &
-     &      iphys%i_filter_temp, iphys%i_f_buo_gen, nod_fld1)
+        call cal_gravity_flux(node, coef_buo, iphys%i_velo,             &
+     &      iphys%i_filter_temp, iphys%i_f_buo_gen, nod_fld)
       end if
 !
 !
 !$omp parallel
       if (iphys%i_temp_gen .gt. izero) then
-        call cal_phys_product_4_scalar(node1, nod_fld1,                 &
+        call cal_phys_product_4_scalar(node, nod_fld,                   &
      &      iphys%i_h_advect, iphys%i_temp, iphys%i_temp_gen)
       end if
 !
       if (iphys%i_par_t_gen .gt. izero) then
-        call cal_phys_product_4_scalar(node1, nod_fld1,                 &
+        call cal_phys_product_4_scalar(node, nod_fld,                   &
      &      iphys%i_ph_advect, iphys%i_par_temp, iphys%i_par_t_gen)
       end if
 !
 !
       if (iphys%i_vis_e_diffuse .gt. izero) then
-        call cal_phys_dot_product(node1, nod_fld1,                      &
+        call cal_phys_dot_product(node, nod_fld,                        &
      &      iphys%i_velo, iphys%i_v_diffuse, iphys%i_vis_e_diffuse)
       end if
 !
       if (iphys%i_mag_e_diffuse .gt. izero) then
-        call cal_phys_dot_product(node1, nod_fld1,                      &
+        call cal_phys_dot_product(node, nod_fld,                        &
      &      iphys%i_magne, iphys%i_b_diffuse, iphys%i_mag_e_diffuse)
       end if
 !
       if (iphys%i_m_tension_wk .gt. izero) then
-        call cal_phys_dot_product(node1, nod_fld1,                      &
+        call cal_phys_dot_product(node, nod_fld,                        &
      &      iphys%i_electric, iphys%i_magne, iphys%i_m_tension_wk)
       end if
 !
       if (iphys%i_mag_stretch .gt. izero) then
-        call cal_phys_dot_product(node1, nod_fld1,                      &
+        call cal_phys_dot_product(node, nod_fld,                        &
      &      iphys%i_grad_vx, iphys%i_magne, iphys%i_mag_stretch    )
-        call cal_phys_dot_product(node1, nod_fld1,                      &
+        call cal_phys_dot_product(node, nod_fld,                        &
      &      iphys%i_grad_vy, iphys%i_magne, (iphys%i_mag_stretch+1))
-        call cal_phys_dot_product(node1, nod_fld1,                      &
+        call cal_phys_dot_product(node, nod_fld,                        &
      &      iphys%i_grad_vz, iphys%i_magne, (iphys%i_mag_stretch+2))
       end if
 !
       if (iphys%i_poynting .gt. izero) then
         call cal_nod_poynting_flux_smp                                  &
-     &     (node1, coef_d_magne, nod_fld1%ntot_phys, iphys%i_current,   &
+     &     (node, coef_d_magne, nod_fld%ntot_phys, iphys%i_current,     &
      &      iphys%i_vp_induct, iphys%i_magne, iphys%i_poynting,         &
-     &      nod_fld1%d_fld)
+     &      nod_fld%d_fld)
       end if
 !$omp end parallel
 !

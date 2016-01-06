@@ -93,14 +93,22 @@
 ! -------     advection and forces
 !
       if (iflag_velo_supg .eq. id_turn_ON) then
-        call int_vol_velo_pre_ele_upwind(fld_ele1%ntot_phys,            &
-     &      iphys_ele%i_velo, fld_ele1%d_fld, iphys_ele)
+        call int_vol_velo_pre_ele_upwind                                &
+     &     (node1, ele1, fluid1, iphys, nod_fld1, fld_ele1%ntot_phys,   &
+     &      iphys_ele%i_velo, fld_ele1%d_fld, iphys_ele,                &
+     &      jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk,                &
+     &      fem1_wk, f1_nl)
       else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
-        call int_vol_velo_pre_ele_upwind(fld_ele1%ntot_phys,            &
-     &      iphys_ele%i_magne, fld_ele1%d_fld, iphys_ele)
+        call int_vol_velo_pre_ele_upwind                                &
+     &     (node1, ele1, fluid1, iphys, nod_fld1, fld_ele1%ntot_phys,   &
+     &      iphys_ele%i_magne, fld_ele1%d_fld, iphys_ele,               &
+     &      jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk,                &
+     &      fem1_wk, f1_nl)
       else
         call int_vol_velo_pre_ele                                       &
-     &     (fld_ele1%ntot_phys, fld_ele1%d_fld, iphys_ele)
+     &     (node1, ele1, fluid1, iphys, nod_fld1, fld_ele1%ntot_phys,   &
+     &      fld_ele1%d_fld, iphys_ele, jac1_3d_q, rhs_tbl1, FEM1_elen,  &
+     &      mhd_fem1_wk, fem1_wk, f1_nl)
       end if
 !
 !    ---  lead surface boundaries

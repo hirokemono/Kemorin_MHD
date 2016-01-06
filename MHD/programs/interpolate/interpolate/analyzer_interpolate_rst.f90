@@ -17,13 +17,22 @@
       use t_field_data_IO
 !
       use t_mesh_data
+      use t_FEM_phys_data
       use t_phys_data
+      use t_phys_address
 !
       implicit none
+!
+      type(mesh_data), save :: org_femmesh
+      type(surface_geometry), save :: org_surf_mesh
+      type(edge_geometry), save ::  org_edge_mesh
 !
       type(mesh_data), save :: new_femmesh
       type(surface_geometry), save :: new_surf_mesh
       type(edge_geometry), save ::  new_edge_mesh
+!
+      type(phys_address), save :: iphys_ITP
+      type(phys_data), save :: nod_fld_ITP
 !
       type(phys_data), save :: new_phys
 !
@@ -40,12 +49,8 @@
 !
       subroutine initialize_itp_rst
 !
-      use m_geometry_data
       use m_ctl_params_4_gen_table
       use m_nod_comm_table
-      use m_geometry_data
-      use m_node_phys_data
-      use t_FEM_phys_data
 !
       use input_control_interpolate
       use const_mesh_information
@@ -54,7 +59,6 @@
       use set_field_to_restart
       use field_IO_select
 !
-      use m_node_phys_data
 !
       integer(kind = kint) :: ierr
 !
@@ -64,21 +68,15 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
-      call s_input_control_interpolate(new_femmesh,                     &
-     &    new_surf_mesh, new_edge_mesh, ierr)
+      call s_input_control_interpolate                                  &
+     &   (org_femmesh, org_surf_mesh, org_edge_mesh,                    &
+     &    new_femmesh, new_surf_mesh, new_edge_mesh, ierr)
 !
 !     --------------------- 
 !
-      call init_send_recv(nod_comm)
+      call init_send_recv(org_femmesh%mesh%nod_comm)
 !
-!     --------------------- 
-!
-      if (my_rank .lt. ndomain_org) then
-        if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
-        call set_nod_and_ele_infos(node1, ele1)
-      end if
-!
-!     --------------------- 
+!     ---------------------
 !
       if (my_rank .lt. ndomain_dest) then
         call count_size_4_smp_mesh_type                                 &
@@ -96,16 +94,17 @@
       call sel_read_alloc_step_FEM_file                                 &
      &   (ndomain_org, izero, istep_rst_start, itp_fld_IO)
       if (iflag_debug.eq.1) write(*,*) 'init_field_name_by_restart'
-      call init_field_name_by_restart(itp_fld_IO, nod_fld1)
+      call init_field_name_by_restart(itp_fld_IO, nod_fld_ITP)
       call dealloc_phys_data_IO(itp_fld_IO)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_address_type'
-      call set_field_address_type(node1%numnod, nod_fld1, iphys)
+      call set_field_address_type(org_femmesh%mesh%node%numnod,         &
+     &                            nod_fld_ITP, iphys_ITP)
 !
       if (iflag_debug.eq.1) write(*,*) 'link_field_name_type'
-      call link_field_name_type(nod_fld1, new_phys)
+      call link_field_name_type(nod_fld_ITP, new_phys)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data_type'
       call alloc_phys_data_type(new_femmesh%mesh%node%numnod, new_phys)
@@ -117,9 +116,6 @@
       subroutine analyze_itp_rst
 !
       use calypso_mpi
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_node_phys_data
       use m_ctl_params_4_gen_table
       use m_time_data_IO
       use field_IO_select
@@ -139,7 +135,7 @@
       do i_step = istep_rst_start, istep_rst_end
 !
         if (my_rank .lt. ndomain_org) then
-          itp_fld_IO%nnod_IO = node1%numnod
+          itp_fld_IO%nnod_IO = org_femmesh%mesh%node%numnod
           call alloc_phys_data_IO(itp_fld_IO)
 !
           call set_field_file_fmt_prefix                                &
@@ -148,12 +144,13 @@
      &       (nprocs, my_rank, i_step, itp_fld_IO)
 !
           call copy_field_data_from_restart                             &
-     &       (node1, itp_fld_IO, nod_fld1)
+     &       (org_femmesh%mesh%node, itp_fld_IO, nod_fld_ITP)
           call dealloc_phys_data_IO(itp_fld_IO)
           time =       time_IO
           i_step_MHD = i_time_step_IO
 !
-          call nod_fields_send_recv(node1, nod_comm, nod_fld1)
+          call nod_fields_send_recv(org_femmesh%mesh%node,              &
+     &        org_femmesh%mesh%nod_comm, nod_fld_ITP)
         end if
 !
         call MPI_Bcast(time, ione, CALYPSO_REAL, izero,                 &
@@ -162,7 +159,7 @@
      &      CALYPSO_COMM, ierr_MPI)
 !
         if (iflag_debug.gt.0)  write(*,*) 's_interpolate_nodal_data'
-        call interpolate_nodal_data(node1, nod_fld1,                    &
+        call interpolate_nodal_data(org_femmesh%mesh%node, nod_fld_ITP, &
      &      new_femmesh%mesh%nod_comm, new_femmesh%mesh%node, new_phys)
 !
         if (my_rank .lt. ndomain_dest) then

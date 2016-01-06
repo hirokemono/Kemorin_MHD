@@ -14,7 +14,7 @@ main_test_itp_tbl.o \
 analyzer_test_table.o \
 \
 check_ineterppolated_mesh.o \
-input_control_itp_mesh.o \
+input_control_interpolate.o \
 mesh_interpolation.o \
 interpolate_position.o
 
@@ -24,7 +24,7 @@ main_test_itp_ele.o \
 analyzer_test_ele_tbl.o \
 \
 check_ineterppolated_mesh.o \
-input_control_itp_mesh.o \
+input_control_interpolate.o \
 mesh_interpolation.o \
 interpolate_position.o
 

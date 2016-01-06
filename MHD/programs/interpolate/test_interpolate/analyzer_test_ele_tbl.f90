@@ -19,6 +19,10 @@
 !
       implicit none
 !
+      type(mesh_data), save :: org_femmesh
+      type(surface_geometry), save :: org_surf_mesh
+      type(edge_geometry), save ::  org_edge_mesh
+!
       type(mesh_data), save :: new_femmesh
       type(surface_geometry), save :: new_surf_mesh
       type(edge_geometry), save ::  new_edge_mesh
@@ -31,10 +35,9 @@
 !
       subroutine init_analyzer
 !
-      use m_geometry_data
       use m_ctl_params_4_gen_table
 !
-      use input_control_itp_mesh
+      use input_control_interpolate
       use const_mesh_information
       use set_size_4_smp_types
       use element_posi_2_nodal_array
@@ -51,15 +54,11 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_itp_mesh'
-      call s_input_control_itp_mesh(new_femmesh,                        &
-     &    new_surf_mesh, new_edge_mesh, ierr)
+      call s_input_control_interpolate                                  &
+     &   (org_femmesh, org_surf_mesh, org_edge_mesh,                    &
+     &    new_femmesh, new_surf_mesh, new_edge_mesh, ierr)
 !
 !     --------------------- 
-!
-      if (my_rank .lt. ndomain_org) then
-        if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
-        call set_nod_and_ele_infos(node1, ele1)
-      end if
 !
       call s_2nd_ele_posi_2_nodal_array(new_femmesh%mesh)
 !
@@ -88,7 +87,8 @@
      &   (new_femmesh%mesh%node%numnod)
 !
        if (iflag_debug.eq.1) write(*,*) 'interpolation_4_mesh_test'
-      call interpolation_4_mesh_test(new_femmesh%mesh)
+      call interpolation_4_mesh_test                                    &
+     &   (org_femmesh%mesh, new_femmesh%mesh)
 !
       end subroutine analyze
 !

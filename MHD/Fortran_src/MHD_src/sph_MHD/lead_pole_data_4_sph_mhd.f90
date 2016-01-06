@@ -15,6 +15,9 @@
       use m_precision
       use m_constants
 !
+      use m_geometry_data
+      use m_node_phys_data
+!
       implicit  none
 !
 !-----------------------------------------------------------------------
@@ -35,12 +38,12 @@
       if(iflag_shell_mode .eq. iflag_MESH_same) return
 !
       if (iflag_debug.eq.1) write(*,*) 'copy_snap_vec_from_pole_trans'
-      call copy_snap_vec_from_pole_trans
+      call copy_snap_vec_from_pole_trans(node1, iphys, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*) 'pole_nonlinear_sph_MHD'
-      call pole_nonlinear_sph_MHD
+      call pole_nonlinear_sph_MHD(node1, iphys, nod_fld1)
       if (iflag_debug.eq.1) write(*,*) 'pole_energy_flux_rtp'
-      call pole_energy_flux_rtp
+      call pole_energy_flux_rtp(node1, iphys, nod_fld1)
 !
       end subroutine lead_pole_fields_4_sph_mhd
 !

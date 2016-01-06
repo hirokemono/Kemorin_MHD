@@ -33,6 +33,7 @@
       use m_machine_parameter
 !
       use m_phys_constants
+      use m_fem_gauss_int_coefs
       use t_geometry_data
       use t_phys_address
       use t_phys_data
@@ -40,7 +41,6 @@
       use t_filter_elength
       use t_finite_element_mat
       use t_MHD_finite_element_mat
-      use m_fem_gauss_int_coefs
 !
       implicit none
 !

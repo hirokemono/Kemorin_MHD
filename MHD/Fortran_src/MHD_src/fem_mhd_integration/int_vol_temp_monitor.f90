@@ -10,25 +10,38 @@
 !
 !      subroutine int_vol_ene_monitor(i_field)
 !      subroutine int_vol_ene_monitor_upw(i_field)
+!!        type(node_data), intent(in) :: node1
+!!        type(element_data), intent(in) :: ele1
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_data), intent(in) :: nod_fld1
+!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(phys_data), intent(in) :: fld_ele1
+!!        type(field_geometry_data), intent(in) :: fluid1
+!!        type(jacobians_3d), intent(in) :: jac1_3d_q
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
+!!        type(gradient_model_data_type), intent(in) :: FEM1_elen
+!!        type(work_finite_element_mat), intent(inout) :: fem1_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f1_nl
+!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem1_wk
 !
       module int_vol_temp_monitor
 !
       use m_precision
 !
       use m_control_parameter
-      use m_geometry_data
-      use m_geometry_data_MHD
-      use m_jacobians
-      use m_element_id_4_node
       use m_physical_property
       use m_SGS_model_coefs
       use m_SGS_address
-      use m_filter_elength
-      use m_finite_element_matrix
-      use m_int_vol_data
-      use m_node_phys_data
-      use m_element_phys_data
 !
+      use t_geometry_data_MHD
+      use t_geometry_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_3d
+      use t_table_FEM_const
+      use t_finite_element_mat
+      use t_MHD_finite_element_mat
+      use t_filter_elength
 !
       implicit none
 !
@@ -38,13 +51,31 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_ene_monitor(i_field)
+      subroutine int_vol_ene_monitor(i_field,                           &
+     &          node1, ele1, fluid1, iphys, nod_fld1, iphys_ele, fld_ele1, &
+     &          jac1_3d_q, rhs_tbl1, FEM1_elen,                         &
+     &          mhd_fem1_wk, fem1_wk, f1_nl)
 !
       use int_vol_inertia
       use int_vol_vect_cst_difference
       use int_vol_SGS_div_flux
 !
+      type(node_data), intent(in) :: node1
+      type(element_data), intent(in) :: ele1
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld1
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: fld_ele1
+      type(field_geometry_data), intent(in) :: fluid1
+      type(jacobians_3d), intent(in) :: jac1_3d_q
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
+      type(gradient_model_data_type), intent(in) :: FEM1_elen
+!
       integer (kind=kint), intent(in) :: i_field
+!
+      type(work_finite_element_mat), intent(inout) :: fem1_wk
+      type(finite_ele_mat_node), intent(inout) :: f1_nl
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem1_wk
 !
 !
       if (i_field .eq. iphys%i_h_advect) then
@@ -93,13 +124,31 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_ene_monitor_upw(i_field)
+      subroutine int_vol_ene_monitor_upw(i_field,                       &
+     &          node1, ele1, fluid1, iphys, nod_fld1, iphys_ele, fld_ele1, &
+     &          jac1_3d_q, rhs_tbl1, FEM1_elen,                         &
+     &          mhd_fem1_wk, fem1_wk, f1_nl)
 !
       use int_vol_inertia
       use int_vol_vect_cst_diff_upw
       use int_vol_SGS_div_flux
 !
+      type(node_data), intent(in) :: node1
+      type(element_data), intent(in) :: ele1
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld1
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: fld_ele1
+      type(field_geometry_data), intent(in) :: fluid1
+      type(jacobians_3d), intent(in) :: jac1_3d_q
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
+      type(gradient_model_data_type), intent(in) :: FEM1_elen
+!
       integer (kind = kint), intent(in) :: i_field
+!
+      type(work_finite_element_mat), intent(inout) :: fem1_wk
+      type(finite_ele_mat_node), intent(inout) :: f1_nl
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem1_wk
 !
 !
       if (i_field .eq. iphys%i_h_advect)  then

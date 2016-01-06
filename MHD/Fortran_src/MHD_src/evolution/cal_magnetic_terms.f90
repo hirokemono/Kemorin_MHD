@@ -12,9 +12,16 @@
 !
       use m_control_parameter
       use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
+      use m_node_phys_data
+      use m_element_phys_data
+      use m_geometry_data_MHD
       use m_jacobians
       use m_element_id_4_node
       use m_finite_element_matrix
+      use m_int_vol_data
+      use m_filter_elength
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -32,10 +39,6 @@
 !
       subroutine cal_terms_4_magnetic(i_field)
 !
-      use m_geometry_data
-      use m_group_data
-      use m_node_phys_data
-      use m_int_vol_data
       use m_bc_data_magne
 !
       use int_vol_magne_monitor
@@ -47,9 +50,13 @@
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
-       call int_vol_magne_monitor_upm(i_field)
+        call int_vol_magne_monitor_upm(i_field, node1, ele1, conduct1,  &
+     &      iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,  &
+     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_nl)
       else
-       call int_vol_magne_monitor_pg(i_field)
+        call int_vol_magne_monitor_pg(i_field, node1, ele1, conduct1,   &
+     &      iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,  &
+     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_nl)
       end if
 !
       call int_surf_magne_monitor(node1, ele1, surf1, sf_grp1, i_field)

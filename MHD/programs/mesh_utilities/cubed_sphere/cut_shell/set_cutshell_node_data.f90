@@ -4,18 +4,19 @@
 !     Written by H. Matsui
 !     Modified by H. Matsui on Oct., 2007
 !
-!      subroutine set_new_node_4_hemi(new_node)
-!      subroutine set_new_node_4_cut_shell(new_node)
-!      subroutine set_new_node_outer_core(nod_grp, new_node)
-!      subroutine set_new_node_hemi_o_core(nod_grp, new_node)
+!      subroutine set_new_node_4_hemi(org_node, new_node)
+!      subroutine set_new_node_4_cut_shell(org_node, new_node)
+!      subroutine set_new_node_outer_core(org_node, nod_grp, new_node)
+!      subroutine set_new_node_hemi_o_core(org_node, nod_grp, new_node)
 !
       module set_cutshell_node_data
 !
       use m_precision
 !
-      use m_geometry_data
       use m_cutshell_nod_ele_flag
+!
       use t_geometry_data
+      use t_group_data
 !
       implicit none
 !
@@ -35,80 +36,81 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_node_4_hemi(new_node)
+      subroutine set_new_node_4_hemi(org_node, new_node)
 !
+      type(node_data), intent(in) :: org_node
       type(node_data), intent(inout) :: new_node
 !
 !
-      call count_new_position_4_hemi(new_node)
+      call count_new_position_4_hemi(org_node, new_node)
 !
       call allocate_node_geometry_type(new_node)
-      call set_new_position_4_hemi(new_node)
+      call set_new_position_4_hemi(org_node, new_node)
 !
       end subroutine set_new_node_4_hemi
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_node_4_cut_shell(new_node)
+      subroutine set_new_node_4_cut_shell(org_node, new_node)
 !
+      type(node_data), intent(in) :: org_node
       type(node_data), intent(inout) :: new_node
 !
 !
-      call count_new_position_cut_shell(new_node)
+      call count_new_position_cut_shell(org_node, new_node)
 !
       call allocate_node_geometry_type(new_node)
-      call set_new_position_cut_shell(new_node)
+      call set_new_position_cut_shell(org_node, new_node)
 !
       end subroutine set_new_node_4_cut_shell
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_node_outer_core(nod_grp, new_node)
+      subroutine set_new_node_outer_core(org_node, nod_grp, new_node)
 !
-      use t_group_data
-!
+      type(node_data), intent(in) :: org_node
       type(group_data), intent(in) :: nod_grp
       type(node_data), intent(inout) :: new_node
 !
 !
-      call set_boundary_radii(nod_grp)
+      call set_boundary_radii(org_node, nod_grp)
 !
-      call count_position_outer_core(new_node)
+      call count_position_outer_core(org_node, new_node)
 !
       call allocate_node_geometry_type(new_node)
-      call set_position_outer_core(new_node)
+      call set_position_outer_core(org_node, new_node)
 !
       end subroutine set_new_node_outer_core
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_node_hemi_o_core(nod_grp, new_node)
+      subroutine set_new_node_hemi_o_core(org_node, nod_grp, new_node)
 !
-      use t_group_data
-!
+      type(node_data), intent(in) :: org_node
       type(group_data), intent(in) :: nod_grp
       type(node_data), intent(inout) :: new_node
 !
-      call set_boundary_radii(nod_grp)
+      call set_boundary_radii(org_node, nod_grp)
 !
-      call count_position_h_outer_core(new_node)
+      call count_position_h_outer_core(org_node, new_node)
 !
       call allocate_node_geometry_type(new_node)
-      call set_position_h_outer_core(new_node)
+      call set_position_h_outer_core(org_node, new_node)
 !
       end subroutine set_new_node_hemi_o_core
 !
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine count_new_position_4_hemi(new_node)
+      subroutine count_new_position_4_hemi(org_node, new_node)
 !
+      type(node_data), intent(in) :: org_node
       type(node_data), intent(inout) :: new_node
       integer(kind = kint) :: inod
 !
       new_node%numnod = 0
-      do inod = 1, node1%numnod
-        if (node1%xx(inod,3) .gt. -1.0d-11) then
+      do inod = 1, org_node%numnod
+        if (org_node%xx(inod,3) .gt. -1.0d-11) then
           new_node%numnod = new_node%numnod + 1
          end if
       end do
@@ -118,16 +120,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_new_position_cut_shell(new_node)
+      subroutine count_new_position_cut_shell(org_node, new_node)
 !
+      type(node_data), intent(in) :: org_node
       type(node_data), intent(inout) :: new_node
       integer(kind = kint) :: inod
 !
       new_node%numnod = 0
-      do inod = 1, node1%numnod
-        if (  node1%xx(inod,1) .lt. 1.0d-11                             &
-     &   .or. node1%xx(inod,2) .lt. 1.0d-11                             &
-     &   .or. node1%xx(inod,3) .lt. 1.0d-11  ) then
+      do inod = 1, org_node%numnod
+        if (  org_node%xx(inod,1) .lt. 1.0d-11                          &
+     &   .or. org_node%xx(inod,2) .lt. 1.0d-11                          &
+     &   .or. org_node%xx(inod,3) .lt. 1.0d-11  ) then
           new_node%numnod = new_node%numnod + 1
         end if
       end do
@@ -137,15 +140,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_position_outer_core(new_node)
+      subroutine count_position_outer_core(org_node, new_node)
 !
+      type(node_data), intent(in) :: org_node
       type(node_data), intent(inout) :: new_node
       integer(kind = kint) :: inod
 !
       new_node%numnod = 0
-      do inod = 1, node1%numnod
-        if      (node1%rr(inod) .ge. r_ICB                              &
-     &     .and. node1%rr(inod) .le. r_CMB) then
+      do inod = 1, org_node%numnod
+        if      (org_node%rr(inod) .ge. r_ICB                           &
+     &     .and. org_node%rr(inod) .le. r_CMB) then
           new_node%numnod = new_node%numnod + 1
         end if
       end do
@@ -155,16 +159,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine count_position_h_outer_core(new_node)
+      subroutine count_position_h_outer_core(org_node, new_node)
 !
+      type(node_data), intent(in) :: org_node
       type(node_data), intent(inout) :: new_node
       integer(kind = kint) :: inod
 !
       new_node%numnod = 0
-      do inod = 1, node1%numnod
-        if     (node1%rr(inod) .ge. r_ICB                               &
-     &    .and. node1%rr(inod) .le. r_CMB                               &
-     &    .and. node1%xx(inod,3) .gt. -1.0d-11) then
+      do inod = 1, org_node%numnod
+        if     (org_node%rr(inod) .ge. r_ICB                            &
+     &    .and. org_node%rr(inod) .le. r_CMB                            &
+     &    .and. org_node%xx(inod,3) .gt. -1.0d-11) then
           new_node%numnod = new_node%numnod + 1
         end if
       end do
@@ -175,18 +180,19 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_position_4_hemi(new_node)
+      subroutine set_new_position_4_hemi(org_node, new_node)
 !
+      type(node_data), intent(in) :: org_node
       type(node_data), intent(inout) :: new_node
       integer(kind = kint) :: inod, icou
 !
       icou = 0
-      do inod = 1, node1%numnod
+      do inod = 1, org_node%numnod
 !
-        if ( node1%xx(inod,3) .gt. -1.0d-11 ) then
+        if ( org_node%xx(inod,3) .gt. -1.0d-11 ) then
           icou = icou + 1
           new_node%inod_global(icou) = icou
-          new_node%xx(icou,1:3) = node1%xx(inod,1:3)
+          new_node%xx(icou,1:3) = org_node%xx(inod,1:3)
 !
           mark_new_node(inod) = icou
         end if
@@ -197,20 +203,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_new_position_cut_shell(new_node)
+      subroutine set_new_position_cut_shell(org_node, new_node)
 !
+      type(node_data), intent(in) :: org_node
       type(node_data), intent(inout) :: new_node
       integer(kind = kint) :: inod, icou
 !
       icou = 0
-      do inod = 1, node1%numnod
+      do inod = 1, org_node%numnod
 !
-        if (  node1%xx(inod,1) .lt. 1.0d-11                             &
-     &   .or. node1%xx(inod,2) .lt. 1.0d-11                             &
-     &   .or. node1%xx(inod,3) .lt. 1.0d-11  ) then
+        if (  org_node%xx(inod,1) .lt. 1.0d-11                          &
+     &   .or. org_node%xx(inod,2) .lt. 1.0d-11                          &
+     &   .or. org_node%xx(inod,3) .lt. 1.0d-11  ) then
           icou = icou + 1
           new_node%inod_global(icou) = icou
-          new_node%xx(icou,1:3) = node1%xx(inod,1:3)
+          new_node%xx(icou,1:3) = org_node%xx(inod,1:3)
 !
           mark_new_node(inod) = icou
         end if
@@ -221,19 +228,20 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_position_outer_core(new_node)
+      subroutine set_position_outer_core(org_node, new_node)
 !
+      type(node_data), intent(in) :: org_node
       type(node_data), intent(inout) :: new_node
       integer(kind = kint) :: inod, icou
 !
       icou = 0
-      do inod = 1, node1%numnod
+      do inod = 1, org_node%numnod
 !
-        if       (node1%rr(inod) .ge. r_ICB                             &
-     &      .and. node1%rr(inod) .le. r_CMB) then
+        if       (org_node%rr(inod) .ge. r_ICB                          &
+     &      .and. org_node%rr(inod) .le. r_CMB) then
           icou = icou + 1
           new_node%inod_global(icou) = icou
-          new_node%xx(icou,1:3) = node1%xx(inod,1:3)
+          new_node%xx(icou,1:3) = org_node%xx(inod,1:3)
 !
           mark_new_node(inod) = icou
         end if
@@ -244,20 +252,21 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_position_h_outer_core(new_node)
+      subroutine set_position_h_outer_core(org_node, new_node)
 !
+      type(node_data), intent(in) :: org_node
       type(node_data), intent(inout) :: new_node
       integer(kind = kint) :: inod, icou
 !
       icou = 0
-      do inod = 1, node1%numnod
+      do inod = 1, org_node%numnod
 !
-        if     (node1%rr(inod) .ge. r_ICB                               &
-     &    .and. node1%rr(inod) .le. r_CMB                               &
-     &    .and. node1%xx(inod,3) .gt. -1.0d-11) then
+        if     (org_node%rr(inod) .ge. r_ICB                            &
+     &    .and. org_node%rr(inod) .le. r_CMB                            &
+     &    .and. org_node%xx(inod,3) .gt. -1.0d-11) then
           icou = icou + 1
           new_node%inod_global(icou) = icou
-          new_node%xx(icou,1:3) = node1%xx(inod,1:3)
+          new_node%xx(icou,1:3) = org_node%xx(inod,1:3)
 !
           mark_new_node(inod) = icou
         end if
@@ -269,10 +278,9 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_boundary_radii(nod_grp)
+      subroutine set_boundary_radii(node, nod_grp)
 !
-      use t_group_data
-!
+      type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
       integer(kind = kint) :: i, inod, inum
 !
@@ -282,12 +290,12 @@
         if (nod_grp%grp_name(i) .eq. 'ICB') then
           do inum = nod_grp%istack_grp(i-1)+1, nod_grp%istack_grp(i)
             inod = nod_grp%item_grp(inum)
-            r_ICB = min(r_ICB,node1%rr(inod))
+            r_ICB = min(r_ICB,node%rr(inod))
           end do
         else if (nod_grp%grp_name(i) .eq. 'CMB') then
           do inum = nod_grp%istack_grp(i-1)+1, nod_grp%istack_grp(i)
             inod = nod_grp%item_grp(inum)
-            r_CMB = max(r_CMB,node1%rr(inod))
+            r_CMB = max(r_CMB,node%rr(inod))
           end do
         end if
       end do

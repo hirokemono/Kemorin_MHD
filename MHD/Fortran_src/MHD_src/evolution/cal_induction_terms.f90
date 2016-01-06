@@ -17,6 +17,8 @@
       use m_jacobians
       use m_element_id_4_node
       use m_finite_element_matrix
+      use m_geometry_data_MHD
+      use m_node_phys_data
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -46,10 +48,14 @@
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
         call int_vol_vect_p_pre_ele_upm                                 &
-     &     (fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
+     &     (node1, ele1, conduct1, iphys, nod_fld1,                     &
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld,      &
+     &      jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_nl)
       else
         call int_vol_vect_p_pre_ele                                     &
-     &     (fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
+     &     (node1, ele1, conduct1, iphys, nod_fld1,                     &
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld,      &
+     &      jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_nl)
       end if
 !
       call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &

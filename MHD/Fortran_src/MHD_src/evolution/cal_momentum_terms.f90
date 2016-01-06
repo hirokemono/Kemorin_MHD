@@ -14,10 +14,14 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
+      use m_geometry_data_MHD
       use m_node_phys_data
       use m_element_phys_data
+      use m_jacobians
+      use m_element_id_4_node
       use m_finite_element_matrix
       use m_int_vol_data
+      use m_filter_elength
 !
       use cal_multi_pass
       use cal_ff_smp_to_ffs
@@ -46,11 +50,17 @@
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       if (iflag_velo_supg .eq. id_turn_ON) then
-       call int_vol_velo_monitor_upw(i_field)
+        call int_vol_velo_monitor_upwind(i_field, node1, ele1, fluid1,  &
+     &     iphys, nod_fld1, iphys_ele, fld_ele1, iphys_ele%i_velo,      &
+     &     jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_nl)
       else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
-       call int_vol_velo_monitor_upm(i_field)
+        call int_vol_velo_monitor_upwind(i_field, node1, ele1, fluid1,  &
+     &     iphys, nod_fld1, iphys_ele, fld_ele1, iphys_ele%i_magne,     &
+     &     jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_nl)
       else
-       call int_vol_velo_monitor_pg(i_field)
+       call int_vol_velo_monitor_pg(i_field, node1, ele1, fluid1,       &
+     &     iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,   &
+     &     FEM1_elen, mhd_fem1_wk, fem1_wk, f1_nl)
       end if
 !
       call int_surf_velo_monitor(node1, ele1, surf1, sf_grp1, i_field)

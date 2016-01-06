@@ -12,9 +12,19 @@
 !!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iphys_nod,       &
 !!     &          iele_fsmp_stack, n_int, ncomp_ele, d_ele, iphys_ele,  &
 !!     &          fem_wk, mhd_fem_wk, f_nl)
-!      subroutine int_vol_mag_induct_upm_t(mesh, jac_3d, rhs_tbl,       &
-!     &          nod_fld, iele_fsmp_stack, n_int, ncomp_ele, d_ele,     &
-!     &          fem_wk, mhd_fem_wk, iphys_nod, iphys_ele, f_nl)
+!!      subroutine int_vol_mag_induct_upm_t(mesh, jac_3d, rhs_tbl,      &
+!!     &          nod_fld, iele_fsmp_stack, n_int, ncomp_ele, d_ele,    &
+!!     &          fem_wk, mhd_fem_wk, iphys_nod, iphys_ele, f_nl)
+!!      type(node_data), intent(in) :: node
+!!      type(element_data), intent(in) :: ele
+!!      type(jacobians_3d), intent(in) :: jac_3d
+!!      type(phys_data),    intent(in) :: nod_fld
+!!      type(phys_address), intent(in) :: iphys_nod
+!!      type(phys_address), intent(in) :: iphys_ele
+!!      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!      type(work_finite_element_mat), intent(inout) :: fem_wk
+!!      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!!      type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       module int_vol_mag_induction
 !
@@ -22,6 +32,8 @@
 !
       use m_machine_parameter
       use m_phys_constants
+      use m_physical_property
+!
       use t_geometry_data
       use t_phys_address
       use t_phys_data
@@ -29,9 +41,6 @@
       use t_table_FEM_const
       use t_finite_element_mat
       use t_MHD_finite_element_mat
-!
-      use m_physical_property
-      use m_node_phys_data
 !
       implicit none
 !

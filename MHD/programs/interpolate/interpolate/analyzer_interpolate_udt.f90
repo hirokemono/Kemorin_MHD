@@ -15,14 +15,23 @@
 !
       use t_mesh_data
       use t_geometry_data
+      use t_FEM_phys_data
       use t_phys_data
+      use t_phys_address
       use t_ucd_data
 !
       implicit none
 !
+      type(mesh_data), save :: org_femmesh
+      type(surface_geometry), save :: org_surf_mesh
+      type(edge_geometry), save ::  org_edge_mesh
+!
       type(mesh_data), save :: new_femmesh
       type(surface_geometry), save :: new_surf_mesh
       type(edge_geometry), save ::  new_edge_mesh
+!
+      type(phys_address), save :: iphys_ITP
+      type(phys_data), save :: nod_fld_ITP
 !
       type(phys_data), save :: new_phys
 !
@@ -38,12 +47,8 @@
 !
       subroutine initialize_itp_udt
 !
-      use m_geometry_data
       use m_ctl_params_4_gen_table
       use m_t_step_parameter
-      use m_nod_comm_table
-      use m_node_phys_data
-      use t_FEM_phys_data
 !
       use input_control_interpolate
       use const_mesh_information
@@ -58,21 +63,16 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
-      call s_input_control_interpolate(new_femmesh,                     &
-     &    new_surf_mesh, new_edge_mesh, ierr)
-      call set_ctl_interpolate_udt
+      call s_input_control_interpolate                                  &
+     &   (org_femmesh, org_surf_mesh, org_edge_mesh,                    &
+     &    new_femmesh, new_surf_mesh, new_edge_mesh, ierr)
+!
+      call set_ctl_interpolate_udt(nod_fld_ITP)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'init_send_recv'
-      call init_send_recv(nod_comm)
-!
-!     --------------------- 
-!
-      if (my_rank .lt. ndomain_org) then
-        if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
-        call set_nod_and_ele_infos(node1, ele1)
-      end if
+      call init_send_recv(org_femmesh%mesh%nod_comm)
 !
 !     --------------------- 
 !
@@ -87,10 +87,11 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_field_address_type'
-      call set_field_address_type(node1%numnod, nod_fld1, iphys)
+      call set_field_address_type(org_femmesh%mesh%node%numnod,         &
+     &                            nod_fld_ITP, iphys_ITP)
 !
       if (iflag_debug.eq.1) write(*,*) 'link_field_name_type'
-      call link_field_name_type(nod_fld1, new_phys)
+      call link_field_name_type(nod_fld_ITP, new_phys)
 !
       if (iflag_debug.eq.1) write(*,*) 'alloc_phys_data_type'
       call alloc_phys_data_type(new_femmesh%mesh%node%numnod, new_phys)
@@ -102,9 +103,6 @@
       subroutine analyze_itp_udt
 !
       use m_t_step_parameter
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_node_phys_data
       use m_ctl_params_4_gen_table
       use ucd_IO_select
       use set_ucd_data_to_type
@@ -117,15 +115,16 @@
       do istep = i_step_init, i_step_number, i_step_output_ucd
         if (my_rank .lt. ndomain_org) then
           call set_data_by_read_ucd_once(my_rank, istep,                &
-   &          itype_org_udt_file, org_udt_file_head, nod_fld1)
+     &        itype_org_udt_file, org_udt_file_head, nod_fld_ITP)
 !
-          call nod_fields_send_recv(node1, nod_comm, nod_fld1)
+          call nod_fields_send_recv(org_femmesh%mesh%node,              &
+     &        org_femmesh%mesh%nod_comm, nod_fld_ITP)
         end if
 !
 !    interpolation
 !
         if (iflag_debug.gt.0) write(*,*) 's_interpolate_nodal_data'
-        call interpolate_nodal_data(node1, nod_fld1,                    &
+        call interpolate_nodal_data(org_femmesh%mesh%node, nod_fld_ITP, &
      &      new_femmesh%mesh%nod_comm, new_femmesh%mesh%node, new_phys)
 !
 !    output udt data

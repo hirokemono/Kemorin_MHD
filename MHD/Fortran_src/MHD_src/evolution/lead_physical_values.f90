@@ -69,6 +69,15 @@
 !
       use m_machine_parameter
 !
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_node_phys_data
+      use m_physical_property
+      use m_jacobians
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_int_vol_data
+!
       use cal_MHD_forces_4_monitor
       use cal_sgs_4_monitor
       use cal_true_sgs_terms
@@ -85,7 +94,9 @@
 !
       call cal_true_sgs_terms_post
 !
-      call cal_work_4_forces
+      call cal_work_4_forces                                            &
+     &   (nod_comm, node1, ele1, iphys, jac1_3d_q, rhs_tbl1,            &
+     &    mhd_fem1_wk, fem1_wk, f1_nl, nod_fld1)
 !
       call cal_work_4_sgs_terms
 !

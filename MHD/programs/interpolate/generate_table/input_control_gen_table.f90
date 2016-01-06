@@ -1,17 +1,16 @@
 !
 !      module input_control_gen_table
 !
-      module input_control_gen_table
-!
 !     Written by H. Matsui on July, 2006
 !
+!!     subroutine s_input_control_generate_table
+!
+      module input_control_gen_table
+!
       use m_precision
+      use t_mesh_data
 !
       implicit none
-!
-!
-!     subroutine s_input_control_generate_table
-!
 !
 ! ----------------------------------------------------------------------
 !
@@ -23,14 +22,8 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
-      use m_read_mesh_data
       use m_ctl_params_4_gen_table
       use m_ctl_data_gen_table
-!
-      use load_mesh_data
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_gen_itp_table'
@@ -38,16 +31,6 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_ctl_params_4_gen_table'
       call set_ctl_params_4_gen_table
-!
-!  --  read geometry
-!
-      mesh_file_head = dest_mesh_head
-      iflag_mesh_file_fmt = ifmt_itp_mesh_file
-!
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh                                                   &
-     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
-     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
       end subroutine s_input_control_generate_table
 !

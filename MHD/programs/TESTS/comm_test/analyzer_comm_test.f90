@@ -138,10 +138,10 @@
 !  -------------------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'node_send_recv4_test'
-      call node_send_recv4_test
+      call node_send_recv4_test(node1, nod_comm)
 !
       if (iflag_debug.gt.0) write(*,*) 'node_send_recv_test'
-      call node_send_recv_test
+      call node_send_recv_test(node1, nod_comm)
       if (iflag_debug.gt.0) write(*,*) 'count_diff_node_comm_test'
       call count_diff_node_comm_test
 !
@@ -163,7 +163,8 @@
       call allocate_geom_4_comm_test                                    &
      &   (ele1%numele, surf1%numsurf, edge1%numedge)
       if (iflag_debug.gt.0) write(*,*) 's_mesh_send_recv_test'
-      call s_mesh_send_recv_test
+      call s_mesh_send_recv_test(ele1, surf1, edge1,                    &
+     &    ele_comm, surf_comm, edge_comm)
       if (iflag_debug.gt.0) write(*,*) 's_count_diff_geom_comm_test'
       call s_count_diff_geom_comm_test
 !

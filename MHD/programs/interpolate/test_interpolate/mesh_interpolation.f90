@@ -3,7 +3,7 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!      subroutine interpolation_4_mesh_test(dest_mesh)
+!      subroutine interpolation_4_mesh_test(org_mesh, dest_mesh)
 !
       module mesh_interpolation
 !
@@ -16,7 +16,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine interpolation_4_mesh_test(dest_mesh)
+      subroutine interpolation_4_mesh_test(org_mesh, dest_mesh)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -28,6 +28,7 @@
 !
       use check_ineterppolated_mesh
 !
+      type(mesh_geometry), intent(inout) :: org_mesh
       type(mesh_geometry), intent(in) :: dest_mesh
 !
 !     return global node from table
@@ -40,13 +41,13 @@
 !
       if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position'
       call s_interpolate_position                                       &
-     &   (dest_mesh%node%numnod, dest_mesh%nod_comm)
+     &   (org_mesh%node, dest_mesh%node%numnod, dest_mesh%nod_comm)
 !      if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position_by_N'
 !      call s_interpolate_position_by_N                                 &
-!     &          (dest_mesh%node%numnod, dest_mesh%nod_comm)
+!     &   (org_mesh%node, dest_mesh%node%numnod, dest_mesh%nod_comm)
 !      if (iflag_debug.eq.1)   write(*,*) 's_interpolate_position_by_s'
 !      call s_interpolate_position_by_s                                 &
-!     &          (dest_mesh%node%%numnod, dest_mesh%nod_comm)
+!     &   (org_mesh%node, dest_mesh%node%%numnod, dest_mesh%nod_comm)
 !
 !
       if (iflag_debug.gt.0)  write(*,*) 's_check_ineterppolated_mesh'

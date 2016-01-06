@@ -71,7 +71,7 @@
       type(mesh_groups), intent(inout) :: new_group
 !
 !
-      call set_new_node_4_hemi(newmesh%node)
+      call set_new_node_4_hemi(node1, newmesh%node)
 !
       call s_set_new_elements(newmesh%ele)
 !
@@ -91,7 +91,7 @@
       type(mesh_groups), intent(inout) :: new_group
 !
 !
-      call set_new_node_4_cut_shell(newmesh%node)
+      call set_new_node_4_cut_shell(node1, newmesh%node)
 !
       call s_set_new_elements(newmesh%ele)
 !
@@ -110,7 +110,7 @@
       type(mesh_groups), intent(inout) :: new_group
 !
 !
-      call set_new_node_outer_core(nod_grp1, newmesh%node)
+      call set_new_node_outer_core(node1, nod_grp1, newmesh%node)
 !
       call s_set_new_elements(newmesh%ele)
 !
@@ -128,7 +128,7 @@
       type(mesh_groups), intent(inout) :: new_group
 !
 !
-      call set_new_node_hemi_o_core(nod_grp1, newmesh%node)
+      call set_new_node_hemi_o_core(node1, nod_grp1, newmesh%node)
 !
       call s_set_new_elements(newmesh%ele)
 !

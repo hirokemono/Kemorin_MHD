@@ -3,9 +3,9 @@
 !
 !     Written by H. Matsui on Sep., 2006
 !
-!      subroutine s_interpolate_position(NP_dest, comm_dest)
-!      subroutine s_interpolate_position_by_N(NP_dest, comm_dest)
-!      subroutine s_interpolate_position_by_s(NP_dest, comm_dest)
+!      subroutine s_interpolate_position(node, NP_dest, comm_dest)
+!      subroutine s_interpolate_position_by_N(node, NP_dest, comm_dest)
+!      subroutine s_interpolate_position_by_s(node, NP_dest, comm_dest)
 !      subroutine s_interpolate_global_node(NP_dest, comm_dest)
 !
       module interpolate_position
@@ -16,6 +16,7 @@
       use m_machine_parameter
 !
       use t_comm_table
+      use t_geometry_data
 !
       implicit none
 !
@@ -25,10 +26,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_interpolate_position(NP_dest, comm_dest)
+      subroutine s_interpolate_position(node, NP_dest, comm_dest)
 !
       use m_constants
-      use m_geometry_data
       use m_2nd_pallalel_vector
       use m_interpolate_matrix
       use m_interpolated_geometry
@@ -38,6 +38,7 @@
 !
       use interpolate_by_module
 !
+      type(node_data), intent(inout) :: node
       integer(kind = kint), intent(in) :: NP_dest
       type(communication_table), intent(in) :: comm_dest
 !
@@ -45,17 +46,17 @@
 !
 !     initialize
 !
-      call verify_vector_for_solver(ithree, node1%numnod)
+      call verify_vector_for_solver(ithree, node%numnod)
       call verify_2nd_iccg_matrix(ithree, NP_dest)
 !
 !
-      do inod = 1, node1%numnod
-        x_vec(3*inod-2) = node1%xx(inod,1)
-        x_vec(3*inod-1) = node1%xx(inod,2)
-        x_vec(3*inod  ) = node1%xx(inod,3)
+      do inod = 1, node%numnod
+        x_vec(3*inod-2) = node%xx(inod,1)
+        x_vec(3*inod-1) = node%xx(inod,2)
+        x_vec(3*inod  ) = node%xx(inod,3)
       end do
 !
-      call interpolate_mod_3(comm_dest, node1%numnod, NP_dest,          &
+      call interpolate_mod_3(comm_dest, node%numnod, NP_dest,           &
      &    x_vec(1), xvec_2nd(1))
 !
       do inod = 1, NP_dest
@@ -68,10 +69,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_interpolate_position_by_N(NP_dest, comm_dest)
+      subroutine s_interpolate_position_by_N(node, NP_dest, comm_dest)
 !
       use m_constants
-      use m_geometry_data
       use m_2nd_pallalel_vector
       use m_interpolated_geometry
 !
@@ -81,6 +81,7 @@
 !
       use interpolate_by_module
 !
+      type(node_data), intent(inout) :: node
       integer(kind = kint), intent(in) :: NP_dest
       type(communication_table), intent(in) :: comm_dest
 !
@@ -88,17 +89,17 @@
 !
 !     initialize
 !
-      call verify_vector_for_solver(ithree, node1%numnod)
+      call verify_vector_for_solver(ithree, node%numnod)
       call verify_2nd_iccg_matrix(ithree, NP_dest)
 !
 !
-      do inod = 1, node1%numnod
-        x_vec(3*inod-2) = node1%xx(inod,1)
-        x_vec(3*inod-1) = node1%xx(inod,2)
-        x_vec(3*inod  ) = node1%xx(inod,3)
+      do inod = 1, node%numnod
+        x_vec(3*inod-2) = node%xx(inod,1)
+        x_vec(3*inod-1) = node%xx(inod,2)
+        x_vec(3*inod  ) = node%xx(inod,3)
       end do
 !
-      call interpolate_mod_N(comm_dest, node1%numnod, NP_dest, ithree,  &
+      call interpolate_mod_N(comm_dest, node%numnod, NP_dest, ithree,   &
      &    x_vec(1), xvec_2nd(1))
 !
       do inod = 1, NP_dest
@@ -111,10 +112,9 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_interpolate_position_by_s(NP_dest, comm_dest)
+      subroutine s_interpolate_position_by_s(node, NP_dest, comm_dest)
 !
       use m_constants
-      use m_geometry_data
       use m_2nd_pallalel_vector
       use m_interpolated_geometry
       use m_interpolate_table_orgin
@@ -128,6 +128,7 @@
       use interpolate_by_module
       use matvec_by_djo
 !
+      type(node_data), intent(inout) :: node
       integer(kind = kint), intent(in) :: NP_dest
       type(communication_table), intent(in) :: comm_dest
 !
@@ -135,16 +136,16 @@
 !
 !     initialize
 !
-      call verify_vector_for_solver(ione, node1%numnod)
+      call verify_vector_for_solver(ione, node%numnod)
       call verify_2nd_iccg_matrix(ione, NP_dest)
 !
 !
       do nd = 1, 3
-        do inod = 1, node1%numnod
-          x_vec(inod  ) = node1%xx(inod,nd)
+        do inod = 1, node%numnod
+          x_vec(inod  ) = node%xx(inod,nd)
         end do
 !
-        call interpolate_mod_1(comm_dest, node1%numnod, NP_dest,        &
+        call interpolate_mod_1(comm_dest, node%numnod, NP_dest,         &
      &      x_vec(1), xvec_2nd(1))
 !
         do inod = 1, NP_dest

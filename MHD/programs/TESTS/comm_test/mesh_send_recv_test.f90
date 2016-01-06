@@ -5,11 +5,9 @@
 !     Written by H. Matsui on Apr., 2008
 !
 !      subroutine s_mesh_send_recv_test
+!      subroutine node_send_recv4_test(node, nod_comm)
 !
-!      subroutine node_send_recv_test
-!      subroutine ele_send_recv_test
-!      subroutine surf_send_recv_test
-!      subroutine edge_send_recv_test
+!      subroutine node_send_recv_test(node, nod_comm)
 !
       module mesh_send_recv_test
 !
@@ -17,8 +15,12 @@
       use m_constants
 !
       use calypso_mpi
-      use m_geometry_data
       use m_geometry_4_comm_test
+!
+      use t_comm_table
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
 !
       implicit  none
 !
@@ -31,46 +33,57 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_mesh_send_recv_test
+      subroutine s_mesh_send_recv_test(ele, surf, edge,                 &
+     &          ele_comm, surf_comm, edge_comm)
 !
-      call ele_send_recv_test
-      call surf_send_recv_test
-      call edge_send_recv_test
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
+      type(communication_table), intent(in) :: ele_comm
+      type(communication_table), intent(in) :: surf_comm
+      type(communication_table), intent(in) :: edge_comm
+!
+      call ele_send_recv_test(ele, ele_comm)
+      call surf_send_recv_test(surf, surf_comm)
+      call edge_send_recv_test(edge, edge_comm)
 !
       end subroutine s_mesh_send_recv_test
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine node_send_recv_test
+      subroutine node_send_recv_test(node, nod_comm)
 !
-      use m_nod_comm_table
       use m_array_for_send_recv
       use solver_SR_type
 !
+      type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: nod_comm
       integer(kind = kint) :: inod
 !
 !
-      do inod = 1, node1%internal_node
-        i8x_vec(inod) = int(node1%inod_global(inod))
-        x_vec(3*inod-2) = node1%xx(inod,1)
-        x_vec(3*inod-1) = node1%xx(inod,2)
-        x_vec(3*inod  ) = node1%xx(inod,3)
+      do inod = 1, node%internal_node
+        i8x_vec(inod) = int(node%inod_global(inod))
+        x_vec(3*inod-2) = node%xx(inod,1)
+        x_vec(3*inod-1) = node%xx(inod,2)
+        x_vec(3*inod  ) = node%xx(inod,3)
       end do
 !
-      call SOLVER_SEND_RECV_int8_type(node1%numnod, nod_comm, i8x_vec)
-      call SOLVER_SEND_RECV_3_type(node1%numnod, nod_comm, x_vec)
+      call SOLVER_SEND_RECV_int8_type(node%numnod, nod_comm, i8x_vec)
+      call SOLVER_SEND_RECV_3_type(node%numnod, nod_comm, x_vec)
 !
       end subroutine node_send_recv_test
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine node_send_recv4_test
+      subroutine node_send_recv4_test(node, nod_comm)
 !
       use m_work_time
-      use m_nod_comm_table
       use m_array_for_send_recv
       use m_solver_SR
       use solver_SR_type
+!
+      type(node_data), intent(in) :: node
+      type(communication_table), intent(in) :: nod_comm
 !
       integer(kind = kint) :: inod
       integer(kind = kint), parameter :: NB = 12
@@ -81,30 +94,30 @@
       integer (kind = kint) :: k, ii, ix, nd
 !
       allocate(irev_import(nod_comm%istack_import(nod_comm%num_neib)))
-      allocate(xx4(NB*node1%numnod))
+      allocate(xx4(NB*node%numnod))
 !
-      do inod = 1, node1%internal_node
-        i8x_vec(inod) = node1%inod_global(inod)
-        xx4(12*inod-11) = node1%xx(inod,1)
-        xx4(12*inod-10) = node1%xx(inod,2)
-        xx4(12*inod- 9) = node1%xx(inod,3)
-        xx4(12*inod- 8) = node1%xx(inod,1) + 100.0
-        xx4(12*inod- 7) = node1%xx(inod,2) + 100.0
-        xx4(12*inod- 6) = node1%xx(inod,3) + 100.0
-        xx4(12*inod- 5) = node1%xx(inod,1) + 200.0
-        xx4(12*inod- 4) = node1%xx(inod,2) + 200.0
-        xx4(12*inod- 3) = node1%xx(inod,3) + 200.0
-        xx4(12*inod- 2) = node1%xx(inod,1) + 300.0
-        xx4(12*inod- 1) = node1%xx(inod,2) + 300.0
-        xx4(12*inod   ) = node1%xx(inod,3) + 300.0
+      do inod = 1, node%internal_node
+        i8x_vec(inod) = node%inod_global(inod)
+        xx4(12*inod-11) = node%xx(inod,1)
+        xx4(12*inod-10) = node%xx(inod,2)
+        xx4(12*inod- 9) = node%xx(inod,3)
+        xx4(12*inod- 8) = node%xx(inod,1) + 100.0
+        xx4(12*inod- 7) = node%xx(inod,2) + 100.0
+        xx4(12*inod- 6) = node%xx(inod,3) + 100.0
+        xx4(12*inod- 5) = node%xx(inod,1) + 200.0
+        xx4(12*inod- 4) = node%xx(inod,2) + 200.0
+        xx4(12*inod- 3) = node%xx(inod,3) + 200.0
+        xx4(12*inod- 2) = node%xx(inod,1) + 300.0
+        xx4(12*inod- 1) = node%xx(inod,2) + 300.0
+        xx4(12*inod   ) = node%xx(inod,3) + 300.0
       end do
 !
-      call SOLVER_SEND_RECV_int8_type(node1%numnod, nod_comm, i8x_vec)
+      call SOLVER_SEND_RECV_int8_type(node%numnod, nod_comm, i8x_vec)
 !
-      call SOLVER_SEND_RECV_N_type(node1%numnod, NB, nod_comm, xx4)
+      call SOLVER_SEND_RECV_N_type(node%numnod, NB, nod_comm, xx4)
 !
       do ii = 1, nod_comm%istack_import(nod_comm%num_neib)
-        k = nod_comm%item_import(ii) - node1%internal_node
+        k = nod_comm%item_import(ii) - node%internal_node
         irev_import(k) = ii
       end do
 !
@@ -151,7 +164,7 @@
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= ist+1, ied
-            ii   = NB * (node1%internal_node+k-1) + nd
+            ii   = NB * (node%internal_node+k-1) + nd
             ix   = NB * (irev_import(k)-1) + nd
             xx4(ii)= WR(ix)
           end do
@@ -204,7 +217,7 @@
 !$omp do private(k,ii,ix)
         do nd = 1, NB
           do k= ist+1, ied
-            ii   = NB * (node1%internal_node+k-1) + nd
+            ii   = NB * (node%internal_node+k-1) + nd
             ix   = NB * (irev_import(k)-1) + nd
             xx4(ii)= WR(ix)
           end do
@@ -262,7 +275,7 @@
         do nd = 1, NB
 !$omp do private(k,ii,ix)
           do k= 1, num
-            ii   = NB * (node1%internal_node+k+ist-1) + nd
+            ii   = NB * (node%internal_node+k+ist-1) + nd
             ix   = NB * (irev_import(k+ist)-1) + nd
             xx4(ii)= WR(ix)
           end do
@@ -320,7 +333,7 @@
         do inum = 1, NB*num
           nd = mod(inum-ione,NB) + ione
           k = (inum-nd) / NB + ione
-            ii   = NB * (node1%internal_node+k+ist-1) + nd
+            ii   = NB * (node%internal_node+k+ist-1) + nd
             ix   = (irev_import(k)-ist) + (nd-1) * num + NB*ist
             xx4(ii)= WR(ix)
         end do
@@ -335,18 +348,20 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine ele_send_recv_test
+      subroutine ele_send_recv_test(ele, ele_comm)
 !
-      use m_nod_comm_table
       use solver_SR_type
+!
+      type(element_data), intent(in) :: ele
+      type(communication_table), intent(in) :: ele_comm
 !
       integer(kind = kint) :: iele, inum
 !
 !
-      do iele = 1, ele1%numele
-        x_ele_comm(3*iele-2) = ele1%x_ele(iele,1)
-        x_ele_comm(3*iele-1) = ele1%x_ele(iele,2)
-        x_ele_comm(3*iele  ) = ele1%x_ele(iele,3)
+      do iele = 1, ele%numele
+        x_ele_comm(3*iele-2) = ele%x_ele(iele,1)
+        x_ele_comm(3*iele-1) = ele%x_ele(iele,2)
+        x_ele_comm(3*iele  ) = ele%x_ele(iele,3)
       end do
       do inum = 1, ele_comm%ntot_import
         iele = ele_comm%item_import(inum)
@@ -355,25 +370,26 @@
         x_ele_comm(3*iele  ) = 0.0d0
       end do
 !
-      call SOLVER_SEND_RECV_3_type(ele1%numele, ele_comm, x_ele_comm)
+      call SOLVER_SEND_RECV_3_type(ele%numele, ele_comm, x_ele_comm)
 !
       end subroutine ele_send_recv_test
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine surf_send_recv_test
+      subroutine surf_send_recv_test(surf, surf_comm)
 !
-      use m_geometry_data
-      use m_nod_comm_table
       use solver_SR_type
+!
+      type(surface_data), intent(in) :: surf
+      type(communication_table), intent(in) :: surf_comm
 !
       integer(kind = kint) :: isurf, inum
 !
 !
-      do isurf = 1, surf1%numsurf
-        x_surf_comm(3*isurf-2) = surf1%x_surf(isurf,1)
-        x_surf_comm(3*isurf-1) = surf1%x_surf(isurf,2)
-        x_surf_comm(3*isurf  ) = surf1%x_surf(isurf,3)
+      do isurf = 1, surf%numsurf
+        x_surf_comm(3*isurf-2) = surf%x_surf(isurf,1)
+        x_surf_comm(3*isurf-1) = surf%x_surf(isurf,2)
+        x_surf_comm(3*isurf  ) = surf%x_surf(isurf,3)
       end do
       do inum = 1, surf_comm%ntot_import
         isurf = surf_comm%item_import(inum)
@@ -383,25 +399,26 @@
       end do
 !
       call SOLVER_SEND_RECV_3_type                                      &
-     &   (surf1%numsurf, surf_comm, x_surf_comm)
+     &   (surf%numsurf, surf_comm, x_surf_comm)
 !
       end subroutine surf_send_recv_test
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine edge_send_recv_test
+      subroutine edge_send_recv_test(edge, edge_comm)
 !
-      use m_geometry_data
-      use m_nod_comm_table
       use solver_SR_type
+!
+      type(edge_data), intent(in) :: edge
+      type(communication_table), intent(in) :: edge_comm
 !
       integer(kind = kint) :: iedge, inum
 !
 !
-      do iedge = 1, edge1%numedge
-        x_edge_comm(3*iedge-2) = edge1%x_edge(iedge,1)
-        x_edge_comm(3*iedge-1) = edge1%x_edge(iedge,2)
-        x_edge_comm(3*iedge  ) = edge1%x_edge(iedge,3)
+      do iedge = 1, edge%numedge
+        x_edge_comm(3*iedge-2) = edge%x_edge(iedge,1)
+        x_edge_comm(3*iedge-1) = edge%x_edge(iedge,2)
+        x_edge_comm(3*iedge  ) = edge%x_edge(iedge,3)
       end do
       do inum = 1, edge_comm%ntot_import
         iedge = edge_comm%item_import(inum)
@@ -411,7 +428,7 @@
       end do
 !
       call SOLVER_SEND_RECV_3_type                                      &
-     &   (edge1%numedge, edge_comm, x_edge_comm)
+     &   (edge%numedge, edge_comm, x_edge_comm)
 !
       end subroutine edge_send_recv_test
 !

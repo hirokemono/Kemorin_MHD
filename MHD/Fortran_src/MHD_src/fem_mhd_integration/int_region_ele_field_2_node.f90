@@ -3,28 +3,30 @@
 !
 !     Written by H. Matsui on Oct., 2006
 !
-!      subroutine int_fl_ele_scalar_2_node(scalar_nod, scalar_ele)
-!      subroutine int_fl_ele_vector_2_node(vector_nod, vector_ele)
-!
-!      subroutine int_cd_ele_scalar_2_node(scalar_nod, scalar_ele)
-!      subroutine int_cd_ele_vector_2_node(vector_nod, vector_ele)
-!
-!      subroutine int_ins_ele_scalar_2_node(scalar_nod, scalar_ele)
-!      subroutine int_ins_ele_vector_2_node(vector_nod, vector_ele)
+!!      subroutine int_ele_scalar_2_node(iele_fsmp_stack, m_lump,       &
+!!     &          node, ele, jac_3d, rhs_tbl, scalar_ele,               &
+!!     &          scalar_nod, fem_wk, f_l)
+!!      subroutine int_ele_vector_2_node(iele_fsmp_stack, m_lump,       &
+!!     &          node, ele, jac_3d, rhs_tbl, vector_ele,               &
+!!     &          vector_nod, fem_wk, f_l)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(lumped_mass_matrices), intent(in) :: m_lump
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_l
 !
       module int_region_ele_field_2_node
 !
       use m_precision
       use m_constants
-      use m_geometry_data
-      use m_geometry_data_MHD
       use m_phys_constants
-      use m_jacobians
-      use m_element_id_4_node
-      use m_finite_element_matrix
 !
-      use int_element_field_2_node
-      use cal_ff_smp_to_ffs
+      use t_geometry_data
+      use t_jacobians
+      use t_table_FEM_const
+      use t_finite_element_mat
 !
       implicit none
 !
@@ -34,120 +36,65 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_fl_ele_scalar_2_node(scalar_nod, scalar_ele)
+      subroutine int_ele_scalar_2_node(iele_fsmp_stack, m_lump,         &
+     &          node, ele, jac_3d, rhs_tbl, scalar_ele,                 &
+     &          scalar_nod, fem_wk, f_l)
 !
-      use m_int_vol_data
+      use int_element_field_2_node
+      use cal_ff_smp_to_ffs
 !
-      real(kind = kreal), intent(in) :: scalar_ele(ele1%numele)
-      real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(lumped_mass_matrices), intent(in) :: m_lump
+      integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      real(kind = kreal), intent(in) :: scalar_ele(ele%numele)
+      real(kind = kreal), intent(inout) :: scalar_nod(node%numnod)
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      call int_area_ele_scalar_2_node                                   &
-     &   (node1, ele1, jac1_3d_q, rhs_tbl1, fluid1%istack_ele_fld_smp,  &
-     &    scalar_ele, fem1_wk, f1_l)
-      call cal_ff_smp_2_scalar(node1, rhs_tbl1,                         &
-     &    f1_l%ff_smp, mhd_fem1_wk%mlump_fl%ml,                         &
-     &    n_scalar, ione, scalar_nod)
+      call int_area_ele_scalar_2_node(node, ele, jac_3d, rhs_tbl,       &
+     &    iele_fsmp_stack, scalar_ele, fem_wk, f_l)
+      call cal_ff_smp_2_scalar(node, rhs_tbl,                           &
+     &    f_l%ff_smp, m_lump%ml, n_scalar, ione, scalar_nod)
 !
-      end subroutine int_fl_ele_scalar_2_node
+      end subroutine int_ele_scalar_2_node
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_fl_ele_vector_2_node(vector_nod, vector_ele)
+      subroutine int_ele_vector_2_node(iele_fsmp_stack, m_lump,         &
+     &          node, ele, jac_3d, rhs_tbl, vector_ele,                 &
+     &          vector_nod, fem_wk, f_l)
 !
-      use m_int_vol_data
+      use int_element_field_2_node
+      use cal_ff_smp_to_ffs
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(lumped_mass_matrices), intent(in) :: m_lump
+      integer (kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
       real(kind = kreal), intent(in)                                    &
-     &                   :: vector_ele(ele1%numele,n_vector)
+     &                   :: vector_ele(ele%numele,n_vector)
       real(kind = kreal), intent(inout)                                 &
-     &                   :: vector_nod(node1%numnod,n_vector)
+     &                   :: vector_nod(node%numnod,n_vector)
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l
 !
 !
-      call int_area_ele_vector_2_node(node1, ele1, jac1_3d_q, rhs_tbl1, &
-     &    fluid1%istack_ele_fld_smp, vector_ele, fem1_wk, f1_l)
-      call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
-     &    f1_l%ff_smp, mhd_fem1_wk%mlump_fl%ml,                         &
-     &    n_vector, ione, vector_nod)
+      call int_area_ele_vector_2_node(node, ele, jac_3d, rhs_tbl,       &
+     &    iele_fsmp_stack, vector_ele, fem_wk, f_l)
+      call cal_ff_smp_2_vector(node, rhs_tbl,                           &
+     &    f_l%ff_smp, m_lump%ml, n_vector, ione, vector_nod)
 !
-      end subroutine int_fl_ele_vector_2_node
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine int_cd_ele_scalar_2_node(scalar_nod, scalar_ele)
-!
-      use m_int_vol_data
-!
-      real(kind = kreal), intent(in) :: scalar_ele(ele1%numele)
-      real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
-!
-!
-      call int_area_ele_scalar_2_node(node1, ele1, jac1_3d_q, rhs_tbl1, &
-     &    conduct1%istack_ele_fld_smp, scalar_ele, fem1_wk, f1_l)
-      call cal_ff_smp_2_scalar(node1, rhs_tbl1,                         &
-     &    f1_l%ff_smp, mhd_fem1_wk%mlump_cd%ml,                         &
-     &    n_scalar, ione, scalar_nod)
-!
-      end subroutine int_cd_ele_scalar_2_node
-!
-!-----------------------------------------------------------------------
-!
-      subroutine int_cd_ele_vector_2_node(vector_nod, vector_ele)
-!
-      use m_int_vol_data
-!
-      real(kind = kreal), intent(in)                                    &
-     &                   :: vector_ele(ele1%numele,n_vector)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: vector_nod(node1%numnod,n_vector)
-!
-!
-      call int_area_ele_vector_2_node(node1, ele1, jac1_3d_q, rhs_tbl1, &
-     &    conduct1%istack_ele_fld_smp, vector_ele, fem1_wk, f1_l)
-      call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
-     &    f1_l%ff_smp, mhd_fem1_wk%mlump_cd%ml,                         &
-     &    n_vector, ione, vector_nod)
-!
-      end subroutine int_cd_ele_vector_2_node
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine int_ins_ele_scalar_2_node(scalar_nod, scalar_ele)
-!
-      use m_int_vol_data
-!
-      real(kind = kreal), intent(in) :: scalar_ele(ele1%numele)
-      real(kind = kreal), intent(inout) :: scalar_nod(node1%numnod)
-!
-!
-      call int_area_ele_scalar_2_node(node1, ele1, jac1_3d_q, rhs_tbl1, &
-     &    insulate1%istack_ele_fld_smp, scalar_ele, fem1_wk, f1_l)
-      call cal_ff_smp_2_scalar(node1, rhs_tbl1,                         &
-     &    f1_l%ff_smp, mhd_fem1_wk%mlump_ins%ml,                        &
-     &    n_scalar, ione, scalar_nod)
-!
-      end subroutine int_ins_ele_scalar_2_node
-!
-!-----------------------------------------------------------------------
-!
-      subroutine int_ins_ele_vector_2_node(vector_nod, vector_ele)
-!
-      use m_int_vol_data
-!
-      real(kind = kreal), intent(in)                                    &
-     &                   :: vector_ele(ele1%numele,n_vector)
-      real(kind = kreal), intent(inout)                                 &
-     &                   :: vector_nod(node1%numnod,n_vector)
-!
-!
-      call int_area_ele_vector_2_node(node1, ele1, jac1_3d_q, rhs_tbl1, &
-     &    insulate1%istack_ele_fld_smp, vector_ele, fem1_wk, f1_l)
-      call cal_ff_smp_2_vector(node1, rhs_tbl1,                         &
-     &    f1_l%ff_smp, mhd_fem1_wk%mlump_ins%ml,                        &
-     &    n_vector, ione, vector_nod)
-!
-      end subroutine int_ins_ele_vector_2_node
+      end subroutine int_ele_vector_2_node
 !
 !-----------------------------------------------------------------------
 !

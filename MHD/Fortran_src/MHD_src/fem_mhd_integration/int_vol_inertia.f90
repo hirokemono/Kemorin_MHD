@@ -30,6 +30,13 @@
 !!     &         (node, ele, jac_3d, rhs_tbl, nod_fld, iele_fsmp_stack, &
 !!     &          n_int, i_vector, ncomp_ele, iele_vort, ie_upw, d_ele, &
 !!     &          coef, fem_wk, f_nl)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(phys_data),    intent(in) :: nod_fld
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       module int_vol_inertia
 !

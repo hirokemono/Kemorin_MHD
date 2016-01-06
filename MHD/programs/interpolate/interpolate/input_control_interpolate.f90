@@ -3,9 +3,10 @@
 !
 !     Written by H. Matsui on July, 2006
 !
-!      subroutine s_input_control_interpolate(new_femmesh,              &
-!     &          new_surf_mesh, new_edge_mesh, ierr)
-!      subroutine set_ctl_interpolate_udt
+!      subroutine s_input_control_interpolate                           &
+!     &         (org_femmesh, org_surf_mesh, org_edge_mesh,             &
+!     &          new_femmesh, new_surf_mesh, new_edge_mesh, ierr)
+!      subroutine set_ctl_interpolate_udt(nod_fld)
 !
       module input_control_interpolate
 !
@@ -22,14 +23,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_control_interpolate(new_femmesh,               &
-     &          new_surf_mesh, new_edge_mesh, ierr)
+      subroutine s_input_control_interpolate                            &
+     &         (org_femmesh, org_surf_mesh, org_edge_mesh,              &
+     &          new_femmesh, new_surf_mesh, new_edge_mesh, ierr)
 !
       use t_mesh_data
 !
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
       use m_2nd_pallalel_vector
       use m_ctl_params_4_gen_table
       use m_ctl_data_gen_table
@@ -38,11 +37,16 @@
       use set_ctl_interpolation
 !
       use load_mesh_data
+      use const_mesh_information
 !
       use itp_table_IO_select_4_zlib
       use copy_interpolate_dest_IO
       use copy_interpolate_org_IO
       use interpolate_nod_field_2_type
+!
+      type(mesh_data), intent(inout) :: org_femmesh
+      type(surface_geometry), intent(inout) :: org_surf_mesh
+      type(edge_geometry), intent(inout) ::  org_edge_mesh
 !
       type(mesh_data), intent(inout) :: new_femmesh
       type(surface_geometry), intent(inout) :: new_surf_mesh
@@ -63,9 +67,13 @@
       if (my_rank .lt. ndomain_org) then
         mesh_file_head = org_mesh_head
         iflag_mesh_file_fmt = ifmt_org_mesh_file
-        call input_mesh                                                 &
-     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
-     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
+        call input_mesh_data_type(my_rank, org_femmesh,                 &
+     &     org_surf_mesh%surf%nnod_4_surf,                              &
+     &     org_edge_mesh%edge%nnod_4_edge)
+!
+        if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
+        call set_nod_and_ele_infos                                      &
+     &     (org_femmesh%mesh%node, org_femmesh%mesh%ele)
       end if
 !
 !  --  read 2nd mesh for target (if exist)
@@ -95,22 +103,24 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'init_interpolate_nodal_data'
       call init_interpolate_nodal_data                                  &
-     &   (node1, ele1, new_femmesh%mesh%node)
+     &   (org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
+     &    new_femmesh%mesh%node)
 !
       end subroutine s_input_control_interpolate
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ctl_interpolate_udt
+      subroutine set_ctl_interpolate_udt(nod_fld)
 !
       use calypso_mpi
-      use m_node_phys_data
+      use t_phys_data
       use set_control_nodal_data
 !
+      type(phys_data), intent(inout) :: nod_fld
       integer(kind = kint) :: ierr
 !
 !
-      call s_set_control_nodal_data(nod_fld1, ierr)
+      call s_set_control_nodal_data(nod_fld, ierr)
       if (ierr .ne. 0) call calypso_MPI_abort(ierr, e_message)
 !
       end subroutine set_ctl_interpolate_udt

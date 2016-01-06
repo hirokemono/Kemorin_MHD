@@ -14,14 +14,15 @@
       use calypso_mpi
       use m_machine_parameter
 !
-      use m_geometry_data
-      use m_group_data
-!
       use t_mesh_data
       use t_next_node_ele_4_node
       use t_jacobian_3d
 !
       implicit none
+!
+      type(mesh_data), save :: org_femmesh
+      type(surface_geometry), save :: org_surf_mesh
+      type(edge_geometry), save ::  org_edge_mesh
 !
       type(mesh_geometry), save :: newmesh
       type(mesh_groups), save ::   newgroup
@@ -39,7 +40,8 @@
 !
       subroutine init_analyzer
 !
-!
+      use m_ctl_params_4_gen_table
+      use m_read_mesh_data
       use input_control_gen_table
       use const_mesh_information
       use set_table_type_RHS_assemble
@@ -47,7 +49,7 @@
       use element_posi_2_nodal_array
       use set_2nd_geometry_4_table
       use const_jacobians_3d
-!
+      use load_mesh_data
 !
       if (my_rank.eq.0) then
         write(*,*) 'Construct commutation filter'
@@ -59,10 +61,18 @@
       if (iflag_debug.eq.1) write(*,*) 's_input_control_generate_table'
       call s_input_control_generate_table
 !
-!     --------------------- 
+!  --  read geometry
+!
+      mesh_file_head = dest_mesh_head
+      iflag_mesh_file_fmt = ifmt_itp_mesh_file
+      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
+      call input_mesh_data_type(my_rank, org_femmesh,                   &
+     &    org_surf_mesh%surf%nnod_4_surf,                               &
+     &    org_edge_mesh%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
-      call set_nod_and_ele_infos(node1, ele1)
+      call set_nod_and_ele_infos                                        &
+     &   (org_femmesh%mesh%node, org_femmesh%mesh%ele)
 !
 !     ----- construct mesh informations for original mesh
 !
@@ -75,21 +85,25 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_belonged_ele_and_next_nod'
       call set_belonged_ele_and_next_nod                                &
-     &   (node1, ele1, next_tbl_i%neib_ele, next_tbl_i%neib_nod)
+     &   (org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
+     &    next_tbl_i%neib_ele, next_tbl_i%neib_nod)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_jacobian_element'
-      call max_int_point_by_etype(ele1%nnod_4_ele)
+      call max_int_point_by_etype(org_femmesh%mesh%ele%nnod_4_ele)
       call cal_jacobian_element                                         &
-     &   (node1, ele1, sf_grp1, infty_list, jac_3d_l, jac_3d_q)
+     &   (org_femmesh%mesh%node, org_femmesh%mesh%ele,                  &
+     &    org_femmesh%group%surf_grp, org_femmesh%group%infty_grp,      &
+     &    jac_3d_l, jac_3d_q)
 !
 !  -------------------------------
 !
-      call s_element_posi_2_nodal_array(ele1, node1)
+      call s_element_posi_2_nodal_array                                 &
+     &   (org_femmesh%mesh%ele, org_femmesh%mesh%node)
 !
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 's_set_serach_data_4_dest'
-      call s_set_serach_data_4_dest(node1)
+      call s_set_serach_data_4_dest(org_femmesh%mesh%node)
 !
       end subroutine init_analyzer
 !
@@ -114,20 +128,22 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_construct_interpolate_table'
       call s_construct_interpolate_table                                &
-     &   (node1, next_tbl_i%neib_nod, newmesh, newgroup, ierr_missing)
+     &   (org_femmesh%mesh%node, next_tbl_i%neib_nod,                   &
+     &    newmesh, newgroup, ierr_missing)
 !
 !   ordering destination table by domain
 !
       if (iflag_debug.eq.1) write(*,*) 's_order_dest_table_by_domain'
       call s_order_dest_table_by_domain                                 &
-     &   (node1%internal_node, ierr_missing)
+     &   (org_femmesh%mesh%node%internal_node, ierr_missing)
 !
 !      call check_table_in_org_2(13)
 !
 !   ordering destination table by interpolation type
 !
       if (iflag_debug.eq.1) write(*,*) 's_order_dest_table_by_type'
-      call s_order_dest_table_by_type(node1, ele1)
+      call s_order_dest_table_by_type                                   &
+     &   (org_femmesh%mesh%node, org_femmesh%mesh%ele)
 !
       call copy_itp_table_dest_to_IO
 !

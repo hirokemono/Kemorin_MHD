@@ -8,8 +8,25 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!      subroutine int_vol_magne_monitor_pg(i_field)
-!      subroutine int_vol_magne_monitor_upm(i_field)
+!!      subroutine int_vol_magne_monitor_pg(i_field,                    &
+!!     &         node, ele, conduct, iphys, nod_fld, iphys_ele, ele_fld,&
+!!     &         jac_3d, rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk, f_nl)
+!!      subroutine int_vol_magne_monitor_upm(i_field,                   &
+!!     &         node, ele, conduct, iphys, nod_fld, iphys_ele, ele_fld,&
+!!     &         jac_3d, rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk, f_nl)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(phys_data), intent(in) :: ele_fld
+!!        type(field_geometry_data), intent(in) :: conduct
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_nl
+!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
       module int_vol_magne_monitor
 !
@@ -18,19 +35,21 @@
       use m_control_parameter
       use m_machine_parameter
       use m_phys_constants
-      use m_geometry_data
-      use m_geometry_data_MHD
       use m_physical_property
       use m_SGS_model_coefs
       use m_SGS_address
-      use m_node_phys_data
-      use m_element_phys_data
       use m_fem_gauss_int_coefs
-      use m_element_id_4_node
-      use m_jacobians
-      use m_finite_element_matrix
-      use m_int_vol_data
-      use m_filter_elength
+!
+      use t_geometry_data_MHD
+      use t_geometry_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_3d
+      use t_table_FEM_const
+      use t_finite_element_mat
+      use t_phys_address
+      use t_MHD_finite_element_mat
+      use t_filter_elength
 !
       implicit none
 !
@@ -40,41 +59,58 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_magne_monitor_pg(i_field)
+      subroutine int_vol_magne_monitor_pg(i_field,                      &
+     &         node, ele, conduct, iphys, nod_fld, iphys_ele, ele_fld,  &
+     &         jac_3d, rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk, f_nl)
 !
       use int_vol_vect_differences
       use int_vol_vect_cst_difference
       use int_vol_mag_induction
       use int_vol_SGS_mag_induct
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: ele_fld
+      type(field_geometry_data), intent(in) :: conduct
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(gradient_model_data_type), intent(in) :: FEM_elen
+!
       integer(kind=kint), intent(in) :: i_field
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_nl
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
       if (i_field .eq. iphys%i_induction) then
-        call int_vol_mag_induct_pg(node1, ele1,                         &
-     &      jac1_3d_q, rhs_tbl1, nod_fld1, iphys, iphys_ele,            &
-     &      conduct1%istack_ele_fld_smp, intg_point_t_evo,              &
-     &      fld_ele1%ntot_phys, fld_ele1%d_fld,                         &
-     &      fem1_wk, mhd_fem1_wk, f1_nl)
+        call int_vol_mag_induct_pg(node, ele,                          &
+     &      jac_3d, rhs_tbl, nod_fld, iphys, iphys_ele,                &
+     &      conduct%istack_ele_fld_smp, intg_point_t_evo,              &
+     &      ele_fld%ntot_phys, ele_fld%d_fld,                          &
+     &      fem_wk, mhd_fem_wk, f_nl)
 !
       else if (i_field .eq. iphys%i_induct_div) then
         call int_vol_div_asym_tsr                                       &
-     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
-     &      conduct1%istack_ele_fld_smp, intg_point_t_evo,              &
-     &      iphys%i_induct_t, fem1_wk, f1_nl)
+     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &      conduct%istack_ele_fld_smp, intg_point_t_evo,               &
+     &      iphys%i_induct_t, fem_wk, f_nl)
 !
       else if (i_field .eq. iphys%i_SGS_induction) then
         if(iflag_commute_induction .eq. id_SGS_commute_ON) then
-          call int_vol_div_SGS_idct_mod_pg(node1, ele1,                 &
-     &        jac1_3d_q, rhs_tbl1, nod_fld1, iphys, FEM1_elen,          &
-     &        conduct1%istack_ele_fld_smp, intg_point_t_evo,            &
+          call int_vol_div_SGS_idct_mod_pg(node, ele,                   &
+     &        jac_3d, rhs_tbl, nod_fld, iphys, FEM_elen,                &
+     &        conduct%istack_ele_fld_smp, intg_point_t_evo,             &
      &        ifilter_final, ak_diff(1,iak_diff_uxb), coef_induct,      &
-     &        fem1_wk, mhd_fem1_wk, f1_nl)
+     &        fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_as_tsr_w_const                               &
-     &       (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,               &
-     &        conduct1%istack_ele_fld_smp, intg_point_t_evo,            &
-     &        iphys%i_SGS_induct_t, coef_induct, fem1_wk, f1_nl)
+     &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
+     &        conduct%istack_ele_fld_smp, intg_point_t_evo,             &
+     &        iphys%i_SGS_induct_t, coef_induct, fem_wk, f_nl)
         end if
       end if
 !
@@ -82,46 +118,62 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_magne_monitor_upm(i_field)
+      subroutine int_vol_magne_monitor_upm(i_field,                     &
+     &         node, ele, conduct, iphys, nod_fld, iphys_ele, ele_fld,  &
+     &         jac_3d, rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk, f_nl)
 !
-      use m_element_phys_data
       use int_vol_vect_diff_upw
       use int_vol_vect_cst_diff_upw
       use int_vol_mag_induction
       use int_vol_SGS_mag_induct
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: ele_fld
+      type(field_geometry_data), intent(in) :: conduct
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(gradient_model_data_type), intent(in) :: FEM_elen
+!
       integer(kind=kint), intent(in) :: i_field
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_nl
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
       if (i_field .eq. iphys%i_induction) then
-        call int_vol_mag_induct_upm(node1, ele1,                        &
-     &      jac1_3d_q, rhs_tbl1, nod_fld1, iphys, iphys_ele,            &
-     &      conduct1%istack_ele_fld_smp, intg_point_t_evo,              &
-     &      fld_ele1%ntot_phys, fld_ele1%d_fld,                         &
-     &      fem1_wk, mhd_fem1_wk, f1_nl)
+        call int_vol_mag_induct_upm(node, ele,                          &
+     &      jac_3d, rhs_tbl, nod_fld, iphys, iphys_ele,                 &
+     &      conduct%istack_ele_fld_smp, intg_point_t_evo,               &
+     &      ele_fld%ntot_phys, ele_fld%d_fld,                           &
+     &      fem_wk, mhd_fem_wk, f_nl)
 !
       else if (i_field .eq. iphys%i_induct_div) then
         call int_vol_div_as_tsr_upw                                     &
-     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
-     &      conduct1%istack_ele_fld_smp, intg_point_t_evo,              &
-     &      iphys%i_induct_t, fld_ele1%ntot_phys, iphys_ele%i_magne,    &
-     &      fld_ele1%d_fld, fem1_wk, f1_nl)
+     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &      conduct%istack_ele_fld_smp, intg_point_t_evo,               &
+     &      iphys%i_induct_t, ele_fld%ntot_phys, iphys_ele%i_magne,     &
+     &      ele_fld%d_fld, fem_wk, f_nl)
 !
       else if (i_field .eq. iphys%i_SGS_induction) then
         if(iflag_commute_induction .eq. id_SGS_commute_ON) then
-          call int_vol_div_SGS_idct_mod_upm(node1, ele1,                &
-     &        jac1_3d_q, rhs_tbl1, nod_fld1, iphys, FEM1_elen,          &
-     &        conduct1%istack_ele_fld_smp, intg_point_t_evo,            &
+          call int_vol_div_SGS_idct_mod_upm(node, ele,                  &
+     &        jac_3d, rhs_tbl, nod_fld, iphys, FEM_elen,                &
+     &        conduct%istack_ele_fld_smp, intg_point_t_evo,             &
      &        ifilter_final, ak_diff(1,iak_diff_uxb), coef_induct,      &
-     &        fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld,    &
-     &        fem1_wk, mhd_fem1_wk, f1_nl)
+     &        ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,      &
+     &        fem_wk, mhd_fem_wk, f_nl)
         else
           call int_vol_div_as_tsr_cst_upw                               &
-     &       (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,               &
-     &        conduct1%istack_ele_fld_smp, intg_point_t_evo,            &
-     &        iphys%i_SGS_induct_t, fld_ele1%ntot_phys,                 &
-     &        iphys_ele%i_magne, fld_ele1%d_fld, coef_induct,           &
-     &        fem1_wk, f1_nl)
+     &       (node, ele, jac_3d, rhs_tbl, nod_fld,                      &
+     &        conduct%istack_ele_fld_smp, intg_point_t_evo,             &
+     &        iphys%i_SGS_induct_t, ele_fld%ntot_phys,                  &
+     &        iphys_ele%i_magne, ele_fld%d_fld, coef_induct,            &
+     &        fem_wk, f_nl)
         end if
       end if
 !
