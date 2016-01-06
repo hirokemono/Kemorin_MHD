@@ -5,9 +5,11 @@
       use m_constants
       use m_machine_parameter
 !
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
       use t_sph_trans_comm_tbl
 !
-      use m_geometry_data
       use m_read_ctl_gen_sph_shell
       use m_spheric_global_ranks
       use m_spheric_parameter
@@ -24,6 +26,10 @@
       use const_surface_mesh
 !
       implicit none
+!
+      type(element_data), save :: ele_pick
+      type(surface_data), save :: surf_pick
+      type(edge_data), save :: edge_pick
 !
 !>      Structure for parallel spherical mesh table
       type(sph_comm_tbl), allocatable :: comm_rlm(:)
@@ -71,7 +77,8 @@
 !  ========= Construct subdomain information for viewer ==============
 !
       if(iflag_excluding_FEM_mesh .eq. 0) then
-        call choose_surface_mesh(sph_file_head, ele1, surf1, edge1)
+        call choose_surface_mesh                                        &
+     &     (sph_file_head, ele_pick, surf_pick, edge_pick)
       end if
 !
       stop 'program is normally finished'

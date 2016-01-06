@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on Aug., 2007
 !
-!      subroutine s_const_local_groups
+!      subroutine s_const_local_groups(orggroup, newgroup)
 !
       module const_local_groups
 !
@@ -23,17 +23,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_const_local_groups(newgroup)
+      subroutine s_const_local_groups(orggroup, newgroup)
 !
-      use m_group_data
+      use t_group_data
       use t_mesh_data
 !
+      type(mesh_groups), intent(in) :: orggroup
       type(mesh_groups), intent(inout) :: newgroup
 !
 !
-      call const_local_nod_group(nod_grp1, newgroup%nod_grp)
-      call const_local_ele_group(ele_grp1, newgroup%ele_grp)
-      call const_local_surf_group(sf_grp1, newgroup%surf_grp)
+      call const_local_nod_group(orggroup%nod_grp, newgroup%nod_grp)
+      call const_local_ele_group(orggroup%ele_grp, newgroup%ele_grp)
+      call const_local_surf_group(orggroup%surf_grp, newgroup%surf_grp)
 !
       end subroutine s_const_local_groups
 !

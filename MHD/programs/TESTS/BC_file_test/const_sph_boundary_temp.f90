@@ -3,12 +3,15 @@
 !
 !      programmed by H.Matsui on Sep. 2009
 !
-!      subroutine const_sph_temp_bc(igrp, l, m)
+!      subroutine const_sph_temp_bc(node, nod_grp)
 !
       module const_sph_boundary_temp
 !
       use m_precision
       use m_constants
+!
+      use t_geometry_data
+      use t_group_data
 !
       implicit none
 !
@@ -20,14 +23,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_sph_temp_bc(nod_grp)
+      subroutine const_sph_temp_bc(node, nod_grp)
 !
       use calypso_mpi
-      use t_group_data
       use m_ctl_params_test_bc_temp
       use m_boundary_field_IO
       use boundary_field_file_IO
 !
+      type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
       integer(kind = kint) :: igrp
 !
@@ -53,7 +56,8 @@
       ntot_boundary_field_IO = istack_bc_data_IO(1)
       call allocate_boundary_values
 !
-      call set_sph_temp_bc(igrp_nod_bc, l_sph_bc, m_sph_bc, nod_grp,    &
+      call set_sph_temp_bc                                              &
+     &   (igrp_nod_bc, l_sph_bc, m_sph_bc, node, nod_grp,               &
      &    ntot_boundary_field_IO, id_local_bc_fld_IO(1),                &
      &    boundary_field_IO(1))
 !
@@ -64,16 +68,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine set_sph_temp_bc                                        &
-     &         (igrp, l, m, nod_grp, n_data, inod_bc, bc_temp)
-!
-      use m_geometry_data
-      use t_group_data
+     &         (igrp, l, m, node, nod_grp, n_data, inod_bc, bc_temp)
 !
       use m_schmidt_polynomial
       use m_spherical_harmonics
 !
       use spherical_harmonics
 !
+      type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
       integer(kind = kint), intent(in) :: igrp, l, m
       integer(kind = kint), intent(in) :: n_data
@@ -92,8 +94,8 @@
       do inum = 1, num
         inod = nod_grp%item_grp(ist+inum)
 !
-        call dschmidt(node1%theta(inod))
-        call spheric(node1%phi(inod))
+        call dschmidt(node%theta(inod))
+        call spheric(node%phi(inod))
 !
         inod_bc(inum) = inod
         bc_temp(inum) = s(j,0)

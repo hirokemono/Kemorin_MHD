@@ -9,7 +9,9 @@
 !
       use m_precision
 !
-      use m_geometry_data
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
       use const_surface_mesh
       use getarg_kemo
 !
@@ -18,6 +20,9 @@
       character(len=kchara) :: file_head
       integer(kind = kint) :: icount
 !
+      type(element_data), save :: ele_pick
+      type(surface_data), save :: surf_pick
+      type(edge_data), save :: edge_pick
 !
       icount = iargc_kemo()
       if(icount .eq. 0) then
@@ -27,7 +32,8 @@
         call getarg_k(1, file_head)
       end if
 !
-      call choose_surface_mesh(file_head, ele1, surf1, edge1)
+      call choose_surface_mesh                                          &
+     &   (file_head, ele_pick, surf_pick, edge_pick)
 !
       stop ' //// program normally finished //// '
 !

@@ -11,7 +11,7 @@
 !!        type(mesh_groups), intent(inout) :: group
 !!
 !!      subroutine dealloc_grp_connectivity_1st
-!!      subroutine deallocate_surf_grp_geometry
+!!      subroutine deasf_grp_nod1llocate_surf_grp_geometry
 !!
 !!      subroutine deallocate_surf_infinity
 !!@endverbatim

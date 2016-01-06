@@ -12,8 +12,14 @@
 !
       use m_constants
       use m_machine_parameter
+      use t_mesh_data
 !
       implicit none
+!
+      type(mesh_geometry), save :: mesh_add
+      type(mesh_groups), save :: group_add
+!
+      integer(kind = kint) :: nnod_4_surf, nnod_4_edge
 !
 !   --------------------------------------------------------------------
 !
@@ -24,9 +30,6 @@
       subroutine  initialize_add_egrp
 !
       use calypso_mpi
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
       use m_control_data_add_ele_grp
       use m_add_ele_grp_parameter
       use m_read_mesh_data
@@ -47,27 +50,30 @@
 !
       mesh_file_head = original_mesh_head
       call input_mesh                                                   &
-     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
-     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
-      call const_nod_ele_infos(my_rank,                                 &
-     &    node1, ele1, nod_grp1, ele_grp1, sf_grp1)
+     &   (my_rank, mesh_add%nod_comm, mesh_add%node, mesh_add%ele,      &
+     &    group_add%nod_grp, group_add%ele_grp, group_add%surf_grp,     &
+     &    nnod_4_surf, nnod_4_edge)
+      call const_nod_ele_infos(my_rank, mesh_add%node, mesh_add%ele,    &
+     &    group_add%nod_grp, group_add%ele_grp, group_add%surf_grp)
 !
-      call alloc_r_ele_cubed_sph(ele1%numele)
-      call set_rele_cubed_sph(node1%numnod, ele1%numele, ele1%ie,       &
-     &    node1%rr, ele1%r_ele)
+      call alloc_r_ele_cubed_sph(mesh_add%ele%numele)
+      call set_rele_cubed_sph                                           &
+     &   (mesh_add%node%numnod, mesh_add%ele%numele, mesh_add%ele%ie,   &
+     &    mesh_add%node%rr, mesh_add%ele%r_ele)
 !
-      call allocate_work_4_add_egrp_sph(ele1%numele)
-      call count_new_2d_element_group
+      call allocate_work_4_add_egrp_sph(mesh_add%ele%numele)
+      call count_new_2d_element_group(mesh_add%ele)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_new_2d_ele_group'
-      call set_new_2d_ele_group(ele_grp1)
+      call set_new_2d_ele_group(mesh_add%ele, group_add%ele_grp)
 !
       call deallocate_work_4_add_egrp_sph
 !
        if (iflag_debug.eq.1) write(*,*) 'output_mesh_1st'
       mesh_file_head = modified_mesh_head
-      call output_mesh(my_rank, nod_comm, node1, ele1,                  &
-     &                 nod_grp1, ele_grp1, sf_grp1)
+      call output_mesh                                                  &
+     &   (my_rank, mesh_add%nod_comm, mesh_add%node, mesh_add%ele,      &
+     &    group_add%nod_grp, group_add%ele_grp, group_add%surf_grp)
 !
       call dealloc_r_ele_cubed_sph
 !

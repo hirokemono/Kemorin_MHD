@@ -15,7 +15,6 @@ INTERPOLATE_PARA     \
 filtering            \
 SPH_SHELL_src        \
 CONST_SPH_GRID       \
-MESH_1st             \
 \
 MULTIGRID_src
 

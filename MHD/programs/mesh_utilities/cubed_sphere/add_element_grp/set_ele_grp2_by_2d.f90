@@ -185,14 +185,15 @@
       max_prev_1 = 1.0e30
       item_ed = 1
       do i = 1, num_ele_grp1
-        call set_start_end_egrping(ref_ele1,                            &
+        call set_start_end_egrping(numele, ref_ele1,                    &
      &      dminmax_grp_1(i,1), dminmax_grp_1(i,2), max_prev_1,         &
      &      item_st, item_ed)
 !
         max_prev_2 = 1.0e30
         jtem_ed = item_st
         do j = 1, num_ele_grp2
-          call set_2nd_start_end_egrp(ref_ele2, dminmax_grp_2(j,1),     &
+          call set_2nd_start_end_egrp                                   &
+     &       (numele, ref_ele2, dminmax_grp_2(j,1),                     &
      &        dminmax_grp_2(j,2), max_prev_2, item_st, item_ed,         &
      &        jtem_st, jtem_ed)
 !
@@ -240,7 +241,7 @@
       item_ed = 1
       icou = ele_grp%num_grp
       do i = 1, num_ele_grp1
-        call set_start_end_egrping(ref_ele1,                            &
+        call set_start_end_egrping(numele, ref_ele1,                    &
      &      dminmax_grp_1(i,1), dminmax_grp_1(i,2), max_prev_1,         &
      &      item_st, item_ed)
 !
@@ -251,7 +252,8 @@
           if(nitem_added_gl(igrp) .gt. 0) then
             icou = icou + 1
 !
-            call set_2nd_start_end_egrp(ref_ele2, dminmax_grp_2(j,1),   &
+            call set_2nd_start_end_egrp                                 &
+     &         (numele, ref_ele2, dminmax_grp_2(j,1),                   &
      &          dminmax_grp_2(j,2), max_prev_2, item_st, item_ed,       &
      &          jtem_st, jtem_ed)
 !

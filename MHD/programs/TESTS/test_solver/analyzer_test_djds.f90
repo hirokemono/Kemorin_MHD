@@ -12,7 +12,13 @@
 !
       use m_precision
 !
+      use t_geometry_data
+      use t_comm_table
+!
       implicit none
+!
+      type(communication_table), save :: nod_comm
+      type(node_data), save :: node
 !
       real(kind = kreal) :: RTIME, STARTTIME, ENDTIME
       private :: RTIME, STARTTIME, ENDTIME
@@ -42,7 +48,7 @@
 !C | MATRIX file |
 !C +-------------+
 !C===
-      call read_matrix_file
+      call read_matrix_file(nod_comm, node)
 !
       end subroutine init_analyzer
 !
@@ -51,8 +57,6 @@
       subroutine analyze
 !
       use calypso_mpi
-      use m_geometry_data
-      use m_nod_comm_table
       use m_iccg_parameter
       use m_crs_matrix
       use crs_matrix_io
@@ -68,24 +72,24 @@
 !      call check_crs_matrix_comps(my_rank, tbl1_crs, mat1_crs)
 !C
 !C-- ICCG computation
-      call transfer_crs_2_djds_matrix(node1, nod_comm,                  &
+      call transfer_crs_2_djds_matrix(node, nod_comm,                   &
      &    tbl1_crs, mat1_crs, djds_tbl1, djds_mat1)
 !
       if (mat1_crs%SOLVER_crs .eq. 'scalar'                             &
      &   .or. mat1_crs%SOLVER_crs.eq.'SCALAR') then
         call solve_by_djds_solver11                                     &
-     &     (node1, nod_comm, mat1_crs, djds_tbl1, djds_mat1, ierr)
+     &     (node, nod_comm, mat1_crs, djds_tbl1, djds_mat1, ierr)
       else if (mat1_crs%SOLVER_crs.eq.'block33'                         &
      &    .or. mat1_crs%SOLVER_crs.eq.'BLOCK33') then
         call solve_by_djds_solver33                                     &
-     &     (node1, nod_comm, mat1_crs, djds_tbl1, djds_mat1, ierr)
+     &     (node, nod_comm, mat1_crs, djds_tbl1, djds_mat1, ierr)
       else if (mat1_crs%SOLVER_crs.eq.'blockNN'                         &
      &    .or. mat1_crs%SOLVER_crs.eq.'BLOCKNN') then
         call solve_by_djds_solverNN                                     &
-     &     (node1, nod_comm, mat1_crs, djds_tbl1, djds_mat1, ierr)
+     &     (node, nod_comm, mat1_crs, djds_tbl1, djds_mat1, ierr)
       end if
 
-      call output_solution
+      call output_solution(node)
 
       if (my_rank.eq.0) write (*,*) itr_res, "  iters"
 

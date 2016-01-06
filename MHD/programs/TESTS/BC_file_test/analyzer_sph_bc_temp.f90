@@ -12,11 +12,17 @@
       module analyzer_sph_bc_temp
 !
       use m_precision
-!
       use m_machine_parameter
+!
       use calypso_mpi
+      use t_mesh_data
 !
       implicit none
+!
+      type(mesh_data), save :: femmesh
+      type(element_comms), save ::    ele_mesh
+      type(surface_geometry), save :: surf_mesh
+      type(edge_geometry), save ::    edge_mesh
 !
 ! ----------------------------------------------------------------------
 !
@@ -26,9 +32,6 @@
 !
       subroutine initilize_bc_temp
 !
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
       use m_ctl_data_test_bc_temp
       use m_ctl_params_test_bc_temp
       use load_mesh_data
@@ -46,16 +49,12 @@
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'input_mesh'
-      call input_mesh                                                   &
-     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
-     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
-!
-!     ---------------------
+      call input_mesh_data_type(my_rank, femmesh,                       &
+     &    surf_mesh%surf%nnod_4_surf, edge_mesh%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank,                                    &
-     &    node1, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,       &
-     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
+      call s_const_mesh_types_info                                      &
+     &   (my_rank, femmesh, surf_mesh, edge_mesh)
 !
        end subroutine initilize_bc_temp
 !
@@ -63,11 +62,11 @@
 !
       subroutine analyze_bc_temp
 !
-      use m_group_data
       use const_sph_boundary_temp
 !
       if (iflag_debug.gt.0) write(*,*) 'const_sph_temp_bc'
-      call const_sph_temp_bc(nod_grp1)
+      call const_sph_temp_bc                                            &
+     &   (femmesh%mesh%node, femmesh%group%nod_grp)
 !
       end subroutine analyze_bc_temp
 !

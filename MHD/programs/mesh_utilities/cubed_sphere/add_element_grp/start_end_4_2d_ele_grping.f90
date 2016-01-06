@@ -1,15 +1,7 @@
 !start_end_4_2d_ele_grping.f90
 !      module start_end_4_2d_ele_grping
 !
-      module start_end_4_2d_ele_grping
-!
 !      Written by Kemorin on Mar., 2008
-!
-      use m_precision
-!
-      implicit    none
-!
-      private :: find_start_end_sorted_grping
 !
 !      subroutine set_start_end_egrping(ref_ele,                        &
 !     &          dmin_grping, dmax_grping, max_prev, item_st, item_ed)
@@ -17,22 +9,30 @@
 !     &          dmin_grping, dmax_grping, max_prev,                    &
 !     &          item_st, item_ed, jtem_st, jtem_ed)
 !
+      module start_end_4_2d_ele_grping
+!
+      use m_precision
+!
+      implicit    none
+!
+      private :: find_start_end_sorted_grping
+!
 !   --------------------------------------------------------------------
 !
       contains
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_start_end_egrping(ref_ele,                         &
-     &          dmin_grping, dmax_grping, max_prev, item_st, item_ed )
+      subroutine set_start_end_egrping(numele, ref_ele,                 &
+     &          dmin_grping, dmax_grping, max_prev, item_st, item_ed)
 !
       use m_constants
       use m_geometry_constants
-      use m_geometry_data
       use m_work_4_add_egrp_sph
       use quicksort
 !
-      real(kind = kreal), intent(in) :: ref_ele(ele1%numele)
+      integer(kind = kint), intent(in) :: numele
+      real(kind = kreal), intent(in) :: ref_ele(numele)
       real(kind = kreal), intent(in) :: dmin_grping
       real(kind = kreal), intent(in) :: dmax_grping
 !
@@ -47,15 +47,15 @@
       else
 !
         ist_ele = ione
-        do iele = 1, ele1%numele
+        do iele = 1, numele
           wk1_4_sort(iele) = ref_ele(iele)
           iele_4_sort(iele) = iele
         end do
-        call quicksort_real_w_index(ele1%numele, wk1_4_sort, ione,      &
-     &      ele1%numele,iele_4_sort)
+        call quicksort_real_w_index(numele, wk1_4_sort, ione,           &
+     &      numele, iele_4_sort)
       end if
 !
-      call find_start_end_sorted_grping(ist_ele, ele1%numele,           &
+      call find_start_end_sorted_grping(ist_ele, numele,                &
      &     wk1_4_sort, dmin_grping, dmax_grping, item_st, item_ed )
       max_prev = dmax_grping
 !
@@ -63,15 +63,15 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_2nd_start_end_egrp(ref_ele,                        &
+      subroutine set_2nd_start_end_egrp(numele, ref_ele,                &
      &          dmin_grping, dmax_grping, max_prev,                     &
      &          item_st, item_ed, jtem_st, jtem_ed)
 !
-      use m_geometry_data
       use m_work_4_add_egrp_sph
       use quicksort
 !
-      real(kind = kreal), intent(in) :: ref_ele(ele1%numele)
+      integer(kind = kint), intent(in) :: numele
+      real(kind = kreal), intent(in) :: ref_ele(numele)
       real(kind = kreal), intent(in) :: dmin_grping
       real(kind = kreal), intent(in) :: dmax_grping
       integer(kind = kint), intent(inout) :: item_st, item_ed

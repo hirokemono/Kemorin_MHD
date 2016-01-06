@@ -88,33 +88,36 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine count_new_2d_element_group
+      subroutine count_new_2d_element_group(org_ele)
 !
       use calypso_mpi
-      use m_geometry_data
+      use t_geometry_data
       use m_add_ele_grp_parameter
       use set_ele_grp2_by_2d
+!
+      type(element_data), intent(in) :: org_ele
 !
 !
       if (iflag_grping_direction .eq. 0) then
         call count_added_egrp_item                                      &
-     &     (ele1%numele, r_ele_sph, ele1%theta_ele,                     &
+     &     (org_ele%numele, r_ele_sph, org_ele%theta_ele,               &
      &      num_r_ele_grp, minmax_r_ele_grping,                         &
      &      num_t_ele_grp, minmax_t_ele_grping)
 !
       else if (iflag_grping_direction .eq. 1) then
-        call count_added_egrp_item(ele1%numele, r_ele_sph, ele1%s_ele,  &
+        call count_added_egrp_item                                      &
+     &     (org_ele%numele, r_ele_sph, org_ele%s_ele,                   &
      &      num_r_ele_grp, minmax_r_ele_grping,                         &
      &      num_s_ele_grp, minmax_s_ele_grping)
 !
       else if (iflag_grping_direction .eq. 2) then
-        call count_added_egrp_item                                      &
-     &     (ele1%numele, ele1%s_ele, ele1%x_ele(1:ele1%numele,3),       &
+        call count_added_egrp_item(org_ele%numele, org_ele%s_ele,       &
+     &      org_ele%x_ele(1:org_ele%numele,3),                          &
      &      num_s_ele_grp, minmax_s_ele_grping,                         &
      &      num_z_ele_grp, minmax_z_ele_grping)
       else if (iflag_grping_direction .eq. 3) then
-        call count_added_egrp_item                                      &
-     &     (ele1%numele, ele1%x_ele(1:ele1%numele,3), ele1%theta_ele,   &
+        call count_added_egrp_item(org_ele%numele,                      &
+     &      org_ele%x_ele(1:org_ele%numele,3), org_ele%theta_ele,       &
      &      num_z_ele_grp, minmax_z_ele_grping,                         &
      &      num_t_ele_grp, minmax_t_ele_grping)
       end if
@@ -126,41 +129,42 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_new_2d_ele_group(ele_grp)
+      subroutine set_new_2d_ele_group(org_ele, ele_grp)
 !
       use m_add_ele_grp_parameter
-      use m_geometry_data
+      use t_geometry_data
       use t_group_data
       use set_ele_grp2_by_2d
 !
+      type(element_data), intent(in) :: org_ele
       type(group_data), intent(inout) :: ele_grp
 !
 !
       if (iflag_grping_direction .eq. 0) then
         call const_ele_grp_item_by_2d                                   &
-     &     (ele1%numele, r_ele_sph, ele1%theta_ele,                     &
+     &     (org_ele%numele, r_ele_sph, org_ele%theta_ele,               &
      &      num_r_ele_grp, r_ele_grp_name, minmax_r_ele_grping,         &
      &      num_t_ele_grp, t_ele_grp_name, minmax_t_ele_grping,         &
      &      ele_grp)
 !
       else if (iflag_grping_direction .eq. 1) then
         call const_ele_grp_item_by_2d                                   &
-     &     (ele1%numele, r_ele_sph, ele1%s_ele,                         &
+     &     (org_ele%numele, r_ele_sph, org_ele%s_ele,                   &
      &      num_r_ele_grp, r_ele_grp_name, minmax_r_ele_grping,         &
      &      num_s_ele_grp, s_ele_grp_name, minmax_s_ele_grping,         &
      &      ele_grp)
 
 !
       else if (iflag_grping_direction .eq. 2) then
-        call const_ele_grp_item_by_2d                                   &
-     &     (ele1%numele, ele1%s_ele, ele1%x_ele(1:ele1%numele,3),       &
+        call const_ele_grp_item_by_2d(org_ele%numele, org_ele%s_ele,    &
+     &      org_ele%x_ele(1:org_ele%numele,3),                          &
      &      num_s_ele_grp, s_ele_grp_name, minmax_s_ele_grping,         &
      &      num_z_ele_grp, z_ele_grp_name, minmax_z_ele_grping,         &
      &      ele_grp)
 
       else if (iflag_grping_direction .eq. 3) then
-        call const_ele_grp_item_by_2d                                   &
-     &     (ele1%numele, ele1%x_ele(1:ele1%numele,3), ele1%theta_ele,   &
+        call const_ele_grp_item_by_2d(org_ele%numele,                   &
+     &      org_ele%x_ele(1:org_ele%numele,3), org_ele%theta_ele,       &
      &      num_z_ele_grp, z_ele_grp_name, minmax_z_ele_grping,         &
      &      num_t_ele_grp, t_ele_grp_name, minmax_t_ele_grping,         &
      &      ele_grp)

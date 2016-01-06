@@ -17,7 +17,9 @@
 !
       integer(kind = kint), parameter, private :: my_rank = izero
 !
+      type(mesh_data), save :: original_fem
       type(mesh_data), save :: cutted_fem
+      integer(kind = kint) :: nnod_4_surf, nnod_4_edge
 !
 !   --------------------------------------------------------------------
 !
@@ -28,9 +30,6 @@
       subroutine  initialize_cutshell
 !
       use m_control_data_4_cutshell
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
       use m_read_mesh_data
       use load_mesh_data
       use set_control_cut_shell
@@ -44,13 +43,12 @@
 !  read global mesh
 !
       mesh_file_head = original_mesh_head
-      call input_mesh                                                   &
-     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
-     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
+      call input_mesh_data_type(my_rank, original_fem,                  &
+     &    nnod_4_surf, nnod_4_edge)
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_local_element_info'
-      call set_spherical_position(node1)
+      call set_spherical_position(original_fem%mesh%node)
 !
       end subroutine  initialize_cutshell
 !
@@ -63,7 +61,9 @@
       use load_mesh_data
 !
 !
-      call s_const_reduced_geometry(cutted_fem%mesh, cutted_fem%group)
+      call s_const_reduced_geometry                                     &
+     &   (original_fem%mesh, original_fem%group,                        &
+     &    cutted_fem%mesh, cutted_fem%group)
 !
       cutted_fem%mesh%nod_comm%num_neib = 0
       call allocate_type_comm_tbl_num(cutted_fem%mesh%nod_comm)

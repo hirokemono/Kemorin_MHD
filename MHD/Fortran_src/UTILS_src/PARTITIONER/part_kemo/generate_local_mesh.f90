@@ -20,7 +20,7 @@
 !   --------------------------------------------------------------------
 !
       subroutine PROC_LOCAL_MESH(node_org, ele_org, edge_org,           &
-     &          ele_grp, new_fem, included_ele)
+     &          group_org, new_fem, included_ele)
 !
       use t_mesh_data
       use t_near_mesh_id_4_node
@@ -40,8 +40,8 @@
 !
       type(node_data), intent(in) :: node_org
       type(element_data), intent(in) :: ele_org
+      type(mesh_groups), intent(in) :: group_org
       type(edge_data), intent(in) :: edge_org
-      type(group_data), intent(in) :: ele_grp
       type(mesh_data), intent(inout) :: new_fem
       type(near_mesh), intent(inout) :: included_ele
 !
@@ -66,7 +66,7 @@
 !C===
 !C
       call s_const_local_mesh_by_tbl(node_org%numnod, ele_org,          &
-     &    ele_grp, num_domain, included_ele)
+     &    group_org%ele_grp, num_domain, included_ele)
       call open_partition_log                                           &
      &   (num_domain, edge_org%numedge, org_mesh_header)
 !C
@@ -86,8 +86,8 @@
      &    (num_domain, work_file_header, new_fem%mesh%nod_comm)
 !C
 !C-- distributed Local DATA
-      call local_fem_mesh                                               &
-     &    (izero, ione, work_file_header, node_org, ele_org, new_fem)
+      call local_fem_mesh(izero, ione, work_file_header,                &
+     &    node_org, ele_org, group_org, new_fem)
 !
       end subroutine PROC_LOCAL_MESH
 !

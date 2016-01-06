@@ -1,18 +1,22 @@
 !
 !      module input_control_test_MG
+!     Written by H. Matsui on Apr., 2008
+!
+!     subroutine s_input_control_test_MG(mesh, group, surf, edge)
+!
+!
 !
       module input_control_test_MG
-!
-!     Written by H. Matsui on Apr., 2008
 !
       use m_precision
 !
       use m_machine_parameter
+      use t_mesh_data
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
 !
       implicit none
-!
-!
-!     subroutine s_input_control_test_MG
 !
 !
 ! ----------------------------------------------------------------------
@@ -21,7 +25,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_input_control_test_MG
+      subroutine s_input_control_test_MG(mesh, group, surf, edge)
 !
         use calypso_mpi
         use m_machine_parameter
@@ -31,6 +35,11 @@
         use set_control_test_MG
         use load_mesh_data
         use set_MG_mesh_data
+!
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) :: group
+      type(surface_data), intent(inout) :: surf
+      type(edge_data), intent(inout) :: edge
 !
 !
 !  --  read control data
@@ -46,8 +55,9 @@
       iflag_mesh_file_fmt = ifile_type
       if (iflag_debug.eq.1) write(*,*) 'input_mesh'
       call input_mesh                                                   &
-     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
-     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
+     &   (my_rank, mesh%nod_comm, mesh%node, mesh%ele,                  &
+     &    group%nod_grp, group%ele_grp, group%surf_grp,                 &
+     &    surf%nnod_4_surf, edge%nnod_4_edge)
 !
 !  --  read geometry data for MG
 !

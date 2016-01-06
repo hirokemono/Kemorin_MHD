@@ -22,7 +22,6 @@
 !
       use m_constants
       use m_phys_labels
-      use m_geometry_data
       use m_size_4_plane
       use m_cube_position
       use m_setting_4_ini
@@ -31,7 +30,6 @@
       use m_comm_data_IO
       use m_ctl_data_4_cub_kemo
       use m_time_data_IO
-      use t_field_data_IO
       use set_ctl_data_plane_mesh
       use set_parallel_file_name
       use mesh_IO_select
@@ -39,10 +37,14 @@
       use field_IO_select
       use set_field_to_restart
 !
+      use t_geometry_data
+      use t_field_data_IO
+!
       implicit none
 !
-      integer(kind=kint) :: i, ip, id_rank, inod
+      integer(kind=kint) :: ip, id_rank, inod
       integer(kind=kint) :: np, jst, jed
+      type(node_data) :: node_plane
       type(field_IO) :: plane_fst_IO
 !
       character(len=kchara), parameter                                  &
@@ -62,7 +64,7 @@
       delta_t_IO = zero
       num_pe = ndx * ndy * ndz
 !
-      merged%node%numnod = node1%numnod
+      merged%node%numnod = node_plane%numnod
 !
       call alloc_merged_field_stack(nprocs, plane_fst_IO)
       plane_fst_IO%istack_numnod_IO(0) = 0
@@ -79,7 +81,7 @@
         iflag_mesh_file_fmt = izero
         mesh_file_head = 'mesh/in'
         call sel_read_geometry_size(id_rank)
-        call copy_node_geometry_from_IO(node1)
+        call copy_node_geometry_from_IO(node_plane)
 !
         call deallocate_neib_domain_IO
 !
@@ -88,22 +90,22 @@
 !   set up of physical values
 !
         do np = 1, merged_fld%num_phys
-          jst = merged_fld%istack_component(i-1)
-          jed = merged_fld%istack_component(i)
+          jst = merged_fld%istack_component(np-1)
+          jed = merged_fld%istack_component(np)
 !
           if (merged_fld%phys_name(np) .eq. fhd_temp) then
 !
             do inod = 1, merged%node%numnod
-              if (node1%xx(inod,3).eq.zmin) then
+              if (node_plane%xx(inod,3).eq.zmin) then
                 merged_fld%d_fld(inod,jst+1) = 1.0d0
-              else if (node1%xx(inod,3).eq.zmax) then
+              else if (node_plane%xx(inod,3).eq.zmax) then
                 merged_fld%d_fld(inod,jst+1) = 0.0d0
               else
                 merged_fld%d_fld(inod,jst+1)                            &
-     &              = -(node1%xx(inod,3)-zmax)/(zmax-zmin)              &
-     &               + 0.5*(node1%xx(inod,3)-zmin)/(zmax-zmin)          &
-     &                * sin(2.0d0*pi*node1%xx(inod,1)/(xmax-xmin))      &
-     &                * sin(2.0d0*pi*node1%xx(inod,2)/(xmax-xmin))
+     &              = -(node_plane%xx(inod,3)-zmax)/(zmax-zmin)         &
+     &               + 0.5*(node_plane%xx(inod,3)-zmin)/(zmax-zmin)     &
+     &                * sin(2.0d0*pi*node_plane%xx(inod,1)/(xmax-xmin)) &
+     &                * sin(2.0d0*pi*node_plane%xx(inod,2)/(xmax-xmin))
               end if
             end do
 !
@@ -111,14 +113,14 @@
 !
             do inod = 1, merged%node%numnod
               merged_fld%d_fld(inod,jst+1)                              &
-     &               = 0.01d0*sin(pi*node1%xx(inod,3) / (zmax-zmin))
+     &            = 0.01d0*sin(pi*node_plane%xx(inod,3) / (zmax-zmin))
             end do
 !
           else if (merged_fld%phys_name(np) .eq. fhd_magne) then
 !
             do inod = 1, merged%node%numnod
               merged_fld%d_fld(inod,jst+2) = (0.01d0*pi/two)            &
-     &                * cos( pi*node1%xx(inod,3) / (zmax-zmin))
+     &                * cos( pi*node_plane%xx(inod,3) / (zmax-zmin))
             end do
           end if
         end do
@@ -146,7 +148,7 @@
         call dealloc_phys_data_IO(plane_fst_IO)
 !
         call dealloc_phys_data_type(merged_fld)
-        call deallocate_node_geometry_base(node1)
+        call deallocate_node_geometry_base(node_plane)
       end do
 !
       stop

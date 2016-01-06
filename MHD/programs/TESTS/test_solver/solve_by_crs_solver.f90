@@ -6,18 +6,19 @@
 !
 !     solve using CRS matrix
 !
-!      subroutine solve_by_crs_solver11
-!      subroutine solve_by_crs_solver33
-!      subroutine solve_by_crs_solverNN
+!      subroutine solve_by_crs_solver11(nod_comm, node)
+!      subroutine solve_by_crs_solver33(nod_comm, node)
+!      subroutine solve_by_crs_solverNN(nod_comm, node)
 !
       module solve_by_crs_solver
 !
       use m_precision
 !
       use calypso_mpi
-      use m_nod_comm_table
-      use m_geometry_data
       use m_crs_matrix
+!
+      use t_comm_table
+      use t_geometry_data
 
       implicit none
 !
@@ -29,10 +30,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_by_crs_solver11
+      subroutine solve_by_crs_solver11(nod_comm, node)
 !
       use solver
 !
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
       integer(kind = kint) :: ierr
 !
       call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
@@ -41,7 +44,7 @@
       mat1_crs%PRESET_crs= 2
 
       call  solve                                                       &
-     &            (node1%internal_node, node1%numnod,                   &
+     &            (node%internal_node, node%numnod,                     &
      &             tbl1_crs%ntot_l, tbl1_crs%ntot_u, mat1_crs%D_crs,    &
      &             mat1_crs%AL_crs, tbl1_crs%istack_l, tbl1_crs%item_l, &
      &             mat1_crs%AU_crs, tbl1_crs%istack_u, tbl1_crs%item_u, &
@@ -57,10 +60,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_by_crs_solver33
+      subroutine solve_by_crs_solver33(nod_comm, node)
 !
       use solver33
 !
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
       integer(kind = kint) :: ierr
 !
       call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
@@ -69,7 +74,7 @@
       mat1_crs%PRESET_crs= 2
 
       call  solve33                                                     &
-     &            (node1%internal_node, node1%numnod,                   &
+     &            (node%internal_node, node%numnod,                     &
      &             tbl1_crs%ntot_l, tbl1_crs%ntot_u, mat1_crs%D_crs,    &
      &             mat1_crs%AL_crs, tbl1_crs%istack_l, tbl1_crs%item_l, &
      &             mat1_crs%AU_crs, tbl1_crs%istack_u, tbl1_crs%item_u, &
@@ -85,10 +90,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_by_crs_solverNN
+      subroutine solve_by_crs_solverNN(nod_comm, node)
 !
       use solverNN
 !
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
       integer(kind = kint) :: ierr
 !
       call MPI_BARRIER  (CALYPSO_COMM,ierr_MPI)
@@ -97,7 +104,7 @@
       mat1_crs%PRESET_crs= 2
 
       call  solveNN                                                     &
-     &            (node1%internal_node, node1%numnod, mat1_crs%NB_crs,  &
+     &            (node%internal_node, node%numnod, mat1_crs%NB_crs,    &
      &             tbl1_crs%ntot_l, tbl1_crs%ntot_u, mat1_crs%D_crs,    &
      &             mat1_crs%AL_crs, tbl1_crs%istack_l, tbl1_crs%item_l, &
      &             mat1_crs%AU_crs, tbl1_crs%istack_u, tbl1_crs%item_u, &

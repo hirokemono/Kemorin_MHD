@@ -3,11 +3,13 @@
 !
 !     Written by H. Matsui on Sep., 2007
 !
-!      subroutine s_count_diff_geom_comm_test
-!      subroutine s_set_diff_geom_comm_test
+!      subroutine s_count_diff_geom_comm_test                           &
+!     &         (ele, surf, edge, ele_comm, surf_comm, edge_comm)
+!      subroutine s_set_diff_geom_comm_test                             &
+!     &         (ele, surf, edge, ele_comm, surf_comm, edge_comm)
 !
-!      subroutine count_diff_node_comm_test
-!      subroutine set_diff_node_comm_test
+!      subroutine count_diff_node_comm_test(node)
+!      subroutine set_diff_node_comm_test(node)
 !
 !      subroutine count_node_comm_test(num_d, inter_d, x_org,           &
 !     &          x_comm, num_diff_l)
@@ -18,7 +20,10 @@
 !
       use m_precision
 !
-      use m_geometry_data
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
+      use t_comm_table
       use m_geometry_4_comm_test
 !
       implicit  none
@@ -31,18 +36,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_count_diff_geom_comm_test
+      subroutine s_count_diff_geom_comm_test                            &
+     &         (ele, surf, edge, ele_comm, surf_comm, edge_comm)
 !
-      use m_nod_comm_table
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
+      type(communication_table), intent(in) :: ele_comm
+      type(communication_table), intent(in) :: surf_comm
+      type(communication_table), intent(in) :: edge_comm
 !
 !
       call count_ele_comm_test                                          &
-     &   (ele1%numele, ele1%x_ele, ele_comm%ntot_import,                &
+     &   (ele%numele, ele%x_ele, ele_comm%ntot_import,                  &
      &    ele_comm%item_import, x_ele_comm, nele_diff_local)
-      call count_ele_comm_test(surf1%numsurf, surf1%x_surf,             &
+      call count_ele_comm_test(surf%numsurf, surf%x_surf,               &
      &    surf_comm%ntot_import, surf_comm%item_import,                 &
      &    x_surf_comm, nsurf_diff_local)
-      call count_ele_comm_test(edge1%numedge, edge1%x_edge,             &
+      call count_ele_comm_test(edge%numedge, edge%x_edge,               &
      &    edge_comm%ntot_import,  edge_comm%item_import,                &
      &    x_edge_comm, nedge_diff_local)
 !
@@ -50,18 +61,24 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_set_diff_geom_comm_test
+      subroutine s_set_diff_geom_comm_test                              &
+     &         (ele, surf, edge, ele_comm, surf_comm, edge_comm)
 !
-      use m_nod_comm_table
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(edge_data), intent(in) :: edge
+      type(communication_table), intent(in) :: ele_comm
+      type(communication_table), intent(in) :: surf_comm
+      type(communication_table), intent(in) :: edge_comm
 !
 !
-      call compare_ele_comm_test(ele1%numele, ele1%x_ele,               &
+      call compare_ele_comm_test(ele%numele, ele%x_ele,                 &
      &    ele_comm%ntot_import, ele_comm%item_import,                   &
      &    x_ele_comm, nele_diff_local, iele_diff, xele_diff)
-      call compare_ele_comm_test(surf1%numsurf, surf1%x_surf,           &
+      call compare_ele_comm_test(surf%numsurf, surf%x_surf,             &
      &    surf_comm%ntot_import, surf_comm%item_import,                 &
      &    x_surf_comm, nsurf_diff_local, isurf_diff, xsurf_diff)
-      call compare_ele_comm_test(edge1%numedge, edge1%x_edge,           &
+      call compare_ele_comm_test(edge%numedge, edge%x_edge,             &
      &    edge_comm%ntot_import, edge_comm%item_import,                 &
      &    x_edge_comm, nedge_diff_local, iedge_diff, xedge_diff)
 !
@@ -70,28 +87,32 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine count_diff_node_comm_test
+      subroutine count_diff_node_comm_test(node)
 !
       use calypso_mpi
       use m_array_for_send_recv
 !
+      type(node_data), intent(in) :: node
 !
-      call count_node_comm_test(node1%numnod, node1%internal_node,      &
-     &    node1%xx, x_vec, nnod_diff_local)
+!
+      call count_node_comm_test(node%numnod, node%internal_node,        &
+     &    node%xx, x_vec, nnod_diff_local)
 !
       end subroutine count_diff_node_comm_test
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine set_diff_node_comm_test
+      subroutine set_diff_node_comm_test(node)
 !
       use calypso_mpi
       use m_array_for_send_recv
 !
+      type(node_data), intent(in) :: node
 !
-      call compare_nod_comm_test(node1%numnod, node1%internal_node,     &
-     &    node1%xx, x_vec, nnod_diff_local, inod_diff, xx_diff)
+!
+      call compare_nod_comm_test(node%numnod, node%internal_node,       &
+     &    node%xx, x_vec, nnod_diff_local, inod_diff, xx_diff)
 !
       end subroutine set_diff_node_comm_test
 !
