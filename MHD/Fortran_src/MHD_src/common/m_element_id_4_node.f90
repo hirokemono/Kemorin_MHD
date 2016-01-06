@@ -19,8 +19,12 @@
 !
       use m_precision
       use m_constants
+!
       use t_next_node_ele_4_node
       use t_table_FEM_const
+!
+      use t_crs_connect
+      use t_crs_matrix
 !
       implicit none
 !
@@ -32,6 +36,13 @@
 !
 !>  Structure for quad FEM marix table
       type(table_mat_const), save :: mat_tbl_q1
+!
+!
+!>  Structures for index table for compressed raw strage matrix
+      type(CRS_matrix_connect), save :: tbl1_crs
+!
+!>  Structures for compressed raw strage matrix
+      type(CRS_matrix), save :: mat1_crs
 !
 !-----------------------------------------------------------------------
 !
@@ -58,7 +69,6 @@
       subroutine set_idx_list_4_whole_crs
 !
       use m_geometry_data
-      use m_crs_matrix
       use set_index_list_4_crs
 !
 !

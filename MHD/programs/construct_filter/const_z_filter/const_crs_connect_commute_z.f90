@@ -5,15 +5,16 @@
 !
 !      subroutine set_connect_2_n_filter(node)
 !      subroutine set_spatial_difference(numele, n_int, jac_1d)
-!      subroutine set_crs_connect_commute_z(node)
+!      subroutine set_crs_connect_commute_z(node, tbl_crs)
 !
       module const_crs_connect_commute_z
 !
       use m_precision
 !
       use m_constants
-      use m_crs_matrix
       use m_commute_filter_z
+!
+      use t_crs_connect
 !
       implicit none
 !
@@ -77,75 +78,79 @@
 !   --------------------------------------------------------------------
 !   --------------------------------------------------------------------
 !
-      subroutine set_crs_connect_commute_z(node)
+      subroutine set_crs_connect_commute_z(node, tbl_crs)
 !
       use t_geometry_data
 !
       type(node_data), intent(inout) :: node
+      type(CRS_matrix_connect), intent(inout) :: tbl_crs
 !
 !
-      call set_num_off_diag_z_commute(node%internal_node)
+      call set_num_off_diag_z_commute(node%internal_node, tbl_crs)
 !
-      call alloc_crs_stack(node%numnod, tbl1_crs)
-      call alloc_crs_connect(tbl1_crs)
+      call alloc_crs_stack(node%numnod, tbl_crs)
+      call alloc_crs_connect(tbl_crs)
 !
-      call set_stack_crs_z_commute(node%internal_node)
+      call set_stack_crs_z_commute(node%internal_node, tbl_crs)
 !
-      call set_item_crs_z_commute(node%internal_node)
+      call set_item_crs_z_commute(node%internal_node, tbl_crs)
 !
       end subroutine set_crs_connect_commute_z
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_num_off_diag_z_commute(internal_node)
+      subroutine set_num_off_diag_z_commute(internal_node, tbl_crs)
 !
       integer(kind = kint), intent(in) :: internal_node
+      type(CRS_matrix_connect), intent(inout) :: tbl_crs
 !
 !
-      tbl1_crs%ntot_l = internal_node - 1
-      tbl1_crs%ntot_u = internal_node - 1
+      tbl_crs%ntot_l = internal_node - 1
+      tbl_crs%ntot_u = internal_node - 1
 !
       end subroutine set_num_off_diag_z_commute
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_stack_crs_z_commute(internal_node)
+      subroutine set_stack_crs_z_commute(internal_node, tbl_crs)
 !
       integer(kind = kint), intent(in) :: internal_node
+      type(CRS_matrix_connect), intent(inout) :: tbl_crs
       integer(kind = kint) :: i
 !
 !    set lower component
 !
       do i = 1, internal_node
-        tbl1_crs%istack_l(i) = i-1
+        tbl_crs%istack_l(i) = i-1
       end do
 !
 !   set upper component
 !
       do i = 1, internal_node-1
-        tbl1_crs%istack_u(i) = i
+        tbl_crs%istack_u(i) = i
       end do
-      tbl1_crs%istack_u(internal_node) = internal_node-1
+      tbl_crs%istack_u(internal_node) = internal_node-1
 !
       end subroutine set_stack_crs_z_commute
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_item_crs_z_commute(internal_node)
+      subroutine set_item_crs_z_commute(internal_node, tbl_crs)
 !
       integer(kind = kint), intent(in) :: internal_node
+      type(CRS_matrix_connect), intent(inout) :: tbl_crs
       integer(kind = kint) :: i
 !
 !    set lower component
 !
       do i = 1, internal_node-1
-        tbl1_crs%item_l(i) = i
+        tbl_crs%item_l(i) = i
       end do
 !
 !   set upper component
 !
       do i = 1, internal_node-1
-        tbl1_crs%item_u(i) = i+1
+        tbl_crs%item_u(i) = i+1
       end do
 !
       end subroutine set_item_crs_z_commute

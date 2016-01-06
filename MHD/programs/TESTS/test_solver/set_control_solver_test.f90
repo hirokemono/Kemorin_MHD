@@ -8,6 +8,7 @@
       module set_control_solver_test
 !
       use m_precision
+      use t_crs_matrix
 !
       implicit none
 !
@@ -17,13 +18,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine set_ctl_params_4_solver_test
+      subroutine set_ctl_params_4_solver_test(mat_crs)
 !
       use calypso_mpi
       use m_machine_parameter
       use m_type_AMG_mesh
       use m_iccg_parameter
-      use m_crs_matrix
       use m_ctl_parameter_Multigrid
       use m_ctl_data_solver_test
       use m_ctl_data_4_solvers
@@ -31,6 +31,8 @@
       use skip_comment_f
 !
       use set_parallel_file_name
+!
+      type(CRS_matrix), intent(inout) :: mat_crs
 !
 !
       if (matrix_head_ctl%iflag .ne. 0) then
@@ -59,9 +61,9 @@
 !     set solver information
 !
       if(solver_type_ctl%iflag .gt. 0) then
-        mat1_crs%SOLVER_crs =  solver_type_ctl%charavalue
+        mat_crs%SOLVER_crs =  solver_type_ctl%charavalue
       else
-        mat1_crs%SOLVER_crs = 'block33'
+        mat_crs%SOLVER_crs = 'block33'
       end if
 !
       if(precond_ctl%iflag .gt. 0) precond = precond_ctl%charavalue
@@ -73,12 +75,12 @@
         sigma_diag =  sigma_diag_ctl%realvalue
       end if
 !
-      mat1_crs%METHOD_crs =       method
-      mat1_crs%PRECOND_crs =      precond
-      mat1_crs%INTARRAY_crs(1) =  itr
-      mat1_crs%REALARRAY_crs(1) = eps
-      mat1_crs%REALARRAY_crs(2) = sigma_diag
-      mat1_crs%REALARRAY_crs(3) = sigma
+      mat_crs%METHOD_crs =       method
+      mat_crs%PRECOND_crs =      precond
+      mat_crs%INTARRAY_crs(1) =  itr
+      mat_crs%REALARRAY_crs(1) = eps
+      mat_crs%REALARRAY_crs(2) = sigma_diag
+      mat_crs%REALARRAY_crs(3) = sigma
 !
       if (cmp_no_case(order_method_ctl%charavalue, 'RCM_DJDS')) then 
         iflag_ordering = 1
@@ -100,23 +102,23 @@
 !
       if (iflag_debug .eq. 1) then
         write(*,*) 'np_smp       ', np_smp
-        write(*,*) 'SOLVER_crs   ', mat1_crs%SOLVER_crs
-        write(*,*) 'METHOD_crs   ', mat1_crs%METHOD_crs
-        write(*,*) 'PRECOND_crs  ', mat1_crs%PRECOND_crs
-        write(*,*) 'INTARRAY_crs (iteration)', mat1_crs%INTARRAY_crs(1)
+        write(*,*) 'SOLVER_crs   ', mat_crs%SOLVER_crs
+        write(*,*) 'METHOD_crs   ', mat_crs%METHOD_crs
+        write(*,*) 'PRECOND_crs  ', mat_crs%PRECOND_crs
+        write(*,*) 'INTARRAY_crs (iteration)', mat_crs%INTARRAY_crs(1)
         write(*,*) 'REALARRAY_crs (eps) ',                              &
-     &            mat1_crs%REALARRAY_crs(1)
+     &            mat_crs%REALARRAY_crs(1)
         write(*,*) 'REALARRAY_crs (sigma_diag) ',                       &
-     &            mat1_crs%REALARRAY_crs(2)
+     &            mat_crs%REALARRAY_crs(2)
         write(*,*) 'REALARRAY_crs (sigma) ',                            &
-     &            mat1_crs%REALARRAY_crs(3)
+     &            mat_crs%REALARRAY_crs(3)
 !
         write(*,*) 'iflag_ordering', iflag_ordering
         write(*,*) 'min_color', min_color
         write(*,*) 'mc_color', mc_color
       end if
 !
-      if(mat1_crs%METHOD_crs .eq. 'MGCG') call set_ctl_data_4_Multigrid
+      if(mat_crs%METHOD_crs .eq. 'MGCG') call set_ctl_data_4_Multigrid
 !
       end subroutine set_ctl_params_4_solver_test
 !

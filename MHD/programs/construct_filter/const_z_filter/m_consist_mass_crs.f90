@@ -25,14 +25,15 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine allocate_consist_mass_crs(numnod)
+      subroutine allocate_consist_mass_crs(numnod, tbl_crs)
 !
-      use m_crs_matrix
-
+      use t_crs_connect
+!
       integer(kind = kint), intent(in) :: numnod
+      type(CRS_matrix_connect), intent(inout) :: tbl_crs
 !
-       allocate (al_mk_crs(tbl1_crs%ntot_l) )
-       allocate (au_mk_crs(tbl1_crs%ntot_l) )
+       allocate (al_mk_crs(tbl_crs%ntot_l) )
+       allocate (au_mk_crs(tbl_crs%ntot_l) )
        allocate (d_mk_crs(numnod))
        allocate (rhs_mk_crs(numnod), sol_mk_crs(numnod))
 !

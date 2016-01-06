@@ -3,7 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine cal_delta_z(nod_comm, node, ele, edge, jac_1d)
+!!      subroutine cal_delta_z(nod_comm, node, ele, edge, jac_1d,       &
+!!     &                       tbl_crs, mat_crs)
 !
       module cal_delta_z_4_z_filter
 !
@@ -12,6 +13,10 @@
       use t_comm_table
       use t_geometry_data
       use t_edge_data
+      use t_crs_connect
+      use t_crs_matrix
+!
+      use t_jacobian_1d
 !
       implicit none
 !
@@ -21,14 +26,12 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine cal_delta_z(nod_comm, node, ele, edge, jac_1d)
+      subroutine cal_delta_z(nod_comm, node, ele, edge, jac_1d,         &
+     &                       tbl_crs, mat_crs)
 !
-      use m_crs_matrix
       use m_int_edge_vart_width
       use m_int_edge_data
       use m_commute_filter_z
-!
-      use t_jacobian_1d
 !
       use calcs_by_LUsolver
       use solve_by_mass_z
@@ -39,8 +42,11 @@
       type(node_data), intent(inout) :: node
       type(element_data), intent(in) :: ele
       type(edge_data), intent(in) :: edge
-!
       type(jacobians_1d), intent(in) :: jac_1d
+!
+      type(CRS_matrix_connect), intent(inout) :: tbl_crs
+      type(CRS_matrix), intent(inout) :: mat_crs
+!
       integer(kind = kint) :: num_int
 !
 !
@@ -51,7 +57,7 @@
 !      iflag_mass = 0
 !
       if ( iflag_mass .eq. 1) then
-       call allocate_consist_mass_crs(node%numnod)
+       call allocate_consist_mass_crs(node%numnod, tbl_crs)
        call set_consist_mass_mat(node%numnod)
 !
        call allocate_delta_z(node%numnod, ele%numele)
@@ -60,15 +66,15 @@
        call set_rhs_vart_width(node%numnod)
        call set_consist_mass_mat(node%numnod)
 !
-       write(*,*) mat1_crs%METHOD_crs
-       if ( mat1_crs%METHOD_crs .eq. 'LU' ) then
+       write(*,*) mat_crs%METHOD_crs
+       if ( mat_crs%METHOD_crs .eq. 'LU' ) then
 !
          call solve_delta_z_LU(node%numnod)
 !
        else
 !
          write(*,*) 'solve_crs_by_mass_z'
-         call solve_crs_by_mass_z(nod_comm, node)
+         call solve_crs_by_mass_z(nod_comm, node, tbl_crs, mat_crs)
 !$omp workshare
          delta_z(1:node%numnod) = sol_mk_crs(1:node%numnod)
 !$omp end workshare
@@ -79,11 +85,11 @@
        write(*,*) 'set_rhs_vart_width'
        call set_rhs_vart_width(node%numnod)
 
-       if ( mat1_crs%METHOD_crs .eq. 'LU' ) then
+       if ( mat_crs%METHOD_crs .eq. 'LU' ) then
          call solve_delta_dz_LU(node%numnod)
        else
          write(*,*) 'solve_crs_by_mass_z2'
-         call  solve_crs_by_mass_z2(nod_comm, node)
+         call  solve_crs_by_mass_z2(nod_comm, node, tbl_crs, mat_crs)
 !$omp workshare
          delta_dz(1:node%numnod) = sol_mk_crs(1:node%numnod)
 !$omp end workshare
@@ -93,11 +99,11 @@
 !       call int_edge_d2_vart_w2(ele, edge, num_int, jac_1d)
        call set_rhs_vart_width(node%numnod)
 
-       if ( mat1_crs%METHOD_crs .eq. 'LU' ) then
+       if ( mat_crs%METHOD_crs .eq. 'LU' ) then
           call solve_delta_d2z_LU(node%numnod)
        else
          write(*,*) 'solve_crs_by_mass_z2'
-         call  solve_crs_by_mass_z2(nod_comm, node)
+         call  solve_crs_by_mass_z2(nod_comm, node, tbl_crs, mat_crs)
 !$omp workshare
          d2_dz(1:node%numnod) = sol_mk_crs(1:node%numnod)
 !$omp end workshare

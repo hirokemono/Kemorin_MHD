@@ -14,7 +14,13 @@
 !
       use m_vertical_filter_utils
 !
+      use t_crs_connect
+      use t_crs_matrix
+!
         implicit none
+!
+      type(CRS_matrix_connect), save :: tbl_crs_z
+      type(CRS_matrix), save :: mat_crs_z
 !
 ! ----------------------------------------------------------------------
 !
@@ -26,7 +32,6 @@
 !
       use calypso_mpi
       use m_iccg_parameter
-      use m_crs_matrix
 !
       use m_gauss_points
       use m_fem_gauss_int_coefs
@@ -67,10 +72,15 @@
       use copy_matrix_2_djds_array
       use write_z_filter_4_nod
 !
+      use t_crs_connect
+      use t_crs_matrix
       use t_solver_djds
 !
-      type(DJDS_ordering_table) :: djds_tbl1
-      type(DJDS_MATRIX) :: djds_mat1
+      type(CRS_matrix_connect), save :: tbl_crs_z
+      type(CRS_matrix), save :: mat_crs_z
+!
+      type(DJDS_ordering_table) :: djds_tbl_z
+      type(DJDS_MATRIX) :: djds_mat_z
 !
       integer(kind=kint) :: n_int, ierr
       integer (kind = kint), parameter :: n_int_points = 200
@@ -79,7 +89,7 @@
 !C-- read CNTL DATA
       call s_input_control_4_z_commute                                  &
      &  (z_filter_mesh%nod_comm, z_filter_mesh%node, z_filter_mesh%ele, &
-     &   surf_z_filter, edge_z_filter)
+     &   surf_z_filter, edge_z_filter, mat_crs_z)
 !
 !C
 !C     set gauss points
@@ -96,9 +106,9 @@
 !
 !   construct FEM mesh for x direction
 !
-      mat1_crs%NB_crs = nfilter2_3
+      mat_crs_z%NB_crs = nfilter2_3
       if (my_rank.eq.0) write(*,*) 'set_crs_connect_commute_z'
-      call set_crs_connect_commute_z(z_filter_mesh%node)
+      call set_crs_connect_commute_z(z_filter_mesh%node, tbl_crs_z)
 !
 !
 !
@@ -114,10 +124,10 @@
      &     edge_z_filter, jac_z_l)
 !      call cal_delta_z(z_filter_mesh%nod_comm,                         &
 !     &    z_filter_mesh%node, z_filter_mesh%ele,                       &
-!     &    edge_z_filter, jac_z_l)
+!     &    edge_z_filter, jac_z_l, tbl_crs_z, mat_crs_z)
 !
 !      call check_crs_connect                                           &
-!     &   (my_rank, z_filter_mesh%node%numnod, tbl1_crs)
+!     &   (my_rank, z_filter_mesh%node%numnod, tbl_crs_z)
 !      call check_communication_data
 !
 !    set information for filtering for node
@@ -178,16 +188,17 @@
 !     &     (my_rank, z_filter_mesh%node%numnod)
 !
        write(*,*) 'alloc_crs_mat_data'
-       mat1_crs%NB_crs = ncomp_mat
-       call alloc_crs_mat_data(tbl1_crs, mat1_crs)
+       mat_crs_z%NB_crs = ncomp_mat
+       call alloc_crs_mat_data(tbl_crs_z, mat_crs_z)
 !
-       call set_matrix_4_border(z_filter_mesh%node%numnod)
+       call set_matrix_4_border(z_filter_mesh%node%numnod, mat_crs_z)
        write(*,*) 's_const_commute_matrix'
-       call s_const_commute_matrix(z_filter_mesh%node%numnod)
+       call s_const_commute_matrix                                      &
+     &    (z_filter_mesh%node%numnod, mat_crs_z)
        write(*,*) 's_switch_crs_matrix'
-       call s_switch_crs_matrix(tbl1_crs, mat1_crs)
+       call s_switch_crs_matrix(tbl_crs_z, mat_crs_z)
        write(*,*) 'check_crs_matrix_comps'
-       call check_crs_matrix_comps(my_rank, tbl1_crs, mat1_crs)
+       call check_crs_matrix_comps(my_rank, tbl_crs_z, mat_crs_z)
 !
 !      goto 999
 !
@@ -195,26 +206,26 @@
 !
 !C
 !C-- solve matrix
-      write(*,*) 'METHOD_crs: ', mat1_crs%METHOD_crs
-      if ( mat1_crs%METHOD_crs .eq. 'LU' ) then
-        call solve_z_commute_LU(z_filter_mesh%node%numnod)
+      write(*,*) 'METHOD_crs: ', mat_crs_z%METHOD_crs
+      if ( mat_crs_z%METHOD_crs .eq. 'LU' ) then
+        call solve_z_commute_LU(z_filter_mesh%node%numnod, mat_crs_z)
       else
         call transfer_crs_2_djds_matrix                                 &
      &     (z_filter_mesh%node, z_filter_mesh%nod_comm,                 &
-     &      tbl1_crs, mat1_crs, djds_tbl1, djds_mat1)
+     &      tbl_crs_z, mat_crs_z, djds_tbl_z, djds_mat_z)
 !
-        if   (mat1_crs%SOLVER_crs.eq.'block33'                          &
-     &    .or. mat1_crs%SOLVER_crs.eq.'BLOCK33') then
+        if   (mat_crs_z%SOLVER_crs.eq.'block33'                         &
+     &    .or. mat_crs_z%SOLVER_crs.eq.'BLOCK33') then
           write(*,*) 'solve_by_djds_solver33'
           call solve_by_djds_solver33                                   &
      &       (z_filter_mesh%node, z_filter_mesh%nod_comm,               &
-     &        mat1_crs, djds_tbl1, djds_mat1, ierr)
-        else if (mat1_crs%SOLVER_crs.eq.'blockNN'                       &
-     &    .or. mat1_crs%SOLVER_crs.eq.'BLOCKNN') then
+     &        mat_crs_z, djds_tbl_z, djds_mat_z, ierr)
+        else if (mat_crs_z%SOLVER_crs.eq.'blockNN'                      &
+     &    .or. mat_crs_z%SOLVER_crs.eq.'BLOCKNN') then
           write(*,*) 'solve_by_djds_solverNN'
           call solve_by_djds_solverNN                                   &
      &       (z_filter_mesh%node, z_filter_mesh%nod_comm,               &
-     &        mat1_crs, djds_tbl1, djds_mat1, ierr)
+     &        mat_crs_z, djds_tbl_z, djds_mat_z, ierr)
         end if
       end if
 !
@@ -228,8 +239,8 @@
        write(*,*) 's_copy_1darray_2_2darray'
        call s_copy_1darray_2_2darray                                    &
      &    (ncomp_mat, z_filter_mesh%node%numnod,                        &
-     &     c_filter, mat1_crs%X_crs)
-       call dealloc_crs_mat_data(mat1_crs)
+     &     c_filter, mat_crs_z%X_crs)
+       call dealloc_crs_mat_data(mat_crs_z)
 !
        write(*,*) 's_set_neib_nod_z'
        call s_set_neib_nod_z(z_filter_mesh%node%numnod,                 &

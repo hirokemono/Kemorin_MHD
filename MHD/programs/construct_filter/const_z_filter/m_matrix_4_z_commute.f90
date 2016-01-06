@@ -24,7 +24,6 @@
       subroutine allocate_matrix_4_commutation(numnod)
 !
       use m_commute_filter_z
-      use m_crs_matrix
 !
       integer(kind = kint), intent(in) :: numnod
 !
@@ -39,7 +38,6 @@
       subroutine check_nod_normalize_matrix(my_rank, numnod)
 !
       use m_commute_filter_z
-      use m_crs_matrix
 !
       integer (kind = kint), intent(in) :: my_rank, numnod
       integer (kind = kint) :: i, j, k

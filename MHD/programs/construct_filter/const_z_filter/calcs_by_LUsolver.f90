@@ -26,12 +26,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine solve_z_commute_LU(numnod)
+      subroutine solve_z_commute_LU(numnod, mat_crs)
 !
-      use m_crs_matrix
       use m_commute_filter_z
+      use t_crs_matrix
 !
       integer(kind = kint), intent(in) :: numnod
+      type(CRS_matrix), intent(inout) :: mat_crs
+!
       integer(kind = kint) :: inod, i, j, ji
 !
        ncomp_lu = ncomp_mat
@@ -42,9 +44,9 @@
          do i = 1, ncomp_mat
            do j = 1, ncomp_mat
              ji = j + (i-1)*ncomp_mat + (inod-1)*ncomp_mat*ncomp_mat
-             a_nod(j,i) = mat1_crs%D_crs(ji)
+             a_nod(j,i) = mat_crs%D_crs(ji)
            end do
-           b_nod(i) = mat1_crs%B_crs( ncomp_lu*(inod-1)+i )
+           b_nod(i) = mat_crs%B_crs( ncomp_lu*(inod-1)+i )
          end do
 !
 !c decompose A = LU
@@ -53,7 +55,7 @@
          call lubksb(a_nod,ncomp_lu,ncomp_lu,indx,b_nod)
 !
          do i = 1, ncomp_mat
-           mat1_crs%X_crs( ncomp_mat*(inod-1)+i ) = b_nod(i)
+           mat_crs%X_crs( ncomp_mat*(inod-1)+i ) = b_nod(i)
            d_nod = d_nod*a_nod(i,i)
          end do
 !

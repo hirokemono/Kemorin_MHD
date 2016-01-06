@@ -13,7 +13,13 @@
 !
       use m_vertical_filter_utils
 !
+      use t_crs_connect
+      use t_crs_matrix
+!
       implicit none
+!
+      type(CRS_matrix_connect), save :: tbl_crs_z
+      type(CRS_matrix), save :: mat_crs_z
 !
 ! ----------------------------------------------------------------------
 !
@@ -24,7 +30,6 @@
       subroutine init_analyzer
 !
       use calypso_mpi
-      use m_crs_matrix
 !
       use m_gauss_points
       use m_fem_gauss_int_coefs
@@ -46,7 +51,7 @@
 !C-- CNTL DATA
       call s_input_control_4_z_commute(z_filter_mesh%nod_comm,          &
      &    z_filter_mesh%node, z_filter_mesh%ele,                        &
-     &    surf_z_filter, edge_z_filter)
+     &    surf_z_filter, edge_z_filter, mat_crs_z)
 !C
 !C     set gauss points
 !C===
@@ -59,7 +64,7 @@
      &    surf_z_filter, edge_z_filter, jac_z_l, jac_z_q)
 !
       if (my_rank.eq.0) write(*,*) 'set_crs_connect_commute_z'
-      call set_crs_connect_commute_z(z_filter_mesh%node)
+      call set_crs_connect_commute_z(z_filter_mesh%node, tbl_crs_z)
 !
       if (my_rank.eq.0) write(*,*) 'allocate_int_edge_data'
       call allocate_int_edge_data                                       &
@@ -69,12 +74,13 @@
 !
 !
       call cal_delta_z(z_filter_mesh%nod_comm, z_filter_mesh%node,      &
-     &    z_filter_mesh%ele, edge_z_filter, jac_z_l)
+     &    z_filter_mesh%ele, edge_z_filter, jac_z_l,                    &
+     &    tbl_crs_z, mat_crs_z)
 !
 !C===
 !
-!       call dealloc_crs_mat_data(mat1_crs)
-!       call dealloc_crs_connect(tbl1_crs)
+!       call dealloc_crs_mat_data(mat_crs_z)
+!       call dealloc_crs_connect(tbl_crs_z)
 !
        open (id_delta_z,file='delta_z.0.dat')
 !
@@ -87,7 +93,7 @@
 !
       close(id_delta_z)
 !
-      if (my_rank.eq.0) write (*,*) mat1_crs%ITERactual, "  iters"
+      if (my_rank.eq.0) write (*,*) mat_crs_z%ITERactual, "  iters"
 
       end subroutine init_analyzer
 !
