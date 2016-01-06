@@ -532,11 +532,7 @@ void gl_zooming_struct(struct view_element *view, GLdouble wheelDelta){
 void reset_to_init_angle(struct view_element *view){
 	view->x_lookfrom[0] = ZERO;
 	view->x_lookfrom[1] = ZERO;
-    if (view->r_max <= ZERO) {
-        view->x_lookfrom[2] = TEN;
-    } else {
-        view->x_lookfrom[2] = TEN*view->r_max;
-    };
+	view->x_lookfrom[2] = TEN;
 	
 	view->shift[0] = -view->x_lookfrom[0];
 	view->shift[1] = -view->x_lookfrom[1];
