@@ -28,6 +28,7 @@
       use m_geometry_data
       use m_group_data
       use m_node_phys_data
+      use m_element_phys_data
       use m_phys_constants
       use m_jacobians
       use m_jacobian_sf_grp
@@ -62,7 +63,11 @@
 !   gradient model by filtered field (to iphys%i_sgs_grad_f)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_m_flux_grad'
-      call cal_sgs_filter_m_flux_grad
+      call cal_sgs_m_flux_grad_w_coef                                   &
+     &    (itype_SGS_m_flux_coef, ifilter_4delta, icomp_sgs_mf,         &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_velo, i_dfvx,              &
+     &    nod_comm, node1, ele1, fluid1, iphys_ele, fld_ele1,           &
+     &    jac1_3d_q, FEM1_elen, rhs_tbl1, fem1_wk, mhd_fem1_wk, nod_fld1)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !

@@ -17,10 +17,16 @@
       use m_machine_parameter
       use m_control_parameter
 !
+      use m_geometry_data_MHD
+      use m_nod_comm_table
       use m_geometry_data
-      use m_finite_element_matrix
       use m_node_phys_data
+      use m_element_phys_data
+      use m_element_id_4_node
       use m_jacobians
+      use m_finite_element_matrix
+      use m_int_vol_data
+      use m_filter_elength
       use m_SGS_address
 !
       use t_layering_ele_list
@@ -56,17 +62,26 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_uxb_simi'
       call cal_sgs_uxb_simi(iphys%i_sgs_simi, iphys%i_velo,             &
-     &    iphys%i_magne, iphys%i_filter_velo, iphys%i_filter_magne)
+     &    iphys%i_magne, iphys%i_filter_velo, iphys%i_filter_magne,     &
+     &    nod_comm, node1, nod_fld1)
 !
 !   gradient model by filtered field
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_uxb_grad_4_dyn'
-      call cal_sgs_filter_uxb_grad_4_dyn
+      call cal_sgs_vp_induct_grad_no_coef(ifilter_4delta,               &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, i_dfvx,             &
+     &    nod_comm, node1, ele1, conduct1, iphys_ele, fld_ele1,         &
+     &    jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk,                  &
+     &    fem1_wk, f1_l, nod_fld1)
 !
 !   gradient model by original field
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_uxb_grad_4_dyn'
-      call cal_sgs_uxb_grad_4_dyn
+      call cal_sgs_vp_induct_grad_no_coef(ifilter_2delta,               &
+     &    iphys%i_SGS_vp_induct, iphys%i_magne, i_dvx,                  &
+     &    nod_comm, node1, ele1, conduct1, iphys_ele, fld_ele1,         &
+     &    jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk,                  &
+     &    fem1_wk, f1_l, nod_fld1)
 !
 !      filtering
 !
@@ -115,7 +130,7 @@
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_induct_t_simi'
       call cal_sgs_induct_t_simi(iphys%i_SGS_induct_t, iphys%i_velo,    &
      &    iphys%i_magne, iphys%i_filter_velo, iphys%i_filter_magne,     &
-     &    icomp_sgs_uxb)
+     &    icomp_sgs_uxb, nod_comm, node1, nod_fld1)
 !
 !    copy to work array
 !
@@ -125,12 +140,22 @@
 !   gradient model by filtered field
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_idt_grad_4_dyn'
-      call cal_sgs_filter_idt_grad_4_dyn
+      call cal_sgs_induct_t_grad_no_coef                                &
+     &   (ifilter_4delta, iphys%i_sgs_grad_f,                           &
+     &    iphys%i_filter_velo, iphys%i_filter_magne, i_dfvx, i_dfbx,    &
+     &    nod_comm, node1, ele1, conduct1, iphys_ele, fld_ele1,         &
+     &    jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, mhd_fem1_wk,         &
+     &    f1_l, nod_fld1)
 !
 !   gradient model by original field
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_induct_t_grad_4_dyn'
-      call cal_sgs_induct_t_grad_4_dyn
+      call cal_sgs_induct_t_grad_no_coef                                &
+     &   (ifilter_2delta,  iphys%i_SGS_induct_t,                        &
+     &    iphys%i_velo, iphys%i_magne, i_dvx, i_dbx,                    &
+     &    nod_comm, node1, ele1, conduct1, iphys_ele, fld_ele1,         &
+     &    jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, mhd_fem1_wk,         &
+     &    f1_l, nod_fld1)
 !
 !      filtering
 !

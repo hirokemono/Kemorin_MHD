@@ -24,6 +24,7 @@
 !
       subroutine s_cal_sgs_h_flux_dynamic_simi(layer_tbl)
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_machine_parameter
       use m_control_parameter
@@ -59,7 +60,8 @@
       if (iflag_debug.eq.1)                                             &
      &     write(*,*) 'cal_sgs_hf_simi_wide i_wide_fil_temp'
       call cal_sgs_hf_simi_wide(iphys%i_sgs_grad_f,                     &
-     &    iphys%i_filter_temp, iphys%i_wide_fil_temp, icomp_sgs_hf)
+     &    iphys%i_filter_temp, iphys%i_wide_fil_temp, icomp_sgs_hf,     &
+     &    nod_comm, node1, iphys, nod_fld1)
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_vector, iphys%i_sgs_grad_f)
 !
@@ -67,7 +69,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sgs_hf_simi'
       call cal_sgs_hf_simi(iphys%i_SGS_h_flux, iphys%i_sgs_temp,        &
-     &    iphys%i_filter_temp, icomp_sgs_hf)
+     &    iphys%i_filter_temp, icomp_sgs_hf,                            &
+     &    nod_comm, node1, iphys, nod_fld1)
 !
 !    copy to work array
 !

@@ -11,6 +11,8 @@
 !!      subroutine dealloc_mass_mat_fluid(mhd_fem_wk)
 !!      subroutine dealloc_mass_mat_conduct(mhd_fem_wk)
 !!
+!!      subroutine reset_ff_t_smp(max_nod_smp, mhd_fem_wk)
+!!
 !!      subroutine check_mass_martix_conduct                            &
 !!     &         (my_rank, numnod, mhd_fem_wk)
 !!      subroutine check_mass_martix_insulate                           &
@@ -113,6 +115,26 @@
       call dealloc_type_fem_lumped_mass(mhd_fem_wk%mlump_ins)
 !
       end subroutine dealloc_mass_mat_conduct
+!
+!   ---------------------------------------------------------------------
+!   ---------------------------------------------------------------------
+!
+      subroutine reset_ff_t_smp(max_nod_smp, mhd_fem_wk)
+!
+      use m_machine_parameter
+!
+      integer(kind = kint), intent(in) :: max_nod_smp
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+      integer(kind = kint) :: ip
+!
+!
+!$omp parallel do
+      do ip = 1, np_smp
+        mhd_fem_wk%ff_t_smp(1:max_nod_smp,1:6,ip) =   0.0d0
+      end do
+!$omp end parallel do
+!
+      end subroutine reset_ff_t_smp
 !
 !   ---------------------------------------------------------------------
 !   ---------------------------------------------------------------------

@@ -116,7 +116,7 @@
       ii = 0
       call set_bc_fixed_scalar_id(node, nod_grp, bc_list, nod_bc_f, ii)
 !
-      call set_bc_sph_magne_p_id(nod_grp, bc_list%num_bc,               &
+      call set_bc_sph_magne_p_id(node, nod_grp, bc_list%num_bc,         &
      &    bc_list%bc_name, bc_list%ibc_type, ii, nod_bc_f)
 !
       i0 = 0

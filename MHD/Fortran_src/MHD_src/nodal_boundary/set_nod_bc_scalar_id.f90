@@ -14,7 +14,7 @@
 !     &         (node, nod_grp, num_bc_field, bc_field_name,            &
 !     &          ibc_field_type, bc_field_mag, ibc, ibc2, num_bc_nod,   &
 !     &          ibc_id, bc_apt, iref, ii)
-!      subroutine set_bc_sph_magne_p_id(nod_grp,                        &
+!      subroutine set_bc_sph_magne_p_id(node, nod_grp,                  &
 !     &          num_bc_field, bc_field_name, ibc_field_type,           &
 !     &          ii, nod_bc_f)
 !
@@ -138,13 +138,14 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_sph_magne_p_id(nod_grp,                         &
+      subroutine set_bc_sph_magne_p_id(node, nod_grp,                   &
      &          num_bc_field, bc_field_name, ibc_field_type,            &
      &          ii, nod_bc_f)
 !
       use t_nodal_bc_data
       use set_mag_p_sph
 !
+      type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
       integer (kind=kint), intent(in) :: num_bc_field
       integer (kind=kint), intent(in) :: ibc_field_type(num_bc_field)
@@ -161,7 +162,7 @@
           if (nod_grp%grp_name(i) .eq. bc_field_name(j)) then
 !
             if ( ibc_field_type(j) .eq. 999 ) then
-              call s_set_mag_p_sph(nod_grp, ii, i, j, nod_bc_f)
+              call s_set_mag_p_sph(node, nod_grp, ii, i, j, nod_bc_f)
             end if
 !
           end if

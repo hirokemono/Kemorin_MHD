@@ -29,6 +29,7 @@
       use m_control_parameter
       use m_phys_constants
       use m_node_phys_data
+      use m_element_phys_data
       use m_jacobians
       use m_jacobian_sf_grp
       use m_element_id_4_node
@@ -60,7 +61,12 @@
 !   gradient model by filtered field (to iphys%i_sgs_grad_f)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_induct_grad'
-      call cal_sgs_filter_induct_grad
+      call cal_sgs_induct_t_grad_w_coef                                 &
+     &   (ifilter_4delta, iphys%i_sgs_grad_f,                           &
+     &    iphys%i_filter_velo, iphys%i_filter_magne, i_dfvx, i_dfbx,    &
+     &    nod_comm, node1, ele1, conduct1, iphys_ele, fld_ele1,         &
+     &    jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, mhd_fem1_wk,         &
+     &    f1_l, nod_fld1)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !

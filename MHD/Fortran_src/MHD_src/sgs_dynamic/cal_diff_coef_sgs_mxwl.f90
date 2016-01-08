@@ -28,6 +28,7 @@
       use m_control_parameter
       use m_phys_constants
       use m_node_phys_data
+      use m_element_phys_data
       use m_SGS_address
       use m_surf_data_magne
       use m_group_data
@@ -62,7 +63,11 @@
 !   gradient model by filtered field (to iphys%i_sgs_grad_f)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_maxwell_grad'
-       call cal_sgs_filter_maxwell_grad
+      call cal_sgs_m_flux_grad_w_coef                                   &
+     &   (itype_SGS_maxwell_coef, ifilter_4delta, icomp_sgs_lor,        &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, i_dfbx,             &
+     &    nod_comm, node1, ele1, fluid1, iphys_ele, fld_ele1,           &
+     &    jac1_3d_q, FEM1_elen, rhs_tbl1, fem1_wk, mhd_fem1_wk, nod_fld1)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !

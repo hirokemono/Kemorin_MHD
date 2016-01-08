@@ -201,7 +201,8 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*)' initial_data_control'
-      call initial_data_control(layer_tbl)
+      call initial_data_control                                         &
+     &   (node1, fluid1, iphys, layer_tbl, nod_fld1)
 !
 !  -------------------------------
 !

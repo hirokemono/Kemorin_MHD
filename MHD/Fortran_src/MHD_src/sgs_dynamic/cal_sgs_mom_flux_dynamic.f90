@@ -24,11 +24,18 @@
       subroutine cal_sgs_m_flux_dynamic(layer_tbl)
 !
       use m_machine_parameter
-      use m_geometry_data
-      use m_node_phys_data
       use m_control_parameter
       use m_phys_constants
+      use m_nod_comm_table
+      use m_geometry_data_MHD
+      use m_geometry_data
+      use m_node_phys_data
+      use m_element_phys_data
+      use m_element_id_4_node
       use m_jacobians
+      use m_filter_elength
+      use m_finite_element_matrix
+      use m_int_vol_data
       use m_SGS_address
 !
       use reset_dynamic_model_coefs
@@ -54,8 +61,8 @@
 !
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_sgs_mf_simi iphys%i_SGS_m_flux'
-       call cal_sgs_mf_simi(iphys%i_SGS_m_flux, iphys%i_velo,           &
-     &     iphys%i_filter_velo, icomp_sgs_mf)
+      call cal_sgs_mf_simi(iphys%i_SGS_m_flux, iphys%i_velo,            &
+     &    iphys%i_filter_velo, icomp_sgs_mf, nod_comm, node1, nod_fld1)
 !
 !    copy to work array
 !
@@ -67,14 +74,20 @@
 !   gradient model by filtered field
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_mf_grad_4_dyn'
-      call cal_sgs_filter_mf_grad_4_dyn
+      call cal_sgs_m_flux_grad_no_coef(ifilter_4delta,                  &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_velo, i_dfvx, nod_comm,    &
+     &    node1, ele1, fluid1, iphys_ele, fld_ele1, jac1_3d_q,          &
+     &    FEM1_elen, rhs_tbl1, fem1_wk, mhd_fem1_wk, nod_fld1)
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_grad_f)
 !
 !   gradient model by original field
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_m_flux_grad_4_dyn'
-      call cal_sgs_m_flux_grad_4_dyn
+      call cal_sgs_m_flux_grad_no_coef(ifilter_2delta,                  &
+     &    iphys%i_SGS_m_flux, iphys%i_velo, i_dvx, nod_comm,            &
+     &    node1, ele1, fluid1, iphys_ele, fld_ele1, jac1_3d_q,          &
+     &    FEM1_elen, rhs_tbl1, fem1_wk, mhd_fem1_wk, nod_fld1)
 !
 !      filtering
 !

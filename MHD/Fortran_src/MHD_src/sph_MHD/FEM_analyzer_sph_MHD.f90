@@ -158,11 +158,11 @@
 !*  -----------  data transfer to FEM array --------------
 !*
       if (iflag_debug.gt.0) write(*,*) 'copy_forces_to_snapshot_rtp'
-      call copy_forces_to_snapshot_rtp
+      call copy_forces_to_snapshot_rtp(node1, iphys, nod_fld1)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_from_trans'
-      call copy_snap_vec_fld_from_trans
+      call copy_snap_vec_fld_from_trans(node1, iphys, nod_fld1)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_to_trans'
-      call copy_snap_vec_fld_to_trans
+      call copy_snap_vec_fld_to_trans(node1, iphys, nod_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'overwrite_nodal_sph_2_xyz'
       call overwrite_nodal_sph_2_xyz(node1, nod_fld1)
@@ -170,7 +170,7 @@
 !*  ----------- transform field at pole and center --------------
 !*
       if (iflag_debug.gt.0) write(*,*) 'lead_pole_fields_4_sph_mhd'
-      call lead_pole_fields_4_sph_mhd
+      call lead_pole_fields_4_sph_mhd(node1, iphys, nod_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
       call nod_fields_send_recv(node1, nod_comm, nod_fld1)

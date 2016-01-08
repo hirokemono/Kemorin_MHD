@@ -14,6 +14,7 @@
 !
       use m_control_parameter
       use m_machine_parameter
+      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
       use m_phys_constants
@@ -56,7 +57,8 @@
      &     write(*,*) 'cal_sgs_uxb_simi_wide i_wide_fil_velo'
       call cal_sgs_uxb_simi_wide(iphys%i_sgs_grad_f,                    &
      &    iphys%i_filter_velo, iphys%i_filter_magne,                    &
-     &    iphys%i_wide_fil_velo, iphys%i_wide_fil_magne)
+     &    iphys%i_wide_fil_velo, iphys%i_wide_fil_magne,                &
+     &    nod_comm, node1, nod_fld1)
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_vector, iphys%i_sgs_simi)
 !
@@ -65,7 +67,8 @@
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_sgs_uxb_simi'
       call cal_sgs_uxb_simi(iphys%i_sgs_simi, iphys%i_velo,             &
-     &    iphys%i_magne, iphys%i_filter_velo, iphys%i_filter_magne)
+     &    iphys%i_magne, iphys%i_filter_velo, iphys%i_filter_magne,     &
+     &    nod_comm, node1, nod_fld1)
 !
 !      filtering
 !
@@ -119,7 +122,8 @@
      &     write(*,*) 'cal_sgs_induct_t_simi_wide i_wide_fil_velo'
       call cal_sgs_induct_t_simi_wide(iphys%i_sgs_grad_f,               &
      &    iphys%i_filter_velo, iphys%i_filter_magne,                    &
-     &    iphys%i_wide_fil_velo, iphys%i_wide_fil_magne, icomp_sgs_uxb)
+     &    iphys%i_wide_fil_velo, iphys%i_wide_fil_magne, icomp_sgs_uxb, &
+     &    nod_comm, node1, nod_fld1)
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_vector, iphys%i_sgs_grad_f)
 !
@@ -129,7 +133,8 @@
      &     write(*,*) 'cal_sgs_induct_t_simi'
       call cal_sgs_induct_t_simi(iphys%i_SGS_induct_t,                  &
      &    iphys%i_velo, iphys%i_magne, iphys%i_filter_velo,             &
-     &    iphys%i_filter_magne, icomp_sgs_uxb)
+     &    iphys%i_filter_magne, icomp_sgs_uxb,                          &
+     &    nod_comm, node1, nod_fld1)
 !
 !    copy to work array
 !

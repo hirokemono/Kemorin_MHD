@@ -4,11 +4,11 @@
 !      Written by H. Matsui
 !
 !!      subroutine cal_filtered_vector                                  &
-!!     &         (nod_comm, node1, i_filter, i_vect, nod_fld)
+!!     &         (nod_comm, node, i_filter, i_vect, nod_fld)
 !!      subroutine cal_filtered_vector_in_fluid                         &
-!!     &         (nod_comm, node1, i_filter, i_vect, nod_fld)
+!!     &         (nod_comm, node, i_filter, i_vect, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
-!!        type(node_data), intent(in) :: node1
+!!        type(node_data), intent(in) :: node
 !!        integer (kind=kint), intent(in) :: i_filter, i_vect
 !!        type(phys_data), intent(inout) :: nod_fld
 !!          i_filter: field UD foe filtered field

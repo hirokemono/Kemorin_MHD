@@ -13,6 +13,21 @@
 !
       use m_precision
 !
+      use m_control_parameter
+      use m_nod_comm_table
+      use m_geometry_data_MHD
+      use m_geometry_data
+      use m_phys_constants
+      use m_node_phys_data
+      use m_element_phys_data
+      use m_element_id_4_node
+      use m_jacobians
+      use m_finite_element_matrix
+      use m_int_vol_data
+      use m_filter_elength
+      use m_SGS_model_coefs
+      use m_SGS_address
+!
       implicit none
 !
       private :: cal_sgs_h_flux_grad_w_coef
@@ -85,17 +100,6 @@
       subroutine cal_sgs_h_flux_grad_w_coef(i_filter, i_sgs,            &
      &          i_field, ie_dvx)
 !
-      use m_control_parameter
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_phys_constants
-      use m_node_phys_data
-      use m_element_id_4_node
-      use m_finite_element_matrix
-      use m_int_vol_data
-      use m_SGS_model_coefs
-      use m_SGS_address
-!
       use cal_ff_smp_to_ffs
       use cal_skv_to_ff_smp
       use nod_phys_send_recv
@@ -110,12 +114,14 @@
       call reset_sk6(n_vector, ele1, fem1_wk%sk6)
       call reset_ff_smp(node1%max_nod_smp, f1_l)
 !
-      call sel_int_vol_sgs_flux(iflag_temp_supg, i_filter, n_vector,    &
-     &    i_field, ie_dvx, fem1_wk, mhd_fem1_wk)
+      call sel_int_vol_sgs_flux                                         &
+     &   (iflag_temp_supg, i_filter, n_vector, i_field, ie_dvx,         &
+     &    node1, ele1, fluid1, nod_fld1, iphys_ele, fld_ele1,           &
+     &    jac1_3d_q, FEM1_elen, fem1_wk, mhd_fem1_wk)
 !
 !     set elemental model coefficients
 !
-      call prod_model_coefs_4_vector(itype_SGS_h_flux_coef,             &
+      call prod_model_coefs_4_vector(ele1, itype_SGS_h_flux_coef,       &
      &    ak_sgs(1,icomp_sgs_hf), fem1_wk%sk6)
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
@@ -135,15 +141,6 @@
       subroutine cal_sgs_h_flux_grad_no_coef(i_filter, i_sgs,           &
      &          i_field, ie_dvx)
 !
-      use m_phys_constants
-      use m_geometry_data
-      use m_nod_comm_table
-      use m_node_phys_data
-      use m_element_id_4_node
-      use m_finite_element_matrix
-      use m_int_vol_data
-      use m_SGS_model_coefs
-!
       use cal_ff_smp_to_ffs
       use cal_skv_to_ff_smp
       use nod_phys_send_recv
@@ -157,8 +154,10 @@
       call reset_sk6(n_vector, ele1, fem1_wk%sk6)
       call reset_ff_smp(node1%max_nod_smp, f1_l)
 !
-      call sel_int_vol_sgs_flux(iflag_temp_supg, i_filter, n_vector,    &
-     &   i_field, ie_dvx, fem1_wk, mhd_fem1_wk)
+      call sel_int_vol_sgs_flux                                         &
+     &   (iflag_temp_supg, i_filter, n_vector, i_field, ie_dvx,         &
+     &    node1, ele1, fluid1, nod_fld1, iphys_ele, fld_ele1,           &
+     &    jac1_3d_q, FEM1_elen, fem1_wk, mhd_fem1_wk)
 !
       call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
      &    fem1_wk%sk6, f1_l%ff_smp)

@@ -4,8 +4,20 @@
 !     Written by H. Matsui
 !     Modified by H. Matsui on July, 2007
 !
-!      subroutine int_simi_vp_induct
-!      subroutine int_simi_vp_induct_upm
+!!      subroutine sel_int_simi_vp_induct(node, ele, conduct,           &
+!!     &           iphys, nod_fld, iphys_ele, ele_fld, jac_3d,          &
+!!     &           rhs_tbl,  fem_wk, f_nl)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(phys_data), intent(in) :: ele_fld
+!!        type(field_geometry_data), intent(in) :: conduct
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       module int_vol_similarity_uxb
 !
@@ -13,12 +25,15 @@
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_geometry_data
       use m_phys_constants
-      use m_geometry_data_MHD
-      use m_element_id_4_node
-      use m_finite_element_matrix
-      use m_int_vol_data
+!
+      use t_geometry_data_MHD
+      use t_geometry_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_3d
+      use t_table_FEM_const
+      use t_finite_element_mat
 !
       implicit none
 !
@@ -30,16 +45,32 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine sel_int_simi_vp_induct
+      subroutine sel_int_simi_vp_induct(node, ele, conduct,             &
+     &           iphys, nod_fld, iphys_ele, ele_fld, jac_3d,            &
+     &           rhs_tbl, fem_wk, f_nl)
 !
-      use m_element_phys_data
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: ele_fld
+      type(field_geometry_data), intent(in) :: conduct
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_nl
 !
 !
       if (iflag_mag_supg .eq. id_turn_ON) then
-        call int_simi_vp_induct_upm                                     &
-     &     (fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld)
+        call int_simi_vp_induct_upm(node, ele, conduct,                 &
+     &      iphys, nod_fld, jac_3d, rhs_tbl,                            &
+     &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
+     &      fem_wk, f_nl)
       else
-        call int_simi_vp_induct
+        call int_simi_vp_induct(node, ele, conduct,                     &
+     &       iphys, nod_fld, jac_3d, rhs_tbl,  fem_wk, f_nl)
       end if
 !
       end subroutine sel_int_simi_vp_induct
@@ -47,10 +78,9 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_simi_vp_induct
+      subroutine int_simi_vp_induct(node, ele, conduct,                 &
+     &          iphys, nod_fld, jac_3d, rhs_tbl, fem_wk, f_nl)
 !
-      use m_jacobians
-      use m_node_phys_data
       use m_SGS_model_coefs
       use m_SGS_address
 !
@@ -59,34 +89,45 @@
       use cal_products_within_skv
       use cal_skv_to_ff_smp
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld
+      type(field_geometry_data), intent(in) :: conduct
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_nl
+!
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for the phsical values
-      do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
-     &      k2, iphys%i_sgs_simi, fem1_wk%vector_1)
-        call fem_skv_vector_type(conduct1%istack_ele_fld_smp,           &
-     &      intg_point_t_evo, k2, ele1, jac1_3d_q,                      &
-     &      fem1_wk%vector_1, fem1_wk%sk6)
+      do k2 = 1, ele%nnod_4_ele
+        call vector_phys_2_each_element(node, ele, nod_fld,             &
+     &      k2, iphys%i_sgs_simi, fem_wk%vector_1)
+        call fem_skv_vector_type(conduct%istack_ele_fld_smp,            &
+     &      intg_point_t_evo, k2, ele, jac_3d,                          &
+     &      fem_wk%vector_1, fem_wk%sk6)
         call scalar_prod_to_tensor_skv                                  &
-     &     (ele1, conduct1%istack_ele_fld_smp,                          &
-     &      ak_sgs(1,icomp_sgs_uxb), fem1_wk%sk6)
+     &     (ele, conduct%istack_ele_fld_smp,                            &
+     &      ak_sgs(1,icomp_sgs_uxb), fem_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, f1_nl%ff_smp)
+      call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_simi_vp_induct
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_simi_vp_induct_upm(ncomp_ele, iele_magne, d_ele)
+      subroutine int_simi_vp_induct_upm(node, ele, conduct,             &
+     &          iphys, nod_fld, jac_3d, rhs_tbl,                        &
+     &          ncomp_ele, iele_magne, d_ele, fem_wk, f_nl)
 !
-      use m_jacobians
-      use m_node_phys_data
       use m_SGS_model_coefs
       use m_SGS_address
 !
@@ -95,29 +136,39 @@
       use cal_products_within_skv
       use cal_skv_to_ff_smp
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld
+      type(field_geometry_data), intent(in) :: conduct
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
       integer(kind = kint), intent(in) :: ncomp_ele, iele_magne
-      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
+      call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
-      do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
-     &      k2, iphys%i_sgs_simi, fem1_wk%vector_1)
+      do k2 = 1, ele%nnod_4_ele
+        call vector_phys_2_each_element(node, ele, nod_fld,             &
+     &      k2, iphys%i_sgs_simi, fem_wk%vector_1)
 !
-        call fem_skv_vector_field_upwind(conduct1%istack_ele_fld_smp,   &
-     &      intg_point_t_evo, k2, d_ele(1,iele_magne), ele1, jac1_3d_q, &
-     &      fem1_wk%vector_1, fem1_wk%sk6)
+        call fem_skv_vector_field_upwind(conduct%istack_ele_fld_smp,    &
+     &      intg_point_t_evo, k2, d_ele(1,iele_magne), ele, jac_3d,     &
+     &      fem_wk%vector_1, fem_wk%sk6)
 !
-        call scalar_prod_to_tensor_skv                                  &
-     &     (ele1, conduct1%istack_ele_fld_smp,                          &
-     &      ak_sgs(1,icomp_sgs_uxb), fem1_wk%sk6)
+        call scalar_prod_to_tensor_skv(ele, conduct%istack_ele_fld_smp, &
+     &      ak_sgs(1,icomp_sgs_uxb), fem_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, f1_nl%ff_smp)
+      call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
+     &    fem_wk%sk6, f_nl%ff_smp)
 !
       end subroutine int_simi_vp_induct_upm
 !

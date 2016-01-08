@@ -34,6 +34,7 @@
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_filter_elength
+      use m_element_phys_data
       use m_SGS_address
       use m_bc_data_ene
       use m_surf_data_temp
@@ -67,12 +68,21 @@
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_filter_hf_simi'
-       call cal_div_sgs_filter_hf_simi
+      call cal_div_sgs_hf_simi(iphys%i_sgs_simi, iphys%i_sgs_grad_f,    &
+     &    iphys%i_filter_velo, iphys%i_filter_temp,                     &
+     &    nod_comm, node1, ele1, fluid1, iphys_ele, fld_ele1,           &
+     &    jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk,                    &
+     &     f1_l, f1_nl, nod_fld1)
 !
 !   take divergence of heat flux (to iphys%i_sgs_grad)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_h_flux_simi'
-       call cal_div_sgs_h_flux_simi
+      call cal_div_sgs_hf_simi(iphys%i_sgs_grad, iphys%i_SGS_h_flux,    &
+     &    iphys%i_velo, iphys%i_sgs_temp,                               &
+     &    nod_comm, node1, ele1, fluid1, iphys_ele, fld_ele1,           &
+     &    jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk,                    &
+     &    f1_l, f1_nl, nod_fld1)
+!
 !
 !    filtering (to iphys%i_sgs_grad)
 !

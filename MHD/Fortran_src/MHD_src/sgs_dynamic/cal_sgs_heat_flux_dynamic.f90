@@ -23,6 +23,7 @@
 !
       subroutine cal_sgs_hf_dynamic(layer_tbl)
 !
+      use m_nod_comm_table
       use m_geometry_data
       use m_machine_parameter
       use m_control_parameter
@@ -54,7 +55,8 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_hf_simi'
       call cal_sgs_hf_simi(iphys%i_SGS_h_flux, iphys%i_sgs_temp,        &
-     &    iphys%i_filter_temp, icomp_sgs_hf)
+     &    iphys%i_filter_temp, icomp_sgs_hf,                            &
+     &    nod_comm, node1, iphys, nod_fld1)
 !
 !    copy to work array
 !

@@ -24,6 +24,7 @@
       use m_machine_parameter
       use m_control_parameter
       use m_int_vol_data
+      use m_nod_comm_table
 !
       use t_layering_ele_list
 !
@@ -91,7 +92,7 @@
       use cal_filtering_vectors
       use cal_diff_vector_on_ele
       use cal_diff_coef_velo
-      use cal_w_filtering_vectors
+      use cal_w_filtering_scalars
 !
       type(layering_tbl), intent(in) :: layer_tbl
 !
@@ -146,7 +147,7 @@
         if (iflag_SGS_model.eq.id_SGS_similarity                        &
      &    .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           call cal_w_filtered_vector(iphys%i_wide_fil_velo,             &
-     &        iphys%i_filter_velo)
+     &        iphys%i_filter_velo, nod_comm, node1, nod_fld1)
           nod_fld1%iflag_update(iphys%i_wide_fil_velo  ) = 1
           nod_fld1%iflag_update(iphys%i_wide_fil_velo+1) = 1
           nod_fld1%iflag_update(iphys%i_wide_fil_velo+2) = 1
@@ -258,7 +259,7 @@
             if (iflag_debug.gt.0)                                       &
      &        write(*,*) 'cal_w_filtered_scalar', iphys%i_wide_fil_temp
             call cal_w_filtered_scalar(iphys%i_wide_fil_temp,           &
-     &          iphys%i_filter_temp)
+     &          iphys%i_filter_temp, nod_comm, node1, nod_fld1)
                 nod_fld1%iflag_update(iphys%i_wide_fil_temp) = 1
           end if
         end if
@@ -326,7 +327,7 @@
       use cal_filtering_vectors
       use cal_diff_vector_on_ele
       use cal_diff_coef_vector_p
-      use cal_w_filtering_vectors
+      use cal_w_filtering_scalars
 !
       type(layering_tbl), intent(in) :: layer_tbl
 !
@@ -359,7 +360,7 @@
           if (iflag_debug.gt.0)                                         &
      &         write(*,*) 'cal_filtered_vector_p i_wide_fil_vecp'
           call cal_w_filtered_vector(iphys%i_wide_fil_vecp,             &
-     &        iphys%i_filter_vecp)
+     &        iphys%i_filter_vecp, nod_comm, node1, nod_fld1)
           nod_fld1%iflag_update(iphys%i_wide_fil_vecp  ) = 1
           nod_fld1%iflag_update(iphys%i_wide_fil_vecp+1) = 1
           nod_fld1%iflag_update(iphys%i_wide_fil_vecp+2) = 1
@@ -457,7 +458,7 @@
 !
          if(iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
            call cal_w_filtered_vector(iphys%i_wide_fil_magne,           &
-     &         iphys%i_filter_magne)
+     &         iphys%i_filter_magne, nod_comm, node1, nod_fld1)
            nod_fld1%iflag_update(iphys%i_wide_fil_magne  ) = 1
            nod_fld1%iflag_update(iphys%i_wide_fil_magne+1) = 1
            nod_fld1%iflag_update(iphys%i_wide_fil_magne+2) = 1
@@ -493,7 +494,7 @@
       use cal_filtering_vectors
       use cal_diff_vector_on_ele
       use cal_diff_coef_magne
-      use cal_w_filtering_vectors
+      use cal_w_filtering_scalars
 !
       type(layering_tbl), intent(in) :: layer_tbl
 !
@@ -554,7 +555,7 @@
 !
          if (iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
            call cal_w_filtered_vector(iphys%i_wide_fil_magne,           &
-     &         iphys%i_filter_magne)
+     &         iphys%i_filter_magne, nod_comm, node1, nod_fld1)
             nod_fld1%iflag_update(iphys%i_wide_fil_magne  ) = 1
             nod_fld1%iflag_update(iphys%i_wide_fil_magne+1) = 1
             nod_fld1%iflag_update(iphys%i_wide_fil_magne+2) = 1
@@ -639,7 +640,7 @@
 !          if (iflag_debug.gt.0)                                        &
 !     &      write(*,*) 'cal_w_filtered_scalar', iphys%i_wide_fil_temp
 !          call cal_w_filtered_scalar(iphys%i_wide_fil_temp,            &
-!     &        iphys%i_filter_comp)
+!     &        iphys%i_filter_comp, nod_comm, node1, nod_fld1)
 !              nod_fld1%iflag_update(iphys%i_wide_fil_temp) = 1
 !        end if
       end if

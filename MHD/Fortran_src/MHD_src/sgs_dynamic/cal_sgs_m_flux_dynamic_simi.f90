@@ -63,14 +63,15 @@
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_sgs_mf_simi_wide i_wide_fil_velo'
       call cal_sgs_mf_simi_wide(iphys%i_sgs_grad_f,                     &
-     &    iphys%i_filter_velo, iphys%i_wide_fil_velo, icomp_sgs_mf)
+     &    iphys%i_filter_velo, iphys%i_wide_fil_velo, icomp_sgs_mf,     &
+     &    nod_comm, node1, nod_fld1)
 !
 !    SGS term by similarity model
 !
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_sgs_mf_simi iphys%i_SGS_m_flux'
-       call cal_sgs_mf_simi(iphys%i_SGS_m_flux, iphys%i_velo,           &
-     &     iphys%i_filter_velo, icomp_sgs_mf)
+      call cal_sgs_mf_simi(iphys%i_SGS_m_flux, iphys%i_velo,            &
+     &    iphys%i_filter_velo, icomp_sgs_mf, nod_comm, node1, nod_fld1)
 !
 !    copy to work array
 !
@@ -140,7 +141,8 @@
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_sgs_mf_simi_wide i_wide_fil_magne'
       call cal_sgs_mf_simi_wide(iphys%i_sgs_grad_f,                     &
-     &    iphys%i_filter_magne, iphys%i_wide_fil_magne, icomp_sgs_lor)
+     &    iphys%i_filter_magne, iphys%i_wide_fil_magne, icomp_sgs_lor,  &
+     &    nod_comm, node1, nod_fld1)
 !
 !      call check_nodal_data                                            &
 !     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_grad_f)
@@ -150,7 +152,8 @@
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_sgs_mf_simi iphys%i_SGS_maxwell'
       call cal_sgs_mf_simi(iphys%i_SGS_maxwell, iphys%i_magne,          &
-     &    iphys%i_filter_magne, icomp_sgs_lor)
+     &    iphys%i_filter_magne, icomp_sgs_lor,                          &
+     &    nod_comm, node1, nod_fld1)
 !
 !    copy to work array
 !

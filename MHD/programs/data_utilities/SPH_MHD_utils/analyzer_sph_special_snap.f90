@@ -270,9 +270,9 @@
 !*
 !*  -----------  data transfer to FEM array --------------
 !*
-      call copy_forces_to_snapshot_rtp
-      call copy_snap_vec_fld_from_trans
-      call copy_snap_vec_fld_to_trans
+      call copy_forces_to_snapshot_rtp(node1, iphys, nod_fld1)
+      call copy_snap_vec_fld_from_trans(node1, iphys, nod_fld1)
+      call copy_snap_vec_fld_to_trans(node1, iphys, nod_fld1)
 !
 ! ----  Take zonal mean
 !
@@ -281,7 +281,7 @@
 !
 !*  ----------- transform field at pole and center --------------
 !*
-      call lead_pole_fields_4_sph_mhd
+      call lead_pole_fields_4_sph_mhd(node1, iphys, nod_fld1)
 !
       call nod_fields_send_recv(node1, nod_comm, nod_fld1)
 !

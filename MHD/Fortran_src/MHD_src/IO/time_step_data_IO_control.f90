@@ -88,7 +88,7 @@
           end if
         end do
 !
-        call output_monitor_file(my_rank)
+        call output_monitor_file(my_rank, nod_fld1)
       end if
 !
       end subroutine output_time_step_control
