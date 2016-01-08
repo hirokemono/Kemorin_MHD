@@ -57,7 +57,6 @@
       ltr =  ltr_type
 !
       nnod_rtp =      rtp%nnod_rtp
-      nnod_rtp_pole = rtp%nnod_rtp_pole
 !
       nidx_rtp(1:ithree) = rtp%nidx_rtp(1:ithree)
       ist_rtp(1:ithree) =  rtp%ist_rtp(1:ithree)

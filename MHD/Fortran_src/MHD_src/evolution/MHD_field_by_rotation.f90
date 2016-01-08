@@ -15,6 +15,14 @@
       use m_precision
       use m_constants
 !
+      use m_geometry_data
+      use m_group_data
+      use m_geometry_data_MHD
+      use m_node_phys_data
+      use m_finite_element_matrix
+      use m_int_vol_data
+      use m_element_phys_data
+!
       implicit none
 !
 ! ----------------------------------------------------------------------
@@ -28,16 +36,16 @@
       use m_machine_parameter
       use m_control_parameter
       use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
-      use m_geometry_data_MHD
-      use m_node_phys_data
+      use m_jacobians
+      use m_jacobian_sf_grp
+      use m_element_id_4_node
       use m_SGS_address
       use m_bc_data_velo
       use m_bc_data_magne
       use m_surf_data_torque
       use m_surf_data_magne
       use m_surf_data_current
+      use m_filter_elength
 !
       use cal_rotation_sgs
 !
@@ -48,9 +56,11 @@
      &        write(*,*) 'cal_vorticity'
           call choose_cal_rotation_sgs                                  &
      &       (iflag_commute_velo, iflag_velo_supg,                      &
+     &        iak_diff_v, iphys%i_velo, iphys%i_vort,                   &
      &        fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,          &
-     &        node1, ele1, surf1, sf_grp1, nod_bc1_w, sf_sgs1_grad_v,   &
-     &        iak_diff_v, iphys%i_velo, iphys%i_vort, nod_fld1)
+     &        nod_comm, node1, ele1, surf1, sf_grp1, iphys_ele, fld_ele1,         &
+     &        jac1_3d_q, jac1_sf_grp_2d_q, FEM1_elen, nod_bc1_w,        &
+     &        sf_sgs1_grad_v, rhs_tbl1, fem1_wk, f1_nl, nod_fld1)
         end if
       end if
 !
@@ -61,16 +71,19 @@
      &        write(*,*) 'cal_current_density'
               call choose_cal_rotation_sgs                              &
      &           (iflag_commute_magne, iflag_mag_supg,                  &
-     &            ele1%istack_ele_smp, m1_lump, node1, ele1, surf1,     &
-     &            sf_grp1, nod_bc1_j, sf_sgs1_grad_b, iak_diff_b,       &
-     &            iphys%i_magne, iphys%i_current, nod_fld1)
+     &            iak_diff_b, iphys%i_magne, iphys%i_current,           &
+     &            ele1%istack_ele_smp, m1_lump, nod_comm, node1, ele1,  &
+     &            surf1, sf_grp1, iphys_ele, fld_ele1, jac1_3d_q,       &
+     &            jac1_sf_grp_2d_q, FEM1_elen, nod_bc1_j,               &
+     &            sf_sgs1_grad_b, rhs_tbl1, fem1_wk, f1_nl, nod_fld1)
 !
 !             call choose_cal_rotation_sgs                              &
 !     &          (iflag_commute_magne, iflag_mag_supg,                  &
+!     &           iak_diff_b, iphys%i_magne, iphys%i_current,           &
 !     &           conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,    &
-!     &           node1, ele1, surf1, sf_grp1, nod_bc1_j,               &
-!     &           sf_sgs1_grad_b, iak_diff_b, iphys%i_magne,            &
-!     &           iphys%i_current, nod_fld1)
+!     &           nod_comm, node1, ele1, surf1, sf_grp1, iphys_ele, fld_ele1,     &
+!     &           jac1_3d_q,  jac1_sf_grp_2d_q, FEM1_elen, nod_bc1_j,   &
+!     &           sf_sgs1_grad_b, rhs_tbl1, fem1_wk, f1_nl, nod_fld1)
 !             call int_current_diffuse                                  &
 !     &         (nod_comm, node1, ele1, surf1, sf_grp1,                 &
 !     &          iphys, jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, m1_lump, &
@@ -80,14 +93,18 @@
      &        write(*,*) 'cal_current_density'
             call choose_cal_rotation_sgs                                &
                (iflag_commute_magne, iflag_mag_supg,                    &
-     &          ele1%istack_ele_smp, m1_lump, node1, ele1, surf1,       &
-     &          sf_grp1, nod_bc1_j, sf_sgs1_grad_b, iak_diff_b,         &
-     &          iphys%i_magne, iphys%i_current, nod_fld1)
+     &          iak_diff_b, iphys%i_magne, iphys%i_current,             &
+     &          ele1%istack_ele_smp, m1_lump, nod_comm, node1, ele1,    &
+     &          surf1, sf_grp1, iphys_ele, fld_ele1, jac1_3d_q,         &
+     &          jac1_sf_grp_2d_q, FEM1_elen, nod_bc1_j, sf_sgs1_grad_b, &
+     &          rhs_tbl1, fem1_wk, f1_nl, nod_fld1)
 !           call choose_cal_rotation_sgs                                &
 !     &        (iflag_commute_magne, iflag_mag_supg,                    &
+!     &         iak_diff_b, iphys%i_magne, iphys%i_current,             &
 !     &         conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,      &
-!     &         node1, ele1, surf1, sf_grp1, nod_bc1_j, sf_sgs1_grad_b, &
-!     &         iak_diff_b, iphys%i_magne, iphys%i_current, nod_fld1)
+!     &         nod_comm, node1, ele1, surf1, sf_grp1, iphys_ele, fld_ele1,       &
+!     &         jac1_3d_q, jac1_sf_grp_2d_q, FEM1_elen, nod_bc1_j,      &
+!     &         sf_sgs1_grad_b, rhs_tbl1, fem1_wk, f1_nl, nod_fld1)
           end if
         end if
       end if

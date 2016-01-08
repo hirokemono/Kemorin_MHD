@@ -47,7 +47,7 @@
       use cal_sgs_fluxes_simi
       use commute_error_h_flux
       use cal_sgs_mom_fluxes_grad
-      use cal_div_sgs_mf_4_simi
+      use cal_div_sgs_flux_simi
       use cal_model_diff_coefs
       use set_nodal_bc_id_data
       use nod_phys_send_recv
@@ -58,7 +58,7 @@
 !    reset model coefficients
 !
       call reset_diff_model_coefs(iak_diff_lor, ele1%istack_ele_smp)
-      call s_clear_work_4_dynamic_model
+      call s_clear_work_4_dynamic_model(node1, iphys, nod_fld1)
 !
 !   gradient model by filtered field (to iphys%i_sgs_grad_f)
 !
@@ -72,12 +72,20 @@
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_div_sgs_filter_mxwl_simi'
-       call cal_div_sgs_filter_mxwl_simi
+      call cal_div_sgs_mf_simi                                          &
+     &   (iphys%i_sgs_simi, iphys%i_sgs_grad_f, iphys%i_filter_magne,   &
+     &    nod_comm, node1, ele1, fluid1, iphys_ele, fld_ele1,           &
+     &    jac1_3d_q, rhs_tbl1, fem1_wk, mhd_fem1_wk,                    &
+     &    f1_l, f1_nl, nod_fld1)
 !
 !   take divergence of heat flux (to iphys%i_sgs_grad)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_maxwell_simi'
-       call cal_div_sgs_maxwell_simi
+      call cal_div_sgs_mf_simi                                          &
+     &   (iphys%i_sgs_grad, iphys%i_SGS_maxwell, iphys%i_magne,         &
+     &    nod_comm, node1, ele1, fluid1, iphys_ele, fld_ele1,           &
+     &    jac1_3d_q, rhs_tbl1, fem1_wk, mhd_fem1_wk,                    &
+     &    f1_l, f1_nl, nod_fld1)
 !
 !    filtering (to iphys%i_sgs_grad)
 !

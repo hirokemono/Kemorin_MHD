@@ -59,7 +59,7 @@
 !  ------  initialize spectr data
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_init_gauss_back_trans'
-      call SPH_init_gauss_back_trans(femmesh_STR%mesh%node%numnod)
+      call SPH_init_gauss_back_trans
 !
       call init_visualize                                               &
      &   (femmesh_STR%mesh%node, femmesh_STR%mesh%ele,                  &

@@ -193,9 +193,6 @@
 !>      number of data points for @f$ f(r,j) @f$
       integer(kind = kint) :: nnod_rj
 !
-!>      number of data points for poles
-      integer(kind = kint) :: nnod_rtp_pole
-!
 !>      number of 1d data points for @f$ f(r,\theta,\phi) @f$
       integer(kind = kint) :: nidx_rtp(3)
 !>      number of 1d data points for @f$ f(r,\theta,m) @f$

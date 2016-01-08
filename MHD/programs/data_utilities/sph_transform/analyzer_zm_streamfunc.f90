@@ -67,8 +67,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'SPH_initialize_back_trans'
-      call SPH_initialize_back_trans                                    &
-     &   (femmesh_STR%mesh%node%numnod, sph_trns_IO)
+      call SPH_initialize_back_trans(sph_trns_IO)
 !
 !  -------------------------------
 !

@@ -27,7 +27,6 @@
       subroutine induction_SPH_initialize
 !
       use interpolate_by_type
-      use m_geometry_data
       use m_addresses_trans_hbd_MHD
       use const_element_comm_tables
       use load_mesh_data
@@ -47,7 +46,7 @@
         sph_fld%ntot_phys = 21
       end if
 !
-      call init_pole_transform(node1%numnod)
+      call init_pole_transform
 !
       call set_addresses_trans_hbd_MHD
       call allocate_hbd_trans_rtp

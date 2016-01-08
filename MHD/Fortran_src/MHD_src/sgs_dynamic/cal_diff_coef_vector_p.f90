@@ -28,6 +28,7 @@
       use m_geometry_data
       use m_group_data
       use m_node_phys_data
+      use m_element_phys_data
       use m_phys_constants
       use m_geometry_data_MHD
       use m_jacobians
@@ -63,7 +64,7 @@
 !    reset model coefficients
 !
       call reset_diff_model_coefs(iak_diff_b, ele1%istack_ele_smp)
-      call s_clear_work_4_dynamic_model
+      call s_clear_work_4_dynamic_model(node1, iphys, nod_fld1)
 !
 !    get filtered scalar potential(to iphys%i_sgs_grad_f)
 !
@@ -77,8 +78,10 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_rotation_whole', iphys%i_sgs_simi, iphys%i_sgs_grad_f
       call choose_cal_rotation                                          &
-     &   (iflag_mag_supg, ele1%istack_ele_smp, m1_lump, node1, ele1,    &
-     &    iphys%i_sgs_grad_f, iphys%i_sgs_simi, nod_fld1)
+     &   (iflag_mag_supg, iphys%i_sgs_grad_f, iphys%i_sgs_simi,         &
+     &    ele1%istack_ele_smp, m1_lump,                                 &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, fem1_wk, f1_nl, nod_fld1)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_whole', i_sgs_simi_p, i_sgs_grad_fp
       call cal_gradent_whole(iflag_mag_supg,                            &
@@ -91,8 +94,10 @@
       if (iflag_debug.gt.0) write(*,*) 'cal_rotation_whole',            &
      &                     iphys%i_sgs_grad, iphys%i_vecp
       call choose_cal_rotation                                          &
-     &   (iflag_mag_supg, ele1%istack_ele_smp, m1_lump, node1, ele1,    &
-     &    iphys%i_vecp, iphys%i_sgs_grad, nod_fld1)
+     &   (iflag_mag_supg, iphys%i_vecp, iphys%i_sgs_grad,               &
+     &    ele1%istack_ele_smp, m1_lump,                                 &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, fem1_wk, f1_nl, nod_fld1)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_grad_p, iphys%i_mag_p
       call cal_gradent_in_fluid(iflag_mag_supg,                         &

@@ -62,7 +62,6 @@
       l_truncation =              ltr_gl_IO
 !
       rtp%nnod_rtp =      nnod_sph_IO
-      rtp%nnod_rtp_pole = nnod_sph_IO
       rtp%nidx_rtp(1:ithree) = nidx_sph_IO(1:ithree)
       rtp%ist_rtp(1:ithree) =  ist_sph_IO(1:ithree)
       rtp%ied_rtp(1:ithree) =  ied_sph_IO(1:ithree)

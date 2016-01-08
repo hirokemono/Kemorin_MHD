@@ -51,7 +51,6 @@
       subroutine init_sph_transform_MHD
 !
       use calypso_mpi
-      use m_geometry_data
       use m_addresses_trans_sph_MHD
       use m_addresses_trans_sph_snap
       use m_addresses_trans_sph_tmp
@@ -66,7 +65,7 @@
       character(len=kchara) :: tmpchara
 !
 !
-      call init_pole_transform(node1%numnod)
+      call init_pole_transform
 !
       if (iflag_debug .ge. iflag_routine_msg) write(*,*)                &
      &                     'set_addresses_trans_sph_MHD'

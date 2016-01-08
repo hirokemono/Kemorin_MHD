@@ -7,7 +7,7 @@
 !>@brief  Spherical transform for poles
 !!
 !!@verbatim
-!!      subroutine init_pole_transform(numnod)
+!!      subroutine init_pole_transform
 !!
 !!      subroutine pole_backward_transforms(ncomp, nvector, nscalar,    &
 !!     &          n_WR, WR, v_pl_local)
@@ -77,24 +77,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_pole_transform(numnod)
-!
-      use calypso_mpi
-      use m_constants
-      use m_machine_parameter
-      use m_spheric_parameter
-      use m_phys_constants
+      subroutine init_pole_transform
 !
       use m_work_pole_sph_trans
 !
-      use m_spheric_constants
-!
-      integer(kind = kint), intent(in) :: numnod
-!
-!
-      if(iflag_shell_mode .ne. iflag_MESH_same) then
-        nnod_rtp_pole = numnod
-      end if
 !
       call init_num_pole_sph_trans
 !

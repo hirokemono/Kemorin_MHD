@@ -53,7 +53,7 @@
      &   (layer_tbl, icomp_sgs_hf, ele1%istack_ele_smp)
       call reset_vector_sgs_nod_m_coefs                                 &
      &   (icomp_sgs_hf, node1%istack_nod_smp)
-      call s_clear_work_4_dynamic_model
+      call s_clear_work_4_dynamic_model(node1, iphys, nod_fld1)
 !
 !   similarity model with wider filter
 !

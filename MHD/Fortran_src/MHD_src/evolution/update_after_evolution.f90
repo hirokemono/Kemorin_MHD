@@ -25,6 +25,7 @@
       use m_control_parameter
       use m_int_vol_data
       use m_nod_comm_table
+      use m_finite_element_matrix
 !
       use t_layering_ele_list
 !
@@ -316,11 +317,15 @@
       use m_group_data
       use m_geometry_data_MHD
       use m_node_phys_data
+      use m_element_phys_data
+      use m_jacobians
+      use m_jacobian_sf_grp
+      use m_element_id_4_node
       use m_SGS_address
       use m_surf_data_vector_p
       use m_bc_data_magne
-      use m_element_phys_data
       use m_SGS_model_coefs
+      use m_filter_elength
 !
       use average_on_elements
       use cal_rotation_sgs
@@ -389,10 +394,12 @@
        if (iphys%i_magne .ne. 0) then
          if (iflag_debug.gt.0) write(*,*) 'cal_magnetic_f_by_vect_p'
          call choose_cal_rotation_sgs                                   &
-     &       (iflag_commute_magne, iflag_mag_supg,                      &
-     &        ele1%istack_ele_smp, m1_lump, node1, ele1, surf1,         &
-     &        sf_grp1, nod_bc1_b, sf_sgs1_grad_a, iak_diff_b,           &
-     &        iphys%i_vecp, iphys%i_magne, nod_fld1)
+     &     (iflag_commute_magne, iflag_mag_supg,                        &
+     &      iak_diff_b, iphys%i_vecp, iphys%i_magne,                    &
+     &      ele1%istack_ele_smp, m1_lump,                               &
+     &      nod_comm, node1, ele1, surf1, sf_grp1, iphys_ele, fld_ele1, &
+     &      jac1_3d_q, jac1_sf_grp_2d_q, FEM1_elen, nod_bc1_b,          &
+     &      sf_sgs1_grad_a, rhs_tbl1, fem1_wk, f1_nl, nod_fld1)
        end if
        if (iphys_ele%i_magne .ne. 0) then
          if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'

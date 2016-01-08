@@ -46,7 +46,7 @@
       use cal_filtering_scalars
       use cal_sgs_fluxes_simi
       use commute_error_h_flux
-      use cal_div_sgs_hf_4_simi
+      use cal_div_sgs_flux_simi
       use cal_sgs_heat_fluxes_grad
       use cal_model_diff_coefs
       use set_boundary_scalars
@@ -58,7 +58,7 @@
 !    reset model coefficients
 !
       call reset_diff_model_coefs(iak_diff_hf, ele1%istack_ele_smp)
-      call s_clear_work_4_dynamic_model
+      call s_clear_work_4_dynamic_model(node1, iphys, nod_fld1)
 !
 !   gradient model by filtered field (to iphys%i_sgs_grad_f)
 !
@@ -71,7 +71,7 @@
       call cal_div_sgs_hf_simi(iphys%i_sgs_simi, iphys%i_sgs_grad_f,    &
      &    iphys%i_filter_velo, iphys%i_filter_temp,                     &
      &    nod_comm, node1, ele1, fluid1, iphys_ele, fld_ele1,           &
-     &    jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk,                    &
+     &    jac1_3d_q, rhs_tbl1, fem1_wk, mhd_fem1_wk,                    &
      &     f1_l, f1_nl, nod_fld1)
 !
 !   take divergence of heat flux (to iphys%i_sgs_grad)
@@ -80,7 +80,7 @@
       call cal_div_sgs_hf_simi(iphys%i_sgs_grad, iphys%i_SGS_h_flux,    &
      &    iphys%i_velo, iphys%i_sgs_temp,                               &
      &    nod_comm, node1, ele1, fluid1, iphys_ele, fld_ele1,           &
-     &    jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk,                    &
+     &    jac1_3d_q, rhs_tbl1, fem1_wk, mhd_fem1_wk,                    &
      &    f1_l, f1_nl, nod_fld1)
 !
 !

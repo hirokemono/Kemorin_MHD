@@ -49,7 +49,7 @@
 !
       call reset_vector_sgs_model_coefs                                 &
      &   (layer_tbl, icomp_sgs_hf, ele1%istack_ele_smp)
-      call s_clear_work_4_dynamic_model
+      call s_clear_work_4_dynamic_model(node1, iphys, nod_fld1)
 !
 !    SGS term by similarity model
 !
@@ -93,7 +93,7 @@
 !
       call reduce_model_coefs_layer(SGS_hf_factor, nlayer_SGS,          &
      &    sgs_f_clip(1,iak_sgs_hf), sgs_f_whole_clip(iak_sgs_hf) )
-      call reduce_ele_vect_model_coefs(SGS_hf_factor,                   &
+      call reduce_ele_vect_model_coefs(ele1, SGS_hf_factor,             &
      &    ak_sgs(1,icomp_sgs_hf))
 !
       end subroutine cal_sgs_hf_dynamic
