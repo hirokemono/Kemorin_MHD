@@ -28,6 +28,7 @@
       use m_geometry_data
       use m_group_data
       use m_node_phys_data
+      use m_element_phys_data
       use m_jacobians
       use m_jacobian_sf_grp
       use m_element_id_4_node
@@ -61,15 +62,21 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
      &        iphys%i_sgs_simi, iphys%i_filter_temp
-      call cal_gradent_in_fluid(iflag_temp_supg,                        &
-     &    iphys%i_sgs_simi, iphys%i_filter_temp)
+      call choose_cal_gradient                                          &
+     &   (iflag_temp_supg, iphys%i_filter_temp, iphys%i_sgs_simi,       &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
 !   take gradient of temperature (to iphys%i_sgs_grad)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_gradent_in_fluid',          &
      &                     iphys%i_sgs_grad, iphys%i_sgs_temp
-      call cal_gradent_in_fluid(iflag_temp_supg,                        &
-     &    iphys%i_sgs_grad, iphys%i_sgs_temp)
+      call choose_cal_gradient                                          &
+     &   (iflag_temp_supg, iphys%i_sgs_temp, iphys%i_sgs_grad,          &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
 !    filtering (to iphys%i_sgs_grad)
 !

@@ -26,6 +26,8 @@
       use m_geometry_data
       use m_node_phys_data
       use m_element_phys_data
+      use m_jacobians
+      use m_finite_element_matrix
       use m_t_step_parameter
       use m_t_int_parameter
       use m_bulk_values
@@ -49,19 +51,33 @@
         call s_int_bulk
 !
         if  (iflag_t_evo_4_velo .gt. id_no_evolution) then
-          call int_norm_div_v
-          call int_rms_div_v
+          call int_norm_divergence                                      &
+     &       (fluid1%istack_ele_fld_smp, iphys%i_velo,                  &
+     &        node1, ele1, nod_fld1, jac1_3d_q, fem1_wk,                &
+     &        bulk_local(ja_divv))
+          call int_rms_divergence                                       &
+     &       (fluid1%istack_ele_fld_smp, iphys%i_velo,                  &
+     &        node1, ele1, nod_fld1, jac1_3d_q, fem1_wk,                &
+     &        rms_local(ir_divv))
           call cal_stability_4_advect                                   &
      &       (fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
         end if
         if  (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-          call int_norm_div_a
-          call int_rms_div_a
+          call int_norm_divergence(ele1%istack_ele_smp, iphys%i_vecp,   &
+     &        node1, ele1, nod_fld1, jac1_3d_q, fem1_wk,                &
+     &        bulk_local(ja_diva))
+          call int_rms_divergence(ele1%istack_ele_smp, iphys%i_vecp,    &
+     &        node1, ele1, nod_fld1, jac1_3d_q, fem1_wk,                &
+     &        rms_local(ir_diva))
         end if
         if  (iflag_t_evo_4_magne .gt. id_no_evolution                   &
      &         .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-          call int_norm_div_b
-          call int_rms_div_b
+          call int_norm_divergence(ele1%istack_ele_smp, iphys%i_magne,  &
+     &        node1, ele1, nod_fld1, jac1_3d_q, fem1_wk,                &
+     &        bulk_local(ja_divb))
+          call int_rms_divergence(ele1%istack_ele_smp, iphys%i_magne,   &
+     &        node1, ele1, nod_fld1, jac1_3d_q, fem1_wk,                &
+     &        rms_local(ir_divb))
         end if
 !
 !

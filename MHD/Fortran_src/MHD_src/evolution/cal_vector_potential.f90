@@ -52,8 +52,10 @@
 !     --------------------- 
 !
       iloop = -1
-      call int_norm_div_a_monitor(iloop, rel_correct)
-!      call int_rms_div_a_monitor(iloop, rel_correct)
+      call int_norm_div_a_monitor(iloop, node1, ele1,                   &
+     &    iphys, nod_fld1, jac1_3d_q, fem1_wk, rel_correct)
+!      call int_rms_div_a_monitor(iloop, node1, ele1,                   &
+!     &    iphys, nod_fld1, jac1_3d_q, fem1_wk, rel_correct)
 !
       call init_sol_potential(node1%numnod, node1%istack_nod_smp,       &
      &    coef_mag_p, nod_fld1%ntot_phys, iphys%i_m_phi, iphys%i_mag_p, &
@@ -78,8 +80,10 @@
         call cal_rms_scalar_potential(iloop, rel_correct)
 !
         if (iflag_debug.gt.0) write(*,*) 'int_norm_div_a_monitor'
-        call int_norm_div_a_monitor(iloop, rel_correct)
-!        call int_rms_div_a_monitor(iloop, rel_correct)
+        call int_norm_div_a_monitor(iloop, node1, ele1,                 &
+     &      iphys, nod_fld1, jac1_3d_q, fem1_wk, rel_correct)
+!        call int_rms_div_a_monitor(iloop, node1, ele1,                 &
+!     &      iphys, nod_fld1, jac1_3d_q, fem1_wk, rel_correct)
 !
         if ( abs(rel_correct) .lt. eps_4_magne ) exit
       end do

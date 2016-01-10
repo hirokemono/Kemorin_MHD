@@ -223,22 +223,31 @@
       if(iphys%i_grad_vx .gt. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead gradient of V_x'
-        call cal_gradent_in_fluid(iflag_velo_supg,                      &
-     &      iphys%i_grad_vx, iphys%i_velo)
+        call choose_cal_gradient                                        &
+     &     (iflag_velo_supg, (iphys%i_velo  ), iphys%i_grad_vx,         &
+     &      fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,            &
+     &      nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,      &
+     &      rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
       if(iphys%i_grad_vy .gt. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead gradient of V_y'
-        call cal_gradent_in_fluid(iflag_velo_supg,                      &
-     &      iphys%i_grad_vy, (iphys%i_velo+1))
+        call choose_cal_gradient                                        &
+     &     (iflag_velo_supg, (iphys%i_velo+1), iphys%i_grad_vy,         &
+     &      fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,            &
+     &      nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,      &
+     &      rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
       if(iphys%i_grad_vz .gt. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead gradient of V_z'
-        call cal_gradent_in_fluid(iflag_velo_supg,                      &
-     &      iphys%i_grad_vz, (iphys%i_velo+2))
+        call choose_cal_gradient                                        &
+     &     (iflag_velo_supg, (iphys%i_velo+2), iphys%i_grad_vz,         &
+     &      fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,            &
+     &      nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,      &
+     &      rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
 !

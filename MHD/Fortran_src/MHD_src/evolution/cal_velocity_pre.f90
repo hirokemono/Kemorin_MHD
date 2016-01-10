@@ -25,6 +25,7 @@
       use m_finite_element_matrix
       use m_int_vol_data
       use m_filter_elength
+      use m_SGS_address
 !
       use t_layering_ele_list
 !
@@ -81,7 +82,12 @@
 !
 ! --------   loop for direction of velocity ---------------
 !
-      call int_vol_viscosity_ele
+      if (coef_velo.gt.zero .and. coef_exp_v.gt.zero) then
+        call int_vol_vector_diffuse_ele(fluid1%istack_ele_fld_smp,      &
+     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+     &      iak_diff_v, coef_exp_v, ak_d_velo, iphys%i_velo,            &
+     &      fem1_wk, f1_l)
+      end if
 !
       if ( iflag_4_coriolis .eq. id_Coriolis_ele_imp) then
          if (iflag_debug.eq.1) write(*,*) 'int_vol_coriolis_crank_ele'

@@ -3,28 +3,49 @@
 !
 !     Written by H. Matsui
 !
-!      subroutine cal_gradent_whole(iflag_4_supg, i_res, i_scalar)
-!      subroutine cal_gradent_in_fluid(iflag_4_supg, i_res, i_scalar)
-!      subroutine cal_gradent_in_conduct(iflag_4_supg, i_res, i_scalar)
+!!      subroutine choose_cal_gradient(iflag_4_supg,                    &
+!!     &          i_scalar, i_grad, iele_fsmp_stack, m_lump,            &
+!!     &          nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,      &
+!!     &          rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+!!      subroutine choose_cal_gradient_w_const(iflag_4_supg,            &
+!!     &          i_scalar, i_grad, const, iele_fsmp_stack, m_lump,     &
+!!     &          nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,      &
+!!     &          rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(phys_data), intent(in) :: ele_fld
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(lumped_mass_matrices), intent(in) :: m_lump
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+!!        type(phys_data), intent(inout) :: nod_fld
 !
       module cal_gradient
 !
       use m_precision
 !
+      use m_machine_parameter
+      use m_control_parameter
       use m_phys_constants
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_finite_element_matrix
-      use m_int_vol_data
-      use m_element_id_4_node
 !
-      use cal_ff_smp_to_ffs
-      use cal_for_ffs
-      use nod_phys_send_recv
+      use t_geometry_data
+      use t_phys_data
+      use t_comm_table
+      use t_geometry_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_3d
+      use t_table_FEM_const
+      use t_finite_element_mat
+!
 !
       implicit none
 !
       private :: choose_int_vol_grads
+      private :: choose_int_vol_grads_w_const
 !
 !-----------------------------------------------------------------------
 !
@@ -32,124 +53,193 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_gradent_whole(iflag_4_supg, i_res, i_scalar)
+      subroutine choose_cal_gradient(iflag_4_supg,                      &
+     &          i_scalar, i_grad, iele_fsmp_stack, m_lump,              &
+     &          nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,        &
+     &          rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
-      use m_node_phys_data
+      use cal_ff_smp_to_ffs
+      use cal_for_ffs
+      use nod_phys_send_recv
 !
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: ele_fld
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+      type(lumped_mass_matrices), intent(in) :: m_lump
+      integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: iflag_4_supg
-      integer(kind = kint), intent(in) :: i_scalar, i_res
+      integer(kind = kint), intent(in) :: i_scalar, i_grad
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
-!
-      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
-!
-      call choose_int_vol_grads(iflag_4_supg,                           &
-     &     ele1%istack_ele_smp, i_scalar)
-!
-      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
-      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    f1_nl%ff, m1_lump%ml, nod_fld1%ntot_phys,                     &
-     &    i_res, nod_fld1%d_fld)
-!
-! ----------   communications
-!
-      call vector_send_recv(i_res, node1, nod_comm, nod_fld1)
-!
-      end subroutine cal_gradent_whole
-!
-!-----------------------------------------------------------------------
-!
-      subroutine cal_gradent_in_fluid(iflag_4_supg, i_res, i_scalar)
-!
-      use m_geometry_data_MHD
-      use m_node_phys_data
-!
-      integer(kind = kint), intent(in) :: iflag_4_supg
-      integer(kind = kint), intent(in) :: i_scalar, i_res
-!
-!
-      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
+      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       call choose_int_vol_grads                                         &
-     &   (iflag_4_supg, fluid1%istack_ele_fld_smp, i_scalar)
+     &   (iflag_4_supg, iele_fsmp_stack, i_scalar,                      &
+     &    node, ele, nod_fld, iphys_ele, ele_fld, jac_3d,               &
+     &    rhs_tbl, fem_wk, f_nl)
 !
-      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
-      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    f1_nl%ff, mhd_fem1_wk%mlump_fl%ml, nod_fld1%ntot_phys,        &
-     &    i_res, nod_fld1%d_fld)
+      call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
+      call cal_ff_2_vector                                              &
+     &   (node%numnod, node%istack_nod_smp, f_nl%ff, m_lump%ml,         &
+     &    nod_fld%ntot_phys, i_grad, nod_fld%d_fld)
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_res, node1, nod_comm, nod_fld1)
+      call vector_send_recv(i_grad, node, nod_comm, nod_fld)
 !
-      end subroutine cal_gradent_in_fluid
+      end subroutine choose_cal_gradient
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_gradent_in_conduct(iflag_4_supg, i_res, i_scalar)
+      subroutine choose_cal_gradient_w_const(iflag_4_supg,              &
+     &          i_scalar, i_grad, const, iele_fsmp_stack, m_lump,       &
+     &          nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,        &
+     &          rhs_tbl, fem_wk, f_l, f_nl, nod_fld)
 !
-      use m_geometry_data_MHD
-      use m_node_phys_data
+      use cal_ff_smp_to_ffs
+      use cal_for_ffs
+      use nod_phys_send_recv
 !
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: ele_fld
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+      type(lumped_mass_matrices), intent(in) :: m_lump
+      integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
       integer(kind = kint), intent(in) :: iflag_4_supg
-      integer(kind = kint), intent(in) :: i_scalar, i_res
+      integer(kind = kint), intent(in) :: i_scalar, i_grad
+      real(kind = kreal), intent(in) :: const
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
+      call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
-      call choose_int_vol_grads                                         &
-     &   (iflag_4_supg, conduct1%istack_ele_fld_smp, i_scalar)
+      call choose_int_vol_grads_w_const                                 &
+     &   (iflag_4_supg, iele_fsmp_stack, const, i_scalar,               &
+     &    node, ele, nod_fld, iphys_ele, ele_fld, jac_3d,               &
+     &    rhs_tbl, fem_wk, f_nl)
 !
-      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
-      call cal_ff_2_vector(node1%numnod, node1%istack_nod_smp,          &
-     &    f1_nl%ff, mhd_fem1_wk%mlump_cd%ml, nod_fld1%ntot_phys,        &
-     &    i_res, nod_fld1%d_fld)
+      call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
+      call cal_ff_2_vector                                              &
+     &   (node%numnod, node%istack_nod_smp, f_nl%ff, m_lump%ml,         &
+     &    nod_fld%ntot_phys, i_grad, nod_fld%d_fld)
 !
 ! ----------   communications
 !
-      call vector_send_recv(i_res, node1, nod_comm, nod_fld1)
+      call vector_send_recv(i_grad, node, nod_comm, nod_fld)
 !
-      end subroutine cal_gradent_in_conduct
+      end subroutine choose_cal_gradient_w_const
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine choose_int_vol_grads(iflag_4_supg,                     &
-     &          iele_fsmp_stack, i_scalar)
-!
-      use m_node_phys_data
-      use m_jacobians
-      use m_control_parameter
-      use m_element_phys_data
-      use m_finite_element_matrix
+      subroutine choose_int_vol_grads                                   &
+     &         (iflag_4_supg, iele_fsmp_stack, i_scalar,                &
+     &          node, ele, nod_fld, iphys_ele, ele_fld,                 &
+     &          jac_3d, rhs_tbl, fem_wk, f_nl)
 !
       use int_vol_vect_differences
       use int_vol_vect_diff_upw
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_data), intent(in) :: nod_fld
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: ele_fld
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
       integer(kind = kint), intent(in) :: iflag_4_supg, i_scalar
       integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_nl
 !
 !
       if ( iflag_4_supg .eq. id_magnetic_SUPG) then
         call int_vol_gradient_upw                                       &
-     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
      &      iele_fsmp_stack, intg_point_t_evo, i_scalar,                &
-     &      fld_ele1%ntot_phys, iphys_ele%i_magne, fld_ele1%d_fld,      &
-     &      fem1_wk, f1_nl)
+     &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
+     &      fem_wk, f_nl)
       else if ( iflag_4_supg .eq. id_turn_ON) then
         call int_vol_gradient_upw                                       &
-     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
      &      iele_fsmp_stack, intg_point_t_evo, i_scalar,                &
-     &      fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,       &
-     &      fem1_wk, f1_nl)
+     &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
+     &      fem_wk, f_nl)
       else
         call int_vol_gradient                                           &
-     &     (node1, ele1, jac1_3d_q, rhs_tbl1, nod_fld1,                 &
+     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
      &      iele_fsmp_stack, intg_point_t_evo, i_scalar,                &
-     &      fem1_wk, f1_nl)
+     &      fem_wk, f_nl)
       end if
 !
       end subroutine choose_int_vol_grads
+!
+!-----------------------------------------------------------------------
+!
+      subroutine choose_int_vol_grads_w_const(iflag_4_supg,             &
+     &          iele_fsmp_stack, const, i_scalar,                       &
+     &          node, ele, nod_fld, iphys_ele, ele_fld,                 &
+     &          jac_3d, rhs_tbl, fem_wk, f_nl)
+!
+      use int_vol_vect_cst_difference
+      use int_vol_vect_cst_diff_upw
+!
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_data), intent(in) :: nod_fld
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: ele_fld
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+      integer(kind = kint), intent(in) :: iflag_4_supg, i_scalar
+      integer(kind = kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: const
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_nl
+!
+!
+      if ( iflag_4_supg .eq. id_magnetic_SUPG) then
+        call int_vol_grad_w_const_upw                                   &
+     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &      iele_fsmp_stack, intg_point_t_evo, i_scalar,                &
+     &      ele_fld%ntot_phys, iphys_ele%i_magne, ele_fld%d_fld,        &
+     &      const, fem_wk, f_nl)
+      else if ( iflag_4_supg .eq. id_turn_ON) then
+        call int_vol_grad_w_const_upw                                   &
+     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &      iele_fsmp_stack, intg_point_t_evo, i_scalar,                &
+     &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld,         &
+     &      const, fem_wk, f_nl)
+      else
+        call int_vol_grad_w_const                                       &
+     &     (node, ele, jac_3d, rhs_tbl, nod_fld,                        &
+     &      iele_fsmp_stack, intg_point_t_evo, i_scalar,                &
+     &      const, fem_wk, f_nl)
+      end if
+!
+      end subroutine choose_int_vol_grads_w_const
 !
 !-----------------------------------------------------------------------
 !

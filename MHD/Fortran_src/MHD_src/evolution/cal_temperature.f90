@@ -65,7 +65,12 @@
 !
 !  ----------  lead diffusion term
 !
-      call int_vol_termal_diffuse_ele
+      if (coef_temp.gt.zero .and. coef_exp_t.gt.zero) then
+        call int_vol_scalar_diffuse_ele(fluid1%istack_ele_fld_smp,      &
+     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+     &      iak_diff_t, coef_exp_t, ak_d_temp, iphys%i_temp,            &
+     &      fem1_wk, f1_l)
+      end if
 !
 !  ----------  lead advection term
 !

@@ -51,6 +51,7 @@
       use commute_error_gradient
       use cal_model_diff_coefs
       use clear_work_4_dynamic_model
+      use nod_phys_send_recv
 !
       type(layering_tbl), intent(in) :: layer_tbl
 !
@@ -84,10 +85,14 @@
      &    rhs_tbl1, fem1_wk, f1_nl, nod_fld1)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_whole', i_sgs_simi_p, i_sgs_grad_fp
-      call cal_gradent_whole(iflag_mag_supg,                            &
-     &    i_sgs_simi_p, i_sgs_grad_fp)
-!      call choose_cal_divergence(node1%istack_nod_smp, m1_lump,         &
-!     &    iflag_mag_supg, iphys%i_sgs_grad_f, iphys%i_sgs_simi+6)
+      call choose_cal_gradient                                          &
+     &   (iflag_mag_supg, i_sgs_grad_fp, i_sgs_simi_p,                  &
+     &    ele1%istack_ele_smp, m1_lump,                                 &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
+!      call choose_cal_divergence                                       &
+!     &   (iflag_mag_supg, iphys%i_sgs_grad_f, iphys%i_sgs_simi+6,      &
+!     &    node1%istack_nod_smp, m1_lump,)
 !
 !   take rotation and gradient of B (to iphys%i_sgs_grad)
 !
@@ -100,10 +105,14 @@
      &    rhs_tbl1, fem1_wk, f1_nl, nod_fld1)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_grad_p, iphys%i_mag_p
-      call cal_gradent_in_fluid(iflag_mag_supg,                         &
-     &    i_sgs_grad_p, iphys%i_mag_p)
-!      call choose_cal_divergence(node1%istack_nod_smp, m1_lump,         &
-!     &    iflag_mag_supg, iphys%i_magne, iphys%i_sgs_grad+6)
+      call choose_cal_gradient                                          &
+     &   (iflag_mag_supg, iphys%i_mag_p, i_sgs_grad_p,                  &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
+!      call choose_cal_divergence                                       &
+!     &   (iflag_mag_supg, iphys%i_magne, iphys%i_sgs_grad+6,           &
+!     &    node1%istack_nod_smp, m1_lump, )
 !
 !    filtering (to iphys%i_sgs_grad)
 !

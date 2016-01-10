@@ -11,15 +11,23 @@
 !!     &         (iflag_4_supg, iele_fsmp_stack, i_vector,              &
 !!     &          node, ele, nod_fld, iphys_ele, ele_fld, jac_3d,       &
 !!     &          rhs_tbl, fem_wk, f_nl)
+!!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
+!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(phys_data), intent(in) ::    ele_fld
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(lumped_mass_matrices), intent(in) :: m_lump
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
 !
       module cal_rotation
 !
       use m_precision
 !
+      use m_machine_parameter
       use m_control_parameter
 !
       use t_geometry_data
@@ -31,10 +39,6 @@
       use t_jacobian_3d
       use t_table_FEM_const
       use t_finite_element_mat
-!
-      use cal_ff_smp_to_ffs
-      use cal_for_ffs
-      use nod_phys_send_recv
 !
       implicit none
 !
@@ -48,6 +52,10 @@
      &        (iflag_4_supg, i_vector, i_rot, iele_fsmp_stack, m_lump,  &
      &         nod_comm, node, ele, iphys_ele, ele_fld, jac_3d,         &
      &         rhs_tbl, fem_wk, f_nl, nod_fld)
+!
+      use cal_ff_smp_to_ffs
+      use cal_for_ffs
+      use nod_phys_send_recv
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node

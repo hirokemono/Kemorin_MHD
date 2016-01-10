@@ -52,6 +52,7 @@
       use cal_model_diff_coefs
       use set_nodal_bc_id_data
       use clear_work_4_dynamic_model
+      use nod_phys_send_recv
 !
       type(layering_tbl), intent(in) :: layer_tbl
 !
@@ -85,14 +86,17 @@
      &    rhs_tbl1, fem1_wk, f1_nl, nod_fld1)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_simi_p, i_sgs_grad_fp
-      call cal_gradent_in_fluid(iflag_velo_supg,                        &
-     &    i_sgs_simi_p, i_sgs_grad_fp)
+      call choose_cal_gradient                                          &
+     &   (iflag_velo_supg, i_sgs_grad_fp, i_sgs_simi_p,                 &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
 !      if (iflag_debug.gt.0)   write(*,*)                               &
 !     &    'cal_divergence_in_fluid', iphys%i_sgs_simi+6,               &
 !     &    iphys%i_filter_velo
-!      call choose_cal_divergence                                        &
-!     &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
-!     &    iflag_velo_supg, iphys%i_filter_velo, iphys%i_sgs_simi+6)
+!      call choose_cal_divergence                                       &
+!     &   (iflag_velo_supg, iphys%i_filter_velo, iphys%i_sgs_simi+6,    &
+!     &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,             &
 !
 !   take rotation and gradient of velocity (to iphys%i_sgs_grad)
 !
@@ -105,14 +109,17 @@
      &    rhs_tbl1, fem1_wk, f1_nl, nod_fld1)
       if (iflag_debug.gt.0)                                             &
      &   write(*,*) 'cal_gradent_in_fluid', i_sgs_grad_p, iphys%i_press
-      call cal_gradent_in_fluid(iflag_velo_supg,                        &
-     &    i_sgs_grad_p, iphys%i_press)
+      call choose_cal_gradient                                          &
+     &   (iflag_velo_supg, iphys%i_press, i_sgs_grad_p,                 &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
 !      if (iflag_debug.gt.0)                                            &
 !     &   write(*,*) 'cal_divergence_in_fluid', iphys%i_sgs_grad+6,     &
 !     &               iphys%i_velo
-!      call choose_cal_divergence                                        &
-!     &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
-!     &    iflag_velo_supg, iphys%i_velo, iphys%i_sgs_grad+3)
+!      call choose_cal_divergence                                       &
+!     &   (iflag_velo_supg, iphys%i_velo, iphys%i_sgs_grad+3,           &
+!     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,             &
 !
 !    filtering (to iphys%i_sgs_grad)
 !

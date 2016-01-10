@@ -91,7 +91,9 @@
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
-      call int_vol_vp_diffuse_ele_monitor
+      call int_vol_vector_diffuse_ele(ele1%istack_ele_smp,              &
+     &    node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,        &
+     &    iak_diff_b, one, ak_d_magne, iphys%i_vecp, fem1_wk, f1_l)
 !
       call int_sf_grad_velocity(node1, ele1, surf1, sf_grp1,            &
      &    jac1_sf_grp_2d_q, rhs_tbl1, sf_bc1_grad_a,                    &

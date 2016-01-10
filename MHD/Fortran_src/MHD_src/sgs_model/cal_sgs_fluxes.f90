@@ -13,8 +13,9 @@
 !
       use m_precision
 !
-      use m_machine_parameter
       use calypso_mpi
+      use m_constants
+      use m_machine_parameter
       use m_control_parameter
       use m_t_step_parameter
 !
@@ -31,9 +32,10 @@
       use m_SGS_address
 !
       use cal_sgs_fluxes_simi
-      use cal_sgs_fluxes_diffuse
 !
       implicit none
+!
+      private :: cal_sgs_m_flux_diffuse
 !
 !-----------------------------------------------------------------------
 !
@@ -45,6 +47,7 @@
 !
       use m_SGS_address
       use cal_sgs_heat_fluxes_grad
+      use cal_gradient
 !
 !
       if (     iflag_SGS_heat .eq. id_SGS_NL_grad) then
@@ -60,7 +63,11 @@
 !
       else if (iflag_SGS_heat .eq. id_SGS_diffusion) then
         if (iflag_debug.eq.1) write(*,*) 'cal_sgs_h_flux_diffuse'
-        call cal_sgs_h_flux_diffuse
+        call choose_cal_gradient_w_const(iflag_temp_supg,               &
+     &      iphys%i_sgs_temp, iphys%i_SGS_h_flux, dminus,               &
+     &      fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,            &
+     &      nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,      &
+     &      rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
       end subroutine cal_sgs_heat_flux
@@ -196,6 +203,54 @@
       end if
 !
       end subroutine cal_sgs_uxb_2_evo
+!
+!-----------------------------------------------------------------------
+!-----------------------------------------------------------------------
+!
+      subroutine cal_sgs_m_flux_diffuse(numnod,                         &
+     &          ncomp_nod, i_vect, i_sgs_diffuse, i_sgs, d_nod)
+!
+      use cal_gradient
+!
+      integer (kind = kint), intent(in) :: numnod, ncomp_nod
+      integer (kind=kint), intent(in) :: i_sgs, i_vect, i_sgs_diffuse
+      real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
+!
+      integer (kind=kint) :: inod
+!
+!
+      call choose_cal_gradient_w_const                                  &
+     &   (iflag_velo_supg, i_vect, i_sgs, dminus,                       &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
+      call choose_cal_gradient_w_const                                  &
+     &   (iflag_velo_supg, (i_vect+1), i_sgs_diffuse, dminus,           &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
+      call choose_cal_gradient_w_const                                  &
+     &   (iflag_velo_supg, (i_vect+2), (i_sgs_diffuse+3), dminus,       &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
+!
+!
+!$omp parallel do
+      do inod = 1, numnod
+        d_nod(inod,i_sgs  ) = two * d_nod(inod,i_sgs  )
+        d_nod(inod,i_sgs+1) =       d_nod(inod,i_sgs+1)                 &
+     &                            + d_nod(inod,i_sgs_diffuse  )
+        d_nod(inod,i_sgs+2) =       d_nod(inod,i_sgs+2)                 &
+     &                            + d_nod(inod,i_sgs_diffuse+3)
+        d_nod(inod,i_sgs+3) = two * d_nod(inod,i_sgs_diffuse+1)
+        d_nod(inod,i_sgs+4) =       d_nod(inod,i_sgs_diffuse+2)         &
+     &                            + d_nod(inod,i_sgs_diffuse+4)
+        d_nod(inod,i_sgs+5) = two * d_nod(inod,i_sgs_diffuse+5)
+      end do
+!$omp end parallel do
+!
+      end subroutine cal_sgs_m_flux_diffuse
 !
 !-----------------------------------------------------------------------
 !

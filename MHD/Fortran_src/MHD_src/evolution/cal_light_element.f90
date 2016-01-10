@@ -54,7 +54,12 @@
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
-      call int_vol_composition_diffuse_ele
+      if (coef_light.gt.zero .and. coef_exp_c.gt.zero) then
+        call int_vol_scalar_diffuse_ele(fluid1%istack_ele_fld_smp,      &
+     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+     &      iak_diff_c, coef_exp_c, ak_d_composit, iphys%i_light,       &
+     &      fem1_wk, f1_l)
+      end if
 !
       if (iflag_comp_supg .gt. id_turn_OFF) then
         call int_vol_composition_ele_upw                                &

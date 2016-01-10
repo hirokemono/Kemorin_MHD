@@ -76,8 +76,10 @@
 !     --------------------- 
 !
       iloop = -1
-      call int_norm_div_v_monitor(iloop, rel_correct)
-!      call int_rms_div_v_monitor(iloop, rel_correct)
+      call int_norm_div_v_monitor(iloop, node1, ele1, fluid1,           &
+     &    iphys, nod_fld1, jac1_3d_q, fem1_wk, rel_correct)
+!      call int_rms_div_v_monitor(iloop, node1, ele1, fluid1,           &
+!     &    iphys, nod_fld1, jac1_3d_q, fem1_wk, rel_correct)
 !
       do iloop = 0, maxiter
 !
@@ -93,8 +95,10 @@
 !
         call cal_rms_pressure_4_loop(iloop, rel_correct)
 !
-        call int_norm_div_v_monitor(iloop, rel_correct)
-!        call int_rms_div_v_monitor(iloop, rel_correct)
+        call int_norm_div_v_monitor(iloop, node1, ele1, fluid1,         &
+     &      iphys, nod_fld1, jac1_3d_q, fem1_wk, rel_correct)
+!        call int_rms_div_v_monitor(iloop, node1, ele1, fluid1,         &
+!     &      iphys, nod_fld1, jac1_3d_q, fem1_wk, rel_correct)
 !
         if ( abs(rel_correct) .lt. eps_4_velo ) go to 10
 !

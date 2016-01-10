@@ -57,7 +57,8 @@
 !----  set magnetic field in insulate layer
 !
       iloop = -1
-      call int_norm_div_b_monitor(iloop, rel_correct)
+      call int_norm_div_b_monitor(iloop, node1, ele1,                   &
+     &    iphys, nod_fld1, jac1_3d_q, fem1_wk, rel_correct)
 !
 !
       do iloop = 0, maxiter
@@ -74,8 +75,10 @@
 !
         call cal_rms_scalar_potential(iloop, rel_correct)
 !
-        call int_norm_div_b_monitor(iloop, rel_correct)
-!        call int_rms_div_b_monitor(iloop, rel_correct)
+        call int_norm_div_b_monitor(iloop, node1, ele1,                 &
+     &      iphys, nod_fld1, jac1_3d_q, fem1_wk, rel_correct)
+!        call int_rms_div_b_monitor(iloop, node1, ele1,                 &
+!     &      iphys, nod_fld1, jac1_3d_q, fem1_wk, rel_correct)
 !
         if ( abs(rel_correct) .lt. eps_4_magne ) exit
       end do

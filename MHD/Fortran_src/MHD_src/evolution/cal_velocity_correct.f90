@@ -129,8 +129,12 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_viscosity_co'
-      call int_vol_viscosity_co
-!
+      if (coef_imp_v.gt.zero) then
+        call int_vol_vector_diffuse_ele(fluid1%istack_ele_fld_smp,      &
+     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+     &      iak_diff_v, coef_imp_v, ak_d_velo, iphys%i_velo,            &
+     &      fem1_wk, f1_l)
+      end if
 !
       if (coef_imp_v.gt.0.0d0) then
         if (iflag_debug.eq.1) write(*,*) 'int_sk_4_fixed_velo'
