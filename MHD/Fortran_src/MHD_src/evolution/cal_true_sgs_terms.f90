@@ -105,15 +105,28 @@
 !
       subroutine cal_div_sgs_h_flux_true_pre
 !
+      use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
+      use m_geometry_data_MHD
       use m_node_phys_data
+      use m_element_phys_data
+      use m_jacobians
+      use m_element_id_4_node
+      use m_filter_elength
+      use m_finite_element_matrix
+      use m_int_vol_data
+!
       use cal_terms_for_heat
 !
 !
       call cal_flux_vector(node1, nod_fld1%ntot_phys,                   &
      &    iphys%i_filter_velo, iphys%i_filter_temp, iphys%i_h_flux,     &
      &    nod_fld1%d_fld)
-      call cal_terms_4_heat(iphys%i_h_flux_div)
+      call cal_terms_4_heat                                             &
+     &     (iphys%i_h_flux_div, nod_comm, node1, ele1, surf1, fluid1,   &
+     &      sf_grp1, iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,   &
+     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       call copy_scalar_component(node1, nod_fld1,                       &
      &    iphys%i_h_flux_div, iphys%i_SGS_div_hf_true)
 !
@@ -123,15 +136,28 @@
 !
       subroutine cal_div_sgs_m_flux_true_pre
 !
+      use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
+      use m_geometry_data_MHD
       use m_node_phys_data
+      use m_element_phys_data
+      use m_jacobians
+      use m_element_id_4_node
+      use m_filter_elength
+      use m_finite_element_matrix
+      use m_int_vol_data
+!
       use cal_momentum_terms
 !
 !
       call cal_flux_tensor(node1, nod_fld1%ntot_phys,                   &
      &    iphys%i_filter_velo, iphys%i_filter_velo, iphys%i_m_flux,     &
      &    nod_fld1%d_fld)
-      call cal_terms_4_momentum(iphys%i_m_flux_div)
+      call cal_terms_4_momentum(iphys%i_m_flux_div,                     &
+     &    nod_comm, node1, ele1, surf1, fluid1, sf_grp1,                &
+     &    iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,   &
+     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       call copy_vector_component(node1, nod_fld1,                       &
      &    iphys%i_m_flux_div, iphys%i_SGS_div_mf_true)
 !
@@ -141,15 +167,28 @@
 !
       subroutine cal_div_sgs_maxwell_true_pre
 !
+      use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
+      use m_geometry_data_MHD
       use m_node_phys_data
+      use m_element_phys_data
+      use m_jacobians
+      use m_element_id_4_node
+      use m_filter_elength
+      use m_finite_element_matrix
+      use m_int_vol_data
       use m_physical_property
+!
       use cal_momentum_terms
 !
 !
       call cal_maxwell_tensor(node1, ex_magne, nod_fld1%ntot_phys,      &
      &    iphys%i_filter_magne, iphys%i_maxwell, nod_fld1%d_fld)
-      call cal_terms_4_momentum(iphys%i_maxwell_div)
+      call cal_terms_4_momentum(iphys%i_maxwell_div,                    &
+     &    nod_comm, node1, ele1, surf1, fluid1, sf_grp1,                &
+     &    iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,   &
+     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       call copy_vector_component(node1, nod_fld1,                       &
      &   iphys%i_maxwell_div, iphys%i_SGS_Lor_true)
 !

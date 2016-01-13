@@ -11,17 +11,30 @@
       use m_precision
 !
       use m_control_parameter
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
-      use m_geometry_data_MHD
-      use m_node_phys_data
-      use m_element_phys_data
-      use m_jacobians
-      use m_element_id_4_node
-      use m_finite_element_matrix
-      use m_int_vol_data
-      use m_filter_elength
+      use m_phys_constants
+!      use m_nod_comm_table
+!      use m_geometry_data
+!      use m_group_data
+!      use m_geometry_data_MHD
+!      use m_node_phys_data
+!      use m_element_phys_data
+!      use m_jacobians
+!      use m_element_id_4_node
+!      use m_finite_element_matrix
+!      use m_int_vol_data
+!      use m_filter_elength
+!
+      use t_geometry_data_MHD
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_3d
+      use t_table_FEM_const
+      use t_finite_element_mat
+      use t_MHD_finite_element_mat
+      use t_filter_elength
 !
       use cal_multi_pass
       use cal_ff_smp_to_ffs
@@ -38,13 +51,32 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_terms_4_momentum(i_field)
-!
-      use m_finite_element_matrix
+      subroutine cal_terms_4_momentum                                   &
+     &         (i_field, nod_comm, node1, ele1, surf1, fluid1, sf_grp1, &
+     &          iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
+     &          FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
       use int_vol_velo_monitor
 !
       integer (kind=kint), intent(in) :: i_field
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node1
+      type(element_data), intent(in) :: ele1
+      type(surface_data), intent(in) :: surf1
+      type(surface_group_data), intent(in) :: sf_grp1
+      type(field_geometry_data), intent(in) :: fluid1
+      type(phys_address), intent(in) :: iphys
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: fld_ele1
+      type(jacobians_3d), intent(in) :: jac1_3d_q
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
+      type(gradient_model_data_type), intent(in) :: FEM1_elen
+!
+      type(work_finite_element_mat), intent(inout) :: fem1_wk
+      type(finite_ele_mat_node), intent(inout) :: f1_l, f1_nl
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem1_wk
+      type(phys_data), intent(inout) :: nod_fld1
 !
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
@@ -80,12 +112,27 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_viscous_diffusion
-!
-      use m_phys_constants
-      use m_finite_element_matrix
+      subroutine cal_viscous_diffusion(nod_comm, node1, ele1, surf1,    &
+     &          fluid1, sf_grp1, iphys, jac1_3d_q, rhs_tbl1, FEM1_elen, &
+     &          mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
       use int_vol_diffusion_ele
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node1
+      type(element_data), intent(in) :: ele1
+      type(surface_data), intent(in) :: surf1
+      type(surface_group_data), intent(in) :: sf_grp1
+      type(field_geometry_data), intent(in) :: fluid1
+      type(phys_address), intent(in) :: iphys
+      type(jacobians_3d), intent(in) :: jac1_3d_q
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
+      type(gradient_model_data_type), intent(in) :: FEM1_elen
+      type(work_MHD_fe_mat), intent(in) :: mhd_fem1_wk
+!
+      type(work_finite_element_mat), intent(inout) :: fem1_wk
+      type(finite_ele_mat_node), intent(inout) :: f1_l, f1_nl
+      type(phys_data), intent(inout) :: nod_fld1
 !
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)

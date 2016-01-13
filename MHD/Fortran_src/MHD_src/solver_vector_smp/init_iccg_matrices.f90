@@ -4,8 +4,8 @@
 !        programmed by H.Matsui
 !                                    on June 2005
 !
-!      subroutine allocate_aiccg_matrices
-!      subroutine reset_aiccg_matrices
+!      subroutine allocate_aiccg_matrices(node)
+!      subroutine reset_aiccg_matrices(node, ele, fluid)
 !      subroutine deallocate_aiccg_matrices
 !
       module init_iccg_matrices
@@ -15,8 +15,6 @@
       use calypso_mpi
       use m_control_parameter
       use m_geometry_constants
-      use m_geometry_data_MHD
-      use m_geometry_data
       use m_solver_djds_MHD
 !
       use t_geometry_data
@@ -31,47 +29,49 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine allocate_aiccg_matrices
+      subroutine allocate_aiccg_matrices(node)
 !
       use set_residual_limit
+!
+      type(node_data), intent(in) :: node
 !
 !
       call set_residual_4_crank
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call alloc_type_djds11_mat(node1%numnod, node1%internal_node,   &
+        call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
      &      DJDS_fl_l, Pmat_DJDS)
 !
         if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-          call alloc_type_djds33_mat(node1%numnod, node1%internal_node, &
+          call alloc_type_djds33_mat(node%numnod, node%internal_node,   &
      &        DJDS_fluid, Vmat_DJDS)
         end if
       end if
 !
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
-        call alloc_type_djds11_mat(node1%numnod, node1%internal_node,   &
+        call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
      &      DJDS_fluid, Tmat_DJDS)
       end if
 !
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        call alloc_type_djds11_mat(node1%numnod, node1%internal_node,   &
+        call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
      &      DJDS_fluid, Cmat_DJDS)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call alloc_type_djds11_mat(node1%numnod, node1%internal_node,   &
+        call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
      &      DJDS_linear, Fmat_DJDS)
         if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
-          call alloc_type_djds33_mat(node1%numnod, node1%internal_node, &
+          call alloc_type_djds33_mat(node%numnod, node%internal_node,   &
      &        DJDS_entire, Bmat_DJDS)
         end if
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call alloc_type_djds11_mat(node1%numnod, node1%internal_node,   &
+        call alloc_type_djds11_mat(node%numnod, node%internal_node,     &
      &      DJDS_linear, Fmat_DJDS)
         if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-          call alloc_type_djds33_mat(node1%numnod, node1%internal_node, &
+          call alloc_type_djds33_mat(node%numnod, node%internal_node,   &
      &        DJDS_entire, Bmat_DJDS)
         end if
       end if
@@ -80,44 +80,48 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine reset_aiccg_matrices
+      subroutine reset_aiccg_matrices(node, ele, fluid)
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid
 !
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call reset_aiccg_11_MHD(node1, ele1,                            &
-     &      fluid1%iele_start_fld, fluid1%iele_end_fld,                 &
+        call reset_aiccg_11_MHD(node, ele,                              &
+     &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
      &      num_t_linear, DJDS_fl_l, Pmat_DJDS)
 !
         if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-          call reset_aiccg_33_MHD(node1, ele1,                          &
-     &        fluid1%iele_start_fld, fluid1%iele_end_fld,               &
-     &        ele1%nnod_4_ele, DJDS_fluid, Vmat_DJDS)
+          call reset_aiccg_33_MHD(node, ele,                            &
+     &        fluid%iele_start_fld, fluid%iele_end_fld,                 &
+     &        ele%nnod_4_ele, DJDS_fluid, Vmat_DJDS)
         end if
       end if
 !
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
-        call reset_aiccg_11_MHD(node1, ele1,                            &
-     &      fluid1%iele_start_fld, fluid1%iele_end_fld,                 &
-     &      ele1%nnod_4_ele, DJDS_fluid, Tmat_DJDS)
+        call reset_aiccg_11_MHD(node, ele,                              &
+     &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
+     &      ele%nnod_4_ele, DJDS_fluid, Tmat_DJDS)
       end if
 !
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        call reset_aiccg_11_MHD(node1, ele1,                            &
-     &      fluid1%iele_start_fld, fluid1%iele_end_fld,                 &
-     &      ele1%nnod_4_ele, DJDS_fluid, Cmat_DJDS)
+        call reset_aiccg_11_MHD(node, ele,                              &
+     &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
+     &      ele%nnod_4_ele, DJDS_fluid, Cmat_DJDS)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution) then
-        call reset_aiccg_11_MHD(node1, ele1, ione, ele1%numele,         &
+        call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
      &      num_t_linear, DJDS_linear, Fmat_DJDS)
         if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
-          call reset_aiccg_33_MHD(node1, ele1,  ione, ele1%nnod_4_ele,  &
-     &     ele1%nnod_4_ele, DJDS_entire, Bmat_DJDS)
+          call reset_aiccg_33_MHD(node, ele,  ione, ele%nnod_4_ele,     &
+     &     ele%nnod_4_ele, DJDS_entire, Bmat_DJDS)
         end if
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call reset_aiccg_11_MHD(node1, ele1, ione, ele1%numele,         &
+        call reset_aiccg_11_MHD(node, ele, ione, ele%numele,            &
      &      num_t_linear, DJDS_linear, Fmat_DJDS)
         if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
           call reset_aiccg_vector_p(Bmat_DJDS)

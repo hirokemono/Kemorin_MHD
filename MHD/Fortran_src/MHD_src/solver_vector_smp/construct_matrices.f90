@@ -80,7 +80,15 @@
       subroutine set_aiccg_matrices
 !
       use m_control_parameter
+      use m_geometry_data
+      use m_geometry_data_MHD
       use m_iccg_parameter
+      use m_int_vol_data
+      use m_jacobians
+      use m_element_id_4_node
+      use m_sorted_node_MHD
+      use m_finite_element_matrix
+      use m_filter_elength
 !
       use int_vol_lumped_mat_crank
       use int_vol_poisson_matrix
@@ -92,7 +100,7 @@
       use skip_comment_f
 !
 !
-      call reset_aiccg_matrices
+      call reset_aiccg_matrices(node1, ele1, fluid1)
 !
 !   set coefficients of matrix
 !
@@ -100,18 +108,24 @@
 !
 !   Poisson matrix
 !
-      call int_vol_poisson_matrices
+      call int_vol_poisson_matrices(ele1, jac1_3d_l, rhs_tbl1,          &
+     &    mat_tbl_l1, mat_tbl_fl_l, FEM1_elen, fem1_wk)
 !
 !   Diffusion matrix
 !
       if (iflag_scheme .eq. id_Crank_nicolson) then
         if (iflag_debug.eq.1) write(*,*) 'int_vol_crank_mat_lump'
-        call int_vol_crank_mat_lump
+        call int_vol_crank_mat_lump                                     &
+     &     (node1, fluid1, conduct1, mhd_fem1_wk)
         if (iflag_debug.eq.1) write(*,*) 'int_vol_crank_matrices'
-        call int_vol_crank_matrices
+        call int_vol_crank_matrices(ele1, jac1_3d_q, rhs_tbl1,          &
+     &      mat_tbl_q1, mat_tbl_fl_q, mat_tbl_full_cd_q,                &
+     &      FEM1_elen, fem1_wk)
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
         call int_vol_crank_mat_consist
-        call int_vol_crank_matrices
+        call int_vol_crank_matrices(ele1, jac1_3d_q, rhs_tbl1,          &
+     &      mat_tbl_q1, mat_tbl_fl_q, mat_tbl_full_cd_q,                &
+     &      FEM1_elen, fem1_wk)
       end if
 !
 !     set boundary conditions
@@ -128,7 +142,6 @@
       if(cmp_no_case(method_4_solver, 'MGCG')) then
         call const_MGCG_MHD_matrices
       end if
-!
 !
       end subroutine set_aiccg_matrices
 !

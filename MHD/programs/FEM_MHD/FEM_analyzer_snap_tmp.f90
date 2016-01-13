@@ -97,7 +97,7 @@
 !
       if (i_step_output_rst .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'input_restart_4_snapshot'
-        call input_restart_4_snapshot
+        call input_restart_4_snapshot(node1, nod_fld1)
 !
       else if (i_step_output_ucd .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
@@ -182,10 +182,19 @@
       subroutine lead_specital_SGS
 !
       use m_constants
-      use m_geometry_data
       use m_phys_constants
       use m_phys_labels
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
+      use m_geometry_data_MHD
       use m_node_phys_data
+      use m_element_phys_data
+      use m_jacobians
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_int_vol_data
+      use m_filter_elength
 !
       use copy_nodal_fields
       use cvt_sph_vector_2_xyz_smp
@@ -217,7 +226,10 @@
       if (iphys%i_SGS_div_m_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead radial', trim(fhd_div_SGS_m_flux)
-        call cal_terms_4_momentum(iphys%i_SGS_div_m_flux)
+        call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,               &
+     &    nod_comm, node1, ele1, surf1, fluid1, sf_grp1,                &
+     &    iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,   &
+     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
 !$omp parallel

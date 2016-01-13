@@ -19,6 +19,7 @@
 !
       use m_precision
       use m_constants
+      use m_machine_parameter
 !
       use t_geometry_data_MHD
       use t_geometry_data
@@ -38,7 +39,6 @@
       subroutine initial_data_control                                   &
      &         (node, fluid, iphys, layer_tbl, nod_fld)
 !
-      use m_machine_parameter
       use m_initial_field_control
       use m_t_int_parameter
       use m_t_step_parameter
@@ -57,14 +57,14 @@
 !
 !
       if(iflag_restart .eq. i_rst_by_file) then
-        call input_MHD_restart_file_ctl(layer_tbl)
+        call input_MHD_restart_file_ctl(layer_tbl, node, nod_fld)
       else
         call set_initial_data(node, fluid, iphys, nod_fld)
       end if
       iflag_initial_step = 0
 !
       if (iflag_debug .gt. 1)  write(*,*) 'init_MHD_restart_output'
-      call init_MHD_restart_output
+      call init_MHD_restart_output(node, nod_fld)
 !
       time   =       time_init
       i_step_MHD =   i_step_init

@@ -259,8 +259,8 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1 ) write(*,*) 'allocate_aiccg_matrices'
-      call allocate_aiccg_matrices
-      call reset_aiccg_matrices
+      call allocate_aiccg_matrices(node1)
+      call reset_aiccg_matrices(node1, ele1, fluid1)
 !
 !     --------------------- 
 !

@@ -67,7 +67,7 @@
 !
       if (i_step_output_rst .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'input_restart_4_snapshot'
-        call input_restart_4_snapshot
+        call input_restart_4_snapshot(node1, nod_fld1)
 !
       else if (i_step_output_ucd .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'

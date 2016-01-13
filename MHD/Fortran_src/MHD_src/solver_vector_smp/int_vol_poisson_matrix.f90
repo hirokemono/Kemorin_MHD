@@ -8,8 +8,11 @@
 !        modifired by H. Matsui on June, 2005
 !        modifired by H. Matsui on Nov., 2007
 !
-!      subroutine int_vol_poisson_matrices
-!      subroutine int_vol_crank_matrices
+!!      subroutine int_vol_poisson_matrices(ele, jac_3d_l, rhs_tbl,    &
+!!     &          mat_tbl_l, mat_tbl_fl_l, FEM_elens, fem_wk)
+!!      subroutine int_vol_crank_matrices(ele, jac_3d, rhs_tbl,        &
+!!     &          mat_tbl_q, mat_tbl_fl_q, mat_tbl_full_cd_q,          &
+!!     &          FEM_elens, fem_wk)
 !
       module int_vol_poisson_matrix
 !
@@ -37,86 +40,96 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_poisson_matrices
+      subroutine int_vol_poisson_matrices(ele, jac_3d_l, rhs_tbl,       &
+     &          mat_tbl_l, mat_tbl_fl_l, FEM_elens, fem_wk)
 !
-      use m_geometry_data
       use m_phys_constants
-      use m_element_id_4_node
-      use m_jacobians
-      use m_finite_element_matrix
-      use m_filter_elength
       use m_solver_djds_MHD
-      use m_sorted_node_MHD
       use m_SGS_model_coefs
       use m_SGS_address
 !
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d_l
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(table_mat_const),  intent(in) :: mat_tbl_l
+      type(table_mat_const),  intent(in) :: mat_tbl_fl_l
+      type(gradient_model_data_type), intent(in) :: FEM_elens
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+!
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call choose_int_poisson_mat(ele1, jac1_3d_l,                    &
-     &      rhs_tbl1, mat_tbl_fl_l, FEM1_elen, intg_point_poisson,      &
-     &      num_diff_kinds, iak_diff_v, ak_diff, fem1_wk, Pmat_DJDS)
+        call choose_int_poisson_mat(ele, jac_3d_l,                      &
+     &      rhs_tbl, mat_tbl_fl_l, FEM_elens, intg_point_poisson,       &
+     &      num_diff_kinds, iak_diff_v, ak_diff, fem_wk, Pmat_DJDS)
       end if
 !
       if (     iflag_t_evo_4_magne .gt.  id_no_evolution                &
      &    .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call choose_int_poisson_mat(ele1, jac1_3d_l,                    &
-     &      rhs_tbl1, mat_tbl_l1, FEM1_elen, intg_point_poisson,        &
-     &      num_diff_kinds, iak_diff_b, ak_diff, fem1_wk, Fmat_DJDS)
+        call choose_int_poisson_mat(ele, jac_3d_l,                      &
+     &      rhs_tbl, mat_tbl_l, FEM_elens, intg_point_poisson,          &
+     &      num_diff_kinds, iak_diff_b, ak_diff, fem_wk, Fmat_DJDS)
       end if
 !
       end subroutine int_vol_poisson_matrices
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_crank_matrices
+      subroutine int_vol_crank_matrices(ele, jac_3d, rhs_tbl,           &
+     &          mat_tbl_q, mat_tbl_fl_q, mat_tbl_full_cd_q,             &
+     &          FEM_elens, fem_wk)
 !
       use m_t_int_parameter
-      use m_geometry_data
       use m_phys_constants
-      use m_jacobians
-      use m_element_id_4_node
       use m_ele_material_property
-      use m_finite_element_matrix
-      use m_filter_elength
-      use m_sorted_node_MHD
       use m_SGS_model_coefs
       use m_SGS_address
       use m_solver_djds_MHD
 !
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(table_mat_const),  intent(in) :: mat_tbl_q
+      type(table_mat_const),  intent(in) :: mat_tbl_fl_q
+      type(table_mat_const),  intent(in) :: mat_tbl_full_cd_q
+      type(gradient_model_data_type), intent(in) :: FEM_elens
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+!
 !
       if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-        call choose_int_diffuse3_crank_mat(ele1, jac1_3d_q,             &
-     &      rhs_tbl1, mat_tbl_fl_q, FEM1_elen, intg_point_t_evo,        &
+        call choose_int_diffuse3_crank_mat(ele, jac_3d,                 &
+     &      rhs_tbl, mat_tbl_fl_q, FEM_elens, intg_point_t_evo,         &
      &      num_diff_kinds, iak_diff_v, ak_diff, coef_imp_v,            &
-     &      ak_d_velo, fem1_wk, Vmat_DJDS)
+     &      ak_d_velo, fem_wk, Vmat_DJDS)
       end if
 !
       if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
-        call choose_int_diffuse3_crank_mat(ele1, jac1_3d_q,             &
-     &      rhs_tbl1, mat_tbl_full_cd_q, FEM1_elen, intg_point_t_evo,   &
+        call choose_int_diffuse3_crank_mat(ele, jac_3d,                 &
+     &      rhs_tbl, mat_tbl_full_cd_q, FEM_elens, intg_point_t_evo,    &
      &      num_diff_kinds, iak_diff_b, ak_diff, coef_imp_b,            &
-     &      ak_d_magne, fem1_wk, Bmat_DJDS)
+     &      ak_d_magne, fem_wk, Bmat_DJDS)
       end if
 !
       if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-        call choose_int_diffuse3_crank_mat(ele1, jac1_3d_q,             &
-     &      rhs_tbl1, mat_tbl_q1, FEM1_elen, intg_point_t_evo,          &
+        call choose_int_diffuse3_crank_mat(ele, jac_3d,                 &
+     &      rhs_tbl, mat_tbl_q, FEM_elens, intg_point_t_evo,            &
      &      num_diff_kinds, iak_diff_b, ak_diff, coef_imp_b,            &
-     &      ak_d_magne, fem1_wk, Bmat_DJDS)
+     &      ak_d_magne, fem_wk, Bmat_DJDS)
       end if
 !
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
-        call choose_int_diffuse1_crank_mat(ele1, jac1_3d_q,             &
-     &      rhs_tbl1, mat_tbl_fl_q, FEM1_elen, intg_point_t_evo,        &
+        call choose_int_diffuse1_crank_mat(ele, jac_3d,                 &
+     &      rhs_tbl, mat_tbl_fl_q, FEM_elens, intg_point_t_evo,         &
      &      num_diff_kinds, iak_diff_t, ak_diff, coef_imp_t,            &
-     &      ak_d_temp, fem1_wk, Tmat_DJDS)
+     &      ak_d_temp, fem_wk, Tmat_DJDS)
       end if
 !
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        call choose_int_diffuse1_crank_mat(ele1, jac1_3d_q,             &
-     &      rhs_tbl1, mat_tbl_fl_q, FEM1_elen, intg_point_t_evo,        &
+        call choose_int_diffuse1_crank_mat(ele, jac_3d,                 &
+     &      rhs_tbl, mat_tbl_fl_q, FEM_elens, intg_point_t_evo,         &
      &      num_diff_kinds, iak_diff_c, ak_diff, coef_imp_c,            &
-     &      ak_d_composit, fem1_wk, Cmat_DJDS)
+     &      ak_d_composit, fem_wk, Cmat_DJDS)
       end if
 !
       end subroutine int_vol_crank_matrices

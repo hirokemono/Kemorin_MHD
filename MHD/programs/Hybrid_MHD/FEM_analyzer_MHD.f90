@@ -112,6 +112,9 @@
 !
       use m_control_parameter
 !
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_node_phys_data
       use m_layering_ele_list
 !
       use cal_temperature
@@ -237,7 +240,8 @@
 !     ---- Output restart field data
 !
         if (iflag_debug.eq.1) write(*,*) 'output_MHD_restart_file_ctl'
-        call output_MHD_restart_file_ctl
+        call output_MHD_restart_file_ctl                                &
+     &          (node1, nod_comm, iphys, nod_fld1)
 !
 !     ---- Output voulme field data
 !
@@ -261,7 +265,8 @@
         if      (istep_rst_end.eq.-1                                    &
      &       .and. total_max.gt.elapsed_time) then
           call start_eleps_time(4)
-          call elspased_MHD_restart_ctl
+          call elspased_MHD_restart_ctl                                 &
+     &       (node1, nod_comm, iphys, nod_fld1
           call end_eleps_time(4)
           retval = 0
         else if (istep_rst_end.ne.-1                                    &
@@ -275,7 +280,8 @@
         if      (i_step_number.eq.-1                                    &
      &       .and. total_max.gt.elapsed_time) then
           call start_eleps_time(4)
-          call elspased_MHD_restart_ctl
+          call elspased_MHD_restart_ctl                                 &
+     &       (node1, nod_comm, iphys, nod_fld1)
           call end_eleps_time(4)
           retval = 0
         else if (i_step_number.ne.-1 .and.                              &

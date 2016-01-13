@@ -26,6 +26,7 @@
 !
       use m_control_parameter
       use m_geometry_data
+      use m_group_data
       use m_phys_constants
       use m_jacobians
       use m_SGS_address
@@ -61,7 +62,10 @@
 !
 !   lead work of Reynolds stress
 !
-      call cal_terms_4_momentum(iphys%i_SGS_div_m_flux)
+      call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,                 &
+     &    nod_comm, node1, ele1, surf1, fluid1, sf_grp1,                &
+     &    iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,   &
+     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
 !$omp parallel
       call cal_phys_dot_product(node1, nod_fld1,                        &

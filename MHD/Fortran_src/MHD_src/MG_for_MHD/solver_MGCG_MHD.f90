@@ -9,11 +9,29 @@
 !!
 !!@verbatim
 !!      subroutine solver_MGCG_velo
+!!     &         (node, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS,            &
+!!     &          num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,     &
+!!     &          MG_mat_velo, MG_vector, b_vec, x_vec)
 !!      subroutine solver_MGCG_press
+!!     &         (node, DJDS_comm_fl, DJDS_fl_l, Pmat_DJDS,             &
+!!     &          num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fll,    &
+!!     &          MG_mat_press, MG_vector, b_vec, x_vec)
 !!      subroutine solver_MGCG_magne
+!!     &         (node, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,          &
+!!     &          num_MG_level, MG_itp, MG_comm, MG_djds_tbl,           &
+!!     &          MG_mat_magne, MG_vector, b_vec, x_vec)
 !!      subroutine solver_MGCG_magne_p
+!!     &         (node, DJDS_comm_etr, DJDS_linear, Fmat_DJDS,          &
+!!     &          num_MG_level, MG_itp, MG_comm, MG_djds_tbl_l,         &
+!!     &          MG_mat_magp, MG_vector, b_vec, x_vec)
 !!      subroutine solver_MGCG_temp
+!!     &         (node, DJDS_comm_fl, DJDS_fluid, Tmat_DJDS,            &
+!!     &          num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,     &
+!!     &          MG_mat_temp, MG_vector, b_vec, x_vec)
 !!      subroutine solver_MGCG_d_scalar
+!!     &         (node, DJDS_comm_fl, DJDS_fluid, Cmat_DJDS,            &
+!!     &          num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,     &
+!!     &          MG_mat_d_scalar, MG_vector, b_vec, x_vec)
 !!@endverbatim
 !
       module   solver_MGCG_MHD
