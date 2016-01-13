@@ -36,10 +36,7 @@
      &       MG0_mat_temp, MG0_mat_light, MG0_mat_press, MG0_mat_magp)
 !
       use m_control_parameter
-      use m_velo_matrix
-      use m_magne_matrix
-      use m_temp_matrix
-      use m_light_element_matrix
+      use m_solver_djds_MHD
 !
       type(DJDS_MATRIX),  intent(inout) :: MG0_mat_velo
       type(DJDS_MATRIX),  intent(inout) :: MG0_mat_magne

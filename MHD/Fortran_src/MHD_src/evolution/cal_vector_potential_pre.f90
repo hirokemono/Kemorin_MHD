@@ -155,6 +155,14 @@
       use m_phys_constants
       use m_t_step_parameter
       use m_bc_data_magne
+      use m_geometry_data
+      use m_phys_constants
+      use m_node_phys_data
+      use m_finite_element_matrix
+      use m_solver_djds_MHD
+      use m_array_for_send_recv
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
       use cal_multi_pass
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
@@ -177,7 +185,10 @@
 !
       call cal_sol_vect_p_pre_linear(node1, iphys, nod_fld1)
 !
-      call cal_sol_vect_p_pre_crank
+      call cal_sol_vect_p_pre_crank                                     &
+     &   (node1, iphys, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,          &
+     &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl,                   &
+     &    MG_mat_magne, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
 !
       end subroutine cal_vect_p_pre_crank
 !
@@ -189,6 +200,14 @@
       use m_t_step_parameter
       use m_bc_data_magne
       use m_physical_property
+      use m_geometry_data
+      use m_phys_constants
+      use m_node_phys_data
+      use m_finite_element_matrix
+      use m_solver_djds_MHD
+      use m_array_for_send_recv
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
       use cal_ff_smp_to_ffs
@@ -212,7 +231,10 @@
      &    f1_nl%ff, n_vector, iphys%i_pre_uxb, nod_fld1, f1_l%ff)
 !
       if (iflag_debug.eq.1) write(*,*) 'time_evolution'
-      call cal_sol_vect_p_pre_crank
+      call cal_sol_vect_p_pre_crank                                     &
+     &   (node1, iphys, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,          &
+     &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl,                   &
+     &    MG_mat_magne, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
 !
       end subroutine cal_vect_p_pre_consist_crank
 !

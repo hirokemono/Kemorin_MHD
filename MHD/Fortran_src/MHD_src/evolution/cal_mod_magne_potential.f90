@@ -37,6 +37,10 @@
       use m_surf_data_magne
       use m_surf_data_magne_p
       use m_bc_data_magne
+      use m_solver_djds_MHD
+      use m_array_for_send_recv
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -74,7 +78,11 @@
 !
       call set_boundary_ff(node1, nod_bc1_f, f1_l)
 !
-      call cal_sol_mag_po
+      call cal_sol_mag_po                                               &
+     &         (node1, DJDS_comm_etr, DJDS_linear, Fmat_DJDS,           &
+     &          num_MG_level, MG_itp, MG_comm, MG_djds_tbl_l,           &
+     &          MG_mat_magp, MG_vector, iphys%i_m_phi, f1_l, b_vec,     &
+     &          x_vec, nod_fld1)
 !
       call set_boundary_scalar(nod_bc1_f, iphys%i_m_phi, nod_fld1)
 !

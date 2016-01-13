@@ -10,7 +10,9 @@
 !!@verbatim
 !!      subroutine allocate_phys_range(ncomp_viz)
 !!      subroutine deallocate_phys_range
-!!      subroutine cal_max_indices
+!!      subroutine cal_max_indices(node, nod_fld)
+!!        type(node_data), intent(in) :: node
+!!        type(phys_data), intent(in) :: nod_fld
 !!@endverbatim
 !
       module m_cal_max_indices
@@ -99,11 +101,14 @@
 ! ----------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_max_indices
+      subroutine cal_max_indices(node, nod_fld)
 !
       use calypso_mpi
-      use m_geometry_data
-      use m_node_phys_data
+      use t_geometry_data
+      use t_phys_data
+!
+      type(node_data), intent(in) :: node
+      type(phys_data), intent(in) :: nod_fld
 !
       integer (kind = kint) :: nd, inod
 !
@@ -111,23 +116,23 @@
       do nd = 1, ncomp_minmax
 !
         inod_max_lc(nd) = 1
-        do inod = 1, node1%numnod
-          if (nod_fld1%d_fld(inod,nd)                                   &
-     &      .gt. nod_fld1%d_fld(inod_max_lc(nd),nd)) then
+        do inod = 1, node%numnod
+          if (nod_fld%d_fld(inod,nd)                                    &
+     &      .gt. nod_fld%d_fld(inod_max_lc(nd),nd)) then
             inod_max_lc(nd) = inod
           end if
         end do
 !
         inod_min_lc(nd) = 1
-        do inod = 1, node1%numnod
-          if (nod_fld1%d_fld(inod,nd)                                   &
-     &      .lt. nod_fld1%d_fld(inod_min_lc(nd),nd)) then
+        do inod = 1, node%numnod
+          if (nod_fld%d_fld(inod,nd)                                    &
+     &      .lt. nod_fld%d_fld(inod_min_lc(nd),nd)) then
             inod_min_lc(nd) = inod
           end if
         end do
 !
-        phys_max_local(nd) = nod_fld1%d_fld(inod_max_lc(nd),nd)
-        phys_min_local(nd) = nod_fld1%d_fld(inod_min_lc(nd),nd)
+        phys_max_local(nd) = nod_fld%d_fld(inod_max_lc(nd),nd)
+        phys_min_local(nd) = nod_fld%d_fld(inod_min_lc(nd),nd)
       end do
 !$omp end parallel do
 !
@@ -144,11 +149,11 @@
       do nd = 1, ncomp_minmax
         if ( phys_max(nd) .eq. phys_max_local(nd) ) then
           inod = inod_max_lc(nd)
-          node_max_local(nd) = node1%inod_global(inod)
+          node_max_local(nd) = node%inod_global(inod)
         end if
         if ( phys_min(nd) .eq. phys_min_local(nd) ) then
           inod = inod_min_lc(nd)
-          node_min_local(nd) = node1%inod_global(inod)
+          node_min_local(nd) = node%inod_global(inod)
         end if
       end do
 !$omp end parallel do

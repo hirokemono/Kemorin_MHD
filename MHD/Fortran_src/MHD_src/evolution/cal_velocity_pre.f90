@@ -200,6 +200,15 @@
       subroutine cal_velo_pre_crank
 !
       use m_t_step_parameter
+!
+      use m_geometry_data
+      use m_node_phys_data
+      use m_finite_element_matrix
+      use m_solver_djds_MHD
+      use m_array_for_send_recv
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
+!
       use cal_multi_pass
       use cal_sol_vector_pre_crank
       use set_nodal_bc_id_data
@@ -231,7 +240,11 @@
 !
       call cal_sol_velo_pre_linear(node1, iphys, nod_fld1)
 !
-      call cal_sol_velo_pre_crank
+      call cal_sol_velo_pre_crank                                       &
+     &    (node1, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS,                  &
+     &     num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,            &
+     &     MG_mat_velo, MG_vector, iphys%i_velo, f1_l, b_vec,           &
+     &     x_vec, nod_fld1)
 !
       end subroutine cal_velo_pre_crank
 !
@@ -249,6 +262,13 @@
       use int_vol_initial_MHD
       use cal_solver_MHD
 !
+      use m_geometry_data
+      use m_node_phys_data
+      use m_finite_element_matrix
+      use m_solver_djds_MHD
+      use m_array_for_send_recv
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
 !
       if (coef_imp_v.gt.0.0d0) then
         call int_sk_4_fixed_velo(iphys%i_velo, node1, ele1, nod_fld1,   &
@@ -264,7 +284,11 @@
       call cal_vector_pre_consist(node1, coef_velo,                     &
      &    f1_nl%ff, n_vector, iphys%i_pre_mom, nod_fld1, f1_l%ff)
 !
-      call cal_sol_velo_pre_crank
+      call cal_sol_velo_pre_crank                                       &
+     &    (node1, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS,                  &
+     &     num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,            &
+     &     MG_mat_velo, MG_vector, iphys%i_velo, f1_l, b_vec,           &
+     &     x_vec, nod_fld1)
 !
       end subroutine cal_velo_pre_consist_crank
 !

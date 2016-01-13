@@ -19,6 +19,25 @@
       implicit none
 !
 !
+!>      Structure of matrix for time evolution of velocity
+      type(DJDS_MATRIX), save :: Vmat_DJDS
+!>      Structure of matrix for poission equation of pressure
+      type(DJDS_MATRIX), save :: Pmat_DJDS
+!
+!
+!>      Structure of matrix for time evolution of magnetic field
+      type(DJDS_MATRIX), save :: Bmat_DJDS
+!>      Structure of matrix for poission equation of electric potential
+      type(DJDS_MATRIX), save :: Fmat_DJDS
+!
+!
+!>      Structure of matrix for time evolution of temperature
+      type(DJDS_MATRIX), save :: Tmat_DJDS
+!
+!>      Structure of matrix for time evolution of conposition variation
+      type(DJDS_MATRIX), save :: Cmat_DJDS
+!
+!
 !>      Structure for MPI communicator
       type(mpi_4_solver), save :: solver_C
 !

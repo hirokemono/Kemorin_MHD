@@ -112,6 +112,13 @@
       subroutine cal_magnetic_co_imp
 !
       use m_t_step_parameter
+      use m_geometry_data
+      use m_node_phys_data
+      use m_finite_element_matrix
+      use m_solver_djds_MHD
+      use m_array_for_send_recv
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
       use int_vol_diffusion_ele
       use int_sk_4_fixed_boundary
       use cal_solver_MHD
@@ -139,7 +146,11 @@
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_sol_magne_pre_crank'
-      call cal_sol_magne_pre_crank
+      call cal_sol_magne_pre_crank                                      &
+     &   (node1, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,                 &
+     &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl,                   &
+     &    MG_mat_magne, MG_vector, iphys%i_magne, f1_l, b_vec,          &
+     &    x_vec, nod_fld1)
 !
       end subroutine cal_magnetic_co_imp
 !

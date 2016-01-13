@@ -48,10 +48,6 @@
       use m_bc_data_ene
       use m_surf_data_torque
       use m_solver_djds_MHD
-      use m_velo_matrix
-      use m_magne_matrix
-      use m_temp_matrix
-      use m_light_element_matrix
 !
       use set_aiccg_bc_fixed
 !

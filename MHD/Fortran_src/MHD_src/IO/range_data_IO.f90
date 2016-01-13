@@ -87,6 +87,7 @@
       subroutine output_range_data(istep_ucd, time)
 !
       use calypso_mpi
+      use m_geometry_data
       use m_node_phys_data
       use m_cal_max_indices
 !
@@ -96,7 +97,7 @@
       character(len=kchara) :: fmt_txt
 !
 !
-      call cal_max_indices
+      call cal_max_indices(node1, nod_fld1)
 !
       if ( my_rank .ne. 0 ) return
 !

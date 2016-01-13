@@ -37,6 +37,13 @@
       use m_jacobian_sf_grp
       use m_surf_data_vector_p
       use m_bc_data_magne
+      use m_geometry_data
+      use m_node_phys_data
+      use m_finite_element_matrix
+      use m_solver_djds_MHD
+      use m_array_for_send_recv
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -72,7 +79,11 @@
       call set_boundary_ff(node1, nod_bc1_f, f1_l)
 !
       if (iflag_debug .gt. 0)  write(*,*) 'cal_sol_mag_po'
-      call cal_sol_mag_po
+      call cal_sol_mag_po                                               &
+     &         (node1, DJDS_comm_etr, DJDS_linear, Fmat_DJDS,           &
+     &          num_MG_level, MG_itp, MG_comm, MG_djds_tbl_l,           &
+     &          MG_mat_magp, MG_vector, iphys%i_m_phi, f1_l, b_vec,     &
+     &          x_vec, nod_fld1)
 !
       if (iflag_debug .gt. 0)  write(*,*) 'set_boundary_m_phi'
       call set_boundary_scalar(nod_bc1_f, iphys%i_m_phi, nod_fld1)

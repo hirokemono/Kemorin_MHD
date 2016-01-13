@@ -131,6 +131,13 @@
 !
       use m_t_step_parameter
       use m_bc_data_ene
+      use m_geometry_data
+      use m_node_phys_data
+      use m_finite_element_matrix
+      use m_solver_djds_MHD
+      use m_array_for_send_recv
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
 !
       use cal_multi_pass
       use set_boundary_scalars
@@ -153,7 +160,11 @@
       call set_boundary_rhs_scalar(node1, nod_bc1_c, f1_l, f1_nl)
       call cal_sol_d_scalar_linear(node1, iphys, nod_fld1)
 !
-      call cal_sol_d_scalar_crank(iphys%i_light)
+      call cal_sol_d_scalar_crank                                       &
+     &   (node1, DJDS_comm_fl, DJDS_fluid, Cmat_DJDS,                   &
+     &    num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,             &
+     &    MG_mat_d_scalar, MG_vector, iphys%i_light, f1_l, b_vec,       &
+     &    x_vec, nod_fld1)
 !
       end subroutine cal_composit_pre_crank
 !
@@ -164,6 +175,13 @@
       use m_t_step_parameter
       use m_bc_data_ene
       use m_physical_property
+      use m_geometry_data
+      use m_node_phys_data
+      use m_finite_element_matrix
+      use m_solver_djds_MHD
+      use m_array_for_send_recv
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
 !
       use cal_sol_vector_pre_crank
       use set_boundary_scalars
@@ -187,7 +205,11 @@
       call cal_vector_pre_consist(node1, coef_light,                    &
      &    f1_nl%ff, n_scalar, iphys%i_pre_composit, nod_fld1, f1_l%ff)
 !
-       call cal_sol_d_scalar_crank(iphys%i_light)
+      call cal_sol_d_scalar_crank                                       &
+     &   (node1, DJDS_comm_fl, DJDS_fluid, Cmat_DJDS,                   &
+     &    num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,             &
+     &    MG_mat_d_scalar, MG_vector, iphys%i_light, f1_l, b_vec,       &
+     &    x_vec, nod_fld1)
 !
        end subroutine cal_composit_pre_consist_crank
 !

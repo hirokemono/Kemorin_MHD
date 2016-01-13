@@ -196,7 +196,7 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*) 'init_MGCG_MHD'
-      call init_MGCG_MHD
+      call init_MGCG_MHD(node1)
 !
 !  -------------------------------
 !
@@ -260,6 +260,7 @@
 !
       if (iflag_debug.eq.1 ) write(*,*) 'allocate_aiccg_matrices'
       call allocate_aiccg_matrices
+      call reset_aiccg_matrices
 !
 !     --------------------- 
 !

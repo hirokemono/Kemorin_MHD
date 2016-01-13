@@ -122,6 +122,15 @@
 !
       use m_geometry_data_MHD
       use m_t_step_parameter
+!
+      use m_geometry_data
+      use m_node_phys_data
+      use m_finite_element_matrix
+      use m_solver_djds_MHD
+      use m_array_for_send_recv
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
+!
       use int_vol_diffusion_ele
       use int_sk_4_fixed_boundary
       use cal_solver_MHD
@@ -158,7 +167,11 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_pre_crank'
-      call cal_sol_velo_pre_crank
+      call cal_sol_velo_pre_crank                                       &
+     &    (node1, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS,                  &
+     &     num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,            &
+     &     MG_mat_velo, MG_vector, iphys%i_velo, f1_l, b_vec,           &
+     &     x_vec, nod_fld1)
 !
       end subroutine cal_velocity_co_imp
 !

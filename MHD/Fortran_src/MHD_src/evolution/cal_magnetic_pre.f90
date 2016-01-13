@@ -146,6 +146,13 @@
       use m_phys_constants
       use m_t_step_parameter
       use m_bc_data_magne
+      use m_geometry_data
+      use m_node_phys_data
+      use m_finite_element_matrix
+      use m_solver_djds_MHD
+      use m_array_for_send_recv
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
       use cal_multi_pass
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
@@ -170,7 +177,11 @@
       call cal_sol_magne_pre_linear(node1, iphys, nod_fld1)
 !
       if (iflag_debug .eq. 0 ) write(*,*) 'time_evolution'
-      call cal_sol_magne_pre_crank
+      call cal_sol_magne_pre_crank                                      &
+     &   (node1, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,                 &
+     &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl,                   &
+     &    MG_mat_magne, MG_vector, iphys%i_magne, f1_l, b_vec,          &
+     &    x_vec, nod_fld1)
 !
        end subroutine cal_magne_pre_crank
 !
@@ -182,6 +193,13 @@
       use m_phys_constants
       use m_bc_data_magne
       use m_physical_property
+      use m_geometry_data
+      use m_node_phys_data
+      use m_finite_element_matrix
+      use m_solver_djds_MHD
+      use m_array_for_send_recv
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
       use cal_ff_smp_to_ffs
@@ -207,7 +225,11 @@
 !
       if (iflag_debug.eq.1)                                             &
      &        write(*,*) 'time_evolution for magnetic field'
-      call cal_sol_magne_pre_crank
+      call cal_sol_magne_pre_crank                                      &
+     &   (node1, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,                 &
+     &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl,                   &
+     &    MG_mat_magne, MG_vector, iphys%i_magne, f1_l, b_vec,          &
+     &    x_vec, nod_fld1)
 !
        end subroutine cal_magne_pre_consist_crank
 !

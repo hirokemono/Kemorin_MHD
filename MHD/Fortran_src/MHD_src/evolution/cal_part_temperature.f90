@@ -167,6 +167,14 @@
 !
       use m_t_step_parameter
       use m_bc_data_ene
+      use m_geometry_data
+      use m_node_phys_data
+      use m_solver_djds_MHD
+      use m_array_for_send_recv
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
+      use m_finite_element_matrix
+!
 !
       use cal_sol_vector_pre_crank
       use cal_multi_pass
@@ -191,7 +199,11 @@
 !
       call cal_sol_par_temp_linear(node1, iphys, nod_fld1)
 !
-      call cal_sol_energy_crank(iphys%i_par_temp)
+      call cal_sol_energy_crank                                         &
+     &   (node1, DJDS_comm_fl, DJDS_fluid, Tmat_DJDS,                   &
+     &    num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,             &
+     &    MG_mat_temp, MG_vector, iphys%i_par_temp, f1_l, b_vec,        &
+     &    x_vec, nod_fld1)
 !
       end subroutine cal_per_temp_crank
 !
@@ -202,6 +214,14 @@
       use m_t_step_parameter
       use m_bc_data_ene
       use m_physical_property
+      use m_geometry_data
+      use m_node_phys_data
+      use m_solver_djds_MHD
+      use m_array_for_send_recv
+      use m_type_AMG_data
+      use m_type_AMG_data_4_MHD
+      use m_finite_element_matrix
+!
 !
       use cal_sol_vector_pre_crank
       use set_boundary_scalars
@@ -225,7 +245,11 @@
       call cal_vector_pre_consist(node1, coef_temp,                     &
      &    f1_nl%ff, n_scalar, iphys%i_pre_heat, nod_fld1, f1_l%ff)
 !
-      call cal_sol_energy_crank(iphys%i_par_temp)
+      call cal_sol_energy_crank                                         &
+     &   (node1, DJDS_comm_fl, DJDS_fluid, Tmat_DJDS,                   &
+     &    num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,             &
+     &    MG_mat_temp, MG_vector, iphys%i_par_temp, f1_l, b_vec,        &
+     &    x_vec, nod_fld1)
 !
       end subroutine cal_per_temp_consist_crank
 !

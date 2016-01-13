@@ -37,10 +37,6 @@
       use m_control_parameter
 !
       use m_solver_djds_MHD
-      use m_velo_matrix
-      use m_magne_matrix
-      use m_temp_matrix
-      use m_light_element_matrix
       use m_int_vol_data
 !
 !$omp parallel
@@ -93,7 +89,6 @@
 !
       use m_solver_djds_MHD
       use m_physical_property
-      use m_velo_matrix
       use m_int_vol_data
 !
       use cal_coriolis_mat33

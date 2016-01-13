@@ -30,10 +30,7 @@
       use m_element_id_4_node
       use m_finite_element_matrix
 !
-      use m_temp_matrix
-      use m_light_element_matrix
-      use m_velo_matrix
-      use m_magne_matrix
+      use m_solver_djds_MHD
 !
       use fem_skv_mass_mat_type
       use cal_skv_to_ff_smp

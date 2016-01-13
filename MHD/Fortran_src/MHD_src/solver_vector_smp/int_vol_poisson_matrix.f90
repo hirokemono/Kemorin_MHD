@@ -16,17 +16,20 @@
       use m_precision
 !
       use m_control_parameter
+      use m_phys_constants
+!
+      use t_geometry_data
+      use t_jacobian_3d
+      use t_table_FEM_const
+      use t_filter_elength
+      use t_finite_element_mat
+      use t_table_FEM_const
 !
       implicit none
 !
-      private :: sel_int_press_poisson_mat_sgs
-      private :: sel_int_mag_p_poisson_mat_sgs
-!
-      private :: sel_int_velo_crank_mat_sgs
-      private :: sel_int_magne_crank_mat_sgs
-      private :: sel_int_vecp_crank_mat_sgs
-      private :: sel_int_temp_crank_mat_sgs
-      private :: sel_int_composit_crank_mat_sgs
+      private :: choose_int_poisson_mat
+      private :: choose_int_diffuse3_crank_mat
+      private :: choose_int_diffuse1_crank_mat
 !
 ! ----------------------------------------------------------------------
 !
@@ -36,14 +39,29 @@
 !
       subroutine int_vol_poisson_matrices
 !
+      use m_geometry_data
+      use m_phys_constants
+      use m_element_id_4_node
+      use m_jacobians
+      use m_finite_element_matrix
+      use m_filter_elength
+      use m_solver_djds_MHD
+      use m_sorted_node_MHD
+      use m_SGS_model_coefs
+      use m_SGS_address
+!
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call sel_int_press_poisson_mat_sgs(intg_point_poisson)
+        call choose_int_poisson_mat(ele1, jac1_3d_l,                    &
+     &      rhs_tbl1, mat_tbl_fl_l, FEM1_elen, intg_point_poisson,      &
+     &      num_diff_kinds, iak_diff_v, ak_diff, fem1_wk, Pmat_DJDS)
       end if
 !
       if (     iflag_t_evo_4_magne .gt.  id_no_evolution                &
      &    .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call sel_int_mag_p_poisson_mat_sgs(intg_point_poisson)
+        call choose_int_poisson_mat(ele1, jac1_3d_l,                    &
+     &      rhs_tbl1, mat_tbl_l1, FEM1_elen, intg_point_poisson,        &
+     &      num_diff_kinds, iak_diff_b, ak_diff, fem1_wk, Fmat_DJDS)
       end if
 !
       end subroutine int_vol_poisson_matrices
@@ -52,25 +70,53 @@
 !
       subroutine int_vol_crank_matrices
 !
+      use m_t_int_parameter
+      use m_geometry_data
+      use m_phys_constants
+      use m_jacobians
+      use m_element_id_4_node
+      use m_ele_material_property
+      use m_finite_element_matrix
+      use m_filter_elength
+      use m_sorted_node_MHD
+      use m_SGS_model_coefs
+      use m_SGS_address
+      use m_solver_djds_MHD
+!
 !
       if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-        call sel_int_velo_crank_mat_sgs(intg_point_t_evo)
+        call choose_int_diffuse3_crank_mat(ele1, jac1_3d_q,             &
+     &      rhs_tbl1, mat_tbl_fl_q, FEM1_elen, intg_point_t_evo,        &
+     &      num_diff_kinds, iak_diff_v, ak_diff, coef_imp_v,            &
+     &      ak_d_velo, fem1_wk, Vmat_DJDS)
       end if
 !
       if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then
-        call sel_int_magne_crank_mat_sgs(intg_point_t_evo)
+        call choose_int_diffuse3_crank_mat(ele1, jac1_3d_q,             &
+     &      rhs_tbl1, mat_tbl_full_cd_q, FEM1_elen, intg_point_t_evo,   &
+     &      num_diff_kinds, iak_diff_b, ak_diff, coef_imp_b,            &
+     &      ak_d_magne, fem1_wk, Bmat_DJDS)
       end if
 !
       if (iflag_t_evo_4_vect_p .ge. id_Crank_nicolson) then
-        call sel_int_vecp_crank_mat_sgs(intg_point_t_evo)
+        call choose_int_diffuse3_crank_mat(ele1, jac1_3d_q,             &
+     &      rhs_tbl1, mat_tbl_q1, FEM1_elen, intg_point_t_evo,          &
+     &      num_diff_kinds, iak_diff_b, ak_diff, coef_imp_b,            &
+     &      ak_d_magne, fem1_wk, Bmat_DJDS)
       end if
 !
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
-        call sel_int_temp_crank_mat_sgs(intg_point_t_evo)
+        call choose_int_diffuse1_crank_mat(ele1, jac1_3d_q,             &
+     &      rhs_tbl1, mat_tbl_fl_q, FEM1_elen, intg_point_t_evo,        &
+     &      num_diff_kinds, iak_diff_t, ak_diff, coef_imp_t,            &
+     &      ak_d_temp, fem1_wk, Tmat_DJDS)
       end if
 !
       if (iflag_t_evo_4_composit .ge. id_Crank_nicolson) then
-        call sel_int_composit_crank_mat_sgs(intg_point_t_evo)
+        call choose_int_diffuse1_crank_mat(ele1, jac1_3d_q,             &
+     &      rhs_tbl1, mat_tbl_fl_q, FEM1_elen, intg_point_t_evo,        &
+     &      num_diff_kinds, iak_diff_c, ak_diff, coef_imp_c,            &
+     &      ak_d_composit, fem1_wk, Cmat_DJDS)
       end if
 !
       end subroutine int_vol_crank_matrices
@@ -78,145 +124,116 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_int_press_poisson_mat_sgs(n_int)
+      subroutine choose_int_poisson_mat                                 &
+     &         (ele, jac_3d_l, rhs_tbl, mat_tbl, FEM_elens, n_int,      &
+     &          num_diff_kinds, iak_diff, ak_diff, fem_wk, mat11_DJDS)
 !
-      use m_SGS_address
+      use int_vol_poisson_mat
+      use int_vol_poisson_sgs_matrix
 !
-      use int_vol_poisson_phys_mat
-      use int_vol_poisson_sgs_mat
-!
-      integer(kind = kint), intent(in) :: n_int
-!
-!
-      if (iflag_commute_velo .eq. id_SGS_commute_ON) then
-        call int_vol_velo_sgs_poisson_mat(n_int)
-      else
-        call int_vol_velo_poisson_mat(n_int)
-      end if
-!
-      end subroutine sel_int_press_poisson_mat_sgs
-!
-! ----------------------------------------------------------------------
-!
-      subroutine sel_int_mag_p_poisson_mat_sgs(n_int)
-!
-      use m_SGS_address
-!
-      use int_vol_poisson_phys_mat
-      use int_vol_poisson_sgs_mat
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d_l
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(table_mat_const), intent(in) :: mat_tbl
+      type(gradient_model_data_type), intent(in) :: FEM_elens
 !
       integer(kind = kint), intent(in) :: n_int
+      integer(kind = kint), intent(in) :: num_diff_kinds, iak_diff
+      real(kind = kreal), intent(in)                                    &
+     &                    :: ak_diff(ele%numele,num_diff_kinds)
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(DJDS_MATRIX), intent(inout) :: mat11_DJDS
 !
 !
       if (iflag_commute_magne .eq. id_SGS_commute_ON) then
-        call int_vol_magne_sgs_poisson_mat(n_int)
+        call int_vol_poisson_sgs_mat11                                  &
+     &     (ele, jac_3d_l, rhs_tbl, mat_tbl, FEM_elens, n_int,          &
+     &      ifilter_final, ak_diff(1,iak_diff), fem_wk, mat11_DJDS)
       else
-        call int_vol_magne_poisson_mat(n_int)
+        call int_vol_poisson_mat11                                      &
+     &     (ele, jac_3d_l, rhs_tbl, mat_tbl, n_int, fem_wk, mat11_DJDS)
       end if
 !
-      end subroutine sel_int_mag_p_poisson_mat_sgs
+      end subroutine choose_int_poisson_mat
 !
 ! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
 !
-      subroutine sel_int_velo_crank_mat_sgs(n_int)
+      subroutine choose_int_diffuse3_crank_mat                          &
+     &         (ele, jac_3d, rhs_tbl, mat_tbl, FEM_elens,               &
+     &          n_int, num_diff_kinds, iak_diff, ak_diff, coef_imp,     &
+     &          ak_d, fem_wk, mat33_DJDS)
 !
-      use m_SGS_address
+      use int_vol_poisson_mat
+      use int_vol_poisson_sgs_matrix
 !
-      use int_vol_poisson_phys_mat
-      use int_vol_poisson_sgs_mat
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(table_mat_const), intent(in) :: mat_tbl
+      type(gradient_model_data_type), intent(in) :: FEM_elens
 !
       integer(kind = kint), intent(in) :: n_int
+      integer(kind = kint), intent(in) :: num_diff_kinds, iak_diff
+      real(kind = kreal), intent(in)                                    &
+     &                    :: ak_diff(ele%numele,num_diff_kinds)
+      real(kind = kreal), intent(in) :: coef_imp
+      real(kind = kreal), intent(in) :: ak_d(ele%numele)
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(DJDS_MATRIX), intent(inout) :: mat33_DJDS
 !
 !
-      if(iak_diff_v.gt.0) then
-        call int_vol_velo_sgs_crank_mat(n_int)
+      if(iak_diff .gt. 0) then
+        call int_vol_diffuse_sgs_mat33                                  &
+     &     (ele, jac_3d, rhs_tbl, mat_tbl, FEM_elens,                   &
+     &      n_int, coef_imp, ifilter_final, ak_diff(1,iak_diff),        &
+     &      ak_d, fem_wk, mat33_DJDS)
       else
-        call int_vol_velo_crank_mat(n_int)
+        call int_vol_diffuse_mat33(ele, jac_3d, rhs_tbl, mat_tbl,       &
+     &      n_int, coef_imp, ak_d, fem_wk, mat33_DJDS)
       end if
 !
-      end subroutine sel_int_velo_crank_mat_sgs
+      end subroutine choose_int_diffuse3_crank_mat
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine sel_int_magne_crank_mat_sgs(n_int)
+      subroutine choose_int_diffuse1_crank_mat                          &
+     &         (ele, jac_3d, rhs_tbl, mat_tbl, FEM_elens,               &
+     &          n_int, num_diff_kinds, iak_diff, ak_diff, coef_imp,     &
+     &          ak_d, fem_wk, mat11_DJDS)
 !
-      use m_SGS_address
+      use int_vol_poisson_mat
+      use int_vol_poisson_sgs_matrix
 !
-      use int_vol_poisson_phys_mat
-      use int_vol_poisson_sgs_mat
+      type(element_data), intent(in) :: ele
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(table_mat_const), intent(in) :: mat_tbl
+      type(gradient_model_data_type), intent(in) :: FEM_elens
 !
       integer(kind = kint), intent(in) :: n_int
+      integer(kind = kint), intent(in) :: num_diff_kinds, iak_diff
+      real(kind = kreal), intent(in)                                    &
+     &                    :: ak_diff(ele%numele,num_diff_kinds)
+      real(kind = kreal), intent(in) :: coef_imp
+      real(kind = kreal), intent(in) :: ak_d(ele%numele)
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(DJDS_MATRIX), intent(inout) :: mat11_DJDS
 !
 !
-      if (iak_diff_b .gt. 0) then
-        call int_vol_magne_sgs_crank_mat(n_int)
+      if(iak_diff .gt. 0) then
+        call int_vol_diffuse_sgs_mat11                                  &
+     &     (ele, jac_3d, rhs_tbl, mat_tbl, FEM_elens,                   &
+     &      n_int, coef_imp, ifilter_final, ak_diff(1,iak_diff),        &
+     &      ak_d, fem_wk, mat11_DJDS)
       else
-        call int_vol_magne_crank_mat(n_int)
+        call int_vol_diffuse_mat11(ele, jac_3d, rhs_tbl, mat_tbl,       &
+     &      n_int, coef_imp, ak_d, fem_wk, mat11_DJDS)
       end if
 !
-      end subroutine sel_int_magne_crank_mat_sgs
-!
-! ----------------------------------------------------------------------
-!
-      subroutine sel_int_vecp_crank_mat_sgs(n_int)
-!
-      use m_SGS_address
-!
-      use int_vol_poisson_phys_mat
-      use int_vol_poisson_sgs_mat
-!
-      integer(kind = kint), intent(in) :: n_int
-!
-!
-      if(iak_diff_b .gt. 0) then
-        call int_vol_vecp_sgs_crank_mat(n_int)
-      else
-        call int_vol_vecp_crank_mat(n_int)
-      end if
-!
-      end subroutine sel_int_vecp_crank_mat_sgs
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine sel_int_temp_crank_mat_sgs(n_int)
-!
-      use m_SGS_address
-!
-      use int_vol_poisson_phys_mat
-      use int_vol_poisson_sgs_mat
-!
-      integer(kind = kint), intent(in) :: n_int
-!
-!
-      if(iak_diff_t .gt. 0) then
-        call int_vol_temp_sgs_crank_mat(n_int)
-      else
-        call int_vol_temp_crank_mat(n_int)
-      end if
-!
-      end subroutine sel_int_temp_crank_mat_sgs
-!
-! ----------------------------------------------------------------------
-!
-      subroutine sel_int_composit_crank_mat_sgs(n_int)
-!
-      use m_SGS_address
-!
-      use int_vol_poisson_phys_mat
-      use int_vol_poisson_sgs_mat
-!
-      integer(kind = kint), intent(in) :: n_int
-!
-!
-      if(iak_diff_c .gt. 0) then
-        call int_vol_composit_sgs_crank_mat(n_int)
-      else
-        call int_vol_composit_crank_mat(n_int)
-      end if
-!
-      end subroutine sel_int_composit_crank_mat_sgs
+      end subroutine choose_int_diffuse1_crank_mat
 !
 ! ----------------------------------------------------------------------
 !

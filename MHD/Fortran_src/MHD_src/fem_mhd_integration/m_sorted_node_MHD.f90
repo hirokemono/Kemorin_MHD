@@ -41,26 +41,26 @@
       implicit  none
 !
 !>  Structure for linear FEM marix table
-      type(table_mat_const) :: mat_tbl_l1
+      type(table_mat_const), save :: mat_tbl_l1
 !
 !>  Structure for quad FEM marix table for fluid
-      type(table_mat_const) :: mat_tbl_fl_q
+      type(table_mat_const), save :: mat_tbl_fl_q
 !mat_tbl_fl_q%idx_4_mat
 !>  Structure for quad FEM marix table for conductor
-      type(table_mat_const) :: mat_tbl_cd_q
+      type(table_mat_const), save :: mat_tbl_cd_q
 !>  Structure for quad FEM marix table for insulator
-      type(table_mat_const) :: mat_tbl_ins_q
+      type(table_mat_const), save :: mat_tbl_ins_q
 !>  Structure for quad FEM marix table for conductor but whole domain
-      type(table_mat_const) :: mat_tbl_full_cd_q
+      type(table_mat_const), save :: mat_tbl_full_cd_q
 !
 !>  Structure for linear FEM marix table for fluid
-      type(table_mat_const) :: mat_tbl_fl_l
+      type(table_mat_const), save :: mat_tbl_fl_l
 !>  Structure for linear FEM marix table for conductor
-      type(table_mat_const) :: mat_tbl_cd_l
+      type(table_mat_const), save :: mat_tbl_cd_l
 !>  Structure for linear FEM marix table for insulator
-      type(table_mat_const) :: mat_tbl_ins_l
+      type(table_mat_const), save :: mat_tbl_ins_l
 !>  Structure for linear FEM marix table for conductor but whole domain
-      type(table_mat_const) :: mat_tbl_full_cd_l
+      type(table_mat_const), save :: mat_tbl_full_cd_l
 !
 !-----------------------------------------------------------------------
 !
