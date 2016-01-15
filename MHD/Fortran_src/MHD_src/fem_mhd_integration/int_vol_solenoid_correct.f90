@@ -3,26 +3,35 @@
 !
 !      Written by H. Matsui on june, 2005
 !
-!      subroutine int_vol_velo_co
+!!      subroutine int_vol_solenoid_co                                  &
+!!     &         (iele_fsmp_stack, i_scalar, iak_diff,                  &
+!!     &          node, ele, nod_fld, jac_3d_q, jac_3d_l,               &
+!!     &          rhs_tbl, FEM_elen, fem_wk, f_nl)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       module int_vol_solenoid_correct
 !
       use m_precision
-!
       use m_machine_parameter
-      use m_geometry_data
-      use m_geometry_data_MHD
-      use m_node_phys_data
-      use m_jacobians
-      use m_element_id_4_node
-      use m_finite_element_matrix
+!
       use m_SGS_address
       use m_SGS_model_coefs
-      use m_filter_elength
+!
+      use t_geometry_data
+      use t_phys_data
+      use t_jacobian_3d
+      use t_table_FEM_const
+      use t_finite_element_mat
+      use t_filter_elength
 !
       implicit none
-!
-      private :: int_vol_solenoid_co
 !
 ! ----------------------------------------------------------------------
 !
@@ -30,59 +39,40 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_velo_co
-!
-!
-      call int_vol_solenoid_co(fluid1%istack_ele_fld_smp,               &
-     &    iphys%i_p_phi, iak_diff_v)
-!
-      end subroutine int_vol_velo_co
-!
-! ----------------------------------------------------------------------
-!
-      subroutine int_vol_magne_co
-!
-!
-      call int_vol_solenoid_co(ele1%istack_ele_smp, iphys%i_m_phi,      &
-     &    iak_diff_b)
-!
-      end subroutine int_vol_magne_co
-!
-! ----------------------------------------------------------------------
-!
-      subroutine int_vol_magne_ins_co
-!
-!
-      call int_vol_solenoid_co(insulate1%istack_ele_fld_smp,            &
-     &    iphys%i_mag_p, iak_diff_b)
-!
-      end subroutine int_vol_magne_ins_co
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine int_vol_solenoid_co(iele_fsmp_stack,                   &
-     &          i_scalar, iak_diff)
+      subroutine int_vol_solenoid_co                                    &
+     &         (iele_fsmp_stack, i_scalar, iak_diff,                    &
+     &          node, ele, nod_fld, jac_3d_q, jac_3d_l,                 &
+     &          rhs_tbl, FEM_elen, fem_wk, f_nl)
 !
       use m_control_parameter
 !
       use int_vol_fractional
       use int_vol_sgs_fractional
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_data), intent(in) :: nod_fld
+      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(gradient_model_data_type), intent(in) :: FEM_elen
+!
       integer(kind=kint), intent(in) :: i_scalar, iak_diff
       integer(kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
 !
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_nl
+!
 !
       if (iak_diff .gt. 0) then
-        call int_vol_sgs_solenoidal_co(node1, ele1,                     &
-     &      jac1_3d_q, jac1_3d_l, rhs_tbl1, FEM1_elen, nod_fld1,        &
+        call int_vol_sgs_solenoidal_co(node, ele,                       &
+     &      jac_3d_q, jac_3d_l, rhs_tbl, FEM_elen, nod_fld,             &
      &      iele_fsmp_stack, intg_point_poisson, i_scalar,              &
-     &      ifilter_final, ak_diff(1,iak_diff), fem1_wk, f1_nl)
+     &      ifilter_final, ak_diff(1,iak_diff), fem_wk, f_nl)
       else
         call int_vol_solenoidal_co                                      &
-     &     (node1, ele1, jac1_3d_q, jac1_3d_l, rhs_tbl1, nod_fld1,      &
+     &     (node, ele, jac_3d_q, jac_3d_l, rhs_tbl, nod_fld,            &
      &      iele_fsmp_stack, intg_point_poisson, i_scalar,              &
-     &      fem1_wk, f1_nl)
+     &      fem_wk, f_nl)
       end if
 !
       end subroutine int_vol_solenoid_co

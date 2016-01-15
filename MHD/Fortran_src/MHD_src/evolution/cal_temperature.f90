@@ -100,10 +100,14 @@
       if (iflag_t_strat .gt. id_turn_OFF) then
         if (iflag_temp_supg .gt. id_turn_OFF) then
           call cal_stratified_layer_upw                                 &
-     &       (fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
+     &       (node1, ele1, fluid1, iphys, nod_fld1,                     &
+     &        fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,     &
+     &        jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_nl)
         else
           call cal_stratified_layer                                     &
-     &       (fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld)
+     &       (node1, ele1, fluid1, iphys, nod_fld1,                     &
+     &        fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,     &
+     &        jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_nl)
         end if
       end if
 !

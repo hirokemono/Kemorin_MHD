@@ -32,6 +32,8 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
+      use m_jacobians
+      use m_finite_element_matrix
       use m_control_parameter
       use m_cal_max_indices
       use m_layering_ele_list
@@ -87,8 +89,10 @@
       iflag_SGS_initial = 0
 !
       if (iflag_flexible_step .eq. iflag_flex_step) then
-        call set_ele_rms_4_previous_step
-        call s_check_deltat_by_prev_rms
+        call set_ele_rms_4_previous_step(node, ele, iphys, nod_fld,     &
+     &      jac_3d_q, jac_3d_l, fem_wk)
+        call s_check_deltat_by_prev_rms                                 &
+     &    (node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk)
       end if
 !
 !

@@ -85,6 +85,7 @@
       use m_t_step_parameter
       use m_node_phys_data
       use m_element_phys_data
+      use m_jacobians
       use m_geometry_data_MHD
       use m_SGS_model_coefs
       use m_SGS_address
@@ -165,7 +166,9 @@
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_filter_v_on_ele'
            call sel_int_diff_vector_on_ele                              &
-     &        (fluid1%istack_ele_fld_smp, iphys%i_filter_velo, i_dfvx)
+     &        (fluid1%istack_ele_fld_smp, iphys%i_filter_velo, i_dfvx,  &
+     &         node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,             &
+     &         mhd_fem1_wk)
          end if
 !
          if (iflag_commute_velo .eq. id_SGS_commute_ON                  &
@@ -184,7 +187,9 @@
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_velocity_on_ele'
            call sel_int_diff_vector_on_ele                              &
-     &        (fluid1%istack_ele_fld_smp, iphys%i_velo, i_dvx)
+     &        (fluid1%istack_ele_fld_smp, iphys%i_velo, i_dvx,          &
+     &         node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,             &
+     &         mhd_fem1_wk)
          end if
        end if
 !
@@ -277,7 +282,8 @@
 !       if ( i_dtx .ne. 0 ) then
 !         if (iflag_debug.gt.0) write(*,*) 'diff_temp_on_ele'
 !         call sel_int_diff_scalar_on_ele                               &
-!     &      (ele1%istack_ele_smp, iphys%i_temp, i_dtx)
+!     &      (ele1%istack_ele_smp, iphys%i_temp, i_dtx,                 &
+!     &       node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l, mhd_fem1_wk)
 !       end if
 !
        if (iflag_dynamic.eq.0                                           &
@@ -287,7 +293,9 @@
 !           if ( i_dftx .ne. 0) then
 !             if (iflag_debug.gt.0) write(*,*) 'diff_filter_t_on_ele'
 !             call sel_int_diff_scalar_on_ele                           &
-!     &          (ele1%istack_ele_smp, iphys%i_filter_temp, i_dftx)
+!     &          (ele1%istack_ele_smp, iphys%i_filter_temp, i_dftx,     &
+!     &           node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,          &
+!     &           mhd_fem1_wk)
 !           end if
 !         end if
 !       end if
@@ -460,7 +468,9 @@
            if (iflag_debug .ge. iflag_routine_msg) write(*,*)           &
      &                         'diff_filter_b_on_ele'
            call sel_int_diff_vector_on_ele                              &
-     &        (ele1%istack_ele_smp, iphys%i_filter_magne, i_dfbx)
+     &        (ele1%istack_ele_smp, iphys%i_filter_magne, i_dfbx,       &
+     &         node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,             &
+     &         mhd_fem1_wk)
          end if
 !
          if(iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
@@ -481,7 +491,9 @@
          if ( i_dbx.ne.0 ) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
            call sel_int_diff_vector_on_ele                              &
-     &        (ele1%istack_ele_smp, iphys%i_magne, i_dbx)
+     &        (ele1%istack_ele_smp, iphys%i_magne, i_dbx,               &
+     &         node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,             &
+     &         mhd_fem1_wk)
         end if
        end if
 !
@@ -494,6 +506,7 @@
       use m_t_step_parameter
       use m_node_phys_data
       use m_element_phys_data
+      use m_jacobians
       use m_SGS_model_coefs
       use m_SGS_address
 !
@@ -557,7 +570,9 @@
          if (iflag2.eq.2 .and. i_dfbx.ne.0) then
            if (iflag_debug.gt.0) write(*,*) 'diff_filter_b_on_ele'
            call sel_int_diff_vector_on_ele                              &
-     &        (ele1%istack_ele_smp, iphys%i_filter_magne, i_dfbx)
+     &        (ele1%istack_ele_smp, iphys%i_filter_magne, i_dfbx,       &
+     &         node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,             &
+     &         mhd_fem1_wk)
          end if
 !
          if (iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
@@ -588,7 +603,9 @@
         if ( i_dbx.ne.0 ) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
             call sel_int_diff_vector_on_ele                             &
-     &         (ele1%istack_ele_smp, iphys%i_magne, i_dbx)
+     &         (ele1%istack_ele_smp, iphys%i_magne, i_dbx,              &
+     &          node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,            &
+     &          mhd_fem1_wk)
         end if
        end if
 !
@@ -666,6 +683,16 @@
 !           end if
 !         end if
 !       end if
+!
+!
+!      call sel_int_diff_scalar_on_ele                                  &
+!     &   (ele1%istack_ele_smp, iphys%i_light, i_dcx,                   &
+!     &    node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l, mhd_fem1_wk)
+!
+!      call sel_int_diff_scalar_on_ele                                  &
+!     &   (ele1%istack_ele_smp, iphys%i_filter_comp, i_dfcx,            &
+!     &    node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l, mhd_fem1_wk)
+!
 !
        end subroutine update_with_dummy_scalar
 !

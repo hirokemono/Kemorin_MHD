@@ -4,7 +4,8 @@
 !      Written by H. Matsui on Nov., 2009
 !
 !      subroutine s_check_deltat_by_prev_rms
-!      subroutine set_ele_rms_4_previous_step
+!!      subroutine set_ele_rms_4_previous_step                          &
+!!     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
       module check_deltat_by_prev_rms
 !
@@ -19,6 +20,12 @@
       use m_t_step_parameter
       use m_t_int_parameter
 !
+      use t_geometry_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_3d
+      use t_finite_element_mat
+!
       use int_all_energy
 !
       implicit  none
@@ -29,9 +36,17 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_check_deltat_by_prev_rms
+      subroutine s_check_deltat_by_prev_rms                             &
+     &         (node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
-      use m_node_phys_data
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld
+      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+!
 !
       integer(kind = kint) :: i, imax
       real(kind = kreal) :: delta1, delta2
@@ -44,63 +59,76 @@
       rms_dt_global(0) = time
 !
       if(i_drmax_v .gt. izero) then
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &     (iphys%i_velo  ), rms_dt_local(i_drmax_v  ),                 &
-     &      ave_dt_local(i_drmax_v  ))
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &     (iphys%i_velo+1), rms_dt_local(i_drmax_v+1),                 &
-     &      ave_dt_local(i_drmax_v+1))
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &     (iphys%i_velo+2), rms_dt_local(i_drmax_v+2),                 &
-     &      ave_dt_local(i_drmax_v+2))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, (iphys%i_velo  ),          &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_v  ), ave_dt_local(i_drmax_v  ))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, (iphys%i_velo+1),          &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &     rms_dt_local(i_drmax_v+1), ave_dt_local(i_drmax_v+1))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, (iphys%i_velo+2),          &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_v+2), ave_dt_local(i_drmax_v+2))
       end if
 !
       if(i_drmax_v .gt. izero) then
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &      iphys%i_press, rms_dt_local(i_drmax_p),                     &
-     &      ave_dt_local(i_drmax_p))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, iphys%i_press,             &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_p), ave_dt_local(i_drmax_p))
       end if
 !
 !
       if( (i_drmax_b*iflag_t_evo_4_vect_p) .gt. izero) then
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &     (iphys%i_vecp  ), rms_dt_local(i_drmax_b  ),                 &
-     &      ave_dt_local(i_drmax_b  ))
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &     (iphys%i_vecp+1),  rms_dt_local(i_drmax_b+1),                &
-     &      ave_dt_local(i_drmax_b+1))
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &     (iphys%i_vecp+2), rms_dt_local(i_drmax_b+2),                 &
-     &      ave_dt_local(i_drmax_b+2))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, (iphys%i_vecp  ),          &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &     rms_dt_local(i_drmax_b  ), ave_dt_local(i_drmax_b  ))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, (iphys%i_vecp+1),          &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_b+1), ave_dt_local(i_drmax_b+1))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, (iphys%i_vecp+2),          &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_b+2), ave_dt_local(i_drmax_b+2))
       else if(i_drmax_b .gt. izero) then
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &     (iphys%i_magne  ), rms_dt_local(i_drmax_b  ),                &
-     &      ave_dt_local(i_drmax_b  ))
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &     (iphys%i_magne+1), rms_dt_local(i_drmax_b+1),                &
-     &      ave_dt_local(i_drmax_b+1))
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &     (iphys%i_magne+2), rms_dt_local(i_drmax_b+2),                &
-     &      ave_dt_local(i_drmax_b+2))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, (iphys%i_magne  ),         &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_b  ), ave_dt_local(i_drmax_b  ))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, (iphys%i_magne+1),         &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_b+1), ave_dt_local(i_drmax_b+1))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, (iphys%i_magne+2),         &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_b+2), ave_dt_local(i_drmax_b+2))
       end if
 !
       if(i_drmax_f .gt. izero) then
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &      iphys%i_mag_p, rms_dt_local(i_drmax_f),                     &
-     &      ave_dt_local(i_drmax_f))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, iphys%i_mag_p,             &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_f), ave_dt_local(i_drmax_f))
       end if
 !
 !
       if(i_drmax_t .gt. izero) then
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &      iphys%i_temp, rms_dt_local(i_drmax_t),                      &
-     &      ave_dt_local(i_drmax_t))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, iphys%i_temp,              &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_t), ave_dt_local(i_drmax_t))
       end if
 !
       if(i_drmax_d .gt. izero) then
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &      iphys%i_light,  rms_dt_local(i_drmax_d),                    &
-     &      ave_dt_local(i_drmax_d))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, iphys%i_light,             &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_d), ave_dt_local(i_drmax_d))
       end if
 !
       call MPI_allREDUCE (rms_dt_local, rms_dt_global(1), ntot_dratio,  &
@@ -145,58 +173,76 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine set_ele_rms_4_previous_step
+      subroutine set_ele_rms_4_previous_step                            &
+     &         (node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
-      use m_node_phys_data
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld
+      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+!
 !
       if(i_drmax_v .gt. izero) then
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &      (iphys%i_chk_mom  ), rms_dt_local(i_drmax_v  ),             &
-     &      ave_dt_local(i_drmax_v  ))
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &      (iphys%i_chk_mom+1), rms_dt_local(i_drmax_v+1),             &
-     &      ave_dt_local(i_drmax_v+1))
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &      (iphys%i_chk_mom+2), rms_dt_local(i_drmax_v+2),             &
-     &      ave_dt_local(i_drmax_v+2))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, (iphys%i_chk_mom  ),       &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_v  ), ave_dt_local(i_drmax_v  ))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, (iphys%i_chk_mom+1),       &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_v+1), ave_dt_local(i_drmax_v+1))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, (iphys%i_chk_mom+2),       &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_v+2), ave_dt_local(i_drmax_v+2))
       end if
 !
       if(i_drmax_v .gt. izero) then
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &      iphys%i_chk_press, rms_dt_local(i_drmax_p),                 &
-     &      ave_dt_local(i_drmax_p))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, iphys%i_chk_press,         &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_p), ave_dt_local(i_drmax_p))
       end if
 !
 !
       if(i_drmax_b .gt. izero) then
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &      (iphys%i_chk_uxb  ), rms_dt_local(i_drmax_b  ),             &
-     &      ave_dt_local(i_drmax_b  ))
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &      (iphys%i_chk_uxb+1), rms_dt_local(i_drmax_b+1),             &
-     &      ave_dt_local(i_drmax_b+1))
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &      (iphys%i_chk_uxb+2), rms_dt_local(i_drmax_b+2),             &
-     &      ave_dt_local(i_drmax_b+2))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, (iphys%i_chk_uxb  ),       &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_b  ), ave_dt_local(i_drmax_b  ))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, (iphys%i_chk_uxb+1),       &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_b+1), ave_dt_local(i_drmax_b+1))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, (iphys%i_chk_uxb+2),       &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_b+2), ave_dt_local(i_drmax_b+2))
       end if
 !
       if(i_drmax_f .gt. izero) then
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &      iphys%i_chk_potential, rms_dt_local(i_drmax_f),             &
-     &      ave_dt_local(i_drmax_f))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, iphys%i_chk_potential,     &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_f), ave_dt_local(i_drmax_f))
       end if
 !
 !
       if(i_drmax_t .gt. izero) then
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &      iphys%i_chk_heat, rms_dt_local(i_drmax_t),                  &
-     &      ave_dt_local(i_drmax_t))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, iphys%i_chk_heat,          &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_t), ave_dt_local(i_drmax_t))
       end if
 !
       if(i_drmax_d .gt. izero) then
-        call int_ave_rms_4_scalar(fluid1%istack_ele_fld_smp, ione,      &
-     &      iphys%i_chk_composit, rms_dt_local(i_drmax_d),              &
-     &      ave_dt_local(i_drmax_d))
+        call int_ave_rms_4_scalar                                       &
+     &     (fluid1%istack_ele_fld_smp, ione, iphys%i_chk_composit,      &
+     &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,             &
+     &      rms_dt_local(i_drmax_d), ave_dt_local(i_drmax_d))
       end if
 !
 !

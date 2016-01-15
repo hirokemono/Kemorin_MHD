@@ -13,6 +13,9 @@
 !
       implicit none
 !
+      real(kind = kreal) :: ave_mp0, rms_mp0
+      private :: ave_mp0, rms_mp0
+!
 !-----------------------------------------------------------------------
 !
       contains
@@ -77,7 +80,14 @@
 !
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_rms_scalar_potential'
-        call cal_rms_scalar_potential(iloop, rel_correct)
+        call cal_rms_scalar_potential(iloop, ele1%istack_ele_smp,       &
+     &      iphys%i_mag_p, i_rms%i_mag_p, j_ave%i_mag_p,                &
+     &      node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk,       &
+     &      rel_correct, ave_mp0, rms_mp0)
+!
+        if (iflag_debug.eq.1)                                           &
+     &         write(12,*) 'average and RMS of potential correction: ', &
+     &         iloop, ave_mp0, rms_mp0
 !
         if (iflag_debug.gt.0) write(*,*) 'int_norm_div_a_monitor'
         call int_norm_div_a_monitor(iloop, node1, ele1,                 &

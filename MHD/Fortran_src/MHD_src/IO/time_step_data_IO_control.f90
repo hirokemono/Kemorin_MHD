@@ -28,6 +28,7 @@
       use m_element_phys_data
       use m_jacobians
       use m_finite_element_matrix
+      use m_int_vol_data
       use m_t_step_parameter
       use m_t_int_parameter
       use m_bulk_values
@@ -48,7 +49,8 @@
         if(my_rank .eq. 0) write(*,'(a10,i16,a10,e15.8)')               &
      &            'i_step=',i_step_MHD,'time=',time
 !
-        call s_int_bulk
+        call s_int_mean_squares(node1, ele1, iphys, nod_fld1,           &
+     &      jac1_3d_q, jac1_3d_l, fem1_wk, mhd_fem1_wk)
 !
         if  (iflag_t_evo_4_velo .gt. id_no_evolution) then
           call int_norm_divergence                                      &

@@ -11,6 +11,12 @@
 !
       use m_precision
 !
+      use t_geometry_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_3d
+      use t_finite_element_mat
+!
       implicit none
 !
 ! ----------------------------------------------------------------------
@@ -19,22 +25,31 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_int_bulk
+      subroutine s_int_mean_squares(node, ele, iphys, nod_fld,          &
+     &          jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
 !
       use m_constants
       use calypso_mpi
       use m_control_parameter
-      use m_geometry_data
+!      use m_geometry_data
       use m_geometry_data_MHD
-      use m_finite_element_matrix
+!      use m_finite_element_matrix
       use m_fem_gauss_int_coefs
-      use m_int_vol_data
+!      use m_int_vol_data
       use m_phys_labels
-      use m_node_phys_data
+!      use m_node_phys_data
       use m_bulk_values
       use int_all_energy
       use int_all_ave_tensors
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld
+      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 ! ---------  initialize
 !
@@ -45,178 +60,223 @@
 !
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_press, j_ave%i_press, iphys%i_press)
-      call int_all_4_scalar (ele1%istack_ele_smp, intg_point_t_evo,     &
-     &    i_rms%i_mag_p, j_ave%i_mag_p, iphys%i_mag_p)
+     &    i_rms%i_press, j_ave%i_press, iphys%i_press,                  &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+      call int_all_4_scalar (ele%istack_ele_smp, intg_point_t_evo,      &
+     &    i_rms%i_mag_p, j_ave%i_mag_p, iphys%i_mag_p,                  &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_temp, j_ave%i_temp, iphys%i_temp)
+     &    i_rms%i_temp, j_ave%i_temp, iphys%i_temp,                     &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_par_temp, j_ave%i_par_temp, iphys%i_par_temp )
+     &    i_rms%i_par_temp, j_ave%i_par_temp, iphys%i_par_temp,         &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_light, j_ave%i_light, iphys%i_light )
+     &    i_rms%i_light, j_ave%i_light, iphys%i_light,                  &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_par_light, j_ave%i_par_light, iphys%i_par_light)
+     &    i_rms%i_par_light, j_ave%i_par_light, iphys%i_par_light,      &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_entropy, j_ave%i_entropy, iphys%i_entropy)
+     &    i_rms%i_entropy, j_ave%i_entropy, iphys%i_entropy,            &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_par_entropy, j_ave%i_par_entropy,                     &
-     &    iphys%i_par_entropy)
+     &    iphys%i_par_entropy,                                          &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_density, j_ave%i_density, iphys%i_density)
+     &    i_rms%i_density, j_ave%i_density, iphys%i_density,            &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_par_density, j_ave%i_par_density,                     &
-     &    iphys%i_par_density)
+     &    iphys%i_par_density,                                          &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_heat_source, j_ave%i_heat_source,                     &
-     &    iphys%i_heat_source)
+     &    iphys%i_heat_source,                                          &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_light_source, j_ave%i_light_source,                   &
-     &    iphys%i_light_source)
+     &    iphys%i_light_source,                                         &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_entropy_source, j_ave%i_entropy_source,               &
-     &    iphys%i_entropy_source)
+     &    iphys%i_entropy_source,                                       &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_filter_temp, j_ave%i_filter_temp,                     &
-     &    iphys%i_filter_temp)
+     &    iphys%i_filter_temp,                                          &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_filter_comp, j_ave%i_filter_comp,                     &
-     &    iphys%i_filter_comp)
+     &    iphys%i_filter_comp,                                          &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_me_gen, j_ave%i_me_gen, iphys%i_me_gen)
+     &    i_rms%i_me_gen, j_ave%i_me_gen, iphys%i_me_gen,               &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_ujb, j_ave%i_ujb, iphys%i_ujb)
+     &    i_rms%i_ujb, j_ave%i_ujb, iphys%i_ujb,                        &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_nega_ujb, j_ave%i_nega_ujb, iphys%i_nega_ujb)
+     &    i_rms%i_nega_ujb, j_ave%i_nega_ujb, iphys%i_nega_ujb,         &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_m_tension_wk, j_ave%i_m_tension_wk,                   &
-     &    iphys%i_m_tension_wk)
+     &    iphys%i_m_tension_wk,                                         &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_buo_gen, j_ave%i_buo_gen, iphys%i_buo_gen)
+     &    i_rms%i_buo_gen, j_ave%i_buo_gen, iphys%i_buo_gen,            &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_c_buo_gen, j_ave%i_c_buo_gen, iphys%i_c_buo_gen)
+     &    i_rms%i_c_buo_gen, j_ave%i_c_buo_gen, iphys%i_c_buo_gen,      &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_f_buo_gen, j_ave%i_f_buo_gen, iphys%i_f_buo_gen)
+     &    i_rms%i_f_buo_gen, j_ave%i_f_buo_gen, iphys%i_f_buo_gen,      &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_vis_e_diffuse, j_ave%i_vis_e_diffuse,                 &
-     &    iphys%i_vis_e_diffuse)
+     &    iphys%i_vis_e_diffuse,                                        &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
      &    i_rms%i_mag_e_diffuse, j_ave%i_mag_e_diffuse,                 &
-     &    iphys%i_mag_e_diffuse)
+     &    iphys%i_mag_e_diffuse,                                        &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_h_advect, j_ave%i_h_advect, iphys%i_h_advect)
+     &    i_rms%i_h_advect, j_ave%i_h_advect, iphys%i_h_advect,         &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_ph_advect, j_ave%i_ph_advect, iphys%i_ph_advect)
+     &    i_rms%i_ph_advect, j_ave%i_ph_advect, iphys%i_ph_advect,      &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_t_diffuse, j_ave%i_t_diffuse, iphys%i_t_diffuse)
+     &    i_rms%i_t_diffuse, j_ave%i_t_diffuse, iphys%i_t_diffuse,      &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_c_diffuse, j_ave%i_c_diffuse, iphys%i_c_diffuse)
+     &    i_rms%i_c_diffuse, j_ave%i_c_diffuse, iphys%i_c_diffuse,      &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_h_flux_div, j_ave%i_h_flux_div, iphys%i_h_flux_div)
+     &    i_rms%i_h_flux_div, j_ave%i_h_flux_div, iphys%i_h_flux_div,   &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_ph_flux_div, j_ave%i_ph_flux_div,                     &
-     &    iphys%i_ph_flux_div)
+     &    iphys%i_ph_flux_div,                                          &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_temp_gen, j_ave%i_temp_gen, iphys%i_temp_gen)
+     &    i_rms%i_temp_gen, j_ave%i_temp_gen, iphys%i_temp_gen,         &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_par_t_gen, j_ave%i_par_t_gen, iphys%i_par_t_gen)
+     &    i_rms%i_par_t_gen, j_ave%i_par_t_gen, iphys%i_par_t_gen,      &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_SGS_div_h_flux, j_ave%i_SGS_div_h_flux,               &
-     &    iphys%i_SGS_div_h_flux)
+     &    iphys%i_SGS_div_h_flux,                                       &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_SGS_temp_gen, j_ave%i_SGS_temp_gen,                   &
-     &    iphys%i_SGS_temp_gen)
+     &    iphys%i_SGS_temp_gen,                                         &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_SGS_me_gen, j_ave%i_SGS_me_gen, iphys%i_SGS_me_gen)
+     &    i_rms%i_SGS_me_gen, j_ave%i_SGS_me_gen, iphys%i_SGS_me_gen,   &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_SGS_Lor_wk, j_ave%i_SGS_Lor_wk, iphys%i_SGS_lor_wk)
+     &    i_rms%i_SGS_Lor_wk, j_ave%i_SGS_Lor_wk, iphys%i_SGS_lor_wk,   &
+     
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_reynolds_wk, j_ave%i_reynolds_wk,                     &
-     &    iphys%i_reynolds_wk)
+     &    iphys%i_reynolds_wk,                                          &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_SGS_div_hf_true, j_ave%i_SGS_div_hf_true,             &
-     &    iphys%i_SGS_div_hf_true)
+     &    iphys%i_SGS_div_hf_true,                                      &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_SGS_buo_wk, j_ave%i_SGS_buo_wk, iphys%i_SGS_buo_wk)
+     &    i_rms%i_SGS_buo_wk, j_ave%i_SGS_buo_wk, iphys%i_SGS_buo_wk,   &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_SGS_comp_buo_wk, j_ave%i_SGS_comp_buo_wk,             &
-     &    iphys%i_SGS_comp_buo_wk)
+     &    iphys%i_SGS_comp_buo_wk,                                      &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_SGS_Lor_wk_tr, j_ave%i_SGS_Lor_wk_tr,                 &
-     &    iphys%i_SGS_Lor_wk_tr)
+     &    iphys%i_SGS_Lor_wk_tr,                                        &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_reynolds_wk_tr, j_ave%i_reynolds_wk_tr,               &
-     &    iphys%i_reynolds_wk_tr)
+     &    iphys%i_reynolds_wk_tr,                                       &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_SGS_t_gen_tr, j_ave%i_SGS_t_gen_tr,                   &
-     &    iphys%i_SGS_t_gen_tr)
+     &    iphys%i_SGS_t_gen_tr,                                         &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_scalar                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_SGS_me_gen_tr, j_ave%i_SGS_me_gen_tr,                 &
-     &    iphys%i_SGS_me_gen_tr)
+     &    iphys%i_SGS_me_gen_tr,                                        &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
 ! ----- lead energy and angular momentum for vector data-------------
 !
       call int_all_4_vector                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_velo, j_ave%i_velo, iphys%i_velo)
-      call int_all_angular_mom                                          &
-     &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    ja_amom, iphys%i_velo)
+      call int_all_angular_mom(fluid1%istack_ele_fld_smp,               &
+     &    intg_point_t_evo, ja_amom, iphys%i_velo,                      &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk, fem_wk)
 !
       call int_all_4_vector                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
      &    i_rms%i_filter_velo, j_ave%i_filter_velo,                     &
      &    iphys%i_filter_velo)
-      call int_all_angular_mom                                          &
-     &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    jr_amom_f, iphys%i_filter_velo)
+      call int_all_angular_mom(fluid1%istack_ele_fld_smp,               &
+     &    intg_point_t_evo, jr_amom_f, iphys%i_filter_velo,             &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk, fem_wk)
 !
       call int_all_4_vector                                             &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
@@ -402,27 +462,31 @@
 !
       call int_all_4_sym_tensor                                         &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_m_flux, j_ave%i_m_flux, iphys%i_m_flux)
+     &    i_rms%i_m_flux, j_ave%i_m_flux, iphys%i_m_flux,               &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_sym_tensor                                         &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_maxwell, j_ave%i_maxwell, iphys%i_maxwell)
+     &    i_rms%i_maxwell, j_ave%i_maxwell, iphys%i_maxwell,            &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
       call int_all_4_sym_tensor                                         &
      &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_SGS_m_flux, j_ave%i_SGS_m_flux, iphys%i_SGS_m_flux)
-      call int_all_4_sym_tensor                                         &
-     &   (fluid1%istack_ele_fld_smp, intg_point_t_evo,                  &
-     &    i_rms%i_SGS_maxwell, j_ave%i_SGS_maxwell,                     &
-     &    iphys%i_SGS_maxwell)
+     &    i_rms%i_SGS_m_flux, j_ave%i_SGS_m_flux, iphys%i_SGS_m_flux,   &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+      call int_all_4_sym_tensor(fluid1%istack_ele_fld_smp,              &
+     &    intg_point_t_evo, i_rms%i_SGS_maxwell,                        &
+     &    j_ave%i_SGS_maxwell, iphys%i_SGS_maxwell,                     &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
       call int_all_4_asym_tensor                                        &
      &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
-     &    i_rms%i_induct_t, j_ave%i_induct_t, iphys%i_induct_t)
-      call int_all_4_asym_tensor                                        &
-     &   (conduct1%istack_ele_fld_smp, intg_point_t_evo,                &
-     &    i_rms%i_SGS_induct_t, j_ave%i_SGS_induct_t,                   &
-     &    iphys%i_SGS_induct_t)
+     &    i_rms%i_induct_t, j_ave%i_induct_t, iphys%i_induct_t,         &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+      call int_all_4_asym_tensor(conduct1%istack_ele_fld_smp,           &
+     &    intg_point_t_evo, i_rms%i_SGS_induct_t,                       &
+     &    j_ave%i_SGS_induct_t, iphys%i_SGS_induct_t,                   &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
-      end subroutine s_int_bulk
+      end subroutine s_int_mean_squares
 !
 ! ----------------------------------------------------------------------
 !

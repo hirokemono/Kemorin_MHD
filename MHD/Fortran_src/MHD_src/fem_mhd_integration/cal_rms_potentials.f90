@@ -3,29 +3,25 @@
 !
 !     Written by H. Matsui on March, 2006
 !
-!      subroutine cal_rms_pressure_4_loop(iloop, rsig)
+!      subroutine cal_rms_pressure_4_loop(iloop, rsig,                  &
+!     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !      subroutine cal_rms_scalar_potential(iloop, rsig)
 !
       module cal_rms_potentials
 !
       use m_precision
+      use m_constants
 !
       use calypso_mpi
-      use m_constants
       use m_machine_parameter
-      use m_geometry_data
-      use m_geometry_data_MHD
       use m_bulk_values
-      use int_all_energy
+!
+      use t_geometry_data
+      use t_phys_data
+      use t_jacobian_3d
+      use t_finite_element_mat
 !
       implicit none
-!
-      real(kind = kreal) :: ave_pr, rms_pr, ave_pr0, rms_pr0
-      real(kind = kreal) :: ave_mp, rms_mp, ave_mp0, rms_mp0
-!
-      private :: ave_pr, rms_pr, ave_pr0, rms_pr0
-      private :: ave_mp, rms_mp, ave_mp0, rms_mp0
-      private :: ione, zero
 !
 ! ----------------------------------------------------------------------
 !
@@ -33,58 +29,36 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_rms_pressure_4_loop(iloop, rsig)
+      subroutine cal_rms_scalar_potential                               &
+     &         (iloop, iele_fsmp_stack, i_phi, ir_phi, ja_phi,          &
+     &          node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk,         &
+     &          rsig, ave_0, rms_0)
 !
-      use m_node_phys_data
+      use int_all_energy
 !
       integer(kind = kint), intent(in) :: iloop
-      real(kind = kreal), intent(inout) :: rsig
+      integer(kind = kint), intent(in) :: i_phi, ir_phi, ja_phi
+      integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_data), intent(in) :: nod_fld
+      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      real(kind = kreal), intent(inout) :: rsig, ave_0, rms_0
 !
       integer(kind = kint) :: num_int
 !
-!
-      num_int = ione
-!
-      rms_local(i_rms%i_press) = zero
-      bulk_local(j_ave%i_press) = zero
-      call int_all_4_scalar (fluid1%istack_ele_fld_smp, num_int,        &
-     &         i_rms%i_press, j_ave%i_press, iphys%i_press)
-!
-      call MPI_allREDUCE ( bulk_local(j_ave%i_press) , ave_pr, ione,    &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE ( rms_local(i_rms%i_press) , rms_pr, ione,     &
-     &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-!
-      if (iloop .eq. 0) then
-        ave_pr0 = ave_pr
-        rms_pr0 = rms_pr
-      end if
-      rsig = (rms_pr - rms_pr0) / rms_pr0
-!
-      if (iflag_debug.eq.1)                                             &
-     &         write(12,*) 'average and RMS of presssur correction: ',  &
-     &         iloop, ave_pr, rms_pr
-!
-      end subroutine cal_rms_pressure_4_loop
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_rms_scalar_potential(iloop, rsig)
-!
-      use m_node_phys_data
-!
-      integer(kind = kint), intent(in) :: iloop
-      real(kind = kreal), intent(inout) :: rsig
-!
-      integer(kind = kint) :: num_int
+      real(kind = kreal) :: ave_mp, rms_mp
 !
 !
       num_int = ione
 !
       rms_local(i_rms%i_mag_p) = zero
       bulk_local(j_ave%i_mag_p) = zero
-      call int_all_4_scalar (ele1%istack_ele_smp, num_int,              &
-     &    i_rms%i_mag_p, j_ave%i_mag_p, iphys%i_mag_p)
+      call int_all_4_scalar                                             &
+     &   (iele_fsmp_stack, num_int, ir_phi, ja_phi, i_phi,              &
+     &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
       call MPI_allREDUCE ( bulk_local(j_ave%i_mag_p) , ave_mp, ione,    &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
@@ -92,14 +66,10 @@
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       if (iloop .eq. 0) then
-        ave_mp0 = ave_mp
-        rms_mp0 = rms_mp
+        ave_0 = ave_mp
+        rms_0 = rms_mp
       end if
-      rsig = (rms_mp - rms_mp0) / rms_mp0
-!
-      if (iflag_debug.eq.1)                                             &
-     &         write(12,*) 'average and RMS of potential correction: ', &
-     &         iloop, ave_mp, rms_mp
+      rsig = (rms_mp - rms_0) / rms_0
 !
       end subroutine cal_rms_scalar_potential
 !

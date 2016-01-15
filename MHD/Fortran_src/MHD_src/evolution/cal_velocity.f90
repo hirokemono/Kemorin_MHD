@@ -16,6 +16,9 @@
 !
       implicit none
 !
+      real(kind = kreal) :: ave_pr0, rms_pr0
+      private :: ave_pr0, rms_pr0
+!
 !-----------------------------------------------------------------------
 !
       contains
@@ -93,7 +96,16 @@
         call cal_velocity_co
 !
 !
-        call cal_rms_pressure_4_loop(iloop, rel_correct)
+        call cal_rms_scalar_potential(iloop, fluid1%istack_ele_fld_smp, &
+     &      iphys%i_press, i_rms%i_press, j_ave%i_press,                &
+     &      node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk,       &
+     &      rel_correct, ave_pr0, rms_pr0)
+!
+!
+        if (iflag_debug.eq.1)                                           &
+     &         write(12,*) 'average and RMS of presssur correction: ',  &
+     &         iloop, ave_pr0, rms_pr0
+!
 !
         call int_norm_div_v_monitor(iloop, node1, ele1, fluid1,         &
      &      iphys, nod_fld1, jac1_3d_q, fem1_wk, rel_correct)

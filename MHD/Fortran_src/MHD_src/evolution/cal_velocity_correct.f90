@@ -62,7 +62,10 @@
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_velo_co'
-      call int_vol_velo_co
+      call int_vol_solenoid_co                                          &
+     &   (fluid1%istack_ele_fld_smp, iphys%i_p_phi, iak_diff_v,         &
+     &    node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,                  &
+     &    rhs_tbl1, FEM1_elen, fem1_wk, f1_nl)
 !
       if (iflag_commute_velo .eq. id_SGS_commute_ON                     &
      &     .and. sf_sgs1_grad_p%ngrp_sf_dat.gt.0) then

@@ -64,12 +64,17 @@
 !
       subroutine s_check_flexible_time_step
 !
+      use m_geometry_data
+      use m_node_phys_data
+      use m_jacobians
+      use m_finite_element_matrix
       use check_deltat_by_prev_rms
 !
 !
       if( mod(istep_flex_to_max,itwo) .eq. izero) then
 !        call s_check_deltat_by_previous
-        call s_check_deltat_by_prev_rms
+        call s_check_deltat_by_prev_rms                                 &
+     &    (node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk)
 !
         if(d_ratio_allmax .gt. min_eps_to_expand_dt) then
           call shrink_delta_t
