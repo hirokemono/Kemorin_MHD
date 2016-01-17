@@ -55,7 +55,11 @@
 !      use check_jacobians
 !
 !
-      if (iflag_SGS_heat .ne. id_SGS_none) call cal_sgs_heat_flux
+      if (iflag_SGS_heat .ne. id_SGS_none) then
+        call cal_sgs_heat_flux(i_dvx, nod_comm, node1, ele1, fluid1,    &
+     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, &
+     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+      end if
 !
 !      call check_nodal_data(my_rank, nod_fld1, 3, iphys%i_SGS_h_flux)
 !

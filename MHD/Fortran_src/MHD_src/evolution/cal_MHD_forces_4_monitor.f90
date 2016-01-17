@@ -86,6 +86,7 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
+      use m_jacobian_sf_grp
       use m_element_id_4_node
       use m_filter_elength
       use m_finite_element_matrix
@@ -140,8 +141,9 @@
      &             write(*,*) 'lead  ', trim(fhd_inertia)
         call cal_terms_4_momentum(iphys%i_m_advect,                     &
      &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, &
-     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
+     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
+     &      nod_fld1)
       end if
 !
       if (iphys%i_m_flux_div .gt. izero) then
@@ -149,8 +151,9 @@
      &             write(*,*) 'lead  ', trim(fhd_div_m_flux)
         call cal_terms_4_momentum(iphys%i_m_flux_div,                   &
      &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, &
-     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
+     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
+     &      nod_fld1)
       end if
 !
       if (iphys%i_maxwell_div .gt. izero) then
@@ -158,8 +161,9 @@
      &             write(*,*) 'lead  ', trim(fhd_div_maxwell_t)
         call cal_terms_4_momentum(iphys%i_maxwell_div,                  &
      &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, &
-     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
+     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
+     &      nod_fld1)
       end if
 !
       if (iphys%i_m_tension .gt. izero) then
@@ -167,8 +171,9 @@
      &             write(*,*) 'lead  ', trim(fhd_mag_tension)
         call cal_terms_4_momentum(iphys%i_m_tension,                    &
      &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, &
-     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
+     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
+     &      nod_fld1)
       end if
 !
       if (iphys%i_lorentz .gt. izero) then
@@ -176,8 +181,9 @@
      &             write(*,*) 'lead  ', trim(fhd_Lorentz)
         call cal_terms_4_momentum(iphys%i_lorentz,                      &
      &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, &
-     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
+     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
+     &      nod_fld1)
       end if
 !
       if (iphys%i_buoyancy .gt. izero) then
@@ -185,8 +191,9 @@
      &             write(*,*) 'lead  ', trim(fhd_buoyancy)
         call cal_terms_4_momentum(iphys%i_buoyancy,                     &
      &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, &
-     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
+     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
+     &      nod_fld1)
       end if
 !
       if (iphys%i_comp_buo .gt. izero) then
@@ -194,8 +201,9 @@
      &             write(*,*) 'lead  ', trim(fhd_comp_buo)
         call cal_terms_4_momentum(iphys%i_comp_buo,                     &
      &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, &
-     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
+     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
+     &      nod_fld1)
       end if
 !
       if (iphys%i_filter_buo .gt. izero) then
@@ -203,8 +211,9 @@
      &             write(*,*) 'lead  ', trim(fhd_filter_buo)
         call cal_terms_4_momentum(iphys%i_filter_buo,                   &
      &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, &
-     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
+     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
+     &      nod_fld1)
       end if
 !
       if (iphys%i_coriolis .gt. izero) then
@@ -212,8 +221,9 @@
      &             write(*,*) 'lead  ', trim(fhd_Coriolis)
         call cal_terms_4_momentum(iphys%i_coriolis,                     &
      &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, &
-     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
+     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
+     &      nod_fld1)
       end if
 !
 !
@@ -257,8 +267,9 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_viscous)
         call cal_viscous_diffusion(nod_comm, node1, ele1, surf1,        &
-     &      fluid1, sf_grp1, iphys, jac1_3d_q, rhs_tbl1, FEM1_elen,     &
-     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      fluid1, sf_grp1, iphys, jac1_3d_q, jac1_sf_grp_2d_q,        &
+     &       rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,                 &
+     &       f1_l, f1_nl, nod_fld1)
       end if
 !
       if (iphys%i_vp_diffuse .gt. izero) then

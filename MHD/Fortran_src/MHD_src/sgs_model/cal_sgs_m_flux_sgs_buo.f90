@@ -3,8 +3,29 @@
 !
 !      written by H. Matsui on Aug., 2007
 !
-!      subroutine cal_sgs_mom_flux_with_sgs_buo(layer_tbl)
-!        type(layering_tbl), intent(in) :: layer_tbl
+!!      subroutine cal_sgs_mom_flux_with_sgs_buo                        &
+!!     &         (ie_dvx, nod_comm, node, ele, surf, sf_grp,            &
+!!     &          fluid, layer_tbl, iphys, iphys_ele, ele_fld,          &
+!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
+!!     &          FEM_elen, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(phys_data), intent(in) :: ele_fld
+!!        type(field_geometry_data), intent(in) :: fluid
+!!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+!!        type(phys_data), intent(inout) :: nod_fld
 !
       module cal_sgs_m_flux_sgs_buo
 !
@@ -13,8 +34,22 @@
       use m_phys_constants
       use m_machine_parameter
 !
-      implicit none
+      use t_comm_table
+      use t_geometry_data_MHD
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_2d
+      use t_jacobian_3d
+      use t_table_FEM_const
+      use t_finite_element_mat
+      use t_MHD_finite_element_mat
+      use t_filter_elength
+      use t_layering_ele_list
 !
+      implicit none
 !
 !  ---------------------------------------------------------------------
 !
@@ -22,20 +57,18 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_mom_flux_with_sgs_buo(layer_tbl)
+      subroutine cal_sgs_mom_flux_with_sgs_buo                          &
+     &         (ie_dvx, nod_comm, node, ele, surf, sf_grp,              &
+     &          fluid, layer_tbl, iphys, iphys_ele, ele_fld,            &
+     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
+     &          FEM_elen, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_control_parameter
-      use m_geometry_data
-      use m_group_data
       use m_phys_constants
-      use m_jacobians
       use m_SGS_address
-      use m_node_phys_data
       use m_physical_property
       use m_ele_info_4_dynamical
       use m_work_4_dynamic_model
-!
-      use t_layering_ele_list
 !
       use cal_sgs_fluxes
       use cal_momentum_terms
@@ -45,7 +78,28 @@
       use set_sgs_diff_model_coefs
       use int_rms_ave_ele_grps
 !
+      integer(kind = kint), intent(in) :: ie_dvx
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: sf_grp
+      type(phys_address), intent(in) :: iphys
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: ele_fld
+      type(field_geometry_data), intent(in) :: fluid
       type(layering_tbl), intent(in) :: layer_tbl
+      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_2d), intent(in) :: jac_sf_grp_q
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(gradient_model_data_type), intent(in) :: FEM_elen
+!
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(phys_data), intent(inout) :: nod_fld
+!
 !
       integer(kind = kint), parameter :: ncomp_sgs_buo= 6
 !      integer(kind = kint) :: i
@@ -56,56 +110,58 @@
       call set_model_coefs_2_ele(itype_SGS_m_flux_coef, n_sym_tensor,   &
      &    iak_sgs_mf, icomp_sgs_mf, layer_tbl%e_grp%num_grp,            &
      &    layer_tbl%e_grp%num_item, layer_tbl%e_grp%istack_grp_smp,     &
-     &    layer_tbl%e_grp%item_grp, ele1)
+     &    layer_tbl%e_grp%item_grp, ele)
 !
-      call cal_sgs_momentum_flux
+      call cal_sgs_momentum_flux(ie_dvx, nod_comm, node, ele, fluid,    &
+     &    iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elen,       &
+     &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !   lead work of Reynolds stress
 !
       call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,                 &
-     &    nod_comm, node1, ele1, surf1, fluid1, sf_grp1,                &
-     &    iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,   &
-     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &    nod_comm, node, ele, surf, fluid, sf_grp,                     &
+     &    iphys, iphys_ele, ele_fld, jac_3d_q, jac_sf_grp_q,            &
+     &    rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !$omp parallel
-      call cal_phys_dot_product(node1, nod_fld1,                        &
+      call cal_phys_dot_product(node, nod_fld,                          &
      &    iphys%i_velo, iphys%i_SGS_div_m_flux, iphys%i_reynolds_wk)
 !$omp end parallel
 !
 !   lead SGS buoyancy flux
 !
       if(iflag_4_gravity .gt. id_turn_OFF) then
-        call cal_SGS_gravity_flux(node1, coef_buo,                      &
-     &      iphys%i_SGS_h_flux, iphys%i_SGS_buo_wk, nod_fld1)
+        call cal_SGS_gravity_flux(node, coef_buo,                       &
+     &      iphys%i_SGS_h_flux, iphys%i_SGS_buo_wk, nod_fld)
       end if
       if(iflag_4_composit_buo .gt. id_turn_OFF) then
-        call cal_SGS_gravity_flux(node1, coef_comp_buo,                 &
-     &      iphys%i_SGS_c_flux, iphys%i_SGS_comp_buo_wk, nod_fld1)
+        call cal_SGS_gravity_flux(node, coef_comp_buo,                  &
+     &      iphys%i_SGS_c_flux, iphys%i_SGS_comp_buo_wk, nod_fld)
        end if
 !
 !   take RMS of SGS buoyancy flux and work of Reynolds stress
 !
       if(iflag_4_gravity .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps                                  &
-     &     (node1, ele1, layer_tbl%e_grp, jac1_3d_q, jac1_3d_l,         &
-     &      intg_point_t_evo, nod_fld1%ntot_phys, iphys%i_reynolds_wk,  &
-     &      nod_fld1%d_fld, nod_fld1%ntot_phys, iphys%i_SGS_buo_wk,     &
-     &      nod_fld1%d_fld, sgs_l(1,1), sgs_l(1,4), sgs_l(1,2),         &
+     &     (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,             &
+     &      intg_point_t_evo, nod_fld%ntot_phys, iphys%i_reynolds_wk,   &
+     &      nod_fld%d_fld, nod_fld%ntot_phys, iphys%i_SGS_buo_wk,       &
+     &      nod_fld%d_fld, sgs_l(1,1), sgs_l(1,4), sgs_l(1,2),          &
      &      sgs_l(1,5) )
 !
         if(iflag_4_composit_buo .gt. id_turn_OFF) then
           call int_vol_rms_ave_ele_grps                                 &
-     &       (node1, ele1, layer_tbl%e_grp, jac1_3d_q, jac1_3d_l,       &
-     &        intg_point_t_evo, nod_fld1%ntot_phys,                     &
-     &        iphys%i_SGS_comp_buo_wk, nod_fld1%d_fld,                  &
+     &       (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,           &
+     &        intg_point_t_evo, nod_fld%ntot_phys,                      &
+     &        iphys%i_SGS_comp_buo_wk, nod_fld%d_fld,                   &
      &        sgs_l(1,3), sgs_l(1,6))
         end if
       else if(iflag_4_composit_buo .gt. id_turn_OFF) then
         call int_vol_2rms_ave_ele_grps                                  &
-     &     (node1, ele1, layer_tbl%e_grp, jac1_3d_q, jac1_3d_l,         &
-     &      intg_point_t_evo, nod_fld1%ntot_phys, iphys%i_reynolds_wk,  &
-     &      nod_fld1%d_fld, nod_fld1%ntot_phys,                         &
-     &      iphys%i_SGS_comp_buo_wk, nod_fld1%d_fld,                    &
+     &     (node, ele, layer_tbl%e_grp, jac_3d_q, jac_3d_l,             &
+     &      intg_point_t_evo, nod_fld%ntot_phys, iphys%i_reynolds_wk,   &
+     &      nod_fld%d_fld, nod_fld%ntot_phys,                           &
+     &      iphys%i_SGS_comp_buo_wk, nod_fld%d_fld,                     &
      &      sgs_l(1,1), sgs_l(1,4), sgs_l(1,3), sgs_l(1,6))
       end if
 !

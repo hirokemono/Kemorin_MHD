@@ -35,7 +35,6 @@
 !
       use m_control_parameter
       use m_phys_constants
-      use m_int_vol_data
 !
       use t_geometry_data
       use t_surface_data

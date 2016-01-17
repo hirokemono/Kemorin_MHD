@@ -21,6 +21,7 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
+      use m_jacobian_sf_grp
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_int_vol_data
@@ -64,16 +65,24 @@
 !
 !
       if (iflag_SGS_gravity .ne. id_SGS_none) then
-        call cal_sgs_mom_flux_with_sgs_buo(layer_tbl)
+        call cal_sgs_mom_flux_with_sgs_buo                              &
+     &     (i_dvx, nod_comm, node1, ele1, surf1, sf_grp1,               &
+     &      fluid1, layer_tbl, iphys, iphys_ele, fld_ele1,              &
+     &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
+     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
         call mod_Csim_by_SGS_buoyancy_ele(layer_tbl%e_grp, ele1)
       end if
 !
       if ( iflag_SGS_inertia .ne. id_SGS_none) then
-       call cal_sgs_momentum_flux
+        call cal_sgs_momentum_flux(i_dvx, nod_comm, node1, ele1,        &
+     &      fluid1, iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,    &
+     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
       if ( iflag_SGS_lorentz .ne. id_SGS_none) then
-       call cal_sgs_maxwell
+        call cal_sgs_maxwell(i_dbx, nod_comm, node1, ele1, fluid1,      &
+     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, &
+     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
 !   --- reset work array for time evolution
@@ -119,7 +128,9 @@
 !
 !    ---  lead surface boundaries
 !
-      call int_surf_velo_pre_ele(node1, ele1, surf1, sf_grp1)
+      call int_surf_velo_pre_ele(node1, ele1, surf1, sf_grp1,           &
+     &    iphys, nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,       &
+     &    fem1_wk, f1_l, f1_nl)
 !
 !
       if (iflag_t_evo_4_velo .eq. id_explicit_euler) then

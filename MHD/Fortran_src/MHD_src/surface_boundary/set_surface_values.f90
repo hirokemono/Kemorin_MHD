@@ -13,7 +13,8 @@
 !!
 !!      subroutine set_surf_bc_1st(sf_grp, ngrp_sf, nele_surf, igrp,    &
 !!     &          id_sf_dat, i_dest, ist_sf, sf_dat_apt)
-!!      subroutine set_surf_bc_on_node_1st(sf_grp, sf_grp_nod, sf_grp_v,&
+!!      subroutine set_surf_bc_on_node_1st                              &
+!!     &         (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,        &
 !!     &          ngrp_sf, nnod_surf, igrp, id_sf_dat, i_dest,          &
 !!     &          ist_nod_sf, sf_dat_apt)
 !!
@@ -87,15 +88,20 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine set_surf_bc_on_node_1st(sf_grp, sf_grp_nod, sf_grp_v,  &
+      subroutine set_surf_bc_on_node_1st                                &
+     &         (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,          &
      &          ngrp_sf, nnod_surf, igrp, id_sf_dat, i_dest,            &
      &          ist_nod_sf, sf_dat_apt)
 !
-      use m_geometry_data
+      use t_geometry_data
+      use t_surface_data
       use t_surface_group_geometry
       use t_group_data
       use t_surface_group_connect
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(surface_group_geometry), intent(in) :: sf_grp_v
@@ -108,8 +114,8 @@
 !
       call set_surf_bc_on_node_dat                                      &
      &   (ngrp_sf, nnod_surf, igrp, id_sf_dat, i_dest,                  &
-     &    node1%numnod, ele1%numele, ele1%nnod_4_ele,                   &
-     &    surf1%nnod_4_surf, ele1%ie, surf1%node_on_sf,                 &
+     &    node%numnod, ele%numele, ele%nnod_4_ele,                      &
+     &    surf%nnod_4_surf, ele%ie, surf%node_on_sf,                    &
      &    sf_grp%num_grp, sf_grp%num_item,                              &
      &    sf_grp%istack_grp, sf_grp%item_sf_grp,                        &
      &    sf_grp_nod%ntot_node_sf_grp, sf_grp_nod%inod_stack_sf_grp,    &

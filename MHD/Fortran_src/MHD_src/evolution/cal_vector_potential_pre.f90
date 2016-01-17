@@ -65,7 +65,9 @@
 !  lead induction terms
 !
       if ( iflag_SGS_induction .ne. id_SGS_none) then
-        call cal_sgs_uxb_2_evo
+        call cal_sgs_uxb_2_evo(i_dvx, nod_comm, node1, ele1, conduct1,  &
+     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, &
+     &      mhd_fem1_wk, fem1_wk, f1_nl, nod_fld1)
       end if
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then

@@ -4,11 +4,16 @@
 !      Written by H. Matsui
 !      Modified by H. Matsui on Oct., 2005
 !
-!      subroutine cal_potential_on_edge
+!!      subroutine cal_potential_on_edge                                &
+!!     &         (node, ele, edge, iphys, nod_fld)
 !
       module itp_potential_on_edge
 !
       use m_precision
+!
+      use t_geometry_data
+      use t_edge_data
+      use t_phys_data
 !
       implicit none
 !
@@ -20,32 +25,37 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_potential_on_edge
+      subroutine cal_potential_on_edge                                  &
+     &         (node, ele, edge, iphys, nod_fld)
 !
       use m_geometry_constants
-      use m_geometry_data
       use m_phys_labels
-      use m_node_phys_data
       use m_control_parameter
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(edge_data), intent(in) :: edge
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: i
 !
-      if (ele1%nnod_4_ele .eq. num_t_quad) then
+      if (ele%nnod_4_ele .eq. num_t_quad) then
 !
-        do i = 1, nod_fld1%num_phys
+        do i = 1, nod_fld%num_phys
 !
-          if     (nod_fld1%phys_name(i) .eq. fhd_press) then
-            call cal_pressure_on_edge(node1%numnod,                     &
-     &          edge1%numedge, edge1%nnod_4_edge, edge1%ie_edge,        &
-     &          nod_fld1%ntot_phys, iphys%i_press, nod_fld1%d_fld)
-          else if(nod_fld1%phys_name(i) .eq. fhd_mag_potential) then
-            call cal_pressure_on_edge(node1%numnod,                     &
-     &          edge1%numedge, edge1%nnod_4_edge, edge1%ie_edge,        &
-     &          nod_fld1%ntot_phys, iphys%i_mag_p, nod_fld1%d_fld)
-          else if(nod_fld1%phys_name(i) .eq. fhd_scalar_potential) then
-            call cal_pressure_on_edge(node1%numnod,                     &
-     &          edge1%numedge, edge1%nnod_4_edge, edge1%ie_edge,        &
-     &          nod_fld1%ntot_phys, iphys%i_scalar_p, nod_fld1%d_fld)
+          if     (nod_fld%phys_name(i) .eq. fhd_press) then
+            call cal_pressure_on_edge(node%numnod,                      &
+     &          edge%numedge, edge%nnod_4_edge, edge%ie_edge,           &
+     &          nod_fld%ntot_phys, iphys%i_press, nod_fld%d_fld)
+          else if(nod_fld%phys_name(i) .eq. fhd_mag_potential) then
+            call cal_pressure_on_edge(node%numnod,                      &
+     &          edge%numedge, edge%nnod_4_edge, edge%ie_edge,           &
+     &          nod_fld%ntot_phys, iphys%i_mag_p, nod_fld%d_fld)
+          else if(nod_fld%phys_name(i) .eq. fhd_scalar_potential) then
+            call cal_pressure_on_edge(node%numnod,                      &
+     &          edge%numedge, edge%nnod_4_edge, edge%ie_edge,           &
+     &          nod_fld%ntot_phys, iphys%i_scalar_p, nod_fld%d_fld)
           end if
 !
         end do

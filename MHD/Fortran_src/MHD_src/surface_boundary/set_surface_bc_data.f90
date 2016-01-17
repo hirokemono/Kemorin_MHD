@@ -5,7 +5,7 @@
 !        modified by H. Matsui on Sep., 2007
 !
 !!      subroutine set_surf_bc_data                                     &
-!!     &         (numnod, sf_grp, sf_grp_nod, sf_grp_v)
+!!     &         (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v)
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !!        type(surface_group_geometry), intent(in) :: sf_grp_v
@@ -26,9 +26,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_surf_bc_data                                       &
-     &         (numnod, sf_grp, sf_grp_nod, sf_grp_v)
+     &         (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v)
 !
       use m_machine_parameter
+      use t_geometry_data
+      use t_surface_data
       use t_group_data
       use t_surface_group_connect
       use t_surface_group_geometry
@@ -37,13 +39,15 @@
       use set_surface_id_MHD
       use set_surface_values
 !
-      integer(kind= kint), intent(in) :: numnod
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(surface_group_geometry), intent(in) :: sf_grp_v
 !
 !
-      call allocate_work_4_surf_bc_dat(numnod)
+      call allocate_work_4_surf_bc_dat(node%numnod)
 !
 ! ---  set boundary conditions
 !
@@ -52,7 +56,8 @@
 !
       call allocate_surf_bc_data
 !
-      call set_surface_id(sf_grp, sf_grp_nod, sf_grp_v)
+      call set_surface_id                                               &
+     &   (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v)
 ! 
       call deallocate_work_4_surf_bc_dat
 ! 

@@ -31,8 +31,6 @@
 !
       use m_precision
 !
-      use m_int_vol_data
-!
       use m_control_parameter
       use m_physical_property
 !

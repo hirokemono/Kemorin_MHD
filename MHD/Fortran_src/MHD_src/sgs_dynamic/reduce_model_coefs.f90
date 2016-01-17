@@ -12,6 +12,7 @@
       module reduce_model_coefs
 !
       use m_precision
+      use m_machine_parameter
 !
       use t_geometry_data
 !
@@ -42,8 +43,6 @@
 !
       subroutine reduce_ele_vect_model_coefs(ele, SGS_factor, ak_sgs)
 !
-      use m_machine_parameter
-      use m_geometry_data
       use overwrite_prod_const_smp
 !
       type(element_data), intent(in) :: ele
@@ -62,8 +61,6 @@
 !
       subroutine reduce_ele_tensor_model_coefs(ele, SGS_factor, ak_sgs)
 !
-      use m_machine_parameter
-      use m_geometry_data
       use overwrite_prod_const_smp
 !
       type(element_data), intent(in) :: ele

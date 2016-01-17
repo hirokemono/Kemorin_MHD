@@ -10,6 +10,7 @@
       module count_sgs_components
 !
       use m_precision
+      use m_machine_parameter
 !
       implicit none
 !
@@ -21,11 +22,9 @@
 !
       subroutine s_count_sgs_components(numnod, numele, layer_tbl)
 !
-      use m_machine_parameter
       use calypso_mpi
       use m_phys_labels
       use m_control_parameter
-      use m_node_phys_data
       use m_ele_info_4_dynamical
       use m_SGS_model_coefs
       use m_SGS_address

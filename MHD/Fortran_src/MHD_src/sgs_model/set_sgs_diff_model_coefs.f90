@@ -298,7 +298,6 @@
       use m_machine_parameter
       use m_control_parameter
       use m_ele_info_4_dynamical
-      use m_node_phys_data
       use m_SGS_model_coefs
 !
       type(element_data), intent(in) :: ele

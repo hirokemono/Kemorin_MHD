@@ -3,11 +3,18 @@
 !
 !      Written by H. Matsui on Sep. 2005
 !
-!      subroutine set_surface_id(sf_grp, sf_grp_nod, sf_grp_v)
+!!      subroutine set_surface_id                                       &
+!!     &         (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v)
 !
       module set_surface_id_MHD
 !
       use m_precision
+!
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
+      use t_surface_group_connect
+      use t_surface_group_geometry
 !
       implicit none
 !
@@ -17,7 +24,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_surface_id(sf_grp, sf_grp_nod, sf_grp_v)
+      subroutine set_surface_id                                         &
+     &         (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v)
 !
       use m_control_parameter
 !
@@ -27,12 +35,11 @@
       use m_scalar_surf_id
       use m_vector_surf_id
 !
-      use t_group_data
-      use t_surface_group_connect
-      use t_surface_group_geometry
-!
       use set_normal_field
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(surface_group_geometry), intent(in) :: sf_grp_v
@@ -44,7 +51,8 @@
       end if
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
-        call set_surf_velo_id(sf_grp, sf_grp_nod, sf_grp_v)
+        call set_surf_velo_id                                           &
+     &     (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v)
         call set_surf_torque_id(sf_grp)
 !
         call set_surf_press_id(sf_grp)
@@ -58,10 +66,12 @@
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
      &      .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call set_surf_magne_id(sf_grp, sf_grp_nod, sf_grp_v)
+        call set_surf_magne_id                                          &
+     &     (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v)
         call set_surf_grad_b_id(sf_grp)
 !
-        call set_surf_current_id(sf_grp, sf_grp_nod, sf_grp_v)
+        call set_surf_current_id                                        &
+     &     (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v)
         call set_surf_grad_j_id(sf_grp)
 !
         call set_surf_magne_p_id(sf_grp)
@@ -70,7 +80,8 @@
       end if
 !
       if (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        call set_surf_vect_p_id(sf_grp, sf_grp_nod, sf_grp_v)
+        call set_surf_vect_p_id                                         &
+     &     (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v)
         call set_surf_grad_vecp_id(sf_grp)
       end if
 ! 

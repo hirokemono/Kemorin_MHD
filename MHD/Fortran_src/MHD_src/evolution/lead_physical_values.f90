@@ -29,6 +29,8 @@
 !
       use m_machine_parameter
       use m_t_step_parameter
+      use m_geometry_data
+      use m_node_phys_data
 !
       use t_layering_ele_list
 !
@@ -46,7 +48,7 @@
 !
       if ( iflag.eq.0 ) then
         if (iflag_debug.gt.0) write(*,*) 'cal_potential_on_edge'
-        call cal_potential_on_edge
+        call cal_potential_on_edge(node1, ele1, edge1, iphys, nod_fld1)
 !
         if (iflag_debug.gt.0) write(*,*) 'update_fields'
         call update_fields(layer_tbl)

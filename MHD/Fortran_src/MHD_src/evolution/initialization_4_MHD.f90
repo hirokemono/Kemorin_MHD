@@ -250,7 +250,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_surf_bc_data'
       call set_surf_bc_data                                             &
-     &   (node1%numnod, sf_grp1, sf_grp_nod1, sf_grp_v1)
+     &   (node1, ele1, surf1, sf_grp1, sf_grp_nod1, sf_grp_v1)
 !
 !     ---------------------
 !

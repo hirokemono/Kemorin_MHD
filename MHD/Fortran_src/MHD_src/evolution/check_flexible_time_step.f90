@@ -72,7 +72,7 @@
 !
 !
       if( mod(istep_flex_to_max,itwo) .eq. izero) then
-!        call s_check_deltat_by_previous
+!        call s_check_deltat_by_previous(node1, iphys, nod_fld1)
         call s_check_deltat_by_prev_rms                                 &
      &    (node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk)
 !

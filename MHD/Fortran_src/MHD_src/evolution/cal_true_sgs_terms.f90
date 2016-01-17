@@ -143,6 +143,7 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
+      use m_jacobian_sf_grp
       use m_element_id_4_node
       use m_filter_elength
       use m_finite_element_matrix
@@ -156,8 +157,9 @@
      &    nod_fld1%d_fld)
       call cal_terms_4_momentum(iphys%i_m_flux_div,                     &
      &    nod_comm, node1, ele1, surf1, fluid1, sf_grp1,                &
-     &    iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,   &
-     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &    iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,      &
+     &    rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,       &
+     &    nod_fld1)
       call copy_vector_component(node1, nod_fld1,                       &
      &    iphys%i_m_flux_div, iphys%i_SGS_div_mf_true)
 !
@@ -174,6 +176,7 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
+      use m_jacobian_sf_grp
       use m_element_id_4_node
       use m_filter_elength
       use m_finite_element_matrix
@@ -187,8 +190,9 @@
      &    iphys%i_filter_magne, iphys%i_maxwell, nod_fld1%d_fld)
       call cal_terms_4_momentum(iphys%i_maxwell_div,                    &
      &    nod_comm, node1, ele1, surf1, fluid1, sf_grp1,                &
-     &    iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,   &
-     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &    iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,      &
+     &    rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,       &
+     &    nod_fld1)
       call copy_vector_component(node1, nod_fld1,                       &
      &   iphys%i_maxwell_div, iphys%i_SGS_Lor_true)
 !

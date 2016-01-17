@@ -4,9 +4,25 @@
 !     Written by H. Matsui on Oct. 2005
 !     Modified by H. Matsui on Aug., 2007
 !
-!      subroutine s_cal_sgs_m_flux_dynamic_simi(layer_tbl)
-!      subroutine cal_sgs_maxwell_dynamic_simi(layer_tbl)
-!        type(layering_tbl), intent(in) :: layer_tbl
+!!      subroutine s_cal_sgs_m_flux_dynamic_simi                        &
+!!     &         (nod_comm, node, ele, iphys, layer_tbl,                &
+!!     &          jac_3d_q, jac_3d_l, rhs_tbl, m1_lump,                 &
+!!     &          fem_wk, f_l, nod_fld)
+!!      subroutine cal_sgs_maxwell_dynamic_simi                         &
+!!     &         (nod_comm, node, ele, iphys, layer_tbl,                &
+!!     &          jac_3d_q, jac_3d_l, rhs_tbl, m1_lump,                 &
+!!     &          fem_wk, f_l, nod_fld)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_address), intent(in) :: iphys
+!!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(lumped_mass_matrices), intent(in) :: m1_lump
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_l
+!!        type(phys_data), intent(inout) :: nod_fld
 !
       module cal_sgs_m_flux_dynamic_simi
 !
@@ -14,14 +30,14 @@
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_nod_comm_table
-      use m_geometry_data
       use m_phys_constants
-      use m_node_phys_data
-      use m_jacobians
-      use m_element_id_4_node
-      use m_finite_element_matrix
 !
+      use t_comm_table
+      use t_geometry_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_3d
+      use t_table_FEM_const
       use t_layering_ele_list
 !
       implicit none
@@ -32,7 +48,10 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_cal_sgs_m_flux_dynamic_simi(layer_tbl)
+      subroutine s_cal_sgs_m_flux_dynamic_simi                          &
+     &         (nod_comm, node, ele, iphys, layer_tbl,                  &
+     &          jac_3d_q, jac_3d_l, rhs_tbl, m1_lump,                   &
+     &          fem_wk, f_l, nod_fld)
 !
       use m_SGS_model_coefs
       use m_SGS_address
@@ -47,16 +66,28 @@
       use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
 !
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
       type(layering_tbl), intent(in) :: layer_tbl
+      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(lumped_mass_matrices), intent(in) :: m1_lump
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l
+      type(phys_data), intent(inout) :: nod_fld
+!
 !
 !
 !    reset model coefficients
 !
       call reset_tensor_sgs_model_coefs                                 &
-     &   (layer_tbl, icomp_sgs_mf, ele1%istack_ele_smp)
+     &   (layer_tbl, icomp_sgs_mf, ele%istack_ele_smp)
       call reset_tensor_sgs_nod_m_coefs                                 &
-     &   (icomp_sgs_mf, node1%istack_nod_smp)
-      call s_clear_work_4_dynamic_model(node1, iphys, nod_fld1)
+     &   (icomp_sgs_mf, node%istack_nod_smp)
+      call s_clear_work_4_dynamic_model(node, iphys, nod_fld)
 !
 !   similarity model with wider filter
 !
@@ -64,53 +95,56 @@
      &     write(*,*) 'cal_sgs_mf_simi_wide i_wide_fil_velo'
       call cal_sgs_mf_simi_wide(iphys%i_sgs_grad_f,                     &
      &    iphys%i_filter_velo, iphys%i_wide_fil_velo, icomp_sgs_mf,     &
-     &    nod_comm, node1, nod_fld1)
+     &    nod_comm, node, nod_fld)
 !
 !    SGS term by similarity model
 !
       if (iflag_debug.gt.0)                                             &
      &     write(*,*) 'cal_sgs_mf_simi iphys%i_SGS_m_flux'
       call cal_sgs_mf_simi(iphys%i_SGS_m_flux, iphys%i_velo,            &
-     &    iphys%i_filter_velo, icomp_sgs_mf, nod_comm, node1, nod_fld1)
+     &    iphys%i_filter_velo, icomp_sgs_mf, nod_comm, node, nod_fld)
 !
 !    copy to work array
 !
-       call copy_tensor_component(node1, nod_fld1,                      &
+       call copy_tensor_component(node, nod_fld,                        &
      &     iphys%i_SGS_m_flux, iphys%i_sgs_simi)
 !      call check_nodal_data                                            &
-!     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_simi)
+!     &   (my_rank, nod_fld, n_sym_tensor, iphys%i_sgs_simi)
 !
 !      filtering
 !
-      call cal_filtered_sym_tensor(nod_comm, node1,                     &
-     &    iphys%i_sgs_grad, iphys%i_SGS_m_flux, nod_fld1)
+      call cal_filtered_sym_tensor(nod_comm, node,                      &
+     &    iphys%i_sgs_grad, iphys%i_SGS_m_flux, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_grad)
+!     &   (my_rank, nod_fld, n_sym_tensor, iphys%i_sgs_grad)
 !
 !   Change coordinate
 !
-      call cvt_tensor_dynamic_scheme_coord(node1, iphys, nod_fld1)
+      call cvt_tensor_dynamic_scheme_coord(node, iphys, nod_fld)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &    'cal_model_coefs', n_sym_tensor, iak_sgs_mf, icomp_sgs_mf
       call cal_model_coefs(layer_tbl,                                   &
-     &    node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l,           &
+     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_SGS_m_flux_coef, n_sym_tensor,                          &
      &    iak_sgs_mf, icomp_sgs_mf, intg_point_t_evo)
 !
       call cal_ele_sym_tensor_2_node                                    &
-     &   (node1, ele1, jac1_3d_q, rhs_tbl1, m1_lump,                    &
+     &   (node, ele, jac_3d_q, rhs_tbl, m1_lump,                        &
      &    ak_sgs(1,icomp_sgs_mf), ak_sgs_nod(1,icomp_sgs_mf),           &
-     &    fem1_wk, f1_l)
+     &    fem_wk, f_l)
 !
       end subroutine s_cal_sgs_m_flux_dynamic_simi
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_maxwell_dynamic_simi(layer_tbl)
+      subroutine cal_sgs_maxwell_dynamic_simi                           &
+     &         (nod_comm, node, ele, iphys, layer_tbl,                  &
+     &          jac_3d_q, jac_3d_l, rhs_tbl, m1_lump,                   &
+     &          fem_wk, f_l, nod_fld)
 !
       use m_SGS_model_coefs
       use m_SGS_address
@@ -125,16 +159,28 @@
       use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
 !
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
       type(layering_tbl), intent(in) :: layer_tbl
+      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(lumped_mass_matrices), intent(in) :: m1_lump
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l
+      type(phys_data), intent(inout) :: nod_fld
+!
 !
 !
 !    reset model coefficients
 !
       call reset_tensor_sgs_model_coefs                                 &
-     &   (layer_tbl, icomp_sgs_lor, ele1%istack_ele_smp)
+     &   (layer_tbl, icomp_sgs_lor, ele%istack_ele_smp)
       call reset_tensor_sgs_nod_m_coefs                                 &
-     &   (icomp_sgs_lor, node1%istack_nod_smp)
-      call s_clear_work_4_dynamic_model(node1, iphys, nod_fld1)
+     &   (icomp_sgs_lor, node%istack_nod_smp)
+      call s_clear_work_4_dynamic_model(node, iphys, nod_fld)
 !
 !   similarity model with wider filter
 !
@@ -142,10 +188,10 @@
      &     write(*,*) 'cal_sgs_mf_simi_wide i_wide_fil_magne'
       call cal_sgs_mf_simi_wide(iphys%i_sgs_grad_f,                     &
      &    iphys%i_filter_magne, iphys%i_wide_fil_magne, icomp_sgs_lor,  &
-     &    nod_comm, node1, nod_fld1)
+     &    nod_comm, node, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   (my_rank, nod_fld1, n_sym_tensor, iphys%i_sgs_grad_f)
+!     &   (my_rank, nod_fld, n_sym_tensor, iphys%i_sgs_grad_f)
 !
 !    SGS term by similarity model
 !
@@ -153,35 +199,35 @@
      &     write(*,*) 'cal_sgs_mf_simi iphys%i_SGS_maxwell'
       call cal_sgs_mf_simi(iphys%i_SGS_maxwell, iphys%i_magne,          &
      &    iphys%i_filter_magne, icomp_sgs_lor,                          &
-     &    nod_comm, node1, nod_fld1)
+     &    nod_comm, node, nod_fld)
 !
 !    copy to work array
 !
-       call copy_tensor_component(node1, nod_fld1,                      &
+       call copy_tensor_component(node, nod_fld,                        &
      &     iphys%i_SGS_maxwell, iphys%i_sgs_simi)
 !
 !    filtering
 !
-      call cal_filtered_sym_tensor(nod_comm, node1,                     &
-     &    iphys%i_sgs_grad, iphys%i_SGS_maxwell, nod_fld1)
+      call cal_filtered_sym_tensor(nod_comm, node,                      &
+     &    iphys%i_sgs_grad, iphys%i_SGS_maxwell, nod_fld)
 !
 !   Change coordinate
 !
-      call cvt_tensor_dynamic_scheme_coord(node1, iphys, nod_fld1)
+      call cvt_tensor_dynamic_scheme_coord(node, iphys, nod_fld)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_model_coefs', n_sym_tensor, iak_sgs_lor, icomp_sgs_lor
       call cal_model_coefs(layer_tbl,                                   &
-     &    node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l,           &
+     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    itype_SGS_maxwell_coef, n_sym_tensor,                         &
      &    iak_sgs_lor, icomp_sgs_lor, intg_point_t_evo)
 !
       call cal_ele_sym_tensor_2_node                                    &
-     &   (node1, ele1, jac1_3d_q, rhs_tbl1, m1_lump,                    &
+     &   (node, ele, jac_3d_q, rhs_tbl, m1_lump,                        &
      &    ak_sgs(1,icomp_sgs_lor), ak_sgs_nod(1,icomp_sgs_lor),         &
-     &    fem1_wk, f1_l)
+     &    fem_wk, f_l)
 !
       end subroutine cal_sgs_maxwell_dynamic_simi
 !

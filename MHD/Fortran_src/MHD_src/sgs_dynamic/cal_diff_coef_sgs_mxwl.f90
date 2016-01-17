@@ -3,14 +3,47 @@
 !
 !     Written by H. Matsui
 !
-!     subroutine s_cal_diff_coef_sgs_mxwl(layer_tbl)
-!        type(layering_tbl), intent(in) :: layer_tbl
+!!      subroutine s_cal_diff_coef_sgs_mxwl                             &
+!!     &         (ie_dfbx, nod_comm, node, ele, surf, sf_grp,           &
+!!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
+!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
+!!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(phys_data), intent(in) :: ele_fld
+!!        type(field_geometry_data), intent(in) :: fluid
+!!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+!!        type(phys_data), intent(inout) :: nod_fld
 !
       module cal_diff_coef_sgs_mxwl
 !
       use m_precision
 !
+      use t_comm_table
+      use t_geometry_data_MHD
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_2d
+      use t_jacobian_3d
+      use t_table_FEM_const
       use t_layering_ele_list
+      use t_MHD_finite_element_mat
+      use t_filter_elength
 !
       implicit none
 !
@@ -20,25 +53,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_sgs_mxwl(layer_tbl)
+      subroutine s_cal_diff_coef_sgs_mxwl                               &
+     &         (ie_dfbx, nod_comm, node, ele, surf, sf_grp,             &
+     &          iphys, iphys_ele, ele_fld, fluid1, layer_tbl,           &
+     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
+     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-      use m_nod_comm_table
-      use m_geometry_data
       use m_machine_parameter
       use m_control_parameter
       use m_phys_constants
-      use m_node_phys_data
-      use m_element_phys_data
       use m_SGS_address
       use m_surf_data_magne
-      use m_group_data
-      use m_jacobians
-      use m_jacobian_sf_grp
-      use m_element_id_4_node
-      use m_finite_element_matrix
-      use m_filter_elength
-      use m_geometry_data_MHD
-      use m_int_vol_data
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -53,97 +78,116 @@
       use nod_phys_send_recv
       use clear_work_4_dynamic_model
 !
+      integer(kind = kint), intent(in) :: ie_dfbx
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: sf_grp
+      type(phys_address), intent(in) :: iphys
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: ele_fld
+      type(field_geometry_data), intent(in) :: fluid1
       type(layering_tbl), intent(in) :: layer_tbl
+      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_2d), intent(in) :: jac_sf_grp_q
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(gradient_model_data_type), intent(in) :: FEM_elens
+!
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(phys_data), intent(inout) :: nod_fld
 !
 !    reset model coefficients
 !
-      call reset_diff_model_coefs(iak_diff_lor, ele1%istack_ele_smp)
-      call s_clear_work_4_dynamic_model(node1, iphys, nod_fld1)
+      call reset_diff_model_coefs(iak_diff_lor, ele%istack_ele_smp)
+      call s_clear_work_4_dynamic_model(node, iphys, nod_fld)
 !
 !   gradient model by filtered field (to iphys%i_sgs_grad_f)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_sgs_filter_maxwell_grad'
       call cal_sgs_m_flux_grad_w_coef                                   &
      &   (itype_SGS_maxwell_coef, ifilter_4delta, icomp_sgs_lor,        &
-     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, i_dfbx,             &
-     &    nod_comm, node1, ele1, fluid1, iphys_ele, fld_ele1,           &
-     &    jac1_3d_q, FEM1_elen, rhs_tbl1, fem1_wk, mhd_fem1_wk, nod_fld1)
+     &    iphys%i_sgs_grad_f, iphys%i_filter_magne, ie_dfbx,            &
+     &    nod_comm, node, ele, fluid1, iphys_ele, ele_fld,              &
+     &    jac_3d_q, FEM_elens, rhs_tbl, fem_wk, mhd_fem_wk, nod_fld)
 !
 !   take divergence of filtered heat flux (to iphys%i_sgs_simi)
 !
       if (iflag_debug.gt.0) write(*,*) 'cal_div_sgs_filter_mxwl_simi'
       call cal_div_sgs_mf_simi                                          &
      &   (iphys%i_sgs_simi, iphys%i_sgs_grad_f, iphys%i_filter_magne,   &
-     &    nod_comm, node1, ele1, fluid1, iphys_ele, fld_ele1,           &
-     &    jac1_3d_q, rhs_tbl1, fem1_wk, mhd_fem1_wk,                    &
-     &    f1_l, f1_nl, nod_fld1)
+     &    nod_comm, node, ele, fluid1, iphys_ele, ele_fld,              &
+     &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk,                        &
+     &    f_l, f_nl, nod_fld)
 !
 !   take divergence of heat flux (to iphys%i_sgs_grad)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_div_sgs_maxwell_simi'
       call cal_div_sgs_mf_simi                                          &
      &   (iphys%i_sgs_grad, iphys%i_SGS_maxwell, iphys%i_magne,         &
-     &    nod_comm, node1, ele1, fluid1, iphys_ele, fld_ele1,           &
-     &    jac1_3d_q, rhs_tbl1, fem1_wk, mhd_fem1_wk,                    &
-     &    f1_l, f1_nl, nod_fld1)
+     &    nod_comm, node, ele, fluid1, iphys_ele, ele_fld,              &
+     &    jac_3d_q, rhs_tbl, fem_wk, mhd_fem_wk, f_l, f_nl, nod_fld)
 !
 !    filtering (to iphys%i_sgs_grad)
 !
-      call cal_filtered_vector(nod_comm, node1,                         &
-     &    iphys%i_sgs_grad, iphys%i_sgs_grad, nod_fld1)
+      call cal_filtered_vector(nod_comm, node,                          &
+     &    iphys%i_sgs_grad, iphys%i_sgs_grad, nod_fld)
 !
 !    take difference (to iphys%i_sgs_simi)
 !
-      call subtract_2_nod_vectors(node1, nod_fld1,                      &
+      call subtract_2_nod_vectors(node, nod_fld,                        &
      &    iphys%i_sgs_grad, iphys%i_sgs_simi, iphys%i_sgs_simi)
-      call delete_field_by_fixed_v_bc(iphys%i_sgs_simi, nod_fld1)
+      call delete_field_by_fixed_v_bc(iphys%i_sgs_simi, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   (my_rank, nod_fld1, n_vector, iphys%i_sgs_simi)
+!     &   (my_rank, nod_fld, n_vector, iphys%i_sgs_simi)
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad_f)
 !
       call cal_commute_error_4_mf                                       &
-     &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
-     &    node1, ele1, surf1, sf_grp1, jac1_3d_q, jac1_sf_grp_2d_q,     &
-     &    rhs_tbl1, FEM1_elen, sf_sgs1_grad_b, ifilter_4delta,          &
+     &   (fluid1%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,               &
+     &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
+     &    rhs_tbl, FEM_elens, sf_sgs1_grad_b, ifilter_4delta,           &
      &    iphys%i_sgs_grad_f, iphys%i_sgs_grad_f, iphys%i_filter_magne, &
-     &    fem1_wk, f1_l, f1_nl, nod_fld1)
+     &    fem_wk, f_l, f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys%i_sgs_grad_f, node1, nod_comm, nod_fld1)
-      call delete_field_by_fixed_v_bc(iphys%i_sgs_grad_f, nod_fld1)
+     &   (iphys%i_sgs_grad_f, node, nod_comm, nod_fld)
+      call delete_field_by_fixed_v_bc(iphys%i_sgs_grad_f, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   (my_rank, nod_fld1, n_vector, iphys%i_sgs_grad_f)
+!     &   (my_rank, nod_fld, n_vector, iphys%i_sgs_grad_f)
 !
 !    obtain modeled commutative error  ( to iphys%i_sgs_grad)
 !
       call cal_commute_error_4_mf                                       &
-     &   (fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,              &
-     &    node1, ele1, surf1, sf_grp1, jac1_3d_q, jac1_sf_grp_2d_q,     &
-     &    rhs_tbl1, FEM1_elen, sf_sgs1_grad_b, ifilter_2delta,          &
+     &   (fluid1%istack_ele_fld_smp, mhd_fem_wk%mlump_fl,               &
+     &    node, ele, surf, sf_grp, jac_3d_q, jac_sf_grp_q,              &
+     &    rhs_tbl, FEM_elens, sf_sgs1_grad_b, ifilter_2delta,           &
      &    iphys%i_sgs_grad, iphys%i_SGS_maxwell, iphys%i_magne,         &
-     &    fem1_wk, f1_l, f1_nl, nod_fld1)
+     &    fem_wk, f_l, f_nl, nod_fld)
 !
       call vector_send_recv                                             &
-     &   (iphys%i_sgs_grad, node1, nod_comm, nod_fld1)
+     &   (iphys%i_sgs_grad, node, nod_comm, nod_fld)
 !
 !    filtering (to iphys%i_sgs_grad)
 !
-      call cal_filtered_vector(nod_comm, node1,                         &
-     &    iphys%i_sgs_grad, iphys%i_sgs_grad, nod_fld1)
-      call delete_field_by_fixed_v_bc(iphys%i_sgs_grad, nod_fld1)
+      call cal_filtered_vector(nod_comm, node,                          &
+     &    iphys%i_sgs_grad, iphys%i_sgs_grad, nod_fld)
+      call delete_field_by_fixed_v_bc(iphys%i_sgs_grad, nod_fld)
 !
 !      call check_nodal_data                                            &
-!     &   (my_rank, nod_fld1, n_vector, iphys%i_sgs_grad)
+!     &   (my_rank, nod_fld, n_vector, iphys%i_sgs_grad)
 !
 !     obtain model coefficient
 !
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_vector, iak_diff_lor, icomp_diff_lor
       call cal_diff_coef_fluid(layer_tbl,                               &
-     &    node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l,           &
+     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
      &    n_vector, iak_diff_lor, icomp_diff_lor, intg_point_t_evo)
 !
 !

@@ -21,8 +21,8 @@
 !!     &           num_surf, inod_stack_sf_grp, ngrp_sf, nnod_sf,       &
 !!     &           id_grp, ist_nod, sf_dat, surf_magnitude)
 !!      subroutine  set_sf_nod_grp_from_data(i_dest, igrp,              &
-!!     &           sf_grp, sf_grp_nod, sf_grp_v, ngrp_sf, nnod_sf,      &
-!!     &           id_grp, ist_nod, sf_dat, field_name)
+!!     &           node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,       &
+!!     &           ngrp_sf, nnod_sf, id_grp, ist_nod, sf_dat, field_name)
 !
       module set_surface_bc
 !
@@ -200,15 +200,20 @@
 !  ---------------------------------------------------------------------
 !
       subroutine  set_sf_nod_grp_from_data(i_dest, igrp,                &
-     &           sf_grp, sf_grp_nod, sf_grp_v, ngrp_sf, nnod_sf,        &
-     &           id_grp, ist_nod, sf_dat, field_name)
+     &           node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,         &
+     &           ngrp_sf, nnod_sf, id_grp, ist_nod, sf_dat, field_name)
 !
       use m_boundary_field_IO
       use set_surface_values
+      use t_geometry_data
+      use t_surface_data
       use t_group_data
       use t_surface_group_connect
       use t_surface_group_geometry
 !
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(surface_group_geometry), intent(in) :: sf_grp_v
@@ -230,7 +235,8 @@
             i_dest = i_dest + 1
             id_grp(i_dest) = igrp
 !
-            call set_surf_bc_on_node_1st(sf_grp, sf_grp_nod, sf_grp_v,  &
+            call set_surf_bc_on_node_1st                                &
+     &         (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v,          &
      &          ngrp_sf, nnod_sf, igrp, ia, i_dest, ist_nod, sf_dat)
           end if
         end if

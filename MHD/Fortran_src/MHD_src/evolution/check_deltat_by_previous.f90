@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui on Nov., 2009
 !
-!      subroutine s_check_deltat_by_previous
+!      subroutine s_check_deltat_by_previous(node, iphys, nod_fld)
 !
       module check_deltat_by_previous
 !
@@ -13,6 +13,10 @@
       use m_constants
       use m_machine_parameter
       use m_flex_delta_t_data
+!
+      use t_geometry_data
+      use t_phys_data
+      use t_phys_address
 !
       implicit  none
 !
@@ -25,11 +29,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_check_deltat_by_previous
+      subroutine s_check_deltat_by_previous(node, iphys, nod_fld)
 !
       use m_control_parameter
-      use m_geometry_data
-      use m_node_phys_data
+!
+      type(node_data), intent(in) :: node
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld
 !
       integer(kind = kint) :: ip, nd
 !
@@ -39,18 +45,18 @@
         if(iflag_debug .gt. izero)                                      &
      &      write(*,*) 'check_vector_evo_by_previous velo'
         call check_vector_evo_by_previous                               &
-     &     (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,     &
+     &     (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,        &
      &      iphys%i_velo, iphys%i_chk_mom, iphys%i_chk_mom_2,           &
-     &      i_drmax_v, nod_fld1%d_fld)
+     &      i_drmax_v, nod_fld%d_fld)
       end if
 !
       if(i_drmax_p .gt. izero) then
         if(iflag_debug .gt. izero)                                      &
      &      write(*,*) 'check_scalar_evo_by_previous press'
         call check_scalar_evo_by_previous                               &
-     &     (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,     &
+     &     (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,        &
      &      iphys%i_press, iphys%i_chk_press, iphys%i_chk_press_2,      &
-     &      i_drmax_p, nod_fld1%d_fld)
+     &      i_drmax_p, nod_fld%d_fld)
       end if
 !
 !
@@ -59,16 +65,16 @@
           if(iflag_debug .gt. izero)                                    &
      &      write(*,*) 'check_vector_evo_by_previous vecp'
           call check_vector_evo_by_previous                             &
-     &       (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,   &
+     &       (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,      &
      &        iphys%i_vecp, iphys%i_chk_uxb, iphys%i_chk_uxb_2,         &
-     &        i_drmax_b, nod_fld1%d_fld)
+     &        i_drmax_b, nod_fld%d_fld)
         else
           if(iflag_debug .gt. izero)                                    &
      &      write(*,*) 'check_vector_evo_by_previous magne'
           call check_vector_evo_by_previous                             &
-     &       (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,   &
+     &       (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,      &
      &        iphys%i_magne, iphys%i_chk_uxb, iphys%i_chk_uxb_2,        &
-     &        i_drmax_b, nod_fld1%d_fld)
+     &        i_drmax_b, nod_fld%d_fld)
         end if
       end if
 !
@@ -76,9 +82,9 @@
         if(iflag_debug .gt. izero)                                      &
      &      write(*,*) 'check_scalar_evo_by_previous mag_p'
         call check_scalar_evo_by_previous                               &
-     &     (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,     &
+     &     (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,        &
      &      iphys%i_mag_p, iphys%i_chk_potential,                       &
-     &      iphys%i_chk_potential_2, i_drmax_f, nod_fld1%d_fld)
+     &      iphys%i_chk_potential_2, i_drmax_f, nod_fld%d_fld)
       end if
 !
 !
@@ -86,16 +92,16 @@
         if(iflag_debug .gt. izero)                                      &
      &      write(*,*) 'check_scalar_evo_by_previous temp'
         call check_scalar_evo_by_previous                               &
-     &     (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,     &
+     &     (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,        &
      &      iphys%i_temp, iphys%i_chk_heat, iphys%i_chk_heat_2,         &
-     &      i_drmax_t, nod_fld1%d_fld)
+     &      i_drmax_t, nod_fld%d_fld)
       end if
 !
       if(i_drmax_d .gt. izero) then
         call check_scalar_evo_by_previous                               &
-     &     (node1%numnod, node1%istack_nod_smp, nod_fld1%ntot_phys,     &
+     &     (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,        &
      &      iphys%i_light, iphys%i_chk_composit,                        &
-     &      iphys%i_chk_composit_2, i_drmax_d, nod_fld1%d_fld)
+     &      iphys%i_chk_composit_2, i_drmax_d, nod_fld%d_fld)
       end if
 !$omp end parallel
 !
@@ -110,9 +116,9 @@
         end do
       end do
 !
-      call MPI_allREDUCE (d_ratio_max_l, d_ratio_max, ntot_dratio,  &
+      call MPI_allREDUCE (d_ratio_max_l, d_ratio_max, ntot_dratio,      &
      &    CALYPSO_REAL, MPI_MAX, CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE (d_ratio_min_l, d_ratio_min, ntot_dratio,  &
+      call MPI_allREDUCE (d_ratio_min_l, d_ratio_min, ntot_dratio,      &
      &    CALYPSO_REAL, MPI_MIN, CALYPSO_COMM, ierr_MPI)
 !
 !

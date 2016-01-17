@@ -99,7 +99,9 @@
 !
 !
       call cal_vecp_induction
-      call cal_sgs_uxb_2_monitor
+      call cal_sgs_uxb_2_monitor(i_dvx, nod_comm, node1, ele1,          &
+     &    conduct1, iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,    &
+     &    FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
       call interpolate_vector_type                                      &
      &   (iphys%i_vp_induct,  iphys_sph%i_vp_induct,                    &

@@ -83,10 +83,17 @@
       subroutine update_with_velocity(layer_tbl)
 !
       use m_t_step_parameter
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
+      use m_geometry_data_MHD
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
+      use m_jacobian_sf_grp
+      use m_element_id_4_node
       use m_geometry_data_MHD
+      use m_filter_elength
       use m_SGS_model_coefs
       use m_SGS_address
 !
@@ -171,14 +178,18 @@
      &         mhd_fem1_wk)
          end if
 !
-         if (iflag_commute_velo .eq. id_SGS_commute_ON                  &
+        if (iflag_commute_velo .eq. id_SGS_commute_ON                  &
      &         .and. iflag_diff_coefs(iak_diff_v) .eq. 0) then
-           if(iflag_debug .ge. iflag_routine_msg)                       &
+          if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 's_cal_diff_coef_velo'
-           call s_cal_diff_coef_velo(layer_tbl)
-         end if
+          call s_cal_diff_coef_velo                                     &
+     &       (nod_comm, node1, ele1, surf1, sf_grp1,                    &
+     &        iphys, iphys_ele, fld_ele1, fluid1, layer_tbl,            &
+     &        jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,         &
+     &        FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+        end if
 !
-       end if
+      end if
 !
 !   required field for gradient model
 !
@@ -200,9 +211,16 @@
       subroutine update_with_temperature(layer_tbl)
 !
       use m_t_step_parameter
+      use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
+      use m_geometry_data_MHD
       use m_node_phys_data
       use m_element_phys_data
+      use m_jacobians
+      use m_jacobian_sf_grp
+      use m_element_id_4_node
+      use m_filter_elength
       use m_SGS_model_coefs
       use m_SGS_address
 !
@@ -305,7 +323,12 @@
 !
              if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
                if (iflag_debug.gt.0)  write(*,*) 's_cal_diff_coef_temp'
-               call s_cal_diff_coef_temp(layer_tbl)
+               call s_cal_diff_coef_temp                                &
+     &            (nod_comm, node1, ele1, surf1, sf_grp1,               &
+     &             iphys, iphys_ele, fld_ele1, fluid1, layer_tbl,       &
+     &             jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,    &
+     &             FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,        &
+     &             nod_fld1)
              end if
            end if
 !
@@ -329,11 +352,11 @@
       use m_jacobians
       use m_jacobian_sf_grp
       use m_element_id_4_node
-      use m_SGS_address
+      use m_filter_elength
       use m_surf_data_vector_p
       use m_bc_data_magne
+      use m_SGS_address
       use m_SGS_model_coefs
-      use m_filter_elength
 !
       use average_on_elements
       use cal_rotation_sgs
@@ -382,15 +405,13 @@
 !
         if ( iflag_diff_coefs(iak_diff_b) .eq. 0) then
           if(iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-            if (iflag_SGS_model .eq. id_SGS_NL_grad) then
-              if(iflag_debug.gt.0)                                      &
-     &                   write(*,*) 's_cal_diff_coef_vector_p'
-              call s_cal_diff_coef_vector_p(layer_tbl)
-!
-            else if (iflag_SGS_model .eq. id_SGS_similarity) then
-              if(iflag_debug.gt.0)                                      &
-     &                   write(*,*) 's_cal_diff_coef_vector_p'
-              call s_cal_diff_coef_vector_p(layer_tbl)
+            if (iflag_SGS_model .eq. id_SGS_NL_grad                     &
+     &        .or. iflag_SGS_model .eq. id_SGS_similarity) then
+              call s_cal_diff_coef_vector_p                             &
+     &           (nod_comm, node1, ele1, surf1, sf_grp1,                &
+     &            iphys, iphys_ele, fld_ele1, layer_tbl,                &
+     &            jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,     &
+     &            FEM1_elen, m1_lump, fem1_wk, f1_l, f1_nl, nod_fld1)
             end if
 !
           end if
@@ -504,11 +525,17 @@
        subroutine update_with_magnetic_field(layer_tbl)
 !
       use m_t_step_parameter
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
+      use m_jacobian_sf_grp
+      use m_element_id_4_node
       use m_SGS_model_coefs
       use m_SGS_address
+      use m_filter_elength
 !
       use average_on_elements
       use cal_filtering_vectors
@@ -585,15 +612,14 @@
        end if
 !
 !
-       if(iflag_commute_magne .eq. id_SGS_commute_ON                    &
+      if(iflag_commute_magne .eq. id_SGS_commute_ON                     &
      &     .and. iflag_diff_coefs(iak_diff_b) .eq. 0) then
-         if (iflag2.eq.2) then
-           if (iflag_debug.gt.0) write(*,*) 's_cal_diff_coef_magne'
-           call s_cal_diff_coef_magne(layer_tbl)
-!
-         else if (iflag2.eq.3) then
-           if (iflag_debug.gt.0) write(*,*) 's_cal_diff_coef_magne'
-           call s_cal_diff_coef_magne(layer_tbl)
+        if (iflag2.eq.2 .or. iflag2.eq.3) then
+          if (iflag_debug.gt.0) write(*,*) 's_cal_diff_coef_magne'
+          call s_cal_diff_coef_magne(nod_comm, node1, ele1, surf1,      &
+     &        sf_grp1, iphys, iphys_ele, fld_ele1, layer_tbl,           &
+     &        jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,         &
+     &        FEM1_elen, m1_lump, fem1_wk, f1_l, f1_nl, nod_fld1)
          end if
        end if
  !
@@ -677,7 +703,12 @@
 !
 !             if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
 !               if (iflag_debug.gt.0)  write(*,*) 's_cal_diff_coef_temp'
-!               call s_cal_diff_coef_temp(layer_tbl)
+!               call s_cal_diff_coef_temp                               &
+!     &             (nod_comm, node1, ele1, surf1, sf_grp1,             &
+!     &              iphys, iphys_ele, fld_ele1, fluid1, layer_tbl,     &
+!     &              jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,  &
+!     &              FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,      &
+!     &              nod_fld1)
 !             end if
 !
 !           end if

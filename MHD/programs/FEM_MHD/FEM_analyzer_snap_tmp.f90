@@ -60,9 +60,18 @@
      &          istep_pvr, istep_fline, visval)
 !
       use m_control_parameter
+      use m_geometry_data_MHD
       use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
       use m_node_phys_data
+      use m_element_phys_data
+      use m_jacobians
+      use m_jacobian_sf_grp
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_filter_elength
+      use m_int_vol_data
       use m_layering_ele_list
 !
       use read_udt_4_snapshot
@@ -125,7 +134,12 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients(layer_tbl1)
+        call s_cal_model_coefficients(i_dvx, i_dbx, i_dfvx, i_dfbx,     &
+     &      nod_comm, node1, ele1, surf1, sf_grp1, iphys,               &
+     &      iphys_ele, fld_ele1, fluid1, conduct1, layer_tbl1,          &
+     &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
+     &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
+     &      f1_l, f1_nl, nod_fld1)
       end if
 !
 !     ========  Data output
@@ -191,6 +205,7 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
+      use m_jacobian_sf_grp
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_int_vol_data
@@ -207,7 +222,7 @@
       use int_sgs_induction
       use cal_momentum_terms
       use cal_sgs_4_monitor
-      use monitor_sgs_terms
+      use int_sgs_induction
 !
 !
 !$omp parallel
@@ -228,8 +243,9 @@
      &        'lead radial', trim(fhd_div_SGS_m_flux)
         call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,               &
      &    nod_comm, node1, ele1, surf1, fluid1, sf_grp1,                &
-     &    iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,   &
-     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &    iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,      &
+     &    rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,       &
+     &    nod_fld1)
       end if
 !
 !$omp parallel
@@ -252,13 +268,18 @@
       if (iphys%i_SGS_vp_induct .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_vp_induct)
-        call cal_sgs_uxb_2_monitor
+        call cal_sgs_uxb_2_monitor(i_dvx, nod_comm, node1, ele1,        &
+     &      conduct1, iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,  &
+     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+
       end if
 !
       if (iphys%i_SGS_induction .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
-        call int_vol_sgs_induction
+        call int_vol_sgs_induction                                      &
+     &     (nod_comm, node1, ele1, conduct1, iphys, jac1_3d_q,          &
+     &      rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_nl, nod_fld1)
       end if
 !
 !$omp parallel
