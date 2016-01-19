@@ -122,7 +122,7 @@
       type(pvr_image_type), intent(inout) :: pvr_img
 !
 !
-      if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
+      if(iflag_debug .gt. 0) write(*,*) 'ray_trace_local'
       call ray_trace_local(numnod, numele, numsurf, nnod_4_surf,        &
      &       ie_surf, isf_4_ele, iele_4_surf, interior_ele, xx,         &
      &       view_param%viewpoint_vec, field_pvr%x_nod_model,           &
@@ -226,6 +226,7 @@
       type(pvr_image_type), intent(inout) :: pvr_img
 !
 !
+      if(iflag_debug .gt. 0) write(*,*) 'set_each_pvr_ray_start'
       call set_each_pvr_ray_start(numnod, numele, numsurf,              &
      &    nnod_4_surf, xx, ie_surf, isf_4_ele, field_pvr%x_nod_model,   &
      &    pixel_xy%num_pixel_x, pixel_xy%num_pixel_y,                   &
@@ -240,6 +241,7 @@
      &    pvr_start%xi_pvr_start, pvr_start%xx_pvr_start,               &
      &    pvr_start%xx_pvr_ray_start, pvr_start%pvr_ray_dir)
 !
+      if(iflag_debug .gt. 0) write(*,*) 's_ray_trace_4_each_image'
       call s_ray_trace_4_each_image                                     &
      &   (numnod, numele, numsurf, nnod_4_surf, ie_surf,                &
      &    isf_4_ele, iele_4_surf, interior_ele, xx,                     &
@@ -250,6 +252,7 @@
      &    pvr_start%xx_pvr_start, pvr_start%xx_pvr_ray_start,           &
      &    pvr_start%rgba_ray)
 !
+      if(iflag_debug .gt. 0) write(*,*) 'blend_overlapped_area'
       call blend_overlapped_area(pvr_start%num_pvr_ray,                 &
      &    pvr_start%id_pixel_start, pvr_start%xx_pvr_ray_start,         &
      &    pvr_start%rgba_ray, pvr_img%num_pixel_xy,                     &

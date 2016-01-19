@@ -21,6 +21,7 @@
 !
       use calypso_mpi
       use m_constants
+      use m_machine_parameter
 !
       implicit  none
 !
@@ -87,21 +88,25 @@
       call alloc_pvr_image_comm_status
 !
 ! -- Set Average depth for each subdomain
+      if(iflag_debug .gt. 0) write(*,*) 'distribute_average_depth'
       call distribute_average_depth                                     &
      &   (pvr_img%num_pixel_xy, pvr_img%iflag_mapped, pvr_img%depth_lc, &
      &    pvr_img%ip_farther, pvr_img%ave_depth_gl)
 !
 ! Distribute image
+      if(iflag_debug .gt. 0) write(*,*) 'distribute_segmented_images'
       call distribute_segmented_images                                  &
      &   (pvr_img%num_pixel_xy, pvr_img%rgba_lc,                        &
      &    pvr_img%istack_image, pvr_img%npixel_local, pvr_img%rgba_part)
 !
 !  Alpha blending
+      if(iflag_debug .gt. 0) write(*,*) 'blend_image_from_subdomains'
       call blend_image_from_subdomains                                  &
      &   (pvr_img%ip_farther, pvr_img%npixel_local,                     &
      &    pvr_img%rgba_part, pvr_img%rgba_real_part)
 !
 !  Collect image to rank 0
+      if(iflag_debug .gt. 0) write(*,*) 'collect_segmented_images'
       call collect_segmented_images                                     &
      &   (irank_tgt, pvr_img%npixel_local, pvr_img%istack_image,        &
      &    pvr_img%num_pixel_xy, pvr_img%rgba_real_part,                 &
@@ -195,7 +200,7 @@
 !
       integer(kind = kint), intent(in) :: ip_farther(nprocs)
       integer(kind = kint), intent(in) :: npixel_local
-      real(kind = kreal), intent(in)                                    &
+      real(kind = kreal), intent(inout)                                 &
      &             :: rgba_part(4,npixel_local,nprocs)
       real(kind = kreal), intent(inout)                                 &
      &             :: rgba_real_part(4,npixel_local)

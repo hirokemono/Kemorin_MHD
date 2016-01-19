@@ -74,11 +74,12 @@
      &                    ::  rgba_ray(4,num_pvr_ray)
 !
       integer(kind = kint) :: inum, iflag_comm
+      real(kind = kreal) :: rgba_tmp(4)
 !
 !
-!$omp parallel do private(inum, iflag_comm)
+!$omp parallel do private(inum, iflag_comm,rgba_tmp)
       do inum = 1, num_pvr_ray
-          rgba_ray(1:4,inum) = zero
+        rgba_tmp(1:4) = zero
           call ray_trace_each_pixel                                     &
      &      (numnod, numele, numsurf, nnod_4_surf, ie_surf,             &
      &       isf_4_ele, iele_4_surf, interior_ele, xx,                  &
@@ -86,7 +87,8 @@
      &       viewpoint_vec, color_param, ray_vec,                       &
      &       isf_pvr_ray_start(1,inum), xx_pvr_ray_start(1,inum),       &
      &       xx_pvr_start(1,inum), xi_pvr_start(1,inum),                &
-     &       rgba_ray(1,inum), icount_pvr_trace(inum), iflag_comm)
+     &       rgba_tmp(1), icount_pvr_trace(inum), iflag_comm)
+        rgba_ray(1:4,inum) = rgba_tmp(1:4)
       end do
 !$omp end parallel do
 !

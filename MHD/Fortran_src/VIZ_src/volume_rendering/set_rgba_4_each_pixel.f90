@@ -177,20 +177,25 @@
       real(kind = kreal), intent(inout) :: accum_rgba(4)
 !
       integer(kind = kint) :: j
+      real(kind = kreal) :: dist
       real(kind = kreal) :: cosalpha, costheta
-      real(kind = kreal) :: lp(3), vp(3), hp(3)
+      real(kind = kreal), allocatable :: lp(:), vp(:), hp(:)
       real(kind = kreal) :: lp_norm, vp_norm, hp_norm, norm
       real(kind = kreal) :: inprodLN, inprodVN, inprodHN
-      real(kind = kreal) :: length, coff_i
-      real(kind = kreal) :: rgb(4), coef, vo(3), x_mid(3)
+      real(kind = kreal) :: length, coff_i, coef
+      real(kind = kreal), allocatable :: rgb(:), vo(:), x_mid(:)
 !
+      allocate(rgb(4), vo(3), x_mid(3))
+      allocate(lp(3), vp(3), hp(3))
 !
-      rgb(1:3) = zero
+      rgb(1:4) = zero
       x_mid(1:3) = half*(out_point(1:3) +  in_point(1:3))
       vo(1:3) = view_point_d(1:3) - norm_v(1:3)
-      length = sqrt( (out_point(1)-in_point(1))**2                      &
-     &             + (out_point(2)-in_point(2))**2                      &
-     &             + (out_point(3)-in_point(3))**2 )
+!
+      dist = (out_point(1)-in_point(1))**2                              &
+    &      + (out_point(2)-in_point(2))**2                              &
+    &      + (out_point(3)-in_point(3))**2
+      length = sqrt(dist)
       coff_i = (length / tav_length)
 !
       do j = 1, num_of_lights
@@ -231,6 +236,7 @@
       rgb(4) =   opa_current*coff_i
 !
       call composite_alpha_blending(rgb, accum_rgba)
+      deallocate(rgb, vo, x_mid, lp, vp, hp)
 !
       end subroutine rendering_with_light
 !
