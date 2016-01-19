@@ -161,7 +161,7 @@
           end if
         end if
 !
-        if(band_lu(3,n).eq.0.0d0) band_lu(3,n) = TINY
+        if(band_lu(3,j).eq.0.0d0) band_lu(3,j) = TINY
         dum = 1.0d0/band_lu(3,j)
         if (j .lt. n) band_lu(4,j) = band_lu(4,j)*dum
 !
