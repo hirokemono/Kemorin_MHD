@@ -18,7 +18,8 @@
 !!     &          bc_field_name, ibc_field_type, bc_field_mag,          &
 !!     &          ibc, ibc2, num_bc_nod, ibc_id, bc_apt, iref, ii)
 !!      subroutine set_sph_magne_id(node, nod_grp, num_bc_field,        &
-!!     &          bc_field_name, ibc_field_type, nod_bc_b, l_f)
+!!     &          bc_field_name, ibc_field_type, nod_bc_b, i_magne,     &
+!!     &          l_f, nod_fld)
 !
       module set_nod_bc_vector_id
 !
@@ -188,21 +189,23 @@
 !  ---------------------------------------------------------------------
 !
       subroutine set_sph_magne_id(node, nod_grp, num_bc_field,          &
-     &          bc_field_name, ibc_field_type, nod_bc_b, l_f)
+     &          bc_field_name, ibc_field_type, nod_bc_b, i_magne,       &
+     &          l_f, nod_fld)
 !
-      use t_geometry_data
       use t_nodal_bc_data
-      use m_node_phys_data
+      use t_phys_data
       use set_radial_magne_sph
 !
       type(node_data), intent(in) :: node
       type(group_data), intent(in) :: nod_grp
+      integer (kind=kint), intent(in) :: i_magne
       integer (kind=kint), intent(in) :: num_bc_field
       integer (kind=kint), intent(in) :: ibc_field_type(num_bc_field)
       character (len=kchara), intent(in) :: bc_field_name(num_bc_field)
 !
       integer (kind = kint), intent(inout) :: l_f(3)
       type(vect_fixed_nod_bc_type), intent(inout) :: nod_bc_b
+      type(phys_data), intent(inout) :: nod_fld
 !
       integer (kind = kint) :: i, j
 !
@@ -214,8 +217,7 @@
 !
             if ( ibc_field_type(j) == 999 ) then
               call set_r_magne_sph(node, nod_grp, l_f, i, j,            &
-     &            nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld,    &
-     &            nod_bc_b)
+     &            nod_fld%ntot_phys, i_magne, nod_fld%d_fld, nod_bc_b)
             end if
 !
           end if

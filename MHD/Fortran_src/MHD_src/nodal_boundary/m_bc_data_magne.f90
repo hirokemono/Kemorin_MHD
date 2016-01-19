@@ -5,7 +5,7 @@
 !     Written by Kemorin
 !
 !!      subroutine set_bc_vect_p_id(node, ele, nod_grp)
-!!      subroutine set_bc_magne_id(node, ele, nod_grp)
+!!      subroutine set_bc_magne_id(node, ele, nod_grp, nod_fld)
 !!      subroutine set_bc_current_id(node, ele, nod_grp)
 !!      subroutine set_bc_m_potential_id(node, ele, nod_grp)
 !!        type(node_data), intent(in) :: node
@@ -81,10 +81,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_magne_id(node, ele, nod_grp)
+      subroutine set_bc_magne_id(node, ele, nod_grp, iphys, nod_fld)
 !
       use t_geometry_data
       use t_group_data
+      use t_phys_data
+      use t_phys_address
       use m_bc_data_list
       use m_boundary_condition_IDs
       use count_num_nod_bc_MHD
@@ -94,6 +96,8 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(group_data), intent(in) :: nod_grp
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
       call count_num_bc_magne(iflag_bc_fixed, nod_grp,                  &
@@ -109,7 +113,7 @@
       nod_bc1_b%vect_bc_name(3) = 'magnetic_z'
 !
       call set_bc_fixed_magne_id(node, nod_grp, magne_nod,              &
-     &    nod_bc1_b, sgs_bc1_b)
+     &    iphys%i_magne, nod_bc1_b, sgs_bc1_b, nod_fld)
 !
 !   set node id in an element for magnetic boundary 
 !

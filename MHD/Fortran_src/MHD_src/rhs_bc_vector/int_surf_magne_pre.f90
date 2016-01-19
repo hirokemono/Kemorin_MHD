@@ -3,13 +3,23 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!!      subroutine int_surf_magne_pre_ele(node, ele, surf, sf_grp)
-!!      subroutine int_surf_magne_monitor                               &
-!!     &         (node, ele, surf, sf_grp, i_field)
+!!      subroutine int_surf_magne_pre_ele(node, ele, surf, sf_grp,      &
+!!     &          iphys, nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,          &
+!!     &          FEM1_elen, fem1_wk, f1_l, f1_nl)
+!!      subroutine int_surf_magne_monitor(i_field, node, ele, surf,     &
+!!     &          sf_grp, iphys, nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,  &
+!!     &          FEM1_elen, fem1_wk, f1_l, f1_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_data), intent(in) :: nod_fld1
+!!        type(jacobians_2d), intent(in) :: jac1_sf_grp_2d_q
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
+!!        type(gradient_model_data_type), intent(in) :: FEM1_elen
+!!        type(work_finite_element_mat), intent(inout) :: fem1_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f1_l, f1_nl
 !
       module int_surf_magne_pre
 !
@@ -18,14 +28,14 @@
       use t_geometry_data
       use t_surface_data
       use t_group_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_2d
+      use t_table_FEM_const
+      use t_finite_element_mat
 !
       use m_control_parameter
       use m_phys_constants
-      use m_node_phys_data
-      use m_element_id_4_node
-      use m_jacobian_sf_grp
-      use m_filter_elength
-      use m_finite_element_matrix
       use m_surf_data_magne
 !
       use int_surf_div_induct_tsr_sgs
@@ -39,12 +49,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_surf_magne_pre_ele(node, ele, surf, sf_grp)
+      subroutine int_surf_magne_pre_ele(node, ele, surf, sf_grp,        &
+     &          iphys, nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,            &
+     &          FEM1_elen, fem1_wk, f1_l, f1_nl)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld1
+      type(jacobians_2d), intent(in) :: jac1_sf_grp_2d_q
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
+      type(gradient_model_data_type), intent(in) :: FEM1_elen
+!
+      type(work_finite_element_mat), intent(inout) :: fem1_wk
+      type(finite_ele_mat_node), intent(inout) :: f1_l, f1_nl
 !
 !
       call int_sf_grad_velocity(node, ele, surf, sf_grp,                &
@@ -73,13 +93,22 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_surf_magne_monitor                                 &
-     &         (node, ele, surf, sf_grp, i_field)
+      subroutine int_surf_magne_monitor(i_field, node, ele, surf,       &
+     &          sf_grp, iphys, nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1,    &
+     &          FEM1_elen, fem1_wk, f1_l, f1_nl)
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld1
+      type(jacobians_2d), intent(in) :: jac1_sf_grp_2d_q
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
+      type(gradient_model_data_type), intent(in) :: FEM1_elen
+!
+      type(work_finite_element_mat), intent(inout) :: fem1_wk
+      type(finite_ele_mat_node), intent(inout) :: f1_l, f1_nl
 !
       integer(kind= kint), intent(in) :: i_field
 !

@@ -32,6 +32,7 @@
       use t_comm_table
       use t_geometry_data
       use t_phys_data
+      use t_phys_address
       use t_jacobian_3d
       use t_finite_element_mat
       use t_filter_elength

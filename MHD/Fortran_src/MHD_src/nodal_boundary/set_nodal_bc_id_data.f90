@@ -83,7 +83,7 @@
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &
      &  .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*)  'set boundary ID 4 magne'
-        call set_bc_magne_id(node, ele, nod_grp)
+        call set_bc_magne_id(node, ele, nod_grp, iphys, nod_fld)
         if (iflag_debug.eq.1)  write(*,*) 'set boundary ID 4 magne_p'
         call set_bc_m_potential_id(node, ele, nod_grp)
         if (iflag_debug.eq.1)  write(*,*) 'set boundary ID 4 current'
