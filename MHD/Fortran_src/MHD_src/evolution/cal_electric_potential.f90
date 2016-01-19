@@ -69,9 +69,8 @@
 !     &      iphys%i_vecp, fem1_wk, f1_l)
 !      end if
 !
-      call int_surf_normal_vector_p                                     &
-     &   (node1, ele1, surf1, sf_grp1, nod_fld1, jac1_sf_grp_2d_l,      &
-     &    rhs_tbl1, fem1_wk, f1_l)
+      call int_surf_normal_vector_p(iphys%i_vecp, node1, ele1, surf1,   &
+     &    sf_grp1, nod_fld1, jac1_sf_grp_2d_l, rhs_tbl1, fem1_wk, f1_l)
 !
       call int_vol_sk_mp_bc(iphys%i_m_phi, node1, ele1, nod_fld1,       &
      &    jac1_3d_l, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)

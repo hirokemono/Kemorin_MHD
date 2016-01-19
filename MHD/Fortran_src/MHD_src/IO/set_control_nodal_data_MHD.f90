@@ -33,9 +33,9 @@
       use calypso_mpi
       use m_error_IDs
       use m_node_phys_data
+      use m_element_phys_data
 !
       use set_control_nodal_data
-      use set_ele_field_names_MHD
       use add_nodal_fields_4_MHD
 !
       integer(kind = kint) :: ierr
@@ -64,7 +64,7 @@
         call s_set_control_nodal_data(nod_fld1, ierr)
       end if
 !
-      call s_set_ele_field_names_MHD
+      call set_ele_field_names_MHD
 !
       end subroutine set_control_4_fields
 !

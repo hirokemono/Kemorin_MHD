@@ -20,11 +20,7 @@
       use calypso_mpi
       use m_machine_parameter
       use m_control_parameter
-!      use m_geometry_data
-!      use m_node_phys_data
-!      use m_jacobians
-!      use m_finite_element_matrix
-      use m_bulk_values
+      use m_mean_square_values
 !
       use t_geometry_data_MHD
       use t_geometry_data

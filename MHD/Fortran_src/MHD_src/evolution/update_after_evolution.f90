@@ -118,15 +118,23 @@
       if (iphys_ele%i_velo .ne. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'velocity_on_element'
-        call velocity_on_element
+        call vector_on_element_1st(node1, ele1, jac1_3d_q,              &
+     &      fluid1%istack_ele_fld_smp, intg_point_t_evo,                &
+     &      nod_fld1%ntot_phys, iphys%i_velo, nod_fld1%d_fld,           &
+     &      fld_ele1%ntot_phys, iphys_ele%i_velo,                       &
+     &      fld_ele1%iflag_update, fld_ele1%d_fld)
       end if
 !
        if ( iflag_4_rotate .eq. id_turn_ON                              &
      &      .and. iphys_ele%i_vort .ne. 0) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &                 write(*,*) 'vorticity_on_element'
-        call vorticity_on_element
-       end if
+        call rotation_on_element_1st(node1, ele1, jac1_3d_q,            &
+     &      fluid1%istack_ele_fld_smp, intg_point_t_evo,                &
+     &      nod_fld1%ntot_phys, iphys%i_velo, nod_fld1%d_fld,           &
+     &      fld_ele1%ntot_phys, iphys_ele%i_vort,                       &
+     &      fld_ele1%iflag_update, fld_ele1%d_fld)
+      end if
 !
 !   required field for explicit filtering
 !
@@ -420,26 +428,34 @@
 !
 !   lead magnetic field
 !
-       if (iphys%i_magne .ne. 0) then
-         if (iflag_debug.gt.0) write(*,*) 'cal_magnetic_f_by_vect_p'
-         call choose_cal_rotation_sgs                                   &
+      if (iphys%i_magne .ne. 0) then
+        if (iflag_debug.gt.0) write(*,*) 'cal_magnetic_f_by_vect_p'
+        call choose_cal_rotation_sgs                                    &
      &     (iflag_commute_magne, iflag_mag_supg,                        &
      &      iak_diff_b, iphys%i_vecp, iphys%i_magne,                    &
      &      ele1%istack_ele_smp, m1_lump,                               &
      &      nod_comm, node1, ele1, surf1, sf_grp1, iphys_ele, fld_ele1, &
      &      jac1_3d_q, jac1_sf_grp_2d_q, FEM1_elen, nod_bc1_b,          &
      &      sf_sgs1_grad_a, rhs_tbl1, fem1_wk, f1_nl, nod_fld1)
-       end if
-       if (iphys_ele%i_magne .ne. 0) then
-         if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'
-         call rot_magne_on_element
-       end if
+      end if
+      if (iphys_ele%i_magne .ne. 0) then
+        if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'
+        call rotation_on_element_1st(node1, ele1, jac1_3d_q,            &
+     &      ele1%istack_ele_smp, intg_point_t_evo,                      &
+     &      nod_fld1%ntot_phys, iphys%i_vecp, nod_fld1%d_fld,           &
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne,                      &
+     &      fld_ele1%iflag_update, fld_ele1%d_fld)
+      end if
 !
-       if (iphys_ele%i_current .ne. 0                                   &
+      if (iphys_ele%i_current .ne. 0                                    &
      &     .and. iflag_4_rotate .eq. id_turn_ON) then
-         if (iflag_debug.gt.0) write(*,*) 'current_on_element'
-         call current_on_element
-       end if
+        if (iflag_debug.gt.0) write(*,*) 'current_on_element'
+        call rotation_on_element_1st(node1, ele1, jac1_3d_q,            &
+     &      conduct1%istack_ele_fld_smp, intg_point_t_evo,              &
+     &      nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld,          &
+     &      fld_ele1%ntot_phys, iphys_ele%i_current,                    &
+     &      fld_ele1%iflag_update, fld_ele1%d_fld)
+      end if
 !
 !   required field for explicit filtering
 !
@@ -477,12 +493,15 @@
            nod_fld1%iflag_update(iphys%i_filter_magne+2) = 1
          end if
 !
-           if (iflag_debug .ge. iflag_routine_msg) write(*,*)           &
-     &         'filtered_magne_on_ele', iphys_ele%i_filter_magne
          if (iphys_ele%i_filter_magne .ne. 0) then
            if (iflag_debug .ge. iflag_routine_msg) write(*,*)           &
      &                         'filtered_magne_on_ele'
-           call filtered_magne_on_ele
+            call vector_on_element_1st(node1, ele1, jac1_3d_q,          &
+     &          ele1%istack_ele_smp, intg_point_t_evo,                  &
+     &          nod_fld1%ntot_phys, iphys%i_filter_magne,               &
+     &          nod_fld1%d_fld, fld_ele1%ntot_phys,                     &
+     &          iphys_ele%i_filter_magne, fld_ele1%iflag_update,        &
+     &          fld_ele1%d_fld)
          end if
 !
          if(iflag2.eq.2 .and. i_dfbx.ne.0) then
@@ -525,6 +544,7 @@
        subroutine update_with_magnetic_field(layer_tbl)
 !
       use m_t_step_parameter
+      use m_geometry_data_MHD
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
@@ -554,7 +574,11 @@
       end if
 !
       if (iphys_ele%i_magne .ne. 0) then
-       call magnetic_on_element
+        call vector_on_element_1st(node1, ele1, jac1_3d_q,              &
+     &      ele1%istack_ele_smp, intg_point_t_evo,                      &
+     &      nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld,          &
+     &      fld_ele1%ntot_phys, iphys_ele%i_magne,                      &
+     &      fld_ele1%iflag_update, fld_ele1%d_fld)
       end if
 !
 !
@@ -591,7 +615,12 @@
 !
          if (iflag2.eq.2 .and. iphys_ele%i_filter_magne.ne.0) then
            if (iflag_debug.gt.0) write(*,*) 'filtered_magne_on_ele'
-           call filtered_magne_on_ele
+            call vector_on_element_1st(node1, ele1, jac1_3d_q,          &
+     &          ele1%istack_ele_smp, intg_point_t_evo,                  &
+     &          nod_fld1%ntot_phys, iphys%i_filter_magne,               &
+     &          nod_fld1%d_fld, fld_ele1%ntot_phys,                     &
+     &          iphys_ele%i_filter_magne, fld_ele1%iflag_update,        &
+     &          fld_ele1%d_fld)
          end if
 !
          if (iflag2.eq.2 .and. i_dfbx.ne.0) then
@@ -635,11 +664,21 @@
         end if
        end if
 !
-       if (iphys_ele%i_current .ne. 0                                   &
+      if (iphys_ele%i_current .ne. 0                                    &
      &     .and. iflag_4_rotate .eq. id_turn_ON) then
          if (iflag_debug.gt.0)  write(*,*) 'current_on_element'
-         call current_on_element
-       end if
+        call rotation_on_element_1st(node1, ele1, jac1_3d_q,            &
+     &      conduct1%istack_ele_fld_smp, intg_point_t_evo,              &
+     &      nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld,          &
+     &      fld_ele1%ntot_phys, iphys_ele%i_current,                    &
+     &      fld_ele1%iflag_update, fld_ele1%d_fld)
+      end if
+!
+!      call rotation_on_element_1st(node1, ele1, jac1_3d_q,             &
+!     &    ele1%istack_ele_smp, intg_point_t_evo,                       &
+!     &    nod_fld1%ntot_phys, iphys%i_filter_vecp, nod_fld1%d_fld,     &
+!     &    fld_ele1%ntot_phys, iphys_ele%i_filter_magne,                &
+!     &    fld_ele1%iflag_update, fld_ele1%d_fld)
 !
        end subroutine update_with_magnetic_field
 !
@@ -648,6 +687,7 @@
       subroutine update_with_dummy_scalar(layer_tbl)
 !
       use m_t_step_parameter
+      use m_geometry_data
       use m_node_phys_data
       use m_SGS_model_coefs
       use m_SGS_address

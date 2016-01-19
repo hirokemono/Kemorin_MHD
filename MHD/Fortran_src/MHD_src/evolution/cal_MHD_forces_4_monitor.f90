@@ -104,8 +104,9 @@
      &             write(*,*) 'lead  ', trim(fhd_heat_advect)
         call cal_terms_4_heat                                           &
      &     (iphys%i_h_advect, nod_comm, node1, ele1, surf1, fluid1,     &
-     &      sf_grp1, iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,   &
-     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      sf_grp1, iphys, iphys_ele, fld_ele1,                        &
+     &      jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,           &
+     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
       if (iphys%i_ph_advect .gt. izero) then
@@ -113,8 +114,9 @@
      &             write(*,*) 'lead  ', trim(fhd_part_h_advect)
         call cal_terms_4_heat                                           &
      &     (iphys%i_ph_advect, nod_comm, node1, ele1, surf1, fluid1,    &
-     &      sf_grp1, iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,   &
-     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      sf_grp1, iphys, iphys_ele, fld_ele1,                        &
+     &      jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,           &
+     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
       if (iphys%i_h_flux_div .gt. izero) then
@@ -122,8 +124,9 @@
      &             write(*,*) 'lead  ', trim(fhd_div_h_flux)
         call cal_terms_4_heat                                           &
      &     (iphys%i_h_flux_div, nod_comm, node1, ele1, surf1, fluid1,   &
-     &      sf_grp1, iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,   &
-     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      sf_grp1, iphys, iphys_ele, fld_ele1,                        &
+     &      jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,           &
+     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
       if (iphys%i_ph_flux_div .gt. izero) then
@@ -131,8 +134,9 @@
      &             write(*,*) 'lead  ', trim(fhd_div_ph_flux)
         call cal_terms_4_heat                                           &
      &     (iphys%i_ph_flux_div, nod_comm, node1, ele1, surf1, fluid1,  &
-     &      sf_grp1, iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,   &
-     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      sf_grp1, iphys, iphys_ele, fld_ele1,                        &
+     &      jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,           &
+     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
 !
@@ -251,16 +255,18 @@
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_thermal_diffusion)
         call cal_thermal_diffusion(nod_comm, node1, ele1, surf1,        &
-     &      fluid1, sf_grp1, iphys, jac1_3d_q, rhs_tbl1, FEM1_elen,     &
-     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &      fluid1, sf_grp1, iphys, jac1_3d_q, jac1_sf_grp_2d_q,        &
+     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
+     &      nod_fld1)
       end if
 !
 !      if (iphys%i_t_diffuse .gt. izero) then
 !        if(iflag_debug .ge. iflag_routine_msg)                         &
 !     &             write(*,*) 'lead  ', trim(fhd_thermal_diffusion)
 !        call cal_thermal_diffusion(nod_comm, node1, ele1, surf1,       &
-!     &      fluid1, sf_grp1, iphys, jac1_3d_q, rhs_tbl1, FEM1_elen,    &
-!     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+!     &      fluid1, sf_grp1, iphys, jac1_3d_q, jac1_sf_grp_2d_q,       &
+!     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,    &
+!     &      nod_fld1)
 !      end if
 !
       if (iphys%i_v_diffuse .gt. izero) then

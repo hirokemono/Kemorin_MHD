@@ -31,14 +31,10 @@
       use m_constants
       use calypso_mpi
       use m_control_parameter
-!      use m_geometry_data
       use m_geometry_data_MHD
-!      use m_finite_element_matrix
       use m_fem_gauss_int_coefs
-!      use m_int_vol_data
       use m_phys_labels
-!      use m_node_phys_data
-      use m_bulk_values
+      use m_mean_square_values
       use int_all_energy
       use int_all_ave_tensors
 !

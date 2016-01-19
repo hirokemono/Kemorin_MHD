@@ -18,6 +18,7 @@
       use m_element_phys_data
       use m_geometry_data_MHD
       use m_jacobians
+      use m_jacobian_sf_grp
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_int_vol_data
@@ -59,7 +60,9 @@
      &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_nl)
       end if
 !
-      call int_surf_magne_monitor(node1, ele1, surf1, sf_grp1, i_field)
+      call int_surf_magne_monitor(i_field, node1, ele1, surf1, sf_grp1, &
+     &    iphys, nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,       &
+     &    fem1_wk, f1_l, f1_nl)
 !
       call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
      &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
@@ -94,8 +97,10 @@
      &    node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,        &
      &    iak_diff_b, one, ak_d_magne, iphys%i_magne, fem1_wk, f1_l)
 !
-      call int_surf_magne_monitor(node1, ele1, surf1, sf_grp1,          &
-     &                            iphys%i_b_diffuse)
+      call int_surf_magne_monitor                                       &
+     &   (iphys%i_b_diffuse, node1, ele1, surf1, sf_grp1,               &
+     &    iphys, nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,       &
+     &    fem1_wk, f1_l, f1_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !

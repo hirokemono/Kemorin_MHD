@@ -21,6 +21,7 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
+      use m_jacobian_sf_grp
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_int_vol_data
@@ -88,7 +89,9 @@
       end if
 !
 !
-      call int_surf_magne_pre_ele(node1, ele1, surf1, sf_grp1)
+      call int_surf_magne_pre_ele(node1, ele1, surf1, sf_grp1,          &
+     &    iphys, nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,       &
+     &    fem1_wk, f1_l, f1_nl)
 !
       if (iflag_t_evo_4_magne .eq. id_explicit_euler) then
        call cal_magne_pre_euler

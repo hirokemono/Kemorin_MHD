@@ -31,7 +31,7 @@
       use m_int_vol_data
       use m_t_step_parameter
       use m_t_int_parameter
-      use m_bulk_values
+      use m_mean_square_values
 !
       use int_norm_div_MHD
       use int_rms_div_MHD

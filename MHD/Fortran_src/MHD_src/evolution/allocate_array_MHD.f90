@@ -33,7 +33,7 @@
       use m_element_phys_data
       use m_finite_element_matrix
       use m_int_vol_data
-      use m_bulk_values
+      use m_mean_square_values
       use t_FEM_phys_data
 !
 !
@@ -56,9 +56,9 @@
       call initialize_ele_field_data
 !
 !
-      if ( iflag_debug.ge.1 ) write(*,*) 'set_bulk_values'
-      call count_bulk_values
-      call set_bulk_values
+      if ( iflag_debug.ge.1 ) write(*,*) 'set_mean_square_values'
+      call count_mean_square_values(nod_fld1)
+      call set_mean_square_values(nod_fld1)
 !
       end subroutine allocate_array
 !

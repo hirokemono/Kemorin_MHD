@@ -21,6 +21,7 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
+      use m_jacobian_sf_grp
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_int_vol_data
@@ -93,7 +94,9 @@
 !      call check_ff_smp(my_rank, n_scalar, node1%max_nod_smp, f1_l)
 !      call check_ff_smp(my_rank, n_scalar, node1%max_nod_smp, f1_nl)
 !
-      call int_surf_temp_ele(node1, ele1, surf1, sf_grp1)
+      call int_surf_temp_ele(node1, ele1, surf1, sf_grp1,               &
+     &    iphys, nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,       &
+     &    fem1_wk, f1_l, f1_nl)
 !
 !      call check_nodal_data(my_rank, nod_fld1, n_scalar, iphys%i_temp)
 !      call check_nodal_data(my_rank, fld_ele1,                         &

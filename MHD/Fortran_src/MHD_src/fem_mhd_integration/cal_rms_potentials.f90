@@ -14,7 +14,7 @@
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_bulk_values
+      use m_mean_square_values
 !
       use t_geometry_data
       use t_phys_data
@@ -54,22 +54,26 @@
 !
       num_int = ione
 !
-      rms_local(i_rms%i_mag_p) = zero
-      bulk_local(j_ave%i_mag_p) = zero
+      rms_local(ir_phi) = zero
+      bulk_local(ja_phi) = zero
       call int_all_4_scalar                                             &
      &   (iele_fsmp_stack, num_int, ir_phi, ja_phi, i_phi,              &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
-      call MPI_allREDUCE ( bulk_local(j_ave%i_mag_p) , ave_mp, ione,    &
+      call MPI_allREDUCE ( bulk_local(ir_phi) , ave_mp, ione,           &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE ( rms_local(i_rms%i_mag_p) , rms_mp, ione,     &
+      call MPI_allREDUCE ( rms_local(ja_phi) , rms_mp, ione,            &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       if (iloop .eq. 0) then
         ave_0 = ave_mp
         rms_0 = rms_mp
       end if
-      rsig = (rms_mp - rms_0) / rms_0
+      if(rms_0 .eq. 0.0d0) then
+        rsig = (rms_mp - rms_0)
+      else
+        rsig = (rms_mp - rms_0) / rms_0
+      end if
 !
       end subroutine cal_rms_scalar_potential
 !

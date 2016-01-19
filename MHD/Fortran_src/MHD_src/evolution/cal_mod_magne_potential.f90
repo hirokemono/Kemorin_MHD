@@ -66,9 +66,8 @@
 !     &      ak_diff(1,iak_diff_b), iphys%i_magne, fem1_wk, f1_l)
 !      end if
 !
-      call int_surf_normal_magne                                        &
-     &   (node1, ele1, surf1, sf_grp1, nod_fld1, jac1_sf_grp_2d_l,      &
-     &    rhs_tbl1, fem1_wk, f1_l)
+      call int_surf_normal_magne(iphys%i_magne, node1, ele1, surf1,     &
+     &    sf_grp1, nod_fld1, jac1_sf_grp_2d_l, rhs_tbl1, fem1_wk, f1_l)
       call int_sf_grad_press(node1, ele1, surf1, sf_grp1,               &
      &    jac1_sf_grp_2d_l, rhs_tbl1, sf_bc1_grad_f,                    &
      &    intg_point_poisson, fem1_wk, f1_l)

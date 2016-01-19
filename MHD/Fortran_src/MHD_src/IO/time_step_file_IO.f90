@@ -47,7 +47,7 @@
 !
       use t_phys_data
       use m_t_step_parameter
-      use m_bulk_values
+      use m_mean_square_values
 !
       type(phys_data), intent(in) :: nod_fld
       integer (kind=kint), intent(in) :: my_rank
@@ -72,7 +72,7 @@
       subroutine skip_time_step_data(my_rank)
 !
       use m_t_step_parameter
-      use m_bulk_values
+      use m_mean_square_values
 !
       integer (kind=kint), intent(in) :: my_rank
 !

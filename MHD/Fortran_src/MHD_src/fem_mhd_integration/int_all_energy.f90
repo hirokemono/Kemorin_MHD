@@ -45,7 +45,7 @@
      &         (iele_fsmp_stack, n_int,  ir_rms, ja_ave, i_vect,        &
      &          node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
-      use m_bulk_values
+      use m_mean_square_values
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -75,7 +75,7 @@
      &     (iele_fsmp_stack, n_int, ir_rms, ja_ave, i_comp,             &
      &      node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
-      use m_bulk_values
+      use m_mean_square_values
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -105,7 +105,7 @@
      &          node, ele, nod_fld, jac_3d_q, jac_3d_l,                 &
      &          mhd_fem_wk, fem_wk)
 !
-      use m_bulk_values
+      use m_mean_square_values
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele

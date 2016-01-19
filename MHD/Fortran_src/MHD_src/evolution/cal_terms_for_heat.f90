@@ -4,12 +4,12 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine cal_terms_4_heat
-!!     &         (i_field, nod_comm, node, ele, surf, fluid, sf_grp,    &
-!!     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,           &
-!!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &        (i_field, nod_comm, node, ele, surf, fluid, sf_grp,     &
+!!     &         iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,&
+!!     &         FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_thermal_diffusion(nod_comm, node, ele, surf,     &
-!!     &          fluid, sf_grp, iphys, jac_3d, rhs_tbl, FEM_elens,     &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          fluid, sf_grp, iphys, jac_3d, jac_sf_grp, rhs_tbl,    &
+!!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       module cal_terms_for_heat
 !
@@ -26,6 +26,7 @@
       use t_phys_data
       use t_phys_address
       use t_jacobian_3d
+      use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
       use t_MHD_finite_element_mat
@@ -47,9 +48,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_terms_4_heat                                       &
-     &         (i_field, nod_comm, node, ele, surf, fluid, sf_grp,      &
-     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,             &
-     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &        (i_field, nod_comm, node, ele, surf, fluid, sf_grp,       &
+     &         iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,  &
+     &         FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_temp_monitor
 !
@@ -63,6 +64,7 @@
       type(phys_data), intent(in) :: ele_fld
       type(field_geometry_data), intent(in) :: fluid
       type(jacobians_3d), intent(in) :: jac_3d
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
@@ -86,7 +88,9 @@
      &     FEM_elens, mhd_fem_wk, fem_wk, f_nl)
       end if
 !
-      call int_surf_temp_monitor(node, ele, surf, sf_grp, i_field)
+      call int_surf_temp_monitor(i_field, node, ele, surf, sf_grp,      &
+     &    iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,               &
+     &    fem_wk, f_l, f_nl)
 !
       call cal_t_evo_4_scalar(iflag_temp_supg,                          &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
@@ -110,8 +114,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_thermal_diffusion(nod_comm, node, ele, surf,       &
-     &          fluid, sf_grp, iphys, jac_3d, rhs_tbl, FEM_elens,       &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          fluid, sf_grp, iphys, jac_3d, jac_sf_grp, rhs_tbl,      &
+     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_diffusion_ele
 !
@@ -123,6 +127,7 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(field_geometry_data), intent(in) :: fluid
       type(jacobians_3d), intent(in) :: jac_3d
+      type(jacobians_2d), intent(in) :: jac_sf_grp
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
@@ -138,8 +143,9 @@
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
      &    iak_diff_t, one, ak_d_temp, iphys%i_temp, fem_wk, f_l)
 !
-      call int_surf_temp_monitor(node, ele, surf, sf_grp,               &
-     &                           iphys%i_t_diffuse)
+      call int_surf_temp_monitor                                        &
+     &   (iphys%i_t_diffuse, node, ele, surf, sf_grp, iphys, nod_fld,   &
+     &    jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_scalar, node, rhs_tbl, f_l, f_nl)
 !

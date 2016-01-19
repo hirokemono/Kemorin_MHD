@@ -33,7 +33,7 @@
       use m_group_data
       use m_node_phys_data
       use m_ele_material_property
-      use m_bulk_values
+      use m_mean_square_values
       use m_jacobians
       use m_jacobian_sf_grp
       use m_work_4_dynamic_model

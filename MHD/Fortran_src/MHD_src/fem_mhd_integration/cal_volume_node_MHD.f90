@@ -44,7 +44,7 @@
 !
       use m_control_parameter
       use m_geometry_data_MHD
-      use m_bulk_values
+      use m_mean_square_values
       use t_jacobians
       use t_layering_ele_list
 !

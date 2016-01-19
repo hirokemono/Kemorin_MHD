@@ -28,7 +28,7 @@
       use m_geometry_data_MHD
       use m_jacobians
       use m_node_phys_data
-      use m_bulk_values
+      use m_mean_square_values
 !
 !
       if ( inner_core%numele_fld .eq. 0 ) return

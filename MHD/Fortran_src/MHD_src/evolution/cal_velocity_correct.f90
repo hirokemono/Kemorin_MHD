@@ -95,10 +95,10 @@
       call set_normal_velocity                                          &
      &   (sf_grp1, sf_grp_nod1, sf_bc1_norm_v, iphys%i_velo, nod_fld1)
 !
-      if (iflag_debug.eq.1) write(*,*) 'vector_send_recv(iphys%i_velo)'
+      if(iflag_debug.eq.1) write(*,*) 'vector_send_recv(iphys%i_velo)'
       call vector_send_recv(iphys%i_velo, node1, nod_comm, nod_fld1)
+      if(iflag_debug.eq.1) write(*,*) 'scalar_send_recv(iphys%i_press)'
       call scalar_send_recv(iphys%i_press, node1, nod_comm, nod_fld1)
-!
 !
       end subroutine cal_velocity_co
 !
