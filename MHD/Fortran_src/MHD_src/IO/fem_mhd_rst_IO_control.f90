@@ -13,15 +13,16 @@
 !!      subroutine set_ctl_restart_4_fem_mhd
 !!
 !!      subroutine init_MHD_restart_output
-!!      subroutine init_restart_4_snapshot(node1)
+!!      subroutine init_restart_4_snapshot(node)
 !!
 !!      subroutine output_MHD_restart_file_ctl                          &
-!!     &         (node1, nod_comm, iphys, nod_fld1)
+!!     &         (node, nod_comm, iphys, nod_fld)
 !!      subroutine elspased_MHD_restart_ctl                             &
-!!     &         (node1, nod_comm, iphys, nod_fld1)
+!!     &         (node, nod_comm, iphys, nod_fld)
 !!
-!!      subroutine input_MHD_restart_file_ctl(layer_tbl, node1, nod_fld1)
-!!      subroutine input_restart_4_snapshot(node1, nod_fld1)
+!!      subroutine input_MHD_restart_file_ctl                           &
+!!     &         (layer_tbl, node, ele, nod_fld)
+!!      subroutine input_restart_4_snapshot(node, nod_fld)
 !!@endverbatim
 !
       module fem_mhd_rst_IO_control
@@ -61,19 +62,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_MHD_restart_output(node1, nod_fld1)
+      subroutine init_MHD_restart_output(node, nod_fld)
 !
       use set_field_to_restart
       use const_global_element_ids
 !
-      type(node_data), intent(in) :: node1
-      type(phys_data), intent(in) :: nod_fld1
+      type(node_data), intent(in) :: node
+      type(phys_data), intent(in) :: nod_fld
 !
 !
-      call count_field_num_to_restart(nod_fld1, fem_fst_IO)
+      call count_field_num_to_restart(nod_fld, fem_fst_IO)
       call alloc_phys_name_IO(fem_fst_IO)
 !
-      call copy_field_name_to_restart(node1, nod_fld1, fem_fst_IO)
+      call copy_field_name_to_restart(node, nod_fld, fem_fst_IO)
       call alloc_phys_data_IO(fem_fst_IO)
 !
       call alloc_merged_field_stack(nprocs, fem_fst_IO)
@@ -84,13 +85,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine init_restart_4_snapshot(node1)
+      subroutine init_restart_4_snapshot(node)
 !
       use const_global_element_ids
       use field_IO_select
       use set_field_to_restart
 !
-      type(node_data), intent(in) :: node1
+      type(node_data), intent(in) :: node
 !
       integer(kind = kint) :: index_rst
 !
@@ -99,7 +100,7 @@
       call sel_read_alloc_FEM_fld_head                                  &
      &   (nprocs, my_rank, index_rst, fem_fst_IO)
 !
-      fem_fst_IO%nnod_IO = node1%numnod
+      fem_fst_IO%nnod_IO = node%numnod
       call alloc_phys_data_IO(fem_fst_IO)
 !
       call alloc_merged_field_stack(nprocs, fem_fst_IO)
@@ -112,13 +113,13 @@
 ! -----------------------------------------------------------------------
 !
       subroutine output_MHD_restart_file_ctl                            &
-     &          (node1, nod_comm, iphys, nod_fld1)
+     &          (node, nod_comm, iphys, nod_fld)
 !
-      type(node_data), intent(in) :: node1
+      type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(phys_address), intent(in) :: iphys
 !
-      type(phys_data), intent(inout) :: nod_fld1
+      type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: index_rst
 !
@@ -127,7 +128,7 @@
 !
       index_rst = istep_max_dt / i_step_output_rst
       call output_restart_files                                         &
-     &   (index_rst, node1, nod_comm, iphys, nod_fld1)
+     &   (index_rst, node, nod_comm, iphys, nod_fld)
       call output_model_coef_file(index_rst)
 !
       end subroutine output_MHD_restart_file_ctl
@@ -135,19 +136,19 @@
 ! -----------------------------------------------------------------------
 !
       subroutine elspased_MHD_restart_ctl                               &
-     &         (node1, nod_comm, iphys, nod_fld1)
+     &         (node, nod_comm, iphys, nod_fld)
 !
-      type(node_data), intent(in) :: node1
+      type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(phys_address), intent(in) :: iphys
 !
-      type(phys_data), intent(inout) :: nod_fld1
+      type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint), parameter :: index_rst = -1
 !
 !
       call output_restart_files                                         &
-     &   (index_rst, node1, nod_comm, iphys, nod_fld1)
+     &   (index_rst, node, nod_comm, iphys, nod_fld)
       call output_model_coef_file(index_rst)
 !
       end subroutine elspased_MHD_restart_ctl
@@ -155,17 +156,19 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine input_MHD_restart_file_ctl(layer_tbl, node1, nod_fld1)
+      subroutine input_MHD_restart_file_ctl                             &
+     &         (layer_tbl, node, ele, nod_fld)
 !
       use t_layering_ele_list
 !
       type(layering_tbl), intent(in) :: layer_tbl
-      type(node_data), intent(in) :: node1
-      type(phys_data), intent(inout) :: nod_fld1
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call input_restart_files(node1, nod_fld1)
-      call input_model_coef_file(layer_tbl)
+      call input_restart_files(node, nod_fld)
+      call input_model_coef_file(ele, layer_tbl)
 !
       end subroutine input_MHD_restart_file_ctl
 !
@@ -173,43 +176,40 @@
 ! -----------------------------------------------------------------------
 !
       subroutine output_restart_files                                   &
-     &         (index_rst, node1, nod_comm, iphys, nod_fld1)
+     &         (index_rst, node, nod_comm, iphys, nod_fld)
 !
-!      use m_nod_comm_table
-!      use m_geometry_data
-!      use m_node_phys_data
       use field_IO_select
       use copy_time_steps_4_restart
       use set_field_to_restart
       use nod_phys_send_recv
 !
       integer(kind = kint), intent(in) :: index_rst
-      type(node_data), intent(in) :: node1
+      type(node_data), intent(in) :: node
       type(communication_table), intent(in) :: nod_comm
       type(phys_address), intent(in) :: iphys
 !
-      type(phys_data), intent(inout) :: nod_fld1
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
       if(iphys%i_pre_mom .gt. 0) then
         call vector_send_recv                                           &
-     &     (iphys%i_pre_mom, node1, nod_comm, nod_fld1)
+     &     (iphys%i_pre_mom, node, nod_comm, nod_fld)
       end if
       if(iphys%i_pre_uxb .gt. 0) then
         call vector_send_recv                                           &
-     &     (iphys%i_pre_uxb, node1, nod_comm, nod_fld1)
+     &     (iphys%i_pre_uxb, node, nod_comm, nod_fld)
       end if
       if(iphys%i_pre_heat .gt. 0) then
         call scalar_send_recv                                           &
-     &     (iphys%i_pre_heat, node1, nod_comm, nod_fld1)
+     &     (iphys%i_pre_heat, node, nod_comm, nod_fld)
       end if
       if(iphys%i_pre_composit .gt. 0) then
         call scalar_send_recv                                           &
-     &     (iphys%i_pre_composit, node1, nod_comm, nod_fld1)
+     &     (iphys%i_pre_composit, node, nod_comm, nod_fld)
       end if
 !
       call copy_time_steps_to_restart
-      call copy_field_data_to_restart(node1, nod_fld1, fem_fst_IO)
+      call copy_field_data_to_restart(node, nod_fld, fem_fst_IO)
 !
       call sel_write_step_FEM_field_file                                &
      &   (nprocs, my_rank, index_rst, fem_fst_IO)
@@ -218,7 +218,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_restart_files(node1, nod_fld1)
+      subroutine input_restart_files(node, nod_fld)
 !
       use m_control_parameter
       use m_t_int_parameter
@@ -228,8 +228,8 @@
       use set_field_to_restart
       use copy_time_steps_4_restart
 !
-      type(node_data), intent(in) :: node1
-      type(phys_data), intent(inout) :: nod_fld1
+      type(node_data), intent(in) :: node
+      type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: ierr
 !
@@ -241,7 +241,7 @@
       call sel_read_alloc_step_FEM_file                                 &
      &   (nprocs, my_rank, istep_rst_start, fem_fst_IO)
 !
-      call copy_field_data_from_restart(node1, fem_fst_IO, nod_fld1)
+      call copy_field_data_from_restart(node, fem_fst_IO, nod_fld)
       call dealloc_phys_data_IO(fem_fst_IO)
       call dealloc_phys_name_IO(fem_fst_IO)
 !
@@ -257,13 +257,13 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_restart_4_snapshot(node1, nod_fld1)
+      subroutine input_restart_4_snapshot(node, nod_fld)
 !
       use set_field_to_restart
       use field_IO_select
 !
-      type(node_data), intent(in) :: node1
-      type(phys_data), intent(inout) :: nod_fld1
+      type(node_data), intent(in) :: node
+      type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: index_rst
 !
@@ -274,7 +274,7 @@
       call sel_read_step_FEM_field_file                                 &
      &    (nprocs, my_rank, index_rst, fem_fst_IO)
 !
-      call copy_field_data_from_restart(node1, fem_fst_IO, nod_fld1)
+      call copy_field_data_from_restart(node, fem_fst_IO, nod_fld)
       time =       time_init
       i_step_MHD = istep_max_dt
 !
@@ -308,7 +308,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_model_coef_file(layer_tbl)
+      subroutine input_model_coef_file(ele, layer_tbl)
 !
       use m_control_parameter
       use t_layering_ele_list
@@ -316,6 +316,7 @@
       use set_parallel_file_name
       use sgs_ini_model_coefs_IO
 !
+      type(element_data), intent(in) :: ele
       type(layering_tbl), intent(in) :: layer_tbl
 !
       character(len=kchara) :: fn_tmp
@@ -331,7 +332,7 @@
       end if
 !
       call add_dat_extension(fn_tmp, rst_sgs_coef_name)
-      call input_ini_model_coefs(layer_tbl)
+      call input_ini_model_coefs(ele, layer_tbl)
 !
       end subroutine input_model_coef_file
 !

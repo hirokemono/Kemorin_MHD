@@ -73,6 +73,93 @@
 !
       contains
 !
+!-----------------------------------------------------------------------
+!
+      subroutine set_MHD_whole_connectivity                             &
+     &         (nod_comm, node, ele, next_tbl, rhs_tbl)
+!
+      use t_comm_table
+      use t_geometry_data
+      use t_next_node_ele_4_node
+      use t_table_FEM_const
+!
+      use set_table_type_RHS_assemble
+      use set_MHD_connectivity
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+!
+      type(next_nod_ele_table), intent(inout) :: next_tbl
+      type(tables_4_FEM_assembles), intent(inout) :: rhs_tbl
+!
+!C +-------------------------------+
+!  +   set RHS assemble table      +
+!C +-------------------------------+
+      call s_set_table_type_RHS_assemble                                &
+     &   (node, ele, next_tbl, rhs_tbl)
+!
+!C +-------------------------------+
+!  +   set Matrix assemble table   +
+!C +-------------------------------+
+      call set_djds_whole_connectivity(nod_comm, node, solver_C,        &
+     &    next_tbl%neib_nod, DJDS_comm_etr, DJDS_entire)
+!
+      end subroutine set_MHD_whole_connectivity
+!
+!-----------------------------------------------------------------------
+!
+      subroutine set_MHD_layerd_connectivity(node, ele, fluid)
+!
+      use t_geometry_data
+      use t_geometry_data_MHD
+!
+      use set_MHD_connectivity
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid
+!      type(field_geometry_data), intent(in) :: conduct, insulate
+!
+!
+      call set_djds_layer_connectivity(node, ele, ele%nnod_4_ele,       &
+     &    fluid%iele_start_fld, fluid%iele_end_fld,                     &
+     &    DJDS_comm_fl, solver_C, DJDS_fluid)
+!
+      if (ele%nnod_4_ele .ne. num_t_linear) then
+        call set_djds_layer_connectivity(node, ele, num_t_linear,       &
+     &      ione, ele%numele, DJDS_comm_etr, solver_C, DJDS_linear)
+        call set_djds_layer_connectivity(node, ele, num_t_linear,       &
+     &      fluid%iele_start_fld, fluid%iele_end_fld,                   &
+     &      DJDS_comm_fl, solver_C, DJDS_fl_l)
+      else
+        call link_djds_connect_structs(DJDS_entire, DJDS_linear)
+        call link_djds_connect_structs(DJDS_fluid, DJDS_fl_l)
+      end if
+!
+!
+!      call set_djds_layer_connectivity(node, ele, ele%nnod_4_ele,      &
+!     &    conduct%iele_start_fld, conduct%iele_end_fld,                &
+!     &    DJDS_comm_etr, solver_C, DJDS_conduct)
+!      call set_djds_layer_connectivity(node, ele, ele%nnod_4_ele,      &
+!     &    insulate%iele_start_fld, insulate%iele_end_fld,              &
+!     &    DJDS_comm_etr, solver_C, DJDS_insulator)
+!
+!      if ( ele%nnod_4_ele .ne. num_t_linear) then
+!        call set_djds_layer_connectivity(node, ele, num_t_linear,      &
+!     &      conduct%iele_start_fld, conduct%iele_end_fld,              &
+!     &      DJDS_comm_etr, solver_C, DJDS_cd_l)
+!        call set_djds_layer_connectivity(node, ele, num_t_linear,      &
+!     &      insulate%iele_start_fld, insulate%iele_end_fld,            &
+!     &      DJDS_comm_etr, solver_C, DJDS_ins_l)
+!      else
+!        call link_djds_connect_structs(DJDS_conduct, DJDS_cd_l)
+!        call link_djds_connect_structs(DJDS_insulator, DJDS_ins_l)
+!      end if
+!
+      end subroutine set_MHD_layerd_connectivity
+!
+!-----------------------------------------------------------------------
 !------------------------------------------------------------------
 !
       subroutine deallocate_comm_table_fluid

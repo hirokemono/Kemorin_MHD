@@ -107,7 +107,7 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 'set_local_node_id_4_monitor'
-      call set_local_node_id_4_monitor(nod_grp1)
+      call set_local_node_id_4_monitor(node1, nod_grp1)
 !
 ! ----  open data file for boundary data
 !
@@ -119,8 +119,7 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 's_read_filtering_data'
-      call s_read_filtering_data
-!
+      call s_read_filtering_data(node1, ele1)!
       if     (iflag_SGS_filter .eq. id_SGS_3D_FILTERING                 &
      &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING              &
      &   .or. iflag_SGS_filter .eq. id_SGS_3D_SMP_FILTERING             &

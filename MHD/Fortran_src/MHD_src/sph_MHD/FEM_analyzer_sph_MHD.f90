@@ -61,7 +61,7 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_local_node_id_4_monitor'
-      call set_local_node_id_4_monitor(nod_grp1)
+      call set_local_node_id_4_monitor(node1, nod_grp1)
 !
 !  -------------------------------
 !

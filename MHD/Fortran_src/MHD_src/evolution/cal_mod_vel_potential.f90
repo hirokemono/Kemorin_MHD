@@ -21,6 +21,7 @@
 !
       subroutine cal_mod_potential
 !
+      use m_geometry_data_MHD
       use m_geometry_data
       use m_group_data
       use m_phys_constants
@@ -29,6 +30,7 @@
       use m_SGS_model_coefs
       use m_element_id_4_node
       use m_finite_element_matrix
+      use m_jacobians
       use m_jacobian_sf_grp
       use m_filter_elength
       use m_surf_data_torque
@@ -54,7 +56,10 @@
 !
 !    take divergence of velocity
 !
-      call int_vol_divergence_velo
+      call int_vol_fractional_div_ele                                   &
+     &   (fluid1%istack_ele_fld_smp, iphys%i_velo, iak_diff_v,          &
+     &    node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,                  &
+     &    rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
 !
       call int_surf_normal_velocity(iphys%i_velo, node1, ele1, surf1,   &
      &    sf_grp1, nod_fld1, jac1_sf_grp_2d_l, rhs_tbl1, fem1_wk, f1_l)

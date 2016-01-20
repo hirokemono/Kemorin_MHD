@@ -41,6 +41,9 @@
       use m_boundary_condition_IDs
       use m_array_for_send_recv
       use m_solver_djds_MHD
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_int_vol_data
 !
       use m_check_subroutines
 !
@@ -68,6 +71,7 @@
       use count_sgs_components
       use set_layer_list_by_table
       use set_normal_vectors
+      use set_table_type_RHS_assemble
       use fem_mhd_rst_IO_control
 !
       use nod_phys_send_recv
@@ -197,7 +201,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' set_connect_RHS_assemble'
-      call set_connect_RHS_assemble
+      call s_set_table_type_RHS_assemble                                &
+     &   (node1, ele1, next_tbl1, rhs_tbl1)
 !
 !     ---------------------
 !
@@ -214,14 +219,15 @@
       call set_bc_id_data(node1, ele1, nod_grp1, iphys, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*)' set_surf_bc_data'
-      call set_surf_bc_data                                             &
-     &   (node1, ele1, surf1, sf_grp1, sf_grp_nod1, sf_grp_v1)
+      call set_surf_bc_data(node1, ele1, surf1, sf_grp1,                &
+     &    sf_grp_nod1, sf_grp_v1, iphys, nod_fld1)
       call deallocate_surf_bc_lists
 !
 !     --------------------- 
 !
-      call int_RHS_mass_matrices
-!
+      call int_RHS_mass_matrices                                        &
+     &   (node1, ele1, fluid1, conduct1, insulate1,                     &
+     &   jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_l, m1_lump)
 !
       end subroutine init_analyzer_snap
 !

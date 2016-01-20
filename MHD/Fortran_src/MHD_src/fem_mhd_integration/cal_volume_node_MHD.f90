@@ -97,7 +97,7 @@
 !
 !
 !
-!       call s_int_volume_insulate_core
+!       call s_int_volume_insulate_core(ele, inner_core)
 !
       call deallocate_volume_4_smp
       call dealloc_dxi_dx_type(jac_3d_q)

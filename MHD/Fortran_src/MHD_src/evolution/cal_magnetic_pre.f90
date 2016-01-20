@@ -180,7 +180,8 @@
       if (iflag_debug .eq. 0 ) write(*,*) 'bc_4_magne_rhs'
       call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
 !
-      call cal_sol_magne_pre_linear(node1, iphys, nod_fld1)
+      call cal_sol_magne_pre_linear                                     &
+     &   (node1, iphys, mhd_fem1_wk, f1_nl, f1_l, nod_fld1)
 !
       if (iflag_debug .eq. 0 ) write(*,*) 'time_evolution'
       call cal_sol_magne_pre_crank                                      &
@@ -220,14 +221,19 @@
 !         if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
       end if
 !
-      call int_vol_initial_magne
+      call reset_ff_t_smp(node1%max_nod_smp, mhd_fem1_wk)
+      call int_vol_initial_vector                                       &
+     &   (conduct1%istack_ele_fld_smp, iphys%i_magne, coef_magne,       &
+     &    node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, fem1_wk,          &
+     &    mhd_fem1_wk)
       call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'bc_4_magne_rhs'
       call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
 !
       call cal_vector_pre_consist(node1, coef_magne,                    &
-     &    f1_nl%ff, n_vector, iphys%i_pre_uxb, nod_fld1, f1_l%ff)
+     &    n_vector, iphys%i_pre_uxb, nod_fld1, rhs_tbl1,                &
+     &    mhd_fem1_wk, f1_nl, f1_l)
 !
       if (iflag_debug.eq.1)                                             &
      &        write(*,*) 'time_evolution for magnetic field'

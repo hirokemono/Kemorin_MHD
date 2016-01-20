@@ -35,7 +35,7 @@
 !   ordereing of element parameters for AMG (for first grid)
 !
       if(cmp_no_case(method_4_solver, 'MGCG')) then
-        call reordering_element_first_MG
+        call reordering_element_first_MG(ele1)
         call s_reordering_MG_ele_by_layers
       end if
 !

@@ -5,11 +5,24 @@
 !                                    on July 2000 (ver 1.1)
 !      Modified by H. Matsui on Aug, 2007
 !
-!      subroutine s_cal_average_mag_potential
+!!      subroutine s_cal_average_mag_potential(node, ele,               &
+!!     &          iphys, nod_fld, inner_core, jac_3d_l)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(field_geometry_data), intent(in) :: inner_core
+!!        type(jacobians_3d), intent(in) :: jac_3d_l
 !
       module cal_average_mag_potential
 !
       use m_precision
+!
+      use t_geometry_data_MHD
+      use t_geometry_data
+      use t_phys_address
+      use t_phys_data
+      use t_jacobian_3d
 !
       implicit none
 !
@@ -20,25 +33,29 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_average_mag_potential
+      subroutine s_cal_average_mag_potential(node, ele,                 &
+     &          iphys, nod_fld, inner_core, jac_3d_l)
 !
       use calypso_mpi
       use m_control_parameter
-      use m_geometry_data
-      use m_geometry_data_MHD
-      use m_jacobians
-      use m_node_phys_data
       use m_mean_square_values
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld
+      type(field_geometry_data), intent(in) :: inner_core
+      type(jacobians_3d), intent(in) :: jac_3d_l
 !
 !
       if ( inner_core%numele_fld .eq. 0 ) return
 !
-        call fem_icore_mag_potential_icore(node1%numnod,                &
-     &      ele1%numele, ele1%nnod_4_ele, ele1%ie, ele1%interior_ele,   &
+        call fem_icore_mag_potential_icore(node%numnod,                 &
+     &      ele%numele, ele%nnod_4_ele, ele%ie, ele%interior_ele,       &
      &      inner_core%numele_fld, inner_core%istack_ele_fld_smp,       &
-     &      inner_core%iele_fld, jac1_3d_l%ntot_int, intg_point_t_evo,  &
-     &      jac1_3d_l%xjac, jac1_3d_l%an,                               &
-     &      nod_fld1%ntot_phys, nod_fld1%d_fld, iphys%i_mag_p,          &
+     &      inner_core%iele_fld, jac_3d_l%ntot_int, intg_point_t_evo,   &
+     &      jac_3d_l%xjac, jac_3d_l%an,                                 &
+     &      nod_fld%ntot_phys, nod_fld%d_fld, iphys%i_mag_p,            &
      &      ave_mp_core_local)
 !
         call MPI_allREDUCE (ave_mp_core_local, ave_mp_core, 1,          &

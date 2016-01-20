@@ -8,9 +8,9 @@
 !> @brief Set field information for MHD simulation from control data
 !!
 !!@verbatim
-!!     subroutine set_control_4_fields
+!!     subroutine set_control_4_fields(nod_fld)
 !!     subroutine add_nodal_fields_2_ctl
-!!     subroutine check_FEM_MHD_dependencies
+!!     subroutine check_FEM_MHD_dependencies(nod_fld)
 !!@endverbatim
 !
       module set_control_nodal_data_MHD
@@ -20,6 +20,8 @@
       use m_machine_parameter
       use m_ctl_data_4_fields
 !
+      use t_phys_data
+!
       implicit  none
 !
 ! -----------------------------------------------------------------------
@@ -28,15 +30,16 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_control_4_fields
+      subroutine set_control_4_fields(nod_fld)
 !
       use calypso_mpi
       use m_error_IDs
-      use m_node_phys_data
       use m_element_phys_data
 !
       use set_control_nodal_data
       use add_nodal_fields_4_MHD
+!
+      type(phys_data), intent(inout) :: nod_fld
 !
       integer(kind = kint) :: ierr
 !
@@ -61,10 +64,10 @@
 !
 !    set nodal data
 !
-        call s_set_control_nodal_data(nod_fld1, ierr)
+        call s_set_control_nodal_data(nod_fld, ierr)
       end if
 !
-      call set_ele_field_names_MHD
+      call set_ele_field_names_MHD(nod_fld)
 !
       end subroutine set_control_4_fields
 !
@@ -85,19 +88,20 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine check_FEM_MHD_dependencies
+      subroutine check_FEM_MHD_dependencies(nod_fld)
 !
-      use m_node_phys_data
       use node_monitor_IO
       use ordering_field_by_viz
       use check_dependency_for_MHD
 !
+      type(phys_data), intent(inout) :: nod_fld
+!
 !
       call count_field_4_monitor                                        &
-     &   (nod_fld1%num_phys, nod_fld1%num_component,                    &
-     &    nod_fld1%iflag_monitor, num_field_monitor, ntot_comp_monitor)
+     &   (nod_fld%num_phys, nod_fld%num_component,                      &
+     &    nod_fld%iflag_monitor, num_field_monitor, ntot_comp_monitor)
 !
-      call check_dependencies(nod_fld1%num_phys, nod_fld1%phys_name)
+      call check_dependencies(nod_fld%num_phys, nod_fld%phys_name)
 !
       end subroutine check_FEM_MHD_dependencies
 !

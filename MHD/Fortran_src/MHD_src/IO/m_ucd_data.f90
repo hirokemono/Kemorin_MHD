@@ -83,7 +83,7 @@
 !
       call copy_time_steps_to_restart
       call sel_write_parallel_ucd_file(istep_ucd, fem_ucd, merged_ucd)
-!      call output_range_data(istep_ucd, time)
+!      call output_range_data(node, nod_fld, istep_ucd, time)
 !
       end subroutine s_output_ucd_file_control
 !

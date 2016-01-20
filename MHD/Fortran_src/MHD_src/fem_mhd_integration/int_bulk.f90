@@ -5,17 +5,32 @@
 !                                    on July 2000 (ver 1.1)
 !      Modified by H. Matsui on Aug, 2007
 !
-!      subroutine s_int_bulk
+!!      subroutine s_int_mean_squares(node, ele, iphys, nod_fld,        &
+!!     &          jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
+!!      subroutine int_no_evo_mean_squares(node, ele, iphys, nod_fld,   &
+!!     &          iphys_ele, ele_fld, fluid, jac_3d_q, fem_wk)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(phys_data), intent(in) :: ele_fld
+!!        type(jacobians_3d), intent(in) :: jac_3d_q
+!!        type(field_geometry_data), intent(in) :: fluid
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
       module int_bulk
 !
       use m_precision
 !
+      use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
       use t_phys_address
       use t_jacobian_3d
       use t_finite_element_mat
+      use t_MHD_finite_element_mat
 !
       implicit none
 !
@@ -527,6 +542,56 @@
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
       end subroutine s_int_mean_squares
+!
+! ----------------------------------------------------------------------
+!
+      subroutine int_no_evo_mean_squares(node, ele, iphys, nod_fld,     &
+     &          iphys_ele, ele_fld, fluid, jac_3d_q, fem_wk)
+!
+      use m_control_parameter
+      use int_norm_div_MHD
+      use int_rms_div_MHD
+      use estimate_stabilities
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: ele_fld
+      type(jacobians_3d), intent(in) :: jac_3d_q
+      type(field_geometry_data), intent(in) :: fluid
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+!
+!
+      if  (iflag_t_evo_4_velo .gt. id_no_evolution) then
+        call int_norm_divergence                                        &
+     &     (fluid%istack_ele_fld_smp, iphys%i_velo,                     &
+     &      node, ele, nod_fld, jac_3d_q, fem_wk, bulk_local(ja_divv))
+        call int_rms_divergence                                         &
+     &     (fluid%istack_ele_fld_smp, iphys%i_velo,                     &
+     &      node, ele, nod_fld, jac_3d_q, fem_wk, rms_local(ir_divv))
+        call cal_stability_4_advect                                     &
+     &     (ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld)
+      end if
+!
+      if  (iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        call int_norm_divergence(ele%istack_ele_smp, iphys%i_vecp,      &
+     &      node, ele, nod_fld, jac_3d_q, fem_wk, bulk_local(ja_diva))
+        call int_rms_divergence(ele%istack_ele_smp, iphys%i_vecp,       &
+     &      node, ele, nod_fld, jac_3d_q, fem_wk, rms_local(ir_diva))
+      end if
+!
+      if  (iflag_t_evo_4_magne .gt. id_no_evolution                     &
+     &         .or. iflag_t_evo_4_vect_p .gt. id_no_evolution) then
+        call int_norm_divergence(ele%istack_ele_smp, iphys%i_magne,     &
+     &      node, ele, nod_fld, jac_3d_q, fem_wk, bulk_local(ja_divb))
+        call int_rms_divergence(ele%istack_ele_smp, iphys%i_magne,      &
+     &      node, ele, nod_fld, jac_3d_q, fem_wk, rms_local(ir_divb))
+      end if
+!
+      end subroutine int_no_evo_mean_squares
 !
 ! ----------------------------------------------------------------------
 !

@@ -162,7 +162,8 @@
      &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
 !
       call set_boundary_rhs_scalar(node1, nod_bc1_c, f1_l, f1_nl)
-      call cal_sol_d_scalar_linear(node1, iphys, nod_fld1)
+      call cal_sol_d_scalar_linear                                      &
+     &   (node1, iphys, mhd_fem1_wk, f1_nl, f1_l, nod_fld1)
 !
       call cal_sol_d_scalar_crank                                       &
      &   (node1, DJDS_comm_fl, DJDS_fluid, Cmat_DJDS,                   &
@@ -201,13 +202,19 @@
 !         if (iflag_initial_step.eq.1) coef_imp_c = 1.0d0 / coef_imp_c
        end if
 !
-       call int_vol_initial_d_scalar
-       call set_ff_nl_smp_2_ff(n_scalar, node1, rhs_tbl1, f1_l, f1_nl)
+      call reset_ff_t_smp(node1%max_nod_smp, mhd_fem1_wk)
+!
+      call int_vol_initial_scalar                                       &
+     &   (fluid1%istack_ele_fld_smp, iphys%i_light, coef_light,         &
+     &    node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, fem1_wk,          &
+     &    mhd_fem1_wk)
+      call set_ff_nl_smp_2_ff(n_scalar, node1, rhs_tbl1, f1_l, f1_nl)
 !
       call set_boundary_rhs_scalar(node1, nod_bc1_c, f1_l, f1_nl)
 !
       call cal_vector_pre_consist(node1, coef_light,                    &
-     &    f1_nl%ff, n_scalar, iphys%i_pre_composit, nod_fld1, f1_l%ff)
+     &    n_scalar, iphys%i_pre_composit, nod_fld1, rhs_tbl1,           &
+     &    mhd_fem1_wk, f1_nl, f1_l)
 !
       call cal_sol_d_scalar_crank                                       &
      &   (node1, DJDS_comm_fl, DJDS_fluid, Cmat_DJDS,                   &

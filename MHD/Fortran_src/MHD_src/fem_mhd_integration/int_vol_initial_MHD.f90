@@ -5,24 +5,34 @@
 !                                    on July 2000 (ver 1.1)
 !     Modified by H. Matsui on Oct. 2005
 !
-!      subroutine int_vol_initial_velo
-!      subroutine int_vol_initial_vect_p
-!      subroutine int_vol_initial_magne
-!      subroutine int_vol_initial_temp
-!      subroutine int_vol_initial_part_temp
-!      subroutine int_vol_initial_d_scalar
+!!      subroutine int_vol_initial_scalar(iele_fsmp_stack, i_fld, coef, &
+!!     &        node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
+!!      subroutine int_vol_initial_vector(iele_fsmp_stack, i_fld, coef, &
+!!     &        node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
       module int_vol_initial_MHD
 !
       use m_precision
 !
+      use m_control_parameter
       use m_phys_constants
-      use m_finite_element_matrix
+!
+      use t_geometry_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_3d
+      use t_table_FEM_const
+      use t_finite_element_mat
+      use t_MHD_finite_element_mat
 !
       implicit none
-!
-      private :: int_vol_initial_scalar
-      private :: int_vol_initial_vector
 !
 !-----------------------------------------------------------------------
 !
@@ -30,176 +40,83 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_initial_velo
-!
-      use m_geometry_data_MHD
-      use m_node_phys_data
-      use m_physical_property
-      use m_int_vol_data
-!
-      mhd_fem1_wk%ff_m_smp = 0.0d0
-      if (coef_velo.gt.0.0d0) then
-        call int_vol_initial_vector                                     &
-     &      (fluid1%istack_ele_fld_smp, iphys%i_velo)
-      end if
-!
-      end subroutine int_vol_initial_velo
-!
-!-----------------------------------------------------------------------
-!
-      subroutine int_vol_initial_vect_p
-!
-      use m_geometry_data_MHD
-      use m_node_phys_data
-      use m_physical_property
-      use m_int_vol_data
-!
-      mhd_fem1_wk%ff_m_smp = 0.0d0
-      if (coef_magne.gt.0.0d0) then
-        call int_vol_initial_vector                                     &
-     &     (conduct1%istack_ele_fld_smp, iphys%i_vecp)
-      end if
-!
-      end subroutine int_vol_initial_vect_p
-!
-!-----------------------------------------------------------------------
-!
-      subroutine int_vol_initial_magne
-!
-      use m_geometry_data_MHD
-      use m_node_phys_data
-      use m_physical_property
-      use m_int_vol_data
-!
-      mhd_fem1_wk%ff_m_smp = 0.0d0
-      if (coef_magne.gt.0.0d0) then
-        call int_vol_initial_vector                                     &
-     &     (conduct1%istack_ele_fld_smp, iphys%i_magne)
-      end if
-!
-      end subroutine int_vol_initial_magne
-!
-!-----------------------------------------------------------------------
-!
-      subroutine int_vol_initial_temp
-!
-      use m_geometry_data_MHD
-      use m_node_phys_data
-      use m_physical_property
-      use m_int_vol_data
-!
-      mhd_fem1_wk%ff_m_smp = 0.0d0
-      if (coef_temp.gt.0.0d0) then
-        call int_vol_initial_scalar                                     &
-     &     (fluid1%istack_ele_fld_smp, iphys%i_temp)
-      end if
-!
-      end subroutine int_vol_initial_temp
-!
-!-----------------------------------------------------------------------
-!
-      subroutine int_vol_initial_part_temp
-!
-      use m_geometry_data_MHD
-      use m_node_phys_data
-      use m_physical_property
-      use m_int_vol_data
-!
-      mhd_fem1_wk%ff_m_smp = 0.0d0
-      if (coef_temp.gt.0.0d0) then
-        call int_vol_initial_scalar                                     &
-     &     (fluid1%istack_ele_fld_smp, iphys%i_par_temp)
-      end if
-!
-      end subroutine int_vol_initial_part_temp
-!
-!-----------------------------------------------------------------------
-!
-      subroutine int_vol_initial_d_scalar
-!
-      use m_geometry_data_MHD
-      use m_node_phys_data
-      use m_physical_property
-      use m_int_vol_data
-!
-      mhd_fem1_wk%ff_m_smp = 0.0d0
-      if (coef_light.gt.0.0d0) then
-        call int_vol_initial_scalar                                     &
-     &     (fluid1%istack_ele_fld_smp, iphys%i_light)
-      end if
-!
-      end subroutine int_vol_initial_d_scalar
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine int_vol_initial_scalar(iele_fsmp_stack, i_field)
-!
-      use m_control_parameter
-      use m_geometry_data
-      use m_jacobians
-      use m_node_phys_data
-      use m_element_id_4_node
-      use m_int_vol_data
+      subroutine int_vol_initial_scalar(iele_fsmp_stack, i_fld, coef,   &
+     &        node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
 !
       use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
       use fem_skv_nodal_field_type
 !
-      integer(kind = kint), intent(in) :: i_field
+      integer(kind = kint), intent(in) :: i_fld
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: coef
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_data), intent(in) :: nod_fld
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6(n_scalar, ele1, fem1_wk%sk6)
+      if (coef .eq. 0.0d0) return
+      call reset_sk6(n_scalar, ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for phsical values
-      do k2 = 1, ele1%nnod_4_ele
-        call scalar_phys_2_each_element(node1, ele1, nod_fld1,          &
-     &      k2, i_field, fem1_wk%scalar_1)
+      do k2 = 1, ele%nnod_4_ele
+        call scalar_phys_2_each_element(node, ele, nod_fld,             &
+     &      k2, i_fld, fem_wk%scalar_1)
         call fem_skv_scalar_type(iele_fsmp_stack, intg_point_t_evo,     &
-     &      k2, ele1, jac1_3d_q, fem1_wk%scalar_1, fem1_wk%sk6)
+     &      k2, ele, jac_3d, fem_wk%scalar_1, fem_wk%sk6)
       end do
 !
-      call add1_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    fem1_wk%sk6, mhd_fem1_wk%ff_m_smp)
+      call add1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
+     &    fem_wk%sk6, mhd_fem_wk%ff_m_smp)
 !
       end subroutine int_vol_initial_scalar
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_initial_vector(iele_fsmp_stack, i_field)
-!
-      use m_control_parameter
-      use m_geometry_data
-      use m_node_phys_data
-      use m_jacobians
-      use m_element_id_4_node
-      use m_int_vol_data
+      subroutine int_vol_initial_vector(iele_fsmp_stack, i_fld, coef,   &
+     &        node, ele, nod_fld, jac_3d, rhs_tbl, fem_wk, mhd_fem_wk)
 !
       use nodal_fld_2_each_element
       use cal_skv_to_ff_smp
       use fem_skv_nodal_field_type
 !
-      integer(kind = kint), intent(in) :: i_field
+      integer(kind = kint), intent(in) :: i_fld
       integer (kind=kint), intent(in) :: iele_fsmp_stack(0:np_smp)
+      real(kind = kreal), intent(in) :: coef
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_data), intent(in) :: nod_fld
+      type(jacobians_3d), intent(in) :: jac_3d
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
       integer(kind = kint) :: k2
 !
 !
-      call reset_sk6(n_vector, ele1, fem1_wk%sk6)
+      if (coef .eq. 0.0d0) return
+      call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
 ! -------- loop for shape function for phsical values
-      do k2 = 1, ele1%nnod_4_ele
-        call vector_phys_2_each_element(node1, ele1, nod_fld1,          &
-     &      k2, i_field, fem1_wk%vector_1)
+      do k2 = 1, ele%nnod_4_ele
+        call vector_phys_2_each_element(node, ele, nod_fld,             &
+     &      k2, i_fld, fem_wk%vector_1)
         call fem_skv_vector_type(iele_fsmp_stack, intg_point_t_evo, k2, &
-     &      ele1, jac1_3d_q, fem1_wk%vector_1, fem1_wk%sk6)
+     &      ele, jac_3d, fem_wk%vector_1, fem_wk%sk6)
       end do
 !
-      call add3_skv_to_ff_v_smp(node1, ele1, rhs_tbl1,                  &
-     &    mhd_fem1_wk%ff_m_smp, fem1_wk%sk6)
+      call add3_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
+     &    fem_wk%sk6, mhd_fem_wk%ff_m_smp)
 !
       end subroutine int_vol_initial_vector
 !

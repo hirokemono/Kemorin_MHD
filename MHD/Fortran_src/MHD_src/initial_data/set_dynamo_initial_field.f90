@@ -6,8 +6,9 @@
 !      modified by H. Matsui on Dec., 2007
 !
 !!      subroutine initial_data_control                                 &
-!!     &         (node, fluid, iphys, layer_tbl, nod_fld)
+!!     &         (node, ele, fluid, iphys, layer_tbl, nod_fld)
 !!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(phys_address), intent(in) :: iphys
 !!        type(layering_tbl), intent(in) :: layer_tbl
@@ -37,7 +38,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine initial_data_control                                   &
-     &         (node, fluid, iphys, layer_tbl, nod_fld)
+     &         (node, ele, fluid, iphys, layer_tbl, nod_fld)
 !
       use m_initial_field_control
       use m_t_int_parameter
@@ -49,6 +50,7 @@
       use set_restart_data
 !
       type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
       type(field_geometry_data), intent(in) :: fluid
       type(phys_address), intent(in) :: iphys
       type(layering_tbl), intent(in) :: layer_tbl
@@ -57,7 +59,7 @@
 !
 !
       if(iflag_restart .eq. i_rst_by_file) then
-        call input_MHD_restart_file_ctl(layer_tbl, node, nod_fld)
+        call input_MHD_restart_file_ctl(layer_tbl, node, ele, nod_fld)
       else
         call set_initial_data(node, fluid, iphys, nod_fld)
       end if

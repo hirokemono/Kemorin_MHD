@@ -122,7 +122,8 @@
      &      mat_tbl_q1, mat_tbl_fl_q, mat_tbl_full_cd_q,                &
      &      FEM1_elen, fem1_wk)
       else if (iflag_scheme .eq. id_Crank_nicolson_cmass) then
-        call int_vol_crank_mat_consist
+        call int_vol_crank_mat_consist                                  &
+     &     (ele1, jac1_3d_q, rhs_tbl1, fem1_wk)
         call int_vol_crank_matrices(ele1, jac1_3d_q, rhs_tbl1,          &
      &      mat_tbl_q1, mat_tbl_fl_q, mat_tbl_full_cd_q,                &
      &      FEM1_elen, fem1_wk)

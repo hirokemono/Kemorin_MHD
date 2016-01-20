@@ -4,7 +4,8 @@
 !      Written by H. Matsui on Dec., 2008
 !
 !      subroutine s_reordering_MG_ele_by_layers
-!      subroutine reordering_element_first_MG
+!      subroutine reordering_element_first_MG(first_ele)
+!!        type(element_data), intent(inout) :: first_ele
 !
       module reordering_MG_ele_by_layers
 !
@@ -54,16 +55,18 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine reordering_element_first_MG
+      subroutine reordering_element_first_MG(first_ele)
 !
-      use m_geometry_data
       use m_work_4_MHD_layering
       use m_type_AMG_data
       use m_type_AMG_mesh
+      use t_geometry_data
       use t_interpolate_table
 !
+      type(element_data), intent(inout) :: first_ele
 !
-      call reordering_ele_interpolate_type(ele1%numele,                 &
+!
+      call reordering_ele_interpolate_type(first_ele%numele,            &
      &    old2newele_layer, MG_itp(1)%f2c%tbl_org )
 !
       end subroutine reordering_element_first_MG

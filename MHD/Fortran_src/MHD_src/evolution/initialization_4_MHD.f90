@@ -43,6 +43,9 @@
       use m_solver_djds_MHD
       use m_array_for_send_recv
       use m_solver_djds_MHD
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_int_vol_data
 !
       use m_check_subroutines
       use m_cal_max_indices
@@ -53,7 +56,7 @@
 !
       use set_MHD_connectivity
       use init_iccg_matrices
-      use convert_temperatures
+      use copy_nodal_fields
       use cal_volume_node_MHD
       use int_MHD_mass_matrices
       use int_surface_params_MHD
@@ -202,13 +205,14 @@
 !
       if (iflag_debug.eq.1) write(*,*)' initial_data_control'
       call initial_data_control                                         &
-     &   (node1, fluid1, iphys, layer_tbl, nod_fld1)
+     &   (node1, ele1, fluid1, iphys, layer_tbl, nod_fld1)
 !
 !  -------------------------------
 !
       if (iflag_4_ref_temp .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1) write(*,*)' set_2_perturbation_temp'
-        call set_2_perturbation_temp
+        call subtract_2_nod_scalars(node1, nod_fld1,                    &
+     &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
       end if
 !
 !  -------------------------------
@@ -230,9 +234,10 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_whole_connectivity'
-      call set_MHD_whole_connectivity
+      call set_MHD_whole_connectivity                                   &
+     &    (nod_comm, node1, ele1, next_tbl1, rhs_tbl1)
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_layerd_connectivity'
-      call set_MHD_layerd_connectivity
+      call set_MHD_layerd_connectivity(node1, ele1, fluid1)
 !
 !     ---------------------
 !
@@ -249,12 +254,14 @@
       call set_bc_id_data(node1, ele1, nod_grp1, iphys, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_surf_bc_data'
-      call set_surf_bc_data                                             &
-     &   (node1, ele1, surf1, sf_grp1, sf_grp_nod1, sf_grp_v1)
+      call set_surf_bc_data(node1, ele1, surf1, sf_grp1,                &
+     &    sf_grp_nod1, sf_grp_v1, iphys, nod_fld1)
 !
 !     ---------------------
 !
-      call int_RHS_mass_matrices
+      call int_RHS_mass_matrices                                        &
+     &   (node1, ele1, fluid1, conduct1, insulate1,                     &
+     &   jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_l, m1_lump)
 !
 !     ---------------------
 !
@@ -270,7 +277,7 @@
 !     ---------------------
 !
       if(solver_iflag(method_4_solver) .eq. iflag_mgcg) then
-        call s_initialize_4_MHD_AMG
+        call s_initialize_4_MHD_AMG(nod_comm, node1, ele1)
       end if
 !
 !     ---------------------

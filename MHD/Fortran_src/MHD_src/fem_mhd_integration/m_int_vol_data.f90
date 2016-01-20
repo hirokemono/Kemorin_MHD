@@ -16,25 +16,6 @@
 !
 !>      Work array for FEM assemble in MHD model
       type(work_MHD_fe_mat), save :: mhd_fem1_wk
-!      real (kind=kreal), allocatable ::  vect_e(:,:)
-!      real (kind=kreal), allocatable ::  velo_1(:,:)
-!      real (kind=kreal), allocatable ::  magne_1(:,:)
-!      real (kind=kreal), allocatable ::  vect_1(:,:)
-!      real (kind=kreal), allocatable ::  tensor_e(:,:)
-! 
-!      real (kind=kreal), allocatable :: xe(:,:)
-!      real (kind=kreal), allocatable :: radius_e(:)
-!
-!      real (kind=kreal), allocatable  :: phi_e(:)
-!      real (kind=kreal), allocatable  :: temp_e(:)
-!      real (kind=kreal), allocatable  :: d_scalar_e(:)
-!
-!      real (kind=kreal), allocatable  :: sgs_e(:,:)
-!      real (kind=kreal), allocatable  :: sgs_t(:,:)
-!
-!
-!      integer(kind=kint) :: num_dvxi
-!      real (kind=kreal), allocatable :: dvx(:,:)
 ! 
       integer(kind=kint) :: i_dvx = 0, i_dfvx = 0
       integer(kind=kint) :: i_dtx = 0, i_dftx = 0

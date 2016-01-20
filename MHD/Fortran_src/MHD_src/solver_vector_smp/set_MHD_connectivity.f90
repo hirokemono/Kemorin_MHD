@@ -8,8 +8,10 @@
 !>@brief  Construct index table for DJDS solver
 !!
 !!@verbatim
-!!      subroutine set_MHD_whole_connectivity
-!!      subroutine set_MHD_layerd_connectivity
+!!      subroutine set_djds_whole_connectivity(nod_comm, node,          &
+!!     &          solver_C, neib_nod, nod_comm_etr, DJDS_tbl)
+!!      subroutine set_djds_layer_connectivity(node, ele, nnod_1ele,    &
+!!     &          iele_start, iele_end, layer_comm, solver_C, DJDS_tbl)
 !!@endverbatim
 !
       module set_MHD_connectivity
@@ -25,85 +27,10 @@
 !
       implicit none
 !
-      private :: set_djds_whole_connectivity
-      private :: set_djds_layer_connectivity
-!
 !-----------------------------------------------------------------------
 !
       contains
 !
-!-----------------------------------------------------------------------
-!
-      subroutine set_MHD_whole_connectivity
-!
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_element_id_4_node
-      use m_solver_djds_MHD
-!
-      use set_table_type_RHS_assemble
-!
-!C +-------------------------------+
-!  +   set RHS assemble table      +
-!C +-------------------------------+
-      call s_set_table_type_RHS_assemble                                &
-     &   (node1, ele1, next_tbl1, rhs_tbl1)
-!
-!C +-------------------------------+
-!  +   set Matrix assemble table   +
-!C +-------------------------------+
-      call set_djds_whole_connectivity(nod_comm, node1, solver_C,       &
-     &    next_tbl1%neib_nod, DJDS_comm_etr, DJDS_entire)
-!
-      end subroutine set_MHD_whole_connectivity
-!
-!-----------------------------------------------------------------------
-!
-      subroutine set_MHD_layerd_connectivity
-!
-      use m_geometry_data
-      use m_geometry_data_MHD
-      use m_solver_djds_MHD
-!
-!
-      call set_djds_layer_connectivity(node1, ele1, ele1%nnod_4_ele,    &
-     &    fluid1%iele_start_fld, fluid1%iele_end_fld,                   &
-     &    DJDS_comm_fl, solver_C, DJDS_fluid)
-!
-      if (ele1%nnod_4_ele .ne. num_t_linear) then
-        call set_djds_layer_connectivity(node1, ele1, num_t_linear,     &
-     &      ione, ele1%numele, DJDS_comm_etr, solver_C, DJDS_linear)
-        call set_djds_layer_connectivity(node1, ele1, num_t_linear,     &
-     &      fluid1%iele_start_fld, fluid1%iele_end_fld,                 &
-     &      DJDS_comm_fl, solver_C, DJDS_fl_l)
-      else
-        call link_djds_connect_structs(DJDS_entire, DJDS_linear)
-        call link_djds_connect_structs(DJDS_fluid, DJDS_fl_l)
-      end if
-!
-!
-!      call set_djds_layer_connectivity(node1, ele1, ele1%nnod_4_ele,   &
-!     &    conduct1%iele_start_fld, conduct1%iele_end_fld,              &
-!     &    DJDS_comm_etr, solver_C, DJDS_conduct)
-!      call set_djds_layer_connectivity(node1, ele1, ele1%nnod_4_ele,   &
-!     &    insulate1%iele_start_fld, insulate1%iele_end_fld,            &
-!     &    DJDS_comm_etr, solver_C, DJDS_insulator)
-!
-!      if ( ele1%nnod_4_ele .ne. num_t_linear) then
-!        call set_djds_layer_connectivity(node1, ele1, num_t_linear,    &
-!     &      conduct1%iele_start_fld, conduct1%iele_end_fld,            &
-!     &      DJDS_comm_etr, solver_C, DJDS_cd_l)
-!        call set_djds_layer_connectivity(node1, ele1, num_t_linear,    &
-!     &      insulate1%iele_start_fld, insulate1%iele_end_fld,          &
-!     &      DJDS_comm_etr, solver_C, DJDS_ins_l)
-!      else
-!        call link_djds_connect_structs(DJDS_conduct, DJDS_cd_l)
-!        call link_djds_connect_structs(DJDS_insulator, DJDS_ins_l)
-!      end if
-!
-      end subroutine set_MHD_layerd_connectivity
-!
-!-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
       subroutine set_djds_whole_connectivity(nod_comm, node,            &

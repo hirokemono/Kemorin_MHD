@@ -25,8 +25,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_surf_bc_data                                       &
-     &         (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v)
+      subroutine set_surf_bc_data(node, ele, surf, sf_grp, sf_grp_nod,  &
+     &          sf_grp_v, iphys, nod_fld)
 !
       use m_machine_parameter
       use t_geometry_data
@@ -34,6 +34,8 @@
       use t_group_data
       use t_surface_group_connect
       use t_surface_group_geometry
+      use t_phys_data
+      use t_phys_address
 !
       use count_num_surface_bc
       use set_surface_id_MHD
@@ -45,6 +47,9 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(surface_group_geometry), intent(in) :: sf_grp_v
+      type(phys_address), intent(in) :: iphys
+!
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
       call allocate_work_4_surf_bc_dat(node%numnod)
@@ -56,8 +61,8 @@
 !
       call allocate_surf_bc_data
 !
-      call set_surface_id                                               &
-     &   (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v)
+      call set_surface_id(node, ele, surf, sf_grp, sf_grp_nod,          &
+     &    sf_grp_v, iphys, nod_fld)
 ! 
       call deallocate_work_4_surf_bc_dat
 ! 

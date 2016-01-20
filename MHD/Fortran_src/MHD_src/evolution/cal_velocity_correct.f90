@@ -214,8 +214,13 @@
       use cal_ff_smp_to_ffs
 !
 !
+      call reset_ff_t_smp(node1%max_nod_smp, mhd_fem1_wk)
+!
       if (iflag_debug.eq.1) write(*,*) 'int_vol_initial_velo'
-      call int_vol_initial_velo
+      call int_vol_initial_vector                                       &
+     &   (fluid1%istack_ele_fld_smp, iphys%i_velo, coef_velo,           &
+     &    node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, fem1_wk,          &
+     &    mhd_fem1_wk)
       call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_boundary_velo_4_rhs'

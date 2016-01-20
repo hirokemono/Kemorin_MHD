@@ -217,7 +217,7 @@
 !$omp end parallel do
 !
 !       write(50+my_rank,*) ' magne_p_ins'
-!       do inod = 1, node1%numnod
+!       do inod = 1, numnod
 !         write(50+my_rank,*)  d_nod(inod,i_mag_p)
 !       end do
 !

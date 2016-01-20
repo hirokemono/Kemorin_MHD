@@ -50,12 +50,17 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
+      use m_geometry_data_MHD
+      use m_element_phys_data
+      use m_jacobians
+      use m_finite_element_matrix
+      use m_int_vol_data
 !
       use read_udt_4_snapshot
 !
       use nod_phys_send_recv
       use lead_physical_values
-      use convert_temperatures
+      use copy_nodal_fields
 !
       use time_step_data_IO_control
       use output_parallel_ucd_file
@@ -74,7 +79,8 @@
 !
       if (iflag_4_ref_temp .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
-        call set_2_perturbation_temp
+        call subtract_2_nod_scalars(node1, nod_fld1,                    &
+     &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
       end if
 !
 !     ---------------------
@@ -85,7 +91,9 @@
 !     -----Output monitor date
 !
       if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-      call output_time_step_control
+      call output_time_step_control                                     &
+     &   (node1, ele1, fluid1, iphys, nod_fld1, iphys_ele, fld_ele1,    &
+     &    jac1_3d_q, jac1_3d_l, fem1_wk, mhd_fem1_wk)
 !
       end subroutine FEM_analyze_vol_average
 !

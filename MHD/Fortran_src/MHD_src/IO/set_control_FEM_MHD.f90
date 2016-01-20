@@ -25,6 +25,7 @@
       subroutine set_control_4_FEM_MHD
 !
       use calypso_mpi
+      use m_node_phys_data
       use m_control_params_2nd_files
       use m_ucd_data
 !
@@ -87,7 +88,7 @@
 !
 !   set fields
 !
-      call set_control_4_fields
+      call set_control_4_fields(nod_fld1)
 !
 !   set control parameters
 !
@@ -143,7 +144,7 @@
 !
 !  check dependencies
 !
-      call check_FEM_MHD_dependencies
+      call check_FEM_MHD_dependencies(nod_fld1)
 !
       end subroutine set_control_4_FEM_MHD
 !

@@ -6,8 +6,7 @@
 !     modified by H. Matsui on Aug., 2007
 !     modified by H. Matsui on May, 2008
 !
-!      subroutine s_read_filtering_data
-!      subroutine read_3d_filter_moments
+!      subroutine s_read_filtering_data(node, ele)
 !
       module read_filtering_data
 !
@@ -17,7 +16,7 @@
 !
       implicit none
 !
-      private :: read_3d_filtering_data, read_line_filtering_data
+      private :: read_3d_filtering_data
       private :: read_w_filtering_data
 !
 !-----------------------------------------------------------------------
@@ -26,15 +25,20 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_read_filtering_data
+      subroutine s_read_filtering_data(node, ele)
 !
       use m_control_parameter
+      use m_filter_elength
+      use t_geometry_data
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
 !
 !
       if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
-        call read_line_filtering_data
+        call read_line_filtering_data(node%numnod, ele%numele)
       else
-        call read_3d_filter_moments
+        call read_3d_filter_moments(node%numnod, ele%numele)
         call read_3d_filtering_data
 !
         if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                   &
@@ -48,47 +52,12 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine read_3d_filter_moments
-!
-      use m_error_IDs
-      use m_control_parameter
-      use m_filter_file_names
-      use m_geometry_data
-      use m_filter_elength
-      use filter_moment_IO_select
-!
-      integer(kind = kint) :: ierr
-!
-!
-      if(iflag_SGS_model .eq. id_SGS_NL_grad) then
-        ifmt_filter_file = ifmt_filter_elen
-        filter_file_head = filter_elen_head
-        call sel_read_filter_elen_file                                  &
-     &      (my_rank, node1%numnod, ele1%numele, FEM1_elen, ierr)
-!
-        if (ierr.eq.500) then
-          write(e_message,*)                                            &
-     &        'Check num. of node in mesh and filter file for', my_rank
-          call calypso_MPI_abort(ierr_file, e_message)
-        else if (ierr.eq.501) then
-          write(e_message,*)                                            &
-     &        'Check num. of element in mesh and filter for', my_rank
-          call calypso_MPI_abort(ierr_file, e_message)
-        end if
-      end if
-!
-      end subroutine read_3d_filter_moments
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
       subroutine read_3d_filtering_data
 !
       use m_control_parameter
       use m_filter_file_names
       use m_filter_coef_combained
       use m_nod_filter_comm_table
-      use m_geometry_data
       use filter_moment_IO_select
       use set_filter_comm_tbl_4_IO
       use set_filter_geometry_4_IO
@@ -143,52 +112,6 @@
       end if
 !
       end subroutine read_w_filtering_data
-!
-!-----------------------------------------------------------------------
-!
-      subroutine read_line_filtering_data
-!
-      use m_error_IDs
-      use m_control_parameter
-      use m_filter_file_names
-      use m_filter_coef_combained
-      use m_filter_elength
-      use m_geometry_data
-      use m_field_file_format
-      use read_line_filter_data
-      use set_parallel_file_name
-      use filter_moment_IO_select
-!
-      integer(kind = kint) :: ierr
-!
-!
-      ifmt_filter_file = ifmt_filter_elen
-      filter_file_head = filter_line_head
-      call sel_read_filter_elen_file                                    &
-     &   (my_rank, node1%numnod, ele1%numele, FEM1_elen, ierr)
-!
-        if (ierr.eq.500) then
-          write(e_message,*)                                            &
-     &        'Check num. of node in mesh and filter file for', my_rank
-          call calypso_MPI_abort(ierr_file, e_message)
-        else if (ierr.eq.501) then
-          write(e_message,*)                                            &
-     &        'Check num. of element in mesh and filter for', my_rank
-          call calypso_MPI_abort(ierr_file, e_message)
-        end if
-!
-!
-      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                     &
-     &      .or. iflag_SGS_model.eq.id_SGS_similarity) then
-        if (ifmt_line_filter .eq. iflag_bin) then
-          call read_line_filter_data_b(filter_file_code, node1%numnod)
-        else
-          call read_line_filter_data_a(filter_file_code, node1%numnod)
-        end if
-      end if
-!
-!
-      end subroutine read_line_filtering_data
 !
 !-----------------------------------------------------------------------
 !

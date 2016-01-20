@@ -10,6 +10,10 @@
 !
       use m_precision
 !
+      use t_geometry_data
+      use t_phys_address
+      use t_phys_data
+!
       implicit none
 !
 ! ----------------------------------------------------------------------
@@ -18,33 +22,34 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_helicity
+      subroutine cal_helicity(node, iphys, nod_fld)
 !
       use m_control_parameter
-      use m_geometry_data
-      use m_node_phys_data
-!
       use products_nodal_fields_smp
+!
+      type(node_data), intent(in) :: node
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
 !$omp parallel
       if (iphys%i_k_heli .gt. izero) then
-         call cal_phys_dot_product(node1, nod_fld1,                     &
+         call cal_phys_dot_product(node, nod_fld,                       &
      &       iphys%i_velo, iphys%i_vort, iphys%i_k_heli)
       end if
 !
       if (iphys%i_m_heli .gt. izero) then
-         call cal_phys_dot_product(node1, nod_fld1,                     &
+         call cal_phys_dot_product(node, nod_fld,                       &
      &       iphys%i_vecp, iphys%i_magne, iphys%i_m_heli)
       end if
 !
       if (iphys%i_c_heli .gt. izero) then
-         call cal_phys_dot_product(node1, nod_fld1,                     &
+         call cal_phys_dot_product(node, nod_fld,                       &
      &       iphys%i_magne, iphys%i_current, iphys%i_c_heli)
       end if
 !
       if (iphys%i_x_heli .gt. izero) then
-         call cal_phys_dot_product(node1, nod_fld1,                     &
+         call cal_phys_dot_product(node, nod_fld,                       &
      &       iphys%i_velo, iphys%i_magne, iphys%i_x_heli)
       end if
 !$omp end parallel

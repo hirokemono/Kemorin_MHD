@@ -170,19 +170,19 @@
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: nd, icomp, if_comp
-      integer (kind = kint) :: istart, iend
+      integer (kind = kint) :: ist, ied
       integer (kind = kint) :: iproc, inod, inum
 !
 !
-!$omp parallel do private(nd,istart,iend,icomp,if_comp,inum,inod)
+!$omp parallel do private(nd,ist,ied,icomp,if_comp,inum,inod)
       do iproc = 1, np_smp
-        istart = inter_smp_stack(iproc-1) + 1
-        iend = inter_smp_stack(iproc)
+        ist = inter_smp_stack(iproc-1) + 1
+        ied = inter_smp_stack(iproc)
         do nd = 1, numdir
           icomp = i_field + nd - 1
           if_comp = if_pre + nd - 1
 !cdir nodep
-          do inum = istart, iend
+          do inum = ist, ied
             inod = inod_conduct(inum)
 !
             d_nod(inod,icomp) = d_nod(inod,icomp)                       &
@@ -226,7 +226,7 @@
           icomp = i_field + nd - 1
           if_comp = if_pre + nd - 1
 !cdir nodep
-          do inod = inod_smp_stack(iproc-1)+1, inod_smp_stack(iproc)
+          do inod = ist, ied
             ff(inod,nd) = d_nod(inod,icomp) * ml_o_fl(inod)             &
      &                   + ( ff(inod,nd)                                &
      &                   + adam_0*ff_nl(inod,nd)                        &

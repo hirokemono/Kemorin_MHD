@@ -212,9 +212,6 @@
 !
       use m_t_step_parameter
 !
-      use m_geometry_data
-      use m_node_phys_data
-      use m_finite_element_matrix
       use m_solver_djds_MHD
       use m_array_for_send_recv
       use m_type_AMG_data
@@ -249,7 +246,8 @@
 !
       call set_boundary_velo_4_rhs(node1, f1_l, f1_nl)
 !
-      call cal_sol_velo_pre_linear(node1, iphys, nod_fld1)
+      call cal_sol_velo_pre_linear                                      &
+     &   (node1, iphys, mhd_fem1_wk, f1_nl, f1_l, nod_fld1)
 !
       call cal_sol_velo_pre_crank                                       &
      &    (node1, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS,                  &
@@ -260,7 +258,6 @@
       end subroutine cal_velo_pre_crank
 !
 ! ----------------------------------------------------------------------
-!  --------  subroutine cal_velo_pre_consist_crank  -------
 !
       subroutine cal_velo_pre_consist_crank
 !
@@ -273,13 +270,11 @@
       use int_vol_initial_MHD
       use cal_solver_MHD
 !
-      use m_geometry_data
-      use m_node_phys_data
-      use m_finite_element_matrix
       use m_solver_djds_MHD
       use m_array_for_send_recv
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
+!
 !
       if (coef_imp_v.gt.0.0d0) then
         call int_sk_4_fixed_velo(iphys%i_velo, node1, ele1, nod_fld1,   &
@@ -287,13 +282,19 @@
 !        if (iflag_initial_step.eq.1) coef_imp_v = 1.0d0 / coef_imp_v
       end if
 !
-      call int_vol_initial_velo
+      call reset_ff_t_smp(node1%max_nod_smp, mhd_fem1_wk)
+!
+      call int_vol_initial_vector                                       &
+     &   (fluid1%istack_ele_fld_smp, iphys%i_velo, coef_velo,           &
+     &    node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, fem1_wk,          &
+     &    mhd_fem1_wk)
       call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !
       call set_boundary_velo_4_rhs(node1, f1_l, f1_nl)
 !
       call cal_vector_pre_consist(node1, coef_velo,                     &
-     &    f1_nl%ff, n_vector, iphys%i_pre_mom, nod_fld1, f1_l%ff)
+     &    n_vector, iphys%i_pre_mom, nod_fld1, rhs_tbl1,                &
+     &    mhd_fem1_wk, f1_nl, f1_l)
 !
       call cal_sol_velo_pre_crank                                       &
      &    (node1, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS,                  &

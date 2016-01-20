@@ -3,8 +3,8 @@
 !
 !      Written by H. Matsui on Sep. 2005
 !
-!!      subroutine set_surface_id                                       &
-!!     &         (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v)
+!!      subroutine set_surface_id(node, ele, surf, sf_grp, sf_grp_nod,  &
+!!     &          sf_grp_v, iphys, nod_fld)
 !
       module set_surface_id_MHD
 !
@@ -15,6 +15,8 @@
       use t_group_data
       use t_surface_group_connect
       use t_surface_group_geometry
+      use t_phys_data
+      use t_phys_address
 !
       implicit none
 !
@@ -24,12 +26,10 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_surface_id                                         &
-     &         (node, ele, surf, sf_grp, sf_grp_nod, sf_grp_v)
+      subroutine set_surface_id(node, ele, surf, sf_grp, sf_grp_nod,    &
+     &          sf_grp_v, iphys, nod_fld)
 !
       use m_control_parameter
-!
-      use m_node_phys_data
 !
       use m_surf_data_torque
       use m_scalar_surf_id
@@ -43,6 +43,9 @@
       type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(surface_group_geometry), intent(in) :: sf_grp_v
+      type(phys_address), intent(in) :: iphys
+!
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
@@ -61,7 +64,7 @@
 !
 !     set normal velocity
         call set_normal_velocity                                        &
-     &     (sf_grp, sf_grp_nod, sf_bc1_norm_v, iphys%i_velo, nod_fld1)
+     &     (sf_grp, sf_grp_nod, sf_bc1_norm_v, iphys%i_velo, nod_fld)
       end if
 !
       if (iflag_t_evo_4_magne .gt. id_no_evolution                      &

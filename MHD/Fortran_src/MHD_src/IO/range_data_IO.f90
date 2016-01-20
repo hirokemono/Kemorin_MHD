@@ -7,8 +7,8 @@
 !
 !> @brief DAta output for range of fields
 !!@verbatim
-!!      subroutine output_range_data(istep_ucd, time)
-!!      subroutine skip_range_data
+!!      subroutine output_range_data(istep_ucd, time, node, nod_fld)
+!!      subroutine skip_range_data(nod_fld)
 !!@endverbatim
 !!
 !!@param  istep_ucd  step number for field data output
@@ -18,6 +18,9 @@
 !
       use m_precision
       use m_constants
+!
+      use t_geometry_data
+      use t_phys_data
 !
       implicit none
 !
@@ -39,11 +42,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine open_maximum_file
+      subroutine open_maximum_file(nod_fld)
 !
-      use m_node_phys_data
       use m_cal_max_indices
       use write_field_labels
+!
+      type(phys_data), intent(in) :: nod_fld
 !
 !
       open (maximum_data_code,file = minmax_data_file_name,             &
@@ -68,13 +72,13 @@
      &    'ID step time x y z     '
 !
       call write_multi_labels(maximum_data_code,                        &
-     &    nod_fld1%ntot_phys_viz, nod_fld1%phys_name)
+     &    nod_fld%ntot_phys_viz, nod_fld%phys_name)
       call write_multi_labels(maximum_data_code,                        &
-     &    nod_fld1%ntot_phys_viz, nod_fld1%phys_name)
+     &    nod_fld%ntot_phys_viz, nod_fld%phys_name)
       call write_multi_labels(maximum_position_code,                    &
-     &    nod_fld1%ntot_phys_viz, nod_fld1%phys_name)
+     &    nod_fld%ntot_phys_viz, nod_fld%phys_name)
       call write_multi_labels(maximum_position_code,                    &
-     &    nod_fld1%ntot_phys_viz, nod_fld1%phys_name)
+     &    nod_fld%ntot_phys_viz, nod_fld%phys_name)
 !
       write(maximum_data_code,'(a)')     ''
       write(maximum_position_code,'(a)') ''
@@ -84,24 +88,25 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine output_range_data(istep_ucd, time)
+      subroutine output_range_data(istep_ucd, time, node, nod_fld)
 !
       use calypso_mpi
-      use m_geometry_data
-      use m_node_phys_data
       use m_cal_max_indices
 !
       integer(kind = kint), intent(in) :: istep_ucd
       real(kind = kreal), intent(in) :: time
 !
+      type(node_data), intent(in) :: node
+      type(phys_data), intent(in) :: nod_fld
+!
       character(len=kchara) :: fmt_txt
 !
 !
-      call cal_max_indices(node1, nod_fld1)
+      call cal_max_indices(node, nod_fld)
 !
       if ( my_rank .ne. 0 ) return
 !
-      call open_maximum_file
+      call open_maximum_file(nod_fld)
 !
       write(fmt_txt,'(a5,i3,a13)')                                      &
      &   '(i16,', (itwo*ncomp_minmax+ione), '(1pE25.15e3))'
@@ -120,11 +125,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine skip_range_data
+      subroutine skip_range_data(nod_fld)
 !
       use calypso_mpi
-      use m_node_phys_data
       use m_t_step_parameter
+!
+      type(phys_data), intent(in) :: nod_fld
 !
       integer (kind = kint) :: iflag, i_read_step, i, itmp
       real(kind = kreal) :: rtmp
@@ -135,16 +141,16 @@
 !
       do
         read(maximum_data_code,*,err=99,end=99)  i_read_step, rtmp,     &
-     &      (rtmp,i=1,nod_fld1%ntot_phys_viz),                          &
-     &      (rtmp,i=1,nod_fld1%ntot_phys_viz)
+     &      (rtmp,i=1,nod_fld%ntot_phys_viz),                           &
+     &      (rtmp,i=1,nod_fld%ntot_phys_viz)
           if (i_read_step.ge.iflag) exit
         end do
   99  continue
 !
       do
         read(maximum_position_code,*,err=98,end=98)                     &
-     &      i_read_step, rtmp, (itmp,i=1,nod_fld1%ntot_phys_viz),       &
-     &      (itmp,i=1,nod_fld1%ntot_phys_viz)
+     &      i_read_step, rtmp, (itmp,i=1,nod_fld%ntot_phys_viz),        &
+     &      (itmp,i=1,nod_fld%ntot_phys_viz)
         if (i_read_step.ge.iflag) exit
       end do
   98  continue

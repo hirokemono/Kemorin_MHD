@@ -32,6 +32,7 @@
       use m_SGS_address
       use m_element_id_4_node
       use m_finite_element_matrix
+      use m_jacobians
       use m_jacobian_sf_grp
       use m_filter_elength
       use m_surf_data_magne
@@ -54,7 +55,10 @@
       call reset_ff(node1%numnod, f1_l)
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
-      call int_vol_divergence_magne
+      call int_vol_fractional_div_ele                                   &
+     &   (ele1%istack_ele_smp, iphys%i_magne, iak_diff_b,               &
+     &    node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,                  &
+     &    rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
 !
 !      if (iflag_commute_magne .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele                                 &

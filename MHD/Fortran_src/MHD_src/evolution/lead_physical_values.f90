@@ -56,7 +56,7 @@
         call cal_field_by_rotation
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_helicity'
-        call cal_helicity
+        call cal_helicity(node1, iphys, nod_fld1)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_energy_fluxes'
         call cal_energy_fluxes

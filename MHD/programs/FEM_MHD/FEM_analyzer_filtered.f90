@@ -50,7 +50,7 @@
       use cal_model_coefficients
       use check_flexible_time_step
       use chenge_step_4_dynamic
-      use convert_temperatures
+      use copy_nodal_fields
 !
       use time_step_data_IO_control
       use node_monitor_IO
@@ -89,7 +89,8 @@
 !
       if (iflag_4_ref_temp .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
-        call set_2_perturbation_temp
+        call subtract_2_nod_scalars(node1, nod_fld1,                    &
+     &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
       end if
 !
 !     ---------------------
@@ -123,10 +124,12 @@
 !     -----Output monitor date
 !
       if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-      call output_time_step_control
+      call output_time_step_control                                     &
+     &   (node1, ele1, fluid1, iphys, nod_fld1, iphys_ele, fld_ele1,    &
+     &    jac1_3d_q, jac1_3d_l, fem1_wk, mhd_fem1_wk)
 !
       if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
-      call output_monitor_control
+      call output_monitor_control(node1, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
       call s_output_sgs_model_coefs
