@@ -26,6 +26,12 @@
       subroutine FEM_check_MHD_mat
 !
       use m_control_parameter
+      use m_geometry_data
+      use m_group_data
+      use m_int_vol_data
+      use m_jacobians
+      use m_jacobian_sf_grp
+      use m_element_id_4_node
       use m_layering_ele_list
 !
       use initialization_4_MHD
@@ -42,9 +48,11 @@
 !   construct matrix for Poisson and diffusion terms
 !
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
-      call set_data_4_const_matrices
+      call set_data_4_const_matrices(node1, ele1, rhs_tbl1, mat_tbl_q1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
-      call set_aiccg_matrices
+      call set_aiccg_matrices(node1, ele1, surf1, sf_grp1,              &
+     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,                       &
+     &    rhs_tbl1, mat_tbl_q1, mhd_fem1_wk)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices end'
 !
       if (iflag_debug.eq.1) write(*,*) 's_write_djds_mat_MHD'

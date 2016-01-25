@@ -675,12 +675,6 @@
       integer(kind = kint) :: ncube_c,  numedge_cube, inod_c, inod_o
       integer(kind = kint) :: ie20(20)
 !
-      integer(kind = kint) :: inod1,  inod2,  inod3,  inod4
-      integer(kind = kint) :: inod5,  inod6,  inod7,  inod8
-      integer(kind = kint) :: inod9,  inod10, inod11, inod12
-      integer(kind = kint) :: inod13, inod14, inod15, inod16
-      integer(kind = kint) :: inod17, inod18, inod19, inod20
-!
 !
       ncube_c  = (num_h-1)*(num_h-1)*(num_v-1)
       numedge_cube = (3*num_h-1)*(num_h-1)*(num_v-1)                    &

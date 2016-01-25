@@ -10,6 +10,23 @@
 !!      subroutine cal_viscous_diffusion(nod_comm, node, ele, surf,     &
 !!     &          fluid, sf_grp, iphys, jac_3d, jac_sf_grp, rhs_tbl,    &
 !!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(field_geometry_data), intent(in) :: fluid
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(phys_data), intent(in) :: ele_fld
+!!        type(jacobians_3d), intent(in) :: jac_3d
+!!        type(jacobians_2d), intent(in) :: jac_sf_grp
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+!!        type(phys_data), intent(inout) :: nod_fld
 !
       module cal_momentum_terms
 !
@@ -26,6 +43,7 @@
       use t_phys_data
       use t_phys_address
       use t_jacobian_3d
+      use t_jacobian_2d
       use t_table_FEM_const
       use t_finite_element_mat
       use t_MHD_finite_element_mat
