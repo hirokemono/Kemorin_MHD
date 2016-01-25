@@ -6,18 +6,18 @@
 !
 !!      subroutine cal_stratified_layer                                 &
 !!     &         (node, ele, fluid, iphys, nod_fld, &
-!!     &          ncomp_ele, iele_velo, d_ele, jac1_3d, rhs_tbl,        &
+!!     &          ncomp_ele, iele_velo, d_ele, jac_3d, rhs_tbl,         &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine cal_stratified_layer_upw                             &
 !!     &         (node, ele, fluid, iphys, nod_fld,                     &
-!!     &          ncomp_ele, iele_velo, d_ele, jac1_3d, rhs_tbl,        &
+!!     &          ncomp_ele, iele_velo, d_ele, jac_3d, rhs_tbl,         &
 !!     &          mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
-!!        type(jacobians_3d), intent(in) :: jac1_3d
+!!        type(jacobians_3d), intent(in) :: jac_3d
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -66,7 +66,7 @@
 !
       subroutine cal_stratified_layer                                   &
      &         (node, ele, fluid, iphys, nod_fld, &
-     &          ncomp_ele, iele_velo, d_ele, jac1_3d, rhs_tbl,          &
+     &          ncomp_ele, iele_velo, d_ele, jac_3d, rhs_tbl,           &
      &          mhd_fem_wk, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
@@ -79,7 +79,7 @@
       type(field_geometry_data), intent(in) :: fluid
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
-      type(jacobians_3d), intent(in) :: jac1_3d
+      type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
@@ -106,7 +106,7 @@
 !
         call fem_skv_stratified_galerkin(fluid%istack_ele_fld_smp,      &
      &      intg_point_t_evo, k2, fem_wk%scalar_1, d_ele(1,iele_velo),  &
-     &      mhd_fem_wk%xx_e, ele, jac1_3d, fem_wk%sk6)
+     &      mhd_fem_wk%xx_e, ele, jac_3d, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &
@@ -118,7 +118,7 @@
 !
       subroutine cal_stratified_layer_upw                               &
      &         (node, ele, fluid, iphys, nod_fld,                       &
-     &          ncomp_ele, iele_velo, d_ele, jac1_3d, rhs_tbl,          &
+     &          ncomp_ele, iele_velo, d_ele, jac_3d, rhs_tbl,           &
      &          mhd_fem_wk, fem_wk, f_nl)
 !
       use nodal_fld_2_each_element
@@ -131,7 +131,7 @@
       type(field_geometry_data), intent(in) :: fluid
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
-      type(jacobians_3d), intent(in) :: jac1_3d
+      type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       integer(kind = kint), intent(in) :: ncomp_ele, iele_velo
@@ -159,7 +159,7 @@
 !
         call fem_skv_stratified_upwind(fluid%istack_ele_fld_smp,        &
      &      intg_point_t_evo, k2, fem_wk%scalar_1, d_ele(1,iele_velo),  &
-     &      mhd_fem_wk%xx_e, ele, jac1_3d, fem_wk%sk6)
+     &      mhd_fem_wk%xx_e, ele, jac_3d, fem_wk%sk6)
       end do
 !
       call add1_skv_to_ff_v_smp(node, ele, rhs_tbl,                     &

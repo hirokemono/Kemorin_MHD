@@ -77,9 +77,11 @@
 !   construct matrix for Poisson and diffusion terms
 !
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
-      call set_data_4_const_matrices
+      call set_data_4_const_matrices(node1, ele1, rhs_tbl1, mat_tbl_q1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
-      call set_aiccg_matrices
+      call set_aiccg_matrices(node1, ele1, surf1,  sf_grp1,             &
+     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,                       &
+     &    rhs_tbl1, mat_tbl_q1, mhd_fem1_wk)
 !
 !   time evolution loop start!
 !
@@ -334,7 +336,9 @@
 !
       if ( retval .ne. 0 ) then
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
-        call update_matrices
+        call update_matrices(node1, ele1, surf1, sf_grp1,               &
+     &          jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,                 &
+     &          rhs_tbl1, mat_tbl_q1, mhd_fem1_wk)
       end if
 !
       end subroutine FEM_analyze_MHD
