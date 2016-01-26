@@ -60,15 +60,16 @@
      &   (iele_fsmp_stack, num_int, ir_phi, ja_phi, i_phi,              &
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
-      call MPI_allREDUCE ( bulk_local(ir_phi) , ave_mp, ione,           &
+      call MPI_allREDUCE ( bulk_local(ja_phi) , ave_mp, ione,           &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
-      call MPI_allREDUCE ( rms_local(ja_phi) , rms_mp, ione,            &
+      call MPI_allREDUCE ( rms_local(ir_phi) , rms_mp, ione,            &
      &    CALYPSO_REAL, MPI_SUM, CALYPSO_COMM, ierr_MPI)
 !
       if (iloop .eq. 0) then
         ave_0 = ave_mp
         rms_0 = rms_mp
       end if
+!
       if(rms_0 .eq. 0.0d0) then
         rsig = (rms_mp - rms_0)
       else
