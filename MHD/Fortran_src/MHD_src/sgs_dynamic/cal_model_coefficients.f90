@@ -4,7 +4,7 @@
 !      Written by H. Matsui
 !
 !!      subroutine s_cal_model_coefficients                             &
-!!     &         (i_dvx, i_dbx, i_dfvx, i_dfbx,                         &
+!!     &         (i_dvx, ie_dbx, i_dfvx, ie_dfbx,                       &
 !!     &          nod_comm, node, ele, surf, sf_grp, iphys,             &
 !!     &          iphys_ele, ele_fld, fluid, conduct, layer_tbl,        &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,  &
@@ -61,15 +61,14 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_model_coefficients                               &
-     &         (i_dvx, i_dbx, i_dfvx, i_dfbx,                           &
-     &          nod_comm, node, ele, surf, sf_grp, iphys,               &
+     &         (nod_comm, node, ele, surf, sf_grp, iphys,               &
      &          iphys_ele, ele_fld, fluid, conduct, layer_tbl,          &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,    &
      &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
-!
       use m_t_step_parameter
-      use cal_sgs_h_flux_dynamic_simi
+      use m_SGS_address
+      use m_int_vol_data
 !
       use cal_sgs_heat_flux_dynamic
       use cal_sgs_h_flux_dynamic_simi
@@ -82,9 +81,6 @@
       use cal_sgs_induction_dynamic
       use cal_diff_coef_sgs_induct
       use cal_sgs_uxb_dynamic_simi
-!
-      integer(kind = kint), intent(in) :: i_dvx, i_dfvx
-      integer(kind = kint), intent(in) :: i_dbx, i_dfbx
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -125,9 +121,10 @@
         else if (iflag_SGS_heat .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
      &          write(*,*) 's_cal_sgs_h_flux_dynamic_simi'
-          call s_cal_sgs_h_flux_dynamic_simi(nod_comm, node, ele,       &
-     &        iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,            &
-     &        m_lump, fem_wk, f_l, nod_fld)
+          call s_cal_sgs_h_flux_dynamic_simi(iak_sgs_hf, icomp_sgs_hf,  &
+     &        nod_comm, node, ele, iphys, layer_tbl,                    &
+     &        jac_3d_q, jac_3d_l, rhs_tbl, m_lump, fem_wk,              &
+     &        f_l, nod_fld)
         end if
 !
         if ( iflag_commute_heat .eq. id_SGS_commute_ON) then
@@ -145,15 +142,16 @@
 !
         if (iflag_SGS_inertia .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_m_flux_dynamic'
-          call cal_sgs_m_flux_dynamic(i_dvx, i_dfvx,                    &
+          call cal_sgs_m_flux_dynamic                                   &
+     &       (iak_sgs_mf, icomp_sgs_mf, i_dvx, i_dfvx,                  &
      &        nod_comm, node, ele, iphys, iphys_ele, ele_fld,           &
      &        fluid, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,            &
      &        FEM_elen, mhd_fem_wk, fem_wk, nod_fld)
         else if (iflag_SGS_inertia .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 's_cal_sgs_m_flux_dynamic_simi'
-          call s_cal_sgs_m_flux_dynamic_simi                            &
-     &       (nod_comm, node, ele, iphys, layer_tbl,                    &
+          call s_cal_sgs_m_flux_dynamic_simi(iak_sgs_mf, icomp_sgs_mf,  &
+     &        nod_comm, node, ele, iphys, layer_tbl,                    &
      &        jac_3d_q, jac_3d_l, rhs_tbl, m_lump,                      &
      &        fem_wk, f_l, nod_fld)
         end if
@@ -161,7 +159,8 @@
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
           if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_mf'
           call s_cal_diff_coef_sgs_mf                                   &
-     &       (i_dfvx, nod_comm, node, ele, surf, sf_grp,                &
+     &       (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, i_dfvx,         &
+     &        nod_comm, node, ele, surf, sf_grp,                        &
      &        iphys, iphys_ele, ele_fld, fluid, layer_tbl,              &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,      &
      &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -174,15 +173,16 @@
         if (iflag_SGS_lorentz .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)                                         &
      &       write(*,*) 'cal_sgs_maxwell_t_dynamic'
-          call cal_sgs_maxwell_t_dynamic(i_dbx, i_dfbx,                 &
+          call cal_sgs_maxwell_t_dynamic                                &
+     &       (iak_sgs_lor, icomp_sgs_lor, ie_dbx, ie_dfbx,              &
      &        nod_comm, node, ele, iphys, iphys_ele, ele_fld,           &
      &        fluid, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,            &
      &        FEM_elen, mhd_fem_wk, fem_wk, nod_fld)
         else if (iflag_SGS_lorentz .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
      &       write(*,*) 'cal_sgs_maxwell_dynamic_simi'
-          call cal_sgs_maxwell_dynamic_simi                             &
-     &       (nod_comm, node, ele, iphys, layer_tbl,                    &
+          call cal_sgs_maxwell_dynamic_simi(iak_sgs_lor, icomp_sgs_lor, &
+     &        nod_comm, node, ele, iphys, layer_tbl,                    &
      &        jac_3d_q, jac_3d_l, rhs_tbl, m_lump,                      &
      &        fem_wk, f_l, nod_fld)
         end if
@@ -190,7 +190,8 @@
         if (iflag_commute_lorentz .eq. id_SGS_commute_ON) then
           if (iflag_debug.eq.1) write(*,*) 's_cal_diff_coef_sgs_mxwl'
           call s_cal_diff_coef_sgs_mxwl                                 &
-     &       (i_dfbx, nod_comm, node, ele, surf, sf_grp,                &
+     &       (iak_diff_lor, icomp_sgs_lor, icomp_diff_lor,              &
+     &        ie_dfbx, nod_comm, node, ele, surf, sf_grp,               &
      &        iphys, iphys_ele, ele_fld, fluid, layer_tbl,              &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,      &
      &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -203,15 +204,16 @@
         if(iflag_SGS_induction .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic'
-          call cal_sgs_induct_t_dynamic                                 &
-     &       (i_dvx, i_dbx, i_dfvx, i_dfbx,                             &
+          call cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb,     &
+     &        i_dvx, ie_dbx, i_dfvx, ie_dfbx,                           &
      &        nod_comm, node, ele, iphys, iphys_ele, ele_fld,           &
      &        conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,          &
      &        FEM_elen, mhd_fem_wk, fem_wk, f_l, nod_fld)
         else if(iflag_SGS_induction .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic_simi'
-          call cal_sgs_induct_t_dynamic_simi(nod_comm, node, ele,       &
+          call cal_sgs_induct_t_dynamic_simi                            &
+     &       (iak_sgs_uxb, icomp_sgs_uxb, nod_comm, node, ele,          &
      &        iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,            &
      &        m_lump, fem_wk, f_l, nod_fld)
         end if
@@ -219,7 +221,8 @@
         if (iflag_commute_induction .eq. id_SGS_commute_ON) then
           if(iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_induct'
           call s_cal_diff_coef_sgs_induct                               &
-     &       (i_dfvx, i_dfbx, nod_comm, node, ele, surf, sf_grp,        &
+     &       (iak_diff_uxb, icomp_sgs_uxb, icomp_diff_uxb,              &
+     &        i_dfvx, ie_dfbx, nod_comm, node, ele, surf, sf_grp,       &
      &        iphys, iphys_ele, ele_fld, conduct, layer_tbl,            &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,      &
      &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -229,14 +232,16 @@
 !
         if(iflag_SGS_induction .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_uxb_dynamic'
-          call cal_sgs_uxb_dynamic(i_dvx, i_dfvx,                       &
+          call cal_sgs_uxb_dynamic                                      &
+     &       (iak_sgs_uxb, icomp_sgs_uxb, i_dvx, i_dfvx,                &
      &        nod_comm, node, ele, iphys, iphys_ele, ele_fld,           &
      &        conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,          &
      &        FEM_elen, mhd_fem_wk, fem_wk, f_l, nod_fld)
         else if(iflag_SGS_induction .eq. id_SGS_similarity) then
           if (iflag_debug.eq.1)  write(*,*)                             &
      &                          's_cal_sgs_uxb_dynamic_simi'
-          call s_cal_sgs_uxb_dynamic_simi(nod_comm, node, ele,          &
+          call s_cal_sgs_uxb_dynamic_simi                               &
+     &       (iak_sgs_uxb, icomp_sgs_uxb, nod_comm, node, ele,          &
      &        iphys, layer_tbl, jac_3d_q, jac_3d_l, nod_fld)
         end if
 !

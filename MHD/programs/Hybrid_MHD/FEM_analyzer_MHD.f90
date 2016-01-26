@@ -87,8 +87,8 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients(i_dvx, i_dbx, i_dfvx, i_dfbx,     &
-     &      nod_comm, node1, ele1, surf1, sf_grp1, iphys,               &
+        call s_cal_model_coefficients                                   &
+     &     (nod_comm, node1, ele1, surf1, sf_grp1, iphys,               &
      &      iphys_ele, fld_ele1, fluid1, conduct1, layer_tbl1,          &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
@@ -235,8 +235,8 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients(i_dvx, i_dbx, i_dfvx, i_dfbx,     &
-     &      nod_comm, node1, ele1, surf1, sf_grp1, iphys,               &
+        call s_cal_model_coefficients                                   &
+     &     (nod_comm, node1, ele1, surf1, sf_grp1, iphys,               &
      &      iphys_ele, fld_ele1, fluid1, conduct1, layer_tbl1,          &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &

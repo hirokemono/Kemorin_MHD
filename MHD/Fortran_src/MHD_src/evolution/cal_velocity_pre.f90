@@ -74,15 +74,17 @@
       end if
 !
       if ( iflag_SGS_inertia .ne. id_SGS_none) then
-        call cal_sgs_momentum_flux(i_dvx, nod_comm, node1, ele1,        &
-     &      fluid1, iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,    &
-     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+        call cal_sgs_momentum_flux(icomp_sgs_mf, i_dvx,                 &
+     &      nod_comm, node1, ele1, fluid1, iphys, iphys_ele, fld_ele1,  &
+     &      jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,       &
+     &      f1_l, f1_nl, nod_fld1)
       end if
 !
       if ( iflag_SGS_lorentz .ne. id_SGS_none) then
-        call cal_sgs_maxwell(i_dbx, nod_comm, node1, ele1, fluid1,      &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, &
-     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+        call cal_sgs_maxwell(icomp_sgs_lor, ie_dbx,                     &
+     &      nod_comm, node1, ele1, fluid1, iphys, iphys_ele, fld_ele1,  &
+     &      jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,       &
+     &      f1_l, f1_nl, nod_fld1)
       end if
 !
 !   --- reset work array for time evolution

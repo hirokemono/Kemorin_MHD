@@ -504,11 +504,11 @@
      &          fld_ele1%d_fld)
          end if
 !
-         if(iflag2.eq.2 .and. i_dfbx.ne.0) then
+         if(iflag2.eq.2 .and. ie_dfbx.ne.0) then
            if (iflag_debug .ge. iflag_routine_msg) write(*,*)           &
      &                         'diff_filter_b_on_ele'
            call sel_int_diff_vector_on_ele                              &
-     &        (ele1%istack_ele_smp, iphys%i_filter_magne, i_dfbx,       &
+     &        (ele1%istack_ele_smp, iphys%i_filter_magne, ie_dfbx,      &
      &         node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,             &
      &         mhd_fem1_wk)
          end if
@@ -528,10 +528,10 @@
 !
        if (  iflag_SGS_lorentz .eq.   id_SGS_NL_grad                    &
      &  .or. iflag_SGS_induction .eq. id_SGS_NL_grad) then
-         if ( i_dbx.ne.0 ) then
+         if ( ie_dbx.ne.0 ) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
            call sel_int_diff_vector_on_ele                              &
-     &        (ele1%istack_ele_smp, iphys%i_magne, i_dbx,               &
+     &        (ele1%istack_ele_smp, iphys%i_magne, ie_dbx,              &
      &         node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,             &
      &         mhd_fem1_wk)
         end if
@@ -623,10 +623,10 @@
      &          fld_ele1%d_fld)
          end if
 !
-         if (iflag2.eq.2 .and. i_dfbx.ne.0) then
+         if (iflag2.eq.2 .and. ie_dfbx.ne.0) then
            if (iflag_debug.gt.0) write(*,*) 'diff_filter_b_on_ele'
            call sel_int_diff_vector_on_ele                              &
-     &        (ele1%istack_ele_smp, iphys%i_filter_magne, i_dfbx,       &
+     &        (ele1%istack_ele_smp, iphys%i_filter_magne, ie_dfbx,      &
      &         node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,             &
      &         mhd_fem1_wk)
          end if
@@ -655,10 +655,10 @@
  !
        if (  iflag_SGS_lorentz .eq.   id_SGS_NL_grad                    &
      &  .or. iflag_SGS_induction .eq. id_SGS_NL_grad) then
-        if ( i_dbx.ne.0 ) then
+        if ( ie_dbx.ne.0 ) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
             call sel_int_diff_vector_on_ele                             &
-     &         (ele1%istack_ele_smp, iphys%i_magne, i_dbx,              &
+     &         (ele1%istack_ele_smp, iphys%i_magne, ie_dbx,             &
      &          node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,            &
      &          mhd_fem1_wk)
         end if
@@ -757,11 +757,11 @@
 !
 !
 !      call sel_int_diff_scalar_on_ele                                  &
-!     &   (ele1%istack_ele_smp, iphys%i_light, i_dcx,                   &
+!     &   (ele1%istack_ele_smp, iphys%i_light, ie_dcx,                  &
 !     &    node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l, mhd_fem1_wk)
 !
 !      call sel_int_diff_scalar_on_ele                                  &
-!     &   (ele1%istack_ele_smp, iphys%i_filter_comp, i_dfcx,            &
+!     &   (ele1%istack_ele_smp, iphys%i_filter_comp, ie_dfcx,           &
 !     &    node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l, mhd_fem1_wk)
 !
 !

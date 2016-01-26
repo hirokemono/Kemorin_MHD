@@ -19,8 +19,6 @@
 ! 
       integer(kind=kint) :: i_dvx = 0, i_dfvx = 0
       integer(kind=kint) :: i_dtx = 0, i_dftx = 0
-      integer(kind=kint) :: i_dcx = 0, i_dfcx = 0
-      integer(kind=kint) :: i_dbx = 0, i_dfbx = 0
 !
 ! -----------------------------------------------------------------------
 !
@@ -106,47 +104,6 @@
 !
        allocate(mhd_fem1_wk%dvx(numele,mhd_fem1_wk%n_dvx))
        if(numele .gt. 0) mhd_fem1_wk%dvx = 0.0d0
-!
-       i = 1
-       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
-        if (  iflag_SGS_heat .ne.      id_SGS_none                      &
-     &   .or. iflag_SGS_inertia .ne.   id_SGS_none                      &
-     &   .or. iflag_SGS_induction .ne. id_SGS_none ) then
-         i_dvx = i
-         i_dfvx = i + 9
-         i = i + 18
-        end if
-!
-        if ( iflag_SGS_lorentz .ne. id_SGS_none) then
-         i_dbx = i
-         i_dfbx = i + 9
-         i = i + 18
-        else if (iflag_SGS_induction .ne. id_SGS_none                   &
-     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
-         i_dbx = i
-         i_dfbx = i + 9
-         i = i + 18
-        end if
-!
-       else if (iflag_SGS_model .ne. id_SGS_none                        &
-     &      .and. iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_OFF) then
-        if (   iflag_SGS_heat .ne.     id_SGS_none                      &
-     &   .or. iflag_SGS_inertia .ne.   id_SGS_none                      &
-     &   .or. iflag_SGS_induction .ne. id_SGS_none) then
-         i_dvx = i
-         i = i + 9
-        end if
-!
-        if ( iflag_SGS_lorentz .ne. id_SGS_none) then
-         i_dbx = i
-         i = i + 9
-        else if (iflag_SGS_induction .ne. id_SGS_none                   &
-     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
-         i_dbx = i
-         i = i + 9
-        end if
-!
-       end if
 !
        end subroutine allocate_int_vol_data
 !

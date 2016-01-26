@@ -4,7 +4,8 @@
 !     Written by H. Matsui
 !
 !!      subroutine s_cal_diff_coef_sgs_induct                           &
-!!     &         (ie_dfvx, ie_dfbx, nod_comm, node, ele, surf, sf_grp,  &
+!!     &         (iak_diff_uxb, icomp_sgs_uxb, icomp_diff_uxb,          &
+!!     &          ie_dfvx, ie_dfbx, nod_comm, node, ele, surf, sf_grp,  &
 !!     &          iphys, iphys_ele, ele_fld, conduct, layer_tbl,        &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -54,7 +55,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_diff_coef_sgs_induct                             &
-     &         (ie_dfvx, ie_dfbx, nod_comm, node, ele, surf, sf_grp,    &
+     &         (iak_diff_uxb, icomp_sgs_uxb, icomp_diff_uxb,            &
+     &          ie_dfvx, ie_dfbx, nod_comm, node, ele, surf, sf_grp,    &
      &          iphys, iphys_ele, ele_fld, conduct, layer_tbl,          &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -62,7 +64,6 @@
       use m_machine_parameter
       use m_control_parameter
       use m_phys_constants
-      use m_SGS_address
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -75,6 +76,8 @@
       use nod_phys_send_recv
       use clear_work_4_dynamic_model
 !
+      integer(kind = kint), intent(in) :: iak_diff_uxb
+      integer(kind = kint), intent(in) :: icomp_sgs_uxb, icomp_diff_uxb
       integer(kind = kint), intent(in) :: ie_dfvx, ie_dfbx
 !
       type(communication_table), intent(in) :: nod_comm
@@ -106,7 +109,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_induct_grad'
       call cal_sgs_induct_t_grad_w_coef                                 &
-     &   (ifilter_4delta, iphys%i_sgs_grad_f,                           &
+     &   (ifilter_4delta, icomp_sgs_uxb, iphys%i_sgs_grad_f,            &
      &    iphys%i_filter_velo, iphys%i_filter_magne, ie_dfvx, ie_dfbx,  &
      &    nod_comm, node, ele, conduct, iphys_ele, ele_fld, jac_3d_q,   &
      &    rhs_tbl, FEM_elens, fem_wk, mhd_fem_wk, f_l, nod_fld)

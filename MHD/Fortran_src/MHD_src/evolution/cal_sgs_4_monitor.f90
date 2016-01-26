@@ -35,6 +35,8 @@
       use m_finite_element_matrix
       use m_int_vol_data
       use m_filter_elength
+      use m_SGS_address
+!
       use cal_sgs_fluxes
       use int_sgs_induction
 !
@@ -48,22 +50,24 @@
 !
       if (iphys%i_SGS_m_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_SGS_m_flux)
-        call cal_sgs_momentum_flux(i_dvx, nod_comm, node1, ele1,        &
-     &      fluid1, iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,    &
-     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+        call cal_sgs_momentum_flux(icomp_sgs_mf, i_dvx,                 &
+     &      nod_comm, node1, ele1, fluid1, iphys, iphys_ele, fld_ele1,  &
+     &      jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,       &
+     &      f1_l, f1_nl, nod_fld1)
       end if
 !
       if (iphys%i_SGS_maxwell .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_maxwell_t)
-        call cal_sgs_maxwell(i_dbx, nod_comm, node1, ele1, fluid1,      &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, &
-     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+        call cal_sgs_maxwell(icomp_sgs_lor, ie_dbx,                     &
+     &      nod_comm, node1, ele1, fluid1, iphys, iphys_ele, fld_ele1,  &
+     &      jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,       &
+     &      f1_l, f1_nl, nod_fld1)
       end if
 !
       if (iphys%i_SGS_induct_t .gt. 0) then
         if(iflag_debug.gt.0) write(*,*) 'lead ', trim(fhd_induct_t)
-        call cal_sgs_magne_induction(i_dvx, i_dbx,                      &
+        call cal_sgs_magne_induction(icomp_sgs_uxb, i_dvx, ie_dbx,      &
      &      nod_comm, node1, ele1, conduct1, iphys, iphys_ele,          &
      &      fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk,      &
      &      fem1_wk, f1_l, nod_fld1)

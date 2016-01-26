@@ -112,9 +112,10 @@
      &    layer_tbl%e_grp%num_item, layer_tbl%e_grp%istack_grp_smp,     &
      &    layer_tbl%e_grp%item_grp, ele)
 !
-      call cal_sgs_momentum_flux(ie_dvx, nod_comm, node, ele, fluid,    &
-     &    iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elen,       &
-     &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+      call cal_sgs_momentum_flux(icomp_sgs_mf, ie_dvx,                  &
+     &    nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,        &
+     &    jac_3d_q, rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk,              &
+     &    f_l, f_nl, nod_fld)
 !
 !   lead work of Reynolds stress
 !

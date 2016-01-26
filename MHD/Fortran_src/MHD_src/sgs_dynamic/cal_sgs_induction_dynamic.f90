@@ -4,12 +4,13 @@
 !     Written by H. Matsui on Oct. 2005
 !     Modified by H. Matsui on Aug., 2007
 !
-!!      subroutine cal_sgs_uxb_dynamic(ie_dvx, ie_dfvx,                 &
+!!      subroutine cal_sgs_uxb_dynamic                                  &
+!!     &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx,          &
 !!     &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,       &
 !!     &          conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,      &
 !!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
-!!      subroutine cal_sgs_induct_t_dynamic                             &
-!!     &         (ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                     &
+!!      subroutine cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb, &
+!!     &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                     &
 !!     &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,       &
 !!     &          conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,      &
 !!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
@@ -38,7 +39,6 @@
       use m_phys_constants
       use m_machine_parameter
       use m_control_parameter
-      use m_SGS_address
 !
       use t_comm_table
       use t_geometry_data_MHD
@@ -59,7 +59,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_uxb_dynamic(ie_dvx, ie_dfvx,                   &
+      subroutine cal_sgs_uxb_dynamic                                    &
+     &         (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx,            &
      &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,         &
      &          conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
      &          FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
@@ -73,7 +74,8 @@
       use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
 !
-      integer (kind=kint), intent(in) :: ie_dvx, ie_dfvx
+      integer(kind=kint), intent(in) :: iak_sgs_uxb, icomp_sgs_uxb
+      integer(kind=kint), intent(in) :: ie_dvx, ie_dfvx
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -146,8 +148,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_induct_t_dynamic                               &
-     &         (ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                       &
+      subroutine cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb,   &
+     &          ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                       &
      &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,         &
      &          conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
      &          FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
@@ -162,8 +164,9 @@
       use cvt_dynamic_scheme_coord
       use reduce_model_coefs
 !
-      integer (kind=kint), intent(in) :: ie_dvx, ie_dfvx
-      integer (kind=kint), intent(in) :: ie_dbx, ie_dfbx
+      integer(kind=kint), intent(in) :: iak_sgs_uxb, icomp_sgs_uxb
+      integer(kind=kint), intent(in) :: ie_dvx, ie_dfvx
+      integer(kind=kint), intent(in) :: ie_dbx, ie_dfbx
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node

@@ -4,9 +4,11 @@
 !     Written by H. Matsui on Oct. 2005
 !     Modified by H. Matsui on Aug., 2007
 !
-!!      subroutine s_cal_sgs_uxb_dynamic_simi(nod_comm, node, ele,      &
+!!      subroutine s_cal_sgs_uxb_dynamic_simi                           &
+!!     &         (iak_sgs_uxb, icomp_sgs_uxb, nod_comm, node, ele,      &
 !!     &          iphys, layer_tbl, jac_3d_q, jac_3d_l, nod_fld)
-!!      subroutine cal_sgs_induct_t_dynamic_simi(nod_comm, node, ele,   &
+!!      subroutine cal_sgs_induct_t_dynamic_simi                        &
+!!     &         (iak_sgs_uxb, icomp_sgs_uxb, nod_comm, node, ele,      &
 !!     &          iphys, layer_tbl, jac_3d_q, jac_3d_l,                 &
 !!     &          rhs_tbl1, m_lump, fem1_wk, f1_l, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -25,7 +27,6 @@
       use m_machine_parameter
       use m_phys_constants
       use m_SGS_model_coefs
-      use m_SGS_address
 !
       use t_comm_table
       use t_geometry_data
@@ -44,7 +45,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_cal_sgs_uxb_dynamic_simi(nod_comm, node, ele,        &
+      subroutine s_cal_sgs_uxb_dynamic_simi                             &
+     &         (iak_sgs_uxb, icomp_sgs_uxb, nod_comm, node, ele,        &
      &          iphys, layer_tbl, jac_3d_q, jac_3d_l, nod_fld)
 !
       use reset_dynamic_model_coefs
@@ -53,6 +55,8 @@
       use cal_model_diff_coefs
       use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
+!
+      integer(kind = kint), intent(in) :: iak_sgs_uxb, icomp_sgs_uxb
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -110,7 +114,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_induct_t_dynamic_simi(nod_comm, node, ele,     &
+      subroutine cal_sgs_induct_t_dynamic_simi                          &
+     &         (iak_sgs_uxb, icomp_sgs_uxb, nod_comm, node, ele,        &
      &          iphys, layer_tbl, jac_3d_q, jac_3d_l,                   &
      &          rhs_tbl1, m_lump, fem1_wk, f1_l, nod_fld)
 !
@@ -123,6 +128,8 @@
       use cal_similarity_terms
       use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
+!
+      integer(kind = kint), intent(in) :: iak_sgs_uxb, icomp_sgs_uxb
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node

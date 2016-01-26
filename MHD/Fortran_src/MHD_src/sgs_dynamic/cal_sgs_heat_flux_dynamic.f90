@@ -32,7 +32,6 @@
       use m_control_parameter
       use m_machine_parameter
       use m_phys_constants
-      use m_SGS_address
 !
       use t_comm_table
       use t_geometry_data_MHD

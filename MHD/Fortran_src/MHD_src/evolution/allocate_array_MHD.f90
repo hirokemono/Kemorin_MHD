@@ -34,6 +34,7 @@
       use m_finite_element_matrix
       use m_int_vol_data
       use m_mean_square_values
+      use m_SGS_address
       use t_FEM_phys_data
 !
 !
@@ -47,7 +48,7 @@
 !
       if (iflag_debug.ge.1) write(*,*) 'allocate_int_vol_data'
       call allocate_int_vol_data(ele1%numele, node1%max_nod_smp)
-!
+      call set_SGS_addresses
 !
 !  allocation for field values
      if (iflag_debug.ge.1)  write(*,*) 'set_field_address_type'

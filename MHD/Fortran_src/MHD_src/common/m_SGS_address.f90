@@ -5,6 +5,7 @@
 !
 !     Written by H. Matsui
 !
+!      subroutine set_SGS_addresses
 !
       module m_SGS_address
 !
@@ -13,6 +14,8 @@
 !
       implicit  none
 ! 
+      integer(kind=kint) :: ie_dcx = 0, ie_dfcx = 0
+      integer(kind=kint) :: ie_dbx = 0, ie_dfbx = 0
 !
       integer (kind=kint) :: iak_sgs_hf =   izero
       integer (kind=kint) :: iak_sgs_mf =   izero
@@ -52,5 +55,62 @@
       integer (kind=kint) :: icomp_diff_cf =   izero
       integer (kind=kint) :: icomp_diff_lor =  izero
       integer (kind=kint) :: icomp_diff_uxb =  izero
+!
+!  ------------------------------------------------------------------
+!
+      contains
+!
+!  ------------------------------------------------------------------
+!
+      subroutine set_SGS_addresses
+!
+      use m_control_parameter
+      use m_int_vol_data
+!
+      integer(kind = kint) :: i
+!
+      i = 1
+      if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
+        if (  iflag_SGS_heat .ne.      id_SGS_none                      &
+     &   .or. iflag_SGS_inertia .ne.   id_SGS_none                      &
+     &   .or. iflag_SGS_induction .ne. id_SGS_none ) then
+         i_dvx = i
+         i_dfvx = i + 9
+         i = i + 18
+        end if
+!
+        if ( iflag_SGS_lorentz .ne. id_SGS_none) then
+         ie_dbx = i
+         ie_dfbx = i + 9
+         i = i + 18
+        else if (iflag_SGS_induction .ne. id_SGS_none                   &
+     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+         ie_dbx = i
+         ie_dfbx = i + 9
+         i = i + 18
+        end if
+!
+      else if (iflag_SGS_model .ne. id_SGS_none                         &
+     &   .and. iflag_dynamic_SGS .eq. id_SGS_DYNAMIC_OFF) then
+        if (   iflag_SGS_heat .ne.     id_SGS_none                      &
+     &   .or. iflag_SGS_inertia .ne.   id_SGS_none                      &
+     &   .or. iflag_SGS_induction .ne. id_SGS_none) then
+         i_dvx = i
+         i = i + 9
+        end if
+!
+        if ( iflag_SGS_lorentz .ne. id_SGS_none) then
+         ie_dbx = i
+         i = i + 9
+        else if (iflag_SGS_induction .ne. id_SGS_none                   &
+     &     .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
+         ie_dbx = i
+         i = i + 9
+        end if
+      end if
+!
+      end subroutine set_SGS_addresses
+!
+!  ------------------------------------------------------------------
 !
       end module m_SGS_address

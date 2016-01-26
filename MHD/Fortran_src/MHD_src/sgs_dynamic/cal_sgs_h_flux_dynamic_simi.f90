@@ -3,8 +3,9 @@
 !
 !     Written by H. Matsui on May, 2009
 !
-!!      subroutine s_cal_sgs_h_flux_dynamic_simi(nod_comm, node, ele, &
-!!     &          iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,      &
+!!      subroutine s_cal_sgs_h_flux_dynamic_simi                        &
+!!     &         (iak_sgs_hf, icomp_sgs_hf, nod_comm, node, ele,        &
+!!     &          iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
 !!     &          m_lump, fem_wk, f_l, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -43,12 +44,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine s_cal_sgs_h_flux_dynamic_simi(nod_comm, node, ele,   &
-     &          iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
+      subroutine s_cal_sgs_h_flux_dynamic_simi                          &
+     &         (iak_sgs_hf, icomp_sgs_hf, nod_comm, node, ele,          &
+     &          iphys, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,          &
      &          m_lump, fem_wk, f_l, nod_fld)
 !
       use m_SGS_model_coefs
-      use m_SGS_address
 !
       use reset_dynamic_model_coefs
       use copy_nodal_fields
@@ -59,6 +60,8 @@
       use cal_similarity_terms
       use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
+!
+      integer(kind = kint), intent(in) :: iak_sgs_hf, icomp_sgs_hf
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node

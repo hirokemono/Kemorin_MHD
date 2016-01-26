@@ -7,18 +7,18 @@
 !!     &          nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,       &
 !!     &          f_l, f_nl, nod_fld)
-!!      subroutine cal_sgs_momentum_flux(ie_dvx,                        &
+!!      subroutine cal_sgs_momentum_flux(icomp_sgs_mf, ie_dvx,          &
 !!     &          nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,       &
 !!     &          f_l, f_nl, nod_fld)
-!!      subroutine cal_sgs_maxwell(ie_dbx,                              &
+!!      subroutine cal_sgs_maxwell(icomp_sgs_lor, ie_dbx,               &
 !!     &          nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,       &
 !!     &          f_l, f_nl, nod_fld)
-!!      subroutine cal_sgs_magne_induction(ie_dvx, ie_dbx,              &
-!!     &        nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,&
-!!     &        jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,         &
-!!     &        f_l, nod_fld)
+!!      subroutine cal_sgs_magne_induction                              &
+!!     &         (icomp_sgs_uxb, ie_dvx, ie_dbx, nod_comm, node, ele,   &
+!!     &          conduct, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,  &
+!!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !!      subroutine cal_sgs_uxb_2_evo(ie_dvx,                            &
 !!     &        nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,&
 !!     &        jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,         &
@@ -48,8 +48,6 @@
       use m_control_parameter
       use m_t_step_parameter
 !
-      use m_SGS_address
-!
       use t_geometry_data
       use t_phys_data
       use t_phys_address
@@ -76,7 +74,6 @@
      &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,         &
      &          f_l, f_nl, nod_fld)
 !
-      use m_SGS_address
       use cal_sgs_heat_fluxes_grad
       use cal_gradient
 !
@@ -126,15 +123,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_momentum_flux(ie_dvx,                          &
+      subroutine cal_sgs_momentum_flux(icomp_sgs_mf, ie_dvx,            &
      &          nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,  &
      &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,         &
      &          f_l, f_nl, nod_fld)
 !
-      use m_SGS_address
-!
       use cal_sgs_mom_fluxes_grad
 !
+      integer(kind = kint), intent(in) :: icomp_sgs_mf
       integer(kind = kint), intent(in) :: ie_dvx
 !
       type(communication_table), intent(in) :: nod_comm
@@ -167,7 +163,7 @@
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_mf_simi', iphys%i_SGS_m_flux
         call cal_sgs_mf_simi(iphys%i_SGS_m_flux, iphys%i_velo,          &
-     &      iphys%i_filter_velo, icomp_sgs_lor,                         &
+     &      iphys%i_filter_velo, icomp_sgs_mf,                          &
      &      nod_comm, node, nod_fld)
 !
       else if (iflag_SGS_inertia .eq. id_SGS_diffusion) then
@@ -183,14 +179,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_maxwell(ie_dbx,                                &
+      subroutine cal_sgs_maxwell(icomp_sgs_lor, ie_dbx,                 &
      &          nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,  &
      &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,         &
      &          f_l, f_nl, nod_fld)
 !
-      use m_SGS_address
       use cal_sgs_mom_fluxes_grad
 !
+      integer(kind = kint), intent(in) :: icomp_sgs_lor
       integer(kind = kint), intent(in) :: ie_dbx
 !
       type(communication_table), intent(in) :: nod_comm
@@ -240,13 +236,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_magne_induction(ie_dvx, ie_dbx,                &
-     &        nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,  &
-     &        jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,           &
-     &        f_l, nod_fld)
+      subroutine cal_sgs_magne_induction                                &
+     &         (icomp_sgs_uxb, ie_dvx, ie_dbx, nod_comm, node, ele,     &
+     &          conduct, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,    &
+     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
       use cal_sgs_inductions_grad
 !
+      integer(kind = kint), intent(in) :: icomp_sgs_uxb
       integer(kind = kint), intent(in) :: ie_dvx, ie_dbx
 !
       type(communication_table), intent(in) :: nod_comm
@@ -270,7 +267,7 @@
         if (iflag_debug.eq.1)                                           &
      &    write(*,*) 'cal_sgs_induct_t_grad'
         call cal_sgs_induct_t_grad_w_coef                               &
-     &     (ifilter_final, iphys%i_SGS_induct_t,                        &
+     &     (ifilter_final, icomp_sgs_uxb, iphys%i_SGS_induct_t,         &
      &      iphys%i_velo, iphys%i_magne, ie_dvx, ie_dbx,                &
      &      nod_comm, node, ele, conduct, iphys_ele, ele_fld,           &
      &      jac_3d, rhs_tbl, FEM_elens, fem_wk, mhd_fem_wk,             &

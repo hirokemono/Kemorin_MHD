@@ -5,13 +5,13 @@
 !     Modified by H. Matsui on Aug., 2007
 !
 !!      subroutine s_cal_sgs_m_flux_dynamic_simi                        &
-!!     &         (nod_comm, node, ele, iphys, layer_tbl,                &
-!!     &          jac_3d_q, jac_3d_l, rhs_tbl, m1_lump,                 &
+!!     &         (iak_sgs_mf, icomp_sgs_mf, nod_comm, node, ele, iphys, &
+!!     &          layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl, m1_lump,      &
 !!     &          fem_wk, f_l, nod_fld)
 !!      subroutine cal_sgs_maxwell_dynamic_simi                         &
-!!     &         (nod_comm, node, ele, iphys, layer_tbl,                &
-!!     &          jac_3d_q, jac_3d_l, rhs_tbl, m1_lump,                 &
-!!     &          fem_wk, f_l, nod_fld)
+!!     &        (iak_sgs_lor, icomp_sgs_lor, nod_comm, node, ele, iphys,&
+!!     &         layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl, m1_lump,       &
+!!     &         fem_wk, f_l, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -49,12 +49,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine s_cal_sgs_m_flux_dynamic_simi                          &
-     &         (nod_comm, node, ele, iphys, layer_tbl,                  &
-     &          jac_3d_q, jac_3d_l, rhs_tbl, m1_lump,                   &
+     &         (iak_sgs_mf, icomp_sgs_mf, nod_comm, node, ele, iphys,   &
+     &          layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl, m1_lump,        &
      &          fem_wk, f_l, nod_fld)
 !
       use m_SGS_model_coefs
-      use m_SGS_address
       use reset_dynamic_model_coefs
       use copy_nodal_fields
       use cal_sgs_fluxes_simi
@@ -65,6 +64,8 @@
 !
       use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
+!
+      integer(kind = kint), intent(in) :: iak_sgs_mf, icomp_sgs_mf
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -142,12 +143,11 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_maxwell_dynamic_simi                           &
-     &         (nod_comm, node, ele, iphys, layer_tbl,                  &
-     &          jac_3d_q, jac_3d_l, rhs_tbl, m1_lump,                   &
-     &          fem_wk, f_l, nod_fld)
+     &        (iak_sgs_lor, icomp_sgs_lor, nod_comm, node, ele, iphys,  &
+     &         layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl, m1_lump,         &
+     &         fem_wk, f_l, nod_fld)
 !
       use m_SGS_model_coefs
-      use m_SGS_address
       use reset_dynamic_model_coefs
       use copy_nodal_fields
       use cal_sgs_fluxes_simi
@@ -158,6 +158,8 @@
 !
       use clear_work_4_dynamic_model
       use cvt_dynamic_scheme_coord
+!
+      integer(kind = kint), intent(in) :: iak_sgs_lor, icomp_sgs_lor
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node

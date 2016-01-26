@@ -4,7 +4,8 @@
 !     Written by H. Matsui
 !
 !!      subroutine s_cal_diff_coef_sgs_mxwl                             &
-!!     &         (ie_dfbx, nod_comm, node, ele, surf, sf_grp,           &
+!!     &         (iak_diff_lor, icomp_sgs_lor, icomp_diff_lor,          &
+!!     &          ie_dfbx, nod_comm, node, ele, surf, sf_grp,           &
 !!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -54,7 +55,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_diff_coef_sgs_mxwl                               &
-     &         (ie_dfbx, nod_comm, node, ele, surf, sf_grp,             &
+     &         (iak_diff_lor, icomp_sgs_lor, icomp_diff_lor,            &
+     &          ie_dfbx, nod_comm, node, ele, surf, sf_grp,             &
      &          iphys, iphys_ele, ele_fld, fluid1, layer_tbl,           &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -62,7 +64,6 @@
       use m_machine_parameter
       use m_control_parameter
       use m_phys_constants
-      use m_SGS_address
       use m_surf_data_magne
 !
       use reset_dynamic_model_coefs
@@ -78,6 +79,8 @@
       use nod_phys_send_recv
       use clear_work_4_dynamic_model
 !
+      integer(kind = kint), intent(in) :: iak_diff_lor
+      integer(kind = kint), intent(in) :: icomp_sgs_lor, icomp_diff_lor
       integer(kind = kint), intent(in) :: ie_dfbx
 !
       type(communication_table), intent(in) :: nod_comm
