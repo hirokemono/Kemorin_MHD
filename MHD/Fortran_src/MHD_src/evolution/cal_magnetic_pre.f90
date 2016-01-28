@@ -42,6 +42,7 @@
 !
       use m_group_data
       use m_bc_data_magne
+      use m_SGS_address
 !
       use set_boundary_scalars
       use nod_phys_send_recv
@@ -56,7 +57,7 @@
 !      call check_surface_param_smp('cal_magnetic_field_pre start',     &
 !     &    my_rank, sf_grp1, sf_grp_nod1)
       if ( iflag_SGS_induction .ne. id_SGS_none) then
-        call cal_sgs_magne_induction(icomp_sgs_uxb, i_dvx, ie_dbx,      &
+        call cal_sgs_magne_induction(icomp_sgs_uxb, ie_dvx, ie_dbx,     &
      &     nod_comm, node1, ele1, conduct1, iphys, iphys_ele, fld_ele1, &
      &     jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,        &
      &     f1_l, nod_fld1)
@@ -159,6 +160,8 @@
       use m_array_for_send_recv
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
+      use m_SGS_address
+!
       use cal_multi_pass
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
@@ -167,8 +170,9 @@
 !
 !
       if (coef_imp_b.gt.0.0d0) then
-        call int_sk_4_fixed_magne(iphys%i_magne, node1, ele1, nod_fld1, &
-     &      jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
+        call int_sk_4_fixed_magne(iphys%i_magne, iak_diff_b,            &
+     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+     &      fem1_wk, f1_l)
 !        if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
       end if
 !
@@ -207,6 +211,8 @@
       use m_array_for_send_recv
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
+      use m_SGS_address
+!
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
       use cal_ff_smp_to_ffs
@@ -216,8 +222,9 @@
 !
 !
       if (coef_imp_b.gt.0.0d0) then
-        call int_sk_4_fixed_magne(iphys%i_magne, node1, ele1, nod_fld1, &
-     &      jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
+        call int_sk_4_fixed_magne(iphys%i_magne, iak_diff_b,            &
+     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+     &      fem1_wk, f1_l)
 !         if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
       end if
 !

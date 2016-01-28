@@ -3,12 +3,12 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!!      subroutine int_surf_temp_ele(node, ele, surf, sf_grp,           &
-!!     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,       &
-!!     &          fem_wk, f_l, f_nl)
-!!      subroutine int_surf_temp_monitor(i_field, node, ele, surf,      &
-!!     &          sf_grp, iphys, nod_fld, jac_sf_grp, rhs_tbl,          &
-!!     &          FEM_elens, fem_wk, f_l, f_nl)
+!!      subroutine int_surf_temp_ele                                    &
+!!     &         (iak_diff_hf, node, ele, surf, sf_grp, iphys, nod_fld, &
+!!     &          jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
+!!      subroutine int_surf_temp_monitor(i_field, iak_diff_hf,          &
+!!     &          node, ele, surf, sf_grp, iphys, nod_fld,              &
+!!     &          jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
@@ -46,13 +46,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_surf_temp_ele(node, ele, surf, sf_grp,             &
-     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,         &
-     &          fem_wk, f_l, f_nl)
+      subroutine int_surf_temp_ele                                      &
+     &         (iak_diff_hf, node, ele, surf, sf_grp, iphys, nod_fld,   &
+     &          jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
 !
       use m_SGS_model_coefs
-      use m_SGS_address
       use m_surf_data_temp
+!
+      integer(kind = kint), intent(in)  :: iak_diff_hf
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -89,13 +90,14 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_surf_temp_monitor(i_field, node, ele, surf,        &
-     &          sf_grp, iphys, nod_fld, jac_sf_grp, rhs_tbl,            &
-     &          FEM_elens, fem_wk, f_l, f_nl)
+      subroutine int_surf_temp_monitor(i_field, iak_diff_hf,            &
+     &          node, ele, surf, sf_grp, iphys, nod_fld,                &
+     &          jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
 !
       use m_SGS_model_coefs
-      use m_SGS_address
       use m_surf_data_temp
+!
+      integer(kind = kint), intent(in)  :: iak_diff_hf
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele

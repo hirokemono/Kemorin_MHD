@@ -150,8 +150,8 @@
 !
       if (coef_imp_v.gt.0.0d0) then
         if (iflag_debug.eq.1) write(*,*) 'int_sk_4_fixed_velo'
-        call int_sk_4_fixed_velo(iphys%i_velo, node1, ele1, nod_fld1,   &
-     &      jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
+        call int_sk_4_fixed_velo(iphys%i_velo, iak_diff_v, node1, ele1, &
+     &      nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
       end if
 !
       if ( iflag_4_coriolis .eq. id_Coriolis_ele_imp) then

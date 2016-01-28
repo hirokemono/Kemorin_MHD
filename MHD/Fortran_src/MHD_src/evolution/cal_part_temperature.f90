@@ -57,9 +57,10 @@
 !
 !
       if (iflag_SGS_heat .ne. id_SGS_none) then
-        call cal_sgs_heat_flux(i_dvx, nod_comm, node1, ele1, fluid1,    &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, &
-     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+        call cal_sgs_heat_flux(icomp_sgs_hf, ie_dvx,                    &
+     &      nod_comm, node1, ele1, fluid1, iphys, iphys_ele, fld_ele1,  &
+     &      jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,       &
+     &      f1_l, f1_nl, nod_fld1)
       end if
 !
 !      call check_nodal_data(my_rank, nod_fld1, 3, iphys%i_SGS_h_flux)
@@ -94,7 +95,7 @@
 !      call check_ff_smp(my_rank, n_scalar, node1%max_nod_smp, f1_l)
 !      call check_ff_smp(my_rank, n_scalar, node1%max_nod_smp, f1_nl)
 !
-      call int_surf_temp_ele(node1, ele1, surf1, sf_grp1,               &
+      call int_surf_temp_ele(iak_diff_hf, node1, ele1, surf1, sf_grp1,  &
      &    iphys, nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,       &
      &    fem1_wk, f1_l, f1_nl)
 !
@@ -185,7 +186,7 @@
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
       use m_finite_element_matrix
-!
+      use m_SGS_address
 !
       use cal_sol_vector_pre_crank
       use cal_multi_pass
@@ -195,8 +196,9 @@
 !
 !
       if (coef_imp_t .gt. 0.0d0) then
-        call int_sk_4_fixed_part_temp(iphys%i_par_temp, node1, ele1,    &
-     &      nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
+        call int_sk_4_fixed_part_temp(iphys%i_par_temp, iak_diff_t,     &
+     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+     &      fem1_wk, f1_l)
         if (iflag_initial_step.eq.1) coef_imp_t = 1.0d0 / coef_imp_t
       end if
 !
@@ -241,11 +243,13 @@
       use cal_ff_smp_to_ffs
       use int_vol_initial_MHD
       use cal_solver_MHD
+      use m_SGS_address
 !
 !
       if (coef_imp_t .gt. 0.0d0) then
-        call int_sk_4_fixed_part_temp(iphys%i_par_temp, node1, ele1,    &
-     &      nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
+        call int_sk_4_fixed_part_temp(iphys%i_par_temp, iak_diff_t,     &
+     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+     &      fem1_wk, f1_l)
         if (iflag_initial_step.eq.1) coef_imp_t = 1.0d0 / coef_imp_t
       end if
 !

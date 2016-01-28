@@ -82,8 +82,8 @@
 !
 !   add boundary term for fixed velocity
 !
-      call int_vol_sk_po_bc(iphys%i_p_phi, node1, ele1, nod_fld1,       &
-     &    jac1_3d_l, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
+      call int_vol_sk_po_bc(iphys%i_p_phi, iak_diff_v, node1, ele1,     &
+     &     nod_fld1, jac1_3d_l, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
 !
 !   add boundary term for fixed pressure
 !

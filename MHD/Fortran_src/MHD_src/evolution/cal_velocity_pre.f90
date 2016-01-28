@@ -66,7 +66,7 @@
 !
       if (iflag_SGS_gravity .ne. id_SGS_none) then
         call cal_sgs_mom_flux_with_sgs_buo                              &
-     &     (i_dvx, nod_comm, node1, ele1, surf1, sf_grp1,               &
+     &     (nod_comm, node1, ele1, surf1, sf_grp1,                      &
      &      fluid1, layer_tbl, iphys, iphys_ele, fld_ele1,              &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
@@ -74,7 +74,7 @@
       end if
 !
       if ( iflag_SGS_inertia .ne. id_SGS_none) then
-        call cal_sgs_momentum_flux(icomp_sgs_mf, i_dvx,                 &
+        call cal_sgs_momentum_flux(icomp_sgs_mf, ie_dvx,                &
      &      nod_comm, node1, ele1, fluid1, iphys, iphys_ele, fld_ele1,  &
      &      jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,       &
      &      f1_l, f1_nl, nod_fld1)
@@ -228,8 +228,8 @@
 !
 !
       if (coef_imp_v.gt.0.0d0) then
-        call int_sk_4_fixed_velo(iphys%i_velo, node1, ele1, nod_fld1,   &
-     &      jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
+        call int_sk_4_fixed_velo(iphys%i_velo, iak_diff_v, node1, ele1, &
+     &      nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
 !        if (iflag_initial_step.eq.1) coef_imp_v = 1.0d0 / coef_imp_v
       end if
 !
@@ -279,8 +279,8 @@
 !
 !
       if (coef_imp_v.gt.0.0d0) then
-        call int_sk_4_fixed_velo(iphys%i_velo, node1, ele1, nod_fld1,   &
-     &      jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
+        call int_sk_4_fixed_velo(iphys%i_velo, iak_diff_v, node1, ele1, &
+     &      nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
 !        if (iflag_initial_step.eq.1) coef_imp_v = 1.0d0 / coef_imp_v
       end if
 !

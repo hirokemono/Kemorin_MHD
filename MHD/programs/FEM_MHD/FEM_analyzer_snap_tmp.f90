@@ -213,6 +213,7 @@
       use m_finite_element_matrix
       use m_int_vol_data
       use m_filter_elength
+      use m_SGS_address
 !
       use copy_nodal_fields
       use cvt_sph_vector_2_xyz_smp
@@ -271,9 +272,10 @@
       if (iphys%i_SGS_vp_induct .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_vp_induct)
-        call cal_sgs_uxb_2_monitor(i_dvx, nod_comm, node1, ele1,        &
-     &      conduct1, iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,  &
-     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+        call cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,               &
+     &     nod_comm, node1, ele1, conduct1, iphys, iphys_ele, fld_ele1, &
+     &     jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,        &
+     &     f1_l, f1_nl, nod_fld1)
 
       end if
 !

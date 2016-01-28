@@ -181,7 +181,7 @@
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_filter_v_on_ele'
            call sel_int_diff_vector_on_ele                              &
-     &        (fluid1%istack_ele_fld_smp, iphys%i_filter_velo, i_dfvx,  &
+     &        (fluid1%istack_ele_fld_smp, iphys%i_filter_velo, ie_dfvx, &
      &         node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,             &
      &         mhd_fem1_wk)
          end if
@@ -201,12 +201,12 @@
 !
 !   required field for gradient model
 !
-       if ( i_dvx .ne. 0) then
+       if (ie_dvx .ne. 0) then
          if ( iflag_SGS_model .eq. id_SGS_NL_grad) then
            if(iflag_debug .ge. iflag_routine_msg)                       &
      &                 write(*,*) 'diff_velocity_on_ele'
            call sel_int_diff_vector_on_ele                              &
-     &        (fluid1%istack_ele_fld_smp, iphys%i_velo, i_dvx,          &
+     &        (fluid1%istack_ele_fld_smp, iphys%i_velo, ie_dvx,         &
      &         node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,             &
      &         mhd_fem1_wk)
          end if
@@ -305,10 +305,10 @@
       end if
 !
 !
-!       if ( i_dtx .ne. 0 ) then
+!       if (ie_dtx .ne. 0) then
 !         if (iflag_debug.gt.0) write(*,*) 'diff_temp_on_ele'
 !         call sel_int_diff_scalar_on_ele                               &
-!     &      (ele1%istack_ele_smp, iphys%i_temp, i_dtx,                 &
+!     &      (ele1%istack_ele_smp, iphys%i_temp, ie_dtx,                &
 !     &       node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l, mhd_fem1_wk)
 !       end if
 !
@@ -316,10 +316,10 @@
      &       .and. iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
 !
 !         if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
-!           if ( i_dftx .ne. 0) then
+!           if (ie_dftx .ne. 0) then
 !             if (iflag_debug.gt.0) write(*,*) 'diff_filter_t_on_ele'
 !             call sel_int_diff_scalar_on_ele                           &
-!     &          (ele1%istack_ele_smp, iphys%i_filter_temp, i_dftx,     &
+!     &          (ele1%istack_ele_smp, iphys%i_filter_temp, ie_dftx,    &
 !     &           node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,          &
 !     &           mhd_fem1_wk)
 !           end if

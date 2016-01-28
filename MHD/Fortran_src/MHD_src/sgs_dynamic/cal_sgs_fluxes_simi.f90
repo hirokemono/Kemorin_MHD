@@ -12,9 +12,10 @@
 !      subroutine cal_sgs_uxb_simi(i_sgs, i_v, i_b, i_fil_v, i_fil_b,   &
 !     &          nod_comm, node, nod_fld)
 !
-!      subroutine cal_sgs_uxb_2_ff_simi(nod_comm, node, ele, conduct,   &
-!     &           iphys, iphys_ele, ele_fld, jac_3d,                    &
-!     &           rhs_tbl, fem_wk, f_nl, nod_fld)
+!!      subroutine cal_sgs_uxb_2_ff_simi                                &
+!!     &          (icomp_sgs_uxb, nod_comm, node, ele, conduct, iphys,  &
+!!     &           iphys_ele, ele_fld, jac_3d, rhs_tbl, fem_wk,         &
+!!     &           f_nl, nod_fld)
 !
 !      subroutine cal_sgs_mf_simi_wide(i_sgs, i_vect, i_vect_f,         &
 !     &          icm_sgs, nod_comm, node, nod_fld)
@@ -162,11 +163,14 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_uxb_2_ff_simi(nod_comm, node, ele, conduct,    &
-     &           iphys, iphys_ele, ele_fld, jac_3d,                     &
-     &           rhs_tbl, fem_wk, f_nl, nod_fld)
+      subroutine cal_sgs_uxb_2_ff_simi                                  &
+     &          (icomp_sgs_uxb, nod_comm, node, ele, conduct, iphys,    &
+     &           iphys_ele, ele_fld, jac_3d, rhs_tbl, fem_wk,           &
+     &           f_nl, nod_fld)
 !
       use int_vol_similarity_uxb
+!
+      integer (kind=kint), intent(in) :: icomp_sgs_uxb
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -187,7 +191,7 @@
      &    iphys%i_magne, iphys%i_filter_velo, iphys%i_filter_magne,     &
      &    nod_comm, node, nod_fld)
 !
-      call sel_int_simi_vp_induct(node, ele, conduct,                   &
+      call sel_int_simi_vp_induct(icomp_sgs_uxb, node, ele, conduct,    &
      &    iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,          &
      &    fem_wk, f_nl)
 !

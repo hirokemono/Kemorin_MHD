@@ -65,9 +65,10 @@
 !  lead induction terms
 !
       if ( iflag_SGS_induction .ne. id_SGS_none) then
-        call cal_sgs_uxb_2_evo(i_dvx, nod_comm, node1, ele1, conduct1,  &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen, &
-     &      mhd_fem1_wk, fem1_wk, f1_nl, nod_fld1)
+        call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,                   &
+     &     nod_comm, node1, ele1, conduct1, iphys, iphys_ele, fld_ele1, &
+     &     jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,        &
+     &     f1_nl, nod_fld1)
       end if
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
@@ -165,6 +166,8 @@
       use m_array_for_send_recv
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
+      use m_SGS_address
+!
       use cal_multi_pass
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
@@ -173,8 +176,9 @@
 !
 !
       if (coef_imp_b.gt.0.0d0) then
-        call int_sk_4_fixed_vector_p(iphys%i_vecp, node1, ele1,         &
-     &      nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
+        call int_sk_4_fixed_vector_p(iphys%i_vecp, iak_diff_b,          &
+     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+     &      fem1_wk, f1_l)
 !        if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
       end if
 !
@@ -211,6 +215,8 @@
       use m_array_for_send_recv
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
+      use m_SGS_address
+!
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
       use cal_ff_smp_to_ffs
@@ -220,8 +226,9 @@
 !
 !
       if (coef_imp_b.gt.0.0d0) then
-        call int_sk_4_fixed_vector_p(iphys%i_vecp, node1, ele1,         &
-     &      nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
+        call int_sk_4_fixed_vector_p(iphys%i_vecp, iak_diff_b,          &
+     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+     &      fem1_wk, f1_l)
 !        if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
       end if
 !

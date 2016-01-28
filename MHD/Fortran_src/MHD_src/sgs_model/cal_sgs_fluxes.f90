@@ -3,7 +3,7 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine cal_sgs_heat_flux(ie_dvx,                            &
+!!      subroutine cal_sgs_heat_flux(icomp_sgs_hf, ie_dvx,              &
 !!     &          nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,&
 !!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,       &
 !!     &          f_l, f_nl, nod_fld)
@@ -19,7 +19,7 @@
 !!     &         (icomp_sgs_uxb, ie_dvx, ie_dbx, nod_comm, node, ele,   &
 !!     &          conduct, iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,  &
 !!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
-!!      subroutine cal_sgs_uxb_2_evo(ie_dvx,                            &
+!!      subroutine cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,             &
 !!     &        nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,&
 !!     &        jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,         &
 !!     &        f_nl, nod_fld)
@@ -69,7 +69,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_heat_flux(ie_dvx,                              &
+      subroutine cal_sgs_heat_flux(icomp_sgs_hf, ie_dvx,                &
      &          nod_comm, node, ele, fluid, iphys, iphys_ele, ele_fld,  &
      &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,         &
      &          f_l, f_nl, nod_fld)
@@ -77,7 +77,7 @@
       use cal_sgs_heat_fluxes_grad
       use cal_gradient
 !
-      integer(kind = kint), intent(in) :: ie_dvx
+      integer(kind = kint), intent(in) :: icomp_sgs_hf, ie_dvx
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -99,7 +99,7 @@
       if (     iflag_SGS_heat .eq. id_SGS_NL_grad) then
         if (iflag_debug.eq.1)                                           &
      &     write(*,*) 'cal_sgs_h_flux_grad', ifilter_final
-      call cal_sgs_h_flux_grad_w_coef(ifilter_final,                    &
+      call cal_sgs_h_flux_grad_w_coef(ifilter_final, icomp_sgs_hf,      &
      &    iphys%i_SGS_h_flux, iphys%i_sgs_temp, ie_dvx,                 &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d,       &
      &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
@@ -285,7 +285,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_uxb_2_evo(ie_dvx,                              &
+      subroutine cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,               &
      &        nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,  &
      &        jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,           &
      &        f_nl, nod_fld)
@@ -293,6 +293,7 @@
       use cal_rotation
       use cal_sgs_uxb_grad
 !
+      integer(kind = kint), intent(in) :: icomp_sgs_uxb
       integer(kind = kint), intent(in) :: ie_dvx
 !
       type(communication_table), intent(in) :: nod_comm
@@ -316,16 +317,16 @@
         if (iflag_debug.eq.1)                                           &
      &      write(*,*) 'cal_sgs_uxb_2_ff_grad', ifilter_final
         call cal_sgs_uxb_2_ff_grad                                      &
-     &     (ifilter_final, ie_dvx, node, ele, conduct,                  &
+     &     (ifilter_final, icomp_sgs_uxb, ie_dvx, node, ele, conduct,   &
      &      iphys, nod_fld, iphys_ele, ele_fld, jac_3d,                 &
      &      rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !
       else if(iflag_SGS_induction .eq. id_SGS_similarity) then
         if (iflag_debug.eq.1)                                           &
      &      write(*,*) 'cal_sgs_uxb_2_ff_simi', ifilter_final
-        call cal_sgs_uxb_2_ff_simi(nod_comm, node, ele, conduct,        &
-     &      iphys, iphys_ele, ele_fld, jac_3d,                          &
-     &      rhs_tbl, fem_wk, f_nl, nod_fld)
+        call cal_sgs_uxb_2_ff_simi                                      &
+     &     (icomp_sgs_uxb, nod_comm, node, ele, conduct, iphys,         &
+     &      iphys_ele, ele_fld, jac_3d, rhs_tbl, fem_wk, f_nl, nod_fld)
 !
       else if(iflag_SGS_induction .eq. id_SGS_diffusion) then
          if (iflag_debug.eq.1)                                          &

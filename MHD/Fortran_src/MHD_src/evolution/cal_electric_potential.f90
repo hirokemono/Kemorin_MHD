@@ -75,8 +75,8 @@
       call int_surf_normal_vector_p(iphys%i_vecp, node1, ele1, surf1,   &
      &    sf_grp1, nod_fld1, jac1_sf_grp_2d_l, rhs_tbl1, fem1_wk, f1_l)
 !
-      call int_vol_sk_mp_bc(iphys%i_m_phi, node1, ele1, nod_fld1,       &
-     &    jac1_3d_l, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
+      call int_vol_sk_mp_bc(iphys%i_m_phi, iak_diff_b, node1, ele1,     &
+     &     nod_fld1, jac1_3d_l, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
 !
       call set_boundary_ff(node1, nod_bc1_f, f1_l)
 !

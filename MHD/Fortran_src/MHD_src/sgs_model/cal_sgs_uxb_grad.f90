@@ -3,10 +3,14 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine cal_sgs_uxb_2_ff_grad(i_filter)
-!
-!!      subroutine cal_sgs_uxb_grad_4_dyn
-!!      subroutine cal_sgs_filter_uxb_grad_4_dyn
+!!      subroutine cal_sgs_uxb_2_ff_grad                                &
+!!     &         (i_filter, icomp_sgs_uxb, ie_dvx, node, ele, conduct,  &
+!!     &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d,           &
+!!     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+!!      subroutine cal_sgs_vp_induct_grad_no_coef(i_filter,             &
+!!     &          i_sgs, i_field, id_dx, nod_comm, node, ele,           &
+!!     &          conduct, iphys_ele, ele_fld, jac_3d, rhs_tbl,         &
+!!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
@@ -47,17 +51,19 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_uxb_2_ff_grad                                  &
-     &         (i_filter, i_dvx, node, ele, conduct,                    &
+     &         (i_filter, icomp_sgs_uxb, ie_dvx, node, ele, conduct,    &
      &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d,             &
      &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !
       use m_control_parameter
       use m_SGS_model_coefs
-      use m_SGS_address
 !
       use int_vol_sgs_uxb
       use cal_skv_to_ff_smp
       use product_model_coefs_to_sk
+!
+      integer (kind=kint), intent(in) :: i_filter, icomp_sgs_uxb
+      integer (kind=kint), intent(in) :: ie_dvx
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -69,7 +75,6 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-      integer (kind=kint), intent(in) :: i_filter, i_dvx
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -78,7 +83,7 @@
 !
       call reset_sk6(n_vector, ele, fem_wk%sk6)
 !
-      call sel_int_vol_sgs_uxb(i_filter, iphys%i_magne, i_dvx,          &
+      call sel_int_vol_sgs_uxb(i_filter, iphys%i_magne, ie_dvx,         &
      &    node, ele, conduct, nod_fld, iphys_ele, ele_fld,              &
      &    jac_3d, FEM_elens, fem_wk, mhd_fem_wk)
 !

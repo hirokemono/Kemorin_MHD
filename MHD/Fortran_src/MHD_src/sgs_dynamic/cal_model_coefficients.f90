@@ -4,8 +4,7 @@
 !      Written by H. Matsui
 !
 !!      subroutine s_cal_model_coefficients                             &
-!!     &         (i_dvx, ie_dbx, i_dfvx, ie_dfbx,                       &
-!!     &          nod_comm, node, ele, surf, sf_grp, iphys,             &
+!!     &         (nod_comm, node, ele, surf, sf_grp, iphys,             &
 !!     &          iphys_ele, ele_fld, fluid, conduct, layer_tbl,        &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,  &
 !!     &          m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -68,7 +67,6 @@
 !
       use m_t_step_parameter
       use m_SGS_address
-      use m_int_vol_data
 !
       use cal_sgs_heat_flux_dynamic
       use cal_sgs_h_flux_dynamic_simi
@@ -113,7 +111,8 @@
       if(iflag_t_evo_4_temp .ne. id_no_evolution) then
         if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_hf_dynamic'
-          call cal_sgs_hf_dynamic(i_dvx, i_dfvx,                        &
+          call cal_sgs_hf_dynamic                                       &
+     &       (iak_sgs_hf, icomp_sgs_hf, ie_dvx, ie_dfvx,                &
      &        nod_comm, node, ele, iphys, iphys_ele, ele_fld,           &
      &        fluid, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,            &
      &        FEM_elen, mhd_fem_wk, fem_wk, f_l, nod_fld)
@@ -130,10 +129,11 @@
         if ( iflag_commute_heat .eq. id_SGS_commute_ON) then
           if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_hf'
           call s_cal_diff_coef_sgs_hf                                   &
-     &       (i_dfvx, nod_comm, node, ele, surf, sf_grp,                &
-     &        iphys, iphys_ele, ele_fld, fluid, layer_tbl,              &
-     &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,      &
-     &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &       (iak_diff_hf, icomp_sgs_hf, icomp_diff_hf, ie_dfvx,        &
+     &        nod_comm, node, ele, surf, sf_grp, iphys,                 &
+     &        iphys_ele, ele_fld, fluid, layer_tbl, jac_3d_q, jac_3d_l, &
+     &        jac_sf_grp_q, rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk,      &
+     &        f_l, f_nl, nod_fld)
         end if
       end if
 !
@@ -143,7 +143,7 @@
         if (iflag_SGS_inertia .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_m_flux_dynamic'
           call cal_sgs_m_flux_dynamic                                   &
-     &       (iak_sgs_mf, icomp_sgs_mf, i_dvx, i_dfvx,                  &
+     &       (iak_sgs_mf, icomp_sgs_mf, ie_dvx, ie_dfvx,                &
      &        nod_comm, node, ele, iphys, iphys_ele, ele_fld,           &
      &        fluid, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,            &
      &        FEM_elen, mhd_fem_wk, fem_wk, nod_fld)
@@ -159,7 +159,7 @@
         if (iflag_commute_inertia .eq. id_SGS_commute_ON) then
           if (iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_mf'
           call s_cal_diff_coef_sgs_mf                                   &
-     &       (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, i_dfvx,         &
+     &       (iak_diff_mf, icomp_sgs_mf, icomp_diff_mf, ie_dfvx,        &
      &        nod_comm, node, ele, surf, sf_grp,                        &
      &        iphys, iphys_ele, ele_fld, fluid, layer_tbl,              &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,      &
@@ -205,7 +205,7 @@
           if (iflag_debug.eq.1)                                         &
      &      write(*,*) 'cal_sgs_induct_t_dynamic'
           call cal_sgs_induct_t_dynamic(iak_sgs_uxb, icomp_sgs_uxb,     &
-     &        i_dvx, ie_dbx, i_dfvx, ie_dfbx,                           &
+     &        ie_dvx, ie_dbx, ie_dfvx, ie_dfbx,                         &
      &        nod_comm, node, ele, iphys, iphys_ele, ele_fld,           &
      &        conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,          &
      &        FEM_elen, mhd_fem_wk, fem_wk, f_l, nod_fld)
@@ -222,7 +222,7 @@
           if(iflag_debug.eq.1)  write(*,*) 's_cal_diff_coef_sgs_induct'
           call s_cal_diff_coef_sgs_induct                               &
      &       (iak_diff_uxb, icomp_sgs_uxb, icomp_diff_uxb,              &
-     &        i_dfvx, ie_dfbx, nod_comm, node, ele, surf, sf_grp,       &
+     &        ie_dfvx, ie_dfbx, nod_comm, node, ele, surf, sf_grp,      &
      &        iphys, iphys_ele, ele_fld, conduct, layer_tbl,            &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,      &
      &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -233,7 +233,7 @@
         if(iflag_SGS_induction .eq. id_SGS_NL_grad) then
           if (iflag_debug.eq.1)  write(*,*) 'cal_sgs_uxb_dynamic'
           call cal_sgs_uxb_dynamic                                      &
-     &       (iak_sgs_uxb, icomp_sgs_uxb, i_dvx, i_dfvx,                &
+     &       (iak_sgs_uxb, icomp_sgs_uxb, ie_dvx, ie_dfvx,              &
      &        nod_comm, node, ele, iphys, iphys_ele, ele_fld,           &
      &        conduct, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,          &
      &        FEM_elen, mhd_fem_wk, fem_wk, f_l, nod_fld)

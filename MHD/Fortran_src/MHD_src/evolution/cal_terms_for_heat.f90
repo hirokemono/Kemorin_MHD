@@ -88,9 +88,9 @@
      &     FEM_elens, mhd_fem_wk, fem_wk, f_nl)
       end if
 !
-      call int_surf_temp_monitor(i_field, node, ele, surf, sf_grp,      &
-     &    iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,               &
-     &    fem_wk, f_l, f_nl)
+      call int_surf_temp_monitor(i_field, iak_diff_hf,                  &
+     &    node, ele, surf, sf_grp, iphys, nod_fld, jac_sf_grp,          &
+     &    rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
 !
       call cal_t_evo_4_scalar(iflag_temp_supg,                          &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
@@ -143,9 +143,9 @@
      &    node, ele, nod_fld, jac_3d, rhs_tbl, FEM_elens,               &
      &    iak_diff_t, one, ak_d_temp, iphys%i_temp, fem_wk, f_l)
 !
-      call int_surf_temp_monitor                                        &
-     &   (iphys%i_t_diffuse, node, ele, surf, sf_grp, iphys, nod_fld,   &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
+      call int_surf_temp_monitor(iphys%i_t_diffuse, iak_diff_hf,        &
+     &    node, ele, surf, sf_grp, iphys, nod_fld, jac_sf_grp,          &
+     &    rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_scalar, node, rhs_tbl, f_l, f_nl)
 !

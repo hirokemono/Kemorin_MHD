@@ -14,6 +14,8 @@
 !
       implicit  none
 ! 
+      integer(kind=kint) :: ie_dvx = 0, ie_dfvx = 0
+      integer(kind=kint) :: ie_dtx = 0, ie_dftx = 0
       integer(kind=kint) :: ie_dcx = 0, ie_dfcx = 0
       integer(kind=kint) :: ie_dbx = 0, ie_dfbx = 0
 !
@@ -74,8 +76,8 @@
         if (  iflag_SGS_heat .ne.      id_SGS_none                      &
      &   .or. iflag_SGS_inertia .ne.   id_SGS_none                      &
      &   .or. iflag_SGS_induction .ne. id_SGS_none ) then
-         i_dvx = i
-         i_dfvx = i + 9
+         ie_dvx = i
+         ie_dfvx = i + 9
          i = i + 18
         end if
 !
@@ -95,7 +97,7 @@
         if (   iflag_SGS_heat .ne.     id_SGS_none                      &
      &   .or. iflag_SGS_inertia .ne.   id_SGS_none                      &
      &   .or. iflag_SGS_induction .ne. id_SGS_none) then
-         i_dvx = i
+         ie_dvx = i
          i = i + 9
         end if
 !

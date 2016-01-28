@@ -125,6 +125,8 @@
       use m_array_for_send_recv
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
+      use m_SGS_address
+!
       use int_vol_diffusion_ele
       use int_sk_4_fixed_boundary
       use cal_solver_MHD
@@ -140,8 +142,9 @@
 !
       if (coef_imp_b.gt.0.0d0) then
         if (iflag_debug.eq.1) write(*,*) 'int_sk_4_fixed_vector_p'
-        call int_sk_4_fixed_vector_p(iphys%i_vecp, node1, ele1,         &
-     &      nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
+        call int_sk_4_fixed_vector_p(iphys%i_vecp, iak_diff_b,          &
+     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+     &      fem1_wk, f1_l)
       end if
 !
 !

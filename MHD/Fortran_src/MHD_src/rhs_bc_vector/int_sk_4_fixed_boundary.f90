@@ -3,25 +3,30 @@
 !
 !      Written by H. Matsui on Oct., 2005
 !
-!!      subroutine int_vol_sk_po_bc(i_p_phi, node, ele, nod_fld,        &
-!!     &         jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
-!!      subroutine int_vol_sk_mp_bc(i_m_phi, node, ele, nod_fld,        &
-!!     &         jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
-!!      subroutine int_vol_sk_mag_p_ins_bc(i_m_phi, node, ele, nod_fld, &
-!!     &         jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
+!!      subroutine int_vol_sk_po_bc(i_p_phi, iak_diff_v, node, ele,     &
+!!     &         nod_fld, jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
+!!      subroutine int_vol_sk_mp_bc(i_m_phi, iak_diff_b, node, ele,     &
+!!     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
+!!      subroutine int_vol_sk_mag_p_ins_bc(i_m_phi, iak_diff_b,         &
+!!     &          node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,     &
+!!     &          fem_wk, f_l)
 !!
-!!      subroutine int_sk_4_fixed_temp(i_temp, node, ele, nod_fld,      &
-!!     &         jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
-!!      subroutine int_sk_4_fixed_part_temp(i_par_temp, node, ele,      &
+!!      subroutine int_sk_4_fixed_temp(i_temp, iak_diff_t, node, ele,   &
 !!     &          nod_fld, jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
-!!      subroutine int_sk_4_fixed_velo(i_velo, node, ele, nod_fld,      &
-!!     &          jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
-!!      subroutine int_sk_4_fixed_vector_p(i_vecp, node, ele, nod_fld,  &
-!!     &          jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
-!!      subroutine int_sk_4_fixed_magne(i_magne, node, ele, nod_fld,    &
-!!     &          jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
-!!      subroutine int_sk_4_fixed_composition(i_light, node, ele,       &
+!!      subroutine int_sk_4_fixed_part_temp(i_par_temp, iak_diff_t,     &
+!!     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,      &
+!!     &          fem_wk, f_l)
+!!      subroutine int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele,   &
 !!     &          nod_fld, jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
+!!      subroutine int_sk_4_fixed_vector_p(i_vecp, iak_diff_b,          &
+!!     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,      &
+!!     &          fem_wk, f_l)
+!!      subroutine int_sk_4_fixed_magne(i_magne, iak_diff_b,            &
+!!     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,      &
+!!     &          fem_wk, f_l)
+!!      subroutine int_sk_4_fixed_composition(i_light, iak_diff_c,      &
+!!     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,      &
+!!     &          fem_wk, f_l)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_data), intent(in) :: nod_fld
@@ -42,7 +47,6 @@
       use m_t_int_parameter
       use m_ele_material_property
       use m_SGS_model_coefs
-      use m_SGS_address
 !
       use t_geometry_data
       use t_phys_data
@@ -59,15 +63,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_sk_po_bc(i_p_phi, node, ele, nod_fld,          &
-     &         jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
+      subroutine int_vol_sk_po_bc(i_p_phi, iak_diff_v, node, ele,       &
+     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
 !
       use m_bc_data_velo
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
       use cal_ff_smp_to_ffs
 !
-      integer(kind = kint), intent(in) :: i_p_phi
+      integer(kind = kint), intent(in) :: i_p_phi, iak_diff_v
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
@@ -101,15 +105,15 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_sk_mp_bc(i_m_phi, node, ele, nod_fld,          &
-     &         jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
+      subroutine int_vol_sk_mp_bc(i_m_phi, iak_diff_b, node, ele,       &
+     &          nod_fld, jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
 !
       use m_bc_data_magne
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
       use cal_ff_smp_to_ffs
 !
-      integer(kind = kint), intent(in) :: i_m_phi
+      integer(kind = kint), intent(in) :: i_m_phi, iak_diff_b
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
@@ -144,15 +148,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine int_vol_sk_mag_p_ins_bc(i_m_phi, node, ele, nod_fld,   &
-     &         jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
+      subroutine int_vol_sk_mag_p_ins_bc(i_m_phi, iak_diff_b,           &
+     &          node, ele, nod_fld, jac_3d_l, rhs_tbl, FEM_elens,       &
+     &          fem_wk, f_l)
 !
       use m_bc_data_magne
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
       use cal_ff_smp_to_ffs
 !
-      integer(kind = kint), intent(in) :: i_m_phi
+      integer(kind = kint), intent(in) :: i_m_phi, iak_diff_b
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
@@ -187,14 +192,14 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine int_sk_4_fixed_temp(i_temp, node, ele, nod_fld,        &
-     &         jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
+      subroutine int_sk_4_fixed_temp(i_temp, iak_diff_t, node, ele,     &
+     &          nod_fld, jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
 !
       use m_bc_data_ene
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
 !
-      integer(kind = kint), intent(in) :: i_temp
+      integer(kind = kint), intent(in) :: i_temp, iak_diff_t
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
@@ -226,14 +231,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_sk_4_fixed_part_temp(i_par_temp, node, ele,        &
-     &          nod_fld, jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
+      subroutine int_sk_4_fixed_part_temp(i_par_temp, iak_diff_t,       &
+     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,        &
+     &          fem_wk, f_l)
 !
       use m_bc_data_ene
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
 !
-      integer(kind = kint), intent(in) :: i_par_temp
+      integer(kind = kint), intent(in) :: i_par_temp, iak_diff_t
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
@@ -266,14 +272,14 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine int_sk_4_fixed_velo(i_velo, node, ele, nod_fld,        &
-     &          jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
+      subroutine int_sk_4_fixed_velo(i_velo, iak_diff_v, node, ele,     &
+     &          nod_fld, jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
 !
       use m_bc_data_velo
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
 !
-      integer(kind = kint), intent(in) :: i_velo
+      integer(kind = kint), intent(in) :: i_velo, iak_diff_v
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
@@ -321,14 +327,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_sk_4_fixed_vector_p(i_vecp, node, ele, nod_fld,    &
-     &          jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
+      subroutine int_sk_4_fixed_vector_p(i_vecp, iak_diff_b,            &
+     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,        &
+     &          fem_wk, f_l)
 !
       use m_bc_data_magne
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
 !
-      integer(kind = kint), intent(in) :: i_vecp
+      integer(kind = kint), intent(in) :: i_vecp, iak_diff_b
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
@@ -361,14 +368,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_sk_4_fixed_magne(i_magne, node, ele, nod_fld,      &
-     &          jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
+      subroutine int_sk_4_fixed_magne(i_magne, iak_diff_b,              &
+     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,        &
+     &          fem_wk, f_l)
 !
       use m_bc_data_magne
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
 !
-      integer(kind = kint), intent(in) :: i_magne
+      integer(kind = kint), intent(in) :: i_magne, iak_diff_b
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
@@ -402,14 +410,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_sk_4_fixed_composition(i_light, node, ele,         &
-     &          nod_fld, jac1_3d, rhs_tbl, FEM_elens, fem_wk, f_l)
+      subroutine int_sk_4_fixed_composition(i_light, iak_diff_c,        &
+     &          node, ele, nod_fld, jac1_3d, rhs_tbl, FEM_elens,        &
+     &          fem_wk, f_l)
 !
       use m_bc_data_ene
       use int_vol_fixed_field_ele
       use int_vol_fixed_fld_sgs_ele
 !
-      integer(kind = kint), intent(in) :: i_light
+      integer(kind = kint), intent(in) :: i_light, iak_diff_c
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld

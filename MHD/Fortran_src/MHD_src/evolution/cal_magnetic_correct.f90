@@ -137,8 +137,9 @@
 !
       if (coef_imp_b.gt.0.0d0) then
         if (iflag_debug.eq.1)  write(*,*) 'int_sk_4_fixed_magne'
-        call int_sk_4_fixed_magne(iphys%i_magne, node1, ele1, nod_fld1, &
-     &      jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
+        call int_sk_4_fixed_magne(iphys%i_magne, iak_diff_b,            &
+     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+     &      fem1_wk, f1_l)
       end if
 !
 !

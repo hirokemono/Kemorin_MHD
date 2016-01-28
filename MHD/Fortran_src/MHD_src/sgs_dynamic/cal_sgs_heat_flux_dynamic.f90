@@ -4,7 +4,8 @@
 !     Written by H. Matsui on Oct. 2005
 !     Modified by H. Matsui on Aug., 2007
 !
-!!      subroutine cal_sgs_hf_dynamic(i_dvx, i_dfvx,                    &
+!!      subroutine cal_sgs_hf_dynamic                                   &
+!!     &         (iak_sgs_hf, icomp_sgs_hf, ie_dvx, ie_dfvx,            &
 !!     &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,       &
 !!     &          fluid, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,        &
 !!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
@@ -52,7 +53,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine cal_sgs_hf_dynamic(i_dvx, i_dfvx,                      &
+      subroutine cal_sgs_hf_dynamic                                     &
+     &         (iak_sgs_hf, icomp_sgs_hf, ie_dvx, ie_dfvx,              &
      &          nod_comm, node, ele, iphys, iphys_ele, ele_fld,         &
      &          fluid, layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl,          &
      &          FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
@@ -67,7 +69,8 @@
       use cvt_dynamic_scheme_coord
       use reduce_model_coefs
 !
-      integer (kind=kint), intent(in) :: i_dvx, i_dfvx
+      integer(kind = kint), intent(in) :: iak_sgs_hf, icomp_sgs_hf
+      integer(kind = kint), intent(in) :: ie_dvx, ie_dfvx
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -108,7 +111,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_hf_grad_4_dyn'
       call cal_sgs_h_flux_grad_no_coef(ifilter_4delta,                  &
-     &    iphys%i_sgs_grad_f, iphys%i_filter_temp, i_dfvx,              &
+     &    iphys%i_sgs_grad_f, iphys%i_filter_temp, ie_dfvx,             &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,     &
      &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !
@@ -116,7 +119,7 @@
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_h_flux_grad_4_dyn'
       call cal_sgs_h_flux_grad_no_coef(ifilter_2delta,                  &
-     &    iphys%i_SGS_h_flux, iphys%i_sgs_temp, i_dvx,                  &
+     &    iphys%i_SGS_h_flux, iphys%i_sgs_temp, ie_dvx,                 &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,     &
      &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
 !

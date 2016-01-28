@@ -7,10 +7,10 @@
 !!      subroutine int_vol_sgs_induction                                &
 !!     &         (nod_comm, node, ele, conduct, iphys, jac_3d,          &
 !!     &          rhs_tbl, mhd_fem_wk, fem_wk, f_nl, nod_fld)
-!!      subroutine cal_sgs_uxb_2_monitor(i_dvx, nod_comm, node, ele,    &
-!!     &          conduct, iphys, iphys_ele, ele_fld, jac_3d,           &
-!!     &          rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk,                &
-!!     &          f_l, f_nl, nod_fld)
+!!      subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,         &
+!!     &          nod_comm, node, ele, conduct, iphys,                  &
+!!     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,        &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -97,17 +97,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_sgs_uxb_2_monitor(i_dvx, nod_comm, node, ele,    &
-     &          conduct, iphys, iphys_ele, ele_fld, jac_3d,           &
-     &          rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk,                &
-     &          f_l, f_nl, nod_fld)
+      subroutine cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,           &
+     &          nod_comm, node, ele, conduct, iphys,                    &
+     &          iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,          &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use cal_sgs_fluxes
       use cal_ff_smp_to_ffs
       use cal_for_ffs
       use nod_phys_send_recv
 !
-      integer(kind = kint), intent(in) :: i_dvx
+      integer(kind = kint), intent(in) :: icomp_sgs_uxb, ie_dvx
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -126,9 +126,9 @@
 !
 !
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
-      call cal_sgs_uxb_2_evo(i_dvx, nod_comm, node, ele, conduct,       &
-     &    iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl, FEM_elen,         &
-     &    mhd_fem_wk, fem_wk, f_nl, nod_fld)
+      call cal_sgs_uxb_2_evo(icomp_sgs_uxb, ie_dvx,                     &
+     &    nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,      &
+     &    jac_3d, rhs_tbl, FEM_elen, mhd_fem_wk, fem_wk, f_nl, nod_fld)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
       call cal_ff_2_vector(node%numnod, node%istack_nod_smp,            &

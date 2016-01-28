@@ -4,7 +4,7 @@
 !      Written by H. Matsui
 !
 !!      subroutine cal_sgs_h_flux_grad_w_coef                           &
-!!     &         (i_filter, i_sgs, i_field, ie_dvx,                     &
+!!     &         (i_filter, icomp_sgs_hf, i_sgs, i_field, ie_dvx,       &
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
 !!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,       &
 !!     &          f_l, nod_fld)
@@ -35,7 +35,6 @@
       use m_control_parameter
       use m_phys_constants
       use m_SGS_model_coefs
-      use m_SGS_address
 !
       use t_comm_table
       use t_geometry_data
@@ -56,7 +55,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_sgs_h_flux_grad_w_coef                             &
-     &         (i_filter, i_sgs, i_field, ie_dvx,                       &
+     &         (i_filter, icomp_sgs_hf, i_sgs, i_field, ie_dvx,         &
      &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
      &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,         &
      &          f_l, nod_fld)
@@ -77,7 +76,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
-      integer (kind=kint), intent(in) :: i_filter
+      integer (kind=kint), intent(in) :: i_filter, icomp_sgs_hf
       integer (kind=kint), intent(in) :: i_sgs, i_field
       integer (kind=kint), intent(in) :: ie_dvx
 !

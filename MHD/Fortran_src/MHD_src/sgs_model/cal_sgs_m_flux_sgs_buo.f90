@@ -4,7 +4,7 @@
 !      written by H. Matsui on Aug., 2007
 !
 !!      subroutine cal_sgs_mom_flux_with_sgs_buo                        &
-!!     &         (ie_dvx, nod_comm, node, ele, surf, sf_grp,            &
+!!     &         (nod_comm, node, ele, surf, sf_grp,                    &
 !!     &          fluid, layer_tbl, iphys, iphys_ele, ele_fld,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elen, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -58,7 +58,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine cal_sgs_mom_flux_with_sgs_buo                          &
-     &         (ie_dvx, nod_comm, node, ele, surf, sf_grp,              &
+     &         (nod_comm, node, ele, surf, sf_grp,                      &
      &          fluid, layer_tbl, iphys, iphys_ele, ele_fld,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elen, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -77,8 +77,6 @@
       use merge_dynamic_coefs
       use set_sgs_diff_model_coefs
       use int_rms_ave_ele_grps
-!
-      integer(kind = kint), intent(in) :: ie_dvx
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node

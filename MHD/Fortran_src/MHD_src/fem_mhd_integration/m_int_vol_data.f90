@@ -17,9 +17,6 @@
 !>      Work array for FEM assemble in MHD model
       type(work_MHD_fe_mat), save :: mhd_fem1_wk
 ! 
-      integer(kind=kint) :: i_dvx = 0, i_dfvx = 0
-      integer(kind=kint) :: i_dtx = 0, i_dftx = 0
-!
 ! -----------------------------------------------------------------------
 !
       contains

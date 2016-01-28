@@ -4,7 +4,7 @@
 !     Written by H. Matsui
 !
 !!      subroutine s_cal_diff_coef_sgs_hf                               &
-!!     &         (ie_dfvx, nod_comm, node, ele, surf, sf_grp,           &
+!!     &         (iak_diff_hf, icomp_sgs_hf, icomp_diff_hf, ie_dfvx,    &
 !!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -54,7 +54,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine s_cal_diff_coef_sgs_hf                                 &
-     &         (ie_dfvx, nod_comm, node, ele, surf, sf_grp,             &
+     &         (iak_diff_hf, icomp_sgs_hf, icomp_diff_hf, ie_dfvx,      &
+     &          nod_comm, node, ele, surf, sf_grp,                      &
      &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -77,6 +78,8 @@
       use nod_phys_send_recv
       use clear_work_4_dynamic_model
 !
+      integer(kind = kint), intent(in) :: iak_diff_hf
+      integer(kind = kint), intent(in) :: icomp_sgs_hf, icomp_diff_hf
       integer(kind = kint), intent(in) :: ie_dfvx
 !
       type(communication_table), intent(in) :: nod_comm
@@ -107,7 +110,7 @@
 !   gradient model by filtered field (to iphys%i_sgs_grad_f)
 !
       if (iflag_debug.gt.0)  write(*,*) 'cal_sgs_filter_hf_grad'
-      call cal_sgs_h_flux_grad_w_coef(ifilter_4delta,                   &
+      call cal_sgs_h_flux_grad_w_coef(ifilter_4delta, icomp_sgs_hf,     &
      &    iphys%i_sgs_grad_f, iphys%i_filter_temp, ie_dfvx,             &
      &    nod_comm, node, ele, fluid, iphys_ele, ele_fld, jac_3d_q,     &
      &    rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, nod_fld)
