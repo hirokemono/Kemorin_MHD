@@ -80,19 +80,19 @@
       if (iflag_mag_supg .gt. id_turn_OFF) then
        call int_vol_magne_pre_ele_upm                                   &
      &    (node1, ele1, conduct1, iphys, nod_fld1,                      &
-     &     fld_ele1%ntot_phys, fld_ele1%d_fld, iphys_ele,               &
+     &     fld_ele1%ntot_phys, fld_ele1%d_fld, iphys_ele, iak_diff_uxb, &
      &     jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_nl)
       else
        call int_vol_magne_pre_ele                                       &
      &    (node1, ele1, conduct1, iphys, nod_fld1,                      &
-     &     fld_ele1%ntot_phys, fld_ele1%d_fld, iphys_ele,               &
+     &     fld_ele1%ntot_phys, fld_ele1%d_fld, iphys_ele, iak_diff_uxb, &
      &     jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_nl)
       end if
 !
 !
-      call int_surf_magne_pre_ele(node1, ele1, surf1, sf_grp1,          &
-     &    iphys, nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,       &
-     &    fem1_wk, f1_l, f1_nl)
+      call int_surf_magne_pre_ele                                       &
+     &   (iak_diff_uxb, node1, ele1, surf1, sf_grp1, iphys, nod_fld1,   &
+     &    jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l, f1_nl)
 !
       if (iflag_t_evo_4_magne .eq. id_explicit_euler) then
        call cal_magne_pre_euler
@@ -101,10 +101,10 @@
        call cal_magne_pre_adams
 !
       else if (iflag_t_evo_4_magne .eq. id_Crank_nicolson) then
-       call cal_magne_pre_crank
+       call cal_magne_pre_crank(iak_diff_b)
 !
       else if (iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass) then 
-       call cal_magne_pre_consist_crank
+       call cal_magne_pre_consist_crank(iak_diff_b)
       end if
 !
       call set_boundary_vect(nod_bc1_b, iphys%i_magne, nod_fld1)
@@ -148,7 +148,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_magne_pre_crank
+      subroutine cal_magne_pre_crank(iak_diff_b)
 !
       use m_phys_constants
       use m_t_step_parameter
@@ -160,13 +160,14 @@
       use m_array_for_send_recv
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
-      use m_SGS_address
 !
       use cal_multi_pass
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
       use cal_solver_MHD
       use set_boundary_scalars
+!
+      integer(kind = kint), intent(in) :: iak_diff_b
 !
 !
       if (coef_imp_b.gt.0.0d0) then
@@ -198,7 +199,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-       subroutine cal_magne_pre_consist_crank
+       subroutine cal_magne_pre_consist_crank(iak_diff_b)
 !
       use m_t_step_parameter
       use m_phys_constants
@@ -211,7 +212,6 @@
       use m_array_for_send_recv
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
-      use m_SGS_address
 !
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
@@ -219,6 +219,8 @@
       use int_vol_initial_MHD
       use cal_solver_MHD
       use set_boundary_scalars
+!
+      integer(kind = kint), intent(in) :: iak_diff_b
 !
 !
       if (coef_imp_b.gt.0.0d0) then

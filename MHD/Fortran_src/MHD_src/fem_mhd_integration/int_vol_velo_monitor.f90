@@ -8,11 +8,13 @@
 !        modified by H. Matsui on Oct., 2005
 !        modified by H. Matsui on Aug., 2007
 !
-!!      subroutine int_vol_velo_monitor_upwind(i_field, node, ele,      &
-!!     &          fluid, iphys, nod_fld, iphys_ele, ele_fld, iv_upw,    &
+!!      subroutine int_vol_velo_monitor_pg                              &
+!!     &         (i_field, iak_diff_mf, iak_diff_lor,                   &
+!!     &          node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld, &
 !!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
-!!      subroutine int_vol_velo_monitor_pg(i_field, node, ele,          &
-!!     &          fluid, iphys, nod_fld, iphys_ele, ele_fld,            &
+!!      subroutine int_vol_velo_monitor_upwind                          &
+!!     &         (i_field, iak_diff_mf, iak_diff_lor, node, ele,        &
+!!     &          fluid, iphys, nod_fld, iphys_ele, ele_fld, iv_upw,    &
 !!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -38,7 +40,6 @@
       use m_physical_property
       use m_ele_material_property
       use m_SGS_model_coefs
-      use m_SGS_address
 !
       use t_geometry_data_MHD
       use t_geometry_data
@@ -59,8 +60,9 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_velo_monitor_pg(i_field, node, ele,          &
-     &          fluid, iphys, nod_fld, iphys_ele, ele_fld,           &
+      subroutine int_vol_velo_monitor_pg                                &
+     &         (i_field, iak_diff_mf, iak_diff_lor,                     &
+     &          node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld,   &
      &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !
       use int_vol_inertia
@@ -69,6 +71,9 @@
       use int_vol_buoyancy
       use int_vol_coriolis
       use int_vol_Lorentz
+!
+      integer(kind=kint), intent(in) :: i_field
+      integer(kind= kint), intent(in) :: iak_diff_mf, iak_diff_lor
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -80,8 +85,6 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-!
-      integer(kind=kint), intent(in) :: i_field
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -198,7 +201,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_velo_monitor_upwind(i_field, node, ele,        &
+      subroutine int_vol_velo_monitor_upwind                            &
+     &         (i_field, iak_diff_mf, iak_diff_lor, node, ele,          &
      &          fluid, iphys, nod_fld, iphys_ele, ele_fld, iv_upw,      &
      &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !
@@ -208,6 +212,9 @@
       use int_vol_buoyancy
       use int_vol_coriolis
       use int_vol_Lorentz
+!
+      integer(kind = kint), intent(in) :: i_field, iv_upw
+      integer(kind= kint), intent(in) :: iak_diff_mf, iak_diff_lor
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -219,8 +226,6 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-!
-      integer(kind = kint), intent(in) :: i_field, iv_upw
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl

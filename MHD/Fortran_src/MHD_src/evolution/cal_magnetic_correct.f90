@@ -122,6 +122,8 @@
       use m_array_for_send_recv
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
+      use m_SGS_address
+!
       use int_vol_diffusion_ele
       use int_sk_4_fixed_boundary
       use cal_solver_MHD

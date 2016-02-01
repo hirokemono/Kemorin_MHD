@@ -5,10 +5,22 @@
 !
 !!      subroutine int_surf_div_induct_t_sgs(node, ele, surf,           &
 !!     &          sf_grp, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,      &
-!!     &          n_int, i_flux, i_filter, i_v, i_b, fem_wk, f_nl)
+!!     &          n_int, i_flux, i_filter, iak_diff_uxb, i_v, i_b,      &
+!!     &          fem_wk, f_nl)
 !!      subroutine int_surf_commute_induct_t(node, ele, surf, sf_grp,   &
 !!     &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,      &
 !!     &          n_int, i_flux, i_filter, i_v, i_b, fem_wk, f_nl)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(phys_data),    intent(in) :: nod_fld
+!!        type(jacobians_2d), intent(in) :: jac_sf_grp
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_nl
 !
       module int_surf_div_induct_tsr_sgs
 !
@@ -35,16 +47,19 @@
 !
       subroutine int_surf_div_induct_t_sgs(node, ele, surf, sf_grp,     &
      &          nod_fld, jac_sf_grp, rhs_tbl, FEM_elens, sgs_sf,        &
-     &          n_int, i_flux, i_filter, i_v, i_b, fem_wk, f_nl)
+     &          n_int, i_flux, i_filter, iak_diff_uxb, i_v, i_b,        &
+     &          fem_wk, f_nl)
 !
       use m_SGS_model_coefs
-      use m_SGS_address
       use m_int_surface_data
 !
       use delta_SGS_2_each_surface
       use fem_surf_skv_sgs_commute_t
       use cal_skv_to_ff_smp
 !
+!
+      integer(kind=kint), intent(in) :: n_int, i_filter, iak_diff_uxb
+      integer (kind = kint), intent(in) :: i_b, i_v, i_flux
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -55,9 +70,6 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(scaler_surf_bc_data_type),  intent(in) :: sgs_sf(3)
-!
-      integer(kind=kint), intent(in) :: n_int, i_filter
-      integer (kind = kint), intent(in) :: i_b, i_v, i_flux
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl

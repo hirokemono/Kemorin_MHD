@@ -9,13 +9,13 @@
 !        modified by H. Matsui on Aug., 2007
 !
 !!      subroutine int_vol_velo_pre_ele                                 &
-!!     &         (node, ele, fluid, iphys, nod_fld,                     &
-!!     &          ncomp_ele, d_ele, iphys_ele,                          &
-!!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
-!!      subroutine int_vol_velo_pre_ele_upwind                          &
-!!     &         (node, ele, fluid, iphys, nod_fld,                     &
-!!     &          ncomp_ele, ie_upw, d_ele, iphys_ele,                  &
-!!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+!!     &        (node, ele, fluid, iphys, nod_fld,                      &
+!!     &         ncomp_ele, d_ele, iphys_ele, iak_diff_mf, iak_diff_lor,&
+!!     &         jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+!!      subroutine int_vol_velo_pre_ele_upwind(node, ele, fluid,        &
+!!     &          iphys, nod_fld, ncomp_ele, ie_upw, d_ele, iphys_ele,  &
+!!     &          iak_diff_mf, iak_diff_lor, jac_3d, rhs_tbl, FEM_elens,&
+!!     &          mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
@@ -39,7 +39,6 @@
       use m_ele_material_property
       use m_fem_gauss_int_coefs
       use m_SGS_model_coefs
-      use m_SGS_address
 !
       use t_geometry_data_MHD
       use t_geometry_data
@@ -61,9 +60,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_vol_velo_pre_ele                                   &
-     &         (node, ele, fluid, iphys, nod_fld,                       &
-     &          ncomp_ele, d_ele, iphys_ele,                            &
-     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+     &        (node, ele, fluid, iphys, nod_fld,                        &
+     &         ncomp_ele, d_ele, iphys_ele, iak_diff_mf, iak_diff_lor,  &
+     &         jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_cst_to_element
@@ -85,6 +84,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
+      integer(kind = kint), intent(in) :: iak_diff_mf, iak_diff_lor
       integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
       type(phys_address), intent(in) :: iphys_ele
@@ -131,7 +131,7 @@
             else if(iflag_SGS_inertia .ne. id_SGS_none) then
               call tensor_cst_phys_2_each_ele(node, ele, nod_fld,       &
      &            k2, iphys%i_SGS_m_flux, coef_nega_v,                  &
-     &             mhd_fem_wk%sgs_t1)
+     &            mhd_fem_wk%sgs_t1)
               call fem_skv_inertia_rot_sgs_pg                           &
      &           (fluid%istack_ele_fld_smp, num_int, k2,                &
      &            ele, jac_3d, mhd_fem_wk%velo_1,                       &
@@ -280,10 +280,10 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_velo_pre_ele_upwind                            &
-     &         (node, ele, fluid, iphys, nod_fld,                       &
-     &          ncomp_ele, ie_upw, d_ele, iphys_ele,                    &
-     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+      subroutine int_vol_velo_pre_ele_upwind(node, ele, fluid,          &
+     &          iphys, nod_fld, ncomp_ele, ie_upw, d_ele, iphys_ele,    &
+     &          iak_diff_mf, iak_diff_lor, jac_3d, rhs_tbl, FEM_elens,  &
+     &          mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
       use nodal_fld_cst_to_element
@@ -305,6 +305,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
+      integer(kind = kint), intent(in) :: iak_diff_mf, iak_diff_lor
       integer(kind = kint), intent(in) :: ncomp_ele, ie_upw
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
       type(phys_address), intent(in) :: iphys_ele

@@ -29,13 +29,14 @@
       use m_geometry_data
       use m_node_phys_data
       use m_physical_property
+      use m_SGS_address
 !
       use cal_magnetic_pre
       use cal_sol_pressure_MHD
       use init_4_sol_potentials
       use int_rms_div_MHD
       use int_norm_div_MHD
-      use cal_mod_magne_potential
+      use cal_mod_vel_potential
       use cal_magnetic_correct
       use cal_rms_potentials
 !
@@ -65,7 +66,7 @@
 !
 !
       do iloop = 0, maxiter
-        call cal_mag_potential
+        call cal_mag_potential(iak_diff_b)
 !
         call cal_sol_m_potential                                        &
      &     (node1%numnod, node1%istack_internal_smp,                    &

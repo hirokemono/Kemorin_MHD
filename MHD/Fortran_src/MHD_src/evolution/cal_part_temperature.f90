@@ -51,6 +51,7 @@
       use int_vol_thermal_ele
       use cal_stratification_by_temp
       use copy_nodal_fields
+      use m_SGS_address
 !
 !      use check_surface_groups
 !      use check_jacobians
@@ -84,12 +85,14 @@
         call int_vol_temp_ele_upw                                       &
      &    (node1, ele1, fluid1, iphys, nod_fld1,                        &
      &     fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,        &
-     &     jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_nl)
+     &     iak_diff_hf, jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk,    &
+     &      fem1_wk, f1_nl)
       else
         call int_vol_temp_ele                                           &
      &    (node1, ele1, fluid1, iphys, nod_fld1,                        &
      &     fld_ele1%ntot_phys, iphys_ele%i_velo, fld_ele1%d_fld,        &
-     &     jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_nl)
+     &     iak_diff_hf, jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk,    &
+     &     fem1_wk, f1_nl)
       end if
 !
 !      call check_ff_smp(my_rank, n_scalar, node1%max_nod_smp, f1_l)

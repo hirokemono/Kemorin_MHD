@@ -8,12 +8,12 @@
 !     modified by H. Matsui on Aug., 2005
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine int_vol_ene_monitor(i_field, node, ele, fluid,       &
-!!     &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d,           &
-!!     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
-!!      subroutine int_vol_ene_monitor_upw(i_field, node, ele, fluid,   &
-!!     &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d,           &
-!!     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+!!      subroutine int_vol_ene_monitor(i_field, iak_diff_hf,            &
+!!     &          node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld, &
+!!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+!!      subroutine int_vol_ene_monitor_upw(i_field, iak_diff_hf,        &
+!!     &          node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld, &
+!!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(phys_address), intent(in) :: iphys
@@ -35,7 +35,6 @@
       use m_control_parameter
       use m_physical_property
       use m_SGS_model_coefs
-      use m_SGS_address
 !
       use t_geometry_data_MHD
       use t_geometry_data
@@ -55,13 +54,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_ene_monitor(i_field, node, ele, fluid,        &
-     &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d,            &
-     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+      subroutine int_vol_ene_monitor(i_field, iak_diff_hf,              &
+     &          node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld,   &
+     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !
       use int_vol_inertia
       use int_vol_vect_cst_difference
       use int_vol_SGS_div_flux
+!
+      integer (kind=kint), intent(in) :: i_field, iak_diff_hf
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -73,8 +74,6 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-!
-      integer (kind=kint), intent(in) :: i_field
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl
@@ -127,13 +126,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine int_vol_ene_monitor_upw(i_field, node, ele, fluid,     &
-     &          iphys, nod_fld, iphys_ele, ele_fld, jac_3d,             &
-     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+      subroutine int_vol_ene_monitor_upw(i_field, iak_diff_hf,          &
+     &          node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld,   &
+     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !
       use int_vol_inertia
       use int_vol_vect_cst_diff_upw
       use int_vol_SGS_div_flux
+!
+      integer (kind = kint), intent(in) :: i_field, iak_diff_hf
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -145,8 +146,6 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
-!
-      integer (kind = kint), intent(in) :: i_field
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_nl

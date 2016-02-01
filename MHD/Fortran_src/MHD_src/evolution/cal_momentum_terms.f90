@@ -4,12 +4,15 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine cal_terms_4_momentum                                 &
-!!     &        (i_field, nod_comm, node, ele, surf, fluid, sf_grp,     &
+!!     &        (i_field, iak_diff_mf, iak_diff_lor,                    &
+!!     &         nod_comm, node, ele, surf, fluid, sf_grp,              &
 !!     &         iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,&
 !!     &         FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_viscous_diffusion(nod_comm, node, ele, surf,     &
-!!     &          fluid, sf_grp, iphys, jac_3d, jac_sf_grp, rhs_tbl,    &
-!!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!      subroutine cal_viscous_diffusion                                &
+!!     &         (iak_diff_v, iak_diff_mf, iak_diff_lor,                &
+!!     &          nod_comm, node, ele, surf, fluid, sf_grp, iphys,      &
+!!     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,   &
+!!     &          fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -64,7 +67,8 @@
 !-----------------------------------------------------------------------
 !
       subroutine cal_terms_4_momentum                                   &
-     &        (i_field, nod_comm, node, ele, surf, fluid, sf_grp,       &
+     &        (i_field, iak_diff_mf, iak_diff_lor,                      &
+     &         nod_comm, node, ele, surf, fluid, sf_grp,                &
      &         iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,  &
      &         FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -72,6 +76,7 @@
       use int_surf_velo_pre
 !
       integer (kind=kint), intent(in) :: i_field
+      integer(kind= kint), intent(in) :: iak_diff_mf, iak_diff_lor
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -96,22 +101,24 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       if (iflag_velo_supg .eq. id_turn_ON) then
-        call int_vol_velo_monitor_upwind(i_field, node, ele, fluid,     &
-     &     iphys, nod_fld, iphys_ele, ele_fld, iphys_ele%i_velo,        &
-     &     jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+        call int_vol_velo_monitor_upwind                                &
+     &     (i_field, iak_diff_mf, iak_diff_lor, node, ele, fluid,       &
+     &      iphys, nod_fld, iphys_ele, ele_fld, iphys_ele%i_velo,       &
+     &      jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
       else if (iflag_velo_supg .eq. id_magnetic_SUPG) then
-        call int_vol_velo_monitor_upwind(i_field, node, ele, fluid,     &
-     &     iphys, nod_fld, iphys_ele, ele_fld, iphys_ele%i_magne,       &
-     &     jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+        call int_vol_velo_monitor_upwind                                &
+     &     (i_field, iak_diff_mf, iak_diff_lor, node, ele, fluid,       &
+     &      iphys, nod_fld, iphys_ele, ele_fld, iphys_ele%i_magne,      &
+     &      jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
       else
-       call int_vol_velo_monitor_pg(i_field, node, ele, fluid,          &
-     &     iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,         &
-     &     FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+       call int_vol_velo_monitor_pg(i_field, iak_diff_mf, iak_diff_lor, &
+     &     node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld,        &
+     &     jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
       end if
 !
-      call int_surf_velo_monitor                                        &
-     &   (i_field, node, ele, surf, sf_grp, iphys, nod_fld,             &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
+      call int_surf_velo_monitor(i_field, iak_diff_mf, iak_diff_lor,    &
+     &    node, ele, surf, sf_grp, iphys, nod_fld, jac_sf_grp,          &
+     &    rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
 !
       call cal_t_evo_4_vector(iflag_velo_supg,                          &
      &    fluid%istack_ele_fld_smp, mhd_fem_wk%mlump_fl, nod_comm,      &
@@ -128,12 +135,17 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_viscous_diffusion(nod_comm, node, ele, surf,       &
-     &          fluid, sf_grp, iphys, jac_3d, jac_sf_grp, rhs_tbl,      &
-     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+      subroutine cal_viscous_diffusion                                  &
+     &         (iak_diff_v, iak_diff_mf, iak_diff_lor,                  &
+     &          nod_comm, node, ele, surf, fluid, sf_grp, iphys,        &
+     &          jac_3d, jac_sf_grp, rhs_tbl, FEM_elens, mhd_fem_wk,     &
+     &          fem_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_diffusion_ele
       use int_surf_velo_pre
+!
+      integer (kind=kint), intent(in) :: iak_diff_v
+      integer(kind= kint), intent(in) :: iak_diff_mf, iak_diff_lor
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -160,8 +172,9 @@
      &    iak_diff_v, one, ak_d_velo, iphys%i_velo, fem_wk, f_l)
 !
       call int_surf_velo_monitor                                        &
-     &   (iphys%i_v_diffuse, node, ele, surf, sf_grp, iphys, nod_fld,   &
-     &    jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
+     &   (iphys%i_v_diffuse, iak_diff_mf, iak_diff_lor,                 &
+     &    node, ele, surf, sf_grp, iphys, nod_fld, jac_sf_grp,          &
+     &    rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node, rhs_tbl, f_l, f_nl)
 !

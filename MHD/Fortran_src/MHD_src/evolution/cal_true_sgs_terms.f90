@@ -41,6 +41,7 @@
       use calypso_mpi
       use m_phys_labels
       use m_node_phys_data
+      use m_SGS_address
 !
       integer(kind = kint) :: i
 !
@@ -48,7 +49,7 @@
          if ( nod_fld1%phys_name(i).eq.fhd_SGS_div_h_flux_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld1%phys_name(i) )
-           call cal_div_sgs_h_flux_true_pre
+           call cal_div_sgs_h_flux_true_pre(iak_diff_hf)
          else if ( nod_fld1%phys_name(i).eq.fhd_SGS_div_m_flux_true)    &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
@@ -103,7 +104,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_sgs_h_flux_true_pre
+      subroutine cal_div_sgs_h_flux_true_pre(iak_diff_hf)
 !
       use m_nod_comm_table
       use m_geometry_data
@@ -120,15 +121,17 @@
 !
       use cal_terms_for_heat
 !
+      integer(kind=kint), intent(in) :: iak_diff_hf
+!
 !
       call cal_flux_vector(node1, nod_fld1%ntot_phys,                   &
      &    iphys%i_filter_velo, iphys%i_filter_temp, iphys%i_h_flux,     &
      &    nod_fld1%d_fld)
-      call cal_terms_4_heat                                             &
-     &     (iphys%i_h_flux_div, nod_comm, node1, ele1, surf1, fluid1,   &
-     &      sf_grp1, iphys, iphys_ele, fld_ele1,                        &
-     &      jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,           &
-     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+      call cal_terms_4_heat(iphys%i_h_flux_div, iak_diff_hf,            &
+     &    nod_comm, node1, ele1, surf1, fluid1, sf_grp1,                &
+     &    iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,      &
+     &    rhs_tbl1, FEM1_elen,  mhd_fem1_wk, fem1_wk,                   &
+     &    f1_l, f1_nl, nod_fld1)
       call copy_scalar_component(node1, nod_fld1,                       &
      &    iphys%i_h_flux_div, iphys%i_SGS_div_hf_true)
 !
@@ -150,6 +153,7 @@
       use m_filter_elength
       use m_finite_element_matrix
       use m_int_vol_data
+      use m_SGS_address
 !
       use cal_momentum_terms
 !
@@ -157,7 +161,8 @@
       call cal_flux_tensor(node1, nod_fld1%ntot_phys,                   &
      &    iphys%i_filter_velo, iphys%i_filter_velo, iphys%i_m_flux,     &
      &    nod_fld1%d_fld)
-      call cal_terms_4_momentum(iphys%i_m_flux_div,                     &
+      call cal_terms_4_momentum                                         &
+     &   (iphys%i_m_flux_div, iak_diff_mf, iak_diff_lor,                &
      &    nod_comm, node1, ele1, surf1, fluid1, sf_grp1,                &
      &    iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,      &
      &    rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,       &
@@ -184,13 +189,15 @@
       use m_finite_element_matrix
       use m_int_vol_data
       use m_physical_property
+      use m_SGS_address
 !
       use cal_momentum_terms
 !
 !
       call cal_maxwell_tensor(node1, ex_magne, nod_fld1%ntot_phys,      &
      &    iphys%i_filter_magne, iphys%i_maxwell, nod_fld1%d_fld)
-      call cal_terms_4_momentum(iphys%i_maxwell_div,                    &
+      call cal_terms_4_momentum                                         &
+     &   (iphys%i_maxwell_div, iak_diff_mf, iak_diff_lor,               &
      &    nod_comm, node1, ele1, surf1, fluid1, sf_grp1,                &
      &    iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,      &
      &    rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,       &

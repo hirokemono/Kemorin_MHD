@@ -43,6 +43,7 @@
       use m_jacobian_sf_grp
       use m_bc_data_ene
       use m_surf_data_composition
+      use m_SGS_address
 !
       use nod_phys_send_recv
       use set_boundary_scalars

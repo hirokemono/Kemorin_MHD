@@ -3,8 +3,8 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_velo                                 &
-!!     &         (nod_comm, node, ele, surf, sf_grp,                    &
+!!      subroutine s_cal_diff_coef_velo(iak_diff_v, icomp_diff_v,       &
+!!     &          nod_comm, node, ele, surf, sf_grp,                    &
 !!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elen, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
@@ -53,15 +53,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_velo                                   &
-     &         (nod_comm, node, ele, surf, sf_grp,                      &
+      subroutine s_cal_diff_coef_velo(iak_diff_v, icomp_diff_v,         &
+     &          nod_comm, node, ele, surf, sf_grp,                      &
      &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elen, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_SGS_address
       use m_phys_constants
       use m_surf_data_torque
       use m_surf_data_press
@@ -79,6 +78,8 @@
       use set_nodal_bc_id_data
       use clear_work_4_dynamic_model
       use nod_phys_send_recv
+!
+      integer (kind=kint), intent(in) :: iak_diff_v, icomp_diff_v
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node

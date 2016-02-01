@@ -101,7 +101,7 @@
       if (iphys%i_SGS_div_h_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_div_SGS_h_flux)
-        call cal_terms_4_heat(iphys%i_SGS_div_h_flux,                   &
+        call cal_terms_4_heat(iphys%i_SGS_div_h_flux, iak_diff_hf,      &
      &      nod_comm, node1, ele1, surf1, fluid1,                       &
      &      sf_grp1, iphys, iphys_ele, fld_ele1,                        &
      &      jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,           &
@@ -111,7 +111,8 @@
       if (iphys%i_SGS_div_m_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_div_SGS_m_flux)
-        call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,               &
+        call cal_terms_4_momentum                                       &
+     &     (iphys%i_SGS_div_m_flux, iak_diff_mf, iak_diff_lor,          &
      &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
      &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
      &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
@@ -121,7 +122,8 @@
       if (iphys%i_SGS_Lorentz .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_Lorentz)
-        call cal_terms_4_momentum(iphys%i_SGS_Lorentz,                  &
+        call cal_terms_4_momentum                                       &
+     &     (iphys%i_SGS_Lorentz, iak_diff_mf, iak_diff_lor,             &
      &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
      &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
      &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &

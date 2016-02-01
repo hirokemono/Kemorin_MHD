@@ -186,12 +186,12 @@
      &         mhd_fem1_wk)
          end if
 !
-        if (iflag_commute_velo .eq. id_SGS_commute_ON                  &
+        if (iflag_commute_velo .eq. id_SGS_commute_ON                   &
      &         .and. iflag_diff_coefs(iak_diff_v) .eq. 0) then
-          if(iflag_debug .ge. iflag_routine_msg)                       &
+          if(iflag_debug .ge. iflag_routine_msg)                        &
      &                 write(*,*) 's_cal_diff_coef_velo'
-          call s_cal_diff_coef_velo                                     &
-     &       (nod_comm, node1, ele1, surf1, sf_grp1,                    &
+          call s_cal_diff_coef_velo(iak_diff_v, icomp_diff_v,           &
+     &        nod_comm, node1, ele1, surf1, sf_grp1,                    &
      &        iphys, iphys_ele, fld_ele1, fluid1, layer_tbl,            &
      &        jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,         &
      &        FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
@@ -331,8 +331,8 @@
 !
              if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
                if (iflag_debug.gt.0)  write(*,*) 's_cal_diff_coef_temp'
-               call s_cal_diff_coef_temp                                &
-     &            (nod_comm, node1, ele1, surf1, sf_grp1,               &
+               call s_cal_diff_coef_temp(iak_diff_t, icomp_diff_t,      &
+     &             nod_comm, node1, ele1, surf1, sf_grp1,               &
      &             iphys, iphys_ele, fld_ele1, fluid1, layer_tbl,       &
      &             jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,    &
      &             FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,        &
@@ -415,8 +415,8 @@
           if(iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
             if (iflag_SGS_model .eq. id_SGS_NL_grad                     &
      &        .or. iflag_SGS_model .eq. id_SGS_similarity) then
-              call s_cal_diff_coef_vector_p                             &
-     &           (nod_comm, node1, ele1, surf1, sf_grp1,                &
+              call s_cal_diff_coef_vector_p(iak_diff_b, icomp_diff_b,   &
+     &            nod_comm, node1, ele1, surf1, sf_grp1,                &
      &            iphys, iphys_ele, fld_ele1, layer_tbl,                &
      &            jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,     &
      &            FEM1_elen, m1_lump, fem1_wk, f1_l, f1_nl, nod_fld1)
@@ -645,8 +645,9 @@
      &     .and. iflag_diff_coefs(iak_diff_b) .eq. 0) then
         if (iflag2.eq.2 .or. iflag2.eq.3) then
           if (iflag_debug.gt.0) write(*,*) 's_cal_diff_coef_magne'
-          call s_cal_diff_coef_magne(nod_comm, node1, ele1, surf1,      &
-     &        sf_grp1, iphys, iphys_ele, fld_ele1, layer_tbl,           &
+          call s_cal_diff_coef_magne(iak_diff_b, icomp_diff_b,          &
+     &        nod_comm, node1, ele1, surf1, sf_grp1,                    &
+     &        iphys, iphys_ele, fld_ele1, layer_tbl,                    &
      &        jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,         &
      &        FEM1_elen, m1_lump, fem1_wk, f1_l, f1_nl, nod_fld1)
          end if
@@ -743,8 +744,8 @@
 !
 !             if (iflag_SGS_heat .eq. id_SGS_NL_grad) then
 !               if (iflag_debug.gt.0)  write(*,*) 's_cal_diff_coef_temp'
-!               call s_cal_diff_coef_temp                               &
-!     &             (nod_comm, node1, ele1, surf1, sf_grp1,             &
+!               call s_cal_diff_coef_temp(iak_diff_t, icomp_diff_t,     &
+!     &              nod_comm, node1, ele1, surf1, sf_grp1,             &
 !     &              iphys, iphys_ele, fld_ele1, fluid1, layer_tbl,     &
 !     &              jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,  &
 !     &              FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,      &

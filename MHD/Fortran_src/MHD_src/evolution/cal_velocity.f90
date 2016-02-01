@@ -32,6 +32,7 @@
       use m_geometry_data
       use m_node_phys_data
       use m_physical_property
+      use m_SGS_address
 !
       use cal_velocity_pre
       use cal_mod_vel_potential
@@ -86,7 +87,7 @@
 !
       do iloop = 0, maxiter
 !
-        call cal_mod_potential
+        call cal_mod_potential(iak_diff_v)
 !
         call cal_sol_pressure                                           &
      &     (node1%numnod, node1%istack_internal_smp,                    &

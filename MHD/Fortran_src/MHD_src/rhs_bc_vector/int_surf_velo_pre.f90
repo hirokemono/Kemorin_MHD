@@ -3,11 +3,12 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!!      subroutine int_surf_velo_pre_ele(node, ele, surf, sf_grp,       &
-!!     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,       &
-!!     &          fem_wk, f_l, f_nl)
+!!      subroutine int_surf_velo_pre_ele(iak_diff_mf, iak_diff_lor,     &
+!!     &          node, ele, surf, sf_grp, iphys, nod_fld, jac_sf_grp,  &
+!!     &          rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
 !!      subroutine int_surf_velo_monitor                                &
-!!     &         (i_field, node, ele, surf, sf_grp, iphys, nod_fld,     &
+!!     &         (i_field, iak_diff_mf, iak_diff_lor,                   &
+!!     &          node, ele, surf, sf_grp, iphys, nod_fld,              &
 !!     &          jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -48,14 +49,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine int_surf_velo_pre_ele(node, ele, surf, sf_grp,         &
-     &          iphys, nod_fld, jac_sf_grp, rhs_tbl, FEM_elens,         &
-     &          fem_wk, f_l, f_nl)
+      subroutine int_surf_velo_pre_ele(iak_diff_mf, iak_diff_lor,       &
+     &          node, ele, surf, sf_grp, iphys, nod_fld, jac_sf_grp,    &
+     &          rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
 !
       use m_SGS_model_coefs
-      use m_SGS_address
       use m_surf_data_torque
       use m_surf_data_magne
+!
+      integer(kind= kint), intent(in) :: iak_diff_mf, iak_diff_lor
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -111,15 +113,16 @@
 ! ----------------------------------------------------------------------
 !
       subroutine int_surf_velo_monitor                                  &
-     &         (i_field, node, ele, surf, sf_grp, iphys, nod_fld,       &
+     &         (i_field, iak_diff_mf, iak_diff_lor,                     &
+     &          node, ele, surf, sf_grp, iphys, nod_fld,                &
      &          jac_sf_grp, rhs_tbl, FEM_elens, fem_wk, f_l, f_nl)
 !
       use m_SGS_model_coefs
-      use m_SGS_address
       use m_surf_data_torque
       use m_surf_data_magne
 !
       integer(kind= kint), intent(in) :: i_field
+      integer(kind= kint), intent(in) :: iak_diff_mf, iak_diff_lor
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele

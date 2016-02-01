@@ -3,9 +3,10 @@
 !
 !     Written by H. Matsui
 !
-!!      subroutine s_cal_diff_coef_magne(nod_comm, node, ele, surf,   &
-!!     &          sf_grp, iphys, iphys_ele, ele_fld, layer_tbl,       &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,          &
+!!      subroutine s_cal_diff_coef_magne(iak_diff_b, icomp_diff_b,      &
+!!     &          nod_comm, node, ele, surf, sf_grp,                    &
+!!     &          iphys, iphys_ele, ele_fld, layer_tbl,                 &
+!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, m_lump, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -49,15 +50,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine s_cal_diff_coef_magne(nod_comm, node, ele, surf,     &
-     &          sf_grp, iphys, iphys_ele, ele_fld, layer_tbl,         &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
+      subroutine s_cal_diff_coef_magne(iak_diff_b, icomp_diff_b,        &
+     &          nod_comm, node, ele, surf, sf_grp,                      &
+     &          iphys, iphys_ele, ele_fld, layer_tbl,                   &
+     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, m_lump, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_machine_parameter
       use m_control_parameter
       use m_phys_constants
-      use m_SGS_address
       use m_surf_data_magne
       use m_surf_data_magne_p
 !
@@ -73,6 +74,8 @@
       use cal_model_diff_coefs
       use clear_work_4_dynamic_model
       use nod_phys_send_recv
+!
+      integer (kind=kint), intent(in) :: iak_diff_b, icomp_diff_b
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node

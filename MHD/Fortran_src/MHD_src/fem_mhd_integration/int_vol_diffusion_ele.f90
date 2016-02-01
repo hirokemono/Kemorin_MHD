@@ -28,7 +28,6 @@
       use m_phys_constants
       use m_control_parameter
       use m_SGS_model_coefs
-      use m_SGS_address
 !
       use t_geometry_data
       use t_phys_data

@@ -3,11 +3,12 @@
 !
 !     Written by H. Matsui on June, 2005
 !
-!!      subroutine cal_terms_4_heat
-!!     &        (i_field, nod_comm, node, ele, surf, fluid, sf_grp,     &
+!!      subroutine cal_terms_4_heat(i_field, iak_diff_hf,               &
+!!     &         nod_comm, node, ele, surf, fluid, sf_grp,              &
 !!     &         iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,&
 !!     &         FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_thermal_diffusion(nod_comm, node, ele, surf,     &
+!!      subroutine cal_thermal_diffusion                                &
+!!     &         (iak_diff_hf, iak_diff_t, nod_comm, node, ele, surf,   &
 !!     &          fluid, sf_grp, iphys, jac_3d, jac_sf_grp, rhs_tbl,    &
 !!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -47,12 +48,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_terms_4_heat                                       &
-     &        (i_field, nod_comm, node, ele, surf, fluid, sf_grp,       &
+      subroutine cal_terms_4_heat(i_field, iak_diff_hf,                 &
+     &         nod_comm, node, ele, surf, fluid, sf_grp,                &
      &         iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,  &
      &         FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_temp_monitor
+!
+      integer (kind=kint), intent(in) :: i_field, iak_diff_hf
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
@@ -68,8 +71,6 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
-      integer (kind=kint), intent(in) :: i_field
-!
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -79,13 +80,13 @@
       call reset_ff_smps(node%max_nod_smp, f_l, f_nl)
 !
       if (iflag_temp_supg .gt. id_turn_OFF) then
-       call int_vol_ene_monitor_upw(i_field, node, ele, fluid,          &
-     &     iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,         &
-     &      FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+       call int_vol_ene_monitor_upw(i_field, iak_diff_hf,               &
+     &     node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld,        &
+     &     jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
       else
-       call int_vol_ene_monitor(i_field, node, ele, fluid,              &
-     &     iphys, nod_fld, iphys_ele, ele_fld, jac_3d, rhs_tbl,         &
-     &     FEM_elens, mhd_fem_wk, fem_wk, f_nl)
+       call int_vol_ene_monitor(i_field, iak_diff_hf,                   &
+     &     node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld,        &
+     &     jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
       end if
 !
       call int_surf_temp_monitor(i_field, iak_diff_hf,                  &
@@ -113,11 +114,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_thermal_diffusion(nod_comm, node, ele, surf,       &
+      subroutine cal_thermal_diffusion                                  &
+     &         (iak_diff_hf, iak_diff_t, nod_comm, node, ele, surf,     &
      &          fluid, sf_grp, iphys, jac_3d, jac_sf_grp, rhs_tbl,      &
      &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use int_vol_diffusion_ele
+!
+      integer (kind=kint), intent(in) :: iak_diff_hf, iak_diff_t
 !
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node

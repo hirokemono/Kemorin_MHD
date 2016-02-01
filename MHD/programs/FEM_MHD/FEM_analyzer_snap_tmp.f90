@@ -245,11 +245,12 @@
       if (iphys%i_SGS_div_m_flux .gt. 0) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead radial', trim(fhd_div_SGS_m_flux)
-        call cal_terms_4_momentum(iphys%i_SGS_div_m_flux,               &
-     &    nod_comm, node1, ele1, surf1, fluid1, sf_grp1,                &
-     &    iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,      &
-     &    rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,       &
-     &    nod_fld1)
+        call cal_terms_4_momentum                                       &
+     &     (iphys%i_SGS_div_m_flux, iak_diff_mf, iak_diff_lor,          &
+     &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
+     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
+     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
+     &      nod_fld1)
       end if
 !
 !$omp parallel

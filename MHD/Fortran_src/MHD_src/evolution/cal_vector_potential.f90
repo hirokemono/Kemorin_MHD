@@ -29,9 +29,10 @@
       use m_geometry_data
       use m_node_phys_data
       use m_physical_property
+      use m_SGS_address
 !
       use cal_vector_potential_pre
-      use cal_electric_potential
+      use cal_mod_vel_potential
       use cal_sol_pressure_MHD
       use init_4_sol_potentials
       use int_rms_div_MHD
@@ -66,8 +67,8 @@
 !
       do iloop = 0, maxiter_vecp
 !
-        if (iflag_debug.gt.0) write(*,*) 'cal_scalar_potential'
-        call cal_scalar_potential
+        if (iflag_debug.gt.0) write(*,*) 'cal_electric_potential'
+        call cal_electric_potential(iak_diff_b)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_sol_m_potential', iloop
         call cal_sol_m_potential                                        &

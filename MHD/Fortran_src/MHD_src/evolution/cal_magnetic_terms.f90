@@ -23,6 +23,7 @@
       use m_finite_element_matrix
       use m_int_vol_data
       use m_filter_elength
+      use m_SGS_address
 !
       use cal_ff_smp_to_ffs
       use cal_for_ffs
@@ -51,18 +52,18 @@
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
 !
       if (iflag_mag_supg .gt. id_turn_OFF) then
-        call int_vol_magne_monitor_upm(i_field, node1, ele1, conduct1,  &
-     &      iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,  &
-     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_nl)
+        call int_vol_magne_monitor_upm(i_field, iak_diff_uxb,           &
+     &     node1, ele1, conduct1, iphys, nod_fld1, iphys_ele, fld_ele1, &
+     &     jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_nl)
       else
-        call int_vol_magne_monitor_pg(i_field, node1, ele1, conduct1,   &
-     &      iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,  &
-     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_nl)
+        call int_vol_magne_monitor_pg(i_field, iak_diff_uxb,            &
+     &     node1, ele1, conduct1, iphys, nod_fld1, iphys_ele, fld_ele1, &
+     &     jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_nl)
       end if
 !
-      call int_surf_magne_monitor(i_field, node1, ele1, surf1, sf_grp1, &
-     &    iphys, nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,       &
-     &    fem1_wk, f1_l, f1_nl)
+      call int_surf_magne_monitor(i_field, iak_diff_uxb,                &
+     &    node1, ele1, surf1, sf_grp1, iphys, nod_fld1,                 &
+     &    jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l, f1_nl)
 !
       call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
      &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
@@ -97,10 +98,9 @@
      &    node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,        &
      &    iak_diff_b, one, ak_d_magne, iphys%i_magne, fem1_wk, f1_l)
 !
-      call int_surf_magne_monitor                                       &
-     &   (iphys%i_b_diffuse, node1, ele1, surf1, sf_grp1,               &
-     &    iphys, nod_fld1, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,       &
-     &    fem1_wk, f1_l, f1_nl)
+      call int_surf_magne_monitor(iphys%i_b_diffuse, iak_diff_uxb,      &
+     &    node1, ele1, surf1, sf_grp1, iphys, nod_fld1,                 &
+     &    jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l, f1_nl)
 !
       call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
 !

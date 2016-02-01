@@ -10,11 +10,11 @@
 !
 !!      subroutine int_vol_magne_pre_ele                                &
 !!     &         (node, ele, conduct, iphys, nod_fld,                   &
-!!     &          ncomp_ele, d_ele, iphys_ele,                          &
+!!     &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,            &
 !!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !!      subroutine int_vol_magne_pre_ele_upm                            &
 !!     &         (node, ele, conduct, iphys, nod_fld,                   &
-!!     &          ncomp_ele, d_ele, iphys_ele,                          &
+!!     &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,            &
 !!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -38,7 +38,6 @@
       use m_fem_gauss_int_coefs
       use m_physical_property
       use m_SGS_model_coefs
-      use m_SGS_address
 !
       use t_geometry_data_MHD
       use t_geometry_data
@@ -61,7 +60,7 @@
 !
       subroutine int_vol_magne_pre_ele                                  &
      &         (node, ele, conduct, iphys, nod_fld,                     &
-     &          ncomp_ele, d_ele, iphys_ele,                            &
+     &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,              &
      &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
@@ -82,6 +81,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
+      integer(kind = kint), intent(in) :: iak_diff_uxb
       integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
       type(phys_address), intent(in) :: iphys_ele
@@ -145,7 +145,7 @@
 !
       subroutine int_vol_magne_pre_ele_upm                              &
      &         (node, ele, conduct, iphys, nod_fld,                     &
-     &          ncomp_ele, d_ele, iphys_ele,                            &
+     &          ncomp_ele, d_ele, iphys_ele, iak_diff_uxb,              &
      &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_nl)
 !
       use cal_add_smp
@@ -166,6 +166,7 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
+      integer(kind = kint), intent(in) :: iak_diff_uxb
       integer(kind = kint), intent(in) :: ncomp_ele
       real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
       type(phys_address), intent(in) :: iphys_ele

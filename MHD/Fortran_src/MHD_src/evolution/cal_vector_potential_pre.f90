@@ -42,6 +42,7 @@
       use m_control_parameter
       use m_bc_data_magne
       use m_surf_data_vector_p
+      use m_SGS_address
 !
       use set_boundary_scalars
       use nod_phys_send_recv

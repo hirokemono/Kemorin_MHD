@@ -75,7 +75,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_vecp_diffusion
+      subroutine cal_vecp_diffusion(iak_diff_b)
 !
       use m_group_data
       use m_phys_constants
@@ -88,6 +88,8 @@
       use int_vol_diffusion_ele
       use int_surf_fixed_gradients
       use set_boundary_scalars
+!
+      integer(kind=kint), intent(in) :: iak_diff_b
 !
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)

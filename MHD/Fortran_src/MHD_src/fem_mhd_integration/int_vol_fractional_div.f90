@@ -13,7 +13,6 @@
       use m_precision
 !
       use m_machine_parameter
-      use m_SGS_address
       use m_SGS_model_coefs
 !
       use t_geometry_data
