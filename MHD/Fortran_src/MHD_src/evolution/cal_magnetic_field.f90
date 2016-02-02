@@ -27,8 +27,15 @@
       use m_machine_parameter
       use m_control_parameter
       use m_geometry_data
+      use m_group_data
       use m_node_phys_data
       use m_physical_property
+      use m_jacobians
+      use m_jacobian_sf_grp
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_filter_elength
+      use m_SGS_model_coefs
       use m_SGS_address
 !
       use cal_magnetic_pre
@@ -66,7 +73,10 @@
 !
 !
       do iloop = 0, maxiter
-        call cal_mag_potential(iak_diff_b)
+        call cal_mag_potential(iak_diff_b,                              &
+     &      node1, ele1, surf1, sf_grp1, iphys,                         &
+     &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_l, rhs_tbl1,           &
+     &      FEM1_elen, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
         call cal_sol_m_potential                                        &
      &     (node1%numnod, node1%istack_internal_smp,                    &

@@ -99,147 +99,46 @@
       use cal_induction_terms
       use cal_gradient
 !
-!
-      if (iphys%i_h_advect .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_heat_advect)
-        call cal_terms_4_heat(iphys%i_h_advect, iak_diff_hf,            &
-     &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
-     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,                  &
-     &      f1_l, f1_nl, nod_fld1)
-      end if
-!
-      if (iphys%i_ph_advect .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_part_h_advect)
-        call cal_terms_4_heat(iphys%i_ph_advect, iak_diff_hf,           &
-     &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
-     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,                  &
-     &      f1_l, f1_nl, nod_fld1)
-      end if
-!
-      if (iphys%i_h_flux_div .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_div_h_flux)
-        call cal_terms_4_heat(iphys%i_h_flux_div, iak_diff_hf,          &
-     &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
-     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,                  &
-     &      f1_l, f1_nl, nod_fld1)
-      end if
-!
-      if (iphys%i_ph_flux_div .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_div_ph_flux)
-        call cal_terms_4_heat(iphys%i_ph_flux_div, iak_diff_hf,         &
-     &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
-     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,                  &
-     &      f1_l, f1_nl, nod_fld1)
-      end if
+      integer(kind = kint) :: i, i_fld, i_src
 !
 !
-      if (iphys%i_m_advect .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_inertia)
-        call cal_terms_4_momentum                                       &
-     &     (iphys%i_m_advect, iak_diff_mf, iak_diff_lor,                &
-     &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
-     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
-     &      nod_fld1)
-      end if
+      do i = 1, nod_fld1%num_phys
+        i_fld = nod_fld1%istack_component(i-1) + 1
+        if(     i_fld .eq. iphys%i_h_advect                             &
+     &     .or. i_fld .eq. iphys%i_ph_advect                            &
+     &     .or. i_fld .eq. iphys%i_h_flux_div                           &
+     &     .or. i_fld .eq. iphys%i_ph_flux_div) then
+          if(iflag_debug .ge. iflag_routine_msg)                        &
+     &             write(*,*) 'lead  ', trim(nod_fld1%phys_name(i))
+          call cal_terms_4_heat(i_fld, iak_diff_hf,                     &
+     &        nod_comm, node1, ele1, surf1, fluid1, sf_grp1,            &
+     &        iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,  &
+     &        rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,                &
+     &        f1_l, f1_nl, nod_fld1)
+        end if
+      end do
 !
-      if (iphys%i_m_flux_div .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_div_m_flux)
-        call cal_terms_4_momentum                                       &
-     &     (iphys%i_m_flux_div, iak_diff_mf, iak_diff_lor,              &
-     &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
-     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
-     &      nod_fld1)
-      end if
 !
-      if (iphys%i_maxwell_div .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_div_maxwell_t)
-        call cal_terms_4_momentum                                       &
-     &     (iphys%i_maxwell_div, iak_diff_mf, iak_diff_lor,             &
-     &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
-     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
-     &      nod_fld1)
-      end if
-!
-      if (iphys%i_m_tension .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_mag_tension)
-        call cal_terms_4_momentum                                       &
-     &     (iphys%i_m_tension, iak_diff_mf, iak_diff_lor,               &
-     &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
-     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
-     &      nod_fld1)
-      end if
-!
-      if (iphys%i_lorentz .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_Lorentz)
-        call cal_terms_4_momentum                                       &
-     &     (iphys%i_lorentz, iak_diff_mf, iak_diff_lor,                 &
-     &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
-     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
-     &      nod_fld1)
-      end if
-!
-      if (iphys%i_buoyancy .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_buoyancy)
-        call cal_terms_4_momentum                                       &
-     &     (iphys%i_buoyancy, iak_diff_mf, iak_diff_lor,                &
-     &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
-     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
-     &      nod_fld1)
-      end if
-!
-      if (iphys%i_comp_buo .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_comp_buo)
-        call cal_terms_4_momentum                                       &
-     &     (iphys%i_comp_buo, iak_diff_mf, iak_diff_lor,                &
-     &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
-     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
-     &      nod_fld1)
-      end if
-!
-      if (iphys%i_filter_buo .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_filter_buo)
-        call cal_terms_4_momentum                                       &
-     &     (iphys%i_filter_buo, iak_diff_mf, iak_diff_lor,              &
-     &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
-     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
-     &      nod_fld1)
-      end if
-!
-      if (iphys%i_coriolis .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_Coriolis)
-        call cal_terms_4_momentum                                       &
-     &     (iphys%i_coriolis, iak_diff_mf, iak_diff_lor,                &
-     &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
-     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
-     &      nod_fld1)
-      end if
-!
+      do i = 1, nod_fld1%num_phys
+        i_fld = nod_fld1%istack_component(i-1) + 1
+        if(     i_fld .eq. iphys%i_m_advect                             &
+     &     .or. i_fld .eq. iphys%i_m_flux_div                           &
+     &     .or. i_fld .eq. iphys%i_maxwell_div                          &
+     &     .or. i_fld .eq. iphys%i_m_tension                            &
+     &     .or. i_fld .eq. iphys%i_lorentz                              &
+     &     .or. i_fld .eq. iphys%i_buoyancy                             &
+     &     .or. i_fld .eq. iphys%i_comp_buo                             &
+     &     .or. i_fld .eq. iphys%i_filter_buo                           &
+     &     .or. i_fld .eq. iphys%i_coriolis) then
+          if(iflag_debug .ge. iflag_routine_msg)                        &
+     &             write(*,*) 'lead  ', trim(nod_fld1%phys_name(i))
+          call cal_terms_4_momentum(i_fld, iak_diff_mf, iak_diff_lor,   &
+     &        nod_comm, node1, ele1, surf1, fluid1, sf_grp1,            &
+     &        iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,  &
+     &        rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,   &
+     &        nod_fld1)
+        end if
+      end do
 !
       if (iphys%i_induct_div .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
@@ -305,36 +204,22 @@
       end if
 !
 !
-      if(iphys%i_grad_vx .gt. 0) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead gradient of V_x'
-        call choose_cal_gradient                                        &
-     &     (iflag_velo_supg, (iphys%i_velo  ), iphys%i_grad_vx,         &
-     &      fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,            &
-     &      nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,      &
-     &      rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
-      end if
-!
-      if(iphys%i_grad_vy .gt. 0) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead gradient of V_y'
-        call choose_cal_gradient                                        &
-     &     (iflag_velo_supg, (iphys%i_velo+1), iphys%i_grad_vy,         &
-     &      fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,            &
-     &      nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,      &
-     &      rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
-      end if
-!
-      if(iphys%i_grad_vz .gt. 0) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead gradient of V_z'
-        call choose_cal_gradient                                        &
-     &     (iflag_velo_supg, (iphys%i_velo+2), iphys%i_grad_vz,         &
-     &      fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,            &
-     &      nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,      &
-     &      rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
-      end if
-!
+      do i = 1, nod_fld1%num_phys
+        i_fld = nod_fld1%istack_component(i-1) + 1
+        if(     i_fld .eq. iphys%i_grad_vx                              &
+     &     .or. i_fld .eq. iphys%i_grad_vy                              &
+     &     .or. i_fld .eq. iphys%i_grad_vz) then
+          if(i_fld .eq. iphys%i_grad_vx) i_src = iphys%i_velo
+          if(i_fld .eq. iphys%i_grad_vy) i_src = iphys%i_velo + 1
+          if(i_fld .eq. iphys%i_grad_vz) i_src = iphys%i_velo + 2
+          if(iflag_debug .ge. iflag_routine_msg)                        &
+     &             write(*,*) 'lead  ', trim(nod_fld1%phys_name(i))
+          call choose_cal_gradient(iflag_velo_supg, i_src, i_fld,       &
+     &        fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl,          &
+     &        nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,    &
+     &        rhs_tbl1, fem1_wk, f1_l, f1_nl, nod_fld1)
+        end if
+      end do
 !
       end subroutine cal_forces_4_monitor
 !
