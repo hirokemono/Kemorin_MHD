@@ -140,23 +140,29 @@
         end if
       end do
 !
-      if (iphys%i_induct_div .gt. izero) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_div_induct_t)
-        call cal_terms_4_magnetic(iphys%i_induct_div)
-      end if
 !
-      if (iphys%i_induction .gt. izero                                  &
-     &      .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
-        if(iflag_debug .ge. iflag_routine_msg)                          &
-     &             write(*,*) 'lead  ', trim(fhd_mag_induct)
-          call cal_terms_4_magnetic(iphys%i_induction)
-      end if
+      do i = 1, nod_fld1%num_phys
+        i_fld = nod_fld1%istack_component(i-1) + 1
+        if(     i_fld .eq. iphys%i_induct_div                           &
+     &     .or. (i_fld.eq.iphys%i_induction                             &
+     &           .and. iflag_t_evo_4_magne.gt.id_no_evolution)) then
+          if(iflag_debug .ge. iflag_routine_msg)                        &
+     &             write(*,*) 'lead  ', trim(nod_fld1%phys_name(i))
+          call cal_terms_4_magnetic(i_fld, iak_diff_uxb,                &
+     &        nod_comm, node1, ele1, surf1, conduct1, sf_grp1,          &
+     &        iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,  &
+     &        rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,   &
+     &        nod_fld1)
+        end if
+      end do
+!
 !
       if (iphys%i_vp_induct .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_vp_induct)
-        call cal_vecp_induction
+        call cal_vecp_induction(nod_comm, node1, ele1, conduct1,        &
+     &       iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,           &
+     &       mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
 !
@@ -193,14 +199,20 @@
       if (iphys%i_vp_diffuse .gt. izero) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_vecp_diffuse)
-        call cal_vecp_diffusion(iak_diff_b)
+        call cal_vecp_diffusion(iak_diff_b,                             &
+     &      nod_comm, node1, ele1, surf1, sf_grp1, iphys,               &
+     &      jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,           &
+     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
       if (iphys%i_b_diffuse .gt. izero                                  &
      &      .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
         if(iflag_debug .ge. iflag_routine_msg)                          &
      &             write(*,*) 'lead  ', trim(fhd_mag_diffuse)
-        call cal_magnetic_diffusion
+        call cal_magnetic_diffusion(iak_diff_b, iak_diff_uxb,           &
+     &     nod_comm, node1, ele1, surf1, conduct1, sf_grp1,             &
+     &     iphys, jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1,                &
+     &     FEM1_elen, m1_lump, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
 !

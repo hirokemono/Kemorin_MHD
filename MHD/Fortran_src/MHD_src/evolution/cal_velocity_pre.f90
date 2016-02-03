@@ -33,7 +33,6 @@
       implicit none
 !
       private :: cal_velo_pre_euler, cal_velo_pre_adams
-      private :: cal_velo_pre_crank, cal_velo_pre_consist_crank
 !
 ! ----------------------------------------------------------------------
 !
@@ -58,6 +57,8 @@
       use cal_sgs_m_flux_sgs_buo
       use modify_Csim_by_SGS_buo_ele
       use set_normal_field
+      use evolve_by_lumped_crank
+      use evolve_by_consist_crank
 !
       type(layering_tbl), intent(in) :: layer_tbl
 !
@@ -143,7 +144,7 @@
        call cal_velo_pre_adams
 !
       else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson) then
-       call cal_velo_pre_crank
+       call cal_velo_pre_lumped_crank
 !
       else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass) then 
        call cal_velo_pre_consist_crank
@@ -207,105 +208,6 @@
       call cal_sol_velo_pre_adams(node1, iphys, nod_fld1)
 !
       end subroutine cal_velo_pre_adams
-!
-! ----------------------------------------------------------------------
-!  --------  subroutine cal_velo_pre_crank  -------
-!
-      subroutine cal_velo_pre_crank
-!
-      use m_t_step_parameter
-!
-      use m_solver_djds_MHD
-      use m_array_for_send_recv
-      use m_type_AMG_data
-      use m_type_AMG_data_4_MHD
-!
-      use cal_multi_pass
-      use cal_sol_vector_pre_crank
-      use set_nodal_bc_id_data
-      use int_sk_4_fixed_boundary
-      use cal_solver_MHD
-      use int_vol_coriolis_term
-!
-!
-      if (coef_imp_v.gt.0.0d0) then
-        call int_sk_4_fixed_velo(iphys%i_velo, iak_diff_v, node1, ele1, &
-     &      nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
-!        if (iflag_initial_step.eq.1) coef_imp_v = 1.0d0 / coef_imp_v
-      end if
-!
-      call cal_t_evo_4_vector(iflag_velo_supg,                          &
-     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
-     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
-     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-!
-      if (iflag_debug.eq.1) write(*,*) 'int_coriolis_nod_exp'
-      call int_coriolis_nod_exp(node1, mhd_fem1_wk,                     &
-     &    iphys%i_velo, nod_fld1, f1_l, f1_nl)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
-      call int_buoyancy_nod_exp                                         &
-     &   (node1, mhd_fem1_wk, iphys, nod_fld1, f1_nl)
-!
-      call set_boundary_velo_4_rhs(node1, f1_l, f1_nl)
-!
-      call cal_sol_velo_pre_linear                                      &
-     &   (node1, iphys, mhd_fem1_wk, f1_nl, f1_l, nod_fld1)
-!
-      call cal_sol_velo_pre_crank                                       &
-     &    (node1, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS,                  &
-     &     num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,            &
-     &     MG_mat_velo, MG_vector, iphys%i_velo, f1_l, b_vec,           &
-     &     x_vec, nod_fld1)
-!
-      end subroutine cal_velo_pre_crank
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_velo_pre_consist_crank
-!
-      use m_t_step_parameter
-      use m_physical_property
-      use cal_sol_vector_pre_crank
-      use set_nodal_bc_id_data
-      use int_sk_4_fixed_boundary
-      use cal_ff_smp_to_ffs
-      use int_vol_initial_MHD
-      use cal_solver_MHD
-!
-      use m_solver_djds_MHD
-      use m_array_for_send_recv
-      use m_type_AMG_data
-      use m_type_AMG_data_4_MHD
-!
-!
-      if (coef_imp_v.gt.0.0d0) then
-        call int_sk_4_fixed_velo(iphys%i_velo, iak_diff_v, node1, ele1, &
-     &      nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
-!        if (iflag_initial_step.eq.1) coef_imp_v = 1.0d0 / coef_imp_v
-      end if
-!
-      call reset_ff_t_smp(node1%max_nod_smp, mhd_fem1_wk)
-!
-      call int_vol_initial_vector                                       &
-     &   (fluid1%istack_ele_fld_smp, iphys%i_velo, coef_velo,           &
-     &    node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, fem1_wk,          &
-     &    mhd_fem1_wk)
-      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
-!
-      call set_boundary_velo_4_rhs(node1, f1_l, f1_nl)
-!
-      call cal_vector_pre_consist(node1, coef_velo,                     &
-     &    n_vector, iphys%i_pre_mom, nod_fld1, rhs_tbl1,                &
-     &    mhd_fem1_wk, f1_nl, f1_l)
-!
-      call cal_sol_velo_pre_crank                                       &
-     &    (node1, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS,                  &
-     &     num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,            &
-     &     MG_mat_velo, MG_vector, iphys%i_velo, f1_l, b_vec,           &
-     &     x_vec, nod_fld1)
-!
-      end subroutine cal_velo_pre_consist_crank
 !
 ! ----------------------------------------------------------------------
 !

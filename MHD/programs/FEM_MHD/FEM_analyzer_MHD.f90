@@ -144,13 +144,6 @@
       use m_int_vol_data
       use m_layering_ele_list
 !
-      use cal_temperature
-      use cal_part_temperature
-      use cal_velocity
-      use cal_vector_potential
-      use cal_magnetic_field
-      use cal_light_element
-!
       use construct_matrices
       use lead_physical_values
       use update_after_evolution
@@ -182,53 +175,10 @@
       if (iflag_debug.eq.1) write(*,*) 'set_new_time_and_step'
       call set_new_time_and_step
 !
-      if (iflag_debug.eq.1) write(*,*) 'reset_update_flag'
-      call reset_update_flag
+!     ----- Time integration
 !
-!     ---- magnetic field update
-!
-      if ( iflag_t_evo_4_vect_p .gt. id_no_evolution) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_magne_vector_potential'
-        call cal_magne_vector_potential
-        call update_with_vector_potential(layer_tbl1)
-!
-      else if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
-!
-        if (iflag_debug.eq.1) write(*,*) 's_cal_magnetic_field'
-        call s_cal_magnetic_field
-        call update_with_magnetic_field(layer_tbl1)
-      end if
-!
-!     ---- temperature update
-!
-      if ( iflag_t_evo_4_temp .gt. id_no_evolution) then
-        if( iflag_4_ref_temp .ne. id_no_ref_temp) then
-          if (iflag_debug.eq.1) write(*,*) 'cal_parturbation_temp'
-          call cal_parturbation_temp
-        else
-          if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
-          call cal_temperature_field
-        end if
-!
-        call update_with_temperature(layer_tbl1)
-      end if
-!
-!     ----- composition update
-!
-      if ( iflag_t_evo_4_composit .gt. id_no_evolution) then
-        if (iflag_debug.eq.1) write(*,*) 'cal_light_element_variation'
-        call cal_light_element_variation
-!
-        call update_with_dummy_scalar(layer_tbl1)
-      end if
-!
-!     ---- velocity update
-!
-      if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
-        if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
-        call velocity_evolution(layer_tbl1)
-        call update_with_velocity(layer_tbl1)
-      end if
+      if (iflag_debug.eq.1) write(*,*) 'fields_evolution'
+      call fields_evolution
 !
 !     ----- Evaluate model coefficients
 !

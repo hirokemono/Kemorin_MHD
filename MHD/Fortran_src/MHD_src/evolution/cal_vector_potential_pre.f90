@@ -26,7 +26,6 @@
       implicit none
 !
       private :: cal_vect_p_pre_euler, cal_vect_p_pre_adams
-      private :: cal_vect_p_pre_crank, cal_vect_p_pre_consist_crank
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,6 +49,8 @@
       use int_vol_diffusion_ele
       use int_vol_vect_p_pre
       use int_surf_fixed_gradients
+      use evolve_by_lumped_crank
+      use evolve_by_consist_crank
 !
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
@@ -109,7 +110,7 @@
 !  -----for Ceank-nicolson
 !
       else if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson) then
-        call cal_vect_p_pre_crank
+        call cal_vect_p_pre_lumped_crank
       else if (iflag_t_evo_4_vect_p.eq.id_Crank_nicolson_cmass) then
         call cal_vect_p_pre_consist_crank
       end if
@@ -151,109 +152,6 @@
       call cal_sol_vect_p_pre_adams(node1, iphys, nod_fld1)
 !
       end subroutine cal_vect_p_pre_adams
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_vect_p_pre_crank
-!
-      use m_phys_constants
-      use m_t_step_parameter
-      use m_bc_data_magne
-      use m_geometry_data
-      use m_phys_constants
-      use m_node_phys_data
-      use m_finite_element_matrix
-      use m_solver_djds_MHD
-      use m_array_for_send_recv
-      use m_type_AMG_data
-      use m_type_AMG_data_4_MHD
-      use m_SGS_address
-!
-      use cal_multi_pass
-      use cal_sol_vector_pre_crank
-      use int_sk_4_fixed_boundary
-      use cal_solver_MHD
-      use set_boundary_scalars
-!
-!
-      if (coef_imp_b.gt.0.0d0) then
-        call int_sk_4_fixed_vector_p(iphys%i_vecp, iak_diff_b,          &
-     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
-     &      fem1_wk, f1_l)
-!        if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
-      end if
-!
-      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
-     &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
-     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
-     &    rhs_tbl1, mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-!
-      call delete_vector_ffs_on_bc(node1, nod_bc1_a, f1_l, f1_nl)
-!
-      call cal_sol_vect_p_pre_linear                                    &
-     &   (node1, iphys, mhd_fem1_wk, f1_nl, f1_l, nod_fld1)
-!
-      call cal_sol_vect_p_pre_crank                                     &
-     &   (node1, iphys, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,          &
-     &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl,                   &
-     &    MG_mat_magne, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
-!
-      end subroutine cal_vect_p_pre_crank
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_vect_p_pre_consist_crank
-!
-      use m_phys_constants
-      use m_t_step_parameter
-      use m_bc_data_magne
-      use m_physical_property
-      use m_geometry_data
-      use m_phys_constants
-      use m_node_phys_data
-      use m_finite_element_matrix
-      use m_solver_djds_MHD
-      use m_array_for_send_recv
-      use m_type_AMG_data
-      use m_type_AMG_data_4_MHD
-      use m_SGS_address
-!
-      use cal_sol_vector_pre_crank
-      use int_sk_4_fixed_boundary
-      use cal_ff_smp_to_ffs
-      use int_vol_initial_MHD
-      use cal_solver_MHD
-      use set_boundary_scalars
-!
-!
-      if (coef_imp_b.gt.0.0d0) then
-        call int_sk_4_fixed_vector_p(iphys%i_vecp, iak_diff_b,          &
-     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
-     &      fem1_wk, f1_l)
-!        if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
-      end if
-!
-      call reset_ff_t_smp(node1%max_nod_smp, mhd_fem1_wk)
-!
-      call int_vol_initial_vector                                       &
-     &   (conduct1%istack_ele_fld_smp, iphys%i_vecp, coef_magne,        &
-     &    node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, fem1_wk,          &
-     &    mhd_fem1_wk)
-      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
-!
-      call delete_vector_ffs_on_bc(node1, nod_bc1_a, f1_l, f1_nl)
-!
-      call cal_vector_pre_consist(node1, coef_magne,                    &
-     &    n_vector, iphys%i_pre_uxb, nod_fld1, rhs_tbl1,                &
-     &    mhd_fem1_wk, f1_nl, f1_l)
-!
-      if (iflag_debug.eq.1) write(*,*) 'time_evolution'
-      call cal_sol_vect_p_pre_crank                                     &
-     &   (node1, iphys, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,          &
-     &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl,                   &
-     &    MG_mat_magne, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
-!
-      end subroutine cal_vect_p_pre_consist_crank
 !
 ! ----------------------------------------------------------------------
 !

@@ -41,6 +41,8 @@
 !
       subroutine set_new_time_and_step
 !
+      use m_geometry_data
+      use m_node_phys_data
       use copy_field_data_4_dt_check
 !
 !
@@ -56,7 +58,7 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 's_copy_field_data_for_dt_check'
-      call s_copy_field_data_for_dt_check
+      call s_copy_field_data_for_dt_check(node1, iphys, nod_fld1)
 !
       end subroutine set_new_time_and_step
 !

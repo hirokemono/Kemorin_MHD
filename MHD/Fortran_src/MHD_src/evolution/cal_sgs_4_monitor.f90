@@ -90,12 +90,25 @@
 !
       subroutine cal_diff_of_sgs_terms
 !
+      use m_nod_comm_table
+      use m_geometry_data_MHD
+      use m_geometry_data
+      use m_group_data
       use m_node_phys_data
+      use m_element_phys_data
       use m_jacobians
       use m_jacobian_sf_grp
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_int_vol_data
+      use m_filter_elength
+      use m_SGS_address
+!
       use cal_terms_for_heat
       use cal_momentum_terms
       use cal_magnetic_terms
+!
+      integer(kind = kint) :: i, i_fld
 !
 !
       if (iphys%i_SGS_div_h_flux .gt. 0) then
@@ -108,46 +121,42 @@
      &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
-      if (iphys%i_SGS_div_m_flux .gt. 0) then
-        if(iflag_debug.gt.0) write(*,*)                                 &
-     &        'lead ', trim(fhd_div_SGS_m_flux)
-        call cal_terms_4_momentum                                       &
-     &     (iphys%i_SGS_div_m_flux, iak_diff_mf, iak_diff_lor,          &
-     &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
-     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
-     &      nod_fld1)
-      end if
-!
-      if (iphys%i_SGS_Lorentz .gt. 0) then
-        if(iflag_debug.gt.0) write(*,*)                                 &
-     &        'lead ', trim(fhd_SGS_Lorentz)
-        call cal_terms_4_momentum                                       &
-     &     (iphys%i_SGS_Lorentz, iak_diff_mf, iak_diff_lor,             &
-     &      nod_comm, node1, ele1, surf1, fluid1, sf_grp1,              &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
-     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
-     &      nod_fld1)
-      end if
+      do i = 1, nod_fld1%num_phys
+        i_fld = nod_fld1%istack_component(i-1) + 1
+        if(     i_fld .eq. iphys%i_SGS_div_m_flux                       &
+     &     .or. i_fld .eq. iphys%i_SGS_Lorentz) then
+          if(iflag_debug .ge. iflag_routine_msg)                        &
+     &             write(*,*) 'lead  ', trim(nod_fld1%phys_name(i))
+          call cal_terms_4_momentum(i_fld, iak_diff_mf, iak_diff_lor,   &
+     &        nod_comm, node1, ele1, surf1, fluid1, sf_grp1,            &
+     &        iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,  &
+     &        rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,   &
+     &        nod_fld1)
+        end if
+      end do
 !
       if (      iphys%i_SGS_induction .gt. 0                            &
      &   .and. iflag_t_evo_4_magne .gt. id_no_evolution) then
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
-        call cal_terms_4_magnetic(iphys%i_SGS_induction)
+        call cal_terms_4_magnetic(iphys%i_SGS_induction, iak_diff_uxb,  &
+     &      nod_comm, node1, ele1, surf1, conduct1, sf_grp1,            &
+     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
+     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
+     &      nod_fld1)
       end if
 !
 !
 !      if (iphys%i_SGS_buoyancy .gt. 0) then
 !        if(iflag_debug.gt.0) write(*,*)                                &
 !     &        'lead ', trim(fhd_SGS_buoyancy)
-!         call cal_terms_4_magnetic(iphys%i_SGS_induction)
+!         call cal_terms_4_magnetic(iphys%i_SGS_buoyancy)
 !      end if
 !
 !      if (iphys%i_SGS_comp_buo .gt. 0) then
 !        if(iflag_debug.gt.0) write(*,*)                                &
 !     &        'lead ', trim(fhd_SGS_comp_buo)
-!         call cal_terms_4_magnetic(iphys%i_SGS_induction)
+!         call cal_terms_4_magnetic(iphys%i_SGS_comp_buo)
 !      end if
 !
       end subroutine cal_diff_of_sgs_terms

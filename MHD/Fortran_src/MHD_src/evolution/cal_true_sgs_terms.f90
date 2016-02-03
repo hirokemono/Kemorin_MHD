@@ -211,15 +211,31 @@
 !
       subroutine cal_div_sgs_induct_true_pre
 !
+      use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
       use m_node_phys_data
+      use m_element_phys_data
+      use m_geometry_data_MHD
+      use m_jacobians
+      use m_jacobian_sf_grp
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_int_vol_data
+      use m_filter_elength
+      use m_SGS_address
+!
       use cal_magnetic_terms
 !
 !
       call cal_induction_tensor(node1, nod_fld1%ntot_phys,              &
      &    iphys%i_filter_magne, iphys%i_filter_velo, iphys%i_induct_t,  &
      &    nod_fld1%d_fld)
-      call cal_terms_4_magnetic(iphys%i_induct_div)
+      call cal_terms_4_magnetic(iphys%i_induct_div, iak_diff_uxb,       &
+     &    nod_comm, node1, ele1, surf1, conduct1, sf_grp1,              &
+     &    iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,      &
+     &    rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,       &
+     &    nod_fld1)
       call copy_vector_component(node1, nod_fld1,                       &
      &    iphys%i_induct_div, iphys%i_SGS_idct_true)
 !

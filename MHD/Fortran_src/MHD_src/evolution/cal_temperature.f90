@@ -30,7 +30,6 @@
       implicit none
 !
       private :: cal_temp_pre_euler, cal_temp_pre_adams
-      private :: cal_temp_pre_crank, cal_temp_pre_consist_crank
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,6 +51,8 @@
       use int_vol_thermal_ele
       use cal_stratification_by_temp
       use copy_nodal_fields
+      use evolve_by_lumped_crank
+      use evolve_by_consist_crank
 !
 !      call check_surface_param_smp('cal_velocity_pre start',           &
 !     &    my_rank, sf_grp1, sf_grp_nod1)
@@ -128,7 +129,7 @@
       else if (iflag_t_evo_4_temp .eq. id_explicit_adams2) then
         call cal_temp_pre_adams
       else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson) then
-        call cal_temp_pre_crank
+        call cal_temp_pre_lumped_crank
       else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass) then 
         call cal_temp_pre_consist_crank
       end if
@@ -176,106 +177,6 @@
       call cal_sol_temp_adams(node1, iphys, nod_fld1)
 !
       end subroutine cal_temp_pre_adams
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_temp_pre_crank
-!
-      use m_t_step_parameter
-      use m_bc_data_ene
-      use m_geometry_data
-      use m_node_phys_data
-      use m_solver_djds_MHD
-      use m_array_for_send_recv
-      use m_type_AMG_data
-      use m_type_AMG_data_4_MHD
-      use m_finite_element_matrix
-      use m_SGS_address
-!
-!
-      use cal_sol_vector_pre_crank
-      use cal_multi_pass
-      use set_boundary_scalars
-      use int_sk_4_fixed_boundary
-      use cal_solver_MHD
-!
-!
-      if (coef_imp_t .gt. 0.0d0) then
-        call int_sk_4_fixed_temp(iphys%i_temp, iak_diff_t, node1, ele1, &
-     &      nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
-!        if (iflag_initial_step.eq.1) coef_imp_t = 1.0d0 / coef_imp_t
-      end if
-!
-      if (iflag_debug.eq.1) write(*,*) 'multi_pass temp'
-      call cal_t_evo_4_scalar(iflag_temp_supg,                          &
-     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
-     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
-     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-!
-      call set_boundary_rhs_scalar(node1, nod_bc1_t, f1_l, f1_nl)
-!
-      call cal_sol_temp_linear                                          &
-     &   (node1, iphys, mhd_fem1_wk, f1_nl, f1_l, nod_fld1)
-!
-      call cal_sol_energy_crank                                         &
-     &   (node1, DJDS_comm_fl, DJDS_fluid, Tmat_DJDS,                   &
-     &    num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,             &
-     &    MG_mat_temp, MG_vector, iphys%i_temp, f1_l, b_vec,            &
-     &    x_vec, nod_fld1)
-!
-      end subroutine cal_temp_pre_crank
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_temp_pre_consist_crank
-!
-      use m_t_step_parameter
-      use m_bc_data_ene
-      use m_physical_property
-      use m_geometry_data
-      use m_node_phys_data
-      use m_solver_djds_MHD
-      use m_array_for_send_recv
-      use m_type_AMG_data
-      use m_type_AMG_data_4_MHD
-      use m_finite_element_matrix
-      use m_SGS_address
-!
-      use cal_sol_vector_pre_crank
-      use set_boundary_scalars
-      use int_sk_4_fixed_boundary
-      use cal_ff_smp_to_ffs
-      use int_vol_initial_MHD
-      use cal_solver_MHD
-!
-!
-      if (coef_imp_t .gt. 0.0d0) then
-        call int_sk_4_fixed_temp(iphys%i_temp, iak_diff_t, node1, ele1, &
-     &      nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l)
-!        if (iflag_initial_step.eq.1) coef_imp_t = 1.0d0 / coef_imp_t
-      end if
-!
-      call reset_ff_t_smp(node1%max_nod_smp, mhd_fem1_wk)
-!
-      call int_vol_initial_scalar                                       &
-     &   (fluid1%istack_ele_fld_smp, iphys%i_temp, coef_temp,           &
-     &    node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, fem1_wk,          &
-     &    mhd_fem1_wk)
-      call set_ff_nl_smp_2_ff(n_scalar, node1, rhs_tbl1, f1_l, f1_nl)
-!
-      call set_boundary_rhs_scalar(node1, nod_bc1_t, f1_l, f1_nl)
-!
-      call cal_vector_pre_consist(node1, coef_temp,                     &
-     &    n_scalar, iphys%i_pre_heat, nod_fld1, rhs_tbl1,               &
-     &    mhd_fem1_wk, f1_nl, f1_l)
-!
-      call cal_sol_energy_crank                                         &
-     &   (node1, DJDS_comm_fl, DJDS_fluid, Tmat_DJDS,                   &
-     &    num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,             &
-     &    MG_mat_temp, MG_vector, iphys%i_temp, f1_l, b_vec,            &
-     &    x_vec, nod_fld1)
-!
-      end subroutine cal_temp_pre_consist_crank
 !
 ! ----------------------------------------------------------------------
 !

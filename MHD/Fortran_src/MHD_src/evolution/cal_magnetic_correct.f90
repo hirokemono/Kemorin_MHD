@@ -32,8 +32,6 @@
       implicit none
 !
       private :: cal_magnetic_co_exp, cal_magnetic_co_imp
-      private :: cal_magnetic_co_crank
-      private :: cal_magne_co_consist_crank
 !
 ! ----------------------------------------------------------------------
 !
@@ -127,6 +125,8 @@
       use int_vol_diffusion_ele
       use int_sk_4_fixed_boundary
       use cal_solver_MHD
+      use evolve_by_lumped_crank
+      use evolve_by_consist_crank
 !
 !
       if (iflag_debug.eq.1)  write(*,*) 'int_vol_magne_diffuse_co'
@@ -146,7 +146,7 @@
 !
 !
       if (     iflag_implicit_correct.eq.3) then
-        call cal_magnetic_co_crank
+        call cal_magne_co_lumped_crank
       else if (iflag_implicit_correct.eq.4) then
         call cal_magne_co_consist_crank
       end if
@@ -159,60 +159,6 @@
      &    x_vec, nod_fld1)
 !
       end subroutine cal_magnetic_co_imp
-!
-! -----------------------------------------------------------------------
-! -----------------------------------------------------------------------
-!
-      subroutine cal_magnetic_co_crank
-!
-      use m_phys_constants
-      use m_bc_data_magne
-      use set_boundary_scalars
-!
-!
-      if (iflag_debug.eq.1)  write(*,*) 'cal_t_evo_4_vector'
-      call cal_t_evo_4_vector                                           &
-     &   (iflag_mag_supg, ele1%istack_ele_smp, m1_lump, nod_comm,       &
-     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
-     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-!
-      if (iflag_debug.eq.1)   write(*,*) 'set_boundary_magne_4_rhs'
-      call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
-!
-      if (iflag_debug.eq.1)   write(*,*) 'cal_sol_magne_co_crank'
-      call cal_sol_magne_co_crank(node1%istack_internal_smp)
-!
-      end subroutine cal_magnetic_co_crank
-!
-! -----------------------------------------------------------------------
-!
-      subroutine cal_magne_co_consist_crank
-!
-      use m_phys_constants
-      use m_bc_data_magne
-      use m_physical_property
-      use int_vol_initial_MHD
-      use cal_ff_smp_to_ffs
-      use set_boundary_scalars
-!
-!
-      call reset_ff_t_smp(node1%max_nod_smp, mhd_fem1_wk)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'int_vol_initial_magne'
-      call int_vol_initial_vector                                       &
-     &   (conduct1%istack_ele_fld_smp, iphys%i_magne, coef_magne,       &
-     &    node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, fem1_wk,          &
-     &    mhd_fem1_wk)
-      call set_ff_nl_smp_2_ff(n_vector, node1, rhs_tbl1, f1_l, f1_nl)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'set_boundary_magne_4_rhs'
-      call delete_vector_ffs_on_bc(node1, nod_bc1_b, f1_l, f1_nl)
-!
-      if (iflag_debug.eq.1)  write(*,*) 'cal_sol_magne_co_crank_consist'
-      call cal_vector_co_crank_consist                                  &
-     &   (node1, node1%istack_internal_smp, coef_magne)
-!
-      end subroutine cal_magne_co_consist_crank
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
