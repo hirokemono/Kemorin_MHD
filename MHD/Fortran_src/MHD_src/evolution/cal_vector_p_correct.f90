@@ -130,6 +130,7 @@
       use cal_solver_MHD
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
+      use copy_nodal_fields
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'int_vol_vecp_diffuse_co'
@@ -159,6 +160,8 @@
      &   (node1, iphys, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,          &
      &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl,                   &
      &    MG_mat_magne, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
+!
+      call clear_nodal_data(node1, nod_fld1, n_scalar, iphys%i_m_phi)
 !
       end subroutine cal_vector_p_co_imp
 !

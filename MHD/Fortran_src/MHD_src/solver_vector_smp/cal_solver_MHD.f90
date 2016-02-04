@@ -65,6 +65,7 @@
      &          MG_mat_velo, MG_vector, i_velo, f_l, b_vec,             &
      &          x_vec, nod_fld)
 !
+      use m_iccg_parameter
       use solver_MGCG_MHD
       use copy_for_MHD_solvers
 !
@@ -92,7 +93,7 @@
 !
 !
       call copy_ff_to_rhs33                                             &
-     &    (node%numnod, node%istack_nod_smp, f_l%ff)
+     &    (node%numnod, node%istack_nod_smp, f_l%ff, b_vec, x_vec)
 !
       call solver_MGCG_vector                                           &
      &   (node, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS, num_MG_level,      &
@@ -114,6 +115,7 @@
      &          MG_mat_press, MG_vector, i_p_phi, f_l, b_vec,           &
      &          x_vec, nod_fld)
 !
+      use m_iccg_parameter
       use solver_MGCG_MHD
       use copy_for_MHD_solvers
 !
@@ -143,10 +145,11 @@
       call copy_ff_potential_to_rhs                                     &
      &   (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,          &
      &    i_p_phi, nod_fld%d_fld, f_l%ff)
-      call solver_MGCG_press                                            &
-     &   (node, DJDS_comm_fl, DJDS_fl_l, Pmat_DJDS,                     &
-     &    num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fll,            &
-     &    MG_mat_press, MG_vector, b_vec, x_vec)
+      call solver_MGCG_scalar                                           &
+     &   (node, DJDS_comm_fl, DJDS_fl_l, Pmat_DJDS, num_MG_level,       &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fll, MG_mat_press,            &
+     &    method_4_solver, precond_4_solver, eps, itr,                  &
+     &    MG_vector, b_vec, x_vec)
 !
       call copy_solver_vec_to_scalar                                    &
      &   (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,          &
@@ -189,7 +192,7 @@
 !
 !
       call copy_ff_to_rhs33                                             &
-     &   (node%numnod, node%istack_nod_smp, f_l%ff)
+     &    (node%numnod, node%istack_nod_smp, f_l%ff, b_vec, x_vec)
       call solver_MGCG_vector                                           &
      &   (node, DJDS_comm_etr, DJDS_entire, Bmat_DJDS, num_MG_level,    &
      &    MG_itp, MG_comm, MG_djds_tbl, MG_mat_magne,                   &
@@ -199,8 +202,6 @@
       call copy_solver_vec_to_vector                                    &
      &   (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,          &
      &    iphys%i_vecp, nod_fld%d_fld)
-!
-      call clear_nodal_data(node, nod_fld, n_scalar, iphys%i_m_phi)
 !
       end subroutine cal_sol_vect_p_pre_crank
 !
@@ -212,8 +213,10 @@
      &          MG_mat_magne, MG_vector, i_magne, f_l, b_vec,           &
      &          x_vec, nod_fld)
 !
+      use m_iccg_parameter
       use solver_MGCG_MHD
       use copy_for_MHD_solvers
+      use copy_nodal_fields
 !
       integer(kind = kint), intent(in) :: i_magne
 !
@@ -239,7 +242,7 @@
 !
 !
       call copy_ff_to_rhs33                                             &
-     &   (node%numnod, node%istack_nod_smp, f_l%ff)
+     &    (node%numnod, node%istack_nod_smp, f_l%ff, b_vec, x_vec)
       call solver_MGCG_vector                                           &
      &   (node, DJDS_comm_etr, DJDS_entire, Bmat_DJDS, num_MG_level,    &
      &    MG_itp, MG_comm, MG_djds_tbl, MG_mat_magne,                   &
@@ -260,6 +263,7 @@
      &          MG_mat_magp, MG_vector, i_m_phi, f_l, b_vec,            &
      &          x_vec, nod_fld)
 !
+      use m_iccg_parameter
       use solver_MGCG_MHD
       use copy_for_MHD_solvers
 !
@@ -289,10 +293,11 @@
       call copy_ff_potential_to_rhs                                     &
      &   (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,          &
      &    i_m_phi, nod_fld%d_fld, f_l%ff)
-      call solver_MGCG_magne_p                                          &
-     &         (node, DJDS_comm_etr, DJDS_linear, Fmat_DJDS,            &
-     &          num_MG_level, MG_itp, MG_comm, MG_djds_tbl_l,           &
-     &          MG_mat_magp, MG_vector, b_vec, x_vec)
+      call solver_MGCG_scalar                                           &
+     &   (node, DJDS_comm_etr, DJDS_linear, Fmat_DJDS, num_MG_level,    &
+     &    MG_itp, MG_comm, MG_djds_tbl_l, MG_mat_magp,                  &
+     &    method_4_solver, precond_4_solver, eps, itr,                  &
+     &    MG_vector, b_vec, x_vec)
 !
       call copy_solver_vec_to_scalar                                    &
      &   (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,          &
@@ -309,6 +314,7 @@
      &          MG_mat_temp, MG_vector, i_fld, f_l, b_vec,              &
      &          x_vec, nod_fld)
 !
+      use m_iccg_parameter
       use solver_MGCG_MHD
       use copy_for_MHD_solvers
 !
@@ -337,10 +343,11 @@
 !
       call copy_ff_to_rhs11                                             &
      &   (node%numnod, node%istack_nod_smp, f_l%ff)
-      call solver_MGCG_temp                                             &
-     &   (node, DJDS_comm_fl, DJDS_fluid, Tmat_DJDS,                    &
-     &    num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,             &
-     &    MG_mat_temp, MG_vector, b_vec, x_vec)
+      call solver_MGCG_scalar                                           &
+     &   (node, DJDS_comm_fl, DJDS_fluid, Tmat_DJDS, num_MG_level,      &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, MG_mat_temp,              &
+     &    method_4_solver, precond_4_solver, eps_4_temp_crank, itr,     &
+     &    MG_vector, b_vec, x_vec)
 !
       call copy_solver_vec_to_scalar                                    &
      &   (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,          &
@@ -356,6 +363,7 @@
      &          MG_mat_d_scalar, MG_vector, i_fld, f_l, b_vec,          &
      &          x_vec, nod_fld)
 !
+      use m_iccg_parameter
       use solver_MGCG_MHD
       use copy_for_MHD_solvers
 !
@@ -384,10 +392,11 @@
 !
       call copy_ff_to_rhs11                                             &
      &   (node%numnod, node%istack_nod_smp, f_l%ff)
-      call solver_MGCG_d_scalar                                         &
-     &   (node, DJDS_comm_fl, DJDS_fluid, Cmat_DJDS,                    &
-     &    num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,             &
-     &    MG_mat_d_scalar, MG_vector, b_vec, x_vec)
+      call solver_MGCG_scalar                                           &
+     &   (node, DJDS_comm_fl, DJDS_fluid, Cmat_DJDS, num_MG_level,      &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, MG_mat_d_scalar,          &
+     &    method_4_solver, precond_4_solver, eps_4_comp_crank, itr,     &
+     &    MG_vector, b_vec, x_vec)
 !
       call copy_solver_vec_to_scalar                                    &
      &   (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,          &

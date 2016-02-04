@@ -110,6 +110,7 @@
       use int_sk_4_fixed_boundary
       use cal_solver_MHD
       use set_boundary_scalars
+      use copy_nodal_fields
 !
 !
       if (coef_imp_b.gt.0.0d0) then
@@ -133,6 +134,8 @@
      &   (node1, iphys, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,          &
      &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl,                   &
      &    MG_mat_magne, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
+!
+      call clear_nodal_data(node1, nod_fld1, n_scalar, iphys%i_m_phi)
 !
       end subroutine cal_vect_p_pre_lumped_crank
 !

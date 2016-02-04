@@ -3,7 +3,8 @@
 !
 !        programmed by H.Matsui on June 2010
 !
-!!      subroutine copy_ff_to_rhs33(numnod, inod_smp_stack, ff)
+!!      subroutine copy_ff_to_rhs33                                     &
+!!     &         (numnod, inod_smp_stack, ff, b_vec, x_vec)
 !!      subroutine copy_ff_to_rhs11(numnod, inod_smp_stack, ff)
 !!      subroutine copy_ff_potential_to_rhs(numnod, inod_smp_stack,     &
 !!     &           ncomp_nod, i_field, d_nod, ff)
@@ -25,15 +26,18 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_ff_to_rhs33(numnod, inod_smp_stack, ff)
+      subroutine copy_ff_to_rhs33                                       &
+     &         (numnod, inod_smp_stack, ff, b_vec, x_vec)
 !
       use calypso_mpi
       use m_machine_parameter
-      use m_array_for_send_recv
 !
       integer (kind = kint), intent(in) :: numnod
       integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: ff(numnod,3)
+!
+      real(kind = kreal), intent(inout) :: b_vec(3*numnod)
+      real(kind = kreal), intent(inout) :: x_vec(3*numnod)
 !
       integer (kind = kint) :: ip, ist, ied, inod
 !
