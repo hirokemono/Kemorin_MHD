@@ -114,6 +114,7 @@
 !
       subroutine cal_vector_p_co_imp
 !
+      use m_iccg_parameter
       use m_t_step_parameter
       use m_geometry_data
       use m_phys_constants
@@ -156,10 +157,11 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_vect_p_pre_crank'
-      call cal_sol_vect_p_pre_crank                                     &
-     &   (node1, iphys, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,          &
-     &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl,                   &
-     &    MG_mat_magne, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
+      call solver_crank_vector                                          &
+     &   (node1, DJDS_comm_etr, DJDS_entire, Bmat_DJDS, num_MG_level,   &
+     &    MG_itp, MG_comm, MG_djds_tbl, MG_mat_magne,                   &
+     &    method_4_velo, precond_4_crank, eps_4_magne_crank, itr,       &
+     &    iphys%i_vecp, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
 !
       call clear_nodal_data(node1, nod_fld1, n_scalar, iphys%i_m_phi)
 !

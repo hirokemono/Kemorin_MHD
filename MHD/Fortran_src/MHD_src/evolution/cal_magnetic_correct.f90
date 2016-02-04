@@ -112,6 +112,7 @@
 !
       subroutine cal_magnetic_co_imp
 !
+      use m_iccg_parameter
       use m_t_step_parameter
       use m_geometry_data
       use m_node_phys_data
@@ -152,11 +153,11 @@
       end if
 !
       if (iflag_debug.eq.1)  write(*,*) 'cal_sol_magne_pre_crank'
-      call cal_sol_magne_pre_crank                                      &
-     &   (node1, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,                 &
-     &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl,                   &
-     &    MG_mat_magne, MG_vector, iphys%i_magne, f1_l, b_vec,          &
-     &    x_vec, nod_fld1)
+      call solver_crank_vector                                          &
+     &   (node1, DJDS_comm_etr, DJDS_entire, Bmat_DJDS, num_MG_level,   &
+     &    MG_itp, MG_comm, MG_djds_tbl, MG_mat_magne,                   &
+     &    method_4_velo, precond_4_crank, eps_4_magne_crank, itr,       &
+     &    iphys%i_magne, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
 !
       end subroutine cal_magnetic_co_imp
 !

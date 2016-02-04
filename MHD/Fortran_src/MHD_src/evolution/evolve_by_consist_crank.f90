@@ -53,6 +53,7 @@
 !
       subroutine cal_velo_pre_consist_crank
 !
+      use m_iccg_parameter
       use m_solver_djds_MHD
       use m_array_for_send_recv
       use m_type_AMG_data
@@ -86,11 +87,11 @@
      &    n_vector, iphys%i_pre_mom, nod_fld1, rhs_tbl1,                &
      &    mhd_fem1_wk, f1_nl, f1_l)
 !
-      call cal_sol_velo_pre_crank                                       &
-     &    (node1, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS,                  &
-     &     num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,            &
-     &     MG_mat_velo, MG_vector, iphys%i_velo, f1_l, b_vec,           &
-     &     x_vec, nod_fld1)
+      call solver_crank_vector                                          &
+     &   (node1, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS, num_MG_level,     &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, MG_mat_velo,              &
+     &    method_4_velo, precond_4_crank, eps_4_velo_crank, itr,        &
+     &    iphys%i_velo, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
 !
       end subroutine cal_velo_pre_consist_crank
 !
@@ -98,6 +99,7 @@
 !
       subroutine cal_vect_p_pre_consist_crank
 !
+      use m_iccg_parameter
       use m_bc_data_magne
       use m_solver_djds_MHD
       use m_array_for_send_recv
@@ -135,10 +137,11 @@
      &    mhd_fem1_wk, f1_nl, f1_l)
 !
       if (iflag_debug.eq.1) write(*,*) 'time_evolution'
-      call cal_sol_vect_p_pre_crank                                     &
-     &   (node1, iphys, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,          &
-     &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl,                   &
-     &    MG_mat_magne, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
+      call solver_crank_vector                                          &
+     &   (node1, DJDS_comm_etr, DJDS_entire, Bmat_DJDS, num_MG_level,   &
+     &    MG_itp, MG_comm, MG_djds_tbl, MG_mat_magne,                   &
+     &    method_4_velo, precond_4_crank, eps_4_magne_crank, itr,       &
+     &    iphys%i_vecp, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
 !
       call clear_nodal_data(node1, nod_fld1, n_scalar, iphys%i_m_phi)
 !
@@ -148,6 +151,7 @@
 !
        subroutine cal_magne_pre_consist_crank(iak_diff_b)
 !
+      use m_iccg_parameter
       use m_bc_data_magne
       use m_solver_djds_MHD
       use m_array_for_send_recv
@@ -187,11 +191,11 @@
 !
       if (iflag_debug.eq.1)                                             &
      &        write(*,*) 'time_evolution for magnetic field'
-      call cal_sol_magne_pre_crank                                      &
-     &   (node1, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,                 &
-     &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl,                   &
-     &    MG_mat_magne, MG_vector, iphys%i_magne, f1_l, b_vec,          &
-     &    x_vec, nod_fld1)
+      call solver_crank_vector                                          &
+     &   (node1, DJDS_comm_etr, DJDS_entire, Bmat_DJDS, num_MG_level,   &
+     &    MG_itp, MG_comm, MG_djds_tbl, MG_mat_magne,                   &
+     &    method_4_velo, precond_4_crank, eps_4_magne_crank, itr,       &
+     &    iphys%i_magne, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
 !
        end subroutine cal_magne_pre_consist_crank
 !

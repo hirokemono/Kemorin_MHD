@@ -5,17 +5,19 @@
 !
 !!      subroutine copy_ff_to_rhs33                                     &
 !!     &         (numnod, inod_smp_stack, ff, b_vec, x_vec)
-!!      subroutine copy_ff_to_rhs11(numnod, inod_smp_stack, ff)
+!!      subroutine copy_ff_to_rhs11                                     &
+!!     &         (numnod, inod_smp_stack, ff, b_vec, x_vec)
 !!      subroutine copy_ff_potential_to_rhs(numnod, inod_smp_stack,     &
-!!     &           ncomp_nod, i_field, d_nod, ff)
+!!     &          ncomp_nod, i_field, d_nod, ff, b_vec, x_vec)
 !!      subroutine copy_solver_vec_to_vector(numnod, inod_smp_stack,    &
-!!     &          ncomp_nod, i_field, d_nod)
+!!     &          ncomp_nod, i_field, x_vec, d_nod)
 !!      subroutine copy_solver_vec_to_scalar(numnod, inod_smp_stack,    &
-!!     &          ncomp_nod, i_field, d_nod)
+!!     &          ncomp_nod, i_field, x_vec, d_nod)
 !
       module copy_for_MHD_solvers
 !
       use m_precision
+      use m_machine_parameter
       use m_phys_constants
 !
       implicit none
@@ -28,9 +30,6 @@
 !
       subroutine copy_ff_to_rhs33                                       &
      &         (numnod, inod_smp_stack, ff, b_vec, x_vec)
-!
-      use calypso_mpi
-      use m_machine_parameter
 !
       integer (kind = kint), intent(in) :: numnod
       integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
@@ -62,15 +61,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine copy_ff_to_rhs11(numnod, inod_smp_stack, ff)
-!
-      use calypso_mpi
-      use m_machine_parameter
-      use m_array_for_send_recv
+      subroutine copy_ff_to_rhs11                                       &
+     &         (numnod, inod_smp_stack, ff, b_vec, x_vec)
 !
       integer (kind = kint), intent(in) :: numnod
       integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
-      real(kind = kreal), intent(in) :: ff(numnod,1)
+      real(kind = kreal), intent(in) :: ff(numnod,3)
+!
+      real(kind = kreal), intent(inout) :: b_vec(numnod)
+      real(kind = kreal), intent(inout) :: x_vec(numnod)
 !
       integer (kind = kint) :: ip, ist, ied, inod
 !
@@ -92,15 +91,15 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_ff_potential_to_rhs(numnod, inod_smp_stack,       &
-     &           ncomp_nod, i_field, d_nod, ff)
-!
-      use m_machine_parameter
-      use m_array_for_send_recv
+     &          ncomp_nod, i_field, d_nod, ff, b_vec, x_vec)
 !
       integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_field
       integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
       real(kind = kreal), intent(in) :: d_nod(numnod,ncomp_nod)
-      real(kind = kreal), intent(in) :: ff(numnod,1)
+      real(kind = kreal), intent(in) :: ff(numnod,3)
+!
+      real(kind = kreal), intent(inout) :: b_vec(numnod)
+      real(kind = kreal), intent(inout) :: x_vec(numnod)
 !
       integer (kind = kint) :: ip, ist, ied, inod
 !
@@ -123,13 +122,12 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_solver_vec_to_vector(numnod, inod_smp_stack,      &
-     &          ncomp_nod, i_field, d_nod)
-!
-      use m_machine_parameter
-      use m_array_for_send_recv
+     &          ncomp_nod, i_field, x_vec, d_nod)
 !
       integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_field
       integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
+      real(kind = kreal), intent(inout) :: x_vec(3*numnod)
+!
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: ip, ist, ied, inod
@@ -153,13 +151,11 @@
 !-----------------------------------------------------------------------
 !
       subroutine copy_solver_vec_to_scalar(numnod, inod_smp_stack,      &
-     &          ncomp_nod, i_field, d_nod)
-!
-      use m_machine_parameter
-      use m_array_for_send_recv
+     &          ncomp_nod, i_field, x_vec, d_nod)
 !
       integer (kind = kint), intent(in) :: numnod, ncomp_nod, i_field
       integer (kind = kint), intent(in) :: inod_smp_stack(0:np_smp)
+      real(kind = kreal), intent(inout) :: x_vec(numnod)
       real(kind = kreal), intent(inout) :: d_nod(numnod,ncomp_nod)
 !
       integer (kind = kint) :: ip, ist, ied, inod

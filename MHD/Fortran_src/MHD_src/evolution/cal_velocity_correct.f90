@@ -123,6 +123,7 @@
 !
       use m_geometry_data_MHD
       use m_t_step_parameter
+      use m_iccg_parameter
 !
       use m_geometry_data
       use m_node_phys_data
@@ -171,11 +172,11 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_pre_crank'
-      call cal_sol_velo_pre_crank                                       &
-     &    (node1, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS,                  &
-     &     num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,            &
-     &     MG_mat_velo, MG_vector, iphys%i_velo, f1_l, b_vec,           &
-     &     x_vec, nod_fld1)
+      call solver_crank_vector                                          &
+     &   (node1, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS, num_MG_level,     &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, MG_mat_velo,              &
+     &    method_4_velo, precond_4_crank, eps_4_velo_crank, itr,        &
+     &    iphys%i_velo, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
 !
       end subroutine cal_velocity_co_imp
 !
