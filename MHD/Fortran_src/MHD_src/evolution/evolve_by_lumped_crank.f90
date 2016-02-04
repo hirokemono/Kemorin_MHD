@@ -194,6 +194,7 @@
 !
       subroutine cal_temp_pre_lumped_crank
 !
+      use m_iccg_parameter
       use m_bc_data_ene
       use m_solver_djds_MHD
       use m_array_for_send_recv
@@ -224,11 +225,11 @@
       call cal_sol_temp_linear                                          &
      &   (node1, iphys, mhd_fem1_wk, f1_nl, f1_l, nod_fld1)
 !
-      call cal_sol_energy_crank                                         &
-     &   (node1, DJDS_comm_fl, DJDS_fluid, Tmat_DJDS,                   &
-     &    num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,             &
-     &    MG_mat_temp, MG_vector, iphys%i_temp, f1_l, b_vec,            &
-     &    x_vec, nod_fld1)
+      call solver_crank_scalar                                          &
+     &   (node1, DJDS_comm_fl, DJDS_fluid, Tmat_DJDS, num_MG_level,     &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, MG_mat_temp,              &
+     &    method_4_solver, precond_4_solver, eps_4_temp_crank, itr,     &
+     &    iphys%i_temp, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
 !
       end subroutine cal_temp_pre_lumped_crank
 !
@@ -236,6 +237,7 @@
 !
       subroutine cal_per_temp_lumped_crank
 !
+      use m_iccg_parameter
       use m_bc_data_ene
       use m_solver_djds_MHD
       use m_array_for_send_recv
@@ -267,11 +269,11 @@
       call cal_sol_par_temp_linear                                      &
      &   (node1, iphys, mhd_fem1_wk, f1_nl, f1_l, nod_fld1)
 !
-      call cal_sol_energy_crank                                         &
-     &   (node1, DJDS_comm_fl, DJDS_fluid, Tmat_DJDS,                   &
-     &    num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,             &
-     &    MG_mat_temp, MG_vector, iphys%i_par_temp, f1_l, b_vec,        &
-     &    x_vec, nod_fld1)
+      call solver_crank_scalar                                          &
+     &   (node1, DJDS_comm_fl, DJDS_fluid, Tmat_DJDS, num_MG_level,     &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, MG_mat_temp,              &
+     &    method_4_solver, precond_4_solver, eps_4_temp_crank, itr,     &
+     &    iphys%i_par_temp, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
 !
       end subroutine cal_per_temp_lumped_crank
 !
@@ -279,6 +281,7 @@
 !
       subroutine cal_composit_pre_lumped_crank
 !
+      use m_iccg_parameter
       use m_bc_data_ene
       use m_solver_djds_MHD
       use m_array_for_send_recv
@@ -308,11 +311,11 @@
       call cal_sol_d_scalar_linear                                      &
      &   (node1, iphys, mhd_fem1_wk, f1_nl, f1_l, nod_fld1)
 !
-      call cal_sol_d_scalar_crank                                       &
-     &   (node1, DJDS_comm_fl, DJDS_fluid, Cmat_DJDS,                   &
-     &    num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,             &
-     &    MG_mat_d_scalar, MG_vector, iphys%i_light, f1_l, b_vec,       &
-     &    x_vec, nod_fld1)
+      call solver_crank_scalar                                          &
+     &   (node1, DJDS_comm_fl, DJDS_fluid, Cmat_DJDS, num_MG_level,     &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, MG_mat_d_scalar,          &
+     &    method_4_solver, precond_4_solver, eps_4_comp_crank, itr,     &
+     &    iphys%i_light, MG_vector, f1_l, b_vec, x_vec, nod_fld1)
 !
       end subroutine cal_composit_pre_lumped_crank
 !
