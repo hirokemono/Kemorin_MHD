@@ -93,10 +93,12 @@
 !
       call copy_ff_to_rhs33                                             &
      &    (node%numnod, node%istack_nod_smp, f_l%ff)
-      call solver_MGCG_velo                                             &
-     &    (node, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS,                   &
-     &     num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,            &
-     &    MG_mat_velo, MG_vector, b_vec, x_vec)
+!
+      call solver_MGCG_vector                                           &
+     &   (node, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS, num_MG_level,      &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, MG_mat_velo,              &
+     &    method_4_velo, precond_4_crank, eps_4_velo_crank, itr,        &
+     &    MG_vector, b_vec, x_vec)
 !
       call copy_solver_vec_to_vector                                    &
      &   (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,          &
@@ -159,6 +161,7 @@
      &          num_MG_level, MG_itp, MG_comm, MG_djds_tbl,             &
      &          MG_mat_magne, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
+      use m_iccg_parameter
       use solver_MGCG_MHD
       use copy_nodal_fields
       use copy_for_MHD_solvers
@@ -187,10 +190,11 @@
 !
       call copy_ff_to_rhs33                                             &
      &   (node%numnod, node%istack_nod_smp, f_l%ff)
-      call solver_MGCG_magne                                            &
-     &   (node, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,                  &
-     &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl,                   &
-     &    MG_mat_magne, MG_vector, b_vec, x_vec)
+      call solver_MGCG_vector                                           &
+     &   (node, DJDS_comm_etr, DJDS_entire, Bmat_DJDS, num_MG_level,    &
+     &    MG_itp, MG_comm, MG_djds_tbl, MG_mat_magne,                   &
+     &    method_4_velo, precond_4_crank, eps_4_magne_crank, itr,       &
+     &    MG_vector, b_vec, x_vec)
 !
       call copy_solver_vec_to_vector                                    &
      &   (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,          &
@@ -236,10 +240,11 @@
 !
       call copy_ff_to_rhs33                                             &
      &   (node%numnod, node%istack_nod_smp, f_l%ff)
-      call solver_MGCG_magne                                            &
-     &   (node, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,                  &
-     &    num_MG_level, MG_itp, MG_comm, MG_djds_tbl,                   &
-     &    MG_mat_magne, MG_vector, b_vec, x_vec)
+      call solver_MGCG_vector                                           &
+     &   (node, DJDS_comm_etr, DJDS_entire, Bmat_DJDS, num_MG_level,    &
+     &    MG_itp, MG_comm, MG_djds_tbl, MG_mat_magne,                   &
+     &    method_4_velo, precond_4_crank, eps_4_magne_crank, itr,       &
+     &    MG_vector, b_vec, x_vec)
 !
       call copy_solver_vec_to_vector                                    &
      &   (node%numnod, node%istack_nod_smp, nod_fld%ntot_phys,          &

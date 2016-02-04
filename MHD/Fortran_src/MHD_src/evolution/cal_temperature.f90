@@ -29,8 +29,6 @@
 !
       implicit none
 !
-      private :: cal_temp_pre_euler, cal_temp_pre_adams
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -51,6 +49,8 @@
       use int_vol_thermal_ele
       use cal_stratification_by_temp
       use copy_nodal_fields
+      use evolve_by_1st_euler
+      use evolve_by_adams_bashforth
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
 !
@@ -144,39 +144,6 @@
       end if
 !
       end subroutine cal_temperature_field
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_temp_pre_euler
-!
-      use cal_multi_pass
-      use cal_sol_vector_explicit
-!
-      call cal_t_evo_4_scalar(iflag_temp_supg,                          &
-     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
-     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
-     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-      call cal_sol_temp_euler(node1, iphys, nod_fld1)
-!
-      end subroutine cal_temp_pre_euler
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_temp_pre_adams
-!
-      use cal_multi_pass
-      use cal_sol_vector_explicit
-!
-!
-      call cal_t_evo_4_scalar(iflag_temp_supg,                          &
-     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
-     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
-     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-!      call check_ff(my_rank, n_scalar, node1%numnod, f1_l)
-!      call check_ff(my_rank, n_scalar, node1%numnod, f1_nl)
-      call cal_sol_temp_adams(node1, iphys, nod_fld1)
-!
-      end subroutine cal_temp_pre_adams
 !
 ! ----------------------------------------------------------------------
 !

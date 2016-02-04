@@ -29,8 +29,6 @@
 !
       implicit none
 !
-      private :: cal_per_temp_euler, cal_per_temp_adams
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -51,6 +49,8 @@
       use int_vol_thermal_ele
       use cal_stratification_by_temp
       use copy_nodal_fields
+      use evolve_by_1st_euler
+      use evolve_by_adams_bashforth
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
 !
@@ -143,39 +143,6 @@
      &    iphys%i_ref_t, iphys%i_par_temp, iphys%i_temp)
 !
       end subroutine cal_parturbation_temp
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine cal_per_temp_euler
-!
-      use cal_multi_pass
-      use cal_sol_vector_explicit
-!
-!
-      call cal_t_evo_4_scalar(iflag_temp_supg,                          &
-     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
-     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
-     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-      call cal_sol_part_temp_euler(node1, iphys, nod_fld1)
-!
-      end subroutine cal_per_temp_euler
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_per_temp_adams
-!
-      use cal_multi_pass
-      use cal_sol_vector_explicit
-!
-!
-      call cal_t_evo_4_scalar(iflag_temp_supg,                          &
-     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
-     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
-     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-      call cal_sol_part_temp_adams(node1, iphys, nod_fld1)
-!
-      end subroutine cal_per_temp_adams
 !
 ! ----------------------------------------------------------------------
 !

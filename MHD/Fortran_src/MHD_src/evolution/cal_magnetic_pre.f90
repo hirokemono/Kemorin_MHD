@@ -29,8 +29,6 @@
 !
       implicit none
 !
-      private :: cal_magne_pre_euler, cal_magne_pre_adams
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -49,6 +47,8 @@
       use int_vol_diffusion_ele
       use int_vol_magne_pre
       use int_surf_magne_pre
+      use evolve_by_1st_euler
+      use evolve_by_adams_bashforth
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
 !
@@ -96,16 +96,13 @@
      &    jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l, f1_nl)
 !
       if (iflag_t_evo_4_magne .eq. id_explicit_euler) then
-       call cal_magne_pre_euler
-!
+        call cal_magne_pre_euler
       else if (iflag_t_evo_4_magne .eq. id_explicit_adams2) then
-       call cal_magne_pre_adams
-!
+        call cal_magne_pre_adams
       else if (iflag_t_evo_4_magne .eq. id_Crank_nicolson) then
-       call cal_magne_pre_lumped_crank(iak_diff_b)
-!
+        call cal_magne_pre_lumped_crank(iak_diff_b)
       else if (iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass) then 
-       call cal_magne_pre_consist_crank(iak_diff_b)
+        call cal_magne_pre_consist_crank(iak_diff_b)
       end if
 !
       call set_boundary_vect(nod_bc1_b, iphys%i_magne, nod_fld1)
@@ -113,39 +110,6 @@
       call vector_send_recv(iphys%i_magne, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_magnetic_field_pre
-!
-! ----------------------------------------------------------------------
-! ----------------------------------------------------------------------
-!
-      subroutine cal_magne_pre_euler
-!
-      use cal_sol_vector_explicit
-      use cal_multi_pass
-!
-!
-      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
-     &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
-     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
-     &    rhs_tbl1, mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-      call cal_sol_magne_pre_euler(node1, iphys, nod_fld1)
-!
-      end subroutine cal_magne_pre_euler
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_magne_pre_adams
-!
-      use cal_sol_vector_explicit
-      use cal_multi_pass
-!
-!
-      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
-     &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
-     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
-     &    rhs_tbl1, mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-      call cal_sol_magne_pre_adams(node1, iphys, nod_fld1)
-!
-      end subroutine cal_magne_pre_adams
 !
 ! ----------------------------------------------------------------------
 !

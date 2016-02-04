@@ -25,8 +25,6 @@
 !
       implicit none
 !
-      private :: cal_vect_p_pre_euler, cal_vect_p_pre_adams
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -49,6 +47,8 @@
       use int_vol_diffusion_ele
       use int_vol_vect_p_pre
       use int_surf_fixed_gradients
+      use evolve_by_1st_euler
+      use evolve_by_adams_bashforth
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
 !
@@ -122,36 +122,6 @@
 !      call check_nodal_data(my_rank, nod_fld1, n_vector, iphys%i_vecp)
 !
       end subroutine cal_vector_p_pre
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_vect_p_pre_euler
-!
-      use cal_multi_pass
-      use cal_sol_vector_explicit
-!
-      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
-     &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
-     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
-     &    rhs_tbl1, mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-      call cal_sol_vect_p_pre_euler(node1, iphys, nod_fld1)
-!
-      end subroutine cal_vect_p_pre_euler
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_vect_p_pre_adams
-!
-      use cal_multi_pass
-      use cal_sol_vector_explicit
-!
-      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
-     &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
-     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
-     &    rhs_tbl1, mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-      call cal_sol_vect_p_pre_adams(node1, iphys, nod_fld1)
-!
-      end subroutine cal_vect_p_pre_adams
 !
 ! ----------------------------------------------------------------------
 !

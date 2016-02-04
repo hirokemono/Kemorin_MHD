@@ -28,8 +28,6 @@
 !
       implicit none
 !
-      private :: cal_composit_pre_euler, cal_composit_pre_adams
-!
 ! ----------------------------------------------------------------------
 !
       contains
@@ -49,6 +47,8 @@
       use int_surf_fixed_gradients
       use int_vol_diffusion_ele
       use int_vol_light_comp_ele
+      use evolve_by_1st_euler
+      use evolve_by_adams_bashforth
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
 !
@@ -99,37 +99,6 @@
       call scalar_send_recv(iphys%i_light, node1, nod_comm, nod_fld1)
 !
       end subroutine cal_light_element_variation
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_composit_pre_euler
-!
-      use cal_multi_pass
-      use cal_sol_vector_explicit
-!
-      call cal_t_evo_4_scalar(iflag_comp_supg,                          &
-     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
-     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
-     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-      call cal_sol_d_scalar_euler(node1, iphys, nod_fld1)
-!
-      end subroutine cal_composit_pre_euler
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_composit_pre_adams
-!
-      use cal_multi_pass
-      use cal_sol_vector_explicit
-!
-!
-      call cal_t_evo_4_scalar(iflag_comp_supg,                          &
-     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
-     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
-     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-      call cal_sol_d_scalar_adams(node1, iphys, nod_fld1)
-!
-      end subroutine cal_composit_pre_adams
 !
 ! ----------------------------------------------------------------------
 !

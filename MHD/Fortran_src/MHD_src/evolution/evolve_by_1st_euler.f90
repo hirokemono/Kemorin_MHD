@@ -1,0 +1,141 @@
+!evolve_by_1st_euler.f90
+!      module evolve_by_1st_euler
+!
+!        programmed by H.Matsui and H.Okuda
+!                                    on July 2000 (ver 1.1)
+!        modieied by H. Matsui on Sep., 2005
+!
+!      subroutine s_cal_velocity_pre(layer_tbl)
+!
+      module evolve_by_1st_euler
+!
+      use m_precision
+!
+      use m_machine_parameter
+      use m_control_parameter
+      use m_t_int_parameter
+      use m_phys_constants
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_geometry_data_MHD
+      use m_node_phys_data
+      use m_element_phys_data
+      use m_jacobians
+      use m_jacobian_sf_grp
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_int_vol_data
+      use m_filter_elength
+      use m_SGS_address
+!
+      implicit none
+!
+! ----------------------------------------------------------------------
+!
+      contains
+!
+! ----------------------------------------------------------------------
+!
+      subroutine cal_velo_pre_euler
+!
+      use cal_multi_pass
+      use cal_sol_vector_explicit
+      use int_vol_coriolis_term
+!
+      call cal_t_evo_4_vector(iflag_velo_supg,                          &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
+     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
+!
+      if (iflag_debug.eq.1)  write(*,*) 'int_coriolis_nod_exp'
+      call int_coriolis_nod_exp(node1, mhd_fem1_wk,                     &
+     &    iphys%i_velo, nod_fld1, f1_l, f1_nl)
+      if (iflag_debug.eq.1)  write(*,*) 'int_buoyancy_nod_exp'
+      call int_buoyancy_nod_exp                                         &
+     &    (node1, mhd_fem1_wk, iphys, nod_fld1, f1_nl)
+!
+      call cal_sol_velo_pre_euler(node1, iphys, nod_fld1)
+!
+      end subroutine cal_velo_pre_euler
+!
+! ----------------------------------------------------------------------
+!
+      subroutine cal_vect_p_pre_euler
+!
+      use cal_multi_pass
+      use cal_sol_vector_explicit
+!
+      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
+     &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
+      call cal_sol_vect_p_pre_euler(node1, iphys, nod_fld1)
+!
+      end subroutine cal_vect_p_pre_euler
+!
+! ----------------------------------------------------------------------
+!
+      subroutine cal_magne_pre_euler
+!
+      use cal_sol_vector_explicit
+      use cal_multi_pass
+!
+!
+      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
+     &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
+     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
+     &    rhs_tbl1, mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
+      call cal_sol_magne_pre_euler(node1, iphys, nod_fld1)
+!
+      end subroutine cal_magne_pre_euler
+!
+! ----------------------------------------------------------------------
+! ----------------------------------------------------------------------
+!
+      subroutine cal_temp_pre_euler
+!
+      use cal_multi_pass
+      use cal_sol_vector_explicit
+!
+      call cal_t_evo_4_scalar(iflag_temp_supg,                          &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
+     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
+      call cal_sol_temp_euler(node1, iphys, nod_fld1)
+!
+      end subroutine cal_temp_pre_euler
+!
+! ----------------------------------------------------------------------
+!
+      subroutine cal_per_temp_euler
+!
+      use cal_multi_pass
+      use cal_sol_vector_explicit
+!
+!
+      call cal_t_evo_4_scalar(iflag_temp_supg,                          &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
+     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
+      call cal_sol_part_temp_euler(node1, iphys, nod_fld1)
+!
+      end subroutine cal_per_temp_euler
+!
+! ----------------------------------------------------------------------
+!
+      subroutine cal_composit_pre_euler
+!
+      use cal_multi_pass
+      use cal_sol_vector_explicit
+!
+      call cal_t_evo_4_scalar(iflag_comp_supg,                          &
+     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
+     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
+     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
+      call cal_sol_d_scalar_euler(node1, iphys, nod_fld1)
+!
+      end subroutine cal_composit_pre_euler
+!
+! ----------------------------------------------------------------------
+!
+      end module evolve_by_1st_euler

@@ -41,7 +41,6 @@
       use m_control_parameter
       use m_machine_parameter
       use m_work_time
-      use m_iccg_parameter
       use m_ctl_parameter_Multigrid
       use calypso_mpi
 !
@@ -62,6 +61,7 @@
 !
       subroutine init_MGCG_MHD(node)
 !
+      use m_iccg_parameter
       use solver_DJDS11_struct
       use solver_DJDS33_struct
       use solver_VMGCG11_DJDS_SMP
@@ -100,63 +100,62 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine solver_MGCG_velo                                       &
-     &         (node, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS,              &
-     &          num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,       &
-     &          MG_mat_velo, MG_vector, b_vec, x_vec)
+      subroutine solver_MGCG_vector                                     &
+     &         (node, DJDS_comm, DJDS_tbl, mat_DJDS, num_MG_level,      &
+     &          MG_itp, MG_comm, MG_DJDS_tbl, MG_DJDS_mat,              &
+     &          METHOD, PRECOND, eps, itr, MG_vector, b_vec, x_vec)
 !
       use solver_DJDS33_struct
       use solver_VMGCG33_DJDS_SMP
       use skip_comment_f
 !
+      character(len=kchara), intent(in) :: METHOD, PRECOND
+      real(kind = kreal), intent(in) :: eps
+      integer(kind = kint), intent(inout) :: itr
+!
       type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: DJDS_comm_fl
-      type(DJDS_ordering_table), intent(in) :: DJDS_fluid
-      type(DJDS_MATRIX), intent(in) :: Vmat_DJDS
+      type(communication_table), intent(in) :: DJDS_comm
+      type(DJDS_ordering_table), intent(in) :: DJDS_tbl
+      type(DJDS_MATRIX), intent(in) :: mat_DJDS
 !
       integer(kind = kint), intent(in) :: num_MG_level
       type(MG_itp_table), intent(in) :: MG_itp(num_MG_level)
       type(communication_table), intent(in)                             &
-     &                      :: MG_comm_fl(0:num_MG_level)
+     &                      :: MG_comm(0:num_MG_level)
       type(DJDS_ordering_table), intent(in)                             &
-     &                      :: MG_djds_tbl_fl(0:num_MG_level)
-      type(DJDS_MATRIX), intent(in) :: MG_mat_velo(0:num_MG_level)
+     &                      :: MG_DJDS_tbl(0:num_MG_level)
+      type(DJDS_MATRIX), intent(in) :: MG_DJDS_mat(0:num_MG_level)
 !
       type(vectors_4_solver), intent(inout)                             &
      &                       :: MG_vector(0:num_MG_level)
       real(kind = kreal), intent(inout) :: b_vec(3*node%numnod)
       real(kind = kreal), intent(inout) :: x_vec(3*node%numnod)
 !
-      integer(kind = kint) :: ierr
+      integer(kind = kint) :: ierr, itr_res
 !
 !
-      METHOD = method_4_velo
-      if (iflag_debug.eq.1) then
-        write(*,*) 'METHOD for velocity: ', trim(method_4_velo)
-      end if
+      if(iflag_debug.gt.0)  write(*,*) 'METHOD for vector: ',          &
+     &                                  trim(METHOD)
 ! 
       call start_eleps_time(5)
       ierr = i_debug
 !
       if (cmp_no_case(METHOD, 'MGCG')) then
-        call VMGCG33_DJDS_SMP(num_MG_level, MG_comm_fl,                 &
-     &      MG_itp, MG_djds_tbl_fl, MG_mat_velo, MG_vector, np_smp,     &
-     &      node%numnod, b_vec(1), x_vec(1), itr,                       &
-     &      itr_MG_mid, itr_MG_lowest, eps_4_velo_crank, EPS_MG,        &
-     &      precond_4_crank, METHOD_MG, PRECOND_MG, ierr, iterPREmax)
+        call VMGCG33_DJDS_SMP(num_MG_level, MG_comm,                    &
+     &      MG_itp, MG_DJDS_tbl, MG_DJDS_mat, MG_vector,                &
+     &      np_smp, node%numnod, b_vec(1), x_vec(1), itr,               &
+     &      itr_MG_mid, itr_MG_lowest, eps, EPS_MG,                     &
+     &      PRECOND, METHOD_MG, PRECOND_MG, ierr, iterPREmax)
       else
-        call solve33_DJDS_struct(np_smp, DJDS_comm_fl, DJDS_fluid,      &
-     &      Vmat_DJDS, node%numnod, b_vec(1), x_vec(1),                 &
-     &      method_4_velo, precond_4_crank, ierr,                       &
-     &      eps_4_velo_crank, itr, itr_res)
+        call solve33_DJDS_struct(np_smp, DJDS_comm, DJDS_tbl,           &
+     &      mat_DJDS, node%numnod, b_vec(1), x_vec(1),                  &
+     &      METHOD, PRECOND, ierr, eps, itr, itr_res)
       end if
 !
       call end_eleps_time(5)
-      if (my_rank .eq. 0 ) then
-        write(12,*) ' iteration_4_velocity:', itr_res
-      end if
+      if(iflag_debug .gt. 0) write(12,*) ' Iteration counts:', itr_res
 !
-      end subroutine solver_MGCG_velo
+      end subroutine solver_MGCG_vector
 !
 ! ----------------------------------------------------------------------
 !
@@ -165,6 +164,7 @@
      &          num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fll,      &
      &          MG_mat_press, MG_vector, b_vec, x_vec)
 !
+      use m_iccg_parameter
       use solver_DJDS11_struct
       use solver_VMGCG11_DJDS_SMP
       use skip_comment_f
@@ -219,71 +219,12 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine solver_MGCG_magne                                      &
-     &         (node, DJDS_comm_etr, DJDS_entire, Bmat_DJDS,            &
-     &          num_MG_level, MG_itp, MG_comm, MG_djds_tbl,             &
-     &          MG_mat_magne, MG_vector, b_vec, x_vec)
-!
-      use solver_DJDS33_struct
-      use solver_VMGCG33_DJDS_SMP
-      use skip_comment_f
-!
-      type(node_data), intent(in) :: node
-      type(communication_table), intent(in) :: DJDS_comm_etr
-      type(DJDS_ordering_table), intent(in) :: DJDS_entire
-      type(DJDS_MATRIX), intent(in) :: Bmat_DJDS
-!
-      integer(kind = kint), intent(in) :: num_MG_level
-      type(MG_itp_table), intent(in) :: MG_itp(num_MG_level)
-      type(communication_table), intent(in)                             &
-     &                      :: MG_comm(0:num_MG_level)
-      type(DJDS_ordering_table), intent(in)                             &
-     &                      :: MG_djds_tbl(0:num_MG_level)
-      type(DJDS_MATRIX), intent(in) :: MG_mat_magne(0:num_MG_level)
-!
-      type(vectors_4_solver), intent(inout)                             &
-     &                      :: MG_vector(0:num_MG_level)
-      real(kind = kreal), intent(inout) :: b_vec(3*node%numnod)
-      real(kind = kreal), intent(inout) :: x_vec(3*node%numnod)
-!
-      integer(kind = kint) :: ierr
-!
-!
-       METHOD = method_4_velo
-       if (iflag_debug.eq.1) then
-         write(*,*) 'METHOD for magne: ', trim(method_4_velo)
-       end if
-! 
-      call start_eleps_time(5)
-      ierr = i_debug
-!
-      if (cmp_no_case(METHOD, 'MGCG')) then
-        call VMGCG33_DJDS_SMP(num_MG_level, MG_comm,                    &
-     &      MG_itp, MG_djds_tbl, MG_mat_magne, MG_vector, np_smp,       &
-     &      node%numnod, b_vec(1), x_vec(1), itr,                       &
-     &      itr_MG_mid, itr_MG_lowest, eps_4_magne_crank, EPS_MG,       &
-     &      precond_4_crank, METHOD_MG, PRECOND_MG, ierr, iterPREmax)
-      else
-        call solve33_DJDS_struct(np_smp, DJDS_comm_etr, DJDS_entire,    &
-     &      Bmat_DJDS, node%numnod, b_vec(1), x_vec(1),                 &
-     &      method_4_velo, precond_4_crank, ierr,                       &
-     &      eps_4_magne_crank, itr, itr_res)
-      end if
-!
-      call end_eleps_time(5)
-      if (my_rank .eq. 0 ) then
-        write(12,*) ' iteration_4_magnetic:', itr_res
-      end if
-!
-      end subroutine solver_MGCG_magne
-!
-! ----------------------------------------------------------------------
-!
       subroutine solver_MGCG_magne_p                                    &
      &         (node, DJDS_comm_etr, DJDS_linear, Fmat_DJDS,            &
      &          num_MG_level, MG_itp, MG_comm, MG_djds_tbl_l,           &
      &          MG_mat_magp, MG_vector, b_vec, x_vec)
 !
+      use m_iccg_parameter
       use solver_DJDS11_struct
       use solver_VMGCG11_DJDS_SMP
       use skip_comment_f
@@ -344,6 +285,7 @@
      &          num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,       &
      &          MG_mat_temp, MG_vector, b_vec, x_vec)
 !
+      use m_iccg_parameter
       use solver_DJDS11_struct
       use solver_VMGCG11_DJDS_SMP
 !      use solver_CG
@@ -416,6 +358,7 @@
      &          num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fl,       &
      &          MG_mat_d_scalar, MG_vector, b_vec, x_vec)
 !
+      use m_iccg_parameter
       use solver_DJDS11_struct
       use solver_VMGCG11_DJDS_SMP
       use skip_comment_f
