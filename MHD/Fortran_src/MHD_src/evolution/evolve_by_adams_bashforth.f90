@@ -39,7 +39,7 @@
       subroutine cal_velo_pre_adams
 !
       use cal_multi_pass
-      use cal_sol_vector_explicit
+      use cal_sol_field_explicit
       use int_vol_coriolis_term
 !
 !
@@ -55,7 +55,11 @@
       call int_buoyancy_nod_exp                                         &
      &   (node1, mhd_fem1_wk, iphys, nod_fld1, f1_nl)
 !
-      call cal_sol_velo_pre_adams(node1, iphys, nod_fld1)
+      call cal_sol_vect_pre_fluid_adams                                 &
+     &   (node1%numnod, node1%istack_internal_smp,                      &
+     &    mhd_fem1_wk%mlump_fl%ml, f1_l%ff, f1_nl%ff,                   &
+     &    nod_fld1%ntot_phys, n_vector, iphys%i_velo,                   &
+     &    iphys%i_pre_mom, nod_fld1%d_fld)
 !
       end subroutine cal_velo_pre_adams
 !
@@ -64,13 +68,18 @@
       subroutine cal_vect_p_pre_adams
 !
       use cal_multi_pass
-      use cal_sol_vector_explicit
+      use cal_sol_field_explicit
 !
       call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
      &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
      &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
      &    rhs_tbl1, mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-      call cal_sol_vect_p_pre_adams(node1, iphys, nod_fld1)
+      call cal_sol_vect_pre_conduct_adams                               &
+     &  (node1%numnod, conduct1%istack_inter_fld_smp,                   &
+     &   conduct1%numnod_fld, conduct1%inod_fld,                        &
+     &   mhd_fem1_wk%mlump_cd%ml, f1_l%ff, f1_nl%ff,                    &
+     &   nod_fld1%ntot_phys, n_vector, iphys%i_vecp, iphys%i_pre_uxb,   &
+     &   nod_fld1%d_fld)
 !
       end subroutine cal_vect_p_pre_adams
 !
@@ -78,7 +87,7 @@
 !
       subroutine cal_magne_pre_adams
 !
-      use cal_sol_vector_explicit
+      use cal_sol_field_explicit
       use cal_multi_pass
 !
 !
@@ -86,7 +95,12 @@
      &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
      &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
      &    rhs_tbl1, mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-      call cal_sol_magne_pre_adams(node1, iphys, nod_fld1)
+      call cal_sol_vect_pre_conduct_adams                               &
+     &   (node1%numnod, conduct1%istack_inter_fld_smp,                  &
+     &    conduct1%numnod_fld, conduct1%inod_fld,                       &
+     &    mhd_fem1_wk%mlump_cd%ml, f1_l%ff, f1_nl%ff,                   &
+     &    nod_fld1%ntot_phys, n_vector, iphys%i_magne, iphys%i_pre_uxb, &
+     &    nod_fld1%d_fld)
 !
       end subroutine cal_magne_pre_adams
 !
@@ -96,7 +110,7 @@
       subroutine cal_temp_pre_adams
 !
       use cal_multi_pass
-      use cal_sol_vector_explicit
+      use cal_sol_field_explicit
 !
 !
       call cal_t_evo_4_scalar(iflag_temp_supg,                          &
@@ -105,7 +119,11 @@
      &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
 !      call check_ff(my_rank, n_scalar, node1%numnod, f1_l)
 !      call check_ff(my_rank, n_scalar, node1%numnod, f1_nl)
-      call cal_sol_temp_adams(node1, iphys, nod_fld1)
+      call cal_sol_vect_pre_fluid_adams                                 &
+     &   (node1%numnod, node1%istack_internal_smp,                      &
+     &    mhd_fem1_wk%mlump_fl%ml, f1_l%ff, f1_nl%ff,                   &
+     &    nod_fld1%ntot_phys, n_scalar, iphys%i_temp, iphys%i_pre_heat, &
+     &    nod_fld1%d_fld)
 !
       end subroutine cal_temp_pre_adams
 !
@@ -114,14 +132,18 @@
       subroutine cal_per_temp_adams
 !
       use cal_multi_pass
-      use cal_sol_vector_explicit
+      use cal_sol_field_explicit
 !
 !
       call cal_t_evo_4_scalar(iflag_temp_supg,                          &
      &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
      &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
      &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-      call cal_sol_part_temp_adams(node1, iphys, nod_fld1)
+      call cal_sol_vect_pre_fluid_adams                                 &
+     &   (node1%numnod, node1%istack_internal_smp,                      &
+     &    mhd_fem1_wk%mlump_fl%ml, f1_l%ff, f1_nl%ff,                   &
+     &    nod_fld1%ntot_phys, n_scalar, iphys%i_par_temp,               &
+     &    iphys%i_pre_heat, nod_fld1%d_fld)
 !
       end subroutine cal_per_temp_adams
 !
@@ -130,14 +152,18 @@
       subroutine cal_composit_pre_adams
 !
       use cal_multi_pass
-      use cal_sol_vector_explicit
+      use cal_sol_field_explicit
 !
 !
       call cal_t_evo_4_scalar(iflag_comp_supg,                          &
      &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
      &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
      &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-      call cal_sol_d_scalar_adams(node1, iphys, nod_fld1)
+      call cal_sol_vect_pre_fluid_adams                                 &
+     &   (node1%numnod, node1%istack_internal_smp,                      &
+     &    mhd_fem1_wk%mlump_fl%ml, f1_l%ff, f1_nl%ff,                   &
+     &    nod_fld1%ntot_phys, n_scalar, iphys%i_light,                  &
+     &    iphys%i_pre_composit, nod_fld1%d_fld)
 !
       end subroutine cal_composit_pre_adams
 !

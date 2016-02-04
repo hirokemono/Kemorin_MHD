@@ -101,7 +101,6 @@
         ied = inter_smp_stack(iproc)
         do nd=1, numdir
           icomp = i_field + nd - 1
-!cdir nodep
           do inum = ist, ied
             inod = inod_conduct(inum)
             d_nod(inod,icomp) = d_nod(inod,icomp)                       &

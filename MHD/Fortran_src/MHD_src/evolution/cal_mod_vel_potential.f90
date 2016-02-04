@@ -37,16 +37,6 @@
       use m_machine_parameter
       use m_phys_constants
 !
-!      use m_geometry_data
-!      use m_group_data
-!      use m_node_phys_data
-!      use m_jacobians
-!      use m_jacobian_sf_grp
-!      use m_element_id_4_node
-!      use m_finite_element_matrix
-!      use m_filter_elength
-!      use m_SGS_model_coefs
-!
       use m_array_for_send_recv
       use m_solver_djds_MHD
       use m_type_AMG_data
@@ -77,9 +67,11 @@
      &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,              &
      &          FEM_elens, fem_wk, f_l, f_nl, nod_fld)
 !
+      use m_iccg_parameter
       use m_surf_data_torque
       use m_surf_data_press
       use m_bc_data_velo
+      use m_surf_data_press
 !
       use int_vol_fractional_div
       use int_sk_4_fixed_boundary
@@ -118,8 +110,10 @@
      &    node, ele, nod_fld, jac_3d_q, jac_3d_l,                       &
      &    rhs_tbl, FEM_elens, fem_wk, f_l)
 !
-      call int_surf_normal_velocity(iphys%i_velo, node, ele, surf,      &
-     &    sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl, fem_wk, f_l)
+      call int_surf_normal_vector                                       &
+     &   (iphys%i_velo, sf_bc1_wall_p, sf_bc1_spin_p, sf_bc1_spout_p,   &
+     &    node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,      &
+     &    fem_wk, f_l)
 !
 !      if (iflag_commute_velo .eq. id_SGS_commute_ON) then
 !        call int_surf_sgs_div_velo_ele                                 &
@@ -148,11 +142,11 @@
 !
 !   solve Poission equation
 !
-      call cal_sol_mod_po                                               &
-     &   (node, DJDS_comm_fl, DJDS_fl_l, Pmat_DJDS,                     &
-     &    num_MG_level, MG_itp, MG_comm_fl, MG_djds_tbl_fll,            &
-     &    MG_mat_press, MG_vector, iphys%i_p_phi, f_l, b_vec,           &
-     &    x_vec, nod_fld)
+      call solver_poisson_scalar                                        &
+     &   (node, DJDS_comm_fl, DJDS_fl_l, Pmat_DJDS, num_MG_level,       &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fll, MG_mat_press,            &
+     &    method_4_solver, precond_4_solver, eps, itr,                  &
+     &    iphys%i_p_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
       call set_boundary_scalar(nod_bc1_p, iphys%i_p_phi, nod_fld)
 !
@@ -165,7 +159,9 @@
      &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,              &
      &          FEM_elens, fem_wk, f_l, f_nl, nod_fld)
 !
+      use m_iccg_parameter
       use m_surf_data_vector_p
+      use m_surf_data_magne_p
       use m_bc_data_magne
 !
       use int_vol_fractional_div
@@ -211,8 +207,10 @@
 !     &      iphys%i_vecp, fem_wk, f_l)
 !      end if
 !
-      call int_surf_normal_vector_p(iphys%i_vecp, node, ele, surf,      &
-     &    sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl, fem_wk, f_l)
+      call int_surf_normal_vector                                       &
+     &   (iphys%i_vecp, sf_bc1_wall_f, sf_bc1_spin_f, sf_bc1_spout_f,   &
+     &    node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,      &
+     &    fem_wk, f_l)
 !
       call int_vol_sk_mp_bc(iphys%i_m_phi, iak_diff_b, node, ele,       &
      &     nod_fld, jac_3d_l, rhs_tbl, FEM_elens, fem_wk, f_l)
@@ -220,11 +218,11 @@
       call set_boundary_ff(node, nod_bc1_f, f_l)
 !
       if (iflag_debug .gt. 0)  write(*,*) 'cal_sol_mag_po'
-      call cal_sol_mag_po                                               &
-     &         (node, DJDS_comm_etr, DJDS_linear, Fmat_DJDS,            &
-     &          num_MG_level, MG_itp, MG_comm, MG_djds_tbl_l,           &
-     &          MG_mat_magp, MG_vector, iphys%i_m_phi, f_l, b_vec,      &
-     &          x_vec, nod_fld)
+      call solver_poisson_scalar                                        &
+     &   (node, DJDS_comm_etr, DJDS_linear, Fmat_DJDS, num_MG_level,    &
+     &    MG_itp, MG_comm, MG_djds_tbl_l, MG_mat_magp,                  &
+     &    method_4_solver, precond_4_solver, eps, itr,                  &
+     &    iphys%i_m_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
       if (iflag_debug .gt. 0)  write(*,*) 'set_boundary_m_phi'
       call set_boundary_scalar(nod_bc1_f, iphys%i_m_phi, nod_fld)
@@ -239,6 +237,7 @@
      &          jac_3d_q, jac_3d_l, jac_sf_grp_l, rhs_tbl,              &
      &          FEM_elens, fem_wk, f_l, f_nl, nod_fld)
 !
+      use m_iccg_parameter
       use m_surf_data_magne
       use m_surf_data_magne_p
       use m_bc_data_magne
@@ -285,8 +284,10 @@
 !     &      ak_diff(1,iak_diff_b), iphys%i_magne, fem_wk, f_l)
 !      end if
 !
-      call int_surf_normal_magne(iphys%i_magne, node, ele, surf,        &
-     &    sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl, fem_wk, f_l)
+      call int_surf_normal_vector                                       &
+     &   (iphys%i_magne, sf_bc1_wall_f, sf_bc1_spin_f, sf_bc1_spout_f,  &
+     &    node, ele, surf, sf_grp, nod_fld, jac_sf_grp_l, rhs_tbl,      &
+     &    fem_wk, f_l)
       call int_sf_grad_press(node, ele, surf, sf_grp,                   &
      &    jac_sf_grp_l, rhs_tbl, sf_bc1_grad_f,                         &
      &    intg_point_poisson, fem_wk, f_l)
@@ -296,11 +297,11 @@
 !
       call set_boundary_ff(node, nod_bc1_f, f_l)
 !
-      call cal_sol_mag_po                                               &
-     &         (node, DJDS_comm_etr, DJDS_linear, Fmat_DJDS,            &
-     &          num_MG_level, MG_itp, MG_comm, MG_djds_tbl_l,           &
-     &          MG_mat_magp, MG_vector, iphys%i_m_phi, f_l, b_vec,      &
-     &          x_vec, nod_fld)
+      call solver_poisson_scalar                                        &
+     &   (node, DJDS_comm_etr, DJDS_linear, Fmat_DJDS, num_MG_level,    &
+     &    MG_itp, MG_comm, MG_djds_tbl_l, MG_mat_magp,                  &
+     &    method_4_solver, precond_4_solver, eps, itr,                  &
+     &    iphys%i_m_phi, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !
       call set_boundary_scalar(nod_bc1_f, iphys%i_m_phi, nod_fld)
 !
