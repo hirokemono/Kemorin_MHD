@@ -5,7 +5,9 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!      subroutine s_cal_velocity_pre(layer_tbl)
+!!      subroutine cal_velo_pre_euler(iflag_supg)
+!!      subroutine cal_magne_pre_euler(iflag_supg, i_field)
+!!      subroutine cal_scalar_pre_euler(iflag_supg, i_field)
 !
       module evolve_by_1st_euler
 !
@@ -33,14 +35,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_velo_pre_euler
+      subroutine cal_velo_pre_euler(iflag_supg)
 !
       use cal_multi_pass
       use cal_sol_field_explicit
       use int_vol_coriolis_term
 !
+      integer(kind = kint), intent(in) :: iflag_supg
 !
-      call cal_t_evo_4_vector(iflag_velo_supg,                          &
+!
+      call cal_t_evo_4_vector(iflag_supg,                               &
      &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
      &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
      &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
@@ -61,12 +65,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_vect_p_pre_euler
+      subroutine cal_magne_pre_euler(iflag_supg, i_field)
 !
-      use cal_multi_pass
       use cal_sol_field_explicit
+      use cal_multi_pass
 !
-      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
+      integer(kind = kint), intent(in) :: iflag_supg, i_field
+!
+!
+      call cal_t_evo_4_vector_cd(iflag_supg,                            &
      &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
      &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
      &    rhs_tbl1, mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
@@ -74,87 +81,31 @@
      &   (node1%numnod, conduct1%istack_inter_fld_smp,                  &
      &    conduct1%numnod_fld, conduct1%inod_fld,                       &
      &    mhd_fem1_wk%mlump_cd%ml, f1_l%ff, f1_nl%ff,                   &
-     &    nod_fld1%ntot_phys, n_vector, iphys%i_vecp, nod_fld1%d_fld)
-!
-      end subroutine cal_vect_p_pre_euler
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_magne_pre_euler
-!
-      use cal_sol_field_explicit
-      use cal_multi_pass
-!
-!
-      call cal_t_evo_4_vector_cd(iflag_mag_supg,                        &
-     &    conduct1%istack_ele_fld_smp, mhd_fem1_wk%mlump_cd,            &
-     &    nod_comm, node1, ele1, iphys_ele, fld_ele1, jac1_3d_q,        &
-     &    rhs_tbl1, mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-      call cal_sol_vect_pre_conduct_euler                               &
-     &  (node1%numnod, conduct1%istack_inter_fld_smp,                   &
-     &   conduct1%numnod_fld, conduct1%inod_fld,                        &
-     &   mhd_fem1_wk%mlump_cd%ml, f1_l%ff, f1_nl%ff,                    &
-     &   nod_fld1%ntot_phys, n_vector, iphys%i_magne, nod_fld1%d_fld)
+     &    nod_fld1%ntot_phys, n_vector, i_field, nod_fld1%d_fld)
 !
       end subroutine cal_magne_pre_euler
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_temp_pre_euler
+      subroutine cal_scalar_pre_euler(iflag_supg, i_field)
 !
       use cal_multi_pass
       use cal_sol_field_explicit
 !
-      call cal_t_evo_4_scalar(iflag_temp_supg,                          &
+      integer(kind = kint), intent(in) :: iflag_supg, i_field
+!
+!
+      call cal_t_evo_4_scalar(iflag_supg, &
      &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
      &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
      &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
       call cal_sol_vect_pre_fluid_euler                                 &
      &   (node1%numnod, node1%istack_internal_smp,                      &
      &    mhd_fem1_wk%mlump_fl%ml, f1_l%ff, f1_nl%ff,                   &
-     &    nod_fld1%ntot_phys, n_scalar, iphys%i_temp, nod_fld1%d_fld)
+     &    nod_fld1%ntot_phys, n_scalar, i_field, nod_fld1%d_fld)
 !
-      end subroutine cal_temp_pre_euler
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_per_temp_euler
-!
-      use cal_multi_pass
-      use cal_sol_field_explicit
-!
-!
-      call cal_t_evo_4_scalar(iflag_temp_supg,                          &
-     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
-     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
-     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-      call cal_sol_vect_pre_fluid_euler                                 &
-     &   (node1%numnod, node1%istack_internal_smp,                      &
-     &    mhd_fem1_wk%mlump_fl%ml, f1_l%ff, f1_nl%ff,                   &
-     &    nod_fld1%ntot_phys, n_scalar, iphys%i_par_temp,               &
-     &    nod_fld1%d_fld)
-!
-      end subroutine cal_per_temp_euler
-!
-! ----------------------------------------------------------------------
-!
-      subroutine cal_composit_pre_euler
-!
-      use cal_multi_pass
-      use cal_sol_field_explicit
-!
-!
-      call cal_t_evo_4_scalar(iflag_comp_supg,                          &
-     &    fluid1%istack_ele_fld_smp, mhd_fem1_wk%mlump_fl, nod_comm,    &
-     &    node1, ele1, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,        &
-     &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
-      call cal_sol_vect_pre_fluid_euler                                 &
-     &   (node1%numnod, node1%istack_internal_smp,                      &
-     &    mhd_fem1_wk%mlump_fl%ml, f1_l%ff, f1_nl%ff,                   &
-     &    nod_fld1%ntot_phys, n_scalar, iphys%i_light, nod_fld1%d_fld)
-!
-      end subroutine cal_composit_pre_euler
+      end subroutine cal_scalar_pre_euler
 !
 ! ----------------------------------------------------------------------
 !

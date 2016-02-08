@@ -100,11 +100,12 @@
       subroutine cal_vect_p_pre_consist_crank
 !
       use m_iccg_parameter
-      use m_bc_data_magne
       use m_solver_djds_MHD
       use m_array_for_send_recv
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
+      use m_ele_material_property
+      use m_bc_data_magne
 !
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
@@ -116,8 +117,9 @@
 !
 !
       if (coef_imp_b.gt.0.0d0) then
-        call int_sk_4_fixed_vector_p(iphys%i_vecp, iak_diff_b,          &
-     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+        call int_sk_4_fixed_vector(iflag_commute_magne,                 &
+     &      iphys%i_vecp, node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1,   &
+     &      FEM1_elen, nod_bc1_a, ak_d_magne, coef_imp_b, iak_diff_b,   &
      &      fem1_wk, f1_l)
 !        if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
       end if
@@ -152,11 +154,12 @@
        subroutine cal_magne_pre_consist_crank(iak_diff_b)
 !
       use m_iccg_parameter
-      use m_bc_data_magne
       use m_solver_djds_MHD
       use m_array_for_send_recv
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
+      use m_ele_material_property
+      use m_bc_data_magne
 !
       use cal_sol_vector_pre_crank
       use int_sk_4_fixed_boundary
@@ -169,8 +172,9 @@
 !
 !
       if (coef_imp_b.gt.0.0d0) then
-        call int_sk_4_fixed_magne(iphys%i_magne, iak_diff_b,            &
-     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+        call int_sk_4_fixed_vector(iflag_commute_magne,                 &
+     &      iphys%i_magne, node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1,  &
+     &      FEM1_elen, nod_bc1_b, ak_d_magne, coef_imp_b, iak_diff_b,   &
      &      fem1_wk, f1_l)
 !         if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
       end if

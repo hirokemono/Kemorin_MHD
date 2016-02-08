@@ -125,9 +125,10 @@
 !
 !
       if (iflag_t_evo_4_temp .eq. id_explicit_euler) then
-        call cal_temp_pre_euler
+        call cal_scalar_pre_euler(iflag_temp_supg, iphys%i_temp)
       else if (iflag_t_evo_4_temp .eq. id_explicit_adams2) then
-        call cal_temp_pre_adams
+        call cal_scalar_pre_adams                                       &
+     &     (iflag_temp_supg, iphys%i_temp, iphys%i_pre_heat)
       else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank
       else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass) then 

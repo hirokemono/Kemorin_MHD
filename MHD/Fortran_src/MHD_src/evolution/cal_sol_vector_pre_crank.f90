@@ -159,27 +159,6 @@
       end subroutine cal_sol_magne_pre_linear
 !
 ! -----------------------------------------------------------------------
-!
-      subroutine cal_sol_d_scalar_linear                                &
-     &         (node, iphys, mhd_fem_wk, f_nl, f_l, nod_fld)
-!
-      type(node_data), intent(in) :: node
-      type(phys_address), intent(in) :: iphys
-      type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
-      type(finite_ele_mat_node), intent(in) :: f_nl
-!
-      type(finite_ele_mat_node), intent(inout) :: f_l
-      type(phys_data), intent(inout) :: nod_fld
-!
-!
-      call cal_sol_vec_fluid_linear(node%numnod, node%istack_nod_smp,   &
-     &    mhd_fem_wk%mlump_fl%ml_o, f_nl%ff, nod_fld%ntot_phys,         &
-     &    n_scalar, iphys%i_light, iphys%i_pre_composit,                &
-     &    nod_fld%d_fld, f_l%ff)
-!
-      end subroutine cal_sol_d_scalar_linear
-!
-! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
       subroutine cal_vector_pre_consist                                 &

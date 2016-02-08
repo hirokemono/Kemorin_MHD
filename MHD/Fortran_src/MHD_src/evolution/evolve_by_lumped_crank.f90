@@ -101,11 +101,12 @@
       subroutine cal_vect_p_pre_lumped_crank
 !
       use m_iccg_parameter
-      use m_bc_data_magne
       use m_solver_djds_MHD
       use m_array_for_send_recv
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
+      use m_ele_material_property
+      use m_bc_data_magne
 !
       use cal_multi_pass
       use cal_sol_vector_pre_crank
@@ -116,8 +117,9 @@
 !
 !
       if (coef_imp_b.gt.0.0d0) then
-        call int_sk_4_fixed_vector_p(iphys%i_vecp, iak_diff_b,          &
-     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+        call int_sk_4_fixed_vector(iflag_commute_magne,                 &
+     &      iphys%i_vecp, node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1,   &
+     &      FEM1_elen, nod_bc1_a, ak_d_magne, coef_imp_b, iak_diff_b,   &
      &      fem1_wk, f1_l)
 !        if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
       end if
@@ -147,11 +149,12 @@
       subroutine cal_magne_pre_lumped_crank(iak_diff_b)
 !
       use m_iccg_parameter
-      use m_bc_data_magne
       use m_solver_djds_MHD
       use m_array_for_send_recv
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
+      use m_ele_material_property
+      use m_bc_data_magne
 !
       use cal_multi_pass
       use cal_sol_vector_pre_crank
@@ -163,8 +166,9 @@
 !
 !
       if (coef_imp_b.gt.0.0d0) then
-        call int_sk_4_fixed_magne(iphys%i_magne, iak_diff_b,            &
-     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+        call int_sk_4_fixed_vector(iflag_commute_magne,                 &
+     &      iphys%i_magne, node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1,  &
+     &      FEM1_elen, nod_bc1_b, ak_d_magne, coef_imp_b, iak_diff_b,   &
      &      fem1_wk, f1_l)
 !        if (iflag_initial_step.eq.1) coef_imp_b = 1.0d0 / coef_imp_b
       end if
@@ -290,7 +294,7 @@
 !
       use cal_multi_pass
       use set_boundary_scalars
-      use cal_sol_vector_pre_crank
+      use cal_sol_field_explicit
       use int_sk_4_fixed_boundary
       use cal_solver_MHD
 !
@@ -308,8 +312,10 @@
      &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
 !
       call set_boundary_rhs_scalar(node1, nod_bc1_c, f1_l, f1_nl)
-      call cal_sol_d_scalar_linear                                      &
-     &   (node1, iphys, mhd_fem1_wk, f1_nl, f1_l, nod_fld1)
+      call cal_sol_vec_fluid_linear(node1%numnod, node1%istack_nod_smp, &
+     &    mhd_fem1_wk%mlump_fl%ml_o, f1_nl%ff, nod_fld1%ntot_phys,      &
+     &    n_scalar, iphys%i_light, iphys%i_pre_composit,                &
+     &    nod_fld1%d_fld, f1_l%ff)
 !
       call solver_crank_scalar                                          &
      &   (node1, DJDS_comm_fl, DJDS_fluid, Cmat_DJDS, num_MG_level,     &

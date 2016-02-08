@@ -138,10 +138,10 @@
 !
 !
       if (iflag_t_evo_4_velo .eq. id_explicit_euler) then
-       call cal_velo_pre_euler
+       call cal_velo_pre_euler(iflag_velo_supg)
 !
       else if (iflag_t_evo_4_velo .eq. id_explicit_adams2) then
-       call cal_velo_pre_adams
+       call cal_velo_pre_adams(iflag_velo_supg)
 !
       else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson) then
        call cal_velo_pre_lumped_crank

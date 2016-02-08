@@ -98,17 +98,15 @@
       if (iflag_debug.eq.1) write(*,*) 'coefs_4_time_evolution_end'
 !
 !  -----for explicit euler
-!
       if (iflag_t_evo_4_vect_p .eq. id_explicit_euler) then
-        call cal_vect_p_pre_euler
+        call cal_magne_pre_euler(iflag_mag_supg, iphys%i_vecp)
 !
 !  -----for Adams_Bashforth
-!
       else if (iflag_t_evo_4_vect_p .eq. id_explicit_adams2) then
-        call cal_vect_p_pre_adams
+        call cal_magne_pre_adams                                        &
+     &     (iflag_mag_supg, iphys%i_vecp, iphys%i_pre_uxb)
 !
 !  -----for Ceank-nicolson
-!
       else if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson) then
         call cal_vect_p_pre_lumped_crank
       else if (iflag_t_evo_4_vect_p.eq.id_Crank_nicolson_cmass) then

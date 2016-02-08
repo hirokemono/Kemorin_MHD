@@ -82,10 +82,11 @@
 !
 !
       if     (iflag_t_evo_4_composit .eq. id_explicit_euler) then
-       call cal_composit_pre_euler
+       call cal_scalar_pre_euler(iflag_comp_supg, iphys%i_light)
 !
       else if(iflag_t_evo_4_composit .eq. id_explicit_adams2) then
-       call cal_composit_pre_adams
+       call cal_scalar_pre_adams                                        &
+     &    (iflag_comp_supg, iphys%i_light, iphys%i_pre_composit)
 !
       else if(iflag_t_evo_4_composit .eq. id_Crank_nicolson) then
        call cal_composit_pre_lumped_crank

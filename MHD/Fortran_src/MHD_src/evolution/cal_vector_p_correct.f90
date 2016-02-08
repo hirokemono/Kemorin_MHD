@@ -125,6 +125,8 @@
       use m_type_AMG_data
       use m_type_AMG_data_4_MHD
       use m_SGS_address
+      use m_ele_material_property
+      use m_bc_data_magne
 !
       use int_vol_diffusion_ele
       use int_sk_4_fixed_boundary
@@ -144,8 +146,9 @@
 !
       if (coef_imp_b.gt.0.0d0) then
         if (iflag_debug.eq.1) write(*,*) 'int_sk_4_fixed_vector_p'
-        call int_sk_4_fixed_vector_p(iphys%i_vecp, iak_diff_b,          &
-     &      node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+        call int_sk_4_fixed_vector(iflag_commute_magne,                 &
+     &      iphys%i_vecp, node1, ele1, nod_fld1, jac1_3d_q, rhs_tbl1,   &
+     &      FEM1_elen, nod_bc1_a, ak_d_magne, coef_imp_b, iak_diff_b,   &
      &      fem1_wk, f1_l)
       end if
 !
