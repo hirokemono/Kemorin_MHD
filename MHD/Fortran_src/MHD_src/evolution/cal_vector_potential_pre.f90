@@ -99,12 +99,18 @@
 !
 !  -----for explicit euler
       if (iflag_t_evo_4_vect_p .eq. id_explicit_euler) then
-        call cal_magne_pre_euler(iflag_mag_supg, iphys%i_vecp)
+        call cal_magne_pre_euler(iflag_mag_supg, iphys%i_vecp,          &
+     &      nod_comm, node1, ele1, conduct1, iphys_ele, fld_ele1,       &
+     &      jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
+     &      nod_fld1)
 !
 !  -----for Adams_Bashforth
       else if (iflag_t_evo_4_vect_p .eq. id_explicit_adams2) then
         call cal_magne_pre_adams                                        &
-     &     (iflag_mag_supg, iphys%i_vecp, iphys%i_pre_uxb)
+     &     (iflag_mag_supg, iphys%i_vecp, iphys%i_pre_uxb,              &
+     &      nod_comm, node1, ele1, conduct1, iphys_ele, fld_ele1,       &
+     &      jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
+     &      nod_fld1)
 !
 !  -----for Ceank-nicolson
       else if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson) then

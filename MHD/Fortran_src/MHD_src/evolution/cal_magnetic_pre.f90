@@ -96,10 +96,16 @@
      &    jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen, fem1_wk, f1_l, f1_nl)
 !
       if (iflag_t_evo_4_magne .eq. id_explicit_euler) then
-        call cal_magne_pre_euler(iflag_mag_supg, iphys%i_magne)
+        call cal_magne_pre_euler(iflag_mag_supg, iphys%i_magne,         &
+     &      nod_comm, node1, ele1, conduct1, iphys_ele, fld_ele1,       &
+     &      jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
+     &      nod_fld1)
       else if (iflag_t_evo_4_magne .eq. id_explicit_adams2) then
         call cal_magne_pre_adams                                        &
-     &     (iflag_mag_supg, iphys%i_magne, iphys%i_pre_uxb)
+     &     (iflag_mag_supg, iphys%i_magne, iphys%i_pre_uxb,             &
+     &      nod_comm, node1, ele1, conduct1, iphys_ele, fld_ele1,       &
+     &      jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
+     &      nod_fld1)
       else if (iflag_t_evo_4_magne .eq. id_Crank_nicolson) then
         call cal_magne_pre_lumped_crank(iak_diff_b)
       else if (iflag_t_evo_4_magne .eq. id_Crank_nicolson_cmass) then 

@@ -82,11 +82,17 @@
 !
 !
       if     (iflag_t_evo_4_composit .eq. id_explicit_euler) then
-       call cal_scalar_pre_euler(iflag_comp_supg, iphys%i_light)
+        call cal_scalar_pre_euler(iflag_comp_supg, iphys%i_light,       &
+     &      nod_comm, node1, ele1, fluid1, iphys_ele, fld_ele1,         &
+     &      jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk,  f1_l, f1_nl,    &
+     &      nod_fld1)
 !
       else if(iflag_t_evo_4_composit .eq. id_explicit_adams2) then
        call cal_scalar_pre_adams                                        &
-     &    (iflag_comp_supg, iphys%i_light, iphys%i_pre_composit)
+     &    (iflag_comp_supg, iphys%i_light, iphys%i_pre_composit,        &
+     &      nod_comm, node1, ele1, fluid1, iphys_ele, fld_ele1,         &
+     &      jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk,  f1_l, f1_nl,    &
+     &      nod_fld1)
 !
       else if(iflag_t_evo_4_composit .eq. id_Crank_nicolson) then
        call cal_composit_pre_lumped_crank
