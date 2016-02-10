@@ -16,6 +16,11 @@
 !!     &          rms_sph_vl, rms_v_sph)
 !!      subroutine sum_sph_rms_all_modes(ltr, nri_rms, ntot_rms,        &
 !!     &          rms_sph_l, rms_sph)
+!!
+!!      subroutine pick_axis_sph_vol_pwr(ltr, ntot_rms,                 &
+!!     &          rms_sph_vm, rms_v_sph, rms_v_sph_m0, ratio_v_sph_m0)
+!!      subroutine pick_axis_sph_power(ltr, nri_rms, ntot_rms,          &
+!!     &          rms_sph_m, rms_sph, rms_sph_m0, ratio_sph_m0)
 !!@endverbatim
 !!@f$ 
 !!        1/V \int (\phi_l^m)^2 r^{2} sin \theta dr d\theta d\phi
@@ -86,7 +91,8 @@
      &                              * a_r_1d_rj_r(kg)**2
           end do
 !
-          rms_sph(k,icou) = rms_sph(k,icou) * a_r_1d_rj_r(kg)**2
+          rms_sph(k,icou) =    rms_sph(k,icou) * a_r_1d_rj_r(kg)**2
+          rms_sph_m0(k,icou) = rms_sph_m0(k,icou) * a_r_1d_rj_r(kg)**2
         end do
       end do
 !$omp end parallel do
@@ -105,7 +111,8 @@
 !
 !$omp parallel do private(icou)
       do icou = 1, ntot_rms_rj
-        rms_sph_vol(icou) = avol * rms_sph_vol(icou)
+        rms_sph_vol(icou) =    avol * rms_sph_vol(icou)
+        rms_sph_vol_m0(icou) = avol * rms_sph_vol_m0(icou)
       end do
 !$omp end parallel do
 !
@@ -174,6 +181,70 @@
 !$omp end parallel do
 !
       end subroutine sum_sph_rms_all_modes
+!
+! -----------------------------------------------------------------------
+! -----------------------------------------------------------------------
+!
+      subroutine pick_axis_sph_vol_pwr(ltr, ntot_rms,                   &
+     &          rms_sph_vm, rms_v_sph, rms_v_sph_m0, ratio_v_sph_m0)
+!
+      integer(kind = kint), intent(in) :: ltr, ntot_rms
+      real(kind = kreal), intent(in) :: rms_sph_vm(0:ltr,ntot_rms)
+      real(kind = kreal), intent(in) :: rms_v_sph(ntot_rms)
+!
+      real(kind = kreal), intent(inout) :: rms_v_sph_m0(ntot_rms)
+      real(kind = kreal), intent(inout) :: ratio_v_sph_m0(ntot_rms)
+!
+      integer(kind = kint) :: nd
+!
+!
+!$omp parallel do private(nd)
+      do nd = 1, ntot_rms
+        rms_v_sph_m0(nd) = rms_sph_vm(0,nd)
+        if(rms_v_sph(nd) .eq. zero) then
+          ratio_v_sph_m0(nd) = zero
+        else
+          ratio_v_sph_m0(nd) = sqrt(rms_v_sph_m0(nd) / rms_v_sph(nd))
+        end if
+      end do
+!$omp end parallel do
+!
+      end subroutine pick_axis_sph_vol_pwr
+!
+! -----------------------------------------------------------------------
+!
+      subroutine pick_axis_sph_power(ltr, nri_rms, ntot_rms,            &
+     &          rms_sph_m, rms_sph, rms_sph_m0, ratio_sph_m0)
+!
+      integer(kind = kint), intent(in) :: ltr, nri_rms
+      integer(kind = kint), intent(in) :: ntot_rms
+      real(kind = kreal), intent(in)                                    &
+     &                   :: rms_sph_m(nri_rms,0:ltr,ntot_rms)
+      real(kind = kreal), intent(in) :: rms_sph(nri_rms,ntot_rms)
+!
+      real(kind = kreal), intent(inout) :: rms_sph_m0(nri_rms,ntot_rms)
+      real(kind = kreal), intent(inout)                                 &
+     &                   :: ratio_sph_m0(nri_rms,ntot_rms)
+!
+      integer(kind = kint) :: kr, nd
+!
+!
+!$omp parallel do private(kr,nd)
+      do nd = 1, ntot_rms
+        rms_sph_m0(1:nri_rms,nd) = rms_sph_m(1:nri_rms,0,nd)
+!
+        do kr = 1, nri_rms
+          if(rms_sph(kr,nd) .eq. zero) then
+            ratio_sph_m0(kr,nd) = zero
+          else
+            ratio_sph_m0(kr,nd)                                         &
+     &              = sqrt(rms_sph_m0(kr,nd) / rms_sph(kr,nd))
+          end if
+        end do
+      end do
+!$omp end parallel do
+!
+      end subroutine pick_axis_sph_power
 !
 ! -----------------------------------------------------------------------
 !

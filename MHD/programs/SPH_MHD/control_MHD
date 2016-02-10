@@ -531,6 +531,7 @@ begin MHD_control
     degree_spectr_switch         'On'
     order_spectr_switch          'On'
     diff_lm_spectr_switch        'On'
+    axisymmetric_spectr_switch   'On'
 !
     nusselt_number_prefix        'Nusselt'
     picked_sph_prefix            'sph_spectr/picked_mode'

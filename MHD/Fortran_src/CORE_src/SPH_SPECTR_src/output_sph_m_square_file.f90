@@ -46,6 +46,8 @@
       integer(kind = kint) :: iflag_spectr_m =  1
 !>      Output flag for spectrum with respect to l-m
       integer(kind = kint) :: iflag_spectr_lm = 1
+!>      Output flag for spectrum for axis-symmetric component
+      integer(kind = kint) :: iflag_spectr_m0 = 1
 !
 !
 !>      File prefix for volume mean square file
@@ -68,6 +70,7 @@
 !
       use m_phys_labels
       use m_rms_4_sph_spectr
+      use sph_mean_spectr_IO
 !
       integer(kind = kint), intent(in) :: my_rank, istep
       real(kind = kreal), intent(in) :: time
@@ -107,6 +110,7 @@
 !
       use set_parallel_file_name
       use m_rms_4_sph_spectr
+      use sph_mean_spectr_IO
 !
       integer(kind = kint), intent(in) :: istep
       real(kind = kreal), intent(in) :: time
@@ -119,8 +123,9 @@
 !
       write(fname_rms, '(a,a4)') trim(fhead_ave_vol), '.dat'
       write(mode_label,'(a)') 'EMPTY'
-      call open_sph_mean_sq_file                                        &
-     &      (id_file_rms, fname_rms, mode_label)
+      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,    &
+     &    l_truncation, num_rms_rj, ntot_rms_rj, num_rms_comp_rj,       &
+     &    rms_name_rj, nri_rms, nlayer_ICB, nlayer_CMB)
 !
       write(id_file_rms,'(i15,1pe23.14e3,1p200e23.14e3)')               &
      &                 istep, time, ave_sph_vol(1:ntot_rms_rj)
@@ -135,6 +140,7 @@
 !
       use set_parallel_file_name
       use m_rms_4_sph_spectr
+      use sph_mean_spectr_IO
 !
       integer(kind = kint), intent(in) :: my_rank, istep
       real(kind = kreal), intent(in) :: time
@@ -147,11 +153,8 @@
 !
       call add_dat_extension(fhead_rms_vol, fname_rms)
       write(mode_label,'(a)') 'EMPTY'
-      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label)
-!
-      write(id_file_rms,'(i16,1pe23.14e3,1p200e23.14e3)')               &
-     &                 istep, time, rms_sph_vol(1:ntot_rms_rj)
-      close(id_file_rms)
+      call write_sph_volume_pwr_file(fname_rms, mode_label,             &
+     &    istep, time, rms_sph_vol)
 !
       end subroutine write_sph_vol_ms_file
 !
@@ -161,6 +164,7 @@
 !
       use set_parallel_file_name
       use m_rms_4_sph_spectr
+      use sph_mean_spectr_IO
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: istep
@@ -182,17 +186,24 @@
       end if
 !
       if(iflag_spectr_m .gt. izero) then
-        write(fname_rms,'(a,a7)') trim(fhead_rms_vol), '_lm.dat'
-        write(mode_label,'(a)') 'diff_deg_order'
+        write(fname_rms,'(a,a7)') trim(fhead_rms_vol), '_m.dat'
+        write(mode_label,'(a)') 'order'
         call write_sph_volume_spec_file(fname_rms, mode_label,          &
      &      istep, time, rms_sph_vol_m)
       end if
 !
       if(iflag_spectr_lm .gt. izero) then
-        write(fname_rms, '(a,a6)') trim(fhead_rms_vol), '_m.dat'
-        write(mode_label,'(a)') 'order'
+        write(fname_rms, '(a,a6)') trim(fhead_rms_vol), '_lm.dat'
+        write(mode_label,'(a)') 'diff_deg_order'
         call write_sph_volume_spec_file(fname_rms, mode_label,          &
      &      istep, time, rms_sph_vol_lm)
+      end if
+!
+      if(iflag_spectr_m0 .gt. izero) then
+        write(fname_rms, '(a,a7)') trim(fhead_rms_vol), '_m0.dat'
+        write(mode_label,'(a)') 'EMPTY'
+        call write_sph_volume_pwr_file(fname_rms, mode_label,           &
+     &    istep, time, rms_sph_vol_m0)
       end if
 !
       end subroutine write_sph_vol_ms_spectr_file
@@ -204,6 +215,7 @@
 !
       use set_parallel_file_name
       use m_rms_4_sph_spectr
+      use sph_mean_spectr_IO
 !
       integer(kind = kint), intent(in) :: my_rank
       integer(kind = kint), intent(in) :: istep
@@ -219,7 +231,8 @@
 !
       write(fname_rms,   '(a,a4)') trim(fhead_rms_layer), '.dat'
       write(mode_label,'(a)') 'radial_id'
-      call write_sph_layer_pwr_file(fname_rms, mode_label, istep, time)
+      call write_sph_layer_pwr_file                                     &
+     &   (fname_rms, mode_label, istep, time, rms_sph)
 !
       if(iflag_spectr_l .gt. izero) then
         write(fname_rms, '(a,a6)') trim(fhead_rms_layer), '_l.dat'
@@ -242,6 +255,13 @@
      &      istep, time, rms_sph_lm)
       end if
 !
+      if(iflag_spectr_m0 .gt. izero) then
+        write(fname_rms,'(a,a7)') trim(fhead_rms_layer), '_m0.dat'
+        write(mode_label,'(a)') 'radial_id'
+        call write_sph_layer_pwr_file(fname_rms, mode_label,           &
+     &      istep, time, rms_sph_m0)
+      end if
+!
       end subroutine write_sph_layer_ms_file
 !
 ! -----------------------------------------------------------------------
@@ -252,6 +272,7 @@
 !
       use m_spheric_parameter
       use m_rms_4_sph_spectr
+      use sph_mean_spectr_IO
 !
       integer(kind = kint), intent(in) :: istep
       real(kind = kreal), intent(in) :: time
@@ -260,8 +281,11 @@
       character(len=kchara), intent(in) :: fname_rms, mode_label
 !
 !
-      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label)
-      call write_sph_volume_data(id_file_rms, istep, time, rms_sph_x)
+      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,    &
+     &    l_truncation, num_rms_rj, ntot_rms_rj, num_rms_comp_rj,       &
+     &    rms_name_rj, nri_rms, nlayer_ICB, nlayer_CMB)
+      call write_sph_volume_data(id_file_rms, istep, time,              &
+     &    l_truncation, ntot_rms_rj, rms_sph_x)
       close(id_file_rms)
 !
       end subroutine write_sph_volume_spec_file
@@ -269,19 +293,50 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine write_sph_layer_pwr_file(fname_rms, mode_label,        &
-     &          istep, time)
+      subroutine write_sph_volume_pwr_file(fname_rms, mode_label,       &
+     &           istep, time, rms_sph_v)
 !
-      use m_spheric_parameter
+      use set_parallel_file_name
       use m_rms_4_sph_spectr
+      use sph_mean_spectr_IO
 !
       integer(kind = kint), intent(in) :: istep
       real(kind = kreal), intent(in) :: time
+      real(kind = kreal), intent(in) :: rms_sph_v(ntot_rms_rj)
+!
       character(len=kchara), intent(in) :: fname_rms, mode_label
 !
 !
-      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label)
-      call write_sph_layerd_power(id_file_rms, istep, time)
+      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,    &
+     &    l_truncation, num_rms_rj, ntot_rms_rj, num_rms_comp_rj,       &
+     &    rms_name_rj, nri_rms, nlayer_ICB, nlayer_CMB)
+!
+      write(id_file_rms,'(i16,1pe23.14e3,1p200e23.14e3)')               &
+     &                 istep, time, rms_sph_v(1:ntot_rms_rj)
+      close(id_file_rms)
+!
+      end subroutine write_sph_volume_pwr_file
+!
+!  --------------------------------------------------------------------
+!
+      subroutine write_sph_layer_pwr_file(fname_rms, mode_label,        &
+     &          istep, time, rms_sph_x)
+!
+      use m_spheric_parameter
+      use m_rms_4_sph_spectr
+      use sph_mean_spectr_IO
+!
+      integer(kind = kint), intent(in) :: istep
+      real(kind = kreal), intent(in) :: time
+      real(kind = kreal), intent(in) :: rms_sph_x(nri_rms, ntot_rms_rj)
+      character(len=kchara), intent(in) :: fname_rms, mode_label
+!
+!
+      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,    &
+     &    l_truncation, num_rms_rj, ntot_rms_rj, num_rms_comp_rj,       &
+     &    rms_name_rj, nri_rms, nlayer_ICB, nlayer_CMB)
+      call write_sph_layerd_power(id_file_rms, istep, time,             &
+     &    ntot_rms_rj, nri_rms, kr_for_rms, r_for_rms, rms_sph_x)
       close(id_file_rms)
 !
       end subroutine write_sph_layer_pwr_file
@@ -293,6 +348,7 @@
 !
       use m_spheric_parameter
       use m_rms_4_sph_spectr
+      use sph_mean_spectr_IO
 !
       integer(kind = kint), intent(in) :: istep
       real(kind = kreal), intent(in) :: time
@@ -300,8 +356,11 @@
      &      :: rms_sph_x(nri_rms,0:l_truncation, ntot_rms_rj)
       character(len=kchara), intent(in) :: fname_rms, mode_label
 !
-      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label)
-      call write_sph_layer_data(id_file_rms, istep, time, rms_sph_x)
+      call open_sph_mean_sq_file(id_file_rms, fname_rms, mode_label,    &
+     &    l_truncation, num_rms_rj, ntot_rms_rj, num_rms_comp_rj,       &
+     &    rms_name_rj, nri_rms, nlayer_ICB, nlayer_CMB)
+      call write_sph_layer_data(id_file_rms, istep, time, l_truncation, &
+     &    ntot_rms_rj, nri_rms, kr_for_rms, r_for_rms, rms_sph_x)
       close(id_file_rms)
 !
       end subroutine write_sph_layer_spec_file

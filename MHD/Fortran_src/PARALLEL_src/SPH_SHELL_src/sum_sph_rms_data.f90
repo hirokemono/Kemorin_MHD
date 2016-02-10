@@ -264,6 +264,9 @@
       if(my_rank .eq. 0) then
         call sum_sph_vol_rms_all_modes(l_truncation, ntot_rms_rj,       &
      &      rms_sph_vol_l(0,1), rms_sph_vol(1) )
+        call pick_axis_sph_vol_pwr(l_truncation, ntot_rms_rj,           &
+     &     rms_sph_vol_m(0,1), rms_sph_vol(1),                          &
+     &     rms_sph_vol_m0(1), ratio_sph_vol_m0(1))
       end if
 !
       if(nri_rms .le. 0) return
@@ -278,6 +281,9 @@
       if(my_rank .gt. 0) return
       call sum_sph_rms_all_modes(l_truncation, nri_rms, ntot_rms_rj,    &
      &    rms_sph_l(1,0,1), rms_sph(1,1) )
+      call pick_axis_sph_power(l_truncation, nri_rms, ntot_rms_rj,      &
+     &    rms_sph_m(1,0,1), rms_sph(1,1),                               &
+     &    rms_sph_m0(1,1), ratio_sph_m0(1,1))
 !
       end subroutine sum_sph_layerd_rms
 !

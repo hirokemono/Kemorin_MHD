@@ -56,6 +56,7 @@
       if(no_flag(order_spectr_switch%charavalue))  iflag_spectr_m = 0
       if(no_flag(diff_lm_spectr_switch%charavalue))                     &
      &                                             iflag_spectr_lm = 0
+      if(no_flag(axis_spectr_switch%charavalue))   iflag_spectr_m0 = 0
 !
 !   set pickup layer
       nri_rms = 0

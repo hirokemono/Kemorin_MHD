@@ -33,6 +33,7 @@
 !!    degree_spectr_switch         'On'
 !!    order_spectr_switch          'On'
 !!    diff_lm_spectr_switch        'On'
+!!    axisymmetric_spectr_switch   'On'
 !!
 !!    nusselt_number_prefix        'Nusselt'
 !!    picked_sph_prefix            'sph_spectr/picked_mode'
@@ -131,6 +132,8 @@
 !
 !>      Structure for l-m spectrum switch
       type(read_character_item), save :: diff_lm_spectr_switch
+!>      Structure for l-m spectrum switch
+      type(read_character_item), save :: axis_spectr_switch
 !
 !
 !>      Structure for list of radial grid of spectr energy data output
@@ -214,7 +217,10 @@
       character(len=kchara), parameter                                  &
      &           :: hd_order_spectr_switch = 'order_spectr_switch'
       character(len=kchara), parameter                                  &
-     &           :: hd_diff_lm_spectr_switch = 'diff_lm_spectr_switch'
+     &           :: hd_diff_lm_spectr_switch                            &
+     &                              = 'axisymmetric_spectr_switch'
+      character(len=kchara), parameter                                  &
+     &           :: hd_axis_spectr_switch = 'diff_lm_spectr_switch'
 !
       character(len=kchara), parameter                                  &
      &           :: hd_gauss_coefs_r =    'gauss_coefs_radius_ctl'
@@ -257,6 +263,7 @@
       private :: hd_voume_ave_head, hd_voume_rms_head
       private :: hd_layer_rms_head, hd_nphi_mid_eq
       private :: hd_pick_s_ctl, hd_pick_z_ctl, hd_diff_lm_spectr_switch
+      private :: hd_axis_spectr_switch
       private :: hd_degree_spectr_switch, hd_order_spectr_switch
 !
 ! -----------------------------------------------------------------------
@@ -385,6 +392,8 @@
      &          order_spectr_switch)
         call read_chara_ctl_type(hd_diff_lm_spectr_switch,              &
      &          diff_lm_spectr_switch)
+        call read_chara_ctl_type(hd_axis_spectr_switch,                 &
+     &          axis_spectr_switch)
 !
         call read_chara_ctl_type(hd_circle_coord,                       &
      &          pick_circle_coord_ctl)
