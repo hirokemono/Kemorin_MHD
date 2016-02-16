@@ -162,7 +162,7 @@
 !
 !
       call link_numnod_stacks_2_output(nprocs, node%istack_numnod,      &
-     &    node%istack_internod, ele%istack_numele, m_ucd)
+     &    node%istack_internod, ele%istack_interele, m_ucd)
 !
       end subroutine link_nnod_stacks_2_ucd
 !
