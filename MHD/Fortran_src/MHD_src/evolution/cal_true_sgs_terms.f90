@@ -13,6 +13,18 @@
       use m_machine_parameter
       use m_control_parameter
 !
+      use t_comm_table
+      use t_geometry_data
+      use t_surface_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_3d
+      use t_jacobian_2d
+      use t_table_FEM_const
+      use t_finite_element_mat
+      use t_MHD_finite_element_mat
+      use t_filter_elength
+!
       use cal_fluxes
       use copy_nodal_fields
 !
@@ -43,6 +55,19 @@
       use m_node_phys_data
       use m_SGS_address
 !
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_group_data
+      use m_node_phys_data
+      use m_element_phys_data
+      use m_geometry_data_MHD
+      use m_jacobians
+      use m_jacobian_sf_grp
+      use m_element_id_4_node
+      use m_finite_element_matrix
+      use m_int_vol_data
+      use m_filter_elength
+!
       integer(kind = kint) :: i
 !
        do i = 1, nod_fld1%num_phys
@@ -63,7 +88,11 @@
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld1%phys_name(i) )
-           call cal_div_sgs_induct_true_pre
+           call cal_div_sgs_induct_true_pre(iak_diff_uxb,               &
+     &         nod_comm, node1, ele1, surf1, sf_grp1, conduct1,         &
+     &         iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q, &
+     &         rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,  &
+     &         nod_fld1)
          end if
        end do
 !
@@ -73,6 +102,9 @@
 !
       subroutine cal_true_sgs_terms_post
 !
+      use m_nod_comm_table
+      use m_geometry_data
+      use m_node_phys_data
       use m_phys_labels
       use m_node_phys_data
 !
@@ -82,21 +114,25 @@
          if ( nod_fld1%phys_name(i).eq.fhd_SGS_div_h_flux_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld1%phys_name(i) )
-           call cal_div_sgs_h_flux_true_post
+           call cal_div_sgs_h_flux_true_post                            &
+     &        (nod_comm, node1, iphys, nod_fld1)
          else if ( nod_fld1%phys_name(i).eq.fhd_SGS_div_m_flux_true)    &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld1%phys_name(i) )
-           call cal_div_sgs_m_flux_true_post
+           call cal_div_sgs_m_flux_true_post                            &
+     &        (nod_comm, node1, iphys, nod_fld1)
          else if ( nod_fld1%phys_name(i).eq.fhd_SGS_Lorentz_true) then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld1%phys_name(i) )
-           call cal_div_sgs_maxwell_true_post
+           call cal_div_sgs_maxwell_true_post                           &
+     &        (nod_comm, node1, iphys, nod_fld1)
          else if ( nod_fld1%phys_name(i).eq.fhd_SGS_mag_induct_true)    &
      &          then
            if(iflag_debug.gt.0) write(*,*)                              &
      &                         'lead  ', trim(nod_fld1%phys_name(i) )
-           call cal_div_sgs_induct_true_post
+           call cal_div_sgs_induct_true_post                            &
+     &        (nod_comm, node1, iphys, nod_fld1)
          end if
        end do
 !
@@ -209,34 +245,45 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_sgs_induct_true_pre
-!
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
-      use m_node_phys_data
-      use m_element_phys_data
-      use m_geometry_data_MHD
-      use m_jacobians
-      use m_jacobian_sf_grp
-      use m_element_id_4_node
-      use m_finite_element_matrix
-      use m_int_vol_data
-      use m_filter_elength
-      use m_SGS_address
+      subroutine cal_div_sgs_induct_true_pre(iak_diff_uxb,              &
+     &          nod_comm, node, ele1, surf1, sf_grp1, conduct1,         &
+     &          iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q, &
+     &          rhs_tbl1, FEM1_elen,                                    &
+     &          mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld)
 !
       use cal_magnetic_terms
 !
+      integer(kind = kint), intent(in) :: iak_diff_uxb
 !
-      call cal_induction_tensor(node1, nod_fld1%ntot_phys,              &
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele1
+      type(surface_data), intent(in) :: surf1
+      type(surface_group_data), intent(in) :: sf_grp1
+      type(field_geometry_data), intent(in) :: conduct1
+      type(phys_address), intent(in) :: iphys
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: fld_ele1
+      type(jacobians_3d), intent(in) :: jac1_3d_q
+      type(jacobians_2d), intent(in) :: jac1_sf_grp_2d_q
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
+      type(gradient_model_data_type), intent(in) :: FEM1_elen
+!
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem1_wk
+      type(work_finite_element_mat), intent(inout) :: fem1_wk
+      type(finite_ele_mat_node), intent(inout) :: f1_l, f1_nl
+      type(phys_data), intent(inout) :: nod_fld
+!
+!
+      call cal_induction_tensor(node, nod_fld%ntot_phys,              &
      &    iphys%i_filter_magne, iphys%i_filter_velo, iphys%i_induct_t,  &
-     &    nod_fld1%d_fld)
+     &    nod_fld%d_fld)
       call cal_terms_4_magnetic(iphys%i_induct_div, iak_diff_uxb,       &
-     &    nod_comm, node1, ele1, surf1, conduct1, sf_grp1,              &
+     &    nod_comm, node, ele1, surf1, conduct1, sf_grp1,              &
      &    iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,      &
      &    rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,       &
-     &    nod_fld1)
-      call copy_vector_component(node1, nod_fld1,                       &
+     &    nod_fld)
+      call copy_vector_component(node, nod_fld,                       &
      &    iphys%i_induct_div, iphys%i_SGS_idct_true)
 !
       end subroutine cal_div_sgs_induct_true_pre
@@ -244,18 +291,21 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_sgs_h_flux_true_post
+      subroutine cal_div_sgs_h_flux_true_post                           &
+     &          (nod_comm, node, iphys, nod_fld)
 !
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_node_phys_data
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(phys_address), intent(in) :: iphys
+!
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call copy_scalar_component(node1, nod_fld1,                       &
+      call copy_scalar_component(node, nod_fld,                         &
      &    iphys%i_SGS_div_hf_true, iphys%i_sgs_simi)
-      call cal_filtered_scalar(nod_comm, node1,                         &
-     &    iphys%i_SGS_div_hf_true, iphys%i_h_flux_div, nod_fld1)
-      call subtract_2_nod_scalars(node1, nod_fld1,                      &
+      call cal_filtered_scalar(nod_comm, node,                          &
+     &    iphys%i_SGS_div_hf_true, iphys%i_h_flux_div, nod_fld)
+      call subtract_2_nod_scalars(node, nod_fld,                        &
      &    iphys%i_SGS_div_hf_true, iphys%i_sgs_simi,                    &
      &    iphys%i_SGS_div_hf_true)
 !
@@ -263,18 +313,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_sgs_m_flux_true_post
+      subroutine cal_div_sgs_m_flux_true_post                           &
+     &          (nod_comm, node, iphys, nod_fld)
 !
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_node_phys_data
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(phys_address), intent(in) :: iphys
+!
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call copy_vector_component(node1, nod_fld1,                       &
+      call copy_vector_component(node, nod_fld,                         &
      &    iphys%i_SGS_div_mf_true, iphys%i_sgs_simi)
-      call cal_filtered_vector(nod_comm, node1,                         &
-     &    iphys%i_SGS_div_mf_true, iphys%i_m_flux_div, nod_fld1)
-      call subtract_2_nod_vectors(node1, nod_fld1,                      &
+      call cal_filtered_vector(nod_comm, node,                          &
+     &    iphys%i_SGS_div_mf_true, iphys%i_m_flux_div, nod_fld)
+      call subtract_2_nod_vectors(node, nod_fld,                        &
      &    iphys%i_SGS_div_mf_true, iphys%i_sgs_simi,                    &
      &    iphys%i_SGS_div_mf_true)
 !
@@ -282,18 +335,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_sgs_maxwell_true_post
+      subroutine cal_div_sgs_maxwell_true_post                          &
+     &          (nod_comm, node, iphys, nod_fld)
 !
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_node_phys_data
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(phys_address), intent(in) :: iphys
+!
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call copy_vector_component(node1, nod_fld1,                       &
+      call copy_vector_component(node, nod_fld,                         &
      &    iphys%i_SGS_Lor_true, iphys%i_sgs_simi)
-      call cal_filtered_vector(nod_comm, node1,                         &
-     &    iphys%i_SGS_Lor_true, iphys%i_maxwell_div, nod_fld1)
-      call subtract_2_nod_vectors(node1, nod_fld1,                      &
+      call cal_filtered_vector(nod_comm, node,                          &
+     &    iphys%i_SGS_Lor_true, iphys%i_maxwell_div, nod_fld)
+      call subtract_2_nod_vectors(node, nod_fld,                        &
      &    iphys%i_SGS_Lor_true, iphys%i_sgs_simi,                       &
      &    iphys%i_SGS_Lor_true)
 !
@@ -301,18 +357,21 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_div_sgs_induct_true_post
+      subroutine cal_div_sgs_induct_true_post                           &
+     &          (nod_comm, node, iphys, nod_fld)
 !
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_node_phys_data
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(phys_address), intent(in) :: iphys
+!
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call copy_vector_component(node1, nod_fld1,                       &
+      call copy_vector_component(node, nod_fld,                         &
      &    iphys%i_SGS_idct_true, iphys%i_sgs_simi)
-      call cal_filtered_vector(nod_comm, node1,                         &
-     &    iphys%i_SGS_idct_true, iphys%i_induct_div, nod_fld1)
-      call subtract_2_nod_vectors(node1, nod_fld1,                      &
+      call cal_filtered_vector(nod_comm, node,                          &
+     &    iphys%i_SGS_idct_true, iphys%i_induct_div, nod_fld)
+      call subtract_2_nod_vectors(node, nod_fld,                        &
      &    iphys%i_SGS_idct_true, iphys%i_sgs_simi,                      &
      &    iphys%i_SGS_idct_true)
 !
