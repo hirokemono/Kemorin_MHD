@@ -74,7 +74,7 @@
       type(node_data), intent(in) :: node
       integer(kind = kint), intent(in) :: ncomp_nod
       integer(kind = kint), intent(in) :: i_magne, i_mxwl
-      real(kind = kreal), intent(inout) :: ex_magne(3)
+      real(kind = kreal), intent(in) :: ex_magne(3)
       real(kind = kreal), intent(inout) :: d_nod(node%numnod,ncomp_nod)
 !
 !

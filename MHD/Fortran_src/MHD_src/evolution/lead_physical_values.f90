@@ -70,22 +70,31 @@
       subroutine cal_energy_fluxes
 !
       use m_machine_parameter
+      use m_physical_property
 !
       use m_nod_comm_table
       use m_geometry_data
+      use m_group_data
       use m_node_phys_data
-      use m_physical_property
+      use m_element_phys_data
+      use m_geometry_data_MHD
       use m_jacobians
+      use m_jacobian_sf_grp
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_int_vol_data
+      use m_filter_elength
 !
       use cal_MHD_forces_4_monitor
       use cal_sgs_4_monitor
       use cal_true_sgs_terms
 !
 !
-      call cal_true_sgs_terms_pre
+      call cal_true_sgs_terms_pre                                       &
+     &   (nod_comm, node1, ele1, surf1, sf_grp1,                        &
+     &    fluid1, conduct1, iphys, iphys_ele, fld_ele1,                 &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
       call cal_sgs_terms_4_monitor
 !
@@ -94,7 +103,7 @@
       call cal_forces_4_monitor
       call cal_diff_of_sgs_terms
 !
-      call cal_true_sgs_terms_post
+      call cal_true_sgs_terms_post(nod_comm, node1, iphys, nod_fld1)
 !
       call cal_work_4_forces                                            &
      &   (nod_comm, node1, ele1, iphys, jac1_3d_q, rhs_tbl1,            &
