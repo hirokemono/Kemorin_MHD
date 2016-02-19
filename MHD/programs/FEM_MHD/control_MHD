@@ -540,7 +540,7 @@ begin MHD_control
              temperature   1.0d0
         end  high_temp_ctl
 !
-      stratified_ctl            0
+      stratified_ctl            Off
 !      stratified_sigma_ctl         0.000   end
 !      stratified_width_ctl         0.000   end
 !      stratified_outer_r_ctl       0.000   end
@@ -953,7 +953,11 @@ begin MHD_control
       file  surface_rendering   ctl_psf_z0.3
       file  surface_rendering   ctl_psf_z1.0
     end array surface_rendering
-    array isosurf_rendering  0
+!
+    array isosurf_rendering  1
+       file  isosurf_rendering   ctl_iso_temp
+    end array isosurf_rendering
+!
     array  volume_rendering  0
   end  visual_control
 !

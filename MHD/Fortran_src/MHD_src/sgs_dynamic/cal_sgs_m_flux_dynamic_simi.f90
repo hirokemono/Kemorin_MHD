@@ -6,11 +6,11 @@
 !
 !!      subroutine s_cal_sgs_m_flux_dynamic_simi                        &
 !!     &         (iak_sgs_mf, icomp_sgs_mf, nod_comm, node, ele, iphys, &
-!!     &          layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl, m1_lump,      &
+!!     &          layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl, m_lump,       &
 !!     &          fem_wk, f_l, nod_fld)
 !!      subroutine cal_sgs_maxwell_dynamic_simi                         &
 !!     &        (iak_sgs_lor, icomp_sgs_lor, nod_comm, node, ele, iphys,&
-!!     &         layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl, m1_lump,       &
+!!     &         layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl, m_lump,        &
 !!     &         fem_wk, f_l, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
@@ -19,7 +19,7 @@
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-!!        type(lumped_mass_matrices), intent(in) :: m1_lump
+!!        type(lumped_mass_matrices), intent(in) :: m_lump
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -50,7 +50,7 @@
 !
       subroutine s_cal_sgs_m_flux_dynamic_simi                          &
      &         (iak_sgs_mf, icomp_sgs_mf, nod_comm, node, ele, iphys,   &
-     &          layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl, m1_lump,        &
+     &          layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl, m_lump,         &
      &          fem_wk, f_l, nod_fld)
 !
       use m_SGS_model_coefs
@@ -74,7 +74,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(lumped_mass_matrices), intent(in) :: m1_lump
+      type(lumped_mass_matrices), intent(in) :: m_lump
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -134,7 +134,7 @@
      &    iak_sgs_mf, icomp_sgs_mf, intg_point_t_evo)
 !
       call cal_ele_sym_tensor_2_node                                    &
-     &   (node, ele, jac_3d_q, rhs_tbl, m1_lump,                        &
+     &   (node, ele, jac_3d_q, rhs_tbl, m_lump,                         &
      &    ak_sgs(1,icomp_sgs_mf), ak_sgs_nod(1,icomp_sgs_mf),           &
      &    fem_wk, f_l)
 !
@@ -144,7 +144,7 @@
 !
       subroutine cal_sgs_maxwell_dynamic_simi                           &
      &        (iak_sgs_lor, icomp_sgs_lor, nod_comm, node, ele, iphys,  &
-     &         layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl, m1_lump,         &
+     &         layer_tbl, jac_3d_q, jac_3d_l, rhs_tbl, m_lump,          &
      &         fem_wk, f_l, nod_fld)
 !
       use m_SGS_model_coefs
@@ -168,7 +168,7 @@
       type(layering_tbl), intent(in) :: layer_tbl
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
-      type(lumped_mass_matrices), intent(in) :: m1_lump
+      type(lumped_mass_matrices), intent(in) :: m_lump
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l
@@ -227,7 +227,7 @@
      &    iak_sgs_lor, icomp_sgs_lor, intg_point_t_evo)
 !
       call cal_ele_sym_tensor_2_node                                    &
-     &   (node, ele, jac_3d_q, rhs_tbl, m1_lump,                        &
+     &   (node, ele, jac_3d_q, rhs_tbl, m_lump,                         &
      &    ak_sgs(1,icomp_sgs_lor), ak_sgs_nod(1,icomp_sgs_lor),         &
      &    fem_wk, f_l)
 !

@@ -138,7 +138,10 @@
       else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson) then
         call cal_temp_pre_lumped_crank
       else if (iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass) then 
-        call cal_temp_pre_consist_crank
+        call cal_temp_pre_consist_crank                                 &
+     &     (iphys%i_temp, iphys%i_pre_heat, iak_diff_t, nod_bc1_t,      &
+     &      node1, ele1, fluid1, jac1_3d_q, rhs_tbl1, FEM1_elen,        &
+     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
       call set_boundary_scalar(nod_bc1_t, iphys%i_temp, nod_fld1)

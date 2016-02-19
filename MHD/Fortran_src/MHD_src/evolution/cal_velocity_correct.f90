@@ -105,6 +105,12 @@
 !
       subroutine cal_velocity_co_exp
 !
+      use m_phys_constants
+      use m_node_phys_data
+      use m_int_vol_data
+      use m_finite_element_matrix
+      use cal_sol_vector_correct
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_multi_pass_4_vector_fl'
       call cal_multi_pass_4_vector_ff                                   &
@@ -113,7 +119,10 @@
      &    mhd_fem1_wk%ff_m_smp, fem1_wk, f1_l, f1_nl)
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_co'
-      call cal_sol_velo_co(node1%istack_internal_smp)
+      call cal_sol_velocity_co                                          &
+     &   (nod_fld1%n_point, node1%istack_internal_smp,                  &
+     &    mhd_fem1_wk%mlump_fl%ml, f1_l%ff, nod_fld1%ntot_phys,         &
+     &    iphys%i_velo, iphys%i_p_phi, nod_fld1%d_fld)
 !
       end subroutine cal_velocity_co_exp
 !
@@ -166,9 +175,14 @@
 !
 !
       if (     iflag_implicit_correct.eq.3) then
-        call cal_velo_co_lumped_crank
+        call cal_velo_co_lumped_crank                                   &
+     &     (iphys%i_velo, nod_comm, node1, ele1, fluid1, nod_fld1,      &
+     &      iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,                   &
+     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl)
       else if (iflag_implicit_correct.eq.4) then
-        call cal_velo_co_consist_crank
+        call cal_velo_co_consist_crank(iphys%i_velo, coef_velo,         &
+     &      node1, ele1, fluid1, nod_fld1, jac1_3d_q,                   &
+     &      rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl)
       end if
 !
 !
