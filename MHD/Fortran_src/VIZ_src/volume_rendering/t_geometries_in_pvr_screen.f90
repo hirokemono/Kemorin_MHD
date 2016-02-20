@@ -46,9 +46,9 @@
 !>    Number of vertical pixels
         integer(kind = kint) :: num_pixel_y
 !>    Position of horizontal pixels
-        real(kind = kreal), allocatable :: pixel_point_x(:)
+        real(kind = kreal), pointer :: pixel_point_x(:)
 !>    Position of vertical pixels
-        real(kind = kreal), allocatable :: pixel_point_y(:)
+        real(kind = kreal), pointer :: pixel_point_y(:)
       end type pvr_pixel_position_type
 !
       private :: alloc_nod_data_4_pvr, alloc_iflag_pvr_used_ele
