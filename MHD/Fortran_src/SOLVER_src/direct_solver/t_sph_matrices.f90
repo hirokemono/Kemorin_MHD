@@ -35,16 +35,16 @@
         integer(kind = kint) :: n_comp
 !
 !>        Band matrices for spectr data
-        real(kind = kreal), allocatable :: mat(:,:,:)
+        real(kind = kreal), pointer :: mat(:,:,:)
 !
 !>        LU-decompositted matrices for spectr data
-        real(kind = kreal), allocatable :: lu(:,:,:)
+        real(kind = kreal), pointer :: lu(:,:,:)
 !
 !>        Determinant of matrices for spectr data
-        real(kind = kreal), allocatable :: det(:,:)
+        real(kind = kreal), pointer :: det(:,:)
 !
 !>        Pivot information for matrices for spectr data
-        integer(kind = kint), allocatable :: i_pivot(:,:)
+        integer(kind = kint), pointer :: i_pivot(:,:)
       end type band_matrix_type
 !
 ! -----------------------------------------------------------------------

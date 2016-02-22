@@ -38,8 +38,8 @@
       end type block_4_interpolate
 !
 !
-      type(block_4_interpolate), allocatable :: org_blocks(:)
-      type(block_4_interpolate) :: dest_block
+      type(block_4_interpolate), save, allocatable :: org_blocks(:)
+      type(block_4_interpolate), save :: dest_block
 !
       private :: alloc_interpolate_blocks, allocate_block_points
       private :: deallocate_block_points, set_block_points_4_itp

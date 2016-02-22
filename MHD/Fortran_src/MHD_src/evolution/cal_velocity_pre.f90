@@ -138,22 +138,28 @@
 !
 !
       if (iflag_t_evo_4_velo .eq. id_explicit_euler) then
-       call cal_velo_pre_euler(iflag_velo_supg,                         &
+        call cal_velo_pre_euler(iflag_velo_supg,                        &
      &     nod_comm, node1, ele1, fluid1, iphys, iphys_ele, fld_ele1,   &
      &     jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,      &
      &     nod_fld1)
 !
       else if (iflag_t_evo_4_velo .eq. id_explicit_adams2) then
-       call cal_velo_pre_adams(iflag_velo_supg,                         &
+        call cal_velo_pre_adams(iflag_velo_supg,                        &
      &     nod_comm, node1, ele1, fluid1, iphys, iphys_ele, fld_ele1,   &
      &     jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,      &
      &     nod_fld1)
 !
       else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson) then
-       call cal_velo_pre_lumped_crank
+        call cal_velo_pre_lumped_crank                                  &
+     &     (iak_diff_v, nod_comm, node1, ele1, fluid1,                  &
+     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1,            &
+     &      FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
       else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass) then 
-       call cal_velo_pre_consist_crank
+        call cal_velo_pre_consist_crank                                 &
+     &    (iphys%i_velo, iphys%i_pre_mom, iak_diff_v,                   &
+     &     node1, ele1, fluid1, jac1_3d_q, rhs_tbl1, FEM1_elen,         &
+     &     mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
       call set_boundary_velo(node1, iphys%i_velo, nod_fld1)

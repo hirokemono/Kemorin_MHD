@@ -95,7 +95,11 @@
      &      nod_fld1)
 !
       else if(iflag_t_evo_4_composit .eq. id_Crank_nicolson) then
-        call cal_composit_pre_lumped_crank
+        call cal_composit_pre_lumped_crank                              &
+     &     (iphys%i_light, iphys%i_pre_composit, iak_diff_c, nod_bc1_c, &
+     &      nod_comm, node1, ele1, fluid1, iphys_ele, fld_ele1,         &
+     &      jac1_3d_q, rhs_tbl1,  FEM1_elen, mhd_fem1_wk, fem1_wk,      &
+     &      f1_l, f1_nl, nod_fld1)
 !
       else if(iflag_t_evo_4_composit .eq. id_Crank_nicolson_cmass) then
         call cal_composit_pre_consist_crank                             &

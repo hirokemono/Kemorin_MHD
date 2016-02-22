@@ -122,6 +122,7 @@
 !
       use m_iccg_parameter
       use m_t_step_parameter
+      use m_geometry_data_MHD
       use m_geometry_data
       use m_phys_constants
       use m_node_phys_data

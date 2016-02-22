@@ -37,12 +37,12 @@
 !
       type psf_averages
         integer(kind = kint) :: ntot_comp
-        real(kind = kreal), allocatable :: ave(:)
-        real(kind = kreal), allocatable :: rms(:)
-        real(kind = kreal), allocatable :: sdev(:)
+        real(kind = kreal), pointer :: ave(:)
+        real(kind = kreal), pointer :: rms(:)
+        real(kind = kreal), pointer :: sdev(:)
 !
-        real(kind = kreal), allocatable :: dmin(:)
-        real(kind = kreal), allocatable :: dmax(:)
+        real(kind = kreal), pointer :: dmin(:)
+        real(kind = kreal), pointer :: dmax(:)
       end type psf_averages
 !
 !-----------------------------------------------------------------------

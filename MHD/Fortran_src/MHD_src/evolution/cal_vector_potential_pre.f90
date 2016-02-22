@@ -51,6 +51,7 @@
       use evolve_by_adams_bashforth
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
+      use copy_nodal_fields
 !
 !
       call reset_ff_smps(node1%max_nod_smp, f1_l, f1_nl)
@@ -114,14 +115,22 @@
 !
 !  -----for Ceank-nicolson
       else if (iflag_t_evo_4_vect_p .eq. id_Crank_nicolson) then
-        call cal_vect_p_pre_lumped_crank
+        call cal_vect_p_pre_lumped_crank                                &
+     &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, nod_bc1_a,       &
+     &      nod_comm, node1, ele1, conduct1, iphys_ele, fld_ele1,       &
+     &      jac1_3d_q, rhs_tbl1,  FEM1_elen, mhd_fem1_wk, fem1_wk,      &
+     &      f1_l, f1_nl, nod_fld1)
       else if (iflag_t_evo_4_vect_p.eq.id_Crank_nicolson_cmass) then
-        call cal_vect_p_pre_consist_crank
+        call cal_vect_p_pre_consist_crank                               &
+     &     (iphys%i_vecp, iphys%i_pre_uxb, iak_diff_b, nod_bc1_a,       &
+     &      node1, ele1, conduct1, jac1_3d_q, rhs_tbl1, FEM1_elen,      &
+     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
       call set_boundary_vect(nod_bc1_a, iphys%i_vecp, nod_fld1)
 !
       call vector_send_recv(iphys%i_vecp, node1, nod_comm, nod_fld1)
+      call clear_nodal_data(node1, nod_fld1, n_scalar, iphys%i_m_phi)
 !
 !      call check_nodal_data(my_rank, nod_fld1, n_vector, iphys%i_vecp)
 !
