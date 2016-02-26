@@ -21,7 +21,7 @@
 !!     &         (node, nod_comm, iphys, nod_fld)
 !!
 !!      subroutine input_MHD_restart_file_ctl                           &
-!!     &         (layer_tbl, node, ele, nod_fld)
+!!     &         (layer_tbl, node, ele, fluid, nod_fld)
 !!      subroutine input_restart_4_snapshot(node, nod_fld)
 !!@endverbatim
 !
@@ -157,18 +157,20 @@
 ! -----------------------------------------------------------------------
 !
       subroutine input_MHD_restart_file_ctl                             &
-     &         (layer_tbl, node, ele, nod_fld)
+     &         (layer_tbl, node, ele, fluid, nod_fld)
 !
+      use t_geometry_data_MHD
       use t_layering_ele_list
 !
-      type(layering_tbl), intent(in) :: layer_tbl
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid
+      type(layering_tbl), intent(in) :: layer_tbl
       type(phys_data), intent(inout) :: nod_fld
 !
 !
       call input_restart_files(node, nod_fld)
-      call input_model_coef_file(ele, layer_tbl)
+      call input_model_coef_file(ele, fluid, layer_tbl)
 !
       end subroutine input_MHD_restart_file_ctl
 !
@@ -308,15 +310,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine input_model_coef_file(ele, layer_tbl)
+      subroutine input_model_coef_file(ele, fluid, layer_tbl)
 !
       use m_control_parameter
+      use t_geometry_data_MHD
       use t_layering_ele_list
 !
       use set_parallel_file_name
       use sgs_ini_model_coefs_IO
 !
       type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid
       type(layering_tbl), intent(in) :: layer_tbl
 !
       character(len=kchara) :: fn_tmp
@@ -332,7 +336,7 @@
       end if
 !
       call add_dat_extension(fn_tmp, rst_sgs_coef_name)
-      call input_ini_model_coefs(ele, layer_tbl)
+      call input_ini_model_coefs(ele, fluid, layer_tbl)
 !
       end subroutine input_model_coef_file
 !

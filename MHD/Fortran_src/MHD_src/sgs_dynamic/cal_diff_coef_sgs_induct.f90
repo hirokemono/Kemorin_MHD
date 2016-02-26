@@ -6,7 +6,7 @@
 !!      subroutine s_cal_diff_coef_sgs_induct                           &
 !!     &         (iak_diff_uxb, icomp_sgs_uxb, icomp_diff_uxb,          &
 !!     &          ie_dfvx, ie_dfbx, nod_comm, node, ele, surf, sf_grp,  &
-!!     &          iphys, iphys_ele, ele_fld, conduct, layer_tbl,        &
+!!     &          iphys, iphys_ele, ele_fld, fluid, conduct, layer_tbl, &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
@@ -17,7 +17,7 @@
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
-!!        type(field_geometry_data), intent(in) :: conduct
+!!        type(field_geometry_data), intent(in) :: fluid, conduct
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
@@ -57,7 +57,7 @@
       subroutine s_cal_diff_coef_sgs_induct                             &
      &         (iak_diff_uxb, icomp_sgs_uxb, icomp_diff_uxb,            &
      &          ie_dfvx, ie_dfbx, nod_comm, node, ele, surf, sf_grp,    &
-     &          iphys, iphys_ele, ele_fld, conduct, layer_tbl,          &
+     &          iphys, iphys_ele, ele_fld, fluid, conduct, layer_tbl,   &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -84,6 +84,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(field_geometry_data), intent(in) :: fluid
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
@@ -183,7 +184,7 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_vector, iak_diff_uxb, icomp_diff_uxb
       call cal_diff_coef_fluid(layer_tbl,                               &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
+     &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
      &    n_vector, iak_diff_uxb, icomp_diff_uxb, intg_point_t_evo)
 !
 !

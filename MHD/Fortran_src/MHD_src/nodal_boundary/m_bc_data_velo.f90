@@ -4,8 +4,13 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine set_bc_velo_id(node, ele, nod_grp)
-!!      subroutine set_bc_press_id(node, ele, nod_grp, iphys, nod_fld)
+!!      subroutine set_bc_velo_id(node, ele, fluid, nod_grp)
+!!      subroutine set_bc_press_id                                      &
+!!     &         (node, ele, fluid, nod_grp, iphys, nod_fld)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(field_geometry_data), intent(in) :: fluid
+!!        type(group_data), intent(in) :: nod_grp
 !
       module m_bc_data_velo
 !
@@ -43,11 +48,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_velo_id(node, ele, nod_grp)
+      subroutine set_bc_velo_id(node, ele, fluid, nod_grp)
 !
       use t_geometry_data
       use t_group_data
-      use m_geometry_data_MHD
+      use t_geometry_data_MHD
       use m_bc_data_list
       use count_num_nod_bc_MHD
       use set_bc_vectors
@@ -57,6 +62,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid
       type(group_data), intent(in) :: nod_grp
 !
 !
@@ -93,30 +99,31 @@
 !   set node id in an element for velocity boundary 
 !
       if(iflag_debug .gt. 0) write(*,*) 'ele_nodal_bc_vector_layer'
-      call ele_nodal_bc_vector_layer(node, ele, fluid1, nod_bc1_v)
-      call ele_nodal_bc_vector_layer(node, ele, fluid1, sgs_bc1_v)
+      call ele_nodal_bc_vector_layer(node, ele, fluid, nod_bc1_v)
+      call ele_nodal_bc_vector_layer(node, ele, fluid, sgs_bc1_v)
 !
       if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_rotate'
-      call set_ele_nodal_bc_4_rotate(node, ele, fluid1, nod_bc1_rot)
+      call set_ele_nodal_bc_4_rotate(node, ele, fluid, nod_bc1_rot)
       if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_vfree'
-      call ele_nodal_bc_scalar_layer(node, ele, fluid1, nod_bc1_vfree)
+      call ele_nodal_bc_scalar_layer(node, ele, fluid, nod_bc1_vfree)
       if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_vr0'
-      call ele_nodal_bc_scalar_layer(node, ele, fluid1, nod_bc1_vr0)
+      call ele_nodal_bc_scalar_layer(node, ele, fluid, nod_bc1_vr0)
       if(iflag_debug .gt. 0) write(*,*) 'set_ele_nodal_bc_4_velo_sph'
-      call ele_nodal_bc_scalar_layer(node, ele, fluid1, nod_bc1_vsp)
+      call ele_nodal_bc_scalar_layer(node, ele, fluid, nod_bc1_vsp)
 !
 !
       end subroutine set_bc_velo_id
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_press_id(node, ele, nod_grp, iphys, nod_fld)
+      subroutine set_bc_press_id                                        &
+     &         (node, ele, fluid, nod_grp, iphys, nod_fld)
 !
       use t_geometry_data
       use t_group_data
       use t_phys_address
       use t_phys_data
-      use m_geometry_data_MHD
+      use t_geometry_data_MHD
       use m_bc_data_list
       use count_num_nod_bc_MHD
       use set_bc_scalars
@@ -125,6 +132,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid
       type(group_data), intent(in) :: nod_grp
       type(phys_address), intent(in) :: iphys
 !
@@ -150,8 +158,8 @@
 !
 !   set node id in an element for the pressure boundary
 !
-      call ele_nodal_bc_potential_layer(node, ele, fluid1, nod_bc1_p)
-      call ele_nodal_bc_potential_layer(node, ele, fluid1, sgs_bc1_p)
+      call ele_nodal_bc_potential_layer(node, ele, fluid, nod_bc1_p)
+      call ele_nodal_bc_potential_layer(node, ele, fluid, sgs_bc1_p)
 !
       end subroutine set_bc_press_id
 !

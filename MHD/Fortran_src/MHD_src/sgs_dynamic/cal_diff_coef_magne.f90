@@ -5,13 +5,14 @@
 !
 !!      subroutine s_cal_diff_coef_magne(iak_diff_b, icomp_diff_b,      &
 !!     &          nod_comm, node, ele, surf, sf_grp,                    &
-!!     &          iphys, iphys_ele, ele_fld, layer_tbl,                 &
+!!     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          FEM_elens, m_lump, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
+!!        type(field_geometry_data), intent(in) :: fluid
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
@@ -31,6 +32,7 @@
       use m_precision
 !
       use t_comm_table
+      use t_geometry_data_MHD
       use t_geometry_data
       use t_surface_data
       use t_group_data
@@ -52,7 +54,7 @@
 !
       subroutine s_cal_diff_coef_magne(iak_diff_b, icomp_diff_b,        &
      &          nod_comm, node, ele, surf, sf_grp,                      &
-     &          iphys, iphys_ele, ele_fld, layer_tbl,                   &
+     &          iphys, iphys_ele, ele_fld, fluid, layer_tbl,            &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          FEM_elens, m_lump, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -81,6 +83,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(field_geometry_data), intent(in) :: fluid
       type(surface_group_data), intent(in) :: sf_grp
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
@@ -214,7 +217,7 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_sym_tensor, iak_diff_b, icomp_diff_b
       call cal_diff_coef_fluid(layer_tbl,                               &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
+     &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
      &    n_sym_tensor, iak_diff_b, icomp_diff_b, intg_point_t_evo)
 !
       iflag_diff_coefs(iak_diff_b) = 1

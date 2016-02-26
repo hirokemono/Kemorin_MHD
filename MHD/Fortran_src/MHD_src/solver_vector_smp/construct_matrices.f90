@@ -4,12 +4,12 @@
 !     Written by H. Matsui on June, 2005
 !
 !!      subroutine set_data_4_const_matrices                            &
-!!     &         (node, ele, rhs_tbl, mat_tbl_q)
-!!      subroutine update_matrices(node, ele, surf, sf_grp,             &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q,                     &
+!!     &         (node, ele, fluid, conduct, rhs_tbl, mat_tbl_q)
+!!      subroutine update_matrices(node, ele, surf, fluid, conduct,     &
+!!     &          sf_grp, jac_3d_q, jac_3d_l, jac_sf_grp_q,             &
 !!     &          rhs_tbl, mat_tbl_q, mhd_fem_wk)
-!!      subroutine set_aiccg_matrices(node, ele, surf, sf_grp,          &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q,                     &
+!!      subroutine set_aiccg_matrices(node, ele, surf, fluid, conduct,  &
+!!     &          sf_grp, jac_3d_q, jac_3d_l, jac_sf_grp_q,             &
 !!     &          rhs_tbl, mat_tbl_q, mhd_fem_wk)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -49,13 +49,14 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_data_4_const_matrices                              &
-     &         (node, ele, rhs_tbl, mat_tbl_q)
+     &         (node, ele, fluid, conduct, rhs_tbl, mat_tbl_q)
 !
       use m_solver_djds_MHD
       use t_solver_djds
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid, conduct
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       type(table_mat_const), intent(inout) :: mat_tbl_q
@@ -63,7 +64,8 @@
 !
 !   set off_diagonal information
 !
-      call set_index_list_4_matrix(node, ele, rhs_tbl, mat_tbl_q)
+      call set_index_list_4_matrix                                      &
+     &   (node, ele, fluid, conduct, rhs_tbl, mat_tbl_q)
 !
 !   deallocate work arrays
 !
@@ -84,8 +86,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine update_matrices(node, ele, surf, sf_grp,               &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q,                       &
+      subroutine update_matrices(node, ele, surf, fluid, conduct,       &
+     &          sf_grp, jac_3d_q, jac_3d_l, jac_sf_grp_q,               &
      &          rhs_tbl, mat_tbl_q, mhd_fem_wk)
 !
       use m_control_parameter
@@ -94,6 +96,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(field_geometry_data), intent(in) :: fluid, conduct
       type(surface_group_data), intent(in) :: sf_grp
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
@@ -112,9 +115,9 @@
 !
       if (iflag .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'matrix assemble again'
-        call set_aiccg_matrices(node, ele, surf, sf_grp,               &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q,                      &
-     &          rhs_tbl, mat_tbl_q, mhd_fem_wk)
+        call set_aiccg_matrices(node, ele, surf, fluid, conduct,        &
+     &      sf_grp, jac_3d_q, jac_3d_l, jac_sf_grp_q,                   &
+     &      rhs_tbl, mat_tbl_q, mhd_fem_wk)
         iflag_flex_step_changed = 0
       end if
 !
@@ -122,12 +125,11 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine set_aiccg_matrices(node, ele, surf, sf_grp,            &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q,                       &
+      subroutine set_aiccg_matrices(node, ele, surf, fluid, conduct,    &
+     &          sf_grp, jac_3d_q, jac_3d_l, jac_sf_grp_q,               &
      &          rhs_tbl, mat_tbl_q, mhd_fem_wk)
 !
       use m_control_parameter
-      use m_geometry_data_MHD
       use m_iccg_parameter
       use m_sorted_node_MHD
       use m_finite_element_matrix
@@ -145,6 +147,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
+      type(field_geometry_data), intent(in) :: fluid, conduct
       type(surface_group_data), intent(in) :: sf_grp
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
@@ -154,7 +157,7 @@
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !
 !
-      call reset_aiccg_matrices(node, ele, fluid1)
+      call reset_aiccg_matrices(node, ele, fluid)
 !
 !   set coefficients of matrix
 !
@@ -170,7 +173,7 @@
       if (iflag_scheme .eq. id_Crank_nicolson) then
         if (iflag_debug.eq.1) write(*,*) 'int_vol_crank_mat_lump'
         call int_vol_crank_mat_lump                                     &
-     &     (node, fluid1, conduct1, mhd_fem_wk)
+     &     (node, fluid, conduct, mhd_fem_wk)
         if (iflag_debug.eq.1) write(*,*) 'int_vol_crank_matrices'
         call int_vol_crank_matrices(ele, jac_3d_q, rhs_tbl,             &
      &      mat_tbl_q, mat_tbl_fl_q, mat_tbl_full_cd_q,                 &
@@ -205,7 +208,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine set_index_list_4_matrix                                &
-     &         (node, ele, rhs_tbl, mat_tbl_q)
+     &         (node, ele, fluid, conduct, rhs_tbl, mat_tbl_q)
 !
       use calypso_mpi
       use m_control_parameter
@@ -216,6 +219,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid, conduct
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
       type(table_mat_const), intent(inout) :: mat_tbl_q
@@ -234,22 +238,22 @@
      &  .or. iflag_t_evo_4_temp .ne. id_no_evolution                    &
      &  .or. iflag_t_evo_4_composit .ne. id_no_evolution) then
 !        write(*,*) 'set_index_list_4_mat_fl'
-        call set_index_list_4_mat_fl(node, ele, rhs_tbl)
+        call set_index_list_4_mat_fl(node, ele, fluid, rhs_tbl)
 !        write(*,*) 'set_index_list_4_mat_fl_l'
-        call set_index_list_4_mat_fl_l(node, ele, rhs_tbl)
+        call set_index_list_4_mat_fl_l(node, ele, fluid, rhs_tbl)
       end if
 !
       if (iflag_t_evo_4_magne .ne. id_no_evolution                      &
      &     .or. iflag_t_evo_4_vect_p .eq. id_Crank_nicolson_cmass) then
         write(*,*) 'set_index_list_4_mat_cd'
-        call set_index_list_4_mat_cd(node, ele, rhs_tbl)
+        call set_index_list_4_mat_cd(node, ele, conduct, rhs_tbl)
 !        write(*,*) 'set_index_list_4_mat_ins'
-!        call set_index_list_4_mat_ins(node, ele, rhs_tbl)
+!        call set_index_list_4_mat_ins(node, ele, insulate, rhs_tbl)
 !
 !        write(*,*) 'set_index_list_4_mat_cd_l'
-!        call set_index_list_4_mat_cd_l(node, ele, rhs_tbl)
+!        call set_index_list_4_mat_cd_l(node, ele, conduct, rhs_tbl)
 !        write(*,*) 'set_index_list_4_mat_ins_l'
-!        call set_index_list_4_mat_ins_l(node, ele, rhs_tbl)
+!        call set_index_list_4_mat_ins_l(node, ele, insulate, rhs_tbl)
       end if
 !
 !

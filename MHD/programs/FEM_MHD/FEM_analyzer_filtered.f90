@@ -34,7 +34,6 @@
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
-      use m_jacobian_sf_grp
       use m_element_id_4_node
       use m_finite_element_matrix
       use m_filter_elength
@@ -133,9 +132,9 @@
 !     -----Output monitor date
 !
       if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-      call output_time_step_control                                     &
-     &   (node1, ele1, fluid1, iphys, nod_fld1, iphys_ele, fld_ele1,    &
-     &    jac1_3d_q, jac1_3d_l, fem1_wk, mhd_fem1_wk)
+      call output_time_step_control(node1, ele1, fluid1, conduct1,      &
+     &    iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, jac1_3d_l,   &
+     &    fem1_wk, mhd_fem1_wk)
 !
       if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
       call output_monitor_control(node1, nod_fld1)

@@ -39,8 +39,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_time_step_control                               &
-     &         (node, ele, fluid, iphys, nod_fld, iphys_ele, ele_fld,   &
+      subroutine output_time_step_control(node, ele, fluid, conduct,    &
+     &          iphys, nod_fld, iphys_ele, ele_fld,                     &
      &          jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
 !
       use calypso_mpi
@@ -57,12 +57,12 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid, conduct
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
-      type(field_geometry_data), intent(in) :: fluid
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
@@ -74,8 +74,8 @@
         if(my_rank .eq. 0) write(*,'(a10,i16,a10,e15.8)')               &
      &            'i_step=',i_step_MHD,'time=',time
 !
-      call s_int_mean_squares(node, ele, iphys, nod_fld,                &
-     &    jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
+      call s_int_mean_squares(node, ele, fluid, conduct,                &
+     &    iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
       call int_no_evo_mean_squares(node, ele, iphys, nod_fld,           &
      &    iphys_ele, ele_fld, fluid, jac_3d_q, fem_wk)
 !

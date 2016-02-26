@@ -4,10 +4,11 @@
 !      Written by H. Matsui on Nov., 2009
 !
 !!      subroutine set_new_time_and_step(node, iphys, nod_fld)
-!!      subroutine s_check_flexible_time_step(node, ele,                &
+!!      subroutine s_check_flexible_time_step(node, ele, fluid,         &
 !!     &          iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
+!!        type(field_geometry_data), intent(in) :: fluid
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -77,9 +78,10 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_check_flexible_time_step(node, ele,                  &
+      subroutine s_check_flexible_time_step(node, ele, fluid,           &
      &          iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
+      use m_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
       use t_phys_address
@@ -90,6 +92,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
@@ -98,8 +101,8 @@
 !
       if( mod(istep_flex_to_max,itwo) .eq. izero) then
 !        call s_check_deltat_by_previous(node, iphys, nod_fld)
-        call s_check_deltat_by_prev_rms                                 &
-     &    (node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+        call s_check_deltat_by_prev_rms(node, ele, fluid,               &
+     &      iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
         if(d_ratio_allmax .gt. min_eps_to_expand_dt) then
           call shrink_delta_t

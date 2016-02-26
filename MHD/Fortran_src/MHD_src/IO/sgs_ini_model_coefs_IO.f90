@@ -4,17 +4,18 @@
 !     programmed by H.Matsui in 2005
 !     modified by H. Matsui on Aug., 2007
 !
-!      subroutine output_ini_model_coefs
-!      subroutine input_ini_model_coefs(ele, layer_tbl)
-!        type(element_data), intent(in) :: ele
-!        type(layering_tbl), intent(in) :: layer_tbl
+!!      subroutine output_ini_model_coefs
+!!      subroutine input_ini_model_coefs(ele, fluid, layer_tbl)
+!!        type(element_data), intent(in) :: ele
+!!        type(field_geometry_data), intent(in) :: fluid
+!!        type(layering_tbl), intent(in) :: layer_tbl
 !
       module sgs_ini_model_coefs_IO
 !
       use m_precision
 !
-      use m_constants
       use calypso_mpi
+      use m_constants
       use m_control_parameter
       use m_t_step_parameter
 !
@@ -108,18 +109,20 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine input_ini_model_coefs(ele, layer_tbl)
+      subroutine input_ini_model_coefs(ele, fluid, layer_tbl)
 !
       use t_geometry_data
+      use t_geometry_data_MHD
       use t_layering_ele_list
 !
       type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid
       type(layering_tbl), intent(in) :: layer_tbl
 !
 !
       call read_ini_model_coefs
       call set_ini_model_coefs_from_IO
-      call set_initial_model_coefs_ele(ele, layer_tbl%e_grp)
+      call set_initial_model_coefs_ele(ele, fluid, layer_tbl%e_grp)
 !
       end subroutine input_ini_model_coefs
 !
@@ -241,15 +244,16 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_initial_model_coefs_ele(ele, layer_egrp)
+      subroutine set_initial_model_coefs_ele(ele, fluid, layer_egrp)
 !
       use t_geometry_data
       use t_group_data
+      use t_geometry_data_MHD
       use m_SGS_model_coefs
-      use m_geometry_data_MHD
       use set_sgs_diff_model_coefs
 !
       type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid
       type(group_data), intent(in) :: layer_egrp
 !
       integer(kind = kint) :: i, ist
@@ -265,7 +269,7 @@
         if (iset_DIFF_model_coefs .eq. 0) then
           do i = 1, num_diff_kinds
             call set_diff_coefs_whole_ele                               &
-     &         (fluid1%istack_ele_fld_smp, i, ele)
+     &         (fluid%istack_ele_fld_smp, i, ele)
           end do
         else
           do i = 1, num_diff_kinds

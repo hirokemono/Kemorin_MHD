@@ -8,16 +8,16 @@
 !!
 !!@verbatim
 !!      subroutine update_with_vector_potential                         &
-!!     &         (nod_comm, node, ele, surf, conduct, sf_grp, iphys,    &
-!!     &          iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
-!!     &          rhs_tbl, FEM_elen, layer_tbl, m_lump,                 &
+!!     &         (nod_comm, node, ele, surf, fluid, conduct, sf_grp,    &
+!!     &          iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l,        &
+!!     &          jac_sf_grp_q, rhs_tbl, FEM_elen, layer_tbl, m_lump,   &
 !!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
 !!        type(surface_group_data), intent(in) :: sf_grp
-!!        type(field_geometry_data), intent(in) :: conduct
+!!        type(field_geometry_data), intent(in) :: fluid, conduct
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_address), intent(in) :: iphys_ele
 !!        type(phys_data), intent(in) :: ele_fld
@@ -63,9 +63,9 @@
 !-----------------------------------------------------------------------
 !
       subroutine update_with_vector_potential                           &
-     &         (nod_comm, node, ele, surf, conduct, sf_grp, iphys,      &
-     &          iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,   &
-     &          rhs_tbl, FEM_elen, layer_tbl, m_lump,                   &
+     &         (nod_comm, node, ele, surf, fluid, conduct, sf_grp,      &
+     &          iphys, iphys_ele, ele_fld, jac_3d_q, jac_3d_l,          &
+     &          jac_sf_grp_q, rhs_tbl, FEM_elen, layer_tbl, m_lump,     &
      &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_control_parameter
@@ -87,7 +87,7 @@
       type(element_data), intent(in) :: ele
       type(surface_data), intent(in) :: surf
       type(surface_group_data), intent(in) :: sf_grp
-      type(field_geometry_data), intent(in) :: conduct
+      type(field_geometry_data), intent(in) :: fluid, conduct
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
       type(phys_data), intent(in) :: ele_fld
@@ -145,7 +145,7 @@
      &        .or. iflag_SGS_model .eq. id_SGS_similarity) then
               call s_cal_diff_coef_vector_p(iak_diff_b, icomp_diff_b,   &
      &            nod_comm, node, ele, surf, sf_grp,                    &
-     &            iphys, iphys_ele, ele_fld, layer_tbl,                 &
+     &            iphys, iphys_ele, ele_fld, fluid, layer_tbl,          &
      &            jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
      &            FEM_elen, m_lump, fem_wk, f_l, f_nl, nod_fld)
             end if

@@ -198,7 +198,7 @@
       if (iflag_debug.gt.0)  write(*,*)                                 &
      &   'cal_diff_coef_fluid', n_vector, iak_diff_mf, icomp_diff_mf
       call cal_diff_coef_fluid(layer_tbl,                               &
-     &    node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,                &
+     &    node, ele, fluid, iphys, nod_fld, jac_3d_q, jac_3d_l,         &
      &    n_vector, iak_diff_mf, icomp_diff_mf, intg_point_t_evo)
 !
 !

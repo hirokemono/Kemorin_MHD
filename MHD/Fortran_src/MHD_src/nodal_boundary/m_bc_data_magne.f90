@@ -7,9 +7,11 @@
 !!      subroutine set_bc_vect_p_id(node, ele, nod_grp)
 !!      subroutine set_bc_magne_id(node, ele, nod_grp, nod_fld)
 !!      subroutine set_bc_current_id(node, ele, nod_grp)
-!!      subroutine set_bc_m_potential_id(node, ele, nod_grp)
+!!      subroutine set_bc_m_potential_id                                &
+!!     &         (node, ele, conduct, insulate, nod_grp)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
+!!        type(field_geometry_data), intent(in) :: conduct, insulate
 !!        type(group_data), intent(in) :: nod_grp
 !
       module m_bc_data_magne
@@ -157,11 +159,12 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine set_bc_m_potential_id(node, ele, nod_grp)
+      subroutine set_bc_m_potential_id                                  &
+     &         (node, ele, conduct, insulate, nod_grp)
 !
       use t_geometry_data
       use t_group_data
-      use m_geometry_data_MHD
+      use t_geometry_data_MHD
       use m_bc_data_list
       use count_num_nod_bc_MHD
       use set_bc_scalars
@@ -169,6 +172,7 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: conduct, insulate
       type(group_data), intent(in) :: nod_grp
 !
 !
@@ -187,9 +191,9 @@
       call ele_nodal_bc_potential_whole(node, ele, nod_bc1_f)
 !
       call set_ele_nodal_bc_mag_p_layer                                 &
-     &   (node, ele, insulate1, nod_bc1_f, nod_bc1_fins)
+     &   (node, ele, insulate, nod_bc1_f, nod_bc1_fins)
       call set_ele_nodal_bc_mag_p_layer                                 &
-     &   (node, ele, conduct1,  nod_bc1_f, nod_bc1_fcd)
+     &   (node, ele, conduct,  nod_bc1_f, nod_bc1_fcd)
       call dealloc_scalar_ibc_type(nod_bc1_f)
 !
 !

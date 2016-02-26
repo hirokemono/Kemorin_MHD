@@ -6,7 +6,7 @@
 !
 !> @brief Field data in element for FEM
 !
-!      subroutine initialize_ele_field_data
+!      subroutine initialize_ele_field_data(numele)
 !      subroutine deallocate_ele_data_arrays
 !      subroutine set_ele_field_names_MHD(nod_fld)
 !
@@ -34,13 +34,13 @@
 !
 ! -------------------------------------------------------------------
 !
-      subroutine initialize_ele_field_data
+      subroutine initialize_ele_field_data(numele)
 !
-      use m_geometry_data
+      integer(kind = kint), intent(in) :: numele
 !
 !  allocatie element field
 !
-      call alloc_phys_data_type(ele1%numele, fld_ele1)
+      call alloc_phys_data_type(numele, fld_ele1)
       call set_element_field_address
 !
       end subroutine initialize_ele_field_data

@@ -10,14 +10,16 @@
 !!      subroutine cal_diff_coef(layer_tbl,                             &
 !!     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,        &
 !!     &          numdir, ifield_d, icomp_f, n_int)
-!!      subroutine cal_diff_coef_fluid(layer_tbl,                       &
-!!     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,        &
+!!      subroutine cal_diff_coef_fluid(layer_tbl, node, ele, fluid,     &
+!!     &          iphys, nod_fld, jac_3d_q, jac_3d_l,                   &
 !!     &          numdir, ifield_d, icomp_f, n_int)
-!!      subroutine cal_diff_coef_conduct(layer_tbl,                     &
-!!     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,        &
+!!      subroutine cal_diff_coef_conduct(layer_tbl, node, ele, conduct, &
+!!     &          iphys, nod_fld, jac_3d_q, jac_3d_l,                   &
 !!     &          numdir, ifield_d, icomp_f, n_int)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
+!!        type(field_geometry_data), intent(in) :: fluid
+!!        type(field_geometry_data), intent(in) :: conduct
 !!        type(layering_tbl), intent(in) :: layer_tbl
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
@@ -28,6 +30,7 @@
 !
       use m_precision
 !
+      use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_address
       use t_phys_data
@@ -109,15 +112,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_diff_coef_fluid(layer_tbl,                         &
-     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,          &
+      subroutine cal_diff_coef_fluid(layer_tbl, node, ele, fluid,       &
+     &          iphys, nod_fld, jac_3d_q, jac_3d_l,                     &
      &          numdir, ifield_d, icomp_f, n_int)
 !
       use m_control_parameter
-      use m_geometry_data_MHD
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid
       type(layering_tbl), intent(in) :: layer_tbl
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
@@ -130,24 +133,24 @@
      &      node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,              &
      &      numdir, ifield_d, icomp_f, n_int)
       else
-        call cal_whole_diff_coef(layer_tbl, fluid1%istack_ele_fld_smp,  &
+        call cal_whole_diff_coef(layer_tbl, fluid%istack_ele_fld_smp,   &
      &      node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,              &
-     &      numdir, ifield_d, icomp_f, n_int, fluid1%volume)
+     &      numdir, ifield_d, icomp_f, n_int, fluid%volume)
       end if
 !
       end subroutine cal_diff_coef_fluid
 !
 !-----------------------------------------------------------------------
 !
-      subroutine cal_diff_coef_conduct(layer_tbl,                       &
-     &          node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,          &
+      subroutine cal_diff_coef_conduct(layer_tbl, node, ele, conduct,   &
+     &          iphys, nod_fld, jac_3d_q, jac_3d_l,                     &
      &          numdir, ifield_d, icomp_f, n_int)
 !
       use m_control_parameter
-      use m_geometry_data_MHD
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: conduct
       type(layering_tbl), intent(in) :: layer_tbl
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
@@ -162,9 +165,9 @@
      &      numdir, ifield_d, icomp_f, n_int)
       else
         call cal_whole_diff_coef                                        &
-     &     (layer_tbl, conduct1%istack_ele_fld_smp,                     &
+     &     (layer_tbl, conduct%istack_ele_fld_smp,                      &
      &      node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l,              &
-     &      numdir, ifield_d, icomp_f, n_int, conduct1%volume)
+     &      numdir, ifield_d, icomp_f, n_int, conduct%volume)
       end if
 !
       end subroutine cal_diff_coef_conduct

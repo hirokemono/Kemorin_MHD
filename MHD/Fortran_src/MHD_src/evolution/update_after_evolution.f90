@@ -129,7 +129,7 @@
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
      &      FEM_elens, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call update_with_vector_potential(nod_comm, node, ele, surf,    &
-     &      conduct, sf_grp, iphys, iphys_ele, ele_fld,                 &
+     &      fluid, conduct, sf_grp, iphys, iphys_ele, ele_fld,          &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,       &
      &      layer_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
@@ -141,7 +141,7 @@
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
      &      FEM_elens, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         call update_with_magnetic_field(nod_comm, node, ele, surf,      &
-     &      conduct, sf_grp, iphys, iphys_ele, ele_fld,                 &
+     &      fluid, conduct, sf_grp, iphys, iphys_ele, ele_fld,          &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,       &
      &      layer_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
@@ -259,12 +259,12 @@
 !
       if (iphys%i_vecp .ne. 0) then
         call update_with_vector_potential(nod_comm, node, ele, surf,    &
-     &      conduct, sf_grp, iphys, iphys_ele, ele_fld,                 &
+     &      fluid, conduct, sf_grp, iphys, iphys_ele, ele_fld,          &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,       &
      &      layer_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       else if (iphys%i_magne.ne.0) then
         call update_with_magnetic_field(nod_comm, node, ele, surf,      &
-     &      conduct, sf_grp, iphys, iphys_ele, ele_fld,                 &
+     &      fluid, conduct, sf_grp, iphys, iphys_ele, ele_fld,          &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,       &
      &      layer_tbl, m_lump, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if

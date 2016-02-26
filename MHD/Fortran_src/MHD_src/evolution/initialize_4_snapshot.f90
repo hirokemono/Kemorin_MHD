@@ -35,7 +35,6 @@
       use m_ele_material_property
       use m_mean_square_values
       use m_jacobians
-      use m_jacobian_sf_grp
       use m_work_4_dynamic_model
       use m_work_layer_correlate
       use m_boundary_condition_IDs
@@ -73,6 +72,7 @@
       use set_normal_vectors
       use set_table_type_RHS_assemble
       use fem_mhd_rst_IO_control
+      use const_jacobians_sf_grp
 !
       use nod_phys_send_recv
 !
@@ -80,8 +80,8 @@
 !
 !     --------------------- 
 !
-      if (iflag_debug.eq.1) write(*,*)' s_reordering_by_layers_snap'
-      call s_reordering_by_layers_snap
+      if (iflag_debug.eq.1) write(*,*)' reordering_by_layers_snap'
+      call reordering_by_layers_snap
 !
       if (iflag_debug.eq.1) write(*,*)' set_layers'
       call set_layers(node1, ele1, ele_grp1)
@@ -157,7 +157,8 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
-      call allocate_array
+      call allocate_array(node1, ele1, iphys, nod_fld1,                 &
+     &    m1_lump, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, label_sim)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
       call set_reference_temp                                           &
@@ -196,7 +197,8 @@
      &   (node1, ele1, sf_grp1, layer_tbl, infty_list,                  &
      &    jac1_3d_l, jac1_3d_q)
 !
-      call cal_jacobian_surf_grp(sf_grp1)
+      call const_jacobian_sf_grp(node1, ele1, surf1, sf_grp1,           &
+     &                           jac1_sf_grp_2d_l, jac1_sf_grp_2d_q)
 !
 !     --------------------- 
 !
@@ -216,7 +218,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' set_bc_id_data'
-      call set_bc_id_data(node1, ele1, nod_grp1, iphys, nod_fld1)
+      call set_bc_id_data(node1, ele1, fluid1, conduct1, insulate1,     &
+     &    nod_grp1, iphys, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*)' set_surf_bc_data'
       call set_surf_bc_data(node1, ele1, surf1, sf_grp1,                &

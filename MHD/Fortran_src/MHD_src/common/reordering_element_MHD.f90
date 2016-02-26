@@ -27,16 +27,19 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine reordering_element_info(ele_grp, sf_grp)
+      subroutine reordering_element_info(ele1, ele_grp, sf_grp)
 !
-      use m_geometry_data
-      use m_geometry_data_MHD
       use m_work_4_MHD_layering
+      use m_geometry_data_MHD
+      use t_geometry_data
       use t_group_data
 !
+      type(element_data), intent(in) :: ele1
       type(group_data), intent(inout) :: ele_grp
       type(surface_group_data), intent(inout) :: sf_grp
 !
+!
+      call allocate_element_connect_org(ele1%numele, ele1%nnod_4_ele)
 !
       call reordering_element_connect(ele1%numele, ele1%nnod_4_ele,     &
      &    new2oldele_layer(1), iele_global_org(1), ele1%iele_global,    &

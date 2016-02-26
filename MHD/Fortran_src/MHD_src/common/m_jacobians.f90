@@ -100,19 +100,27 @@
       use m_constants
       use m_precision
       use t_jacobian_3d
+      use t_jacobian_2d
 !
       implicit  none
 !
 !
 !>     Stracture for Jacobians for linear element
       type(jacobians_3d), save :: jac1_3d_l
-!
 !>     Stracture for Jacobians for quad element
       type(jacobians_3d), save :: jac1_3d_q
 !
 !
 !>     Stracture for linear Jacobians for quad element
       type(jacobians_3d), save :: jac1_3d_lq
+!
+!
+!>     Stracture of linear Jacobians for surafce group
+      type(jacobians_2d), save :: jac1_sf_grp_2d_l
+!>     Stracture of quadrature Jacobians for surafce group
+      type(jacobians_2d), save :: jac1_sf_grp_2d_q
+!>     Stracture of quadrature Jacobians for linear surafce group
+      type(jacobians_2d), save :: jac1_sf_grp_2d_ql
 !
 !  ---------------------------------------------------------------------
 !

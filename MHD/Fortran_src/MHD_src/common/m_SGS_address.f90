@@ -67,7 +67,6 @@
       subroutine set_SGS_addresses
 !
       use m_control_parameter
-      use m_int_vol_data
 !
       integer(kind = kint) :: i
 !

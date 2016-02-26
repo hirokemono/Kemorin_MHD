@@ -223,7 +223,7 @@
           call s_cal_diff_coef_sgs_induct                               &
      &       (iak_diff_uxb, icomp_sgs_uxb, icomp_diff_uxb,              &
      &        ie_dfvx, ie_dfbx, nod_comm, node, ele, surf, sf_grp,      &
-     &        iphys, iphys_ele, ele_fld, conduct, layer_tbl,            &
+     &        iphys, iphys_ele, ele_fld, fluid, conduct, layer_tbl,     &
      &        jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elen,      &
      &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         end if

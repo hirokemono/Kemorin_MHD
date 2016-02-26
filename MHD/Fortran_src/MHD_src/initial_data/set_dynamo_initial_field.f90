@@ -59,7 +59,8 @@
 !
 !
       if(iflag_restart .eq. i_rst_by_file) then
-        call input_MHD_restart_file_ctl(layer_tbl, node, ele, nod_fld)
+        call input_MHD_restart_file_ctl                                 &
+     &     (layer_tbl, node, ele, fluid, nod_fld)
       else
         call set_initial_data(node, fluid, iphys, nod_fld)
       end if

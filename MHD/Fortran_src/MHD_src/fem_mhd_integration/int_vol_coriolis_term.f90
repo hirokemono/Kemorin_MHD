@@ -5,7 +5,7 @@
 !
 !!      subroutine int_coriolis_nod_exp                                 &
 !!     &         (node, mhd_fem_wk, i_velo, nod_fld, f_l, f1_nl)
-!!      subroutine int_vol_coriolis_crank_ele(node, ele, fluid1,        &
+!!      subroutine int_vol_coriolis_crank_ele(node, ele, fluid,         &
 !!     &          jac_3d, rhs_tbl, i_velo, nod_fld, fem_wk, f_l)
 !!
 !!      subroutine int_buoyancy_nod_exp(node, mhd_fem_wk,               &
@@ -66,7 +66,7 @@
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine int_vol_coriolis_crank_ele(node, ele, fluid1,          &
+      subroutine int_vol_coriolis_crank_ele(node, ele, fluid,           &
      &          jac_3d, rhs_tbl, i_velo, nod_fld, fem_wk, f_l)
 !
       use m_control_parameter
@@ -82,7 +82,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
-      type(field_geometry_data), intent(in) :: fluid1
+      type(field_geometry_data), intent(in) :: fluid
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -96,7 +96,7 @@
         call vector_cst_phys_2_each_ele(node, ele, nod_fld,             &
      &      k2, i_velo, coef_cor, fem_wk%vector_1)
         call fem_skv_coriolis_type                                      &
-     &     (fluid1%istack_ele_fld_smp, intg_point_t_evo,                &
+     &     (fluid%istack_ele_fld_smp, intg_point_t_evo,                 &
      &      k2, fem_wk%vector_1, angular, ele, jac_3d, fem_wk%sk6)
       end do
 !
