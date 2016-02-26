@@ -43,7 +43,6 @@
       call const_next_nod_hang_type(node1, hang1%nod_hang,              &
      &    next_tbl1%neib_nod, neib_hang1)
 !
-!
       end subroutine const_next_nod_id_w_hang
 !
 !-----------------------------------------------------------------------

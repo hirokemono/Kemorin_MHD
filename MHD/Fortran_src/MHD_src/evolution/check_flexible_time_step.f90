@@ -3,8 +3,15 @@
 !
 !      Written by H. Matsui on Nov., 2009
 !
-!      subroutine set_new_time_and_step
-!      subroutine s_check_flexible_time_step
+!!      subroutine set_new_time_and_step(node, iphys, nod_fld)
+!!      subroutine s_check_flexible_time_step(node, ele,                &
+!!     &          iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_data), intent(in) :: nod_fld
+!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !
       module check_flexible_time_step
 !
@@ -39,11 +46,17 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine set_new_time_and_step
+      subroutine set_new_time_and_step(node, iphys, nod_fld)
 !
-      use m_geometry_data
-      use m_node_phys_data
+      use t_geometry_data
+      use t_phys_data
+      use t_phys_address
+!
       use copy_field_data_4_dt_check
+!
+      type(node_data), intent(in) :: node
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(inout) :: nod_fld
 !
 !
       time = time + dt
@@ -58,25 +71,35 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 's_copy_field_data_for_dt_check'
-      call s_copy_field_data_for_dt_check(node1, iphys, nod_fld1)
+      call s_copy_field_data_for_dt_check(node, iphys, nod_fld)
 !
       end subroutine set_new_time_and_step
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_check_flexible_time_step
+      subroutine s_check_flexible_time_step(node, ele,                  &
+     &          iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
-      use m_geometry_data
-      use m_node_phys_data
-      use m_jacobians
-      use m_finite_element_matrix
+      use t_geometry_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_3d
+      use t_finite_element_mat
+!
       use check_deltat_by_prev_rms
+!
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(phys_address), intent(in) :: iphys
+      type(phys_data), intent(in) :: nod_fld
+      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(work_finite_element_mat), intent(inout) :: fem_wk
 !
 !
       if( mod(istep_flex_to_max,itwo) .eq. izero) then
-!        call s_check_deltat_by_previous(node1, iphys, nod_fld1)
+!        call s_check_deltat_by_previous(node, iphys, nod_fld)
         call s_check_deltat_by_prev_rms                                 &
-     &    (node1, ele1, iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk)
+     &    (node, ele, iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
         if(d_ratio_allmax .gt. min_eps_to_expand_dt) then
           call shrink_delta_t

@@ -7,7 +7,30 @@
 !> @brief Evaluate field data for time integration for FEM dynamo model
 !!
 !!@verbatim
-!!      subroutine update_with_vector_potential(layer_tbl)
+!!      subroutine update_with_vector_potential                         &
+!!     &         (nod_comm, node, ele, surf, conduct, sf_grp, iphys,    &
+!!     &          iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q, &
+!!     &          rhs_tbl, FEM_elen, layer_tbl, m_lump,                 &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node
+!!        type(element_data), intent(in) :: ele
+!!        type(surface_data), intent(in) :: surf
+!!        type(surface_group_data), intent(in) :: sf_grp
+!!        type(field_geometry_data), intent(in) :: conduct
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(phys_data), intent(in) :: ele_fld
+!!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+!!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+!!        type(gradient_model_data_type), intent(in) :: FEM_elen
+!!        type(lumped_mass_matrices), intent(in) :: m_lump
+!!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+!!        type(work_finite_element_mat), intent(inout) :: fem_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+!!        type(phys_data), intent(inout) :: nod_fld
 !!@endverbatim
 !
       module update_with_vector_p
@@ -16,10 +39,19 @@
 !
       use m_machine_parameter
       use m_control_parameter
-      use m_int_vol_data
-      use m_nod_comm_table
-      use m_finite_element_matrix
 !
+      use t_comm_table
+      use t_geometry_data_MHD
+      use t_geometry_data
+      use t_surface_data
+      use t_group_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_3d
+      use t_table_FEM_const
+      use t_finite_element_mat
+      use t_MHD_finite_element_mat
+      use t_filter_elength
       use t_layering_ele_list
 !
       implicit none
@@ -30,20 +62,14 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine update_with_vector_potential(layer_tbl)
+      subroutine update_with_vector_potential                           &
+     &         (nod_comm, node, ele, surf, conduct, sf_grp, iphys,      &
+     &          iphys_ele, ele_fld, jac_3d_q, jac_3d_l, jac_sf_grp_q,   &
+     &          rhs_tbl, FEM_elen, layer_tbl, m_lump,                   &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_control_parameter
       use m_t_step_parameter
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
-      use m_geometry_data_MHD
-      use m_node_phys_data
-      use m_element_phys_data
-      use m_jacobians
-      use m_jacobian_sf_grp
-      use m_element_id_4_node
-      use m_filter_elength
       use m_surf_data_vector_p
       use m_bc_data_magne
       use m_SGS_address
@@ -56,7 +82,26 @@
       use cal_diff_coef_vector_p
       use cal_w_filtering_scalars
 !
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node
+      type(element_data), intent(in) :: ele
+      type(surface_data), intent(in) :: surf
+      type(surface_group_data), intent(in) :: sf_grp
+      type(field_geometry_data), intent(in) :: conduct
+      type(phys_address), intent(in) :: iphys
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: ele_fld
+      type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
+      type(jacobians_2d), intent(in) :: jac_sf_grp_q
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
+      type(gradient_model_data_type), intent(in) :: FEM_elen
+      type(lumped_mass_matrices), intent(in) :: m_lump
       type(layering_tbl), intent(in) :: layer_tbl
+!
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
+      type(work_finite_element_mat), intent(inout) :: fem_wk
+      type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
+      type(phys_data), intent(inout) :: nod_fld
 !
       integer (kind = kint) :: iflag_dynamic, iflag2
 !
@@ -74,11 +119,11 @@
 !
         if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
           if (iflag_debug.gt.0) write(*,*) 'cal_filtered_vector_p'
-          call cal_filtered_vector(nod_comm, node1,                     &
-     &        iphys%i_filter_vecp, iphys%i_vecp, nod_fld1)
-          nod_fld1%iflag_update(iphys%i_filter_vecp  ) = 1
-          nod_fld1%iflag_update(iphys%i_filter_vecp+1) = 1
-          nod_fld1%iflag_update(iphys%i_filter_vecp+2) = 1
+          call cal_filtered_vector(nod_comm, node,                      &
+     &        iphys%i_filter_vecp, iphys%i_vecp, nod_fld)
+          nod_fld%iflag_update(iphys%i_filter_vecp  ) = 1
+          nod_fld%iflag_update(iphys%i_filter_vecp+1) = 1
+          nod_fld%iflag_update(iphys%i_filter_vecp+2) = 1
         end if
 !
         if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF                   &
@@ -87,10 +132,10 @@
           if (iflag_debug.gt.0)                                         &
      &         write(*,*) 'cal_filtered_vector_p i_wide_fil_vecp'
           call cal_w_filtered_vector(iphys%i_wide_fil_vecp,             &
-     &        iphys%i_filter_vecp, nod_comm, node1, nod_fld1)
-          nod_fld1%iflag_update(iphys%i_wide_fil_vecp  ) = 1
-          nod_fld1%iflag_update(iphys%i_wide_fil_vecp+1) = 1
-          nod_fld1%iflag_update(iphys%i_wide_fil_vecp+2) = 1
+     &        iphys%i_filter_vecp, nod_comm, node, nod_fld)
+          nod_fld%iflag_update(iphys%i_wide_fil_vecp  ) = 1
+          nod_fld%iflag_update(iphys%i_wide_fil_vecp+1) = 1
+          nod_fld%iflag_update(iphys%i_wide_fil_vecp+2) = 1
         end if
 !
 !
@@ -99,10 +144,10 @@
             if (iflag_SGS_model .eq. id_SGS_NL_grad                     &
      &        .or. iflag_SGS_model .eq. id_SGS_similarity) then
               call s_cal_diff_coef_vector_p(iak_diff_b, icomp_diff_b,   &
-     &            nod_comm, node1, ele1, surf1, sf_grp1,                &
-     &            iphys, iphys_ele, fld_ele1, layer_tbl,                &
-     &            jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,     &
-     &            FEM1_elen, m1_lump, fem1_wk, f1_l, f1_nl, nod_fld1)
+     &            nod_comm, node, ele, surf, sf_grp,                    &
+     &            iphys, iphys_ele, ele_fld, layer_tbl,                 &
+     &            jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
+     &            FEM_elen, m_lump, fem_wk, f_l, f_nl, nod_fld)
             end if
 !
           end if
@@ -116,28 +161,28 @@
         call choose_cal_rotation_sgs                                    &
      &     (iflag_commute_magne, iflag_mag_supg,                        &
      &      iak_diff_b, iphys%i_vecp, iphys%i_magne,                    &
-     &      ele1%istack_ele_smp, m1_lump,                               &
-     &      nod_comm, node1, ele1, surf1, sf_grp1, iphys_ele, fld_ele1, &
-     &      jac1_3d_q, jac1_sf_grp_2d_q, FEM1_elen, nod_bc1_b,          &
-     &      sf_sgs1_grad_a, rhs_tbl1, fem1_wk, f1_nl, nod_fld1)
+     &      ele%istack_ele_smp, m_lump,                                 &
+     &      nod_comm, node, ele, surf, sf_grp, iphys_ele, ele_fld,      &
+     &      jac_3d_q, jac_sf_grp_q, FEM_elen, nod_bc1_b,                &
+     &      sf_sgs1_grad_a, rhs_tbl, fem_wk, f_nl, nod_fld)
       end if
       if (iphys_ele%i_magne .ne. 0) then
         if (iflag_debug.gt.0) write(*,*) 'rot_magne_on_element'
-        call rotation_on_element_1st(node1, ele1, jac1_3d_q,            &
-     &      ele1%istack_ele_smp, intg_point_t_evo,                      &
-     &      nod_fld1%ntot_phys, iphys%i_vecp, nod_fld1%d_fld,           &
-     &      fld_ele1%ntot_phys, iphys_ele%i_magne,                      &
-     &      fld_ele1%iflag_update, fld_ele1%d_fld)
+        call rotation_on_element_1st(node, ele, jac_3d_q,               &
+     &      ele%istack_ele_smp, intg_point_t_evo,                       &
+     &      nod_fld%ntot_phys, iphys%i_vecp, nod_fld%d_fld,             &
+     &      ele_fld%ntot_phys, iphys_ele%i_magne,                       &
+     &      ele_fld%iflag_update, ele_fld%d_fld)
       end if
 !
       if (iphys_ele%i_current .ne. 0                                    &
      &     .and. iflag_4_rotate .eq. id_turn_ON) then
         if (iflag_debug.gt.0) write(*,*) 'current_on_element'
-        call rotation_on_element_1st(node1, ele1, jac1_3d_q,            &
-     &      conduct1%istack_ele_fld_smp, intg_point_t_evo,              &
-     &      nod_fld1%ntot_phys, iphys%i_magne, nod_fld1%d_fld,          &
-     &      fld_ele1%ntot_phys, iphys_ele%i_current,                    &
-     &      fld_ele1%iflag_update, fld_ele1%d_fld)
+        call rotation_on_element_1st(node, ele, jac_3d_q,               &
+     &      conduct%istack_ele_fld_smp, intg_point_t_evo,               &
+     &      nod_fld%ntot_phys, iphys%i_magne, nod_fld%d_fld,            &
+     &      ele_fld%ntot_phys, iphys_ele%i_current,                     &
+     &      ele_fld%iflag_update, ele_fld%d_fld)
       end if
 !
 !   required field for explicit filtering
@@ -169,39 +214,38 @@
          if (iphys%i_filter_magne .ne. 0) then
            if (iflag_debug.gt.0)                                        &
      &        write(*,*) 'cal_filtered_vector', iphys%i_filter_magne
-           call cal_filtered_vector(nod_comm, node1,                    &
-     &         iphys%i_filter_magne, iphys%i_magne, nod_fld1)
-           nod_fld1%iflag_update(iphys%i_filter_magne  ) = 1
-           nod_fld1%iflag_update(iphys%i_filter_magne+1) = 1
-           nod_fld1%iflag_update(iphys%i_filter_magne+2) = 1
+           call cal_filtered_vector(nod_comm, node,                     &
+     &         iphys%i_filter_magne, iphys%i_magne, nod_fld)
+           nod_fld%iflag_update(iphys%i_filter_magne  ) = 1
+           nod_fld%iflag_update(iphys%i_filter_magne+1) = 1
+           nod_fld%iflag_update(iphys%i_filter_magne+2) = 1
          end if
 !
          if (iphys_ele%i_filter_magne .ne. 0) then
            if (iflag_debug .ge. iflag_routine_msg) write(*,*)           &
      &                         'filtered_magne_on_ele'
-            call vector_on_element_1st(node1, ele1, jac1_3d_q,          &
-     &          ele1%istack_ele_smp, intg_point_t_evo,                  &
-     &          nod_fld1%ntot_phys, iphys%i_filter_magne,               &
-     &          nod_fld1%d_fld, fld_ele1%ntot_phys,                     &
-     &          iphys_ele%i_filter_magne, fld_ele1%iflag_update,        &
-     &          fld_ele1%d_fld)
+            call vector_on_element_1st(node, ele, jac_3d_q,             &
+     &          ele%istack_ele_smp, intg_point_t_evo,                   &
+     &          nod_fld%ntot_phys, iphys%i_filter_magne,                &
+     &          nod_fld%d_fld, ele_fld%ntot_phys,                       &
+     &          iphys_ele%i_filter_magne, ele_fld%iflag_update,         &
+     &          ele_fld%d_fld)
          end if
 !
          if(iflag2.eq.2 .and. ie_dfbx.ne.0) then
            if (iflag_debug .ge. iflag_routine_msg) write(*,*)           &
      &                         'diff_filter_b_on_ele'
            call sel_int_diff_vector_on_ele                              &
-     &        (ele1%istack_ele_smp, iphys%i_filter_magne, ie_dfbx,      &
-     &         node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,             &
-     &         mhd_fem1_wk)
+     &        (ele%istack_ele_smp, iphys%i_filter_magne, ie_dfbx,       &
+     &         node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
          end if
 !
          if(iflag2.eq.3 .and. iphys%i_wide_fil_magne.ne.0) then
            call cal_w_filtered_vector(iphys%i_wide_fil_magne,           &
-     &         iphys%i_filter_magne, nod_comm, node1, nod_fld1)
-           nod_fld1%iflag_update(iphys%i_wide_fil_magne  ) = 1
-           nod_fld1%iflag_update(iphys%i_wide_fil_magne+1) = 1
-           nod_fld1%iflag_update(iphys%i_wide_fil_magne+2) = 1
+     &         iphys%i_filter_magne, nod_comm, node, nod_fld)
+           nod_fld%iflag_update(iphys%i_wide_fil_magne  ) = 1
+           nod_fld%iflag_update(iphys%i_wide_fil_magne+1) = 1
+           nod_fld%iflag_update(iphys%i_wide_fil_magne+2) = 1
          end if
 !
        end if
@@ -214,9 +258,8 @@
          if ( ie_dbx.ne.0 ) then
            if (iflag_debug.gt.0) write(*,*) 'diff_magne_on_ele'
            call sel_int_diff_vector_on_ele                              &
-     &        (ele1%istack_ele_smp, iphys%i_magne, ie_dbx,              &
-     &         node1, ele1, nod_fld1, jac1_3d_q, jac1_3d_l,             &
-     &         mhd_fem1_wk)
+     &        (ele%istack_ele_smp, iphys%i_magne, ie_dbx,               &
+     &         node, ele, nod_fld, jac_3d_q, jac_3d_l, mhd_fem_wk)
         end if
        end if
 !

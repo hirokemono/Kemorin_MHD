@@ -7,13 +7,52 @@
 !> @brief Evaluate many kind of field data
 !!
 !!@verbatim
-!!      subroutine lead_fields_by_FEM
+!!      subroutine lead_fields_by_FEM                                   &
+!!     &         (nod_comm, node1, ele1, surf1, edge1, fluid1, conduct1,&
+!!     &          sf_grp1, iphys, iphys_ele, fld_ele1,                  &
+!!     &          jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,     &
+!!     &          FEM1_elen, layer_tbl, m1_lump, mhd_fem1_wk, fem1_wk,  &
+!!     &          f1_l, f1_nl, nod_fld1)
+!!        type(communication_table), intent(in) :: nod_comm
+!!        type(node_data), intent(in) :: node1
+!!        type(element_data), intent(in) :: ele1
+!!        type(surface_data), intent(in) :: surf1
+!!        type(edge_data), intent(in) :: edge1
+!!        type(surface_group_data), intent(in) :: sf_grp1
+!!        type(field_geometry_data), intent(in) :: fluid1, conduct1
+!!        type(phys_address), intent(in) :: iphys
+!!        type(phys_address), intent(in) :: iphys_ele
+!!        type(phys_data), intent(in) :: fld_ele1
+!!        type(jacobians_3d), intent(in) :: jac1_3d_q, jac1_3d_l
+!!        type(jacobians_2d), intent(in) :: jac1_sf_grp_2d_q
+!!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
+!!        type(lumped_mass_matrices), intent(in) :: m1_lump
+!!        type(gradient_model_data_type), intent(in) :: FEM1_elen
 !!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem1_wk
+!!        type(work_finite_element_mat), intent(inout) :: fem1_wk
+!!        type(finite_ele_mat_node), intent(inout) :: f1_l, f1_nl
+!!        type(phys_data), intent(inout) :: nod_fld1
 !!@endverbatim
 !
       module lead_physical_values
 !
       use m_precision
+!
+      use t_comm_table
+      use t_geometry_data_MHD
+      use t_geometry_data
+      use t_surface_data
+      use t_edge_data
+      use t_group_data
+      use t_phys_data
+      use t_phys_address
+      use t_jacobian_3d
+      use t_table_FEM_const
+      use t_finite_element_mat
+      use t_MHD_finite_element_mat
+      use t_filter_elength
+      use t_layering_ele_list
 !
       implicit none
 !
@@ -25,14 +64,15 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine lead_fields_by_FEM(layer_tbl)
+      subroutine lead_fields_by_FEM                                     &
+     &         (nod_comm, node1, ele1, surf1, edge1, fluid1, conduct1,  &
+     &          sf_grp1, iphys, iphys_ele, fld_ele1,                    &
+     &          jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,       &
+     &          FEM1_elen, layer_tbl, m1_lump, mhd_fem1_wk, fem1_wk,    &
+     &          f1_l, f1_nl, nod_fld1)
 !
       use m_machine_parameter
       use m_t_step_parameter
-      use m_geometry_data
-      use m_node_phys_data
-!
-      use t_layering_ele_list
 !
       use update_after_evolution
       use itp_potential_on_edge
@@ -40,7 +80,28 @@
       use cal_helicities
       use output_viz_file_control
 !
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node1
+      type(element_data), intent(in) :: ele1
+      type(surface_data), intent(in) :: surf1
+      type(edge_data), intent(in) :: edge1
+      type(surface_group_data), intent(in) :: sf_grp1
+      type(field_geometry_data), intent(in) :: fluid1, conduct1
+      type(phys_address), intent(in) :: iphys
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: fld_ele1
+      type(jacobians_3d), intent(in) :: jac1_3d_q, jac1_3d_l
+      type(jacobians_2d), intent(in) :: jac1_sf_grp_2d_q
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
+      type(lumped_mass_matrices), intent(in) :: m1_lump
+      type(gradient_model_data_type), intent(in) :: FEM1_elen
       type(layering_tbl), intent(in) :: layer_tbl
+!
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem1_wk
+      type(work_finite_element_mat), intent(inout) :: fem1_wk
+      type(finite_ele_mat_node), intent(inout) :: f1_l, f1_nl
+      type(phys_data), intent(inout) :: nod_fld1
+!
       integer (kind =kint) :: iflag
 !
 !
@@ -51,43 +112,63 @@
         call cal_potential_on_edge(node1, ele1, edge1, iphys, nod_fld1)
 !
         if (iflag_debug.gt.0) write(*,*) 'update_fields'
-        call update_fields(layer_tbl)
+        call update_fields(nod_comm, node1, ele1, surf1,                &
+     &      fluid1, conduct1, sf_grp1, iphys, iphys_ele, fld_ele1,      &
+     &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
+     &      FEM1_elen, layer_tbl, m1_lump, mhd_fem1_wk, fem1_wk,        &
+     &      f1_l, f1_nl, nod_fld1)
 !
-        call cal_field_by_rotation
+        call cal_field_by_rotation                                      &
+     &     (nod_comm, node1, ele1, surf1, sf_grp1,                      &
+     &      fluid1, conduct1, iphys, iphys_ele, fld_ele1,               &
+     &      jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,           &
+     &      m1_lump, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_helicity'
         call cal_helicity(node1, iphys, nod_fld1)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_energy_fluxes'
-        call cal_energy_fluxes
-!
+        call cal_energy_fluxes(nod_comm, node1, ele1, surf1,            &
+     &      fluid1, conduct1, sf_grp1, iphys, iphys_ele, fld_ele1,      &
+     &      jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,           &
+     &      m1_lump, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
       end subroutine lead_fields_by_FEM
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_energy_fluxes
+      subroutine cal_energy_fluxes(nod_comm, node1, ele1, surf1,        &
+     &          fluid1, conduct1, sf_grp1, iphys, iphys_ele, fld_ele1,  &
+     &          jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,       &
+     &          m1_lump, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
       use m_machine_parameter
       use m_physical_property
 !
-      use m_nod_comm_table
-      use m_geometry_data
-      use m_group_data
-      use m_node_phys_data
-      use m_element_phys_data
-      use m_geometry_data_MHD
-      use m_jacobians
-      use m_jacobian_sf_grp
-      use m_element_id_4_node
-      use m_finite_element_matrix
-      use m_int_vol_data
-      use m_filter_elength
-!
       use cal_MHD_forces_4_monitor
       use cal_sgs_4_monitor
       use cal_true_sgs_terms
+!
+      type(communication_table), intent(in) :: nod_comm
+      type(node_data), intent(in) :: node1
+      type(element_data), intent(in) :: ele1
+      type(surface_data), intent(in) :: surf1
+      type(surface_group_data), intent(in) :: sf_grp1
+      type(field_geometry_data), intent(in) :: fluid1, conduct1
+      type(phys_address), intent(in) :: iphys
+      type(phys_address), intent(in) :: iphys_ele
+      type(phys_data), intent(in) :: fld_ele1
+      type(jacobians_3d), intent(in) :: jac1_3d_q
+      type(jacobians_2d), intent(in) :: jac1_sf_grp_2d_q
+      type(tables_4_FEM_assembles), intent(in) :: rhs_tbl1
+      type(lumped_mass_matrices), intent(in) :: m1_lump
+      type(gradient_model_data_type), intent(in) :: FEM1_elen
+!
+      type(work_MHD_fe_mat), intent(inout) :: mhd_fem1_wk
+      type(work_finite_element_mat), intent(inout) :: fem1_wk
+      type(finite_ele_mat_node), intent(inout) :: f1_l, f1_nl
+      type(phys_data), intent(inout) :: nod_fld1
 !
 !
       call cal_true_sgs_terms_pre                                       &
@@ -96,12 +177,21 @@
      &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
      &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
-      call cal_sgs_terms_4_monitor
+      call cal_sgs_terms_4_monitor                                      &
+     &   (nod_comm, node1, ele1, fluid1, conduct1, iphys,               &
+     &    iphys_ele, fld_ele1,  jac1_3d_q, rhs_tbl1, FEM1_elen,         &
+     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
-      call cal_fluxes_4_monitor
+      call cal_fluxes_4_monitor(node1, iphys, nod_fld1)
 !
-      call cal_forces_4_monitor
-      call cal_diff_of_sgs_terms
+      call cal_forces_4_monitor(nod_comm, node1, ele1, surf1, sf_grp1,  &
+     &    fluid1, conduct1, iphys, iphys_ele, fld_ele1,                 &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    m1_lump, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+      call cal_diff_of_sgs_terms(nod_comm, node1, ele1, surf1, sf_grp1, &
+     &    fluid1, conduct1, iphys, iphys_ele, fld_ele1,                 &
+     &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
+     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
       call cal_true_sgs_terms_post(nod_comm, node1, iphys, nod_fld1)
 !
@@ -109,8 +199,10 @@
      &   (nod_comm, node1, ele1, iphys, jac1_3d_q, rhs_tbl1,            &
      &    mhd_fem1_wk, fem1_wk, f1_nl, nod_fld1)
 !
-      call cal_work_4_sgs_terms
-!
+      call cal_work_4_sgs_terms(nod_comm, node1, ele1, conduct1,        &
+     &    iphys, jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk,             &
+     &    f1_nl, nod_fld1)
+! 
       end subroutine cal_energy_fluxes
 !
 !  ---------------------------------------------------------------------

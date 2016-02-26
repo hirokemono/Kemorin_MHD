@@ -66,9 +66,13 @@
 !
 !   obtain elemental averages
 !
-      call reset_update_flag
+      call reset_update_flag(nod_fld1)
       if (iflag_debug.eq.1) write(*,*) 'update_fields'
-      call update_fields(layer_tbl1)
+      call update_fields(nod_comm, node1, ele1, surf1,                  &
+     &    fluid1, conduct1, sf_grp1, iphys, iphys_ele, fld_ele1,        &
+     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
+     &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
+     &    f1_l, f1_nl, nod_fld1)
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'copy_model_coef_2_previous'
@@ -97,7 +101,12 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
-      call lead_fields_by_FEM(layer_tbl1)
+      call lead_fields_by_FEM                                           &
+     &   (nod_comm, node1, ele1, surf1, edge1, fluid1, conduct1,        &
+     &    sf_grp1, iphys, iphys_ele, fld_ele1,                          &
+     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
+     &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
+     &    f1_l, f1_nl, nod_fld1)
 !
 !     ---------------------
 !
@@ -173,12 +182,17 @@
 !     ---- step to next time!! --- 
 !
       if (iflag_debug.eq.1) write(*,*) 'set_new_time_and_step'
-      call set_new_time_and_step
+      call set_new_time_and_step(node1, iphys, nod_fld1)
 !
 !     ----- Time integration
 !
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution'
-      call fields_evolution
+      call fields_evolution                                             &
+     &   (nod_comm, node1, ele1, surf1, fluid1, conduct1,               &
+     &    sf_grp1, sf_grp_nod1, iphys, iphys_ele, fld_ele1,             &
+     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,     &
+     &    rhs_tbl1, FEM1_elen, layer_tbl1, m1_lump,                     &
+     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
 !     ----- Evaluate model coefficients
 !
@@ -196,13 +210,19 @@
 !
       if (iflag_flexible_step .eq. iflag_flex_step) then
         if (iflag_debug.eq.1) write(*,*) 's_check_flexible_time_step'
-        call s_check_flexible_time_step
+        call s_check_flexible_time_step(node1, ele1,                    &
+     &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk)
       end if
 !
 !     ========  Data output
 !
       if(istep_flex_to_max .eq. 0) then
-        call lead_fields_by_FEM(layer_tbl1)
+        call lead_fields_by_FEM                                         &
+     &     (nod_comm, node1, ele1, surf1, edge1, fluid1, conduct1,      &
+     &      sf_grp1, iphys, iphys_ele, fld_ele1,                        &
+     &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
+     &      FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,       &
+     &      f1_l, f1_nl, nod_fld1)
 !
 !     -----Output monitor date
 !

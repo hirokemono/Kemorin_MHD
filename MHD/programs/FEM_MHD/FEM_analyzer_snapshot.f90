@@ -96,7 +96,7 @@
 !
 !     ---- Load field data --- 
 !
-      call reset_update_flag
+      call reset_update_flag(nod_fld1)
       istep_max_dt = i_step
       if (my_rank.eq.0) write(*,*) 'step: ', istep_max_dt
 !
@@ -125,7 +125,11 @@
       call nod_fields_send_recv(node1, nod_comm, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
-      call update_fields(layer_tbl1)
+      call update_fields(nod_comm, node1, ele1, surf1,                  &
+     &    fluid1, conduct1, sf_grp1, iphys, iphys_ele, fld_ele1,        &
+     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
+     &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
+     &    f1_l, f1_nl, nod_fld1)
 !
 !     ----- Evaluate model coefficients
 !
@@ -141,7 +145,12 @@
 !
 !     ========  Data output
 !
-      call lead_fields_by_FEM(layer_tbl1)
+      call lead_fields_by_FEM                                           &
+     &   (nod_comm, node1, ele1, surf1, edge1, fluid1, conduct1,        &
+     &    sf_grp1, iphys, iphys_ele, fld_ele1,                          &
+     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
+     &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
+     &    f1_l, f1_nl, nod_fld1)
 !
 !     -----Output monitor date
 !
