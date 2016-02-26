@@ -4,8 +4,9 @@
 !      Written by H. Matsui
 !      Modified by H. Matsui on july, 2006
 !
-!      subroutine cal_stability_4_diffuse
-!      subroutine cal_stability_4_advect(ncomp_ele, ivelo_ele, d_ele)
+!!      subroutine cal_stability_4_diffuse(ele)
+!!      subroutine cal_stability_4_advect                               &
+!!     &         (ele, fluid, ncomp_ele, ivelo_ele, d_ele)
 !
       module estimate_stabilities
 !
@@ -15,10 +16,11 @@
       use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
-      use m_geometry_data
-      use m_geometry_data_MHD
       use m_physical_property
       use m_stability_data
+!
+      use t_geometry_data
+      use t_geometry_data_MHD
 !
       implicit none
 !
@@ -28,14 +30,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_stability_4_diffuse
+      subroutine cal_stability_4_diffuse(ele)
+!
+      type(element_data), intent(in) :: ele
 !
       integer (kind = kint) :: iele
 !
 !
        min_length = 1.0d10
-       do iele = 1, ele1%numele
-         min_length = min(min_length, ele1%volume_ele(iele))
+       do iele = 1, ele%numele
+         min_length = min(min_length, ele%volume_ele(iele))
        end do
        min_length = (min_length)**(2.0d0/3.0d0)*4.0d0 / 6.0d0
 !
@@ -80,19 +84,23 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_stability_4_advect(ncomp_ele, ivelo_ele, d_ele)
+      subroutine cal_stability_4_advect                                 &
+     &         (ele, fluid, ncomp_ele, ivelo_ele, d_ele)
+!
+      type(element_data), intent(in) :: ele
+      type(field_geometry_data), intent(in) :: fluid
 !
       integer(kind = kint), intent(in) :: ncomp_ele, ivelo_ele
-      real(kind = kreal), intent(in) :: d_ele(ele1%numele,ncomp_ele)
+      real(kind = kreal), intent(in) :: d_ele(ele%numele,ncomp_ele)
 !
       integer (kind = kint) :: iele
 !
 !
       cfl_advect0 = 1.0d10
 !
-      do iele = fluid1%iele_start_fld, fluid1%iele_end_fld
+      do iele = fluid%iele_start_fld, fluid%iele_end_fld
 !
-        cfl_tmp = ele1%volume_ele(iele)**(1/3)*2.0d0                    &
+        cfl_tmp = ele%volume_ele(iele)**(1/3)*2.0d0                     &
      &            / (sqrt(d_ele(iele,ivelo_ele  )**2                    &
      &                  + d_ele(iele,ivelo_ele+1)**2                    &
      &                  + d_ele(iele,ivelo_ele+2)**2) + 1.0d-10)

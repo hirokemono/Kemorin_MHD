@@ -6,14 +6,17 @@
 !        Modified by H. Matsui on Aug., 2006
 !        Modified by H. Matsui on Aug., 2007
 !
-!!      subroutine const_MHD_jacobian_and_volumes (node, ele, sf_grp,   &
-!!     &          layer_tbl, infty_list, jac_3d_l, jac_3d_q)
+!!      subroutine const_MHD_jacobian_and_volumes(node, ele, sf_grp,    &
+!!     &          layer_tbl, infty_list, jac_3d_l, jac_3d_q,            &
+!!     &          fluid, conduct, insulate)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(inout) :: ele
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(scalar_surf_BC_list), intent(in) :: infty_list
 !!        type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
 !!        type(layering_tbl), intent(inout) :: layer_tbl
+!!        type(field_geometry_data), intent(inout) :: fluid
+!!        type(field_geometry_data), intent(inout) :: conduct, insulate
 !
       module cal_volume_node_MHD
 !
@@ -25,6 +28,7 @@
       use t_geometry_data
       use t_group_data
       use t_surface_boundary
+      use t_geometry_data_MHD
 !
       implicit none
 !
@@ -39,11 +43,11 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine const_MHD_jacobian_and_volumes (node, ele, sf_grp,     &
-     &          layer_tbl, infty_list, jac_3d_l, jac_3d_q)
+      subroutine const_MHD_jacobian_and_volumes(node, ele, sf_grp,      &
+     &          layer_tbl, infty_list, jac_3d_l, jac_3d_q,              &
+     &          fluid, conduct, insulate)
 !
       use m_control_parameter
-      use m_geometry_data_MHD
       use m_mean_square_values
       use t_jacobians
       use t_layering_ele_list
@@ -59,6 +63,8 @@
       type(scalar_surf_BC_list), intent(in) :: infty_list
       type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
       type(layering_tbl), intent(inout) :: layer_tbl
+      type(field_geometry_data), intent(inout) :: fluid
+      type(field_geometry_data), intent(inout) :: conduct, insulate
 !
 !    Construct Jacobians
 !
@@ -76,19 +82,19 @@
 !     ---  lead total volume of each area
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_volume_4_fluid'
-      call cal_volume_4_area(ele, fluid1)
+      call cal_volume_4_area(ele, fluid)
 !
-      if (fluid1%istack_ele_fld_smp(np_smp)                             &
-     &   .eq. fluid1%istack_ele_fld_smp(0)) then
+      if (fluid%istack_ele_fld_smp(np_smp)                              &
+     &   .eq. fluid%istack_ele_fld_smp(0)) then
         rms_local(ivol) = vol_local
       else
         rms_local(ivol) = vol_fl_local
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_volume_4_conduct'
-      call cal_volume_4_area(ele, conduct1)
+      call cal_volume_4_area(ele, conduct)
       if (iflag_debug.eq.1) write(*,*) 'cal_volume_4_insulate'
-      call cal_volume_4_area(ele, insulate1)
+      call cal_volume_4_area(ele, insulate)
 !
        if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
          if (iflag_debug.eq.1) write(*,*) 's_cal_layered_volumes'
@@ -106,9 +112,9 @@
 !
       if (iflag_debug.eq.1) then
         write(*,*) 'volume:       ', ele%volume
-        write(*,*) 'vol_fluid:    ', fluid1%volume
-        write(*,*) 'vol_conduct:  ', conduct1%volume
-        write(*,*) 'vol_insulate: ', insulate1%volume
+        write(*,*) 'vol_fluid:    ', fluid%volume
+        write(*,*) 'vol_conduct:  ', conduct%volume
+        write(*,*) 'vol_insulate: ', insulate%volume
       end if
 !
       end subroutine const_MHD_jacobian_and_volumes
@@ -118,7 +124,6 @@
 !
       subroutine cal_volume_4_area(ele, area)
 !
-      use t_geometry_data_MHD
       use sum_volume_of_domain
 !
       type(element_data), intent(in) :: ele

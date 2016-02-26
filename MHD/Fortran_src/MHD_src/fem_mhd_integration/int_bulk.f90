@@ -573,8 +573,8 @@
         call int_rms_divergence                                         &
      &     (fluid%istack_ele_fld_smp, iphys%i_velo,                     &
      &      node, ele, nod_fld, jac_3d_q, fem_wk, rms_local(ir_divv))
-        call cal_stability_4_advect                                     &
-     &     (ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld)
+        call cal_stability_4_advect(ele, fluid,                         &
+     &      ele_fld%ntot_phys, iphys_ele%i_velo, ele_fld%d_fld)
       end if
 !
       if  (iflag_t_evo_4_vect_p .gt. id_no_evolution) then

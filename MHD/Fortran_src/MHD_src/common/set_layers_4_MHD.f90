@@ -90,7 +90,7 @@
 !
 !    count number of element for insulated core
 !
-      call count_ele_4_layer(ele%numele, inner_core%numele_fld,         &
+      call count_ele_4_layer(ele%numele, inner_core1%numele_fld,        &
      &    num_in_core_ele_grp, in_core_ele_grp_name,                    &
      &    ele_grp%num_grp, ele_grp%istack_grp, ele_grp%grp_name)
 !
@@ -109,7 +109,7 @@
      &    ele%numele, ele%nnod_4_ele, ele%ie)
 !
 !      call count_node_4_layer(node%numnod, node%internal_node,         &
-!     &    inner_core%numnod_fld, inner_core%internal_node_fld,         &
+!     &    inner_core1%numnod_fld, inner_core1%internal_node_fld,       &
 !     &    iele_ic_start, iele_ic_end,                                  &
 !     &    ele%numele, ele%nnod_4_ele, ele%ie)
 !
@@ -117,7 +117,7 @@
 !
       call allocate_field_nod_list(conduct1)
       call allocate_field_nod_list(insulate1)
-      call allocate_field_nod_list(inner_core)
+      call allocate_field_nod_list(inner_core1)
 !
 !  set node list
 !
@@ -132,7 +132,7 @@
      &      ele%numele, ele%nnod_4_ele, ele%ie)
 !
 !      call set_node_4_layer                                            &
-!     &     (node%numnod, inner_core%numnod_fld, inner_core%inod_fld,   &
+!     &     (node%numnod, inner_core1%numnod_fld, inner_core1%inod_fld, &
 !     &      iele_ic_start, iele_ic_end,                                &
 !     &      ele%numele, ele%nnod_4_ele, ele%ie)
 !
@@ -140,7 +140,7 @@
 !
       call count_smp_size_4_area(conduct1)
       call count_smp_size_4_area(insulate1)
-!      call count_smp_size_4_area(inner_core)
+!      call count_smp_size_4_area(inner_core1)
 !
       end subroutine set_layers_4_induction
 !

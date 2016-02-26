@@ -44,8 +44,6 @@
       use m_finite_element_matrix
       use m_int_vol_data
 !
-      use m_check_subroutines
-!
       use t_layering_ele_list
 !
       use count_whole_num_element
@@ -85,8 +83,6 @@
 !
       if (iflag_debug.eq.1) write(*,*)' set_layers'
       call set_layers(node1, ele1, ele_grp1)
-!      call check_numbers_of_nodes(my_rank)
-!      call check_nodes_4_layers(my_rank)
 !
       if (iflag_dynamic_SGS  .ne. id_SGS_DYNAMIC_OFF) then
         ncomp_correlate = 9
@@ -195,7 +191,7 @@
       if (iflag_debug.eq.1) write(*,*)' const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes                               &
      &   (node1, ele1, sf_grp1, layer_tbl, infty_list,                  &
-     &    jac1_3d_l, jac1_3d_q)
+     &    jac1_3d_l, jac1_3d_q, fluid1, conduct1, insulate1)
 !
       call const_jacobian_sf_grp(node1, ele1, surf1, sf_grp1,           &
      &                           jac1_sf_grp_2d_l, jac1_sf_grp_2d_q)

@@ -29,7 +29,7 @@
 !
 !
 !>       Mesh information for inner core segments
-      type(field_geometry_data), save :: inner_core
+      type(field_geometry_data), save :: inner_core1
 !
 !   original connectivity table
 !
@@ -47,7 +47,7 @@
        subroutine allocate_inner_core_ele_list
 !
 !
-       call allocate_field_ele_list(inner_core)
+       call allocate_field_ele_list(inner_core1)
 !
        end subroutine allocate_inner_core_ele_list
 !
@@ -81,7 +81,7 @@
 !
        call deallocate_field_nod_list(conduct1)
        call deallocate_field_nod_list(insulate1)
-       call deallocate_field_nod_list(inner_core)
+       call deallocate_field_nod_list(inner_core1)
 !
        end subroutine deallocate_conduct_node_list
 !
@@ -90,7 +90,7 @@
        subroutine deallocate_inner_core_ele_list
 !
 !
-       call deallocate_field_ele_list(inner_core)
+       call deallocate_field_ele_list(inner_core1)
 !
        end subroutine deallocate_inner_core_ele_list
 !
@@ -116,7 +116,7 @@
 !
        call deallocate_geometry_field_smp(conduct1)
        call deallocate_geometry_field_smp(insulate1)
-       call deallocate_geometry_field_smp(inner_core)
+       call deallocate_geometry_field_smp(inner_core1)
 !
        end subroutine deallocate_geometry_conduct_smp
 !
