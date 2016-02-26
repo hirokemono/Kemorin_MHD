@@ -5,16 +5,15 @@
 !                                    on July 2000 (ver 1.1)
 !        modified by H.Matsui on Aug., 2007
 !
-!!      subroutine set_bc_id_data(node, ele, fluid, conduct, insulate,  &
-!!     &          nod_grp, iphys, nod_fld)
+!!      subroutine set_bc_id_data                                       &
+!!     &         (node, ele, nod_grp, MHD_mesh, iphys, nod_fld)
 !!      subroutine set_boundary_velo(node, i_velo, nod_fld)
 !!      subroutine set_boundary_velo_4_rhs(node, f_l, f_nl)
 !!      subroutine delete_field_by_fixed_v_bc(i_field, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
-!!        type(field_geometry_data), intent(in) :: fluid
-!!        type(field_geometry_data), intent(in) :: conduct, insulate
 !!        type(group_data), intent(in) :: nod_grp
+!!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(inout) :: nod_fld
 !!        type(finite_ele_mat_node), intent(inout) :: f_l
@@ -39,8 +38,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine set_bc_id_data(node, ele, fluid, conduct, insulate,    &
-     &          nod_grp, iphys, nod_fld)
+      subroutine set_bc_id_data                                         &
+     &         (node, ele, nod_grp, MHD_mesh, iphys, nod_fld)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -57,9 +56,8 @@
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
-      type(field_geometry_data), intent(in) :: fluid
-      type(field_geometry_data), intent(in) :: conduct, insulate
       type(group_data), intent(in) :: nod_grp
+      type(mesh_data_MHD), intent(in) :: MHD_mesh
 !
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(inout) :: nod_fld
@@ -67,21 +65,23 @@
 !
       if (iflag_t_evo_4_velo .gt. id_no_evolution) then
         if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 v'
-        call set_bc_velo_id(node, ele, fluid, nod_grp)
+        call set_bc_velo_id(node, ele, MHD_mesh%fluid, nod_grp)
         if ( iflag_debug .eq.1) write(*,*)  'set boundary id 4 P'
-        call set_bc_press_id(node, ele, fluid, nod_grp, iphys, nod_fld)
+        call set_bc_press_id                                            &
+     &     (node, ele, MHD_mesh%fluid, nod_grp, iphys, nod_fld)
         if ( iflag_debug .eq.1) write(*,*)  'set boundary values 4 v'
         call set_boundary_velo(node, iphys%i_velo, nod_fld)
       end if
 !
       if (iflag_t_evo_4_temp .gt. id_no_evolution) then
-        call set_bc_temp_id(node, ele, fluid, nod_grp, iphys, nod_fld)
+        call set_bc_temp_id                                             &
+     &     (node, ele, MHD_mesh%fluid, nod_grp, iphys, nod_fld)
 !
         call set_boundary_scalar(nod_bc1_t, iphys%i_temp, nod_fld)
       end if
 !
       if (iflag_t_evo_4_composit .gt. id_no_evolution) then
-        call set_bc_composition_id(node, ele, fluid, nod_grp)
+        call set_bc_composition_id(node, ele, MHD_mesh%fluid, nod_grp)
 !
         call set_boundary_scalar(nod_bc1_c, iphys%i_light, nod_fld)
       end if
@@ -92,7 +92,7 @@
         call set_bc_magne_id(node, ele, nod_grp, iphys, nod_fld)
         if (iflag_debug.eq.1)  write(*,*) 'set boundary ID 4 magne_p'
         call set_bc_m_potential_id                                      &
-     &     (node, ele, conduct, insulate, nod_grp)
+     &     (node, ele, MHD_mesh%conduct, MHD_mesh%insulate, nod_grp)
         if (iflag_debug.eq.1)  write(*,*) 'set boundary ID 4 current'
         call set_bc_current_id(node, ele, nod_grp)
 !

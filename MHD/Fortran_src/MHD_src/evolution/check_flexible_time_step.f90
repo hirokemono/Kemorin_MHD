@@ -81,7 +81,7 @@
       subroutine s_check_flexible_time_step(node, ele, fluid,           &
      &          iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk)
 !
-      use m_geometry_data_MHD
+      use t_geometry_data_MHD
       use t_geometry_data
       use t_phys_data
       use t_phys_address

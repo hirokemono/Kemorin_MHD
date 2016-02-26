@@ -8,15 +8,14 @@
 !
 !!      subroutine const_MHD_jacobian_and_volumes(node, ele, sf_grp,    &
 !!     &          layer_tbl, infty_list, jac_3d_l, jac_3d_q,            &
-!!     &          fluid, conduct, insulate)
+!!     &          MHD_mesh)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(inout) :: ele
 !!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(scalar_surf_BC_list), intent(in) :: infty_list
 !!        type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
 !!        type(layering_tbl), intent(inout) :: layer_tbl
-!!        type(field_geometry_data), intent(inout) :: fluid
-!!        type(field_geometry_data), intent(inout) :: conduct, insulate
+!!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !
       module cal_volume_node_MHD
 !
@@ -45,7 +44,7 @@
 !
       subroutine const_MHD_jacobian_and_volumes(node, ele, sf_grp,      &
      &          layer_tbl, infty_list, jac_3d_l, jac_3d_q,              &
-     &          fluid, conduct, insulate)
+     &          MHD_mesh)
 !
       use m_control_parameter
       use m_mean_square_values
@@ -63,8 +62,7 @@
       type(scalar_surf_BC_list), intent(in) :: infty_list
       type(jacobians_3d), intent(inout) :: jac_3d_l, jac_3d_q
       type(layering_tbl), intent(inout) :: layer_tbl
-      type(field_geometry_data), intent(inout) :: fluid
-      type(field_geometry_data), intent(inout) :: conduct, insulate
+      type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !
 !    Construct Jacobians
 !
@@ -82,19 +80,19 @@
 !     ---  lead total volume of each area
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_volume_4_fluid'
-      call cal_volume_4_area(ele, fluid)
+      call cal_volume_4_area(ele, MHD_mesh%fluid)
 !
-      if (fluid%istack_ele_fld_smp(np_smp)                              &
-     &   .eq. fluid%istack_ele_fld_smp(0)) then
+      if (MHD_mesh%fluid%istack_ele_fld_smp(np_smp)                     &
+     &   .eq. MHD_mesh%fluid%istack_ele_fld_smp(0)) then
         rms_local(ivol) = vol_local
       else
         rms_local(ivol) = vol_fl_local
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_volume_4_conduct'
-      call cal_volume_4_area(ele, conduct)
+      call cal_volume_4_area(ele, MHD_mesh%conduct)
       if (iflag_debug.eq.1) write(*,*) 'cal_volume_4_insulate'
-      call cal_volume_4_area(ele, insulate)
+      call cal_volume_4_area(ele, MHD_mesh%insulate)
 !
        if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
          if (iflag_debug.eq.1) write(*,*) 's_cal_layered_volumes'
@@ -112,9 +110,9 @@
 !
       if (iflag_debug.eq.1) then
         write(*,*) 'volume:       ', ele%volume
-        write(*,*) 'vol_fluid:    ', fluid%volume
-        write(*,*) 'vol_conduct:  ', conduct%volume
-        write(*,*) 'vol_insulate: ', insulate%volume
+        write(*,*) 'vol_fluid:    ', MHD_mesh%fluid%volume
+        write(*,*) 'vol_conduct:  ', MHD_mesh%conduct%volume
+        write(*,*) 'vol_insulate: ', MHD_mesh%insulate%volume
       end if
 !
       end subroutine const_MHD_jacobian_and_volumes

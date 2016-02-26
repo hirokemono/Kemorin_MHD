@@ -91,16 +91,21 @@
 !
 !*   ------------------------------------------------------------------
 !
-      subroutine nonlinear_incuction_wSGS_SPH
+      subroutine nonlinear_incuction_wSGS_SPH(conduct)
 !
       use m_solver_SR
+!
+      use t_geometry_data_MHD
+!
       use spherical_SRs_N
       use copy_nodal_type_4_sph_trans
+!
+      type(field_geometry_data), intent(in) :: conduct
 !
 !
       call cal_vecp_induction
       call cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,                 &
-     &    nod_comm, node1, ele1, conduct1, iphys, iphys_ele, fld_ele1,  &
+     &    nod_comm, node1, ele1, conduct, iphys, iphys_ele, fld_ele1,   &
      &    jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,         &
      &    f1_l, f1_nl, nod_fld1)
 !

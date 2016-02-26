@@ -61,21 +61,34 @@
       end type field_geometry_data
 !
 !
+!>       Strucutre for MHD mesh data
       type mesh_data_MHD
+!>        nodal communication table for fluid
         type(communication_table) :: nod_fl_comm
+!>        nodal communication table for conductor
         type(communication_table) :: nod_cd_comm
+!>        nodal communication table for insulator
         type(communication_table) :: nod_ins_comm
 !
+!>        element communication table for fluid
         type(communication_table) :: ele_fl_comm
+!>        element communication table for conductor
         type(communication_table) :: ele_cd_comm
+!>        element communication table for insulator
         type(communication_table) :: ele_ins_comm
 !
+!>        surface communication table for fluid
         type(communication_table) :: surf_fl_comm
+!>        surface communication table for conductor
         type(communication_table) :: surf_cd_comm
+!>        surface communication table for insulator
         type(communication_table) :: surf_ins_comm
 !
+!>        edge communication table for fluid
         type(communication_table) :: edge_fl_comm
+!>        edge communication table for conductor
         type(communication_table) :: edge_cd_comm
+!>        edge communication table for insulator
         type(communication_table) :: edge_ins_comm
 !
 !>   geometry parameter for fluid
@@ -228,6 +241,8 @@
 !
       allocate(MHD_mesh%iele_global_org(ele%numele))
       allocate(MHD_mesh%ie_org(ele%numele,ele%nnod_4_ele))
+!
+      if(ele%numele .le. 0) return
       MHD_mesh%iele_global_org = 0
       MHD_mesh%ie_org =          0
 !
@@ -240,8 +255,7 @@
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !
 !
-      deallocate(MHD_mesh%iele_global_org)
-      deallocate(MHD_mesh%ie_org)
+      deallocate(MHD_mesh%iele_global_org, MHD_mesh%ie_org)
 !
       end subroutine dealloc_ele_connect_org_type
 !

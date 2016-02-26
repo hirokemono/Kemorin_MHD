@@ -22,6 +22,10 @@
 !
       use m_work_4_MHD_layering
 !
+      use t_geometry_data
+      use t_geometry_data_MHD
+      use t_group_data
+!
       implicit none
 !
       private :: s_reordering_by_layers
@@ -32,41 +36,40 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine reordering_by_layers_snap
+      subroutine reordering_by_layers_snap(MHD_mesh)
 !
       use m_geometry_data
       use m_group_data
-      use m_geometry_data_MHD
+!
+      type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !
 !
       call allocate_lists_4_layer(ele1%numele)
-      call s_reordering_by_layers(ele1, ele_grp1, sf_grp1,              &
-     &                            fluid1, conduct1, insulate1)
+      call s_reordering_by_layers(ele1, ele_grp1, sf_grp1, MHD_mesh)
       call deallocate_lists_4_layer
 !
       end subroutine reordering_by_layers_snap
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine reordering_by_layers_MHD
+      subroutine reordering_by_layers_MHD(MHD_mesh)
 !
       use m_geometry_data
       use m_group_data
-      use m_geometry_data_MHD
       use m_iccg_parameter
       use m_work_4_MHD_layering
       use m_type_AMG_data
       use m_type_AMG_mesh
-      use t_geometry_data
       use t_interpolate_table
 !
       use reordering_MG_ele_by_layers
       use skip_comment_f
 !
+      type(mesh_data_MHD), intent(inout) :: MHD_mesh
+!
 !
       call allocate_lists_4_layer(ele1%numele)
-      call s_reordering_by_layers(ele1, ele_grp1, sf_grp1,              &
-     &                            fluid1, conduct1, insulate1)
+      call s_reordering_by_layers(ele1, ele_grp1, sf_grp1, MHD_mesh)
 !
 !   ordereing of element parameters for AMG (for first grid)
 !
@@ -83,15 +86,10 @@
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine s_reordering_by_layers(ele, ele_grp, sf_grp,           &
-     &          fluid, conduct, insulate)
+      subroutine s_reordering_by_layers(ele, ele_grp, sf_grp, MHD_mesh)
 !
       use calypso_mpi
       use m_control_parameter
-!
-      use t_geometry_data_MHD
-      use t_geometry_data
-      use t_group_data
 !
       use const_layering_table
       use reordering_element_MHD
@@ -100,8 +98,7 @@
       type(element_data), intent(in) :: ele
       type(group_data), intent(inout) :: ele_grp
       type(surface_group_data), intent(inout) :: sf_grp
-      type(field_geometry_data), intent(inout) :: fluid, conduct
-      type(field_geometry_data), intent(inout) :: insulate
+      type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !
 !
 !      if (my_rank .eq. 0 ) then
@@ -132,23 +129,26 @@
 !  set list vector for ordering
 !
       call const_table_by_layers(ele%numele, mat_flag_mhd(1),           &
-     &    fluid%iele_start_fld,    conduct%iele_start_fld,              &
-     &    insulate%iele_start_fld, fluid%iele_end_fld,                  &
-     &    conduct%iele_end_fld,    insulate%iele_end_fld,               &
-     &    new2oldele_layer(1), old2newele_layer(1) )
+     &  MHD_mesh%fluid%iele_start_fld, MHD_mesh%conduct%iele_start_fld, &
+     &  MHD_mesh%insulate%iele_start_fld, MHD_mesh%fluid%iele_end_fld,  &
+     &  MHD_mesh%conduct%iele_end_fld, MHD_mesh%insulate%iele_end_fld,  &
+     &  new2oldele_layer(1), old2newele_layer(1) )
 !
       if (iflag_debug .gt. iflag_minimum_msg) then
        write(*,*) 'iele_fl_start, iele_fl_end',                         &
-     &           fluid%iele_start_fld, fluid%iele_end_fld
+     &           MHD_mesh%fluid%iele_start_fld,                         &
+     &           MHD_mesh%fluid%iele_end_fld
        write(*,*) 'iele_cd_start, iele_cd_end',                         &
-     &           conduct%iele_start_fld, conduct%iele_end_fld
+     &           MHD_mesh%conduct%iele_start_fld,                       &
+     &           MHD_mesh%conduct%iele_end_fld
        write(*,*) 'iele_ins_start, iele_ins_end',                       &
-     &           insulate%iele_start_fld, insulate%iele_end_fld
+     &           MHD_mesh%insulate%iele_start_fld,                      &
+     &           MHD_mesh%insulate%iele_end_fld
       end if
 !
 !   ordereing of connectivity, element group, and surface group
 !
-      call reordering_element_info(ele, ele_grp, sf_grp)
+      call reordering_element_info(ele, ele_grp, sf_grp, MHD_mesh)
 !
 !   ordereing of element parameters for SGS model
 !

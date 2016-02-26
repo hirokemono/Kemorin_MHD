@@ -15,10 +15,11 @@
 !!      subroutine output_grd_file_4_snapshot                           &
 !!     &         (nod_comm, node, ele, nod_fld)
 !!      subroutine output_grd_file_w_org_connect                        &
-!!     &        (node, ele, nod_comm, nod_fld)
+!!     &        (node, ele, nod_comm, MHD_mesh, nod_fld)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(communication_table), intent(in) :: nod_comm
+!!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(ucd_data), intent(inout) :: ucd
 !!        type(merged_ucd_data), intent(inout) :: m_ucd
@@ -36,6 +37,7 @@
       use t_geometry_data
       use t_ucd_data
       use t_phys_data
+      use t_geometry_data_MHD
 !
       implicit none
 !
@@ -110,7 +112,7 @@
 ! ----------------------------------------------------------------------
 !
       subroutine output_grd_file_w_org_connect                          &
-     &          (node, ele, nod_comm, nod_fld)
+     &          (node, ele, nod_comm, MHD_mesh, nod_fld)
 !
       use m_field_file_format
       use m_t_step_parameter
@@ -122,13 +124,14 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(communication_table), intent(in) :: nod_comm
+      type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(phys_data), intent(in) :: nod_fld
 !
 !
       if(i_step_output_ucd .eq. 0) return
 !
       call link_num_field_2_ucd(nod_fld, fem_ucd)
-      call link_local_org_mesh_4_ucd(node, ele, fem_ucd)
+      call link_local_org_mesh_4_ucd(node, ele, MHD_mesh, fem_ucd)
       call link_field_data_to_ucd(nod_fld, fem_ucd)
 !
       if (fem_ucd%ifmt_file/icent .eq. iflag_single/icent) then
@@ -164,14 +167,14 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine link_global_org_mesh_4_ucd(node, ele, ucd)
+      subroutine link_global_org_mesh_4_ucd(node, ele, MHD_mesh, ucd)
 !
-      use m_geometry_data_MHD
       use set_ucd_data_to_type
       use set_and_cal_udt_data
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(mesh_data_MHD), intent(in) :: MHD_mesh
 !
       type(ucd_data), intent(inout) :: ucd
 !
@@ -179,19 +182,19 @@
       call link_node_data_2_ucd(node, ucd)
       call const_udt_global_connect                                     &
      &   (node%internal_node, ele%numele, ele%nnod_4_ele,               &
-     &    iele_global_org, ie_org, ucd)
+     &    MHD_mesh%iele_global_org, MHD_mesh%ie_org, ucd)
 !
       end subroutine link_global_org_mesh_4_ucd
 !
 !-----------------------------------------------------------------------
 !
-      subroutine link_local_org_mesh_4_ucd(node, ele, ucd)
+      subroutine link_local_org_mesh_4_ucd(node, ele, MHD_mesh, ucd)
 !
-      use m_geometry_data_MHD
       use set_and_cal_udt_data
 !
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
+      type(mesh_data_MHD), intent(in) :: MHD_mesh
 !
       type(ucd_data), intent(inout) :: ucd
 !
@@ -199,7 +202,7 @@
       call const_udt_local_nodes(node%numnod, node%xx, ucd)
       call const_udt_local_connect                                      &
      &   (node%internal_node, ele%numele, ele%nnod_4_ele,               &
-     &    ie_org, ucd)
+     &    MHD_mesh%ie_org, ucd)
 !
       end subroutine link_local_org_mesh_4_ucd
 !

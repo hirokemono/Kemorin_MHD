@@ -34,6 +34,7 @@
       use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
+      use m_geometry_data_MHD
       use m_layering_ele_list
 !
       use initialize_4_snapshot
@@ -41,10 +42,10 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
-      call init_analyzer_snap(layer_tbl1)
+      call init_analyzer_snap(MHD_mesh1, layer_tbl1)
 !
       call output_grd_file_w_org_connect                                &
-     &   (node1, ele1, nod_comm, nod_fld1)
+     &   (node1, ele1, nod_comm, MHD_mesh1, nod_fld1)
 !
       call allocate_phys_range(nod_fld1%ntot_phys_viz)
 !
@@ -125,7 +126,7 @@
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
       call update_fields(nod_comm, node1, ele1, surf1,                  &
-     &    fluid1, conduct1, sf_grp1, iphys, iphys_ele, fld_ele1,        &
+     &    MHD_mesh1, sf_grp1, iphys, iphys_ele, fld_ele1,               &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
      &    f1_l, f1_nl, nod_fld1)
@@ -136,7 +137,7 @@
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
      &     (nod_comm, node1, ele1, surf1, sf_grp1, iphys,               &
-     &      iphys_ele, fld_ele1, fluid1, conduct1, layer_tbl1,          &
+     &      iphys_ele, fld_ele1, MHD_mesh1, layer_tbl1,                 &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
      &      f1_l, f1_nl, nod_fld1)
@@ -145,7 +146,7 @@
 !     ========  Data output
 !
       call lead_fields_by_FEM                                           &
-     &   (nod_comm, node1, ele1, surf1, edge1, fluid1, conduct1,        &
+     &   (nod_comm, node1, ele1, surf1, edge1, MHD_mesh1,               &
      &    sf_grp1, iphys, iphys_ele, fld_ele1,                          &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
@@ -156,7 +157,7 @@
       call start_eleps_time(4)
 !
       if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-      call output_time_step_control(node1, ele1, fluid1, conduct1,      &
+      call output_time_step_control(node1, ele1, MHD_mesh1,             &
      &    iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, jac1_3d_l,   &
      &    fem1_wk, mhd_fem1_wk)
 !

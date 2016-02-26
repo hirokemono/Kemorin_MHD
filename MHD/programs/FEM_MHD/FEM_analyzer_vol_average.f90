@@ -28,6 +28,7 @@
 !
       use m_control_parameter
       use m_layering_ele_list
+      use m_geometry_data_MHD
 !
       use initialize_4_snapshot
 !
@@ -38,7 +39,7 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
-      call init_analyzer_snap(layer_tbl1)
+      call init_analyzer_snap(MHD_mesh1, layer_tbl1)
 !
       end subroutine FEM_initialize_vol_average
 !
@@ -91,7 +92,7 @@
 !     -----Output monitor date
 !
       if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-      call output_time_step_control(node1, ele1, fluid1, conduct1,      &
+      call output_time_step_control(node1, ele1, MHD_mesh1,             &
      &    iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, jac1_3d_l,   &
      &    fem1_wk, mhd_fem1_wk)
 !

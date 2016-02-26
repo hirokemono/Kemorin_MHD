@@ -11,7 +11,7 @@
 !!     &          node, ele, fluid, nod_fld, jac_3d, rhs_tbl,           &
 !!     &          ncomp_ele, iele_velo, d_ele, fem_wk, f_nl)
 !!      subroutine int_div_sgs_idct_simi_upw(i_flux, i_v, i_b,          &
-!!     &          node, ele, conduct1, nod_fld, jac_3d, rhs_tbl,        &
+!!     &          node, ele, conduct, nod_fld, jac_3d, rhs_tbl,         &
 !!     &          ncomp_ele, iele_velo, d_ele, fem_wk, f_nl)
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -142,7 +142,7 @@
 !-----------------------------------------------------------------------
 !
       subroutine int_div_sgs_idct_simi_upw(i_flux, i_v, i_b,            &
-     &          node, ele, conduct1, nod_fld, jac_3d, rhs_tbl,          &
+     &          node, ele, conduct, nod_fld, jac_3d, rhs_tbl,           &
      &          ncomp_ele, iele_velo, d_ele, fem_wk, f_nl)
 !
       use sgs_terms_2_each_ele
@@ -152,7 +152,7 @@
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
       type(phys_data), intent(in) :: nod_fld
-      type(field_geometry_data), intent(in) :: conduct1
+      type(field_geometry_data), intent(in) :: conduct
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !
@@ -172,7 +172,7 @@
      &     (node%numnod, ele%numele, ele%nnod_4_ele, ele%ie,            &
      &      ele%istack_ele_smp, k2, nod_fld%ntot_phys,                  &
      &      i_b, i_v, i_flux, nod_fld%d_fld, fem_wk%vector_1)
-        call fem_skv_div_as_tsr_upw(conduct1%istack_ele_fld_smp,        &
+        call fem_skv_div_as_tsr_upw(conduct%istack_ele_fld_smp,         &
      &      intg_point_t_evo, k2, d_ele(1,iele_velo), ele, jac_3d,      &
      &      fem_wk%vector_1, fem_wk%sk6)
       end do

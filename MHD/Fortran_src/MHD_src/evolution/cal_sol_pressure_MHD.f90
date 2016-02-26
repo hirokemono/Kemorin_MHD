@@ -27,7 +27,6 @@
       use m_machine_parameter
       use m_t_int_parameter
       use m_physical_property
-!      use m_finite_element_matrix
 !
       implicit none
 !
@@ -228,6 +227,9 @@
       subroutine cal_sol_m_potential_crank(numnod, inter_smp_stack,     &
      &          ncomp_nod, i_m_phi, i_mag_p, d_nod)
 !
+!      use t_geometry_data_MHD
+!
+!      type(field_geometry_data), intent(in) :: conduct
       integer(kind = kint), intent(in) :: inter_smp_stack(0:np_smp)
       integer (kind = kint), intent(in) :: numnod, ncomp_nod
       integer (kind = kint), intent(in) :: i_m_phi, i_mag_p
@@ -251,11 +253,11 @@
 !$omp end parallel do
 !
 !       do iproc = 1, np_smp
-!         ist = conduct1%istack_inter_fld_smp(iproc-1)+1
-!         ied = conduct1%istack_inter_fld_smp(iproc)
+!         ist = conduct%istack_inter_fld_smp(iproc-1)+1
+!         ied = conduct%istack_inter_fld_smp(iproc)
 !!$omp parallel do private(inod)
 !         do inod = ist, ied
-!          inod = conduct1%inod_fld(inum)
+!          inod = conduct%inod_fld(inum)
 !          d_nod(inod,i_mag_p)=  + d_nod(inod,i_mag_p)                  &
 !     &               - 0.5d0 * ak_d_magne(1) * ff(inod,1)*ml(inod)
 !         end do

@@ -192,33 +192,33 @@
       do inum = 0, 3
 !
        if ( inum.eq. 0 ) then
-        iflag = 1
-        iele_cd_st = iele + 1
+         iflag = 1
+         iele_cd_st = iele + 1
        else if ( inum.eq. 1 ) then
-        iflag = 3
-        iele_fl_st = iele + 1
+         iflag = 3
+         iele_fl_st = iele + 1
        else if ( inum.eq. 2 ) then
-        iflag = 2
-        iele_ins_st = iele + 1
+         iflag = 2
+         iele_ins_st = iele + 1
        else if ( inum.eq. 3 ) then
-        iflag = 0
+         iflag = 0
        end if
 !
        do iele0 = 1, numele
 !
         if ( mat_flag_mhd(iele0) .eq. iflag ) then
-         iele = iele + 1
-         new2oldele_layer(iele) = iele0
+          iele = iele + 1
+          new2oldele_layer(iele) = iele0
         end if
 !
        end do
 !
        if ( inum.eq. 1 ) then
-        iele_cd_ed = iele
+         iele_cd_ed = iele
        else if ( inum.eq. 2 ) then
-        iele_fl_ed = iele
+         iele_fl_ed = iele
        else if ( inum.eq. 3 ) then
-        iele_ins_ed = iele
+         iele_ins_ed = iele
        end if
 !
       end do

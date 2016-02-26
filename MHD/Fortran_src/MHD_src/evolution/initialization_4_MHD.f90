@@ -3,8 +3,9 @@
 !
 !      Written by H. Matsui
 !
-!      subroutine init_analyzer_fl(layer_tbl)
-!        type(layering_tbl), intent(in) :: layer_tbl
+!!      subroutine init_analyzer_fl(MHD_mesh, layer_tbl)
+!!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
+!!        type(layering_tbl), intent(inout) :: layer_tbl
 !
       module initialization_4_MHD
 !
@@ -18,7 +19,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_fl(layer_tbl)
+      subroutine init_analyzer_fl(MHD_mesh, layer_tbl)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -29,7 +30,6 @@
       use m_mesh_data
       use m_nod_comm_table
       use m_geometry_data
-      use m_geometry_data_MHD
       use m_group_data
       use m_node_phys_data
       use m_ele_material_property
@@ -48,6 +48,7 @@
 !
       use m_cal_max_indices
 !
+      use t_geometry_data_MHD
       use t_layering_ele_list
 !
       use count_whole_num_element
@@ -84,6 +85,7 @@
       use nod_phys_send_recv
       use solver_MGCG_MHD
 !
+      type(mesh_data_MHD), intent(inout) :: MHD_mesh
       type(layering_tbl), intent(inout) :: layer_tbl
 !
 !     --------------------------------
@@ -92,9 +94,9 @@
 !
 !  -----   ordering by regions ---------------------------------------
 !
-      call reordering_by_layers_MHD
+      call reordering_by_layers_MHD(MHD_mesh)
 !
-      call set_layers(node1, ele1, ele_grp1)
+      call set_layers(node1, ele1, ele_grp1, MHD_mesh)
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         ncomp_correlate = 9
@@ -174,8 +176,8 @@
       call s_init_check_delta_t_data(iphys)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
-      call set_reference_temp                                           &
-     &   (node1%numnod, fluid1%numnod_fld, fluid1%inod_fld,             &
+      call set_reference_temp(node1%numnod,                             &
+     &    MHD_mesh%fluid%numnod_fld, MHD_mesh%fluid%inod_fld,           &
      &    node1%xx, node1%rr, node1%a_r, nod_fld1%ntot_phys,            &
      &    iphys%i_ref_t, iphys%i_gref_t, nod_fld1%d_fld)
 !
@@ -190,7 +192,8 @@
       call copy_communicator_4_solver(solver_C)
 !
       if (iflag_debug.eq.1) write(*,*) 'make comm. table for fluid'
-      call s_const_comm_table_fluid(nprocs, fluid1%istack_ele_fld_smp,  &
+      call s_const_comm_table_fluid                                     &
+     &   (nprocs, MHD_mesh%fluid%istack_ele_fld_smp,                    &
      &    node1, ele1, nod_comm, DJDS_comm_fl)
 !
 !  -------------------------------
@@ -202,7 +205,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)' initial_data_control'
       call initial_data_control                                         &
-     &   (node1, ele1, fluid1, iphys, layer_tbl, nod_fld1)
+     &   (node1, ele1, MHD_mesh%fluid, iphys, layer_tbl, nod_fld1)
 !
 !  -------------------------------
 !
@@ -223,7 +226,7 @@
       if (iflag_debug.eq.1) write(*,*) 'const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes                               &
      &   (node1, ele1, sf_grp1, layer_tbl, infty_list,                  &
-     &    jac1_3d_l, jac1_3d_q, fluid1, conduct1, insulate1)
+     &    jac1_3d_l, jac1_3d_q, MHD_mesh)
 !
       if (iflag_debug.eq.1) write(*,*)  'const_jacobian_sf_grp'
       call const_jacobian_sf_grp(node1, ele1, surf1, sf_grp1,           &
@@ -235,7 +238,7 @@
       call set_MHD_whole_connectivity                                   &
      &    (nod_comm, node1, ele1, next_tbl1, rhs_tbl1)
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_layerd_connectivity'
-      call set_MHD_layerd_connectivity(node1, ele1, fluid1)
+      call set_MHD_layerd_connectivity(node1, ele1, MHD_mesh%fluid)
 !
 !     ---------------------
 !
@@ -249,8 +252,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1)write(*,*) 'set_bc_id_data'
-      call set_bc_id_data(node1, ele1, fluid1, conduct1, insulate1,     &
-     &    nod_grp1, iphys, nod_fld1)
+      call set_bc_id_data                                               &
+     &   (node1, ele1, nod_grp1, MHD_mesh, iphys, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_surf_bc_data'
       call set_surf_bc_data(node1, ele1, surf1, sf_grp1,                &
@@ -258,15 +261,14 @@
 !
 !     ---------------------
 !
-      call int_RHS_mass_matrices                                        &
-     &   (node1, ele1, fluid1, conduct1, insulate1,                     &
+      call int_RHS_mass_matrices(node1, ele1, MHD_mesh,                 &
      &   jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_l, m1_lump)
 !
 !     ---------------------
 !
       if (iflag_debug.eq.1 ) write(*,*) 'allocate_aiccg_matrices'
       call allocate_aiccg_matrices(node1)
-      call reset_aiccg_matrices(node1, ele1, fluid1)
+      call reset_aiccg_matrices(node1, ele1, MHD_mesh%fluid)
 !
 !     --------------------- 
 !
