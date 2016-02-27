@@ -42,10 +42,8 @@
       call FEM_initialize_surface
 !
 !  VIZ Initialization
-      call init_visualize_surface                                       &
-     &   (femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,                  &
-     &    surfmesh_VIZ%surf, edgemesh_VIZ%edge,                         &
-     &    femmesh_VIZ%mesh%nod_comm, edgemesh_VIZ%edge_comm,            &
+      call init_visualize_surface(femmesh_VIZ%mesh,                     &
+     &    surfmesh_VIZ%surf, edgemesh_VIZ%edge, edgemesh_VIZ%edge_comm, &
      &    femmesh_VIZ%group%ele_grp, femmesh_VIZ%group%surf_grp,        &
      &    femmesh_VIZ%group%surf_nod_grp, field_VIZ)
 !
@@ -66,8 +64,7 @@
         call FEM_analyze_surface(i_step, istep_psf, istep_iso)
 !
 !  Generate field lines
-        call visualize_surface(istep_psf, istep_iso,                    &
-     &      femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,                &
+        call visualize_surface(istep_psf, istep_iso, femmesh_VIZ%mesh,  &
      &      edgemesh_VIZ%edge, edgemesh_VIZ%edge_comm, field_VIZ)
       end do
 !

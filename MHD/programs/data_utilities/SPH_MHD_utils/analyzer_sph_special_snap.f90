@@ -89,7 +89,7 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
           call start_eleps_time(12)
           call visualize_surface(istep_psf, istep_iso,                  &
-     &        mesh1%node, ele1, edge1, edge_comm, nod_fld1)
+     &        mesh1, edge1, edge_comm, nod_fld1)
           call end_eleps_time(12)
         end if
         call end_eleps_time(1)

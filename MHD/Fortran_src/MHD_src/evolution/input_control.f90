@@ -51,7 +51,7 @@
 !
 !  --  load FEM mesh data
       call input_mesh(my_rank, mesh1%nod_comm,                          &
-     &    mesh1%node, ele1, nod_grp1, ele_grp1, sf_grp1,                &
+     &    mesh1%node, mesh1%ele, nod_grp1, ele_grp1, sf_grp1,           &
      &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
       call input_meshes_4_MHD
@@ -78,7 +78,7 @@
       call set_control_4_FEM_MHD
 !
 !  --  load FEM mesh data
-      call input_mesh(my_rank, mesh1%nod_comm, mesh1%node, ele1,        &
+      call input_mesh(my_rank, mesh1%nod_comm, mesh1%node, mesh1%ele,   &
      &    nod_grp1, ele_grp1, sf_grp1,                                  &
      &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
@@ -120,7 +120,7 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 's_read_filtering_data'
-      call s_read_filtering_data(mesh1%node, ele1)
+      call s_read_filtering_data(mesh1%node, mesh1%ele)
 !
       if     (iflag_SGS_filter .eq. id_SGS_3D_FILTERING                 &
      &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING              &

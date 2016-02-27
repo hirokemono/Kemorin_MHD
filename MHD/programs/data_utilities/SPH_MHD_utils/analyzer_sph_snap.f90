@@ -72,8 +72,7 @@
       call SPH_init_sph_snap
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize                                               &
-     &   (mesh1%node, ele1, surf1, edge1, mesh1%nod_comm, edge_comm,    &
+      call init_visualize(mesh1, surf1, edge1, edge_comm,               &
      &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
 !
       call calypso_MPI_barrier
@@ -135,9 +134,8 @@
           call start_eleps_time(12)
           call visualize_all                                            &
      &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
-     &        mesh1%node, ele1, surf1, edge1, mesh1%nod_comm,           &
-     &        edge_comm, ele_grp1, nod_fld1, next_tbl1%neib_ele,        &
-     &        jac1_3d_q)
+     &        mesh1, surf1, edge1, edge_comm, ele_grp1, nod_fld1,       &
+     &        next_tbl1%neib_ele, jac1_3d_q)
           call end_eleps_time(12)
         end if
         call end_eleps_time(1)

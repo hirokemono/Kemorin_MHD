@@ -49,8 +49,7 @@
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
       call init_analyzer_snap(MHD_mesh1, layer_tbl1)
 !
-      call output_grd_file_w_org_connect                                &
-     &   (mesh1%node, ele1, mesh1%nod_comm, MHD_mesh1, nod_fld1)
+      call output_grd_file_w_org_connect(mesh1, MHD_mesh1, nod_fld1)
 !
       call allocate_phys_range(nod_fld1%ntot_phys_viz)
 !
@@ -130,8 +129,8 @@
       call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
-      call update_fields(mesh1%nod_comm, mesh1%node, ele1, surf1,       &
-     &    MHD_mesh1, sf_grp1, iphys, iphys_ele, fld_ele1,               &
+      call update_fields                                                &
+     &   (mesh1, surf1, MHD_mesh1, sf_grp1, iphys, iphys_ele, fld_ele1, &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
      &    f1_l, f1_nl, nod_fld1)
@@ -140,8 +139,7 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients                                   &
-     &     (mesh1%nod_comm, mesh1%node, ele1, surf1, sf_grp1, iphys,    &
+        call s_cal_model_coefficients(mesh1, surf1, sf_grp1, iphys,     &
      &      iphys_ele, fld_ele1, MHD_mesh1, layer_tbl1,                 &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
@@ -150,8 +148,7 @@
 !
 !     ========  Data output
 !
-      call lead_fields_by_FEM                                           &
-     &   (mesh1%nod_comm, mesh1%node, ele1, surf1, edge1, MHD_mesh1,    &
+      call lead_fields_by_FEM(mesh1, surf1, edge1, MHD_mesh1,           &
      &    sf_grp1, iphys, iphys_ele, fld_ele1,                          &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
@@ -163,7 +160,7 @@
 !     -----Output monitor date
 !
       if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-      call output_time_step_control(mesh1%node, ele1, MHD_mesh1,        &
+      call output_time_step_control(mesh1, MHD_mesh1,                   &
      &    iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, jac1_3d_l,   &
      &    fem1_wk, mhd_fem1_wk)
 !
@@ -259,8 +256,8 @@
      &        'lead radial', trim(fhd_div_SGS_m_flux)
         call cal_terms_4_momentum                                       &
      &     (iphys%i_SGS_div_m_flux, iak_diff_mf, iak_diff_lor,          &
-     &      mesh1%nod_comm, mesh1%node, ele1, surf1, MHD_mesh1%fluid,   &
-     &      sf_grp1, iphys, iphys_ele, fld_ele1,                        &
+     &      mesh1%nod_comm, mesh1%node, mesh1%ele, surf1,               &
+     &      MHD_mesh1%fluid, sf_grp1, iphys, iphys_ele, fld_ele1,       &
      &      jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,           &
      &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
@@ -289,8 +286,8 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_vp_induct)
         call cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,               &
-     &     mesh1%nod_comm, mesh1%node, ele1, MHD_mesh1%conduct, iphys,  &
-     &     iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,         &
+     &     mesh1%nod_comm, mesh1%node, mesh1%ele, MHD_mesh1%conduct,    &
+     &     iphys, iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,  &
      &     mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 
       end if
@@ -299,8 +296,9 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
         call int_vol_sgs_induction                                      &
-     &     (mesh1%nod_comm, mesh1%node, ele1, MHD_mesh1%conduct, iphys, &
-     &      jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_nl, nod_fld1)
+     &     (mesh1%nod_comm, mesh1%node, mesh1%ele, MHD_mesh1%conduct,   &
+     &      iphys, jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk,           &
+     &      f1_nl, nod_fld1)
       end if
 !
 !$omp parallel

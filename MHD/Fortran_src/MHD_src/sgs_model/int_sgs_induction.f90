@@ -108,6 +108,7 @@
       use nod_phys_send_recv
 !
       integer(kind = kint), intent(in) :: icomp_sgs_uxb, ie_dvx
+!
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele

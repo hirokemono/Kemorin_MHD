@@ -75,8 +75,8 @@
         if(iflag_refine_ele(iele) .gt. 0) then
           ilevel_refine(iele) = 1
         end if
-!        if(iele.eq.ele1%numele) write(*,*) 'hehehe ',                  &
-!     &                   edge%iedge_4_ele(ele1%numele,1:nedge_4_ele)
+!        if(iele .eq. ele%numele) write(*,*) 'hehehe ',                 &
+!     &                   edge%iedge_4_ele(ele%numele,1:nedge_4_ele)
 !
       end do
       max_refine_level = max_refine_level + 1

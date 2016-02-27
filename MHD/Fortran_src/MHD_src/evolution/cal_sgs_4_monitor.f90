@@ -187,10 +187,9 @@
           if(iflag_debug .ge. iflag_routine_msg)                        &
      &             write(*,*) 'lead  ', trim(nod_fld%phys_name(i))
           call cal_terms_4_momentum(i_fld, iak_diff_mf, iak_diff_lor,   &
-     &        nod_comm, node, ele, surf, fluid, sf_grp,            &
-     &        iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp,  &
-     &        rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl,   &
-     &        nod_fld)
+     &        nod_comm, node, ele, surf, fluid, sf_grp,                 &
+     &        iphys, iphys_ele, ele_fld, jac_3d, jac_sf_grp, rhs_tbl,   &
+     &        FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         end if
       end do
 !

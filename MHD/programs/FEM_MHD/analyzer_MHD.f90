@@ -60,8 +60,7 @@
       call start_eleps_time(2)
       call FEM_initialize_MHD
 !
-      call init_visualize_surface                                       &
-     &   (mesh1%node, ele1, surf1, edge1, mesh1%nod_comm, edge_comm,    &
+      call init_visualize_surface(mesh1, surf1, edge1, edge_comm,       &
      &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
       call end_eleps_time(2)
 !
@@ -91,7 +90,7 @@
         if (visval.eq.0) then
           call start_eleps_time(4)
           call visualize_surface(istep_psf, istep_iso,                  &
-     &        mesh1%node, ele1, edge1, edge_comm, nod_fld1)
+     &        mesh1, edge1, edge_comm, nod_fld1)
           call end_eleps_time(4)
         end if
 !

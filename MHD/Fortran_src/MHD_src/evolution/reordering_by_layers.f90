@@ -36,25 +36,24 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine reordering_by_layers_snap(MHD_mesh)
+      subroutine reordering_by_layers_snap(ele, MHD_mesh)
 !
-      use m_geometry_data
       use m_group_data
 !
+      type(element_data), intent(in) :: ele
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !
 !
-      call allocate_lists_4_layer(ele1%numele)
-      call s_reordering_by_layers(ele1, ele_grp1, sf_grp1, MHD_mesh)
+      call allocate_lists_4_layer(ele%numele)
+      call s_reordering_by_layers(ele, ele_grp1, sf_grp1, MHD_mesh)
       call deallocate_lists_4_layer
 !
       end subroutine reordering_by_layers_snap
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine reordering_by_layers_MHD(MHD_mesh)
+      subroutine reordering_by_layers_MHD(ele, MHD_mesh)
 !
-      use m_geometry_data
       use m_group_data
       use m_iccg_parameter
       use m_work_4_MHD_layering
@@ -65,16 +64,17 @@
       use reordering_MG_ele_by_layers
       use skip_comment_f
 !
+      type(element_data), intent(in) :: ele
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !
 !
-      call allocate_lists_4_layer(ele1%numele)
-      call s_reordering_by_layers(ele1, ele_grp1, sf_grp1, MHD_mesh)
+      call allocate_lists_4_layer(ele%numele)
+      call s_reordering_by_layers(ele, ele_grp1, sf_grp1, MHD_mesh)
 !
 !   ordereing of element parameters for AMG (for first grid)
 !
       if(cmp_no_case(method_4_solver, 'MGCG')) then
-        call reordering_ele_interpolate_type(ele1%numele,               &
+        call reordering_ele_interpolate_type(ele%numele,                &
      &      old2newele_layer, MG_itp(1)%f2c%tbl_org )
         call s_reordering_MG_ele_by_layers
       end if

@@ -7,15 +7,12 @@
 !> @brief Evaluate many kind of field data
 !!
 !!@verbatim
-!!      subroutine lead_fields_by_FEM                                   &
-!!     &         (nod_comm, node, ele1, surf1, edge1, MHD_mesh,         &
+!!      subroutine lead_fields_by_FEM(mesh, surf1, edge1, MHD_mesh,     &
 !!     &          sf_grp1, iphys, iphys_ele, fld_ele1,                  &
 !!     &          jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,     &
 !!     &          FEM1_elen, layer_tbl, m1_lump, mhd_fem1_wk, fem1_wk,  &
 !!     &          f1_l, f1_nl, nod_fld1)
-!!        type(communication_table), intent(in) :: nod_comm
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
+!!        type(mesh_geometry), intent(in) :: mesh
 !!        type(surface_data), intent(in) :: surf1
 !!        type(edge_data), intent(in) :: edge1
 !!        type(surface_group_data), intent(in) :: sf_grp1
@@ -39,6 +36,7 @@
 !
       use m_precision
 !
+      use t_mesh_data
       use t_comm_table
       use t_geometry_data_MHD
       use t_geometry_data
@@ -64,8 +62,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine lead_fields_by_FEM                                     &
-     &         (nod_comm, node, ele, surf1, edge1, MHD_mesh,            &
+      subroutine lead_fields_by_FEM(mesh, surf1, edge1, MHD_mesh,       &
      &          sf_grp1, iphys, iphys_ele, fld_ele1,                    &
      &          jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,       &
      &          FEM1_elen, layer_tbl, m1_lump, mhd_fem1_wk, fem1_wk,    &
@@ -80,9 +77,7 @@
       use cal_helicities
       use output_viz_file_control
 !
-      type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry), intent(in) :: mesh
       type(surface_data), intent(in) :: surf1
       type(edge_data), intent(in) :: edge1
       type(surface_group_data), intent(in) :: sf_grp1
@@ -109,27 +104,29 @@
 !
       if ( iflag.eq.0 ) then
         if (iflag_debug.gt.0) write(*,*) 'cal_potential_on_edge'
-        call cal_potential_on_edge(node, ele, edge1, iphys, nod_fld1)
+        call cal_potential_on_edge                                      &
+     &     (mesh%node, mesh%ele, edge1, iphys, nod_fld1)
 !
         if (iflag_debug.gt.0) write(*,*) 'update_fields'
-        call update_fields(nod_comm, node, ele, surf1,                  &
-     &      MHD_mesh, sf_grp1, iphys, iphys_ele, fld_ele1,              &
+        call update_fields                                              &
+     &     (mesh, surf1, MHD_mesh, sf_grp1, iphys, iphys_ele, fld_ele1, &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, layer_tbl, m1_lump, mhd_fem1_wk, fem1_wk,        &
      &      f1_l, f1_nl, nod_fld1)
 !
-        call cal_field_by_rotation(nod_comm, node, ele, surf1,          &
+        call cal_field_by_rotation                                      &
+     &     (mesh%nod_comm, mesh%node, mesh%ele, surf1,                  &
      &      sf_grp1, MHD_mesh%fluid, MHD_mesh%conduct,                  &
      &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
      &      rhs_tbl1, FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,         &
      &      f1_l, f1_nl, nod_fld1)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_helicity'
-        call cal_helicity(node, iphys, nod_fld1)
+        call cal_helicity(mesh%node, iphys, nod_fld1)
 !
         if (iflag_debug.gt.0) write(*,*) 'cal_energy_fluxes'
-        call cal_energy_fluxes(nod_comm, node, ele, surf1,              &
-     &      MHD_mesh, sf_grp1, iphys, iphys_ele, fld_ele1,              &
+        call cal_energy_fluxes                                          &
+     &     (mesh, surf1, MHD_mesh, sf_grp1, iphys, iphys_ele, fld_ele1, &
      &      jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,           &
      &      m1_lump, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
@@ -138,8 +135,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine cal_energy_fluxes(nod_comm, node, ele, surf1,          &
-     &          MHD_mesh, sf_grp1, iphys, iphys_ele, fld_ele1,          &
+      subroutine cal_energy_fluxes(mesh, surf1, MHD_mesh,               &
+     &          sf_grp1, iphys, iphys_ele, fld_ele1,                    &
      &          jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,       &
      &          m1_lump, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
@@ -150,9 +147,7 @@
       use cal_sgs_4_monitor
       use cal_true_sgs_terms
 !
-      type(communication_table), intent(in) :: nod_comm
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry), intent(in) :: mesh
       type(surface_data), intent(in) :: surf1
       type(surface_group_data), intent(in) :: sf_grp1
       type(mesh_data_MHD), intent(in) :: MHD_mesh
@@ -172,35 +167,38 @@
 !
 !
       call cal_true_sgs_terms_pre                                       &
-     &   (nod_comm, node, ele, surf1, sf_grp1,                          &
+     &   (mesh%nod_comm, mesh%node, mesh%ele, surf1, sf_grp1,           &
      &    MHD_mesh%fluid, MHD_mesh%conduct, iphys, iphys_ele, fld_ele1, &
      &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
      &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
-      call cal_sgs_terms_4_monitor                                      &
-     &   (nod_comm, node, ele, MHD_mesh%fluid, MHD_mesh%conduct,        &
-     &    iphys, iphys_ele, fld_ele1,  jac1_3d_q, rhs_tbl1, FEM1_elen,  &
-     &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
+      call cal_sgs_terms_4_monitor(mesh%nod_comm, mesh%node, mesh%ele,  &
+     &    MHD_mesh%fluid, MHD_mesh%conduct, iphys, iphys_ele, fld_ele1, &
+     &    jac1_3d_q, rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk,         &
+     &    f1_l, f1_nl, nod_fld1)
 !
-      call cal_fluxes_4_monitor(node, iphys, nod_fld1)
+      call cal_fluxes_4_monitor(mesh%node, iphys, nod_fld1)
 !
-      call cal_forces_4_monitor(nod_comm, node, ele, surf1, sf_grp1,    &
+      call cal_forces_4_monitor                                         &
+     &   (mesh%nod_comm, mesh%node, mesh%ele, surf1, sf_grp1,           &
      &    MHD_mesh%fluid, MHD_mesh%conduct, iphys, iphys_ele, fld_ele1, &
      &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
      &    m1_lump, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
-      call cal_diff_of_sgs_terms(nod_comm, node, ele, surf1, sf_grp1,   &
+      call cal_diff_of_sgs_terms                                        &
+     &   (mesh%nod_comm, mesh%node, mesh%ele, surf1, sf_grp1,           &
      &    MHD_mesh%fluid, MHD_mesh%conduct, iphys, iphys_ele, fld_ele1, &
      &    jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,             &
      &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !
-      call cal_true_sgs_terms_post(nod_comm, node, iphys, nod_fld1)
+      call cal_true_sgs_terms_post                                      &
+     &   (mesh%nod_comm, mesh%node, iphys, nod_fld1)
 !
-      call cal_work_4_forces                                            &
-     &   (nod_comm, node, ele, iphys, jac1_3d_q, rhs_tbl1,              &
-     &    mhd_fem1_wk, fem1_wk, f1_nl, nod_fld1)
+      call cal_work_4_forces(mesh%nod_comm, mesh%node, mesh%ele,        &
+     &    iphys, jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk,             &
+     &    f1_nl, nod_fld1)
 !
       call cal_work_4_sgs_terms                                         &
-     &   (nod_comm, node, ele, MHD_mesh%conduct,                        &
+     &   (mesh%nod_comm, mesh%node, mesh%ele, MHD_mesh%conduct,         &
      &    iphys, jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk,             &
      &    f1_nl, nod_fld1)
 ! 

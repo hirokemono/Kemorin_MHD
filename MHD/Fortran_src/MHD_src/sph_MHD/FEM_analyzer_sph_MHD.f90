@@ -94,8 +94,7 @@
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
-      call output_grd_file_4_snapshot                                   &
-     &   (mesh1%nod_comm, mesh1%node, ele1, nod_fld1)
+      call output_grd_file_4_snapshot(mesh1, nod_fld1)
 !
       end subroutine FEM_initialize_sph_MHD
 !

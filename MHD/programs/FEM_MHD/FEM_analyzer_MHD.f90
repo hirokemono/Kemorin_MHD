@@ -68,8 +68,8 @@
 !
       call reset_update_flag(nod_fld1)
       if (iflag_debug.eq.1) write(*,*) 'update_fields'
-      call update_fields(mesh1%nod_comm, mesh1%node, ele1, surf1,       &
-     &    MHD_mesh1, sf_grp1, iphys, iphys_ele, fld_ele1,               &
+      call update_fields                                                &
+     &   (mesh1, surf1, MHD_mesh1, sf_grp1, iphys, iphys_ele, fld_ele1, &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
      &    f1_l, f1_nl, nod_fld1)
@@ -83,9 +83,9 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
       call set_data_4_const_matrices                                    &
-     &   (mesh1%node, ele1, MHD_mesh1, rhs_tbl1, mat_tbl_q1)
+     &   (mesh1, MHD_mesh1, rhs_tbl1, mat_tbl_q1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
-      call set_aiccg_matrices(mesh1%node, ele1, surf1, MHD_mesh1,       &
+      call set_aiccg_matrices(mesh1, surf1, MHD_mesh1,                  &
      &    sf_grp1, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,              &
      &    rhs_tbl1, mat_tbl_q1, mhd_fem1_wk)
 !
@@ -93,8 +93,7 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients                                   &
-     &     (mesh1%nod_comm, mesh1%node, ele1, surf1, sf_grp1, iphys,    &
+        call s_cal_model_coefficients(mesh1, surf1, sf_grp1, iphys,     &
      &      iphys_ele, fld_ele1, MHD_mesh1, layer_tbl1,                 &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
@@ -102,8 +101,7 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
-      call lead_fields_by_FEM                                           &
-     &   (mesh1%nod_comm, mesh1%node, ele1, surf1, edge1, MHD_mesh1,    &
+      call lead_fields_by_FEM(mesh1, surf1, edge1, MHD_mesh1,           &
      &    sf_grp1, iphys, iphys_ele, fld_ele1,                          &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
@@ -115,10 +113,10 @@
 !
       if (iflag_flexible_step .eq. iflag_flex_step) then
         call set_ele_rms_4_previous_step                                &
-     &     (mesh1%node, ele1, MHD_mesh1%fluid,                          &
+     &     (mesh1%node, mesh1%ele, MHD_mesh1%fluid,                     &
      &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk)
         call s_check_deltat_by_prev_rms                                 &
-     &     (mesh1%node, ele1, MHD_mesh1%fluid,                          &
+     &     (mesh1%node, mesh1%ele, MHD_mesh1%fluid,                     &
      &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk)
       end if
 !
@@ -127,8 +125,7 @@
       call end_eleps_time(2)
       call start_eleps_time(4)
 !
-      call output_grd_file_w_org_connect                                &
-     &   (mesh1%node, ele1, mesh1%nod_comm, MHD_mesh1, nod_fld1)
+      call output_grd_file_w_org_connect(mesh1, MHD_mesh1, nod_fld1)
 !
       call allocate_phys_range(nod_fld1%ntot_phys_viz)
 !       call s_open_boundary_monitor(my_rank, sf_grp1)
@@ -189,8 +186,7 @@
 !     ----- Time integration
 !
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution'
-      call fields_evolution                                             &
-     &   (mesh1%nod_comm, mesh1%node, ele1, surf1, MHD_mesh1,           &
+      call fields_evolution(mesh1, surf1, MHD_mesh1,                    &
      &    sf_grp1, sf_grp_nod1, iphys, iphys_ele, fld_ele1,             &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,     &
      &    rhs_tbl1, FEM1_elen, layer_tbl1, m1_lump,                     &
@@ -200,8 +196,7 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients                                   &
-     &     (mesh1%nod_comm, mesh1%node, ele1, surf1, sf_grp1, iphys,    &
+        call s_cal_model_coefficients(mesh1, surf1, sf_grp1, iphys,     &
      &      iphys_ele, fld_ele1, MHD_mesh1, layer_tbl1,                 &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
@@ -213,15 +208,14 @@
       if (iflag_flexible_step .eq. iflag_flex_step) then
         if (iflag_debug.eq.1) write(*,*) 's_check_flexible_time_step'
         call s_check_flexible_time_step                                 &
-     &     (mesh1%node, ele1, MHD_mesh1%fluid,                          &
+     &     (mesh1%node, mesh1%ele, MHD_mesh1%fluid,                     &
      &      iphys, nod_fld1, jac1_3d_q, jac1_3d_l, fem1_wk)
       end if
 !
 !     ========  Data output
 !
       if(istep_flex_to_max .eq. 0) then
-        call lead_fields_by_FEM                                         &
-     &     (mesh1%nod_comm, mesh1%node, ele1, surf1, edge1, MHD_mesh1,  &
+        call lead_fields_by_FEM(mesh1, surf1, edge1, MHD_mesh1,         &
      &      sf_grp1, iphys, iphys_ele, fld_ele1,                        &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,       &
@@ -233,7 +227,7 @@
         call start_eleps_time(4)
 !
         if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-        call output_time_step_control(mesh1%node, ele1, MHD_mesh1,      &
+        call output_time_step_control(mesh1, MHD_mesh1,                 &
      &      iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, jac1_3d_l, &
      &      fem1_wk, mhd_fem1_wk)
 !
@@ -308,7 +302,7 @@
 !
       if ( retval .ne. 0 ) then
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
-        call update_matrices(mesh1%node, ele1, surf1, MHD_mesh1,        &
+        call update_matrices(mesh1, surf1, MHD_mesh1,                   &
      &      sf_grp1, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,            &
      &      rhs_tbl1, mat_tbl_q1, mhd_fem1_wk)
       end if

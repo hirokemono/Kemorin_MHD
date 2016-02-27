@@ -73,10 +73,8 @@
 !
 !  -------------------------------
 !
-      call init_visualize                                               &
-     &   (femmesh_STR%mesh%node, femmesh_STR%mesh%ele,                  &
-     &    surfmesh_STR%surf, edgemesh_STR%edge,                         &
-     &    femmesh_STR%mesh%nod_comm, edgemesh_STR%edge_comm,            &
+      call init_visualize(femmesh_STR%mesh, surfmesh_STR%surf,          &
+     &    edgemesh_STR%edge, edgemesh_STR%edge_comm,                    &
      &    femmesh_STR%group%ele_grp, femmesh_STR%group%surf_grp,        &
      &    femmesh_STR%group%surf_nod_grp, field_STR)
 !
@@ -115,10 +113,8 @@
         if(visval .eq. 0) then
           call visualize_all                                            &
      &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
-     &        femmesh_STR%mesh%node, femmesh_STR%mesh%ele,              &
-     &        surfmesh_STR%surf, edgemesh_STR%edge,                     &
-     &        femmesh_STR%mesh%nod_comm, edgemesh_STR%edge_comm,        &
-     &        femmesh_STR%group%ele_grp,                                &
+     &        femmesh_STR%mesh, surfmesh_STR%surf, edgemesh_STR%edge,   &
+     &        edgemesh_STR%edge_comm, femmesh_STR%group%ele_grp,        &
      &        field_STR, ele_4_nod_SPH_TRANS, jac_STR_q)
         end if
       end do

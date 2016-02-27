@@ -75,9 +75,8 @@
 !        Initialize visualization
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'
-      call init_visualize_surface                                       &
-     &   (mesh1%node, ele1, surf1, edge1, mesh1%nod_comm, edge_comm,    &
-     &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
+      call init_visualize_surface(mesh1, surf1, edge1,                  &
+     &    edge_comm, ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
 !
       call calypso_MPI_barrier
       call end_eleps_time(2)
@@ -135,7 +134,7 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
           call start_eleps_time(8)
           call visualize_surface(istep_psf, istep_iso,                  &
-     &        mesh1%node, ele1, edge1, edge_comm, nod_fld1)
+     &        mesh1, edge1, edge_comm, nod_fld1)
           call end_eleps_time(8)
         end if
         call end_eleps_time(1)

@@ -5,11 +5,10 @@
 !                                    on July 2000 (ver 1.1)
 !     modified by H. Matsui on Aug., 2007
 !
-!!      subroutine output_time_step_control(node, ele, MHD_mesh,        &
+!!      subroutine output_time_step_control(mesh, MHD_mesh,             &
 !!     &          iphys, nod_fld, iphys_ele, ele_fld,                   &
 !!     &          jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
-!!        type(node_data), intent(in) :: node
-!!        type(element_data), intent(in) :: ele
+!!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(phys_address), intent(in) :: iphys
 !!        type(phys_data), intent(in) :: nod_fld
@@ -23,8 +22,9 @@
 !
       use m_precision
 !
-      use t_geometry_data_MHD
+      use t_mesh_data
       use t_geometry_data
+      use t_geometry_data_MHD
       use t_phys_data
       use t_phys_address
       use t_jacobian_3d
@@ -39,7 +39,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine output_time_step_control(node, ele, MHD_mesh,          &
+      subroutine output_time_step_control(mesh, MHD_mesh,               &
      &          iphys, nod_fld, iphys_ele, ele_fld,                     &
      &          jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
 !
@@ -55,8 +55,7 @@
 !
       integer (kind = kint) :: nd, ii
 !
-      type(node_data), intent(in) :: node
-      type(element_data), intent(in) :: ele
+      type(mesh_geometry), intent(in) :: mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(phys_address), intent(in) :: iphys
       type(phys_data), intent(in) :: nod_fld
@@ -75,9 +74,9 @@
      &            'i_step=',i_step_MHD,'time=',time
 !
       call s_int_mean_squares                                           &
-     &   (node, ele, MHD_mesh%fluid, MHD_mesh%conduct,                  &
+     &   (mesh%node, mesh%ele, MHD_mesh%fluid, MHD_mesh%conduct,        &
      &    iphys, nod_fld, jac_3d_q, jac_3d_l, fem_wk, mhd_fem_wk)
-      call int_no_evo_mean_squares(node, ele, iphys, nod_fld,           &
+      call int_no_evo_mean_squares(mesh%node, mesh%ele, iphys, nod_fld, &
      &    iphys_ele, ele_fld, MHD_mesh%fluid, jac_3d_q, fem_wk)
 !
       call MPI_allREDUCE (bulk_local, bulk_global, num_bulk,            &

@@ -50,9 +50,9 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_data_4_const_matrices'
       call set_data_4_const_matrices                                    &
-     &   (mesh1%node, ele1, MHD_mesh1, rhs_tbl1, mat_tbl_q1)
+     &   (mesh1, MHD_mesh1, rhs_tbl1, mat_tbl_q1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
-      call set_aiccg_matrices(mesh1%node, ele1, surf1, MHD_mesh1,       &
+      call set_aiccg_matrices(mesh1, surf1, MHD_mesh1,                  &
      &    sf_grp1, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,              &
      &    rhs_tbl1, mat_tbl_q1, mhd_fem1_wk)
 !

@@ -21,9 +21,6 @@
       implicit  none
 !
 !
-!>  structure for element data (position and connectivity)
-      type(element_data), save :: ele1
-!
 !>      structure of surface data (geometry and connectivity)
       type(surface_data), save :: surf1
 !

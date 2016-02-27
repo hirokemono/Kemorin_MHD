@@ -105,7 +105,7 @@
 !
       call cal_vecp_induction
       call cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,                 &
-     &    mesh1%nod_comm, mesh1%node, ele1, conduct, iphys,             &
+     &    mesh1%nod_comm, mesh1%node, mesh1%ele, conduct, iphys,        &
      &    iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,          &
      &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 !

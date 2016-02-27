@@ -93,7 +93,7 @@
 !     -----Output monitor date
 !
       if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-      call output_time_step_control(mesh1%node, ele1, MHD_mesh1,        &
+      call output_time_step_control(mesh1, MHD_mesh1,                   &
      &    iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, jac1_3d_l,   &
      &    fem1_wk, mhd_fem1_wk)
 !

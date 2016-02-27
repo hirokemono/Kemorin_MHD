@@ -99,8 +99,8 @@
       call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
-      call update_fields(mesh1%nod_comm, mesh1%node, ele1, surf1,       &
-     &    MHD_mesh1, sf_grp1, iphys, iphys_ele, fld_ele1,               &
+      call update_fields                                                &
+     &   (mesh1, surf1, MHD_mesh1, sf_grp1, iphys, iphys_ele, fld_ele1, &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
      &    f1_l, f1_nl, nod_fld1)
@@ -109,8 +109,7 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients                                   &
-     &     (mesh1%nod_comm, mesh1%node, ele1, surf1, sf_grp1, iphys,    &
+        call s_cal_model_coefficients(mesh1, surf1, sf_grp1, iphys,     &
      &      iphys_ele, fld_ele1, MHD_mesh1, layer_tbl1,                 &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
@@ -119,8 +118,7 @@
 !
 !     ========  Data output
 !
-      call lead_fields_by_FEM                                           &
-     &   (mesh1%nod_comm, mesh1%node, ele1, surf1, edge1, MHD_mesh1,    &
+      call lead_fields_by_FEM(mesh1, surf1, edge1, MHD_mesh1,           &
      &    sf_grp1, iphys, iphys_ele, fld_ele1,                          &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
@@ -133,7 +131,7 @@
 !     -----Output monitor date
 !
       if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-      call output_time_step_control(mesh1%node, ele1, MHD_mesh1,        &
+      call output_time_step_control(mesh1, MHD_mesh1,                   &
      &    iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, jac1_3d_l,   &
      &    fem1_wk, mhd_fem1_wk)
 !

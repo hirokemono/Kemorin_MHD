@@ -42,9 +42,8 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call init_visualize_surface(fem%mesh%node, fem%mesh%ele,          &
-     &    sf_mesh_psf%surf, eg_mesh_psf%edge,                           &
-     &    fem%mesh%nod_comm, eg_mesh_psf%edge_comm,                     &
+      call init_visualize_surface(fem%mesh,                             &
+     &    sf_mesh_psf%surf, eg_mesh_psf%edge, eg_mesh_psf%edge_comm,    &
      &    fem%group%ele_grp, fem%group%surf_grp,                        &
      &    fem%group%surf_nod_grp, nod_fld)
 !
@@ -64,8 +63,7 @@
       integer(kind = kint), intent(in) :: istep_psf, istep_iso
 !
 !
-      call visualize_surface                                            &
-     &   (istep_psf, istep_iso, fem%mesh%node, fem%mesh%ele,            &
+      call visualize_surface(istep_psf, istep_iso, fem%mesh,            &
      &    eg_mesh_psf%edge, eg_mesh_psf%edge_comm, nod_fld)
 !
       end subroutine sectioning_type

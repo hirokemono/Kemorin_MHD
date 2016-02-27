@@ -24,7 +24,6 @@
 !>     Structure for grid data
 !>        (position, connectivity, and communication)
       type(mesh_geometry), save :: mesh1
-!mesh1%ele
 !
 ! ----------------------------------------------------------------------
 !
@@ -43,7 +42,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos(my_rank, mesh1%node,                        &
-     &    ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,              &
+     &    mesh1%ele, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,         &
      &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
 !
       end subroutine const_mesh_informations
@@ -61,7 +60,7 @@
 !
        if (iflag_debug.eq.1) write(*,*) 'const_nod_ele_infos'
       call const_nod_ele_infos(my_rank,                                 &
-     &    mesh1%node, ele1, nod_grp1, ele_grp1, sf_grp1)
+     &    mesh1%node, mesh1%ele, nod_grp1, ele_grp1, sf_grp1)
 !
       end subroutine const_nod_ele_infos_1st
 !
@@ -74,7 +73,7 @@
       use const_element_comm_tables
 !
 !
-      call const_element_comm_tbls(mesh1%node, ele1, surf1, edge1,      &
+      call const_element_comm_tbls(mesh1%node, mesh1%ele, surf1, edge1, &
      &    mesh1%nod_comm, ele_comm, surf_comm, edge_comm)
 !
       end subroutine const_element_comm_tables_1st
@@ -91,9 +90,10 @@
       use m_group_data
 !
 !
-      call dealloc_mesh_infomations(mesh1%nod_comm,                     &
-     &    mesh1%node, ele1, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,  &
-     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
+      call dealloc_mesh_infomations                                     &
+     &   (mesh1%nod_comm, mesh1%node, mesh1%ele, surf1, edge1,          &
+     &    nod_grp1, ele_grp1, sf_grp1, ele_grp_tbl1,                    &
+     &    sf_grp_tbl1, sf_grp_nod1)
 !
       end subroutine deallocate_mesh_infomations
 !
@@ -109,7 +109,7 @@
 !
 !
       call dealloc_nod_ele_infos                                        &
-     &   (mesh1%nod_comm, mesh1%node, ele1, surf1, edge1,               &
+     &   (mesh1%nod_comm, mesh1%node, mesh1%ele, surf1, edge1,          &
      &    nod_grp1, ele_grp1, sf_grp1)
 !
       end subroutine deallocate_nod_ele_infos
@@ -123,7 +123,7 @@
 !
 !
       call dealloc_numnod_stack(mesh1%node)
-      call dealloc_numele_stack(ele1)
+      call dealloc_numele_stack(mesh1%ele)
       call dealloc_numsurf_stack(surf1)
       call dealloc_numedge_stack(edge1)
 !
