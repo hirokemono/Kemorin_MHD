@@ -111,20 +111,20 @@
 !*
 !*  -----------  data transfer to FEM array --------------
 !*
-      call copy_forces_to_snapshot_rtp(node1, iphys, nod_fld1)
-      call copy_snap_vec_fld_from_trans(node1, iphys, nod_fld1)
-      call copy_snap_vec_fld_to_trans(node1, iphys, nod_fld1)
+      call copy_forces_to_snapshot_rtp(mesh1%node, iphys, nod_fld1)
+      call copy_snap_vec_fld_from_trans(mesh1%node, iphys, nod_fld1)
+      call copy_snap_vec_fld_to_trans(mesh1%node, iphys, nod_fld1)
 !
 ! ----  Take zonal mean
 !
       if (iflag_debug.eq.1) write(*,*) 'zonal_mean_all_rtp_field'
-      call zonal_mean_all_rtp_field(node1, nod_fld1)
+      call zonal_mean_all_rtp_field(mesh1%node, nod_fld1)
 !
 !*  ----------- transform field at pole and center --------------
 !*
-      call lead_pole_fields_4_sph_mhd(node1, iphys, nod_fld1)
+      call lead_pole_fields_4_sph_mhd(mesh1%node, iphys, nod_fld1)
 !
-      call nod_fields_send_recv(node1, mesh1%nod_comm, nod_fld1)
+      call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
 !
       end subroutine SPH_to_FEM_bridge_zm_snap
 !

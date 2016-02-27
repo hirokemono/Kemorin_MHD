@@ -76,7 +76,7 @@
 !
       if (i_step_output_rst .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'input_restart_4_snapshot'
-        call input_restart_4_snapshot(node1, nod_fld1)
+        call input_restart_4_snapshot(mesh1%node, nod_fld1)
 !
       else if (i_step_output_ucd .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
@@ -89,17 +89,17 @@
 !
       if (iflag_4_ref_temp .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
-        call subtract_2_nod_scalars(node1, nod_fld1,                    &
+        call subtract_2_nod_scalars(mesh1%node, nod_fld1,               &
      &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
       end if
 !
 !     ---------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(node1, mesh1%nod_comm, nod_fld1)
+      call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
-      call update_fields(mesh1%nod_comm, node1, ele1, surf1,            &
+      call update_fields(mesh1%nod_comm, mesh1%node, ele1, surf1,       &
      &    MHD_mesh1, sf_grp1, iphys, iphys_ele, fld_ele1,               &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
@@ -110,7 +110,7 @@
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
-     &     (mesh1%nod_comm, node1, ele1, surf1, sf_grp1, iphys,         &
+     &     (mesh1%nod_comm, mesh1%node, ele1, surf1, sf_grp1, iphys,    &
      &      iphys_ele, fld_ele1, MHD_mesh1, layer_tbl1,                 &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
@@ -120,7 +120,7 @@
 !     ========  Data output
 !
       call lead_fields_by_FEM                                           &
-     &   (mesh1%nod_comm, node1, ele1, surf1, edge1, MHD_mesh1,         &
+     &   (mesh1%nod_comm, mesh1%node, ele1, surf1, edge1, MHD_mesh1,    &
      &    sf_grp1, iphys, iphys_ele, fld_ele1,                          &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
@@ -128,17 +128,17 @@
 !
 !     ----Filtering
       if (iflag_debug.eq.1) write(*,*) 'filtering_all_fields'
-      call filtering_all_fields(mesh1%nod_comm, node1, nod_fld1)
+      call filtering_all_fields(mesh1%nod_comm, mesh1%node, nod_fld1)
 !
 !     -----Output monitor date
 !
       if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-      call output_time_step_control(node1, ele1, MHD_mesh1,             &
+      call output_time_step_control(mesh1%node, ele1, MHD_mesh1,        &
      &    iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, jac1_3d_l,   &
      &    fem1_wk, mhd_fem1_wk)
 !
       if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
-      call output_monitor_control(node1, nod_fld1)
+      call output_monitor_control(mesh1%node, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
       call s_output_sgs_model_coefs

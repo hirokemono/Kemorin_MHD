@@ -61,12 +61,12 @@
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_local_node_id_4_monitor'
-      call set_local_node_id_4_monitor(node1, nod_grp1)
+      call set_local_node_id_4_monitor(mesh1%node, nod_grp1)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, node1%numnod)
+      call allocate_vector_for_solver(isix, mesh1%node%numnod)
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
       call init_send_recv(mesh1%nod_comm)
@@ -85,7 +85,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'set_field_address_type'
-      call set_field_address_type(node1%numnod, nod_fld1, iphys)
+      call set_field_address_type(mesh1%node%numnod, nod_fld1, iphys)
 !
 !  connect grid data to volume output
 !
@@ -95,7 +95,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
       call output_grd_file_4_snapshot                                   &
-     &   (mesh1%nod_comm, node1, ele1, nod_fld1)
+     &   (mesh1%nod_comm, mesh1%node, ele1, nod_fld1)
 !
       end subroutine FEM_initialize_sph_MHD
 !
@@ -160,22 +160,22 @@
 !*  -----------  data transfer to FEM array --------------
 !*
       if (iflag_debug.gt.0) write(*,*) 'copy_forces_to_snapshot_rtp'
-      call copy_forces_to_snapshot_rtp(node1, iphys, nod_fld1)
+      call copy_forces_to_snapshot_rtp(mesh1%node, iphys, nod_fld1)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_from_trans'
-      call copy_snap_vec_fld_from_trans(node1, iphys, nod_fld1)
+      call copy_snap_vec_fld_from_trans(mesh1%node, iphys, nod_fld1)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_to_trans'
-      call copy_snap_vec_fld_to_trans(node1, iphys, nod_fld1)
+      call copy_snap_vec_fld_to_trans(mesh1%node, iphys, nod_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'overwrite_nodal_sph_2_xyz'
-      call overwrite_nodal_sph_2_xyz(node1, nod_fld1)
+      call overwrite_nodal_sph_2_xyz(mesh1%node, nod_fld1)
 !
 !*  ----------- transform field at pole and center --------------
 !*
       if (iflag_debug.gt.0) write(*,*) 'lead_pole_fields_4_sph_mhd'
-      call lead_pole_fields_4_sph_mhd(node1, iphys, nod_fld1)
+      call lead_pole_fields_4_sph_mhd(mesh1%node, iphys, nod_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(node1, mesh1%nod_comm, nod_fld1)
+      call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
 !
       end subroutine SPH_to_FEM_bridge_MHD
 !

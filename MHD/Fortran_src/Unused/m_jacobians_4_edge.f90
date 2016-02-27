@@ -38,12 +38,12 @@
 !
       use m_machine_parameter
       use m_geometry_constants
-      use m_geometry_data
+      use m_mesh_data
 !
       use const_jacobians_1d
 !
 !
-      call cal_jacobian_edge(node1, edge1, jac1_1d_l, jac1_1d_q)
+      call cal_jacobian_edge(mesh1%node, edge1, jac1_1d_l, jac1_1d_q)
 !
       end subroutine const_jacobian_edge
 !

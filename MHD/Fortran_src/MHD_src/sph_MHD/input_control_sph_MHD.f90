@@ -51,7 +51,8 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
-      call load_para_SPH_and_FEM_mesh(mesh1%nod_comm, node1, ele1,      &
+      call load_para_SPH_and_FEM_mesh                                   &
+     &   (mesh1%nod_comm, mesh1%node, ele1,                             &
      &    surf1, edge1, nod_grp1, ele_grp1, sf_grp1)
 !
       if (iflag_boundary_file .eq. id_read_boundary_file) then

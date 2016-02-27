@@ -35,12 +35,13 @@
       subroutine const_jacobian_surface
 !
       use m_geometry_constants
-      use m_geometry_data
+      use m_mesh_data
 !
       use const_jacobians_2d
 !
 !
-      call cal_jacobian_surface(node1, surf1, jac1_2d_l, jac1_2d_q)
+      call cal_jacobian_surface                                         &
+     &   (mesh1%node, surf1, jac1_2d_l, jac1_2d_q)
 !
       end subroutine const_jacobian_surface
 !

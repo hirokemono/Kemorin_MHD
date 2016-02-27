@@ -30,28 +30,5 @@
 !> data structure for edge communication table
       type(communication_table), save :: edge_comm
 !
-!-----------------------------------------------------------------------
-!
-      contains
-!
-!-----------------------------------------------------------------------
-!
-      subroutine dealloc_ele_sf_eg_comm_tables
-!
-      use m_geometry_data
-!
-!
-      call dealloc_numnod_stack(node1)
-      call dealloc_numele_stack(ele1)
-      call dealloc_numsurf_stack(surf1)
-      call dealloc_numedge_stack(edge1)
-!
-      call deallocate_type_comm_tbl(ele_comm)
-      call deallocate_type_comm_tbl(surf_comm)
-      call deallocate_type_comm_tbl(edge_comm)
-!
-      end subroutine dealloc_ele_sf_eg_comm_tables
-!
-!-----------------------------------------------------------------------
 !
       end module m_nod_comm_table

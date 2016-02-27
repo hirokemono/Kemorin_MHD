@@ -37,6 +37,7 @@
 !
       subroutine FEM_initialize_w_viz
 !
+      use m_mesh_data
       use m_geometry_data
       use m_group_data
       use m_t_step_parameter
@@ -61,7 +62,7 @@
 !
       if( (i_step_output_fline) .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
-        call set_ele_id_4_node(node1, ele1, next_tbl1%neib_ele)
+        call set_ele_id_4_node(mesh1%node, ele1, next_tbl1%neib_ele)
       end if
 !
       if(i_step_output_pvr .le. 0) Return
@@ -71,7 +72,7 @@
       if (iflag_debug.eq.1) write(*,*)  'maximum_integration_points'
       call maximum_integration_points(ione)
       call const_jacobian_and_volume                                    &
-     &   (node1, sf_grp1, infty_list, ele1, jac1_3d_l, jac1_3d_q)
+     &   (mesh1%node, sf_grp1, infty_list, ele1, jac1_3d_l, jac1_3d_q)
 !
       end subroutine FEM_initialize_w_viz
 !

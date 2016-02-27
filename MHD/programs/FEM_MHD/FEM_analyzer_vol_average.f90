@@ -81,19 +81,19 @@
 !
       if (iflag_4_ref_temp .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
-        call subtract_2_nod_scalars(node1, nod_fld1,                    &
+        call subtract_2_nod_scalars(mesh1%node, nod_fld1,               &
      &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
       end if
 !
 !     ---------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(node1, mesh1%nod_comm, nod_fld1)
+      call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
 !
 !     -----Output monitor date
 !
       if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-      call output_time_step_control(node1, ele1, MHD_mesh1,             &
+      call output_time_step_control(mesh1%node, ele1, MHD_mesh1,        &
      &    iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, jac1_3d_l,   &
      &    fem1_wk, mhd_fem1_wk)
 !

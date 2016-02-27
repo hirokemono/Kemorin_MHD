@@ -50,7 +50,7 @@
       call init_analyzer_snap(MHD_mesh1, layer_tbl1)
 !
       call output_grd_file_w_org_connect                                &
-     &   (node1, ele1, mesh1%nod_comm, MHD_mesh1, nod_fld1)
+     &   (mesh1%node, ele1, mesh1%nod_comm, MHD_mesh1, nod_fld1)
 !
       call allocate_phys_range(nod_fld1%ntot_phys_viz)
 !
@@ -107,7 +107,7 @@
 !
       if (i_step_output_rst .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'input_restart_4_snapshot'
-        call input_restart_4_snapshot(node1, nod_fld1)
+        call input_restart_4_snapshot(mesh1%node, nod_fld1)
 !
       else if (i_step_output_ucd .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'read_udt_4_snap'
@@ -120,17 +120,17 @@
 !
       if (iflag_4_ref_temp .ne. id_no_ref_temp) then
         if (iflag_debug.eq.1)  write(*,*) 'set_2_perturbation_temp'
-        call subtract_2_nod_scalars(node1, nod_fld1,                    &
+        call subtract_2_nod_scalars(mesh1%node, nod_fld1,               &
      &      iphys%i_temp, iphys%i_ref_t, iphys%i_par_temp)
       end if
 !
 !     ---------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(node1, mesh1%nod_comm, nod_fld1)
+      call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
-      call update_fields(mesh1%nod_comm, node1, ele1, surf1,            &
+      call update_fields(mesh1%nod_comm, mesh1%node, ele1, surf1,       &
      &    MHD_mesh1, sf_grp1, iphys, iphys_ele, fld_ele1,               &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
@@ -141,7 +141,7 @@
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
-     &     (mesh1%nod_comm, node1, ele1, surf1, sf_grp1, iphys,         &
+     &     (mesh1%nod_comm, mesh1%node, ele1, surf1, sf_grp1, iphys,    &
      &      iphys_ele, fld_ele1, MHD_mesh1, layer_tbl1,                 &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
@@ -151,7 +151,7 @@
 !     ========  Data output
 !
       call lead_fields_by_FEM                                           &
-     &   (mesh1%nod_comm, node1, ele1, surf1, edge1, MHD_mesh1,         &
+     &   (mesh1%nod_comm, mesh1%node, ele1, surf1, edge1, MHD_mesh1,    &
      &    sf_grp1, iphys, iphys_ele, fld_ele1,                          &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
@@ -163,12 +163,12 @@
 !     -----Output monitor date
 !
       if (iflag_debug.eq.1) write(*,*) 'output_time_step_control'
-      call output_time_step_control(node1, ele1, MHD_mesh1,             &
+      call output_time_step_control(mesh1%node, ele1, MHD_mesh1,        &
      &    iphys, nod_fld1, iphys_ele, fld_ele1, jac1_3d_q, jac1_3d_l,   &
      &    fem1_wk, mhd_fem1_wk)
 !
       if (iflag_debug.eq.1) write(*,*) 'output_monitor_control'
-      call output_monitor_control(node1, nod_fld1)
+      call output_monitor_control(mesh1%node, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*) 's_output_sgs_model_coefs'
       call s_output_sgs_model_coefs
@@ -240,16 +240,18 @@
 !
 !
 !$omp parallel
-      call overwrite_nodal_xyz_2_sph_smp(node1, nod_fld1%ntot_phys,     &
+      call overwrite_nodal_xyz_2_sph_smp                                &
+     &   (mesh1%node, nod_fld1%ntot_phys,                               &
      &    iphys%i_SGS_m_flux, n_sym_tensor, nod_fld1%d_fld)
 !$omp end parallel
 !
-      call clear_nodal_data(node1, nod_fld1,                            &
+      call clear_nodal_data(mesh1%node, nod_fld1,                       &
      &    n_sym_tensor, iphys%i_SGS_m_flux)
 !
 !$omp parallel
-      call overwrite_nodal_sph_2_xyz_smp(node1, nod_fld1%ntot_phys,     &
-     &   iphys%i_SGS_m_flux, n_sym_tensor, nod_fld1%d_fld)
+      call overwrite_nodal_sph_2_xyz_smp                                &
+     &   (mesh1%node, nod_fld1%ntot_phys,                               &
+     &    iphys%i_SGS_m_flux, n_sym_tensor, nod_fld1%d_fld)
 !$omp end parallel
 !
       if (iphys%i_SGS_div_m_flux .gt. 0) then
@@ -257,26 +259,29 @@
      &        'lead radial', trim(fhd_div_SGS_m_flux)
         call cal_terms_4_momentum                                       &
      &     (iphys%i_SGS_div_m_flux, iak_diff_mf, iak_diff_lor,          &
-     &      mesh1%nod_comm, node1, ele1, surf1, MHD_mesh1%fluid, sf_grp1, &
-     &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
-     &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
-     &      nod_fld1)
+     &      mesh1%nod_comm, mesh1%node, ele1, surf1, MHD_mesh1%fluid,   &
+     &      sf_grp1, iphys, iphys_ele, fld_ele1,                        &
+     &      jac1_3d_q, jac1_sf_grp_2d_q, rhs_tbl1, FEM1_elen,           &
+     &      mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
       end if
 !
 !$omp parallel
       if (iphys%i_reynolds_wk .gt. 0) then
-        call cal_phys_dot_product(node1, nod_fld1,                      &
+        call cal_phys_dot_product(mesh1%node, nod_fld1,                 &
      &      iphys%i_velo, iphys%i_SGS_div_m_flux, iphys%i_reynolds_wk)
       end if
 !
-      call overwrite_nodal_xyz_2_sph_smp(node1, nod_fld1%ntot_phys,     &
-     &   iphys%i_velo, n_vector, nod_fld1%d_fld)
+      call overwrite_nodal_xyz_2_sph_smp                                &
+     &   (mesh1%node, nod_fld1%ntot_phys,                               &
+     &    iphys%i_velo, n_vector, nod_fld1%d_fld)
 !$omp end parallel
 
-      call clear_nodal_data(node1, nod_fld1, n_vector, iphys%i_velo)
+      call clear_nodal_data                                             &
+     &   (mesh1%node, nod_fld1, n_vector, iphys%i_velo)
 !
 !$omp parallel
-      call overwrite_nodal_sph_2_xyz_smp(node1, nod_fld1%ntot_phys,     &
+      call overwrite_nodal_sph_2_xyz_smp                                &
+     &   (mesh1%node, nod_fld1%ntot_phys,                               &
      &    iphys%i_velo, n_vector, nod_fld1%d_fld)
 !$omp end parallel
 !
@@ -284,7 +289,7 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_vp_induct)
         call cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,               &
-     &     mesh1%nod_comm, node1, ele1, MHD_mesh1%conduct, iphys,       &
+     &     mesh1%nod_comm, mesh1%node, ele1, MHD_mesh1%conduct, iphys,  &
      &     iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,         &
      &     mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 
@@ -294,13 +299,13 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
         call int_vol_sgs_induction                                      &
-     &     (mesh1%nod_comm, node1, ele1, MHD_mesh1%conduct, iphys,      &
+     &     (mesh1%nod_comm, mesh1%node, ele1, MHD_mesh1%conduct, iphys, &
      &      jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_nl, nod_fld1)
       end if
 !
 !$omp parallel
       if (iphys%i_SGS_me_gen .gt. 0) then
-        call cal_phys_dot_product(node1, nod_fld1,                      &
+        call cal_phys_dot_product(mesh1%node, nod_fld1,                 &
      &      iphys%i_magne, iphys%i_SGS_induction, iphys%i_SGS_me_gen)
       end if
 !$omp end parallel

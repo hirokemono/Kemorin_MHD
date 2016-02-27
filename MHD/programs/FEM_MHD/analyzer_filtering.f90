@@ -56,7 +56,7 @@
       call FEM_initialize_snapshot
 !
       call init_visualize                                               &
-     &   (node1, ele1, surf1, edge1, mesh1%nod_comm, edge_comm,         &
+     &   (mesh1%node, ele1, surf1, edge1, mesh1%nod_comm, edge_comm,    &
      &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
 !
       end subroutine init_analyzer
@@ -85,8 +85,9 @@
         if (visval.eq.0) then
           call visualize_all                                            &
      &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
-     &        node1, ele1, surf1, edge1, mesh1%nod_comm, edge_comm,     &
-     &         ele_grp1, nod_fld1, next_tbl1%neib_ele, jac1_3d_q)
+     &        mesh1%node, ele1, surf1, edge1, mesh1%nod_comm,           &
+     &        edge_comm, ele_grp1, nod_fld1, next_tbl1%neib_ele,        &
+     &        jac1_3d_q)
         end if
       end do
 !

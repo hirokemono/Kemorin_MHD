@@ -21,9 +21,6 @@
       implicit  none
 !
 !
-!>  structure for node data (position)
-      type(node_data), save :: node1
-!
 !>  structure for element data (position and connectivity)
       type(element_data), save :: ele1
 !
