@@ -59,14 +59,14 @@
       call read_control_4_sph_snap_w_psf
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
-      call input_control_SPH_mesh(mesh1)
+      call input_control_SPH_mesh(mesh1, group1)
       call end_eleps_time(4)
 !
 !     --------------------- 
 !
       call start_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
-      call FEM_initialize_sph_MHD(mesh1)
+      call FEM_initialize_sph_MHD(mesh1, group1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'
@@ -75,8 +75,8 @@
 !        Initialize visualization
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'
-      call init_visualize_surface(mesh1, surf1, edge1, edge_comm,       &
-     &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
+      call init_visualize_surface(mesh1, group1, surf1,                 &
+     &    edge1, edge_comm, sf_grp_nod1, nod_fld1)
 !
       call calypso_MPI_barrier
       call end_eleps_time(2)

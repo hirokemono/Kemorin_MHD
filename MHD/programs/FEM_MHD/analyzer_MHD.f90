@@ -55,14 +55,14 @@
       call start_eleps_time(1)
 !
       call start_eleps_time(4)
-      call input_control_4_MHD(mesh1)
+      call input_control_4_MHD(mesh1, group1)
       call end_eleps_time(4)
 !
       call start_eleps_time(2)
       call FEM_initialize_MHD
 !
-      call init_visualize_surface(mesh1, surf1, edge1, edge_comm,       &
-     &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
+      call init_visualize_surface(mesh1, group1, surf1,                 &
+     &    edge1, edge_comm, sf_grp_nod1, nod_fld1)
       call end_eleps_time(2)
 !
       end subroutine initialization_MHD

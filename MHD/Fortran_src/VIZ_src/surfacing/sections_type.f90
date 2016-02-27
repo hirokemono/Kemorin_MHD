@@ -42,9 +42,8 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-      call init_visualize_surface(fem%mesh,                             &
+      call init_visualize_surface(fem%mesh, fem%group,                  &
      &    sf_mesh_psf%surf, eg_mesh_psf%edge, eg_mesh_psf%edge_comm,    &
-     &    fem%group%ele_grp, fem%group%surf_grp,                        &
      &    fem%group%surf_nod_grp, nod_fld)
 !
       end subroutine init_sections_type

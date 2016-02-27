@@ -3,18 +3,17 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!!      subroutine init_visualize(mesh, surf, edge, edge_comm,          &
-!!     &          ele_grp, sf_grp, sf_grp_nod, nod_fld)
+!!      subroutine init_visualize(mesh, group, surf, edge, edge_comm,   &
+!!     &          sf_grp_nod, nod_fld)
 !!      subroutine visualize_all                                        &
 !!     &         (istep_psf, istep_iso, istep_pvr, istep_fline,         &
-!!     &          mesh, surf, edge, edge_comm, ele_grp,                 &
+!!     &          mesh, group, surf, edge, edge_comm,                   &
 !!     &          nod_fld, ele_4_nod, jac_3d)
 !!        type(mesh_geometry), intent(in) :: mesh
+!!        type(mesh_groups), intent(in) ::   group
 !!        type(surface_data), intent(in) :: surf
 !!        type(edge_data), intent(in) :: edge
 !!        type(communication_table), intent(in) :: edge_comm
-!!        type(group_data), intent(in) :: ele_grp
-!!        type(surface_group_data), intent(in) :: sf_grp
 !!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(element_around_node), intent(in) :: ele_4_nod
@@ -46,8 +45,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize(mesh, surf, edge, edge_comm,            &
-     &          ele_grp, sf_grp, sf_grp_nod, nod_fld)
+      subroutine init_visualize(mesh, group, surf, edge, edge_comm,     &
+     &          sf_grp_nod, nod_fld)
 !
       use m_cross_section
       use m_isosurface
@@ -56,13 +55,12 @@
       use fieldline
 !
       type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) ::   group
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
 !
       type(communication_table), intent(in) :: edge_comm
 !
-      type(group_data), intent(in) :: ele_grp
-      type(surface_group_data), intent(in) :: sf_grp
       type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
       type(phys_data), intent(in) :: nod_fld
@@ -73,16 +71,17 @@
 !
       call SECTIONING_initialize                                        &
      &   (mesh%node, mesh%ele, surf, edge, mesh%nod_comm, edge_comm,    &
-     &    ele_grp, sf_grp, sf_grp_nod, nod_fld)
+     &    group%ele_grp, group%surf_grp, sf_grp_nod, nod_fld)
 !
       call ISOSURF_initialize                                           &
-     &   (mesh%node, mesh%ele, surf, edge, ele_grp, nod_fld)
+     &   (mesh%node, mesh%ele, surf, edge, group%ele_grp, nod_fld)
 !
-      call PVR_initialize(mesh%node, mesh%ele, surf, ele_grp, nod_fld)
+      call PVR_initialize                                               &
+     &   (mesh%node, mesh%ele, surf, group%ele_grp, nod_fld)
       call calypso_MPI_barrier
 !
       call FLINE_initialize                                             &
-     &   (mesh%node, mesh%ele, ele_grp, sf_grp, nod_fld)
+     &   (mesh%node, mesh%ele, group%ele_grp, group%surf_grp, nod_fld)
 !
       end subroutine init_visualize
 !
@@ -90,7 +89,7 @@
 !
       subroutine visualize_all                                          &
      &         (istep_psf, istep_iso, istep_pvr, istep_fline,           &
-     &          mesh, surf, edge, edge_comm, ele_grp,                   &
+     &          mesh, group, surf, edge, edge_comm,                     &
      &          nod_fld, ele_4_nod, jac_3d)
 !
       use m_cross_section
@@ -102,12 +101,11 @@
       integer(kind = kint), intent(in) :: istep_pvr, istep_fline
 !
       type(mesh_geometry), intent(in) :: mesh
+      type(mesh_groups), intent(in) ::   group
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
 !
       type(communication_table), intent(in) :: edge_comm
-!
-      type(group_data), intent(in) :: ele_grp
 !
       type(phys_data), intent(in) :: nod_fld
       type(element_around_node), intent(in) :: ele_4_nod
@@ -123,7 +121,7 @@
      &   (istep_pvr, mesh%node, mesh%ele, surf, jac_3d, nod_fld)
 !
       call FLINE_visualize(istep_fline, mesh%node, mesh%ele, surf,      &
-     &                     ele_grp, ele_4_nod, nod_fld, mesh%nod_comm)
+     &    group%ele_grp, ele_4_nod, nod_fld, mesh%nod_comm)
 !
       end subroutine visualize_all
 !

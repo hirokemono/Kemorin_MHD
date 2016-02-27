@@ -7,7 +7,9 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_SPH_mesh(mesh)
+!!      subroutine input_control_SPH_mesh(mesh, group)
+!!        type(mesh_geometry), intent(inout) :: mesh
+!!        type(mesh_groups), intent(inout) ::   group
 !!      subroutine input_control_4_SPH_MHD_nosnap
 !!
 !!      subroutine input_control_4_SPH_make_init
@@ -34,7 +36,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_SPH_mesh(mesh)
+      subroutine input_control_SPH_mesh(mesh, group)
 !
       use m_geometry_data
       use m_group_data
@@ -45,6 +47,7 @@
       use parallel_load_data_4_sph
 !
       type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) ::   group
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
@@ -54,8 +57,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
-     &   (mesh%nod_comm, mesh%node, mesh%ele,                           &
-     &    surf1, edge1, nod_grp1, ele_grp1, sf_grp1)
+     &   (mesh%nod_comm, mesh%node, mesh%ele, surf1, edge1,             &
+     &    group%nod_grp, group%ele_grp, group%surf_grp)
 !
       if (iflag_boundary_file .eq. id_read_boundary_file) then
         if (iflag_debug.eq.1) write(*,*) 'read_boundary_spectr_file'

@@ -46,9 +46,8 @@
 !
 !  VIZ Initialization
       if(iflag_debug .gt. 0)  write(*,*) 'init_visualize'
-      call init_visualize(femmesh_VIZ%mesh, surfmesh_VIZ%surf,          &
-     &    edgemesh_VIZ%edge, edgemesh_VIZ%edge_comm,                    &
-     &    femmesh_VIZ%group%ele_grp, femmesh_VIZ%group%surf_grp,        &
+      call init_visualize(femmesh_VIZ%mesh, femmesh_VIZ%group,          &
+     &    surfmesh_VIZ%surf, edgemesh_VIZ%edge, edgemesh_VIZ%edge_comm, &
      &    femmesh_VIZ%group%surf_nod_grp, field_VIZ)
 !
       end subroutine init_analyzer
@@ -73,8 +72,8 @@
           if(iflag_debug .gt. 0)  write(*,*) 'visualize_all', i_step
           call visualize_all                                            &
      &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
-     &        femmesh_VIZ%mesh, surfmesh_VIZ%surf, edgemesh_VIZ%edge,   &
-     &        edgemesh_VIZ%edge_comm, femmesh_VIZ%group%ele_grp,        &
+     &        femmesh_VIZ%mesh, femmesh_VIZ%group, surfmesh_VIZ%surf,   &
+     &        edgemesh_VIZ%edge, edgemesh_VIZ%edge_comm,                &
      &        field_VIZ, ele_4_nod_VIZ, jac_VIZ_q)
         end if
       end do

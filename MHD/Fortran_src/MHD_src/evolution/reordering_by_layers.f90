@@ -5,15 +5,18 @@
 !      Modified by H. Matsui on Sep., 2007
 !      Modified by H. Matsui on Feb., 2008
 !
-!      subroutine reordering_by_layers_snap
-!      subroutine reordering_by_layers_MHD
-!
-!.......................................................................
-!
-!     subroutine for element re-ordering
-!      by insulator, conductor, and fluid
-!
-!.......................................................................
+!!      subroutine reordering_by_layers_snap(ele, group, MHD_mesh)
+!!      subroutine reordering_by_layers_MHD(ele, group, MHD_mesh)
+!!        type(element_data), intent(in) :: ele
+!!        type(mesh_groups), intent(inout) ::   group
+!!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
+!!
+!!.......................................................................
+!!
+!!     subroutine for element re-ordering
+!!      by insulator, conductor, and fluid
+!!
+!!.......................................................................
 !
       module reordering_by_layers
 !
@@ -22,9 +25,10 @@
 !
       use m_work_4_MHD_layering
 !
+      use t_mesh_data
       use t_geometry_data
-      use t_geometry_data_MHD
       use t_group_data
+      use t_geometry_data_MHD
 !
       implicit none
 !
@@ -36,25 +40,24 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine reordering_by_layers_snap(ele, MHD_mesh)
-!
-      use m_group_data
+      subroutine reordering_by_layers_snap(ele, group, MHD_mesh)
 !
       type(element_data), intent(in) :: ele
+      type(mesh_groups), intent(inout) ::   group
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !
 !
       call allocate_lists_4_layer(ele%numele)
-      call s_reordering_by_layers(ele, ele_grp1, sf_grp1, MHD_mesh)
+      call s_reordering_by_layers                                       &
+     &   (ele, group%ele_grp, group%surf_grp, MHD_mesh)
       call deallocate_lists_4_layer
 !
       end subroutine reordering_by_layers_snap
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine reordering_by_layers_MHD(ele, MHD_mesh)
+      subroutine reordering_by_layers_MHD(ele, group, MHD_mesh)
 !
-      use m_group_data
       use m_iccg_parameter
       use m_work_4_MHD_layering
       use m_type_AMG_data
@@ -65,11 +68,13 @@
       use skip_comment_f
 !
       type(element_data), intent(in) :: ele
+      type(mesh_groups), intent(inout) ::   group
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !
 !
       call allocate_lists_4_layer(ele%numele)
-      call s_reordering_by_layers(ele, ele_grp1, sf_grp1, MHD_mesh)
+      call s_reordering_by_layers                                       &
+     &   (ele, group%ele_grp, group%surf_grp, MHD_mesh)
 !
 !   ordereing of element parameters for AMG (for first grid)
 !

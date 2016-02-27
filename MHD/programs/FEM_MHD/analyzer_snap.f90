@@ -48,14 +48,14 @@
 !
 !     --------------------- 
 !
-      call input_control_4_snapshot(mesh1)
+      call input_control_4_snapshot(mesh1, group1)
 !
 !     --------------------- 
 !
       call FEM_initialize_snapshot
 !
-      call init_visualize(mesh1, surf1, edge1, edge_comm,               &
-     &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
+      call init_visualize(mesh1, group1, surf1, edge1, edge_comm,       &
+     &    sf_grp_nod1, nod_fld1)
 !
       end subroutine init_analyzer
 !
@@ -83,7 +83,7 @@
           call start_eleps_time(4)
           call visualize_all                                            &
      &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
-     &        mesh1, surf1, edge1, edge_comm, ele_grp1, nod_fld1,       &
+     &        mesh1, group1, surf1, edge1, edge_comm, nod_fld1,         &
      &        next_tbl1%neib_ele, jac1_3d_q)
           call end_eleps_time(4)
         end if

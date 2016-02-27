@@ -20,7 +20,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_snap(mesh, MHD_mesh, layer_tbl)
+      subroutine init_analyzer_snap(mesh, group, MHD_mesh, layer_tbl)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -79,21 +79,22 @@
       use nod_phys_send_recv
 !
       type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) ::   group
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
       type(layering_tbl), intent(inout) :: layer_tbl
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' reordering_by_layers_snap'
-      call reordering_by_layers_snap(mesh%ele, MHD_mesh)
+      call reordering_by_layers_snap(mesh%ele, group, MHD_mesh)
 !
       if (iflag_debug.eq.1) write(*,*)' set_layers'
-      call set_layers(mesh%node, mesh%ele, ele_grp1, MHD_mesh)
+      call set_layers(mesh%node, mesh%ele, group%ele_grp, MHD_mesh)
 !
       if (iflag_dynamic_SGS  .ne. id_SGS_DYNAMIC_OFF) then
         ncomp_correlate = 9
         if (iflag_debug.eq.1) write(*,*)' const_layers_4_dynamic'
-        call const_layers_4_dynamic(ele_grp1, layer_tbl)
+        call const_layers_4_dynamic(group%ele_grp, layer_tbl)
         call allocate_work_4_dynamic(layer_tbl%e_grp%num_grp)
         call allocate_work_layer_correlate(layer_tbl%e_grp%num_grp)
       end if
@@ -107,8 +108,8 @@
       call init_send_recv(mesh%nod_comm)
 !
       if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, mesh%node,                         &
-     &    mesh%ele, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,          &
+      call const_mesh_infos(my_rank, mesh%node, mesh%ele, surf1,        &
+     &    edge1, group%nod_grp, group%ele_grp, group%surf_grp,          &
      &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
@@ -196,17 +197,18 @@
 !     ---------------------
 !
       call const_bc_infinity_surf_grp                                   &
-     &   (iflag_surf_infty, sf_grp1, infty_list)
+     &   (iflag_surf_infty, group%surf_grp, infty_list)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes                               &
-     &   (mesh%node, mesh%ele, sf_grp1, layer_tbl, infty_list,          &
+     &   (mesh%node, mesh%ele, group%surf_grp, layer_tbl, infty_list,   &
      &    jac1_3d_l, jac1_3d_q, MHD_mesh)
 !
-      call const_jacobian_sf_grp(mesh%node, mesh%ele, surf1, sf_grp1,   &
-     &                           jac1_sf_grp_2d_l, jac1_sf_grp_2d_q)
+      call const_jacobian_sf_grp                                        &
+     &   (mesh%node, mesh%ele, surf1, group%surf_grp,                   &
+     &    jac1_sf_grp_2d_l, jac1_sf_grp_2d_q)
 !
 !     --------------------- 
 !
@@ -221,17 +223,18 @@
 !
       if (iflag_debug.eq.1) write(*,*)' int_surface_parameters'
       call int_surface_parameters                                       &
-     &   (sf_grp1%num_grp, mesh%node, mesh%ele, surf1,                  &
-     &    sf_grp1, sf_grp_tbl1, sf_grp_v1, sf_grp_nod1)
+     &   (group%surf_grp%num_grp, mesh%node, mesh%ele, surf1,           &
+     &    group%surf_grp, sf_grp_tbl1, sf_grp_v1, sf_grp_nod1)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' set_bc_id_data'
-      call set_bc_id_data                                               &
-     &   (mesh%node, mesh%ele, nod_grp1, MHD_mesh, iphys, nod_fld1)
+      call set_bc_id_data(mesh%node, mesh%ele, group%nod_grp,           &
+     &    MHD_mesh, iphys, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*)' set_surf_bc_data'
-      call set_surf_bc_data(mesh%node, mesh%ele, surf1, sf_grp1,        &
+      call set_surf_bc_data                                             &
+     &   (mesh%node, mesh%ele, surf1, group%surf_grp,                   &
      &    sf_grp_nod1, sf_grp_v1, iphys, nod_fld1)
       call deallocate_surf_bc_lists
 !

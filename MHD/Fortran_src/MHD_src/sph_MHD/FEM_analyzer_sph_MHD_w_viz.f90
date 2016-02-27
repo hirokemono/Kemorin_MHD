@@ -8,8 +8,9 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
-!!      subroutine FEM_initialize_w_viz(mesh)
+!!      subroutine FEM_initialize_w_viz(mesh, group)
 !!        type(mesh_geometry), intent(inout) :: mesh
+!!        type(mesh_groups), intent(inout) ::   group
 !!@endverbatim
 !!
 !!@n @param  i_step       Current time step
@@ -36,7 +37,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_w_viz(mesh)
+      subroutine FEM_initialize_w_viz(mesh, group)
 !
       use m_geometry_data
       use m_group_data
@@ -52,6 +53,7 @@
       use int_volume_of_domain
 !
       type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) ::   group
 !
 !   --------------------------------
 !       setup mesh information
@@ -60,7 +62,7 @@
 !  --  init FEM mesh data
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
-      call FEM_initialize_sph_MHD(mesh)
+      call FEM_initialize_sph_MHD(mesh, group)
 !
 !  -------------------------------
 !
@@ -77,7 +79,7 @@
       if (iflag_debug.eq.1) write(*,*)  'maximum_integration_points'
       call maximum_integration_points(ione)
       call const_jacobian_and_volume                                    &
-     &   (mesh%node, sf_grp1, infty_list, mesh%ele,                     &
+     &   (mesh%node, group%surf_grp, infty_list, mesh%ele,              &
      &    jac1_3d_l, jac1_3d_q)
 !
       end subroutine FEM_initialize_w_viz

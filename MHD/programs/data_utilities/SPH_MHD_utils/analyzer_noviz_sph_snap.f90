@@ -23,6 +23,7 @@
       use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
+      use m_mesh_data
 !
       use FEM_analyzer_sph_MHD
       use SPH_analyzer_snap
@@ -37,7 +38,6 @@
 !
       subroutine initialize_noviz_sph_snap
 !
-      use m_mesh_data
       use m_ctl_data_sph_MHD_noviz
       use init_sph_MHD_elapsed_label
       use input_control_sph_MHD
@@ -55,14 +55,14 @@
       call read_control_4_sph_snap_noviz
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
-      call input_control_SPH_mesh(mesh1)
+      call input_control_SPH_mesh(mesh1, group1)
       call end_eleps_time(4)
 !
 !     --------------------- 
 !
       call start_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
-      call FEM_initialize_sph_MHD(mesh1)
+      call FEM_initialize_sph_MHD(mesh1, group1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'

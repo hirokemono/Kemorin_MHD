@@ -44,7 +44,7 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1) write(*,*) 'init_analyzer_fl'
-      call init_analyzer_fl(mesh1, MHD_mesh1, layer_tbl1)
+      call init_analyzer_fl(mesh1, group1, MHD_mesh1, layer_tbl1)
 !
 !   construct matrix for Poisson and diffusion terms
 !
@@ -52,9 +52,9 @@
       call set_data_4_const_matrices                                    &
      &   (mesh1, MHD_mesh1, rhs_tbl1, mat_tbl_q1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
-      call set_aiccg_matrices(mesh1, surf1, MHD_mesh1,                  &
-     &    sf_grp1, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,              &
-     &    rhs_tbl1, mat_tbl_q1, mhd_fem1_wk)
+      call set_aiccg_matrices(mesh1, group1, surf1, MHD_mesh1,          &
+     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
+     &    mat_tbl_q1, mhd_fem1_wk)
 !
       if (iflag_debug.eq.1) write(*,*) 's_write_djds_mat_MHD'
       call s_write_djds_mat_MHD

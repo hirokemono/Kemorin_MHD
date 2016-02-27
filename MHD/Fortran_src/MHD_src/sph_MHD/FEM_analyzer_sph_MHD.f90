@@ -8,8 +8,9 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
-!!      subroutine FEM_initialize_sph_MHD(mesh)
+!!      subroutine FEM_initialize_sph_MHD(mesh, group)
 !!        type(mesh_geometry), intent(inout) :: mesh
+!!        type(mesh_groups), intent(inout) ::   group
 !!      subroutine FEM_analyze_sph_MHD(i_step                           &
 !!     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !!      subroutine FEM_finalize
@@ -44,7 +45,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_sph_MHD(mesh)
+      subroutine FEM_initialize_sph_MHD(mesh, group)
 !
       use m_nod_comm_table
       use m_geometry_data
@@ -64,10 +65,11 @@
       use const_element_comm_tables
 !
       type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) ::   group
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_local_node_id_4_monitor'
-      call set_local_node_id_4_monitor(mesh%node, nod_grp1)
+      call set_local_node_id_4_monitor(mesh%node, group%nod_grp)
 !
 !  -------------------------------
 !
@@ -80,8 +82,9 @@
 !  -----    construct geometry informations
 !
       if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, mesh%node,                         &
-     &    mesh%ele, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,          &
+      call const_mesh_infos                                             &
+     &   (my_rank, mesh%node, mesh%ele, surf1, edge1,                   &
+     &    group%nod_grp, group%ele_grp, group%surf_grp,                 &
      &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'

@@ -29,7 +29,7 @@
 !
 !     --------------------- 
 !
-      call input_control_4_snapshot(mesh1)
+      call input_control_4_snapshot(mesh1, group1)
 !
 !   matrix assembling
 !
