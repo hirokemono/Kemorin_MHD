@@ -7,11 +7,11 @@
 !> @brief Evaluate field data for time integration for FEM dynamo model
 !!
 !!@verbatim
-!!      subroutine fields_evolution(mesh, group, surf, MHD_mesh,        &
-!!     &          sf_grp_nod, iphys, iphys_ele, ele_fld,                &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
-!!     &          rhs_tbl, FEM_elens, layer_tbl, m_lump, mhd_fem_wk,    &
-!!     &          fem_wk, f_l, f_nl, nod_fld)
+!!      subroutine fields_evolution                                     &
+!!     &        (mesh, group, surf, MHD_mesh, iphys, iphys_ele, ele_fld,&
+!!     &         jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,        &
+!!     &         rhs_tbl, FEM_elens, layer_tbl, m_lump, mhd_fem_wk,     &
+!!     &         fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine update_fields(mesh, group, surf, MHD_mesh,           &
 !!     &          iphys, iphys_ele, ele_fld,                            &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
@@ -19,8 +19,8 @@
 !!     &          f_l, f_nl, nod_fld)
 !!      subroutine reset_update_flag(nod_fld)
 !!
-!!      subroutine fields_evolution_4_FEM_SPH(mesh, group, surf, fluid, &
-!!     &          sf_grp_nod, iphys, iphys_ele, ele_fld,                &
+!!      subroutine fields_evolution_4_FEM_SPH                           &
+!!     &         (mesh, group, surf, fluid, iphys, iphys_ele, ele_fld,  &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
 !!     &          rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,    &
 !!     &          f_l, f_nl, nod_fld)
@@ -30,7 +30,6 @@
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
 !!        type(surface_data), intent(in) :: surf
-!!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(field_geometry_data), intent(in) :: fluid
 !!        type(phys_address), intent(in) :: iphys
@@ -79,8 +78,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine fields_evolution(mesh, group, surf, MHD_mesh,          &
-     &          sf_grp_nod, iphys, iphys_ele, ele_fld,                  &
+      subroutine fields_evolution                                       &
+     &         (mesh, group, surf, MHD_mesh, iphys, iphys_ele, ele_fld, &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, layer_tbl, m_lump, mhd_fem_wk,      &
      &          fem_wk, f_l, f_nl, nod_fld)
@@ -95,10 +94,11 @@
       use update_with_vector_p
       use update_with_magne
 !
+!      use check_surface_groups
+!
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(surface_data), intent(in) :: surf
-      type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
@@ -137,6 +137,8 @@
 !
       else if ( iflag_t_evo_4_magne .gt. id_no_evolution) then
 !
+!        call check_surface_param_smp('cal_magnetic_field_pre start',   &
+!     &      my_rank, sf_grp, group%surf_nod_grp)
         if (iflag_debug.eq.1) write(*,*) 's_cal_magnetic_field'
         call s_cal_magnetic_field                                       &
      &     (mesh%nod_comm, mesh%node, mesh%ele, surf, MHD_mesh%conduct, &
@@ -162,6 +164,8 @@
      &        jac_3d_q, jac_sf_grp_q, rhs_tbl, FEM_elens,               &
      &        mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
         else
+!          call check_surface_param_smp('cal_temperature_field start',  &
+!     &        my_rank, sf_grp, group%surf_nod_grp)
           if (iflag_debug.eq.1) write(*,*) 'cal_temperature_field'
           call cal_temperature_field                                    &
      &       (mesh%nod_comm, mesh%node, mesh%ele, surf, MHD_mesh%fluid, &
@@ -197,9 +201,9 @@
 !
       if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
-        call velocity_evolution                                         &
-     &     (mesh%nod_comm, mesh%node, mesh%ele, surf, MHD_mesh%fluid,   &
-     &      group%surf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,      &
+        call velocity_evolution(mesh%nod_comm, mesh%node, mesh%ele,     &
+     &      surf, MHD_mesh%fluid, group%surf_grp, group%surf_nod_grp,   &
+     &      iphys, iphys_ele, ele_fld,                                  &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,             &
      &      rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,          &
      &      f_l, f_nl, nod_fld)
@@ -308,8 +312,8 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine fields_evolution_4_FEM_SPH(mesh, group, surf, fluid,   &
-     &          sf_grp_nod, iphys, iphys_ele, ele_fld,                  &
+      subroutine fields_evolution_4_FEM_SPH                             &
+     &         (mesh, group, surf, fluid, iphys, iphys_ele, ele_fld,    &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
      &          rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,      &
      &          f_l, f_nl, nod_fld)
@@ -324,7 +328,6 @@
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
       type(surface_data), intent(in) :: surf
-      type(surface_node_grp_data), intent(in) :: sf_grp_nod
       type(field_geometry_data), intent(in) :: fluid
       type(phys_address), intent(in) :: iphys
       type(phys_address), intent(in) :: iphys_ele
@@ -389,9 +392,9 @@
 !
       if ( iflag_t_evo_4_velo .gt. id_no_evolution) then
         if (iflag_debug.eq.1) write(*,*) 'velocity_evolution'
-        call velocity_evolution                                         &
-     &     (mesh%nod_comm, mesh%node, mesh%ele, surf, fluid,            &
-     &      group%surf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,      &
+        call velocity_evolution(mesh%nod_comm, mesh%node, mesh%ele,     &
+     &      surf, fluid, group%surf_grp, group%surf_nod_grp,            &
+     &      iphys, iphys_ele, ele_fld,                                  &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,             &
      &      rhs_tbl, FEM_elens, layer_tbl, mhd_fem_wk, fem_wk,          &
      &      f_l, f_nl, nod_fld)

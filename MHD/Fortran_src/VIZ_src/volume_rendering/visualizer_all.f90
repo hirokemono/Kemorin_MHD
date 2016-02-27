@@ -4,7 +4,7 @@
 !      Written by H. Matsui on July, 2006
 !
 !!      subroutine init_visualize(mesh, group, surf, edge, edge_comm,   &
-!!     &          sf_grp_nod, nod_fld)
+!!     &          nod_fld)
 !!      subroutine visualize_all                                        &
 !!     &         (istep_psf, istep_iso, istep_pvr, istep_fline,         &
 !!     &          mesh, group, surf, edge, edge_comm,                   &
@@ -14,7 +14,6 @@
 !!        type(surface_data), intent(in) :: surf
 !!        type(edge_data), intent(in) :: edge
 !!        type(communication_table), intent(in) :: edge_comm
-!!        type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(element_around_node), intent(in) :: ele_4_nod
 !!        type(jacobians_3d), intent(in) :: jac_3d
@@ -46,7 +45,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine init_visualize(mesh, group, surf, edge, edge_comm,     &
-     &          sf_grp_nod, nod_fld)
+     &          nod_fld)
 !
       use m_cross_section
       use m_isosurface
@@ -58,10 +57,7 @@
       type(mesh_groups), intent(in) ::   group
       type(surface_data), intent(in) :: surf
       type(edge_data), intent(in) :: edge
-!
       type(communication_table), intent(in) :: edge_comm
-!
-      type(surface_node_grp_data), intent(in) :: sf_grp_nod
 !
       type(phys_data), intent(in) :: nod_fld
 !
@@ -71,7 +67,7 @@
 !
       call SECTIONING_initialize                                        &
      &   (mesh%node, mesh%ele, surf, edge, mesh%nod_comm, edge_comm,    &
-     &    group%ele_grp, group%surf_grp, sf_grp_nod, nod_fld)
+     &    group%ele_grp, group%surf_grp, group%surf_nod_grp, nod_fld)
 !
       call ISOSURF_initialize                                           &
      &   (mesh%node, mesh%ele, surf, edge, group%ele_grp, nod_fld)

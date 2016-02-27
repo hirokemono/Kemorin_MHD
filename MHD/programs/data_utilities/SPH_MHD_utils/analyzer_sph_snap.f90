@@ -24,7 +24,6 @@
       use m_mesh_data
       use m_nod_comm_table
       use m_geometry_data
-      use m_group_data
       use m_node_phys_data
 !
       use SPH_analyzer_snap
@@ -73,7 +72,7 @@
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
       call init_visualize(mesh1, group1, surf1, edge1, edge_comm,       &
-     &    sf_grp_nod1, nod_fld1)
+     &    nod_fld1)
 !
       call calypso_MPI_barrier
       call end_eleps_time(2)

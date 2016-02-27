@@ -29,7 +29,6 @@
       use m_mesh_data
       use m_geometry_data_MHD
       use m_geometry_data
-      use m_group_data
       use m_int_vol_data
       use m_jacobians
       use m_element_id_4_node

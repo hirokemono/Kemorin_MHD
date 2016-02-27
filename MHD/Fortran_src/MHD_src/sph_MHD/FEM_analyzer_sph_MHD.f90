@@ -49,7 +49,6 @@
 !
       use m_nod_comm_table
       use m_geometry_data
-      use m_group_data
       use m_array_for_send_recv
       use m_t_step_parameter
       use m_node_phys_data
@@ -85,7 +84,7 @@
       call const_mesh_infos                                             &
      &   (my_rank, mesh%node, mesh%ele, surf1, edge1,                   &
      &    group%nod_grp, group%ele_grp, group%surf_grp,                 &
-     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
+     &    group%tbls_ele_grp, group%tbls_surf_grp, group%surf_nod_grp)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
       call const_element_comm_tbls(mesh%node, mesh%ele, surf1, edge1,   &

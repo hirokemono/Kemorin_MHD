@@ -13,7 +13,6 @@
 !
       use m_nod_comm_table
       use m_geometry_data
-      use m_group_data
       use m_node_phys_data
       use m_node_phys_data
       use FEM_analyzer_snap_tmp
@@ -54,7 +53,7 @@
       call FEM_initialize_snap_tmp
 !
       call init_visualize(mesh1, group1, surf1, edge1, edge_comm,       &
-     &    sf_grp_nod1, nod_fld1)
+     &    nod_fld1)
 !
       end subroutine init_analyzer
 !

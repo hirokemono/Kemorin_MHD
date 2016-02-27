@@ -39,7 +39,6 @@
       subroutine input_control_SPH_mesh(mesh, group)
 !
       use m_geometry_data
-      use m_group_data
       use m_control_parameter
       use m_spheric_parameter
       use m_sph_boundary_input_data

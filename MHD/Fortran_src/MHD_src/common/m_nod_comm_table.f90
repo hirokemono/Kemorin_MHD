@@ -16,9 +16,6 @@
 !
       implicit  none
 !
-!> data structure for node communication table
-!      type(communication_table), save :: nod_comm
-!
 !> data structure for element communication table
       type(communication_table), save :: ele_comm
 !> data structure for surface communication table

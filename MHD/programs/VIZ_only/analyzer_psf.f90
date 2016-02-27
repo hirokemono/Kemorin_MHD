@@ -44,7 +44,7 @@
 !  VIZ Initialization
       call init_visualize_surface(femmesh_VIZ%mesh, femmesh_VIZ%group,  &
      &    surfmesh_VIZ%surf, edgemesh_VIZ%edge, edgemesh_VIZ%edge_comm, &
-     &    femmesh_VIZ%group%surf_nod_grp, field_VIZ)
+     &    field_VIZ)
 !
       end subroutine init_analyzer
 !

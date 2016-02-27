@@ -104,8 +104,6 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-!      call check_surface_param_smp('cal_velocity_pre start',           &
-!     &    my_rank, sf_grp, sf_grp_nod1)
 !      call check_jacobians_triquad(ele, jac_3d)
 !
       if (iflag_SGS_heat .ne. id_SGS_none) then

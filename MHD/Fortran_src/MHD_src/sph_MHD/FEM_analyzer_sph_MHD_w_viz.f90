@@ -40,7 +40,6 @@
       subroutine FEM_initialize_w_viz(mesh, group)
 !
       use m_geometry_data
-      use m_group_data
       use m_t_step_parameter
       use m_fem_gauss_int_coefs
       use m_jacobians
@@ -79,7 +78,7 @@
       if (iflag_debug.eq.1) write(*,*)  'maximum_integration_points'
       call maximum_integration_points(ione)
       call const_jacobian_and_volume                                    &
-     &   (mesh%node, group%surf_grp, infty_list, mesh%ele,              &
+     &   (mesh%node, group%surf_grp, group%infty_grp, mesh%ele,         &
      &    jac1_3d_l, jac1_3d_q)
 !
       end subroutine FEM_initialize_w_viz

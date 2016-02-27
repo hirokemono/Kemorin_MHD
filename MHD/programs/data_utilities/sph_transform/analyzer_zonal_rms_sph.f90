@@ -78,7 +78,7 @@
 !
       call init_visualize(femmesh_STR%mesh, femmesh_STR%group,          &
      &    surfmesh_STR%surf, edgemesh_STR%edge, edgemesh_STR%edge_comm, &
-     &    femmesh_STR%group%surf_nod_grp, field_STR)
+     &    field_STR)
 !
       end subroutine init_analyzer
 !

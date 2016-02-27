@@ -89,8 +89,6 @@
       use evolve_by_lumped_crank
       use evolve_by_consist_crank
 !
-!      use check_surface_groups
-!
       type(communication_table), intent(in) :: nod_comm
       type(node_data), intent(in) :: node
       type(element_data), intent(in) :: ele
@@ -111,8 +109,6 @@
       type(phys_data), intent(inout) :: nod_fld
 !
 !
-!      call check_surface_param_smp('cal_magnetic_field_pre start',     &
-!     &    my_rank, sf_grp, sf_grp_nod1)
       if ( iflag_SGS_induction .ne. id_SGS_none) then
         call cal_sgs_magne_induction(icomp_sgs_uxb, ie_dvx, ie_dbx,     &
      &     nod_comm, node, ele, conduct, iphys, iphys_ele, ele_fld,     &

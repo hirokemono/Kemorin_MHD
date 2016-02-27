@@ -64,7 +64,6 @@
       use m_geometry_data_MHD
       use m_nod_comm_table
       use m_geometry_data
-      use m_group_data
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
@@ -211,7 +210,6 @@
       use m_phys_labels
       use m_nod_comm_table
       use m_geometry_data
-      use m_group_data
       use m_geometry_data_MHD
       use m_node_phys_data
       use m_element_phys_data

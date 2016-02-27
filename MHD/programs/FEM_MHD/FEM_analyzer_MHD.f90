@@ -34,7 +34,6 @@
       use m_geometry_data_MHD
       use m_nod_comm_table
       use m_geometry_data
-      use m_group_data
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
@@ -142,7 +141,6 @@
       use m_geometry_data_MHD
       use m_nod_comm_table
       use m_geometry_data
-      use m_group_data
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
@@ -186,8 +184,8 @@
 !     ----- Time integration
 !
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution'
-      call fields_evolution(mesh1, group1, surf1, MHD_mesh1,            &
-     &    sf_grp_nod1, iphys, iphys_ele, fld_ele1,                      &
+      call fields_evolution                                             &
+     &   (mesh1, group1, surf1, MHD_mesh1, iphys, iphys_ele, fld_ele1,  &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,     &
      &    rhs_tbl1, FEM1_elen, layer_tbl1, m1_lump,                     &
      &    mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)

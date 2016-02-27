@@ -23,7 +23,6 @@
 !
       use m_nod_comm_table
       use m_geometry_data
-      use m_group_data
 !
       use t_mesh_data
 !

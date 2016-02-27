@@ -29,7 +29,6 @@
 !
       use m_nod_comm_table
       use m_geometry_data
-      use m_group_data
       use m_element_id_4_node
       use m_node_phys_data
       use m_ele_material_property
@@ -110,7 +109,7 @@
       if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
       call const_mesh_infos(my_rank, mesh%node, mesh%ele, surf1,        &
      &    edge1, group%nod_grp, group%ele_grp, group%surf_grp,          &
-     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
+     &    group%tbls_ele_grp, group%tbls_surf_grp, group%surf_nod_grp)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
       call const_element_comm_tbls(mesh%node, mesh%ele, surf1, edge1,   &
@@ -197,14 +196,14 @@
 !     ---------------------
 !
       call const_bc_infinity_surf_grp                                   &
-     &   (iflag_surf_infty, group%surf_grp, infty_list)
+     &   (iflag_surf_infty, group%surf_grp, group%infty_grp)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes                               &
-     &   (mesh%node, mesh%ele, group%surf_grp, layer_tbl, infty_list,   &
-     &    jac1_3d_l, jac1_3d_q, MHD_mesh)
+     &   (mesh%node, mesh%ele, group%surf_grp, layer_tbl,               &
+     &    group%infty_grp, jac1_3d_l, jac1_3d_q, MHD_mesh)
 !
       call const_jacobian_sf_grp                                        &
      &   (mesh%node, mesh%ele, surf1, group%surf_grp,                   &
@@ -224,7 +223,8 @@
       if (iflag_debug.eq.1) write(*,*)' int_surface_parameters'
       call int_surface_parameters                                       &
      &   (group%surf_grp%num_grp, mesh%node, mesh%ele, surf1,           &
-     &    group%surf_grp, sf_grp_tbl1, sf_grp_v1, sf_grp_nod1)
+     &    group%surf_grp, group%tbls_surf_grp, group%surf_grp_geom,     &
+     &    group%surf_nod_grp)
 !
 !     --------------------- 
 !
@@ -235,7 +235,7 @@
       if (iflag_debug.eq.1) write(*,*)' set_surf_bc_data'
       call set_surf_bc_data                                             &
      &   (mesh%node, mesh%ele, surf1, group%surf_grp,                   &
-     &    sf_grp_nod1, sf_grp_v1, iphys, nod_fld1)
+     &    group%surf_nod_grp, group%surf_grp_geom, iphys, nod_fld1)
       call deallocate_surf_bc_lists
 !
 !     --------------------- 

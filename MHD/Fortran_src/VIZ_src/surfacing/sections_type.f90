@@ -44,7 +44,7 @@
 !
       call init_visualize_surface(fem%mesh, fem%group,                  &
      &    sf_mesh_psf%surf, eg_mesh_psf%edge, eg_mesh_psf%edge_comm,    &
-     &    fem%group%surf_nod_grp, nod_fld)
+     &    nod_fld)
 !
       end subroutine init_sections_type
 !

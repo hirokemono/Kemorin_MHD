@@ -23,7 +23,7 @@
       type(mesh_geometry), save :: mesh1
 !>     Structure for group data
       type(mesh_groups), save ::   group1
-!group1%surf_grp
+!group1%tbls_surf_grp
 !
 ! ----------------------------------------------------------------------
 !
@@ -35,15 +35,14 @@
 !
       use t_mesh_data
       use m_nod_comm_table
-!
       use m_geometry_data
-      use m_group_data
 !
 !
       call dealloc_mesh_infomations                                     &
      &   (mesh1%nod_comm, mesh1%node, mesh1%ele, surf1, edge1,          &
      &    group1%nod_grp, group1%ele_grp, group1%surf_grp,              &
-     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
+     &    group1%tbls_ele_grp, group1%tbls_surf_grp,                    &
+     &    group1%surf_nod_grp)
 !
       end subroutine deallocate_mesh_infomations
 !
@@ -53,9 +52,7 @@
 !
       use t_mesh_data
       use m_nod_comm_table
-!
       use m_geometry_data
-      use m_group_data
 !
 !
       call dealloc_nod_ele_infos                                        &
