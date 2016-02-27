@@ -58,14 +58,14 @@
       call read_control_4_sph_MHD_w_psf
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
-      call input_control_SPH_mesh
+      call input_control_SPH_mesh(mesh1)
       call end_eleps_time(4)
 !
 !        Initialize FEM mesh data for field data IO
 !
       call start_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
-      call FEM_initialize_sph_MHD
+      call FEM_initialize_sph_MHD(mesh1)
 !
 !        Initialize spherical transform dynamo
 !
@@ -119,7 +119,7 @@
         call start_eleps_time(4)
 !
         if (iflag_debug.eq.1) write(*,*) 'SPH_to_FEM_bridge_MHD'
-        call SPH_to_FEM_bridge_MHD
+        call SPH_to_FEM_bridge_MHD(mesh1)
         if (iflag_debug.eq.1) write(*,*) 'FEM_analyze_sph_MHD'
         call FEM_analyze_sph_MHD(i_step_MHD, istep_psf, istep_iso,      &
      &      istep_pvr, istep_fline, visval)

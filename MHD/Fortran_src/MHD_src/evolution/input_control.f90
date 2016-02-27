@@ -9,8 +9,8 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_4_MHD
-!!      subroutine input_control_4_snapshot
+!!      subroutine input_control_4_MHD(mesh)
+!!      subroutine input_control_4_snapshot(mesh)
 !!@endverbatim
 !
 !
@@ -21,12 +21,15 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use m_mesh_data
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
 !
+      use t_mesh_data
+!
       implicit none
+!
+      private :: input_meshes_4_MHD
 !
 ! ----------------------------------------------------------------------
 !
@@ -34,7 +37,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_MHD
+      subroutine input_control_4_MHD(mesh)
 !
       use m_ctl_data_fem_MHD
       use m_iccg_parameter
@@ -43,6 +46,8 @@
       use input_MG_data
       use skip_comment_f
 !
+      type(mesh_geometry), intent(inout) :: mesh
+!
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_MHD'
       call read_control_4_fem_MHD
@@ -50,11 +55,11 @@
       call set_control_4_FEM_MHD
 !
 !  --  load FEM mesh data
-      call input_mesh(my_rank, mesh1%nod_comm,                          &
-     &    mesh1%node, mesh1%ele, nod_grp1, ele_grp1, sf_grp1,           &
+      call input_mesh(my_rank, mesh%nod_comm, mesh%node, mesh%ele,      &
+     &    nod_grp1, ele_grp1, sf_grp1,                                  &
      &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
-      call input_meshes_4_MHD
+      call input_meshes_4_MHD(mesh)
 !
       if(cmp_no_case(method_4_solver, 'MGCG')) then
         call input_MG_mesh
@@ -65,11 +70,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_snapshot
+      subroutine input_control_4_snapshot(mesh)
 !
       use m_ctl_data_fem_MHD
       use set_control_FEM_MHD
       use load_mesh_data
+!
+      type(mesh_geometry), intent(inout) :: mesh
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
@@ -78,18 +85,18 @@
       call set_control_4_FEM_MHD
 !
 !  --  load FEM mesh data
-      call input_mesh(my_rank, mesh1%nod_comm, mesh1%node, mesh1%ele,   &
+      call input_mesh(my_rank, mesh%nod_comm, mesh%node, mesh%ele,      &
      &    nod_grp1, ele_grp1, sf_grp1,                                  &
      &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
-      call input_meshes_4_MHD
+      call input_meshes_4_MHD(mesh)
 !
       end subroutine input_control_4_snapshot
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-      subroutine input_meshes_4_MHD
+      subroutine input_meshes_4_MHD(mesh)
 !
       use m_machine_parameter
       use m_control_parameter
@@ -105,10 +112,12 @@
       use node_monitor_IO
       use read_bc_values_file
 !
+      type(mesh_geometry), intent(in) :: mesh
+!
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 'set_local_node_id_4_monitor'
-      call set_local_node_id_4_monitor(mesh1%node, nod_grp1)
+      call set_local_node_id_4_monitor(mesh%node, nod_grp1)
 !
 ! ----  open data file for boundary data
 !
@@ -120,7 +129,7 @@
 !
       if (iflag_debug .ge. iflag_routine_msg)                           &
      &      write(*,*) 's_read_filtering_data'
-      call s_read_filtering_data(mesh1%node, mesh1%ele)
+      call s_read_filtering_data(mesh%node, mesh%ele)
 !
       if     (iflag_SGS_filter .eq. id_SGS_3D_FILTERING                 &
      &   .or. iflag_SGS_filter .eq. id_SGS_3D_EZ_FILTERING              &

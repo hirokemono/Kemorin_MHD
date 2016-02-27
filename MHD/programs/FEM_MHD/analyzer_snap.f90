@@ -48,7 +48,7 @@
 !
 !     --------------------- 
 !
-      call input_control_4_snapshot
+      call input_control_4_snapshot(mesh1)
 !
 !     --------------------- 
 !

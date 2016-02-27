@@ -8,7 +8,8 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
-!!      subroutine FEM_initialize_w_viz
+!!      subroutine FEM_initialize_w_viz(mesh)
+!!        type(mesh_geometry), intent(inout) :: mesh
 !!@endverbatim
 !!
 !!@n @param  i_step       Current time step
@@ -35,9 +36,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_w_viz
+      subroutine FEM_initialize_w_viz(mesh)
 !
-      use m_mesh_data
       use m_geometry_data
       use m_group_data
       use m_t_step_parameter
@@ -45,9 +45,13 @@
       use m_jacobians
       use m_element_id_4_node
 !
+      use t_mesh_data
+!
       use set_ele_id_4_node_type
       use FEM_analyzer_sph_MHD
       use int_volume_of_domain
+!
+      type(mesh_geometry), intent(inout) :: mesh
 !
 !   --------------------------------
 !       setup mesh information
@@ -56,14 +60,14 @@
 !  --  init FEM mesh data
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
-      call FEM_initialize_sph_MHD
+      call FEM_initialize_sph_MHD(mesh)
 !
 !  -------------------------------
 !
       if( (i_step_output_fline) .gt. 0) then
         if (iflag_debug.gt.0) write(*,*) 'set_ele_id_4_node'
         call set_ele_id_4_node                                          &
-     &    (mesh1%node, mesh1%ele, next_tbl1%neib_ele)
+     &    (mesh%node, mesh%ele, next_tbl1%neib_ele)
       end if
 !
       if(i_step_output_pvr .le. 0) Return
@@ -73,7 +77,7 @@
       if (iflag_debug.eq.1) write(*,*)  'maximum_integration_points'
       call maximum_integration_points(ione)
       call const_jacobian_and_volume                                    &
-     &   (mesh1%node, sf_grp1, infty_list, mesh1%ele,                   &
+     &   (mesh%node, sf_grp1, infty_list, mesh%ele,                     &
      &    jac1_3d_l, jac1_3d_q)
 !
       end subroutine FEM_initialize_w_viz

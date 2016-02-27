@@ -111,7 +111,7 @@
 !
 !  -----    construct geometry informations
 !
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
+      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl_global_id'
       call start_eleps_time(2)
       call const_ele_comm_tbl_global_id                                 &
      &   (test_fem%mesh, test_ele_mesh, test_surf_mesh, test_edge_mesh)

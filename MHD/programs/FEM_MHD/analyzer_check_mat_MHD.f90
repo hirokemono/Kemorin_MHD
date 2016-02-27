@@ -23,12 +23,13 @@
 !
       subroutine init_analyzer
 !
+      use m_mesh_data
       use input_control
 !
 !
         write(*,*) 'Simulation start: PE. ', my_rank
 !
-      call input_control_4_MHD
+      call input_control_4_MHD(mesh1)
 !
       call FEM_check_MHD_mat
 !

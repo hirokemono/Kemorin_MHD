@@ -8,7 +8,8 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
-!!      subroutine FEM_initialize_sph_MHD
+!!      subroutine FEM_initialize_sph_MHD(mesh)
+!!        type(mesh_geometry), intent(inout) :: mesh
 !!      subroutine FEM_analyze_sph_MHD(i_step                           &
 !!     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !!      subroutine FEM_finalize
@@ -43,9 +44,8 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_sph_MHD
+      subroutine FEM_initialize_sph_MHD(mesh)
 !
-      use m_mesh_data
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
@@ -55,29 +55,38 @@
       use m_cal_max_indices
       use t_FEM_phys_data
 !
+      use t_mesh_data
+!
       use nod_phys_send_recv
       use range_data_IO
       use node_monitor_IO
+      use const_mesh_information
+      use const_element_comm_tables
+!
+      type(mesh_geometry), intent(inout) :: mesh
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_local_node_id_4_monitor'
-      call set_local_node_id_4_monitor(mesh1%node, nod_grp1)
+      call set_local_node_id_4_monitor(mesh%node, nod_grp1)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(isix, mesh1%node%numnod)
+      call allocate_vector_for_solver(isix, mesh%node%numnod)
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
-      call init_send_recv(mesh1%nod_comm)
+      call init_send_recv(mesh%nod_comm)
 !
 !  -----    construct geometry informations
 !
-      if (iflag_debug.gt.0) write(*,*) 'const_mesh_informations'
-      call const_mesh_informations(my_rank)
+      if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos(my_rank, mesh%node,                         &
+     &    mesh%ele, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,          &
+     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
 !
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
-      call const_element_comm_tables_1st
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
+      call const_element_comm_tbls(mesh%node, mesh%ele, surf1, edge1,   &
+     &    mesh%nod_comm, ele_comm, surf_comm, edge_comm)
 !
       call deallocate_surface_geom_type(surf1)
       call deallocate_edge_geom_type(edge1)
@@ -85,7 +94,7 @@
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'set_field_address_type'
-      call set_field_address_type(mesh1%node%numnod, nod_fld1, iphys)
+      call set_field_address_type(mesh%node%numnod, nod_fld1, iphys)
 !
 !  connect grid data to volume output
 !
@@ -94,7 +103,7 @@
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
-      call output_grd_file_4_snapshot(mesh1, nod_fld1)
+      call output_grd_file_4_snapshot(mesh, nod_fld1)
 !
       end subroutine FEM_initialize_sph_MHD
 !
@@ -135,12 +144,13 @@
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine SPH_to_FEM_bridge_MHD
+      subroutine SPH_to_FEM_bridge_MHD(mesh)
 !
-      use m_mesh_data
       use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
+!
+      use t_mesh_data
 !
       use output_viz_file_control
       use lead_pole_data_4_sph_mhd
@@ -149,6 +159,7 @@
       use copy_MHD_4_sph_trans
       use coordinate_convert_4_sph
 !
+      type(mesh_geometry), intent(inout) :: mesh
 !
       integer (kind =kint) :: iflag
 !
@@ -159,22 +170,22 @@
 !*  -----------  data transfer to FEM array --------------
 !*
       if (iflag_debug.gt.0) write(*,*) 'copy_forces_to_snapshot_rtp'
-      call copy_forces_to_snapshot_rtp(mesh1%node, iphys, nod_fld1)
+      call copy_forces_to_snapshot_rtp(mesh%node, iphys, nod_fld1)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_from_trans'
-      call copy_snap_vec_fld_from_trans(mesh1%node, iphys, nod_fld1)
+      call copy_snap_vec_fld_from_trans(mesh%node, iphys, nod_fld1)
       if (iflag_debug.gt.0) write(*,*) 'copy_snap_vec_fld_to_trans'
-      call copy_snap_vec_fld_to_trans(mesh1%node, iphys, nod_fld1)
+      call copy_snap_vec_fld_to_trans(mesh%node, iphys, nod_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'overwrite_nodal_sph_2_xyz'
-      call overwrite_nodal_sph_2_xyz(mesh1%node, nod_fld1)
+      call overwrite_nodal_sph_2_xyz(mesh%node, nod_fld1)
 !
 !*  ----------- transform field at pole and center --------------
 !*
       if (iflag_debug.gt.0) write(*,*) 'lead_pole_fields_4_sph_mhd'
-      call lead_pole_fields_4_sph_mhd(mesh1%node, iphys, nod_fld1)
+      call lead_pole_fields_4_sph_mhd(mesh%node, iphys, nod_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(mesh1%node, mesh1%nod_comm, nod_fld1)
+      call nod_fields_send_recv(mesh%node, mesh%nod_comm, nod_fld1)
 !
       end subroutine SPH_to_FEM_bridge_MHD
 !

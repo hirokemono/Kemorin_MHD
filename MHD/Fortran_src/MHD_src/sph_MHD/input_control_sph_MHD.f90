@@ -7,7 +7,7 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_SPH_mesh
+!!      subroutine input_control_SPH_mesh(mesh)
 !!      subroutine input_control_4_SPH_MHD_nosnap
 !!
 !!      subroutine input_control_4_SPH_make_init
@@ -22,6 +22,8 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use t_mesh_data
+!
       implicit none
 !
       private :: set_control_4_SPH_to_FEM
@@ -32,10 +34,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_SPH_mesh
+      subroutine input_control_SPH_mesh(mesh)
 !
-      use m_mesh_data
-      use m_nod_comm_table
       use m_geometry_data
       use m_group_data
       use m_control_parameter
@@ -43,6 +43,8 @@
       use m_sph_boundary_input_data
       use set_control_sph_mhd
       use parallel_load_data_4_sph
+!
+      type(mesh_geometry), intent(inout) :: mesh
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
@@ -52,7 +54,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh                                   &
-     &   (mesh1%nod_comm, mesh1%node, mesh1%ele,                        &
+     &   (mesh%nod_comm, mesh%node, mesh%ele,                           &
      &    surf1, edge1, nod_grp1, ele_grp1, sf_grp1)
 !
       if (iflag_boundary_file .eq. id_read_boundary_file) then

@@ -15,12 +15,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-       contains
+      contains
 !
 ! ----------------------------------------------------------------------
 !
-        subroutine init_analyzer
+      subroutine init_analyzer
 !
+      use m_mesh_data
       use input_control
 !
 !
@@ -28,7 +29,7 @@
 !
 !     --------------------- 
 !
-      call input_control_4_snapshot
+      call input_control_4_snapshot(mesh1)
 !
 !   matrix assembling
 !

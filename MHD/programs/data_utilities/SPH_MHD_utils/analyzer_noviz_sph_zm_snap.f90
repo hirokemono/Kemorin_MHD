@@ -35,6 +35,7 @@
 !
       subroutine initialize_noviz_sph_zm_snap
 !
+      use m_mesh_data
       use m_ctl_data_sph_MHD_noviz
       use init_sph_MHD_elapsed_label
       use SPH_analyzer_snap
@@ -53,14 +54,14 @@
       call read_control_4_sph_snap_noviz
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
-      call input_control_SPH_mesh
+      call input_control_SPH_mesh(mesh1)
       call end_eleps_time(4)
 !
 !     --------------------- 
 !
       call start_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
-      call FEM_initialize_sph_MHD
+      call FEM_initialize_sph_MHD(mesh1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'

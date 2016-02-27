@@ -13,6 +13,7 @@
       use calypso_mpi
       use m_work_time
 !
+      use m_mesh_data
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
@@ -54,7 +55,7 @@
       call start_eleps_time(1)
 !
       call start_eleps_time(4)
-      call input_control_4_MHD
+      call input_control_4_MHD(mesh1)
       call end_eleps_time(4)
 !
       call start_eleps_time(2)

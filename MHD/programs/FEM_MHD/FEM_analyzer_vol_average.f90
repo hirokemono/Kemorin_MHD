@@ -26,6 +26,7 @@
 !
       subroutine FEM_initialize_vol_average
 !
+      use m_mesh_data
       use m_control_parameter
       use m_layering_ele_list
       use m_geometry_data_MHD
@@ -39,7 +40,7 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1)  write(*,*) 'init_analyzer_snap'
-      call init_analyzer_snap(MHD_mesh1, layer_tbl1)
+      call init_analyzer_snap(mesh1, MHD_mesh1, layer_tbl1)
 !
       end subroutine FEM_initialize_vol_average
 !

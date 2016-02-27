@@ -8,11 +8,7 @@
 !
 !> @brief Communication table for node
 !!
-!!@verbatim
-!!      subroutine dealloc_ele_sf_eg_comm_tables
-!!      subroutine const_element_comm_tables_1st
-!!@endverbatim
-!
+!!
       module m_nod_comm_table
 !
       use m_precision

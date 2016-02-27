@@ -87,36 +87,36 @@
 !>     Structure for mesh data
 !>        (position, connectivity, group, and communication)
       type mesh_data
+!>     Structure for grid data
         type(mesh_geometry) :: mesh
-!<     Structure for grid data
+!>     Structure for group data
         type(mesh_groups) ::   group
-!<     Structure for group data
       end type mesh_data
 !
 !
 !
 !>     Structure for element data (communication)
       type element_comms
+!>     Structure for element communication
         type(communication_table) :: ele_comm
-!<     Structure for element communication
       end type element_comms
 !
 !>     Structure for surface data
 !>        (position, connectivity, and communication)
       type surface_geometry
+!>     Structure for surface communication
         type(communication_table) :: surf_comm
-!<     Structure for surface communication
+!>     Structure for surface position and connectivity
         type(surface_data) ::        surf
-!<     Structure for surface position and connectivity
       end type surface_geometry
 !
 !>     Structure for edge data
 !>        (position, connectivity, and communication)
       type edge_geometry
+!>     Structure for edge communication
         type(communication_table) :: edge_comm
-!<     Structure for edge communication
+!>     Structure for edge position and connectivity
         type(edge_data) ::           edge
-!<     Structure for edge position and connectivity
       end type edge_geometry
 !
 !------------------------------------------------------------------

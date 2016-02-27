@@ -3,7 +3,8 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine init_analyzer_snap(MHD_mesh, layer_tbl)
+!!      subroutine init_analyzer_snap(mesh, MHD_mesh, layer_tbl)
+!!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !!        type(layering_tbl), intent(inout) :: layer_tbl
 !
@@ -19,14 +20,13 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_snap(MHD_mesh, layer_tbl)
+      subroutine init_analyzer_snap(mesh, MHD_mesh, layer_tbl)
 !
       use calypso_mpi
       use m_machine_parameter
       use m_control_parameter
       use m_t_step_parameter
 !
-      use m_mesh_data
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
@@ -44,6 +44,7 @@
       use m_finite_element_matrix
       use m_int_vol_data
 !
+      use t_mesh_data
       use t_geometry_data_MHD
       use t_layering_ele_list
 !
@@ -72,19 +73,22 @@
       use set_table_type_RHS_assemble
       use fem_mhd_rst_IO_control
       use const_jacobians_sf_grp
+      use const_element_comm_tables
+      use const_mesh_information
 !
       use nod_phys_send_recv
 !
+      type(mesh_geometry), intent(inout) :: mesh
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
       type(layering_tbl), intent(inout) :: layer_tbl
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' reordering_by_layers_snap'
-      call reordering_by_layers_snap(mesh1%ele, MHD_mesh)
+      call reordering_by_layers_snap(mesh%ele, MHD_mesh)
 !
       if (iflag_debug.eq.1) write(*,*)' set_layers'
-      call set_layers(mesh1%node, mesh1%ele, ele_grp1, MHD_mesh)
+      call set_layers(mesh%node, mesh%ele, ele_grp1, MHD_mesh)
 !
       if (iflag_dynamic_SGS  .ne. id_SGS_DYNAMIC_OFF) then
         ncomp_correlate = 9
@@ -98,18 +102,21 @@
 !     ---------------------
 !
       if (iflag_debug.ge.1 ) write(*,*) 'allocate_vector_for_solver'
-      call allocate_vector_for_solver(n_sym_tensor, mesh1%node%numnod)
+      call allocate_vector_for_solver(n_sym_tensor, mesh%node%numnod)
 !
-      call init_send_recv(mesh1%nod_comm)
+      call init_send_recv(mesh%nod_comm)
 !
-      if (iflag_debug.eq.1) write(*,*)' const_mesh_informations'
-      call const_mesh_informations(my_rank)
+      if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
+      call const_mesh_infos(my_rank, mesh%node,                         &
+     &    mesh%ele, surf1, edge1, nod_grp1, ele_grp1, sf_grp1,          &
+     &    ele_grp_tbl1, sf_grp_tbl1, sf_grp_nod1)
 !
-      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tables_1st'
-      call const_element_comm_tables_1st
+      if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
+      call const_element_comm_tbls(mesh%node, mesh%ele, surf1, edge1,   &
+     &    mesh%nod_comm, ele_comm, surf_comm, edge_comm)
 !
       if(i_debug .eq. iflag_full_msg) then
-        call check_whole_num_of_elements(mesh1%ele)
+        call check_whole_num_of_elements(mesh%ele)
       end if
 !
 !     ---------------------
@@ -132,7 +139,7 @@
         else if (iflag_SGS_filter .eq. id_SGS_LINE_FILTERING) then
           if (iflag_debug.gt.0) write(*,*)' ordering_l_filter_smp'
           call ordering_l_filter_smp                                    &
-     &       (mesh1%node%numnod, mesh1%node%istack_nod_smp)
+     &       (mesh%node%numnod, mesh%node%istack_nod_smp)
         end if
       end if
 !
@@ -155,26 +162,26 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)' allocate_array'
-      call allocate_array(mesh1%node, mesh1%ele, iphys, nod_fld1,       &
+      call allocate_array(mesh%node, mesh%ele, iphys, nod_fld1,         &
      &    m1_lump, mhd_fem1_wk, fem1_wk, f1_l, f1_nl, label_sim)
 !
       if (iflag_debug.eq.1) write(*,*)' set_reference_temp'
-      call set_reference_temp(mesh1%node%numnod,                        &
+      call set_reference_temp(mesh%node%numnod,                         &
      &    MHD_mesh%fluid%numnod_fld, MHD_mesh%fluid%inod_fld,           &
-     &    mesh1%node%xx, mesh1%node%rr, mesh1%node%a_r,                 &
+     &    mesh%node%xx, mesh%node%rr, mesh%node%a_r,                    &
      &    nod_fld1%ntot_phys, iphys%i_ref_t, iphys%i_gref_t,            &
      &    nod_fld1%d_fld)
 !
       if (iflag_debug.eq.1) write(*,*)' set_material_property'
       call set_material_property
-      call init_ele_material_property(mesh1%ele%numele)
+      call init_ele_material_property(mesh%ele%numele)
       call s_count_sgs_components                                       &
-     &   (mesh1%node%numnod, mesh1%ele%numele, layer_tbl)
+     &   (mesh%node%numnod, mesh%ele%numele, layer_tbl)
 !
       if (iflag_debug.gt.0)  write(*,*)' make comm. table for fluid'
       call s_const_comm_table_fluid                                     &
      &   (nprocs, MHD_mesh%fluid%istack_ele_fld_smp,                    &
-     &    mesh1%node, mesh1%ele, mesh1%nod_comm, DJDS_comm_fl)
+     &    mesh%node, mesh%ele, mesh%nod_comm, DJDS_comm_fl)
 !
       call deallocate_surface_geom_type(surf1)
       call deallocate_edge_geom_type(edge1)
@@ -183,7 +190,7 @@
 !
       if (i_step_output_rst .gt. 0) then
         if (iflag_debug.eq.1) write(*,*)' init_restart_4_snapshot'
-        call init_restart_4_snapshot(mesh1%node)
+        call init_restart_4_snapshot(mesh%node)
       end if
 !
 !     ---------------------
@@ -195,42 +202,42 @@
 !
       if (iflag_debug.eq.1) write(*,*)' const_MHD_jacobian_and_volumes'
       call const_MHD_jacobian_and_volumes                               &
-     &   (mesh1%node, mesh1%ele, sf_grp1, layer_tbl, infty_list,        &
+     &   (mesh%node, mesh%ele, sf_grp1, layer_tbl, infty_list,          &
      &    jac1_3d_l, jac1_3d_q, MHD_mesh)
 !
-      call const_jacobian_sf_grp(mesh1%node, mesh1%ele, surf1, sf_grp1, &
+      call const_jacobian_sf_grp(mesh%node, mesh%ele, surf1, sf_grp1,   &
      &                           jac1_sf_grp_2d_l, jac1_sf_grp_2d_q)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' set_connect_RHS_assemble'
       call s_set_table_type_RHS_assemble                                &
-     &   (mesh1%node, mesh1%ele, next_tbl1, rhs_tbl1)
+     &   (mesh%node, mesh%ele, next_tbl1, rhs_tbl1)
 !
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-      call const_normal_vector(mesh1%node, surf1)
+      call const_normal_vector(mesh%node, surf1)
 !
       if (iflag_debug.eq.1) write(*,*)' int_surface_parameters'
       call int_surface_parameters                                       &
-     &   (sf_grp1%num_grp, mesh1%node, mesh1%ele, surf1,                &
+     &   (sf_grp1%num_grp, mesh%node, mesh%ele, surf1,                  &
      &    sf_grp1, sf_grp_tbl1, sf_grp_v1, sf_grp_nod1)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*)' set_bc_id_data'
       call set_bc_id_data                                               &
-     &   (mesh1%node, mesh1%ele, nod_grp1, MHD_mesh, iphys, nod_fld1)
+     &   (mesh%node, mesh%ele, nod_grp1, MHD_mesh, iphys, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*)' set_surf_bc_data'
-      call set_surf_bc_data(mesh1%node, mesh1%ele, surf1, sf_grp1,      &
+      call set_surf_bc_data(mesh%node, mesh%ele, surf1, sf_grp1,        &
      &    sf_grp_nod1, sf_grp_v1, iphys, nod_fld1)
       call deallocate_surf_bc_lists
 !
 !     --------------------- 
 !
-      call int_RHS_mass_matrices(mesh1%node, mesh1%ele, MHD_mesh,       &
+      call int_RHS_mass_matrices(mesh%node, mesh%ele, MHD_mesh,         &
      &   jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_l, m1_lump)
 !
       end subroutine init_analyzer_snap
