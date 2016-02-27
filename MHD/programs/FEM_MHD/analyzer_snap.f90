@@ -11,6 +11,7 @@
       use m_precision
       use calypso_mpi
 !
+      use m_mesh_data
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
@@ -54,7 +55,7 @@
       call FEM_initialize_snapshot
 !
       call init_visualize                                               &
-     &   (node1, ele1, surf1, edge1, nod_comm, edge_comm,               &
+     &   (node1, ele1, surf1, edge1, mesh1%nod_comm, edge_comm,         &
      &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
 !
       end subroutine init_analyzer
@@ -83,8 +84,8 @@
           call start_eleps_time(4)
           call visualize_all                                            &
      &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
-     &        node1, ele1, surf1, edge1, nod_comm, edge_comm, ele_grp1, &
-     &        nod_fld1, next_tbl1%neib_ele, jac1_3d_q)
+     &        node1, ele1, surf1, edge1, mesh1%nod_comm, edge_comm,     &
+     &        ele_grp1, nod_fld1, next_tbl1%neib_ele, jac1_3d_q)
           call end_eleps_time(4)
         end if
       end do

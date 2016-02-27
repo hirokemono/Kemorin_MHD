@@ -69,7 +69,7 @@
       call allocate_vector_for_solver(isix, node1%numnod)
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
-      call init_send_recv(nod_comm)
+      call init_send_recv(mesh1%nod_comm)
 !
 !  -----    construct geometry informations
 !
@@ -94,7 +94,8 @@
       end if
 !
       if(iflag_debug .gt. 0) write(*,*) 'output_grd_file_4_snapshot'
-      call output_grd_file_4_snapshot(nod_comm, node1, ele1, nod_fld1)
+      call output_grd_file_4_snapshot                                   &
+     &   (mesh1%nod_comm, node1, ele1, nod_fld1)
 !
       end subroutine FEM_initialize_sph_MHD
 !
@@ -137,6 +138,7 @@
 !
       subroutine SPH_to_FEM_bridge_MHD
 !
+      use m_mesh_data
       use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
@@ -173,7 +175,7 @@
       call lead_pole_fields_4_sph_mhd(node1, iphys, nod_fld1)
 !
       if (iflag_debug.gt.0) write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(node1, nod_comm, nod_fld1)
+      call nod_fields_send_recv(node1, mesh1%nod_comm, nod_fld1)
 !
       end subroutine SPH_to_FEM_bridge_MHD
 !

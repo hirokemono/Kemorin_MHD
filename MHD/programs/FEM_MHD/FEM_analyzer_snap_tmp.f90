@@ -15,6 +15,7 @@
       use m_work_time
       use m_t_step_parameter
       use m_t_int_parameter
+      use m_mesh_data
       use m_ucd_data
 !
       use calypso_mpi
@@ -49,7 +50,7 @@
       call init_analyzer_snap(MHD_mesh1, layer_tbl1)
 !
       call output_grd_file_w_org_connect                                &
-     &   (node1, ele1, nod_comm, MHD_mesh1, nod_fld1)
+     &   (node1, ele1, mesh1%nod_comm, MHD_mesh1, nod_fld1)
 !
       call allocate_phys_range(nod_fld1%ntot_phys_viz)
 !
@@ -126,10 +127,10 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(node1, nod_comm, nod_fld1)
+      call nod_fields_send_recv(node1, mesh1%nod_comm, nod_fld1)
 !
       if (iflag_debug.eq.1)  write(*,*) 'update_fields'
-      call update_fields(nod_comm, node1, ele1, surf1,                  &
+      call update_fields(mesh1%nod_comm, node1, ele1, surf1,            &
      &    MHD_mesh1, sf_grp1, iphys, iphys_ele, fld_ele1,               &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
@@ -140,7 +141,7 @@
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
-     &     (nod_comm, node1, ele1, surf1, sf_grp1, iphys,               &
+     &     (mesh1%nod_comm, node1, ele1, surf1, sf_grp1, iphys,         &
      &      iphys_ele, fld_ele1, MHD_mesh1, layer_tbl1,                 &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
@@ -150,7 +151,7 @@
 !     ========  Data output
 !
       call lead_fields_by_FEM                                           &
-     &   (nod_comm, node1, ele1, surf1, edge1, MHD_mesh1,               &
+     &   (mesh1%nod_comm, node1, ele1, surf1, edge1, MHD_mesh1,         &
      &    sf_grp1, iphys, iphys_ele, fld_ele1,                          &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
@@ -256,7 +257,7 @@
      &        'lead radial', trim(fhd_div_SGS_m_flux)
         call cal_terms_4_momentum                                       &
      &     (iphys%i_SGS_div_m_flux, iak_diff_mf, iak_diff_lor,          &
-     &      nod_comm, node1, ele1, surf1, MHD_mesh1%fluid, sf_grp1,     &
+     &      mesh1%nod_comm, node1, ele1, surf1, MHD_mesh1%fluid, sf_grp1, &
      &      iphys, iphys_ele, fld_ele1, jac1_3d_q, jac1_sf_grp_2d_q,    &
      &      rhs_tbl1, FEM1_elen, mhd_fem1_wk, fem1_wk, f1_l, f1_nl,     &
      &      nod_fld1)
@@ -283,7 +284,7 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_vp_induct)
         call cal_sgs_uxb_2_monitor(icomp_sgs_uxb, ie_dvx,               &
-     &     nod_comm, node1, ele1, MHD_mesh1%conduct, iphys,             &
+     &     mesh1%nod_comm, node1, ele1, MHD_mesh1%conduct, iphys,       &
      &     iphys_ele, fld_ele1, jac1_3d_q, rhs_tbl1, FEM1_elen,         &
      &     mhd_fem1_wk, fem1_wk, f1_l, f1_nl, nod_fld1)
 
@@ -293,8 +294,8 @@
         if(iflag_debug.gt.0) write(*,*)                                 &
      &        'lead ', trim(fhd_SGS_induction)
         call int_vol_sgs_induction                                      &
-     &     (nod_comm, node1, ele1, MHD_mesh1%conduct, iphys, jac1_3d_q, &
-     &      rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_nl, nod_fld1)
+     &     (mesh1%nod_comm, node1, ele1, MHD_mesh1%conduct, iphys,      &
+     &      jac1_3d_q, rhs_tbl1, mhd_fem1_wk, fem1_wk, f1_nl, nod_fld1)
       end if
 !
 !$omp parallel

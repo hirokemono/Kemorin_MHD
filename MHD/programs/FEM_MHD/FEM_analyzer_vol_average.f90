@@ -48,6 +48,7 @@
       subroutine FEM_analyze_vol_average(i_step)
 !
       use m_control_parameter
+      use m_mesh_data
       use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
@@ -87,7 +88,7 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'phys_send_recv_all'
-      call nod_fields_send_recv(node1, nod_comm, nod_fld1)
+      call nod_fields_send_recv(node1, mesh1%nod_comm, nod_fld1)
 !
 !     -----Output monitor date
 !

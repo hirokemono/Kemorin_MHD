@@ -250,6 +250,7 @@
 !
       subroutine SPH_to_FEM_bridge_special_snap
 !
+      use m_mesh_data
       use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
@@ -283,7 +284,7 @@
 !*
       call lead_pole_fields_4_sph_mhd(node1, iphys, nod_fld1)
 !
-      call nod_fields_send_recv(node1, nod_comm, nod_fld1)
+      call nod_fields_send_recv(node1, mesh1%nod_comm, nod_fld1)
 !
       end subroutine SPH_to_FEM_bridge_special_snap
 !

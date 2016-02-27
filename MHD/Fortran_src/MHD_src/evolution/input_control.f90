@@ -21,6 +21,7 @@
       use m_machine_parameter
       use calypso_mpi
 !
+      use m_mesh_data
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
@@ -49,8 +50,8 @@
       call set_control_4_FEM_MHD
 !
 !  --  load FEM mesh data
-      call input_mesh                                                   &
-     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
+      call input_mesh(my_rank, mesh1%nod_comm,                          &
+     &    node1, ele1, nod_grp1, ele_grp1, sf_grp1,                     &
      &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
       call input_meshes_4_MHD
@@ -77,8 +78,8 @@
       call set_control_4_FEM_MHD
 !
 !  --  load FEM mesh data
-      call input_mesh                                                   &
-     &   (my_rank, nod_comm, node1, ele1, nod_grp1, ele_grp1, sf_grp1,  &
+      call input_mesh(my_rank, mesh1%nod_comm, node1, ele1,             &
+     &    nod_grp1, ele_grp1, sf_grp1,                                  &
      &    surf1%nnod_4_surf, edge1%nnod_4_edge)
 !
       call input_meshes_4_MHD

@@ -15,6 +15,7 @@
       use m_machine_parameter
       use m_t_step_parameter
       use m_t_int_parameter
+      use m_mesh_data
       use m_ucd_data
 !
       use calypso_mpi
@@ -61,13 +62,13 @@
 !
       call init_analyzer_fl(MHD_mesh1, layer_tbl1)
 !
-      call nod_fields_send_recv(node1, nod_comm, nod_fld1)
+      call nod_fields_send_recv(node1, mesh1%nod_comm, nod_fld1)
 !
 !   obtain elemental averages
 !
       call reset_update_flag(nod_fld1)
       if (iflag_debug.eq.1) write(*,*) 'update_fields'
-      call update_fields(nod_comm, node1, ele1, surf1,                  &
+      call update_fields(mesh1%nod_comm, node1, ele1, surf1,            &
      &    MHD_mesh1, sf_grp1, iphys, iphys_ele, fld_ele1,               &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
@@ -93,7 +94,7 @@
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
-     &     (nod_comm, node1, ele1, surf1, sf_grp1, iphys,               &
+     &     (mesh1%nod_comm, node1, ele1, surf1, sf_grp1, iphys,         &
      &      iphys_ele, fld_ele1, MHD_mesh1, layer_tbl1,                 &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
@@ -102,7 +103,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
       call lead_fields_by_FEM                                           &
-     &   (nod_comm, node1, ele1, surf1, edge1, MHD_mesh1,               &
+     &   (mesh1%nod_comm, node1, ele1, surf1, edge1, MHD_mesh1,         &
      &    sf_grp1, iphys, iphys_ele, fld_ele1,                          &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
@@ -125,7 +126,7 @@
       call start_eleps_time(4)
 !
       call output_grd_file_w_org_connect                                &
-     &   (node1, ele1, nod_comm, MHD_mesh1, nod_fld1)
+     &   (node1, ele1, mesh1%nod_comm, MHD_mesh1, nod_fld1)
 !
       call allocate_phys_range(nod_fld1%ntot_phys_viz)
 !       call s_open_boundary_monitor(my_rank, sf_grp1)
@@ -186,7 +187,7 @@
 !     ----- Time integration
 !
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution'
-      call fields_evolution(nod_comm, node1, ele1, surf1, MHD_mesh1,    &
+      call fields_evolution(mesh1%nod_comm, node1, ele1, surf1, MHD_mesh1, &
      &    sf_grp1, sf_grp_nod1, iphys, iphys_ele, fld_ele1,             &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,     &
      &    rhs_tbl1, FEM1_elen, layer_tbl1, m1_lump,                     &
@@ -197,7 +198,7 @@
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
         call s_cal_model_coefficients                                   &
-     &     (nod_comm, node1, ele1, surf1, sf_grp1, iphys,               &
+     &     (mesh1%nod_comm, node1, ele1, surf1, sf_grp1, iphys,         &
      &      iphys_ele, fld_ele1, MHD_mesh1, layer_tbl1,                 &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
@@ -216,7 +217,7 @@
 !
       if(istep_flex_to_max .eq. 0) then
         call lead_fields_by_FEM                                         &
-     &     (nod_comm, node1, ele1, surf1, edge1, MHD_mesh1,             &
+     &     (mesh1%nod_comm, node1, ele1, surf1, edge1, MHD_mesh1,       &
      &      sf_grp1, iphys, iphys_ele, fld_ele1,                        &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,       &
@@ -242,7 +243,7 @@
 !
         if (iflag_debug.eq.1) write(*,*) 'output_MHD_restart_file_ctl'
         call output_MHD_restart_file_ctl                                &
-     &          (node1, nod_comm, iphys, nod_fld1)
+     &     (node1, mesh1%nod_comm, iphys, nod_fld1)
 !
 !     ---- Output voulme field data
 !
@@ -267,7 +268,7 @@
      &       .and. total_max.gt.elapsed_time) then
           call start_eleps_time(4)
           call elspased_MHD_restart_ctl                                 &
-     &       (node1, nod_comm, iphys, nod_fld1)
+     &       (node1, mesh1%nod_comm, iphys, nod_fld1)
           call end_eleps_time(4)
           retval = 0
         else if (istep_rst_end.ne.-1                                    &
@@ -282,7 +283,7 @@
      &       .and. total_max.gt.elapsed_time) then
           call start_eleps_time(4)
           call elspased_MHD_restart_ctl                                 &
-     &        (node1, nod_comm, iphys, nod_fld1)
+     &        (node1, mesh1%nod_comm, iphys, nod_fld1)
           call end_eleps_time(4)
           retval = 0
         else if (i_step_number.ne.-1 .and.                              &

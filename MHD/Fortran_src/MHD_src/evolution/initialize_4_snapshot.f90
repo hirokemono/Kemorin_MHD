@@ -100,7 +100,7 @@
       if (iflag_debug.ge.1 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(n_sym_tensor, node1%numnod)
 !
-      call init_send_recv(nod_comm)
+      call init_send_recv(mesh1%nod_comm)
 !
       if (iflag_debug.eq.1) write(*,*)' const_mesh_informations'
       call const_mesh_informations(my_rank)
@@ -172,7 +172,7 @@
       if (iflag_debug.gt.0)  write(*,*)' make comm. table for fluid'
       call s_const_comm_table_fluid                                     &
      &   (nprocs, MHD_mesh%fluid%istack_ele_fld_smp,                    &
-     &    node1, ele1, nod_comm, DJDS_comm_fl)
+     &    node1, ele1, mesh1%nod_comm, DJDS_comm_fl)
 !
       call deallocate_surface_geom_type(surf1)
       call deallocate_edge_geom_type(edge1)

@@ -110,7 +110,7 @@
       if (iflag_debug.ge.1 ) write(*,*) 'allocate_vector_for_solver'
       call allocate_vector_for_solver(n_sym_tensor, node1%numnod)
 !
-      call init_send_recv(nod_comm)
+      call init_send_recv(mesh1%nod_comm)
 !
 !  -----    construct geometry informations
 !
@@ -194,7 +194,7 @@
       if (iflag_debug.eq.1) write(*,*) 'make comm. table for fluid'
       call s_const_comm_table_fluid                                     &
      &   (nprocs, MHD_mesh%fluid%istack_ele_fld_smp,                    &
-     &    node1, ele1, nod_comm, DJDS_comm_fl)
+     &    node1, ele1, mesh1%nod_comm, DJDS_comm_fl)
 !
 !  -------------------------------
 !
@@ -236,7 +236,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_whole_connectivity'
       call set_MHD_whole_connectivity                                   &
-     &    (nod_comm, node1, ele1, next_tbl1, rhs_tbl1)
+     &    (mesh1%nod_comm, node1, ele1, next_tbl1, rhs_tbl1)
       if (iflag_debug.eq.1) write(*,*) 'set_MHD_layerd_connectivity'
       call set_MHD_layerd_connectivity(node1, ele1, MHD_mesh%fluid)
 !
@@ -278,7 +278,7 @@
 !     ---------------------
 !
       if(solver_iflag(method_4_solver) .eq. iflag_mgcg) then
-        call s_initialize_4_MHD_AMG(nod_comm, node1, ele1)
+        call s_initialize_4_MHD_AMG(mesh1%nod_comm, node1, ele1)
       end if
 !
 !     ---------------------

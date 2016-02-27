@@ -21,6 +21,7 @@
       use m_control_parameter
       use m_t_int_parameter
       use m_t_step_parameter
+      use m_mesh_data
       use m_nod_comm_table
       use m_geometry_data
       use m_group_data
@@ -75,7 +76,7 @@
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'
       call init_visualize_surface                                       &
-     &   (node1, ele1, surf1, edge1, nod_comm, edge_comm,               &
+     &   (node1, ele1, surf1, edge1, mesh1%nod_comm, edge_comm,         &
      &    ele_grp1, sf_grp1, sf_grp_nod1, nod_fld1)
 !
       call calypso_MPI_barrier

@@ -21,7 +21,7 @@
       implicit  none
 !
 !> data structure for node communication table
-      type(communication_table), save :: nod_comm
+!      type(communication_table), save :: nod_comm
 !
 !> data structure for element communication table
       type(communication_table), save :: ele_comm
@@ -33,19 +33,6 @@
 !-----------------------------------------------------------------------
 !
       contains
-!
-!-----------------------------------------------------------------------
-!
-      subroutine const_element_comm_tables_1st
-!
-      use m_geometry_data
-      use const_element_comm_tables
-!
-!
-      call const_element_comm_tbls(node1, ele1, surf1, edge1,           &
-     &    nod_comm, ele_comm, surf_comm, edge_comm)
-!
-      end subroutine const_element_comm_tables_1st
 !
 !-----------------------------------------------------------------------
 !

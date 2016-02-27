@@ -39,6 +39,7 @@
       use m_machine_parameter
       use m_control_parameter
 !
+      use m_mesh_data
       use m_nod_comm_table
       use m_spheric_parameter
       use m_sph_spectr_data
@@ -70,7 +71,7 @@
       call allocate_vector_for_solver(isix, nnod_rtp)
 !
       if(iflag_debug.gt.0) write(*,*)' init_send_recv'
-      call init_send_recv(nod_comm)
+      call init_send_recv(mesh1%nod_comm)
 !
       if ( iflag_debug.gt.0 ) write(*,*) 'init_rms_4_sph_spectr'
       call init_rms_4_sph_spectr
