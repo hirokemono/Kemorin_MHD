@@ -32,7 +32,6 @@
       use m_iccg_parameter
       use m_t_step_parameter
 !
-      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
       use m_ele_material_property
@@ -130,7 +129,7 @@
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
       call const_element_comm_tbls(mesh%node, mesh%ele, surf1, edge1,   &
-     &    mesh%nod_comm, ele_mesh%ele_comm, surf_comm, edge_comm)
+     &    mesh%nod_comm, ele_mesh%ele_comm, ele_mesh%surf_comm, ele_mesh%edge_comm)
 !
       if(i_debug .eq. iflag_full_msg) then
         call check_whole_num_of_elements(mesh%ele)

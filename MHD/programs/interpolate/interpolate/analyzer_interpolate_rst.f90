@@ -48,7 +48,6 @@
       subroutine initialize_itp_rst
 !
       use m_ctl_params_4_gen_table
-      use m_nod_comm_table
 !
       use input_control_interpolate
       use const_mesh_information

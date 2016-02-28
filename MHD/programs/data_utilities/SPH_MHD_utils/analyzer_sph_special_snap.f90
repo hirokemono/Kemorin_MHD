@@ -36,7 +36,6 @@
       use m_t_int_parameter
       use m_t_step_parameter
       use m_mesh_data
-      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
 !
@@ -89,7 +88,7 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface'
           call start_eleps_time(12)
           call visualize_surface(istep_psf, istep_iso,                  &
-     &        mesh1, edge1, edge_comm, nod_fld1)
+     &        mesh1, edge1, ele_mesh1%edge_comm, nod_fld1)
           call end_eleps_time(12)
         end if
         call end_eleps_time(1)
@@ -252,7 +251,6 @@
       subroutine SPH_to_FEM_bridge_special_snap
 !
       use m_mesh_data
-      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
       use output_viz_file_control

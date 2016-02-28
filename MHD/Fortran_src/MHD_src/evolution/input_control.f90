@@ -21,7 +21,6 @@
       use m_machine_parameter
       use calypso_mpi
 !
-      use m_nod_comm_table
       use m_geometry_data
 !
       use t_mesh_data

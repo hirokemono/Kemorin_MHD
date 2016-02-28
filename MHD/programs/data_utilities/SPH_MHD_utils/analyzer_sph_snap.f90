@@ -22,7 +22,6 @@
       use m_t_int_parameter
       use m_t_step_parameter
       use m_mesh_data
-      use m_nod_comm_table
       use m_geometry_data
       use m_node_phys_data
 !
@@ -71,7 +70,7 @@
       call SPH_init_sph_snap
 !        Initialize visualization
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize(mesh1, group1, surf1, edge1, edge_comm,       &
+      call init_visualize(mesh1, group1, surf1, edge1, ele_mesh1%edge_comm,       &
      &    nod_fld1)
 !
       call calypso_MPI_barrier
@@ -133,7 +132,7 @@
           call start_eleps_time(12)
           call visualize_all                                            &
      &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
-     &        mesh1, group1, surf1, edge1, edge_comm, nod_fld1,         &
+     &        mesh1, group1, surf1, edge1, ele_mesh1%edge_comm, nod_fld1,         &
      &        next_tbl1%neib_ele, jac1_3d_q)
           call end_eleps_time(12)
         end if

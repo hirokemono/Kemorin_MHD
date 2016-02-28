@@ -26,7 +26,7 @@
 !
 !>     Structure for element data (communication)
       type(element_geometry), save :: ele_mesh1
-!ele_mesh1%ele_comm
+!ele_mesh1%surf
 !
 ! ----------------------------------------------------------------------
 !
@@ -37,7 +37,6 @@
       subroutine deallocate_mesh_infomations
 !
       use t_mesh_data
-      use m_nod_comm_table
       use m_geometry_data
 !
 !
@@ -54,7 +53,6 @@
       subroutine deallocate_nod_ele_infos
 !
       use t_mesh_data
-      use m_nod_comm_table
       use m_geometry_data
 !
 !
@@ -69,7 +67,6 @@
       subroutine dealloc_ele_sf_eg_comm_tables
 !
       use m_geometry_data
-      use m_nod_comm_table
 !
 !
       call dealloc_numnod_stack(mesh1%node)
@@ -78,8 +75,8 @@
       call dealloc_numedge_stack(edge1)
 !
       call deallocate_type_comm_tbl(ele_mesh1%ele_comm)
-      call deallocate_type_comm_tbl(surf_comm)
-      call deallocate_type_comm_tbl(edge_comm)
+      call deallocate_type_comm_tbl(ele_mesh1%surf_comm)
+      call deallocate_type_comm_tbl(ele_mesh1%edge_comm)
 !
       end subroutine dealloc_ele_sf_eg_comm_tables
 !
