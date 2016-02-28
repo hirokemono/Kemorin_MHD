@@ -47,11 +47,12 @@
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'input_mesh'
-      call input_mesh_data_type(my_rank, femmesh,                       &
+      call input_mesh(my_rank, femmesh%mesh, femmesh%group,             &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call s_const_mesh_types_info(my_rank, femmesh, ele_mesh)
+      call const_mesh_infos                                             &
+     &   (my_rank, femmesh%mesh, femmesh%group, ele_mesh)
 !
        end subroutine initilize_bc_temp
 !

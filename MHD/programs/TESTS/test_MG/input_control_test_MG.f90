@@ -54,9 +54,7 @@
 !
       iflag_mesh_file_fmt = ifile_type
       if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh                                                   &
-     &   (my_rank, mesh%nod_comm, mesh%node, mesh%ele,                  &
-     &    group%nod_grp, group%ele_grp, group%surf_grp,                 &
+      call input_mesh(my_rank, mesh, group,                             &
      &    surf%nnod_4_surf, edge%nnod_4_edge)
 !
 !  --  read geometry data for MG

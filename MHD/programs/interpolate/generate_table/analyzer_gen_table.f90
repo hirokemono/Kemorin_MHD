@@ -67,11 +67,12 @@
       mesh_file_head = dest_mesh_head
       iflag_mesh_file_fmt = ifmt_itp_mesh_file
       if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh_data_type(my_rank, org_femmesh,                   &
+      call input_mesh(my_rank, org_femmesh%mesh, org_femmesh%group,     &
      &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call s_const_mesh_types_info(my_rank, org_femmesh, org_ele_mesh)
+      call const_mesh_infos                                             &
+     &   (my_rank, org_femmesh%mesh, org_femmesh%group, org_ele_mesh)
 !
 !     ----- construct mesh informations for original mesh
 !

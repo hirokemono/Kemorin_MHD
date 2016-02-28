@@ -40,7 +40,6 @@
 !
       subroutine FEM_initialize_w_viz(mesh, group, ele_mesh)
 !
-      use m_geometry_data
       use m_t_step_parameter
       use m_fem_gauss_int_coefs
       use m_jacobians

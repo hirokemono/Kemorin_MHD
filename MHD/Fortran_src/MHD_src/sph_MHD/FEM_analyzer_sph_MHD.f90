@@ -48,7 +48,6 @@
 !
       subroutine FEM_initialize_sph_MHD(mesh, group, ele_mesh)
 !
-      use m_geometry_data
       use m_array_for_send_recv
       use m_t_step_parameter
       use m_node_phys_data
@@ -82,18 +81,13 @@
 !  -----    construct geometry informations
 !
       if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos                                             &
-     &   (my_rank, mesh%node, mesh%ele, surf1, edge1,                   &
-     &    group%nod_grp, group%ele_grp, group%surf_grp,                 &
-     &    group%tbls_ele_grp, group%tbls_surf_grp, group%surf_nod_grp)
+      call const_mesh_infos(my_rank, mesh, group, ele_mesh)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
-      call const_element_comm_tbls                                      &
-     &   (mesh%node, mesh%ele, surf1, edge1, mesh%nod_comm,             &
-     &    ele_mesh%ele_comm, ele_mesh%surf_comm, ele_mesh%edge_comm)
+      call const_element_comm_tbls(mesh, ele_mesh)
 !
-      call deallocate_surface_geom_type(surf1)
-      call deallocate_edge_geom_type(edge1)
+      call deallocate_surface_geom_type(ele_mesh%surf)
+      call deallocate_edge_geom_type(ele_mesh%edge)
 !
 !  -------------------------------
 !
@@ -150,7 +144,6 @@
 !
       subroutine SPH_to_FEM_bridge_MHD(mesh)
 !
-      use m_geometry_data
       use m_node_phys_data
 !
       use t_mesh_data

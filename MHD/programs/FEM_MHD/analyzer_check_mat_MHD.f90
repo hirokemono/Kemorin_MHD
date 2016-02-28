@@ -29,7 +29,7 @@
 !
         write(*,*) 'Simulation start: PE. ', my_rank
 !
-      call input_control_4_MHD(mesh1, group1)
+      call input_control_4_MHD(mesh1, group1, ele_mesh1)
 !
       call FEM_check_MHD_mat
 !

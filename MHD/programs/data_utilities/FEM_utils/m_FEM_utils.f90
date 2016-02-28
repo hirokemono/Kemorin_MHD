@@ -60,10 +60,9 @@
       use const_mesh_information
 !
 !
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh_data_type'
-      call input_mesh_data_type                                         &
-     &   (my_rank, femmesh_FUTIL, elemesh_FUTIL%surf%nnod_4_surf,       &
-     &    elemesh_FUTIL%edge%nnod_4_edge)
+      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
+      call input_mesh(my_rank, femmesh_FUTIL%mesh, femmesh_FUTIL%group,  &
+     &   elemesh_FUTIL%surf%nnod_4_surf, elemesh_FUTIL%edge%nnod_4_edge)
 !
 !     --------------------- 
 !

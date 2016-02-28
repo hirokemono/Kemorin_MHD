@@ -22,7 +22,6 @@
       use m_t_int_parameter
       use m_t_step_parameter
       use m_mesh_data
-      use m_geometry_data
       use m_node_phys_data
 !
       use FEM_analyzer_sph_MHD
@@ -56,7 +55,7 @@
       call read_control_4_sph_MHD_w_psf
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
-      call input_control_SPH_mesh(mesh1, group1)
+      call input_control_SPH_mesh(mesh1, group1, ele_mesh1)
       call end_eleps_time(4)
 !
 !        Initialize FEM mesh data for field data IO
@@ -73,8 +72,7 @@
 !        Initialize visualization
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize_surface'
-      call init_visualize_surface(mesh1, group1, surf1,                 &
-     &    edge1, ele_mesh1%edge_comm, nod_fld1)
+      call init_visualize_surface(mesh1, group1, ele_mesh1, nod_fld1)
 !
       call calypso_MPI_barrier
       call end_eleps_time(2)
@@ -130,7 +128,7 @@
           if (iflag_debug.eq.1) write(*,*) 'visualize_surface', my_rank
           call start_eleps_time(12)
           call visualize_surface(istep_psf, istep_iso,                  &
-     &        mesh1, edge1, ele_mesh1%edge_comm, nod_fld1)
+     &        mesh1, ele_mesh1, nod_fld1)
           call end_eleps_time(12)
         end if
 !

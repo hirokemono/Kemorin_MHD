@@ -77,11 +77,12 @@
 !
 !       load mesh informations
       if (iflag_debug.gt.0) write(*,*) 'input_mesh', mesh_file_head
-      call input_mesh_data_type(my_rank, femmesh_VIZ,                   &
+      call input_mesh(my_rank, femmesh_VIZ%mesh, femmesh_VIZ%group,     &
      &    elemesh_VIZ%surf%nnod_4_surf, elemesh_VIZ%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call s_const_mesh_types_info(my_rank, femmesh_VIZ, elemesh_VIZ)
+      call const_mesh_infos                                             &
+     &   (my_rank, femmesh_VIZ%mesh, femmesh_VIZ%group, elemesh_VIZ)
 !
       call allocate_vector_for_solver                                   &
      &   (isix, femmesh_VIZ%mesh%node%numnod)
@@ -90,7 +91,7 @@
       call init_send_recv(femmesh_VIZ%mesh%nod_comm)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
-      call const_ele_comm_tbl_global_id(femmesh_VIZ%mesh, elemesh_VIZ)
+      call const_element_comm_tbls(femmesh_VIZ%mesh, elemesh_VIZ)
 !
 !     ---------------------
 !

@@ -50,11 +50,11 @@
 !
 !     ---------------------
 !
-      if (iflag_debug.gt.0) write(*,*) 'input_mesh_data_type'
-      call input_mesh_data_type(my_rank, mesh_sph,                      &
-     &                          ele_mesh_sph%surf%nnod_4_surf,          &
-     &                          ele_mesh_sph%edge%nnod_4_edge)
-      call s_const_mesh_types_info(my_rank, mesh_sph, ele_mesh_sph)
+      if (iflag_debug.gt.0) write(*,*) 'input_mesh'
+      call input_mesh(my_rank, mesh_sph%mesh, mesh_sph%group,           &
+     &    ele_mesh_sph%surf%nnod_4_surf, ele_mesh_sph%edge%nnod_4_edge)
+      call const_mesh_infos                                             &
+     &   (my_rank, mesh_sph%mesh, mesh_sph%group, ele_mesh_sph)
 !
       call alloc_phys_name_type(sph_fld)
       call alloc_phys_data_type(mesh_sph%node%numnod, sph_fld)
@@ -79,7 +79,7 @@
 !
 !     ---------------------
 !
-      call const_ele_comm_tbl_global_id(mesh_sph, ele_mesh_sph)
+      call const_element_comm_tbls(mesh_sph, ele_mesh_sph)
 !
       end subroutine induction_SPH_initialize
 !

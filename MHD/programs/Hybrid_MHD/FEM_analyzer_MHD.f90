@@ -32,7 +32,6 @@
 !
       use m_mesh_data
       use m_geometry_data_MHD
-      use m_geometry_data
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
@@ -68,10 +67,10 @@
       call reset_update_flag(nod_fld1)
       if (iflag_debug.eq.1) write(*,*) 'update_fields'
       call update_fields                                                &
-     &   (mesh1, group1, surf1, MHD_mesh1, iphys, iphys_ele, fld_ele1,  &
-     &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
-     &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
-     &    f1_l, f1_nl, nod_fld1)
+     &   (mesh1, group1, ele_mesh1, MHD_mesh1, iphys,                   &
+     &    iphys_ele, fld_ele1, jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q,  &
+     &    rhs_tbl1, FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk,        &
+     &    fem1_wk, f1_l, f1_nl, nod_fld1)
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 'copy_model_coef_2_previous'
@@ -84,7 +83,7 @@
       call set_data_4_const_matrices                                    &
      &   (mesh1, MHD_mesh1, rhs_tbl1, mat_tbl_q1)
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_matrices'
-      call set_aiccg_matrices(mesh1, group1, surf1, MHD_mesh1,          &
+      call set_aiccg_matrices(mesh1, group1, ele_mesh1, MHD_mesh1,      &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    mat_tbl_q1, mhd_fem1_wk)
 !
@@ -92,7 +91,7 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients(mesh1, group1, surf1, iphys,      &
+        call s_cal_model_coefficients(mesh1, group1, ele_mesh1, iphys,  &
      &      iphys_ele, fld_ele1, MHD_mesh1, layer_tbl1,                 &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
@@ -100,7 +99,7 @@
       end if
 !
       if (iflag_debug.eq.1) write(*,*) 'lead_fields_by_FEM'
-      call lead_fields_by_FEM(mesh1, group1, surf1, edge1,              &
+      call lead_fields_by_FEM(mesh1, group1, ele_mesh1,                 &
      &    MHD_mesh1, iphys, iphys_ele, fld_ele1,                        &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,             &
      &    FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,         &
@@ -140,7 +139,6 @@
       use m_control_parameter
 !
       use m_geometry_data_MHD
-      use m_geometry_data
       use m_node_phys_data
       use m_element_phys_data
       use m_jacobians
@@ -183,7 +181,7 @@
       call set_new_time_and_step(mesh1%node, iphys, nod_fld1)
 !
       if (iflag_debug.eq.1) write(*,*) 'fields_evolution_4_FEM_SPH'
-      call fields_evolution_4_FEM_SPH(mesh1, group1, surf1,             &
+      call fields_evolution_4_FEM_SPH(mesh1, group1, ele_mesh1,         &
      &    MHD_mesh1%fluid, iphys, iphys_ele, fld_ele1,                  &
      &    jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, jac1_sf_grp_2d_l,     &
      &    rhs_tbl1, FEM1_elen, layer_tbl1, mhd_fem1_wk, fem1_wk,        &
@@ -193,7 +191,7 @@
 !
       if (iflag_dynamic_SGS .ne. id_SGS_DYNAMIC_OFF) then
         if (iflag_debug.eq.1) write(*,*) 's_cal_model_coefficients'
-        call s_cal_model_coefficients(mesh1, group1, surf1, iphys,      &
+        call s_cal_model_coefficients(mesh1, group1, ele_mesh1, iphys,  &
      &      iphys_ele, fld_ele1, MHD_mesh1, layer_tbl1,                 &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, m1_lump, mhd_fem1_wk, fem1_wk,                   &
@@ -212,7 +210,7 @@
 !     ========  Data output
 !
       if(istep_flex_to_max .eq. 0) then
-        call lead_fields_by_FEM(mesh1, group1, surf1, edge1,            &
+        call lead_fields_by_FEM(mesh1, group1, ele_mesh1,               &
      &      MHD_mesh1, iphys, iphys_ele, fld_ele1,                      &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      FEM1_elen, layer_tbl1, m1_lump, mhd_fem1_wk, fem1_wk,       &
@@ -299,7 +297,7 @@
 !
       if ( retval .ne. 0 ) then
         if (iflag_debug.eq.1) write(*,*) 'update_matrices'
-        call update_matrices(mesh1, group1, surf1, MHD_mesh1,           &
+        call update_matrices(mesh1, group1, ele_mesh1, MHD_mesh1,       &
      &      jac1_3d_q, jac1_3d_l, jac1_sf_grp_2d_q, rhs_tbl1,           &
      &      mat_tbl_q1, mhd_fem1_wk)
       end if

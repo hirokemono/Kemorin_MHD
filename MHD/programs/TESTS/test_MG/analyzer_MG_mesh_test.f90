@@ -22,8 +22,7 @@
 !
       type(mesh_geometry), save :: mesh
       type(mesh_groups), save :: group
-      type(surface_data), save :: surf
-      type(edge_data), save :: edge
+      type(element_geometry), save :: ele_mesh
 !
 ! ----------------------------------------------------------------------
 !
@@ -73,19 +72,18 @@
 !     --------------------- 
 !
       if (iflag_debug.gt.0) write(*,*) 's_input_control_test_MG'
-      call s_input_control_test_MG(mesh, group, surf, edge)
+      call s_input_control_test_MG                                      &
+     &   (mesh, group, ele_mesh%surf, ele_mesh%edge)
 !
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, mesh%node, mesh%ele, surf, edge,   &
-     &    group%nod_grp,  group%ele_grp, group%surf_grp,                &
-     &    group%tbls_ele_grp, group%tbls_surf_grp, group%surf_nod_grp)
+      call const_mesh_infos(my_rank, mesh, group, ele_mesh)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'pick_surface_group_geometry'
-      call pick_surface_group_geometry(surf,                            &
+      call pick_surface_group_geometry(ele_mesh%surf,                   &
      &   group%surf_grp, group%tbls_surf_grp, group%surf_grp_geom)
 !
 !  -------------------------------
@@ -100,27 +98,27 @@
 !  -------------------------------
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-      call const_normal_vector(mesh%node, surf)
+      call const_normal_vector(mesh%node, ele_mesh%surf)
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector_spherical'
-      call s_cal_normal_vector_spherical(surf)
+      call s_cal_normal_vector_spherical(ele_mesh%surf)
       if (iflag_debug.gt.0) write(*,*) 's_cal_normal_vector_cylindrical'
-      call s_cal_normal_vector_cylindrical(surf)
+      call s_cal_normal_vector_cylindrical(ele_mesh%surf)
 !
 !  -------------------------------
 !
       if (iflag_debug.gt.0) write(*,*) 'const_edge_vector'
-      call const_edge_vector(mesh%node, edge)
+      call const_edge_vector(mesh%node, ele_mesh%edge)
 !
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_spherical'
-      call s_cal_edge_vector_spherical(edge)
+      call s_cal_edge_vector_spherical(ele_mesh%edge)
       if (iflag_debug.gt.0) write(*,*) 's_cal_edge_vector_cylindrical'
-      call s_cal_edge_vector_cylindrical(edge)
+      call s_cal_edge_vector_cylindrical(ele_mesh%edge)
 !
 !  -------------------------------
 !
       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
-      call pick_normal_of_surf_group(surf,                              &
+      call pick_normal_of_surf_group(ele_mesh%surf,                     &
      &    group%surf_grp, group%tbls_surf_grp, group%surf_grp_geom)
 !
       if (iflag_debug.eq.1)  write(*,*) 's_sum_normal_4_surf_group'
@@ -185,24 +183,24 @@
 !
       mesh_surf_file_head = mesh_def_surf_head
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO'
-      call copy_surf_connect_to_IO(surf, mesh%ele%numele)
-      call copy_surf_geometry_to_IO(surf)
+      call copy_surf_connect_to_IO(ele_mesh%surf, mesh%ele%numele)
+      call copy_surf_geometry_to_IO(ele_mesh%surf)
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_output_surface_file'
       call sel_output_surface_file(my_rank)
 !
       write(mesh_surf_file_head,'(a,a4)') mesh_def_surf_head, '_sph'
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO_sph'
-      call copy_surf_connect_to_IO(surf, mesh%ele%numele)
-      call copy_surf_geometry_to_IO_sph(surf)
+      call copy_surf_connect_to_IO(ele_mesh%surf, mesh%ele%numele)
+      call copy_surf_geometry_to_IO_sph(ele_mesh%surf)
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_output_surface_sph_file'
       call sel_output_surface_sph_file(my_rank)
 !
       write(mesh_surf_file_head,'(a,a4)') mesh_def_surf_head, '_cyl'
       if (iflag_debug.gt.0) write(*,*) 'copy_surf_geometry_to_IO_cyl'
-      call copy_surf_connect_to_IO(surf, mesh%ele%numele)
-      call copy_surf_geometry_to_IO_cyl(surf)
+      call copy_surf_connect_to_IO(ele_mesh%surf, mesh%ele%numele)
+      call copy_surf_geometry_to_IO_cyl(ele_mesh%surf)
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_output_surface_cyl_file'
       call sel_output_surface_cyl_file(my_rank)
@@ -214,8 +212,8 @@
       mesh_edge_file_head = mesh_def_edge_head
       if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO'
       call copy_edge_connect_to_IO                                      &
-     &   (edge, mesh%ele%numele, surf%numsurf)
-      call copy_edge_geometry_to_IO(edge)
+     &   (ele_mesh%edge, mesh%ele%numele, ele_mesh%surf%numsurf)
+      call copy_edge_geometry_to_IO(ele_mesh%edge)
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_output_edge_geometries'
       call sel_output_edge_geometries(my_rank)
@@ -223,8 +221,8 @@
       write(mesh_edge_file_head,'(a,a4)') mesh_def_edge_head, '_sph'
       if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO_sph'
       call copy_edge_connect_to_IO                                      &
-     &   (edge, mesh%ele%numele, surf%numsurf)
-      call copy_edge_geometry_to_IO_sph(edge)
+     &   (ele_mesh%edge, mesh%ele%numele, ele_mesh%surf%numsurf)
+      call copy_edge_geometry_to_IO_sph(ele_mesh%edge)
 !
       if (iflag_debug.gt.0) write(*,*) 'sel_output_edge_geometries_sph'
       call sel_output_edge_geometries_sph(my_rank)
@@ -232,8 +230,8 @@
       write(mesh_edge_file_head,'(a,a4)') mesh_def_edge_head, '_cyl'
       if (iflag_debug.gt.0) write(*,*) 'copy_edge_geometry_to_IO_cyl'
       call copy_edge_connect_to_IO                                      &
-     &   (edge, mesh%ele%numele, surf%numsurf)
-      call copy_edge_geometry_to_IO_cyl(edge)
+     &   (ele_mesh%edge, mesh%ele%numele, ele_mesh%surf%numsurf)
+      call copy_edge_geometry_to_IO_cyl(ele_mesh%edge)
       if (iflag_debug.gt.0) write(*,*) 'sel_output_edge_geometries_cyl'
       call sel_output_edge_geometries_cyl(my_rank)
 !

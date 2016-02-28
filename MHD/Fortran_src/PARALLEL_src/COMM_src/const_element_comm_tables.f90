@@ -7,21 +7,10 @@
 !> @brief Belonged element list for each node
 !!
 !!@verbatim
-!!      subroutine const_ele_comm_tbl_global_id(mesh, ele_mesh)
+!!      subroutine const_element_comm_tbls(mesh, ele_mesh)
 !!      subroutine dealloc_ele_comm_tbls_gl_nele(mesh, ele_mesh)
 !!        type(mesh_geometry), intent(inout) ::    mesh
 !!        type(element_geometry), intent(inout) :: ele_mesh
-!!
-!!      subroutine const_element_comm_tbls(node, ele, surf, edge,       &
-!!     &          nod_comm, ele_comm, surf_comm, edge_comm)
-!!        type(node_data), intent(inout) :: node
-!!        type(element_data), intent(inout) :: ele
-!!        type(surface_data), intent(inout) :: surf
-!!        type(edge_data), intent(inout) :: edge
-!!        type(communication_table), intent(inout) :: nod_comm
-!!        type(communication_table), intent(inout) :: ele_comm
-!!        type(communication_table), intent(inout) :: surf_comm
-!!        type(communication_table), intent(inout) :: edge_comm
 !!
 !!      subroutine const_global_element_id(ele)
 !!      subroutine const_global_surface_id(surf, sf_comm)
@@ -59,18 +48,33 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_ele_comm_tbl_global_id(mesh, ele_mesh)
+      subroutine const_element_comm_tbls(mesh, ele_mesh)
 !
-      type(mesh_geometry), intent(inout) ::    mesh
+      use set_ele_id_4_node_type
+!
+      type(mesh_geometry), intent(inout) :: mesh
       type(element_geometry), intent(inout) :: ele_mesh
 !
 !
-      call const_element_comm_tbls                                      &
-     &   (mesh%node, mesh%ele, ele_mesh%surf, ele_mesh%edge,            &
-     &    mesh%nod_comm, ele_mesh%ele_comm,                             &
-     &    ele_mesh%surf_comm, ele_mesh%edge_comm)
+      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
+      call const_global_numnod_list(mesh%node)
 !
-      end subroutine const_ele_comm_tbl_global_id
+      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
+      call const_ele_comm_tbl(mesh%node, mesh%ele, mesh%nod_comm,       &
+     &    blng_tbl, ele_mesh%ele_comm)
+      call const_global_element_id(mesh%ele, ele_mesh%ele_comm)
+!
+      if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
+      call const_surf_comm_table(mesh%node, mesh%nod_comm,              &
+     &    ele_mesh%surf, blng_tbl, ele_mesh%surf_comm)
+      call const_global_surface_id(ele_mesh%surf, ele_mesh%surf_comm)
+!
+      if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
+      call const_edge_comm_table(mesh%node, mesh%nod_comm,              &
+     &    ele_mesh%edge, blng_tbl, ele_mesh%edge_comm)
+      call const_global_edge_id(ele_mesh%edge, ele_mesh%edge_comm)
+!
+      end subroutine const_element_comm_tbls
 !
 !-----------------------------------------------------------------------
 !
@@ -90,45 +94,6 @@
       call dealloc_numedge_stack(ele_mesh%edge)
 !
       end subroutine dealloc_ele_comm_tbls_gl_nele
-!
-!-----------------------------------------------------------------------
-!-----------------------------------------------------------------------
-!
-      subroutine const_element_comm_tbls(node, ele, surf, edge,         &
-     &          nod_comm, ele_comm, surf_comm, edge_comm)
-!
-      use set_ele_id_4_node_type
-!
-      type(node_data), intent(inout) :: node
-      type(element_data), intent(inout) :: ele
-      type(surface_data), intent(inout) :: surf
-      type(edge_data), intent(inout) :: edge
-!
-      type(communication_table), intent(inout) :: nod_comm
-      type(communication_table), intent(inout) :: ele_comm
-      type(communication_table), intent(inout) :: surf_comm
-      type(communication_table), intent(inout) :: edge_comm
-!
-!
-      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
-      call const_global_numnod_list(node)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_ele_comm_tbl'
-      call const_ele_comm_tbl                                           &
-     &   (node, ele, nod_comm, blng_tbl, ele_comm)
-      call const_global_element_id(ele, ele_comm)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_surf_comm_table'
-      call const_surf_comm_table                                       &
-     &   (node, nod_comm, surf, blng_tbl, surf_comm)
-      call const_global_surface_id(surf, surf_comm)
-!
-      if(iflag_debug.gt.0) write(*,*)' const_edge_comm_table'
-      call const_edge_comm_table                                        &
-     &   (node, nod_comm, edge, blng_tbl, edge_comm)
-      call const_global_edge_id(edge, edge_comm)
-!
-      end subroutine const_element_comm_tbls
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

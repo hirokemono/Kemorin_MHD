@@ -6,10 +6,6 @@
 !
 !> @brief Structure of edge geometry data
 !!
-!> Substitution of
-!> @n      (module m_geometry_data)
-!> @n      (module m_edgerime_geometry_data)
-!!
 !!@verbatim
 !!      subroutine alloc_numedge_stack(nprocs, edge)
 !!      subroutine allocate_inod_in_edge(edge)

@@ -86,13 +86,15 @@
           call set_layers_type_4_MHD(MG_mesh(i_level)%mesh,             &
      &      MG_mesh(i_level)%group,  MG_MHD_mesh(i_level) )
           if(iflag_debug .gt. 0) write(*,*)                             &
-     &            's_const_mesh_types_info', i_level
-          call s_const_mesh_types_info                                  &
-     &       (my_rank, MG_mesh(i_level), MG_ele_mesh(i_level))
+     &            'const_mesh_infos', i_level
+          call const_mesh_infos                                         &
+     &       (my_rank, MG_mesh(i_level)%mesh, MG_mesh(i_level)%group,   &
+     &        MG_ele_mesh(i_level))
         else
           call set_empty_layers_type_4_MHD(MG_MHD_mesh(i_level) )
-          call empty_mesh_types_info                                    &
-     &       (MG_mesh(i_level), MG_ele_mesh(i_level))
+          call empty_mesh_info                                          &
+     &       (MG_mesh(i_level)%mesh, MG_mesh(i_level)%group,            &
+     &        MG_ele_mesh(i_level))
         end if
 !
         call deallocate_edge_geom_type(MG_ele_mesh(i_level)%edge)
@@ -129,7 +131,7 @@
         call s_const_comm_tbl_type_fluid(MG_mpi(i_level),               &
      &      MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level) )
 !
-        call const_ele_comm_tbl_global_id                               &
+        call const_element_comm_tbls                                    &
      &     (MG_mesh(i_level)%mesh, MG_ele_mesh(i_level))
       end do
 !

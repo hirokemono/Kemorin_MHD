@@ -91,7 +91,6 @@
       subroutine SPH_to_FEM_bridge_zm_snap
 !
       use m_mesh_data
-      use m_geometry_data
       use m_node_phys_data
       use output_viz_file_control
       use lead_pole_data_4_sph_mhd

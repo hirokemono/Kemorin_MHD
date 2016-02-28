@@ -30,8 +30,7 @@
 !
       type(mesh_geometry), save :: org_mesh
       type(mesh_groups), save :: org_group
-      type(surface_data), save :: org_surf
-      type(edge_data), save :: org_edge
+      type(element_geometry), save :: org_ele_mesh
 !
       type(mesh_data), save :: partitioned_fem
       type(near_mesh), save :: included_ele
@@ -47,44 +46,34 @@
 !
       iflag_mesh_file_fmt = ifmt_single_mesh_fmt
       mesh_file_head = global_mesh_head
-      call input_mesh                                                   &
-     &   (my_rank, org_mesh%nod_comm, org_mesh%node, org_mesh%ele,      &
-     &    org_group%nod_grp, org_group%ele_grp, org_group%surf_grp,     &
-     &    org_surf%nnod_4_surf, org_edge%nnod_4_edge)
+      call input_mesh(my_rank, org_mesh, org_group,                     &
+     &    org_ele_mesh%surf%nnod_4_surf, org_ele_mesh%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank,                                    &
-     &    org_mesh%node, org_mesh%ele, org_surf, org_edge,              &
-     &    org_group%nod_grp, org_group%ele_grp, org_group%surf_grp,     &
-     &    org_group%tbls_ele_grp, org_group%tbls_surf_grp,              &
-     &    org_group%surf_nod_grp)
+      call const_mesh_infos(my_rank, org_mesh, org_group, org_ele_mesh)
 !
 !  ========= Routines for partitioner ==============
 !
-      call initialize_partitioner                                       &
-     &   (org_mesh%nod_comm, org_mesh%node, org_mesh%ele,               &
-     &    org_group%nod_grp, org_group%ele_grp, org_group%surf_grp)
+      call initialize_partitioner(org_mesh, org_group)
       call grouping_for_partitioner                                     &
-     &   (org_mesh%node, org_mesh%ele, org_edge,                        &
+     &   (org_mesh%node, org_mesh%ele, org_ele_mesh%edge,               &
      &    org_group%nod_grp, org_group%ele_grp, org_group%tbls_ele_grp)
 !
 !C===
 !C-- create subdomain mesh
       call PROC_LOCAL_MESH                                              &
-     &   (org_mesh%node, org_mesh%ele, org_edge, org_group,             &
+     &   (org_mesh%node, org_mesh%ele, org_ele_mesh%edge, org_group,    &
      &    partitioned_fem, included_ele)
 !C
 !C-- Finalize
       write(*,*) 'dealloc_nod_ele_infos'
-      call dealloc_nod_ele_infos(org_mesh%nod_comm,                     &
-     &    org_mesh%node, org_mesh%ele, org_surf, org_edge,              &
-     &    org_group%nod_grp, org_group%ele_grp, org_group%surf_grp)
+      call dealloc_nod_ele_infos(org_mesh, org_group, org_ele_mesh)
 !
 !  ========= Construct subdomain information for viewer ==============
 !
       write(*,*) 'choose_surface_mesh'
       call choose_surface_mesh(local_file_header,                       &
-     &    org_mesh%ele, org_surf, org_edge)
+     &    org_mesh%ele, org_ele_mesh%surf, org_ele_mesh%edge)
 !
       stop ' * Partitioning finished'
 !

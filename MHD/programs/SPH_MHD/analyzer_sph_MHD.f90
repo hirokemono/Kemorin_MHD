@@ -22,8 +22,6 @@
       use m_t_int_parameter
       use m_t_step_parameter
       use m_mesh_data
-      use m_geometry_data
-      use m_node_phys_data
       use m_node_phys_data
 !
       use SPH_analyzer_MHD
@@ -57,7 +55,7 @@
       call read_control_4_sph_MHD
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
-      call input_control_SPH_mesh(mesh1, group1)
+      call input_control_SPH_mesh(mesh1, group1, ele_mesh1)
       call end_eleps_time(4)
 !
 !    IO elapsed end
@@ -78,8 +76,7 @@
 !        Initialize visualization
 !
       if(iflag_debug .gt. 0) write(*,*) 'init_visualize'
-      call init_visualize(mesh1, group1, surf1, edge1, ele_mesh1%edge_comm,       &
-     &    nod_fld1)
+      call init_visualize(mesh1, group1, ele_mesh1, nod_fld1)
 !
       call calypso_MPI_barrier
 !
@@ -141,7 +138,7 @@
           call start_eleps_time(12)
           call visualize_all                                            &
      &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
-     &        mesh1, group1, surf1, edge1, ele_mesh1%edge_comm, nod_fld1,         &
+     &        mesh1, group1, ele_mesh1, nod_fld1,                       &
      &        next_tbl1%neib_ele, jac1_3d_q)
           call end_eleps_time(12)
         end if

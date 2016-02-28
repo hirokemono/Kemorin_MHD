@@ -14,7 +14,6 @@
       use m_work_time
 !
       use m_mesh_data
-      use m_geometry_data
       use m_node_phys_data
 !
       use FEM_analyzer_MHD
@@ -53,14 +52,13 @@
       call start_eleps_time(1)
 !
       call start_eleps_time(4)
-      call input_control_4_MHD(mesh1, group1)
+      call input_control_4_MHD(mesh1, group1, ele_mesh1)
       call end_eleps_time(4)
 !
       call start_eleps_time(2)
       call FEM_initialize_MHD
 !
-      call init_visualize_surface(mesh1, group1, surf1,                 &
-     &    edge1, ele_mesh1%edge_comm, nod_fld1)
+      call init_visualize_surface(mesh1, group1, ele_mesh1, nod_fld1)
       call end_eleps_time(2)
 !
       end subroutine initialization_MHD
@@ -89,7 +87,7 @@
         if (visval.eq.0) then
           call start_eleps_time(4)
           call visualize_surface(istep_psf, istep_iso,                  &
-     &        mesh1, edge1, ele_mesh1%edge_comm, nod_fld1)
+     &        mesh1, ele_mesh1, nod_fld1)
           call end_eleps_time(4)
         end if
 !

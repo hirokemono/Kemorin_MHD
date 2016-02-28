@@ -78,10 +78,11 @@
       call init_send_recv(femmesh_STR%mesh%nod_comm)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call s_const_mesh_types_info(my_rank, femmesh_STR, elemesh_STR)
+      call const_mesh_infos                                             &
+     &   (my_rank, femmesh_STR%mesh, femmesh_STR%group, elemesh_STR)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
-      call const_ele_comm_tbl_global_id(femmesh_STR%mesh, elemesh_STR)
+      call const_element_comm_tbls(femmesh_STR%mesh, elemesh_STR)
 !
       if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data_type'
       call alloc_phys_data_type                                         &

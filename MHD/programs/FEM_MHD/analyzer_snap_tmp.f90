@@ -11,7 +11,6 @@
       use m_precision
       use calypso_mpi
 !
-      use m_geometry_data
       use m_node_phys_data
       use m_node_phys_data
       use FEM_analyzer_snap_tmp
@@ -45,14 +44,13 @@
 !
 !     --------------------- 
 !
-      call input_control_4_snapshot(mesh1, group1)
+      call input_control_4_snapshot(mesh1, group1, ele_mesh1)
 !
 !     --------------------- 
 !
       call FEM_initialize_snap_tmp
 !
-      call init_visualize(mesh1, group1, surf1, edge1, ele_mesh1%edge_comm,       &
-     &    nod_fld1)
+      call init_visualize(mesh1, group1, ele_mesh1, nod_fld1)
 !
       end subroutine init_analyzer
 !
@@ -80,7 +78,7 @@
           call start_eleps_time(4)
           call visualize_all                                            &
      &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
-     &        mesh1, group1, surf1, edge1, ele_mesh1%edge_comm, nod_fld1,         &
+     &        mesh1, group1, ele_mesh1, nod_fld1,                       &
      &        next_tbl1%neib_ele, jac1_3d_q)
           call end_eleps_time(4)
         end if

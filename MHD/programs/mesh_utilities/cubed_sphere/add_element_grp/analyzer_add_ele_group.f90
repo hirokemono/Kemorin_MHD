@@ -50,11 +50,8 @@
 !
       mesh_file_head = original_mesh_head
       call input_mesh                                                   &
-     &   (my_rank, mesh_add%nod_comm, mesh_add%node, mesh_add%ele,      &
-     &    group_add%nod_grp, group_add%ele_grp, group_add%surf_grp,     &
-     &    nnod_4_surf, nnod_4_edge)
-      call const_nod_ele_infos(my_rank, mesh_add%node, mesh_add%ele,    &
-     &    group_add%nod_grp, group_add%ele_grp, group_add%surf_grp)
+     &   (my_rank, mesh_add, group_add, nnod_4_surf, nnod_4_edge)
+      call const_nod_ele_infos(my_rank, mesh_add, group_add)
 !
       call alloc_r_ele_cubed_sph(mesh_add%ele%numele)
       call set_rele_cubed_sph                                           &
@@ -71,9 +68,7 @@
 !
        if (iflag_debug.eq.1) write(*,*) 'output_mesh_1st'
       mesh_file_head = modified_mesh_head
-      call output_mesh                                                  &
-     &   (my_rank, mesh_add%nod_comm, mesh_add%node, mesh_add%ele,      &
-     &    group_add%nod_grp, group_add%ele_grp, group_add%surf_grp)
+      call output_mesh(my_rank, mesh_add, group_add)
 !
       call dealloc_r_ele_cubed_sph
 !

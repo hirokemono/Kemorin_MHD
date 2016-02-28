@@ -55,11 +55,8 @@
 !
 !  ------    set spectr grids
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
-      call load_para_SPH_and_FEM_mesh(femmesh_STR%mesh%nod_comm,        &
-     &    femmesh_STR%mesh%node, femmesh_STR%mesh%ele,                  &
-     &    elemesh_STR%surf, elemesh_STR%edge,                           &
-     &    femmesh_STR%group%nod_grp, femmesh_STR%group%ele_grp,         &
-     &    femmesh_STR%group%surf_grp)
+      call load_para_SPH_and_FEM_mesh(femmesh_STR%mesh,                 &
+     &    femmesh_STR%group, elemesh_STR)
 !
 !    Initialize FEM grid
       if (iflag_debug.gt.0) write(*,*) 'FEM_initialize_back_trans'
@@ -77,8 +74,7 @@
 !  -------------------------------
 !
       call init_visualize(femmesh_STR%mesh, femmesh_STR%group,          &
-     &    elemesh_STR%surf, elemesh_STR%edge, elemesh_STR%edge_comm,    &
-     &    field_STR)
+     &    elemesh_STR, field_STR)
 !
       end subroutine init_analyzer
 !
@@ -115,8 +111,7 @@
         if(visval .eq. 0) then
           call visualize_all                                            &
      &       (istep_psf, istep_iso, istep_pvr, istep_fline,             &
-     &        femmesh_STR%mesh, femmesh_STR%group, elemesh_STR%surf,    &
-     &        elemesh_STR%edge, elemesh_STR%edge_comm,                  &
+     &        femmesh_STR%mesh, femmesh_STR%group, elemesh_STR,         &
      &        field_STR, ele_4_nod_SPH_TRANS, jac_STR_q)
         end if
       end do

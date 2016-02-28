@@ -7,9 +7,10 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_SPH_mesh(mesh, group)
+!!      subroutine input_control_SPH_mesh(mesh, group, ele_mesh)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
+!!        type(element_geometry), intent(inout) :: ele_mesh
 !!      subroutine input_control_4_SPH_MHD_nosnap
 !!
 !!      subroutine input_control_4_SPH_make_init
@@ -36,9 +37,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_SPH_mesh(mesh, group)
+      subroutine input_control_SPH_mesh(mesh, group, ele_mesh)
 !
-      use m_geometry_data
       use m_control_parameter
       use m_spheric_parameter
       use m_sph_boundary_input_data
@@ -47,6 +47,7 @@
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
+      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'set_control_4_SPH_MHD'
@@ -55,9 +56,7 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'load_para_SPH_and_FEM_mesh'
-      call load_para_SPH_and_FEM_mesh                                   &
-     &   (mesh%nod_comm, mesh%node, mesh%ele, surf1, edge1,             &
-     &    group%nod_grp, group%ele_grp, group%surf_grp)
+      call load_para_SPH_and_FEM_mesh(mesh, group, ele_mesh)
 !
       if (iflag_boundary_file .eq. id_read_boundary_file) then
         if (iflag_debug.eq.1) write(*,*) 'read_boundary_spectr_file'

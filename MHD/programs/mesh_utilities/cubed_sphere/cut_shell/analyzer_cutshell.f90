@@ -43,7 +43,7 @@
 !  read global mesh
 !
       mesh_file_head = original_mesh_head
-      call input_mesh_data_type(my_rank, original_fem,                  &
+      call input_mesh(my_rank, original_fem%mesh, original_fem%group,   &
      &    nnod_4_surf, nnod_4_edge)
 !
 !
@@ -70,7 +70,7 @@
       call allocate_type_comm_tbl_item(cutted_fem%mesh%nod_comm)
 !
       mesh_file_head = modified_mesh_head
-      call output_mesh_type(my_rank, cutted_fem)
+      call output_mesh(my_rank, cutted_fem%mesh, cutted_fem%group)
 !
       end subroutine analyze_cutshell
 !

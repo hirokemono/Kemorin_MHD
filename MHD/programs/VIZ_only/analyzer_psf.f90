@@ -43,8 +43,7 @@
 !
 !  VIZ Initialization
       call init_visualize_surface(femmesh_VIZ%mesh, femmesh_VIZ%group,  &
-     &    elemesh_VIZ%surf, elemesh_VIZ%edge, elemesh_VIZ%edge_comm,    &
-     &    field_VIZ)
+     &    elemesh_VIZ, field_VIZ)
 !
       end subroutine init_analyzer
 !
@@ -64,7 +63,7 @@
 !
 !  Generate field lines
         call visualize_surface(istep_psf, istep_iso, femmesh_VIZ%mesh,  &
-     &      elemesh_VIZ%edge, elemesh_VIZ%edge_comm, field_VIZ)
+     &      elemesh_VIZ, field_VIZ)
       end do
 !
       end subroutine analyze

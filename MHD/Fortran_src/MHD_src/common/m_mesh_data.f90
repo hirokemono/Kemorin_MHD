@@ -4,11 +4,6 @@
 !      Written by H. Matsui on July, 2006
 !      Modified by H. Matsui on June, 2007
 !
-!
-!!      subroutine deallocate_mesh_infomations
-!!      subroutine deallocate_nod_ele_infos
-!!      subroutine dealloc_ele_sf_eg_comm_tables
-!
       module m_mesh_data
 !
       use m_precision
@@ -26,60 +21,5 @@
 !
 !>     Structure for element data (communication)
       type(element_geometry), save :: ele_mesh1
-!ele_mesh1%surf
-!
-! ----------------------------------------------------------------------
-!
-      contains
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_mesh_infomations
-!
-      use t_mesh_data
-      use m_geometry_data
-!
-!
-      call dealloc_mesh_infomations                                     &
-     &   (mesh1%nod_comm, mesh1%node, mesh1%ele, surf1, edge1,          &
-     &    group1%nod_grp, group1%ele_grp, group1%surf_grp,              &
-     &    group1%tbls_ele_grp, group1%tbls_surf_grp,                    &
-     &    group1%surf_nod_grp)
-!
-      end subroutine deallocate_mesh_infomations
-!
-! ----------------------------------------------------------------------
-!
-      subroutine deallocate_nod_ele_infos
-!
-      use t_mesh_data
-      use m_geometry_data
-!
-!
-      call dealloc_nod_ele_infos                                        &
-     &   (mesh1%nod_comm, mesh1%node, mesh1%ele, surf1, edge1,          &
-     &    group1%nod_grp, group1%ele_grp, group1%surf_grp)
-!
-      end subroutine deallocate_nod_ele_infos
-!
-! ----------------------------------------------------------------------
-!
-      subroutine dealloc_ele_sf_eg_comm_tables
-!
-      use m_geometry_data
-!
-!
-      call dealloc_numnod_stack(mesh1%node)
-      call dealloc_numele_stack(mesh1%ele)
-      call dealloc_numsurf_stack(surf1)
-      call dealloc_numedge_stack(edge1)
-!
-      call deallocate_type_comm_tbl(ele_mesh1%ele_comm)
-      call deallocate_type_comm_tbl(ele_mesh1%surf_comm)
-      call deallocate_type_comm_tbl(ele_mesh1%edge_comm)
-!
-      end subroutine dealloc_ele_sf_eg_comm_tables
-!
-!-----------------------------------------------------------------------
 !
       end module m_mesh_data

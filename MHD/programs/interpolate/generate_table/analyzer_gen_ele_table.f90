@@ -65,7 +65,7 @@
       mesh_file_head = dest_mesh_head
       iflag_mesh_file_fmt = ifmt_itp_mesh_file
       if (iflag_debug.eq.1) write(*,*) 'input_mesh'
-      call input_mesh_data_type(my_rank, org_femmesh,                   &
+      call input_mesh(my_rank, org_femmesh%mesh, org_femmesh%group,     &
      &    org_ele_mesh%surf%nnod_4_surf,                                &
      &    org_ele_mesh%edge%nnod_4_edge)
 !

@@ -32,7 +32,6 @@
       use m_iccg_parameter
       use m_t_step_parameter
 !
-      use m_geometry_data
       use m_node_phys_data
       use m_ele_material_property
       use m_mean_square_values
@@ -123,20 +122,17 @@
 !  -----    construct geometry informations
 !
       if (iflag_debug .gt. 0) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, mesh%node, mesh%ele, surf1,        &
-     &    edge1, group%nod_grp, group%ele_grp, group%surf_grp,          &
-     &    group%tbls_ele_grp, group%tbls_surf_grp, group%surf_nod_grp)
+      call const_mesh_infos(my_rank, mesh, group, ele_mesh)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
-      call const_element_comm_tbls(mesh%node, mesh%ele, surf1, edge1,   &
-     &    mesh%nod_comm, ele_mesh%ele_comm, ele_mesh%surf_comm, ele_mesh%edge_comm)
+      call const_element_comm_tbls(mesh, ele_mesh)
 !
       if(i_debug .eq. iflag_full_msg) then
         call check_whole_num_of_elements(mesh%ele)
       end if
 !
-      call deallocate_surface_geom_type(surf1)
-      call deallocate_edge_geom_type(edge1)
+      call deallocate_surface_geom_type(ele_mesh%surf)
+      call deallocate_edge_geom_type(ele_mesh%edge)
 !
 !     ---------------------
 !
@@ -244,7 +240,7 @@
 !
       if (iflag_debug.eq.1) write(*,*)  'const_jacobian_sf_grp'
       call const_jacobian_sf_grp                                        &
-     &   (mesh%node, mesh%ele, surf1, group%surf_grp,                   &
+     &   (mesh%node, mesh%ele, ele_mesh%surf, group%surf_grp,           &
      &    jac1_sf_grp_2d_l, jac1_sf_grp_2d_q)
 !
 !     --------------------- 
@@ -259,11 +255,11 @@
 !     ---------------------
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
-      call const_normal_vector(mesh%node, surf1)
+      call const_normal_vector(mesh%node, ele_mesh%surf)
 !
       if (iflag_debug.eq.1) write(*,*)  'int_surface_parameters'
       call int_surface_parameters                                       &
-     &   (group%surf_grp%num_grp, mesh%node, mesh%ele, surf1,           &
+     &   (group%surf_grp%num_grp, mesh%node, mesh%ele, ele_mesh%surf,   &
      &    group%surf_grp, group%tbls_surf_grp, group%surf_grp_geom,     &
      &    group%surf_nod_grp)
 !
@@ -275,7 +271,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'set_surf_bc_data'
       call set_surf_bc_data                                             &
-     &   (mesh%node, mesh%ele, surf1, group%surf_grp,                   &
+     &   (mesh%node, mesh%ele, ele_mesh%surf, group%surf_grp,           &
      &    group%surf_nod_grp, group%surf_grp_geom, iphys, nod_fld1)
 !
 !     ---------------------

@@ -65,7 +65,7 @@
       if (my_rank .lt. ndomain_org) then
         mesh_file_head = org_mesh_head
         iflag_mesh_file_fmt = ifmt_org_mesh_file
-        call input_mesh_data_type(my_rank, org_femmesh,                 &
+        call input_mesh(my_rank, org_femmesh%mesh, org_femmesh%group,   &
      &     org_ele_mesh%surf%nnod_4_surf,                               &
      &     org_ele_mesh%edge%nnod_4_edge)
 !
@@ -80,7 +80,7 @@
       if (my_rank .lt. ndomain_dest) then
         mesh_file_head = dest_mesh_head
         iflag_mesh_file_fmt = ifmt_itp_mesh_file
-        call input_mesh_data_type(my_rank, new_femmesh,                 &
+        call input_mesh(my_rank, new_femmesh%mesh, new_femmesh%group,   &
      &      new_ele_mesh%surf%nnod_4_surf,                              &
      &      new_ele_mesh%edge%nnod_4_edge)
         call allocate_overlaped_ele_type(new_femmesh%mesh%ele)

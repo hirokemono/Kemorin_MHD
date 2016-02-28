@@ -97,9 +97,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_mesh'
       call input_mesh                                                   &
-     &   (my_rank, mesh_filter%nod_comm, mesh_filter%node,              &
-     &    mesh_filter%ele, group_filter%nod_grp,                        &
-     &    group_filter%ele_grp, group_filter%surf_grp,                  &
+     &   (my_rank, mesh_filter, group_filter,                           &
      &    ele_filter%surf%nnod_4_surf, ele_filter%edge%nnod_4_edge)
 !
 !     --------------------- 
@@ -113,11 +111,8 @@
 !     --------------------- 
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank, mesh_filter%node, mesh_filter%ele, &
-     &    ele_filter%surf, ele_filter%edge, group_filter%nod_grp,       &
-     &    group_filter%ele_grp, group_filter%surf_grp,                  &
-     &    group_filter%tbls_ele_grp, group_filter%tbls_surf_grp,        &
-     &    group_filter%surf_nod_grp)
+      call const_mesh_infos                                             &
+     &   (my_rank, mesh_filter, group_filter, ele_filter)
 !
 !  -------------------------------
 !

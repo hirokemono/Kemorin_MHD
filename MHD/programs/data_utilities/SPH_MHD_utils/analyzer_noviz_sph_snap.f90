@@ -55,7 +55,7 @@
       call read_control_4_sph_snap_noviz
 !
       if (iflag_debug.eq.1) write(*,*) 'input_control_SPH_mesh'
-      call input_control_SPH_mesh(mesh1, group1)
+      call input_control_SPH_mesh(mesh1, group1, ele_mesh1)
       call end_eleps_time(4)
 !
 !     --------------------- 

@@ -3,17 +3,13 @@
 !
 !      Written by H. Matsui on July, 2006
 !
-!!      subroutine init_visualize(mesh, group, surf, edge, edge_comm,   &
-!!     &          nod_fld)
+!!      subroutine init_visualize(mesh, group, ele_mesh, nod_fld)
 !!      subroutine visualize_all                                        &
 !!     &         (istep_psf, istep_iso, istep_pvr, istep_fline,         &
-!!     &          mesh, group, surf, edge, edge_comm,                   &
-!!     &          nod_fld, ele_4_nod, jac_3d)
+!!     &          mesh, group, ele_mesh, nod_fld, ele_4_nod, jac_3d)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(surface_data), intent(in) :: surf
-!!        type(edge_data), intent(in) :: edge
-!!        type(communication_table), intent(in) :: edge_comm
+!!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(phys_data), intent(in) :: nod_fld
 !!        type(element_around_node), intent(in) :: ele_4_nod
 !!        type(jacobians_3d), intent(in) :: jac_3d
@@ -44,8 +40,7 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize(mesh, group, surf, edge, edge_comm,     &
-     &          nod_fld)
+      subroutine init_visualize(mesh, group, ele_mesh, nod_fld)
 !
       use m_cross_section
       use m_isosurface
@@ -55,9 +50,7 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
-      type(edge_data), intent(in) :: edge
-      type(communication_table), intent(in) :: edge_comm
+      type(element_geometry), intent(in) :: ele_mesh
 !
       type(phys_data), intent(in) :: nod_fld
 !
@@ -66,14 +59,15 @@
       call set_sectioning_case_table
 !
       call SECTIONING_initialize                                        &
-     &   (mesh%node, mesh%ele, surf, edge, mesh%nod_comm, edge_comm,    &
+     &   (mesh%node, mesh%ele, ele_mesh%surf, ele_mesh%edge,            &
+     &    mesh%nod_comm, ele_mesh%edge_comm,                            &
      &    group%ele_grp, group%surf_grp, group%surf_nod_grp, nod_fld)
 !
-      call ISOSURF_initialize                                           &
-     &   (mesh%node, mesh%ele, surf, edge, group%ele_grp, nod_fld)
+      call ISOSURF_initialize(mesh%node, mesh%ele,                      &
+     &    ele_mesh%surf, ele_mesh%edge, group%ele_grp, nod_fld)
 !
       call PVR_initialize                                               &
-     &   (mesh%node, mesh%ele, surf, group%ele_grp, nod_fld)
+     &   (mesh%node, mesh%ele, ele_mesh%surf, group%ele_grp, nod_fld)
       call calypso_MPI_barrier
 !
       call FLINE_initialize                                             &
@@ -85,8 +79,7 @@
 !
       subroutine visualize_all                                          &
      &         (istep_psf, istep_iso, istep_pvr, istep_fline,           &
-     &          mesh, group, surf, edge, edge_comm,                     &
-     &          nod_fld, ele_4_nod, jac_3d)
+     &          mesh, group, ele_mesh, nod_fld, ele_4_nod, jac_3d)
 !
       use m_cross_section
       use m_isosurface
@@ -98,26 +91,24 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
-      type(edge_data), intent(in) :: edge
-!
-      type(communication_table), intent(in) :: edge_comm
+      type(element_geometry), intent(in) :: ele_mesh
 !
       type(phys_data), intent(in) :: nod_fld
       type(element_around_node), intent(in) :: ele_4_nod
       type(jacobians_3d), intent(in) :: jac_3d
 !
 !
-      call SECTIONING_visualize(istep_psf, edge, nod_fld)
+      call SECTIONING_visualize(istep_psf, ele_mesh%edge, nod_fld)
 !
-      call ISOSURF_visualize(istep_iso, mesh%node, mesh%ele, edge,      &
-      &                      edge_comm, nod_fld)
+      call ISOSURF_visualize(istep_iso, mesh%node, mesh%ele,            &
+     &   ele_mesh%edge, ele_mesh%edge_comm, nod_fld)
 !
-      call PVR_visualize                                                &
-     &   (istep_pvr, mesh%node, mesh%ele, surf, jac_3d, nod_fld)
+      call PVR_visualize(istep_pvr, mesh%node, mesh%ele,                &
+     &    ele_mesh%surf, jac_3d, nod_fld)
 !
-      call FLINE_visualize(istep_fline, mesh%node, mesh%ele, surf,      &
-     &    group%ele_grp, ele_4_nod, nod_fld, mesh%nod_comm)
+      call FLINE_visualize(istep_fline, mesh%node, mesh%ele,            &
+     &    ele_mesh%surf, group%ele_grp, ele_4_nod, nod_fld,             &
+     &    mesh%nod_comm)
 !
       end subroutine visualize_all
 !

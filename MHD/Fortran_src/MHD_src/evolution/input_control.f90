@@ -9,8 +9,11 @@
 !>@brief  Load mesh and filtering data for MHD simulation
 !!
 !!@verbatim
-!!      subroutine input_control_4_MHD(mesh, group)
-!!      subroutine input_control_4_snapshot(mesh, group)
+!!      subroutine input_control_4_MHD(mesh, group, ele_mesh)
+!!      subroutine input_control_4_snapshot(mesh, group, ele_mesh)
+!!        type(mesh_geometry), intent(inout) :: mesh
+!!        type(mesh_groups), intent(inout) ::   group
+!!        type(element_geometry), intent(inout) :: ele_mesh
 !!@endverbatim
 !
 !
@@ -20,8 +23,6 @@
 !
       use m_machine_parameter
       use calypso_mpi
-!
-      use m_geometry_data
 !
       use t_mesh_data
 !
@@ -35,7 +36,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_MHD(mesh, group)
+      subroutine input_control_4_MHD(mesh, group, ele_mesh)
 !
       use m_ctl_data_fem_MHD
       use m_iccg_parameter
@@ -46,6 +47,7 @@
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
+      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_MHD'
@@ -54,9 +56,8 @@
       call set_control_4_FEM_MHD
 !
 !  --  load FEM mesh data
-      call input_mesh(my_rank, mesh%nod_comm, mesh%node, mesh%ele,      &
-     &    group%nod_grp, group%ele_grp, group%surf_grp,                 &
-     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
+      call input_mesh(my_rank, mesh, group,                             &
+     &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD(mesh, group)
 !
@@ -69,7 +70,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine input_control_4_snapshot(mesh, group)
+      subroutine input_control_4_snapshot(mesh, group, ele_mesh)
 !
       use m_ctl_data_fem_MHD
       use set_control_FEM_MHD
@@ -77,6 +78,7 @@
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
+      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'read_control_4_fem_snap'
@@ -85,9 +87,8 @@
       call set_control_4_FEM_MHD
 !
 !  --  load FEM mesh data
-      call input_mesh(my_rank, mesh%nod_comm, mesh%node, mesh%ele,      &
-     &    group%nod_grp, group%ele_grp, group%surf_grp,                 &
-     &    surf1%nnod_4_surf, edge1%nnod_4_edge)
+      call input_mesh(my_rank, mesh, group,                             &
+     &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       call input_meshes_4_MHD(mesh, group)
 !

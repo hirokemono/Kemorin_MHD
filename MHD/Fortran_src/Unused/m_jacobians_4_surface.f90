@@ -3,8 +3,10 @@
 !.......................................................................
 !
 !
-!      subroutine const_jacobian_surface
-!      subroutine allocate_jacobians_surf_l_quad(n_int)
+!!      subroutine const_jacobian_surface(mesh, ele_mesh)
+!!      subroutine allocate_jacobians_surf_l_quad(n_int, ele_mesh)
+!!        type(mesh_geometry), intent(inout) :: mesh
+!!        type(element_geometry), intent(inout) :: ele_mesh
 !
 !      subroutine deallocate_jac_surf_linear
 !      subroutine deallocate_jac_surf_quad
@@ -32,32 +34,36 @@
 !> Construct shape function, difference of shape function, and Jacobian
 !> for surface element
 !
-      subroutine const_jacobian_surface
+      subroutine const_jacobian_surface(mesh, ele_mesh)
 !
       use m_geometry_constants
-      use m_mesh_data
+      use t_mesh_data
 !
       use const_jacobians_2d
 !
+      type(mesh_geometry), intent(inout) :: mesh
+      type(element_geometry), intent(inout) :: ele_mesh
+!
 !
       call cal_jacobian_surface                                         &
-     &   (mesh1%node, surf1, jac1_2d_l, jac1_2d_q)
+     &   (mesh%node, ele_mesh%surf, jac1_2d_l, jac1_2d_q)
 !
       end subroutine const_jacobian_surface
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
-      subroutine allocate_jacobians_surf_l_quad(n_int)
+      subroutine allocate_jacobians_surf_l_quad(n_int, ele_mesh)
 !
       use m_geometry_constants
-      use m_geometry_data
       use m_fem_gauss_int_coefs
+      use t_mesh_data
 !
       integer(kind = kint), intent(in) :: n_int
+      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
-      call alloc_2d_jac_type(surf1%numsurf, num_quad_sf,                &
+      call alloc_2d_jac_type(ele_mesh%surf%numsurf, num_quad_sf,        &
      &    n_int, jac1_2d_ql)
 !
        end subroutine allocate_jacobians_surf_l_quad

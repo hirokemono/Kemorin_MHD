@@ -39,8 +39,7 @@
 !
 !
       call init_visualize_surface(fem%mesh, fem%group,                  &
-     &    ele_mesh_psf%surf, ele_mesh_psf%edge, ele_mesh_psf%edge_comm, &
-     &    nod_fld)
+     &    ele_mesh_psf, nod_fld)
 !
       end subroutine init_sections_type
 !
@@ -59,7 +58,7 @@
 !
 !
       call visualize_surface(istep_psf, istep_iso, fem%mesh,            &
-     &    ele_mesh_psf%edge, ele_mesh_psf%edge_comm, nod_fld)
+     &    ele_mesh_psf, nod_fld)
 !
       end subroutine sectioning_type
 !

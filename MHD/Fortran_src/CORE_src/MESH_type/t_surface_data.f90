@@ -6,9 +6,6 @@
 !
 !> @brief structure of surface data (geometry and connectivity)
 !!
-!> Substitution of
-!> @n      (module m_geometry_data)
-!!
 !!@verbatim
 !!      subroutine alloc_numsurf_stack(nprocs, surf)
 !!      subroutine allocate_inod_in_surf(surf)

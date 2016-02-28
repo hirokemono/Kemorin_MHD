@@ -92,16 +92,11 @@
 !  --  read geometry
 !
       if (iflag_debug.gt.0) write(*,*) 'input_mesh'
-      call input_mesh                                                   &
-     &   (my_rank, mesh%nod_comm, mesh%node, mesh%ele,                  &
-     &    group%nod_grp, group%ele_grp, group%surf_grp,                 &
+      call input_mesh(my_rank, mesh, group,                             &
      &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call const_mesh_infos(my_rank,                                    &
-     &    mesh%node, mesh%ele, ele_mesh%surf, ele_mesh%edge,            &
-     &    group%nod_grp, group%ele_grp, group%surf_grp,                 &
-     &    group%tbls_ele_grp, group%tbls_surf_grp, group%surf_nod_grp)
+      call const_mesh_infos(my_rank, mesh, group, ele_mesh)
 !
 !  -------------------------------
 !
@@ -114,9 +109,7 @@
 !  -----    construct geometry informations
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
-      call const_element_comm_tbls(mesh%node, mesh%ele,                 &
-     &    ele_mesh%surf, ele_mesh%edge, mesh%nod_comm,                  &
-     &    ele_mesh%ele_comm, ele_mesh%surf_comm, ele_mesh%edge_comm)
+      call const_element_comm_tbls(mesh, ele_mesh)
 !
 !  -------------------------------
 !

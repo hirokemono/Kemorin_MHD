@@ -42,7 +42,7 @@
 !
       iflag_mesh_file_fmt = iflag_para_mesh_file_fmt
       mesh_file_head = finer_mesh_file_head
-      call input_mesh_geometry_type(izero, finermesh)
+      call input_mesh_geometry(izero, finermesh)
 !
 !     read interpolate table
 !

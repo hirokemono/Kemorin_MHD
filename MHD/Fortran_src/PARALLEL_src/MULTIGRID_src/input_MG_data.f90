@@ -44,7 +44,8 @@
         if(my_rank .lt. MG_mpi(i_level)%nprocs ) then
 !
           mesh_file_head = MG_mesh_file_head(i_level)
-          call input_mesh_data_type(my_rank, MG_mesh(i_level),          &
+          call input_mesh                                               &
+     &       (my_rank, MG_mesh(i_level)%mesh, MG_mesh(i_level)%group,   &
      &        MG_ele_mesh(i_level)%surf%nnod_4_surf,                    &
      &        MG_ele_mesh(i_level)%edge%nnod_4_edge)
         else

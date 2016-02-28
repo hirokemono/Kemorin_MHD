@@ -35,7 +35,8 @@
 !
       do ip = 1, nprocs
         my_rank = ip - 1
-        call input_mesh_data_type(my_rank, para_mesh(ip),               &
+        call input_mesh                                                 &
+     &     (my_rank, para_mesh(ip)%mesh, para_mesh(ip)%group,           &
      &      nnod_4_surf, nnod_4_edge)
         call set_nod_and_ele_infos                                      &
      &     (para_mesh(ip)%mesh%node, para_mesh(ip)%mesh%ele)

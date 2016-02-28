@@ -45,9 +45,9 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_grp_patch'
       call s_input_control_grp_patch(ucd_FUTIL)
-      if (iflag_debug.eq.1) write(*,*) 'input_mesh_data_type'
-      call input_mesh_data_type                                         &
-     &   (my_rank, femmesh_FUTIL, elemesh_FUTIL%surf%nnod_4_surf,       &
+      if (iflag_debug.eq.1) write(*,*) 'input_mesh'
+      call input_mesh(my_rank, femmesh_FUTIL%mesh, femmesh_FUTIL%group, &
+     &    elemesh_FUTIL%surf%nnod_4_surf,                               &
      &    elemesh_FUTIL%edge%nnod_4_edge)
 !
 !     --------------------- 
@@ -65,10 +65,9 @@
       call init_send_recv(femmesh_FUTIL%mesh%nod_comm)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call s_const_mesh_types_info                                      &
-     &   (my_rank, femmesh_FUTIL, elemesh_FUTIL)
-      call const_ele_comm_tbl_global_id                                 &
-     &   (femmesh_FUTIL%mesh, elemesh_FUTIL)
+      call const_mesh_infos(my_rank,                                    &
+     &   femmesh_FUTIL%mesh, femmesh_FUTIL%group, elemesh_FUTIL)
+      call const_element_comm_tbls(femmesh_FUTIL%mesh, elemesh_FUTIL)
 !
       if(i_debug .eq. iflag_full_msg) then
         call check_whole_num_of_elements(femmesh_FUTIL%mesh%ele)

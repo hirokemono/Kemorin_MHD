@@ -6,12 +6,10 @@
 !!      subroutine init_visualize_surface(mesh, group, surf,            &
 !!     &          edge, edge_comm, nod_fld)
 !!      subroutine visualize_surface(istep_psf, istep_iso,              &
-!!     &          mesh, edge, edge_comm, nod_fld)
+!!     &          mesh, ele_mesh, nod_fld)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(surface_data), intent(in) :: surf
-!!        type(edge_data), intent(in) :: edge
-!!        type(communication_table), intent(in) :: edge_comm
+!!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(phys_data), intent(in) :: nod_fld
 !
       module sections_for_1st
@@ -38,8 +36,8 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize_surface(mesh, group, surf,              &
-     &          edge, edge_comm, nod_fld)
+      subroutine init_visualize_surface                                 &
+     &         (mesh, group, ele_mesh, nod_fld)
 !
       use m_cross_section
       use m_isosurface
@@ -48,9 +46,7 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
-      type(edge_data), intent(in) :: edge
-      type(communication_table), intent(in) :: edge_comm
+      type(element_geometry), intent(in) :: ele_mesh
 !
       type(phys_data), intent(in) :: nod_fld
 !
@@ -58,19 +54,19 @@
       if (iflag_debug.eq.1)  write(*,*) 'set_sectioning_case_table'
       call set_sectioning_case_table
 !
-      call SECTIONING_initialize                                        &
-     &   (mesh%node, mesh%ele, surf, edge, mesh%nod_comm, edge_comm,    &
+      call SECTIONING_initialize(mesh%node, mesh%ele, ele_mesh%surf,    &
+     &    ele_mesh%edge, mesh%nod_comm, ele_mesh%edge_comm,             &
      &    group%ele_grp, group%surf_grp, group%surf_nod_grp, nod_fld)
 !
-      call ISOSURF_initialize(mesh%node, mesh%ele, surf, edge,          &
-     &    group%ele_grp, nod_fld)
+      call ISOSURF_initialize(mesh%node, mesh%ele,                      &
+     &    ele_mesh%surf, ele_mesh%edge, group%ele_grp, nod_fld)
 !
       end subroutine init_visualize_surface
 !
 !  ---------------------------------------------------------------------
 !
       subroutine visualize_surface(istep_psf, istep_iso,                &
-     &          mesh, edge, edge_comm, nod_fld)
+     &          mesh, ele_mesh, nod_fld)
 !
       use m_cross_section
       use m_isosurface
@@ -78,15 +74,14 @@
       integer(kind = kint), intent(in) :: istep_psf, istep_iso
 !
       type(mesh_geometry), intent(in) :: mesh
-      type(edge_data), intent(in) :: edge
-      type(communication_table), intent(in) :: edge_comm
+      type(element_geometry), intent(in) :: ele_mesh
       type(phys_data), intent(in) :: nod_fld
 !
 !
-      call SECTIONING_visualize(istep_psf, edge, nod_fld)
+      call SECTIONING_visualize(istep_psf, ele_mesh%edge, nod_fld)
 !
-      call ISOSURF_visualize                                            &
-     &   (istep_iso, mesh%node, mesh%ele, edge, edge_comm, nod_fld)
+      call ISOSURF_visualize(istep_iso, mesh%node, mesh%ele,            &
+     &    ele_mesh%edge, ele_mesh%edge_comm, nod_fld)
 !
       end subroutine visualize_surface
 !

@@ -135,10 +135,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'const_group_type_info'
       call const_group_type_info                                        &
-     &   (femmesh_l%mesh%node, femmesh_l%mesh%ele,                      &
-     &    ele_mesh_l%surf, ele_mesh_l%edge,                             &
-     &    femmesh_l%group%ele_grp, femmesh_l%group%surf_grp,            &
-     &    femmesh_l%group%tbls_ele_grp, femmesh_l%group%tbls_surf_grp)
+     &   (femmesh_l%mesh, ele_mesh_l, femmesh_l%group)
 !
       call count_ele_4_smp_mesh_type(femmesh_l%mesh%ele)
       call count_surf_size_smp_type(ele_mesh_l%surf)
@@ -195,10 +192,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'const_group_type_info'
       call const_group_type_info                                        &
-     &   (femmesh_l%mesh%node, femmesh_l%mesh%ele,                      &
-     &    ele_mesh_l%surf, ele_mesh_l%edge,                             &
-     &    femmesh_l%group%ele_grp, femmesh_l%group%surf_grp,            &
-     &    femmesh_l%group%tbls_ele_grp, femmesh_l%group%tbls_surf_grp)
+     &   (femmesh_l%mesh, ele_mesh_l, femmesh_l%group)
 !
       call count_size_4_smp_mesh_type(femmesh_l%mesh%node,              &
      &    femmesh_l%mesh%ele)

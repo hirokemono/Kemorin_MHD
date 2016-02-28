@@ -86,7 +86,8 @@
 !C===
         iflag_mesh_file_fmt = iflag_para_mesh_file_fmt
         mesh_file_head = local_file_header
-        call output_mesh_type(irank_subdomain, para_fem)
+        call output_mesh                                                &
+     &     (irank_subdomain, para_fem%mesh, para_fem%group)
       end do
 !
 !C===

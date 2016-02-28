@@ -6,12 +6,11 @@
 !>@brief Load spherical harmonics indexing data on multiple processes
 !!
 !!@verbatim
-!!      subroutine load_para_SPH_and_FEM_mesh
-!!     &         (nod_comm, node, ele, surf, edge,                      &
-!!     &          nod_grp, ele_grp, surf_grp)
-!!      subroutine load_FEM_mesh_4_SPH(nod_comm, node, ele, surf, edge, &
-!!     &          nod_grp, ele_grp, surf_grp)
+!!      subroutine load_para_SPH_and_FEM_mesh(mesh, group, ele_mesh)
 !!      subroutine load_para_sph_mesh
+!!        type(mesh_geometry), intent(inout) :: mesh
+!!        type(mesh_groups), intent(inout) ::   group
+!!        type(element_geometry), intent(inout) :: ele_mesh
 !!@endverbatim
 !
       module parallel_load_data_4_sph
@@ -22,7 +21,7 @@
       implicit none
 !
       private :: count_interval_4_each_dir, self_comm_flag
-      private :: set_fem_center_mode_4_SPH
+      private :: set_fem_center_mode_4_SPH, load_FEM_mesh_4_SPH
 !
 ! -----------------------------------------------------------------------
 !
@@ -30,39 +29,24 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine load_para_SPH_and_FEM_mesh                             &
-     &         (nod_comm, node, ele, surf, edge,                        &
-     &          nod_grp, ele_grp, surf_grp)
+      subroutine load_para_SPH_and_FEM_mesh(mesh, group, ele_mesh)
 !
-      use t_comm_table
-      use t_geometry_data
-      use t_surface_data
-      use t_edge_data
-      use t_group_data
+      use t_mesh_data
 !
-      type(communication_table), intent(inout) :: nod_comm
-      type(node_data), intent(inout) :: node
-      type(element_data), intent(inout) :: ele
-      type(surface_data), intent(inout) :: surf
-      type(edge_data), intent(inout) :: edge
-!
-      type(group_data), intent(inout) :: nod_grp
-      type(group_data), intent(inout) :: ele_grp
-      type(surface_group_data), intent(inout) :: surf_grp
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) ::   group
+      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
       call load_para_sph_mesh
-!
-      call load_FEM_mesh_4_SPH(nod_comm, node, ele, surf, edge,         &
-     &                         nod_grp, ele_grp, surf_grp)
+      call load_FEM_mesh_4_SPH(mesh, group, ele_mesh)
 !
       end subroutine load_para_SPH_and_FEM_mesh
 !
 ! -----------------------------------------------------------------------
 ! -----------------------------------------------------------------------
 !
-      subroutine load_FEM_mesh_4_SPH(nod_comm, node, ele, surf, edge,   &
-     &          nod_grp, ele_grp, surf_grp)
+      subroutine load_FEM_mesh_4_SPH(mesh, group, ele_mesh)
 !
       use calypso_mpi
       use t_mesh_data
@@ -77,28 +61,21 @@
       use const_FEM_mesh_sph_mhd
       use mesh_IO_select
 !
-      type(communication_table), intent(inout) :: nod_comm
-      type(node_data), intent(inout) :: node
-      type(element_data), intent(inout) :: ele
-      type(surface_data), intent(inout) :: surf
-      type(edge_data), intent(inout) :: edge
+      type(mesh_geometry), intent(inout) :: mesh
+      type(mesh_groups), intent(inout) ::   group
+      type(element_geometry), intent(inout) :: ele_mesh
 !
-      type(group_data), intent(inout) :: nod_grp
-      type(group_data), intent(inout) :: ele_grp
-      type(surface_group_data), intent(inout) :: surf_grp
-!
-      type(mesh_geometry) :: mesh
-      type(mesh_groups) ::  group
+      type(mesh_geometry) :: mesh_s
+      type(mesh_groups) ::  group_s
 !
 !
 !  --  load FEM mesh data
       if(check_exist_mesh(my_rank) .eq. 0) then
         if (iflag_debug.gt.0) write(*,*) 'input_mesh'
-        call input_mesh                                                 &
-     &    (my_rank, nod_comm, node, ele, nod_grp, ele_grp, surf_grp,    &
-     &     surf%nnod_4_surf, edge%nnod_4_edge)
-        call allocate_ele_geometry_type(ele)
-        call set_fem_center_mode_4_SPH(node%internal_node)
+        call input_mesh(my_rank, mesh, group,                           &
+     &      ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
+        call allocate_ele_geometry_type(mesh%ele)
+        call set_fem_center_mode_4_SPH(mesh%node%internal_node)
         return
       end if
 !
@@ -111,15 +88,18 @@
         end if
       end if
 !
-      call const_FEM_mesh_4_sph_mhd(mesh, group)
-!      call compare_mesh_type(my_rank, nod_comm, node, ele, mesh)
-!      call compare_group_types(my_rank, group_ref%nod_grp, nod_grp)
-!      call compare_group_types(my_rank, group_ref%ele_grp, ele_grp)
+      call const_FEM_mesh_4_sph_mhd(mesh_s, group_s)
+!      call compare_mesh_type                                           &
+!     &   (my_rank, mesh%nod_comm, mesh%node, mesh%ele, mesh_s)
+!      call compare_group_types(my_rank, group%nod_grp, group_s%nod_grp)
+!      call compare_group_types(my_rank, group%ele_grp, group_s%ele_grp)
 !      call compare_surface_grp_types                                   &
-!     &   (my_rank, group_ref%surf_grp, sf_grp)
+!     &   (my_rank, group%surf_grp, group_s%surf_grp)
 !
-      call set_mesh_data_from_type(mesh, group, nod_comm, node, ele,    &
-     &    surf, edge, nod_grp, ele_grp, surf_grp)
+      call set_mesh_data_from_type(mesh_s, group_s,                     &
+     &    mesh%nod_comm, mesh%node, mesh%ele,                           &
+     &    ele_mesh%surf, ele_mesh%edge,                                 &
+     &    group%nod_grp, group%ele_grp, group%surf_grp)
 !
       end subroutine load_FEM_mesh_4_SPH
 !

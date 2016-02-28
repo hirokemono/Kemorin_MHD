@@ -78,8 +78,7 @@
 !  --  read geometry
 !
         if (iflag_debug.eq.1) write(*,*) 'input_mesh_geometry'
-        call input_mesh_geometry(my_rank, mesh_filter%nod_comm,        &
-     &      mesh_filter%node, mesh_filter%ele)
+        call input_mesh_geometry(my_rank, mesh_filter)
 !
         call deallocate_node_geometry_type(mesh_filter%node)
         call deallocate_type_comm_tbl(mesh_filter%nod_comm)

@@ -5,15 +5,15 @@
 !
 !!      subroutine set_data_4_const_matrices                            &
 !!     &         (mesh, MHD_mesh, rhs_tbl, mat_tbl_q)
-!!      subroutine update_matrices(mesh, group, surf, MHD_mesh,         &
+!!      subroutine update_matrices(mesh, group, ele_mesh, MHD_mesh,     &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          mat_tbl_q, mhd_fem_wk)
-!!      subroutine set_aiccg_matrices(mesh, group, surf, MHD_mesh,      &
+!!      subroutine set_aiccg_matrices(mesh, group, ele_mesh, MHD_mesh,  &
 !!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,            &
 !!     &          mat_tbl_q, mhd_fem_wk)
 !!        type(mesh_geometry), intent(in) :: mesh
 !!        type(mesh_groups), intent(in) ::   group
-!!        type(surface_data), intent(in) :: surf
+!!        type(element_geometry), intent(in) :: ele_mesh
 !!        type(mesh_data_MHD), intent(in) :: MHD_mesh
 !!        type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q
@@ -85,7 +85,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine update_matrices(mesh, group, surf, MHD_mesh,           &
+      subroutine update_matrices(mesh, group, ele_mesh, MHD_mesh,       &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          mat_tbl_q, mhd_fem_wk)
 !
@@ -94,7 +94,7 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
+      type(element_geometry), intent(in) :: ele_mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
@@ -113,7 +113,7 @@
 !
       if (iflag .gt. 0) then
         if (iflag_debug.eq.1)  write(*,*) 'matrix assemble again'
-        call set_aiccg_matrices(mesh, group, surf, MHD_mesh,            &
+        call set_aiccg_matrices(mesh, group, ele_mesh, MHD_mesh,        &
      &      jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, mat_tbl_q,       &
      &      mhd_fem_wk)
         iflag_flex_step_changed = 0
@@ -123,7 +123,7 @@
 !
 !  ----------------------------------------------------------------------
 !
-      subroutine set_aiccg_matrices(mesh, group, surf, MHD_mesh,        &
+      subroutine set_aiccg_matrices(mesh, group, ele_mesh, MHD_mesh,    &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl,              &
      &          mat_tbl_q, mhd_fem_wk)
 !
@@ -144,7 +144,7 @@
 !
       type(mesh_geometry), intent(in) :: mesh
       type(mesh_groups), intent(in) ::   group
-      type(surface_data), intent(in) :: surf
+      type(element_geometry), intent(in) :: ele_mesh
       type(mesh_data_MHD), intent(in) :: MHD_mesh
       type(jacobians_3d), intent(in) :: jac_3d_q, jac_3d_l
       type(jacobians_2d), intent(in) :: jac_sf_grp_q
@@ -186,7 +186,7 @@
 !     set boundary conditions
 !
       if (iflag_debug.eq.1) write(*,*) 'set_aiccg_bc_phys'
-      call set_aiccg_bc_phys(mesh%ele, surf, group%surf_grp,            &
+      call set_aiccg_bc_phys(mesh%ele, ele_mesh%surf, group%surf_grp,   &
      &    jac_sf_grp_q, rhs_tbl, mat_tbl_fl_q, fem1_wk)
 !
       if (iflag_debug.eq.1) write(*,*) 'preconditioning'
