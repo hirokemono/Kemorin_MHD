@@ -24,14 +24,9 @@
 !>        (position, connectivity, group, and communication)
       type(mesh_data), save :: femmesh_FUTIL
 !
-!>     Structure for element data (communication)
-      type(element_comms), save :: elemesh_FUTIL
-!>     Structure for surface data
-!>        (position, connectivity, and communication)
-      type(surface_geometry), save :: surfmesh_FUTIL
-!>     Structure for edge data
-!>        (position, connectivity, and communication)
-      type(edge_geometry), save :: edgemesh_FUTIL
+!>     Structure for element, surface, and edge mesh
+!!        (position, connectivity, and communication)
+      type(element_geometry), save :: elemesh_FUTIL
 !
 !
 !>       Structure for nodal field data
@@ -67,8 +62,8 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'input_mesh_data_type'
       call input_mesh_data_type                                         &
-     &   (my_rank, femmesh_FUTIL, surfmesh_FUTIL%surf%nnod_4_surf,      &
-     &    edgemesh_FUTIL%edge%nnod_4_edge)
+     &   (my_rank, femmesh_FUTIL, elemesh_FUTIL%surf%nnod_4_surf,       &
+     &    elemesh_FUTIL%edge%nnod_4_edge)
 !
 !     --------------------- 
 !

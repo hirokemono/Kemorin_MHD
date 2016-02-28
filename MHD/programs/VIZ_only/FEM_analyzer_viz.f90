@@ -42,7 +42,7 @@
 !
 !     --------------------- 
 !
-      call deallocate_edge_geom_type(edgemesh_VIZ%edge)
+      call deallocate_edge_geom_type(elemesh_VIZ%edge)
 !
 !     ---------------------
 !

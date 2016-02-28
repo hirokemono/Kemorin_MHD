@@ -43,7 +43,8 @@
 !   matrix assembling
 !
       if (iflag_debug.eq.1) write(*,*) 'init_analyzer_fl'
-      call init_analyzer_fl(mesh1, group1, MHD_mesh1, layer_tbl1)
+      call init_analyzer_fl(mesh1, group1, ele_mesh1,                   &
+     &    MHD_mesh1, layer_tbl1)
 !
 !   construct matrix for Poisson and diffusion terms
 !

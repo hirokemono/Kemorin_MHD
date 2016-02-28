@@ -30,8 +30,7 @@
 !
       type(mesh_geometry), save :: mesh_filter
       type(mesh_groups), save :: group_filter
-      type(surface_geometry), save :: surf_filter
-      type(edge_geometry), save ::    edge_filter
+      type(element_geometry), save :: ele_filter
 !
       type(jacobians_3d), save :: jac_3d_l
       type(jacobians_3d), save :: jac_3d_q
@@ -101,7 +100,7 @@
      &   (my_rank, mesh_filter%nod_comm, mesh_filter%node,              &
      &    mesh_filter%ele, group_filter%nod_grp,                        &
      &    group_filter%ele_grp, group_filter%surf_grp,                  &
-     &    surf_filter%surf%nnod_4_surf, edge_filter%edge%nnod_4_edge)
+     &    ele_filter%surf%nnod_4_surf, ele_filter%edge%nnod_4_edge)
 !
 !     --------------------- 
 !
@@ -115,7 +114,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
       call const_mesh_infos(my_rank, mesh_filter%node, mesh_filter%ele, &
-     &    surf_filter%surf, edge_filter%edge, group_filter%nod_grp,     &
+     &    ele_filter%surf, ele_filter%edge, group_filter%nod_grp,       &
      &    group_filter%ele_grp, group_filter%surf_grp,                  &
      &    group_filter%tbls_ele_grp, group_filter%tbls_surf_grp,        &
      &    group_filter%surf_nod_grp)
@@ -131,7 +130,7 @@
       if (iflag_debug.eq.1 .and. my_rank.eq.0 )                         &
      &   write(*,*) 'pick_surface_group_geometry'
       call pick_surface_group_geometry                                  &
-     &   (surf_filter%surf, group_filter%surf_grp,                      &
+     &   (ele_filter%surf, group_filter%surf_grp,                       &
      &    group_filter%tbls_surf_grp, group_filter%surf_grp_geom)
 !
 !  -------------------------------

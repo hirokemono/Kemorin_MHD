@@ -7,10 +7,10 @@
 !> @brief Belonged element list for each node
 !!
 !!@verbatim
-!!      subroutine const_ele_comm_tbl_global_id                         &
-!!     &         (mesh, ele_mesh, surf_mesh, edge_mesh)
-!!      subroutine dealloc_ele_comm_tbls_gl_nele                        &
-!!     &         (mesh, ele_mesh, surf_mesh, edge_mesh)
+!!      subroutine const_ele_comm_tbl_global_id(mesh, ele_mesh)
+!!      subroutine dealloc_ele_comm_tbls_gl_nele(mesh, ele_mesh)
+!!        type(mesh_geometry), intent(inout) ::    mesh
+!!        type(element_geometry), intent(inout) :: ele_mesh
 !!
 !!      subroutine const_element_comm_tbls(node, ele, surf, edge,       &
 !!     &          nod_comm, ele_comm, surf_comm, edge_comm)
@@ -59,41 +59,35 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine const_ele_comm_tbl_global_id                           &
-     &         (mesh, ele_mesh, surf_mesh, edge_mesh)
+      subroutine const_ele_comm_tbl_global_id(mesh, ele_mesh)
 !
-      type(mesh_geometry), intent(inout) :: mesh
-      type(element_comms), intent(inout) ::    ele_mesh
-      type(surface_geometry), intent(inout) :: surf_mesh
-      type(edge_geometry),    intent(inout) :: edge_mesh
+      type(mesh_geometry), intent(inout) ::    mesh
+      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
       call const_element_comm_tbls                                      &
-     &   (mesh%node, mesh%ele, surf_mesh%surf, edge_mesh%edge,          &
+     &   (mesh%node, mesh%ele, ele_mesh%surf, ele_mesh%edge,            &
      &    mesh%nod_comm, ele_mesh%ele_comm,                             &
-     &    surf_mesh%surf_comm, edge_mesh%edge_comm)
+     &    ele_mesh%surf_comm, ele_mesh%edge_comm)
 !
       end subroutine const_ele_comm_tbl_global_id
 !
 !-----------------------------------------------------------------------
 !
-      subroutine dealloc_ele_comm_tbls_gl_nele                          &
-     &         (mesh, ele_mesh, surf_mesh, edge_mesh)
+      subroutine dealloc_ele_comm_tbls_gl_nele(mesh, ele_mesh)
 !
       type(mesh_geometry), intent(inout) :: mesh
-      type(element_comms), intent(inout) ::    ele_mesh
-      type(surface_geometry), intent(inout) :: surf_mesh
-      type(edge_geometry),    intent(inout) :: edge_mesh
+      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
       call deallocate_type_comm_tbl(ele_mesh%ele_comm)
-      call deallocate_type_comm_tbl(surf_mesh%surf_comm)
-      call deallocate_type_comm_tbl(edge_mesh%edge_comm)
+      call deallocate_type_comm_tbl(ele_mesh%surf_comm)
+      call deallocate_type_comm_tbl(ele_mesh%edge_comm)
 !
       call dealloc_numnod_stack(mesh%node)
       call dealloc_numele_stack(mesh%ele)
-      call dealloc_numsurf_stack(surf_mesh%surf)
-      call dealloc_numedge_stack(edge_mesh%edge)
+      call dealloc_numsurf_stack(ele_mesh%surf)
+      call dealloc_numedge_stack(ele_mesh%edge)
 !
       end subroutine dealloc_ele_comm_tbls_gl_nele
 !

@@ -50,7 +50,7 @@
       if (iflag_debug.gt.0) write(*,*) 'load_para_SPH_and_FEM_mesh'
       call load_para_SPH_and_FEM_mesh(femmesh_STR%mesh%nod_comm,        &
      &    femmesh_STR%mesh%node, femmesh_STR%mesh%ele,                  &
-     &    surfmesh_STR%surf, edgemesh_STR%edge,                         &
+     &    elemesh_STR%surf, elemesh_STR%edge,                           &
      &    femmesh_STR%group%nod_grp, femmesh_STR%group%ele_grp,         &
      &    femmesh_STR%group%surf_grp)
 !

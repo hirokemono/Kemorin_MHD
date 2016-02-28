@@ -45,11 +45,11 @@
 !
           mesh_file_head = MG_mesh_file_head(i_level)
           call input_mesh_data_type(my_rank, MG_mesh(i_level),          &
-     &        MG_surf_mesh(i_level)%surf%nnod_4_surf,                   &
-     &        MG_edge_mesh(i_level)%edge%nnod_4_edge)
+     &        MG_ele_mesh(i_level)%surf%nnod_4_surf,                    &
+     &        MG_ele_mesh(i_level)%edge%nnod_4_edge)
         else
-          call alloc_zero_mesh_data( MG_mesh(i_level),                  &
-     &        MG_surf_mesh(i_level), MG_edge_mesh(i_level))
+          call alloc_zero_mesh_data                                     &
+     &       (MG_mesh(i_level), MG_ele_mesh(i_level))
         end if
 !
         call sync_group_name_4_empty(MG_mpi(i_level)%nprocs,            &
@@ -125,14 +125,13 @@
 !  ---------------------------------------------------------------------
 !  ---------------------------------------------------------------------
 !
-      subroutine alloc_zero_mesh_data(mesh_info, surf_mesh, edge_mesh)
+      subroutine alloc_zero_mesh_data(mesh_info, ele_mesh)
 !
       use t_mesh_data
       use set_nnod_4_ele_by_type
 !
       type(mesh_data), intent(inout) ::        mesh_info
-      type(surface_geometry), intent(inout) :: surf_mesh
-      type(edge_geometry), intent(inout) ::    edge_mesh
+      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
       mesh_info%mesh%nod_comm%num_neib =    izero
@@ -150,7 +149,7 @@
       call allocate_ele_connect_type(mesh_info%mesh%ele)
 !
       call set_3D_nnod_4_sfed_by_ele(mesh_info%mesh%ele%nnod_4_ele,     &
-     &    surf_mesh%surf%nnod_4_surf, edge_mesh%edge%nnod_4_edge)
+     &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       end subroutine alloc_zero_mesh_data
 !

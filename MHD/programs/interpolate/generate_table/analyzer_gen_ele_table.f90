@@ -21,8 +21,7 @@
       implicit none
 !
       type(mesh_data), save :: org_femmesh
-      type(surface_geometry), save :: org_surf_mesh
-      type(edge_geometry), save ::  org_edge_mesh
+      type(element_geometry), save :: org_ele_mesh
 !
       type(mesh_geometry), save :: newmesh
       type(mesh_groups), save ::   newgroup
@@ -67,8 +66,8 @@
       iflag_mesh_file_fmt = ifmt_itp_mesh_file
       if (iflag_debug.eq.1) write(*,*) 'input_mesh'
       call input_mesh_data_type(my_rank, org_femmesh,                   &
-     &    org_surf_mesh%surf%nnod_4_surf,                               &
-     &    org_edge_mesh%edge%nnod_4_edge)
+     &    org_ele_mesh%surf%nnod_4_surf,                                &
+     &    org_ele_mesh%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
       call set_nod_and_ele_infos                                        &

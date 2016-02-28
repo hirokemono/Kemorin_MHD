@@ -65,7 +65,7 @@
 !
       call start_eleps_time(2)
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
-      call FEM_initialize_sph_MHD(mesh1, group1)
+      call FEM_initialize_sph_MHD(mesh1, group1, ele_mesh1)
 !
 !        Initialize spherical transform dynamo
       if(iflag_debug .gt. 0) write(*,*) 'SPH_init_sph_snap'

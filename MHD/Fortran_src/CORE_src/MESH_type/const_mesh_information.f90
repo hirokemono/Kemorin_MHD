@@ -7,16 +7,13 @@
 !> @brief Construct mesh strucuture informations
 !!
 !!@verbatim
-!!      subroutine s_const_mesh_types_info                              &
-!!     &         (femmesh, surf_mesh, edge_mesh)
+!!      subroutine s_const_mesh_types_info(my_rank, femmesh, ele_mesh)
 !!        type(mesh_data), intent(in) :: femmesh
-!!        type(surface_geometry), intent(inout) :: surf_mesh
-!!        type(edge_geometry),    intent(inout) :: edge_mesh
+!!        type(element_geometry), intent(inout) :: ele_mesh
 !!
-!!      subroutine empty_mesh_types_info(femmesh, surf_mesh, edge_mesh)
+!!      subroutine empty_mesh_types_info(femmesh, ele_mesh)
 !!        type(mesh_data),      intent(inout) :: femmesh
-!!        type(surface_geometry), intent(inout) :: surf_mesh
-!!        type(edge_geometry),    intent(inout) :: edge_mesh
+!!        type(element_geometry), intent(inout) :: ele_mesh
 !!
 !!      subroutine const_mesh_infos(my_rank, node, ele, surf, edge,     &
 !!     &          nod_grp, ele_grp, surf_grp, tbls_ele_grp, tbls_sf_grp)
@@ -63,18 +60,16 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_const_mesh_types_info                                &
-     &         (my_rank, femmesh, surf_mesh, edge_mesh)
+      subroutine s_const_mesh_types_info(my_rank, femmesh, ele_mesh)
 !
       integer(kind = kint), intent(in) :: my_rank
       type(mesh_data),      intent(inout) :: femmesh
-      type(surface_geometry), intent(inout) :: surf_mesh
-      type(edge_geometry),    intent(inout) :: edge_mesh
+      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
       call const_mesh_infos                                             &
      &   (my_rank, femmesh%mesh%node, femmesh%mesh%ele,                 &
-     &    surf_mesh%surf, edge_mesh%edge,femmesh%group%nod_grp,         &
+     &    ele_mesh%surf, ele_mesh%edge,femmesh%group%nod_grp,           &
      &    femmesh%group%ele_grp, femmesh%group%surf_grp,                &
      &    femmesh%group%tbls_ele_grp, femmesh%group%tbls_surf_grp,      &
      &    femmesh%group%surf_nod_grp)
@@ -83,7 +78,7 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine empty_mesh_types_info(femmesh, surf_mesh, edge_mesh)
+      subroutine empty_mesh_types_info(femmesh, ele_mesh)
 !
       use set_smp_4_group_types
       use set_connects_4_ele_group
@@ -91,8 +86,7 @@
       use set_surf_edge_mesh
 !
       type(mesh_data),      intent(inout) :: femmesh
-      type(surface_geometry), intent(inout) :: surf_mesh
-      type(edge_geometry),    intent(inout) :: edge_mesh
+      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'empty_nod_and_ele_type_infos'
@@ -100,7 +94,7 @@
 !
 !
       call empty_surface_and_edge                                       &
-     &   (femmesh%mesh%ele, surf_mesh%surf, edge_mesh%edge)
+     &   (femmesh%mesh%ele, ele_mesh%surf, ele_mesh%edge)
 !
       femmesh%group%nod_grp%num_grp_smp =  0
       femmesh%group%ele_grp%num_grp_smp =  0

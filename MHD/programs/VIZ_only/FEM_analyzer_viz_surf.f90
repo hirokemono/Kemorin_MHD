@@ -35,8 +35,8 @@
 !
 !     ---------------------
 !
-      call deallocate_surface_geom_type(surfmesh_VIZ%surf)
-      call deallocate_edge_geom_type(edgemesh_VIZ%edge)
+      call deallocate_surface_geom_type(elemesh_VIZ%surf)
+      call deallocate_edge_geom_type(elemesh_VIZ%edge)
 !
       end subroutine FEM_initialize_surface
 !

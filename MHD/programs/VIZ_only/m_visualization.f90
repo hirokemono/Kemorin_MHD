@@ -29,14 +29,9 @@
 !>        (position, connectivity, group, and communication)
       type(mesh_data), save :: femmesh_VIZ
 !
-!>     Structure for element data (communication)
-      type(element_comms), save :: elemesh_VIZ
-!>     Structure for surface data
-!>        (position, connectivity, and communication)
-      type(surface_geometry), save :: surfmesh_VIZ
-!>     Structure for edge data
-!>        (position, connectivity, and communication)
-      type(edge_geometry), save :: edgemesh_VIZ
+!>     Structure for element, surface, and edge mesh
+!!        (position, connectivity, and communication)
+      type(element_geometry), save :: elemesh_VIZ
 !
 !
 !>       Structure for nodal field data
@@ -83,11 +78,10 @@
 !       load mesh informations
       if (iflag_debug.gt.0) write(*,*) 'input_mesh', mesh_file_head
       call input_mesh_data_type(my_rank, femmesh_VIZ,                   &
-     &    surfmesh_VIZ%surf%nnod_4_surf, edgemesh_VIZ%edge%nnod_4_edge)
+     &    elemesh_VIZ%surf%nnod_4_surf, elemesh_VIZ%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call s_const_mesh_types_info(my_rank, femmesh_VIZ,                &
-     &    surfmesh_VIZ, edgemesh_VIZ)
+      call s_const_mesh_types_info(my_rank, femmesh_VIZ, elemesh_VIZ)
 !
       call allocate_vector_for_solver                                   &
      &   (isix, femmesh_VIZ%mesh%node%numnod)
@@ -96,8 +90,7 @@
       call init_send_recv(femmesh_VIZ%mesh%nod_comm)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
-      call const_ele_comm_tbl_global_id(femmesh_VIZ%mesh, elemesh_VIZ,  &
-     &                                  surfmesh_VIZ, edgemesh_VIZ)
+      call const_ele_comm_tbl_global_id(femmesh_VIZ%mesh, elemesh_VIZ)
 !
 !     ---------------------
 !
@@ -146,11 +139,11 @@
 !
       if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
       call const_normal_vector                                          &
-     &   (femmesh_VIZ%mesh%node, surfmesh_VIZ%surf)
+     &   (femmesh_VIZ%mesh%node, elemesh_VIZ%surf)
 !
       if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
       call pick_normal_of_surf_group                                    &
-     &   (surfmesh_VIZ%surf, femmesh_VIZ%group%surf_grp,                &
+     &   (elemesh_VIZ%surf, femmesh_VIZ%group%surf_grp,                 &
      &    femmesh_VIZ%group%tbls_surf_grp,                              &
      &    femmesh_VIZ%group%surf_grp_geom)
 !

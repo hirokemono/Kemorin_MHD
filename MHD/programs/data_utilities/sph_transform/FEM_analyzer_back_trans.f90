@@ -73,11 +73,11 @@
 !
         if (iflag_debug.eq.1) write(*,*)  'const_normal_vector'
         call const_normal_vector                                        &
-     &     (femmesh_STR%mesh%node, surfmesh_STR%surf)
+     &     (femmesh_STR%mesh%node, elemesh_STR%surf)
 !
         if (iflag_debug.eq.1)  write(*,*) 'pick_normal_of_surf_group'
         call pick_normal_of_surf_group                                  &
-     &     (surfmesh_STR%surf, femmesh_STR%group%surf_grp,              &
+     &     (elemesh_STR%surf, femmesh_STR%group%surf_grp,               &
      &      femmesh_STR%group%tbls_surf_grp,                            &
      &      femmesh_STR%group%surf_grp_geom)
 !
@@ -89,7 +89,7 @@
 !  -------------------------------
 !  -------------------------------
 !
-      call deallocate_edge_geom_type(edgemesh_STR%edge)
+      call deallocate_edge_geom_type(elemesh_STR%edge)
 !
 !  connect grid data to volume output
 !

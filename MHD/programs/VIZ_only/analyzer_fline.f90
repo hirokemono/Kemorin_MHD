@@ -65,7 +65,7 @@
 !  Generate field lines
         call FLINE_visualize                                            &
      &     (istep_fline, femmesh_VIZ%mesh%node, femmesh_VIZ%mesh%ele,   &
-     &      surfmesh_VIZ%surf, femmesh_VIZ%group%ele_grp,               &
+     &      elemesh_VIZ%surf, femmesh_VIZ%group%ele_grp,                &
      &      ele_4_nod_VIZ, field_VIZ, femmesh_VIZ%mesh%nod_comm)
       end do
 !

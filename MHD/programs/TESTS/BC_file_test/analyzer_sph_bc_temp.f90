@@ -20,9 +20,7 @@
       implicit none
 !
       type(mesh_data), save :: femmesh
-      type(element_comms), save ::    ele_mesh
-      type(surface_geometry), save :: surf_mesh
-      type(edge_geometry), save ::    edge_mesh
+      type(element_geometry), save :: ele_mesh
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,11 +48,10 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'input_mesh'
       call input_mesh_data_type(my_rank, femmesh,                       &
-     &    surf_mesh%surf%nnod_4_surf, edge_mesh%edge%nnod_4_edge)
+     &    ele_mesh%surf%nnod_4_surf, ele_mesh%edge%nnod_4_edge)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call s_const_mesh_types_info                                      &
-     &   (my_rank, femmesh, surf_mesh, edge_mesh)
+      call s_const_mesh_types_info(my_rank, femmesh, ele_mesh)
 !
        end subroutine initilize_bc_temp
 !

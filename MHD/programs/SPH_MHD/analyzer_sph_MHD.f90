@@ -69,7 +69,7 @@
 !        Initialize FEM mesh data for field data IO
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_w_viz'
-      call FEM_initialize_w_viz(mesh1, group1)
+      call FEM_initialize_w_viz(mesh1, group1, ele_mesh1)
 !
 !        Initialize spherical transform dynamo
 !

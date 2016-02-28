@@ -23,12 +23,10 @@
       implicit none
 !
       type(mesh_data), save :: org_femmesh
-      type(surface_geometry), save :: org_surf_mesh
-      type(edge_geometry), save ::  org_edge_mesh
+      type(element_geometry), save :: org_ele_mesh
 !
       type(mesh_data), save :: new_femmesh
-      type(surface_geometry), save :: new_surf_mesh
-      type(edge_geometry), save ::  new_edge_mesh
+      type(element_geometry), save :: new_ele_mesh
 !
       type(phys_address), save :: iphys_ITP
       type(phys_data), save :: nod_fld_ITP
@@ -64,8 +62,7 @@
 !
       if (iflag_debug.eq.1) write(*,*) 's_input_control_interpolate'
       call s_input_control_interpolate                                  &
-     &   (org_femmesh, org_surf_mesh, org_edge_mesh,                    &
-     &    new_femmesh, new_surf_mesh, new_edge_mesh, ierr)
+     &   (org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh, ierr)
 !
       call set_ctl_interpolate_udt(nod_fld_ITP)
 !

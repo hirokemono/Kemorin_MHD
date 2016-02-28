@@ -2,14 +2,10 @@
       use t_phys_address
 !
       type(mesh_data) :: mesh_fem
-      type(surface_geometry) :: surf_mesh_fem
-      type(edge_geometry) ::    edge_mesh_fem
       type(phys_data) ::        fem_fld
 !
       type(mesh_data) :: mesh_sph
-      type(element_comms) ::    ele_mesh_sph
-      type(surface_geometry) :: surf_mesh_sph
-      type(edge_geometry) ::    edge_mesh_sph
+      type(element_geometry) :: ele_mesh_sph
       type(phys_data) :: sph_fld
 !
       type(interpolate_table), intent(in) :: itp_FEM_2_SPH
@@ -56,10 +52,9 @@
 !
       if (iflag_debug.gt.0) write(*,*) 'input_mesh_data_type'
       call input_mesh_data_type(my_rank, mesh_sph,                      &
-     &                          surf_mesh_sph%surf%nnod_4_surf,         &
-     &                          edge_mesh_sph%edge%nnod_4_edge)
-      call s_const_mesh_types_info                                      &
-     &   (my_rank, mesh_sph, surf_mesh_sph, edge_mesh_sph)
+     &                          ele_mesh_sph%surf%nnod_4_surf,          &
+     &                          ele_mesh_sph%edge%nnod_4_edge)
+      call s_const_mesh_types_info(my_rank, mesh_sph, ele_mesh_sph)
 !
       call alloc_phys_name_type(sph_fld)
       call alloc_phys_data_type(mesh_sph%node%numnod, sph_fld)
@@ -84,8 +79,7 @@
 !
 !     ---------------------
 !
-      call const_ele_comm_tbl_global_id                                 &
-     &   (mesh_sph, ele_mesh_sph, surf_mesh_sph, edge_mesh_sph)
+      call const_ele_comm_tbl_global_id(mesh_sph, ele_mesh_sph)
 !
       end subroutine induction_SPH_initialize
 !

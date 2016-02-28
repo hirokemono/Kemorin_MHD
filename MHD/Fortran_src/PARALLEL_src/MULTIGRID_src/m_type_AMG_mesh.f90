@@ -22,9 +22,7 @@
 !
 !
       type(mesh_data), target, save :: MG_mesh(max_MG_level)
-      type(element_comms), save ::    MG_ele_mesh(max_MG_level)
-      type(surface_geometry), save :: MG_surf_mesh(max_MG_level)
-      type(edge_geometry), save ::    MG_edge_mesh(max_MG_level)
+      type(element_geometry), save ::  MG_ele_mesh(max_MG_level)
 !   mesh data structure
 !
       type(MG_itp_table), save :: MG_itp(max_MG_level)

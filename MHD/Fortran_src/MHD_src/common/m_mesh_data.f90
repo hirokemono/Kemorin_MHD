@@ -23,7 +23,10 @@
       type(mesh_geometry), save :: mesh1
 !>     Structure for group data
       type(mesh_groups), save ::   group1
-!group1%tbls_surf_grp
+!
+!>     Structure for element data (communication)
+      type(element_geometry), save :: ele_mesh1
+!ele_mesh1%ele_comm
 !
 ! ----------------------------------------------------------------------
 !
@@ -74,7 +77,7 @@
       call dealloc_numsurf_stack(surf1)
       call dealloc_numedge_stack(edge1)
 !
-      call deallocate_type_comm_tbl(ele_comm)
+      call deallocate_type_comm_tbl(ele_mesh1%ele_comm)
       call deallocate_type_comm_tbl(surf_comm)
       call deallocate_type_comm_tbl(edge_comm)
 !

@@ -28,14 +28,9 @@
 !>        (position, connectivity, group, and communication)
       type(mesh_data), save :: femmesh_STR
 !
-!>     Structure for element data (communication)
-      type(element_comms), save :: elemesh_STR
-!>     Structure for surface data
-!>        (position, connectivity, and communication)
-      type(surface_geometry), save :: surfmesh_STR
-!>     Structure for edge data
-!>        (position, connectivity, and communication)
-      type(edge_geometry), save :: edgemesh_STR
+!>     Structure for element, surface, and edge mesh
+!!        (position, connectivity, and communication)
+      type(element_geometry), save :: elemesh_STR
 !
 !
 !>       Structure for nodal field data
@@ -83,12 +78,10 @@
       call init_send_recv(femmesh_STR%mesh%nod_comm)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call s_const_mesh_types_info(my_rank,                             &
-     &    femmesh_STR, surfmesh_STR, edgemesh_STR)
+      call s_const_mesh_types_info(my_rank, femmesh_STR, elemesh_STR)
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
-      call const_ele_comm_tbl_global_id                                 &
-     &   (femmesh_STR%mesh, elemesh_STR, surfmesh_STR, edgemesh_STR)
+      call const_ele_comm_tbl_global_id(femmesh_STR%mesh, elemesh_STR)
 !
       if (iflag_debug.gt.0) write(*,*) 'alloc_phys_data_type'
       call alloc_phys_data_type                                         &

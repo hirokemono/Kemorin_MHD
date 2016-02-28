@@ -8,9 +8,10 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
-!!      subroutine FEM_initialize_w_viz(mesh, group)
+!!      subroutine FEM_initialize_w_viz(mesh, group, ele_mesh)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
+!!        type(element_geometry), intent(inout) :: ele_mesh
 !!@endverbatim
 !!
 !!@n @param  i_step       Current time step
@@ -37,7 +38,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_w_viz(mesh, group)
+      subroutine FEM_initialize_w_viz(mesh, group, ele_mesh)
 !
       use m_geometry_data
       use m_t_step_parameter
@@ -53,6 +54,7 @@
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
+      type(element_geometry), intent(inout) :: ele_mesh
 !
 !   --------------------------------
 !       setup mesh information
@@ -61,7 +63,7 @@
 !  --  init FEM mesh data
 !
       if(iflag_debug .gt. 0) write(*,*) 'FEM_initialize_sph_MHD'
-      call FEM_initialize_sph_MHD(mesh, group)
+      call FEM_initialize_sph_MHD(mesh, group, ele_mesh)
 !
 !  -------------------------------
 !

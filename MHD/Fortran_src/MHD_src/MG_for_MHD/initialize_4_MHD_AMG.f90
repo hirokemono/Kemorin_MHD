@@ -87,15 +87,15 @@
      &      MG_mesh(i_level)%group,  MG_MHD_mesh(i_level) )
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            's_const_mesh_types_info', i_level
-          call s_const_mesh_types_info(my_rank, MG_mesh(i_level),       &
-     &        MG_surf_mesh(i_level), MG_edge_mesh(i_level) )
+          call s_const_mesh_types_info                                  &
+     &       (my_rank, MG_mesh(i_level), MG_ele_mesh(i_level))
         else
           call set_empty_layers_type_4_MHD(MG_MHD_mesh(i_level) )
-          call empty_mesh_types_info(MG_mesh(i_level),                  &
-     &      MG_surf_mesh(i_level), MG_edge_mesh(i_level) )
+          call empty_mesh_types_info                                    &
+     &       (MG_mesh(i_level), MG_ele_mesh(i_level))
         end if
 !
-        call deallocate_edge_geom_type(MG_edge_mesh(i_level)%edge)
+        call deallocate_edge_geom_type(MG_ele_mesh(i_level)%edge)
       end do
 !
 !     ---------------------
@@ -129,9 +129,8 @@
         call s_const_comm_tbl_type_fluid(MG_mpi(i_level),               &
      &      MG_mesh(i_level)%mesh, MG_MHD_mesh(i_level) )
 !
-        call const_ele_comm_tbl_global_id(MG_mesh(i_level)%mesh,        &
-     &      MG_ele_mesh(max_MG_level), MG_surf_mesh(i_level),           &
-     &      MG_edge_mesh(i_level))
+        call const_ele_comm_tbl_global_id                               &
+     &     (MG_mesh(i_level)%mesh, MG_ele_mesh(i_level))
       end do
 !
 !     ---------------------
@@ -160,12 +159,12 @@
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'const_jacobian_surface_type', i_level
           call const_jacobian_surface_type(MG_mesh(i_level)%mesh,       &
-     &        MG_surf_mesh(i_level), MG_jacobians(i_level)%jac_2d)
+     &        MG_ele_mesh(i_level), MG_jacobians(i_level)%jac_2d)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            'cal_jacobian_surf_grp_type', i_level
           call cal_jacobian_surf_grp_type(MG_mesh(i_level)%mesh,        &
-     &        MG_surf_mesh(i_level), MG_mesh(i_level)%group,            &
+     &        MG_ele_mesh(i_level), MG_mesh(i_level)%group,             &
      &        MG_jacobians(i_level)%jac_sf_grp)
 !
 !
@@ -181,12 +180,12 @@
 !
           if(iflag_debug .gt. 0) write(*,*)                             &
      &            'empty_jacobian_surface_type', i_level
-          call empty_jacobian_surface_type(MG_surf_mesh(i_level),       &
+          call empty_jacobian_surface_type(MG_ele_mesh(i_level),        &
      &        MG_jacobians(i_level)%jac_2d)
 !
         if(iflag_debug .gt. 0) write(*,*)                               &
      &            'empty_jacobian_surf_grp_type', i_level
-          call empty_jacobian_surf_grp_type(MG_surf_mesh(i_level),      &
+          call empty_jacobian_surf_grp_type(MG_ele_mesh(i_level),       &
      &        MG_mesh(i_level)%group, MG_jacobians(i_level)%jac_sf_grp)
 !
 !
@@ -251,10 +250,10 @@
       do i_level = 1, num_MG_level
         if(iflag_debug .gt. 0) write(*,*)                               &
      &         'int_normal_4_all_surface', i_level
-        call int_normal_4_all_surface(MG_surf_mesh(i_level)%surf,       &
+        call int_normal_4_all_surface(MG_ele_mesh(i_level)%surf,        &
      &      MG_jacobians(i_level)%jac_2d)
         call s_int_surface_param_type(MG_mesh(i_level)%mesh,            &
-     &      MG_surf_mesh(i_level)%surf, MG_mesh(i_level)%group)
+     &      MG_ele_mesh(i_level)%surf, MG_mesh(i_level)%group)
       end do
 !
 !     --------------------- 
@@ -332,7 +331,7 @@
         if(my_rank .lt. MG_mpi(i_level)%nprocs) then
           if (iflag_debug.eq.1) write(*,*) 'set MG matrices', i_level
           call s_set_aiccg_matrices_type(MG_mesh(i_level),              &
-     &      MG_surf_mesh(i_level),  MG_MHD_mesh(i_level),               &
+     &      MG_ele_mesh(i_level),  MG_MHD_mesh(i_level),                &
      &      MG_node_bc(i_level), MG_surf_bc(i_level),                   &
      &      MG_djds_tbl(i_level), MG_djds_tbl_fl(i_level),              &
      &      MG_djds_tbl_cd(i_level), MG_djds_tbl_l(i_level),            &

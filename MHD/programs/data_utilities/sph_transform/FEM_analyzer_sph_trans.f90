@@ -51,7 +51,7 @@
 !
       call mesh_setup_4_SPH_TRANS
 !
-      call deallocate_edge_geom_type(edgemesh_STR%edge)
+      call deallocate_edge_geom_type(elemesh_STR%edge)
 !
 !  -------------------------------
 !

@@ -3,13 +3,13 @@
 !
 !      Written by H. Matsui on Apr., 2012
 !
-!      subroutine init_visualize_pvr_type(fem, sf_mesh_psf, fld_nod)
+!      subroutine init_visualize_pvr_type(fem, ele_mesh_psf, fld_nod)
 !      subroutine visualize_pvr_type(istep_pvr,                         &
-!     &          fem, sf_mesh_psf, jac_3d, fld_nod)
+!     &          fem, ele_mesh_psf, jac_3d, fld_nod)
 !        integer(kind = kint), intent(in) :: istep_pvr
 !        integer(kind = kint), intent(inout) :: ierror
 !        type(mesh_data), intent(in) :: fem
-!        type(surface_geometry), intent(in) :: sf_mesh_psf
+!        type(element_geometry), intent(in) :: ele_mesh_psf
 !        type(phys_data), intent(in) :: fld_nod
 !        type(jacobians_3d), intent(in) :: jac_3d
 !
@@ -32,17 +32,17 @@
 !
 !  ---------------------------------------------------------------------
 !
-      subroutine init_visualize_pvr_type(fem, sf_mesh_psf, fld_nod)
+      subroutine init_visualize_pvr_type(fem, ele_mesh_psf, fld_nod)
 !
       use volume_rendering
 !
       type(mesh_data), intent(in) :: fem
-      type(surface_geometry), intent(in) :: sf_mesh_psf
+      type(element_geometry), intent(in) :: ele_mesh_psf
       type(phys_data), intent(in) :: fld_nod
 !
 !
       call PVR_initialize(fem%mesh%node, fem%mesh%ele,                  &
-     &      sf_mesh_psf%surf, fem%group%ele_grp, fld_nod)
+     &    ele_mesh_psf%surf, fem%group%ele_grp, fld_nod)
       call calypso_MPI_barrier
 !
       end subroutine init_visualize_pvr_type
@@ -50,7 +50,7 @@
 !  ---------------------------------------------------------------------
 !
       subroutine visualize_pvr_type(istep_pvr,                          &
-     &          fem, sf_mesh_psf, jac_3d, fld_nod)
+     &          fem, ele_mesh_psf, jac_3d, fld_nod)
 !
       use t_jacobian_3d
       use volume_rendering
@@ -58,13 +58,13 @@
       integer(kind = kint), intent(in) :: istep_pvr
 !
       type(mesh_data), intent(in) :: fem
-      type(surface_geometry), intent(in) :: sf_mesh_psf
+      type(element_geometry), intent(in) :: ele_mesh_psf
       type(phys_data), intent(in) :: fld_nod
       type(jacobians_3d), intent(in) :: jac_3d
 !
 !
       call PVR_visualize(istep_pvr, fem%mesh%node, fem%mesh%ele,        &
-     &    sf_mesh_psf%surf, jac_3d, fld_nod)
+     &    ele_mesh_psf%surf, jac_3d, fld_nod)
 !
       end subroutine visualize_pvr_type
 !

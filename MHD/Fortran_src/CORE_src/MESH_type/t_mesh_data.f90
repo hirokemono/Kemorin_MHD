@@ -25,10 +25,8 @@
 !      subroutine dealloc_mesh_type(mesh)
 !      subroutine dealloc_groups_data(group)
 !
-!      subroutine dealloc_ele_surf_edge_type                            &
-!     &          (ele_mesh, surf_mesh, edge_mesh)
-!      subroutine dealloc_surf_mesh_type(surf_mesh)
-!      subroutine dealloc_edge_mesh_type(my_rank, mesh)
+!      subroutine dealloc_ele_surf_edge_type(ele_mesh)
+!      subroutine check_smp_size_surf_edge_type(ele_mesh)
 !
       module t_mesh_data
 !
@@ -94,30 +92,24 @@
       end type mesh_data
 !
 !
-!
-!>     Structure for element data (communication)
-      type element_comms
+!>     Structure for element, surface, and edge mesh
+!!        (position, connectivity, and communication)
+      type element_geometry
 !>     Structure for element communication
         type(communication_table) :: ele_comm
-      end type element_comms
 !
-!>     Structure for surface data
-!>        (position, connectivity, and communication)
-      type surface_geometry
 !>     Structure for surface communication
         type(communication_table) :: surf_comm
 !>     Structure for surface position and connectivity
         type(surface_data) ::        surf
-      end type surface_geometry
 !
-!>     Structure for edge data
-!>        (position, connectivity, and communication)
-      type edge_geometry
 !>     Structure for edge communication
         type(communication_table) :: edge_comm
 !>     Structure for edge position and connectivity
         type(edge_data) ::           edge
-      end type edge_geometry
+      end type element_geometry
+!
+      private :: dealloc_surf_mesh_type, dealloc_edge_mesh_type
 !
 !------------------------------------------------------------------
 !
@@ -318,43 +310,40 @@
 !
 !   --------------------------------------------------------------------
 !
-      subroutine dealloc_ele_surf_edge_type                            &
-     &          (ele_mesh, surf_mesh, edge_mesh)
+      subroutine dealloc_ele_surf_edge_type(ele_mesh)
 !
-      type(element_comms), intent(inout) :: ele_mesh
-      type(surface_geometry), intent(inout) :: surf_mesh
-      type(edge_geometry), intent(inout) ::    edge_mesh
+      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
       call deallocate_type_comm_tbl(ele_mesh%ele_comm)
 !
-      call dealloc_surf_mesh_type(surf_mesh)
-      call dealloc_edge_mesh_type(edge_mesh)
+      call dealloc_surf_mesh_type(ele_mesh)
+      call dealloc_edge_mesh_type(ele_mesh)
 !
       end subroutine dealloc_ele_surf_edge_type
 !
 !------------------------------------------------------------------
 !
-      subroutine dealloc_surf_mesh_type(surf_mesh)
+      subroutine dealloc_surf_mesh_type(ele_mesh)
 !
-      type(surface_geometry), intent(inout) :: surf_mesh
+      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
-      call deallocate_type_comm_tbl(surf_mesh%surf_comm)
-      call deallocate_surface_connect_type(surf_mesh%surf)
+      call deallocate_type_comm_tbl(ele_mesh%surf_comm)
+      call deallocate_surface_connect_type(ele_mesh%surf)
 !
       end subroutine dealloc_surf_mesh_type
 !
 !------------------------------------------------------------------
 !
-      subroutine dealloc_edge_mesh_type(edge_mesh)
+      subroutine dealloc_edge_mesh_type(ele_mesh)
 !
-      type(edge_geometry), intent(inout) :: edge_mesh
+      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
-      call deallocate_type_comm_tbl(edge_mesh%edge_comm)
-      call deallocate_edge_connect_type(edge_mesh%edge)
-      call deallocate_edge_4_ele_type(edge_mesh%edge)
+      call deallocate_type_comm_tbl(ele_mesh%edge_comm)
+      call deallocate_edge_connect_type(ele_mesh%edge)
+      call deallocate_edge_4_ele_type(ele_mesh%edge)
 !
       end subroutine dealloc_edge_mesh_type
 !
@@ -378,16 +367,15 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine check_smp_size_surf_edge_type(surf_mesh, edge_mesh)
+      subroutine check_smp_size_surf_edge_type(ele_mesh)
 !
-      type(surface_geometry), intent(inout) :: surf_mesh
-      type(edge_geometry), intent(inout) ::  edge_mesh
+      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
-      write(*,*) 'surf_mesh%surfistack_surf_smp ',                      &
-     &           surf_mesh%surf%istack_surf_smp
-      write(*,*) 'edge_mesh%edge%istack_edge_smp ',                     &
-     &           edge_mesh%edge%istack_edge_smp
+      write(*,*) 'ele_mesh%surfistack_surf_smp ',                       &
+     &           ele_mesh%surf%istack_surf_smp
+      write(*,*) 'ele_mesh%edge%istack_edge_smp ',                      &
+     &           ele_mesh%edge%istack_edge_smp
 !
       end subroutine check_smp_size_surf_edge_type
 !

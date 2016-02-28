@@ -32,8 +32,7 @@
       type(edge_data), save :: org_edge
 !
       type(mesh_data), save :: refined_fem
-      type(surface_geometry), save :: finer_surfmesh
-      type(edge_geometry), save ::  finer_edgemesh
+      type(element_geometry), save :: finer_elemesh
 !
 !   --------------------------------------------------------------------
 !
@@ -197,8 +196,8 @@
         call s_refined_ele_2_mesh_data(refined_fem%mesh%ele)
         call set_3D_nnod_4_sfed_by_ele                                  &
      &     (refined_fem%mesh%ele%nnod_4_ele,                            &
-     &      finer_surfmesh%surf%nnod_4_surf,                            &
-     &      finer_edgemesh%edge%nnod_4_edge)
+     &      finer_elemesh%surf%nnod_4_surf,                             &
+     &      finer_elemesh%edge%nnod_4_edge)
 !
         call set_hanging_nodes(org_surf%numsurf, org_surf%nnod_4_surf,  &
      &      org_edge%numedge, org_edge%nnod_4_edge,                     &
@@ -235,8 +234,8 @@
      &      org_mesh%node, org_mesh%ele, org_surf, org_edge,            &
      &      org_group%nod_grp, org_group%ele_grp, org_group%surf_grp)
 !
-        org_surf%nnod_4_surf = finer_surfmesh%surf%nnod_4_surf
-        org_edge%nnod_4_edge = finer_edgemesh%edge%nnod_4_edge
+        org_surf%nnod_4_surf = finer_elemesh%surf%nnod_4_surf
+        org_edge%nnod_4_edge = finer_elemesh%edge%nnod_4_edge
       end do
 !
       iflag_mesh_file_fmt = ifile_type

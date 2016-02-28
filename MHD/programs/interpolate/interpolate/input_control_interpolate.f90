@@ -4,8 +4,8 @@
 !     Written by H. Matsui on July, 2006
 !
 !      subroutine s_input_control_interpolate                           &
-!     &         (org_femmesh, org_surf_mesh, org_edge_mesh,             &
-!     &          new_femmesh, new_surf_mesh, new_edge_mesh, ierr)
+!     &         (org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,  &
+!     &          ierr)
 !      subroutine set_ctl_interpolate_udt(nod_fld)
 !
       module input_control_interpolate
@@ -24,8 +24,8 @@
 ! ----------------------------------------------------------------------
 !
       subroutine s_input_control_interpolate                            &
-     &         (org_femmesh, org_surf_mesh, org_edge_mesh,              &
-     &          new_femmesh, new_surf_mesh, new_edge_mesh, ierr)
+     &         (org_femmesh, org_ele_mesh, new_femmesh, new_ele_mesh,   &
+     &          ierr)
 !
       use t_mesh_data
 !
@@ -45,12 +45,10 @@
       use interpolate_nod_field_2_type
 !
       type(mesh_data), intent(inout) :: org_femmesh
-      type(surface_geometry), intent(inout) :: org_surf_mesh
-      type(edge_geometry), intent(inout) ::  org_edge_mesh
+      type(element_geometry), intent(inout) :: org_ele_mesh
 !
       type(mesh_data), intent(inout) :: new_femmesh
-      type(surface_geometry), intent(inout) :: new_surf_mesh
-      type(edge_geometry), intent(inout) ::  new_edge_mesh
+      type(element_geometry), intent(inout) :: new_ele_mesh
       integer(kind = kint), intent(inout) :: ierr
 !
 !
@@ -68,8 +66,8 @@
         mesh_file_head = org_mesh_head
         iflag_mesh_file_fmt = ifmt_org_mesh_file
         call input_mesh_data_type(my_rank, org_femmesh,                 &
-     &     org_surf_mesh%surf%nnod_4_surf,                              &
-     &     org_edge_mesh%edge%nnod_4_edge)
+     &     org_ele_mesh%surf%nnod_4_surf,                               &
+     &     org_ele_mesh%edge%nnod_4_edge)
 !
         if (iflag_debug.eq.1) write(*,*) 'set_nod_and_ele_infos'
         call set_nod_and_ele_infos                                      &
@@ -83,8 +81,8 @@
         mesh_file_head = dest_mesh_head
         iflag_mesh_file_fmt = ifmt_itp_mesh_file
         call input_mesh_data_type(my_rank, new_femmesh,                 &
-     &      new_surf_mesh%surf%nnod_4_surf,                             &
-     &      new_edge_mesh%edge%nnod_4_edge)
+     &      new_ele_mesh%surf%nnod_4_surf,                              &
+     &      new_ele_mesh%edge%nnod_4_edge)
         call allocate_overlaped_ele_type(new_femmesh%mesh%ele)
       end if
 !

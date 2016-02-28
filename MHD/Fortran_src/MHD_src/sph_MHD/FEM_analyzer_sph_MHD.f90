@@ -8,9 +8,10 @@
 !!       to FEM data for data visualization
 !!
 !!@verbatim
-!!      subroutine FEM_initialize_sph_MHD(mesh, group)
+!!      subroutine FEM_initialize_sph_MHD(mesh, group, ele_mesh)
 !!        type(mesh_geometry), intent(inout) :: mesh
 !!        type(mesh_groups), intent(inout) ::   group
+!!        type(element_geometry), intent(inout) :: ele_mesh
 !!      subroutine FEM_analyze_sph_MHD(i_step                           &
 !!     &          istep_psf, istep_iso, istep_pvr, istep_fline, visval)
 !!      subroutine FEM_finalize
@@ -45,7 +46,7 @@
 !
 !-----------------------------------------------------------------------
 !
-      subroutine FEM_initialize_sph_MHD(mesh, group)
+      subroutine FEM_initialize_sph_MHD(mesh, group, ele_mesh)
 !
       use m_nod_comm_table
       use m_geometry_data
@@ -65,6 +66,7 @@
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
+      type(element_geometry), intent(inout) :: ele_mesh
 !
 !
       if (iflag_debug.gt.0) write(*,*) 'set_local_node_id_4_monitor'
@@ -88,7 +90,7 @@
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
       call const_element_comm_tbls(mesh%node, mesh%ele, surf1, edge1,   &
-     &    mesh%nod_comm, ele_comm, surf_comm, edge_comm)
+     &    mesh%nod_comm, ele_mesh%ele_comm, surf_comm, edge_comm)
 !
       call deallocate_surface_geom_type(surf1)
       call deallocate_edge_geom_type(edge1)

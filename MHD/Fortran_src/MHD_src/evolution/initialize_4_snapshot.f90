@@ -3,8 +3,11 @@
 !
 !      Written by H. Matsui
 !
-!!      subroutine init_analyzer_snap(mesh, MHD_mesh, layer_tbl)
+!!      subroutine init_analyzer_snap(mesh, group, ele_mesh,            &
+!!     &          MHD_mesh, layer_tbl)
 !!        type(mesh_geometry), intent(inout) :: mesh
+!!        type(mesh_groups), intent(inout) ::   group
+!!        type(element_geometry), intent(inout) :: ele_mesh
 !!        type(mesh_data_MHD), intent(inout) :: MHD_mesh
 !!        type(layering_tbl), intent(inout) :: layer_tbl
 !
@@ -20,7 +23,8 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine init_analyzer_snap(mesh, group, MHD_mesh, layer_tbl)
+      subroutine init_analyzer_snap(mesh, group, ele_mesh,              &
+     &          MHD_mesh, layer_tbl)
 !
       use calypso_mpi
       use m_machine_parameter
@@ -79,6 +83,7 @@
 !
       type(mesh_geometry), intent(inout) :: mesh
       type(mesh_groups), intent(inout) ::   group
+      type(element_geometry), intent(inout) :: ele_mesh
       type(mesh_data_MHD), intent(inout) :: MHD_mesh
       type(layering_tbl), intent(inout) :: layer_tbl
 !
@@ -113,7 +118,7 @@
 !
       if(iflag_debug.gt.0) write(*,*)' const_element_comm_tbls'
       call const_element_comm_tbls(mesh%node, mesh%ele, surf1, edge1,   &
-     &    mesh%nod_comm, ele_comm, surf_comm, edge_comm)
+     &    mesh%nod_comm, ele_mesh%ele_comm, surf_comm, edge_comm)
 !
       if(i_debug .eq. iflag_full_msg) then
         call check_whole_num_of_elements(mesh%ele)

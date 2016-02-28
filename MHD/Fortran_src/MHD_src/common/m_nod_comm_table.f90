@@ -17,7 +17,7 @@
       implicit  none
 !
 !> data structure for element communication table
-      type(communication_table), save :: ele_comm
+!      type(communication_table), save :: ele_comm
 !> data structure for surface communication table
       type(communication_table), save :: surf_comm
 !> data structure for edge communication table

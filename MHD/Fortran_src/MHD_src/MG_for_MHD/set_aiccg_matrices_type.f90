@@ -4,7 +4,7 @@
 !        programmed H.Matsui on Dec., 2008
 !
 !
-!      subroutine s_set_aiccg_matrices_type(femmesh, sf_mesh,           &
+!      subroutine s_set_aiccg_matrices_type(femmesh, ele_mesh,          &
 !     &          MHD_mesh, nodal_bc, surface_bc, djds_tbl, djds_tbl_fl, &
 !     &          djds_tbl_cd, djds_tbl_l, djds_tbl_fl_l,                &
 !     &          jacobians, ak_AMG, rhs_tbl, djds_const,                &
@@ -12,7 +12,7 @@
 !     &          mk_MHD, MG_FEM_mat, mat_velo, mat_magne,               &
 !     &          mat_temp, mat_d_scalar ,mat_press, mat_magp)
 !        type(mesh_data), intent(in) ::             femmesh
-!        type(surface_geometry), intent(in) ::       sf_mesh
+!        type(element_geometry), intent(in) ::      ele_mesh
 !        type(mesh_data_MHD), intent(in) ::          MHD_mesh
 !        type(nodal_boundarty_conditions), intent(in) ::   nodal_bc
 !        type(surface_boundarty_conditions), intent(in) :: surface_bc
@@ -48,7 +48,7 @@
 !
 ! -----------------------------------------------------------------------
 !
-      subroutine s_set_aiccg_matrices_type(femmesh, sf_mesh,            &
+      subroutine s_set_aiccg_matrices_type(femmesh, ele_mesh,           &
      &          MHD_mesh, nodal_bc, surface_bc, djds_tbl, djds_tbl_fl,  &
      &          djds_tbl_cd, djds_tbl_l, djds_tbl_fl_l,                 &
      &          jacobians, ak_AMG, rhs_tbl, djds_const,                 &
@@ -77,7 +77,7 @@
       use int_crank_mat_consist_type
 !
       type(mesh_data), intent(in) ::             femmesh
-      type(surface_geometry), intent(in) ::       sf_mesh
+      type(element_geometry), intent(in) ::      ele_mesh
       type(mesh_data_MHD), intent(in) ::          MHD_mesh
       type(nodal_boundarty_conditions), intent(in) ::   nodal_bc
       type(surface_boundarty_conditions), intent(in) :: surface_bc
@@ -139,7 +139,7 @@
 !
 !     set boundary conditions
 !
-      call s_set_aiccg_bc_phys_type(femmesh, sf_mesh%surf,              &
+      call s_set_aiccg_bc_phys_type(femmesh, ele_mesh%surf,             &
      &     nodal_bc, surface_bc, jacobians%jac_sf_grp,                  &
      &     ak_AMG, djds_tbl, djds_tbl_fl, djds_tbl_l, djds_tbl_fl_l,    &
      &     MG_FEM_mat%fem_wk, mat_velo, mat_magne, mat_temp,            &

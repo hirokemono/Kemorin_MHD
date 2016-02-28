@@ -65,8 +65,8 @@
       call s_input_control_corr_udt(field_FUTIL, ucd_FUTIL)
       if (iflag_debug.eq.1) write(*,*) 'input_mesh_data_type'
       call input_mesh_data_type                                         &
-     &   (my_rank, femmesh_FUTIL, surfmesh_FUTIL%surf%nnod_4_surf,      &
-     &    edgemesh_FUTIL%edge%nnod_4_edge)
+     &   (my_rank, femmesh_FUTIL, elemesh_FUTIL%surf%nnod_4_surf,       &
+     &    elemesh_FUTIL%edge%nnod_4_edge)
 !
 !     --------------------- 
 !
@@ -82,10 +82,10 @@
       call init_send_recv(femmesh_FUTIL%mesh%nod_comm)
 !
       if (iflag_debug.eq.1) write(*,*) 'const_mesh_infos'
-      call s_const_mesh_types_info(my_rank, femmesh_FUTIL,              &
-     &    surfmesh_FUTIL, edgemesh_FUTIL)
-      call const_ele_comm_tbl_global_id(femmesh_FUTIL%mesh,             &
-     &    elemesh_FUTIL, surfmesh_FUTIL, edgemesh_FUTIL)
+      call s_const_mesh_types_info                                      &
+     &   (my_rank, femmesh_FUTIL, elemesh_FUTIL)
+      call const_ele_comm_tbl_global_id                                 &
+     &   (femmesh_FUTIL%mesh, elemesh_FUTIL)
 !
 !     --------------------- 
 !
