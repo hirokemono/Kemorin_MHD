@@ -61,7 +61,8 @@
         call init_33_matrix_lump                                        &
      &     (node%numnod, fluid%numnod_fld, fluid%inod_fld,              &
      &      DJDS_fluid%OLDtoNEW, mhd_fem_wk%mlump_fl%ml_o,              &
-     &      Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
+     &      MHD1_matrices%Vmat_MG_DJDS(0)%num_non0,                     &
+     &      MHD1_matrices%Vmat_MG_DJDS(0)%aiccg)
       end if
 !
       if (iflag_t_evo_4_temp .eq. id_Crank_nicolson                     &

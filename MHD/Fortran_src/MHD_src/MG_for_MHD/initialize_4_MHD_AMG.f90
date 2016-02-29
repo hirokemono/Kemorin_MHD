@@ -33,6 +33,7 @@
       use t_edge_data
       use t_surface_data
 !
+      use m_solver_djds_MHD
       use m_type_AMG_data
       use m_boundary_condition_IDs
       use set_layers_4_MHD_AMG
@@ -299,13 +300,13 @@
           if(iflag_debug .gt. 0) write(*,*) 'alloc_MG_AMG_matrices'
           call alloc_MG_AMG_matrices( MG_mesh(i_level),                 &
      &      MG_djds_tbl(i_level), MG_djds_tbl_fl(i_level),              &
-     &      MG_mat_velo(i_level), MG_mat_magne(i_level),                &
+     &      MHD1_matrices%Vmat_MG_DJDS(i_level), MG_mat_magne(i_level), &
      &      MG_mat_temp(i_level),  MG_mat_d_scalar(i_level),            &
      &      MG_mat_press(i_level), MG_mat_magp(i_level) )
         else
           if(iflag_debug .gt. 0) write(*,*) 'alloc_MG_zero_matrices'
           call alloc_MG_zero_matrices                                   &
-     &     (MG_mat_velo(i_level), MG_mat_magne(i_level),                &
+     &     (MHD1_matrices%Vmat_MG_DJDS(i_level), MG_mat_magne(i_level), &
      &      MG_mat_temp(i_level),  MG_mat_d_scalar(i_level),            &
      &      MG_mat_press(i_level), MG_mat_magp(i_level) )
         end if
@@ -318,6 +319,7 @@
       subroutine const_MGCG_MHD_matrices
 !
       use m_ctl_parameter_Multigrid
+      use m_solver_djds_MHD
       use link_djds_mat_MHD_4_MG
       use set_aiccg_matrices_type
       use matrices_precond_type
@@ -325,8 +327,8 @@
       integer(kind = kint) :: i_level
 !
 !
-      call s_link_djds_mat_MHD_4_MG(MG_mat_velo(0), MG_mat_magne(0),    &
-     &    MG_mat_temp(0), MG_mat_d_scalar(0),                           &
+      call s_link_djds_mat_MHD_4_MG                                     &
+     &   (MG_mat_magne(0), MG_mat_temp(0), MG_mat_d_scalar(0),          &
      &    MG_mat_press(0), MG_mat_magp(0))
 !
       do i_level = 1, num_MG_level
@@ -344,7 +346,7 @@
      &      MG_djds_const_idx_l(i_level),                               &
      &      MG_djds_const_idx_fll(i_level), MG_filter_MHD(i_level),     &
      &      MG_mk_MHD(i_level), MG_FEM_mat(i_level),                    &
-     &      MG_mat_velo(i_level), MG_mat_magne(i_level),                &
+     &      MHD1_matrices%Vmat_MG_DJDS(i_level), MG_mat_magne(i_level), &
      &      MG_mat_temp(i_level), MG_mat_d_scalar(i_level),             &
      &      MG_mat_press(i_level), MG_mat_magp(i_level) )
         end if
@@ -356,7 +358,7 @@
           call s_matrices_precond_type(PRECOND_MG,                      &
      &      MG_djds_tbl(i_level), MG_djds_tbl_fl(i_level),              &
      &      MG_djds_tbl_l(i_level),  MG_djds_tbl_fll(i_level),          &
-     &      MG_mat_velo(i_level), MG_mat_magne(i_level),                &
+     &      MHD1_matrices%Vmat_MG_DJDS(i_level), MG_mat_magne(i_level), &
      &      MG_mat_temp(i_level), MG_mat_d_scalar(i_level),             &
      &      MG_mat_press(i_level), MG_mat_magp(i_level) )
         end if

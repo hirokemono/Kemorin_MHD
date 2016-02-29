@@ -8,7 +8,8 @@
 !!      subroutine cal_velo_pre_lumped_crank                            &
 !!     &         (iak_diff_v, nod_comm, node, ele, fluid,               &
 !!     &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,           &
-!!     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          FEM_elens, Vmat_MG_DJDS, mhd_fem_wk, fem_wk,          &
+!!     &          f_l, f_nl, nod_fld)
 !!      subroutine cal_vect_p_pre_lumped_crank                          &
 !!     &         (i_vecp, i_pre_uxb, iak_diff_b, nod_bc_a,              &
 !!     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,     &
@@ -50,6 +51,7 @@
 !!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
 !!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_c
 !!        type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
+!!        type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
 !!        type(phys_data), intent(inout) :: nod_fld
@@ -75,6 +77,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_nodal_bc_data
+      use t_solver_djds
 !
       implicit none
 !
@@ -87,7 +90,8 @@
       subroutine cal_velo_pre_lumped_crank                              &
      &         (iak_diff_v, nod_comm, node, ele, fluid,                 &
      &          iphys, iphys_ele, ele_fld, jac_3d, rhs_tbl,             &
-     &          FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          FEM_elens, Vmat_MG_DJDS, mhd_fem_wk, fem_wk,            &
+     &          f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
       use m_solver_djds_MHD
@@ -115,6 +119,8 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(work_MHD_fe_mat), intent(in) :: mhd_fem_wk
+!
+      type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
 !
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -147,9 +153,9 @@
      &    n_vector, iphys%i_velo, iphys%i_pre_mom, nod_fld%d_fld,       &
      &    f_l%ff)
 !
-      call solver_crank_vector                                          &
-     &   (node, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS, num_MG_level,      &
-     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, MG_mat_velo,              &
+      call solver_crank_vector(node,                                    &
+     &    DJDS_comm_fl, DJDS_fluid, Vmat_MG_DJDS(0), num_MG_level,      &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, Vmat_MG_DJDS,             &
      &    method_4_velo, precond_4_crank, eps_4_velo_crank, itr,        &
      &    iphys%i_velo, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !

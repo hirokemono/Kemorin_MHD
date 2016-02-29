@@ -17,8 +17,8 @@
 !!
 !!      subroutine cal_velocity_co_imp(i_velo,                          &
 !!     &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,       &
-!!     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,       &
-!!     &          f_l, f_nl, nod_fld)
+!!     &          jac_3d, rhs_tbl, FEM_elens, Vmat_MG_DJDS, mhd_fem_wk, &
+!!     &          fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vector_p_co_imp(i_vecp,                          &
 !!     &          nod_comm, node, ele, conduct, iphys_ele, ele_fld,     &
 !!     &          jac_3d, rhs_tbl, FEM_elens, m1_lump,                  &
@@ -61,6 +61,7 @@
       use t_finite_element_mat
       use t_MHD_finite_element_mat
       use t_filter_elength
+      use t_solver_djds
 !
       implicit none
 !
@@ -183,7 +184,7 @@
 !
       subroutine cal_velocity_co_imp(i_velo,                            &
      &          nod_comm, node, ele, fluid, iphys_ele, ele_fld,         &
-     &          jac_3d, rhs_tbl, FEM_elens, mhd_fem_wk,                 &
+     &          jac_3d, rhs_tbl, FEM_elens, Vmat_MG_DJDS, mhd_fem_wk,   &
      &          fem_wk, f_l, f_nl, nod_fld)
 !
       use m_iccg_parameter
@@ -215,6 +216,8 @@
       type(jacobians_3d), intent(in) :: jac_3d
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
+!
+      type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -255,9 +258,9 @@
 !
 !
       if (iflag_debug.eq.1) write(*,*) 'cal_sol_velo_pre_crank'
-      call solver_crank_vector                                          &
-     &   (node, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS, num_MG_level,      &
-     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, MG_mat_velo,              &
+      call solver_crank_vector(node,                                    &
+     &   DJDS_comm_fl, DJDS_fluid, Vmat_MG_DJDS(0), num_MG_level,       &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, Vmat_MG_DJDS,             &
      &    method_4_velo, precond_4_crank, eps_4_velo_crank, itr,        &
      &    i_velo, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !

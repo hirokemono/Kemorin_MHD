@@ -44,7 +44,7 @@
 !
         if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
           call alloc_type_djds33_mat(node%numnod, node%internal_node,   &
-     &        DJDS_fluid, Vmat_DJDS)
+     &        DJDS_fluid, MHD1_matrices%Vmat_MG_DJDS(0))
         end if
       end if
 !
@@ -94,8 +94,8 @@
 !
         if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
           call reset_aiccg_33_MHD(node, ele,                            &
-     &        fluid%iele_start_fld, fluid%iele_end_fld,                 &
-     &        ele%nnod_4_ele, DJDS_fluid, Vmat_DJDS)
+     &        fluid%iele_start_fld, fluid%iele_end_fld, ele%nnod_4_ele, &
+     &        DJDS_fluid, MHD1_matrices%Vmat_MG_DJDS(0))
         end if
       end if
 !
@@ -142,7 +142,7 @@
         call dealloc_type_djds_mat(Pmat_DJDS)
 !
         if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-          call dealloc_type_djds_mat(Vmat_DJDS)
+          call dealloc_type_djds_mat(MHD1_matrices%Vmat_MG_DJDS(0))
         end if
       end if
 !

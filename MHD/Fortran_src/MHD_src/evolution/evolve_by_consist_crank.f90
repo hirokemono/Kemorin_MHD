@@ -8,7 +8,7 @@
 !!      subroutine cal_velo_pre_consist_crank                           &
 !!     &         (i_velo, i_pre_mom, iak_diff_v,                        &
 !!     &          node, ele, fluid, jac_3d, rhs_tbl, FEM_elens,         &
-!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!     &          Vmat_MG_DJDS, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!      subroutine cal_vect_p_pre_consist_crank                         &
 !!     &         (i_vecp, i_pre_uxb, iak_diff_b, nod_bc_a,              &
 !!     &          node, ele, conduct, jac_3d, rhs_tbl, FEM_elens,       &
@@ -41,6 +41,7 @@
 !!        type(vect_fixed_nod_bc_type), intent(in) :: nod_bc_b
 !!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_t
 !!        type(scaler_fixed_nod_bc_type), intent(in) :: nod_bc_c
+!!        type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -67,6 +68,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_nodal_bc_data
+      use t_solver_djds
 !
       implicit none
 !
@@ -79,7 +81,7 @@
       subroutine cal_velo_pre_consist_crank                             &
      &         (i_velo, i_pre_mom, iak_diff_v,                          &
      &          node, ele, fluid, jac_3d, rhs_tbl, FEM_elens,           &
-     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &          Vmat_MG_DJDS, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_phys_constants
       use m_iccg_parameter
@@ -105,6 +107,8 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
+      type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
+!
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -127,12 +131,11 @@
       call set_boundary_velo_4_rhs(node, f_l, f_nl)
 !
       call cal_vector_pre_consist(node, coef_velo,                      &
-     &    n_vector, i_pre_mom, nod_fld, rhs_tbl,                        &
-     &    mhd_fem_wk, f_nl, f_l)
+     &    n_vector, i_pre_mom, nod_fld, rhs_tbl, mhd_fem_wk, f_nl, f_l)
 !
-      call solver_crank_vector                                          &
-     &   (node, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS, num_MG_level,      &
-     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, MG_mat_velo,              &
+      call solver_crank_vector(node,                                    &
+     &    DJDS_comm_fl, DJDS_fluid, Vmat_MG_DJDS(0), num_MG_level,      &
+     &    MG_itp, MG_comm_fl, MG_djds_tbl_fl, Vmat_MG_DJDS,             &
      &    method_4_velo, precond_4_crank, eps_4_velo_crank, itr,        &
      &    i_velo, MG_vector, f_l, b_vec, x_vec, nod_fld)
 !

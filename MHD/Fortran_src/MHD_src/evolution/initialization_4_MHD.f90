@@ -281,14 +281,15 @@
 !
 !     ---------------------
 !
+      if(solver_iflag(method_4_solver) .eq. iflag_mgcg) then
+        call alloc_MHD_MG_DJDS_mat(num_MG_level, MHD1_matrices)
+      else
+        call alloc_MHD_MG_DJDS_mat(izero, MHD1_matrices)
+      end if
+!
       if (iflag_debug.eq.1 ) write(*,*) 'allocate_aiccg_matrices'
       call allocate_aiccg_matrices(mesh%node)
       call reset_aiccg_matrices(mesh%node, mesh%ele, MHD_mesh%fluid)
-!
-!     --------------------- 
-!
-      if (iflag_debug.eq.1) write(*,*) 'cal_stability_4_diffuse'
-      call cal_stability_4_diffuse(mesh%ele)
 !
 !     ---------------------
 !
@@ -296,6 +297,11 @@
         call s_initialize_4_MHD_AMG                                     &
      &     (mesh%nod_comm, mesh%node, mesh%ele)
       end if
+!
+!     --------------------- 
+!
+      if (iflag_debug.eq.1) write(*,*) 'cal_stability_4_diffuse'
+      call cal_stability_4_diffuse(mesh%ele)
 !
 !     ---------------------
 !

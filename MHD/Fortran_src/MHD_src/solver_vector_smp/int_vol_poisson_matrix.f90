@@ -101,7 +101,7 @@
         call choose_int_diffuse3_crank_mat(ele, jac_3d,                 &
      &      rhs_tbl, mat_tbl_fl_q, FEM_elens, intg_point_t_evo,         &
      &      num_diff_kinds, iak_diff_v, ak_diff, coef_imp_v,            &
-     &      ak_d_velo, fem_wk, Vmat_DJDS)
+     &      ak_d_velo, fem_wk, MHD1_matrices%Vmat_MG_DJDS(0))
       end if
 !
       if (iflag_t_evo_4_magne .ge. id_Crank_nicolson) then

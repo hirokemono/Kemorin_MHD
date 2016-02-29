@@ -59,8 +59,10 @@
 !
       if ( iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
         call write_MHD_djds_mat33                                       &
-     &      (fhead_velo_mat, DJDS_comm_fl, DJDS_fluid, Vmat_DJDS,       &
-     &       num_MG_level, MG_comm_fl, MG_djds_tbl_fl, MG_mat_velo)
+     &      (fhead_velo_mat, DJDS_comm_fl, DJDS_fluid,                  &
+     &       MHD1_matrices%Vmat_MG_DJDS(0),                             &
+     &       num_MG_level, MG_comm_fl, MG_djds_tbl_fl,                  &
+     &       MHD1_matrices%Vmat_MG_DJDS)
       end if
 !
       if ( iflag_t_evo_4_temp .ge. id_Crank_nicolson) then

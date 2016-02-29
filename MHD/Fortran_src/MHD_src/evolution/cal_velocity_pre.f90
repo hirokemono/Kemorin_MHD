@@ -5,15 +5,16 @@
 !                                    on July 2000 (ver 1.1)
 !        modieied by H. Matsui on Sep., 2005
 !
-!!      subroutine s_cal_velocity_pre(nod_comm, node, ele, surf, fluid,&
-!!     &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,       &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,&
-!!     &          layer_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
-!!      subroutine cal_velocity_co(nod_comm, node, ele, surf, fluid,   &
-!!     &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,       &
-!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,      &
-!!     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,              &
-!!     &          f_l, f_nl, nod_fld)
+!!      subroutine s_cal_velocity_pre(nod_comm, node, ele, surf, fluid, &
+!!     &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,        &
+!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens, &
+!!     &          layer_tbl, num_MG_level, Vmat_MG_DJDS,                &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+!!      subroutine cal_velocity_co(nod_comm, node, ele, surf, fluid,    &
+!!     &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,        &
+!!     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,       &
+!!     &          rhs_tbl, FEM_elens, num_MG_level, Vmat_MG_DJDS,       &
+!!     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !!        type(communication_table), intent(in) :: nod_comm
 !!        type(node_data), intent(in) :: node
 !!        type(element_data), intent(in) :: ele
@@ -28,6 +29,8 @@
 !!        type(jacobians_2d), intent(in) :: jac_sf_grp_q, jac_sf_grp_l
 !!        type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
 !!        type(gradient_model_data_type), intent(in) :: FEM_elens
+!!        type(layering_tbl), intent(in) :: layer_tbl
+!!        type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
 !!        type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
 !!        type(work_finite_element_mat), intent(inout) :: fem_wk
 !!        type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -56,6 +59,7 @@
       use t_MHD_finite_element_mat
       use t_filter_elength
       use t_layering_ele_list
+      use t_solver_djds
 !
       implicit none
 !
@@ -65,10 +69,11 @@
 !
 ! ----------------------------------------------------------------------
 !
-      subroutine s_cal_velocity_pre(nod_comm, node, ele, surf, fluid,  &
-     &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,         &
-     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,  &
-     &          layer_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+      subroutine s_cal_velocity_pre(nod_comm, node, ele, surf, fluid,   &
+     &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,          &
+     &          jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,   &
+     &          layer_tbl, num_MG_level, Vmat_MG_DJDS,                  &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_surf_data_torque
       use m_SGS_address
@@ -104,6 +109,9 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
       type(layering_tbl), intent(in) :: layer_tbl
+!
+      integer(kind = kint), intent(in) :: num_MG_level
+      type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
 !
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
@@ -194,14 +202,14 @@
       else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson) then
         call cal_velo_pre_lumped_crank                                  &
      &     (iak_diff_v, nod_comm, node, ele, fluid,                     &
-     &      iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl,               &
-     &      FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      iphys, iphys_ele, ele_fld, jac_3d_q, rhs_tbl, FEM_elens,    &
+     &      Vmat_MG_DJDS, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       else if (iflag_t_evo_4_velo .eq. id_Crank_nicolson_cmass) then 
         call cal_velo_pre_consist_crank                                 &
      &    (iphys%i_velo, iphys%i_pre_mom, iak_diff_v,                   &
      &     node, ele, fluid, jac_3d_q, rhs_tbl, FEM_elens,              &
-     &     mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &     Vmat_MG_DJDS, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
       end if
 !
       call set_boundary_velo(node, iphys%i_velo, nod_fld)
@@ -217,8 +225,8 @@
       subroutine cal_velocity_co(nod_comm, node, ele, surf, fluid,      &
      &          sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,          &
      &          jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,         &
-     &          rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,                 &
-     &          f_l, f_nl, nod_fld)
+     &          rhs_tbl, FEM_elens, num_MG_level, Vmat_MG_DJDS,         &
+     &          mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
       use m_SGS_address
       use m_SGS_model_coefs
@@ -251,6 +259,9 @@
       type(tables_4_FEM_assembles), intent(in) :: rhs_tbl
       type(gradient_model_data_type), intent(in) :: FEM_elens
 !
+      integer(kind = kint), intent(in) :: num_MG_level
+      type(DJDS_MATRIX), intent(in) :: Vmat_MG_DJDS(0:num_MG_level)
+!
       type(work_MHD_fe_mat), intent(inout) :: mhd_fem_wk
       type(work_finite_element_mat), intent(inout) :: fem_wk
       type(finite_ele_mat_node), intent(inout) :: f_l, f_nl
@@ -282,8 +293,8 @@
      &  .or. iflag_implicit_correct.eq.4) then
         call cal_velocity_co_imp(iphys%i_velo,                          &
      &      nod_comm, node, ele, fluid, iphys_ele, ele_fld,             &
-     &      jac_3d_q, rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk,           &
-     &      f_l, f_nl, nod_fld)
+     &      jac_3d_q, rhs_tbl, FEM_elens, Vmat_MG_DJDS, mhd_fem_wk,     &
+     &      fem_wk, f_l, f_nl, nod_fld)
       else
         call cal_velocity_co_exp(iphys%i_velo, iphys%i_p_phi,           &
      &      nod_comm, node, ele, fluid, jac_3d_q, rhs_tbl,              &

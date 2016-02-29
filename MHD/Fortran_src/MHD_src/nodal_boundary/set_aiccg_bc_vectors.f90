@@ -73,7 +73,7 @@
           call set_aiccg_bc_velo(intg_point_t_evo, ele, surf,           &
      &        sf_grp, nod_bc1_v, nod_bc1_rot, sf_bc1_free_sph_in,       &
      &        sf_bc1_free_sph_out, jac_sf_grp, rhs_tbl, mat_tbl_fl,     &
-     &        DJDS_fluid, fem_wk, Vmat_DJDS)
+     &        DJDS_fluid, fem_wk, MHD1_matrices%Vmat_MG_DJDS(0))
         end if
       end if
 !

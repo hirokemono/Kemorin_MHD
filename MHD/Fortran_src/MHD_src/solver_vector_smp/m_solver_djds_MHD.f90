@@ -15,12 +15,14 @@
       use t_comm_table
       use t_solver_djds
       use t_vector_for_solver
+      use t_solver_djds_MHD
 !
       implicit none
 !
 !
-!>      Structure of matrix for time evolution of velocity
-      type(DJDS_MATRIX), save :: Vmat_DJDS
+!>        Structure of matrices for MHD dynamo simulation
+      type(MHD_MG_matrices), save :: MHD1_matrices
+!
 !>      Structure of matrix for poission equation of pressure
       type(DJDS_MATRIX), save :: Pmat_DJDS
 !
@@ -69,7 +71,7 @@
 !>      Communication table structure for insulator
       type(communication_table), save :: DJDS_comm_ins
 !
-!------------------------------------------------------------------
+!-----------------------------------------------------------------------
 !
       contains
 !

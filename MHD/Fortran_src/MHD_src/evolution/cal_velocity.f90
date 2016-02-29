@@ -70,8 +70,10 @@
       use m_control_parameter
       use m_machine_parameter
       use m_physical_property
+      use m_type_AMG_data
       use m_SGS_model_coefs
       use m_SGS_address
+      use m_solver_djds_MHD
 !
       use cal_velocity_pre
       use cal_mod_vel_potential
@@ -135,7 +137,8 @@
       call s_cal_velocity_pre(nod_comm, node, ele, surf, fluid,         &
      &    sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,                &
      &    jac_3d_q, jac_3d_l, jac_sf_grp_q, rhs_tbl, FEM_elens,         &
-     &    layer_tbl, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &    layer_tbl, num_MG_level, MHD1_matrices%Vmat_MG_DJDS,          &
+     &    mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !     --------------------- 
 !
@@ -156,8 +159,9 @@
 !
         call cal_velocity_co(nod_comm, node, ele, surf, fluid,          &
      &      sf_grp, sf_grp_nod, iphys, iphys_ele, ele_fld,              &
-     &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l,             &
-     &      rhs_tbl, FEM_elens, mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
+     &      jac_3d_q, jac_3d_l, jac_sf_grp_q, jac_sf_grp_l, rhs_tbl,    &
+     &      FEM_elens, num_MG_level, MHD1_matrices%Vmat_MG_DJDS,        &
+     &      mhd_fem_wk, fem_wk, f_l, f_nl, nod_fld)
 !
 !
         call cal_rms_scalar_potential(iloop, fluid%istack_ele_fld_smp,  &

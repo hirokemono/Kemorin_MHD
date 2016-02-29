@@ -37,7 +37,6 @@
       use m_control_parameter
       use m_physical_property
       use m_phys_constants
-      use m_sorted_node_MHD
 !
       use m_solver_djds_MHD
 !
@@ -65,7 +64,8 @@
      &      .and. coef_velo.gt.0.0d0 ) then
           call add_skv1_to_crs_matrix33(ele, rhs_tbl,                   &
      &        MHD_mat_tbls%fluid_q, k2, fem_wk%sk6,                     &
-     &        Vmat_DJDS%num_non0, Vmat_DJDS%aiccg)
+     &        MHD1_matrices%Vmat_MG_DJDS(0)%num_non0,                   &
+     &        MHD1_matrices%Vmat_MG_DJDS(0)%aiccg)
         end if
 !
         if ( iflag_t_evo_4_temp .eq. id_Crank_nicolson_cmass            &

@@ -60,10 +60,11 @@
       end if
 !
       if (iflag_t_evo_4_velo .ge. id_Crank_nicolson) then
-        call precond_DJDS33_struct(np_smp, DJDS_fluid, Vmat_DJDS,       &
-     &      precond_4_crank, sigma_diag)
+        call precond_DJDS33_struct(np_smp, DJDS_fluid,                  &
+     &      MHD1_matrices%Vmat_MG_DJDS(0), precond_4_crank, sigma_diag)
 !        call precond_DJDSnn_struct(n_vector, np_smp,                   &
-!     &      DJDS_fluid, Vmat_DJDS, precond_4_crank, sigma_diag)
+!     &      DJDS_fluid, MHD1_matrices%Vmat_MG_DJDS(0),                 &
+!     &      precond_4_crank, sigma_diag)
       end if
 !
       if (iflag_t_evo_4_temp .ge. id_Crank_nicolson) then
